@@ -340,7 +340,7 @@ build_message (EMsgComposer *composer)
 	
 	if (composer->send_html) {
 		clear_current_images (composer);
-
+		
 		data = get_text (composer->persist_stream_interface, "text/html");		
 		if (!data) {
 			/* The component has probably died */
@@ -394,7 +394,7 @@ build_message (EMsgComposer *composer)
 			
 			add_inlined_images (composer, html_with_images);
 			clear_current_images (composer);
-
+			
 			current = CAMEL_DATA_WRAPPER (html_with_images);
 		} else
 			current = CAMEL_DATA_WRAPPER (body);
@@ -408,7 +408,7 @@ build_message (EMsgComposer *composer)
 			camel_data_wrapper_set_mime_type (CAMEL_DATA_WRAPPER (multipart),
 							  "multipart/alternative");
 		}
-
+		
 		/* Generate a random boundary. */
 		camel_multipart_set_boundary (multipart, NULL);
 		
@@ -424,16 +424,16 @@ build_message (EMsgComposer *composer)
 		
 		if (composer->is_alternative) {
 			int i;
-
+			
 			for (i = camel_multipart_get_number (multipart); i > 1; i--) {
 				part = camel_multipart_get_part (multipart, i - 1);
 				camel_medium_remove_header (CAMEL_MEDIUM (part), "Content-Disposition");
 			}
 		}
-
+		
 		current = CAMEL_DATA_WRAPPER (multipart);
 	}
-
+	
 	if (composer->pgp_sign || composer->pgp_encrypt) {
 		part = camel_mime_part_new ();
 		camel_medium_set_content_object (CAMEL_MEDIUM (part), current);
@@ -454,6 +454,8 @@ build_message (EMsgComposer *composer)
 				from = e_msg_composer_hdrs_get_from (hdrs);
 				camel_internet_address_get (from, 0, NULL, &pgpid);
 			}
+			
+			printf ("build_message(): pgpid = '%s'\n", pgpid);
 			
 			mail_crypto_pgp_mime_part_sign (&part, pgpid, CAMEL_CIPHER_HASH_SHA1, &ex);
 			
@@ -1058,7 +1060,7 @@ autosave_save_draft (EMsgComposer *composer)
 	CamelMimeMessage *message;
 	CamelStream *stream;
 	char *file;
-	gint fd;
+	int fd;
 	gboolean success = TRUE;
 	
 	fd = composer->autosave_fd;
@@ -1767,6 +1769,8 @@ setup_ui (EMsgComposer *composer)
 	g_free (default_charset);
 	
 	if (!session || !camel_session_is_online (session)) {
+		char *tooltip;
+		
 		/* Move the accelerator from Send to Send Later */
 		bonobo_ui_component_set_prop (
 			composer->uic, "/commands/FileSend",
@@ -1774,6 +1778,15 @@ setup_ui (EMsgComposer *composer)
 		bonobo_ui_component_set_prop (
 			composer->uic, "/commands/FileSendLater",
 			"accel", "*Ctrl*Return", NULL);
+		
+		/* Update the FileSend tooltip to be the same as the FileSendLater tooltip... */
+		tooltip = bonobo_ui_component_get_prop (
+			composer->uic, "/commands/FileSendLater",
+			"tip", NULL);
+		bonobo_ui_component_set_prop (
+			composer->uic, "/commands/FileSend",
+			"tip", tooltip, NULL);
+		g_free (tooltip);
 	}
 	
 	/* Format -> HTML */
@@ -2195,6 +2208,8 @@ init (EMsgComposer *composer)
 	composer->has_changed              = FALSE;
 	
 	composer->charset                  = NULL;
+	
+	composer->enable_autosave          = TRUE;
 	composer->autosave_file            = NULL;
 	composer->autosave_fd              = -1;
 }
@@ -3304,6 +3319,11 @@ e_msg_composer_get_message_draft (EMsgComposer *composer)
 	account = e_msg_composer_get_preferred_account (composer);
 	if (account && account->name)
 		camel_medium_set_header (CAMEL_MEDIUM (msg), "X-Evolution-Account", account->name);
+	
+	/* build_message() set this to text/html since we set composer->send_html to
+	   TRUE before calling e_msg_composer_get_message() */
+	if (!composer->send_html)
+		camel_medium_set_header (CAMEL_MEDIUM (msg), "X-Evolution-Format", "text/plain");
 	
 	return msg;
 }

@@ -1,3 +1,180 @@
+2002-01-11  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* providers/imap/camel-imap-folder.c (imap_update_summary): Kludge
+	around a bug in Exchange 5.5 that reports 2 messages with the same
+	UID. Fixes bug #17694.
+
+2002-01-09  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* providers/local/camel-local-folder.c
+	(camel_local_folder_construct): If the mbox file is a symlink,
+	follow the symlink and get the One True Path so that we can
+	rewrite the mbox later without worrying about clobbering the
+	symlink.
+
+2001-12-11  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* camel-service.c (camel_service_connect): Make sure that the
+	connect_op is non-NULL before unregistering/unreffing it.
+
+2001-12-12  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* camel-folder-summary.c (content_info_load): Don't try setting a
+	content-type parameter if either the name or value is NULL.
+
+	* camel-mime-utils.c (header_set_param): NULL-protection.
+
+2001-12-17  Dan Winship  <danw@ximian.com>
+
+	* Makefile.am (INCLUDES): define CAMEL_PROVIDERDIR to be the
+	configure.in-defined camel_providerdir.
+
+	* providers/Makefile.am: Remove some outdated comments
+
+	* providers/imap/Makefile.am (camel_provider_LTLIBRARIES,
+	camel_provider_DATA): renamed from provider_LTLIBRARIES,
+	provider_DATA.
+	* providers/local/Makefile.am: Likewise
+	* providers/nntp/Makefile.am: Likewise
+	* providers/pop3/Makefile.am: Likewise
+	* providers/sendmail/Makefile.am: Likewise
+	* providers/smtp/Makefile.am: Likewise
+
+2001-12-11  Zbigniew Chyla  <cyba@gnome.pl>
+
+	Fixes #17085
+
+	* camel-charset-map.c: Added #include <errno.h>.
+
+	* camel-charset-map-private.h:
+	Recreated (following instructions from camel-charset-map.c)
+
+2001-12-11  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* camel-object.c (camel_type_register): Keep a name-to-type hash
+	so that we can make sure that the type has not yet been registered
+	(prevents a race condition such as the one in bug #16559).
+
+	* camel-service.c (camel_service_connect): Make sure that the
+	connect_op is non-NULL before unregistering/unreffing it.
+
+2001-12-05  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* camel-sasl-digest-md5.c: iconv() returns a size_t, not an int.
+
+	* camel-pgp-context.c: The return value of iconv() is a size_t,
+	not an int.
+
+	* camel-mime-part-utils.c (convert_buffer): Always use size_t args
+	for iconv().
+
+	* camel-mime-filter-charset.c (complete): Always use size_t args
+	for iconv().
+	(filter): Same.
+
+	* camel-mime-utils.c (header_address_fold): Make headerlen a
+	size_t instead of an int.
+	(header_fold): Same.
+	(base64_encode_close): We should be returning a size_t and inlen
+	should also be a size_t.
+	(base64_encode_step): Same here.
+	(base64_decode_step): Here too.
+	(base64_encode_simple): And here...
+	(base64_decode_simple): Same.
+	(uuencode_close): We should also use size_t's here...
+	(uuencode_step): And here too.
+	(uudecode_step): And also here.
+	(quoted_encode_close): Same idea here.
+	(quoted_encode_step): Again here.
+	(quoted_decode_step): Here too.
+	(quoted_encode): Input length should be a size_t.
+	(rfc2047_decode_word): Same.
+	(g_string_append_len): Here too.
+	(append_8bit): "
+	(rfc2047_encode_word): "
+	(quote_word): "
+	(hex_decode): "
+	(rfc2184_decode): Use size_t's with iconv().
+	(header_decode_param): Same.
+
+2001-12-07  Dan Winship  <danw@ximian.com>
+
+	* camel-mime-message.c (camel_mime_message_set_date): Fix the
+	tm_gmtoff case (its sign is the opposite of "timezone"). Fixes
+	#14678
+
+2001-12-04  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* camel-mime-utils.c (header_content_type_simple): Protect against
+	either of the types being NULL.
+
+2001-12-05  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* camel-mime-filter-basic.c (filter): If complete() allocates
+	len+2 bytes for the out buffer, so should this. See bug #16371 for
+	an example case.
+
+2001-11-29  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* camel-folder-search.c (search_body_contains): Don't use regex
+	matching. Fixes bug #16227.
+
+	* camel-mime-message.c (best_encoding): Check the content-object's
+	mime type, not the mime part types. Should fix bug #15843.
+
+2001-11-27  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* providers/imap/camel-imap-folder.c (get_content): Return NULL if
+	construct_from_stream fails.
+	(get_message): Same.
+	(get_message_simple): Here too.
+	(add_message_from_data): And here.
+
+2001-11-14    <NotZed@Ximian.com>
+
+	* camel-vee-folder.c (folder_changed_remove_uid): Use the uid
+	rather than vuid for unmatched.  Also add the uid to unmatched if
+	it wasn't in the unmatched_uids table at all.
+	(folder_changed_change): If checking for added, if the new ones
+	dont match, then try to add them to unmatched.  Fixes #6893.
+
+	* camel-folder-summary.c (camel_folder_summary_index): Change lock
+	order, always summary_lock before ref_lock.
+	(camel_folder_summary_array): "
+	(camel_folder_summary_uid): "
+	(camel_folder_summary_remove_uid): "  Fixes a deadlock.
+
+2001-11-21  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* Makefile.am: Remove OpenSSL library includes/LDFLAGS from the
+	build.
+
+2001-11-20  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* providers/smtp/camel-smtp-transport.c (get_smtp_error_string):
+	Check to see that errno is non-zero before returning
+	g_strerror. If it's 0, then we have an unknown error.
+
+2001-11-19  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* camel-tcp-stream-ssl.c (stream_read): Added a check to see if
+	the operation has been cancelled.
+	(stream_write): Same.
+
+2001-11-16  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* providers/imap/camel-imap-utils.c (imap_parse_body): Abort if
+	body == NULL.
+
+2001-11-16  Jeffrey Stedfast  <fejj@ximian.com>
+
+	Since some mail clients like Outlook are broken, we need to set a
+	name parameter on pgp signed and encrypted parts.
+
+	* camel-pgp-mime.c (camel_pgp_mime_part_encrypt): Set a name
+	parameter.
+	(camel_pgp_mime_part_sign): Same.
+
 2001-11-13    <NotZed@Ximian.com>
 
 	* camel-filter-search.c (get_source): If we have no source string,

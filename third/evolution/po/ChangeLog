@@ -1,6 +1,216 @@
-2001-11-21  gettextize  <bug-gnu-utils@gnu.org>
+2002-01-24  gettextize  <bug-gnu-utils@gnu.org>
 
 	* Makefile.in.in: Upgrade to gettext-0.10.40.
+
+2002-01-24  Ettore Perazzoli  <ettore@ximian.com>
+
+	* it.po: More tweaking.
+
+2002-01-23  Ettore Perazzoli  <ettore@ximian.com>
+
+	* it.po: More updates to the Italian translation.
+
+2002-01-23  Ettore Perazzoli  <ettore@ximian.com>
+
+	* it.po: Updated Italian translation by Clara Tattoni
+	<clara.tattoni@libero.it>.
+
+2002-01-22  Stanislav Visnovsky  <visnovsky@nenya.ms.mff.cuni.cz>
+
+	* sk.po: Updated Slovak translation.
+
+2002-01-20  Simos Xenitellis  <simos@hellug.gr>
+
+	* Updated Greek translation (by Nick Niktaris).
+
+2002-01-19	Roy-Magne Mo <rmo@sunnmore.net>
+
+	* Updated Norwegian (nynorsk) translation.
+
+2002-01-19    Alexander Shopov <al_shopov@web.bg>
+
+	* Small update of Bulgarian translation
+
+2002-01-13  Dan Winship  <danw@ximian.com>
+
+	* POTFILES.in: Revert previous change AGAIN.
+
+2002-01-12  Christian Rose  <menthos@menthos.com>
+
+	* POTFILES.in: Sorted and added LOTS of missing files.
+	* sv.po: Updated Swedish translation.
+
+2002-01-11  Stanislav Visnovsky  <visnovsky@nenya.ms.mff.cuni.cz>
+
+	* sk.po: Finished Slovak update.
+
+2002-01-10  Peteris Krisjanis <peteris.krisjanis@ttc.lv>
+
+	* lv.po: Heavely updated latvian translation.
+
+2002-01-09  Stanislav Visnovsky  <visnovsky@nenya.ms.mff.cuni.cz>
+
+	* sk.po: Starting Slovak translation of zones.
+
+2002-01-09  Dan Winship  <danw@ximian.com>
+
+	* POTFILES.in: Revert previous change as it broke the snapshot
+	builds by depending on non-disted (ie, unused) files
+
+2002-01-09  Christian Rose  <menthos@menthos.com>
+
+	* POTFILES.in: Sorted and added LOTS of missing files.
+	* sv.po: Updated Swedish translation.
+
+2002-01-07  Simos Xenitellis  <simos@hellug.gr>
+
+	* el.po: Minor fixes.
+	* el.po: Updated Greek translation by Panayotis Pakos.
+
+2002-01-04  Christophe Merlet  <redfox@eikonex.org>
+
+	* fr.po: Updated French translation.
+
+2001-12-29  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* no.po: Updated Norwegian (bokmål) translation.
+
+2001-12-27  Andras Timar <timar@gnome.hu>
+
+	* hu.po: Updated Hungarian translation. 
+
+2001-12-22  Simos Xenitellis  <simos@hellug.gr>
+
+	* el.po: Updated Greek translation 
+	by Nick Nicktaris.
+
+2001-12-19  Christian Rose  <menthos@menthos.com>
+
+	* sv.po: Fixed Swedish translation. Thanks to
+	Johan Dahlin <zilch.am@home.se> for his review.
+
+2001-12-19  Andras Timar <timar@gnome.hu>
+
+	* hu.po: Updated Hungarian translation. 
+
+2001-12-19  Christian Rose  <menthos@menthos.com>
+
+	* sv.po: Updated Swedish translation.
+
+2001-12-19  Roy-Magne Mo <rmo@sunnmore.net>
+
+	* nn.po: Updated Norwegian (nynorsk) translation
+	* ChangeLog: removed gettext-entries
+
+2001-12-18  Ettore Perazzoli  <ettore@ximian.com>
+
+	* it.po: More updates.
+
+2001-12-17  Ettore Perazzoli  <ettore@ximian.com>
+
+	* it.po: Updated Italian translation.
+
+2001-12-17  Zbigniew Chyla  <cyba@gnome.pl>
+
+	* pl.po: Updated Polish translation by
+	GNOME PL Team <translators@gnome.pl>.
+
+2001-12-17  Iain Holmes  <iain@ximian.com>
+
+	* POFILES.in: Added my-evolution/Locations.h
+
+2001-12-16  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* no.po: Updated Norwegian (bokmål) translation.
+
+2001-12-14  Andras Timar <timar@gnome.hu>
+
+	* hu.po: Updated Hungarian translation 
+		 and fixed Bugzilla ID 17344.
+
+2001-12-13  Damon Chaplin  <damon@ximian.com>
+
+	* POTFILES.in: added calendar/zones.h
+
+2001-12-12  Zbigniew Chyla  <cyba@gnome.pl>
+
+	* pl.po: Updated Polish translation by
+	GNOME PL Team <translators@gnome.pl>.
+
+2001-12-12  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* no.po: Updated Norwegian (bokmål) translation.
+
+2001-12-12  Christian Rose  <menthos@menthos.com>
+
+	* sv.po: Updated Swedish translation.
+
+2001-12-12  Christian Rose  <menthos@menthos.com>
+
+	* sv.po: Updated Swedish translation.
+
+2001-12-11  Stanislav Visnovsky  <visnovsky@nenya.ms.mff.cuni.cz>
+
+	* sk.po: Updated Slovak translation.
+
+2001-12-07  Andras Timar <timar@gnome.hu>
+
+	* hu.po: Updated Hungarian translation.
+
+2001-12-07  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* no.po: Updated Norwegian (bokmål) translation.
+
+2001-12-07  Christian Rose  <menthos@menthos.com>
+
+	* sv.po: Updated Swedish translation.
+
+2001-12-06  Christian Meyer  <chrisime@gnome.org>
+
+	* de.po: Minor update + fixes.
+
+2001-12-04  Christian Meyer  <chrisime@gnome.org>
+
+	* de.po: Updated German translation.
+
+2001-12-04  Zbigniew Chyla  <cyba@gnome.pl>
+
+	* pl.po: Updated Polish translation by
+	GNOME PL Team <translators@gnome.pl>.
+
+2001-12-03  Simos Xenitellis  <simos@hellug.gr>
+
+	* el.po: Updated Greek translation.
+
+2001-12-02  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* no.po: Updated Norwegian (bokmål) translation.
+
+2001-12-01  Christian Rose  <menthos@menthos.com>
+
+	* sv.po: Updated Swedish translation.
+
+2001-11-30  Peteris Krisjanis <pecisk@inbox.lv>
+
+	* lv.po: Updated Latvian translation.
+
+2001-11-28  Christian Rose  <menthos@menthos.com>
+
+	* sv.po: Updated Swedish translation.
+
+2001-11-25  Matthias Warkus  <mawarkus@gnome.org>
+
+	* de.po: Updated German translation for release.
+
+2001-11-25  Christophe Merlet  <redfox@eikonex.org>
+	
+	* fr.po: Updated French translation from work of
+	Frederic Riss <frederic.riss@laposte.net>.
+
+2001-11-24  Zbigniew Chyla  <cyba@gnome.pl>
+
+	* pl.po: Updated Polish translation by
+	GNOME PL Team <translators@gnome.pl>.
 
 2001-11-21  Jeffrey Stedfast  <fejj@ximian.com>
 
@@ -63,10 +273,6 @@
 2001-11-16  Andras Timar <timar@gnome.hu>
 
         * hu.po: Updated Hungarian translation.
-
-2001-11-14  gettextize  <bug-gnu-utils@gnu.org>
-
-	* Makefile.in.in: Upgrade to gettext-0.10.39.
 
 2001-11-14  Christian Rose  <menthos@menthos.com>
 

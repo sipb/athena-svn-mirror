@@ -14,7 +14,7 @@
 #  FILE: Makefile.am
 #  CREATOR: eric 
 #  
-#  $Id: Makefile.in,v 1.1.1.3 2001-12-03 17:47:37 ghudson Exp $
+#  $Id: Makefile.in,v 1.1.1.4 2002-02-15 17:35:10 ghudson Exp $
 #
 #
 # (C) COPYRIGHT 2000, Eric Busboom, http://www.softwarestudio.org
@@ -383,6 +383,118 @@ distdir: $(DISTFILES)
 	  fi; \
 	done
 	$(MAKE) $(AM_MAKEFLAGS) top_distdir="$(top_distdir)" distdir="$(distdir)" dist-hook
+icalarray.lo icalarray.o : icalarray.c ../../config.h icalarray.h \
+	icalerror.h
+icalattendee.lo icalattendee.o : icalattendee.c ../../config.h \
+	icalattendee.h icalenums.h icaltime.h icalduration.h \
+	icalperiod.h icalderivedparameter.h icalderivedvalue.h \
+	icaltypes.h icalrecur.h
+icalcomponent.lo icalcomponent.o : icalcomponent.c ../../config.h \
+	icalcomponent.h icalproperty.h icalderivedparameter.h \
+	icalvalue.h icalenums.h icaltypes.h icaltime.h icalduration.h \
+	icalperiod.h icalrecur.h icalderivedproperty.h icalparameter.h \
+	icalderivedvalue.h icalattendee.h pvl.h icalerror.h \
+	icalmemory.h icalarray.h icaltimezone.h icalparser.h
+icalderivedparameter.lo icalderivedparameter.o : icalderivedparameter.c \
+	../../config.h icalparameter.h icalderivedparameter.h \
+	icalparameterimpl.h icalproperty.h icalvalue.h icalenums.h \
+	icaltypes.h icaltime.h icalduration.h icalperiod.h icalrecur.h \
+	icalderivedproperty.h icalderivedvalue.h icalerror.h \
+	icalmemory.h
+icalderivedproperty.lo icalderivedproperty.o : icalderivedproperty.c \
+	../../config.h icalproperty.h icalderivedparameter.h \
+	icalvalue.h icalenums.h icaltypes.h icaltime.h icalduration.h \
+	icalperiod.h icalrecur.h icalderivedproperty.h icalparameter.h \
+	icalderivedvalue.h icalcomponent.h icalattendee.h pvl.h \
+	icalerror.h icalmemory.h icalparser.h
+icalderivedvalue.lo icalderivedvalue.o : icalderivedvalue.c \
+	../../config.h icalerror.h icalmemory.h icalparser.h \
+	icalenums.h icaltypes.h icaltime.h icalduration.h icalperiod.h \
+	icalcomponent.h icalproperty.h icalderivedparameter.h \
+	icalvalue.h icalrecur.h icalderivedproperty.h icalparameter.h \
+	icalderivedvalue.h icalattendee.h pvl.h icalvalueimpl.h
+icalduration.lo icalduration.o : icalduration.c ../../config.h \
+	icalduration.h icaltime.h icalerror.h icalmemory.h icalvalue.h \
+	icalenums.h icaltypes.h icalperiod.h icalrecur.h \
+	icalderivedproperty.h icalparameter.h icalderivedparameter.h \
+	icalderivedvalue.h
+icalenums.lo icalenums.o : icalenums.c ../../config.h icalenums.h
+icalerror.lo icalerror.o : icalerror.c ../../config.h icalerror.h
+icallangbind.lo icallangbind.o : icallangbind.c icalcomponent.h \
+	icalproperty.h icalderivedparameter.h icalvalue.h icalenums.h \
+	icaltypes.h icaltime.h icalduration.h icalperiod.h icalrecur.h \
+	icalderivedproperty.h icalparameter.h icalderivedvalue.h \
+	icalattendee.h pvl.h icalerror.h ../../config.h icalmemory.h
+icallexer.lo icallexer.o : icallexer.c icalparser.h icalenums.h \
+	icaltypes.h icaltime.h icalduration.h icalperiod.h \
+	icalcomponent.h icalproperty.h icalderivedparameter.h \
+	icalvalue.h icalrecur.h icalderivedproperty.h icalparameter.h \
+	icalderivedvalue.h icalattendee.h pvl.h icalmemory.h icalyacc.h
+icalmemory.lo icalmemory.o : icalmemory.c ../../config.h icalmemory.h \
+	icalerror.h
+icalmime.lo icalmime.o : icalmime.c icalmime.h icalcomponent.h \
+	icalproperty.h icalderivedparameter.h icalvalue.h icalenums.h \
+	icaltypes.h icaltime.h icalduration.h icalperiod.h icalrecur.h \
+	icalderivedproperty.h icalparameter.h icalderivedvalue.h \
+	icalattendee.h pvl.h icalparser.h icalerror.h ../../config.h \
+	icalmemory.h sspm.h
+icalparameter.lo icalparameter.o : icalparameter.c ../../config.h \
+	icalparameter.h icalderivedparameter.h icalproperty.h \
+	icalvalue.h icalenums.h icaltypes.h icaltime.h icalduration.h \
+	icalperiod.h icalrecur.h icalderivedproperty.h \
+	icalderivedvalue.h icalerror.h icalmemory.h icalparameterimpl.h
+icalparser.lo icalparser.o : icalparser.c ../../config.h icalparser.h \
+	icalenums.h icaltypes.h icaltime.h icalduration.h icalperiod.h \
+	icalcomponent.h icalproperty.h icalderivedparameter.h \
+	icalvalue.h icalrecur.h icalderivedproperty.h icalparameter.h \
+	icalderivedvalue.h icalattendee.h pvl.h icalmemory.h \
+	icalerror.h
+icalperiod.lo icalperiod.o : icalperiod.c ../../config.h icalperiod.h \
+	icaltime.h icalduration.h icalerror.h icalmemory.h
+icalproperty.lo icalproperty.o : icalproperty.c ../../config.h \
+	icalproperty.h icalderivedparameter.h icalvalue.h icalenums.h \
+	icaltypes.h icaltime.h icalduration.h icalperiod.h icalrecur.h \
+	icalderivedproperty.h icalparameter.h icalderivedvalue.h \
+	icalcomponent.h icalattendee.h pvl.h icalerror.h icalmemory.h \
+	icalparser.h
+icalrecur.lo icalrecur.o : icalrecur.c ../../config.h icalrecur.h \
+	icaltime.h icalerror.h icalmemory.h pvl.h
+icalrestriction.lo icalrestriction.o : icalrestriction.c ../../config.h \
+	icalrestriction.h icalproperty.h icalderivedparameter.h \
+	icalvalue.h icalenums.h icaltypes.h icaltime.h icalduration.h \
+	icalperiod.h icalrecur.h icalderivedproperty.h icalparameter.h \
+	icalderivedvalue.h icalcomponent.h icalattendee.h pvl.h \
+	icalerror.h
+icaltime.lo icaltime.o : icaltime.c ../../config.h icaltime.h \
+	icalerror.h icalmemory.h icaltimezone.h icalarray.h \
+	icalcomponent.h icalproperty.h icalderivedparameter.h \
+	icalvalue.h icalenums.h icaltypes.h icalduration.h icalperiod.h \
+	icalrecur.h icalderivedproperty.h icalparameter.h \
+	icalderivedvalue.h icalattendee.h pvl.h
+icaltimezone.lo icaltimezone.o : icaltimezone.c ../../config.h \
+	icalproperty.h icalderivedparameter.h icalvalue.h icalenums.h \
+	icaltypes.h icaltime.h icalduration.h icalperiod.h icalrecur.h \
+	icalderivedproperty.h icalparameter.h icalderivedvalue.h \
+	icalarray.h icalerror.h icalparser.h icalcomponent.h \
+	icalattendee.h pvl.h icaltimezone.h
+icaltypes.lo icaltypes.o : icaltypes.c ../../config.h icaltypes.h \
+	icalenums.h icaltime.h icalduration.h icalperiod.h icalerror.h \
+	icalmemory.h icalvalueimpl.h icalderivedvalue.h icalrecur.h \
+	icalderivedproperty.h icalparameter.h icalderivedparameter.h
+icalvalue.lo icalvalue.o : icalvalue.c ../../config.h icalerror.h \
+	icalmemory.h icalparser.h icalenums.h icaltypes.h icaltime.h \
+	icalduration.h icalperiod.h icalcomponent.h icalproperty.h \
+	icalderivedparameter.h icalvalue.h icalrecur.h \
+	icalderivedproperty.h icalparameter.h icalderivedvalue.h \
+	icalattendee.h pvl.h icalvalueimpl.h
+icalyacc.lo icalyacc.o : icalyacc.c icalparser.h icalenums.h icaltypes.h \
+	icaltime.h icalduration.h icalperiod.h icalcomponent.h \
+	icalproperty.h icalderivedparameter.h icalvalue.h icalrecur.h \
+	icalderivedproperty.h icalparameter.h icalderivedvalue.h \
+	icalattendee.h pvl.h
+pvl.lo pvl.o : pvl.c ../../config.h pvl.h
+sspm.lo sspm.o : sspm.c sspm.h
+vsnprintf.lo vsnprintf.o : vsnprintf.c
 
 info-am:
 info: info-am

@@ -2261,6 +2261,14 @@ _ORBIT_skel_GNOME_Evolution_Calendar_CalFactory_open
 		  &TC_GNOME_Evolution_Calendar_CalFactory_NilListener_struct,
 		  (gpointer)
 		  _ORBIT_GNOME_Evolution_Calendar_CalFactory_NilListener_marshal},
+	       {(const CORBA_TypeCode)
+		&TC_GNOME_Evolution_Calendar_CalFactory_InvalidURI_struct,
+		(gpointer)
+		_ORBIT_GNOME_Evolution_Calendar_CalFactory_InvalidURI_marshal},
+	       {(const CORBA_TypeCode)
+		&TC_GNOME_Evolution_Calendar_CalFactory_UnsupportedMethod_struct,
+		(gpointer)
+		_ORBIT_GNOME_Evolution_Calendar_CalFactory_UnsupportedMethod_marshal},
 	       {CORBA_OBJECT_NIL, NULL} };
 	    ORBit_send_user_exception(_ORBIT_send_buffer, ev,
 				      _ORBIT_user_exceptions);

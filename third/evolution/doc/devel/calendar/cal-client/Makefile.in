@@ -129,6 +129,7 @@ INSTOBJEXT = @INSTOBJEXT@
 INTLDEPS = @INTLDEPS@
 INTLLIBS = @INTLLIBS@
 INTLOBJS = @INTLOBJS@
+INTLTOOL_PERL = @INTLTOOL_PERL@
 JW = @JW@
 KDE_APPLNK_DIR = @KDE_APPLNK_DIR@
 KRB4_CFLAGS = @KRB4_CFLAGS@
@@ -175,11 +176,20 @@ USE_NLS = @USE_NLS@
 VERSION = @VERSION@
 XML_I18N_EXTRACT = @XML_I18N_EXTRACT@
 XML_I18N_MERGE = @XML_I18N_MERGE@
-XML_I18N_TOOLS_PERL = @XML_I18N_TOOLS_PERL@
+XML_I18N_MERGE_DESKTOP_RULE = @XML_I18N_MERGE_DESKTOP_RULE@
+XML_I18N_MERGE_DIRECTORY_RULE = @XML_I18N_MERGE_DIRECTORY_RULE@
+XML_I18N_MERGE_KEYS_RULE = @XML_I18N_MERGE_KEYS_RULE@
+XML_I18N_MERGE_OAF_RULE = @XML_I18N_MERGE_OAF_RULE@
+XML_I18N_MERGE_PONG_RULE = @XML_I18N_MERGE_PONG_RULE@
+XML_I18N_MERGE_SERVER_RULE = @XML_I18N_MERGE_SERVER_RULE@
+XML_I18N_MERGE_SHEET_RULE = @XML_I18N_MERGE_SHEET_RULE@
+XML_I18N_MERGE_SOUNDLIST_RULE = @XML_I18N_MERGE_SOUNDLIST_RULE@
+XML_I18N_MERGE_XML_RULE = @XML_I18N_MERGE_XML_RULE@
 XML_I18N_UPDATE = @XML_I18N_UPDATE@
 XPM_LIBS = @XPM_LIBS@
 YACC = @YACC@
 ZVT_LIBS = @ZVT_LIBS@
+camel_providerdir = @camel_providerdir@
 cflags_set = @cflags_set@
 cxxflags_set = @cxxflags_set@
 l = @l@
@@ -226,10 +236,10 @@ extra_files =
 
 # CFLAGS and LDFLAGS for compiling scan program. Only needed if your app/lib
 # contains GtkObjects/GObjects and you want to document signals and properties.
-GTKDOC_CFLAGS =  	-I$(top_srcdir)/calendar				-I$(top_builddir)/calendar/cal-client			-I$(top_srcdir)						-I$(top_builddir)					-I$(top_builddir)/libical/src/libical			-I$(top_srcdir)/libical/src/libical			$(BONOBO_VFS_GNOME_CFLAGS)
+GTKDOC_CFLAGS =  	-I$(top_srcdir)/calendar				-I$(top_builddir)/calendar/cal-client			-I$(top_srcdir)						-I$(top_builddir)					-I$(top_builddir)/libical/src/libical			-I$(top_srcdir)/libical/src/libical			$(BONOBO_VFS_GNOME_CFLAGS)				$(BONOBO_CONF_CFLAGS)
 
 
-GTKDOC_LIBS =  	$(BONOBO_VFS_GNOME_LIBS)						$(top_builddir)/calendar/cal-client/.libs/libcal-client-static.al 	$(top_builddir)/calendar/cal-util/.libs/libcal-util-static.al		$(top_builddir)/libical/src/libical/.libs/libical-static.al		$(top_builddir)/libversit/.libs/libversit.al				$(top_builddir)/libwombat/libwombat.la
+GTKDOC_LIBS =  	$(BONOBO_VFS_GNOME_LIBS)						$(BONOBO_CONF_LIBS)							$(top_builddir)/calendar/cal-client/.libs/libcal-client-static.al 	$(top_builddir)/calendar/cal-util/.libs/libcal-util-static.al		$(top_builddir)/libical/src/libical/.libs/libical-static.al		$(top_builddir)/libversit/.libs/libversit.al				$(top_builddir)/libwombat/libwombat.la
 
 
 GTKDOC_CC = $(LIBTOOL) --mode=compile $(CC)

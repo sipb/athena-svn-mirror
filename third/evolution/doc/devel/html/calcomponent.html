@@ -1,0 +1,9329 @@
+<HTML
+><HEAD
+><TITLE
+>CalComponent</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.64
+"><LINK
+REL="HOME"
+TITLE="Evolution Developer's Guide"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Calendar Public API Reference"
+HREF="calendar-public-reference.html"><LINK
+REL="PREVIOUS"
+TITLE="CalClient"
+HREF="calclient.html"><LINK
+REL="NEXT"
+TITLE="Miscellaneous utilities"
+HREF="evolution-cal-util-cal-util.html"></HEAD
+><BODY
+CLASS="REFENTRY"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+WIDTH="100%"
+BORDER="0"
+BGCOLOR="#000000"
+CELLPADDING="1"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="4"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="5"
+><SPAN
+CLASS="APPLICATION"
+>Evolution</SPAN
+> Developer's Guide</FONT
+></TH
+></TR
+><TR
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="left"
+><A
+HREF="calclient.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>&#60;&#60;&#60; Previous Page</B
+></FONT
+></A
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#0000C0"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="index.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Home</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#00C000"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="calendar-public-reference.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Up</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="right"
+><A
+HREF="evolution-cal-util-cal-util.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Next Page &#62;&#62;&#62;</B
+></FONT
+></A
+></TD
+></TR
+></TABLE
+></DIV
+><H1
+><A
+NAME="CALCOMPONENT"
+>CalComponent</A
+></H1
+><DIV
+CLASS="REFNAMEDIV"
+><A
+NAME="AEN998"
+></A
+><H2
+>Name</H2
+>CalComponent&nbsp;--&nbsp;RFC 2445 iCalendar component object.</DIV
+><DIV
+CLASS="REFSYNOPSISDIV"
+><A
+NAME="AEN1001"
+></A
+><H2
+>Synopsis</H2
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="SYNOPSIS"
+>&#13;
+
+#define     <A
+HREF="calcomponent.html#CAL-COMPONENT-CAPS"
+>CAL_COMPONENT</A
+>                   (obj)
+enum        <A
+HREF="calcomponent.html#CALCOMPONENTVTYPE"
+>CalComponentVType</A
+>;
+enum        <A
+HREF="calcomponent.html#CALCOMPONENTFIELD"
+>CalComponentField</A
+>;
+enum        <A
+HREF="calcomponent.html#CALCOMPONENTCLASSIFICATION"
+>CalComponentClassification</A
+>;
+typedef     <A
+HREF="calcomponent.html#CALCOMPONENTDATETIME"
+>CalComponentDateTime</A
+>;
+enum        <A
+HREF="calcomponent.html#CALCOMPONENTPERIODTYPE"
+>CalComponentPeriodType</A
+>;
+typedef     <A
+HREF="calcomponent.html#CALCOMPONENTPERIOD"
+>CalComponentPeriod</A
+>;
+typedef     <A
+HREF="calcomponent.html#CALCOMPONENTTEXT"
+>CalComponentText</A
+>;
+enum        <A
+HREF="calcomponent.html#CALCOMPONENTTRANSPARENCY"
+>CalComponentTransparency</A
+>;
+char*       <A
+HREF="calcomponent.html#CAL-COMPONENT-GEN-UID"
+>cal_component_gen_uid</A
+>           (void);
+<A
+HREF="calcomponent.html"
+>CalComponent</A
+>* <A
+HREF="calcomponent.html#CAL-COMPONENT-NEW"
+>cal_component_new</A
+>             (void);
+<A
+HREF="calcomponent.html"
+>CalComponent</A
+>* <A
+HREF="calcomponent.html#CAL-COMPONENT-CLONE"
+>cal_component_clone</A
+>           (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp);
+void        <A
+HREF="calcomponent.html#CAL-COMPONENT-SET-NEW-VTYPE"
+>cal_component_set_new_vtype</A
+>     (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp,
+                                             <A
+HREF="calcomponent.html#CALCOMPONENTVTYPE"
+>CalComponentVType</A
+> type);
+gboolean    <A
+HREF="calcomponent.html#CAL-COMPONENT-SET-ICALCOMPONENT"
+>cal_component_set_icalcomponent</A
+> (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp,
+                                             icalcomponent *icalcomp);
+icalcomponent* <A
+HREF="calcomponent.html#CAL-COMPONENT-GET-ICALCOMPONENT"
+>cal_component_get_icalcomponent</A
+>
+                                            (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp);
+<A
+HREF="calcomponent.html#CALCOMPONENTVTYPE"
+>CalComponentVType</A
+> <A
+HREF="calcomponent.html#CAL-COMPONENT-GET-VTYPE"
+>cal_component_get_vtype</A
+>   (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp);
+char*       <A
+HREF="calcomponent.html#CAL-COMPONENT-GET-AS-STRING"
+>cal_component_get_as_string</A
+>     (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp);
+void        <A
+HREF="calcomponent.html#CAL-COMPONENT-COMMIT-SEQUENCE"
+>cal_component_commit_sequence</A
+>   (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp);
+void        <A
+HREF="calcomponent.html#CAL-COMPONENT-GET-UID"
+>cal_component_get_uid</A
+>           (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp,
+                                             const char **uid);
+void        <A
+HREF="calcomponent.html#CAL-COMPONENT-SET-UID"
+>cal_component_set_uid</A
+>           (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp,
+                                             const char *uid);
+void        <A
+HREF="calcomponent.html#CAL-COMPONENT-GET-CATEGORIES"
+>cal_component_get_categories</A
+>    (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp,
+                                             const char **categories);
+void        <A
+HREF="calcomponent.html#CAL-COMPONENT-SET-CATEGORIES"
+>cal_component_set_categories</A
+>    (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp,
+                                             const char *categories);
+void        <A
+HREF="calcomponent.html#CAL-COMPONENT-GET-CATEGORIES-LIST"
+>cal_component_get_categories_list</A
+>
+                                            (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp,
+                                             GSList **categ_list);
+void        <A
+HREF="calcomponent.html#CAL-COMPONENT-SET-CATEGORIES-LIST"
+>cal_component_set_categories_list</A
+>
+                                            (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp,
+                                             GSList *categ_list);
+void        <A
+HREF="calcomponent.html#CAL-COMPONENT-GET-CLASSIFICATION"
+>cal_component_get_classification</A
+>
+                                            (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp,
+                                             <A
+HREF="calcomponent.html#CALCOMPONENTCLASSIFICATION"
+>CalComponentClassification</A
+> *classif);
+void        <A
+HREF="calcomponent.html#CAL-COMPONENT-SET-CLASSIFICATION"
+>cal_component_set_classification</A
+>
+                                            (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp,
+                                             <A
+HREF="calcomponent.html#CALCOMPONENTCLASSIFICATION"
+>CalComponentClassification</A
+> classif);
+void        <A
+HREF="calcomponent.html#CAL-COMPONENT-GET-COMMENT-LIST"
+>cal_component_get_comment_list</A
+>  (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp,
+                                             GSList **text_list);
+void        <A
+HREF="calcomponent.html#CAL-COMPONENT-SET-COMMENT-LIST"
+>cal_component_set_comment_list</A
+>  (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp,
+                                             GSList *text_list);
+void        <A
+HREF="calcomponent.html#CAL-COMPONENT-GET-COMPLETED"
+>cal_component_get_completed</A
+>     (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp,
+                                             struct icaltimetype **t);
+void        <A
+HREF="calcomponent.html#CAL-COMPONENT-SET-COMPLETED"
+>cal_component_set_completed</A
+>     (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp,
+                                             struct icaltimetype *t);
+void        <A
+HREF="calcomponent.html#CAL-COMPONENT-GET-CREATED"
+>cal_component_get_created</A
+>       (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp,
+                                             struct icaltimetype **t);
+void        <A
+HREF="calcomponent.html#CAL-COMPONENT-SET-CREATED"
+>cal_component_set_created</A
+>       (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp,
+                                             struct icaltimetype *t);
+void        <A
+HREF="calcomponent.html#CAL-COMPONENT-GET-DESCRIPTION-LIST"
+>cal_component_get_description_list</A
+>
+                                            (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp,
+                                             GSList **text_list);
+void        <A
+HREF="calcomponent.html#CAL-COMPONENT-SET-DESCRIPTION-LIST"
+>cal_component_set_description_list</A
+>
+                                            (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp,
+                                             GSList *text_list);
+void        <A
+HREF="calcomponent.html#CAL-COMPONENT-GET-DTEND"
+>cal_component_get_dtend</A
+>         (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp,
+                                             <A
+HREF="calcomponent.html#CALCOMPONENTDATETIME"
+>CalComponentDateTime</A
+> *dt);
+void        <A
+HREF="calcomponent.html#CAL-COMPONENT-SET-DTEND"
+>cal_component_set_dtend</A
+>         (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp,
+                                             <A
+HREF="calcomponent.html#CALCOMPONENTDATETIME"
+>CalComponentDateTime</A
+> *dt);
+void        <A
+HREF="calcomponent.html#CAL-COMPONENT-GET-DTSTAMP"
+>cal_component_get_dtstamp</A
+>       (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp,
+                                             struct icaltimetype *t);
+void        <A
+HREF="calcomponent.html#CAL-COMPONENT-SET-DTSTAMP"
+>cal_component_set_dtstamp</A
+>       (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp,
+                                             struct icaltimetype *t);
+void        <A
+HREF="calcomponent.html#CAL-COMPONENT-GET-DTSTART"
+>cal_component_get_dtstart</A
+>       (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp,
+                                             <A
+HREF="calcomponent.html#CALCOMPONENTDATETIME"
+>CalComponentDateTime</A
+> *dt);
+void        <A
+HREF="calcomponent.html#CAL-COMPONENT-SET-DTSTART"
+>cal_component_set_dtstart</A
+>       (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp,
+                                             <A
+HREF="calcomponent.html#CALCOMPONENTDATETIME"
+>CalComponentDateTime</A
+> *dt);
+void        <A
+HREF="calcomponent.html#CAL-COMPONENT-GET-DUE"
+>cal_component_get_due</A
+>           (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp,
+                                             <A
+HREF="calcomponent.html#CALCOMPONENTDATETIME"
+>CalComponentDateTime</A
+> *dt);
+void        <A
+HREF="calcomponent.html#CAL-COMPONENT-SET-DUE"
+>cal_component_set_due</A
+>           (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp,
+                                             <A
+HREF="calcomponent.html#CALCOMPONENTDATETIME"
+>CalComponentDateTime</A
+> *dt);
+void        <A
+HREF="calcomponent.html#CAL-COMPONENT-GET-EXDATE-LIST"
+>cal_component_get_exdate_list</A
+>   (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp,
+                                             GSList **exdate_list);
+void        <A
+HREF="calcomponent.html#CAL-COMPONENT-SET-EXDATE-LIST"
+>cal_component_set_exdate_list</A
+>   (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp,
+                                             GSList *exdate_list);
+gboolean    <A
+HREF="calcomponent.html#CAL-COMPONENT-HAS-EXDATES"
+>cal_component_has_exdates</A
+>       (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp);
+void        <A
+HREF="calcomponent.html#CAL-COMPONENT-GET-EXRULE-LIST"
+>cal_component_get_exrule_list</A
+>   (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp,
+                                             GSList **recur_list);
+void        <A
+HREF="calcomponent.html#CAL-COMPONENT-GET-EXRULE-PROPERTY-LIST"
+>cal_component_get_exrule_property_list</A
+>
+                                            (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp,
+                                             GSList **recur_list);
+void        <A
+HREF="calcomponent.html#CAL-COMPONENT-SET-EXRULE-LIST"
+>cal_component_set_exrule_list</A
+>   (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp,
+                                             GSList *recur_list);
+gboolean    <A
+HREF="calcomponent.html#CAL-COMPONENT-HAS-EXRULES"
+>cal_component_has_exrules</A
+>       (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp);
+gboolean    <A
+HREF="calcomponent.html#CAL-COMPONENT-HAS-EXCEPTIONS"
+>cal_component_has_exceptions</A
+>    (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp);
+void        <A
+HREF="calcomponent.html#CAL-COMPONENT-GET-GEO"
+>cal_component_get_geo</A
+>           (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp,
+                                             struct icalgeotype **geo);
+void        <A
+HREF="calcomponent.html#CAL-COMPONENT-SET-GEO"
+>cal_component_set_geo</A
+>           (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp,
+                                             struct icalgeotype *geo);
+void        <A
+HREF="calcomponent.html#CAL-COMPONENT-GET-LAST-MODIFIED"
+>cal_component_get_last_modified</A
+> (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp,
+                                             struct icaltimetype **t);
+void        <A
+HREF="calcomponent.html#CAL-COMPONENT-SET-LAST-MODIFIED"
+>cal_component_set_last_modified</A
+> (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp,
+                                             struct icaltimetype *t);
+void        <A
+HREF="calcomponent.html#CAL-COMPONENT-GET-PERCENT"
+>cal_component_get_percent</A
+>       (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp,
+                                             int **percent);
+void        <A
+HREF="calcomponent.html#CAL-COMPONENT-SET-PERCENT"
+>cal_component_set_percent</A
+>       (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp,
+                                             int *percent);
+void        <A
+HREF="calcomponent.html#CAL-COMPONENT-GET-PRIORITY"
+>cal_component_get_priority</A
+>      (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp,
+                                             int **priority);
+void        <A
+HREF="calcomponent.html#CAL-COMPONENT-SET-PRIORITY"
+>cal_component_set_priority</A
+>      (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp,
+                                             int *priority);
+void        <A
+HREF="calcomponent.html#CAL-COMPONENT-GET-RDATE-LIST"
+>cal_component_get_rdate_list</A
+>    (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp,
+                                             GSList **period_list);
+void        <A
+HREF="calcomponent.html#CAL-COMPONENT-SET-RDATE-LIST"
+>cal_component_set_rdate_list</A
+>    (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp,
+                                             GSList *period_list);
+gboolean    <A
+HREF="calcomponent.html#CAL-COMPONENT-HAS-RDATES"
+>cal_component_has_rdates</A
+>        (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp);
+void        <A
+HREF="calcomponent.html#CAL-COMPONENT-GET-RRULE-LIST"
+>cal_component_get_rrule_list</A
+>    (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp,
+                                             GSList **recur_list);
+void        <A
+HREF="calcomponent.html#CAL-COMPONENT-GET-RRULE-PROPERTY-LIST"
+>cal_component_get_rrule_property_list</A
+>
+                                            (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp,
+                                             GSList **recur_list);
+void        <A
+HREF="calcomponent.html#CAL-COMPONENT-SET-RRULE-LIST"
+>cal_component_set_rrule_list</A
+>    (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp,
+                                             GSList *recur_list);
+gboolean    <A
+HREF="calcomponent.html#CAL-COMPONENT-HAS-RRULES"
+>cal_component_has_rrules</A
+>        (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp);
+gboolean    <A
+HREF="calcomponent.html#CAL-COMPONENT-HAS-RECURRENCES"
+>cal_component_has_recurrences</A
+>   (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp);
+void        <A
+HREF="calcomponent.html#CAL-COMPONENT-GET-SEQUENCE"
+>cal_component_get_sequence</A
+>      (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp,
+                                             int **sequence);
+void        <A
+HREF="calcomponent.html#CAL-COMPONENT-SET-SEQUENCE"
+>cal_component_set_sequence</A
+>      (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp,
+                                             int *sequence);
+void        <A
+HREF="calcomponent.html#CAL-COMPONENT-GET-STATUS"
+>cal_component_get_status</A
+>        (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp,
+                                             icalproperty_status *status);
+void        <A
+HREF="calcomponent.html#CAL-COMPONENT-SET-STATUS"
+>cal_component_set_status</A
+>        (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp,
+                                             icalproperty_status status);
+void        <A
+HREF="calcomponent.html#CAL-COMPONENT-GET-SUMMARY"
+>cal_component_get_summary</A
+>       (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp,
+                                             <A
+HREF="calcomponent.html#CALCOMPONENTTEXT"
+>CalComponentText</A
+> *summary);
+void        <A
+HREF="calcomponent.html#CAL-COMPONENT-SET-SUMMARY"
+>cal_component_set_summary</A
+>       (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp,
+                                             <A
+HREF="calcomponent.html#CALCOMPONENTTEXT"
+>CalComponentText</A
+> *summary);
+void        <A
+HREF="calcomponent.html#CAL-COMPONENT-GET-TRANSPARENCY"
+>cal_component_get_transparency</A
+>  (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp,
+                                             <A
+HREF="calcomponent.html#CALCOMPONENTTRANSPARENCY"
+>CalComponentTransparency</A
+> *transp);
+void        <A
+HREF="calcomponent.html#CAL-COMPONENT-SET-TRANSPARENCY"
+>cal_component_set_transparency</A
+>  (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp,
+                                             <A
+HREF="calcomponent.html#CALCOMPONENTTRANSPARENCY"
+>CalComponentTransparency</A
+> transp);
+void        <A
+HREF="calcomponent.html#CAL-COMPONENT-GET-URL"
+>cal_component_get_url</A
+>           (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp,
+                                             const char **url);
+void        <A
+HREF="calcomponent.html#CAL-COMPONENT-SET-URL"
+>cal_component_set_url</A
+>           (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp,
+                                             const char *url);
+
+void        <A
+HREF="calcomponent.html#CAL-COMPONENT-FREE-CATEGORIES-LIST"
+>cal_component_free_categories_list</A
+>
+                                            (GSList *categ_list);
+void        <A
+HREF="calcomponent.html#CAL-COMPONENT-FREE-DATETIME"
+>cal_component_free_datetime</A
+>     (<A
+HREF="calcomponent.html#CALCOMPONENTDATETIME"
+>CalComponentDateTime</A
+> *dt);
+void        <A
+HREF="calcomponent.html#CAL-COMPONENT-FREE-EXDATE-LIST"
+>cal_component_free_exdate_list</A
+>  (GSList *exdate_list);
+void        <A
+HREF="calcomponent.html#CAL-COMPONENT-FREE-GEO"
+>cal_component_free_geo</A
+>          (struct icalgeotype *geo);
+void        <A
+HREF="calcomponent.html#CAL-COMPONENT-FREE-ICALTIMETYPE"
+>cal_component_free_icaltimetype</A
+> (struct icaltimetype *t);
+void        <A
+HREF="calcomponent.html#CAL-COMPONENT-FREE-PERCENT"
+>cal_component_free_percent</A
+>      (int *percent);
+void        <A
+HREF="calcomponent.html#CAL-COMPONENT-FREE-PRIORITY"
+>cal_component_free_priority</A
+>     (int *priority);
+void        <A
+HREF="calcomponent.html#CAL-COMPONENT-FREE-PERIOD-LIST"
+>cal_component_free_period_list</A
+>  (GSList *period_list);
+void        <A
+HREF="calcomponent.html#CAL-COMPONENT-FREE-RECUR-LIST"
+>cal_component_free_recur_list</A
+>   (GSList *recur_list);
+void        <A
+HREF="calcomponent.html#CAL-COMPONENT-FREE-SEQUENCE"
+>cal_component_free_sequence</A
+>     (int *sequence);
+void        <A
+HREF="calcomponent.html#CAL-COMPONENT-FREE-TEXT-LIST"
+>cal_component_free_text_list</A
+>    (GSList *text_list);
+
+struct      <A
+HREF="calcomponent.html#CALCOMPONENTALARM"
+>CalComponentAlarm</A
+>;
+typedef     <A
+HREF="calcomponent.html#CALALARMINSTANCE"
+>CalAlarmInstance</A
+>;
+typedef     <A
+HREF="calcomponent.html#CALCOMPONENTALARMS"
+>CalComponentAlarms</A
+>;
+enum        <A
+HREF="calcomponent.html#CALALARMACTION"
+>CalAlarmAction</A
+>;
+enum        <A
+HREF="calcomponent.html#CALALARMTRIGGERTYPE"
+>CalAlarmTriggerType</A
+>;
+typedef     <A
+HREF="calcomponent.html#CALALARMTRIGGER"
+>CalAlarmTrigger</A
+>;
+gboolean    <A
+HREF="calcomponent.html#CAL-COMPONENT-HAS-ALARMS"
+>cal_component_has_alarms</A
+>        (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp);
+GList*      <A
+HREF="calcomponent.html#CAL-COMPONENT-GET-ALARM-UIDS"
+>cal_component_get_alarm_uids</A
+>    (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp);
+<A
+HREF="calcomponent.html#CALCOMPONENTALARM"
+>CalComponentAlarm</A
+>* <A
+HREF="calcomponent.html#CAL-COMPONENT-GET-ALARM"
+>cal_component_get_alarm</A
+>  (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp,
+                                             const char *auid);
+void        <A
+HREF="calcomponent.html#CAL-COMPONENT-ALARM-FREE"
+>cal_component_alarm_free</A
+>        (<A
+HREF="calcomponent.html#CALCOMPONENTALARM"
+>CalComponentAlarm</A
+> *alarm);
+void        <A
+HREF="calcomponent.html#CAL-COMPONENT-ALARMS-FREE"
+>cal_component_alarms_free</A
+>       (<A
+HREF="calcomponent.html#CALCOMPONENTALARMS"
+>CalComponentAlarms</A
+> *alarms);
+const char* <A
+HREF="calcomponent.html#CAL-COMPONENT-ALARM-GET-UID"
+>cal_component_alarm_get_uid</A
+>     (<A
+HREF="calcomponent.html#CALCOMPONENTALARM"
+>CalComponentAlarm</A
+> *alarm);
+void        <A
+HREF="calcomponent.html#CAL-COMPONENT-ALARM-GET-ACTION"
+>cal_component_alarm_get_action</A
+>  (<A
+HREF="calcomponent.html#CALCOMPONENTALARM"
+>CalComponentAlarm</A
+> *alarm,
+                                             <A
+HREF="calcomponent.html#CALALARMACTION"
+>CalAlarmAction</A
+> *action);
+void        <A
+HREF="calcomponent.html#CAL-COMPONENT-ALARM-SET-ACTION"
+>cal_component_alarm_set_action</A
+>  (<A
+HREF="calcomponent.html#CALCOMPONENTALARM"
+>CalComponentAlarm</A
+> *alarm,
+                                             <A
+HREF="calcomponent.html#CALALARMACTION"
+>CalAlarmAction</A
+> action);
+void        <A
+HREF="calcomponent.html#CAL-COMPONENT-ALARM-GET-TRIGGER"
+>cal_component_alarm_get_trigger</A
+> (<A
+HREF="calcomponent.html#CALCOMPONENTALARM"
+>CalComponentAlarm</A
+> *alarm,
+                                             <A
+HREF="calcomponent.html#CALALARMTRIGGER"
+>CalAlarmTrigger</A
+> *trigger);
+void        <A
+HREF="calcomponent.html#CAL-COMPONENT-ALARM-SET-TRIGGER"
+>cal_component_alarm_set_trigger</A
+> (<A
+HREF="calcomponent.html#CALCOMPONENTALARM"
+>CalComponentAlarm</A
+> *alarm,
+                                             <A
+HREF="calcomponent.html#CALALARMTRIGGER"
+>CalAlarmTrigger</A
+> trigger);
+&#13;</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN1250"
+></A
+><H2
+>Object Hierarchy</H2
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="SYNOPSIS"
+>&#13;  GtkObject
+   +----CalComponent</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN1254"
+></A
+><H2
+>Description</H2
+><P
+>    The <A
+HREF="calcomponent.html"
+>CalComponent</A
+> object provides a wrapper over the <SPAN
+CLASS="APPLICATION"
+>libical</SPAN
+>
+    functions for manipulating calendar components.  <A
+HREF="calcomponent.html"
+>CalComponent</A
+>
+    presents a GTK+-like interface to calendar components according to
+    RFC 2445.
+  </P
+><P
+>    While <SPAN
+CLASS="APPLICATION"
+>libical</SPAN
+> supports almost all of the features of the
+    iCalendar RFCs, applications are normally not interested in all
+    the mindless gunk that is there.  Still, applications should do
+    their best not to drop extension fields from calendar components
+    or any other extra information they do not support (including
+    standard fields they are not interested in).  The <A
+HREF="calcomponent.html"
+>CalComponent</A
+>
+    object provides a wrapper over
+    <SPAN
+CLASS="STRUCTNAME"
+>icalcomponent</SPAN
+> structures from <SPAN
+CLASS="APPLICATION"
+>libical</SPAN
+>
+    so that no information in them will be lost even if the
+    application is not designed to handle it.  Also, <A
+HREF="calcomponent.html"
+>CalComponent</A
+>
+    provides a higher-level API to many of the <SPAN
+CLASS="APPLICATION"
+>libical</SPAN
+> operations so
+    as to make it less painful to deal with iCalendar components.
+  </P
+><P
+>    A <A
+HREF="calcomponent.html"
+>CalComponent</A
+> object starts out empty.  It must be initialized
+    from an existing <SPAN
+CLASS="STRUCTNAME"
+>icalcomponent</SPAN
+> structure
+    by using the <A
+HREF="calcomponent.html#CAL-COMPONENT-SET-ICALCOMPONENT"
+>cal_component_set_icalcomponent</A
+>() function, or from a
+    completely new data by specifying the desired component type to
+    the <A
+HREF="calcomponent.html#CAL-COMPONENT-SET-NEW-VTYPE"
+>cal_component_set_new_vtype</A
+>() function.
+  </P
+><P
+>    <A
+HREF="calcomponent.html"
+>CalComponent</A
+> will create an internal map of the properties in the
+    <SPAN
+CLASS="STRUCTNAME"
+>icalcomponent</SPAN
+> structure and then allow
+    random access to them via the <A
+HREF="calcomponent.html"
+>CalComponent</A
+> API functions;
+    normally the <SPAN
+CLASS="APPLICATION"
+>libical</SPAN
+> API would have to be used by creating many
+    iterators and other unpleasant constructs.  <A
+HREF="calcomponent.html"
+>CalComponent</A
+> keeps
+    handles to the properties it scanned from the
+    <SPAN
+CLASS="STRUCTNAME"
+>icalcomponent</SPAN
+> and will let the parent
+    application modify them at any time without having to do any
+    iteration.
+  </P
+><P
+>    Eventually a <A
+HREF="calcomponent.html"
+>CalComponent</A
+> may be turned into the RFC 2445 string
+    representation of an iCalendar component by using the
+    <A
+HREF="calcomponent.html#CAL-COMPONENT-GET-AS-STRING"
+>cal_component_get_as_string</A
+>() function.  Applications can then
+    transfer this interoperable
+    <A
+NAME="AEN1282"
+HREF="#FTN.AEN1282"
+>[1]</A
+>
+    string to other programs that deal with iCalendar.
+  </P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN1284"
+></A
+><H2
+>Details</H2
+><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1286"
+></A
+><H3
+><A
+NAME="CAL-COMPONENT-CAPS"
+></A
+>CAL_COMPONENT()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>#define CAL_COMPONENT(obj)            (GTK_CHECK_CAST ((obj), CAL_COMPONENT_TYPE, CalComponent))</PRE
+></TD
+></TR
+></TABLE
+><P
+>    Casts a GtkObject to a <A
+HREF="calcomponent.html"
+>CalComponent</A
+>.
+  </P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN1293"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>obj</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>A GTK+ object.
+&#13;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1302"
+></A
+><H3
+><A
+NAME="CALCOMPONENTVTYPE"
+></A
+>enum CalComponentVType</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>typedef enum {
+	CAL_COMPONENT_NO_TYPE,
+	CAL_COMPONENT_EVENT,
+	CAL_COMPONENT_TODO,
+	CAL_COMPONENT_JOURNAL,
+	CAL_COMPONENT_FREEBUSY,
+	CAL_COMPONENT_TIMEZONE
+} CalComponentVType;</PRE
+></TD
+></TR
+></TABLE
+><P
+>    Calendar component types as defined by RFC 2445.  These values can
+    be used to create a new calendar component by passing them to the
+    <A
+HREF="calcomponent.html#CAL-COMPONENT-SET-NEW-VTYPE"
+>cal_component_set_new_vtype</A
+>() function.  They are also the return
+    value of the <A
+HREF="calcomponent.html#CAL-COMPONENT-GET-VTYPE"
+>cal_component_get_vtype</A
+>() function.  The only time
+    the <TT
+CLASS="PARAMETER"
+><I
+>CAL_COMPONENT_NO_TYPE</I
+></TT
+> value is used is when querying the
+    vtype of an uninitialized <A
+HREF="calcomponent.html"
+>CalComponent</A
+>.
+  </P
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1311"
+></A
+><H3
+><A
+NAME="CALCOMPONENTFIELD"
+></A
+>enum CalComponentField</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>typedef enum {
+	CAL_COMPONENT_FIELD_CATEGORIES,		/* concatenation of the categories list */
+	CAL_COMPONENT_FIELD_CLASSIFICATION,
+	CAL_COMPONENT_FIELD_COMPLETED,
+	CAL_COMPONENT_FIELD_DTEND,
+	CAL_COMPONENT_FIELD_DTSTART,
+	CAL_COMPONENT_FIELD_DUE,
+	CAL_COMPONENT_FIELD_GEO,
+	CAL_COMPONENT_FIELD_PERCENT,
+	CAL_COMPONENT_FIELD_PRIORITY,
+	CAL_COMPONENT_FIELD_SUMMARY,
+	CAL_COMPONENT_FIELD_TRANSPARENCY,
+	CAL_COMPONENT_FIELD_URL,
+	CAL_COMPONENT_FIELD_HAS_ALARMS,		/* not a real field */
+	CAL_COMPONENT_FIELD_ICON,		/* not a real field */
+	CAL_COMPONENT_FIELD_COMPLETE,		/* not a real field */
+	CAL_COMPONENT_FIELD_RECURRING,		/* not a real field */
+	CAL_COMPONENT_FIELD_OVERDUE,		/* not a real field */
+	CAL_COMPONENT_FIELD_COLOR,		/* not a real field */
+	CAL_COMPONENT_FIELD_STATUS,
+	CAL_COMPONENT_FIELD_COMPONENT,		/* not a real field */
+#if 0
+	CAL_COMPONENT_FIELD_LOCATION,
+#endif
+	CAL_COMPONENT_FIELD_NUM_FIELDS
+} CalComponentField;</PRE
+></TD
+></TR
+></TABLE
+><P
+>    These values are used as identifiers for ETable columns.  These
+    are used by the calendar GUI code in <SPAN
+CLASS="APPLICATION"
+>Evolution</SPAN
+>.
+  </P
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1318"
+></A
+><H3
+><A
+NAME="CALCOMPONENTCLASSIFICATION"
+></A
+>enum CalComponentClassification</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>typedef enum {
+	CAL_COMPONENT_CLASS_NONE,
+	CAL_COMPONENT_CLASS_PUBLIC,
+	CAL_COMPONENT_CLASS_PRIVATE,
+	CAL_COMPONENT_CLASS_CONFIDENTIAL,
+	CAL_COMPONENT_CLASS_UNKNOWN
+} CalComponentClassification;</PRE
+></TD
+></TR
+></TABLE
+><P
+>    Values for the access classification property of a calendar
+    component.
+  </P
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1323"
+></A
+><H3
+><A
+NAME="CALCOMPONENTDATETIME"
+></A
+>CalComponentDateTime</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>typedef struct {
+	/* Actual date/time value */
+	struct icaltimetype *value;
+
+	/* Timezone ID */
+	const char *tzid;
+} CalComponentDateTime;</PRE
+></TD
+></TR
+></TABLE
+><P
+>    This structure defines a date and time value.
+  </P
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1328"
+></A
+><H3
+><A
+NAME="CALCOMPONENTPERIODTYPE"
+></A
+>enum CalComponentPeriodType</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>typedef enum {
+	CAL_COMPONENT_PERIOD_DATETIME,
+	CAL_COMPONENT_PERIOD_DURATION
+} CalComponentPeriodType;</PRE
+></TD
+></TR
+></TABLE
+><P
+>    Defines how a period of time is specified.
+  </P
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1333"
+></A
+><H3
+><A
+NAME="CALCOMPONENTPERIOD"
+></A
+>CalComponentPeriod</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>typedef struct {
+	CalComponentPeriodType type;
+
+	struct icaltimetype start;
+
+	union {
+		struct icaltimetype end;
+		struct icaldurationtype duration;
+	} u;
+} CalComponentPeriod;</PRE
+></TD
+></TR
+></TABLE
+><P
+>    This structure defines a period of time.
+  </P
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1338"
+></A
+><H3
+><A
+NAME="CALCOMPONENTTEXT"
+></A
+>CalComponentText</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>typedef struct {
+	/* Description string */
+	const char *value;
+
+	/* Alternate representation URI */
+	const char *altrep;
+} CalComponentText;</PRE
+></TD
+></TR
+></TABLE
+><P
+>    This structure defines the value of a text property that may have
+    an alternate representation parameter.
+  </P
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1343"
+></A
+><H3
+><A
+NAME="CALCOMPONENTTRANSPARENCY"
+></A
+>enum CalComponentTransparency</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>typedef enum {
+	CAL_COMPONENT_TRANSP_NONE,
+	CAL_COMPONENT_TRANSP_TRANSPARENT,
+	CAL_COMPONENT_TRANSP_OPAQUE,
+	CAL_COMPONENT_TRANSP_UNKNOWN
+} CalComponentTransparency;</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1348"
+></A
+><H3
+><A
+NAME="CAL-COMPONENT-GEN-UID"
+></A
+>cal_component_gen_uid ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>char*       cal_component_gen_uid           (void);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Generates a unique identifier suitable for calendar components.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN1354"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A unique identifier string.  Every time this function is called
+a different string is returned.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1363"
+></A
+><H3
+><A
+NAME="CAL-COMPONENT-NEW"
+></A
+>cal_component_new ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF="calcomponent.html"
+>CalComponent</A
+>* cal_component_new             (void);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Creates a new empty calendar component object.  You should set it from an
+icalcomponent structure by using <A
+HREF="calcomponent.html#CAL-COMPONENT-SET-ICALCOMPONENT"
+>cal_component_set_icalcomponent</A
+>() or with a
+new empty component type by using <A
+HREF="calcomponent.html#CAL-COMPONENT-SET-NEW-VTYPE"
+>cal_component_set_new_vtype</A
+>().</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN1373"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A newly-created calendar component object.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1382"
+></A
+><H3
+><A
+NAME="CAL-COMPONENT-CLONE"
+></A
+>cal_component_clone ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF="calcomponent.html"
+>CalComponent</A
+>* cal_component_clone           (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Creates a new calendar component object by copying the information from
+another one.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN1390"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>comp</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A calendar component object.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A newly-created calendar component with the same values as the
+original one.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1403"
+></A
+><H3
+><A
+NAME="CAL-COMPONENT-SET-NEW-VTYPE"
+></A
+>cal_component_set_new_vtype ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        cal_component_set_new_vtype     (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp,
+                                             <A
+HREF="calcomponent.html#CALCOMPONENTVTYPE"
+>CalComponentVType</A
+> type);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Clears any existing component data from a calendar component object and
+creates a new icalcomponent of the specified type for it.  The only property
+that will be set in the new component will be its unique identifier.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN1412"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>comp</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A calendar component object.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>type</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Type of calendar component to create.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1425"
+></A
+><H3
+><A
+NAME="CAL-COMPONENT-SET-ICALCOMPONENT"
+></A
+>cal_component_set_icalcomponent ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>gboolean    cal_component_set_icalcomponent (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp,
+                                             icalcomponent *icalcomp);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Sets the contents of a calendar component object from an icalcomponent
+structure.  If the <TT
+CLASS="PARAMETER"
+><I
+>comp</I
+></TT
+> already had an icalcomponent set into it, it will
+will be freed automatically if the icalcomponent does not have a parent
+component itself.</P
+><P
+>Supported component types are VEVENT, VTODO, VJOURNAL, VFREEBUSY, and VTIMEZONE.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN1439"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>comp</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A calendar component object.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>icalcomp</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> An icalcomponent.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> TRUE on success, FALSE if <TT
+CLASS="PARAMETER"
+><I
+>icalcomp</I
+></TT
+> is an unsupported component
+type.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1458"
+></A
+><H3
+><A
+NAME="CAL-COMPONENT-GET-ICALCOMPONENT"
+></A
+>cal_component_get_icalcomponent ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>icalcomponent* cal_component_get_icalcomponent
+                                            (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Queries the icalcomponent structure that a calendar component object is
+wrapping.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN1467"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>comp</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A calendar component object.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> An icalcomponent structure, or NULL if the <TT
+CLASS="PARAMETER"
+><I
+>comp</I
+></TT
+> has no
+icalcomponent set to it.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1483"
+></A
+><H3
+><A
+NAME="CAL-COMPONENT-GET-VTYPE"
+></A
+>cal_component_get_vtype ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF="calcomponent.html#CALCOMPONENTVTYPE"
+>CalComponentVType</A
+> cal_component_get_vtype   (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Queries the type of a calendar component object.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN1491"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>comp</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A calendar component object.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> The type of the component, as defined by RFC 2445.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1504"
+></A
+><H3
+><A
+NAME="CAL-COMPONENT-GET-AS-STRING"
+></A
+>cal_component_get_as_string ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>char*       cal_component_get_as_string     (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Gets the iCalendar string representation of a calendar component.  You should
+call <A
+HREF="calcomponent.html#CAL-COMPONENT-COMMIT-SEQUENCE"
+>cal_component_commit_sequence</A
+>() before this function to ensure that the
+component's sequence number is consistent with the state of the object.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN1512"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>comp</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A calendar component.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> String representation of the calendar component according to
+RFC 2445.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1525"
+></A
+><H3
+><A
+NAME="CAL-COMPONENT-COMMIT-SEQUENCE"
+></A
+>cal_component_commit_sequence ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        cal_component_commit_sequence   (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Increments the sequence number property in a calendar component object if it
+needs it.  This needs to be done when any of a number of properties listed in
+RFC 2445 change values, such as the start and end dates of a component.</P
+><P
+>This function must be called before calling <A
+HREF="calcomponent.html#CAL-COMPONENT-GET-AS-STRING"
+>cal_component_get_as_string</A
+>() to
+ensure that the component is fully consistent.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN1534"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>comp</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1543"
+></A
+><H3
+><A
+NAME="CAL-COMPONENT-GET-UID"
+></A
+>cal_component_get_uid ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        cal_component_get_uid           (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp,
+                                             const char **uid);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Queries the unique identifier of a calendar component object.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN1550"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>comp</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A calendar component object.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>uid</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Return value for the UID string.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1563"
+></A
+><H3
+><A
+NAME="CAL-COMPONENT-SET-UID"
+></A
+>cal_component_set_uid ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        cal_component_set_uid           (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp,
+                                             const char *uid);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Sets the unique identifier string of a calendar component object.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN1570"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>comp</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A calendar component object.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>uid</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Unique identifier.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1583"
+></A
+><H3
+><A
+NAME="CAL-COMPONENT-GET-CATEGORIES"
+></A
+>cal_component_get_categories ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        cal_component_get_categories    (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp,
+                                             const char **categories);</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN1590"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>comp</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A calendar component object.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>categories</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1603"
+></A
+><H3
+><A
+NAME="CAL-COMPONENT-SET-CATEGORIES"
+></A
+>cal_component_set_categories ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        cal_component_set_categories    (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp,
+                                             const char *categories);</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN1610"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>comp</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A calendar component object.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>categories</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1623"
+></A
+><H3
+><A
+NAME="CAL-COMPONENT-GET-CATEGORIES-LIST"
+></A
+>cal_component_get_categories_list ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        cal_component_get_categories_list
+                                            (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp,
+                                             GSList **categ_list);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Queries the list of categories of a calendar component object.  Each element
+in the returned categ_list is a string with the corresponding category.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN1631"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>comp</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A calendar component object.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>categ_list</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Return value for the list of strings, where each string is a
+category.  This should be freed using <A
+HREF="calcomponent.html#CAL-COMPONENT-FREE-CATEGORIES-LIST"
+>cal_component_free_categories_list</A
+>().</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1645"
+></A
+><H3
+><A
+NAME="CAL-COMPONENT-SET-CATEGORIES-LIST"
+></A
+>cal_component_set_categories_list ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        cal_component_set_categories_list
+                                            (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp,
+                                             GSList *categ_list);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Sets the list of categories of a calendar component object.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN1653"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>comp</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A calendar component object.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>categ_list</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> List of strings, one for each category.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1666"
+></A
+><H3
+><A
+NAME="CAL-COMPONENT-GET-CLASSIFICATION"
+></A
+>cal_component_get_classification ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        cal_component_get_classification
+                                            (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp,
+                                             <A
+HREF="calcomponent.html#CALCOMPONENTCLASSIFICATION"
+>CalComponentClassification</A
+> *classif);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Queries the classification of a calendar component object.  If the
+classification property is not set on this component, this function returns
+CAL_COMPONENT_CLASS_NONE.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN1675"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>comp</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A calendar component object.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>classif</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Return value for the classification.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1688"
+></A
+><H3
+><A
+NAME="CAL-COMPONENT-SET-CLASSIFICATION"
+></A
+>cal_component_set_classification ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        cal_component_set_classification
+                                            (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp,
+                                             <A
+HREF="calcomponent.html#CALCOMPONENTCLASSIFICATION"
+>CalComponentClassification</A
+> classif);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Sets the classification property of a calendar component object.  To unset
+the property, specify CAL_COMPONENT_CLASS_NONE for <TT
+CLASS="PARAMETER"
+><I
+>classif</I
+></TT
+>.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN1697"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>comp</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A calendar component object.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>classif</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Classification to use.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1710"
+></A
+><H3
+><A
+NAME="CAL-COMPONENT-GET-COMMENT-LIST"
+></A
+>cal_component_get_comment_list ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        cal_component_get_comment_list  (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp,
+                                             GSList **text_list);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Queries the comment of a calendar component object.  The comment property can
+appear several times inside a calendar component, and so a list of
+<A
+HREF="calcomponent.html#CALCOMPONENTTEXT"
+>CalComponentText</A
+> is returned.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN1719"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>comp</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A calendar component object.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>text_list</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Return value for the comment properties and their parameters, as
+a list of <A
+HREF="calcomponent.html#CALCOMPONENTTEXT"
+>CalComponentText</A
+> structures.  This should be freed using the
+<A
+HREF="calcomponent.html#CAL-COMPONENT-FREE-TEXT-LIST"
+>cal_component_free_text_list</A
+>() function.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1734"
+></A
+><H3
+><A
+NAME="CAL-COMPONENT-SET-COMMENT-LIST"
+></A
+>cal_component_set_comment_list ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        cal_component_set_comment_list  (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp,
+                                             GSList *text_list);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Sets the comment of a calendar component object.  The comment property can
+appear several times inside a calendar component, and so a list of
+<A
+HREF="calcomponent.html#CALCOMPONENTTEXT"
+>CalComponentText</A
+> structures is used.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN1743"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>comp</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A calendar component object.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>text_list</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> List of <A
+HREF="calcomponent.html#CALCOMPONENTTEXT"
+>CalComponentText</A
+> structures.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1757"
+></A
+><H3
+><A
+NAME="CAL-COMPONENT-GET-COMPLETED"
+></A
+>cal_component_get_completed ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        cal_component_get_completed     (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp,
+                                             struct icaltimetype **t);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Queries the date at which a calendar compoment object was completed.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN1765"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>comp</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A calendar component object.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>t</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Return value for the completion date.  This should be freed using the
+<A
+HREF="calcomponent.html#CAL-COMPONENT-FREE-ICALTIMETYPE"
+>cal_component_free_icaltimetype</A
+>() function.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1779"
+></A
+><H3
+><A
+NAME="CAL-COMPONENT-SET-COMPLETED"
+></A
+>cal_component_set_completed ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        cal_component_set_completed     (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp,
+                                             struct icaltimetype *t);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Sets the date at which a calendar component object was completed.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN1787"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>comp</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A calendar component object.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>t</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Value for the completion date.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1800"
+></A
+><H3
+><A
+NAME="CAL-COMPONENT-GET-CREATED"
+></A
+>cal_component_get_created ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        cal_component_get_created       (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp,
+                                             struct icaltimetype **t);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Queries the date in which a calendar component object was created in the
+calendar store.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN1808"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>comp</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A calendar component object.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>t</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Return value for the creation date.  This should be freed using the
+<A
+HREF="calcomponent.html#CAL-COMPONENT-FREE-ICALTIMETYPE"
+>cal_component_free_icaltimetype</A
+>() function.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1822"
+></A
+><H3
+><A
+NAME="CAL-COMPONENT-SET-CREATED"
+></A
+>cal_component_set_created ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        cal_component_set_created       (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp,
+                                             struct icaltimetype *t);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Sets the date in which a calendar component object is created in the calendar
+store.  This should only be used inside a calendar store application, i.e.
+not by calendar user agents.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN1830"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>comp</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A calendar component object.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>t</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Value for the creation date.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1843"
+></A
+><H3
+><A
+NAME="CAL-COMPONENT-GET-DESCRIPTION-LIST"
+></A
+>cal_component_get_description_list ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        cal_component_get_description_list
+                                            (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp,
+                                             GSList **text_list);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Queries the description of a calendar component object.  Journal components
+may have more than one description, and as such this function returns a list
+of <A
+HREF="calcomponent.html#CALCOMPONENTTEXT"
+>CalComponentText</A
+> structures.  All other types of components can have at
+most one description.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN1852"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>comp</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A calendar component object.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>text_list</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Return value for the description properties and their parameters,
+as a list of <A
+HREF="calcomponent.html#CALCOMPONENTTEXT"
+>CalComponentText</A
+> structures.  This should be freed using the
+<A
+HREF="calcomponent.html#CAL-COMPONENT-FREE-TEXT-LIST"
+>cal_component_free_text_list</A
+>() function.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1867"
+></A
+><H3
+><A
+NAME="CAL-COMPONENT-SET-DESCRIPTION-LIST"
+></A
+>cal_component_set_description_list ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        cal_component_set_description_list
+                                            (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp,
+                                             GSList *text_list);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Sets the description of a calendar component object.  Journal components may
+have more than one description, and as such this function takes in a list of
+CalComponentDescription structures.  All other types of components can have
+at most one description.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN1876"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>comp</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A calendar component object.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>text_list</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> List of CalComponentSummary structures.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1890"
+></A
+><H3
+><A
+NAME="CAL-COMPONENT-GET-DTEND"
+></A
+>cal_component_get_dtend ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        cal_component_get_dtend         (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp,
+                                             <A
+HREF="calcomponent.html#CALCOMPONENTDATETIME"
+>CalComponentDateTime</A
+> *dt);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Queries the date/time end of a calendar component object.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN1898"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>comp</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A calendar component object.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>dt</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Return value for the date/time end.  This should be freed with the
+<A
+HREF="calcomponent.html#CAL-COMPONENT-FREE-DATETIME"
+>cal_component_free_datetime</A
+>() function.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1912"
+></A
+><H3
+><A
+NAME="CAL-COMPONENT-SET-DTEND"
+></A
+>cal_component_set_dtend ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        cal_component_set_dtend         (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp,
+                                             <A
+HREF="calcomponent.html#CALCOMPONENTDATETIME"
+>CalComponentDateTime</A
+> *dt);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Sets the date/time end property of a calendar component object.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN1920"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>comp</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A calendar component object.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>dt</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> End date/time.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1933"
+></A
+><H3
+><A
+NAME="CAL-COMPONENT-GET-DTSTAMP"
+></A
+>cal_component_get_dtstamp ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        cal_component_get_dtstamp       (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp,
+                                             struct icaltimetype *t);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Queries the date/timestamp property of a calendar component object, which is
+the last time at which the object was modified by a calendar user agent.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN1941"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>comp</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A calendar component object.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>t</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A value for the date/timestamp.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1954"
+></A
+><H3
+><A
+NAME="CAL-COMPONENT-SET-DTSTAMP"
+></A
+>cal_component_set_dtstamp ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        cal_component_set_dtstamp       (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp,
+                                             struct icaltimetype *t);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Sets the date/timestamp of a calendar component object.  This should be
+called whenever a calendar user agent makes a change to a component's
+properties.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN1962"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>comp</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A calendar component object.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>t</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Date/timestamp value.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1975"
+></A
+><H3
+><A
+NAME="CAL-COMPONENT-GET-DTSTART"
+></A
+>cal_component_get_dtstart ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        cal_component_get_dtstart       (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp,
+                                             <A
+HREF="calcomponent.html#CALCOMPONENTDATETIME"
+>CalComponentDateTime</A
+> *dt);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Queries the date/time start of a calendar component object.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN1983"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>comp</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A calendar component object.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>dt</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Return value for the date/time start.  This should be freed with the
+<A
+HREF="calcomponent.html#CAL-COMPONENT-FREE-DATETIME"
+>cal_component_free_datetime</A
+>() function.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1997"
+></A
+><H3
+><A
+NAME="CAL-COMPONENT-SET-DTSTART"
+></A
+>cal_component_set_dtstart ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        cal_component_set_dtstart       (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp,
+                                             <A
+HREF="calcomponent.html#CALCOMPONENTDATETIME"
+>CalComponentDateTime</A
+> *dt);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Sets the date/time start property of a calendar component object.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN2005"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>comp</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A calendar component object.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>dt</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Start date/time.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2018"
+></A
+><H3
+><A
+NAME="CAL-COMPONENT-GET-DUE"
+></A
+>cal_component_get_due ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        cal_component_get_due           (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp,
+                                             <A
+HREF="calcomponent.html#CALCOMPONENTDATETIME"
+>CalComponentDateTime</A
+> *dt);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Queries the due date/time of a calendar component object.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN2026"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>comp</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A calendar component object.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>dt</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Return value for the due date/time.  This should be freed with the
+<A
+HREF="calcomponent.html#CAL-COMPONENT-FREE-DATETIME"
+>cal_component_free_datetime</A
+>() function.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2040"
+></A
+><H3
+><A
+NAME="CAL-COMPONENT-SET-DUE"
+></A
+>cal_component_set_due ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        cal_component_set_due           (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp,
+                                             <A
+HREF="calcomponent.html#CALCOMPONENTDATETIME"
+>CalComponentDateTime</A
+> *dt);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Sets the due date/time property of a calendar component object.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN2048"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>comp</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A calendar component object.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>dt</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> End date/time.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2061"
+></A
+><H3
+><A
+NAME="CAL-COMPONENT-GET-EXDATE-LIST"
+></A
+>cal_component_get_exdate_list ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        cal_component_get_exdate_list   (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp,
+                                             GSList **exdate_list);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Queries the list of exception date properties in a calendar component object.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN2069"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>comp</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A calendar component object.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>exdate_list</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Return value for the list of exception dates, as a list of
+<A
+HREF="calcomponent.html#CALCOMPONENTDATETIME"
+>CalComponentDateTime</A
+> structures.  This should be freed using the
+<A
+HREF="calcomponent.html#CAL-COMPONENT-FREE-EXDATE-LIST"
+>cal_component_free_exdate_list</A
+>() function.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2084"
+></A
+><H3
+><A
+NAME="CAL-COMPONENT-SET-EXDATE-LIST"
+></A
+>cal_component_set_exdate_list ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        cal_component_set_exdate_list   (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp,
+                                             GSList *exdate_list);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Sets the list of exception dates in a calendar component object.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN2092"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>comp</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A calendar component object.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>exdate_list</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> List of <A
+HREF="calcomponent.html#CALCOMPONENTDATETIME"
+>CalComponentDateTime</A
+> structures.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2106"
+></A
+><H3
+><A
+NAME="CAL-COMPONENT-HAS-EXDATES"
+></A
+>cal_component_has_exdates ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>gboolean    cal_component_has_exdates       (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Queries whether a calendar component object has any exception dates defined
+for it.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN2114"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>comp</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A calendar component object.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> TRUE if the component has exception dates, FALSE otherwise.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2127"
+></A
+><H3
+><A
+NAME="CAL-COMPONENT-GET-EXRULE-LIST"
+></A
+>cal_component_get_exrule_list ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        cal_component_get_exrule_list   (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp,
+                                             GSList **recur_list);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Queries the list of exception rule properties of a calendar component
+object.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN2135"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>comp</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A calendar component object.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>recur_list</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> List of exception rules as struct icalrecurrencetype
+structures.  This should be freed using the <A
+HREF="calcomponent.html#CAL-COMPONENT-FREE-RECUR-LIST"
+>cal_component_free_recur_list</A
+>()
+function.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2150"
+></A
+><H3
+><A
+NAME="CAL-COMPONENT-GET-EXRULE-PROPERTY-LIST"
+></A
+>cal_component_get_exrule_property_list ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        cal_component_get_exrule_property_list
+                                            (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp,
+                                             GSList **recur_list);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Queries the list of exception rule properties of a calendar component object.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN2158"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>comp</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A calendar component object.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>recur_list</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Returns a list of exception rule properties.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2171"
+></A
+><H3
+><A
+NAME="CAL-COMPONENT-SET-EXRULE-LIST"
+></A
+>cal_component_set_exrule_list ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        cal_component_set_exrule_list   (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp,
+                                             GSList *recur_list);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Sets the list of exception rules in a calendar component object.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN2179"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>comp</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A calendar component object.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>recur_list</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> List of struct icalrecurrencetype structures.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2193"
+></A
+><H3
+><A
+NAME="CAL-COMPONENT-HAS-EXRULES"
+></A
+>cal_component_has_exrules ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>gboolean    cal_component_has_exrules       (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Queries whether a calendar component object has any exception rules defined
+for it.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN2201"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>comp</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A calendar component object.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> TRUE if the component has exception rules, FALSE otherwise.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2214"
+></A
+><H3
+><A
+NAME="CAL-COMPONENT-HAS-EXCEPTIONS"
+></A
+>cal_component_has_exceptions ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>gboolean    cal_component_has_exceptions    (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Queries whether a calendar component object has any exception dates
+or exception rules.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN2222"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>comp</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A calendar component object</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> TRUE if the component has exceptions, FALSE otherwise.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2235"
+></A
+><H3
+><A
+NAME="CAL-COMPONENT-GET-GEO"
+></A
+>cal_component_get_geo ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        cal_component_get_geo           (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp,
+                                             struct icalgeotype **geo);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Sets the geographic position property of a calendar component object.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN2243"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>comp</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A calendar component object.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>geo</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Return value for the geographic position property.  This should be
+freed using the <A
+HREF="calcomponent.html#CAL-COMPONENT-FREE-GEO"
+>cal_component_free_geo</A
+>() function.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2257"
+></A
+><H3
+><A
+NAME="CAL-COMPONENT-SET-GEO"
+></A
+>cal_component_set_geo ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        cal_component_set_geo           (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp,
+                                             struct icalgeotype *geo);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Sets the geographic position property on a calendar component object.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN2265"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>comp</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A calendar component object.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>geo</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Value for the geographic position property.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2278"
+></A
+><H3
+><A
+NAME="CAL-COMPONENT-GET-LAST-MODIFIED"
+></A
+>cal_component_get_last_modified ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        cal_component_get_last_modified (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp,
+                                             struct icaltimetype **t);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Queries the time at which a calendar component object was last modified in
+the calendar store.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN2286"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>comp</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A calendar component object.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>t</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Return value for the last modified time value.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2299"
+></A
+><H3
+><A
+NAME="CAL-COMPONENT-SET-LAST-MODIFIED"
+></A
+>cal_component_set_last_modified ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        cal_component_set_last_modified (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp,
+                                             struct icaltimetype *t);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Sets the time at which a calendar component object was last stored in the
+calendar store.  This should not be called by plain calendar user agents.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN2307"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>comp</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A calendar component object.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>t</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Value for the last time modified.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2320"
+></A
+><H3
+><A
+NAME="CAL-COMPONENT-GET-PERCENT"
+></A
+>cal_component_get_percent ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        cal_component_get_percent       (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp,
+                                             int **percent);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Queries the percent-complete property of a calendar component object.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN2327"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>comp</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A calendar component object.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>percent</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Return value for the percent-complete property.  This should be
+freed using the <A
+HREF="calcomponent.html#CAL-COMPONENT-FREE-PERCENT"
+>cal_component_free_percent</A
+>() function.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2341"
+></A
+><H3
+><A
+NAME="CAL-COMPONENT-SET-PERCENT"
+></A
+>cal_component_set_percent ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        cal_component_set_percent       (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp,
+                                             int *percent);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Sets the percent-complete property of a calendar component object.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN2348"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>comp</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A calendar component object.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>percent</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Value for the percent-complete property.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2361"
+></A
+><H3
+><A
+NAME="CAL-COMPONENT-GET-PRIORITY"
+></A
+>cal_component_get_priority ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        cal_component_get_priority      (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp,
+                                             int **priority);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Queries the priority property of a calendar component object.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN2368"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>comp</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A calendar component object.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>priority</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Return value for the priority property.  This should be freed using
+the <A
+HREF="calcomponent.html#CAL-COMPONENT-FREE-PRIORITY"
+>cal_component_free_priority</A
+>() function.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2382"
+></A
+><H3
+><A
+NAME="CAL-COMPONENT-SET-PRIORITY"
+></A
+>cal_component_set_priority ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        cal_component_set_priority      (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp,
+                                             int *priority);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Sets the priority property of a calendar component object.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN2389"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>comp</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A calendar component object.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>priority</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Value for the priority property.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2402"
+></A
+><H3
+><A
+NAME="CAL-COMPONENT-GET-RDATE-LIST"
+></A
+>cal_component_get_rdate_list ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        cal_component_get_rdate_list    (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp,
+                                             GSList **period_list);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Queries the list of recurrence date properties in a calendar component
+object.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN2410"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>comp</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A calendar component object.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>period_list</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Return value for the list of recurrence dates, as a list of
+<A
+HREF="calcomponent.html#CALCOMPONENTPERIOD"
+>CalComponentPeriod</A
+> structures.  This should be freed using the
+<A
+HREF="calcomponent.html#CAL-COMPONENT-FREE-PERIOD-LIST"
+>cal_component_free_period_list</A
+>() function.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2425"
+></A
+><H3
+><A
+NAME="CAL-COMPONENT-SET-RDATE-LIST"
+></A
+>cal_component_set_rdate_list ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        cal_component_set_rdate_list    (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp,
+                                             GSList *period_list);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Sets the list of recurrence dates in a calendar component object.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN2433"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>comp</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A calendar component object.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>period_list</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> List of <A
+HREF="calcomponent.html#CALCOMPONENTPERIOD"
+>CalComponentPeriod</A
+> structures.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2447"
+></A
+><H3
+><A
+NAME="CAL-COMPONENT-HAS-RDATES"
+></A
+>cal_component_has_rdates ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>gboolean    cal_component_has_rdates        (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Queries whether a calendar component object has any recurrence dates defined
+for it.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN2455"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>comp</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A calendar component object.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> TRUE if the component has recurrence dates, FALSE otherwise.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2468"
+></A
+><H3
+><A
+NAME="CAL-COMPONENT-GET-RRULE-LIST"
+></A
+>cal_component_get_rrule_list ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        cal_component_get_rrule_list    (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp,
+                                             GSList **recur_list);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Queries the list of recurrence rule properties of a calendar component
+object.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN2476"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>comp</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A calendar component object.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>recur_list</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> List of recurrence rules as struct icalrecurrencetype
+structures.  This should be freed using the <A
+HREF="calcomponent.html#CAL-COMPONENT-FREE-RECUR-LIST"
+>cal_component_free_recur_list</A
+>()
+function.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2491"
+></A
+><H3
+><A
+NAME="CAL-COMPONENT-GET-RRULE-PROPERTY-LIST"
+></A
+>cal_component_get_rrule_property_list ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        cal_component_get_rrule_property_list
+                                            (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp,
+                                             GSList **recur_list);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Queries a list of recurrence rule properties of a calendar component object.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN2499"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>comp</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A calendar component object.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>recur_list</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Returns a list of recurrence rule properties.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2512"
+></A
+><H3
+><A
+NAME="CAL-COMPONENT-SET-RRULE-LIST"
+></A
+>cal_component_set_rrule_list ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        cal_component_set_rrule_list    (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp,
+                                             GSList *recur_list);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Sets the list of recurrence rules in a calendar component object.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN2520"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>comp</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A calendar component object.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>recur_list</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> List of struct icalrecurrencetype structures.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2534"
+></A
+><H3
+><A
+NAME="CAL-COMPONENT-HAS-RRULES"
+></A
+>cal_component_has_rrules ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>gboolean    cal_component_has_rrules        (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Queries whether a calendar component object has any recurrence rules defined
+for it.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN2542"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>comp</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A calendar component object.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> TRUE if the component has recurrence rules, FALSE otherwise.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2555"
+></A
+><H3
+><A
+NAME="CAL-COMPONENT-HAS-RECURRENCES"
+></A
+>cal_component_has_recurrences ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>gboolean    cal_component_has_recurrences   (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Queries whether a calendar component object has any recurrence dates or
+recurrence rules.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN2563"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>comp</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A calendar component object</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> TRUE if the component has recurrences, FALSE otherwise.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2576"
+></A
+><H3
+><A
+NAME="CAL-COMPONENT-GET-SEQUENCE"
+></A
+>cal_component_get_sequence ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        cal_component_get_sequence      (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp,
+                                             int **sequence);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Queries the sequence number of a calendar component object.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN2583"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>comp</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A calendar component object.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>sequence</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Return value for the sequence number.  This should be freed using
+<A
+HREF="calcomponent.html#CAL-COMPONENT-FREE-SEQUENCE"
+>cal_component_free_sequence</A
+>().</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2597"
+></A
+><H3
+><A
+NAME="CAL-COMPONENT-SET-SEQUENCE"
+></A
+>cal_component_set_sequence ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        cal_component_set_sequence      (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp,
+                                             int *sequence);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Sets the sequence number of a calendar component object.  Normally this
+function should not be called, since the sequence number is incremented
+automatically at the proper times.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN2604"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>comp</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A calendar component object.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>sequence</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Sequence number value.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2617"
+></A
+><H3
+><A
+NAME="CAL-COMPONENT-GET-STATUS"
+></A
+>cal_component_get_status ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        cal_component_get_status        (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp,
+                                             icalproperty_status *status);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Queries the status property of a calendar component object.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN2625"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>comp</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A calendar component object.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>status</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Return value for the status value.  It is set to ICAL_STATUS_NONE
+if the component has no status property.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2639"
+></A
+><H3
+><A
+NAME="CAL-COMPONENT-SET-STATUS"
+></A
+>cal_component_set_status ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        cal_component_set_status        (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp,
+                                             icalproperty_status status);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Sets the status property of a calendar component object.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN2647"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>comp</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A calendar component object.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>status</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Status value.  You should use ICAL_STATUS_NONE if you want to unset
+this property.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2661"
+></A
+><H3
+><A
+NAME="CAL-COMPONENT-GET-SUMMARY"
+></A
+>cal_component_get_summary ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        cal_component_get_summary       (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp,
+                                             <A
+HREF="calcomponent.html#CALCOMPONENTTEXT"
+>CalComponentText</A
+> *summary);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Queries the summary of a calendar component object.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN2669"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>comp</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A calendar component object.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>summary</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Return value for the summary property and its parameters.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2682"
+></A
+><H3
+><A
+NAME="CAL-COMPONENT-SET-SUMMARY"
+></A
+>cal_component_set_summary ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        cal_component_set_summary       (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp,
+                                             <A
+HREF="calcomponent.html#CALCOMPONENTTEXT"
+>CalComponentText</A
+> *summary);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Sets the summary of a calendar component object.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN2690"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>comp</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A calendar component object.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>summary</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Summary property and its parameters.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2703"
+></A
+><H3
+><A
+NAME="CAL-COMPONENT-GET-TRANSPARENCY"
+></A
+>cal_component_get_transparency ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        cal_component_get_transparency  (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp,
+                                             <A
+HREF="calcomponent.html#CALCOMPONENTTRANSPARENCY"
+>CalComponentTransparency</A
+> *transp);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Queries the time transparency of a calendar component object.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN2711"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>comp</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A calendar component object.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>transp</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Return value for the time transparency.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2724"
+></A
+><H3
+><A
+NAME="CAL-COMPONENT-SET-TRANSPARENCY"
+></A
+>cal_component_set_transparency ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        cal_component_set_transparency  (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp,
+                                             <A
+HREF="calcomponent.html#CALCOMPONENTTRANSPARENCY"
+>CalComponentTransparency</A
+> transp);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Sets the time transparency of a calendar component object.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN2732"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>comp</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A calendar component object.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>transp</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Time transparency value.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2745"
+></A
+><H3
+><A
+NAME="CAL-COMPONENT-GET-URL"
+></A
+>cal_component_get_url ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        cal_component_get_url           (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp,
+                                             const char **url);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Queries the uniform resource locator property of a calendar component object.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN2752"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>comp</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A calendar component object.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>url</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Return value for the URL.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2765"
+></A
+><H3
+><A
+NAME="CAL-COMPONENT-SET-URL"
+></A
+>cal_component_set_url ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        cal_component_set_url           (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp,
+                                             const char *url);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Sets the uniform resource locator property of a calendar component object.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN2772"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>comp</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A calendar component object.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>url</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> URL value.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2785"
+></A
+><H3
+><A
+NAME="CAL-COMPONENT-FREE-CATEGORIES-LIST"
+></A
+>cal_component_free_categories_list ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        cal_component_free_categories_list
+                                            (GSList *categ_list);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Frees a list of category strings.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN2792"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>categ_list</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> List of category strings.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2801"
+></A
+><H3
+><A
+NAME="CAL-COMPONENT-FREE-DATETIME"
+></A
+>cal_component_free_datetime ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        cal_component_free_datetime     (<A
+HREF="calcomponent.html#CALCOMPONENTDATETIME"
+>CalComponentDateTime</A
+> *dt);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Frees a date/time structure.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN2808"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>dt</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A date/time structure.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2817"
+></A
+><H3
+><A
+NAME="CAL-COMPONENT-FREE-EXDATE-LIST"
+></A
+>cal_component_free_exdate_list ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        cal_component_free_exdate_list  (GSList *exdate_list);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Frees a list of <A
+HREF="calcomponent.html#CALCOMPONENTDATETIME"
+>CalComponentDateTime</A
+> structures as returned by the
+<A
+HREF="calcomponent.html#CAL-COMPONENT-GET-EXDATE-LIST"
+>cal_component_get_exdate_list</A
+>() function.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN2826"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>exdate_list</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> List of <A
+HREF="calcomponent.html#CALCOMPONENTDATETIME"
+>CalComponentDateTime</A
+> structures.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2836"
+></A
+><H3
+><A
+NAME="CAL-COMPONENT-FREE-GEO"
+></A
+>cal_component_free_geo ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        cal_component_free_geo          (struct icalgeotype *geo);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Frees a struct icalgeotype structure as returned by the calendar component
+functions.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN2844"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>geo</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> An icalgeotype structure.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2854"
+></A
+><H3
+><A
+NAME="CAL-COMPONENT-FREE-ICALTIMETYPE"
+></A
+>cal_component_free_icaltimetype ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        cal_component_free_icaltimetype (struct icaltimetype *t);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Frees a struct icaltimetype value as returned by the calendar component
+functions.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN2862"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>t</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> An icaltimetype structure.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2872"
+></A
+><H3
+><A
+NAME="CAL-COMPONENT-FREE-PERCENT"
+></A
+>cal_component_free_percent ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        cal_component_free_percent      (int *percent);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Frees a percent value as returned by the <A
+HREF="calcomponent.html#CAL-COMPONENT-GET-PERCENT"
+>cal_component_get_percent</A
+>()
+function.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN2879"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>percent</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Percent value.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2888"
+></A
+><H3
+><A
+NAME="CAL-COMPONENT-FREE-PRIORITY"
+></A
+>cal_component_free_priority ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        cal_component_free_priority     (int *priority);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Frees a priority value as returned by the <A
+HREF="calcomponent.html#CAL-COMPONENT-GET-PRIORITY"
+>cal_component_get_priority</A
+>()
+function.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN2895"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>priority</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Priority value.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2904"
+></A
+><H3
+><A
+NAME="CAL-COMPONENT-FREE-PERIOD-LIST"
+></A
+>cal_component_free_period_list ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        cal_component_free_period_list  (GSList *period_list);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Frees a list of <A
+HREF="calcomponent.html#CALCOMPONENTPERIOD"
+>CalComponentPeriod</A
+> structures.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN2912"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>period_list</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> List of <A
+HREF="calcomponent.html#CALCOMPONENTPERIOD"
+>CalComponentPeriod</A
+> structures.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2922"
+></A
+><H3
+><A
+NAME="CAL-COMPONENT-FREE-RECUR-LIST"
+></A
+>cal_component_free_recur_list ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        cal_component_free_recur_list   (GSList *recur_list);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Frees a list of struct icalrecurrencetype structures.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN2930"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>recur_list</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> List of struct icalrecurrencetype structures.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2940"
+></A
+><H3
+><A
+NAME="CAL-COMPONENT-FREE-SEQUENCE"
+></A
+>cal_component_free_sequence ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        cal_component_free_sequence     (int *sequence);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Frees a sequence number value.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN2946"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>sequence</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Sequence number value.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2955"
+></A
+><H3
+><A
+NAME="CAL-COMPONENT-FREE-TEXT-LIST"
+></A
+>cal_component_free_text_list ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        cal_component_free_text_list    (GSList *text_list);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Frees a list of <A
+HREF="calcomponent.html#CALCOMPONENTTEXT"
+>CalComponentText</A
+> structures.  This function should only be
+used to free lists of text values as returned by the other getter functions
+of <A
+HREF="calcomponent.html"
+>CalComponent</A
+>.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN2964"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>text_list</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> List of <A
+HREF="calcomponent.html#CALCOMPONENTTEXT"
+>CalComponentText</A
+> structures.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2974"
+></A
+><H3
+><A
+NAME="CALCOMPONENTALARM"
+></A
+>struct CalComponentAlarm</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>struct CalComponentAlarm;</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2979"
+></A
+><H3
+><A
+NAME="CALALARMINSTANCE"
+></A
+>CalAlarmInstance</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>typedef struct {
+	/* UID of the alarm that triggered */
+	const char *auid;
+
+	/* Trigger time, i.e. "5 minutes before the appointment" */
+	time_t trigger;
+
+	/* Actual event occurrence to which this trigger corresponds */
+	time_t occur_start;
+	time_t occur_end;
+} CalAlarmInstance;</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2984"
+></A
+><H3
+><A
+NAME="CALCOMPONENTALARMS"
+></A
+>CalComponentAlarms</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>typedef struct {
+	/* The actual component */
+	CalComponent *comp;
+
+	/* List of CalAlarmInstance structures */
+	GSList *alarms;
+} CalComponentAlarms;</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2989"
+></A
+><H3
+><A
+NAME="CALALARMACTION"
+></A
+>enum CalAlarmAction</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>typedef enum {
+	CAL_ALARM_NONE,
+	CAL_ALARM_AUDIO,
+	CAL_ALARM_DISPLAY,
+	CAL_ALARM_EMAIL,
+	CAL_ALARM_PROCEDURE,
+	CAL_ALARM_UNKNOWN
+} CalAlarmAction;</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2994"
+></A
+><H3
+><A
+NAME="CALALARMTRIGGERTYPE"
+></A
+>enum CalAlarmTriggerType</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>typedef enum {
+	CAL_ALARM_TRIGGER_NONE,
+	CAL_ALARM_TRIGGER_RELATIVE_START,
+	CAL_ALARM_TRIGGER_RELATIVE_END,
+	CAL_ALARM_TRIGGER_ABSOLUTE
+} CalAlarmTriggerType;</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2999"
+></A
+><H3
+><A
+NAME="CALALARMTRIGGER"
+></A
+>CalAlarmTrigger</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>typedef struct {
+	CalAlarmTriggerType type;
+
+	union {
+		struct icaldurationtype rel_duration;
+		struct icaltimetype abs_time;
+	} u;
+} CalAlarmTrigger;</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN3004"
+></A
+><H3
+><A
+NAME="CAL-COMPONENT-HAS-ALARMS"
+></A
+>cal_component_has_alarms ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>gboolean    cal_component_has_alarms        (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Checks whether the component has any alarms.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN3012"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>comp</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A calendar component object.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> TRUE if the component has any alarms.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN3025"
+></A
+><H3
+><A
+NAME="CAL-COMPONENT-GET-ALARM-UIDS"
+></A
+>cal_component_get_alarm_uids ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>GList*      cal_component_get_alarm_uids    (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Builds a list of the unique identifiers of the alarm subcomponents inside a
+calendar component.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN3033"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>comp</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A calendar component.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> List of unique identifiers for alarms.  This should be freed
+using <A
+HREF="evolution-cal-util-cal-util.html#CAL-OBJ-UID-LIST-FREE"
+>cal_obj_uid_list_free</A
+>().</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN3047"
+></A
+><H3
+><A
+NAME="CAL-COMPONENT-GET-ALARM"
+></A
+>cal_component_get_alarm ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF="calcomponent.html#CALCOMPONENTALARM"
+>CalComponentAlarm</A
+>* cal_component_get_alarm  (<A
+HREF="calcomponent.html"
+>CalComponent</A
+> *comp,
+                                             const char *auid);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Queries a particular alarm subcomponent of a calendar component.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN3055"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>comp</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A calendar component.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>auid</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Unique identifier for the sought alarm subcomponent.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> The alarm subcomponent that corresponds to the specified <TT
+CLASS="PARAMETER"
+><I
+>auid</I
+></TT
+>,
+or NULL if no alarm exists with that UID.  This should be freed using
+<A
+HREF="calcomponent.html#CAL-COMPONENT-ALARM-FREE"
+>cal_component_alarm_free</A
+>().</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN3075"
+></A
+><H3
+><A
+NAME="CAL-COMPONENT-ALARM-FREE"
+></A
+>cal_component_alarm_free ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        cal_component_alarm_free        (<A
+HREF="calcomponent.html#CALCOMPONENTALARM"
+>CalComponentAlarm</A
+> *alarm);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Frees an alarm structure.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN3082"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>alarm</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A calendar alarm.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN3091"
+></A
+><H3
+><A
+NAME="CAL-COMPONENT-ALARMS-FREE"
+></A
+>cal_component_alarms_free ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        cal_component_alarms_free       (<A
+HREF="calcomponent.html#CALCOMPONENTALARMS"
+>CalComponentAlarms</A
+> *alarms);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Frees a <A
+HREF="calcomponent.html#CALCOMPONENTALARMS"
+>CalComponentAlarms</A
+> structure.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN3099"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>alarms</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Component alarms structure.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN3108"
+></A
+><H3
+><A
+NAME="CAL-COMPONENT-ALARM-GET-UID"
+></A
+>cal_component_alarm_get_uid ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>const char* cal_component_alarm_get_uid     (<A
+HREF="calcomponent.html#CALCOMPONENTALARM"
+>CalComponentAlarm</A
+> *alarm);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Queries the unique identifier of an alarm subcomponent.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN3115"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>alarm</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> An alarm subcomponent.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> UID of the alarm.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN3128"
+></A
+><H3
+><A
+NAME="CAL-COMPONENT-ALARM-GET-ACTION"
+></A
+>cal_component_alarm_get_action ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        cal_component_alarm_get_action  (<A
+HREF="calcomponent.html#CALCOMPONENTALARM"
+>CalComponentAlarm</A
+> *alarm,
+                                             <A
+HREF="calcomponent.html#CALALARMACTION"
+>CalAlarmAction</A
+> *action);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Queries the action type of an alarm.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN3136"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>alarm</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> An alarm.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>action</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Return value for the alarm's action type.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN3149"
+></A
+><H3
+><A
+NAME="CAL-COMPONENT-ALARM-SET-ACTION"
+></A
+>cal_component_alarm_set_action ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        cal_component_alarm_set_action  (<A
+HREF="calcomponent.html#CALCOMPONENTALARM"
+>CalComponentAlarm</A
+> *alarm,
+                                             <A
+HREF="calcomponent.html#CALALARMACTION"
+>CalAlarmAction</A
+> action);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Sets the action type for an alarm.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN3157"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>alarm</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> An alarm.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>action</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Action type.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN3170"
+></A
+><H3
+><A
+NAME="CAL-COMPONENT-ALARM-GET-TRIGGER"
+></A
+>cal_component_alarm_get_trigger ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        cal_component_alarm_get_trigger (<A
+HREF="calcomponent.html#CALCOMPONENTALARM"
+>CalComponentAlarm</A
+> *alarm,
+                                             <A
+HREF="calcomponent.html#CALALARMTRIGGER"
+>CalAlarmTrigger</A
+> *trigger);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Queries the trigger time for an alarm.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN3178"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>alarm</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> An alarm.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>trigger</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Return value for the trigger time.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN3191"
+></A
+><H3
+><A
+NAME="CAL-COMPONENT-ALARM-SET-TRIGGER"
+></A
+>cal_component_alarm_set_trigger ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        cal_component_alarm_set_trigger (<A
+HREF="calcomponent.html#CALCOMPONENTALARM"
+>CalComponentAlarm</A
+> *alarm,
+                                             <A
+HREF="calcomponent.html#CALALARMTRIGGER"
+>CalAlarmTrigger</A
+> trigger);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Sets the trigger time of an alarm.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN3199"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>alarm</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> An alarm.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>trigger</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Trigger time structure.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+></DIV
+><H2
+CLASS="FOOTNOTES"
+>Notes</H2
+><TABLE
+BORDER="0"
+CLASS="FOOTNOTES"
+WIDTH="100%"
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="5%"
+><A
+NAME="FTN.AEN1282"
+HREF="calcomponent.html#AEN1282"
+>[1]</A
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="95%"
+><P
+>	&ldquo;Interoperable.&rdquo;  Heavens, I love that word.
+      </P
+></TD
+></TR
+></TABLE
+><DIV
+CLASS="NAVFOOTER"
+><BR
+CLEAR="all"><BR><TABLE
+WIDTH="100%"
+BORDER="0"
+BGCOLOR="#000000"
+CELLPADDING="1"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="left"
+><A
+HREF="calclient.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>&#60;&#60;&#60; Previous Page</B
+></FONT
+></A
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#0000C0"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="index.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Home</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#00C000"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="calendar-public-reference.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Up</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="right"
+><A
+HREF="evolution-cal-util-cal-util.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Next Page &#62;&#62;&#62;</B
+></FONT
+></A
+></TD
+></TR
+><TR
+><TD
+COLSPAN="2"
+ALIGN="left"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>CalClient</B
+></FONT
+></TD
+><TD
+COLSPAN="2"
+ALIGN="right"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Miscellaneous utilities</B
+></FONT
+></TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

@@ -127,6 +127,7 @@ INSTOBJEXT = @INSTOBJEXT@
 INTLDEPS = @INTLDEPS@
 INTLLIBS = @INTLLIBS@
 INTLOBJS = @INTLOBJS@
+INTLTOOL_PERL = @INTLTOOL_PERL@
 JW = @JW@
 KDE_APPLNK_DIR = @KDE_APPLNK_DIR@
 KRB4_CFLAGS = @KRB4_CFLAGS@
@@ -173,11 +174,20 @@ USE_NLS = @USE_NLS@
 VERSION = @VERSION@
 XML_I18N_EXTRACT = @XML_I18N_EXTRACT@
 XML_I18N_MERGE = @XML_I18N_MERGE@
-XML_I18N_TOOLS_PERL = @XML_I18N_TOOLS_PERL@
+XML_I18N_MERGE_DESKTOP_RULE = @XML_I18N_MERGE_DESKTOP_RULE@
+XML_I18N_MERGE_DIRECTORY_RULE = @XML_I18N_MERGE_DIRECTORY_RULE@
+XML_I18N_MERGE_KEYS_RULE = @XML_I18N_MERGE_KEYS_RULE@
+XML_I18N_MERGE_OAF_RULE = @XML_I18N_MERGE_OAF_RULE@
+XML_I18N_MERGE_PONG_RULE = @XML_I18N_MERGE_PONG_RULE@
+XML_I18N_MERGE_SERVER_RULE = @XML_I18N_MERGE_SERVER_RULE@
+XML_I18N_MERGE_SHEET_RULE = @XML_I18N_MERGE_SHEET_RULE@
+XML_I18N_MERGE_SOUNDLIST_RULE = @XML_I18N_MERGE_SOUNDLIST_RULE@
+XML_I18N_MERGE_XML_RULE = @XML_I18N_MERGE_XML_RULE@
 XML_I18N_UPDATE = @XML_I18N_UPDATE@
 XPM_LIBS = @XPM_LIBS@
 YACC = @YACC@
 ZVT_LIBS = @ZVT_LIBS@
+camel_providerdir = @camel_providerdir@
 cflags_set = @cflags_set@
 cxxflags_set = @cxxflags_set@
 l = @l@
@@ -494,6 +504,215 @@ distdir: $(DISTFILES)
 	      || exit 1; \
 	  fi; \
 	done
+addressbook-component.o: addressbook-component.c ../../../config.h \
+	../../../shell/evolution-shell-component.h \
+	../../../shell/Evolution.h \
+	../../../shell/evolution-shell-client.h \
+	../../../shell/evolution-shell-component-dnd.h \
+	../../../shell/evolution-storage.h \
+	../../../addressbook/backend/ebook/e-book.h \
+	../../../addressbook/backend/ebook/e-card.h \
+	../../../addressbook/backend/ebook/e-card-types.h \
+	../../../e-util/e-list.h ../../../e-util/e-list-iterator.h \
+	../../../e-util/e-iterator.h \
+	../../../addressbook/backend/ebook/e-card-cursor.h \
+	../../../addressbook/backend/ebook/addressbook.h \
+	../../../addressbook/backend/ebook/e-book-view.h \
+	../../../addressbook/backend/ebook/e-book-view-listener.h \
+	../../../addressbook/backend/ebook/e-book-types.h \
+	../../../addressbook/backend/ebook/e-book-util.h \
+	addressbook-storage.h addressbook-component.h addressbook.h \
+	../../../addressbook/gui/merging/e-card-merging.h \
+	../../../addressbook/gui/widgets/e-addressbook-util.h \
+	../../../addressbook/gui/contact-editor/e-contact-editor.h \
+	select-names/e-select-names-manager.h \
+	select-names/e-select-names.h \
+	../../../addressbook/gui/widgets/e-addressbook-model.h \
+	../../../addressbook/backend/ebook/e-card-simple.h \
+	select-names/e-select-names-model.h \
+	../../../addressbook/backend/ebook/e-destination.h \
+	../../../shell/evolution-storage-listener.h \
+	../../../addressbook/gui/contact-list-editor/e-contact-list-editor.h
+addressbook-config.o: addressbook-config.c ../../../config.h \
+	../../../e-util/e-html-utils.h addressbook-config.h \
+	addressbook-storage.h \
+	../../../shell/evolution-shell-component.h \
+	../../../shell/Evolution.h \
+	../../../shell/evolution-shell-client.h \
+	../../../shell/evolution-storage.h
+addressbook-factory.o: addressbook-factory.c ../../../config.h \
+	../../../e-util/e-passwords.h ../../../camel/camel.h \
+	../../../camel/camel-cipher-context.h \
+	../../../camel/camel-session.h ../../../camel/camel-object.h \
+	../../../camel/camel-types.h ../../../camel/camel-provider.h \
+	../../../e-util/e-msgport.h ../../../camel/camel-stream.h \
+	../../../camel/camel-exception.h \
+	../../../camel/camel-exception-list.def \
+	../../../camel/camel-cms-context.h \
+	../../../camel/camel-mime-message.h \
+	../../../camel/camel-mime-part.h ../../../camel/camel-medium.h \
+	../../../camel/camel-data-wrapper.h \
+	../../../camel/camel-mime-utils.h \
+	../../../camel/camel-mime-parser.h \
+	../../../camel/camel-mime-filter.h \
+	../../../camel/camel-internet-address.h \
+	../../../camel/camel-address.h \
+	../../../camel/camel-mime-filter-bestenc.h \
+	../../../camel/camel-charset-map.h \
+	../../../camel/camel-folder.h \
+	../../../camel/camel-folder-summary.h ../../../libibex/ibex.h \
+	../../../camel/camel-digest-folder.h \
+	../../../camel/camel-disco-diary.h \
+	../../../camel/camel-disco-folder.h \
+	../../../camel/camel-disco-store.h \
+	../../../camel/camel-remote-store.h \
+	../../../camel/camel-store.h ../../../camel/camel-service.h \
+	../../../camel/camel-url.h ../../../camel/camel-operation.h \
+	../../../camel/camel-vee-folder.h \
+	../../../camel/camel-mime-filter-basic.h \
+	../../../camel/camel-mime-filter-charset.h \
+	../../../camel/camel-mime-filter-index.h \
+	../../../camel/camel-mime-filter-save.h \
+	../../../camel/camel-mime-filter-crlf.h \
+	../../../camel/camel-mime-part-utils.h \
+	../../../camel/camel-movemail.h \
+	../../../camel/camel-multipart.h \
+	../../../camel/camel-pgp-context.h \
+	../../../camel/camel-pgp-mime.h \
+	../../../camel/camel-seekable-stream.h \
+	../../../camel/camel-seekable-substream.h \
+	../../../camel/camel-smime-context.h \
+	../../../camel/camel-smime-utils.h \
+	../../../camel/camel-stream-buffer.h \
+	../../../camel/camel-stream-filter.h \
+	../../../camel/camel-stream-fs.h \
+	../../../camel/camel-stream-mem.h \
+	../../../camel/camel-tcp-stream-raw.h \
+	../../../camel/camel-tcp-stream.h \
+	../../../camel/camel-tcp-stream-ssl.h \
+	../../../camel/camel-transport.h \
+	../../../camel/camel-uid-cache.h ../../../camel/gstring-util.h \
+	../../../camel/hash-table-utils.h ../../../camel/string-utils.h \
+	addressbook.h ../../../addressbook/backend/ebook/e-book.h \
+	../../../addressbook/backend/ebook/e-card.h \
+	../../../addressbook/backend/ebook/e-card-types.h \
+	../../../e-util/e-list.h ../../../e-util/e-list-iterator.h \
+	../../../e-util/e-iterator.h \
+	../../../addressbook/backend/ebook/e-card-cursor.h \
+	../../../addressbook/backend/ebook/addressbook.h \
+	../../../addressbook/backend/ebook/e-book-view.h \
+	../../../addressbook/backend/ebook/e-book-view-listener.h \
+	../../../addressbook/backend/ebook/e-book-types.h \
+	addressbook-component.h \
+	../../../shell/evolution-shell-component.h \
+	../../../shell/Evolution.h \
+	../../../shell/evolution-shell-client.h \
+	../../../shell/evolution-storage.h e-address-widget.h \
+	../../../addressbook/backend/ebook/e-book-util.h \
+	e-address-popup.h \
+	../../../addressbook/gui/widgets/e-minicard-control.h \
+	select-names/e-select-names-factory.h
+addressbook-storage.o: addressbook-storage.c ../../../config.h \
+	addressbook-storage.h \
+	../../../shell/evolution-shell-component.h \
+	../../../shell/Evolution.h \
+	../../../shell/evolution-shell-client.h \
+	../../../shell/evolution-storage.h addressbook-config.h
+addressbook.o: addressbook.c ../../../config.h \
+	../../../e-util/e-categories-master-list-wombat.h \
+	../../../e-util/e-sexp.h ../../../e-util/e-passwords.h \
+	select-names/e-select-names.h \
+	../../../addressbook/gui/widgets/e-addressbook-model.h \
+	../../../addressbook/backend/ebook/e-book.h \
+	../../../addressbook/backend/ebook/e-card.h \
+	../../../addressbook/backend/ebook/e-card-types.h \
+	../../../e-util/e-list.h ../../../e-util/e-list-iterator.h \
+	../../../e-util/e-iterator.h \
+	../../../addressbook/backend/ebook/e-card-cursor.h \
+	../../../addressbook/backend/ebook/addressbook.h \
+	../../../addressbook/backend/ebook/e-book-view.h \
+	../../../addressbook/backend/ebook/e-book-view-listener.h \
+	../../../addressbook/backend/ebook/e-book-types.h \
+	../../../addressbook/backend/ebook/e-card-simple.h \
+	select-names/e-select-names-model.h \
+	../../../addressbook/backend/ebook/e-destination.h \
+	../../../shell/evolution-storage-listener.h \
+	../../../shell/Evolution.h \
+	select-names/e-select-names-manager.h \
+	../../../shell/evolution-shell-component-utils.h \
+	../../../shell/evolution-activity-client.h \
+	../../../shell/evolution-shell-client.h \
+	../../../addressbook/gui/contact-editor/e-contact-editor.h \
+	select-names/e-select-names-manager.h \
+	../../../addressbook/gui/contact-editor/e-contact-save-as.h \
+	addressbook-config.h addressbook-storage.h \
+	../../../shell/evolution-shell-component.h \
+	../../../shell/evolution-storage.h addressbook.h \
+	addressbook-component.h \
+	../../../addressbook/gui/search/e-addressbook-search-dialog.h \
+	../../../addressbook/gui/widgets/e-addressbook-view.h \
+	../../../widgets/menus/gal-view-menus.h \
+	../../../filter/rule-context.h ../../../filter/filter-part.h \
+	../../../filter/filter-input.h ../../../filter/filter-element.h \
+	../../../filter/filter-rule.h \
+	../../../addressbook/gui/widgets/e-addressbook-util.h \
+	../../../addressbook/gui/contact-list-editor/e-contact-list-editor.h \
+	../../../addressbook/printing/e-contact-print.h \
+	../../../addressbook/printing/e-contact-print-types.h \
+	../../../addressbook/backend/ebook/e-book-util.h \
+	../../../widgets/misc/e-search-bar.h \
+	../../../widgets/misc/e-filter-bar.h
+e-address-popup.o: e-address-popup.c ../../../config.h addressbook.h \
+	../../../addressbook/backend/ebook/e-book.h \
+	../../../addressbook/backend/ebook/e-card.h \
+	../../../addressbook/backend/ebook/e-card-types.h \
+	../../../e-util/e-list.h ../../../e-util/e-list-iterator.h \
+	../../../e-util/e-iterator.h \
+	../../../addressbook/backend/ebook/e-card-cursor.h \
+	../../../addressbook/backend/ebook/addressbook.h \
+	../../../addressbook/backend/ebook/e-book-view.h \
+	../../../addressbook/backend/ebook/e-book-view-listener.h \
+	../../../addressbook/backend/ebook/e-book-types.h \
+	e-address-popup.h \
+	../../../addressbook/backend/ebook/e-book-util.h \
+	../../../addressbook/gui/contact-editor/e-contact-editor.h \
+	select-names/e-select-names-manager.h \
+	select-names/e-select-names.h \
+	../../../addressbook/gui/widgets/e-addressbook-model.h \
+	../../../addressbook/backend/ebook/e-card-simple.h \
+	select-names/e-select-names-model.h \
+	../../../addressbook/backend/ebook/e-destination.h \
+	../../../shell/evolution-storage-listener.h \
+	../../../shell/Evolution.h \
+	../../../addressbook/gui/contact-editor/e-contact-quick-add.h \
+	../../../addressbook/gui/widgets/e-minicard-widget.h \
+	../../../addressbook/gui/widgets/e-addressbook-util.h \
+	../../../addressbook/gui/contact-list-editor/e-contact-list-editor.h
+e-address-widget.o: e-address-widget.c ../../../config.h \
+	../../../addressbook/gui/contact-editor/e-contact-quick-add.h \
+	../../../addressbook/backend/ebook/e-card.h \
+	../../../addressbook/backend/ebook/e-card-types.h \
+	../../../e-util/e-list.h ../../../e-util/e-list-iterator.h \
+	../../../e-util/e-iterator.h e-address-widget.h \
+	../../../addressbook/backend/ebook/e-book.h \
+	../../../addressbook/backend/ebook/e-card-cursor.h \
+	../../../addressbook/backend/ebook/addressbook.h \
+	../../../addressbook/backend/ebook/e-book-view.h \
+	../../../addressbook/backend/ebook/e-book-view-listener.h \
+	../../../addressbook/backend/ebook/e-book-types.h \
+	../../../addressbook/backend/ebook/e-book-util.h
+e-cardlist-model.o: e-cardlist-model.c ../../../config.h \
+	e-cardlist-model.h ../../../addressbook/backend/ebook/e-book.h \
+	../../../addressbook/backend/ebook/e-card.h \
+	../../../addressbook/backend/ebook/e-card-types.h \
+	../../../e-util/e-list.h ../../../e-util/e-list-iterator.h \
+	../../../e-util/e-iterator.h \
+	../../../addressbook/backend/ebook/e-card-cursor.h \
+	../../../addressbook/backend/ebook/addressbook.h \
+	../../../addressbook/backend/ebook/e-book-view.h \
+	../../../addressbook/backend/ebook/e-book-view-listener.h \
+	../../../addressbook/backend/ebook/e-book-types.h \
+	../../../addressbook/backend/ebook/e-card-simple.h
 
 info-am:
 info: info-recursive

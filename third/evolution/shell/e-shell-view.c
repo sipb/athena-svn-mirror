@@ -403,6 +403,7 @@ popdown_transient_folder_bar (EShellView *shell_view)
 	priv = shell_view->priv;
 
 	gdk_pointer_ungrab (GDK_CURRENT_TIME);
+	gdk_keyboard_ungrab (GDK_CURRENT_TIME);
 	gtk_grab_remove (priv->storage_set_view_box);
 
 	reparent_storage_set_view_box_and_destroy_popup (shell_view);
@@ -459,9 +460,12 @@ folder_bar_popup_map_callback (GtkWidget *widget,
 {
 	EShellView *shell_view;
 	EShellViewPrivate *priv;
+	guint32 current_time;
 
 	shell_view = E_SHELL_VIEW (data);
 	priv = shell_view->priv;
+
+	current_time = GDK_CURRENT_TIME;
 
 	if (gdk_pointer_grab (widget->window, TRUE,
 			      (GDK_BUTTON_PRESS_MASK
@@ -469,8 +473,14 @@ folder_bar_popup_map_callback (GtkWidget *widget,
 			       | GDK_ENTER_NOTIFY_MASK
 			       | GDK_LEAVE_NOTIFY_MASK
 			       | GDK_POINTER_MOTION_MASK),
-			      NULL, NULL, GDK_CURRENT_TIME) != 0) {
+			      NULL, NULL, current_time) != 0) {
 		g_warning ("e-shell-view.c:folder_bar_popup_map_callback() -- pointer grab failed.");
+		return;
+	}
+
+	if (gdk_keyboard_grab (widget->window, TRUE, 0) != 0) {
+		g_warning ("e-shell-view.c:folder_bar_popup_map_callback() -- keyboard grab failed.");
+		gdk_pointer_ungrab (current_time);
 		return;
 	}
 
@@ -576,6 +586,7 @@ switch_on_folder_tree_click (EShellView *shell_view,
 	priv = shell_view->priv;
 
 	gdk_pointer_ungrab (GDK_CURRENT_TIME);
+	gdk_keyboard_ungrab (GDK_CURRENT_TIME);
 	gtk_grab_remove (priv->storage_set_view_box);
 
 	uri = g_strconcat (E_SHELL_URI_PREFIX, path, NULL);
@@ -1655,7 +1666,8 @@ set_current_notebook_page (EShellView *shell_view,
 	EShellViewPrivate *priv;
 	GtkNotebook *notebook;
 	GtkWidget *current;
-	BonoboControlFrame *control_frame;
+	BonoboControlFrame *old_control_frame = NULL;
+	BonoboControlFrame *new_control_frame;
 	int current_page;
 
 	priv = shell_view->priv;
@@ -1667,10 +1679,9 @@ set_current_notebook_page (EShellView *shell_view,
 
 	if (current_page != -1 && current_page != 0) {
 		current = gtk_notebook_get_nth_page (notebook, current_page);
-		control_frame = bonobo_widget_get_control_frame (BONOBO_WIDGET (current));
 
-		bonobo_control_frame_set_autoactivate (control_frame, FALSE);
-		bonobo_control_frame_control_deactivate (control_frame);
+		old_control_frame = bonobo_widget_get_control_frame (BONOBO_WIDGET (current));
+		bonobo_control_frame_set_autoactivate (old_control_frame, FALSE);
 	}
 
 	e_shell_folder_title_bar_set_folder_bar_label  (E_SHELL_FOLDER_TITLE_BAR (priv->folder_title_bar), "");
@@ -1680,10 +1691,12 @@ set_current_notebook_page (EShellView *shell_view,
 		return;
 
 	current = gtk_notebook_get_nth_page (notebook, page_num);
-	control_frame = bonobo_widget_get_control_frame (BONOBO_WIDGET (current));
-
-	bonobo_control_frame_set_autoactivate (control_frame, FALSE);
-	bonobo_control_frame_control_activate (control_frame);
+	new_control_frame = bonobo_widget_get_control_frame (BONOBO_WIDGET (current));
+	bonobo_control_frame_set_autoactivate (new_control_frame, FALSE);
+ 
+	bonobo_control_frame_control_activate (new_control_frame);
+	if (old_control_frame)
+		bonobo_control_frame_control_deactivate (old_control_frame);
 }
 
 static void

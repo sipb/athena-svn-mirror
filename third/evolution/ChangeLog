@@ -1,13 +1,97 @@
+2002-01-24  Ettore Perazzoli  <ettore@ximian.com>
+
+	* configure.in: Not a Preview Release anymore.  Set VERSION to
+	1.0.2.
+
+2002-01-24  Ettore Perazzoli  <ettore@ximian.com>
+
+	* NEWS: Update.
+
+2001-12-18  Ettore Perazzoli  <ettore@ximian.com>
+
+	* configure.in: Set VERSION_COMMENT say "Preview Release".
+
+2001-12-18  Ettore Perazzoli  <ettore@ximian.com>
+
+	* configure.in: Set VERSION to 1.0.1.99.
+
+2001-12-18  Ettore Perazzoli  <ettore@ximian.com>
+
+	* configure.in: Define `VERSION_COMMENT' to be the empty string.
+	Up version number to 1.0.1.  Require GAL 0.19 or later and gtkhtml
+	1.0.1 or later.
+
+2001-12-17  JP Rosevear  <jpr@ximian.com>
+
+	* NEWS: Update
+
+2001-12-17  Dan Winship  <danw@ximian.com>
+
+	* configure.in (camel_providerdir): Define this here, using only
+	EVOLUTION_MAJOR_VERSION and EVOLUTION_MINOR_VERSION (and not MICRO
+	and NANO).
+
+2001-12-17  Ettore Perazzoli  <ettore@ximian.com>
+
+	* NEWS: Tidied up a bit.
+
+2001-12-17  Ettore Perazzoli  <ettore@ximian.com>
+
+	* tools/Makefile.am (bin_SCRIPTS): Add `csv2vcard'.
+
+	* csv2vcard: New file; script by Michael MacDonald to convert CSV
+	files into VCard files.
+
+2001-12-17  Iain Holmes  <iain@ximian.com>
+
+	* NEWS: Updated for summary
+
+2001-12-11  Ettore Perazzoli  <ettore@ximian.com>
+
+	[Fix #16358, No man page for Evolution.]
+
+	* data/Makefile.am (man_MANS): Install the man page.
+
+	* data/evolution.1: New man page for Evolution.
+
+2001-12-10  JP Rosevear  <jpr@ximian.com>
+
+	* configure.in: use UTF-8 as the char set when testing pilot link
+
+2001-12-10  Ettore Perazzoli  <ettore@ximian.com>
+
+	* NEWS: Added 1.0 changes, massaged a little bit.
+
+	* HACKING: Remove Dan Winship from the mailer core team listing.
+
+2001-12-06  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* configure.in: s/PREVIEW_RELEASE/VERSION_COMMENT
+
+2001-12-04  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* configure.in: Add a AC_DEFINE for PREVIEW_RELEASE which is a
+	string that will be appended to the X-Mailer header.
+
+2001-12-05  Ettore Perazzoli  <ettore@ximian.com>
+
+	* HACKING: Put the patch review policy here.
+
+2001-12-04  Ettore Perazzoli  <ettore@ximian.com>
+
+	* configure.in: Update version number to 1.0.0.99 for snapshot
+	purposes.
+
 2001-11-21  Jeffrey Stedfast  <fejj@ximian.com>
  
- 	* README: Updated. Don't say that the user needs to copy their
- 	mozilla database files into ~/evolution, since Evolution now
- 	builds it's own default database files if they don't exist and
- 	also remove instructions for building with OpenSSL.
+	* README: Updated. Don't say that the user needs to copy their
+	mozilla database files into ~/evolution, since Evolution now
+	builds it's own default database files if they don't exist and
+	also remove instructions for building with OpenSSL.
  
- 	* acconfig.h: Remove HAVE_OPENSSL define
+	* acconfig.h: Remove HAVE_OPENSSL define
  
- 	* configure.in: Remove checks for OpenSSL libraries.
+	* configure.in: Remove checks for OpenSSL libraries.
  
 2001-11-21  Ettore Perazzoli  <ettore@ximian.com>
 

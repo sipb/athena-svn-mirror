@@ -1,3 +1,31 @@
+2002-01-07  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* e-msg-composer.c (e_msg_composer_get_message_draft): Set the
+	X-Evolution-Format header to text/plain if that is the editing
+	mode we are really in. This fixes bug #11499.
+
+2002-01-03  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* e-msg-composer-attachment.c (e_msg_composer_attachment_edit):
+	Only connect to the parent's destroy/hide signals while the
+	attachment editor dialog is "alive".
+
+2001-12-11  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* e-msg-composer-attachment.c (e_msg_composer_attachment_edit):
+	Attach to the parent widget's destroy signal - when that gets
+	destroyed, we need to cancel the editor dialog too. Also connect
+	to our parent window's "hide" signal so that when the composer
+	gets hidden (ie, it's being sent), we also close the dialogs.
+
+	* e-msg-composer.c (init): Default composer->enable_autosave to
+	TRUE.
+
+2001-11-30  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* e-msg-composer.c (setup_ui): Change the FileSend tooltip the be
+	the same as the FileSendLater tooltip if we are in offline mode.
+
 2001-11-14  Larry Ewing  <lewing@ximian.com>
 
 	* e-msg-composer.c (create_composer): popup failure dialog if we

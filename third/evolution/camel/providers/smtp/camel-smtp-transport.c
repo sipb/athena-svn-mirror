@@ -164,7 +164,10 @@ get_smtp_error_string (int error)
 	switch (error) {
 	case 0:
 		/* looks like a read problem, check errno */
-		return g_strerror (errno);
+		if (errno)
+			return g_strerror (errno);
+		else
+			return _("Unknown");
 	case 500:
 		return _("Syntax error, command unrecognized");
 	case 501:
@@ -403,8 +406,7 @@ smtp_connect (CamelService *service, CamelException *ex)
 		while (!authenticated) {
 			if (errbuf) {
 				/* We need to un-cache the password before prompting again */
-				camel_session_forget_password (
-					session, service, "password", ex);
+				camel_session_forget_password (session, service, "password", ex);
 				g_free (service->url->passwd);
 				service->url->passwd = NULL;
 			}
@@ -416,10 +418,8 @@ smtp_connect (CamelService *service, CamelException *ex)
 							  errbuf ? errbuf : "", service->url->user,
 							  service->url->host);
 				
-				service->url->passwd =
-					camel_session_get_password (
-						session, prompt, TRUE,
-						service, "password", ex);
+				service->url->passwd = camel_session_get_password (session, prompt, TRUE,
+										   service, "password", ex);
 				
 				g_free (prompt);
 				g_free (errbuf);

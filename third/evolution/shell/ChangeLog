@@ -1,3 +1,123 @@
+2002-01-23  Ettore Perazzoli  <ettore@ximian.com>
+
+	[Patch by Michael Meeks <michael@ximian.com>.]
+
+	* e-splash.c (e_splash_set_icon_highlight): g_return if there is
+	no num-th icon.
+
+2002-01-15  Iain Holmes  <iain@ximian.com>
+
+	* e-shell-importer.c (show_import_wizard): Set the druid as transient
+	for the main shell.
+
+2002-01-15  Ettore Perazzoli  <ettore@ximian.com>
+
+	[Fix #17441, Crash trying to import Multiple VCard file into LDAP
+	folder.]
+
+	* e-shell-importer.c (show_error): Add a NULL in the call to
+	`gnome_message_box_new()'.
+
+2001-12-14  Michael Meeks  <michael@ximian.com>
+
+	* e-shell-view.c (set_current_notebook_page): re-order
+	activate / de-activate to minimise flicker switching between
+	identical components.
+
+2002-01-11  Damon Chaplin  <damon@ximian.com>
+
+	* e-shell-startup-wizard.c (finish_func): handle translated timezone
+	names.
+
+	* Makefile.am (INCLUDES): added -I$(top_srcdir)/libical/src/libical.
+
+2001-12-17  Ettore Perazzoli  <ettore@ximian.com>
+
+	* e-shell-about-box.c: Add Michael MacDonald.
+
+2001-12-17  Ettore Perazzoli  <ettore@ximian.com>
+
+	[Fixes #17377, Evolution doesn't work on multi-depth displays.]
+
+	* main.c (main): Push GdkRGB visual and colormap.
+
+2001-12-17  Ettore Perazzoli  <ettore@ximian.com>
+
+	[Fix #16693.  What happens there is that the user closed the
+	dialog before the async operation was completed, so when the
+	notification was received the shell crashed.]
+
+	* e-shell-folder-creation-dialog.c: New member
+	`creation_in_progress' in `DialogData'.
+	(e_shell_show_folder_creation_dialog): Init to %FALSE.
+	(async_create_cb): Set to %FALSE.  Also, if the
+	dialog_data->dialog is %NULL, free the dialog_data before
+	returning.
+	(dialog_clicked_cb): Set to %TRUE.
+	(dialog_destroy_cb): If a creation is in progress, just set the
+	widget pointers in the DialogData struct to %NULL instead of
+	freeing the whole struct.
+	(async_create_cb): Make the OK and Cancel buttons sensitive.
+	(dialog_clicked_cb): Make them insensitive here.
+
+2001-12-12  Ettore Perazzoli  <ettore@ximian.com>
+
+	[Fix #17258, shell displays splash even if Evolution is already
+	running.]
+
+	* e-shell.c (e_shell_construct): Display the splash screen only if
+	the registration succeeds.
+
+2001-12-10  Ettore Perazzoli  <ettore@ximian.com>
+
+	[Fix #14838, saving passwords doesn't work.  It is actually a
+	workaround for some obscure Bonobo-conf bug.]
+
+	* e-setup.c (setup_bonobo_conf_private_directory): New helper
+	function to create the `~/evolution/private' directory.
+	(e_setup): Call it.
+
+2001-12-07  Iain Holmes  <iain@ximian.com>
+
+	[Trying to fix #14701, importing locks up Evolution.]
+
+	* e-shell-importer.c (show_error): Show an error message, but not
+	modally.
+	(start_import): Use above function so none of the errors are modal.
+	(folder_selected): Hide the folder dialog.
+	
+2001-12-04  Ettore Perazzoli  <ettore@ximian.com>
+
+	[Fix #7827, Switching desktops leaves the folder bar popped up.]
+
+	* e-shell-view.c (folder_bar_popup_map_callback): And grab the
+	keyboard as well.
+	(popdown_transient_folder_bar): Ungrab the keyboard as well.
+	(switch_on_folder_tree_click): Likewise.
+
+	[Fix #16507, Right Click -> View does nothing.]
+
+	* e-shell-view-menu.c: New verb "ActivateView".
+	(command_activate_view): New, callback for the "ActivateView"
+	verb.
+
+2001-11-15  Zbigniew Chyla  <cyba@gnome.pl>
+
+	* e-shell-folder-commands.c (e_shell_command_rename_folder): Convert
+	folder name to locale's encoding before using it as part of the prompt.
+
+2001-11-28  Federico Mena Quintero  <federico@ximian.com>
+
+	Fixes bug #3290.
+
+	* e-shell-folder-selection-dialog.c
+	(e_shell_folder_selection_dialog_construct): Use our own filename
+	for the collapsation state of the tree, instead of sharing the one
+	of shell view number 0.
+	(save_expanded_state): New function, saves the collapsation state
+	of the tree.
+	(impl_destroy): Call save_expanded_state().
+
 2001-11-15  Ettore Perazzoli  <ettore@ximian.com>
 
 	* e-shell-about-box.c: Add missing comma.

@@ -37,9 +37,11 @@
 #include <e-pilot-util.h>
 
 #define CAL_CONFIG_LOAD 1
+#define CAL_CONFIG_SAVE 1
 #define CAL_CONFIG_DESTROY 1
 #include <calendar-conduit-config.h>
 #undef CAL_CONFIG_LOAD
+#undef CAL_CONFIG_SAVE
 #undef CAL_CONFIG_DESTROY
 
 #include <calendar-conduit.h>
@@ -65,6 +67,8 @@ void conduit_destroy_gpilot_conduit (GnomePilotConduit*);
 
 #define WARN(e...) g_log (G_LOG_DOMAIN, G_LOG_LEVEL_WARNING, e)
 #define INFO(e...) g_log (G_LOG_DOMAIN, G_LOG_LEVEL_MESSAGE, e)
+
+#define PILOT_MAX_ADVANCE 99
 
 /* Debug routines */
 static char *
@@ -200,28 +204,21 @@ start_calendar_server_cb (CalClient *cal_client,
 static int
 start_calendar_server (ECalConduitContext *ctxt)
 {
-	char *calendar_file;
 	gboolean success = FALSE;
 	
 	g_return_val_if_fail (ctxt != NULL, -2);
 
 	ctxt->client = cal_client_new ();
 
-	/* FIX ME */
-	calendar_file = g_concat_dir_and_file (g_get_home_dir (),
-					       "evolution/local/"
-					       "Calendar/calendar.ics");
-
 	gtk_signal_connect (GTK_OBJECT (ctxt->client), "cal_opened",
 			    start_calendar_server_cb, &success);
 
-	if (!cal_client_open_calendar (ctxt->client, calendar_file, FALSE))
+	if (!cal_client_open_default_calendar (ctxt->client, FALSE))
 		return -1;
 
 	/* run a sub event loop to turn cal-client's async load
 	   notification into a synchronous call */
 	gtk_main ();
-	g_free (calendar_file);
 
 	if (success)
 		return 0;
@@ -720,6 +717,54 @@ local_record_from_comp (ECalLocalRecord *local, CalComponent *comp, ECalConduitC
 		*local->appt->exception = icaltimetype_to_tm (dt->value);
 	}
 	cal_component_free_exdate_list (edl);
+
+	/* Alarm */
+	local->appt->alarm = 0;
+	if (cal_component_has_alarms (comp)) {
+		GList *uids, *l;		
+		CalComponentAlarm *alarm;
+		CalAlarmTrigger trigger;
+
+		uids = cal_component_get_alarm_uids (comp);
+		for (l = uids; l != NULL; l = l->next) {
+			alarm = cal_component_get_alarm (comp, l->data);
+			cal_component_alarm_get_trigger (alarm, &trigger);
+			
+			if ((trigger.type == CAL_ALARM_TRIGGER_RELATIVE_START
+			     && trigger.u.rel_duration.is_neg)) {
+				local->appt->advanceUnits = advMinutes;
+				local->appt->advance = 
+					trigger.u.rel_duration.minutes
+					+ trigger.u.rel_duration.hours * 60
+					+ trigger.u.rel_duration.days * 60 * 24
+					+ trigger.u.rel_duration.weeks * 7 * 60 * 24;
+
+				if (local->appt->advance > PILOT_MAX_ADVANCE) {
+					local->appt->advanceUnits = advHours;
+					local->appt->advance = 
+						trigger.u.rel_duration.minutes / 60
+						+ trigger.u.rel_duration.hours
+						+ trigger.u.rel_duration.days * 24
+						+ trigger.u.rel_duration.weeks * 7 * 24;
+				}
+				if (local->appt->advance > PILOT_MAX_ADVANCE) {
+					local->appt->advanceUnits = advDays;
+					local->appt->advance =
+						trigger.u.rel_duration.minutes / (60 * 24)
+						+ trigger.u.rel_duration.hours / 24
+						+ trigger.u.rel_duration.days
+						+ trigger.u.rel_duration.weeks * 7;
+				}
+				if (local->appt->advance > PILOT_MAX_ADVANCE)
+					local->appt->advance = PILOT_MAX_ADVANCE;
+
+				local->appt->alarm = 1;
+				break;
+			}
+			cal_component_alarm_free (alarm);
+		}
+		cal_obj_uid_list_free (uids);
+	}
 	
 	cal_component_get_classification (comp, &classif);
 
@@ -907,6 +952,53 @@ comp_from_remote_record (GnomePilotConduitSyncAbs *conduit,
 	}
 	cal_component_set_exdate_list (comp, edl);
 	cal_component_free_exdate_list (edl);
+
+	/* Alarm */
+	if (appt.alarm) {
+		CalComponentAlarm *alarm = NULL;
+		CalAlarmTrigger trigger;
+		gboolean found = FALSE;
+		
+		if (cal_component_has_alarms (comp)) {
+			GList *uids, *l;
+			
+			uids = cal_component_get_alarm_uids (comp);
+			for (l = uids; l != NULL; l = l->next) {
+				alarm = cal_component_get_alarm (comp, l->data);
+				cal_component_alarm_get_trigger (alarm, &trigger);
+				if ((trigger.type == CAL_ALARM_TRIGGER_RELATIVE_START
+				     && trigger.u.rel_duration.is_neg)) {
+					found = TRUE;
+					break;
+				}
+				cal_component_alarm_free (alarm);
+			}
+			cal_obj_uid_list_free (uids);
+		}
+		if (!found)
+			alarm = cal_component_alarm_new ();
+
+		memset (&trigger, 0, sizeof (CalAlarmTrigger));
+		trigger.type = CAL_ALARM_TRIGGER_RELATIVE_START;
+		trigger.u.rel_duration.is_neg = 1;
+		switch (appt.advanceUnits) {
+		case advMinutes:
+			trigger.u.rel_duration.minutes = appt.advance;
+			break;
+		case advHours:
+			trigger.u.rel_duration.hours = appt.advance;
+			break;
+		case advDays:
+			trigger.u.rel_duration.days = appt.advance;
+			break;
+		}
+		cal_component_alarm_set_trigger (alarm, trigger);
+		cal_component_alarm_set_action (alarm, CAL_ALARM_DISPLAY);
+
+		if (!found)
+			cal_component_add_alarm (comp, alarm);
+		cal_component_alarm_free (alarm);
+	}
 	
 	cal_component_set_transparency (comp, CAL_COMPONENT_TRANSP_NONE);
 
@@ -942,12 +1034,21 @@ check_for_slow_setting (GnomePilotConduit *c, ECalConduitContext *ctxt)
 {
 	GnomePilotConduitStandard *conduit = GNOME_PILOT_CONDUIT_STANDARD (c);
 	int map_count;
-
+	const char *uri;
+	
 	/* If there are objects but no log */
 	map_count = g_hash_table_size (ctxt->map->pid_map);
 	if (map_count == 0)
 		gnome_pilot_conduit_standard_set_slow (conduit, TRUE);
 
+	/* Or if the URI's don't match */
+	uri = cal_client_get_uri (ctxt->client);
+	LOG("  Current URI %s (%s)\n", uri, ctxt->cfg->last_uri ? ctxt->cfg->last_uri : "<NONE>");
+	if (ctxt->cfg->last_uri != NULL && strcmp (ctxt->cfg->last_uri, uri)) {
+		gnome_pilot_conduit_standard_set_slow (conduit, TRUE);
+		e_pilot_map_clear (ctxt->map);
+	}
+	
 	if (gnome_pilot_conduit_standard_get_slow (conduit)) {
 		ctxt->map->write_touched_only = TRUE;
 		LOG ("    doing slow sync\n");
@@ -1099,6 +1200,10 @@ post_sync (GnomePilotConduit *conduit,
 	
 	LOG ("post_sync: Calendar Conduit v.%s", CONDUIT_VERSION);
 
+	g_free (ctxt->cfg->last_uri);
+	ctxt->cfg->last_uri = g_strdup (cal_client_get_uri (ctxt->client));
+	calconduit_save_configuration (ctxt->cfg);
+	
 	filename = map_name (ctxt);
 	e_pilot_map_write (filename, ctxt->map);
 	g_free (filename);

@@ -3414,6 +3414,14 @@ GNOME_Evolution_Calendar_CalFactory_open(GNOME_Evolution_Calendar_CalFactory
 	 &TC_GNOME_Evolution_Calendar_CalFactory_NilListener_struct,
 	 (gpointer)
 	 _ORBIT_GNOME_Evolution_Calendar_CalFactory_NilListener_demarshal},
+      {(const CORBA_TypeCode)
+       &TC_GNOME_Evolution_Calendar_CalFactory_InvalidURI_struct,
+       (gpointer)
+       _ORBIT_GNOME_Evolution_Calendar_CalFactory_InvalidURI_demarshal},
+      {(const CORBA_TypeCode)
+       &TC_GNOME_Evolution_Calendar_CalFactory_UnsupportedMethod_struct,
+       (gpointer)
+       _ORBIT_GNOME_Evolution_Calendar_CalFactory_UnsupportedMethod_demarshal},
       {CORBA_OBJECT_NIL, NULL} };
    register GIOP_unsigned_long _ORBIT_request_id,
     _ORBIT_system_exception_minor;

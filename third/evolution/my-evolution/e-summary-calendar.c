@@ -364,19 +364,17 @@ generate_html (gpointer data)
 		for (i = 0; i < uidarray->len; i++) {
 			ESummaryCalEvent *event;
 			CalComponentText text;
-			time_t start_t;
-			struct tm *start_tm;
+			struct tm start_tm;
 			char start_str[64], *start_str_utf, *img;
 
 			event = uidarray->pdata[i];
 			cal_component_get_summary (event->comp, &text);
-			start_t = icaltime_as_timet (*event->dt.value);
 
-			start_tm = localtime (&start_t);
+			start_tm = icaltimetype_to_tm (event->dt.value);
 			if (calendar->wants24hr == TRUE) {
-				strftime (start_str, sizeof start_str, _("%k:%M %d %B"), start_tm);
+				strftime (start_str, sizeof start_str, _("%k:%M %d %B"), &start_tm);
 			} else {
-				strftime (start_str, sizeof start_str, _("%l:%M %d %B"), start_tm);
+				strftime (start_str, sizeof start_str, _("%l:%M %d %B"), &start_tm);
 			}
 
 			if (cal_component_has_alarms (event->comp)) {
@@ -394,7 +392,7 @@ generate_html (gpointer data)
 					       "alt=\"\" width=\"16\" height=\"16\">  &#160; "
 					       "<font size=\"-1\"><a href=\"calendar:/%s\">%s, %s</a></font><br>", 
 					       img,
-					       event->uid, start_str_utf, text.value);
+					       event->uid, start_str_utf, text.value ? text.value : _("No description"));
 			g_free (start_str_utf);
 			
 			g_string_append (string, tmp);
@@ -486,8 +484,6 @@ e_summary_calendar_init (ESummary *summary)
 	CORBA_Environment ev;
 	ESummaryCalendar *calendar;
 	gboolean result;
-	char *uri;
-	char *default_uri;
 
 	g_return_if_fail (summary != NULL);
 
@@ -519,14 +515,7 @@ e_summary_calendar_init (ESummary *summary)
 	gtk_signal_connect (GTK_OBJECT (calendar->client), "obj-removed",
 			    GTK_SIGNAL_FUNC (obj_changed_cb), summary);
 
-	default_uri = bonobo_config_get_string (db, "/Calendar/DefaultUri", NULL);
-	if (!default_uri)
-		uri = gnome_util_prepend_user_home ("evolution/local/Calendar/calendar.ics");
-	else
-		uri = g_strdup (default_uri);
-
-	result = cal_client_open_calendar (calendar->client, uri, FALSE);
-	g_free (uri);
+	result = cal_client_open_default_calendar (calendar->client, FALSE);
 	if (result == FALSE) {
 		g_message ("Open calendar failed");
 	}
