@@ -161,19 +161,20 @@ child_terminated (int signo)
     /* Most of the code in this function is disabled, because if one have 
        shellscripts that starts the application in the background, the script
        will immediatley exit. Nevertheless, we should keep tracking the launch. */
-    
-    /* int status; */
-    /*    remove_sighandlers (); */
 
-    /* fprintf (stderr, "%s: child (%s) died prematurely\n", programname, taskname); */
+    /* Athena doesn't care, and wants xalf to give up after htmlview
+       or gnome-moz-remote exits. */
     
-    /*    if (cursor_opt)  */
-    /*  	{ */
-    /*  	    gtk_timeout_remove (timeout_tag); */
-    /*  	    change_cursor (FALSE); */
-    /*  	} */
-    /*      wait (&status); */
-    /*      gtk_exit (WIFEXITED(status) ? WEXITSTATUS(status) : 1); */
+    int status;
+    remove_sighandlers ();
+
+    if (cursor_opt)
+      	{
+      	    gtk_timeout_remove (timeout_tag);
+      	    change_cursor (FALSE);
+      	}
+    wait (&status);
+    gtk_exit (WIFEXITED(status) ? WEXITSTATUS(status) : 1);
 }
 
 
