@@ -15,7 +15,7 @@
 	<oaf_attribute name="description-bg" type="string"
                        value="&#212;&#224;&#225;&#240;&#232;&#234;&#224; &#231;&#224; &#242;&#250;&#240;&#241;&#229;&#237;&#229;&#242;&#238; &#239;&#238; &#232;&#236;&#229;&#237;&#224; &#226; &#224;&#228;&#240;&#229;&#241;&#237;&#224;&#242;&#224; &#234;&#237;&#232;&#227;&#224; &#237;&#224; &#197;&#226;&#238;&#235;&#254;&#248;&#250;&#237;"/>
 	<oaf_attribute name="description-cs" type="string"
-                       value="Tov&#225;rna pro rozhran&#237; v&#253;b&#236;ru jm&#233;na adres&#225;&#248;e."/>
+                       value="Tov&#195;&#161;rna pro rozhran&#195;&#173; v&#195;&#189;b&#196;&#155;ru jm&#195;&#169;na adres&#195;&#161;&#197;&#153;e."/>
 	<oaf_attribute name="description-da" type="string"
                        value="Fabrik til adressebogens gr&#230;nseflade for navnevalg"/>
 	<oaf_attribute name="description-de" type="string"
@@ -23,7 +23,7 @@
 	<oaf_attribute name="description-el" type="string"
                        value="&#197;&#241;&#227;&#239;&#243;&#244;&#220;&#243;&#233;&#239; &#227;&#233;&#225; &#244;&#231; &#228;&#233;&#225;&#243;&#253;&#237;&#228;&#229;&#243;&#231; &#229;&#240;&#233;&#235;&#239;&#227;&#222;&#242; &#239;&#237;&#239;&#236;&#220;&#244;&#249;&#237; &#244;&#239;&#245; &#194;&#233;&#226;&#235;&#223;&#239;&#245; &#196;&#233;&#229;&#245;&#232;&#253;&#237;&#243;&#229;&#249;&#237;"/>
 	<oaf_attribute name="description-es" type="string"
-                       value="F&#195;&#161;brica para la interfaz de selecci&#195;&#179;n de nombre de la Agenda"/>
+                       value="F&#225;brica para la interfaz de selecci&#243;n de nombre de la libreta de direcciones"/>
 	<oaf_attribute name="description-eu" type="string"
                        value="Helbide-liburuko izen-hautaketaren interfazerako fabrika"/>
 	<oaf_attribute name="description-fr" type="string"
@@ -48,12 +48,14 @@
                        value="Factory for adressebokens grensesnitt for navnevalg"/>
 	<oaf_attribute name="description-pl" type="string"
                        value="Generator interfejsu wyboru nazwy ksi&#177;&#191;ki adresowej Evolution"/>
+	<oaf_attribute name="description-pt" type="string"
+                       value="F&#225;brica para o interface de selec&#231;&#227;o de nome do Livro de Endere&#231;os Evolution"/>
 	<oaf_attribute name="description-pt_BR" type="string"
                        value="F&#225;brica para interface para sele&#231;&#227;o de nomes do cat&#225;logo de endere&#231;os"/>
 	<oaf_attribute name="description-ro" type="string"
                        value="Procesator interfa&#254;a de selectare nume a agendei"/>
 	<oaf_attribute name="description-ru" type="string"
-                       value="&#230;&#193;&#194;&#210;&#201;&#203;&#193; &#196;&#204;&#209; &#201;&#206;&#212;&#197;&#210;&#198;&#197;&#202;&#211;&#193; &#215;&#217;&#194;&#207;&#210;&#193; &#201;&#205;&#197;&#206;&#201; &#215; &#193;&#196;&#210;&#197;&#211;&#206;&#207;&#202; &#203;&#206;&#201;&#199;&#197;."/>
+                       value="&#208;&#164;&#208;&#176;&#208;&#177;&#209;&#128;&#208;&#184;&#208;&#186;&#208;&#176; &#208;&#180;&#208;&#187;&#209;&#143; &#208;&#184;&#208;&#189;&#209;&#130;&#208;&#181;&#209;&#128;&#209;&#132;&#208;&#181;&#208;&#185;&#209;&#129;&#208;&#176; &#208;&#178;&#209;&#139;&#208;&#177;&#208;&#190;&#209;&#128;&#208;&#176; &#208;&#184;&#208;&#188;&#208;&#181;&#208;&#189;&#208;&#184; &#208;&#178; &#208;&#176;&#208;&#180;&#209;&#128;&#208;&#181;&#209;&#129;&#208;&#189;&#208;&#190;&#208;&#185; &#208;&#186;&#208;&#189;&#208;&#184;&#208;&#179;&#208;&#181;."/>
 	<oaf_attribute name="description-sk" type="string"
                        value="Vytv&#195;&#161;racie rozhranie pre rozhranie pre v&#195;&#189;ber mena adres&#195;&#161;ra."/>
 	<oaf_attribute name="description-sl" type="string"
@@ -69,7 +71,7 @@
 	<oaf_attribute name="description-zh_CN" type="string"
                        value="&#229;&#156;&#176;&#229;&#157;&#128;&#231;&#176;&#191;&#229;&#144;&#141;&#231;&#167;&#176;&#233;&#128;&#137;&#230;&#139;&#169;&#231;&#149;&#140;&#233;&#157;&#162;&#232;&#189;&#166;&#233;&#151;&#180;"/>
 	<oaf_attribute name="description-zh_TW" type="string"
-                       value="&#165;&#216;&#191;&#253;&#170;A&#176;&#200;&#166;W&#186;&#217;&#191;&#239;&#190;&#220;&#164;&#182;&#173;&#177;&#164;u&#188;t"/>
+                       value="&#165;&#216;&#191;&#253;&#170;A&#176;&#200;&#166;W&#186;&#217;&#191;&#239;&#190;&#220;&#172;&#201;&#173;&#177;&#164;u&#188;t"/>
 
 </oaf_server>
 
@@ -88,7 +90,7 @@
 	<oaf_attribute name="description-bg" type="string"
                        value="&#200;&#237;&#242;&#229;&#240;&#244;&#229;&#233;&#241; &#231;&#224; &#242;&#250;&#240;&#241;&#229;&#237;&#229;&#242;&#238; &#239;&#238; &#232;&#236;&#229;&#237;&#224; &#226; &#224;&#228;&#240;&#229;&#241;&#237;&#224;&#242;&#224; &#234;&#237;&#232;&#227;&#224; &#237;&#224; &#197;&#226;&#238;&#235;&#254;&#248;&#250;&#237;"/>
 	<oaf_attribute name="description-cs" type="string"
-                       value="Rozhran&#237; pro v&#253;b&#236;r jm&#233;na adres&#225;&#248;e Evolution."/>
+                       value="Rozhran&#195;&#173; pro v&#195;&#189;b&#196;&#155;r jm&#195;&#169;na adres&#195;&#161;&#197;&#153;e Evolution."/>
 	<oaf_attribute name="description-da" type="string"
                        value="Evolution adressebog-komponent"/>
 	<oaf_attribute name="description-de" type="string"
@@ -96,7 +98,7 @@
 	<oaf_attribute name="description-el" type="string"
                        value="&#196;&#233;&#225;&#243;&#253;&#237;&#228;&#229;&#243;&#231; &#229;&#240;&#233;&#235;&#239;&#227;&#222;&#242; &#239;&#237;&#239;&#236;&#220;&#244;&#249;&#237; &#244;&#239;&#245; &#194;&#233;&#226;&#235;&#223;&#239;&#245; &#196;&#233;&#229;&#245;&#232;&#253;&#237;&#243;&#229;&#249;&#237; &#244;&#239;&#245; Evolution."/>
 	<oaf_attribute name="description-es" type="string"
-                       value="Interfaz de selecci&#195;&#179;n de nombre de la agenda."/>
+                       value="Interfaz de selecci&#243;n de nombre de la libreta de direcciones."/>
 	<oaf_attribute name="description-et" type="string"
                        value="Evolutioni aadressiraamatu nime valiku kasutajaliides."/>
 	<oaf_attribute name="description-eu" type="string"
@@ -123,16 +125,18 @@
                        value="Evolution adressebok-komponent"/>
 	<oaf_attribute name="description-pl" type="string"
                        value="Interfejs wyboru nazwy ksi&#177;&#191;ki adresowej Evolution"/>
+	<oaf_attribute name="description-pt" type="string"
+                       value="Interface de selec&#231;&#227;o de nome do livro de endere&#231;os Evolution."/>
 	<oaf_attribute name="description-pt_BR" type="string"
                        value="Interface para sele&#231;&#227;o de nomes do cat&#225;logo de endere&#231;os do Evolution"/>
 	<oaf_attribute name="description-ro" type="string"
                        value="Interfa&#254;a de selectare nume a agendei Evolution."/>
 	<oaf_attribute name="description-ru" type="string"
-                       value="&#233;&#206;&#212;&#197;&#210;&#198;&#197;&#202;&#211; &#215;&#217;&#194;&#207;&#210;&#193; &#201;&#205;&#197;&#206;&#201; &#215; &#193;&#196;&#210;&#197;&#211;&#206;&#207;&#202; &#203;&#206;&#201;&#199;&#197; Evolution."/>
+                       value="&#208;&#152;&#208;&#189;&#209;&#130;&#208;&#181;&#209;&#128;&#209;&#132;&#208;&#181;&#208;&#185;&#209;&#129; &#208;&#178;&#209;&#139;&#208;&#177;&#208;&#190;&#209;&#128;&#208;&#176; &#208;&#184;&#208;&#188;&#208;&#181;&#208;&#189;&#208;&#184; &#208;&#178; &#208;&#176;&#208;&#180;&#209;&#128;&#208;&#181;&#209;&#129;&#208;&#189;&#208;&#190;&#208;&#185; &#208;&#186;&#208;&#189;&#208;&#184;&#208;&#179;&#208;&#181; Evolution."/>
 	<oaf_attribute name="description-sk" type="string"
                        value="Rozhranie pre v&#195;&#189;ber mena adres&#195;&#161;ra Evolution."/>
 	<oaf_attribute name="description-sl" type="string"
-                       value="Evolucijin vmesnik za izibro imen iz adresarja."/>
+                       value="Vmesnik za izbor imen iz adresarja programa Evolucija."/>
 	<oaf_attribute name="description-sv" type="string"
                        value="Evolutions adressboks namnvalsgr&#228;nssnitt."/>
 	<oaf_attribute name="description-tr" type="string"
@@ -144,7 +148,7 @@
 	<oaf_attribute name="description-zh_CN" type="string"
                        value="Evolution &#231;&#154;&#132;&#229;&#156;&#176;&#229;&#157;&#128;&#231;&#176;&#191;&#229;&#144;&#141;&#231;&#167;&#176;&#233;&#128;&#137;&#230;&#139;&#169;&#231;&#149;&#140;&#233;&#157;&#162;&#227;&#128;&#130;"/>
 	<oaf_attribute name="description-zh_TW" type="string"
-                       value="Evolution &#165;&#216;&#191;&#253;&#170;A&#176;&#200;&#166;W&#186;&#217;&#191;&#239;&#190;&#220;&#164;&#182;&#173;&#177;."/>
+                       value="Evolution &#165;&#216;&#191;&#253;&#170;A&#176;&#200;&#166;W&#186;&#217;&#191;&#239;&#190;&#220;&#172;&#201;&#173;&#177;&#161;C"/>
 
 </oaf_server>
 

@@ -23,6 +23,9 @@
 #endif
 
 #include <bonobo/bonobo-exception.h>
+#include <libgnomeui/gnome-dialog.h>
+#include <libgnomeui/gnome-dialog-util.h>
+#include <libgnome/gnome-i18n.h>
 #include <evolution-calendar.h>
 #include <e-util/e-url.h>
 #include <cal-client/cal-client.h>
@@ -300,7 +303,7 @@ edit_existing (OpenClient *oc, const char *uid)
  * type.
  */
 static CalComponent *
-get_default_event (gboolean all_day) 
+get_default_event (CalClient *client, gboolean all_day) 
 {
 	CalComponent *comp;
 	struct icaltimetype itt;
@@ -308,7 +311,7 @@ get_default_event (gboolean all_day)
 	char *location;
 	icaltimezone *zone;
 
-	comp = cal_comp_event_new_with_defaults ();
+	comp = cal_comp_event_new_with_defaults (client);
 
 	location = calendar_config_get_timezone ();
 	zone = icaltimezone_get_builtin_timezone (location);
@@ -339,12 +342,11 @@ get_default_event (gboolean all_day)
 }
 
 static CalComponent *
-get_default_task (void)
+get_default_task (CalClient *client)
 {
 	CalComponent *comp;
 	
-	comp = cal_component_new ();
-	cal_component_set_new_vtype (comp, CAL_COMPONENT_TODO);
+	comp = cal_comp_task_new_with_defaults (client);
 
 	return comp;
 }
@@ -360,15 +362,15 @@ edit_new (OpenClient *oc, const GNOME_Evolution_Calendar_CompEditorFactory_CompE
 	case GNOME_Evolution_Calendar_CompEditorFactory_EDITOR_MODE_EVENT:
 	case GNOME_Evolution_Calendar_CompEditorFactory_EDITOR_MODE_MEETING:
 		editor = COMP_EDITOR (event_editor_new (oc->client));
-		comp = get_default_event (FALSE);
+		comp = get_default_event (oc->client, FALSE);
 		break;
 	case GNOME_Evolution_Calendar_CompEditorFactory_EDITOR_MODE_ALLDAY_EVENT:
 		editor = COMP_EDITOR (event_editor_new (oc->client));
-		comp = get_default_event (TRUE);
+		comp = get_default_event (oc->client, TRUE);
 		break;
 	case GNOME_Evolution_Calendar_CompEditorFactory_EDITOR_MODE_TODO:
 		editor = COMP_EDITOR (task_editor_new (oc->client));
-		comp = get_default_task ();
+		comp = get_default_task (oc->client);
 		break;
 	default:
 		g_assert_not_reached ();
@@ -451,7 +453,7 @@ cal_opened_cb (CalClient *client, CalClientOpenStatus status, gpointer data)
 		return;
 
 	case CAL_CLIENT_OPEN_ERROR:
-		g_message ("cal_opened_cb(): Error while opening the calendar");
+	        gnome_error_dialog (_("Error while opening the calendar"));
 		break;
 
 	case CAL_CLIENT_OPEN_NOT_FOUND:
@@ -460,7 +462,11 @@ cal_opened_cb (CalClient *client, CalClientOpenStatus status, gpointer data)
 		return;
 
 	case CAL_CLIENT_OPEN_METHOD_NOT_SUPPORTED:
-		g_message ("cal_opened_cb(): Method not supported when opening the calendar");
+		gnome_error_dialog (_("Method not supported when opening the calendar"));
+		break;
+
+	case CAL_CLIENT_OPEN_PERMISSION_DENIED :
+		gnome_error_dialog (_("Permission denied to open calendar"));
 		break;
 
 	default:

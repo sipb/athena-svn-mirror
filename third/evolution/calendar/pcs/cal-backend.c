@@ -141,7 +141,9 @@ cal_backend_class_init (CalBackendClass *class)
 	class->obj_removed = NULL;
 
 	class->get_uri = NULL;
-	class->get_email_address = NULL;
+	class->get_cal_address = NULL;
+	class->get_alarm_email_address = NULL;
+	class->get_static_capabilities = NULL;
 	class->open = NULL;
 	class->is_loaded = NULL;
 	class->is_read_only = NULL;
@@ -185,22 +187,52 @@ cal_backend_get_uri (CalBackend *backend)
 }
 
 /**
- * cal_backend_get_email_address:
+ * cal_backend_get_cal_address:
  * @backend: A calendar backend.
  *
- * Queries the email address associated with a calendar backend, which
+ * Queries the cal address associated with a calendar backend, which
  * must already have an open calendar.
  *
- * Return value: The email address associated with the calendar.
+ * Return value: The cal address associated with the calendar.
  **/
 const char *
-cal_backend_get_email_address (CalBackend *backend)
+cal_backend_get_cal_address (CalBackend *backend)
 {
 	g_return_val_if_fail (backend != NULL, NULL);
 	g_return_val_if_fail (IS_CAL_BACKEND (backend), NULL);
 
-	g_assert (CLASS (backend)->get_email_address != NULL);
-	return (* CLASS (backend)->get_email_address) (backend);
+	g_assert (CLASS (backend)->get_cal_address != NULL);
+	return (* CLASS (backend)->get_cal_address) (backend);
+}
+
+const char *
+cal_backend_get_alarm_email_address (CalBackend *backend)
+{
+	g_return_val_if_fail (backend != NULL, NULL);
+	g_return_val_if_fail (IS_CAL_BACKEND (backend), NULL);
+
+	g_assert (CLASS (backend)->get_alarm_email_address != NULL);
+	return (* CLASS (backend)->get_alarm_email_address) (backend);
+}
+
+const char *
+cal_backend_get_ldap_attribute (CalBackend *backend)
+{
+	g_return_val_if_fail (backend != NULL, NULL);
+	g_return_val_if_fail (IS_CAL_BACKEND (backend), NULL);
+
+	g_assert (CLASS (backend)->get_ldap_attribute != NULL);
+	return (* CLASS (backend)->get_ldap_attribute) (backend);
+}
+
+const char *
+cal_backend_get_static_capabilities (CalBackend *backend)
+{
+	g_return_val_if_fail (backend != NULL, NULL);
+	g_return_val_if_fail (IS_CAL_BACKEND (backend), NULL);
+
+	g_assert (CLASS (backend)->get_static_capabilities != NULL);
+	return (* CLASS (backend)->get_static_capabilities) (backend);
 }
 
 /* Callback used when a Cal is destroyed */
@@ -425,6 +457,16 @@ cal_backend_get_n_objects (CalBackend *backend, CalObjType type)
 
 	g_assert (CLASS (backend)->get_n_objects != NULL);
 	return (* CLASS (backend)->get_n_objects) (backend, type);
+}
+
+char *
+cal_backend_get_default_object (CalBackend *backend, CalObjType type)
+{
+	g_return_val_if_fail (backend != NULL, NULL);
+	g_return_val_if_fail (IS_CAL_BACKEND (backend), NULL);
+
+	g_assert (CLASS (backend)->get_default_object != NULL);
+	return (* CLASS (backend)->get_default_object) (backend, type);
 }
 
 /**
@@ -721,14 +763,14 @@ cal_backend_get_alarms_for_object (CalBackend *backend, const char *uid,
  * result of the operation.
  **/
 CalBackendResult
-cal_backend_update_objects (CalBackend *backend, const char *calobj)
+cal_backend_update_objects (CalBackend *backend, const char *calobj, CalObjModType mod)
 {
 	g_return_val_if_fail (backend != NULL, FALSE);
 	g_return_val_if_fail (IS_CAL_BACKEND (backend), FALSE);
 	g_return_val_if_fail (calobj != NULL, FALSE);
 
 	g_assert (CLASS (backend)->update_objects != NULL);
-	return (* CLASS (backend)->update_objects) (backend, calobj);
+	return (* CLASS (backend)->update_objects) (backend, calobj, mod);
 }
 
 /**
@@ -743,14 +785,14 @@ cal_backend_update_objects (CalBackend *backend, const char *calobj)
  * result of the operation.
  **/
 CalBackendResult
-cal_backend_remove_object (CalBackend *backend, const char *uid)
+cal_backend_remove_object (CalBackend *backend, const char *uid, CalObjModType mod)
 {
 	g_return_val_if_fail (backend != NULL, FALSE);
 	g_return_val_if_fail (IS_CAL_BACKEND (backend), FALSE);
 	g_return_val_if_fail (uid != NULL, FALSE);
 
 	g_assert (CLASS (backend)->remove_object != NULL);
-	return (* CLASS (backend)->remove_object) (backend, uid);
+	return (* CLASS (backend)->remove_object) (backend, uid, mod);
 }
 
 CalBackendSendResult

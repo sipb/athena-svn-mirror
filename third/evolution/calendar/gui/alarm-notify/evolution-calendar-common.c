@@ -519,6 +519,41 @@ const struct CORBA_TypeCode_struct
    CORBA_OBJECT_NIL, 0, -1, 0, 0
 };
 #endif
+#if ( (TC_IMPL_TC_GNOME_Evolution_Calendar_CalObjModType_0 == 'e') \
+&& (TC_IMPL_TC_GNOME_Evolution_Calendar_CalObjModType_1 == 'v') \
+&& (TC_IMPL_TC_GNOME_Evolution_Calendar_CalObjModType_2 == 'o') \
+&& (TC_IMPL_TC_GNOME_Evolution_Calendar_CalObjModType_3 == 'l') \
+&& (TC_IMPL_TC_GNOME_Evolution_Calendar_CalObjModType_4 == 'u') \
+&& (TC_IMPL_TC_GNOME_Evolution_Calendar_CalObjModType_5 == 't') \
+&& (TC_IMPL_TC_GNOME_Evolution_Calendar_CalObjModType_6 == 'i') \
+&& (TC_IMPL_TC_GNOME_Evolution_Calendar_CalObjModType_7 == 'o') \
+&& (TC_IMPL_TC_GNOME_Evolution_Calendar_CalObjModType_8 == 'n') \
+&& (TC_IMPL_TC_GNOME_Evolution_Calendar_CalObjModType_9 == '_') \
+&& (TC_IMPL_TC_GNOME_Evolution_Calendar_CalObjModType_10 == 'c') \
+&& (TC_IMPL_TC_GNOME_Evolution_Calendar_CalObjModType_11 == 'a') \
+&& (TC_IMPL_TC_GNOME_Evolution_Calendar_CalObjModType_12 == 'l') \
+&& (TC_IMPL_TC_GNOME_Evolution_Calendar_CalObjModType_13 == 'e') \
+&& (TC_IMPL_TC_GNOME_Evolution_Calendar_CalObjModType_14 == 'n') \
+&& (TC_IMPL_TC_GNOME_Evolution_Calendar_CalObjModType_15 == 'd') \
+&& (TC_IMPL_TC_GNOME_Evolution_Calendar_CalObjModType_16 == 'a') \
+&& (TC_IMPL_TC_GNOME_Evolution_Calendar_CalObjModType_17 == 'r') \
+) && !defined(TC_DEF_TC_GNOME_Evolution_Calendar_CalObjModType)
+#define TC_DEF_TC_GNOME_Evolution_Calendar_CalObjModType 1
+static const CORBA_TypeCode anon_subtypes_array112[] =
+   { (CORBA_TypeCode) & TC_CORBA_long_struct };
+const struct CORBA_TypeCode_struct
+   TC_GNOME_Evolution_Calendar_CalObjModType_struct = {
+   {{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
+    ORBIT_PSEUDO_TYPECODE},
+   CORBA_tk_alias, "CalObjModType",
+      "IDL:GNOME/Evolution/Calendar/CalObjModType:1.0",
+   0, 1,
+   NULL,
+   (CORBA_TypeCode *) anon_subtypes_array112,
+   NULL,
+   CORBA_OBJECT_NIL, 0, -1, 0, 0
+};
+#endif
 #if ( (TC_IMPL_TC_GNOME_Evolution_Calendar_CalMode_0 == 'e') \
 && (TC_IMPL_TC_GNOME_Evolution_Calendar_CalMode_1 == 'v') \
 && (TC_IMPL_TC_GNOME_Evolution_Calendar_CalMode_2 == 'o') \
@@ -539,7 +574,7 @@ const struct CORBA_TypeCode_struct
 && (TC_IMPL_TC_GNOME_Evolution_Calendar_CalMode_17 == 'r') \
 ) && !defined(TC_DEF_TC_GNOME_Evolution_Calendar_CalMode)
 #define TC_DEF_TC_GNOME_Evolution_Calendar_CalMode 1
-static const CORBA_TypeCode anon_subtypes_array112[] =
+static const CORBA_TypeCode anon_subtypes_array121[] =
    { (CORBA_TypeCode) & TC_CORBA_long_struct };
 const struct CORBA_TypeCode_struct TC_GNOME_Evolution_Calendar_CalMode_struct
    = {
@@ -548,7 +583,7 @@ const struct CORBA_TypeCode_struct TC_GNOME_Evolution_Calendar_CalMode_struct
    CORBA_tk_alias, "CalMode", "IDL:GNOME/Evolution/Calendar/CalMode:1.0",
    0, 1,
    NULL,
-   (CORBA_TypeCode *) anon_subtypes_array112,
+   (CORBA_TypeCode *) anon_subtypes_array121,
    NULL,
    CORBA_OBJECT_NIL, 0, -1, 0, 0
 };
@@ -573,7 +608,7 @@ const struct CORBA_TypeCode_struct TC_GNOME_Evolution_Calendar_CalMode_struct
 && (TC_IMPL_TC_GNOME_Evolution_Calendar_CalObjChangeType_17 == 'r') \
 ) && !defined(TC_DEF_TC_GNOME_Evolution_Calendar_CalObjChangeType)
 #define TC_DEF_TC_GNOME_Evolution_Calendar_CalObjChangeType 1
-static const CORBA_TypeCode anon_subtypes_array121[] =
+static const CORBA_TypeCode anon_subtypes_array130[] =
    { (CORBA_TypeCode) & TC_CORBA_long_struct };
 const struct CORBA_TypeCode_struct
    TC_GNOME_Evolution_Calendar_CalObjChangeType_struct = {
@@ -583,7 +618,7 @@ const struct CORBA_TypeCode_struct
       "IDL:GNOME/Evolution/Calendar/CalObjChangeType:1.0",
    0, 1,
    NULL,
-   (CORBA_TypeCode *) anon_subtypes_array121,
+   (CORBA_TypeCode *) anon_subtypes_array130,
    NULL,
    CORBA_OBJECT_NIL, 0, -1, 0, 0
 };
@@ -608,7 +643,7 @@ const struct CORBA_TypeCode_struct
 && (TC_IMPL_TC_GNOME_Evolution_Calendar_AlarmType_17 == 'r') \
 ) && !defined(TC_DEF_TC_GNOME_Evolution_Calendar_AlarmType)
 #define TC_DEF_TC_GNOME_Evolution_Calendar_AlarmType 1
-static const char *anon_subnames_array124[] =
+static const char *anon_subnames_array133[] =
    { "MAIL", "PROGRAM", "DISPLAY", "AUDIO" };
 const struct CORBA_TypeCode_struct
    TC_GNOME_Evolution_Calendar_AlarmType_struct = {
@@ -616,7 +651,7 @@ const struct CORBA_TypeCode_struct
     ORBIT_PSEUDO_TYPECODE},
    CORBA_tk_enum, "AlarmType", "IDL:GNOME/Evolution/Calendar/AlarmType:1.0",
    0, 4,
-   (const char **) anon_subnames_array124,
+   (const char **) anon_subnames_array133,
    NULL,
    NULL,
    CORBA_OBJECT_NIL, 0, -1, 0, 0
@@ -642,7 +677,7 @@ const struct CORBA_TypeCode_struct
 && (TC_IMPL_TC_GNOME_Evolution_Calendar_Time_t_17 == 'r') \
 ) && !defined(TC_DEF_TC_GNOME_Evolution_Calendar_Time_t)
 #define TC_DEF_TC_GNOME_Evolution_Calendar_Time_t 1
-static const CORBA_TypeCode anon_subtypes_array134[] =
+static const CORBA_TypeCode anon_subtypes_array143[] =
    { (CORBA_TypeCode) & TC_CORBA_unsigned_long_struct };
 const struct CORBA_TypeCode_struct TC_GNOME_Evolution_Calendar_Time_t_struct = {
    {{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
@@ -650,7 +685,7 @@ const struct CORBA_TypeCode_struct TC_GNOME_Evolution_Calendar_Time_t_struct = {
    CORBA_tk_alias, "Time_t", "IDL:GNOME/Evolution/Calendar/Time_t:1.0",
    0, 1,
    NULL,
-   (CORBA_TypeCode *) anon_subtypes_array134,
+   (CORBA_TypeCode *) anon_subtypes_array143,
    NULL,
    CORBA_OBJECT_NIL, 0, -1, 0, 0
 };
@@ -675,8 +710,8 @@ const struct CORBA_TypeCode_struct TC_GNOME_Evolution_Calendar_Time_t_struct = {
 && (TC_IMPL_TC_GNOME_Evolution_Calendar_CalObjInstance_17 == 'r') \
 ) && !defined(TC_DEF_TC_GNOME_Evolution_Calendar_CalObjInstance)
 #define TC_DEF_TC_GNOME_Evolution_Calendar_CalObjInstance 1
-static const char *anon_subnames_array137[] = { "uid", "start", "end" };
-static const CORBA_TypeCode anon_subtypes_array138[] =
+static const char *anon_subnames_array146[] = { "uid", "start", "end" };
+static const CORBA_TypeCode anon_subtypes_array147[] =
    { (CORBA_TypeCode) & TC_GNOME_Evolution_Calendar_CalObjUID_struct,
 (CORBA_TypeCode) & TC_GNOME_Evolution_Calendar_Time_t_struct,
 (CORBA_TypeCode) & TC_GNOME_Evolution_Calendar_Time_t_struct };
@@ -687,42 +722,8 @@ const struct CORBA_TypeCode_struct
    CORBA_tk_struct, "CalObjInstance",
       "IDL:GNOME/Evolution/Calendar/CalObjInstance:1.0",
    0, 3,
-   (const char **) anon_subnames_array137,
-   (CORBA_TypeCode *) anon_subtypes_array138,
-   NULL,
-   CORBA_OBJECT_NIL, 0, -1, 0, 0
-};
-#endif
-#if ( (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalObjInstance_0 == 'e') \
-&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalObjInstance_1 == 'v') \
-&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalObjInstance_2 == 'o') \
-&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalObjInstance_3 == 'l') \
-&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalObjInstance_4 == 'u') \
-&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalObjInstance_5 == 't') \
-&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalObjInstance_6 == 'i') \
-&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalObjInstance_7 == 'o') \
-&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalObjInstance_8 == 'n') \
-&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalObjInstance_9 == '_') \
-&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalObjInstance_10 == 'c') \
-&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalObjInstance_11 == 'a') \
-&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalObjInstance_12 == 'l') \
-&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalObjInstance_13 == 'e') \
-&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalObjInstance_14 == 'n') \
-&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalObjInstance_15 == 'd') \
-&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalObjInstance_16 == 'a') \
-&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalObjInstance_17 == 'r') \
-) && !defined(TC_DEF_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalObjInstance)
-#define TC_DEF_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalObjInstance 1
-static const CORBA_TypeCode anon_subtypes_array142[] =
-   { (CORBA_TypeCode) & TC_GNOME_Evolution_Calendar_CalObjInstance_struct };
-const struct CORBA_TypeCode_struct
-   TC_CORBA_sequence_GNOME_Evolution_Calendar_CalObjInstance_struct = {
-   {{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
-    ORBIT_PSEUDO_TYPECODE},
-   CORBA_tk_sequence, NULL, NULL,
-   0, 1,
-   NULL,
-   (CORBA_TypeCode *) anon_subtypes_array142,
+   (const char **) anon_subnames_array146,
+   (CORBA_TypeCode *) anon_subtypes_array147,
    NULL,
    CORBA_OBJECT_NIL, 0, -1, 0, 0
 };
@@ -761,6 +762,40 @@ const struct CORBA_TypeCode_struct
    CORBA_OBJECT_NIL, 0, -1, 0, 0
 };
 #endif
+#if ( (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalObjInstance_0 == 'e') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalObjInstance_1 == 'v') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalObjInstance_2 == 'o') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalObjInstance_3 == 'l') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalObjInstance_4 == 'u') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalObjInstance_5 == 't') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalObjInstance_6 == 'i') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalObjInstance_7 == 'o') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalObjInstance_8 == 'n') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalObjInstance_9 == '_') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalObjInstance_10 == 'c') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalObjInstance_11 == 'a') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalObjInstance_12 == 'l') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalObjInstance_13 == 'e') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalObjInstance_14 == 'n') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalObjInstance_15 == 'd') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalObjInstance_16 == 'a') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalObjInstance_17 == 'r') \
+) && !defined(TC_DEF_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalObjInstance)
+#define TC_DEF_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalObjInstance 1
+static const CORBA_TypeCode anon_subtypes_array160[] =
+   { (CORBA_TypeCode) & TC_GNOME_Evolution_Calendar_CalObjInstance_struct };
+const struct CORBA_TypeCode_struct
+   TC_CORBA_sequence_GNOME_Evolution_Calendar_CalObjInstance_struct = {
+   {{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
+    ORBIT_PSEUDO_TYPECODE},
+   CORBA_tk_sequence, NULL, NULL,
+   0, 1,
+   NULL,
+   (CORBA_TypeCode *) anon_subtypes_array160,
+   NULL,
+   CORBA_OBJECT_NIL, 0, -1, 0, 0
+};
+#endif
 #if ( (TC_IMPL_TC_GNOME_Evolution_Calendar_CalObjInstanceSeq_0 == 'e') \
 && (TC_IMPL_TC_GNOME_Evolution_Calendar_CalObjInstanceSeq_1 == 'v') \
 && (TC_IMPL_TC_GNOME_Evolution_Calendar_CalObjInstanceSeq_2 == 'o') \
@@ -781,7 +816,7 @@ const struct CORBA_TypeCode_struct
 && (TC_IMPL_TC_GNOME_Evolution_Calendar_CalObjInstanceSeq_17 == 'r') \
 ) && !defined(TC_DEF_TC_GNOME_Evolution_Calendar_CalObjInstanceSeq)
 #define TC_DEF_TC_GNOME_Evolution_Calendar_CalObjInstanceSeq 1
-static const CORBA_TypeCode anon_subtypes_array155[] =
+static const CORBA_TypeCode anon_subtypes_array164[] =
    { (CORBA_TypeCode) &
 TC_CORBA_sequence_GNOME_Evolution_Calendar_CalObjInstance_struct };
 const struct CORBA_TypeCode_struct
@@ -792,7 +827,7 @@ const struct CORBA_TypeCode_struct
       "IDL:GNOME/Evolution/Calendar/CalObjInstanceSeq:1.0",
    0, 1,
    NULL,
-   (CORBA_TypeCode *) anon_subtypes_array155,
+   (CORBA_TypeCode *) anon_subtypes_array164,
    NULL,
    CORBA_OBJECT_NIL, 0, -1, 0, 0
 };
@@ -817,8 +852,8 @@ const struct CORBA_TypeCode_struct
 && (TC_IMPL_TC_GNOME_Evolution_Calendar_CalObjChange_17 == 'r') \
 ) && !defined(TC_DEF_TC_GNOME_Evolution_Calendar_CalObjChange)
 #define TC_DEF_TC_GNOME_Evolution_Calendar_CalObjChange 1
-static const char *anon_subnames_array158[] = { "calobj", "type" };
-static const CORBA_TypeCode anon_subtypes_array159[] =
+static const char *anon_subnames_array167[] = { "calobj", "type" };
+static const CORBA_TypeCode anon_subtypes_array168[] =
    { (CORBA_TypeCode) & TC_GNOME_Evolution_Calendar_CalObj_struct,
 (CORBA_TypeCode) & TC_GNOME_Evolution_Calendar_CalObjChangeType_struct };
 const struct CORBA_TypeCode_struct
@@ -828,42 +863,8 @@ const struct CORBA_TypeCode_struct
    CORBA_tk_struct, "CalObjChange",
       "IDL:GNOME/Evolution/Calendar/CalObjChange:1.0",
    0, 2,
-   (const char **) anon_subnames_array158,
-   (CORBA_TypeCode *) anon_subtypes_array159,
-   NULL,
-   CORBA_OBJECT_NIL, 0, -1, 0, 0
-};
-#endif
-#if ( (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalObjChange_0 == 'e') \
-&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalObjChange_1 == 'v') \
-&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalObjChange_2 == 'o') \
-&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalObjChange_3 == 'l') \
-&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalObjChange_4 == 'u') \
-&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalObjChange_5 == 't') \
-&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalObjChange_6 == 'i') \
-&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalObjChange_7 == 'o') \
-&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalObjChange_8 == 'n') \
-&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalObjChange_9 == '_') \
-&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalObjChange_10 == 'c') \
-&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalObjChange_11 == 'a') \
-&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalObjChange_12 == 'l') \
-&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalObjChange_13 == 'e') \
-&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalObjChange_14 == 'n') \
-&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalObjChange_15 == 'd') \
-&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalObjChange_16 == 'a') \
-&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalObjChange_17 == 'r') \
-) && !defined(TC_DEF_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalObjChange)
-#define TC_DEF_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalObjChange 1
-static const CORBA_TypeCode anon_subtypes_array163[] =
-   { (CORBA_TypeCode) & TC_GNOME_Evolution_Calendar_CalObjChange_struct };
-const struct CORBA_TypeCode_struct
-   TC_CORBA_sequence_GNOME_Evolution_Calendar_CalObjChange_struct = {
-   {{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
-    ORBIT_PSEUDO_TYPECODE},
-   CORBA_tk_sequence, NULL, NULL,
-   0, 1,
-   NULL,
-   (CORBA_TypeCode *) anon_subtypes_array163,
+   (const char **) anon_subnames_array167,
+   (CORBA_TypeCode *) anon_subtypes_array168,
    NULL,
    CORBA_OBJECT_NIL, 0, -1, 0, 0
 };
@@ -902,6 +903,40 @@ const struct CORBA_TypeCode_struct
    CORBA_OBJECT_NIL, 0, -1, 0, 0
 };
 #endif
+#if ( (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalObjChange_0 == 'e') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalObjChange_1 == 'v') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalObjChange_2 == 'o') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalObjChange_3 == 'l') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalObjChange_4 == 'u') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalObjChange_5 == 't') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalObjChange_6 == 'i') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalObjChange_7 == 'o') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalObjChange_8 == 'n') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalObjChange_9 == '_') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalObjChange_10 == 'c') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalObjChange_11 == 'a') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalObjChange_12 == 'l') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalObjChange_13 == 'e') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalObjChange_14 == 'n') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalObjChange_15 == 'd') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalObjChange_16 == 'a') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalObjChange_17 == 'r') \
+) && !defined(TC_DEF_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalObjChange)
+#define TC_DEF_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalObjChange 1
+static const CORBA_TypeCode anon_subtypes_array181[] =
+   { (CORBA_TypeCode) & TC_GNOME_Evolution_Calendar_CalObjChange_struct };
+const struct CORBA_TypeCode_struct
+   TC_CORBA_sequence_GNOME_Evolution_Calendar_CalObjChange_struct = {
+   {{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
+    ORBIT_PSEUDO_TYPECODE},
+   CORBA_tk_sequence, NULL, NULL,
+   0, 1,
+   NULL,
+   (CORBA_TypeCode *) anon_subtypes_array181,
+   NULL,
+   CORBA_OBJECT_NIL, 0, -1, 0, 0
+};
+#endif
 #if ( (TC_IMPL_TC_GNOME_Evolution_Calendar_CalObjChangeSeq_0 == 'e') \
 && (TC_IMPL_TC_GNOME_Evolution_Calendar_CalObjChangeSeq_1 == 'v') \
 && (TC_IMPL_TC_GNOME_Evolution_Calendar_CalObjChangeSeq_2 == 'o') \
@@ -922,7 +957,7 @@ const struct CORBA_TypeCode_struct
 && (TC_IMPL_TC_GNOME_Evolution_Calendar_CalObjChangeSeq_17 == 'r') \
 ) && !defined(TC_DEF_TC_GNOME_Evolution_Calendar_CalObjChangeSeq)
 #define TC_DEF_TC_GNOME_Evolution_Calendar_CalObjChangeSeq 1
-static const CORBA_TypeCode anon_subtypes_array176[] =
+static const CORBA_TypeCode anon_subtypes_array185[] =
    { (CORBA_TypeCode) &
 TC_CORBA_sequence_GNOME_Evolution_Calendar_CalObjChange_struct };
 const struct CORBA_TypeCode_struct
@@ -933,7 +968,7 @@ const struct CORBA_TypeCode_struct
       "IDL:GNOME/Evolution/Calendar/CalObjChangeSeq:1.0",
    0, 1,
    NULL,
-   (CORBA_TypeCode *) anon_subtypes_array176,
+   (CORBA_TypeCode *) anon_subtypes_array185,
    NULL,
    CORBA_OBJECT_NIL, 0, -1, 0, 0
 };
@@ -958,9 +993,9 @@ const struct CORBA_TypeCode_struct
 && (TC_IMPL_TC_GNOME_Evolution_Calendar_CalAlarmInstance_17 == 'r') \
 ) && !defined(TC_DEF_TC_GNOME_Evolution_Calendar_CalAlarmInstance)
 #define TC_DEF_TC_GNOME_Evolution_Calendar_CalAlarmInstance 1
-static const char *anon_subnames_array179[] =
+static const char *anon_subnames_array188[] =
    { "auid", "trigger", "occur_start", "occur_end" };
-static const CORBA_TypeCode anon_subtypes_array180[] =
+static const CORBA_TypeCode anon_subtypes_array189[] =
    { (CORBA_TypeCode) & TC_GNOME_Evolution_Calendar_CalAlarmUID_struct,
 (CORBA_TypeCode) & TC_GNOME_Evolution_Calendar_Time_t_struct, (CORBA_TypeCode) & TC_GNOME_Evolution_Calendar_Time_t_struct,
 (CORBA_TypeCode) & TC_GNOME_Evolution_Calendar_Time_t_struct };
@@ -971,42 +1006,8 @@ const struct CORBA_TypeCode_struct
    CORBA_tk_struct, "CalAlarmInstance",
       "IDL:GNOME/Evolution/Calendar/CalAlarmInstance:1.0",
    0, 4,
-   (const char **) anon_subnames_array179,
-   (CORBA_TypeCode *) anon_subtypes_array180,
-   NULL,
-   CORBA_OBJECT_NIL, 0, -1, 0, 0
-};
-#endif
-#if ( (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalAlarmInstance_0 == 'e') \
-&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalAlarmInstance_1 == 'v') \
-&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalAlarmInstance_2 == 'o') \
-&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalAlarmInstance_3 == 'l') \
-&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalAlarmInstance_4 == 'u') \
-&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalAlarmInstance_5 == 't') \
-&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalAlarmInstance_6 == 'i') \
-&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalAlarmInstance_7 == 'o') \
-&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalAlarmInstance_8 == 'n') \
-&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalAlarmInstance_9 == '_') \
-&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalAlarmInstance_10 == 'c') \
-&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalAlarmInstance_11 == 'a') \
-&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalAlarmInstance_12 == 'l') \
-&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalAlarmInstance_13 == 'e') \
-&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalAlarmInstance_14 == 'n') \
-&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalAlarmInstance_15 == 'd') \
-&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalAlarmInstance_16 == 'a') \
-&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalAlarmInstance_17 == 'r') \
-) && !defined(TC_DEF_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalAlarmInstance)
-#define TC_DEF_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalAlarmInstance 1
-static const CORBA_TypeCode anon_subtypes_array184[] =
-   { (CORBA_TypeCode) & TC_GNOME_Evolution_Calendar_CalAlarmInstance_struct };
-const struct CORBA_TypeCode_struct
-   TC_CORBA_sequence_GNOME_Evolution_Calendar_CalAlarmInstance_struct = {
-   {{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
-    ORBIT_PSEUDO_TYPECODE},
-   CORBA_tk_sequence, NULL, NULL,
-   0, 1,
-   NULL,
-   (CORBA_TypeCode *) anon_subtypes_array184,
+   (const char **) anon_subnames_array188,
+   (CORBA_TypeCode *) anon_subtypes_array189,
    NULL,
    CORBA_OBJECT_NIL, 0, -1, 0, 0
 };
@@ -1045,6 +1046,40 @@ const struct CORBA_TypeCode_struct
    CORBA_OBJECT_NIL, 0, -1, 0, 0
 };
 #endif
+#if ( (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalAlarmInstance_0 == 'e') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalAlarmInstance_1 == 'v') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalAlarmInstance_2 == 'o') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalAlarmInstance_3 == 'l') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalAlarmInstance_4 == 'u') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalAlarmInstance_5 == 't') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalAlarmInstance_6 == 'i') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalAlarmInstance_7 == 'o') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalAlarmInstance_8 == 'n') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalAlarmInstance_9 == '_') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalAlarmInstance_10 == 'c') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalAlarmInstance_11 == 'a') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalAlarmInstance_12 == 'l') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalAlarmInstance_13 == 'e') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalAlarmInstance_14 == 'n') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalAlarmInstance_15 == 'd') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalAlarmInstance_16 == 'a') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalAlarmInstance_17 == 'r') \
+) && !defined(TC_DEF_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalAlarmInstance)
+#define TC_DEF_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalAlarmInstance 1
+static const CORBA_TypeCode anon_subtypes_array202[] =
+   { (CORBA_TypeCode) & TC_GNOME_Evolution_Calendar_CalAlarmInstance_struct };
+const struct CORBA_TypeCode_struct
+   TC_CORBA_sequence_GNOME_Evolution_Calendar_CalAlarmInstance_struct = {
+   {{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
+    ORBIT_PSEUDO_TYPECODE},
+   CORBA_tk_sequence, NULL, NULL,
+   0, 1,
+   NULL,
+   (CORBA_TypeCode *) anon_subtypes_array202,
+   NULL,
+   CORBA_OBJECT_NIL, 0, -1, 0, 0
+};
+#endif
 #if ( (TC_IMPL_TC_GNOME_Evolution_Calendar_CalAlarmInstanceSeq_0 == 'e') \
 && (TC_IMPL_TC_GNOME_Evolution_Calendar_CalAlarmInstanceSeq_1 == 'v') \
 && (TC_IMPL_TC_GNOME_Evolution_Calendar_CalAlarmInstanceSeq_2 == 'o') \
@@ -1065,7 +1100,7 @@ const struct CORBA_TypeCode_struct
 && (TC_IMPL_TC_GNOME_Evolution_Calendar_CalAlarmInstanceSeq_17 == 'r') \
 ) && !defined(TC_DEF_TC_GNOME_Evolution_Calendar_CalAlarmInstanceSeq)
 #define TC_DEF_TC_GNOME_Evolution_Calendar_CalAlarmInstanceSeq 1
-static const CORBA_TypeCode anon_subtypes_array197[] =
+static const CORBA_TypeCode anon_subtypes_array206[] =
    { (CORBA_TypeCode) &
 TC_CORBA_sequence_GNOME_Evolution_Calendar_CalAlarmInstance_struct };
 const struct CORBA_TypeCode_struct
@@ -1076,7 +1111,7 @@ const struct CORBA_TypeCode_struct
       "IDL:GNOME/Evolution/Calendar/CalAlarmInstanceSeq:1.0",
    0, 1,
    NULL,
-   (CORBA_TypeCode *) anon_subtypes_array197,
+   (CORBA_TypeCode *) anon_subtypes_array206,
    NULL,
    CORBA_OBJECT_NIL, 0, -1, 0, 0
 };
@@ -1101,8 +1136,8 @@ const struct CORBA_TypeCode_struct
 && (TC_IMPL_TC_GNOME_Evolution_Calendar_CalComponentAlarms_17 == 'r') \
 ) && !defined(TC_DEF_TC_GNOME_Evolution_Calendar_CalComponentAlarms)
 #define TC_DEF_TC_GNOME_Evolution_Calendar_CalComponentAlarms 1
-static const char *anon_subnames_array200[] = { "calobj", "alarms" };
-static const CORBA_TypeCode anon_subtypes_array201[] =
+static const char *anon_subnames_array209[] = { "calobj", "alarms" };
+static const CORBA_TypeCode anon_subtypes_array210[] =
    { (CORBA_TypeCode) & TC_GNOME_Evolution_Calendar_CalObj_struct,
 (CORBA_TypeCode) & TC_GNOME_Evolution_Calendar_CalAlarmInstanceSeq_struct };
 const struct CORBA_TypeCode_struct
@@ -1112,43 +1147,8 @@ const struct CORBA_TypeCode_struct
    CORBA_tk_struct, "CalComponentAlarms",
       "IDL:GNOME/Evolution/Calendar/CalComponentAlarms:1.0",
    0, 2,
-   (const char **) anon_subnames_array200,
-   (CORBA_TypeCode *) anon_subtypes_array201,
-   NULL,
-   CORBA_OBJECT_NIL, 0, -1, 0, 0
-};
-#endif
-#if ( (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalComponentAlarms_0 == 'e') \
-&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalComponentAlarms_1 == 'v') \
-&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalComponentAlarms_2 == 'o') \
-&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalComponentAlarms_3 == 'l') \
-&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalComponentAlarms_4 == 'u') \
-&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalComponentAlarms_5 == 't') \
-&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalComponentAlarms_6 == 'i') \
-&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalComponentAlarms_7 == 'o') \
-&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalComponentAlarms_8 == 'n') \
-&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalComponentAlarms_9 == '_') \
-&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalComponentAlarms_10 == 'c') \
-&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalComponentAlarms_11 == 'a') \
-&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalComponentAlarms_12 == 'l') \
-&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalComponentAlarms_13 == 'e') \
-&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalComponentAlarms_14 == 'n') \
-&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalComponentAlarms_15 == 'd') \
-&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalComponentAlarms_16 == 'a') \
-&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalComponentAlarms_17 == 'r') \
-) && !defined(TC_DEF_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalComponentAlarms)
-#define TC_DEF_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalComponentAlarms 1
-static const CORBA_TypeCode anon_subtypes_array205[] =
-   { (CORBA_TypeCode) & TC_GNOME_Evolution_Calendar_CalComponentAlarms_struct
-   };
-const struct CORBA_TypeCode_struct
-   TC_CORBA_sequence_GNOME_Evolution_Calendar_CalComponentAlarms_struct = {
-   {{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
-    ORBIT_PSEUDO_TYPECODE},
-   CORBA_tk_sequence, NULL, NULL,
-   0, 1,
-   NULL,
-   (CORBA_TypeCode *) anon_subtypes_array205,
+   (const char **) anon_subnames_array209,
+   (CORBA_TypeCode *) anon_subtypes_array210,
    NULL,
    CORBA_OBJECT_NIL, 0, -1, 0, 0
 };
@@ -1188,6 +1188,41 @@ const struct CORBA_TypeCode_struct
    CORBA_OBJECT_NIL, 0, -1, 0, 0
 };
 #endif
+#if ( (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalComponentAlarms_0 == 'e') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalComponentAlarms_1 == 'v') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalComponentAlarms_2 == 'o') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalComponentAlarms_3 == 'l') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalComponentAlarms_4 == 'u') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalComponentAlarms_5 == 't') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalComponentAlarms_6 == 'i') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalComponentAlarms_7 == 'o') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalComponentAlarms_8 == 'n') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalComponentAlarms_9 == '_') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalComponentAlarms_10 == 'c') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalComponentAlarms_11 == 'a') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalComponentAlarms_12 == 'l') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalComponentAlarms_13 == 'e') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalComponentAlarms_14 == 'n') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalComponentAlarms_15 == 'd') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalComponentAlarms_16 == 'a') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalComponentAlarms_17 == 'r') \
+) && !defined(TC_DEF_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalComponentAlarms)
+#define TC_DEF_TC_CORBA_sequence_GNOME_Evolution_Calendar_CalComponentAlarms 1
+static const CORBA_TypeCode anon_subtypes_array223[] =
+   { (CORBA_TypeCode) & TC_GNOME_Evolution_Calendar_CalComponentAlarms_struct
+   };
+const struct CORBA_TypeCode_struct
+   TC_CORBA_sequence_GNOME_Evolution_Calendar_CalComponentAlarms_struct = {
+   {{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
+    ORBIT_PSEUDO_TYPECODE},
+   CORBA_tk_sequence, NULL, NULL,
+   0, 1,
+   NULL,
+   (CORBA_TypeCode *) anon_subtypes_array223,
+   NULL,
+   CORBA_OBJECT_NIL, 0, -1, 0, 0
+};
+#endif
 #if ( (TC_IMPL_TC_GNOME_Evolution_Calendar_CalComponentAlarmsSeq_0 == 'e') \
 && (TC_IMPL_TC_GNOME_Evolution_Calendar_CalComponentAlarmsSeq_1 == 'v') \
 && (TC_IMPL_TC_GNOME_Evolution_Calendar_CalComponentAlarmsSeq_2 == 'o') \
@@ -1208,7 +1243,7 @@ const struct CORBA_TypeCode_struct
 && (TC_IMPL_TC_GNOME_Evolution_Calendar_CalComponentAlarmsSeq_17 == 'r') \
 ) && !defined(TC_DEF_TC_GNOME_Evolution_Calendar_CalComponentAlarmsSeq)
 #define TC_DEF_TC_GNOME_Evolution_Calendar_CalComponentAlarmsSeq 1
-static const CORBA_TypeCode anon_subtypes_array218[] =
+static const CORBA_TypeCode anon_subtypes_array227[] =
    { (CORBA_TypeCode) &
 TC_CORBA_sequence_GNOME_Evolution_Calendar_CalComponentAlarms_struct };
 const struct CORBA_TypeCode_struct
@@ -1219,7 +1254,7 @@ const struct CORBA_TypeCode_struct
       "IDL:GNOME/Evolution/Calendar/CalComponentAlarmsSeq:1.0",
    0, 1,
    NULL,
-   (CORBA_TypeCode *) anon_subtypes_array218,
+   (CORBA_TypeCode *) anon_subtypes_array227,
    NULL,
    CORBA_OBJECT_NIL, 0, -1, 0, 0
 };
@@ -1244,7 +1279,7 @@ const struct CORBA_TypeCode_struct
 && (TC_IMPL_TC_GNOME_Evolution_Calendar_User_17 == 'r') \
 ) && !defined(TC_DEF_TC_GNOME_Evolution_Calendar_User)
 #define TC_DEF_TC_GNOME_Evolution_Calendar_User 1
-static const CORBA_TypeCode anon_subtypes_array227[] =
+static const CORBA_TypeCode anon_subtypes_array236[] =
    { (CORBA_TypeCode) & TC_CORBA_string_struct };
 const struct CORBA_TypeCode_struct TC_GNOME_Evolution_Calendar_User_struct = {
    {{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
@@ -1252,41 +1287,7 @@ const struct CORBA_TypeCode_struct TC_GNOME_Evolution_Calendar_User_struct = {
    CORBA_tk_alias, "User", "IDL:GNOME/Evolution/Calendar/User:1.0",
    0, 1,
    NULL,
-   (CORBA_TypeCode *) anon_subtypes_array227,
-   NULL,
-   CORBA_OBJECT_NIL, 0, -1, 0, 0
-};
-#endif
-#if ( (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_User_0 == 'e') \
-&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_User_1 == 'v') \
-&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_User_2 == 'o') \
-&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_User_3 == 'l') \
-&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_User_4 == 'u') \
-&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_User_5 == 't') \
-&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_User_6 == 'i') \
-&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_User_7 == 'o') \
-&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_User_8 == 'n') \
-&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_User_9 == '_') \
-&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_User_10 == 'c') \
-&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_User_11 == 'a') \
-&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_User_12 == 'l') \
-&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_User_13 == 'e') \
-&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_User_14 == 'n') \
-&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_User_15 == 'd') \
-&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_User_16 == 'a') \
-&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_User_17 == 'r') \
-) && !defined(TC_DEF_TC_CORBA_sequence_GNOME_Evolution_Calendar_User)
-#define TC_DEF_TC_CORBA_sequence_GNOME_Evolution_Calendar_User 1
-static const CORBA_TypeCode anon_subtypes_array231[] =
-   { (CORBA_TypeCode) & TC_GNOME_Evolution_Calendar_User_struct };
-const struct CORBA_TypeCode_struct
-   TC_CORBA_sequence_GNOME_Evolution_Calendar_User_struct = {
-   {{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
-    ORBIT_PSEUDO_TYPECODE},
-   CORBA_tk_sequence, NULL, NULL,
-   0, 1,
-   NULL,
-   (CORBA_TypeCode *) anon_subtypes_array231,
+   (CORBA_TypeCode *) anon_subtypes_array236,
    NULL,
    CORBA_OBJECT_NIL, 0, -1, 0, 0
 };
@@ -1325,6 +1326,40 @@ const struct CORBA_TypeCode_struct
    CORBA_OBJECT_NIL, 0, -1, 0, 0
 };
 #endif
+#if ( (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_User_0 == 'e') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_User_1 == 'v') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_User_2 == 'o') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_User_3 == 'l') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_User_4 == 'u') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_User_5 == 't') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_User_6 == 'i') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_User_7 == 'o') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_User_8 == 'n') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_User_9 == '_') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_User_10 == 'c') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_User_11 == 'a') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_User_12 == 'l') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_User_13 == 'e') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_User_14 == 'n') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_User_15 == 'd') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_User_16 == 'a') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Evolution_Calendar_User_17 == 'r') \
+) && !defined(TC_DEF_TC_CORBA_sequence_GNOME_Evolution_Calendar_User)
+#define TC_DEF_TC_CORBA_sequence_GNOME_Evolution_Calendar_User 1
+static const CORBA_TypeCode anon_subtypes_array249[] =
+   { (CORBA_TypeCode) & TC_GNOME_Evolution_Calendar_User_struct };
+const struct CORBA_TypeCode_struct
+   TC_CORBA_sequence_GNOME_Evolution_Calendar_User_struct = {
+   {{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
+    ORBIT_PSEUDO_TYPECODE},
+   CORBA_tk_sequence, NULL, NULL,
+   0, 1,
+   NULL,
+   (CORBA_TypeCode *) anon_subtypes_array249,
+   NULL,
+   CORBA_OBJECT_NIL, 0, -1, 0, 0
+};
+#endif
 #if ( (TC_IMPL_TC_GNOME_Evolution_Calendar_UserList_0 == 'e') \
 && (TC_IMPL_TC_GNOME_Evolution_Calendar_UserList_1 == 'v') \
 && (TC_IMPL_TC_GNOME_Evolution_Calendar_UserList_2 == 'o') \
@@ -1345,7 +1380,7 @@ const struct CORBA_TypeCode_struct
 && (TC_IMPL_TC_GNOME_Evolution_Calendar_UserList_17 == 'r') \
 ) && !defined(TC_DEF_TC_GNOME_Evolution_Calendar_UserList)
 #define TC_DEF_TC_GNOME_Evolution_Calendar_UserList 1
-static const CORBA_TypeCode anon_subtypes_array244[] =
+static const CORBA_TypeCode anon_subtypes_array253[] =
    { (CORBA_TypeCode) & TC_CORBA_sequence_GNOME_Evolution_Calendar_User_struct
    };
 const struct CORBA_TypeCode_struct TC_GNOME_Evolution_Calendar_UserList_struct
@@ -1355,7 +1390,7 @@ const struct CORBA_TypeCode_struct TC_GNOME_Evolution_Calendar_UserList_struct
    CORBA_tk_alias, "UserList", "IDL:GNOME/Evolution/Calendar/UserList:1.0",
    0, 1,
    NULL,
-   (CORBA_TypeCode *) anon_subtypes_array244,
+   (CORBA_TypeCode *) anon_subtypes_array253,
    NULL,
    CORBA_OBJECT_NIL, 0, -1, 0, 0
 };
@@ -1576,8 +1611,8 @@ const struct CORBA_TypeCode_struct
 && (TC_IMPL_TC_GNOME_Evolution_Calendar_Cal_Busy_17 == 'r') \
 ) && !defined(TC_DEF_TC_GNOME_Evolution_Calendar_Cal_Busy)
 #define TC_DEF_TC_GNOME_Evolution_Calendar_Cal_Busy 1
-static const char *anon_subnames_array271[] = { "errorMsg" };
-static const CORBA_TypeCode anon_subtypes_array272[] =
+static const char *anon_subnames_array280[] = { "errorMsg" };
+static const CORBA_TypeCode anon_subtypes_array281[] =
    { (CORBA_TypeCode) & TC_CORBA_string_struct };
 const struct CORBA_TypeCode_struct TC_GNOME_Evolution_Calendar_Cal_Busy_struct
    = {
@@ -1585,8 +1620,8 @@ const struct CORBA_TypeCode_struct TC_GNOME_Evolution_Calendar_Cal_Busy_struct
     ORBIT_PSEUDO_TYPECODE},
    CORBA_tk_except, "Busy", "IDL:GNOME/Evolution/Calendar/Cal/Busy:1.0",
    0, 1,
-   (const char **) anon_subnames_array271,
-   (CORBA_TypeCode *) anon_subtypes_array272,
+   (const char **) anon_subnames_array280,
+   (CORBA_TypeCode *) anon_subtypes_array281,
    NULL,
    CORBA_OBJECT_NIL, 0, -1, 0, 0
 };
@@ -1643,7 +1678,7 @@ const struct CORBA_TypeCode_struct TC_GNOME_Evolution_Calendar_Listener_struct
 && (TC_IMPL_TC_GNOME_Evolution_Calendar_Listener_OpenStatus_17 == 'r') \
 ) && !defined(TC_DEF_TC_GNOME_Evolution_Calendar_Listener_OpenStatus)
 #define TC_DEF_TC_GNOME_Evolution_Calendar_Listener_OpenStatus 1
-static const char *anon_subnames_array279[] =
+static const char *anon_subnames_array288[] =
    { "SUCCESS", "ERROR", "NOT_FOUND", "METHOD_NOT_SUPPORTED",
 "PERMISSION_DENIED" };
 const struct CORBA_TypeCode_struct
@@ -1653,7 +1688,7 @@ const struct CORBA_TypeCode_struct
    CORBA_tk_enum, "OpenStatus",
       "IDL:GNOME/Evolution/Calendar/Listener/OpenStatus:1.0",
    0, 5,
-   (const char **) anon_subnames_array279,
+   (const char **) anon_subnames_array288,
    NULL,
    NULL,
    CORBA_OBJECT_NIL, 0, -1, 0, 0
@@ -1679,7 +1714,7 @@ const struct CORBA_TypeCode_struct
 && (TC_IMPL_TC_GNOME_Evolution_Calendar_Listener_SetModeStatus_17 == 'r') \
 ) && !defined(TC_DEF_TC_GNOME_Evolution_Calendar_Listener_SetModeStatus)
 #define TC_DEF_TC_GNOME_Evolution_Calendar_Listener_SetModeStatus 1
-static const char *anon_subnames_array283[] =
+static const char *anon_subnames_array292[] =
    { "MODE_SET", "MODE_NOT_SET", "MODE_NOT_SUPPORTED" };
 const struct CORBA_TypeCode_struct
    TC_GNOME_Evolution_Calendar_Listener_SetModeStatus_struct = {
@@ -1688,7 +1723,7 @@ const struct CORBA_TypeCode_struct
    CORBA_tk_enum, "SetModeStatus",
       "IDL:GNOME/Evolution/Calendar/Listener/SetModeStatus:1.0",
    0, 3,
-   (const char **) anon_subnames_array283,
+   (const char **) anon_subnames_array292,
    NULL,
    NULL,
    CORBA_OBJECT_NIL, 0, -1, 0, 0
@@ -1778,7 +1813,7 @@ const struct CORBA_TypeCode_struct
 && (TC_IMPL_TC_GNOME_Evolution_Calendar_QueryListener_QueryDoneStatus_17 == 'r') \
 ) && !defined(TC_DEF_TC_GNOME_Evolution_Calendar_QueryListener_QueryDoneStatus)
 #define TC_DEF_TC_GNOME_Evolution_Calendar_QueryListener_QueryDoneStatus 1
-static const char *anon_subnames_array295[] = { "SUCCESS", "PARSE_ERROR" };
+static const char *anon_subnames_array304[] = { "SUCCESS", "PARSE_ERROR" };
 const struct CORBA_TypeCode_struct
    TC_GNOME_Evolution_Calendar_QueryListener_QueryDoneStatus_struct = {
    {{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
@@ -1786,7 +1821,7 @@ const struct CORBA_TypeCode_struct
    CORBA_tk_enum, "QueryDoneStatus",
       "IDL:GNOME/Evolution/Calendar/QueryListener/QueryDoneStatus:1.0",
    0, 2,
-   (const char **) anon_subnames_array295,
+   (const char **) anon_subnames_array304,
    NULL,
    NULL,
    CORBA_OBJECT_NIL, 0, -1, 0, 0
@@ -2242,7 +2277,7 @@ const struct CORBA_TypeCode_struct
 && (TC_IMPL_TC_GNOME_Evolution_Calendar_CompEditorFactory_CompEditorMode_17 == 'r') \
 ) && !defined(TC_DEF_TC_GNOME_Evolution_Calendar_CompEditorFactory_CompEditorMode)
 #define TC_DEF_TC_GNOME_Evolution_Calendar_CompEditorFactory_CompEditorMode 1
-static const CORBA_TypeCode anon_subtypes_array357[] =
+static const CORBA_TypeCode anon_subtypes_array366[] =
    { (CORBA_TypeCode) & TC_CORBA_long_struct };
 const struct CORBA_TypeCode_struct
    TC_GNOME_Evolution_Calendar_CompEditorFactory_CompEditorMode_struct = {
@@ -2252,7 +2287,7 @@ const struct CORBA_TypeCode_struct
       "IDL:GNOME/Evolution/Calendar/CompEditorFactory/CompEditorMode:1.0",
    0, 1,
    NULL,
-   (CORBA_TypeCode *) anon_subtypes_array357,
+   (CORBA_TypeCode *) anon_subtypes_array366,
    NULL,
    CORBA_OBJECT_NIL, 0, -1, 0, 0
 };

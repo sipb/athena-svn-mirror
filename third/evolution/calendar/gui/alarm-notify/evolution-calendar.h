@@ -465,6 +465,49 @@ extern "C"
 #define GNOME_Evolution_Calendar_TYPE_ANY 7
 #endif				/* !GNOME_Evolution_Calendar_TYPE_ANY */
 
+#if !defined(_GNOME_Evolution_Calendar_CalObjModType_defined)
+#define _GNOME_Evolution_Calendar_CalObjModType_defined 1
+   typedef CORBA_long GNOME_Evolution_Calendar_CalObjModType;
+#if !defined(TC_IMPL_TC_GNOME_Evolution_Calendar_CalObjModType_0)
+#define TC_IMPL_TC_GNOME_Evolution_Calendar_CalObjModType_0 'e'
+#define TC_IMPL_TC_GNOME_Evolution_Calendar_CalObjModType_1 'v'
+#define TC_IMPL_TC_GNOME_Evolution_Calendar_CalObjModType_2 'o'
+#define TC_IMPL_TC_GNOME_Evolution_Calendar_CalObjModType_3 'l'
+#define TC_IMPL_TC_GNOME_Evolution_Calendar_CalObjModType_4 'u'
+#define TC_IMPL_TC_GNOME_Evolution_Calendar_CalObjModType_5 't'
+#define TC_IMPL_TC_GNOME_Evolution_Calendar_CalObjModType_6 'i'
+#define TC_IMPL_TC_GNOME_Evolution_Calendar_CalObjModType_7 'o'
+#define TC_IMPL_TC_GNOME_Evolution_Calendar_CalObjModType_8 'n'
+#define TC_IMPL_TC_GNOME_Evolution_Calendar_CalObjModType_9 '_'
+#define TC_IMPL_TC_GNOME_Evolution_Calendar_CalObjModType_10 'c'
+#define TC_IMPL_TC_GNOME_Evolution_Calendar_CalObjModType_11 'a'
+#define TC_IMPL_TC_GNOME_Evolution_Calendar_CalObjModType_12 'l'
+#define TC_IMPL_TC_GNOME_Evolution_Calendar_CalObjModType_13 'e'
+#define TC_IMPL_TC_GNOME_Evolution_Calendar_CalObjModType_14 'n'
+#define TC_IMPL_TC_GNOME_Evolution_Calendar_CalObjModType_15 'd'
+#define TC_IMPL_TC_GNOME_Evolution_Calendar_CalObjModType_16 'a'
+#define TC_IMPL_TC_GNOME_Evolution_Calendar_CalObjModType_17 'r'
+   extern const struct CORBA_TypeCode_struct
+      TC_GNOME_Evolution_Calendar_CalObjModType_struct;
+#define TC_GNOME_Evolution_Calendar_CalObjModType ((CORBA_TypeCode)&TC_GNOME_Evolution_Calendar_CalObjModType_struct)
+#endif
+#endif
+#ifndef GNOME_Evolution_Calendar_MOD_THIS
+#define GNOME_Evolution_Calendar_MOD_THIS 1
+#endif				/* !GNOME_Evolution_Calendar_MOD_THIS */
+
+#ifndef GNOME_Evolution_Calendar_MOD_THISANDPRIOR
+#define GNOME_Evolution_Calendar_MOD_THISANDPRIOR 2
+#endif				/* !GNOME_Evolution_Calendar_MOD_THISANDPRIOR */
+
+#ifndef GNOME_Evolution_Calendar_MOD_THISANDFUTURE
+#define GNOME_Evolution_Calendar_MOD_THISANDFUTURE 4
+#endif				/* !GNOME_Evolution_Calendar_MOD_THISANDFUTURE */
+
+#ifndef GNOME_Evolution_Calendar_MOD_ALL
+#define GNOME_Evolution_Calendar_MOD_ALL 7
+#endif				/* !GNOME_Evolution_Calendar_MOD_ALL */
+
 #if !defined(_GNOME_Evolution_Calendar_CalMode_defined)
 #define _GNOME_Evolution_Calendar_CalMode_defined 1
    typedef CORBA_long GNOME_Evolution_Calendar_CalMode;
@@ -2351,14 +2394,24 @@ extern "C"
 			       CORBA_Environment * ev);
        CORBA_boolean(*isReadOnly) (PortableServer_Servant _servant,
 				   CORBA_Environment * ev);
-      CORBA_char *(*getEmailAddress) (PortableServer_Servant _servant,
-				      CORBA_Environment * ev);
+      CORBA_char *(*getStaticCapabilities) (PortableServer_Servant _servant,
+					    CORBA_Environment * ev);
+      CORBA_char *(*getCalAddress) (PortableServer_Servant _servant,
+				    CORBA_Environment * ev);
+      CORBA_char *(*getAlarmEmailAddress) (PortableServer_Servant _servant,
+					   CORBA_Environment * ev);
+      CORBA_char *(*getLdapAttribute) (PortableServer_Servant _servant,
+				       CORBA_Environment * ev);
       void (*setMode) (PortableServer_Servant _servant,
 		       const GNOME_Evolution_Calendar_CalMode mode,
 		       CORBA_Environment * ev);
        CORBA_long(*countObjects) (PortableServer_Servant _servant,
 				  const GNOME_Evolution_Calendar_CalObjType
 				  type, CORBA_Environment * ev);
+       GNOME_Evolution_Calendar_CalObj(*getDefaultObject)
+	 (PortableServer_Servant _servant,
+	  const GNOME_Evolution_Calendar_CalObjType type,
+	  CORBA_Environment * ev);
        GNOME_Evolution_Calendar_CalObj(*getObject) (PortableServer_Servant
 						    _servant,
 						    const
@@ -2408,9 +2461,11 @@ extern "C"
 				 CORBA_Environment * ev);
       void (*updateObjects) (PortableServer_Servant _servant,
 			     const GNOME_Evolution_Calendar_CalObj calobj,
+			     const GNOME_Evolution_Calendar_CalObjModType mod,
 			     CORBA_Environment * ev);
       void (*removeObject) (PortableServer_Servant _servant,
 			    const GNOME_Evolution_Calendar_CalObjUID uid,
+			    const GNOME_Evolution_Calendar_CalObjModType mod,
 			    CORBA_Environment * ev);
        GNOME_Evolution_Calendar_CalObj(*sendObject) (PortableServer_Servant
 						     _servant,
@@ -2685,7 +2740,17 @@ extern "C"
       GNOME_Evolution_Calendar_Cal_isReadOnly(GNOME_Evolution_Calendar_Cal
 					      _obj, CORBA_Environment * ev);
    CORBA_char
-      *GNOME_Evolution_Calendar_Cal_getEmailAddress
+      *GNOME_Evolution_Calendar_Cal_getStaticCapabilities
+      (GNOME_Evolution_Calendar_Cal _obj, CORBA_Environment * ev);
+   CORBA_char
+      *GNOME_Evolution_Calendar_Cal_getCalAddress(GNOME_Evolution_Calendar_Cal
+						  _obj,
+						  CORBA_Environment * ev);
+   CORBA_char
+      *GNOME_Evolution_Calendar_Cal_getAlarmEmailAddress
+      (GNOME_Evolution_Calendar_Cal _obj, CORBA_Environment * ev);
+   CORBA_char
+      *GNOME_Evolution_Calendar_Cal_getLdapAttribute
       (GNOME_Evolution_Calendar_Cal _obj, CORBA_Environment * ev);
    void GNOME_Evolution_Calendar_Cal_setMode(GNOME_Evolution_Calendar_Cal
 					     _obj,
@@ -2698,6 +2763,11 @@ extern "C"
 						const
 						GNOME_Evolution_Calendar_CalObjType
 						type, CORBA_Environment * ev);
+   GNOME_Evolution_Calendar_CalObj
+      GNOME_Evolution_Calendar_Cal_getDefaultObject
+      (GNOME_Evolution_Calendar_Cal _obj,
+       const GNOME_Evolution_Calendar_CalObjType type,
+       CORBA_Environment * ev);
    GNOME_Evolution_Calendar_CalObj
       GNOME_Evolution_Calendar_Cal_getObject(GNOME_Evolution_Calendar_Cal
 					     _obj,
@@ -2762,12 +2832,17 @@ extern "C"
 						 const
 						 GNOME_Evolution_Calendar_CalObj
 						 calobj,
-						 CORBA_Environment * ev);
+						 const
+						 GNOME_Evolution_Calendar_CalObjModType
+						 mod, CORBA_Environment * ev);
    void GNOME_Evolution_Calendar_Cal_removeObject(GNOME_Evolution_Calendar_Cal
 						  _obj,
 						  const
 						  GNOME_Evolution_Calendar_CalObjUID
 						  uid,
+						  const
+						  GNOME_Evolution_Calendar_CalObjModType
+						  mod,
 						  CORBA_Environment * ev);
    GNOME_Evolution_Calendar_CalObj
       GNOME_Evolution_Calendar_Cal_sendObject(GNOME_Evolution_Calendar_Cal
@@ -2891,11 +2966,32 @@ extern "C"
        CORBA_boolean(*_impl_isReadOnly) (PortableServer_Servant _servant,
 					 CORBA_Environment * ev));
    void
-      _ORBIT_skel_GNOME_Evolution_Calendar_Cal_getEmailAddress
+      _ORBIT_skel_GNOME_Evolution_Calendar_Cal_getStaticCapabilities
       (POA_GNOME_Evolution_Calendar_Cal * _ORBIT_servant,
        GIOPRecvBuffer * _ORBIT_recv_buffer, CORBA_Environment * ev,
-       CORBA_char * (*_impl_getEmailAddress) (PortableServer_Servant _servant,
-					      CORBA_Environment * ev));
+       CORBA_char *
+       (*_impl_getStaticCapabilities) (PortableServer_Servant _servant,
+				       CORBA_Environment * ev));
+   void
+      _ORBIT_skel_GNOME_Evolution_Calendar_Cal_getCalAddress
+      (POA_GNOME_Evolution_Calendar_Cal * _ORBIT_servant,
+       GIOPRecvBuffer * _ORBIT_recv_buffer, CORBA_Environment * ev,
+       CORBA_char * (*_impl_getCalAddress) (PortableServer_Servant _servant,
+					    CORBA_Environment * ev));
+   void
+      _ORBIT_skel_GNOME_Evolution_Calendar_Cal_getAlarmEmailAddress
+      (POA_GNOME_Evolution_Calendar_Cal * _ORBIT_servant,
+       GIOPRecvBuffer * _ORBIT_recv_buffer, CORBA_Environment * ev,
+       CORBA_char *
+       (*_impl_getAlarmEmailAddress) (PortableServer_Servant _servant,
+				      CORBA_Environment * ev));
+   void
+      _ORBIT_skel_GNOME_Evolution_Calendar_Cal_getLdapAttribute
+      (POA_GNOME_Evolution_Calendar_Cal * _ORBIT_servant,
+       GIOPRecvBuffer * _ORBIT_recv_buffer, CORBA_Environment * ev,
+       CORBA_char *
+       (*_impl_getLdapAttribute) (PortableServer_Servant _servant,
+				  CORBA_Environment * ev));
    void
       _ORBIT_skel_GNOME_Evolution_Calendar_Cal_setMode
       (POA_GNOME_Evolution_Calendar_Cal * _ORBIT_servant,
@@ -2911,6 +3007,14 @@ extern "C"
 					const
 					GNOME_Evolution_Calendar_CalObjType
 					type, CORBA_Environment * ev));
+   void
+      _ORBIT_skel_GNOME_Evolution_Calendar_Cal_getDefaultObject
+      (POA_GNOME_Evolution_Calendar_Cal * _ORBIT_servant,
+       GIOPRecvBuffer * _ORBIT_recv_buffer, CORBA_Environment * ev,
+       GNOME_Evolution_Calendar_CalObj(*_impl_getDefaultObject)
+       (PortableServer_Servant _servant,
+	const GNOME_Evolution_Calendar_CalObjType type,
+	CORBA_Environment * ev));
    void
       _ORBIT_skel_GNOME_Evolution_Calendar_Cal_getObject
       (POA_GNOME_Evolution_Calendar_Cal * _ORBIT_servant,
@@ -3001,14 +3105,20 @@ extern "C"
        GIOPRecvBuffer * _ORBIT_recv_buffer, CORBA_Environment * ev,
        void (*_impl_updateObjects) (PortableServer_Servant _servant,
 				    const GNOME_Evolution_Calendar_CalObj
-				    calobj, CORBA_Environment * ev));
+				    calobj,
+				    const
+				    GNOME_Evolution_Calendar_CalObjModType
+				    mod, CORBA_Environment * ev));
    void
       _ORBIT_skel_GNOME_Evolution_Calendar_Cal_removeObject
       (POA_GNOME_Evolution_Calendar_Cal * _ORBIT_servant,
        GIOPRecvBuffer * _ORBIT_recv_buffer, CORBA_Environment * ev,
        void (*_impl_removeObject) (PortableServer_Servant _servant,
 				   const GNOME_Evolution_Calendar_CalObjUID
-				   uid, CORBA_Environment * ev));
+				   uid,
+				   const
+				   GNOME_Evolution_Calendar_CalObjModType mod,
+				   CORBA_Environment * ev));
    void
       _ORBIT_skel_GNOME_Evolution_Calendar_Cal_sendObject
       (POA_GNOME_Evolution_Calendar_Cal * _ORBIT_servant,

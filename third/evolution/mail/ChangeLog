@@ -1,3 +1,88 @@
+2003-03-14  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-display.c (do_external_viewer): Lookup the handler for the
+	type. If we don't have a registered handler or if the registered
+	handler is not meant to be handled by a bonobo-component, don't
+	use a bonobo-component.
+
+	* mail-format.c (mail_lookup_handler): If we register a new
+	handler that is to be handled by a bonobo-component, set
+	handler->is_bonobo to TRUE.
+
+2003-03-13  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-format.c (try_uudecoding): Don't use isspace() when looking
+	for the beginning of the filename, instead just check for ' ' and
+	'\t'. If the first non-blank location == eoln, then this is not a
+	valid uuencode line, so abort.
+	(handle_text_plain): Instead of using !g_strcasecmp (mime_type,
+	"text/plain") to see if the part is really text/plain, check
+	instead the ContentType on the CamelDataWrapper since mime_type
+	could be just the handler type. This will prevent uudecoding of
+	parts that are actually application/octet-stream which were
+	detected as text/plain by gnome-vfs.
+
+2003-03-10  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-session.c (request_password): No need to convert the prompt
+	from Camel into UTF-8 (first, gtk widgets don't want UTF-8 and
+	second, the camel strings are already translated). Fixes bug
+	#36453.
+
+2003-03-04  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-callbacks.c (composer_get_message): Revert my prior change
+	to this code as it prevented users from sending to
+	address-lists. Instead make the code decode the addresses from
+	e_destination_get_address() to make sure they contain a valid
+	address (or list of addresses). See bug #37854 for details.
+
+2003-02-23  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-format.c (write_text_header): Add
+	E_TEXT_TO_HTML_CONVERT_SPACES to the flags. Fixes bug #38499.
+
+2003-02-23  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-local.c: Set the local provider description field to a
+	string rather than NULL to prevent a segfault on solaris. Fixes
+	bug #38418.
+
+2003-02-20  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-callbacks.c (flag_messages): Revert a bogus patch that I
+	must have accidently committed?
+
+2003-02-18  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-callbacks.c (mark_all_as_seen): Fixed a memory leak. We
+	need to free each individual uid string in the array, they aren't
+	const char *'s.
+
+2003-01-24  Not Zed  <NotZed@Ximian.com>
+
+	* mail-local.c (non_equal): We do actually need to check they are
+	file url's, otherwise, all file url's match.
+
+2002-12-07 leon.zhang  <leon.zhang@sun.com>
+
+	* component-factory.c (user_create_new_item_cb):  transfer the 
+	current acount info, which will be regarded as the sender of 
+	new composer, to send_to_url().
+
+	* mail-callbacks.h (send_to_url): Add a new parameter for parent
+	folder uri.
+
+	* mail-callbacks.c (send_to_url): Create composer base on source
+	account info from parent folder physical uri.
+	(post_to_url): create composer based on current account from 
+	parent folder physical uri. 
+
+	* mail-display.c (on_link_clicked): Apply new format of function:
+	send_to_url.
+
+	Fixes bug #35123 #35289
+ 
 2003-01-24  Antonio Xu  <antonio.xu@sun.com>
 
 	* component-factory.c (storage_remove_folder): Change

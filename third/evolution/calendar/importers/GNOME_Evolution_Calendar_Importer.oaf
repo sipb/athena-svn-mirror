@@ -10,11 +10,11 @@
 	<oaf_attribute name="description" type="string"
                        value="Factory to import iCalendar files into Evolution"/>
 	<oaf_attribute name="description-cs" type="string"
-                       value="Tov&#225;rna pro import soubor&#249; iCalendar do Evolution"/>
+                       value="Gener&#195;&#161;tor pro import soubor&#197;&#175; iCalendar do Evolution"/>
 	<oaf_attribute name="description-de" type="string"
                        value="Fabrik zum Import von iCalendar-Dateien in Evolution"/>
 	<oaf_attribute name="description-es" type="string"
-                       value="F&#195;&#161;brica para importar archivos iCalendar a Evolution."/>
+                       value="F&#225;brica para importar archivos iCalendar a Evolution."/>
 	<oaf_attribute name="description-eu" type="string"
                        value="iCalendar fitxategiak Evolution-era inportatzeko fabrika"/>
 	<oaf_attribute name="description-fr" type="string"
@@ -29,14 +29,16 @@
                        value="Factory for import av iCalendar-filer til Evolution."/>
 	<oaf_attribute name="description-pl" type="string"
                        value="Generator importu plik&#243;w iCalendar do Evolution"/>
+	<oaf_attribute name="description-pt" type="string"
+                       value="F&#225;brica para importar ficheiros iCalend&#225;rio para o Evolution"/>
 	<oaf_attribute name="description-pt_BR" type="string"
                        value="F&#225;brica para importar arquivos iCalendar no Evolution"/>
 	<oaf_attribute name="description-ru" type="string"
-                       value="&#230;&#193;&#194;&#210;&#201;&#203;&#193; &#196;&#204;&#209; &#201;&#205;&#208;&#207;&#210;&#212;&#193; &#198;&#193;&#202;&#204;&#207;&#215; iCalendar &#215; Evolution."/>
+                       value="&#208;&#164;&#208;&#176;&#208;&#177;&#209;&#128;&#208;&#184;&#208;&#186;&#208;&#176; &#208;&#180;&#208;&#187;&#209;&#143; &#208;&#184;&#208;&#188;&#208;&#191;&#208;&#190;&#209;&#128;&#209;&#130;&#208;&#176; &#209;&#132;&#208;&#176;&#208;&#185;&#208;&#187;&#208;&#190;&#208;&#178; iCalendar &#208;&#178; Evolution"/>
 	<oaf_attribute name="description-sk" type="string"
                        value="Vytv&#195;&#161;racie rozhranie pre import s&#195;&#186;borov iCalendar do Evolution"/>
 	<oaf_attribute name="description-sl" type="string"
-                       value="Tovarna uvozov datotek iCalendar v Evolucijo"/>
+                       value="Tovarna za uvoz datotek iKoledar v Evolucijo"/>
 	<oaf_attribute name="description-sv" type="string"
                        value="Fabrik f&#246;r import av iCalendar-filer till Evolution"/>
 	<oaf_attribute name="description-uk" type="string"
@@ -45,6 +47,8 @@
                        value="Factory Nh&#225;&#186;&#173;p t&#225;&#186;&#173;p tin iCalendar v&#195;&#160;o Evolution"/>
 	<oaf_attribute name="description-zh_CN" type="string"
                        value="&#229;&#176;&#134; iCalendar &#230;&#150;&#135;&#228;&#187;&#182;&#229;&#175;&#188;&#229;&#133;&#165; Evolution &#231;&#154;&#132;&#232;&#189;&#166;&#233;&#151;&#180;"/>
+	<oaf_attribute name="description-zh_TW" type="string"
+                       value="&#182;&#215;&#164;J iCalendar &#192;&#201;&#174;&#215;&#168;&#236; Evolution &#170;&#186;&#164;&#184;&#165;&#243;&#164;u&#188;t&#161;C"/>
 </oaf_server>
 
 <oaf_server iid="OAFIID:GNOME_Evolution_Calendar_iCalendar_Importer"
@@ -80,14 +84,16 @@
                        value="Importerer iCalendar-filer til Evolution"/>
         <oaf_attribute name="description-pl" type="string"
                        value="Importuje pliki iCalendar do Evolution"/>
+        <oaf_attribute name="description-pt" type="string"
+                       value="Importa ficheiros iCalend&#225;rio para o Evolution"/>
         <oaf_attribute name="description-pt_BR" type="string"
                        value="Importa arquivos iCalendar no Evolution"/>
         <oaf_attribute name="description-ru" type="string"
-                       value="&#233;&#205;&#208;&#207;&#210;&#212;&#201;&#210;&#213;&#197;&#212; &#198;&#193;&#202;&#204;&#217; iCalendar &#215; Evolution."/>
+                       value="&#208;&#152;&#208;&#188;&#208;&#191;&#208;&#190;&#209;&#128;&#209;&#130;&#208;&#184;&#209;&#128;&#209;&#131;&#208;&#181;&#209;&#130; &#209;&#132;&#208;&#176;&#208;&#185;&#208;&#187;&#209;&#139; iCalendar &#208;&#178; Evolution"/>
         <oaf_attribute name="description-sk" type="string"
                        value="Importuje s&#195;&#186;bory iCalendar do Evolution"/>
         <oaf_attribute name="description-sl" type="string"
-                       value="Uvozi datoteke iCalendar v Evolucijo."/>
+                       value="Uvozi datoteke iKoledar v Evolucijo"/>
         <oaf_attribute name="description-sv" type="string"
                        value="Importerar iCalendar-filer till Evolution"/>
         <oaf_attribute name="description-uk" type="string"
@@ -96,6 +102,8 @@
                        value="Nh&#225;&#186;&#173;p t&#225;&#186;&#173;p tin iCalendar v&#195;&#160;o Evolution"/>
         <oaf_attribute name="description-zh_CN" type="string"
                        value="&#229;&#176;&#134; iCalendar &#230;&#150;&#135;&#228;&#187;&#182;&#229;&#175;&#188;&#229;&#133;&#165; Evolution"/>
+        <oaf_attribute name="description-zh_TW" type="string"
+                       value="&#182;&#215;&#164;J iCalendar &#192;&#201;&#174;&#215;&#168;&#236; Evolution"/>
 
 </oaf_server>
 
@@ -132,20 +140,24 @@
                        value="Importerer vCalendar-filer til Evolution"/>
         <oaf_attribute name="description-pl" type="string"
                        value="Importuje pliki vCalendar do Evolution"/>
+        <oaf_attribute name="description-pt" type="string"
+                       value="Importa ficheiros vCalend&#225;rio para o Evolution"/>
         <oaf_attribute name="description-pt_BR" type="string"
                        value="Importa arquivos vCalendar no Evolution"/>
         <oaf_attribute name="description-ru" type="string"
-                       value="&#233;&#205;&#208;&#207;&#210;&#212;&#201;&#210;&#213;&#197;&#212; &#198;&#193;&#202;&#204;&#217; vCalendar &#215; Evolution."/>
+                       value="&#208;&#152;&#208;&#188;&#208;&#191;&#208;&#190;&#209;&#128;&#209;&#130;&#208;&#184;&#209;&#128;&#209;&#131;&#208;&#181;&#209;&#130; &#209;&#132;&#208;&#176;&#208;&#185;&#208;&#187;&#209;&#139; vCalendar &#208;&#178; Evolution"/>
         <oaf_attribute name="description-sk" type="string"
                        value="Importuje s&#195;&#186;bory vCalendar do Evolution"/>
         <oaf_attribute name="description-sl" type="string"
-                       value="Uvozi datoteke vCalendar v Evolucijo."/>
+                       value="Uvozi datoteke vKoledar v Evolucijo"/>
         <oaf_attribute name="description-sv" type="string"
                        value="Importerar vCalendar-filer till Evolution"/>
         <oaf_attribute name="description-uk" type="string"
                        value="&#208;&#134;&#208;&#188;&#208;&#191;&#208;&#190;&#209;&#128;&#209;&#130; &#209;&#132;&#208;&#176;&#208;&#185;&#208;&#187;&#209;&#150;&#208;&#178; vCalendar &#209;&#131; Evolution."/>
         <oaf_attribute name="description-vi" type="string"
                        value="Nh&#225;&#186;&#173;p t&#225;&#186;&#173;p tin vCalendar v&#195;&#160;o Evolution"/>
+        <oaf_attribute name="description-zh_TW" type="string"
+                       value="&#182;&#215;&#164;J vCalendar &#192;&#201;&#174;&#215;&#168;&#236; Evolution"/>
 
 </oaf_server>
 

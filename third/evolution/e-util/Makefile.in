@@ -234,10 +234,10 @@ INCLUDES =  	-I$(top_srcdir)								-DEVOLUTION_IMAGES=\""$(imagesdir)"\"					-D
 privlib_LTLIBRARIES = libeutil.la libedb3util.la libeconduit.la
 noinst_LTLIBRARIES = libeutil-static.la libeconduit-static.la
 
-eutilinclude_HEADERS =  	e-bonobo-factory-util.h				e-categories-master-list-wombat.h		e-categories-config.h				e-component-listener.h				e-config-listener.h				e-corba-utils.h					e-dialog-utils.h				e-dialog-widgets.h				e-gtk-utils.h					e-gui-utils.h					e-host-utils.h					e-html-utils.h					e-iterator.h					e-lang-utils.h					e-list-iterator.h				e-list.h					e-memory.h					e-mktemp.h					e-msgport.h					e-passwords.h					e-path.h					e-proxy.h					e-request.h					e-sexp.h					e-time-utils.h					e-url.h						md5-utils.h
+eutilinclude_HEADERS =  	e-bonobo-factory-util.h				e-categories-master-list-wombat.h		e-categories-config.h				e-component-listener.h				e-config-listener.h				e-corba-utils.h					e-dialog-utils.h				e-dialog-widgets.h				e-gtk-utils.h					e-gui-utils.h					e-host-utils.h					e-html-utils.h					e-iterator.h					e-lang-utils.h					e-list-iterator.h				e-list.h					e-memory.h					e-mktemp.h					e-msgport.h					e-passwords.h					e-path.h					e-proxy.h					e-request.h					e-sexp.h					e-time-utils.h					e-url.h						e-xml-hash-utils.h				md5-utils.h
 
 
-libeutil_la_SOURCES =  	$(eutilinclude_HEADERS)				e-bonobo-factory-util.c				e-categories-master-list-wombat.c		e-categories-config.c				e-component-listener.c				e-config-listener.c				e-corba-utils.c					e-dialog-utils.c				e-dialog-widgets.c				e-gtk-utils.c					e-gui-utils.c					e-host-utils.c					e-html-utils.c					e-iterator.c					e-lang-utils.c					e-list-iterator.c				e-list.c					e-memory.c					e-mktemp.c					e-msgport.c					e-passwords.c					e-path.c					e-proxy.c					e-request.c					e-sexp.c					e-time-utils.c					e-url.c						md5-utils.c
+libeutil_la_SOURCES =  	$(eutilinclude_HEADERS)				e-bonobo-factory-util.c				e-categories-master-list-wombat.c		e-categories-config.c				e-component-listener.c				e-config-listener.c				e-corba-utils.c					e-dialog-utils.c				e-dialog-widgets.c				e-gtk-utils.c					e-gui-utils.c					e-host-utils.c					e-html-utils.c					e-iterator.c					e-lang-utils.c					e-list-iterator.c				e-list.c					e-memory.c					e-mktemp.c					e-msgport.c					e-passwords.c					e-path.c					e-proxy.c					e-request.c					e-sexp.c					e-time-utils.c					e-url.c						e-xml-hash-utils.c				md5-utils.c
 
 
 libeutil_la_LIBADD = $(E_UTIL_LIBS)
@@ -284,7 +284,7 @@ e-dialog-utils.lo e-dialog-widgets.lo e-gtk-utils.lo e-gui-utils.lo \
 e-host-utils.lo e-html-utils.lo e-iterator.lo e-lang-utils.lo \
 e-list-iterator.lo e-list.lo e-memory.lo e-mktemp.lo e-msgport.lo \
 e-passwords.lo e-path.lo e-proxy.lo e-request.lo e-sexp.lo \
-e-time-utils.lo e-url.lo md5-utils.lo
+e-time-utils.lo e-url.lo e-xml-hash-utils.lo md5-utils.lo
 libeconduit_static_la_LIBADD = 
 @ENABLE_PILOT_CONDUITS_TRUE@libeconduit_static_la_OBJECTS =  \
 @ENABLE_PILOT_CONDUITS_TRUE@e-pilot-map.lo e-pilot-settings.lo \
@@ -300,7 +300,7 @@ e-dialog-utils.lo e-dialog-widgets.lo e-gtk-utils.lo e-gui-utils.lo \
 e-host-utils.lo e-html-utils.lo e-iterator.lo e-lang-utils.lo \
 e-list-iterator.lo e-list.lo e-memory.lo e-mktemp.lo e-msgport.lo \
 e-passwords.lo e-path.lo e-proxy.lo e-request.lo e-sexp.lo \
-e-time-utils.lo e-url.lo md5-utils.lo
+e-time-utils.lo e-url.lo e-xml-hash-utils.lo md5-utils.lo
 libedb3util_la_LDFLAGS = 
 libedb3util_la_LIBADD = 
 libedb3util_la_OBJECTS =  e-db3-utils.lo e-dbhash.lo
@@ -594,27 +594,29 @@ distdir: $(DISTFILES)
 e-bonobo-factory-util.lo e-bonobo-factory-util.o : \
 	e-bonobo-factory-util.c ../config.h e-bonobo-factory-util.h
 e-categories-config.lo e-categories-config.o : e-categories-config.c \
-	e-categories-config.h e-categories-master-list-wombat.h
+	../config.h e-categories-config.h \
+	e-categories-master-list-wombat.h
 e-categories-master-list-wombat.lo e-categories-master-list-wombat.o : \
 	e-categories-master-list-wombat.c ../config.h \
 	e-categories-master-list-wombat.h e-categories-config.h
 e-component-listener.lo e-component-listener.o : e-component-listener.c \
-	e-component-listener.h
+	../config.h e-component-listener.h
 e-config-listener.lo e-config-listener.o : e-config-listener.c \
-	e-config-listener.h
+	../config.h e-config-listener.h
 e-corba-utils.lo e-corba-utils.o : e-corba-utils.c ../config.h \
 	e-corba-utils.h
 e-db3-utils.lo e-db3-utils.o : e-db3-utils.c ../config.h e-db3-utils.h
 e-dbhash.lo e-dbhash.o : e-dbhash.c ../config.h e-dbhash.h md5-utils.h
-e-dialog-utils.lo e-dialog-utils.o : e-dialog-utils.c e-dialog-utils.h \
-	../widgets/misc/e-bonobo-widget.h
+e-dialog-utils.lo e-dialog-utils.o : e-dialog-utils.c ../config.h \
+	e-dialog-utils.h ../widgets/misc/e-bonobo-widget.h
 e-dialog-widgets.lo e-dialog-widgets.o : e-dialog-widgets.c ../config.h \
 	e-dialog-widgets.h
 e-gtk-utils.lo e-gtk-utils.o : e-gtk-utils.c ../config.h e-gtk-utils.h
 e-gui-utils.lo e-gui-utils.o : e-gui-utils.c ../config.h e-gui-utils.h
 e-host-utils.lo e-host-utils.o : e-host-utils.c ../config.h \
 	e-host-utils.h
-e-html-utils.lo e-html-utils.o : e-html-utils.c e-html-utils.h
+e-html-utils.lo e-html-utils.o : e-html-utils.c ../config.h \
+	e-html-utils.h
 e-iterator.lo e-iterator.o : e-iterator.c ../config.h e-iterator.h
 e-lang-utils.lo e-lang-utils.o : e-lang-utils.c ../config.h \
 	e-lang-utils.h
@@ -640,6 +642,8 @@ e-time-utils.lo e-time-utils.o : e-time-utils.c ../config.h \
 e-unicode-i18n.lo e-unicode-i18n.o : e-unicode-i18n.c ../config.h \
 	e-unicode-i18n.h
 e-url.lo e-url.o : e-url.c ../config.h e-url.h
+e-xml-hash-utils.lo e-xml-hash-utils.o : e-xml-hash-utils.c ../config.h \
+	e-xml-hash-utils.h
 md5-utils.lo md5-utils.o : md5-utils.c md5-utils.h
 
 info-am:

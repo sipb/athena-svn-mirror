@@ -151,15 +151,190 @@ _ORBIT_skel_GNOME_Evolution_Calendar_Cal_isReadOnly
    }
 }
 void
-_ORBIT_skel_GNOME_Evolution_Calendar_Cal_getEmailAddress
+_ORBIT_skel_GNOME_Evolution_Calendar_Cal_getStaticCapabilities
    (POA_GNOME_Evolution_Calendar_Cal * _ORBIT_servant,
     GIOPRecvBuffer * _ORBIT_recv_buffer, CORBA_Environment * ev,
-    CORBA_char * (*_impl_getEmailAddress) (PortableServer_Servant _servant,
-					   CORBA_Environment * ev))
+    CORBA_char *
+    (*_impl_getStaticCapabilities) (PortableServer_Servant _servant,
+				    CORBA_Environment * ev))
 {
    CORBA_char *_ORBIT_retval;
 
-   _ORBIT_retval = _impl_getEmailAddress(_ORBIT_servant, ev);
+   _ORBIT_retval = _impl_getStaticCapabilities(_ORBIT_servant, ev);
+   {				/* marshalling */
+      register GIOPSendBuffer *_ORBIT_send_buffer;
+
+      _ORBIT_send_buffer =
+	 giop_send_reply_buffer_use(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer)->
+				    connection, NULL,
+				    _ORBIT_recv_buffer->message.u.request.
+				    request_id, ev->_major);
+      if (_ORBIT_send_buffer) {
+	 if (ev->_major == CORBA_NO_EXCEPTION) {
+	    register CORBA_unsigned_long _ORBIT_tmpvar_0;
+	    CORBA_unsigned_long _ORBIT_tmpvar_1;
+
+	    _ORBIT_tmpvar_1 = strlen(_ORBIT_retval) + 1;
+	    giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					     (_ORBIT_send_buffer), 4);
+	    {
+	       guchar *_ORBIT_t;
+
+	       _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_1));
+	       memcpy(_ORBIT_t, &(_ORBIT_tmpvar_1), sizeof(_ORBIT_tmpvar_1));
+	       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					      (_ORBIT_send_buffer),
+					      (_ORBIT_t),
+					      sizeof(_ORBIT_tmpvar_1));
+	    }
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer),
+					   (_ORBIT_retval),
+					   sizeof(_ORBIT_retval
+						  [_ORBIT_tmpvar_0]) *
+					   _ORBIT_tmpvar_1);
+	 } else
+	    ORBit_send_system_exception(_ORBIT_send_buffer, ev);
+	 giop_send_buffer_write(_ORBIT_send_buffer);
+	 giop_send_buffer_unuse(_ORBIT_send_buffer);
+      }
+      if (ev->_major == CORBA_NO_EXCEPTION)
+	 CORBA_free(_ORBIT_retval);
+   }
+}
+void
+_ORBIT_skel_GNOME_Evolution_Calendar_Cal_getCalAddress
+   (POA_GNOME_Evolution_Calendar_Cal * _ORBIT_servant,
+    GIOPRecvBuffer * _ORBIT_recv_buffer, CORBA_Environment * ev,
+    CORBA_char * (*_impl_getCalAddress) (PortableServer_Servant _servant,
+					 CORBA_Environment * ev))
+{
+   CORBA_char *_ORBIT_retval;
+
+   _ORBIT_retval = _impl_getCalAddress(_ORBIT_servant, ev);
+   {				/* marshalling */
+      register GIOPSendBuffer *_ORBIT_send_buffer;
+
+      _ORBIT_send_buffer =
+	 giop_send_reply_buffer_use(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer)->
+				    connection, NULL,
+				    _ORBIT_recv_buffer->message.u.request.
+				    request_id, ev->_major);
+      if (_ORBIT_send_buffer) {
+	 if (ev->_major == CORBA_NO_EXCEPTION) {
+	    register CORBA_unsigned_long _ORBIT_tmpvar_0;
+	    CORBA_unsigned_long _ORBIT_tmpvar_1;
+
+	    _ORBIT_tmpvar_1 = strlen(_ORBIT_retval) + 1;
+	    giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					     (_ORBIT_send_buffer), 4);
+	    {
+	       guchar *_ORBIT_t;
+
+	       _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_1));
+	       memcpy(_ORBIT_t, &(_ORBIT_tmpvar_1), sizeof(_ORBIT_tmpvar_1));
+	       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					      (_ORBIT_send_buffer),
+					      (_ORBIT_t),
+					      sizeof(_ORBIT_tmpvar_1));
+	    }
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer),
+					   (_ORBIT_retval),
+					   sizeof(_ORBIT_retval
+						  [_ORBIT_tmpvar_0]) *
+					   _ORBIT_tmpvar_1);
+	 } else if (ev->_major == CORBA_USER_EXCEPTION) {
+	    static const ORBit_exception_marshal_info _ORBIT_user_exceptions[]
+	       =
+	       { {(const CORBA_TypeCode)
+		  &TC_GNOME_Evolution_Calendar_Cal_NotFound_struct,
+		  (gpointer)
+		  _ORBIT_GNOME_Evolution_Calendar_Cal_NotFound_marshal},
+	       {CORBA_OBJECT_NIL, NULL} };
+	    ORBit_send_user_exception(_ORBIT_send_buffer, ev,
+				      _ORBIT_user_exceptions);
+	 } else
+	    ORBit_send_system_exception(_ORBIT_send_buffer, ev);
+	 giop_send_buffer_write(_ORBIT_send_buffer);
+	 giop_send_buffer_unuse(_ORBIT_send_buffer);
+      }
+      if (ev->_major == CORBA_NO_EXCEPTION)
+	 CORBA_free(_ORBIT_retval);
+   }
+}
+void
+_ORBIT_skel_GNOME_Evolution_Calendar_Cal_getAlarmEmailAddress
+   (POA_GNOME_Evolution_Calendar_Cal * _ORBIT_servant,
+    GIOPRecvBuffer * _ORBIT_recv_buffer, CORBA_Environment * ev,
+    CORBA_char *
+    (*_impl_getAlarmEmailAddress) (PortableServer_Servant _servant,
+				   CORBA_Environment * ev))
+{
+   CORBA_char *_ORBIT_retval;
+
+   _ORBIT_retval = _impl_getAlarmEmailAddress(_ORBIT_servant, ev);
+   {				/* marshalling */
+      register GIOPSendBuffer *_ORBIT_send_buffer;
+
+      _ORBIT_send_buffer =
+	 giop_send_reply_buffer_use(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer)->
+				    connection, NULL,
+				    _ORBIT_recv_buffer->message.u.request.
+				    request_id, ev->_major);
+      if (_ORBIT_send_buffer) {
+	 if (ev->_major == CORBA_NO_EXCEPTION) {
+	    register CORBA_unsigned_long _ORBIT_tmpvar_0;
+	    CORBA_unsigned_long _ORBIT_tmpvar_1;
+
+	    _ORBIT_tmpvar_1 = strlen(_ORBIT_retval) + 1;
+	    giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					     (_ORBIT_send_buffer), 4);
+	    {
+	       guchar *_ORBIT_t;
+
+	       _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_1));
+	       memcpy(_ORBIT_t, &(_ORBIT_tmpvar_1), sizeof(_ORBIT_tmpvar_1));
+	       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					      (_ORBIT_send_buffer),
+					      (_ORBIT_t),
+					      sizeof(_ORBIT_tmpvar_1));
+	    }
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer),
+					   (_ORBIT_retval),
+					   sizeof(_ORBIT_retval
+						  [_ORBIT_tmpvar_0]) *
+					   _ORBIT_tmpvar_1);
+	 } else if (ev->_major == CORBA_USER_EXCEPTION) {
+	    static const ORBit_exception_marshal_info _ORBIT_user_exceptions[]
+	       =
+	       { {(const CORBA_TypeCode)
+		  &TC_GNOME_Evolution_Calendar_Cal_NotFound_struct,
+		  (gpointer)
+		  _ORBIT_GNOME_Evolution_Calendar_Cal_NotFound_marshal},
+	       {CORBA_OBJECT_NIL, NULL} };
+	    ORBit_send_user_exception(_ORBIT_send_buffer, ev,
+				      _ORBIT_user_exceptions);
+	 } else
+	    ORBit_send_system_exception(_ORBIT_send_buffer, ev);
+	 giop_send_buffer_write(_ORBIT_send_buffer);
+	 giop_send_buffer_unuse(_ORBIT_send_buffer);
+      }
+      if (ev->_major == CORBA_NO_EXCEPTION)
+	 CORBA_free(_ORBIT_retval);
+   }
+}
+void
+_ORBIT_skel_GNOME_Evolution_Calendar_Cal_getLdapAttribute
+   (POA_GNOME_Evolution_Calendar_Cal * _ORBIT_servant,
+    GIOPRecvBuffer * _ORBIT_recv_buffer, CORBA_Environment * ev,
+    CORBA_char * (*_impl_getLdapAttribute) (PortableServer_Servant _servant,
+					    CORBA_Environment * ev))
+{
+   CORBA_char *_ORBIT_retval;
+
+   _ORBIT_retval = _impl_getLdapAttribute(_ORBIT_servant, ev);
    {				/* marshalling */
       register GIOPSendBuffer *_ORBIT_send_buffer;
 
@@ -304,6 +479,72 @@ _ORBIT_skel_GNOME_Evolution_Calendar_Cal_countObjects
 	 giop_send_buffer_write(_ORBIT_send_buffer);
 	 giop_send_buffer_unuse(_ORBIT_send_buffer);
       }
+   }
+}
+void
+_ORBIT_skel_GNOME_Evolution_Calendar_Cal_getDefaultObject
+   (POA_GNOME_Evolution_Calendar_Cal * _ORBIT_servant,
+    GIOPRecvBuffer * _ORBIT_recv_buffer, CORBA_Environment * ev,
+    GNOME_Evolution_Calendar_CalObj(*_impl_getDefaultObject)
+    (PortableServer_Servant _servant,
+     const GNOME_Evolution_Calendar_CalObjType type, CORBA_Environment * ev))
+{
+   GNOME_Evolution_Calendar_CalObj _ORBIT_retval;
+   GNOME_Evolution_Calendar_CalObjType type;
+
+   {				/* demarshalling */
+      guchar *_ORBIT_curptr;
+
+      _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
+      if (giop_msg_conversion_needed(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer))) {
+	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	 (*((guint32 *) & (type))) =
+	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
+      } else {
+	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	 type = *((GNOME_Evolution_Calendar_CalObjType *) _ORBIT_curptr);
+      }
+   }
+   _ORBIT_retval = _impl_getDefaultObject(_ORBIT_servant, type, ev);
+   {				/* marshalling */
+      register GIOPSendBuffer *_ORBIT_send_buffer;
+
+      _ORBIT_send_buffer =
+	 giop_send_reply_buffer_use(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer)->
+				    connection, NULL,
+				    _ORBIT_recv_buffer->message.u.request.
+				    request_id, ev->_major);
+      if (_ORBIT_send_buffer) {
+	 if (ev->_major == CORBA_NO_EXCEPTION) {
+	    register CORBA_unsigned_long _ORBIT_tmpvar_0;
+	    CORBA_unsigned_long _ORBIT_tmpvar_1;
+
+	    _ORBIT_tmpvar_1 = strlen(_ORBIT_retval) + 1;
+	    giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					     (_ORBIT_send_buffer), 4);
+	    {
+	       guchar *_ORBIT_t;
+
+	       _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_1));
+	       memcpy(_ORBIT_t, &(_ORBIT_tmpvar_1), sizeof(_ORBIT_tmpvar_1));
+	       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					      (_ORBIT_send_buffer),
+					      (_ORBIT_t),
+					      sizeof(_ORBIT_tmpvar_1));
+	    }
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer),
+					   (_ORBIT_retval),
+					   sizeof(_ORBIT_retval
+						  [_ORBIT_tmpvar_0]) *
+					   _ORBIT_tmpvar_1);
+	 } else
+	    ORBit_send_system_exception(_ORBIT_send_buffer, ev);
+	 giop_send_buffer_write(_ORBIT_send_buffer);
+	 giop_send_buffer_unuse(_ORBIT_send_buffer);
+      }
+      if (ev->_major == CORBA_NO_EXCEPTION)
+	 CORBA_free(_ORBIT_retval);
    }
 }
 void
@@ -1584,9 +1825,11 @@ _ORBIT_skel_GNOME_Evolution_Calendar_Cal_updateObjects
     GIOPRecvBuffer * _ORBIT_recv_buffer, CORBA_Environment * ev,
     void (*_impl_updateObjects) (PortableServer_Servant _servant,
 				 const GNOME_Evolution_Calendar_CalObj calobj,
-				 CORBA_Environment * ev))
+				 const GNOME_Evolution_Calendar_CalObjModType
+				 mod, CORBA_Environment * ev))
 {
    GNOME_Evolution_Calendar_CalObj calobj;
+   GNOME_Evolution_Calendar_CalObjModType mod;
 
    {				/* demarshalling */
       guchar *_ORBIT_curptr;
@@ -1601,15 +1844,20 @@ _ORBIT_skel_GNOME_Evolution_Calendar_Cal_updateObjects
 	 _ORBIT_curptr += 4;
 	 calobj = (void *) _ORBIT_curptr;
 	 _ORBIT_curptr += sizeof(calobj[_ORBIT_tmpvar_2]) * _ORBIT_tmpvar_3;
+	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	 (*((guint32 *) & (mod))) =
+	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
       } else {
 	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
 	 _ORBIT_tmpvar_3 = *((CORBA_unsigned_long *) _ORBIT_curptr);
 	 _ORBIT_curptr += 4;
 	 calobj = (void *) _ORBIT_curptr;
 	 _ORBIT_curptr += sizeof(calobj[_ORBIT_tmpvar_2]) * _ORBIT_tmpvar_3;
+	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	 mod = *((GNOME_Evolution_Calendar_CalObjModType *) _ORBIT_curptr);
       }
    }
-   _impl_updateObjects(_ORBIT_servant, calobj, ev);
+   _impl_updateObjects(_ORBIT_servant, calobj, mod, ev);
    {				/* marshalling */
       register GIOPSendBuffer *_ORBIT_send_buffer;
 
@@ -1647,9 +1895,11 @@ _ORBIT_skel_GNOME_Evolution_Calendar_Cal_removeObject
     GIOPRecvBuffer * _ORBIT_recv_buffer, CORBA_Environment * ev,
     void (*_impl_removeObject) (PortableServer_Servant _servant,
 				const GNOME_Evolution_Calendar_CalObjUID uid,
-				CORBA_Environment * ev))
+				const GNOME_Evolution_Calendar_CalObjModType
+				mod, CORBA_Environment * ev))
 {
    GNOME_Evolution_Calendar_CalObjUID uid;
+   GNOME_Evolution_Calendar_CalObjModType mod;
 
    {				/* demarshalling */
       guchar *_ORBIT_curptr;
@@ -1664,15 +1914,20 @@ _ORBIT_skel_GNOME_Evolution_Calendar_Cal_removeObject
 	 _ORBIT_curptr += 4;
 	 uid = (void *) _ORBIT_curptr;
 	 _ORBIT_curptr += sizeof(uid[_ORBIT_tmpvar_2]) * _ORBIT_tmpvar_3;
+	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	 (*((guint32 *) & (mod))) =
+	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
       } else {
 	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
 	 _ORBIT_tmpvar_3 = *((CORBA_unsigned_long *) _ORBIT_curptr);
 	 _ORBIT_curptr += 4;
 	 uid = (void *) _ORBIT_curptr;
 	 _ORBIT_curptr += sizeof(uid[_ORBIT_tmpvar_2]) * _ORBIT_tmpvar_3;
+	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	 mod = *((GNOME_Evolution_Calendar_CalObjModType *) _ORBIT_curptr);
       }
    }
-   _impl_removeObject(_ORBIT_servant, uid, ev);
+   _impl_removeObject(_ORBIT_servant, uid, mod, ev);
    {				/* marshalling */
       register GIOPSendBuffer *_ORBIT_send_buffer;
 
@@ -3120,6 +3375,18 @@ get_skel_GNOME_Evolution_Calendar_Cal(POA_GNOME_Evolution_Calendar_Cal *
 				      switch (opname[7]) {
 					case 'm':
 					   switch (opname[8]) {
+					     case 'E':
+						if (strcmp
+						    ((opname + 9),
+						     "mailAddress"))
+						   break;
+						*impl =
+						   (gpointer) servant->vepv->
+						   GNOME_Evolution_Calendar_Cal_epv->
+						   getAlarmEmailAddress;
+						return (ORBitSkeleton)
+						   _ORBIT_skel_GNOME_Evolution_Calendar_Cal_getAlarmEmailAddress;
+						break;
 					     case 's':
 						switch (opname[9]) {
 						  case 'F':
@@ -3173,22 +3440,38 @@ get_skel_GNOME_Evolution_Calendar_Cal(POA_GNOME_Evolution_Calendar_Cal *
 		       }
 		       break;
 		    case 'C':
-		       if (strcmp((opname + 4), "hanges"))
-			  break;
-		       *impl =
-			  (gpointer) servant->vepv->
-			  GNOME_Evolution_Calendar_Cal_epv->getChanges;
-		       return (ORBitSkeleton)
-			  _ORBIT_skel_GNOME_Evolution_Calendar_Cal_getChanges;
+		       switch (opname[4]) {
+			 case 'a':
+			    if (strcmp((opname + 5), "lAddress"))
+			       break;
+			    *impl =
+			       (gpointer) servant->vepv->
+			       GNOME_Evolution_Calendar_Cal_epv->
+			       getCalAddress;
+			    return (ORBitSkeleton)
+			       _ORBIT_skel_GNOME_Evolution_Calendar_Cal_getCalAddress;
+			    break;
+			 case 'h':
+			    if (strcmp((opname + 5), "anges"))
+			       break;
+			    *impl =
+			       (gpointer) servant->vepv->
+			       GNOME_Evolution_Calendar_Cal_epv->getChanges;
+			    return (ORBitSkeleton)
+			       _ORBIT_skel_GNOME_Evolution_Calendar_Cal_getChanges;
+			    break;
+			 default:
+			    break;
+		       }
 		       break;
-		    case 'E':
-		       if (strcmp((opname + 4), "mailAddress"))
+		    case 'D':
+		       if (strcmp((opname + 4), "efaultObject"))
 			  break;
 		       *impl =
 			  (gpointer) servant->vepv->
-			  GNOME_Evolution_Calendar_Cal_epv->getEmailAddress;
+			  GNOME_Evolution_Calendar_Cal_epv->getDefaultObject;
 		       return (ORBitSkeleton)
-			  _ORBIT_skel_GNOME_Evolution_Calendar_Cal_getEmailAddress;
+			  _ORBIT_skel_GNOME_Evolution_Calendar_Cal_getDefaultObject;
 		       break;
 		    case 'F':
 		       if (strcmp((opname + 4), "reeBusy"))
@@ -3198,6 +3481,15 @@ get_skel_GNOME_Evolution_Calendar_Cal(POA_GNOME_Evolution_Calendar_Cal *
 			  GNOME_Evolution_Calendar_Cal_epv->getFreeBusy;
 		       return (ORBitSkeleton)
 			  _ORBIT_skel_GNOME_Evolution_Calendar_Cal_getFreeBusy;
+		       break;
+		    case 'L':
+		       if (strcmp((opname + 4), "dapAttribute"))
+			  break;
+		       *impl =
+			  (gpointer) servant->vepv->
+			  GNOME_Evolution_Calendar_Cal_epv->getLdapAttribute;
+		       return (ORBitSkeleton)
+			  _ORBIT_skel_GNOME_Evolution_Calendar_Cal_getLdapAttribute;
 		       break;
 		    case 'O':
 		       switch (opname[4]) {
@@ -3265,6 +3557,16 @@ get_skel_GNOME_Evolution_Calendar_Cal(POA_GNOME_Evolution_Calendar_Cal *
 			  GNOME_Evolution_Calendar_Cal_epv->getQuery;
 		       return (ORBitSkeleton)
 			  _ORBIT_skel_GNOME_Evolution_Calendar_Cal_getQuery;
+		       break;
+		    case 'S':
+		       if (strcmp((opname + 4), "taticCapabilities"))
+			  break;
+		       *impl =
+			  (gpointer) servant->vepv->
+			  GNOME_Evolution_Calendar_Cal_epv->
+			  getStaticCapabilities;
+		       return (ORBitSkeleton)
+			  _ORBIT_skel_GNOME_Evolution_Calendar_Cal_getStaticCapabilities;
 		       break;
 		    case 'T':
 		       if (strcmp((opname + 4), "imezoneObject"))

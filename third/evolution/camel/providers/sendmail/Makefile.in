@@ -449,13 +449,15 @@ camel-sendmail-transport.lo camel-sendmail-transport.o : \
 	../../../camel/camel-exception.h \
 	../../../camel/camel-exception-list.def \
 	../../../camel/camel-operation.h \
+	../../../camel/camel-mime-filter-crlf.h \
+	../../../camel/camel-mime-filter.h \
+	../../../camel/camel-stream-filter.h \
+	../../../camel/camel-stream.h \
 	../../../camel/camel-mime-message.h \
 	../../../camel/camel-mime-part.h ../../../camel/camel-medium.h \
 	../../../camel/camel-data-wrapper.h \
 	../../../camel/camel-mime-utils.h \
 	../../../camel/camel-mime-parser.h \
-	../../../camel/camel-mime-filter.h \
-	../../../camel/camel-stream.h \
 	../../../camel/camel-internet-address.h \
 	../../../camel/camel-address.h \
 	../../../camel/camel-mime-filter-bestenc.h \

@@ -13,7 +13,7 @@
 	<oaf_attribute name="description-az" type="string"
                        value="Alarm verm&#201;&#153; xidm&#201;&#153;ti emalatxanas&#196;&#177;"/>
 	<oaf_attribute name="description-cs" type="string"
-                       value="Tov&#225;rna pro slu&#190;bu hl&#225;&#185;en&#237; alarmu"/>
+                       value="Tov&#195;&#161;rna pro slu&#197;&#190;bu hl&#195;&#161;&#197;&#161;en&#195;&#173; alarmu"/>
 	<oaf_attribute name="description-da" type="string"
                        value="Fabrik til alarm-tjenesten"/>
 	<oaf_attribute name="description-de" type="string"
@@ -21,7 +21,7 @@
 	<oaf_attribute name="description-el" type="string"
                        value="&#197;&#241;&#227;&#239;&#243;&#244;&#220;&#243;&#233;&#239; &#227;&#233;&#225; &#244;&#231;&#237; &#245;&#240;&#231;&#241;&#229;&#243;&#223;&#225; &#245;&#240;&#229;&#237;&#232;&#253;&#236;&#233;&#243;&#231;&#242; &#229;&#233;&#228;&#239;&#240;&#239;&#223;&#231;&#243;&#231;&#242;"/>
 	<oaf_attribute name="description-es" type="string"
-                       value="F&#195;&#161;brica para la alarma del servicio de notificaci&#195;&#179;n"/>
+                       value="F&#225;brica para la alarma del servicio de notificaci&#243;n"/>
 	<oaf_attribute name="description-eu" type="string"
                        value="Alarma bidezko jakinarazpen-zerbitzurako fabrika"/>
 	<oaf_attribute name="description-fr" type="string"
@@ -44,16 +44,18 @@
                        value="Factory for alarm-tjenesten"/>
 	<oaf_attribute name="description-pl" type="string"
                        value="Generator us&#179;ugi przypominania za pomoc&#177; alarmu"/>
+	<oaf_attribute name="description-pt" type="string"
+                       value="F&#225;brica para o servi&#231;o de alarme de notifica&#231;&#227;o"/>
 	<oaf_attribute name="description-pt_BR" type="string"
                        value="F&#225;brica para o servi&#231;o de notifica&#231;&#227;o de alarme"/>
 	<oaf_attribute name="description-ro" type="string"
                        value="Procesator pentru serviciul notificare alarme"/>
 	<oaf_attribute name="description-ru" type="string"
-                       value="&#230;&#193;&#194;&#210;&#201;&#203;&#193; &#196;&#204;&#209; &#211;&#197;&#210;&#215;&#201;&#211;&#193; &#213;&#215;&#197;&#196;&#207;&#205;&#204;&#197;&#206;&#201;&#209; &#207; &#211;&#201;&#199;&#206;&#193;&#204;&#197;"/>
+                       value="&#208;&#164;&#208;&#176;&#208;&#177;&#209;&#128;&#208;&#184;&#208;&#186;&#208;&#176; &#208;&#180;&#208;&#187;&#209;&#143; &#209;&#129;&#208;&#181;&#209;&#128;&#208;&#178;&#208;&#184;&#209;&#129;&#208;&#176; &#209;&#131;&#208;&#178;&#208;&#181;&#208;&#180;&#208;&#190;&#208;&#188;&#208;&#187;&#208;&#181;&#208;&#189;&#208;&#184;&#209;&#143; &#208;&#190; &#209;&#129;&#208;&#184;&#208;&#179;&#208;&#189;&#208;&#176;&#208;&#187;&#208;&#181;"/>
 	<oaf_attribute name="description-sk" type="string"
                        value="Vytv&#195;&#161;racie rozhranie pre slu&#197;&#190;bu na upozornenie na poplach"/>
 	<oaf_attribute name="description-sl" type="string"
-                       value="Tovarna za storitev opozorlinega alarma"/>
+                       value="Tovarna za storitev opozorilnega obve&#197;&#161;&#196;&#141;anja (alarm)"/>
 	<oaf_attribute name="description-sv" type="string"
                        value="Fabrik f&#246;r alarmavsieringstj&#228;nsten"/>
 	<oaf_attribute name="description-tr" type="string"
@@ -80,7 +82,7 @@
 	<oaf_attribute name="description-bg" type="string"
                        value="&#192;&#235;&#224;&#240;&#236;&#229;&#237;&#238; &#232;&#231;&#226;&#229;&#241;&#242;&#255;&#226;&#224;&#249;&#238; &#238;&#225;&#241;&#235;&#243;&#230;&#226;&#224;&#237;&#229;"/>
 	<oaf_attribute name="description-cs" type="string"
-                       value="Slu&#190;ba hl&#225;&#185;en&#237; alarmu"/>
+                       value="Slu&#197;&#190;ba hl&#195;&#161;&#197;&#161;en&#195;&#173; alarmu"/>
 	<oaf_attribute name="description-da" type="string"
                        value="Alarm-tjeneste"/>
 	<oaf_attribute name="description-de" type="string"
@@ -88,7 +90,7 @@
 	<oaf_attribute name="description-el" type="string"
                        value="&#213;&#240;&#231;&#241;&#229;&#243;&#223;&#225; &#245;&#240;&#229;&#237;&#232;&#253;&#236;&#233;&#243;&#231;&#242; &#229;&#233;&#228;&#239;&#240;&#239;&#223;&#231;&#243;&#231;&#242;"/>
 	<oaf_attribute name="description-es" type="string"
-                       value="Servicio de alarmas de notificaci&#195;&#179;n"/>
+                       value="Servicio de alarmas de notificaci&#243;n"/>
 	<oaf_attribute name="description-et" type="string"
                        value="Alarmi teenus"/>
 	<oaf_attribute name="description-eu" type="string"
@@ -115,16 +117,18 @@
                        value="Alarm-tjeneste"/>
 	<oaf_attribute name="description-pl" type="string"
                        value="Us&#179;uga przypominania za pomoc&#177; alarmu"/>
+	<oaf_attribute name="description-pt" type="string"
+                       value="Servi&#231;o de alarme de notifica&#231;&#227;o"/>
 	<oaf_attribute name="description-pt_BR" type="string"
                        value="Servi&#231;o de notifica&#231;&#227;o de alarme"/>
 	<oaf_attribute name="description-ro" type="string"
                        value="Serviciu notificare alarme"/>
 	<oaf_attribute name="description-ru" type="string"
-                       value="&#243;&#197;&#210;&#215;&#201;&#211; &#213;&#215;&#197;&#196;&#207;&#205;&#204;&#197;&#206;&#201;&#209; &#207; &#211;&#201;&#199;&#206;&#193;&#204;&#197;"/>
+                       value="&#208;&#161;&#208;&#181;&#209;&#128;&#208;&#178;&#208;&#184;&#209;&#129; &#209;&#131;&#208;&#178;&#208;&#181;&#208;&#180;&#208;&#190;&#208;&#188;&#208;&#187;&#208;&#181;&#208;&#189;&#208;&#184;&#209;&#143; &#208;&#190; &#209;&#129;&#208;&#184;&#208;&#179;&#208;&#189;&#208;&#176;&#208;&#187;&#208;&#181;"/>
 	<oaf_attribute name="description-sk" type="string"
                        value="Slu&#197;&#190;ba upozor&#197;&#136;ovania na poplachy"/>
 	<oaf_attribute name="description-sl" type="string"
-                       value="Storitev opozorilnega alarma"/>
+                       value="Opozorilno obve&#197;&#161;&#196;&#141;anje (alarm)"/>
 	<oaf_attribute name="description-sv" type="string"
                        value="Alarmaviseringstj&#228;nst"/>
 	<oaf_attribute name="description-tr" type="string"

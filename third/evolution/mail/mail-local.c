@@ -1111,7 +1111,7 @@ static void mail_local_store_remove_folder(MailLocalStore *mls, const char *path
 /* ** Local Provider ************************************************************** */
 
 static CamelProvider local_provider = {
-	"file", "Local mail", NULL, "mail",
+	"file", "Local mail", "Local mailbox file", "mail",
 	CAMEL_PROVIDER_IS_STORAGE | CAMEL_PROVIDER_IS_EXTERNAL,
 	CAMEL_URL_NEED_PATH,
 	/* ... */
@@ -1125,9 +1125,12 @@ non_hash (gconstpointer key)
 }
 
 static gint
-non_equal (gconstpointer a, gconstpointer b)
+non_equal (gconstpointer ap, gconstpointer bp)
 {
-	return TRUE;
+	const CamelURL *a = ap, *b = bp;
+
+	return strcmp(a->protocol, "file") == 0
+		&& strcmp(a->protocol, b->protocol) == 0;
 }
 
 static void
