@@ -10,6 +10,7 @@ start)
 		echo "Update completed, rebooting in 15 seconds."
 		sync
 		sleep 15
+		reboot
 		killall rc2
 	fi
 	;;
