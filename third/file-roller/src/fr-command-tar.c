@@ -99,7 +99,7 @@ split_line (char *line,
 	int    i;
 
 	fields = g_new0 (char *, n_fields + 1);
-	fields[n_fields + 1] = NULL;
+	fields[n_fields] = NULL;
 
 	scan = eat_spaces (line);
 	for (i = 0; i < n_fields; i++) {
@@ -223,7 +223,7 @@ fr_command_tar_list (FRCommand *comm)
 				      comm);
 
 	fr_process_clear (comm->process);
-	fr_process_begin_command (comm->process, "tar");
+	fr_process_begin_command (comm->process, "gtar");
 	fr_process_add_arg (comm->process, "-tvf");
 	fr_process_add_arg (comm->process, comm->e_filename);
 	add_compress_arg (comm);
@@ -245,7 +245,7 @@ fr_command_tar_add (FRCommand     *comm,
 
 	/* Add files. */
 
-	fr_process_begin_command (comm->process, "tar");
+	fr_process_begin_command (comm->process, "gtar");
 
 	if (base_dir != NULL) {
 		gchar *e_base_dir = shell_escape (base_dir);
@@ -275,7 +275,7 @@ fr_command_tar_delete (FRCommand *comm,
 
 	/* Delete files. */
 
-	fr_process_begin_command (comm->process, "tar");
+	fr_process_begin_command (comm->process, "gtar");
 	fr_process_add_arg (comm->process, "--delete");
 	fr_process_add_arg (comm->process, "-f");
 	fr_process_add_arg (comm->process, c_tar->uncomp_filename);
@@ -297,7 +297,7 @@ fr_command_tar_extract (FRCommand  *comm,
 {
 	GList *scan;
 
-	fr_process_begin_command (comm->process, "tar");
+	fr_process_begin_command (comm->process, "gtar");
 	
 	fr_process_add_arg (comm->process, "-xf");
 	fr_process_add_arg (comm->process, comm->e_filename);

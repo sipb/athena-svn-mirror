@@ -1,7 +1,7 @@
 /* common.c - Functions that are common to server and clinet
  * Rob Siemborski
  * Tim Martin
- * $Id: common.c,v 1.1.1.2 2003-02-12 22:33:52 ghudson Exp $
+ * $Id: common.c,v 1.1.1.2.4.1 2004-10-27 01:21:18 ghudson Exp $
  */
 /* 
  * Copyright (c) 2001 Carnegie Mellon University.  All rights reserved.
@@ -1742,7 +1742,10 @@ _sasl_getpath(void *context __attribute__((unused)),
   if (! path)
     return SASL_BADPARAM;
 
-  *path = getenv(SASL_PATH_ENV_VAR);
+  /* Honor external variable only in a safe environment */
+  if (getuid() == geteuid() && getgid() == getegid())
+    *path = getenv(SASL_PATH_ENV_VAR);
+
   if (! *path)
     *path = PLUGINDIR;
 
