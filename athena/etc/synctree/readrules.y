@@ -33,7 +33,11 @@ static char *dstpath;
 %type  <action_type> action
 %type  <bool_exp>    boolexp boolexp1 boolexp0
 %%
-
+
+%{
+#include "lex.yy.c"
+%}
+
 rulefile:   rules |
 rules:      rules rule | rule 
 rule:       mrule | arule | wrule | srule | irule | brule
@@ -284,9 +288,3 @@ yyerror(s)
 {
         printf("%s: %s near line %d\n", yyinfilename, s, lineno);
 }
-
-/*
- *  lex makes yylex() for us from readrules.l
- */
-
-#include "lex.yy.c"
