@@ -19,8 +19,8 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olcd.h,v $
- *	$Id: olcd.h,v 1.43 1992-08-17 17:00:30 lwvanels Exp $
- *	$Author: lwvanels $
+ *	$Id: olcd.h,v 1.44 1993-04-28 14:33:09 vanharen Exp $
+ *	$Author: vanharen $
  */
 
 #include <mit-copyright.h>
@@ -45,8 +45,6 @@
 /* Ditto for saber */
 #include <stdarg.h>
 #define HAS_STDARG
-#else
-#include <varargs.h>
 #endif
 
 
@@ -56,7 +54,8 @@
 
 #define is_allowed(u,a)         (u->permissions & a)
 #define is_connected(k)         (k->connected != (KNUCKLE *) NULL)
-#define has_question(k)         (k->question != (QUESTION *) NULL)
+#define has_question(k)         ((k != (KNUCKLE *) NULL) && \
+				 (k->question != (QUESTION *) NULL))
 #define is_signed_on(k)         (k->status & SIGNED_ON)
 #define sign_on(k,code)         k->status |= code
 #define sign_off(k)             k->status = 0
