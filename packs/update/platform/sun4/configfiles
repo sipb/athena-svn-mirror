@@ -5,6 +5,7 @@
 /etc/athena/attach.conf
 /etc/athena/inetd.conf
 /etc/athena/newsyslog.conf
+/etc/default/sulogin
 /etc/inet/inetd.conf
 /etc/inet/netmasks
 /etc/inet/services
