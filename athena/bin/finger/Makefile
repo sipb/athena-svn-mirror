@@ -3,9 +3,12 @@
 #	MIT Project Athena
 #
 #	$Source: /afs/dev.mit.edu/source/repository/athena/bin/finger/Makefile,v $
-#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/finger/Makefile,v 1.5 1987-08-27 16:56:33 ambar Exp $
-#	$Author: ambar $
+#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/finger/Makefile,v 1.6 1987-12-04 11:36:25 shanzer Exp $
+#	$Author: shanzer $
 #	$Log: not supported by cvs2svn $
+# Revision 1.5  87/08/27  16:56:33  ambar
+# fixed clean target.
+# 
 # Revision 1.5  87/08/27  16:41:44  ambar
 # fixed clean target
 # 
@@ -28,7 +31,7 @@ CFLAGS = -O
 CONFDIR = ${DESTDIR}/usr/athena
 BINDIR = ${DESTDIR}/bin
 
-LIBS =  -lhesiod -lzephyr -lcom_err -lkrb
+LIBS =  -lhesiod -lzephyr -lcom_err -lkrb -ldes
 
 SRCS =	finger.c hespwnam.c
 
