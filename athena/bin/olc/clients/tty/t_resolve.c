@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_resolve.c,v $
- *	$Id: t_resolve.c,v 1.11 1990-11-14 14:59:37 lwvanels Exp $
+ *	$Id: t_resolve.c,v 1.12 1991-01-21 01:13:59 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_resolve.c,v 1.11 1990-11-14 14:59:37 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_resolve.c,v 1.12 1991-01-21 01:13:59 lwvanels Exp $";
 #endif
 #endif
 
@@ -35,9 +35,10 @@ static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 
 
 ERRCODE
-t_done(Request,title)
+t_done(Request,title,check)
      REQUEST *Request;
      char *title;
+     int check;
 {
   int status;
   char buf[LINE_SIZE];
@@ -54,46 +55,49 @@ t_done(Request,title)
       switch(status)
 	{
 	case SEND_INFO:
-	  if(isme(Request))
-	    status = t_check_connected_messages(Request);
-	  else
-	    status = t_check_messages(Request);
-
-	  if(status == SUCCESS)
-	    {
-	      *buf = '\0';
-	      get_prompted_input("Do you wish to resolve this question? ",buf);
-	      if(*buf != 'y')
-		return(SUCCESS);
-	    }
-
+	  if (check) {
+	    if(isme(Request))
+	      status = t_check_connected_messages(Request);
+	    else
+	      status = t_check_messages(Request);
+	    
+	    if(status == SUCCESS)
+	      {
+		*buf = '\0';
+		get_prompted_input("Do you wish to resolve this question? ",
+				   buf);
+		if(*buf != 'y')
+		  return(SUCCESS);
+	      }
+	  }
 	  get_prompted_input("Enter a title for this conversation: ", buf);
 	  title = &buf[0];
 	  break;
 
 	case OK:
-	  status = t_check_messages(Request);
-	  if(status == SUCCESS)
-	    {
-	      *buf = '\0';
-	      get_prompted_input("Do you wish to mark this question \"done\"? "
-				 ,buf);
-	      if(*buf != 'y')
-		return(SUCCESS);
-	    }
-	  printf("Using this command means that the consultant has satisfactorly answered\n");
-	  printf("your question.  If this is not the case, you can exit using the 'quit' command,\n");
-	  printf("and OLC will save your question until a consultant can answer it.  If you\n");
-	  printf("wish to withdraw your question, use the 'cancel' command.\n");
-	  buf[0] = '\0';
-	  get_prompted_input("Really done? [y/n] ", buf);
-	  if(buf[0] != 'y')             
-	    {
-	      printf("OK, your question will remain in the queue.\n");
-	      return(NO_ACTION);
-	    }
+	  if (check) {
+	    status = t_check_messages(Request);
+	    if(status == SUCCESS)
+	      {
+		*buf = '\0';
+		get_prompted_input("Do you wish to mark this question \"done\"? "
+				   ,buf);
+		if(*buf != 'y')
+		  return(SUCCESS);
+	      }
+	    printf("Using this command means that the consultant has satisfactorly answered\n");
+	    printf("your question.  If this is not the case, you can exit using the 'quit' command,\n");
+	    printf("and OLC will save your question until a consultant can answer it.  If you\n");
+	    printf("wish to withdraw your question, use the 'cancel' command.\n");
+	    buf[0] = '\0';
+	    get_prompted_input("Really done? [y/n] ", buf);
+	    if(buf[0] != 'y')             
+	      {
+		printf("OK, your question will remain in the queue.\n");
+		return(NO_ACTION);
+	      }
+	  }
 	  break;
-
 	case PERMISSION_DENIED:
 	  fprintf(stderr, "You are not allowed to resolve %s's question.\n",
 		  Request->target.username);
@@ -151,11 +155,8 @@ t_done(Request,title)
       if(isme(Request))
 	printf("Your question is resolved. Thank you for using OLC.\n");
       else
-	{
-	  printf("%s's [%d] question is resolved. Thank him for using OLC.\n",
+	  printf("%s's [%d] question is resolved.\n",
 		 Request->target.username, Request->target.instance);
-	  printf("That tom and his sexist messages!\n");
-	}
       if(OLC)
 	exit(0);
 
