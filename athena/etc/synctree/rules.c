@@ -3,11 +3,6 @@
 #include "synctree.h"
 #include <string.h>
 #include <stdio.h>
-#ifdef SOLARIS
-#include <sys/exechdr.h>
-#else
-#include <a.out.h>
-#endif
 
 extern char *date_db_name;
 extern rule rules[];
