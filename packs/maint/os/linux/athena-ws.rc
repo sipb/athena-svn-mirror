@@ -229,7 +229,10 @@ EOF
 	rm -rf $gdir/gconf.xml.defaults
 	mkdir $gdir/gconf.xml.defaults
 	export GCONF_CONFIG_SOURCE=xml::$gdir/gconf.xml.defaults
-	for f in /etc/gconf/schemas/*.schemas $gdir/schemas/*.schemas; do
+	# athena.schemas has to be installed last in order to override
+	# standard GNOME defaults.
+	for f in /etc/gconf/schemas/*.schemas $gdir/schemas/*.schemas \
+		 $gdir/schemas/athena.schemas; do
 		gconftool-2 --makefile-install-rule $f > /dev/null 2>&1
 	done
 	success gconf
