@@ -4,7 +4,7 @@
 ### installation program.  It is called by the first script,
 ### athenainstall.
 
-### $Header: /afs/dev.mit.edu/source/repository/packs/install/platform/sun4/phase2.sh,v 1.28 1998-01-12 19:02:10 danw Exp $
+### $Header: /afs/dev.mit.edu/source/repository/packs/install/platform/sun4/phase2.sh,v 1.29 1998-02-17 19:56:25 danw Exp $
 ### $Locker:  $
 
 echo "Set some variables"
@@ -13,7 +13,7 @@ export PATH
 umask 2
 
 # Use format to get information about the available drives.
-format < /dev/null | awk '/[0-9]\./ { print; }' > /tmp/disks
+format < /dev/null | awk '/^[ 	]*[0-9]\./ { print; }' > /tmp/disks
 
 ndrives=`wc -l /tmp/disks`
 case `uname -m` in
