@@ -1,6 +1,6 @@
 /* vmh.c - visual front-end to mh */
 #ifndef	lint
-static char ident[] = "@(#)$Id: vmh.c,v 1.2 1997-12-14 00:33:08 ghudson Exp $";
+static char ident[] = "@(#)$Id: vmh.c,v 1.3 1997-12-22 20:10:20 ghudson Exp $";
 #endif	/* lint */
 #if defined(SYS5) && !defined(TERMINFO)
 /*
@@ -1510,7 +1510,7 @@ char   *what,
 	    iov -> iov_len = strlen (iov -> iov_base = ": ");
 	    iov++;
 	}
-	iov -> iov_len = strlen (iov -> iov_base = strerror(eindex);
+	iov -> iov_len = strlen (iov -> iov_base = strerror(eindex));
 	iov++;
     }
     if (tail && *tail) {
