@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.1 1996-10-13 07:03:22 ghudson Exp $
+# $Id: Makefile.in,v 1.2 1996-10-16 22:25:29 ghudson Exp $
 
 SHELL=/bin/sh
 CC=@CC@
@@ -8,7 +8,7 @@ srcdir=@srcdir@
 top_srcdir=@top_srcdir@
 prefix=@prefix@
 exec_prefix=@exec_prefix@
-bonindir=@bindir@
+bindir=@bindir@
 mandir=@mandir@
 OBJS=ctl.o ctl_transact.o display.o get_addrs.o get_names.o \
 	init_disp.o invite.o io.o look_up.o msgs.o talk.o
