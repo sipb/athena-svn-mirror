@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: do.sh,v 1.17 1998-01-17 03:09:47 ghudson Exp $
+# $Id: do.sh,v 1.18 1998-03-03 21:04:42 ghudson Exp $
 
 source="/mit/source"
 srvd="/srvd"
@@ -48,6 +48,7 @@ CONFIG_SITE=$source/packs/build/config.site
 
 # Determine proper ATHENA_SYS value.
 case "`uname -srm`" in
+SunOS*5.6*sun4*)	ATHENA_SYS=sun4x_56	;;
 SunOS*5.5*sun4*)	ATHENA_SYS=sun4x_55	;;
 SunOS*5.4*sun4*)	ATHENA_SYS=sun4m_54	;;
 IRIX*5.3*)		ATHENA_SYS=sgi_53	;;
