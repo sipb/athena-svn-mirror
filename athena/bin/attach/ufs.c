@@ -1,13 +1,13 @@
 /*	Created by:  Theodore Ts'o
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/attach/ufs.c,v $
- *	$Author: jfc $
+ *	$Author: epeisach $
  *
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  */
 
 #ifndef lint
-static char rcsid_ufs_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/ufs.c,v 1.1 1990-04-19 13:09:22 jfc Exp $";
+static char rcsid_ufs_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/ufs.c,v 1.2 1991-03-04 12:57:38 epeisach Exp $";
 #endif lint
 
 #include "attach.h"
@@ -55,7 +55,7 @@ ufs_detach(at)
 	return(SUCCESS);
     }
 	
-    if (unmount_42(at->hesiodname, at->mntpt) == FAILURE)
+    if (unmount_42(at->hesiodname, at->mntpt, at->hostdir) == FAILURE)
 	return (FAILURE);
 
     return (SUCCESS);
