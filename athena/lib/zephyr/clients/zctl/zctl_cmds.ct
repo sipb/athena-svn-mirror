@@ -1,6 +1,6 @@
 #	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zctl/zctl_cmds.ct,v $
 #	$Author: jtkohl $
-#	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zctl/zctl_cmds.ct,v 1.4 1988-07-01 10:43:47 jtkohl Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zctl/zctl_cmds.ct,v 1.5 1988-07-01 12:16:14 jtkohl Exp $
 #
 	command_table	zctl_cmds;
 
@@ -33,7 +33,7 @@
 
 	request		sub_file, "Unsubscribe and delete subscription from\n                         subscriptions file.",
 			delete, del, dl;
-	request		sub_file, "Delete unsubscription from subscriptions file.",
+	request		sub_file, "Delete un-subscription from subscriptions file.",
 			delete_unsubscription, del_un;
 
 	request		current, "Retrieve current subscriptions.",
