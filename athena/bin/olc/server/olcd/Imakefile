@@ -1,6 +1,6 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/Imakefile,v $
- * $Id: Imakefile,v 1.7 1990-07-16 10:05:44 vanharen Exp $
+ * $Id: Imakefile,v 1.8 1990-08-20 04:49:21 lwvanels Exp $
  */
 
 /*#define UseCPlusPlus*/
@@ -48,9 +48,9 @@ SYS_LIBRARIES=	$(HesiodLib) $(DbmLib) $(ZephyrLib) $(ComErrLib) \
 INCLUDES= -I.
 
 NormalProgramTarget(olcd,$(OBJS),$(LOCAL_LIBRARIES),$(LOCAL_LIBRARIES),$(SYS_LIBRARIES))
-
+SaberProgramTarget(olcd,$(SRCS),$(OBJS),$(LOCAL_LIBRARIES),$(SYS_LIBRARIES))
 NormalProgramTarget(lumberjack,$(L_OBJS),,,)
-
+SaberProgramTarget(lumberjack,$(L_SRCS),$(L_OBJS),,)
 DependTarget()
 LintTarget()
 TagsTarget()
