@@ -1,6 +1,6 @@
 .\"	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/znol/znol.1,v $
 .\"	$Author: jtkohl $
-.\"	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/znol/znol.1,v 1.6 1989-10-25 14:23:06 jtkohl Exp $
+.\"	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/znol/znol.1,v 1.7 1989-10-30 09:46:58 jtkohl Exp $
 .\"
 .\" Copyright 1987,1988 by the Massachusetts Institute of Technology
 .\" All rights reserved.  The file /usr/include/zephyr/mit-copyright.h
@@ -46,6 +46,8 @@ Turns notification on or off.
 The namelist file is taken to be
 .I file.
 If
+.I file
+is "-", then the standard input is used instead of a file. If
 .I file
 does not exist, an error message is printed, and
 .I znol
