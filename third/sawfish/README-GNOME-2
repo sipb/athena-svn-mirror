@@ -1,4 +1,0 @@
-
-This branch is _only_ for porting sawfish to GNOME/Gtk+ 2 -- no feature
-additions or general bug fixes, they still belong on HEAD for now..
-
