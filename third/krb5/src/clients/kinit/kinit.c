@@ -37,7 +37,7 @@
 #include <pwd.h>
 #endif
 
-#define KRB5_DEFAULT_OPTIONS 0
+#define KRB5_DEFAULT_OPTIONS (KDC_OPT_PROXIABLE|KDC_OPT_FORWARDABLE)
 #define KRB5_DEFAULT_LIFE 60*60*10 /* 10 hours */
 
 extern int optind;
