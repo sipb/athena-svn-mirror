@@ -12,7 +12,9 @@
  *
  */
 
-#include "mit-copyright.h"
+/*
+ *#include "mit-copyright.h"
+ */
 
 XCLUSTER	=	xcluster
 CVIEW		=	cview
@@ -25,21 +27,15 @@ M_LIB		=	-lmalloc
 M_LIB		=
 #endif
 
-X_OBJS		=	Jets.o hash.o registerCallbacks.o \
-			Label.o Form.o Button.o Window.o \
-			xcluster.o Tree.o Drawing.o read.o net.o check.o
+X_OBJS		=	xcluster.o read.o net.o check.o
 OBJS		=	cview.o net.o
 
-CFILES		=	hash.c registerCallbacks.c \
-			Jets.c Button.c Form.c \
-			Label.c Menu.c \
-			Tree.c Window.c \
-			Drawing.c \
-			xcluster.c read.c net.c check.c cview.c
+CFILES		=	xcluster.c read.c net.c check.c cview.c
 
 XLIB		=	-lX11
+XJLIB		=	../lib/libXj.a
 HLIB		=	-lhesiod
-LIBS		=	-lX11 ${M_LIB} ${HLIB}
+LIBS		=	${XJLIB} ${XLIB} ${M_LIB} ${HLIB}
 
 #if defined(ibm032)
 DEFINES		=	-DSHAPE -D_BSD -D_BSD_INCLUDES -DAIXV=12 -DAPPDEFDIR=\"${ATHXAPPDIR}\"
