@@ -25,10 +25,15 @@ Changes from release 8.0 to release 8.1:
 	  because of the /mit/x11 glue.
 
 	* The symlink /bin/csh -> /bin/athena/tcsh has gone away.  The
-	  update to 8.0 will fix /bin/csh references in /etc/passwd
-	  and /etc/passwd.local to refer to /bin/athena/tcsh instead.
+	  update from 8.0 to 8.1 will fix /bin/csh references in
+	  /etc/passwd and /etc/passwd.local to refer to
+	  /bin/athena/tcsh instead.
 
-	* emacs18 has gone away.
+	* The command emacs18 has gone away, as advertised.  The
+	  command emacs19 has become a script which advertises that
+	  the emacs19 command will go away in summer 1998, and then
+	  executes emacs.  People should run just "emacs" in their
+	  dotfiles and scripts.
 
 	* AFS includes and libraries are installed in
 	  /usr/afsws/include and /usr/afsws/lib.
