@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/notify.c,v $
- *	$Id: notify.c,v 1.34 1991-11-05 13:51:30 lwvanels Exp $
+ *	$Id: notify.c,v 1.35 1991-11-06 15:44:35 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/notify.c,v 1.34 1991-11-05 13:51:30 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/notify.c,v 1.35 1991-11-06 15:44:35 lwvanels Exp $";
 #endif
 #endif
 
@@ -547,7 +547,7 @@ toggle_zephyr(toggle,punt_time)
     close(fd);
   } else {
     punt_zephyr = 0;
-    if (unlink(ZEPHYR_DOWN_FILE,0) < 0) {
+    if (unlink(ZEPHYR_DOWN_FILE) < 0) {
       sprintf(errbuf,"error unlinking %s: %%m",ZEPHYR_DOWN_FILE);
       log_error(errbuf);
       return;
