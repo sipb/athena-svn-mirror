@@ -1,7 +1,7 @@
 /*
  * make_commands.c
  *
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/ss/mk_cmds.c,v 1.3 1995-07-12 05:22:26 cfields Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/lib/ss/mk_cmds.c,v 1.4 1996-05-13 19:12:19 ghudson Exp $
  * $Locker:  $
  *
  * Copyright 1987, 1988 by MIT Student Information Processing Board
@@ -33,7 +33,7 @@ main(argc, argv)
 {
     char c_file[MAXPATHLEN];
     int result;
-    char *path, *p;
+    char *path, *p, *q;
 
     if (argc != 2) {
 	fputs("Usage: ", stderr);
@@ -60,7 +60,8 @@ main(argc, argv)
 
     p = strrchr(path, '.');
     *p = '\0';
-    strcpy(c_file, path);
+    q = strrchr(path, '/');
+    strcpy(c_file, (q) ? q + 1 : path);
     strcat(c_file, ".c");
     *p = '.';
 
