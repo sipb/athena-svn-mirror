@@ -27,7 +27,11 @@
 #include <sys/time.h>
 
 #include <sys/param.h>
+#ifdef SOLARIS
+#include <sys/fs/ufs_quota.h>
+#else
 #include <ufs/quota.h>
+#endif
 
 #include <X11/Intrinsic.h>
 
