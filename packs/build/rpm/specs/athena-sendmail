@@ -15,12 +15,17 @@ mkdir $RPM_BUILD_ROOT
 rm -f $RPM_BUILD_ROOT/etc/sendmail.st
 
 # Extra files
+mkdir -p $RPM_BUILD_ROOT/etc/athena
 mkdir -p $RPM_BUILD_ROOT/etc/mail
+mkdir -p $RPM_BUILD_ROOT/usr/lib
 cp aliases $RPM_BUILD_ROOT/etc/aliases
+cp authinfo $RPM_BUILD_ROOT/etc/mail/authinfo
+cp sendmail-noauth.cf $RPM_BUILD_ROOT/etc/mail/sendmail-noauth.cf
 cp sendmail.cf $RPM_BUILD_ROOT/etc/mail/sendmail.cf
+cp sendmail-relay-select $RPM_BUILD_ROOT/etc/athena/sendmail-relay-select
+cp sendmail.sh $RPM_BUILD_ROOT/usr/lib/sendmail
 mkdir -p $RPM_BUILD_ROOT/var/spool/mqueue
 %ifos linux
-mkdir -p $RPM_BUILD_ROOT/usr/lib
 ln -s ../sbin/sendmail $RPM_BUILD_ROOT/usr/lib/sendmail
 %endif
 
