@@ -2,7 +2,7 @@
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lp.h,v $
  *	$Author: ghudson $
  *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lp.h,v 1.15 1996-09-20 02:06:39 ghudson Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lp.h,v 1.15.2.1 1997-10-17 07:02:50 ghudson Exp $
  */
 
 /*
@@ -119,7 +119,7 @@ extern char	pbuf[];		/* buffer for printcap entry */
 extern char	*bp;		/* pointer into ebuf for pgetent() */
 extern char	*name;		/* program name */
 extern char	*printer;	/* printer name */
-extern char	host[32];	/* host machine name */
+extern char	host[MAXHOSTNAMELEN + 1];	/* host machine name */
 extern char	*from;		/* client's machine name */
 extern int	errno;
 #ifdef HESIOD
