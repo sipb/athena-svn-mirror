@@ -1,7 +1,7 @@
 
 AC_INIT
 AM_CONFIG_HEADER(common/settings.h)
-AM_INIT_AUTOMAKE(aspell, 0.50.3)
+AM_INIT_AUTOMAKE(aspell, 0.50.5)
 
 AM_MAINTAINER_MODE
 
@@ -69,8 +69,6 @@ AC_PROG_LIBTOOL
 #                     Platform Specific Tests                     #
 #                                                                 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-
-AC_SUBST(extra_ldflags)
 
 if test "$enable_win32_relocatable" = "yes"
 then
