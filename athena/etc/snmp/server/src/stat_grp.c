@@ -15,6 +15,10 @@
  *    $Author: tom $
  *    $Locker:  $
  *    $Log: not supported by cvs2svn $
+ * Revision 2.0  92/04/22  02:05:13  tom
+ * release 7.4
+ * 	removed version stuff from this file
+ * 
  * Revision 1.7  90/07/17  14:23:26  tom
  * undef EMPTY for decmips (recalared in utmp.h)
  * 
@@ -41,7 +45,7 @@
  */
 
 #ifndef lint
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/stat_grp.c,v 2.0 1992-04-22 02:05:13 tom Exp $";
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/stat_grp.c,v 2.1 1993-02-19 15:14:50 tom Exp $";
 #endif
 
 
@@ -196,6 +200,10 @@ get_time(ret)
 }
 
 
+#ifdef ultrix
+#include <sys/fixpoint.h>
+#endif
+
 
 /*
  * Function:    get_load()
@@ -222,12 +230,14 @@ get_rtload(ret)
       syslog(LOG_ERR, "Couldn't find load average from name list.\n");
       return(BUILD_ERR);      
     }
-	
+
+#ifdef notdef	
   if(nl[N_HZ].n_value == 0 || nl[N_CPTIME].n_value == 0)
     {
       syslog(LOG_ERR, "Couldn't find cpu time from name list.\n");
       return(BUILD_ERR);
     }
+#endif
 
   (void) lseek(kmem, nl[N_AVENRUN].n_value, L_SET);
   if(read(kmem, avenrun, sizeof(avenrun)) == -1)
@@ -252,9 +262,13 @@ get_rtload(ret)
       load  = (avenrun[0] >> 11) +  (avenrun[1] >> 12) + (avenrun[2] >> 12);
 #endif
 
+#ifdef ultrix
+       load = (int) (FIX_TO_DBL(avenrun[0]) * 100);
+#endif
     }
   
   *ret = load;
+
   return(BUILD_SUCCESS);
 }
 
