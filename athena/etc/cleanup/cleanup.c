@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/cleanup/cleanup.c,v 1.4 1990-11-18 14:59:20 mar Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/cleanup/cleanup.c,v 1.5 1990-11-18 15:05:29 mar Exp $
  *
  * Cleanup script for dialup.
  *
@@ -31,7 +31,11 @@
 #include <nlist.h>
 #include <hesiod.h>
 
-const char *version = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/cleanup/cleanup.c,v 1.4 1990-11-18 14:59:20 mar Exp $";
+const char *version = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/cleanup/cleanup.c,v 1.5 1990-11-18 15:05:29 mar Exp $";
+
+#ifdef ultrix
+extern char *sys_errlist[];
+#endif
 
 extern void make_passwd(int,uid_t *, char (*)[16]);
 extern void make_group(int, uid_t *);
