@@ -1,0 +1,507 @@
+# translation of gnome-netstatus to Albanian
+# This file is distributed under the same license as the gnome-netstatus package
+# Laurent Dhima <laurenti@alblinux.net>, 2004.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gnome-netstatus.HEAD\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-08-03 15:35+0100\n"
+"PO-Revision-Date: 2004-07-06 20:34+0200\n"
+"Last-Translator: Laurent Dhima <laurenti@alblinux.net>\n"
+"Language-Team: Albanian <gnome-albanian-perkthyesit@lists.sourceforge.net>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: src/GNOME_NetstatusApplet_Factory.server.in.in.h:1
+msgid "Factory for Network Monitor applet"
+msgstr "Fabrikë për instrumentin e Monitorimit të Rrjetit"
+
+#: src/GNOME_NetstatusApplet_Factory.server.in.in.h:2
+msgid "Internet"
+msgstr "Internet"
+
+#: src/GNOME_NetstatusApplet_Factory.server.in.in.h:3
+msgid "Monitor network activity"
+msgstr "Monitoro aktivitetin e rrjetit"
+
+#: src/GNOME_NetstatusApplet_Factory.server.in.in.h:4
+#: src/netstatus-applet.c:290
+msgid "Network Monitor"
+msgstr "Monitori i rrjetit"
+
+#: src/GNOME_NetstatusApplet_Factory.server.in.in.h:5
+msgid "Network Monitor Factory"
+msgstr "Fabrikë për monitorimin e rrjetit"
+
+#: src/GNOME_NetstatusApplet.xml.h:1
+msgid "_About"
+msgstr "_Informacione"
+
+#: src/GNOME_NetstatusApplet.xml.h:2
+msgid "_Help"
+msgstr "_Ndihmë"
+
+#: src/GNOME_NetstatusApplet.xml.h:3
+msgid "_Properties"
+msgstr "_Pronësitë"
+
+#: src/gnome-netstatus.glade.h:1
+msgid "    "
+msgstr "    "
+
+#: src/gnome-netstatus.glade.h:2
+msgid "*"
+msgstr "*"
+
+#: src/gnome-netstatus.glade.h:4
+#, no-c-format
+msgid "0%"
+msgstr "0%"
+
+#: src/gnome-netstatus.glade.h:5
+msgid "<b>Activity</b>"
+msgstr "<b>Aktiviteti</b>"
+
+#: src/gnome-netstatus.glade.h:6
+msgid "<b>Connection</b>"
+msgstr "<b>Lidhja</b>"
+
+#: src/gnome-netstatus.glade.h:7
+msgid "<b>Internet Protocol (IPv4)</b>"
+msgstr "<b>Protokolli i Internetit (IPv4)</b>"
+
+#: src/gnome-netstatus.glade.h:8
+msgid "<b>Internet Protocol (IPv6)</b>"
+msgstr "<b>Protokolli i Internetit (IPv6)</b>"
+
+#: src/gnome-netstatus.glade.h:9
+msgid "<b>Network Device</b>"
+msgstr "<b>Dispozitivi i Rrjetit</b>"
+
+#: src/gnome-netstatus.glade.h:10
+msgid "<b>Signal Strength</b>"
+msgstr "<b>Rezistenca e Sinjalit</b>"
+
+#: src/gnome-netstatus.glade.h:11
+msgid "Address:"
+msgstr "Adresa:"
+
+#: src/gnome-netstatus.glade.h:12
+msgid "Broadcast:"
+msgstr "Broadcast:"
+
+#: src/gnome-netstatus.glade.h:13
+msgid "Con_figure"
+msgstr "Kon_figuro"
+
+#: src/gnome-netstatus.glade.h:14
+msgid "Destination:"
+msgstr "Destinimi:"
+
+#: src/gnome-netstatus.glade.h:15
+msgid "General"
+msgstr "Të përgjithshme"
+
+#: src/gnome-netstatus.glade.h:16
+msgid "Received:"
+msgstr "Marrë:"
+
+#: src/gnome-netstatus.glade.h:17
+msgid "Scope:"
+msgstr "Scope:"
+
+#: src/gnome-netstatus.glade.h:18
+msgid "Sent:"
+msgstr "Dërguar:"
+
+#: src/gnome-netstatus.glade.h:19
+msgid "Status:"
+msgstr "Gjëndja:"
+
+#: src/gnome-netstatus.glade.h:20
+msgid "Subnet Mask:"
+msgstr "Maska e nënrrjetit:"
+
+#: src/gnome-netstatus.glade.h:21
+msgid "Support"
+msgstr "Suporti"
+
+#: src/gnome-netstatus.glade.h:22
+msgid "Type:"
+msgstr "Lloji:"
+
+#: src/gnome-netstatus.glade.h:23
+msgid "_Name:"
+msgstr "_Emri:"
+
+#: src/netstatus.schemas.in.h:1
+msgid "Network configuration tool"
+msgstr "Instrument për konfigurimin e rrjetit"
+
+#: src/netstatus.schemas.in.h:2
+msgid "Network interface"
+msgstr "Interfaqja e rrjetit"
+
+#: src/netstatus.schemas.in.h:3
+msgid "The Network Interface monitored by the Network Monitor."
+msgstr "Interfaqja e rrjetit e monitoruar nga Monitoruesi i Rrjetit."
+
+#: src/netstatus.schemas.in.h:5
+#, no-c-format
+msgid ""
+"This key specifies the name of the network configuration tool which should "
+"be invoked when the \"Configure\" button in the properties dialog is "
+"clicked. If the configuration tool can take a parameter of the interface to "
+"configure you may use %i in the string and it will be substituted with the "
+"interface name before invoking the configuration tool. For example, gnome-"
+"system-tool's network-admin tool takes the interface name through a --"
+"configure parameter. Thus, you could set the value of this key to be: "
+"\"network-admin --configure %i\"."
+msgstr ""
+"Kjo vlerë specifikon emrin e instrumentit për konfigurimin e rrjetit që "
+"duhet thërritur kur klikohet pulsanti \"Konfiguro\" tek dritarja e dialogut "
+"të pronësive. Nëse instrumenti i konfigurimit mund të marrë parametrat nga "
+"interfaqja që duhet konfiguruar ju duhet të përdorni %i tek vlera dhe kjo do "
+"të zevendësohet me emrin e interfaqes para se të thërritet instrumenti i "
+"konfigurimit. Për shembull, instrumenti network-admin i instrumenteve të "
+"gnome-system e merr emrin e interfaqes me anë të parametrit --configure. "
+"Kështu, ju duhet të rregulloni vlerën e këtij çelsi që të jetë: \"network-"
+"admin --configure %i\"."
+
+#: src/netstatus-applet.c:249
+#, c-format
+msgid "There was an error displaying help: %s"
+msgstr "U verifikua një gabim gjatë shfaqjes së ndihmës: %s"
+
+#: src/netstatus-applet.c:271
+msgid "translator_credits"
+msgstr "Laurent Dhima <laurenti@alblinux.net>"
+
+#: src/netstatus-applet.c:292
+msgid "The Network Monitor displays the status of a network device."
+msgstr "Monitori i Rrjetit pasqyron gjendjen e një interfaqe rrjeti."
+
+#: src/netstatus-dialog.c:47 src/netstatus-dialog.c:306
+msgid "Unknown"
+msgstr "Nuk njihet"
+
+#: src/netstatus-dialog.c:110
+msgid "Connection Properties"
+msgstr "Pronësitë e lidhjes"
+
+#: src/netstatus-dialog.c:116
+#, c-format
+msgid "Connection Properties: %s"
+msgstr "Pronësitë e lidhjes: %s"
+
+#: src/netstatus-dialog.c:129
+#, c-format
+msgid "%lu packet"
+msgid_plural "%lu packets"
+msgstr[0] "%lu pako"
+msgstr[1] "%lu paketa"
+
+#: src/netstatus-dialog.c:390
+#, c-format
+msgid ""
+"There was an error displaying help:\n"
+"%s"
+msgstr ""
+"Gabim gjatë shfaqjes së ndihmës:\n"
+"%s"
+
+#: src/netstatus-dialog.c:568
+#, c-format
+msgid "Failed to launch time configuration tool: %s"
+msgstr "Nisja e programit për konfigurimin e orës dështoi: %s"
+
+#: src/netstatus-icon.c:381
+#, c-format
+msgid "Network Connection: %s"
+msgstr "Lidhja e rrjetit: %s"
+
+#: src/netstatus-icon.c:386
+msgid "Network Connection"
+msgstr "Lidhja e rrjetit"
+
+#: src/netstatus-icon.c:809
+msgid "Interface"
+msgstr "Interfaqja"
+
+#: src/netstatus-icon.c:810
+msgid "The current interface the icon is monitoring."
+msgstr "Ikona e interfaqes aktuale nën monitorim."
+
+#: src/netstatus-icon.c:817
+msgid "Orientation"
+msgstr "Orientimi"
+
+#: src/netstatus-icon.c:818
+msgid "The orientation of the tray."
+msgstr "Orientimi i sirtarit."
+
+#: src/netstatus-icon.c:826
+msgid "Tooltips Enabled"
+msgstr "Aktivon propozimet"
+
+#: src/netstatus-icon.c:827
+msgid "Whether or not the icon's tooltips are enabled."
+msgstr "Kur duhet ose jo të aktivohet ikona e propozimeve."
+
+#: src/netstatus-icon.c:834
+msgid "Show Signal"
+msgstr "Shfaq sinjalin"
+
+#: src/netstatus-icon.c:835
+msgid "Whether or not the signal strength should be displayed."
+msgstr "Kur duhet ose jo të shfaqet rezistenca e sinjalit."
+
+#: src/netstatus-icon.c:948
+#, c-format
+msgid ""
+"Please contact your system administrator to resolve the following problem:\n"
+"\n"
+"%s"
+msgstr ""
+"Ju lutem vihuni në kontakt me administratorin e sistemit për të zgjidhur "
+"problemin në vazhdim:\n"
+"\n"
+"%s"
+
+#: src/netstatus-iface.c:153
+msgid "Name"
+msgstr "Emri"
+
+#: src/netstatus-iface.c:154
+msgid "The interface name"
+msgstr "Emri i interfaqes"
+
+#: src/netstatus-iface.c:161
+msgid "State"
+msgstr "Gjendja"
+
+#: src/netstatus-iface.c:162
+msgid "The interface state"
+msgstr "Gjendja e interfaqes"
+
+#: src/netstatus-iface.c:170
+msgid "Stats"
+msgstr "Gjëndja"
+
+#: src/netstatus-iface.c:171
+msgid "The interface packets/bytes statistics"
+msgstr "Statistikat e paketave/bytes të interfaqes"
+
+#: src/netstatus-iface.c:178
+msgid "Wireless"
+msgstr "Wireless (pa fije)"
+
+#: src/netstatus-iface.c:179
+msgid "Whether the interface is a wireless interface"
+msgstr "Kur interfaqja është një interfaqe wireless"
+
+#: src/netstatus-iface.c:186
+msgid "Signal"
+msgstr "Sinjali"
+
+#: src/netstatus-iface.c:187
+msgid "Wireless signal strength percentage"
+msgstr "Përqindja e rezistencës së sinjalit wireless"
+
+#: src/netstatus-iface.c:196 src/netstatus-util.c:167
+msgid "Error"
+msgstr "Gabim"
+
+#: src/netstatus-iface.c:197
+msgid "The current error condition"
+msgstr "Kondicioni i gabimit aktual"
+
+#: src/netstatus-iface.c:439 src/netstatus-iface.c:1202
+#, c-format
+msgid "Unable to open socket: %s"
+msgstr "E pamundur hapja e socket: %s"
+
+#: src/netstatus-iface.c:501 src/netstatus-iface.c:1228
+#, c-format
+msgid "SIOCGIFFLAGS error: %s"
+msgstr "Gabim SIOCGIFFLAGS: %s"
+
+#: src/netstatus-iface.c:875
+msgid "AMPR NET/ROM"
+msgstr "AMPR NET/ROM"
+
+#: src/netstatus-iface.c:878
+msgid "Ethernet"
+msgstr "Ethernet"
+
+#: src/netstatus-iface.c:884
+msgid "AMPR AX.25"
+msgstr "AMPR AX.25"
+
+#: src/netstatus-iface.c:893 src/netstatus-iface.c:1013
+msgid "16/4 Mbps Token Ring"
+msgstr "Token Ring 16/4 Mbps"
+
+#: src/netstatus-iface.c:896
+msgid "ARCnet"
+msgstr "ARCnet"
+
+#: src/netstatus-iface.c:902
+msgid "Frame Relay DLCI"
+msgstr "Frame Relay DLCI"
+
+#: src/netstatus-iface.c:908
+msgid "Metricom Starmode IP"
+msgstr "Metricom Starmode IP"
+
+#: src/netstatus-iface.c:911
+msgid "Serial Line IP"
+msgstr "Serial Line IP"
+
+#: src/netstatus-iface.c:914
+msgid "VJ Serial Line IP"
+msgstr "VJ Serial Line IP"
+
+#: src/netstatus-iface.c:917
+msgid "6-bit Serial Line IP"
+msgstr "6-bit Serial Line IP"
+
+#: src/netstatus-iface.c:920
+msgid "VJ 6-bit Serial Line IP"
+msgstr "VJ 6-bit Serial Line IP"
+
+#: src/netstatus-iface.c:926
+msgid "Adaptive Serial Line IP"
+msgstr "Adaptive Serial Line IP"
+
+#: src/netstatus-iface.c:929
+msgid "AMPR ROSE"
+msgstr "AMPR ROSE"
+
+#: src/netstatus-iface.c:932
+msgid "Generic X.25"
+msgstr "X.25 e përgjithshme"
+
+#: src/netstatus-iface.c:935
+msgid "Point-to-Point Protocol"
+msgstr "Protokoll Point-to-Point"
+
+#: src/netstatus-iface.c:941
+msgid "(Cisco)-HDLC"
+msgstr "(Cisco)-HDLC"
+
+#: src/netstatus-iface.c:944
+msgid "LAPB"
+msgstr "LAPB"
+
+#: src/netstatus-iface.c:953
+msgid "IPIP Tunnel"
+msgstr "Tynel IPIP"
+
+#: src/netstatus-iface.c:959
+msgid "Frame Relay Access Device"
+msgstr "Frame Relay Access Device"
+
+#: src/netstatus-iface.c:965
+msgid "Local Loopback"
+msgstr "Loopback lokale"
+
+#: src/netstatus-iface.c:971
+msgid "Fiber Distributed Data Interface"
+msgstr "Fiber Distributed Data Interface"
+
+#: src/netstatus-iface.c:977
+msgid "IPv6-in-IPv4"
+msgstr "IPv6-in-IPv4"
+
+#: src/netstatus-iface.c:989
+msgid "HIPPI"
+msgstr "HIPPI"
+
+#: src/netstatus-iface.c:992
+msgid "Ash"
+msgstr "Ash"
+
+#: src/netstatus-iface.c:995
+msgid "Econet"
+msgstr "Econet"
+
+#: src/netstatus-iface.c:998
+msgid "IrLAP"
+msgstr "IrLAP"
+
+#: src/netstatus-iface.c:1160
+#, c-format
+msgid "SIOCGIFCONF error: %s"
+msgstr "Gabim SIOCGIFCONF: %s"
+
+#: src/netstatus-iface.c:1253
+msgid "No network devices found"
+msgstr "Nuk u gjet asnjë interfaqe rrjeti"
+
+#: src/netstatus-sysdeps.c:170
+#, c-format
+msgid "Cannot open /proc/net/dev: %s"
+msgstr "E pamundur hapja e /proc/net/dev: %s"
+
+#: src/netstatus-sysdeps.c:179
+msgid "Could not parse /proc/net/dev. Unknown format."
+msgstr "I pamundur analizimi i /proc/net/dev. Format i panjohur."
+
+#: src/netstatus-sysdeps.c:194 src/netstatus-sysdeps.c:320
+#, c-format
+msgid "Could not parse interface name from '%s'"
+msgstr "I pamundur analizimi i emrit të interfaqes nga '%s'"
+
+#: src/netstatus-sysdeps.c:207 src/netstatus-sysdeps.c:462
+#, c-format
+msgid ""
+"Could not parse interface statistics from '%s'. prx_idx = %d; ptx_idx = %d; "
+"brx_idx = %d; btx_idx = %d;"
+msgstr ""
+"I pamundur analizimi i statistikave të interfaqes nga '%s'. prx_idx = %d; "
+"ptx_idx = %d; brx_idx = %d; btx_idx = %d;"
+
+#: src/netstatus-sysdeps.c:304
+msgid "Could not parse /proc/net/wireless. Unknown format."
+msgstr "I pamundur analizimi i /proc/net/wireless. Format i panjohur."
+
+#: src/netstatus-sysdeps.c:331
+#, c-format
+msgid "Could not parse wireless details from '%s'. link_idx = %d;"
+msgstr "I pamundur analizimi i hollësive të wireless nga '%s'. link_idx= %d;"
+
+#: src/netstatus-sysdeps.c:415
+#, c-format
+msgid "Could not parse command line '%s': %s"
+msgstr "I pamundur analizimi i rreshtit të komandës '%s': %s"
+
+#: src/netstatus-sysdeps.c:452
+msgid "Could not parse 'netstat' output. Unknown format"
+msgstr "I pamundur analizimi i rezultatit të 'netstat'. Format i panjohur."
+
+#: src/netstatus-util.c:152
+msgid "Disconnected"
+msgstr "I shkëputur"
+
+#: src/netstatus-util.c:155
+msgid "Idle"
+msgstr "Joaktiv"
+
+#: src/netstatus-util.c:158
+msgid "Sending"
+msgstr "Duke dërguar"
+
+#: src/netstatus-util.c:161
+msgid "Receiving"
+msgstr "Duke marrë"
+
+#: src/netstatus-util.c:164
+msgid "Sending/Receiving"
+msgstr "Duke marrë/dërguar"
+
+#~ msgid "Cannot open /proc/net/wireless: %s"
+#~ msgstr "E pamundur hapja e /proc/net/wireless: %s"

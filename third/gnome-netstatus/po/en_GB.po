@@ -1,0 +1,509 @@
+# English (British) translation.
+# Copyright (C) 2004 THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the gnome-netstatus package.
+# Gareth Owen <gowen72@yahoo.com>, 2004.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gnome-netstatus\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-08-03 15:35+0100\n"
+"PO-Revision-Date: 2004-07-19 22:36-0400\n"
+"Last-Translator: Gareth Owen <gowen72@yahoo.comg>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: src/GNOME_NetstatusApplet_Factory.server.in.in.h:1
+msgid "Factory for Network Monitor applet"
+msgstr "Factory for Network Monitor applet"
+
+#: src/GNOME_NetstatusApplet_Factory.server.in.in.h:2
+msgid "Internet"
+msgstr "Internet"
+
+#: src/GNOME_NetstatusApplet_Factory.server.in.in.h:3
+msgid "Monitor network activity"
+msgstr "Monitor network activity"
+
+#: src/GNOME_NetstatusApplet_Factory.server.in.in.h:4
+#: src/netstatus-applet.c:290
+msgid "Network Monitor"
+msgstr "Network Monitor"
+
+#: src/GNOME_NetstatusApplet_Factory.server.in.in.h:5
+msgid "Network Monitor Factory"
+msgstr "Network Monitor Factory"
+
+#: src/GNOME_NetstatusApplet.xml.h:1
+msgid "_About"
+msgstr "_About"
+
+#: src/GNOME_NetstatusApplet.xml.h:2
+msgid "_Help"
+msgstr "_Help"
+
+#: src/GNOME_NetstatusApplet.xml.h:3
+msgid "_Properties"
+msgstr "_Properties"
+
+#: src/gnome-netstatus.glade.h:1
+msgid "    "
+msgstr "    "
+
+#: src/gnome-netstatus.glade.h:2
+msgid "*"
+msgstr "*"
+
+#: src/gnome-netstatus.glade.h:4
+#, no-c-format
+msgid "0%"
+msgstr "0%"
+
+#: src/gnome-netstatus.glade.h:5
+msgid "<b>Activity</b>"
+msgstr "<b>Activity</b>"
+
+#: src/gnome-netstatus.glade.h:6
+msgid "<b>Connection</b>"
+msgstr "<b>Connection</b>"
+
+#: src/gnome-netstatus.glade.h:7
+msgid "<b>Internet Protocol (IPv4)</b>"
+msgstr "<b>Internet Protocol (IPv4)</b>"
+
+#: src/gnome-netstatus.glade.h:8
+msgid "<b>Internet Protocol (IPv6)</b>"
+msgstr "<b>Internet Protocol (IPv6)</b>"
+
+#: src/gnome-netstatus.glade.h:9
+msgid "<b>Network Device</b>"
+msgstr "<b>Network Device</b>"
+
+#: src/gnome-netstatus.glade.h:10
+msgid "<b>Signal Strength</b>"
+msgstr "<b>Signal Strength</b>"
+
+#: src/gnome-netstatus.glade.h:11
+msgid "Address:"
+msgstr "Address:"
+
+#: src/gnome-netstatus.glade.h:12
+msgid "Broadcast:"
+msgstr "Broadcast:"
+
+#: src/gnome-netstatus.glade.h:13
+msgid "Con_figure"
+msgstr "Con_figure"
+
+#: src/gnome-netstatus.glade.h:14
+msgid "Destination:"
+msgstr "Destination:"
+
+#: src/gnome-netstatus.glade.h:15
+msgid "General"
+msgstr "General"
+
+#: src/gnome-netstatus.glade.h:16
+msgid "Received:"
+msgstr "Received:"
+
+#: src/gnome-netstatus.glade.h:17
+msgid "Scope:"
+msgstr "Scope:"
+
+#: src/gnome-netstatus.glade.h:18
+msgid "Sent:"
+msgstr "Sent:"
+
+#: src/gnome-netstatus.glade.h:19
+msgid "Status:"
+msgstr "Status:"
+
+#: src/gnome-netstatus.glade.h:20
+msgid "Subnet Mask:"
+msgstr "Subnet Mask:"
+
+#: src/gnome-netstatus.glade.h:21
+msgid "Support"
+msgstr "Support"
+
+#: src/gnome-netstatus.glade.h:22
+msgid "Type:"
+msgstr "Type:"
+
+#: src/gnome-netstatus.glade.h:23
+msgid "_Name:"
+msgstr "_Name:"
+
+#: src/netstatus.schemas.in.h:1
+msgid "Network configuration tool"
+msgstr "Network configuration tool"
+
+#: src/netstatus.schemas.in.h:2
+msgid "Network interface"
+msgstr "Network interface"
+
+#: src/netstatus.schemas.in.h:3
+msgid "The Network Interface monitored by the Network Monitor."
+msgstr "The Network Interface monitored by the Network Monitor."
+
+#: src/netstatus.schemas.in.h:5
+#, no-c-format
+msgid ""
+"This key specifies the name of the network configuration tool which should "
+"be invoked when the \"Configure\" button in the properties dialog is "
+"clicked. If the configuration tool can take a parameter of the interface to "
+"configure you may use %i in the string and it will be substituted with the "
+"interface name before invoking the configuration tool. For example, gnome-"
+"system-tool's network-admin tool takes the interface name through a --"
+"configure parameter. Thus, you could set the value of this key to be: "
+"\"network-admin --configure %i\"."
+msgstr ""
+"This key specifies the name of the network configuration tool which should "
+"be invoked when the \"Configure\" button in the properties dialogue is "
+"clicked. If the configuration tool can take a parameter of the interface to "
+"configure you may use %i in the string and it will be substituted with the "
+"interface name before invoking the configuration tool. For example, gnome-"
+"system-tool's network-admin tool takes the interface name through a --"
+"configure parameter. Thus, you could set the value of this key to be: "
+"\"network-admin --configure %i\"."
+
+#: src/netstatus-applet.c:249
+#, c-format
+msgid "There was an error displaying help: %s"
+msgstr "There was an error displaying help: %s"
+
+#: src/netstatus-applet.c:271
+msgid "translator_credits"
+msgstr ""
+"Abigail Brady <morwen@evilmagi_c.org>\n"
+"Bastien Nocera <hadess@hadess.net>\n"
+"Gareth Owen <gowen72@yahoo.com>"
+
+#: src/netstatus-applet.c:292
+msgid "The Network Monitor displays the status of a network device."
+msgstr "The Network Monitor displays the status of a network device."
+
+#: src/netstatus-dialog.c:47 src/netstatus-dialog.c:306
+msgid "Unknown"
+msgstr "Unknown"
+
+#: src/netstatus-dialog.c:110
+msgid "Connection Properties"
+msgstr "Connection Properties"
+
+#: src/netstatus-dialog.c:116
+#, c-format
+msgid "Connection Properties: %s"
+msgstr "Connection Properties: %s"
+
+#: src/netstatus-dialog.c:129
+#, c-format
+msgid "%lu packet"
+msgid_plural "%lu packets"
+msgstr[0] "%lu packet"
+msgstr[1] "%lu packets"
+
+#: src/netstatus-dialog.c:390
+#, c-format
+msgid ""
+"There was an error displaying help:\n"
+"%s"
+msgstr ""
+"There was an error displaying help:\n"
+"%s"
+
+#: src/netstatus-dialog.c:568
+#, c-format
+msgid "Failed to launch time configuration tool: %s"
+msgstr "Failed to launch time configuration tool: %s"
+
+#: src/netstatus-icon.c:381
+#, c-format
+msgid "Network Connection: %s"
+msgstr "Network Connection: %s"
+
+#: src/netstatus-icon.c:386
+msgid "Network Connection"
+msgstr "Network Connection"
+
+#: src/netstatus-icon.c:809
+msgid "Interface"
+msgstr "Interface"
+
+#: src/netstatus-icon.c:810
+msgid "The current interface the icon is monitoring."
+msgstr "The current interface the icon is monitoring."
+
+#: src/netstatus-icon.c:817
+msgid "Orientation"
+msgstr "Orientation"
+
+#: src/netstatus-icon.c:818
+msgid "The orientation of the tray."
+msgstr "The orientation of the tray."
+
+#: src/netstatus-icon.c:826
+msgid "Tooltips Enabled"
+msgstr "Tooltips Enabled"
+
+#: src/netstatus-icon.c:827
+msgid "Whether or not the icon's tooltips are enabled."
+msgstr "Whether or not the icon's tooltips are enabled."
+
+#: src/netstatus-icon.c:834
+msgid "Show Signal"
+msgstr "Show Signal"
+
+#: src/netstatus-icon.c:835
+msgid "Whether or not the signal strength should be displayed."
+msgstr "Whether or not the signal strength should be displayed."
+
+#: src/netstatus-icon.c:948
+#, c-format
+msgid ""
+"Please contact your system administrator to resolve the following problem:\n"
+"\n"
+"%s"
+msgstr ""
+"Please contact your system administrator to resolve the following problem:\n"
+"\n"
+"%s"
+
+#: src/netstatus-iface.c:153
+msgid "Name"
+msgstr "Name"
+
+#: src/netstatus-iface.c:154
+msgid "The interface name"
+msgstr "The interface name"
+
+#: src/netstatus-iface.c:161
+msgid "State"
+msgstr "State"
+
+#: src/netstatus-iface.c:162
+msgid "The interface state"
+msgstr "The interface state"
+
+#: src/netstatus-iface.c:170
+msgid "Stats"
+msgstr "Stats"
+
+#: src/netstatus-iface.c:171
+msgid "The interface packets/bytes statistics"
+msgstr "The interface packets/bytes statistics"
+
+#: src/netstatus-iface.c:178
+msgid "Wireless"
+msgstr "Wireless"
+
+#: src/netstatus-iface.c:179
+msgid "Whether the interface is a wireless interface"
+msgstr "Whether the interface is a wireless interface"
+
+#: src/netstatus-iface.c:186
+msgid "Signal"
+msgstr "Signal"
+
+#: src/netstatus-iface.c:187
+msgid "Wireless signal strength percentage"
+msgstr "Wireless signal strength percentage"
+
+#: src/netstatus-iface.c:196 src/netstatus-util.c:167
+msgid "Error"
+msgstr "Error"
+
+#: src/netstatus-iface.c:197
+msgid "The current error condition"
+msgstr "The current error condition"
+
+#: src/netstatus-iface.c:439 src/netstatus-iface.c:1202
+#, c-format
+msgid "Unable to open socket: %s"
+msgstr "Unable to open socket: %s"
+
+#: src/netstatus-iface.c:501 src/netstatus-iface.c:1228
+#, c-format
+msgid "SIOCGIFFLAGS error: %s"
+msgstr "SIOCGIFFLAGS error: %s"
+
+#: src/netstatus-iface.c:875
+msgid "AMPR NET/ROM"
+msgstr "AMPR NET/ROM"
+
+#: src/netstatus-iface.c:878
+msgid "Ethernet"
+msgstr "Ethernet"
+
+#: src/netstatus-iface.c:884
+msgid "AMPR AX.25"
+msgstr "AMPR AX.25"
+
+#: src/netstatus-iface.c:893 src/netstatus-iface.c:1013
+msgid "16/4 Mbps Token Ring"
+msgstr "16/4 Mbps Token Ring"
+
+#: src/netstatus-iface.c:896
+msgid "ARCnet"
+msgstr "ARCnet"
+
+#: src/netstatus-iface.c:902
+msgid "Frame Relay DLCI"
+msgstr "Frame Relay DLCI"
+
+#: src/netstatus-iface.c:908
+msgid "Metricom Starmode IP"
+msgstr "Metricom Starmode IP"
+
+#: src/netstatus-iface.c:911
+msgid "Serial Line IP"
+msgstr "Serial Line IP"
+
+#: src/netstatus-iface.c:914
+msgid "VJ Serial Line IP"
+msgstr "VJ Serial Line IP"
+
+#: src/netstatus-iface.c:917
+msgid "6-bit Serial Line IP"
+msgstr "6-bit Serial Line IP"
+
+#: src/netstatus-iface.c:920
+msgid "VJ 6-bit Serial Line IP"
+msgstr "VJ 6-bit Serial Line IP"
+
+#: src/netstatus-iface.c:926
+msgid "Adaptive Serial Line IP"
+msgstr "Adaptive Serial Line IP"
+
+#: src/netstatus-iface.c:929
+msgid "AMPR ROSE"
+msgstr "AMPR ROSE"
+
+#: src/netstatus-iface.c:932
+msgid "Generic X.25"
+msgstr "Generic X.25"
+
+#: src/netstatus-iface.c:935
+msgid "Point-to-Point Protocol"
+msgstr "Point-to-Point Protocol"
+
+#: src/netstatus-iface.c:941
+msgid "(Cisco)-HDLC"
+msgstr "(Cisco)-HDLC"
+
+#: src/netstatus-iface.c:944
+msgid "LAPB"
+msgstr "LAPB"
+
+#: src/netstatus-iface.c:953
+msgid "IPIP Tunnel"
+msgstr "IPIP Tunnel"
+
+#: src/netstatus-iface.c:959
+msgid "Frame Relay Access Device"
+msgstr "Frame Relay Access Device"
+
+#: src/netstatus-iface.c:965
+msgid "Local Loopback"
+msgstr "Local Loopback"
+
+#: src/netstatus-iface.c:971
+msgid "Fiber Distributed Data Interface"
+msgstr "Fibre Distributed Data Interface"
+
+#: src/netstatus-iface.c:977
+msgid "IPv6-in-IPv4"
+msgstr "IPv6-in-IPv4"
+
+#: src/netstatus-iface.c:989
+msgid "HIPPI"
+msgstr "HIPPI"
+
+#: src/netstatus-iface.c:992
+msgid "Ash"
+msgstr "Ash"
+
+#: src/netstatus-iface.c:995
+msgid "Econet"
+msgstr "Econet"
+
+#: src/netstatus-iface.c:998
+msgid "IrLAP"
+msgstr "IrLAP"
+
+#: src/netstatus-iface.c:1160
+#, c-format
+msgid "SIOCGIFCONF error: %s"
+msgstr "SIOCGIFCONF error: %s"
+
+#: src/netstatus-iface.c:1253
+msgid "No network devices found"
+msgstr "No network devices found"
+
+#: src/netstatus-sysdeps.c:170
+#, c-format
+msgid "Cannot open /proc/net/dev: %s"
+msgstr "Cannot open /proc/net/dev: %s"
+
+#: src/netstatus-sysdeps.c:179
+msgid "Could not parse /proc/net/dev. Unknown format."
+msgstr "Could not parse /proc/net/dev. Unknown format."
+
+#: src/netstatus-sysdeps.c:194 src/netstatus-sysdeps.c:320
+#, c-format
+msgid "Could not parse interface name from '%s'"
+msgstr "Could not parse interface name from '%s'"
+
+#: src/netstatus-sysdeps.c:207 src/netstatus-sysdeps.c:462
+#, c-format
+msgid ""
+"Could not parse interface statistics from '%s'. prx_idx = %d; ptx_idx = %d; "
+"brx_idx = %d; btx_idx = %d;"
+msgstr ""
+"Could not parse interface statistics from '%s'. prx_idx = %d; ptx_idx = %d; "
+"brx_idx = %d; btx_idx = %d;"
+
+#: src/netstatus-sysdeps.c:304
+msgid "Could not parse /proc/net/wireless. Unknown format."
+msgstr "Could not parse /proc/net/wireless. Unknown format."
+
+#: src/netstatus-sysdeps.c:331
+#, c-format
+msgid "Could not parse wireless details from '%s'. link_idx = %d;"
+msgstr "Could not parse wireless details from '%s'. link_idx = %d;"
+
+#: src/netstatus-sysdeps.c:415
+#, c-format
+msgid "Could not parse command line '%s': %s"
+msgstr "Could not parse command line '%s': %s"
+
+#: src/netstatus-sysdeps.c:452
+msgid "Could not parse 'netstat' output. Unknown format"
+msgstr "Could not parse 'netstat' output. Unknown format"
+
+#: src/netstatus-util.c:152
+msgid "Disconnected"
+msgstr "Disconnected"
+
+#: src/netstatus-util.c:155
+msgid "Idle"
+msgstr "Idle"
+
+#: src/netstatus-util.c:158
+msgid "Sending"
+msgstr "Sending"
+
+#: src/netstatus-util.c:161
+msgid "Receiving"
+msgstr "Receiving"
+
+#: src/netstatus-util.c:164
+msgid "Sending/Receiving"
+msgstr "Sending/Receiving"
+
+#~ msgid "Cannot open /proc/net/wireless: %s"
+#~ msgstr "Cannot open /proc/net/wireless: %s"

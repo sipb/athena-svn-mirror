@@ -1,0 +1,507 @@
+# translation of nn.po to Norwegian Nynorsk
+# This file is distributed under the same license as the gnome-netstatus package.
+# Copyright (C) 2004 THE gnome-netstatus'S COPYRIGHT HOLDER.
+# Åsmund Skjæveland, 2004.
+# Åsmund Skjæveland <aasmunds@fys.uio.no>, 2004.
+#
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: nn\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-08-03 15:35+0100\n"
+"PO-Revision-Date: 2004-09-05 18:40+0000\n"
+"Last-Translator: Åsmund Skjæveland <aasmunds@fys.uio.no>\n"
+"Language-Team: Norwegian Nynorsk <i18n-nn@lister.ping.uio.no>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms:  nplurals=2; plural=(n != 1);\n"
+"X-Generator: KBabel 1.3.1\n"
+
+#: src/GNOME_NetstatusApplet_Factory.server.in.in.h:1
+msgid "Factory for Network Monitor applet"
+msgstr "Fabrikk for nettverksovervakar-panelprogram"
+
+#: src/GNOME_NetstatusApplet_Factory.server.in.in.h:2
+msgid "Internet"
+msgstr "Internett"
+
+#: src/GNOME_NetstatusApplet_Factory.server.in.in.h:3
+msgid "Monitor network activity"
+msgstr "Overvak nettverksaktivitet"
+
+#: src/GNOME_NetstatusApplet_Factory.server.in.in.h:4
+#: src/netstatus-applet.c:290
+msgid "Network Monitor"
+msgstr "Nettverksovervakar"
+
+#: src/GNOME_NetstatusApplet_Factory.server.in.in.h:5
+msgid "Network Monitor Factory"
+msgstr "Nettverksovervakarfabrikk"
+
+#: src/GNOME_NetstatusApplet.xml.h:1
+msgid "_About"
+msgstr "_Om"
+
+#: src/GNOME_NetstatusApplet.xml.h:2
+msgid "_Help"
+msgstr "_Hjelp"
+
+#: src/GNOME_NetstatusApplet.xml.h:3
+msgid "_Properties"
+msgstr "_Eigenskapar"
+
+#: src/gnome-netstatus.glade.h:1
+msgid "    "
+msgstr "    "
+
+#: src/gnome-netstatus.glade.h:2
+msgid "*"
+msgstr "*"
+
+#: src/gnome-netstatus.glade.h:4
+#, no-c-format
+msgid "0%"
+msgstr "0 %"
+
+#: src/gnome-netstatus.glade.h:5
+msgid "<b>Activity</b>"
+msgstr "<b>Aktivitet</b>"
+
+#: src/gnome-netstatus.glade.h:6
+msgid "<b>Connection</b>"
+msgstr "<b>Tilkopling</b>"
+
+#: src/gnome-netstatus.glade.h:7
+msgid "<b>Internet Protocol (IPv4)</b>"
+msgstr "<b>Internettprotokoll (IPv4)</b>"
+
+#: src/gnome-netstatus.glade.h:8
+msgid "<b>Internet Protocol (IPv6)</b>"
+msgstr "<b>Internettprotokoll (IPv6)</b>"
+
+#: src/gnome-netstatus.glade.h:9
+msgid "<b>Network Device</b>"
+msgstr "<b>Nettverkseining</b>"
+
+#: src/gnome-netstatus.glade.h:10
+msgid "<b>Signal Strength</b>"
+msgstr "<b>Signalstyrke</b>"
+
+#: src/gnome-netstatus.glade.h:11
+msgid "Address:"
+msgstr "Adresse:"
+
+#: src/gnome-netstatus.glade.h:12
+msgid "Broadcast:"
+msgstr "Kringkasting:"
+
+#: src/gnome-netstatus.glade.h:13
+msgid "Con_figure"
+msgstr "Still _inn"
+
+#: src/gnome-netstatus.glade.h:14
+msgid "Destination:"
+msgstr "Mål:"
+
+#: src/gnome-netstatus.glade.h:15
+msgid "General"
+msgstr "Allmennt"
+
+#: src/gnome-netstatus.glade.h:16
+msgid "Received:"
+msgstr "Motteke:"
+
+#: src/gnome-netstatus.glade.h:17
+msgid "Scope:"
+msgstr "Område:"
+
+#: src/gnome-netstatus.glade.h:18
+msgid "Sent:"
+msgstr "Sendt:"
+
+#: src/gnome-netstatus.glade.h:19
+msgid "Status:"
+msgstr "Status:"
+
+#: src/gnome-netstatus.glade.h:20
+msgid "Subnet Mask:"
+msgstr "Subnettmaske:"
+
+#: src/gnome-netstatus.glade.h:21
+msgid "Support"
+msgstr "Støtte"
+
+#: src/gnome-netstatus.glade.h:22
+msgid "Type:"
+msgstr "Type:"
+
+#: src/gnome-netstatus.glade.h:23
+msgid "_Name:"
+msgstr "_Namn:"
+
+#: src/netstatus.schemas.in.h:1
+msgid "Network configuration tool"
+msgstr "Verktøy for å stilla inn nettverket"
+
+#: src/netstatus.schemas.in.h:2
+msgid "Network interface"
+msgstr "Nettverkseining"
+
+#: src/netstatus.schemas.in.h:3
+msgid "The Network Interface monitored by the Network Monitor."
+msgstr "Nettverkseininga nettverksovervakaren ser på."
+
+#: src/netstatus.schemas.in.h:5
+#, no-c-format
+msgid ""
+"This key specifies the name of the network configuration tool which should "
+"be invoked when the \"Configure\" button in the properties dialog is "
+"clicked. If the configuration tool can take a parameter of the interface to "
+"configure you may use %i in the string and it will be substituted with the "
+"interface name before invoking the configuration tool. For example, gnome-"
+"system-tool's network-admin tool takes the interface name through a --"
+"configure parameter. Thus, you could set the value of this key to be: "
+"\"network-admin --configure %i\"."
+msgstr ""
+"Denne nøkkelen inneheld namnet på oppsettsverktøyet som skal startast når "
+"knappen «Still inn» i eigenskapar-dialogen vert klikka på. Dersom "
+"oppsettsverktøyet kan ta nettverkseininga som ein ein parameter, kan du "
+"bruka «%i» i strengen, og det vil verta byta ut med namnet på eininga før "
+"oppsettsverktøyet startar. Til dømes vil gnome-system-tools sitt "
+"nettverksadministrasjonsprogram ta imot namnet på grensesnittet som ein "
+"parameter «--configure». Dermed kan du setja denne nøkkelen til  vera "
+"«network-admin --configure %i»."
+
+#: src/netstatus-applet.c:249
+#, c-format
+msgid "There was an error displaying help: %s"
+msgstr "Ein feil oppstod under framvising av hjelp: %s"
+
+#: src/netstatus-applet.c:271
+msgid "translator_credits"
+msgstr "Åsmund Skjæveland <aasmunds@fys.uio.no>"
+
+#: src/netstatus-applet.c:292
+msgid "The Network Monitor displays the status of a network device."
+msgstr "Nettverksovervakaren viser statusen til ei nettverkseining."
+
+#: src/netstatus-dialog.c:47 src/netstatus-dialog.c:306
+msgid "Unknown"
+msgstr "Ukjend"
+
+#: src/netstatus-dialog.c:110
+msgid "Connection Properties"
+msgstr "Eigenskapar for tilkopling"
+
+#: src/netstatus-dialog.c:116
+#, c-format
+msgid "Connection Properties: %s"
+msgstr "Eigenskapar for tilkopling: %s"
+
+#: src/netstatus-dialog.c:129
+#, c-format
+msgid "%lu packet"
+msgid_plural "%lu packets"
+msgstr[0] "%lu pakke"
+msgstr[1] "%lu pakkar"
+
+#: src/netstatus-dialog.c:390
+#, c-format
+msgid ""
+"There was an error displaying help:\n"
+"%s"
+msgstr ""
+"Ein feil oppstod under framsyning av hjelp:\n"
+"%s"
+
+#: src/netstatus-dialog.c:568
+#, c-format
+msgid "Failed to launch time configuration tool: %s"
+msgstr "Klarte ikkje å starta tidsoppsett-verktøy: %s"
+
+#: src/netstatus-icon.c:381
+#, c-format
+msgid "Network Connection: %s"
+msgstr "Nettverkstilkopling: %s"
+
+#: src/netstatus-icon.c:386
+msgid "Network Connection"
+msgstr "Nettverkstilkopling"
+
+#: src/netstatus-icon.c:809
+msgid "Interface"
+msgstr "Nettverkseining"
+
+#: src/netstatus-icon.c:810
+msgid "The current interface the icon is monitoring."
+msgstr "Nettverkseininga overvakaren ser på no."
+
+#: src/netstatus-icon.c:817
+msgid "Orientation"
+msgstr "Retning"
+
+#: src/netstatus-icon.c:818
+msgid "The orientation of the tray."
+msgstr "Retninga til trauet."
+
+#: src/netstatus-icon.c:826
+msgid "Tooltips Enabled"
+msgstr "Bruk verktøytips"
+
+#: src/netstatus-icon.c:827
+msgid "Whether or not the icon's tooltips are enabled."
+msgstr "Om ikonet har verktøytips eller ikkje."
+
+#: src/netstatus-icon.c:834
+msgid "Show Signal"
+msgstr "Vis signal"
+
+#: src/netstatus-icon.c:835
+msgid "Whether or not the signal strength should be displayed."
+msgstr "Om signalstyrka skal visast."
+
+#: src/netstatus-icon.c:948
+#, c-format
+msgid ""
+"Please contact your system administrator to resolve the following problem:\n"
+"\n"
+"%s"
+msgstr ""
+"Ta kontakt med systemansvarleg for å løysa dette problemet:\n"
+"\n"
+"%s"
+
+#: src/netstatus-iface.c:153
+msgid "Name"
+msgstr "Namn"
+
+#: src/netstatus-iface.c:154
+msgid "The interface name"
+msgstr "Namnet på nettverkseininga"
+
+#: src/netstatus-iface.c:161
+msgid "State"
+msgstr "Tilstand"
+
+#: src/netstatus-iface.c:162
+msgid "The interface state"
+msgstr "Tilstanden til eininga"
+
+#: src/netstatus-iface.c:170
+msgid "Stats"
+msgstr "Statistikk"
+
+#: src/netstatus-iface.c:171
+msgid "The interface packets/bytes statistics"
+msgstr "Statistikk om bytes og pakkar gjennom grensesnittet"
+
+#: src/netstatus-iface.c:178
+msgid "Wireless"
+msgstr "Trådlaus"
+
+#: src/netstatus-iface.c:179
+msgid "Whether the interface is a wireless interface"
+msgstr "Om eininga er ei trådlaus nettverkseining"
+
+#: src/netstatus-iface.c:186
+msgid "Signal"
+msgstr "Signal"
+
+#: src/netstatus-iface.c:187
+msgid "Wireless signal strength percentage"
+msgstr "Signalstyrken til det trådlause signalet, i prosent"
+
+#: src/netstatus-iface.c:196 src/netstatus-util.c:167
+msgid "Error"
+msgstr "Feil"
+
+#: src/netstatus-iface.c:197
+msgid "The current error condition"
+msgstr "Noverande feiltilstand"
+
+#: src/netstatus-iface.c:439 src/netstatus-iface.c:1202
+#, c-format
+msgid "Unable to open socket: %s"
+msgstr "Klarte ikkje opna sokkel: %s"
+
+#: src/netstatus-iface.c:501 src/netstatus-iface.c:1228
+#, c-format
+msgid "SIOCGIFFLAGS error: %s"
+msgstr "SIOCGIFFLAGS feil: %s"
+
+#: src/netstatus-iface.c:875
+msgid "AMPR NET/ROM"
+msgstr "AMPR NET/ROM"
+
+#: src/netstatus-iface.c:878
+msgid "Ethernet"
+msgstr "Ethernet"
+
+#: src/netstatus-iface.c:884
+msgid "AMPR AX.25"
+msgstr "AMPR AX.25"
+
+#: src/netstatus-iface.c:893 src/netstatus-iface.c:1013
+msgid "16/4 Mbps Token Ring"
+msgstr "16/4 Mbps Token Ring"
+
+#: src/netstatus-iface.c:896
+msgid "ARCnet"
+msgstr "ARCnet"
+
+#: src/netstatus-iface.c:902
+msgid "Frame Relay DLCI"
+msgstr "Frame Relay DLCI"
+
+#: src/netstatus-iface.c:908
+msgid "Metricom Starmode IP"
+msgstr "Metricom Starmode IP"
+
+#: src/netstatus-iface.c:911
+msgid "Serial Line IP"
+msgstr "Serial Line IP"
+
+#: src/netstatus-iface.c:914
+msgid "VJ Serial Line IP"
+msgstr "VJ Serial Line IP"
+
+#: src/netstatus-iface.c:917
+msgid "6-bit Serial Line IP"
+msgstr "6-bit Serial Line IP"
+
+#: src/netstatus-iface.c:920
+msgid "VJ 6-bit Serial Line IP"
+msgstr "VJ 6-bit Serial Line IP"
+
+#: src/netstatus-iface.c:926
+msgid "Adaptive Serial Line IP"
+msgstr "Adaptive Serial Line IP"
+
+#: src/netstatus-iface.c:929
+msgid "AMPR ROSE"
+msgstr "AMPR ROSE"
+
+#: src/netstatus-iface.c:932
+msgid "Generic X.25"
+msgstr "Generic X.25"
+
+#: src/netstatus-iface.c:935
+msgid "Point-to-Point Protocol"
+msgstr "Point-to-Point Protocol"
+
+#: src/netstatus-iface.c:941
+msgid "(Cisco)-HDLC"
+msgstr "(Cisco)-HDLC"
+
+#: src/netstatus-iface.c:944
+msgid "LAPB"
+msgstr "LAPB"
+
+#: src/netstatus-iface.c:953
+msgid "IPIP Tunnel"
+msgstr "IPIP Tunnel"
+
+#: src/netstatus-iface.c:959
+msgid "Frame Relay Access Device"
+msgstr "Frame Relay Access Device"
+
+#: src/netstatus-iface.c:965
+msgid "Local Loopback"
+msgstr "Lokal løkkekopling (loopback)"
+
+#: src/netstatus-iface.c:971
+msgid "Fiber Distributed Data Interface"
+msgstr "Fiber Distributed Data Interface"
+
+#: src/netstatus-iface.c:977
+msgid "IPv6-in-IPv4"
+msgstr "IPv6-in-IPv4"
+
+#: src/netstatus-iface.c:989
+msgid "HIPPI"
+msgstr "HIPPI"
+
+#: src/netstatus-iface.c:992
+msgid "Ash"
+msgstr "Ash"
+
+#: src/netstatus-iface.c:995
+msgid "Econet"
+msgstr "Econet"
+
+#: src/netstatus-iface.c:998
+msgid "IrLAP"
+msgstr "IrLAP"
+
+#: src/netstatus-iface.c:1160
+#, c-format
+msgid "SIOCGIFCONF error: %s"
+msgstr "SIOCGIFCONF feil: %s"
+
+#: src/netstatus-iface.c:1253
+msgid "No network devices found"
+msgstr "Fann ingen nettverkseiningar"
+
+#: src/netstatus-sysdeps.c:170
+#, c-format
+msgid "Cannot open /proc/net/dev: %s"
+msgstr "Kan ikkje opna /proc/net/dev: %s"
+
+#: src/netstatus-sysdeps.c:179
+msgid "Could not parse /proc/net/dev. Unknown format."
+msgstr "Klarte ikkje tolka /proc/net/dev. Ukjend format."
+
+#: src/netstatus-sysdeps.c:194 src/netstatus-sysdeps.c:320
+#, c-format
+msgid "Could not parse interface name from '%s'"
+msgstr "Klarte ikkje lesa namn på nettverkseining frå «%s»"
+
+#: src/netstatus-sysdeps.c:207 src/netstatus-sysdeps.c:462
+#, c-format
+msgid ""
+"Could not parse interface statistics from '%s'. prx_idx = %d; ptx_idx = %d; "
+"brx_idx = %d; btx_idx = %d;"
+msgstr ""
+"Klarte ikkje tolka einingstatistikk frå «%s». prx_idx = %d; ptx_idx = %d; "
+"brx_idx = %d; btx_idx = %d;"
+
+#: src/netstatus-sysdeps.c:304
+msgid "Could not parse /proc/net/wireless. Unknown format."
+msgstr "Klarte ikkje tolka /proc/net/wireless. Ukjend format."
+
+#: src/netstatus-sysdeps.c:331
+#, c-format
+msgid "Could not parse wireless details from '%s'. link_idx = %d;"
+msgstr ""
+"Klarte ikkje lesa detaljar om trådlaus tilkopling frå «%s». link_idx = %d;"
+
+#: src/netstatus-sysdeps.c:415
+#, c-format
+msgid "Could not parse command line '%s': %s"
+msgstr "Klarte ikkje tolka kommandolinja «%s»: %s"
+
+#: src/netstatus-sysdeps.c:452
+msgid "Could not parse 'netstat' output. Unknown format"
+msgstr "Klarte ikkje tolka resultatet av kommandoen «netstat». Ukjend format"
+
+#: src/netstatus-util.c:152
+msgid "Disconnected"
+msgstr "Fråkopla"
+
+#: src/netstatus-util.c:155
+msgid "Idle"
+msgstr "Inaktiv"
+
+#: src/netstatus-util.c:158
+msgid "Sending"
+msgstr "Sender"
+
+#: src/netstatus-util.c:161
+msgid "Receiving"
+msgstr "Tek imot"
+
+#: src/netstatus-util.c:164
+msgid "Sending/Receiving"
+msgstr "Sender/tek imot"

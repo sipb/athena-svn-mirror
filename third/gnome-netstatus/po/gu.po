@@ -1,0 +1,505 @@
+# translation of gnome-netstatus.HEAD.gu.po to Gujarati
+# translation of gnome-netstatus.HEAD.po to Gujarati
+# This file is distributed under the same license as the PACKAGE package.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER.
+# Ankit Patel <ankit@redhat.com>, 2004.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gnome-netstatus.HEAD.gu\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-08-03 15:35+0100\n"
+"PO-Revision-Date: 2004-08-23 14:33+0530\n"
+"Last-Translator: Ankit Patel <ankit@redhat.com>\n"
+"Language-Team: Gujarati\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: Plural-Forms: nplurals=2; plural=(n!=1);\n"
+"\n"
+"\n"
+"X-Generator: KBabel 1.3.1\n"
+
+#: src/GNOME_NetstatusApplet_Factory.server.in.in.h:1
+msgid "Factory for Network Monitor applet"
+msgstr "નેટવર્ક મોનિટર એપ્લેટ માટે કારખાનુ"
+
+#: src/GNOME_NetstatusApplet_Factory.server.in.in.h:2
+msgid "Internet"
+msgstr "ઈન્ટરનેટ"
+
+#: src/GNOME_NetstatusApplet_Factory.server.in.in.h:3
+msgid "Monitor network activity"
+msgstr "નેટવર્કની ક્રિયા માટે ધ્યાન રાખો"
+
+#: src/GNOME_NetstatusApplet_Factory.server.in.in.h:4
+#: src/netstatus-applet.c:290
+msgid "Network Monitor"
+msgstr "નેટવર્ક મોનિટર"
+
+#: src/GNOME_NetstatusApplet_Factory.server.in.in.h:5
+msgid "Network Monitor Factory"
+msgstr "નેટવર્ક મોનિટર કારખાનુ"
+
+#: src/GNOME_NetstatusApplet.xml.h:1
+msgid "_About"
+msgstr "વિશે (_A)"
+
+#: src/GNOME_NetstatusApplet.xml.h:2
+msgid "_Help"
+msgstr "મદદ (_H)"
+
+#: src/GNOME_NetstatusApplet.xml.h:3
+msgid "_Properties"
+msgstr "ગુણધર્મો (_P)"
+
+#: src/gnome-netstatus.glade.h:1
+msgid "    "
+msgstr "    "
+
+#: src/gnome-netstatus.glade.h:2
+msgid "*"
+msgstr "*"
+
+#: src/gnome-netstatus.glade.h:4
+#, no-c-format
+msgid "0%"
+msgstr "0%"
+
+#: src/gnome-netstatus.glade.h:5
+msgid "<b>Activity</b>"
+msgstr "<b>ક્રિયા</b>"
+
+#: src/gnome-netstatus.glade.h:6
+msgid "<b>Connection</b>"
+msgstr "<b>જોડાણ</b>"
+
+#: src/gnome-netstatus.glade.h:7
+msgid "<b>Internet Protocol (IPv4)</b>"
+msgstr "<b>ઈન્ટરનેટ પ્રોટોકોલ (IPv4)</b>"
+
+#: src/gnome-netstatus.glade.h:8
+msgid "<b>Internet Protocol (IPv6)</b>"
+msgstr "<b>ઈન્ટરનેટ પ્રોટોકોલ (IPv6)</b>"
+
+#: src/gnome-netstatus.glade.h:9
+msgid "<b>Network Device</b>"
+msgstr "<b>નેટવર્ક ઉપકરણ</b>"
+
+#: src/gnome-netstatus.glade.h:10
+msgid "<b>Signal Strength</b>"
+msgstr "<b>સંકેતની મજબૂતાઈ</b>"
+
+#: src/gnome-netstatus.glade.h:11
+msgid "Address:"
+msgstr "સરનામુ:"
+
+#: src/gnome-netstatus.glade.h:12
+msgid "Broadcast:"
+msgstr "બ્રોડકાસ્ટ:"
+
+#: src/gnome-netstatus.glade.h:13
+msgid "Con_figure"
+msgstr "રુપરેખાંકિત કરો (_f)"
+
+#: src/gnome-netstatus.glade.h:14
+msgid "Destination:"
+msgstr "અંતિમ મુકામ:"
+
+#: src/gnome-netstatus.glade.h:15
+msgid "General"
+msgstr "સામાન્ય"
+
+#: src/gnome-netstatus.glade.h:16
+msgid "Received:"
+msgstr "મેળવેલ:"
+
+#: src/gnome-netstatus.glade.h:17
+msgid "Scope:"
+msgstr "હદ:"
+
+#: src/gnome-netstatus.glade.h:18
+msgid "Sent:"
+msgstr "મોકલાયેલ:"
+
+#: src/gnome-netstatus.glade.h:19
+msgid "Status:"
+msgstr "સ્થિતિ:"
+
+#: src/gnome-netstatus.glade.h:20
+msgid "Subnet Mask:"
+msgstr "સબનેટ માસ્ક:"
+
+#: src/gnome-netstatus.glade.h:21
+msgid "Support"
+msgstr "આધાર"
+
+#: src/gnome-netstatus.glade.h:22
+msgid "Type:"
+msgstr "પ્રકાર:"
+
+#: src/gnome-netstatus.glade.h:23
+msgid "_Name:"
+msgstr "નામ (_N):"
+
+#: src/netstatus.schemas.in.h:1
+msgid "Network configuration tool"
+msgstr "નેટવર્ક રુપરેખાંકન સાધન"
+
+#: src/netstatus.schemas.in.h:2
+msgid "Network interface"
+msgstr "નેટવર્ક ઈન્ટરફેસ"
+
+#: src/netstatus.schemas.in.h:3
+msgid "The Network Interface monitored by the Network Monitor."
+msgstr "નેટવર્ક મોનિટર દ્વારા નેટવર્ક ઈન્ટરફેસનું ધ્યાન રખાય છે."
+
+#: src/netstatus.schemas.in.h:5
+#, no-c-format
+msgid ""
+"This key specifies the name of the network configuration tool which should "
+"be invoked when the \"Configure\" button in the properties dialog is "
+"clicked. If the configuration tool can take a parameter of the interface to "
+"configure you may use %i in the string and it will be substituted with the "
+"interface name before invoking the configuration tool. For example, gnome-"
+"system-tool's network-admin tool takes the interface name through a --"
+"configure parameter. Thus, you could set the value of this key to be: "
+"\"network-admin --configure %i\"."
+msgstr ""
+"આ કી નેટવર્ક રુપરેખાંકન સાધનનું નામ સ્પષ્ટ કરે છે કે જે જ્યારે ગુણધર્મ સંવાદમાં \"રુપરેખાંકન\" બટન "
+"ચિહ્નિત કરાય ત્યારે જાગૃત થાય છે. જો રુપરેખાંકન કરવા માટે રુપરેખાંકન સાધન ઈન્ટરફેસના "
+"પરિમાણ લે તો તમે %i મા શબ્દમાળા વાપરી શકો છો અને તે રુપરેખાંકન સાધન જાગૃત કર્યા પહેલાં "
+"તેમાં મૂકવામાં આવે છે. ઉદારહરણ તરીકે જીનોમ સિસ્ટમ સાધનોના નેટવર્ક સંચાલક સાધનો ઈન્ટરફેસનું "
+"નામ રુપરેખાંકન પરિમાણો તરફથી -- દ્વારા લઈ શકે છે. આ રીતે, તમે આ કીની કિંમત આ સુયોજિત "
+"કરી શક્યા હોત: \"network-admin --configure %i\"."
+
+#: src/netstatus-applet.c:249
+#, c-format
+msgid "There was an error displaying help: %s"
+msgstr "ત્યાં મદદ દર્શાવવામાં ભૂલ હતી: %s"
+
+#: src/netstatus-applet.c:271
+msgid "translator_credits"
+msgstr "અંકિત પટેલ <ankit@redhat.com>"
+
+#: src/netstatus-applet.c:292
+msgid "The Network Monitor displays the status of a network device."
+msgstr "નેટવર્ક મોનિટર નેટવર્ક ઉપકરણની સ્થિતિ પ્રદર્શિત કરે છે."
+
+#: src/netstatus-dialog.c:47 src/netstatus-dialog.c:306
+msgid "Unknown"
+msgstr "અજ્ઞાત"
+
+#: src/netstatus-dialog.c:110
+msgid "Connection Properties"
+msgstr "જોડાણ ગુણધર્મો"
+
+#: src/netstatus-dialog.c:116
+#, c-format
+msgid "Connection Properties: %s"
+msgstr "જોડાણ ગુણધર્મો: %s"
+
+#: src/netstatus-dialog.c:129
+#, c-format
+msgid "%lu packet"
+msgid_plural "%lu packets"
+msgstr[0] "%lu પેકેટ"
+msgstr[1] "%lu પેકેટો"
+
+#: src/netstatus-dialog.c:390
+#, c-format
+msgid ""
+"There was an error displaying help:\n"
+"%s"
+msgstr ""
+"ત્યાં મદદ દર્શાવવામાં ભૂલ હતી:\n"
+"%s"
+
+#: src/netstatus-dialog.c:568
+#, c-format
+msgid "Failed to launch time configuration tool: %s"
+msgstr "સમય રુપરેખાંકન સાધન લાવવામાં નિષ્ફળ: %s"
+
+#: src/netstatus-icon.c:381
+#, c-format
+msgid "Network Connection: %s"
+msgstr "નેટવર્ક જોડાણ: %s"
+
+#: src/netstatus-icon.c:386
+msgid "Network Connection"
+msgstr "નેટવર્ક જોડાણ"
+
+#: src/netstatus-icon.c:809
+msgid "Interface"
+msgstr "ઈન્ટરફેસ"
+
+#: src/netstatus-icon.c:810
+msgid "The current interface the icon is monitoring."
+msgstr "વર્તમાન ઈન્ટરફેસ કે જે ચિહ્ન છે તેનું ધ્યાન રાખી રહ્યુ છે."
+
+#: src/netstatus-icon.c:817
+msgid "Orientation"
+msgstr "દિશા"
+
+#: src/netstatus-icon.c:818
+msgid "The orientation of the tray."
+msgstr "ટ્રેની દિશા."
+
+#: src/netstatus-icon.c:826
+msgid "Tooltips Enabled"
+msgstr "સાધનમદદ સક્રિય કરેલ છે"
+
+#: src/netstatus-icon.c:827
+msgid "Whether or not the icon's tooltips are enabled."
+msgstr "શું ચિહ્નની સાધનમદદો સક્રિય કરેલ છે કે નહિં."
+
+#: src/netstatus-icon.c:834
+msgid "Show Signal"
+msgstr "સંકેત બતાવો"
+
+#: src/netstatus-icon.c:835
+msgid "Whether or not the signal strength should be displayed."
+msgstr "શું સંકેતની મજબૂતાઈ પ્રદર્શિત થશે કે નહિં."
+
+#: src/netstatus-icon.c:948
+#, c-format
+msgid ""
+"Please contact your system administrator to resolve the following problem:\n"
+"\n"
+"%s"
+msgstr ""
+"નીચેની સમસ્યા ઉકેલવા માટે મહેરબાની કરીને તમારા સિસ્ટમ સંચાલકનો સંપર્ક કરો:\n"
+"\n"
+"%s"
+
+#: src/netstatus-iface.c:153
+msgid "Name"
+msgstr "નામ"
+
+#: src/netstatus-iface.c:154
+msgid "The interface name"
+msgstr "ઈન્ટરફેસ નામ"
+
+#: src/netstatus-iface.c:161
+msgid "State"
+msgstr "સ્થિતિ"
+
+#: src/netstatus-iface.c:162
+msgid "The interface state"
+msgstr "ઈન્ટફેસની સ્થિતિ"
+
+#: src/netstatus-iface.c:170
+msgid "Stats"
+msgstr "સ્થિતિ"
+
+#: src/netstatus-iface.c:171
+msgid "The interface packets/bytes statistics"
+msgstr "ઈન્ટરફેસ પેકેટો/બાઈટોની સ્થિતિઓ"
+
+#: src/netstatus-iface.c:178
+msgid "Wireless"
+msgstr "વાયરલેસ"
+
+#: src/netstatus-iface.c:179
+msgid "Whether the interface is a wireless interface"
+msgstr "શું ઈન્ટરફેસ વાયરલેસ ઈન્ટરફેસ છે"
+
+#: src/netstatus-iface.c:186
+msgid "Signal"
+msgstr "સંકેત"
+
+#: src/netstatus-iface.c:187
+msgid "Wireless signal strength percentage"
+msgstr "વાયરલેસ સંકેતની મજબૂતાઈની ટકાવારી"
+
+#: src/netstatus-iface.c:196 src/netstatus-util.c:167
+msgid "Error"
+msgstr "ભૂલ"
+
+#: src/netstatus-iface.c:197
+msgid "The current error condition"
+msgstr "વર્તમાન ભૂલની શરત"
+
+#: src/netstatus-iface.c:439 src/netstatus-iface.c:1202
+#, c-format
+msgid "Unable to open socket: %s"
+msgstr "સોકેટ ખોલવા સમર્થ નથી: %s"
+
+#: src/netstatus-iface.c:501 src/netstatus-iface.c:1228
+#, c-format
+msgid "SIOCGIFFLAGS error: %s"
+msgstr "SIOCGIFFLAGS ભૂલ: %s"
+
+#: src/netstatus-iface.c:875
+msgid "AMPR NET/ROM"
+msgstr "AMPR NET/ROM"
+
+#: src/netstatus-iface.c:878
+msgid "Ethernet"
+msgstr "ઈથરનેટ"
+
+#: src/netstatus-iface.c:884
+msgid "AMPR AX.25"
+msgstr "AMPR AX.25"
+
+#: src/netstatus-iface.c:893 src/netstatus-iface.c:1013
+msgid "16/4 Mbps Token Ring"
+msgstr "16/4 Mbps ટોકન રીંગ"
+
+#: src/netstatus-iface.c:896
+msgid "ARCnet"
+msgstr "ARCnet"
+
+#: src/netstatus-iface.c:902
+msgid "Frame Relay DLCI"
+msgstr "ેફ્રેમ રીલેય DLCI"
+
+#: src/netstatus-iface.c:908
+msgid "Metricom Starmode IP"
+msgstr "મેટ્રિકોમ સ્ટારમોડ IP"
+
+#: src/netstatus-iface.c:911
+msgid "Serial Line IP"
+msgstr "સિરીયલ લાઈન IP"
+
+#: src/netstatus-iface.c:914
+msgid "VJ Serial Line IP"
+msgstr "VJ સિરીયલ લાઈન IP"
+
+#: src/netstatus-iface.c:917
+msgid "6-bit Serial Line IP"
+msgstr "૬-બીટ સિરીયલ લાઈન IP"
+
+#: src/netstatus-iface.c:920
+msgid "VJ 6-bit Serial Line IP"
+msgstr "VJ ૬-બીટ સિરીયલ લાઈન IP"
+
+#: src/netstatus-iface.c:926
+msgid "Adaptive Serial Line IP"
+msgstr "એડેપ્ટીવ સિરીયલ લાઈન IP"
+
+#: src/netstatus-iface.c:929
+msgid "AMPR ROSE"
+msgstr "AMPR ROSE"
+
+#: src/netstatus-iface.c:932
+msgid "Generic X.25"
+msgstr "સામાન્ય X.25"
+
+#: src/netstatus-iface.c:935
+msgid "Point-to-Point Protocol"
+msgstr "પોઈન્ટ-ટુ-પોઈન્ટ પ્રોટોકોલ"
+
+#: src/netstatus-iface.c:941
+msgid "(Cisco)-HDLC"
+msgstr "(સિસ્કો)-HDLC"
+
+#: src/netstatus-iface.c:944
+msgid "LAPB"
+msgstr "LAPB"
+
+#: src/netstatus-iface.c:953
+msgid "IPIP Tunnel"
+msgstr "IPIP ટનલ"
+
+#: src/netstatus-iface.c:959
+msgid "Frame Relay Access Device"
+msgstr "ફ્રેમ રીલેય ઉપકરણ ચલાવો"
+
+#: src/netstatus-iface.c:965
+msgid "Local Loopback"
+msgstr "સ્થાનિક લુપબેક"
+
+#: src/netstatus-iface.c:971
+msgid "Fiber Distributed Data Interface"
+msgstr "ફાયબર ડિસ્ટ્રીબ્યુટેડ માહિતી ઈન્ટરફેસ"
+
+#: src/netstatus-iface.c:977
+msgid "IPv6-in-IPv4"
+msgstr "IPv6-in-IPv4"
+
+#: src/netstatus-iface.c:989
+msgid "HIPPI"
+msgstr "HIPPI"
+
+#: src/netstatus-iface.c:992
+msgid "Ash"
+msgstr "રાખ"
+
+#: src/netstatus-iface.c:995
+msgid "Econet"
+msgstr "ઈકોનેટ"
+
+#: src/netstatus-iface.c:998
+msgid "IrLAP"
+msgstr "IrLAP"
+
+#: src/netstatus-iface.c:1160
+#, c-format
+msgid "SIOCGIFCONF error: %s"
+msgstr "SIOCGIFCONF ભૂલ: %s"
+
+#: src/netstatus-iface.c:1253
+msgid "No network devices found"
+msgstr "કોઈ નેટવર્ક ઉપકરણો મળ્યા નથી"
+
+#: src/netstatus-sysdeps.c:170
+#, c-format
+msgid "Cannot open /proc/net/dev: %s"
+msgstr "/proc/net/dev ખોલી શકતા નથી: %s"
+
+#: src/netstatus-sysdeps.c:179
+msgid "Could not parse /proc/net/dev. Unknown format."
+msgstr "/proc/net/dev નું પદચ્છેદ કરી શક્યા નહિં. અજ્ઞાત બંધારણ."
+
+#: src/netstatus-sysdeps.c:194 src/netstatus-sysdeps.c:320
+#, c-format
+msgid "Could not parse interface name from '%s'"
+msgstr "'%s' માંથી ઈન્ટરફેસ નામનું પદચ્છેદ કરી શક્યા નહિં"
+
+#: src/netstatus-sysdeps.c:207 src/netstatus-sysdeps.c:462
+#, c-format
+msgid ""
+"Could not parse interface statistics from '%s'. prx_idx = %d; ptx_idx = %d; "
+"brx_idx = %d; btx_idx = %d;"
+msgstr ""
+"'%s' માંથી ઈન્ટરફેસની સ્થિતિનું પદચ્છેદ કરી શક્યા નહિં. prx_idx = %d; ptx_idx = %d; "
+"brx_idx = %d; btx_idx = %d;"
+
+#: src/netstatus-sysdeps.c:304
+msgid "Could not parse /proc/net/wireless. Unknown format."
+msgstr "/proc/net/wireless નું પદચ્છેદ કરી શક્યા નહિં. અજ્ઞાત બંધારણ."
+
+#: src/netstatus-sysdeps.c:331
+#, c-format
+msgid "Could not parse wireless details from '%s'. link_idx = %d;"
+msgstr "'%s' માંથી વાયરલેસ વિગતોનું પદચ્છેદ કરી શક્યા નહિં. link_idx = %d;"
+
+#: src/netstatus-sysdeps.c:415
+#, c-format
+msgid "Could not parse command line '%s': %s"
+msgstr "આદેશ વાક્ય '%s' નું પદચ્છેદ કરી શક્યા નહિં: %s"
+
+#: src/netstatus-sysdeps.c:452
+msgid "Could not parse 'netstat' output. Unknown format"
+msgstr "'netstat' નું આઉટપુટ પદચ્છેદ કરી શક્યા નહિં. અજ્ઞાત બંધારણ"
+
+#: src/netstatus-util.c:152
+msgid "Disconnected"
+msgstr "સંપર્ક તૂટી ગયેલ છે"
+
+#: src/netstatus-util.c:155
+msgid "Idle"
+msgstr "આળસુ"
+
+#: src/netstatus-util.c:158
+msgid "Sending"
+msgstr "મોકલી રહ્યા છીએ"
+
+#: src/netstatus-util.c:161
+msgid "Receiving"
+msgstr "મેળવી રહ્યા છીએ"
+
+#: src/netstatus-util.c:164
+msgid "Sending/Receiving"
+msgstr "મોકલી રહ્યા છીએ/મેળવી રહ્યા છીએ"
