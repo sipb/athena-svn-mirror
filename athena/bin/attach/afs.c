@@ -1,10 +1,10 @@
 /*
- * $Id: afs.c,v 1.16 1997-12-17 18:17:32 ghudson Exp $
+ * $Id: afs.c,v 1.17 1998-03-17 03:49:52 cfields Exp $
  *
  * Copyright (c) 1990,1992 by the Massachusetts Institute of Technology.
  */
 
-static char *rcsid = "$Id: afs.c,v 1.16 1997-12-17 18:17:32 ghudson Exp $";
+static char *rcsid = "$Id: afs.c,v 1.17 1998-03-17 03:49:52 cfields Exp $";
 
 #include "attach.h"
 
@@ -37,10 +37,11 @@ static int afs_auth_internal();
  * link.  This is NOT GUARANTEED to always be the case. 
  */
 
-afs_attach(at, mopt, errorout)
+afs_attach(at, mopt, errorout, mountpoint_list)
 	struct _attachtab *at;
 	struct mntopts	*mopt;
 	int errorout;
+	string_list **mountpoint_list;
 {
 	struct	stat	statbuf;
 	char	buf[BUFSIZ];
