@@ -12,7 +12,7 @@
  *
  */
 
-#include "../Xj.tmpl"
+#include "../Xj.defs"
 
 #include "mit-copyright.h"
 
@@ -70,25 +70,20 @@ AllTarget(${DASH})
 
 NormalProgramTarget($(COMPILE),$(CMP_OBJS),$(XJLIB),,$(CMP_LIBS))
 NormalProgramTarget($(DASH),$(OBJS),$(XJLIB),,$(D_LIBS))
-InstallProgram($(DASH),$(ATHBINDIR)/$(DASH))
+InstallProgram($(DASH),$(DASH_BIN_DIR))
 
-InstallNonExec(${DASH}.1,${ATHMANDIR}/${DASH}.1)
-InstallNonExec(${DASHRESOURCES},${ATHXAPPDIR}/${DASHRESOURCES})
-InstallNonExec(arrow,${ATHXBITDIR}/arrow)
-InstallNonExec(question,${ATHXBITDIR}/question)
-InstallNonExec(Dash.xbm,${ATHXBITDIR}/Dash.xbm)
+InstallNonExec(${DASH}.1,${MAN_DIR}/${DASH}.1)
+InstallNonExec(${DASHRESOURCES},${DASH_APP_DIR}/${DASHRESOURCES})
+InstallNonExec(arrow,${DASH_XBM_DIR}/arrow)
+InstallNonExec(question,${DASH_XBM_DIR}/question)
+InstallNonExec(Dash.xbm,${DASH_XBM_DIR}/Dash.xbm)
 
 DependTarget()
 
-install::
-	. $(ATHVERS); \
-	$(INSTALL) -m 0444 /afs/athena.mit.edu/system/config/dash/`machtype`/Dash.menus.$$ATHMAJV$$ATHMINV $(DESTDIR)/usr/athena/lib/Dash.fallback
-
-install::
-	${RM} $(DESTDIR)/usr/athena/lib/Dash.menus
-	. $(ATHVERS); \
-	ln -s /afs/athena.mit.edu/system/config/dash/`machtype`/Dash.menus.$$ATHMAJV$$ATHMINV $(DESTDIR)/usr/athena/lib/Dash.menus; \
-	ln -s /afs/athena.mit.edu/system/config/dash/`machtype`/Dash.menus.$$ATHMAJV$$ATHMINV.cmp $(DESTDIR)/usr/athena/lib/Dash.menus.cmp
+$(DASHRESOURCES): Dash.pre-sed
+	${RM} ${DASHRESOURCES}
+	sed -e "s,DASH_MENUS,$(DASH_MENUS)," Dash.pre-sed | \
+	sed -e "s,DASH_FALLBACK,$(DASH_FALLBACK)," > $(DASHRESOURCES)
 
 compile_menu.o:	compile_menu.c
 	${CC} -c -DMENU_COMPILER ${CFLAGS} compile_menu.c

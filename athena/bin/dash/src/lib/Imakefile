@@ -12,7 +12,7 @@
  *
  */
 
-#include "../Xj.tmpl"
+#include "../Xj.defs"
 
 #include "mit-copyright.h"
 
@@ -24,17 +24,22 @@ SHAPE_DEF	=	-DSHAPE
 SHAPE_DEF	=
 #endif
 
-#if defined(AIXArchitecture)
-SPECIALOBJS	=	strcasecmp.o
-SPECIAL_C	=	strcasecmp.c
+#if defined(AIXArchitecture) || defined(NeedStrcasecmp)
+STRCASEOBJS	=	strcasecmp.o
+STRCASE_C	=	strcasecmp.c
 #else
-#if defined(RtArchitecture) || (defined(VaxArchitecture) && !defined(UltrixArchitecture))
-SPECIALOBJS	=	vsprintf.o
-SPECIAL_C	=	vsprintf.c
-#else
-SPECIALOBJS	=
-SPECIAL_C	=
+STRCASEOBJS	=
+STRCASE_C	=
 #endif
+
+#if defined(RtArchitecture) \
+  || (defined(VaxArchitecture) && !defined(UltrixArchitecture)) \
+  || defined(NeedVsprintf)
+VSPRINTFOBJS	=	vsprintf.o
+VSPRINTF_C	=	vsprintf.c
+#else
+VSPRINTFOBJS	=
+VSPRINTF_C	=
 #endif
 
 STR_OBJS	=	StrToBool.o StrToDirect.o StrToJust.o \
@@ -58,15 +63,15 @@ L_HDRS		=	${LABEL_HDRS}
 OBJS		=	AClock.o Arrow.o Button.o DClock.o Drawing.o \
 			Form.o Jets.o ${L_OBJS} Menu.o ScrollBar.o \
 			TextDisplay.o Tree.o Window.o \ 
-			hash.o registerCallbacks.o xselect.o warn.o \
-			XjVaCreateJet.o \
-			${STR_OBJS} ${SPECIALOBJS}
+			hash.o registerCB.o xselect.o warn.o \
+			VaCreateJet.o \
+			${STR_OBJS} ${VSPRINTFOBJS} ${STRCASEOBJS}
 SRCS		=	AClock.c Arrow.c Button.c DClock.c Drawing.c \
 			Form.c Jets.c ${L_SRCS} Menu.c ScrollBar.c \
 			TextDisplay.c Tree.c Window.c \ 
-			hash.c registerCallbacks.c xselect.c warn.c \
-			XjVaCreateJet.c \
-			${STR_C} ${SPECIAL_C}
+			hash.c registerCB.c xselect.c warn.c \
+			VaCreateJet.c \
+			${STR_C} ${VSPRINTF_C} ${STRCASE_C}
 HEADERS		=	AClock.h Arrow.h Button.h DClock.h Drawing.h \
 			Form.h Jets.h ${L_HDRS} Menu.h ScrollBar.h \
 			TextDisplay.h Tree.h Window.h \
@@ -79,26 +84,29 @@ NOTUSED		=	Icon.c StripChart.c get_load.c get_cpu.c List.c
 SIN_LIBS	=	-lm
 
 #ifdef RtArchitecture
-DEFINES		=	${SHAPE_DEF} -D_BSD -D_BSD_INCLUDES \
-			-DAIXV=12 \
-			-DAPPDEFDIR=\"/usr/athena/lib/X11/app-defaults\" \
-			-DBITMAPDIR=\"/usr/athena/lib/X11/bitmaps\"
+RT_DEFINES	=	-D_BSD -D_BSD_INCLUDES -DAIXV=12
 #else
-DEFINES		=	${SHAPE_DEF} \
-			-DAPPDEFDIR=\"/usr/athena/lib/X11/app-defaults\" \
-			-DBITMAPDIR=\"/usr/athena/lib/X11/bitmaps\"
+RT_DEFINES	=
 #endif
+
+DEFINES		=	${SHAPE_DEF} ${RT_DEFINES} \
+			-DAPPDEFDIR=\"${XJ_APP_DIR}\" \
+			-DBITMAPDIR=\"${XJ_XBM_DIR}\"
 
 
 
 all::	sintable.h
 
 NormalLibraryTarget(Xj,${OBJS})
-InstallLibrary(Xj,${USRLIBDIR})
+#if defined(InstallXj)
+InstallLibrary(Xj,${XJ_LIB_DIR})
+#endif
 
 BuildIncludes($(HEADERS),Xj,..)
-MakeDirectories(install,$(INCDIR)/Xj)
-InstallMultiple($(HEADERS),$(INCDIR)/Xj)
+#if defined(InstallXj)
+MakeDirectories(install,$(XJ_INC_DIR)/Xj)
+InstallMultiple($(HEADERS),$(XJ_INC_DIR)/Xj)
+#endif
 
 
 NormalProgramTarget(${SINTABLE},${SIN_OBJS},,,${SIN_LIBS})
