@@ -1,8 +1,13 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/track/stamp.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/stamp.c,v 4.2 1988-05-24 17:41:08 don Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/stamp.c,v 4.3 1988-05-25 21:25:02 don Exp $
  *
  *	$Log: not supported by cvs2svn $
+ * Revision 4.2  88/05/24  17:41:08  don
+ * beefed up garbled-statfile messages, to aid in finding a bug.
+ * the bug is a garbled-statfile message at the end of an update.
+ * this is intermittent.
+ * 
  * Revision 4.1  88/05/04  18:14:26  shanzer
  * fixed a bug in sort_entries(); its augmentation of a parent-entry's
  * exception-list didn't always work.	-don
@@ -61,7 +66,7 @@
  */
 
 #ifndef lint
-static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/stamp.c,v 4.2 1988-05-24 17:41:08 don Exp $";
+static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/stamp.c,v 4.3 1988-05-25 21:25:02 don Exp $";
 #endif lint
 
 #include "mit-copyright.h"
@@ -262,29 +267,28 @@ sort_entries() {
 	for (     A = &entries[ i = 1  ]; i < entrycnt; A = &entries[ ++i]) {
 	    for ( C = &entries[ j = i+1]; j < entrycnt; C = &entries[ ++j]) {
 		  switch(  keyncmp( C->sortkey, i)) {
-		  case 1: break;			/* get next A */
+		  case 1:  break;			/* get next A */
 		  case 0:  tail = C->fromfile + A->keylen;
 		  	   while( '/' == *tail) tail++;
 			   if ( A->names.table)
 			       store( add_list_elt( tail, DONT_TRACK, NULL),
 				      &A->names);
 			   else add_list_elt( tail, DONT_TRACK, LIST( list));
-			   break;
-		  case -1:  continue;	/* unlikely */
+		  case -1: continue;	/* unlikely */
 		  }
-		  if ( ! list.table);
-		  else if ( ! A->names.table) {
-			   A->names.table = list.table;
-			   A->names.shift = list.shift;
-			   list.table = NULL;
-			   list.shift = 0;
-			   list2hashtable( &A->names);
-		  }
-		  else {
-			   sprintf(errmsg, "sort_entries: internal error\n");
-			   do_panic();
-		  }
-		  break; /* leave C loop, get next A */
+	     break; /* get next A */
+	     }
+	     if ( ! list.table);
+	     else if ( ! A->names.table) {
+		      A->names.table = list.table;
+		      A->names.shift = list.shift;
+		      list.table = NULL;
+		      list.shift = 0;
+		      list2hashtable( &A->names);
+	     }
+	     else {
+		      sprintf(errmsg, "sort_entries: internal error\n");
+		      do_panic();
 	     }
 	}
 }
