@@ -54,8 +54,8 @@ choose_client() {
 
 	set X `uname -v`; shift
 	case $2 in
-	SMP) MP=.mp ;;	# MP system
-	*)   MP= ;;	# SP system
+	SMP) MP=.mp; MPFLAG="-P smp";;	# MP system
+	*)   MP= ; MPFLAG= ;		# SP system
 	esac
 
 	# For now, just use uname -r to get the module version. 
@@ -76,7 +76,7 @@ load_client() {
 		echo AFS module $LIBAFS does not exist. Not starting AFS.
 		exit 1
 	fi
-	/sbin/insmod -f -m /usr/vice/etc/modload/$LIBAFS > /usr/vice/etc/modload/libafs.map 2>&1
+	/sbin/insmod $MPFLAG -f -m /usr/vice/etc/modload/$LIBAFS > /usr/vice/etc/modload/libafs.map 2>&1
 }
 
 case "$1" in 
@@ -107,6 +107,7 @@ case "$1" in
 		$AFS_POST_INIT
 	fi
 
+	touch /var/lock/subsys/afs
 	;;
 
   stop)
@@ -130,6 +131,7 @@ case "$1" in
 		/sbin/rmmod $LIBAFS
 	fi
 
+	rm -f /var/lock/subsys/afs
 	;;
 
   *)
