@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/sh.func.c,v 1.1.1.1 1996-10-02 06:09:21 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/sh.func.c,v 1.2 1997-02-05 06:54:23 ghudson Exp $ */
 /*
  * sh.func.c: csh builtin functions
  */
@@ -36,7 +36,7 @@
  */
 #include "sh.h"
 
-RCSID("$Id: sh.func.c,v 1.1.1.1 1996-10-02 06:09:21 ghudson Exp $")
+RCSID("$Id: sh.func.c,v 1.2 1997-02-05 06:54:23 ghudson Exp $")
 
 #include "ed.h"
 #include "tw.h"
@@ -1655,7 +1655,7 @@ getval(lp, v)
 	cp++;
     if (*cp == 0) {
 	if (*v == 0)
-	    return restrict_limit((f + 0.5) * lp->limdiv);
+	    return f == 0.0 ? (RLIM_TYPE) 0 : restrict_limit((f + 0.5) * lp->limdiv);
 	cp = *v;
     }
     switch (*cp) {
@@ -1663,7 +1663,7 @@ getval(lp, v)
     case ':':
 	if (lp->limconst != RLIMIT_CPU)
 	    goto badscal;
-	return restrict_limit((f * 60.0 + atof(short2str(cp + 1))));
+	return f == 0.0 ? (RLIM_TYPE) 0 : restrict_limit((f * 60.0 + atof(short2str(cp + 1))));
     case 'h':
 	if (lp->limconst != RLIMIT_CPU)
 	    goto badscal;
