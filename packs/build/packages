@@ -1,4 +1,4 @@
-# $Id: packages,v 1.267 2004-03-23 20:44:12 rbasch Exp $
+# $Id: packages,v 1.268 2004-03-26 20:23:56 ghudson Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -179,7 +179,7 @@ third/gettext			except linux requires libiconv
 third/glib
 third/glib2			requires libiconv,gettext
 third/gmp			except linux
-third/gnome2-user-docs		except linux requires scrollkeeper
+third/gnome2-user-docs		requires scrollkeeper
 third/gnome-applets		requires gettext,intltool,gtk2,libgnome,libgnomeui,gnome-vfs2,GConf2,scrollkeeper,gnome-panel,libwnck,libglade2,gail
 third/gnome-desktop		requires gettext,gtk2,libgnomecanvas,libgnomeui,gnome-vfs2,startup-notification
 third/gnome-icon-theme		requires gettext,intltool
@@ -291,7 +291,7 @@ third/xmh
 third/xntp			package ntp
 third/xpm			on solaris
 third/xscreensaver		requires krb5,control-center
-third/yelp			except linux requires ORBit2,glib2,libgnome,libxslt,gnome-vfs2,libgnomeui,libbonobo,GConf2,bzip2,popt,libgtkhtml,libglade2
+third/yelp			requires ORBit2,glib2,libgnome,libxslt,gnome-vfs2,libgnomeui,libbonobo,GConf2,bzip2,popt,libgtkhtml,libglade2
 third/zenity			requires gtk2,libglade2,GConf2,libgnomecanvas,scrollkeeper,gettext
 
 # Final packs stuff
