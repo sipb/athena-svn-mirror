@@ -17,6 +17,7 @@ man1dir		= $(mandir)/man1
 mansuffix	= 1
 
 CC		= @CC@
+CPPFLAGS	= @CPPFLAGS@
 CFLAGS		= @CFLAGS@
 LDFLAGS		= @LDFLAGS@
 DEFS		= -DSTANDALONE @DEFS@
@@ -363,7 +364,7 @@ $(UTIL_OBJS):
 
 # How we build object files in this directory.
 .c.o:
-	$(CC) -c $(INCLUDES) $(DEFS) $(CFLAGS) $(X_CFLAGS) $<
+	$(CC) -c $(INCLUDES) $(DEFS) $(CPPFLAGS) $(CFLAGS) $(X_CFLAGS) $<
 
 # Some hacks use a slightly-differently-compiled variant of this file.
 # This is how to make the the other .o file from it.
