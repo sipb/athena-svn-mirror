@@ -1,3 +1,76 @@
+2.2.101 ("Fidelio"):
+
+  * Fixes:
+
+	- Get gdb backtraces as non-UTF8 so we can read invalid UTF-8 strings
+          (fixes #102493).
+
+
+2.2.100 ("I should be there, baby!"):
+
+  * Fixes:
+
+	- Workaround for all-applications gnome-vfs bug.
+
+	- Change "Refresh" button to "Update" (bug #101693).
+
+	- Some text corrections (bugs #86410, #99564)
+
+
+  * Improvements:
+
+	- When reporting a bug from scratch, after the app is selected, if 
+	  the component is known, preselect it. Thanks to Kristian Rietveld
+
+	- Use the GNOME 2 cool logo for GNOME products.
+
+2.2.99 ("Rain Dogs"): 
+
+  * Fixes:
+
+	- fix incorrect url (bug #86711)
+
+	- fix a leak (bug #95981, Kjartan)
+
+	- make file saving  (bug #84914)
+
+	
+  * Improvements:
+
+	- Try to update bugzilla files only once a day, and get first md5sums
+	  to check if it's really needed. New update dialog (HIG compliant) at
+	  startup time.
+
+	- When invoked from crash, skip Application/product and component
+	  step, because we have the info from .dekstop file. If invoked from
+	  scratch, skip only product step. We should be able to autoselect the
+	  component, but cannot do with gtktreeview.
+
+	- Get GNOME version from $prefix/share/gnome-about/gnome-version.xml
+	
+	- Use hash tables for components and products
+
+	- Present the user a list of applications from all-applications:///
+	  Get bugzilla component and product from the .desktop entries (and
+	  query bonobo-activation for applets).
+	  Allow to choose between Applications of Bugzilla products.
+
+	- Port to GnomeIconTheme
+
+2.2.1:
+
+  * Fixes:
+
+	- make stack saving work (bug #80334)
+
+	- fix 'cancelling bug-buddy makes old app hang' (bug #86404)
+
+	- gdb truncation bug (#82722)
+
+  * Improvements:
+
+	- prompt the user before overwriting a file (#84914)
+
 2.2.0:
 
   * Fixes:

@@ -1,3 +1,311 @@
+2002-01-19  Fernando Herrera  <fherrera@onirica.com>
+
+	* NEWS: 
+	* bugzilla/*/*:
+	* configure.in: 2.2.101 release "Fidelio"
+
+2003-01-14  Pablo Saratxaga <pablo@mandrakesoft.com>
+
+	* configure.in: Added Amharic (am) and Macedonian (mk) to ALL_LINGUAS
+
+2003-01-05  Fernando Herrera  <fherrera@onirica.com>
+
+        * src/gdb-buddy.c: (get_trace_from_pair): set NULL encoding for gdb
+          output, so g_io_channel can read text with invalid UTF-8 strings
+	  (fixes #102493).
+
+2002-12-31  Fernando Herrera  <fherrera@onirica.com>
+
+	* src/bug-buddy.desktop.in: add StartupNotify
+
+2002-12-31  Fernando Herrera  <fherrera@onirica.com>
+
+	* NEWS: 
+	* bugzilla/*/*:
+	* configure.in: 2.2.100 release "I should be there, baby!"
+	* pixmaps/gnome.png: Update GNOME logo to the new version.
+
+2002-12-29  Fernando Herrera  <fherrera@onirica.com>
+
+        * src/united-states-of-bug-buddy.c: Little text typo. Fixes (#99564)
+          Thanks to Christian Rose for pointing this.
+
+2002-12-29  Fernando Herrera  <fherrera@onirica.com>
+
+	* src/bug-buddy.glade: Don't use gtk stock button "Refresh". Use
+	  "Update" as label to be consistent with the text (fixes #101693).
+	  Remove references to help button (fixes #86410).
+
+2002-12-29  Fernando Herrera  <fherrera@onirica.com>
+
+	* src/united-states-of-bug-buddy.c: (select_component_row), 
+	  (on_druid_next_clicked): If component is in the .desktop file
+	  preselect it. (Thanks to Kristian Rietveld for its gtktree
+	  wisdom)
+
+2002-12-29  Fernando Herrera  <fherrera@onirica.com>
+
+	* src/bugzilla.c: (visit_cb): don't use all-applications because it is
+	  not working. Use applications-all-users:/// and check for recursion
+
+2002-12-28  Fernando Herrera  <fherrera@onirica.com>
+
+         * configure.in: requiere libgnomeui 2.1.x for gnome-icom-theme
+
+2002-12-16  Fernando Herrera  <fherrera@onirica.com>
+
+	* MAINTAINERS:
+	* NEWS:
+	* README.STABLE_BRANCH:
+	* TODO: 
+
+	* bugzilla/gnome/config:
+	* bugzilla/gnome/mostfreq:
+	* bugzilla/gnome/products:
+	* bugzilla/ximian/config:
+	* bugzilla/ximian/mostfreq:
+	* bugzilla/ximian/products: Updated for the new release.
+
+2002-12-15  Fernando Herrera  <fherrera@onirica.com>
+
+	* src/bug-buddy.glade:
+	* src/bugzilla.c: (async_update): Tweak progress dialog. Show only
+	  number of files "1 of 6".
+	  http://bugzilla.gnome.org/bugzilla.gnome.org/config.xml is nothing
+	  relevant for the user.
+
+2002-12-13  Fernando Herrera <fherrera@onirica.com>
+
+	* bugzilla/gnome.bugzilla:
+	* bugzilla/ximian.bugzilla:
+	* src/Makefile.am:
+	* src/bug-buddy.glade:
+	* src/bug-buddy.h:
+	* src/bugzilla.c: (md5str_equal_digest), (get_xml_file), 
+          (bugzilla_get_md5sums), (load_bugzilla):
+	* src/bugzilla.h:
+	* src/config.c: (save_config), (load_config): Download md5sums from
+          bugzilla (only if it didn't in the last 24h), and compare with local
+          bugzilla files. If different, aks the user for updating them.
+	* src/md5-utils.h: 
+	* src/md5-utils.c: Copied md5 functions from somewhere in the gnome
+	  cvs.
+
+2002-12-13  Fernando Herrera <fherrera@onirica.com>
+
+	* src/gdb-buddy.c: Try to look in libexec dir (Needed to debug
+	  applets)
+
+2002-12-10  Fernando Herrera <fherrera@onirica.com>
+
+	* src/bug-buddy.c (stop_progress, queue_download_restart,
+	  on_proxy_settings_clicked, on_progress_start_clicked, 
+	  on_progress_stop_clicked, main):
+
+	* src/bug-buddy.glade:
+
+	* src/bugzilla.c (async_update, copy_from_system_to_cache, 
+	  get_xml_file, end_bugzilla_download, start_bugzilla_download,):
+	  Changed the logic of downloading. First try the newer version from
+	  local cached bugzilla files and the ones from sharedir. If they are
+	  too old, ask the user for updating. New dialog for updating and
+	  new progress dialog.
+	  
+2002-12-15  Fernando Herrera  <fherrera@onirica.com>
+
+	* src/united-states-of-bug-buddy.c: add Kevin and Eric to credits as
+	  documenters
+
+2002-12-14  Fernando Herrera  <fherrera@onirica.com>
+
+	* src/bugzilla.c: (open_mostfreq_bug):
+	* src/cell-renderer-uri.c: (cell_renderer_uri_set_property),
+	(cell_renderer_uri_activate): Workaround to fix #86711. As cru->uri is
+	not set correctly (maybe a gtk+ or a problem derivating the class?),
+	use a new function to open the bug with bug_position --> iter -->
+	model --> url.
+
+2002-12-03  Fernando Herrera <fherrera@onirica.com>
+ 
+ 	* src/bugzilla.c (products_list_load): Removed code to autoselect
+ 	component (it didn't work)
+ 
+ 	* src/united-states-of-bug-buddy.c (on_druid_prev_clicked)
+ 	on_druid_next_clicked: When invoked from crash, try to guess 
+ 	product and component (from .desktop file) corresponding to the
+ 	crashed app. When invoked from scratch, after the user has 
+ 	selected an application, guess the product. This implies skipping
+ 	two sometimes hard steps. Autoset critical severity for crashes.
+ 
+2002-12-08  Malcolm Tredinnick <malcolm@commsecure.com.au>
+
+	* src/united-states-of-bug-buddy.c: Unbreak the build and
+	restore Ximian's copyright notice.
+
+2002-12-07  Christian Neumair  <chris@gnome-de.org>
+
+	* src/united-states-of-bug-buddy.c: Made copyright string translatable
+	and changed it (pattern is "(C) first-year-code-was-published
+	first-author").	Sorry Ximian, but that's the way we ought to refer to
+	authors.
+
+2002-11-21  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* src/bugzilla.c (load_bugzilla): Free the path. Fixing a leak
+	and closing bugzilla #95981.
+	
+2002-11-17  Dmitry G. Mastrukov  <dmitry@taurussoft.org>
+
+	* configure.in: Added Belarusian to ALL_LINGUAS.
+
+2002-09-30  jacob berkman  <jacob@ximian.com>
+
+	* src/bugzilla.c (load_applets): 
+	(visit_cb):
+	(visit_cb):
+	(load_applications): port from GnomeIconLoader to GnomeIconTheme
+
+2002-09-06  jacob berkman  <jacob@ximan.com>
+
+	* src/bug-buddy.[ch]:
+	* src/bugzilla.[ch]:
+	* src/gdb-buddy.c"
+	* src/united-states-of-bug-buddy.c: commit 2 week old changes on
+	my local tree.  i think this adds support for pre-selecting a
+	crashed app in the list of applications.  or, it would but
+	gtktreeview doesn't work right.
+
+	* src/save-buddy.c: include signal.h
+
+2002-09-04  Ross Burton  <ross@burtonini.com>
+
+	* src/bug-buddy.desktop.in: Fix the desktop file so that it
+	validates correctly.
+
+2002-08-15  jacob berkman  <jacob@ximian.com>
+
+	* src/bugzilla.c (create_products_list): 
+	(create_components_list): sort by the first column
+
+	* src/config.c (save_config): 
+	(load_config): don't persist "show debugging info"
+
+	* configure.in: require bonobo-activation and libbonobo
+
+	* src/bugzilla.c (bugzilla_application_new): helper func
+	(get_i18n_slist): cut-n-paste from (gasp!) menu.c
+	(load_applets): get the list of applets from bonobo-activation
+	(visit_cb): use bugzilla_application_new()
+	(load_applications): load the applets too and don't leak the icon
+	loader
+
+2002-08-14  jacob berkman  <jacob@ximian.com>
+
+	* src/bugzilla.c (BUGZILLA_*): 
+	* src/bug-buddy.desktop.in (X-GNOME-Bugzilla-*): spell it GNOME
+
+	* configure.in: check for gnome-desktop
+
+	* src/united-states-of-bug-buddy.c (druid_set_state): disable next
+	button if we are downloading
+	(on_druid_prev_clicked): handle a new state we can be in
+	(submit_ok): handle the user selecting an application (this
+	function needs to be refactored)
+
+	* src/save-buddy.c (bb_write_buffer_to_*): add a wait_msg arg that
+	is the label of the dialog that pops up after a while
+
+	* src/config.c (save_config): 
+	(load_config): persist whether we are showing products or
+	applications
+
+	* src/bugzilla.c (load_bugzilla_xml): only populate the products
+	list if we are showing products
+	(end_bugzilla_download):
+	(start_bugzilla_download): turn the next button off while
+	downloading if we are on the product page
+	(visit_cb):
+	(load_applications): load a list of applications from
+	all-applications:/// to present the user, rather than using a list
+	of products.  .desktop files with X-Gnome-Bugzilla-* headers will
+	work automagically
+	(products_list_load): populate the products list with either
+	products or applications
+
+	* src/bug-buddy.h (DruidData): add show_products and applications
+	list
+
+	* src/bug-buddy.glade: add a button to swtich between product and
+	application selection mode
+
+	* src/bug-buddy.desktop.in: add X-Gnome-Bugzilla-* entries
+
+	* src/bug-buddy.c (buddy_set_text_widget): 
+	(buddy_get_text_widget): add support for GtkButton
+	(on_gdb_save_clicked): pass a wait message
+	(on_product_toggle_clicked): toggle the tree view between
+	applications / products listing
+	(on_list_button_press_event): don't continue if a download is in
+	progress
+	(main): load the list of applications
+
+	* src/bugzilla.[ch] (bugzilla_bts_add_products_to_clist): nuke
+	(BugzillaProduct): make components a hash table
+	(BugzillaBTS): make products a hash table
+	(generate_email_text): submit data from gnome-version.xml
+	(*): fixups for hash tables, and i think fix bug #83109 (can't
+	tell because gnome-vfs crashes for me)
+
+	* src/bug-buddy.h (DruidData): make bugzillas a GHashTable, and
+	nuke all_products
+
+	* src/bug-buddy.glade: kill the bts selection option menu
+
+	* src/bug-buddy.[ch] (init_gnome_version_stuff): read gnome
+	platform version and vendor from
+	$prefix/share/gnome-about/gnome-version.xml
+
+	* src/bugzilla.c (generate_email_text): clean up a bit
+
+2002-08-13  jacob berkman  <jacob@ximian.com>
+
+	* src/united-states-of-bug-buddy.c (submit_ok): fix a crash
+
+	* configure.in: bump to 2.2.99
+
+	* src/united-states-of-bug-buddy.c: use new saving code (fixes
+	#84914)
+
+	* src/save-buddy.c (bb_write_buffer_to_fd): use an io channel to
+	write to a file, and pop up a dialog if it takes more than 1.1
+	seconds which allows the user to cancel the action (fixes #73443)
+
+	* src/*.[ch]: nuke some #if 0'd code and fix some compile warnings
+	
+	* src/Makefile.am:
+	* src/signal-buddy.[ch]: steal unix signal/glib mainloop code from gdm
+
+2002-08-12  jacob berkman  <jacob@ximian.com>
+
+	* NEWS (2.2.1): updates, but need to fix the other part of 84914
+	before releasing a new version
+
+	* src/save-buddy.c (bb_save_file): steal file saving from gedit
+	(fixes #80334)
+
+	* src/united-states-of-bug-buddy.c (on_druid_cancel_clicked): kill
+	gdb (should fix bug #86404)
+
+	* src/save-buddy.c (bb_save_file): prompt the user to overwrite
+	the file if it already exists (bug #84914)
+
+	* src/gdb-buddy.c (handle_gdb_input): convert gdb data to UTF-8
+	(michael meeks, bug #82722)
+
+2002-07-28  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "sq" to ALL_LINGUAS.
+
 2002-06-19  jacob berkman  <jacob@ximian.com>
 
 	* NEWS:
@@ -87,7 +395,7 @@
 
 2002-05-08  Pablo Saratxaga <pablo@mandrakesoft.com>
 
-	* configure.in: Added Vietnamese (eu) to ALL_LINGUAS
+	* configure.in: Added Vietnamese (vi) to ALL_LINGUAS
 
 2002-05-07  Archit Baweja  <bighead@users.sourceforge.net>
 

@@ -24,6 +24,7 @@
 #include "bug-buddy.h"
 
 #include "libglade-buddy.h"
+#include "save-buddy.h"
 
 #include <stdio.h>
 #include <unistd.h>
@@ -103,13 +104,11 @@ buddy_set_text_widget (GtkWidget *w, const char *s)
 {
 	g_return_if_fail (GTK_IS_ENTRY (w) || 
 			  GTK_IS_TEXT_VIEW (w) ||
-			  GTK_IS_LABEL (w));
+			  GTK_IS_LABEL (w) ||
+			  GTK_IS_BUTTON (w));
 
 	if (!s) s = "";
 
-#if 0
-	g_object_set (G_OBJECT (w), "text", s, NULL);
-#else
 	if (GTK_IS_ENTRY (w)) {
 		gtk_entry_set_text (GTK_ENTRY (w), s);
 	} else if (GTK_IS_TEXT_VIEW (w)) {
@@ -118,8 +117,9 @@ buddy_set_text_widget (GtkWidget *w, const char *s)
 			s, strlen (s));
 	} else if (GTK_IS_LABEL (w)) {
 		gtk_label_set_text (GTK_LABEL (w), s);
+	} else if (GTK_IS_BUTTON (w)) {
+		gtk_button_set_label (GTK_BUTTON (w), s);
 	}
-#endif
 }
 
 char *
@@ -128,10 +128,10 @@ buddy_get_text_widget (GtkWidget *w)
 	char *s = NULL;
 	g_return_val_if_fail (GTK_IS_ENTRY (w) || 
 			      GTK_IS_TEXT_VIEW (w) ||
-			      GTK_IS_LABEL (w), NULL);
-#if 0
-	g_object_get (G_OBJECT (w), "text", &s, NULL);
-#else
+			      GTK_IS_LABEL (w) ||
+			      GTK_IS_BUTTON (w), 
+			      NULL);
+
 	if (GTK_IS_ENTRY (w)) {
 		s = g_strdup (gtk_entry_get_text (GTK_ENTRY (w)));
 	} else if (GTK_IS_TEXT_VIEW (w)) {
@@ -143,8 +143,9 @@ buddy_get_text_widget (GtkWidget *w)
 		s = gtk_text_iter_get_text (&start, &end);
 	} else if (GTK_IS_LABEL (w)) {
 		s = g_strdup (gtk_label_get_text (GTK_LABEL (w)));
+	} else if (GTK_IS_BUTTON (w)) {
+		s = g_strdup (gtk_button_get_label (GTK_BUTTON (w)));
 	}
-#endif
 	return s;
 }
 
@@ -219,9 +220,7 @@ on_gdb_stop_clicked (GtkWidget *button, gpointer data)
 			d(g_message (_("gdb has already exited")));
 			return;
 		}
-		kill (druid_data.gdb_pid, SIGTERM);
-		stop_gdb ();		
-		kill (druid_data.app_pid, SIGCONT);
+		stop_gdb ();
 		druid_data.explicit_dirty = TRUE;
 	}
 	gtk_widget_destroy (w);
@@ -242,41 +241,6 @@ on_gdb_copy_clicked (GtkWidget *w, gpointer data)
 	gtk_text_buffer_copy_clipboard (buffy, gtk_clipboard_get (GDK_NONE));
 }
 
-typedef struct {
-	char *buffer;
-	gsize written;
-	gsize to_write;
-} SaveData;
-
-static gboolean
-save_cb (GIOChannel *source, GIOCondition condition, gpointer data)
-{
-	SaveData *save_data = data;
-	GIOStatus status;
-	gsize new_written = 0;
-	
- do_save_write:
-	status = g_io_channel_write_chars (source, save_data->buffer + save_data->written, save_data->to_write, &new_written, NULL);
-	switch (status) {
-	case G_IO_STATUS_AGAIN:
-		goto do_save_write;
-	case G_IO_STATUS_ERROR:
-		break;
-	default:
-		save_data->written += new_written;
-		save_data->to_write -= new_written;
-		g_print ("wrote %d bytes, (total: %d\tleft: %d)\n", new_written, save_data->written, save_data->to_write);
-		if (save_data->to_write)
-			return TRUE;
-		break;
-	}
-
-	g_free (save_data->buffer);
-	g_free (save_data);
-
-	return FALSE;
-}
-
 void
 on_gdb_save_clicked (GtkWidget *w, gpointer data)
 {
@@ -288,39 +252,57 @@ on_gdb_save_clicked (GtkWidget *w, gpointer data)
 	response = gtk_dialog_run (GTK_DIALOG (filesel));
 	if (response == GTK_RESPONSE_OK) {
 		const char *file;
-		GIOChannel *ioc;
 		GError *gerr = NULL;
-		SaveData *save_data;
+		char *text;
 
 		file = gtk_file_selection_get_filename (GTK_FILE_SELECTION (filesel));
-		ioc = g_io_channel_new_file (file, "w", &gerr);
-
-		if (!ioc) {
-			GtkWidget *d;
-
-			d = gtk_message_dialog_new (GTK_WINDOW (GET_WIDGET ("druid-window")),
-						    0,
-						    GTK_MESSAGE_ERROR,
-						    GTK_BUTTONS_OK,
-						    _("There was an error trying to save %s:\n\n"
-						      "%s\n\n"
-						      "Please choose another file and try again."),
-						    file, gerr->message);
-			gtk_dialog_run (GTK_DIALOG (d));
-			gtk_widget_destroy (d);
-			g_error_free (gerr);
+		text = buddy_get_text ("gdb-text");
+		if (!bb_write_buffer_to_file (GTK_WINDOW (filesel), 
+					      _("Please wait while Bug Buddy saves the stack trace..."),
+					      file, text, -1, &gerr)) {
+			if (gerr) {
+				GtkWidget *d;
+				
+				d = gtk_message_dialog_new (GTK_WINDOW (filesel),
+							    0,
+							    GTK_MESSAGE_ERROR,
+							    GTK_BUTTONS_OK,
+							    _("The stack trace was not saved in %s:\n\n"
+							      "%s\n\n"
+							      "Please try again, maybe with a different file name."),
+							    file, gerr->message);
+				gtk_dialog_run (GTK_DIALOG (d));
+				gtk_widget_destroy (d);
+				g_error_free (gerr);
+			}
+			g_free (text);
 			goto run_save_dialog;
 		}
 
-		save_data = g_new (SaveData, 1);
-		save_data->buffer = buddy_get_text ("gdb-text");
-		save_data->written = 0;
-		save_data->to_write = strlen (save_data->buffer);
-		g_io_add_watch (ioc, G_IO_OUT, save_cb, save_data);
-		g_io_channel_unref (ioc);
+		g_free (text);
 	}
 	
 	gtk_widget_destroy (filesel);
+}
+
+void
+on_product_toggle_clicked (GtkWidget *w, gpointer data)
+{
+	char *button;
+
+	g_return_if_fail (druid_data.state == STATE_PRODUCT);
+
+	druid_data.show_products = !druid_data.show_products;
+
+	if (druid_data.show_products) {
+		button = _("Show _Applications");
+	} else {
+		button = _("Show _Products");
+	}
+
+	buddy_set_text ("product-toggle",    button);
+
+	products_list_load ();
 }
 
 static void
@@ -330,23 +312,17 @@ on_list_button_press_event (GtkWidget *w, GdkEventButton *button, gpointer data)
 
 	if (button->type != GDK_2BUTTON_PRESS)
 		return;
+
+	if (druid_data.download_in_progress)
+		return;
 	
 	selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (w));
 	if (!gtk_tree_selection_get_selected (selection, NULL, NULL))
 		return;
-	
+
 	on_druid_next_clicked (NULL, NULL);
 }
 
-void
-stop_progress (void)
-{
-	if (!druid_data.progress_timeout)
-		return;
-
-	gtk_timeout_remove (druid_data.progress_timeout);
-	gtk_widget_hide (GET_WIDGET ("config_progress"));
-}
 
 void
 on_file_radio_toggled (GtkWidget *radio, gpointer data)
@@ -370,30 +346,20 @@ stock_pixmap_buddy (gchar *w, char *n, char *a, int b, int c)
 void
 on_email_group_toggled (GtkWidget *w, gpointer data)
 {
-	const char *widgets[] = { "email-mailer-radio", "email-sendmail-radio", "email-file-radio" };
 	const char *label = GTK_STOCK_GO_FORWARD;
+	gboolean using_sendmail;
 
-	/* this utilizes the pigeon hole principle */
-	for (druid_data.submit_type = SUBMIT_GNOME_MAILER;
-	     druid_data.submit_type < SUBMIT_FILE;
-	     druid_data.submit_type++)
-		if (GTK_TOGGLE_BUTTON (GET_WIDGET (widgets[druid_data.submit_type]))->active)
-			break;
+	using_sendmail = GTK_TOGGLE_BUTTON (GET_WIDGET ("email-sendmail-radio"))->active;
 
+	gtk_widget_set_sensitive (GET_WIDGET ("email-sendmail-frame"), using_sendmail);
+	druid_data.submit_type = using_sendmail ? SUBMIT_SENDMAIL : SUBMIT_FILE;
 
 	if (druid_data.submit_type == SUBMIT_FILE) {
-		gtk_widget_hide (GET_WIDGET ("mail-notebook"));
 		gtk_widget_hide (GET_WIDGET ("email-to-table"));
 		gtk_widget_show (GET_WIDGET ("email-save-in-box"));
 	} else {
-		GtkWidget *nb = GET_WIDGET ("mail-notebook");
-
-		gtk_widget_show (nb);
 		gtk_widget_show (GET_WIDGET ("email-to-table"));
 		gtk_widget_hide (GET_WIDGET ("email-save-in-box"));
-
-		gtk_notebook_set_current_page (GTK_NOTEBOOK (nb),
-					       druid_data.submit_type);
 	}
 
 	switch (druid_data.state) {
@@ -416,63 +382,6 @@ on_email_group_toggled (GtkWidget *w, gpointer data)
 		      "use-underline", TRUE,
 
 		      NULL);
-}
-
-void
-queue_download_restart (GtkWidget *w, gpointer data)
-{
-	if (druid_data.dl_timeout)
-		gtk_timeout_remove (druid_data.dl_timeout);
-
-	druid_data.dl_timeout = gtk_timeout_add (500, (GtkFunction)start_bugzilla_download, NULL);
-}
-
-void
-on_proxy_settings_clicked (GtkWidget *w, gpointer data)
-{
-	GError *err = NULL;
-	GtkWidget *dialog;
-
-	if (g_spawn_command_line_async ("gnome-network-preferences", &err))
-		return;
-
-	dialog = gtk_message_dialog_new (GTK_WINDOW (GET_WIDGET ("druid-window")),
-					 0,
-					 GTK_MESSAGE_ERROR,
-					 GTK_BUTTONS_OK,
-					 _("There was an error showing the proxy settings:\n\n"
-					   "%s.\n\n"
-					   "Please make sure the GNOME Control Center is properly installed."),
-					 err->message);
-	g_error_free (err);
-
-	gtk_dialog_set_default_response (GTK_DIALOG (dialog), GTK_RESPONSE_OK);
-	g_signal_connect (dialog, "response", G_CALLBACK (gtk_widget_destroy), NULL);
-
-	gtk_widget_show_all (dialog);
-}
-
-void
-on_progress_start_clicked (GtkWidget *wid, gpointer data)
-{
-	GtkTreeView *w;
-	GtkListStore *store;
-
-	w = GTK_TREE_VIEW (GET_WIDGET ("product-list"));
-
-	g_object_get (G_OBJECT (w), "model", &store, NULL);
-
-	gtk_list_store_clear (store);
-	druid_data.product = NULL;
-
-	start_bugzilla_download ();
-}
-
-void
-on_progress_stop_clicked (GtkWidget *w, gpointer data)
-{
-	end_bugzilla_download (END_BUGZILLA_CANCEL);
-	load_bugzilla_xml ();
 }
 
 void
@@ -512,19 +421,59 @@ on_email_default_radio_toggled (GtkWidget *w, gpointer data)
 }
 
 static void
-build_custom_mailers (gpointer key, gpointer value, gpointer data)
-{
-	GList **list = data;
-	*list = g_list_append (*list, key);
-}
-
-static void
 fixup_notebook (const char *name)
 {
 	GtkNotebook *nb = GTK_NOTEBOOK (GET_WIDGET (name));
 
 	gtk_notebook_set_show_border (GTK_NOTEBOOK (nb), FALSE);
 	gtk_notebook_set_show_tabs   (GTK_NOTEBOOK (nb), FALSE);
+}
+
+static void
+init_gnome_version_stuff (void)
+{
+	xmlDoc *doc;
+	char *xml_file;
+	xmlNode *node;
+	char *platform, *minor, *micro, *vendor;
+
+
+	druid_data.gnome_version = g_getenv ("BUG_BUDDY_GNOME_VERSION");
+
+	xml_file = gnome_program_locate_file (NULL, GNOME_FILE_DOMAIN_DATADIR,
+					      "gnome-about/gnome-version.xml",
+					      TRUE, NULL);
+	if (!xml_file)
+		return;
+	doc = xmlParseFile (xml_file);
+	if (!doc)
+		return;
+
+	platform = minor = micro = vendor = NULL;
+	
+	for (node = xmlDocGetRootElement (doc)->children; node; node = node->next) {
+		if (!strcmp (node->name, "platform"))
+			platform = xmlNodeGetContent (node);
+		else if (!strcmp (node->name, "minor"))
+			minor = xmlNodeGetContent (node);
+		else if (!strcmp (node->name, "micro"))
+			micro = xmlNodeGetContent (node);
+		else if (!strcmp (node->name, "vendor"))
+			vendor = xmlNodeGetContent (node);
+	}
+	
+	if (platform && minor && micro)
+		druid_data.gnome_platform_version = g_strdup_printf ("GNOME%s.%s.%s", platform, minor, micro);
+  
+	if (vendor && *vendor)
+		druid_data.gnome_vendor = g_strdup (vendor);
+	
+	xmlFree (platform);
+	xmlFree (minor);
+	xmlFree (micro);
+	xmlFree (vendor);
+	
+	xmlFreeDoc (doc);
 }
 
 /* there should be no setting of default values here, I think */
@@ -535,7 +484,7 @@ init_ui (void)
 	char *s;
 	const char **sp;
 	int i;
-	const char *nbs[] = { "druid-notebook", "gdb-notebook", "mail-notebook", NULL };
+	const char *nbs[] = { "druid-notebook", "gdb-notebook", NULL };
 	
 	glade_xml_signal_autoconnect (druid_data.xml);
 
@@ -545,8 +494,6 @@ init_ui (void)
 
 	for (sp = nbs; *sp; sp++)
 		fixup_notebook (*sp);
-
-	druid_data.gnome_version = g_getenv ("BUG_BUDDY_GNOME_VERSION");
 
 	/* dialog crash page */
 	s = popt_data.app_file;
@@ -619,20 +566,6 @@ init_ui (void)
 
 	gnome_window_icon_set_from_default (GTK_WINDOW (GET_WIDGET ("druid-window")));
 
-#if 0
-	g_object_set (G_OBJECT (GET_WIDGET ("druid-about")),
-		      "label", GNOME_STOCK_ABOUT,
-		      "use_stock", TRUE,
-		      "use_underline", TRUE,
-		      NULL);
-
-	g_object_set (G_OBJECT (GET_WIDGET ("gdb-stop")),
-		      "label", GTK_STOCK_STOP,
-		      "use_stock", TRUE,
-		      "use_underline", TRUE,
-		      NULL);
-#endif
-
 	{
 		GtkButtonBox *bbox;
 		
@@ -645,16 +578,6 @@ init_ui (void)
 		
 	gtk_misc_set_alignment (GTK_MISC (GET_WIDGET ("druid-logo")),
 				1.0, 0.5);
-
-	buddy_set_text ("email-default-entry", _(druid_data.mailer->name));
-
-	{
-		GList *mailers = NULL;
-		g_hash_table_foreach (druid_data.mailer_hash, build_custom_mailers, &mailers);
-		gtk_combo_set_popdown_strings (GTK_COMBO (GET_WIDGET ("email-default-combo")),
-					       mailers);
-		g_list_free (mailers);
-	}
 
 	w = GET_WIDGET ("druid-next");
 	gtk_widget_set_direction (GTK_BIN (GTK_BIN (w)->child)->child,
@@ -671,7 +594,7 @@ init_ui (void)
 			  NULL);
 
 	{
-		const char **w, *windows[] = { "druid-window", "progress-window", NULL };
+		const char **w, *windows[] = { "druid-window", "update-dialog", "progress-dialog", NULL };
 		for (w = windows; *w; w++)
 			g_signal_connect (GET_WIDGET (*w), "delete-event", 
 					  G_CALLBACK (gtk_widget_hide_on_delete),
@@ -801,20 +724,61 @@ main (int argc, char *argv[])
 		gtk_widget_destroy (w);
 		return 0;
 	}
-	g_free (s);
+	g_free (s);	
 
 	druid_set_state (STATE_GDB);
 
+	init_gnome_version_stuff ();
 	init_ui ();
+
+	load_bugzillas ();
+	if (druid_data.need_to_download) {
+		int response;
+		if (gtk_dialog_run (GTK_DIALOG (GET_WIDGET ("update-dialog"))) == GTK_RESPONSE_OK) {
+			start_bugzilla_download ();
+			response = gtk_dialog_run (GTK_DIALOG (GET_WIDGET ("progress-dialog")));
+			if (response == GTK_RESPONSE_CANCEL) {
+				gnome_vfs_async_cancel (druid_data.vfshandle);
+				gtk_widget_destroy(GET_WIDGET ("progress-dialog"));
+				druid_data.download_in_progress = FALSE;
+			} else if (response == DOWNLOAD_FINISHED_ZERO_RESPONSE) {
+				w = gtk_message_dialog_new (NULL,
+							    0,
+							    GTK_MESSAGE_ERROR,
+							    GTK_BUTTONS_OK,
+							    _("Bug Buddy could not update its bug information.\n"
+							      "The old one will be used."));
+					      
+				gtk_dialog_set_default_response (GTK_DIALOG (w),
+						 		GTK_RESPONSE_OK);
+				gtk_dialog_run (GTK_DIALOG (w));
+				gtk_widget_destroy (w);
+
+				gtk_widget_destroy(GET_WIDGET ("progress-dialog"));
+			} else if (response == DOWNLOAD_FINISHED_OK_RESPONSE) {
+				w = gtk_message_dialog_new (NULL,
+							    0,
+							    GTK_MESSAGE_INFO,
+							    GTK_BUTTONS_OK,
+							    _("Bug Buddy updated its bug information correctly."));
+					      
+				gtk_dialog_set_default_response (GTK_DIALOG (w),
+						 		GTK_RESPONSE_OK);
+				gtk_dialog_run (GTK_DIALOG (w));
+				gtk_widget_destroy (w);
+
+				gtk_widget_destroy(GET_WIDGET ("progress-dialog"));
+			}
+		}
+		
+		gtk_widget_destroy (GET_WIDGET ("update-dialog"));
+	}
+	
+	load_bugzilla_xml ();
 
 	gtk_widget_show (GET_WIDGET ("druid-window"));
 
-	if (getenv ("BUG_ME_HARDER")) {
-		gtk_widget_show (GET_WIDGET ("progress-window"));
-	}
-	
-	load_bugzillas ();
-	start_bugzilla_download ();
+	load_applications ();
 	start_gdb ();
 
 	gtk_main ();

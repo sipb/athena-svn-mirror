@@ -1,6 +1,22 @@
 Things to do:
 
-1.  support other BTS's (via plugins?) (ie, kde, debian, redhat, and 
+ *  Support other BTS's (via plugins?) (ie, kde, debian, redhat, and 
 	mozilla)
 
-2.  user documentation, maybe
+ * Skip mostfreq bugs page if there are no bugs related to this product
+
+ * Change first step:
+
+       - If bug-buddy ran from sisegv --> Debbug screen; describe bug
+       - If bug-buddy was invoked alone --> (Welcome? / Kind of bug?);
+         Select application; describe bug
+
+ * Re-organize some code
+
+ * Report a bug from inside the application (like monkeytalk patch from
+   Ximian)
+
+ * Add "kind of bug" first step --> Use different templates for 
+   differents kinds
+
+ * Add keywords and set severity based on kind of bug.

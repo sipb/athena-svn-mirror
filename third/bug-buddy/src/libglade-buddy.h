@@ -44,4 +44,6 @@ void on_progress_start_clicked (GtkWidget *w, gpointer data);
 void on_progress_stop_clicked (GtkWidget *w, gpointer data);
 void on_proxy_settings_clicked (GtkWidget *w, gpointer data);
 
+void on_product_toggle_clicked (GtkWidget *w, gpointer data);
+
 #endif /* LIBGLADE_BUDDY_H */

@@ -42,10 +42,14 @@
     <opsys>Mandrake 7.2</opsys>
     <opsys>Mandrake 8.0</opsys>
     <opsys>Mandrake 8.1</opsys>
+    <opsys>Mandrake 8.2</opsys>
+    <opsys>Mandrake 9.0</opsys>
     <opsys>Red Hat 6.2</opsys>
     <opsys>Red Hat 7.0</opsys>
     <opsys>Red Hat 7.1</opsys>
     <opsys>Red Hat 7.2</opsys>
+    <opsys>Red Hat 7.3</opsys>
+    <opsys>Red Hat 8.0</opsys>
     <opsys>Solaris 7</opsys>
     <opsys>Solaris 8</opsys>
     <opsys>Solaris [Other]</opsys>
@@ -54,10 +58,13 @@
     <opsys>SuSE 7.1</opsys>
     <opsys>SuSE 7.2</opsys>
     <opsys>SuSE 7.3</opsys>
+    <opsys>SuSE 8.0</opsys>
+    <opsys>SuSE 8.1</opsys>
     <opsys>TurboLinux 6.0</opsys>
     <opsys>Yellow Dog 1.2</opsys>
     <opsys>Yellow Dog 2.0</opsys>
     <opsys>Yellow Dog 2.1</opsys>
+    <opsys>Yellow Dog 2.2</opsys>
     <opsys>AIX</opsys>
     <opsys>All</opsys>
     <opsys>other</opsys>

@@ -1,58 +1,54 @@
 <!DOCTYPE products SYSTEM "http://bugzilla.gnome.org/bugzilla.gnome.org/bugzilla-gnome-org.dtd">
 <products>
-  <product name="gnome-applets">
-    <component name="battery">
-      <bug bugid="81601">
-        <desc>Battstat only displays accurate information intermittently</desc>
-        <url>http://bugzilla.gnome.org/show_bug.cgi?id=81601</url>
+  <product name="control-center">
+    <component name="font properties">
+      <bug bugid="86593">
+        <desc>gnome-font-properties crashes on startup [gtk_window_set_icon_list]</desc>
+        <url>http://bugzilla.gnome.org/show_bug.cgi?id=86593</url>
+      </bug>
+    </component>
+    <component name="Keybinding">
+      <bug bugid="86575">
+        <desc>gnome-keybinding-properties crashes on startup</desc>
+        <url>http://bugzilla.gnome.org/show_bug.cgi?id=86575</url>
       </bug>
     </component>
   </product>
   <product name="gnome-panel">
-    <component name="Window List Applet">
-      <bug bugid="72335">
-        <desc>Window List applet takes up all panel space to the right of it</desc>
-        <url>http://bugzilla.gnome.org/show_bug.cgi?id=72335</url>
+    <component name="Notification Area Applet">
+      <bug bugid="94625">
+        <desc>vertical panel with notification area crashes on login (gtk_obox_size_request())</desc>
+        <url>http://bugzilla.gnome.org/show_bug.cgi?id=94625</url>
       </bug>
     </component>
   </product>
-  <product name="gnome-vfs">
-    <component name="Module: vfolder">
-      <bug bugid="71391">
-        <desc>crash when upgrading or changing application menu [g_string_insert_len]</desc>
-        <url>http://bugzilla.gnome.org/show_bug.cgi?id=71391</url>
+  <product name="Gnumeric">
+    <component name="Database plugin">
+      <bug bugid="93524">
+        <desc>gnumeric crashes while filtering to another spreadsheet</desc>
+        <url>http://bugzilla.gnome.org/show_bug.cgi?id=93524</url>
       </bug>
     </component>
   </product>
   <product name="libwnck">
     <component name="general">
-      <bug bugid="78869">
-        <desc>Panel crash when using deskguide applet [wnck_tasklist_size_request]</desc>
-        <url>http://bugzilla.gnome.org/show_bug.cgi?id=78869</url>
+      <bug bugid="79500">
+        <desc>Clicking a task in window list a second time to minimize</desc>
+        <url>http://bugzilla.gnome.org/show_bug.cgi?id=79500</url>
       </bug>
     </component>
   </product>
   <product name="libzvt">
     <component name="general">
-      <bug bugid="79413">
-        <desc>spontaneous crash in gnome-terminal with transparent background [zvt_background_set]</desc>
-        <url>http://bugzilla.gnome.org/show_bug.cgi?id=79413</url>
+      <bug bugid="88029">
+        <desc>font selection no longer works with i18n branch</desc>
+        <url>http://bugzilla.gnome.org/show_bug.cgi?id=88029</url>
       </bug>
     </component>
-  </product>
-  <product name="nautilus">
-    <component name="general">
-      <bug bugid="72715">
-        <desc>Nautilus provides no way to add application launchers to the panel menus</desc>
-        <url>http://bugzilla.gnome.org/show_bug.cgi?id=72715</url>
-      </bug>
-    </component>
-  </product>
-  <product name="sawfish">
-    <component name="general">
-      <bug bugid="79692">
-        <desc>sawfish configuration settings not being saved</desc>
-        <url>http://bugzilla.gnome.org/show_bug.cgi?id=79692</url>
+    <component name="internationalization">
+      <bug bugid="78007">
+        <desc>i18n input methods, font selection, display all broken</desc>
+        <url>http://bugzilla.gnome.org/show_bug.cgi?id=78007</url>
       </bug>
     </component>
   </product>

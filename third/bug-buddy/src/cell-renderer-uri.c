@@ -2,6 +2,7 @@
 
 #include "cell-renderer-uri.h"
 #include "bb-marshal.h"
+#include "bugzilla.h"
 
 #include <libgnome/gnome-i18n.h>
 #include <libgnome/gnome-macros.h>
@@ -54,7 +55,10 @@ cell_renderer_uri_set_property (GObject      *object,
 
 	switch (param_id) {
 	case PROP_URI:
-		g_free (cru->uri);
+		if (cru->uri!=NULL) {
+			g_free (cru->uri);
+		}
+			
 		cru->uri = g_strdup (g_value_get_string (value));
 		break;
 	case PROP_SHOWN:
@@ -82,9 +86,11 @@ cell_renderer_uri_activate (GtkCellRenderer      *cell,
 	if (!cru->uri)
 		return FALSE;
 
-	if (gnome_url_show (cru->uri, NULL))
+	g_print("activate: cru uri is %s\n! but asked to go to %s bug!\n", cru->uri, path);
+	
+	if (open_mostfreq_bug (path))
 		g_signal_emit (cell, uri_cell_signals[SIGNAL_URI_SHOWN], 0, path);
-			      
+
 	return TRUE;
 }
 

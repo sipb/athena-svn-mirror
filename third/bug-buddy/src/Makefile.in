@@ -1,4 +1,4 @@
-# Makefile.in generated automatically by automake 1.4-p5 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p6 from Makefile.am
 
 # Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
@@ -82,6 +82,7 @@ INTLTOOL_MERGE = @INTLTOOL_MERGE@
 INTLTOOL_OAF_RULE = @INTLTOOL_OAF_RULE@
 INTLTOOL_PERL = @INTLTOOL_PERL@
 INTLTOOL_PONG_RULE = @INTLTOOL_PONG_RULE@
+INTLTOOL_PROP_RULE = @INTLTOOL_PROP_RULE@
 INTLTOOL_SCHEMAS_RULE = @INTLTOOL_SCHEMAS_RULE@
 INTLTOOL_SERVER_RULE = @INTLTOOL_SERVER_RULE@
 INTLTOOL_SHEET_RULE = @INTLTOOL_SHEET_RULE@
@@ -104,42 +105,87 @@ VERSION = @VERSION@
 
 buddydir = $(datadir)/bug-buddy
 
-INCLUDES =  	-DGNOMELOCALEDIR=\""$(datadir)/locale"\"		$(BUG_BUDDY_CFLAGS) -I$(includedir)			-DBUDDY_DATADIR=\""$(buddydir)"\"		        -DBUDDY_ICONDIR=\""$(datadir)/pixmaps"\"		-DREAL_DATADIR=\""$(datadir)"\"				-DG_DISABLE_DEPRECATED			-DGDK_DISABLE_DEPRECATED		-DGDK_PIXBUF_DISABLE_DEPRECATED		-DGTK_DISABLE_DEPRECATED		-DGNOME_DISABLE_DEPRECATED		-DGNOME_VFS_DISABLE_DEPRECATED		-DLIBGLADE_DISABLE_DEPRECATED		-D_GNU_SOURCE
+INCLUDES = \
+	-DGNOMELOCALEDIR=\""$(datadir)/locale"\"	\
+	$(BUG_BUDDY_CFLAGS) -I$(includedir)		\
+	-DBUDDY_DATADIR=\""$(buddydir)"\"		\
+        -DBUDDY_ICONDIR=\""$(datadir)/pixmaps"\"	\
+	-DREAL_DATADIR=\""$(datadir)"\"			\
+	-DG_DISABLE_DEPRECATED		\
+	-DGDK_DISABLE_DEPRECATED	\
+	-DGDK_PIXBUF_DISABLE_DEPRECATED	\
+	-DGTK_DISABLE_DEPRECATED	\
+	-DGNOME_DISABLE_DEPRECATED	\
+	-DGNOME_VFS_DISABLE_DEPRECATED	\
+	-DLIBGLADE_DISABLE_DEPRECATED	\
+	-D_GNU_SOURCE
 
 
-bb_built_sources =  	bb-marshal.c		bb-marshal.h
+bb_built_sources = \
+	bb-marshal.c	\
+	bb-marshal.h
 
 
 bin_PROGRAMS = bug-buddy
 
-bug_buddy_SOURCES =  	$(bb_built_sources)		bug-buddy.c			bug-buddy.h			bugzilla.c			bugzilla.h			cell-renderer-uri.c		cell-renderer-uri.h		config.c			gdb-buddy.c			libglade-buddy.h		united-states-of-bug-buddy.c
+bug_buddy_SOURCES = \
+	$(bb_built_sources)	\
+	bug-buddy.c		\
+	bug-buddy.h		\
+	md5-utils.c		\
+	md5-utils.h		\
+	bugzilla.c		\
+	bugzilla.h		\
+	cell-renderer-uri.c	\
+	cell-renderer-uri.h	\
+	config.c		\
+	gdb-buddy.c		\
+	libglade-buddy.h	\
+	save-buddy.c		\
+	save-buddy.h		\
+	signal-buddy.c		\
+	signal-buddy.h		\
+	united-states-of-bug-buddy.c
 
 
-bug_buddy_LDADD =  	$(BUG_BUDDY_LIBS)
+bug_buddy_LDADD = \
+	$(BUG_BUDDY_LIBS)
 
 
 noinst_PROGRAMS = gnome-crash
 
 gnome_crash_SOURCES = gnome-crash.c
 
-gnome_crash_LDADD =  	$(GNOME_CRASH_LIBS)
+gnome_crash_LDADD = \
+	$(GNOME_CRASH_LIBS)
 
 
 mimedir = $(datadir)/mime-info
-mime_DATA =  	bug-buddy.keys		bug-buddy.mime
+mime_DATA = \
+	bug-buddy.keys	\
+	bug-buddy.mime
 
 
 applicationsdir = $(datadir)/application-registry
 applications_DATA = bug-buddy.applications
 
-buddy_DATA =  	bug-buddy.glade		gdb-cmd
+buddy_DATA = \
+	bug-buddy.glade	\
+	gdb-cmd
 
 
 utilsdir = $(datadir)/applications
 utils_in_files = bug-buddy.desktop.in
 utils_DATA = $(utils_in_files:.desktop.in=.desktop)
 
-EXTRA_DIST =  	$(utils_DATA)			$(utils_in_files)		$(buddy_DATA)			$(applications_DATA)		bug-buddy.mime			bug-buddy.keys.in		bb-marshal.list
+EXTRA_DIST = \
+	$(utils_DATA)		\
+	$(utils_in_files)	\
+	$(buddy_DATA)		\
+	$(applications_DATA)	\
+	bug-buddy.mime		\
+	bug-buddy.keys.in	\
+	bb-marshal.list
 
 
 DONT_DIST_SOURCE = $(bb_built_sources)
@@ -153,8 +199,9 @@ DEFS = @DEFS@ -I. -I$(srcdir) -I..
 CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
-bug_buddy_OBJECTS =  bb-marshal.o bug-buddy.o bugzilla.o \
-cell-renderer-uri.o config.o gdb-buddy.o united-states-of-bug-buddy.o
+bug_buddy_OBJECTS =  bb-marshal.o bug-buddy.o md5-utils.o bugzilla.o \
+cell-renderer-uri.o config.o gdb-buddy.o save-buddy.o signal-buddy.o \
+united-states-of-bug-buddy.o
 bug_buddy_DEPENDENCIES = 
 bug_buddy_LDFLAGS = 
 gnome_crash_OBJECTS =  gnome-crash.o
@@ -171,7 +218,7 @@ DIST_COMMON =  Makefile.am Makefile.in
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = gnutar
+TAR = gtar
 GZIP_ENV = --best
 SOURCES = $(bug_buddy_SOURCES) $(gnome_crash_SOURCES)
 OBJECTS = $(bug_buddy_OBJECTS) $(gnome_crash_OBJECTS)
@@ -369,13 +416,6 @@ distdir: $(DISTFILES)
 	  fi; \
 	done
 	$(MAKE) $(AM_MAKEFLAGS) top_distdir="$(top_distdir)" distdir="$(distdir)" dist-hook
-bug-buddy.o: bug-buddy.c ../config.h bug-buddy.h bugzilla.h \
-	libglade-buddy.h
-bugzilla.o: bugzilla.c ../config.h bug-buddy.h bugzilla.h \
-	libglade-buddy.h cell-renderer-uri.h
-config.o: config.c ../config.h bug-buddy.h bugzilla.h
-united-states-of-bug-buddy.o: united-states-of-bug-buddy.c ../config.h \
-	bug-buddy.h bugzilla.h libglade-buddy.h
 
 info-am:
 info: info-am

@@ -7,4 +7,5 @@ src/bugzilla.c
 src/cell-renderer-uri.c
 src/config.c
 src/gdb-buddy.c
+src/save-buddy.c
 src/united-states-of-bug-buddy.c

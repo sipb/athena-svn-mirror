@@ -23,12 +23,17 @@
 #include "bug-buddy.h"
 
 #include "libglade-buddy.h"
+#include "save-buddy.h"
 
 #include <gnome.h>
 #include <string.h>
 
 #include <libgnomevfs/gnome-vfs-mime-utils.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
+
+#include <sys/types.h>
+#include <sysexits.h>
+#include <sys/wait.h>
 
 #if 0
 static char *help_pages[] = {
@@ -47,7 +52,7 @@ static char *help_pages[] = {
 
 static char *state_title[] = {
 	N_("Welcome to Bug Buddy"),
-	N_("Select a Product"),
+	N_("Select a Product or Application"),
 	N_("Select a Component"),
 	N_("Frequently Reported Bugs"),
 	N_("Bug Description"),
@@ -84,6 +89,8 @@ on_druid_about_clicked (GtkWidget *button, gpointer data)
 
 	static const char *documentors[] = {
 		"Telsa Gwynne  <hobbit@aloss.ukuu.org.uk>",
+		"Kevin Conder  <kevin@kevindumpscore.com>",
+		"Eric Baudais  <baudais@kkpsi.org>",
 		NULL
 	};
 
@@ -105,11 +112,14 @@ on_druid_about_clicked (GtkWidget *button, gpointer data)
 			  &about);
 
 #if 0
-	href = gnome_href_new ("http://bug-buddy.org/",
-			       _("The lame Bug Buddy web page"));
-	gtk_box_pack_start (GTK_BOX (GNOME_DIALOG (about)->vbox),
-			    href, FALSE, FALSE, 0);
-	gtk_widget_show (href);
+	{
+		GtkWidget *href;
+		href = gnome_href_new ("http://bug-buddy.org/",
+				       _("The lame Bug Buddy web page"));
+		gtk_box_pack_start (GTK_BOX (GNOME_DIALOG (about)->vbox),
+				    href, FALSE, FALSE, 0);
+		gtk_widget_show (href);
+	}
 #endif
 	gtk_window_set_transient_for (GTK_WINDOW (about),
 				      GTK_WINDOW (GET_WIDGET ("druid-window")));
@@ -153,25 +163,10 @@ druid_set_state (BuddyState state)
 	case STATE_GDB:
 		break;
 	case STATE_PRODUCT:
-#if 0
-		if (!druid_data.package_name)
-			determine_our_package ();
-		buddy_set_text ("bts-package-entry".
-				druid_data.package_name);
-#endif
-#if 0
-		load_bugzilla_xml ();
-#endif
-#if 0
-		if (!druid_data.product)
-			druid_set_sensitive (TRUE, FALSE,  TRUE);
-#endif
+		if (druid_data.download_in_progress)
+			druid_set_sensitive (TRUE, FALSE, TRUE);
 		break;
 	case STATE_COMPONENT:
-#if 0
-		if (!druid_data.component)
-			druid_set_sensitive (TRUE, FALSE,  TRUE);
-#endif
 		break;
 	case STATE_MOSTFREQ:
 		/* nothing to do */
@@ -179,21 +174,13 @@ druid_set_state (BuddyState state)
 	case STATE_DESC:
 		/* nothing to do */
 		break;
-#if 0
-	case STATE_SYSTEM:
-		/* start the process of version checking if we haven't
-		 * run anything or the list of thingies has changed */
-		do_dependency_stuff ();
-		druid_set_state (state - 1);
-		break;
-#endif
 	case STATE_EMAIL_CONFIG:
 		/* FIXME: change next icon */
 		on_email_group_toggled (NULL, NULL);
 		break;
 	case STATE_EMAIL:
 		/* fill in the content text */
-		s = generate_email_text (TRUE);
+		s = generate_email_text (druid_data.product != NULL);
 		w = GET_WIDGET ("email-text");
 		buddy_set_text ("email-text", s);
 		g_free (s);
@@ -219,10 +206,38 @@ on_druid_prev_clicked (GtkWidget *w, gpointer data)
 
 	switch (druid_data.state) {
 	case STATE_DESC:
-		if (GTK_TOGGLE_BUTTON (GET_WIDGET ("no-product-toggle"))->active)
-			newstate = STATE_PRODUCT;
-		else if (!druid_data.product->bts->bugs)
+		if (!druid_data.mostfreq_skipped) {
+			newstate = STATE_MOSTFREQ;
+			break;
+		}
+		if (!druid_data.component_skipped && 
+		    !GTK_TOGGLE_BUTTON (GET_WIDGET ("no-product-toggle"))->active) {
 			newstate = STATE_COMPONENT;
+			break;
+		}
+		if (!druid_data.product_skipped) {
+			newstate = STATE_PRODUCT;
+			break;
+		}
+		newstate = STATE_GDB;
+		break;
+	case STATE_MOSTFREQ:
+		if (!druid_data.component_skipped) {
+			newstate = STATE_COMPONENT;
+			break;
+		}
+		if (!druid_data.product_skipped) {
+			newstate = STATE_PRODUCT;
+			break;
+		}
+		newstate = STATE_GDB;
+		break;
+	case STATE_COMPONENT:
+		if (!druid_data.product_skipped) {
+			newstate = STATE_PRODUCT;
+			break;
+		}
+		newstate = STATE_GDB;
 		break;
 	default:
 		break;
@@ -485,9 +500,12 @@ desc_page_ok (void)
 static gboolean
 submit_ok (void)
 {
-	gchar *to, *s, *file=NULL, *command;
-	GtkWidget *w;
-	FILE *fp;
+	char *to=NULL, *s, *file=NULL;
+	char *name, *from;
+	GtkWidget *w = NULL;
+	GString *buf=NULL;
+	gboolean retval = FALSE;
+	GError *error = NULL;
 
 	enum {
 		RESPONSE_SUBMIT,
@@ -505,96 +523,96 @@ submit_ok (void)
 					_("_Submit"), RESPONSE_SUBMIT,
 					NULL);
 		gtk_dialog_set_default_response (GTK_DIALOG (w),
-						 GTK_RESPONSE_YES);
-		if (RESPONSE_SUBMIT != gtk_dialog_run (GTK_DIALOG (w))) {
-			gtk_widget_destroy (w);
-			return FALSE;
-		}
+						 RESPONSE_SUBMIT);
+		if (RESPONSE_SUBMIT != gtk_dialog_run (GTK_DIALOG (w)))
+			goto submit_ok_out;
+
 		gtk_widget_destroy (w);
+		w = NULL;
 	}
 
+	buf = g_string_new (NULL);
+
+	name = buddy_get_text ("email-name-entry");
+	from = buddy_get_text ("email-email-entry");
+
+	g_string_append_printf (buf, "From: %s <%s>\n", name, from);
+
+	g_free (from);
+	g_free (name);
+
 	to = buddy_get_text ("email-to-entry");
+	g_string_append_printf (buf, "To: %s\n", to);
+	
+	s = buddy_get_text ("email-cc-entry");
+	if (*s) g_string_append_printf (buf, "Cc: %s\n", s);
+	g_free (s);
+
+	g_string_append_printf (buf, "X-Mailer: %s %s\n", PACKAGE, VERSION);
+
+	s = buddy_get_text ("email-text");
+	g_string_append (buf, s);
+	g_free (s);
 
 	if (druid_data.submit_type == SUBMIT_FILE) {
 		file = buddy_get_text ("email-file-entry");
-		fp = fopen (file, "w");
-		if (!fp) {
-			w = gtk_message_dialog_new (GTK_WINDOW (GET_WIDGET ("druid-window")),
-						    0,
-						    GTK_MESSAGE_ERROR,
-						    GTK_BUTTONS_OK,
-						    _("Unable to open file '%s':\n%s"), 
-						    file, g_strerror (errno));
-			g_free (file);
-			g_free (to);
-			gtk_dialog_set_default_response (GTK_DIALOG (w),
-							 GTK_RESPONSE_OK);
-			gtk_dialog_run (GTK_DIALOG (w));
-			gtk_widget_destroy (w);
-			return FALSE;
+		if (!bb_write_buffer_to_file (GTK_WINDOW (GET_WIDGET ("druid-window")),
+					      _("Please wait while Bug Buddy saves your bug report..."),
+					      file, buf->str, buf->len, &error)) {
+			if (error) {
+				w = gtk_message_dialog_new (GTK_WINDOW (GET_WIDGET ("druid-window")),
+							    0,
+							    GTK_MESSAGE_ERROR,
+							    GTK_BUTTONS_OK,
+							    _("The bug report was not saved in %s:\n\n"
+							      "%s\n\n"
+							      "Please try again, maybe with a different file name."),
+							    file, error->message);
+				gtk_dialog_run (GTK_DIALOG (w));
+			}
+			goto submit_ok_out;
 		}
-	} else {
-		s = buddy_get_text ("email-sendmail-entry");
-		command = g_strdup_printf ("%s -i -t", s);
 
-		d(g_message (_("about to run '%s'"), command));
-		fp =  popen (command, "w");
-		g_free (command);
-		if (!fp) {
-			w = gtk_message_dialog_new (GTK_WINDOW (GET_WIDGET ("druid-window")),
-						    0,
-						    GTK_MESSAGE_ERROR,
-						    GTK_BUTTONS_OK,
-						    _("Unable to start mail program '%s':\n%s"), 
-						    s, g_strerror (errno));
-			gtk_dialog_set_default_response (GTK_DIALOG (w),
-							 GTK_RESPONSE_OK);
-			gtk_dialog_run (GTK_DIALOG (w));
-			gtk_widget_destroy (w);
-			g_free (s);
-			g_free (to);
-			return FALSE;
+		s = g_strdup_printf (_("Your bug report was saved in %s"), file);
+		g_free (file);
+	} else {
+		char *argv[] = { "", "-i", "-t", NULL };
+
+		argv[0] = buddy_get_text ("email-sendmail-entry");
+
+		if (!bb_write_buffer_to_command (GTK_WINDOW (GET_WIDGET ("druid-window")), 
+						 _("Please wait while Bug Buddy submits your bug report..."),
+						 argv, buf->str, buf->len, &error)) {
+			if (error) {
+				w = gtk_message_dialog_new (GTK_WINDOW (GET_WIDGET ("druid-window")),
+							    0,
+							    GTK_MESSAGE_ERROR,
+							    GTK_BUTTONS_OK,
+							    _("There was an error submitting the bug report:\n\n"
+							      "%s"),
+							    error->message);
+				gtk_dialog_run (GTK_DIALOG (w));
+			}
+			goto submit_ok_out;
 		}
-		g_free (s);
-	}
 
-	{
-		char *name, *from;
-		
-		name = buddy_get_text ("email-name-entry");
-		from = buddy_get_text ("email-email-entry");
-
-		fprintf (fp, "From: %s <%s>\n", name, from);
-		g_free (from);
-		g_free (name);
-	}
-
-	fprintf (fp, "To: %s\n", to);
-	
-	s = buddy_get_text ("email-cc-entry");
-	if (*s) fprintf (fp, "Cc: %s\n", s);
-	g_free (s);
-
-	fprintf (fp, "X-Mailer: %s %s\n", PACKAGE, VERSION);
-
-	s = buddy_get_text ("email-text");
-	fprintf (fp, "%s", s);
-	g_free (s);
-
-	if (druid_data.submit_type == SUBMIT_FILE) {
-		fclose (fp);
-		s = g_strdup_printf (_("Your bug report was saved in '%s'"), file);
-	} else {
-		pclose (fp);
 		s = g_strdup_printf (_("Your bug report has been submitted to:\n\n        <%s>\n\nThanks!"), to);
 	}
-	g_free (to);
 
 	buddy_set_text ("finished-label", s);
-	g_free (file);
 	g_free (s);
+	retval = TRUE;
 
-	return TRUE;
+ submit_ok_out:
+	g_free (to);
+	if (w)
+		gtk_widget_destroy (w);
+	if (buf)
+		g_string_free (buf, TRUE);
+	if (error) 
+		g_error_free (error);
+
+	return retval;
 }
 
 static gpointer
@@ -616,6 +634,46 @@ get_selected_row (const char *w, int col)
 	
 	return retval;
 }
+void
+select_component_row (char *component_name)
+{
+	GtkTreeView *view;
+	GtkTreeSelection *selection;
+	GtkTreeModel *model;
+	GtkTreeIter iter;
+
+	view = GTK_TREE_VIEW (GET_WIDGET ("component-list"));
+	selection = gtk_tree_view_get_selection (view);
+	model = gtk_tree_view_get_model (view);
+
+	if (gtk_tree_model_get_iter_first (model, &iter)) {
+		do {
+			gchar *tmp = NULL;
+
+			gtk_tree_model_get (model, &iter,
+					    COMPONENT_NAME, &tmp,
+					    -1);
+
+			if (! strcmp (component_name, tmp)) {
+				GtkTreePath *path;
+
+				path = gtk_tree_model_get_path (model, &iter);
+				gtk_tree_view_set_cursor (view, path,
+							  NULL, FALSE);
+				gtk_tree_path_free (path);
+
+				d(g_print("Autoselected %s\n", tmp));
+				g_free (tmp);
+				break;
+			}
+
+			g_free (tmp);
+		} while (gtk_tree_model_iter_next (model, &iter));
+	}
+	
+        gtk_tree_view_columns_autosize (view);
+}
+	
 
 void
 on_druid_next_clicked (GtkWidget *w, gpointer data)
@@ -628,11 +686,54 @@ on_druid_next_clicked (GtkWidget *w, gpointer data)
 
 	switch (druid_data.state) {
 	case STATE_GDB:
-		/* nothing */
+	{
+		BugzillaApplication *application;
+		BugzillaProduct *product;
+		BugzillaBTS *bts;
+
+		products_list_load ();
+		if (!druid_data.current_appname)
+			break;
+		
+		application = g_hash_table_lookup(druid_data.program_to_application, druid_data.current_appname);
+		if (!application || !application->bugzilla || !application->product)
+			break;
+
+		bts = g_hash_table_lookup (druid_data.bugzillas, application->bugzilla);
+		if (!bts)
+	       		break;
+		
+		product = g_hash_table_lookup (bts->products, application->product);
+		if (!product)
+			break;
+		
+		druid_data.product = product;
+		bugzilla_product_add_components_to_clist (druid_data.product);
+		buddy_set_text ("email-to-entry", druid_data.product->bts->email);
+		newstate++;
+		druid_data.product_skipped = TRUE;
+		if (application->component) {
+			bugzilla_add_mostfreq (druid_data.product->bts);
+			druid_data.component = g_hash_table_lookup(product->components, application->component);
+			if (!druid_data.component)
+				break;
+				
+			newstate++;
+			druid_data.component_skipped = TRUE;
+			if (g_slist_find (druid_data.product->bts->severities, "critical")!=NULL); {
+				druid_data.severity = "critical";
+			}
+			if (!druid_data.product->bts->bugs) {
+				newstate++;
+				druid_data.mostfreq_skipped = TRUE;
+			}
+		}
 		break;
+	}
 	case STATE_PRODUCT:
 	{
-		BugzillaProduct *product;
+		BugzillaProduct *product = NULL;
+		BugzillaApplication *application;
 		/* check that the package is ok */
 		if (GTK_TOGGLE_BUTTON (GET_WIDGET ("no-product-toggle"))->active) {
 			static gboolean dialog_shown = FALSE;
@@ -653,26 +754,80 @@ on_druid_next_clicked (GtkWidget *w, gpointer data)
 			druid_data.product = NULL;
 			druid_data.component = NULL;
 			newstate = STATE_DESC;
+			druid_data.component_skipped = TRUE;
+			druid_data.mostfreq_skipped = TRUE;
 			break;
 		}
  
-		product = get_selected_row ("product-list", PRODUCT_DATA);
-		if (!product) {
-			d = gtk_message_dialog_new (GTK_WINDOW (GET_WIDGET ("druid-window")),
-						    0,
-						    GTK_MESSAGE_ERROR,
-						    GTK_BUTTONS_OK,
-						    _("You must specify a product for your bug report."));
-			gtk_dialog_set_default_response (GTK_DIALOG (d),
-							 GTK_RESPONSE_OK);
-			gtk_dialog_run (GTK_DIALOG (d));
-			gtk_widget_destroy (d);
-			return;
+		if (druid_data.show_products) {
+			product = get_selected_row ("product-list", PRODUCT_DATA);
+ 			if (!product) {
+				d = gtk_message_dialog_new (GTK_WINDOW (GET_WIDGET ("druid-window")),
+							    0,
+							    GTK_MESSAGE_ERROR,
+							    GTK_BUTTONS_OK,
+							    _("Please choose a product for your bug report."));
+				gtk_dialog_set_default_response (GTK_DIALOG (d),
+								 GTK_RESPONSE_OK);
+				gtk_dialog_run (GTK_DIALOG (d));
+				gtk_widget_destroy (d);
+				return;
+			}
+		} else {
+			application = get_selected_row ("product-list", PRODUCT_DATA);
+ 			if (!application) {
+				d = gtk_message_dialog_new (GTK_WINDOW (GET_WIDGET ("druid-window")),
+							    0,
+							    GTK_MESSAGE_ERROR,
+							    GTK_BUTTONS_OK,
+							    _("Please choose an application for your bug report."));
+				gtk_dialog_set_default_response (GTK_DIALOG (d),
+								 GTK_RESPONSE_OK);
+				gtk_dialog_run (GTK_DIALOG (d));
+				gtk_widget_destroy (d);
+				return;
+			}
+			if (application->bugzilla && application->product) {
+				BugzillaBTS *bts = g_hash_table_lookup (druid_data.bugzillas, application->bugzilla);
+				if (bts) {
+					product = g_hash_table_lookup (bts->products, application->product);
+				}
+			}
+			if (!product) {
+				if (!application->email) {
+					d = gtk_message_dialog_new (GTK_WINDOW (GET_WIDGET ("druid-window")),
+								    0,
+								    GTK_MESSAGE_WARNING,
+								    GTK_BUTTONS_OK,
+								    _("This application has not included information about "
+								      "how to submit bugs.\n\n"
+								      "If you know an email address where bug reports should be sent, "
+								      "you will be able to specify that later.\n\n"
+								      "You may be able to find one in an \"About\" box in the "
+								      "application, or in the application's documentation."));
+					gtk_dialog_set_default_response (GTK_DIALOG (d), GTK_RESPONSE_OK);
+					gtk_dialog_run (GTK_DIALOG (d));
+					gtk_widget_destroy (d);
+				}
+				buddy_set_text ("email-to-entry", application->email);
+				druid_data.product = NULL;
+				druid_data.component = NULL;
+				newstate = STATE_DESC;
+				druid_data.component_skipped = TRUE;
+				druid_data.mostfreq_skipped = TRUE;
+				break;
+			}
+				
 		}
+
 		if (product != druid_data.product) {
 			druid_data.product = product;
 			bugzilla_product_add_components_to_clist (druid_data.product);
 			buddy_set_text ("email-to-entry", druid_data.product->bts->email);
+		}
+		
+		if (application->component) {
+			select_component_row (application->component);
 		}
 		break;
 	}
@@ -711,8 +866,10 @@ on_druid_next_clicked (GtkWidget *w, gpointer data)
 			druid_data.component = component;
 			bugzilla_add_mostfreq (druid_data.product->bts);
 		}
-		if (!druid_data.product->bts->bugs)
+		if (!druid_data.product->bts->bugs) {
 			newstate++;
+			druid_data.mostfreq_skipped = TRUE;
+		}
 		break;
 	}
 	case STATE_MOSTFREQ:
@@ -725,66 +882,6 @@ on_druid_next_clicked (GtkWidget *w, gpointer data)
 	case STATE_EMAIL_CONFIG:
 		if (!mail_config_page_ok ())
 			return;
-
-		if (GTK_TOGGLE_BUTTON (GET_WIDGET ("email-mailer-radio"))->active) {
-			MailerItem *mailer;
-			char *orig_body, *uri_body, *to, *orig_subject, *uri_subject;
-			int argc;
-			char **argv;
-
-			if (GTK_TOGGLE_BUTTON (GET_WIDGET ("email-custom-radio"))->active) {
-				mailer = &druid_data.custom_mailer;
-			} else {
-				char *s;
-				s = buddy_get_text ("email-default-entry");
-				mailer = g_hash_table_lookup (druid_data.mailer_hash, s);
-				g_free (s);
-			}
-
-			/* FIXME: validate mailer */
-
-			g_shell_parse_argv (mailer->command, &argc, &argv, NULL);
-			argv = g_realloc (argv, ++argc);
-
-			/* escape from la */
-			orig_body  = generate_email_text (FALSE);
-			uri_body   = gnome_vfs_escape_string (orig_body);
-
-			orig_subject = buddy_get_text ("desc-subject");
-			uri_subject  = gnome_vfs_escape_string (orig_subject);
-
-			if (druid_data.product)
-				to = gnome_vfs_escape_string (druid_data.product->bts->email);
-			else
-				to = g_strdup ("");
-
-			argv[argc-1] = g_strdup_printf ("mailto:%s?subject=%s&body=%s", to, uri_subject, uri_body);
-			argv[argc]   = NULL;
-
-			{
-				char **s;
-				for (s = argv; *s; s++)
-					g_print ("%s\n", *s);
-			}
-
-			/* FIXME: check for errors */
-			g_spawn_async (NULL, argv, NULL,
-				       G_SPAWN_SEARCH_PATH,
-				       NULL, NULL, NULL, NULL);
-
-			g_strfreev (argv);
-			g_free (orig_body);
-			g_free (uri_body);
-			g_free (orig_subject);
-			g_free (uri_subject);
-			g_free (to);
-
-			newstate = STATE_FINISHED;
-
-			buddy_set_text ("finished-label", 
-					_("Your email program has been launched.  Please look it over and send it.\n\n"
-					  "Thank you for submitting this bug report."));
-		}
 		break;
 	case STATE_EMAIL:
 		/* validate included file.
@@ -819,6 +916,7 @@ on_druid_cancel_clicked (GtkWidget *w, gpointer data)
 	}
 	gtk_widget_destroy (d);
 
+	stop_gdb ();
 	save_config ();
 	gtk_main_quit ();
 }

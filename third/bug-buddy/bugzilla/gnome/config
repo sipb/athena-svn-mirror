@@ -24,6 +24,8 @@
     <opsys>IRIX</opsys>
     <opsys>Linux</opsys>
     <opsys>FreeBSD</opsys>
+    <opsys>OpenBSD</opsys>
+    <opsys>NetBSD</opsys>
     <opsys>OSF/1</opsys>
     <opsys>Solaris</opsys>
     <opsys>SunOS</opsys>

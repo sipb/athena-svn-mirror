@@ -38,6 +38,8 @@ bug_buddy_SOURCES = \
 	$(bb_built_sources)	\
 	bug-buddy.c		\
 	bug-buddy.h		\
+	md5-utils.c		\
+	md5-utils.h		\
 	bugzilla.c		\
 	bugzilla.h		\
 	cell-renderer-uri.c	\
@@ -45,6 +47,10 @@ bug_buddy_SOURCES = \
 	config.c		\
 	gdb-buddy.c		\
 	libglade-buddy.h	\
+	save-buddy.c		\
+	save-buddy.h		\
+	signal-buddy.c		\
+	signal-buddy.h		\
 	united-states-of-bug-buddy.c
 
 bug_buddy_LDADD = \
