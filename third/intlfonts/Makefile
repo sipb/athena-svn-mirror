@@ -1,11 +1,11 @@
-# $Id: Makefile,v 1.3 1999-04-08 05:06:30 tb Exp $
+# $Id: Makefile,v 1.4 1999-04-09 17:53:32 ghudson Exp $
 
 # Font source directories
-vpath = Asian Chinese Chinese-BIG Chinese-X Ethiopic European \
+VPATH = Asian Chinese Chinese-BIG Chinese-X Ethiopic European \
 	European-BIG Japanese Japanese-BIG Japanese-X Korean-X Misc
 
 # Tools
-BCFTOPDF=bcftopdf
+BDFTOPCF=bdftopcf
 MKFONTDIR=mkfontdir
 
 # Where to put the founts
@@ -16,44 +16,44 @@ aliases = Chinese/fonts.alias European/fonts.alias Japanese-X/fonts.alias \
 	Japanese/fonts.alias
 
 # fonts to build
-fonts = etl16-viscii.pdf etl24-viscii.pdf mule-indian-1col-24.pdf \
-	mule-indian-24.pdf mule-iscii-24.pdf mule-lao-14.pdf \
-	mule-lao-16.pdf mule-lao-24.pdf mule-tibmdx-16.pdf \
-	mule-tibmdx-1col-16.pdf mule-tibmdx-1col-24.pdf \
-	mule-tibmdx-24.pdf thai-14.pdf thai-16.pdf thai-24.pdf \
-	cns-1-16.pdf cns-1-24.pdf cns-2-16.pdf cns-2-24.pdf \
-	cns-3-24.pdf cns-4-24.pdf cns-5-24.pdf cns-6-24.pdf \
-	cns-7-24.pdf etl14-sisheng.pdf etl16-sisheng.pdf \
-	etl24-sisheng.pdf fonts.alias guobiao16.pdf taipei16.pdf \
-	taipei24.pdf cc40s.pdf cc48s.pdf cns-1-40.pdf cns-2-40.pdf \
-	cns-3-40.pdf cns-4-40.pdf cns-5-40.pdf cns-6-40.pdf \
-	cns-7-40.pdf gb16fs.pdf gb16st.pdf gb24st.pdf \
-	ethiomx16f-uni.pdf ethiomx24f-uni.pdf a18.pdf \
-	etl14-cyrillic.pdf etl14-greek.pdf etl14-koi8.pdf \
-	etl14-latin1.pdf etl14-latin2.pdf etl14-latin3.pdf \
-	etl14-latin4.pdf etl14-latin5.pdf etl16-cyrillic.pdf \
-	etl16-greek.pdf etl16-koi8.pdf etl16-latin1.pdf \
-	etl16-latin2.pdf etl16-latin3.pdf etl16-latin4.pdf \
-	etl16-latin5.pdf etl16b-latin1.pdf etl16bi-latin1.pdf \
-	etl16i-latin1.pdf etl24-cyrillic.pdf etl24-greek.pdf \
-	etl24-koi8.pdf etl24-latin1.pdf etl24-latin2.pdf \
-	etl24-latin3.pdf etl24-latin4.pdf etl24-latin5.pdf \
-	etl40-latin1.pdf a18rk.pdf jiskan16-1978.pdf jisksp16.pdf \
-	k16-1990.pdf kanji18.pdf jisksp40.pdf kanji32.pdf kanji48.pdf \
-	12x24rk.pdf 8x16rk.pdf jiskan16.pdf jiskan24.pdf k14.pdf \
-	hanglg16.pdf hanglm16.pdf hanglm24.pdf etl14-hebrew.pdf \
-	etl14-ipa.pdf etl16-arabic0.pdf etl16-arabic1.pdf \
-	etl16-arabic2.pdf etl16-hebrew.pdf etl16-ipa.pdf \
-	etl24-arabic0.pdf etl24-arabic1.pdf etl24-arabic2.pdf \
-	etl24-hebrew.pdf etl24-ipa.pdf
+fonts = etl16-viscii.pcf etl24-viscii.pcf mule-indian-1col-24.pcf \
+	mule-indian-24.pcf mule-iscii-24.pcf mule-lao-14.pcf \
+	mule-lao-16.pcf mule-lao-24.pcf mule-tibmdx-16.pcf \
+	mule-tibmdx-1col-16.pcf mule-tibmdx-1col-24.pcf \
+	mule-tibmdx-24.pcf thai-14.pcf thai-16.pcf thai-24.pcf \
+	cns-1-16.pcf cns-1-24.pcf cns-2-16.pcf cns-2-24.pcf \
+	cns-3-24.pcf cns-4-24.pcf cns-5-24.pcf cns-6-24.pcf \
+	cns-7-24.pcf etl14-sisheng.pcf etl16-sisheng.pcf \
+	etl24-sisheng.pcf fonts.alias guobiao16.pcf taipei16.pcf \
+	taipei24.pcf cc40s.pcf cc48s.pcf cns-1-40.pcf cns-2-40.pcf \
+	cns-3-40.pcf cns-4-40.pcf cns-5-40.pcf cns-6-40.pcf \
+	cns-7-40.pcf gb16fs.pcf gb16st.pcf gb24st.pcf \
+	ethiomx16f-uni.pcf ethiomx24f-uni.pcf a18.pcf \
+	etl14-cyrillic.pcf etl14-greek.pcf etl14-koi8.pcf \
+	etl14-latin1.pcf etl14-latin2.pcf etl14-latin3.pcf \
+	etl14-latin4.pcf etl14-latin5.pcf etl16-cyrillic.pcf \
+	etl16-greek.pcf etl16-koi8.pcf etl16-latin1.pcf \
+	etl16-latin2.pcf etl16-latin3.pcf etl16-latin4.pcf \
+	etl16-latin5.pcf etl16b-latin1.pcf etl16bi-latin1.pcf \
+	etl16i-latin1.pcf etl24-cyrillic.pcf etl24-greek.pcf \
+	etl24-koi8.pcf etl24-latin1.pcf etl24-latin2.pcf \
+	etl24-latin3.pcf etl24-latin4.pcf etl24-latin5.pcf \
+	etl40-latin1.pcf a18rk.pcf jiskan16-1978.pcf jisksp16.pcf \
+	k16-1990.pcf kanji18.pcf jisksp40.pcf kanji32.pcf kanji48.pcf \
+	12x24rk.pcf 8x16rk.pcf jiskan16.pcf jiskan24.pcf k14.pcf \
+	hanglg16.pcf hanglm16.pcf hanglm24.pcf etl14-hebrew.pcf \
+	etl14-ipa.pcf etl16-arabic0.pcf etl16-arabic1.pcf \
+	etl16-arabic2.pcf etl16-hebrew.pcf etl16-ipa.pcf \
+	etl24-arabic0.pcf etl24-arabic1.pcf etl24-arabic2.pcf \
+	etl24-hebrew.pcf etl24-ipa.pcf
 
 all: $(fonts) fonts.alias
 
 clean:
-	rm -f *.pdf fonts.alias
+	rm -f *.pcf fonts.alias
 
 install: all
-	-mkdir -p $(INSTALLDIR)
+	mkdir -p $(INSTALLDIR)
 	cp $(fonts) $(INSTALLDIR)
 	touch $(INSTALLDIR)/fonts.alias
 	cat fonts.alias $(INSTALLDIR)/fonts.alias | sort | uniq > temp
@@ -63,5 +63,6 @@ install: all
 fonts.alias: $(aliases)
 	cat $(aliases) | sort | uniq > fonts.alias
 
-%.pdf: %.bcf
-	$(BCFTOPDF) $< > $@
+%.pcf: %.bdf
+	rm -f $@
+	$(BDFTOPCF) $< > $@
