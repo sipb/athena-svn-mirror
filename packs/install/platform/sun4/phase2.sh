@@ -4,7 +4,7 @@
 ### installation program.  It is called by the first script,
 ### athenainstall.
 
-### $Header: /afs/dev.mit.edu/source/repository/packs/install/platform/sun4/phase2.sh,v 1.9 1995-08-17 17:09:09 cfields Exp $
+### $Header: /afs/dev.mit.edu/source/repository/packs/install/platform/sun4/phase2.sh,v 1.10 1996-01-04 10:23:58 miki Exp $
 ### $Locker:  $
 
 
@@ -51,6 +51,10 @@ SUN1.05)
          echo "formatting SUN1.05"
          cat /util/format.input.SUN1.05 | /usr/sbin/format >/dev/null 2>&1
 	 ;;
+SEAGATE*5660N)
+         echo "formatting SEAGATE-ST5660N"
+         cat /util/format.input.seagate.5660|/usr/sbin/format >/dev/null 2>&1
+        ;;
 *)
          echo "can't format the disks - type unknown"
          echo "Call an expert !"
