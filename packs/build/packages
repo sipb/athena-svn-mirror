@@ -1,4 +1,4 @@
-# $Id: packages,v 1.148 2002-02-03 17:12:53 ghudson Exp $
+# $Id: packages,v 1.149 2002-02-03 19:39:03 ghudson Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -138,7 +138,7 @@ third/control-center		requires gnome-libs,libxml,libglade,esound,gdk-pixbuf,gnom
 third/diffutils			on solaris
 third/emacs			requires hesiod,krb5
 third/esound			requires audiofile
-third/evolution			requires bonobo,libglade,gtkhtml,gnome-vfs,bonobo-conf
+third/evolution			requires bonobo,libglade,gtkhtml,gnome-vfs,bonobo-conf,scrollkeeper
 third/flex			on solaris
 third/GConf			requires gtk,oaf,ORBit
 third/gal			requires gnome-vfs,libglade
