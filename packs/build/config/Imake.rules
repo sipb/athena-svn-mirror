@@ -1,9 +1,19 @@
 /* 
  * The following instances are supported
+ *	program(program, objs, ldflags, libs, instflags, dest)
  *	foreach_subdirs(name,subdirs)
  *	do_subdirs_no_imakefile(subdirs)
  *	do_subdirs(subdirs)
  */
+
+#define program(prog,objs,ldflags,libs,instflags,dest)			@@\
+all::	prog								@@\
+prog::	objs								@@\
+	$(LD) ldflags -o prog objs libs					@@\
+clean::									@@\
+	rm -f prog objs							@@\
+install::								@@\
+	install instflags prog dest
 
 #define makefile_target()						@@\
 Makefile:: $(ICONFIGFILE)						@@\
