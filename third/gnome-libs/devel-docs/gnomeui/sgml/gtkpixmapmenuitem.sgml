@@ -1,4 +1,4 @@
-<refentry id="GtkPixmapMenuItem" revision="16 Mar 2001">
+<refentry id="GtkPixmapMenuItem">
 <refmeta>
 <refentrytitle>GtkPixmapMenuItem</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -71,7 +71,7 @@ Creates a new pixmap menu item. Use <link linkend="gtk-pixmap-menu-item-set-pixm
 to set the pixmap wich is displayed at the left side.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -88,7 +88,7 @@ to set the pixmap wich is displayed at the left side.</para>
 Set the pixmap of the menu item.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">

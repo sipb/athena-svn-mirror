@@ -2,10 +2,10 @@
 * HTML.h : XmHTML Widget public header file.
 *			Resource defines, enumerations and structures.
 *
-* This file Version	$Revision: 1.1.1.1 $
+* This file Version	$Revision: 1.1.1.2 $
 *
 * Creation date:		Tue Apr 15 23:39:26 GMT+0100 1997
-* Last modification: 	$Date: 2000-11-12 01:46:03 $
+* Last modification: 	$Date: 2002-02-13 00:14:40 $
 * By:					$Author: ghudson $
 * Current State:		$State: Exp $
 *

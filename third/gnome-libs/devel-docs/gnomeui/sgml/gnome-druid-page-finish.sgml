@@ -1,4 +1,4 @@
-<refentry id="GnomeDruidPageFinish" revision="16 Mar 2001">
+<refentry id="GnomeDruidPageFinish">
 <refmeta>
 <refentrytitle>GnomeDruidPageFinish</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -83,7 +83,7 @@ void        <link linkend="gnome-druid-page-finish-set-watermark">gnome_druid_pa
 <programlisting><link linkend="GtkWidget">GtkWidget</link>*  gnome_druid_page_finish_new     (void);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -102,7 +102,7 @@ void        <link linkend="gnome-druid-page-finish-set-watermark">gnome_druid_pa
                                              <link linkend="GdkImlibImage">GdkImlibImage</link> *watermark);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -131,7 +131,7 @@ void        <link linkend="gnome-druid-page-finish-set-watermark">gnome_druid_pa
                                              <link linkend="GdkColor">GdkColor</link> *color);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -152,7 +152,7 @@ void        <link linkend="gnome-druid-page-finish-set-watermark">gnome_druid_pa
                                              <link linkend="GdkColor">GdkColor</link> *color);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -173,7 +173,7 @@ void        <link linkend="gnome-druid-page-finish-set-watermark">gnome_druid_pa
                                              <link linkend="GdkColor">GdkColor</link> *color);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -194,7 +194,7 @@ void        <link linkend="gnome-druid-page-finish-set-watermark">gnome_druid_pa
                                              <link linkend="GdkColor">GdkColor</link> *color);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -215,7 +215,7 @@ void        <link linkend="gnome-druid-page-finish-set-watermark">gnome_druid_pa
                                              <link linkend="GdkColor">GdkColor</link> *color);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -236,7 +236,7 @@ void        <link linkend="gnome-druid-page-finish-set-watermark">gnome_druid_pa
                                              <link linkend="gchar">gchar</link> *text);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -257,7 +257,7 @@ void        <link linkend="gnome-druid-page-finish-set-watermark">gnome_druid_pa
                                              <link linkend="gchar">gchar</link> *title);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -278,7 +278,7 @@ void        <link linkend="gnome-druid-page-finish-set-watermark">gnome_druid_pa
                                              <link linkend="GdkImlibImage">GdkImlibImage</link> *logo_image);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -299,7 +299,7 @@ void        <link linkend="gnome-druid-page-finish-set-watermark">gnome_druid_pa
                                              <link linkend="GdkImlibImage">GdkImlibImage</link> *watermark);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">

@@ -1,10 +1,10 @@
 /*****
 * plc.c : XmHTML Progressive Loader Context interfacing routines.
 *
-* This file Version	$Revision: 1.1.1.1 $
+* This file Version	$Revision: 1.1.1.2 $
 *
 * Creation date:		Thu Jun 12 16:46:34 GMT+0100 1997
-* Last modification: 	$Date: 2000-11-12 01:49:39 $
+* Last modification: 	$Date: 2002-02-13 00:12:36 $
 * By:					$Author: ghudson $
 * Current State:		$State: Exp $
 *
@@ -35,6 +35,14 @@
 /*****
 * ChangeLog 
 * $Log: not supported by cvs2svn $
+* Revision 1.10.6.1  2002/01/08 22:33:11  kmaraas
+* 2002-01-06  Kjartan Maraas  <kmaraas@gnome.org>
+*
+* 	* *: Fix compiler warnings.
+* 	* images.c: Fix missing X color context ref that was causing lots
+* 	of crashes. Fixes #60237, #61638, #63439, #65040, #66913 and more.
+* 	* test.c: do not use %s for a boolean use %d instead.
+*
 * Revision 1.10  1999/07/29 01:26:29  sopwith
 *
 *
@@ -145,14 +153,9 @@
 
 #include <stdlib.h>
 #include <stdio.h>
-#include <config.h>
 
 #if defined (HAVE_LIBPNG) || defined(HAVE_LIBZ)
 #include <zlib.h>
-#endif
-
-#if defined(HAVE_LIBJPEG)
-#include <jpeglib.h>
 #endif
 
 #ifndef WITH_MOTIF

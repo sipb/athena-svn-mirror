@@ -1,4 +1,4 @@
-<refentry id="GnomeCanvasGroup" revision="16 Mar 2001">
+<refentry id="GnomeCanvasGroup">
 <refmeta>
 <refentrytitle>GnomeCanvasGroup</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -59,7 +59,7 @@ void        <link linkend="gnome-canvas-group-child-bounds">gnome_canvas_group_c
 Deprecated.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">

@@ -1,4 +1,4 @@
-<refentry id="GnomePixmapEntry" revision="16 Mar 2001">
+<refentry id="GnomePixmapEntry">
 <refmeta>
 <refentrytitle>GnomePixmapEntry</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -85,7 +85,7 @@ to show it. For a pixmap entry without preview, use the
 <link linkend="GnomeFileEntry">GnomeFileEntry</link> widget..</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -113,7 +113,7 @@ subdirectory should be specified relative to the default GNOME
 pixmap directory.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -134,7 +134,7 @@ Get the GnomeFileEntry component of the
 GnomePixmapEntry widget for lower-level manipulation.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -153,7 +153,7 @@ Get the GnomeEntry component of the
 GnomePixmapEntry widget for lower-level manipulation.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -172,7 +172,7 @@ Get the GtkEntry component of the
 GnomePixmapEntry for Gtk+-level manipulation.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -192,7 +192,7 @@ Sets whether or not previews of the currently selected
 pixmap should be shown in the file selector.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -214,7 +214,7 @@ pixmap should be shown in the file selector.</para>
 Sets the minimum size of the preview frame in pixels.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -237,7 +237,7 @@ Gets the filename of the image if the preview
 successfully loaded.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">

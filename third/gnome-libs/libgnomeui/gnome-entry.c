@@ -479,7 +479,7 @@ gnome_entry_save_history (GnomeEntry *gentry)
 	GList *items;
 	struct item *final_items[DEFAULT_MAX_HISTORY_SAVED];
 	struct item *item;
-	gint n;
+	gint n, key_num;
 	gchar key[13];
 
 	g_return_if_fail (gentry != NULL);
@@ -499,15 +499,16 @@ gnome_entry_save_history (GnomeEntry *gentry)
 	gnome_config_push_prefix (prefix);
 	g_free (prefix);
 
-	for (n = 0, items = gentry->items; items && n < gentry->max_saved; items = items->next, n++) {
+	for (n = 0, key_num = 0, items = gentry->items; items && n < gentry->max_saved; items = items->next, n++) {
 		item = items->data;
 
 		final_items [n] = NULL;
 		if (item->save) {
 			if (check_for_duplicates (final_items, n, item)) {
 				final_items [n] = item;
-				g_snprintf (key, sizeof(key), "%d", n);
+				g_snprintf (key, sizeof(key), "%d", key_num);
 				gnome_config_set_string (key, item->text);
+				key_num ++;
 			}
 		}
 	}

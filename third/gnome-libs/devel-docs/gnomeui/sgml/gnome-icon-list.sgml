@@ -1,4 +1,4 @@
-<refentry id="GnomeIconList" revision="16 Mar 2001">
+<refentry id="GnomeIconList">
 <refmeta>
 <refentrytitle>GnomeIconList</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -224,7 +224,7 @@ similar in purpose to <link linkend="gnome-icon-list-new-flags">gnome_icon_list_
 the <literal>GNOME_ICON_LIST_IS_EDITABLE</literal> flag.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -270,7 +270,7 @@ This is intended to save memory.  If this flag is not set, then the text
 strings will be copied and managed internally.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -297,7 +297,7 @@ strings will be copied and managed internally.</para>
 Constructor for the icon list, to be used by derived classes.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -325,7 +325,7 @@ not required, as the icon list can be simply inserted in a &amp;GtkScrolledWindo
 and scrolling will be handled automatically.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -347,7 +347,7 @@ required, as the icon list can be simply inserted in a &amp;GtkScrolledWindow an
 scrolling will be handled automatically.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -377,7 +377,7 @@ same number of calls to <link linkend="gnome-icon-list-thaw">gnome_icon_list_tha
 effect.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -394,7 +394,7 @@ Thaws the icon list and performs any pending layout operations.  This
 is to be used in conjunction with <link linkend="gnome-icon-list-freeze">gnome_icon_list_freeze</link>().</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -414,7 +414,7 @@ Inserts an icon in the specified icon list.  The icon's image is loaded
 from the specified file, and it is inserted at the <parameter>pos</parameter> index.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -443,7 +443,7 @@ Inserts an icon in the specified icon list.  The icon is created from the
 specified Imlib image, and it is inserted at the <parameter>pos</parameter> index.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -471,7 +471,7 @@ Appends an icon to the specified icon list.  The icon's image is loaded from
 the specified file, and it is inserted at the <parameter>pos</parameter> index.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -500,7 +500,7 @@ Appends an icon to the specified icon list.  The icon is created from
 the specified Imlib image.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -528,7 +528,7 @@ handlers were specified for any of the icons, they will be called with the
 appropriate data.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -546,7 +546,7 @@ Removes the icon at index position <parameter>pos</parameter>.  If a destroy han
 for that icon, it will be called with the appropriate data.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -568,7 +568,7 @@ Sets the selection mode for an icon list.  The <literal>GTK_SELECTION_MULTIPLE</
 <literal>GTK_SELECTION_EXTENDED</literal> modes are considered equivalent.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -588,7 +588,7 @@ Sets the selection mode for an icon list.  The <literal>GTK_SELECTION_MULTIPLE</
 Selects the icon at the index specified by <parameter>pos</parameter>.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -610,7 +610,7 @@ Selects the icon at the index specified by <parameter>pos</parameter>.</para>
 Unselects the icon at the index specified by <parameter>pos</parameter>.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -632,7 +632,7 @@ Unselects all the icons in the icon list.  The <parameter>event</parameter> and 
 must be NULL, since they are used only internally.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -658,7 +658,7 @@ Sets the amount of horizontal space allocated to the icons, i.e. the column
 width of the icon list.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -678,7 +678,7 @@ width of the icon list.</para>
 Sets the spacing to be used between rows of icons.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -698,7 +698,7 @@ Sets the spacing to be used between rows of icons.</para>
 Sets the spacing to be used between columns of icons.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -719,7 +719,7 @@ Sets the spacing to be used between columns of icons.</para>
 Sets the spacing to be used between an icon's image and its text caption.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -740,7 +740,7 @@ Sets the width of the border to be displayed around an icon's image.  This is
 currently not implemented.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -761,7 +761,7 @@ Sets the characters that can be used as word separators when doing
 word-wrapping in the icon text captions.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -780,7 +780,7 @@ word-wrapping in the icon text captions.</para>
                                              <link linkend="gpointer">gpointer</link> data);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -810,7 +810,7 @@ Associates the <parameter>data</parameter> pointer to the icon at the index spec
 destroyed, or NULL if no function is to be called when this happens.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -837,7 +837,7 @@ destroyed, or NULL if no function is to be called when this happens.</para>
 </para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -860,7 +860,7 @@ or -1 if no icon has this data associated to it.
 </para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -887,7 +887,7 @@ the top of the visible part of the icon list, and 1.0 represents the bottom.
 An icon can be centered on the icon list.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -909,7 +909,7 @@ An icon can be centered on the icon list.</para>
                                              int pos);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -934,7 +934,7 @@ An icon can be centered on the icon list.</para>
 </para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -961,7 +961,7 @@ position, -1 is returned.
 </para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">

@@ -1,3 +1,178 @@
+2002-01-22  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* no.po: Updated Norwegian (bokmål) translation.
+
+2002-01-13  Karl Eichwalder  <ke@suse.de>
+
+	* de.po: Cleanup.
+
+2002-01-12  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* no.po: Updated Norwegian (bokmål) translation.
+
+2002-01-02  Pablo Saratxaga <pablo@mandrakesoft.com>
+
+	* eu.po: Updated Basque file
+
+2001-12-10  Tõivo Leedjärv  <leedjarv@interest.ee>
+
+	* et.po: Updated Estonian translation by
+	Ilmar Kerm <ikerm@hot.ee>
+
+2001-10-30  Roy-Magne Mo  <rmo@sunnmore.net>
+
+	* nn.po: Updated Norwegian (nynorsk) translation.
+
+2001-10-20  Pablo Saratxaga <pablo@mandrakesoft.com>
+
+	* az.po: Updated Azeri file
+
+2001-10-15  Zbigniew Chyla  <cyba@gnome.pl>
+
+	* pl.po: Updated Polish translation.
+
+2001-10-13  Christophe Merlet  <redfox@eikonex.org>
+
+	* fr.po: Updated French translation.
+
+2001-10-07  Artis Trops <hornet@navigators.lv>
+
+	* lv.po: Updated Latvian translation.
+
+2001-10-07  Carlos Perelló Marín <carlos@gnome-db.org>
+
+	* pt.po: Updated by Nuno Ferreira <nmrf@rnl.ist.utl.pt>
+
+2001-09-10  Yukihiro Nakai <nakai@gnome.gr.jp>
+
+	* ja.po: Small fix.
+
+2001-09-07  Pablo Saratxaga <pablo@mandrakesoft.com>
+
+	* ga.po: Updated Irish file
+
+2001-09-03  Stanislav Visnovsky  <visnovsky@nenya.ms.mff.cuni.cz>
+
+	* sk.po: Fixed Settings menu entry accelerator.
+
+2001-08-27  Abel Cheung  <maddog@linux.org.hk>
+
+	* zh_TW.Big5.po: Rename to...
+	* zh_TW.po: this one.
+
+2001-08-16  Andras Timar  <timar@gnome.hu>
+
+	* hu.po: Changed the hotkey on Szerkesztés (Edit) menu from S to Z.
+
+2001-08-16  Abel Cheung  <maddog@linux.org.hk>
+
+	* zh_TW.Big5.po: Minor update.
+
+2001-08-14  Abel Cheung  <maddog@linux.org.hk>
+
+	* zh_TW.Big5.po: Updated traditional Chinese translation.
+	  This one is not gettext-version dependent.
+
+2001-08-06  Marius Andreiana  <mandreiana@yahoo.com>
+
+	* ro.po: updated
+
+2001-08-04  Abel Cheung <maddog@linux.org.hk>
+
+	* zh_TW.Big5.po: Updated traditional Chinese translation. This
+	  requires gettext >= 0.10.36, so please tell me if there's problem.
+
+2001-08-02  Abel Cheung <maddog@linux.org.hk>
+
+	* ms.po: Marked line 1917 as fuzzy, gettext error.
+
+2001-08-01  Peteris Krisjanis  <peterisk@apollo.lv>
+
+	* lv.po: Updated Latvian translation.
+
+2001-07-30  Marius Andreiana  <mandreiana@yahoo.com>
+
+	* ro.po: updated
+
+2001-07-23  Zbigniew Chyla  <cyba@gnome.pl>
+
+	* pl.po: Updated Polish translation.
+
+2001-07-13  Zbigniew Chyla  <cyba@gnome.pl>
+
+	* pl.po: Updated Polish translation.
+
+2001-07-11  Ole Laursen  <olau@hardworking.dk>
+
+	* da.po: Fixed a few things.
+
+2001-06-26  Fatih Demir <kabalak@gtranslator.org>
+
+	* ta.po: Committed updated Tamil translation by
+		Dinesh.
+
+2001-05-29  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* ms.po: Updated again.
+	
+2001-06-22  Stanislav Brabec  <utx@penguin.cz>
+
+	* cs.po: Fixes, hotkeys and ellipses.
+
+2001-06-12  Stanislav Brabec  <utx@penguin.cz>
+
+	* cs.po: Change hotkey for main menu and keep Alt+d reserved.
+
+2001-05-29  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* ms.po: Fixed up the Microsoft translation. :)
+	
+2001-05-28  Gediminas Paulauskas <menesis@delfi.lt>
+
+	* lt.po: Revised Lithuanian translation.
+
+2001-05-24  Stanislav Brabec  <utx@penguin.cz>
+
+	* cs.po: Updated translation.
+
+2001-05-21  Pablo Saratxaga <pablo@mandrakesoft.com>
+
+	* zh_TW.Big5.po: fixed invalid multibyte
+
+2001-05-21  Stanislav Brabec  <utx@penguin.cz>
+
+	* cs.po: Updated translation.
+
+2001-04-02  Fatih Demir <kabalak@gtranslator.org>
+
+	* tr.po: Committed updated Turkish translation
+		by Nilg|n.
+
+2001-03-31  Ole Laursen  <olau@hardworking.dk>
+
+	* da.po: Fixed typo.
+
+2001-03-31  Pablo Saratxaga  <pablo@mandrakesoft.com>
+
+	* ca.po: Updated Catalan file
+
+2001-03-27  Ole Laursen  <olau@hardworking.dk>
+
+	* da.po: Minor fixes in Danish translation.
+
+2001-03-26  Gediminas Paulauskas <menesis@delfi.lt>
+
+	* lt.po: updated Lithuanian translation.
+	* lv.po: added Latvian translation.
+
+2001-03-25  Christopher R. Gabriel  <cgabriel@softwarelibero.org>
+
+	* it.po: Updated italian translation
+
+2001-03-18  Fatih Demir <kabalak@gtranslator.org>
+
+	* tr.po: %100'ification.
+
 2001-03-15  Pablo Saratxaga  <pablo@mandrakesoft.com>
 
 	* az.po: Updated Azeri file
@@ -41,7 +216,7 @@
 
 2001-03-01  Kjartan Maraas  <kmaraas@gnome.org>
 
-	* no.po: Updated Norwegian (bokmel) translation.
+	* no.po: Updated Norwegian (bokmål) translation.
 	* nn.po: Updated Norwegian (nynorsk) translation.
 	
 2001-03-01  Carlos Perells Marmn <carlos@gnome-db.org>
@@ -118,7 +293,7 @@
 
 2001-02-16  Kjartan Maraas  <kmaraas@gnome.org>
 
-	* no.po: Updated Norwegian (bokmel) translation.
+	* no.po: Updated Norwegian (bokmål) translation.
 
 2001-02-15  Fatih Demir	<kabalak@gtranslator.org>
 
@@ -184,7 +359,7 @@
 
 2001-01-24  Kjartan Maraas  <kmaraas@gnome.org>
 
-	* no.po: Updated Norwegian (bokmel) translation.
+	* no.po: Updated Norwegian (bokmål) translation.
 	* nn.po: Updated Norwegian (nynorsk) translation.
 
 2001-01-24  Szabolcs Ban  <shooby@gnome.hu>
@@ -262,7 +437,7 @@
 
 2000-10-24  Kjartan Maraas  <kmaraas@gnome.org>
 
-	* no.po: Updated Norwegian (bokmel) translation.
+	* no.po: Updated Norwegian (bokmål) translation.
 	* nn.po: Updated Norwegian (nynorsk) translation.
 
 2000-10-21  Zbigniew Chyla  <cyba@gnome.pl>

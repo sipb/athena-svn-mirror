@@ -1,10 +1,10 @@
 /*****
 * miniparse.h : required header file when compiling the parser standalone.
 *
-* This file Version	$Revision: 1.1.1.1 $
+* This file Version	$Revision: 1.1.1.2 $
 *
 * Creation date:		Wed Mar 19 17:26:15 GMT+0100 1997
-* Last modification: 	$Date: 2000-11-12 01:46:09 $
+* Last modification: 	$Date: 2002-02-13 00:14:51 $
 * By:					$Author: ghudson $
 * Current State:		$State: Exp $
 *

@@ -1,4 +1,4 @@
-<refentry id="GnomeColorPicker" revision="16 Mar 2001">
+<refentry id="GnomeColorPicker">
 <refmeta>
 <refentrytitle>GnomeColorPicker</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -135,7 +135,7 @@ a color-selection dialog will open, allowing the user to select a color. The swa
 updated to reflect the new color when the user finishes.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -155,7 +155,7 @@ Pointer to new GNOME color picker widget.
 Set color shown in the color picker widget using floating point values.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -187,7 +187,7 @@ Set color shown in the color picker widget using floating point values.</para>
 Retrieve color currently selected in the color picker widget in the form of floating point values.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -219,7 +219,7 @@ Retrieve color currently selected in the color picker widget in the form of floa
 Set color shown in the color picker widget using 8-bit integer values.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -251,7 +251,7 @@ Set color shown in the color picker widget using 8-bit integer values.</para>
 Retrieve color currently selected in the color picker widget in the form of 8-bit integer values.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -283,7 +283,7 @@ Retrieve color currently selected in the color picker widget in the form of 8-bi
 Set color shown in the color picker widget using 16-bit integer values.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -315,7 +315,7 @@ Set color shown in the color picker widget using 16-bit integer values.</para>
 Retrieve color currently selected in the color picker widget in the form of 16-bit integer values.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -345,7 +345,7 @@ Sets whether the picker should dither the color sample or just paint
 a solid rectangle.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -366,7 +366,7 @@ a solid rectangle.</para>
 Sets whether or not the picker should use the alpha channel.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -386,7 +386,7 @@ Sets whether or not the picker should use the alpha channel.</para>
 Sets the title for the color selection dialog.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">

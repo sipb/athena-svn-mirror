@@ -1,4 +1,4 @@
-<refentry id="gnome-gnome-exec" revision="16 Mar 2001">
+<refentry id="gnome-gnome-exec">
 <refmeta>
 <refentrytitle>gnome-exec</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -71,7 +71,7 @@ Like <link linkend="gnome-execute-async-with-env">gnome_execute_async_with_env</
 child's environment.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -99,7 +99,7 @@ directory
 </para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -138,7 +138,7 @@ completely replace it.  This function closes all fds besides 0, 1,
 and 2 for the child</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -175,7 +175,7 @@ directory
 Like <link linkend="gnome-execute-async-with-env">gnome_execute_async_with_env</link>() but has a flag to decide whether or not  * to close fd's</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -212,7 +212,7 @@ run the desired program.  Note that the pid of the shell is
 returned, not the pid of the user's program.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -236,7 +236,7 @@ directory
 </para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">

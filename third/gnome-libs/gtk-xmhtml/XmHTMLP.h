@@ -1,10 +1,10 @@
 /*****
 * XmHTMLP.h : XmHTML Widget private header file
 *
-* This file Version	$Revision: 1.1.1.1 $
+* This file Version	$Revision: 1.1.1.2 $
 *
 * Creation date:		Tue Nov 19 23:18:41 GMT+0100 1996
-* Last modification: 	$Date: 2000-11-12 01:49:01 $
+* Last modification: 	$Date: 2002-02-13 00:12:08 $
 * By:					$Author: ghudson $
 * Current State:		$State: Exp $
 *
@@ -35,6 +35,11 @@
 /*****
 * ChangeLog 
 * $Log: not supported by cvs2svn $
+* Revision 1.11.6.1  2001/10/20 06:52:12  kmaraas
+* 2001-10-20  Kjartan Maraas  <kmaraas@gnome.org>
+*
+* 	* *.*: Apply all the Red Hat patches.
+*
 * Revision 1.11  1999/06/02 01:00:37  unammx
 *
 * 1999-06-01  Akira Higuchi <a-higuti@math.sci.hokudai.ac.jp>
@@ -301,6 +306,8 @@ _XFUNCPROTOBEGIN
 #define TEXT_IMAGE				(1<<5)	/* indicates an image member	*/
 #define TEXT_FORM				(1<<6)	/* indicates a form member		*/
 #define TEXT_BREAK				(1<<7)	/* indicates a linebreak		*/
+#define TEXT_SPACE_LEAD_ZEROWIDTH	(1<<8)	/* no spacing, but can break before the word	*/
+#define TEXT_SPACE_TRAIL_ZEROWIDTH	(1<<9)	/* no spacing, but can break after the word	*/
 
 /***** 
 * HTML list marker enumeration type 
@@ -527,7 +534,7 @@ typedef struct _XmHTMLWord{
 	int 				len;		/* string length of word				*/
 	XmHTMLfont	 		*font;		/* font to use							*/
 	Byte 				line_data;	/* line data (underline/strikeout)		*/
-	Byte				spacing;	/* leading/trailing/nospace allowed		*/
+	int				spacing;	/* leading/trailing/nospace allowed		*/
 	AllEvents			*events;	/* events to be served					*/
 	struct _XmHTMLImage *image;		/* when this is an image				*/
 	struct _XmHTMLForm	*form;		/* when this is a form element			*/

@@ -1,4 +1,4 @@
-<refentry id="gnome-gnome-help" revision="16 Mar 2001">
+<refentry id="gnome-gnome-help">
 <refmeta>
 <refentrytitle>gnome-help</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -80,7 +80,7 @@ displayed</para></refsect2>
 </para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -107,7 +107,7 @@ to handle case where locale file didnt exist
 </para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -130,7 +130,7 @@ done.  It looks in LANG, then unser C if LANG is not set
 Cause a help viewer to display help entry defined in <parameter>ref</parameter>.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -151,7 +151,7 @@ signals
 Cause a help viewer to display file.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -177,7 +177,7 @@ my-app/lang/properties-blah-3.html, which can be symlinked to the
 appropriate file.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -206,7 +206,7 @@ done.  Most of the time, you can use gnome_help_pbox_display,
 though.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">

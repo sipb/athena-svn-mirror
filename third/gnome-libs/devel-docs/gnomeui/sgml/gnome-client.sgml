@@ -1,4 +1,4 @@
-<refentry id="GnomeClient" revision="16 Mar 2001">
+<refentry id="GnomeClient">
 <refmeta>
 <refentrytitle>GnomeClient</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -176,7 +176,7 @@ X.
 </programlisting>
 <para>
 Returns TRUE if the client is connected to the session manager.
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -259,7 +259,7 @@ Controls type of dialog generated for user interaction.
                                              <link linkend="gpointer">gpointer</link> data);</programlisting>
 <para>
 Callback invoked to perform user interaction.
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -309,7 +309,7 @@ Get the master session management client.  This master client gets
    are recognised by gtk as static arguments to the master client.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -324,7 +324,7 @@ Get the master session management client.  This master client gets
 </para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -342,7 +342,7 @@ session manager. You probably want to use
 &lt;function&gt;<link linkend="gnome-master-client">gnome_master_client</link>()&lt;/function&gt; instead.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -361,7 +361,7 @@ client object. You probably want to use
 &lt;function&gt;<link linkend="gnome-master-client">gnome_master_client</link>()&lt;/function&gt; instead.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -378,7 +378,7 @@ Causes the client to connect to the session manager.
 Usually happens automatically; no need to call this function.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -394,7 +394,7 @@ Usually happens automatically; no need to call this function.</para>
 Disconnect the client from the session manager.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -413,7 +413,7 @@ before connecting to the session manager. Frankly I have no idea
 why you'd do this.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -434,7 +434,7 @@ why you'd do this.</para>
 Returns session management ID</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -452,7 +452,7 @@ Returns session management ID</para>
 Get the previous session management ID (from previous session)</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -476,7 +476,7 @@ returned value using 'gnome_config_push_prefix' and read or write
 any values you require.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -505,7 +505,7 @@ app. However, this practice limits the users freedom to configure
 each instance in a different way so it should be used with caution.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -537,7 +537,7 @@ Set the value used for the global config prefix. The config prefixes
    be gathered together into the app.d directory.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -556,7 +556,7 @@ Set the value used for the global config prefix. The config prefixes
 </para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -594,7 +594,7 @@ out. GNOME_RESTART_IMMEDIATELY restarts the client immediately
 anytime it crashes or is exited.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -621,7 +621,7 @@ When clients crash or the user logs out and back in,
    gnome_client_get_config_prefix is generally useful.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -650,7 +650,7 @@ You can add arguments to your restart command argv
    line.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -684,7 +684,7 @@ in progress when the discard command was set. For example:
 &lt;/example&gt;</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -720,7 +720,7 @@ command. It is executed when the user decides that the client
 should cease to be restarted.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -755,7 +755,7 @@ command simply undoes the effects of the client. It is executed
 during a normal logout.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -781,7 +781,7 @@ during a normal logout.</para>
 Set the directory to be in when running shutdown, discard, restart, etc. commands.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -803,7 +803,7 @@ Set an environment variable to be placed in the
 client's environment prior to running restart, shutdown, discard, etc. commands.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -827,7 +827,7 @@ client's environment prior to running restart, shutdown, discard, etc. commands.
 Set a command the session manager can use to create a new instance of the application.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -854,7 +854,7 @@ of &lt;function&gt;<link linkend="getpid">getpid</link>()&lt;/function&gt;. Howe
 automatically; so you don't need this function.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -875,7 +875,7 @@ Used to tell the session manager the name of your program. Set automatically;
 this function isn't needed.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -896,7 +896,7 @@ Tell the session manager the user's login name. Gnome
 does this automatically; no need to call the function.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -921,7 +921,7 @@ Request the session managaer to emit the "save_yourself" signal for
    an idle state before saving its final data.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -942,7 +942,7 @@ interact_style == GNOME_INTERACT_ANY. A "Cancel Logout" button
 will be added during a shutdown.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -965,7 +965,7 @@ but it will not be shown when the interact_style == GNOME_INTERACT_NONE.
 A "Cancel Logout" button will be added during a shutdown.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -996,7 +996,7 @@ from interacting until this key is returned with
 'gnome_interaction_key_return'.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -1028,7 +1028,7 @@ from interacting until this key is returned with
 Used when you need to destroy the callback data after the interaction.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -1058,7 +1058,7 @@ Used in interaction callback to tell the session manager
 you're done interacting</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -1095,7 +1095,7 @@ TRUE will request that all the other apps in the session do a save
 as well. A global save is mandatory when doing a shutdown.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -1128,7 +1128,7 @@ be flushed.  This is useful if you have some pending changes that
 you want to make sure get committed.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">

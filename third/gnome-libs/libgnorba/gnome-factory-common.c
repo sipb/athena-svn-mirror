@@ -23,10 +23,8 @@
 static const CORBA_TypeCode anon_subtypes_array2[] =
    { (CORBA_TypeCode) & TC_CORBA_string_struct };
 const struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_string_struct = {
-   
-      {{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
+   {{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
     ORBIT_PSEUDO_TYPECODE},
-
    CORBA_tk_sequence, NULL, NULL,
    0, 1,
    NULL,
@@ -53,10 +51,8 @@ const struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_string_struct = {
 static const CORBA_TypeCode anon_subtypes_array11[] =
    { (CORBA_TypeCode) & TC_CORBA_string_struct };
 const struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_string_struct = {
-   
-      {{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
+   {{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
     ORBIT_PSEUDO_TYPECODE},
-
    CORBA_tk_sequence, NULL, NULL,
    0, 1,
    NULL,
@@ -83,10 +79,8 @@ const struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_string_struct = {
 static const CORBA_TypeCode anon_subtypes_array15[] =
    { (CORBA_TypeCode) & TC_CORBA_sequence_CORBA_string_struct };
 const struct CORBA_TypeCode_struct TC_GNOME_stringlist_struct = {
-   
-      {{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
+   {{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
     ORBIT_PSEUDO_TYPECODE},
-
    CORBA_tk_alias, "stringlist", "IDL:GNOME/stringlist:1.0",
    0, 1,
    NULL,
@@ -111,10 +105,8 @@ const struct CORBA_TypeCode_struct TC_GNOME_stringlist_struct = {
 ) && !defined(TC_DEF_TC_GNOME_GenericFactory)
 #define TC_DEF_TC_GNOME_GenericFactory 1
 const struct CORBA_TypeCode_struct TC_GNOME_GenericFactory_struct = {
-   
-      {{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
+   {{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
     ORBIT_PSEUDO_TYPECODE},
-
    CORBA_tk_objref, "GenericFactory", "IDL:GNOME/GenericFactory:1.0",
    0, 0,
    NULL,
@@ -200,7 +192,6 @@ CORBA_sequence_CORBA_string_allocbuf(CORBA_unsigned_long len)
    CORBA_char **retval =
       ORBit_alloc(sizeof(CORBA_char *) * len,
 		  (ORBit_free_childvals) CORBA_string__free,
-
 		  GUINT_TO_POINTER(len));
    memset(retval, '\0', sizeof(CORBA_char *) * len);
    return retval;

@@ -1,4 +1,4 @@
-<refentry id="GnomeDruidPageStart" revision="16 Mar 2001">
+<refentry id="GnomeDruidPageStart">
 <refmeta>
 <refentrytitle>GnomeDruidPageStart</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -84,7 +84,7 @@ to what is being installed in a consistent manner.
 Creates a new GnomeDruidPageStart widget.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -104,7 +104,7 @@ This will create a new GNOME Druid start page, with the values
 given.  It is acceptable for any of them to be <literal>NULL</literal>.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -135,7 +135,7 @@ need to allocate the color, as the <parameter>druid_page_start</parameter> will 
 you.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -154,7 +154,7 @@ you.</para>
                                              <link linkend="GdkColor">GdkColor</link> *color);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -175,7 +175,7 @@ you.</para>
                                              <link linkend="GdkColor">GdkColor</link> *color);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -196,7 +196,7 @@ you.</para>
                                              <link linkend="GdkColor">GdkColor</link> *color);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -217,7 +217,7 @@ you.</para>
                                              <link linkend="GdkColor">GdkColor</link> *color);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -237,7 +237,7 @@ you.</para>
                                              <link linkend="gchar">gchar</link> *text);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -258,7 +258,7 @@ you.</para>
                                              <link linkend="gchar">gchar</link> *title);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -278,7 +278,7 @@ you.</para>
                                              <link linkend="GdkImlibImage">GdkImlibImage</link> *logo_image);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -299,7 +299,7 @@ you.</para>
                                              <link linkend="GdkImlibImage">GdkImlibImage</link> *watermark);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">

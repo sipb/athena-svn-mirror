@@ -12,7 +12,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-libs 1.0.61\n"
-"POT-Creation-Date: 2001-02-23 13:45-0500\n"
+"POT-Creation-Date: 2002-01-25 00:29+0100\n"
 "PO-Revision-Date: 1999-03-18 23:11+0100\n"
 "Last-Translator: Lorint Hendschel <LorintHendschel@skynet.be>\n"
 "Language-Team: walon <linux-wa@chanae.alphanet.ch>\n"
@@ -86,7 +86,8 @@ msgstr "Oteurs: "
 msgid "About"
 msgstr "Å dfait"
 
-#: libgnomeui/gnome-app-helper.c:78
+#. Some standard menus
+#: libgnomeui/gnome-app-helper.c:78 libgnomeui/gnome-app-helper.h:484
 msgid "_File"
 msgstr "_Fitchî"
 
@@ -94,7 +95,7 @@ msgstr "_Fitchî"
 msgid "_File/"
 msgstr "_Fitchî/"
 
-#: libgnomeui/gnome-app-helper.c:80
+#: libgnomeui/gnome-app-helper.c:80 libgnomeui/gnome-app-helper.h:487
 msgid "_Edit"
 msgstr "_Candjî"
 
@@ -102,7 +103,7 @@ msgstr "_Candjî"
 msgid "_Edit/"
 msgstr "_Candjî/"
 
-#: libgnomeui/gnome-app-helper.c:82
+#: libgnomeui/gnome-app-helper.c:82 libgnomeui/gnome-app-helper.h:490
 msgid "_View"
 msgstr "_Vey"
 
@@ -110,7 +111,7 @@ msgstr "_Vey"
 msgid "_View/"
 msgstr "_Vey/"
 
-#: libgnomeui/gnome-app-helper.c:84
+#: libgnomeui/gnome-app-helper.c:84 libgnomeui/gnome-app-helper.h:493
 msgid "_Settings"
 msgstr "A_pontiaedjes"
 
@@ -118,7 +119,8 @@ msgstr "A_pontiaedjes"
 msgid "_Settings/"
 msgstr "A_pontiaedjes/"
 
-#: libgnomeui/gnome-app-helper.c:86
+#. If you have more then one New type, use this tree
+#: libgnomeui/gnome-app-helper.c:86 libgnomeui/gnome-app-helper.h:266
 msgid "_New"
 msgstr "_Novea"
 
@@ -126,7 +128,7 @@ msgstr "_Novea"
 msgid "_New/"
 msgstr "_Novea/"
 
-#: libgnomeui/gnome-app-helper.c:88
+#: libgnomeui/gnome-app-helper.c:88 libgnomeui/gnome-app-helper.h:496
 msgid "Fi_les"
 msgstr "_Fitchîs"
 
@@ -134,15 +136,15 @@ msgstr "_Fitchîs"
 msgid "Fi_les/"
 msgstr "_Fitchîs/"
 
-#: libgnomeui/gnome-app-helper.c:90
+#: libgnomeui/gnome-app-helper.c:90 libgnomeui/gnome-app-helper.h:499
 msgid "_Windows"
 msgstr "_Purneas"
 
-#: libgnomeui/gnome-app-helper.c:91
+#: libgnomeui/gnome-app-helper.c:91 libgnomeui/gnome-app-helper.h:505
 msgid "_Game"
 msgstr "_Djeu"
 
-#: libgnomeui/gnome-app-helper.c:92
+#: libgnomeui/gnome-app-helper.c:92 libgnomeui/gnome-app-helper.h:502
 msgid "_Help"
 msgstr "_Aidance"
 
@@ -710,32 +712,32 @@ msgstr "="
 msgid "INV"
 msgstr "INV"
 
-#: libgnomeui/gnome-client.c:835
+#: libgnomeui/gnome-client.c:842
 msgid "Specify session management ID"
 msgstr "Dire l' ID pol manaedjmint del session"
 
-#: libgnomeui/gnome-client.c:835 libgnorba/goad-browser.c:27
+#: libgnomeui/gnome-client.c:842 libgnorba/goad-browser.c:27
 msgid "ID"
 msgstr "ID"
 
-#: libgnomeui/gnome-client.c:837
+#: libgnomeui/gnome-client.c:844
 msgid "Specify prefix of saved configuration"
 msgstr "Dire li betchete di l' apontiaedje schapé"
 
-#: libgnomeui/gnome-client.c:837
+#: libgnomeui/gnome-client.c:844
 msgid "PREFIX"
 msgstr "BETCHETE"
 
-#: libgnomeui/gnome-client.c:839
+#: libgnomeui/gnome-client.c:846
 msgid "Disable connection to session manager"
 msgstr "Essocter l' adjondaedje å manaedjeu di sessions"
 
 #. Register commandline options.
-#: libgnomeui/gnome-client.c:968
+#: libgnomeui/gnome-client.c:977
 msgid "Session management options"
 msgstr "Tchûzes do manaedjmint des sessions"
 
-#: libgnomeui/gnome-client.c:2348
+#: libgnomeui/gnome-client.c:2357
 msgid "Cancel Logout"
 msgstr "Rinoncî a moussî foû"
 
@@ -943,13 +945,13 @@ msgstr "Tchûzes di GTK"
 msgid "GNOME GUI options"
 msgstr "Tchûzes di l' eterface di GNOME"
 
-#: libgnomeui/gnome-init.c:452
+#: libgnomeui/gnome-init.c:453
 #, c-format
 msgid "%s options"
 msgstr "Tchûzes di %s"
 
 #. dialog display isn't working out
-#: libgnomeui/gnome-init.c:642
+#: libgnomeui/gnome-init.c:647
 msgid "Multiple segmentation faults occurred; can't display error dialog\n"
 msgstr ""
 "I gn a yeu pus d' ene aroke di segmentåcion; dji n' pout mostrer li purnea "
@@ -1016,13 +1018,9 @@ msgid "Date"
 msgstr "Date"
 
 #. the localized string should fit (after replacing the %a %b
-#. etc) in ~18 chars.
-#. %a is abbreviated weekday, %A is full weekday,
-#. %b %B are abbreviated and full monthname, %Y is year,
-#. %d is day of month, %m is month number, %T full hour,
-#. %H hours, %M minutes, %S seconds
+#. * etc) in ~18 chars. Please consult strftime(3) manpage.
 #.
-#: libgnomeui/gnome-scores.c:130
+#: libgnomeui/gnome-scores.c:126
 msgid "%a %b %d %T %Y"
 msgstr "%d di %B %Y a %H"
 
@@ -1486,8 +1484,8 @@ msgid ""
 "And to test the gnome_win_hints_* functions for errors. :)"
 msgstr ""
 "Simpe programe po sayî cmint c' est ki les WIN_HINTS rotèt.\n"
-"Mins eto po sayî les foncsions gnome_win_hints_* èt vey s' i gn a des arokes "
-":)"
+"Mins eto po sayî les foncsions gnome_win_hints_* èt vey s' i gn a des "
+"arokes :)"
 
 #: libgnorba/gnome-name-server.c:229
 #, c-format
@@ -1511,7 +1509,7 @@ msgstr "Repository ID do sierveu a mete èn alaedje"
 msgid "REPO-ID"
 msgstr "REPO-ID"
 
-#: libgnorba/goad-browser.c:171
+#: libgnorba/goad-browser.c:182
 msgid ""
 "I couldn't find any installed services.  Either you don't have\n"
 "any services installed or I don't know the path to find them.\n"
@@ -1549,33 +1547,38 @@ msgstr "Repository ID ki li GOAD conoxhe ci sierveu"
 msgid "REPO_ID"
 msgstr "REPO_ID"
 
-#: libgnorba/orbitgtk.c:138
+#: libgnorba/orbitgtk.c:129
+#, c-format
+msgid "Failed to get user details for UID %d (%s)\n"
+msgstr ""
+
+#: libgnorba/orbitgtk.c:141
 #, c-format
 msgid "Failed to open CORBA cookie file (%s) for writing: %s\n"
 msgstr ""
 "Dji n' a savou drovî li fitchî cookie CORBA (%s) po z-î scrire dvins: %s\n"
 
-#: libgnorba/orbitgtk.c:145
+#: libgnorba/orbitgtk.c:148
 #, c-format
 msgid "Failed to write CORBA cookie file (%s): %s\n"
 msgstr "Dji n' a savou scrire li fitchî cookie CORBA (%s): %s\n"
 
-#: libgnorba/orbitgtk.c:171
+#: libgnorba/orbitgtk.c:174
 #, c-format
 msgid "Failed to write CORBA cookie to `%s': %s\n"
 msgstr "Dji n' a savou scrire li fitchî cookie CORBA è «%s»: %s\n"
 
-#: libgnorba/orbitgtk.c:181
+#: libgnorba/orbitgtk.c:184
 #, c-format
 msgid "Failed to open CORBA cookie file `%s': %s\n"
 msgstr "Dji n' a savou drovî li fitchî cookie CORBA «%s»: %s\n"
 
-#: libgnorba/orbitgtk.c:187
+#: libgnorba/orbitgtk.c:190
 #, c-format
 msgid "Failed to read CORBA cookie file `%s': %s\n"
 msgstr "Dji n' a savou lere li fitchî cookie CORBA «%s»: %s\n"
 
-#: libgnorba/orbitgtk.c:213
+#: libgnorba/orbitgtk.c:216
 msgid "Failed to obtain CORBA authentication cookie, exiting\n"
 msgstr ""
 "Dj' a nén parvinou a rapexhî on cookie d' åtentificåcion CORBA, dji cwite\n"
@@ -1647,11 +1650,11 @@ msgstr "%s: li tchûze «-W %s» n' est nén clére\n"
 msgid "%s: option `-W %s' doesn't allow an argument\n"
 msgstr "%s: avou li tchûze «-W %s», vos n' poloz pont mete d' årgumint\n"
 
-#: support/popthelp.c:35
+#: support/popthelp.c:36
 msgid "Show this help message"
 msgstr "Mostrer ci messaedje d' aidance"
 
-#: support/popthelp.c:36
+#: support/popthelp.c:37
 msgid "Display brief usage message"
 msgstr "Mostrer on court messaedje d' ûzaedje"
 

@@ -1,4 +1,4 @@
-<refentry id="GnomePixmap" revision="16 Mar 2001">
+<refentry id="GnomePixmap">
 <refmeta>
 <refentrytitle>GnomePixmap</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -160,7 +160,7 @@ Returns a widget that contains the image, or <literal>NULL</literal>
 if it fails to load the image.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -182,7 +182,7 @@ Returns a widget that contains the image scaled to
 <parameter>width</parameter> by <parameter>height</parameter> pixels, or <literal>NULL</literal> if it fails to load the image.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -207,7 +207,7 @@ Returns a widget that contains the image, or <literal>NULL</literal>
 if it fails to load the image.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -229,7 +229,7 @@ Returns a widget that contains the image scaled to
 <parameter>width</parameter> by <parameter>height</parameter> pixels, or <literal>NULL</literal> if it fails to load the image.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -257,7 +257,7 @@ Returns a widget that contains the image, or <literal>NULL</literal>
 if it fails to load the image.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -290,7 +290,7 @@ Returns a widget that contains the image, or <literal>NULL</literal>
 if it fails to load the image.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -328,7 +328,7 @@ Returns a widget that contains the image scaled to
 <parameter>width</parameter> by <parameter>height</parameter> pixels, or <literal>NULL</literal> if it fails to load the image.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -371,7 +371,7 @@ Returns a widget that contains the image scaled to
 <parameter>width</parameter> by <parameter>height</parameter> pixels, or <literal>NULL</literal> if it fails to load the image.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -405,7 +405,7 @@ Returns a widget that contains the image scaled to
 Returns a widget that contains a copy of <parameter>gpixmap_old</parameter></para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -425,7 +425,7 @@ if it fails to load the image. Note that <parameter>im</parameter> will not be
 rendered after this call.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -448,7 +448,7 @@ Returns a widget that contains the image scaled to
 Note that <parameter>im</parameter> will not be * rendered after this call.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -474,7 +474,7 @@ Sets the gnome pixmap to image stored
 in <parameter>filename</parameter>.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -497,7 +497,7 @@ Sets the gnome pixmap to image stored in
 <parameter>filename</parameter> scaled to <parameter>width</parameter> and <parameter>height</parameter> pixels.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -523,7 +523,7 @@ Sets the gnome pixmap to image stored in
 Sets the gnome pixmap to image stored in <parameter>xpm_data</parameter>.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -546,7 +546,7 @@ Sets the gnome pixmap to image stored in
 <parameter>xpm_data</parameter> scaled to <parameter>width</parameter> and <parameter>height</parameter> pixels.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -575,7 +575,7 @@ Sets the gnome pixmap to image stored in
 Sets the gnome pixmap to the image.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -608,7 +608,7 @@ Sets the gnome pixmap to the image.</para>
 Sets the gnome pixmap to the image.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -648,7 +648,7 @@ Sets the gnome pixmap to the image scaled to
 <parameter>width</parameter> and <parameter>height</parameter> pixels.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -692,7 +692,7 @@ Sets the gnome pixmap to the image scaled to
 <parameter>width</parameter> and <parameter>height</parameter> pixels.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -728,7 +728,7 @@ Sets the gnome pixmap to image stored in <parameter>im</parameter>. Note
 that <parameter>im</parameter> will not be rendered after this call.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -752,7 +752,7 @@ scaled to <parameter>width</parameter> and <parameter>height</parameter> pixels.
 be rendered after this call.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">

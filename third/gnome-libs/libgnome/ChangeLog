@@ -1,3 +1,74 @@
+2002-01-22  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* gnome-util.c: Cope with SHELL being null. Patch from bugzilla.
+	
+2002-01-14  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* gnome-score.c (gnome_score_child): Fix the previous patch.
+	
+2001-11-16  Jody Goldberg <jgoldberg@home.com>
+
+	* gnome-mime.c (add_to_key) : patch irritating leak.
+
+2002-01-10  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* *.1, Makefile.am: Add man pages.
+	* gnome-url.c: Make the protocol handler work reliably the first
+	time you open help. From Red Hat.
+	* *.1: Add man pages.
+	
+2002-01-09  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* gnome-score.c: Use full names instead of just login names if
+	possible. Bug #52252. From Andrey Panov <panov@canopus.iacp.dvo.ru>.
+	
+2002-01-08  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* gnome-history.c: Fix #54626. Passing NULL to fprintf() crashes
+	on Sun and other OSes.
+	
+2002-01-06  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* gnome-metadata.c, gnome-dump.c: Fix compilation with db1. 
+	From Frank Belew <frb@ximian.com>. Fixes #50935 and #53418
+	
+2001-09-13  Havoc Pennington  <hp@redhat.com>
+
+	* Makefile.am (libgnomeincludedir): move to includedir/gnome-1.0
+
+2001-08-30  Darin Adler  <darin@bentspoon.com>
+
+	* gnome-metadata.c: (gnome_metadata_get),
+	(gnome_metadata_get_fast): Make sure we call init () before
+	we call lock ().
+
+2001-06-14  Miguel de Icaza  <miguel@ximian.com>
+
+	* gnome-i18n.c (read_aliases): Use sizeof(buf) instead of 256,
+	patch from Kjartan 
+
+	* gnome-history.c (gnome_history_recently_used): Add assertions. 
+
+	* gnome-dentry.c (gnome_desktop_entry_launch_with_args): Sun, HP
+	and IBM compilers complain (apparently correctly) that:
+
+	char *p;
+	(void *) p + 8; is void pointer arithmetic.  Fix 
+
+2001-04-18  Dan Winship  <danw@ximian.com>
+
+	* Makefile.am (libgnome_la_LIBADD): Remove $(DL_LIB). We get that
+	from GLIB_LIBS
+
+2001-03-21  Martin Baulig  <baulig@suse.de>
+
+	This stuff is now all merged into gnome-libs HEAD and the
+	latest merged version is tagged `gnome_libs_latest_1_0_merge'.
+	
+	If you do any changes in the stable branch, please commit them
+	to the HEAD as well and move this tag. You can also mail me a
+	diff of your changes and I'll apply them to HEAD for you.
+
 2001-02-26  jacob berkman  <jacob@ximian.com>
 
 	* gnome-mime.c: 

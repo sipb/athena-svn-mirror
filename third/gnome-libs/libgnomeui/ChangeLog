@@ -1,3 +1,126 @@
+2002-01-10  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* gnome_segv.1, Makefile.am: Man page.
+	* gnome-client.c (gnome_client_init): Fix a dangling pointer to 
+	master SM client. From Red Hat.
+	* gnome-client.c (client_save_yourself_callback): Make it work with
+	the KDE session manager. From Red Hat.
+	* gnome-canvas-text.c: Make GnomeCanvasTextSuckFont() work
+	better with multibyte. From Red Hat.
+	* gnome-mdi-generic-child.c (gnome_mdi_generic_child_set_label,
+	gnome_mdi_generic_child_create_menus): Fix crashes. From John Finlay.
+	
+2002-01-09  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* gnome-dock.c, gnome-dock-band.c, gnome-dock-layout.c: #include missing
+	headers to avoid compiler warnings.
+	
+2002-01-08  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* gnome_segv.c: Fix a warning on ia64 by making a var const.
+	
+2001-10-23  Federico Mena Quintero  <federico@ximian.com>
+
+	* gnome-canvas.c (gnome_canvas_request_redraw_uta): Check that the
+	widget is drawable before queueing a redraw.
+
+2001-10-08  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* gnome-about.c: Call gtk_style_ref() after gtk_widget_ensure_style()
+
+2001-09-13  Havoc Pennington  <hp@redhat.com>
+
+	* Makefile.am (libgnomeuiincludedir): move to includedir/gnome-1.0
+
+2001-08-21  Chris Toshok  <toshok@ximian.com>
+
+	* gnome-canvas.c (gnome_canvas_button): if there's an active
+	pointer grab, dispatch the event even if the window is different.
+	fixes stuck grabs when using dnd from canvas items.
+
+2001-08-20  Jaka Mocnik  <jaka@gnu.org>
+
+	* gnome-dock.c (drag_begin): check if dock->client_area != NULL.
+
+2001-08-13  Darin Adler  <darin@bentspoon.com>
+
+	* gnome-canvas.c: (gnome_canvas_focus_out):
+	Miguel missed one place when he put #if 0 around all of
+	Jody's input context calls.
+
+Sun Aug 12 19:33:13 2001  Owen Taylor  <otaylor@redhat.com>
+
+	* gnome-init.c (imlib_image_loader): Fix (understandable)
+	misunderstanding of how imlib memory management works.
+	Theme switching should crash much less now.
+
+2001-08-12  Abel Cheung  <maddog@linux.org.hk>
+
+	gnome-scores.c (gnome_scores_new): Changed comment -- tell
+	translators to see strftime manpage instead of providing an
+	incomplete list in the comment.
+
+2001-08-09  Radek Doulik  <rodo@ximian.com>
+
+	* gnome-pixmap-entry.c (gnome_pixmap_entry_construct): call
+	gnome_entry_load_history after gnome_entry_set_history_id to
+	actually load history
+
+	* gnome-entry.c (gnome_entry_save_history): add key_num variable,
+	it contains count of already assigned keys. before we could end
+	with interrupted sequence of keys. to be sure we load all keys we
+	need an uninterrupted sequence
+
+2001-07-02  jacob berkman  <jacob@ximian.com>
+
+	* gnome-init.c (gnome_init_with_popt_table): fix the leak
+	correctly by freeing the string after the args are parsed.
+
+Mon Jun 25 02:03:28 2001  George Lebl <jirka@5z.com>
+
+	* gnome-init.c (gnome_init_with_popt_table): Revert the "memory leak
+	  fix".  When calling gnomelib_register_popt_table, the description
+	  argument is NOT copied by that function, so we can't free it,
+	  which makes --help crash nicely.  Added a comment so that people
+	  will not "fix" this "leak" again.
+
+2001-06-14  Miguel de Icaza  <miguel@ximian.com>
+
+	* gnome-init.c (gnome_init_cb): putenv emtpy LC_CTYPE using equal
+	sign at the end.  From Bugzilla (Thanks to Kjartan for sending me
+	these patches, but I do not know who to attribute this to).
+
+2001-06-14  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* gnome-window.c: Include <string.h> for strstr().
+	(bugzilla #54288).
+	
+2001-06-13  Jaka Mocnik  <jaka@gnu.org>
+
+	* gnome-mdi.c (count_ui_info_items): applied patch from Murray Cumming.
+	fixes a bug when a UI_BUILDER_DATA item is included in the UIInfo
+	array (bugzilla #54569).
+
+2001-05-16  Kevin Vandersloot <kfv101@psu.edu>
+
+       * gnome-calculator.c (gnome_calculator_init): allow buttons to 
+         expand in vertical direction.
+
+2001-04-18  Dan Winship  <danw@ximian.com>
+
+	* gnome-init.c (gnome_init_with_popt_table): Fix a small memory
+	leak.
+
+	* gnome-canvas-load.c: s/malloc.h/stdlib.h/
+
+2001-03-21  Martin Baulig  <baulig@suse.de>
+
+	Tagged gnome-canvas*.[ch] `BEFORE_LIBGNOMECANVAS_2_SPLIT'.
+	If you do any changes to the canvas in the stable branch,
+	please also commit them to libgnomecanvas-2/libgnomecanvas/
+	and move the `gnome_libs_latest_1_0_merge' tag here. You can
+	also send me a diff of your changes and I'll do it for you.
+
 2001-02-22  Gediminas Paulauskas <menesis@delfi.lt>
 
 	* gnome-property-entries.c: use _() instead of gettext().

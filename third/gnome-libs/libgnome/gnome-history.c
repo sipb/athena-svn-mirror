@@ -46,6 +46,11 @@ gnome_history_recently_used (char *filename, char *filetype,
 	GList *ents;
 	GnomeHistoryEntry ent;
 
+	g_return_if_fail (filename != NULL);
+	g_return_if_fail (filetype != NULL);
+	g_return_if_fail (creator != NULL);
+	g_return_if_fail (desc != NULL);
+	
 	ent = g_new (struct _GnomeHistoryEntry, 1);
 	ent->filename = g_strdup (filename);
 	ent->filetype = g_strdup (filetype);
@@ -101,7 +106,7 @@ static void
 write_history_entry(GnomeHistoryEntry ent, FILE *outfile)
 {
 	fprintf(outfile, "%s %s %s %s\n",
-		ent->filename, ent->filetype, ent->creator, ent->desc);
+		ent->filename, ent->filetype, ent->creator, ent->desc ? ent->desc : "");
 }
 
 static void

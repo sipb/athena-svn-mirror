@@ -20,6 +20,7 @@
    Author: Ettore Perazzoli <ettore@ximian.com>
 */
 
+#include <string.h>
 #include <gtk/gtk.h>
 #include <gtk/gtkprivate.h>
 
@@ -1103,7 +1104,10 @@ drag_begin (GtkWidget *widget, gpointer data)
   g_list_foreach (dock->right_bands, (GFunc) gnome_dock_band_drag_begin, item);
   g_list_foreach (dock->left_bands, (GFunc) gnome_dock_band_drag_begin, item);
 
-  dock->client_rect = dock->client_area->allocation;
+  if(dock->client_area != NULL)
+    dock->client_rect = dock->client_area->allocation;
+  else
+    memset(&dock->client_rect, 0, sizeof(dock->client_rect));
 }
 
 

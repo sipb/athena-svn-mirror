@@ -11,6 +11,7 @@
 
 #include <config.h>
 #include <math.h>
+#include <string.h>
 #include "gnome-canvas-text.h"
 #include <gdk/gdkx.h> /* for BlackPixel */
 
@@ -84,6 +85,8 @@ static void split_into_lines (GnomeCanvasText *text);
 
 static GnomeCanvasTextSuckFont *gnome_canvas_suck_font (GdkFont *font);
 static void gnome_canvas_suck_font_free (GnomeCanvasTextSuckFont *suckfont);
+
+static GnomeCanvasTextSuckFont *gnome_canvas_suck_font_multibyte (GdkFont *font, gchar *text);
 
 
 static GnomeCanvasItemClass *parent_class;
@@ -1089,11 +1092,27 @@ gnome_canvas_text_render (GnomeCanvasItem *item, GnomeCanvasBuf *buf)
 
 			for (j = 0; j < lines->length; j++) {
 				GnomeCanvasTextSuckChar *ch;
+				int len;
 
-				ch = &suckfont->chars[(unsigned char)((lines->text)[j])];
+				if (suckfont != NULL && suckfont != text->suckfont)
+					g_free (suckfont);
+				if (item->canvas->aa && MB_CUR_MAX >= 2 && (len = mblen (&lines->text[j], MB_CUR_MAX)) >= 2) {
+					gchar str[3];
 
+					str[0] = lines->text[j];
+					str[1] = lines->text[j+1];
+					str[2] = 0;
+					j += len - 1;
+					suckfont = gnome_canvas_suck_font_multibyte (text->font, str);
+					ch = &suckfont->chars[0];
+				} else {
+					suckfont = text->suckfont;
+					ch = &suckfont->chars[(unsigned char)((lines->text)[j])];
+
+				}
 				affine[4] = xpos;
 				affine[5] = ypos;
+
 				art_rgb_bitmap_affine (
 					buf->buf,
 					buf->rect.x0, buf->rect.y0, buf->rect.x1, buf->rect.y1,
@@ -1341,6 +1360,86 @@ gnome_canvas_suck_font (GdkFont *font)
 			       font->ascent,
 			       text, 1);
 	}
+
+	/* The handling of the image leaves me with distinct unease.  But this
+	 * is more or less copied out of gimp/app/text_tool.c, so it _ought_ to
+	 * work. -RLL
+	 */
+
+	image = gdk_image_get (pixmap, 0, 0, width, height);
+	suckfont->bitmap = g_malloc0 ((width >> 3) * height);
+
+	line = suckfont->bitmap;
+	for (y = 0; y < height; y++) {
+		for (x = 0; x < width; x++) {
+			pixel = gdk_image_get_pixel (image, x, y);
+			if (pixel == black_pixel)
+				line[x >> 3] |= 128 >> (x & 7);
+		}
+		line += width >> 3;
+	}
+
+	gdk_image_destroy (image);
+
+	/* free the pixmap */
+	gdk_pixmap_unref (pixmap);
+
+	/* free the gc */
+	gdk_gc_destroy (gc);
+
+	return suckfont;
+}
+
+static GnomeCanvasTextSuckFont *
+gnome_canvas_suck_font_multibyte (GdkFont *font, gchar *text)
+{
+	GnomeCanvasTextSuckFont *suckfont;
+	int x, y;
+	int lbearing, rbearing, ch_width, ascent, descent;
+	GdkPixmap *pixmap;
+	GdkColor black, white;
+	GdkImage *image;
+	GdkGC *gc;
+	guchar *line;
+	int width, height;
+	int black_pixel, pixel;
+
+	if (!font)
+		return NULL;
+
+	suckfont = g_new (GnomeCanvasTextSuckFont, 1);
+
+	height = font->ascent + font->descent;
+       	gdk_text_extents (font, text, strlen (text),
+			  &lbearing, &rbearing, &ch_width, &ascent, &descent);
+	suckfont->chars[0].left_sb = lbearing;
+	suckfont->chars[0].right_sb = ch_width - rbearing;
+	suckfont->chars[0].width = rbearing - lbearing;
+	suckfont->chars[0].ascent = ascent;
+	suckfont->chars[0].descent = descent;
+	suckfont->chars[0].bitmap_offset = 0;
+	width = (ch_width + 31) & -32;
+
+	suckfont->bitmap_width = width;
+	suckfont->bitmap_height = height;
+	suckfont->ascent = font->ascent;
+
+	pixmap = gdk_pixmap_new (NULL, suckfont->bitmap_width,
+				 suckfont->bitmap_height, 1);
+	gc = gdk_gc_new (pixmap);
+	gdk_gc_set_font (gc, font);
+
+	black_pixel = BlackPixel (gdk_display, DefaultScreen (gdk_display));
+	black.pixel = black_pixel;
+	white.pixel = WhitePixel (gdk_display, DefaultScreen (gdk_display));
+	gdk_gc_set_foreground (gc, &white);
+	gdk_draw_rectangle (pixmap, gc, 1, 0, 0, width, height);
+
+	gdk_gc_set_foreground (gc, &black);
+	gdk_draw_text (pixmap, font, gc,
+		       suckfont->chars[0].bitmap_offset - suckfont->chars[0].left_sb,
+		       font->ascent,
+		       text, strlen (text));
 
 	/* The handling of the image leaves me with distinct unease.  But this
 	 * is more or less copied out of gimp/app/text_tool.c, so it _ought_ to

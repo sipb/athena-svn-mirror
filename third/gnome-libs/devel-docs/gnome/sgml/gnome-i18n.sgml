@@ -1,4 +1,4 @@
-<refentry id="gnome-gnome-i18n" revision="16 Mar 2001">
+<refentry id="gnome-gnome-i18n">
 <refmeta>
 <refentrytitle>gnome-i18n</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -111,7 +111,7 @@ void print_hello (void)
   Use this to tag strings in an executable path, this macro expands to
   <link linkend="gettext">gettext</link>() or <link linkend="dgettext">dgettext</link>() if the application supports
   internationalization.
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -151,7 +151,7 @@ void print_days (void)
 }
     </programlisting>
   </example>
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -168,7 +168,7 @@ void print_days (void)
 </programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -185,7 +185,7 @@ void print_days (void)
 </programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -202,7 +202,7 @@ void print_days (void)
 </programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -222,7 +222,7 @@ void print_days (void)
 </programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -245,7 +245,7 @@ void print_days (void)
 </programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -266,7 +266,7 @@ void print_days (void)
 Returns current language (contents of "LANG" environment variable).</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -285,7 +285,7 @@ is appended to the list if it does not already appear.
 If <parameter>category_name</parameter> is <literal>NULL</literal>, then LC_ALL is assumed.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -308,7 +308,7 @@ chooses the preferred language has a standard place to put the
 resulting information.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -325,7 +325,7 @@ resulting information.</para>
 </para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">

@@ -4,10 +4,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gnome-libs 1.2.12\n"
-"POT-Creation-Date: 2001-02-23 13:45-0500\n"
-"PO-Revision-Date: 2001-03-08 01:45+0900\n"
-"Last-Translator: Sung-Hyun Nam <namsh@kldp.org>\n"
+"Project-Id-Version: gnome-libs 1.4.1.2\n"
+"POT-Creation-Date: 2002-01-25 00:29+0100\n"
+"PO-Revision-Date: 2001-11-26 07:59+0900\n"
+"Last-Translator: Nam SungHyun <namsh@kldp.org>\n"
 "Language-Team: Korean <ko@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=euc-kr\n"
@@ -79,7 +79,8 @@ msgstr "만든이: "
 msgid "About"
 msgstr "이 프로그램은"
 
-#: libgnomeui/gnome-app-helper.c:78
+#. Some standard menus
+#: libgnomeui/gnome-app-helper.c:78 libgnomeui/gnome-app-helper.h:484
 msgid "_File"
 msgstr "파일(_F)"
 
@@ -87,7 +88,7 @@ msgstr "파일(_F)"
 msgid "_File/"
 msgstr "파일(_F)/"
 
-#: libgnomeui/gnome-app-helper.c:80
+#: libgnomeui/gnome-app-helper.c:80 libgnomeui/gnome-app-helper.h:487
 msgid "_Edit"
 msgstr "편집(_E)"
 
@@ -95,7 +96,7 @@ msgstr "편집(_E)"
 msgid "_Edit/"
 msgstr "편집(_E)/"
 
-#: libgnomeui/gnome-app-helper.c:82
+#: libgnomeui/gnome-app-helper.c:82 libgnomeui/gnome-app-helper.h:490
 msgid "_View"
 msgstr "보기(_V)"
 
@@ -103,7 +104,7 @@ msgstr "보기(_V)"
 msgid "_View/"
 msgstr "보기(_V)/"
 
-#: libgnomeui/gnome-app-helper.c:84
+#: libgnomeui/gnome-app-helper.c:84 libgnomeui/gnome-app-helper.h:493
 msgid "_Settings"
 msgstr "설정(_S)"
 
@@ -111,7 +112,8 @@ msgstr "설정(_S)"
 msgid "_Settings/"
 msgstr "설정(_S)/"
 
-#: libgnomeui/gnome-app-helper.c:86
+#. If you have more then one New type, use this tree
+#: libgnomeui/gnome-app-helper.c:86 libgnomeui/gnome-app-helper.h:266
 msgid "_New"
 msgstr "새로운(_N)"
 
@@ -119,7 +121,7 @@ msgstr "새로운(_N)"
 msgid "_New/"
 msgstr "새로운(_N)/"
 
-#: libgnomeui/gnome-app-helper.c:88
+#: libgnomeui/gnome-app-helper.c:88 libgnomeui/gnome-app-helper.h:496
 msgid "Fi_les"
 msgstr "파일들(_l)"
 
@@ -127,15 +129,15 @@ msgstr "파일들(_l)"
 msgid "Fi_les/"
 msgstr "파일들(_l)/"
 
-#: libgnomeui/gnome-app-helper.c:90
+#: libgnomeui/gnome-app-helper.c:90 libgnomeui/gnome-app-helper.h:499
 msgid "_Windows"
 msgstr "창(_W)"
 
-#: libgnomeui/gnome-app-helper.c:91
+#: libgnomeui/gnome-app-helper.c:91 libgnomeui/gnome-app-helper.h:505
 msgid "_Game"
 msgstr "게임(_G)"
 
-#: libgnomeui/gnome-app-helper.c:92
+#: libgnomeui/gnome-app-helper.c:92 libgnomeui/gnome-app-helper.h:502
 msgid "_Help"
 msgstr "도움말(_H)"
 
@@ -703,32 +705,32 @@ msgstr "="
 msgid "INV"
 msgstr "INV"
 
-#: libgnomeui/gnome-client.c:835
+#: libgnomeui/gnome-client.c:842
 msgid "Specify session management ID"
 msgstr "세션 관리 id 지정"
 
-#: libgnomeui/gnome-client.c:835 libgnorba/goad-browser.c:27
+#: libgnomeui/gnome-client.c:842 libgnorba/goad-browser.c:27
 msgid "ID"
 msgstr "ID"
 
-#: libgnomeui/gnome-client.c:837
+#: libgnomeui/gnome-client.c:844
 msgid "Specify prefix of saved configuration"
 msgstr "이미 저장된 설정의 앞부분을 지정"
 
-#: libgnomeui/gnome-client.c:837
+#: libgnomeui/gnome-client.c:844
 msgid "PREFIX"
 msgstr "PREFIX"
 
-#: libgnomeui/gnome-client.c:839
+#: libgnomeui/gnome-client.c:846
 msgid "Disable connection to session manager"
 msgstr "세션 관리자에 연결하지 않음"
 
 #. Register commandline options.
-#: libgnomeui/gnome-client.c:968
+#: libgnomeui/gnome-client.c:977
 msgid "Session management options"
 msgstr "세션 관리 선택사항"
 
-#: libgnomeui/gnome-client.c:2348
+#: libgnomeui/gnome-client.c:2357
 msgid "Cancel Logout"
 msgstr "로그아웃 취소"
 
@@ -936,13 +938,13 @@ msgstr "GTK 옵션"
 msgid "GNOME GUI options"
 msgstr "그놈 GUI 옵션"
 
-#: libgnomeui/gnome-init.c:452
+#: libgnomeui/gnome-init.c:453
 #, c-format
 msgid "%s options"
 msgstr "%s 옵션"
 
 #. dialog display isn't working out
-#: libgnomeui/gnome-init.c:642
+#: libgnomeui/gnome-init.c:647
 msgid "Multiple segmentation faults occurred; can't display error dialog\n"
 msgstr ""
 "여러 세그먼테이션 오류가 발생했습니다; 에러 대화상자를 표시할 수 없습니다\n"
@@ -1008,13 +1010,9 @@ msgid "Date"
 msgstr "날짜"
 
 #. the localized string should fit (after replacing the %a %b
-#. etc) in ~18 chars.
-#. %a is abbreviated weekday, %A is full weekday,
-#. %b %B are abbreviated and full monthname, %Y is year,
-#. %d is day of month, %m is month number, %T full hour,
-#. %H hours, %M minutes, %S seconds
+#. * etc) in ~18 chars. Please consult strftime(3) manpage.
 #.
-#: libgnomeui/gnome-scores.c:130
+#: libgnomeui/gnome-scores.c:126
 msgid "%a %b %d %T %Y"
 msgstr "%Y %b %d %a %T"
 
@@ -1503,7 +1501,7 @@ msgstr "활성화할 서버의 저장소 ID"
 msgid "REPO-ID"
 msgstr "저장소-ID"
 
-#: libgnorba/goad-browser.c:171
+#: libgnorba/goad-browser.c:182
 msgid ""
 "I couldn't find any installed services.  Either you don't have\n"
 "any services installed or I don't know the path to find them.\n"
@@ -1541,32 +1539,37 @@ msgstr "GOAD가 알고 있는 서버에서 사용할 저장소 ID"
 msgid "REPO_ID"
 msgstr "REPO_ID"
 
-#: libgnorba/orbitgtk.c:138
+#: libgnorba/orbitgtk.c:129
+#, c-format
+msgid "Failed to get user details for UID %d (%s)\n"
+msgstr ""
+
+#: libgnorba/orbitgtk.c:141
 #, c-format
 msgid "Failed to open CORBA cookie file (%s) for writing: %s\n"
 msgstr "쓰기할 CORBA 쿠키 파일을 (%s) 열지 못했습니다: %s\n"
 
-#: libgnorba/orbitgtk.c:145
+#: libgnorba/orbitgtk.c:148
 #, c-format
 msgid "Failed to write CORBA cookie file (%s): %s\n"
 msgstr "CORBA 쿠키 파일에 (%s) 쓰지 못했습니다: %s\n"
 
-#: libgnorba/orbitgtk.c:171
+#: libgnorba/orbitgtk.c:174
 #, c-format
 msgid "Failed to write CORBA cookie to `%s': %s\n"
 msgstr "CORBA 쿠키를 `%s'에 쓰지 못했습니다: %s\n"
 
-#: libgnorba/orbitgtk.c:181
+#: libgnorba/orbitgtk.c:184
 #, c-format
 msgid "Failed to open CORBA cookie file `%s': %s\n"
 msgstr "CORBA 쿠키 파일 `%s'를(을) 열지 못했습니다: %s\n"
 
-#: libgnorba/orbitgtk.c:187
+#: libgnorba/orbitgtk.c:190
 #, c-format
 msgid "Failed to read CORBA cookie file `%s': %s\n"
 msgstr "CORBA 쿠키 파일 `%s'를(을) 읽지 못했습니다: %s\n"
 
-#: libgnorba/orbitgtk.c:213
+#: libgnorba/orbitgtk.c:216
 msgid "Failed to obtain CORBA authentication cookie, exiting\n"
 msgstr "CORBA 인증 쿠키를 얻을 수 없으므로, 끝냅니다\n"
 
@@ -1637,11 +1640,11 @@ msgstr "%s: `-W %s' 옵션이 모호합니다\n"
 msgid "%s: option `-W %s' doesn't allow an argument\n"
 msgstr "%s: `-W %s' 옵션은 인자를 받을 수 없습니다\n"
 
-#: support/popthelp.c:35
+#: support/popthelp.c:36
 msgid "Show this help message"
 msgstr "이 도움말 메세지를 보여줌"
 
-#: support/popthelp.c:36
+#: support/popthelp.c:37
 msgid "Display brief usage message"
 msgstr "간단한 사용법 메세지를 표시"
 

@@ -1,4 +1,4 @@
-<refentry id="GnomeFontPicker" revision="16 Mar 2001">
+<refentry id="GnomeFontPicker">
 <refmeta>
 <refentrytitle>GnomeFontPicker</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -98,7 +98,7 @@ void        <link linkend="gnome-font-picker-set-preview-text">gnome_font_picker
 Create new font picker widget.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -115,7 +115,7 @@ Pointer to new font picker widget.
 Sets the title for the font selection dialog.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -138,7 +138,7 @@ values include <literal>GNOME_FONT_PICKER_MODE_PIXMAP</literal>,
 <literal>GNOME_FONT_PICKER_MODE_USER_WIDGET</literal>.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -159,7 +159,7 @@ Button mode currently set in font picker widget, or
 Set value of subsequent font picker button mode (or what to show).</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -183,7 +183,7 @@ by user and using <parameter>size</parameter> passed to this function.  This onl
 current button mode is <literal>GNOME_FONT_PICKER_MODE_FONT_INFO</literal>.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -209,7 +209,7 @@ by user.  This only applies if current button mode is
 <literal>GNOME_FONT_PICKER_MODE_FONT_INFO</literal>.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -230,7 +230,7 @@ Set the user-supplied <parameter>widget</parameter> as the inside of the font pi
 This only applies with GNOME_FONT_PICKER_MODE_USER_WIDGET.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -249,7 +249,7 @@ This only applies with GNOME_FONT_PICKER_MODE_USER_WIDGET.</para>
 Retrieve name of font from font selection dialog.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -268,7 +268,7 @@ Pointer to an internal copy of the font name.
 Retrieve font info from font selection dialog.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -289,7 +289,7 @@ font dialog is not being displayed.
 Set or update currently-displayed font in font picker dialog.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -313,7 +313,7 @@ font selection dialog exists, otherwise <literal>FALSE</literal>.
 Retrieve preview text from font selection dialog if available.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -336,7 +336,7 @@ Set preview text in font picker, and in font selection dialog if one
 is being displayed.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">

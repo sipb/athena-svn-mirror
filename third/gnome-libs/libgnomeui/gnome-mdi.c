@@ -1,7 +1,7 @@
 /* -*- Mode: C; tab-width: 4; indent-tabs-mode: t; c-basic-offset: 4 -*- */
 /* gnome-mdi.c - implementation of the GnomeMDI object
 
-   Copyright (C) 1997, 1998 Free Software Foundation
+   Copyright (C) 1997 - 2001 Free Software Foundation
 
    The Gnome Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public License as
@@ -18,10 +18,7 @@
    write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
    Boston, MA 02111-1307, USA.
 
-   Author: Jaka Mocnik <jaka.mocnik@kiss.uni-lj.si>
-
-   see gnome-libs/gnome-hello/gnome-hello-7-mdi.c or gnome-utils/ghex for an example
-   of its use & gnome-mdi.h for a short explanation of the signals
+   Author: Jaka Mocnik <jaka@gnu.org>
 */
 
 #include <gtk/gtk.h>
@@ -367,14 +364,18 @@ static GnomeUIInfo *copy_ui_info_tree (const GnomeUIInfo source[])
 	return copy;
 }
 
+
 static gint count_ui_info_items (const GnomeUIInfo *ui_info)
 {
 	gint num;
-	
+	gint count=0;
+
 	for(num = 0; ui_info[num].type != GNOME_APP_UI_ENDOFINFO; num++)
-		;
-	
-	return num;
+		if (ui_info[num].type != GNOME_APP_UI_HELP &&
+			ui_info[num].type != GNOME_APP_UI_BUILDER_DATA)
+			count++;
+
+	return count;
 }
 
 static void free_ui_info_tree (GnomeUIInfo *root)

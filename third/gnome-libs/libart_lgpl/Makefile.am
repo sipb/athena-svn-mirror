@@ -1,3 +1,5 @@
+SUBDIRS = doc
+
 noinst_PROGRAMS = testart testuta gen_art_config
 
 bin_SCRIPTS = \
@@ -8,10 +10,13 @@ BUILT_SOURCES = art_config.h
 art_config.h:	gen_art_config
 	./gen_art_config > art_config.h
 
+man_MANS = libart-config.1
+
 EXTRA_DIST = 			\
 	libart.m4		\
 	libartConf.sh.in	\
-	libart-config.in
+	libart-config.in	\
+	$(man_MANS)
 
 lib_LTLIBRARIES = libart_lgpl.la
 
@@ -52,8 +57,9 @@ libart_lgpl_la_SOURCES = \
 	libart-features.c
 
 libart_lgpl_la_LDFLAGS = -version-info @LIBART_VERSION_INFO@
+libart_lgpl_la_LIBADD = -lm
 
-libart_lgplincdir = $(includedir)/libart_lgpl
+libart_lgplincdir = $(includedir)/gnome-1.0/libart_lgpl
 libart_lgplinc_HEADERS = \
 	art_affine.h \
 	art_alphagamma.h \

@@ -1,4 +1,4 @@
-<refentry id="gnomeui-gtkcauldron" revision="16 Mar 2001">
+<refentry id="gnomeui-gtkcauldron">
 <refmeta>
 <refentrytitle>gtkcauldron</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -664,7 +664,7 @@ application will work until the dialog exits.
                                              void *result);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -687,7 +687,7 @@ application will work until the dialog exits.
                                              <link linkend="gpointer">gpointer</link> user_data);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -726,7 +726,7 @@ pressed escape. Otherwise the label of the widget that was used to
 exit the dialog is returned.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -779,7 +779,7 @@ Otherwise the label of the widget that was used to
 exit the dialog is returned.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">

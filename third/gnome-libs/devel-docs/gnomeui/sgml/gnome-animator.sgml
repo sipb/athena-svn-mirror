@@ -1,4 +1,4 @@
-<refentry id="GnomeAnimator" revision="16 Mar 2001">
+<refentry id="GnomeAnimator">
 <refmeta>
 <refentrytitle>GnomeAnimator</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -229,7 +229,7 @@ GnomeAnimator object.
 Creates a new animator widget of the specified size.</para>
 <para>
 Create a GnomeAnimator object of the specified size.
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -255,7 +255,7 @@ and <literal>GNOME_ANIMATOR_LOOP_PING_PONG</literal> (play animation over and ov
 again, reversing the playing direction every time.)</para>
 <para>
 Sets the type of loop the animator will use.
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -279,7 +279,7 @@ and <literal>GNOME_ANIMATOR_LOOP_PING_PONG</literal> (play animation over and ov
 again, reversing the playing direction every time.)</para>
 <para>
 Determine the type of loop being used on the animator object.
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -305,7 +305,7 @@ last to the first frame.</para>
 Set the direction the animation should be played back. Setting a positive
 value will cause the animator to play forward; a negative value will cause
 it to play backward.
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -329,7 +329,7 @@ If it is negative, the animation is played from the last to the
 first frame.</para>
 <para>
 Determines the direction of playback.
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -359,7 +359,7 @@ by the playback speed.</para>
 <para>
 Append a frame from a GdkImlibImage to the GnomeAnimator object and render
 it.
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -404,7 +404,7 @@ the end of the current animation.  The frame display interval is
 Adds frame contained within a GdkImlibImage image at the end of the
 current animation.  The frame display interval is divided by the playback
 speed.
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -447,7 +447,7 @@ Appends a frame from a file to a GnomeAnimator widget. If the specified
 width and height variables are different from the actual size of the
 image, it is scaled proportionally. The frame display interval is
 <parameter>interval</parameter> divided by the playback speed.
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -491,7 +491,7 @@ by the playback speed.</para>
 <para>
 Append a frame from a given file to a GnomeAnimator widget. The frame
 display interval is <parameter>interval</parameter> divided by the playback speed.
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -539,7 +539,7 @@ another in a single, horizontal row.  If <parameter>width</parameter> and/or <pa
 different from the actual size of the frame, the image will be scaled
 proportionally.  The frame display interval is <parameter>interval</parameter> divided by the
 playback speed.
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -591,7 +591,7 @@ Append multiple frames contained within a GdkImlibImage image to the end
 of a GnomeAnimator widget. Each frame within the image should be next to
 one another in a single, horizontal row.  The frame display interval is
 <parameter>interval</parameter> divided by the playback speed.
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -643,7 +643,7 @@ are different from the actual frame size, the image is scaled
 proportionally.  The frame display interval is <parameter>interval</parameter> divided by the
 playback speed.
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -694,7 +694,7 @@ Load and render an image containing multiple frames, and append those
 frames to the animator widget. Each frame within the image should be
 next to one another in a single, horizontal row. The frame display
 interval is <parameter>interval</parameter> divided by the playback speed.
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -735,7 +735,7 @@ the end of the current animation.  The frame display interval is
 <para>
 Appends a frame from a GnomePixmap image to the animator widget.  The
 frame display interval is <parameter>interval</parameter> divided by the playback speed.
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -765,7 +765,7 @@ frame display interval is <parameter>interval</parameter> divided by the playbac
 Initiate display of animated frames.</para>
 <para>
 Begin animating the widget.
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -782,7 +782,7 @@ Halts display of animated frames.  The current frame
 in the animation will remain in the animator widget.</para>
 <para>
 Stop an animator that is running.
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -807,7 +807,7 @@ specified <parameter>playback_direction</parameter>; if it is negative, go in th
 direction.  After the call, the animator is in the same state it would be
 if it had actually executed the sppecified number of iterations.
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -830,7 +830,7 @@ Jump to the specified <parameter>frame_number</parameter> and display it.</para>
 <para>
 Jump to the specified frame.  If <parameter>num_frame</parameter> is greater than the total
 number of frames, no action is taken.
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -850,7 +850,7 @@ number of frames, no action is taken.
 Obtains current frame number from animator widget.</para>
 <para>
 Determine the current frame number of the animator widget.
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -871,7 +871,7 @@ return values include <literal>GNOME_ANIMATOR_STATUS_STOPPED</literal> and
 <literal>GNOME_ANIMATOR_STATUS_RUNNING</literal>.</para>
 <para>
 Obtain the current status from the animator widget.
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -895,7 +895,7 @@ consequence, higher values give higher playback speeds.</para>
 Sets the playback speed.  The delay between every frame is divided by this
 value before being used.  As a consequence, higher values give higher
 playback speeds.
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -915,7 +915,7 @@ playback speeds.
 Returns the current playback speed.</para>
 <para>
 Obtain the current playback speed.
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">

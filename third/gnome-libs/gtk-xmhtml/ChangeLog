@@ -1,3 +1,38 @@
+2002-01-24  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* colors.c: Fix up earlier fix so things compile.
+	
+2002-01-23  Wayne Schuller  <k_wayne@linuxpower.org>
+
+	* colors.c: (my_get_colors), (set_widget_colors): Just some error 
+	checking for NULL parameters. Helps to avoid 
+	http://bugzilla.gnome.org/show_bug.cgi?id=12493
+
+2002-01-22  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* LZWStream.c: Make tempfile handling more safe. (Ximian)
+
+2002-01-10  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* readPNG.c: More error checking to avoid a crash.
+	(k_wayne@linuxpower.org)
+	
+2002-01-06  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* *: Fix compiler warnings.
+	* images.c: Fix missing X color context ref that was causing lots
+	of crashes. Fixes #60237, #61638, #63439, #65040, #66913 and more.
+	* test.c: do not use %s for a boolean use %d instead.
+	* parser: #if 0 out _ParserClearStack() since it's not used.
+	
+2001-10-20  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* *.*: Apply all the Red Hat patches.
+	
+2001-09-13  Havoc Pennington  <hp@redhat.com>
+
+	* Makefile.am (libgtkxmhtmlincludedir): move to includedir/gnome-1.0
+
 2000-06-21  Kjartan Maraas  <kmaraas@gnome.org>
 
 	* images.c: Fix a warning by initializing a var to NULL.

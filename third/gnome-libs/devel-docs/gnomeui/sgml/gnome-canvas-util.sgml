@@ -1,4 +1,4 @@
-<refentry id="gnomeui-gnome-canvas-util" revision="16 Mar 2001">
+<refentry id="gnomeui-gnome-canvas-util">
 <refmeta>
 <refentrytitle>gnome-canvas-util</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -109,7 +109,7 @@ Creates a structure that should be used to pass an array of points to
 items.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -129,7 +129,7 @@ Decreases the reference count of the specified points structure.  If it
 reaches zero, then the structure is freed.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -157,7 +157,7 @@ and outside points of the mitered corner formed by a line of a given width at
 that angle.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -216,7 +216,7 @@ Otherwise, returns TRUE.
 Computes the butt points of a line segment.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -262,7 +262,7 @@ Computes the butt points of a line segment.</para>
 Computes the distance between a point and a polygon.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -293,7 +293,7 @@ point is inside the polygon.
 Render the svp over the buf.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -318,7 +318,7 @@ Sets the svp to the new value, requesting repaint on what's changed. This
 function takes responsibility for freeing new_svp.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -344,7 +344,7 @@ Sets the svp to the new value, clipping if necessary, and requesting repaint
 on what's changed. This function takes responsibility for freeing new_svp.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -369,7 +369,7 @@ on what's changed. This function takes responsibility for freeing new_svp.</para
 Resets the bounding box of a canvas item to an empty rectangle.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -389,7 +389,7 @@ function takes responsibility for freeing new_svp. This routine also adds the
 svp's bbox to the item's.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -416,7 +416,7 @@ Sets the svp to the new value, clipping if necessary, and requesting repaint
 on what's changed. This function takes responsibility for freeing new_svp.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -443,7 +443,7 @@ on what's changed. This function takes responsibility for freeing new_svp.</para
 Request redraw of the svp if in aa mode, or the entire item in in xlib mode.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -466,7 +466,7 @@ Request redraw of the svp if in aa mode, or the entire item in in xlib mode.</pa
 Sets the bbox to the new value, requesting full repaint.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -492,7 +492,7 @@ Sets the bbox to the new value, requesting full repaint.</para>
 <programlisting>void        gnome_canvas_buf_ensure_buf     (<link linkend="GnomeCanvasBuf">GnomeCanvasBuf</link> *buf);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -510,7 +510,7 @@ Sets the bbox to the new value, requesting full repaint.</para>
 This routine loads a PNG file with full alpha transparency and</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -538,7 +538,7 @@ Do not pass a regular GdkImlibImage to this routine, only pass
 GdkImlibImage pointer that were created by gnome_canvas_load_alpha</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">

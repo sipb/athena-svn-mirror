@@ -1,4 +1,4 @@
-<refentry id="GnomeFileEntry" revision="16 Mar 2001">
+<refentry id="GnomeFileEntry">
 <refmeta>
 <refentrytitle>GnomeFileEntry</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -159,7 +159,7 @@ ctmp);
 <para>
 Creates a new <link linkend="GnomeFileEntry">GnomeFileEntry</link> widget.</para>
 <para>
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -180,7 +180,7 @@ Creates a new <link linkend="GnomeFileEntry">GnomeFileEntry</link> widget.</para
 It returns a pointer to the gnome entry widget of the
 widget (see<link linkend="GnomeEntry">GnomeEntry</link>).</para>
 <para>
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -198,7 +198,7 @@ widget (see<link linkend="GnomeEntry">GnomeEntry</link>).</para>
 Similar to <link linkend="gnome-file-entry-gnome-entry">gnome_file_entry_gnome_entry</link> but
 returns the gtk entry instead of the Gnome entry widget.</para>
 <para>
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -217,7 +217,7 @@ returns the gtk entry instead of the Gnome entry widget.</para>
 Set the title of the browse dialog to <parameter>browse_dialog_title</parameter>.
 The new title will go into effect the next time the browse button is pressed.</para>
 <para>
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -240,7 +240,7 @@ default path is only used if the entry is empty or if the current path
 of the entry is not an absolute path, in which case the default
 path is prepended to it before the dialog is started.</para>
 <para>
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -263,7 +263,7 @@ check for the file being a directory, and the browse dialog will have
 the file list disabled.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -289,7 +289,7 @@ directory then it's returned; if not, it is assumed it was a file so
 we try to strip it, and try again. It allocates memory for the returned string.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -312,7 +312,7 @@ wrong
 Sets the modality of the browse dialog.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">

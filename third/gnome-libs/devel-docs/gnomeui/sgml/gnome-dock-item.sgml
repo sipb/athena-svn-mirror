@@ -1,4 +1,4 @@
-<refentry id="GnomeDockItem" revision="16 Mar 2001">
+<refentry id="GnomeDockItem">
 <refmeta>
 <refentrytitle>GnomeDockItem</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -133,7 +133,7 @@ drag the item around.</para></listitem>
 <programlisting>#define     GNOME_DOCK_ITEM_NOT_LOCKED(x)</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -153,7 +153,7 @@ Create a new GnomeDockItem named <parameter>name</parameter>, with the
 specified <parameter>behavior</parameter>.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -174,7 +174,7 @@ specified <parameter>behavior</parameter>.</para>
 Retrieve the child of <parameter>item</parameter>.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -192,7 +192,7 @@ Retrieve the child of <parameter>item</parameter>.</para>
 Retrieve the name of <parameter>item</parameter>.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -212,7 +212,7 @@ string.
 Set the shadow type for <parameter>dock_item</parameter>.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -232,7 +232,7 @@ Set the shadow type for <parameter>dock_item</parameter>.</para>
 Retrieve the shadow type of <parameter>dock_item</parameter>.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -251,7 +251,7 @@ Retrieve the shadow type of <parameter>dock_item</parameter>.</para>
 Set the orientation for <parameter>dock_item</parameter>.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -273,7 +273,7 @@ Set the orientation for <parameter>dock_item</parameter>.</para>
 Retrieve the orientation of <parameter>dock_item</parameter>.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -292,7 +292,7 @@ Retrieve the orientation of <parameter>dock_item</parameter>.</para>
 Retrieve the behavior of <parameter>dock_item</parameter>.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -310,7 +310,7 @@ Retrieve the behavior of <parameter>dock_item</parameter>.</para>
                                              <link linkend="gint">gint</link> y);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -337,7 +337,7 @@ Retrieve the behavior of <parameter>dock_item</parameter>.</para>
                                              <link linkend="gint">gint</link> y);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -362,7 +362,7 @@ Retrieve the behavior of <parameter>dock_item</parameter>.</para>
 <programlisting>void        gnome_dock_item_grab_pointer    (<link linkend="GnomeDockItem">GnomeDockItem</link> *item);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -380,7 +380,7 @@ Retrieve the behavior of <parameter>dock_item</parameter>.</para>
                                              <link linkend="gint">gint</link> y);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -404,7 +404,7 @@ Retrieve the behavior of <parameter>dock_item</parameter>.</para>
                                              <link linkend="GtkRequisition">GtkRequisition</link> *requisition);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -426,7 +426,7 @@ Retrieve the behavior of <parameter>dock_item</parameter>.</para>
                                              <link linkend="gint">gint</link> *y);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">

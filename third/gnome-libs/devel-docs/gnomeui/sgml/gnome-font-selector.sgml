@@ -1,4 +1,4 @@
-<refentry id="GnomeFontSelector" revision="16 Mar 2001">
+<refentry id="GnomeFontSelector">
 <refmeta>
 <refentrytitle>GnomeFontSelector</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -73,7 +73,7 @@ Deprecated, use GtkFontSelection in a GnomeDialog or GnomeFontPicker
 </para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -89,7 +89,7 @@ Deprecated, use GtkFontSelection in a GnomeDialog or GnomeFontPicker
 </para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -109,7 +109,7 @@ by Gdk.
 Pops up a font selector and lets the user choose the font.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -122,7 +122,7 @@ Pops up a font selector and lets the user choose the font.</para>
 <programlisting><link linkend="gchar">gchar</link>*      gnome_font_select_with_default  (const <link linkend="gchar">gchar</link>*);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">

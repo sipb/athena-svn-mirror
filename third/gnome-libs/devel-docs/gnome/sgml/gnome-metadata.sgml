@@ -1,4 +1,4 @@
-<refentry id="gnome-gnome-metadata" revision="16 Mar 2001">
+<refentry id="gnome-gnome-metadata">
 <refmeta>
 <refentrytitle>gnome-metadata</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -140,7 +140,7 @@ functions.
 Sets metadata associated with <parameter>file</parameter> and <parameter>name</parameter>.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -168,7 +168,7 @@ Sets metadata associated with <parameter>file</parameter> and <parameter>name</p
 Remove a piece of metadata associated with <parameter>file</parameter>.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -189,7 +189,7 @@ Remove a piece of metadata associated with <parameter>file</parameter>.</para>
 </para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -215,7 +215,7 @@ Get a piece of metadata associated with <parameter>file</parameter>.  <parameter
 are result parameters.  *<parameter>buffer</parameter> is <link linkend="g-malloc">g_malloc</link>()d.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -246,7 +246,7 @@ Like <link linkend="gnome-metadata-get">gnome_metadata_get</link>(), but won't r
 characterize the file type.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -276,7 +276,7 @@ This function moves metadata associated with file <parameter>from</parameter> to
 <parameter>to</parameter>.  It should be called after a file is renamed.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -299,7 +299,7 @@ This function copies metadata associated with file <parameter>from</parameter> t
 <parameter>to</parameter>.  It should be called after a file is copied.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -321,7 +321,7 @@ This function deletes all metadata associated with <parameter>file</parameter>.
 It should be called after a file is deleted.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -343,7 +343,7 @@ Add a regular expression to the internal list.  This regex is used
 when matching requests for the metadata <parameter>key</parameter>.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -369,7 +369,7 @@ when matching requests for the metadata <parameter>key</parameter>.</para>
 Remove the regular expression from the internal list.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -392,7 +392,7 @@ Add a file type to the internal list.  This pairing is used
 when matching requests for the metadata <parameter>key</parameter>.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -418,7 +418,7 @@ when matching requests for the metadata <parameter>key</parameter>.</para>
 Remove a type/key pairing from the internal list.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">

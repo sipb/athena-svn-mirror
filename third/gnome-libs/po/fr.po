@@ -2,15 +2,15 @@
 # Copyright (C) 1998-2001 Free Software Foundation, Inc.
 # Vincent Renardias <vincent@ldsol.com>, 1998-1999.
 # Thibaut Cousin <Thibaut.Cousin@clermont.in2p3.fr>, 1999.
-# Christophe Merlet (RedFox) <redfox@eikonex.org>, 2000-2001.
+# maintainer: Christophe Merlet (RedFox) <redfox@eikonex.org>, 2000-2001.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gnome-libs 1.2.12\n"
-"POT-Creation-Date: 2001-02-23 13:45-0500\n"
-"PO-Revision-Date: 2001-03-13 17:40+0100\n"
+"Project-Id-Version: gnome-libs 1.4.1.2\n"
+"POT-Creation-Date: 2002-01-25 00:29+0100\n"
+"PO-Revision-Date: 2001-10-13 09:33+0200\n"
 "Last-Translator: Christophe Merlet (RedFox) <redfox@eikonex.org>\n"
-"Language-Team: Gnome French Team <gnomefr@gnomefr.traduc.org>\n"
+"Language-Team: Gnome French Team <gnomefr@traduc.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=ISO-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -82,7 +82,8 @@ msgstr "Auteurs : "
 msgid "About"
 msgstr "À propos"
 
-#: libgnomeui/gnome-app-helper.c:78
+#. Some standard menus
+#: libgnomeui/gnome-app-helper.c:78 libgnomeui/gnome-app-helper.h:484
 msgid "_File"
 msgstr "_Fichier"
 
@@ -90,7 +91,7 @@ msgstr "_Fichier"
 msgid "_File/"
 msgstr "_Fichier/"
 
-#: libgnomeui/gnome-app-helper.c:80
+#: libgnomeui/gnome-app-helper.c:80 libgnomeui/gnome-app-helper.h:487
 msgid "_Edit"
 msgstr "_Édition"
 
@@ -98,7 +99,7 @@ msgstr "_Édition"
 msgid "_Edit/"
 msgstr "_Édition/"
 
-#: libgnomeui/gnome-app-helper.c:82
+#: libgnomeui/gnome-app-helper.c:82 libgnomeui/gnome-app-helper.h:490
 msgid "_View"
 msgstr "_Vue"
 
@@ -106,7 +107,7 @@ msgstr "_Vue"
 msgid "_View/"
 msgstr "_Vue/"
 
-#: libgnomeui/gnome-app-helper.c:84
+#: libgnomeui/gnome-app-helper.c:84 libgnomeui/gnome-app-helper.h:493
 msgid "_Settings"
 msgstr "_Paramètres"
 
@@ -114,7 +115,8 @@ msgstr "_Paramètres"
 msgid "_Settings/"
 msgstr "_Paramètres/"
 
-#: libgnomeui/gnome-app-helper.c:86
+#. If you have more then one New type, use this tree
+#: libgnomeui/gnome-app-helper.c:86 libgnomeui/gnome-app-helper.h:266
 msgid "_New"
 msgstr "_Nouveau"
 
@@ -122,7 +124,7 @@ msgstr "_Nouveau"
 msgid "_New/"
 msgstr "_Nouveau/"
 
-#: libgnomeui/gnome-app-helper.c:88
+#: libgnomeui/gnome-app-helper.c:88 libgnomeui/gnome-app-helper.h:496
 msgid "Fi_les"
 msgstr "Fi_chiers"
 
@@ -130,15 +132,15 @@ msgstr "Fi_chiers"
 msgid "Fi_les/"
 msgstr "Fi_chiers/"
 
-#: libgnomeui/gnome-app-helper.c:90
+#: libgnomeui/gnome-app-helper.c:90 libgnomeui/gnome-app-helper.h:499
 msgid "_Windows"
 msgstr "_Fenêtres"
 
-#: libgnomeui/gnome-app-helper.c:91
+#: libgnomeui/gnome-app-helper.c:91 libgnomeui/gnome-app-helper.h:505
 msgid "_Game"
 msgstr "_Jeu"
 
-#: libgnomeui/gnome-app-helper.c:92
+#: libgnomeui/gnome-app-helper.c:92 libgnomeui/gnome-app-helper.h:502
 msgid "_Help"
 msgstr "_Aide"
 
@@ -706,32 +708,32 @@ msgstr "="
 msgid "INV"
 msgstr "INV"
 
-#: libgnomeui/gnome-client.c:835
+#: libgnomeui/gnome-client.c:842
 msgid "Specify session management ID"
 msgstr "Spécifie l'ID de gestion de session"
 
-#: libgnomeui/gnome-client.c:835 libgnorba/goad-browser.c:27
+#: libgnomeui/gnome-client.c:842 libgnorba/goad-browser.c:27
 msgid "ID"
 msgstr "ID"
 
-#: libgnomeui/gnome-client.c:837
+#: libgnomeui/gnome-client.c:844
 msgid "Specify prefix of saved configuration"
 msgstr "Spécifie le préfixe de la configuration sauvegardée"
 
-#: libgnomeui/gnome-client.c:837
+#: libgnomeui/gnome-client.c:844
 msgid "PREFIX"
 msgstr "PRÉFIXE"
 
-#: libgnomeui/gnome-client.c:839
+#: libgnomeui/gnome-client.c:846
 msgid "Disable connection to session manager"
 msgstr "Désactive la connexion avec le gestionnaire de session"
 
 #. Register commandline options.
-#: libgnomeui/gnome-client.c:968
+#: libgnomeui/gnome-client.c:977
 msgid "Session management options"
 msgstr "Options du gestionnaire de session"
 
-#: libgnomeui/gnome-client.c:2348
+#: libgnomeui/gnome-client.c:2357
 msgid "Cancel Logout"
 msgstr "Annuler la demande de fin de session"
 
@@ -941,13 +943,13 @@ msgstr "Options GTK"
 msgid "GNOME GUI options"
 msgstr "Options IUG GNOME"
 
-#: libgnomeui/gnome-init.c:452
+#: libgnomeui/gnome-init.c:453
 #, c-format
 msgid "%s options"
 msgstr "Options %s"
 
 #. dialog display isn't working out
-#: libgnomeui/gnome-init.c:642
+#: libgnomeui/gnome-init.c:647
 msgid "Multiple segmentation faults occurred; can't display error dialog\n"
 msgstr ""
 "Plusieurs erreurs de segmentation sont apparues ; ne peut afficher de "
@@ -1014,13 +1016,9 @@ msgid "Date"
 msgstr "Date"
 
 #. the localized string should fit (after replacing the %a %b
-#. etc) in ~18 chars.
-#. %a is abbreviated weekday, %A is full weekday,
-#. %b %B are abbreviated and full monthname, %Y is year,
-#. %d is day of month, %m is month number, %T full hour,
-#. %H hours, %M minutes, %S seconds
+#. * etc) in ~18 chars. Please consult strftime(3) manpage.
 #.
-#: libgnomeui/gnome-scores.c:130
+#: libgnomeui/gnome-scores.c:126
 msgid "%a %b %d %T %Y"
 msgstr "%a %b %d %T %Y"
 
@@ -1508,7 +1506,7 @@ msgstr "ID de dépositaire du serveur à activer"
 msgid "REPO-ID"
 msgstr "REPO-ID"
 
-#: libgnorba/goad-browser.c:171
+#: libgnorba/goad-browser.c:182
 msgid ""
 "I couldn't find any installed services.  Either you don't have\n"
 "any services installed or I don't know the path to find them.\n"
@@ -1546,33 +1544,38 @@ msgstr "ID de dépositaire sous lequel GOAD connaît ce serveur"
 msgid "REPO_ID"
 msgstr "REPO_ID"
 
-#: libgnorba/orbitgtk.c:138
+#: libgnorba/orbitgtk.c:129
+#, c-format
+msgid "Failed to get user details for UID %d (%s)\n"
+msgstr ""
+
+#: libgnorba/orbitgtk.c:141
 #, c-format
 msgid "Failed to open CORBA cookie file (%s) for writing: %s\n"
 msgstr ""
 "Impossible d'ouvrir de fichier de cookie CORBA (%s) pour écriture : %s\n"
 
-#: libgnorba/orbitgtk.c:145
+#: libgnorba/orbitgtk.c:148
 #, c-format
 msgid "Failed to write CORBA cookie file (%s): %s\n"
 msgstr "Impossible d'écrire dans le fichier de cookie CORBA (%s) : %s\n"
 
-#: libgnorba/orbitgtk.c:171
+#: libgnorba/orbitgtk.c:174
 #, c-format
 msgid "Failed to write CORBA cookie to `%s': %s\n"
 msgstr "Impossible d'écrire le cookie CORBA dans « %s » : %s\n"
 
-#: libgnorba/orbitgtk.c:181
+#: libgnorba/orbitgtk.c:184
 #, c-format
 msgid "Failed to open CORBA cookie file `%s': %s\n"
 msgstr "Impossible d'ouvrir de fichier de cookie CORBA « %s » : %s\n"
 
-#: libgnorba/orbitgtk.c:187
+#: libgnorba/orbitgtk.c:190
 #, c-format
 msgid "Failed to read CORBA cookie file `%s': %s\n"
 msgstr "Impossible de lire de fichier de cookie CORBA « %s » : %s\n"
 
-#: libgnorba/orbitgtk.c:213
+#: libgnorba/orbitgtk.c:216
 msgid "Failed to obtain CORBA authentication cookie, exiting\n"
 msgstr "Impossible d'obtenir le cookie d'authentification CORBA, abandon.\n"
 
@@ -1663,11 +1666,11 @@ msgstr "%s : l'option « -W %s » est ambigüe\n"
 msgid "%s: option `-W %s' doesn't allow an argument\n"
 msgstr "%s : l'option « -W %s » n'a pas d'argument\n"
 
-#: support/popthelp.c:35
+#: support/popthelp.c:36
 msgid "Show this help message"
 msgstr "Montrer ce message d'aide"
 
-#: support/popthelp.c:36
+#: support/popthelp.c:37
 msgid "Display brief usage message"
 msgstr "Donne une aide succinte"
 

@@ -1,4 +1,4 @@
-<refentry id="gnome-gnome-triggers" revision="16 Mar 2001">
+<refentry id="gnome-gnome-triggers">
 <refmeta>
 <refentrytitle>gnome-triggers</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -77,7 +77,7 @@ Deprecated.
                                              char *supinfo[]);</programlisting>
 <para>
 Deprecated.
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -140,7 +140,7 @@ specified in 'params') or 'play' (play the esd sound sample named
 'params').</para>
 <para>
 Deprecated.
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -162,7 +162,7 @@ Similar to <link linkend="gnome-triggers-readfile">gnome_triggers_readfile</link
 from the file 'nt' structure and the varargs, instead of from a file.</para>
 <para>
 Deprecated.
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -183,7 +183,7 @@ Similar to <link linkend="gnome-triggers-readfile">gnome_triggers_readfile</link
 from the file 'nt' structure and 'supinfo', instead of from a file.</para>
 <para>
 Deprecated.
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -206,7 +206,7 @@ Notifies GNOME about an event happening, so GNOME can do cool things.</para>
 This function tells the GNOME framework that an event has occurred inside 
 the application that GNOME might be interested in.
 Currently this is just used to trigger user-configurable sound events.
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -232,7 +232,7 @@ Notifies GNOME about an event happening, so GNOME can do cool things.</para>
 This function is the same as gnome_triggers_do, except the supinfo is
 passed as an array of strings, rather than as a variable number of
 arguments.
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">

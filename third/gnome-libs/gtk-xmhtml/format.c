@@ -2,10 +2,10 @@
 * format.c : XmHTML formatting routines: translates parsed HTML to 	info 
 *			required for displaying a HTML page.
 *
-* This file Version	$Revision: 1.1.1.1 $
+* This file Version	$Revision: 1.1.1.2 $
 *
 * Creation date:		Tue Nov 26 17:03:09 GMT+0100 1996
-* Last modification: 	$Date: 2000-11-12 01:49:36 $
+* Last modification: 	$Date: 2002-02-13 00:12:36 $
 * By:					$Author: ghudson $
 * Current State:		$State: Exp $
 *
@@ -33,6 +33,19 @@
 /*****
 * ChangeLog 
 * $Log: not supported by cvs2svn $
+* Revision 1.13.6.2  2002/01/08 22:33:11  kmaraas
+* 2002-01-06  Kjartan Maraas  <kmaraas@gnome.org>
+*
+* 	* *: Fix compiler warnings.
+* 	* images.c: Fix missing X color context ref that was causing lots
+* 	of crashes. Fixes #60237, #61638, #63439, #65040, #66913 and more.
+* 	* test.c: do not use %s for a boolean use %d instead.
+*
+* Revision 1.13.6.1  2001/10/20 06:52:12  kmaraas
+* 2001-10-20  Kjartan Maraas  <kmaraas@gnome.org>
+*
+* 	* *.*: Apply all the Red Hat patches.
+*
 * Revision 1.13  1999/07/29 01:26:28  sopwith
 *
 *
@@ -237,6 +250,15 @@
 #include <string.h>
 #include <ctype.h>	/* isspace, tolower */
 
+#include <gdk/gdki18n.h>
+#if !defined(G_HAVE_BROKEN_WCTYPE) && (defined(G_HAVE_WCTYPE_H) || defined(G_HAVE_WCHAR_H)) && !defined(X_LOCALE)
+#define is_ideograph(wc) \
+	(iswalpha (wc) && (!iswupper (wc) && !iswlower (wc) )) || \
+	(!(iswalnum(wc) || iswspace(wc) || iswpunct(wc) || iswcntrl(wc)))
+#else
+#define is_ideograph(wc) FALSE
+#endif
+
 /* Local includes */
 #include "XmHTMLP.h"
 #include "XmHTMLfuncs.h"
@@ -307,14 +329,14 @@ static XmHTMLfont *PopFont(int *size);
 
 /* copy given text into an internal buffer */
 static String CopyText(XmHTMLWidget html, String text, Boolean formatted,
-	Byte *text_data, Boolean expand_escapes);
+	int *text_data, Boolean expand_escapes);
 
 /* collapse all consecutive whitespace into a single space */
 static void CollapseWhiteSpace(String text);
 
 /* Split raw text into an array of words */
 static XmHTMLWord* TextToWords(String text, int *num_words, Dimension *height, 
-	XmHTMLfont *font, Byte line_data, Byte text_data, 
+	XmHTMLfont *font, Byte line_data, int text_data, 
 	XmHTMLObjectTableElement owner);
 
 /* Split an image into an array of words ;-) */
@@ -804,14 +826,16 @@ CollapseWhiteSpace(String text)
 *****/
 static XmHTMLWord* 
 TextToWords(String text, int *num_words, Dimension *height, XmHTMLfont *font, 
-	Byte line_data, Byte text_data, XmHTMLObjectTableElement owner)
+	Byte line_data, int text_data, XmHTMLObjectTableElement owner)
 {
-	int n_words, len, i;
-	char *start;
-	static XmHTMLWord *words;
-	static char *raw;
+	int n_words, n_words_alloc, raw_numwc, i;
+	GdkWChar *raw, *start;
+	XmHTMLWord *words;
 	register int j;
-	register char *chPtr;
+	register GdkWChar *chPtr;
+	int leading_space;
+	char *wordsbuf;
+	int size_wordsbuf;
 
 	/* sanity check */
 	if(text == NULL)
@@ -822,45 +846,74 @@ TextToWords(String text, int *num_words, Dimension *height, XmHTMLfont *font,
 
 	_XmHTMLFullDebug(2, ("format.c: TextToWords, text in is:\n%s\n", text));
 
-	/* compute how many words we have */
-	n_words = 0;
-	for(chPtr = text; *chPtr != '\0'; chPtr++)
-		if(*chPtr == ' ')
-			n_words++;
-	/* also pick up the last word */
-	n_words++;
-
 	/* copy text */
-	raw = strdup(text);
+	raw = (GdkWChar *)calloc(strlen(text) + 1, sizeof(GdkWChar));
+	raw_numwc = gdk_mbstowcs(raw, text, strlen(text));
+	if (raw_numwc < 1)
+		raw_numwc = 0;
 
 	/* allocate memory for all words */
-	words = (XmHTMLWord*)calloc(n_words, sizeof(XmHTMLWord));
+	n_words = 0;
+	n_words_alloc = 10;
+	words = (XmHTMLWord*)calloc(n_words_alloc, sizeof(XmHTMLWord));
 
 	/* Split the text in words and fill in the appropriate fields */
 	*height = font->height;
 	chPtr = start = raw;
 
-	for(i = 0, j = 0, len = 0; ; chPtr++, len++, j++)
+	for(i = 0, j = 0, leading_space = 0; ; chPtr++, j++)
 	{
-		/* also pick up the last word! */
-		if(*chPtr == ' ' || *chPtr == '\0')
+		/* expand words[] if needed */
+		if (n_words_alloc < i + 1)
 		{
-			if(*chPtr)
+			n_words_alloc += 10;
+			words = (XmHTMLWord *)realloc(
+				words, n_words_alloc * sizeof(XmHTMLWord));
+		}
+
+		/* also pick up the last word! */
+		if(*chPtr == ' ' || *chPtr == '\0' ||
+		   (chPtr > start &&
+		    (is_ideograph(*chPtr) || is_ideograph(chPtr[-1]))))
+		{
+			GdkWChar saved_char;
+			int trailing_space = 0;
+			if(*chPtr == ' ')
 			{
 				chPtr++;			/* nuke the space */
 				raw[j++] = '\0';
+				trailing_space = 1;
 			}
+			/* set the first char of the next word 0 temporally.
+			 * gdk_wcstombs requires this. */
+			saved_char = raw[j];
+			raw[j] = '\0';
 			/* fill in required fields */
-			words[i].self      = &words[i];
-			words[i].word      = start;
-			words[i].len       = len;
+			words[i].self      = NULL;	/* set later */
+			words[i].word      = gdk_wcstombs(start);
+			words[i].len       = words[i].word ? strlen(words[i].word) : 0;
 			words[i].height    = *height;
-			words[i].width     = Toolkit_Text_Width(font->xfont, words[i].word, len);
+			words[i].width     = Toolkit_Text_Width(
+				font->xfont, words[i].word, strlen(words[i].word));
 			words[i].owner     = owner;
 			words[i].font      = font;
-			words[i].spacing   = TEXT_SPACE_LEAD | TEXT_SPACE_TRAIL;
+			words[i].spacing   = 0;		/* set later */
 			words[i].type      = OBJ_TEXT;
 			words[i].line_data = line_data;
+
+			if (leading_space)
+				words[i].spacing |= TEXT_SPACE_LEAD;
+			else
+				words[i].spacing |= TEXT_SPACE_LEAD_ZEROWIDTH;
+
+			if (trailing_space)
+				words[i].spacing |= TEXT_SPACE_TRAIL;
+			else
+				words[i].spacing |= TEXT_SPACE_TRAIL_ZEROWIDTH;
+
+			leading_space = trailing_space; /* for the next word */
+
+			raw[j] = saved_char;
 
 			_XmHTMLFullDebug(2, ("format.c: TextToWords, word is %s, len is "
 				"%i, width is %i, height is %i\n", words[i].word, words[i].len,
@@ -868,11 +921,34 @@ TextToWords(String text, int *num_words, Dimension *height, XmHTMLfont *font,
 
 			start = chPtr;
 			i++;
-			len = 0;
 		}
 		if(*chPtr == '\0')
 			break;
 	}
+	free(raw);
+	n_words = i;
+
+	/* because the pointer 'words' may be realloc()ed, we need to set the
+	* 'self' field here.
+	*/
+	for (i = 0; i < n_words; i++)
+		words[i].self = &words[i];
+
+	/* words[0].word must be a malloc()ed pointer, and word[i].word
+	* (for i > 0) a reference (i.e., it should not be freed).
+	*/
+	for (size_wordsbuf = 0, i = 0; i < n_words; i++)
+		size_wordsbuf += words[i].len + 1;
+	wordsbuf = (char *)malloc(size_wordsbuf);
+	for (i = j = 0; i < n_words; i++)
+	{
+		/* copies trailing nil also */
+		memcpy(wordsbuf + j, words[i].word, words[i].len + 1);
+		free(words[i].word);
+		words[i].word = wordsbuf + j;
+		j += words[i].len + 1;
+	}
+
 	/* 
 	* when there is more than one word in this block, the first word
 	* _always_ has a trailing space.
@@ -880,10 +956,13 @@ TextToWords(String text, int *num_words, Dimension *height, XmHTMLfont *font,
 	*/
 	if(n_words > 1)
 	{
-		/* unset nospace bit */
-		Byte spacing = text_data & ~TEXT_SPACE_NONE;
-		words[0].spacing = spacing | TEXT_SPACE_TRAIL;
-		words[n_words-1].spacing = spacing | TEXT_SPACE_LEAD;
+		words[0].spacing &= ~TEXT_SPACE_LEAD_ZEROWIDTH;
+		words[n_words-1].spacing &= ~TEXT_SPACE_TRAIL_ZEROWIDTH;
+
+		words[0].spacing |= text_data &
+			(TEXT_SPACE_LEAD | TEXT_SPACE_LEAD_ZEROWIDTH);
+		words[n_words-1].spacing |= text_data &
+			(TEXT_SPACE_TRAIL | TEXT_SPACE_TRAIL_ZEROWIDTH);
 	}
 	else
 		words[0].spacing = text_data;
@@ -1109,7 +1188,7 @@ SelectToWord(XmHTMLWidget html, XmHTMLObject *start, int *num_words,
 		if(tmp->id == HT_OPTION && !tmp->is_end)
 		{
 			XmHTMLObject *sel_start = tmp;
-			Byte foo;
+			int foo;
 			String text = NULL;
 
 			/*
@@ -1185,7 +1264,7 @@ TextAreaToWord(XmHTMLWidget html, XmHTMLObject *start, int *num_words,
 	static XmHTMLForm *form_entry;
 	XmHTMLWord *word;
 	String text = NULL;
-	Byte foo;
+	int foo;
 
 	*num_words = 0;
 	*height = *width = 0;
@@ -1633,13 +1712,14 @@ SetTab(int size, Dimension *height, XmHTMLfont *font,
 *	cleaned up text. Terminates if malloc fails.
 *****/
 static String 
-CopyText(XmHTMLWidget html, String text, Boolean formatted, Byte *text_data,
+CopyText(XmHTMLWidget html, String text, Boolean formatted, int *text_data,
 	Boolean expand_escapes)
 {
 	static String ret_val;
-	char *start = text;
+	GdkWChar *wtext, *start;
 	int len;
 	static Boolean have_space = False;
+	static Boolean have_space_zerowidth = False;
 
 	/* sanity check */
 	if(*text == '\0' || !strlen(text))
@@ -1653,23 +1733,30 @@ CopyText(XmHTMLWidget html, String text, Boolean formatted, Byte *text_data,
 		/* expand all escape sequences in this text */
 		if(expand_escapes)
 			_XmHTMLExpandEscapes(ret_val, html->html.bad_html_warnings);
-		have_space = False;
+		have_space = have_space_zerowidth = False;
 		return(ret_val);
 	}
 
 	_XmHTMLFullDebug(2, ("format.c: CopyText, text in is:\n%s\n", text));
 
-	/* initial length of full text */
-	len = strlen(text);
+	/* convert to wide characters */
+	wtext = (GdkWChar *)calloc(strlen(text) + 1, sizeof(GdkWChar));
+	len = gdk_mbstowcs(wtext, text, strlen(text));
+	if (len < 0) len = 0;
+	start = wtext;
 
 	*text_data = 0;
 
 	/* see if we have any leading/trailing spaces */
-	if(isspace(*text) || have_space)
+	if(gdk_iswspace(*wtext) || have_space)
 		*text_data = TEXT_SPACE_LEAD;
+	else if(is_ideograph(*wtext) || have_space_zerowidth)
+		*text_data = TEXT_SPACE_LEAD_ZEROWIDTH;
 
-	if(isspace(text[len-1]))
+	if(len > 0 && gdk_iswspace(wtext[len-1]))
 		*text_data |= TEXT_SPACE_TRAIL;
+	else if(len > 0 && (is_ideograph(wtext[len-1])))
+		*text_data |= TEXT_SPACE_TRAIL_ZEROWIDTH;
 
 	/*****
 	* Remove leading/trailing spaces
@@ -1677,11 +1764,13 @@ CopyText(XmHTMLWidget html, String text, Boolean formatted, Byte *text_data,
 	* elements must be retained
 	*****/
 	/* remove all leading space */
-	while(*start != '\0' && isspace(*start))
+	while(*start != '\0' && gdk_iswspace(*start))
+	{
 		start++;
+		len--;
+	}
 	/* remove all trailing space */
-	len = strlen(start);
-	while(len > 0 && isspace(start[len-1]))
+	while(len > 0 && gdk_iswspace(start[len-1]))
 		len--; 
 
 	/*****
@@ -1705,16 +1794,14 @@ CopyText(XmHTMLWidget html, String text, Boolean formatted, Byte *text_data,
 		have_space = True;
 		return(NULL);
 	}
-	have_space = False;
+	have_space = have_space_zerowidth = False;
+	if(len > 0 && (is_ideograph(wtext[len-1])))
+		have_space_zerowidth = True;
 
-	/*
-	* We are a little bit to generous here: consecutive multiple whitespace 
-	* will be collapsed into a single space, so we may over-allocate. 
-	* Hey, better to overdo this than to have one byte to short ;-)
-	*/
-	ret_val = (String)malloc((len+1)*sizeof(char));
-	strncpy(ret_val, start, len);	/* copy it */
-	ret_val[len] = '\0';			/* NULL terminate */
+	/* convert to multibyte form */
+	start[len] = '\0';
+	ret_val = gdk_wcstombs(start);
+	free(wtext);
 
 	/* expand all escape sequences in this text */
 	if(expand_escapes)
@@ -3030,7 +3117,8 @@ _XmHTMLformatObjects(XmHTMLWidget old, XmHTMLWidget html)
 	String text;
 	int linefeed, n_words, anchor_words, named_anchors;
 	int x_offset = 0, y_offset = 0;
-	Byte text_data, line_data;		/* text and line data bits */
+	int text_data;		/* text data bits */
+	Byte line_data;		/* line data bits */
 	unsigned long element_data = 0;
 	XmHTMLWord *words;
 	XmHTMLAnchor *anchor_data, *form_anchor_data;

@@ -1,4 +1,4 @@
-<refentry id="gnomeui-gnome-popup-help" revision="16 Mar 2001">
+<refentry id="gnomeui-gnome-popup-help">
 <refmeta>
 <refentrytitle>gnome-popup-help</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -47,7 +47,7 @@ void        <link linkend="gnome-widget-add-help-with-uidata">gnome_widget_add_h
 <para>
 This is the same as <link linkend="gnome-widget-add-help-with-uidata">gnome_widget_add_help_with_uidata</link>() but without the
 options for the extra menu fields.
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -92,7 +92,7 @@ by it on the end of the popup menu, with <parameter>user_data</parameter> passed
 This function currently only works on non <link linkend="GTK-WIDGET-NO-WINDOW-CAPS">GTK_WIDGET_NO_WINDOW</link>() widgets
 (ie. it only works on widgets with windows.)  If you would actually like a
 handle to the popup menu, call <link linkend="gnome-popup-menu-get">gnome_popup_menu_get</link>() as normal.
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">

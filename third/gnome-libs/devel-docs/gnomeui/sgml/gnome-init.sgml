@@ -1,4 +1,4 @@
-<refentry id="gnomeui-gnome-init" revision="16 Mar 2001">
+<refentry id="gnomeui-gnome-init">
 <refmeta>
 <refentrytitle>gnome-init</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -91,7 +91,7 @@ internals and prepares them (imlib, gdk, session-management, triggers,
 sound, user preferences)</para>
 <para>
     
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -133,7 +133,7 @@ a table of popt options (popt is the command line argument parsing
 library).</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">

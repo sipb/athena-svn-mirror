@@ -1,4 +1,4 @@
-<refentry id="GnomeCanvas" revision="16 Mar 2001">
+<refentry id="GnomeCanvas">
 <refmeta>
 <refentrytitle>GnomeCanvas</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -223,7 +223,7 @@ void        <link linkend="gnome-canvas-set-dither">gnome_canvas_set_dither</lin
     This macro is used to build a 32-bit integer with an RGB color
     specification.  The specified values must be integers in the range
     [0, 255].
-  </para><informaltable pgwide=1 frame="none" role="params">
+  </para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -248,7 +248,7 @@ void        <link linkend="gnome-canvas-set-dither">gnome_canvas_set_dither</lin
     specification.  This is the same as an RGB color specification,
     but with an added alpha or opacity value.  The specified values
     must be integers in the range [0, 255].
-  </para><informaltable pgwide=1 frame="none" role="params">
+  </para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -437,7 +437,7 @@ visual and colormap before calling this function, and they can be popped
 afterwards.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -454,7 +454,7 @@ visual and colormap before calling this functions, and they can be popped
 afterwards.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -469,7 +469,7 @@ afterwards.</para>
 Queries the root group of a canvas.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -493,7 +493,7 @@ will then be able to scroll only within this region.  The view of the canvas
 is adjusted as appropriate to display as much of the new region as possible.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -525,7 +525,7 @@ is adjusted as appropriate to display as much of the new region as possible.</pa
 Queries the scrolling region of a canvas.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -556,7 +556,7 @@ Sets the zooming factor of a canvas by specifying the number of pixels that
 correspond to one canvas unit.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -580,7 +580,7 @@ region.  This function is typically not used, as it is better to hook
 scrollbars to the canvas layout's scrolling adjusments.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -605,7 +605,7 @@ Queries the scrolling offsets of a canvas.  The values are returned in canvas
 pixel units.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -630,7 +630,7 @@ typically only used by applications that need explicit control of when the
 display is updated, like games.  It is not needed by normal applications.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -649,7 +649,7 @@ Looks for the item that is under the specified position, which must be
 specified in world coordinates.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -676,7 +676,7 @@ Informs a canvas that the specified area, given as a microtile array, needs
 to be repainted.  To be used only by item implementations.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -702,7 +702,7 @@ and feeds it to <link linkend="gnome-canvas-request-redraw-uta">gnome_canvas_req
 <parameter>x1</parameter> and <parameter>y1</parameter>, but not <parameter>x2</parameter> and <parameter>y2</parameter>.  To be used only by item implementations.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -732,7 +732,7 @@ Gets the affine transform that converts from world coordinates to canvas
 pixel coordinates.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -755,7 +755,7 @@ pixel coordinates.</para>
 Converts world coordinates into canvas pixel coordinates.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -787,7 +787,7 @@ Converts world coordinates into canvas pixel coordinates.</para>
 Converts world coordinates into canvas pixel coordinates.  This version</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -819,7 +819,7 @@ Converts world coordinates into canvas pixel coordinates.  This version</para>
 Converts canvas pixel coordinates to world coordinates.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -853,7 +853,7 @@ this when you need to convert mouse coordinates into world coordinates, for
 example.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -885,7 +885,7 @@ example.</para>
 Converts world coordinates into window-relative coordinates.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -918,7 +918,7 @@ allocated, or FALSE if the specification was NULL.  A NULL color
 specification is considered as "transparent" by the canvas.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -946,7 +946,7 @@ so that it will be aligned with other stipple patterns used by canvas items.
 This is typically only needed by item implementations.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -968,7 +968,7 @@ should be; <link linkend="GDK-RGB-DITHER-NONE-CAPS">GDK_RGB_DITHER_NONE</link>, 
 <link linkend="GDK-RGB-DITHER-MAX-CAPS">GDK_RGB_DITHER_MAX</link>. The default canvas setting is <link linkend="GDK-RGB-DITHER-NORMAL-CAPS">GDK_RGB_DITHER_NORMAL</link>.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -998,7 +998,7 @@ End:
 Returns the type of dithering used to render an antialiased canvas.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">

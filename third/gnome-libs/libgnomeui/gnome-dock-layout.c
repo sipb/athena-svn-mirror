@@ -22,6 +22,7 @@
 
 #include <gtk/gtk.h>
 #include <stdio.h>
+#include <string.h>
 
 #include "gnome-dock-layout.h"
 

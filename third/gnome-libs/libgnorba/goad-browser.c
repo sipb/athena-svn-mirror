@@ -109,6 +109,19 @@ gb_create_main_window(CORBA_ORB orb, CORBA_Environment *ev)
 
   clist = gtk_clist_new_with_titles(6, (gchar **)column_titles);
 
+  /* Set some working defaults. */
+  gtk_clist_set_column_width(GTK_CLIST (clist), 0, 200);
+  gtk_clist_set_column_width(GTK_CLIST (clist), 1, 50);
+  gtk_clist_set_column_width(GTK_CLIST (clist), 2, 200);
+  gtk_clist_set_column_width(GTK_CLIST (clist), 3, 200);
+  gtk_clist_set_column_width(GTK_CLIST (clist), 4, 50);
+  gtk_clist_set_column_width(GTK_CLIST (clist), 5, 50);
+
+  /* Set a minimum width, but only on the widget, so the user can resize
+   * the window.
+   */
+  gtk_widget_set_usize(GTK_WIDGET(clist), 950, 300);
+
   gtk_widget_pop_colormap();
   gtk_widget_pop_visual();
 
@@ -139,9 +152,8 @@ gb_create_main_window(CORBA_ORB orb, CORBA_Environment *ev)
 static void
 gb_create_server_list(GtkWidget *w, GtkCList *clist)
 {
-  int i, currow, j;
+  int i, currow;
   gchar *columns[6];
-  int maxw[6];
 
   GdkFont *font;
 
@@ -164,7 +176,6 @@ gb_create_server_list(GtkWidget *w, GtkCList *clist)
   font = gtk_widget_get_style(GTK_WIDGET(clist))->font;
 
   columns[1] = NULL;
-  memset(maxw, 0, sizeof(maxw));
 
   if (slist == NULL) {
     no_server_warning = gnome_warning_dialog(
@@ -201,20 +212,8 @@ gb_create_server_list(GtkWidget *w, GtkCList *clist)
       else
 	gtk_clist_set_pixmap(clist, currow, 1, pm_inactive, pm_inactive_mask);
       
-      for(j = 0; j < 6; j++) {
-	if(columns[j])
-	  maxw[j] = MAX(gdk_string_width(font, columns[j]), maxw[j]);
-      }
     }
   }
-
-  for(j = 0; j < 6; j++)
-    maxw[j] = MAX(gdk_string_width(font, column_titles[j]), maxw[j]);
-
-  for(i = j = 0; j < 6; i += maxw[j], j++)
-    gtk_clist_set_column_width(clist, j, maxw[j] + GNOME_PAD_SMALL);
-
-  gtk_widget_set_usize(GTK_WIDGET(clist), i + 50, 300);
 
   gtk_clist_thaw(clist);
 

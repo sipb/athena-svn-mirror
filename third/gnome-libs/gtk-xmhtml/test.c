@@ -9,6 +9,12 @@
 #include <X11/Xatom.h>		/* property defines */
 #include <gtk-xmhtml/gtk-xmhtml.h>
 
+/* Prototypes */
+
+void click (GtkWidget *widget, gpointer data);
+void frame (GtkWidget *widget, gpointer data);
+
+
 char *urls [] = {
 	"unknown", "named (...)", "jump (#...)",
 	"file_local (file.html)", "file_remote (file://foo.bar/file)",
@@ -56,7 +62,7 @@ click (GtkWidget *widget, gpointer data)
 	printf ("rev:     %s\n", cbs->rev);
 	printf ("title:   %s\n", cbs->title);
 	printf ("doit:    %d\n", cbs->doit);
-	printf ("visited: %s\n", cbs->visited);
+	printf ("visited: %d\n", cbs->visited);
 	gtk_xmhtml_source (GTK_XMHTML (widget), test_string3);
 }
 
@@ -90,8 +96,6 @@ int
 main (int argc, char *argv [])
 {
 	GtkWidget *window, *html;
-	GtkWidget *button;
-	char *p = malloc (10);
 	GString *file_contents;
 	char aline[1024];
 	FILE *afile = NULL;

@@ -3,10 +3,10 @@
 *				converts LZW compressed data to compress LZW data and
 *				calls compress to do the uncompressing.
 *
-* This file Version	$Revision: 1.1.1.1 $
+* This file Version	$Revision: 1.1.1.2 $
 *
 * Creation date:		Thu May  8 04:53:42 GMT+0100 1997
-* Last modification: 	$Date: 2000-11-12 01:49:33 $
+* Last modification: 	$Date: 2002-02-13 00:13:21 $
 * By:					$Author: ghudson $
 * Current State:		$State: Exp $
 *
@@ -31,6 +31,11 @@
 /*****
 * ChangeLog 
 * $Log: not supported by cvs2svn $
+* Revision 1.4.6.1  2002/01/22 03:16:52  kmaraas
+* 2002-01-22  Kjartan Maraas  <kmaraas@gnome.org>
+*
+* 	* LZWStream.c: Make tempfile handling more safe. (Ximian)
+*
 * Revision 1.4  1999/07/29 01:26:28  sopwith
 *
 *
@@ -83,6 +88,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <fcntl.h>
 
 #ifndef NO_XmHTML			/* defined when compiling for standalone */
 #ifdef WITH_GTK
@@ -811,13 +817,17 @@ LZWStreamInit(LZWStream *lzw)
 	tmpnam(lzw->zName);
 	strcat(lzw->zName, ".Z");
 
-	/* open it */
-	if(!(lzw->f = fopen(lzw->zName, "w")))
-	{
+	{ /* open it 
+	   * CPhipps 2000/03/07- open temp file safely */
+	  int fd = open(lzw->zName, O_CREAT|O_RDWR|O_EXCL, 0600);
+
+	  if((fd == -1) || !(lzw->f = fdopen(fd, "w")))
+	    {
 		sprintf(msg_buf, "LZWStream Error: couldn't open temporary file "
 			"'%s'.", lzw->zName);
 		lzw->err_msg = msg_buf;
 		return(-1);
+	    }
 	}
 
 	/*

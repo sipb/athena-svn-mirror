@@ -1,10 +1,10 @@
 /*****
 * readPNG.c : XmHTML png image loading routines
 *
-* This file Version	$Revision: 1.1.1.1 $
+* This file Version	$Revision: 1.1.1.2 $
 *
 * Creation date:		Wed Feb 19 03:21:11 GMT+0100 1997
-* Last modification: 	$Date: 2000-11-12 01:49:40 $
+* Last modification: 	$Date: 2002-02-13 00:13:11 $
 * By:					$Author: ghudson $
 * Current State:		$State: Exp $
 *
@@ -34,6 +34,12 @@
 /*****
 * ChangeLog 
 * $Log: not supported by cvs2svn $
+* Revision 1.9.6.1  2002/01/12 21:52:39  kmaraas
+* 2002-01-10  Kjartan Maraas  <kmaraas@gnome.org>
+*
+* 	* readPNG.c: More error checking to avoid a crash.
+* 	(k_wayne@linuxpower.org)
+*
 * Revision 1.9  1999/07/29 01:26:29  sopwith
 *
 *
@@ -288,8 +294,11 @@ _XmHTMLReadPNG(TWidget html, ImageBuffer *ib)
 	}
 
 	/* We set up the normal PNG error routines, then override with longjmp. */
-	png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING,
-		NULL, NULL, NULL);
+	if ((png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL)) == NULL)
+	{
+		/* failed, too bad */
+		return((XmHTMLRawImageData*)NULL);
+	}
 
 	/* Create and initialize the info structure */
 	if((info_ptr = png_create_info_struct(png_ptr)) == NULL)

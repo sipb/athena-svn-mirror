@@ -1,4 +1,4 @@
-<refentry id="GnomeDruid" revision="16 Mar 2001">
+<refentry id="GnomeDruid">
 <refmeta>
 <refentrytitle>GnomeDruid</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -127,7 +127,7 @@ void        <link linkend="gnome-druid-set-page">gnome_druid_set_page</link>    
 <programlisting><link linkend="GtkWidget">GtkWidget</link>*  gnome_druid_new                 (void);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -150,7 +150,7 @@ variables are TRUE, then they will be clickable.  This function is used
 primarily by the actual GnomeDruidPage widgets.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -178,7 +178,7 @@ is TRUE, then the text becomes "Finish".  If <parameter>show_finish</parameter> 
 text becomes "Cancel".</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -202,7 +202,7 @@ This will prepend a GnomeDruidPage into the internal list of
 pages that the <parameter>druid</parameter> has.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -225,7 +225,7 @@ internal pages that the <parameter>druid</parameter> has.  If <parameter>back_pa
 or NULL, <parameter>page</parameter> will be prepended to the list.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -248,7 +248,7 @@ or NULL, <parameter>page</parameter> will be prepended to the list.</para>
 This will append <parameter>page</parameter> onto the end of the internal list.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -269,7 +269,7 @@ This will make <parameter>page</parameter> the currently showing page in the dru
 <parameter>page</parameter> must already be in the druid.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">

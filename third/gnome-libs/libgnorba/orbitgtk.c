@@ -125,7 +125,10 @@ _gnorba_get_cookie_reliably (const char *setme)
 	int fd = -1;
 	
 	pwent = getpwuid(getuid());
-	g_assert(pwent);
+	if(!pwent) {
+		fprintf(stderr,_("Failed to get user details for UID %d (%s)\n"), getuid(),strerror(errno));
+		goto out;
+	}
 	
 	name = g_strconcat ("/tmp/orbit-", pwent->pw_name, "/cookie", NULL);
 	

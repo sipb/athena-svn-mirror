@@ -1,11 +1,10 @@
-# Slovenian translation for gnome-libs.
-# Copyright (C) 2000 Free Software Foundation, Inc.
-# Andraz Tori <andraz.tori1@guest.arnes.si>, 2000.
+# Slovenian translation for gnome-libs. Copyright (C) 2000 Free Software
+# Foundation, Inc. Andraz Tori <andraz.tori1@guest.arnes.si>, 2000.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-libs 1.2.4\n"
-"POT-Creation-Date: 2001-02-23 13:45-0500\n"
+"POT-Creation-Date: 2002-01-25 00:29+0100\n"
 "PO-Revision-Date: 2000-07-28 13:59+0200\n"
 "Last-Translator: Andraz Tori <andraz.tori1@guest.arnes.si>\n"
 "Language-Team: Slovenian <sl@li.org>\n"
@@ -78,9 +77,10 @@ msgstr "Avtorji: "
 #: libgnomeui/gnome-about.c:591 libgnomeui/stock_demo.c:282
 #: libgnomeui/winhints_demo.c:256
 msgid "About"
-msgstr "O"
+msgstr "O programu"
 
-#: libgnomeui/gnome-app-helper.c:78
+#. Some standard menus
+#: libgnomeui/gnome-app-helper.c:78 libgnomeui/gnome-app-helper.h:484
 msgid "_File"
 msgstr "_Datoteka"
 
@@ -88,7 +88,7 @@ msgstr "_Datoteka"
 msgid "_File/"
 msgstr "_Datoteka/"
 
-#: libgnomeui/gnome-app-helper.c:80
+#: libgnomeui/gnome-app-helper.c:80 libgnomeui/gnome-app-helper.h:487
 msgid "_Edit"
 msgstr "_Uredi"
 
@@ -96,7 +96,7 @@ msgstr "_Uredi"
 msgid "_Edit/"
 msgstr "_Uredi/"
 
-#: libgnomeui/gnome-app-helper.c:82
+#: libgnomeui/gnome-app-helper.c:82 libgnomeui/gnome-app-helper.h:490
 msgid "_View"
 msgstr "_Pogled"
 
@@ -104,7 +104,7 @@ msgstr "_Pogled"
 msgid "_View/"
 msgstr "_Pogled/"
 
-#: libgnomeui/gnome-app-helper.c:84
+#: libgnomeui/gnome-app-helper.c:84 libgnomeui/gnome-app-helper.h:493
 msgid "_Settings"
 msgstr "_Nastavitve"
 
@@ -112,7 +112,8 @@ msgstr "_Nastavitve"
 msgid "_Settings/"
 msgstr "Na_stavitve/"
 
-#: libgnomeui/gnome-app-helper.c:86
+#. If you have more then one New type, use this tree
+#: libgnomeui/gnome-app-helper.c:86 libgnomeui/gnome-app-helper.h:266
 msgid "_New"
 msgstr "_Novo"
 
@@ -120,7 +121,7 @@ msgstr "_Novo"
 msgid "_New/"
 msgstr "_Novo/"
 
-#: libgnomeui/gnome-app-helper.c:88
+#: libgnomeui/gnome-app-helper.c:88 libgnomeui/gnome-app-helper.h:496
 msgid "Fi_les"
 msgstr "Da_toteke"
 
@@ -128,15 +129,15 @@ msgstr "Da_toteke"
 msgid "Fi_les/"
 msgstr "Da_toteke/"
 
-#: libgnomeui/gnome-app-helper.c:90
+#: libgnomeui/gnome-app-helper.c:90 libgnomeui/gnome-app-helper.h:499
 msgid "_Windows"
 msgstr "_Okna"
 
-#: libgnomeui/gnome-app-helper.c:91
+#: libgnomeui/gnome-app-helper.c:91 libgnomeui/gnome-app-helper.h:505
 msgid "_Game"
 msgstr "_Igra"
 
-#: libgnomeui/gnome-app-helper.c:92
+#: libgnomeui/gnome-app-helper.c:92 libgnomeui/gnome-app-helper.h:502
 msgid "_Help"
 msgstr "_Pomoè"
 
@@ -275,7 +276,7 @@ msgstr "Zapri trenutno datoteko"
 #. Exit
 #: libgnomeui/gnome-app-helper.c:160
 msgid "E_xit"
-msgstr "_Izhod"
+msgstr "Iz_hod"
 
 #: libgnomeui/gnome-app-helper.c:160
 msgid "Exit the program"
@@ -351,7 +352,7 @@ msgstr "I¹èi niz"
 #. Find Again
 #: libgnomeui/gnome-app-helper.c:204
 msgid "Find _Again"
-msgstr "Poi¹èi Zn_ova"
+msgstr "Poi¹èi zn_ova"
 
 #: libgnomeui/gnome-app-helper.c:205
 msgid "Search again for the same string"
@@ -394,7 +395,7 @@ msgstr "Nastavi program"
 #. About
 #: libgnomeui/gnome-app-helper.c:234
 msgid "_About..."
-msgstr "_O..."
+msgstr "_O programu..."
 
 #: libgnomeui/gnome-app-helper.c:235
 msgid "About this application"
@@ -704,32 +705,32 @@ msgstr "="
 msgid "INV"
 msgstr "INV"
 
-#: libgnomeui/gnome-client.c:835
+#: libgnomeui/gnome-client.c:842
 msgid "Specify session management ID"
 msgstr "Doloèi ID seje"
 
-#: libgnomeui/gnome-client.c:835 libgnorba/goad-browser.c:27
+#: libgnomeui/gnome-client.c:842 libgnorba/goad-browser.c:27
 msgid "ID"
 msgstr "ID"
 
-#: libgnomeui/gnome-client.c:837
+#: libgnomeui/gnome-client.c:844
 msgid "Specify prefix of saved configuration"
 msgstr "Doloèi predpono za shranjene nastavitve"
 
-#: libgnomeui/gnome-client.c:837
+#: libgnomeui/gnome-client.c:844
 msgid "PREFIX"
 msgstr "PREDPONA"
 
-#: libgnomeui/gnome-client.c:839
+#: libgnomeui/gnome-client.c:846
 msgid "Disable connection to session manager"
 msgstr "Izkljuèi povezavo z upravljalnikom seje"
 
 #. Register commandline options.
-#: libgnomeui/gnome-client.c:968
+#: libgnomeui/gnome-client.c:977
 msgid "Session management options"
 msgstr "Mo¾nosti upravljanja seje"
 
-#: libgnomeui/gnome-client.c:2348
+#: libgnomeui/gnome-client.c:2357
 msgid "Cancel Logout"
 msgstr "Preklièi odjavo"
 
@@ -850,7 +851,7 @@ msgstr "Predogled"
 
 #: libgnomeui/gnome-icon-sel.c:368
 msgid "Loading Icons..."
-msgstr "Nalagam ione..."
+msgstr "Nalagam ikone..."
 
 #: libgnomeui/gnome-init.c:161
 msgid "Gdk debugging flags to set"
@@ -937,13 +938,13 @@ msgstr "Mo¾nosti GTK"
 msgid "GNOME GUI options"
 msgstr "Mo¾nosti GNOME grafiènega vmesnika"
 
-#: libgnomeui/gnome-init.c:452
+#: libgnomeui/gnome-init.c:453
 #, c-format
 msgid "%s options"
 msgstr "Mo¾nosti %s"
 
 #. dialog display isn't working out
-#: libgnomeui/gnome-init.c:642
+#: libgnomeui/gnome-init.c:647
 msgid "Multiple segmentation faults occurred; can't display error dialog\n"
 msgstr ""
 "Pojavilo se je veè segmentacijskih napak: ne morem pokazati dialoga za "
@@ -1010,13 +1011,9 @@ msgid "Date"
 msgstr "Datum"
 
 #. the localized string should fit (after replacing the %a %b
-#. etc) in ~18 chars.
-#. %a is abbreviated weekday, %A is full weekday,
-#. %b %B are abbreviated and full monthname, %Y is year,
-#. %d is day of month, %m is month number, %T full hour,
-#. %H hours, %M minutes, %S seconds
+#. * etc) in ~18 chars. Please consult strftime(3) manpage.
 #.
-#: libgnomeui/gnome-scores.c:130
+#: libgnomeui/gnome-scores.c:126
 msgid "%a %b %d %T %Y"
 msgstr "%a %d %b %T %Y"
 
@@ -1268,7 +1265,7 @@ msgid ""
 "due to a fatal error.\n"
 "(%s)"
 msgstr ""
-"Program \"%s\" (process %d) se je sesul\n"
+"Program \"%s\" (proces %d) se je sesul\n"
 "zaradi usodne napake.\n"
 "(%s)"
 
@@ -1502,7 +1499,7 @@ msgstr "ID skladi¹èa, ki naj ga stre¾nik aktivira"
 msgid "REPO-ID"
 msgstr "REPO-ID"
 
-#: libgnorba/goad-browser.c:171
+#: libgnorba/goad-browser.c:182
 msgid ""
 "I couldn't find any installed services.  Either you don't have\n"
 "any services installed or I don't know the path to find them.\n"
@@ -1540,32 +1537,37 @@ msgstr "ID skladi¹èa pod katerim GOAD pozna ta stre¾nik"
 msgid "REPO_ID"
 msgstr "REPO_ID"
 
-#: libgnorba/orbitgtk.c:138
+#: libgnorba/orbitgtk.c:129
+#, c-format
+msgid "Failed to get user details for UID %d (%s)\n"
+msgstr ""
+
+#: libgnorba/orbitgtk.c:141
 #, c-format
 msgid "Failed to open CORBA cookie file (%s) for writing: %s\n"
 msgstr "Nisem uspel nalo¾iti datoteke s pi¹koti CORBA (%s) za pisanje: %s\n"
 
-#: libgnorba/orbitgtk.c:145
+#: libgnorba/orbitgtk.c:148
 #, c-format
 msgid "Failed to write CORBA cookie file (%s): %s\n"
 msgstr "Nisem uspel zapisati datoteke s pi¹koti CORBA (%s): %s\n"
 
-#: libgnorba/orbitgtk.c:171
+#: libgnorba/orbitgtk.c:174
 #, c-format
 msgid "Failed to write CORBA cookie to `%s': %s\n"
 msgstr "Nisem uspel zapisati pi¹kot CORBA v `%s': %s\n"
 
-#: libgnorba/orbitgtk.c:181
+#: libgnorba/orbitgtk.c:184
 #, c-format
 msgid "Failed to open CORBA cookie file `%s': %s\n"
 msgstr "Nisem uspel odpreti datoteke s pi¹koti CORBA `%s': %s\n"
 
-#: libgnorba/orbitgtk.c:187
+#: libgnorba/orbitgtk.c:190
 #, c-format
 msgid "Failed to read CORBA cookie file `%s': %s\n"
 msgstr "Nisem uspel prebrati datoteke s pi¹koti CORBA `%s': %s\n"
 
-#: libgnorba/orbitgtk.c:213
+#: libgnorba/orbitgtk.c:216
 msgid "Failed to obtain CORBA authentication cookie, exiting\n"
 msgstr "Nisem uspel dobiti avtentifikacijskega pi¹kota CORBA, konèujem\n"
 
@@ -1636,11 +1638,11 @@ msgstr "%s: opcija `-W %s' je dvoumna\n"
 msgid "%s: option `-W %s' doesn't allow an argument\n"
 msgstr "%s: opcija `-W %s' ne dovoli argumenta\n"
 
-#: support/popthelp.c:35
+#: support/popthelp.c:36
 msgid "Show this help message"
 msgstr "Poka¾i to sporoèilo s pomoèjo"
 
-#: support/popthelp.c:36
+#: support/popthelp.c:37
 msgid "Display brief usage message"
 msgstr "Poka¾i skraj¹ano sporoèilo o uporabi"
 
@@ -1809,21 +1811,21 @@ msgstr "Èudna ¹tevilka v povratnem klicu"
 
 #~ msgid ""
 #~ "You attempted to change an aspect of your configuration that your system "
-#~ "administrator or operating system vendor does not allow you to change. Some "
-#~ "of the settings you have selected may not take effect, or may not be "
+#~ "administrator or operating system vendor does not allow you to change. "
+#~ "Some of the settings you have selected may not take effect, or may not be "
 #~ "restored next time you use this application (%s)."
 #~ msgstr ""
-#~ "Poskusili ste spremeniti nastavitve, ki vam jih va¹ sistemski administrator "
-#~ "ali prodajalec operacijskega sistema ne dovoli spremeniti. Nekatere od "
-#~ "izbranih nastavitev morda ne bodo upo¹tevane ali pa ob naslednjem zagonu te "
-#~ "aplikacije ne bodo obnovljene (%s)."
+#~ "Poskusili ste spremeniti nastavitve, ki vam jih va¹ sistemski "
+#~ "administrator ali prodajalec operacijskega sistema ne dovoli spremeniti. "
+#~ "Nekatere od izbranih nastavitev morda ne bodo upo¹tevane ali pa ob "
+#~ "naslednjem zagonu te aplikacije ne bodo obnovljene (%s)."
 
 #~ msgid ""
-#~ "An error occurred while loading or saving configuration information for %s. "
-#~ "Some of your configuration settings may not work properly."
+#~ "An error occurred while loading or saving configuration information for %"
+#~ "s. Some of your configuration settings may not work properly."
 #~ msgstr ""
-#~ "Med nalaganjem ali shranjevanjem podatkov za %s se je zgodila napaka. Mo¾no "
-#~ "je, da nekatere nastavitve ne bodo delovale pravilno."
+#~ "Med nalaganjem ali shranjevanjem podatkov za %s se je zgodila napaka. "
+#~ "Mo¾no je, da nekatere nastavitve ne bodo delovale pravilno."
 
 #~ msgid "GConf error details: %s\n"
 #~ msgstr "GConf podrobnosti napake: %s\n"
@@ -2008,8 +2010,8 @@ msgstr "Èudna ¹tevilka v povratnem klicu"
 #~ "Could not set mode 0700 on private per-user gnome configuration directory "
 #~ "`%s': %s\n"
 #~ msgstr ""
-#~ "Ne morem nastaviti naèina 0700 na privatnem uporabni¹kem gnome nastavitvenem "
-#~ "imeniku `%s': %s\n"
+#~ "Ne morem nastaviti naèina 0700 na privatnem uporabni¹kem gnome "
+#~ "nastavitvenem imeniku `%s': %s\n"
 
 #~ msgid "Could not create gnome accelerators directory `%s': %s\n"
 #~ msgstr "Ne morem ustvariti gnome pospe¹evalnega imenika `%s': %s\n"

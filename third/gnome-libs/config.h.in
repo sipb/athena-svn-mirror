@@ -28,9 +28,6 @@
 /* Define to `long' if <sys/types.h> doesn't define.  */
 #undef off_t
 
-/* Define if you need to in order for stat and other things to work.  */
-#undef _POSIX_SOURCE
-
 /* Define to `unsigned' if <sys/types.h> doesn't define.  */
 #undef size_t
 
@@ -110,9 +107,6 @@
 /* Defined, if there is struct lastlog */
 #undef HAVE_LASTLOG
 
-#undef HAVE_STROPTS_H
-#undef HAVE_DLFCN_H
-
 #undef KDE_ICONDIR
 #undef KDE_MINI_ICONDIR
 
@@ -132,12 +126,6 @@
 
 /* Define if you have the dcgettext function.  */
 #undef HAVE_DCGETTEXT
-
-/* Define if you have the dlerror function.  */
-#undef HAVE_DLERROR
-
-/* Define if you have the dlopen function.  */
-#undef HAVE_DLOPEN
 
 /* Define if you have the doprnt function.  */
 #undef HAVE_DOPRNT
@@ -286,9 +274,6 @@
 /* Define if you have the <dirent.h> header file.  */
 #undef HAVE_DIRENT_H
 
-/* Define if you have the <dl.h> header file.  */
-#undef HAVE_DL_H
-
 /* Define if you have the <dlfcn.h> header file.  */
 #undef HAVE_DLFCN_H
 
@@ -328,6 +313,9 @@
 /* Define if you have the <strings.h> header file.  */
 #undef HAVE_STRINGS_H
 
+/* Define if you have the <stropts.h> header file.  */
+#undef HAVE_STROPTS_H
+
 /* Define if you have the <sys/dir.h> header file.  */
 #undef HAVE_SYS_DIR_H
 
@@ -343,11 +331,17 @@
 /* Define if you have the <sys/select.h> header file.  */
 #undef HAVE_SYS_SELECT_H
 
+/* Define if you have the <sys/stat.h> header file.  */
+#undef HAVE_SYS_STAT_H
+
 /* Define if you have the <sys/syslimits.h> header file.  */
 #undef HAVE_SYS_SYSLIMITS_H
 
 /* Define if you have the <sys/time.h> header file.  */
 #undef HAVE_SYS_TIME_H
+
+/* Define if you have the <sys/types.h> header file.  */
+#undef HAVE_SYS_TYPES_H
 
 /* Define if you have the <sys/un.h> header file.  */
 #undef HAVE_SYS_UN_H
@@ -390,4 +384,7 @@
 
 /* Version number of package */
 #undef VERSION
+
+/* Define if your <locale.h> file defines LC_MESSAGES. */
+#undef HAVE_LC_MESSAGES
 

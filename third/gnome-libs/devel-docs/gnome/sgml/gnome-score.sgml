@@ -1,4 +1,4 @@
-<refentry id="gnome-gnome-score" revision="16 Mar 2001">
+<refentry id="gnome-gnome-score">
 <refmeta>
 <refentrytitle>gnome-score</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -50,7 +50,7 @@ GNOME Games should call this routine as the first statement
 in <link linkend="main">main</link>() if they have been installed setgid to the <link linkend="games">games</link>() group.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -72,7 +72,7 @@ group privileges are dropped regardless of the status returned.
 Logs a score entry for the user.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">

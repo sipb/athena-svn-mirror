@@ -1,3 +1,75 @@
+2002-01-22  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* vt.c, vt.h, zvtterm.c, zvtterm.h: Add support for dtterm escape
+	sequences. Patch from bugzilla. (Debian) Please test.
+	* zvtterm.c (vt_draw_text): Fix off by one error in underlining.
+	(Ximian)
+	
+2002-01-12  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* update.c, zvtterm.c: Remove unused stuff.
+	
+2002-01-10  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* *.1, Makefile.am: Add man pages.
+	
+2001-11-23  Gregory Leblanc  <gleblanc@linuxweasel.com>
+
+	* gnome-pty-helper.c: (init_term_with_defaults):
+	* update.c: (vt_line_update), (vt_update), (vt_update_rect),
+	(vt_fix_selection), (vt_expand_line), (vt_draw_cursor):
+	* vt.c: (vt_line_mblen), (vt_query_line_mbchar), (vt_parse_vt):
+	* vt.h:
+	* zterm.c: (main):
+	* zvtterm.c: (zvt_term_init), (zvt_term_destroy),
+	(zvt_term_set_color_scheme), (zvt_term_realize),
+	(zvt_term_set_fonts_internal), (zvt_term_set_font_name),
+	(request_paste), (zvt_term_convert_selection),
+	(zvt_term_selection_get), (zvt_term_selection_received),
+	(zvt_term_set_open_im), (zvt_im_preedit_set_spot),
+	(zvt_im_preedit_set_foreground), (zvt_im_preedit_set_background),
+	(zvt_im_preedit_set_font), (zvt_term_key_press),
+	(zvt_term_set_background), (vt_draw_text), (load_background):
+	* zvtterm.h:
+
+	Miguel asked me to apply this patch.  It's the rest of the changes
+	from RedHat to support multibyte locales, I believe.  Things
+	applied without any conflicts, and I've tested that it compiles,
+	so I'm putting this into CVS.  Enjoy, and flame me if it's broken
+	(but tell somebody else, since I can't fix it)
+	
+2001-11-11  Miguel de Icaza  <miguel@ximian.com>
+
+	* gnome-pty-helper.c (init_term_with_defaults): Integrate patch
+	from Red Hat (set initial settings to ECHOK, Alan Cox posted a
+	description a few months ago about it).
+
+2001-10-14  Xavier Bestel  <xavier.bestel@free.fr>
+
+       * zvt/vt.c: Now correctly reports mouse wheel events
+       to applications (e.g. VIM).
+
+2001-09-13  Havoc Pennington  <hp@redhat.com>
+
+	* Makefile.am (libzvtincludedir): move to includedir/gnome-1.0
+
+2001-09-18  jacob berkman  <jacob@ximian.com>
+
+	* zvtterm.c (zvt_term_init): default to cursor not filled
+	(zvt_term_realize): don't start the blinking here.  fixes gnome
+	#13120
+
+2001-06-14  Miguel de Icaza  <miguel@ximian.com>
+
+	* subshell-includes.h: From Dan McNichol: IBM compiler defines
+	_XOPEN_SOURCE, only define this if it is not defined before.
+
+	* zvtterm.h: Remove comma in last member of enum.
+
+2001-04-18  Dan Winship  <danw@ximian.com>
+
+	* gnome-pty-helper.c: Remove #include <malloc.h>
+
 2001-03-05  Stanislav Brabec  <utx@penguin.cz>
 
 	* zvtterm.h, zvtterm.c: New bit del_is_del, new function

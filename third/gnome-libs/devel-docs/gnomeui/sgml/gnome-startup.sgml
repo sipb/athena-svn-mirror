@@ -1,4 +1,4 @@
-<refentry id="gnomeui-gnome-startup" revision="16 Mar 2001">
+<refentry id="gnomeui-gnome-startup">
 <refmeta>
 <refentrytitle>gnome-startup</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -40,7 +40,7 @@ without notice.  Do not use.
                                              const <link linkend="gchar">gchar</link> *sm_id);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">

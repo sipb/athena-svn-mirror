@@ -45,10 +45,9 @@ extern "C"
       void *_private;
       void (*ref) (PortableServer_Servant _servant, CORBA_Environment * ev);
       void (*unref) (PortableServer_Servant _servant, CORBA_Environment * ev);
-      
-	 CORBA_Object(*query_interface) (PortableServer_Servant _servant,
-					 const CORBA_char * repoid,
-					 CORBA_Environment * ev);
+       CORBA_Object(*query_interface) (PortableServer_Servant _servant,
+				       const CORBA_char * repoid,
+				       CORBA_Environment * ev);
    }
    POA_GNOME_Unknown__epv;
    typedef struct

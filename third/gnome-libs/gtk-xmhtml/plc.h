@@ -1,10 +1,10 @@
 /*****
 * plc.h : XmHTML progressive object loading interface
 *
-* This file Version	$Revision: 1.1.1.1 $
+* This file Version	$Revision: 1.1.1.2 $
 *
 * Creation date:		Tue Jun 10 14:30:39 GMT+0100 1997
-* Last modification: 	$Date: 2000-11-12 01:46:10 $
+* Last modification: 	$Date: 2002-02-13 00:12:36 $
 * By:					$Author: ghudson $
 * Current State:		$State: Exp $
 *
@@ -38,6 +38,14 @@
 /*****
 * ChangeLog 
 * $Log: not supported by cvs2svn $
+* Revision 1.4.14.1  2002/01/08 22:33:11  kmaraas
+* 2002-01-06  Kjartan Maraas  <kmaraas@gnome.org>
+*
+* 	* *: Fix compiler warnings.
+* 	* images.c: Fix missing X color context ref that was causing lots
+* 	of crashes. Fixes #60237, #61638, #63439, #65040, #66913 and more.
+* 	* test.c: do not use %s for a boolean use %d instead.
+*
 * Revision 1.4  1998/01/07 01:45:39  unammx
 * Gtk/XmHTML is ready to be used by the Gnome hackers now!
 * Weeeeeee!
@@ -104,6 +112,8 @@
 * included more than once...
 *****/
 #ifdef HAVE_LIBJPEG
+/* jconfig.h is not needed, and overwrites parts of config.h */
+#  define JCONFIG_INCLUDED  
 #  include <jpeglib.h>
 #  ifndef HAVE_LIBPNG	
 #    include <setjmp.h>

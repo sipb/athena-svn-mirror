@@ -1,10 +1,10 @@
 /*****
 * parse.c : XmHTML HTML parser
 *
-* This file Version	$Revision: 1.1.1.1 $
+* This file Version	$Revision: 1.1.1.2 $
 *
 * Creation date:		Wed Nov 13 00:33:27 GMT+0100 1996
-* Last modification: 	$Date: 2000-11-12 01:49:39 $
+* Last modification: 	$Date: 2002-02-13 00:12:36 $
 * By:					$Author: ghudson $
 * Current State:		$State: Exp $
 *
@@ -32,6 +32,14 @@
 /*****
 * ChangeLog 
 * $Log: not supported by cvs2svn $
+* Revision 1.8.6.1  2002/01/08 22:33:11  kmaraas
+* 2002-01-06  Kjartan Maraas  <kmaraas@gnome.org>
+*
+* 	* *: Fix compiler warnings.
+* 	* images.c: Fix missing X color context ref that was causing lots
+* 	of crashes. Fixes #60237, #61638, #63439, #65040, #66913 and more.
+* 	* test.c: do not use %s for a boolean use %d instead.
+*
 * Revision 1.8  1999/07/29 01:26:29  sopwith
 *
 *
@@ -422,6 +430,7 @@ _ParserPopState(Parser *parser)
 	return(id);
 }
 
+#if 0
 /*****
 * Name: 		_ParserClearStack
 * Return Type: 	void
@@ -444,6 +453,7 @@ _ParserClearStack(Parser *parser)
 	parser->state_stack->next = NULL;
 	parser->state_stack = &parser->state_base;
 }
+#endif
 
 /*****
 * Name: 		_ParserOnStack

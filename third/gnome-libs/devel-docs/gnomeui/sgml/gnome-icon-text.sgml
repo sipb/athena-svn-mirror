@@ -1,4 +1,4 @@
-<refentry id="gnomeui-gnome-icon-text" revision="16 Mar 2001">
+<refentry id="gnomeui-gnome-icon-text">
 <refmeta>
 <refentrytitle>gnome-icon-text</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -106,7 +106,7 @@ whether the word should be unconditionally split to fit or whether
 the maximum width should be increased as necessary.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -143,7 +143,7 @@ This is just a sample implementation; applications can choose to use other
 rendering functions.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -175,7 +175,7 @@ Frees a &amp;GnomeIconTextInfo structure.  You should call this instead of
 freeing the structure yourself.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">

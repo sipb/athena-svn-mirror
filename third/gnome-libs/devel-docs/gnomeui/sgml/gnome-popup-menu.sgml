@@ -1,4 +1,4 @@
-<refentry id="gnomeui-gnome-popup-menu" revision="16 Mar 2001">
+<refentry id="gnomeui-gnome-popup-menu">
 <refmeta>
 <refentrytitle>gnome-popup-menu</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -62,7 +62,7 @@ accelgroup for you and attaches it to the menu object.  Use
 created.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -85,7 +85,7 @@ Creates a popup menu out of the specified uiinfo array.  Use
 window with <link linkend="gnome-popup-menu-attach">gnome_popup_menu_attach</link>().</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -107,7 +107,7 @@ window with <link linkend="gnome-popup-menu-attach">gnome_popup_menu_attach</lin
 </para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -146,7 +146,7 @@ widgets it is attached to are destroyed, the popup menu will be
 destroyed as well.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -185,7 +185,7 @@ pass in NULL, then no button and the current time will be used as
 defaults.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -218,7 +218,7 @@ Same as above, but runs the popup menu modally and returns the
 index of the selected item, or -1 if none.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">

@@ -6,10 +6,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gnome-libs 1.0.60\n"
-"POT-Creation-Date: 2001-02-23 13:45-0500\n"
-"PO-Revision-Date: 2000-05-10 19:20+0200\n"
-"Last-Translator: Dan Damian <dand@dnttm.ro>\n"
+"Project-Id-Version: gnome-libs 1.2.13\n"
+"POT-Creation-Date: 2002-01-25 00:29+0100\n"
+"PO-Revision-Date: 2001-07-29 19:21+0200\n"
+"Last-Translator: Marius Andreiana <mandreiana@yahoo.com>\n"
 "Language-Team: Romanian <ro@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=iso-8859-2\n"
@@ -21,7 +21,7 @@ msgstr "obþine"
 
 #: libgnome/gconfigger.c:32
 msgid "Get config entry"
-msgstr "Obþine intrarea de configurare"
+msgstr "Obþine locaþia configuraþiei"
 
 #: libgnome/gconfigger.c:32 libgnome/gconfigger.c:33
 msgid "CONFIG-PATH"
@@ -33,7 +33,7 @@ msgstr "seteazã"
 
 #: libgnome/gconfigger.c:33
 msgid "Set config entry"
-msgstr "Seteazã intrarea de configurare"
+msgstr "Seteazã locaþia configuraþiei"
 
 #: libgnome/gnome-popt.c:90
 #, c-format
@@ -42,27 +42,26 @@ msgid ""
 "Run '%s --help' to see a full list of available command line options.\n"
 msgstr ""
 "Eroare la opþiunea %s: %s.\n"
-"Rulaþi '%s --help' pentru a vedea lista completã de opþiuni în linia de "
-"compandã disponibile.\n"
+"Rulaþi '%s --help' pentru a vedeo o listã completã a opþiunilor "
+"disponibile.\n"
 
 #: libgnome/gnomelib-init.c:136
 msgid "Disable sound server usage"
-msgstr "Dezactiveazã utilizarea serverului de sunet"
+msgstr "Dezactiveazã folosirea serverului de sunet"
 
 #: libgnome/gnomelib-init.c:138
 msgid "Enable sound server usage"
-msgstr "Activeazã utilizarea serverului de sunet"
+msgstr "Activeazã folosirea serverului de sunet"
 
 #: libgnome/gnomelib-init.c:140
 msgid "Host:port on which the sound server to use is running"
-msgstr "Host:port pe ce server de sunet ruleazã"
+msgstr "gazdã:port pe care serverul de sunet care sã fie folosit ruleazã"
 
 #: libgnome/gnomelib-init.c:141
 msgid "HOSTNAME:PORT"
-msgstr "HOSTNAME:PORT"
+msgstr "GAZDÃ:PORT"
 
 #: libgnome/gnomelib-init.c:150
-#, fuzzy
 msgid "GNOME options"
 msgstr "Opþiuni GNOME"
 
@@ -76,14 +75,15 @@ msgstr "Autori:"
 
 #: libgnomeui/gnome-about.c:352
 msgid "Authors: "
-msgstr "Autori:"
+msgstr "Autori: "
 
 #: libgnomeui/gnome-about.c:591 libgnomeui/stock_demo.c:282
 #: libgnomeui/winhints_demo.c:256
 msgid "About"
 msgstr "Despre"
 
-#: libgnomeui/gnome-app-helper.c:78
+#. Some standard menus
+#: libgnomeui/gnome-app-helper.c:78 libgnomeui/gnome-app-helper.h:484
 msgid "_File"
 msgstr "_Fiºier"
 
@@ -91,23 +91,23 @@ msgstr "_Fiºier"
 msgid "_File/"
 msgstr "_Fiºier/"
 
-#: libgnomeui/gnome-app-helper.c:80
+#: libgnomeui/gnome-app-helper.c:80 libgnomeui/gnome-app-helper.h:487
 msgid "_Edit"
 msgstr "_Editare"
 
 #: libgnomeui/gnome-app-helper.c:81
 msgid "_Edit/"
-msgstr "R_edactare/"
+msgstr "_Editare/"
 
-#: libgnomeui/gnome-app-helper.c:82
+#: libgnomeui/gnome-app-helper.c:82 libgnomeui/gnome-app-helper.h:490
 msgid "_View"
-msgstr "_Vizualizare"
+msgstr "_Vizor"
 
 #: libgnomeui/gnome-app-helper.c:83
 msgid "_View/"
-msgstr "_Vedere/"
+msgstr "_Vizor/"
 
-#: libgnomeui/gnome-app-helper.c:84
+#: libgnomeui/gnome-app-helper.c:84 libgnomeui/gnome-app-helper.h:493
 msgid "_Settings"
 msgstr "_Setãri"
 
@@ -115,7 +115,8 @@ msgstr "_Setãri"
 msgid "_Settings/"
 msgstr "_Setãri/"
 
-#: libgnomeui/gnome-app-helper.c:86
+#. If you have more then one New type, use this tree
+#: libgnomeui/gnome-app-helper.c:86 libgnomeui/gnome-app-helper.h:266
 msgid "_New"
 msgstr "_Nou"
 
@@ -123,7 +124,7 @@ msgstr "_Nou"
 msgid "_New/"
 msgstr "_Nou/"
 
-#: libgnomeui/gnome-app-helper.c:88
+#: libgnomeui/gnome-app-helper.c:88 libgnomeui/gnome-app-helper.h:496
 msgid "Fi_les"
 msgstr "F_iºiere"
 
@@ -131,15 +132,15 @@ msgstr "F_iºiere"
 msgid "Fi_les/"
 msgstr "F_iºiere/"
 
-#: libgnomeui/gnome-app-helper.c:90
+#: libgnomeui/gnome-app-helper.c:90 libgnomeui/gnome-app-helper.h:499
 msgid "_Windows"
 msgstr "_Ferestre"
 
-#: libgnomeui/gnome-app-helper.c:91
+#: libgnomeui/gnome-app-helper.c:91 libgnomeui/gnome-app-helper.h:505
 msgid "_Game"
 msgstr "_Joc"
 
-#: libgnomeui/gnome-app-helper.c:92
+#: libgnomeui/gnome-app-helper.c:92 libgnomeui/gnome-app-helper.h:502
 msgid "_Help"
 msgstr "_Ajutor"
 
@@ -157,19 +158,19 @@ msgstr "Fiºier/"
 
 #: libgnomeui/gnome-app-helper.c:97 libgnomeui/stock_demo.c:274
 msgid "Edit"
-msgstr "Redactare"
+msgstr "Editare"
 
 #: libgnomeui/gnome-app-helper.c:98
 msgid "Edit/"
-msgstr "Redactare/"
+msgstr "Editare/"
 
 #: libgnomeui/gnome-app-helper.c:99
 msgid "View"
-msgstr "Vizualizare"
+msgstr "Vizor"
 
 #: libgnomeui/gnome-app-helper.c:100
 msgid "View/"
-msgstr "Vizualizare/"
+msgstr "Vizor/"
 
 #: libgnomeui/gnome-app-helper.c:101
 msgid "Settings"
@@ -255,12 +256,12 @@ msgstr "_Tipãreºte"
 
 #: libgnomeui/gnome-app-helper.c:144
 msgid "Print the current file"
-msgstr "Listeazã fiºierul curent"
+msgstr "Tipãreºte fiºierul curent"
 
 #. Print Setup
 #: libgnomeui/gnome-app-helper.c:149
 msgid "Print S_etup..."
-msgstr "S_etare imprimantã"
+msgstr "S_etare imprimantã..."
 
 #: libgnomeui/gnome-app-helper.c:150
 msgid "Setup the page settings for your current printer"
@@ -290,11 +291,11 @@ msgstr "Ieºire din program"
 #. Cut
 #: libgnomeui/gnome-app-helper.c:168
 msgid "C_ut"
-msgstr "_Taie"
+msgstr "Dec_upeazã"
 
 #: libgnomeui/gnome-app-helper.c:168
 msgid "Cut the selection"
-msgstr "Taie selecþia"
+msgstr "Decupeazã selecþia"
 
 #. 10
 #. Copy
@@ -336,16 +337,16 @@ msgstr "Anuleazã ultima acþiune"
 #. Redo
 #: libgnomeui/gnome-app-helper.c:194
 msgid "_Redo"
-msgstr "_Repetã"
+msgstr "_Refã"
 
 #: libgnomeui/gnome-app-helper.c:194
 msgid "Redo the undone action"
-msgstr "Eliminã acþiunea refãcutã"
+msgstr "Refã acþiunea anulatã"
 
 #. Find
 #: libgnomeui/gnome-app-helper.c:199
 msgid "_Find..."
-msgstr "_Cautã"
+msgstr "_Cautã..."
 
 #: libgnomeui/gnome-app-helper.c:199
 msgid "Search for a string"
@@ -363,7 +364,7 @@ msgstr "Cautã din nou acelaºi ºir"
 #. Replace
 #: libgnomeui/gnome-app-helper.c:210
 msgid "_Replace..."
-msgstr "În_locuieºte"
+msgstr "În_locuieºte..."
 
 #: libgnomeui/gnome-app-helper.c:210
 msgid "Replace a string"
@@ -372,7 +373,7 @@ msgstr "Înlocuieºte un ºir"
 #. Properties
 #: libgnomeui/gnome-app-helper.c:215
 msgid "_Properties..."
-msgstr "_Proprietãþi"
+msgstr "_Proprietãþi..."
 
 #: libgnomeui/gnome-app-helper.c:216
 msgid "Modify the file's properties"
@@ -409,7 +410,7 @@ msgstr "_Selecteazã tot"
 
 #: libgnomeui/gnome-app-helper.c:239
 msgid "Select everything"
-msgstr "Selecteazã totul"
+msgstr "Selecteazã tot"
 
 #.
 #. * Window menu
@@ -459,7 +460,7 @@ msgstr "Reîncepe jocul"
 
 #: libgnomeui/gnome-app-helper.c:276
 msgid "_Undo move"
-msgstr "An_uleazã mutarea"
+msgstr "_Anuleazã mutarea"
 
 #: libgnomeui/gnome-app-helper.c:277
 msgid "Undo the last move"
@@ -467,11 +468,11 @@ msgstr "Anuleazã utima mutare"
 
 #: libgnomeui/gnome-app-helper.c:281
 msgid "_Redo move"
-msgstr "Repetã mutarea"
+msgstr "_Refã mutarea"
 
 #: libgnomeui/gnome-app-helper.c:282
 msgid "Redo the undone move"
-msgstr "Repetã mutarea anulatã"
+msgstr "Refã mutarea anulatã"
 
 #: libgnomeui/gnome-app-helper.c:286
 msgid "_Hint"
@@ -479,12 +480,12 @@ msgstr "Su_gestie"
 
 #: libgnomeui/gnome-app-helper.c:287
 msgid "Get a hint for your next move"
-msgstr "Primeºte o sugestie pentru mutarea urmãtoare"
+msgstr "Obþine o sugestie pentru mutarea urmãtoare"
 
 #. 30
 #: libgnomeui/gnome-app-helper.c:292
 msgid "_Scores..."
-msgstr "_Scoruri"
+msgstr "_Scoruri..."
 
 #: libgnomeui/gnome-app-helper.c:293
 msgid "View the scores"
@@ -707,32 +708,32 @@ msgstr "="
 msgid "INV"
 msgstr "INV"
 
-#: libgnomeui/gnome-client.c:835
+#: libgnomeui/gnome-client.c:842
 msgid "Specify session management ID"
 msgstr "Specificaþi ID-ul de management sesiuni"
 
-#: libgnomeui/gnome-client.c:835 libgnorba/goad-browser.c:27
+#: libgnomeui/gnome-client.c:842 libgnorba/goad-browser.c:27
 msgid "ID"
 msgstr "ID"
 
-#: libgnomeui/gnome-client.c:837
+#: libgnomeui/gnome-client.c:844
 msgid "Specify prefix of saved configuration"
 msgstr "Specificaþi prefixul configuraþiei salvate"
 
-#: libgnomeui/gnome-client.c:837
+#: libgnomeui/gnome-client.c:844
 msgid "PREFIX"
 msgstr "PREFIX"
 
-#: libgnomeui/gnome-client.c:839
+#: libgnomeui/gnome-client.c:846
 msgid "Disable connection to session manager"
-msgstr "Întrerupe conexiunea la managerul de sesiuni"
+msgstr "Dezactiveazã conexiunea la managerul de sesiuni"
 
 #. Register commandline options.
-#: libgnomeui/gnome-client.c:968
+#: libgnomeui/gnome-client.c:977
 msgid "Session management options"
-msgstr "Opþiuni management de sesiuni"
+msgstr "Opþiuni management sesiune"
 
-#: libgnomeui/gnome-client.c:2348
+#: libgnomeui/gnome-client.c:2357
 msgid "Cancel Logout"
 msgstr "Renunþa la logout"
 
@@ -829,7 +830,7 @@ msgstr "Selecteazã fiºier"
 #: libgnomeui/gnome-file-entry.c:282 libgnomeui/gnome-spell.c:619
 #: libgnomeui/gnome-spell.c:636 libgnomeui/gnome-spell.c:653
 msgid "Browse..."
-msgstr "Navigheazã"
+msgstr "Navigheazã..."
 
 #: libgnomeui/gnome-font-picker.c:161
 msgid "Pick a Font"
@@ -853,7 +854,7 @@ msgstr "Previzualizare"
 
 #: libgnomeui/gnome-icon-sel.c:368
 msgid "Loading Icons..."
-msgstr "Încarc iconurile..."
+msgstr "Încarc icon-urile..."
 
 #: libgnomeui/gnome-init.c:161
 msgid "Gdk debugging flags to set"
@@ -866,7 +867,7 @@ msgstr "FLAGS"
 
 #: libgnomeui/gnome-init.c:163
 msgid "Gdk debugging flags to unset"
-msgstr "Flag-urile Gdk de depanare pentru desetat"
+msgstr "Flag-urile Gtk+ de depanare pentru desetat"
 
 #: libgnomeui/gnome-init.c:165
 msgid "X display to use"
@@ -922,7 +923,7 @@ msgstr "Flag-urile Gtk+ de depanare pentru desetat"
 
 #: libgnomeui/gnome-init.c:187
 msgid "Make all warnings fatal"
-msgstr "Fã toate atenþierile fatale"
+msgstr "Fã toate atenþionãrile fatale"
 
 #: libgnomeui/gnome-init.c:189
 msgid "Load an additional Gtk module"
@@ -934,22 +935,21 @@ msgstr "MODULE"
 
 #: libgnomeui/gnome-init.c:297
 msgid "GTK options"
-msgstr "Opþiuni GNOME"
+msgstr "Opþiuni GTK"
 
 #: libgnomeui/gnome-init.c:298
 msgid "GNOME GUI options"
-msgstr "Opþiuni interfaþã GNOME"
+msgstr "Opþiuni interfaþã graficã GNOME"
 
-#: libgnomeui/gnome-init.c:452
+#: libgnomeui/gnome-init.c:453
 #, c-format
 msgid "%s options"
 msgstr "%s opþiuni"
 
 #. dialog display isn't working out
-#: libgnomeui/gnome-init.c:642
+#: libgnomeui/gnome-init.c:647
 msgid "Multiple segmentation faults occurred; can't display error dialog\n"
-msgstr ""
-"Au avut loc segmentation faulturi multiple; nu pot afiºa dialogul de eroare\n"
+msgstr "Au avut loc erori multiple; nu pot afiºa dialogul de eroare\n"
 
 #: libgnomeui/gnome-messagebox.c:111 libgnomeui/gnome-messagebox.c:244
 msgid "Information"
@@ -989,7 +989,7 @@ msgstr "_Ajutã cu aceasta"
 
 #: libgnomeui/gnome-popup-help.c:58
 msgid "Cu_t"
-msgstr "_Taie"
+msgstr "_Decupeazã"
 
 #: libgnomeui/gnome-property-entries.c:254
 msgid "Select"
@@ -1012,13 +1012,9 @@ msgid "Date"
 msgstr "Data"
 
 #. the localized string should fit (after replacing the %a %b
-#. etc) in ~18 chars.
-#. %a is abbreviated weekday, %A is full weekday,
-#. %b %B are abbreviated and full monthname, %Y is year,
-#. %d is day of month, %m is month number, %T full hour,
-#. %H hours, %M minutes, %S seconds
+#. * etc) in ~18 chars. Please consult strftime(3) manpage.
 #.
-#: libgnomeui/gnome-scores.c:130
+#: libgnomeui/gnome-scores.c:126
 msgid "%a %b %d %T %Y"
 msgstr "%a %b %d %T %Y"
 
@@ -1098,12 +1094,12 @@ msgid ""
 "Insert the word\n"
 "in your personal dictionary"
 msgstr ""
-"Introdu cuvântul\n"
+"Introduceþi cuvântul\n"
 "în dicþionarul dvs. personal"
 
 #: libgnomeui/gnome-spell.c:591
 msgid "Insert with case"
-msgstr "Introdu cu case"
+msgstr "Introdu cu diferenþiere litere mici/mari"
 
 #: libgnomeui/gnome-spell.c:597
 msgid ""
@@ -1151,7 +1147,7 @@ msgstr "Renunþã la cuvintele acceptate la ucidere"
 
 #: libgnomeui/gnome-spell.c:712
 msgid "Enable tooltips"
-msgstr "Activeazã tooltip-urile"
+msgstr "Activeazã ponturile"
 
 #: libgnomeui/gnome-spell.c:726
 msgid "Kill ispell process"
@@ -1258,7 +1254,7 @@ msgid ""
 "will exit.\n"
 "Please save all your files before closing this dialog."
 msgstr ""
-"Managerul GNOME de sesiuni (procesul %d) s-a prãbuºit\n"
+"Managerul GNOME de sesiuni (procesul %d) a avut o panã\n"
 "datoritã unei erori fatale (%s).\n"
 "Când închideþi acest dialog, toate aplicaþiile se vor închide ºisesiunea "
 "dvs. se va termina.\n"
@@ -1271,7 +1267,7 @@ msgid ""
 "due to a fatal error.\n"
 "(%s)"
 msgstr ""
-"Aplicaþia \"%s\" (procesul %d) s-a prãbuºit\n"
+"Aplicaþia \"%s\" (procesul %d) a avut o panã\n"
 "datoritã unei erori fatale.\n"
 "(%s)"
 
@@ -1294,8 +1290,7 @@ msgstr "http://www.gnome.org/application_crashed.shtml.ro"
 #: libgnomeui/gnome_segv.c:117
 msgid "Please visit the GNOME Application Crash page for more information"
 msgstr ""
-"Vã rugãm sã vizitaþi pagina Prabuºiri Aplicaþii GNOME pentru mai multe "
-"informaþii"
+"Vã rugãm sã vizitaþi pagina Erori Aplicaþii GNOME pentru mai multe informaþii"
 
 #: libgnomeui/stock_demo.c:112
 msgid "New..."
@@ -1315,11 +1310,11 @@ msgstr "Salveazã ca..."
 
 #: libgnomeui/stock_demo.c:156
 msgid "Print..."
-msgstr "Listeazã"
+msgstr "Tipãreºte..."
 
 #: libgnomeui/stock_demo.c:164
 msgid "Setup Page..."
-msgstr "Paginã setãri..."
+msgstr "Seteazã pagina..."
 
 #: libgnomeui/stock_demo.c:173
 msgid "Quit"
@@ -1331,7 +1326,7 @@ msgstr "Anuleazã"
 
 #: libgnomeui/stock_demo.c:199
 msgid "Redo"
-msgstr "Repetã"
+msgstr "Refã"
 
 #: libgnomeui/stock_demo.c:208
 msgid "Delete"
@@ -1339,7 +1334,7 @@ msgstr "ªterge"
 
 #: libgnomeui/stock_demo.c:213
 msgid "Cut"
-msgstr "Taie"
+msgstr "Decupeazã"
 
 #: libgnomeui/stock_demo.c:221
 msgid "Copy"
@@ -1351,7 +1346,7 @@ msgstr "Lipeºte"
 
 #: libgnomeui/stock_demo.c:241
 msgid "Properties..."
-msgstr "Proprietãþi"
+msgstr "Proprietãþi..."
 
 #: libgnomeui/stock_demo.c:251
 msgid "Preferences..."
@@ -1375,11 +1370,11 @@ msgstr "Strat:"
 
 #: libgnomeui/winhints_demo.c:94
 msgid "Above Dock"
-msgstr "Deasupra dock-ului"
+msgstr "Deasupra docului"
 
 #: libgnomeui/winhints_demo.c:98
 msgid "Dock"
-msgstr "Dock"
+msgstr "Ataºeazã"
 
 #: libgnomeui/winhints_demo.c:102
 msgid "On Top"
@@ -1439,7 +1434,7 @@ msgstr "Umbrit"
 
 #: libgnomeui/winhints_demo.c:195
 msgid "Fixed Position"
-msgstr "Poziþie fixatã"
+msgstr "Poziþie fixã"
 
 #: libgnomeui/winhints_demo.c:199
 msgid "Ignore on Arrange"
@@ -1447,11 +1442,11 @@ msgstr "Ignorã la aranjare"
 
 #: libgnomeui/winhints_demo.c:203
 msgid "Set State"
-msgstr "Seteazã statutul"
+msgstr "Seteazã starea"
 
 #: libgnomeui/winhints_demo.c:209
 msgid "Skip Toggles:"
-msgstr "Sãri peste schimbãtoare:"
+msgstr "Sãri peste comutatoare:"
 
 #: libgnomeui/winhints_demo.c:219
 msgid "Skip Focus"
@@ -1497,37 +1492,37 @@ msgstr "Creez contextul '/GNOME/Servers' %s %d"
 
 #: libgnorba/goad-browser.c:27
 msgid "GOAD ID of the server to activate"
-msgstr "GOAD ID-ul serverului pentru activare"
+msgstr "GOAD ID al serverului care sã fie activat"
 
 #: libgnorba/goad-browser.c:28
 msgid "Repository ID of the server to activate"
-msgstr "Repository ID-ul serverului pentru activare"
+msgstr "Repository ID al serverului care sã fie activat"
 
 #: libgnorba/goad-browser.c:28
 msgid "REPO-ID"
 msgstr "REPO-ID"
 
-#: libgnorba/goad-browser.c:171
+#: libgnorba/goad-browser.c:182
 msgid ""
 "I couldn't find any installed services.  Either you don't have\n"
 "any services installed or I don't know the path to find them.\n"
 "In either case, please check your GNOME installation."
 msgstr ""
-"Nu am puttu gãsi nici un serviciu instalat. Fie nu aveþi servicii instalate\n"
-"sau nu cunosc calea cãtre ele.\n"
-"În orice caz, vã rog sã vã verificaþi instalarea GNOME."
+"N-am putut gãsi nici un serviciu instalat. Ori nu aveþi nici unul instalat\n"
+"ori nu ºtiu calea pentru a le gãsi.\n"
+"În orice caz, verificaþi instalarea dvs. GNOME."
 
 #: libgnorba/goad.c:1361
 msgid "(Internal use only) GOAD server ID to activate"
-msgstr "(Doar pt. uz intern) ID-ul de server GOAD pentru activare"
+msgstr "(Internal use only) GOAD server ID to activate"
 
 #: libgnorba/goad.c:1363
 msgid "(Internal use only) GOAD file descriptor"
-msgstr "(Doar pt. uz intern) Descriptrul de fiºier GOAD"
+msgstr "(Internal use only) GOAD file descriptor"
 
 #: libgnorba/goad.c:1367
 msgid "Gnome Object Activation Directory"
-msgstr "Directorul Gnome de Activare a Obiectelor (GOAD)"
+msgstr "Director activare Obiect GNOME"
 
 #: libgnorba/loadshlib.c:11
 msgid "ID under which GOAD knows this server"
@@ -1539,44 +1534,50 @@ msgstr "GOAD_ID"
 
 #: libgnorba/loadshlib.c:12
 msgid "Repository ID under which GOAD knows this server"
-msgstr "ID-ul de Repository sub care GOAD cunoaºte acest server"
+msgstr "Repository ID-ul sub care GOAD cunoaºte acest server"
 
 #: libgnorba/loadshlib.c:12
 msgid "REPO_ID"
 msgstr "REPO_ID"
 
-#: libgnorba/orbitgtk.c:138
+#: libgnorba/orbitgtk.c:129
+#, c-format
+msgid "Failed to get user details for UID %d (%s)\n"
+msgstr ""
+
+#: libgnorba/orbitgtk.c:141
 #, c-format
 msgid "Failed to open CORBA cookie file (%s) for writing: %s\n"
-msgstr "Nu am putut deschide fiºierul cookie CORBA (%s) pentru scriere: %s\n"
+msgstr ""
+"Eroare la deschiderea fiºierului cookie CORBA (%s) pentru scriere: %s\n"
 
-#: libgnorba/orbitgtk.c:145
+#: libgnorba/orbitgtk.c:148
 #, c-format
 msgid "Failed to write CORBA cookie file (%s): %s\n"
-msgstr "Nu am putut scrie fiºierul cookie CORBA (%s): %s\n"
+msgstr "Eroare la scrierea fiºierului cookie CORBA (%s): %s\n"
 
-#: libgnorba/orbitgtk.c:171
+#: libgnorba/orbitgtk.c:174
 #, c-format
 msgid "Failed to write CORBA cookie to `%s': %s\n"
-msgstr "Nu am putut scrie fiºierul cookie CORBA în '%s': %s\n"
+msgstr "Eroare la scrierea fiºierului cookie CORBA în '%s': %s\n"
 
-#: libgnorba/orbitgtk.c:181
+#: libgnorba/orbitgtk.c:184
 #, c-format
 msgid "Failed to open CORBA cookie file `%s': %s\n"
-msgstr "Nu am putut deschide fiºierul cookie CORBA '%s': %s\n"
+msgstr "Eroare la deschiderea fiºierului cookie CORBA '%s': %s\n"
 
-#: libgnorba/orbitgtk.c:187
+#: libgnorba/orbitgtk.c:190
 #, c-format
 msgid "Failed to read CORBA cookie file `%s': %s\n"
-msgstr "Nu am putut citi fiºierul cookie CORBA '%s': %s\n"
+msgstr "Eroare la citirea fiºierului cookie CORBA '%s': %s\n"
 
-#: libgnorba/orbitgtk.c:213
+#: libgnorba/orbitgtk.c:216
 msgid "Failed to obtain CORBA authentication cookie, exiting\n"
-msgstr "Nu am putut obþine cookie-ul CORBA de autentificare, ies\n"
+msgstr "Eroare la obþinerea cookie-ului de autentificare CORBA, ies\n"
 
 #: libgnorba/orbitns.c:295
 msgid "Could not get name service!"
-msgstr "Nu am putut obþine serviciul de nume!"
+msgstr "N-am putut obþine serviciul de nume"
 
 #: support/error.c:109
 msgid "Unknown system error"
@@ -1600,7 +1601,7 @@ msgstr "%s: opþiunea `%c%s' nu permite un argument\n"
 #: support/getopt.c:715 support/getopt.c:888
 #, c-format
 msgid "%s: option `%s' requires an argument\n"
-msgstr "%s: opþiunea `%s' are nevoie de un argument\n"
+msgstr "%s: opþiunea `%s' cere un argument\n"
 
 #. --option
 #: support/getopt.c:744
@@ -1641,18 +1642,18 @@ msgstr "%s: opþiunea `-W %s' este ambiguã\n"
 msgid "%s: option `-W %s' doesn't allow an argument\n"
 msgstr "%s: opþiunea `-W %s' nu permite un argument\n"
 
-#: support/popthelp.c:35
+#: support/popthelp.c:36
 msgid "Show this help message"
 msgstr "Aratã acest mesaj de ajutor"
 
-#: support/popthelp.c:36
+#: support/popthelp.c:37
 msgid "Display brief usage message"
-msgstr "Aratã un mesaj scurt de utilizare"
+msgstr "Afiºeazã un scurt mesaj de utilizare"
 
 #. Pixmap
 #: test-gnome/testgnome.c:792
 msgid "Default Pixmap"
-msgstr "Pixmapul standard"
+msgstr "Pixmapul implicit"
 
 #: test-gnome/testgnome.c:800 test-gnome/testgnome.c:841
 #: test-gnome/testgnome.c:866
@@ -1670,7 +1671,7 @@ msgstr "Foloseºte fontul în buton cu mãrime"
 
 #: test-gnome/testgnome.c:824
 msgid "Show font size"
-msgstr "Aratã marimea fontului"
+msgstr "Aratã mãrimea fontului"
 
 #: test-gnome/testgnome.c:860
 msgid "This is an hbox with pixmap and text"
@@ -1687,3 +1688,414 @@ msgstr "Utilizatorul a ales Nu/Renunþã cu datele:\n"
 #: test-gnome/testgnome.c:1087
 msgid "Weird number in reply callback"
 msgstr "Numãr ciudat în replica callback"
+
+#~ msgid "Unknown desktop file format %d"
+#~ msgstr "Format fiºier desktop necunoscut %d"
+
+#~ msgid "Attempting to launch a non-application"
+#~ msgstr "Încerc sã lansez o non-aplicaþie"
+
+#~ msgid "Trying to execute an item with no 'Exec'"
+#~ msgstr "Încerc sã execut un element fãrã 'Exec'"
+
+#~ msgid "No exec field for this drop"
+#~ msgstr "Nici un field exec pentru acest plasament"
+
+#~ msgid "Nothing to replace with a file in the exec string"
+#~ msgstr "Nimic de înlocuit cu un fiºier în acest ºir"
+
+#~ msgid "There was no argument to replace with dropped files"
+#~ msgstr "Nu a existat nici un argument de înlocuit cu fiºierele plasate"
+
+#~ msgid "Dropped URLs on an app that can only take files"
+#~ msgstr "URL-urile plasate pe o aplicaþie poate accepta numai fiºiere"
+
+#~ msgid "Specify X display to use."
+#~ msgstr "Specificã afiºajul X de folosit."
+
+#~ msgid "Put the X connection in synchronous mode."
+#~ msgstr "Plaseazã conexiunea X în mod sincron."
+
+#~ msgid "Specify the X window ID of Netscape."
+#~ msgstr "Specificã ID-ul ferestrei X pentru Netscape."
+
+#~ msgid "Don't raise the Netscape window."
+#~ msgstr "Nu ridica fereastra Netscape."
+
+#~ msgid "Show the given URL in a new window."
+#~ msgstr "Afiºeazã URL-ul într-o fereastrã nouã."
+
+#~ msgid "Close the specified window."
+#~ msgstr "Închide fereastra specificatã."
+
+#~ msgid "Print the X window ID of the utilized window."
+#~ msgstr "Afiºeazã ID-ul ferestrei X al ferestrei utilizate."
+
+#~ msgid "Error parsing '%s' (empty result)"
+#~ msgstr "Eroare la procesarea '%s' (rezultat vid)"
+
+#~ msgid "Mozilla not found as '%s'"
+#~ msgstr "Mozilla nu a fost gãsit ca '%s'"
+
+#~ msgid "Cannot open a pipe: %s"
+#~ msgstr "Nu pot deschide un conector pipe: %s"
+
+#~ msgid "Cannot parse handler template: %s"
+#~ msgstr "Nu pot procesa handler-ul de template: %s"
+
+#~ msgid "Cannot execute command '%s'!"
+#~ msgstr "Nu pot executa comanda '%s'!"
+
+#~ msgid "Command '%s' did not return an ID!"
+#~ msgstr "Comanda '%s' nu a returnat un ID!"
+
+#~ msgid "Dynamic modules to load"
+#~ msgstr "Module dinamice de încãrcat"
+
+#~ msgid "MODULE1,MODULE2,..."
+#~ msgstr "MODULE1,MODULE2,..."
+
+#~ msgid ""
+#~ "gnome_appbar_set_progress deprecated, use "
+#~ "gnome_appbar_set_progress_percentage"
+#~ msgstr ""
+#~ "gnome_appbar_set_progress este depreciat, utilizaþi\n"
+#~ "gnome_appbar_set_progress_percentage"
+
+#~ msgid "Simple drag and drop"
+#~ msgstr "Plasare simplã"
+
+#~ msgid ""
+#~ "In the following commands you should use %s in the spot where the\n"
+#~ "filename/URL should be substituted.  If you leave the field blank\n"
+#~ "drops will not be accepted.  If this application can accept\n"
+#~ "multiple files or URLs as arguments after its command name check the box "
+#~ "above."
+#~ msgstr ""
+#~ "În comenzile urmãtoare ar trebui sã utilizaþi %s în locul unde\n"
+#~ "fiºierul/URL ar trebui substituit. Dacã lãsaþi câmpul vid,\n"
+#~ "plasãrile nu vor fi acceptate. Dacã aplicaþia poate accepta\n"
+#~ "fiºiere multiple sau URL-uri ca argumente dupã numele sãu de comandã\n"
+#~ "bifaþi cãsuþa de mai sus."
+
+#~ msgid "Command for file drops:"
+#~ msgstr "Comanda pentru plasãrile de fiºiere:"
+
+#~ msgid "Drop one file at a time only."
+#~ msgstr "Plaseazã un singur fiºier la un moment dat."
+
+#~ msgid "Command for URL drops:"
+#~ msgstr "Comanda pentru plasãrile URL:"
+
+#~ msgid "Drop one URL at a time only."
+#~ msgstr "Plaseazã un singur URL la un moment dat."
+
+#~ msgid "Window titles to wait for (comma separated):"
+#~ msgstr "Titlul ferestrelor pentru care sã aºtept (separate prin virgulã):"
+
+#~ msgid "Drag and Drop"
+#~ msgstr "Plasare"
+
+#~ msgid "-adobe-helvetica-bold-r-normal-*-*-180-*-*-p-*-*-*,*-r-*"
+#~ msgstr "-adobe-helvetica-bold-r-normal-*-*-180-*-*-p-*-*-*,*-r-*"
+
+#~ msgid "-adobe-helvetica-medium-r-normal-*-*-120-*-*-p-*-*-*,*-r-*"
+#~ msgstr "-adobe-helvetica-medium-r-normal-*-*-120-*-*-p-*-*-*,*-r-*"
+
+#~ msgid "File Name:"
+#~ msgstr "Nume fiþier:"
+
+#~ msgid "Location:"
+#~ msgstr "Locaþie:"
+
+#~ msgid "Save As Type:"
+#~ msgstr "Salveazã ca tipul:"
+
+#~ msgid "GNOME GConf Support"
+#~ msgstr "Suport GNOME GConf"
+
+#~ msgid ""
+#~ "You attempted to change an aspect of your configuration that your system "
+#~ "administrator or operating system vendor does not allow you to change. "
+#~ "Some of the settings you have selected may not take effect, or may not be "
+#~ "restored next time you use this application (%s)."
+#~ msgstr ""
+#~ "Aþi încercat sã schimbaþi un aspect al configuraþiei dvs. pe care "
+#~ "administratorul\n"
+#~ "dvs. de sistem sau distribuitorul sistemului de operare nu vã permite sã-"
+#~ "l schimbaþi. Câteva\n"
+#~ "dintre setãrile pe care le-aþi selectat s-ar putea sã nu aibã efect, sau "
+#~ "s-ar putea sã nu fie\n"
+#~ "restaurate urmãtoarea datã când folosiþi aceastã aplicaþie (%s)."
+
+#~ msgid ""
+#~ "An error occurred while loading or saving configuration information for %"
+#~ "s. Some of your configuration settings may not work properly."
+#~ msgstr ""
+#~ "S-a produs o eroare la încãrcarea sau salvarea informaþiilor pentru %s.\n"
+#~ "Câteva dintre setãrile configuraþiei dvs. s-ar putea sã nu funcþioneze "
+#~ "corect."
+
+#~ msgid "GConf error details: %s\n"
+#~ msgstr "Detalii despre eroarea GConf: %s\n"
+
+#~ msgid "_Popup"
+#~ msgstr "_Popup"
+
+#~ msgid "Show help in temporary popup windows"
+#~ msgstr "Afiºeazã "
+
+#~ msgid "_Embedded"
+#~ msgstr "Î_ncapsulat"
+
+#~ msgid "Show help inside the application window"
+#~ msgstr "Afiºeazã ajutorul înãuntrul ferestrei aplicaþiei"
+
+#~ msgid "_Browser"
+#~ msgstr "_Navigator"
+
+#~ msgid "Show help in a help browser window"
+#~ msgstr "Afiºeazã ajutorul într-o fereastrã de navigator"
+
+#~ msgid "App style"
+#~ msgstr "Stil aplicaþie"
+
+#~ msgid "The style of GnomeHelpView"
+#~ msgstr "Stilul GnomeHelpView"
+
+#~ msgid "App style priority"
+#~ msgstr "Prioritatea stilului de aplicaþie"
+
+#~ msgid "The priority of style of GnomeHelpView"
+#~ msgstr "Prioritatea stilului GnomeHelpView"
+
+#~ msgid "Orientation"
+#~ msgstr "Orientare:"
+
+#~ msgid "Toplevel"
+#~ msgstr "Nivelul de top"
+
+#~ msgid "The toplevel widget"
+#~ msgstr "Widget nivelul de top"
+
+#~ msgid "Show help for a specific region of the application"
+#~ msgstr "Afiºeazã ajutorul pentru o regiune specificã a aplicaþiei"
+
+#~ msgid "Style"
+#~ msgstr "Stil"
+
+#~ msgid "Change the way help is displayed"
+#~ msgstr "Schimbã felul în care ajutorul este afiºat"
+
+#~ msgid "No help is available for the selected portion of the application."
+#~ msgstr ""
+#~ "Nu este disponibil un ajutor pentru porþiunea selectatã a aplicaþiei."
+
+#~ msgid "Cought GnomeURL error: %s"
+#~ msgstr "Am detectat eroarea GnomeURl: %s"
+
+#~ msgid "URL"
+#~ msgstr "URL"
+
+#~ msgid "The URL that GnomeHRef activates"
+#~ msgstr "URL-ul pe care GnomeHRef îl activeazã"
+
+#~ msgid "Text"
+#~ msgstr "Next"
+
+#~ msgid "The text on the button"
+#~ msgstr "Textul de pe buton"
+
+#~ msgid "End World Hunger"
+#~ msgstr "Sfârºiþi foametea mondialã"
+
+#~ msgid ""
+#~ "Error occured while trying to launch the URL handler.\n"
+#~ "Please check the settings in the Control Center if they are correct."
+#~ msgstr ""
+#~ "S-a produs o eroare la încercarea de a lansa handler-ul URL.\n"
+#~ "Vã rog sã verificaþi dacã setãrile din Centrul de control sunt corecte."
+
+#~ msgid "Paper Size"
+#~ msgstr "Dimensiune hârtie"
+
+#~ msgid "Portrait"
+#~ msgstr "Portret"
+
+#~ msgid "Landscape"
+#~ msgstr "Peisaj"
+
+#~ msgid "Margins"
+#~ msgstr "Margini"
+
+#~ msgid "Top:"
+#~ msgstr "Sus:"
+
+#~ msgid "Bottom:"
+#~ msgstr "Jos:"
+
+#~ msgid "Left:"
+#~ msgstr "Stânga:"
+
+#~ msgid "Right:"
+#~ msgstr "Dreapta:"
+
+#~ msgid "Scaling"
+#~ msgstr "Scalare"
+
+#~ msgid "Fit to Page"
+#~ msgstr "Potrivire în paginã"
+
+#~ msgid "%0.3g%s x %0.3g%s"
+#~ msgstr "\"%0.3g%s x %0.3g%s"
+
+#~ msgid "Page Setup"
+#~ msgstr "Setare paginã"
+
+#~ msgid "Top left"
+#~ msgstr "Stânga sus"
+
+#~ msgid "Bottom left"
+#~ msgstr "Stânga jos"
+
+#~ msgid "Top right"
+#~ msgstr "Dreapta sus"
+
+#~ msgid "Bottom right"
+#~ msgstr "Dreapta jos"
+
+#~ msgid "Horizontal"
+#~ msgstr "Orizontal"
+
+#~ msgid "Vertical"
+#~ msgstr "Vertical"
+
+#~ msgid "Icon position"
+#~ msgstr "Poziþie icon"
+
+#~ msgid "Icon orientation"
+#~ msgstr "Orientare icon"
+
+#~ msgid "Tile children"
+#~ msgstr "Ferestre alãturate"
+
+#~ msgid "Cascade children"
+#~ msgstr "Ferestre cascadã"
+
+#~ msgid "Arrange icons"
+#~ msgstr "Aranjeazã icon-uri"
+
+#~ msgid "Autoarrange icons"
+#~ msgstr "Auto-aranjeazã icon-uri"
+
+#~ msgid "App Specific"
+#~ msgstr "Specific aplicaþiei"
+
+#~ msgid "Is this list application specific"
+#~ msgstr "Este aceastã listã specificã aplicaþiei"
+
+#~ msgid "bad GnomeRecentDocument attribute: %s\n"
+#~ msgstr "atribut GnomeRecentDocument greºit: %s\n"
+
+#~ msgid "Unknown"
+#~ msgstr "Necunoscut"
+
+#~ msgid "Default..."
+#~ msgstr "Implicit..."
+
+#~ msgid "Clear..."
+#~ msgstr "ªterge..."
+
+#~ msgid "Username:"
+#~ msgstr "Nume utilizator:"
+
+#~ msgid "Password:"
+#~ msgstr "Parola:"
+
+#~ msgid "Could not create per-user gnome configuration directory `%s': %s\n"
+#~ msgstr ""
+#~ "Directorul per-utilizator `%s' de configuraþii gnome nu a putut fi creat: "
+#~ "%s\n"
+
+#~ msgid ""
+#~ "Could not set mode 0700 on private per-user gnome configuration directory "
+#~ "`%s': %s\n"
+#~ msgstr ""
+#~ "Modul 0700 nu a putut fi setat pe directorul privat per-utilizator de "
+#~ "configuraþii gnome `%s': %s\n"
+
+#~ msgid "Could not create gnome accelerators directory `%s': %s\n"
+#~ msgstr "Directorul de acceleratoare gnome `%s' nu a putut fi creat: %s\n"
+
+#~ msgid "App ID"
+#~ msgstr "ID aplicaþie"
+
+#~ msgid "The application ID string"
+#~ msgstr "ªirul corespunzãtor ID-ului aplicaþiei"
+
+#~ msgid "Received invalid color data\n"
+#~ msgstr "Recepþionat date invalide despre culoare\n"
+
+#~ msgid "Time"
+#~ msgstr "Timp"
+
+#~ msgid "The time currentlyselected"
+#~ msgstr "Timpul selectat în mod curent"
+
+#~ msgid "DateEdit Flags"
+#~ msgstr "Opþiuni DateEdit"
+
+#~ msgid "Flags for how DateEdit looks"
+#~ msgstr "Opþiuni referitoare la aspectul DateEdit"
+
+#~ msgid "Lower Hour"
+#~ msgstr "Orã finalã"
+
+#~ msgid "Lower hour in the time popup selector"
+#~ msgstr "Ora finalã din selectorul de timp"
+
+#~ msgid "Upper Hour"
+#~ msgstr "Ora iniþialã"
+
+#~ msgid "Upper hour in the time popup selector"
+#~ msgstr "Ora iniþialã din selectorul de timp"
+
+#~ msgid "Initial Time"
+#~ msgstr "Timp iniþial"
+
+#~ msgid "The initial time"
+#~ msgstr "Timpul iniþial"
+
+#~ msgid "gnome_date_edit_get_date deprecated, use gnome_date_edit_get_time"
+#~ msgstr ""
+#~ "gnome_date_edit_get_date este deprecat, utilizaþi gnome_date_edit_get_time"
+
+#~ msgid "GnomeIconSelection: '%s' does not exist or is not a directory"
+#~ msgstr "GnomeIconSelection: '%s' nu existã sau nu este un director"
+
+#~ msgid "GnomeIconSelection: couldn't open directory '%s'"
+#~ msgstr "GnomeIconSelection: nu am putut deschide directorul '%s'"
+
+#~ msgid "-freefont-garamond-*-*-*-*-30-170-*-*-*-*-*-*,*-r-*"
+#~ msgstr "-freefont-garamond-*-*-*-*-30-170-*-*-*-*-*-*,*-r-*"
+
+#~ msgid "Test GNOME"
+#~ msgstr "Test GNOME"
+
+#~ msgid "-adobe-helvetica-bold-r-normal-*-*-180-*-*-p-*-*-*"
+#~ msgstr "-adobe-helvetica-bold-r-normal-*-*-180-*-*-p-*-*-*"
+
+#~ msgid "-adobe-helvetica-medium-r-normal-*-*-120-*-*-p-*-*-*"
+#~ msgstr "-adobe-helvetica-medium-r-normal-*-*-120-*-*-p-*-*-*"
+
+#~ msgid "Child Item 1"
+#~ msgstr "Element copil 1"
+
+#~ msgid "Hint for item 1"
+#~ msgstr "Sugestie pentru elementul 1"
+
+#~ msgid "Child Item 2"
+#~ msgstr "Element copil 2"
+
+#~ msgid "Hint for item 2"
+#~ msgstr "Sugestie pentru elementul 2"

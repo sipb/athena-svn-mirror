@@ -33,11 +33,17 @@ extern "C" {
 
 /* if one doesn't want to compile in transparency one would define this */
 /* #define ZVT_NO_TRANSPARENT 1 */
+#define ZVT_IM_ON_THE_SPOT 1
 
 #define ZVT_TERM(obj)          GTK_CHECK_CAST (obj, zvt_term_get_type (), ZvtTerm)
 #define ZVT_TERM_CLASS(klass)  GTK_CHECK_CLASS_CAST (klass, zvt_term_get_type (), ZvtTermClass)
 #define ZVT_IS_TERM(obj)       GTK_CHECK_TYPE (obj, zvt_term_get_type ())
 	
+#define ZVT_GTK_TOPWGT(t) gtk_widget_get_toplevel(GTK_WIDGET(t))    
+#define ZVT_GTK_WINDOW(t) GTK_WINDOW(ZVT_GTK_TOPWGT(t))
+#define ZVT_GDK_WINDOW(t) GTK_WIDGET(t)->window    
+#define ZVT_GDK_TOPWIN(t) gtk_widget_get_toplevel(GTK_WIDGET(t))->window
+
   /* Capabilities
 
      NOTE: These are added at different stages of development always
@@ -140,7 +146,7 @@ struct _ZvtTermClass
 typedef enum {
   ZVT_FONT_1BYTE=0,		/* simple, 1-byte fonts */
   ZVT_FONT_2BYTE,		/* 2-byte fonts */
-  ZVT_FONT_FONTSET,		/* fontset fonts */
+  ZVT_FONT_FONTSET		/* fontset fonts */
 } zvtfont_t;
 
 /* private data structure, stored under "_zvtprivate" */
@@ -161,9 +167,7 @@ struct _zvtprivate
   int scroll_position;		/* offset for background pixmap when scrolling */
   GdkPixmap *bold_save;		/* when drawing bold, use this to save the
 				   maybe-overwritten line. */
-  GdkPixmap *transpix;		/* transparency pixmap.  Must be treated
-				   differently so we dont blow away the root
-				   pixmap! */
+  gboolean transpix;		/* TRUE if we have a transparency pixmap set. */
   char *paste;			/* where paste overflow is stored temporarily */
   int paste_len;		/* how much left to write */
   int paste_offset;		/* how much written so far */
@@ -242,6 +246,10 @@ void         zvt_term_set_shadow_type           (ZvtTerm       *term,
 void         zvt_term_set_size                  (ZvtTerm       *term,
 						 guint          width,
 						 guint          height);
+#if ZVT_IM_ON_THE_SPOT
+void         zvt_term_set_open_im               (ZvtTerm       *term,
+						 int            state);
+#endif
   
 /* returns an bitmask of the capabilities compiled into ZvtTerm */
 guint32	     zvt_term_get_capabilities	        (ZvtTerm       *term);

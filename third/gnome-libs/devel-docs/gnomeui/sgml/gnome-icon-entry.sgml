@@ -1,4 +1,4 @@
-<refentry id="GnomeIconEntry" revision="16 Mar 2001">
+<refentry id="GnomeIconEntry">
 <refmeta>
 <refentrytitle>GnomeIconEntry</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -74,7 +74,7 @@ char*       <link linkend="gnome-icon-entry-get-filename">gnome_icon_entry_get_f
 Creates a new icon entry widget</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -99,7 +99,7 @@ pixmap directory to use as the default path for the file
 entry.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -119,7 +119,7 @@ entry.</para>
 Get the GnomeFileEntry widget that's part of the entry</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -137,7 +137,7 @@ Get the GnomeFileEntry widget that's part of the entry</para>
 Get the GnomeEntry widget that's part of the entry</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -155,7 +155,7 @@ Get the GnomeEntry widget that's part of the entry</para>
 Get the GtkEntry widget that's part of the entry</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -175,7 +175,7 @@ to load it into the preview. That is, it will only return a filename
 if the image exists and it was possible to load it as an image.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">

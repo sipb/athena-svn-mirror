@@ -1,10 +1,10 @@
 /*****
 * XmHTML.h : XmHTML TWidget public header file
 *
-* This file Version	$Revision: 1.1.1.1 $
+* This file Version	$Revision: 1.1.1.2 $
 *
 * Creation date:		Tue Nov 19 23:18:37 GMT+0100 1996
-* Last modification: 	$Date: 2000-11-12 01:46:06 $
+* Last modification: 	$Date: 2002-02-13 00:14:49 $
 * By:					$Author: ghudson $
 * Current State:		$State: Exp $
 *

@@ -13,10 +13,8 @@
 ) && !defined(TC_DEF_TC_GNOME_Table)
 #define TC_DEF_TC_GNOME_Table 1
 const struct CORBA_TypeCode_struct TC_GNOME_Table_struct = {
-   
-      {{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
+   {{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
     ORBIT_PSEUDO_TYPECODE},
-
    CORBA_tk_objref, "Table", "IDL:GNOME/Table:1.0",
    0, 0,
    NULL,
@@ -36,17 +34,15 @@ static const CORBA_short anon_sublabel_values_array8[] = { 2, 0 };
 static const char *anon_subnames_array5[] = { "v_float", "str" };
 static const CORBA_TypeCode anon_subtypes_array6[] =
    { (CORBA_TypeCode) & TC_CORBA_double_struct,
-      (CORBA_TypeCode) & TC_CORBA_string_struct };
+(CORBA_TypeCode) & TC_CORBA_string_struct };
 static const CORBA_any anon_sublabels_array7[] =
    { {(CORBA_TypeCode) & TC_CORBA_short_struct,
       (gpointer) & anon_sublabel_values_array8[0], CORBA_FALSE},
    {(CORBA_TypeCode) & TC_CORBA_short_struct,
     (gpointer) & anon_sublabel_values_array8[1], CORBA_FALSE} };
 const struct CORBA_TypeCode_struct TC_GNOME_Table_Value_struct = {
-   
-      {{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
+   {{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
     ORBIT_PSEUDO_TYPECODE},
-
    CORBA_tk_union, "Value", "IDL:GNOME/Table/Value:1.0",
    0, 2,
    (const char **) anon_subnames_array5,
@@ -63,10 +59,8 @@ const struct CORBA_TypeCode_struct TC_GNOME_Table_Value_struct = {
 ) && !defined(TC_DEF_TC_GNOME_Table_OutOfRange)
 #define TC_DEF_TC_GNOME_Table_OutOfRange 1
 const struct CORBA_TypeCode_struct TC_GNOME_Table_OutOfRange_struct = {
-   
-      {{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
+   {{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
     ORBIT_PSEUDO_TYPECODE},
-
    CORBA_tk_except, "OutOfRange", "IDL:GNOME/Table/OutOfRange:1.0",
    0, 0,
    NULL,

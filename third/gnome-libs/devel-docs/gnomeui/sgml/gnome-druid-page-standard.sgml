@@ -1,4 +1,4 @@
-<refentry id="GnomeDruidPageStandard" revision="16 Mar 2001">
+<refentry id="GnomeDruidPageStandard">
 <refmeta>
 <refentrytitle>GnomeDruidPageStandard</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -69,7 +69,7 @@ void        <link linkend="gnome-druid-page-standard-set-logo">gnome_druid_page_
 <programlisting><link linkend="GtkWidget">GtkWidget</link>*  gnome_druid_page_standard_new   (void);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -86,7 +86,7 @@ void        <link linkend="gnome-druid-page-standard-set-logo">gnome_druid_page_
                                              <link linkend="GdkImlibImage">GdkImlibImage</link> *logo);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -109,7 +109,7 @@ void        <link linkend="gnome-druid-page-standard-set-logo">gnome_druid_page_
                                              <link linkend="GdkColor">GdkColor</link> *color);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -130,7 +130,7 @@ void        <link linkend="gnome-druid-page-standard-set-logo">gnome_druid_page_
                                              <link linkend="GdkColor">GdkColor</link> *color);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -151,7 +151,7 @@ void        <link linkend="gnome-druid-page-standard-set-logo">gnome_druid_page_
                                              <link linkend="GdkColor">GdkColor</link> *color);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -172,7 +172,7 @@ void        <link linkend="gnome-druid-page-standard-set-logo">gnome_druid_page_
                                              <link linkend="gchar">gchar</link> *title);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -193,7 +193,7 @@ void        <link linkend="gnome-druid-page-standard-set-logo">gnome_druid_page_
                                              <link linkend="GdkImlibImage">GdkImlibImage</link> *logo_image);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">

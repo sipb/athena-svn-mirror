@@ -35,6 +35,8 @@ GNOME_GenericFactory_supports(GNOME_GenericFactory _obj,
 							 obj_goad_id, ev);
       return _ORBIT_retval;
    }
+   if (0)
+      return *(&_ORBIT_retval);
    _cnx = ORBit_object_get_connection(_obj);
  _ORBIT_retry_request:
    _ORBIT_send_buffer = NULL;
@@ -95,7 +97,8 @@ GNOME_GenericFactory_supports(GNOME_GenericFactory _obj,
 	 goto _ORBIT_system_exception;
       _ORBIT_completion_status = CORBA_COMPLETED_YES;
       if (_ORBIT_recv_buffer->message.u.reply.reply_status !=
-	  GIOP_NO_EXCEPTION) goto _ORBIT_msg_exception;
+	  GIOP_NO_EXCEPTION)
+	 goto _ORBIT_msg_exception;
       _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
       if (giop_msg_conversion_needed(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer))) {
 	 _ORBIT_retval = *((CORBA_boolean *) _ORBIT_curptr);
@@ -154,6 +157,8 @@ GNOME_GenericFactory_create_object(GNOME_GenericFactory _obj,
 							      ev);
       return _ORBIT_retval;
    }
+   if (0)
+      return *(&_ORBIT_retval);
    _cnx = ORBit_object_get_connection(_obj);
  _ORBIT_retry_request:
    _ORBIT_send_buffer = NULL;
@@ -235,10 +240,10 @@ GNOME_GenericFactory_create_object(GNOME_GenericFactory _obj,
 	       alloca(sizeof
 		      ((*params)._buffer[_ORBIT_tmpvar_2][_ORBIT_tmpvar_3]) *
 		      _ORBIT_tmpvar_4);
-	       memcpy(_ORBIT_t, ((*params)._buffer[_ORBIT_tmpvar_2]),
-		      sizeof((*params).
-			     _buffer[_ORBIT_tmpvar_2][_ORBIT_tmpvar_3]) *
-		      _ORBIT_tmpvar_4);
+	    memcpy(_ORBIT_t, ((*params)._buffer[_ORBIT_tmpvar_2]),
+		   sizeof((*params).
+			  _buffer[_ORBIT_tmpvar_2][_ORBIT_tmpvar_3]) *
+		   _ORBIT_tmpvar_4);
 	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
 					   (_ORBIT_send_buffer), (_ORBIT_t),
 					   sizeof((*params).
@@ -262,7 +267,8 @@ GNOME_GenericFactory_create_object(GNOME_GenericFactory _obj,
 	 goto _ORBIT_system_exception;
       _ORBIT_completion_status = CORBA_COMPLETED_YES;
       if (_ORBIT_recv_buffer->message.u.reply.reply_status !=
-	  GIOP_NO_EXCEPTION) goto _ORBIT_msg_exception;
+	  GIOP_NO_EXCEPTION)
+	 goto _ORBIT_msg_exception;
       _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
       if (giop_msg_conversion_needed(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer))) {
 	 GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur = _ORBIT_curptr;

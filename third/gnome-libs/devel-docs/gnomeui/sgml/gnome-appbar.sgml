@@ -1,4 +1,4 @@
-<refentry id="GnomeAppBar" revision="16 Mar 2001">
+<refentry id="GnomeAppBar">
 <refmeta>
 <refentrytitle>GnomeAppBar</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -88,7 +88,7 @@ void        <link linkend="gnome-appbar-construct">gnome_appbar_construct</link>
 </programlisting>
 <para>
 Returns whether the appbar contains a statusbar widget. For internal use. Don't use.
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -105,7 +105,7 @@ Returns whether the appbar contains a statusbar widget. For internal use. Don't 
 </programlisting>
 <para>
 Returns whether the appbar has a progress widget. For internal use. Don't use.
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -126,7 +126,7 @@ Returns whether the appbar has a progress widget. For internal use. Don't use.
 <para>
 Returns whether the appbar has a minibuffer-style interactive status display.
 For internal use. Don't use.
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -163,7 +163,7 @@ GtkEntry is inadequate and so a custom widget will be written
 eventually.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -189,7 +189,7 @@ Sets the status label without changing widget state; next set or push
 will destroy this permanently.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -209,7 +209,7 @@ will destroy this permanently.</para>
 What to show when showing nothing else; defaults to nothing.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -230,7 +230,7 @@ Push a new status message onto the status bar stack, and
 display it.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -250,7 +250,7 @@ Remove current status message, and display previous status
 message, if any.  It is OK to call this with an empty stack.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -267,7 +267,7 @@ Remove all status messages from appbar, and display default status
 message (if present).</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -287,7 +287,7 @@ which is not the opposite of set_progress. Maybe this function
 should die.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -307,7 +307,7 @@ Returns &amp;GtkProgress widget pointer, so that the progress bar may be
 manipulated further.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -328,7 +328,7 @@ Reflect the current state of stack/default. Useful to force a
 set_status to disappear.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -347,7 +347,7 @@ Put a prompt in the appbar and wait for a response. When the
 user responds or cancels, a user_response signal is emitted.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -369,7 +369,7 @@ user responds or cancels, a user_response signal is emitted.</para>
 Remove any prompt.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -385,7 +385,7 @@ Remove any prompt.</para>
 Get the response to the prompt, if any. Result must be g_free'd.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -407,7 +407,7 @@ Text from appbar entry widget, as entered by user.
 For use to bindings in languages other than C. Don't use.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">

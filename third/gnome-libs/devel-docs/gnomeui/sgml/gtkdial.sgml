@@ -1,4 +1,4 @@
-<refentry id="GtkDial" revision="16 Mar 2001">
+<refentry id="GtkDial">
 <refmeta>
 <refentrytitle>GtkDial</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -74,7 +74,7 @@ specified GtkAdjustment. When the dial is moved, the adjustment is
 updated, and vice-versa.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -93,7 +93,7 @@ Retrieves the GtkAdjustment associated with the
 GtkDial <parameter>dial</parameter>.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -115,7 +115,7 @@ Sets the update policy of the GtkDial <parameter>dial</parameter> to one of eith
 explanation of these values.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -136,7 +136,7 @@ Associates a new GtkAdjustment with GtkDial <parameter>dial</parameter>
 widget. The old adjustment is removed and replaced with the new.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -158,7 +158,7 @@ Sets the GtkDial's value to <parameter>percent</parameter> of
 GtkAdjustment is created.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -179,7 +179,7 @@ GtkAdjustment is created.</para>
 Retrieves the current percentage held in the dial widget.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -199,7 +199,7 @@ Sets the current value held in the GtkDial's
 adjustment object to <parameter>value</parameter>.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -220,7 +220,7 @@ adjustment object to <parameter>value</parameter>.</para>
 Retrieves the current value helt in the dial widget.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -243,7 +243,7 @@ be able to edit it. If <parameter>view_only</parameter> is FALSE, the user will 
 to change the value represented.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">

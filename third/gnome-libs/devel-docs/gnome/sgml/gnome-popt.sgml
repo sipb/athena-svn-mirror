@@ -1,4 +1,4 @@
-<refentry id="gnome-gnome-popt" revision="16 Mar 2001">
+<refentry id="gnome-gnome-popt">
 <refmeta>
 <refentrytitle>gnome-popt</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -45,7 +45,7 @@ Registers the <parameter>options</parameter> table of command line options for t
 argument parser.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -67,7 +67,7 @@ Parses the arguments in argv according to all of the registered
 tables.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">

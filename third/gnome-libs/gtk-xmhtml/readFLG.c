@@ -1,13 +1,13 @@
 #ifndef lint
-static char rcsId[]="$Header: /afs/dev.mit.edu/source/repository/third/gnome-libs/gtk-xmhtml/readFLG.c,v 1.1.1.1 2000-11-12 01:46:11 ghudson Exp $";
+static char rcsId[]="$Header: /afs/dev.mit.edu/source/repository/third/gnome-libs/gtk-xmhtml/readFLG.c,v 1.1.1.2 2002-02-13 00:12:36 ghudson Exp $";
 #endif
 /*****
 * readFLG.c : XmHTML Fast Loadable Graphics reader.
 *
-* This file Version	$Revision: 1.1.1.1 $
+* This file Version	$Revision: 1.1.1.2 $
 *
 * Creation date:		Sun Sep 28 14:11:03 GMT+0100 1997
-* Last modification: 	$Date: 2000-11-12 01:46:11 $
+* Last modification: 	$Date: 2002-02-13 00:12:36 $
 * By:					$Author: ghudson $
 * Current State:		$State: Exp $
 *
@@ -36,6 +36,14 @@ static char rcsId[]="$Header: /afs/dev.mit.edu/source/repository/third/gnome-lib
 /*****
 * ChangeLog 
 * $Log: not supported by cvs2svn $
+* Revision 1.4.14.1  2002/01/08 22:33:11  kmaraas
+* 2002-01-06  Kjartan Maraas  <kmaraas@gnome.org>
+*
+* 	* *: Fix compiler warnings.
+* 	* images.c: Fix missing X color context ref that was causing lots
+* 	of crashes. Fixes #60237, #61638, #63439, #65040, #66913 and more.
+* 	* test.c: do not use %s for a boolean use %d instead.
+*
 * Revision 1.4  1998/02/12 03:09:44  unammx
 * Merge to Koen's XmHTML 1.1.2 + following fixes:
 *
@@ -74,7 +82,6 @@ static char rcsId[]="$Header: /afs/dev.mit.edu/source/repository/third/gnome-lib
 #include <stdlib.h>
 #include <string.h>
 
-#include <config.h>
 #if defined(HAVE_LIBPNG) || defined(HAVE_LIBZ)
 #include <zlib.h>
 #endif

@@ -95,7 +95,7 @@ gnome_add_gtk_arg_callback(poptContext con,
 	int final_argc;
 	char **final_argv;
 	
-	if(gnome_gtk_initialized) {
+	if (gnome_gtk_initialized) {
 		/*
 		 * gnome has already been initialized, so app might be making a
 		 * second pass over the args - just ignore
@@ -199,7 +199,7 @@ static void
 gnome_init_cb(poptContext ctx, enum poptCallbackReason reason,
 	      const struct poptOption *opt)
 {
-	if(gnome_initialized)
+	if (gnome_initialized)
 		return;
 	
 	switch(reason) {
@@ -227,7 +227,7 @@ gnome_init_cb(poptContext ctx, enum poptCallbackReason reason,
                                         setme = g_strconcat ("LC_CTYPE=", old_ctype, NULL);
                                         g_free(old_ctype);
                                 } else
-                                        setme = "LC_CTYPE";
+                                        setme = "LC_CTYPE=";
 
                                 putenv (setme);
                         }
@@ -423,7 +423,7 @@ gnome_init_with_popt_table(const char *app_id,
 			   poptContext *return_ctx)
 {
 	poptContext ctx;
-	char *appdesc;
+	char *appdesc = NULL;
 
 #ifdef ALLOC_DEBUGGING_HOOKS
 	appdesc = malloc(10);
@@ -437,7 +437,8 @@ gnome_init_with_popt_table(const char *app_id,
 	__malloc_hook = my_malloc_hook;
 	__realloc_hook = my_realloc_hook;
 #endif
-	g_return_val_if_fail(gnome_initialized == FALSE, -1);
+	if (gnome_initialized)
+                return 0;
 	
 	gnomelib_init (app_id, app_version);
 	
@@ -454,7 +455,10 @@ gnome_init_with_popt_table(const char *app_id,
 	}
 	
 	ctx = gnomelib_parse_args(argc, argv, flags);
-	
+
+        /* free this after we parse the args to aviod a crash */
+        g_free (appdesc);
+
 	if(return_ctx)
 		*return_ctx = ctx;
 	else
@@ -485,7 +489,8 @@ gnome_init(const char *app_id,
 	   const char *app_version,
 	   int argc, char **argv)
 {
-  g_return_val_if_fail(gnome_initialized == FALSE, -1);
+  if (gnome_initialized)
+          return 0;
 
   gnome_init_with_popt_table(app_id, app_version,
 			     argc, argv, NULL, 0, NULL);
@@ -688,8 +693,21 @@ imlib_image_loader(GdkWindow   *window,
 {
 	GdkPixmap *retval;
 	
-	if (gdk_imlib_load_file_to_pixmap ((char *) filename, &retval, mask))
+	if (gdk_imlib_load_file_to_pixmap ((char *) filename, &retval, mask)) {
+                if (retval) {
+                        if (mask && *mask)
+                                gdk_pixmap_ref (*mask);
+                        gdk_pixmap_ref (retval);
+                        gdk_imlib_free_pixmap (retval);
+                } else {
+                        /* Paranoia */
+                        if (mask && *mask) {
+                                gdk_imlib_free_pixmap (*mask);
+                                *mask = NULL;
+                        }
+                }
 		return retval;
+        }
 	else
 		return NULL;
 }

@@ -1,4 +1,4 @@
-<refentry id="GnomeIconSelection" revision="16 Mar 2001">
+<refentry id="GnomeIconSelection">
 <refmeta>
 <refentrytitle>GnomeIconSelection</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -75,7 +75,7 @@ Creates a new icon selection widget, it uses GnomeIconList
 for the listing of icons</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -93,7 +93,7 @@ widget. It doesn't show the icons in the selection until you
 do <link linkend="gnome-icon-selection-show-icons">gnome_icon_selection_show_icons</link>.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -113,7 +113,7 @@ selection widget. It doesn't show the icons in the selection
 until you do <link linkend="gnome-icon-selection-show-icons">gnome_icon_selection_show_icons</link>.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -136,7 +136,7 @@ is called the icons aren't actually added to the listing
 and can't be picked by the user.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -155,7 +155,7 @@ that weren't shown yet are not cleared unless the not_shown
 parameter is given, in which case even those are cleared.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -177,7 +177,7 @@ full_path is true, it returns the full path to the icon,
 if none is selected it returns NULL</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -202,7 +202,7 @@ Selects the icon <parameter>filename</parameter>. This icon must have
 already been added and shown * (see <parameter>gnome_icon_selection_show_icons</parameter>)</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">

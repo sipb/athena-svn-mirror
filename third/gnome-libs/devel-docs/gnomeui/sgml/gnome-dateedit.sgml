@@ -1,4 +1,4 @@
-<refentry id="GnomeDateEdit" revision="16 Mar 2001">
+<refentry id="GnomeDateEdit">
 <refmeta>
 <refentrytitle>GnomeDateEdit</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -72,7 +72,7 @@ Creates a new GnomeDateEdit widget which can be used to provide
 an easy to use way for entering dates and times.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -98,7 +98,7 @@ Changes the displayed date and time in the GnomeDateEdit widget
 to be the one represented by <parameter>the_time</parameter>.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -120,7 +120,7 @@ Sets the range of times that will be provide by the time popup
 selectors.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -142,7 +142,7 @@ selectors.</para>
 </para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">

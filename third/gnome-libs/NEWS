@@ -1,4 +1,101 @@
 ========================================================================
+gnome-libs-1.4.1.4
+
+Hello again,
+
+* New in this release:
+
+	* general:
+	
+	- Build fixes. (From bugzilla)
+	- Missed a man page (Kjartan, Christian)
+
+	* libgnorba:
+	
+	- Make the goad-browser behave and have sane defaults
+	  for window size (Wayne Schuller)
+
+	- Fix a wrong assert and print info if we can't get
+	  userinfo from the pwentry. (Richard Kinder)
+	
+	* libgnome:
+	
+	- Handle a null SHELL better (Debian)
+
+	* gtk-xmhtml:
+	
+	- Safer tempfile handling. (Ximian)
+	- More errorchecking in a couple of functions to handle being
+	  passed NULL parameters. (Wayne Schuller)
+
+	* libzvt:
+	
+	- Support for dtterm window manipulation/info-request
+	  escape sequences. <vivek@etla.org>.
+	
+	- Fix off by one error in underline handling. (Ximian)
+	
+			
+========================================================================
+gnome-libs-1.4.1.3
+
+Hello,
+
+* New in this release:
+
+	* general:
+	
+	- Parallell install fixes (Havoc, Darin)
+	- Man pages (Christian Marillat)
+	- Fix compilation with db1 (Frank Belew)
+	- Loads of new translations (Translation heros)
+
+	* devel-docs (zvt):
+	
+	- Don't build docs at 'make' and 'make install' time. (Kjartan)
+	
+	* gtk-xmhtml:
+	
+	- Fix loads of compiler warnings. (Kjartan)
+	- Apply all patches from Red Hat's packages. (Kjartan)
+	- Fix a couple of crashes. (k_wayne@linuxpower.org)
+	- Parallell install fixes. (Havoc)
+	
+	* libart_lgpl:
+
+	- art_affine_expansion(): Use absolute value in computation. (Darin)
+	- Fix compiler warnings (Kjartan)
+
+	* libgnome:
+
+	- Use full name in in highscore lists in gnome-score.c (Andrey Panov)
+	- Portability fixes (Kjartan)
+	- Fix url handler on first load (Red Hat)
+	- Mem leak in gnome-mime.c (Jody)
+	
+	* libgnomeui:
+	
+	- Fix crashes in gnome-mdi (John Finlay)
+	- Fix to work with KDE SM + other SM fixes (Red Hat)
+	- Make GnomeCanvasSuckTextFont() work better with multibyte (Red Hat)
+	- Compiler warning fixes (Kjartan)
+	- Check that the widget is drawable before queuing a redraw in
+	  gnome-canvas (Federico)
+	- i18n fixes in gnome-about (Kjartan)
+	
+	* support:
+	
+	- Compiler warning fixes (Christian Marillat)
+	
+	* zvt:
+	
+	- Report mouse wheel events correctly to apps (Xavier Bestel)
+	- Fixes for multibyte handling and more (Red Hat)
+
+Enjoy and report all bugs to http://bugzilla.gnome.org/ 
+
+
+========================================================================
 gnome-libs-1.0.6
 ----------------
 

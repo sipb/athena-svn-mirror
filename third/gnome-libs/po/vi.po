@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-libs 1.2.12\n"
-"POT-Creation-Date: 2001-02-23 13:45-0500\n"
+"POT-Creation-Date: 2002-01-25 00:29+0100\n"
 "PO-Revision-Date: 2001-03-12 15:27+01:00\n"
 "Last-Translator: Hoang Ngoc Tu <hntu@gmx.de>\n"
 "Language-Team: Vietnamese <vi@li.org>\n"
@@ -80,7 +80,8 @@ msgstr "C¸c ®ång t¸c gi¶:"
 msgid "About"
 msgstr "Néi dung"
 
-#: libgnomeui/gnome-app-helper.c:78
+#. Some standard menus
+#: libgnomeui/gnome-app-helper.c:78 libgnomeui/gnome-app-helper.h:484
 msgid "_File"
 msgstr "TËp tin"
 
@@ -88,7 +89,7 @@ msgstr "TËp tin"
 msgid "_File/"
 msgstr "TËp tin/"
 
-#: libgnomeui/gnome-app-helper.c:80
+#: libgnomeui/gnome-app-helper.c:80 libgnomeui/gnome-app-helper.h:487
 msgid "_Edit"
 msgstr "So¹n th¶o"
 
@@ -96,7 +97,7 @@ msgstr "So¹n th¶o"
 msgid "_Edit/"
 msgstr "Biªn tËp/"
 
-#: libgnomeui/gnome-app-helper.c:82
+#: libgnomeui/gnome-app-helper.c:82 libgnomeui/gnome-app-helper.h:490
 msgid "_View"
 msgstr "HiÓn thÞ"
 
@@ -104,7 +105,7 @@ msgstr "HiÓn thÞ"
 msgid "_View/"
 msgstr "HiÓn thÞ"
 
-#: libgnomeui/gnome-app-helper.c:84
+#: libgnomeui/gnome-app-helper.c:84 libgnomeui/gnome-app-helper.h:493
 msgid "_Settings"
 msgstr "C¸c ®iÒu chØnh"
 
@@ -112,7 +113,8 @@ msgstr "C¸c ®iÒu chØnh"
 msgid "_Settings/"
 msgstr "C¸c ®iÒu chØnh/"
 
-#: libgnomeui/gnome-app-helper.c:86
+#. If you have more then one New type, use this tree
+#: libgnomeui/gnome-app-helper.c:86 libgnomeui/gnome-app-helper.h:266
 msgid "_New"
 msgstr "Míi"
 
@@ -120,7 +122,7 @@ msgstr "Míi"
 msgid "_New/"
 msgstr "Míi/"
 
-#: libgnomeui/gnome-app-helper.c:88
+#: libgnomeui/gnome-app-helper.c:88 libgnomeui/gnome-app-helper.h:496
 msgid "Fi_les"
 msgstr "C¸c tËp tin"
 
@@ -128,15 +130,15 @@ msgstr "C¸c tËp tin"
 msgid "Fi_les/"
 msgstr "C¸c tËp tin"
 
-#: libgnomeui/gnome-app-helper.c:90
+#: libgnomeui/gnome-app-helper.c:90 libgnomeui/gnome-app-helper.h:499
 msgid "_Windows"
 msgstr "C¸c cöa sæ"
 
-#: libgnomeui/gnome-app-helper.c:91
+#: libgnomeui/gnome-app-helper.c:91 libgnomeui/gnome-app-helper.h:505
 msgid "_Game"
 msgstr "Trß ch¬i"
 
-#: libgnomeui/gnome-app-helper.c:92
+#: libgnomeui/gnome-app-helper.c:92 libgnomeui/gnome-app-helper.h:502
 msgid "_Help"
 msgstr "ChØ dÉn"
 
@@ -704,32 +706,32 @@ msgstr "="
 msgid "INV"
 msgstr "INV"
 
-#: libgnomeui/gnome-client.c:835
+#: libgnomeui/gnome-client.c:842
 msgid "Specify session management ID"
 msgstr "Th«ng b¸o ID cho qu¶n lý t¸c vô"
 
-#: libgnomeui/gnome-client.c:835 libgnorba/goad-browser.c:27
+#: libgnomeui/gnome-client.c:842 libgnorba/goad-browser.c:27
 msgid "ID"
 msgstr "ID"
 
-#: libgnomeui/gnome-client.c:837
+#: libgnomeui/gnome-client.c:844
 msgid "Specify prefix of saved configuration"
 msgstr ""
 
-#: libgnomeui/gnome-client.c:837
+#: libgnomeui/gnome-client.c:844
 msgid "PREFIX"
 msgstr ""
 
-#: libgnomeui/gnome-client.c:839
+#: libgnomeui/gnome-client.c:846
 msgid "Disable connection to session manager"
 msgstr "Kh«ng nèi ®­îc víi qu¶n lý t¸c vô"
 
 #. Register commandline options.
-#: libgnomeui/gnome-client.c:968
+#: libgnomeui/gnome-client.c:977
 msgid "Session management options"
 msgstr "C¸c lùa chän qu¶n lý t¸c vô"
 
-#: libgnomeui/gnome-client.c:2348
+#: libgnomeui/gnome-client.c:2357
 msgid "Cancel Logout"
 msgstr "Bá kÕt thóc"
 
@@ -937,13 +939,13 @@ msgstr "C¸c lùa chän GNOME"
 msgid "GNOME GUI options"
 msgstr "C¸c lùa chän GNOME GUI"
 
-#: libgnomeui/gnome-init.c:452
+#: libgnomeui/gnome-init.c:453
 #, c-format
 msgid "%s options"
 msgstr "%s lùa chän"
 
 #. dialog display isn't working out
-#: libgnomeui/gnome-init.c:642
+#: libgnomeui/gnome-init.c:647
 msgid "Multiple segmentation faults occurred; can't display error dialog\n"
 msgstr "NhiÒu lçi ph©n ®o¹n xuÊt hiÖn; kh«ng hiÓn thÞ ®­îc ®èi tho¹i lçi\n"
 
@@ -1008,13 +1010,9 @@ msgid "Date"
 msgstr "Ngµy"
 
 #. the localized string should fit (after replacing the %a %b
-#. etc) in ~18 chars.
-#. %a is abbreviated weekday, %A is full weekday,
-#. %b %B are abbreviated and full monthname, %Y is year,
-#. %d is day of month, %m is month number, %T full hour,
-#. %H hours, %M minutes, %S seconds
+#. * etc) in ~18 chars. Please consult strftime(3) manpage.
 #.
-#: libgnomeui/gnome-scores.c:130
+#: libgnomeui/gnome-scores.c:126
 msgid "%a %b %d %T %Y"
 msgstr "%a, %d. %b %Y, %H.%M"
 
@@ -1499,7 +1497,7 @@ msgstr ""
 msgid "REPO-ID"
 msgstr ""
 
-#: libgnorba/goad-browser.c:171
+#: libgnorba/goad-browser.c:182
 msgid ""
 "I couldn't find any installed services.  Either you don't have\n"
 "any services installed or I don't know the path to find them.\n"
@@ -1534,32 +1532,37 @@ msgstr ""
 msgid "REPO_ID"
 msgstr ""
 
-#: libgnorba/orbitgtk.c:138
+#: libgnorba/orbitgtk.c:129
+#, c-format
+msgid "Failed to get user details for UID %d (%s)\n"
+msgstr ""
+
+#: libgnorba/orbitgtk.c:141
 #, c-format
 msgid "Failed to open CORBA cookie file (%s) for writing: %s\n"
 msgstr ""
 
-#: libgnorba/orbitgtk.c:145
+#: libgnorba/orbitgtk.c:148
 #, c-format
 msgid "Failed to write CORBA cookie file (%s): %s\n"
 msgstr ""
 
-#: libgnorba/orbitgtk.c:171
+#: libgnorba/orbitgtk.c:174
 #, c-format
 msgid "Failed to write CORBA cookie to `%s': %s\n"
 msgstr ""
 
-#: libgnorba/orbitgtk.c:181
+#: libgnorba/orbitgtk.c:184
 #, c-format
 msgid "Failed to open CORBA cookie file `%s': %s\n"
 msgstr ""
 
-#: libgnorba/orbitgtk.c:187
+#: libgnorba/orbitgtk.c:190
 #, c-format
 msgid "Failed to read CORBA cookie file `%s': %s\n"
 msgstr ""
 
-#: libgnorba/orbitgtk.c:213
+#: libgnorba/orbitgtk.c:216
 msgid "Failed to obtain CORBA authentication cookie, exiting\n"
 msgstr ""
 
@@ -1630,11 +1633,11 @@ msgstr "%s: lùa chän `-W %s' lµ kh«ng râ rµng\n"
 msgid "%s: option `-W %s' doesn't allow an argument\n"
 msgstr "%s: lùa chän `-W %s' kh«ng cho phÐp mét th«ng sè\n"
 
-#: support/popthelp.c:35
+#: support/popthelp.c:36
 msgid "Show this help message"
 msgstr "ChØ ra nh¾n göi gióp ®ì nµy"
 
-#: support/popthelp.c:36
+#: support/popthelp.c:37
 msgid "Display brief usage message"
 msgstr "HiÓn thÞ mét h­íng dÉn ng¾n"
 

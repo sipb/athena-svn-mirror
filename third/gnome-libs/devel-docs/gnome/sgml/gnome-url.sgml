@@ -1,4 +1,4 @@
-<refentry id="gnome-gnome-url" revision="16 Mar 2001">
+<refentry id="gnome-gnome-url">
 <refmeta>
 <refentrytitle>gnome-url</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -95,7 +95,7 @@ We really need a capplet so a user can configure the behaviour of this
 function.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">

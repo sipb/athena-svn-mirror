@@ -1,4 +1,4 @@
-<refentry id="GnomeProcBar" revision="16 Mar 2001">
+<refentry id="GnomeProcBar">
 <refmeta>
 <refentrytitle>GnomeProcBar</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -75,7 +75,7 @@ and swap load. It is for instance used in the cpumemusage applet and in GTop.
 </programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -102,7 +102,7 @@ the data argument that will be passed to the callback to actually start
 executing the timer.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -132,7 +132,7 @@ Set the values of <parameter>pb</parameter> to <parameter>val</parameter> and re
 probably call this function in the callback to update the values.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -155,7 +155,7 @@ Sets the orientation of <parameter>pb</parameter> to vertical if
 <parameter>vertical</parameter> is <literal>TRUE</literal> or to horizontal if <parameter>vertical</parameter> is <literal>FALSE</literal>.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -177,7 +177,7 @@ Start a timer, and call the callback that was set
 on <link linkend="gnome-proc-bar-new">gnome_proc_bar_new</link> with the <parameter>data</parameter>.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -199,7 +199,7 @@ on <link linkend="gnome-proc-bar-new">gnome_proc_bar_new</link> with the <parame
 Stop running the callback in the timer.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -217,7 +217,7 @@ Update <parameter>pb</parameter> with <parameter>colors</parameter>. <parameter>
 it is only redrawn when you call <link linkend="gnome-proc-bar-set-values">gnome_proc_bar_set_values</link></para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">

@@ -1,13 +1,16 @@
 # Czech message catalog for gnome-libs package.
 # Copyright (C) 1999 Free Software Foundation, Inc.
-# David Sauer <davids@penguin.cz>, 1999.
+# Original translation David Sauer <davids@penguin.cz> (David ©auer), 1999.
+# Updated by:
+# George Lebl <jirka@5z.com>, 2000.
+# Stanislav Brabec <utx@penguin.cz>, 2000-2001.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: 1.0.10\n"
-"POT-Creation-Date: 2001-02-23 13:45-0500\n"
-"PO-Revision-Date: 2000-09-02 17:59+02:00\n"
-"Last-Translator: David Sauer <davids@penguin.cz>\n"
+"POT-Creation-Date: 2002-01-25 00:29+0100\n"
+"PO-Revision-Date: 2001-06-22 18:40+02:00\n"
+"Last-Translator: Stanislav Brabec <utx@penguin.cz>\n"
 "Language-Team: czech <cs@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=ISO-8859-2\n"
@@ -44,11 +47,11 @@ msgstr ""
 
 #: libgnome/gnomelib-init.c:136
 msgid "Disable sound server usage"
-msgstr "Zakázat pou¾ití zvukového serveru"
+msgstr "Zaká¾e pou¾ití zvukového serveru"
 
 #: libgnome/gnomelib-init.c:138
 msgid "Enable sound server usage"
-msgstr "Povolit pou¾ití zvukového serveru"
+msgstr "Povolí pou¾ití zvukového serveru"
 
 #: libgnome/gnomelib-init.c:140
 msgid "Host:port on which the sound server to use is running"
@@ -59,9 +62,8 @@ msgid "HOSTNAME:PORT"
 msgstr "POÈÍTAÈ:PORT"
 
 #: libgnome/gnomelib-init.c:150
-#, fuzzy
 msgid "GNOME options"
-msgstr "Nastavení GNOME"
+msgstr "Volby GNOME"
 
 #: libgnomeui/gnome-about.c:187
 msgid "Author:"
@@ -80,7 +82,8 @@ msgstr "Autoøi: "
 msgid "About"
 msgstr "O programu"
 
-#: libgnomeui/gnome-app-helper.c:78
+#. Some standard menus
+#: libgnomeui/gnome-app-helper.c:78 libgnomeui/gnome-app-helper.h:484
 msgid "_File"
 msgstr "_Soubor"
 
@@ -88,23 +91,23 @@ msgstr "_Soubor"
 msgid "_File/"
 msgstr "_Soubor/"
 
-#: libgnomeui/gnome-app-helper.c:80
+#: libgnomeui/gnome-app-helper.c:80 libgnomeui/gnome-app-helper.h:487
 msgid "_Edit"
-msgstr "_Edit"
+msgstr "Úp_ravy"
 
 #: libgnomeui/gnome-app-helper.c:81
 msgid "_Edit/"
-msgstr "_Edit/"
+msgstr "Úp_ravy/"
 
-#: libgnomeui/gnome-app-helper.c:82
+#: libgnomeui/gnome-app-helper.c:82 libgnomeui/gnome-app-helper.h:490
 msgid "_View"
-msgstr "_Pohled"
+msgstr "_Zobrazení"
 
 #: libgnomeui/gnome-app-helper.c:83
 msgid "_View/"
-msgstr "_Pohled/"
+msgstr "_Zobrazení/"
 
-#: libgnomeui/gnome-app-helper.c:84
+#: libgnomeui/gnome-app-helper.c:84 libgnomeui/gnome-app-helper.h:493
 msgid "_Settings"
 msgstr "_Nastavení"
 
@@ -112,7 +115,8 @@ msgstr "_Nastavení"
 msgid "_Settings/"
 msgstr "_Nastavení/"
 
-#: libgnomeui/gnome-app-helper.c:86
+#. If you have more then one New type, use this tree
+#: libgnomeui/gnome-app-helper.c:86 libgnomeui/gnome-app-helper.h:266
 msgid "_New"
 msgstr "_Nový"
 
@@ -120,7 +124,7 @@ msgstr "_Nový"
 msgid "_New/"
 msgstr "_Nový/"
 
-#: libgnomeui/gnome-app-helper.c:88
+#: libgnomeui/gnome-app-helper.c:88 libgnomeui/gnome-app-helper.h:496
 msgid "Fi_les"
 msgstr "Soubo_ry"
 
@@ -128,17 +132,17 @@ msgstr "Soubo_ry"
 msgid "Fi_les/"
 msgstr "Soubo_ry"
 
-#: libgnomeui/gnome-app-helper.c:90
+#: libgnomeui/gnome-app-helper.c:90 libgnomeui/gnome-app-helper.h:499
 msgid "_Windows"
 msgstr "_Okna"
 
-#: libgnomeui/gnome-app-helper.c:91
+#: libgnomeui/gnome-app-helper.c:91 libgnomeui/gnome-app-helper.h:505
 msgid "_Game"
 msgstr "_Hra"
 
-#: libgnomeui/gnome-app-helper.c:92
+#: libgnomeui/gnome-app-helper.c:92 libgnomeui/gnome-app-helper.h:502
 msgid "_Help"
-msgstr "_Nápovìda"
+msgstr "Nápovìd_a"
 
 #: libgnomeui/gnome-app-helper.c:93
 msgid "_Windows/"
@@ -154,19 +158,19 @@ msgstr "Soubor/"
 
 #: libgnomeui/gnome-app-helper.c:97 libgnomeui/stock_demo.c:274
 msgid "Edit"
-msgstr "Úp_ravy"
+msgstr "Úpravy"
 
 #: libgnomeui/gnome-app-helper.c:98
 msgid "Edit/"
-msgstr "Úp_ravy/"
+msgstr "Úpravy/"
 
 #: libgnomeui/gnome-app-helper.c:99
 msgid "View"
-msgstr "Pohled"
+msgstr "Zobrazení"
 
 #: libgnomeui/gnome-app-helper.c:100
 msgid "View/"
-msgstr "Pohled/"
+msgstr "Zobrazení/"
 
 #: libgnomeui/gnome-app-helper.c:101
 msgid "Settings"
@@ -212,7 +216,7 @@ msgstr "Okna/"
 #. Open
 #: libgnomeui/gnome-app-helper.c:122
 msgid "_Open..."
-msgstr "_Otevøít"
+msgstr "_Otevøít..."
 
 #: libgnomeui/gnome-app-helper.c:122
 msgid "Open a file"
@@ -230,7 +234,7 @@ msgstr "Ulo¾it aktuální soubor"
 #. Save As
 #: libgnomeui/gnome-app-helper.c:132
 msgid "Save _As..."
-msgstr "Ulo¾it _Jako..."
+msgstr "Ulo¾it _jako..."
 
 #: libgnomeui/gnome-app-helper.c:133
 msgid "Save the current file with a different name"
@@ -257,7 +261,7 @@ msgstr "Tisk aktuálního souboru"
 #. Print Setup
 #: libgnomeui/gnome-app-helper.c:149
 msgid "Print S_etup..."
-msgstr "Nastavení tis_ku"
+msgstr "Nastavení tis_ku..."
 
 #: libgnomeui/gnome-app-helper.c:150
 msgid "Setup the page settings for your current printer"
@@ -266,7 +270,7 @@ msgstr "Nastavení stránky pro aktuální tiskárnu"
 #. Close
 #: libgnomeui/gnome-app-helper.c:155
 msgid "_Close"
-msgstr "_Uzavøít"
+msgstr "U_zavøít"
 
 #: libgnomeui/gnome-app-helper.c:155
 msgid "Close the current file"
@@ -306,7 +310,7 @@ msgstr "Kopírovat výbìr"
 #. Paste
 #: libgnomeui/gnome-app-helper.c:179 libgnomeui/gnome-popup-help.c:62
 msgid "_Paste"
-msgstr "_Vlo¾it"
+msgstr "Vlo¾_it"
 
 #: libgnomeui/gnome-app-helper.c:179
 msgid "Paste the clipboard"
@@ -337,7 +341,7 @@ msgstr "_Akci znovu"
 
 #: libgnomeui/gnome-app-helper.c:194
 msgid "Redo the undone action"
-msgstr "Zru¹it poslední \"Zpìt\""
+msgstr "Zru¹it poslední akci zpìt"
 
 #. Find
 #: libgnomeui/gnome-app-helper.c:199
@@ -351,7 +355,7 @@ msgstr "Vyhledat øetìzec"
 #. Find Again
 #: libgnomeui/gnome-app-helper.c:204
 msgid "Find _Again"
-msgstr "Vyhledat _Znovu"
+msgstr "Vyhledat zn_ovu"
 
 #: libgnomeui/gnome-app-helper.c:205
 msgid "Search again for the same string"
@@ -360,7 +364,7 @@ msgstr "Znovu vyhledat stejný øetìzec"
 #. Replace
 #: libgnomeui/gnome-app-helper.c:210
 msgid "_Replace..."
-msgstr "Nah_radit"
+msgstr "Nah_radit..."
 
 #: libgnomeui/gnome-app-helper.c:210
 msgid "Replace a string"
@@ -394,7 +398,7 @@ msgstr "Konfigurace aplikace"
 #. About
 #: libgnomeui/gnome-app-helper.c:234
 msgid "_About..."
-msgstr "O _programu"
+msgstr "O _programu..."
 
 #: libgnomeui/gnome-app-helper.c:235
 msgid "About this application"
@@ -704,38 +708,38 @@ msgstr "="
 msgid "INV"
 msgstr "INV"
 
-#: libgnomeui/gnome-client.c:835
+#: libgnomeui/gnome-client.c:842
 msgid "Specify session management ID"
 msgstr "Specifikujte ID správy sezení"
 
-#: libgnomeui/gnome-client.c:835 libgnorba/goad-browser.c:27
+#: libgnomeui/gnome-client.c:842 libgnorba/goad-browser.c:27
 msgid "ID"
 msgstr "ID"
 
-#: libgnomeui/gnome-client.c:837
+#: libgnomeui/gnome-client.c:844
 msgid "Specify prefix of saved configuration"
 msgstr "Specifikujte prefix ukládané konfigurace"
 
-#: libgnomeui/gnome-client.c:837
+#: libgnomeui/gnome-client.c:844
 msgid "PREFIX"
 msgstr "PREFIX"
 
-#: libgnomeui/gnome-client.c:839
+#: libgnomeui/gnome-client.c:846
 msgid "Disable connection to session manager"
 msgstr "Zakázat pøipojení na správce sezení"
 
 #. Register commandline options.
-#: libgnomeui/gnome-client.c:968
+#: libgnomeui/gnome-client.c:977
 msgid "Session management options"
-msgstr "Nastavení správy sezení"
+msgstr "Volby správy sezení"
 
-#: libgnomeui/gnome-client.c:2348
+#: libgnomeui/gnome-client.c:2357
 msgid "Cancel Logout"
 msgstr "Zru¹it odhlá¹ení"
 
 #: libgnomeui/gnome-color-picker.c:313
 msgid "Pick a color"
-msgstr "Vyberte barvu"
+msgstr "Zvolte barvu"
 
 #. Calendar label, only shown if the date editor has a time field
 #: libgnomeui/gnome-dateedit.c:459
@@ -760,11 +764,11 @@ msgstr "Typ:"
 
 #: libgnomeui/gnome-dentry-edit.c:230
 msgid "Icon:"
-msgstr "Ikonka:"
+msgstr "Ikona:"
 
 #: libgnomeui/gnome-dentry-edit.c:240
 msgid "Choose an icon"
-msgstr "Vyberte ikonku"
+msgstr "Zvolte ikonu"
 
 #: libgnomeui/gnome-dentry-edit.c:253
 msgid "Run in Terminal"
@@ -820,27 +824,25 @@ msgstr "Dokonèit"
 
 #: libgnomeui/gnome-file-entry.c:152
 msgid "Select file"
-msgstr "Vyberte soubor"
+msgstr "Výbìr souboru"
 
 #. browse button ...
 #: libgnomeui/gnome-file-entry.c:282 libgnomeui/gnome-spell.c:619
 #: libgnomeui/gnome-spell.c:636 libgnomeui/gnome-spell.c:653
 msgid "Browse..."
-msgstr "Probírat..."
+msgstr "Procházet..."
 
 #: libgnomeui/gnome-font-picker.c:161
 msgid "Pick a Font"
-msgstr "Zvolte font"
+msgstr "Zvolte písmo"
 
 #: libgnomeui/gnome-font-picker.c:710 libgnomeui/gnome-stock.c:848
 msgid "Font"
-msgstr "Font"
+msgstr "Písmo"
 
 #: libgnomeui/gnome-icon-entry.c:111 libgnomeui/gnome-icon-entry.c:556
 msgid "No Icon"
-msgstr ""
-"Bez\n"
-"Ikony"
+msgstr "Bez ikony"
 
 #: libgnomeui/gnome-icon-entry.c:274 libgnomeui/gnome-pixmap-entry.c:272
 msgid "Can't find an hbox, using a normal file selection"
@@ -852,7 +854,7 @@ msgstr "Náhled"
 
 #: libgnomeui/gnome-icon-sel.c:368
 msgid "Loading Icons..."
-msgstr "Nahrávají se ikonky..."
+msgstr "Nahrávají se ikony..."
 
 #: libgnomeui/gnome-init.c:161
 msgid "Gdk debugging flags to set"
@@ -881,11 +883,11 @@ msgstr "Volání funkcí X bude synchronní"
 
 #: libgnomeui/gnome-init.c:169
 msgid "Don't use X shared memory extension"
-msgstr "Nepou¾ívat roz¹íøení X - sdílenou pamì»"
+msgstr "Nepou¾ije sdílenou pamì» - X roz¹íøení"
 
 #: libgnomeui/gnome-init.c:171
 msgid "Program name as used by the window manager"
-msgstr "Jméno program, bude pou¾ito správcem oken"
+msgstr "Jméno programu, bude pou¾ito správcem oken"
 
 #: libgnomeui/gnome-init.c:171
 msgid "NAME"
@@ -893,7 +895,7 @@ msgstr "JMÉNO"
 
 #: libgnomeui/gnome-init.c:173
 msgid "Program class as used by the window manager"
-msgstr "Tøída aprogramu, bude pou¾ito správcem oken"
+msgstr "Tøída programu, bude pou¾ito správcem oken"
 
 #: libgnomeui/gnome-init.c:173
 msgid "CLASS"
@@ -925,29 +927,27 @@ msgstr "Varování bude znamena fatální chybu"
 
 #: libgnomeui/gnome-init.c:189
 msgid "Load an additional Gtk module"
-msgstr "Naèíst pøídavný modul Gtk"
+msgstr "Naète pøídavný modul Gtk"
 
 #: libgnomeui/gnome-init.c:189
 msgid "MODULE"
 msgstr "MODUL"
 
 #: libgnomeui/gnome-init.c:297
-#, fuzzy
 msgid "GTK options"
-msgstr "Nastavení GNOME"
+msgstr "Volby GTK"
 
 #: libgnomeui/gnome-init.c:298
-#, fuzzy
 msgid "GNOME GUI options"
-msgstr "Nastavení GNOME"
+msgstr "Volby GNOME GUI"
 
-#: libgnomeui/gnome-init.c:452
-#, fuzzy, c-format
+#: libgnomeui/gnome-init.c:453
+#, c-format
 msgid "%s options"
-msgstr "Nastavení GNOME"
+msgstr "Volby %s"
 
 #. dialog display isn't working out
-#: libgnomeui/gnome-init.c:642
+#: libgnomeui/gnome-init.c:647
 msgid "Multiple segmentation faults occurred; can't display error dialog\n"
 msgstr "Pøíli¹ mnoho výpadkù segmentu; nelze zobrazit chybový dialog\n"
 
@@ -1012,19 +1012,15 @@ msgid "Date"
 msgstr "Datum"
 
 #. the localized string should fit (after replacing the %a %b
-#. etc) in ~18 chars.
-#. %a is abbreviated weekday, %A is full weekday,
-#. %b %B are abbreviated and full monthname, %Y is year,
-#. %d is day of month, %m is month number, %T full hour,
-#. %H hours, %M minutes, %S seconds
+#. * etc) in ~18 chars. Please consult strftime(3) manpage.
 #.
-#: libgnomeui/gnome-scores.c:130
+#: libgnomeui/gnome-scores.c:126
 msgid "%a %b %d %T %Y"
 msgstr "%a, %e.%b %T %Y"
 
 #: libgnomeui/gnome-spell.c:197
 msgid "Select dictionary"
-msgstr "Vyberte slovník"
+msgstr "Vybìr slovníku"
 
 #: libgnomeui/gnome-spell.c:245
 #, c-format
@@ -1155,7 +1151,7 @@ msgstr "Povolit tipy"
 
 #: libgnomeui/gnome-spell.c:726
 msgid "Kill ispell process"
-msgstr "Ukonèit procesy kontroly pravopisu"
+msgstr "Ukonèit proces kontroly pravopisu"
 
 #: libgnomeui/gnome-spell.c:752
 msgid "Spell"
@@ -1175,7 +1171,7 @@ msgstr "Smazat"
 
 #: libgnomeui/gnome-stock.c:827
 msgid "Select Color"
-msgstr "Vyberte barvu"
+msgstr "Vybìr barvy"
 
 #: libgnomeui/gnome-stock.c:829
 msgid "Table Borders"
@@ -1285,7 +1281,7 @@ msgstr "Sepsat hlá¹ení o chybách"
 
 #: libgnomeui/gnome_segv.c:104
 msgid "Debug"
-msgstr ""
+msgstr "Ladìní"
 
 #: libgnomeui/gnome_segv.c:111
 msgid "http://www.gnome.org/application_crashed.shtml"
@@ -1449,7 +1445,7 @@ msgstr "Nastavit stav"
 
 #: libgnomeui/winhints_demo.c:209
 msgid "Skip Toggles:"
-msgstr ""
+msgstr "Vynechat pøepínaèe:"
 
 #: libgnomeui/winhints_demo.c:219
 msgid "Skip Focus"
@@ -1461,11 +1457,11 @@ msgstr "Vynechat z menu oken"
 
 #: libgnomeui/winhints_demo.c:227
 msgid "Skip Taskbar / WinList"
-msgstr ""
+msgstr "Vynechat stavovou li¹tu / seznam oken"
 
 #: libgnomeui/winhints_demo.c:231
 msgid "Set Skip"
-msgstr ""
+msgstr "Nastavit skok"
 
 #: libgnomeui/winhints_demo.c:410
 msgid "WIN_HINTS Test"
@@ -1480,6 +1476,8 @@ msgid ""
 "Simple test app to check how the WIN_HINTS work.\n"
 "And to test the gnome_win_hints_* functions for errors. :)"
 msgstr ""
+"Jednoduchá testovací aplikace, která ovìøí, zda WIN_HINTS fungují.\n"
+"A k nalezení chyb ve funkcích gnome_win_hints_*. :)"
 
 #: libgnorba/gnome-name-server.c:229
 #, c-format
@@ -1497,13 +1495,13 @@ msgstr "GOAD ID aktivovaného serveru"
 
 #: libgnorba/goad-browser.c:28
 msgid "Repository ID of the server to activate"
-msgstr ""
+msgstr "ID repozitáøe aktivovaného serveru"
 
 #: libgnorba/goad-browser.c:28
 msgid "REPO-ID"
 msgstr "REPO-ID"
 
-#: libgnorba/goad-browser.c:171
+#: libgnorba/goad-browser.c:182
 msgid ""
 "I couldn't find any installed services.  Either you don't have\n"
 "any services installed or I don't know the path to find them.\n"
@@ -1523,7 +1521,7 @@ msgstr "(Interní pou¾ití) GOAD deskriptor souboru"
 
 #: libgnorba/goad.c:1367
 msgid "Gnome Object Activation Directory"
-msgstr ""
+msgstr "Adresáø Aktivovatelných Gnome Objektù (GOAD)"
 
 #: libgnorba/loadshlib.c:11
 msgid "ID under which GOAD knows this server"
@@ -1535,40 +1533,45 @@ msgstr "GOAD_ID"
 
 #: libgnorba/loadshlib.c:12
 msgid "Repository ID under which GOAD knows this server"
-msgstr ""
+msgstr "ID repozitáøe, které zná GOAD na tomto serveru"
 
 #: libgnorba/loadshlib.c:12
 msgid "REPO_ID"
 msgstr "REPO_ID"
 
-#: libgnorba/orbitgtk.c:138
+#: libgnorba/orbitgtk.c:129
+#, c-format
+msgid "Failed to get user details for UID %d (%s)\n"
+msgstr ""
+
+#: libgnorba/orbitgtk.c:141
 #, c-format
 msgid "Failed to open CORBA cookie file (%s) for writing: %s\n"
-msgstr ""
+msgstr "Nepodaøilo se opevøít pro zápis soubor CORBA cookie (%s): %s\n"
 
-#: libgnorba/orbitgtk.c:145
+#: libgnorba/orbitgtk.c:148
 #, c-format
 msgid "Failed to write CORBA cookie file (%s): %s\n"
-msgstr ""
+msgstr "Nepodaøilo se zapsat soubor CORBA cookie (%s): %s\n"
 
-#: libgnorba/orbitgtk.c:171
+#: libgnorba/orbitgtk.c:174
 #, c-format
 msgid "Failed to write CORBA cookie to `%s': %s\n"
-msgstr ""
+msgstr "Nepodaøilo se zapsat CORBA cookie do `%s': %s\n"
 
-#: libgnorba/orbitgtk.c:181
+#: libgnorba/orbitgtk.c:184
 #, c-format
 msgid "Failed to open CORBA cookie file `%s': %s\n"
-msgstr ""
+msgstr "Nepodaøilo se otevøít CORBA cookie `%s': %s\n"
 
-#: libgnorba/orbitgtk.c:187
+#: libgnorba/orbitgtk.c:190
 #, c-format
 msgid "Failed to read CORBA cookie file `%s': %s\n"
-msgstr ""
+msgstr "Nepodaøilo se naèíst soubor CORBA cookie `%s': %s\n"
 
-#: libgnorba/orbitgtk.c:213
+#: libgnorba/orbitgtk.c:216
 msgid "Failed to obtain CORBA authentication cookie, exiting\n"
-msgstr ""
+msgstr "Nepodaøilo se získat autentizaèní CORBA cookie, ukonèeno\n"
 
 #: libgnorba/orbitns.c:295
 msgid "Could not get name service!"
@@ -1659,184 +1662,49 @@ msgstr "%s: pøepínaè `-W %s' není jednoznaèný\n"
 msgid "%s: option `-W %s' doesn't allow an argument\n"
 msgstr "%s: pøepínaè `-W %s' nepovoluje argument\n"
 
-#: support/popthelp.c:35
+#: support/popthelp.c:36
 msgid "Show this help message"
 msgstr "Zobrazit tuto chybovou zprávu"
 
-#: support/popthelp.c:36
+#: support/popthelp.c:37
 msgid "Display brief usage message"
 msgstr "Zobrazit struènou nápovìdu"
 
 #. Pixmap
 #: test-gnome/testgnome.c:792
 msgid "Default Pixmap"
-msgstr "Standardní pixmap"
+msgstr "Standardní obrázková mapa"
 
 #: test-gnome/testgnome.c:800 test-gnome/testgnome.c:841
 #: test-gnome/testgnome.c:866
 msgid "If you choose a font it will appear here"
-msgstr "Pokud vyberete font, bude zde zobrazen"
+msgstr "Pokud vyberete písmo, bude zde zobrazeno"
 
 #. Font_Info
 #: test-gnome/testgnome.c:807
 msgid "Font Info"
-msgstr "Informace o fontu"
+msgstr "Informace o písmu"
 
 #: test-gnome/testgnome.c:817
 msgid "Use Font in button with size"
-msgstr ""
+msgstr "Pou¾ít v tlaèítkách písmo o velikosti"
 
 #: test-gnome/testgnome.c:824
 msgid "Show font size"
-msgstr "Ukazovat velikost fontu"
+msgstr "Ukazovat velikost písma"
 
 #: test-gnome/testgnome.c:860
 msgid "This is an hbox with pixmap and text"
-msgstr ""
+msgstr "Toto je hbox s obrázkovou mapou a textem"
 
 #: test-gnome/testgnome.c:1072
 msgid "The user chose Yes/OK with data:\n"
-msgstr ""
+msgstr "U¾ivatel zvolil Ano/OK s daty:\n"
 
 #: test-gnome/testgnome.c:1076
 msgid "The user chose No/Cancel with data:\n"
-msgstr ""
+msgstr "U¾ivatel zvolil Ne/Zru¹it s daty:\n"
 
 #: test-gnome/testgnome.c:1087
 msgid "Weird number in reply callback"
-msgstr ""
-
-#~ msgid "Guru-in-a-dialog test"
-#~ msgstr "Test Guru-v-dialogu"
-
-# , c-format
-# , c-format
-#~ msgid ""
-#~ "Application \"%s\" has a bug.\n"
-#~ "SIGSEGV received at PC %#lx in PID %d.\n"
-#~ "\n"
-#~ "\n"
-#~ "Do you want to exit this program?"
-#~ msgstr ""
-#~ "Aplikace \"%s\" obsahuje chybu.\n"
-#~ "Pøijat signál SIGSEGV. PC = %#lx, PID = %d\n"
-#~ "\n"
-#~ "Chcete ukonèit tento program?"
-
-#~ msgid ""
-#~ "No, and ignore\n"
-#~ "future SIGSEGV's"
-#~ msgstr ""
-#~ "Ne a ignorovat\n"
-#~ "dal¹í signály SIGSEGV"
-
-#~ msgid "Ask next time"
-#~ msgstr "Zeptat se i pøí¹tì"
-
-#~ msgid "Really log out?"
-#~ msgstr "Skuteènì odhlásit ?"
-
-#~ msgid "Options error\n"
-#~ msgstr "Chyba ve volbách\n"
-
-#~ msgid "Gnome Hello %s.\n"
-#~ msgstr "Gnome Hello %s.\n"
-
-#~ msgid ""
-#~ "%s: A gnomified 'Hello World' program\n"
-#~ "\n"
-#~ "Usage: %s [--help] [--version]\n"
-#~ "\n"
-#~ "Options:\n"
-#~ "        --help     display this help and exit\n"
-#~ "        --version  output version information and exit\n"
-#~ msgstr ""
-#~ "%s: program 'Hello World' pro Gnome\n"
-#~ "\n"
-#~ "Pou¾ití: %s [--help] [--version]\n"
-#~ "\n"
-#~ "Pøepínaèe:\n"
-#~ "        --help     tato nápovìda a konec\n"
-#~ "        --version  informace o verzi a konec\n"
-
-#~ msgid "<control>A"
-#~ msgstr "<control>A"
-
-#~ msgid "Help/About..."
-#~ msgstr "Nápovìda/O programu ..."
-
-#~ msgid "<control>E"
-#~ msgstr "<control>E"
-
-#~ msgid "File/Exit"
-#~ msgstr "Soubor/Konec"
-
-#~ msgid "Children/"
-#~ msgstr "Potomci/"
-
-#~ msgid "MDI Mode"
-#~ msgstr "Re¾im MDI"
-
-#~ msgid "Modal"
-#~ msgstr "Modální"
-
-#~ msgid "Toplevel"
-#~ msgstr "Nejvy¹¹í úroveò"
-
-#~ msgid "Notebook"
-#~ msgstr "Blok"
-
-#~ msgid "Children"
-#~ msgstr "Potomci"
-
-#~ msgid "Remove Child"
-#~ msgstr "Odstranit potomka"
-
-#~ msgid "Add Child"
-#~ msgstr "Pøidat potomka"
-
-#~ msgid "Child"
-#~ msgstr "Potomek"
-
-#~ msgid "Increase Counter"
-#~ msgstr "Zvìt¹it poèítadlo"
-
-#~ msgid "Remove View"
-#~ msgstr "Odstranit prvek"
-
-#~ msgid "Add View"
-#~ msgstr "Pøidat prvek"
-
-#~ msgid "Info about GNOME hello"
-#~ msgstr "Info o GNOME hello"
-
-#~ msgid "About..."
-#~ msgstr "O programu"
-
-#~ msgid "Exit GNOME hello"
-#~ msgstr "Konec GNOME hello"
-
-#~ msgid "Hello GNOME"
-#~ msgstr "Ahoj GNOME"
-
-#~ msgid "Hello World Gnomified"
-#~ msgstr "Hello World pro Gnome"
-
-#~ msgid "Exit"
-#~ msgstr "Konec"
-
-#~ msgid "About GnomeHello..."
-#~ msgstr "O GnomeHello..."
-
-#~ msgid ""
-#~ "GNOME is a civilized software system so we've a \"hello world\" program"
-#~ msgstr "GNOME je civilizovaný software, proto máme program \"hello world\""
-
-#~ msgid "(C) 1998 the Free Software Foundation"
-#~ msgstr "(C) 1998 Free Software Foundation"
-
-#~ msgid "The Hello World Gnomified"
-#~ msgstr "Verze 'Hello World' pro Gnome"
-
-#~ msgid "Hello GNOME\n"
-#~ msgstr "Hello pro GNOME\n"
+msgstr "Podivné èíslo v odpovìdi zpìtného volání"

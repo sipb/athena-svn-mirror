@@ -61,8 +61,7 @@ extern "C"
 #define TC_GNOME_Table_Value ((CORBA_TypeCode)&TC_GNOME_Table_Value_struct)
 #endif
    extern GNOME_Table_Value *GNOME_Table_Value__alloc(void);
-   extern gpointer GNOME_Table_Value__free(gpointer mem, gpointer dat,
-					   CORBA_boolean free_strings);	/* ORBit internal use */
+   extern gpointer GNOME_Table_Value__free(gpointer mem, gpointer dat, CORBA_boolean free_strings);	/* ORBit internal use */
 #endif
 #define ex_GNOME_Table_OutOfRange "IDL:GNOME/Table/OutOfRange:1.0"
    void _ORBIT_GNOME_Table_OutOfRange_demarshal(GIOPRecvBuffer *
@@ -89,8 +88,7 @@ extern "C"
 #define TC_GNOME_Table_OutOfRange ((CORBA_TypeCode)&TC_GNOME_Table_OutOfRange_struct)
 #endif
 #define GNOME_Table_OutOfRange__alloc() NULL
-   extern gpointer GNOME_Table_OutOfRange__free(gpointer mem, gpointer dat,
-						CORBA_boolean free_strings);	/* ORBit internal use */
+   extern gpointer GNOME_Table_OutOfRange__free(gpointer mem, gpointer dat, CORBA_boolean free_strings);	/* ORBit internal use */
 #endif
 
 /** POA structures **/

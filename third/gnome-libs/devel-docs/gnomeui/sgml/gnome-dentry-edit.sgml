@@ -1,4 +1,4 @@
-<refentry id="GnomeDEntryEdit" revision="16 Mar 2001">
+<refentry id="GnomeDEntryEdit">
 <refmeta>
 <refentrytitle>GnomeDEntryEdit</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -74,7 +74,7 @@ to add to a notebook. Use the <link linkend="gnome-dentry-edit-new-notebook">gno
 pages to the notebook.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -88,7 +88,7 @@ pages to the notebook.</para>
 <para>
   Get the first child widget pointer (page 1, basic), if you want to
   add it to a notebook yourself.
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -105,7 +105,7 @@ pages to the notebook.</para>
 <para>
   Get the first child widget pointer (page 2, advanced), if you want to
   add it to a notebook yourself.
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -124,7 +124,7 @@ Creates a new <link linkend="GnomeDEntryEdit">GnomeDEntryEdit</link> object and 
 to the <parameter>notebook</parameter> specified in the parameter.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -142,7 +142,7 @@ to the <parameter>notebook</parameter> specified in the parameter.</para>
 Clear the editting areas.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -160,7 +160,7 @@ Load a .desktop file and update the editting areas
 of the object accordingly.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -181,7 +181,7 @@ Destroy existing dentry and replace
 it with this one, updating the <link linkend="GnomeDEntryEdit">GnomeDEntryEdit</link> to reflect it.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -201,7 +201,7 @@ This call is actually the <link linkend="gnome-dentry-edit-get-dentry">gnome_den
 it should not be used, it is left ONLY for compatibility reasons.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -221,7 +221,7 @@ Get the icon filename. The icon is entered into a
 for <link linkend="gnome-icon-entry-get-filename">gnome_icon_entry_get_filename</link></para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -239,7 +239,7 @@ for <link linkend="gnome-icon-entry-get-filename">gnome_icon_entry_get_filename<
 Get the Name field from the dentry.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">

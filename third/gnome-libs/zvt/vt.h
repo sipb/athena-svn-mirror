@@ -28,6 +28,10 @@
 /* for utf-8 input support */
 #define ZVT_UTF 1
 
+/* for multibyte support */
+#define ZVT_MB 1
+#define ZVT_JIS 1
+
 #ifdef __cplusplus
 extern "C" {
 #endif /* __cplusplus */
@@ -71,6 +75,7 @@ typedef enum {
 #define VTATTR_BLINK      0x10000000
 #define VTATTR_REVERSE    0x08000000
 #define VTATTR_CONCEALED  0x04000000
+#define VTATTR_MULTIBYTE  0x80000000  /* for multibyte charater */
 
 /* all attributes mask, and no-attributes mask */
 #define VTATTR_MASK	  0xffff0000
@@ -152,6 +157,7 @@ struct vt_em {
 				   old lines are discarded */
   void (*ring_my_bell)(void *user_data);	/* ring my bell ... */
   void (*change_my_name)(void *user_data, VTTITLE_TYPE type, char *name);	/* ring my bell ... */
+  void (*dtterm_seq)(void *user_data);
 
   void *user_data;		/* opaque external data handle for callbacks */
 
@@ -207,6 +213,10 @@ void  	      vt_scrollback_set (struct vt_em *vt, int lines);
 int   	      vt_killchild      (struct vt_em *vt, int signal);
 int   	      vt_closepty       (struct vt_em *vt);
 void	      vt_reset_terminal (struct vt_em *vt, int hard);
+#ifdef ZVT_MB
+int           vt_line_mblen(int x, struct vt_line *l);
+int           vt_query_line_mbchar(int x, struct vt_line *l);
+#endif
 
 #ifdef __cplusplus
 	   }

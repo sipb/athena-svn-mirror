@@ -1,10 +1,10 @@
 /*****
 * fonts.c : XmHTML font loading & caching routines.
 *
-* This file Version	$Revision: 1.1.1.1 $
+* This file Version	$Revision: 1.1.1.2 $
 *
 * Creation date:		Mon Sep 22 09:46:00 GMT+0100 1997
-* Last modification: 	$Date: 2000-11-12 01:49:35 $
+* Last modification: 	$Date: 2002-02-13 00:12:08 $
 * By:					$Author: ghudson $
 * Current State:		$State: Exp $
 *
@@ -33,6 +33,11 @@
 /*****
 * ChangeLog 
 * $Log: not supported by cvs2svn $
+* Revision 1.10.6.1  2001/10/20 06:52:12  kmaraas
+* 2001-10-20  Kjartan Maraas  <kmaraas@gnome.org>
+*
+* 	* *.*: Apply all the Red Hat patches.
+*
 * Revision 1.10  1999/07/29 01:26:28  sopwith
 *
 *
@@ -221,8 +226,8 @@ static fontCache *master_cache;		/* master font cache */
 static fontCache *curr_cache;		/* current font cache */
 
 /* Backup lists when sizes are not specified */
-static int def_fn_sizes[8] = {140,80,240,180,160,140,120,100};
-static int def_fn_fixed_sizes[2] = {120,80};
+static int def_fn_sizes[8] = {110,80,240,160,160,140,140,140};
+static int def_fn_fixed_sizes[2] = {110,80};
 
 /*****
 * Name: 		makeFontName
@@ -297,13 +302,13 @@ makeFontName(String name, String foundry, String family, String weight,
 		/* FIXME: better way to determine the fontset name? */
 		sprintf(new_name,
 			"-%s-%s-%s-%s-%s-*-*-%i-%i-%i-%s-*-%s,"
-			"-*-*-%s-%s-%s-*-*-%i-*-*-*-*-*,"
+			"-*-*-%s-%s-%s-*-%i-*-*-*-*-*-*,"
 			"-*-*-*-*-*-*-%i-*-*-*-*-*-*,*",
 			foundry != NULL ? foundry : fndry,
 			family != NULL ? family : fam, 
 			weight, slant, wd, points,
 			curr_cache->res_x, curr_cache->res_y, sp, charset, 
-			weight, slant, wd, points,
+			weight, slant, wd, points / 10,
 			points / 10);
 	} else {
 		sprintf(new_name,

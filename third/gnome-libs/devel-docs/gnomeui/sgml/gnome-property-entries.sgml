@@ -1,4 +1,4 @@
-<refentry id="gnomeui-gnome-property-entries" revision="16 Mar 2001">
+<refentry id="gnomeui-gnome-property-entries">
 <refmeta>
 <refentrytitle>gnome-property-entries</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -51,7 +51,7 @@ This module is deprecated/experimental/unfinished. Don't use it.
                                              <link linkend="GdkFont">GdkFont</link> **font_ptr);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -84,7 +84,7 @@ This module is deprecated/experimental/unfinished. Don't use it.
                                              const <link linkend="gchar">gchar</link> *texts[]);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">

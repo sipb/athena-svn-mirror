@@ -2262,16 +2262,18 @@ void
 Toolkit_Draw_Shadows(XmHTMLWidget html, TGC top_shadow, TGC bottom_shadow,
 		     gint xs, gint ys, gint w, gint h, gint shadow_thick, gint shadow_type)
 {
+	GtkWidget *win;
+	win = GTK_WIDGET(html->html.work_area);
 	switch (shadow_type)
 	  {
 	  case XmSHADOW_IN:
-	    gtk_draw_shadow(GTK_WIDGET(html)->style, GTK_WIDGET(html)->window,
+	    gtk_draw_shadow(GTK_WIDGET(html)->style, win->window,
 			    GTK_STATE_NORMAL, GTK_SHADOW_IN,
 			    xs, ys,
 			    w, h);
 	    break;
 	  case XmSHADOW_OUT:
-	    gtk_draw_shadow(GTK_WIDGET(html)->style, GTK_WIDGET(html)->window,
+	    gtk_draw_shadow(GTK_WIDGET(html)->style, win->window,
 			    GTK_STATE_NORMAL, GTK_SHADOW_OUT,
 			    xs, ys,
 			    w, h);

@@ -426,6 +426,7 @@ gnome_pixmap_entry_construct (GnomePixmapEntry *pentry, const gchar *history_id,
 	gentry = gnome_file_entry_gnome_entry(GNOME_FILE_ENTRY(pentry->fentry));
 
 	gnome_entry_set_history_id (GNOME_ENTRY (gentry), history_id);
+	gnome_entry_load_history (GNOME_ENTRY (gentry));
 	gnome_file_entry_set_title (GNOME_FILE_ENTRY(pentry->fentry),
 				    browse_dialog_title);
 

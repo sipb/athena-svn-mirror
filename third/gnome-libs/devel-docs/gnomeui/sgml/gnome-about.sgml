@@ -1,4 +1,4 @@
-<refentry id="GnomeAbout" revision="16 Mar 2001">
+<refentry id="GnomeAbout">
 <refmeta>
 <refentrytitle>GnomeAbout</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -106,7 +106,7 @@ optional pixmap to be displayed in the dialog, typically a product or
 company logo of some sort; set to <literal>NULL</literal> if no logo file is available.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -157,7 +157,7 @@ Only for use by bindings to languages other than C; don't use
 in applications.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
