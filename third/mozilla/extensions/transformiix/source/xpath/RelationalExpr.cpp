@@ -28,15 +28,8 @@
  */
 
 #include "Expr.h"
-#include "NodeSet.h"
-#include "XMLDOMUtils.h"
+#include "txNodeSet.h"
 #include "txIXPathContext.h"
-
-RelationalExpr::RelationalExpr(Expr* aLeftExpr, Expr* aRightExpr,
-                               RelationalExprType aOp)
-    : mLeftExpr(aLeftExpr), mRightExpr(aRightExpr), mOp(aOp)
-{
-}
 
 /**
  *  Compares the two ExprResults based on XPath 1.0 Recommendation (section 3.4)
@@ -56,16 +49,16 @@ RelationalExpr::compareResults(txIEvalContext* aContext, txAExprResult* aLeft,
             return compareResults(aContext, &leftBool, aRight);
         }
 
-        NodeSet* nodeSet = NS_STATIC_CAST(NodeSet*, aLeft);
+        txNodeSet* nodeSet = NS_STATIC_CAST(txNodeSet*, aLeft);
         nsRefPtr<StringResult> strResult;
         rv = aContext->recycler()->getStringResult(getter_AddRefs(strResult));
         NS_ENSURE_SUCCESS(rv, rv);
 
-        int i;
+        PRInt32 i;
         for (i = 0; i < nodeSet->size(); ++i) {
-            Node* node = nodeSet->get(i);
             strResult->mValue.Truncate();
-            XMLDOMUtils::getNodeValue(node, strResult->mValue);
+            txXPathNodeUtils::appendNodeValue(nodeSet->get(i),
+                                              strResult->mValue);
             if (compareResults(aContext, strResult, aRight)) {
                 return PR_TRUE;
             }
@@ -81,16 +74,16 @@ RelationalExpr::compareResults(txIEvalContext* aContext, txAExprResult* aLeft,
             return compareResults(aContext, aLeft, &rightBool);
         }
 
-        NodeSet* nodeSet = NS_STATIC_CAST(NodeSet*, aRight);
+        txNodeSet* nodeSet = NS_STATIC_CAST(txNodeSet*, aRight);
         nsRefPtr<StringResult> strResult;
         rv = aContext->recycler()->getStringResult(getter_AddRefs(strResult));
         NS_ENSURE_SUCCESS(rv, rv);
 
-        int i;
+        PRInt32 i;
         for (i = 0; i < nodeSet->size(); ++i) {
-            Node* node = nodeSet->get(i);
             strResult->mValue.Truncate();
-            XMLDOMUtils::getNodeValue(node, strResult->mValue);
+            txXPathNodeUtils::appendNodeValue(nodeSet->get(i),
+                                              strResult->mValue);
             if (compareResults(aContext, aLeft, strResult)) {
                 return PR_TRUE;
             }
@@ -115,7 +108,7 @@ RelationalExpr::compareResults(txIEvalContext* aContext, txAExprResult* aLeft,
                  rtype == txAExprResult::NUMBER) {
             double lval = aLeft->numberValue();
             double rval = aRight->numberValue();
-#if defined(XP_WIN) || defined(XP_OS2)
+#if defined(XP_WIN)
             if (Double::isNaN(lval) || Double::isNaN(rval))
                 result = PR_FALSE;
             else
@@ -154,26 +147,33 @@ RelationalExpr::compareResults(txIEvalContext* aContext, txAExprResult* aLeft,
 
     double leftDbl = aLeft->numberValue();
     double rightDbl = aRight->numberValue();
-#if defined(XP_WIN) || defined(XP_OS2)
+#if defined(XP_WIN)
     if (Double::isNaN(leftDbl) || Double::isNaN(rightDbl))
         return PR_FALSE;
 #endif
 
     switch (mOp) {
         case LESS_THAN:
+        {
             return leftDbl < rightDbl;
-
+        }
         case LESS_OR_EQUAL:
+        {
             return leftDbl <= rightDbl;
-
-        case GREATER_THAN :
+        }
+        case GREATER_THAN:
+        {
             return leftDbl > rightDbl;
-
+        }
         case GREATER_OR_EQUAL:
+        {
             return leftDbl >= rightDbl;
+        }
+        default:
+        {
+            NS_NOTREACHED("We should have caught all cases");
+        }
     }
-
-    NS_NOTREACHED("We should have cought all cases");
 
     return PR_FALSE;
 }

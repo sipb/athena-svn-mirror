@@ -95,9 +95,9 @@ class nsXBLBinding: public nsIXBLBinding
   NS_IMETHOD UnhookEventHandlers();
   NS_IMETHOD ChangeDocument(nsIDocument* aOldDocument, nsIDocument* aNewDocument);
 
-  NS_IMETHOD GetBindingURI(nsCString& aResult);
-  NS_IMETHOD GetDocURI(nsCString& aResult);
-  NS_IMETHOD GetID(nsCString& aResult);
+  NS_IMETHOD_(nsIURI*) BindingURI() const;
+  NS_IMETHOD_(nsIURI*) DocURI() const;
+  NS_IMETHOD GetID(nsACString& aResult) const;
 
   NS_IMETHOD GetInsertionPointsFor(nsIContent* aParent, nsVoidArray** aResult);
 
@@ -138,22 +138,6 @@ public:
                                 const nsAFlatCString& aClassName,
                                 void **aClassObject);
 
-// Static members
-  static PRUint32 gRefCnt;
-  
-  // Used to easily obtain the correct IID for an event.
-  struct EventHandlerMapEntry {
-    const char*  mAttributeName;
-    nsIAtom*     mAttributeAtom;
-    const nsIID* mHandlerIID;
-  };
-
-  static EventHandlerMapEntry kEventHandlerMap[];
-
-  static PRBool IsSupportedHandler(const nsIID* aIID);
-  
-  static void GetEventHandlerIID(nsIAtom* aName, nsIID* aIID, PRBool* aFound);
-
 // Internal member functions
 protected:
   nsresult InitClass(const nsCString& aClassName, nsIScriptContext* aContext,
@@ -166,14 +150,10 @@ protected:
   
 // MEMBER VARIABLES
 protected:
-
   nsRefPtr<nsXBLPrototypeBinding> mPrototypeBinding; // Strong. We share ownership with other bindings and the docinfo.
   nsCOMPtr<nsIContent> mContent; // Strong. Our anonymous content stays around with us.
   nsCOMPtr<nsIXBLBinding> mNextBinding; // Strong. The derived binding owns the base class bindings.
   
-  nsXBLEventHandler* mFirstHandler; // Weak. Our bound element owns the handler 
-                                    // through the event listener manager.
-
   nsIContent* mBoundElement; // [WEAK] We have a reference, but we don't own it.
   
   nsObjectHashtable* mInsertionPointTable;    // A hash from nsIContent* -> (a sorted array of nsXBLInsertionPoint*)

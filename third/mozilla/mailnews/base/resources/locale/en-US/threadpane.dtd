@@ -20,6 +20,7 @@ Rights Reserved.
 
 <!ENTITY threadColumn.label "Thread">
 <!ENTITY senderColumn.label "Sender">
+<!ENTITY recipientColumn.label "Recipient">
 <!ENTITY subjectColumn.label "Subject">
 <!ENTITY dateColumn.label "Date">
 <!ENTITY priorityColumn.label "Priority">
@@ -28,8 +29,8 @@ Rights Reserved.
 <!ENTITY sizeColumn.label "Size">
 <!ENTITY junkStatusColumn.label "Junk Status">
 <!ENTITY linesColumn.label "Lines">
-<!ENTITY unreadColumn.label "Unread">
-<!ENTITY totalColumn.label "Total">
+<!ENTITY unreadColumn.label "Unread in Thread">
+<!ENTITY totalColumn.label "Total in Thread">
 <!ENTITY readColumn.label "Read">
 <!ENTITY flagColumn.label "Flag">
 <!ENTITY locationColumn.label "Location">
@@ -39,6 +40,7 @@ Rights Reserved.
 <!ENTITY columnChooser.tooltip "Click to select columns to display">
 <!ENTITY threadColumn.tooltip "Click to display message threads"> 
 <!ENTITY senderColumn.tooltip "Click to sort by sender">
+<!ENTITY recipientColumn.tooltip "Click to sort by recipient">
 <!ENTITY subjectColumn.tooltip "Click to sort by subject">
 <!ENTITY dateColumn.tooltip "Click to sort by date">
 <!ENTITY priorityColumn.tooltip "Click to sort by priority">

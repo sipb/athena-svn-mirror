@@ -17,7 +17,7 @@
  * All Rights Reserved.
  *
  * Contributor(s): 
- *  Brian Ryner <bryner@uiuc.edu>
+ *  Brian Ryner <bryner@brianryner.com>
  */
 
 // DateTime implementation
@@ -125,7 +125,7 @@ NS_IMETHODIMP
 nsDateTimeChannel::Suspend()
 {
     if (mPump)
-        mPump->Suspend();
+        return mPump->Suspend();
     return NS_ERROR_UNEXPECTED;
 }
 
@@ -133,7 +133,7 @@ NS_IMETHODIMP
 nsDateTimeChannel::Resume()
 {
     if (mPump)
-        mPump->Resume();
+        return mPump->Resume();
     return NS_ERROR_UNEXPECTED;
 }
 
@@ -166,8 +166,7 @@ nsDateTimeChannel::GetURI(nsIURI* *aURI)
 NS_IMETHODIMP
 nsDateTimeChannel::Open(nsIInputStream **_retval)
 {
-    NS_NOTREACHED("nsDateTimeChannel::Open");
-    return NS_ERROR_NOT_IMPLEMENTED;
+    return NS_ImplementChannelOpen(this, _retval);
 }
 
 NS_IMETHODIMP

@@ -115,24 +115,34 @@ function HandleColumnClick(columnID)
     return;
 
   var dbview = GetDBView();
-  // if we're already threaded, clicking the thread icon does a reverse sort by id.
-  if (sortType == nsMsgViewSortType.byThread && (dbview.viewFlags & nsMsgViewFlagsType.kThreadedDisplay))
-    sortType = nsMsgViewSortType.byId;
-  if (sortType == nsMsgViewSortType.byThread && !dbview.supportsThreading)
+  var simpleColumns = false;
+  try {
+    simpleColumns = !pref.getBoolPref("mailnews.thread_pane_column_unthreads");
+  }
+  catch (ex) {
+  }
+  if (sortType == nsMsgViewSortType.byThread) {
+    if (!dbview.supportsThreading)
       return;
-  if (dbview.sortType == sortType) {
-    MsgReverseSortThreadPane();
+
+    if (simpleColumns)
+      MsgToggleThreaded();
+    else if (dbview.viewFlags & nsMsgViewFlagsType.kThreadedDisplay)
+      MsgReverseSortThreadPane();
+    else
+      MsgSortByThread();
   }
   else {
-    try {
-      var flatSort = pref.getBoolPref("mailnews.thread_pane_column_unthreads"); 
-      if (flatSort)
-        dbview.viewFlags &= ~nsMsgViewFlagsType.kThreadedDisplay;
+    if (!simpleColumns && (dbview.viewFlags & nsMsgViewFlagsType.kThreadedDisplay)) {
+      dbview.viewFlags &= ~nsMsgViewFlagsType.kThreadedDisplay;
+      MsgSortThreadPane(sortType);
     }
-    catch (ex) {
+    else if (dbview.sortType == sortType) {
+      MsgReverseSortThreadPane();
     }
-
-    MsgSortThreadPane(sortType);
+    else {
+      MsgSortThreadPane(sortType);
+    }
   }
 }
 
@@ -170,14 +180,14 @@ function MsgSortByDate()
     MsgSortThreadPane(nsMsgViewSortType.byDate);
 }
 
-function MsgSortBySenderOrRecipient()
+function MsgSortBySender()
 {
-    if (IsSpecialFolderSelected(MSG_FOLDER_FLAG_SENTMAIL | MSG_FOLDER_FLAG_DRAFTS | MSG_FOLDER_FLAG_QUEUE)) {
-      MsgSortThreadPane(nsMsgViewSortType.byRecipient);
-    }
-    else {
-      MsgSortThreadPane(nsMsgViewSortType.byAuthor);
-    }
+    MsgSortThreadPane(nsMsgViewSortType.byAuthor);
+}
+
+function MsgSortByRecipient()
+{
+    MsgSortThreadPane(nsMsgViewSortType.byRecipient);
 }
 
 function MsgSortByStatus()
@@ -193,6 +203,11 @@ function MsgSortByLabel()
 function MsgSortByJunkStatus()
 {
     MsgSortThreadPane(nsMsgViewSortType.byJunkStatus);
+}
+
+function MsgSortByAttachments()
+{
+    MsgSortThreadPane(nsMsgViewSortType.byAttachments);
 }
 
 function MsgSortBySubject()
@@ -242,7 +257,8 @@ function MsgSortByThread()
   var dbview = GetDBView();
   if(dbview && !dbview.supportsThreading)
     return;
-  MsgSortThreadPane(nsMsgViewSortType.byThread);
+  dbview.viewFlags |= nsMsgViewFlagsType.kThreadedDisplay;
+  MsgSortThreadPane(nsMsgViewSortType.byId);
 }
 
 function MsgSortThreadPane(sortType)
@@ -266,10 +282,9 @@ function MsgReverseSortThreadPane()
 function MsgToggleThreaded()
 {
   var dbview = GetDBView();
-	curFlags = dbview.viewFlags;
-	dbview.viewFlags = dbview.viewFlags ^ nsMsgViewFlagsType.kThreadedDisplay;
-	dbview.sort(dbview.sortType, dbview.sortOrder); // resort
-  UpdateSortIndicators(dbview.sortType, nsMsgViewSortOrder.ascending);
+  dbview.viewFlags ^= nsMsgViewFlagsType.kThreadedDisplay;
+  dbview.sort(dbview.sortType, dbview.sortOrder); // resort
+  UpdateSortIndicators(dbview.sortType, dbview.sortOrder);
 }
 
 function MsgSortAscending()
@@ -373,7 +388,7 @@ function ThreadPaneOnLoad()
   var tree = GetThreadTree();
 
   tree.addEventListener("click",ThreadPaneOnClick,true);
-
+  
   // The mousedown event listener below should only be added in the thread
   // pane of the mailnews 3pane window, not in the advanced search window.
   if(tree.parentNode.id == "searchResultListBox")

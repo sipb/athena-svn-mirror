@@ -89,10 +89,8 @@ nsStaticComponentLoader::GetModuleInfo()
     }
 
     if (! NSGetStaticModuleInfo) {
-        // apparently we're a static build with no static modules
-        // to register. Suspicious, but might be as intended in certain
-        // shared uses (such as by the stand-alone install engine)
-        NS_WARNING("NSGetStaticModuleInfo not initialized -- is this right?");
+        // We're a static build with no static modules to
+        // register. This can happen in shared uses (such as the GRE)
         return NS_OK;
     }
 
@@ -157,23 +155,16 @@ nsStaticComponentLoader::Init(nsIComponentManager *mgr, nsISupports *aReg)
     return NS_OK;
 }
 
-struct RegisterSelfData
-{
-    nsIComponentManager *mgr;
-    nsIFile             *dir;
-};
-
 PR_STATIC_CALLBACK(PLDHashOperator)
 info_RegisterSelf(PLDHashTable *table, PLDHashEntryHdr *hdr,
                   PRUint32 number, void *arg)
 {
-    RegisterSelfData *data = NS_STATIC_CAST(RegisterSelfData *, arg);
+    nsIComponentManager *mgr = NS_STATIC_CAST(nsIComponentManager *, arg);
     StaticModuleInfo *info = NS_STATIC_CAST(StaticModuleInfo *, hdr);
     
     nsresult rv;
     if (!info->module) {
-        rv = info->info.getModule(data->mgr, nsnull,
-                                  getter_AddRefs(info->module));
+        rv = info->info.getModule(mgr, nsnull, getter_AddRefs(info->module));
 #ifdef DEBUG
         fprintf(stderr, "nSCL: getModule(\"%s\"): %lx\n", info->info.name, rv);
 #endif
@@ -181,8 +172,8 @@ info_RegisterSelf(PLDHashTable *table, PLDHashEntryHdr *hdr,
             return PL_DHASH_NEXT; // oh well.
     }
 
-    rv = info->module->RegisterSelf(data->mgr, data->dir,
-                                    info->info.name, staticComponentType);
+    rv = info->module->RegisterSelf(mgr, nsnull, info->info.name,
+                                    staticComponentType);
 #ifdef DEBUG
     fprintf(stderr, "nSCL: autoreg of \"%s\": %lx\n", info->info.name, rv);
 #endif
@@ -198,14 +189,18 @@ nsStaticComponentLoader::AutoRegisterComponents(PRInt32 when, nsIFile *dir)
     if (mAutoRegistered)
         return NS_OK;
 
+    // if a directory has been explicitly specified, then return early.  we
+    // don't load static components from disk ;)
+    if (dir)
+        return NS_OK;
+
     nsresult rv;
     if (NS_FAILED(rv = GetModuleInfo()))
         return rv;
 
-    RegisterSelfData data = { mComponentMgr, dir };
+    PL_DHashTableEnumerate(&mInfoHash, info_RegisterSelf, mComponentMgr.get());
 
-    PL_DHashTableEnumerate(&mInfoHash, info_RegisterSelf, &data);
-
+    mAutoRegistered = PR_TRUE;
     return NS_OK;
 }
 

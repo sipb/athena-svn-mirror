@@ -47,12 +47,12 @@
 #include "nsIPrompt.h"
 #include "nsIFilePicker.h"
 #include "nsJSPrincipals.h"
-#include "nsScriptSecurityManager.h"
 #include "nsIPrincipal.h"
 #include "nsXPIDLString.h"
 #include "nsIGenKeypairInfoDlg.h"
 #include "nsIDOMCryptoDialogs.h"
 #include "jsapi.h"
+#include "jsdbgapi.h"
 #include <ctype.h>
 #include "nsReadableUtils.h"
 #include "pk11func.h"
@@ -1787,13 +1787,14 @@ nsCryptoRunnable::Run()
 {
   nsNSSShutDownPreventionLock locker;
   JSPrincipals *principals;
+  JSContext *cx = m_args->m_cx;
 
-  nsresult rv = m_args->m_principals->GetJSPrincipals(&principals);
+  nsresult rv = m_args->m_principals->GetJSPrincipals(cx, &principals);
   if (NS_FAILED(rv))
     return NS_ERROR_FAILURE;
 
   jsval retval;
-  if (JS_EvaluateScriptForPrincipals(m_args->m_cx, m_args->m_scope, principals,
+  if (JS_EvaluateScriptForPrincipals(cx, m_args->m_scope, principals,
                                      m_args->m_jsCallback, 
                                      strlen(m_args->m_jsCallback),
                                      nsnull, 0,

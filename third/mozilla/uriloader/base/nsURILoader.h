@@ -47,6 +47,14 @@
 #include "nsString.h"
 #include "nsIWeakReference.h"
 
+#ifdef MOZ_LOGGING
+// Uncomment the next line to force logging on in release builds
+// #define FORCE_PR_LOG
+#endif
+#include "prlog.h"
+
+class nsDocumentOpenInfo;
+
 class nsURILoader : public nsIURILoader
 {
 public:
@@ -65,11 +73,14 @@ protected:
   // prepare the load cookie for the window context
   nsresult SetupLoadCookie(nsISupports * aWindowContext, nsIInterfaceRequestor ** aLoadCookie);
 
-  // a small helper function
-  PRBool ShouldHandleContent(nsIURIContentListener * aCntListener, 
-                             const char * aContentType,
-                             PRBool bIsContentPreferred,
-                             char ** aContentTypeToUse);
+#ifdef PR_LOGGING
+  /**
+   * NSPR logging.  The module is called "URILoader"
+   */
+  static PRLogModuleInfo* mLog;
+#endif
+  
+  friend class nsDocumentOpenInfo;
 };
 
 #endif /* nsURILoader_h__ */

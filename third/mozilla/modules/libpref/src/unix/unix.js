@@ -21,6 +21,7 @@
  *
  * Contributor(s):
  *   Roland Mainz <roland.mainz@informatik.med.uni-giessen.de>
+ *   Jungshik Shin <jshin@mailaps.org>
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either the GNU General Public License Version 2 or later (the "GPL"), or 
@@ -184,6 +185,12 @@ pref("font.name.serif.zh-CN", "isas-song ti-gb2312.1980-0");
 pref("font.name.sans-serif.zh-CN", "isas-song ti-gb2312.1980-0");
 pref("font.name.monospace.zh-CN", "isas-song ti-gb2312.1980-0");
 
+// ming_uni.ttf (HKSCS-2001) 
+// http://www.info.gov.hk/digital21/eng/hkscs/download/uime.exe
+pref("font.name.serif.zh-HK", "-arphic-Ming for ISO10646-big5hkscs-0");
+pref("font.name.sans-serif.zh-HK", "-arphic-Ming for ISO10646-big5hkscs-0");
+pref("font.name.monospace.zh-HK", "-arphic-Ming for ISO10646-big5hkscs-0");
+
 // zh-TW
 
 pref("font.default", "serif");
@@ -228,6 +235,9 @@ pref("font.size.fixed.zh-CN", 16);
 
 pref("font.size.variable.zh-TW", 16);
 pref("font.size.fixed.zh-TW", 16);
+
+pref("font.size.variable.zh-HK", 16);
+pref("font.size.fixed.zh-HK", 16);
 
 // below a certian pixel size outline scaled fonts produce poor results
 pref("font.scale.outline.min",      6);
@@ -294,6 +304,13 @@ pref("font.scale.bitmap.min.zh-TW",       16);
 pref("font.scale.bitmap.undersize.zh-TW", 80);
 pref("font.scale.bitmap.oversize.zh-TW",  120);
 
+pref("font.scale.outline.min.zh-HK",      10);
+pref("font.scale.aa_bitmap.min.zh-HK",    12);
+pref("font.scale.aa_bitmap.always.zh-HK", false);
+pref("font.scale.bitmap.min.zh-HK",       16);
+pref("font.scale.bitmap.undersize.zh-HK", 80);
+pref("font.scale.bitmap.oversize.zh-HK",  120);
+
 // minimum font sizes
 
 pref("font.min-size.variable.ja", 10);
@@ -307,6 +324,9 @@ pref("font.min-size.fixed.zh-CN", 10);
 
 pref("font.min-size.variable.zh-TW", 10);
 pref("font.min-size.fixed.zh-TW", 10);
+
+pref("font.min-size.variable.zh-HK", 10);
+pref("font.min-size.fixed.zh-HK", 10);
 
 // X11 specific
 /* X11 font accept/reject patterns:
@@ -347,6 +367,7 @@ pref("print.xprint.font.rejectfontpattern",
 pref("print.xprint.font.force_outline_scaled_fonts", true);
 
 /* PostScript print module prefs */
+// pref("print.postscript.enabled",      true);
 pref("print.postscript.paper_size",    "letter");
 pref("print.postscript.orientation",   "portrait");
 pref("print.postscript.print_command", "lpr ${MOZ_PRINTER_NAME:+'-P'}${MOZ_PRINTER_NAME}");
@@ -372,6 +393,7 @@ pref("print.postscript.nativefont.x-user-def",     "");
 pref("print.postscript.nativefont.x-western",      "");
 pref("print.postscript.nativefont.zh-CN",          "");
 pref("print.postscript.nativefont.zh-TW",          "");
+pref("print.postscript.nativefont.zh-HK",          "");
 
 // For the download dialog
 pref("browser.download.progressDnldDialog.enable_launch_reveal_buttons", false);

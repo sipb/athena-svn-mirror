@@ -56,6 +56,8 @@ REQUIRES = \
     helperAppDlg \
     exthandler \
     mimetype \
+    composer \
+    commandhandler \
     ax_common \
     $(NULL)
 
@@ -112,7 +114,7 @@ $(DEFFILE): mkctldef.sh
 	$(srcdir)/mkctldef.sh $@
 
 done_gen: MozillaControl.idl
-	$(MIDL) /Oicf /h MozillaControl.h /iid MozillaControl_i.c $(srcdir)/MozillaControl.idl
+	$(MIDL) $(MIDL_FLAGS) /Oicf /h MozillaControl.h /iid MozillaControl_i.c $(srcdir)/MozillaControl.idl
 	touch $@
 
 $(MIDL_GENERATED_FILES): done_gen

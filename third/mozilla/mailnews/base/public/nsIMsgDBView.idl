@@ -98,6 +98,7 @@ interface nsMsgViewSortType
   const nsMsgViewSortTypeValue byLocation = 0x1d;
 	const nsMsgViewSortTypeValue byLabel = 0x1e;
 	const nsMsgViewSortTypeValue byJunkStatus = 0x1f;
+	const nsMsgViewSortTypeValue byAttachments = 0x20;
 };
 
 [scriptable, uuid(255d1c1e-fde7-11d4-a5be-0060b0fc04b7)]
@@ -227,7 +228,6 @@ interface nsMsgNavigationType
   const nsMsgNavigationTypeValue nextUnreadFolder = 11;
   const nsMsgNavigationTypeValue nextFolder = 12;
   const nsMsgNavigationTypeValue readMore = 13;
-  const nsMsgNavigationTypeValue laterMessage = 14;
   /**
    * Go back to the previous visited message
    */
@@ -248,7 +248,7 @@ interface nsMsgNavigationType
 [scriptable, uuid(704c7d28-fd1a-11d4-a5be-0060b0fc04b7)]
 interface nsIMsgDBView : nsISupports
 {
-    void open(in nsIMsgFolder folder, in nsMsgViewSortTypeValue sortType, in nsMsgViewSortOrderValue sortOrder, in nsMsgViewFlagsTypeValue viewFlags, in boolean aTreatRecipientAsAuthor, out long count);
+    void open(in nsIMsgFolder folder, in nsMsgViewSortTypeValue sortType, in nsMsgViewSortOrderValue sortOrder, in nsMsgViewFlagsTypeValue viewFlags, out long count);
     void close();
 
     void init(in nsIMessenger aMessengerInstance, in nsIMsgWindow aMsgWindow, in nsIMsgDBViewCommandUpdater aCommandUpdater);

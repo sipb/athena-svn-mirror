@@ -100,7 +100,6 @@ CPPSRCS = \
 
 ifeq (,$(filter windows,$(MOZ_WIDGET_TOOLKIT)))
 REQUIRES += uconv
-CPPSRCS += nsCompressedCharMap.cpp
 endif
 
 ifneq (,$(filter gtk gtk2 xlib os2,$(MOZ_WIDGET_TOOLKIT)))
@@ -109,7 +108,7 @@ CPPSRCS += \
         $(NULL)
 endif
 
-ifneq (,$(filter gtk gtk2 xlib beos,$(MOZ_WIDGET_TOOLKIT)))
+ifneq (,$(filter gtk gtk2 xlib beos windows os2,$(MOZ_WIDGET_TOOLKIT)))
 CPPSRCS += imgScaler.cpp
 endif
 
@@ -128,7 +127,6 @@ EXPORTS += \
         os2/nsOS2Uni.h \
         os2/nsPaletteOS2.h \
         $(NULL)
-OS_LIBS += -luconv
 endif
 
 EXTRA_DSO_LDOPTS = \

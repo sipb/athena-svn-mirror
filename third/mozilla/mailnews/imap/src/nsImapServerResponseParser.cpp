@@ -92,6 +92,10 @@ nsImapServerResponseParser::nsImapServerResponseParser(nsImapProtocol &imapProto
   fGotPermanentFlags = PR_FALSE;
   fFolderUIDValidity = 0;
   fCRAMDigest = nsnull;
+  fStatusUnseenMessages = 0;
+  fStatusRecentMessages = 0;
+  fStatusNextUID = nsMsgKey_None;
+  fStatusExistingMessages = 0;
 }
 
 nsImapServerResponseParser::~nsImapServerResponseParser()
@@ -114,61 +118,61 @@ nsImapServerResponseParser::~nsImapServerResponseParser()
 
 PRBool nsImapServerResponseParser::LastCommandSuccessful()
 {
-	return (!CommandFailed() && 
-		!fServerConnection.DeathSignalReceived() &&
-		nsIMAPGenericParser::LastCommandSuccessful());
+  return (!CommandFailed() && 
+    !fServerConnection.DeathSignalReceived() &&
+    nsIMAPGenericParser::LastCommandSuccessful());
 }
 
 // returns PR_TRUE if things look ok to continue
 PRBool nsImapServerResponseParser::GetNextLineForParser(char **nextLine)
 {
-	PRBool rv = PR_TRUE;
-	*nextLine = fServerConnection.CreateNewLineFromSocket();
-	if (fServerConnection.DeathSignalReceived() || (fServerConnection.GetConnectionStatus() <= 0))
-		rv = PR_FALSE;
-	// we'd really like to try to silently reconnect, but we shouldn't put this
-	// message up just in the interrupt case
-	if (fServerConnection.GetConnectionStatus() <= 0 && !fServerConnection.DeathSignalReceived())
-		fServerConnection.AlertUserEventUsingId(IMAP_SERVER_DISCONNECTED);
-	return rv;
+  PRBool rv = PR_TRUE;
+  *nextLine = fServerConnection.CreateNewLineFromSocket();
+  if (fServerConnection.DeathSignalReceived() || (fServerConnection.GetConnectionStatus() <= 0))
+    rv = PR_FALSE;
+  // we'd really like to try to silently reconnect, but we shouldn't put this
+  // message up just in the interrupt case
+  if (fServerConnection.GetConnectionStatus() <= 0 && !fServerConnection.DeathSignalReceived())
+    fServerConnection.AlertUserEventUsingId(IMAP_SERVER_DISCONNECTED);
+  return rv;
 }
 
 // This should probably be in the base class...
 void nsImapServerResponseParser::end_of_line()
 {
-	// if current commands failed, don't reset the lex analyzer
-	// we need the info for the user
-	if (!at_end_of_line())
-		SetSyntaxError(PR_TRUE);
-	else if (fProcessingTaggedResponse && !fCurrentCommandFailed)
-		ResetLexAnalyzer();	// no more tokens until we send a command
-	else if (!fCurrentCommandFailed)
-		fNextToken = GetNextToken();
+  // if current commands failed, don't reset the lex analyzer
+  // we need the info for the user
+  if (!at_end_of_line())
+    SetSyntaxError(PR_TRUE);
+  else if (fProcessingTaggedResponse && !fCurrentCommandFailed)
+    ResetLexAnalyzer();	// no more tokens until we send a command
+  else if (!fCurrentCommandFailed)
+    fNextToken = GetNextToken();
 }
 
 PRBool	nsImapServerResponseParser::CommandFailed()
 {
-	return fCurrentCommandFailed;
+  return fCurrentCommandFailed;
 }
 
 void nsImapServerResponseParser::SetFlagState(nsIImapFlagAndUidState *state)
 {
-	fFlagState = state;
+  fFlagState = state;
 }
 
 PRInt32 nsImapServerResponseParser::SizeOfMostRecentMessage()
 {
-	return fSizeOfMostRecentMessage;
+  return fSizeOfMostRecentMessage;
 }
 
 // Call this when adding a pipelined command to the session
 void nsImapServerResponseParser::IncrementNumberOfTaggedResponsesExpected(const char *newExpectedTag)
 {
-	fNumberOfTaggedResponsesExpected++;
-	PR_Free( fCurrentCommandTag );
-	fCurrentCommandTag = PL_strdup(newExpectedTag);
-	if (!fCurrentCommandTag)
-		HandleMemoryFailure();
+  fNumberOfTaggedResponsesExpected++;
+  PR_Free( fCurrentCommandTag );
+  fCurrentCommandTag = PL_strdup(newExpectedTag);
+  if (!fCurrentCommandTag)
+    HandleMemoryFailure();
 }
 /* 
  response        ::= *response_data response_done
@@ -177,118 +181,118 @@ void nsImapServerResponseParser::IncrementNumberOfTaggedResponsesExpected(const 
 
 void nsImapServerResponseParser::InitializeState()
 {
-	fProcessingTaggedResponse = PR_FALSE;
-	fCurrentCommandFailed 	  = PR_FALSE;
+  fProcessingTaggedResponse = PR_FALSE;
+  fCurrentCommandFailed 	  = PR_FALSE;
 }
 
 void nsImapServerResponseParser::ParseIMAPServerResponse(const char *currentCommand, PRBool aIgnoreBadAndNOResponses)
 {
-
-    NS_ASSERTION(currentCommand && *currentCommand != '\r' && 
-                 *currentCommand != '\n' && *currentCommand != ' ', 
-                 "Invailid command string");
-	// Reinitialize the parser
-	SetConnected(PR_TRUE);
-	SetSyntaxError(PR_FALSE);
-
-	// Reinitialize our state
-	InitializeState();
-	
-	// the default is to not pipeline
-	fNumberOfTaggedResponsesExpected = 1;
-	int numberOfTaggedResponsesReceived = 0;
-
-	char *copyCurrentCommand = PL_strdup(currentCommand);
-	if (copyCurrentCommand && !fServerConnection.DeathSignalReceived())
-	{
-		char *placeInTokenString = nsnull;
-		char *tagToken           = Imapstrtok_r(copyCurrentCommand, WHITESPACE,&placeInTokenString);
-		char *commandToken       = Imapstrtok_r(nsnull, WHITESPACE,&placeInTokenString);
-		if (tagToken)
-		{
-			PR_Free( fCurrentCommandTag );
-			fCurrentCommandTag = PL_strdup(tagToken);
-			if (!fCurrentCommandTag)
-				HandleMemoryFailure();
-		}
-		
-		if (commandToken && ContinueParse())
-			PreProcessCommandToken(commandToken, currentCommand);
-		
-		if (ContinueParse())
-		{
-			// Clears any syntax error lines
-			SetSyntaxError(PR_FALSE);
-			ResetLexAnalyzer();
-			
-			do {
-				fNextToken = GetNextToken();
-				while (ContinueParse() && !PL_strcmp(fNextToken, "*") )
-				{
-					response_data();
-				}
-				
-				if (*fNextToken == '+')	// never pipeline APPEND or AUTHENTICATE
-				{
-					NS_ASSERTION((fNumberOfTaggedResponsesExpected - numberOfTaggedResponsesReceived) == 1, 
-						" didn't get the number of tagged responses we expected");
-					numberOfTaggedResponsesReceived = fNumberOfTaggedResponsesExpected;
+  
+  NS_ASSERTION(currentCommand && *currentCommand != '\r' && 
+    *currentCommand != '\n' && *currentCommand != ' ', 
+    "Invailid command string");
+  // Reinitialize the parser
+  SetConnected(PR_TRUE);
+  SetSyntaxError(PR_FALSE);
+  
+  // Reinitialize our state
+  InitializeState();
+  
+  // the default is to not pipeline
+  fNumberOfTaggedResponsesExpected = 1;
+  int numberOfTaggedResponsesReceived = 0;
+  
+  char *copyCurrentCommand = PL_strdup(currentCommand);
+  if (copyCurrentCommand && !fServerConnection.DeathSignalReceived())
+  {
+    char *placeInTokenString = nsnull;
+    char *tagToken           = Imapstrtok_r(copyCurrentCommand, WHITESPACE,&placeInTokenString);
+    char *commandToken       = Imapstrtok_r(nsnull, WHITESPACE,&placeInTokenString);
+    if (tagToken)
+    {
+      PR_Free( fCurrentCommandTag );
+      fCurrentCommandTag = PL_strdup(tagToken);
+      if (!fCurrentCommandTag)
+        HandleMemoryFailure();
+    }
+    
+    if (commandToken && ContinueParse())
+      PreProcessCommandToken(commandToken, currentCommand);
+    
+    if (ContinueParse())
+    {
+      // Clears any syntax error lines
+      SetSyntaxError(PR_FALSE);
+      ResetLexAnalyzer();
+      
+      do {
+        fNextToken = GetNextToken();
+        while (ContinueParse() && !PL_strcmp(fNextToken, "*") )
+        {
+          response_data();
+        }
+        
+        if (*fNextToken == '+')	// never pipeline APPEND or AUTHENTICATE
+        {
+          NS_ASSERTION((fNumberOfTaggedResponsesExpected - numberOfTaggedResponsesReceived) == 1, 
+            " didn't get the number of tagged responses we expected");
+          numberOfTaggedResponsesReceived = fNumberOfTaggedResponsesExpected;
           if (commandToken && !nsCRT::strcasecmp(commandToken, "authenticate") && placeInTokenString && 
             !nsCRT::strncasecmp(placeInTokenString, "CRAM-MD5", strlen("CRAM-MD5")))
           {
             // we need to store the digest from the server if we are using CRAM-MD5. 
             cramResponse_data();
           }
-				}
-				else
-					numberOfTaggedResponsesReceived++;
-					
-				if (numberOfTaggedResponsesReceived < fNumberOfTaggedResponsesExpected)
-				{
-					response_tagged();
-					fProcessingTaggedResponse = PR_FALSE;
-				}
-				
-			} while (ContinueParse() && (numberOfTaggedResponsesReceived < fNumberOfTaggedResponsesExpected));
-			
-			// check and see if the server is waiting for more input
+        }
+        else
+          numberOfTaggedResponsesReceived++;
+        
+        if (numberOfTaggedResponsesReceived < fNumberOfTaggedResponsesExpected)
+        {
+          response_tagged();
+          fProcessingTaggedResponse = PR_FALSE;
+        }
+        
+      } while (ContinueParse() && (numberOfTaggedResponsesReceived < fNumberOfTaggedResponsesExpected));
+      
+      // check and see if the server is waiting for more input
       // it's possible that we ate this + while parsing certain responses (like cram data),
       // in these cases, the parsing routine for that specific command will manually set
       // fWaitingForMoreClientInput so we don't lose that information....
-			if (*fNextToken == '+')
-			{
-				fWaitingForMoreClientInput = PR_TRUE;
-			}
-			else if (!fWaitingForMoreClientInput) // if we aren't still waiting for more input....
-			{
-				if (ContinueParse())
-					response_done();
-				
-				if (ContinueParse() && !CommandFailed())
-				{
-					// a sucessful command may change the eIMAPstate
-					ProcessOkCommand(commandToken);
-				}
-				else if (CommandFailed())
-				{
-					// a failed command may change the eIMAPstate
-					ProcessBadCommand(commandToken);
-					if (fReportingErrors && !aIgnoreBadAndNOResponses)
-						fServerConnection.AlertUserEventFromServer(fCurrentLine);
-				}
-			}
-		}
-	}
-	else if (!fServerConnection.DeathSignalReceived())
-		HandleMemoryFailure();
-
-	PR_Free(copyCurrentCommand);
+      if (*fNextToken == '+')
+      {
+        fWaitingForMoreClientInput = PR_TRUE;
+      }
+      else if (!fWaitingForMoreClientInput) // if we aren't still waiting for more input....
+      {
+        if (ContinueParse())
+          response_done();
+        
+        if (ContinueParse() && !CommandFailed())
+        {
+          // a sucessful command may change the eIMAPstate
+          ProcessOkCommand(commandToken);
+        }
+        else if (CommandFailed())
+        {
+          // a failed command may change the eIMAPstate
+          ProcessBadCommand(commandToken);
+          if (fReportingErrors && !aIgnoreBadAndNOResponses)
+            fServerConnection.AlertUserEventFromServer(fCurrentLine);
+        }
+      }
+    }
+  }
+  else if (!fServerConnection.DeathSignalReceived())
+    HandleMemoryFailure();
+  
+  PR_Free(copyCurrentCommand);
 }
 
 void nsImapServerResponseParser::HandleMemoryFailure()
 {
-	fServerConnection.AlertUserEventUsingId(IMAP_OUT_OF_MEMORY);
-	nsIMAPGenericParser::HandleMemoryFailure();
+  fServerConnection.AlertUserEventUsingId(IMAP_OUT_OF_MEMORY);
+  nsIMAPGenericParser::HandleMemoryFailure();
 }
 
 
@@ -377,128 +381,128 @@ const char *nsImapServerResponseParser::GetSelectedMailboxName()
 
 nsImapSearchResultIterator *nsImapServerResponseParser::CreateSearchResultIterator()
 {
-	return new nsImapSearchResultIterator(*fSearchResults);
+  return new nsImapSearchResultIterator(*fSearchResults);
 }
 
 nsImapServerResponseParser::eIMAPstate nsImapServerResponseParser::GetIMAPstate()
 {
-	return fIMAPstate;
+  return fIMAPstate;
 }
 
 void nsImapServerResponseParser::PreauthSetAuthenticatedState()
 {
-	fIMAPstate = kAuthenticated;
+  fIMAPstate = kAuthenticated;
 }
 
 void nsImapServerResponseParser::ProcessOkCommand(const char *commandToken)
 {
-	if (!PL_strcasecmp(commandToken, "LOGIN") ||
-		!PL_strcasecmp(commandToken, "AUTHENTICATE"))
-		fIMAPstate = kAuthenticated;
-	else if (!PL_strcasecmp(commandToken, "LOGOUT"))
-		fIMAPstate = kNonAuthenticated;
-	else if (!PL_strcasecmp(commandToken, "SELECT") ||
-	         !PL_strcasecmp(commandToken, "EXAMINE"))
-		fIMAPstate = kFolderSelected;
-	else if (!PL_strcasecmp(commandToken, "CLOSE"))
+  if (!PL_strcasecmp(commandToken, "LOGIN") ||
+    !PL_strcasecmp(commandToken, "AUTHENTICATE"))
+    fIMAPstate = kAuthenticated;
+  else if (!PL_strcasecmp(commandToken, "LOGOUT"))
+    fIMAPstate = kNonAuthenticated;
+  else if (!PL_strcasecmp(commandToken, "SELECT") ||
+    !PL_strcasecmp(commandToken, "EXAMINE"))
+    fIMAPstate = kFolderSelected;
+  else if (!PL_strcasecmp(commandToken, "CLOSE"))
   {
-		fIMAPstate = kAuthenticated;
+    fIMAPstate = kAuthenticated;
     // we no longer have a selected mailbox.
     PR_FREEIF( fSelectedMailboxName );
   }
-	else if ((!PL_strcasecmp(commandToken, "LIST")) ||
+  else if ((!PL_strcasecmp(commandToken, "LIST")) ||
 			 (!PL_strcasecmp(commandToken, "LSUB")))
-	{
-		//fServerConnection.MailboxDiscoveryFinished();
-		// This used to be reporting that we were finished
-		// discovering folders for each time we issued a
-		// LIST or LSUB.  So if we explicitly listed the
-		// INBOX, or Trash, or namespaces, we would get multiple
-		// "done" states, even though we hadn't finished.
-		// Move this to be called from the connection object
-		// itself.
-	}
-	else if (!PL_strcasecmp(commandToken, "FETCH"))
-	{
-		if (!fZeroLengthMessageUidString.IsEmpty())
-		{
-			// "Deleting zero length message");
-			fServerConnection.Store(fZeroLengthMessageUidString.get(), "+Flags (\\Deleted)", PR_TRUE);
-			if (LastCommandSuccessful())
-				fServerConnection.Expunge();
-
-			fZeroLengthMessageUidString.Truncate();
-		}
-	}
-	if (GetFillingInShell())
-	{
-		// There is a BODYSTRUCTURE response.  Now let's generate the stream...
-		// that is, if we're not doing it already
-		if (!m_shell->IsBeingGenerated())
-		{
-			nsImapProtocol *navCon = &fServerConnection;
-
-			char *imapPart = nsnull;
-
-			fServerConnection.GetCurrentUrl()->GetImapPartToFetch(&imapPart);
-			m_shell->Generate(imapPart);
-			PR_Free(imapPart);
-
-			if ((navCon && navCon->GetPseudoInterrupted())
-				|| fServerConnection.DeathSignalReceived())
-			{
-				// we were pseudointerrupted or interrupted
-				if (!m_shell->IsShellCached())
-				{
-					// if it's not in the cache, then we were (pseudo)interrupted while generating
-					// for the first time.  Delete it.
-					delete m_shell;
-				}
-				navCon->PseudoInterrupt(PR_FALSE);
-			}
-			else if (m_shell->GetIsValid())
-			{
-				// If we have a valid shell that has not already been cached, then cache it.
-				if (!m_shell->IsShellCached() && fHostSessionList)	// cache is responsible for destroying it
-				{
-					PR_LOG(IMAP, PR_LOG_ALWAYS, 
-                           ("BODYSHELL:  Adding shell to cache."));
-                    const char *serverKey = fServerConnection.GetImapServerKey();
-					fHostSessionList->AddShellToCacheForHost(
-                        serverKey, m_shell);
-				}
-			}
-			else
-			{
-				// The shell isn't valid, so we don't cache it.
-				// Therefore, we have to destroy it here.
-				delete m_shell;
-			}
-			m_shell = nsnull;
-		}
-	}
+  {
+    //fServerConnection.MailboxDiscoveryFinished();
+    // This used to be reporting that we were finished
+    // discovering folders for each time we issued a
+    // LIST or LSUB.  So if we explicitly listed the
+    // INBOX, or Trash, or namespaces, we would get multiple
+    // "done" states, even though we hadn't finished.
+    // Move this to be called from the connection object
+    // itself.
+  }
+  else if (!PL_strcasecmp(commandToken, "FETCH"))
+  {
+    if (!fZeroLengthMessageUidString.IsEmpty())
+    {
+      // "Deleting zero length message");
+      fServerConnection.Store(fZeroLengthMessageUidString.get(), "+Flags (\\Deleted)", PR_TRUE);
+      if (LastCommandSuccessful())
+        fServerConnection.Expunge();
+      
+      fZeroLengthMessageUidString.Truncate();
+    }
+  }
+  if (GetFillingInShell())
+  {
+    // There is a BODYSTRUCTURE response.  Now let's generate the stream...
+    // that is, if we're not doing it already
+    if (!m_shell->IsBeingGenerated())
+    {
+      nsImapProtocol *navCon = &fServerConnection;
+      
+      char *imapPart = nsnull;
+      
+      fServerConnection.GetCurrentUrl()->GetImapPartToFetch(&imapPart);
+      m_shell->Generate(imapPart);
+      PR_Free(imapPart);
+      
+      if ((navCon && navCon->GetPseudoInterrupted())
+        || fServerConnection.DeathSignalReceived())
+      {
+        // we were pseudointerrupted or interrupted
+        if (!m_shell->IsShellCached())
+        {
+          // if it's not in the cache, then we were (pseudo)interrupted while generating
+          // for the first time.  Delete it.
+          delete m_shell;
+        }
+        navCon->PseudoInterrupt(PR_FALSE);
+      }
+      else if (m_shell->GetIsValid())
+      {
+        // If we have a valid shell that has not already been cached, then cache it.
+        if (!m_shell->IsShellCached() && fHostSessionList)	// cache is responsible for destroying it
+        {
+          PR_LOG(IMAP, PR_LOG_ALWAYS, 
+            ("BODYSHELL:  Adding shell to cache."));
+          const char *serverKey = fServerConnection.GetImapServerKey();
+          fHostSessionList->AddShellToCacheForHost(
+            serverKey, m_shell);
+        }
+      }
+      else
+      {
+        // The shell isn't valid, so we don't cache it.
+        // Therefore, we have to destroy it here.
+        delete m_shell;
+      }
+      m_shell = nsnull;
+    }
+  }
 }
 
 void nsImapServerResponseParser::ProcessBadCommand(const char *commandToken)
 {
-	if (!PL_strcasecmp(commandToken, "LOGIN") ||
-		!PL_strcasecmp(commandToken, "AUTHENTICATE"))
-		fIMAPstate = kNonAuthenticated;
-	else if (!PL_strcasecmp(commandToken, "LOGOUT"))
-		fIMAPstate = kNonAuthenticated;	// ??
-	else if (!PL_strcasecmp(commandToken, "SELECT") ||
-	         !PL_strcasecmp(commandToken, "EXAMINE"))
-		fIMAPstate = kAuthenticated;	// nothing selected
-	else if (!PL_strcasecmp(commandToken, "CLOSE"))
-		fIMAPstate = kAuthenticated;	// nothing selected
-	if (GetFillingInShell())
-	{
-		if (!m_shell->IsBeingGenerated())
-		{
-			delete m_shell;
-			m_shell = nsnull;
-		}
-	}
+  if (!PL_strcasecmp(commandToken, "LOGIN") ||
+    !PL_strcasecmp(commandToken, "AUTHENTICATE"))
+    fIMAPstate = kNonAuthenticated;
+  else if (!PL_strcasecmp(commandToken, "LOGOUT"))
+    fIMAPstate = kNonAuthenticated;	// ??
+  else if (!PL_strcasecmp(commandToken, "SELECT") ||
+    !PL_strcasecmp(commandToken, "EXAMINE"))
+    fIMAPstate = kAuthenticated;	// nothing selected
+  else if (!PL_strcasecmp(commandToken, "CLOSE"))
+    fIMAPstate = kAuthenticated;	// nothing selected
+  if (GetFillingInShell())
+  {
+    if (!m_shell->IsBeingGenerated())
+    {
+      delete m_shell;
+      m_shell = nsnull;
+    }
+  }
 }
 
 
@@ -579,7 +583,12 @@ void nsImapServerResponseParser::response_data()
         mailbox_data();
       else if (!PL_strcasecmp(fNextToken, "STATUS"))
       {
-        PRBool gotMailboxName = PR_FALSE;
+        fNextToken = GetNextToken();
+        if (fNextToken)
+        {
+          char *mailboxName = CreateAstring();
+          PL_strfree( mailboxName); 
+        }
         while (	ContinueParse() &&
           !at_end_of_line() )
         {
@@ -587,24 +596,13 @@ void nsImapServerResponseParser::response_data()
           if (!fNextToken)
             break;
           
-          if (!gotMailboxName)	// if we haven't got the mailbox name, get it
-          {
-            // this couldn't be more bogus, but I don't know how to parse the status response.
-            // I need to find the next open parenthesis, and it looks like folder names with
-            // parentheses are quoted...but not ones with spaces...
-            fCurrentTokenPlaceHolder = PL_strchr(fCurrentTokenPlaceHolder, '(');
-            
-            gotMailboxName = PR_TRUE;
-            continue;
-          }
-          
           if (*fNextToken == '(') fNextToken++;
           if (!PL_strcasecmp(fNextToken, "UIDNEXT"))
           {
             fNextToken = GetNextToken();
             if (fNextToken)
             {
-              fCurrentResponseUID = atoi(fNextToken);
+              fStatusNextUID = atoi(fNextToken);
               // if this token ends in ')', then it is the last token
               // else we advance
               if ( *(fNextToken + strlen(fNextToken) - 1) == ')')
@@ -616,7 +614,7 @@ void nsImapServerResponseParser::response_data()
             fNextToken = GetNextToken();
             if (fNextToken)
             {
-              fNumberOfExistingMessages = atoi(fNextToken);
+              fStatusExistingMessages = atoi(fNextToken);
               // if this token ends in ')', then it is the last token
               // else we advance
               if ( *(fNextToken + strlen(fNextToken) - 1) == ')')
@@ -628,7 +626,19 @@ void nsImapServerResponseParser::response_data()
             fNextToken = GetNextToken();
             if (fNextToken)
             {
-              fNumberOfUnseenMessages = atoi(fNextToken);
+              fStatusUnseenMessages = atoi(fNextToken);
+              // if this token ends in ')', then it is the last token
+              // else we advance
+              if ( *(fNextToken + strlen(fNextToken) - 1) == ')')
+                fNextToken += strlen(fNextToken) - 1;
+            }
+          }
+          else if (!PL_strcasecmp(fNextToken, "RECENT"))
+          {
+            fNextToken = GetNextToken();
+            if (fNextToken)
+            {
+              fStatusRecentMessages = atoi(fNextToken);
               // if this token ends in ')', then it is the last token
               // else we advance
               if ( *(fNextToken + strlen(fNextToken) - 1) == ')')
@@ -1623,7 +1633,8 @@ void nsImapServerResponseParser::flags()
         }
         break;
       case 'L':
-        if (fSupportsUserDefinedFlags & kImapMsgSupportUserFlag
+        if ((fSupportsUserDefinedFlags & (kImapMsgSupportUserFlag |
+          kImapMsgLabelFlags))
           && !PL_strncasecmp(fNextToken, "$Label", 6))
         {
           PRInt32 labelValue = fNextToken[6];
@@ -1729,6 +1740,8 @@ void nsImapServerResponseParser::text()
 
 void nsImapServerResponseParser::parse_folder_flags()
 {
+  PRUint16 labelFlags = 0;
+
   do 
   {
     fNextToken = GetNextToken();
@@ -1748,6 +1761,16 @@ void nsImapServerResponseParser::parse_folder_flags()
       fSettablePermanentFlags |= kImapMsgDeletedFlag;
     else if (!PL_strncasecmp(fNextToken, "\\Draft", 6))
       fSettablePermanentFlags |= kImapMsgDraftFlag;
+    else if (!PL_strncasecmp(fNextToken, "$Label1", 7))
+      labelFlags |= 1;
+    else if (!PL_strncasecmp(fNextToken, "$Label2", 7))
+      labelFlags |= 2;
+    else if (!PL_strncasecmp(fNextToken, "$Label3", 7))
+      labelFlags |= 4;
+    else if (!PL_strncasecmp(fNextToken, "$Label4", 7))
+      labelFlags |= 8;
+    else if (!PL_strncasecmp(fNextToken, "$Label5", 7))
+      labelFlags |= 16;
     else if (!PL_strncasecmp(fNextToken, "\\*", 2))
     {
       fSupportsUserDefinedFlags |= kImapMsgSupportUserFlag;
@@ -1756,6 +1779,9 @@ void nsImapServerResponseParser::parse_folder_flags()
       fSupportsUserDefinedFlags |= kImapMsgLabelFlags;
     }
   } while (!at_end_of_line() && ContinueParse());
+
+  if (labelFlags == 31)
+    fSupportsUserDefinedFlags |= kImapMsgLabelFlags;
 
   if (fFlagState)
     fFlagState->SetSupportedUserFlags(fSupportsUserDefinedFlags);
@@ -2333,42 +2359,42 @@ void nsImapServerResponseParser::namespace_data()
 
 void nsImapServerResponseParser::myrights_data()
 {
-	fNextToken = GetNextToken();
-	if (ContinueParse() && !at_end_of_line())
-	{
-		char *mailboxName = CreateAstring(); // PL_strdup(fNextToken);
-		if (mailboxName)
-		{
-			fNextToken = GetNextToken();
-			if (ContinueParse())
-			{
-				char *myrights = CreateAstring(); // PL_strdup(fNextToken);
-				if (myrights)
-				{
-					nsImapProtocol *navCon = &fServerConnection;
-					NS_ASSERTION(navCon, "null connection parsing my rights");	// we should always have this
-					if (navCon)
-						navCon->AddFolderRightsForUser(mailboxName, nsnull /* means "me" */, myrights);
-					PR_Free(myrights);
-				}
-				else
-				{
-					HandleMemoryFailure();
-				}
-				if (ContinueParse())
-					fNextToken = GetNextToken();
-			}
-			PR_Free(mailboxName);
-		}
-		else
-		{
-			HandleMemoryFailure();
-		}
-	}
-	else
-	{
-		SetSyntaxError(PR_TRUE);
-	}
+  fNextToken = GetNextToken();
+  if (ContinueParse() && !at_end_of_line())
+  {
+    char *mailboxName = CreateAstring(); // PL_strdup(fNextToken);
+    if (mailboxName)
+    {
+      fNextToken = GetNextToken();
+      if (ContinueParse())
+      {
+        char *myrights = CreateAstring(); // PL_strdup(fNextToken);
+        if (myrights)
+        {
+          nsImapProtocol *navCon = &fServerConnection;
+          NS_ASSERTION(navCon, "null connection parsing my rights");	// we should always have this
+          if (navCon)
+            navCon->AddFolderRightsForUser(mailboxName, nsnull /* means "me" */, myrights);
+          PR_Free(myrights);
+        }
+        else
+        {
+          HandleMemoryFailure();
+        }
+        if (ContinueParse())
+          fNextToken = GetNextToken();
+      }
+      PR_Free(mailboxName);
+    }
+    else
+    {
+      HandleMemoryFailure();
+    }
+  }
+  else
+  {
+    SetSyntaxError(PR_TRUE);
+  }
 }
 
 void nsImapServerResponseParser::acl_data()
@@ -2708,27 +2734,27 @@ PRBool nsImapServerResponseParser::msg_fetch_literal(PRBool chunk, PRInt32 origi
 
 PRBool nsImapServerResponseParser::CurrentFolderReadOnly()
 {
-	return fCurrentFolderReadOnly;
+  return fCurrentFolderReadOnly;
 }
 
 PRInt32	nsImapServerResponseParser::NumberOfMessages()
 {
-	return fNumberOfExistingMessages;
+  return fNumberOfExistingMessages;
 }
 
-PRInt32 	nsImapServerResponseParser::NumberOfRecentMessages()
+PRInt32 nsImapServerResponseParser::NumberOfRecentMessages()
 {
-	return fNumberOfRecentMessages;
+  return fNumberOfRecentMessages;
 }
 
-PRInt32 	nsImapServerResponseParser::NumberOfUnseenMessages()
+PRInt32 nsImapServerResponseParser::NumberOfUnseenMessages()
 {
-	return fNumberOfUnseenMessages;
+  return fNumberOfUnseenMessages;
 }
 
 PRInt32 nsImapServerResponseParser::FolderUID()
 {
-	return fFolderUIDValidity;
+  return fFolderUIDValidity;
 }
 
 void nsImapServerResponseParser::SetCurrentResponseUID(PRUint32 uid)
@@ -2744,102 +2770,99 @@ PRUint32 nsImapServerResponseParser::CurrentResponseUID()
 
 PRUint32 nsImapServerResponseParser::HighestRecordedUID()
 {
-	return fHighestRecordedUID;
+  return fHighestRecordedUID;
 }
 
 PRBool nsImapServerResponseParser::IsNumericString(const char *string)
 {
-	int i;
-	for(i = 0; i < (int) PL_strlen(string); i++)
-	{
-		if (! isdigit(string[i]))
-		{
-			return PR_FALSE;
-		}
-	}
-
-	return PR_TRUE;
+  int i;
+  for(i = 0; i < (int) PL_strlen(string); i++)
+  {
+    if (! isdigit(string[i]))
+    {
+      return PR_FALSE;
+    }
+  }
+  
+  return PR_TRUE;
 }
 
 
 nsImapMailboxSpec *nsImapServerResponseParser::CreateCurrentMailboxSpec(const char *mailboxName /* = nsnull */)
 {
-	nsImapMailboxSpec *returnSpec = new nsImapMailboxSpec;
-	NS_ADDREF(returnSpec);
-	if (returnSpec)
-	{	
-		const char *mailboxNameToConvert = (mailboxName) ? mailboxName : fSelectedMailboxName;
-	    if (mailboxNameToConvert)
-	    {
-			const char *serverKey = 				
-                fServerConnection.GetImapServerKey();
-			nsIMAPNamespace *ns = nsnull;
-			if (serverKey && fHostSessionList)
-			{
-				fHostSessionList->GetNamespaceForMailboxForHost(serverKey, mailboxNameToConvert, ns);	// for
-                                                                // delimiter
-			}
+  nsImapMailboxSpec *returnSpec = new nsImapMailboxSpec;
+  if (!returnSpec)
+  {
+    HandleMemoryFailure();
+    return  nsnull;
+  }
+  NS_ADDREF(returnSpec);
+  const char *mailboxNameToConvert = (mailboxName) ? mailboxName : fSelectedMailboxName;
+  if (mailboxNameToConvert)
+  {
+    const char *serverKey = fServerConnection.GetImapServerKey();
+    nsIMAPNamespace *ns = nsnull;
+    if (serverKey && fHostSessionList)
+      fHostSessionList->GetNamespaceForMailboxForHost(serverKey, mailboxNameToConvert, ns);	// for
+      // delimiter
+    returnSpec->hierarchySeparator = (ns) ? ns->GetDelimiter(): '/';
+    
+  }
+  
+  returnSpec->folderSelected = !mailboxName; // if mailboxName is null, we're doing a Status
+  returnSpec->folder_UIDVALIDITY = fFolderUIDValidity;
+  returnSpec->number_of_messages = (mailboxName) ? fStatusExistingMessages : fNumberOfExistingMessages;
+  returnSpec->number_of_unseen_messages = (mailboxName) ? fStatusUnseenMessages : fNumberOfUnseenMessages;
+  returnSpec->number_of_recent_messages = (mailboxName) ? fStatusRecentMessages : fNumberOfRecentMessages;
+  
+  returnSpec->supportedUserFlags = fSupportsUserDefinedFlags;
 
-			if (ns)
-				returnSpec->hierarchySeparator = ns->GetDelimiter();
-			else
-				returnSpec->hierarchySeparator = '/';	// a guess?
+  returnSpec->box_flags = kNoFlags;	// stub
+  returnSpec->onlineVerified = PR_FALSE;	// we're fabricating this.  The flags aren't verified.
+  returnSpec->allocatedPathName = strdup(mailboxNameToConvert);
+  returnSpec->connection = &fServerConnection;
+  if (returnSpec->connection)
+  {
+    nsIURI * aUrl = nsnull;
+    nsresult rv = NS_OK;
+    returnSpec->connection->GetCurrentUrl()->QueryInterface(NS_GET_IID(nsIURI), (void **) &aUrl);
+    if (NS_SUCCEEDED(rv) && aUrl) 
+    {
+      nsCAutoString host;
+      aUrl->GetHost(host);
+      returnSpec->hostName = ToNewCString(host);
+    }
+    NS_IF_RELEASE(aUrl);
+    
+  }
+  else
+    returnSpec->hostName = nsnull;
 
-	    }
-
-		returnSpec->folderSelected = PR_TRUE;
-		returnSpec->folder_UIDVALIDITY = fFolderUIDValidity;
-		returnSpec->number_of_messages = fNumberOfExistingMessages;
-		returnSpec->number_of_unseen_messages = fNumberOfUnseenMessages;
-		returnSpec->number_of_recent_messages = fNumberOfRecentMessages;
-		
-		returnSpec->box_flags = kNoFlags;	// stub
-		returnSpec->onlineVerified = PR_FALSE;	// we're fabricating this.  The flags aren't verified.
-		returnSpec->allocatedPathName = nsCRT::strdup(mailboxNameToConvert);
-		returnSpec->connection = &fServerConnection;
-		if (returnSpec->connection)
-		{
-			nsIURI * aUrl = nsnull;
-			nsresult rv = NS_OK;
-			returnSpec->connection->GetCurrentUrl()->QueryInterface(NS_GET_IID(nsIURI), (void **) &aUrl);
-			if (NS_SUCCEEDED(rv) && aUrl) {
-                nsCAutoString host;
-				aUrl->GetHost(host);
-                returnSpec->hostName = ToNewCString(host);
-            }
-			NS_IF_RELEASE(aUrl);
-			
-		}
-		else
-			returnSpec->hostName = nsnull;
-		if (fFlagState)
-			returnSpec->flagState = fFlagState; //copies flag state
-		else
-			returnSpec->flagState = nsnull;
-	}
-	else
-		HandleMemoryFailure();
-	
-	return returnSpec;
-	
+  if (fFlagState)
+    returnSpec->flagState = fFlagState; //copies flag state
+  else
+    returnSpec->flagState = nsnull;
+  
+  return returnSpec;
+  
 }
 // zero stops a list recording of flags and causes the flags for
 // each individual message to be sent back to libmsg 
 void nsImapServerResponseParser::ResetFlagInfo(int numberOfInterestingMessages)
 {
-	if (fFlagState)
-		fFlagState->Reset(numberOfInterestingMessages);
+  if (fFlagState)
+    fFlagState->Reset(numberOfInterestingMessages);
 }
 
 
 PRBool nsImapServerResponseParser::GetLastFetchChunkReceived()
 {
-	return fLastChunk;
+  return fLastChunk;
 }
 
 void nsImapServerResponseParser::ClearLastFetchChunkReceived()
 {
-	fLastChunk = PR_FALSE;
+  fLastChunk = PR_FALSE;
 }
 
 void nsImapServerResponseParser::SetHostSessionList(nsIImapHostSessionList*

@@ -23,11 +23,11 @@ Rights Reserved.
 
 <!DOCTYPE dialog SYSTEM "chrome://messenger/locale/subscribe.dtd">
 
-<dialog xmlns:NC="http://home.netscape.com/NC-rdf#" 
+<dialog id="subscribeWindow"
+        xmlns:NC="http://home.netscape.com/NC-rdf#" 
         xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
         title="&subscribeDialog.title;"
-        width="500"
-        height="400"
+        style="width: 44em; height: 33em;"
         persist="width height screenX screenY"
         buttons="accept,cancel,help"
         onload="SubscribeOnLoad()"
@@ -63,8 +63,8 @@ Rights Reserved.
               </hbox>
               <menulist oncommand="onServerClick(event);" id="serverMenu"
                         datasources="rdf:msgaccountmanager rdf:mailnewsfolders"
-                        containment="http://home.netscape.com/NC-rdf#child"
-                        ref="msgaccounts:/" flex="1">
+                        sortResource="http://home.netscape.com/NC-rdf#FolderTreeName"
+                        sortDirection="ascending" ref="msgaccounts:/" flex="1">
                 <template>
                   <rule NC:CanSubscribe="true">
                     <menupopup>
@@ -77,7 +77,7 @@ Rights Reserved.
             <row align="center">
               <label value="&namefield.label;" accesskey="&namefield.accesskey;" 
                      id="namefieldlabel" control="namefield"/>
-              <textbox id="namefield" flex="1" oninput="Search();"/>
+              <textbox id="namefield" flex="1" type="timed" timeout="300" oncommand="Search();"/>
             </row>
           </rows>
         </grid>
@@ -94,6 +94,7 @@ Rights Reserved.
               flex="1"
               datasources="rdf:null"
               flags="dont-build-content"
+              statedatasource="rdf:null"
               disableKeyNavigation="true"
               onkeypress="onSubscribeTreeKeyPress(event);"
               onclick="SubscribeOnClick(event);"> 

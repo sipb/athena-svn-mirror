@@ -57,9 +57,9 @@
 #include "nsIDocShellLoadInfo.h"
 #include "nsIBaseWindow.h"
 #include "nsIWebShell.h"
+#include "nsContentUtils.h"
 
 #include "nsIScriptSecurityManager.h"
-#include "nsICodebasePrincipal.h"
 
 #include "nsIURI.h"
 #include "nsIURL.h"
@@ -173,26 +173,22 @@ nsFrameLoader::LoadFrame()
   }
 
   // Make an absolute URI
-  nsCOMPtr<nsIURI> base_uri;
-  doc->GetBaseURL(getter_AddRefs(base_uri));
+  nsIURI *base_uri = doc->GetBaseURL();
 
-  nsCAutoString doc_charset;
-  doc->GetDocumentCharacterSet(doc_charset);
+  const nsACString &doc_charset = doc->GetDocumentCharacterSet();
 
   nsCOMPtr<nsIURI> uri;
   rv = NS_NewURI(getter_AddRefs(uri), src,
                  doc_charset.IsEmpty() ? nsnull :
-                 doc_charset.get(), base_uri);
-  NS_ENSURE_SUCCESS(rv, rv);
-
-  // Check for security
-  nsCOMPtr<nsIScriptSecurityManager> secMan =
-    do_GetService(NS_SCRIPTSECURITYMANAGER_CONTRACTID, &rv);
+                 PromiseFlatCString(doc_charset).get(), base_uri);
   NS_ENSURE_SUCCESS(rv, rv);
 
   nsCOMPtr<nsIDocShellLoadInfo> loadInfo;
   mDocShell->CreateLoadInfo(getter_AddRefs(loadInfo));
   NS_ENSURE_TRUE(loadInfo, NS_ERROR_FAILURE);
+
+  // Check for security
+  nsIScriptSecurityManager *secMan = nsContentUtils::GetSecurityManager();
 
   // Get referring URL
   nsCOMPtr<nsIURI> referrer;
@@ -203,12 +199,8 @@ nsFrameLoader::LoadFrame()
   // If we were called from script, get the referring URL from the script
 
   if (principal) {
-    nsCOMPtr<nsICodebasePrincipal> codebase(do_QueryInterface(principal));
-
-    if (codebase) {
-      rv = codebase->GetURI(getter_AddRefs(referrer));
-      NS_ENSURE_SUCCESS(rv, rv);
-    }
+    rv = principal->GetURI(getter_AddRefs(referrer));
+    NS_ENSURE_SUCCESS(rv, rv);
 
     // Pass the script principal to the docshell
 
@@ -365,6 +357,13 @@ nsFrameLoader::Destroy()
     mOwnerContent = nsnull;
   }
 
+  // Let our window know that we are gone
+  nsCOMPtr<nsIDOMWindow> win(do_GetInterface(mDocShell));
+  nsCOMPtr<nsPIDOMWindow> win_private(do_QueryInterface(win));
+  if (win_private) {
+    win_private->SetFrameElementInternal(nsnull);
+  }
+  
   nsCOMPtr<nsIBaseWindow> base_win(do_QueryInterface(mDocShell));
 
   if (base_win) {
@@ -381,11 +380,10 @@ nsFrameLoader::GetPresContext(nsIPresContext **aPresContext)
 {
   *aPresContext = nsnull;
 
-  nsCOMPtr<nsIDocument> doc = mOwnerContent->GetDocument();
+  nsIDocument* doc = mOwnerContent->GetDocument();
 
   while (doc) {
-    nsCOMPtr<nsIPresShell> presShell;
-    doc->GetShellAt(0, getter_AddRefs(presShell));
+    nsIPresShell *presShell = doc->GetShellAt(0);
 
     if (presShell) {
       presShell->GetPresContext(aPresContext);
@@ -393,10 +391,7 @@ nsFrameLoader::GetPresContext(nsIPresContext **aPresContext)
       return NS_OK;
     }
 
-    nsCOMPtr<nsIDocument> parent;
-    doc->GetParentDocument(getter_AddRefs(parent));
-
-    doc = parent;
+    doc = doc->GetParentDocument();
   }
 
   return NS_OK;
@@ -519,7 +514,7 @@ nsFrameLoader::EnsureDocShell()
       nsCOMPtr<nsIDocShellTreeOwner> parentTreeOwner;
       parentAsItem->GetTreeOwner(getter_AddRefs(parentTreeOwner));
 
-      if(parentTreeOwner) {
+      if (parentTreeOwner) {
         PRBool is_primary = parentType == nsIDocShellTreeItem::typeChrome &&
                             value == NS_LITERAL_STRING("content-primary");
 
@@ -592,10 +587,7 @@ nsFrameLoader::GetURL(nsAString& aURI)
 {
   aURI.Truncate();
 
-  nsCOMPtr<nsIAtom> type;
-  mOwnerContent->GetTag(getter_AddRefs(type));
-
-  if (type == nsHTMLAtoms::object) {
+  if (mOwnerContent->Tag() == nsHTMLAtoms::object) {
     mOwnerContent->GetAttr(kNameSpaceID_None, nsHTMLAtoms::data, aURI);
   } else {
     mOwnerContent->GetAttr(kNameSpaceID_None, nsHTMLAtoms::src, aURI);

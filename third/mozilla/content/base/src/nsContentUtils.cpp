@@ -89,36 +89,51 @@ nsIParserService *nsContentUtils::sParserService = nsnull;
 nsINameSpaceManager *nsContentUtils::sNameSpaceManager = nsnull;
 nsIIOService *nsContentUtils::sIOService = nsnull;
 
+PRBool nsContentUtils::sInitialized = PR_FALSE;
+
 // static
 nsresult
 nsContentUtils::Init()
 {
-  NS_ENSURE_TRUE(!sXPConnect, NS_ERROR_ALREADY_INITIALIZED);
+  if (sInitialized) {
+    NS_WARNING("Init() called twice");
 
-  nsresult rv = CallGetService(nsIXPConnect::GetCID(), &sXPConnect);
+    return NS_OK;
+  }
+
+  nsresult rv = CallGetService(NS_SCRIPTSECURITYMANAGER_CONTRACTID,
+                               &sSecurityManager);
   NS_ENSURE_SUCCESS(rv, rv);
 
-  rv = CallGetService(NS_SCRIPTSECURITYMANAGER_CONTRACTID,
-                      &sSecurityManager);
+  rv = NS_GetNameSpaceManager(&sNameSpaceManager);
+  NS_ENSURE_SUCCESS(rv, rv);
+
+  rv = CallGetService(nsIXPConnect::GetCID(), &sXPConnect);
   if (NS_FAILED(rv)) {
-    // We can run without a security manager, so don't return early.
-    sSecurityManager = nsnull;
+    // We could be a standalone DOM engine without JS, so no
+    // nsIXPConnect is actually ok...
+
+    sXPConnect = nsnull;
   }
 
-  rv = CallGetService(NS_IOSERVICE_CONTRACTID, &sIOService);
-  if (NS_FAILED(rv)) {
-    // If this fails, that's ok
-    sIOService = nsnull;
-  }
-  
   rv = CallGetService(kJSStackContractID, &sThreadJSContextStack);
-  if (NS_FAILED(rv)) {
-    sThreadJSContextStack = nsnull;
+  if (NS_FAILED(rv) && sXPConnect) {
+    // However, if we can't get a context stack after getting
+    // an nsIXPConnect, things are broken, so let's fail here.
 
     return rv;
   }
 
-  return NS_GetNameSpaceManager(&sNameSpaceManager);
+  rv = CallGetService(NS_IOSERVICE_CONTRACTID, &sIOService);
+  if (NS_FAILED(rv)) {
+    // This makes life easier, but we can live without it.
+
+    sIOService = nsnull;
+  }
+
+  sInitialized = PR_TRUE;
+
+  return NS_OK;
 }
 
 /**
@@ -387,6 +402,8 @@ nsContentUtils::CopyNewlineNormalizedUnicodeTo(nsReadingIterator<PRUnichar>& aSr
 void
 nsContentUtils::Shutdown()
 {
+  sInitialized = PR_FALSE;
+
   NS_IF_RELEASE(sDOMScriptObjectFactory);
   NS_IF_RELEASE(sXPConnect);
   NS_IF_RELEASE(sSecurityManager);
@@ -450,7 +467,7 @@ nsContentUtils::GetDocumentAndPrincipal(nsIDOMNode* aNode,
       // manager
       nsCOMPtr<nsINodeInfo> ni;
       if (content) {
-        content->GetNodeInfo(getter_AddRefs(ni));
+        ni = content->GetNodeInfo();
       }
       else {
         attr->GetNodeInfo(getter_AddRefs(ni));
@@ -481,7 +498,7 @@ nsContentUtils::GetDocumentAndPrincipal(nsIDOMNode* aNode,
   }
 
   if (!*aPrincipal) {
-    (*aDocument)->GetPrincipal(aPrincipal);
+    NS_IF_ADDREF(*aPrincipal = (*aDocument)->GetPrincipal());
   }
 
   return NS_OK;
@@ -500,12 +517,6 @@ nsContentUtils::CheckSameOrigin(nsIDOMNode *aTrustedNode,
                                 nsIDOMNode *aUnTrustedNode)
 {
   NS_PRECONDITION(aTrustedNode, "There must be a trusted node");
-
-  // If there isn't a security manager it is probably because it is not
-  // installed so we don't care about security anyway
-  if (!sSecurityManager) {
-    return NS_OK;
-  }
 
   PRBool isSystem = PR_FALSE;
   sSecurityManager->SubjectPrincipalIsSystem(&isSystem);
@@ -539,9 +550,8 @@ nsContentUtils::CheckSameOrigin(nsIDOMNode *aTrustedNode,
 
       nsCOMPtr<nsIContent> cont = do_QueryInterface(aTrustedNode);
       NS_ENSURE_TRUE(cont, NS_ERROR_UNEXPECTED);
-      
-      nsCOMPtr<nsINodeInfo> ni;
-      cont->GetNodeInfo(getter_AddRefs(ni));
+
+      nsINodeInfo *ni = cont->GetNodeInfo();
       NS_ENSURE_TRUE(ni, NS_ERROR_UNEXPECTED);
       
       ni->GetDocumentPrincipal(getter_AddRefs(trustedPrincipal));
@@ -586,7 +596,7 @@ nsContentUtils::CheckSameOrigin(nsIDOMNode *aTrustedNode,
   }
 
   if (!trustedPrincipal) {
-    trustedDoc->GetPrincipal(getter_AddRefs(trustedPrincipal));
+    trustedPrincipal = trustedDoc->GetPrincipal();
 
     if (!trustedPrincipal) {
       // If the trusted node doesn't have a principal we can't check
@@ -604,12 +614,6 @@ nsContentUtils::CheckSameOrigin(nsIDOMNode *aTrustedNode,
 PRBool
 nsContentUtils::CanCallerAccess(nsIDOMNode *aNode)
 {
-  if (!sSecurityManager) {
-    // No security manager available, let any calls go through...
-
-    return PR_TRUE;
-  }
-
   nsCOMPtr<nsIPrincipal> subjectPrincipal;
   sSecurityManager->GetSubjectPrincipal(getter_AddRefs(subjectPrincipal));
 
@@ -678,12 +682,11 @@ nsContentUtils::InProlog(nsIDOMNode *aNode)
 
   // Check that there are no elements before aNode to make sure we are not
   // in the epilog
-  PRInt32 pos;
-  doc->IndexOf(cont, pos);
+  PRInt32 pos = doc->IndexOf(cont);
+
   while (pos > 0) {
     --pos;
-    nsCOMPtr<nsIContent> sibl;
-    doc->ChildAt(pos, getter_AddRefs(sibl));
+    nsIContent *sibl = doc->GetChildAt(pos);
     if (sibl->IsContentOfType(nsIContent::eELEMENT)) {
       return PR_FALSE;
     }
@@ -717,9 +720,7 @@ nsContentUtils::doReparentContentWrapper(nsIContent *aChild,
   }
 
   if (aOldDocument) {
-    nsCOMPtr<nsISupports> old_ref;
-
-    aOldDocument->RemoveReference(aChild, getter_AddRefs(old_ref));
+    nsCOMPtr<nsISupports> old_ref = aOldDocument->RemoveReference(aChild);
 
     if (old_ref) {
       // Transfer the reference from aOldDocument to aNewDocument
@@ -732,13 +733,10 @@ nsContentUtils::doReparentContentWrapper(nsIContent *aChild,
   rv = old_wrapper->GetJSObject(&old);
   NS_ENSURE_SUCCESS(rv, rv);
 
-  nsCOMPtr<nsIContent> child;
-  PRInt32 count = 0, i;
-
-  aChild->ChildCount(count);
+  PRUint32 i, count = aChild->GetChildCount();
 
   for (i = 0; i < count; i++) {
-    aChild->ChildAt(i, getter_AddRefs(child));
+    nsIContent *child = aChild->GetChildAt(i);
     NS_ENSURE_TRUE(child, NS_ERROR_UNEXPECTED);
 
     rv = doReparentContentWrapper(child, aNewDocument, aOldDocument, cx, old);
@@ -753,8 +751,7 @@ nsresult GetContextFromDocument(nsIDocument *aDocument, JSContext **cx)
 {
   *cx = nsnull;
 
-  nsCOMPtr<nsIScriptGlobalObject> sgo;
-  aDocument->GetScriptGlobalObject(getter_AddRefs(sgo));
+  nsIScriptGlobalObject *sgo = aDocument->GetScriptGlobalObject();
 
   if (!sgo) {
     // No script global, no context.
@@ -790,9 +787,7 @@ nsContentUtils::ReparentContentWrapper(nsIContent *aContent,
   nsIDocument* old_doc = aOldDocument;
 
   if (!old_doc) {
-    nsCOMPtr<nsINodeInfo> ni;
-
-    aContent->GetNodeInfo(getter_AddRefs(ni));
+    nsINodeInfo *ni = aContent->GetNodeInfo();
 
     if (ni) {
       old_doc = ni->GetDocument();
@@ -811,10 +806,7 @@ nsContentUtils::ReparentContentWrapper(nsIContent *aContent,
   nsCOMPtr<nsISupports> new_parent;
 
   if (!aNewParent) {
-    nsCOMPtr<nsIContent> root;
-    old_doc->GetRootContent(getter_AddRefs(root));
-
-    if (root.get() == aContent) {
+    if (old_doc->GetRootContent() == aContent) {
       new_parent = old_doc;
     }
   } else {
@@ -913,10 +905,6 @@ nsContentUtils::GetDocumentFromCaller(nsIDOMDocument** aDocument)
 PRBool
 nsContentUtils::IsCallerChrome()
 {
-  if (!sSecurityManager) {
-    return PR_FALSE;
-  }
-
   PRBool is_caller_chrome = PR_FALSE;
   nsresult rv = sSecurityManager->SubjectPrincipalIsSystem(&is_caller_chrome);
   if (NS_FAILED(rv)) {
@@ -1018,7 +1006,7 @@ nsContentUtils::GetAncestorsAndOffsets(nsIDOMNode* aNode,
   nsIContent* child = content;
   nsIContent* parent = child->GetParent();
   while (parent) {
-    parent->IndexOf(child, offset);
+    offset = parent->IndexOf(child);
     aAncestorNodes->AppendElement(parent);
     aAncestorOffsets->AppendElement(NS_INT32_TO_PTR(offset));
     child = parent;
@@ -1403,8 +1391,7 @@ nsContentUtils::GenerateStateKey(nsIContent* aContent,
   NS_ENSURE_TRUE(aContent, NS_ERROR_FAILURE);
 
   // Don't capture state for anonymous content
-  PRUint32 contentID;
-  aContent->GetContentID(&contentID);
+  PRUint32 contentID = aContent->ContentID();
   if (!contentID) {
     return NS_OK;
   }
@@ -1458,7 +1445,7 @@ nsContentUtils::GenerateStateKey(nsIContent* aContent,
 
         // Append the index of the form in the document
         nsCOMPtr<nsIContent> formContent(do_QueryInterface(formElement));
-        htmlForms->IndexOf(formContent, index, PR_FALSE);
+        index = htmlForms->IndexOf(formContent, PR_FALSE);
         if (index <= -1) {
           //
           // XXX HACK this uses some state that was dumped into the document
@@ -1503,7 +1490,7 @@ nsContentUtils::GenerateStateKey(nsIContent* aContent,
         // causes a signficant pageload performance hit. See bug
         // 166636. Doing this wrong means you will see the assertion
         // below being hit.
-        htmlFormControls->IndexOf(aContent, index, PR_FALSE);
+        index = htmlFormControls->IndexOf(aContent, PR_FALSE);
         NS_ASSERTION(index > -1,
                      "nsFrameManager::GenerateStateKey didn't find content "
                      "by type! See bug 139568");
@@ -1539,8 +1526,8 @@ nsContentUtils::NewURIWithDocumentCharset(nsIURI** aResult,
                                           nsIURI* aBaseURI)
 {
   nsCAutoString originCharset;
-  if (aDocument && NS_FAILED(aDocument->GetDocumentCharacterSet(originCharset)))
-    originCharset.Truncate();
+  if (aDocument)
+    originCharset = aDocument->GetDocumentCharacterSet();
 
   return NS_NewURI(aResult, NS_ConvertUCS2toUTF8(aSpec), originCharset.get(),
                    aBaseURI, sIOService);
@@ -1577,11 +1564,8 @@ nsContentUtils::BelongsInForm(nsIDOMHTMLFormElement *aForm,
       return PR_TRUE;
     }
 
-    nsCOMPtr<nsIAtom> tag;
-
-    content->GetTag(getter_AddRefs(tag));
-
-    if (tag == nsHTMLAtoms::form) {
+    if (content->Tag() == nsHTMLAtoms::form &&
+        content->IsContentOfType(nsIContent::eHTML)) {
       // The child is contained within a form, but not the right form
       // so we ignore it.
 
@@ -1591,11 +1575,7 @@ nsContentUtils::BelongsInForm(nsIDOMHTMLFormElement *aForm,
     content = content->GetParent();
   }
 
-  PRInt32 count = 0;
-
-  form->ChildCount(count);
-
-  if (count > 0) {
+  if (form->GetChildCount() > 0) {
     // The form is a container but aContent wasn't inside the form,
     // return false
 
@@ -1646,7 +1626,7 @@ nsCxPusher::Push(nsISupports *aCurrentTarget)
   }
 
   if (document) {
-    document->GetScriptGlobalObject(getter_AddRefs(sgo));
+    sgo = document->GetScriptGlobalObject();
   }
 
   if (!document && !sgo) {

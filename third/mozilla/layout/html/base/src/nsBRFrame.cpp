@@ -74,7 +74,7 @@ public:
                     nsHTMLReflowMetrics& aDesiredSize,
                     const nsHTMLReflowState& aReflowState,
                     nsReflowStatus& aStatus);
-  NS_IMETHOD GetFrameType(nsIAtom** aType) const;
+  virtual nsIAtom* GetType() const;
 protected:
   virtual ~BRFrame();
 };
@@ -141,9 +141,9 @@ BRFrame::Reflow(nsIPresContext* aPresContext,
   if (ll) {
     // Note that the compatibility mode check excludes AlmostStandards
     // mode, since this is the inline box model.  See bug 161691.
-    if ( ll->CanPlaceFloaterNow() ||
+    if ( ll->CanPlaceFloatNow() ||
          ll->GetCompatMode() == eCompatibility_FullStandards ) {
-      // If we can place a floater on the line now it means that the
+      // If we can place a float on the line now it means that the
       // line is effectively empty (there may be zero sized compressed
       // white-space frames on the line, but they are to be ignored).
       //
@@ -184,6 +184,8 @@ BRFrame::Reflow(nsIPresContext* aPresContext,
       // code in nsLineLayout::VerticalAlignFrames that zaps minY/maxY
       // if the width is zero.
       // XXX This also fixes bug 10036!
+      // Warning: nsTextControlFrame::CalculateSizeStandard depends on
+      // the following line, see bug 228752.
       aMetrics.width = 1;
 
       // Update max-element-width to keep us honest
@@ -210,13 +212,10 @@ BRFrame::Reflow(nsIPresContext* aPresContext,
   return NS_OK;
 }
 
-NS_IMETHODIMP
-BRFrame::GetFrameType(nsIAtom** aType) const
+nsIAtom*
+BRFrame::GetType() const
 {
-  NS_PRECONDITION(nsnull != aType, "null OUT parameter pointer");
-  *aType = nsLayoutAtoms::brFrame;
-  NS_ADDREF(*aType);
-  return NS_OK;
+  return nsLayoutAtoms::brFrame;
 }
 
 NS_IMETHODIMP BRFrame::GetContentAndOffsetsFromPoint(nsIPresContext* aCX,
@@ -230,12 +229,11 @@ NS_IMETHODIMP BRFrame::GetContentAndOffsetsFromPoint(nsIPresContext* aCX,
     return NS_ERROR_NULL_POINTER;
   NS_IF_ADDREF(*aContent = mContent->GetParent());
 
-  nsresult result = NS_OK;
   if (*aContent)
-    result = (*aContent)->IndexOf(mContent, aOffsetBegin);
+    aOffsetBegin = (*aContent)->IndexOf(mContent);
   aOffsetEnd = aOffsetBegin;
   aBeginFrameContent = PR_TRUE;
-  return result;
+  return NS_OK;
 }
 
 NS_IMETHODIMP BRFrame::PeekOffset(nsIPresContext* aPresContext, nsPeekOffsetStruct *aPos)
@@ -243,11 +241,8 @@ NS_IMETHODIMP BRFrame::PeekOffset(nsIPresContext* aPresContext, nsPeekOffsetStru
   if (!aPos)
     return NS_ERROR_NULL_POINTER;
 
-  PRInt32 offsetBegin; //offset of this content in its parents child list. base 0
-
-  nsCOMPtr<nsIContent> parentContent = mContent->GetParent();
-  if (parentContent)
-    parentContent->IndexOf(mContent, offsetBegin);
+ //offset of this content in its parents child list. base 0
+  PRInt32 offsetBegin = mContent->GetParent()->IndexOf(mContent);
 
   if (aPos->mAmount != eSelectLine && aPos->mAmount != eSelectBeginLine 
       && aPos->mAmount != eSelectEndLine) //then we must do the adjustment to make sure we leave this frame

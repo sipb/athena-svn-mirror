@@ -41,7 +41,6 @@
 
 #include "nsVoidArray.h"
 #include "nsISupports.h"
-#include "nsCOMPtr.h"
 
 // See below for the definition of nsCOMArray<T>
 
@@ -70,6 +69,10 @@ protected:
         return mArray.EnumerateBackwards(aFunc, aData);
     }
     
+    void Sort(nsVoidArrayComparatorFunc aFunc, void* aData) {
+        mArray.Sort(aFunc, aData);
+    }
+    
     // any method which is not a direct forward to mArray should
     // avoid inline bodies, so that the compiler doesn't inline them
     // all over the place
@@ -93,11 +96,15 @@ public:
         return mArray.Count();
     }
 
-    nsDerivedSafe<nsISupports>* ObjectAt(PRInt32 aIndex) const {
-        return NS_REINTERPRET_CAST(nsDerivedSafe<nsISupports>*, mArray.ElementAt(aIndex));
+    nsISupports* ObjectAt(PRInt32 aIndex) const {
+        return NS_STATIC_CAST(nsISupports*, mArray.ElementAt(aIndex));
     }
     
-    nsDerivedSafe<nsISupports>* operator[](PRInt32 aIndex) const {
+    nsISupports* SafeObjectAt(PRInt32 aIndex) const {
+        return NS_STATIC_CAST(nsISupports*, mArray.SafeElementAt(aIndex));
+    }
+
+    nsISupports* operator[](PRInt32 aIndex) const {
         return ObjectAt(aIndex);
     }
 
@@ -126,7 +133,7 @@ private:
 //
 // This array will accept null as an argument for any object, and will
 // store null in the array, just like nsVoidArray. But that also means
-// that methods like ObjectAt() may return null when refering to an
+// that methods like ObjectAt() may return null when referring to an
 // existing, but null entry in the array.
 template <class T>
 class nsCOMArray : public nsCOMArray_base
@@ -142,12 +149,17 @@ class nsCOMArray : public nsCOMArray_base
     ~nsCOMArray() {}
 
     // these do NOT refcount on the way out, for speed
-    nsDerivedSafe<T>* ObjectAt(PRInt32 aIndex) const {
-        return NS_REINTERPRET_CAST(nsDerivedSafe<T>*,nsCOMArray_base::ObjectAt(aIndex));
+    T* ObjectAt(PRInt32 aIndex) const {
+        return NS_STATIC_CAST(T*,nsCOMArray_base::ObjectAt(aIndex));
+    }
+
+    // these do NOT refcount on the way out, for speed
+    T* SafeObjectAt(PRInt32 aIndex) const {
+        return NS_STATIC_CAST(T*,nsCOMArray_base::SafeObjectAt(aIndex));
     }
 
     // indexing operator for syntactic sugar
-    nsDerivedSafe<T>* operator[](PRInt32 aIndex) const {
+    T* operator[](PRInt32 aIndex) const {
         return ObjectAt(aIndex);
     }
 
@@ -213,6 +225,13 @@ class nsCOMArray : public nsCOMArray_base
     PRBool EnumerateBackwards(nsCOMArrayEnumFunc aFunc, void* aData) {
         return nsCOMArray_base::EnumerateBackwards(nsVoidArrayEnumFunc(aFunc),
                                                   aData);
+    }
+    
+    typedef int (* PR_CALLBACK nsCOMArrayComparatorFunc)
+        (T* aElement1, T* aElement2, void* aData);
+        
+    void Sort(nsCOMArrayComparatorFunc aFunc, void* aData) {
+        nsCOMArray_base::Sort(nsVoidArrayComparatorFunc(aFunc), aData);
     }
 
     // append an object, growing the array as necessary

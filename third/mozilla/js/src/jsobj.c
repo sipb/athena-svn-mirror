@@ -1,36 +1,41 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 4 -*-
  *
- * The contents of this file are subject to the Netscape Public
- * License Version 1.1 (the "License"); you may not use this file
- * except in compliance with the License. You may obtain a copy of
- * the License at http://www.mozilla.org/NPL/
+ * ***** BEGIN LICENSE BLOCK *****
+ * Version: MPL 1.1/GPL 2.0/LGPL 2.1
  *
- * Software distributed under the License is distributed on an "AS
- * IS" basis, WITHOUT WARRANTY OF ANY KIND, either express or
- * implied. See the License for the specific language governing
- * rights and limitations under the License.
+ * The contents of this file are subject to the Mozilla Public License Version
+ * 1.1 (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ * http://www.mozilla.org/MPL/
+ *
+ * Software distributed under the License is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+ * for the specific language governing rights and limitations under the
+ * License.
  *
  * The Original Code is Mozilla Communicator client code, released
  * March 31, 1998.
  *
- * The Initial Developer of the Original Code is Netscape
- * Communications Corporation.  Portions created by Netscape are
- * Copyright (C) 1998 Netscape Communications Corporation. All
- * Rights Reserved.
+ * The Initial Developer of the Original Code is
+ * Netscape Communications Corporation.
+ * Portions created by the Initial Developer are Copyright (C) 1998
+ * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s):
  *
- * Alternatively, the contents of this file may be used under the
- * terms of the GNU Public License (the "GPL"), in which case the
- * provisions of the GPL are applicable instead of those above.
- * If you wish to allow use of your version of this file only
- * under the terms of the GPL and not to allow others to use your
- * version of this file under the NPL, indicate your decision by
- * deleting the provisions above and replace them with the notice
- * and other provisions required by the GPL.  If you do not delete
- * the provisions above, a recipient may use your version of this
- * file under either the NPL or the GPL.
- */
+ * Alternatively, the contents of this file may be used under the terms of
+ * either of the GNU General Public License Version 2 or later (the "GPL"),
+ * or the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
+ * in which case the provisions of the GPL or the LGPL are applicable instead
+ * of those above. If you wish to allow use of your version of this file only
+ * under the terms of either the GPL or the LGPL, and not to allow others to
+ * use your version of this file under the terms of the MPL, indicate your
+ * decision by deleting the provisions above and replace them with the notice
+ * and other provisions required by the GPL or the LGPL. If you do not delete
+ * the provisions above, a recipient may use your version of this file under
+ * the terms of any one of the MPL, the GPL or the LGPL.
+ *
+ * ***** END LICENSE BLOCK ***** */
 
 /*
  * JS object implementation.
@@ -620,6 +625,12 @@ js_obj_toSource(JSContext *cx, JSObject *obj, uintN argc, jsval *argv,
     JSString *gsop[2];
     JSAtom *atom;
     JSString *idstr, *valstr, *str;
+    int stackDummy;
+
+    if (!JS_CHECK_STACK_SIZE(cx, stackDummy)) {
+        JS_ReportErrorNumber(cx, js_GetErrorMessage, NULL, JSMSG_OVER_RECURSED);
+        return JS_FALSE;
+    }
 
     /*
      * obj_toString for 1.2 calls toSource, and doesn't want the extra parens
@@ -956,8 +967,8 @@ obj_eval(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval)
 #endif
 
     fp = cx->fp;
-    caller = fp->down;
-    indirectCall = (!caller->pc || *caller->pc != JSOP_EVAL);
+    caller = JS_GetScriptedCaller(cx, fp);
+    indirectCall = (caller && caller->pc && *caller->pc != JSOP_EVAL);
 
     if (JSVERSION_IS_ECMA(cx->version) &&
         indirectCall &&
@@ -1018,21 +1029,23 @@ obj_eval(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval)
         scopeobj = obj;
 #else
         /* Compile using caller's current scope object. */
-        scopeobj = caller->scopeChain;
+        if (caller)
+            scopeobj = caller->scopeChain;
 #endif
     }
 
     str = JSVAL_TO_STRING(argv[0]);
-    if (caller->script) {
+    if (caller) {
         file = caller->script->filename;
         line = js_PCToLineNumber(cx, caller->script, caller->pc);
-        principals = caller->script->principals;
+        principals = JS_EvalFramePrincipals(cx, fp, caller);
     } else {
         file = NULL;
         line = 0;
         principals = NULL;
     }
 
+    /* XXXbe set only for the compiler, which does not currently test it */
     fp->flags |= JSFRAME_EVAL;
     script = JS_CompileUCScriptForPrincipals(cx, scopeobj, principals,
                                              JSSTRING_CHARS(str),
@@ -1049,7 +1062,8 @@ obj_eval(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval)
 #endif
     {
         /* Execute using caller's new scope object (might be a Call object). */
-        scopeobj = caller->scopeChain;
+        if (caller)
+            scopeobj = caller->scopeChain;
     }
 #endif
     ok = js_Execute(cx, scopeobj, script, caller, JSFRAME_EVAL, rval);
@@ -1215,7 +1229,7 @@ obj_watch(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval)
     jsid propid;
     uintN attrs;
 
-    fun = js_ValueToFunction(cx, &argv[1], JS_FALSE);
+    fun = js_ValueToFunction(cx, &argv[1], 0);
     if (!fun)
         return JS_FALSE;
     argv[1] = OBJECT_TO_JSVAL(fun->object);
@@ -1942,7 +1956,7 @@ js_ConstructObject(JSContext *cx, JSClass *clasp, JSObject *proto,
     if (!FindConstructor(cx, parent, clasp->name, &cval))
         return NULL;
     if (JSVAL_IS_PRIMITIVE(cval)) {
-        js_ReportIsNotFunction(cx, &cval, JS_TRUE);
+        js_ReportIsNotFunction(cx, &cval, JSV2F_CONSTRUCT | JSV2F_SEARCH_STACK);
         return NULL;
     }
 
@@ -2721,7 +2735,8 @@ js_SetProperty(JSContext *cx, JSObject *obj, jsid id, jsval *vp)
         scope = OBJ_SCOPE(pobj);
 
         attrs = sprop->attrs;
-        if ((attrs & JSPROP_READONLY) || SCOPE_IS_SEALED(scope)) {
+        if ((attrs & JSPROP_READONLY) ||
+            (SCOPE_IS_SEALED(scope) && pobj == obj)) {
             JS_UNLOCK_SCOPE(cx, scope);
             if ((attrs & JSPROP_READONLY) && JSVERSION_IS_ECMA(cx->version))
                 return JS_TRUE;
@@ -2771,7 +2786,7 @@ js_SetProperty(JSContext *cx, JSObject *obj, jsid id, jsval *vp)
     }
 
     if (!sprop) {
-        if (SCOPE_IS_SEALED(OBJ_SCOPE(obj)))
+        if (SCOPE_IS_SEALED(OBJ_SCOPE(obj)) && OBJ_SCOPE(obj)->object == obj)
             goto read_only_error;
 
         /* Find or make a property descriptor with the right heritage. */
@@ -3283,7 +3298,7 @@ js_DropProperty(JSContext *cx, JSObject *obj, JSProperty *prop)
 #endif
 
 static void
-ReportIsNotFunction(JSContext *cx, jsval *vp, JSBool constructing)
+ReportIsNotFunction(JSContext *cx, jsval *vp, uintN flags)
 {
     /*
      * The decompiler may need to access the args of the function in
@@ -3300,7 +3315,7 @@ ReportIsNotFunction(JSContext *cx, jsval *vp, JSBool constructing)
         cx->fp = fp->down;
     }
 
-    js_ReportIsNotFunction(cx, vp, constructing);
+    js_ReportIsNotFunction(cx, vp, flags);
 
     if (fp->down) {
         JS_ASSERT(cx->dormantFrameChain == fp);
@@ -3317,7 +3332,7 @@ js_Call(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval)
 
     clasp = OBJ_GET_CLASS(cx, JSVAL_TO_OBJECT(argv[-2]));
     if (!clasp->call) {
-        ReportIsNotFunction(cx, &argv[-2], JS_FALSE);
+        ReportIsNotFunction(cx, &argv[-2], 0);
         return JS_FALSE;
     }
     return clasp->call(cx, obj, argc, argv, rval);
@@ -3331,7 +3346,7 @@ js_Construct(JSContext *cx, JSObject *obj, uintN argc, jsval *argv,
 
     clasp = OBJ_GET_CLASS(cx, JSVAL_TO_OBJECT(argv[-2]));
     if (!clasp->construct) {
-        ReportIsNotFunction(cx, &argv[-2], JS_TRUE);
+        ReportIsNotFunction(cx, &argv[-2], JSV2F_CONSTRUCT);
         return JS_FALSE;
     }
     return clasp->construct(cx, obj, argc, argv, rval);

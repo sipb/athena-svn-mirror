@@ -71,6 +71,7 @@ protected:
                                  PRUint32 aChromeMask,
                                  PRInt32 aInitialWidth, PRInt32 aInitialHeight,
                                  PRBool aIsHiddenWindow, nsIXULWindow **aResult);
+  PRUint32 CalculateWindowZLevel(nsIXULWindow *aParent, PRUint32 aChromeMask);
   nsresult SetXPConnectSafeContext();
   nsresult ClearXPConnectSafeContext();
   void     AttemptingQuit(PRBool aAttempt);
@@ -90,13 +91,8 @@ protected:
   PRPackedBool mAttemptingQuit; // Quit(eAttemptQuit) still trying
 
   // A "last event" that is used to flush the appshell's event queue.
-  struct ExitEvent {
-    PLEvent            mEvent;
-    nsAppShellService* mService;
-  };
-
-  static void* PR_CALLBACK HandleExitEvent(PLEvent* aEvent);
-  static void PR_CALLBACK DestroyExitEvent(PLEvent* aEvent);
+  PR_STATIC_CALLBACK(void*) HandleExitEvent(PLEvent* aEvent);
+  PR_STATIC_CALLBACK(void) DestroyExitEvent(PLEvent* aEvent);
 
 private:
   nsresult CheckAndRemigrateDefunctProfile();

@@ -43,11 +43,9 @@
 #include "nsIComponentManager.h"
 #include "nsIServiceManager.h"
 #include "nsICategoryManager.h"
-#include "nsNetModuleMgr.h"
 #include "nsSocketProviderService.h"
 #include "nscore.h"
 #include "nsSimpleURI.h"
-#include "nsDnsService.h"
 #include "nsLoadGroup.h"
 #include "nsStreamLoader.h"
 #include "nsUnicharStreamLoader.h"
@@ -56,8 +54,8 @@
 #include "nsBufferedStreams.h"
 #include "nsMIMEInputStream.h"
 #include "nsSOCKSSocketProvider.h"
-#include "nsSOCKS4SocketProvider.h"
 #include "nsCacheService.h"
+#include "nsIOThreadPool.h"
 
 #include "nsNetCID.h"
 
@@ -73,17 +71,23 @@
 
 #include "nsIOService.h"
 NS_GENERIC_FACTORY_CONSTRUCTOR_INIT(nsIOService, Init)
+
+#include "nsDNSService2.h"
+NS_GENERIC_FACTORY_CONSTRUCTOR_INIT(nsDNSService, Init)
   
 #include "nsProtocolProxyService.h"
 NS_GENERIC_FACTORY_CONSTRUCTOR_INIT(nsProtocolProxyService, Init)
 
 #include "nsStreamTransportService.h"
-NS_GENERIC_FACTORY_CONSTRUCTOR_INIT(nsStreamTransportService, Init)
+NS_GENERIC_FACTORY_CONSTRUCTOR(nsStreamTransportService)
 
 #include "nsSocketTransportService2.h"
 #undef LOG
 #undef LOG_ENABLED
 NS_GENERIC_FACTORY_CONSTRUCTOR_INIT(nsSocketTransportService, Init)
+
+#include "nsServerSocket.h"
+NS_GENERIC_FACTORY_CONSTRUCTOR(nsServerSocket)
 
 #include "nsAsyncStreamCopier.h"
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsAsyncStreamCopier)
@@ -96,6 +100,9 @@ NS_GENERIC_FACTORY_CONSTRUCTOR(nsInputStreamChannel)
 
 #include "nsDownloader.h"
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsDownloader)
+
+#include "nsSyncStreamListener.h"
+NS_GENERIC_FACTORY_CONSTRUCTOR_INIT(nsSyncStreamListener, Init)
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -135,6 +142,11 @@ NS_GENERIC_FACTORY_CONSTRUCTOR(nsDirIndex)
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsStreamListenerTee)
 
 ///////////////////////////////////////////////////////////////////////////////
+
+#include "nsCookieService.h"
+NS_GENERIC_FACTORY_SINGLETON_CONSTRUCTOR(nsCookieService, nsCookieService::GetSingleton)
+
+///////////////////////////////////////////////////////////////////////////////
 // protocols
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -169,10 +181,8 @@ NS_GENERIC_FACTORY_CONSTRUCTOR_INIT(nsFtpProtocolHandler, Init)
 #include "nsHttpAuthManager.h"
 #include "nsHttpBasicAuth.h"
 #include "nsHttpDigestAuth.h"
-#ifdef XP_WIN
 #include "nsHttpNTLMAuth.h"
-NS_GENERIC_FACTORY_CONSTRUCTOR_INIT(nsHttpNTLMAuth, Init)
-#endif
+NS_GENERIC_FACTORY_CONSTRUCTOR(nsHttpNTLMAuth)
 #undef LOG
 #undef LOG_ENABLED
 NS_GENERIC_FACTORY_CONSTRUCTOR_INIT(nsHttpHandler, Init)
@@ -567,6 +577,10 @@ static const nsModuleComponentInfo gNetModuleInfo[] = {
       NS_IOSERVICE_CID,
       NS_IOSERVICE_CONTRACTID,
       nsIOServiceConstructor },
+    { NS_IOTHREADPOOL_CLASSNAME,
+      NS_IOTHREADPOOL_CID,
+      NS_IOTHREADPOOL_CONTRACTID,
+      net_NewIOThreadPool },
     { NS_STREAMTRANSPORTSERVICE_CLASSNAME,
       NS_STREAMTRANSPORTSERVICE_CID,
       NS_STREAMTRANSPORTSERVICE_CONTRACTID,
@@ -575,14 +589,18 @@ static const nsModuleComponentInfo gNetModuleInfo[] = {
       NS_SOCKETTRANSPORTSERVICE_CID,
       NS_SOCKETTRANSPORTSERVICE_CONTRACTID,
       nsSocketTransportServiceConstructor },
-    { "Socket Provider Service", 
+    { NS_SERVERSOCKET_CLASSNAME,
+      NS_SERVERSOCKET_CID,
+      NS_SERVERSOCKET_CONTRACTID,
+      nsServerSocketConstructor },
+    { NS_SOCKETPROVIDERSERVICE_CLASSNAME,
       NS_SOCKETPROVIDERSERVICE_CID,
-      "@mozilla.org/network/socket-provider-service;1",
+      NS_SOCKETPROVIDERSERVICE_CONTRACTID,
       nsSocketProviderService::Create },
-    { "DNS Service", 
+    { NS_DNSSERVICE_CLASSNAME,
       NS_DNSSERVICE_CID,
-      "@mozilla.org/network/dns-service;1",
-      nsDNSService::Create },
+      NS_DNSSERVICE_CONTRACTID,
+      nsDNSServiceConstructor },
     { NS_IDNSERVICE_CLASSNAME,
       NS_IDNSERVICE_CID,
       NS_IDNSERVICE_CONTRACTID,
@@ -591,10 +609,6 @@ static const nsModuleComponentInfo gNetModuleInfo[] = {
       NS_SIMPLEURI_CID,
       NS_SIMPLEURI_CONTRACTID,
       nsSimpleURI::Create },
-    { "External Module Manager", 
-      NS_NETMODULEMGR_CID,
-      "@mozilla.org/network/net-extern-mod;1",
-      nsNetModuleMgr::Create },
     { NS_ASYNCSTREAMCOPIER_CLASSNAME,
       NS_ASYNCSTREAMCOPIER_CID,
       NS_ASYNCSTREAMCOPIER_CONTRACTID,
@@ -619,6 +633,10 @@ static const nsModuleComponentInfo gNetModuleInfo[] = {
       NS_DOWNLOADER_CID,
       NS_DOWNLOADER_CONTRACTID,
       nsDownloaderConstructor },
+    { NS_SYNCSTREAMLISTENER_CLASSNAME,
+      NS_SYNCSTREAMLISTENER_CID,
+      NS_SYNCSTREAMLISTENER_CONTRACTID,
+      nsSyncStreamListenerConstructor },
     { NS_REQUESTOBSERVERPROXY_CLASSNAME,
       NS_REQUESTOBSERVERPROXY_CID,
       NS_REQUESTOBSERVERPROXY_CONTRACTID,
@@ -868,12 +886,10 @@ static const nsModuleComponentInfo gNetModuleInfo[] = {
       NS_HTTP_AUTHENTICATOR_CONTRACTID_PREFIX "digest",
       nsHttpDigestAuthConstructor },
 
-#ifdef XP_WIN
     { "HTTP NTLM Auth Encoder",
       NS_HTTPNTLMAUTH_CID,
       NS_HTTP_AUTHENTICATOR_CONTRACTID_PREFIX "ntlm",
       nsHttpNTLMAuthConstructor },
-#endif
 
     { NS_HTTPAUTHMANAGER_CLASSNAME,
       NS_HTTPAUTHMANAGER_CID,
@@ -955,6 +971,11 @@ static const nsModuleComponentInfo gNetModuleInfo[] = {
       NS_ABOUT_MODULE_CONTRACTID_PREFIX "buildconfig",
       nsAboutRedirector::Create
     },
+    { "about:about",
+      NS_ABOUT_REDIRECTOR_MODULE_CID,
+      NS_ABOUT_MODULE_CONTRACTID_PREFIX "about",
+      nsAboutRedirector::Create
+    },
 
     { "about:cache", 
       NS_ABOUT_CACHE_MODULE_CID,
@@ -968,22 +989,34 @@ static const nsModuleComponentInfo gNetModuleInfo[] = {
     },
 #endif
 
-    {  NS_ISOCKSSOCKETPROVIDER_CLASSNAME,
+    {  "nsSOCKSSocketProvider",
        NS_SOCKSSOCKETPROVIDER_CID,
-       NS_ISOCKSSOCKETPROVIDER_CONTRACTID,
-       nsSOCKSSocketProvider::Create
+       NS_NETWORK_SOCKET_CONTRACTID_PREFIX "socks",
+       nsSOCKSSocketProvider::CreateV5
     },
 
-    {  NS_ISOCKS4SOCKETPROVIDER_CLASSNAME,
+    {  "nsSOCKS4SocketProvider",
        NS_SOCKS4SOCKETPROVIDER_CID,
-       NS_ISOCKS4SOCKETPROVIDER_CONTRACTID,
-       nsSOCKS4SocketProvider::Create
+       NS_NETWORK_SOCKET_CONTRACTID_PREFIX "socks4",
+       nsSOCKSSocketProvider::CreateV4
     },
 
     {  NS_CACHESERVICE_CLASSNAME,
        NS_CACHESERVICE_CID,
        NS_CACHESERVICE_CONTRACTID,
        nsCacheService::Create
+    },
+
+    { NS_COOKIEMANAGER_CLASSNAME,
+      NS_COOKIEMANAGER_CID,
+      NS_COOKIEMANAGER_CONTRACTID,
+      nsCookieServiceConstructor
+    },
+
+    { NS_COOKIESERVICE_CLASSNAME,
+      NS_COOKIESERVICE_CID,
+      NS_COOKIESERVICE_CONTRACTID,
+      nsCookieServiceConstructor
     },
 
 };

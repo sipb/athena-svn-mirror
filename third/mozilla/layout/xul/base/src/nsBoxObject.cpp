@@ -144,9 +144,7 @@ nsBoxObject::SetDocument(nsIDocument* aDocument)
 {
   mPresState = nsnull;
   if (aDocument) {
-    nsCOMPtr<nsIPresShell> shell;
-    aDocument->GetShellAt(0, getter_AddRefs(shell));
-    mPresShell = shell;
+    mPresShell = aDocument->GetShellAt(0);
   }
   else {
     mPresShell = nsnull;
@@ -174,17 +172,18 @@ nsBoxObject::GetFrame()
 nsresult 
 nsBoxObject::GetOffsetRect(nsRect& aRect)
 {
-  nsresult res = NS_OK;
-
   aRect.x = aRect.y = 0;
   aRect.Empty();
  
+  if (!mContent)
+    return NS_ERROR_NOT_INITIALIZED;
+
+  nsresult res = NS_OK;
   nsCOMPtr<nsIDocument> doc = mContent->GetDocument();
 
   if (doc) {
     // Get Presentation shell 0
-    nsCOMPtr<nsIPresShell> presShell;
-    doc->GetShellAt(0, getter_AddRefs(presShell));
+    nsIPresShell *presShell = doc->GetShellAt(0);
 
     if(presShell) {
       // Flush all pending notifications so that our frames are uptodate
@@ -208,12 +207,11 @@ nsBoxObject::GetOffsetRect(nsRect& aRect)
 
         // Find the frame parent whose content's tagName either matches 
         // the tagName passed in or is the document element.
-        nsCOMPtr<nsIContent> docElement;
-        doc->GetRootContent(getter_AddRefs(docElement));
+        nsIContent *docElement = doc->GetRootContent();
         nsIFrame* parent = frame->GetParent();
         while (parent) {
           // If we've hit the document element, break here
-          if (parent->GetContent() == docElement.get()) {
+          if (parent->GetContent() == docElement) {
             break;
           }
 
@@ -273,13 +271,15 @@ nsBoxObject::GetScreenRect(nsRect& aRect)
   aRect.x = aRect.y = 0;
   aRect.Empty();
  
+  if (!mContent)
+    return NS_ERROR_NOT_INITIALIZED;
+
   nsCOMPtr<nsIDocument> doc = mContent->GetDocument();
 
   if (doc) {
     // Get Presentation shell 0
-    nsCOMPtr<nsIPresShell> presShell;
-    doc->GetShellAt(0, getter_AddRefs(presShell));
-    
+    nsIPresShell *presShell = doc->GetShellAt(0);
+
     if (presShell) {
       // Flush all pending notifications so that our frames are uptodate
       presShell->FlushPendingNotifications(PR_FALSE);
@@ -289,7 +289,7 @@ nsBoxObject::GetScreenRect(nsRect& aRect)
       
       if (presContext) {
         nsIFrame* frame;
-        nsresult rv = presShell->GetPrimaryFrameFor(mContent, &frame);
+        presShell->GetPrimaryFrameFor(mContent, &frame);
         
         PRInt32 offsetX = 0;
         PRInt32 offsetY = 0;
@@ -508,6 +508,10 @@ nsBoxObject::GetParentBox(nsIDOMElement * *aParentBox)
 NS_IMETHODIMP 
 nsBoxObject::GetFirstChild(nsIDOMElement * *aFirstVisibleChild)
 {
+  if (!mContent) {
+    *aFirstVisibleChild = nsnull;
+    return NS_ERROR_NOT_INITIALIZED;
+  }
   *aFirstVisibleChild = GetChildByOrdinalAt(0);
   NS_IF_ADDREF(*aFirstVisibleChild);
   return NS_OK;
@@ -516,10 +520,19 @@ nsBoxObject::GetFirstChild(nsIDOMElement * *aFirstVisibleChild)
 NS_IMETHODIMP
 nsBoxObject::GetLastChild(nsIDOMElement * *aLastVisibleChild)
 {
-  PRInt32 count;
-  mContent->ChildCount(count);
-  *aLastVisibleChild = GetChildByOrdinalAt(count-1);
-  NS_IF_ADDREF(*aLastVisibleChild);
+  if (!mContent) {
+    *aLastVisibleChild = nsnull;
+    return NS_ERROR_NOT_INITIALIZED;
+  }
+
+  PRUint32 count = mContent->GetChildCount();
+
+  if (count > 0) {
+    NS_IF_ADDREF(*aLastVisibleChild = GetChildByOrdinalAt(count-1));
+  } else {
+    *aLastVisibleChild = nsnull;
+  }
+
   return NS_OK;
 }
 
@@ -622,17 +635,16 @@ nsBoxObject::GetDocShell(nsIDocShell** aResult)
   // No nsIFrameFrame available for mContent, try if there's a mapping
   // between mContent's document to mContent's subdocument.
 
-  nsCOMPtr<nsIDocument> doc, sub_doc;
+  nsCOMPtr<nsIDocument> doc;
   mPresShell->GetDocument(getter_AddRefs(doc));
 
-  doc->GetSubDocumentFor(mContent, getter_AddRefs(sub_doc));
+  nsIDocument *sub_doc = doc->GetSubDocumentFor(mContent);
 
   if (!sub_doc) {
     return NS_OK;
   }
 
-  nsCOMPtr<nsISupports> container;
-  sub_doc->GetContainer(getter_AddRefs(container));
+  nsCOMPtr<nsISupports> container = sub_doc->GetContainer();
 
   if (!container) {
     return NS_OK;

@@ -839,9 +839,8 @@ getUILangCountry(nsAString& aUILang, nsAString& aCountry)
   nsCOMPtr<nsILocaleService> localeService = do_GetService(NS_LOCALESERVICE_CONTRACTID, &result);
   NS_ASSERTION(NS_SUCCEEDED(result),"getUILangCountry: get locale service failed");
 
-  nsXPIDLString uiLang;
-  result = localeService->GetLocaleComponentForUserAgent(getter_Copies(uiLang));
-  aUILang = uiLang;
+  result = localeService->GetLocaleComponentForUserAgent(aUILang);
+  NS_ASSERTION(NS_SUCCEEDED(result), "getUILangCountry: get locale component failed");
   result = getCountry(aUILang, aCountry);
   return result;
 }
@@ -961,10 +960,11 @@ static void ShowOSAlertFromFile(int argc, char **argv, const char *alert_filenam
 
   directoryService = do_GetService(NS_DIRECTORY_SERVICE_CONTRACTID, &rv);
   if (NS_SUCCEEDED(rv)) {
-    rv = directoryService->Get(NS_APP_RES_DIR,
+    rv = directoryService->Get(NS_GRE_DIR,
                                NS_GET_IID(nsIFile),
                                getter_AddRefs(fileName));
     if (NS_SUCCEEDED(rv) && fileName) {
+      fileName->AppendNative(NS_LITERAL_CSTRING("res"));
       fileName->AppendNative(nsDependentCString(alert_filename));
       PRFileDesc* fd = 0;
       fileName->OpenNSPRFileDesc(PR_RDONLY, 0664, &fd);
@@ -1264,6 +1264,7 @@ static nsresult main1(int argc, char* argv[], nsISupports *nativeApp )
 #ifdef MOZ_ENABLE_XREMOTE
   // if we have X remote support and we have our one window up and
   // running start listening for requests on the proxy window.
+  // It will shut itself down before the event queue stops processing events.
   nsCOMPtr<nsIXRemoteService> remoteService;
   remoteService = do_GetService(NS_IXREMOTESERVICE_CONTRACTID);
   if (remoteService)
@@ -1290,12 +1291,6 @@ static nsresult main1(int argc, char* argv[], nsISupports *nativeApp )
   rv = appShell->Run();
   NS_TIMELINE_LEAVE("appShell->Run");
   NS_ASSERTION(NS_SUCCEEDED(rv), "failed to run appshell");
-
-#ifdef MOZ_ENABLE_XREMOTE
-  // shut down the x remote proxy window
-  if (remoteService)
-    remoteService->Shutdown();
-#endif /* MOZ_ENABLE_XREMOTE */
 
 #ifdef MOZ_TIMELINE
   // Make sure we print this out even if timeline is runtime disabled
@@ -1576,11 +1571,25 @@ int main(int argc, char* argv[])
 #endif
 
 #if defined(MOZ_WIDGET_GTK) || defined(MOZ_WIDGET_GTK2)
+  // setup for private colormap.  Ideally we'd like to do this
+  // in nsAppShell::Create, but we need to get in before gtk
+  // has been initialized to make sure everything is running
+  // consistently.
+  for (int i=1; i<argc; i++)
+    if ((PL_strcasecmp(argv[i], "-install") == 0)
+        || (PL_strcasecmp(argv[i], "--install") == 0)) {
+      gdk_rgb_set_install(TRUE);
+      break;
+    }
+
   // Initialize GTK+1/2 here for splash
 #if defined(MOZ_WIDGET_GTK)
   gtk_set_locale();
 #endif
   gtk_init(&argc, &argv);
+
+  gtk_widget_set_default_visual(gdk_rgb_get_visual());
+  gtk_widget_set_default_colormap(gdk_rgb_get_cmap());
 #endif /* MOZ_WIDGET_GTK || MOZ_WIDGET_GTK2 */
     
   // Call the code to install our handler
@@ -1684,7 +1693,7 @@ int main(int argc, char* argv[])
   return TranslateReturnValue(mainResult);
 }
 
-#if defined( XP_WIN ) && defined( WIN32 )
+#if defined( XP_WIN ) && defined( WIN32 ) && !defined(__GNUC__)
 // We need WinMain in order to not be a console app.  This function is
 // unused if we are a console application.
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR args, int)

@@ -240,7 +240,7 @@ public:
   NS_IMETHOD  SetNextInFlow(nsIFrame*);
   NS_IMETHOD  GetOffsetFromView(nsIPresContext* aPresContext, nsPoint& aOffset, nsIView** aView) const;
   NS_IMETHOD  GetOriginToViewOffset(nsIPresContext *aPresContext, nsPoint& aOffset, nsIView **aView) const;
-  NS_IMETHOD  GetFrameType(nsIAtom** aType) const;
+  virtual nsIAtom* GetType() const;
   NS_IMETHOD  IsPercentageBase(PRBool& aBase) const;
 #ifdef NS_DEBUG
   NS_IMETHOD  List(nsIPresContext* aPresContext, FILE* out, PRInt32 aIndent) const;
@@ -276,9 +276,7 @@ public:
                                   PRBool               aCheckVis,
                                   PRBool*              aIsVisible);
 
-  NS_IMETHOD IsEmpty(nsCompatibility aCompatMode,
-                     PRBool aIsPre,
-                     PRBool* aResult);
+  virtual PRBool IsEmpty();
 
   // nsIHTMLReflow
   NS_IMETHOD  WillReflow(nsIPresContext* aPresContext);
@@ -337,10 +335,6 @@ public:
                          const nsRect& aDamageRect,
                          PRBool aImmediate = PR_FALSE) const;
 
-  // Helper function to return the index in parent of the frame's content
-  // object. Returns -1 on error or if the frame doesn't have a content object
-  static PRInt32 ContentIndexInContainer(const nsIFrame* aFrame);
-
   // Helper function that tests if the frame tree is too deep; if it
   // is it marks the frame as "unflowable" and zeros out the metrics
   // and returns PR_TRUE. Otherwise, the frame is unmarked
@@ -375,6 +369,12 @@ public:
   // later without reflowing the frame.
   void StoreOverflow(nsIPresContext*      aPresContext,
                      nsHTMLReflowMetrics& aMetrics);
+
+  // incorporate the child overflow area into the parent overflow area
+  // if the child does not have a overflow use the child area
+  void ConsiderChildOverflow(nsIPresContext* aPresContext,
+                             nsRect&         aOverflowArea,
+                             nsIFrame*       aChildFrame);
 
   //Mouse Capturing code used by the frames to tell the view to capture all the following events
   NS_IMETHOD CaptureMouse(nsIPresContext* aPresContext, PRBool aGrabMouseEvents);
@@ -415,6 +415,10 @@ public:
   // Helper function that verifies that each frame in the list has the
   // NS_FRAME_IS_DIRTY bit set
   static void VerifyDirtyBitSet(nsIFrame* aFrameList);
+
+  // Helper function to return the index in parent of the frame's content
+  // object. Returns -1 on error or if the frame doesn't have a content object
+  static PRInt32 ContentIndexInContainer(const nsIFrame* aFrame);
 
   void ListTag(FILE* out) const {
     ListTag(out, (nsIFrame*)this);

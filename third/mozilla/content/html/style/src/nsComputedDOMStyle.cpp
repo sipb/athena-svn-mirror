@@ -339,7 +339,7 @@ nsComputedDOMStyle::GetBinding(nsIFrame *aFrame,
 
   GetStyleData(eStyleStruct_Display, (const nsStyleStruct*&)display, aFrame);
 
-  if (display && !display->mBinding.IsEmpty()) {
+  if (display && display->mBinding) {
     val->SetURI(display->mBinding);
   } else {
     val->SetIdent(NS_LITERAL_STRING("none"));
@@ -460,12 +460,11 @@ nsComputedDOMStyle::GetOpacity(nsIFrame *aFrame,
   nsROCSSPrimitiveValue *val = GetROCSSPrimitiveValue();
   NS_ENSURE_TRUE(val, NS_ERROR_OUT_OF_MEMORY);
 
-  const nsStyleVisibility *visibility = nsnull;
-  GetStyleData(eStyleStruct_Visibility, (const nsStyleStruct*&)visibility,
-               aFrame);
+  const nsStyleDisplay *display = nsnull;
+  GetStyleData(eStyleStruct_Display, (const nsStyleStruct*&)display, aFrame);
 
-  if (visibility) {
-    val->SetNumber(visibility->mOpacity);
+  if (display) {
+    val->SetNumber(display->mOpacity);
   } else {
     val->SetNumber(1.0f);
   }
@@ -1281,9 +1280,6 @@ nsComputedDOMStyle::GetZIndex(nsIFrame *aFrame,
       case eStyleUnit_Auto:
         val->SetIdent(NS_LITERAL_STRING("auto"));
         break;
-      case eStyleUnit_Inherit:
-        val->SetIdent(NS_LITERAL_STRING("inherit"));
-        break;
       default:
         NS_WARNING("Double Check the Unit!");
         val->SetIdent(NS_LITERAL_STRING("auto"));
@@ -1307,7 +1303,7 @@ nsComputedDOMStyle::GetListStyleImage(nsIFrame *aFrame,
   GetStyleData(eStyleStruct_List, (const nsStyleStruct*&)list, aFrame);
 
   if (list) {
-    if (list->mListStyleImage.IsEmpty()) {
+    if (!list->mListStyleImage) {
       val->SetIdent(NS_LITERAL_STRING("none"));
     } else {
       val->SetURI(list->mListStyleImage);
@@ -1566,9 +1562,6 @@ nsComputedDOMStyle::GetTextIndent(nsIFrame *aFrame,
           }
           break;
         }
-      case eStyleUnit_Inherit:
-        val->SetIdent(NS_LITERAL_STRING("inherit"));
-        break;
       default:
         val->SetTwips(0);
         break;
@@ -1741,7 +1734,7 @@ nsComputedDOMStyle::GetCursor(nsIFrame *aFrame,
   GetStyleData(eStyleStruct_UserInterface, (const nsStyleStruct*&)ui, aFrame);
 
   if (ui) {
-    if (!ui->mCursorImage.IsEmpty()) {
+    if (ui->mCursorImage) {
       val->SetURI(ui->mCursorImage);
     } else {
       if (ui->mCursor == NS_STYLE_CURSOR_AUTO) {
@@ -2302,9 +2295,6 @@ nsComputedDOMStyle::GetHeight(nsIFrame *aFrame,
         case eStyleUnit_Auto:
           val->SetIdent(NS_LITERAL_STRING("auto"));
           break;
-        case eStyleUnit_Inherit:
-          val->SetIdent(NS_LITERAL_STRING("inherit"));
-          break;
         default:
           NS_WARNING("Double check the unit");
           val->SetTwips(0);
@@ -2375,9 +2365,6 @@ nsComputedDOMStyle::GetWidth(nsIFrame *aFrame,
         case eStyleUnit_Auto:
           val->SetIdent(NS_LITERAL_STRING("auto"));
           break;
-        case eStyleUnit_Inherit:
-          val->SetIdent(NS_LITERAL_STRING("inherit"));
-          break;
         default:
           NS_WARNING("Double check the unit");
           val->SetTwips(0);
@@ -2439,10 +2426,6 @@ nsComputedDOMStyle::GetMaxHeight(nsIFrame *aFrame,
           val->SetTwips(PR_MAX(minHeight, size.height *
                                positionData->mMaxHeight.GetPercentValue()));
         }
-
-        break;
-      case eStyleUnit_Inherit:
-        val->SetIdent(NS_LITERAL_STRING("inherit"));
 
         break;
       default:
@@ -2507,10 +2490,6 @@ nsComputedDOMStyle::GetMaxWidth(nsIFrame *aFrame,
         }
 
         break;
-      case eStyleUnit_Inherit:
-        val->SetIdent(NS_LITERAL_STRING("inherit"));
-
-        break;
       default:
         val->SetIdent(NS_LITERAL_STRING("none"));
 
@@ -2553,10 +2532,6 @@ nsComputedDOMStyle::GetMinHeight(nsIFrame *aFrame,
         }
 
         break;
-      case eStyleUnit_Inherit:
-        val->SetIdent(NS_LITERAL_STRING("inherit"));
-
-        break;
       default:
         val->SetTwips(0);
 
@@ -2597,9 +2572,6 @@ nsComputedDOMStyle::GetMinWidth(nsIFrame *aFrame,
           // no containing block
           val->SetPercent(positionData->mMinWidth.GetPercentValue());
         }
-        break;
-      case eStyleUnit_Inherit:
-        val->SetIdent(NS_LITERAL_STRING("inherit"));
         break;
       default:
         val->SetTwips(0);
@@ -2697,9 +2669,7 @@ nsComputedDOMStyle::GetAbsoluteOffset(PRUint8 aSide, nsIFrame* aFrame,
     nsRect rect = aFrame->GetRect();
     nsRect containerRect = container->GetRect();
       
-    nsCOMPtr<nsIAtom> typeAtom;
-    container->GetFrameType(getter_AddRefs(typeAtom));
-    if (typeAtom == nsLayoutAtoms::viewportFrame) {
+    if (container->GetType() == nsLayoutAtoms::viewportFrame) {
       // For absolutely positioned frames scrollbars are taken into
       // account by virtue of getting a containing block that does
       // _not_ include the scrollbars.  For fixed positioned frames,
@@ -3205,13 +3175,6 @@ nsComputedDOMStyle::GetBorderRadiusFor(PRUint8 aSide, nsIFrame *aFrame,
         } else {
           val->SetPercent(coord.GetPercentValue());
         }
-        break;
-      case eStyleUnit_Inherit:
-        // XXX This will only happen if we are inheriting from
-        // a node with a percentage style unit for its relevant
-        // border radius property. Layout currently drops this
-        // one inherit case, so we do the same thing here.
-        val->SetIdent(NS_LITERAL_STRING("inherit"));
         break;
       default:
 #ifdef DEBUG_ComputedDOMStyle

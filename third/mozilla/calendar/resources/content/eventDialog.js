@@ -24,6 +24,7 @@
  *                 Chris Charabaruk <coldacid@meldstar.com>
  *                 ArentJan Banck <ajbanck@planet.nl>
  *                 Mostafa Hosseini <mostafah@oeone.com>
+ *                 Eric Belhaire <belhaire@ief.u-psud.fr>
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either the GNU General Public License Version 2 or later (the "GPL"), or
@@ -86,7 +87,7 @@ var gOnOkFunction;   // function to be called when user clicks OK
 var gTimeDifference = 3600000;  //when editing an event, we change the end time if the start time is changing. This is the difference for the event time.
 var gDateDifference = 3600000;  //this is the difference for the dates, not the times.
 
-var gDefaultAlarmLength = 15; //number of minutes to default the alarm to
+const DEFAULT_ALARM_LENGTH = 15; //default number of time units, an alarm goes off before an event
 
 var gMode = ''; //what mode are we in? new or edit...
 
@@ -200,13 +201,11 @@ function loadCalendarEventDialog()
 
    setFieldValue( "private-checkbox", gEvent.privateEvent, "checked" );
    
-   if( gEvent.alarm === false && gEvent.alarmLength == 0 )
-   {
-      gEvent.alarmLength = gDefaultAlarmLength;
+   if( "new" == args.mode ) {
+       gEvent.alarm = opener.getIntPref( opener.gCalendarWindow.calendarPreferences.calendarPref, "alarms.onforevents", 0 );
+       gEvent.alarmLength = opener.getIntPref( opener.gCalendarWindow.calendarPreferences.calendarPref, "alarms.eventalarmlen", DEFAULT_ALARM_LENGTH );
+       gEvent.alarmUnits = opener.getCharPref( opener.gCalendarWindow.calendarPreferences.calendarPref, "alarms.eventalarmunit", "minutes" );
    }
-   
-   if( "new" == args.mode )
-      gEvent.alarm = opener.getIntPref( opener.gCalendarWindow.calendarPreferences.calendarPref, "alarms.onforevents", 0 );
 
    setFieldValue( "alarm-checkbox", gEvent.alarm, "checked" );
    setFieldValue( "alarm-length-field", gEvent.alarmLength );
@@ -796,7 +795,6 @@ function commandAllDay()
 
 function commandAlarm()
 {
-   document.getElementById( "alarm-email-checkbox" ).removeAttribute( "checked" );
    updateAlarmItemEnabled();
 }
 
@@ -816,14 +814,15 @@ function updateAlarmItemEnabled()
    var alarmEmailCheckbox = "alarm-email-checkbox";
    var alarmEmailField = "alarm-email-field";
 
-   if( getFieldValue(alarmCheckBox, "checked" ) || getFieldValue( alarmEmailCheckbox, "checked" ) )
+//   if( getFieldValue(alarmCheckBox, "checked" ) || getFieldValue( alarmEmailCheckbox, "checked" ) )
+   if( getFieldValue(alarmCheckBox, "checked" ) )
    {
       // call remove attribute beacuse some widget code checks for the presense of a 
       // disabled attribute, not the value.
-      setFieldValue( alarmCheckBox, true, "checked" );
       setFieldValue( alarmField, false, "disabled" );
       setFieldValue( alarmMenu, false, "disabled" );
       setFieldValue( alarmTrigger, false, "disabled" );
+      setFieldValue( alarmEmailField, false, "disabled" );
       setFieldValue( alarmEmailCheckbox, false, "disabled" );
    }
    else
@@ -833,7 +832,6 @@ function updateAlarmItemEnabled()
       setFieldValue( alarmTrigger, true, "disabled" );
       setFieldValue( alarmEmailField, true, "disabled" );
       setFieldValue( alarmEmailCheckbox, true, "disabled" );
-      setFieldValue( alarmEmailCheckbox, false, "checked" );
    }
 }
 
@@ -1250,25 +1248,35 @@ function updateAdvancedRepeatDayOfMonth()
 
    var weekNumber = getWeekNumberOfMonth();
    
-   document.getElementById( "advanced-repeat-dayofmonth" ).setAttribute( "label", document.getElementById( "onthe-text" ).getAttribute( "value" )+dayNumber+dayExtension+document.getElementById( "ofthemonth-text" ).getAttribute( "value" ) );
+   var calStrings = document.getElementById("bundle_calendar");
+
+   var weekNumberText = getWeekNumberText( weekNumber );
+   var dayOfWeekText = getDayOfWeek( dayNumber );
+   var ofTheMonthText = document.getElementById( "ofthemonth-text" ).getAttribute( "value" );
+   var lastText = document.getElementById( "last-text" ).getAttribute( "value" );
+   var onTheText = document.getElementById( "onthe-text" ).getAttribute( "value" );
+   var dayNumberWithOrdinal = dayNumber + dayExtension;
+   var repeatSentence = calStrings.getFormattedString( "weekDayMonthLabel", [onTheText, dayNumberWithOrdinal, ofTheMonthText] );
+
+   document.getElementById( "advanced-repeat-dayofmonth" ).setAttribute( "label", repeatSentence );
    
    if( weekNumber == 4 && isLastDayOfWeekOfMonth() )
    {
-      document.getElementById( "advanced-repeat-dayofweek" ).setAttribute( "label", getWeekNumberText( weekNumber )+" "+getDayOfWeek( dayNumber )+document.getElementById( "ofthemonth-text" ).getAttribute( "value" ) );
+      document.getElementById( "advanced-repeat-dayofweek" ).setAttribute( "label", calStrings.getFormattedString( "weekDayMonthLabel", [weekNumberText, dayOfWeekText, ofTheMonthText] ) );
 
       document.getElementById( "advanced-repeat-dayofweek-last" ).removeAttribute( "collapsed" );
 
-      document.getElementById( "advanced-repeat-dayofweek-last" ).setAttribute( "label", document.getElementById( "last-text" ).getAttribute( "value" )+getDayOfWeek( dayNumber )+document.getElementById( "ofthemonth-text" ).getAttribute( "value" ) );
+      document.getElementById( "advanced-repeat-dayofweek-last" ).setAttribute( "label", calStrings.getFormattedString( "weekDayMonthLabel", [lastText, dayOfWeekText, ofTheMonthText] ) );
    }
    else if( weekNumber == 4 && !isLastDayOfWeekOfMonth() )
    {
-      document.getElementById( "advanced-repeat-dayofweek" ).setAttribute( "label", getWeekNumberText( weekNumber )+" "+getDayOfWeek( dayNumber )+document.getElementById( "ofthemonth-text" ).getAttribute( "value" ) );
+      document.getElementById( "advanced-repeat-dayofweek" ).setAttribute( "label", calStrings.getFormattedString( "weekDayMonthLabel", [weekNumberText, dayOfWeekText, ofTheMonthText] ) );
 
       document.getElementById( "advanced-repeat-dayofweek-last" ).setAttribute( "collapsed", "true" );
    }
    else
    {
-      document.getElementById( "advanced-repeat-dayofweek" ).setAttribute( "label", getWeekNumberText( weekNumber )+" "+getDayOfWeek( dayNumber )+document.getElementById( "ofthemonth-text" ).getAttribute( "value" ) );
+      document.getElementById( "advanced-repeat-dayofweek" ).setAttribute( "label", calStrings.getFormattedString( "weekDayMonthLabel", [weekNumberText, dayOfWeekText, ofTheMonthText] ) );
 
       document.getElementById( "advanced-repeat-dayofweek-last" ).setAttribute( "collapsed", "true" );
    }
@@ -1340,20 +1348,16 @@ function isAlreadyException( dateObj )
 
 function getDayExtension( dayNumber )
 {
-   switch( dayNumber )
+   var dateStringBundle = srGetStrBundle("chrome://calendar/locale/dateFormat.properties");
+
+   if ( dayNumber >= 1 && dayNumber <= 31 )
    {
-      case 1:
-      case 21:
-      case 31:
-         return( "st" );
-      case 2:
-      case 22:
-         return( "nd" );
-      case 3:
-      case 23:
-         return( "rd" );
-      default:
-         return( "th" );
+      return( dateStringBundle.GetStringFromName( "ordinal.suffix."+dayNumber ) );
+   }
+   else
+   {
+      dump("ERROR: Invalid day number: " + dayNumber);
+      return ( false );
    }
 }
 
@@ -1460,28 +1464,25 @@ function addAttachment( attachmentToAdd )
 
 function getWeekNumberText( weekNumber )
 {
-   switch( weekNumber )
+   var dateStringBundle = srGetStrBundle("chrome://calendar/locale/dateFormat.properties");
+   if ( weekNumber >= 1 && weekNumber <= 4 )
    {
-   case 1:
-      return( "First" );
-   case 2:
-      return( "Second" );
-   case 3:
-      return( "Third" );
-   case 4:
-      return( "Fourth" );
-   case 5:
-      return( "Last" );
-   default:
+      return( dateStringBundle.GetStringFromName( "ordinal.name."+weekNumber) );
+   }
+   else if( weekNumber == 5 ) 
+   {
+       return( dateStringBundle.GetStringFromName( "ordinal.name.last" ) );
+   }
+   else
+   {
       return( false );
    }
-
 }
 
 var launch = true;
 
 /* URL */
-function launchBrowser()
+function loadURL()
 {
    if( launch == false ) //stops them from clicking on it twice
       return;
@@ -1498,33 +1499,8 @@ function launchBrowser()
       UrlToGoTo = "http://"+UrlToGoTo;
 
    //launch the browser to that URL
-   var navWindow;
+   launchBrowser( UrlToGoTo );
 
-     // if not, get the most recently used browser window
-       try {
-         var wm = Components.classes["@mozilla.org/appshell/window-mediator;1"]
-           .getService(Components.interfaces.nsIWindowMediator);
-         navWindow = wm.getMostRecentWindow("navigator:browser");
-       }
-       catch (ex) { }
-     
-     if (navWindow) {
-       if ("delayedOpenTab" in navWindow)
-         navWindow.delayedOpenTab(UrlToGoTo);
-       else if ("loadURI" in navWindow)
-         navWindow.loadURI(UrlToGoTo);
-       else
-         navWindow._content.location.href = UrlToGoTo;
-     }
-     // if all else fails, open a new window
-     else {
-       var ass = Components.classes["@mozilla.org/appshell/appShellService;1"].getService(Components.interfaces.nsIAppShellService);
-       w = ass.hiddenDOMWindow;
-
-       w.openDialog( getBrowserURL(), "_blank", "chrome,all,dialog=no", UrlToGoTo );
-     }
-   //window.open(UrlToGoTo, "_blank", "chrome,menubar,toolbar,resizable,dialog=no");
-   //window.open( UrlToGoTo, "calendar-opened-window" );
    launch = true;
 }
 

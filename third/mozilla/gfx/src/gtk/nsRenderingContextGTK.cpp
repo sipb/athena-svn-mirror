@@ -58,7 +58,7 @@
 #include <gdk/gdkwindow.h>
 #endif
 
-NS_IMPL_THREADSAFE_ISUPPORTS1(nsRenderingContextGTK, nsIRenderingContext)
+NS_IMPL_ISUPPORTS1(nsRenderingContextGTK, nsIRenderingContext)
 
 static NS_DEFINE_CID(kRegionCID, NS_REGION_CID);
 
@@ -879,9 +879,6 @@ NS_IMETHODIMP nsRenderingContextGTK::DrawPolyline(const nsPoint aPoints[], PRInt
     mTranMatrix->TransformCoord(&p.x,&p.y);
     pts[i].x = p.x;
     pts[i].y = p.y;
-#ifdef DEBUG
-    printf("(%i,%i)\n", p.x, p.y);
-#endif
   }
 
   UpdateGC();

@@ -21,6 +21,7 @@
 
 #include "gtkmozembed.h"
 #include <gtk/gtk.h>
+#include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 
@@ -31,6 +32,10 @@
 
 #ifdef NS_TRACE_MALLOC
 #include "nsTraceMalloc.h"
+#endif
+
+#ifdef MOZ_JPROF
+#include "jprof.h"
 #endif
 
 typedef struct _TestGtkBrowser {
@@ -168,6 +173,10 @@ main(int argc, char **argv)
 
   gtk_set_locale();
   gtk_init(&argc, &argv);
+
+#ifdef MOZ_JPROF
+  setupProfilingStuff();
+#endif
 
   char *home_path;
   char *full_path;

@@ -212,7 +212,8 @@ nsSVGAttribute::GetNamespaceURI(nsAString& aNamespaceURI)
 NS_IMETHODIMP
 nsSVGAttribute::GetPrefix(nsAString& aPrefix)
 {
-  return mNodeInfo->GetPrefix(aPrefix);
+  mNodeInfo->GetPrefix(aPrefix);
+  return NS_OK;
 }
 
 NS_IMETHODIMP
@@ -240,7 +241,8 @@ nsSVGAttribute::SetPrefix(const nsAString& aPrefix)
 NS_IMETHODIMP
 nsSVGAttribute::GetLocalName(nsAString& aLocalName)
 {
-  return mNodeInfo->GetLocalName(aLocalName);
+  mNodeInfo->GetLocalName(aLocalName);
+  return NS_OK;
 }
 
 NS_IMETHODIMP
@@ -549,8 +551,7 @@ nsSVGAttributes::GetAttr(PRInt32 aNameSpaceID, nsIAtom* aName,
     if ((aNameSpaceID == kNameSpaceID_Unknown ||
          attr->GetNodeInfo()->NamespaceEquals(aNameSpaceID)) &&
         (attr->GetNodeInfo()->Equals(aName))) {
-      // AddRefs
-      *aPrefix = attr->GetNodeInfo()->GetPrefixAtom().get();
+      NS_IF_ADDREF(*aPrefix = attr->GetNodeInfo()->GetPrefixAtom());
       attr->GetValue()->GetValueString(aResult);
       if (!aResult.IsEmpty()) {
         rv = NS_CONTENT_ATTR_HAS_VALUE;
@@ -603,12 +604,12 @@ nsSVGAttributes::SetAttr(nsINodeInfo* aNodeInfo,
     }
   }
 
-  PRInt32 nameSpaceID = aNodeInfo->GetNamespaceID();
-  nsCOMPtr<nsIAtom> name = aNodeInfo->GetNameAtom();
+  PRInt32 nameSpaceID = aNodeInfo->NamespaceID();
+  nsIAtom *name = aNodeInfo->NameAtom();
 
   // Send the notification before making any updates
+  mozAutoDocUpdate updateBatch(document, UPDATE_CONTENT_MODEL, aNotify);
   if (aNotify && document) {
-    document->BeginUpdate();
     document->AttributeWillChange(mContent, nameSpaceID, name);
   }
 
@@ -636,8 +637,7 @@ nsSVGAttributes::SetAttr(nsINodeInfo* aNodeInfo,
   }
 
   if (document && NS_SUCCEEDED(rv)) {
-    nsCOMPtr<nsIBindingManager> bindingManager;
-    document->GetBindingManager(getter_AddRefs(bindingManager));
+    nsIBindingManager *bindingManager = document->GetBindingManager();
     nsCOMPtr<nsIXBLBinding> binding;
     bindingManager->GetBinding(mContent, getter_AddRefs(binding));
     if (binding)
@@ -671,7 +671,6 @@ nsSVGAttributes::SetAttr(nsINodeInfo* aNodeInfo,
                                      : PRInt32(nsIDOMMutationEvent::ADDITION);
       document->AttributeChanged(mContent, nameSpaceID, name,
                                  modHint);
-      document->EndUpdate();
     }
   }
 
@@ -687,8 +686,6 @@ nsSVGAttributes::UnsetAttr(PRInt32 aNameSpaceID, nsIAtom* aName,
     return NS_ERROR_NULL_POINTER;
   }
   
-  nsresult rv = NS_OK;
-
   nsCOMPtr<nsIDocument> document;
   if (mContent)
     document = mContent->GetDocument();
@@ -696,49 +693,55 @@ nsSVGAttributes::UnsetAttr(PRInt32 aNameSpaceID, nsIAtom* aName,
   PRInt32 count = Count();
   PRInt32 index;
   PRBool  found = PR_FALSE;
+  nsSVGAttribute* attr = nsnull;
   for (index = 0; index < count; index++) {
-    nsSVGAttribute* attr = ElementAt(index);
+    attr = ElementAt(index);
     if ((aNameSpaceID == kNameSpaceID_Unknown ||
          attr->GetNodeInfo()->NamespaceEquals(aNameSpaceID)) &&
         attr->GetNodeInfo()->Equals(aName) &&
         !attr->IsRequired() &&
         !attr->IsFixed()) {
-      if (aNotify && document) {
-        document->BeginUpdate();
-      }
-      
-      if (mContent && nsGenericElement::HasMutationListeners(mContent, NS_EVENT_BITS_MUTATION_ATTRMODIFIED)) {
-        nsCOMPtr<nsIDOMEventTarget> node(do_QueryInterface(mContent));
-        nsMutationEvent mutation;
-        mutation.eventStructType = NS_MUTATION_EVENT;
-        mutation.message = NS_MUTATION_ATTRMODIFIED;
-        mutation.mTarget = node;
-        
-        CallQueryInterface(attr,
-                           NS_STATIC_CAST(nsIDOMNode**,
-                                          getter_AddRefs(mutation.mRelatedNode)));
-        mutation.mAttrName = aName;
-        nsAutoString str;
-        attr->GetValue()->GetValueString(str);
-        if (!str.IsEmpty())
-          mutation.mPrevAttrValue = do_GetAtom(str);
-        mutation.mAttrChange = nsIDOMMutationEvent::REMOVAL;
-        
-        nsEventStatus status = nsEventStatus_eIgnore;
-        nsCOMPtr<nsIDOMEvent> domEvent;
-        mContent->HandleDOMEvent(nsnull, &mutation, getter_AddRefs(domEvent),
-                             NS_EVENT_FLAG_INIT, &status);
-      }
-      
-      RemoveElementAt(index);
       found = PR_TRUE;
       break;
     }
   }
+
+  if (!found) {
+    return NS_OK;
+  }
+
+  mozAutoDocUpdate updateBatch(document, UPDATE_CONTENT_MODEL, aNotify);
+  if (document && aNotify) {
+    document->AttributeWillChange(mContent, aNameSpaceID, aName);
+  }
   
-  if (NS_SUCCEEDED(rv) && found && document) {
-    nsCOMPtr<nsIBindingManager> bindingManager;
-    document->GetBindingManager(getter_AddRefs(bindingManager));
+  if (mContent && nsGenericElement::HasMutationListeners(mContent, NS_EVENT_BITS_MUTATION_ATTRMODIFIED)) {
+    nsCOMPtr<nsIDOMEventTarget> node(do_QueryInterface(mContent));
+    nsMutationEvent mutation;
+    mutation.eventStructType = NS_MUTATION_EVENT;
+    mutation.message = NS_MUTATION_ATTRMODIFIED;
+    mutation.mTarget = node;
+        
+    CallQueryInterface(attr,
+                       NS_STATIC_CAST(nsIDOMNode**,
+                                      getter_AddRefs(mutation.mRelatedNode)));
+    mutation.mAttrName = aName;
+    nsAutoString str;
+    attr->GetValue()->GetValueString(str);
+    if (!str.IsEmpty())
+      mutation.mPrevAttrValue = do_GetAtom(str);
+    mutation.mAttrChange = nsIDOMMutationEvent::REMOVAL;
+        
+    nsEventStatus status = nsEventStatus_eIgnore;
+    nsCOMPtr<nsIDOMEvent> domEvent;
+    mContent->HandleDOMEvent(nsnull, &mutation, getter_AddRefs(domEvent),
+                             NS_EVENT_FLAG_INIT, &status);
+  }
+      
+  RemoveElementAt(index);
+  
+  if (document) {
+    nsIBindingManager *bindingManager = document->GetBindingManager();
     nsCOMPtr<nsIXBLBinding> binding;
     bindingManager->GetBinding(mContent, getter_AddRefs(binding));
     if (binding)
@@ -747,11 +750,10 @@ nsSVGAttributes::UnsetAttr(PRInt32 aNameSpaceID, nsIAtom* aName,
     if (aNotify) {
       document->AttributeChanged(mContent, aNameSpaceID, aName,
                                  nsIDOMMutationEvent::REMOVAL);
-      document->EndUpdate();
     }
   }
   
-  return rv;
+  return NS_OK;
 }
 
 NS_IMETHODIMP_(PRBool)
@@ -771,33 +773,22 @@ nsSVGAttributes::HasAttr(PRInt32 aNameSpaceID, nsIAtom* aName) const
   return PR_FALSE;
 }
 
-NS_IMETHODIMP
-nsSVGAttributes::NormalizeAttrString(const nsAString& aStr,
-                                     nsINodeInfo** aNodeInfo)
+NS_IMETHODIMP_(already_AddRefed<nsINodeInfo>)
+nsSVGAttributes::GetExistingAttrNameFromQName(const nsAString& aStr)
 {
   PRInt32 indx, count = Count();
   NS_ConvertUCS2toUTF8 utf8String(aStr);
   for (indx = 0; indx < count; indx++) {
     nsSVGAttribute* attr = ElementAt(indx);
-    if (attr->GetNodeInfo()->QualifiedNameEquals(utf8String)) {
-      *aNodeInfo = attr->GetNodeInfo();
-      NS_ADDREF(*aNodeInfo);
-      
-      return NS_OK;
+    nsINodeInfo* ni = attr->GetNodeInfo();
+    if (ni->QualifiedNameEquals(utf8String)) {
+      NS_ADDREF(ni);
+
+      return ni;
     }
   }
 
-  NS_ASSERTION(mContent,"no owner content");
-  if (!mContent) return NS_ERROR_FAILURE;
-
-  nsCOMPtr<nsINodeInfo> contentNodeInfo;
-  mContent->GetNodeInfo(getter_AddRefs(contentNodeInfo));
-  
-  nsCOMPtr<nsINodeInfoManager> nimgr;
-  contentNodeInfo->GetNodeInfoManager(getter_AddRefs(nimgr));
-  NS_ENSURE_TRUE(nimgr, NS_ERROR_FAILURE);
-  
-  return nimgr->GetNodeInfo(aStr, nsnull, kNameSpaceID_None, aNodeInfo);
+  return nsnull;
 }
 
 NS_IMETHODIMP
@@ -808,11 +799,9 @@ nsSVGAttributes::GetAttrNameAt(PRInt32 aIndex,
 {
   nsSVGAttribute* attr = ElementAt(aIndex);
   if (attr) {
-    *aNameSpaceID = attr->GetNodeInfo()->GetNamespaceID();
-    // AddRefs
-    *aName = attr->GetNodeInfo()->GetNameAtom().get();
-    // AddRefs
-    *aPrefix = attr->GetNodeInfo()->GetPrefixAtom().get();
+    *aNameSpaceID = attr->GetNodeInfo()->NamespaceID();
+    NS_ADDREF(*aName = attr->GetNodeInfo()->NameAtom());
+    NS_IF_ADDREF(*aPrefix = attr->GetNodeInfo()->GetPrefixAtom());
 
     return NS_OK;
   }
@@ -833,15 +822,10 @@ nsSVGAttributes::AddMappedSVGValue(nsIAtom* name, nsISupports* value)
   NS_ASSERTION(mContent,"no owner content");
   if (!mContent) return NS_ERROR_FAILURE;
   
-  nsCOMPtr<nsINodeInfo> contentNodeInfo;
-  mContent->GetNodeInfo(getter_AddRefs(contentNodeInfo));
-  
-  nsCOMPtr<nsINodeInfoManager> nimgr;
-  contentNodeInfo->GetNodeInfoManager(getter_AddRefs(nimgr));
-  NS_ENSURE_TRUE(nimgr, NS_ERROR_FAILURE);
-
   nsCOMPtr<nsINodeInfo> ni;
-  nimgr->GetNodeInfo(name, nsnull, kNameSpaceID_None, getter_AddRefs(ni));
+  mContent->GetNodeInfo()->NodeInfoManager()->GetNodeInfo(name, nsnull,
+                                                          kNameSpaceID_None,
+                                                          getter_AddRefs(ni));
   NS_ENSURE_TRUE(ni, NS_ERROR_FAILURE);
 
   nsSVGAttribute* attrib = nsnull;
@@ -905,14 +889,14 @@ nsSVGAttributes::GetNamedItem(const nsAString& aName,
   if (! aReturn)
     return NS_ERROR_NULL_POINTER;
   
-  nsresult rv;
   *aReturn = nsnull;
   
-  nsCOMPtr<nsINodeInfo> inpNodeInfo;
-  
-  if (NS_FAILED(rv = mContent->NormalizeAttrString(aName, getter_AddRefs(inpNodeInfo))))
-    return rv;
-  
+  nsCOMPtr<nsINodeInfo> inpNodeInfo =
+    mContent->GetExistingAttrNameFromQName(aName);
+  if (!inpNodeInfo) {
+    return NS_OK;
+  }
+
   for (PRInt32 i = mAttributes.Count() - 1; i >= 0; --i) {
     nsSVGAttribute* attr = (nsSVGAttribute*) mAttributes[i];
     nsINodeInfo *ni = attr->GetNodeInfo();

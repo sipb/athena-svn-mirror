@@ -60,33 +60,23 @@ nsMathMLTokenFrame::~nsMathMLTokenFrame()
 {
 }
 
-NS_IMETHODIMP
-nsMathMLTokenFrame::GetFrameType(nsIAtom** aType) const
+nsIAtom*
+nsMathMLTokenFrame::GetType() const
 {
-  *aType = nsMathMLAtoms::ordinaryMathMLFrame;
-  NS_ADDREF(*aType);
-  return NS_OK;
+  return nsMathMLAtoms::ordinaryMathMLFrame;
 }
 
 static void
 CompressWhitespace(nsIContent* aContent)
 {
-  PRInt32 numKids;
-  aContent->ChildCount(numKids);
-  for (PRInt32 kid = 0; kid < numKids; kid++) {
-    nsCOMPtr<nsIContent> kidContent;
-    aContent->ChildAt(kid, getter_AddRefs(kidContent));
-    if (kidContent) {       
-      nsCOMPtr<nsIDOMText> kidText(do_QueryInterface(kidContent));
-      if (kidText) {
-        nsCOMPtr<nsITextContent> tc(do_QueryInterface(kidContent));
-        if (tc) {
-          nsAutoString text;
-          tc->CopyText(text);
-          text.CompressWhitespace();
-          tc->SetText(text, PR_FALSE); // not meant to be used if notify is needed
-        }
-      }
+  PRUint32 numKids = aContent->GetChildCount();
+  for (PRUint32 kid = 0; kid < numKids; kid++) {
+    nsCOMPtr<nsITextContent> tc(do_QueryInterface(aContent->GetChildAt(kid)));
+    if (tc && tc->IsContentOfType(nsIContent::eTEXT)) {
+      nsAutoString text;
+      tc->CopyText(text);
+      text.CompressWhitespace();
+      tc->SetText(text, PR_FALSE); // not meant to be used if notify is needed
     }
   }
 }
@@ -284,9 +274,7 @@ nsMathMLTokenFrame::ProcessTextData(nsIPresContext* aPresContext)
 void
 nsMathMLTokenFrame::SetTextStyle(nsIPresContext* aPresContext)
 {
-  nsCOMPtr<nsIAtom> tag;
-  mContent->GetTag(getter_AddRefs(tag));
-  if (tag != nsMathMLAtoms::mi_)
+  if (mContent->Tag() != nsMathMLAtoms::mi_)
     return;
 
   if (!mFrames.FirstChild())
@@ -296,18 +284,13 @@ nsMathMLTokenFrame::SetTextStyle(nsIPresContext* aPresContext)
   // our content can include comment-nodes, attribute-nodes, text-nodes...
   // we use the DOM to make sure that we are only looking at text-nodes...
   nsAutoString data;
-  PRInt32 numKids;
-  mContent->ChildCount(numKids);
-  for (PRInt32 kid = 0; kid < numKids; kid++) {
-    nsCOMPtr<nsIContent> kidContent;
-    mContent->ChildAt(kid, getter_AddRefs(kidContent));
-    if (kidContent) {
-      nsCOMPtr<nsIDOMText> kidText(do_QueryInterface(kidContent));
-      if (kidText) {
-        nsAutoString kidData;
-        kidText->GetData(kidData);
-        data += kidData;
-      }
+  PRUint32 numKids = mContent->GetChildCount();
+  for (PRUint32 kid = 0; kid < numKids; kid++) {
+    nsCOMPtr<nsIDOMText> kidText(do_QueryInterface(mContent->GetChildAt(kid)));
+    if (kidText) {
+      nsAutoString kidData;
+      kidText->GetData(kidData);
+      data += kidData;
     }
   }
 
@@ -385,9 +368,7 @@ SetQuote(nsIPresContext* aPresContext,
     // walk down the hierarchy of first children because they could be wrapped
     aFrame->FirstChild(aPresContext, nsnull, &textFrame);
     if (textFrame) {
-      nsCOMPtr<nsIAtom> frameType;
-      textFrame->GetFrameType(getter_AddRefs(frameType));
-      if (frameType == nsLayoutAtoms::textFrame)
+      if (textFrame->GetType() == nsLayoutAtoms::textFrame)
         break;
     }
     aFrame = textFrame;
@@ -409,9 +390,7 @@ SetQuote(nsIPresContext* aPresContext,
 void
 nsMathMLTokenFrame::SetQuotes(nsIPresContext* aPresContext)
 {
-  nsCOMPtr<nsIAtom> tag;
-  mContent->GetTag(getter_AddRefs(tag));
-  if (tag != nsMathMLAtoms::ms_)
+  if (mContent->Tag() != nsMathMLAtoms::ms_)
     return;
 
   nsIFrame* rightFrame = nsnull;

@@ -631,12 +631,17 @@ nsTableCellMap::RemoveCell(nsTableCellFrame* aCellFrame,
       PRInt32 colIndex;
       aCellFrame->GetColIndex(colIndex);
       aDamageArea.width = PR_MAX(0, GetColCount() - colIndex - 1);
-      break;
+      //Dump("after RemoveCell");
+      return;
     }
     rowIndex -= cellMap->GetRowCount();
     cellMap = cellMap->GetNextSibling();
   }
-  //Dump("after RemoveCell");
+  // if we reach this point - the cell did not get removed, the caller of this routine 
+  // will delete the cell and the cellmap will probably hold a reference to 
+  // the deleted cell which will cause a subsequent crash when this cell is 
+  // referenced later
+  NS_ERROR("nsTableCellMap::RemoveCell - could not remove cell");
 }
 
 PRInt32 
@@ -1345,17 +1350,13 @@ PRBool nsCellMap::CellsSpanOut(nsIPresContext* aPresContext,
     nsIFrame* cellFrame = nsnull;
     rowFrame->FirstChild(aPresContext, nsnull, &cellFrame);
     while (cellFrame) {
-      nsIAtom* frameType;
-      cellFrame->GetFrameType(&frameType);
-      if (IS_TABLE_CELL(frameType)) {
+      if (IS_TABLE_CELL(cellFrame->GetType())) {
         PRBool zeroSpan;
         PRInt32 rowSpan = GetRowSpanForNewCell((nsTableCellFrame &)*cellFrame, rowX, zeroSpan);
         if (rowX + rowSpan > numNewRows) {
-          NS_RELEASE(frameType);
           return PR_TRUE;
         }
       }
-      NS_IF_RELEASE(frameType);
       cellFrame = cellFrame->GetNextSibling();
     }
   }
@@ -1490,12 +1491,9 @@ nsCellMap::ExpandWithRows(nsIPresContext* aPresContext,
     rFrame->FirstChild(aPresContext, nsnull, &cFrame);
     PRInt32 colIndex = 0;
     while (cFrame) {
-      nsIAtom* cFrameType;
-      cFrame->GetFrameType(&cFrameType);
-      if (IS_TABLE_CELL(cFrameType)) {
+      if (IS_TABLE_CELL(cFrame->GetType())) {
         AppendCell(aMap, (nsTableCellFrame *)cFrame, rowX, PR_FALSE, aDamageArea, &colIndex);
       }
-      NS_IF_RELEASE(cFrameType);
       cFrame = cFrame->GetNextSibling();
     }
     newRowIndex++;
@@ -1901,12 +1899,9 @@ nsCellMap::RebuildConsideringRows(nsIPresContext* aPresContext,
       nsIFrame* cFrame = nsnull;
       rFrame->FirstChild(aPresContext, nsnull, &cFrame);
       while (cFrame) {
-        nsIAtom* cFrameType;
-        cFrame->GetFrameType(&cFrameType);
-        if (IS_TABLE_CELL(cFrameType)) {
+        if (IS_TABLE_CELL(cFrame->GetType())) {
           AppendCell(aMap, (nsTableCellFrame *)cFrame, rowX, PR_FALSE, aDamageArea);
         }
-        NS_IF_RELEASE(cFrameType);
         cFrame = cFrame->GetNextSibling();
       }
       rowX++;
@@ -2000,9 +1995,7 @@ void nsCellMap::RebuildConsideringCells(nsTableCellMap& aMap,
 
   // For for cell deletion, since the row is not being deleted, 
   // keep mRowCount the same as before. 
-  if (!aInsert) {
-    mRowCount = mRowCountOrig;
-  }
+  mRowCount = PR_MAX(mRowCount, mRowCountOrig);
 
   // delete the old cell map
   for (rowX = 0; rowX < numOrigRows; rowX++) {
@@ -2050,6 +2043,8 @@ void nsCellMap::RemoveCell(nsTableCellMap&   aMap,
   // XXX if the cell has a col span to the end of the map, and the end has no originating 
   // cells, we need to assume that this the only such cell, and rebuild so that there are 
   // no extraneous cols at the end. The same is true for removing rows.
+  if (!aCellFrame->GetRowSpan() || !aCellFrame->GetColSpan())
+    spansCauseRebuild = PR_TRUE;
 
   if (spansCauseRebuild) {
     RebuildConsideringCells(aMap, nsnull, aRowIndex, startColIndex, PR_FALSE, aDamageArea);

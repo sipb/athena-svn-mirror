@@ -213,8 +213,7 @@ nsMenuBarFrame::SetActive(PRBool aActiveFlag)
     if (!document)
       break;
 
-    nsCOMPtr<nsISupports> container;
-    document->GetContainer(getter_AddRefs(container));
+    nsCOMPtr<nsISupports> container = document->GetContainer();
     nsCOMPtr<nsPIDOMWindow> windowPrivate = do_GetInterface(container);
     if (!windowPrivate)
       break;
@@ -235,7 +234,7 @@ nsMenuBarFrame::SetActive(PRBool aActiveFlag)
     if (!document)
       break;
 
-    document->GetShellAt(0, getter_AddRefs(presShell));
+    presShell = document->GetShellAt(0);
     nsCOMPtr<nsISelectionController> selCon(do_QueryInterface(presShell));
     // there is no selection controller for full page plugins
     if (!selCon)
@@ -782,14 +781,11 @@ nsMenuBarFrame::RemoveKeyboardNavigator()
 PRBool 
 nsMenuBarFrame::IsValidItem(nsIContent* aContent)
 {
-  nsCOMPtr<nsIAtom> tag;
-  aContent->GetTag(getter_AddRefs(tag));
-  if (tag && (tag.get() == nsXULAtoms::menu ||
-              tag.get() == nsXULAtoms::menuitem) &&
-      !IsDisabled(aContent))
-      return PR_TRUE;
+  nsIAtom *tag = aContent->Tag();
 
-  return PR_FALSE;
+  return ((tag == nsXULAtoms::menu ||
+           tag == nsXULAtoms::menuitem) &&
+          !IsDisabled(aContent));
 }
 
 PRBool 

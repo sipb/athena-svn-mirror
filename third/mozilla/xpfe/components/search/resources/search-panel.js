@@ -127,7 +127,7 @@ function rememberSearchText(target)
     target = target.QueryInterface(nsIRDFLiteral).Value;
     if (target) {
       // convert plusses (+) back to spaces
-      target = target.replace(/+/g, " ");
+      target = target.replace(/\+/g, " ");
       var textNode = document.getElementById("sidebar-search-text");
 
       if (target != textNode.value) {
@@ -139,7 +139,7 @@ function rememberSearchText(target)
         }
       }
 
-      textNode.value = unescape(target);
+      textNode.value = decodeURI(target);
       doEnabling();
     }
   }
@@ -411,14 +411,11 @@ function SearchPanelStartup()
   if (catDS) {
     catDS = catDS.QueryInterface(nsIRDFDataSource);
     categoryList.database.AddDataSource(catDS);
-    var ref = categoryList.getAttribute("ref");
-    if (ref)
-      categoryList.setAttribute("ref", ref);
+    categoryList.builder.rebuild();
     var engineList = document.getElementById("searchengines");
     engineList.database.AddDataSource(catDS);
-    ref = engineList.getAttribute("ref");
-    if (ref)
-      engineList.setAttribute("ref", ref);
+    engineList.builder.rebuild();
+    engineList.addEventListener("CheckboxStateChange", saveEngine, false);
   }
 
   // try and determine last category name used
@@ -480,9 +477,9 @@ function haveSearchResults()
     target = target.QueryInterface(nsIRDFLiteral).Value;
     if (target) {
       // convert plusses (+) back to spaces
-      target = target.replace(/+/g, " ");
+      target = target.replace(/\+/g, " ");
       var textNode = document.getElementById("sidebar-search-text");
-      textNode.value = unescape(target);
+      textNode.value = decodeURI(target);
       return true;
     }
   }
@@ -507,35 +504,24 @@ function chooseCategory(aNode)
   loadEngines(category);
 }
 
-function saveEngines()
+function saveEngine(event)
 {
-  var categoryList = document.getElementById("categoryList");
-  var category = categoryList.selectedItem.getAttribute("id");
-  if (category)
-    category = "NC:SearchCategory?category=" + category;
-  else
-    category = "NC:SearchEngineRoot";
-
   var rdf = Components.classes[RDFSERVICE_CONTRACTID].getService(nsIRDFService);
   var localStore = rdf.GetDataSource("rdf:local-store");
   if (!localStore)
     return;
 
-  var engineItems = document.getElementById("searchengines").getElementsByTagName("listitem");
-
   var checkedProperty = rdf.GetResource("http://home.netscape.com/NC-rdf#checked", true);
-  var categorySRC = rdf.GetResource(category, true);
+  var engines = event.currentTarget;
+  var categorySRC = rdf.GetResource(engines.ref, true);
 
-  for (var x = 0; x < engineItems.length; ++x) {
-    var itemNode = engineItems[x];
-    var engineURI = itemNode.getAttribute("id");
-    var engineSRC = rdf.GetResource(engineURI, true);
+  var itemNode = event.target;
+  var engineSRC = rdf.GetResource(itemNode.id, true);
 
-    if (itemNode.checked)
-      localStore.Assert(categorySRC, checkedProperty, engineSRC, true);
-    else
-      localStore.Unassert(categorySRC, checkedProperty, engineSRC, true);
-  }
+  if (itemNode.checked)
+    localStore.Assert(categorySRC, checkedProperty, engineSRC, true);
+  else
+    localStore.Unassert(categorySRC, checkedProperty, engineSRC, true);
 
   // save changes; flush out the localstore
   try {
@@ -731,7 +717,7 @@ function onNavWindowLoad() {
         for (var i = 0; i < engineBox.childNodes.length; ++i) {
           itemNode = engineBox.childNodes[i];
           var theID = itemNode.id;
-          if (theID.indexOf("NetscapeSearch.src") != -1) {
+          if (theID.indexOf("google.src") != -1) {
             engineURIs[engineURIs.length] = theID;
             foundEngine = true;
             break;
@@ -845,7 +831,7 @@ function OpenSearch(aSearchStr, engineURIs)
 
   var searchDS = Components.classes[ISEARCH_CONTRACTID].getService(nsIInternetSearchService);
 
-  var escapedSearchStr = escape(aSearchStr);
+  var escapedSearchStr = encodeURIComponent(aSearchStr);
   sidebarInitiatedSearch = true;
   searchDS.RememberLastSearchText(escapedSearchStr);
   sidebarInitiatedSearch = false;
@@ -891,7 +877,7 @@ function OpenSearch(aSearchStr, engineURIs)
       }
       searchURL += ("&text=" + escapedSearchStr);
       gURL = searchURL;
-      loadURLInContent("chrome://communicator/content/search/internetresults.xul?" + escape(searchURL));
+      loadURLInContent(encodeURI("chrome://communicator/content/search/internetresults.xul?" + searchURL));
     }
   }
   catch (ex) {
@@ -928,8 +914,8 @@ function saveSearch()
     target = target.QueryInterface(nsIRDFLiteral).Value;
     if (target) {
       // convert plusses (+) back to spaces
-      target = target.replace(/+/g, " ");
-      lastSearchText = unescape(target);
+      target = target.replace(/\+/g, " ");
+      lastSearchText = decodeURI(target);
     }
   }
 
@@ -975,7 +961,7 @@ function showMoreResults(direction)
 
   // get search term
   var searchTerm = document.getElementById("sidebar-search-text").value;
-  searchTerm = escape(searchTerm);
+  searchTerm = encodeURIComponent(searchTerm);
 
   // change page number
   if (direction > 0)

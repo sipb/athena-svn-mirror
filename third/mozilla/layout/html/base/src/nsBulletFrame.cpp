@@ -124,9 +124,8 @@ nsBulletFrame::Init(nsIPresContext*  aPresContext,
   
   nsresult  rv = nsFrame::Init(aPresContext, aContent, aParent, aContext, aPrevInFlow);
 
-  const nsStyleList* myList = GetStyleList();
-
-  if (!myList->mListStyleImage.IsEmpty()) {
+  nsIURI *imgURI = GetStyleList()->mListStyleImage;
+  if (imgURI) {
     nsCOMPtr<imgILoader> il(do_GetService("@mozilla.org/image/loader;1", &rv));
     if (NS_FAILED(rv))
       return rv;
@@ -134,19 +133,13 @@ nsBulletFrame::Init(nsIPresContext*  aPresContext,
     nsCOMPtr<nsILoadGroup> loadGroup;
     GetLoadGroup(aPresContext, getter_AddRefs(loadGroup));
 
-    nsCOMPtr<nsIURI> baseURI;
-    mContent->GetBaseURL(getter_AddRefs(baseURI));
-
-    nsCOMPtr<nsIURI> imgURI;
-    NS_NewURI(getter_AddRefs(imgURI), myList->mListStyleImage, nsnull, baseURI);
-
     // Get the document URI for the referrer...
-    nsCOMPtr<nsIURI> documentURI;
+    nsIURI *documentURI = nsnull;
     nsCOMPtr<nsIDocument> doc;
     if (mContent) {
       doc = mContent->GetDocument();
       if (doc) {
-        doc->GetDocumentURL(getter_AddRefs(documentURI));
+        documentURI = doc->GetDocumentURL();
       }
     }
 
@@ -175,13 +168,10 @@ nsBulletFrame::GetFrameName(nsAString& aResult) const
 }
 #endif
 
-NS_IMETHODIMP
-nsBulletFrame::GetFrameType(nsIAtom** aType) const
+nsIAtom*
+nsBulletFrame::GetType() const
 {
-  NS_PRECONDITION(nsnull != aType, "null OUT parameter pointer");
-  *aType = nsLayoutAtoms::bulletFrame; 
-  NS_ADDREF(*aType);
-  return NS_OK;
+  return nsLayoutAtoms::bulletFrame;
 }
 
 #include "nsIDOMNode.h"
@@ -201,7 +191,7 @@ nsBulletFrame::Paint(nsIPresContext*      aPresContext,
     const nsStyleList* myList = GetStyleList();
     PRUint8 listStyleType = myList->mListStyleType;
 
-    if (!myList->mListStyleImage.IsEmpty() && mImageRequest) {
+    if (myList->mListStyleImage && mImageRequest) {
       PRUint32 status;
       mImageRequest->GetImageStatus(&status);
       if (status & imgIRequest::STATUS_LOAD_COMPLETE &&
@@ -407,8 +397,7 @@ nsBulletFrame::SetListItemOrdinal(PRInt32 aNextOrdinal,
   // value attribute. Note: we do this with our parent's content
   // because our parent is the list-item.
   nsHTMLValue value;
-  nsCOMPtr<nsIContent> parentContent;
-  mParent->GetContent(getter_AddRefs(parentContent));
+  nsIContent* parentContent = mParent->GetContent();
   if (parentContent) {
     nsCOMPtr<nsIHTMLContent> hc = do_QueryInterface(parentContent);
     if (hc) {
@@ -1380,7 +1369,7 @@ nsBulletFrame::GetDesiredSize(nsIPresContext*  aCX,
   const nsStyleList* myList = GetStyleList();
   nscoord ascent;
 
-  if (!myList->mListStyleImage.IsEmpty() && mImageRequest) {
+  if (myList->mListStyleImage && mImageRequest) {
     PRUint32 status;
     mImageRequest->GetImageStatus(&status);
     if (status & imgIRequest::STATUS_SIZE_AVAILABLE &&
@@ -1596,12 +1585,9 @@ nsBulletFrame::Reflow(nsIPresContext* aPresContext,
   }
 
   if (isStyleChange) {
-    nsCOMPtr<nsIURI> baseURI;
-    mContent->GetBaseURL(getter_AddRefs(baseURI));
+    nsIURI *newURI = GetStyleList()->mListStyleImage;
 
-    const nsStyleList* myList = GetStyleList();
-
-    if (!myList->mListStyleImage.IsEmpty()) {
+    if (newURI) {
 
       if (!mListener) {
         nsBulletListener *listener;
@@ -1612,10 +1598,6 @@ nsBulletFrame::Reflow(nsIPresContext* aPresContext,
         NS_ASSERTION(mListener, "queryinterface for the listener failed");
         NS_RELEASE(listener);
       }
-
-
-      nsCOMPtr<nsIURI> newURI;
-      NS_NewURI(getter_AddRefs(newURI), myList->mListStyleImage, nsnull, baseURI);
 
       PRBool needNewRequest = PR_TRUE;
 
@@ -1645,12 +1627,12 @@ nsBulletFrame::Reflow(nsIPresContext* aPresContext,
         GetLoadGroup(aPresContext, getter_AddRefs(loadGroup));
 
         // Get the document URI for the referrer...
-        nsCOMPtr<nsIURI> documentURI;
+        nsIURI* documentURI = nsnull;
         nsCOMPtr<nsIDocument> doc;
         if (mContent) {
           doc = mContent->GetDocument();
           if (doc) {
-            doc->GetDocumentURL(getter_AddRefs(documentURI));
+            documentURI = doc->GetDocumentURL();
           }
         }
 
@@ -1745,15 +1727,8 @@ NS_IMETHODIMP nsBulletFrame::OnDataAvailable(imgIRequest *aRequest,
   
   nsRect r(*aRect);
 
-  /* XXX Why do we subtract 1 here?  The rect is (for example): (0, 0, 600, 1)..
-         Why do we have to make y -1?
-   */
-
-  // The y coordinate of aRect is passed as a scanline where the first scanline is given
-  // a value of 1. We need to convert this to the nsFrames coordinate space by subtracting
-  // 1.
-  r.y -= 1;
-
+  // XXX what if this frame ever has a padding or border?
+  
   float p2t;
   mPresContext->GetPixelsToTwips(&p2t);
   r.x = NSIntPixelsToTwips(r.x, p2t);
@@ -1830,7 +1805,7 @@ nsBulletFrame::GetLoadGroup(nsIPresContext *aPresContext, nsILoadGroup **aLoadGr
   if (!doc)
     return;
 
-  doc->GetDocumentLoadGroup(aLoadGroup);
+  *aLoadGroup = doc->GetDocumentLoadGroup().get();  // already_AddRefed
 }
 
 

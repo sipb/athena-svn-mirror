@@ -114,9 +114,7 @@ nsLeafBoxFrame::Init(nsIPresContext*  aPresContext,
     PRBool needsWidget = PR_FALSE;
     parent->ChildrenMustHaveWidgets(needsWidget);
     if (needsWidget) {
-        if (!HasView()) {
-           nsHTMLContainerFrame::CreateViewForFrame(aPresContext,this,mStyleContext,nsnull,PR_TRUE); 
-        }
+        nsHTMLContainerFrame::CreateViewForFrame(this, nsnull, PR_TRUE); 
         nsIView* view = GetView();
 
         if (!view->HasWidget())
@@ -153,9 +151,9 @@ void nsLeafBoxFrame::UpdateMouseThrough()
   if (mContent) {
     nsAutoString value;
     if (NS_CONTENT_ATTR_HAS_VALUE == mContent->GetAttr(kNameSpaceID_None, nsXULAtoms::mousethrough, value)) {
-        if (value.EqualsIgnoreCase("never")) 
+        if (value.Equals(NS_LITERAL_STRING("never")))
           mMouseThrough = never;
-        else if (value.EqualsIgnoreCase("always")) 
+        else if (value.Equals(NS_LITERAL_STRING("always")))
           mMouseThrough = always;
       
     }

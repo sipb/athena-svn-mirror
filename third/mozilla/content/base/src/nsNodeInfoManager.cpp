@@ -43,11 +43,13 @@
 #include "nsIAtom.h"
 #include "nsIDocument.h"
 #include "nsIPrincipal.h"
-#include "nsISupportsArray.h"
+#include "nsIURI.h"
+#include "nsArray.h"
 #include "nsContentUtils.h"
+#include "nsReadableUtils.h"
 
-nsNodeInfoManager* nsNodeInfoManager::gAnonymousNodeInfoManager = nsnull;
-PRUint32 nsNodeInfoManager::gNodeManagerCount = 0;
+nsNodeInfoManager* nsNodeInfoManager::gAnonymousNodeInfoManager;
+PRUint32 nsNodeInfoManager::gNodeManagerCount;
 
 
 nsresult NS_NewNodeInfoManager(nsINodeInfoManager** aResult)
@@ -93,7 +95,6 @@ nsNodeInfoManager::NodeInfoInnerKeyCompare(const void *key1, const void *key2)
 
 
 nsNodeInfoManager::nsNodeInfoManager()
-  : mDocument(nsnull)
 {
 
   if (gNodeManagerCount == 1 && gAnonymousNodeInfoManager) {
@@ -136,6 +137,11 @@ nsNodeInfoManager::~nsNodeInfoManager()
   if (mNodeInfoHash)
     PL_HashTableDestroy(mNodeInfoHash);
 
+
+  if (gNodeManagerCount == 0) {
+    nsNodeInfo::ClearCache();
+  }
+
 #ifdef DEBUG_jst
   printf ("Removing NodeInfoManager, gcount = %d\n", gNodeManagerCount);
 #endif
@@ -147,7 +153,7 @@ NS_IMPL_THREADSAFE_ISUPPORTS1(nsNodeInfoManager, nsINodeInfoManager)
 
 // nsINodeInfoManager
 
-NS_IMETHODIMP
+nsresult
 nsNodeInfoManager::Init(nsIDocument *aDocument)
 {
   NS_ENSURE_TRUE(mNodeInfoHash, NS_ERROR_OUT_OF_MEMORY);
@@ -161,7 +167,7 @@ nsNodeInfoManager::Init(nsIDocument *aDocument)
 }
 
 
-NS_IMETHODIMP
+void
 nsNodeInfoManager::DropDocumentReference()
 {
   if (mDocument) {
@@ -171,19 +177,15 @@ nsNodeInfoManager::DropDocumentReference()
     // that we're creating a principal without having a uri.
     // This happens in a few cases where a document is created and then
     // immediately dropped without ever getting a URI.
-    nsCOMPtr<nsIURI> docUri;
-    mDocument->GetDocumentURL(getter_AddRefs(docUri));
-    if (docUri) {
-      mDocument->GetPrincipal(getter_AddRefs(mPrincipal));
+    if (mDocument->GetDocumentURL()) {
+      mPrincipal = mDocument->GetPrincipal();
     }
   }
   mDocument = nsnull;
-
-  return NS_OK;
 }
 
 
-NS_IMETHODIMP
+nsresult
 nsNodeInfoManager::GetNodeInfo(nsIAtom *aName, nsIAtom *aPrefix,
                                PRInt32 aNamespaceID, nsINodeInfo** aNodeInfo)
 {
@@ -201,7 +203,7 @@ nsNodeInfoManager::GetNodeInfo(nsIAtom *aName, nsIAtom *aPrefix,
     return NS_OK;
   }
 
-  nsNodeInfo *newNodeInfo = new nsNodeInfo();
+  nsNodeInfo *newNodeInfo = nsNodeInfo::Create();
   NS_ENSURE_TRUE(newNodeInfo, NS_ERROR_OUT_OF_MEMORY);
 
   NS_ADDREF(newNodeInfo);
@@ -219,8 +221,58 @@ nsNodeInfoManager::GetNodeInfo(nsIAtom *aName, nsIAtom *aPrefix,
 }
 
 
-NS_IMETHODIMP
+nsresult
 nsNodeInfoManager::GetNodeInfo(const nsAString& aName, nsIAtom *aPrefix,
+                               PRInt32 aNamespaceID, nsINodeInfo** aNodeInfo)
+{
+  return nsNodeInfoManager::GetNodeInfo(NS_ConvertUTF16toUTF8(aName),
+                                        aPrefix, aNamespaceID, aNodeInfo);
+}
+
+
+nsresult
+nsNodeInfoManager::GetNodeInfo(const nsAString& aQualifiedName,
+                               const nsAString& aNamespaceURI,
+                               nsINodeInfo** aNodeInfo)
+{
+  NS_ENSURE_ARG(!aQualifiedName.IsEmpty());
+
+  nsAString::const_iterator start, end;
+  aQualifiedName.BeginReading(start);
+  aQualifiedName.EndReading(end);
+
+  nsCOMPtr<nsIAtom> prefixAtom;
+
+  nsAString::const_iterator iter(start);
+
+  if (FindCharInReadable(':', iter, end)) {
+    prefixAtom = do_GetAtom(Substring(start, iter));
+    NS_ENSURE_TRUE(prefixAtom, NS_ERROR_OUT_OF_MEMORY);
+
+    start = ++iter; // step over the ':'
+
+    if (iter == end) {
+      // No data after the ':'.
+
+      return NS_ERROR_INVALID_ARG;
+    }
+  }
+
+  nsCOMPtr<nsIAtom> nameAtom = do_GetAtom(Substring(start, end));
+  NS_ENSURE_TRUE(nameAtom, NS_ERROR_OUT_OF_MEMORY);
+
+  PRInt32 nsid = kNameSpaceID_None;
+
+  if (!aNamespaceURI.IsEmpty()) {
+    nsresult rv = nsContentUtils::GetNSManagerWeakRef()->RegisterNameSpace(aNamespaceURI, nsid);
+    NS_ENSURE_SUCCESS(rv, rv);
+  }
+
+  return nsNodeInfoManager::GetNodeInfo(nameAtom, prefixAtom, nsid, aNodeInfo);
+}
+
+nsresult
+nsNodeInfoManager::GetNodeInfo(const nsACString& aName, nsIAtom *aPrefix,
                                PRInt32 aNamespaceID, nsINodeInfo** aNodeInfo)
 {
   NS_ENSURE_ARG(!aName.IsEmpty());
@@ -232,95 +284,7 @@ nsNodeInfoManager::GetNodeInfo(const nsAString& aName, nsIAtom *aPrefix,
 }
 
 
-NS_IMETHODIMP
-nsNodeInfoManager::GetNodeInfo(const nsAString& aName,
-                               const nsAString& aPrefix, PRInt32 aNamespaceID,
-                               nsINodeInfo** aNodeInfo)
-{
-  NS_ENSURE_ARG(!aName.IsEmpty());
-
-  nsCOMPtr<nsIAtom> name = do_GetAtom(aName);
-  NS_ENSURE_TRUE(name, NS_ERROR_OUT_OF_MEMORY);
-
-  nsCOMPtr<nsIAtom> prefix;
-
-  if (!aPrefix.IsEmpty()) {
-    prefix = do_GetAtom(aPrefix);
-    NS_ENSURE_TRUE(prefix, NS_ERROR_OUT_OF_MEMORY);
-  }
-
-  return GetNodeInfo(name, prefix, aNamespaceID, aNodeInfo);
-}
-
-
-NS_IMETHODIMP
-nsNodeInfoManager::GetNodeInfo(const nsAString& aName,
-                               const nsAString& aPrefix,
-                               const nsAString& aNamespaceURI,
-                               nsINodeInfo** aNodeInfo)
-{
-  NS_ENSURE_ARG(!aName.IsEmpty());
-
-  nsCOMPtr<nsIAtom> name = do_GetAtom(aName);
-  NS_ENSURE_TRUE(name, NS_ERROR_OUT_OF_MEMORY);
-
-  nsCOMPtr<nsIAtom> prefix;
-
-  if (!aPrefix.IsEmpty()) {
-    prefix = do_GetAtom(aPrefix);
-    NS_ENSURE_TRUE(prefix, NS_ERROR_OUT_OF_MEMORY);
-  }
-
-  PRInt32 nsid;
-  nsresult rv = nsContentUtils::GetNSManagerWeakRef()->RegisterNameSpace(aNamespaceURI, nsid);
-  NS_ENSURE_SUCCESS(rv, rv);
-
-  return GetNodeInfo(name, prefix, nsid, aNodeInfo);
-}
-
-
-NS_IMETHODIMP
-nsNodeInfoManager::GetNodeInfo(const nsAString& aQualifiedName,
-                               const nsAString& aNamespaceURI,
-                               nsINodeInfo** aNodeInfo)
-{
-  NS_ENSURE_ARG(!aQualifiedName.IsEmpty());
-
-  nsAutoString name(aQualifiedName);
-  nsAutoString prefix;
-  PRInt32 nsoffset = name.FindChar(':');
-  if (-1 != nsoffset) {
-    name.Left(prefix, nsoffset);
-    name.Cut(0, nsoffset+1);
-  }
-
-  nsCOMPtr<nsIAtom> nameAtom = do_GetAtom(name);
-  NS_ENSURE_TRUE(nameAtom, NS_ERROR_OUT_OF_MEMORY);
-
-  nsCOMPtr<nsIAtom> prefixAtom;
-
-  if (!prefix.IsEmpty()) {
-    prefixAtom = do_GetAtom(prefix);
-    NS_ENSURE_TRUE(prefixAtom, NS_ERROR_OUT_OF_MEMORY);
-  }
-
-  PRInt32 nsid = kNameSpaceID_None;
-
-  if (!aNamespaceURI.IsEmpty()) {
-    nsresult rv = nsContentUtils::GetNSManagerWeakRef()->RegisterNameSpace(aNamespaceURI, nsid);
-    NS_ENSURE_SUCCESS(rv, rv);
-  }
-
-  return GetNodeInfo(nameAtom, prefixAtom, nsid, aNodeInfo);
-}
-
-nsIDocument*
-nsNodeInfoManager::GetDocument() const
-{
-  return mDocument;
-}
-
-NS_IMETHODIMP
+nsresult
 nsNodeInfoManager::GetDocumentPrincipal(nsIPrincipal** aPrincipal)
 {
   NS_ENSURE_ARG_POINTER(aPrincipal);
@@ -330,20 +294,24 @@ nsNodeInfoManager::GetDocumentPrincipal(nsIPrincipal** aPrincipal)
   if (mDocument) {
     // If the document has a uri we'll ask for it's principal. Otherwise we'll
     // consider this document 'anonymous'
-    nsCOMPtr<nsIURI> docUri;
-    mDocument->GetDocumentURL(getter_AddRefs(docUri));
-    if (!docUri) {
+    if (!mDocument->GetDocumentURL()) {
       *aPrincipal = nsnull;
       return NS_OK;
     }
-    return mDocument->GetPrincipal(aPrincipal);
+
+    *aPrincipal = mDocument->GetPrincipal();
+    if (!*aPrincipal)
+      return NS_ERROR_FAILURE;
+
+    NS_ADDREF(*aPrincipal);
+    return NS_OK;
   }
   *aPrincipal = mPrincipal;
   NS_IF_ADDREF(*aPrincipal);
   return NS_OK;
 }
 
-NS_IMETHODIMP
+nsresult
 nsNodeInfoManager::SetDocumentPrincipal(nsIPrincipal* aPrincipal)
 {
   NS_ENSURE_FALSE(mDocument, NS_ERROR_UNEXPECTED);
@@ -351,24 +319,14 @@ nsNodeInfoManager::SetDocumentPrincipal(nsIPrincipal* aPrincipal)
   return NS_OK;
 }
 
-NS_IMETHODIMP
-nsNodeInfoManager::GetNodeInfoArray(nsISupportsArray** aArray)
+nsresult
+nsNodeInfoManager::GetNodeInfos(nsCOMArray<nsINodeInfo> *aArray)
 {
-  *aArray = nsnull;
-
-  nsCOMPtr<nsISupportsArray> array;
-  nsresult rv = NS_NewISupportsArray(getter_AddRefs(array));
-  NS_ENSURE_SUCCESS(rv, rv);
-
   PL_HashTableEnumerateEntries(mNodeInfoHash,
                                GetNodeInfoArrayEnumerator,
-                               array);
-  PRUint32 n;
-  array->Count(&n);
-  NS_ENSURE_TRUE(n == mNodeInfoHash->nentries, NS_ERROR_OUT_OF_MEMORY);
-
-  *aArray = array;
-  NS_ADDREF(*aArray);
+                               aArray);
+  PRInt32 n = aArray->Count();
+  NS_ENSURE_TRUE((PRUint32)n == mNodeInfoHash->nentries, NS_ERROR_OUT_OF_MEMORY);
 
   return NS_OK;
 }
@@ -379,10 +337,9 @@ nsNodeInfoManager::GetNodeInfoArrayEnumerator(PLHashEntry* he, PRIntn i,
                                               void* arg)
 {
   NS_ASSERTION(arg, "missing array");
-  nsISupportsArray* array = (nsISupportsArray*)arg;
+  nsCOMArray<nsINodeInfo> *array = (nsCOMArray<nsINodeInfo> *) arg;
 
-  nsresult rv = array->AppendElement((nsINodeInfo*)he->value);
-  if (NS_FAILED(rv)) {
+  if (!array->AppendObject((nsINodeInfo*)he->value)) {
     return HT_ENUMERATE_STOP;
   }
 
@@ -395,7 +352,10 @@ nsNodeInfoManager::RemoveNodeInfo(nsNodeInfo *aNodeInfo)
   NS_WARN_IF_FALSE(aNodeInfo, "Trying to remove null nodeinfo from manager!");
 
   if (aNodeInfo) {
-    PRBool ret = PL_HashTableRemove(mNodeInfoHash, &aNodeInfo->mInner);
+#ifdef DEBUG
+    PRBool ret =
+#endif
+    PL_HashTableRemove(mNodeInfoHash, &aNodeInfo->mInner);
 
     NS_WARN_IF_FALSE(ret, "Can't find nsINodeInfo to remove!!!");
   }

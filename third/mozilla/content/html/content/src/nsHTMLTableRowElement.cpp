@@ -82,6 +82,15 @@ nsTableCellCollection::~nsTableCellCollection()
 {
 }
 
+static PRBool
+IsCell(nsIContent *aContent)
+{
+  nsINodeInfo *ni = aContent->GetNodeInfo();
+
+  return (ni && (ni->Equals(nsHTMLAtoms::td) || ni->Equals(nsHTMLAtoms::th)) &&
+          aContent->IsContentOfType(nsIContent::eHTML));
+}
+
 NS_IMETHODIMP 
 nsTableCellCollection::GetLength(PRUint32* aLength)
 {
@@ -94,22 +103,13 @@ nsTableCellCollection::GetLength(PRUint32* aLength)
   nsresult result = NS_OK;
 
   if (mParent) {
-    nsCOMPtr<nsIContent> child;
+    nsIContent *child;
     PRUint32 childIndex = 0;
 
-    mParent->ChildAt(childIndex, getter_AddRefs(child));
-
-    while (child) {
-      nsCOMPtr<nsIAtom> childTag;
-      child->GetTag(getter_AddRefs(childTag));
-
-      if ((nsHTMLAtoms::td == childTag.get()) ||
-          (nsHTMLAtoms::th == childTag.get())) {
+    while ((child = mParent->GetChildAt(childIndex++))) {
+      if (IsCell(child)) {
         (*aLength)++;
       }
-
-      childIndex++;
-      mParent->ChildAt(childIndex, getter_AddRefs(child));
     }
   }
 
@@ -125,29 +125,20 @@ nsTableCellCollection::Item(PRUint32     aIndex,
   nsresult rv = NS_OK;
 
   if (mParent) {
-    nsCOMPtr<nsIContent> child;
+    nsIContent *child;
     PRUint32 childIndex = 0;
 
-    mParent->ChildAt(childIndex, getter_AddRefs(child));
-
-    while (child) {
-      nsCOMPtr<nsIAtom> childTag;
-
-      child->GetTag(getter_AddRefs(childTag));
-
-      if ((nsHTMLAtoms::td == childTag.get()) ||
-          (nsHTMLAtoms::th == childTag.get())) {
+    while ((child = mParent->GetChildAt(childIndex++))) {
+      if (IsCell(child)) {
         if (aIndex == theIndex) {
           CallQueryInterface(child, aReturn);
           NS_ASSERTION(aReturn, "content element must be an nsIDOMNode");
 
           break;
         }
+
         theIndex++;
       }
-
-      childIndex++;
-      mParent->ChildAt(childIndex, getter_AddRefs(child));
     }
   }
 
@@ -206,8 +197,7 @@ void DebugList(nsIDOMHTMLTableElement* aTable) {
       if (root) {
         root->List();
       }
-      nsCOMPtr<nsIPresShell> shell;
-      doc->GetShellAt(0, getter_AddRefs(shell));
+      nsIPresShell *shell = doc->GetShellAt(0);
       if (shell) {
         nsIFrame* rootFrame;
         shell->GetRootFrame(rootFrame);
@@ -598,10 +588,7 @@ nsHTMLTableRowElement::AttributeToString(nsIAtom* aAttribute,
 static 
 void MapAttributesIntoRule(const nsIHTMLMappedAttributes* aAttributes, nsRuleData* aData)
 {
-  if (!aAttributes || !aData)
-    return;
-
-  if (aData->mPositionData) {
+  if (aData->mSID == eStyleStruct_Position) {
     // height: value
     nsHTMLValue value;
     if (aData->mPositionData->mHeight.GetUnit() == eCSSUnit_Null) {
@@ -612,24 +599,22 @@ void MapAttributesIntoRule(const nsIHTMLMappedAttributes* aAttributes, nsRuleDat
         aData->mPositionData->mHeight.SetPercentValue(value.GetPercentValue());
     }
   }
-  else if (aData->mTextData) {
-    if (aData->mSID == eStyleStruct_Text) {
-      if (aData->mTextData->mTextAlign.GetUnit() == eCSSUnit_Null) {
-        // align: enum
-        nsHTMLValue value;
-        aAttributes->GetAttribute(nsHTMLAtoms::align, value);
-        if (value.GetUnit() == eHTMLUnit_Enumerated)
-          aData->mTextData->mTextAlign.SetIntValue(value.GetIntValue(), eCSSUnit_Enumerated);
-      }
+  else if (aData->mSID == eStyleStruct_Text) {
+    if (aData->mTextData->mTextAlign.GetUnit() == eCSSUnit_Null) {
+      // align: enum
+      nsHTMLValue value;
+      aAttributes->GetAttribute(nsHTMLAtoms::align, value);
+      if (value.GetUnit() == eHTMLUnit_Enumerated)
+        aData->mTextData->mTextAlign.SetIntValue(value.GetIntValue(), eCSSUnit_Enumerated);
     }
-    else {
-      if (aData->mTextData->mVerticalAlign.GetUnit() == eCSSUnit_Null) {
-        // valign: enum
-        nsHTMLValue value;
-        aAttributes->GetAttribute(nsHTMLAtoms::valign, value);
-        if (value.GetUnit() == eHTMLUnit_Enumerated) 
-          aData->mTextData->mVerticalAlign.SetIntValue(value.GetIntValue(), eCSSUnit_Enumerated);
-      }
+  }
+  else if (aData->mSID == eStyleStruct_TextReset) {
+    if (aData->mTextData->mVerticalAlign.GetUnit() == eCSSUnit_Null) {
+      // valign: enum
+      nsHTMLValue value;
+      aAttributes->GetAttribute(nsHTMLAtoms::valign, value);
+      if (value.GetUnit() == eHTMLUnit_Enumerated) 
+        aData->mTextData->mVerticalAlign.SetIntValue(value.GetIntValue(), eCSSUnit_Enumerated);
     }
   }
 

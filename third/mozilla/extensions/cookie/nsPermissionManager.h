@@ -49,6 +49,8 @@
 #include "nsTHashtable.h"
 #include "nsString.h"
 
+class nsIPermission;
+
 ////////////////////////////////////////////////////////////////////////////////
 
 // This allow us 8 types of permissions, with 256 values for each
@@ -58,6 +60,7 @@
 // permission safely. (We allow space for 256 here, since it's faster to
 // deal with bytes than with bits).
 // Note: When changing NUMBER_OF_TYPES, also update PermissionsAreEmpty()
+// and the constructors.
 // This should be a multiple of 4, to make PermissionsAreEmpty() fast
 #define NUMBER_OF_TYPES       (8)
 #define NUMBER_OF_PERMISSIONS (16)
@@ -160,14 +163,20 @@ private:
 
   nsresult AddInternal(const nsAFlatCString &aHost,
                        PRInt32  aTypeIndex,
-                       PRUint32 aPermission);
+                       PRUint32 aPermission,
+                       PRBool   aNotify);
   PRInt32 GetTypeIndex(const char *aTypeString,
                        PRBool      aAdd);
 
   nsresult Read();
   nsresult Write();
-  nsresult NotifyObservers(const nsACString &aHost);
+  void     NotifyObserversWithPermission(const nsACString &aHost,
+                                         const char       *aType,
+                                         PRUint32          aPermission,
+                                         const PRUnichar  *aData);
+  void     NotifyObservers(nsIPermission *aPermission, const PRUnichar *aData);
   nsresult RemoveAllFromMemory();
+  nsresult GetHost(nsIURI *aURI, nsACString &aResult);
   void     RemoveTypeStrings();
 
   nsCOMPtr<nsIObserverService> mObserverService;

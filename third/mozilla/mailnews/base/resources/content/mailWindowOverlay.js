@@ -20,7 +20,7 @@
  * Contributors: timeless
  *               slucy@objectivesw.co.uk
  *               Håkan Waara <hwaara@chello.se>
- *               Jan Varga <varga@utcru.sk>
+ *               Jan Varga <varga@nixcorp.com>
  *               Seth Spitzer <sspitzer@netscape.com>
  *               David Bienvenu <bienvenu@netscape.com>
  */
@@ -218,21 +218,9 @@ function InitViewSortByMenu()
     setSortByMenuItemCheckState("sortByUnreadMenuitem", (sortType == nsMsgViewSortType.byUnread));
     setSortByMenuItemCheckState("sortByLabelMenuitem", (sortType == nsMsgViewSortType.byLabel));
     setSortByMenuItemCheckState("sortByJunkStatusMenuitem", (sortType == nsMsgViewSortType.byJunkStatus));
- 
-    // the Sender / Recipient menu is dynamic
-    setSortByMenuItemCheckState("sortBySenderOrRecipientMenuitem", (sortType == nsMsgViewSortType.byAuthor) || (sortType == nsMsgViewSortType.byRecipient));
-    var senderOrRecipientMenuitem = document.getElementById("sortBySenderOrRecipientMenuitem");
-    if (senderOrRecipientMenuitem) {
-    	var currentFolder = gDBView.msgFolder;
-	if (IsSpecialFolder(currentFolder, MSG_FOLDER_FLAG_SENTMAIL | MSG_FOLDER_FLAG_DRAFTS | MSG_FOLDER_FLAG_QUEUE)) {
-	  senderOrRecipientMenuitem.setAttribute('label',gMessengerBundle.getString('recipientColumnHeader'));
-	  senderOrRecipientMenuitem.setAttribute('accesskey',gMessengerBundle.getString('recipientAccessKey'));
-        }
-        else {
-	  senderOrRecipientMenuitem.setAttribute('label',gMessengerBundle.getString('senderColumnHeader'));
-	  senderOrRecipientMenuitem.setAttribute('accesskey',gMessengerBundle.getString('senderAccessKey'));
-	}
-    }
+    setSortByMenuItemCheckState("sortBySenderMenuitem", (sortType == nsMsgViewSortType.byAuthor));
+    setSortByMenuItemCheckState("sortByRecipientMenuitem", (sortType == nsMsgViewSortType.byRecipient));
+
     var sortOrder = gDBView.sortOrder;
 
     setSortByMenuItemCheckState("sortAscending", (sortOrder == nsMsgViewSortOrder.ascending));
@@ -244,9 +232,9 @@ function InitViewSortByMenu()
 
 function InitViewMessagesMenu()
 {
-  var viewFlags = gDBView.viewFlags;
-  var viewType = gDBView.viewType;
-  
+  var viewFlags = gDBView ? gDBView.viewFlags : 0;
+  var viewType = gDBView ? gDBView.viewType : 0;
+
   var allMenuItem = document.getElementById("viewAllMessagesMenuItem");
   if (allMenuItem)
     allMenuItem.setAttribute("checked",  (viewFlags & nsMsgViewFlagsType.kUnreadOnly) == 0 && (viewType == nsMsgViewType.eShowAllThreads));
@@ -270,8 +258,7 @@ function InitViewMessagesMenu()
 
 function InitViewMessageViewMenu()
 {
-  var viewFlags = gDBView.viewFlags;
-  var viewType = gDBView.viewType;
+  var viewFlags = gDBView ? gDBView.viewFlags : 0;
 
 	var threadedMenuItem = document.getElementById("viewThreaded");
 	if (threadedMenuItem)
@@ -399,6 +386,23 @@ function InitMessageMenu()
   var copyMenu = document.getElementById("copyMenu");
   if(copyMenu)
       copyMenu.setAttribute("disabled", !aMessage);
+
+  // Disable Forward as/Label menu items if no message is selected
+  var forwardAsMenu = document.getElementById("forwardAsMenu");
+  if(forwardAsMenu)
+      forwardAsMenu.setAttribute("disabled", !aMessage);
+
+  var labelMenu = document.getElementById("labelMenu");
+  if(labelMenu)
+      labelMenu.setAttribute("disabled", !aMessage);
+
+  // Disable mark menu when we're not in a folder
+  var markMenu = document.getElementById("markMenu");
+  if(markMenu)
+  {
+      var msgFolder = GetLoadedMsgFolder();
+      markMenu.setAttribute("disabled", !msgFolder);
+  }
 
   document.commandDispatcher.updateCommands('create-menu-message');
 }
@@ -1196,41 +1200,29 @@ function MsgOpenSelectedMessages()
   // gWindowReuse values: false, true
   //    false: open new standalone message window for each message
   //    true : reuse existing standalone message window for each message
-  if ((gWindowReuse) && (numMessages == 1)) {
-      if (!MsgOpenExistingWindowForMessage(dbView.getURIForViewIndex(indices[0]))) {
-          MsgOpenNewWindowForMessage(dbView.getURIForViewIndex(indices[0]),dbView.getFolderForViewIndex(indices[0]).URI);
-      }
-  } else {
+  if ((!gWindowReuse) || (numMessages != 1) || (!MsgOpenSelectedMessageInExistingWindow())) {
       for (var i = 0; i < numMessages; i++) {
           MsgOpenNewWindowForMessage(dbView.getURIForViewIndex(indices[i]),dbView.getFolderForViewIndex(indices[i]).URI);
       }
   }
 }
 
-function MsgOpenExistingWindowForMessage(aMessageUri)
+function MsgOpenSelectedMessageInExistingWindow()
 {
-    var messageUri;
-    var msgHdr = null;
     var windowID = GetWindowByWindowType("mail:messageWindow");
-
     if (!windowID)
       return false;
 
-    if (!aMessageUri) {
-        var currentIndex = gDBView.QueryInterface(Components.interfaces.nsIOutlinerView).outlinerView.selection;
-        messageUri = gDBView.getURIForViewIndex(currentIndex);
-    }
-    else
-        messageUri = aMessageUri;
-
-    // be sure to pass in the current view....
-    if (!messageUri)
-        return false;
-
     try {
-        msgHdr = messenger.messageServiceFromURI(messageUri).messageURIToMsgHdr(messageUri);
-        if (!msgHdr)
-            return false;
+        var messageURI = gDBView.URIForFirstSelectedMessage;
+        var msgHdr = gDBView.hdrForFirstSelectedMessage;
+
+        // Reset the window's message uri and folder uri vars, and
+        // update the command handlers to what's going to be used.
+        // This has to be done before the call to CreateView().
+        windowID.gCurrentMessageUri = messageURI;
+        windowID.gCurrentFolderUri = msgHdr.folder.URI;
+        windowID.UpdateMailToolbar('MsgOpenExistingWindowForMessage');
 
         // even if the folder uri's match, we can't use the existing view
         // (msgHdr.folder.URI == windowID.gCurrentFolderUri)
@@ -1240,27 +1232,17 @@ function MsgOpenExistingWindowForMessage(aMessageUri)
         // for the sake of simplicity,
         // let's always call CreateView(gDBView)
         // which will clone gDBView
-        if ("CreateView" in windowID) {
-          // Reset the window's message uri and folder uri vars, and
-          // update the command handlers to what's going to be used.
-          // This has to be done before the call to CreateView().
-          windowID.gCurrentMessageUri = messageUri;
-          windowID.gCurrentFolderUri = msgHdr.folder.URI;
-          windowID.UpdateMailToolbar('MsgOpenExistingWindowForMessage');
-          windowID.CreateView(gDBView);
-          windowID.LoadMessageByMsgKey(msgHdr.messageKey);
-        }
-        else
-          return false;
+        windowID.CreateView(gDBView);
+        windowID.LoadMessageByMsgKey(msgHdr.messageKey);
+
+        // bring existing window to front
+        windowID.focus();
+        return true;
     }
     catch (ex) {
         dump("reusing existing standalone message window failed: " + ex + "\n");
-        return false;
     }
-
-    // bring existing window to front
-    windowID.focus();
-    return true;
+    return false;
 }
 
 function MsgOpenNewWindowForMessage(messageUri, folderUri)
@@ -1928,7 +1910,7 @@ function GetMessagesForAllAuthenticatedAccounts()
       var currentServer = allServers.GetElementAt(i).QueryInterface(Components.interfaces.nsIMsgIncomingServer);
       var protocolinfo = Components.classes["@mozilla.org/messenger/protocol/info;1?type=" +
                            currentServer.type].getService(Components.interfaces.nsIMsgProtocolInfo);
-      if (protocolinfo.canGetMessages && currentServer.isAuthenticated) {
+      if (protocolinfo.canGetMessages && !currentServer.passwordPromptRequired) {
         // Get new messages now
         GetMessagesForInboxOnServer(currentServer);
       }
@@ -2189,7 +2171,8 @@ function MsgJunkMail()
     preselectedFolder = GetFirstSelectedMsgFolder();
 
   var args = { folder: preselectedFolder };
-  OpenOrFocusWindow(args, "mailnews:junk", "chrome://messenger/content/junkMail.xul");
+  window.openDialog("chrome://messenger/content/junkMail.xul", "",
+                    "chrome,resizable=no,modal,dialog", args);
 }
 
 function MsgJunkMailInfo(aCheckFirstUse)

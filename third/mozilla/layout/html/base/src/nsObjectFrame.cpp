@@ -492,13 +492,11 @@ PRBool nsObjectFrame::IsSupportedImage(nsIContent* aContent)
   PRBool haveType = (rv == NS_CONTENT_ATTR_HAS_VALUE) && (!type.IsEmpty());
   if (!haveType) 
   {
-    nsCOMPtr<nsIAtom> tag;
-    aContent->GetTag(getter_AddRefs(tag));
     nsAutoString data;
 
     // If this is an OBJECT tag, we should look for a DATA attribute.
     // If not, it's an EMBED tag, and so we should look for a SRC attribute.
-    if (tag == nsHTMLAtoms::object)
+    if (aContent->Tag() == nsHTMLAtoms::object)
       rv = aContent->GetAttr(kNameSpaceID_None, nsHTMLAtoms::data, data);
     else
       rv = aContent->GetAttr(kNameSpaceID_None, nsHTMLAtoms::src, data);
@@ -635,19 +633,17 @@ nsObjectFrame::Init(nsIPresContext*  aPresContext,
       return NS_ERROR_UNEXPECTED;
     }
 
-    nsCOMPtr<nsIAtom> tag;
-    aContent->GetTag(getter_AddRefs(tag));
     nsAutoString data;
-    
+
     // If this is an OBJECT tag, we should look for a DATA attribute.
     // If not, it's an EMBED tag, and so we should look for a SRC attribute.
-    if (tag == nsHTMLAtoms::object)
+    if (aContent->Tag() == nsHTMLAtoms::object)
       rv = aContent->GetAttr(kNameSpaceID_None, nsHTMLAtoms::data, data);
     else
       rv = aContent->GetAttr(kNameSpaceID_None, nsHTMLAtoms::src, data);
-    
+
     imageLoader->ImageURIChanged(data);
-    
+
     nsCOMPtr<nsIPresShell> shell;
     aPresContext->GetShell(getter_AddRefs(shell));
     nsIFrame * aNewFrame = nsnull;
@@ -660,7 +656,7 @@ nsObjectFrame::Init(nsIPresContext*  aPresContext,
     rv = aNewFrame->Init(aPresContext, aContent, this, aContext, aPrevInFlow);
     if (NS_SUCCEEDED(rv))
     {
-      nsHTMLContainerFrame::CreateViewForFrame(aPresContext, aNewFrame, aContext, nsnull, PR_FALSE);
+      nsHTMLContainerFrame::CreateViewForFrame(aNewFrame, nsnull, PR_FALSE);
       mFrames.AppendFrame(this, aNewFrame);
     }
     else
@@ -671,9 +667,8 @@ nsObjectFrame::Init(nsIPresContext*  aPresContext,
 
   
   // only do the following for the object tag
-  nsCOMPtr<nsIAtom> tag;
-  aContent->GetTag(getter_AddRefs(tag));
-  if (tag.get() != nsHTMLAtoms::object) return rv;
+  if (aContent->Tag() != nsHTMLAtoms::object)
+    return rv;
 
   // for now, we should try to do the same for "document" types and create
   // and IFrame-like sub-frame
@@ -694,7 +689,7 @@ nsObjectFrame::Init(nsIPresContext*  aPresContext,
     rv = aNewFrame->Init(aPresContext, aContent, this, aContext, aPrevInFlow);
     if(NS_SUCCEEDED(rv))
     {
-      nsHTMLContainerFrame::CreateViewForFrame(aPresContext, aNewFrame, aContext, nsnull, PR_FALSE);
+      nsHTMLContainerFrame::CreateViewForFrame(aNewFrame, nsnull, PR_FALSE);
       mFrames.AppendFrame(this, aNewFrame);
     }
     else
@@ -771,13 +766,10 @@ nsObjectFrame::Destroy(nsIPresContext* aPresContext)
   return nsObjectFrameSuper::Destroy(aPresContext);
 }
 
-NS_IMETHODIMP
-nsObjectFrame::GetFrameType(nsIAtom** aType) const
+nsIAtom*
+nsObjectFrame::GetType() const
 {
-  NS_PRECONDITION(nsnull != aType, "null OUT parameter pointer");
-  *aType = nsLayoutAtoms::objectFrame; 
-  NS_ADDREF(*aType);
-  return NS_OK;
+  return nsLayoutAtoms::objectFrame; 
 }
 
 #ifdef DEBUG
@@ -918,8 +910,7 @@ nsObjectFrame::GetDesiredSize(nsIPresContext* aPresContext,
   aMetrics.height = aReflowState.mComputedHeight;
 
   // for EMBED and APPLET, default to 240x200 for compatibility
-  nsCOMPtr<nsIAtom> atom;
-  mContent->GetTag(getter_AddRefs(atom));
+  nsIAtom *atom = mContent->Tag();
   if (atom == nsHTMLAtoms::applet || atom == nsHTMLAtoms::embed) {
     float p2t;
     aPresContext->GetScaledPixelsToTwips(&p2t);
@@ -933,6 +924,15 @@ nsObjectFrame::GetDesiredSize(nsIPresContext* aPresContext,
                                       aReflowState.mComputedMinHeight),
                                aReflowState.mComputedMaxHeight);
     }
+
+#if defined (MOZ_WIDGET_GTK) || defined (MOZ_WIDGET_GTK2) || defined (MOZ_WIDGET_XLIB)  
+    // We need to make sure that the size of the object frame does not
+    // exceed the maximum size of X coordinates.  See bug #225357 for
+    // more information.  In theory Gtk2 can handle large coordinates,
+    // but underlying plugins can't.
+    aMetrics.height = PR_MIN(NSIntPixelsToTwips(PR_INT16_MAX, p2t), aMetrics.height);
+    aMetrics.width = PR_MIN(NSIntPixelsToTwips(PR_INT16_MAX, p2t), aMetrics.width);
+#endif
   }
 
   // At this point, the width has an unconstrained value only if we have
@@ -979,8 +979,8 @@ nsObjectFrame::MakeAbsoluteURL(nsIURI* *aFullURI,
 
   // get document charset
   nsCAutoString originCharset;
-  if (document && NS_FAILED(document->GetDocumentCharacterSet(originCharset)))
-    originCharset.Truncate();
+  if (document)
+    originCharset = document->GetDocumentCharacterSet();
  
   return NS_NewURI(aFullURI, aSrc, originCharset.get(), aBaseURI);
 }
@@ -1110,9 +1110,8 @@ nsObjectFrame::Reflow(nsIPresContext*          aPresContext,
 
       mInstanceOwner->SetPluginHost(pluginHost);
 
-      nsCOMPtr<nsIAtom> tag;
-      mContent->GetTag(getter_AddRefs(tag));
-      if (tag.get() == nsHTMLAtoms::applet) {
+      nsIAtom *tag = mContent->Tag();
+      if (tag == nsHTMLAtoms::applet) {
         if (NS_CONTENT_ATTR_HAS_VALUE == mContent->GetAttr(kNameSpaceID_None, nsHTMLAtoms::code, src)) {
           // Create an absolute URL
           rv = MakeAbsoluteURL(getter_AddRefs(fullURL), src, baseURL);
@@ -1160,11 +1159,9 @@ nsObjectFrame::Reflow(nsIPresContext*          aPresContext,
         if (mimeType || !src.IsEmpty()) {
           if (!mimeType) {
             // we don't have a mime type, try to figure it out from extension
-            nsXPIDLCString extension;
             PRInt32 offset = src.RFindChar(PRUnichar('.'));
             if (offset != kNotFound)
-              *getter_Copies(extension) = ToNewCString(Substring(src, offset+1, src.Length()));
-            pluginHost->IsPluginEnabledForExtension(extension, mimeType);
+              pluginHost->IsPluginEnabledForExtension(NS_ConvertUTF16toUTF8(Substring(src, offset + 1, src.Length())).get(), mimeType);
           }
           // if we fail to get a mime type from extension we can still try to 
           // instantiate plugin as it can be possible to determine it later
@@ -1301,11 +1298,7 @@ nsObjectFrame::InstantiatePlugin(nsIPresContext* aPresContext,
     if (! document)
       return NS_ERROR_FAILURE;
 
-    nsCOMPtr<nsIScriptGlobalObject> globalScript;
-    rv = document->GetScriptGlobalObject(getter_AddRefs(globalScript));
-    if (NS_FAILED(rv)) return rv;
-
-    nsCOMPtr<nsIDOMWindow> domWin(do_QueryInterface(globalScript));
+    nsCOMPtr<nsIDOMWindow> domWin(do_QueryInterface(document->GetScriptGlobalObject(), &rv));
 
     if (NS_SUCCEEDED(rv) &&
         NS_SUCCEEDED(NS_CheckContentLoadPolicy(nsIContentPolicy::OBJECT,
@@ -1409,25 +1402,29 @@ nsObjectFrame::IsHidden(PRBool aCheckVisibilityStyle) const
       return PR_TRUE;    
   }
 
-  nsCOMPtr<nsIAtom> tag;
-  mContent->GetTag(getter_AddRefs(tag));
-
   // only <embed> tags support the HIDDEN attribute
-  if (tag.get() == nsHTMLAtoms::embed) {
+  if (mContent->Tag() == nsHTMLAtoms::embed) {
     nsAutoString hidden;
     nsresult result = mContent->GetAttr(kNameSpaceID_None, nsHTMLAtoms::hidden, hidden);
 
     // Yes, these are really the kooky ways that you could tell 4.x
     // not to hide the <embed> once you'd put the 'hidden' attribute
     // on the tag...
-      // these |NS_ConvertASCIItoUCS2|s can't be |NS_LITERAL_STRING|s until |EqualsIgnoreCase| get's fixed
-    // HIDDEN w/ no attributes gets translated as we are hidden for compatibility
-    // w/ 4.x and IE so we don't create a non-painting widget in layout. See bug 188959.
+
+    // these |NS_ConvertASCIItoUCS2|s can't be |NS_LITERAL_STRING|s
+    // until |EqualsIgnoreCase| get's fixed
+
+    // HIDDEN w/ no attributes gets translated as we are hidden for
+    // compatibility w/ 4.x and IE so we don't create a non-painting
+    // widget in layout. See bug 188959.
     if (NS_CONTENT_ATTR_NOT_THERE != result &&
        (hidden.IsEmpty() ||
-        !hidden.Equals(NS_LITERAL_STRING("false"), nsCaseInsensitiveStringComparator()) &&
-        !hidden.Equals(NS_LITERAL_STRING("no"), nsCaseInsensitiveStringComparator()) &&
-        !hidden.Equals(NS_LITERAL_STRING("off"), nsCaseInsensitiveStringComparator()))) {
+        !hidden.Equals(NS_LITERAL_STRING("false"),
+                       nsCaseInsensitiveStringComparator()) &&
+        !hidden.Equals(NS_LITERAL_STRING("no"),
+                       nsCaseInsensitiveStringComparator()) &&
+        !hidden.Equals(NS_LITERAL_STRING("off"),
+                       nsCaseInsensitiveStringComparator()))) {
       return PR_TRUE;
     }
   }
@@ -1596,8 +1593,7 @@ nsObjectFrame::Paint(nsIPresContext*      aPresContext,
 
     // now we need to get the shell for the screen
     // XXX assuming that the shell at zero will always be the screen one
-    nsCOMPtr<nsIPresShell> shell;
-    doc->GetShellAt(0, getter_AddRefs(shell));
+    nsIPresShell *shell = doc->GetShellAt(0);
     NS_ENSURE_TRUE(shell, NS_ERROR_NULL_POINTER);
 
     // then the shell can give us the screen frame for this content node
@@ -1636,21 +1632,18 @@ nsObjectFrame::Paint(nsIPresContext*      aPresContext,
     pi->GetValue(nsPluginInstanceVariable_WindowlessBool, (void *)&windowless);
     window.type  =  windowless ? nsPluginWindowType_Drawable : nsPluginWindowType_Window;
 
-    // get a few things
-    nsCOMPtr<nsIPrintSettings> printSettings;
-    if (thePrinterContext) {
-      thePrinterContext->GetPrintSettings(getter_AddRefs(printSettings));
-      NS_ENSURE_TRUE(printSettings, NS_ERROR_FAILURE);
-      printSettings->GetMarginInTwips(margin);
-    }
+    // Get the offset of the DC
+    nsTransform2D* rcTransform;
+    aRenderingContext.GetCurrentTransform(rcTransform);
+    rcTransform->GetTranslationCoord(&origin.x, &origin.y);
     
+    // Get the conversion factor between pixels and twips
     aPresContext->GetTwipsToPixels(&t2p);
-    GetOffsetFromView(aPresContext, origin, &parentWithView);
 
     // set it all up
     // XXX is windowless different?
-    window.x = NSToCoordRound((origin.x + margin.left) * t2p);
-    window.y = NSToCoordRound((origin.y + margin.top ) * t2p);
+    window.x = origin.x;
+    window.y = origin.y;
     window.width = NSToCoordRound(mRect.width * t2p);
     window.height= NSToCoordRound(mRect.height * t2p);
     window.clipRect.bottom = 0; window.clipRect.top = 0;
@@ -1966,8 +1959,7 @@ nsObjectFrame::NotifyContentObjectWrapper()
   nsCOMPtr<nsIDocument> doc = mContent->GetDocument();
   NS_ENSURE_TRUE(doc, NS_ERROR_UNEXPECTED);
 
-  nsCOMPtr<nsIScriptGlobalObject> sgo;
-  doc->GetScriptGlobalObject(getter_AddRefs(sgo));
+  nsIScriptGlobalObject *sgo = doc->GetScriptGlobalObject();
   NS_ENSURE_TRUE(sgo, NS_ERROR_UNEXPECTED);
 
   nsCOMPtr<nsIScriptContext> scx;
@@ -2336,7 +2328,7 @@ NS_IMETHODIMP nsPluginInstanceOwner::GetURL(const char *aURL, const char *aTarge
   if (NS_SUCCEEDED(rv) && doc) {
     // XXX should this really be the document base URL?  Or the
     // content's base URL?
-    rv = doc->GetBaseURL(getter_AddRefs(baseURL));  // gets the document's url
+    baseURL = doc->GetBaseURL();  // gets the document's url
   } else {
     mOwner->GetFullURL(*getter_AddRefs(baseURL)); // gets the plugin's content url
   }
@@ -2522,20 +2514,16 @@ NS_IMETHODIMP nsPluginInstanceOwner::GetTagType(nsPluginTagType *result)
     nsIContent* cont = mOwner->GetContent();
     if (cont)
     {
-      nsCOMPtr<nsIAtom> atom;
-      cont->GetTag(getter_AddRefs(atom));
+      nsIAtom *atom = cont->Tag();
 
-      if (atom)
-      {
-        if (atom == nsHTMLAtoms::applet)
-          *result = nsPluginTagType_Applet;
-        else if (atom == nsHTMLAtoms::embed)
-          *result = nsPluginTagType_Embed;
-        else if (atom == nsHTMLAtoms::object)
-          *result = nsPluginTagType_Object;
+      if (atom == nsHTMLAtoms::applet)
+        *result = nsPluginTagType_Applet;
+      else if (atom == nsHTMLAtoms::embed)
+        *result = nsPluginTagType_Embed;
+      else if (atom == nsHTMLAtoms::object)
+        *result = nsPluginTagType_Object;
 
-        rv = NS_OK;
-      }
+      rv = NS_OK;
     }
   }
 
@@ -2636,10 +2624,7 @@ NS_IMETHODIMP nsPluginInstanceOwner::GetDocumentBase(const char* *result)
     nsCOMPtr<nsIDocument> doc;
     shell->GetDocument(getter_AddRefs(doc));
 
-    nsCOMPtr<nsIURI> docURL;
-    doc->GetBaseURL(getter_AddRefs(docURL));  // should return base + doc url
-
-    rv = docURL->GetSpec(mDocumentBase);
+    rv = doc->GetBaseURL()->GetSpec(mDocumentBase);
   }
   if (rv == NS_OK)
     *result = ToNewCString(mDocumentBase);
@@ -2715,10 +2700,7 @@ NS_IMETHODIMP nsPluginInstanceOwner::GetDocumentEncoding(const char* *result)
   NS_ASSERTION(NS_SUCCEEDED(rv), "failed to get document");
   if (NS_FAILED(rv)) return rv;
 
-  nsCAutoString charset;
-  rv = doc->GetDocumentCharacterSet(charset);
-  NS_ASSERTION(NS_SUCCEEDED(rv), "can't get charset");
-  if (NS_FAILED(rv)) return rv;
+  const nsACString &charset = doc->GetDocumentCharacterSet();
 
   if (charset.IsEmpty()) return NS_OK;
 
@@ -2726,7 +2708,7 @@ NS_IMETHODIMP nsPluginInstanceOwner::GetDocumentEncoding(const char* *result)
   if (charset == NS_LITERAL_CSTRING("us-acsii")) {
     *result = PL_strdup("US_ASCII");
   } else if (charset == NS_LITERAL_CSTRING("ISO-8859-1") ||
-      !nsCRT::strncmp(charset.get(), "UTF", 3)) {
+      !nsCRT::strncmp(PromiseFlatCString(charset).get(), "UTF", 3)) {
     *result = ToNewCString(charset);
   } else {
     if (!gCharsetMap) {
@@ -2926,14 +2908,12 @@ nsresult nsPluginInstanceOwner::EnsureCachedAttrParamArrays()
   nsresult rv = NS_OK;
   NS_ENSURE_TRUE(content, rv);
 
-  PRInt32 cattrs;
-  rv = content->GetAttrCount(cattrs);
-  NS_ENSURE_SUCCESS(rv, rv);
+  PRUint32 cattrs = content->GetAttrCount();
 
   if (cattrs < 0x0000FFFF) {
-    // signed 32 bits to unsigned 16 bits conversion
+    // unsigned 32 bits to unsigned 16 bits conversion
     mNumCachedAttrs = NS_STATIC_CAST(PRUint16, cattrs);
-  } else { 
+  } else {
     mNumCachedAttrs = 0xFFFE;  // minus one in case we add an extra "src" entry below
   }
 
@@ -2958,8 +2938,7 @@ nsresult nsPluginInstanceOwner::EnsureCachedAttrParamArrays()
 
   nsCOMPtr<nsIDOMNodeList> allParams; 
 
-  nsCOMPtr<nsINodeInfo> ni;
-  content->GetNodeInfo(getter_AddRefs(ni));
+  nsINodeInfo *ni = content->GetNodeInfo();
 
   if (ni->NamespaceEquals(kNameSpaceID_XHTML)) {
     // For XHTML elements we need to take the namespace URI into
@@ -3041,9 +3020,8 @@ nsresult nsPluginInstanceOwner::EnsureCachedAttrParamArrays()
   // to the bottom of the array if there isn't already a "src" specified.
   PRInt16 numRealAttrs = mNumCachedAttrs;
   nsAutoString data;
-  nsCOMPtr<nsIAtom> tag;
-  content->GetTag(getter_AddRefs(tag));
-  if (nsHTMLAtoms::object == tag.get() 
+  nsIAtom *tag = content->Tag();
+  if (nsHTMLAtoms::object == tag
     && !content->HasAttr(kNameSpaceID_None, nsHTMLAtoms::src)
     && NS_CONTENT_ATTR_NOT_THERE != content->GetAttr(kNameSpaceID_None, nsHTMLAtoms::data, data)) {
       mNumCachedAttrs++;

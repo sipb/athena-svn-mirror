@@ -34,7 +34,7 @@
 /*
  * CMS signedData methods.
  *
- * $Id: cmssigdata.c,v 1.1.1.3 2003-12-24 16:01:43 rbasch Exp $
+ * $Id: cmssigdata.c,v 1.1.1.4 2004-02-27 16:22:16 rbasch Exp $
  */
 
 #include "cmslocal.h"

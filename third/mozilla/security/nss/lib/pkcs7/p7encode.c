@@ -34,7 +34,7 @@
 /*
  * PKCS7 encoding.
  *
- * $Id: p7encode.c,v 1.1.1.2 2003-07-08 16:56:21 rbasch Exp $
+ * $Id: p7encode.c,v 1.1.1.3 2004-02-27 16:41:46 rbasch Exp $
  */
 
 #include "nssrenam.h"
@@ -1165,6 +1165,15 @@ loser:
     return rv;
 }
 
+/*
+ * Abort the ASN.1 stream. Used by pkcs 12
+ */
+void
+SEC_PKCS7EncoderAbort(SEC_PKCS7EncoderContext *p7ecx, int error)
+{
+    PORT_Assert(p7ecx);
+    SEC_ASN1EncoderAbort(p7ecx->ecx, error);
+}
 
 /*
  * After this routine is called, the entire PKCS7 contentInfo is ready

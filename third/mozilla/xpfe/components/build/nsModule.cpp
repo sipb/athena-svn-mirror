@@ -38,7 +38,6 @@
 #include "nsICategoryManager.h"
 #include "nsDirectoryViewer.h"
 #include "rdf.h"
-#include "nsTimeBomb.h"
 #include "nsLocalSearchService.h"
 #include "nsInternetSearchService.h"
 #include "nsRelatedLinksHandlerImpl.h"
@@ -59,7 +58,9 @@
 #endif
 #endif
 #if defined(XP_WIN)
+#ifndef MOZ_PHOENIX
 #include "nsAlertsService.h" 
+#endif
 #include "nsUrlWidget.h"
 #include "nsWindowsHooks.h"
 #endif // Windows
@@ -74,7 +75,6 @@ NS_GENERIC_FACTORY_CONSTRUCTOR(nsDirectoryViewerFactory)
 NS_GENERIC_FACTORY_CONSTRUCTOR_INIT(LocalSearchDataSource, Init)
 NS_GENERIC_FACTORY_CONSTRUCTOR_INIT(InternetSearchDataSource, Init)
 NS_GENERIC_FACTORY_CONSTRUCTOR_INIT(RelatedLinksHandlerImpl, Init)
-NS_GENERIC_FACTORY_CONSTRUCTOR(nsTimeBomb)
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsFontPackageHandler)
 NS_GENERIC_FACTORY_CONSTRUCTOR_INIT(nsWindowDataSource, Init)
 #ifndef MOZ_PHOENIX
@@ -90,7 +90,9 @@ NS_GENERIC_FACTORY_CONSTRUCTOR(nsLDAPAutoCompleteSession)
 #endif
 #endif
 #if defined(XP_WIN)
+#ifndef MOZ_PHOENIX
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsAlertsService)
+#endif
 NS_GENERIC_FACTORY_CONSTRUCTOR_INIT(nsUrlWidget, Init)
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsWindowsHooks)
 #endif // Windows
@@ -179,7 +181,6 @@ static const nsModuleComponentInfo components[] = {
       NS_INTERNETSEARCH_DATASOURCE_CONTRACTID, InternetSearchDataSourceConstructor },
     { "Related Links Handler", NS_RELATEDLINKSHANDLER_CID, NS_RELATEDLINKSHANDLER_CONTRACTID,
 	  RelatedLinksHandlerImplConstructor},
-    { "Netscape TimeBomb", NS_TIMEBOMB_CID, NS_TIMEBOMB_CONTRACTID, nsTimeBombConstructor},
     { "nsCharsetMenu", NS_CHARSETMENU_CID,
       NS_RDF_DATASOURCE_CONTRACTID_PREFIX NS_CHARSETMENU_PID,
       NS_NewCharsetMenu },
@@ -193,7 +194,9 @@ static const nsModuleComponentInfo components[] = {
 #if defined(XP_WIN)
     { NS_IURLWIDGET_CLASSNAME, NS_IURLWIDGET_CID, NS_IURLWIDGET_CONTRACTID,
       nsUrlWidgetConstructor },
+#ifndef MOZ_PHOENIX
     { "nsAlertsService", NS_ALERTSSERVICE_CID, NS_ALERTSERVICE_CONTRACTID, nsAlertsServiceConstructor},
+#endif
     { NS_IWINDOWSHOOKS_CLASSNAME, NS_IWINDOWSHOOKS_CID, NS_IWINDOWSHOOKS_CONTRACTID,
       nsWindowsHooksConstructor },
 #endif // Windows

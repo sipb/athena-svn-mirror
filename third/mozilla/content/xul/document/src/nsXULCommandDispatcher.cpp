@@ -124,9 +124,7 @@ void
 nsXULCommandDispatcher::EnsureFocusController()
 {
   if (!mFocusController) {
-    nsCOMPtr<nsIScriptGlobalObject> global;
-    mDocument->GetScriptGlobalObject(getter_AddRefs(global));
-    nsCOMPtr<nsPIDOMWindow> win(do_QueryInterface(global));
+    nsCOMPtr<nsPIDOMWindow> win(do_QueryInterface(mDocument->GetScriptGlobalObject()));
   
     // An inelegant way to retrieve this to be sure, but we are
     // guaranteed that the focus controller outlives us, so it
@@ -366,13 +364,10 @@ nsXULCommandDispatcher::UpdateCommands(const nsAString& aEventName)
             aeventnameC.get()));
 #endif
 
-    PRInt32 count = document->GetNumberOfShells();
-    for (PRInt32 i = 0; i < count; i++) {
-      nsCOMPtr<nsIPresShell> shell;
-      document->GetShellAt(i, getter_AddRefs(shell));
-      if (! shell)
-          continue;
-      
+    PRUint32 count = document->GetNumberOfShells();
+    for (PRUint32 i = 0; i < count; i++) {
+      nsIPresShell *shell = document->GetShellAt(i);
+
       // Retrieve the context in which our DOM event will fire.
       nsCOMPtr<nsIPresContext> context;
       rv = shell->GetPresContext(getter_AddRefs(context));
@@ -429,5 +424,19 @@ nsXULCommandDispatcher::GetControllerForCommand(const char *aCommand, nsIControl
 {
   EnsureFocusController();
   return mFocusController->GetControllerForCommand(aCommand, _retval);
+}
+
+NS_IMETHODIMP
+nsXULCommandDispatcher::GetSuppressFocusScroll(PRBool* aSuppressFocusScroll)
+{
+  EnsureFocusController();
+  return mFocusController->GetSuppressFocusScroll(aSuppressFocusScroll);
+}
+
+NS_IMETHODIMP
+nsXULCommandDispatcher::SetSuppressFocusScroll(PRBool aSuppressFocusScroll)
+{
+  EnsureFocusController();
+  return mFocusController->SetSuppressFocusScroll(aSuppressFocusScroll);
 }
 

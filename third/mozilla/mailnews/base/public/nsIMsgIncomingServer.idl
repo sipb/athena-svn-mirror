@@ -40,7 +40,6 @@
 #include "MailNewsTypes2.idl"
 
 interface nsIFileSpec;
-interface nsIFolder;
 interface nsIMsgFolder;
 interface nsIMsgFolderCache;
 interface nsIMsgWindow;
@@ -159,7 +158,7 @@ interface nsIMsgIncomingServer : nsISupports {
   readonly attribute string serverURI;
 
   /* the root folder for this server */
-  attribute nsIFolder rootFolder;
+  attribute nsIMsgFolder rootFolder;
 
   /* handy accessor when we want a msg folder */
   readonly attribute nsIMsgFolder rootMsgFolder;
@@ -354,10 +353,10 @@ interface nsIMsgIncomingServer : nsISupports {
   /** 
    * If the password for the server is available either via authentication 
    * in the current session or from password manager stored entries, return
-   * true. Otherwise, return false. If password is obtained from password 
+   * false. Otherwise, return true. If password is obtained from password 
    * manager, set the password member variable.
    */ 
-  readonly attribute boolean isAuthenticated;
+  readonly attribute boolean passwordPromptRequired;
 
   /**
    * If we have set up to filter return receipts into

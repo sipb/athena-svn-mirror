@@ -103,7 +103,7 @@ typedef void
 
 /**
  * Indication of how the frame can be split. This is used when doing runaround
- * of floaters, and when pulling up child frames from a next-in-flow.
+ * of floats, and when pulling up child frames from a next-in-flow.
  *
  * The choices are splittable, not splittable at all, and splittable in
  * a non-rectangular fashion. This last type only applies to block-level
@@ -265,7 +265,7 @@ enum nsSpread {
 // For HTML reflow we rename with the different paint layers are
 // actually used for.
 #define NS_FRAME_PAINT_LAYER_BACKGROUND eFramePaintLayer_Underlay
-#define NS_FRAME_PAINT_LAYER_FLOATERS   eFramePaintLayer_Content
+#define NS_FRAME_PAINT_LAYER_FLOATS   eFramePaintLayer_Content
 #define NS_FRAME_PAINT_LAYER_FOREGROUND eFramePaintLayer_Overlay
 #define NS_FRAME_PAINT_LAYER_DEBUG      eFramePaintLayer_Overlay
 
@@ -1013,7 +1013,7 @@ public:
    *
    * @see nsLayoutAtoms
    */
-  NS_IMETHOD  GetFrameType(nsIAtom** aType) const = 0;
+  virtual nsIAtom* GetType() const = 0;
   
   /**
    * Is this frame a "containing block"?
@@ -1143,18 +1143,15 @@ public:
                                   PRBool*              aIsVisible) = 0;
 
   /**
-   * Determine whether the frame is logically empty, i.e., whether the
-   * layout would be the same whether or not the frame is present.
-   * Placeholder frames should return true.  Block frames should be
-   * considered empty whenever margins collapse through them, even
-   * though those margins are relevant.
-   *
-   * aIsPre should be ignored by frames to which the 'white-space'
-   * property applies.
+   * Determine whether the frame is logically empty, which is roughly
+   * whether the layout would be the same whether or not the frame is
+   * present.  Placeholder frames should return true.  Block frames
+   * should be considered empty whenever margins collapse through them,
+   * even though those margins are relevant.  Text frames containing
+   * only whitespace that does not contribute to the height of the line
+   * should return true.
    */
-  NS_IMETHOD IsEmpty(nsCompatibility aCompatMode,
-                     PRBool aIsPre,
-                     PRBool* aResult) = 0;
+  virtual PRBool IsEmpty() = 0;
 
   /**
    * IsGeneratedContentFrame returns whether a frame corresponds to
@@ -1217,67 +1214,6 @@ public:
    * this means children can't be made visible again.
    */
   virtual PRBool SupportsVisibilityHidden() { return PR_TRUE; }
-
-  // DEPRECATED COMPATIBILITY METHODS
-  nsresult GetContent(nsIContent** aContent) const {  *aContent = mContent; NS_IF_ADDREF(*aContent); return NS_OK; }
-  nsresult GetParent(nsIFrame** aParent) const { *aParent = mParent; return NS_OK; }
-  nsresult GetRect(nsRect& aRect) const {
-    aRect = mRect;
-    return NS_OK;
-  }
-  nsresult GetOrigin(nsPoint& aPoint) const {
-    aPoint.x = mRect.x;
-    aPoint.y = mRect.y;
-    return NS_OK;
-  }
-  nsresult GetSize(nsSize& aSize) const {
-    aSize.width = mRect.width;
-    aSize.height = mRect.height;
-    return NS_OK;
-  }
-  nsresult SetRect(nsIPresContext* aPresContext,
-               const nsRect&   aRect) {
-    MoveTo(aPresContext, aRect.x, aRect.y);
-    SizeTo(aPresContext, aRect.width, aRect.height);
-    return NS_OK;
-  }
-  nsresult MoveTo(nsIPresContext* aPresContext,
-                  nscoord         aX,
-                  nscoord         aY) {
-    mRect.x = aX;
-    mRect.y = aY;
-    return NS_OK;
-  }
-  nsresult SizeTo(nsIPresContext* aPresContext,
-                  nscoord         aWidth,
-                  nscoord         aHeight) {
-    mRect.width = aWidth;
-    mRect.height = aHeight;
-    return NS_OK;
-  }
-  nsresult GetNextSibling(nsIFrame** aNextSibling) const {
-    *aNextSibling = mNextSibling;
-    return NS_OK;
-  }
-  nsresult GetFrameState(nsFrameState* aResult) {
-    *aResult = mState;
-    return NS_OK;
-  }
-  nsresult SetFrameState(nsFrameState aState) {
-    mState = aState;
-    return NS_OK;
-  }
-  nsIView* GetView(nsIPresContext* aPresContext) const { return GetView(); }
-  nsIView* GetViewExternal(nsIPresContext* aPresContext) const { return GetViewExternal(); }
-  nsresult SetView(nsIPresContext* aPresContext, nsIView* aView) { return SetView(aView); }
-  nsIView* GetClosestView(nsIPresContext* aPresContext) const { return GetClosestView(); }
-  nsresult GetParentWithView(nsIPresContext* aPresContext, nsIFrame** aParent) const {
-    *aParent = GetAncestorWithViewExternal();
-    return NS_OK;
-  }
-  PRBool AreAncestorViewsVisible(nsIPresContext* aPresContext) const {
-    return AreAncestorViewsVisible();
-  }
 
 protected:
   // Members

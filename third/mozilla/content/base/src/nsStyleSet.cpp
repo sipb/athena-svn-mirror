@@ -380,7 +380,7 @@ StyleSetImpl::StyleSetImpl()
 {
   if (gInstances++ == 0)
   {
-    static const char kQuirk_href[] = "resource:/res/quirk.css";
+    static const char kQuirk_href[] = "resource://gre/res/quirk.css";
     NS_NewURI (&gQuirkURI, NS_LITERAL_CSTRING(kQuirk_href));
     NS_ASSERTION (gQuirkURI != 0, "Cannot allocate nsStyleSetImpl::gQuirkURI");
   }
@@ -648,16 +648,14 @@ void StyleSetImpl::AddDocStyleSheet(nsIStyleSheet* aSheet, nsIDocument* aDocumen
   if (EnsureArray(mDocSheets)) {
     mDocSheets->RemoveElement(aSheet);
     // lowest index last
-    PRInt32 newDocIndex = 0;
-    aDocument->GetIndexOfStyleSheet(aSheet, &newDocIndex);
+    PRInt32 newDocIndex = aDocument->GetIndexOfStyleSheet(aSheet);
     PRUint32 count;
     nsresult rv = mDocSheets->Count(&count);
     if (NS_FAILED(rv)) return;  // XXX error?
     PRUint32 index;
     for (index = 0; index < count; index++) {
       nsIStyleSheet* sheet = (nsIStyleSheet*)mDocSheets->ElementAt(index);
-      PRInt32 sheetDocIndex = 0;
-      aDocument->GetIndexOfStyleSheet(sheet, &sheetDocIndex);
+      PRInt32 sheetDocIndex = aDocument->GetIndexOfStyleSheet(sheet);
       if (sheetDocIndex < newDocIndex) {
         mDocSheets->InsertElementAt(aSheet, index);
         index = count; // break loop
@@ -1478,7 +1476,7 @@ StyleSetImpl::ReParentStyleContext(nsIPresContext* aPresContext,
       return aStyleContext;
     }
     else {  // really a new parent
-      nsCOMPtr<nsIAtom>  pseudoTag = aStyleContext->GetPseudoType();
+      nsIAtom* pseudoTag = aStyleContext->GetPseudoType();
 
       nsRuleNode* ruleNode = aStyleContext->GetRuleNode();
       EnsureRuleWalker(aPresContext);

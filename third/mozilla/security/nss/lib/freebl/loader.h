@@ -36,7 +36,7 @@
  * may use your version of this file under either the MPL or the
  * GPL.
  *
- * $Id: loader.h,v 1.1.1.2 2003-07-08 17:24:27 rbasch Exp $
+ * $Id: loader.h,v 1.1.1.3 2004-02-27 16:41:33 rbasch Exp $
  */
 
 #ifndef _LOADER_H_
@@ -44,7 +44,7 @@
 
 #include "blapi.h"
 
-#define FREEBL_VERSION 0x0306
+#define FREEBL_VERSION 0x0307
 
 struct FREEBLVectorStr {
 
@@ -370,6 +370,12 @@ struct FREEBLVectorStr {
                              const int          seedlen);
 
   /* Version 3.006 came to here */
+
+  /* no modification to FREEBLVectorStr itself 
+   * but ECParamStr was modified 
+   */
+
+  /* Version 3.007 came to here */
 
 };
 

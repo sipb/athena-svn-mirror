@@ -1,36 +1,41 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 4 -*-
  *
- * The contents of this file are subject to the Netscape Public
- * License Version 1.1 (the "License"); you may not use this file
- * except in compliance with the License. You may obtain a copy of
- * the License at http://www.mozilla.org/NPL/
+ * ***** BEGIN LICENSE BLOCK *****
+ * Version: MPL 1.1/GPL 2.0/LGPL 2.1
  *
- * Software distributed under the License is distributed on an "AS
- * IS" basis, WITHOUT WARRANTY OF ANY KIND, either express or
- * implied. See the License for the specific language governing
- * rights and limitations under the License.
+ * The contents of this file are subject to the Mozilla Public License Version
+ * 1.1 (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ * http://www.mozilla.org/MPL/
+ *
+ * Software distributed under the License is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+ * for the specific language governing rights and limitations under the
+ * License.
  *
  * The Original Code is Mozilla Communicator client code, released
  * March 31, 1998.
  *
- * The Initial Developer of the Original Code is Netscape
- * Communications Corporation.  Portions created by Netscape are
- * Copyright (C) 1998 Netscape Communications Corporation. All
- * Rights Reserved.
+ * The Initial Developer of the Original Code is
+ * Netscape Communications Corporation.
+ * Portions created by the Initial Developer are Copyright (C) 1998
+ * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s):
  *
- * Alternatively, the contents of this file may be used under the
- * terms of the GNU Public License (the "GPL"), in which case the
- * provisions of the GPL are applicable instead of those above.
- * If you wish to allow use of your version of this file only
- * under the terms of the GPL and not to allow others to use your
- * version of this file under the NPL, indicate your decision by
- * deleting the provisions above and replace them with the notice
- * and other provisions required by the GPL.  If you do not delete
- * the provisions above, a recipient may use your version of this
- * file under either the NPL or the GPL.
- */
+ * Alternatively, the contents of this file may be used under the terms of
+ * either of the GNU General Public License Version 2 or later (the "GPL"),
+ * or the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
+ * in which case the provisions of the GPL or the LGPL are applicable instead
+ * of those above. If you wish to allow use of your version of this file only
+ * under the terms of either the GPL or the LGPL, and not to allow others to
+ * use your version of this file under the terms of the MPL, indicate your
+ * decision by deleting the provisions above and replace them with the notice
+ * and other provisions required by the GPL or the LGPL. If you do not delete
+ * the provisions above, a recipient may use your version of this file under
+ * the terms of any one of the MPL, the GPL or the LGPL.
+ *
+ * ***** END LICENSE BLOCK ***** */
 
 /*
  * JavaScript API.
@@ -173,7 +178,7 @@ JS_ConvertArgumentsVA(JSContext *cx, uintN argc, jsval *argv,
         }
         if (sp == argv + argc) {
             if (required) {
-                fun = js_ValueToFunction(cx, &argv[-2], JS_FALSE);
+                fun = js_ValueToFunction(cx, &argv[-2], 0);
                 if (fun) {
                     char numBuf[12];
                     JS_snprintf(numBuf, sizeof numBuf, "%u", argc);
@@ -237,7 +242,7 @@ JS_ConvertArgumentsVA(JSContext *cx, uintN argc, jsval *argv,
             *va_arg(ap, JSObject **) = obj;
             break;
           case 'f':
-            fun = js_ValueToFunction(cx, sp, JS_FALSE);
+            fun = js_ValueToFunction(cx, sp, 0);
             if (!fun)
                 return JS_FALSE;
             *sp = OBJECT_TO_JSVAL(fun->object);
@@ -459,7 +464,7 @@ JS_ConvertValue(JSContext *cx, jsval v, JSType type, jsval *vp)
             *vp = OBJECT_TO_JSVAL(obj);
         break;
       case JSTYPE_FUNCTION:
-        fun = js_ValueToFunction(cx, &v, JS_FALSE);
+        fun = js_ValueToFunction(cx, &v, JSV2F_SEARCH_STACK);
         ok = (fun != NULL);
         if (ok)
             *vp = OBJECT_TO_JSVAL(fun->object);
@@ -507,14 +512,14 @@ JS_PUBLIC_API(JSFunction *)
 JS_ValueToFunction(JSContext *cx, jsval v)
 {
     CHECK_REQUEST(cx);
-    return js_ValueToFunction(cx, &v, JS_FALSE);
+    return js_ValueToFunction(cx, &v, JSV2F_SEARCH_STACK);
 }
 
 JS_PUBLIC_API(JSFunction *)
 JS_ValueToConstructor(JSContext *cx, jsval v)
 {
     CHECK_REQUEST(cx);
-    return js_ValueToFunction(cx, &v, JS_TRUE);
+    return js_ValueToFunction(cx, &v, JSV2F_SEARCH_STACK);
 }
 
 JS_PUBLIC_API(JSString *)
@@ -638,7 +643,7 @@ JS_NewRuntime(uint32 maxbytes)
     rt = (JSRuntime *) malloc(sizeof(JSRuntime));
     if (!rt)
         return NULL;
-    
+
     /* Initialize infallibly first, so we can goto bad and JS_DestroyRuntime. */
     memset(rt, 0, sizeof(JSRuntime));
     JS_INIT_CLIST(&rt->contextList);
@@ -1231,11 +1236,8 @@ static JSStdName standard_class_names[] = {
     {js_InitNumberClass,        LAZILY_PINNED_ATOM(parseInt)},
 
     /* String global functions. */
-#ifndef MOZILLA_CLIENT
-    /* These two are predefined in a backward-compatible way by the DOM. */
     {js_InitStringClass,        LAZILY_PINNED_ATOM(escape)},
     {js_InitStringClass,        LAZILY_PINNED_ATOM(unescape)},
-#endif
     {js_InitStringClass,        LAZILY_PINNED_ATOM(decodeURI)},
     {js_InitStringClass,        LAZILY_PINNED_ATOM(encodeURI)},
     {js_InitStringClass,        LAZILY_PINNED_ATOM(decodeURIComponent)},
@@ -1668,8 +1670,6 @@ JS_GC(JSContext *cx)
     /* Don't nuke active arenas if executing or compiling. */
     if (cx->stackPool.current == &cx->stackPool.first)
         JS_FinishArenaPool(&cx->stackPool);
-    if (cx->codePool.current == &cx->codePool.first)
-        JS_FinishArenaPool(&cx->codePool);
     if (cx->tempPool.current == &cx->tempPool.first)
         JS_FinishArenaPool(&cx->tempPool);
     js_ForceGC(cx, 0);
@@ -1755,6 +1755,39 @@ JS_GetExternalStringGCType(JSRuntime *rt, JSString *str)
         return (intN)type;
     JS_ASSERT(type == GCX_STRING || type == GCX_MUTABLE_STRING);
     return -1;
+}
+
+#ifdef DEBUG
+static void
+CheckStackGrowthDirection(int *dummy1addr, jsuword limitAddr)
+{
+    int dummy2;
+
+#if JS_STACK_GROWTH_DIRECTION > 0
+    JS_ASSERT(dummy1addr < &dummy2);
+    JS_ASSERT((jsuword)&dummy2 < limitAddr);
+#else
+    /* Stack grows downward, the common case on modern architectures. */
+    JS_ASSERT(&dummy2 < dummy1addr);
+    JS_ASSERT(limitAddr < (jsuword)&dummy2);
+#endif
+}
+#endif
+
+JS_PUBLIC_API(void)
+JS_SetThreadStackLimit(JSContext *cx, jsuword limitAddr)
+{
+#ifdef DEBUG
+    int dummy1;
+
+    CheckStackGrowthDirection(&dummy1, limitAddr);
+#endif
+
+#if JS_STACK_GROWTH_DIRECTION > 0
+    if (limitAddr == 0)
+        limitAddr = (jsuword)-1;
+#endif
+    cx->stackLimit = limitAddr;
 }
 
 /************************************************************************/
@@ -1923,7 +1956,7 @@ JS_InstanceOf(JSContext *cx, JSObject *obj, JSClass *clasp, jsval *argv)
     if (OBJ_GET_CLASS(cx, obj) == clasp)
         return JS_TRUE;
     if (argv) {
-        fun = js_ValueToFunction(cx, &argv[-2], JS_FALSE);
+        fun = js_ValueToFunction(cx, &argv[-2], 0);
         if (fun) {
             JS_ReportErrorNumber(cx, js_GetErrorMessage, NULL,
                                  JSMSG_INCOMPATIBLE_PROTO,
@@ -2049,11 +2082,19 @@ JS_SealObject(JSContext *cx, JSObject *obj, JSBool deep)
         return JS_FALSE;
     }
 
-    /* Nothing to do if obj's scope is already sealed. */
     scope = OBJ_SCOPE(obj);
-#ifdef JS_THREADSAFE
-    JS_ASSERT(scope->ownercx == cx);
+
+#if defined JS_THREADSAFE && defined DEBUG
+    /* Insist on scope being used exclusively by cx's thread. */
+    if (scope->ownercx != cx) {
+        JS_LOCK_OBJ(cx, obj);
+        JS_ASSERT(OBJ_SCOPE(obj) == scope);
+        JS_ASSERT(scope->ownercx == cx);
+        JS_UNLOCK_SCOPE(cx, scope);
+    }
 #endif
+
+    /* Nothing to do if obj's scope is already sealed. */
     if (SCOPE_IS_SEALED(scope))
         return JS_TRUE;
 
@@ -2083,46 +2124,6 @@ JS_SealObject(JSContext *cx, JSObject *obj, JSBool deep)
         if (JSVAL_IS_PRIMITIVE(v))
             continue;
         if (!JS_SealObject(cx, JSVAL_TO_OBJECT(v), deep))
-            return JS_FALSE;
-    }
-    return JS_TRUE;
-}
-
-JS_PUBLIC_API(JSBool)
-JS_UnsealObject(JSContext *cx, JSObject *obj, JSBool deep)
-{
-    JSScope *scope;
-    uint32 nslots;
-    jsval v, *vp, *end;
-
-    if (!OBJ_IS_NATIVE(obj)) {
-        JS_ReportErrorNumber(cx, js_GetErrorMessage, NULL,
-                             JSMSG_CANT_UNSEAL_OBJECT,
-                             OBJ_GET_CLASS(cx, obj)->name);
-        return JS_FALSE;
-    }
-
-    scope = OBJ_SCOPE(obj);
-#ifdef JS_THREADSAFE
-    JS_ASSERT(scope->ownercx == cx);
-#endif
-    if (!SCOPE_IS_SEALED(scope))
-        return JS_TRUE;
-
-    JS_ASSERT(scope == OBJ_SCOPE(obj));
-    JS_LOCK_SCOPE(cx, scope);
-    SCOPE_CLR_SEALED(scope);
-    JS_UNLOCK_SCOPE(cx, scope);
-
-    if (!deep)
-        return JS_TRUE;
-
-    nslots = JS_MIN(scope->map.freeslot, scope->map.nslots);
-    for (vp = obj->slots, end = vp + nslots; vp < end; vp++) {
-        v = *vp;
-        if (JSVAL_IS_PRIMITIVE(v))
-            continue;
-        if (!JS_UnsealObject(cx, JSVAL_TO_OBJECT(v), deep))
             return JS_FALSE;
     }
     return JS_TRUE;
@@ -2841,6 +2842,23 @@ JS_SetReservedSlot(JSContext *cx, JSObject *obj, uint32 index, jsval v)
     return JS_TRUE;
 }
 
+#ifdef JS_THREADSAFE
+JS_PUBLIC_API(jsrefcount)
+JS_HoldPrincipals(JSContext *cx, JSPrincipals *principals)
+{
+    return JS_ATOMIC_INCREMENT(&principals->refcount);
+}
+
+JS_PUBLIC_API(jsrefcount)
+JS_DropPrincipals(JSContext *cx, JSPrincipals *principals)
+{
+    jsrefcount rc = JS_ATOMIC_DECREMENT(&principals->refcount);
+    if (rc == 0)
+        principals->destroy(cx, principals);
+    return rc;
+}
+#endif
+
 JS_PUBLIC_API(JSPrincipalsTranscoder)
 JS_SetPrincipalsTranscoder(JSRuntime *rt, JSPrincipalsTranscoder px)
 {
@@ -2849,6 +2867,16 @@ JS_SetPrincipalsTranscoder(JSRuntime *rt, JSPrincipalsTranscoder px)
     oldpx = rt->principalsTranscoder;
     rt->principalsTranscoder = px;
     return oldpx;
+}
+
+JS_PUBLIC_API(JSObjectPrincipalsFinder)
+JS_SetObjectPrincipalsFinder(JSContext *cx, JSObjectPrincipalsFinder fop)
+{
+    JSObjectPrincipalsFinder oldfop;
+
+    oldfop = cx->findObjectPrincipals;
+    cx->findObjectPrincipals = fop;
+    return oldfop;
 }
 
 JS_PUBLIC_API(JSFunction *)
@@ -2946,12 +2974,16 @@ CompileTokenStream(JSContext *cx, JSObject *obj, JSTokenStream *ts,
                    void *tempMark, JSBool *eofp)
 {
     JSBool eof;
+    JSArenaPool codePool, notePool;
     JSCodeGenerator cg;
     JSScript *script;
 
     CHECK_REQUEST(cx);
     eof = JS_FALSE;
-    if (!js_InitCodeGenerator(cx, &cg, ts->filename, ts->lineno,
+    JS_InitArenaPool(&codePool, "code", 1024, sizeof(jsbytecode));
+    JS_InitArenaPool(&notePool, "note", 1024, sizeof(jssrcnote));
+    if (!js_InitCodeGenerator(cx, &cg, &codePool, &notePool,
+                              ts->filename, ts->lineno,
                               ts->principals)) {
         script = NULL;
     } else if (!js_CompileTokenStream(cx, obj, ts, &cg)) {
@@ -2969,6 +3001,8 @@ CompileTokenStream(JSContext *cx, JSObject *obj, JSTokenStream *ts,
     }
     cg.tempMark = tempMark;
     js_FinishCodeGenerator(cx, &cg);
+    JS_FinishArenaPool(&codePool);
+    JS_FinishArenaPool(&notePool);
     return script;
 }
 
@@ -4108,9 +4142,7 @@ JS_ClearContextThread(JSContext *cx)
 
 /************************************************************************/
 
-#if defined(XP_OS2)
-/*DSR031297 - the OS/2 equiv is dll_InitTerm, but I don't see the need for it*/
-#elif defined(XP_WIN)
+#if defined(XP_WIN)
 #include <windows.h>
 /*
  * Initialization routine for the JS DLL...
@@ -4144,4 +4176,4 @@ BOOL CALLBACK __loadds WEP(BOOL fSystemExit)
 }
 
 #endif /* !_WIN32 */
-#endif /* XP_OS2 || XP_WIN */
+#endif /* XP_WIN */

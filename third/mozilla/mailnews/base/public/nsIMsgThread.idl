@@ -49,6 +49,7 @@ interface nsIMsgThread : nsISupports {
   attribute nsMsgKey threadKey;
   attribute unsigned long flags;
   attribute string subject;
+  attribute unsigned long newestMsgDate;
   readonly attribute unsigned long numChildren;
   readonly attribute unsigned long numUnreadChildren;
 
@@ -66,6 +67,5 @@ interface nsIMsgThread : nsISupports {
   nsIMsgDBHdr GetFirstUnreadChild();
 
   nsISimpleEnumerator EnumerateMessages(in nsMsgKey parent);
-  nsISimpleEnumerator EnumerateUnreadMessages(in nsMsgKey parent);
 
 };

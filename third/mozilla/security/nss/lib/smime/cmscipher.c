@@ -34,7 +34,7 @@
 /*
  * Encryption/decryption routines for CMS implementation, none of which are exported.
  *
- * $Id: cmscipher.c,v 1.1.1.1 2003-02-14 17:55:07 rbasch Exp $
+ * $Id: cmscipher.c,v 1.1.1.2 2004-02-27 16:53:24 rbasch Exp $
  */
 
 #include "cmslocal.h"
@@ -598,7 +598,7 @@ NSS_CMSCipherContext_Decrypt(NSSCMSCipherContext *cc, unsigned char *output,
      */
     if (final && (padsize != 0)) {
 	unsigned int padlen = *(output + ofraglen - 1);
-	PORT_Assert (padlen > 0 && padlen <= padsize);
+
 	if (padlen == 0 || padlen > padsize) {
 	    PORT_SetError(SEC_ERROR_BAD_DATA);
 	    return SECFailure;

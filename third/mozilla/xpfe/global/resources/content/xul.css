@@ -59,6 +59,7 @@ menulist.uri-element
 
 /****** elements that have no visual representation ******/
 
+script,
 data,
 xbl|children,
 commands, commandset, command,
@@ -98,7 +99,7 @@ radio {
 
 window, 
 page {
-  overflow: hidden;
+  overflow: -moz-hidden-unscrollable;
   -moz-box-orient: vertical;
 }
 
@@ -653,10 +654,6 @@ textbox[type="autocomplete"] {
   -moz-binding: url("chrome://global/content/autocomplete.xml#autocomplete-treebody");
 }
 
-.autocomplete-treerows {
-  -moz-binding: url("chrome://global/content/autocomplete.xml#autocomplete-treerows");
-}
-
 .autocomplete-history-dropmarker {
   -moz-binding: url("chrome://global/content/autocomplete.xml#history-dropmarker");
 }
@@ -762,6 +759,10 @@ statusbarpanel {
   -moz-binding: url("chrome://global/content/bindings/general.xml#statusbarpanel-iconic");
 }
 
+.statusbarpanel-menu-iconic {
+  -moz-binding: url("chrome://global/content/bindings/general.xml#statusbarpanel-menu-iconic");
+}
+
 /********** spinbuttons ***********/
 
 spinbuttons {
@@ -802,6 +803,8 @@ page {
 wizard {
   -moz-binding: url("chrome://global/content/bindings/wizard.xml#wizard");
   -moz-box-orient: vertical;
+  width: 40em;
+  height: 30em;
 }
 
 wizardpage {

@@ -68,7 +68,7 @@ nsGenericDOMDataNode::Shutdown()
 //----------------------------------------------------------------------
 
 nsGenericDOMDataNode::nsGenericDOMDataNode()
-  : mText(), mDocument(nsnull), mParentPtrBits(0)
+  : mText()
 {
 }
 
@@ -125,7 +125,7 @@ nsGenericDOMDataNode::GetParentNode(nsIDOMNode** aParentNode)
 {
   nsresult res = NS_OK;
 
-  nsIContent *parent_weak = GetParentWeak();
+  nsIContent *parent_weak = GetParent();
 
   if (parent_weak) {
     res = CallQueryInterface(parent_weak, aParentNode);
@@ -146,24 +146,22 @@ nsGenericDOMDataNode::GetParentNode(nsIDOMNode** aParentNode)
 nsresult
 nsGenericDOMDataNode::GetPreviousSibling(nsIDOMNode** aPrevSibling)
 {
-  nsCOMPtr<nsIContent> sibling;
   nsresult rv = NS_OK;
 
-  nsIContent *parent_weak = GetParentWeak();
+  nsIContent *parent_weak = GetParent();
+  nsIContent *sibling = nsnull;
 
   if (parent_weak) {
-    PRInt32 pos;
-    parent_weak->IndexOf(this, pos);
-    if (pos > 0 ) {
-      parent_weak->ChildAt(--pos, getter_AddRefs(sibling));
+    PRInt32 pos = parent_weak->IndexOf(this);
+    if (pos > 0) {
+      sibling = parent_weak->GetChildAt(pos - 1);
     }
   } else if (mDocument) {
     // Nodes that are just below the document (their parent is the
     // document) need to go to the document to find their next sibling.
-    PRInt32 pos;
-    mDocument->IndexOf(this, pos);
-    if (pos > 0 ) {
-      mDocument->ChildAt(--pos, getter_AddRefs(sibling));
+    PRInt32 pos = mDocument->IndexOf(this);
+    if (pos > 0) {
+      sibling = mDocument->GetChildAt(pos - 1);
     }
   }
 
@@ -180,25 +178,23 @@ nsGenericDOMDataNode::GetPreviousSibling(nsIDOMNode** aPrevSibling)
 nsresult
 nsGenericDOMDataNode::GetNextSibling(nsIDOMNode** aNextSibling)
 {
-  nsCOMPtr<nsIContent> sibling;
   nsresult rv = NS_OK;
 
-  nsIContent *parent_weak = GetParentWeak();
+  nsIContent *parent_weak = GetParent();
+  nsIContent *sibling = nsnull;
 
   if (parent_weak) {
-    PRInt32 pos;
-    parent_weak->IndexOf(this, pos);
+    PRInt32 pos = parent_weak->IndexOf(this);
     if (pos > -1 ) {
-      parent_weak->ChildAt(++pos, getter_AddRefs(sibling));
+      sibling = parent_weak->GetChildAt(pos + 1);
     }
   }
   else if (mDocument) {
     // Nodes that are just below the document (their parent is the
     // document) need to go to the document to find their next sibling.
-    PRInt32 pos;
-    mDocument->IndexOf(this, pos);
+    PRInt32 pos = mDocument->IndexOf(this);
     if (pos > -1 ) {
-      mDocument->ChildAt(++pos, getter_AddRefs(sibling));
+      sibling = mDocument->GetChildAt(pos + 1);
     }
   }
 
@@ -305,7 +301,7 @@ nsGenericDOMDataNode::LookupPrefix(const nsAString& aNamespaceURI,
 {
   aPrefix.Truncate();
 
-  nsIContent *parent_weak = GetParentWeak();
+  nsIContent *parent_weak = GetParent();
 
   // DOM Data Node passes the query on to its parent
   nsCOMPtr<nsIDOM3Node> node(do_QueryInterface(parent_weak));
@@ -322,7 +318,7 @@ nsGenericDOMDataNode::LookupNamespaceURI(const nsAString& aNamespacePrefix,
 {
   aNamespaceURI.Truncate();
 
-  nsIContent *parent_weak = GetParentWeak();
+  nsIContent *parent_weak = GetParent();
 
   // DOM Data Node passes the query on to its parent
   nsCOMPtr<nsIDOM3Node> node(do_QueryInterface(parent_weak));
@@ -453,10 +449,10 @@ nsGenericDOMDataNode::AppendData(const nsAString& aData)
     if (NS_SUCCEEDED(rv)) {
       tccd->SetData(nsITextContentChangeData::Append, length,
                     aData.Length());
-      rv = mDocument->ContentChanged(this, tccd);
+      mDocument->ContentChanged(this, tccd);
       NS_RELEASE(tccd);
     } else {
-      rv = mDocument->ContentChanged(this, nsnull);
+      mDocument->ContentChanged(this, nsnull);
     }
   }
 
@@ -599,7 +595,7 @@ nsGenericDOMDataNode::ToCString(nsAString& aBuf, PRInt32 aOffset,
       } else if ((ch < ' ') || (ch >= 127)) {
         char buf[10];
         PR_snprintf(buf, sizeof(buf), "\\u%04x", ch);
-        aBuf.Append(NS_ConvertASCIItoUCS2(buf));
+        AppendASCIItoUTF16(buf, aBuf);
       } else {
         aBuf.Append(ch);
       }
@@ -619,7 +615,7 @@ nsGenericDOMDataNode::ToCString(nsAString& aBuf, PRInt32 aOffset,
       } else if ((ch < ' ') || (ch >= 127)) {
         char buf[10];
         PR_snprintf(buf, sizeof(buf), "\\u%04x", ch);
-        aBuf.Append(NS_ConvertASCIItoUCS2(buf));
+        AppendASCIItoUTF16(buf, aBuf);
       } else {
         aBuf.Append(ch);
       }
@@ -628,18 +624,11 @@ nsGenericDOMDataNode::ToCString(nsAString& aBuf, PRInt32 aOffset,
 }
 #endif
 
-NS_IMETHODIMP_(nsIDocument*)
-nsGenericDOMDataNode::GetDocument() const
-{
-  return mDocument;
-}
-
-
 NS_IMETHODIMP
 nsGenericDOMDataNode::SetDocument(nsIDocument* aDocument, PRBool aDeep,
                                   PRBool aCompileEventHandlers)
 {
-  mDocument = aDocument;
+  nsIContent::SetDocument(aDocument, aDeep, aCompileEventHandlers);
 
   if (mDocument && mText.IsBidi()) {
     mDocument->SetBidiEnabled(PR_TRUE);
@@ -648,28 +637,20 @@ nsGenericDOMDataNode::SetDocument(nsIDocument* aDocument, PRBool aDeep,
   return NS_OK;
 }
 
-NS_IMETHODIMP_(nsIContent*)
-nsGenericDOMDataNode::GetParent() const
-{
-  return GetParentWeak();
-}
-
-NS_IMETHODIMP
+NS_IMETHODIMP_(void)
 nsGenericDOMDataNode::SetParent(nsIContent* aParent)
 {
   PtrBits new_bits = NS_REINTERPRET_CAST(PtrBits, aParent);
 
-  new_bits |= mParentPtrBits & PARENT_BIT_MASK;
+  new_bits |= mParentPtrBits & nsIContent::kParentBitMask;
 
   mParentPtrBits = new_bits;
-
-  return NS_OK;
 }
 
 NS_IMETHODIMP_(PRBool)
 nsGenericDOMDataNode::IsNativeAnonymous() const
 {
-  nsIContent* parent = GetParentWeak();
+  nsIContent* parent = GetParent();
   return parent && parent->IsNativeAnonymous();
 }
 
@@ -686,12 +667,22 @@ nsGenericDOMDataNode::GetNameSpaceID(PRInt32* aID) const
   return NS_OK;
 }
 
-NS_IMETHODIMP
-nsGenericDOMDataNode::NormalizeAttrString(const nsAString& aStr,
-                                          nsINodeInfo** aNodeInfo)
+NS_IMETHODIMP_(nsIAtom*)
+nsGenericDOMDataNode::GetIDAttributeName() const
 {
-  *aNodeInfo = nsnull;
-  return NS_OK;
+  return nsnull;
+}
+
+NS_IMETHODIMP_(nsIAtom*)
+nsGenericDOMDataNode::GetClassAttributeName() const
+{
+  return nsnull;
+}
+
+NS_IMETHODIMP_(already_AddRefed<nsINodeInfo>)
+nsGenericDOMDataNode::GetExistingAttrNameFromQName(const nsAString& aStr)
+{
+  return nsnull;
 }
 
 NS_IMETHODIMP
@@ -742,7 +733,7 @@ nsGenericDOMDataNode::HasAttr(PRInt32 aNameSpaceID, nsIAtom *aAttribute) const
 }
 
 NS_IMETHODIMP
-nsGenericDOMDataNode::GetAttrNameAt(PRInt32 aIndex, PRInt32* aNameSpaceID,
+nsGenericDOMDataNode::GetAttrNameAt(PRUint32 aIndex, PRInt32* aNameSpaceID,
                                     nsIAtom** aName, nsIAtom** aPrefix) const
 {
   *aNameSpaceID = kNameSpaceID_None;
@@ -752,11 +743,10 @@ nsGenericDOMDataNode::GetAttrNameAt(PRInt32 aIndex, PRInt32* aNameSpaceID,
   return NS_ERROR_ILLEGAL_VALUE;
 }
 
-NS_IMETHODIMP
-nsGenericDOMDataNode::GetAttrCount(PRInt32& aResult) const
+NS_IMETHODIMP_(PRUint32)
+nsGenericDOMDataNode::GetAttrCount() const
 {
-  aResult = 0;
-  return NS_OK;
+  return 0;
 }
 
 NS_IMETHODIMP
@@ -782,7 +772,7 @@ nsGenericDOMDataNode::HandleDOMEvent(nsIPresContext* aPresContext,
     aFlags |= NS_EVENT_FLAG_BUBBLE | NS_EVENT_FLAG_CAPTURE;
   }
 
-  nsIContent *parent_weak = GetParentWeak();
+  nsIContent *parent_weak = GetParent();
 
   //Capturing stage evaluation
   if (NS_EVENT_FLAG_CAPTURE & aFlags) {
@@ -844,11 +834,10 @@ nsGenericDOMDataNode::HandleDOMEvent(nsIPresContext* aPresContext,
   return ret;
 }
 
-NS_IMETHODIMP
-nsGenericDOMDataNode::GetContentID(PRUint32* aID)
+PRUint32
+nsGenericDOMDataNode::ContentID() const
 {
-  *aID = 0;
-  return NS_OK;
+  return 0;
 }
 
 NS_IMETHODIMP
@@ -857,51 +846,45 @@ nsGenericDOMDataNode::SetContentID(PRUint32 aID)
   return NS_OK;
 }
 
-NS_IMETHODIMP
-nsGenericDOMDataNode::GetNodeInfo(nsINodeInfo** aResult) const
+NS_IMETHODIMP_(nsINodeInfo *)
+nsGenericDOMDataNode::GetNodeInfo() const
 {
-  *aResult = nsnull;
-  return NS_OK;
+  return nsnull;
+}
+
+NS_IMETHODIMP_(PRBool)
+nsGenericDOMDataNode::CanContainChildren() const
+{
+  return PR_FALSE;
+}
+
+NS_IMETHODIMP_(PRUint32)
+nsGenericDOMDataNode::GetChildCount() const
+{
+  return 0;
+}
+
+NS_IMETHODIMP_(nsIContent *)
+nsGenericDOMDataNode::GetChildAt(PRUint32 aIndex) const
+{
+  return nsnull;
+}
+
+NS_IMETHODIMP_(PRInt32)
+nsGenericDOMDataNode::IndexOf(nsIContent* aPossibleChild) const
+{
+  return -1;
 }
 
 NS_IMETHODIMP
-nsGenericDOMDataNode::CanContainChildren(PRBool& aResult) const
-{
-  aResult = PR_FALSE;
-  return NS_OK;
-}
-
-NS_IMETHODIMP
-nsGenericDOMDataNode::ChildCount(PRInt32& aResult) const
-{
-  aResult = 0;
-  return NS_OK;
-}
-
-NS_IMETHODIMP
-nsGenericDOMDataNode::ChildAt(PRInt32 aIndex, nsIContent** aResult) const
-{
-  *aResult = nsnull;
-  return NS_OK;
-}
-
-NS_IMETHODIMP
-nsGenericDOMDataNode::IndexOf(nsIContent* aPossibleChild,
-                              PRInt32& aResult) const
-{
-  aResult = -1;
-  return NS_OK;
-}
-
-NS_IMETHODIMP
-nsGenericDOMDataNode::InsertChildAt(nsIContent* aKid, PRInt32 aIndex,
+nsGenericDOMDataNode::InsertChildAt(nsIContent* aKid, PRUint32 aIndex,
                                     PRBool aNotify, PRBool aDeepSetDocument)
 {
   return NS_OK;
 }
 
 NS_IMETHODIMP
-nsGenericDOMDataNode::ReplaceChildAt(nsIContent* aKid, PRInt32 aIndex,
+nsGenericDOMDataNode::ReplaceChildAt(nsIContent* aKid, PRUint32 aIndex,
                                      PRBool aNotify, PRBool aDeepSetDocument)
 {
   return NS_OK;
@@ -915,7 +898,7 @@ nsGenericDOMDataNode::AppendChildTo(nsIContent* aKid, PRBool aNotify,
 }
 
 NS_IMETHODIMP
-nsGenericDOMDataNode::RemoveChildAt(PRInt32 aIndex, PRBool aNotify)
+nsGenericDOMDataNode::RemoveChildAt(PRUint32 aIndex, PRBool aNotify)
 {
   return NS_OK;
 }
@@ -1003,12 +986,10 @@ nsGenericDOMDataNode::RangeRemove(nsIDOMRange* aRange)
   return NS_ERROR_FAILURE;
 }
 
-
-NS_IMETHODIMP
-nsGenericDOMDataNode::GetRangeList(nsVoidArray** aResult) const
+const nsVoidArray *
+nsGenericDOMDataNode::GetRangeList() const
 {
-  *aResult = LookupRangeList();
-  return NS_OK;
+  return LookupRangeList();
 }
 
 NS_IMETHODIMP
@@ -1060,16 +1041,17 @@ NS_IMETHODIMP
 nsGenericDOMDataNode::GetBaseURL(nsIURI** aURI) const
 {
   // DOM Data Node inherits the base from its parent element/document
-  nsIContent* parent_weak = GetParentWeak();
+  nsIContent* parent_weak = GetParent();
   if (parent_weak) {
     return parent_weak->GetBaseURL(aURI);
   }
 
   if (mDocument) {
-    return mDocument->GetBaseURL(aURI);
+    NS_IF_ADDREF(*aURI = mDocument->GetBaseURL());
+  } else {
+    *aURI = nsnull;
   }
 
-  *aURI = nsnull;
   return NS_OK;
 }
 
@@ -1121,17 +1103,14 @@ nsGenericDOMDataNode::SplitText(PRUint32 aOffset, nsIDOMText** aReturn)
     return rv;
   }
 
-  nsIContent* parentNode = GetParentWeak();
+  nsIContent* parentNode = GetParent();
 
   if (parentNode) {
-    PRInt32 index;
+    PRInt32 index = parentNode->IndexOf(this);
 
-    rv = parentNode->IndexOf(this, index);
-    if (NS_SUCCEEDED(rv)) {
-      nsCOMPtr<nsIContent> content(do_QueryInterface(newNode));
+    nsCOMPtr<nsIContent> content(do_QueryInterface(newNode));
 
-      rv = parentNode->InsertChildAt(content, index+1, PR_TRUE, PR_FALSE);
-    }
+    parentNode->InsertChildAt(content, index+1, PR_TRUE, PR_FALSE);
   }
 
   return CallQueryInterface(newNode, aReturn);
@@ -1189,9 +1168,7 @@ nsGenericDOMDataNode::SetText(const PRUnichar* aBuffer,
     return NS_ERROR_NULL_POINTER;
   }
 
-  if (aNotify && mDocument) {
-    mDocument->BeginUpdate();
-  }
+  mozAutoDocUpdate updateBatch(mDocument, UPDATE_CONTENT_MODEL, aNotify);
 
   mText.SetTo(aBuffer, aLength);
 
@@ -1216,7 +1193,6 @@ nsGenericDOMDataNode::SetText(const PRUnichar* aBuffer,
   // Trigger a reflow
   if (aNotify && mDocument) {
     mDocument->ContentChanged(this, nsnull);
-    mDocument->EndUpdate();
   }
   return NS_OK;
 }
@@ -1233,9 +1209,7 @@ nsGenericDOMDataNode::SetText(const char* aBuffer, PRInt32 aLength,
     return NS_ERROR_NULL_POINTER;
   }
 
-  if (aNotify && mDocument) {
-    mDocument->BeginUpdate();
-  }
+  mozAutoDocUpdate updateBatch(mDocument, UPDATE_CONTENT_MODEL, aNotify);
 
   mText.SetTo(aBuffer, aLength);
 
@@ -1258,7 +1232,6 @@ nsGenericDOMDataNode::SetText(const char* aBuffer, PRInt32 aLength,
   // Trigger a reflow
   if (aNotify && mDocument) {
     mDocument->ContentChanged(this, nsnull);
-    mDocument->EndUpdate();
   }
 
   return NS_OK;
@@ -1268,9 +1241,7 @@ NS_IMETHODIMP
 nsGenericDOMDataNode::SetText(const nsAString& aStr,
                               PRBool aNotify)
 {
-  if (aNotify && mDocument) {
-    mDocument->BeginUpdate();
-  }
+  mozAutoDocUpdate updateBatch(mDocument, UPDATE_CONTENT_MODEL, aNotify);
 
   mText = aStr;
 
@@ -1295,7 +1266,6 @@ nsGenericDOMDataNode::SetText(const nsAString& aStr,
   // Trigger a reflow
   if (aNotify && mDocument) {
     mDocument->ContentChanged(this, nsnull);
-    mDocument->EndUpdate();
   }
 
   return NS_OK;
@@ -1355,10 +1325,8 @@ nsGenericDOMDataNode::AppendTextTo(nsAString& aResult)
   if (mText.Is2b()) {
     aResult.Append(mText.Get2b(), mText.GetLength());
   } else {
-    // XXX we would like to have a AppendASCIItoUCS2 here
-    aResult.Append(NS_ConvertASCIItoUCS2(mText.Get1b(),
-                                         mText.GetLength()).get(),
-                   mText.GetLength());
+    const char *str = mText.Get1b();
+    AppendASCIItoUTF16(Substring(str, str + mText.GetLength()), aResult);
   }
 
   return NS_OK;
@@ -1406,16 +1374,9 @@ nsGenericDOMDataNode::LookupRangeList() const
 
 void nsGenericDOMDataNode::SetBidiStatus()
 {
-  if (mDocument) {
-    PRBool isBidiDocument = PR_FALSE;
-
-    mDocument->GetBidiEnabled(&isBidiDocument);
-
-    if (isBidiDocument) {
-      // OK, we already know it's Bidi, so we won't test again
-
-      return;
-    }
+  if (mDocument && mDocument->GetBidiEnabled()) {
+    // OK, we already know it's Bidi, so we won't test again
+    return;
   }
 
   mText.SetBidiFlag();

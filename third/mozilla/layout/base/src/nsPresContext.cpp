@@ -184,8 +184,9 @@ nsPresContext::nsPresContext()
   // the minimum font-size is unconstrained by default
   mMinimumFontSize = 0;
 
-  mLinkColor = NS_RGB(0x33, 0x33, 0xFF);
-  mVisitedLinkColor = NS_RGB(0x66, 0x00, 0xCC);
+  mLinkColor = NS_RGB(0x00, 0x00, 0xEE);
+  mActiveLinkColor = NS_RGB(0xEE, 0x00, 0x00);
+  mVisitedLinkColor = NS_RGB(0x55, 0x1A, 0x8B);
   mUnderlineLinks = PR_TRUE;
 
   mUseFocusColors = PR_FALSE;
@@ -222,6 +223,7 @@ nsPresContext::~nsPresContext()
     mPrefs->UnregisterCallback("browser.display.", nsPresContext::PrefChangedCallback, (void*)this);
     mPrefs->UnregisterCallback("browser.underline_anchors", nsPresContext::PrefChangedCallback, (void*)this);
     mPrefs->UnregisterCallback("browser.anchor_color", nsPresContext::PrefChangedCallback, (void*)this);
+    mPrefs->UnregisterCallback("browser.active_color", nsPresContext::PrefChangedCallback, (void*)this);
     mPrefs->UnregisterCallback("browser.visited_color", nsPresContext::PrefChangedCallback, (void*)this);
     mPrefs->UnregisterCallback("network.image.imageBehavior", nsPresContext::PrefChangedCallback, (void*)this);
     mPrefs->UnregisterCallback("image.animation_mode", nsPresContext::PrefChangedCallback, (void*)this);
@@ -470,6 +472,9 @@ nsPresContext::GetUserPreferences()
   if (NS_SUCCEEDED(mPrefs->CopyCharPref("browser.anchor_color", getter_Copies(colorStr)))) {
     mLinkColor = MakeColorPref(colorStr);
   }
+  if (NS_SUCCEEDED(mPrefs->CopyCharPref("browser.active_color", getter_Copies(colorStr)))) {
+    mActiveLinkColor = MakeColorPref(colorStr);
+  }
   if (NS_SUCCEEDED(mPrefs->CopyCharPref("browser.visited_color", getter_Copies(colorStr)))) {
     mVisitedLinkColor = MakeColorPref(colorStr);
   }
@@ -637,6 +642,7 @@ nsPresContext::Init(nsIDeviceContext* aDeviceContext)
     mPrefs->RegisterCallback("browser.display.", nsPresContext::PrefChangedCallback, (void*)this);
     mPrefs->RegisterCallback("browser.underline_anchors", nsPresContext::PrefChangedCallback, (void*)this);
     mPrefs->RegisterCallback("browser.anchor_color", nsPresContext::PrefChangedCallback, (void*)this);
+    mPrefs->RegisterCallback("browser.active_color", nsPresContext::PrefChangedCallback, (void*)this);
     mPrefs->RegisterCallback("browser.visited_color", nsPresContext::PrefChangedCallback, (void*)this);
     mPrefs->RegisterCallback("network.image.imageBehavior", nsPresContext::PrefChangedCallback, (void*)this);
     mPrefs->RegisterCallback("image.animation_mode", nsPresContext::PrefChangedCallback, (void*)this);
@@ -677,7 +683,7 @@ nsPresContext::SetShell(nsIPresShell* aShell)
     if (NS_SUCCEEDED(mShell->GetDocument(getter_AddRefs(doc)))) {
       NS_ASSERTION(doc, "expect document here");
       if (doc) {
-        doc->GetBaseURL(getter_AddRefs(mBaseURL));
+        mBaseURL = doc->GetBaseURL();
 
         if (mBaseURL) {
             PRBool isChrome = PR_FALSE;
@@ -692,10 +698,8 @@ nsPresContext::SetShell(nsIPresShell* aShell)
         }
 
         if (mLangService) {
-          nsCAutoString charset;
           doc->AddCharSetObserver(this);
-          doc->GetDocumentCharacterSet(charset);
-          UpdateCharSet(charset.get());
+          UpdateCharSet(PromiseFlatCString(doc->GetDocumentCharacterSet()).get());
         }
       }
     }
@@ -824,7 +828,7 @@ PR_STATIC_CALLBACK(PRBool) set_animation_mode(nsHashKey *aKey, void *aData, void
 //
 // Walks content and set the animation mode
 // this is a way to turn on/off image animations
-void nsPresContext::SetImgAnimations(nsCOMPtr<nsIContent>& aParent, PRUint16 aMode)
+void nsPresContext::SetImgAnimations(nsIContent *aParent, PRUint16 aMode)
 {
   nsCOMPtr<nsIImageLoadingContent> imgContent(do_QueryInterface(aParent));
   if (imgContent) {
@@ -834,14 +838,9 @@ void nsPresContext::SetImgAnimations(nsCOMPtr<nsIContent>& aParent, PRUint16 aMo
     SetImgAnimModeOnImgReq(imgReq, aMode);
   }
   
-  PRInt32 count;
-  aParent->ChildCount(count);
-  for (PRInt32 i=0;i<count;i++) {
-    nsCOMPtr<nsIContent> child;
-    aParent->ChildAt(i, getter_AddRefs(child));
-    if (child) {
-      SetImgAnimations(child, aMode);
-    }
+  PRUint32 count = aParent->GetChildCount();
+  for (PRUint32 i = 0; i < count; ++i) {
+    SetImgAnimations(aParent->GetChildAt(i), aMode);
   }
 }
 
@@ -862,8 +861,7 @@ nsPresContext::SetImageAnimationMode(PRUint16 aMode)
   if (mShell != nsnull) {
     mShell->GetDocument(getter_AddRefs(doc));
     if (doc) {
-      nsCOMPtr<nsIContent> rootContent;
-      doc->GetRootContent(getter_AddRefs(rootContent));
+      nsIContent *rootContent = doc->GetRootContent();
       if (rootContent) {
         SetImgAnimations(rootContent, aMode);
       }
@@ -990,13 +988,14 @@ nsPresContext::ProbePseudoStyleContextFor(nsIContent* aParentContent,
 }
 
 NS_IMETHODIMP
-nsPresContext::GetXBLBindingURL(nsIContent* aContent, nsAString& aResult)
+nsPresContext::GetXBLBindingURL(nsIContent* aContent, nsIURI** aResult)
 {
   nsRefPtr<nsStyleContext> sc;
   sc = ResolveStyleContextFor(aContent, nsnull);
   NS_ENSURE_TRUE(sc, NS_ERROR_FAILURE);
 
-  aResult = sc->GetStyleDisplay()->mBinding;
+  *aResult = sc->GetStyleDisplay()->mBinding;
+  NS_IF_ADDREF(*aResult);
   return NS_OK;
 }
 
@@ -1165,6 +1164,14 @@ nsPresContext::GetDefaultLinkColor(nscolor* aColor)
 }
 
 NS_IMETHODIMP 
+nsPresContext::GetDefaultActiveLinkColor(nscolor* aColor)
+{
+  NS_PRECONDITION(aColor, "null out param");
+  *aColor = mActiveLinkColor;
+  return NS_OK;
+}
+
+NS_IMETHODIMP 
 nsPresContext::GetDefaultVisitedLinkColor(nscolor* aColor)
 {
   NS_PRECONDITION(aColor, "null out param");
@@ -1233,6 +1240,13 @@ NS_IMETHODIMP
 nsPresContext::SetDefaultLinkColor(nscolor aColor)
 {
   mLinkColor = aColor;
+  return NS_OK;
+}
+
+NS_IMETHODIMP 
+nsPresContext::SetDefaultActiveLinkColor(nscolor aColor)
+{
+  mActiveLinkColor = aColor;
   return NS_OK;
 }
 
@@ -1350,8 +1364,7 @@ nsPresContext::GetImageLoadFlags(nsLoadFlags& aLoadFlags)
   (void) mShell->GetDocument(getter_AddRefs(doc));
 
   if (doc) {
-    nsCOMPtr<nsILoadGroup> loadGroup;
-    (void) doc->GetDocumentLoadGroup(getter_AddRefs(loadGroup));
+    nsCOMPtr<nsILoadGroup> loadGroup = doc->GetDocumentLoadGroup();
 
     if (loadGroup) {
       loadGroup->GetLoadFlags(&aLoadFlags);
@@ -1362,28 +1375,14 @@ nsPresContext::GetImageLoadFlags(nsLoadFlags& aLoadFlags)
 }
 
 NS_IMETHODIMP
-nsPresContext::LoadImage(const nsString& aURL,
+nsPresContext::LoadImage(nsIURI* aURL,
                          nsIFrame* aTargetFrame,
                          imgIRequest **aRequest)
 {
   // look and see if we have a loader for the target frame.
 
-  nsresult rv;
-
   nsVoidKey key(aTargetFrame);
   nsImageLoader *loader = NS_REINTERPRET_CAST(nsImageLoader*, mImageLoaders.Get(&key)); // addrefs
-
-  nsCOMPtr<nsIDocument> doc;
-  rv = mShell->GetDocument(getter_AddRefs(doc));
-  if (NS_FAILED(rv)) return rv;
-
-  nsCOMPtr<nsIURI> baseURI;
-  doc->GetBaseURL(getter_AddRefs(baseURI));
-
-  nsCOMPtr<nsIURI> uri;
-  nsCOMPtr<nsIIOService> ioService;
-  GetIOService(getter_AddRefs(ioService));
-  NS_NewURI(getter_AddRefs(uri), aURL, nsnull, baseURI, ioService);
 
   if (!loader) {
     nsIContent* content = aTargetFrame->GetContent();
@@ -1399,15 +1398,11 @@ nsPresContext::LoadImage(const nsString& aURL,
       // XXXldb This really means the document is being destroyed, so
       // perhaps we're better off skipping the load entirely.
       if (document) {
-        nsCOMPtr<nsIScriptGlobalObject> globalScript;
-        rv = document->GetScriptGlobalObject(getter_AddRefs(globalScript));
-
-        if (globalScript) {
-          nsCOMPtr<nsIDOMWindow> domWin(do_QueryInterface(globalScript));
-
+        nsCOMPtr<nsIDOMWindow> domWin(do_QueryInterface(document->GetScriptGlobalObject()));
+        if (domWin) {
           PRBool shouldLoad = PR_TRUE;
           rv = NS_CheckContentLoadPolicy(nsIContentPolicy::IMAGE,
-                                         uri, element, domWin, &shouldLoad);
+                                         aURL, element, domWin, &shouldLoad);
           if (NS_SUCCEEDED(rv) && !shouldLoad)
             return NS_ERROR_FAILURE;
         }
@@ -1436,7 +1431,7 @@ nsPresContext::LoadImage(const nsString& aURL,
     aTargetFrame->AddStateBits(NS_FRAME_HAS_LOADED_IMAGES);
   }
 
-  loader->Load(uri);
+  loader->Load(aURL);
 
   loader->GetRequest(aRequest);
 
@@ -1559,7 +1554,7 @@ nsPresContext::GetBidiEnabled(PRBool* aBidiEnabled) const
     mShell->GetDocument(getter_AddRefs(doc) );
     NS_ASSERTION(doc, "PresShell has no document in nsPresContext::GetBidiEnabled");
     if (doc) {
-      doc->GetBidiEnabled(aBidiEnabled);
+      *aBidiEnabled = doc->GetBidiEnabled();
     }
   }
   return NS_OK;

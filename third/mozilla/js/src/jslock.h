@@ -1,36 +1,41 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 4 -*-
  *
- * The contents of this file are subject to the Netscape Public
- * License Version 1.1 (the "License"); you may not use this file
- * except in compliance with the License. You may obtain a copy of
- * the License at http://www.mozilla.org/NPL/
+ * ***** BEGIN LICENSE BLOCK *****
+ * Version: MPL 1.1/GPL 2.0/LGPL 2.1
  *
- * Software distributed under the License is distributed on an "AS
- * IS" basis, WITHOUT WARRANTY OF ANY KIND, either express or
- * implied. See the License for the specific language governing
- * rights and limitations under the License.
+ * The contents of this file are subject to the Mozilla Public License Version
+ * 1.1 (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ * http://www.mozilla.org/MPL/
+ *
+ * Software distributed under the License is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+ * for the specific language governing rights and limitations under the
+ * License.
  *
  * The Original Code is Mozilla Communicator client code, released
  * March 31, 1998.
  *
- * The Initial Developer of the Original Code is Netscape
- * Communications Corporation.  Portions created by Netscape are
- * Copyright (C) 1998 Netscape Communications Corporation. All
- * Rights Reserved.
+ * The Initial Developer of the Original Code is
+ * Netscape Communications Corporation.
+ * Portions created by the Initial Developer are Copyright (C) 1998
+ * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s):
  *
- * Alternatively, the contents of this file may be used under the
- * terms of the GNU Public License (the "GPL"), in which case the
- * provisions of the GPL are applicable instead of those above.
- * If you wish to allow use of your version of this file only
- * under the terms of the GPL and not to allow others to use your
- * version of this file under the NPL, indicate your decision by
- * deleting the provisions above and replace them with the notice
- * and other provisions required by the GPL.  If you do not delete
- * the provisions above, a recipient may use your version of this
- * file under either the NPL or the GPL.
- */
+ * Alternatively, the contents of this file may be used under the terms of
+ * either of the GNU General Public License Version 2 or later (the "GPL"),
+ * or the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
+ * in which case the provisions of the GPL or the LGPL are applicable instead
+ * of those above. If you wish to allow use of your version of this file only
+ * under the terms of either the GPL or the LGPL, and not to allow others to
+ * use your version of this file under the terms of the MPL, indicate your
+ * decision by deleting the provisions above and replace them with the notice
+ * and other provisions required by the GPL or the LGPL. If you do not delete
+ * the provisions above, a recipient may use your version of this file under
+ * the terms of any one of the MPL, the GPL or the LGPL.
+ *
+ * ***** END LICENSE BLOCK ***** */
 #ifndef jslock_h__
 #define jslock_h__
 
@@ -76,6 +81,7 @@ typedef struct JSFatLockTable {
  */
 #define JS_ATOMIC_INCREMENT(p)      PR_AtomicIncrement((PRInt32 *)(p))
 #define JS_ATOMIC_DECREMENT(p)      PR_AtomicDecrement((PRInt32 *)(p))
+#define JS_ATOMIC_ADD(p,v)          PR_AtomicAdd((PRInt32 *)(p), (PRInt32)(v))
 
 #define CurrentThreadId()           (jsword)PR_GetCurrentThread()
 #define JS_CurrentThreadId()        js_CurrentThreadId()
@@ -116,7 +122,8 @@ typedef struct JSFatLockTable {
 
 #define SET_SCOPE_INFO(scope_,file_,line_)                                    \
     ((scope_)->ownercx ? (void)0 :                                            \
-     (JS_ASSERT((scope_)->u.count > 0 && (scope_)->u.count <= 4),             \
+     (JS_ASSERT((0 < (scope_)->u.count && (scope_)->u.count <= 4) ||          \
+                SCOPE_IS_SEALED(scope_)),                                     \
       (void)((scope_)->file[(scope_)->u.count-1] = (file_),                   \
              (scope_)->line[(scope_)->u.count-1] = (line_))))
 #endif /* DEBUG */
@@ -166,19 +173,19 @@ extern void js_FinishSharingScope(JSRuntime *rt, JSScope *scope);
 
 #ifdef DEBUG
 
-#define JS_IS_RUNTIME_LOCKED(rt)    js_IsRuntimeLocked(rt)
-#define JS_IS_OBJ_LOCKED(obj)       js_IsObjLocked(obj)
-#define JS_IS_SCOPE_LOCKED(scope)   js_IsScopeLocked(scope)
+#define JS_IS_RUNTIME_LOCKED(rt)        js_IsRuntimeLocked(rt)
+#define JS_IS_OBJ_LOCKED(cx,obj)        js_IsObjLocked(cx,obj)
+#define JS_IS_SCOPE_LOCKED(cx,scope)    js_IsScopeLocked(cx,scope)
 
 extern JSBool js_IsRuntimeLocked(JSRuntime *rt);
-extern JSBool js_IsObjLocked(JSObject *obj);
-extern JSBool js_IsScopeLocked(JSScope *scope);
+extern JSBool js_IsObjLocked(JSContext *cx, JSObject *obj);
+extern JSBool js_IsScopeLocked(JSContext *cx, JSScope *scope);
 
 #else
 
-#define JS_IS_RUNTIME_LOCKED(rt)    0
-#define JS_IS_OBJ_LOCKED(obj)       1
-#define JS_IS_SCOPE_LOCKED(scope)   1
+#define JS_IS_RUNTIME_LOCKED(rt)        0
+#define JS_IS_OBJ_LOCKED(cx,obj)        1
+#define JS_IS_SCOPE_LOCKED(cx,scope)    1
 
 #endif /* DEBUG */
 
@@ -221,6 +228,7 @@ extern JS_INLINE void js_Unlock(JSThinLock *tl, jsword me);
 
 #define JS_ATOMIC_INCREMENT(p)      (++*(p))
 #define JS_ATOMIC_DECREMENT(p)      (--*(p))
+#define JS_ATOMIC_ADD(p,v)          (*(p) += (v))
 
 #define JS_CurrentThreadId() 0
 #define JS_NEW_LOCK()               NULL
@@ -245,10 +253,10 @@ extern JS_INLINE void js_Unlock(JSThinLock *tl, jsword me);
 #define JS_UNLOCK_SCOPE(cx,scope)   ((void)0)
 #define JS_TRANSFER_SCOPE_LOCK(c,o,n) ((void)0)
 
-#define JS_IS_RUNTIME_LOCKED(rt)    1
-#define JS_IS_OBJ_LOCKED(obj)       1
-#define JS_IS_SCOPE_LOCKED(scope)   1
-#define JS_LOCK_VOID(cx, e)         JS_LOCK_RUNTIME_VOID((cx)->runtime, e)
+#define JS_IS_RUNTIME_LOCKED(rt)        1
+#define JS_IS_OBJ_LOCKED(cx,obj)        1
+#define JS_IS_SCOPE_LOCKED(cx,scope)    1
+#define JS_LOCK_VOID(cx, e)             JS_LOCK_RUNTIME_VOID((cx)->runtime, e)
 
 #endif /* !JS_THREADSAFE */
 

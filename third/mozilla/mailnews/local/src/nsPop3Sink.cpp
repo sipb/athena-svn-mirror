@@ -21,6 +21,7 @@
  *
  * Contributor(s):
  *   Pierre Phaneuf <pp@ludusdesign.com>
+ *   bienvenu@nventure.com
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either the GNU General Public License Version 2 or later (the "GPL"), or 
@@ -45,7 +46,6 @@
 #include <time.h>
 #include "nsIFileSpec.h"
 #include "nsParseMailbox.h"
-#include "nsIFolder.h"
 #include "nsIMsgLocalMailFolder.h"
 #include "nsIMsgIncomingServer.h"
 #include "nsLocalUtils.h"
@@ -60,6 +60,7 @@ nsPop3Sink::nsPop3Sink()
     m_authed = PR_FALSE;
     m_accountUrl = nsnull;
     m_biffState = 0;
+    m_numNewMessages = 0;
     m_senderAuthed = PR_FALSE;
     m_outputBuffer = nsnull;
     m_outputBufferSize = 0;
@@ -87,6 +88,7 @@ nsresult
 nsPop3Sink::SetUserAuthenticated(PRBool authed)
 {
   m_authed = authed;
+  m_popServer->SetAuthenticated(authed);
   if (authed)
   {
     nsCOMPtr<nsIMsgIncomingServer> server = do_QueryInterface(m_popServer);
@@ -100,11 +102,7 @@ nsPop3Sink::SetUserAuthenticated(PRBool authed)
 nsresult
 nsPop3Sink::GetUserAuthenticated(PRBool* authed)
 {
-    NS_ASSERTION(authed, "null getter in GetUserAuthenticated");
-    if (!authed) return NS_ERROR_NULL_POINTER;
-
-    *authed=m_authed;
-    return NS_OK;
+  return m_popServer->GetAuthenticated(authed);
 }
 
 nsresult
@@ -154,17 +152,17 @@ nsPop3Sink::BeginMailDelivery(PRBool uidlDownload, nsIMsgWindow *aMsgWindow, PRB
 
     PRBool isLocked;
     nsCOMPtr <nsISupports> supports = do_QueryInterface(NS_STATIC_CAST(nsIPop3Sink*, this));
-	m_folder->GetLocked(&isLocked);
-	if(!isLocked)
+    m_folder->GetLocked(&isLocked);
+    if(!isLocked)
       m_folder->AcquireSemaphore(supports);
-	else
+    else
       return NS_MSG_FOLDER_BUSY;
 
     if (uidlDownload)
     {
       nsCOMPtr<nsIFileSpec> path;
       m_folder->GetPath(getter_AddRefs(path));
-	    path->GetFileSpec(&fileSpec);
+      path->GetFileSpec(&fileSpec);
     }
     else
     {
@@ -194,7 +192,7 @@ nsPop3Sink::BeginMailDelivery(PRBool uidlDownload, nsIMsgWindow *aMsgWindow, PRB
     if (m_newMailParser == nsnull)
       return NS_ERROR_OUT_OF_MEMORY;
 
-    nsCOMPtr <nsIFolder> serverFolder;
+    nsCOMPtr <nsIMsgFolder> serverFolder;
     rv = GetServerFolder(getter_AddRefs(serverFolder));
     if (NS_FAILED(rv)) return rv;
 
@@ -204,8 +202,8 @@ nsPop3Sink::BeginMailDelivery(PRBool uidlDownload, nsIMsgWindow *aMsgWindow, PRB
 
     if (NS_FAILED(rv))
     {
-		  NS_IF_RELEASE(m_newMailParser);
-		  rv = NS_OK;
+      NS_IF_RELEASE(m_newMailParser);
+      rv = NS_OK;
     }
     else
     {
@@ -248,7 +246,11 @@ nsPop3Sink::EndMailDelivery()
   nsresult rv = ReleaseFolderLock();
   NS_ASSERTION(NS_SUCCEEDED(rv),"folder lock not released successfully");
 
-  m_folder->CallFilterPlugins(nsnull); // ??? do we need msgWindow?
+  PRBool filtersRun;
+  m_folder->CallFilterPlugins(nsnull, &filtersRun); // ??? do we need msgWindow?
+  m_folder->SetNumNewMessages(m_numNewMessages); // we'll adjust this for spam later
+  if (!filtersRun && m_numNewMessages > 0)
+    m_folder->SetBiffState(m_biffState);
 
   // note that size on disk has possibly changed.
   nsCOMPtr<nsIMsgLocalMailFolder> localFolder = do_QueryInterface(m_folder);
@@ -270,12 +272,13 @@ nsPop3Sink::EndMailDelivery()
   m_folder->UpdateSummaryTotals(PR_TRUE);
  
   // check if the folder open in this window is not the current folder, and if it has new
-  // message, in which case we need to try to run the
-  // filter plugin.
+  // message, in which case we need to try to run the filter plugin.
   if (m_newMailParser)
   {
     nsCOMPtr <nsIMsgWindow> msgWindow;
     m_newMailParser->GetMsgWindow(getter_AddRefs(msgWindow));
+    // this breaks down if it's biff downloading new mail because
+    // there's no msgWindow...
     if (msgWindow)
     {
       nsCOMPtr <nsIMsgFolder> openFolder;
@@ -287,10 +290,19 @@ nsPop3Sink::EndMailDelivery()
         nsCOMPtr<nsIMsgLocalMailFolder> localFolder = do_QueryInterface(openFolder);
         if (localFolder)
         {
-          PRBool hasNew;
+          PRBool hasNew, isLocked;
           (void) openFolder->GetHasNewMessages(&hasNew);
           if (hasNew)
-            openFolder->CallFilterPlugins(nsnull);
+          {
+            // if the open folder is locked, we shouldn't run the spam filters
+            // on it because someone is using the folder. see 218433.
+            // Ideally, the filter plugin code would try to grab the folder lock
+            // and hold onto it until done, but that's more difficult and I think
+            // this will actually fix the problem.
+            openFolder->GetLocked(&isLocked);
+            if(!isLocked)
+              openFolder->CallFilterPlugins(nsnull, &filtersRun);
+          }
         }
       }
     }
@@ -342,7 +354,7 @@ nsPop3Sink::AbortMailDelivery()
   return NS_OK;
 }
 
-nsresult
+NS_IMETHODIMP
 nsPop3Sink::IncorporateBegin(const char* uidlString,
                              nsIURI* aURL,
                              PRUint32 flags,
@@ -415,7 +427,7 @@ nsresult nsPop3Sink::SetFolder(nsIMsgFolder * folder)
 }
 
 nsresult
-nsPop3Sink::GetServerFolder(nsIFolder **aFolder)
+nsPop3Sink::GetServerFolder(nsIMsgFolder **aFolder)
 {
   if (!aFolder) 
     return NS_ERROR_NULL_POINTER;
@@ -477,12 +489,6 @@ nsPop3Sink::IncorporateWrite(const char* block,
     *(m_outputBuffer + length) = 0;
     nsresult rv = WriteLineToMailbox (m_outputBuffer);
     if (NS_FAILED(rv)) return rv;
-    // Is this where we should hook up the new mail parser? Is this block a line, or a real block?
-    // I think it's a real line. We're also not escaping lines that start with "From ", which is
-    // a potentially horrible bug...Should this be done here, or in the mailbox parser? I vote for
-    // here. Also, we're writing out the mozilla-status line in IncorporateBegin, but we need to 
-    // pass that along to the mailbox parser so that the mozilla-status offset is handled correctly.
-    // And what about uidl? Don't we need to be able to write out an X-UIDL header?
   }
   return NS_OK;
 }
@@ -496,21 +502,22 @@ nsresult nsPop3Sink::WriteLineToMailbox(char *buffer)
     if (m_newMailParser)
       m_newMailParser->HandleLine(buffer, bufferLen);
     // The following (!m_outFileStream etc) was added to make sure that we don't write somewhere 
-    // where for some reason or another we can't write too and lose the messages
+    // where for some reason or another we can't write to and lose the messages
     // See bug 62480
     if (!m_outFileStream)
       return NS_ERROR_OUT_OF_MEMORY;
     
     NS_ASSERTION(m_outFileStream->eof(), "we are not writing to end-of-file");
     
+    m_outFileStream->seek(PR_SEEK_END, 0);
     PRInt32 bytes = m_outFileStream->write(buffer,bufferLen);
     if (bytes != bufferLen) return NS_ERROR_FAILURE;
   }
   return NS_OK;
 }
 
-nsresult
-nsPop3Sink::IncorporateComplete(nsIMsgWindow *msgWindow)
+NS_IMETHODIMP
+nsPop3Sink::IncorporateComplete(nsIMsgWindow *aMsgWindow)
 {
   if (m_buildMessageUri && m_baseMessageUri)
   {
@@ -520,21 +527,21 @@ nsPop3Sink::IncorporateComplete(nsIMsgWindow *msgWindow)
       nsBuildLocalMessageURI(m_baseMessageUri, msgKey, m_messageUri);
   }
 
-	nsresult rv = WriteLineToMailbox(MSG_LINEBREAK);
-    if (NS_FAILED(rv)) return rv;
-    rv = m_outFileStream->flush();   //to make sure the message is written to the disk
-    if (NS_FAILED(rv)) return rv;
-    NS_ASSERTION(m_newMailParser, "could not get m_newMailParser");
-    if (m_newMailParser)
-      m_newMailParser->PublishMsgHeader(msgWindow); 
+  nsresult rv = WriteLineToMailbox(MSG_LINEBREAK);
+  if (NS_FAILED(rv)) return rv;
+  rv = m_outFileStream->flush();   //to make sure the message is written to the disk
+  if (NS_FAILED(rv)) return rv;
+  NS_ASSERTION(m_newMailParser, "could not get m_newMailParser");
+  if (m_newMailParser)
+    m_newMailParser->PublishMsgHeader(aMsgWindow); 
 
 #ifdef DEBUG
-	printf("Incorporate message complete.\n");
+  printf("Incorporate message complete.\n");
 #endif
-    return NS_OK;
+  return NS_OK;
 }
 
-nsresult
+NS_IMETHODIMP
 nsPop3Sink::IncorporateAbort(PRBool uidlDownload)
 {
   nsresult rv;
@@ -573,14 +580,17 @@ nsPop3Sink::BiffGetNewMail()
 }
 
 nsresult
-nsPop3Sink::SetBiffStateAndUpdateFE(PRUint32 aBiffState, PRInt32 numNewMessages)
+nsPop3Sink::SetBiffStateAndUpdateFE(PRUint32 aBiffState, PRInt32 numNewMessages, PRBool notify)
 {
   m_biffState = aBiffState;
-  if(m_folder)
+  if (notify && m_folder && numNewMessages > 0 && numNewMessages != m_numNewMessages 
+      && aBiffState == nsIMsgFolder::nsMsgBiffState_NewMail)
   {
     m_folder->SetNumNewMessages(numNewMessages);
     m_folder->SetBiffState(aBiffState);
   }
+  m_numNewMessages = numNewMessages;
+
   return NS_OK;
 }
 

@@ -265,8 +265,7 @@ nsTextInputListener::NotifySelectionChanged(nsIDOMDocument* aDoc, nsISelection* 
       nsCOMPtr<nsIDocument> doc = content->GetDocument();
       if (doc) 
       {
-        nsCOMPtr<nsIPresShell> presShell;
-        doc->GetShellAt(0, getter_AddRefs(presShell));
+        nsIPresShell *presShell = doc->GetShellAt(0);
         if (presShell) 
         {
           nsEventStatus status = nsEventStatus_eIgnore;
@@ -384,11 +383,7 @@ nsTextInputListener::UpdateTextInputCommands(const nsAString& commandsToUpdate)
   nsCOMPtr<nsIDocument> doc = content->GetDocument();
   NS_ENSURE_TRUE(doc, NS_ERROR_FAILURE);
 
-  nsCOMPtr<nsIScriptGlobalObject> scriptGlobalObject;
-  nsresult rv = doc->GetScriptGlobalObject(getter_AddRefs(scriptGlobalObject));
-  NS_ENSURE_TRUE(scriptGlobalObject, NS_ERROR_FAILURE);
-
-  nsCOMPtr<nsIDOMWindowInternal> domWindow = do_QueryInterface(scriptGlobalObject);
+  nsCOMPtr<nsIDOMWindowInternal> domWindow = do_QueryInterface(doc->GetScriptGlobalObject());
   NS_ENSURE_TRUE(domWindow, NS_ERROR_FAILURE);
 
   return domWindow->UpdateCommands(commandsToUpdate);
@@ -790,24 +785,19 @@ nsTextInputSelectionImpl::CompleteMove(PRBool aForward, PRBool aExtend)
   HINT hint = HINTLEFT;
   if (aForward)
   {
-    parentDIV->ChildCount(offset);
+    offset = parentDIV->GetChildCount();
 
     // Prevent the caret from being placed after the last
     // BR node in the content tree!
 
     if (offset > 0)
     {
-      nsCOMPtr<nsIContent> child;
-      result = parentDIV->ChildAt(offset - 1, getter_AddRefs(child));
-      if (NS_SUCCEEDED(result) && child)
+      nsIContent *child = parentDIV->GetChildAt(offset - 1);
+
+      if (child->Tag() == nsHTMLAtoms::br)
       {
-        nsCOMPtr<nsIAtom> tagName;
-        result = child->GetTag(getter_AddRefs(tagName));
-        if (NS_SUCCEEDED(result) && tagName.get() == nsHTMLAtoms::br)
-        {
-          --offset;
-          hint = HINTRIGHT; // for Bug 106855
-        }
+        --offset;
+        hint = HINTRIGHT; // for Bug 106855
       }
     }
   }
@@ -1323,34 +1313,22 @@ nsTextControlFrame::RemovedAsPrimaryFrame(nsIPresContext* aPresContext)
   else NS_ASSERTION(PR_FALSE, "RemovedAsPrimaryFrame called after PreDestroy");
 }
 
-NS_IMETHODIMP 
-nsTextControlFrame::GetFrameType(nsIAtom** aType) const 
+nsIAtom*
+nsTextControlFrame::GetType() const 
 { 
-  NS_PRECONDITION(nsnull != aType, "null OUT parameter pointer"); 
-  *aType = nsLayoutAtoms::textInputFrame; 
-  NS_ADDREF(*aType); 
-  return NS_OK; 
+  return nsLayoutAtoms::textInputFrame;
 } 
 
 // XXX: wouldn't it be nice to get this from the style context!
 PRBool nsTextControlFrame::IsSingleLineTextControl() const
 {
-  PRInt32 type = GetType();
+  PRInt32 type = GetFormControlType();
   return (type == NS_FORM_INPUT_TEXT) || (type == NS_FORM_INPUT_PASSWORD);
 }
 
 PRBool nsTextControlFrame::IsTextArea() const
 {
-  if (!mContent)
-    return PR_FALSE;
-
-  nsCOMPtr<nsIAtom> tag;
-  mContent->GetTag(getter_AddRefs(tag));
-
-  if (nsHTMLAtoms::textarea == tag)
-    return PR_TRUE;
-
-  return PR_FALSE;
+  return mContent && mContent->Tag() == nsHTMLAtoms::textarea;
 }
 
 // XXX: wouldn't it be nice to get this from the style context!
@@ -1362,7 +1340,7 @@ PRBool nsTextControlFrame::IsPlainTextControl() const
 
 PRBool nsTextControlFrame::IsPasswordTextControl() const
 {
-  return GetType() == NS_FORM_INPUT_PASSWORD;
+  return GetFormControlType() == NS_FORM_INPUT_PASSWORD;
 }
 
 
@@ -1491,27 +1469,36 @@ nsTextControlFrame::CalculateSizeStandard(nsIPresContext*       aPresContext,
   fontMet->GetAveCharWidth(charWidth);
   fontMet->GetMaxAdvance(charMaxAdvance);
 
-  // calc the min width and pref width. Pref Width is calced by multiplying the size times avecharwidth 
-  float p2t;
-  aPresContext->GetPixelsToTwips(&p2t);
-
-  // To better match IE, take the maximum character width(in twips) and remove 4 pixels
-  // add this on as additional padding(internalPadding)
-  nscoord internalPadding = 0;
-  internalPadding = PR_MAX(charMaxAdvance - NSToCoordRound(4 * p2t), 0);
-  // round to a multiple of p2t
-  nscoord t = NSToCoordRound(p2t); 
-  nscoord rest = internalPadding % t; 
-  if (rest < t - rest) {
-    internalPadding -= rest;
-  } else {
-    internalPadding += t - rest;
-  }
-
   // Set the width equal to the width in characters
   aDesiredSize.width = GetCols() * charWidth;
-  // Now add the extra padding on (so that small input sizes work well)
-  aDesiredSize.width += internalPadding;
+
+  // To better match IE, take the maximum character width(in twips) and remove
+  // 4 pixels add this on as additional padding(internalPadding). But only do
+  // this if charMaxAdvance != charWidth; if they are equal, this is almost
+  // certainly a fixed-width font.
+  if (charWidth != charMaxAdvance) {
+    float p2t;
+    aPresContext->GetPixelsToTwips(&p2t);
+    nscoord internalPadding = PR_MAX(charMaxAdvance - NSToCoordRound(4 * p2t), 0);
+    // round to a multiple of p2t
+    nscoord t = NSToCoordRound(p2t); 
+    nscoord rest = internalPadding % t; 
+    if (rest < t - rest) {
+      internalPadding -= rest;
+    } else {
+      internalPadding += t - rest;
+    }
+    // Now add the extra padding on (so that small input sizes work well)
+    aDesiredSize.width += internalPadding;
+  } else {
+    // This is to account for the anonymous <br> having a 1 twip width
+    // in Full Standards mode, see BRFrame::Reflow and bug 228752.
+    nsCompatibility mode;
+    aPresContext->GetCompatibilityMode(&mode);
+    if (mode == eCompatibility_FullStandards) {
+      aDesiredSize.width += 1;
+    }
+  }
 
   // Set the height equal to total number of rows (times the height of each
   // line, of course)
@@ -1526,13 +1513,16 @@ nsTextControlFrame::CalculateSizeStandard(nsIPresContext*       aPresContext,
   return NS_OK;
 }
 
-//------------------------------------------------------------------
+void nsTextControlFrame::PostCreateFrames() {
+  InitEditor();
+}
+
 NS_IMETHODIMP
 nsTextControlFrame::CreateFrameFor(nsIPresContext*   aPresContext,
                                        nsIContent *      aContent,
                                        nsIFrame**        aFrame)
 {
-  aContent = nsnull;
+  *aFrame = nsnull;
   return NS_ERROR_FAILURE;
 }
 
@@ -1677,12 +1667,7 @@ nsTextControlFrame::CreateAnonymousContent(nsIPresContext* aPresContext,
   if (!elementFactory)
     return NS_ERROR_FAILURE;
 
-  nsCOMPtr<nsINodeInfoManager> nodeInfoManager;
-  rv = doc->GetNodeInfoManager(getter_AddRefs(nodeInfoManager));
-
-  if (NS_FAILED(rv))
-    return rv;
-
+  nsINodeInfoManager *nodeInfoManager = doc->GetNodeInfoManager();
   NS_ENSURE_TRUE(nodeInfoManager, NS_ERROR_FAILURE);
 
   nsCOMPtr<nsINodeInfo> nodeInfo;
@@ -1951,8 +1936,6 @@ nsTextControlFrame::Reflow(nsIPresContext*   aPresContext,
   DO_GLOBAL_REFLOW_COUNT("nsTextControlFrame", aReflowState.reason);
   DISPLAY_REFLOW(aPresContext, this, aReflowState, aDesiredSize, aStatus);
 
-  InitEditor();
-
   // make sure the the form registers itself on the initial/first reflow
   if (mState & NS_FRAME_FIRST_REFLOW) {
     nsFormControlFrame::RegUnRegAccessKey(aPresContext, NS_STATIC_CAST(nsIFrame*, this), PR_TRUE);
@@ -1989,7 +1972,7 @@ nsTextControlFrame::Paint(nsIPresContext*      aPresContext,
   if (aWhichLayer == NS_FRAME_PAINT_LAYER_FOREGROUND) {
     rv = nsStackFrame::Paint(aPresContext, aRenderingContext, aDirtyRect, NS_FRAME_PAINT_LAYER_BACKGROUND);
     if (NS_FAILED(rv)) return rv;
-    rv = nsStackFrame::Paint(aPresContext, aRenderingContext, aDirtyRect, NS_FRAME_PAINT_LAYER_FLOATERS);
+    rv = nsStackFrame::Paint(aPresContext, aRenderingContext, aDirtyRect, NS_FRAME_PAINT_LAYER_FLOATS);
     if (NS_FAILED(rv)) return rv;
     rv = nsStackFrame::Paint(aPresContext, aRenderingContext, aDirtyRect, NS_FRAME_PAINT_LAYER_FOREGROUND);
   }
@@ -2010,7 +1993,7 @@ nsTextControlFrame::GetFrameForPoint(nsIPresContext* aPresContext,
     if (NS_SUCCEEDED(rv))
       return NS_OK;
     rv = nsStackFrame::GetFrameForPoint(aPresContext, aPoint,
-                                        NS_FRAME_PAINT_LAYER_FLOATERS, aFrame);
+                                        NS_FRAME_PAINT_LAYER_FLOATS, aFrame);
     if (NS_SUCCEEDED(rv))
       return NS_OK;
     rv = nsStackFrame::GetFrameForPoint(aPresContext, aPoint,
@@ -2044,8 +2027,6 @@ nsTextControlFrame::GetPrefSize(nsBoxLayoutState& aState, nsSize& aSize)
 
   if (!reflowState)
     return NS_OK;
-
-  InitEditor();
 
   if (mState & NS_FRAME_FIRST_REFLOW)
     mNotifyOnInput = PR_TRUE; //its ok to notify now. all has been prepared.
@@ -2113,7 +2094,7 @@ nsTextControlFrame::GetName(nsAString* aResult)
 }
 
 NS_IMETHODIMP_(PRInt32)
-nsTextControlFrame::GetType() const
+nsTextControlFrame::GetFormControlType() const
 {
   return nsFormControlHelper::GetType(mContent);
 }
@@ -2307,19 +2288,14 @@ nsTextControlFrame::SelectAllContents()
   NS_ENSURE_SUCCESS(rv, rv);
 
   nsCOMPtr<nsIContent> rootContent = do_QueryInterface(rootElement);
-  PRInt32 numChildren = 0;
-  rv = rootContent->ChildCount(numChildren);
-  NS_ENSURE_SUCCESS(rv, rv);
+  PRInt32 numChildren = rootContent->GetChildCount();
 
   if (numChildren > 0) {
     // We never want to place the selection after the last
     // br under the root node!
-    nsCOMPtr<nsIContent> child;
-    rv = rootContent->ChildAt(numChildren - 1, getter_AddRefs(child));
-    if (NS_SUCCEEDED(rv) && child) {
-      nsCOMPtr<nsIAtom> tagName;
-      rv = child->GetTag(getter_AddRefs(tagName));
-      if (NS_SUCCEEDED(rv) && tagName == nsHTMLAtoms::br)
+    nsIContent *child = rootContent->GetChildAt(numChildren - 1);
+    if (child) {
+      if (child->Tag() == nsHTMLAtoms::br)
         --numChildren;
     }
   }

@@ -103,11 +103,11 @@ void ProcessExtendedValue(const nsAString * aInputString, nsAString & aOutputStr
   aOutputString.Truncate();
   if (aInputString) {
     if (aPrependString) {
-      aOutputString.Append(NS_ConvertASCIItoUCS2(aPrependString));
+      AppendASCIItoUTF16(aPrependString, aOutputString);
     }
     aOutputString.Append(*aInputString);
     if (aAppendString) {
-      aOutputString.Append(NS_ConvertASCIItoUCS2(aAppendString));
+      AppendASCIItoUTF16(aAppendString, aOutputString);
     }
   }
 }
@@ -343,8 +343,7 @@ nsHTMLCSSUtils::IsCSSEditableProperty(nsIDOMNode * aNode,
   nsCOMPtr<nsIContent> content = do_QueryInterface(node);
   if (!content) return PR_FALSE;
 
-  nsCOMPtr<nsIAtom> tagName;
-  content->GetTag(getter_AddRefs(tagName));
+  nsIAtom *tagName = content->Tag();
   // brade: should the above use nsEditor::GetTag(aNode)?
   // brade: shouldn't some of the above go below the next block?
 
@@ -654,10 +653,9 @@ nsHTMLCSSUtils::RemoveCSSInlineStyle(nsIDOMNode *aNode, nsIAtom *aProperty, cons
   if (NS_FAILED(res)) return res;
 
   if (nsEditor::NodeIsType(aNode, nsEditProperty::span)) {
-    PRInt32 attrCount;
     nsCOMPtr<nsIContent> content = do_QueryInterface(aNode);
-    res = content->GetAttrCount(attrCount);
-    if (NS_FAILED(res)) return res;
+    PRUint32 attrCount = content->GetAttrCount();
+
     if (0 == attrCount) {
       // no more attributes on this span, let's remove the element
       res = mHTMLEditor->RemoveContainer(aNode);
@@ -919,10 +917,7 @@ nsHTMLCSSUtils::GenerateCSSDeclarationsFromHTMLStyle(nsIDOMNode * aNode,
   }
   if (!node) return;
 
-  // brade: use nsEditor::GetTag instead??
-  nsCOMPtr<nsIContent> content = do_QueryInterface(node);
-  nsCOMPtr<nsIAtom> tagName;
-  content->GetTag(getter_AddRefs(tagName));
+  nsIAtom *tagName = nsEditor::GetTag(node);
 
   if (nsEditProperty::b == aHTMLProperty) {
     BuildCSSDeclarations(cssPropertyArray, cssValueArray, boldEquivTable, aValue, aGetOrRemoveRequest);

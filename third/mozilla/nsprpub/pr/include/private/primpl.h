@@ -304,7 +304,8 @@ typedef struct _PRInterruptTable {
 #define _PR_CPU_PTR(_qp) \
     ((_PRCPU*) ((char*) (_qp) - offsetof(_PRCPU,links)))
 
-#if !defined(IRIX) && !defined(WIN32) && !defined(XP_OS2)
+#if !defined(IRIX) && !defined(WIN32) && !defined(XP_OS2) \
+        && !(defined(SOLARIS) && defined(_PR_GLOBAL_THREADS_ONLY))
 #define _MD_GET_ATTACHED_THREAD()        (_PR_MD_CURRENT_THREAD())
 #endif
 
@@ -1394,7 +1395,7 @@ extern PRUintn _PR_NetAddrSize(const PRNetAddr* addr);
 ** struct sockaddr_in6.
 */
 
-#if defined(XP_UNIX)
+#if defined(XP_UNIX) || defined(XP_OS2)
 #define PR_NETADDR_SIZE(_addr) 					\
         ((_addr)->raw.family == PR_AF_INET		\
         ? sizeof((_addr)->inet)					\
@@ -1410,7 +1411,7 @@ extern PRUintn _PR_NetAddrSize(const PRNetAddr* addr);
 
 #else
 
-#if defined(XP_UNIX)
+#if defined(XP_UNIX) || defined(XP_OS2)
 #define PR_NETADDR_SIZE(_addr) 					\
         ((_addr)->raw.family == PR_AF_INET		\
         ? sizeof((_addr)->inet)					\

@@ -1,36 +1,41 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 4 -*-
  *
- * The contents of this file are subject to the Netscape Public
- * License Version 1.1 (the "License"); you may not use this file
- * except in compliance with the License. You may obtain a copy of
- * the License at http://www.mozilla.org/NPL/
+ * ***** BEGIN LICENSE BLOCK *****
+ * Version: MPL 1.1/GPL 2.0/LGPL 2.1
  *
- * Software distributed under the License is distributed on an "AS
- * IS" basis, WITHOUT WARRANTY OF ANY KIND, either express or
- * implied. See the License for the specific language governing
- * rights and limitations under the License.
+ * The contents of this file are subject to the Mozilla Public License Version
+ * 1.1 (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ * http://www.mozilla.org/MPL/
+ *
+ * Software distributed under the License is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+ * for the specific language governing rights and limitations under the
+ * License.
  *
  * The Original Code is Mozilla Communicator client code, released
  * March 31, 1998.
  *
- * The Initial Developer of the Original Code is Netscape
- * Communications Corporation.  Portions created by Netscape are
- * Copyright (C) 1998 Netscape Communications Corporation. All
- * Rights Reserved.
+ * The Initial Developer of the Original Code is
+ * Netscape Communications Corporation.
+ * Portions created by the Initial Developer are Copyright (C) 1998
+ * the Initial Developer. All Rights Reserved.
  *
- * Contributor(s): 
+ * Contributor(s):
  *
- * Alternatively, the contents of this file may be used under the
- * terms of the GNU Public License (the "GPL"), in which case the
- * provisions of the GPL are applicable instead of those above.
- * If you wish to allow use of your version of this file only
- * under the terms of the GPL and not to allow others to use your
- * version of this file under the NPL, indicate your decision by
- * deleting the provisions above and replace them with the notice
- * and other provisions required by the GPL.  If you do not delete
- * the provisions above, a recipient may use your version of this
- * file under either the NPL or the GPL.
- */
+ * Alternatively, the contents of this file may be used under the terms of
+ * either of the GNU General Public License Version 2 or later (the "GPL"),
+ * or the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
+ * in which case the provisions of the GPL or the LGPL are applicable instead
+ * of those above. If you wish to allow use of your version of this file only
+ * under the terms of either the GPL or the LGPL, and not to allow others to
+ * use your version of this file under the terms of the MPL, indicate your
+ * decision by deleting the provisions above and replace them with the notice
+ * and other provisions required by the GPL or the LGPL. If you do not delete
+ * the provisions above, a recipient may use your version of this file under
+ * the terms of any one of the MPL, the GPL or the LGPL.
+ *
+ * ***** END LICENSE BLOCK ***** */
 
 /*
  * Portable double to alphanumeric string and back converters.
@@ -1241,6 +1246,8 @@ JS_strtod(CONST char *s00, char **se, int *err)
     ULong y, z;
     Bigint *bb, *bb1, *bd, *bd0, *bs, *delta;
 
+    SET_FPU();
+
     *err = 0;
 
 	bb = bd = bs = delta = NULL;
@@ -1861,7 +1868,8 @@ ret:
     RELEASE_DTOA_LOCK();
     if (se)
         *se = (char *)s;
-    return sign ? -rv : rv;
+    rv0 = sign ? -rv : rv;
+    goto ret1;
 
 nomem:
     Bfree(bb);
@@ -1870,7 +1878,11 @@ nomem:
     Bfree(bd0);
     Bfree(delta);
     *err = JS_DTOA_ENOMEM;
-    return 0;
+    rv0 = 0;
+
+ret1:
+    RESTORE_FPU();
+    return rv0;
 }
 
 
@@ -2088,6 +2100,9 @@ js_dtoa(double d, int mode, JSBool biasUp, int ndigits,
     Bigint *b, *b1, *delta, *mlo, *mhi, *S;
     double d2, ds, eps;
     char *s;
+    JSBool ok;
+
+    SET_FPU();
 
     if (word0(d) & Sign_bit) {
         /* set sign for everything, including 0's and NaNs */
@@ -2104,14 +2119,16 @@ js_dtoa(double d, int mode, JSBool biasUp, int ndigits,
         if ((s[0] == 'I' && bufsize < 9) || (s[0] == 'N' && bufsize < 4)) {
             JS_ASSERT(JS_FALSE);
 /*          JS_SetError(JS_BUFFER_OVERFLOW_ERROR, 0); */
-            return JS_FALSE;
+            ok = JS_FALSE;
+            goto ret2;
         }
         strcpy(buf, s);
         if (rve) {
             *rve = buf[3] ? buf + 8 : buf + 3;
             JS_ASSERT(**rve == '\0');
         }
-        return JS_TRUE;
+        ok = JS_TRUE;
+        goto ret2;
     }
     
     b = NULL;                           /* initialize for abort protection */
@@ -2124,7 +2141,8 @@ js_dtoa(double d, int mode, JSBool biasUp, int ndigits,
         if (bufsize < 2) {
             JS_ASSERT(JS_FALSE);
 /*          JS_SetError(JS_BUFFER_OVERFLOW_ERROR, 0); */
-            return JS_FALSE;
+            ok = JS_FALSE;
+            goto ret2;
         }
         buf[0] = '0'; buf[1] = '\0';  /* copy "0" to buffer */
         if (rve)
@@ -2137,7 +2155,8 @@ js_dtoa(double d, int mode, JSBool biasUp, int ndigits,
         if (mlo != mhi)
             Bfree(mlo);
         Bfree(mhi);
-        return JS_TRUE;
+        ok = JS_TRUE;
+        goto ret2;
     }
 
     b = d2b(d, &be, &bbits);
@@ -2266,7 +2285,8 @@ js_dtoa(double d, int mode, JSBool biasUp, int ndigits,
     if (bufsize <= (size_t)i) {
         Bfree(b);
         JS_ASSERT(JS_FALSE);
-        return JS_FALSE;
+        ok = JS_FALSE;
+        goto ret2;
     }
     s = buf;
 
@@ -2729,7 +2749,8 @@ js_dtoa(double d, int mode, JSBool biasUp, int ndigits,
     if (rve)
         *rve = s;
     *decpt = k + 1;
-    return JS_TRUE;
+    ok =  JS_TRUE;
+    goto ret2;
 
 nomem:
     Bfree(S);
@@ -2739,7 +2760,11 @@ nomem:
         Bfree(mhi);
     }
     Bfree(b);
-    return JS_FALSE;
+    ok = JS_FALSE;
+    
+ret2:
+    RESTORE_FPU();
+    return ok;
 }
 
 

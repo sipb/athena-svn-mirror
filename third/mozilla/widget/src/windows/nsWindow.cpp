@@ -1618,6 +1618,15 @@ NS_METHOD nsWindow::Destroy()
     if (gAttentionTimerMonitor)
       gAttentionTimerMonitor->KillTimer(mWnd);
 
+    HICON icon;
+    icon = (HICON) nsToolkit::mSendMessage(mWnd, WM_SETICON, (WPARAM)ICON_BIG, (LPARAM) 0);
+    if (icon)
+      ::DestroyIcon(icon);
+
+    icon = (HICON) nsToolkit::mSendMessage(mWnd, WM_SETICON, (WPARAM)ICON_SMALL, (LPARAM) 0);
+    if (icon)
+      ::DestroyIcon(icon);
+
     VERIFY(::DestroyWindow(mWnd));
 
     mWnd = NULL;
@@ -1757,9 +1766,14 @@ NS_METHOD nsWindow::IsVisible(PRBool & bState)
 // Position the window behind the given window
 //
 //-------------------------------------------------------------------------
-NS_METHOD nsWindow::PlaceBehind(nsIWidget *aWidget, PRBool aActivate)
+NS_METHOD nsWindow::PlaceBehind(nsTopLevelWidgetZPlacement aPlacement,
+                                nsIWidget *aWidget, PRBool aActivate)
 {
-  HWND behind = aWidget ? (HWND)aWidget->GetNativeData(NS_NATIVE_WINDOW) : HWND_TOP;
+  HWND behind = HWND_TOP;
+  if (aPlacement == eZPlacementBottom)
+    behind = HWND_BOTTOM;
+  else if (aPlacement == eZPlacementBelow && aWidget)
+    behind = (HWND)aWidget->GetNativeData(NS_NATIVE_WINDOW);
   UINT flags = SWP_NOMOVE | SWP_NOREPOSITION | SWP_NOSIZE;
   if (!aActivate)
     flags |= SWP_NOACTIVATE;
@@ -4891,6 +4905,9 @@ void nsWindow::OnDestroy()
 //-------------------------------------------------------------------------
 PRBool nsWindow::OnMove(PRInt32 aX, PRInt32 aY)
 {            
+  mBounds.x = aX;
+  mBounds.y = aY;
+
   nsGUIEvent event;
   InitEvent(event, NS_MOVE);
   event.point.x = aX;
@@ -5489,7 +5506,7 @@ NS_METHOD nsWindow::SetIcon(const nsAString& anIconSpec)
   nsCOMPtr<nsIFile> chromeDir;
   if ( NS_FAILED( NS_GetSpecialDirectory( NS_APP_CHROME_DIR,
                                           getter_AddRefs( chromeDir ) ) ) ) {
-      return NS_ERROR_FAILURE;
+    return NS_ERROR_FAILURE;
   }
   // Get native file name of that directory.
   nsAutoString iconPath;
@@ -5527,31 +5544,32 @@ NS_METHOD nsWindow::SetIcon(const nsAString& anIconSpec)
 
   // See if unicode API not implemented and if not, try ascii version
   if ( ::GetLastError() == ERROR_CALL_NOT_IMPLEMENTED ) {
-      nsCOMPtr<nsILocalFile> pathConverter;
-      if ( NS_SUCCEEDED( NS_NewLocalFile( iconPath,
-                                          PR_FALSE,
-                                          getter_AddRefs( pathConverter ) ) ) ) {
-          // Now try the char* path.
-          nsCAutoString aPath;
-          pathConverter->GetNativePath( aPath );
-          bigIcon = (HICON)::LoadImage( NULL,
-                                        aPath.get(),
-                                        IMAGE_ICON,
-                                        ::GetSystemMetrics(SM_CXICON),
-                                        ::GetSystemMetrics(SM_CYICON),
-                                        LR_LOADFROMFILE | LR_SHARED );
-          smallIcon = (HICON)::LoadImage( NULL,
-                                          aPath.get(),
-                                          IMAGE_ICON,
-                                          ::GetSystemMetrics(SM_CXSMICON),
-                                          ::GetSystemMetrics(SM_CYSMICON),
-                                          LR_LOADFROMFILE | LR_SHARED );
-      }
+    nsCOMPtr<nsILocalFile> pathConverter;
+    if ( NS_SUCCEEDED( NS_NewLocalFile( iconPath,
+                                        PR_FALSE,
+                                        getter_AddRefs( pathConverter ) ) ) ) {
+      // Now try the char* path.
+      nsCAutoString aPath;
+      pathConverter->GetNativePath( aPath );
+      bigIcon = (HICON)::LoadImage( NULL,
+                                    aPath.get(),
+                                    IMAGE_ICON,
+                                    ::GetSystemMetrics(SM_CXICON),
+                                    ::GetSystemMetrics(SM_CYICON),
+                                    LR_LOADFROMFILE );
+      smallIcon = (HICON)::LoadImage( NULL,
+                                      aPath.get(),
+                                      IMAGE_ICON,
+                                      ::GetSystemMetrics(SM_CXSMICON),
+                                      ::GetSystemMetrics(SM_CYSMICON),
+                                      LR_LOADFROMFILE );
+    }
   }
 
   if ( bigIcon ) {
-      LRESULT rv = 0;
-      rv = nsToolkit::mSendMessage(mWnd, WM_SETICON, (WPARAM)ICON_BIG, (LPARAM)bigIcon);
+    HICON icon = (HICON) nsToolkit::mSendMessage(mWnd, WM_SETICON, (WPARAM)ICON_BIG, (LPARAM)bigIcon);
+    if (icon)
+      ::DestroyIcon(icon);
   }
 #ifdef DEBUG_law
   else {
@@ -5560,8 +5578,9 @@ NS_METHOD nsWindow::SetIcon(const nsAString& anIconSpec)
   }
 #endif
   if ( smallIcon ) {
-      LRESULT rv = 0;
-      rv = nsToolkit::mSendMessage(mWnd, WM_SETICON, (WPARAM)ICON_SMALL, (LPARAM)smallIcon);
+    HICON icon = (HICON) nsToolkit::mSendMessage(mWnd, WM_SETICON, (WPARAM)ICON_SMALL, (LPARAM)smallIcon);
+    if (icon)
+      ::DestroyIcon(icon);
   }
 #ifdef DEBUG_law
   else {
@@ -6598,7 +6617,8 @@ nsWindow::HandleMouseActionOfIME(int aAction, POINT *ptPos)
 
       // Note: hitText has been done, so no check of mIMECompCharPos
       // and composing char maximum limit is necessary.
-      for (PRInt32 i = 0; i < mIMECompUnicode->Length(); i++) {
+      PRInt32 i = 0;
+      for (i = 0; i < mIMECompUnicode->Length(); i++) {
         if (PT_IN_RECT(*ptPos, mIMECompCharPos[i]))
           break;
       }

@@ -38,7 +38,7 @@
  * for security libraries.  It should not be dependent on any other
  * headers, and should not require linking with any libraries.
  *
- * $Id: seccomon.h,v 1.1.1.1 2003-02-14 18:19:59 rbasch Exp $
+ * $Id: seccomon.h,v 1.1.1.2 2004-02-27 16:35:35 rbasch Exp $
  */
 
 #ifndef _SECCOMMON_H_
@@ -68,7 +68,9 @@ typedef enum {
     siAsciiNameString = 7,
     siAsciiString = 8,
     siDEROID = 9,
-    siUnsignedInteger = 10
+    siUnsignedInteger = 10,
+    siUTCTime = 11,
+    siGeneralizedTime = 12
 } SECItemType;
 
 typedef struct SECItemStr SECItem;

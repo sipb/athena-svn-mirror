@@ -46,7 +46,6 @@ pref("keyword.URL", "http://www.google.com/search?btnI=I%27m+Feeling+Lucky&ie=UT
 
 pref("general.useragent.locale", "chrome://navigator/locale/navigator.properties");
 pref("general.useragent.contentlocale", "chrome://navigator-region/locale/region.properties");
-pref("general.useragent.misc", "rv:1.5a");
 pref("general.useragent.vendor", "Mozilla Sunbird");
 pref("general.useragent.vendorSub", "0.1");
 
@@ -283,8 +282,6 @@ pref("capability.policy.default.Window.window", "allAccess");
 
 // Scripts & Windows prefs
 pref("browser.block.target_new_window",     false);
-pref("dom.disable_cookie_get",              false);
-pref("dom.disable_cookie_set",              false);
 pref("dom.disable_image_src_set",           false);
 pref("dom.disable_open_during_load",        true);
 pref("dom.disable_window_flip",             false);
@@ -637,6 +634,11 @@ pref("signon.expireMasterPassword",         false);
 
 pref("network.protocol-handler.external.mailto", true); // for mail
 pref("network.protocol-handler.external.news" , true); // for news 
+
+// By default, all protocol handlers are hidden.  This means
+// that calendar will not respond to X-remote openURL commands
+// and it will also defer all link clicks to the user's browser.
+pref("network.protocol-handler.expose-all", false);
 
 // Default security warning dialogs to off
 pref("security.warn_entering_secure", false);

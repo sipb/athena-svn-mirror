@@ -210,11 +210,13 @@ nsWebShellWindow::~nsWebShellWindow()
     mWindow->SetClientData(0);
   mWindow = nsnull; // Force release here.
 
-  PR_Lock(mSPTimerLock);
-  if (mSPTimer)
-    mSPTimer->Cancel();
-  PR_Unlock(mSPTimerLock);
-  PR_DestroyLock(mSPTimerLock);
+  if (mSPTimerLock) {
+    PR_Lock(mSPTimerLock);
+    if (mSPTimer)
+      mSPTimer->Cancel();
+    PR_Unlock(mSPTimerLock);
+    PR_DestroyLock(mSPTimerLock);
+  }
 }
 
 NS_IMPL_THREADSAFE_ADDREF(nsWebShellWindow)
@@ -235,7 +237,6 @@ nsresult nsWebShellWindow::Initialize(nsIXULWindow* aParent,
                                       nsIAppShell* aShell, nsIURI* aUrl, 
                                       PRBool aCreatedVisible,
                                       PRBool aLoadDefaultPage,
-                                      PRUint32 aZlevel,
                                       PRInt32 aInitialWidth, PRInt32 aInitialHeight,
                                       PRBool aIsHiddenWindow, nsWidgetInitData& widgetInitData)
 {
@@ -246,7 +247,6 @@ nsresult nsWebShellWindow::Initialize(nsIXULWindow* aParent,
   
   mShowAfterLoad = aCreatedVisible;
   mLoadDefaultPage = aLoadDefaultPage;
-  mZlevel = aZlevel;
   
   // XXX: need to get the default window size from prefs...
   // Doesn't come from prefs... will come from CSS/XUL/RDF
@@ -406,7 +406,7 @@ nsWebShellWindow::HandleEvent(nsGUIEvent *aEvent)
       case NS_MOVE: {
         // persist position, but not immediately, in case this OS is firing
         // repeated move events as the user drags the window
-        eventWindow->SetPersistenceTimer(PR_FALSE, PR_TRUE, PR_FALSE);
+        eventWindow->SetPersistenceTimer(PAD_POSITION);
         break;
       }
       case NS_SIZE: {
@@ -418,18 +418,32 @@ nsWebShellWindow::HandleEvent(nsGUIEvent *aEvent)
         // persist size, but not immediately, in case this OS is firing
         // repeated size events as the user drags the sizing handle
         if (NS_FAILED(eventWindow->GetLockedState(chromeLock)) || !chromeLock)
-          eventWindow->SetPersistenceTimer(PR_TRUE, PR_FALSE, PR_TRUE);
+          eventWindow->SetPersistenceTimer(PAD_SIZE | PAD_MISC);
         result = nsEventStatus_eConsumeNoDefault;
         break;
       }
       case NS_SIZEMODE: {
         nsSizeModeEvent* modeEvent = (nsSizeModeEvent*)aEvent;
+
+        // an alwaysRaised (or higher) window will hide any newly opened
+        // normal browser windows. here we just drop a raised window
+        // to the normal zlevel if it's maximized. we make no provision
+        // for automatically re-raising it when restored.
+        if (modeEvent->mSizeMode == nsSizeMode_Maximized) {
+          PRUint32 zLevel;
+          eventWindow->GetZLevel(&zLevel);
+          if (zLevel > nsIXULWindow::normalZ)
+            eventWindow->SetZLevel(nsIXULWindow::normalZ);
+        }
+
         aEvent->widget->SetSizeMode(modeEvent->mSizeMode);
+
         // persist mode, but not immediately, because in many (all?)
         // cases this will merge with the similar call in NS_SIZE and
         // write the attribute values only once.
-        eventWindow->SetPersistenceTimer(PR_FALSE, PR_FALSE, PR_TRUE);
+        eventWindow->SetPersistenceTimer(PAD_MISC);
         result = nsEventStatus_eConsumeDoDefault;
+
         // Note the current implementation of SetSizeMode just stores
         // the new state; it doesn't actually resize. So here we store
         // the state and pass the event on to the OS. The day is coming
@@ -595,8 +609,11 @@ nsWebShellWindow::HandleEvent(nsGUIEvent *aEvent)
 
             // since the window has been activated, replace persistent size data
             // with the newly activated window's
-            if (eventWindow->mChromeLoaded)
-              eventWindow->PersistPositionAndSize(PR_TRUE, PR_TRUE, PR_TRUE);
+            if (eventWindow->mChromeLoaded) {
+              eventWindow->PersistentAttributesDirty(
+                             PAD_POSITION | PAD_SIZE | PAD_MISC);
+              eventWindow->SavePersistentAttributes();
+            }
 
             break;
           }
@@ -1157,14 +1174,15 @@ nsWebShellWindow::DestroyModalDialogEvent(PLEvent *aEvent)
 }
 
 void
-nsWebShellWindow::SetPersistenceTimer(PRBool aSize, PRBool aPosition, PRBool aMode)
+nsWebShellWindow::SetPersistenceTimer(PRUint32 aDirtyFlags)
 {
+  if (!mSPTimerLock)
+    return;
+
   PR_Lock(mSPTimerLock);
   if (mSPTimer) {
     mSPTimer->SetDelay(SIZE_PERSISTENCE_TIMEOUT);
-    mSPTimerSize |= aSize;
-    mSPTimerPosition |= aPosition;
-    mSPTimerMode |= aMode;
+    PersistentAttributesDirty(aDirtyFlags);
   } else {
     nsresult rv;
     mSPTimer = do_CreateInstance("@mozilla.org/timer;1", &rv);
@@ -1172,9 +1190,7 @@ nsWebShellWindow::SetPersistenceTimer(PRBool aSize, PRBool aPosition, PRBool aMo
       NS_ADDREF_THIS(); // for the timer, which holds a reference to this window
       mSPTimer->InitWithFuncCallback(FirePersistenceTimer, this,
                                      SIZE_PERSISTENCE_TIMEOUT, nsITimer::TYPE_ONE_SHOT);
-      mSPTimerSize = aSize;
-      mSPTimerPosition = aPosition;
-      mSPTimerMode = aMode;
+      PersistentAttributesDirty(aDirtyFlags);
     }
   }
   PR_Unlock(mSPTimerLock);
@@ -1184,12 +1200,10 @@ void
 nsWebShellWindow::FirePersistenceTimer(nsITimer *aTimer, void *aClosure)
 {
   nsWebShellWindow *win = NS_STATIC_CAST(nsWebShellWindow *, aClosure);
+  if (!win->mSPTimerLock)
+    return;
   PR_Lock(win->mSPTimerLock);
-  win->PersistPositionAndSize(win->mSPTimerPosition, win->mSPTimerSize,
-                              win->mSPTimerMode);
-  win->mSPTimerSize = PR_FALSE;
-  win->mSPTimerPosition = PR_FALSE;
-  win->mSPTimerMode = PR_FALSE;
+  win->SavePersistentAttributes();
   PR_Unlock(win->mSPTimerLock);
 }
 
@@ -1409,8 +1423,7 @@ void nsWebShellWindow::LoadContentAreas() {
     if (docViewer) {
       nsCOMPtr<nsIDocument> doc;
       docViewer->GetDocument(getter_AddRefs(doc));
-      nsCOMPtr<nsIURI> mainURL;
-      doc->GetDocumentURL(getter_AddRefs(mainURL));
+      nsIURI *mainURL = doc->GetDocumentURL();
       if (mainURL) {
         nsCAutoString search;
         nsCOMPtr<nsIURL> url = do_QueryInterface(mainURL);
@@ -1648,15 +1661,19 @@ NS_IMETHODIMP nsWebShellWindow::Destroy()
    }
 #endif
 
+  nsCOMPtr<nsIWebShellWindow> kungFuDeathGrip(this);
+  if (mSPTimerLock) {
   PR_Lock(mSPTimerLock);
   if (mSPTimer) {
     mSPTimer->Cancel();
+    SavePersistentAttributes();
     mSPTimer = nsnull;
-    PersistPositionAndSize(mSPTimerPosition, mSPTimerSize, mSPTimerMode);
     NS_RELEASE_THIS(); // the timer held a reference to us
   }
   PR_Unlock(mSPTimerLock);
-
+  PR_DestroyLock(mSPTimerLock);
+  mSPTimerLock = nsnull;
+  }
   return nsXULWindow::Destroy();
 }
 

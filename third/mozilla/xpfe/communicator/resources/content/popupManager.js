@@ -64,14 +64,12 @@ function Startup() {
 
   popupStringBundle = document.getElementById("popupStringBundle");
 
-  // window.args[0]: host to prefill
-  // window.args[1]: true = opened from pref panel, false = opened from tools menu or statusbar icon
-
   sortAscending = (permissionsTree.getAttribute("sortAscending") == "true");
 
   loadPermissions(permissions);
   loadTree();
-   
+
+  // window.arguments[0] contains the host to prefill   
   if (window.arguments[0] != "") {
     // fill textbox to unblock/add to whitelist
     var prefill = window.arguments[0];
@@ -81,8 +79,6 @@ function Startup() {
   }
 
   document.documentElement.addEventListener("keypress", onReturnHit, true);
-
-  window.sizeToContent();
 }
 
 function getMatch(host) {
@@ -165,9 +161,6 @@ function onAccept() {
     } 
   }
 
-  if (window.arguments[1])
-    window.opener.setButtons();
-
   return true;                                           
 }
 
@@ -236,28 +229,19 @@ function deletePermissions() {
         k++;
       }
       permissions.splice(j, k-j);
+      permissionsTreeView.rowCount -= k - j;
+      permissionsTree.treeBoxObject.rowCountChanged(j, j - k);
     }
   }
 
-  var box = permissionsTree.treeBoxObject;
-  var firstRow = box.getFirstVisibleRow();
-  if (firstRow > (permissions.length - 1) ) {
-    firstRow = permissions.length - 1;
-  }
-  permissionsTreeView.rowCount = permissions.length;
-  box.rowCountChanged(0, permissions.length);
-  box.scrollToRow(firstRow);
-
   if (permissions.length) {
     var nextSelection = (selections[0] < permissions.length) ? selections[0] : permissions.length - 1;
-    box.view.selection.select(-1); 
-    box.view.selection.select(nextSelection);
+    permissionsTreeView.selection.select(nextSelection);
+    permissionsTree.treeBoxObject.ensureRowIsVisible(nextSelection);
   } 
   else {
     document.getElementById("removePermission").setAttribute("disabled", "true")
     document.getElementById("removeAllPermissions").setAttribute("disabled","true");
-
-    permissionsTree.treeBoxObject.view.selection.select(-1); 
   }
 }
 
@@ -279,10 +263,9 @@ function updatePendingRemovals(host) {
 }
 
 function clearTree() {
-  permissionsTree.treeBoxObject.view.selection.select(-1); 
-
+  var oldCount = permissionsTreeView.rowCount;
   permissionsTreeView.rowCount = 0;
-  permissionsTree.treeBoxObject.invalidate();
+  permissionsTree.treeBoxObject.rowCountChanged(0, -oldCount);
 
   document.getElementById("removePermission").setAttribute("disabled", "true")
   document.getElementById("removeAllPermissions").setAttribute("disabled","true");

@@ -21,7 +21,7 @@
  *
  * Contributor(s):
  * Original Author: David W. Hyatt (hyatt@netscape.com)
- *  Brian Ryner <bryner@netscape.com>
+ *  Brian Ryner <bryner@brianryner.com>
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either the GNU General Public License Version 2 or later (the "GPL"), or 
@@ -45,6 +45,7 @@
 #include "nsIFrame.h"
 #include "nsTreeBodyFrame.h"
 #include "nsIAtom.h"
+#include "nsINodeInfo.h"
 #include "nsXULAtoms.h"
 #include "nsChildIterator.h"
 
@@ -124,14 +125,14 @@ static void FindBodyElement(nsIContent* aParent, nsIContent** aResult)
   ChildIterator iter, last;
   for (ChildIterator::Init(aParent, &iter, &last); iter != last; ++iter) {
     nsCOMPtr<nsIContent> content = *iter;
-    nsCOMPtr<nsIAtom> tag;
-    content->GetTag(getter_AddRefs(tag));
-    if (tag.get() == nsXULAtoms::treechildren) {
+
+    nsINodeInfo *ni = content->GetNodeInfo();
+    if (ni && ni->Equals(nsXULAtoms::treechildren, kNameSpaceID_XUL)) {
       *aResult = content;
       NS_ADDREF(*aResult);
       break;
     }
-    else if (tag != nsXULAtoms::templateAtom) {
+    else if (ni && !ni->Equals(nsXULAtoms::templateAtom, kNameSpaceID_XUL)) {
       FindBodyElement(content, aResult);
       if (*aResult)
         break;
@@ -372,14 +373,6 @@ NS_IMETHODIMP nsTreeBoxObject::InvalidateRange(PRInt32 aStart, PRInt32 aEnd)
   nsITreeBoxObject* body = GetTreeBody();
   if (body)
     return body->InvalidateRange(aStart, aEnd);
-  return NS_OK;
-}
-
-NS_IMETHODIMP nsTreeBoxObject::InvalidateScrollbar()
-{
-  nsITreeBoxObject* body = GetTreeBody();
-  if (body)
-    return body->InvalidateScrollbar();
   return NS_OK;
 }
 

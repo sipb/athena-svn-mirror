@@ -27,14 +27,15 @@ Contributor(s):
 <!ENTITY composeMsgLink.label         "Compose a new message"> 
 
 <!ENTITY newsSectionHdr.label         "Newsgroups"> 
-<!ENTITY subscribeNewsLink.label      "Subscribe to newsgroups"> 
+<!ENTITY subscribeNewsLink.label      "Manage newsgroup subscriptions"> 
 
 <!ENTITY accountsSectionHdr.label     "Accounts"> 
+<!ENTITY subscribeImapFolders.label   "Manage folder subscriptions"> 
 <!ENTITY settingsLink.label           "View settings for this account"> 
 <!ENTITY newAcctLink.label            "Create a new account"> 
 
 <!ENTITY advFeaturesSectionHdr.label  "Advanced Features"> 
 <!ENTITY searchMsgsLink.label         "Search messages"> 
-<!ENTITY filtersLink.label            "Create message filters">
+<!ENTITY filtersLink.label            "Manage message filters">
 <!ENTITY junkSettings.label           "Junk mail settings">
 <!ENTITY offlineLink.label            "Offline settings">

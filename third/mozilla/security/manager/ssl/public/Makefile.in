@@ -17,7 +17,7 @@
 # Rights Reserved.
 #
 # Contributor(s): 
-#  Brian Ryner <bryner@netscape.com>
+#  Brian Ryner <bryner@brianryner.com>
 #  Javier Delgadillo <javi@netscape.com>
 #  Terry Hayes <thayes@netscape.com>
 #
@@ -49,6 +49,7 @@ XPIDLSRCS = \
     nsICertSelect.idl \
     nsIX509Cert.idl \
     nsIX509CertDB.idl \
+    nsIX509CertDB2.idl \
     nsIPKCS11Slot.idl \
     nsIPK11TokenDB.idl \
     nsICertificateDialogs.idl \

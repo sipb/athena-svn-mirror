@@ -36,7 +36,6 @@
 #define TRANSFRMX_EXPR_H
 
 #include "baseutils.h"
-#include "dom.h"
 #include "List.h"
 #include "nsString.h"
 #include "nsIAtom.h"
@@ -49,10 +48,11 @@
   Much of this code was ported from XSL:P.
 */
 
-class NodeSet;
 class txIParseContext;
 class txIMatchContext;
 class txIEvalContext;
+class txNodeSet;
+class txXPathNode;
 
 /**
  * A Base Class for all XSL Expressions
@@ -116,9 +116,12 @@ public:
     void toString(nsAString& aDest);
 
     /**
-     * Adds the given parameter to this FunctionCall's parameter list
-     * @param expr the Expr to add to this FunctionCall's parameter list
-    **/
+     * Adds the given parameter to this FunctionCall's parameter list.
+     * The ownership of the given Expr is passed over to the FunctionCall,
+     * even on failure.
+     * @param aExpr the Expr to add to this FunctionCall's parameter list
+     * @return nsresult indicating out of memory
+     */
     nsresult addParam(Expr* aExpr);
 
     /**
@@ -164,7 +167,7 @@ protected:
      * If the result is not a NodeSet an error is returned.
      */
     nsresult evaluateToNodeSet(Expr* aExpr, txIEvalContext* aContext,
-                               NodeSet** aResult);
+                               txNodeSet** aResult);
 
     /*
      * Returns the name of the function as an atom.
@@ -209,13 +212,14 @@ public:
      * standalone. The NodeTest node() is different to the
      * Pattern "node()" (document node isn't matched)
      */
-    virtual MBool matches(Node* aNode, txIMatchContext* aContext) = 0;
+    virtual PRBool matches(const txXPathNode& aNode,
+                           txIMatchContext* aContext) = 0;
     virtual double getDefaultPriority() = 0;
     virtual void toString(nsAString& aDest) = 0;
 };
 
 #define TX_DECL_NODE_TEST \
-    MBool matches(Node* aNode, txIMatchContext* aContext); \
+    PRBool matches(const txXPathNode& aNode, txIMatchContext* aContext); \
     double getDefaultPriority(); \
     void toString(nsAString& aDest)
 
@@ -230,7 +234,7 @@ public:
      * principal node type
      */
     txNameTest(nsIAtom* aPrefix, nsIAtom* aLocalName, PRInt32 aNSID,
-               Node::NodeType aNodeType);
+               PRUint16 aNodeType);
 
     ~txNameTest();
 
@@ -240,7 +244,7 @@ private:
     nsCOMPtr<nsIAtom> mPrefix;
     nsCOMPtr<nsIAtom> mLocalName;
     PRInt32 mNamespace;
-    Node::NodeType mNodeType;
+    PRUint16 mNodeType;
 };
 
 /*
@@ -294,12 +298,15 @@ public:
     virtual ~PredicateList();
 
     /**
-     * Adds the given Expr to the list
-     * @param expr the Expr to add to the list
-    **/
-    void add(Expr* expr);
+     * Adds the given Expr to the list.
+     * The ownership of the given Expr is passed over the PredicateList,
+     * even on failure.
+     * @param aExpr the Expr to add to the list
+     * @return nsresult indicating out of memory
+     */
+    nsresult add(Expr* aExpr);
 
-    nsresult evaluatePredicates(NodeSet* aNodes, txIMatchContext* aContext);
+    nsresult evaluatePredicates(txNodeSet* aNodes, txIMatchContext* aContext);
 
     /**
      * returns true if this predicate list is empty
@@ -321,12 +328,10 @@ protected:
     List predicates;
 }; //-- PredicateList
 
-class LocationStep : public PredicateList, public Expr {
-
+class LocationStep : public PredicateList,
+                     public Expr
+{
 public:
-
-    // Axis Identifier Types
-    //-- LF changed from static const short to enum
     enum LocationStepType {
         ANCESTOR_AXIS = 0,
         ANCESTOR_OR_SELF_AXIS,
@@ -348,22 +353,24 @@ public:
      * @param nodeExpr the NodeExpr to use when matching Nodes
      * @param axisIdentifier the Axis Identifier in which to search for nodes
     **/
-    LocationStep(nsAutoPtr<txNodeTest> aNodeTest, LocationStepType aAxisIdentifier);
+    LocationStep(nsAutoPtr<txNodeTest>& aNodeTest,
+                 LocationStepType aAxisIdentifier)
+        : mNodeTest(aNodeTest),
+          mAxisIdentifier(aAxisIdentifier)
+    {
+    }
 
     TX_DECL_EXPR;
 
 private:
+    void fromDescendants(const txXPathNode& aNode, txIMatchContext* aCs,
+                         txNodeSet* aNodes);
+    void fromDescendantsRev(const txXPathNode& aNode, txIMatchContext* aCs,
+                            txNodeSet* aNodes);
 
     nsAutoPtr<txNodeTest> mNodeTest;
     LocationStepType mAxisIdentifier;
-
-    void fromDescendants(Node* node, txIMatchContext* aContext,
-                         NodeSet* nodes);
-    void fromDescendantsRev(Node* node, txIMatchContext* aContext,
-                            NodeSet* nodes);
-
-}; //-- LocationStep
-
+};
 
 class FilterExpr : public PredicateList, public Expr {
 
@@ -372,18 +379,16 @@ public:
     /**
      * Creates a new FilterExpr using the given Expr
      * @param expr the Expr to use for evaluation
-    **/
-    FilterExpr(Expr* aExpr);
-
-    /**
-     * Destructor, will delete all predicates and the given Expr
-    **/
-    virtual ~FilterExpr();
+     */
+    FilterExpr(nsAutoPtr<Expr>& aExpr)
+        : expr(aExpr)
+    {
+    }
 
     TX_DECL_EXPR;
 
 private:
-    Expr* expr;
+    nsAutoPtr<Expr> expr;
 
 }; //-- FilterExpr
 
@@ -413,15 +418,19 @@ public:
     //-- LF, changed from static const short to enum
     enum _AdditiveExprType { ADDITION = 1, SUBTRACTION };
 
-     AdditiveExpr(Expr* leftExpr, Expr* rightExpr, short op);
-     ~AdditiveExpr();
+     AdditiveExpr(nsAutoPtr<Expr>& aLeftExpr, nsAutoPtr<Expr>& aRightExpr,
+                  short aOp)
+         : op(aOp),
+           leftExpr(aLeftExpr),
+           rightExpr(aRightExpr)
+    {
+    }
 
     TX_DECL_EXPR;
 
 private:
     short op;
-    Expr* leftExpr;
-    Expr* rightExpr;
+    nsAutoPtr<Expr> leftExpr, rightExpr;
 }; //-- AdditiveExpr
 
 /**
@@ -431,13 +440,15 @@ class UnaryExpr : public Expr {
 
 public:
 
-     UnaryExpr(Expr* expr);
-     ~UnaryExpr();
+    UnaryExpr(nsAutoPtr<Expr>& aExpr)
+        : expr(aExpr)
+    {
+    }
 
     TX_DECL_EXPR;
 
 private:
-    Expr* expr;
+    nsAutoPtr<Expr> expr;
 }; //-- UnaryExpr
 
 /**
@@ -451,15 +462,19 @@ public:
     //-- BooleanExpr Types
     enum _BooleanExprType { AND = 1, OR };
 
-     BooleanExpr(Expr* leftExpr, Expr* rightExpr, short op);
-     ~BooleanExpr();
+     BooleanExpr(nsAutoPtr<Expr>& aLeftExpr, nsAutoPtr<Expr>& aRightExpr,
+                 short aOp)
+         : op(aOp),
+           leftExpr(aLeftExpr),
+           rightExpr(aRightExpr)
+    {
+    }
 
     TX_DECL_EXPR;
 
 private:
     short op;
-    Expr* leftExpr;
-    Expr* rightExpr;
+    nsAutoPtr<Expr> leftExpr, rightExpr;
 }; //-- BooleanExpr
 
 /**
@@ -478,15 +493,20 @@ public:
     //-- LF, changed from static const short to enum
     enum _MultiplicativeExprType { DIVIDE = 1, MULTIPLY, MODULUS };
 
-     MultiplicativeExpr(Expr* leftExpr, Expr* rightExpr, short op);
-     ~MultiplicativeExpr();
+     MultiplicativeExpr(nsAutoPtr<Expr>& aLeftExpr,
+                        nsAutoPtr<Expr>& aRightExpr,
+                        short aOp)
+         : op(aOp),
+           leftExpr(aLeftExpr),
+           rightExpr(aRightExpr)
+    {
+    }
 
     TX_DECL_EXPR;
 
 private:
     short op;
-    Expr* leftExpr;
-    Expr* rightExpr;
+    nsAutoPtr<Expr> leftExpr, rightExpr;
 }; //-- MultiplicativeExpr
 
 /**
@@ -511,7 +531,14 @@ public:
         GREATER_OR_EQUAL
     };
 
-    RelationalExpr(Expr* aLeftExpr, Expr* aRightExpr, RelationalExprType aOp);
+    RelationalExpr(nsAutoPtr<Expr>& aLeftExpr, nsAutoPtr<Expr>& aRightExpr,
+                   RelationalExprType aOp)
+        : mLeftExpr(aLeftExpr),
+          mRightExpr(aRightExpr),
+          mOp(aOp)
+    {
+    }
+
 
     TX_DECL_EXPR;
 
@@ -567,15 +594,23 @@ public:
 
     /**
      * Adds the Expr to this PathExpr
-     * @param expr the Expr to add to this PathExpr
-    **/
-    void addExpr(Expr* expr, PathOperator pathOp);
+     * The ownership of the given Expr is passed over the PathExpr,
+     * even on failure.
+     * @param aExpr the Expr to add to this PathExpr
+     * @return nsresult indicating out of memory
+     */
+    nsresult addExpr(Expr* aExpr, PathOperator pathOp);
 
     TX_DECL_EXPR;
 
 private:
-    struct PathExprItem {
-        Expr* expr;
+    class PathExprItem {
+    public:
+        PathExprItem(Expr* aExpr, PathOperator aOp)
+            : expr(aExpr),
+              pathOp(aOp)
+        {}
+        nsAutoPtr<Expr> expr;
         PathOperator pathOp;
     };
 
@@ -585,11 +620,10 @@ private:
      * Selects from the descendants of the context node
      * all nodes that match the Expr
      */
-    nsresult evalDescendants(Expr* aStep, Node* aNode,
+    nsresult evalDescendants(Expr* aStep, const txXPathNode& aNode,
                              txIMatchContext* aContext,
-                             NodeSet* resNodes);
-
-}; //-- PathExpr
+                             txNodeSet* resNodes);
+};
 
 /**
  * This class represents a RootExpr, which only matches the Document node
@@ -631,9 +665,12 @@ public:
 
     /**
      * Adds the PathExpr to this UnionExpr
-     * @param expr the Expr to add to this UnionExpr
-    **/
-    void addExpr(Expr* expr);
+     * The ownership of the given Expr is passed over the UnionExpr,
+     * even on failure.
+     * @param aExpr the Expr to add to this UnionExpr
+     * @return nsresult indicating out of memory
+     */
+    nsresult addExpr(Expr* aExpr);
 
     TX_DECL_EXPR;
 
@@ -643,7 +680,6 @@ private:
 
 }; //-- UnionExpr
 
-/* */
 #endif
 
 

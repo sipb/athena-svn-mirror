@@ -1,4 +1,3 @@
-
 <!-- ***** BEGIN LICENSE BLOCK *****
    - Version: MPL 1.1/GPL 2.0/LGPL 2.1
    -
@@ -39,11 +38,16 @@
 
 <!ENTITY calendar.label             "Calendar" >
 <!ENTITY calendarPanel.label        "Calendar" >
-<!ENTITY calendar.accesskey         "c" >
+<!ENTITY calendar.accesskey         "C" >
 <!ENTITY calendar.publish.label     "Publishing">
+<!ENTITY calendar.general.label     "General">
 <!ENTITY calendar.alarms.label      "Alarms">
 <!ENTITY calendar.views.label       "Views">
 <!ENTITY calendar.timezone.label    "My Timezone">
+
+<!ENTITY prefWindow.title            "Calendar Options">
+<!ENTITY prefWindow.size             "width: 52.3em; height: 41em;">
+<!ENTITY prefWindow.category         "Category">
 
 <!ENTITY pref.mainbox.label         "General Settings" >
 <!ENTITY pref.alarmgoesoff.label "When an alarm goes off:">
@@ -58,6 +62,8 @@
 <!ENTITY pref.defalarm4todos.label "Default alarm setting for tasks:">
 <!ENTITY pref.alarm.on "On">
 <!ENTITY pref.alarm.off "Off">
+<!ENTITY pref.defalarmlen4events.label "Default time an alarm goes off before an event:">
+<!ENTITY pref.defalarmlen4todos.label "Default time an alarm goes off before a task:">
 
 <!ENTITY pref.dateformat.label      "Date Text Format:" >
 <!ENTITY pref.dateformat.long       "Long" >
@@ -83,7 +89,6 @@
 <!ENTITY pref.numberofweeks.5      "5 Weeks" >
 <!ENTITY pref.numberofweeks.6      "6 Weeks" >
 <!ENTITY pref.numberofpreviousweeks.label     "Number of Previous Weeks:" >
-
 
 <!ENTITY pref.hour.help.description    "Overwritten if events are outside these times" >
 <!ENTITY pref.hour.00    "00:00" >
@@ -111,16 +116,16 @@
 <!ENTITY pref.hour.22    "22:00" >
 <!ENTITY pref.hour.23    "23:00" >
 
-<!ENTITY pref.calendar.view.allview.caption "General"> 
-<!ENTITY pref.calendar.view.dayview.caption "Day View"> 
-<!ENTITY pref.calendar.view.weekview.caption "Week View"> 
-<!ENTITY pref.calendar.view.weekanddayview.caption "Week and Day Views"> 
-<!ENTITY pref.calendar.view.monthview.caption "Month View"> 
-<!ENTITY pref.calendar.view.multiweekview.caption "Multiweek View"> 
+<!ENTITY pref.calendar.view.allview.caption "General">
+<!ENTITY pref.calendar.view.dayview.caption "Day View">
+<!ENTITY pref.calendar.view.weekview.caption "Week View">
+<!ENTITY pref.calendar.view.weekanddayview.caption "Week and Day Views">
+<!ENTITY pref.calendar.view.monthview.caption "Month View">
+<!ENTITY pref.calendar.view.multiweekview.caption "Multiweek View">
 
-<!ENTITY pref.calendar.view.restrict.label "Restrict Views to "> 
-<!ENTITY pref.calendar.view.starttime.label "Start time:"> 
-<!ENTITY pref.calendar.view.endtime.label   "End time:"> 
+<!ENTITY pref.calendar.view.restrict.label "Restrict Views to ">
+<!ENTITY pref.calendar.view.starttime.label "Start time:">
+<!ENTITY pref.calendar.view.endtime.label   "End time:">
 
 <!ENTITY pref.categories.label   "Categories" >
 
@@ -135,8 +140,7 @@
 
 <!ENTITY pref.minutes.label "Minutes">
 
-<!-- Calendar Timezone preferences information -->        
-        
+<!-- Calendar Timezone preferences information -->
 <!ENTITY pref.calendar.timezone.label "My Timezone">
 <!ENTITY pref.calendar.timezone.caption "Timezone">
 <!ENTITY pref.defaultzone.label     "Default Timezone:" >

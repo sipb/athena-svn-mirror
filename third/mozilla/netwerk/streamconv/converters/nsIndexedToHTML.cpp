@@ -299,7 +299,7 @@ nsIndexedToHTML::OnStartRequest(nsIRequest* request, nsISupports *aContext) {
     buffer.Append(strNCR);
 
     buffer.Append(NS_LITERAL_STRING("</title><base href=\""));    
-    buffer.Append(NS_ConvertASCIItoUCS2(baseUri));
+    AppendASCIItoUTF16(baseUri, buffer);
     buffer.Append(NS_LITERAL_STRING("\"/>\n"));
 
     buffer.Append(NS_LITERAL_STRING("<style type=\"text/css\">\n") +
@@ -517,11 +517,11 @@ nsIndexedToHTML::OnIndexAvailable(nsIRequest *aRequest,
     switch (type) {
     case nsIDirIndex::TYPE_DIRECTORY:
     case nsIDirIndex::TYPE_SYMLINK:
-        pushBuffer.Append(NS_LITERAL_STRING("resource:/res/html/gopher-menu.gif\" alt=\"Directory: "));
+        pushBuffer.Append(NS_LITERAL_STRING("resource://gre/res/html/gopher-menu.gif\" alt=\"Directory: "));
         break;
     case nsIDirIndex::TYPE_FILE:
     case nsIDirIndex::TYPE_UNKNOWN:
-        pushBuffer.Append(NS_LITERAL_STRING("resource:/res/html/gopher-unknown.gif\" alt=\"File: "));
+        pushBuffer.Append(NS_LITERAL_STRING("resource://gre/res/html/gopher-unknown.gif\" alt=\"File: "));
         break;
     }
     pushBuffer.Append(NS_LITERAL_STRING("\"/>"));

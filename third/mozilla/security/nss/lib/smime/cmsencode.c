@@ -34,7 +34,7 @@
 /*
  * CMS encoding.
  *
- * $Id: cmsencode.c,v 1.1.1.1 2003-02-14 17:29:00 rbasch Exp $
+ * $Id: cmsencode.c,v 1.1.1.2 2004-02-27 16:03:12 rbasch Exp $
  */
 
 #include "cmslocal.h"
@@ -43,7 +43,6 @@
 #include "key.h"
 #include "secasn1.h"
 #include "secoid.h"
-#include "secrng.h"
 #include "secitem.h"
 #include "pk11func.h"
 #include "secerr.h"

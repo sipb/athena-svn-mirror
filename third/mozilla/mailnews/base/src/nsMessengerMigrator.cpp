@@ -84,6 +84,9 @@
 #include "nsIAddressBook.h"
 #include "nsAbBaseCID.h"
 
+#if defined(MOZ_LDAP_XPCOM)
+#include "nsILDAPPrefsService.h"
+#endif
 #include "nsIMsgFilterService.h"
 #include "nsIMsgFilterList.h"
 
@@ -96,7 +99,6 @@
 #endif
 
 static NS_DEFINE_CID(kPrefServiceCID, NS_PREF_CID);
-static NS_DEFINE_CID(kAddressBookCID, NS_ADDRESSBOOK_CID);
 
 #define IMAP_SCHEMA "imap:/"
 #define IMAP_SCHEMA_LENGTH 6
@@ -171,6 +173,8 @@ static NS_DEFINE_CID(kAddressBookCID, NS_ADDRESSBOOK_CID);
 #define PREF_4X_NEWS_MAX_ARTICLES "news.max_articles"
 #define PREF_4X_NEWS_NOTIFY_ON "news.notify.on"
 #define PREF_4X_NEWS_MARK_OLD_READ "news.mark_old_read"
+#define PREF_4X_MAIL_ATTACH_VCARD "mail.attach_vcard"
+#define PREF_4X_MAIL_IDENTITY_VCARD_ROOT "mail.identity.vcard"
 
 #define PREF_4X_AUTOCOMPLETE_ON_LOCAL_AB "ldap_2.autoComplete.useAddressBooks"
 #define PREF_MOZILLA_AUTOCOMPLETE_ON_LOCAL_AB "mail.enable_autocomplete"
@@ -178,6 +182,8 @@ static NS_DEFINE_CID(kAddressBookCID, NS_ADDRESSBOOK_CID);
 #define DEFAULT_FCC_FOLDER_PREF_NAME "mail.identity.default.fcc_folder"
 #define DEFAULT_DRAFT_FOLDER_PREF_NAME  "mail.identity.default.draft_folder"
 #define DEFAULT_STATIONERY_FOLDER_PREF_NAME "mail.identity.default.stationery_folder"
+
+#define DEFAULT_PAB_FILENAME_PREF_NAME "ldap_2.servers.pab.filename"
 
 // this is for the hidden preference setting in mozilla/modules/libpref/src/init/mailnews.js
 // pref("mail.migration.copyMailFiles", true);
@@ -211,8 +217,7 @@ static NS_DEFINE_CID(kAddressBookCID, NS_ADDRESSBOOK_CID);
   nsXPIDLCString macro_oldStr; \
   nsresult macro_rv; \
   macro_rv = IDENTITY->MACRO_GETTER(getter_Copies(macro_oldStr));	\
-  if (NS_FAILED(macro_rv)) return macro_rv;	\
-  if (!macro_oldStr) { \
+  if (NS_FAILED(macro_rv) || !macro_oldStr) { \
     IDENTITY->MACRO_SETTER("");	\
   }\
   else {	\
@@ -413,9 +418,7 @@ nsresult nsMessengerMigrator::Init()
 nsresult 
 nsMessengerMigrator::Shutdown()
 {
-  if (m_prefs) {
 	m_prefs = nsnull;
-  }
 
   m_haveShutdown = PR_TRUE;
   return NS_OK;
@@ -729,12 +732,16 @@ nsMessengerMigrator::UpgradePrefs()
     rv = MigrateNewsAccounts(identity);
     if (NS_FAILED(rv)) return rv;
 
+    // this will upgrade the ldap prefs
+#if defined(MOZ_LDAP_XPCOM)
+    nsCOMPtr <nsILDAPPrefsService> ldapPrefsService = do_GetService("@mozilla.org/ldapprefs-service;1", &rv);
+#endif    
     rv = MigrateAddressBookPrefs();
     NS_ENSURE_SUCCESS(rv,rv);
 
     rv = MigrateAddressBooks();
     if (NS_FAILED(rv)) return rv;
-    
+
     // we're done migrating, let's save the prefs
     rv = m_prefs->SavePrefFile(nsnull);
     if (NS_FAILED(rv)) return rv;
@@ -742,6 +749,7 @@ nsMessengerMigrator::UpgradePrefs()
 	// remove the temporary identity we used for migration purposes
     identity->ClearAllValues();
     rv = accountManager->RemoveIdentity(identity);
+
     return rv;
 }
 
@@ -788,9 +796,23 @@ nsMessengerMigrator::MigrateIdentity(nsIMsgIdentity *identity)
   MIGRATE_SIMPLE_STR_PREF(PREF_4X_MAIL_IDENTITY_REPLY_TO,identity,SetReplyTo)
   MIGRATE_SIMPLE_WSTR_PREF(PREF_4X_MAIL_IDENTITY_ORGANIZATION,identity,SetOrganization)
   MIGRATE_SIMPLE_BOOL_PREF(PREF_4X_MAIL_COMPOSE_HTML,identity,SetComposeHtml)
-  MIGRATE_SIMPLE_FILE_PREF_TO_FILE_PREF(PREF_4X_MAIL_SIGNATURE_FILE,identity,SetSignature);
-  MIGRATE_SIMPLE_FILE_PREF_TO_BOOL_PREF(PREF_4X_MAIL_SIGNATURE_FILE,identity,SetAttachSignature);
-  MIGRATE_SIMPLE_INT_PREF(PREF_4X_MAIL_SIGNATURE_DATE,identity,SetSignatureDate);
+  MIGRATE_SIMPLE_FILE_PREF_TO_FILE_PREF(PREF_4X_MAIL_SIGNATURE_FILE,identity,SetSignature)
+  MIGRATE_SIMPLE_FILE_PREF_TO_BOOL_PREF(PREF_4X_MAIL_SIGNATURE_FILE,identity,SetAttachSignature)
+  MIGRATE_SIMPLE_INT_PREF(PREF_4X_MAIL_SIGNATURE_DATE,identity,SetSignatureDate)
+
+  MIGRATE_SIMPLE_BOOL_PREF(PREF_4X_MAIL_ATTACH_VCARD, identity, SetAttachVCard)
+  nsCOMPtr <nsIAddressBook> ab = do_CreateInstance(NS_ADDRESSBOOK_CONTRACTID);
+  if (ab) 
+  {
+      nsXPIDLCString escapedVCardStr;
+      rv = ab->Convert4xVCardPrefs(PREF_4X_MAIL_IDENTITY_VCARD_ROOT, getter_Copies(escapedVCardStr));
+      if (NS_SUCCEEDED(rv) && !escapedVCardStr.IsEmpty()) 
+      {
+          rv = identity->SetEscapedVCard(escapedVCardStr.get());
+          NS_ASSERTION(NS_SUCCEEDED(rv), "failed to set escaped vCard string");
+      }
+  }    
+
   /* NOTE:  if you add prefs here, make sure you update nsMsgIdentity::Copy() */
   return NS_OK;
 }
@@ -1161,10 +1183,6 @@ nsMessengerMigrator::MigrateLocalMailAccount()
   noServer = do_QueryInterface(server, &rv);
   if (NS_FAILED(rv)) return rv;
 
-  // we don't want "nobody at Local Folders" to show up in the
-  // folder pane, so we set the pretty name to "Local Folders"
-  server->SetPrettyName(mLocalFoldersName.get());
-  
   // create the directory structure for old 4.x "Local Mail"
   // under <profile dir>/Mail/Local Folders or
   // <"mail.directory" pref>/Local Folders 
@@ -1225,6 +1243,10 @@ nsMessengerMigrator::MigrateLocalMailAccount()
   if (!dirExists) {
     mailDirSpec->CreateDir();
   }
+  
+  // we don't want "nobody at Local Folders" to show up in the
+  // folder pane, so we set the pretty name to "Local Folders"
+  server->SetPrettyName(mLocalFoldersName.get());
   
   // pass the "Local Folders" server so the send later uri pref 
   // will be "mailbox://nobody@Local Folders/Unsent Messages"
@@ -1901,10 +1923,35 @@ nsMessengerMigrator::migrateAddressBookPrefEnum(const char *aPref, void *aClosur
 #ifdef DEBUG_AB_MIGRATION
   printf("investigate pref: %s\n",aPref);
 #endif
+  nsXPIDLCString abFileName;
   // we only care about ldap_2.servers.*.filename" prefs
   if (!charEndsWith(aPref, ADDRESSBOOK_PREF_NAME_SUFFIX)) return;
       
-  nsXPIDLCString abFileName;
+  // check for pab without a filename and if so, set it to pab.na2.
+  // This is an ugly hack for installations that haven't set 
+  // pab.filename.
+      rv = prefs->CopyCharPref(DEFAULT_PAB_FILENAME_PREF_NAME, getter_Copies(abFileName));
+      if (NS_FAILED(rv))
+      {
+        // pab.filename not set - set it to pab.na2 and pretend aPref is it.
+        prefs->SetCharPref(DEFAULT_PAB_FILENAME_PREF_NAME, "pab.na2");
+        aPref = "ldap_2.servers.pab.filename";
+      }
+
+  // check if this really is an ldap server, in which case, we're not going to migrate
+  // the na2 file for now, since it confuses RDF when the import code adds this
+  // server as a personal address book. I'd like to fix that but it's tricky
+  // and the .na2 file for ldap servers should only be for offline data.
+
+  nsCAutoString serverPrefName(aPref);
+  PRInt32 fileNamePos = serverPrefName.Find(".filename");
+  serverPrefName.Truncate(fileNamePos + 1);
+  serverPrefName.Append("serverName");
+  nsXPIDLCString serverName;
+  rv = prefs->CopyCharPref(serverPrefName.get(), getter_Copies(serverName));
+  if (NS_SUCCEEDED(rv) && !serverName.IsEmpty())
+    return; // skip this - it's an ldap server
+      
   rv = prefs->CopyCharPref(aPref,getter_Copies(abFileName));
   NS_ASSERTION(NS_SUCCEEDED(rv),"ab migration failed: failed to get ab filename");
   if (NS_FAILED(rv)) return;
@@ -2000,7 +2047,7 @@ nsMessengerMigrator::migrateAddressBookPrefEnum(const char *aPref, void *aClosur
   NS_ASSERTION(NS_SUCCEEDED(rv),"ab migration failed: failed to append filename");
   if (NS_FAILED(rv)) return;
      
-  nsCOMPtr <nsIAddressBook> ab = do_CreateInstance(kAddressBookCID, &rv);
+  nsCOMPtr <nsIAddressBook> ab = do_CreateInstance(NS_ADDRESSBOOK_CONTRACTID, &rv);
   NS_ASSERTION(NS_SUCCEEDED(rv) && ab, "failed to get address book");
   if (NS_FAILED(rv) || !ab) return;
 

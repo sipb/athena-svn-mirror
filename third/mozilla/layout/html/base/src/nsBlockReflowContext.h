@@ -106,9 +106,6 @@ public:
                            /* inout */  nsCollapsingMargin& aMargin);
 
 protected:
-  nsStyleUnit GetRealMarginLeftUnit();
-  nsStyleUnit GetRealMarginRightUnit();
-
   nsIPresContext* mPresContext;
   const nsHTMLReflowState& mOuterReflowState;
 
@@ -125,7 +122,6 @@ protected:
   nscoord mX, mY;
   nsHTMLReflowMetrics mMetrics;
   nsCollapsingMargin mTopMargin;
-  PRPackedBool mIsTable;
   PRPackedBool mComputeMaximumWidth;
 };
 

@@ -198,7 +198,7 @@ public:
 }; // class nsSplashScreenOS2
 
 MRESULT EXPENTRY DialogProc( HWND dlg, ULONG msg, MPARAM mp1, MPARAM mp2 );
-void _Optlink ThreadProc (void *splashScreen);
+void ThreadProc (void *splashScreen);
 
 // Simple Win32 mutex wrapper.
 struct Mutex {
@@ -628,7 +628,7 @@ nsSplashScreenOS2 *nsSplashScreenOS2::GetPointer( HWND dlg ) {
     return (nsSplashScreenOS2*)data;
 }
 
-void _Optlink ThreadProc(void *splashScreen) {
+void ThreadProc(void *splashScreen) {
     HAB hab = WinInitialize( 0 );
     HMQ hmq = WinCreateMsgQueue( hab, 0 );
     WinDlgBox( HWND_DESKTOP, HWND_DESKTOP, (PFNWP)DialogProc, NULLHANDLE, IDD_SPLASH, (MPARAM)splashScreen );
@@ -2313,8 +2313,15 @@ nsNativeAppSupportOS2::OpenBrowserWindow( const char *args, PRBool newWindow ) {
         return NS_OK;
     } while ( PR_FALSE );
 
+    nsCOMPtr<nsICmdLineHandler> handler(do_GetService("@mozilla.org/commandlinehandler/general-startup;1?type=browser", &rv));
+    if (NS_FAILED(rv)) return rv;
+
+    nsXPIDLCString chromeUrlForTask;
+    rv = handler->GetChromeUrlForTask(getter_Copies(chromeUrlForTask));
+    if (NS_FAILED(rv)) return rv;
+
     // Last resort is to open a brand new window.
-    return OpenWindow( "chrome://navigator/content", args );
+    return OpenWindow( chromeUrlForTask, args );
 }
 
 //   This opens a special browser window for purposes of priming the pump for

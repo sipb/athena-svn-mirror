@@ -38,7 +38,6 @@
 
 #include "nsMsgIncomingServer.h"
 #include "nscore.h"
-#include "nsCom.h"
 #include "plstr.h"
 #include "prmem.h"
 #include "prprf.h"
@@ -126,14 +125,14 @@ nsMsgIncomingServer::SetKey(const char * serverKey)
 }
     
 NS_IMETHODIMP
-nsMsgIncomingServer::SetRootFolder(nsIFolder * aRootFolder)
+nsMsgIncomingServer::SetRootFolder(nsIMsgFolder * aRootFolder)
 {
 	m_rootFolder = aRootFolder;
 	return NS_OK;
 }
 
 NS_IMETHODIMP
-nsMsgIncomingServer::GetRootFolder(nsIFolder * *aRootFolder)
+nsMsgIncomingServer::GetRootFolder(nsIMsgFolder * *aRootFolder)
 {
   if (!aRootFolder)
     return NS_ERROR_NULL_POINTER;
@@ -154,12 +153,16 @@ NS_IMETHODIMP
 nsMsgIncomingServer::GetRootMsgFolder(nsIMsgFolder **aRootMsgFolder)
 {
   NS_ENSURE_ARG_POINTER(aRootMsgFolder);
-  nsCOMPtr <nsIFolder> rootFolder;
-  nsresult rv = GetRootFolder(getter_AddRefs(rootFolder));
-  if (NS_SUCCEEDED(rv) && rootFolder)
-    rv = rootFolder->QueryInterface(NS_GET_IID(nsIMsgFolder), (void **) aRootMsgFolder);
 
-  return rv;
+  if (!m_rootFolder)
+  {
+    nsresult rv = CreateRootFolder();
+    if (NS_FAILED(rv))
+      return rv;
+  }
+
+  NS_IF_ADDREF(*aRootMsgFolder = m_rootFolder);
+  return NS_OK;
 }
 
 NS_IMETHODIMP
@@ -689,7 +692,7 @@ nsMsgIncomingServer::SetPrettyName(const PRUnichar *value)
 {
     SetUnicharValue("name", value);
     
-    nsCOMPtr<nsIFolder> rootFolder;
+    nsCOMPtr<nsIMsgFolder> rootFolder;
     GetRootFolder(getter_AddRefs(rootFolder));
 
     if (rootFolder)
@@ -773,8 +776,8 @@ NS_IMETHODIMP nsMsgIncomingServer::GetPassword(char ** aPassword)
 NS_IMETHODIMP nsMsgIncomingServer::GetServerRequiresPasswordForBiff(PRBool *aServerRequiresPasswordForBiff)
 {
   NS_ENSURE_ARG_POINTER(aServerRequiresPasswordForBiff);
-	*aServerRequiresPasswordForBiff = PR_TRUE;
-	return NS_OK;
+  *aServerRequiresPasswordForBiff = PR_TRUE;
+  return NS_OK;
 }
 
 NS_IMETHODIMP
@@ -791,7 +794,36 @@ nsMsgIncomingServer::GetPasswordWithUI(const PRUnichar * aPromptMessage, const
   
   if (m_password.IsEmpty()) 
   {
+    // let's see if we have the password in the password manager and  
+    // can avoid this prompting thing. This makes it easier to get embedders
+    // to get up and running w/o a password prompting UI. We already depend on
+    // nsIPasswordManagerInternal so this doesn't introduce a new dependency.
+    nsCOMPtr <nsIPasswordManagerInternal> passwordMgrInt = do_GetService(NS_PASSWORDMANAGER_CONTRACTID, &rv);
+    if(passwordMgrInt) 
+    {
+
+      // Get the current server URI
+      nsXPIDLCString currServerUri;
+      rv = GetServerURI(getter_Copies(currServerUri));
+      NS_ENSURE_SUCCESS(rv, rv);
+
+      nsCAutoString hostFound;
+      nsAutoString userNameFound;
+      nsAutoString passwordFound;
+
+      // Get password entry corresponding to the host URI we are passing in.
+      if (NS_SUCCEEDED(passwordMgrInt->FindPasswordEntry(currServerUri, NS_LITERAL_STRING(""), NS_LITERAL_STRING(""),
+                                             hostFound, userNameFound, passwordFound)))
+      {
+        m_password.AssignWithConversion(passwordFound);
+        *okayValue = PR_TRUE;
+      }
+    }
+  }
+  if (m_password.IsEmpty())
+  {
     nsCOMPtr<nsIAuthPrompt> dialog;
+
     // aMsgWindow is required if we need to prompt
     if (aMsgWindow)
     {
@@ -812,7 +844,7 @@ nsMsgIncomingServer::GetPasswordWithUI(const PRUnichar * aPromptMessage, const
         wwatch->GetNewAuthPrompter(0, getter_AddRefs(dialog));
       if (!dialog) return NS_ERROR_FAILURE;
     }
-    if (NS_SUCCEEDED(rv) && dialog)
+    if (dialog)
     {
       nsXPIDLString uniPassword;
       nsXPIDLCString serverUri;
@@ -842,8 +874,7 @@ nsMsgIncomingServer::GetPasswordWithUI(const PRUnichar * aPromptMessage, const
     } // if we got a prompt dialog
   } // if the password is empty
   
-  rv = GetPassword(aPassword);
-  return rv;
+  return GetPassword(aPassword);
 }
 
 NS_IMETHODIMP
@@ -1717,12 +1748,12 @@ NS_IMETHODIMP nsMsgIncomingServer::GetIntAttribute(const char *aName, PRInt32 *v
 // Check if the password is available and return a boolean indicating whether 
 // it is being authenticated or not.
 NS_IMETHODIMP 
-nsMsgIncomingServer::GetIsAuthenticated(PRBool *isAuthenticated)
+nsMsgIncomingServer::GetPasswordPromptRequired(PRBool *aPasswordIsRequired)
 {
   nsresult rv = NS_OK;
-  NS_ENSURE_ARG_POINTER(isAuthenticated);
+  NS_ENSURE_ARG_POINTER(aPasswordIsRequired);
 
-  *isAuthenticated = PR_FALSE;
+  *aPasswordIsRequired = PR_TRUE;
   // If the password is empty, check to see if it is stored and to be retrieved
   if (m_password.IsEmpty()) {
     nsCOMPtr <nsIPasswordManagerInternal> passwordMgrInt = do_GetService(NS_PASSWORDMANAGER_CONTRACTID, &rv);
@@ -1745,7 +1776,7 @@ nsMsgIncomingServer::GetIsAuthenticated(PRBool *isAuthenticated)
                                              hostFound, userNameFound, passwordFound);
       if (NS_FAILED(rv)) 
       {
-        *isAuthenticated = PR_FALSE;
+        *aPasswordIsRequired = PR_TRUE;
         return NS_OK;
       }
 
@@ -1759,13 +1790,15 @@ nsMsgIncomingServer::GetIsAuthenticated(PRBool *isAuthenticated)
         }
         else
         {
-          rv = SetPassword(NS_ConvertUCS2toUTF8(passwordFound).get());
+          nsCAutoString cStrPassword;
+          cStrPassword.AssignWithConversion(passwordFound);
+          rv = SetPassword(cStrPassword.get());
           NS_ENSURE_SUCCESS(rv, rv);
         }
       }
     }
   }
-  *isAuthenticated = !m_password.IsEmpty();
+  *aPasswordIsRequired = m_password.IsEmpty();
   return rv;
 }
 
@@ -1781,6 +1814,7 @@ nsMsgIncomingServer::ConfigureTemporaryReturnReceiptsFilter(nsIMsgFilterList *fi
   nsCOMPtr<nsIMsgIdentity> identity;
   rv = accountMgr->GetFirstIdentityForServer(this, getter_AddRefs(identity));
   NS_ENSURE_SUCCESS(rv, rv);
+  // this can return success and a null identity...
   
   PRBool useCustomPrefs = PR_FALSE;
   PRInt32 incorp = nsIMsgMdnGenerator::eIncorporateInbox;

@@ -206,10 +206,9 @@ public:
   // nsICollection methods
   NS_IMETHOD Enumerate(nsIEnumerator **result);
   
-  // nsIFolder methods:
+  // nsIMsgFolder methods:
   NS_IMETHOD GetSubFolders(nsIEnumerator* *result);
   
-  // nsIMsgFolder methods:
   NS_IMETHOD GetMessages(nsIMsgWindow *aMsgWindow, nsISimpleEnumerator* *result);
   NS_IMETHOD UpdateFolder(nsIMsgWindow *aWindow);
   
@@ -448,6 +447,8 @@ protected:
   nsImapMoveCoalescer *m_moveCoalescer; // strictly owned by the nsImapMailFolder
   nsMsgKey m_curMsgUid;
   PRUint32 m_uidValidity;
+  PRInt32 m_numStatusRecentMessages; // used to store counts from Status command
+  PRInt32 m_numStatusUnseenMessages;
   PRInt32  m_nextMessageByteLength;
   nsCOMPtr<nsIEventQueue> m_eventQueue;
   nsCOMPtr<nsIUrlListener> m_urlListener;
@@ -478,7 +479,7 @@ protected:
   
   nsMsgIMAPFolderACL *m_folderACL;
   PRUint32     m_aclFlags;
-  PRUint32      m_supportedUserFlags;
+  PRUint32     m_supportedUserFlags;
 
   nsCOMPtr<nsISupports> mSupportsToRelease;
   

@@ -1,36 +1,41 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 4 -*-
  *
- * The contents of this file are subject to the Netscape Public
- * License Version 1.1 (the "License"); you may not use this file
- * except in compliance with the License. You may obtain a copy of
- * the License at http://www.mozilla.org/NPL/
+ * ***** BEGIN LICENSE BLOCK *****
+ * Version: MPL 1.1/GPL 2.0/LGPL 2.1
  *
- * Software distributed under the License is distributed on an "AS
- * IS" basis, WITHOUT WARRANTY OF ANY KIND, either express or
- * implied. See the License for the specific language governing
- * rights and limitations under the License.
+ * The contents of this file are subject to the Mozilla Public License Version
+ * 1.1 (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ * http://www.mozilla.org/MPL/
+ *
+ * Software distributed under the License is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+ * for the specific language governing rights and limitations under the
+ * License.
  *
  * The Original Code is Mozilla Communicator client code, released
  * March 31, 1998.
  *
- * The Initial Developer of the Original Code is Netscape
- * Communications Corporation.  Portions created by Netscape are
- * Copyright (C) 1998 Netscape Communications Corporation. All
- * Rights Reserved.
+ * The Initial Developer of the Original Code is
+ * Netscape Communications Corporation.
+ * Portions created by the Initial Developer are Copyright (C) 1998
+ * the Initial Developer. All Rights Reserved.
  *
- * Contributor(s): 
+ * Contributor(s):
  *
- * Alternatively, the contents of this file may be used under the
- * terms of the GNU Public License (the "GPL"), in which case the
- * provisions of the GPL are applicable instead of those above.
- * If you wish to allow use of your version of this file only
- * under the terms of the GPL and not to allow others to use your
- * version of this file under the NPL, indicate your decision by
- * deleting the provisions above and replace them with the notice
- * and other provisions required by the GPL.  If you do not delete
- * the provisions above, a recipient may use your version of this
- * file under either the NPL or the GPL.
- */
+ * Alternatively, the contents of this file may be used under the terms of
+ * either of the GNU General Public License Version 2 or later (the "GPL"),
+ * or the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
+ * in which case the provisions of the GPL or the LGPL are applicable instead
+ * of those above. If you wish to allow use of your version of this file only
+ * under the terms of either the GPL or the LGPL, and not to allow others to
+ * use your version of this file under the terms of the MPL, indicate your
+ * decision by deleting the provisions above and replace them with the notice
+ * and other provisions required by the GPL or the LGPL. If you do not delete
+ * the provisions above, a recipient may use your version of this file under
+ * the terms of any one of the MPL, the GPL or the LGPL.
+ *
+ * ***** END LICENSE BLOCK ***** */
 
 /*
  * This is the JavaScript error message file.
@@ -128,7 +133,7 @@ MSG_DEF(JSMSG_ZERO_QUANTIFIER,         50, 1, JSEXN_SYNTAXERR, "zero quantifier 
 MSG_DEF(JSMSG_UNTERM_QUANTIFIER,       51, 1, JSEXN_SYNTAXERR, "unterminated quantifier {0}")
 MSG_DEF(JSMSG_EMPTY_BEFORE_STAR,       52, 0, JSEXN_SYNTAXERR, "regular expression before * could be empty")
 MSG_DEF(JSMSG_EMPTY_BEFORE_PLUS,       53, 0, JSEXN_SYNTAXERR, "regular expression before + could be empty")
-MSG_DEF(JSMSG_MISSING_PAREN,           54, 1, JSEXN_SYNTAXERR, "unterminated parenthetical {0}")
+MSG_DEF(JSMSG_MISSING_PAREN,           54, 0, JSEXN_SYNTAXERR, "unterminated parenthetical")
 MSG_DEF(JSMSG_UNTERM_CLASS,            55, 1, JSEXN_SYNTAXERR, "unterminated character class {0}")
 MSG_DEF(JSMSG_TRAILING_SLASH,          56, 0, JSEXN_SYNTAXERR, "trailing \\ in regular expression")
 MSG_DEF(JSMSG_BAD_CLASS_RANGE,         57, 0, JSEXN_SYNTAXERR, "invalid range in character class")
@@ -136,7 +141,7 @@ MSG_DEF(JSMSG_BAD_FLAG,                58, 1, JSEXN_SYNTAXERR, "invalid regular 
 MSG_DEF(JSMSG_NO_INPUT,                59, 3, JSEXN_SYNTAXERR, "no input for /{0}/{1}{2}")
 MSG_DEF(JSMSG_CANT_OPEN,               60, 2, JSEXN_NONE, "can't open {0}: {1}")
 MSG_DEF(JSMSG_BAD_STRING_MASK,         61, 1, JSEXN_ERR, "invalid string escape mask {0}")
-MSG_DEF(JSMSG_UNUSED62,                62, 0, JSEXN_NONE, "<Error #62 is currently unused>")
+MSG_DEF(JSMSG_UNMATCHED_RIGHT_PAREN,   62, 0, JSEXN_SYNTAXERR, "unmatched ) in regular expression")
 MSG_DEF(JSMSG_END_OF_DATA,             63, 0, JSEXN_NONE, "unexpected end of data")
 MSG_DEF(JSMSG_SEEK_BEYOND_START,       64, 0, JSEXN_NONE, "illegal seek beyond start")
 MSG_DEF(JSMSG_SEEK_BEYOND_END,         65, 0, JSEXN_NONE, "illegal seek beyond end")
@@ -213,7 +218,7 @@ MSG_DEF(JSMSG_BAD_PROTOTYPE,          135, 1, JSEXN_TYPEERR,   "'prototype' prop
 MSG_DEF(JSMSG_MISSING_EXPONENT,       136, 0, JSEXN_SYNTAXERR, "missing exponent")
 MSG_DEF(JSMSG_OUT_OF_MEMORY,          137, 0, JSEXN_ERR, "out of memory")
 MSG_DEF(JSMSG_UNTERMINATED_STRING,    138, 0, JSEXN_SYNTAXERR, "unterminated string literal")
-MSG_DEF(JSMSG_UNUSED139,              139, 0, JSEXN_NONE, "<Error #139 is currently unused>")
+MSG_DEF(JSMSG_TOO_MANY_PARENS,        139, 0, JSEXN_INTERNALERR, "too many parentheses in regular expression")
 MSG_DEF(JSMSG_UNTERMINATED_COMMENT,   140, 0, JSEXN_SYNTAXERR, "unterminated comment")
 MSG_DEF(JSMSG_UNTERMINATED_REGEXP,    141, 0, JSEXN_SYNTAXERR, "unterminated regular expression literal")
 MSG_DEF(JSMSG_BAD_REGEXP_FLAG,        142, 0, JSEXN_SYNTAXERR, "invalid flag after regular expression")

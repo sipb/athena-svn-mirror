@@ -27,6 +27,7 @@
 #include "nsIContent.h"
 #include "nsIDocument.h"
 #include "nsIDOMDocument.h"
+#include "nsIDOMNSDocument.h"
 #include "nsIDOMElement.h"
 #include "nsIDocumentViewer.h"
 #include "nsIDocumentLoaderFactory.h"
@@ -52,7 +53,7 @@
 #include "nsIHttpEventSink.h"
 #include "nsIUploadChannel.h"
 #include "nsISecurityEventSink.h"
-#include "nsScriptSecurityManager.h"
+#include "nsIScriptSecurityManager.h"
 #include "nsDocumentCharsetInfoCID.h"
 #include "nsICanvasFrame.h"
 #include "nsContentPolicyUtils.h" // NS_CheckContentLoadPolicy(...)
@@ -105,7 +106,6 @@
 #include "nsIWyciwygChannel.h"
 
 // The following are for bug #13871: Prevent frameset spoofing
-#include "nsICodebasePrincipal.h"
 #include "nsIHTMLDocument.h"
 
 // For reporting errors with the console service.
@@ -724,6 +724,7 @@ nsDocShell::LoadURI(nsIURI * aURI,
                           owner,
                           inheritOwner,
                           target.get(),
+                          nsnull,         // No type hint
                           postStream,
                           headersStream,
                           loadType,
@@ -946,20 +947,16 @@ PRBool ValidateOrigin(nsIDocShellTreeItem* aOriginTreeItem, nsIDocShellTreeItem*
 
   // Get target principal uri (including document.domain)
   nsCOMPtr<nsIDOMDocument> targetDOMDocument(do_GetInterface(aTargetTreeItem));
-  NS_ENSURE_TRUE(targetDOMDocument, NS_ERROR_FAILURE);
+  NS_ENSURE_TRUE(targetDOMDocument, PR_TRUE);
 
   nsCOMPtr<nsIDocument> targetDocument(do_QueryInterface(targetDOMDocument));
-  NS_ENSURE_TRUE(targetDocument, NS_ERROR_FAILURE);
+  NS_ENSURE_TRUE(targetDocument, PR_TRUE);
 
-  nsCOMPtr<nsIPrincipal> targetPrincipal;
-  rv = targetDocument->GetPrincipal(getter_AddRefs(targetPrincipal));
-  NS_ENSURE_TRUE(NS_SUCCEEDED(rv) && targetPrincipal, rv);
-
-  nsCOMPtr<nsICodebasePrincipal> targetCodebasePrincipal(do_QueryInterface(targetPrincipal));
-  NS_ENSURE_TRUE(targetCodebasePrincipal, PR_TRUE);
+  nsIPrincipal *targetPrincipal = targetDocument->GetPrincipal();
+  NS_ENSURE_TRUE(targetPrincipal, NS_ERROR_FAILURE);
 
   nsCOMPtr<nsIURI> targetPrincipalURI;
-  rv = targetCodebasePrincipal->GetURI(getter_AddRefs(targetPrincipalURI));
+  rv = targetPrincipal->GetURI(getter_AddRefs(targetPrincipalURI));
   NS_ENSURE_TRUE(NS_SUCCEEDED(rv) && targetPrincipalURI, PR_TRUE);
 
   // Find out if document.domain was set for HTML documents
@@ -1339,9 +1336,7 @@ nsDocShell::GetCharset(char** aCharset)
     NS_ENSURE_TRUE(presShell, NS_ERROR_FAILURE);
     presShell->GetDocument(getter_AddRefs(doc));
     NS_ENSURE_TRUE(doc, NS_ERROR_FAILURE);
-    nsCAutoString charset;
-    NS_ENSURE_SUCCESS(doc->GetDocumentCharacterSet(charset), NS_ERROR_FAILURE);
-    *aCharset = ToNewCString(charset);
+    *aCharset = ToNewCString(doc->GetDocumentCharacterSet());
     if (!*aCharset) {
         return NS_ERROR_OUT_OF_MEMORY;
     }
@@ -1564,9 +1559,7 @@ nsDocShell::SetZoom(float zoom)
     NS_ENSURE_TRUE(presShell, NS_ERROR_FAILURE);
 
     // get the view manager
-    nsCOMPtr<nsIViewManager> vm;
-    NS_ENSURE_SUCCESS(presShell->GetViewManager(getter_AddRefs(vm)),
-                      NS_ERROR_FAILURE);
+    nsIViewManager* vm = presShell->GetViewManager();
     NS_ENSURE_TRUE(vm, NS_ERROR_FAILURE);
 
     // get the root scrollable view
@@ -1891,8 +1884,7 @@ PrintDocTree(nsIDocShellTreeNode * aParentNode, int aLevel)
   nsCOMPtr<nsIDOMWindowInternal> domwin(do_QueryInterface(sgo));
 
   nsCOMPtr<nsIWidget> widget;
-  nsCOMPtr<nsIViewManager> vm;
-  presShell->GetViewManager(getter_AddRefs(vm));
+  nsIViewManager* vm = presShell->GetViewManager();
   if (vm) {
     vm->GetWidget(getter_AddRefs(widget));
   }
@@ -2086,10 +2078,7 @@ nsDocShell::AddChild(nsIDocShellTreeItem * aChild)
     res = docv->GetDocument(getter_AddRefs(doc));
     if (NS_FAILED(res) || (!doc))
         return NS_OK;
-    nsCAutoString parentCS;
-    res = doc->GetDocumentCharacterSet(parentCS);
-    if (NS_FAILED(res))
-        return NS_OK;
+    const nsACString &parentCS = doc->GetDocumentCharacterSet();
 
     // set the child's parentCharset
     nsCOMPtr<nsIAtom> parentCSAtom(do_GetAtom(parentCS));
@@ -2097,10 +2086,7 @@ nsDocShell::AddChild(nsIDocShellTreeItem * aChild)
     if (NS_FAILED(res))
         return NS_OK;
 
-    PRInt32 charsetSource;
-    res = doc->GetDocumentCharacterSetSource(&charsetSource);
-    if (NS_FAILED(res))
-        return NS_OK;
+    PRInt32 charsetSource = doc->GetDocumentCharacterSetSource();
 
     // set the child's parentCharset
     res = dcInfo->SetParentCharsetSource(charsetSource);
@@ -2747,16 +2733,30 @@ nsDocShell::Reload(PRUint32 aReloadFlags)
       return NS_OK;
     
     /* If you change this part of code, make sure bug 45297 does not re-occur */
-    if (mOSHE)
+    if (mOSHE) {
         rv = LoadHistoryEntry(mOSHE, type);
-    else if (mLSHE)              // In case a reload happened before the current load is done
+    }
+    else if (mLSHE) { // In case a reload happened before the current load is done
         rv = LoadHistoryEntry(mLSHE, type);
-    else
+    }
+    else {
+        nsAutoString contentTypeHint;
+        nsCOMPtr<nsIDOMWindow> window(do_GetInterface((nsIDocShell*)this));
+        if (window) {
+            nsCOMPtr<nsIDOMDocument> document;
+            window->GetDocument(getter_AddRefs(document));
+            nsCOMPtr<nsIDOMNSDocument> doc(do_QueryInterface(document));
+            if (doc) {
+                doc->GetContentType(contentTypeHint);
+            }
+        }
+
         rv = InternalLoad(mCurrentURI,
                           mReferrerURI,
                           nsnull,         // No owner
                           PR_TRUE,        // Inherit owner from document
                           nsnull,         // No window target
+                          NS_LossyConvertUCS2toASCII(contentTypeHint).get(),
                           nsnull,         // No post data
                           nsnull,         // No headers data
                           type,           // Load type
@@ -2764,6 +2764,8 @@ nsDocShell::Reload(PRUint32 aReloadFlags)
                           PR_TRUE,
                           nsnull,         // No nsIDocShell
                           nsnull);        // No nsIRequest
+    }
+    
     return rv;
 }
 
@@ -3150,12 +3152,7 @@ nsDocShell::Repaint(PRBool aForce)
     docViewer->GetPresContext(getter_AddRefs(context));
     NS_ENSURE_TRUE(context, NS_ERROR_FAILURE);
 
-    nsCOMPtr<nsIPresShell> shell;
-    context->GetShell(getter_AddRefs(shell));
-    NS_ENSURE_TRUE(shell, NS_ERROR_FAILURE);
-
-    nsCOMPtr<nsIViewManager> viewManager;
-    shell->GetViewManager(getter_AddRefs(viewManager));
+    nsIViewManager* viewManager = context->GetViewManager();
     NS_ENSURE_TRUE(viewManager, NS_ERROR_FAILURE);
 
     // what about aForce ?
@@ -3226,9 +3223,7 @@ nsDocShell::GetVisibility(PRBool * aVisibility)
     NS_ENSURE_TRUE(presShell, NS_ERROR_FAILURE);
 
     // get the view manager
-    nsCOMPtr<nsIViewManager> vm;
-    NS_ENSURE_SUCCESS(presShell->GetViewManager(getter_AddRefs(vm)),
-                      NS_ERROR_FAILURE);
+    nsIViewManager* vm = presShell->GetViewManager();
     NS_ENSURE_TRUE(vm, NS_ERROR_FAILURE);
 
     // get the root view
@@ -3237,9 +3232,7 @@ nsDocShell::GetVisibility(PRBool * aVisibility)
     NS_ENSURE_TRUE(view, NS_ERROR_FAILURE);
 
     // if our root view is hidden, we are not visible
-    nsViewVisibility vis;
-    NS_ENSURE_SUCCESS(view->GetVisibility(vis), NS_ERROR_FAILURE);
-    if (vis == nsViewVisibility_kHide) {
+    if (view->GetVisibility() == nsViewVisibility_kHide) {
         *aVisibility = PR_FALSE;
         return NS_OK;
     }
@@ -3264,21 +3257,14 @@ nsDocShell::GetVisibility(PRBool * aVisibility)
         nsCOMPtr<nsIDocument> pDoc;
         pPresShell->GetDocument(getter_AddRefs(pDoc));
 
-        nsCOMPtr<nsIContent> shellContent;
-        nsCOMPtr<nsISupports> shellISupports = do_QueryInterface(treeItem);
-        pDoc->FindContentForSubDocument(doc, getter_AddRefs(shellContent));
+        nsIContent *shellContent = pDoc->FindContentForSubDocument(doc);
         NS_ASSERTION(shellContent, "subshell not in the map");
 
         nsIFrame* frame;
         pPresShell->GetPrimaryFrameFor(shellContent, &frame);
-        if (frame) {
-            nsCOMPtr<nsIPresContext> pc;
-            pPresShell->GetPresContext(getter_AddRefs(pc));
-
-            if (!frame->AreAncestorViewsVisible(pc)) {
-                *aVisibility = PR_FALSE;
-                return NS_OK;
-            }
+        if (frame && !frame->AreAncestorViewsVisible()) {
+            *aVisibility = PR_FALSE;
+            return NS_OK;
         }
 
         treeItem = parentItem;
@@ -4462,9 +4448,7 @@ nsDocShell::CreateAboutBlankContentViewer()
         Embed(viewer, "", 0);
         viewer->SetDOMDocument(domdoc);
 
-        nsCOMPtr<nsIURI> documentURI;
-        blankDoc->GetDocumentURL(getter_AddRefs(documentURI)); // about:blank, duh
-        SetCurrentURI(documentURI);
+        SetCurrentURI(blankDoc->GetDocumentURL());
         rv = NS_OK;
       }
     }
@@ -4785,8 +4769,7 @@ nsDocShell::SetupNewViewer(nsIContentViewer * aNewViewer)
             docviewer->GetPresShell(getter_AddRefs(shell));
 
             if (shell) {
-                nsCOMPtr<nsIViewManager> vm;
-                shell->GetViewManager(getter_AddRefs(vm));
+                nsIViewManager* vm = shell->GetViewManager();
 
                 if (vm) {
                     vm->GetDefaultBackgroundColor(&bgcolor);
@@ -4863,8 +4846,7 @@ nsDocShell::SetupNewViewer(nsIContentViewer * aNewViewer)
             docviewer->GetPresShell(getter_AddRefs(shell));
 
             if (shell) {
-                nsCOMPtr<nsIViewManager> vm;
-                shell->GetViewManager(getter_AddRefs(vm));
+                nsIViewManager* vm = shell->GetViewManager();
 
                 if (vm) {
                     vm->SetDefaultBackgroundColor(bgcolor);
@@ -4896,6 +4878,7 @@ nsDocShell::InternalLoad(nsIURI * aURI,
                          nsISupports * aOwner,
                          PRBool aInheritOwner,
                          const PRUnichar *aWindowTarget,
+                         const char* aTypeHint,
                          nsIInputStream * aPostData,
                          nsIInputStream * aHeadersData,
                          PRUint32 aLoadType,
@@ -5062,6 +5045,7 @@ nsDocShell::InternalLoad(nsIURI * aURI,
                                               owner,
                                               aInheritOwner,
                                               nsnull,         // No window target
+                                              aTypeHint,
                                               aPostData,
                                               aHeadersData,
                                               aLoadType,
@@ -5237,8 +5221,8 @@ nsDocShell::InternalLoad(nsIURI * aURI,
     // been called. 
     mLSHE = aSHEntry;
 
-    rv = DoURILoad(aURI, aReferrer, owner, aPostData, aHeadersData, firstParty,
-                   aDocShell, aRequest);
+    rv = DoURILoad(aURI, aReferrer, owner, aTypeHint, aPostData, aHeadersData,
+                   firstParty, aDocShell, aRequest);
 
     if (NS_FAILED(rv)) {
         DisplayLoadError(rv, aURI, nsnull);
@@ -5279,18 +5263,17 @@ nsDocShell::GetCurrentDocumentOwner(nsISupports ** aOwner)
     }
 
     //-- Get the document's principal
-    nsCOMPtr<nsIPrincipal> principal;
-    rv = document->GetPrincipal(getter_AddRefs(principal));
-    if (NS_FAILED(rv) || !principal)
+    nsIPrincipal *principal = document->GetPrincipal();
+    if (!principal)
         return NS_ERROR_FAILURE;
-    rv = principal->QueryInterface(NS_GET_IID(nsISupports), (void **) aOwner);
-    return rv;
+    return principal->QueryInterface(NS_GET_IID(nsISupports), (void **) aOwner);
 }
 
 nsresult
 nsDocShell::DoURILoad(nsIURI * aURI,
                       nsIURI * aReferrerURI,
                       nsISupports * aOwner,
+                      const char * aTypeHint,
                       nsIInputStream * aPostData,
                       nsIInputStream * aHeadersData,
                       PRBool firstParty,
@@ -5343,7 +5326,10 @@ nsDocShell::DoURILoad(nsIURI * aURI,
     }
 
     channel->SetOriginalURI(aURI);
-
+    if (aTypeHint && *aTypeHint) {
+        channel->SetContentType(nsDependentCString(aTypeHint));
+    }
+    
     //hack
     nsCOMPtr<nsIHttpChannel> httpChannel(do_QueryInterface(channel));
     nsCOMPtr<nsIHttpChannelInternal> httpChannelInternal(do_QueryInterface(channel));
@@ -5833,9 +5819,7 @@ nsDocShell::ScrollIfAnchor(nsIURI * aURI, PRBool * aWasAnchor,
             nsCOMPtr<nsIDocument> doc;
             rv = docv->GetDocument(getter_AddRefs(doc));
             NS_ENSURE_SUCCESS(rv, rv);
-            nsCAutoString aCharset;
-            rv = doc->GetDocumentCharacterSet(aCharset);
-            NS_ENSURE_SUCCESS(rv, rv);
+            const nsACString &aCharset = doc->GetDocumentCharacterSet();
 
             nsCOMPtr<nsITextToSubURI> textToSubURI =
                 do_GetService(NS_ITEXTTOSUBURI_CONTRACTID, &rv);
@@ -5844,7 +5828,7 @@ nsDocShell::ScrollIfAnchor(nsIURI * aURI, PRBool * aWasAnchor,
             // Unescape and convert to unicode
             nsXPIDLString uStr;
 
-            rv = textToSubURI->UnEscapeAndConvert(aCharset.get(),
+            rv = textToSubURI->UnEscapeAndConvert(PromiseFlatCString(aCharset).get(),
                                                   PromiseFlatCString(sNewRef).get(),
                                                   getter_Copies(uStr));
             NS_ENSURE_SUCCESS(rv, rv);
@@ -6107,6 +6091,7 @@ nsDocShell::AddToSessionHistory(nsIURI * aURI,
     nsCOMPtr<nsISupports> cacheToken;
     PRBool expired = PR_FALSE;
     PRBool discardLayoutState = PR_FALSE;
+    nsCAutoString contentType;
     if (aChannel) {
         nsCOMPtr<nsICachingChannel>
             cacheChannel(do_QueryInterface(aChannel));
@@ -6132,6 +6117,7 @@ nsDocShell::AddToSessionHistory(nsIURI * aURI,
 
             discardLayoutState = ShouldDiscardLayoutState(httpChannel);
         }
+        aChannel->GetContentType(contentType);
     }
 
     //Title is set in nsDocShell::SetTitle()
@@ -6140,7 +6126,8 @@ nsDocShell::AddToSessionHistory(nsIURI * aURI,
                   nsnull,       // DOMDocument
                   inputStream,  // Post data stream
                   nsnull,       // LayoutHistory state
-                  cacheKey);    // CacheKey
+                  cacheKey,     // CacheKey
+                  contentType); // Content-type
     entry->SetReferrerURI(referrerURI);
     /* If cache got a 'no-store', ask SH not to store
      * HistoryLayoutState. By default, SH will set this
@@ -6212,6 +6199,7 @@ nsDocShell::LoadHistoryEntry(nsISHEntry * aEntry, PRUint32 aLoadType)
     nsCOMPtr<nsIURI> uri;
     nsCOMPtr<nsIInputStream> postData;
     nsCOMPtr<nsIURI> referrerURI;
+    nsCAutoString contentType;
 
     NS_ENSURE_TRUE(aEntry, NS_ERROR_FAILURE);
     nsCOMPtr<nsIHistoryEntry> hEntry(do_QueryInterface(aEntry));
@@ -6222,6 +6210,7 @@ nsDocShell::LoadHistoryEntry(nsISHEntry * aEntry, PRUint32 aLoadType)
                       NS_ERROR_FAILURE);
     NS_ENSURE_SUCCESS(aEntry->GetPostData(getter_AddRefs(postData)),
                       NS_ERROR_FAILURE);
+    NS_ENSURE_SUCCESS(aEntry->GetContentType(contentType), NS_ERROR_FAILURE);
 
     /* If there is a valid postdata *and* the user pressed
      * reload or shift-reload, take user's permission before we  
@@ -6253,16 +6242,17 @@ nsDocShell::LoadHistoryEntry(nsISHEntry * aEntry, PRUint32 aLoadType)
 
     rv = InternalLoad(uri,
                       referrerURI,
-                      nsnull,       // No owner
-                      PR_FALSE,     // Do not inherit owner from document (security-critical!)
-                      nsnull,       // No window target
-                      postData,     // Post data stream
-                      nsnull,       // No headers stream
-                      aLoadType,    // Load type
-                      aEntry,       // SHEntry
+                      nsnull,            // No owner
+                      PR_FALSE,          // Do not inherit owner from document (security-critical!)
+                      nsnull,            // No window target
+                      contentType.get(), // Type hint
+                      postData,          // Post data stream
+                      nsnull,            // No headers stream
+                      aLoadType,         // Load type
+                      aEntry,            // SHEntry
                       PR_TRUE,
-                      nsnull,       // No nsIDocShell
-                      nsnull);      // No nsIRequest
+                      nsnull,            // No nsIDocShell
+                      nsnull);           // No nsIRequest
     return rv;
 }
 
@@ -6710,11 +6700,7 @@ nsDocShell::GetRootScrollableView(nsIScrollableView ** aOutScrollView)
     NS_ENSURE_SUCCESS(GetPresShell(getter_AddRefs(shell)), NS_ERROR_FAILURE);
     NS_ENSURE_TRUE(shell, NS_ERROR_NULL_POINTER);
 
-    nsCOMPtr<nsIViewManager> viewManager;
-    NS_ENSURE_SUCCESS(shell->GetViewManager(getter_AddRefs(viewManager)),
-                      NS_ERROR_FAILURE);
-
-    NS_ENSURE_SUCCESS(viewManager->GetRootScrollableView(aOutScrollView),
+    NS_ENSURE_SUCCESS(shell->GetViewManager()->GetRootScrollableView(aOutScrollView),
                       NS_ERROR_FAILURE);
 
     if (*aOutScrollView == nsnull) {
@@ -6900,27 +6886,21 @@ nsDocShell::SetCanvasHasFocus(PRBool aCanvasHasFocus)
   presShell->GetDocument(getter_AddRefs(doc));
   if (!doc) return NS_ERROR_FAILURE;
 
-  nsCOMPtr<nsIContent> rootContent;
-  doc->GetRootContent(getter_AddRefs(rootContent));
+  nsIContent *rootContent = doc->GetRootContent();
   if (!rootContent) return NS_ERROR_FAILURE;
 
   nsIFrame* frame;
   presShell->GetPrimaryFrameFor(rootContent, &frame);
-  if (frame != nsnull) {
-    frame->GetParent(&frame);
-    if (frame != nsnull) {
+  if (frame) {
+    frame = frame->GetParent();
+    if (frame) {
       nsICanvasFrame* canvasFrame;
       if (NS_SUCCEEDED(frame->QueryInterface(NS_GET_IID(nsICanvasFrame), (void**)&canvasFrame))) {
         canvasFrame->SetHasFocus(aCanvasHasFocus);
 
-        nsCOMPtr<nsIPresContext> presContext;
-        GetPresContext(getter_AddRefs(presContext));
-        
-        nsIView* canvasView = frame->GetViewExternal(presContext);
+        nsIView* canvasView = frame->GetViewExternal();
 
-        nsCOMPtr<nsIViewManager> viewManager;
-        canvasView->GetViewManager(*getter_AddRefs(viewManager));
-        viewManager->UpdateView(canvasView, NS_VMREFRESH_NO_SYNC);
+        canvasView->GetViewManager()->UpdateView(canvasView, NS_VMREFRESH_NO_SYNC);
 
         return NS_OK;
       }

@@ -303,8 +303,20 @@ void nsImageGTK::UpdateCachedImage()
             break;
           case 0:
             NS_CLEAR_BIT(mask,x);
-            if (mAlphaDepth != 8)
+            if (mAlphaDepth == 0) {
               mAlphaDepth=1;
+
+              // promoting an image from no alpha channel to 1-bit, so
+              // we need to create/clear the alpha pixmap
+              CreateOffscreenPixmap(mWidth, mHeight);
+
+              XFillRectangle(GDK_WINDOW_XDISPLAY(mAlphaPixmap),
+                             GDK_WINDOW_XWINDOW(mAlphaPixmap),
+                             GDK_GC_XGC(s1bitGC),
+                             mDecodedX1, mDecodedY1,
+                             mDecodedX2 - mDecodedX1 + 1,
+                             mDecodedY2 - mDecodedY1 + 1);
+            }
             break;
           default:
             mAlphaDepth=8;
@@ -465,8 +477,8 @@ XlibRectStretch(PRInt32 srcWidth, PRInt32 srcHeight,
   xd2 = dstWidth-1;
   yd2 = dstHeight-1;
 
-//  fprintf(stderr, "%p (%ld %ld)-(%ld %ld) (%ld %ld)-(%ld %ld)\n",
-//          aDstImage, xs1, ys1, xs2, ys2, xd1, yd1, xd2, yd2);
+//  fprintf(stderr, "XRS %p (%ld %ld)-(%ld %ld) (%ld %ld)-(%ld %ld)\n",
+//          (void *)aDstImage, xs1, ys1, xs2, ys2, xd1, yd1, xd2, yd2);
   
   startColumn = aDX-dstOrigX;
   startRow    = aDY-dstOrigY;
@@ -699,6 +711,7 @@ nsImageGTK::Draw(nsIRenderingContext &aContext, nsDrawingSurface aSurface,
   if ((srcWidth != dstWidth) || (srcHeight != dstHeight)) {
     GdkPixmap *pixmap = 0;
     GdkGC *gc = 0;
+    nsRegionGTK clipRgn;
 
     switch (mAlphaDepth) {
     case 8:
@@ -725,14 +738,84 @@ nsImageGTK::Draw(nsIRenderingContext &aContext, nsDrawingSurface aSurface,
           gdk_gc_set_clip_mask(gc, pixmap);
         }
       }
-      /* fall through */
+
+      if (gdk_rgb_get_visual()->depth <= 8) {
+        PRUint8 *scaledRGB = (PRUint8 *)nsMemory::Alloc(3*dstWidth*dstHeight);
+
+        if (!scaledRGB)
+          return NS_ERROR_OUT_OF_MEMORY;
+
+        RectStretch(mWidth, mHeight,
+                    dstWidth, dstHeight,
+                    0, 0, dstWidth-1, dstHeight-1,
+                    mImageBits, mRowBytes, scaledRGB, 3*dstWidth, 24);
+
+        if (NS_SUCCEEDED(((nsRenderingContextGTK&)aContext).CopyClipRegion(clipRgn))) {
+          // we have both a set of rectangles and a bitmap defining the clip
+          // let X11 clip to the bitmap, do the rectangles by hand
+          nsRegionRectSet *rectSet = nsnull;
+          clipRgn.Intersect(aDX, aDY, aDWidth, aDHeight);
+          clipRgn.GetRects(&rectSet);
+          for (PRUint32 i=0; i<rectSet->mRectsLen; i++) {
+            nsRegionRect *rect = &(rectSet->mRects[i]);
+
+            gdk_draw_rgb_image_dithalign(drawing->GetDrawable(), gc,
+                                         rect->x, rect->y, rect->width, rect->height,
+                                         GDK_RGB_DITHER_MAX, 
+                                         scaledRGB + 3*((rect->y-dstOrigY)*dstWidth+(rect->x-dstOrigX)),
+                                         3*dstWidth,
+                                         (rect->x-dstOrigX), (rect->y-dstOrigY));
+          }
+          clipRgn.FreeRects(rectSet);
+        } else {
+          gdk_draw_rgb_image_dithalign(drawing->GetDrawable(), gc,
+                                       aDX, aDY, aDWidth, aDHeight,
+                                       GDK_RGB_DITHER_MAX, 
+                                       scaledRGB + 3*((aDY-dstOrigY)*dstWidth+(aDX-dstOrigX)),
+                                       3*dstWidth,
+                                       (aDX-dstOrigX), (aDY-dstOrigY));
+        }
+        nsMemory::Free(scaledRGB);
+      } else {
+        if (NS_SUCCEEDED(((nsRenderingContextGTK&)aContext).CopyClipRegion(clipRgn))) {
+          // we have both a set of rectangles and a bitmap defining the clip
+          // let X11 clip to the bitmap, do the rectangles by hand
+          nsRegionRectSet *rectSet = nsnull;
+          clipRgn.Intersect(aDX, aDY, aDWidth, aDHeight);
+          clipRgn.GetRects(&rectSet);
+          for (PRUint32 i=0; i<rectSet->mRectsLen; i++) {
+            nsRegionRect *rect = &(rectSet->mRects[i]);
+            
+            XlibRectStretch(srcWidth, srcHeight,
+                            dstWidth, dstHeight,
+                            dstOrigX, dstOrigY,
+                            rect->x, rect->y,
+                            rect->width, rect->height,
+                            mImagePixmap, drawing->GetDrawable(),
+                            gc, sXbitGC, gdk_rgb_get_visual()->depth);
+          }
+          clipRgn.FreeRects(rectSet);
+        } else {
+          // only a mask
+          XlibRectStretch(srcWidth, srcHeight,
+                          dstWidth, dstHeight,
+                          dstOrigX, dstOrigY,
+                          aDX, aDY,
+                          aDWidth, aDHeight,
+                          mImagePixmap, drawing->GetDrawable(),
+                          gc, sXbitGC, gdk_rgb_get_visual()->depth);
+        }
+      }
+
+      break;
     case 0:
       if (!gc)
         gc = ((nsRenderingContextGTK&)aContext).GetGC();
 
       if (gdk_rgb_get_visual()->depth <= 8) {
         PRUint8 *scaledRGB = (PRUint8 *)nsMemory::Alloc(3*dstWidth*dstHeight);
-        RectStretch(0, 0, mWidth-1, mHeight-1,
+        RectStretch(mWidth, mHeight,
+                    dstWidth, dstHeight,
                     0, 0, dstWidth-1, dstHeight-1,
                     mImageBits, mRowBytes, scaledRGB, 3*dstWidth, 24);
     
@@ -796,21 +879,20 @@ nsImageGTK::Draw(nsIRenderingContext &aContext, nsDrawingSurface aSurface,
     // let X11 clip to the bitmap, do the rectangles by hand
     nsRegionRectSet *rectSet = nsnull;
     clipRgn.Intersect(aDX, aDY, aSWidth, aSHeight);
-    if (NS_SUCCEEDED(clipRgn.GetRects(&rectSet))) {
-      for (PRUint32 i=0; i<rectSet->mRectsLen; i++) {
-        nsRegionRect *rect = &(rectSet->mRects[i]);
-        gdk_window_copy_area(drawing->GetDrawable(),      // dest window
-                             copyGC,                      // gc
-                             rect->x,                     // xdest
-                             rect->y,                     // ydest
-                             mImagePixmap,                // source window
-                             aSX+(rect->x-aDX),           // xsrc
-                             aSY+(rect->y-aDY),           // ysrc
-                             rect->width,                 // width
-                             rect->height);               // height
-      }
-      clipRgn.FreeRects(rectSet);
+    clipRgn.GetRects(&rectSet);
+    for (PRUint32 i=0; i<rectSet->mRectsLen; i++) {
+      nsRegionRect *rect = &(rectSet->mRects[i]);
+      gdk_window_copy_area(drawing->GetDrawable(),      // dest window
+                           copyGC,                      // gc
+                           rect->x,                     // xdest
+                           rect->y,                     // ydest
+                           mImagePixmap,                // source window
+                           aSX+(rect->x-aDX),           // xsrc
+                           aSY+(rect->y-aDY),           // ysrc
+                           rect->width,                 // width
+                           rect->height);               // height
     }
+    clipRgn.FreeRects(rectSet);
   } else {
     // normal case - let X11 take care of all the clipping
     gdk_window_copy_area(drawing->GetDrawable(),      // dest window
@@ -1177,10 +1259,10 @@ nsImageGTK::DrawComposited(nsIRenderingContext &aContext,
   readWidth = aDWidth;
   readHeight = aDHeight;
 
-  //  fprintf(stderr, "aX=%d aY=%d, aWidth=%u aHeight=%u\n", aX, aY, aWidth, aHeight);
-  //  fprintf(stderr, "surfaceWidth=%u surfaceHeight=%u\n", surfaceWidth, surfaceHeight);
-  //  fprintf(stderr, "readX=%u readY=%u readWidth=%u readHeight=%u destX=%u destY=%u\n\n",
-  //          readX, readY, readWidth, readHeight, destX, destY);
+//  fprintf(stderr, "dstOrigX=%d dstOrigY=%d, dstWidth=%u dstHeight=%u\n", dstOrigX, dstOrigY, dstWidth, dstHeight);
+//  fprintf(stderr, "srcWidth=%u srcHeight=%u\n", srcWidth, srcHeight);
+//  fprintf(stderr, "readX=%u readY=%u readWidth=%u readHeight=%u destX=%u destY=%u\n\n",
+//          readX, readY, readWidth, readHeight, destX, destY);
 
   XImage *ximage = XGetImage(dpy, drawable,
                              readX, readY, readWidth, readHeight, 
@@ -1215,11 +1297,15 @@ nsImageGTK::DrawComposited(nsIRenderingContext &aContext,
         nsMemory::Free(scaledAlpha);
       return;
     }
-    RectStretch(x1, y1, x2-1, y2-1,
-                0, 0, readWidth-1, readHeight-1,
+    RectStretch(srcWidth, srcHeight,
+                dstWidth, dstHeight,
+                destX, destY,
+                destX+aDWidth-1, destY+aDHeight-1,
                 mImageBits, mRowBytes, scaledImage, 3*readWidth, 24);
-    RectStretch(x1, y1, x2-1, y2-1,
-                0, 0, readWidth-1, readHeight-1,
+    RectStretch(srcWidth, srcHeight,
+                dstWidth, dstHeight,
+                destX, destY,
+                destX+aDWidth-1, destY+aDHeight-1,
                 mAlphaBits, mAlphaRowBytes, scaledAlpha, readWidth, 8);
     imageOrigin = scaledImage;
     imageStride = 3*readWidth;
@@ -1487,8 +1573,11 @@ void nsImageGTK::CreateOffscreenPixmap(PRInt32 aWidth, PRInt32 aHeight)
        low to high address in memory. */
     mAlphaXImage->byte_order = MSBFirst;
 
-    if (!s1bitGC)
+    if (!s1bitGC) {
+      GdkColor fg = { 1, 0, 0, 0 };
       s1bitGC = gdk_gc_new(mAlphaPixmap);
+      gdk_gc_set_foreground(s1bitGC, &fg);
+    }
   }
 
   if (!sXbitGC)

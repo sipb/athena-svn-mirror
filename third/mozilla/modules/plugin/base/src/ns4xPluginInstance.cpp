@@ -49,6 +49,10 @@
 #include "nsIPref.h" // needed for NS_TRY_SAFE_CALL_*
 #include "nsPluginLogging.h"
 
+#ifdef XP_OS2
+#include "nsILegacyPluginWrapperOS2.h"
+#endif
+
 #ifdef MOZ_WIDGET_GTK
 #include <gdk/gdk.h>
 #include <gdk/gdkx.h>
@@ -860,9 +864,26 @@ NS_IMETHODIMP ns4xPluginInstance::SetWindow(nsPluginWindow* window)
   NPError error;
   
 #if defined (MOZ_WIDGET_GTK) || defined (MOZ_WIDGET_GTK2)
+  PRBool isXembed = PR_FALSE;
   // bug 108337, flash plugin on linux doesn't like window->width <= 0
   if ((PRInt32) window->width <= 0 || (PRInt32) window->height <= 0)
     return NS_OK;
+
+  // We need to test if this is an xembed window before doing checks
+  // below, as they might be used on the first pass or on later passes
+  // when we resize the plugin window.
+  GdkWindow *win = gdk_window_lookup((XID)window->window);
+  if (!win)
+    return NS_ERROR_FAILURE;
+
+  gpointer user_data = nsnull;
+  gdk_window_get_user_data(win, &user_data);
+  if (user_data) {
+    GtkWidget* widget = GTK_WIDGET(user_data);
+
+    if (GTK_IS_SOCKET(widget))
+      isXembed = PR_TRUE;
+  }
 
   // Allocate and fill out the ws_info data
   if (!window->ws_info) {
@@ -878,9 +899,7 @@ NS_IMETHODIMP ns4xPluginInstance::SetWindow(nsPluginWindow* window)
 
     ws = (NPSetWindowCallbackStruct *)window->ws_info;
 
-    GdkWindow *win = gdk_window_lookup((XID)window->window);
-    if (!win)
-      return NS_ERROR_FAILURE;
+    if (!isXembed)
     {  
 #ifdef NS_DEBUG      
       printf("About to create new xtbin of %i X %i from %p...\n",
@@ -929,7 +948,10 @@ NS_IMETHODIMP ns4xPluginInstance::SetWindow(nsPluginWindow* window)
     ws->type = 0; // OK, that was a guess!!
 #ifdef MOZ_X11
     ws->depth = gdk_window_get_visual(win)->depth;
-    ws->display = GTK_XTBIN(mXtBin)->xtdisplay;
+    if (!isXembed)
+      ws->display = GTK_XTBIN(mXtBin)->xtdisplay;
+    else
+      ws->display = GDK_WINDOW_XDISPLAY(win);
     ws->visual = GDK_VISUAL_XVISUAL(gdk_window_get_visual(win));
     ws->colormap = GDK_COLORMAP_XCOLORMAP(gdk_window_get_colormap(win));
 
@@ -937,14 +959,16 @@ NS_IMETHODIMP ns4xPluginInstance::SetWindow(nsPluginWindow* window)
 #endif
   } // !window->ws_info
 
-  if (!mXtBin)
+  if (!mXtBin && !isXembed)
     return NS_ERROR_FAILURE;
 
-  // And now point the NPWindow structures window 
-  // to the actual X window
-  window->window = (nsPluginPort *)GTK_XTBIN(mXtBin)->xtwindow;
-  
-  gtk_xtbin_resize(mXtBin, window->width, window->height);
+  if (!isXembed) {
+    // And now point the NPWindow structures window 
+    // to the actual X window
+    window->window = (nsPluginPort *)GTK_XTBIN(mXtBin)->xtwindow;
+    
+    gtk_xtbin_resize(mXtBin, window->width, window->height);
+  }
   
 #elif defined(MOZ_WIDGET_XLIB)
 
@@ -1172,6 +1196,24 @@ nsresult ns4xPluginInstance::GetValueInternal(NPPVariable variable, void* value)
     NPP_PLUGIN_LOG(PLUGIN_LOG_NORMAL,
     ("NPP GetValue called: this=%p, npp=%p, var=%d, value=%d, return=%d\n", 
     this, &fNPP, variable, value, res));
+
+#ifdef XP_OS2
+    /* Query interface for legacy Flash plugin */
+    if (res == NS_OK && variable == NPPVpluginScriptableInstance)
+    {
+      nsCOMPtr<nsILegacyPluginWrapperOS2> wrapper =
+               do_GetService(NS_LEGACY_PLUGIN_WRAPPER_CONTRACTID, &res);
+      if (res == NS_OK)
+      {
+        nsIID *iid = nsnull; 
+        res = CallNPP_GetValueProc(fCallbacks->getvalue, &fNPP, 
+                                   NPPVpluginScriptableIID, (void *)&iid);
+        if (res == NS_OK)
+          res = wrapper->MaybeWrap(*iid, *(nsISupports**)value,
+                                   (nsISupports**)value);
+      }
+    }
+#endif
   }
 
   return res;

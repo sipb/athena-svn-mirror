@@ -43,6 +43,7 @@
 
 #include "nsCOMPtr.h"
 #include "nsIContent.h"
+#include "nsINodeInfo.h"
 #include "nsIDocument.h"
 #include "nsIDOMElement.h"
 #include "nsIDOMXULCommandDispatcher.h"
@@ -154,29 +155,20 @@ nsXULContentUtils::FindChildByTag(nsIContent* aElement,
                                   nsIAtom* aTag,
                                   nsIContent** aResult)
 {
-    nsresult rv;
+    PRUint32 count = aElement->GetChildCount();
 
-    PRInt32 count;
-    if (NS_FAILED(rv = aElement->ChildCount(count)))
-        return rv;
-
-    for (PRInt32 i = 0; i < count; ++i) {
-        nsCOMPtr<nsIContent> kid;
-        if (NS_FAILED(rv = aElement->ChildAt(i, getter_AddRefs(kid))))
-            return rv; // XXX fatal
+    for (PRUint32 i = 0; i < count; ++i) {
+        nsIContent *kid = aElement->GetChildAt(i);
 
         PRInt32 nameSpaceID;
-        if (NS_FAILED(rv = kid->GetNameSpaceID(&nameSpaceID)))
-            return rv; // XXX fatal
+        kid->GetNameSpaceID(&nameSpaceID);
 
         if (nameSpaceID != aNameSpaceID)
             continue; // wrong namespace
 
-        nsCOMPtr<nsIAtom> kidTag;
-        if (NS_FAILED(rv = kid->GetTag(getter_AddRefs(kidTag))))
-            return rv; // XXX fatal
+        nsINodeInfo *ni = kid->GetNodeInfo();
 
-        if (kidTag.get() != aTag)
+        if (!ni || !ni->Equals(aTag))
             continue;
 
         *aResult = kid;
@@ -239,8 +231,7 @@ nsXULContentUtils::GetElementRefResource(nsIContent* aElement, nsIRDFResource** 
         // We'll use rdf_MakeAbsolute() to translate this to a URL.
         nsCOMPtr<nsIDocument> doc = aElement->GetDocument();
 
-        nsCOMPtr<nsIURI> url;
-        doc->GetDocumentURL(getter_AddRefs(url));
+        nsIURI *url = doc->GetDocumentURL();
         NS_ASSERTION(url != nsnull, "element has no document");
         if (! url)
             return NS_ERROR_UNEXPECTED;
@@ -342,11 +333,7 @@ nsXULContentUtils::MakeElementURI(nsIDocument* aDocument, const nsAString& aElem
         CopyUTF16toUTF8(aElementID, aURI);
     }
     else {
-        nsresult rv;
-
-        nsCOMPtr<nsIURI> docURL;
-        rv = aDocument->GetBaseURL(getter_AddRefs(docURL));
-        if (NS_FAILED(rv)) return rv;
+        nsIURI *docURL = aDocument->GetBaseURL();
 
         // XXX Urgh. This is so broken; I'd really just like to use
         // NS_MakeAbsolueURI(). Unfortunatly, doing that breaks
@@ -362,7 +349,7 @@ nsXULContentUtils::MakeElementURI(nsIDocument* aDocument, const nsAString& aElem
         AppendUTF16toUTF8(aElementID, aURI);
 #else
         nsXPIDLCString spec;
-        rv = NS_MakeAbsoluteURI(nsCAutoString(aElementID), docURL, getter_Copies(spec));
+        nsresult rv = NS_MakeAbsoluteURI(nsCAutoString(aElementID), docURL, getter_Copies(spec));
         if (NS_SUCCEEDED(rv)) {
             aURI = spec;
         }
@@ -401,14 +388,8 @@ nsXULContentUtils::MakeElementID(nsIDocument* aDocument, const nsAString& aURI, 
 {
     // Convert a URI into an element ID that can be accessed from the
     // DOM APIs.
-    nsresult rv;
-
-    nsCOMPtr<nsIURI> docURL;
-    rv = aDocument->GetBaseURL(getter_AddRefs(docURL));
-    if (NS_FAILED(rv)) return rv;
-
     nsCAutoString spec;
-    docURL->GetSpec(spec);
+    aDocument->GetBaseURL()->GetSpec(spec);
 
     // XXX FIX ME to not do a copy
     nsAutoString str(aURI);

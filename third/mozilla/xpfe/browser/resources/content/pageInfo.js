@@ -384,8 +384,6 @@ function makeGeneralTab()
   for (var i = 0; i < length; i++)
     metaView.addRow([metaNodes[i].name || metaNodes[i].httpEquiv, metaNodes[i].content]);
 
-  metaView.rowCountChanged(0, length);
-  
   // get the document characterset
   var encoding = theDocument.characterSet;
   document.getElementById("encodingtext").value = encoding;
@@ -661,8 +659,6 @@ function onFormSelect()
             fieldView.setCellText(j, "field-label", labeltext);
       }
     }
-
-    fieldView.rowCountChanged(0, length);
   }
 }
 
@@ -915,7 +911,7 @@ function makePreview(row)
   {
     // fallback image for protocols not allowed (e.g., data: or javascript:) 
     // or elements not [yet] handled (e.g., object, embed). XXX blank??
-    newImage.src = "resource:///res/loading-image.gif";
+    newImage.src = "resource://gre/re/loading-image.gif";
     newImage.width = 40;
     newImage.height = 40;
   }

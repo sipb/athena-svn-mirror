@@ -444,8 +444,7 @@ PRBool nsAccessible::IsPartiallyVisible(PRBool *aIsOffscreen)
   if (!shell) 
     return PR_FALSE;
 
-  nsCOMPtr<nsIViewManager> viewManager;
-  shell->GetViewManager(getter_AddRefs(viewManager));
+  nsIViewManager* viewManager = shell->GetViewManager();
   if (!viewManager)
     return PR_FALSE;
 
@@ -473,10 +472,9 @@ PRBool nsAccessible::IsPartiallyVisible(PRBool *aIsOffscreen)
   // We don't use the more accurate GetBoundsRect, because that is more expensive 
   // and the STATE_OFFSCREEN flag that this is used for only needs to be a rough indicator
 
-  nsRect relFrameRect;
+  nsRect relFrameRect = frame->GetRect();
   nsPoint frameOffset;
-  frame->GetRect(relFrameRect);
-  nsIView *containingView = frame->GetViewExternal(presContext);
+  nsIView *containingView = frame->GetViewExternal();
   if (!containingView) {
     frame->GetOffsetFromView(presContext, frameOffset, &containingView);
     if (!containingView)
@@ -510,9 +508,7 @@ nsresult nsAccessible::GetFocusedNode(nsIDOMNode *aCurrentNode, nsIDOMNode **aFo
   if (!document)
     document = do_QueryInterface(aCurrentNode);
   if (document) {
-    nsCOMPtr<nsIScriptGlobalObject> ourGlobal;
-    document->GetScriptGlobalObject(getter_AddRefs(ourGlobal));
-    nsCOMPtr<nsPIDOMWindow> ourWindow(do_QueryInterface(ourGlobal));
+    nsCOMPtr<nsPIDOMWindow> ourWindow(do_QueryInterface(document->GetScriptGlobalObject()));
     if (ourWindow) 
       ourWindow->GetRootFocusController(getter_AddRefs(focusController));
   }
@@ -665,23 +661,22 @@ void nsAccessible::GetScreenOrigin(nsIPresContext *aPresContext, nsIFrame *aFram
   if (aPresContext) {
     PRInt32 offsetX = 0;
     PRInt32 offsetY = 0;
-    nsCOMPtr<nsIWidget> widget;
+    nsIWidget* widget = nsnull;
     
     while (aFrame) {
       // Look for a widget so we can get screen coordinates
-      nsIView* view = aFrame->GetViewExternal(aPresContext);
-      nsPoint origin;
+      nsIView* view = aFrame->GetViewExternal();
       if (view) {
-        view->GetWidget(*getter_AddRefs(widget));
+        widget = view->GetWidget();
         if (widget)
           break;
       }
       // No widget yet, so count up the coordinates of the frame 
-      aFrame->GetOrigin(origin);
+      nsPoint origin = aFrame->GetPosition();
       offsetX += origin.x;
       offsetY += origin.y;
   
-      aFrame->GetParent(&aFrame);
+      aFrame = aFrame->GetParent();
     }
     
     if (widget) {
@@ -755,20 +750,19 @@ void nsAccessible::GetBoundsRect(nsRect& aTotalBounds, nsIFrame** aBoundingFrame
     if (!IsCorrectFrameType(ancestorFrame, nsAccessibilityAtoms::inlineFrame) &&
         !IsCorrectFrameType(ancestorFrame, nsAccessibilityAtoms::textFrame))
       break;
-    ancestorFrame->GetParent(&ancestorFrame); 
+    ancestorFrame = ancestorFrame->GetParent();
   }
 
   nsIFrame *iterFrame = firstFrame;
   nsCOMPtr<nsIContent> firstContent(do_QueryInterface(mDOMNode));
-  nsCOMPtr<nsIContent> iterContent(firstContent);
+  nsIContent* iterContent = firstContent;
   PRInt32 depth = 0;
 
   // Look only at frames below this depth, or at this depth (if we're still on the content node we started with)
   while (iterContent == firstContent || depth > 0) {
     // Coordinates will come back relative to parent frame
     nsIFrame *parentFrame = iterFrame;
-    nsRect currFrameBounds;
-    iterFrame->GetRect(currFrameBounds);
+    nsRect currFrameBounds = iterFrame->GetRect();
    
     // We just want the width and height - only get relative coordinates if we're not already
     // at the bounding frame
@@ -776,13 +770,9 @@ void nsAccessible::GetBoundsRect(nsRect& aTotalBounds, nsIFrame** aBoundingFrame
 
     // Make this frame's bounds relative to common parent frame
     while (parentFrame && parentFrame != *aBoundingFrame) {
-      nsRect parentFrameBounds;
-      parentFrame->GetRect(parentFrameBounds);
       // Add this frame's bounds to our total rectangle
-      currFrameBounds.x += parentFrameBounds.x;
-      currFrameBounds.y += parentFrameBounds.y;
-
-      parentFrame->GetParent(&parentFrame);
+      currFrameBounds += parentFrame->GetPosition();
+      parentFrame = parentFrame->GetParent();
     }
 
     // Add this frame's bounds to total
@@ -805,10 +795,10 @@ void nsAccessible::GetBoundsRect(nsRect& aTotalBounds, nsIFrame** aBoundingFrame
       while (iterFrame) {
         iterFrame->GetNextInFlow(&iterNextFrame);
         if (!iterNextFrame)
-          iterFrame->GetNextSibling(&iterNextFrame);
+          iterNextFrame = iterFrame->GetNextSibling();
         if (iterNextFrame || --depth < 0) 
           break;
-        iterFrame->GetParent(&iterFrame);
+        iterFrame = iterFrame->GetParent();
       }
     }
 
@@ -818,7 +808,7 @@ void nsAccessible::GetBoundsRect(nsRect& aTotalBounds, nsIFrame** aBoundingFrame
       break;
     iterContent = nsnull;
     if (depth == 0)
-      iterFrame->GetContent(getter_AddRefs(iterContent));
+      iterContent = iterFrame->GetContent();
   }
 }
 
@@ -881,10 +871,7 @@ PRBool nsAccessible::IsCorrectFrameType( nsIFrame* aFrame, nsIAtom* aAtom )
   NS_ASSERTION(aFrame != nsnull, "aFrame is null in call to IsCorrectFrameType!");
   NS_ASSERTION(aAtom != nsnull, "aAtom is null in call to IsCorrectFrameType!");
 
-  nsCOMPtr<nsIAtom> frameType;
-  aFrame->GetFrameType(getter_AddRefs(frameType));
-
-  return (frameType.get() == aAtom);
+  return aFrame->GetType() == aAtom;
 }
 
 
@@ -1128,19 +1115,15 @@ nsresult nsAccessible::AppendFlatStringFromSubtreeRecurse(nsIContent *aContent, 
   // Depth first search for all text nodes that are decendants of content node.
   // Append all the text into one flat string
 
-  PRInt32 numChildren = 0;
+  PRUint32 numChildren = aContent->GetChildCount();
 
-  aContent->ChildCount(numChildren);
   if (numChildren == 0) {
     AppendFlatStringFromContentNode(aContent, aFlatString);
     return NS_OK;
   }
 
-  nsCOMPtr<nsIContent> contentWalker;
-  PRInt32 index;
-  for (index = 0; index < numChildren; index++) {
-    aContent->ChildAt(index, getter_AddRefs(contentWalker));
-    AppendFlatStringFromSubtree(contentWalker, aFlatString);
+  for (PRUint32 index = 0; index < numChildren; index++) {
+    AppendFlatStringFromSubtree(aContent->GetChildAt(index), aFlatString);
   }
   return NS_OK;
 }
@@ -1170,10 +1153,10 @@ NS_IMETHODIMP nsAccessible::AppendLabelText(nsIDOMNode *aLabelNode, nsAString& _
 /**
   * Called for HTML work only
   */
-NS_IMETHODIMP nsAccessible::AppendLabelFor(nsIContent *aLookNode, const nsAString *aId, nsAString *aLabel)
+NS_IMETHODIMP nsAccessible::AppendLabelFor(nsIContent *aLookNode,
+                                           const nsAString *aId,
+                                           nsAString *aLabel)
 {
-  PRInt32 numChildren = 0;
-
   nsCOMPtr<nsIDOMHTMLLabelElement> labelElement(do_QueryInterface(aLookNode));
   if (labelElement) {
     nsCOMPtr<nsIDOMElement> elt(do_QueryInterface(aLookNode));
@@ -1188,11 +1171,10 @@ NS_IMETHODIMP nsAccessible::AppendLabelFor(nsIContent *aLookNode, const nsAStrin
     return rv;
   }
 
-  aLookNode->ChildCount(numChildren);
-  nsCOMPtr<nsIContent> contentWalker;
-  PRInt32 index;
-  for (index = 0; index < numChildren; index++) {
-    aLookNode->ChildAt(index, getter_AddRefs(contentWalker));
+  PRUint32 numChildren = aLookNode->GetChildCount();
+
+  for (PRUint32 index = 0; index < numChildren; index++) { 
+    nsIContent *contentWalker = aLookNode->GetChildAt(index);
     if (contentWalker)
       AppendLabelFor(contentWalker, aId, aLabel);
   }
@@ -1457,45 +1439,114 @@ NS_IMETHODIMP nsAccessible::GetNativeInterface(void **aOutAccessible)
 }
 
 #ifdef MOZ_ACCESSIBILITY_ATK
-// static helper function
-nsresult nsAccessible::GetParentBlockNode(nsIDOMNode *aCurrentNode, nsIDOMNode **aBlockNode)
+// static helper functions
+nsresult nsAccessible::GetParentBlockNode(nsIPresShell *aPresShell, nsIDOMNode *aCurrentNode, nsIDOMNode **aBlockNode)
 {
   *aBlockNode = nsnull;
 
   nsCOMPtr<nsIContent> content(do_QueryInterface(aCurrentNode));
-  if (!content)
+  if (! content)
     return NS_ERROR_FAILURE;
 
-  nsCOMPtr<nsIDocument> doc = content->GetDocument();
-  if (!doc)
-    return NS_ERROR_FAILURE;
-
-  nsCOMPtr<nsIPresShell> presShell;
-  doc->GetShellAt(0, getter_AddRefs(presShell));
-
-  nsIFrame* frame = nsnull;
-  nsCOMPtr<nsIAtom> frameType;
-  presShell->GetPrimaryFrameFor(content, &frame);
-  if (frame)
-    frame->GetFrameType(getter_AddRefs(frameType));
-  while (frame && frameType != nsAccessibilityAtoms::blockFrame) {
-    nsIFrame* parentFrame = nsnull;
-    frame->GetParent(&parentFrame);
-    if (parentFrame)
-      parentFrame->GetFrameType(getter_AddRefs(frameType));
-    frame = parentFrame;
-  }
-
+  nsIFrame *frame = nsnull;
+  aPresShell->GetPrimaryFrameFor(content, &frame);
   if (! frame)
     return NS_ERROR_FAILURE;
 
-  frame->GetContent(getter_AddRefs(content));
-  nsCOMPtr<nsIDOMNode> domNode(do_QueryInterface(content));
-  *aBlockNode = domNode;
-  NS_IF_ADDREF(*aBlockNode);
-  return NS_OK;
+  nsIFrame *parentFrame = GetParentBlockFrame(frame);
+  if (! parentFrame)
+    return NS_ERROR_FAILURE;
+
+  nsCOMPtr<nsIPresContext> presContext;
+  aPresShell->GetPresContext(getter_AddRefs(presContext));
+  nsIFrame* childFrame = nsnull;
+  nsCOMPtr<nsIAtom> frameType;
+  while (frame && frame->GetType() != nsAccessibilityAtoms::textFrame) {
+    frame->FirstChild(presContext, nsnull, &childFrame);
+    frame = childFrame;
+  }
+  if (! frame || frameType != nsAccessibilityAtoms::textFrame)
+    return NS_ERROR_FAILURE;
+
+  parentFrame->FirstChild(presContext, nsnull, &childFrame);
+  PRInt32 index = 0;
+  nsIFrame *firstTextFrame = nsnull;
+  FindTextFrame(index, presContext, childFrame, &firstTextFrame, frame);
+  if (firstTextFrame) {
+    nsIContent *content = firstTextFrame->GetContent();
+
+    if (content) {
+      CallQueryInterface(content, aBlockNode);
+    }
+
+    return NS_OK;
+  }
+  else {
+    //XXX, why?
+  }
+  return NS_ERROR_FAILURE;
 }
-#endif  //MOZ_ACCESSIBILITY_ATK
 
+nsIFrame* nsAccessible::GetParentBlockFrame(nsIFrame *aFrame)
+{
+  if (! aFrame)
+    return nsnull;
 
+  nsIFrame* frame = aFrame;
+  while (frame && frame->GetType() != nsAccessibilityAtoms::blockFrame) {
+    nsIFrame* parentFrame = frame->GetParent();
+    frame = parentFrame;
+  }
+  return frame;
+}
 
+PRBool nsAccessible::FindTextFrame(PRInt32 &index, nsIPresContext *aPresContext, nsIFrame *aCurFrame, 
+                                   nsIFrame **aFirstTextFrame, const nsIFrame *aTextFrame)
+// Do a depth-first traversal to find the given text frame(aTextFrame)'s index of the block frame(aCurFrame)
+//   it belongs to, also return the first text frame within the same block.
+// Parameters:
+//   index        [in/out] - the current index - finally, it will be the aTextFrame's index in its block;
+//   aCurFrame        [in] - the current frame - its initial value is the first child frame of the block frame;
+//   aFirstTextFrame [out] - the first text frame which is within the same block with aTextFrame;
+//   aTextFrame       [in] - the text frame we are looking for;
+// Return:
+//   PR_TRUE  - the aTextFrame was found in its block frame;
+//   PR_FALSE - the aTextFrame was NOT found in its block frame;
+{
+  if (! aCurFrame)
+    return PR_FALSE;
+
+  if (aCurFrame == aTextFrame) {
+    if (index == 0)
+      *aFirstTextFrame = aCurFrame;
+    // we got it, stop traversing
+    return PR_TRUE;
+  }
+
+  nsIAtom* frameType = aCurFrame->GetType();
+  if (frameType == nsAccessibilityAtoms::blockFrame) {
+    // every block frame will reset the index
+    index = 0;
+  }
+  else {
+    if (frameType == nsAccessibilityAtoms::textFrame) {
+      nsRect frameRect = aCurFrame->GetRect();
+      // skip the empty frame
+      if (! frameRect.IsEmpty()) {
+        if (index == 0)
+          *aFirstTextFrame = aCurFrame;
+        index++;
+      }
+    }
+
+    // we won't expand the tree under a block frame.
+    nsIFrame* childFrame = nsnull;
+    aCurFrame->FirstChild(aPresContext, nsnull, &childFrame);
+    if (FindTextFrame(index, aPresContext, childFrame, aFirstTextFrame, aTextFrame))
+      return PR_TRUE;
+  }
+
+  nsIFrame* siblingFrame = aCurFrame->GetNextSibling();
+  return FindTextFrame(index, aPresContext, siblingFrame, aFirstTextFrame, aTextFrame);
+}
+#endif //MOZ_ACCESSIBILITY_ATK

@@ -232,6 +232,8 @@ nsresult nsPop3Service::RunPopUrl(nsIMsgIncomingServer * aServer, nsIURI * aUrlT
         protocol->SetUsername(userName);
         rv = protocol->LoadUrl(aUrlToRun);
         NS_RELEASE(protocol);
+        if (NS_FAILED(rv))
+          aServer->SetServerBusy(PR_FALSE);
       }
     } 
   } // if server
@@ -289,8 +291,7 @@ NS_IMETHODIMP nsPop3Service::NewURI(const nsACString &aSpec,
 
     nsCOMPtr<nsIRDFService> rdfService(do_GetService(kRDFServiceCID, &rv)); 
     if (NS_FAILED(rv)) return rv;
-    rv = rdfService->GetResource(folderUri,
-                                 getter_AddRefs(resource));
+    rv = rdfService->GetResource(folderUri, getter_AddRefs(resource));
     if (NS_FAILED(rv)) return rv;
     nsCOMPtr<nsIMsgFolder> folder = do_QueryInterface(resource, &rv);
     if (NS_FAILED(rv)) return rv;
@@ -373,14 +374,14 @@ NS_IMETHODIMP nsPop3Service::NewChannel(nsIURI *aURI, nsIChannel **_retval)
     nsCOMPtr<nsIMsgMailNewsUrl> url = do_QueryInterface(aURI, &rv);
     if (NS_SUCCEEDED(rv) && url)
     {
-      // GetUsername() returns an escaped username, and the protocol
-      // stores the username unescaped, so we must unescape the username.
-      // XXX this is of course very risky since the unescaped string may
-      // contain embedded nulls as well as characters from some unknown
-      // charset!!
-      url->GetUsername(username);
-      NS_UnescapeURL(username);
-      protocol->SetUsername(username.get());
+      nsXPIDLCString realUserName;
+      nsCOMPtr <nsIMsgIncomingServer> server;
+      url->GetServer(getter_AddRefs(server));
+      if (server)
+      {
+        server->GetRealUsername(getter_Copies(realUserName));
+        protocol->SetUsername(realUserName.get());
+      }
     }
     rv = protocol->QueryInterface(NS_GET_IID(nsIChannel), (void **) _retval);
   }

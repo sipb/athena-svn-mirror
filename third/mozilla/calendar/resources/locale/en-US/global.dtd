@@ -18,7 +18,7 @@
    - Portions created by the Initial Developer are Copyright (C) 2001
    - the Initial Developer. All Rights Reserved.
    -
-   - Contributor(s): Garth Smedley <garths@oeone.com> 
+   - Contributor(s): Garth Smedley <garths@oeone.com>
    -
    - Alternatively, the contents of this file may be used under the terms of
    - either the GNU General Public License Version 2 or later (the "GPL"), or
@@ -86,9 +86,6 @@
 
 <!ENTITY time.am "AM" >
 <!ENTITY time.pm "PM" >
-<!ENTITY time.midnight "Midnight" >
-<!ENTITY time.noon "Noon" >
-
 
 <!ENTITY month.1.MMM "JAN" >
 <!ENTITY month.2.MMM "FEB" >

@@ -105,7 +105,7 @@ public:
                              nsIAtom* aPseudoTag,
                              nsStyleContext* aParentContext);
 
-  NS_IMETHOD GetXBLBindingURL(nsIContent* aContent, nsAString& aResult);
+  NS_IMETHOD GetXBLBindingURL(nsIContent* aContent, nsIURI** aResult);
   NS_IMETHOD ReParentStyleContext(nsIFrame* aFrame, 
                                   nsStyleContext* aNewParentContext);
   NS_IMETHOD GetMetricsFor(const nsFont& aFont, nsIFontMetrics** aResult);
@@ -121,6 +121,7 @@ public:
   NS_IMETHOD GetDefaultColor(nscolor* aColor);
   NS_IMETHOD GetDefaultBackgroundColor(nscolor* aColor);
   NS_IMETHOD GetDefaultLinkColor(nscolor* aColor);
+  NS_IMETHOD GetDefaultActiveLinkColor(nscolor* aColor);
   NS_IMETHOD GetDefaultVisitedLinkColor(nscolor* aColor);
 
   NS_IMETHOD GetFocusBackgroundColor(nscolor* aColor);
@@ -131,9 +132,10 @@ public:
   NS_IMETHOD SetDefaultColor(nscolor aColor);
   NS_IMETHOD SetDefaultBackgroundColor(nscolor aColor);
   NS_IMETHOD SetDefaultLinkColor(nscolor aColor);
+  NS_IMETHOD SetDefaultActiveLinkColor(nscolor aColor);
   NS_IMETHOD SetDefaultVisitedLinkColor(nscolor aColor);
 
-  NS_IMETHOD LoadImage(const nsString& aURL,
+  NS_IMETHOD LoadImage(nsIURI* aURL,
                        nsIFrame* aTargetFrame,
                        imgIRequest **aRequest);
 
@@ -240,6 +242,7 @@ protected:
   nscolor               mDefaultColor;            // set in GetUserPrefs
   nscolor               mDefaultBackgroundColor;  // set in GetUserPrefs
   nscolor               mLinkColor;               // set in GetUserPrefs
+  nscolor               mActiveLinkColor;         // set in GetUserPrefs
   nscolor               mVisitedLinkColor;        // set in GetUserPrefs
   nscolor               mFocusTextColor;          // set in GetUserPrefs
   nscolor               mFocusBackgroundColor;    // set in GetUserPrefs
@@ -287,7 +290,7 @@ protected:
   void   GetFontPreferences();
   void   GetDocumentColorPreferences();
   void   UpdateCharSet(const char* aCharSet);
-  void SetImgAnimations(nsCOMPtr<nsIContent>& aParent, PRUint16 aMode);
+  void SetImgAnimations(nsIContent *aParent, PRUint16 aMode);
 
 private:
   static int PR_CALLBACK PrefChangedCallback(const char*, void*);

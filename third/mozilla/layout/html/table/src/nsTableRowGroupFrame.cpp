@@ -206,13 +206,15 @@ NS_METHOD nsTableRowGroupFrame::Paint(nsIPresContext*      aPresContext,
 #endif
   // Standards mode background painting removed.  See bug 4510
 
-  const nsStyleDisplay* disp = GetStyleDisplay();
-  if (disp && (NS_STYLE_OVERFLOW_HIDDEN == disp->mOverflow)) {
+  PRUint8 overflow = GetStyleDisplay()->mOverflow;
+  PRBool clip = overflow == NS_STYLE_OVERFLOW_HIDDEN ||
+                overflow == NS_STYLE_OVERFLOW_SCROLLBARS_NONE;
+  if (clip) {
     aRenderingContext.PushState();
     SetOverflowClipRect(aRenderingContext);
   }
   PaintChildren(aPresContext, aRenderingContext, aDirtyRect, aWhichLayer, aFlags);
-  if (disp && (NS_STYLE_OVERFLOW_HIDDEN == disp->mOverflow)) {
+  if (clip) {
     PRBool clipState;
     aRenderingContext.PopState(clipState);
   }
@@ -311,9 +313,7 @@ nsTableRowGroupFrame::InitChildReflowState(nsIPresContext&    aPresContext,
   nsMargin* pCollapseBorder = nsnull;
   if (aBorderCollapse) {
     if (aReflowState.frame) {
-      nsCOMPtr<nsIAtom> fType;
-      aReflowState.frame->GetFrameType(getter_AddRefs(fType));
-      if (nsLayoutAtoms::tableRowFrame == fType.get()) {
+      if (nsLayoutAtoms::tableRowFrame == aReflowState.frame->GetType()) {
         nsTableRowFrame* rowFrame = (nsTableRowFrame*)aReflowState.frame;
         pCollapseBorder = rowFrame->GetBCBorderWidth(aPixelsToTwips, collapseBorder);
       }
@@ -356,17 +356,14 @@ nsTableRowGroupFrame::ReflowChildren(nsIPresContext*        aPresContext,
   nsIFrame* kidFrame = (aStartFrame) ? aStartFrame : mFrames.FirstChild();
 
   for ( ; kidFrame; kidFrame = kidFrame->GetNextSibling()) {
-    // Get the frame state bits
-    nsCOMPtr<nsIAtom> kidType;
-    kidFrame->GetFrameType(getter_AddRefs(kidType));
-
     // See if we should only reflow the dirty child frames
     PRBool doReflowChild = PR_TRUE;
     if (aDirtyOnly && ((kidFrame->GetStateBits() & NS_FRAME_IS_DIRTY) == 0)) {
       doReflowChild = PR_FALSE;
     }
+    nsIAtom* kidType = kidFrame->GetType();
     if (aReflowState.reflowState.mFlags.mSpecialHeightReflow) {
-      if (!isPaginated && (nsLayoutAtoms::tableRowFrame == kidType.get() &&
+      if (!isPaginated && (nsLayoutAtoms::tableRowFrame == kidType &&
                            !((nsTableRowFrame*)kidFrame)->NeedSpecialReflow())) {
         doReflowChild = PR_FALSE;
       }
@@ -377,7 +374,7 @@ nsTableRowGroupFrame::ReflowChildren(nsIPresContext*        aPresContext,
       nsSize kidAvailSize(aReflowState.availSize);
       if (0 >= kidAvailSize.height)
         kidAvailSize.height = 1;      // XXX: HaCk - we don't handle negative heights yet
-      nsHTMLReflowMetrics desiredSize(nsnull);
+      nsHTMLReflowMetrics desiredSize(PR_FALSE);
       desiredSize.width = desiredSize.height = desiredSize.ascent = desiredSize.descent = 0;
   
       // Reflow the child into the available space, giving it as much height as
@@ -420,12 +417,12 @@ nsTableRowGroupFrame::ReflowChildren(nsIPresContext*        aPresContext,
       lastReflowedRow = kidFrame;
 
       if (aFirstRowReflowed && !*aFirstRowReflowed) { 
-        if (nsLayoutAtoms::tableRowFrame == kidType.get()) {
+        if (nsLayoutAtoms::tableRowFrame == kidType) {
           *aFirstRowReflowed = (nsTableRowFrame*)kidFrame;
         }
       }
       if (isPaginated && aPageBreakBeforeEnd && !*aPageBreakBeforeEnd && 
-          (nsLayoutAtoms::tableRowFrame == kidType.get())) {
+          (nsLayoutAtoms::tableRowFrame == kidType)) {
         nsTableRowFrame* nextRow = ((nsTableRowFrame*)kidFrame)->GetNextRow();
         if (nextRow) {
           *aPageBreakBeforeEnd = nsTableFrame::PageBreakAfter(*kidFrame, nextRow);
@@ -442,6 +439,7 @@ nsTableRowGroupFrame::ReflowChildren(nsIPresContext*        aPresContext,
       // Adjust the running y-offset so we know where the next row should be placed
       aReflowState.y += kidFrame->GetSize().height + cellSpacingY;
     }
+    ConsiderChildOverflow(aPresContext, aDesiredSize.mOverflowArea, kidFrame);
   }
 
   // adjust the rows after the ones that were reflowed
@@ -467,9 +465,7 @@ nsTableRowGroupFrame::GetFirstRow()
 {
   for (nsIFrame* childFrame = GetFirstFrame(); childFrame;
        childFrame = childFrame->GetNextSibling()) {
-    nsCOMPtr<nsIAtom> frameType;
-    childFrame->GetFrameType(getter_AddRefs(frameType));
-    if (nsLayoutAtoms::tableRowFrame == frameType.get()) {
+    if (nsLayoutAtoms::tableRowFrame == childFrame->GetType()) {
       return (nsTableRowFrame*)childFrame;
     }
   }
@@ -503,6 +499,7 @@ UpdateHeights(RowInfo& aRowInfo,
 void 
 nsTableRowGroupFrame::DidResizeRows(nsIPresContext&          aPresContext,
                                     const nsHTMLReflowState& aReflowState,
+                                    nsHTMLReflowMetrics&     aDesiredSize,
                                     nsTableRowFrame*         aStartRowFrameIn)
 {
   // update the cells spanning rows with their new heights
@@ -510,8 +507,13 @@ nsTableRowGroupFrame::DidResizeRows(nsIPresContext&          aPresContext,
   PRInt32 rowIndex;
   nsTableRowFrame* rowFrame;
   nsTableRowFrame* startRowFrame = (aStartRowFrameIn) ? aStartRowFrameIn: GetFirstRow();
+  if (!aStartRowFrameIn || startRowFrame == GetFirstRow()) {
+    // Reset the overflow area
+    aDesiredSize.mOverflowArea = nsRect(0, 0, 0, 0);
+  }
   for (rowFrame = startRowFrame, rowIndex = 0; rowFrame; rowFrame = rowFrame->GetNextRow(), rowIndex++) {
     rowFrame->DidResize(&aPresContext, aReflowState);
+    ConsiderChildOverflow(&aPresContext, aDesiredSize.mOverflowArea, rowFrame);
   }
 }
 
@@ -842,7 +844,7 @@ nsTableRowGroupFrame::CalculateRowHeights(nsIPresContext*          aPresContext,
     CacheRowHeightsForPrinting(aPresContext, GetFirstRow());
   }
 
-  DidResizeRows(*aPresContext, aReflowState, startRowFrame);
+  DidResizeRows(*aPresContext, aReflowState, aDesiredSize, startRowFrame);
 
   aDesiredSize.height = rowGroupHeight; // Adjust our desired size
   delete [] rowInfo; // cleanup
@@ -1068,7 +1070,7 @@ nsTableRowGroupFrame::SplitRowGroup(nsIPresContext*          aPresContext,
                                          eReflowReason_Resize);
         InitChildReflowState(*aPresContext, borderCollapse, p2t, rowReflowState);
         rowReflowState.mFlags.mIsTopOfPage = isTopOfPage; // set top of page
-        nsHTMLReflowMetrics rowMetrics(nsnull);
+        nsHTMLReflowMetrics rowMetrics(PR_FALSE);
 
         // Reflow the cell with the constrained height. A cell with rowspan >1 will get this
         // reflow later during SplitSpanningCells.
@@ -1287,7 +1289,7 @@ nsTableRowGroupFrame::Reflow(nsIPresContext*          aPresContext,
     // but we need to correctly calculate the row group height and we can't if there
     // are row spans unless we do this step
     if (aReflowState.mFlags.mSpecialHeightReflow) {
-      DidResizeRows(*aPresContext, aReflowState);
+      DidResizeRows(*aPresContext, aReflowState, aDesiredSize);
       if (isPaginated) {
         CacheRowHeightsForPrinting(aPresContext, GetFirstRow());
       }
@@ -1325,6 +1327,9 @@ nsTableRowGroupFrame::Reflow(nsIPresContext*          aPresContext,
     aDesiredSize.height = GetHeightOfRows(aPresContext);
   }
 
+  aDesiredSize.mOverflowArea.UnionRect(aDesiredSize.mOverflowArea, nsRect(0, 0, aDesiredSize.width,
+	                                                                      aDesiredSize.height)); 
+  StoreOverflow(aPresContext, aDesiredSize);
 #if defined DEBUG_TABLE_REFLOW_TIMING
   nsTableFrame::DebugReflow(this, (nsHTMLReflowState&)aReflowState, &aDesiredSize, aStatus);
 #endif
@@ -1368,9 +1373,7 @@ nsTableRowGroupFrame::AppendFrames(nsIPresContext* aPresContext,
   nsAutoVoidArray rows;
   for (nsIFrame* rowFrame = aFrameList; rowFrame;
        rowFrame = rowFrame->GetNextSibling()) {
-    nsCOMPtr<nsIAtom> frameType;
-    rowFrame->GetFrameType(getter_AddRefs(frameType));
-    if (nsLayoutAtoms::tableRowFrame == frameType.get()) {
+    if (nsLayoutAtoms::tableRowFrame == rowFrame->GetType()) {
       rows.AppendElement(rowFrame);
     }
   }
@@ -1423,9 +1426,7 @@ nsTableRowGroupFrame::InsertFrames(nsIPresContext* aPresContext,
   PRBool gotFirstRow = PR_FALSE;
   for (nsIFrame* rowFrame = aFrameList; rowFrame;
        rowFrame = rowFrame->GetNextSibling()) {
-    nsCOMPtr<nsIAtom> frameType;
-    rowFrame->GetFrameType(getter_AddRefs(frameType));
-    if (nsLayoutAtoms::tableRowFrame == frameType.get()) {
+    if (nsLayoutAtoms::tableRowFrame == rowFrame->GetType()) {
       rows.AppendElement(rowFrame);
       if (!gotFirstRow) {
         ((nsTableRowFrame*)rowFrame)->SetFirstInserted(PR_TRUE);
@@ -1474,9 +1475,7 @@ nsTableRowGroupFrame::RemoveFrame(nsIPresContext* aPresContext,
   nsTableFrame* tableFrame = nsnull;
   nsTableFrame::GetTableFrame(this, tableFrame);
   if (tableFrame) {
-    nsCOMPtr<nsIAtom> frameType;
-    aOldFrame->GetFrameType(getter_AddRefs(frameType));
-    if (nsLayoutAtoms::tableRowFrame == frameType.get()) {
+    if (nsLayoutAtoms::tableRowFrame == aOldFrame->GetType()) {
       // remove the rows from the table (and flag a rebalance)
       tableFrame->RemoveRows(*aPresContext, (nsTableRowFrame &)*aOldFrame, 1, PR_TRUE);
 
@@ -1602,9 +1601,7 @@ nsTableRowGroupFrame::RecoverState(nsRowGroupReflowState& aReflowState,
   // Walk the list of children up to aKidFrame
   for (nsIFrame* frame = mFrames.FirstChild(); frame && (frame != aKidFrame);
        frame = frame->GetNextSibling()) {
-       nsCOMPtr<nsIAtom> fType;
-    frame->GetFrameType(getter_AddRefs(fType));
-    if (fType.get() == nsLayoutAtoms::tableRowFrame) {
+    if (frame->GetType() == nsLayoutAtoms::tableRowFrame) {
       // Update the running y-offset
       nsSize kidSize = frame->GetSize();
       aReflowState.y += kidSize.height + cellSpacingY;
@@ -1624,10 +1621,7 @@ nsTableRowGroupFrame::IsSimpleRowFrame(nsTableFrame* aTableFrame,
                                        nsIFrame*     aFrame)
 {
   // Make sure it's a row frame and not a row group frame
-  nsCOMPtr<nsIAtom>  frameType;
-
-  aFrame->GetFrameType(getter_AddRefs(frameType));
-  if (frameType.get() == nsLayoutAtoms::tableRowFrame) {
+  if (aFrame->GetType() == nsLayoutAtoms::tableRowFrame) {
     PRInt32 rowIndex = ((nsTableRowFrame*)aFrame)->GetRowIndex();
     
     // It's a simple row frame if there are no cells that span into or
@@ -1647,9 +1641,7 @@ GetLastRowSibling(nsIFrame* aRowFrame)
   nsIFrame* lastRowFrame = nsnull;
   for (nsIFrame* lastFrame = aRowFrame; lastFrame;
        lastFrame = lastFrame->GetNextSibling()) {
-    nsCOMPtr<nsIAtom> fType;
-    lastFrame->GetFrameType(getter_AddRefs(fType));
-    if (nsLayoutAtoms::tableRowFrame == fType.get()) {
+    if (nsLayoutAtoms::tableRowFrame == lastFrame->GetType()) {
       lastRowFrame = lastFrame;
     }
   }
@@ -1711,6 +1703,8 @@ nsTableRowGroupFrame::IR_TargetIsChild(nsIPresContext*        aPresContext,
       } else {
         // Inform the row of its new height.
         ((nsTableRowFrame*)aNextFrame)->DidResize(aPresContext, aReflowState.reflowState);
+        // the overflow area may have changed inflate the overflow area
+        ConsiderChildOverflow(aPresContext, aDesiredSize.mOverflowArea, aNextFrame);
         if (aReflowState.tableFrame->IsAutoHeight()) {
           // Because other cells in the row may need to be be aligned differently,
           // repaint the entire row
@@ -1790,13 +1784,10 @@ nsTableRowGroupFrame::IR_StyleChanged(nsIPresContext*        aPresContext,
   return rv;
 }
 
-NS_IMETHODIMP
-nsTableRowGroupFrame::GetFrameType(nsIAtom** aType) const
+nsIAtom*
+nsTableRowGroupFrame::GetType() const
 {
-  NS_PRECONDITION(nsnull != aType, "null OUT parameter pointer");
-  *aType = nsLayoutAtoms::tableRowGroupFrame; 
-  NS_ADDREF(*aType);
-  return NS_OK;
+  return nsLayoutAtoms::tableRowGroupFrame;
 }
 
 
@@ -1853,7 +1844,7 @@ nsTableRowGroupFrame::GetBCBorderWidth(float     aPixelsToTwips,
   nsTableRowFrame* firstRowFrame = nsnull;
   nsTableRowFrame* lastRowFrame = nsnull;
   for (nsTableRowFrame* rowFrame = GetFirstRow(); rowFrame; rowFrame = rowFrame->GetNextRow()) {
-    if(!firstRowFrame) {
+    if (!firstRowFrame) {
       firstRowFrame = rowFrame;
     }
     lastRowFrame = rowFrame;
@@ -1899,21 +1890,21 @@ nsTableRowGroupFrame::GetLine(PRInt32    aLineNumber,
     return NS_ERROR_FAILURE;
 
   nsTableCellMap* cellMap = parentFrame->GetCellMap();
-  if(!cellMap)
+  if (!cellMap)
      return NS_ERROR_FAILURE;
 
-  if(aLineNumber >= cellMap->GetRowCount())
+  if (aLineNumber >= cellMap->GetRowCount())
     return NS_ERROR_INVALID_ARG;
   
   *aLineFlags = 0;/// should we fill these in later?
   // not gonna touch aLineBounds right now
 
   CellData* firstCellData = cellMap->GetDataAt(aLineNumber, 0);
-  if(!firstCellData) 
+  if (!firstCellData)
     return NS_ERROR_FAILURE;
 
   *aFirstFrameOnLine = (nsIFrame*)firstCellData->GetCellFrame();
-  if(!(*aFirstFrameOnLine))
+  if (!(*aFirstFrameOnLine))
   {
     while((aLineNumber > 0)&&(!(*aFirstFrameOnLine)))
     {
@@ -1935,9 +1926,7 @@ nsTableRowGroupFrame::FindLineContaining(nsIFrame* aFrame,
 
   // make sure it is a rowFrame in the RowGroup
   // - it should be, but we do not validate in every case (see bug 88849)
-  nsCOMPtr<nsIAtom> frameType;
-  aFrame->GetFrameType(getter_AddRefs(frameType));
-  if (frameType.get() != nsLayoutAtoms::tableRowFrame) {
+  if (aFrame->GetType() != nsLayoutAtoms::tableRowFrame) {
     NS_WARNING("RowGroup contains a frame that is not a row");
     *aLineNumberResult = 0;
     return NS_ERROR_FAILURE;
@@ -1984,7 +1973,7 @@ nsTableRowGroupFrame::FindFrameAt(PRInt32    aLineNumber,
   nsTableFrame* parentFrame = nsnull;
   nsTableFrame::GetTableFrame(this, parentFrame);
   nsTableCellMap* cellMap = parentFrame->GetCellMap();
-  if(!cellMap)
+  if (!cellMap)
      return NS_ERROR_FAILURE;
 
   colCount = cellMap->GetColCount();
@@ -2002,7 +1991,7 @@ nsTableRowGroupFrame::FindFrameAt(PRInt32    aLineNumber,
       continue;
     tempFrame = (nsIFrame*)cellData->GetCellFrame();
 
-    if(!tempFrame)
+    if (!tempFrame)
       continue;
     
     nsRect tempRect = tempFrame->GetRect();//offsetting x to be in row coordinates
@@ -2016,13 +2005,13 @@ nsTableRowGroupFrame::FindFrameAt(PRInt32    aLineNumber,
       gotParentRect = PR_TRUE;
     }
 
-    if(i==0 &&(aX <= 0))//short circuit for negative x coords
+    if (i==0 &&(aX <= 0))//short circuit for negative x coords
     {
       *aXIsBeforeFirstFrame = PR_TRUE;
       *aFrameFound = tempFrame;
       return NS_OK;
     }
-    if(aX < tempRect.x)
+    if (aX < tempRect.x)
     {
       return NS_ERROR_FAILURE;
     }
@@ -2035,7 +2024,7 @@ nsTableRowGroupFrame::FindFrameAt(PRInt32    aLineNumber,
   //x coord not found in frame, return last frame
   *aXIsAfterLastFrame = PR_TRUE;
   *aFrameFound = tempFrame;
-  if(!(*aFrameFound))
+  if (!(*aFrameFound))
     return NS_ERROR_FAILURE;
   return NS_OK;
 }
@@ -2048,13 +2037,13 @@ nsTableRowGroupFrame::GetNextSiblingOnLine(nsIFrame*& aFrame,
 
   nsITableCellLayout* cellFrame;
   nsresult result = CallQueryInterface(aFrame, &cellFrame);
-  if(NS_FAILED(result)) 
+  if (NS_FAILED(result))
     return result;
 
   nsTableFrame* parentFrame = nsnull;
   result = nsTableFrame::GetTableFrame(this, parentFrame);
   nsTableCellMap* cellMap = parentFrame->GetCellMap();
-  if(!cellMap)
+  if (!cellMap)
      return NS_ERROR_FAILURE;
 
 
@@ -2064,10 +2053,10 @@ nsTableRowGroupFrame::GetNextSiblingOnLine(nsIFrame*& aFrame,
 
   CellData* cellData = cellMap->GetDataAt(aLineNumber, colIndex + 1);
   
-  if(!cellData)// if this isnt a valid cell, drop down and check the next line
+  if (!cellData)// if this isnt a valid cell, drop down and check the next line
   {
     cellData = cellMap->GetDataAt(aLineNumber + 1, 0);
-    if(!cellData)
+    if (!cellData)
     {
       //*aFrame = nsnull;
       return NS_ERROR_FAILURE;
@@ -2075,19 +2064,19 @@ nsTableRowGroupFrame::GetNextSiblingOnLine(nsIFrame*& aFrame,
   }
 
   aFrame = (nsIFrame*)cellData->GetCellFrame();
-  if(!aFrame)
+  if (!aFrame)
   {
     //PRInt32 numCellsInRow = cellMap->GetNumCellsOriginatingInRow(aLineNumber) - 1;
     PRInt32 tempCol = colIndex + 1;
     PRInt32 tempRow = aLineNumber;
-    while((tempCol > 0) && (!aFrame))
+    while ((tempCol > 0) && (!aFrame))
     {
       tempCol--;
       cellData = cellMap->GetDataAt(aLineNumber, tempCol);
       aFrame = (nsIFrame*)cellData->GetCellFrame();
-      if(!aFrame && (tempCol==0))
+      if (!aFrame && (tempCol==0))
       {
-        while((tempRow > 0) && (!aFrame))
+        while ((tempRow > 0) && (!aFrame))
         {
           tempRow--;
           cellData = cellMap->GetDataAt(tempRow, 0);

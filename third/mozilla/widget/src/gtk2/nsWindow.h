@@ -94,8 +94,9 @@ public:
                                          PRInt32 *aY);
     NS_IMETHOD         Move(PRInt32 aX,
                             PRInt32 aY);
-    NS_IMETHOD         PlaceBehind(nsIWidget *aWidget,
-                                   PRBool     aActivate);
+    NS_IMETHOD         PlaceBehind(nsTopLevelWidgetZPlacement  aPlacement,
+                                   nsIWidget                  *aWidget,
+                                   PRBool                      aActivate);
     NS_IMETHOD         SetSizeMode(PRInt32 aMode);
     NS_IMETHOD         Enable(PRBool aState);
     NS_IMETHOD         SetFocus(PRBool aRaise = PR_FALSE);
@@ -235,7 +236,13 @@ public:
     void               GrabKeyboard (void);
     void               ReleaseGrabs (void);
 
-    void               SetPluginType(PRBool aIsXembed);
+    enum PluginType {
+        PluginType_NONE = 0,   /* do not have any plugin */
+        PluginType_XEMBED,     /* the plugin support xembed */
+        PluginType_NONXEMBED   /* the plugin does not support xembed */
+    };
+
+    void               SetPluginType(PluginType aPluginType);
     void               SetNonXEmbedPluginFocus(void);
     void               LoseNonXEmbedPluginFocus(void);
 
@@ -281,11 +288,11 @@ private:
                         mInKeyRepeat : 1,
                         mIsVisible : 1,
                         mRetryPointerGrab : 1,
-                        mHasNonXembedPlugin : 1,
                         mActivatePending : 1,
                         mRetryKeyboardGrab : 1;
     GtkWindow          *mTransientParent;
     PRInt32             mSizeState;
+    PluginType          mPluginType;
 
 #ifdef ACCESSIBILITY
     nsCOMPtr<nsIAccessible> mRootAccessible;
@@ -313,6 +320,10 @@ private:
     guint              mDragMotionTime;
     guint              mDragMotionTimerID;
     nsCOMPtr<nsITimer> mDragLeaveTimer;
+
+    static PRBool      sIsDraggingOutOf;
+    // drag in progress
+    static PRBool DragInProgress(void);
 
     void         ResetDragMotionTimer     (GtkWidget      *aWidget,
                                            GdkDragContext *aDragContext,

@@ -203,8 +203,8 @@ static const nsCatalogData kCatalogTable[] = {
  {"-//W3C//DTD XHTML 1.0 Strict//EN",          "xhtml11.dtd", nsnull },
  {"-//W3C//DTD XHTML 1.0 Frameset//EN",        "xhtml11.dtd", nsnull },
  {"-//W3C//DTD XHTML Basic 1.0//EN",           "xhtml11.dtd", nsnull },
- {"-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN", "mathml.dtd",  "resource:/res/mathml.css" },
- {"-//W3C//DTD XHTML 1.1 plus MathML 2.0 plus SVG 1.1//EN", "mathml.dtd", "resource:/res/mathml.css" },
+ {"-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN", "mathml.dtd",  "resource://gre/res/mathml.css" },
+ {"-//W3C//DTD XHTML 1.1 plus MathML 2.0 plus SVG 1.1//EN", "mathml.dtd", "resource://gre/res/mathml.css" },
  {"-//W3C//DTD SVG 20001102//EN",              "svg.dtd",     nsnull },
  {"-//WAPFORUM//DTD XHTML Mobile 1.0//EN",     "xhtml11.dtd", nsnull },
  {nsnull, nsnull, nsnull}
@@ -269,7 +269,7 @@ IsLoadableDTD(const nsCatalogData* aCatalogData, nsCOMPtr<nsIURI>* aDTD)
   }
   
   nsCOMPtr<nsIFile> dtdPath;
-  NS_GetSpecialDirectory(NS_OS_CURRENT_PROCESS_DIR, 
+  NS_GetSpecialDirectory(NS_GRE_DIR, 
                          getter_AddRefs(dtdPath));
 
   if (!dtdPath)
@@ -346,9 +346,20 @@ nsExpatDriver::HandleStartElement(const PRUnichar *aValue,
 { 
   NS_ASSERTION(mSink, "content sink not found!");
 
+  // Calculate the total number of elements in aAtts.
+  // XML_GetSpecifiedAttributeCount will only give us the number of specified
+  // attrs (twice that number, actually), so we have to check for default attrs
+  // ourselves.
+  PRUint32 attrArrayLength;
+  for (attrArrayLength = XML_GetSpecifiedAttributeCount(mExpatParser);
+       aAtts[attrArrayLength];
+       attrArrayLength += 2) {
+    // Just looping till we find out what the length is
+  }
+  
   if (mSink){
     mSink->HandleStartElement(aValue, aAtts, 
-                              XML_GetSpecifiedAttributeCount(mExpatParser) / 2, 
+                              attrArrayLength,
                               XML_GetIdAttributeIndex(mExpatParser), 
                               XML_GetCurrentLineNumber(mExpatParser));
   }
@@ -1181,6 +1192,12 @@ nsExpatDriver::StringTagToIntTag(const nsAString &aTag, PRInt32* aIntTag) const
 
 NS_IMETHODIMP_(const PRUnichar *)
 nsExpatDriver::IntTagToStringTag(PRInt32 aIntTag) const
+{
+  return 0;
+}
+
+NS_IMETHODIMP_(nsIAtom *)
+nsExpatDriver::IntTagToAtom(PRInt32 aIntTag) const
 {
   return 0;
 }

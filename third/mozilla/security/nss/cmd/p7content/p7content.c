@@ -34,7 +34,7 @@
 /*
  * p7content -- A command to display pkcs7 content.
  *
- * $Id: p7content.c,v 1.1.1.2 2003-07-08 17:00:16 rbasch Exp $
+ * $Id: p7content.c,v 1.1.1.3 2004-02-27 16:36:50 rbasch Exp $
  */
 
 #include "nspr.h"
@@ -175,7 +175,7 @@ DecodeAndPrintFile(FILE *out, PRFileDesc *in, char *progName)
 
 	signing_time = SEC_PKCS7GetSigningTime(cinfo);
 	if (signing_time != NULL) {
-	    SECU_PrintUTCTime(out, signing_time, "Signing time", 0);
+	    SECU_PrintTimeChoice(out, signing_time, "Signing time", 0);
 	} else {
 	    fprintf(out, "No signing time included.\n");
 	}

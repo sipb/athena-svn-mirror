@@ -22,12 +22,11 @@
 #include "nsMimeTypes.h"
 #include "nsNetUtil.h"
 
-#include "nsScriptSecurityManager.h"
-#include "nsIAggregatePrincipal.h"
+#include "nsIScriptSecurityManager.h"
+#include "nsIPrincipal.h"
 #include "nsIFileURL.h"
 #include "nsIJAR.h"
 
-static NS_DEFINE_CID(kScriptSecurityManagerCID, NS_SCRIPTSECURITYMANAGER_CID);
 static NS_DEFINE_CID(kZipReaderCID, NS_ZIPREADER_CID);
 
 //-----------------------------------------------------------------------------
@@ -119,11 +118,8 @@ nsJARInputThunk::EnsureJarStream()
                                     getter_AddRefs(mJarStream));
     if (NS_FAILED(rv)) return rv;
 
-    // ask the zip entry for the content length
-    nsCOMPtr<nsIZipEntry> entry;
-    mJarReader->GetEntry(mJarEntry.get(), getter_AddRefs(entry));
-    if (entry)
-        entry->GetRealSize((PRUint32 *) &mContentLength);
+    // ask the JarStream for the content length
+    mJarStream->Available((PRUint32 *) &mContentLength);
 
     return NS_OK;
 }
@@ -422,24 +418,19 @@ nsJARChannel::GetOwner(nsISupports **result)
     if (NS_FAILED(rv)) return rv;
 
     if (cert) {
-        // Get the codebase principal
+        nsXPIDLCString certID;
+        rv = cert->GetCertificateID(getter_Copies(certID));
+        if (NS_FAILED(rv)) return rv;
+
         nsCOMPtr<nsIScriptSecurityManager> secMan = 
-                 do_GetService(kScriptSecurityManagerCID, &rv);
+                 do_GetService(NS_SCRIPTSECURITYMANAGER_CONTRACTID, &rv);
         if (NS_FAILED(rv)) return rv;
 
-        nsCOMPtr<nsIPrincipal> codebase;
-        rv = secMan->GetCodebasePrincipal(mJarBaseURI, 
-                                          getter_AddRefs(codebase));
-        if (NS_FAILED(rv)) return rv;
-    
-        // Join the certificate and the codebase
-        nsCOMPtr<nsIAggregatePrincipal> agg = do_QueryInterface(cert, &rv);
+        rv = secMan->GetCertificatePrincipal(certID, mJarBaseURI,
+                                             getter_AddRefs(cert));
         if (NS_FAILED(rv)) return rv;
 
-        rv = agg->SetCodebase(codebase);
-        if (NS_FAILED(rv)) return rv;
-
-        mOwner = do_QueryInterface(agg, &rv);
+        mOwner = do_QueryInterface(cert, &rv);
         if (NS_FAILED(rv)) return rv;
 
         NS_ADDREF(*result = mOwner);
@@ -479,44 +470,35 @@ nsJARChannel::GetSecurityInfo(nsISupports **aSecurityInfo)
 NS_IMETHODIMP
 nsJARChannel::GetContentType(nsACString &result)
 {
-    nsresult rv;
-
-    if (!mContentType.IsEmpty()) {
-        result = mContentType;
-        return NS_OK;
-    }
-
-    //
-    // generate content type and set it
-    //
-    if (mJarEntry.IsEmpty()) {
-        LOG(("mJarEntry is empty!\n"));
-        return NS_ERROR_NOT_AVAILABLE;
-    }
-
-    const char *ext = nsnull, *fileName = mJarEntry.get();
-    PRInt32 len = mJarEntry.Length();
-    for (PRInt32 i = len-1; i >= 0; i--) {
-        if (fileName[i] == '.') {
-            ext = &fileName[i + 1];
-            break;
+    if (mContentType.IsEmpty()) {
+        //
+        // generate content type and set it
+        //
+        if (mJarEntry.IsEmpty()) {
+            LOG(("mJarEntry is empty!\n"));
+            return NS_ERROR_NOT_AVAILABLE;
         }
-    }
-    if (ext) {
-        nsIMIMEService *mimeServ = gJarHandler->MimeService();
-        if (mimeServ) {
-            nsXPIDLCString mimeType;
-            rv = mimeServ->GetTypeFromExtension(ext, getter_Copies(mimeType));
-            if (NS_SUCCEEDED(rv))
-                mContentType = mimeType;
+    
+        const char *ext = nsnull, *fileName = mJarEntry.get();
+        PRInt32 len = mJarEntry.Length();
+        for (PRInt32 i = len-1; i >= 0; i--) {
+            if (fileName[i] == '.') {
+                ext = &fileName[i + 1];
+                break;
+            }
         }
+        if (ext) {
+            nsIMIMEService *mimeServ = gJarHandler->MimeService();
+            if (mimeServ) {
+                nsXPIDLCString mimeType;
+                nsresult rv = mimeServ->GetTypeFromExtension(ext, getter_Copies(mimeType));
+                if (NS_SUCCEEDED(rv))
+                    mContentType = mimeType;
+            }
+        }
+        if (mContentType.IsEmpty())
+            mContentType = NS_LITERAL_CSTRING(UNKNOWN_CONTENT_TYPE);
     }
-    else
-        rv = NS_ERROR_NOT_AVAILABLE;
-
-    if (NS_FAILED(rv) || mContentType.IsEmpty())
-        mContentType = NS_LITERAL_CSTRING(UNKNOWN_CONTENT_TYPE);
-
     result = mContentType;
     return NS_OK;
 }

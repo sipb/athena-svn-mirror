@@ -873,13 +873,12 @@ nsMathMLContainerFrame::ReLayoutChildren(nsIPresContext* aPresContext,
       break;
     }
     // stop if we reach the root <math> tag
-    nsCOMPtr<nsIAtom> tag;
     nsIContent* content = frame->GetContent();
     NS_ASSERTION(content, "dangling frame without a content node");
     if (!content)
       return NS_ERROR_FAILURE;
-    content->GetTag(getter_AddRefs(tag));
-    if (tag.get() == nsMathMLAtoms::math) {
+
+    if (content->Tag() == nsMathMLAtoms::math) {
       break;
     }
     // mark the frame dirty, and continue to climb up
@@ -1162,20 +1161,17 @@ printf("\n");
 // For MathML, the 'type' will be used to determine the spacing between frames
 // Subclasses can override this method to return a 'type' that will give
 // them a particular spacing
-NS_IMETHODIMP
-nsMathMLContainerFrame::GetFrameType(nsIAtom** aType) const
+nsIAtom*
+nsMathMLContainerFrame::GetType() const
 {
-  NS_PRECONDITION(nsnull != aType, "null OUT parameter pointer");
   // see if this is an embellished operator (mapped to 'Op' in TeX)
   if (NS_MATHML_IS_EMBELLISH_OPERATOR(mEmbellishData.flags) &&
       mEmbellishData.coreFrame) {
-    return mEmbellishData.coreFrame->GetFrameType(aType);
+    return mEmbellishData.coreFrame->GetType();
   }
 
   // everything else is a schematta element (mapped to 'Inner' in TeX)
-  *aType = nsMathMLAtoms::schemataMathMLFrame;
-  NS_ADDREF(*aType);
-  return NS_OK;
+  return nsMathMLAtoms::schemataMathMLFrame;
 }
 
 enum eMathMLFrameType {
@@ -1303,12 +1299,11 @@ nsMathMLContainerFrame::Place(nsIPresContext*      aPresContext,
   nsHTMLReflowMetrics childSize (nsnull);
   nsBoundingMetrics bmChild;
   nscoord leftCorrection = 0, italicCorrection = 0;
-  nsCOMPtr<nsIAtom> prevFrameType;
+  nsIAtom* prevFrameType = nsnull;
 
   nsIFrame* childFrame = mFrames.FirstChild();
   while (childFrame) {
-    nsCOMPtr<nsIAtom> childFrameType;
-    childFrame->GetFrameType(getter_AddRefs(childFrameType));
+    nsIAtom* childFrameType = childFrame->GetType();
     GetReflowAndBoundingMetricsFor(childFrame, childSize, bmChild);
     GetItalicCorrection(bmChild, leftCorrection, italicCorrection);
     if (0 == count) {
@@ -1317,9 +1312,8 @@ nsMathMLContainerFrame::Place(nsIPresContext*      aPresContext,
       mBoundingMetrics = bmChild;
       // update to include the left correction
       // but leave <msqrt> alone because the sqrt glyph itself is there first
-      nsCOMPtr<nsIAtom> tag;
-      mContent->GetTag(getter_AddRefs(tag));
-      if (tag.get() == nsMathMLAtoms::msqrt_)
+
+      if (mContent->Tag() == nsMathMLAtoms::msqrt_)
         leftCorrection = 0;
       else
         mBoundingMetrics.leftBearing += leftCorrection;
@@ -1368,16 +1362,14 @@ nsMathMLContainerFrame::Place(nsIPresContext*      aPresContext,
     fromFrameType = eMathMLFrameType_UNKNOWN;
     childFrame = mFrames.FirstChild();
     while (childFrame) {
-      nsCOMPtr<nsIAtom> childFrameType;
-      childFrame->GetFrameType(getter_AddRefs(childFrameType));
+      nsIAtom* childFrameType = childFrame->GetType();
       GetReflowAndBoundingMetricsFor(childFrame, childSize, bmChild);
       GetItalicCorrection(bmChild, leftCorrection, italicCorrection);
       dy = aDesiredSize.ascent - childSize.ascent;
       if (0 == count) {
         // for <msqrt>, the sqrt glyph itself is there first
-        nsCOMPtr<nsIAtom> tag;
-        mContent->GetTag(getter_AddRefs(tag));
-        if (tag.get() == nsMathMLAtoms::msqrt_)
+
+        if (mContent->Tag() == nsMathMLAtoms::msqrt_)
           leftCorrection = 0;
       }
       else {
@@ -1416,13 +1408,12 @@ GetInterFrameSpacingFor(nsIPresContext* aPresContext,
 
   PRInt32 carrySpace = 0;
   eMathMLFrameType fromFrameType = eMathMLFrameType_UNKNOWN;
-  nsCOMPtr<nsIAtom> childFrameType;
-  nsCOMPtr<nsIAtom> prevFrameType;
-  childFrame->GetFrameType(getter_AddRefs(childFrameType));
+  nsIAtom* childFrameType = childFrame->GetType();
+  nsIAtom* prevFrameType = nsnull;
   childFrame = childFrame->GetNextSibling();
   while (childFrame) {
     prevFrameType = childFrameType;
-    childFrame->GetFrameType(getter_AddRefs(childFrameType));
+    childFrameType = childFrame->GetType();
     nscoord space = GetInterFrameSpacing(aScriptLevel,
       prevFrameType, childFrameType, &fromFrameType, &carrySpace);
     if (aChildFrame == childFrame) {
@@ -1444,9 +1435,8 @@ nsresult
 nsMathMLContainerFrame::FixInterFrameSpacing(nsIPresContext*      aPresContext,
                                              nsHTMLReflowMetrics& aDesiredSize)
 {
-  nsCOMPtr<nsIAtom> parentTag;
   nsIContent* parentContent = mParent->GetContent();
-  parentContent->GetTag(getter_AddRefs(parentTag));
+  nsIAtom *parentTag = parentContent->Tag();
   if (parentTag == nsMathMLAtoms::math ||
       parentTag == nsMathMLAtoms::mtd_) {
     nscoord gap = GetInterFrameSpacingFor(aPresContext,

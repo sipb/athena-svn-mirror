@@ -32,7 +32,7 @@
  */
 
 #ifdef DEBUG
-static const char CVS_ID[] = "@(#) $RCSfile: tdcache.c,v $ $Revision: 1.1.1.3 $ $Date: 2003-12-24 14:43:43 $ $Name: not supported by cvs2svn $";
+static const char CVS_ID[] = "@(#) $RCSfile: tdcache.c,v $ $Revision: 1.1.1.4 $ $Date: 2004-02-27 16:14:31 $ $Name: not supported by cvs2svn $";
 #endif /* DEBUG */
 
 #ifndef PKIM_H
@@ -488,11 +488,15 @@ nssTrustDomain_RemoveTokenCertsFromCache (
     for (i=0; i<dtor.numCerts; i++) {
 	if (dtor.certs[i]->object.numInstances == 0) {
 	    nssTrustDomain_RemoveCertFromCacheLOCKED(td, dtor.certs[i]);
-	} else {
-	    STAN_ForceCERTCertificateUpdate(dtor.certs[i]);
+	    dtor.certs[i] = NULL;  /* skip this cert in the second for loop */
 	}
     }
     PZ_Unlock(td->cache->lock);
+    for (i=0; i<dtor.numCerts; i++) {
+	if (dtor.certs[i]) {
+	    STAN_ForceCERTCertificateUpdate(dtor.certs[i]);
+	}
+    }
     nss_ZFreeIf(dtor.certs);
     return PR_SUCCESS;
 }

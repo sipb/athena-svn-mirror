@@ -90,11 +90,11 @@ txMozillaXMLOutput::txMozillaXMLOutput(const nsAString& aRootName,
                                        nsIDOMDocument* aResultDocument,
                                        nsITransformObserver* aObserver)
     : mBadChildLevel(0),
+      mTableState(NORMAL),
       mDontAddCurrent(PR_FALSE),
       mHaveTitleElement(PR_FALSE),
       mHaveBaseElement(PR_FALSE),
-      mCreatingNewDocument(PR_TRUE),
-      mTableState(NORMAL)
+      mCreatingNewDocument(PR_TRUE)
 {
     if (aObserver) {
         mNotifier = new txTransformNotifier();
@@ -112,11 +112,11 @@ txMozillaXMLOutput::txMozillaXMLOutput(const nsAString& aRootName,
 txMozillaXMLOutput::txMozillaXMLOutput(txOutputFormat* aFormat,
                                        nsIDOMDocumentFragment* aFragment)
     : mBadChildLevel(0),
+      mTableState(NORMAL),
       mDontAddCurrent(PR_FALSE),
       mHaveTitleElement(PR_FALSE),
       mHaveBaseElement(PR_FALSE),
-      mCreatingNewDocument(PR_FALSE),
-      mTableState(NORMAL)
+      mCreatingNewDocument(PR_FALSE)
 {
     mOutputFormat.merge(*aFormat);
     mOutputFormat.setFromDefaults();
@@ -208,16 +208,14 @@ void txMozillaXMLOutput::endDocument()
 
     if (!mRefreshString.IsEmpty()) {
         nsCOMPtr<nsIDocument> doc = do_QueryInterface(mDocument);
-        nsCOMPtr<nsIScriptGlobalObject> sgo;
-        doc->GetScriptGlobalObject(getter_AddRefs(sgo));
+        nsIScriptGlobalObject *sgo = doc->GetScriptGlobalObject();
         if (sgo) {
             nsCOMPtr<nsIDocShell> docShell;
             sgo->GetDocShell(getter_AddRefs(docShell));
             nsCOMPtr<nsIRefreshURI> refURI = do_QueryInterface(docShell);
             if (refURI) {
-                nsCOMPtr<nsIURI> baseURI;
-                doc->GetBaseURL(getter_AddRefs(baseURI));
-                refURI->SetupRefreshURIFromHeader(baseURI, mRefreshString);
+                refURI->SetupRefreshURIFromHeader(doc->GetBaseURL(),
+                                                  mRefreshString);
             }
         }
     }
@@ -448,12 +446,10 @@ void txMozillaXMLOutput::closePrevious(PRInt8 aAction)
                                             getter_AddRefs(wrapper));
             NS_ASSERTION(NS_SUCCEEDED(rv), "Can't create wrapper element");
 
-            nsCOMPtr<nsIContent> childContent;
             nsCOMPtr<nsIDOMNode> child, resultNode;
-            PRInt32 childCount, i;
-            document->GetChildCount(childCount);
+            PRUint32 i, childCount = document->GetChildCount();
             for (i = 0; i < childCount; ++i) {
-                document->ChildAt(0, getter_AddRefs(childContent));
+                nsCOMPtr<nsIContent> childContent = document->GetChildAt(0);
                 if (childContent == mRootContent) {
                     document->SetRootContent(nsnull);
                 }
@@ -515,9 +511,8 @@ void txMozillaXMLOutput::closePrevious(PRInt8 aAction)
 void txMozillaXMLOutput::startHTMLElement(nsIDOMElement* aElement, PRBool aXHTML)
 {
     nsresult rv = NS_OK;
-    nsCOMPtr<nsIAtom> atom;
     nsCOMPtr<nsIContent> content = do_QueryInterface(aElement);
-    content->GetTag(getter_AddRefs(atom));
+    nsIAtom *atom = content->Tag();
 
     mDontAddCurrent = (atom == txHTMLAtoms::script);
 
@@ -535,15 +530,8 @@ void txMozillaXMLOutput::startHTMLElement(nsIDOMElement* aElement, PRBool aXHTML
     else if (atom == txHTMLAtoms::tr && !aXHTML &&
              NS_PTR_TO_INT32(mTableStateStack.peek()) == TABLE) {
         nsCOMPtr<nsIDOMElement> elem;
-        if (mDocumentIsHTML) {
-            rv = mDocument->CreateElement(NS_LITERAL_STRING("tbody"),
-                                          getter_AddRefs(elem));
-        }
-        else {
-            rv = mDocument->CreateElementNS(NS_LITERAL_STRING(kXHTMLNameSpaceURI),
-                                            NS_LITERAL_STRING("tbody"),
-                                            getter_AddRefs(elem));
-        }
+        rv = createHTMLElement(NS_LITERAL_STRING("tbody"),
+                               getter_AddRefs(elem));
         if (NS_FAILED(rv)) {
             return;
         }
@@ -552,7 +540,7 @@ void txMozillaXMLOutput::startHTMLElement(nsIDOMElement* aElement, PRBool aXHTML
         if (NS_FAILED(rv)) {
             return;
         }
-        nsresult rv = mTableStateStack.push(NS_INT32_TO_PTR(ADDED_TBODY));
+        rv = mTableStateStack.push(NS_INT32_TO_PTR(ADDED_TBODY));
         if (NS_FAILED(rv)) {
             return;
         }
@@ -562,12 +550,12 @@ void txMozillaXMLOutput::startHTMLElement(nsIDOMElement* aElement, PRBool aXHTML
              mOutputFormat.mMethod == eHTMLOutput) {
         // Insert META tag, according to spec, 16.2, like
         // <META http-equiv="Content-Type" content="text/html; charset=EUC-JP">
-        nsresult rv;
-        nsCOMPtr<nsIDOMNode> foo;
         nsCOMPtr<nsIDOMElement> meta;
-        rv = mDocument->CreateElement(NS_LITERAL_STRING("meta"),
-                                      getter_AddRefs(meta));
-        NS_ASSERTION(NS_SUCCEEDED(rv), "Can't create meta element");
+        rv = createHTMLElement(NS_LITERAL_STRING("meta"),
+                               getter_AddRefs(meta));
+        if (NS_FAILED(rv)) {
+            return;
+        }
         rv = meta->SetAttribute(NS_LITERAL_STRING("http-equiv"),
                                 NS_LITERAL_STRING("Content-Type"));
         NS_ASSERTION(NS_SUCCEEDED(rv), "Can't set http-equiv on meta");
@@ -578,7 +566,8 @@ void txMozillaXMLOutput::startHTMLElement(nsIDOMElement* aElement, PRBool aXHTML
         rv = meta->SetAttribute(NS_LITERAL_STRING("content"),
                                 metacontent);
         NS_ASSERTION(NS_SUCCEEDED(rv), "Can't set content on meta");
-        rv = aElement->AppendChild(meta, getter_AddRefs(foo));
+        nsCOMPtr<nsIDOMNode> dummy;
+        rv = aElement->AppendChild(meta, getter_AddRefs(dummy));
         NS_ASSERTION(NS_SUCCEEDED(rv), "Can't append meta");
     }
     else if (mCreatingNewDocument) {
@@ -597,8 +586,7 @@ void txMozillaXMLOutput::endHTMLElement(nsIDOMElement* aElement)
     nsCOMPtr<nsIContent> content = do_QueryInterface(aElement);
     NS_ASSERTION(content, "Can't QI to nsIContent");
 
-    nsCOMPtr<nsIAtom> atom;
-    content->GetTag(getter_AddRefs(atom));
+    nsIAtom *atom = content->Tag();
 
     if (mTableState == ADDED_TBODY) {
         NS_ASSERTION(atom == txHTMLAtoms::tbody,
@@ -735,6 +723,13 @@ txMozillaXMLOutput::createResultDocument(const nsAString& aName, PRInt32 aNsID,
     // Reset and set up the document
     URIUtils::ResetWithSource(doc, aSourceDocument);
 
+    // Set the charset
+    if (!mOutputFormat.mEncoding.IsEmpty()) {
+        doc->SetDocumentCharacterSet(
+            NS_LossyConvertUTF16toASCII(mOutputFormat.mEncoding));
+        doc->SetDocumentCharacterSetSource(kCharsetFromOtherComponent);
+    }
+
     // Set the mime-type
     if (!mOutputFormat.mMediaType.IsEmpty()) {
         doc->SetContentType(mOutputFormat.mMediaType);
@@ -747,8 +742,7 @@ txMozillaXMLOutput::createResultDocument(const nsAString& aName, PRInt32 aNsID,
     }
 
     // Set up script loader of the result document.
-    nsCOMPtr<nsIScriptLoader> loader;
-    doc->GetScriptLoader(getter_AddRefs(loader));
+    nsIScriptLoader *loader = doc->GetScriptLoader();
     if (loader) {
         if (mNotifier) {
             loader->AddObserver(mNotifier);
@@ -793,6 +787,18 @@ txMozillaXMLOutput::createResultDocument(const nsAString& aName, PRInt32 aNsID,
     }
 
     return NS_OK;
+}
+
+nsresult
+txMozillaXMLOutput::createHTMLElement(const nsAString& aName,
+                                      nsIDOMElement** aResult)
+{
+    if (mDocumentIsHTML) {
+        return mDocument->CreateElement(aName, aResult);
+    }
+
+    return mDocument->CreateElementNS(NS_LITERAL_STRING(kXHTMLNameSpaceURI),
+                                      aName, aResult);
 }
 
 txTransformNotifier::txTransformNotifier()
@@ -840,9 +846,15 @@ txTransformNotifier::ScriptEvaluated(nsresult aResult,
 NS_IMETHODIMP 
 txTransformNotifier::StyleSheetLoaded(nsICSSStyleSheet* aSheet, PRBool aNotify)
 {
-    // aSheet might not be in our list if the load was done synchronously
-    mStylesheets.RemoveObject(aSheet);
-    SignalTransformEnd();
+    // Check that the stylesheet was in the mStylesheets array, if not it is an
+    // alternate and we don't want to call SignalTransformEnd since we don't
+    // wait on alternates before calling OnTransformDone and so the load of the
+    // alternate could finish after we called OnTransformDone already.
+    // See http://bugzilla.mozilla.org/show_bug.cgi?id=215465.
+    if (mStylesheets.RemoveObject(aSheet)) {
+        SignalTransformEnd();
+    }
+
     return NS_OK;
 }
 
@@ -900,9 +912,8 @@ txTransformNotifier::SignalTransformEnd()
 
     // XXX Need a better way to determine transform success/failure
     if (mDocument) {
-        nsCOMPtr<nsIScriptLoader> loader;
         nsCOMPtr<nsIDocument> doc = do_QueryInterface(mDocument);
-        doc->GetScriptLoader(getter_AddRefs(loader));
+        nsIScriptLoader *loader = doc->GetScriptLoader();
         if (loader) {
             loader->RemoveObserver(this);
         }

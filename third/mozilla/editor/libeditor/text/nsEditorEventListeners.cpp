@@ -968,8 +968,7 @@ IsTargetFocused(nsIDOMEventTarget* aTarget)
   if (!doc)
     return PR_FALSE;
 
-  nsCOMPtr<nsIPresShell> shell;
-  doc->GetShellAt(0, getter_AddRefs(shell));
+  nsIPresShell *shell = doc->GetShellAt(0);
   if (!shell)
     return PR_FALSE;
 
@@ -1051,8 +1050,7 @@ nsTextEditorFocusListener::Focus(nsIDOMEvent* aEvent)
           selCon->SetDisplaySelection(nsISelectionController::SELECTION_ON);
 #ifdef USE_HACK_REPAINT
   // begin hack repaint
-          nsCOMPtr<nsIViewManager> viewmgr;
-          ps->GetViewManager(getter_AddRefs(viewmgr));
+          nsIViewManager* viewmgr = ps->GetViewManager();
           if (viewmgr) {
             nsIView* view;
             viewmgr->GetRootView(view);         // views are not refCounted
@@ -1114,8 +1112,7 @@ nsTextEditorFocusListener::Blur(nsIDOMEvent* aEvent)
 
 #ifdef USE_HACK_REPAINT
 // begin hack repaint
-        nsCOMPtr<nsIViewManager> viewmgr;
-        ps->GetViewManager(getter_AddRefs(viewmgr));
+        nsIViewManager* viewmgr = ps->GetViewManager();
         if (viewmgr) 
         {
           nsIView* view;

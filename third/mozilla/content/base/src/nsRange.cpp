@@ -61,7 +61,7 @@
 #include "nsParserCIID.h"
 #include "nsIHTMLFragmentContentSink.h"
 #include "nsIEnumerator.h"
-#include "nsScriptSecurityManager.h"
+#include "nsIScriptSecurityManager.h"
 #include "nsIScriptGlobalObject.h"
 #include "nsIScriptContext.h"
 #include "nsIHTMLDocument.h"
@@ -281,9 +281,8 @@ PRBool GetNodeBracketPoints(nsIContent* aNode,
     return PR_FALSE;
     
   nsCOMPtr<nsIDOMNode> theDOMNode( do_QueryInterface(aNode) );
-  PRInt32 indx;
   theDOMNode->GetParentNode(getter_AddRefs(*outParent));
-  
+
   if (!(*outParent)) // special case for root node
   {
     // can't make a parent/offset pair to represent start or 
@@ -293,8 +292,8 @@ PRBool GetNodeBracketPoints(nsIContent* aNode,
     nsCOMPtr<nsIContent> cN(do_QueryInterface(*outParent));
     if (!cN)
       return PR_FALSE;
-    cN->ChildCount(indx);
-    if (!indx) 
+    PRUint32 indx = cN->GetChildCount();
+    if (!indx)
       return PR_FALSE;
     *outStartOffset = 0;
     *outEndOffset = indx;
@@ -654,24 +653,24 @@ PRInt32 nsRange::GetNodeLength(nsIDOMNode *aNode)
 {
   if (!aNode)
     return 0;
-    
+
   PRUint16 nodeType;
-  PRUint32 len = -1;
-  
+  PRInt32 len = -1;
+
   aNode->GetNodeType(&nodeType);
   if( (nodeType == nsIDOMNode::CDATA_SECTION_NODE) ||
       (nodeType == nsIDOMNode::TEXT_NODE) )
   {
     nsCOMPtr<nsIDOMText> textText = do_QueryInterface(aNode);
     if (textText)
-      textText->GetLength(&len);
+      textText->GetLength((PRUint32 *)&len);
   }
   else
   {
     nsCOMPtr<nsIDOMNodeList> childList;
     nsresult res = aNode->GetChildNodes(getter_AddRefs(childList));
     if (NS_SUCCEEDED(res) && childList)
-      childList->GetLength(&len);
+      childList->GetLength((PRUint32 *)&len);
   }
   
   return len;
@@ -849,31 +848,19 @@ PRBool nsRange::IsIncreasing(nsIDOMNode* aStartN, PRInt32 aStartOffset,
 
 PRInt32 nsRange::IndexOf(nsIDOMNode* aChildNode)
 {
-  if (!aChildNode) 
+  // convert node to nsIContent, so that we can find the child index
+
+  nsCOMPtr<nsIContent> contentChild = do_QueryInterface(aChildNode);
+  if (!contentChild) 
     return 0;
 
-  // get the parent node
-  nsCOMPtr<nsIDOMNode> parentNode;
-  nsresult res = aChildNode->GetParentNode(getter_AddRefs(parentNode));
-  if (NS_FAILED(res)) 
-    return 0;
-  
-  // convert node and parent to nsIContent, so that we can find the child index
-  nsCOMPtr<nsIContent> contentParent = do_QueryInterface(parentNode, &res);
-  if (NS_FAILED(res)) 
+  nsIContent *parent = contentChild->GetParent();
+
+  if (!parent)
     return 0;
 
-  nsCOMPtr<nsIContent> contentChild = do_QueryInterface(aChildNode, &res);
-  if (NS_FAILED(res)) 
-    return 0;
-  
   // finally we get the index
-  PRInt32 theIndex = 0;
-  res = contentParent->IndexOf(contentChild,theIndex); 
-  if (NS_FAILED(res)) 
-    return 0;
-
-  return theIndex;
+  return parent->IndexOf(contentChild); 
 }
 
 nsresult nsRange::PopRanges(nsIDOMNode* aDestNode, PRInt32 aOffset, nsIContent* aSourceNode)
@@ -886,12 +873,12 @@ nsresult nsRange::PopRanges(nsIDOMNode* aDestNode, PRInt32 aOffset, nsIContent* 
   iter->Init(aSourceNode);
 
   nsCOMPtr<nsIContent> cN;
-  nsVoidArray* theRangeList;
+  const nsVoidArray* theRangeList;
   
   iter->CurrentNode(getter_AddRefs(cN));
   while (cN && (NS_ENUMERATOR_FALSE == iter->IsDone()))
   {
-    cN->GetRangeList(&theRangeList);
+    theRangeList = cN->GetRangeList();
     if (theRangeList)
     {
        nsRange* theRange;
@@ -923,7 +910,7 @@ nsresult nsRange::PopRanges(nsIDOMNode* aDestNode, PRInt32 aOffset, nsIContent* 
             }          
           }
           // must refresh theRangeList - it might have gone away!
-          cN->GetRangeList(&theRangeList);
+          theRangeList = cN->GetRangeList();
           if (theRangeList)
             theCount = theRangeList->Count();
           else
@@ -1177,9 +1164,7 @@ nsresult nsRange::SelectNode(nsIDOMNode* aN)
       parent = aN;//parent is now equal to the node you passed in
       // which is the root.  start is zero, end is the number of children
       start = 0;
-      res = content->ChildCount(end);
-      if (NS_FAILED(res))
-        return NS_ERROR_DOM_RANGE_INVALID_NODE_TYPE_ERR;
+      end = content->GetChildCount();
     }
     else
     {
@@ -2346,8 +2331,7 @@ nsresult nsRange::OwnerChildInserted(nsIContent* aParentNode, PRInt32 aOffset)
 
   nsCOMPtr<nsIContent> parent( do_QueryInterface(aParentNode) );
   // quick return if no range list
-  nsVoidArray *theRangeList;
-  parent->GetRangeList(&theRangeList);
+  const nsVoidArray *theRangeList = parent->GetRangeList();
   if (!theRangeList) return NS_OK;
 
   nsresult res;
@@ -2399,8 +2383,7 @@ nsresult nsRange::OwnerChildRemoved(nsIContent* aParentNode, PRInt32 aOffset, ns
   nsresult res = PopRanges(domNode, aOffset, removed);
 
   // quick return if no range list
-  nsVoidArray *theRangeList;
-  parent->GetRangeList(&theRangeList);
+  const nsVoidArray *theRangeList = parent->GetRangeList();
   if (!theRangeList) return NS_OK;
   
   PRInt32   count = theRangeList->Count();
@@ -2459,8 +2442,7 @@ nsresult nsRange::TextOwnerChanged(nsIContent* aTextNode, PRInt32 aStartChanged,
   if (!aTextNode) return NS_ERROR_UNEXPECTED;
 
   nsCOMPtr<nsIContent> textNode( do_QueryInterface(aTextNode) );
-  nsVoidArray *theRangeList;
-  aTextNode->GetRangeList(&theRangeList);
+  const nsVoidArray *theRangeList = aTextNode->GetRangeList();
   // the caller already checked to see if there was a range list
   
   nsCOMPtr<nsIDOMNode> domNode(do_QueryInterface(textNode));
@@ -2586,11 +2568,11 @@ nsRange::CreateContextualFragment(const nsAString& aFragment,
       // so that event handlers in the fragment do not get 
       // compiled with the system principal.
       nsCOMPtr<nsIJSContextStack> ContextStack;
-      nsCOMPtr<nsIScriptSecurityManager> secMan;
-      secMan = do_GetService(NS_SCRIPTSECURITYMANAGER_CONTRACTID, &result);
-      if (document && NS_SUCCEEDED(result)) {
+      if (document) {
         nsCOMPtr<nsIPrincipal> sysPrin;
         nsCOMPtr<nsIPrincipal> subjectPrin;
+
+        nsIScriptSecurityManager *secMan = nsContentUtils::GetSecurityManager();
 
         // Just to compare, not to use!
         result = secMan->GetSystemPrincipal(getter_AddRefs(sysPrin));
@@ -2600,11 +2582,10 @@ nsRange::CreateContextualFragment(const nsAString& aFragment,
         // (just in case...null subject principal will probably never happen)
         if (NS_SUCCEEDED(result) &&
            (!subjectPrin || sysPrin.get() == subjectPrin.get())) {
-          nsCOMPtr<nsIScriptGlobalObject> globalObj;
-          result = document->GetScriptGlobalObject(getter_AddRefs(globalObj));
+          nsIScriptGlobalObject *globalObj = document->GetScriptGlobalObject();
 
           nsCOMPtr<nsIScriptContext> scriptContext;
-          if (NS_SUCCEEDED(result) && globalObj) {
+          if (globalObj) {
             result = globalObj->GetContext(getter_AddRefs(scriptContext));
           }
 

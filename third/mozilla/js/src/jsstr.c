@@ -1,36 +1,41 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 4 -*-
  *
- * The contents of this file are subject to the Netscape Public
- * License Version 1.1 (the "License"); you may not use this file
- * except in compliance with the License. You may obtain a copy of
- * the License at http://www.mozilla.org/NPL/
+ * ***** BEGIN LICENSE BLOCK *****
+ * Version: MPL 1.1/GPL 2.0/LGPL 2.1
  *
- * Software distributed under the License is distributed on an "AS
- * IS" basis, WITHOUT WARRANTY OF ANY KIND, either express or
- * implied. See the License for the specific language governing
- * rights and limitations under the License.
+ * The contents of this file are subject to the Mozilla Public License Version
+ * 1.1 (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ * http://www.mozilla.org/MPL/
+ *
+ * Software distributed under the License is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+ * for the specific language governing rights and limitations under the
+ * License.
  *
  * The Original Code is Mozilla Communicator client code, released
  * March 31, 1998.
  *
- * The Initial Developer of the Original Code is Netscape
- * Communications Corporation.  Portions created by Netscape are
- * Copyright (C) 1998 Netscape Communications Corporation. All
- * Rights Reserved.
+ * The Initial Developer of the Original Code is
+ * Netscape Communications Corporation.
+ * Portions created by the Initial Developer are Copyright (C) 1998
+ * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s):
  *
- * Alternatively, the contents of this file may be used under the
- * terms of the GNU Public License (the "GPL"), in which case the
- * provisions of the GPL are applicable instead of those above.
- * If you wish to allow use of your version of this file only
- * under the terms of the GPL and not to allow others to use your
- * version of this file under the NPL, indicate your decision by
- * deleting the provisions above and replace them with the notice
- * and other provisions required by the GPL.  If you do not delete
- * the provisions above, a recipient may use your version of this
- * file under either the NPL or the GPL.
- */
+ * Alternatively, the contents of this file may be used under the terms of
+ * either of the GNU General Public License Version 2 or later (the "GPL"),
+ * or the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
+ * in which case the provisions of the GPL or the LGPL are applicable instead
+ * of those above. If you wish to allow use of your version of this file only
+ * under the terms of either the GPL or the LGPL, and not to allow others to
+ * use your version of this file under the terms of the MPL, indicate your
+ * decision by deleting the provisions above and replace them with the notice
+ * and other provisions required by the GPL or the LGPL. If you do not delete
+ * the provisions above, a recipient may use your version of this file under
+ * the terms of any one of the MPL, the GPL or the LGPL.
+ *
+ * ***** END LICENSE BLOCK ***** */
 
 /*
  * JS string type implementation.
@@ -473,11 +478,8 @@ const char js_decodeURIComponent_str[] = "decodeURIComponent";
 const char js_encodeURIComponent_str[] = "encodeURIComponent";
 
 static JSFunctionSpec string_functions[] = {
-#ifndef MOZILLA_CLIENT
-    /* These two are predefined in a backward-compatible way by the DOM. */
     {js_escape_str,             js_str_escape,              1,0,0},
     {js_unescape_str,           str_unescape,               1,0,0},
-#endif
 #if JS_HAS_UNEVAL
     {js_uneval_str,             str_uneval,                 1,0,0},
 #endif
@@ -754,10 +756,11 @@ str_toLocaleLowerCase(JSContext *cx, JSObject *obj, uintN argc, jsval *argv,
                 jsval *rval)
 {
     JSString *str;
-/*
- *  Forcibly ignore the first (or any) argument and return toLowerCase(),
- *  ECMA has reserved that argument, presumbaly for defining the locale.
- */
+
+    /*
+     * Forcefully ignore the first (or any) argument and return toLowerCase(),
+     * ECMA has reserved that argument, presumably for defining the locale.
+     */
     if (cx->localeCallbacks && cx->localeCallbacks->localeToLowerCase) {
         str = js_ValueToString(cx, OBJECT_TO_JSVAL(obj));
         if (!str)
@@ -800,10 +803,11 @@ str_toLocaleUpperCase(JSContext *cx, JSObject *obj, uintN argc, jsval *argv,
                 jsval *rval)
 {
     JSString *str;
-/*
- *  Forcibly ignore the first (or any) argument and return toLowerCase(),
- *  ECMA has reserved that argument, presumbaly for defining the locale.
- */
+
+    /*
+     * Forcefully ignore the first (or any) argument and return toUpperCase(),
+     * ECMA has reserved that argument, presumbaly for defining the locale.
+     */
     if (cx->localeCallbacks && cx->localeCallbacks->localeToUpperCase) {
         str = js_ValueToString(cx, OBJECT_TO_JSVAL(obj));
         if (!str)
@@ -814,7 +818,8 @@ str_toLocaleUpperCase(JSContext *cx, JSObject *obj, uintN argc, jsval *argv,
 }
 
 static JSBool
-str_localeCompare(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval)
+str_localeCompare(JSContext *cx, JSObject *obj, uintN argc, jsval *argv,
+                  jsval *rval)
 {
     JSString *str, *thatStr;
 
@@ -1371,6 +1376,7 @@ find_replen(JSContext *cx, ReplaceData *rdata, size_t *sizep)
         void *mark;
         JSStackFrame *fp;
         JSBool ok;
+
         /*
          * Save the rightContext from the current regexp, since it
          * gets stuck at the end of the replacement string and may
@@ -2382,6 +2388,11 @@ js_InitRuntimeStringState(JSContext *cx)
     empty = js_NewStringCopyN(cx, js_empty_ucstr, 0, GCF_LOCK);
     if (!empty)
         return JS_FALSE;
+
+    /* Atomize it for scripts that use '' + x to convert x to string. */
+    if (!js_AtomizeString(cx, empty, ATOM_PINNED))
+        return JS_FALSE;
+
     rt->emptyString = empty;
     return JS_TRUE;
 }
@@ -2663,7 +2674,15 @@ js_ValueToSource(JSContext *cx, jsval v)
 {
     if (JSVAL_IS_STRING(v))
         return js_QuoteString(cx, JSVAL_TO_STRING(v), '"');
-    if (!JSVAL_IS_PRIMITIVE(v)) {
+    if (JSVAL_IS_PRIMITIVE(v)) {
+        /* Special case to preserve negative zero, _contra_ toString. */
+        if (JSVAL_IS_DOUBLE(v) && JSDOUBLE_IS_NEGZERO(*JSVAL_TO_DOUBLE(v))) {
+            /* NB: _ucNstr rather than _ucstr to indicate non-terminated. */
+            static const jschar js_negzero_ucNstr[] = {'-', '0'};
+
+            return js_NewStringCopyN(cx, js_negzero_ucNstr, 2, 0);
+        }
+    } else {
         if (!js_TryMethod(cx, JSVAL_TO_OBJECT(v),
                           cx->runtime->atomState.toSourceAtom,
                           0, NULL, &v)) {

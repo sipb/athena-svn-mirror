@@ -101,9 +101,7 @@ nsTableCellFrame::GetNextCell() const
 {
   nsIFrame* childFrame = GetNextSibling();
   while (childFrame) {
-    nsCOMPtr<nsIAtom> frameType;
-    childFrame->GetFrameType(getter_AddRefs(frameType));
-    if (IS_TABLE_CELL(frameType.get())) {
+    if (IS_TABLE_CELL(childFrame->GetType())) {
       return (nsTableCellFrame*)childFrame;
     }
     childFrame = childFrame->GetNextSibling();
@@ -345,7 +343,7 @@ nsTableCellFrame::DecorateForSelection(nsIPresContext* aPresContext,
         result = frameSelection->GetTableCellSelection(&tableCellSelectionMode);
         if (NS_SUCCEEDED(result) && tableCellSelectionMode) {
           nscolor       bordercolor;
-          if(displaySelection == nsISelectionController::SELECTION_DISABLED) {
+          if (displaySelection == nsISelectionController::SELECTION_DISABLED) {
             bordercolor = NS_RGB(176,176,176);// disabled color
           }
           else {
@@ -469,28 +467,30 @@ nsTableCellFrame::Paint(nsIPresContext*      aPresContext,
     PRBool clipState;
     nsPoint offset;
     GetCollapseOffset(aPresContext, offset);
+    PRBool pushed = PR_FALSE;
     if ((0 != offset.x) || (0 != offset.y)) {
       aRenderingContext.PushState();
+      pushed = PR_TRUE;
       aRenderingContext.Translate(offset.x, offset.y);
       aRenderingContext.SetClipRect(nsRect(-offset.x, -offset.y, mRect.width, mRect.height),
                                     nsClipCombine_kIntersect, clipState);
     }
     else {
-      if ((NS_STYLE_OVERFLOW_HIDDEN == disp->mOverflow) || HasPctOverHeight()) {
+      if (NS_STYLE_OVERFLOW_HIDDEN == disp->mOverflow ||
+          // XXXldb SCROLLBARS_NONE should really create a scrollframe,
+          // but test here since it doesn't.
+          NS_STYLE_OVERFLOW_SCROLLBARS_NONE == disp->mOverflow ||
+          HasPctOverHeight()) {
         aRenderingContext.PushState();
+        pushed = PR_TRUE;
         SetOverflowClipRect(aRenderingContext);
       }    
     }
 
     PaintChildren(aPresContext, aRenderingContext, aDirtyRect, aWhichLayer, aFlags);
 
-    if ((0 != offset.x) || (0 != offset.y)) {
+    if (pushed) {
       aRenderingContext.PopState(clipState);
-    }
-    else { 
-      if ((NS_STYLE_OVERFLOW_HIDDEN == disp->mOverflow) || HasPctOverHeight()) {
-        aRenderingContext.PopState(clipState);         
-      }
     }
   } 
   
@@ -642,6 +642,12 @@ void nsTableCellFrame::VerticallyAlignChild(nsIPresContext*          aPresContex
       kidYTop = nsTableFrame::RoundToPixel(kidYTop, p2t, eAlwaysRoundDown);
   }
   firstKid->SetPosition(nsPoint(kidRect.x, kidYTop));
+  nsHTMLReflowMetrics desiredSize(PR_FALSE);
+  desiredSize.width = mRect.width;
+  desiredSize.height = mRect.height;
+  desiredSize.mOverflowArea = nsRect(0, 0, mRect.width, mRect.height);
+  ConsiderChildOverflow(aPresContext, desiredSize.mOverflowArea, firstKid);
+  StoreOverflow(aPresContext, desiredSize);
   if (kidYTop != kidRect.y) {
     // Make sure any child views are correctly positioned. We know the inner table
     // cell won't have a view
@@ -1018,6 +1024,8 @@ NS_METHOD nsTableCellFrame::Reflow(nsIPresContext*          aPresContext,
 
   aDesiredSize.ascent  += kidSize.ascent;
   aDesiredSize.descent += kidSize.descent;
+  
+  // the overflow area will be computed when the child will be vertically aligned
 
   if (aDesiredSize.mComputeMEW) {
     aDesiredSize.mMaxElementWidth =
@@ -1220,13 +1228,10 @@ nsTableCellFrame::GetBorderWidth(float      aPixelsToTwips,
   return &aBorder;
 }
 
-NS_IMETHODIMP
-nsTableCellFrame::GetFrameType(nsIAtom** aType) const
+nsIAtom*
+nsTableCellFrame::GetType() const
 {
-  NS_PRECONDITION(nsnull != aType, "null OUT parameter pointer");
-  *aType = nsLayoutAtoms::tableCellFrame; 
-  NS_ADDREF(*aType);
-  return NS_OK;
+  return nsLayoutAtoms::tableCellFrame;
 }
 
 #ifdef DEBUG
@@ -1284,13 +1289,10 @@ nsBCTableCellFrame::~nsBCTableCellFrame()
 {
 }
 
-NS_IMETHODIMP
-nsBCTableCellFrame::GetFrameType(nsIAtom** aType) const
+nsIAtom*
+nsBCTableCellFrame::GetType() const
 {
-  NS_PRECONDITION(nsnull != aType, "null OUT parameter pointer");
-  *aType = nsLayoutAtoms::bcTableCellFrame; 
-  NS_ADDREF(*aType);
-  return NS_OK;
+  return nsLayoutAtoms::bcTableCellFrame;
 }
 
 #ifdef DEBUG

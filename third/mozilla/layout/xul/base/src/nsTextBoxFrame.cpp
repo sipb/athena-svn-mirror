@@ -237,11 +237,13 @@ nsTextBoxFrame::UpdateAttributes(nsIPresContext*  aPresContext,
         mContent->GetAttr(kNameSpaceID_None, nsXULAtoms::crop, value);
         CroppingStyle cropType;
 
-        if (value.EqualsIgnoreCase(CROP_LEFT) || value.EqualsIgnoreCase(CROP_START))
+        if (value.Equals(NS_LITERAL_STRING(CROP_LEFT)) ||
+            value.Equals(NS_LITERAL_STRING(CROP_START)))
             cropType = CropLeft;
-        else if (value.EqualsIgnoreCase(CROP_CENTER))
+        else if (value.Equals(NS_LITERAL_STRING(CROP_CENTER)))
             cropType = CropCenter;
-        else if (value.EqualsIgnoreCase(CROP_RIGHT) || value.EqualsIgnoreCase(CROP_END))
+        else if (value.Equals(NS_LITERAL_STRING(CROP_RIGHT)) ||
+                 value.Equals(NS_LITERAL_STRING(CROP_END)))
             cropType = CropRight;
         else
             cropType = CropNone;
@@ -401,17 +403,17 @@ nsTextBoxFrame::PaintTitle(nsIPresContext*      aPresContext,
       fontMet->GetUnderline(offset, size);
       if (decorations & NS_FONT_DECORATION_OVERLINE) {
         aRenderingContext.SetColor(overColor);
-        aRenderingContext.FillRect(textRect.x, textRect.y, mRect.width, size);
+        aRenderingContext.FillRect(textRect.x, textRect.y, textRect.width, size);
       }
       if (decorations & NS_FONT_DECORATION_UNDERLINE) {
         aRenderingContext.SetColor(underColor);
-        aRenderingContext.FillRect(textRect.x, textRect.y + baseline - offset, mRect.width, size);
+        aRenderingContext.FillRect(textRect.x, textRect.y + baseline - offset, textRect.width, size);
       }
     }
     if (decorations & NS_FONT_DECORATION_LINE_THROUGH) {
       fontMet->GetStrikeout(offset, size);
       aRenderingContext.SetColor(strikeColor);
-      aRenderingContext.FillRect(textRect.x, textRect.y + baseline - offset, mRect.width, size);
+      aRenderingContext.FillRect(textRect.x, textRect.y + baseline - offset, textRect.width, size);
     }
  
     aRenderingContext.SetFont(fontStyle->mFont, nsnull);

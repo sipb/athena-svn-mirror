@@ -43,6 +43,7 @@
 #include "nsIContent.h"
 #include "nsIAtom.h"
 #include "nsString.h"
+#include "nsReadableUtils.h"
 #include "nsStyleContext.h"
 #include "nsIView.h"
 #include "nsIViewManager.h"
@@ -857,15 +858,13 @@ nsFrame::Paint(nsIPresContext*      aPresContext,
     return NS_OK; //if frame does not allow selection. do nothing
 
 
-  nsCOMPtr<nsIContent> newContent = mContent->GetParent();
+  nsIContent *newContent = mContent->GetParent();
 
   //check to see if we are anonymous content
-  PRInt32 offset;
+  PRInt32 offset = 0;
   if (newContent) {
     // XXXbz there has GOT to be a better way of determining this!
-    result = newContent->IndexOf(mContent, offset);
-    if (NS_FAILED(result)) 
-      return result;
+    offset = newContent->IndexOf(mContent);
   }
 
   SelectionDetails *details;
@@ -1101,9 +1100,7 @@ nsFrame::GetDataForTableSelection(nsIFrameSelection *aFrameSelection,
   nsCOMPtr<nsIContent> parentContent = tableOrCellContent->GetParent();
   if (!parentContent) return NS_ERROR_FAILURE;
 
-  PRInt32 offset;
-  result = parentContent->IndexOf(tableOrCellContent, offset);
-  if (NS_FAILED(result)) return result;
+  PRInt32 offset = parentContent->IndexOf(tableOrCellContent);
   // Not likely?
   if (offset < 0) return NS_ERROR_FAILURE;
 
@@ -1990,32 +1987,26 @@ nsresult nsFrame::GetContentAndOffsetsFromPoint(nsIPresContext* aCX,
       // Skip over generated content kid frames, or frames
       // that don't have a proper parent-child relationship!
 
-      PRBool skipThisKid = (GetStateBits() & NS_FRAME_GENERATED_CONTENT) != 0;
+      PRBool skipThisKid = (kid->GetStateBits() & NS_FRAME_GENERATED_CONTENT) != 0;
 #if 0
-      else {
+      if (!skipThisKid) {
         // The frame's content is not generated. Now check
         // if it is anonymous content!
 
-        nsIContent* kidContent = GetContent();
+        nsIContent* kidContent = kid->GetContent();
         if (kidContent) {
           nsCOMPtr<nsIContent> content = kidContent->GetParent();
 
           if (content) {
-            PRInt32 kidCount = 0;
+            PRInt32 kidCount = content->ChildCount();
+            PRInt32 kidIndex = content->IndexOf(kidContent);
 
-            result = content->ChildCount(kidCount);
-            if (NS_SUCCEEDED(result)) {
+            // IndexOf() should return -1 for the index if it doesn't
+            // find kidContent in it's child list.
 
-              PRInt32 kidIndex = 0;
-              result = content->IndexOf(kidContent, kidIndex);
-
-              // IndexOf() should return -1 for the index if it doesn't
-              // find kidContent in it's child list.
-
-              if (NS_SUCCEEDED(result) && (kidIndex < 0 || kidIndex >= kidCount)) {
-                // Must be anonymous content! So skip it!
-                skipThisKid = PR_TRUE;
-              }
+            if (kidIndex < 0 || kidIndex >= kidCount) {
+              // Must be anonymous content! So skip it!
+              skipThisKid = PR_TRUE;
             }
           }
         }
@@ -2114,10 +2105,10 @@ nsresult nsFrame::GetContentAndOffsetsFromPoint(nsIPresContext* aCX,
     
     PRInt32 contentOffset(aContentOffset); //temp to hold old value in case of failure
     
-    result = (*aNewContent)->IndexOf(mContent, contentOffset);
-    if (NS_FAILED(result) || contentOffset < 0) 
+    contentOffset = (*aNewContent)->IndexOf(mContent);
+    if (contentOffset < 0) 
     {
-      return (result?result:NS_ERROR_FAILURE);
+      return NS_ERROR_FAILURE;
     }
     aContentOffset = contentOffset; //its clear save the result
 
@@ -2533,12 +2524,10 @@ nsIWidget* nsIFrame::GetWindow() const
   return window;
 }
 
-NS_IMETHODIMP
-nsFrame::GetFrameType(nsIAtom** aType) const
+nsIAtom*
+nsFrame::GetType() const
 {
-  NS_PRECONDITION(nsnull != aType, "null OUT parameter pointer");
-  *aType = nsnull;
-  return NS_OK;
+  return nsnull;
 }
 
 void
@@ -2643,22 +2632,22 @@ NS_IMETHODIMP nsFrame::IsPercentageBase(PRBool& aBase) const
   return NS_OK;
 }
 
+#ifdef NS_DEBUG
+
 PRInt32 nsFrame::ContentIndexInContainer(const nsIFrame* aFrame)
 {
-  PRInt32     result = -1;
+  PRInt32 result = -1;
 
   nsIContent* content = aFrame->GetContent();
   if (content) {
     nsIContent* parentContent = content->GetParent();
     if (parentContent) {
-      parentContent->IndexOf(content, result);
+      result = parentContent->IndexOf(content);
     }
   }
 
   return result;
 }
-
-#ifdef NS_DEBUG
 
 #ifdef DEBUG_waterson
 
@@ -2718,10 +2707,9 @@ nsresult
 nsFrame::MakeFrameName(const nsAString& aType, nsAString& aResult) const
 {
   aResult = aType;
-  if (nsnull != mContent) {
-    nsCOMPtr<nsIAtom> tag;
-    mContent->GetTag(getter_AddRefs(tag));
-    if (tag && tag != nsLayoutAtoms::textTagName) {
+  if (mContent) {
+    nsIAtom *tag = mContent->Tag();
+    if (tag != nsLayoutAtoms::textTagName) {
       nsAutoString buf;
       tag->ToString(buf);
       aResult.Append(NS_LITERAL_STRING("(") + buf + NS_LITERAL_STRING(")"));
@@ -2729,7 +2717,7 @@ nsFrame::MakeFrameName(const nsAString& aType, nsAString& aResult) const
   }
   char buf[40];
   PR_snprintf(buf, sizeof(buf), "(%d)", ContentIndexInContainer(this));
-  aResult.Append(NS_ConvertASCIItoUCS2(buf));
+  AppendASCIItoUTF16(buf, aResult);
   return NS_OK;
 }
 #endif
@@ -2859,11 +2847,10 @@ nsFrame::IsVisibleForPainting(nsIPresContext *     aPresContext,
   return rv;
 }
 
-NS_IMETHODIMP
-nsFrame::IsEmpty(nsCompatibility aCompatMode, PRBool aIsPre, PRBool *aResult)
+/* virtual */ PRBool
+nsFrame::IsEmpty()
 {
-  *aResult = PR_FALSE;
-  return NS_OK;
+  return PR_FALSE;
 }
 
 NS_IMETHODIMP
@@ -3098,12 +3085,8 @@ nsFrame::GetPointFromOffset(nsIPresContext* inPresContext, nsIRenderingContext* 
   {
     nsIContent* newContent = mContent->GetParent();
     if (newContent){
-      PRInt32 newOffset;
-      nsresult result = newContent->IndexOf(mContent, newOffset);
-      if (NS_FAILED(result)) 
-      {
-        return result;
-      }
+      PRInt32 newOffset = newContent->IndexOf(mContent);
+
       if (inOffset > newOffset)
         bottomLeft.x = GetRect().width;
     }
@@ -3281,32 +3264,28 @@ nsFrame::GetNextPrevLineFromeBlockFrame(nsIPresContext* aPresContext,
         isEditor = isEditor == nsISelectionDisplay::DISPLAY_ALL;
         if ( isEditor ) 
         {
-          nsIAtom *resultFrameType;
-          if(NS_SUCCEEDED(resultFrame->GetFrameType(&resultFrameType)) && resultFrameType)
+          if (resultFrame->GetType() == nsLayoutAtoms::tableOuterFrame)
           {
-            if (resultFrameType ==  nsLayoutAtoms::tableOuterFrame)
+            if (((point.x - offset.x + tempRect.x)<0) ||  ((point.x - offset.x+ tempRect.x)>tempRect.width))//off left/right side
             {
-              if (((point.x - offset.x + tempRect.x)<0) ||  ((point.x - offset.x+ tempRect.x)>tempRect.width))//off left/right side
+              nsIContent* content = resultFrame->GetContent();
+              if (content)
               {
-                nsIContent* content = resultFrame->GetContent();
-                if (content)
+                nsIContent* parent = content->GetParent();
+                if (parent)
                 {
-                  nsIContent* parent = content->GetParent();
-                  if (parent)
+                  aPos->mResultContent = parent;
+                  aPos->mContentOffset = parent->IndexOf(content);
+                  aPos->mPreferLeft = PR_FALSE;
+                  if ((point.x - offset.x+ tempRect.x)>tempRect.width)
                   {
-                    aPos->mResultContent = parent;
-                    parent->IndexOf(content, aPos->mContentOffset);
-                    aPos->mPreferLeft = PR_FALSE;
-                    if ((point.x - offset.x+ tempRect.x)>tempRect.width)
-                    {
-                      aPos->mContentOffset++;//go to end of this frame
-                      aPos->mPreferLeft = PR_TRUE;
-                    }
-                    aPos->mContentOffsetEnd = aPos->mContentOffset;
-                    //result frame is the result frames parent.
-                    aPos->mResultFrame = resultFrame->GetParent();
-                    return NS_POSITION_BEFORE_TABLE;
+                    aPos->mContentOffset++;//go to end of this frame
+                    aPos->mPreferLeft = PR_TRUE;
                   }
+                  aPos->mContentOffsetEnd = aPos->mContentOffset;
+                  //result frame is the result frames parent.
+                  aPos->mResultFrame = resultFrame->GetParent();
+                  return NS_POSITION_BEFORE_TABLE;
                 }
               }
             }
@@ -3652,15 +3631,13 @@ nsFrame::PeekOffset(nsIPresContext* aPresContext, nsPeekOffsetStruct *aPos)
       {
         nsIContent* newContent = mContent->GetParent();
         if (newContent){
-          PRInt32 newOffset;
           aPos->mResultContent = newContent;
-          result = newContent->IndexOf(mContent, newOffset);
+
+          PRInt32 newOffset = newContent->IndexOf(mContent);
+
           if (aPos->mStartOffset < 0)//start at "end"
             aPos->mStartOffset = newOffset + 1;
-          if (NS_FAILED(result)) 
-          {
-            return result;
-          }
+
           if ((aPos->mDirection == eDirNext && newOffset < aPos->mStartOffset) || //need to go to next one
               (aPos->mDirection == eDirPrevious && newOffset >= aPos->mStartOffset))
           {
@@ -3792,8 +3769,7 @@ nsFrame::PeekOffset(nsIPresContext* aPresContext, nsPeekOffsetStruct *aPos)
   if we hit a header or footer thats ok just go into them,
 */
             PRBool searchTableBool = PR_FALSE;
-            nsIAtom *resultFrameType;
-            if(NS_SUCCEEDED(aPos->mResultFrame->GetFrameType(&resultFrameType)) && resultFrameType == nsLayoutAtoms::tableOuterFrame)
+            if (aPos->mResultFrame->GetType() == nsLayoutAtoms::tableOuterFrame)
             {
               nsIFrame *frame = aPos->mResultFrame;
               result = frame->FirstChild(aPresContext, nsnull,&frame);
@@ -4144,9 +4120,7 @@ nsFrame::GetFrameFromDirection(nsIPresContext* aPresContext, nsPeekOffsetStruct 
     //in the case of a text node since that does not mean we are stuck. it could mean a change in style for
     //the text node.  in the case of a hruleframe with generated before and after content, we do not
     //want the splittable generated frame to get us stuck on an HR
-    nsCOMPtr<nsIAtom>        frameType;
-    newFrame->GetFrameType(getter_AddRefs(frameType) );
-    if (nsLayoutAtoms::textFrame != frameType.get() )
+    if (nsLayoutAtoms::textFrame != newFrame->GetType())
       continue;  //we should NOT be getting stuck on the same piece of content on the same line. skip to next line.
   }
   isBidiGhostFrame = (newFrame->GetRect().IsEmpty() &&
@@ -4352,6 +4326,24 @@ nsFrame::StoreOverflow(nsIPresContext*      aPresContext,
   }   
 }
 
+void
+nsFrame::ConsiderChildOverflow(nsIPresContext* aPresContext,
+                               nsRect&         aOverflowArea,
+                               nsIFrame*       aChildFrame)
+{
+  if (GetStyleDisplay()->mOverflow != NS_STYLE_OVERFLOW_HIDDEN) {
+    nsRect* overflowArea = aChildFrame->GetOverflowAreaProperty(aPresContext);
+    if (overflowArea) {
+      nsRect childOverflow(*overflowArea);
+      childOverflow.MoveBy(aChildFrame->GetPosition());
+      aOverflowArea.UnionRect(aOverflowArea, childOverflow);
+    }
+    else {
+      aOverflowArea.UnionRect(aOverflowArea, aChildFrame->GetRect());
+    }
+  }
+}
+
 NS_IMETHODIMP 
 nsFrame::GetParentStyleContextFrame(nsIPresContext* aPresContext,
                                     nsIFrame**      aProviderFrame,
@@ -4435,6 +4427,9 @@ GetNextSiblingAcrossLines(nsIPresContext *aPresContext, nsIFrame *aFrame)
  *
  * Also correct for the frame tree mangling that happens when we create
  * wrappers for :before/:after.
+ *
+ * Also skip anonymous scrolled-content parents; inherit directly from the
+ * outer scroll frame.
  */
 static nsresult
 GetCorrectedParent(nsIPresContext* aPresContext, nsIFrame* aFrame,
@@ -4443,10 +4438,10 @@ GetCorrectedParent(nsIPresContext* aPresContext, nsIFrame* aFrame,
   nsIFrame *parent = aFrame->GetParent();
   *aSpecialParent = parent;
   if (parent) {
-    nsCOMPtr<nsIAtom> parentPseudo = parent->GetStyleContext()->GetPseudoType();
+    nsIAtom* parentPseudo = parent->GetStyleContext()->GetPseudoType();
     if (parentPseudo == nsCSSAnonBoxes::mozGCWrapperBlock ||
         parentPseudo == nsCSSAnonBoxes::mozGCWrapperInline) {
-      nsCOMPtr<nsIAtom> pseudo = aFrame->GetStyleContext()->GetPseudoType();
+      nsIAtom* pseudo = aFrame->GetStyleContext()->GetPseudoType();
       if (pseudo == nsCSSPseudoElements::before) {
         // Use the wrapped frame, which is after the |:before|.
         parent = GetNextSiblingAcrossLines(aPresContext, aFrame);
@@ -4454,11 +4449,24 @@ GetCorrectedParent(nsIPresContext* aPresContext, nsIFrame* aFrame,
         parent->GetFirstInFlow()->FirstChild(aPresContext, nsnull, &parent);
         // Now we have either the wrapped frame or the :before, but we
         // want the wrapped frame.
-        if (nsCOMPtr<nsIAtom>(parent->GetStyleContext()->GetPseudoType()) ==
+        if (parent->GetStyleContext()->GetPseudoType() ==
             nsCSSPseudoElements::before)
           parent = GetNextSiblingAcrossLines(aPresContext, parent);
       } else {
         parent = parent->GetParent();
+      }
+      parentPseudo = parent->GetStyleContext()->GetPseudoType();
+    }
+
+    // if this frame itself is not scrolled-content, then skip any scrolled-content
+    // parents since they're basically anonymous as far as the style system goes
+    if (parentPseudo == nsCSSAnonBoxes::scrolledContent) {
+      nsIAtom* pseudo = aFrame->GetStyleContext()->GetPseudoType();
+      if (pseudo != nsCSSAnonBoxes::scrolledContent) {
+        do {
+          parent = parent->GetParent();
+          parentPseudo = parent->GetStyleContext()->GetPseudoType();
+        } while (parentPseudo == nsCSSAnonBoxes::scrolledContent);
       }
     }
 
@@ -4527,13 +4535,11 @@ nsFrame::GetLastLeaf(nsIPresContext* aPresContext, nsIFrame **aFrame)
     return;
   nsIFrame *child = *aFrame;
   nsresult result;
-  nsIFrame *lookahead = nsnull;
   //if we are a block frame then go for the last line of 'this'
   while (1){
-    result = child->FirstChild(aPresContext, nsnull, &lookahead);
-    if (NS_FAILED(result) || !lookahead)
+    result = child->FirstChild(aPresContext, nsnull, &child);
+    if (NS_FAILED(result) || !child)
       return;//nothing to do
-    child = lookahead;
     while (child->GetNextSibling())
       child = child->GetNextSibling();
     *aFrame = child;
@@ -4547,13 +4553,11 @@ nsFrame::GetFirstLeaf(nsIPresContext* aPresContext, nsIFrame **aFrame)
   if (!aFrame || !*aFrame)
     return;
   nsIFrame *child = *aFrame;
-  nsIFrame *lookahead;
   nsresult result;
   while (1){
-    result = child->FirstChild(aPresContext, nsnull, &lookahead);
-    if (NS_FAILED(result) || !lookahead)
+    result = child->FirstChild(aPresContext, nsnull, &child);
+    if (NS_FAILED(result) || !child)
       return;//nothing to do
-    child = lookahead;
     *aFrame = child;
   }
 }
@@ -4751,18 +4755,11 @@ static void
 GetTagName(nsFrame* aFrame, nsIContent* aContent, PRIntn aResultSize,
            char* aResult)
 {
-  char namebuf[40];
-  namebuf[0] = 0;
+  const char *nameStr = "";
   if (aContent) {
-    nsCOMPtr<nsIAtom> tag;
-    aContent->GetTag(getter_AddRefs(tag));
-    if (tag) {
-      nsAutoString tmp;
-      tag->ToString(tmp);
-      tmp.ToCString(namebuf, sizeof(namebuf));
-    }
+    aContent->Tag()->GetUTF8String(&nameStr);
   }
-  PR_snprintf(aResult, aResultSize, "%s@%p", namebuf, aFrame);
+  PR_snprintf(aResult, aResultSize, "%s@%p", nameStr, aFrame);
 }
 
 void
@@ -5246,10 +5243,7 @@ void DR_State::InitFrameTypeTable()
 void DR_State::DisplayFrameTypeInfo(nsIFrame* aFrame,
                                     PRInt32   aIndent)
 { 
-  nsCOMPtr<nsIAtom> fType;
-  aFrame->GetFrameType(getter_AddRefs(fType));
-
-  DR_FrameTypeInfo* frameTypeInfo = GetFrameTypeInfo(fType);
+  DR_FrameTypeInfo* frameTypeInfo = GetFrameTypeInfo(aFrame->GetType());
   if (frameTypeInfo) {
     for (PRInt32 i = 0; i < aIndent; i++) {
       printf(" ");
@@ -5283,9 +5277,7 @@ PRBool DR_State::RuleMatches(DR_Rule&          aRule,
        rulePart = rulePart->mNext, parentNode = parentNode->mParent) {
     if (rulePart->mFrameType) {
       if (parentNode->mFrame) {
-        nsCOMPtr<nsIAtom> fNodeType;
-        parentNode->mFrame->GetFrameType(getter_AddRefs(fNodeType));
-        if (rulePart->mFrameType != fNodeType) {
+        if (rulePart->mFrameType != parentNode->mFrame->GetType()) {
           return PR_FALSE;
         }
       }
@@ -5305,9 +5297,7 @@ void DR_State::FindMatchingRule(DR_FrameTreeNode& aNode)
 
   PRBool matchingRule = PR_FALSE;
 
-  nsCOMPtr<nsIAtom> fType;
-  aNode.mFrame->GetFrameType(getter_AddRefs(fType));
-  DR_FrameTypeInfo* info = GetFrameTypeInfo(fType.get());
+  DR_FrameTypeInfo* info = GetFrameTypeInfo(aNode.mFrame->GetType());
   NS_ASSERTION(info, "program error");
   PRInt32 numRules = info->mRules.Count();
   for (PRInt32 ruleX = 0; ruleX < numRules; ruleX++) {

@@ -118,13 +118,13 @@ public:
   NS_IMETHOD SetValueChanged(PRBool aValueChanged);
 
   // nsIContent
-  NS_IMETHOD InsertChildAt(nsIContent* aKid, PRInt32 aIndex, PRBool aNotify,
+  NS_IMETHOD InsertChildAt(nsIContent* aKid, PRUint32 aIndex, PRBool aNotify,
                            PRBool aDeepSetDocument);
-  NS_IMETHOD ReplaceChildAt(nsIContent* aKid, PRInt32 aIndex, PRBool aNotify,
+  NS_IMETHOD ReplaceChildAt(nsIContent* aKid, PRUint32 aIndex, PRBool aNotify,
                             PRBool aDeepSetDocument);
   NS_IMETHOD AppendChildTo(nsIContent* aKid, PRBool aNotify,
                            PRBool aDeepSetDocument);
-  NS_IMETHOD RemoveChildAt(PRInt32 aIndex, PRBool aNotify);
+  NS_IMETHOD RemoveChildAt(PRUint32 aIndex, PRBool aNotify);
   NS_IMETHOD StringToAttribute(nsIAtom* aAttribute,
                                const nsAString& aValue,
                                nsHTMLValue& aResult);
@@ -327,10 +327,7 @@ nsHTMLTextAreaElement::RemoveFocus(nsIPresContext* aPresContext)
     if (!mDocument)
       return NS_ERROR_NULL_POINTER;
 
-    nsCOMPtr<nsIContent> rootContent;
-    mDocument->GetRootContent(getter_AddRefs(rootContent));
-
-    rv = esm->SetContentState(rootContent, NS_EVENT_STATE_FOCUS);
+    rv = esm->SetContentState(nsnull, NS_EVENT_STATE_FOCUS);
   }
 
   return rv;
@@ -537,7 +534,7 @@ nsHTMLTextAreaElement::SetDefaultValue(const nsAString& aDefaultValue)
 }
 
 NS_IMETHODIMP
-nsHTMLTextAreaElement::InsertChildAt(nsIContent* aKid, PRInt32 aIndex,
+nsHTMLTextAreaElement::InsertChildAt(nsIContent* aKid, PRUint32 aIndex,
                                      PRBool aNotify, PRBool aDeepSetDocument)
 {
   nsresult rv;
@@ -550,7 +547,7 @@ nsHTMLTextAreaElement::InsertChildAt(nsIContent* aKid, PRInt32 aIndex,
 }
 
 NS_IMETHODIMP
-nsHTMLTextAreaElement::ReplaceChildAt(nsIContent* aKid, PRInt32 aIndex,
+nsHTMLTextAreaElement::ReplaceChildAt(nsIContent* aKid, PRUint32 aIndex,
                                       PRBool aNotify, PRBool aDeepSetDocument)
 {
   nsresult rv;
@@ -576,7 +573,7 @@ nsHTMLTextAreaElement::AppendChildTo(nsIContent* aKid, PRBool aNotify,
 }
 
 NS_IMETHODIMP
-nsHTMLTextAreaElement::RemoveChildAt(PRInt32 aIndex, PRBool aNotify)
+nsHTMLTextAreaElement::RemoveChildAt(PRUint32 aIndex, PRBool aNotify)
 {
   nsresult rv;
   rv = nsGenericHTMLContainerFormElement::RemoveChildAt(aIndex, aNotify);
@@ -622,9 +619,6 @@ static void
 MapAttributesIntoRule(const nsIHTMLMappedAttributes* aAttributes,
                       nsRuleData* aData)
 {
-  if (!aAttributes || !aData)
-    return;
-
   nsGenericHTMLElement::MapDivAlignAttributeInto(aAttributes, aData);
   nsGenericHTMLElement::MapCommonAttributesInto(aAttributes, aData);
 }

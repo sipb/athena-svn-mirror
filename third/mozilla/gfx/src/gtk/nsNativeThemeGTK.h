@@ -20,7 +20,7 @@
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s):
- *  Brian Ryner <bryner@netscape.com>  (Original Author)
+ *  Brian Ryner <bryner@brianryner.com>  (Original Author)
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either the GNU General Public License Version 2 or later (the "GPL"), or
@@ -39,13 +39,16 @@
 #include "nsITheme.h"
 #include "nsCOMPtr.h"
 #include "nsIAtom.h"
+#include "nsIObserver.h"
 
 #include <gtk/gtkwidget.h>
 #include "gtkdrawing.h"
 
-class nsNativeThemeGTK: public nsITheme {
+class nsNativeThemeGTK: public nsITheme, public nsIObserver {
 public:
   NS_DECL_ISUPPORTS
+
+  NS_DECL_NSIOBSERVER
 
   // The nsITheme interface.
   NS_IMETHOD DrawWidgetBackground(nsIRenderingContext* aContext,

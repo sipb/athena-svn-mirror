@@ -24,8 +24,8 @@
  */
 
 #include "Expr.h"
-#include "NodeSet.h"
 #include "txIXPathContext.h"
+#include "txNodeSet.h"
 
   //-------------/
  //- UnionExpr -/
@@ -53,9 +53,14 @@ UnionExpr::~UnionExpr() {
  * Adds the Expr to this UnionExpr
  * @param expr the Expr to add to this UnionExpr
 **/
-void UnionExpr::addExpr(Expr* expr) {
-    if (expr)
-      expressions.add(expr);
+nsresult
+UnionExpr::addExpr(Expr* aExpr)
+{
+    nsresult rv = expressions.add(aExpr);
+    if (NS_FAILED(rv)) {
+        delete aExpr;
+    }
+    return rv;
 } //-- addExpr
 
     //-----------------------------/
@@ -73,7 +78,7 @@ nsresult
 UnionExpr::evaluate(txIEvalContext* aContext, txAExprResult** aResult)
 {
     *aResult = nsnull;
-    nsRefPtr<NodeSet> nodes;
+    nsRefPtr<txNodeSet> nodes;
     nsresult rv = aContext->recycler()->getNodeSet(getter_AddRefs(nodes));
     NS_ENSURE_SUCCESS(rv, rv);
 
@@ -88,8 +93,16 @@ UnionExpr::evaluate(txIEvalContext* aContext, txAExprResult** aResult)
             //XXX ErrorReport: report nonnodeset error
             return NS_ERROR_XSLT_NODESET_EXPECTED;
         }
-        rv = nodes->add(NS_STATIC_CAST(NodeSet*, NS_STATIC_CAST(txAExprResult*,
-                                                                exprResult)));
+
+        nsRefPtr<txNodeSet> resultSet, ownedSet;
+        resultSet = NS_STATIC_CAST(txNodeSet*,
+                                   NS_STATIC_CAST(txAExprResult*, exprResult));
+        exprResult = nsnull;
+        rv = aContext->recycler()->
+            getNonSharedNodeSet(resultSet, getter_AddRefs(ownedSet));
+        NS_ENSURE_SUCCESS(rv, rv);
+
+        rv = nodes->addAndTransfer(ownedSet);
         NS_ENSURE_SUCCESS(rv, rv);
     }
 

@@ -35,7 +35,6 @@ DIRS	= \
 			related \
 			prefwindow \
 			shistory \
-			timebomb \
 			console \
 			updates \
 			intl \
@@ -56,7 +55,10 @@ DIRS += \
 endif
 
 ifeq ($(OS_ARCH),WINNT)
-DIRS		+= winhooks urlwidget alerts
+DIRS		+= winhooks urlwidget 
+ifndef MOZ_PHOENIX
+DIRS		+= alerts
+endif
 endif
 
 else
@@ -74,7 +76,6 @@ DIRS    = \
           history/public \
           shistory/public \
           bookmarks/public \
-          timebomb \
           $(NULL)
 
 ifeq ($(OS_ARCH),WINNT)
@@ -88,7 +89,11 @@ DIRS		+= xremote
 endif
 
 ifndef MOZ_THUNDERBIRD
+ifndef MOZ_STANDALONE_COMPOSER
 DIRS		+= build
+else
+DIRS		+= build2
+endif
 else
 DIRS	        += build2
 endif

@@ -107,13 +107,10 @@ nsInlineFrame::GetFrameName(nsAString& aResult) const
 }
 #endif
 
-NS_IMETHODIMP
-nsInlineFrame::GetFrameType(nsIAtom** aType) const
+nsIAtom*
+nsInlineFrame::GetType() const
 {
-  NS_PRECONDITION(nsnull != aType, "null OUT parameter pointer");
-  *aType = nsLayoutAtoms::inlineFrame;
-  NS_ADDREF(*aType);
-  return NS_OK;
+  return nsLayoutAtoms::inlineFrame;
 }
 
 inline PRBool
@@ -139,16 +136,16 @@ IsMarginZero(nsStyleUnit aUnit, nsStyleCoord &aCoord)
             (aUnit == eStyleUnit_Percent && aCoord.GetPercentValue() == 0.0));
 }
 
-NS_IMETHODIMP
-nsInlineFrame::IsEmpty(nsCompatibility aCompatMode, PRBool aIsPre,
-                       PRBool* aResult)
+/* virtual */ PRBool
+nsInlineFrame::IsEmpty()
 {
 #if 0
   // I used to think inline frames worked this way, but it seems they
   // don't.  At least not in our codebase.
-  if (aCompatMode == eCompatibility_FullStandards) {
-    *aResult = PR_FALSE;
-    return NS_OK;
+  nsCompatibility compatMode;
+  GetPresContext()->GetCompatibilityMode(&compatMode);
+  if (compatMode == eCompatibility_FullStandards) {
+    return PR_FALSE;
   }
 #endif
   const nsStyleMargin* margin = GetStyleMargin();
@@ -172,17 +169,14 @@ nsInlineFrame::IsEmpty(nsCompatibility aCompatMode, PRBool aIsPre,
                     margin->mMargin.GetRight(coord)) ||
       !IsMarginZero(margin->mMargin.GetLeftUnit(),
                     margin->mMargin.GetLeft(coord))) {
-    *aResult = PR_FALSE;
-    return NS_OK;
+    return PR_FALSE;
   }
 
-  *aResult = PR_TRUE;
   for (nsIFrame *kid = mFrames.FirstChild(); kid; kid = kid->GetNextSibling()) {
-    kid->IsEmpty(aCompatMode, aIsPre, aResult);
-    if (! *aResult)
-      break;
+    if (!kid->IsEmpty())
+      return PR_FALSE;
   }
-  return NS_OK;
+  return PR_TRUE;
 }
 
 NS_IMETHODIMP
@@ -244,15 +238,11 @@ nsInlineFrame::RemoveFrame(nsIPresContext* aPresContext,
 
   if (aOldFrame) {
     // Loop and destroy the frame and all of its continuations.
-    PRBool generateReflowCommand = PR_FALSE;
-
     // If the frame we are removing is a brFrame, we need a reflow so
     // the line the brFrame was on can attempt to pull up any frames
     // that can fit from lines below it.
-    nsCOMPtr<nsIAtom> frameType;
-    aOldFrame->GetFrameType(getter_AddRefs(frameType));
-    if (frameType == nsLayoutAtoms::brFrame)
-      generateReflowCommand = PR_TRUE;
+    PRBool generateReflowCommand =
+      aOldFrame->GetType() == nsLayoutAtoms::brFrame;
 
     nsInlineFrame* parent = NS_STATIC_CAST(nsInlineFrame*, aOldFrame->GetParent());
     while (aOldFrame) {
@@ -701,7 +691,7 @@ void MarkPercentAwareFrame(nsIPresContext *aPresContext,
     aFrame->FirstChild(aPresContext, nsnull, &child);
     if (child)
     { // aFrame is an inline container frame, check my frame state
-      if (child->GetStateBits() & NS_INLINE_FRAME_CONTAINS_PERCENT_AWARE_CHILD) {
+      if (aFrame->GetStateBits() & NS_INLINE_FRAME_CONTAINS_PERCENT_AWARE_CHILD) {
         SetContainsPercentAwareChild(aInline); // if a child container is effected, so am I
       }
     }
@@ -786,9 +776,7 @@ nsInlineFrame::ReflowInlineFrame(nsIPresContext* aPresContext,
     }
   }
   else if (NS_FRAME_IS_NOT_COMPLETE(aStatus)) {
-    nsCOMPtr<nsIAtom> frameType;
-    aFrame->GetFrameType(getter_AddRefs(frameType));
-    if (nsLayoutAtoms::placeholderFrame == frameType) {
+    if (nsLayoutAtoms::placeholderFrame == aFrame->GetType()) {
       nsBlockReflowState* blockRS = lineLayout->mBlockRS;
       blockRS->mBlock->SplitPlaceholder(*aPresContext, *aFrame);
     }
@@ -894,10 +882,10 @@ NS_IMETHODIMP nsInlineFrame::GetAccessible(nsIAccessible** aAccessible)
   // Broken image accessibles are created here, because layout
   // replaces the image or image control frame with an inline frame
   *aAccessible = nsnull;
-  nsCOMPtr<nsIAtom> tagAtom;
-  mContent->GetTag(getter_AddRefs(tagAtom));
-  if (tagAtom == nsHTMLAtoms::img || tagAtom == nsHTMLAtoms::input || 
-     tagAtom == nsHTMLAtoms::label || tagAtom == nsHTMLAtoms::hr) {
+  nsIAtom *tagAtom = mContent->Tag();
+  if ((tagAtom == nsHTMLAtoms::img || tagAtom == nsHTMLAtoms::input || 
+       tagAtom == nsHTMLAtoms::label || tagAtom == nsHTMLAtoms::hr) &&
+      mContent->IsContentOfType(nsIContent::eHTML)) {
     // Only get accessibility service if we're going to use it
     nsCOMPtr<nsIAccessibilityService> accService(do_GetService("@mozilla.org/accessibilityService;1"));
     if (!accService)
@@ -958,13 +946,10 @@ nsFirstLineFrame::GetFrameName(nsAString& aResult) const
 }
 #endif
 
-NS_IMETHODIMP
-nsFirstLineFrame::GetFrameType(nsIAtom** aType) const
+nsIAtom*
+nsFirstLineFrame::GetType() const
 {
-  NS_PRECONDITION(nsnull != aType, "null OUT parameter pointer");
-  *aType = nsLayoutAtoms::lineFrame;
-  NS_ADDREF(*aType);
-  return NS_OK;
+  return nsLayoutAtoms::lineFrame;
 }
 
 void
@@ -1008,8 +993,8 @@ nsFirstLineFrame::Reflow(nsIPresContext* aPresContext,
     if (prevOverflowFrames) {
       nsFrameList frames(prevOverflowFrames);
       
-      ReParentChildListStyle(aPresContext, mStyleContext, frames);
       mFrames.InsertFrames(this, nsnull, prevOverflowFrames);
+      ReParentChildListStyle(aPresContext, mStyleContext, frames);
     }
   }
 
@@ -1019,8 +1004,8 @@ nsFirstLineFrame::Reflow(nsIPresContext* aPresContext,
     NS_ASSERTION(mFrames.NotEmpty(), "overflow list w/o frames");
     nsFrameList frames(overflowFrames);
 
-    ReParentChildListStyle(aPresContext, mStyleContext, frames);
     mFrames.AppendFrames(nsnull, overflowFrames);
+    ReParentChildListStyle(aPresContext, mStyleContext, frames);
   }
 
   // Set our own reflow state (additional state above and beyond
@@ -1232,13 +1217,10 @@ nsPositionedInlineFrame::FirstChild(nsIPresContext* aPresContext,
   return nsInlineFrame::FirstChild(aPresContext, aListName, aFirstChild);
 }
 
-NS_IMETHODIMP
-nsPositionedInlineFrame::GetFrameType(nsIAtom** aType) const
+nsIAtom*
+nsPositionedInlineFrame::GetType() const
 {
-  NS_PRECONDITION(nsnull != aType, "null OUT parameter pointer");
-  *aType = nsLayoutAtoms::positionedInlineFrame;
-  NS_ADDREF(*aType);
-  return NS_OK;
+  return nsLayoutAtoms::positionedInlineFrame;
 }
 
 NS_IMETHODIMP

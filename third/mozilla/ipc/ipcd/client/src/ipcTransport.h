@@ -47,13 +47,6 @@
 #include "ipcMessage.h"
 #include "ipcMessageQ.h"
 
-#ifdef XP_UNIX
-#include "ipcTransportUnix.h"
-typedef nsISocketEventHandler ipcTransportSuper;
-#else
-typedef nsISupports ipcTransportSuper;
-#endif
-
 //----------------------------------------------------------------------------
 // ipcTransportObserver interface
 //----------------------------------------------------------------------------
@@ -61,7 +54,6 @@ typedef nsISupports ipcTransportSuper;
 class ipcTransportObserver
 {
 public:
-    virtual void OnConnectionEstablished(PRUint32 clientID) = 0;
     virtual void OnConnectionLost() = 0;
     virtual void OnMessageAvailable(const ipcMessage *) = 0;
 };
@@ -70,7 +62,7 @@ public:
 // ipcTransport
 //-----------------------------------------------------------------------------
 
-class ipcTransport : public ipcTransportSuper
+class ipcTransport : public nsISupports
 {
 public:
     NS_DECL_ISUPPORTS
@@ -81,29 +73,19 @@ public:
         , mIncomingMsgQ(nsnull)
         , mSyncReplyMsg(nsnull)
         , mSyncWaiting(nsnull)
-        , mSentHello(PR_FALSE)
         , mHaveConnection(PR_FALSE)
-        , mSpawnedDaemon(PR_FALSE)
-        , mConnectionAttemptCount(0)
-        , mClientID(0)
         {}
 
     virtual ~ipcTransport()
     {
         PR_DestroyMonitor(mMonitor);
-#ifdef XP_UNIX
-        if (mReceiver)
-            ((ipcReceiver *) mReceiver.get())->ClearTransport();
-#endif
     }
 
-    nsresult Init(ipcTransportObserver *observer);
+    nsresult Init(ipcTransportObserver *observer, PRUint32 *clientID);
     nsresult Shutdown();
 
     // takes ownership of |msg|
     nsresult SendMsg(ipcMessage *msg, PRBool sync = PR_FALSE);
-
-    PRBool   HaveConnection() const { return mHaveConnection; }
 
 public:
     //
@@ -112,58 +94,30 @@ public:
     void OnMessageAvailable(ipcMessage *); // takes ownership
 
 private:
+    friend void IPC_OnMessageAvailable(ipcMessage *);
+    friend void IPC_OnConnectionEnd(nsresult);
+
     //
     // helpers
     //
-    nsresult PlatformInit();
-    nsresult Connect();
-    nsresult Disconnect();
-    nsresult OnConnectFailure();
-    nsresult SendMsg_Internal(ipcMessage *msg);
-    nsresult SpawnDaemon();
-    void     ProxyToMainThread(PLHandleEventProc);
-    void     ProcessIncomingMsgQ();
+    void ProxyToMainThread(PLHandleEventProc);
+    void ProcessIncomingMsgQ();
 
     PR_STATIC_CALLBACK(void *) ProcessIncomingMsgQ_EventHandler(PLEvent *);
-    PR_STATIC_CALLBACK(void *) ConnectionEstablished_EventHandler(PLEvent *);
     PR_STATIC_CALLBACK(void *) ConnectionLost_EventHandler(PLEvent *);
     PR_STATIC_CALLBACK(void)   Generic_EventCleanup(PLEvent *);
+
+    nsresult SendMsg_Locked(ipcMessage *msg, PRBool sync, ipcMessage **syncReply);
 
     //
     // data
     //
     PRMonitor             *mMonitor;
     ipcTransportObserver  *mObserver; // weak reference
-    ipcMessageQ            mDelayedQ;
     ipcMessageQ           *mIncomingMsgQ;
     ipcMessage            *mSyncReplyMsg;
     PRPackedBool           mSyncWaiting;
-    PRPackedBool           mSentHello;
     PRPackedBool           mHaveConnection;
-    PRPackedBool           mSpawnedDaemon;
-    PRUint32               mConnectionAttemptCount;
-    PRUint32               mClientID;
-
-#ifdef XP_UNIX
-    nsCOMPtr<nsIInputStreamNotify> mReceiver;
-    nsCOMPtr<nsISocketTransport>   mTransport;
-    nsCOMPtr<nsIInputStream>       mInputStream;
-    nsCOMPtr<nsIOutputStream>      mOutputStream;
-
-    //
-    // unix specific helpers
-    //
-    nsresult CreateTransport();
-    nsresult GetSocketPath(nsACString &);
-
-public:
-    NS_DECL_NSISOCKETEVENTHANDLER
-
-    //
-    // internal helper methods
-    //
-    void OnConnectionLost(nsresult reason);
-#endif
 };
 
 #endif // !ipcTransport_h__

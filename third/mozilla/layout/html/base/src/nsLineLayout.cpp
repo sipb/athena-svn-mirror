@@ -94,9 +94,7 @@ static nscoord AccumulateImageSizes(nsIPresContext& aPresContext, nsIFrame& aFra
   nscoord sizes = 0;
 
   // see if aFrame is an image frame first
-  nsCOMPtr<nsIAtom> type;
-  aFrame.GetFrameType(getter_AddRefs(type));
-  if(type.get() == nsLayoutAtoms::imageFrame) {
+  if (aFrame.GetType() == nsLayoutAtoms::imageFrame) {
     sizes += aFrame.GetSize().width;
   } else {
     // see if there are children to process
@@ -169,7 +167,7 @@ nsLineLayout::nsLineLayout(nsIPresContext* aPresContext,
   mColumn = 0;
   mFlags = 0; // default all flags to false except those that follow here...
   SetFlag(LL_ENDSINWHITESPACE, PR_TRUE);
-  mPlacedFloaters = 0;
+  mPlacedFloats = 0;
   mTotalPlacedFrames = 0;
   mTopEdge = mBottomEdge = 0;
 
@@ -229,7 +227,7 @@ HasPrevInFlow(nsIFrame *aFrame)
 void
 nsLineLayout::BeginLineReflow(nscoord aX, nscoord aY,
                               nscoord aWidth, nscoord aHeight,
-                              PRBool aImpactedByFloaters,
+                              PRBool aImpactedByFloats,
                               PRBool aIsTopOfPage)
 {
   NS_ASSERTION(nsnull == mRootSpan, "bad linelayout user");
@@ -251,7 +249,7 @@ nsLineLayout::BeginLineReflow(nscoord aX, nscoord aY,
   nsFrame::ListTag(stdout, mBlockReflowState->frame);
   printf(": BeginLineReflow: %d,%d,%d,%d impacted=%s %s\n",
          aX, aY, aWidth, aHeight,
-         aImpactedByFloaters?"true":"false",
+         aImpactedByFloats?"true":"false",
          aIsTopOfPage ? "top-of-page" : "");
 #endif
 #ifdef DEBUG
@@ -262,14 +260,13 @@ nsLineLayout::BeginLineReflow(nscoord aX, nscoord aY,
   
   SetFlag(LL_ENDSINWHITESPACE, PR_TRUE);
   SetFlag(LL_UNDERSTANDSNWHITESPACE, PR_FALSE);
-  SetFlag(LL_TEXTSTARTSWITHNBSP, PR_FALSE);
   SetFlag(LL_FIRSTLETTERSTYLEOK, PR_FALSE);
   SetFlag(LL_ISTOPOFPAGE, aIsTopOfPage);
   SetFlag(LL_UPDATEDBAND, PR_FALSE);
-  mPlacedFloaters = 0;
-  SetFlag(LL_IMPACTEDBYFLOATERS, aImpactedByFloaters);
+  mPlacedFloats = 0;
+  SetFlag(LL_IMPACTEDBYFLOATS, aImpactedByFloats);
   mTotalPlacedFrames = 0;
-  SetFlag(LL_CANPLACEFLOATER, PR_TRUE);
+  SetFlag(LL_CANPLACEFLOAT, PR_TRUE);
   SetFlag(LL_LINEENDSINBR, PR_FALSE);
   mSpanDepth = 0;
   mMaxTopBoxHeight = mMaxBottomBoxHeight = 0;
@@ -375,12 +372,12 @@ nsLineLayout::EndLineReflow()
 void
 nsLineLayout::UpdateBand(nscoord aX, nscoord aY,
                          nscoord aWidth, nscoord aHeight,
-                         PRBool aPlacedLeftFloater,
-                         nsIFrame* aFloaterFrame)
+                         PRBool aPlacedLeftFloat,
+                         nsIFrame* aFloatFrame)
 {
 #ifdef REALLY_NOISY_REFLOW
   printf("nsLL::UpdateBand %d, %d, %d, %d, frame=%p placedLeft=%s\n  will set mImpacted to PR_TRUE\n",
-         aX, aY, aWidth, aHeight, aFloaterFrame, aPlacedLeftFloater?"true":"false");
+         aX, aY, aWidth, aHeight, aFloatFrame, aPlacedLeftFloat?"true":"false");
 #endif
   PerSpanData* psd = mRootSpan;
   NS_PRECONDITION(psd->mX == psd->mLeftEdge, "update-band called late");
@@ -406,9 +403,9 @@ nsLineLayout::UpdateBand(nscoord aX, nscoord aY,
   }
 #ifdef NOISY_REFLOW
   nsFrame::ListTag(stdout, mBlockReflowState->frame);
-  printf(": UpdateBand: %d,%d,%d,%d deltaWidth=%d %s floater\n",
+  printf(": UpdateBand: %d,%d,%d,%d deltaWidth=%d %s float\n",
          aX, aY, aWidth, aHeight, deltaWidth,
-         aPlacedLeftFloater ? "left" : "right");
+         aPlacedLeftFloat ? "left" : "right");
 #endif
 
   psd->mLeftEdge = aX;
@@ -427,29 +424,28 @@ nsLineLayout::UpdateBand(nscoord aX, nscoord aY,
     mBottomEdge = aY + aHeight;
   }
   SetFlag(LL_UPDATEDBAND, PR_TRUE);
-  mPlacedFloaters |= (aPlacedLeftFloater ? PLACED_LEFT : PLACED_RIGHT);
-  SetFlag(LL_IMPACTEDBYFLOATERS, PR_TRUE);
+  mPlacedFloats |= (aPlacedLeftFloat ? PLACED_LEFT : PLACED_RIGHT);
+  SetFlag(LL_IMPACTEDBYFLOATS, PR_TRUE);
 
-  nsCOMPtr<nsIAtom> frameType;
-  aFloaterFrame->GetFrameType(getter_AddRefs(frameType));
-  SetFlag(LL_LASTFLOATERWASLETTERFRAME, (nsLayoutAtoms::letterFrame == frameType.get()));
+  SetFlag(LL_LASTFLOATWASLETTERFRAME,
+          nsLayoutAtoms::letterFrame == aFloatFrame->GetType());
 
   // Now update all of the open spans...
-  mRootSpan->mContainsFloater = PR_TRUE;              // make sure mRootSpan gets updated too
+  mRootSpan->mContainsFloat = PR_TRUE;              // make sure mRootSpan gets updated too
   psd = mCurrentSpan;
   while (psd != mRootSpan) {
     NS_ASSERTION(nsnull != psd, "null ptr");
     if (nsnull == psd) {
       break;
     }
-    NS_ASSERTION(psd->mX == psd->mLeftEdge, "bad floater placement");
+    NS_ASSERTION(psd->mX == psd->mLeftEdge, "bad float placement");
     if (NS_UNCONSTRAINEDSIZE == aWidth) {
       psd->mRightEdge = NS_UNCONSTRAINEDSIZE;
     }
     else {
       psd->mRightEdge += deltaWidth;
     }
-    psd->mContainsFloater = PR_TRUE;
+    psd->mContainsFloat = PR_TRUE;
 #ifdef NOISY_REFLOW
     printf("  span %p: oldRightEdge=%d newRightEdge=%d\n",
            psd, psd->mRightEdge - deltaWidth, psd->mRightEdge);
@@ -469,7 +465,7 @@ nsLineLayout::UpdateFrames()
 
   PerSpanData* psd = mRootSpan;
   if (NS_STYLE_DIRECTION_LTR == psd->mDirection) {
-    if (PLACED_LEFT & mPlacedFloaters) {
+    if (PLACED_LEFT & mPlacedFloats) {
       PerFrameData* pfd = psd->mFirstFrame;
       while (nsnull != pfd) {
         pfd->mBounds.x = psd->mX;
@@ -477,7 +473,7 @@ nsLineLayout::UpdateFrames()
       }
     }
   }
-  else if (PLACED_RIGHT & mPlacedFloaters) {
+  else if (PLACED_RIGHT & mPlacedFloats) {
     // XXX handle DIR=right-to-left
   }
 }
@@ -505,7 +501,7 @@ nsLineLayout::NewPerSpanData(PerSpanData** aResult)
   psd->mFrame = nsnull;
   psd->mFirstFrame = nsnull;
   psd->mLastFrame = nsnull;
-  psd->mContainsFloater = PR_FALSE;
+  psd->mContainsFloat = PR_FALSE;
   psd->mZeroEffectiveSpanBox = PR_FALSE;
 
 #ifdef DEBUG
@@ -796,21 +792,15 @@ nsLineLayout::NewPerFrameData(PerFrameData** aResult)
 }
 
 PRBool
-nsLineLayout::CanPlaceFloaterNow() const
+nsLineLayout::CanPlaceFloatNow() const
 {
-  return GetFlag(LL_CANPLACEFLOATER);
-}
-
-PRBool
-nsLineLayout::LineIsEmpty() const
-{
-  return 0 == mTotalPlacedFrames;
+  return GetFlag(LL_CANPLACEFLOAT);
 }
 
 PRBool
 nsLineLayout::LineIsBreakable() const
 {
-  if ((0 != mTotalPlacedFrames) || GetFlag(LL_IMPACTEDBYFLOATERS)) {
+  if ((0 != mTotalPlacedFrames) || GetFlag(LL_IMPACTEDBYFLOATS)) {
     return PR_TRUE;
   }
   return PR_FALSE;
@@ -932,7 +922,6 @@ nsLineLayout::ReflowFrame(nsIFrame* aFrame,
   reflowState.mLineLayout = this;
   reflowState.mFlags.mIsTopOfPage = GetFlag(LL_ISTOPOFPAGE);
   SetFlag(LL_UNDERSTANDSNWHITESPACE, PR_FALSE);
-  SetFlag(LL_TEXTSTARTSWITHNBSP, PR_FALSE);
   mTextJustificationNumSpaces = 0;
   mTextJustificationNumLetters = 0;
 
@@ -958,7 +947,7 @@ nsLineLayout::ReflowFrame(nsIFrame* aFrame,
   // We want to guarantee that we always make progress when
   // formatting. Therefore, if the object being placed on the line is
   // too big for the line, but it is the only thing on the line
-  // (including counting floaters) then we go ahead and place it
+  // (including counting floats) then we go ahead and place it
   // anyway. Its also true that if the object is a part of a larger
   // object (a multiple frame word) then we will place it on the line
   // too.
@@ -966,7 +955,7 @@ nsLineLayout::ReflowFrame(nsIFrame* aFrame,
   // Capture this state *before* we reflow the frame in case it clears
   // the state out. We need to know how to treat the current frame
   // when breaking.
-  PRBool notSafeToBreak = CanPlaceFloaterNow() || InWord();
+  PRBool notSafeToBreak = CanPlaceFloatNow() || InWord();
 
   // Apply start margins (as appropriate) to the frame computing the
   // new starting x,y coordinates for the frame.
@@ -1013,8 +1002,7 @@ nsLineLayout::ReflowFrame(nsIFrame* aFrame,
   }
 #endif // IBMBIDI
 
-  nsCOMPtr<nsIAtom> frameType;
-  aFrame->GetFrameType(getter_AddRefs(frameType));
+  nsIAtom* frameType = aFrame->GetType();
 
   rv = aFrame->Reflow(mPresContext, metrics, reflowState, aReflowStatus);
   if (NS_FAILED(rv)) {
@@ -1027,7 +1015,7 @@ nsLineLayout::ReflowFrame(nsIFrame* aFrame,
   // This only shows up in textareas, so do a quick check to see if we're inside one
   if (eReflowReason_Initial == reflowState.reason)
   {
-    if (frameType && nsLayoutAtoms::textFrame == frameType.get()) 
+    if (nsLayoutAtoms::textFrame == frameType) 
     { // aFrame is a text frame, see if it's inside a text control
       // although this is a bit slow, the frame tree shouldn't be too deep, it's only called
       // for the text frame's initial reflow (once in the text frame's lifetime)
@@ -1037,15 +1025,10 @@ nsLineLayout::ReflowFrame(nsIFrame* aFrame,
       for (nsIFrame *parentFrame = aFrame->GetParent(); parentFrame;
            parentFrame = parentFrame->GetParent())
       { 
-        nsCOMPtr<nsIAtom> parentFrameType;
-        parentFrame->GetFrameType(getter_AddRefs(parentFrameType));
-        if (parentFrameType)
+        if (nsLayoutAtoms::textInputFrame == parentFrame->GetType()) 
         {
-          if (nsLayoutAtoms::textInputFrame == parentFrameType.get()) 
-          {
-            inTextControl = PR_TRUE; // found it
-            break;
-          }
+          inTextControl = PR_TRUE; // found it
+          break;
         }
       }
       if (inTextControl)
@@ -1065,36 +1048,32 @@ nsLineLayout::ReflowFrame(nsIFrame* aFrame,
   pfd->mJustificationNumLetters = mTextJustificationNumLetters;
 
   // XXX See if the frame is a placeholderFrame and if it is process
-  // the floater.
+  // the float.
   if (frameType) {
-    if (nsLayoutAtoms::placeholderFrame == frameType.get()) {
+    if (nsLayoutAtoms::placeholderFrame == frameType) {
       nsIFrame* outOfFlowFrame = ((nsPlaceholderFrame*)aFrame)->GetOutOfFlowFrame();
       if (outOfFlowFrame) {
         // Make sure it's floated and not absolutely positioned
         const nsStyleDisplay* display = outOfFlowFrame->GetStyleDisplay();
         if (!display->IsAbsolutelyPositioned()) {
           if (eReflowReason_Incremental == reason) {
-            InitFloater((nsPlaceholderFrame*)aFrame, aReflowStatus);
+            InitFloat((nsPlaceholderFrame*)aFrame, aReflowStatus);
           }
           else {
-            AddFloater((nsPlaceholderFrame*)aFrame, aReflowStatus);
+            AddFloat((nsPlaceholderFrame*)aFrame, aReflowStatus);
           }
-          nsIAtom* oofft;
-          outOfFlowFrame->GetFrameType(&oofft);
-          if (oofft) {
-            if (oofft == nsLayoutAtoms::letterFrame) {
-              SetFlag(LL_FIRSTLETTERSTYLEOK, PR_FALSE);
-              // An incomplete reflow status means we should split the floater if the 
-              // height is constrained (bug 145305). We never split floating first letters.
-              if (NS_FRAME_IS_NOT_COMPLETE(aReflowStatus)) 
-                aReflowStatus = NS_FRAME_COMPLETE;
-            }
-            NS_RELEASE(oofft);
+          if (outOfFlowFrame->GetType() == nsLayoutAtoms::letterFrame) {
+            SetFlag(LL_FIRSTLETTERSTYLEOK, PR_FALSE);
+            // An incomplete reflow status means we should split the
+            // float if the height is constrained (bug 145305). We
+            // never split floating first letters.
+            if (NS_FRAME_IS_NOT_COMPLETE(aReflowStatus)) 
+              aReflowStatus = NS_FRAME_COMPLETE;
           }
         }
       }
     }
-    else if (nsLayoutAtoms::textFrame == frameType.get()) {
+    else if (nsLayoutAtoms::textFrame == frameType) {
       // Note non-empty text-frames for inline frame compatability hackery
       pfd->SetFlag(PFD_ISTEXTFRAME, PR_TRUE);
       // XXX An empty text frame at the end of the line seems not
@@ -1131,7 +1110,7 @@ nsLineLayout::ReflowFrame(nsIFrame* aFrame,
         }
       }
     }
-    else if (nsLayoutAtoms::letterFrame==frameType.get()) {
+    else if (nsLayoutAtoms::letterFrame==frameType) {
       pfd->SetFlag(PFD_ISLETTERFRAME, PR_TRUE);
     }
   }
@@ -1262,7 +1241,6 @@ nsLineLayout::ReflowFrame(nsIFrame* aFrame,
   else {
     PushFrame(aFrame);
   }
-  SetFlag(LL_TEXTSTARTSWITHNBSP, PR_FALSE);           // reset for next time
 
 #ifdef REALLY_NOISY_REFLOW
   nsFrame::IndentBy(stdout, mSpanDepth);
@@ -1408,9 +1386,7 @@ nsLineLayout::CanPlaceFrame(PerFrameData* pfd,
 
 #ifdef FIX_BUG_50257
   // another special case:  always place a BR
-  nsCOMPtr<nsIAtom> frameType;
-  pfd->mFrame->GetFrameType(getter_AddRefs(frameType));
-  if (nsLayoutAtoms::brFrame == frameType.get()) {
+  if (nsLayoutAtoms::brFrame == pfd->mFrame->GetType()) {
 #ifdef NOISY_CAN_PLACE_FRAME
     printf("   ==> BR frame fits\n");
 #endif
@@ -1420,9 +1396,9 @@ nsLineLayout::CanPlaceFrame(PerFrameData* pfd,
 
   if (aNotSafeToBreak) {
     // There are no frames on the line or we are in the first word on
-    // the line. If the line isn't impacted by a floater then the
+    // the line. If the line isn't impacted by a float then the
     // current frame fits.
-    if (!GetFlag(LL_IMPACTEDBYFLOATERS)) {
+    if (!GetFlag(LL_IMPACTEDBYFLOATS)) {
 #ifdef NOISY_CAN_PLACE_FRAME
       printf("   ==> not-safe and not-impacted fits: ");
       while (nsnull != psd) {
@@ -1433,8 +1409,8 @@ nsLineLayout::CanPlaceFrame(PerFrameData* pfd,
 #endif
       return PR_TRUE;
     }
-    else if (GetFlag(LL_LASTFLOATERWASLETTERFRAME)) {
-      // Another special case: see if the floater is a letter
+    else if (GetFlag(LL_LASTFLOATWASLETTERFRAME)) {
+      // Another special case: see if the float is a letter
       // frame. If it is, then allow the frame next to it to fit.
       if (pfd->GetFlag(PFD_ISNONEMPTYTEXTFRAME)) {
         // This must be the first piece of non-empty text (because
@@ -1456,7 +1432,7 @@ nsLineLayout::CanPlaceFrame(PerFrameData* pfd,
 
       if (pfd->GetFlag(PFD_ISSTICKY)) {
 #ifdef NOISY_CAN_PLACE_FRAME
-        printf("   ==> last floater was letter frame && frame is sticky\n");
+        printf("   ==> last float was letter frame && frame is sticky\n");
 #endif
         return PR_TRUE;
       }
@@ -1493,8 +1469,8 @@ nsLineLayout::CanPlaceFrame(PerFrameData* pfd,
   }
 
   // Special check for span frames
-  if (pfd->mSpan && pfd->mSpan->mContainsFloater) {
-    // If the span either directly or indirectly contains a floater then
+  if (pfd->mSpan && pfd->mSpan->mContainsFloat) {
+    // If the span either directly or indirectly contains a float then
     // it fits. Why? It's kind of complicated, but here goes:
     //
     // 1. CanPlaceFrame is used for all frame placements on a line,
@@ -1503,31 +1479,22 @@ nsLineLayout::CanPlaceFrame(PerFrameData* pfd,
     // checks for room before proceeding (the code above here), the
     // only things on a line will be those things that "fit".
     //
-    // 2. Before a floater is placed on a line, the line has to be empty
+    // 2. Before a float is placed on a line, the line has to be empty
     // (otherwise its a "below current line" flaoter and will be placed
     // after the line).
     //
-    // Therefore, if the span directly or indirectly has a floater
-    // then it means that at the time of the placement of the floater
+    // Therefore, if the span directly or indirectly has a float
+    // then it means that at the time of the placement of the float
     // the line was empty. Because of #1, only the frames that fit can
     // be added after that point, therefore we can assume that the
     // current span being placed has fit.
     //
     // So how do we get here and have a span that should already fit
     // and yet doesn't: Simple: span's that have the no-wrap attribute
-    // set on them and contain a floater and are placed where they
+    // set on them and contain a float and are placed where they
     // don't naturally fit.
     return PR_TRUE;
  }
-
-  // Yet another special check. If the text happens to have started
-  // with a non-breaking space, then we make it sticky on its left
-  // edge...Which means that whatever piece of text we just formatted
-  // will be the piece that fits (the text frame logic knows to stop
-  // when it runs out of room).
-  if (pfd->GetFlag(PFD_ISNONEMPTYTEXTFRAME) && GetFlag(LL_TEXTSTARTSWITHNBSP)) {
-    return PR_TRUE;
-  }
 
 #ifdef NOISY_CAN_PLACE_FRAME
   printf("   ==> didn't fit\n");
@@ -1577,8 +1544,8 @@ nsLineLayout::PlaceFrame(PerFrameData* pfd, nsHTMLReflowMetrics& aMetrics)
   mTotalPlacedFrames++;
   if (psd->mX != psd->mLeftEdge || pfd->mBounds.x != psd->mLeftEdge) {
     // As soon as a frame placed on the line advances an X coordinate
-    // of any span we can no longer place a floater on the line.
-    SetFlag(LL_CANPLACEFLOATER, PR_FALSE);
+    // of any span we can no longer place a float on the line.
+    SetFlag(LL_CANPLACEFLOAT, PR_FALSE);
   }
 }
 
@@ -1651,10 +1618,9 @@ nsLineLayout::IsPercentageAwareReplacedElement(nsIPresContext *aPresContext,
 {
   if (aFrame->GetStateBits() & NS_FRAME_REPLACED_ELEMENT)
   {
-    nsCOMPtr<nsIAtom> frameType;
-    aFrame->GetFrameType(getter_AddRefs(frameType));
-    if (nsLayoutAtoms::brFrame != frameType.get() && 
-        nsLayoutAtoms::textFrame != frameType.get())
+    nsIAtom* frameType = aFrame->GetType();
+    if (nsLayoutAtoms::brFrame != frameType && 
+        nsLayoutAtoms::textFrame != frameType)
     {
       const nsStyleMargin* margin = aFrame->GetStyleMargin();
       if (IsPercentageUnitSides(&margin->mMargin)) {
@@ -2223,13 +2189,6 @@ nsLineLayout::VerticalAlignFrames(PerSpanData* psd)
     // Get vertical-align property
     const nsStyleTextReset* textStyle = frame->GetStyleTextReset();
     nsStyleUnit verticalAlignUnit = textStyle->mVerticalAlign.GetUnit();
-#ifdef DEBUG
-    if (eStyleUnit_Inherit == verticalAlignUnit) {
-      printf("XXX: vertical-align: inherit not implemented for ");
-      nsFrame::ListTag(stdout, frame);
-      printf("\n");
-    }
-#endif
 #ifdef NOISY_VERTICAL_ALIGN
     printf("  [frame]");
     nsFrame::ListTag(stdout, frame);
@@ -2450,9 +2409,7 @@ nsLineLayout::VerticalAlignFrames(PerSpanData* psd)
           // Check if it's a BR frame that is not alone on its line (it
           // is given a height of zero to indicate this), and if so reset
           // yTop and yBottom so that BR frames don't influence the line.
-          nsCOMPtr<nsIAtom> frameType;
-          frame->GetFrameType(getter_AddRefs(frameType));
-          if (nsLayoutAtoms::brFrame == frameType.get()) {
+          if (nsLayoutAtoms::brFrame == frame->GetType()) {
             yTop = VERTICAL_ALIGN_FRAMES_NO_MINIMUM;
             yBottom = VERTICAL_ALIGN_FRAMES_NO_MAXIMUM;
           }
@@ -2500,24 +2457,22 @@ nsLineLayout::VerticalAlignFrames(PerSpanData* psd)
     if (!applyMinLH && (isFirstLine || isLastLine)) {
       nsIContent* blockContent = mRootSpan->mFrame->mFrame->GetContent();
       if (blockContent) {
-        nsCOMPtr<nsIAtom> blockTagAtom;
-        nsresult result = blockContent->GetTag(getter_AddRefs(blockTagAtom));
-        if ( NS_SUCCEEDED(result) && blockTagAtom) {
-          // (2) above, if the first line of LI
-          if (isFirstLine && blockTagAtom.get() == nsHTMLAtoms::li) {
-            // if the line is empty, then don't force the min height (see bug 75963)
-            if (!IsZeroHeight()) {
-              applyMinLH = PR_TRUE;
-              foundLI = PR_TRUE;
-            }
-          }
-          // (3) above, if the last line of LI, DT, or DD
-          else if (!applyMinLH && isLastLine &&
-                ((blockTagAtom.get() == nsHTMLAtoms::li) ||
-                 (blockTagAtom.get() == nsHTMLAtoms::dt) ||
-                 (blockTagAtom.get() == nsHTMLAtoms::dd))) {
+        nsIAtom *blockTagAtom = blockContent->Tag();
+        // (2) above, if the first line of LI
+        if (isFirstLine && blockTagAtom == nsHTMLAtoms::li) {
+          // if the line is empty, then don't force the min height
+          // (see bug 75963)
+          if (!IsZeroHeight()) {
             applyMinLH = PR_TRUE;
+            foundLI = PR_TRUE;
           }
+        }
+        // (3) above, if the last line of LI, DT, or DD
+        else if (!applyMinLH && isLastLine &&
+                 ((blockTagAtom == nsHTMLAtoms::li) ||
+                  (blockTagAtom == nsHTMLAtoms::dt) ||
+                  (blockTagAtom == nsHTMLAtoms::dd))) {
+          applyMinLH = PR_TRUE;
         }
       }
     }
@@ -3246,9 +3201,7 @@ nsLineLayout::FindNextText(nsIPresContext* aPresContext, nsIFrame* aFrame)
       continue;
 
     // If this is a text frame, return it.
-    nsCOMPtr<nsIAtom> frameType;
-    next->GetFrameType(getter_AddRefs(frameType));
-    if (nsLayoutAtoms::textFrame == frameType.get())
+    if (nsLayoutAtoms::textFrame == next->GetType())
       return next;
   }
 

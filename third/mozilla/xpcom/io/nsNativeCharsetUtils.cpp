@@ -447,11 +447,10 @@ nsNativeCharsetConverter::NativeToUnicode(const char **input,
 
         res = xp_iconv(gNativeToUnicode, input, &inLeft, (char **) output, &outLeft);
 
-        if (res != (size_t) -1) {
-            *inputLeft = inLeft;
-            *outputLeft = outLeft / 2;
+        *inputLeft = inLeft;
+        *outputLeft = outLeft / 2;
+        if (res != (size_t) -1) 
             return NS_OK;
-        }
 
         NS_WARNING("conversion from native to utf-16 failed");
 
@@ -486,12 +485,12 @@ nsNativeCharsetConverter::NativeToUnicode(const char **input,
             }
         }
 
-        if (res != (size_t) -1) {
-            (*input) += (*inputLeft - inLeft);
-            *inputLeft = inLeft;
-            *outputLeft = outLeft / 2;
+        (*input) += (*inputLeft - inLeft);
+        *inputLeft = inLeft;
+        *outputLeft = outLeft / 2;
+
+        if (res != (size_t) -1) 
             return NS_OK;
-        }
 
         // reset converters
         xp_iconv_reset(gNativeToUTF8);
@@ -500,6 +499,7 @@ nsNativeCharsetConverter::NativeToUnicode(const char **input,
 #endif
 
     // fallback: zero-pad and hope for the best
+    // XXX This is lame and we have to do better.
     isolatin1_to_utf16(input, inputLeft, output, outputLeft);
 
     return NS_OK;
@@ -1008,8 +1008,8 @@ NS_CopyNativeToUnicode(const nsACString &input, nsAString  &output)
     char *inputStr = (char*)flat.get();
     size_t inputLen = flat.Length() + 1; // include null char
 
-    // assume worst case allocation
-    size_t resultLen = CCHMAXPATH;
+    // resultLen must be >= inputLen or the unicode conversion will fail
+    size_t resultLen = inputLen;
 
     output.Truncate();
     output.SetLength(resultLen);
@@ -1047,8 +1047,8 @@ NS_CopyUnicodeToNative(const nsAString &input, nsACString &output)
     UniChar *inputStr = (UniChar*)flat.get();
     size_t inputLen = flat.Length() + 1; // include null char
 
-    // assume worst case allocation
-    size_t resultLen = CCHMAXPATH;
+    // resultLen must be >= inputLen or the unicode conversion will fail
+    size_t resultLen = inputLen;
 
     output.Truncate();
     output.SetLength(resultLen);

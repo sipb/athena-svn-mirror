@@ -144,8 +144,7 @@ nsresult nsCopySupport::HTMLCopy(nsISelection *aSel, nsIDocument *aDoc, PRInt16 
   
   nsCOMPtr<nsIDocument> doc = do_QueryInterface(aDoc);
   if (doc) {
-    nsCOMPtr<nsIPresShell> shell;
-    doc->GetShellAt(0, getter_AddRefs(shell));
+    nsIPresShell *shell = doc->GetShellAt(0);
     if (shell) {
       nsCOMPtr<nsIPresContext> context;
       shell->GetPresContext(getter_AddRefs(context) );
@@ -290,10 +289,8 @@ nsresult nsCopySupport::DoHooks(nsIDocument *aDoc, nsITransferable *aTrans,
 
   *aDoPutOnClipboard = PR_TRUE;
 
-  nsCOMPtr<nsISupports> isupp;
-  nsresult rv = aDoc->GetContainer(getter_AddRefs(isupp));
-  nsCOMPtr<nsIDocShell> docShell = do_QueryInterface(isupp);
-  nsCOMPtr<nsIClipboardDragDropHookList> hookObj = do_GetInterface(docShell);
+  nsCOMPtr<nsISupports> container = aDoc->GetContainer();
+  nsCOMPtr<nsIClipboardDragDropHookList> hookObj = do_GetInterface(container);
   if (!hookObj) return NS_ERROR_FAILURE;
 
   nsCOMPtr<nsISimpleEnumerator> enumerator;
@@ -304,7 +301,9 @@ nsresult nsCopySupport::DoHooks(nsIDocument *aDoc, nsITransferable *aTrans,
   // nsIClipboardDragDropHooks.h
 
   nsCOMPtr<nsIClipboardDragDropHooks> override;
+  nsCOMPtr<nsISupports> isupp;
   PRBool hasMoreHooks = PR_FALSE;
+  nsresult rv = NS_OK;
   while (NS_SUCCEEDED(enumerator->HasMoreElements(&hasMoreHooks))
          && hasMoreHooks)
   {
@@ -313,7 +312,10 @@ nsresult nsCopySupport::DoHooks(nsIDocument *aDoc, nsITransferable *aTrans,
     override = do_QueryInterface(isupp);
     if (override)
     {
-      nsresult hookResult = override->OnCopyOrDrag(nsnull, aTrans, aDoPutOnClipboard);
+#ifdef DEBUG
+      nsresult hookResult =
+#endif
+      override->OnCopyOrDrag(nsnull, aTrans, aDoPutOnClipboard);
       NS_ASSERTION(NS_SUCCEEDED(hookResult), "OnCopyOrDrag hook failed");
       if (!*aDoPutOnClipboard)
         break;
@@ -357,8 +359,12 @@ nsresult nsCopySupport::IsPlainTextContext(nsISelection *aSel, nsIDocument *aDoc
        selContent = selContent->GetParent())
   {
     // checking for selection inside a plaintext form widget
-    nsCOMPtr<nsIAtom> atom;
-    selContent->GetTag(getter_AddRefs(atom));
+
+    if (!selContent->IsContentOfType(nsIContent::eHTML)) {
+      continue;
+    }
+
+    nsIAtom *atom = selContent->Tag();
 
     if (atom == nsHTMLAtoms::input ||
         atom == nsHTMLAtoms::textarea)

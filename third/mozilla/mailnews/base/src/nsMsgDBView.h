@@ -69,8 +69,7 @@
 
 enum eFieldType {
     kCollationKey,
-    kU32,
-    kPRTime
+    kU32
 };
 
 // reserve the top 8 bits in the msg flags for the view-only flags.
@@ -158,6 +157,7 @@ protected:
   PRPackedBool  mSuppressChangeNotification;
   virtual const char * GetViewName(void) {return "MsgDBView"; }
   nsresult FetchAuthor(nsIMsgHdr * aHdr, PRUnichar ** aAuthorString);
+  nsresult FetchRecipient(nsIMsgHdr * aHdr, PRUnichar ** aRecipientString);
   nsresult FetchSubject(nsIMsgHdr * aMsgHdr, PRUint32 aFlags, PRUnichar ** aValue);
   nsresult FetchDate(nsIMsgHdr * aHdr, PRUnichar ** aDateString);
   nsresult FetchStatus(PRUint32 aFlags, PRUnichar ** aStatusString);
@@ -218,11 +218,11 @@ protected:
   nsresult ReverseThreads();
   nsresult SaveSortInfo(nsMsgViewSortTypeValue sortType, nsMsgViewSortOrderValue sortOrder);
 
-	nsMsgKey		GetAt(nsMsgViewIndex index) ;
-	nsMsgViewIndex	FindViewIndex(nsMsgKey  key) 
-						{return (nsMsgViewIndex) (m_keys.FindIndex(key));}
-	virtual nsMsgViewIndex	FindKey(nsMsgKey key, PRBool expand);
-	virtual nsresult GetDBForViewIndex(nsMsgViewIndex index, nsIMsgDatabase **db);
+  nsMsgKey		GetAt(nsMsgViewIndex index) ;
+  nsMsgViewIndex	FindViewIndex(nsMsgKey  key) 
+					  {return (nsMsgViewIndex) (m_keys.FindIndex(key));}
+  virtual nsMsgViewIndex	FindKey(nsMsgKey key, PRBool expand);
+  virtual nsresult GetDBForViewIndex(nsMsgViewIndex index, nsIMsgDatabase **db);
   virtual nsresult GetFolders(nsISupportsArray **folders);
   virtual nsresult GetFolderFromMsgURI(const char *aMsgURI, nsIMsgFolder **aFolder);
 
@@ -230,17 +230,17 @@ protected:
   nsresult ListUnreadIdsInThread(nsIMsgThread *threadHdr, nsMsgViewIndex startOfThreadViewIndex, PRUint32 *pNumListed);
   PRInt32  FindLevelInThread(nsIMsgDBHdr *msgHdr, nsMsgViewIndex startOfThreadViewIndex);
   nsresult ListIdsInThreadOrder(nsIMsgThread *threadHdr, nsMsgKey parentKey, PRInt32 level, nsMsgViewIndex *viewIndex, PRUint32 *pNumListed);
-	PRInt32	  GetSize(void) {return(m_keys.GetSize());}
+  PRInt32  GetSize(void) {return(m_keys.GetSize());}
 
   // notification api's
-	void	EnableChangeUpdates();
-	void	DisableChangeUpdates();
-	void	NoteChange(nsMsgViewIndex firstlineChanged, PRInt32 numChanged, 
-							   nsMsgViewNotificationCodeValue changeType);
-	void	NoteStartChange(nsMsgViewIndex firstlineChanged, PRInt32 numChanged, 
-							   nsMsgViewNotificationCodeValue changeType);
-	void	NoteEndChange(nsMsgViewIndex firstlineChanged, PRInt32 numChanged, 
-							   nsMsgViewNotificationCodeValue changeType);
+  void	EnableChangeUpdates();
+  void	DisableChangeUpdates();
+  void	NoteChange(nsMsgViewIndex firstlineChanged, PRInt32 numChanged, 
+                    nsMsgViewNotificationCodeValue changeType);
+  void	NoteStartChange(nsMsgViewIndex firstlineChanged, PRInt32 numChanged, 
+                        nsMsgViewNotificationCodeValue changeType);
+  void	NoteEndChange(nsMsgViewIndex firstlineChanged, PRInt32 numChanged, 
+                        nsMsgViewNotificationCodeValue changeType);
 
   // for commands
   nsresult ApplyCommandToIndices(nsMsgViewCommandTypeValue command, nsMsgViewIndex* indices,
@@ -272,16 +272,12 @@ protected:
   nsresult SetThreadIgnored(nsIMsgThread *thread, nsMsgViewIndex threadIndex, PRBool ignored);
   nsresult DownloadForOffline(nsIMsgWindow *window, nsMsgViewIndex *indices, PRInt32 numIndices);
   nsresult DownloadFlaggedForOffline(nsIMsgWindow *window);
-
-
-  nsMsgViewIndex	GetThreadFromMsgIndex(nsMsgViewIndex index, 
-													 nsIMsgThread **threadHdr);
+  nsMsgViewIndex	GetThreadFromMsgIndex(nsMsgViewIndex index, nsIMsgThread **threadHdr);
 
   // for sorting
   nsresult GetFieldTypeAndLenForSort(nsMsgViewSortTypeValue sortType, PRUint16 *pMaxLen, eFieldType *pFieldType);
   nsresult GetCollationKey(nsIMsgHdr *msgHdr, nsMsgViewSortTypeValue sortType, PRUint8 **result, PRUint32 *len);
-  nsresult GetLongField(nsIMsgHdr *msgHdr, nsMsgViewSortTypeValue sortType, PRUint32 *result);
-  nsresult GetPRTimeField(nsIMsgHdr *msgHdr, nsMsgViewSortTypeValue sortType, PRTime *result);
+  nsresult GetLongField(nsIMsgDBHdr *msgHdr, nsMsgViewSortTypeValue sortType, PRUint32 *result);
   nsresult GetStatusSortValue(nsIMsgHdr *msgHdr, PRUint32 *result);
   nsresult GetLocationCollationKey(nsIMsgHdr *msgHdr, PRUint8 **result, PRUint32 *len);
 
@@ -337,7 +333,6 @@ protected:
   // and decendents of those folders
   // (like the "Sent" folder, "Sent/Old Sent")
   // the Sender column really shows recipients.
-  PRPackedBool mTreatRecipientAsAuthor; 
   PRPackedBool mIsNews;          // we have special icons for news, and for news, we show lines instead of size
   PRPackedBool m_sortValid;
   PRUint8      m_saveRestoreSelectionDepth;

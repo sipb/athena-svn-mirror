@@ -41,10 +41,10 @@
 
 #include "nsSocketTransportService2.h"
 #include "nsSocketTransport2.h"
-#include "nsPrintfCString.h"
 #include "nsReadableUtils.h"
 #include "nsAutoLock.h"
 #include "nsNetError.h"
+#include "prnetdb.h"
 #include "prlock.h"
 #include "prerror.h"
 #include "plstr.h"
@@ -56,6 +56,21 @@ PRLogModuleInfo *gSocketTransportLog = nsnull;
 nsSocketTransportService *gSocketTransportService = nsnull;
 PRThread                 *gSocketThread           = nsnull;
 
+#define PLEVENT_FROM_LINK(_link) \
+    ((PLEvent*) ((char*) (_link) - offsetof(PLEvent, link)))
+
+static inline void
+MoveCList(PRCList &from, PRCList &to)
+{
+    if (!PR_CLIST_IS_EMPTY(&from)) {
+        to.next = from.next;
+        to.prev = from.prev;
+        to.next->prev = &to;
+        to.prev->next = &to;
+        PR_INIT_CLIST(&from);
+    }             
+}
+
 //-----------------------------------------------------------------------------
 // ctor/dtor (called on the main/UI thread by the service manager)
 
@@ -64,13 +79,9 @@ nsSocketTransportService::nsSocketTransportService()
     , mThread(nsnull)
     , mThreadEvent(nsnull)
     , mAutodialEnabled(PR_FALSE)
-    , mEventQHead(nsnull)
-    , mEventQTail(nsnull)
     , mEventQLock(PR_NewLock())
     , mActiveCount(0)
     , mIdleCount(0)
-    , mPendingQHead(nsnull)
-    , mPendingQTail(nsnull)
 {
 #if defined(PR_LOGGING)
     gSocketTransportLog = PR_NewLogModule("nsSocketTransport");
@@ -78,6 +89,10 @@ nsSocketTransportService::nsSocketTransportService()
 
     NS_ASSERTION(nsIThread::IsMainThread(), "wrong thread");
 
+    PR_INIT_CLIST(&mEventQ);
+    PR_INIT_CLIST(&mPendingSocketQ);
+
+    NS_ASSERTION(!gSocketTransportService, "must not instantiate twice");
     gSocketTransportService = this;
 }
 
@@ -98,29 +113,17 @@ nsSocketTransportService::~nsSocketTransportService()
 // event queue (any thread)
 
 NS_IMETHODIMP
-nsSocketTransportService::PostEvent(nsISocketEventHandler *handler,
-                                    PRUint32 type, PRUint32 uparam,
-                                    void *vparam)
+nsSocketTransportService::PostEvent(PLEvent *event)
 {
-    LOG(("nsSocketTransportService::PostEvent [handler=%x type=%u u=%x v=%x]\n",
-        handler, type, uparam, vparam));
+    LOG(("nsSocketTransportService::PostEvent [event=%p]\n", event));
 
-    NS_ASSERTION(handler, "null handler");
+    NS_ASSERTION(event, "null event");
 
     nsAutoLock lock(mEventQLock);
     if (!mInitialized)
         return NS_ERROR_OFFLINE;
 
-    SocketEvent *event = new SocketEvent(handler, type, uparam, vparam);
-    if (!event)
-        return NS_ERROR_OUT_OF_MEMORY;
-
-    // XXX generalize this into some kind of template class
-    if (mEventQTail)
-        mEventQTail->mNext = event;
-    mEventQTail = event;
-    if (!mEventQHead)
-        mEventQHead = event;
+    PR_APPEND_LINK(&event->link, &mEventQ);
 
     if (mThreadEvent)
         PR_SetPollableEvent(mThreadEvent);
@@ -128,31 +131,29 @@ nsSocketTransportService::PostEvent(nsISocketEventHandler *handler,
     return NS_OK;
 }
 
+NS_IMETHODIMP
+nsSocketTransportService::IsOnCurrentThread(PRBool *result)
+{
+    *result = (PR_GetCurrentThread() == gSocketThread);
+    return NS_OK;
+}
+
 //-----------------------------------------------------------------------------
 // socket api (socket thread only)
 
 nsresult
-nsSocketTransportService::NotifyWhenCanAttachSocket(nsISocketEventHandler *handler,
-                                                    PRUint32 msg)
+nsSocketTransportService::NotifyWhenCanAttachSocket(PLEvent *event)
 {
     LOG(("nsSocketTransportService::NotifyWhenCanAttachSocket\n"));
 
+    NS_ASSERTION(PR_GetCurrentThread() == gSocketThread, "wrong thread");
+
     if (CanAttachSocket()) {
         NS_WARNING("should have called CanAttachSocket");
-        return PostEvent(handler, msg, 0, nsnull);
+        return PostEvent(event);
     }
 
-    PendingSocket *ps = new PendingSocket(handler, msg);
-    if (!ps)
-        return NS_ERROR_OUT_OF_MEMORY;
-
-    // XXX generalize this into some kind of template class
-    if (mPendingQTail)
-        mPendingQTail->mNext = ps;
-    mPendingQTail = ps;
-    if (!mPendingQHead)
-        mPendingQHead = ps;
-
+    PR_APPEND_LINK(&event->link, &mPendingSocketQ);
     return NS_OK;
 }
 
@@ -160,6 +161,8 @@ nsresult
 nsSocketTransportService::AttachSocket(PRFileDesc *fd, nsASocketHandler *handler)
 {
     LOG(("nsSocketTransportService::AttachSocket [handler=%x]\n", handler));
+
+    NS_ASSERTION(PR_GetCurrentThread() == gSocketThread, "wrong thread");
 
     SocketContext sock;
     sock.mFD = fd;
@@ -193,15 +196,13 @@ nsSocketTransportService::DetachSocket(SocketContext *sock)
     // NOTE: sock is now an invalid pointer
     
     //
-    // notify the first element on the pending socket handler queue...
+    // notify the first element on the pending socket queue...
     //
-    if (mPendingQHead) {
-        PendingSocket *ps = mPendingQHead;
-        mPendingQHead = ps->mNext;
-        if (!mPendingQHead)
-            mPendingQTail = nsnull;
-        PostEvent(ps->mHandler, ps->mMsg, 0, nsnull);
-        delete ps;
+    if (!PR_CLIST_IS_EMPTY(&mPendingSocketQ)) {
+        // move event from pending queue to event queue
+        PLEvent *event = PLEVENT_FROM_LINK(PR_LIST_HEAD(&mPendingSocketQ));
+        PR_REMOVE_AND_INIT_LINK(&event->link);
+        PostEvent(event);
     }
     return NS_OK;
 }
@@ -330,100 +331,34 @@ nsSocketTransportService::ServiceEventQ()
     PRBool keepGoing;
 
     // grab the event queue
-    SocketEvent *head = nsnull, *event;
+    PRCList eq;
+    PR_INIT_CLIST(&eq);
     {
         nsAutoLock lock(mEventQLock);
 
-        head = mEventQHead;
-        mEventQHead = nsnull;
-        mEventQTail = nsnull;
+        MoveCList(mEventQ, eq);
 
         // check to see if we're supposed to shutdown
         keepGoing = mInitialized;
     }
     // service the event queue
-    while (head) {
-        head->mHandler->OnSocketEvent(head->mType,
-                                      head->mUparam,
-                                      head->mVparam);
-        // delete head of queue
-        event = head->mNext;
-        delete head;
-        head = event;
+    PLEvent *event;
+    while (!PR_CLIST_IS_EMPTY(&eq)) {
+        event = PLEVENT_FROM_LINK(PR_LIST_HEAD(&eq));
+        PR_REMOVE_AND_INIT_LINK(&event->link);
+
+        PL_HandleEvent(event);
     }
     return keepGoing;
 }
 
-//-----------------------------------------------------------------------------
-// host:port -> ipaddr cache
-
-PLDHashTableOps nsSocketTransportService::ops =
-{
-    PL_DHashAllocTable,
-    PL_DHashFreeTable,
-    PL_DHashGetKeyStub,
-    PL_DHashStringKey,
-    PL_DHashMatchStringKey,
-    PL_DHashMoveEntryStub,
-    PL_DHashFreeStringKey,
-    PL_DHashFinalizeStub,
-    nsnull
-};
-
-nsresult
-nsSocketTransportService::LookupHost(const nsACString &host, PRUint16 port, PRIPv6Addr *addr)
-{
-    NS_ASSERTION(!host.IsEmpty(), "empty host");
-    NS_ASSERTION(addr, "null addr");
-
-    PLDHashEntryHdr *hdr;
-    nsCAutoString hostport(host + nsPrintfCString(":%d", port));
-
-    hdr = PL_DHashTableOperate(&mHostDB, hostport.get(), PL_DHASH_LOOKUP);
-    if (PL_DHASH_ENTRY_IS_BUSY(hdr)) {
-        // found match
-        nsHostEntry *ent = NS_REINTERPRET_CAST(nsHostEntry *, hdr);
-        memcpy(addr, &ent->addr, sizeof(ent->addr));
-        return NS_OK;
-    }
-
-    return NS_ERROR_UNKNOWN_HOST;
-}
-
-nsresult
-nsSocketTransportService::RememberHost(const nsACString &host, PRUint16 port, PRIPv6Addr *addr)
-{
-    // remember hostname
-
-    PLDHashEntryHdr *hdr;
-    nsCAutoString hostport(host + nsPrintfCString(":%d", port));
-
-    hdr = PL_DHashTableOperate(&mHostDB, hostport.get(), PL_DHASH_ADD);
-    if (!hdr)
-        return NS_ERROR_FAILURE;
-
-    NS_ASSERTION(PL_DHASH_ENTRY_IS_BUSY(hdr), "entry not busy");
-
-    nsHostEntry *ent = NS_REINTERPRET_CAST(nsHostEntry *, hdr);
-    if (ent->key == nsnull) {
-        ent->key = (const void *) ToNewCString(hostport);
-        memcpy(&ent->addr, addr, sizeof(ent->addr));
-    }
-#ifdef DEBUG
-    else {
-        // verify that the existing entry is in fact a perfect match
-        NS_ASSERTION(PL_strcmp(ent->hostport(), hostport.get()) == 0, "bad match");
-        NS_ASSERTION(memcmp(&ent->addr, addr, sizeof(ent->addr)) == 0, "bad match");
-    }
-#endif
-    return NS_OK;
-}
 
 //-----------------------------------------------------------------------------
 // xpcom api
 
-NS_IMPL_THREADSAFE_ISUPPORTS2(nsSocketTransportService,
+NS_IMPL_THREADSAFE_ISUPPORTS3(nsSocketTransportService,
                               nsISocketTransportService,
+                              nsIEventTarget,
                               nsIRunnable)
 
 // called from main thread only
@@ -535,11 +470,6 @@ nsSocketTransportService::Run()
     gSocketThread = PR_GetCurrentThread();
 
     //
-    // Initialize hostname database
-    //
-    PL_DHashTableInit(&mHostDB, &ops, nsnull, sizeof(nsHostEntry), 0);
-
-    //
     // add thread event to poll list (mThreadEvent may be NULL)
     //
     mPollList[0].fd = mThreadEvent;
@@ -649,9 +579,6 @@ nsSocketTransportService::Run()
         DetachSocket(&mActiveList[i]);
     for (i=mIdleCount-1; i>=0; --i)
         DetachSocket(&mIdleList[i]);
-
-    // clear the hostname database
-    PL_DHashTableFinish(&mHostDB);
 
     gSocketThread = nsnull;
     return NS_OK;

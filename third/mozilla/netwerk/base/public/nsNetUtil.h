@@ -80,6 +80,7 @@
 #include "nsIInputStreamPump.h"
 #include "nsIAsyncStreamCopier.h"
 #include "nsIPersistentProperties2.h"
+#include "nsISyncStreamListener.h"
 
 // Helper, to simplify getting the I/O service.
 inline const nsGetServiceByCID
@@ -327,16 +328,16 @@ NS_NewInputStreamPump(nsIInputStreamPump **result,
     return rv;
 }
 
-// NOTE: you can optimize the copy by specifying whether or not your streams
-// are buffered (i.e., do they implement ReadSegments/WriteSegments).  the
-// default assumption of FALSE for both streams is OK, but the copy is much
-// more efficient if one of the streams is buffered.
+// NOTE: you will need to specify whether or not your streams are buffered
+// (i.e., do they implement ReadSegments/WriteSegments).  the default
+// assumption of TRUE for both streams might not be right for you!
 inline nsresult
 NS_NewAsyncStreamCopier(nsIAsyncStreamCopier **result,
                         nsIInputStream        *source,
                         nsIOutputStream       *sink,
-                        PRBool                 sourceBuffered = PR_FALSE,
-                        PRBool                 sinkBuffered = PR_FALSE,
+                        nsIEventTarget        *target,
+                        PRBool                 sourceBuffered = PR_TRUE,
+                        PRBool                 sinkBuffered = PR_TRUE,
                         PRUint32               chunkSize = 0)
 {
     nsresult rv;
@@ -344,7 +345,7 @@ NS_NewAsyncStreamCopier(nsIAsyncStreamCopier **result,
     nsCOMPtr<nsIAsyncStreamCopier> copier =
         do_CreateInstance(kAsyncStreamCopierCID, &rv);
     if (NS_SUCCEEDED(rv)) {
-        rv = copier->Init(source, sink, sourceBuffered, sinkBuffered, chunkSize);
+        rv = copier->Init(source, sink, target, sourceBuffered, sinkBuffered, chunkSize);
         if (NS_SUCCEEDED(rv))
             NS_ADDREF(*result = copier);
     }
@@ -449,6 +450,50 @@ NS_NewUnicharStreamLoader(nsIUnicharStreamLoader        **aResult,
 }
 
 inline nsresult
+NS_NewSyncStreamListener(nsIStreamListener **aResult,
+                         nsIInputStream    **aStream)
+{
+    nsresult rv;
+    static NS_DEFINE_CID(kSyncStreamListenerCID, NS_SYNCSTREAMLISTENER_CID);
+    nsCOMPtr<nsISyncStreamListener> listener =
+        do_CreateInstance(kSyncStreamListenerCID, &rv);
+    if (NS_SUCCEEDED(rv)) {
+        rv = listener->GetInputStream(aStream);
+        if (NS_SUCCEEDED(rv))
+            NS_ADDREF(*aResult = listener);
+    }
+    return rv;
+}
+
+/**
+ * Implement the nsIChannel::Open(nsIInputStream**) method using the channel's
+ * AsyncOpen method.
+ *
+ * NOTE: Reading from the returned nsIInputStream may spin the current
+ * thread's event queue, which could result in any event being processed.
+ */
+inline nsresult
+NS_ImplementChannelOpen(nsIChannel      *aChannel,
+                        nsIInputStream **aResult)
+{
+    nsCOMPtr<nsIStreamListener> listener;
+    nsCOMPtr<nsIInputStream> stream;
+    nsresult rv = NS_NewSyncStreamListener(getter_AddRefs(listener),
+                                           getter_AddRefs(stream));
+    if (NS_SUCCEEDED(rv)) {
+        rv = aChannel->AsyncOpen(listener, nsnull);
+        if (NS_SUCCEEDED(rv)) {
+            PRUint32 n;
+            // block until the initial response is received or an error occurs.
+            rv = stream->Available(&n);
+            if (NS_SUCCEEDED(rv))
+                NS_ADDREF(*aResult = stream);
+        }
+    }
+    return rv;
+}
+
+inline nsresult
 NS_NewRequestObserverProxy(nsIRequestObserver **aResult,
                            nsIRequestObserver  *aObserver,
                            nsIEventQueue       *aEventQ = nsnull)
@@ -482,7 +527,6 @@ NS_NewSimpleStreamListener(nsIStreamListener **aResult,
     return rv;
 }
 
-// Deprecated, prefer NS_NewStreamListenerProxy
 inline nsresult
 NS_NewAsyncStreamListener(nsIStreamListener **result,
                           nsIStreamListener  *receiver,
@@ -634,7 +678,8 @@ NS_ParseContentType(const nsACString &rawContentType,
         contentType = Substring(begin, it);
         // now look for "charset=FOO" and extract "FOO"
         begin = ++it;
-        if (FindInReadable(NS_LITERAL_CSTRING("charset="), begin, it = end)) {
+        if (FindInReadable(NS_LITERAL_CSTRING("charset="), begin, it = end,
+                           nsCaseInsensitiveCStringComparator())) {
             contentCharset = Substring(it, end);
             contentCharset.StripWhitespace();
         }

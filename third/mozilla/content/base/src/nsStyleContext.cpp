@@ -172,14 +172,6 @@ void nsStyleContext::RemoveChild(nsStyleContext* aChild)
   aChild->mPrevSibling = aChild;
 }
 
-already_AddRefed<nsIAtom>
-nsStyleContext::GetPseudoType() const
-{
-  nsIAtom* pseudoTag = mPseudoTag;
-  NS_IF_ADDREF(pseudoTag);
-  return pseudoTag;
-}
-
 already_AddRefed<nsStyleContext>
 nsStyleContext::FindChildWithRules(const nsIAtom* aPseudoTag, 
                                    nsRuleNode* aRuleNode)
@@ -534,6 +526,23 @@ nsStyleContext::Mark()
 }
 
 #ifdef DEBUG
+
+class URICString : public nsCAutoString {
+public:
+  URICString(nsIURI* aURI) {
+    if (aURI) {
+      aURI->GetSpec(*this);
+    } else {
+      Assign("[none]");
+    }
+  }
+
+  URICString& operator=(const URICString& aOther) {
+    Assign(aOther);
+    return *this;
+  }
+};
+
 void nsStyleContext::List(FILE* out, PRInt32 aIndent)
 {
   // Indent
@@ -614,7 +623,7 @@ void nsStyleContext::DumpRegressionData(nsIPresContext* aPresContext, FILE* out,
     (long)bg->mBackgroundColor,
     (long)bg->mBackgroundXPosition.mCoord, // potentially lossy on some platforms
     (long)bg->mBackgroundYPosition.mCoord, // potentially lossy on some platforms
-    NS_ConvertUCS2toUTF8(bg->mBackgroundImage).get());
+    URICString(bg->mBackgroundImage).get());
  
   // SPACING (ie. margin, padding, border, outline)
   IndentBy(out,aIndent);
@@ -648,7 +657,7 @@ void nsStyleContext::DumpRegressionData(nsIPresContext* aPresContext, FILE* out,
   fprintf(out, "<list data=\"%d %d %s\" />\n",
     (int)list->mListStyleType,
     (int)list->mListStyleType,
-    NS_ConvertUCS2toUTF8(list->mListStyleImage).get());
+    URICString(list->mListStyleImage).get());
 
   // POSITION
   IndentBy(out,aIndent);
@@ -702,9 +711,10 @@ void nsStyleContext::DumpRegressionData(nsIPresContext* aPresContext, FILE* out,
   // DISPLAY
   IndentBy(out,aIndent);
   const nsStyleDisplay* disp = GetStyleDisplay();
-  fprintf(out, "<display data=\"%d %d %d %d %d %d %d %d %ld %ld %ld %ld %s\" />\n",
+  fprintf(out, "<display data=\"%d %d %f %d %d %d %d %d %d %ld %ld %ld %ld %s\" />\n",
     (int)disp->mPosition,
     (int)disp->mDisplay,
+    (float)disp->mOpacity,      
     (int)disp->mFloats,
     (int)disp->mBreakType,
     (int)disp->mBreakBefore,
@@ -715,16 +725,15 @@ void nsStyleContext::DumpRegressionData(nsIPresContext* aPresContext, FILE* out,
     (long)disp->mClip.y,
     (long)disp->mClip.width,
     (long)disp->mClip.height,
-    NS_ConvertUCS2toUTF8(disp->mBinding).get()
+    URICString(disp->mBinding).get()
     );
   
   // VISIBILITY
   IndentBy(out,aIndent);
   const nsStyleVisibility* vis = GetStyleVisibility();
-  fprintf(out, "<visibility data=\"%d %d %f\" />\n",
+  fprintf(out, "<visibility data=\"%d %d\" />\n",
     (int)vis->mDirection,
-    (int)vis->mVisible,
-    (float)vis->mOpacity
+    (int)vis->mVisible
     );
 
   // TABLE
@@ -781,7 +790,7 @@ void nsStyleContext::DumpRegressionData(nsIPresContext* aPresContext, FILE* out,
     (int)ui->mUserModify,
     (int)ui->mUserFocus, 
     (int)ui->mCursor,
-    NS_ConvertUCS2toUTF8(ui->mCursorImage).get());
+    URICString(ui->mCursorImage).get());
 
   // UIReset
   IndentBy(out,aIndent);

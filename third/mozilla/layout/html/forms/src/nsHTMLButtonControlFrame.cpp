@@ -201,7 +201,7 @@ NS_IMETHODIMP nsHTMLButtonControlFrame::GetAccessible(nsIAccessible** aAccessibl
 
 
 NS_IMETHODIMP_(PRInt32)
-nsHTMLButtonControlFrame::GetType() const
+nsHTMLButtonControlFrame::GetFormControlType() const
 {
   return nsFormControlHelper::GetType(mContent);
 }
@@ -216,6 +216,22 @@ NS_IMETHODIMP
 nsHTMLButtonControlFrame::GetValue(nsAString* aResult)
 {
   return nsFormControlHelper::GetValueAttr(mContent, aResult);
+}
+
+void
+nsHTMLButtonControlFrame::ReParentFrameList(nsIFrameManager* aFrameManager,
+                                            nsIFrame* aFrameList)
+{
+  // get the new parent context from the first child: that is the
+  // frame that the subsequent children will be made children of
+  nsStyleContext* newParentContext = mFrames.FirstChild()->GetStyleContext();
+
+  // Set the parent for each of the child frames
+  for (nsIFrame* frame = aFrameList; frame; frame = frame->GetNextSibling()) {
+    frame->SetParent(mFrames.FirstChild());
+    // now reparent the contexts for the reparented frame too
+    aFrameManager->ReParentStyleContext(frame, newParentContext);
+  }
 }
 
 PRBool
@@ -317,31 +333,9 @@ nsHTMLButtonControlFrame::SetInitialChildList(nsIPresContext* aPresContext,
                                               nsIAtom*        aListName,
                                               nsIFrame*       aChildList)
 {
-  // get the frame manager and the style context of the new parent frame
-  // this is used whent he children are reparented below
   // NOTE: the whole reparenting should not need to happen: see bugzilla bug 51767
-  //
-  nsCOMPtr<nsIPresShell> shell;
-  nsCOMPtr<nsIFrameManager> frameManager;
-  nsStyleContext* newParentContext;
-  aPresContext->GetShell(getter_AddRefs(shell));
-  if (shell) {
-    shell->GetFrameManager(getter_AddRefs(frameManager));
-  }
-  // get the new parent context from the first child: that is the frame that the
-  // subsequent children will be made children of
-  newParentContext = mFrames.FirstChild()->GetStyleContext();
-
-  // Set the parent for each of the child frames
-  for (nsIFrame* frame = aChildList; frame; frame = frame->GetNextSibling()) {
-    frame->SetParent(mFrames.FirstChild());
-    // now reparent the contexts for the reparented frame too
-    if (frameManager) {
-      frameManager->ReParentStyleContext(frame, newParentContext);
-    }
-  }
-
-  // Queue up the frames for the inline frame
+  ReParentFrameList(aPresContext->GetFrameManager(), aChildList);
+  
   return mFrames.FirstChild()->SetInitialChildList(aPresContext, nsnull, aChildList);
 }
 
@@ -363,7 +357,7 @@ nsHTMLButtonControlFrame::Paint(nsIPresContext*      aPresContext,
 
 #if 0 // old way
   PaintChildren(aPresContext, aRenderingContext, aDirtyRect, NS_FRAME_PAINT_LAYER_BACKGROUND);
-  PaintChildren(aPresContext, aRenderingContext, aDirtyRect, NS_FRAME_PAINT_LAYER_FLOATERS);
+  PaintChildren(aPresContext, aRenderingContext, aDirtyRect, NS_FRAME_PAINT_LAYER_FLOATS);
   PaintChildren(aPresContext, aRenderingContext, aDirtyRect, NS_FRAME_PAINT_LAYER_FOREGROUND);
 
 #else // temporary
@@ -384,7 +378,7 @@ nsHTMLButtonControlFrame::Paint(nsIPresContext*      aPresContext,
   aRenderingContext.SetClipRect(rect, nsClipCombine_kIntersect, clipEmpty);
 
   PaintChildren(aPresContext, aRenderingContext, aDirtyRect, NS_FRAME_PAINT_LAYER_BACKGROUND);
-  PaintChildren(aPresContext, aRenderingContext, aDirtyRect, NS_FRAME_PAINT_LAYER_FLOATERS);
+  PaintChildren(aPresContext, aRenderingContext, aDirtyRect, NS_FRAME_PAINT_LAYER_FLOATS);
   PaintChildren(aPresContext, aRenderingContext, aDirtyRect, NS_FRAME_PAINT_LAYER_FOREGROUND);
 
   aRenderingContext.PopState(clipEmpty);
@@ -450,8 +444,7 @@ nsHTMLButtonControlFrame::Reflow(nsIPresContext* aPresContext,
       SetView(view);
 
       // set the opacity
-      viewMan->SetViewOpacity(view, GetStyleColor()->mOpacity);
-
+      viewMan->SetViewOpacity(view, GetStyleDisplay()->mOpacity);
     }
     mDidInit = PR_TRUE;
   }
@@ -723,10 +716,53 @@ nsHTMLButtonControlFrame::AppendFrames(nsIPresContext* aPresContext,
                                        nsIAtom*        aListName,
                                        nsIFrame*       aFrameList)
 {
+  ReParentFrameList(aPresContext->GetFrameManager(), aFrameList);
   return mFrames.FirstChild()->AppendFrames(aPresContext,
-                                     aPresShell,
-                                     aListName,
-                                     aFrameList);
+                                            aPresShell,
+                                            aListName,
+                                            aFrameList);
+}
+
+NS_IMETHODIMP
+nsHTMLButtonControlFrame::InsertFrames(nsIPresContext* aPresContext,
+                                       nsIPresShell&   aPresShell,
+                                       nsIAtom*        aListName,
+                                       nsIFrame*       aPrevFrame,
+                                       nsIFrame*       aFrameList)
+{
+  ReParentFrameList(aPresContext->GetFrameManager(), aFrameList);
+  return mFrames.FirstChild()->InsertFrames(aPresContext,
+                                            aPresShell,
+                                            aListName,
+                                            aPrevFrame,
+                                            aFrameList);
+}
+
+NS_IMETHODIMP
+nsHTMLButtonControlFrame::RemoveFrame(nsIPresContext* aPresContext,
+                                      nsIPresShell&   aPresShell,
+                                      nsIAtom*        aListName,
+                                      nsIFrame*       aOldFrame)
+{
+  return mFrames.FirstChild()->RemoveFrame(aPresContext,
+                                           aPresShell,
+                                           aListName,
+                                           aOldFrame);
+}
+
+NS_IMETHODIMP
+nsHTMLButtonControlFrame::ReplaceFrame(nsIPresContext* aPresContext,
+                                       nsIPresShell&   aPresShell,
+                                       nsIAtom*        aListName,
+                                       nsIFrame*       aOldFrame,
+                                       nsIFrame*       aNewFrame)
+{
+  ReParentFrameList(aPresContext->GetFrameManager(), aNewFrame);
+  return mFrames.FirstChild()->ReplaceFrame(aPresContext,
+                                            aPresShell,
+                                            aListName,
+                                            aOldFrame,
+                                            aNewFrame);
 }
 
 NS_IMETHODIMP

@@ -130,6 +130,11 @@ public:
    */
   void CleanUp(PRBool aCleanUpAll);
 
+  void DrawComposited24(unsigned char *aBits,
+                        PRUint8 *aImageRGB, PRUint32 aStrideRGB,
+                        PRUint8 *aImageAlpha, PRUint32 aStrideAlpha,
+                        int aWidth, int aHeight);
+
 #ifdef OS2TODO
   /** 
    * Create a Device Dependent bitmap from a drawing surface
@@ -195,8 +200,7 @@ public:
   void NS2PM_ININ( const nsRect &in, RECTL &rcl);
   void CreateBitmaps( nsDrawingSurfaceOS2 *surf);
 
-  nsresult SlowTile (nsIRenderingContext& aContext, nsDrawingSurface aSurface, PRInt32 aSXOffset, PRInt32 aSYOffset, const nsRect &aTileRect);
-  void     BuildTile (HPS hpsTile, PRUint8* pImageBits, PBITMAPINFO2 pBitmapInfo, nscoord aTileWidth, nscoord aTileHeight);
+  void     BuildTile (HPS hpsTile, PRUint8* pImageBits, PBITMAPINFO2 pBitmapInfo, nscoord aTileWidth, nscoord aTileHeight, float scale);
 };
 
 #endif

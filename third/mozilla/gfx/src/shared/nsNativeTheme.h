@@ -20,7 +20,7 @@
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s):
- *  Brian Ryner <bryner@netscape.com>  (Original Author)
+ *  Brian Ryner <bryner@brianryner.com>  (Original Author)
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either the GNU General Public License Version 2 or later (the "GPL"), or
@@ -135,7 +135,7 @@ class nsNativeTheme
   }
   
 private:
-  void GetPrimaryPresShell(nsIFrame* aFrame, nsIPresShell** aResult);
+  nsIPresShell *GetPrimaryPresShell(nsIFrame* aFrame);
   PRBool CheckBooleanAttr(nsIFrame* aFrame, nsIAtom* aAtom);
   PRInt32 CheckIntAttr(nsIFrame* aFrame, nsIAtom* aAtom);
   PRBool GetAttr(nsIFrame* aFrame, nsIAtom* aAtom, nsAString& attrValue);

@@ -20,7 +20,8 @@
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s):
- *  Bill Law    <law@netscape.com>
+ *  Bill Law     <law@netscape.com>
+ *  Dean Tessman <dean_tessman@hotmail.com>
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either the GNU General Public License Version 2 or later (the "GPL"), or 
@@ -434,8 +435,13 @@ static void setWindowsXP() {
             }
             RegistryEntry tmp_entry5( HKEY_LOCAL_MACHINE,
                            nsCAutoString( subkey + NS_LITERAL_CSTRING( "\\shell\\properties\\command" ) ).get(),
-                           "", 
-                           nsCAutoString( thisApplication() + NS_LITERAL_CSTRING( " -chrome \"chrome://communicator/content/pref/pref.xul\"" ) ).get() );
+                           "", nsCAutoString( thisApplication() + 
+#ifndef MOZ_PHOENIX
+                                               NS_LITERAL_CSTRING(" -chrome \"chrome://communicator/content/pref/pref.xul\"") ).get()
+#else
+                                               NS_LITERAL_CSTRING(" -chrome \"chrome://browser/content/pref/pref.xul\"") ).get()
+#endif
+                          );
             tmp_entry5.set();
 
             // Now we need to select our application as the default start menu internet application.
@@ -711,7 +717,7 @@ nsresult FileTypeRegistryEntry::set() {
 
         // If we just created this file type entry, set description and default icon.
         if ( NS_SUCCEEDED( rv ) ) {
-            nsCAutoString iconFileToUse;
+            nsCAutoString iconFileToUse( "%1" );
             nsCAutoString descKey( "Software\\Classes\\" );
             descKey += protocol;
             RegistryEntry descEntry( HKEY_LOCAL_MACHINE, descKey.get(), NULL, "" );
@@ -729,6 +735,7 @@ nsresult FileTypeRegistryEntry::set() {
             iconKey += protocol;
             iconKey += "\\DefaultIcon";
 
+            if ( !iconFile.Equals(iconFileToUse) ) {
             iconFileToUse = thisApplication() + NS_LITERAL_CSTRING( ",0" );
 
             // Check to see if there's an icon file name associated with this extension.
@@ -763,7 +770,7 @@ nsresult FileTypeRegistryEntry::set() {
                             iconFileToUse.Assign( buffer );
                             iconFileToUse.Append( NS_LITERAL_CSTRING( ",0" ) );
                         }
-
+                        }
                     }
                 }
             }
@@ -801,12 +808,17 @@ nsresult FileTypeRegistryEntry::reset() {
 nsresult EditableFileTypeRegistryEntry::set() {
     nsresult rv = FileTypeRegistryEntry::set();
     if ( NS_SUCCEEDED( rv ) ) {
-        nsCAutoString editKey( "Software\\Classes\\" );
-        editKey += protocol;
-        editKey += "\\shell\\edit\\command";
-        nsCAutoString editor( thisApplication() );
-        editor += " -edit \"%1\"";
-        rv = RegistryEntry( HKEY_LOCAL_MACHINE, editKey.get(), "", editor.get() ).set();
+        // only set this if we support "-edit" on the command-line
+        nsCOMPtr<nsICmdLineHandler> editorService =
+            do_GetService( "@mozilla.org/commandlinehandler/general-startup;1?type=edit", &rv );
+        if ( NS_SUCCEEDED( rv) ) {
+            nsCAutoString editKey( "Software\\Classes\\" );
+            editKey += protocol;
+            editKey += "\\shell\\edit\\command";
+            nsCAutoString editor( thisApplication() );
+            editor += " -edit \"%1\"";
+            rv = RegistryEntry( HKEY_LOCAL_MACHINE, editKey.get(), "", editor.get() ).set();
+        }
     }
     return rv;
 }
