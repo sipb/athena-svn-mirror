@@ -1,5 +1,8 @@
 AC_INIT(dm.c)
 
+test -z "$lsbindir" && lsbindir='${sbindir}'
+AC_SUBST(lsbindir)
+
 AC_PROG_CC
 AC_PROG_INSTALL
 
