@@ -4,7 +4,7 @@
  *	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zwrite/zwrite.c,v $
- *	$Author: jfc $
+ *	$Author: lwvanels $
  *
  *	Copyright (c) 1987,1988 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -20,8 +20,8 @@
 #include <ctype.h>
 
 #ifndef lint
-static char rcsid_zwrite_c[] = "$Id: zwrite.c,v 1.37 1990-12-14 10:57:03 jfc Exp $";
-#endif lint
+static char rcsid_zwrite_c[] = "$Id: zwrite.c,v 1.38 1991-12-05 15:32:38 lwvanels Exp $";
+#endif /* lint */
 
 #define DEFAULT_CLASS "MESSAGE"
 #define DEFAULT_INSTANCE "PERSONAL"
