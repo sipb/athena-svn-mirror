@@ -1,12 +1,10 @@
 /*
- *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.41 1991-07-20 12:54:03 epeisach Exp $
+ * $Id: login.c,v 1.42 1991-08-24 17:41:35 probe Exp $
  */
 
 #ifndef lint
-static char *rcsid_login_c =
-    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.41 1991-07-20 12:54:03 epeisach Exp $";
-#endif	/* lint */
+static char *rcsid = "$Id: login.c,v 1.42 1991-08-24 17:41:35 probe Exp $";
+#endif
 
 /*
  * Copyright (c) 1980 Regents of the University of California.
@@ -18,11 +16,11 @@ static char *rcsid_login_c =
 char copyright[] =
 "@(#) Copyright (c) 1980 Regents of the University of California.\n\
  All rights reserved.\n";
-#endif not lint
+#endif
 
 #ifndef lint
 static char sccsid[] = "@(#)login.c	5.15 (Berkeley) 4/12/86";
-#endif not lint
+#endif
 
 /*
  * login [ name ]
@@ -428,9 +426,11 @@ main(argc, argv)
 			continue;
 		}
 	}
- 
+
 	invalid = FALSE;
-	if (!strcmp(pwd->pw_shell, "/bin/csh")) {
+	
+	if (!strcmp(pwd->pw_shell, "/bin/csh") ||
+	    !strcmp(pwd->pw_shell, "/bin/athena/tcsh")) {
 	    ldisc = NTTYDISC;
 	    ioctl(0, TIOCSETD, &ldisc);
 	}
