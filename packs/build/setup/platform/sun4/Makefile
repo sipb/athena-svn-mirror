@@ -1,5 +1,6 @@
-# $Id: Makefile,v 1.7 1998-01-31 23:37:04 ghudson Exp $
+# $Id: Makefile,v 1.8 1998-06-08 14:18:28 ghudson Exp $
 
+USRBIN=/usr/bin
 ATHINCDIR=/usr/athena/include
 ATHLIBDIR=/usr/athena/lib
 BSDOBJS=bcmp.o bcopy.o bzero.o flock.o ftime.o getdtblsize.o \
@@ -23,7 +24,7 @@ libbsd.a:
 check:
 
 install:
-	mkdir -p ${DESTDIR}/usr/bin
+	mkdir -p ${DESTDIR}${USRBIN}
 	mkdir -p ${DESTDIR}${ATHINCDIR}/rpc
 	mkdir -p ${DESTDIR}${ATHLIBDIR}
 	install -c -m 444 auth_kerb.h ${DESTDIR}${ATHINCDIR}/rpc
