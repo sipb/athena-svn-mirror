@@ -12,13 +12,14 @@
  *
  *      Tom Coppeto
  *	Chris VanHaren
+ *	Lucien Van Elsen
  *      MIT Project Athena
  *
  * Copyright (C) 1985,1988,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/requests.h,v $
- *	$Id: requests.h,v 1.15 1991-01-21 01:20:25 lwvanels Exp $
+ *	$Id: requests.h,v 1.16 1991-02-25 16:33:30 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
@@ -45,15 +46,83 @@ typedef struct tREQUEST
  * routing through the server but not necessary to send over.
  */
 
-typedef struct tIO_REQUEST 
-{
-  int	    version;             /* version of server client is expecting */
-  int	    request_type;	 /* Type of request. */
-  int	    options;		 /* Optional flags. */
-  int       code;
-  PERSON    requester; 		 /* Who sends the request. */
-  PERSON    target;              /* Recipient of action */
+typedef struct tIO_REQUEST {
+  char data[440];
+/* The data is in the following format:
+
+offset(dec)	name		type		meaning
+----------------------------------------------------------------------------
+0		version		net long	version
+4		request_type	net long	type of request
+8		options		net long	request options
+12		code		net long	additional options
+--- requester data ---
+16		r_uid		net long	uid
+20		r_instance	net long	instance
+24		r_username	char[10]	username
+34		r_realname	char[32]	"real" name
+66		r_realm		char[40]	kerberos realm
+106		r_inst		char[40]	kerberos instance
+146		r_nickname	char[16]	gecos nickname
+162		r_title		char[32]	title in OLC
+194		r_machine	char[32]	machine name
+226		r_pad		char[2]		padding (historical)
+--- target data ---
+227		t_uid		net long	uid
+232		t_instance	net long	instance
+236		t_username	char[10]	username
+246		t_realname	char[32]	"real" name
+278		t_realm		char[40]	kerberos realm
+318		t_inst		char[40]	kerberos instance
+358		t_nickname	char[16]	gecos nickname
+374		t_title		char[32]	title in OLC
+406		t_machine	char[32]	machine name
+438		t_pad		char[2]		padding (historical)
+*/
 } IO_REQUEST;
+
+
+typedef struct tIO_LIST
+{
+  char data[548];
+/* The data is in the following format:
+offset(dec)	name		type		meaning
+----------------------------------------------------------------------------
+0		ustatus		net long	user status
+4		cstatus		net long	consultant status
+8		ukstatus	net long	user "knuckle" status
+12		ckstatus	net long	consultant "knuckle" status
+16		utime		net long	time q. asked
+20		ctime		net long	---
+24		umessage	net long	---
+28		cmessage	net long	---
+32		nseen		net long	# con. consultants
+36		topic		char[24]	topic of question
+60		note		note[64]	description of question
+--- user data ---
+124		u_uid		net long	uid
+128		u_instance	net long	instance
+132		u_username	char[10]	username
+142		u_realname	char[32]	"real" name
+174		u_realm		char[40]	kerberos realm
+214		u_inst		char[40]	kerberos instance
+254		u_nickname	char[16]	gecos nickname
+270		u_title		char[32]	title in OLC
+302		u_machine	char[32]	machine name
+334		u_pad		char[2]		padding (historical)
+--- consultant data ---
+336		c_uid		net long	uid
+340		c_instance	net long	instance
+344		c_username	char[10]	username
+354		c_realname	char[32]	"real" name
+386		c_realm		char[40]	kerberos realm
+426		c_inst		char[40]	kerberos instance
+466		c_nickname	char[16]	gecos nickname
+482		c_title		char[32]	title in OLC
+514		c_machine	char[32]	machine name
+546		c_pad		char[2]		padding (historical)
+*/
+} IO_LIST;
 
 /* request types */
 
