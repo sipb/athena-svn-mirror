@@ -15,6 +15,9 @@
  *    $Author: tom $
  *    $Locker:  $
  *    $Log: not supported by cvs2svn $
+ * Revision 1.4  90/05/26  13:34:28  tom
+ * release 7.0e
+ * 
  * Revision 1.3  90/04/26  15:24:09  tom
  * *** empty log message ***
  * 
@@ -22,7 +25,7 @@
  */
 
 #ifndef lint
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/afs_grp.c,v 1.4 1990-05-26 13:34:28 tom Exp $";
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/afs_grp.c,v 1.5 1990-06-05 15:24:20 tom Exp $";
 #endif
 
 #include "include.h"
@@ -30,7 +33,7 @@ static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snm
 
 #ifdef MIT
 #ifdef AFS
-char lbuf[BUFSIZ];
+static char lbuf[BUFSIZ];
 
 
 /*

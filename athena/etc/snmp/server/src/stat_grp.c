@@ -15,6 +15,9 @@
  *    $Author: tom $
  *    $Locker:  $
  *    $Log: not supported by cvs2svn $
+ * Revision 1.3  90/05/26  13:41:00  tom
+ * athena release 7.0e - reduced number of buffers
+ * 
  * Revision 1.2  90/04/26  18:14:39  tom
  * *** empty log message ***
  * 
@@ -22,7 +25,7 @@
  */
 
 #ifndef lint
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/stat_grp.c,v 1.3 1990-05-26 13:41:00 tom Exp $";
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/stat_grp.c,v 1.4 1990-06-05 15:24:35 tom Exp $";
 #endif
 
 
@@ -35,7 +38,7 @@ static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snm
 static int stattime();
 static int get_load();
 static int get_time();
-char lbuf[BUFSIZ];
+static char lbuf[BUFSIZ];
 
 #ifdef ATHENA
 static int get_ws_version();
