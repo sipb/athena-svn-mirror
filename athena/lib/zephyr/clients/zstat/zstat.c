@@ -22,11 +22,7 @@
 #include "zserver.h"
 
 #if !defined(lint) && !defined(SABER)
-static char rcsid_zstat_c[] = "$Id: zstat.c,v 1.17 1994-11-11 19:55:36 ghudson Exp $";
-#endif
-
-#ifndef linux /* Defines atol() as a macro. */
-extern long atol();
+static char rcsid_zstat_c[] = "$Id: zstat.c,v 1.18 1994-11-12 05:05:54 ghudson Exp $";
 #endif
 
 #ifdef __STDC__
