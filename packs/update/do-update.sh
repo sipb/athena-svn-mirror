@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: do-update.sh,v 1.35 2000-04-12 15:41:27 ghudson Exp $
+# $Id: do-update.sh,v 1.36 2000-05-23 17:59:37 ghudson Exp $
 
 # Copyright 1996 by the Massachusetts Institute of Technology.
 #
@@ -123,6 +123,8 @@ fi
 #		NEWOS		OS version has changed
 #		TRACKOS		OS files relevant to local disk have changed
 #		MINIROOT	some OS files require a miniroot update
+#		OSCHANGES	Need to run /srvd/install/oschanges
+#				(always set if any OS packages are installed)
 
 configfiles=`cat $LIBDIR/configfiles`
 
