@@ -1,6 +1,6 @@
 #!/usr/athena/bin/perl -w
 
-# $Id: mitmailappend.pl,v 1.1 2004-09-03 20:44:43 rbasch Exp $
+# $Id: mitmailappend.pl,v 1.1.2.1 2005-01-04 21:23:06 ghudson Exp $
 
 # Append a message to an IMAP folder.
 
