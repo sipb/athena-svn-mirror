@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.14.2.5 1997-11-03 20:47:45 ghudson Exp $
+# $Id: Makefile,v 1.14.2.6 1997-11-04 18:37:47 ghudson Exp $
 
 SHELL=/bin/sh
 ATHRBINDIR=/bin/athena
@@ -57,6 +57,7 @@ SYMLINKS=	/mit/sipb			/usr/sipb \
 
 all: ${ATTACHRUN} verify-message sis
 	cd platform/${HOSTTYPE} && ${MAKE} $@
+	cd arch/${ATHENA_SYS} && ${MAKE} $@
 
 ${ATTACHRUN}: specs template.sh
 	set `grep '^$@[ 	]' specs`; locker=$$2; program=$${3-$$1}; \
@@ -74,6 +75,7 @@ verify-message: verify-message.in
 
 check:
 	cd platform/${HOSTTYPE} && ${MAKE} $@
+	cd arch/${ATHENA_SYS} && ${MAKE} $@
 
 install:
 	-mkdir -p ${DESTDIR}/usr
@@ -136,11 +138,14 @@ install:
 		vers=$$major.$$minor; \
 		ln -s ${ANDREW}/athena-$$vers/$$HOSTTYPE ${DESTDIR}/usr/andrew
 	cd platform/${HOSTTYPE} && ${MAKE} $@
+	cd arch/${ATHENA_SYS} && ${MAKE} $@
 
 clean:
 	rm -f ${ATTACHRUN} verify-message
 	cd platform/${HOSTTYPE} && ${MAKE} $@
+	cd arch/${ATHENA_SYS} && ${MAKE} $@
 
 distclean:
 	rm -f ${ATTACHRUN} verify-message
 	cd platform/${HOSTTYPE} && ${MAKE} $@
+	cd arch/${ATHENA_SYS} && ${MAKE} $@
