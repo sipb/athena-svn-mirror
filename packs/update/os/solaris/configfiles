@@ -2,7 +2,6 @@
 /.login
 /.profile
 /.xsession
-/etc/aliases
 /etc/athena/athinfo.defs
 /etc/athena/attach.conf
 /etc/athena/inetd.conf
@@ -11,10 +10,11 @@
 /etc/inet/inetd.conf
 /etc/inet/services
 /etc/ftpusers
+/etc/resolv.conf
+/etc/mail/aliases
+/etc/mail/sendmail.cf
 /etc/named.conf
 /etc/ntp.conf
-/etc/resolv.conf
-/etc/sendmail.cf
 /etc/shells
 /etc/sshd_config
 /var/spool/cron/crontabs/root

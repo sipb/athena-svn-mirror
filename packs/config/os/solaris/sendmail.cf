@@ -1,4 +1,4 @@
-# $Id: sendmail.cf,v 1.8 1999-04-20 14:32:09 ghudson Exp $
+# $Id: sendmail.cf,v 1.9 1999-04-20 19:35:45 ghudson Exp $
 #
 # Athena Workstation Sendmail configuration file
 #
@@ -30,7 +30,7 @@ CR
 ###   Options   ###
 ###################
 
-O AliasFile=/etc/aliases
+O AliasFile=/etc/mail/aliases
 O DefaultUser=daemon:daemon
 # where do errors that occur when sending errors get sent?
 O DoubleBounceAddress=postmaster

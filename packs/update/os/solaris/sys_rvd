@@ -1,17 +1,18 @@
 GLOBAL : *.CKP *.local *.pid *.unstripped :
 ## Major subscription list for workstations
-## $Id: sys_rvd,v 1.3 1999-04-20 14:32:19 ghudson Exp $
+## $Id: sys_rvd,v 1.4 1999-04-20 19:36:15 ghudson Exp $
 ##
 ##	MIT Project Athena
 ##
 	/core::::
 	/etc:::			# These are specific to each machine.
-		aliases
+		crontab.root.add
 		default/sulogin
 		driver_aliases.*
 		driver_classes.*
 		ftpusers
 		group
+		mail
 		inet/inetd.conf
 		inet/netmasks	
 		inet/services
@@ -22,13 +23,16 @@ GLOBAL : *.CKP *.local *.pid *.unstripped :
 		ntp.conf
 		passwd
 		passwd.fallback
-		sendmail.cf
 		shells
 		system
 		shadow
 		shadow.fallback
 		sshd_config
 		syslog.conf
+		:
+	/etc/mail:::
+		aliases
+		sendmail.cf
 		:
 	/etc/athena:::
 		athinfo.access

@@ -1,5 +1,5 @@
 GLOBAL : *.CKP *.pid :
-## $Id: os_rvd,v 1.5 1999-04-20 14:32:20 ghudson Exp $
+## $Id: os_rvd,v 1.6 1999-04-20 19:36:19 ghudson Exp $
 ## Major subscription list for workstations
 ##
 ##	MIT Project Athena
@@ -25,7 +25,6 @@ GLOBAL : *.CKP *.pid :
 		:
 	/etc:::			# These are specific to each machine.
 		.UNCON*
-		aliases
 		-> acct
 		-> asppp.cf
 		-> auto_*
@@ -66,6 +65,10 @@ GLOBAL : *.CKP *.pid :
 		vfstab
 			# The following are symbolic links; no update is
 			# needed
+		:
+	/etc/mail:::
+		sendmail.cf
+		aliases
 		:
 	/etc/rc0.d:::
 		K20lp
