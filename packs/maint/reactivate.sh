@@ -1,7 +1,7 @@
 #!/bin/sh
 # Script to bounce the packs on an Athena workstation
 #
-# $Id: reactivate.sh,v 1.62 2001-07-11 12:34:22 zacheiss Exp $
+# $Id: reactivate.sh,v 1.63 2001-08-01 13:47:40 ghudson Exp $
 
 # Ignore various terminating signals.
 trap "" HUP INT QUIT PIPE ALRM TERM USR1 USR2
@@ -304,7 +304,7 @@ if [ "$full" = true ]; then
 	if [ "$PUBLIC" = true -a -f /srvd/.rvdinfo ]; then
 		NEWVERS=`awk '{a=$5} END{print a}' /srvd/.rvdinfo`
 		if [ "$NEWVERS" = "$THISVERS" ]; then
-			/usr/athena/etc/track
+			/usr/athena/etc/track -q
 			cf=`cat /srvd/usr/athena/lib/update/configfiles`
 			for i in $cf; do
 				if [ -f /srvd$i ]; then
