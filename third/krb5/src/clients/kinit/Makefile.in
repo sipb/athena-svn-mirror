@@ -13,7 +13,7 @@ all-windows::
 all-mac::
 
 kinit: kinit.o $(KRB4COMPAT_DEPLIBS)
-	$(CC_LINK) -o $@ kinit.o $(KRB4COMPAT_LIBS)
+	$(CC_LINK) -o $@ kinit.o $(BUILDTOP)/krb524/libkrb524.a $(KRB4COMPAT_LIBS)
 
 ##WIN32##INCLUDES = /I$(BUILDTOP)\include /I$(BUILDTOP)\include\krb5
 ##WIN32##CFLAGS	= $(CCOPTS2) $(INCLUDES)
