@@ -211,9 +211,7 @@ imported into:
 (*)	fonts/ams/amsltx11/inputs/*		lib/tex/macros/amslatex/inputs
 (*)	fonts/ams/amsltx11/fontsel/*		lib/tex/macros/amslatex/fontsel
 	biblio/bibtex/distribs/styles/*		lib/tex/macros/bib
-	macros/latex209/distribs/latex/sty/*	lib/tex/macros/latex
-	macros/latex209/distribs/latex/doc/*	lib/tex/macros/latex
-	macros/latex209/distribs/latex/general/* lib/tex/macros/latex
+	macros/latex/unpacked/*			lib/tex/macros/latex
 
 (*) These directories seem to have disappeared in a reorganization of
     the CTAN archive, and their contents will need to be located again
