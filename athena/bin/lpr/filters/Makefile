@@ -17,7 +17,7 @@ SRCS=	lpf.c necf.c \
 	chrtab.c rvsort.c rvcat.c vsort.c vcat.c vpf.c vpsf.c vdmp.c vpltdmp.c \
 	vplotf.c vfontinfo.c vwidth.c vfw.c fcvt.c rotate.c rotprt.c \
 	ln01filter.l ln03filter.c
-PRINTER=lpf necf ln01filter ln03filter ln01raw
+PRINTER=lpf necf ln01filter ln03filter ln01raw staff_ln03filter
 LN01FILTERS= ln01l ln01p
 VARIAN=	rvsort rvcat vsort vcat vpf vpsf vdmp vpltdmp vplotf vfontinfo vwidth \
 	vfw fcvt rotate rotprt
@@ -80,12 +80,17 @@ rotprt: rotprt.c
 	${CC} -o rotprt ${CFLAGS} rotprt.c
 
 ln01filter.c: ln01filter.l
-ln01filter.o: ln01filter.o
 ln01filter: ln01filter.o
 	${CC} -o ln01filter ${CFLAGS} ln01filter.o
 
+newln01: newln01.o
+	${CC} -o newln01 ${CFLAGS} newln01.o
+
 ln03filter: ln03filter.o
 	${CC} -o ln03filter ${CFLAGS} ln03filter.o
+
+staff_ln03filter: staff_ln03filter.o
+	${CC} -o staff_ln03filter ${CFLAGS} staff_ln03filter.o
 
 ln01raw: ln01raw.o
 	${CC} ${CFLAGS} -o ln01raw ln01raw.o
@@ -100,6 +105,7 @@ install: printer
 		ln -s ln01filter ${DESTDIR}${LIBDIR}/$$i; \
 	done
 	install -s ln03filter ${DESTDIR}/${LIBDIR}/ln03filter
+	install -s staff_ln03filter ${DESTDIR}/${LIBDIR}/staff_ln03filter
 	install -s ln01raw ${DESTDIR}/${LIBDIR}/ln01raw
 installv: varian
 	-mkdir ${DESTDIR}/${LIBDIR}
