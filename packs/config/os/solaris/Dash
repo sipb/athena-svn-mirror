@@ -250,3 +250,39 @@
 *quitDialog*question.label:           Do you really want to quit Dash?
 *quitDialog*question.font:            *-times-medium-i-*--24-*
 *quitDialog*question.Center:          True
+
+! Enable GNOME dialog
+!
+*enableGNOME.tree:                                               \
+{                                                               \
+  Window window;                                                \
+    {                                                           \
+      Form form;                                                \
+        {                                                       \
+          Label dashLogo;                                       \
+          Label question;                                       \
+          Window yes; { Button yes; { Label yes; } }            \
+          Window no; { Button no; { Label no; } }               \
+        }                                                       \
+    }                                                           \
+}
+ 
+*enableGNOME.window.mapped:            False
+*enableGNOME*form.form:                dashLogo: 0 0 - -         \
+                                        yes: 10 - - 95          \
+                                        no: - - 90 95           \
+                                        question: 0 35 100 -
+*enableGNOME*form.padding:             2
+ 
+*enableGNOME*window.geometry:          515x150+318+326
+*enableGNOME*window.title:             Re-enable GNOME interface?
+*enableGNOME*window.rootTransient:     True
+ 
+*enableGNOME*Label.font:               *-times-medium-r-*--18-*
+*enableGNOME*yes.label:                Yes, re-enable GNOME 
+*enableGNOME*yes.activateProc:         unmapTree("enableGNOME"),enableGnome()
+*enableGNOME*no.label:                 No, stay with Dash
+*enableGNOME*no.activateProc:          unmapTree("enableGNOME")
+*enableGNOME*question.label:           Go back to the GNOME interface at next login?
+*enableGNOME*question.font:            *-times-medium-i-*--24-*
+*enableGNOME*question.Center:          True
