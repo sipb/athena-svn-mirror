@@ -1,4 +1,4 @@
-# $Id: packages,v 1.231 2003-04-22 15:39:03 ghudson Exp $
+# $Id: packages,v 1.232 2003-04-30 19:21:54 ghudson Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -231,7 +231,7 @@ third/libxslt			except linux requires libxml2
 third/libzvt			except linux requires glib2,gtk2,libart_lgpl
 third/linc			except linux requires glib2,openssl
 third/lprng/athena		package lprng-misc
-third/lprng/ifhp
+third/lprng/ifhp		requires athena/lib/zephyr
 third/lprng/lprng		requires krb5,zephyr,hesiod
 third/mdoc
 third/metacity			requires gettext,intltool,gtk2,GConf2,startup-notification
