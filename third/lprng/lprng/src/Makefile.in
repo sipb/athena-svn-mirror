@@ -7,7 +7,7 @@
 #
 ###########################################################################
 # MODULE: Makefile
-# $Id: Makefile.in,v 1.7 1999-05-04 19:24:20 danw Exp $
+# $Id: Makefile.in,v 1.8 1999-05-05 18:09:24 mwhitson Exp $
 ###########################################################################
 #
 # WARNING: This is a makefile for GNU Make or when modified by BSD Make
@@ -95,7 +95,7 @@ LF := @LDFLAGS@
 #  communicate with the existing Kerberos 4 print servers at MIT.
 #
 #  If you still want Kerberos 4,  then uncomment the following line
-# CF := $(CF) -DMIT_KERBEROS4
+CF := $(CF) -DMIT_KERBEROS4
 
 #### ****** TESTING AND SECURITY LOOPHOLE ******************************
 # Define GETENV to allow the LPD_CONFIG environment
