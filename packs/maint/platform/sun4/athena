@@ -241,6 +241,8 @@ fi
 if [ "${OLC}" = "true" ]; then
 	echo "olcd... \c"					>/dev/console
         /usr/athena/etc/olcd &
+	echo "rpd... \c"					>/dev/console
+	/usr/athena/etc/rpd &
 fi
 
 if [ "${ZSERVER}" = "true" ] ; then
