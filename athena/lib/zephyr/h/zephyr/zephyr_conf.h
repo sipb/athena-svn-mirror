@@ -4,7 +4,7 @@
  *	Created by:	John T. Kohl
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/h/zephyr/zephyr_conf.h,v $
- *	$Author: ghudson $
+ *	$Author: cfields $
  *	$Zephyr: /mit/zephyr/src/include/zephyr/RCS/zephyr_conf.h,v 1.8 90/12/21 17:40:40 raeburn Exp $
  *
  *	Copyright (c) 1988,1991 by the Massachusetts Institute of Technology.
@@ -14,6 +14,20 @@
 
 #ifndef __ZEPHYR_CONF_H__
 #define __ZEPHYR_CONF_H__
+
+#ifdef POSIX
+#define POSIX_FLOCK
+#define POSIX_SIGNALS
+#define HAVE_UNISTD_H
+#define HAVE_STDLIB_H
+#endif
+
+#ifdef HAVE_UNISTD_H
+#include <unistd.h>
+#endif
+#ifdef HAVE_STDLIB_H
+#include <stdlib.h>
+#endif
 
 #include <zephyr/mit-copyright.h>
 #include <zephyr/zephyr_paths.h>
