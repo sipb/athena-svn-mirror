@@ -10,11 +10,11 @@
  */
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/kstuff.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/kstuff.c,v 1.10 1990-11-13 17:05:32 raeburn Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/kstuff.c,v 1.11 1990-11-16 23:32:59 raeburn Exp $
  */
 
 #ifndef lint
-static const char rcsid_kstuff_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/kstuff.c,v 1.10 1990-11-13 17:05:32 raeburn Exp $";
+static const char rcsid_kstuff_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/kstuff.c,v 1.11 1990-11-16 23:32:59 raeburn Exp $";
 #endif
 
 #include "zserver.h"
@@ -262,7 +262,7 @@ int ZCheckAuthentication(ZNotice_t *notice, sockaddr_in *from) {
     if (__Zephyr_server) {
 	
 	if (notice->z_authent_len <= 0) { /* bogus length */
-#if 1
+#if 0
 	    syslog (LOG_DEBUG, "z_authent_len = %d -> AUTH_FAILED",
 		    notice->z_authent_len);
 #endif
