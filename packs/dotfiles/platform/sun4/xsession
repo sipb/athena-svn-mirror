@@ -1,0 +1,105 @@
+#!/bin/csh -f
+# Global xsession file
+# Accepts one optional argument "nocalls" (i.e., use no user files)
+# $Author: ilham $
+# $Source: /afs/dev.mit.edu/source/repository/packs/dotfiles/platform/sun4/xsession,v $
+# $Header: /afs/dev.mit.edu/source/repository/packs/dotfiles/platform/sun4/xsession,v 1.1 1989-08-09 01:21:29 ilham Exp $
+
+# Note: This shell script deliberately uses the -f flag.
+
+set initdir=/usr/athena/lib/init
+
+
+# *******************   ENVIRONMENT SETUP   *******************
+
+
+# Identify this as a window session.
+
+setenv XSESSION
+
+
+# The ~/.cshrc file sets environment variables, attaches lockers, and sets
+# the command search path.
+
+echo "Setting up environment..."
+
+if ($?NOCALLS) then
+	if (-r ${initdir}/cshrc) source ${initdir}/cshrc
+else
+	if (-r ~/.cshrc) source ~/.cshrc
+endif
+
+
+
+# *******************   DEVICE SETUP   *******************
+
+
+# Load user X resources.
+
+if ((! $?NOCALLS) && (-r ~/.Xresources)) /usr/bin/X11/xrdb -merge ~/.Xresources
+
+
+# Start window manager.  To change your default window manager, set the 
+# WINDOW_MANAGER environment variable in your ~/.environment file.
+
+if (! $?WINDOW_MANAGER) setenv WINDOW_MANAGER uwm
+echo "Starting $WINDOW_MANAGER window manager..."
+($WINDOW_MANAGER &)
+
+
+
+# *******************   ACTIVITY STARTUP   *******************
+
+# Run standard system/user startup activities
+
+
+# Start default initial xterm window.  To skip this, put the command
+# "setenv SKIP_INITIAL_XTERM" in your ~/.environment file.
+
+# BE CAREFUL:  If you skip this, make sure that your ~/.startup.X file
+# provides a way for you to exit your session (e.g., an xterm from which
+# you can type "logout"). 
+
+if (! $?SKIP_INITIAL_XTERM) then
+	echo "Creating initial xterm window..."
+	(xterm -geometry 80x56+0+0 &)
+endif
+
+
+# Run default system startup activities.  To skip these, put the command
+# "setenv SKIP_X_STARTUP" in your ~/.environment file.
+
+if (! $?SKIP_X_STARTUP) then
+	echo "Running standard startup activities..."
+	/usr/new/mh/bin/msgchk -nonotify nomail	# Check for mail
+	/usr/etc/zwgc				# Start Zephyr client
+	/bin/athena/get_message -new -zephyr	# Get message of the day
+	/usr/athena/olc who >& /dev/null	# Ping the OLC server
+endif
+
+
+# Run the window-session customizing commands in your ~/.startup.X file.
+
+if ((! $?NOCALLS) && (-r ~/.startup.X)) then
+	echo "Running custom startup activities listed in ~/.startup.X..."
+	source ~/.startup.X
+endif
+
+
+echo "Session initialization completed."
+
+
+# Gate the session.
+
+# This command, NOT run in the background, "gates" your session.  When
+# this process terminates, the session ends and you are logged out.
+# To terminate this process, type the "logout" command in an xterm window
+# or invoke the "end_session" program.
+
+/usr/athena/session_gate				# Wait for logout
+
+
+
+# Run any user-specified shutdown activities
+
+if ((! $?NOCALLS) && (-r ~/.logout)) source ~/.logout
