@@ -46,7 +46,7 @@
 
 #if ! lint
 static const char rcsid[] =
-    "$Header: /afs/dev.mit.edu/source/repository/athena/lib/et/com_err.c,v 1.1 1990-03-23 13:20:35 epeisach Exp $";
+    "$Header: /afs/dev.mit.edu/source/repository/athena/lib/et/com_err.c,v 1.2 1990-03-23 13:22:20 epeisach Exp $";
 #endif	/* ! lint */
 
 static void
@@ -126,7 +126,12 @@ errf set_com_err_hook (new_proc)
     errf new_proc;
 {
     errf x = com_err_hook;
-    com_err_hook = new_proc ? new_proc : default_com_err_proc;
+
+    if (new_proc)
+	com_err_hook = new_proc;
+    else
+	com_err_hook = default_com_err_proc;
+
     return x;
 }
 
