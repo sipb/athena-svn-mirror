@@ -1,14 +1,16 @@
-# $Id: Makefile,v 1.7 1997-02-19 18:14:18 ghudson Exp $
+# $Id: Makefile,v 1.8 1997-02-25 19:05:48 ghudson Exp $
 
 SHELL=/bin/sh
+ATHRBINDIR=/bin/athena
 ATHBINDIR=/usr/athena/bin
 ATHETCDIR=/usr/athena/etc
 ATHMANDIR=/usr/athena/man
-ATTACHRUN=addusr blanche chfn chpobox chsh dcmmaint kermit listmaint mkserv \
-	mailmaint moira mrcheck namespace olc_answers olh sis techinfo \
-	usermaint userreg xinfo xtechinfo
+ATTACHRUN=addusr blanche bos chfn chpobox chsh dcmmaint kermit klog listmaint \
+	mkserv mailmaint moira mrcheck namespace olc_answers olh olh_ascii \
+	olh_motif pts sis techinfo usermaint userreg vos xinfo xtechinfo
 ANDREW=/afs/athena.mit.edu/astaff/project/andrew/export
 MOIRA=/afs/athena.mit.edu/system/moira
+TELLME=/afs/athena.mit.edu/system/config/tellme
 
 all: ${ATTACHRUN} verify-message
 	cd platform/${HOSTTYPE} && ${MAKE} $@
@@ -28,17 +30,20 @@ check:
 
 install:
 	-mkdir -p ${DESTDIR}/usr
+	-mkdir -p ${DESTDIR}${ATHRBINDIR}
 	-mkdir -p ${DESTDIR}${ATHBINDIR}
 	-mkdir -p ${DESTDIR}${ATHETCDIR}
 	-mkdir -p ${DESTDIR}${ATHMANDIR}/man1
 	install -c -m 555 addusr ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 blanche ${DESTDIR}${ATHBINDIR}
+	install -c -m 555 bos ${DESTDIR}${ATHRBINDIR}
 	install -c -m 555 chfn ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 chpobox ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 chsh ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 dcmmaint ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 emacs19.sh ${DESTDIR}${ATHBINDIR}/emacs19
 	install -c -m 555 kermit ${DESTDIR}${ATHBINDIR}
+	install -c -m 555 klog ${DESTDIR}${ATHRBINDIR}
 	install -c -m 555 mkserv ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 listmaint ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 mailmaint ${DESTDIR}${ATHBINDIR}
@@ -47,12 +52,16 @@ install:
 	install -c -m 555 namespace ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 olc_answers ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 olh ${DESTDIR}${ATHBINDIR}
+	install -c -m 555 olh_ascii ${DESTDIR}${ATHBINDIR}
+	install -c -m 555 olh_motif ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 psgrind.sh ${DESTDIR}${ATHBINDIR}/psgrind
+	install -c -m 555 pts ${DESTDIR}${ATHRBINDIR}
 	install -c -m 555 sis ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 techinfo ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 usermaint ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 userreg ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 verify-message ${DESTDIR}${ATHBINDIR}
+	install -c -m 555 vos ${DESTDIR}${ATHRBINDIR}
 	install -c -m 555 xinfo ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 xtechinfo ${DESTDIR}${ATHBINDIR}
 	install -c -m 444 sis.1 ${DESTDIR}${ATHMANDIR}/man1
@@ -61,10 +70,17 @@ install:
 	rm -f ${DESTDIR}${ATHETCDIR}/update_server
 	ln -s `athdir -c -p ${MOIRA} -t bin`/update_server \
 		${DESTDIR}${ATHETCDIR}/update_server
+	rm -f ${DESTDIR}${ATHBINDIR}/tellme
+	ln -s `athdir -c -p ${TELLME} -t bin`/tellme \
+		${DESTDIR}${ATHBINDIR}/tellme
 	rm -f ${DESTDIR}${ATHBINDIR}/help
 	ln -s olh ${DESTDIR}${ATHBINDIR}/help
+	rm -f ${DESTDIR}${ATHBINDIR}/passwd
+	ln -s kpasswd ${DESTDIR}${ATHBINDIR}/passwd
 	rm -f ${DESTDIR}${ATHBINDIR}/passwd.real
 	ln -s /usr/bin/passwd ${DESTDIR}${ATHBINDIR}/passwd.real
+	rm -f ${DESTDIR}/usr/sipb
+	ln -s /mit/sipb ${DESTDIR}/usr/sipb
 	rm -f ${DESTDIR}/usr/andrew
 	. ../build/version; \
 		vers=$$major.$$minor; \
