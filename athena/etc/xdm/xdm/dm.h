@@ -43,7 +43,9 @@
 
 #ifdef XDMCP
 # include	<X11/Xdmcp.h>
+#ifndef SOLARIS
 typedef char *XdmcpNetaddr;
+#endif
 #endif
 
 #ifndef X_NOT_POSIX
