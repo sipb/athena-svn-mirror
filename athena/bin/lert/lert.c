@@ -85,7 +85,8 @@ static int error_messages = TRUE;
 void Usage(pname, errname)
      char *pname, *errname;
 {
-  fprintf(stderr, "%s <%s>: Usage: %s [-zephyr|-z] [-mail|-m] [-no|-n]\n",
+  fprintf(stderr,
+	  "%s <%s>: Usage: %s [-zephyr|-z] [-mail|-m] [-no|-n] [-quiet|-q]\n",
 	  pname, errname, pname);
 }
 
@@ -102,7 +103,6 @@ int no_p;
   u_long iplen;
   int biplen;
   int gotit;
-  struct servent *buggy;
   struct hostent *hp;
   struct sockaddr_in sin, lsin;
   fd_set readfds;
@@ -128,38 +128,20 @@ int no_p;
   void bombout();
 
   /*
+    find out where lert lives
 
-   find out where lert lives
-
-    do it in this order
-    getservbyname()
-      struct servent *getservbyname(const char *name,
-          char *proto);
-    hesiod lookup
-    hardcode
-
-    rationale--if someone wants to override for some reason... 
-    /etc/services is easier to fix
-
+    note the presumption that there is only one lert!
    */
 
-  buggy = getservbyname(LERT_SERVED, LERT_PROTO);
-  if (buggy != NULL){  
-    ip = buggy->s_name;
-  } else {
+  tip = (hes_resolve(LERT_SERVER, LERT_TYPE));
+  if (tip == NULL){
     /*
-      note the presumption that there is only one lert!
+      No Hesiod available
+      fall into hardcoded--below for realmofhost
      */
-    tip = (hes_resolve(LERT_SERVER, LERT_TYPE));
-    if (tip == NULL){
-      /*
-	No Hesiod available
-	fall into hardcoded--below for realmofhost
-       */
-      ip = LERT_HOME;
-    } else {
-      ip = tip[0];
-    }
+    ip = LERT_HOME;
+  } else {
+    ip = tip[0];
   }
 
   /*
@@ -385,7 +367,7 @@ line of code from the cmi program in case.
 		       &sin,
 		       &lsin,
 		       &msg_data);
-  if (status) bombout(ERR_KERB_FAKE);
+  if (status) bombout(ERR_SERVER);
 
   if (msg_data.app_length == 0) return(LERT_NOT_IN_DB);
   /*
@@ -432,6 +414,7 @@ void bombout(mess)
 int mess;
 {
   if (error_messages) {
+    fprintf(stderr, "lert: ");
     switch(mess)
       {
       case ERR_KERB_CRED:
@@ -442,11 +425,10 @@ int mess;
 	fprintf(stderr, "Are your tickets valid?\n");
 	break;
       case ERR_TIMEOUT:
-	fprintf(stderr, "Lert timed out waiting for response from server.\n");
+	fprintf(stderr, "Timed out waiting for response from server.\n");
 	break;
       case ERR_SERVER:
-      case ERR_KERB_FAKE:
-	fprintf(stderr, "Someone is spoofing lert.\n");
+	fprintf(stderr, "Unable to contact server.\n");
 	break;
       case ERR_SERVED:
 	fprintf(stderr, "Bad string from server.\n");
@@ -458,20 +440,17 @@ int mess;
 	fprintf(stderr, "Error in recv: %s\n", strerror(errno));
 	break;
       case ERR_USER:
-	fprintf(stderr,
-		"lert could not get your name to send messages\n");
+	fprintf(stderr, "Could not get your name to send messages\n");
 	break;
       case NO_PROCS:
-	fprintf(stderr,
-		"Error when lert ran child processes: %s\n", strerror(errno));
+	fprintf(stderr, "Error running child processes: %s\n",
+		strerror(errno));
 	break;
       case ERR_MEMORY:
-	fprintf(stderr,
-		"lert doesn't have memory for messages\n");
+	fprintf(stderr, "Out of memory\n");
 	break;
       default:
-	fprintf(stderr, 
-		"A problem (%d) occurred when lert checked her database \n",
+	fprintf(stderr, "A problem (%d) occurred when checking the database\n",
 		mess);
 	break;
       }
