@@ -1,4 +1,4 @@
-;; $Id: site-init.jl,v 1.1 2001-01-03 03:40:22 ghudson Exp $
+;; $Id: site-init.jl,v 1.2 2001-01-10 20:01:47 ghudson Exp $
 ;; Site initialization for Athena
 
 ;; Load gnome stuff even if we start before any gnome properties are set.
@@ -29,8 +29,8 @@
 				    '(frame-type . border-only))
 
 ;; Menu customizations
-(require 'menus)
-(require 'old-window-menu)
+(require 'sawfish.wm.ext.menus)
+(require 'sawfish.wm.ext.old-window-menu)
 (setq menu-program-stays-running t)
 (menu-start-process)
 
@@ -65,7 +65,7 @@
 	("Quit" quit)))
 
 ;; Window history
-(require 'window-history)
+(require 'sawfish.wm.ext.window-history)
 (setq window-history-auto-save-position nil)
 (setq window-history-auto-save-dimensions nil)
 (setq window-history-auto-save-state nil)
