@@ -11,7 +11,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_undelete_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/undelete.c,v 1.3 1989-01-23 15:12:48 jik Exp $";
+     static char rcsid_undelete_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/undelete.c,v 1.4 1989-01-23 18:52:40 jik Exp $";
 #endif
 
 #include <stdio.h>
@@ -156,9 +156,11 @@ char *file_exp;
 	  for (i = 0; i < num_found; num_found++)
 	       status = status | do_undelete(found_files[i], 0);
      }
-     else
+     else {
+	  if (! force)
+	       fprintf(stderr, "%s: %s not found\n", whoami, file_exp);
 	  status = 1;
-
+     }
      return(status);
 }
 
@@ -205,26 +207,34 @@ int recursed;
 
 
 
-
 undelete_directory(user_nm, real_nm, recursed)
 char *user_nm, *real_nm;
 int recursed;
 {
      int status = 0;
+     int directory_is_undeleted = 0;
      
-     if (interactive && recursive) {
+     if (interactive && recursive && recursed) {
 	  printf("%s: Undelete directory %s? ", whoami, user_nm);
 	  if (! yes())
 	       return(0);
      }
 
 
+     status = really_do_undelete(user_nm, real_nm);
+     directory_is_undeleted = !status;
+     
      if (recursive) {
-	  struct stat stat_buf;
 	  DIR *dirp;
+	  struct direct *dp;
 	  filerec workfile;
 	  char real[MAXPATHLEN], user[MAXPATHLEN];
-	  
+	  char real_base[MAXPATHLEN];
+
+	  if (directory_is_undeleted)
+	       strcpy(real_base, user_nm);
+	  else
+	       strcpy(real_base, real_nm);
 	  workfile.realname = real;
 	  workfile.username = user;
 	  dirp = opendir(real_nm);
@@ -234,18 +244,18 @@ int recursed;
 	       status = 1;
 	  }
 			   
-	  for (fp = readdir(dirp); fp != NULL; fp = readdir(dirp)) {
+	  for (dp = readdir(dirp); dp != NULL; dp = readdir(dirp)) {
 	       if (is_dotfile(dp->d_name))
 		    continue;
-	       if (! is_deleted(dp->d_name))
+	       if (! (is_deleted(dp->d_name) || directory_is_undeleted))
 		    continue;
-	       strcpy(workfile.realname, append(real_nm, dp->d_name));
+	       strcpy(workfile.realname, append(real_base, dp->d_name));
 	       strcpy(workfile.username, append(user_nm, dp->d_name + 2));
 	       status = status || do_undelete(workfile, 1);
 	  }
 	  closedir(dirp);
      }
-     return(status || really_do_undelete(user_nm, real_nm));
+     return(status);
 }
 
 
@@ -254,14 +264,15 @@ int recursed;
 
      
 really_do_undelete(usr_nm, real_nm)
-char *usr_nm, real_nm;
+char *usr_nm, *real_nm;
 {
      struct stat stat_buf;
 
-     if (interactive)
+     if (interactive) {
 	  printf("%s: Undelete %s? ", whoami, usr_nm);
-     if (! yes())
-	  return(0);
+	  if (! yes())
+	       return(0);
+     }
      if (! lstat(usr_nm, &stat_buf)) if (! force) {
 	  printf("%s: Undeleted %s already exists.\n", whoami, usr_nm);
 	  printf("Do you wish to continue with the undelete and override that version? ");
@@ -292,12 +303,14 @@ char *new_nm, *old_nm;
      char *ptr, *q;
      char new_name[MAXPATHLEN];
 
+     printf("In do_file_rename, renaming %s to %s.\n", old_nm, new_nm);
      strcpy(new_name, old_nm);
      ptr = old_nm;
      while (ptr = strrindex(old_nm, ".#")) {
 	  for (q = &new_name[ptr - old_nm]; *(q + 2); q++)
 	       *q = *(q + 2);
 	  *q = '\0';
+	  printf("     Renaming %s to %s.\n", old_nm, new_name);
 	  if (rename(old_nm, new_name)) {
 	       if (! force)
 		    perror(sprintf("%s: %s", whoami, new_nm));
@@ -649,6 +662,7 @@ char *str, *sub_str;
      while (ptr != str) {
 	  if (! strncmp(ptr, sub_str, strlen(sub_str)))
 	       return(ptr);
+	  ptr--;
 	  while ((*ptr != *sub_str) && (ptr != str)) ptr--;
      }
      if (! strncmp(ptr, sub_str, strlen(sub_str)))
