@@ -15,7 +15,7 @@
 
 /* This file is part of liblocker. It implements reading attach.conf. */
 
-static const char rcsid[] = "$Id: conf.c,v 1.3 1999-06-04 14:06:40 danw Exp $";
+static const char rcsid[] = "$Id: conf.c,v 1.3.4.1 1999-11-09 16:11:30 ghudson Exp $";
 
 #include <ctype.h>
 #include <errno.h>
@@ -181,10 +181,10 @@ int locker_init(locker_context *contextp, uid_t user,
 	continue;
 
       p = buf;
-      while (isspace(*p))
+      while (isspace((unsigned char)*p))
 	p++;
       q = p;
-      while (*q && !isspace(*q))
+      while (*q && !isspace((unsigned char)*q))
 	q++;
 
       for (i = 0; i < noptions; i++)
@@ -203,7 +203,7 @@ int locker_init(locker_context *contextp, uid_t user,
 	}
       else
 	{
-	  while (*q && isspace(*q))
+	  while (*q && isspace((unsigned char)*q))
 	    q++;
 	  status = conf_options[i].parse(context, q,
 					 ((char *)context +
@@ -331,7 +331,7 @@ static int parse_trusted_list(locker_context context, char *line, void *val)
   for (line = strtok_r(line, " \t", &lasts); line;
        line = strtok_r(NULL, " \t", &lasts))
     {
-      if (isdigit(*line) && context->user == atoi(line))
+      if (isdigit((unsigned char)*line) && context->user == atoi(line))
 	*trusted = 1;
       else
 	{
@@ -386,11 +386,10 @@ static int parse_fs_list(locker_context context, char *line, void *val)
     return LOCKER_ENOMEM;
 
   line = strtok_r(data, " \t", &lasts);
-  if (!line)
+  if (!line || !lasts)
     return LOCKER_EATTACHCONF;
-  line = strtok_r(NULL, " \t", &lasts);
-  if (!line)
-    return LOCKER_EATTACHCONF;
+  for (line = lasts + 1; isspace((unsigned char)*line); line++)
+    ;
 
   status = add_regexp(context, lst, data);
   if (status == LOCKER_SUCCESS)
@@ -562,7 +561,7 @@ struct locker_ops *locker__get_fstype(locker_context context, char *type)
     {
       len = strlen(context->fstype[i]->name);
       if (!strncasecmp(type, context->fstype[i]->name, len) &&
-	  (!type[len] || isspace(type[len])))
+	  (!type[len] || isspace((unsigned char)type[len])))
 	return context->fstype[i];
     }
   return NULL;
