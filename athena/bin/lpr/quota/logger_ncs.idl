@@ -8,7 +8,7 @@
 %c
 [
 uuid(49c3f7aa8d7d.02.12.48.00.68.00.00.00),
-version(1),
+version(2),
 port(ip:[3703])
 ]
 
@@ -17,20 +17,17 @@ interface print_logger {
     import "base.idl";
 
 #include "quota_limits.h"
-
-    /* For LoggerJournal */
-    typedef long startingpoint;
-    typedef long maxtotransfer;
-    typedef char loggerflags;
-    typedef long recordtime;
-    typedef long recordptr;
+    %import "nidl_structs.idl";
 
     typedef enum { LO_ADD, LO_SET, LO_SUBTRACT, LO_DELETEUSER, LO_ALLOW,
-		   LO_CHARGE, LO_DISALLOW, LO_ADJUST } logfunc;
+		   LO_CHARGE, LO_DISALLOW, LO_ADJUST,
+		   LO_ADD_ADMIN, LO_DELETE_ADMIN,
+		   LO_ADD_USER, LO_DELETE_USER } logfunc;
 
     typedef struct {
 	recordtime time;
 	quota_username 	name;
+	quota_account   account;
 	quota_service 	service;
 	recordptr	next;
 	recordptr	prev;
@@ -48,11 +45,20 @@ interface print_logger {
 		      } offset;
 		  case LO_CHARGE	:
 		      struct {
-			  print_time ptime;
-			  printed_pages npages;
-			  media_cost	pcost;
-			  printer_name 	where;
+			  print_time      ptime;
+			  printed_pages   npages;
+			  media_cost	  pcost;
+			  printer_name 	  where;
+			  quota_username  wname;
 		      } charge;
+		  case LO_ADD_ADMIN:
+		  case LO_DELETE_ADMIN:
+		  case LO_ADD_USER:
+		  case LO_DELETE_USER:
+		      struct {
+			  quota_username uname;
+			  quota_username aname;
+		      } group;
 		  } func_union;
     } LogEnt;
 
