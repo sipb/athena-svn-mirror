@@ -1,0 +1,22 @@
+#!/bin/sh
+
+case "$HOSTTYPE" in
+sun4)
+  ;;
+
+sgi)
+  # Undo the kernel hack which disabled the R5000 CVT workaround.
+  kconfig=/var/sysgen/system/irix.sm
+  if grep R5000_CVT_WAR=0 "$kconfig" > /dev/null ; then
+    sed -e "s/-D_R5000_CVT_WAR=0/-D_R5000_CVT_WAR=1/g" "$kconfig" \
+	> "$kconfig.new" &&
+    mv -f "$kconfig.new" "$kconfig" &&
+    chmod 444 "$kconfig"
+  fi
+
+  # Build a new kernel.
+  echo "NEWUNIX=true"                           >> $CONFVARS
+  ;;
+esac
+
+echo "/etc/athena/athinfo.defs"			>> $CONFCHG
