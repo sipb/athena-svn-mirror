@@ -7,7 +7,7 @@
  */
 
 #ifndef lint
-static char rcsid_main_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/main.c,v 1.4 1990-04-21 17:40:28 jfc Exp $";
+static char rcsid_main_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/main.c,v 1.5 1990-04-21 17:56:16 jfc Exp $";
 #endif lint
 
 #include "attach.h"
@@ -782,9 +782,16 @@ zinitcmd(argc, argv)
 	char instbfr[BUFSIZ];
 	struct _attachtab *p;
 	int	i;
+#define	USER_ONLY	0
+#define	ROOT_TOO	1
+#define	ALL_USERS	2
+	int	who = ROOT_TOO;
+
 	static struct command_list options[] = {
 		{ "-verbose", "-v" },
 		{ "-quiet", "-q" },
+		{ "-all", "-a"},
+		{ "-me", "-m"},
 		{ "-debug", "-d" },
 		{ 0, 0}};
 
@@ -801,6 +808,12 @@ zinitcmd(argc, argv)
 			case 'd':
 				debug_flag = 1;
 				break;
+			case 'm':
+				who = USER_ONLY;
+				break;
+			case 'a':
+				who = ALL_USERS;
+				break;
 			}
 		}
 	}
@@ -816,6 +829,8 @@ zinitcmd(argc, argv)
 			 * deal with the zephyr subscriptions.
 			 * (Also, all the information won't be here yet.)
 			 */
+			continue;
+		if(who != ALL_USERS && !wants_to_subscribe(p, real_uid, who))
 			continue;
 		if (p->fs->type == TYPE_AFS) 
 			afs_auth(p->hesiodname, p->hostdir, AFSAUTH_DOZEPHYR);
