@@ -20,13 +20,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v $
- *	$Id: requests_olc.c,v 1.31 1991-01-03 15:54:24 lwvanels Exp $
+ *	$Id: requests_olc.c,v 1.32 1991-01-03 23:10:51 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v 1.31 1991-01-03 15:54:24 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v 1.32 1991-01-03 23:10:51 lwvanels Exp $";
 #endif
 #endif
 
@@ -1596,18 +1596,20 @@ olc_replay(fd, request)
      !(can_monitor))
     return(send_response(fd,PERMISSION_DENIED));
 
-  status = NO_QUESTION;
-  for(instance=0;instance<target->user->no_knuckles;instance++)
-    if (has_question(target->user->knuckles[instance])) {
-      target = target->user->knuckles[instance];
-      status = SUCCESS;
-      break;
-    }
+  if (has_question(target))
+    status = SUCCESS;
+  else {
+    status = NO_QUESTION;
+    for(instance=0;instance<target->user->no_knuckles;instance++)
+      if (has_question(target->user->knuckles[instance])) {
+	target = target->user->knuckles[instance];
+	status = SUCCESS;
+	break;
+      }
+  }
 
-  if (status != SUCCESS)
-    return(send_response(fd, NO_QUESTION));
+  send_response(fd, status);
 
-  send_response(fd, SUCCESS);
   if (can_monitor)
     write_file_to_fd(fd, target->question->logfile);
   else {
