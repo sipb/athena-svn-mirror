@@ -2,7 +2,7 @@
  *  Machtype: determine machine type & display type
  *
  * RCS Info
- *	$Id: machtype_sgi.c,v 1.2 1995-12-11 01:28:17 cfields Exp $
+ *	$Id: machtype_sgi.c,v 1.3 1996-05-14 17:07:33 ghudson Exp $
  *	$Locker:  $
  */
 
@@ -263,7 +263,7 @@ usage(name)
 char *name;
 {
     fprintf(stderr, "usage: %s [-v] [-c] [-d] [-r] [-E] [-N] [-M]\n",name);
-    fprintf(stderr, "             [-k kernel] [-m memory] [-A] [-L] [-P]\n");
+    fprintf(stderr, "             [-k kernel] [-m memory] [-A] [-L] [-P] [-S]\n");
     exit(1);
 }
 
