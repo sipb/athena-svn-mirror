@@ -550,10 +550,16 @@ override_fn (GtkObject      *object,
 	fprintf (stderr, "Override '%s'\n", 
 		 bonobo_ui_xml_make_path (old));
 #endif
-	bonobo_ui_engine_prune_widget_info (engine, old, TRUE);
 
-	cmd_to_node_remove_node (engine, old, FALSE);
-	cmd_to_node_add_node    (engine, new, FALSE);
+	if (!strcmp (bonobo_ui_node_get_name (new),
+		     bonobo_ui_node_get_name (old))) {
+		replace_override_fn (object, new, old, engine);
+	} else {
+		bonobo_ui_engine_prune_widget_info (engine, old, TRUE);
+
+		cmd_to_node_remove_node (engine, old, FALSE);
+		cmd_to_node_add_node    (engine, new, FALSE);
+	}
 }
 
 static void
@@ -940,6 +946,8 @@ state_update_new (BonoboUISync *sync,
 	sensitive = bonobo_ui_node_get_attr (node, "sensitive");
 	if (sensitive)
 		gtk_widget_set_sensitive (widget, atoi (sensitive));
+	else
+		gtk_widget_set_sensitive (widget, TRUE);
 	bonobo_ui_node_free_string (sensitive);
 
 	if ((state = bonobo_ui_node_get_attr (node, "state"))) {
@@ -1182,6 +1190,27 @@ bonobo_ui_engine_object_get (BonoboUIEngine    *engine,
 	return BONOBO_UI_ERROR_OK;
 }
 
+static char *
+get_parent_path (const char *path)
+{
+	int i, last_slash = 0;
+	char *ret;
+
+	for (i = 0; path [i]; i++) {
+		if (path [i] == '/')
+			last_slash = i;
+	}
+
+	if (!last_slash)
+		return NULL;
+
+	ret = g_malloc (last_slash + 1);
+	memcpy (ret, path, last_slash);
+	ret [last_slash] = '\0';
+
+	return ret;
+}
+
 /**
  * bonobo_ui_engine_xml_set_prop:
  * @engine: the engine
@@ -1202,20 +1231,26 @@ bonobo_ui_engine_xml_set_prop (BonoboUIEngine    *engine,
 			       const char        *value,
 			       const char        *component)
 {
-	BonoboUINode *node;
+	char *parent_path;
+	BonoboUINode *copy;
+	BonoboUINode *original;
 	
 	g_return_val_if_fail (BONOBO_IS_UI_ENGINE (engine), 
 			      BONOBO_UI_ERROR_BAD_PARAM);
 
-	node = bonobo_ui_engine_get_path (engine, path);
+	original = bonobo_ui_engine_get_path (engine, path);
 
-	if (!node) 
+	if (!original) 
 		return BONOBO_UI_ERROR_INVALID_PATH;
 
-	bonobo_ui_node_set_attr (node, property, value);
-	bonobo_ui_xml_set_dirty (engine->priv->tree, node);
-	
-	bonobo_ui_engine_update (engine);
+	copy = bonobo_ui_node_new (bonobo_ui_node_get_name (original));
+	bonobo_ui_node_copy_attrs (original, copy);
+	bonobo_ui_node_set_attr (copy, property, value);
+
+	parent_path = get_parent_path (path);
+	bonobo_ui_engine_xml_merge_tree (
+		engine, parent_path, copy, component);
+	g_free (parent_path);
 	
 	return BONOBO_UI_ERROR_OK;
 }
@@ -2181,7 +2216,7 @@ void
 bonobo_ui_engine_update_node (BonoboUIEngine *engine,
 			      BonoboUINode   *node)
 {
-	BonoboUISync *sync = find_sync_for_node (engine, node);
+	BonoboUISync *sync;
 
 	if ((sync = find_sync_for_node (engine, node))) {
 		if (bonobo_ui_sync_is_recursive (sync))

@@ -6,12 +6,12 @@
 # Christian Rose <menthos@menthos.com>, 2000-2001.
 # Richard Hult <rhult@codefactory.se>, 2000.
 #
-# $Id: sv.po,v 1.1.1.5 2001-12-03 17:26:31 ghudson Exp $
+# $Id: sv.po,v 1.1.1.6 2002-02-15 16:27:58 ghudson Exp $
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: bonobo\n"
-"POT-Creation-Date: 2001-11-15 09:16+1100\n"
+"POT-Creation-Date: 2002-01-22 22:24+0000\n"
 "PO-Revision-Date: 2001-05-28 02:10+0200\n"
 "Last-Translator: Christian Rose <menthos@menthos.com>\n"
 "Language-Team: Swedish <sv@li.org>\n"
@@ -39,11 +39,11 @@ msgstr "_Visa verktygstips"
 msgid "Toolbars"
 msgstr "Verktygsrader"
 
-#: bonobo/bonobo-ui-config-widget.c:325 bonobo/bonobo-ui-sync-toolbar.c:512
+#: bonobo/bonobo-ui-config-widget.c:325 bonobo/bonobo-ui-sync-toolbar.c:511
 msgid "Look"
 msgstr "Utseende"
 
-#: bonobo/bonobo-ui-config-widget.c:335 bonobo/bonobo-ui-sync-toolbar.c:514
+#: bonobo/bonobo-ui-config-widget.c:335 bonobo/bonobo-ui-sync-toolbar.c:513
 msgid "_Icon"
 msgstr "_Ikon"
 
@@ -59,31 +59,31 @@ msgstr "_Endast prioritetstext"
 msgid "Customize Toolbars"
 msgstr "Anpassa verktygsrader"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:513
+#: bonobo/bonobo-ui-sync-toolbar.c:512
 msgid "B_oth"
 msgstr "B_åda"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:515
+#: bonobo/bonobo-ui-sync-toolbar.c:514
 msgid "T_ext"
 msgstr "Te_xt"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:516
+#: bonobo/bonobo-ui-sync-toolbar.c:515
 msgid "Hide t_ips"
 msgstr "Göm t_ips"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:517
+#: bonobo/bonobo-ui-sync-toolbar.c:516
 msgid "Show t_ips"
 msgstr "Visa t_ips"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:518
+#: bonobo/bonobo-ui-sync-toolbar.c:517
 msgid "_Hide toolbar"
 msgstr "_Göm verktygsrad"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:519
+#: bonobo/bonobo-ui-sync-toolbar.c:518
 msgid "Customi_ze"
 msgstr "Anpa_ssa"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:520
+#: bonobo/bonobo-ui-sync-toolbar.c:519
 msgid "Customize the toolbar"
 msgstr "Anpassa verktygsraden"
 
@@ -322,11 +322,11 @@ msgstr "textkomponent"
 msgid "text/plain embeddable factory"
 msgstr "fabrik för inbyggbar text"
 
-#: components/text-plain/bonobo-text-plain.c:340
+#: components/text-plain/bonobo-text-plain.c:338
 msgid "_Clear Text"
 msgstr "_Töm text"
 
-#: components/text-plain/bonobo-text-plain.c:341
+#: components/text-plain/bonobo-text-plain.c:339
 msgid "Clears the text in the component"
 msgstr "Tömmer texten i komponenten"
 

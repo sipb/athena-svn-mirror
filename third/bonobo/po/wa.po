@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: bonobo 1.0.8\n"
-"POT-Creation-Date: 2001-11-15 09:16+1100\n"
+"POT-Creation-Date: 2002-01-22 22:24+0000\n"
 "PO-Revision-Date: 1999-04-19 13:31+0200\n"
 "Last-Translator: Pablo Saratxaga <pablo@mandrakesoft.com>\n"
 "Language-Team: walon <linux-wa@chanae.alphanet.ch>\n"
@@ -35,11 +35,11 @@ msgstr "_Vey racsegnes"
 msgid "Toolbars"
 msgstr "Bårs ås usteyes"
 
-#: bonobo/bonobo-ui-config-widget.c:325 bonobo/bonobo-ui-sync-toolbar.c:512
+#: bonobo/bonobo-ui-config-widget.c:325 bonobo/bonobo-ui-sync-toolbar.c:511
 msgid "Look"
 msgstr "Rivnance"
 
-#: bonobo/bonobo-ui-config-widget.c:335 bonobo/bonobo-ui-sync-toolbar.c:514
+#: bonobo/bonobo-ui-config-widget.c:335 bonobo/bonobo-ui-sync-toolbar.c:513
 msgid "_Icon"
 msgstr "_Imådjete"
 
@@ -55,31 +55,31 @@ msgstr ""
 msgid "Customize Toolbars"
 msgstr "Mete li bår ås usteyes a vosse môde"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:513
+#: bonobo/bonobo-ui-sync-toolbar.c:512
 msgid "B_oth"
 msgstr "Les _deus"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:515
+#: bonobo/bonobo-ui-sync-toolbar.c:514
 msgid "T_ext"
 msgstr "T_ecse"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:516
+#: bonobo/bonobo-ui-sync-toolbar.c:515
 msgid "Hide t_ips"
 msgstr "Catchî _racsegnes"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:517
+#: bonobo/bonobo-ui-sync-toolbar.c:516
 msgid "Show t_ips"
 msgstr "Mostrer _racsegnes"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:518
+#: bonobo/bonobo-ui-sync-toolbar.c:517
 msgid "_Hide toolbar"
 msgstr "_Catchî l' bår ås usteyes"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:519
+#: bonobo/bonobo-ui-sync-toolbar.c:518
 msgid "Customi_ze"
 msgstr "A _vosse môde"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:520
+#: bonobo/bonobo-ui-sync-toolbar.c:519
 msgid "Customize the toolbar"
 msgstr "Mete li bår ås usteyes a vosse môde"
 
@@ -324,11 +324,11 @@ msgstr "Componint peur tecse"
 msgid "text/plain embeddable factory"
 msgstr "Oujhene ravalé peur tecse"
 
-#: components/text-plain/bonobo-text-plain.c:340
+#: components/text-plain/bonobo-text-plain.c:338
 msgid "_Clear Text"
 msgstr "_Netyî tecse"
 
-#: components/text-plain/bonobo-text-plain.c:341
+#: components/text-plain/bonobo-text-plain.c:339
 msgid "Clears the text in the component"
 msgstr "Netyî li tecse el componint"
 

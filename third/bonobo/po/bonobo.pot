@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2001-11-15 09:16+1100\n"
+"POT-Creation-Date: 2002-01-22 22:24+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -34,11 +34,11 @@ msgstr ""
 msgid "Toolbars"
 msgstr ""
 
-#: bonobo/bonobo-ui-config-widget.c:325 bonobo/bonobo-ui-sync-toolbar.c:512
+#: bonobo/bonobo-ui-config-widget.c:325 bonobo/bonobo-ui-sync-toolbar.c:511
 msgid "Look"
 msgstr ""
 
-#: bonobo/bonobo-ui-config-widget.c:335 bonobo/bonobo-ui-sync-toolbar.c:514
+#: bonobo/bonobo-ui-config-widget.c:335 bonobo/bonobo-ui-sync-toolbar.c:513
 msgid "_Icon"
 msgstr ""
 
@@ -54,31 +54,31 @@ msgstr ""
 msgid "Customize Toolbars"
 msgstr ""
 
-#: bonobo/bonobo-ui-sync-toolbar.c:513
+#: bonobo/bonobo-ui-sync-toolbar.c:512
 msgid "B_oth"
 msgstr ""
 
-#: bonobo/bonobo-ui-sync-toolbar.c:515
+#: bonobo/bonobo-ui-sync-toolbar.c:514
 msgid "T_ext"
 msgstr ""
 
-#: bonobo/bonobo-ui-sync-toolbar.c:516
+#: bonobo/bonobo-ui-sync-toolbar.c:515
 msgid "Hide t_ips"
 msgstr ""
 
-#: bonobo/bonobo-ui-sync-toolbar.c:517
+#: bonobo/bonobo-ui-sync-toolbar.c:516
 msgid "Show t_ips"
 msgstr ""
 
-#: bonobo/bonobo-ui-sync-toolbar.c:518
+#: bonobo/bonobo-ui-sync-toolbar.c:517
 msgid "_Hide toolbar"
 msgstr ""
 
-#: bonobo/bonobo-ui-sync-toolbar.c:519
+#: bonobo/bonobo-ui-sync-toolbar.c:518
 msgid "Customi_ze"
 msgstr ""
 
-#: bonobo/bonobo-ui-sync-toolbar.c:520
+#: bonobo/bonobo-ui-sync-toolbar.c:519
 msgid "Customize the toolbar"
 msgstr ""
 
@@ -317,11 +317,11 @@ msgstr ""
 msgid "text/plain embeddable factory"
 msgstr ""
 
-#: components/text-plain/bonobo-text-plain.c:340
+#: components/text-plain/bonobo-text-plain.c:338
 msgid "_Clear Text"
 msgstr ""
 
-#: components/text-plain/bonobo-text-plain.c:341
+#: components/text-plain/bonobo-text-plain.c:339
 msgid "Clears the text in the component"
 msgstr ""
 

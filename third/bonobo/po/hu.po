@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Bonobo VERSION\n"
-"POT-Creation-Date: 2001-11-15 09:16+1100\n"
+"POT-Creation-Date: 2002-01-22 22:24+0000\n"
 "PO-Revision-Date: 2001-03-07 19:42+00:00\n"
 "Last-Translator: Andras Timar <timar@gnome.hu>\n"
 "Language-Team: Hungarian <hu@gnome.hu>\n"
@@ -35,11 +35,11 @@ msgstr "_Segédszöveg mutatása"
 msgid "Toolbars"
 msgstr "Eszköztárak"
 
-#: bonobo/bonobo-ui-config-widget.c:325 bonobo/bonobo-ui-sync-toolbar.c:512
+#: bonobo/bonobo-ui-config-widget.c:325 bonobo/bonobo-ui-sync-toolbar.c:511
 msgid "Look"
 msgstr "Nézet"
 
-#: bonobo/bonobo-ui-config-widget.c:335 bonobo/bonobo-ui-sync-toolbar.c:514
+#: bonobo/bonobo-ui-config-widget.c:335 bonobo/bonobo-ui-sync-toolbar.c:513
 msgid "_Icon"
 msgstr "_Ikon"
 
@@ -56,31 +56,31 @@ msgstr "_Csak elsõdleges szöveg"
 msgid "Customize Toolbars"
 msgstr "Eszköztár testreszabása"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:513
+#: bonobo/bonobo-ui-sync-toolbar.c:512
 msgid "B_oth"
 msgstr "_Mindkettõ"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:515
+#: bonobo/bonobo-ui-sync-toolbar.c:514
 msgid "T_ext"
 msgstr "Szö_veg"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:516
+#: bonobo/bonobo-ui-sync-toolbar.c:515
 msgid "Hide t_ips"
 msgstr "Tippek el_rejtése"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:517
+#: bonobo/bonobo-ui-sync-toolbar.c:516
 msgid "Show t_ips"
 msgstr "Tippek _mutatása"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:518
+#: bonobo/bonobo-ui-sync-toolbar.c:517
 msgid "_Hide toolbar"
 msgstr "_Eszköztár elrejtése"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:519
+#: bonobo/bonobo-ui-sync-toolbar.c:518
 msgid "Customi_ze"
 msgstr "Testres_zabás"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:520
+#: bonobo/bonobo-ui-sync-toolbar.c:519
 msgid "Customize the toolbar"
 msgstr "Eszköztár testreszabása"
 
@@ -322,11 +322,11 @@ msgstr "text/plain komponens"
 msgid "text/plain embeddable factory"
 msgstr "text/plain beágyazható factory"
 
-#: components/text-plain/bonobo-text-plain.c:340
+#: components/text-plain/bonobo-text-plain.c:338
 msgid "_Clear Text"
 msgstr "_Szöveg törlése"
 
-#: components/text-plain/bonobo-text-plain.c:341
+#: components/text-plain/bonobo-text-plain.c:339
 msgid "Clears the text in the component"
 msgstr "Törli a szöveget a komponensben"
 

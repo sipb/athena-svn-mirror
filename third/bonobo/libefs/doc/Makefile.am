@@ -9,7 +9,7 @@ DOC_MAIN_SGML_FILE=libefs.sgml
 # The directory containing the source code (if it contains documentation).
 DOC_SOURCE_DIR=../src
 
-TARGET_DIR=$(HTML_DIR)/$(DOC_MODULE)
+TARGET_DIR=$(DESTDIR)$(HTML_DIR)/$(DOC_MODULE)
 
 scan:
 	gtkdoc-scan --module=$(DOC_MODULE) --source-dir=$(DOC_SOURCE_DIR) \

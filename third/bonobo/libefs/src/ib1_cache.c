@@ -24,6 +24,7 @@
 
 #include <sys/types.h>
 #include <unistd.h>
+#include <string.h>
 #include "ib1_driver.h"
 
 #include <sys/types.h>

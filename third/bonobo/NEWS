@@ -1,3 +1,24 @@
+Bonobo 1.0.19
+
+	* Bugs fixed (Me)
+		+ sensitivity update bug
+		+ set_prop ownership bug
+		+ double free segv in text-plain
+
+Bonobo 1.0.18
+
+	* Speedups
+		+ intelligent GdkPixbuf rendering (Federico)
+		+ sensible pixbuf filtering (Federico)
+		+ cache GdkPixbufs (Michael)
+		+ cache X resources (Federico)
+		+ UI handler algorithmic tweaks (Michael)
+	* Bugs
+		+ leak fix (Jody Goldberg)
+		+ warning fixes (Federic Crozay)
+
+...
+
 Bonobo 1.0.15
 
 	* fix evil key forwarding issues (Federico)

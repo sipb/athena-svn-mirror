@@ -1,3 +1,144 @@
+2002-01-22  Michael Meeks  <michael@ximian.com>
+
+	* Version 1.0.19
+
+2002-01-22  Michael Meeks  <michael@ximian.com>
+
+	* Makefile.am: distribute NEWS
+
+	* bonobo/bonobo-ui-engine.c (state_update_new):
+	fix sensitivity bug on re-sets.
+
+2002-01-22  Michael Meeks  <michael@ximian.com>
+
+	* components/text-plain/bonobo-text-plain.c
+	(bonobo_object_destroy_cb): fix double free.
+
+2002-01-21  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-ui-engine.c
+	(get_parent_path): impl.
+	(bonobo_ui_engine_xml_set_prop): re-write to preserve
+	ordering and component ownership information.
+
+2002-01-10  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-ui-sync-menu.c (radio_group_destroy):
+	kill bogus g_slist_free on a GtkWidget, this seems to
+	never get called.
+
+2002-01-10  Michael Meeks  <michael@ximian.com>
+
+	* Version 1.0.18
+
+2002-01-09  Federico Mena Quintero  <federico@ximian.com>
+
+	* bonobo/bonobo-ui-state-cache.[ch]: New files with a cache of
+        (pixbuf, modifiers)->pixbuf, keyed on the source pixbuf plus its
+        image modifications, and mapping to modified pixbufs.
+
+	* bonobo/bonobo-ui-pixmap-cache.[ch]: New files with a simple
+        cache of rendered pixmap/mask pairs.
+
+	* bonobo/bonobo-ui-icon-modify.[ch]: New files with the image
+        modifier ripped out from bonobo-ui-toolbar-icon.c and simplified
+        to be readable.
+
+	* bonobo/bonobo-ui-icon.[ch]: New files with a simple icon
+        widget.  Gets fed with a number of pixbufs and uses the pixmap
+        cache to avoid re-rendering the images unnecessarily.
+
+	* bonobo/bonobo-ui-util.c
+        (bonobo_ui_util_xml_get_icon_pixmap_widget): Use BonoboUIIcon
+        instead of GnomePixmap.
+
+	* bonobo/bonobo-ui-sync-menu.c (impl_bonobo_ui_sync_menu_build):
+        Push the GdkRGB visual/colormap for pixmap menu items, as
+        BonoboUIIcon is a windowless widget.
+
+	* bonobo/bonobo-ui-toolbar-button-item.c
+        (bonobo_ui_toolbar_button_item_new): Push the GdkRGB
+        visual/colormap, as BonoboUIIcon is a windowless widget.
+        (set_icon_widget): Use BonoboUIIcon by creating the set of
+        modified pixbufs for it and setting them.
+        (create_pixmap_widget_from_pixbuf): Create a BonoboUIIcon.
+
+2002-01-04  Pablo Saratxaga  <pablo@mandrakesoft.com>
+
+        * configure.in: Added "eu" to ALL_LINGUAS
+
+2001-12-28  Jody Goldberg <jody@gnome.org>
+
+	* bonobo/bonobo-ui-util.c (bonobo_ui_util_xml_get_icon_pixbuf) :
+	  Don't leak the key, pixtype, or pixname when the cache lookup succeeds.
+	  Remove useless NULL test.
+
+2001-12-19  Federico Mena Quintero  <federico@ximian.com>
+
+	* bonobo/bonobo-ui-util.c (pixbuf_from_imlib): Use bilinear
+	scaling, not hyperbolic.  This is a lot faster.
+	(convert_from_imlib_rgb_chromakey): Renamed from
+	convert_from_chromakey().  Also, take in an RGB buffer and its
+	dimensions rather than a pixbuf.  Handle the case where the pixbuf
+	cannot be created.  And do not unconditionally use magenta (!) as
+	the chroma key; Imlib images can have other colors set for that
+	purpose.
+	(pixbuf_from_imlib): Do not create a temporary pixbuf from the
+	Imlib RGB data.  Handle the case where the scaled pixbuf cannot be
+	created.
+
+2001-12-18  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-ui-util.c (bonobo_ui_util_new_ui): only
+	do help fixup if we have a non NULL component.
+	(bonobo_ui_util_xml_get_icon_pixbuf): only ref the
+	pixbuf if it's non NULL.
+
+2001-12-17  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-ui-engine.c
+	(bonobo_ui_engine_update_node): don't do the slow bit
+	twice !
+
+2001-12-15  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-ui-engine.c (override_fn): move logic
+	from bonobo-ui-xml.c into here.
+
+	* bonobo/bonobo-ui-xml.c (override_node_with):
+	if we have the same name,
+
+	* bonobo/bonobo-ui-node.c (bonobo_ui_node_transparent): 
+	special case the placeholder - separators should not be
+	'transparent', their ownership matters lots, also special
+	case 'menu' since Nautilus relies on this being transparent
+	for some complex rootwindow thing.
+
+2001-12-14  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-ui-toolbar-button-item.c
+	(set_icon): don't be constantly destroying and
+	re-creating that icon - just set the new pixbuf.
+
+	* bonobo/bonobo-ui-util.c
+	(bonobo_ui_util_xml_get_icon_pixbuf): impl.
+	a pixbuf cache.
+
+2001-11-16  Frederic Crozat  <fcrozat@mandrakesoft.com>
+
+	* bonobo/bonobo-arg.c: (bonobo_arg_copy):
+	* monikers/bonobo-moniker-extender-file.c:
+	(bonobo_file_extender_resolve):
+	Fix warning caused by missing cast
+
+2001-11-15  Frederic Crozat  <fcrozat@mandrakesoft.com>
+
+	* bonobo/bonobo-main.c:
+	Fix warnings caused by missing includes
+
+	* samples/compound-doc/container/container.c: (main):
+	Fix warning caused by missing cast
+
 2001-11-15  Michael Meeks  <michael@ximian.com>
 
 	* Version 1.0.17

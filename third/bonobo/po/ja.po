@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: bonobo 1.0.8cvs\n"
-"POT-Creation-Date: 2001-11-15 09:16+1100\n"
+"POT-Creation-Date: 2002-01-22 22:24+0000\n"
 "PO-Revision-Date: 2001-09-19 22:32+0900\n"
 "Last-Translator: Takayuki KUSANO <AE5T-KSN@asahi-net.or.jp>\n"
 "Language-Team: Japanese <translation@gnome.gr.jp>\n"
@@ -33,11 +33,11 @@ msgstr "ツールチップを表示(_V)"
 msgid "Toolbars"
 msgstr "ツールバー"
 
-#: bonobo/bonobo-ui-config-widget.c:325 bonobo/bonobo-ui-sync-toolbar.c:512
+#: bonobo/bonobo-ui-config-widget.c:325 bonobo/bonobo-ui-sync-toolbar.c:511
 msgid "Look"
 msgstr "見る"
 
-#: bonobo/bonobo-ui-config-widget.c:335 bonobo/bonobo-ui-sync-toolbar.c:514
+#: bonobo/bonobo-ui-config-widget.c:335 bonobo/bonobo-ui-sync-toolbar.c:513
 msgid "_Icon"
 msgstr "アイコン(_I)"
 
@@ -53,31 +53,31 @@ msgstr "優先テキストのみ(_P)"
 msgid "Customize Toolbars"
 msgstr "ツールバーの設定"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:513
+#: bonobo/bonobo-ui-sync-toolbar.c:512
 msgid "B_oth"
 msgstr "両方(_O)"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:515
+#: bonobo/bonobo-ui-sync-toolbar.c:514
 msgid "T_ext"
 msgstr "テキスト (_E)"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:516
+#: bonobo/bonobo-ui-sync-toolbar.c:515
 msgid "Hide t_ips"
 msgstr "チップを隠す(_I)"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:517
+#: bonobo/bonobo-ui-sync-toolbar.c:516
 msgid "Show t_ips"
 msgstr "チップを表示(_I)"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:518
+#: bonobo/bonobo-ui-sync-toolbar.c:517
 msgid "_Hide toolbar"
 msgstr "ツールバーを隠す(_H)"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:519
+#: bonobo/bonobo-ui-sync-toolbar.c:518
 msgid "Customi_ze"
 msgstr "設定(_Z)"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:520
+#: bonobo/bonobo-ui-sync-toolbar.c:519
 msgid "Customize the toolbar"
 msgstr "ツールバーの設定"
 
@@ -316,11 +316,11 @@ msgstr "text/plain コンポーネント"
 msgid "text/plain embeddable factory"
 msgstr "text/plain 埋め込み可能ファクトリ"
 
-#: components/text-plain/bonobo-text-plain.c:340
+#: components/text-plain/bonobo-text-plain.c:338
 msgid "_Clear Text"
 msgstr "テキストの消去(_C)"
 
-#: components/text-plain/bonobo-text-plain.c:341
+#: components/text-plain/bonobo-text-plain.c:339
 msgid "Clears the text in the component"
 msgstr "コンポーネントのテキストを消去します"
 

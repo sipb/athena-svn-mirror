@@ -16,7 +16,7 @@ AC_SUBST(BONOBO_REVISION)
 AC_SUBST(BONOBO_AGE)
 
 AM_CONFIG_HEADER(config.h)
-AM_INIT_AUTOMAKE(bonobo,1.0.17)
+AM_INIT_AUTOMAKE(bonobo,1.0.19)
 AM_MAINTAINER_MODE
 AM_ACLOCAL_INCLUDE(macros)
 
@@ -60,7 +60,7 @@ dnl ====================================
 dnl = Profiling support
 dnl ====================================
 
-ALL_LINGUAS="az ca da de el en_GB es fi fr ga gl hu it ja ko lt nl no pl pt pt_BR ro ru sk sl sv uk wa tr zh_CN zh_TW"
+ALL_LINGUAS="az ca da de el en_GB es eu fi fr ga gl hu it ja ko lt nl no pl pt pt_BR ro ru sk sl sv uk wa tr zh_CN zh_TW"
 AM_GNOME_GETTEXT
 # AM_GNOME_GETTEXT above substs $DATADIRNAME
 # this is the directory where the *.{mo,gmo} files are installed

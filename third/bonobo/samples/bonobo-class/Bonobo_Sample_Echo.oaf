@@ -12,19 +12,18 @@
 	<oaf_attribute name="name-de" type="string" value="Echo-Komponenteneinheit"/>
 	<oaf_attribute name="name-el" type="string" value="&#197;&#241;&#227;&#239;&#243;&#244;&#220;&#243;&#233;&#239; &#243;&#245;&#243;&#244;&#225;&#244;&#233;&#234;&#239;&#253; &#231;&#247;&#239;&#253;&#242;"/>
 	<oaf_attribute name="name-es" type="string" value="F&#225;brica de componentes Echo"/>
+	<oaf_attribute name="name-eu" type="string" value="Echo osagai-fabrika"/>
 	<oaf_attribute name="name-fi" type="string" value="Kaikukomponenttitehdas"/>
 	<oaf_attribute name="name-fr" type="string" value="Fabrique de composants Echo"/>
 	<oaf_attribute name="name-gl" type="string" value="F&#225;brica de compo&#241;entes echo"/>
 	<oaf_attribute name="name-it" type="string" value="factory per il componente Echo"/>
 	<oaf_attribute name="name-ja" type="string" value="&#165;&#168;&#165;&#179;&#161;&#188;&#165;&#179;&#165;&#243;&#165;&#221;&#161;&#188;&#165;&#205;&#165;&#243;&#165;&#200;&#165;&#213;&#165;&#161;&#165;&#175;&#165;&#200;&#165;&#234;"/>
 	<oaf_attribute name="name-ko" type="string" value="&#184;&#222;&#190;&#198;&#184;&#174; &#196;&#196;&#198;&#247;&#179;&#205;&#198;&#174; &#198;&#209;&#197;&#228;&#184;&#174;"/>
-	<oaf_attribute name="name-nl" type="string" value="Echo component factory"/>
 	<oaf_attribute name="name-nn" type="string" value="Ekko komponent fabrikk "/>
 	<oaf_attribute name="name-no" type="string" value="Echo komponent factory"/>
 	<oaf_attribute name="name-pl" type="string" value="Generator komponent&#243;w Echo"/>
 	<oaf_attribute name="name-pt" type="string" value="F&#225;brica de componente Eco"/>
 	<oaf_attribute name="name-pt_BR" type="string" value="F&#225;brica de componente de eco"/>
-	<oaf_attribute name="name-ro" type="string" value="Echo component factory"/>
 	<oaf_attribute name="name-ru" type="string" value="&#230;&#193;&#194;&#210;&#201;&#203;&#193; &#203;&#207;&#205;&#208;&#207;&#206;&#197;&#206;&#212;&#193; &#252;&#200;&#207;"/>
 	<oaf_attribute name="name-sk" type="string" value="Vytv&#225;racie rozhranie pre Komponent Echo"/>
 	<oaf_attribute name="name-sl" type="string" value="Tovarna komponente odmevov"/>
@@ -40,6 +39,7 @@
 	<oaf_attribute name="description-de" type="string" value="Bonobo Echo-Server-Einheit"/>
 	<oaf_attribute name="description-el" type="string" value="&#197;&#241;&#227;&#239;&#243;&#244;&#220;&#243;&#233;&#239; &#229;&#238;&#245;&#240;&#231;&#241;&#229;&#244;&#231;&#244;&#222; &#199;&#247;&#239;&#253;&#242; Bonobo"/>
 	<oaf_attribute name="description-es" type="string" value="f&#225;brica de servidores de Echo de Bonobo"/>
+	<oaf_attribute name="description-eu" type="string" value="Bonobo Echo zerbitzari-fabrika"/>
 	<oaf_attribute name="description-fi" type="string" value="Bonobo-kaikupalvelintehdas"/>
 	<oaf_attribute name="description-fr" type="string" value="Fabrique de serveurs Bonobo Echo"/>
 	<oaf_attribute name="description-gl" type="string" value="F&#225;brica de servidores Echo de bonobo"/>
@@ -52,7 +52,6 @@
 	<oaf_attribute name="description-pl" type="string" value="generator serwera Bonobo Echo"/>
 	<oaf_attribute name="description-pt" type="string" value="F&#225;brica de servidor Eco Bonobo"/>
 	<oaf_attribute name="description-pt_BR" type="string" value="F&#225;brica de servidor de eco do bonobo"/>
-	<oaf_attribute name="description-ro" type="string" value="Bonobo Echo server factory"/>
 	<oaf_attribute name="description-ru" type="string" value="&#230;&#193;&#194;&#210;&#201;&#203;&#193; &#220;&#200;&#207;-&#211;&#197;&#210;&#215;&#197;&#210;&#193; Bonobo"/>
 	<oaf_attribute name="description-sk" type="string" value="Vytv&#225;racie rozhranie pre Bonobo Echo server"/>
 	<oaf_attribute name="description-sl" type="string" value="Tovarna stre&#190;nika bonobo odmeov"/>
@@ -74,13 +73,14 @@
 	<oaf_attribute name="name-de" type="string" value="Echo-Komponente"/>
 	<oaf_attribute name="name-el" type="string" value="&#211;&#245;&#243;&#244;&#225;&#244;&#233;&#234;&#252; &#199;&#247;&#239;&#253;&#242;"/>
 	<oaf_attribute name="name-es" type="string" value="Componente Echo"/>
+	<oaf_attribute name="name-eu" type="string" value="Echo osagaia"/>
 	<oaf_attribute name="name-fi" type="string" value="Kaikukomponentti"/>
 	<oaf_attribute name="name-fr" type="string" value="Composant Echo"/>
 	<oaf_attribute name="name-gl" type="string" value="Compo&#241;ente Echo"/>
 	<oaf_attribute name="name-it" type="string" value="Componente Echo"/>
 	<oaf_attribute name="name-ja" type="string" value="&#165;&#168;&#165;&#179;&#161;&#188;&#165;&#179;&#165;&#243;&#165;&#221;&#161;&#188;&#165;&#205;&#165;&#243;&#165;&#200;"/>
 	<oaf_attribute name="name-ko" type="string" value="&#184;&#222;&#190;&#198;&#184;&#174; &#196;&#196;&#198;&#247;&#179;&#205;&#198;&#174;"/>
-	<oaf_attribute name="name-nl" type="string" value="Echo component"/>
+	<oaf_attribute name="name-lt" type="string" value="component"/>
 	<oaf_attribute name="name-nn" type="string" value="Ekko komponent"/>
 	<oaf_attribute name="name-no" type="string" value="Echo-komponent"/>
 	<oaf_attribute name="name-pl" type="string" value="Komponent echo"/>
@@ -103,6 +103,7 @@
 	<oaf_attribute name="description-de" type="string" value="Bonobo Echo-Server-Beispielprogramm"/>
 	<oaf_attribute name="description-el" type="string" value="&#208;&#241;&#252;&#227;&#241;&#225;&#236;&#236;&#225;-&#228;&#229;&#223;&#227;&#236;&#225; &#229;&#238;&#245;&#240;&#231;&#241;&#229;&#244;&#231;&#244;&#222; &#199;&#247;&#239;&#253;&#242; Bonobo"/>
 	<oaf_attribute name="description-es" type="string" value="Programa de ejemplo de servidor de Echo de Bonobo"/>
+	<oaf_attribute name="description-eu" type="string" value="Bonobo Echo zerbitzariaren mostrako programa"/>
 	<oaf_attribute name="description-fi" type="string" value="Bonobo-kaikupalvelinesimerkkiohjelma"/>
 	<oaf_attribute name="description-fr" type="string" value="Programme d&#39;example de serveur Bonobo Echo"/>
 	<oaf_attribute name="description-gl" type="string" value="Programa de exemplo do servidor de Echo de bonobo"/>
@@ -115,7 +116,6 @@
 	<oaf_attribute name="description-pl" type="string" value="Przyk&#179;adowy program serwera Bonobo Echo"/>
 	<oaf_attribute name="description-pt" type="string" value="Aplica&#231;&#227;o de exemplo de servidor Eco Bonobo"/>
 	<oaf_attribute name="description-pt_BR" type="string" value="Programa exemplo de servidor de eco do bonobo"/>
-	<oaf_attribute name="description-ro" type="string" value="Bonobo Echo server sample program"/>
 	<oaf_attribute name="description-ru" type="string" value="&#240;&#210;&#201;&#205;&#197;&#210; &#208;&#210;&#207;&#199;&#210;&#193;&#205;&#205;&#217; &#220;&#200;&#207;-&#211;&#197;&#210;&#215;&#197;&#210;&#193; Bonobo"/>
 	<oaf_attribute name="description-sk" type="string" value="Uk&#225;&#190;kov&#253; program pre Bonobo Echo server"/>
 	<oaf_attribute name="description-sl" type="string" value="Preizkusni program bonobo stre&#190;nika odmevov"/>

@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Bonobo\n"
-"POT-Creation-Date: 2001-11-15 09:16+1100\n"
+"POT-Creation-Date: 2002-01-22 22:24+0000\n"
 "PO-Revision-Date: 2001-02-15 06:24+01:00\n"
 "Last-Translator: Christopher R. Gabriel <cgabriel@pluto.linux.it>\n"
 "Language-Team: Italiano <it@li.org>\n"
@@ -33,11 +33,11 @@ msgstr "_Visualizza suggerimento"
 msgid "Toolbars"
 msgstr "Barre degli strumenti"
 
-#: bonobo/bonobo-ui-config-widget.c:325 bonobo/bonobo-ui-sync-toolbar.c:512
+#: bonobo/bonobo-ui-config-widget.c:325 bonobo/bonobo-ui-sync-toolbar.c:511
 msgid "Look"
 msgstr "Guarda"
 
-#: bonobo/bonobo-ui-config-widget.c:335 bonobo/bonobo-ui-sync-toolbar.c:514
+#: bonobo/bonobo-ui-config-widget.c:335 bonobo/bonobo-ui-sync-toolbar.c:513
 msgid "_Icon"
 msgstr "_Icona"
 
@@ -50,35 +50,34 @@ msgid "_Priority text only"
 msgstr "_Priorità al solo testo"
 
 #: bonobo/bonobo-ui-engine-config.c:524
-#, fuzzy
 msgid "Customize Toolbars"
-msgstr "Personalizza la barra degli strumenti"
+msgstr "Personalizza barra degli strumenti"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:513
+#: bonobo/bonobo-ui-sync-toolbar.c:512
 msgid "B_oth"
 msgstr "_Entrambi"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:515
+#: bonobo/bonobo-ui-sync-toolbar.c:514
 msgid "T_ext"
 msgstr "T_esto"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:516
+#: bonobo/bonobo-ui-sync-toolbar.c:515
 msgid "Hide t_ips"
 msgstr "Nascon_di suggerimenti"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:517
+#: bonobo/bonobo-ui-sync-toolbar.c:516
 msgid "Show t_ips"
 msgstr "Mostra _suggerimenti"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:518
+#: bonobo/bonobo-ui-sync-toolbar.c:517
 msgid "_Hide toolbar"
 msgstr "_Nascondi barra strumenti"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:519
+#: bonobo/bonobo-ui-sync-toolbar.c:518
 msgid "Customi_ze"
 msgstr "Person_alizza"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:520
+#: bonobo/bonobo-ui-sync-toolbar.c:519
 msgid "Customize the toolbar"
 msgstr "Personalizza la barra degli strumenti"
 
@@ -317,11 +316,11 @@ msgstr "componente text/plain"
 msgid "text/plain embeddable factory"
 msgstr "factory per l'oggetto embeddable text/plain"
 
-#: components/text-plain/bonobo-text-plain.c:340
+#: components/text-plain/bonobo-text-plain.c:338
 msgid "_Clear Text"
 msgstr "Cancella _Testo"
 
-#: components/text-plain/bonobo-text-plain.c:341
+#: components/text-plain/bonobo-text-plain.c:339
 msgid "Clears the text in the component"
 msgstr "Cancella il testo nel componente"
 
@@ -662,9 +661,8 @@ msgid "I could not initialize Bonobo"
 msgstr "Non posso inizializzare Bonobo"
 
 #: samples/bonobo-class/main.c:40
-#, fuzzy
 msgid "Could not initialize Bonobo"
-msgstr "Impossibile inizializzare Bonobo!"
+msgstr "Impossibile inizializzare Bonobo"
 
 #: samples/compound-doc/container/component.c:253
 msgid "The component now claims that it doesn't support PersistStream!"

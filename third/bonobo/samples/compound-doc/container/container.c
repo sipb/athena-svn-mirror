@@ -279,7 +279,7 @@ main (int argc, char **argv)
 	init_data.app = sample_app_create ();
 
 	if (ctx)
-		init_data.startup_files = poptGetArgs (ctx);
+		init_data.startup_files = (const char**) poptGetArgs (ctx);
 	else
 		init_data.startup_files = NULL;
 

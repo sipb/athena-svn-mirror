@@ -66,7 +66,7 @@ bonobo_file_extender_resolve (BonoboMonikerExtender *extender,
 
 	CORBA_free (result);
 
-	object = bonobo_url_lookup (oafiid, display_name, ev);
+	object = bonobo_url_lookup (oafiid, (char *) display_name, ev);
 	if (!BONOBO_EX (ev) && object != CORBA_OBJECT_NIL) {
 		g_free (oafiid);
 		Bonobo_Unknown_ref (object, ev);

@@ -634,9 +634,15 @@ impl_bonobo_ui_sync_menu_build (BonoboUISync     *sync,
 			
 			/* FIXME: why not always create pixmap menu items ? */
 			if ((txt = bonobo_ui_engine_get_attr (node, cmd_node, "pixtype")) &&
-			    gnome_preferences_get_menus_have_icons ())
+			    gnome_preferences_get_menus_have_icons ()) {
+				gtk_widget_push_visual (gdk_rgb_get_visual ());
+				gtk_widget_push_colormap (gdk_rgb_get_cmap ());
+
 				menu_widget = gtk_pixmap_menu_item_new ();
-			else
+
+				gtk_widget_pop_visual ();
+				gtk_widget_pop_colormap ();
+			} else
 				menu_widget = gtk_menu_item_new ();
 
 			bonobo_ui_node_free_string (txt);
@@ -769,7 +775,6 @@ radio_group_destroy (gpointer	key,
 		     gpointer	user_data)
 {
 	g_free (key);
-	g_slist_free (value);
 
 	return TRUE;
 }

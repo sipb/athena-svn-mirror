@@ -302,8 +302,8 @@ bonobo_ui_toolbar_icon_destroy (GtkObject *object)
 }
 
 static void
-bonobo_ui_toolbar_icon_size_request  (GtkWidget        *widget,
-                            GtkRequisition    *requisition)
+bonobo_ui_toolbar_icon_size_request  (GtkWidget      *widget,
+                                      GtkRequisition *requisition)
 {
         /* We base size on the max of all provided images if w,h are -1
            else the scaled "main" image size (gpixmap->width, gpixmap->height) */
@@ -541,7 +541,7 @@ set_state_pixbufs(BonoboUIToolbarIcon* gpixmap, GdkPixbuf* pixbufs[5], GdkBitmap
 }
 
 static void
-set_pixbuf(BonoboUIToolbarIcon* gpixmap, GdkPixbuf* pixbuf)
+set_pixbuf (BonoboUIToolbarIcon* gpixmap, GdkPixbuf *pixbuf)
 {
         if (pixbuf == gpixmap->provided_image)
                 return;

@@ -77,7 +77,7 @@ bonobo_arg_copy (const BonoboArg *arg)
 		copy->_type = TC_null;
 		g_warning ("Duplicating a NULL Bonobo Arg");
 	} else
-		CORBA_any__copy (copy, arg);
+		CORBA_any__copy (copy, (BonoboArg *) arg);
 
 	return copy;
 }

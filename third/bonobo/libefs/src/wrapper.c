@@ -21,6 +21,7 @@
 
 */
 
+#include <string.h>
 #include "efs_internal.h"
 
 #if MAX_MEM_LEVEL >= 8
