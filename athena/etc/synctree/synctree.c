@@ -233,7 +233,11 @@ main(argc, argv)
 }
 
 struct src {
+#ifdef POSIX
+  struct dirent *dir;
+#else
   struct direct *dir;
+#endif
   char *pathname;
   struct stat stat;
   unsigned int type;
@@ -262,7 +266,11 @@ int dodir(src,dst,part)
     unsigned long getmemt;
     bool sorted;
     DIR *dirp;
+#ifdef POSIX
+    struct dirent *dp;
+#else
     struct direct *dp;
+#endif
     char *testpath;
     struct stat teststat;
 
@@ -291,7 +299,11 @@ int dodir(src,dst,part)
 	newsrc(sp);
 	sp->pathname = (char *)0;
 	/**** the next two lines are space inefficient, it can be done better */
+#ifdef POSIX
+	sp->dir    = (struct dirent *) getmem(sizeof(struct dirent));
+#else
 	sp->dir    = (struct direct *) getmem(sizeof(struct direct));
+#endif
 	*(sp->dir) = *dp;
     }
     closedir(dirp);
@@ -309,7 +321,11 @@ int dodir(src,dst,part)
 	    if (lstat(testpath, &teststat)) {
 		newsrc(sp);
 		/* the next two lines are space inefficient */
+#ifdef POSIX
+		sp->dir    = (struct dirent *) getmem(sizeof(struct dirent));
+#else
 		sp->dir    = (struct direct *) getmem(sizeof(struct direct));
+#endif
 		*(sp->dir) = *dp;
 
 		sp->pathname =
