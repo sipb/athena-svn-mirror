@@ -1,4 +1,4 @@
-# $Id: root.cshrc,v 1.2 1999-04-03 01:26:58 jweiss Exp $
+# $Id: root.cshrc,v 1.3 2001-06-04 04:37:55 jweiss Exp $
 
 set path=( /srvd/patch /usr/athena/bin /etc/athena /usr/sbin /sbin \
 	   /bin/athena /usr/bin /usr/ccs/bin /usr/athena/etc /usr/ucb \
@@ -7,6 +7,7 @@ setenv MANPATH /usr/athena/man:/usr/openwin/man:/usr/dt/man:/usr/man
 if ($?prompt) then
 	set prompt="`uname -n`# "
 	set nostat = (/afs/)
+	set autolist
 endif
 
 set add_flags="-a -h -n"

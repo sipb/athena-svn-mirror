@@ -1,4 +1,4 @@
-# $Id: root.cshrc,v 1.5 2000-03-15 15:12:07 rbasch Exp $
+# $Id: root.cshrc,v 1.6 2001-06-04 04:37:42 jweiss Exp $
 
 set path=(/srvd/patch /usr/athena/bin /etc/athena /bin/athena /usr/sbin \
 	  /usr/bsd /sbin /usr/bin /bin /etc /usr/athena/etc /usr/etc \
@@ -7,6 +7,7 @@ setenv MANPATH /usr/athena/man:/usr/freeware/catman:/usr/share/catman:/usr/share
 if ( (! $?ENVONLY) && $?prompt ) then
 	set prompt="`uname -n`# "
 	set nostat = (/afs/)
+	set autolist
 endif
 
 set add_flags="-a -h -n"
