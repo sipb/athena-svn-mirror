@@ -9,8 +9,11 @@
 
 */
 /*
- * $Id: auth-kerberos.c,v 1.11 1999-03-08 18:20:00 danw Exp $
+ * $Id: auth-kerberos.c,v 1.12 1999-10-22 14:35:26 ghudson Exp $
  * $Log: not supported by cvs2svn $
+ * Revision 1.11  1999/03/08 18:20:00  danw
+ * merge changes
+ *
  * Revision 1.10  1998/11/09 16:25:21  ghudson
  * Close some possible buffer overflows.
  *
@@ -153,10 +156,10 @@ int auth_kerberos(char *server_user, krb5_data *auth, krb5_principal *client)
       
       debug("Kerberos invalid service name (%.100s).", server);
       packet_send_debug("Kerberos invalid service name (%.100s).", server);
-      krb5_xfree(server);
+      free(server);
       return 0;
     }
-  krb5_xfree(server);
+  free(server);
   
   /* Extract the users name from the ticket client principal */
   problem = krb5_copy_principal(ssh_context, ticket->enc_part2->client,
@@ -192,7 +195,7 @@ int auth_kerberos(char *server_user, krb5_data *auth, krb5_principal *client)
   packet_put_string((char *) reply.data, reply.length);
   packet_send();
   packet_write_wait();
-  krb5_xfree(reply.data);
+  free(reply.data);
   return 1;
 }
 #endif /* KRB5 */
