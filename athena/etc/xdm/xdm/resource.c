@@ -48,31 +48,32 @@ char	*randomFile;
 # define DM_BOOL	2
 # define DM_ARGV	3
 
-/*
- * the following constants are supposed to be set in the makefile from
- * parameters set util/imake.includes/site.def (or *.macros in that directory
- * if it is server-specific).  DO NOT CHANGE THESE DEFINITIONS!
- */
+#ifdef SOLARIS
+#define X_PROGRAMS "/usr/openwin/bin"
+#else
+#define X_PROGRAMS "/usr/bin/X11"
+#endif
+
 #ifndef DEF_SERVER_LINE 
-#define DEF_SERVER_LINE ":0 local /usr/bin/X11/X :0"
+#define DEF_SERVER_LINE ":0 local " X_PROGRAMS " :0"
 #endif
 #ifndef XRDB_PROGRAM
-#define XRDB_PROGRAM "/usr/bin/X11/xrdb"
+#define XRDB_PROGRAM X_PROGRAMS "/xrdb"
 #endif
 #ifndef DEF_SESSION
-#define DEF_SESSION "/usr/bin/X11/xterm -ls"
+#define DEF_SESSION X_PROGRAMS "/xterm -ls"
 #endif
 #ifndef DEF_USER_PATH
-#define DEF_USER_PATH ":/bin:/usr/bin:/usr/bin/X11:/usr/ucb"
+#define DEF_USER_PATH ":/bin:/usr/bin:" X_PROGRAMS ":/usr/ucb"
 #endif
 #ifndef DEF_SYSTEM_PATH
-#define DEF_SYSTEM_PATH "/etc:/bin:/usr/bin:/usr/bin/X11:/usr/ucb"
+#define DEF_SYSTEM_PATH "/etc:/bin:/usr/bin:" X_PROGRAMS ":/usr/ucb"
 #endif
 #ifndef DEF_SYSTEM_SHELL
 #define DEF_SYSTEM_SHELL "/bin/sh"
 #endif
 #ifndef DEF_FAILSAFE_CLIENT
-#define DEF_FAILSAFE_CLIENT "/usr/bin/X11/xterm"
+#define DEF_FAILSAFE_CLIENT X_PROGRAMS "/xterm"
 #endif
 #ifndef DEF_XDM_CONFIG
 #define DEF_XDM_CONFIG "/usr/lib/X11/xdm/xdm-config"
