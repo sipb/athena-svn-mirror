@@ -1,15 +1,8 @@
-# from lib/krb/Imakefile
-# far from complete, but this is where things should go for -site=athena
-#FALLBACK=-DATHENA_CONF_FALLBACK -DKRB_FB_CONF=\"/etc/krb.conf\" \
-#	-DKRB_FB_RLM_TRANS=\"/etc/krb.realms\"
-#OLD_SRVTAB=-DATHENA_OLD_SRVTAB
-#OLD_KLOGIN=-DATHENA_OLD_KLOGIN
 LOGINPATH="/srvd/patch:/usr/athena/bin:/bin/athena:/usr/bin/X11:/usr/new:/usr/new/mh/bin:/usr/ucb:/bin:/usr/bin:/usr/ibm:/usr/andrew/bin:."
 
-SITE_CDEFS=-DHESIOD -I/usr/athena/include
+SITE_CDEFS=-DHESIOD -DDO_REVERSE_RESOLVE -I/usr/athena/include
 
 HESIOD_LIB=-L/usr/athena/lib -lhesiod
-# -lhesiod
 
 BASEDIR=/usr
 USRDIR= $(BASEDIR)/athena
