@@ -1,51 +1,65 @@
-/* $Id: verify.c,v 1.5 1999-12-08 22:04:05 danw Exp $ */
+/* Copyright 1990, 1999 by the Massachusetts Institute of Technology.
+ *
+ * Permission to use, copy, modify, and distribute this
+ * software and its documentation for any purpose and without
+ * fee is hereby granted, provided that the above copyright
+ * notice appear in all copies and that both that copyright
+ * notice and this permission notice appear in supporting
+ * documentation, and that the name of M.I.T. not be used in
+ * advertising or publicity pertaining to distribution of the
+ * software without specific, written prior permission.
+ * M.I.T. makes no representations about the suitability of
+ * this software for any purpose.  It is provided "as is"
+ * without express or implied warranty.
+ */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <pwd.h>
-#include <unistd.h>
-#include <signal.h>
-#include <fcntl.h>
-#ifdef HAVE_SHADOW_H
-#include <shadow.h>
+static const char rcsid[] = "$Id: verify.c,v 1.6 1999-12-22 17:27:48 danw Exp $";
+
+#include <sys/types.h>
+#include <sys/param.h>
+#include <sys/stat.h>
+#include <sys/time.h>
+
+#include <dirent.h>
+#ifdef HAVE_CRYPT_H
+#include <crypt.h>
 #endif
+#include <errno.h>
+#include <fcntl.h>
+#include <grp.h>
 #ifdef HAVE_LIMITS_H
 #include <limits.h>
 #endif
-#ifdef HAVE_UTMPX_H
-#include <utmpx.h>
-#endif
-#include <grp.h>
-#include <string.h>
-#include <sys/types.h>
-#include <sys/file.h>
-#include <sys/param.h>
-#include <utime.h>
-#include <dirent.h>
-#include <sys/stat.h>
-#include <sys/time.h>
-#include <utmp.h>
 #include <netdb.h>
-#include <errno.h>
+#include <pwd.h>
+#ifdef HAVE_SHADOW_H
+#include <shadow.h>
+#endif
+#include <signal.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include <syslog.h>
+#include <unistd.h>
 #ifdef HAVE_UTIL_H
 #include <util.h>
 #endif
+#include <utime.h>
+#include <utmp.h>
+#ifdef HAVE_UTMPX_H
+#include <utmpx.h>
+#endif
 
-#include <krb.h>
-#include <hesiod.h>
 #include <al.h>
-#include <larv.h>
-
+#include <hesiod.h>
+#include <krb.h>
 #ifdef HAVE_KRB5
 #include <krb5.h>
 #endif
-
-#ifdef XDM
-#include "dm.h"
-#endif
+#include <larv.h>
 
 #include "environment.h"
+#include "xlogin.h"
 
 #ifndef TRUE
 #define FALSE 0
@@ -92,19 +106,23 @@ extern FILE *xdmstream;
 
 extern char *audio_devices[];
 
-pid_t fork_and_store(pid_t *var);
-extern char *crypt(), *lose(), *getenv();
-extern char *krb_get_phost(); /* should be in <krb.h> */
-char *get_tickets(), *strsave();
-void abort_verify();
+static char *get_tickets(char *username, char *password);
+static void abort_verify(void *user);
+static void add_utmp(char *user, char *tty, char *display);
+
+#ifdef HAVE_KRB5
+static krb5_error_code do_v5_kinit(char *name, char *instance, char *realm,
+				   int lifetime, char *password,
+				   char **ret_cache_name, char **etext);
+static krb5_error_code do_v5_kdestroy(const char *cachename);
+#endif
+
 extern pid_t attach_pid, attachhelp_pid, quota_pid;
 extern int attach_state, attachhelp_state, errno;
 extern sigset_t sig_zero;
-void add_utmp(char *user, char *tty, char *display);
 
 #ifdef HAVE_GETSPNAM
-struct passwd *get_pwnam(usr)
-     char *usr;
+static struct passwd *get_pwnam(char *usr)
 {
   struct passwd *pwd;
   struct spwd *sp;
@@ -119,19 +137,8 @@ struct passwd *get_pwnam(usr)
 #define get_pwnam(x) getpwnam(x)
 #endif
 
-#ifdef XDM
-char *dologin(user, passwd, option, script, tty, session, display, verify)
-     struct verify_info *verify;
-#else /* XDM */
-char *dologin(user, passwd, option, script, tty, session, display)
-#endif /* XDM */
-     char *user;
-     char *passwd;
-     int option;
-     char *script;
-     char *tty;
-     char *session;
-     char *display;
+char *dologin(char *user, char *passwd, int option, char *script,
+	      char *tty, char *session, char *display)
 {
   static char errbuf[5120];
   char tkt_file[128], *msg, wgfile[16];
@@ -151,7 +158,6 @@ char *dologin(user, passwd, option, script, tty, session, display)
 #endif
   int i;
   /* state variables: */
-  int local_passwd = FALSE;	/* user is in local passwd file */
   int local_ok = FALSE;		/* verified from local password file */
   int local_acct;		/* user's account is supposed to be local */
   char *altext = NULL, *alerrmem;
@@ -226,7 +232,6 @@ char *dologin(user, passwd, option, script, tty, session, display)
   pwd = get_pwnam(user);
   if (pwd != NULL)
     {
-      local_passwd = TRUE;
       if (strcmp(crypt(passwd, pwd->pw_passwd), pwd->pw_passwd) == 0)
 	local_ok = TRUE;
       else if (local_acct)
@@ -248,11 +253,11 @@ char *dologin(user, passwd, option, script, tty, session, display)
 	if (tty != NULL)
 	  {
 	    strcpy(fixed_tty, tty);
-	    while (p = strchr(fixed_tty, '/'))
+	    while ((p = strchr(fixed_tty, '/')))
 	      *p = '_';
 	  }
 	else
-	  sprintf(fixed_tty, "%d", pwd->pw_uid);
+	  sprintf(fixed_tty, "%lu", (unsigned long)pwd->pw_uid);
 	sprintf(tkt_file, "/tmp/tkt_%s", fixed_tty);
 	psetenv("KRBTKFILE", tkt_file, 1);
 
@@ -478,7 +483,7 @@ char *dologin(user, passwd, option, script, tty, session, display)
   if (msg)						\
     {							\
       sprintf(errbuf, "%s=%s", envvar, msg);		\
-      environment[i++] = strsave(errbuf);		\
+      environment[i++] = strdup(errbuf);		\
     }
 
   environment = (char **) malloc(MAXENVIRON * sizeof(char *));
@@ -488,39 +493,32 @@ char *dologin(user, passwd, option, script, tty, session, display)
 
   i = 0;
   sprintf(errbuf, "HOME=%s", pwd->pw_dir);
-  environment[i++] = strsave(errbuf);
+  environment[i++] = strdup(errbuf);
   sprintf(errbuf, "PATH=%s", defaultpath);
-  environment[i++] = strsave(errbuf);
+  environment[i++] = strdup(errbuf);
   sprintf(errbuf, "USER=%s", pwd->pw_name);
-  environment[i++] = strsave(errbuf);
+  environment[i++] = strdup(errbuf);
   sprintf(errbuf, "SHELL=%s", pwd->pw_shell);
-  environment[i++] = strsave(errbuf);
+  environment[i++] = strdup(errbuf);
   sprintf(errbuf, "DISPLAY=%s", display);
-  environment[i++] = strsave(errbuf);
+  environment[i++] = strdup(errbuf);
   if (!local_acct)
     {
       sprintf(errbuf, "KRBTKFILE=%s", tkt_file);
-      environment[i++] = strsave(errbuf);
+      environment[i++] = strdup(errbuf);
 #ifdef HAVE_KRB5
       sprintf(errbuf, "KRB5CCNAME=%s", tkt5_file);
-      environment[i++] = strsave(errbuf);
+      environment[i++] = strdup(errbuf);
 #endif
     }
 #ifdef HOSTTYPE
   sprintf(errbuf, "hosttype=%s", HOSTTYPE); /* environment.h */
-  environment[i++] = strsave(errbuf);
+  environment[i++] = strdup(errbuf);
 #endif
 
 #ifdef SOLARIS
-#ifdef XDM
-  sprintf(errbuf, "LD_LIBRARY_PATH=%s", "/usr/openwin/lib");
-  environment[i++] = strsave(errbuf);
-  sprintf(errbuf, "OPENWINHOME=%s", "/usr/openwin");
-  environment[i++] = strsave(errbuf);
-#else
   PASSENV("LD_LIBRARY_PATH");
   PASSENV("OPENWINHOME");
-#endif
 #endif
 
   if (tmp_homedir)
@@ -528,7 +526,7 @@ char *dologin(user, passwd, option, script, tty, session, display)
   strcpy(wgfile, "/tmp/wg.XXXXXX");
   mktemp(wgfile);
   sprintf(errbuf, "WGFILE=%s", wgfile);
-  environment[i++] = strsave(errbuf);
+  environment[i++] = strdup(errbuf);
   PASSENV("TZ");
 
 #ifdef NANNY
@@ -554,23 +552,6 @@ char *dologin(user, passwd, option, script, tty, session, display)
 
   times.actime = times.modtime = time(NULL);
   utime(errbuf, &times);
-
-#ifdef XDM
-  {
-    static char *newargv[4];
-
-    verify->uid = pwd->pw_uid;
-    getGroups(pwd->pw_name, verify, pwd->pw_gid);
-    verify->userEnviron = environment;
-    newargv[0] = script;
-    sprintf(errbuf, "%d", option);
-    newargv[1] = errbuf;
-    newargv[2] = session;
-    newargv[3] = NULL;
-    verify->argv = newargv;
-    return NULL;
-  }
-#endif /* XDM */
 
   i = setgid(pwd->pw_gid);
   if (i) 
@@ -631,9 +612,7 @@ char *dologin(user, passwd, option, script, tty, session, display)
   return lose("Failed to start session.");
 }
 
-char *get_tickets(username, password)
-     char *username;
-     char *password;
+static char *get_tickets(char *username, char *password)
 {
   char inst[INST_SZ], realm[REALM_SZ];
   char hostname[MAXHOSTNAMELEN], phost[INST_SZ];
@@ -699,7 +678,7 @@ char *get_tickets(username, password)
   phost[sizeof(phost) - 1] = '\0';
 
   /* Without a srvtab, we cannot verify tickets. */
-  if (read_service_key(rcmd, phost, realm, 0, KEYFILE, key) == KFAILURE)
+  if (read_service_key(rcmd, phost, realm, 0, NULL, key) == KFAILURE)
     return NULL;
 
   hp = gethostbyname(hostname);
@@ -734,8 +713,7 @@ char *get_tickets(username, password)
 }
 
 /* Destroy kerberos tickets and let al_acct_revert clean up the rest. */
-void cleanup(user)
-     char *user;
+void cleanup(char *user)
 {
   dest_tkt();
 #ifdef HAVE_KRB5
@@ -754,33 +732,19 @@ void cleanup(user)
     lose("Unable to reset real uid to root");
 }
 
-void abort_verify(user)
-     char *user;
+static void abort_verify(void *user)
 {
   cleanup(user);
   _exit(1);
 }
 
-char *strsave(s)
-     char *s;
-{
-  char *ret = malloc(strlen(s) + 1);
-
-  strcpy(ret, s);
-  return ret;
-}
-
 #if HAVE_GETUTXENT && !HAVE_LOGIN
-void add_utmp(user, tty, display)
-     char *user;
-     char *tty;
-     char *display;
+static void add_utmp(char *user, char *tty, char *display)
 {
   struct utmp ut_entry;
   struct utmp *ut_tmp;
   struct utmpx utx_entry;
   struct utmpx *utx_tmp;
-  int f;
 
   memset(&utx_entry, 0, sizeof(utx_entry));
 
@@ -799,13 +763,13 @@ void add_utmp(user, tty, display)
   getutmp(&utx_entry, &ut_entry);
 
   setutent();
-  while (ut_tmp = getutline(&ut_entry))
+  while ((ut_tmp = getutline(&ut_entry)))
     if (!strncmp(ut_tmp->ut_id, "XLOG", sizeof(ut_tmp->ut_id)))
       break;
   pututline(&ut_entry);
 
   setutxent();
-  while (utx_tmp = getutxline(&utx_entry))
+  while ((utx_tmp = getutxline(&utx_entry)))
     if (!strncmp(utx_tmp->ut_id, "XLOG", sizeof(utx_tmp->ut_id)))
       break;
   pututxline(&utx_entry);
@@ -813,10 +777,7 @@ void add_utmp(user, tty, display)
   updwtmpx(WTMPX_FILE, &utx_entry);
 }
 #else /* HAVE_GETUTXENT && !HAVE_LOGIN */
-void add_utmp(user, tty, display)
-     char *user;
-     char *tty;
-     char *display;
+static void add_utmp(char *user, char *tty, char *display)
 {
   struct utmp ut_entry;
   struct utmp ut_tmp;
@@ -935,15 +896,9 @@ int punsetenv(const char *name)
  * etext is a mandatory output variable which is filled in with
  * additional explanatory text in case of an error.
  */
-krb5_error_code do_v5_kinit(name, instance, realm, lifetime, password,
-			    ret_cache_name, etext)
-     char	*name;
-     char	*instance;
-     char	*realm;
-     int	lifetime;
-     char	*password;
-     char	**ret_cache_name;
-     char	**etext;
+static krb5_error_code do_v5_kinit(char *name, char *instance, char *realm,
+				   int lifetime, char *password,
+				   char **ret_cache_name, char **etext)
 {
   krb5_context context;
   krb5_error_code retval;
@@ -953,7 +908,7 @@ krb5_error_code do_v5_kinit(name, instance, realm, lifetime, password,
   krb5_timestamp now;
   krb5_flags options = KDC_OPT_FORWARDABLE | KDC_OPT_PROXIABLE;
 
-  char *cache_name;
+  const char *cache_name;
 
   *etext = 0;
   if (ret_cache_name)
@@ -1050,8 +1005,7 @@ cleanup:
   return retval;
 }
 
-krb5_error_code do_v5_kdestroy(cachename)
-     char	*cachename;
+static krb5_error_code do_v5_kdestroy(const char *cachename)
 {
   krb5_context context;
   krb5_error_code retval;

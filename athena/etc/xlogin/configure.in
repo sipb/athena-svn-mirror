@@ -1,4 +1,4 @@
-# $Id: configure.in,v 1.4 1999-11-23 20:18:13 danw Exp $
+# $Id: configure.in,v 1.5 1999-12-22 17:27:47 danw Exp $
 AC_INIT(xlogin.c)
 
 test -z "$lsbindir" && lsbindir='${sbindir}'
@@ -28,7 +28,7 @@ AC_CHECK_FUNC(crypt, :, AC_CHECK_LIB(crypt, crypt))
 
 AC_PATH_XTRA
 
-AC_CHECK_HEADERS(util.h shadow.h limits.h utmpx.h)
+AC_CHECK_HEADERS(crypt.h util.h shadow.h limits.h utmpx.h)
 
 AC_CHECK_FUNCS(getspnam setlogin login getutxent)
 

@@ -42,18 +42,14 @@ SOFTWARE.
 
  Name		     Class		RepType		Default Value
  ----		     -----		-------		-------------
- analog		     Boolean		Boolean		True
  background	     Background		Pixel		white
  backingStore	     BackingStore	BackingStore	default
  border		     BorderColor	Pixel		Black
  borderWidth	     BorderWidth	Dimension	1
- chime		     Boolean		Boolean		False
  destroyCallback     Callback		Pointer		NULL
  font		     Font		XFontStruct*	fixed
  foreground	     Foreground		Pixel		black
- hand		     Foreground		Pixel		black
  height		     Height		Dimension	164
- highlight	     Foreground		Pixel		black
  mappedWhenManaged   MappedWhenManaged	Boolean		True
  padding	     Margin		int		8
  update		     Interval		int		60 (seconds)
@@ -64,16 +60,6 @@ SOFTWARE.
 */
 
 /* Resource names used to the clock widget */
-
-		/* color of hands */
-#define XtNhand "hands"
-
-
-		/* Boolean: digital if FALSE */
-#define XtNanalog "analog"
-
-		/* Boolean:  */
-#define XtNchime "chime"
 
 		/* Int: amount of space around outside of clock */
 #define XtNpadding "padding"

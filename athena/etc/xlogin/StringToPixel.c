@@ -1,11 +1,31 @@
-#include <X11/StringDefs.h>
+/* Copyright 1990, 1999 by the Massachusetts Institute of Technology.
+ *
+ * Permission to use, copy, modify, and distribute this
+ * software and its documentation for any purpose and without
+ * fee is hereby granted, provided that the above copyright
+ * notice appear in all copies and that both that copyright
+ * notice and this permission notice appear in supporting
+ * documentation, and that the name of M.I.T. not be used in
+ * advertising or publicity pertaining to distribution of the
+ * software without specific, written prior permission.
+ * M.I.T. makes no representations about the suitability of
+ * this software for any purpose.  It is provided "as is"
+ * without express or implied warranty.
+ */
+
+static const char rcsid[] = "$Id: StringToPixel.c,v 1.2 1999-12-22 17:27:47 danw Exp $";
+
+#include <ctype.h>
 #include <stdio.h>
 #include <string.h>
+
+#include <X11/IntrinsicP.h>
+#include <X11/StringDefs.h>
+#include <X11/Xresource.h>
 #include <X11/cursorfont.h>
 #include <X11/keysym.h>
-#include <X11/IntrinsicP.h>
-#include <X11/Xresource.h>
-#include <ctype.h>
+
+#include "xlogin.h"
 
 #define MONO 0
 #define GRAY 1
@@ -15,13 +35,8 @@
 /*
  * a few things taken from Xt/Converters.c, with a few mods...
  */
-#ifdef __STDC__
-#define Const const
-#else
-#define Const /**/
-#endif
 
-static Const String XtNwrongParameters = "wrongParameters";
+static const String XtNwrongParameters = "wrongParameters";
 
 #define	done(type, value) \
 	{							\
@@ -57,13 +72,9 @@ static XtConvertArgRec multiColorConvertArgs[] = {
  *  our needs...
  */
 
-static Boolean CvtMultiStrToPxl(dpy, args, num_args, fromVal, toVal, closure_ret)
-    Display*	dpy;
-    XrmValuePtr args;
-    Cardinal    *num_args;
-    XrmValuePtr	fromVal;
-    XrmValuePtr	toVal;
-    XtPointer	*closure_ret;
+static Boolean CvtMultiStrToPxl(Display *dpy, XrmValuePtr args,
+				Cardinal *num_args, XrmValuePtr fromVal,
+				XrmValuePtr toVal, XtPointer *closure_ret)
 {
     String	    str = (String)fromVal->addr;
     XColor	    screenColor;
@@ -137,27 +148,27 @@ static Boolean CvtMultiStrToPxl(dpy, args, num_args, fromVal, toVal, closure_ret
     if ((ptr = address2 = strchr(copy, sep))  !=  NULL)
       {
 	ptr--;				/* strip trailing spaces off word */
-	while (isspace(*ptr))		/*   before comma */
+	while (isspace((unsigned char)*ptr))		/*   before comma */
 	  ptr--;
 	*++ptr = '\0';			/* terminate string */
 
 	address2++;			/* strip leading spaces off word */
-	while (isspace(*address2))	/*   after comma */
+	while (isspace((unsigned char)*address2))	/*   after comma */
 	  address2++;
 
 	if ((ptr = address3 = strchr(address2, sep))  !=  NULL)
 	  {
 	    ptr--;			/* strip trailing spaces off word */
-	    while (isspace(*ptr))	/*   before comma */
+	    while (isspace((unsigned char)*ptr))	/*   before comma */
 	      ptr--;
 	    *++ptr = '\0';		/* terminate string */
 
 	    address3++;			/* strip leading spaces off word */
-	    while (isspace(*address3))	/*   after comma */
+	    while (isspace((unsigned char)*address3))	/*   after comma */
 	      address3++;
 
 	    ptr = address3 + strlen(address3) - 1;	/* strip trailing */
-	    while (isspace(*ptr))	/*   spaces off last word... */
+	    while (isspace((unsigned char)*ptr)) /* spaces off last word... */
 	      ptr--;
 	    *++ptr = '\0';		/* terminate string */
 	  }
@@ -266,7 +277,7 @@ static Boolean CvtMultiStrToPxl(dpy, args, num_args, fromVal, toVal, closure_ret
 
 
 
-void add_converter ()
+void add_converter(void)
 {
   XtSetTypeConverter(XtRString, XtRPixel, CvtMultiStrToPxl,
 		     multiColorConvertArgs,

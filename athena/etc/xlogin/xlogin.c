@@ -1,38 +1,57 @@
-/* $Id: xlogin.c,v 1.4 1999-12-08 22:04:05 danw Exp $ */
+/* Copyright 1990, 1999 by the Massachusetts Institute of Technology.
+ *
+ * Permission to use, copy, modify, and distribute this
+ * software and its documentation for any purpose and without
+ * fee is hereby granted, provided that the above copyright
+ * notice appear in all copies and that both that copyright
+ * notice and this permission notice appear in supporting
+ * documentation, and that the name of M.I.T. not be used in
+ * advertising or publicity pertaining to distribution of the
+ * software without specific, written prior permission.
+ * M.I.T. makes no representations about the suitability of
+ * this software for any purpose.  It is provided "as is"
+ * without express or implied warranty.
+ */
+
+static const char rcsid[] = "$Id: xlogin.c,v 1.5 1999-12-22 17:27:48 danw Exp $";
  
-#include <unistd.h>
-#include <string.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <signal.h>
 #include <sys/types.h>
-#include <sys/wait.h>
-#include <sys/time.h>
 #include <sys/stat.h>
-#include <sys/file.h>
-#include <utmp.h>
-#include <fcntl.h>
-#include <X11/Intrinsic.h>
+#include <sys/time.h>
+#include <sys/wait.h>
+
 #include <ctype.h>
 #include <errno.h>
+#include <fcntl.h>
 #include <pwd.h>
-#include <X11/Wc/WcCreate.h>
+#include <signal.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+#include <utmp.h>
+
+#include <X11/Intrinsic.h>
+#include <X11/Shell.h>
 #include <X11/StringDefs.h>
+#include <X11/Xatom.h>
+#include <X11/Xlib.h>
+#include <X11/Xaw/Form.h>
 #include <X11/Xaw/Label.h>
 #include <X11/Xaw/Text.h>
-#include <X11/Xaw/Form.h>
 #ifdef SOLARIS
 #include <X11/Xaw/SmeBSB.h>
 #endif
-#include <X11/Xlib.h>
-#include <X11/Xatom.h>
-#include <X11/Shell.h>
-#include <X11/Xmu/Drawing.h>
 #include <X11/Xmu/Converters.h>
+#include <X11/Xmu/Drawing.h>
+#include <X11/Wc/WcCreate.h>
+
 #include <larv.h>
+
 #include "Clock.h"
 #include "owl.h"
 #include "environment.h"
+#include "xlogin.h"
 
 #ifndef MIN
 #define MIN(a,b) ((a) < (b) ? (a) : (b))
@@ -65,18 +84,42 @@ gid_t def_grplist[] = { 101 };		/* default group list */
 
 /* Function declarations. */
 
-extern void AriRegisterAthena ();
-static void move_instructions(), screensave(), unsave(), start_reactivate();
-static void blinkOwl(), blinkIs(), initOwl(), adjustOwl();
-static void catch_child(), setFontPath();
-static Boolean auxConditions();
-extern pid_t fork_and_store(pid_t *var);
-void focusACT(), unfocusACT(), runACT(), runCB(), focusCB(), resetCB();
-void idleReset(), loginACT(), localErrorHandler(), setcorrectfocus();
-void sigconsACT(), sigconsCB(), callbackACT(), attachandrunCB(), commandCB();
-void restartCB(), windowShutdownACT(), windowShutdownCB();
-void do_motd();
-extern void add_converter ();
+static void move_instructions(XtPointer data, XtIntervalId *timerid);
+static void screensave(XtPointer data, XtIntervalId *timerid);
+static void unsave(Widget w, XtPointer popdown, XEvent *event, Boolean *bool);
+static void start_reactivate(XtPointer data, XtIntervalId *timerid);
+static void blinkOwl(XtPointer data, XtIntervalId *intervalid);
+static void blinkIs(XtPointer data, XtIntervalId *intervalid);
+static void initOwl(Widget search);
+static void adjustOwl(Widget search);
+static void catch_child(void);
+static void setFontPath(void);
+static Boolean auxConditions(void);
+
+static void focusACT(Widget w, XEvent *event, String *p, Cardinal *n);
+static void unfocusACT(Widget w, XEvent *event, String *p, Cardinal *n);
+static void resetACT(Widget w, XEvent *event, String *p, Cardinal *n);
+static void runACT(Widget w, XEvent *event, String *p, Cardinal *n);
+static void idleResetACT(Widget w, XEvent *event, String *p, Cardinal *n);
+static void loginACT(Widget w, XEvent *event, String *p, Cardinal *n);
+static void setcorrectfocus(Widget w, XEvent *event, String *p, Cardinal *n);
+static void sigconsACT(Widget w, XEvent *event, String *p, Cardinal *n);
+static void callbackACT(Widget w, XEvent *event, String *p, Cardinal *n);
+static void windowShutdownACT(Widget w, XEvent *event, String *p, Cardinal *n);
+
+static void runCB(Widget w, XtPointer s, XtPointer unused);
+static void focusCB(Widget w, XtPointer s, XtPointer unused);
+static void unfocusCB(Widget w, XtPointer s, XtPointer unused);
+static void resetCB(Widget w, XtPointer s, XtPointer unused);
+static void sigconsCB(Widget w, XtPointer s, XtPointer unused);
+static void attachandrunCB(Widget w, XtPointer s, XtPointer unused);
+static void commandCB(Widget w, XtPointer s, XtPointer unused);
+static void restartCB(Widget w, XtPointer s, XtPointer unused);
+static void windowShutdownCB(Widget w, XtPointer s, XtPointer unused);
+static void idleResetCB(Widget w, XtPointer s, XtPointer unused);
+
+static void localErrorHandler(String s);
+static void do_motd(void);
 
 
 /* Definition of the Application resources structure. */
@@ -183,9 +226,9 @@ XtActionsRec actions[] = {
     { "setfocus", focusACT },
     { "unsetfocus", unfocusACT },
     { "run", runACT },
-    { "idleReset", idleReset },
+    { "idleReset", idleResetACT },
     { "login", loginACT },
-    { "reset", resetCB },
+    { "reset", resetACT },
     { "setCorrectFocus", setcorrectfocus },
     { "signalConsoleACT", sigconsACT },
     { "callbackACT", callbackACT },
@@ -245,9 +288,7 @@ char *audio_devices[] = { NULL };
 
 static struct sigaction sigact, osigact;
 
-int main(argc, argv)
-     int argc;
-     char* argv[];
+int main(int argc, char **argv)
 {
   XtAppContext app;
   XEvent e;
@@ -256,7 +297,7 @@ int main(argc, argv)
   char hname[1024], *c;
   Arg args[1];
   int i;
-  unsigned acc = 0;
+  long acc = 0;
   int pid;
 #ifdef NANNY
   int fdflags;
@@ -410,12 +451,12 @@ int main(argc, argv)
   sigact.sa_handler = catch_child;
   sigaction(SIGCHLD, &sigact, NULL);
 
-  WcRegisterCallback(app, "UnsetFocus", unfocusACT, NULL);
+  WcRegisterCallback(app, "UnsetFocus", unfocusCB, NULL);
   WcRegisterCallback(app, "runCB", runCB, NULL);
   WcRegisterCallback(app, "setfocusCB", focusCB, NULL);
   WcRegisterCallback(app, "resetCB", resetCB, NULL);
   WcRegisterCallback(app, "signalConsoleCB", sigconsCB, NULL);
-  WcRegisterCallback(app, "idleResetCB", idleReset, NULL);
+  WcRegisterCallback(app, "idleResetCB", idleResetCB, NULL);
   WcRegisterCallback(app, "attachAndRunCB", attachandrunCB, NULL);
   WcRegisterCallback(app, "commandCB", commandCB, NULL);
   WcRegisterCallback(app, "restartCB", restartCB, NULL);
@@ -550,9 +591,7 @@ int main(argc, argv)
 
 static Dimension x_max = 0, y_max = 0;
 
-static void move_instructions(data, timerid)
-     XtPointer data;
-     XtIntervalId *timerid;
+static void move_instructions(XtPointer data, XtIntervalId *timerid)
 {
   Position x, y;
   Window wins[2];
@@ -592,9 +631,7 @@ static void move_instructions(data, timerid)
 			      move_instructions, NULL);
 }
 
-static void start_reactivate(data, timerid)
-     XtPointer  data;
-     XtIntervalId  *timerid;
+static void start_reactivate(XtPointer data, XtIntervalId *timerid)
 {
   int in_use = 0;
   int file;
@@ -664,7 +701,7 @@ static void start_reactivate(data, timerid)
 			       start_reactivate, NULL);
 }
 
-void idleReset()
+static void idleReset(void)
 {
   if (curr_timerid)
     XtRemoveTimeOut(curr_timerid);
@@ -672,9 +709,17 @@ void idleReset()
 			      screensave, NULL);
 }
 
-static void stop_activate(data, timerid)
-     XtPointer data;
-     XtIntervalId *timerid;
+static void idleResetACT(Widget w, XEvent *event, String *p, Cardinal *n)
+{
+  idleReset();
+}
+
+static void idleResetCB(Widget w, XtPointer s, XtPointer unused)
+{
+  idleReset();
+}
+
+static void stop_activate(XtPointer data, XtIntervalId *timerid)
 {
   if (activation_state == ACTIVATED)
     return;
@@ -684,9 +729,16 @@ static void stop_activate(data, timerid)
   activation_state = ACTIVATED;
 }
 
-static void screensave(data, timerid)
-     XtPointer  data;
-     XtIntervalId  *timerid;
+static void unfocus(void)
+{
+  int rvt;
+  Window win;
+
+  XSetInputFocus(dpy, PointerRoot, RevertToPointerRoot, CurrentTime);
+  XGetInputFocus(dpy, &win, &rvt);
+}
+
+static void screensave(XtPointer data, XtIntervalId *timerid)
 {
   static int first_time = TRUE;
   Pixmap pixmap;
@@ -704,7 +756,7 @@ static void screensave(data, timerid)
   do_motd();
   XtPopup(ins, XtGrabNone);
   XRaiseWindow(XtDisplay(ins), XtWindow(ins));
-  unfocusACT(appShell, NULL, NULL, NULL);
+  unfocus();
   if (first_time)
     {
       /* Contortions to "get rid of" cursor on screensaver windows. */
@@ -740,7 +792,7 @@ static void screensave(data, timerid)
 }
 
 /* Check the motd file and update the contents of the widget if necessary. */
-void do_motd()
+static void do_motd(void)
 {
   static Widget motdtext = NULL;
   static time_t modtime = 0, modtime2 = 0;
@@ -832,11 +884,7 @@ void do_motd()
     }
 }
 
-static void unsave(w, popdown, event, bool)
-     Widget w;
-     int popdown;
-     XEvent *event;
-     Boolean *bool;
+static void unsave(Widget w, XtPointer popdown, XEvent *event, Boolean *bool)
 {
   /* Hide the console window. */
   sigconsCB(NULL, "hide", NULL);
@@ -869,18 +917,13 @@ static void unsave(w, popdown, event, bool)
 				 stop_activate, NULL);
 }
 
-void loginACT(w, event, p, n)
-     Widget w;
-     XEvent *event;
-     String *p;
-     Cardinal *n;
+static void loginACT(Widget w, XEvent *event, String *p, Cardinal *n)
 {
   Arg args[2];
   char *script;
   int mode = 1;
   Pixmap bm1, bm2, bm3, bm4, bm5;
   XawTextBlock tb;
-  extern char *dologin();
   XEvent e;
 
   if (curr_timerid)
@@ -911,7 +954,7 @@ void loginACT(w, event, p, n)
 
   XtSetArg(args[0], XtNstring, &script);
   XtGetValues(WcFullNameToWidget(appShell, "*getsession*value"), args, 1);
-  unfocusACT(appShell, NULL, NULL, NULL);
+  unfocus();
   XtUnmapWidget(appShell);
   /* To clear the cut buffer in case someone types ^U while typing
    * their password.
@@ -926,8 +969,6 @@ void loginACT(w, event, p, n)
    */
   if (activation_state != ACTIVATED)
     {
-      void (*oldsig)();
-
       fprintf(stderr, "Waiting for workstation to finish activating...");
       fflush(stderr);
       sigemptyset(&sigact.sa_mask);
@@ -980,18 +1021,13 @@ void loginACT(w, event, p, n)
 }
 
 /* Login failed: Set the exit flag, then return the message the usual way. */
-char *lose(msg)
-     char *msg;
+char *lose(char *msg)
 {
   exiting = TRUE;
   return msg;
 }
 
-void focusACT(w, event, p, n)
-     Widget w;
-     XEvent *event;
-     String *p;
-     Cardinal *n;
+static void focusACT(Widget w, XEvent *event, String *p, Cardinal *n)
 {
   Widget target;
 
@@ -1028,34 +1064,24 @@ void focusACT(w, event, p, n)
       }
 }
 
-void focusCB(w, s, unused)
-     Widget w;
-     char *s;
-     caddr_t unused;
+static void focusCB(Widget w, XtPointer s, XtPointer unused)
 {
   Cardinal one = 1;
 
-  focusACT(w, NULL, &s, &one);
+  focusACT(w, NULL, (String *)&s, &one);
 }
 
-void unfocusACT(w, event, p, n)
-     Widget w;
-     XEvent *event;
-     String *p;
-     Cardinal *n;
+static void unfocusACT(Widget w, XEvent *event, String *p, Cardinal *n)
 {
-  int rvt;
-  Window win;
-
-  XSetInputFocus(dpy, PointerRoot, RevertToPointerRoot, CurrentTime);
-  XGetInputFocus(dpy, &win, &rvt);
+  unfocus();
 }
 
-void setcorrectfocus(w, event, p, n)
-     Widget w;
-     XEvent *event;
-     String *p;
-     Cardinal *n;
+static void unfocusCB(Widget w, XtPointer s, XtPointer unused)
+{
+  unfocus();
+}
+
+static void setcorrectfocus(Widget w, XEvent *event, String *p, Cardinal *n)
 {
   Arg args[2];
   char *win;
@@ -1072,11 +1098,7 @@ void setcorrectfocus(w, event, p, n)
   focusACT(w, event, &win, &i);
 }
 
-void runACT(w, event, p, n)
-     Widget w;
-     XEvent *event;
-     char **p;
-     Cardinal *n;
+static void runACT(Widget w, XEvent *event, String *p, Cardinal *n)
 {
   char **argv;
   int i;
@@ -1171,22 +1193,16 @@ void runACT(w, event, p, n)
 #endif
 }
 
-void runCB(w, s, unused)
-     Widget w;
-     char *s;
-     caddr_t unused;
+static void runCB(Widget w, XtPointer s, XtPointer unused)
 {
   Cardinal i = 1;
 
-  runACT(w, NULL, &s, &i);
+  runACT(w, NULL, (String *)&s, &i);
 }
 
-void attachandrunCB(w, s, unused)
-     Widget w;
-     char *s;
-     caddr_t unused;
+static void attachandrunCB(Widget w, XtPointer xs, XtPointer unused)
 {
-  char *cmd, locker[256];
+  char *s = xs, *cmd, locker[256];
   Cardinal i = 1;
 
   cmd = strchr(s, ',');
@@ -1225,18 +1241,12 @@ void attachandrunCB(w, s, unused)
   runACT(w, NULL, &cmd, &i);
 }
 
-void commandCB(w, s, unused)
-     Widget w;
-     char *s;
-     caddr_t unused;
+static void commandCB(Widget w, XtPointer s, XtPointer unused)
 {
   system(s);
 }
 
-void restartCB(w, s, unused)
-     Widget w;
-     char *s;
-     caddr_t unused;
+static void restartCB(Widget w, XtPointer s, XtPointer unused)
 {
 #ifdef NANNY
   /* On IRIX, we must tell nanny to restart X. */
@@ -1245,10 +1255,7 @@ void restartCB(w, s, unused)
   exit(0);
 }
 
-void windowShutdownCB(w, s, unused)
-     Widget w;
-     char *s;
-     caddr_t unused;
+static void windowShutdownCB(Widget w, XtPointer s, XtPointer unused)
 {
   larv_set_busy(1);
 #ifdef NANNY
@@ -1262,11 +1269,7 @@ void windowShutdownCB(w, s, unused)
 #endif
 }
 
-void windowShutdownACT(w, event, p, n)
-     Widget w;
-     XEvent *event;
-     char **p;
-     Cardinal *n;
+static void windowShutdownACT(Widget w, XEvent *event, String *p, Cardinal *n)
 {
   larv_set_busy(1);
 #ifdef NANNY
@@ -1277,11 +1280,7 @@ void windowShutdownACT(w, event, p, n)
 #endif
 }
 
-void sigconsACT(w, event, p, n)
-     Widget w;
-     XEvent *event;
-     char **p;
-     Cardinal *n;
+static void sigconsACT(Widget w, XEvent *event, String *p, Cardinal *n)
 {
   int sig, pid;
   FILE *f;
@@ -1309,30 +1308,20 @@ void sigconsACT(w, event, p, n)
     }
 }
 
-void sigconsCB(w, s, unused)
-     Widget w;
-     char *s;
-     caddr_t unused;
+static void sigconsCB(Widget w, XtPointer s, XtPointer unused)
 {
   Cardinal i = 1;
 
-  sigconsACT(w, NULL, &s, &i);
+  sigconsACT(w, NULL, (String *)&s, &i);
 }
 
-void callbackACT(w, event, p, n)
-     Widget w;
-     XEvent *event;
-     char **p;
-     Cardinal *n;
+static void callbackACT(Widget w, XEvent *event, String *p, Cardinal *n)
 {
   w = WcFullNameToWidget(appShell, p[0]);
   XtCallCallbacks(w, "callback", p[1]);
 }
 
-void resetCB(w, s, unused)
-     Widget w;
-     char *s;
-     caddr_t unused;
+static void reset(void)
 {
   XawTextBlock tb;
   Widget name_input;
@@ -1372,45 +1361,47 @@ void resetCB(w, s, unused)
 			      screensave, NULL);
 }
 
-void setvalue(w, done, unused)
-     Widget w;
-     int *done;
+static void resetCB(Widget w, XtPointer s, XtPointer unused)
+{
+  reset();
+}
+
+static void resetACT(Widget w, XEvent *event, String *p, Cardinal *n)
+{
+  reset();
+}
+
+static void setvalue(Widget w, int *done, int unused)
 {
   *done = 1;
 }
 
 typedef struct _prompt_callback_info {
-  void (*abort_proc)();
+  void (*abort_proc)(void *);
   void *abort_arg;
 } prompt_callback_info;
 
-void click_abort(widget, client_data, call_data)
-     Widget widget;
-     XtPointer client_data, call_data;
+static void click_abort(Widget widget, XtPointer client_data,
+			XtPointer call_data)
 {
   prompt_callback_info *cdata = (prompt_callback_info *)client_data;
 
   cdata->abort_proc(cdata->abort_arg);
 }
 
-void timeout_abort(client_data, timer_id)
-     XtPointer client_data;
-     XtIntervalId *timer_id;
+static void timeout_abort(XtPointer client_data, XtIntervalId *timer_id)
 {
   prompt_callback_info *cdata = (prompt_callback_info *)client_data;
 
   cdata->abort_proc(cdata->abort_arg);
 }
 
-void prompt_user(msg, abort_proc, abort_arg)
-     char *msg;
-     void (*abort_proc)();
-     void *abort_arg;
+void prompt_user(char *msg, void (*abort_proc)(void *), void *abort_arg)
 {
   XawTextBlock tb;
   XEvent e;
   prompt_callback_info cb;
-  static void (*oldcallback)() = NULL;
+  static void (*oldcallback)(void *) = NULL;
   static int done;
 
   cb.abort_proc = abort_proc;
@@ -1460,9 +1451,7 @@ void prompt_user(msg, abort_proc, abort_arg)
 				   isWindow, isGC, 0, 0, \
 				   isWidth, isHeight, 0, 0, 1)
 
-static void blinkOwl(data, intervalid)
-     XtPointer data;
-     XtIntervalId *intervalid;
+static void blinkOwl(XtPointer data, XtIntervalId *intervalid)
 {
   static int owlCurBitmap;
   owlTimeout = 0;
@@ -1522,9 +1511,7 @@ static void blinkOwl(data, intervalid)
 				blinkOwl, NULL);
 }
 
-static void blinkIs(data, intervalid)
-     XtPointer data;
-     XtIntervalId *intervalid;
+static void blinkIs(XtPointer data, XtIntervalId *intervalid)
 {
   static int isCurBitmap;
   isTimeout = 0;
@@ -1560,8 +1547,7 @@ static void blinkIs(data, intervalid)
 			    blinkIs, NULL);
 }
 
-static void initOwl(search)
-     Widget search;
+static void initOwl(Widget search)
 {
   Widget owl, is;
   Arg args[3];
@@ -1594,7 +1580,7 @@ static void initOwl(search)
 	  ptr = filenames;
 	  while (ptr != NULL && !done)
 	    {
-	      while (*ptr != '\0' && !isspace(*ptr))
+	      while (*ptr != '\0' && !isspace((unsigned char)*ptr))
 		ptr++;
 
 	      if (*ptr == '\0')
@@ -1614,7 +1600,7 @@ static void initOwl(search)
 	      if (!done)
 		{
 		  *ptr = ' ';
-		  while (isspace(*ptr))
+		  while (isspace((unsigned char)*ptr))
 		    ptr++;
 		}
 	      filenames = ptr;
@@ -1659,7 +1645,7 @@ static void initOwl(search)
 	  ptr = filenames;
 	  while (ptr != NULL && !done)
 	    {
-	      while (*ptr != '\0' && !isspace(*ptr))
+	      while (*ptr != '\0' && !isspace((unsigned char)*ptr))
 		ptr++;
 
 	      if (*ptr == '\0')
@@ -1679,7 +1665,7 @@ static void initOwl(search)
 	      if (!done)
 		{
 		  *ptr = ' ';
-		  while (isspace(*ptr))
+		  while (isspace((unsigned char)*ptr))
 		    ptr++;
 		}
 	      filenames = ptr;
@@ -1746,7 +1732,7 @@ static short conditions[] =
 
 static int conditions_len = sizeof(conditions) / sizeof(short);
 
-static Boolean conditionsMet()
+static Boolean conditionsMet(void)
 {
   time_t t;
   struct tm *now;
@@ -1781,7 +1767,7 @@ static short auxconditions[] =
 
 static int auxconditions_len = sizeof(auxconditions) / sizeof(short);
 
-static Boolean auxConditions()
+static Boolean auxConditions(void)
 {
   time_t t;
   struct tm *now;
@@ -1806,8 +1792,7 @@ static Boolean auxConditions()
   return False;
 }
 
-static void adjustOwl(search)
-     Widget search;
+static void adjustOwl(Widget search)
 {
   Widget version, logo, eyes, Slogo, Sversion;
   XtWidgetGeometry logoGeom, eyesGeom, versionGeom;
@@ -1855,19 +1840,17 @@ static void adjustOwl(search)
 }
 
 /* Called from within the toolkit. */
-void localErrorHandler(s)
-     String s;
+static void localErrorHandler(String s)
 {
   fprintf(stderr, "XLogin X error: %s\n", s);
   cleanup(NULL);
   exit(1);
 }
 
-static void catch_child()
+static void catch_child(void)
 {
   int pid;
   int status;
-  char *number();
 
   while (1)
     {
@@ -1907,7 +1890,7 @@ static void catch_child()
     }
 }
 
-static void setFontPath()
+static void setFontPath(void)
 {
   static int ndirs = 0;
   static char **dirlist;
@@ -1933,7 +1916,7 @@ static void setFontPath()
       /* Count the number of directories we will have total. */
       ndirs = nold + 1;
       cp = dirs;
-      while (cp = strchr(cp, ','))
+      while ((cp = strchr(cp, ',')))
 	{
 	  ndirs++;
 	  cp++;
@@ -1952,7 +1935,7 @@ static void setFontPath()
       /* Copy the entries in resources.fontpath. */
       cp = dirs;
       dirlist[i++] = cp;
-      while (cp = strchr(cp, ','))
+      while ((cp = strchr(cp, ',')))
 	{
 	  *cp++ = '\0';
 	  dirlist[i++] = cp;

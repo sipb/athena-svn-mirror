@@ -76,18 +76,27 @@ static XtResource resources[] = {
  * Semi Public function definitions. 
  */
 
-static void Redisplay(), Destroy(), Initialize(), FlipColors();
-static void ClassInitialize();
-static Boolean SetValues();
-static XtGeometryResult QueryGeometry();
+static void Redisplay(Widget w, XEvent *event, Region region);
+static void Destroy(Widget w);
+static void Initialize(Widget request, Widget new, ArgList args,
+		       Cardinal *num_args);
+static void FlipColors(Widget w);
+static void ClassInitialize(void);
+static Boolean SetValues(Widget current, Widget request, Widget new,
+			 ArgList args, Cardinal *num_args);
+static XtGeometryResult QueryGeometry(Widget w, XtWidgetGeometry *intended,
+				      XtWidgetGeometry *return_val);
 
 /* 
  * Private Function Definitions.
  */
 
-static void GetDefaultSize(), DrawBitmaps(), GetBitmapInfo();
-static void CreateGCs(), DestroyGCs();
-    
+static void GetDefaultSize(Widget w, Dimension *width, Dimension *height);
+static void DrawBitmaps(Widget w, GC gc);
+static void GetBitmapInfo(Widget w, Boolean is_left);
+static void CreateGCs(Widget w);
+static void DestroyGCs(Widget w);
+
 #define superclass (&smeClassRec)
 SmeBSBClassRec smeBSBClassRec = {
   {
@@ -151,8 +160,7 @@ WidgetClass smeBSBObjectClass = (WidgetClass) &smeBSBClassRec;
  *	Returns: none.
  */
 
-static void 
-ClassInitialize()
+static void ClassInitialize(void)
 {
     XawInitializeWidgetSet();
     XtAddConverter( XtRString, XtRJustify, XmuCvtStringToJustify, NULL, 0 );
@@ -167,11 +175,8 @@ ClassInitialize()
  */
 
 /* ARGSUSED */
-static void
-Initialize(request, new, args, num_args)
-Widget request, new;
-ArgList args;
-Cardinal *num_args;
+static void Initialize(Widget request, Widget new, ArgList args,
+		       Cardinal *num_args)
 {
     SmeBSBObject entry = (SmeBSBObject) new;
 
@@ -196,9 +201,7 @@ Cardinal *num_args;
  *      Returns: none.
  */
 
-static void
-Destroy(w)
-Widget w;
+static void Destroy(Widget w)
 {
     SmeBSBObject entry = (SmeBSBObject) w;
 
@@ -216,11 +219,7 @@ Widget w;
  */
 
 /* ARGSUSED */
-static void
-Redisplay(w, event, region)
-Widget w;
-XEvent * event;
-Region region;
+static void Redisplay(Widget w, XEvent *event, Region region)
 {
     GC gc;
     SmeBSBObject entry = (SmeBSBObject) w;
@@ -290,11 +289,8 @@ Region region;
  */
 
 /* ARGSUSED */
-static Boolean
-SetValues(current, request, new, args, num_args)
-Widget current, request, new;
-ArgList args;
-Cardinal *num_args;
+static Boolean SetValues(Widget current, Widget request, Widget new,
+			 ArgList args, Cardinal *num_args)
 {
     SmeBSBObject entry = (SmeBSBObject) new;
     SmeBSBObject old_entry = (SmeBSBObject) current;
@@ -349,10 +345,8 @@ Cardinal *num_args;
  * I just return the height and width of the label plus the margins.
  */
 
-static XtGeometryResult
-QueryGeometry(w, intended, return_val) 
-Widget w;
-XtWidgetGeometry *intended, *return_val;
+static XtGeometryResult QueryGeometry(Widget w, XtWidgetGeometry *intended,
+				      XtWidgetGeometry *return_val) 
 {
     SmeBSBObject entry = (SmeBSBObject) w;
     Dimension width, height;
@@ -392,9 +386,7 @@ XtWidgetGeometry *intended, *return_val;
  *      Returns: none.
  */
 
-static void 
-FlipColors(w)
-Widget w;
+static void FlipColors(Widget w)
 {
     SmeBSBObject entry = (SmeBSBObject) w;
 
@@ -422,10 +414,7 @@ Widget w;
  *	Returns: none.
  */
 
-static void
-GetDefaultSize(w, width, height) 
-Widget w;
-Dimension * width, * height;
+static void GetDefaultSize(Widget w, Dimension *width, Dimension *height) 
 {
     SmeBSBObject entry = (SmeBSBObject) w;
 
@@ -451,10 +440,7 @@ Dimension * width, * height;
  *      Returns: none
  */
 
-static void
-DrawBitmaps(w, gc)
-Widget w;
-GC gc;
+static void DrawBitmaps(Widget w, GC gc)
 {
     int x_loc, y_loc;
     SmeBSBObject entry = (SmeBSBObject) w;
@@ -507,10 +493,7 @@ GC gc;
  *      Returns: none
  */
 
-static void
-GetBitmapInfo(w, is_left)
-Widget w;
-Boolean is_left;
+static void GetBitmapInfo(Widget w, Boolean is_left)
 {
     SmeBSBObject entry = (SmeBSBObject) w;    
     unsigned int depth, bw;
@@ -565,9 +548,7 @@ Boolean is_left;
  *      Returns: none.
  */
 
-static void
-CreateGCs(w)
-Widget w;
+static void CreateGCs(Widget w)
 {
     SmeBSBObject entry = (SmeBSBObject) w;    
     XGCValues values;
@@ -606,9 +587,7 @@ Widget w;
  *      Returns: none.
  */
 
-static void
-DestroyGCs(w)
-Widget w;
+static void DestroyGCs(Widget w)
 {
     SmeBSBObject entry = (SmeBSBObject) w;    
 
@@ -617,19 +596,3 @@ Widget w;
     XtReleaseGC(w, entry->sme_bsb.rev_gc);
     XtReleaseGC(w, entry->sme_bsb.invert_gc);
 }
-
-#ifdef apollo
-
-/*
- * The apollo compiler that we have optomizes out my code for
- * FlipColors() since it is static. and no one executes it in this
- * file.  I am setting the function pointer into the class structure so
- * that it can be called by my parent who will tell me to when to
- * highlight and unhighlight.
- */
-
-void _XawSmeBSBApolloHack ()
-{
-    FlipColors();
-}
-#endif /* apollo */
