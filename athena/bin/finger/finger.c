@@ -5,8 +5,11 @@
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/finger/finger.c,v $
  *	$Author: probe $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/finger/finger.c,v 1.12 1991-05-27 13:17:16 probe Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/finger/finger.c,v 1.13 1991-07-01 10:17:51 probe Exp $
  *	$Log: not supported by cvs2svn $
+ * Revision 1.12  91/05/27  13:17:16  probe
+ * RIOS integration
+ * 
  * Revision 1.1  91/03/27  14:44:33  probe
  * Initial revision
  * 
@@ -47,7 +50,7 @@
  */
 
 #ifndef lint
-static char *rcsid_finger_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/finger/finger.c,v 1.12 1991-05-27 13:17:16 probe Exp $";
+static char *rcsid_finger_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/finger/finger.c,v 1.13 1991-07-01 10:17:51 probe Exp $";
 
 #endif lint
 
@@ -109,8 +112,8 @@ static char sccsid[] = "@(#)finger.c	5.8 (Berkeley) 3/13/86";
  * option turns off plans for long format outputs.
  */
 
-#include <sys/file.h>
 #include <sys/types.h>
+#include <sys/file.h>
 #include <sys/stat.h>
 #include <utmp.h>
 #include <sys/signal.h>
@@ -123,6 +126,9 @@ static char sccsid[] = "@(#)finger.c	5.8 (Berkeley) 3/13/86";
 #define NO_LASTLOG
 #endif
 #include <ctype.h>
+#ifdef _AUX_SOURCE
+#include <time.h>
+#endif
 #include <sys/time.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -302,7 +308,7 @@ doall()
 		exit(2);
 	}
 	if (unquick) {
-#if defined(ultrix) || defined(_AIX)
+#if defined(ultrix) || defined(_AIX) || defined(_AUX_SOURCE)
 		setpwent();
 #else
 		extern _pw_stayopen;
@@ -410,7 +416,7 @@ donames(argv)
 	if (unquick) {
 		setpwent();
 		if (!match) {
-#if !defined(ultrix) && !defined(_AIX)
+#if !defined(ultrix) && !defined(_AIX) || defined(_AUX_SOURCE)
 			extern _pw_stayopen;
 
 			_pw_stayopen = 1;
