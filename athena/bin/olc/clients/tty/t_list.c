@@ -12,18 +12,21 @@
  *
  *      Tom Coppeto
  *	Chris VanHaren
+ *	Lucien Van Elsen
  *      MIT Project Athena
  *
  * Copyright (C) 1989,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_list.c,v $
- *	$Id: t_list.c,v 1.14 1990-07-16 08:09:02 lwvanels Exp $
+ *	$Id: t_list.c,v 1.15 1990-11-14 14:56:53 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_list.c,v 1.14 1990-07-16 08:09:02 lwvanels Exp $";
+#ifndef SABER
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_list.c,v 1.15 1990-11-14 14:56:53 lwvanels Exp $";
+#endif
 #endif
 
 #include <mit-copyright.h>
@@ -58,7 +61,7 @@ t_list_queue(Request,sort,queues,topics,users,stati,comments,file,display)
 	OSortListByRule(list, default_sort_order);
 	t_display_list(list,comments,file);
 	if(display == TRUE)
-	    display_file(file,TRUE);
+	    display_file(file);
 	else
 	    cat_file(file);
 	free(list);
@@ -92,9 +95,6 @@ void output_status_header (file, status)
     FILE *file;
     const char *status;
 {
-    int active;
-    static int old_active;
-
     if (status == 0) {
 	old_status[0] = '\0';
 	return;
