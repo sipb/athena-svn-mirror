@@ -1,0 +1,906 @@
+/*
+ * This is the MIT supplement to the PSI/NYSERNet implementation of SNMP.
+ * This file describes the disk usage portion of the mib.
+ *
+ * Copyright 1990 by the Massachusetts Institute of Technology.
+ *
+ * For copying and distribution information, please see the file
+ * <mit-copyright.h>.
+ *
+ * Tom Coppeto
+ * MIT Network Services
+ * 15 April 1990
+ *
+ *    $Source: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/disk_grp.c.new,v $
+ *    $Author: cfields $
+ *    $Locker:  $
+ *    $Log: not supported by cvs2svn $
+ * Revision 1.6  90/06/05  16:07:31  tom
+ * the total variable length must be counted (not just "instance")
+ * 
+ * Revision 1.5  90/05/30  10:29:10  tom
+ * SNMPMXSID should be SNMPMXID
+ * 
+ * Revision 1.4  90/05/26  13:36:31  tom
+ * instances are now set to device name in ascii
+ * and a variable to query mount point has been added
+ * 
+ * Revision 1.3  90/04/26  17:06:14  tom
+ * added rcsid
+ * 
+ * Revision 1.2  90/04/26  16:22:18  tom
+ * cleaned up some code
+ * 
+ *
+ */
+
+#ifndef lint
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/disk_grp.c.new,v 1.1 1994-09-18 12:55:57 cfields Exp $";
+#endif
+
+#include "include.h"
+#include <mit-copyright.h>
+
+#ifdef MIT
+#ifndef RSPOS
+
+#include <sys/param.h>
+#include <errno.h>
+#include <ufs/fs.h>
+#ifdef decmips
+#include <sys/mount.h>
+#else  decmips
+#include <sys/vfs.h>
+#include <mntent.h>
+#endif decmips
+
+
+static int bread();
+static char *get_mounted_filsys();
+static struct fs *get_fs();
+extern int errno;
+
+#ifndef decmips
+static int dfreedev();
+static int dfreemnt();
+
+/*
+ * plastic shopping bags are 5 cents
+ */
+
+struct thing 
+{
+  int total;
+  int free;
+  int avail;
+  int used;
+};
+
+#endif decmips
+
+
+/*
+ * Function:    lu_ndparts()
+ * Description: Top level callback. Retrieves the number of partitions 
+ *              currently mounted (INT).
+ * Returns:     BUILD_ERR/BUILD_SUCCESS
+ */
+
+int
+lu_nfsmounted(varnode, repl, instptr, reqflg)
+     struct snmp_tree_node *varnode;
+     varbind *repl;
+     objident *instptr;
+     int reqflg;
+{
+#ifndef decmips
+  FILE *mtabp;
+  struct mntent *mnt;
+#endif  decmips
+  int i   = 0;
+  int cnt = 0;
+
+  if (varnode->flags & NOT_AVAIL ||
+      varnode->offset <= 0 ||     /* not expecting offset here */
+      ((varnode->flags & NULL_OBJINST) && (reqflg == NXT)))
+    return (BUILD_ERR);
+
+  /*
+   * Build reply
+   */
+
+  bcopy ((char *)varnode->var_code, (char *) &repl->name, sizeof(repl->name));
+  repl->name.ncmp++;      
+  repl->val.type = INT;   
+  
+  /*
+   * Open mtab and count 'em up. We only care about MNTTYPE_42 types.
+   */
+
+#ifdef decmips
+  while(cnt = getmountent(&i, lbuf, 1));
+  cnt = i + 1;
+#else  decmips
+  if((mtabp = setmntent(MOUNTED, "r")) == 0)
+    {
+      syslog(LOG_ERR, "lu_ndparts: could not open mtab");
+      return(BUILD_ERR);
+    }
+
+  while(mnt = getmntent(mtabp))
+    {
+      if(strcmp(mnt->mnt_type, MNTTYPE_42) != 0)
+	continue;
+      cnt++;
+    }
+
+  endmntent(mtabp);
+#endif decmips
+
+  repl->val.value.intgr = cnt;
+  return(BUILD_SUCCESS);
+}
+
+
+
+
+/*
+ * Function:    lu_disk()
+ * Description: Top level callback. Suports the following:
+ *                 DKPATH:  (STR) mounted on pathname
+ *                 DKDNAME: (STR) block device pathname
+ *                 DKTYPE:  (STR) type of disk
+ *                 PTUSED:  (INT) used disk in bytes
+ *                 PTAVAIL: (INT) available disk in bytes
+ *                 PTFREE:  (INT) free disk in bytes
+ *                 PTTOTAL: (INT) total disk in bytes
+ *                 PIUSED:  (INT) used inodes
+ *                 PIFREE:  (INT) free inodes
+ *                 PITOTAL: (INT) total inodes
+ *              Each partition is an instance starting at 1, proceeding in the
+ *              order in which they were mounted.
+ * Returns:     BUILD_ERR/BUILD_SUCCESS
+ */
+
+int          
+lu_fsstat(varnode, repl, instptr, reqflg)
+     struct snmp_tree_node *varnode;
+     varbind *repl;
+     objident *instptr;
+     int reqflg;
+{
+#ifdef decmips
+  struct fs_data *f;
+#else  decmips
+  struct mntent *mnt;
+  struct thing df;     
+  struct thing di;
+  int status;
+#endif decmips
+  int cnt = 0;
+  int len;
+  char *ch;
+  char disk[SNMPMXID];
+#ifdef 0
+  if ((varnode->flags & NOT_AVAIL) || (varnode->offset <= 0))
+    return (BUILD_ERR);
+
+  if((instptr == (objident *) NULL) || (instptr->ncmp == 0))
+    disk[0] = '\0';
+  else
+    {
+      cnt = 0;
+      while((cnt < instptr->ncmp) && (cnt < SNMPMXID))
+	{
+	  disk[cnt] = instptr->cmp[cnt];
+	  ++cnt;
+	}
+      disk[cnt] = '\0';
+    }
+
+  /*
+   * get the partition associated with given instance 
+   */
+
+#ifdef decmips
+  
+  if((f = (struct fs_data *) get_mounted_filsys(disk, reqflg)) == 
+     (struct fs_data *) NULL)
+    {
+      repl->name.ncmp++;
+      return(BUILD_ERR);
+    }
+  
+  /*
+   * Build reply
+   */
+
+  bcopy ((char *)varnode->var_code, (char *) &repl->name, sizeof(repl->name));
+  repl->val.type = INT;
+
+  /*
+   *  fill in object instance with block device path
+   */
+
+  cnt = 0;
+  ch = &(f->fd_req.devname[0]);
+  len = strlen(f->fd_req.devname);
+  if((len + repl->name.ncmp) > SNMPMXID)
+    len = SNMPMXID - repl->name.ncmp;
+
+  while(cnt < len)
+    {
+      repl->name.cmp[repl->name.ncmp] = *ch & 0xff;
+      repl->name.ncmp++;
+      cnt++;
+      ch++;
+    }
+
+  /*
+   * return values
+   */
+
+  switch(varnode->offset)
+    {
+    case N_DKPATH:
+      return(make_str(&(repl->val), f->fd_req.devname));
+    case N_DKDNAME:
+      return(make_str(&(repl->val), f->fd_req.path));
+    case N_DKTYPE:
+      return(BUILD_ERR); 
+    case N_PTUSED:
+      repl->val.value.intgr = (f->fd_req.btot - f->fd_req.bfree) * 1024;
+      return(BUILD_SUCCESS);
+    case N_PTAVAIL:
+      repl->val.value.intgr = (f->fd_req.bfreen) * 1024;
+      return(BUILD_SUCCESS);
+    case N_PTFREE:
+      repl->val.value.intgr = f->fd_req.bfree * 1024;
+      return(BUILD_SUCCESS);
+    case N_PTTOTAL:
+      repl->val.value.intgr = f->fd_req.btot * 1024;
+      return(BUILD_SUCCESS);
+    case N_PIUSED:
+      repl->val.value.intgr = f->fd_req.gtot - f->fd_req.gfree;
+      return(BUILD_SUCCESS);
+    case N_PIFREE:
+      repl->val.value.intgr = f->fd_req.gfree;
+      return(BUILD_SUCCESS);
+    case N_PITOTAL:
+      repl->val.value.intgr = f->fd_req.gtot;
+      return(BUILD_SUCCESS);
+    default:
+      return(BUILD_ERR);
+    }
+
+#else decmips
+
+  if((mnt = get_mounted_filsys(disk, reqflg)) == (struct mntent *) NULL)
+    {
+      repl->name.ncmp++;
+      return(BUILD_ERR);
+    }
+
+  /*
+   * Build reply
+   */
+
+  bcopy ((char *)varnode->var_code, (char *) &repl->name, sizeof(repl->name));
+  repl->val.type = INT; 
+
+  status = dfreemnt(mnt->mnt_dir, &df, &di);
+  if(status != BUILD_SUCCESS)
+    return(status);
+
+   /*
+    *  fill in object instance with block device path
+    */
+  
+  cnt = 0;
+  ch = &(mnt->mnt_fsname[0]);
+  len = strlen(mnt->mnt_fsname);
+  if((len + repl->name.ncmp) > SNMPMXID)
+    len = SNMPMXID - repl->name.ncmp;
+
+  while(cnt < len)
+    {
+      repl->name.cmp[repl->name.ncmp] = *ch & 0xff;
+      repl->name.ncmp++;
+      cnt++;
+      ch++;
+    }
+
+  /*
+   * return values
+   */
+
+  switch(varnode->offset)
+    {
+    case N_DKPATH:
+      return(make_str(&(repl->val), mnt->mnt_dir));
+    case N_DKDNAME:
+      return(make_str(&(repl->val), mnt->mnt_fsname));
+    case N_DKTYPE:
+      return(make_str(&(repl->val), mnt->mnt_type));
+    case N_PTUSED:
+      repl->val.value.intgr = df.used;
+      return(BUILD_SUCCESS);
+    case N_PTAVAIL:
+      repl->val.value.intgr = df.avail;
+      return(BUILD_SUCCESS);
+    case N_PTFREE:
+      repl->val.value.intgr = df.free;
+      return(BUILD_SUCCESS);      
+    case N_PTTOTAL:
+      repl->val.value.intgr = df.total;
+      return(BUILD_SUCCESS);
+    case N_PIUSED:
+      repl->val.value.intgr = di.used;
+      return(BUILD_SUCCESS);     
+    case N_PIFREE:
+      repl->val.value.intgr = di.free;
+      return(BUILD_SUCCESS);
+    case N_PITOTAL:
+      repl->val.value.intgr = di.total;
+      return(BUILD_SUCCESS);
+    default:
+      return(BUILD_ERR);
+    }
+
+#endif decmips
+#endif 0
+}
+
+
+
+
+
+int          
+lu_fs(varnode, repl, instptr, reqflg)
+     struct snmp_tree_node *varnode;
+     varbind *repl;
+     objident *instptr;
+     int reqflg;
+{
+#ifdef decmips
+  struct fs_data *f;
+#else  decmips
+  struct mntent *mnt;
+  struct thing df;     
+  struct thing di;
+  int status;
+#endif decmips
+  int cnt = 0;
+  int len;
+  char *ch;
+  char disk[SNMPMXID];
+  struct fs *fst;
+#ifdef 0
+  if ((varnode->flags & NOT_AVAIL) || (varnode->offset <= 0))
+    return (BUILD_ERR);
+
+  if((instptr == (objident *) NULL) || (instptr->ncmp == 0))
+    disk[0] = '\0';
+  else
+    {
+      cnt = 0;
+      while((cnt < instptr->ncmp) && (cnt < SNMPMXID))
+	{
+	  disk[cnt] = instptr->cmp[cnt];
+	  ++cnt;
+	}
+      disk[cnt] = '\0';
+    }
+
+  /*
+   * get the partition associated with given instance 
+   */
+
+#ifdef decmips
+  
+  if((f = (struct fs_data *) get_mounted_filsys(disk, reqflg)) == 
+     (struct fs_data *) NULL)
+    {
+      repl->name.ncmp++;
+      return(BUILD_ERR);
+    }
+
+#else  decmips
+
+  if((mnt = get_mounted_filsys(disk, reqflg)) == (struct mntent *) NULL)
+    {
+      repl->name.ncmp++;
+      return(BUILD_ERR);
+    }
+
+#endif decmips
+
+
+  /*
+   * get fs structure
+   */
+
+  if((fst = get_fs(disk)) == (struct fs *) NULL)
+    {
+      repl->name.ncmp++;
+      return(BUILD_ERR);
+    }
+
+
+  /*
+   * Build reply
+   */
+
+  bcopy ((char *)varnode->var_code, (char *) &repl->name, sizeof(repl->name));
+  repl->val.type = INT;
+
+  /*
+   *  fill in object instance with block device path
+   */
+
+  cnt = 0;
+  ch = &(f->fd_req.devname[0]);
+  len = strlen(f->fd_req.devname);
+  if((len + repl->name.ncmp) > SNMPMXID)
+    len = SNMPMXID - repl->name.ncmp;
+
+  while(cnt < len)
+    {
+      repl->name.cmp[repl->name.ncmp] = *ch & 0xff;
+      repl->name.ncmp++;
+      cnt++;
+      ch++;
+    }
+
+  /*
+   * return values
+   */
+
+  repl->val.type = INT;  /* mostly true */
+
+  switch(varnode->offset)
+    {
+    case N_FSSBLKNO:
+      repl->val.value.intgr = fst->fs_sblkno;
+      return(BUILD_SUCCESS);      
+    case N_FSCBLKNO:
+      repl->val.value.intgr = fst->fs_cblkno;
+      return(BUILD_SUCCESS);
+    case N_FSIBLKNO:
+      repl->val.value.intgr = fst->fs_iblkno;
+      return(BUILD_SUCCESS); 
+    case N_FSDBLKNO:
+      repl->val.value.intgr = fst->fs_dblkno;
+      return(BUILD_SUCCESS); 
+    case N_FSCGOFFSET:
+      repl->val.value.intgr = fst->fs_cgoffset;
+      return(BUILD_SUCCESS); 
+    case N_FSCGMASK:
+      repl->val.value.intgr = fst->fs_cgmask;
+      return(BUILD_SUCCESS); 
+    case N_FSTIME:
+      return(make_str(&(repl->val), ctime(fst->fs_time)));
+    case N_FSSIZE:
+      repl->val.value.intgr = fst->fs_size;
+      return(BUILD_SUCCESS);
+    case N_FSNCG:
+      repl->val.value.intgr = fst->fs_ncg;
+      return(BUILD_SUCCESS);
+    case N_FSBSIZE:
+      repl->val.value.intgr = fst->fs_bsize;
+      return(BUILD_SUCCESS);
+    case N_FSFSIZE:
+      repl->val.value.intgr = fst->fs_fsize;
+      return(BUILD_SUCCESS);
+    case N_FSFRAG:
+      repl->val.value.intgr = fst->fs_frag;
+      return(BUILD_SUCCESS);
+    case N_FSMINFREE:
+      repl->val.value.intgr = fst->fs_minfree;
+      return(BUILD_SUCCESS);
+    case N_FSROTDELAY:
+      repl->val.value.intgr = fst->fs_rotdelay;
+      return(BUILD_SUCCESS);
+    case N_FSRPS:
+      repl->val.value.intgr = fst->fs_rps;
+      return(BUILD_SUCCESS);
+    case N_FSBMASK:
+      repl->val.value.intgr = fst->fs_bmask;
+      return(BUILD_SUCCESS);
+    case N_FSFMASK:
+      repl->val.value.intgr = fst->fs_fmask;
+      return(BUILD_SUCCESS);
+    case N_FSBSHIFT:
+      repl->val.value.intgr = fst->fs_bshift;
+      return(BUILD_SUCCESS);
+    case N_FSFSHIFT:
+      repl->val.value.intgr = fst->fs_fshift;
+      return(BUILD_SUCCESS);
+    case N_FSMAXCONTIG:
+      repl->val.value.intgr = fst->fs_maxcontig;
+      return(BUILD_SUCCESS);
+    case N_FSMAXBPG:
+      repl->val.value.intgr = fst->fs_maxbpg;
+      return(BUILD_SUCCESS);
+    case N_FSFRAGSHIFT:
+      repl->val.value.intgr = fst->fs_fragshift;
+      return(BUILD_SUCCESS);
+    case N_FSFSBTODB:
+      repl->val.value.intgr = fst->fs_fsbtodb;
+      return(BUILD_SUCCESS);
+    case N_FSSBSIZE:
+      repl->val.value.intgr = fst->fs_sbsize;
+      return(BUILD_SUCCESS);
+    case N_FSCSMASK:
+      repl->val.value.intgr = fst->fs_csmask;
+      return(BUILD_SUCCESS);
+    case N_FSCSSHIFT:
+      repl->val.value.intgr = fst->fs_csshift;
+      return(BUILD_SUCCESS);
+    case N_FSNINDIR:
+      repl->val.value.intgr = fst->fs_nindir;
+      return(BUILD_SUCCESS);
+    case N_FSINOPB:
+      repl->val.value.intgr = fst->fs_inopb;
+      return(BUILD_SUCCESS);
+    case N_FSNSPF:
+      repl->val.value.intgr = fst->fs_nspf;
+      return(BUILD_SUCCESS);
+    case N_FSOPTIM:
+      repl->val.value.intgr = fst->fs_optim;
+      return(BUILD_SUCCESS);
+#ifndef decmips
+    case N_FSID1:
+      repl->val.value.intgr = fst->fs_id[0];
+      return(BUILD_SUCCESS);
+    case N_FSID2:
+      repl->val.value.intgr = fst->fs_id[1];
+      return(BUILD_SUCCESS);
+#endif /* decmips */
+    case N_FSCSADDR:
+      repl->val.value.intgr = fst->fs_csaddr;
+      return(BUILD_SUCCESS);
+    case N_FSCSSIZE: 
+      repl->val.value.intgr = fst->fs_cssize;
+      return(BUILD_SUCCESS);
+    case N_FSCGSIZE: 
+      repl->val.value.intgr = fst->fs_cgsize;
+      return(BUILD_SUCCESS);
+    case N_FSNTRAK:
+      repl->val.value.intgr = fst->fs_ntrak;
+      return(BUILD_SUCCESS);
+    case N_FSNSECT: 
+      repl->val.value.intgr = fst->fs_nsect;
+      return(BUILD_SUCCESS);
+    case N_FSSPC:
+      repl->val.value .intgr = fst->fs_spc;
+      return(BUILD_SUCCESS);
+    case N_FSNCYL: 
+      repl->val.value.intgr = fst->fs_ncyl;
+      return(BUILD_SUCCESS);
+    case N_FSCPG:
+      repl->val.value.intgr = fst->fs_cpg;
+      return(BUILD_SUCCESS);
+    case N_FSIPG:
+      repl->val.value.intgr = fst->fs_ipg;
+      return(BUILD_SUCCESS);
+    case N_FSFPG:
+      repl->val.value.intgr = fst->fs_fpg;
+      return(BUILD_SUCCESS);
+    case N_FSFMOD:
+      repl->val.value.intgr = fst->fs_fmod;
+      return(BUILD_SUCCESS);
+    case N_FSCLEAN:
+      repl->val.value.intgr = fst->fs_clean;
+      return(BUILD_SUCCESS);
+    case N_FSRONLY:
+      repl->val.value.intgr = fst->fs_ronly;
+      return(BUILD_SUCCESS);
+    case N_FSFLAGS:
+      repl->val.value.intgr = fst->fs_flags;
+      return(BUILD_SUCCESS);
+    case N_FSFSMNT:
+      return(make_str((&repl->val), fst->fs_fsmnt));
+    case N_FSCGROTOR:
+      repl->val.value.intgr = fst->fs_cgrotor;
+      return(BUILD_SUCCESS);
+    case N_FSCPC:
+      repl->val.value.intgr = fst->fs_cpc;
+      return(BUILD_SUCCESS);
+    case N_FSMAGIC:
+      repl->val.value.intgr = fst->fs_magic;
+      return(BUILD_SUCCESS);
+#ifdef 0
+    case N_FSROTBL:
+      repl->val.value.intgr = fst->fs_rotbl;
+      return(BUILD_SUCCESS);
+#endif
+    case N_FSCSNDIR:
+      repl->val.value.intgr = fst->fs_cstotal.cs_ndir;
+      return(BUILD_SUCCESS);
+    case N_FSCSNBFREE:
+      repl->val.value.intgr = fst->fs_cstotal.cs_nbfree;
+      return(BUILD_SUCCESS);
+    case N_FSCSNIFREE:
+      repl->val.value.intgr = fst->fs_cstotal.cs_nifree;
+      return(BUILD_SUCCESS);
+    case N_FSCSNFFREE:
+      repl->val.value.intgr = fst->fs_cstotal.cs_nffree;
+#ifdef 0
+    case N_FSCSPNDIR:
+      repl->val.value.intgr = fst->fs_csp[csp].cs_ndir;
+      return(BUILD_SUCCESS);
+    case N_FSCSPNBFREE:
+      repl->val.value.intgr = fst->fs_csp[csp].cs_nbfree;
+      return(BUILD_SUCCESS);
+    case N_FSCSPNIFREE:
+      repl->val.value.intgr = fst->fs_csp[csp].cs_ifree;
+      return(BUILD_SUCCESS);
+    case N_FSCSPNFFREE:
+      repl->val.value.intgr = fst->fs_csp[csp].cs_nffree;
+      return(BUILD_SUCCESS);
+#endif
+    default:
+      return(BUILD_ERR);
+    }
+#endif 0
+}
+
+
+
+
+
+
+static char *
+get_mounted_filsys(disk, reqflg)
+     char *disk;
+     int reqflg;
+{
+#ifdef decmips
+  char *c = (char *) NULL;
+  struct fs_data *f;
+#else  decmips
+  static struct mntent *mnt;
+  FILE *mtabp;
+#endif decmips
+  int nflag = 0;
+  int i;
+  int cnt = 0;
+#ifdef 0  
+#ifdef decmips
+
+  i = 0;
+  while(cnt = getmountent(&i, lbuf, 1))
+    {
+      f = (struct fs_data *) lbuf;
+
+      if(*disk == '\0')
+	break;
+      
+      if(nflag)
+	break;
+      
+      if(!(f->fd_flags & M_LOCAL))
+	continue;
+
+      if(strcmp(f->fd_req.devname, disk) == 0)
+        {
+          if((reqflg & (NXT|GET_LEX_NEXT)) && disk)
+            {
+              nflag = 1;
+              continue;
+            }
+          else
+	    {
+	      c = lbuf;
+	      break;
+	    }
+        }
+    }
+
+  return(c);
+
+#else decmips
+
+  if((mtabp = setmntent(MOUNTED, "r")) == 0)
+    {
+      syslog(LOG_ERR, "lu_ndparts: could not open mtab");
+      return((char *) NULL);
+    }
+    
+  while(mnt = getmntent(mtabp))
+    {
+      if(strcmp(mnt->mnt_type, MNTTYPE_42) != 0)
+	continue;
+      if (strcmp(mnt->mnt_type, MNTTYPE_IGNORE) == 0 ||
+	  strcmp(mnt->mnt_type, MNTTYPE_SWAP) == 0)
+	continue;
+
+      /*
+       * the first one
+       */
+  
+      if(*disk == '\0')
+	break;
+      
+      /*
+       * the next one
+       */
+      
+      if(nflag)
+	break;
+
+      /*
+       * the one we want
+       */
+      
+      if(strcmp(mnt->mnt_fsname, disk) == 0)
+	{
+	  if((reqflg & (NXT|GET_LEX_NEXT)) && (instptr != (objident *) NULL) &&
+	     (instptr->ncmp !=0))
+	    {
+	      nflag = 1;
+	      continue;
+	    }
+	  else
+	    break;
+	}
+    }
+
+  endmntent(mtabp);
+
+  /*
+   * instance too high?
+   */
+
+  if(mnt == (struct mntent *) NULL)
+    return((char *) NULL);
+    
+  return((char *) mnt);
+
+#endif decmips
+#endif 0
+}
+
+
+
+
+
+#ifndef decmips
+
+/*
+ * Function:    dfreedev()
+ * Description: read disk stats out of given file, return stuff in things.
+ * Returns:     BUILD_ERR/BUILD_SUCCESS
+ */
+
+static int
+dfreedev(file, df, di)
+     char *file;
+     struct thing *df;
+     struct thing *di;
+{
+  int tavail;
+  struct fs *f;
+
+  if((f = get_fs(file)) == (struct fs *) NULL)
+    return(BUILD_ERR);
+      
+  di->total  = f->fs_ncg * f->fs_ipg;
+  di->used   = di->total - f->fs_cstotal.cs_nifree;
+  di->free   = f->fs_cstotal.cs_nifree;
+  df->total  = f->fs_dsize;
+  df->free   = f->fs_cstotal.cs_nbfree * f->fs_frag + 
+    f->fs_cstotal.cs_nffree;
+  df->used   = df->total - df->free;
+  tavail     = df->total * (100 - f->fs_minfree) / 100;
+  df->avail  = (tavail > df->used ? tavail - df->used : 0);
+
+  df->total  = df->total * f->fs_fsize;
+  df->used   = df->used  * f->fs_fsize;
+  df->avail  = df->avail * f->fs_fsize;
+  df->free   = df->free  * f->fs_fsize;
+
+  return(BUILD_SUCCESS);
+}
+
+
+
+/*
+ * Function:    dfreemnt()
+ * Description: read disk stats out of given file, return stuff in things.
+ * Returns:     BUILD_ERR/BUILD_SUCCESS
+ */
+
+static int      
+dfreemnt(file, df, di)
+     char *file;
+     struct thing *df;
+     struct thing *di;
+{
+  struct statfs fs;
+  
+  if(statfs(file, &fs) < 0)
+    {
+      syslog(LOG_NOTICE, "dfreemnt: error %d", errno);
+      return(BUILD_ERR);
+    }
+  
+  di->total  = fs.f_files;
+  di->used   = di->total - fs.f_ffree;
+  di->free   = fs.f_ffree;
+  df->total  = fs.f_blocks;
+  df->free   = fs.f_bfree;
+  df->used   = (df->total - df->free);
+  df->avail  = fs.f_bavail;
+
+  df->total  = df->total * fs.f_bsize;
+  df->used   = df->used  * fs.f_bsize;
+  df->avail  = df->avail * fs.f_bsize;
+  df->free   = df->free  * fs.f_bsize;
+  
+  return(BUILD_SUCCESS);
+}
+
+#endif decmips
+
+
+
+static struct fs *
+get_fs(file)
+     char *file;
+{
+  static struct fs f;
+  int fd;
+
+  fd = open(file, 0);
+  if(fd < 0)
+    {
+      perror("dfreedev");
+      syslog(LOG_NOTICE, "dfreedev: unable to open %s (%d)", file, errno);
+      return((struct fs *) NULL);
+    }
+
+  if(bread(fd, SBLOCK, (char *) &f, sizeof(f)) == 0)
+    {
+      (void) close(fd);
+      return((struct fs *) NULL);
+    }
+
+  (void) close(fd);
+  return(&f);
+}
+
+
+/*
+ * Function:    bread()
+ * Description: seek & read
+ * Returns:     0 if error
+ *              1 if success
+ */
+
+static int
+bread(fi, bno, buf, cnt)
+     int fi;
+     daddr_t bno;
+     char *buf;
+     int cnt;
+{
+  int n;
+  extern errno;
+  
+  (void) lseek(fi, (long)(bno * DEV_BSIZE), 0);
+  if ((n=read(fi, buf, cnt)) != cnt) 
+    {
+      /* probably a dismounted disk if errno == EIO */
+      if (errno != EIO) 
+	{
+	  /* syslog here */
+	}
+      return (0);
+    }
+  return (1);
+}
+
+#endif /* RSPOS */
+#endif MIT

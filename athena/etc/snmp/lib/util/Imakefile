@@ -1,0 +1,19 @@
+#
+# Imakefile for misc. functions in snmp library
+#
+UTLOBJS=	auth.o commtbl.o varcvt.o error.o valprint.o oidutil.o
+
+all:: $(UTLOBJS)
+	cp $(UTLOBJS) ../obj
+
+clean::
+	$(RM) $(UTLOBJS)
+
+auth.o: auth.c
+
+commtbl.o: commtbl.c
+
+varcvt.o: varcvt.c
+
+error.o: error.c
+
