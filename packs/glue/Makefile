@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.42 2000-06-14 20:25:38 ghudson Exp $
+# $Id: Makefile,v 1.42.2.1 2000-09-23 19:33:49 ghudson Exp $
 
 SHELL=/bin/sh
 ATHRBINDIR=/bin/athena
@@ -6,8 +6,8 @@ ATHBINDIR=/usr/athena/bin
 ATHETCDIR=/usr/athena/etc
 ATHMANDIR=/usr/athena/man
 ATHLIBEXECDIR=/usr/athena/libexec
-ATTACHRUN=addusr blanche bos chfn chpobox chsh dcmmaint help klog \
-	listmaint mailmaint moira mrcheck namespace olh olh_ascii \
+ATTACHRUN=addusr blanche bos chfn chpobox chsh dcmmaint gs help klog \
+	lastlog listmaint mailmaint moira mrcheck namespace olh olh_ascii \
 	olh_motif pts stella usermaint vos xinfo \
 	show-application show-audio show-binhex show-excel show-image \
 	show-msword show-pdf show-postscript show-text show-video \
@@ -80,10 +80,12 @@ install:
 	install -c -m 555 chpobox ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 chsh ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 dcmmaint ${DESTDIR}${ATHBINDIR}
+	install -c -m 555 gs ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 help ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 htmlview.sh ${DESTDIR}${ATHBINDIR}/htmlview
 	install -c -m 555 klog ${DESTDIR}${ATHRBINDIR}
 	install -c -m 555 mkserv.sh ${DESTDIR}${ATHBINDIR}/mkserv
+	install -c -m 555 lastlog ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 listmaint ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 mailmaint ${DESTDIR}${ATHBINDIR}
 	install -c -m 444 mh.1 ${DESTDIR}${ATHMANDIR}/man1
