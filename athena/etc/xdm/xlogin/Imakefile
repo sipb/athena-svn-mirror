@@ -1,4 +1,4 @@
-# $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/Imakefile,v 1.11 1992-05-03 20:46:36 epeisach Exp $
+# $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/Imakefile,v 1.12 1992-05-05 16:14:35 lwvanels Exp $
 #
 # CC can be overridden from driver makefile.  Note the -g flag
 # is on the CC macro, not the CFLAGS and LDFLAGS macros, so the
@@ -39,7 +39,7 @@ all::	Xlogin
 #if defined(_IBMR2)
 Xlogin:	Xlogin.aix.presed
 	. $(ATHVERS); \
-	sed -e "s/ATHENA_VERSION/$$ATHMAJV.$$ATHMINV /" Xlogin.rios.presed > Xlogin
+	sed -e "s/ATHENA_VERSION/$$ATHMAJV.$$ATHMINV /" Xlogin.aix.presed > Xlogin
 #else
 Xlogin:	Xlogin.presed
 	. $(ATHVERS); \
