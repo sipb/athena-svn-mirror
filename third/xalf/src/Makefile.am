@@ -11,7 +11,6 @@ xalfoff_LDADD =  -lXmu -lXt -lSM -lICE -lXext -lX11 -lXext -L/usr/X11R6/lib @GTK
 
 INCLUDES = @GTK_CFLAGS@ 
 
-CFLAGS = -Wall
 
 
 EXTRA_DIST = hourglass.xpm splash.xpm hgcursor.h hgcursor_mask.h getopt.h \

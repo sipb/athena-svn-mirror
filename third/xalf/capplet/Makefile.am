@@ -3,7 +3,7 @@ bin_PROGRAMS = xalf-capplet
 
 xalf_capplet_SOURCES = xalf-capplet.c
 
-CFLAGS = $(GNOME_CC_CFLAGS) -Wall
+CFLAGS = $(GNOME_CC_CFLAGS)
 
 xalf_capplet_LDFLAGS = $(GNOME_CC_LIBS)
 
