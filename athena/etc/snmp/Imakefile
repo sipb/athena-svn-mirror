@@ -1,0 +1,15 @@
+#
+# Makefile to install NYSERNet snmp distribution
+#
+#define ISUBDIRS lib server man
+
+install::
+	$(INSTALL) -m 0444 etc/snmpd.conf $(DESTDIR)/etc/snmpd.conf
+
+instman:
+	@-mkdir ${DESTDIR}/include/arpa/snmp
+	@-cp h//**/*.h ${DESTDIR}/include/arpa/snmp
+	@-cp etc//**/* ${DESTDIR}/etc
+	@cd man; \
+	make MAN1="$(MAN1)"  MAN3="$(MAN3)" MAN8="$(MAN8)" install
+

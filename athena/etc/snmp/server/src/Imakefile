@@ -1,0 +1,185 @@
+#
+#  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/Imakefile,v 1.1 1993-06-22 14:23:10 vrt Exp $
+#
+#  Makefile for SNMPD
+#
+#  PLEASE EDIT CONFIG.H FOR YOUR SITE.  This is where all of the
+#  compile time options are defined.
+#
+#  Instructions for installation can be found in README and
+#  in config.h
+#
+
+DEPEND=makedepend
+
+OBJS = ext.o main.o snmp.o var_tree.o debug.o config.o if_grp.o \
+	ip_grp.o icmp_grp.o sys_grp.o tcp_grp.o udp_grp.o \
+	at_grp.o agent.o traps.o stat_grp.o conf_grp.o mt_grp.o \
+        nfs_grp.o rpc_grp.o afs_grp.o \
+        mail_grp.o krb_grp.o time_grp.o vers_grp.o wthr_grp.o utils.o $(MACHOBJS)
+
+SRCS = ext.c main.c snmp.c var_tree.c debug.c config.c if_grp.c \
+	ip_grp.c icmp_grp.c sys_grp.c tcp_grp.c udp_grp.c \
+	at_grp.c agent.c traps.c stat_grp.c conf_grp.c mt_grp.c \
+        nfs_grp.c rpc_grp.c afs_grp.c \
+        mail_grp.c krb_grp.c time_grp.c vers_grp.c wthr_grp.c utils.c $(MACHSRCS)
+
+#if !defined(ultrix) && !defined(SOLARIS)
+MACHOBJS = vm_grp.o ps_grp.o rvd_grp.o disk_grp.o dns_grp.o 
+
+MACHSRCS = vm_grp.c ps_grp.c rvd_grp.c disk_grp.c dns_grp.c 
+MACHFLAGS= -DBSD43 -DVFS -DDNS -DRVD -DRPC -DNFS -DTIMED
+#endif
+#ifdef i386
+MACHOBJS = rvd_grp.o dns_grp.o 
+
+MACHSRCS = rvd_grp.c dns_grp.c 
+MACHFLAGS= -DBSD43 -DVFS -DDNS -DRVD -DRPC -DNFS -DTIMED
+#endif
+
+#ifdef aix
+MACHOBJS = vm_grp.o ps_grp.o rvd_grp.o dns_grp.o
+
+MACHSRCS = vm_grp.c ps_grp.c rvd_grp.c  dns_grp.c
+MACHFLAGS= -DRSPOS -DBSD43 -DVFS -DDNS 
+#endif 
+
+#if defined(SOLARIS)
+MACHOBJS = vm_grp.o ps_grp.o rvd_grp.o 
+
+MACHSRCS = vm_grp.c ps_grp.c rvd_grp.c
+MACHFLAGS= -DSOLARIS  -DBSD43 -DVFS -DAFS
+#endif
+
+#if defined(ultrix) && defined(mips)
+#ifdef ULTRIX40
+MACHFLAGS=-Ddecmips -DULT40 -DRPC -DNFS -DTIMED
+#else
+MACHFLAGS=-Ddecmips  -DRPC -DNFS -DTIMED
+#endif
+#endif
+
+LIBS      = -lsnmp 
+LLFLAGS	  = -L../../lib/obj
+DEFINES   = -I./include -DMIT -DATHENA -DAFS  $(MACHFLAGS)
+LINTFLAGS = $(CFLAGS) -achx
+
+#if defined(SOLARIS)
+DEFINES = -I./include -I/usr/athena/include -I/usr/ucbinclude -DMIT -DATHENA -DAFS  $(MACHFLAGS)
+LIBS = -lsnmp -lsocket -lnsl -ldl -lelf -lkvm -lucb
+#endif
+
+build_program(snmpd,${OBJS},$(LLFLAGS),$(LIBS))
+install_program(snmpd,-g kmem -m 2755,${ATHRETCDIR}/snmpd)
+
+compile_time.h: $(SRCS)
+	${RM} compile_time.h
+	echo "#define COMPILE_TIME  \"`/bin/date`"\" > compile_time.h
+
+stat_grp.o: compile_time.h
+
+#if defined(ultrix) && defined(mips)
+/* ugen bug prevents compiling otherwise */
+SpecialObject(at_grp.o,at_grp.c,-O1)
+#endif
+	
+clean::
+	${RM} snmpd *.o *~ core linterrs compile_time.h
+
+lint:
+	lint $(LINTFLAGS) $(SRCS)
+
+depend::	compile_time.h
+	${DEPEND} ${DFLAGS} ${SRCS}
+	${RM} compile_time.h
+
+ext.o: ext.c include.h config.h 
+ext.o: ../../h/snmp_hs.h ../../h/snmp.h
+ext.o: ../../h/snmperrs.h var_tree.h snmpd.h
+main.o: main.c include.h config.h 
+main.o: ../../h/snmp_hs.h ../../h/snmp.h
+main.o: ../../h/snmperrs.h var_tree.h snmpd.h 
+snmp.o: snmp.c include.h config.h 
+snmp.o: ../../h/snmp_hs.h ../../h/snmp.h
+snmp.o: ../../h/snmperrs.h var_tree.h snmpd.h
+var_tree.o: var_tree.c include.h config.h 
+var_tree.o: ../../h/snmp_hs.h ../../h/snmp.h ../../h/snmperrs.h var_tree.h
+var_tree.o: snmpd.h
+debug.o: debug.c include.h config.h 
+debug.o: ../../h/snmp_hs.h ../../h/snmp.h
+debug.o: ../../h/snmperrs.h var_tree.h snmpd.h
+config.o: config.c include.h config.h 
+config.o: ../../h/snmp_hs.h ../../h/snmp.h
+config.o: ../../h/snmperrs.h var_tree.h snmpd.h 
+if_grp.o: if_grp.c include.h config.h 
+if_grp.o: ../../h/snmp_hs.h ../../h/snmp.h
+if_grp.o: ../../h/snmperrs.h var_tree.h snmpd.h
+ip_grp.o: ip_grp.c include.h config.h 
+ip_grp.o: ../../h/snmp_hs.h ../../h/snmp.h
+ip_grp.o: ../../h/snmperrs.h var_tree.h snmpd.h
+icmp_grp.o: icmp_grp.c include.h config.h 
+icmp_grp.o: ../../h/snmp_hs.h ../../h/snmp.h ../../h/snmperrs.h var_tree.h
+icmp_grp.o: snmpd.h
+sys_grp.o: sys_grp.c include.h config.h 
+sys_grp.o: ../../h/snmp_hs.h ../../h/snmp.h
+sys_grp.o: ../../h/snmperrs.h var_tree.h snmpd.h
+tcp_grp.o: tcp_grp.c include.h config.h 
+tcp_grp.o: ../../h/snmp_hs.h ../../h/snmp.h
+tcp_grp.o: ../../h/snmperrs.h var_tree.h snmpd.h
+udp_grp.o: udp_grp.c include.h config.h 
+udp_grp.o: ../../h/snmp_hs.h ../../h/snmp.h
+udp_grp.o: ../../h/snmperrs.h var_tree.h snmpd.h
+at_grp.o: at_grp.c include.h config.h 
+at_grp.o: ../../h/snmp_hs.h ../../h/snmp.h
+at_grp.o: ../../h/snmperrs.h var_tree.h snmpd.h
+agent.o: agent.c include.h config.h 
+agent.o: ../../h/snmp_hs.h ../../h/snmp.h
+agent.o: ../../h/snmperrs.h var_tree.h snmpd.h
+traps.o: traps.c include.h config.h 
+traps.o: ../../h/snmp_hs.h ../../h/snmp.h
+traps.o: ../../h/snmperrs.h var_tree.h snmpd.h
+stat_grp.o: stat_grp.c include.h config.h 
+stat_grp.o: ../../h/snmp_hs.h ../../h/snmp.h ../../h/snmperrs.h var_tree.h
+stat_grp.o: snmpd.h 
+stat_grp.o: compile_time.h
+conf_grp.o: conf_grp.c include.h config.h 
+conf_grp.o: ../../h/snmp_hs.h ../../h/snmp.h ../../h/snmperrs.h var_tree.h
+conf_grp.o: snmpd.h
+mt_grp.o: mt_grp.c include.h config.h 
+mt_grp.o: ../../h/snmp_hs.h ../../h/snmp.h
+mt_grp.o: ../../h/snmperrs.h var_tree.h snmpd.h 
+vm_grp.o: ../../h/snmp_hs.h ../../h/snmp.h
+vm_grp.o: ../../h/snmperrs.h var_tree.h snmpd.h 
+ps_grp.o: ps_grp.c include.h config.h
+ps_grp.o: ../../h/snmp_hs.h ../../h/snmp.h
+ps_grp.o: ../../h/snmperrs.h var_tree.h snmpd.h 
+nfs_grp.o: nfs_grp.c include.h config.h 
+nfs_grp.o: ../../h/snmp_hs.h ../../h/snmp.h
+nfs_grp.o: ../../h/snmperrs.h var_tree.h snmpd.h 
+rpc_grp.o: rpc_grp.c include.h config.h 
+rpc_grp.o: ../../h/snmp_hs.h ../../h/snmp.h
+rpc_grp.o: ../../h/snmperrs.h var_tree.h snmpd.h 
+afs_grp.o: afs_grp.c include.h config.h 
+afs_grp.o: ../../h/snmp_hs.h ../../h/snmp.h
+afs_grp.o: ../../h/snmperrs.h var_tree.h snmpd.h 
+rvd_grp.o: rvd_grp.c include.h config.h 
+rvd_grp.o: ../../h/snmp_hs.h ../../h/snmp.h
+rvd_grp.o: ../../h/snmperrs.h var_tree.h snmpd.h
+disk_grp.o: disk_grp.c include.h config.h 
+disk_grp.o: ../../h/snmp_hs.h ../../h/snmp.h ../../h/snmperrs.h var_tree.h
+disk_grp.o: snmpd.h 
+mail_grp.o: mail_grp.c include.h config.h 
+mail_grp.o: ../../h/snmp_hs.h ../../h/snmp.h ../../h/snmperrs.h var_tree.h
+mail_grp.o: snmpd.h 
+krb_grp.o: krb_grp.c include.h config.h 
+krb_grp.o: ../../h/snmp_hs.h ../../h/snmp.h
+krb_grp.o: ../../h/snmperrs.h var_tree.h snmpd.h 
+dns_grp.o: dns_grp.c include.h config.h 
+dns_grp.o: ../../h/snmp_hs.h ../../h/snmp.h
+dns_grp.o: ../../h/snmperrs.h var_tree.h snmpd.h 
+time_grp.o: time_grp.c include.h config.h 
+time_grp.o: ../../h/snmp_hs.h ../../h/snmp.h ../../h/snmperrs.h var_tree.h
+time_grp.o: snmpd.h
+utils.o: utils.c include.h config.h 
+utils.o: ../../h/snmp_hs.h ../../h/snmp.h
+utils.o: ../../h/snmperrs.h var_tree.h snmpd.h 
