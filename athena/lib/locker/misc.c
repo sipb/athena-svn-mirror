@@ -17,7 +17,7 @@
  * public locker operations besides attaching and detaching.
  */
 
-static const char rcsid[] = "$Id: misc.c,v 1.2 1999-03-29 17:33:23 danw Exp $";
+static const char rcsid[] = "$Id: misc.c,v 1.3 1999-10-30 19:32:51 danw Exp $";
 
 #include <errno.h>
 #include <stdlib.h>
@@ -105,8 +105,8 @@ int locker_lookup_filsys(locker_context context, char *name, char ***descs,
 	  locker__error(context, "Out of memory in looking up filesystem.\n");
 	  return LOCKER_ENOMEM;
 	}
-      *descs[0] = conffs;
-      *descs[1] = NULL;
+      (*descs)[0] = conffs;
+      (*descs)[1] = NULL;
       *cleanup = NULL;
 
       return LOCKER_SUCCESS;
