@@ -1,9 +1,19 @@
 #ifndef __ASSEMBLER__
-#include <KerberosSupport/KerberosConditionalMacros.h>
+#include <TargetConditionals.h>
+
+/* Macros for crypto types so they don't conflict with KerberosDES */
+#define make_key_sched 	mit_make_key_sched
+#define des_FP_table 	mit_des_FP_table
+#define des_IP_table  	mit_des_IP_table
+#define des_SP_table  	mit_des_SP_table
 
 #define SIZEOF_LONG		4
 #define SIZEOF_INT		4
-#define SIZEOF_SHORT		2
+#define SIZEOF_SHORT	2
+
+/* define while building krb5 libraries */
+#define KRB5_PRIVATE		1
+#define KRB524_PRIVATE		1
 
 #define	KRB5_DLLIMP		
 #define	GSS_DLLIMP		
@@ -13,9 +23,12 @@
 
 #define	krb5_sigtype		void
 
+/* Note: code only checks #ifdef <foo> */
 #define USE_CCAPI			1
 #define USE_LOGIN_LIBRARY	1
 #define NO_PASSWORD			1
+#define KRB5_KRB4_COMPAT	1
+#define KINIT_DEFAULT_BOTH	1
 
 #define HAVE_SRAND			1
 #define HAVE_LABS			1
@@ -35,7 +48,10 @@
 #define	HAVE_MEMORY_H		1
 #define HAVE_PWD_H			1
 
+#define HAVE_PTHREADS	1
+
 #define	HAVE_STAT		1
+#define HAVE_LSTAT		1
 #define	HAVE_ACCESS		1
 #define	HAVE_FLOCK		1
 
@@ -48,6 +64,8 @@
 #define	HAVE_SETENV		1
 #define	HAVE_UNSETENV		1
 #define	HAVE_GETENV		1
+
+#define HAVE_GETUSERSHELL 1
 
 #define	HAVE_SETSID		1
 #define	HAVE_GETHOSTBYNAME2	1

@@ -24,13 +24,15 @@
 #define _GSSAPI_KRB5_H_
 
 #if defined(macintosh) || (defined(__MACH__) && defined(__APPLE__))
-	#include <KerberosSupport/KerberosSupport.h>
+	#include <TargetConditionals.h>
 #endif
 
 #if TARGET_OS_MAC
-#include <Kerberos5/Kerberos5.h>
+    #include <Kerberos/krb5.h>
+    #include <Kerberos/gssapi.h>
+    #include <Kerberos/gssapi_generic.h>
 #else
-#include <krb5.h>
+    #include <krb5.h>
 #endif
 
 /* C++ friendlyness */

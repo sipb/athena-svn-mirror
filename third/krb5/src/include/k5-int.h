@@ -92,14 +92,6 @@
  * Machine-type definitions: PC Clone 386 running Microloss Windows
  */
 
-#if defined(macintosh) || (defined(__MACH__) && defined(__APPLE__))
-	#include <KerberosSupport/KerberosConditionalMacros.h>
-	
-	#if TARGET_API_MAC_OS8 || (TARGET_API_MAC_CARBON && !TARGET_API_MAC_OSX)
-		#include <Kerberos5/win-mac.h>
-	#endif
-#endif
-
 #if defined(_MSDOS) || defined(_WIN32)
 #include "win-mac.h"
 
@@ -1000,7 +992,8 @@ KRB5_DLLIMP void KRB5_CALLCONV krb5_free_pa_enc_ts
 
 /* #include "krb5/wordsize.h" -- comes in through base-defs.h. */
 #if TARGET_OS_MAC
-#include <KerberosProfile/KerberosProfile.h>
+#include <Kerberos/profile.h>
+#include <Kerberos/com_err.h>  /* Not included by Kerberos/profile.h */
 #else
 #include "profile.h"
 #endif
@@ -1577,5 +1570,12 @@ struct _krb5_cc_ops {
 
 extern krb5_cc_ops *krb5_cc_dfl_ops;
 #endif /* KRB5_CCACHE_ACCESSOR_FUNCTIONS */
+
+#if KRB5_KEYTAB_ACCESSOR_FUNCTIONS
+/* temporary -- this should be under lib/krb5/keytab somewhere */
+/* structures defined in krb5.h when KRB5_PRIVATE is 1 */
+extern krb5_kt_ops krb5_kt_dfl_ops;
+#endif /* KRB5_KEYTAB_ACCESSOR_FUNCTIONS */
+
 
 #endif /* _KRB5_INT_H */

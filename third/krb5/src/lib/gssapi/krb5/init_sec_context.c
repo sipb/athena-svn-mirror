@@ -76,7 +76,7 @@
 #include <assert.h>
 
 /*
- * $Id: init_sec_context.c,v 1.1.1.7 2002-03-01 18:51:47 rbasch Exp $
+ * $Id: init_sec_context.c,v 1.1.1.8 2002-05-02 16:56:40 rbasch Exp $
  */
 
 /* XXX This is for debugging only!!!  Should become a real bitfield
@@ -137,7 +137,7 @@ cleanup:
     return code;
 }
 
-
+#if !defined(TARGET_OS_MAC) || !TARGET_OS_MAC
 static krb5_error_code
 make_ap_req_v2(context, ctx, cred, k_cred, chan_bindings, mech_type, token)
     krb5_context context;
@@ -151,6 +151,7 @@ make_ap_req_v2(context, ctx, cred, k_cred, chan_bindings, mech_type, token)
     int krb5_mech2_supported = 0;
     assert(krb5_mech2_supported);
 }
+#endif
 
 static krb5_error_code
 make_ap_req_v1(context, ctx, cred, k_cred, chan_bindings, mech_type, token)

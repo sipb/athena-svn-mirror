@@ -71,6 +71,7 @@
  */
 
 #include "gssapiP_krb5.h"
+#include "k5-int.h"
 #ifdef HAVE_STRING_H
 #include <string.h>
 #else
@@ -78,7 +79,7 @@
 #endif
 
 /*
- * $Id: acquire_cred.c,v 1.1.1.6 2001-12-05 20:48:05 rbasch Exp $
+ * $Id: acquire_cred.c,v 1.1.1.7 2002-05-02 16:56:36 rbasch Exp $
  */
 
 /* get credentials corresponding to a key in the krb5 keytab.

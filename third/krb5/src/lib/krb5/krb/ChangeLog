@@ -1,3 +1,42 @@
+2002-04-05  Danilo Almeida  <dalmeida@mit.edu>
+
+	* princ_comp.c (krb5_realm_compare), auth_con.c
+	(krb5_auth_con_setports, krb5_auth_con_getaddrs,
+	krb5_auth_con_initivector), addr_order.c (krb5_address_order),
+	addr_comp.c (krb5_address_compare): Make KRB5_CALLCONV.
+
+2002-04-03  Danilo Almeida  <dalmeida@mit.edu>
+
+	* bld_princ.c (krb5_build_principal_va): Make
+	krb5_build_principal_va() KRB5_CALLCONV.
+
+2002-04-02  Sam Hartman  <hartmans@mit.edu>
+
+	* init_keyblock.c: Merge from mainline
+
+2002-03-15  Sam Hartman  <hartmans@mit.edu>
+
+	* walk_rtree.c (krb5_walk_realm_tree): Fix handling of null realms
+
+2002-03-14 Alexandra Ellwood <lxs@mit.edu>
+    * appdefault.c, get_in_tkt.c: made conf_yes and conf_no const to 
+    improve load time on Mach-O
+
+2002-03-13  Sam Hartman  <hartmans@mit.edu>
+
+	* rd_cred.c (krb5_rd_cred): Don't  check IP addresses; improves
+	Heimdal compatibility.
+
+2002-02-28 Alexandra Ellwood <lxs@mit.edu>
+    * conv_princ.c: removed unused variable cpp to reduce warnings
+    * get_creds.c: removed unused variables fields and mcreds to 
+    reduce warnings
+    * get_in_tkt.c: removed unused variables cpp and preauth_to_use
+    to reduce warnings
+    * init_ctx: fixed Mac OS macros
+    * parse.c: added type in to avoid "defaults to int" warning
+    * send_tgs.c: removed unused variable enclen
+
 2001-12-20  Ken Raeburn  <raeburn@mit.edu>
 
 	* ser_actx.c (krb5_auth_context_externalize): Pass address of a

@@ -24,11 +24,11 @@
 #define _GSSAPI_GENERIC_H_
 
 /*
- * $Id: gssapi_generic.h,v 1.1.1.4 2001-12-05 20:48:05 rbasch Exp $
+ * $Id: gssapi_generic.h,v 1.1.1.5 2002-05-02 16:55:53 rbasch Exp $
  */
 
 #if defined(macintosh) || (defined(__MACH__) && defined(__APPLE__))
-#include <GSS/gssapi.h>
+#include <Kerberos/gssapi.h>
 #else
 #include <gssapi/gssapi.h>
 #endif

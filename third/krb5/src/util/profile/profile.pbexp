@@ -1,9 +1,7 @@
 #
 # _profile library Macintosh export file
 #
-# $Header: /afs/dev.mit.edu/source/repository/third/krb5/src/util/profile/profile.pbexp,v 1.1.1.1 2001-12-05 20:48:43 rbasch Exp $
-
-___InitializeProfileLib 
+# $Header: /afs/dev.mit.edu/source/repository/third/krb5/src/util/profile/profile.pbexp,v 1.1.1.2 2002-05-02 16:55:55 rbasch Exp $
 
 _profile_init
 _profile_init_path
@@ -24,9 +22,3 @@ _profile_update_relation
 _profile_clear_relation
 _profile_rename_section
 _profile_add_relation
-
-### Temporary -- DO NOT USE
-
-_profile_ser_internalize
-_profile_ser_externalize
-_profile_ser_size
