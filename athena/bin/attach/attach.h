@@ -271,20 +271,22 @@ struct cache_ent {
 #define ZEPHYR_TIMEOUT  60	/* 1 minute timeout */
 #endif /* ZEPHYR */
 
-/*
- * AFS definitions
- */
-
+/* AFS */
 #ifdef AFS
-/* Flags to afs_auth() */
-#define AFSAUTH_DOAUTH		1
-#define AFSAUTH_CELL		2
-#define AFSAUTH_DOZEPHYR	4
+#ifdef __STDC__
+extern int afs_auth(const char *, const char *), afs_auth_to_cell(const char *);
+extern int afs_zinit(const char *, const char *);
+#else
+extern int afs_auth(), afs_auth_to_cell();
+#endif
 #endif
 
 /*
  * Externals
  */
+
+extern	char	*errstr();	/* convert errno to string */
+extern	char	*inaddr_to_name();	/* convert host addr to host name */
 
 AUTH	*spoofunix_create_default();
 CLIENT	*rpc_create();
@@ -343,15 +345,11 @@ extern int	parse_username(const char *);
 extern int	trusted_user(int);
 extern void	lock_attachtab(void), unlock_attachtab(void);
 extern void	lint_attachtab(void), get_attachtab(void), free_attachtab(void);
-#ifdef AFS
-extern int	afs_auth(const char *, const char *, int);
-#endif
 #ifdef ZEPHYR
 extern	int	zephyr_sub(int), zephyr_unsub(int);
 extern	void	zephyr_addsub(const char *);
 #endif
 #else
-#define	const
 #ifdef NFS
 extern int	nfsid();
 extern AUTH	*spoofunix_create_default();
@@ -361,9 +359,6 @@ extern	void	detach_all(), detach_host();
 extern	int	read_config_file(), parse_username(), trusted_user();
 extern	void	lock_attachtab(), unlock_attachtab();
 extern	void	get_attachtab(), free_attachtab();
-#ifdef AFS
-extern	int	afs_auth();
-#endif
 #ifdef ZEPHYR
 extern	int	zephyr_sub(), zephyr_unsub();
 extern	void	zephyr_addsub();
@@ -371,3 +366,11 @@ extern	void	zephyr_addsub();
 #endif
 
 extern	char	*progname;
+
+/*
+ * Instead of ifdef-ing all const declarations, make one global definition.
+ * The AIX PS/2 compiler understands "const", but does not define __STDC__.
+ */
+#if !defined(__STDC__) && !(defined(AIX) && defined(i386))
+#define	const
+#endif
