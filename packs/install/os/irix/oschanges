@@ -34,6 +34,17 @@ if [ -f ${AIS_ROOT}$scheme \
     mv ${AIS_ROOT}$scheme ${AIS_ROOT}$scheme.old
 fi
 
+# xdm has an /etc/config option, but it runs regardless when
+# windowsystem is on.  And we need windowsystem on in order to
+# run X.
+if [ -l ${AIS_ROOT}/etc/rc2.d/S98xdm ]; then
+    mv ${AIS_ROOT}/etc/rc2.d/S98xdm ${AIS_ROOT}/etc/rc2.d/s98xdm
+fi
+
+if [ -l ${AIS_ROOT}/etc/rc0.d/K02xdm ]; then
+    mv ${AIS_ROOT}/etc/rc0.d/K02xdm ${AIS_ROOT}/etc/rc0.d/k02xdm
+fi
+
 # Midi startup doesn't have an /etc/config option. Sigh.
 # Note that for rc?.d scripts, we use test -l instead of -f. This
 # is because sometimes there are absolute symlinks involved, while
