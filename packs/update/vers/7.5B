@@ -1,4 +1,0 @@
-#!/bin/sh -
-# Version-specific update script for 7.5B
-
-echo "NEWTTYS=true"			>> ${CONFVARS}
