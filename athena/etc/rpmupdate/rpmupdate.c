@@ -18,7 +18,7 @@
  * workstation as indicated by the flags.
  */
 
-static const char rcsid[] = "$Id: rpmupdate.c,v 1.6 2001-04-06 17:16:25 ghudson Exp $";
+static const char rcsid[] = "$Id: rpmupdate.c,v 1.7 2001-04-13 21:03:08 ghudson Exp $";
 
 #define _GNU_SOURCE
 #include <sys/types.h>
@@ -99,6 +99,7 @@ static int easprintf(char **ptr, const char *fmt, ...);
 static int read_line(FILE *fp, char **buf, int *bufsize);
 static void die(const char *fmt, ...);
 static void usage(void);
+static int already_removed(rpmTransactionSet ts, int offset);
 
 int main(int argc, char **argv)
 {
@@ -314,9 +315,10 @@ static void perform_updates(struct package **pkgtab, int public, int dryrun,
     die("Failed to initialize database iterator\n");
   while ((h = rpmdbNextIterator(mi)) != NULL)
     {
-      headerGetEntry(h, RPMTAG_NAME, NULL, (void **) &pkgname, NULL);
+      if (!headerGetEntry(h, RPMTAG_NAME, NULL, (void **) &pkgname, NULL))
+	continue;
       pkg = get_package(pkgtab, pkgname);
-      if (pkg->erase)
+      if (pkg->erase && !already_removed(rpmdep, rpmdbGetIteratorOffset(mi)))
 	rpmtransRemovePackage(rpmdep, rpmdbGetIteratorOffset(mi));
     }
 
@@ -942,4 +944,37 @@ static void usage()
 {
   fprintf(stderr, "Usage: %s [-p] oldlist newlist\n", progname);
   exit(1);
+}
+
+/* This is terrible, but there's no other way.  Here we have a copy of
+ * the opaque representation of the abstract rpmTransactionSet type,
+ * truncated about halfway through.  This lets us get at the
+ * removedPackages array, which lets us avoid removing packages twice
+ * when an updated package obsoletes a package we were going to remove
+ * anyway.
+ */
+struct rpmTransactionSet_s {
+    rpmtransFlags transFlags;		/*!< Bit(s) to control operation. */
+    rpmCallbackFunction notify;		/*!< Callback function. */
+/*@observer@*/ rpmCallbackData notifyData;/*!< Callback private data. */
+/*@dependent@*/ rpmProblemSet probs;	/*!< Current problems in transaction. */
+    rpmprobFilterFlags ignoreSet;	/*!< Bits to filter current problems. */
+/*@owned@*/ /*@null@*/ rpmdb rpmdb;	/*!< Database handle. */
+/*@only@*/ int * removedPackages;	/*!< Set of packages being removed. */
+    int numRemovedPackages;		/*!< No. removed rpmdb instances. */
+    int allocedRemovedPackages;		/*!< Size of removed packages array. */
+    /* There's more after this in the real structure, but we don't need it. */
+};
+
+static int already_removed(rpmTransactionSet ts, int offset)
+{
+  struct rpmTransactionSet_s *its = ts;
+  int i;
+
+  for (i = 0; i < its->numRemovedPackages; i++)
+    {
+      if (its->removedPackages[i] == offset)
+	return 1;
+    }
+  return 0;
 }
