@@ -1,11 +1,11 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/transcript-v2.1/lps40comm.c,v $
  *	$Author: epeisach $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/transcript-v2.1/lps40comm.c,v 1.4 1989-05-24 21:17:14 epeisach Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/transcript-v2.1/lps40comm.c,v 1.5 1990-04-16 18:03:13 epeisach Exp $
  */
 
 #ifndef lint
-static char *rcsid_lps40_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/transcript-v2.1/lps40comm.c,v 1.4 1989-05-24 21:17:14 epeisach Exp $";
+static char *rcsid_lps40_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/transcript-v2.1/lps40comm.c,v 1.5 1990-04-16 18:03:13 epeisach Exp $";
 #endif lint
 
 /* lps40comm.c
@@ -25,6 +25,8 @@ static char *rcsid_lps40_c = "$Header: /afs/dev.mit.edu/source/repository/athena
  *			[-r]		(don't ever reverse)
  *			-n login
  *			-h host
+ *			-a account
+ *			-m mediacost
  *			[accntfile]
  *
  *	environ	== various environment variable effect behavior
@@ -71,6 +73,8 @@ private char	*prog;			/* invoking program name */
 private char	*name;			/* user login name */
 private char	*host;			/* host name */
 private char	*pname;			/* printer name */
+private char	*account = NULL;	/* account number */
+private char	*mediacost = "0";	/* mediacost */
 private char	*accountingfile;	/* file for printer accounting */
 private int	doactng;		/* true if we can do accounting */
 private int	progress, oldprogress;	/* finite progress counts */
@@ -126,6 +130,7 @@ private VOID	emtdone();
 private VOID	open_lps40();
 private VOID	badfile();
 private char 	*FindPattern();
+private VOID    acctentry();
 
 main(argc,argv)
 	int argc;
@@ -196,6 +201,16 @@ main(argc,argv)
 
 		case 'r':	/* never reverse */
 		    argc--;
+		    break;
+
+		case 'a':	/* account number */
+		    argc--;
+		    account = *(++av);
+		    break;
+
+		case 'm':	/* media cost */
+		    argc--;
+		    mediacost = *(++av);
 		    break;
 
 		default:	/* unknown */
@@ -448,7 +463,8 @@ main(argc,argv)
 		    VOIDC fflush(stderr);
 	    }
 	    else if (freopen(accountingfile, "a", stdout) != NULL) {
-		    printf("%7.2f\t%s:%s\n", (float)(pc2 - pc1), host, name);
+		VOIDC acctentry(pc1, pc2, account, mediacost);
+/*		    printf("%7.2f\t%s:%s\n", (float)(pc2 - pc1), host, name);*/
 		    VOIDC fclose(stdout);
 	    }
     }
@@ -742,3 +758,29 @@ char *file1, *file2;
     VOIDC close(fd2);
 }
 
+/* Make an entry in the accounting file */
+private VOID acctentry(start,end,account,mediacost)
+long start,end;         /* Starting and ending page counts for job */
+char *mediacost, account;
+{
+    struct timeval timestamp;
+    debugp((stderr,"%s: Make acct entry s=%ld, e=%ld\n",prog,start,end));
+
+    /* The following is cause you might not really print the banner page if
+       the job is aborted and you get a negative number. Ugly.... */
+    if( start > end || start < 0 || end < 0 ) {
+	fprintf(stderr,"%s: accounting error 3, %ld %ld\n",prog, start,end);
+	fflush(stderr);
+	}
+    else if( freopen(accountingfile,"a",stdout) != NULL ) {
+	gettimeofday(&timestamp, NULL);
+	if (account == NULL) 
+	    printf("%d\t%s:%s\t%ld\t0\t%s\t%d\n",(end-start),host,name,
+		   timestamp.tv_sec,mediacost);
+	else if (mediacost == NULL) 
+	    printf("%d\t%s:%s\t%ld\t%s\t0\t%d\n",(end-start),host,name,
+		   timestamp.tv_sec,account, (end-start));
+	else printf("%d\t%s:%s\t%ld\t%s\t%s\t%d\n",(end-start),host,name,
+		    timestamp.tv_sec,account,mediacost, (end-start));
+	}
+}
