@@ -1,4 +1,4 @@
-# $Id: packages,v 1.55 1999-01-29 00:33:45 ghudson Exp $
+# $Id: packages,v 1.56 1999-01-29 18:56:34 ghudson Exp $
 
 # This file gives the list of packages to build for the release, the
 # order they will be built in, and which platforms they will be built
@@ -13,7 +13,7 @@
 # first, even before the packs are set up.  They have Makefile.athena
 # files which don't assume that much of anything is ready.
 third/gcc			solaris
-athena/bin/install
+athena/bin/install		solaris,irix
 athena/bin/imake		solaris
 
 packs/build/setup
@@ -27,12 +27,12 @@ athena/etc/synctree
 athena/lib/Mu
 athena/lib/Xj
 third/wcl
-third/tcp_wrappers
+third/tcp_wrappers		all,-linux
 third/tcsh
 third/emacs
 third/tex
-third/top			all,-irix
-third/sysinfo
+third/top			all,-irix,-linux
+third/sysinfo			solaris,irix
 third/rcs			solaris
 third/patch			solaris
 third/jot
@@ -47,7 +47,7 @@ third/traceroute		solaris
 third/look			irix
 third/whois			irix
 third/appletalk			solaris
-third/ispell
+third/ispell			all,-linux
 third/ssh
 third/kermit
 third/xntp
@@ -107,7 +107,7 @@ athena/bin/quota
 athena/bin/saferm
 athena/bin/passwd
 athena/bin/hesinfo
-third/perl			solaris,irix
+third/perl
 third/transcript
 packs/config
 packs/dotfiles
