@@ -967,7 +967,7 @@ Boolean	flag;		/* update current meeting? */
 
 	if (mode == NEXTNEWS) {
 
-		if (tempstring[end] == '\0') {
+		if (start == end || tempstring[end] == '\0') {
 			PutUpWarning(	"", 
 					"Nothing more to read", False);
 			return(-1);
@@ -981,7 +981,8 @@ Boolean	flag;		/* update current meeting? */
 		} while (	tempstring[end] != '\0' &&
 				tempstring[start + 2] != 'c');
 
-		if ( tempstring[start + 2] != 'c') {
+
+		if ( tempstring[start] == '\0') {
 			PutUpWarning(	"", 
 					"Nothing more to read", False);
 			return(-1);
