@@ -1,0 +1,105 @@
+Xalf 0.4 (http://www.lysator.liu.se/~altic/projects/xalf/)
+----------------------------------------------------------
+
+This a utility to provide feedback when starting X11 applications.
+
+Xalf is solving the same problem as Busycursor (also written by me),
+but in a more reliable and flexible way. The main differences are:
+
+1) Xalf can reliable detect if newly mapped windows are belonging to a
+particular launched application. It does this by overloading the Xlib
+function XMapWindow with a version that signals the tracking xalf
+process.
+
+2) Xalf provides (currently) four different types as "indicators",
+described below. 
+
+Invisible Window:
+Xalf creates an invisible window, to be used in conjunction with a
+standard task pager like Gnomes tasklist_applet or the KDE
+Taskbar. The name of the window is the application name within
+parenthesis. The small window icon (KWM_WIN_ICON) is set to a small
+hourglass. This indicator is default. 
+
+Splash screen:
+An generic splashscreen is displayed during application launch. 
+
+Mouse cursor change:
+Xalf adds an hourglass symbol to the mousecursor for the root window
+and the Gnome panel. Note that the cursor is not changed for the Gnome
+foot-menu windows. 
+
+Animated star:
+An animated indicator resembling the look of that on SGI/Irix
+machines (a kind of yellow star blinking while loading a program).
+
+
+INSTALL
+-------
+See the file INSTALL. 
+
+
+GNOME INTEGRATION
+-----------------
+Gnome-libs 1.2.0 has built-in support for Xalf. It can be activated by
+setting the environment variable GNOME_USE_XALF before starting GNOME
+(eg. add: export GNOME_USE_XALF=1 to .bash_profile or other appropiate
+dotfile). This means that all applications will be started via Xalf.
+Note: The built-in hooks has some drawbacks: Xalf is always given the
+arguments --mappingmode and --invisiblewindow. 
+
+I recommend using an updated version of Gnome-libs, which can be
+downloaded on the Xalf homepage. You should use version
+gnome-libs-1.2.1-0_helix_1xalf2.i386.rpm or newer. Starting with this
+version, GNOME_USE_XALF and GNOME_XALF_OPTIONS is obsolete and doesn't
+work anymore. Instead, Xalf behavior is controlled by the file
+/.gnome/xalf. Use control center to control it (see below). With this
+modified version, you can prepend NO_XALF to desktop entries
+commandlines to disable Xalf for a specific application. This is
+especially useful for launching applications that doesn't start new
+processes but only creates new windows. Gmc works like this, so I
+recommend change "Exec=gmc" in /usr/share/gnome/apps/Gmc.desktop to
+"Exec=NO_XALF gmc". 
+
+
+GNOME CONTROL CENTER CAPPLET
+----------------------------
+From version 0.4, an GNOME Control Center capplet is included. It
+requires an updated version of gnome-libs
+(gnome-libs-1.2.1-0_helix_1xalf2.i386.rpm or newer). 
+
+
+KDE INTEGRATION
+---------------
+KDE has borrowed some Xalf techniques, and integrated them into
+KDE2. I don't know the current status of this work, though. 
+
+
+USAGE
+-----
+If you are not using GNOME with built-in hooks, prepend xalf to your
+commandlines. For example, create an desktop icon running:
+ xalf netscape
+
+
+COMMANDLINE OPTIONS
+-------------------
+   -h, --help               display this help and exit
+   -v, --version            output version information and exit
+   -t, --timeout nseconds   use a time-out period of nseconds seconds
+   -n, --noxalf             do nothing, besides launch application
+   -m, --mappingmode        compatibility mode: Do not distinguish between
+                            windows. All new mapped windows turns off indicator
+   -i, --invisiblewindow    use an invisible window as indicator (default)
+                            (for use with Gnome panel, KDE taskbar etc)
+   -s, --splash             use splashscreen as indicator
+   -c, --cursor             add hourglass to mouse cursor
+   -a, --anim               use animated star as indicator
+   -l, --title titlestring  Title to show in the tasklist
+
+Comments and bug-reports are appreciated. 
+
+/Peter Åstrand <altic@lysator.liu.se>
+
+
+

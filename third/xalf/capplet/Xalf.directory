@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=Launch Feedback
+Name[sv]=Programstartsindikator
+Comment=Settings for launch feedback
+Comment[sv]=Inställningar för programstartsindikator
+Icon=hourglass-small.png
+Type=Directory
