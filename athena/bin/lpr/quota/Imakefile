@@ -1,5 +1,5 @@
 /* 
- *	$Id: Imakefile,v 1.11 1992-07-23 15:54:35 miki Exp $
+ *	$Id: Imakefile,v 1.12 1992-07-23 16:35:54 miki Exp $
  *	$Author: miki $
  *	$Locker:  $
  *
@@ -185,10 +185,8 @@ printcap.c:
 #endif
 #if defined(sun)
 DBMLIB=-ldbm
-#define compile_file_to(from,to) ncs/cpp/cpp $(CFLAGS) from x.c; $(CC) -c $(CFLAGS) x.c; mv x.o to
-
 .c.o:
-      compile_file_to($*.c,$*.o)
+	 $(CC)  -c $(CFLAGS) $*.c
 #endif
 #if defined(i386)
 .c.o:
