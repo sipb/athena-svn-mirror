@@ -1,6 +1,6 @@
 # Global bashrc file
 #
-# $Id: bashrc,v 1.26 2003-02-08 19:24:18 ghudson Exp $
+# $Id: bashrc,v 1.27 2003-03-15 16:16:03 ghudson Exp $
 
 # This file is sourced by default user file ~/.bashrc
 
@@ -197,10 +197,6 @@ renew () { kinit $USER && fsid -a && zctl load /dev/null ; }
 
 #   alias for a convenient way to change terminal type
 term () { set -f; unset TERMCAP; eval "$( tset -s -I -Q "$@" )"; set +f; }
-
-#   aliases dealing with mail
-alias mail=Mail
-Mail () { more /usr/prototype_user/README.mail ; }
 
 #   aliases dealing with x window system
 xresize () { set -f; eval "$( resize -u )"; set +f ; }

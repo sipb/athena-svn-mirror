@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.13 2003-02-19 23:53:24 rbasch Exp $
+# $Id: Makefile,v 1.14 2003-03-15 16:16:03 ghudson Exp $
 
 SHELL=/bin/sh
 PROTOTYPE=/usr/prototype_user
@@ -21,8 +21,6 @@ install:
 	mkdir -p ${DESTDIR}${ATHMANDIR}/man1
 	mkdir -p ${DESTDIR}${ATHMANDIR}/man7
 	mkdir -p ${DESTDIR}${ATHLOGINDIR}
-	install -c -m 0644 README.mail ${DESTDIR}${PROTOTYPE}
-	install -c -m 0644 README.mail ${DESTDIR}${PROTOTMP}
 	install -c -m 0755 Xsession ${DESTDIR}${ATHLOGINDIR}
 	install -c -m 0644 cshrc ${DESTDIR}${SYSTEM}
 	install -c -m 0644 dot.cshrc ${DESTDIR}${PROTOTYPE}/.cshrc
