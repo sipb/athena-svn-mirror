@@ -4,10 +4,7 @@
  *     For copying and distribution information, see the file
  *     "mit-copying.h".
  *
- *     $Source: /afs/dev.mit.edu/source/repository/athena/bin/delete/Imakefile,v $
- *     $Author: epeisach $
- *     $Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/Imakefile,v 1.13 1991-07-08 17:23:08 epeisach Exp $
- *
+ *     $Id: Imakefile,v 1.14 1993-02-02 06:26:00 probe Exp $
  */
 
 /*
@@ -22,16 +19,13 @@
  * don't know whether or not to define it, run "make malloc-test".
  */
 
+#ifdef _IBMR2
+OSDEFS=		-DMALLOC_0_RETURNS_NULL -DPOSIX
+#endif
+
 INSTALLDIR=	$(ATHBINDIR)
 TMPDIR=		/tmp
-#ifdef _IBMR2
-MALLOC=		-DMALLOC_0_RETURNS_NULL
-#endif
-#ifdef _IBMR2
-DEFINES=	$(AFSDEFINES) $(MALLOC) -DUSE_BLOCKS -DPOSIX
-#else
-DEFINES=	$(AFSDEFINES) $(MALLOC) -DUSE_BLOCKS
-#endif
+DEFINES=	$(AFSDEFINES) $(OSDEFS) -DUSE_BLOCKS
 
 
 #ifdef DeleteDevelopment
@@ -51,31 +45,10 @@ IFLAGS= -I$(IRULESRC) -DDeleteDevelopment
  * then set all the variables starting with "AFS" to nothing.
  */
 
-#ifndef HaveAFS
-#ifdef i386
-#define HaveAFS 0
-#else
-#define HaveAFS 1
-#endif /* i386 */
-#endif /* ! defined(HaveAFS) */
-
-#if HaveAFS
-#ifndef DeleteDevelopment
-#ifdef ultrix
-AFSINC=		/var/local/include
-AFSLIB=		/var/local/lib
-#else
-AFSINC=		/usr/local/include
-AFSLIB=		/usr/local/lib
-#endif /* ultrix */
-#else
-AFSINC=		/afs/rel-eng.athena.mit.edu/project/release/current/build/$(MACHINE)/third/common/afs/dest/include
-AFSLIB=		/afs/rel-eng.athena.mit.edu/project/release/current/build/$(MACHINE)/third/common/afs/dest/lib
-#endif /* !DeleteDevelopment */
-     
-AFSLIBS=	-L$(AFSLIB) $(AFSLIB)/afs/libsys.a -lrx -llwp
-AFSDEFINES=	-I$(AFSINC) -DAFS_MOUNTPOINTS
-#endif /* AFS */
+#ifdef AfsDir
+AFSLIBS=	-L$(AFSDIR)/lib $(AFSDIR)/lib/afs/libsys.a -lrx -llwp
+AFSDEFINES=	-I$(AFSDIR)/include -DAFS_MOUNTPOINTS
+#endif
 
 
 /* You probably won't have to edit anything below this line. */
