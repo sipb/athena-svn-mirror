@@ -1,5 +1,5 @@
 #
-# $Id: Makefile.in,v 1.2 2003-02-14 23:16:05 zacheiss Exp $
+# $Id: Makefile.in,v 1.3 2003-02-15 23:01:51 zacheiss Exp $
 #
 # This is the Makefile for the AFS-Kerberos 5 Migration Kit.  See the
 # directions below for the meaning of each flag.
@@ -64,8 +64,9 @@ LIBOBJS=@LIBOBJS@
 INSTALL=@INSTALL@
 
 prefix=@prefix@
-INSTALL_BIN=$(prefix)/bin
-INSTALL_SBIN=$(prefix)/sbin
+INSTALL_BIN=/bin/athena
+INSTALL_SBIN=$(prefix)/etc
+INSTALL_MAN=$(prefix)/man
 
 PROGS= asetkey aklog ka-forwarder 
 CFLAGS=$(OPT) $(INCLUDE) $(DEFS)
@@ -111,7 +112,10 @@ keyfile_dump.o: keyfile_dump.c
 	$(CC) -c $(CFLAGS) $(EXTRA_INC) $<
 
 install: $(PROGS)
-	$(INSTALL) -s aklog $(DESTDIR)$(INSTALL_BIN)
-	$(INSTALL) -s  asetkey   $(DESTDIR)$(INSTALL_SBIN)
-
+	mkdir -p $(DESTDIR)$(INSTALL_BIN)
+	mkdir -p $(DESTDIR)$(INSTALL_SBIN)
+	mkdir -p $(DESTDIR)$(INSTALL_MAN)/man1
+	$(INSTALL) -m 555 aklog $(DESTDIR)$(INSTALL_BIN)
+	$(INSTALL) -m 555 asetkey $(DESTDIR)$(INSTALL_SBIN)
+	$(INSTALL) -m 444 aklog.1 $(DESTDIR)$(INSTALL_MAN)/man1
 
