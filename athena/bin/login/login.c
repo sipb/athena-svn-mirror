@@ -1,11 +1,11 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.40 1991-07-19 13:38:19 probe Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.41 1991-07-20 12:54:03 epeisach Exp $
  */
 
 #ifndef lint
 static char *rcsid_login_c =
-    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.40 1991-07-19 13:38:19 probe Exp $";
+    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.41 1991-07-20 12:54:03 epeisach Exp $";
 #endif	/* lint */
 
 /*
@@ -826,7 +826,9 @@ leavethis:
     setenv("TERM", term, 0);
     setenv("USER", pwd->pw_name, 1);
     setenv("PATH", "/usr/athena/bin:/bin/athena:/usr/ucb:/bin:/usr/bin", 0);
-
+#if defined(ultrix) && defined(mips)
+    setenv("hosttype", "decmips", 1);
+#endif
     if ((namep = rindex(pwd->pw_shell, '/')) == NULL)
 	namep = pwd->pw_shell;
     else
