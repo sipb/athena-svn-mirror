@@ -180,6 +180,39 @@ command to work properly.  These files should be mode 444.
 Make this directory mode 777 and owned by ``ftp''.  Users
 should then place files which are to be accessible via the
 anonymous account in this directory.
+.IP ~ftp/usr/lib)
+Make this directory owned by the super-user and unwritable by
+anyone.  The files
+.IR ld.so ,
+.IR libc.so ,
+.IR libdl.so ,
+.IR libintl.so ,
+.IR libw.so ,
+.IR libnsl.so ,
+.IR libsocket.so ,
+.IR nss_nis.so ,
+.IR nss_nisplus.so ,
+.IR nss_dns.so ,
+and
+.IR straddt.so
+should be copied from
+.IR /usr/lib
+into this directory.
+.IP ~ftp/dev)
+Make this directory owned by the super-user and unwritable by
+anyone.  The devices
+.IR zero ,
+.IR tcp ,
+.IR udp ,
+and
+.IR ticotsord
+should be created in this directory with mode 666.  Use the
+.IR mknod
+command to create them after examining the version of these devices in
+.IR /dev
+with the
+.IR ls (1)
+command to determine their major and minor modes.
 .SH "ENHANCEMENTS FOR THE ATHENA ENVIRONMENT"
 This
 .I ftpd
@@ -187,19 +220,19 @@ has been enhanced to work properly in the Athena environment, when
 invoked with the -a option.
 
 It does a full login of the user much as
-.IR login,
+.IR login ,
 including
 .IR Kerberos
 authentication, attaching of the user's home directory, and entry into
 the password file and
-.IR /etc/utmp.
+.IR /etc/utmp .
 It also honors
-.IR /etc/nologin,
-.IR /etc/nocreate,
-.IR /etc/noremote,
-.IR /etc/noattach,
+.IR /etc/nologin ,
+.IR /etc/nocreate ,
+.IR /etc/noremote ,
+.IR /etc/noattach ,
 and
-.IR /etc/nocrack.
+.IR /etc/nocrack .
 .PP
 Upon closing of the ftp connection (or HUP and TERM signals),
 .I ftpd
@@ -213,7 +246,7 @@ In addition, this
 .I ftpd
 also supports an attach command, ATCH.  Arguments following ATCH
 are passed directly to
-.IR attach.
+.IR attach .
 If
 .IR Kerberos
 authentication was not obtained,
@@ -264,7 +297,7 @@ adds an entry to
 .IR utmp
 to show the user as logged in.  Since it doesn't require a tty,
 it places "ftpN" (where N is an ftp line number) in its line entry in
-.IR utmp.
+.IR utmp .
 This causes unpatched versions of
 .I finger
 to break trying to stat /dev/ftpN, which doesn't exist. A gross
