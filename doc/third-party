@@ -1,7 +1,8 @@
 For the most part, third-party software is easy to locate because it
 is found in the third hierarchy.  Nevertheless, it's a good idea to
 keep track of what we get from outside, especially for things outside
-of third.
+of third.  There are also some notes at the end of this file on how we
+deal with building third-party software.
 
 Third-party stuff not under third
 ---------------------------------
@@ -21,32 +22,81 @@ Third-party stuff not under third
 Distribution sites for software under third
 -------------------------------------------
 
-This is a partial list at the moment.
-
-	afsbin		See our Transarc site contacts
-	ansi
+	afsbin		See our Transarc site contacts.
 	cns		Previously we've talked to people we know at
 			Cygnus; the official channels involve signing
 			some ITAR-related paperwork.
 	emacs		prep.ai.mit.edu:pub/gnu
 	gcc		prep.ai.mit.edu:pub/gnu
-	jove
+	jot		From NetBSD (ftp.netbsd.org)
 	krb5		athena-dist.mit.edu:pub/kerberos
-	learn
-	look
-	mae-2.0
-	mh
-	tcsh
-	patch
+	lam		From NetBSD (ftp.netbsd.org)
+	look		From NetBSD (ftp.netbsd.org)
+	mh		ftp.ics.uci.edu:pub/mh
+	tcsh		ftp.deshaw.com:pub/tcsh
+			(Old versions at ftp.uu.net:pub/shells/tcsh)
+	patch		prep.ai.mit.edu:pub/gnu
 	perl		prep.ai.mit.edu:pub/gnu
 	rcs		prep.ai.mit.edu:pub/gnu
-	sysinfo
-	tac
-	talk
-	tex
-	tools
-	top
-	transcript
+	rs		From NetBSD (ftp.netbsd.org)
+	sysinfo		usc.edu:pub/sysinfo
+	talk		From NetBSD (ftp.netbsd.org)
+	talkd		From NetBSD (ftp.netbsd.org)
+	tex		Any CTAN mirror (e.g. ftp.duke.edu:/tex-archive,
+			ftp.cdrom.com:pub/tex/ctan).  We want:
+				- dvips from dviware/dvips
+				- xdvi from dviware/xdvi
+				- web2c from systems/web2c
+				- web from systems/web2c
+			Untar web2c and web (they will untar into the same
+			directory), and import that into third/tex/web2c.
+			Untar xdvi and import that into third/tex/xdvi.
+			Untar dvips in its own directory (it untars into
+			the current directory) and import that into
+			third/tex/dvips.
+			[And then there are fonts...]
+	top		eecs.nwu.edu:pub/top
+	transcript	From Adobe
 	wcl		ftp.x.org:contrib/devel_tools
-	whois
-	x3270
+	whois		From NetBSD (ftp.netbsd.org)
+	x3270		ftp.x.org:contrib/applications/x3270
+
+Third-party build systems
+-------------------------
+
+There are two avenues one can take for building third-party software:
+
+	* You can use the native build system.
+
+	* You can declare the native build system a loss, and use one
+	  of the two Athena build systems described in the file
+	  "build-system" in this directory.  This option is not
+	  preferred, but is necessary in cases like afsbin (where we
+	  are simply installing target files) or software imported
+	  from NetBSD.
+
+In a some cases, the native build system may already conform to the
+Athena build system (a configure script which needs no special options
+for the Athena environment besides those given in our site.def file),
+but generally you will have to write a .build file specifying how to
+build and install the program.  Following is a sample .build file,
+used to build a package which uses an X-style Imakefile.
+
+# $Id: $
+
+echo In ${package}: imake -I$xconfigdir -DUseInstalled -DSRCDIR=$source &&
+imake -I"$xconfigdir" -DUseInstalled -DSRCDIR="$source" &&
+echo In ${package}: make Makefiles && make Makefiles &&
+echo In ${package}: make clean && make clean &&
+echo In ${package}: make includes && make includes &&
+echo In ${package}: make depend && make depend &&
+echo In ${package}: make all && make all &&
+echo In ${package}: make install DESTDIR=$srvd && make install DESTDIR=$srvd &&
+echo In ${package}: make install.man DESTDIR=$srvd &&
+make install.man DESTDIR=$srvd
+
+As you can see from this example, the .build file can rely on $package
+to be the name of the package, $source to be the path to the source
+directory, $srvd to be the path to the destination directory, and
+$xconfigdir to be the path to the imake templates we use to build X
+programs.
