@@ -1,9 +1,9 @@
 /*
  * The FX (File Exchange) Server
  *
- * $Author: ghudson $
+ * $Author: danw $
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/neos/server/commands.c,v $
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/server/commands.c,v 1.5 1997-11-14 22:29:02 ghudson Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/server/commands.c,v 1.6 1998-02-17 19:48:51 danw Exp $
  *
  * Copyright 1989, 1990 by the Massachusetts Institute of Technology.
  *
@@ -18,7 +18,7 @@
  */
 
 #ifndef lint
-static char rcsid_commands_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/server/commands.c,v 1.5 1997-11-14 22:29:02 ghudson Exp $";
+static char rcsid_commands_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/server/commands.c,v 1.6 1998-02-17 19:48:51 danw Exp $";
 #endif /* lint */
 
 #include <com_err.h>
@@ -196,7 +196,7 @@ stringlist_res *list_acl_1_svc(aclname, rqstp)
   /*
    * Free previous result.   XXX Memory leak?
    */
-  xdr_free(xdr_stringlist_res, &res);
+  xdr_free(xdr_stringlist_res, (char*) &res);
 
   next = &res.stringlist_res_u.list;
   while (fgets(aclbfr, sizeof(aclbfr), fp)) {
@@ -553,7 +553,7 @@ stringlist_res *list_courses_1_svc(dummy, rqstp)
   /*
    * Free previous result.   XXX Memory leak?
    */
-  xdr_free(xdr_stringlist_res, &res);
+  xdr_free(xdr_stringlist_res, (char *) &res);
 
   next = &res.stringlist_res_u.list;
   while (fgets(coursebfr, sizeof(coursebfr), fp)) {
@@ -599,13 +599,13 @@ Paperlist_res *list_1_svc(paper, rqstp)
    * Free previous result.  XXX Memory leak?
    */
   
-  xdr_free(xdr_Paperlist_res, &res);
+  xdr_free(xdr_Paperlist_res, (char *) &res);
 
   next = &res.Paperlist_res_u.list;
 
   wild_type = wild_assignment = wild_author = wild_owner =
     wild_filename = 0;
-  bzero((char *) &db_criterion, sizeof(Contents));
+  memset((char *) &db_criterion, 0, sizeof(Contents));
 
   if (paper->type == TYPE_WILDCARD)
     wild_type = 1;

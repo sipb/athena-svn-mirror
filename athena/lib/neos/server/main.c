@@ -1,9 +1,9 @@
 /*
  * The FX (File Exchange) Server
  *
- * $Author: ghudson $
+ * $Author: danw $
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/neos/server/main.c,v $
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/server/main.c,v 1.4 1997-11-14 22:27:03 ghudson Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/server/main.c,v 1.5 1998-02-17 19:48:53 danw Exp $
  *
  * Copyright 1989, 1990 by the Massachusetts Institute of Technology.
  *
@@ -19,7 +19,7 @@
  */
 
 #ifndef lint
-static char rcsid_main_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/server/main.c,v 1.4 1997-11-14 22:27:03 ghudson Exp $";
+static char rcsid_main_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/server/main.c,v 1.5 1998-02-17 19:48:53 danw Exp $";
 #endif /* lint */
 
 #include <fxserver.h>
@@ -49,7 +49,7 @@ int do_update_server = 0;
 #endif /* MULTI */
 
 #ifdef MALLOC_LEAK
-dump_mem()
+void dump_mem()
 {
     malloc_dump_all("./fxserver");
     exit(0);
@@ -57,7 +57,7 @@ dump_mem()
 #endif /* MALLOC_LEAK */
 
 #ifdef MULTI
-child_dead()
+void child_dead()
 {
     int pid, i;
     extern int update_server_npids;
@@ -86,6 +86,7 @@ main(argc, argv)
     int i, nfound;
     fd_set readfds;
     struct hostent *hent;
+    struct sigaction action;
 #ifdef MULTI
     struct timeval seltimeout;
     int elapsed;
@@ -94,8 +95,11 @@ main(argc, argv)
     TOUCH(argc);
     TOUCH(argv);
 
+    sigemptyset(&action.sa_mask);
+    action.sa_flags = 0;
 #ifdef MALLOC_LEAK
-    signal(SIGFPE, dump_mem);
+    action.sa_handler = dump_mem;
+    sigaction(SIGFPE, &action, NULL);
 #endif /* MALLOC_LEAK */
 
     root_dir = ROOT_DIR;
@@ -103,7 +107,8 @@ main(argc, argv)
     /*
      * Ignore broken pipes due to dropped TCP connections
      */
-    signal(SIGPIPE, SIG_IGN);
+    action.sa_handler = SIG_IGN;
+    sigaction(SIGPIPE, &action, NULL);
 
     /*
      * Get my hostname.
@@ -120,7 +125,8 @@ main(argc, argv)
     my_canonhostname[sizeof(my_canonhostname) - 1] = '\0';
 
 #ifdef MULTI
-    signal(SIGCHLD, child_dead);
+    action.sa_handler = child_dead;
+    sigaction(SIGCHLD, &action, NULL);
     multi_init();
 #endif /* MULTI */
     

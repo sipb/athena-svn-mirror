@@ -1,9 +1,9 @@
 /*
  * The FX (File Exchange) Server
  *
- * $Author: ghudson $
+ * $Author: danw $
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/neos/include/fxserver.h,v $
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/include/fxserver.h,v 1.4 1997-11-14 22:22:39 ghudson Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/include/fxserver.h,v 1.5 1998-02-17 19:48:48 danw Exp $
  *
  * Copyright 1989, 1990 by the Massachusetts Institute of Technology.
  *
@@ -27,10 +27,10 @@
 #include <errno.h>
 #include <stdio.h>
 #include <sys/types.h>
-#include <rpc/rpc.h>
 #ifdef SOLARIS
-#include <rpc/svc.h>
+#define PORTMAP  /* Solaris wants this defined to get at the socket-based RPC calls */
 #endif
+#include <rpc/rpc.h>
 #include <fx_prot.h>
 #include <sys/param.h>
 #ifdef KERBEROS
@@ -42,18 +42,8 @@
  * used to locate and store files.
  */
 
-#if defined(_IBMR2)
-#define ROOT_DIR	"/usr/lpp/exchange/files"
-#define BACKUP_ROOT_DIR	"/usr/lpp/exchange/files.new" /* XXX */
-#else /* defined(_IBMR2) */
-#if defined(ultrix)
 #define ROOT_DIR	"/var/exchange/files"
 #define BACKUP_ROOT_DIR	"/var/exchange/files.new" /* XXX */
-#else
-#define ROOT_DIR	"/site/exchange/files"
-#define BACKUP_ROOT_DIR	"/site/exchange/files.new" /* XXX */
-#endif /* defined(ultrix) */
-#endif /* defined(_IBMR2) */
 
 #define INDEX_FILE	"INDEX"
 #define COURSE_INDEX	"COURSE_INDEX"
@@ -175,7 +165,7 @@ void free();
 				(c)->p.filename, \
 				(c)->p.location.time.tv_sec, \
 				(c)->p.location.time.tv_usec, \
-				(c)->p.location.host)
+				(c)->p.location.host ? (c)->p.location.host : "")
 
 #define MAKEDATA(bfr, c) sprintf((bfr), \
 				 "%d\001%s\001%s\001%ld\001%ld\001%ld\001%ld\001%d\001%d\001%d\001%d\001%s", \
@@ -201,7 +191,7 @@ void free();
 
 struct _servers {
     char *name;
-    u_long inet_addr;
+    struct in_addr inet_addr;
     CLIENT *cl;
     int sockfd;
     int maybe_up;

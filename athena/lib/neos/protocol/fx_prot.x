@@ -1,9 +1,9 @@
 /*
  * The FX (File Exchange) Library and Server
  *
- * $Author: vrt $
+ * $Author: danw $
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/neos/protocol/fx_prot.x,v $
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/protocol/fx_prot.x,v 1.2 1993-04-29 15:47:39 vrt Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/protocol/fx_prot.x,v 1.3 1998-02-17 19:48:49 danw Exp $
  *
  * Copyright 1989, 1990 by the Massachusetts Institute of Technology.
  *
@@ -19,6 +19,10 @@
 %#include <krb.h>
 %#include <fxserver_err.h>
 %#include <sys/time.h>
+
+%#if defined(SOLARIS) && defined(DEBUG)
+%#undef RPC_SVC_FG	/* Needed because of a really stupid incompatibility in Solaris rpcgen. */
+%#endif	/* SOLARIS && DEBUG */
 
 /*
  * String length restrictions - always keep these in sync.

@@ -1,9 +1,9 @@
 /*
  * The FX (File Exchange) Server
  *
- * $Author: ghudson $
+ * $Author: danw $
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/neos/server/util.c,v $
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/server/util.c,v 1.3 1997-11-14 22:27:26 ghudson Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/server/util.c,v 1.4 1998-02-17 19:48:54 danw Exp $
  *
  * Copyright 1989, 1990 by the Massachusetts Institute of Technology.
  *
@@ -18,7 +18,7 @@
  */
 
 #ifndef lint
-static char rcsid_util_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/server/util.c,v 1.3 1997-11-14 22:27:26 ghudson Exp $";
+static char rcsid_util_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/server/util.c,v 1.4 1998-02-17 19:48:54 danw Exp $";
 #endif /* lint */
 
 #include <fxserver.h>
@@ -78,7 +78,7 @@ check_access(file)
     char aclname[MAXPATHLEN];
 
     sprintf(aclname, "%sACL-%s", curconn->coursepath, file);
-    Debug((stderr, "Checking access in %s\n", aclname));
+    Debug(("Checking access in %s\n", aclname));
 
     return acl_check(aclname, curconn->authname);
 }
@@ -92,7 +92,7 @@ is_god()
     char aclname[MAXPATHLEN];
 
     sprintf(aclname, "%s/ACL-GOD", root_dir);
-    Debug((stderr, "Checking access in %s\n", aclname));
+    Debug(("Checking access in %s\n", aclname));
 
     return acl_check(aclname, curconn->authname);
 }

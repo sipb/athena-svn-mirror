@@ -1,9 +1,9 @@
 /*
  * The FX (File Exchange) Server
  *
- * $Author: ghudson $
+ * $Author: danw $
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/neos/server/multi.c,v $
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/server/multi.c,v 1.3 1997-11-14 22:30:13 ghudson Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/server/multi.c,v 1.4 1998-02-17 19:48:53 danw Exp $
  *
  * Copyright 1989, 1990 by the Massachusetts Institute of Technology.
  *
@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid_multi_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/server/multi.c,v 1.3 1997-11-14 22:30:13 ghudson Exp $";
+static char rcsid_multi_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/server/multi.c,v 1.4 1998-02-17 19:48:53 danw Exp $";
 #endif /* lint */
 
 #include <fxserver.h>
@@ -117,7 +117,7 @@ multi_init()
 	servers = (struct _servers *)xmalloc(sizeof(struct _servers));
       memset(&servers[nservers], 0, sizeof(struct _servers));
       servers[nservers].name = xsave_string(hent->h_name);
-      servers[nservers].inet_addr = *(long *)hent->h_addr_list[0];
+      servers[nservers].inet_addr.s_addr = *(long *)hent->h_addr_list[0];
       servers[nservers].cl = (CLIENT*)NULL;
       servers[nservers].maybe_up = 1;
 
@@ -255,13 +255,13 @@ multi_open_connection(num)
   
   sin.sin_family = AF_INET;
   sin.sin_port = 0;
-  sin.sin_addr.s_addr = servers[num].inet_addr;
+  sin.sin_addr.s_addr = servers[num].inet_addr.s_addr;
   servers[num].sockfd = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
   if (servers[num].sockfd < 0)
     fatal("Unable to allocate socket!\n");
   sockdummy = 1;
   if (setsockopt(servers[num].sockfd, SOL_SOCKET, SO_KEEPALIVE,
-		 &sockdummy, sizeof(int)) < 0)
+		 (char *) &sockdummy, sizeof(int)) < 0)
     fatal("Unable to set SO_KEEPALIVE on socket\n");
   servers[num].cl = clnttcp_create(&sin, FXSERVER, FXVERS,
 				   &servers[num].sockfd, 0, 0);
@@ -273,8 +273,8 @@ multi_open_connection(num)
       servers[num].cl = (CLIENT*)NULL;
     }
     else {
-      clnt_control(servers[num].cl, CLSET_TIMEOUT, &TIMEOUT);
-      res = server_quorum_1(&qs, servers[num].cl);
+      clnt_control(servers[num].cl, CLSET_TIMEOUT, (char *) &TIMEOUT);
+      res = (quorum_res*)_server_quorum_1(&qs, servers[num].cl);
       if (!res) {
 	clnt_destroy(servers[num].cl);
 	servers[num].cl = (CLIENT*)NULL;
@@ -598,7 +598,7 @@ multi_find_server(rqstp)
   int i;
 
   for (i=0; i<nservers; i++)
-    if (servers[i].inet_addr ==
+    if (servers[i].inet_addr.s_addr ==
 	svc_getcaller(rqstp->rq_xprt)->sin_addr.s_addr)
       return i;
   return -1;
@@ -991,7 +991,7 @@ long *server_delete_1_svc(contents, rqstp)
 }
 
 long *server_commit_1_svc(contents, rqstp)
-     Contents *contents;
+     DBVers *contents;
      struct svc_req *rqstp;
 {
   static long res;

@@ -1,9 +1,9 @@
 /*
  * The FX (File Exchange) Library
  *
- * $Author: epeisach $
+ * $Author: danw $
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/neos/include/fx-internal.h,v $
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/include/fx-internal.h,v 1.2 1992-04-27 12:53:25 epeisach Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/include/fx-internal.h,v 1.3 1998-02-17 19:48:48 danw Exp $
  *
  * Copyright 1989, 1990 by the Massachusetts Institute of Technology.
  *
@@ -46,15 +46,7 @@
 
 #else
 
-#if defined(_IBMR2)
-#define SERVER_LIST_FILE "/usr/lpp/exchange/server.list"
-#else /* defined(_IBMR2) */
-#if defined(ultrix)
 #define SERVER_LIST_FILE "/var/exchange/server.list"
-#else
-#define SERVER_LIST_FILE "/site/exchange/server.list"
-#endif /* defined(ultrix) */
-#endif /* defined(_IBMR2) */
 
 #endif /* HESIOD */
 
