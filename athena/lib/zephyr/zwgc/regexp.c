@@ -5,7 +5,7 @@
  *      Created by:     Marc Horowitz <marc@athena.mit.edu>
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/regexp.c,v $
- *      $Author: jfc $
+ *      $Author: probe $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -13,11 +13,15 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char rcsid_regexp_c[] = "$Id: regexp.c,v 1.4 1991-06-20 09:20:45 jfc Exp $";
+static char rcsid_regexp_c[] = "$Id: regexp.c,v 1.5 1993-11-19 15:05:11 probe Exp $";
 #endif
 
 #include <stdio.h>
 #include "regexp.h"
+
+#ifdef SOLARIS
+#include <libgen.h>
+#endif
 
 extern char *re_comp();
 extern int re_exec();
@@ -47,7 +51,7 @@ int ed_regexp_match_p(test_string, pattern)
  * It is a wrapper around the C library regexp functions.
  */
 
-#ifdef _AUX_SOURCE
+#if defined(_AUX_SOURCE) || defined(SOLARIS)
 
 static char *re;
 
