@@ -355,48 +355,7 @@ SetUpEdsc()
 	char	*envcommand;
 	
 	envcommand = getenv("EDSC");
-
-	if (envcommand) {
-		strcpy (commandtorun, envcommand);
-	}
-	else {
-
-#if defined (mips) && defined (ultrix)
-		strcpy (machtype, "decmips");
-#else
-#ifdef vax
-		strcpy (machtype, "vax");
-#else
-#ifdef ibm032
-		strcpy (machtype, "rt");
-#else
-#ifdef _IBMR2
-		strcpy (machtype, "rsaix");
-#else
-#ifdef _AUX_SOURCE
-		strcpy (machtype, "mac");
-#else
-#ifdef sparc
-		strcpy (machtype, "sparc");
-#else
-#ifdef sgi
-		strcpy(machtype, "sgi");
-#else
-		Need to define for this machine
-#endif
-#endif
-#endif
-#endif
-#endif
-#endif
-#endif
-#ifndef EDSC_PATH
-#define EDSC_PATH "/mit/StaffTools/%sbin/edsc"
-#endif
-		sprintf (	commandtorun, 
-				EDSC_PATH,
-				machtype);
-	}
+	strcpy (commandtorun, envcommand ? envcommand : EDSC_PATH);
 
 	close (filedesparent[0]);
 	close (filedeschild[1]);
