@@ -50,6 +50,7 @@ typedef union
 		guint is_menu:1;
 		guint has_context_menu:1;
 		guint is_toolbar_item:1;
+	        guint inside_html_container:1;
 	} data;
 } AccessibleNodeFlags;
 

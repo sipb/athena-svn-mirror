@@ -539,7 +539,7 @@ gboolean gok_scanner_read_access_method (gchar* Filename)
 			gok_log_x ("using name: %s.", 
 				pStringAttributeValue);
 			/* use the name if no display name */
-			pStringAttributeValue = pAccessMethod->Name;
+			pStringAttributeValue = (unsigned char *)pAccessMethod->Name;
 		}
 		else
 		{

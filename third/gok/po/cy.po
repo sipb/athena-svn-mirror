@@ -8,15 +8,14 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gok\n"
-"POT-Creation-Date: 2004-09-10 06:47+0100\n"
-"PO-Revision-Date: 2004-03-18 14:18+0000\n"
-"Last-Translator: Dafydd Tomos <l10n@da.fydd.org>\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-12-07 12:18-0500\n"
+"PO-Revision-Date: 2004-09-12 14:19+0100\n"
+"Last-Translator: Dafydd Harries <daf@muse.19inch.net>\n"
 "Language-Team: Cymraeg <gnome-cy@www.linux.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Report-Msgid-Bugs-To: \n"
-"X-Generator: KBabel 1.0.2\n"
 
 #: automatic-scanning.xml.in.h:1 direct-selection.xml.in.h:1
 #: dwell-selection.xml.in.h:1 inverse-scanning.xml.in.h:1
@@ -34,70 +33,70 @@ msgstr "Ailadrodd Awtomatig Ymlaen"
 msgid "Auto Repeat Rate:"
 msgstr "Cyfradd Ailadrodd Awtomatig"
 
-#: automatic-scanning.xml.in.h:4
+#. User interface for the access method
+#: automatic-scanning.xml.in.h:5
 msgid "Automatic Scanning"
 msgstr "Archwilio Awtomatig"
 
-#: automatic-scanning.xml.in.h:5 singlekey-automatic-scanning.xml.in.h:1
+#: automatic-scanning.xml.in.h:6 singlekey-automatic-scanning.xml.in.h:1
 msgid "Autostart (starts automatically)"
 msgstr "Hunan-ddechrau (dechrau'n awtomatig)"
 
-#: automatic-scanning.xml.in.h:6 inverse-scanning.xml.in.h:4
+#: automatic-scanning.xml.in.h:7 inverse-scanning.xml.in.h:4
 #: singlekey-automatic-scanning.xml.in.h:2
 #: singlekey-inverse-scanning.xml.in.h:2
 msgid "Bottom/Top"
 msgstr "Gwaelod/Top"
 
-#: automatic-scanning.xml.in.h:7 inverse-scanning.xml.in.h:5
+#: automatic-scanning.xml.in.h:8 inverse-scanning.xml.in.h:5
 msgid "Continuous Cycle On"
 msgstr "Cylched Parhaol Ymlaen"
 
-#: automatic-scanning.xml.in.h:8 inverse-scanning.xml.in.h:6
+#: automatic-scanning.xml.in.h:9 inverse-scanning.xml.in.h:6
 #: singlekey-automatic-scanning.xml.in.h:3
 #: singlekey-inverse-scanning.xml.in.h:3
 msgid "Cycles Before Stopping:"
 msgstr "Cylchedau Cyn Stopio"
 
-#: automatic-scanning.xml.in.h:9 direct-selection.xml.in.h:5
+#: automatic-scanning.xml.in.h:10 direct-selection.xml.in.h:5
 #: dwell-selection.xml.in.h:4 gok.glade2.h:69 inverse-scanning.xml.in.h:7
 #: singlekey-automatic-scanning.xml.in.h:4
 #: singlekey-inverse-scanning.xml.in.h:4 directed.xml.in.h:4
 msgid "Feedback"
 msgstr "Adborth"
 
-#: automatic-scanning.xml.in.h:10
+#: automatic-scanning.xml.in.h:11
 msgid "Feedback Movement"
 msgstr "Adborth Symudiad"
 
-#: automatic-scanning.xml.in.h:11
+#: automatic-scanning.xml.in.h:12
 msgid "Feedback Selection"
 msgstr "Adborth Dewis"
 
-#: automatic-scanning.xml.in.h:12 singlekey-automatic-scanning.xml.in.h:7
+#: automatic-scanning.xml.in.h:13 singlekey-automatic-scanning.xml.in.h:7
 msgid "Initial Delay:"
 msgstr "Oedi Cychwynnol"
 
-#: automatic-scanning.xml.in.h:13 inverse-scanning.xml.in.h:10
+#: automatic-scanning.xml.in.h:14 inverse-scanning.xml.in.h:10
 #: singlekey-automatic-scanning.xml.in.h:8
 #: singlekey-inverse-scanning.xml.in.h:7
 msgid "Left/Right"
 msgstr "Chwith/Dde"
 
-#: automatic-scanning.xml.in.h:14 direct-selection.xml.in.h:10
+#: automatic-scanning.xml.in.h:15 direct-selection.xml.in.h:10
 #: dwell-selection.xml.in.h:10 inverse-scanning.xml.in.h:12
 #: singlekey-automatic-scanning.xml.in.h:10
 #: singlekey-inverse-scanning.xml.in.h:9 directed.xml.in.h:8
 msgid "Operation"
 msgstr "Gweithrediad"
 
-#: automatic-scanning.xml.in.h:15 direct-selection.xml.in.h:11
+#: automatic-scanning.xml.in.h:16 direct-selection.xml.in.h:11
 #: inverse-scanning.xml.in.h:13 singlekey-automatic-scanning.xml.in.h:11
 #: singlekey-inverse-scanning.xml.in.h:10
 msgid "Options"
 msgstr "Dewisiadau"
 
-#: automatic-scanning.xml.in.h:16 singlekey-automatic-scanning.xml.in.h:12
-#, fuzzy
+#: automatic-scanning.xml.in.h:17 singlekey-automatic-scanning.xml.in.h:12
 msgid ""
 "Press a switch to start scanning.  Press another switch or the same switch "
 "again to select."
@@ -105,52 +104,52 @@ msgstr ""
 "Gwasgwch swits er mwyn cychwyn archwilio. Gwasgwch swits arall neu'r un "
 "swits eto er mwyn dewis."
 
-#: automatic-scanning.xml.in.h:17 singlekey-automatic-scanning.xml.in.h:13
+#: automatic-scanning.xml.in.h:18 singlekey-automatic-scanning.xml.in.h:13
 msgid "Press switch to start"
 msgstr "Gwasgwch swits i ddechrau"
 
-#: automatic-scanning.xml.in.h:18 inverse-scanning.xml.in.h:15
+#: automatic-scanning.xml.in.h:19 inverse-scanning.xml.in.h:15
 #: singlekey-automatic-scanning.xml.in.h:14
 #: singlekey-inverse-scanning.xml.in.h:12
 msgid "Right/Left"
 msgstr "Dde/Chwith"
 
-#: automatic-scanning.xml.in.h:19 inverse-scanning.xml.in.h:16
+#: automatic-scanning.xml.in.h:20 inverse-scanning.xml.in.h:16
 #: singlekey-automatic-scanning.xml.in.h:15
 #: singlekey-inverse-scanning.xml.in.h:13 directed.xml.in.h:10
 msgid "Scan Delay:"
 msgstr "Oediad Archwilio:"
 
-#: automatic-scanning.xml.in.h:20 inverse-scanning.xml.in.h:17
+#: automatic-scanning.xml.in.h:21 inverse-scanning.xml.in.h:17
 #: singlekey-automatic-scanning.xml.in.h:16
 #: singlekey-inverse-scanning.xml.in.h:14 directed.xml.in.h:11
 msgid "Scan Speed:"
 msgstr "Cyflymder Archwilio"
 
-#: automatic-scanning.xml.in.h:21
+#: automatic-scanning.xml.in.h:22
 msgid "Select"
 msgstr "Dewis"
 
-#: automatic-scanning.xml.in.h:22
+#: automatic-scanning.xml.in.h:23
 msgid "Start Scanning"
 msgstr "Dechrau Archwilio"
 
-#: automatic-scanning.xml.in.h:23 inverse-scanning.xml.in.h:21
-#: singlekey-automatic-scanning.xml.in.h:23
+#: automatic-scanning.xml.in.h:24 inverse-scanning.xml.in.h:21
+#: singlekey-automatic-scanning.xml.in.h:24
 #: singlekey-inverse-scanning.xml.in.h:20
 msgid "Top/Bottom"
 msgstr "Top/Gwaelod"
 
-#: automatic-scanning.xml.in.h:24 inverse-scanning.xml.in.h:22
+#: automatic-scanning.xml.in.h:25 inverse-scanning.xml.in.h:22
 #: singlekey-inverse-scanning.xml.in.h:21 directed.xml.in.h:15
 msgid "Wrap Rows/Columns"
 msgstr "Amlapio Rhesi/Colofnau"
 
-#: automatic-scanning.xml.in.h:25
+#: automatic-scanning.xml.in.h:26
 msgid "feedbackmovement"
 msgstr "adborthsymudiad"
 
-#: automatic-scanning.xml.in.h:26
+#: automatic-scanning.xml.in.h:27
 msgid "feedbackselection"
 msgstr "adborthdewis"
 
@@ -175,10 +174,9 @@ msgid "Highlight:"
 msgstr "Amlygu:"
 
 #: direct-selection.xml.in.h:9
-#, fuzzy
 msgid "Move the mouse pointer to highlight a key.  Press a switch to select."
 msgstr ""
-"Symudwch y pwyntydd llygoden er mwyn amylgu bysell. Gwasgwch swits er mwyn "
+"Symudwch y pwyntydd llygoden er mwyn amlygu bysell. Gwasgwch swits er mwyn "
 "dewis."
 
 #: direct-selection.xml.in.h:12 dwell-selection.xml.in.h:11
@@ -192,7 +190,6 @@ msgid "Dwell Selection"
 msgstr "Dewis Oedi"
 
 #: dwell-selection.xml.in.h:8
-#, fuzzy
 msgid "Move the mouse pointer to highlight a key.  Dwell on the key to select."
 msgstr ""
 "Symudwch y pwyntydd llygoden er mwyn amlygu bysell. Oedwch ar y bysell er "
@@ -231,18 +228,28 @@ msgid "Window"
 msgstr "Ffenest"
 
 #. "back" means go to previous keyboard
-#: gok-controls.kbd.in.h:6 gok/gok-keyboard.c:2476 gok/gok-windowlister.c:130
+#. Translators: short label for go back.
+#: gok-controls.kbd.in.h:6 gok/gok-keyboard.c:2481 gok/gok-windowlister.c:130
 #: launcher.kbd.in.h:5 mouse.kbd.in.h:24 move-resize.kbd.in.h:23
-#: numberpad.kbd.in.h:19 quit.kbd.in.h:4 valuator.kbd.in.h:3
+#: numberpad.kbd.in.h:20 quit.kbd.in.h:4 valuator.kbd.in.h:3
 msgid "back"
 msgstr "yn ôl"
 
-#: gok-with-references.schemas.in.h:1 gok/main.c:284
-msgid ""
-"A multiplier to be applied to input device valuator events before processing"
+#: gok-with-references.schemas.in.h:1
+msgid "$pkgdatadir/goksound1.wav"
 msgstr ""
 
 #: gok-with-references.schemas.in.h:2
+msgid "$pkgdatadir/goksound2.wav"
+msgstr ""
+
+#: gok-with-references.schemas.in.h:3 gok/main.c:286
+msgid ""
+"A multiplier to be applied to input device valuator events before processing"
+msgstr ""
+"Lluosydd i'w gymhwyso at ddigwyddiadau gwetheuswr dyfais mewnbwn cyn prosesu"
+
+#: gok-with-references.schemas.in.h:4
 msgid ""
 "A semicolon-delimited list of fully specified paths to additional word-"
 "completion dictionaries"
@@ -250,15 +257,17 @@ msgstr ""
 "Rhestr, wedi ei amffinio gyda ';', o lwybrau llawn i eiriaduron cwblhau "
 "geiriau ychwanegol"
 
-#: gok-with-references.schemas.in.h:3
+#: gok-with-references.schemas.in.h:5
 msgid "Are the preferences to be restricted?"
 msgstr "A ddylid cyfyngu'r hoffterau?"
 
-#: gok-with-references.schemas.in.h:4
+#: gok-with-references.schemas.in.h:6
 msgid "Determines the keyboard type used for the default compose keyboard"
 msgstr ""
+"Penderfynu y math bysellfwrdd a ddefnyddir ar gyfer y bysellfwrdd cyfansoddi "
+"rhagosod"
 
-#: gok-with-references.schemas.in.h:5
+#: gok-with-references.schemas.in.h:7
 msgid ""
 "Does GOK generate its compose keyboard dynamically based on information from "
 "the X Server?"
@@ -266,166 +275,254 @@ msgstr ""
 "A ydi GOK yn cynhyrchu ei fysellfwrdd cyfansoddi yn ddeinamig yn seiliadig "
 "ar wybodaeth o'r gweinydd X?"
 
-#: gok-with-references.schemas.in.h:6
+#: gok-with-references.schemas.in.h:8
 msgid ""
 "Does each GOK user have a private copy of the word prediction dictionary?"
 msgstr ""
+"A oes gan pob ddefnyddiwr GOK gopi preifat o'r geiriadur darogan geiriau?"
 
-#: gok-with-references.schemas.in.h:7
+#: gok-with-references.schemas.in.h:9
 msgid "Does the GOK window expand to fill the full screen width?"
 msgstr "Ydi'r ffenest GOK yn ehangu er mwyn llenwi holl led y sgrîn?"
 
-#: gok-with-references.schemas.in.h:8
+#: gok-with-references.schemas.in.h:10
 msgid "Does the core pointer follow the GOK keyboard pointer?"
 msgstr "Ydi'r pwyntydd craidd yn dilyn y pwyntydd bysellfwrdd GOK?"
 
-#: gok-with-references.schemas.in.h:9
+#: gok-with-references.schemas.in.h:11
 msgid "Does this action use key averaging"
 msgstr "Ydi'r gweithred hwn yn defnyddio cyfartaleddu bysell"
 
-#: gok-with-references.schemas.in.h:10
+#: gok-with-references.schemas.in.h:12
 msgid "Does this feedback flash"
 msgstr "Ydi'r adborth hwn yn fflachio"
 
-#: gok-with-references.schemas.in.h:11
+#: gok-with-references.schemas.in.h:13
 msgid "Does this feedback play a sound"
 msgstr "Ydi'r adborth hwn yn chwarae sain"
 
-#: gok-with-references.schemas.in.h:12
-#, fuzzy
+#: gok-with-references.schemas.in.h:14
 msgid "Does this feedback speak the label of a GOK key"
-msgstr "Ydi'r adborth hwn yn chwarae sain"
+msgstr "Ydi'r adborth hwn yn dweud label bysell GOK"
 
-#: gok-with-references.schemas.in.h:13
+#: gok-with-references.schemas.in.h:15
+#, fuzzy
+msgid "Dwell"
+msgstr "Dileu"
+
+#: gok-with-references.schemas.in.h:16
 msgid "GOK main window anchor location (if a dock), or empty string if not"
 msgstr "Lleoliad angor prif ffenest GOK (os yw'n ddoc), neu llinyn gwag os na"
 
-#: gok-with-references.schemas.in.h:14
+#: gok-with-references.schemas.in.h:17
 msgid ""
 "How many children of each node in the GUI tree to search for accessible "
 "objects"
 msgstr ""
 "Faint o blant o bob nod yn y goeden GUI i'w chwilio am wrthrychau hygyrch"
 
-#: gok-with-references.schemas.in.h:15
+#: gok-with-references.schemas.in.h:18
 msgid "How many levels down the GUI tree to search for accessible objects"
 msgstr "Faint o lefelau i lawr yn y goeden GUI i chwilio am wrthrychau hygyrch"
 
-#: gok-with-references.schemas.in.h:16
+#: gok-with-references.schemas.in.h:19
 msgid "Is this action permanent"
 msgstr "Ydi'r weithred hon yn barhaol"
 
-#: gok-with-references.schemas.in.h:17
+#: gok-with-references.schemas.in.h:20
 msgid "Is this feedback permanent"
 msgstr "Ydi'r adborth hwn yn barhaol"
 
-#: gok-with-references.schemas.in.h:18
+#: gok-with-references.schemas.in.h:21
 msgid "Is word completion on"
 msgstr "Ydi cyflawni geiriau ymlaen"
 
-#: gok-with-references.schemas.in.h:19
+#: gok-with-references.schemas.in.h:22
+#, fuzzy
+msgid "Key flashing"
+msgstr "<b>Fflachio Bysellau</b>"
+
+#: gok-with-references.schemas.in.h:23
+msgid "Left Mouse Button"
+msgstr ""
+
+#: gok-with-references.schemas.in.h:24
+msgid "Middle Mouse Button"
+msgstr ""
+
+#: gok-with-references.schemas.in.h:25
+#, fuzzy
+msgid "Mouse Button 4"
+msgstr "Botwm 3"
+
+#: gok-with-references.schemas.in.h:26
+#, fuzzy
+msgid "Mouse Button 5"
+msgstr "Botwm 3"
+
+#: gok-with-references.schemas.in.h:27
+#, fuzzy
+msgid "Mouse Pointer"
+msgstr "Pwyntydd"
+
+#: gok-with-references.schemas.in.h:28
+msgid "None"
+msgstr ""
+
+#: gok-with-references.schemas.in.h:29
+msgid "Right Mouse Button"
+msgstr ""
+
+#: gok-with-references.schemas.in.h:30
 msgid ""
 "Should be one of the following: xkb, default, alpha, alpha-freq, custom; if "
 "custom, custom_compose_keyboard should be defined."
 msgstr ""
-
-#: gok-with-references.schemas.in.h:20
-msgid "The access method to use"
-msgstr "Y dull hygyrchedd i'w ddefnyddio"
-
-#: gok-with-references.schemas.in.h:21
-msgid "The directory to load access method files from."
-msgstr "Y cyfeiridur i lwytho ffeiliau dull hygyrchedd ohoni."
-
-#: gok-with-references.schemas.in.h:22
-msgid "The directory to load dictionary files from."
-msgstr "Y cyfeiriadur i lwytho ffeiliau geiriadur ohoni."
-
-#: gok-with-references.schemas.in.h:23
-msgid "The directory to load the gok resource file from."
-msgstr "Y cyfeiriadur i lwytho'r ffeil adnodd gok ohoni."
-
-#: gok-with-references.schemas.in.h:24
-#, fuzzy
-msgid "The directory to load user-specific or custom keyboard files from."
-msgstr "Y cyfeiriadur i lwytho ffeiliau bysellfwrdd ohoni."
-
-#: gok-with-references.schemas.in.h:25
-msgid "The full pathname to a file which defines a custom GOK compose keyboard"
-msgstr ""
-
-#: gok-with-references.schemas.in.h:26
-msgid "The key height"
-msgstr "Yr uchder bysell"
-
-#: gok-with-references.schemas.in.h:27
-msgid "The key width"
-msgstr "Y lled bysell"
-
-#: gok-with-references.schemas.in.h:28
-msgid "The keyboards X coordinate"
-msgstr "Cyfesurun X y bysellfwrdd"
-
-#: gok-with-references.schemas.in.h:29
-msgid "The keyboards Y coordinate"
-msgstr "Cyfesurun Y y bysellfwrdd"
-
-#: gok-with-references.schemas.in.h:30
-msgid "The name of the sound that this feedback will play"
-msgstr "Enw y sain fe fydd yr adborth hwn yn chwarae"
+"Dylai fod yn un ô'r canlynol: \"xkb\", \"default\", \"alpha\", \"alpha-freq"
+"\", \"custom\"; os \"custom\", dylai custom_compose_keyboard fod wedi ei "
+"ddiffinio."
 
 #: gok-with-references.schemas.in.h:31
-msgid "The name of the xinput device to use"
-msgstr "Enw y dyfais xinput i'w ddefnyddio"
+#, fuzzy
+msgid "Sound one"
+msgstr "_Sain:"
 
 #: gok-with-references.schemas.in.h:32
-msgid "The name to display to the user for this action"
-msgstr "Yr enw i'w ddangos i'r defnyddiwr ar gyfer y weithred hon"
+#, fuzzy
+msgid "Sound two"
+msgstr "_Sain:"
 
 #: gok-with-references.schemas.in.h:33
-msgid "The name to display to the user for this feedback"
-msgstr "Yr enw i'w ddangos i'r defnyddiwr ar gyfer yr adborth hwn"
+#, fuzzy
+msgid "Speech"
+msgstr "Dewis"
 
 #: gok-with-references.schemas.in.h:34
-msgid "The number if applicable"
-msgstr "Y rhif os yn briodol"
+#, fuzzy
+msgid "Switch 1"
+msgstr "Swits _1"
 
 #: gok-with-references.schemas.in.h:35
-msgid "The number of predictions for word completion"
-msgstr "Y nifer o ddaroganau ar gyfer cyflawniad geiriau"
+#, fuzzy
+msgid "Switch 2"
+msgstr "Swits _2"
 
 #: gok-with-references.schemas.in.h:36
-msgid "The number of times this feedback will flash"
-msgstr "Y nifer o weithiau fe fydd yr adborth hwn yn fflachio"
+#, fuzzy
+msgid "Switch 3"
+msgstr "Swits _3"
 
 #: gok-with-references.schemas.in.h:37
 #, fuzzy
-msgid "The primary or system directory to load keyboard files from."
-msgstr "Y cyfeiriadur i lwytho ffeiliau bysellfwrdd ohoni."
+msgid "Switch 4"
+msgstr "Swits _4"
 
 #: gok-with-references.schemas.in.h:38
+#, fuzzy
+msgid "Switch 5"
+msgstr "Swits _5"
+
+#: gok-with-references.schemas.in.h:39
+msgid "The access method to use"
+msgstr "Y dull hygyrchedd i'w ddefnyddio"
+
+#: gok-with-references.schemas.in.h:40
+msgid "The directory to load access method files from."
+msgstr "Y cyfeiridur i lwytho ffeiliau dull hygyrchedd ohoni."
+
+#: gok-with-references.schemas.in.h:41
+msgid "The directory to load dictionary files from."
+msgstr "Y cyfeiriadur i lwytho ffeiliau geiriadur ohoni."
+
+#: gok-with-references.schemas.in.h:42
+msgid "The directory to load the gok resource file from."
+msgstr "Y cyfeiriadur i lwytho'r ffeil adnodd gok ohoni."
+
+#: gok-with-references.schemas.in.h:43
+msgid "The directory to load user-specific or custom keyboard files from."
+msgstr ""
+"Y cyfeiriadur i lwytho ffeiliau bysellfwrdd defnyddiwr neu addasiedig ohoni."
+
+#: gok-with-references.schemas.in.h:44
+msgid "The full pathname to a file which defines a custom GOK compose keyboard"
+msgstr ""
+"Y llwybr llawn i ffeil sy'n diffinio bysellfwrdd cyfansoddi GOK addasiedig"
+
+#: gok-with-references.schemas.in.h:45
+msgid "The key height"
+msgstr "Yr uchder bysell"
+
+#: gok-with-references.schemas.in.h:46
+msgid "The key width"
+msgstr "Y lled bysell"
+
+#: gok-with-references.schemas.in.h:47
+msgid "The keyboards X coordinate"
+msgstr "Cyfesurun X y bysellfwrdd"
+
+#: gok-with-references.schemas.in.h:48
+msgid "The keyboards Y coordinate"
+msgstr "Cyfesurun Y y bysellfwrdd"
+
+#: gok-with-references.schemas.in.h:49
+msgid "The name of the sound that this feedback will play"
+msgstr "Enw y sain fe fydd yr adborth hwn yn chwarae"
+
+#: gok-with-references.schemas.in.h:50
+msgid "The name of the xinput device to use"
+msgstr "Enw y dyfais xinput i'w ddefnyddio"
+
+#: gok-with-references.schemas.in.h:51
+msgid "The name to display to the user for this action"
+msgstr "Yr enw i'w ddangos i'r defnyddiwr ar gyfer y weithred hon"
+
+#: gok-with-references.schemas.in.h:52
+msgid "The name to display to the user for this feedback"
+msgstr "Yr enw i'w ddangos i'r defnyddiwr ar gyfer yr adborth hwn"
+
+#: gok-with-references.schemas.in.h:53
+msgid "The number if applicable"
+msgstr "Y rhif os yn briodol"
+
+#: gok-with-references.schemas.in.h:54
+msgid "The number of predictions for word completion"
+msgstr "Y nifer o ddaroganau ar gyfer cyflawniad geiriau"
+
+#: gok-with-references.schemas.in.h:55
+msgid "The number of times this feedback will flash"
+msgstr "Y nifer o weithiau fe fydd yr adborth hwn yn fflachio"
+
+#: gok-with-references.schemas.in.h:56
+msgid "The primary or system directory to load keyboard files from."
+msgstr "Y cyfeiriadur cyntefig neu system i lwytho ffeiliau bysellfwrdd ohoni."
+
+#: gok-with-references.schemas.in.h:57
 msgid "The rate for this action"
 msgstr "Y gyfradd ar gyfer y weithred hon"
 
-#: gok-with-references.schemas.in.h:39
+#: gok-with-references.schemas.in.h:58
 msgid "The space between keys"
 msgstr "Y gofod rhwng bysellau"
 
-#: gok-with-references.schemas.in.h:40
+#: gok-with-references.schemas.in.h:59
 msgid "The state in which this action is activated"
 msgstr "Y cyflwr caiff y weithred hon ei weithredi ynddo"
 
-#: gok-with-references.schemas.in.h:41
+#: gok-with-references.schemas.in.h:60
 msgid "The type of this action"
 msgstr "Math y weithred hon"
 
-#: gok-with-references.schemas.in.h:42
+#: gok-with-references.schemas.in.h:61
 msgid ""
 "Whether to use additional word lists when searching for GOK word-completion "
 "candidates"
 msgstr ""
 "Defnyddio rhestrau geiriau ychwanegol pan yn chwilio am gynigion cwblhau "
 "gair GOK"
+
+#: gok-with-references.schemas.in.h:62
+msgid "none"
+msgstr ""
 
 #: gok.desktop.in.h:1
 msgid "On-Screen Keyboard"
@@ -460,14 +557,12 @@ msgid "<b>Command Prediction</b>"
 msgstr "<b>Darogan Gorchymyn</b>"
 
 #: gok.glade2.h:7
-#, fuzzy
 msgid "<b>Compose Keyboard</b>"
-msgstr "<b>Bysellfwrdd</b>"
+msgstr "<b>Bysellfwrdd Cyfansoddi</b>"
 
 #: gok.glade2.h:8
-#, fuzzy
 msgid "<b>Custom Keyboards</b>"
-msgstr "<b>Bysellfwrdd</b>"
+msgstr "<b>Bysellfyrddau Addasiedig</b>"
 
 #: gok.glade2.h:9
 msgid "<b>Define Actions</b>"
@@ -487,11 +582,11 @@ msgstr "<b>Disgrifiad</b>"
 
 #: gok.glade2.h:13
 msgid "<b>Dock and Expand Horizontally</b>"
-msgstr ""
+msgstr "<b>Docio ac Ehangu'n Llorweddol</b>"
 
 #: gok.glade2.h:14
 msgid "<b>Event Source</b>"
-msgstr "<b>Ffynhonell Digwyddiad</b> "
+msgstr "<b>Ffynhonell Digwyddiad</b>"
 
 #: gok.glade2.h:15
 msgid "<b>Font</b>"
@@ -530,18 +625,16 @@ msgid "<b>Preview</b>"
 msgstr "<b>Rhagolwg</b>"
 
 #: gok.glade2.h:24
-#, fuzzy
 msgid "<b>Sensitivity</b>"
-msgstr "<b>Safle</b>"
+msgstr "<b>Synhwyredd</b>"
 
 #: gok.glade2.h:25
 msgid "<b>Sound</b>"
 msgstr "<b>Sain</b>"
 
 #: gok.glade2.h:26
-#, fuzzy
 msgid "<b>Speech</b>"
-msgstr "<b>Math</b>"
+msgstr "<b>Llafar</b>"
 
 #: gok.glade2.h:27
 msgid "<b>Switch or Button Number</b>"
@@ -580,6 +673,8 @@ msgid ""
 "A multipler which is applied to the extended input device valuator events "
 "before processing."
 msgstr ""
+"Lluosydd a gymhwysir at ddigwyddiadau gwerthuswr dyfais mewnbwn estynedig "
+"cyn prosesu."
 
 #: gok.glade2.h:35
 msgid "Access Methods"
@@ -635,20 +730,19 @@ msgstr "Ychwanegu Bysell Newydd"
 
 #: gok.glade2.h:48
 msgid "Additional directory to search for GOK Keyboards"
-msgstr ""
+msgstr "Cyfeiriadur i'w chwilio am Fysellfyrddau GOK"
 
 #: gok.glade2.h:49
-#, fuzzy
 msgid "Additional directory to search for GOK keyboard files"
-msgstr "Y cyfeiriadur i lwytho ffeiliau bysellfwrdd ohoni."
+msgstr "Cyfeiriadur ychwanegol i'w chwilio am ffeiliau bysellfwrdd GTK."
 
 #: gok.glade2.h:50
 msgid "Alphanumeric keyboard arranged by letter frequency"
-msgstr ""
+msgstr "Bysellfwrdd alffanrhifyddol wedi ei drefnu yn ôl amledd llythyren"
 
 #: gok.glade2.h:51
 msgid "Alphanumeric keyboard sorted alphabetically"
-msgstr ""
+msgstr "Bysellfwrdd alffarhifyddol wedi ei drefni yn ôl y wyddor"
 
 #: gok.glade2.h:52
 msgid "Appearance"
@@ -659,9 +753,8 @@ msgid "Bottom:"
 msgstr "Gwaelod:"
 
 #: gok.glade2.h:54
-#, fuzzy
 msgid "Browse"
-msgstr "_Pori..."
+msgstr "Pori"
 
 #: gok.glade2.h:55
 msgid "C_ore pointer"
@@ -692,9 +785,8 @@ msgid "Delete Key"
 msgstr "Dileu Bysell"
 
 #: gok.glade2.h:61
-#, fuzzy
 msgid "Dock"
-msgstr "Doc Top"
+msgstr "Doc"
 
 #. Translators: dock is used as a verb.
 #: gok.glade2.h:62 move-resize.kbd.in.h:2
@@ -728,7 +820,7 @@ msgstr "Galluogi _darogan gorchmynion"
 
 #: gok.glade2.h:70
 msgid "Fill WIdth"
-msgstr ""
+msgstr "Llenwi Lled"
 
 #: gok.glade2.h:71
 msgid "Font Group:"
@@ -767,9 +859,8 @@ msgid "Key h_eight:"
 msgstr "_Uchder bysell:"
 
 #: gok.glade2.h:80
-#, fuzzy
 msgid "Keyboards"
-msgstr "<b>Bysellfwrdd</b>"
+msgstr "Bysellfyrddau"
 
 #: gok.glade2.h:81
 msgid "Keycode:"
@@ -789,7 +880,7 @@ msgstr "Chwith:"
 
 #: gok.glade2.h:85
 msgid "Match physical keyboard as reported by X Server"
-msgstr ""
+msgstr "Cyfatebu'r bysellfwrdd corfforol a adroddir gan y gweinydd X"
 
 #: gok.glade2.h:86
 msgid "Modifier Post"
@@ -860,9 +951,8 @@ msgid "Previous Key"
 msgstr "Bysell Blaenorol"
 
 #: gok.glade2.h:103
-#, fuzzy
 msgid "Read keyboard from file:"
-msgstr "Cadw ffeil bysellfwrdd as"
+msgstr "Darllen bysellfwrdd o ffeil:"
 
 #: gok.glade2.h:104
 msgid "Release"
@@ -886,7 +976,7 @@ msgstr "_Sain:"
 
 #: gok.glade2.h:109
 msgid "Speak key _label"
-msgstr ""
+msgstr "Dweud _label bysell"
 
 #: gok.glade2.h:110
 msgid "Style:"
@@ -933,9 +1023,8 @@ msgid "Top:"
 msgstr "Pen:"
 
 #: gok.glade2.h:121
-#, fuzzy
 msgid "Use _extra word list file(s)"
-msgstr "_Defnyddio ffeil rhestr geiriau ychwanegol"
+msgstr "Defnyddio ffeil(iau) rhestr geiriau _ychwanegol"
 
 #: gok.glade2.h:122
 msgid "Use _key averaging"
@@ -943,7 +1032,7 @@ msgstr "Defnyddio cyfartaleddu _bysell"
 
 #: gok.glade2.h:123
 msgid "Valuator Sensitivity"
-msgstr ""
+msgstr "Synhwyredd Gwerthuswr"
 
 #: gok.glade2.h:124
 msgid "Word Completion"
@@ -1022,13 +1111,12 @@ msgid "display user help"
 msgstr "dangos cymorth defnyddiwr"
 
 #: gok.glade2.h:143
-#, fuzzy
 msgid "high"
-msgstr "Dde"
+msgstr "uchel"
 
 #: gok.glade2.h:144
 msgid "low"
-msgstr ""
+msgstr "isel"
 
 #: gok.glade2.h:145
 msgid "pixels"
@@ -1048,7 +1136,7 @@ msgstr "defnyddio'r gosodiadau yma"
 
 #: gok/gok-button.c:221
 msgid "You appear to be using GOK in 'core pointer' mode."
-msgstr ""
+msgstr "Ymddengys eich bod chi'n defnyddio GOK yn y modd 'pwyntydd craidd'."
 
 #: gok/callbacks.c:394
 msgid "Sorry, Access Method Wizard not implemented yet."
@@ -1129,201 +1217,203 @@ msgstr ""
 msgid "(new)"
 msgstr "(newydd)"
 
-#: gok/gok-key.c:115
-#, fuzzy
+#: gok/gok-key.c:117
 msgid "Mute"
-msgstr "Llygoden"
+msgstr "Mud"
 
-#: gok/gok-key.c:118
-#, fuzzy
+#: gok/gok-key.c:120
 msgid ""
 "Mouse\n"
 "Keys"
-msgstr "Llygoden"
+msgstr ""
+"Bysellau\n"
+"Llygoden"
 
-#: gok/gok-key.c:121
-#, fuzzy
+#: gok/gok-key.c:123
 msgid ""
 "Left\n"
 "Tab"
-msgstr "Chwith"
+msgstr ""
+"Tab\n"
+"Chwith"
 
-#: gok/gok-key.c:232
-#, fuzzy
+#: gok/gok-key.c:234
 msgid "Divide"
-msgstr "Cuddio"
+msgstr "Gwahannu"
 
-#: gok/gok-key.c:235
+#: gok/gok-key.c:237
 msgid "Multiply"
-msgstr ""
+msgstr "Lluosi"
 
-#: gok/gok-key.c:238
+#: gok/gok-key.c:240
 msgid "Subtract"
-msgstr ""
+msgstr "Tynnu"
 
-#: gok/gok-key.c:241
-#, fuzzy
+#: gok/gok-key.c:243
 msgid "Addition"
-msgstr "Darogan"
+msgstr "Ychwanegu"
 
-#: gok/gok-key.c:244
+#: gok/gok-key.c:246
 msgid "Prior"
-msgstr ""
+msgstr "Cynt"
 
-#: gok/gok-key.c:247
-#, fuzzy
+#: gok/gok-key.c:249
 msgid "Next"
-msgstr "Bysell nesaf"
+msgstr "Nesaf"
 
-#: gok/gok-key.c:250 numberpad.kbd.in.h:6
+#: gok/gok-key.c:252 numberpad.kbd.in.h:6
 msgid "Home"
-msgstr ""
+msgstr "Adref"
 
-#: gok/gok-key.c:253 numberpad.kbd.in.h:4
+#: gok/gok-key.c:255 numberpad.kbd.in.h:4
 msgid "End"
-msgstr ""
+msgstr "Diwedd"
 
 #. Translators: this describes the direction gok will move.
-#: gok/gok-key.c:256 move-resize.kbd.in.h:20 numberpad.kbd.in.h:17
+#: gok/gok-key.c:258 move-resize.kbd.in.h:20 numberpad.kbd.in.h:18
 msgid "Up"
 msgstr "Fyny"
 
 #. Translators: this describes the direction gok will move.
-#: gok/gok-key.c:259 move-resize.kbd.in.h:6 numberpad.kbd.in.h:3
+#: gok/gok-key.c:261 move-resize.kbd.in.h:6 numberpad.kbd.in.h:3
 msgid "Down"
 msgstr "Lawr"
 
 #. Translators: this describes the direction gok will move.
-#: gok/gok-key.c:262 move-resize.kbd.in.h:11 numberpad.kbd.in.h:8
+#: gok/gok-key.c:264 move-resize.kbd.in.h:11 numberpad.kbd.in.h:8
 msgid "Left"
 msgstr "Chwith"
 
 #. Translators: this describes the direction gok will move.
-#: gok/gok-key.c:265 move-resize.kbd.in.h:15 numberpad.kbd.in.h:14
+#: gok/gok-key.c:267 move-resize.kbd.in.h:15 numberpad.kbd.in.h:14
 msgid "Right"
 msgstr "Dde"
 
-#: gok/gok-key.c:268
+#: gok/gok-key.c:270
 msgid "Begin"
-msgstr ""
+msgstr "Cychwyn"
 
-#: gok/gok-key.c:271
+#: gok/gok-key.c:273
 msgid "Decimal"
-msgstr ""
+msgstr "Degol"
 
-#: gok/gok-key.c:274
+#: gok/gok-key.c:276
 msgid "Meta"
-msgstr ""
+msgstr "Meta"
 
-#: gok/gok-key.c:277
+#: gok/gok-key.c:279
 msgid ""
 "Multi\n"
 "key"
 msgstr ""
+"Bysell\n"
+"multi"
 
-#: gok/gok-key.c:280
+#: gok/gok-key.c:282
 msgid ""
 "Eisu\n"
 "toggle"
 msgstr ""
+"Togl\n"
+"Eisu"
 
-#: gok/gok-key.c:283
+#: gok/gok-key.c:285
 msgid ""
 "Henkan\n"
 "Mode"
 msgstr ""
+"Modd\n"
+"Hankan"
 
-#: gok/gok-key.c:286
+#: gok/gok-key.c:288
 msgid "Muhenkan"
-msgstr ""
+msgstr "Muhenkan"
 
-#: gok/gok-key.c:289
+#: gok/gok-key.c:291
 msgid ""
 "Mode\n"
 "switch"
 msgstr ""
+"Swits\n"
+"modd"
 
-#: gok/gok-keyboard.c:150
+#: gok/gok-keyboard.c:155
 #, c-format
 msgid "Xkb extension could not be initialized! (error code %x)"
 msgstr "Methwyd ymgychwyn estyniad Xkb (côd gwall %x)"
 
-#: gok/gok-keyboard.c:156 gok/gok-keyboard.c:196
+#: gok/gok-keyboard.c:161 gok/gok-keyboard.c:201
 msgid "keyboard description not available!"
 msgstr "dim disgrifiad bysellfwrdd ar gael!"
 
-#: gok/gok-keyboard.c:162 gok/gok-keyboard.c:202 gok/gok-keyboard.c:499
+#: gok/gok-keyboard.c:167 gok/gok-keyboard.c:207 gok/gok-keyboard.c:504
 msgid "Keyboard Geometry cannot be read from your X Server."
 msgstr "Methwyd darllen y Geometreg Bysellfwrdd o'ch gweinydd X"
 
-#: gok/gok-keyboard.c:425
+#: gok/gok-keyboard.c:430
 msgid "Back"
 msgstr "Yn Ôl"
 
-#: gok/gok-keyboard.c:443 valuator.kbd.in.h:1
-#, fuzzy
+#: gok/gok-keyboard.c:448 valuator.kbd.in.h:1
 msgid "Repeat Next"
-msgstr "Ailadrodd y Bysell Nesaf"
+msgstr "Ailadrodd Nesaf"
 
-#: gok/gok-keyboard.c:456
+#: gok/gok-keyboard.c:461
 msgid "Edit"
-msgstr ""
+msgstr "Golygu"
 
 #. translators: Abbreviation/mnemonic for "numeric keypad", but must be <= 10 chars
-#: gok/gok-keyboard.c:469
+#: gok/gok-keyboard.c:474
 msgid ""
 "Num\n"
 "Pad"
 msgstr ""
+"Pad\n"
+"Rhif"
 
 #. translators: Abbreviation/mnemonic for "numeric keypad", but must be <= 10 chars
-#: gok/gok-keyboard.c:483 move-resize.kbd.in.h:9
+#: gok/gok-keyboard.c:488 move-resize.kbd.in.h:9
 msgid "Hide"
 msgstr "Cuddio"
 
 #. translators: "shift" as in "the shift modifier key"
-#: gok/gok-keyboard.c:694
+#: gok/gok-keyboard.c:699
 msgid "shift"
-msgstr ""
+msgstr "shifft"
 
 #. translators: The context is "key level" as in shift/caps status on keyboard
-#: gok/gok-keyboard.c:706
-#, fuzzy
+#: gok/gok-keyboard.c:711
 msgid "Level 2"
-msgstr "level 2|"
+msgstr "Lefel 2"
 
 #. translators: see note for "Level 2"
-#: gok/gok-keyboard.c:718
-#, fuzzy
+#: gok/gok-keyboard.c:723
 msgid "Level 3"
-msgstr "level 3|"
+msgstr "Lefel 3"
 
 #. translators: this is a label for a 'Back space' key
-#: gok/gok-keyboard.c:730
+#: gok/gok-keyboard.c:735
 msgid ""
 "Back\n"
 "Space"
-msgstr ""
+msgstr "Ôlnod"
 
 #. translators: this is a label for a "Tab" key, for instance on a keyboard
-#: gok/gok-keyboard.c:741 numberpad.kbd.in.h:16
-#, fuzzy
+#: gok/gok-keyboard.c:746 numberpad.kbd.in.h:16
 msgid "Tab"
-msgstr "\"Tab\""
+msgstr "Tab"
 
 #. translators: this is a label for a "spacebar" key, for instance on a keyboard
-#: gok/gok-keyboard.c:752
-#, fuzzy
+#: gok/gok-keyboard.c:757
 msgid "space"
-msgstr "\"bar gofod\""
+msgstr "gofod"
 
 #. translators: this is a label for an "Enter" or Return key, for instance on a keyboard
-#: gok/gok-keyboard.c:763 numberpad.kbd.in.h:5
-#, fuzzy
+#: gok/gok-keyboard.c:768 numberpad.kbd.in.h:5
 msgid "Enter"
-msgstr "Pwyntydd"
+msgstr "Enter"
 
-#: gok/gok-keyboard.c:801 main.kbd.in.h:7
+#: gok/gok-keyboard.c:806 main.kbd.in.h:7
 msgid "Menus"
 msgstr "Dewislenni"
 
@@ -1344,7 +1434,7 @@ msgstr "Dewislenni"
 #. * precede alphabetic characters, digits and punctuation should be placed
 #. * at the end of the string.
 #.
-#: gok/gok-keyboard.c:860
+#: gok/gok-keyboard.c:865
 msgid "level 0|abcdefghijklmnopqrstuvwxyz1234567890-=[];'#\\,./"
 msgstr "level 0|abcdefghijlmnoprstuwy1234567890-=[];'#\\,./"
 
@@ -1352,7 +1442,7 @@ msgstr "level 0|abcdefghijlmnoprstuwy1234567890-=[];'#\\,./"
 #. * For languages/locales which use 'upper case', this string should
 #. * correspond to uppercase versions of characters in the 'level 0' string.
 #.
-#: gok/gok-keyboard.c:865
+#: gok/gok-keyboard.c:870
 msgid "level 1|ABCDEFGHIJKLMNOPQRSTUVWXYZ!\"3$%^&*()_+{}:@~<>?"
 msgstr "lefel 1|ABCDEFGHIJLMNOPRSTUWY!\"3$%^&*()_+{}:@~<>?"
 
@@ -1362,13 +1452,16 @@ msgstr "lefel 1|ABCDEFGHIJLMNOPRSTUWY!\"3$%^&*()_+{}:@~<>?"
 #. * 'level 3'.  At the translator's discretion, accented characters can be
 #. * placed here and in 'level 3' as well.
 #.
-#: gok/gok-keyboard.c:872 gok/gok-keyboard.c:928
+#.
+#. * Seldom-used or alternate characters can appear in levels 2 and 3 if necessary.
+#.
+#: gok/gok-keyboard.c:877 gok/gok-keyboard.c:933
 msgid "level 2|"
 msgstr "level 2|"
 
 #. For locales which need an even larger character set, or offer uppercase versions
 #. * of the 'level2' characters, add them to 'level 3'
-#: gok/gok-keyboard.c:875 gok/gok-keyboard.c:929
+#: gok/gok-keyboard.c:880 gok/gok-keyboard.c:934
 msgid "level 3|"
 msgstr "level 3|"
 
@@ -1383,86 +1476,85 @@ msgstr "level 3|"
 #. * If level 0 and level 1 refer to upper-and-lower-case in your locale,
 #. * the characters in these two strings should occur in the same relative order.
 #.
-#: gok/gok-keyboard.c:923
+#: gok/gok-keyboard.c:928
 msgid "level 0|etaonrishdlfcmugypwbvkxjqz`1234567890-=\\[];'<,./"
 msgstr "level 0|dayneirolwhgftsucmbpjvkzxq`1234567890-=\\[];'<,./"
 
-#: gok/gok-keyboard.c:924
+#: gok/gok-keyboard.c:929
 msgid "level 1|ETAONRISHDLFCMUGYPWBVKXJQZ~!@#$%^&*()_+|{}:\"><>?"
 msgstr "level 1|DAYNEIROLWHGFTSUCMBPJVKZXQ~!@#$^&*()_+|{}:\"><>?"
 
 #. change the name of the window to the keyboard name
-#: gok/gok-keyboard.c:1908
+#: gok/gok-keyboard.c:1916
 msgid "GOK - "
 msgstr "GOK - "
 
-#: gok/gok-keyboard.c:2736
+#: gok/gok-keyboard.c:2808
 msgid "GUI"
 msgstr "GUI"
 
 #. translators: "table" as in row/column data structure
-#: gok/gok-keyboard.c:2741 gok/gok-spy.c:1673
-#, fuzzy
+#: gok/gok-keyboard.c:2813 gok/gok-spy.c:1718
 msgid "Table"
-msgstr "Talach"
+msgstr "Tabl"
 
-#: gok/gok-keyboard.c:2746 main.kbd.in.h:9
+#: gok/gok-keyboard.c:2818 main.kbd.in.h:9
 msgid "Toolbars"
 msgstr "Bar offer"
 
-#: gok/gok-keyboard.c:2750
+#: gok/gok-keyboard.c:2822
 msgid "Applications"
 msgstr "Rhaglenni"
 
-#: gok/gok-keyboard.c:2757
+#: gok/gok-keyboard.c:2832
 msgid "Menu"
 msgstr "Dewislen"
 
-#: gok/gok-keyboard.c:3527
+#: gok/gok-keyboard.c:3697
 msgid "translator_credits"
 msgstr ""
 "Chris M. Jackson <chris@www.linux.org.uk>,\n"
 "Dafydd Harries <daf@muse.19inch.net>,\n"
 "Dafydd Tomos <l10n@da.fydd.org>"
 
-#: gok/gok-keyboard.c:3550 main.kbd.in.h:4
+#: gok/gok-keyboard.c:3720 main.kbd.in.h:4
 msgid "GOK"
 msgstr "GOK"
 
-#: gok/gok-keyboard.c:3552
+#: gok/gok-keyboard.c:3722
 msgid "Dynamic virtual keyboards for the GNOME desktop"
 msgstr "Bysellfyrddau rhithwir deinamig ar gyfer y penbwrdd GNOME"
 
-#: gok/gok-keyboard.c:3561
+#: gok/gok-keyboard.c:3731
 msgid "Full Credits"
 msgstr "Cydnabyddiaethau Llawn"
 
 #: gok/gok-scanner.c:1003
 msgid "error reading description"
-msgstr ""
+msgstr "gwall wrth ddarllen disgifiad"
 
 #. translators: abbreviated version of "Vertical Scrollbar"
-#: gok/gok-spy.c:1593
+#: gok/gok-spy.c:1638
 msgid "V Scrollbar"
-msgstr ""
+msgstr "Bar Sgrolio F"
 
 #. translators: abbreviated version of "Horizontal Scrollbar"
-#: gok/gok-spy.c:1598
+#: gok/gok-spy.c:1643
 msgid "H Scrollbar"
-msgstr ""
+msgstr "Bar Sgrolio Ll"
 
 #. create the 'new action name' dialog
-#: gok/gok-page-actions.c:380 gok/gok-page-actions.c:425
-#: gok/gok-page-actions.c:444
+#: gok/gok-page-actions.c:381 gok/gok-page-actions.c:426
+#: gok/gok-page-actions.c:445
 msgid "GOK Action Name"
 msgstr "Enw Gweithred GOK"
 
 #. add a text label
-#: gok/gok-page-actions.c:386
+#: gok/gok-page-actions.c:387
 msgid "Change the action name:"
 msgstr "Newid yr enw gweithred:"
 
-#: gok/gok-page-actions.c:423
+#: gok/gok-page-actions.c:424
 msgid ""
 "Action name can't be empty.\n"
 "Please enter a new action name."
@@ -1470,7 +1562,7 @@ msgstr ""
 "Ni all yr enw gweithred fod yn wag.\n"
 "Rhowch enw gweithred newydd os gwelwch yn dda."
 
-#: gok/gok-page-actions.c:442
+#: gok/gok-page-actions.c:443
 msgid ""
 "Sorry, that action name already exists.\n"
 "Please enter a new action name"
@@ -1478,17 +1570,17 @@ msgstr ""
 "Yn anffodus, mae'r enw gweithred yna'n bodoli eisioes.Rhowch enw gweithred "
 "newydd os gwelwch yn dda."
 
-#: gok/gok-page-actions.c:497
+#: gok/gok-page-actions.c:498
 #, c-format
 msgid "New Action %d"
 msgstr "Gweithred Newydd %d"
 
-#: gok/gok-page-actions.c:560
+#: gok/gok-page-actions.c:561
 #, c-format
 msgid "Do you wish to delete this action (%s)?"
 msgstr "Ydych am ddileu'r weithred hon (%s)?"
 
-#: gok/gok-page-actions.c:568
+#: gok/gok-page-actions.c:569
 msgid "GOK Delete Action"
 msgstr "GOK Dileu Gweithrediad"
 
@@ -1539,23 +1631,23 @@ msgid "Select sound file"
 msgstr "Dewis ffeil sain"
 
 #: gok/gok-page-keyboard.c:180
-#, fuzzy
 msgid "Enter directory to search for additional GOK keyboard files."
-msgstr "Y cyfeiriadur i lwytho ffeiliau bysellfwrdd ohoni."
+msgstr "Y cyfeiriadur i'w chwilio am ffeiliau bysellfwrdd GOK ychwanegol."
 
 #: gok/gok-page-keyboard.c:194
 msgid "Select the XML file defining your startup compose keyboard"
 msgstr ""
+"Dewiswch y ffeil XML sy'n diffinio eich bysellfwrdd cyfansoddi cychwynol"
 
 #: gok/gok-page-keysizespace.c:83
-#, fuzzy
 msgid "Button"
-msgstr "Botwm 3"
+msgstr "Botwm"
 
 #. and post a warning if the new settings use corepointer
-#: gok/gok-settings-dialog.c:259
+#: gok/gok-settings-dialog.c:260
 msgid "You appear to be configuring GOK to use 'core pointer' mode."
 msgstr ""
+"Ymddengys eich bod chi'n cyflunio GOK i ddefnyddio'r modd 'pwyntydd craidd'."
 
 #: gok/gok-windowlister.c:98
 msgid "Window List"
@@ -1564,10 +1656,9 @@ msgstr "Rhestr Ffenstri"
 #: gok/gok-utf8-word-complete.c:120
 #, c-format
 msgid "Could not read contents of dictionary file '%s'\n"
-msgstr ""
+msgstr "Methwyd darllen cynnwys y ffeil geiriadur '%s'\n"
 
-#: gok/main.c:164
-#, fuzzy
+#: gok/main.c:166
 msgid ""
 "Use the specified access method. NAME is a string and can be found in the "
 "various access method files (.xam) assigned to the \"name\" property of <gok:"
@@ -1576,22 +1667,22 @@ msgid ""
 msgstr ""
 "Defnyddio'r dull hygyrchedd penodedig. Mae ENW yn llinyn a gellir ei ganfod "
 "yn yr amryw ffeiliau dull hygyrchedd (.xam) a bennwyd i briodwedd \"name\" y "
-"tag <gok:accessmethod>. NOdwch nad yw hyn o rheidrwydd yr un peth ag enw y "
-"ffeil xam."
+"tag <gok:accessmethod>. Sylwer nad yw hyn o rheidrwydd yr un peth ag enw y "
+"ffeil xam. (Gweler --list-accessmethods.)"
 
-#: gok/main.c:165
+#: gok/main.c:167
 msgid "NAME"
 msgstr "ENW"
 
-#: gok/main.c:173
+#: gok/main.c:175
 msgid "Start the GOK keyboard editor"
 msgstr "Dechrau'r golygydd bysellfwrdd GOK"
 
-#: gok/main.c:181
+#: gok/main.c:183
 msgid "Use special, but possibly unstable, gok stuff"
 msgstr "Defnyddio pethau GOK arbennig, ond ansefydlog"
 
-#: gok/main.c:189
+#: gok/main.c:191
 msgid ""
 "Whenever --geometry is not used gok remembers its position between "
 "invocations and starts in the position that it had when it was last "
@@ -1610,39 +1701,43 @@ msgstr ""
 "ymddygiad hwn gyda'r banner --remembergeometry sy'n gorfodi gok i gofio ei "
 "safle pan mae'n cau hyd yn oed pan gychwynwyd e efo --geometry."
 
-#: gok/main.c:190
+#: gok/main.c:192
 msgid "GEOMETRY"
 msgstr "GEOMETREG"
 
-#: gok/main.c:198
+#: gok/main.c:200
 msgid "Use the specified input device"
 msgstr "Defnyddir y dyfais mewnbwn â rhoddir"
 
-#: gok/main.c:199
+#: gok/main.c:201
 msgid "DEVICENAME"
 msgstr "ENWDYFAIS"
 
-#: gok/main.c:207
+#: gok/main.c:209
 msgid "Start GOK with the specified keyboard."
 msgstr "Dechrau GOK gyda'r bysellfwrdd â rhoddir"
 
-#: gok/main.c:208
+#: gok/main.c:210
 msgid "KEYBOARDNAME"
 msgstr "ENWBYSELLFWRDD"
 
-#: gok/main.c:216
+#: gok/main.c:218
 msgid "List the access methods that can used as options to other arguments."
 msgstr ""
+"Rhestru'r dulliau hygyrchedd a ellir eu defnyddio fel opsiynnau i "
+"ymresymiadau eraill."
 
-#: gok/main.c:225
+#: gok/main.c:227
 msgid "List the actions that can used as options to other arguments."
 msgstr ""
+"Rhestru'r gweithredion a ellir eu defnyddio fel opsiynnau i ymresymiadau "
+"eraill."
 
-#: gok/main.c:234
+#: gok/main.c:236
 msgid "GOK will be used to login"
 msgstr "Defnyddir GOK i fewngofnodi"
 
-#: gok/main.c:245
+#: gok/main.c:247
 msgid ""
 "Can be used with --geometry.  Forces GOK to remember its position when "
 "shutdown even when it was started with --geometry.  Please see the "
@@ -1652,86 +1747,91 @@ msgstr ""
 "mae'n cau hyd yn oed pan dechreuwyd ef gyda --geometry. Gweler y manylion ar "
 "gyfer y banner --geometry ar gyfer mwy o wybodaeth."
 
-#: gok/main.c:256
+#: gok/main.c:258
 msgid "Start GOK and hook this action to scan operations. (See --list-actions)"
 msgstr ""
+"Cychwynnwch GOK a bachwch y weithred hwn i archwilio gweithrediadau. (Gweler "
+"--list-actions.)"
 
-#: gok/main.c:266
+#: gok/main.c:268
 msgid ""
 "Start GOK and hook this action to select operations. (See --list-actions)"
 msgstr ""
+"Cychwynnwch GOK a bachwch y weithred hwn er mwyn dewis gweithrediadau. "
+"(Gweler --list-actions.)"
 
-#: gok/main.c:275
+#: gok/main.c:277
 msgid "Open the settings dialog box when GOK starts"
 msgstr "Agor y deialog gosodiadau wrth ddechrau GOK"
 
-#: gok/main.c:588
+#: gok/main.c:590
+#, c-format
 msgid "gok: Unsupported geometry specification\n"
 msgstr "gok: Penodiad gemoetreg ni gynhelir\n"
 
-#: gok/main.c:589
+#: gok/main.c:591
+#, c-format
 msgid ""
 "gok: Currently GOK requires that the x, y, width and height all be given\n"
 msgstr "gok: Am nawr, mae'n rhaid rhoi'r x, y, lled a hyd ar gyfer GOK\n"
 
-#: gok/main.c:685
+#: gok/main.c:687
 msgid "XKB extension is required."
 msgstr "Mynnir yr estyniad XKB."
 
-#: gok/main.c:695
+#: gok/main.c:697
 msgid "Can't initialize actions."
 msgstr "Ni ellir ymgychwyn gweithrediadau."
 
-#: gok/main.c:705
+#: gok/main.c:707
 msgid "Can't initialize feedbacks."
 msgstr "Ni ellir ymgychwyn adbyrth."
 
-#: gok/main.c:732
+#: gok/main.c:734
 msgid "Can't create the main GOK window!"
 msgstr "Ni ellir creu prif ffenestr GOK!"
 
-#: gok/main.c:751
+#: gok/main.c:753
 msgid "Can't create the settings dialog window!"
 msgstr "Ni ellir creu ffenestr deialog gosodiadau!"
 
-#: gok/main.c:773
+#: gok/main.c:775
 msgid "You are using GOK in 'core pointer' mode."
-msgstr ""
+msgstr "Rydych yn defnyddio GOK yn y modd 'pwyntydd craidd'."
 
-#: gok/main.c:813
+#: gok/main.c:815
 msgid "No keyboards to display!"
 msgstr "Dim bysellfyrddau i'w dangos!"
 
-#: gok/main.c:949
+#: gok/main.c:951
 msgid "popup menu"
 msgstr "naidlen"
 
-#: gok/main.c:1805
-#, fuzzy
+#: gok/main.c:1809
 msgid "Can't create a compose keyboard!"
-msgstr "Ni ellir darllen unrhyw fysellfyrddau"
+msgstr "Ni ellir creu bysellfwrdd cyfansoddi!"
 
-#: gok/main.c:1847
+#: gok/main.c:1851
 msgid "Can't read any keyboards!"
 msgstr "Ni ellir darllen unrhyw fysellfyrddau"
 
-#: gok/main.c:1964
+#: gok/main.c:1968
 msgid "could not access method directory key from GConf!"
 msgstr "ni allwyd cyrchu'r allwedd cyfeiriadur dull o GConf!"
 
-#: gok/main.c:1972
+#: gok/main.c:1976
 msgid "possibly unknown access method!"
 msgstr "dull hygyrchedd sydd efallai'n anhysbys!"
 
-#: gok/main.c:2513
+#: gok/main.c:2517
 msgid "Sorry, GOK can't run because:\n"
 msgstr "Yn anffodus, ni all GOK rhedeg achos:\n"
 
-#: gok/main.c:2522
+#: gok/main.c:2526
 msgid "GOK Fatal Error"
 msgstr "Gwall Marwol GOK"
 
-#: gok/main.c:2534
+#: gok/main.c:2538
 msgid ""
 "GOK uses GConf 2 to store its settings and requires certain settings to be "
 "in GConf to run.  GOK is currently unable to retrieve those settings.  If "
@@ -1746,7 +1846,7 @@ msgstr ""
 "ddefnyddio'r gorchymyn \"gconftool-2 --shutdown\" er mwyn gwneud hynny, neu "
 "fe allwch allogofnodi a mewngofonodi eto."
 
-#: gok/main.c:2551
+#: gok/main.c:2555
 msgid ""
 "Currently GOK requires that the x, y, width and height all be given.  Sorry, "
 "your geometry specification will not be used."
@@ -1754,25 +1854,28 @@ msgstr ""
 "Yn bresennol, mae GOK yn mynnu y caiff yr x, y, lled a uchder eu rhoi. Mae'n "
 "flin gen i, ni chaiff eich penodiad gemoetreg ei ddefnyddio."
 
-#: gok/main.c:2553
+#: gok/main.c:2557
 msgid "gok: Unsupported geometry specification"
 msgstr "gok: Penodiad geometreg ni gynhelir"
 
-#: gok/main.c:2760
+#: gok/main.c:2764
 msgid ""
 "GOK may not work properly, because it could not enable your desktop's "
 "'sticky keys' feature."
 msgstr ""
+"Efallai ni fydd GOK yn gweithio'n gywir, oherwydd nid oedd yn gallu galluogi "
+"nodwedd 'bysellau gludiog' eich penbwrdd."
 
-#: gok/main.c:2767
+#: gok/main.c:2771
 msgid "GOK has enabled Sticky Keys, which it requires.\n"
-msgstr "Mae GOK wedi troi Bysellau Gludiog ymlaen, oherwydd ei fod angen hyn\n"
+msgstr ""
+"Mae GOK wedi troi Bysellau Gludiog ymlaen, oherwydd ei fod angen hyn.\n"
 
-#: gok/main.c:2789
+#: gok/main.c:2793
 msgid "GOK cannot run because XKB display extension is missing.\n"
-msgstr "Ni ellir rhedeg GOK oherwydd fod estyniadau arddangos XKB ar goll.\n"
+msgstr "Ni ellir rhedeg GOK oherwydd fod estyniad arddangos XKB ar goll.\n"
 
-#: gok/main.c:2853
+#: gok/main.c:2857
 msgid ""
 "This means that the device you are using to operate GOK\n"
 "is also controlling the system pointer (or 'mouse pointer').\n"
@@ -1782,8 +1885,16 @@ msgid ""
 "We strongly recommend configuring your input device as an\n"
 "'Extended' input device instead; see GOK Help for more information."
 msgstr ""
+"Mae hyn yn golygu fod y dyfais rydych chi'n defnyddio i\n"
+"weithredu GOK hefyd yn rheoli y pwyntydd system (neu 'pwyntydd\n"
+"llygoden'). Gall gwrthdrawiadau gyda defnydd rhaglenni o'r\n"
+"pwyntydd amharu gyda'ch gallu i ddefnyddio rhaglenni neu GOK.\n"
+"\n"
+"Rydym yn argymell yn gryf cyflunio eich dyfais mewnbwn fel\n"
+"dyfais mewnbwn 'Estynniedig' yn lle; gwelwch Cymorth GOK am\n"
+"fwy o wybodaeth."
 
-#: gok/main.c:2917
+#: gok/main.c:2921
 msgid ""
 "Assistive Technology Support Is Not Enabled.\n"
 "\n"
@@ -1813,11 +1924,11 @@ msgstr ""
 "Er mwyn gadael GOK, cliciwch Cau.\n"
 "\n"
 
-#: gok/main.c:2936
+#: gok/main.c:2940
 msgid "Enable and Log Out"
 msgstr "Galluogi ac Allgofnodi"
 
-#: gok/main.c:2948
+#: gok/main.c:2952
 msgid "Continue"
 msgstr "Parhau"
 
@@ -1826,7 +1937,6 @@ msgid "Inverse Scanning"
 msgstr "Archwilio Gwrthdroedig"
 
 #: inverse-scanning.xml.in.h:14 singlekey-inverse-scanning.xml.in.h:11
-#, fuzzy
 msgid "Press and hold a switch to scan.  Press another switch to select."
 msgstr ""
 "Gwasgwch a deliwch swits er mwyn archwilio. Gwasgwch swits arall er mwyn "
@@ -1841,19 +1951,20 @@ msgstr "Archwilio:"
 msgid "Scanning Direction:"
 msgstr "Cyfeiriad Archwilio:"
 
-#: singlekey-automatic-scanning.xml.in.h:20
+#. User interface for the access method
+#: singlekey-automatic-scanning.xml.in.h:21
 msgid "Single Key Automatic Scanning"
 msgstr "Archwilio Awtomatig Un Bysell"
 
-#: singlekey-automatic-scanning.xml.in.h:21
+#: singlekey-automatic-scanning.xml.in.h:22
 msgid "Start Scanning:"
 msgstr "Dechrau Archwilio"
 
-#: singlekey-automatic-scanning.xml.in.h:22
+#: singlekey-automatic-scanning.xml.in.h:23
 msgid "Start scanning:"
 msgstr "Dechrau archwilio:"
 
-#: singlekey-automatic-scanning.xml.in.h:24
+#: singlekey-automatic-scanning.xml.in.h:25
 msgid "Wrap"
 msgstr "Amlapio"
 
@@ -1863,17 +1974,15 @@ msgstr "Archwilio Gwrthdroedig Un Bysell"
 
 #: directed.xml.in.h:2
 msgid "5 Switch Directed"
-msgstr ""
+msgstr "5 Swits Cyfeiriedig"
 
 #: directed.xml.in.h:3
-#, fuzzy
 msgid "Down:"
-msgstr "Lawr"
+msgstr "I Lawr:"
 
 #: directed.xml.in.h:14
-#, fuzzy
 msgid "Up:"
-msgstr "Fyny"
+msgstr "I Fyny:"
 
 #: hide.kbd.in.h:1
 msgid "Show"
@@ -2016,42 +2125,58 @@ msgid "Wider"
 msgstr "Lletach"
 
 #: numberpad.kbd.in.h:1
-#, fuzzy
 msgid "Ctrl"
-msgstr "\"Ctrl\""
+msgstr "Ctrl"
 
 #: numberpad.kbd.in.h:2
-#, fuzzy
 msgid "Del"
-msgstr "Oediad"
+msgstr "Dileu"
 
 #: numberpad.kbd.in.h:7
 msgid "Ins"
-msgstr ""
+msgstr "Mewnosod"
 
 #: numberpad.kbd.in.h:9
 msgid "Num"
-msgstr ""
+msgstr "Rhif"
 
 #. Translators: abbreviation for Page Down.
 #: numberpad.kbd.in.h:11
 msgid "PgDn"
-msgstr ""
+msgstr "Tud Lawr"
 
 #. Translators: abbreviation for Page Up.
 #: numberpad.kbd.in.h:13
-#, fuzzy
 msgid "PgUp"
-msgstr "Fyny"
+msgstr "Tud Fyny"
 
 #: numberpad.kbd.in.h:15
 msgid "Shift"
-msgstr ""
+msgstr "Shifft"
+
+#: numberpad.kbd.in.h:17
+msgid "Tab&lt;-"
+msgstr "Tab&lt;-"
 
 #. Translators: short phrase to confirm that user wants to quit.
 #: quit.kbd.in.h:2
 msgid "Really Quit!"
-msgstr "Gadael go iawn!"
+msgstr "Gadael Go Iawn!"
+
+#~ msgid "\"Alt\""
+#~ msgstr "\"Alt\""
+
+#~ msgid "\"Ctrl\""
+#~ msgstr "\"Ctrl\""
+
+#~ msgid "\"Shift AltGr Level-3\""
+#~ msgstr "\"Shift AltGr Level-3\""
+
+#~ msgid "\"Tab\""
+#~ msgstr "\"Tab\""
+
+#~ msgid "\"spacebar\""
+#~ msgstr "\"bar gofod\""
 
 #~ msgid "Key 1"
 #~ msgstr "Bysell 1"
@@ -2076,12 +2201,6 @@ msgstr "Gadael go iawn!"
 
 #~ msgid "example key 4"
 #~ msgstr "bysell enghraifft 4"
-
-#~ msgid "\"Alt\""
-#~ msgstr "\"Alt\""
-
-#~ msgid "\"Shift AltGr Level-3\""
-#~ msgstr "\"Shift AltGr Level-3\""
 
 #~ msgid "Extra word list file"
 #~ msgstr "Ffeil rhestr geiriau ychwanegol"

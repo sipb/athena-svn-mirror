@@ -45,7 +45,7 @@ typedef enum {
 	GOK_SPY_SEARCH_APPLICATIONS,
 	GOK_SPY_SEARCH_CHILDREN,
 	GOK_SPY_SEARCH_LISTITEMS,
-	GOK_SPY_SEARCH_TABLE_ROWS,
+	GOK_SPY_SEARCH_TABLE_CELLS,
 	GOK_SPY_SEARCH_COMBO,
 	GOK_SPY_SEARCH_ACTIONABLE,
 	GOK_SPY_SEARCH_ALL
@@ -96,9 +96,8 @@ Accessible*     gok_spy_get_list_parent (Accessible* paccessible);
 Accessible*     gok_spy_get_editable (Accessible* paccessible);
 GSList*         gok_spy_get_children (Accessible* paccessible); 
 GSList*         gok_spy_get_actionable_descendants (Accessible* paccessible, GSList *nodes); 
-GSList*         gok_spy_get_table_row_nodes (Accessible* paccessible); 
+GSList*         gok_spy_get_table_nodes (Accessible* paccessible); 
 GokSpyUIFlags   gok_spy_update_component_list (Accessible* accessible, GokSpyUIFlags keyboard_ui_flags);
-AccessibleNode* gok_spy_get_ui_list (Accessible* paccessible); 
 AccessibleNode* gok_spy_refresh (AccessibleNode* plist); 
 GSList*         gok_spy_append_node (GSList *nodes, Accessible* pAccessible, AccessibleNodeFlags flags);
 

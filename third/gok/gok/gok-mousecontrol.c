@@ -59,7 +59,7 @@ gok_mouse_control_init (GokKey *key, xmlNode *node)
 	{
 		command->type = MOUSE_COMMAND_MOVE;
 		command->detail.dir = 
-			gok_keyboard_parse_direction (attribute);
+			gok_keyboard_parse_direction ((const char *)attribute);
 	}
 	else {
 		attribute = xmlGetProp (node, (const xmlChar *) "action");

@@ -35,6 +35,7 @@ gok-keyboard
 @KEYBOARD_TYPE_APPLICATIONS: 
 @KEYBOARD_TYPE_MENUS: 
 @KEYBOARD_TYPE_MENUITEMS: 
+@KEYBOARD_TYPE_ACTIONS: 
 @KEYBOARD_TYPE_ALLTOOLBARS: 
 @KEYBOARD_TYPE_TOOLBAR: 
 @KEYBOARD_TYPE_GUI: 
@@ -270,7 +271,9 @@ gok-keyboard
 
 </para>
 
+@keyboard: 
 @pNodeAccessible: 
+@action_ndx: 
 @Returns: 
 
 

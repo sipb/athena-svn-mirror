@@ -43,4 +43,5 @@ struct _GokSWWordCompleteClass
 	GokUTF8WordCompleteClass parent_class;
 };
 
+GType gok_sw_wordcomplete_get_type (void);
 #endif /* #ifndef _GOK_SLIDING_WINDOW_WORDCOMPLETE_H__ */

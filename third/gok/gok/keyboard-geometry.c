@@ -83,7 +83,8 @@ report_key_info (XkbDescPtr kbd, XkbKeyPtr key, int col, int *x, int *y,
     {
       if (!strncmp (name, kbd->names->keys[k].name, XkbKeyNameLength))
 	{ 
-	  unsigned int mods_rtn, extra_rtn;
+	  unsigned int mods_rtn;
+	  int extra_rtn;
 	  char symname[16];
 	  KeySym keysym;
 	  if (XkbTranslateKeyCode (kbd, (KeyCode) k, mods, 

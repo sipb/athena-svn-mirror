@@ -86,6 +86,7 @@ KEYTYPE_BRANCHGUITABLE,
 KEYTYPE_BRANCHGUIVALUATOR,
 KEYTYPE_BRANCHCOMBO,
 KEYTYPE_REPEATNEXT,
+KEYTYPE_ACTION,
 KEYTYPE_ADDWORD
 } GokKeyActionType;
 
@@ -113,7 +114,9 @@ KEYSTYLE_SETTINGS,
 KEYSTYLE_SPELL,
 KEYSTYLE_WORDCOMPLETE,
 KEYSTYLE_POINTERCONTROL,
+KEYSTYLE_BRANCHHYPERTEXT,
 KEYSTYLE_BRANCHMODAL,
+KEYSTYLE_HTMLACTION,
 KEYSTYLE_HYPERLINK,
 KEYSTYLE_BRANCHTEXT,
 KEYSTYLE_HELP,
@@ -131,6 +134,7 @@ KEYSTYLE_INSENSITIVE
 #define FONT_SIZE_GROUP_UNIQUE -1
 #define FONT_SIZE_GROUP_WORDCOMPLETE -2
 #define FONT_SIZE_GROUP_GLYPH -3
+#define FONT_SIZE_GROUP_CONTENT -4
 
 #define GOK_MODMASK_CURRENT -1
 #define GOK_MIN_FONT_SIZE 6000 
@@ -202,6 +206,7 @@ typedef struct GokKey{
 	guint is_repeatable:1;
         guint unused:13; /* nicer alignment in case compiler is weird */
 	AccessibleNode* accessible_node;
+        gint action_ndx;
 	gint CellsRequired;
 	gint FontSizeGroup;
 	gint FontSize;
@@ -265,6 +270,8 @@ GokKeyImage* gok_keyimage_new (GokKey *pKey, gchar* Filename);
 void gok_keyimage_delete (GokKeyImage* pKeyImage);
 gboolean gok_key_isRepeatable(GokKey* pKey);
 GokOutput* gok_key_wordcomplete_output (GokKey *pKey, GokWordComplete *complete);
+unsigned int gok_key_get_numlock_mask (Display *display);
+gchar * gok_key_modifier_for_keycode (Display *display, XkbDescPtr xkb, int keycode);
 
 #ifdef __cplusplus
 }

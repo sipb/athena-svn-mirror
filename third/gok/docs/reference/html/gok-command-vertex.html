@@ -1,0 +1,107 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>command-vertex</title><meta name="generator" content="DocBook XSL Stylesheets V1.64.1"><link rel="home" href="index.html" title="[Insert name here] Reference Manual"><link rel="up" href="ch01.html" title="[Insert title here]"><link rel="previous" href="gok-command-vertex-data.html" title="command-vertex-data"><link rel="next" href="gok-global.html" title="global"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><link rel="stylesheet" href="style.css" type="text/css"><link rel="chapter" href="ch01.html" title="[Insert title here]"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="gok-command-vertex-data.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">[Insert name here] Reference Manual</th><td><a accesskey="n" href="gok-global.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="gok-command-vertex"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><table width="100%"><tr><td valign="top"><h2><span class="refentrytitle">command-vertex</span></h2><p>command-vertex &#8212; </p></td><td valign="top" align="right"></td></tr></table></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+
+
+
+const <a href="gok-arraylist.html#Boolean">Boolean</a> <a href="gok-command-vertex.html#command-vertex-equals">command_vertex_equals</a>         (const <a href="gok-arraylist.html#Object">Object</a> vertex_1,
+                                             const <a href="gok-arraylist.html#Object">Object</a> vertex_2);
+void        <a href="gok-command-vertex.html#command-vertex-free">command_vertex_free</a>             (const Command_Vertex vertex);
+Command_Vertex <a href="gok-command-vertex.html#command-vertex-create">command_vertex_create</a>        (const Command_Vertex_Data vertex_data);
+void        <a href="gok-command-vertex.html#command-vertex-set-vertex-data">command_vertex_set_vertex_data</a>  (const Command_Vertex vertex,
+                                             const Command_Vertex_Data vertex_data);
+const Command_Vertex_Data <a href="gok-command-vertex.html#command-vertex-get-vertex-data">command_vertex_get_vertex_data</a>
+                                            (const Command_Vertex vertex);
+void        <a href="gok-command-vertex.html#command-vertex-sort-by-stat">command_vertex_sort_by_stat</a>     (const Command_Vertex vertex);
+const Command_Edge <a href="gok-command-vertex.html#command-vertex-get-edge">command_vertex_get_edge</a>  (const Command_Vertex vertex,
+                                             const Command_Edge edge);
+void        <a href="gok-command-vertex.html#command-vertex-remove-edge">command_vertex_remove_edge</a>      (const Command_Vertex vertex,
+                                             const Command_Edge edge);
+void        <a href="gok-command-vertex.html#command-vertex-add-edge">command_vertex_add_edge</a>         (const Command_Vertex vertex,
+                                             const Command_Edge edge);
+const Arraylist <a href="gok-command-vertex.html#command-vertex-get-edges">command_vertex_get_edges</a>    (const Command_Vertex vertex);
+void        <a href="gok-command-vertex.html#command-vertex-dump-text">command_vertex_dump_text</a>        (const Command_Vertex vertex,
+                                             FILE *stream);
+void        <a href="gok-command-vertex.html#command-vertex-dump-binary">command_vertex_dump_binary</a>      (const Command_Vertex vertex,
+                                             FILE *stream);
+</pre></div><div class="refsect1" lang="en"><a name="id2539496"></a><h2>Description</h2><p>
+
+</p></div><div class="refsect1" lang="en"><a name="id2539505"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2539511"></a><h3><a name="command-vertex-equals"></a>command_vertex_equals ()</h3><a class="indexterm" name="id2539523"></a><pre class="programlisting">const <a href="gok-arraylist.html#Boolean">Boolean</a> command_vertex_equals         (const <a href="gok-arraylist.html#Object">Object</a> vertex_1,
+                                             const <a href="gok-arraylist.html#Object">Object</a> vertex_2);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>vertex_1</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>vertex_2</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2539601"></a><h3><a name="command-vertex-free"></a>command_vertex_free ()</h3><a class="indexterm" name="id2539613"></a><pre class="programlisting">void        command_vertex_free             (const Command_Vertex vertex);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>vertex</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2539659"></a><h3><a name="command-vertex-create"></a>command_vertex_create ()</h3><a class="indexterm" name="id2539670"></a><pre class="programlisting">Command_Vertex command_vertex_create        (const Command_Vertex_Data vertex_data);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>vertex_data</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2539727"></a><h3><a name="command-vertex-set-vertex-data"></a>command_vertex_set_vertex_data ()</h3><a class="indexterm" name="id2539739"></a><pre class="programlisting">void        command_vertex_set_vertex_data  (const Command_Vertex vertex,
+                                             const Command_Vertex_Data vertex_data);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>vertex</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>vertex_data</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2539807"></a><h3><a name="command-vertex-get-vertex-data"></a>command_vertex_get_vertex_data ()</h3><a class="indexterm" name="id2539819"></a><pre class="programlisting">const Command_Vertex_Data command_vertex_get_vertex_data
+                                            (const Command_Vertex vertex);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>vertex</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2539878"></a><h3><a name="command-vertex-sort-by-stat"></a>command_vertex_sort_by_stat ()</h3><a class="indexterm" name="id2539891"></a><pre class="programlisting">void        command_vertex_sort_by_stat     (const Command_Vertex vertex);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>vertex</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2539937"></a><h3><a name="command-vertex-get-edge"></a>command_vertex_get_edge ()</h3><a class="indexterm" name="id2539948"></a><pre class="programlisting">const Command_Edge command_vertex_get_edge  (const Command_Vertex vertex,
+                                             const Command_Edge edge);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>vertex</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>edge</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2540028"></a><h3><a name="command-vertex-remove-edge"></a>command_vertex_remove_edge ()</h3><a class="indexterm" name="id2540040"></a><pre class="programlisting">void        command_vertex_remove_edge      (const Command_Vertex vertex,
+                                             const Command_Edge edge);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>vertex</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>edge</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2540108"></a><h3><a name="command-vertex-add-edge"></a>command_vertex_add_edge ()</h3><a class="indexterm" name="id2540119"></a><pre class="programlisting">void        command_vertex_add_edge         (const Command_Vertex vertex,
+                                             const Command_Edge edge);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>vertex</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>edge</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2540188"></a><h3><a name="command-vertex-get-edges"></a>command_vertex_get_edges ()</h3><a class="indexterm" name="id2540199"></a><pre class="programlisting">const Arraylist command_vertex_get_edges    (const Command_Vertex vertex);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>vertex</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2540256"></a><h3><a name="command-vertex-dump-text"></a>command_vertex_dump_text ()</h3><a class="indexterm" name="id2540268"></a><pre class="programlisting">void        command_vertex_dump_text        (const Command_Vertex vertex,
+                                             FILE *stream);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>vertex</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>stream</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2540336"></a><h3><a name="command-vertex-dump-binary"></a>command_vertex_dump_binary ()</h3><a class="indexterm" name="id2540348"></a><pre class="programlisting">void        command_vertex_dump_binary      (const Command_Vertex vertex,
+                                             FILE *stream);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>vertex</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>stream</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="gok-command-vertex-data.html"><b>&lt;&lt; command-vertex-data</b></a></td><td align="right"><a accesskey="n" href="gok-global.html"><b>global &gt;&gt;</b></a></td></tr></table></body></html>

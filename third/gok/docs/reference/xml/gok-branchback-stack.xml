@@ -1,0 +1,99 @@
+<refentry id="gok-gok-branchback-stack">
+<refmeta>
+<refentrytitle>gok-branchback-stack</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>GOK Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>gok-branchback-stack</refname><refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+
+<synopsis>
+
+
+
+#define     <link linkend="MAX-BRANCHBACKSTACK:CAPS">MAX_BRANCHBACKSTACK</link>
+<link linkend="void">void</link>        <link linkend="gok-branchbackstack-initialize">gok_branchbackstack_initialize</link>  (void);
+<link linkend="void">void</link>        <link linkend="gok-branchbackstack-push">gok_branchbackstack_push</link>        (<link linkend="GokKeyboard">GokKeyboard</link> *pKeyboard);
+<link linkend="GokKeyboard">GokKeyboard</link>* <link linkend="gok-branchbackstack-pop">gok_branchbackstack_pop</link>        (void);
+<link linkend="gboolean">gboolean</link>    <link linkend="gok-branchbackstack-is-empty">gok_branchbackstack_is_empty</link>    (void);
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="MAX-BRANCHBACKSTACK:CAPS"/>MAX_BRANCHBACKSTACK</title>
+<indexterm><primary>MAX_BRANCHBACKSTACK</primary></indexterm><programlisting>#define MAX_BRANCHBACKSTACK 50
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="gok-branchbackstack-initialize"/>gok_branchbackstack_initialize ()</title>
+<indexterm><primary>gok_branchbackstack_initialize</primary></indexterm><programlisting><link linkend="void">void</link>        gok_branchbackstack_initialize  (void);</programlisting>
+<para>
+This must be called prior to using the stack.</para>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="gok-branchbackstack-push"/>gok_branchbackstack_push ()</title>
+<indexterm><primary>gok_branchbackstack_push</primary></indexterm><programlisting><link linkend="void">void</link>        gok_branchbackstack_push        (<link linkend="GokKeyboard">GokKeyboard</link> *pKeyboard);</programlisting>
+<para>
+Stores a keyboard on the stack.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>pKeyboard</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gok-branchbackstack-pop"/>gok_branchbackstack_pop ()</title>
+<indexterm><primary>gok_branchbackstack_pop</primary></indexterm><programlisting><link linkend="GokKeyboard">GokKeyboard</link>* gok_branchbackstack_pop        (void);</programlisting>
+<para>
+Remove the last keyboard in the stack and return it.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> A pointer to the keyboard popped off the stack, NULL if the stack is empty.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gok-branchbackstack-is-empty"/>gok_branchbackstack_is_empty ()</title>
+<indexterm><primary>gok_branchbackstack_is_empty</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gok_branchbackstack_is_empty    (void);</programlisting>
+<para>
+Checks if the branch back stack is empty.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>  TRUE if the stack is empty (you can't branch back). FALSE if there is at least 
+one keyboard in the stack (you can branch back).
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

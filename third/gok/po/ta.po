@@ -1,3 +1,4 @@
+# translation of gok.HEAD.ta.po to Tamil
 # translation of ta.po to Tamil
 # Tamil translation of Tamil GOK 2.4.
 # Copyright (C) 2003, 2004 Free Software Foundation, Inc.
@@ -7,17 +8,18 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: ta\n"
-"POT-Creation-Date: 2004-09-10 06:47+0100\n"
-"PO-Revision-Date: 2004-09-02 11:53+0530\n"
+"Project-Id-Version: gok.HEAD.ta\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-12-07 12:18-0500\n"
+"PO-Revision-Date: 2004-09-16 13:19+0530\n"
 "Last-Translator: Jayaradha N <jaya@pune.redhat.com>\n"
 "Language-Team: Tamil <zhakanini@yahoogroups.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Report-Msgid-Bugs-To: \n"
 "X-Generator: KBabel 1.3.1\n"
 "Plural-Forms: Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"\n"
 "\n"
 
 #: automatic-scanning.xml.in.h:1 direct-selection.xml.in.h:1
@@ -36,120 +38,121 @@ msgstr "தானாக மீண்டும் செய்வதை இயக
 msgid "Auto Repeat Rate:"
 msgstr "தானாக மீண்டும் செய்யும் விகிதம்:"
 
-#: automatic-scanning.xml.in.h:4
+#. User interface for the access method
+#: automatic-scanning.xml.in.h:5
 msgid "Automatic Scanning"
 msgstr "தானாக தேடு"
 
-#: automatic-scanning.xml.in.h:5 singlekey-automatic-scanning.xml.in.h:1
+#: automatic-scanning.xml.in.h:6 singlekey-automatic-scanning.xml.in.h:1
 msgid "Autostart (starts automatically)"
 msgstr "தானாக துவக்கு(தானாக துவக்கு)"
 
-#: automatic-scanning.xml.in.h:6 inverse-scanning.xml.in.h:4
+#: automatic-scanning.xml.in.h:7 inverse-scanning.xml.in.h:4
 #: singlekey-automatic-scanning.xml.in.h:2
 #: singlekey-inverse-scanning.xml.in.h:2
 msgid "Bottom/Top"
 msgstr "கீழ்/மேல்"
 
-#: automatic-scanning.xml.in.h:7 inverse-scanning.xml.in.h:5
+#: automatic-scanning.xml.in.h:8 inverse-scanning.xml.in.h:5
 msgid "Continuous Cycle On"
 msgstr "தொடர் சங்கிலி இயக்கு"
 
-#: automatic-scanning.xml.in.h:8 inverse-scanning.xml.in.h:6
+#: automatic-scanning.xml.in.h:9 inverse-scanning.xml.in.h:6
 #: singlekey-automatic-scanning.xml.in.h:3
 #: singlekey-inverse-scanning.xml.in.h:3
 msgid "Cycles Before Stopping:"
 msgstr "நிறுத்துவதற்கு முன் சங்கிலி"
 
-#: automatic-scanning.xml.in.h:9 direct-selection.xml.in.h:5
+#: automatic-scanning.xml.in.h:10 direct-selection.xml.in.h:5
 #: dwell-selection.xml.in.h:4 gok.glade2.h:69 inverse-scanning.xml.in.h:7
 #: singlekey-automatic-scanning.xml.in.h:4
 #: singlekey-inverse-scanning.xml.in.h:4 directed.xml.in.h:4
 msgid "Feedback"
 msgstr "கருத்து"
 
-#: automatic-scanning.xml.in.h:10
+#: automatic-scanning.xml.in.h:11
 msgid "Feedback Movement"
 msgstr "கருத்து தற்போது"
 
-#: automatic-scanning.xml.in.h:11
+#: automatic-scanning.xml.in.h:12
 msgid "Feedback Selection"
 msgstr "கருத்து தேர்வு"
 
-#: automatic-scanning.xml.in.h:12 singlekey-automatic-scanning.xml.in.h:7
+#: automatic-scanning.xml.in.h:13 singlekey-automatic-scanning.xml.in.h:7
 msgid "Initial Delay:"
 msgstr "துவக்க தாமதம்:"
 
-#: automatic-scanning.xml.in.h:13 inverse-scanning.xml.in.h:10
+#: automatic-scanning.xml.in.h:14 inverse-scanning.xml.in.h:10
 #: singlekey-automatic-scanning.xml.in.h:8
 #: singlekey-inverse-scanning.xml.in.h:7
 msgid "Left/Right"
 msgstr "இடது/வலது"
 
-#: automatic-scanning.xml.in.h:14 direct-selection.xml.in.h:10
+#: automatic-scanning.xml.in.h:15 direct-selection.xml.in.h:10
 #: dwell-selection.xml.in.h:10 inverse-scanning.xml.in.h:12
 #: singlekey-automatic-scanning.xml.in.h:10
 #: singlekey-inverse-scanning.xml.in.h:9 directed.xml.in.h:8
 msgid "Operation"
 msgstr "செயல்"
 
-#: automatic-scanning.xml.in.h:15 direct-selection.xml.in.h:11
+#: automatic-scanning.xml.in.h:16 direct-selection.xml.in.h:11
 #: inverse-scanning.xml.in.h:13 singlekey-automatic-scanning.xml.in.h:11
 #: singlekey-inverse-scanning.xml.in.h:10
 msgid "Options"
 msgstr "தேர்வுகள்"
 
-#: automatic-scanning.xml.in.h:16 singlekey-automatic-scanning.xml.in.h:12
+#: automatic-scanning.xml.in.h:17 singlekey-automatic-scanning.xml.in.h:12
 msgid ""
 "Press a switch to start scanning.  Press another switch or the same switch "
 "again to select."
 msgstr "தேட விசையை இயக்கவும்.மீண்டும் தேர்வு செய்ய அதே விசையை பயன்படுத்தவும்"
 
-#: automatic-scanning.xml.in.h:17 singlekey-automatic-scanning.xml.in.h:13
+#: automatic-scanning.xml.in.h:18 singlekey-automatic-scanning.xml.in.h:13
 msgid "Press switch to start"
 msgstr "துவக்க விசையை அழுத்தவும்"
 
-#: automatic-scanning.xml.in.h:18 inverse-scanning.xml.in.h:15
+#: automatic-scanning.xml.in.h:19 inverse-scanning.xml.in.h:15
 #: singlekey-automatic-scanning.xml.in.h:14
 #: singlekey-inverse-scanning.xml.in.h:12
 msgid "Right/Left"
 msgstr "வலது/இடது:"
 
-#: automatic-scanning.xml.in.h:19 inverse-scanning.xml.in.h:16
+#: automatic-scanning.xml.in.h:20 inverse-scanning.xml.in.h:16
 #: singlekey-automatic-scanning.xml.in.h:15
 #: singlekey-inverse-scanning.xml.in.h:13 directed.xml.in.h:10
 msgid "Scan Delay:"
 msgstr "தேடல் தாமதம்:"
 
-#: automatic-scanning.xml.in.h:20 inverse-scanning.xml.in.h:17
+#: automatic-scanning.xml.in.h:21 inverse-scanning.xml.in.h:17
 #: singlekey-automatic-scanning.xml.in.h:16
 #: singlekey-inverse-scanning.xml.in.h:14 directed.xml.in.h:11
 msgid "Scan Speed:"
 msgstr "தேடல் வேகம்:"
 
-#: automatic-scanning.xml.in.h:21
+#: automatic-scanning.xml.in.h:22
 msgid "Select"
 msgstr "தேர்வுசெய்க்கு"
 
-#: automatic-scanning.xml.in.h:22
+#: automatic-scanning.xml.in.h:23
 msgid "Start Scanning"
 msgstr "தேடதுவங்கு"
 
-#: automatic-scanning.xml.in.h:23 inverse-scanning.xml.in.h:21
-#: singlekey-automatic-scanning.xml.in.h:23
+#: automatic-scanning.xml.in.h:24 inverse-scanning.xml.in.h:21
+#: singlekey-automatic-scanning.xml.in.h:24
 #: singlekey-inverse-scanning.xml.in.h:20
 msgid "Top/Bottom"
 msgstr "மேல்/கீழ்்:"
 
-#: automatic-scanning.xml.in.h:24 inverse-scanning.xml.in.h:22
+#: automatic-scanning.xml.in.h:25 inverse-scanning.xml.in.h:22
 #: singlekey-inverse-scanning.xml.in.h:21 directed.xml.in.h:15
 msgid "Wrap Rows/Columns"
 msgstr "மடக்கு வரிசை/நெடுவரிசை"
 
-#: automatic-scanning.xml.in.h:25
+#: automatic-scanning.xml.in.h:26
 msgid "feedbackmovement"
 msgstr "கருத்து "
 
-#: automatic-scanning.xml.in.h:26
+#: automatic-scanning.xml.in.h:27
 msgid "feedbackselection"
 msgstr "கருத்து தேர்வு"
 
@@ -224,32 +227,41 @@ msgid "Window"
 msgstr "சாளரம்"
 
 #. "back" means go to previous keyboard
-#: gok-controls.kbd.in.h:6 gok/gok-keyboard.c:2476 gok/gok-windowlister.c:130
+#. Translators: short label for go back.
+#: gok-controls.kbd.in.h:6 gok/gok-keyboard.c:2481 gok/gok-windowlister.c:130
 #: launcher.kbd.in.h:5 mouse.kbd.in.h:24 move-resize.kbd.in.h:23
-#: numberpad.kbd.in.h:19 quit.kbd.in.h:4 valuator.kbd.in.h:3
+#: numberpad.kbd.in.h:20 quit.kbd.in.h:4 valuator.kbd.in.h:3
 msgid "back"
 msgstr "பின்"
 
-#: gok-with-references.schemas.in.h:1 gok/main.c:284
+#: gok-with-references.schemas.in.h:1
+msgid "$pkgdatadir/goksound1.wav"
+msgstr ""
+
+#: gok-with-references.schemas.in.h:2
+msgid "$pkgdatadir/goksound2.wav"
+msgstr ""
+
+#: gok-with-references.schemas.in.h:3 gok/main.c:286
 msgid ""
 "A multiplier to be applied to input device valuator events before processing"
 msgstr "செயல்படுவதற்கு முன் உள்ளீடு சாதனத்தில் பயன்படுத்த வேண்டிய பல் இயக்கி"
 
-#: gok-with-references.schemas.in.h:2
+#: gok-with-references.schemas.in.h:4
 msgid ""
 "A semicolon-delimited list of fully specified paths to additional word-"
 "completion dictionaries"
 msgstr "அகராதியில் உள்ள அரைப்புள்ளியால் பிரிக்கப்பட்ட வார்த்தைகளில் பட்டியை"
 
-#: gok-with-references.schemas.in.h:3
+#: gok-with-references.schemas.in.h:5
 msgid "Are the preferences to be restricted?"
 msgstr "விருப்பங்கள் கட்டுப்படுத்தப்பட வேண்டுமா?"
 
-#: gok-with-references.schemas.in.h:4
+#: gok-with-references.schemas.in.h:6
 msgid "Determines the keyboard type used for the default compose keyboard"
 msgstr "இயல்பான எழுது விசையாக பயன்படுத்தப்படும் விசைப்பலகையை கண்டுபிடிக்கவும்"
 
-#: gok-with-references.schemas.in.h:5
+#: gok-with-references.schemas.in.h:7
 msgid ""
 "Does GOK generate its compose keyboard dynamically based on information from "
 "the X Server?"
@@ -257,62 +269,103 @@ msgstr ""
 "GOK எழுதுவிசைகளை X சேவகனிலிருந்து இயக்கத்தின் போது பெறப்பட்ட தகவல்களை கொண்டு "
 "உருவாக்குகிறதா?"
 
-#: gok-with-references.schemas.in.h:6
+#: gok-with-references.schemas.in.h:8
 msgid ""
 "Does each GOK user have a private copy of the word prediction dictionary?"
 msgstr "ஒவ்வொரு GOK பயனீட்டாளரும் தனி வார்த்தை கணிப்பு அகராதியை வைத்திருக்கிறார்களா?"
 
-#: gok-with-references.schemas.in.h:7
+#: gok-with-references.schemas.in.h:9
 msgid "Does the GOK window expand to fill the full screen width?"
 msgstr "GOK சாளரம் முழு திரை அகலத்திற்கு விரியுமா?"
 
-#: gok-with-references.schemas.in.h:8
+#: gok-with-references.schemas.in.h:10
 msgid "Does the core pointer follow the GOK keyboard pointer?"
 msgstr "GOK விசைப்பலகை குறிப்பில் மூல குறிப்பை தொடர்கிறதா?"
 
-#: gok-with-references.schemas.in.h:9
+#: gok-with-references.schemas.in.h:11
 msgid "Does this action use key averaging"
 msgstr "விசை சராசரிப்படுத்தலை இந்த செயல் செய்கிறதா?"
 
-#: gok-with-references.schemas.in.h:10
+#: gok-with-references.schemas.in.h:12
 msgid "Does this feedback flash"
 msgstr "இதில் கருத்து தெரிகிறதா?"
 
-#: gok-with-references.schemas.in.h:11
+#: gok-with-references.schemas.in.h:13
 msgid "Does this feedback play a sound"
 msgstr "இந்த கருத்து ஒலியை இயக்குமா"
 
-#: gok-with-references.schemas.in.h:12
+#: gok-with-references.schemas.in.h:14
 msgid "Does this feedback speak the label of a GOK key"
 msgstr "GOK விசையில் உள்ள விளக்கச்சீட்டில் கருத்து இருக்குமா"
 
-#: gok-with-references.schemas.in.h:13
+#: gok-with-references.schemas.in.h:15
+#, fuzzy
+msgid "Dwell"
+msgstr "Del"
+
+#: gok-with-references.schemas.in.h:16
 msgid "GOK main window anchor location (if a dock), or empty string if not"
 msgstr "GOK முதன்மை சாளர இணைப்பின் இடம் (if a dock), or empty string if not"
 
-#: gok-with-references.schemas.in.h:14
+#: gok-with-references.schemas.in.h:17
 msgid ""
 "How many children of each node in the GUI tree to search for accessible "
 "objects"
 msgstr "அணுகக்கூடிய பொருளை தேட GUI கிளையில் எத்தை சேய் கணினிகள் இருக்க வேண்டும்"
 
-#: gok-with-references.schemas.in.h:15
+#: gok-with-references.schemas.in.h:18
 msgid "How many levels down the GUI tree to search for accessible objects"
 msgstr "அணுக்ககூடிய பொருளை தேட GUI கிளையில் எத்தனை மட்டங்கள் கீழே செல்ல வேண்டும்"
 
-#: gok-with-references.schemas.in.h:16
+#: gok-with-references.schemas.in.h:19
 msgid "Is this action permanent"
 msgstr "இந்த செயல் நிலையானதா"
 
-#: gok-with-references.schemas.in.h:17
+#: gok-with-references.schemas.in.h:20
 msgid "Is this feedback permanent"
 msgstr "இந்த கருத்து நிலையானதா"
 
-#: gok-with-references.schemas.in.h:18
+#: gok-with-references.schemas.in.h:21
 msgid "Is word completion on"
 msgstr "வார்த்தை முடிவுற்றதா"
 
-#: gok-with-references.schemas.in.h:19
+#: gok-with-references.schemas.in.h:22
+#, fuzzy
+msgid "Key flashing"
+msgstr "<b>விசை காட்சி</b>"
+
+#: gok-with-references.schemas.in.h:23
+msgid "Left Mouse Button"
+msgstr ""
+
+#: gok-with-references.schemas.in.h:24
+msgid "Middle Mouse Button"
+msgstr ""
+
+#: gok-with-references.schemas.in.h:25
+#, fuzzy
+msgid "Mouse Button 4"
+msgstr "பட்டன் 3"
+
+#: gok-with-references.schemas.in.h:26
+#, fuzzy
+msgid "Mouse Button 5"
+msgstr "பட்டன் 3"
+
+#: gok-with-references.schemas.in.h:27
+#, fuzzy
+msgid "Mouse Pointer"
+msgstr "குறி"
+
+#: gok-with-references.schemas.in.h:28
+msgid "None"
+msgstr ""
+
+#: gok-with-references.schemas.in.h:29
+msgid "Right Mouse Button"
+msgstr ""
+
+#: gok-with-references.schemas.in.h:30
 msgid ""
 "Should be one of the following: xkb, default, alpha, alpha-freq, custom; if "
 "custom, custom_compose_keyboard should be defined."
@@ -320,99 +373,143 @@ msgstr ""
 "பின்வருவனவற்றுள் ஒன்றாக இருக்க வேண்டும் xkb, default, alpha, alpha-freq, custom; "
 "ஒருவேளை custom, custom_compose_keyboard குறிப்பிட வேண்டும்"
 
-#: gok-with-references.schemas.in.h:20
+#: gok-with-references.schemas.in.h:31
+#, fuzzy
+msgid "Sound one"
+msgstr "(_u)ஒலி:"
+
+#: gok-with-references.schemas.in.h:32
+#, fuzzy
+msgid "Sound two"
+msgstr "(_u)ஒலி:"
+
+#: gok-with-references.schemas.in.h:33
+#, fuzzy
+msgid "Speech"
+msgstr "தேர்வுசெய்க்கு"
+
+#: gok-with-references.schemas.in.h:34
+#, fuzzy
+msgid "Switch 1"
+msgstr "மாற்றி  _1"
+
+#: gok-with-references.schemas.in.h:35
+#, fuzzy
+msgid "Switch 2"
+msgstr "மாற்றி _2"
+
+#: gok-with-references.schemas.in.h:36
+#, fuzzy
+msgid "Switch 3"
+msgstr "மாற்றி _3"
+
+#: gok-with-references.schemas.in.h:37
+#, fuzzy
+msgid "Switch 4"
+msgstr "மாற்றி _4"
+
+#: gok-with-references.schemas.in.h:38
+#, fuzzy
+msgid "Switch 5"
+msgstr "மாற்றி _5"
+
+#: gok-with-references.schemas.in.h:39
 msgid "The access method to use"
 msgstr "பயன்படுத்த வேண்டிய அணுகல் முறை"
 
-#: gok-with-references.schemas.in.h:21
+#: gok-with-references.schemas.in.h:40
 msgid "The directory to load access method files from."
 msgstr "அணுகல் முறையை ஏற்றும் அடைவு"
 
-#: gok-with-references.schemas.in.h:22
+#: gok-with-references.schemas.in.h:41
 msgid "The directory to load dictionary files from."
 msgstr "அகரதி கோப்புகளை பெற வேண்டிய அடைவு"
 
-#: gok-with-references.schemas.in.h:23
+#: gok-with-references.schemas.in.h:42
 msgid "The directory to load the gok resource file from."
 msgstr "gok மூல கோப்புகளை பெறவேண்டிய அடைவு"
 
-#: gok-with-references.schemas.in.h:24
+#: gok-with-references.schemas.in.h:43
 msgid "The directory to load user-specific or custom keyboard files from."
 msgstr "பயனீட்டாளர் விவரம் அல்லது தனி விசைப்பலகை கோப்புகளை பெற வேண்டிய அடைவு"
 
-#: gok-with-references.schemas.in.h:25
+#: gok-with-references.schemas.in.h:44
 msgid "The full pathname to a file which defines a custom GOK compose keyboard"
 msgstr "GOK தொகுப்பு விசைப்பலகைகளை குறிப்பிடும் முழுபாதை"
 
-#: gok-with-references.schemas.in.h:26
+#: gok-with-references.schemas.in.h:45
 msgid "The key height"
 msgstr "விசை உயரம்"
 
-#: gok-with-references.schemas.in.h:27
+#: gok-with-references.schemas.in.h:46
 msgid "The key width"
 msgstr "விசை அகலம்"
 
-#: gok-with-references.schemas.in.h:28
+#: gok-with-references.schemas.in.h:47
 msgid "The keyboards X coordinate"
 msgstr "விசைப்பலகை X அச்சு"
 
-#: gok-with-references.schemas.in.h:29
+#: gok-with-references.schemas.in.h:48
 msgid "The keyboards Y coordinate"
 msgstr "விசைப்பலகை Y அச்சு"
 
-#: gok-with-references.schemas.in.h:30
+#: gok-with-references.schemas.in.h:49
 msgid "The name of the sound that this feedback will play"
 msgstr "இந்த கருத்து இயக்க விரும்பும் ஒலியில் பெயரை குறிப்பிடவும்"
 
-#: gok-with-references.schemas.in.h:31
+#: gok-with-references.schemas.in.h:50
 msgid "The name of the xinput device to use"
 msgstr "xஉள்ளீட்டு சாதனத்தின் பெயரை குறிப்பிடவும்"
 
-#: gok-with-references.schemas.in.h:32
+#: gok-with-references.schemas.in.h:51
 msgid "The name to display to the user for this action"
 msgstr "இந்த செயலுக்கு பயனீட்டாளருக்கு காட்ட வேண்டிய பெயரை குறிப்பிடவும்"
 
-#: gok-with-references.schemas.in.h:33
+#: gok-with-references.schemas.in.h:52
 msgid "The name to display to the user for this feedback"
 msgstr "இந்த கருத்துக்கு பயனீட்டாளருக்கு காட்ட வேண்டிய பெயரை குறிப்பிடவும்"
 
-#: gok-with-references.schemas.in.h:34
+#: gok-with-references.schemas.in.h:53
 msgid "The number if applicable"
 msgstr "ஏற்புடையதெனில் எண்"
 
-#: gok-with-references.schemas.in.h:35
+#: gok-with-references.schemas.in.h:54
 msgid "The number of predictions for word completion"
 msgstr "வார்தை முடிவிற்கான கணிப்புகளின் எண்ணிக்கை"
 
-#: gok-with-references.schemas.in.h:36
+#: gok-with-references.schemas.in.h:55
 msgid "The number of times this feedback will flash"
 msgstr "கருத்து எத்தனை முறை தோன்ற வேண்டும் "
 
-#: gok-with-references.schemas.in.h:37
+#: gok-with-references.schemas.in.h:56
 msgid "The primary or system directory to load keyboard files from."
 msgstr "விசைப்பலகை கோப்புகளை எற்க வேண்டிய முதன்மை அல்லது கணினி அடைவு"
 
-#: gok-with-references.schemas.in.h:38
+#: gok-with-references.schemas.in.h:57
 msgid "The rate for this action"
 msgstr "இந்த செயலின் விகிதம்"
 
-#: gok-with-references.schemas.in.h:39
+#: gok-with-references.schemas.in.h:58
 msgid "The space between keys"
 msgstr "விசைகளுக்கு இடைப்பட்ட இடைவெளி"
 
-#: gok-with-references.schemas.in.h:40
+#: gok-with-references.schemas.in.h:59
 msgid "The state in which this action is activated"
 msgstr "இந்த செயல் செயல்படுத்தப்பட்ட நிலை"
 
-#: gok-with-references.schemas.in.h:41
+#: gok-with-references.schemas.in.h:60
 msgid "The type of this action"
 msgstr "இந்த செயலின் வகை"
 
-#: gok-with-references.schemas.in.h:42
+#: gok-with-references.schemas.in.h:61
 msgid ""
 "Whether to use additional word lists when searching for GOK word-completion "
 "candidates"
 msgstr "GOK வார்த்தை முடிவுகளுக்காக தேடும்போது கூடுதல் வார்த்தைகளை பயன்படுத்த வேண்டுமா"
+
+#: gok-with-references.schemas.in.h:62
+msgid "none"
+msgstr ""
 
 #: gok.desktop.in.h:1
 msgid "On-Screen Keyboard"
@@ -1102,11 +1199,11 @@ msgstr ""
 msgid "(new)"
 msgstr "(புதிய)"
 
-#: gok/gok-key.c:115
+#: gok/gok-key.c:117
 msgid "Mute"
 msgstr "ஓசையில்லாமல்"
 
-#: gok/gok-key.c:118
+#: gok/gok-key.c:120
 msgid ""
 "Mouse\n"
 "Keys"
@@ -1114,7 +1211,7 @@ msgstr ""
 "சுட்டி\n"
 "விசைகள்"
 
-#: gok/gok-key.c:121
+#: gok/gok-key.c:123
 msgid ""
 "Left\n"
 "Tab"
@@ -1122,71 +1219,71 @@ msgstr ""
 "இடது\n"
 "தத்தல்"
 
-#: gok/gok-key.c:232
+#: gok/gok-key.c:234
 msgid "Divide"
 msgstr "வகு"
 
-#: gok/gok-key.c:235
+#: gok/gok-key.c:237
 msgid "Multiply"
 msgstr "பெருக்கு"
 
-#: gok/gok-key.c:238
+#: gok/gok-key.c:240
 msgid "Subtract"
 msgstr "கழித்தல்"
 
-#: gok/gok-key.c:241
+#: gok/gok-key.c:243
 msgid "Addition"
 msgstr "சேர்த்தல்"
 
-#: gok/gok-key.c:244
+#: gok/gok-key.c:246
 msgid "Prior"
 msgstr "முன்னமே"
 
-#: gok/gok-key.c:247
+#: gok/gok-key.c:249
 msgid "Next"
 msgstr "அடுத்து"
 
-#: gok/gok-key.c:250 numberpad.kbd.in.h:6
+#: gok/gok-key.c:252 numberpad.kbd.in.h:6
 msgid "Home"
 msgstr "இல்லம்"
 
-#: gok/gok-key.c:253 numberpad.kbd.in.h:4
+#: gok/gok-key.c:255 numberpad.kbd.in.h:4
 msgid "End"
 msgstr "முடி"
 
 #. Translators: this describes the direction gok will move.
-#: gok/gok-key.c:256 move-resize.kbd.in.h:20 numberpad.kbd.in.h:17
+#: gok/gok-key.c:258 move-resize.kbd.in.h:20 numberpad.kbd.in.h:18
 msgid "Up"
 msgstr "மேல்"
 
 #. Translators: this describes the direction gok will move.
-#: gok/gok-key.c:259 move-resize.kbd.in.h:6 numberpad.kbd.in.h:3
+#: gok/gok-key.c:261 move-resize.kbd.in.h:6 numberpad.kbd.in.h:3
 msgid "Down"
 msgstr "கீழ்"
 
 #. Translators: this describes the direction gok will move.
-#: gok/gok-key.c:262 move-resize.kbd.in.h:11 numberpad.kbd.in.h:8
+#: gok/gok-key.c:264 move-resize.kbd.in.h:11 numberpad.kbd.in.h:8
 msgid "Left"
 msgstr "இடது"
 
 #. Translators: this describes the direction gok will move.
-#: gok/gok-key.c:265 move-resize.kbd.in.h:15 numberpad.kbd.in.h:14
+#: gok/gok-key.c:267 move-resize.kbd.in.h:15 numberpad.kbd.in.h:14
 msgid "Right"
 msgstr "வலது"
 
-#: gok/gok-key.c:268
+#: gok/gok-key.c:270
 msgid "Begin"
 msgstr "துவக்கம்"
 
-#: gok/gok-key.c:271
+#: gok/gok-key.c:273
 msgid "Decimal"
 msgstr "தசமம்"
 
-#: gok/gok-key.c:274
+#: gok/gok-key.c:276
 msgid "Meta"
 msgstr "மெட்டா"
 
-#: gok/gok-key.c:277
+#: gok/gok-key.c:279
 msgid ""
 "Multi\n"
 "key"
@@ -1194,7 +1291,7 @@ msgstr ""
 "பெருக்கு\n"
 "விசை"
 
-#: gok/gok-key.c:280
+#: gok/gok-key.c:282
 msgid ""
 "Eisu\n"
 "toggle"
@@ -1202,7 +1299,7 @@ msgstr ""
 "Eisu\n"
 "இருநிலைமாறி"
 
-#: gok/gok-key.c:283
+#: gok/gok-key.c:285
 msgid ""
 "Henkan\n"
 "Mode"
@@ -1210,11 +1307,11 @@ msgstr ""
 "Henkan\n"
 "பாங்கு"
 
-#: gok/gok-key.c:286
+#: gok/gok-key.c:288
 msgid "Muhenkan"
 msgstr "Muhenkan"
 
-#: gok/gok-key.c:289
+#: gok/gok-key.c:291
 msgid ""
 "Mode\n"
 "switch"
@@ -1222,33 +1319,33 @@ msgstr ""
 "பாங்கு\n"
 "மாற்றி"
 
-#: gok/gok-keyboard.c:150
+#: gok/gok-keyboard.c:155
 #, c-format
 msgid "Xkb extension could not be initialized! (error code %x)"
 msgstr "Xkb நீட்டிப்பை துவக்க முடியாது! (பிழை எண் %x)"
 
-#: gok/gok-keyboard.c:156 gok/gok-keyboard.c:196
+#: gok/gok-keyboard.c:161 gok/gok-keyboard.c:201
 msgid "keyboard description not available!"
 msgstr "விசைப்பலகை விளக்கம் இல்லை!"
 
-#: gok/gok-keyboard.c:162 gok/gok-keyboard.c:202 gok/gok-keyboard.c:499
+#: gok/gok-keyboard.c:167 gok/gok-keyboard.c:207 gok/gok-keyboard.c:504
 msgid "Keyboard Geometry cannot be read from your X Server."
 msgstr "X சேவகனிலிருந்து விசைப்பலகை வடிவியலை படிக்க முடியாது"
 
-#: gok/gok-keyboard.c:425
+#: gok/gok-keyboard.c:430
 msgid "Back"
 msgstr "பின்"
 
-#: gok/gok-keyboard.c:443 valuator.kbd.in.h:1
+#: gok/gok-keyboard.c:448 valuator.kbd.in.h:1
 msgid "Repeat Next"
 msgstr "அடுத்து மீண்டும் செய்"
 
-#: gok/gok-keyboard.c:456
+#: gok/gok-keyboard.c:461
 msgid "Edit"
 msgstr "திருத்து"
 
 #. translators: Abbreviation/mnemonic for "numeric keypad", but must be <= 10 chars
-#: gok/gok-keyboard.c:469
+#: gok/gok-keyboard.c:474
 msgid ""
 "Num\n"
 "Pad"
@@ -1257,27 +1354,27 @@ msgstr ""
 "அட்டை"
 
 #. translators: Abbreviation/mnemonic for "numeric keypad", but must be <= 10 chars
-#: gok/gok-keyboard.c:483 move-resize.kbd.in.h:9
+#: gok/gok-keyboard.c:488 move-resize.kbd.in.h:9
 msgid "Hide"
 msgstr "மறை"
 
 #. translators: "shift" as in "the shift modifier key"
-#: gok/gok-keyboard.c:694
+#: gok/gok-keyboard.c:699
 msgid "shift"
 msgstr "ஷிப்ட்"
 
 #. translators: The context is "key level" as in shift/caps status on keyboard
-#: gok/gok-keyboard.c:706
+#: gok/gok-keyboard.c:711
 msgid "Level 2"
 msgstr "மட்டம் 2"
 
 #. translators: see note for "Level 2"
-#: gok/gok-keyboard.c:718
+#: gok/gok-keyboard.c:723
 msgid "Level 3"
 msgstr "மட்டம் 3"
 
 #. translators: this is a label for a 'Back space' key
-#: gok/gok-keyboard.c:730
+#: gok/gok-keyboard.c:735
 msgid ""
 "Back\n"
 "Space"
@@ -1286,21 +1383,21 @@ msgstr ""
 "இடைவெளி"
 
 #. translators: this is a label for a "Tab" key, for instance on a keyboard
-#: gok/gok-keyboard.c:741 numberpad.kbd.in.h:16
+#: gok/gok-keyboard.c:746 numberpad.kbd.in.h:16
 msgid "Tab"
 msgstr "டாப்"
 
 #. translators: this is a label for a "spacebar" key, for instance on a keyboard
-#: gok/gok-keyboard.c:752
+#: gok/gok-keyboard.c:757
 msgid "space"
 msgstr "இடைவெளி"
 
 #. translators: this is a label for an "Enter" or Return key, for instance on a keyboard
-#: gok/gok-keyboard.c:763 numberpad.kbd.in.h:5
+#: gok/gok-keyboard.c:768 numberpad.kbd.in.h:5
 msgid "Enter"
 msgstr "என்டர்"
 
-#: gok/gok-keyboard.c:801 main.kbd.in.h:7
+#: gok/gok-keyboard.c:806 main.kbd.in.h:7
 msgid "Menus"
 msgstr "பட்டிகள்"
 
@@ -1320,7 +1417,7 @@ msgstr "பட்டிகள்"
 #. * precede alphabetic characters, digits and punctuation should be placed
 #. * at the end of the string.
 #.
-#: gok/gok-keyboard.c:860
+#: gok/gok-keyboard.c:865
 msgid "level 0|abcdefghijklmnopqrstuvwxyz1234567890-=[];'#\\,./"
 msgstr "மட்டம் 0|abcdefghijklmnopqrstuvwxyz1234567890-=[];'#\\,./"
 
@@ -1328,7 +1425,7 @@ msgstr "மட்டம் 0|abcdefghijklmnopqrstuvwxyz1234567890-=[];'#\\,./"
 #. * For languages/locales which use 'upper case', this string should
 #. * correspond to uppercase versions of characters in the 'level 0' string.
 #.
-#: gok/gok-keyboard.c:865
+#: gok/gok-keyboard.c:870
 msgid "level 1|ABCDEFGHIJKLMNOPQRSTUVWXYZ!\"3$%^&*()_+{}:@~<>?"
 msgstr "மட்டம் 1|ABCDEFGHIJKLMNOPQRSTUVWXYZ!\"3$%^&*()_+{}:@~<>?"
 
@@ -1338,13 +1435,16 @@ msgstr "மட்டம் 1|ABCDEFGHIJKLMNOPQRSTUVWXYZ!\"3$%^&*()_+{}:@~<>?"
 #. * 'level 3'.  At the translator's discretion, accented characters can be
 #. * placed here and in 'level 3' as well.
 #.
-#: gok/gok-keyboard.c:872 gok/gok-keyboard.c:928
+#.
+#. * Seldom-used or alternate characters can appear in levels 2 and 3 if necessary.
+#.
+#: gok/gok-keyboard.c:877 gok/gok-keyboard.c:933
 msgid "level 2|"
 msgstr "மட்டம் 2|"
 
 #. For locales which need an even larger character set, or offer uppercase versions
 #. * of the 'level2' characters, add them to 'level 3'
-#: gok/gok-keyboard.c:875 gok/gok-keyboard.c:929
+#: gok/gok-keyboard.c:880 gok/gok-keyboard.c:934
 msgid "level 3|"
 msgstr "மட்டம் 3|"
 
@@ -1359,53 +1459,53 @@ msgstr "மட்டம் 3|"
 #. * If level 0 and level 1 refer to upper-and-lower-case in your locale,
 #. * the characters in these two strings should occur in the same relative order.
 #.
-#: gok/gok-keyboard.c:923
+#: gok/gok-keyboard.c:928
 msgid "level 0|etaonrishdlfcmugypwbvkxjqz`1234567890-=\\[];'<,./"
 msgstr "மட்டம் 0|etaonrishdlfcmugypwbvkxjqz`1234567890-=\\[];'<,./"
 
-#: gok/gok-keyboard.c:924
+#: gok/gok-keyboard.c:929
 msgid "level 1|ETAONRISHDLFCMUGYPWBVKXJQZ~!@#$%^&*()_+|{}:\"><>?"
 msgstr "மட்டம் 1|ETAONRISHDLFCMUGYPWBVKXJQZ~!@#$%^&*()_+|{}:\"><>?"
 
 #. change the name of the window to the keyboard name
-#: gok/gok-keyboard.c:1908
+#: gok/gok-keyboard.c:1916
 msgid "GOK - "
 msgstr "GOK - "
 
-#: gok/gok-keyboard.c:2736
+#: gok/gok-keyboard.c:2808
 msgid "GUI"
 msgstr "GUI"
 
 #. translators: "table" as in row/column data structure
-#: gok/gok-keyboard.c:2741 gok/gok-spy.c:1673
+#: gok/gok-keyboard.c:2813 gok/gok-spy.c:1718
 msgid "Table"
 msgstr "அட்டவணை"
 
-#: gok/gok-keyboard.c:2746 main.kbd.in.h:9
+#: gok/gok-keyboard.c:2818 main.kbd.in.h:9
 msgid "Toolbars"
 msgstr "கருவிப்பட்டி"
 
-#: gok/gok-keyboard.c:2750
+#: gok/gok-keyboard.c:2822
 msgid "Applications"
 msgstr "செயல்பாடு"
 
-#: gok/gok-keyboard.c:2757
+#: gok/gok-keyboard.c:2832
 msgid "Menu"
 msgstr "பட்டி"
 
-#: gok/gok-keyboard.c:3527
+#: gok/gok-keyboard.c:3697
 msgid "translator_credits"
 msgstr "மொழிபெயர்ப்பர் பற்று"
 
-#: gok/gok-keyboard.c:3550 main.kbd.in.h:4
+#: gok/gok-keyboard.c:3720 main.kbd.in.h:4
 msgid "GOK"
 msgstr "GOK"
 
-#: gok/gok-keyboard.c:3552
+#: gok/gok-keyboard.c:3722
 msgid "Dynamic virtual keyboards for the GNOME desktop"
 msgstr "க்னோம் மேல்மேசைக்கான செயல்படும் மெய்நிகர் விசைப்பலகை"
 
-#: gok/gok-keyboard.c:3561
+#: gok/gok-keyboard.c:3731
 msgid "Full Credits"
 msgstr "முழு புகழும்"
 
@@ -1414,27 +1514,27 @@ msgid "error reading description"
 msgstr "விளக்கத்தை படிக்கையில் பிழை"
 
 #. translators: abbreviated version of "Vertical Scrollbar"
-#: gok/gok-spy.c:1593
+#: gok/gok-spy.c:1638
 msgid "V Scrollbar"
 msgstr "V உருள்பட்டி"
 
 #. translators: abbreviated version of "Horizontal Scrollbar"
-#: gok/gok-spy.c:1598
+#: gok/gok-spy.c:1643
 msgid "H Scrollbar"
 msgstr "H உருள்பட்டி"
 
 #. create the 'new action name' dialog
-#: gok/gok-page-actions.c:380 gok/gok-page-actions.c:425
-#: gok/gok-page-actions.c:444
+#: gok/gok-page-actions.c:381 gok/gok-page-actions.c:426
+#: gok/gok-page-actions.c:445
 msgid "GOK Action Name"
 msgstr "GOK செயல் பெயர்"
 
 #. add a text label
-#: gok/gok-page-actions.c:386
+#: gok/gok-page-actions.c:387
 msgid "Change the action name:"
 msgstr "செயல் பெயரை மாற்று"
 
-#: gok/gok-page-actions.c:423
+#: gok/gok-page-actions.c:424
 msgid ""
 "Action name can't be empty.\n"
 "Please enter a new action name."
@@ -1442,7 +1542,7 @@ msgstr ""
 "செயல்பெயர் காலியாக இருக்ககூடாது\n"
 "புதிய செயல்பெயரை உள்ளிடவும்"
 
-#: gok/gok-page-actions.c:442
+#: gok/gok-page-actions.c:443
 msgid ""
 "Sorry, that action name already exists.\n"
 "Please enter a new action name"
@@ -1450,17 +1550,17 @@ msgstr ""
 "மன்னிக்கவும், இந்த செயல்பெயர் ஏற்கெனவே உள்ளது\n"
 "புதிய பெயரை உள்ளிடவும்"
 
-#: gok/gok-page-actions.c:497
+#: gok/gok-page-actions.c:498
 #, c-format
 msgid "New Action %d"
 msgstr "புதிய செயல் %d"
 
-#: gok/gok-page-actions.c:560
+#: gok/gok-page-actions.c:561
 #, c-format
 msgid "Do you wish to delete this action (%s)?"
 msgstr "இந்த செயலை நீக்க விருப்பமா (%s)?"
 
-#: gok/gok-page-actions.c:568
+#: gok/gok-page-actions.c:569
 msgid "GOK Delete Action"
 msgstr "GOK செயலை நீக்கு"
 
@@ -1523,7 +1623,7 @@ msgid "Button"
 msgstr "பட்டன்"
 
 #. and post a warning if the new settings use corepointer
-#: gok/gok-settings-dialog.c:259
+#: gok/gok-settings-dialog.c:260
 msgid "You appear to be configuring GOK to use 'core pointer' mode."
 msgstr "GOK முதன்மை புள்ளி பாங்கில் நீங்கள் அமைத்திருக்கிறீர்கள்"
 
@@ -1536,7 +1636,7 @@ msgstr "_சாளரம்"
 msgid "Could not read contents of dictionary file '%s'\n"
 msgstr "அகராதி கோப்பை படிக்க முடியவில்லை '%s'\n"
 
-#: gok/main.c:164
+#: gok/main.c:166
 msgid ""
 "Use the specified access method. NAME is a string and can be found in the "
 "various access method files (.xam) assigned to the \"name\" property of <gok:"
@@ -1547,19 +1647,19 @@ msgstr ""
 "<gok:accessmethod> குறியுடன் காணப்படும் (.xam). இது xam கோப்பு போல இருக்க வேண்டிய "
 "அவசியம் இல்லை"
 
-#: gok/main.c:165
+#: gok/main.c:167
 msgid "NAME"
 msgstr "பெயர்"
 
-#: gok/main.c:173
+#: gok/main.c:175
 msgid "Start the GOK keyboard editor"
 msgstr "GOK விசைப்பலகை தொகுப்பியை தேர்வு செய்யவும்"
 
-#: gok/main.c:181
+#: gok/main.c:183
 msgid "Use special, but possibly unstable, gok stuff"
 msgstr "சிறப்பு, நிலையற்ற , gok வை பயன்படுத்து"
 
-#: gok/main.c:189
+#: gok/main.c:191
 msgid ""
 "Whenever --geometry is not used gok remembers its position between "
 "invocations and starts in the position that it had when it was last "
@@ -1576,39 +1676,39 @@ msgstr ""
 "பணிநிறுத்ததில் அதன் நிலையை நினைவில் கொள்ளாது. geometry ஐ நினைவில் கொள் என்ற விசையை "
 "செயபடுத்துவதன் மூலம் உங்கள் அளவுகள் பாதுகாக்கப்படும்."
 
-#: gok/main.c:190
+#: gok/main.c:192
 msgid "GEOMETRY"
 msgstr "GEOMETRY"
 
-#: gok/main.c:198
+#: gok/main.c:200
 msgid "Use the specified input device"
 msgstr "குறிப்பிட்ட உள்ளிடும் சாதனத்தை பயன்படுத்து"
 
-#: gok/main.c:199
+#: gok/main.c:201
 msgid "DEVICENAME"
 msgstr "DEVICENAME"
 
-#: gok/main.c:207
+#: gok/main.c:209
 msgid "Start GOK with the specified keyboard."
 msgstr "குறிப்பிட்ட விசைப்பலகையோடு GOK வை துவக்கு"
 
-#: gok/main.c:208
+#: gok/main.c:210
 msgid "KEYBOARDNAME"
 msgstr "KEYBOARDNAME"
 
-#: gok/main.c:216
+#: gok/main.c:218
 msgid "List the access methods that can used as options to other arguments."
 msgstr "மற்ற தேர்வுகளில் அளவுருக்களாக பயன்படுத்தப்படும் அனுகல் முறைகளை பட்டியலிடவும்"
 
-#: gok/main.c:225
+#: gok/main.c:227
 msgid "List the actions that can used as options to other arguments."
 msgstr "மற்ற தேர்வுகளில் அளவுருக்களாக பயன்படுத்தப்படும் செயல்களை பட்டியலிடவும்"
 
-#: gok/main.c:234
+#: gok/main.c:236
 msgid "GOK will be used to login"
 msgstr "GOK உள்நுழைய பயன்படுத்தப்படும்"
 
-#: gok/main.c:245
+#: gok/main.c:247
 msgid ""
 "Can be used with --geometry.  Forces GOK to remember its position when "
 "shutdown even when it was started with --geometry.  Please see the "
@@ -1618,89 +1718,91 @@ msgstr ""
 "நினைவில் கொள்ளவைத்து பணிநிறுத்தம் செய்யும். --geometry குறிகளுக்கு கீழே உள்ள விவாதங்களை "
 "பார்த்து மேலும் விவரங்களை தெரிந்துகொள்ளவும்"
 
-#: gok/main.c:256
+#: gok/main.c:258
 msgid "Start GOK and hook this action to scan operations. (See --list-actions)"
 msgstr ""
 "GOK வை துவக்கி இந்த செயலைக்கொண்டு செயல்பாடுகளை தேடச்செய்யவும் (--list-actions ஐ "
 "பார்க்கவும்)"
 
-#: gok/main.c:266
+#: gok/main.c:268
 msgid ""
 "Start GOK and hook this action to select operations. (See --list-actions)"
 msgstr ""
 "GOK வை துவக்கி இந்த செயலைக்கொண்டு செயல்பாடுகளை தேடச்செய்யவும் (--list-actions ஐ "
 "பார்க்கவும்)"
 
-#: gok/main.c:275
+#: gok/main.c:277
 msgid "Open the settings dialog box when GOK starts"
 msgstr "GOK துவங்கும் போது அமைப்புகள் உரையாடல் பெட்டியை பார்க்கவும்"
 
-#: gok/main.c:588
+#: gok/main.c:590
+#, c-format
 msgid "gok: Unsupported geometry specification\n"
 msgstr "gok: ஆதரவற்ற வடிவியல் குறியீடு\n"
 
-#: gok/main.c:589
+#: gok/main.c:591
+#, c-format
 msgid ""
 "gok: Currently GOK requires that the x, y, width and height all be given\n"
 msgstr "gok: தற்போது GOK விற்கு x, y, அகலம், உயரம் ஆகியவை தரப்பட்டுள்ளது\n"
 
-#: gok/main.c:685
+#: gok/main.c:687
 msgid "XKB extension is required."
 msgstr "XKB நீட்டிப்புகள் தேவை"
 
-#: gok/main.c:695
+#: gok/main.c:697
 msgid "Can't initialize actions."
 msgstr "செயலை துவக்க முடியவில்லை"
 
-#: gok/main.c:705
+#: gok/main.c:707
 msgid "Can't initialize feedbacks."
 msgstr "கருத்தை துவக்க முடியவில்லை"
 
-#: gok/main.c:732
+#: gok/main.c:734
 msgid "Can't create the main GOK window!"
 msgstr "முதன்மை GOK சாளரத்தை உருவாக்க முடியவில்லை!"
 
-#: gok/main.c:751
+#: gok/main.c:753
 msgid "Can't create the settings dialog window!"
 msgstr "அமைப்புகள் உரையாடல் பெட்டியை உருவாக்க முடியவில்லை!"
 
-#: gok/main.c:773
+#: gok/main.c:775
 msgid "You are using GOK in 'core pointer' mode."
 msgstr "GOK மூல புள்ளி பாங்கை நீங்கள் பயன்படுத்துகிறீர்கள்"
 
-#: gok/main.c:813
+#: gok/main.c:815
 msgid "No keyboards to display!"
 msgstr "விசைப்பலகை எதுவும் காட்டப்படவில்லை!"
 
-#: gok/main.c:949
+#: gok/main.c:951
 msgid "popup menu"
 msgstr "தோன்றல் மெனு"
 
-#: gok/main.c:1805
+#: gok/main.c:1809
 msgid "Can't create a compose keyboard!"
 msgstr "விசைப்பலகை தொகுப்பை உருவாக்க முடியவில்லை"
 
-#: gok/main.c:1847
+#: gok/main.c:1851
 msgid "Can't read any keyboards!"
 msgstr "எந்த விசைப்பலகையையும் படிக்க முடியவில்லை"
 
-#: gok/main.c:1964
+#: gok/main.c:1968
 msgid "could not access method directory key from GConf!"
 msgstr " GConf லிருந்து அடைவை அனுகல் முறை விசையை படிக்க முடியவில்லை"
 
-#: gok/main.c:1972
+#: gok/main.c:1976
 msgid "possibly unknown access method!"
 msgstr "ஒருவேளை தெரியாத அனுகல் முறையாக இருக்கலாம்!"
 
-#: gok/main.c:2513
+#: gok/main.c:2517
 msgid "Sorry, GOK can't run because:\n"
 msgstr "மன்னிக்கவும்,GOK வை இயக்க முடியவில்லை\n"
 
-#: gok/main.c:2522
+#: gok/main.c:2526
 msgid "GOK Fatal Error"
 msgstr "GOK மோசமான பிழை"
 
-#: gok/main.c:2534
+#: gok/main.c:2538
 msgid ""
 "GOK uses GConf 2 to store its settings and requires certain settings to be "
 "in GConf to run.  GOK is currently unable to retrieve those settings.  If "
@@ -1713,7 +1815,7 @@ msgstr ""
 "ஐ பயன்படுத்துகிறீர்கள் என்றால் gconfd ஐ மீண்டும் துவக்கவும், அதற்கு 'gconftool-2 --"
 "shutdown' கட்டளையை பயன்படுத்தவும்."
 
-#: gok/main.c:2551
+#: gok/main.c:2555
 msgid ""
 "Currently GOK requires that the x, y, width and height all be given.  Sorry, "
 "your geometry specification will not be used."
@@ -1721,11 +1823,11 @@ msgstr ""
 "தற்போது GOK க்கு  x, y,அகலம் மற்றும் உயரம் ஆகியவர் தரப்பட வேண்டும். மன்னிக்கவும் நீங்கள் தந்த "
 "அளவை பயன்படுத்த முடியாது"
 
-#: gok/main.c:2553
+#: gok/main.c:2557
 msgid "gok: Unsupported geometry specification"
 msgstr "gok: ஆதரவற்ற அளவுக்குறிப்புகள்"
 
-#: gok/main.c:2760
+#: gok/main.c:2764
 msgid ""
 "GOK may not work properly, because it could not enable your desktop's "
 "'sticky keys' feature."
@@ -1733,15 +1835,15 @@ msgstr ""
 "GOK சரியாக வேலை செய்யாது, காரணம் உங்கள் மேல்மேசை 'sticky keys' விசைகளை "
 "செயல்படுத்தவில்லை"
 
-#: gok/main.c:2767
+#: gok/main.c:2771
 msgid "GOK has enabled Sticky Keys, which it requires.\n"
 msgstr "GOK Sticky Keys ஐ செயல்படுத்திவிட்டது\n"
 
-#: gok/main.c:2789
+#: gok/main.c:2793
 msgid "GOK cannot run because XKB display extension is missing.\n"
 msgstr "GOK ஐ இயக்க முடியாது காரணம் XKB நீட்டிப்பை காணவில்லை\n"
 
-#: gok/main.c:2853
+#: gok/main.c:2857
 msgid ""
 "This means that the device you are using to operate GOK\n"
 "is also controlling the system pointer (or 'mouse pointer').\n"
@@ -1759,7 +1861,7 @@ msgstr ""
 "உங்கள் உள்ளிடும் சாதனத்தை\n"
 "'நீட்டித்த' உள்ளிடும் சாதனமாக அமைக்கவும். GOK உதவியை பார்க்கவும்."
 
-#: gok/main.c:2917
+#: gok/main.c:2921
 msgid ""
 "Assistive Technology Support Is Not Enabled.\n"
 "\n"
@@ -1787,11 +1889,11 @@ msgstr ""
 "வெளியேற வெளியேறு என்பதை க்ளிக் செய்யவும்\n"
 "\n"
 
-#: gok/main.c:2936
+#: gok/main.c:2940
 msgid "Enable and Log Out"
 msgstr "வெளியேறுவதை செயல்படுத்து"
 
-#: gok/main.c:2948
+#: gok/main.c:2952
 msgid "Continue"
 msgstr "தொடர்"
 
@@ -1812,19 +1914,20 @@ msgstr "வருடு:"
 msgid "Scanning Direction:"
 msgstr "வருடும் திசை"
 
-#: singlekey-automatic-scanning.xml.in.h:20
+#. User interface for the access method
+#: singlekey-automatic-scanning.xml.in.h:21
 msgid "Single Key Automatic Scanning"
 msgstr "ஒரு விசை தன்னியக்க வருடல்"
 
-#: singlekey-automatic-scanning.xml.in.h:21
+#: singlekey-automatic-scanning.xml.in.h:22
 msgid "Start Scanning:"
 msgstr "வருடலை துவக்கு:"
 
-#: singlekey-automatic-scanning.xml.in.h:22
+#: singlekey-automatic-scanning.xml.in.h:23
 msgid "Start scanning:"
 msgstr "வருடலை துவக்கு:"
 
-#: singlekey-automatic-scanning.xml.in.h:24
+#: singlekey-automatic-scanning.xml.in.h:25
 msgid "Wrap"
 msgstr "மடக்கு"
 
@@ -2013,6 +2116,10 @@ msgstr "PgUp"
 #: numberpad.kbd.in.h:15
 msgid "Shift"
 msgstr "Shift"
+
+#: numberpad.kbd.in.h:17
+msgid "Tab&lt;-"
+msgstr "Tab&lt;-"
 
 #. Translators: short phrase to confirm that user wants to quit.
 #: quit.kbd.in.h:2

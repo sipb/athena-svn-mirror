@@ -16,6 +16,11 @@
 * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
 * Boston, MA 02111-1307, USA.
 */
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+#include <strings.h>
 #include <glib.h>
 
 typedef struct
@@ -30,7 +35,7 @@ gint
 read_branch_count (GIOChannel *infile)
 {
     gchar *line;
-    gint len;
+    guint len;
     GError *error = NULL;
     gint count = 0;
     GIOStatus status;
@@ -55,7 +60,7 @@ kbd_file_create (gchar *name, gint maxcols)
 {
     KbdFile *kbd;
     gchar *buf;
-    gssize bytz, stored;
+    gsize bytz, stored;
     gchar *fname, *utf8name;
 
     kbd = g_new0 (KbdFile, 1);
@@ -84,7 +89,7 @@ static void
 kbd_file_close (KbdFile *kbd)
 {
     gchar *buf;
-    gssize bytz;
+    gsize bytz;
     buf = g_strconcat ("</GOK:keyboard>\n</GOK:GokFile>\n", NULL);
     g_io_channel_write_chars (kbd->io, buf, -1, &bytz, NULL);
     g_io_channel_close (kbd->io);
@@ -93,7 +98,7 @@ kbd_file_close (KbdFile *kbd)
 static void
 kbd_file_add_key (KbdFile *kbd, gunichar unichar, gchar *label, gchar *mod_label, gchar *branch_tag)
 {
-    gssize bytz;
+    gsize bytz;
     gchar *outputbuf, *tbuf;
     gchar buf[120];
     g_assert (kbd);
@@ -138,7 +143,7 @@ static void
 create_kbd_from_file (GIOChannel *infile, gchar *kbd_name, gint columns)
 {
     gchar *line;
-    gint len;
+    guint len;
     GError *error = NULL;
     GIOStatus status;
     KbdFile *branch_kbd = kbd_file_create (kbd_name, columns);

@@ -1,0 +1,102 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>command-predictor</title><meta name="generator" content="DocBook XSL Stylesheets V1.64.1"><link rel="home" href="index.html" title="[Insert name here] Reference Manual"><link rel="up" href="ch01.html" title="[Insert title here]"><link rel="previous" href="gok-command-graph.html" title="command-graph"><link rel="next" href="gok-command-vertex-data.html" title="command-vertex-data"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><link rel="stylesheet" href="style.css" type="text/css"><link rel="chapter" href="ch01.html" title="[Insert title here]"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="gok-command-graph.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">[Insert name here] Reference Manual</th><td><a accesskey="n" href="gok-command-vertex-data.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="gok-command-predictor"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><table width="100%"><tr><td valign="top"><h2><span class="refentrytitle">command-predictor</span></h2><p>command-predictor &#8212; </p></td><td valign="top" align="right"></td></tr></table></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+
+
+
+enum        <a href="gok-command-predictor.html#Prediction-Algorithm">Prediction_Algorithm</a>;
+void        <a href="gok-command-predictor.html#command-predictor-free">command_predictor_free</a>          (const Command_Predictor predictor);
+Command_Predictor <a href="gok-command-predictor.html#command-predictor-create">command_predictor_create</a>  (const Command_Graph graph);
+void        <a href="gok-command-predictor.html#command-predictor-calculate-recency-percentages">command_predictor_calculate_recency_percentages</a>
+                                            (const Command_Predictor predictor);
+const float <a href="gok-command-predictor.html#command-predictor-get-recency-percent-correct">command_predictor_get_recency_percent_correct</a>
+                                            (const Command_Predictor predictor,
+                                             const int index);
+void        <a href="gok-command-predictor.html#command-predictor-calculate-frequency-percentages">command_predictor_calculate_frequency_percentages</a>
+                                            (const Command_Predictor predictor);
+const float <a href="gok-command-predictor.html#command-predictor-get-frequency-percent-correct">command_predictor_get_frequency_percent_correct</a>
+                                            (const Command_Predictor predictor,
+                                             const int index);
+const Command_Vertex* <a href="gok-command-predictor.html#command-predictor-predict-same-as-last">command_predictor_predict_same_as_last</a>
+                                            (const Command_Predictor predictor);
+const Command_Vertex* <a href="gok-command-predictor.html#command-predictor-predict-high-stat">command_predictor_predict_high_stat</a>
+                                            (const Command_Predictor predictor);
+void        <a href="gok-command-predictor.html#command-predictor-evaluate-prediction">command_predictor_evaluate_prediction</a>
+                                            (const Command_Predictor predictor,
+                                             const Command_Vertex actual_vertex,
+                                             const <a href="gok-command-predictor.html#Prediction-Algorithm">Prediction_Algorithm</a> algorithm,
+                                             const int num_predictions);
+</pre></div><div class="refsect1" lang="en"><a name="id2535049"></a><h2>Description</h2><p>
+
+</p></div><div class="refsect1" lang="en"><a name="id2535058"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2535064"></a><h3><a name="Prediction-Algorithm"></a>enum Prediction_Algorithm</h3><a class="indexterm" name="id2535075"></a><pre class="programlisting">typedef enum {
+  RECENCY,
+  FREQUENCY
+} Prediction_Algorithm;
+</pre><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2535091"></a><h3><a name="command-predictor-free"></a>command_predictor_free ()</h3><a class="indexterm" name="id2535103"></a><pre class="programlisting">void        command_predictor_free          (const Command_Predictor predictor);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>predictor</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2535150"></a><h3><a name="command-predictor-create"></a>command_predictor_create ()</h3><a class="indexterm" name="id2535161"></a><pre class="programlisting">Command_Predictor command_predictor_create  (const Command_Graph graph);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>graph</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2535218"></a><h3><a name="command-predictor-calculate-recency-percentages"></a>command_predictor_calculate_recency_percentages ()</h3><a class="indexterm" name="id2535230"></a><pre class="programlisting">void        command_predictor_calculate_recency_percentages
+                                            (const Command_Predictor predictor);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>predictor</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2535278"></a><h3><a name="command-predictor-get-recency-percent-correct"></a>command_predictor_get_recency_percent_correct ()</h3><a class="indexterm" name="id2535291"></a><pre class="programlisting">const float command_predictor_get_recency_percent_correct
+                                            (const Command_Predictor predictor,
+                                             const int index);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>predictor</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>index</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2535371"></a><h3><a name="command-predictor-calculate-frequency-percentages"></a>command_predictor_calculate_frequency_percentages ()</h3><a class="indexterm" name="id2535385"></a><pre class="programlisting">void        command_predictor_calculate_frequency_percentages
+                                            (const Command_Predictor predictor);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>predictor</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2535432"></a><h3><a name="command-predictor-get-frequency-percent-correct"></a>command_predictor_get_frequency_percent_correct ()</h3><a class="indexterm" name="id2535445"></a><pre class="programlisting">const float command_predictor_get_frequency_percent_correct
+                                            (const Command_Predictor predictor,
+                                             const int index);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>predictor</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>index</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2535525"></a><h3><a name="command-predictor-predict-same-as-last"></a>command_predictor_predict_same_as_last ()</h3><a class="indexterm" name="id2535537"></a><pre class="programlisting">const Command_Vertex* command_predictor_predict_same_as_last
+                                            (const Command_Predictor predictor);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>predictor</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2535597"></a><h3><a name="command-predictor-predict-high-stat"></a>command_predictor_predict_high_stat ()</h3><a class="indexterm" name="id2535609"></a><pre class="programlisting">const Command_Vertex* command_predictor_predict_high_stat
+                                            (const Command_Predictor predictor);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>predictor</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2535668"></a><h3><a name="command-predictor-evaluate-prediction"></a>command_predictor_evaluate_prediction ()</h3><a class="indexterm" name="id2535680"></a><pre class="programlisting">void        command_predictor_evaluate_prediction
+                                            (const Command_Predictor predictor,
+                                             const Command_Vertex actual_vertex,
+                                             const <a href="gok-command-predictor.html#Prediction-Algorithm">Prediction_Algorithm</a> algorithm,
+                                             const int num_predictions);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>predictor</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>actual_vertex</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>algorithm</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>num_predictions</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="gok-command-graph.html"><b>&lt;&lt; command-graph</b></a></td><td align="right"><a accesskey="n" href="gok-command-vertex-data.html"><b>command-vertex-data &gt;&gt;</b></a></td></tr></table></body></html>

@@ -1,0 +1,84 @@
+<refentry id="gok-gok-log">
+<refmeta>
+<refentrytitle>gok-log</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>GOK Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>gok-log</refname><refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+
+<synopsis>
+
+
+
+#define     <link linkend="gok-log">gok_log</link>                         (...)
+#define     <link linkend="gok-log-x">gok_log_x</link>                       (...)
+#define     <link linkend="gok-log-enter">gok_log_enter</link>                   ()
+#define     <link linkend="gok-log-leave">gok_log_leave</link>                   ()
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="gok-log"/>gok_log()</title>
+<indexterm><primary>gok_log</primary></indexterm><programlisting>#define     gok_log(...)</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>...</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gok-log-x"/>gok_log_x()</title>
+<indexterm><primary>gok_log_x</primary></indexterm><programlisting>#define     gok_log_x(...)</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>...</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gok-log-enter"/>gok_log_enter()</title>
+<indexterm><primary>gok_log_enter</primary></indexterm><programlisting>#define     gok_log_enter()</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="gok-log-leave"/>gok_log_leave()</title>
+<indexterm><primary>gok_log_leave</primary></indexterm><programlisting>#define     gok_log_leave()</programlisting>
+<para>
+
+</para></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

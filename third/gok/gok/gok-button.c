@@ -309,6 +309,7 @@ GokKey* gok_button_find_key (GtkWidget* pWidget)
 	return NULL;
 }
 
+static gboolean
 gok_button_expose (GtkWidget      *widget,
 		   GdkEventExpose *event)
 {

@@ -28,6 +28,7 @@
 
 #include <sys/types.h>
 #include <dirent.h>
+#include <signal.h>
 #include <gnome.h>
 #include <cspi/spi.h>
 #include <libbonobo.h>
@@ -60,8 +61,9 @@
 #include "gok-feedback.h"
 #include "gok-modifier.h"
 #include "gok-action.h"
-#include <signal.h>
 #include "gok-bounds.h"
+#include "gok-keyslotter.h"
+#include "gok-gconf.h"
 
 #define USE_GCONF 1
 
@@ -606,8 +608,8 @@ gok_main_open(gint argc, gchar *argv[])
 		
 		fprintf (stderr, "\nGOK Actions:\n");
 		if (error == NULL) {
-			list = g_slist_sort (list, (GCompareFunc)comparebasenames);
-			GSList* listhead = list;
+			GSList* listhead;
+			listhead = list = g_slist_sort (list, (GCompareFunc)comparebasenames);
 			while (list) {
 				fprintf(stderr,"%s\n",g_path_get_basename(list->data));
 				g_free(list->data);
@@ -634,8 +636,8 @@ gok_main_open(gint argc, gchar *argv[])
 		fprintf (stderr, "\nGOK Access Methods:\n");
 		if (error == NULL) {
 			gchar* base;
-			list = g_slist_sort (list, (GCompareFunc)comparebasenames);
-			GSList* listhead = list;
+			GSList* listhead;
+			listhead = list = g_slist_sort (list, (GCompareFunc)comparebasenames);
 			while (list) {
 				base = g_path_get_basename(list->data);
 				fprintf(stderr,"%s\n",base);
@@ -1479,10 +1481,12 @@ gok_main_display_scan (GokKeyboard* pKeyboard, gchar* nameKeyboard, KeyboardType
 	
 	if (pKeyboard != NULL)
 	{
+	        gok_log ("displaying %s\n", pKeyboard->Name);
 		pKB = pKeyboard;
 	}
 	else
 	{
+	        gok_log ("displaying %s\n", nameKeyboard);
 		pKB = gok_main_keyboard_find_byname (nameKeyboard);
 	}
 
@@ -2090,7 +2094,7 @@ gok_main_initialize_wordcomplete ()
 
     if ( !(gok_wordcomplete_open (gok_wordcomplete_get_default (),
 				  directory_name)) ||
-	 ! (gok_keyslotter_on (gok_wordcomplete_get_default (), KEYTYPE_WORDCOMPLETE))) {
+	 ! (gok_keyslotter_on (TRUE, KEYTYPE_WORDCOMPLETE))) {
 	    gok_log_x ("Error initializing word completion");
 	    
     }

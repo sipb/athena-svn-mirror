@@ -1,0 +1,724 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<book xmlns="http://www.devhelp.net/book" title="[Insert name here] Reference Manual" link="index.html" author="" name="gok">
+  <chapters>
+    <sub name="[Insert title here]" link="ch01.html">
+      <sub name="arraylist" link="gok-arraylist.html"/>
+      <sub name="callbacks" link="gok-callbacks.html"/>
+      <sub name="command-common" link="gok-command-common.html"/>
+      <sub name="command-edge-data" link="gok-command-edge-data.html"/>
+      <sub name="command-edge" link="gok-command-edge.html"/>
+      <sub name="command-graph" link="gok-command-graph.html"/>
+      <sub name="command-predictor" link="gok-command-predictor.html"/>
+      <sub name="command-vertex-data" link="gok-command-vertex-data.html"/>
+      <sub name="command-vertex" link="gok-command-vertex.html"/>
+      <sub name="global" link="gok-global.html"/>
+      <sub name="gok-action" link="gok-gok-action.html"/>
+      <sub name="gok-branchback-stack" link="gok-gok-branchback-stack.html"/>
+      <sub name="GokButton" link="gok-GokButton.html"/>
+      <sub name="gok-chunker" link="gok-gok-chunker.html"/>
+      <sub name="gok-control" link="gok-gok-control.html"/>
+      <sub name="gok-data" link="gok-gok-data.html"/>
+      <sub name="gok-editor" link="gok-gok-editor.html"/>
+      <sub name="gok-feedback" link="gok-gok-feedback.html"/>
+      <sub name="gok-gconf" link="gok-gok-gconf.html"/>
+      <sub name="gok-key" link="gok-gok-key.html"/>
+      <sub name="gok-keyboard" link="gok-gok-keyboard.html"/>
+      <sub name="gok-keyslotter" link="gok-gok-keyslotter.html"/>
+      <sub name="gok-log-priv" link="gok-gok-log-priv.html"/>
+      <sub name="gok-log-reader" link="gok-gok-log-reader.html"/>
+      <sub name="gok-log" link="gok-gok-log.html"/>
+      <sub name="gok-modifier" link="gok-gok-modifier.html"/>
+      <sub name="gok-output" link="gok-gok-output.html"/>
+      <sub name="gok-page-accessmethod" link="gok-gok-page-accessmethod.html"/>
+      <sub name="gok-page-actions" link="gok-gok-page-actions.html"/>
+      <sub name="gok-page-feedbacks" link="gok-gok-page-feedbacks.html"/>
+      <sub name="gok-page-keysizespace" link="gok-gok-page-keysizespace.html"/>
+      <sub name="gok-page-wordcomplete" link="gok-gok-page-wordcomplete.html"/>
+      <sub name="gok-predictor" link="gok-gok-predictor.html"/>
+      <sub name="gok-scanner" link="gok-gok-scanner.html"/>
+      <sub name="gok-settings-dialog" link="gok-gok-settings-dialog.html"/>
+      <sub name="gok-sound" link="gok-gok-sound.html"/>
+      <sub name="gok-spy-priv" link="gok-gok-spy-priv.html"/>
+      <sub name="gok-spy" link="gok-gok-spy.html"/>
+      <sub name="gok-word-complete" link="gok-gok-word-complete.html"/>
+      <sub name="gok" link="gok-gok.html"/>
+      <sub name="gtkjoyswitch" link="gok-gtkjoyswitch.html"/>
+      <sub name="interface" link="gok-interface.html"/>
+      <sub name="main" link="gok-main.html"/>
+      <sub name="support" link="gok-support.html"/>
+      <sub name="switchapi" link="gok-switchapi.html"/>
+      <sub name="word-complete" link="gok-word-complete.html"/>
+    </sub>
+  </chapters>
+  <functions>
+    <function name="Boolean" link="gok-arraylist.html#Boolean"/>
+    <function name="Object" link="gok-arraylist.html#Object"/>
+    <function name="arraylist_free ()" link="gok-arraylist.html#arraylist-free"/>
+    <function name="arraylist_create ()" link="gok-arraylist.html#arraylist-create"/>
+    <function name="arraylist_add ()" link="gok-arraylist.html#arraylist-add"/>
+    <function name="arraylist_remove ()" link="gok-arraylist.html#arraylist-remove"/>
+    <function name="arraylist_contains ()" link="gok-arraylist.html#arraylist-contains"/>
+    <function name="arraylist_index_of ()" link="gok-arraylist.html#arraylist-index-of"/>
+    <function name="arraylist_is_empty ()" link="gok-arraylist.html#arraylist-is-empty"/>
+    <function name="arraylist_size ()" link="gok-arraylist.html#arraylist-size"/>
+    <function name="arraylist_get ()" link="gok-arraylist.html#arraylist-get"/>
+    <function name="arraylist_clear ()" link="gok-arraylist.html#arraylist-clear"/>
+    <function name="arraylist_sort ()" link="gok-arraylist.html#arraylist-sort"/>
+    <function name="on_window1_realize ()" link="gok-callbacks.html#on-window1-realize"/>
+    <function name="on_window1_remove ()" link="gok-callbacks.html#on-window1-remove"/>
+    <function name="on_window1_delete_event ()" link="gok-callbacks.html#on-window1-delete-event"/>
+    <function name="on_window1_size_allocate ()" link="gok-callbacks.html#on-window1-size-allocate"/>
+    <function name="on_window1_unrealize ()" link="gok-callbacks.html#on-window1-unrealize"/>
+    <function name="on_window1_destroy ()" link="gok-callbacks.html#on-window1-destroy"/>
+    <function name="on_window1_button_press_event ()" link="gok-callbacks.html#on-window1-button-press-event"/>
+    <function name="on_editor_button_press_event ()" link="gok-callbacks.html#on-editor-button-press-event"/>
+    <function name="on_window1_client_event ()" link="gok-callbacks.html#on-window1-client-event"/>
+    <function name="on_window1_drag_motion ()" link="gok-callbacks.html#on-window1-drag-motion"/>
+    <function name="on_window1_button_release_event ()" link="gok-callbacks.html#on-window1-button-release-event"/>
+    <function name="on_window1_configure_event ()" link="gok-callbacks.html#on-window1-configure-event"/>
+    <function name="on_window1_motion_notify_event ()" link="gok-callbacks.html#on-window1-motion-notify-event"/>
+    <function name="on_entryName_changed ()" link="gok-callbacks.html#on-entryName-changed"/>
+    <function name="on_dialogSettings_delete_event ()" link="gok-callbacks.html#on-dialogSettings-delete-event"/>
+    <function name="on_dialogSettings_destroy_event ()" link="gok-callbacks.html#on-dialogSettings-destroy-event"/>
+    <function name="on_dialogSettings_destroy ()" link="gok-callbacks.html#on-dialogSettings-destroy"/>
+    <function name="on_buttonKeySize_clicked ()" link="gok-callbacks.html#on-buttonKeySize-clicked"/>
+    <function name="on_spinSpacing_changed ()" link="gok-callbacks.html#on-spinSpacing-changed"/>
+    <function name="on_spinWidth_changed ()" link="gok-callbacks.html#on-spinWidth-changed"/>
+    <function name="on_spinHeight_changed ()" link="gok-callbacks.html#on-spinHeight-changed"/>
+    <function name="on_radiobuttonTypeSwitch_toggled ()" link="gok-callbacks.html#on-radiobuttonTypeSwitch-toggled"/>
+    <function name="on_radiobuttonTypeMouseButton_toggled ()" link="gok-callbacks.html#on-radiobuttonTypeMouseButton-toggled"/>
+    <function name="on_radiobuttonTypeDwell_toggled ()" link="gok-callbacks.html#on-radiobuttonTypeDwell-toggled"/>
+    <function name="on_radiobuttonTypeMousePointer_toggled ()" link="gok-callbacks.html#on-radiobuttonTypeMousePointer-toggled"/>
+    <function name="on_buttonNewAction_clicked ()" link="gok-callbacks.html#on-buttonNewAction-clicked"/>
+    <function name="on_checkWordCompletion_toggled ()" link="gok-callbacks.html#on-checkWordCompletion-toggled"/>
+    <function name="on_buttonSaveAction_clicked ()" link="gok-callbacks.html#on-buttonSaveAction-clicked"/>
+    <function name="on_buttonDeleteAction_clicked ()" link="gok-callbacks.html#on-buttonDeleteAction-clicked"/>
+    <function name="on_spinSwitchDelay_changed ()" link="gok-callbacks.html#on-spinSwitchDelay-changed"/>
+    <function name="on_buttonAccessMethodWizard_clicked ()" link="gok-callbacks.html#on-buttonAccessMethodWizard-clicked"/>
+    <function name="on_comboActionNames_focus_out_event ()" link="gok-callbacks.html#on-comboActionNames-focus-out-event"/>
+    <function name="on_entryActionName_focus_out_event ()" link="gok-callbacks.html#on-entryActionName-focus-out-event"/>
+    <function name="on_spinSwitchDelay_focus_in_event ()" link="gok-callbacks.html#on-spinSwitchDelay-focus-in-event"/>
+    <function name="on_entryActionName_leave_notify_event ()" link="gok-callbacks.html#on-entryActionName-leave-notify-event"/>
+    <function name="on_buttonChangeName_clicked ()" link="gok-callbacks.html#on-buttonChangeName-clicked"/>
+    <function name="on_radiobuttonSwitch1_toggled ()" link="gok-callbacks.html#on-radiobuttonSwitch1-toggled"/>
+    <function name="on_radiobuttonSwitch2_toggled ()" link="gok-callbacks.html#on-radiobuttonSwitch2-toggled"/>
+    <function name="on_radiobuttonSwitch3_toggled ()" link="gok-callbacks.html#on-radiobuttonSwitch3-toggled"/>
+    <function name="on_radiobuttonSwitch4_toggled ()" link="gok-callbacks.html#on-radiobuttonSwitch4-toggled"/>
+    <function name="on_radiobuttonSwitch5_toggled ()" link="gok-callbacks.html#on-radiobuttonSwitch5-toggled"/>
+    <function name="on_radiobuttonSwitchPress_toggled ()" link="gok-callbacks.html#on-radiobuttonSwitchPress-toggled"/>
+    <function name="on_radiobuttonSwitchRelease_toggled ()" link="gok-callbacks.html#on-radiobuttonSwitchRelease-toggled"/>
+    <function name="on_radiobuttonMouseButton0_toggled ()" link="gok-callbacks.html#on-radiobuttonMouseButton0-toggled"/>
+    <function name="on_radiobuttonMouseButton1_toggled ()" link="gok-callbacks.html#on-radiobuttonMouseButton1-toggled"/>
+    <function name="on_radiobuttonMouseButton2_toggled ()" link="gok-callbacks.html#on-radiobuttonMouseButton2-toggled"/>
+    <function name="on_radiobuttonMouseButton3_toggled ()" link="gok-callbacks.html#on-radiobuttonMouseButton3-toggled"/>
+    <function name="on_radiobuttonMouseButton4_toggled ()" link="gok-callbacks.html#on-radiobuttonMouseButton4-toggled"/>
+    <function name="on_radiobuttonButtonPress_toggled ()" link="gok-callbacks.html#on-radiobuttonButtonPress-toggled"/>
+    <function name="on_radiobuttonButtonRelease_toggled ()" link="gok-callbacks.html#on-radiobuttonButtonRelease-toggled"/>
+    <function name="on_radiobuttonButtonClick_toggled ()" link="gok-callbacks.html#on-radiobuttonButtonClick-toggled"/>
+    <function name="on_spinButtonDelay_changed ()" link="gok-callbacks.html#on-spinButtonDelay-changed"/>
+    <function name="on_spinDwellRate_changed ()" link="gok-callbacks.html#on-spinDwellRate-changed"/>
+    <function name="on_checkKeyAverage_toggled ()" link="gok-callbacks.html#on-checkKeyAverage-toggled"/>
+    <function name="on_spinKeyAverage_changed ()" link="gok-callbacks.html#on-spinKeyAverage-changed"/>
+    <function name="on_file1_activate ()" link="gok-callbacks.html#on-file1-activate"/>
+    <function name="on_new1_activate ()" link="gok-callbacks.html#on-new1-activate"/>
+    <function name="on_open1_activate ()" link="gok-callbacks.html#on-open1-activate"/>
+    <function name="on_save1_activate ()" link="gok-callbacks.html#on-save1-activate"/>
+    <function name="on_save_as1_activate ()" link="gok-callbacks.html#on-save-as1-activate"/>
+    <function name="on_exit1_activate ()" link="gok-callbacks.html#on-exit1-activate"/>
+    <function name="on_help1_activate ()" link="gok-callbacks.html#on-help1-activate"/>
+    <function name="on_gok_editor_help1_activate ()" link="gok-callbacks.html#on-gok-editor-help1-activate"/>
+    <function name="on_about1_activate ()" link="gok-callbacks.html#on-about1-activate"/>
+    <function name="on_windowEditor_destroy_event ()" link="gok-callbacks.html#on-windowEditor-destroy-event"/>
+    <function name="on_windowEditor_delete_event ()" link="gok-callbacks.html#on-windowEditor-delete-event"/>
+    <function name="on_spinbutton47_changed ()" link="gok-callbacks.html#on-spinbutton47-changed"/>
+    <function name="on_buttonNext_clicked ()" link="gok-callbacks.html#on-buttonNext-clicked"/>
+    <function name="on_buttonPrevious_clicked ()" link="gok-callbacks.html#on-buttonPrevious-clicked"/>
+    <function name="on_buttonAddNewKey_clicked ()" link="gok-callbacks.html#on-buttonAddNewKey-clicked"/>
+    <function name="on_buttonDeleteKey_clicked ()" link="gok-callbacks.html#on-buttonDeleteKey-clicked"/>
+    <function name="on_buttonDuplicate_clicked ()" link="gok-callbacks.html#on-buttonDuplicate-clicked"/>
+    <function name="on_spinLeft_changed ()" link="gok-callbacks.html#on-spinLeft-changed"/>
+    <function name="on_spinLeft_insert_text ()" link="gok-callbacks.html#on-spinLeft-insert-text"/>
+    <function name="on_spinRight_insert_text ()" link="gok-callbacks.html#on-spinRight-insert-text"/>
+    <function name="on_spinTop_insert_text ()" link="gok-callbacks.html#on-spinTop-insert-text"/>
+    <function name="on_spinBottom_insert_text ()" link="gok-callbacks.html#on-spinBottom-insert-text"/>
+    <function name="on_dialogSettings_show ()" link="gok-callbacks.html#on-dialogSettings-show"/>
+    <function name="on_buttonAddFeedback_clicked ()" link="gok-callbacks.html#on-buttonAddFeedback-clicked"/>
+    <function name="on_buttonDeleteFeedback_clicked ()" link="gok-callbacks.html#on-buttonDeleteFeedback-clicked"/>
+    <function name="on_buttonChangeFeedbackName_clicked ()" link="gok-callbacks.html#on-buttonChangeFeedbackName-clicked"/>
+    <function name="on_buttonFeedbackSoundFile_clicked ()" link="gok-callbacks.html#on-buttonFeedbackSoundFile-clicked"/>
+    <function name="on_entry63_changed ()" link="gok-callbacks.html#on-entry63-changed"/>
+    <function name="on_entryFeedback_changed ()" link="gok-callbacks.html#on-entryFeedback-changed"/>
+    <function name="on_checkKeyFlashing_clicked ()" link="gok-callbacks.html#on-checkKeyFlashing-clicked"/>
+    <function name="on_spinKeyFlashing_changed ()" link="gok-callbacks.html#on-spinKeyFlashing-changed"/>
+    <function name="on_checkSoundOn_clicked ()" link="gok-callbacks.html#on-checkSoundOn-clicked"/>
+    <function name="on_entrySoundName_changed ()" link="gok-callbacks.html#on-entrySoundName-changed"/>
+    <function name="STORAGE_TYPE_COMMAND_VERTEX" link="gok-command-common.html#STORAGE-TYPE-COMMAND-VERTEX:CAPS"/>
+    <function name="STORAGE_TYPE_COMMAND_EDGE" link="gok-command-common.html#STORAGE-TYPE-COMMAND-EDGE:CAPS"/>
+    <function name="COMMAND_EDGE_DATA_DEFAULT_WEIGHT" link="gok-command-edge-data.html#COMMAND-EDGE-DATA-DEFAULT-WEIGHT:CAPS"/>
+    <function name="COMMAND_EDGE_DATA_WEIGHT_DELTA" link="gok-command-edge-data.html#COMMAND-EDGE-DATA-WEIGHT-DELTA:CAPS"/>
+    <function name="command_edge_data_equals ()" link="gok-command-edge-data.html#command-edge-data-equals"/>
+    <function name="command_edge_data_free ()" link="gok-command-edge-data.html#command-edge-data-free"/>
+    <function name="command_edge_data_create ()" link="gok-command-edge-data.html#command-edge-data-create"/>
+    <function name="command_edge_data_set_weight ()" link="gok-command-edge-data.html#command-edge-data-set-weight"/>
+    <function name="command_edge_data_get_weight ()" link="gok-command-edge-data.html#command-edge-data-get-weight"/>
+    <function name="command_edge_data_dump_text ()" link="gok-command-edge-data.html#command-edge-data-dump-text"/>
+    <function name="command_edge_data_dump_binary ()" link="gok-command-edge-data.html#command-edge-data-dump-binary"/>
+    <function name="command_edge_equals ()" link="gok-command-edge.html#command-edge-equals"/>
+    <function name="command_edge_free ()" link="gok-command-edge.html#command-edge-free"/>
+    <function name="command_edge_create ()" link="gok-command-edge.html#command-edge-create"/>
+    <function name="command_edge_set_edge_data ()" link="gok-command-edge.html#command-edge-set-edge-data"/>
+    <function name="command_edge_get_edge_data ()" link="gok-command-edge.html#command-edge-get-edge-data"/>
+    <function name="command_edge_get_next_vertex ()" link="gok-command-edge.html#command-edge-get-next-vertex"/>
+    <function name="command_edge_dump_text ()" link="gok-command-edge.html#command-edge-dump-text"/>
+    <function name="command_edge_dump_binary ()" link="gok-command-edge.html#command-edge-dump-binary"/>
+    <function name="MAX_NUM_PREDICTIONS" link="gok-command-graph.html#MAX-NUM-PREDICTIONS:CAPS"/>
+    <function name="command_graph_free ()" link="gok-command-graph.html#command-graph-free"/>
+    <function name="command_graph_create ()" link="gok-command-graph.html#command-graph-create"/>
+    <function name="command_graph_add_vertex ()" link="gok-command-graph.html#command-graph-add-vertex"/>
+    <function name="command_graph_get_last_n_added_vertices ()" link="gok-command-graph.html#command-graph-get-last-n-added-vertices"/>
+    <function name="command_graph_remove_vertex ()" link="gok-command-graph.html#command-graph-remove-vertex"/>
+    <function name="command_graph_get_vertex ()" link="gok-command-graph.html#command-graph-get-vertex"/>
+    <function name="command_graph_size ()" link="gok-command-graph.html#command-graph-size"/>
+    <function name="command_graph_total_commands ()" link="gok-command-graph.html#command-graph-total-commands"/>
+    <function name="command_graph_get_vertices ()" link="gok-command-graph.html#command-graph-get-vertices"/>
+    <function name="command_graph_get_last_added_vertex ()" link="gok-command-graph.html#command-graph-get-last-added-vertex"/>
+    <function name="command_graph_sort_by_stat ()" link="gok-command-graph.html#command-graph-sort-by-stat"/>
+    <function name="command_graph_sort_by_keyboard ()" link="gok-command-graph.html#command-graph-sort-by-keyboard"/>
+    <function name="command_graph_dump_to_text ()" link="gok-command-graph.html#command-graph-dump-to-text"/>
+    <function name="command_graph_dump_to_binary ()" link="gok-command-graph.html#command-graph-dump-to-binary"/>
+    <function name="command_graph_reconstruct_from_binary ()" link="gok-command-graph.html#command-graph-reconstruct-from-binary"/>
+    <function name="enum Prediction_Algorithm" link="gok-command-predictor.html#Prediction-Algorithm"/>
+    <function name="command_predictor_free ()" link="gok-command-predictor.html#command-predictor-free"/>
+    <function name="command_predictor_create ()" link="gok-command-predictor.html#command-predictor-create"/>
+    <function name="command_predictor_calculate_recency_percentages ()" link="gok-command-predictor.html#command-predictor-calculate-recency-percentages"/>
+    <function name="command_predictor_get_recency_percent_correct ()" link="gok-command-predictor.html#command-predictor-get-recency-percent-correct"/>
+    <function name="command_predictor_calculate_frequency_percentages ()" link="gok-command-predictor.html#command-predictor-calculate-frequency-percentages"/>
+    <function name="command_predictor_get_frequency_percent_correct ()" link="gok-command-predictor.html#command-predictor-get-frequency-percent-correct"/>
+    <function name="command_predictor_predict_same_as_last ()" link="gok-command-predictor.html#command-predictor-predict-same-as-last"/>
+    <function name="command_predictor_predict_high_stat ()" link="gok-command-predictor.html#command-predictor-predict-high-stat"/>
+    <function name="command_predictor_evaluate_prediction ()" link="gok-command-predictor.html#command-predictor-evaluate-prediction"/>
+    <function name="COMMAND_VERTEX_DATA_DEFAULT_WEIGHT" link="gok-command-vertex-data.html#COMMAND-VERTEX-DATA-DEFAULT-WEIGHT:CAPS"/>
+    <function name="COMMAND_VERTEX_DATA_WEIGHT_DELTA" link="gok-command-vertex-data.html#COMMAND-VERTEX-DATA-WEIGHT-DELTA:CAPS"/>
+    <function name="command_vertex_data_equals ()" link="gok-command-vertex-data.html#command-vertex-data-equals"/>
+    <function name="command_vertex_data_free ()" link="gok-command-vertex-data.html#command-vertex-data-free"/>
+    <function name="command_vertex_data_create ()" link="gok-command-vertex-data.html#command-vertex-data-create"/>
+    <function name="command_vertex_data_create_from_log ()" link="gok-command-vertex-data.html#command-vertex-data-create-from-log"/>
+    <function name="command_vertex_data_get_keyboard_id ()" link="gok-command-vertex-data.html#command-vertex-data-get-keyboard-id"/>
+    <function name="command_vertex_data_get_key_id ()" link="gok-command-vertex-data.html#command-vertex-data-get-key-id"/>
+    <function name="command_vertex_data_set_weight ()" link="gok-command-vertex-data.html#command-vertex-data-set-weight"/>
+    <function name="command_vertex_data_get_weight ()" link="gok-command-vertex-data.html#command-vertex-data-get-weight"/>
+    <function name="command_vertex_data_dump_text ()" link="gok-command-vertex-data.html#command-vertex-data-dump-text"/>
+    <function name="command_vertex_data_dump_binary ()" link="gok-command-vertex-data.html#command-vertex-data-dump-binary"/>
+    <function name="command_vertex_equals ()" link="gok-command-vertex.html#command-vertex-equals"/>
+    <function name="command_vertex_free ()" link="gok-command-vertex.html#command-vertex-free"/>
+    <function name="command_vertex_create ()" link="gok-command-vertex.html#command-vertex-create"/>
+    <function name="command_vertex_set_vertex_data ()" link="gok-command-vertex.html#command-vertex-set-vertex-data"/>
+    <function name="command_vertex_get_vertex_data ()" link="gok-command-vertex.html#command-vertex-get-vertex-data"/>
+    <function name="command_vertex_sort_by_stat ()" link="gok-command-vertex.html#command-vertex-sort-by-stat"/>
+    <function name="command_vertex_get_edge ()" link="gok-command-vertex.html#command-vertex-get-edge"/>
+    <function name="command_vertex_remove_edge ()" link="gok-command-vertex.html#command-vertex-remove-edge"/>
+    <function name="command_vertex_add_edge ()" link="gok-command-vertex.html#command-vertex-add-edge"/>
+    <function name="command_vertex_get_edges ()" link="gok-command-vertex.html#command-vertex-get-edges"/>
+    <function name="command_vertex_dump_text ()" link="gok-command-vertex.html#command-vertex-dump-text"/>
+    <function name="command_vertex_dump_binary ()" link="gok-command-vertex.html#command-vertex-dump-binary"/>
+    <function name="EMPTY_STRING" link="gok-global.html#EMPTY-STRING:CAPS"/>
+    <function name="string_equals ()" link="gok-global.html#string-equals"/>
+    <function name="string_not_equals ()" link="gok-global.html#string-not-equals"/>
+    <function name="string_empty ()" link="gok-global.html#string-empty"/>
+    <function name="string_starts_with ()" link="gok-global.html#string-starts-with"/>
+    <function name="string_ends_with ()" link="gok-global.html#string-ends-with"/>
+    <function name="string_trim ()" link="gok-global.html#string-trim"/>
+    <function name="checked_malloc ()" link="gok-global.html#checked-malloc"/>
+    <function name="ACTION_TYPE_SWITCH" link="gok-gok-action.html#ACTION-TYPE-SWITCH:CAPS"/>
+    <function name="ACTION_TYPE_MOUSEBUTTON" link="gok-gok-action.html#ACTION-TYPE-MOUSEBUTTON:CAPS"/>
+    <function name="ACTION_TYPE_MOUSEPOINTER" link="gok-gok-action.html#ACTION-TYPE-MOUSEPOINTER:CAPS"/>
+    <function name="ACTION_TYPE_DWELL" link="gok-gok-action.html#ACTION-TYPE-DWELL:CAPS"/>
+    <function name="enum ActionState" link="gok-gok-action.html#ActionState"/>
+    <function name="gok_action_new ()" link="gok-gok-action.html#gok-action-new"/>
+    <function name="gok_action_free ()" link="gok-gok-action.html#gok-action-free"/>
+    <function name="gok_action_open ()" link="gok-gok-action.html#gok-action-open"/>
+    <function name="gok_action_close ()" link="gok-gok-action.html#gok-action-close"/>
+    <function name="gok_action_get_first_action ()" link="gok-gok-action.html#gok-action-get-first-action"/>
+    <function name="gok_action_set_modified ()" link="gok-gok-action.html#gok-action-set-modified"/>
+    <function name="gok_action_delete_action ()" link="gok-gok-action.html#gok-action-delete-action"/>
+    <function name="gok_action_find_action ()" link="gok-gok-action.html#gok-action-find-action"/>
+    <function name="gok_action_add_action ()" link="gok-gok-action.html#gok-action-add-action"/>
+    <function name="MAX_BRANCHBACKSTACK" link="gok-gok-branchback-stack.html#MAX-BRANCHBACKSTACK:CAPS"/>
+    <function name="gok_branchbackstack_initialize ()" link="gok-gok-branchback-stack.html#gok-branchbackstack-initialize"/>
+    <function name="gok_branchbackstack_push ()" link="gok-gok-branchback-stack.html#gok-branchbackstack-push"/>
+    <function name="gok_branchbackstack_pop ()" link="gok-gok-branchback-stack.html#gok-branchbackstack-pop"/>
+    <function name="gok_branchbackstack_is_empty ()" link="gok-gok-branchback-stack.html#gok-branchbackstack-is-empty"/>
+    <function name="GOK_TYPE_BUTTON" link="gok-GokButton.html#GOK-TYPE-BUTTON:CAPS"/>
+    <function name="GOK_BUTTON_CLASS()" link="gok-GokButton.html#GOK-BUTTON-CLASS:CAPS"/>
+    <function name="gok_button_get_type ()" link="gok-GokButton.html#gok-button-get-type"/>
+    <function name="gok_button_new_with_label ()" link="gok-GokButton.html#gok-button-new-with-label"/>
+    <function name="gok_button_enter_notify ()" link="gok-GokButton.html#gok-button-enter-notify"/>
+    <function name="gok_button_leave_notify ()" link="gok-GokButton.html#gok-button-leave-notify"/>
+    <function name="gok_button_state_changed ()" link="gok-GokButton.html#gok-button-state-changed"/>
+    <function name="enum ChunkTypes" link="gok-gok-chunker.html#ChunkTypes"/>
+    <function name="enum ChunkOrder" link="gok-gok-chunker.html#ChunkOrder"/>
+    <function name="gok_chunker_chunk_all ()" link="gok-gok-chunker.html#gok-chunker-chunk-all"/>
+    <function name="gok_chunker_init_chunk ()" link="gok-gok-chunker.html#gok-chunker-init-chunk"/>
+    <function name="gok_chunker_delete_chunks ()" link="gok-gok-chunker.html#gok-chunker-delete-chunks"/>
+    <function name="gok_chunker_reset ()" link="gok-gok-chunker.html#gok-chunker-reset"/>
+    <function name="gok_chunker_next_chunk ()" link="gok-gok-chunker.html#gok-chunker-next-chunk"/>
+    <function name="gok_chunker_previous_chunk ()" link="gok-gok-chunker.html#gok-chunker-previous-chunk"/>
+    <function name="gok_chunker_next_key ()" link="gok-gok-chunker.html#gok-chunker-next-key"/>
+    <function name="gok_chunker_previous_key ()" link="gok-gok-chunker.html#gok-chunker-previous-key"/>
+    <function name="gok_chunker_keyup ()" link="gok-gok-chunker.html#gok-chunker-keyup"/>
+    <function name="gok_chunker_keydown ()" link="gok-gok-chunker.html#gok-chunker-keydown"/>
+    <function name="gok_chunker_keyleft ()" link="gok-gok-chunker.html#gok-chunker-keyleft"/>
+    <function name="gok_chunker_keyright ()" link="gok-gok-chunker.html#gok-chunker-keyright"/>
+    <function name="gok_chunker_keyhighlight ()" link="gok-gok-chunker.html#gok-chunker-keyhighlight"/>
+    <function name="gok_chunker_wraptofirstchunk ()" link="gok-gok-chunker.html#gok-chunker-wraptofirstchunk"/>
+    <function name="gok_chunker_wraptolastchunk ()" link="gok-gok-chunker.html#gok-chunker-wraptolastchunk"/>
+    <function name="gok_chunker_wraptofirstkey ()" link="gok-gok-chunker.html#gok-chunker-wraptofirstkey"/>
+    <function name="gok_chunker_wraptolastkey ()" link="gok-gok-chunker.html#gok-chunker-wraptolastkey"/>
+    <function name="gok_chunker_wraptoleft ()" link="gok-gok-chunker.html#gok-chunker-wraptoleft"/>
+    <function name="gok_chunker_wraptoright ()" link="gok-gok-chunker.html#gok-chunker-wraptoright"/>
+    <function name="gok_chunker_move_leftright ()" link="gok-gok-chunker.html#gok-chunker-move-leftright"/>
+    <function name="gok_chunker_move_topbottom ()" link="gok-gok-chunker.html#gok-chunker-move-topbottom"/>
+    <function name="gok_chunker_if_next_chunk ()" link="gok-gok-chunker.html#gok-chunker-if-next-chunk"/>
+    <function name="gok_chunker_if_previous_chunk ()" link="gok-gok-chunker.html#gok-chunker-if-previous-chunk"/>
+    <function name="gok_chunker_if_next_key ()" link="gok-gok-chunker.html#gok-chunker-if-next-key"/>
+    <function name="gok_chunker_if_previous_key ()" link="gok-gok-chunker.html#gok-chunker-if-previous-key"/>
+    <function name="gok_chunker_if_top ()" link="gok-gok-chunker.html#gok-chunker-if-top"/>
+    <function name="gok_chunker_if_bottom ()" link="gok-gok-chunker.html#gok-chunker-if-bottom"/>
+    <function name="gok_chunker_if_left ()" link="gok-gok-chunker.html#gok-chunker-if-left"/>
+    <function name="gok_chunker_if_right ()" link="gok-gok-chunker.html#gok-chunker-if-right"/>
+    <function name="gok_chunker_if_key_selected ()" link="gok-gok-chunker.html#gok-chunker-if-key-selected"/>
+    <function name="gok_chunker_is_left ()" link="gok-gok-chunker.html#gok-chunker-is-left"/>
+    <function name="gok_chunker_is_right ()" link="gok-gok-chunker.html#gok-chunker-is-right"/>
+    <function name="gok_chunker_is_top ()" link="gok-gok-chunker.html#gok-chunker-is-top"/>
+    <function name="gok_chunker_is_bottom ()" link="gok-gok-chunker.html#gok-chunker-is-bottom"/>
+    <function name="gok_chunker_counter_set ()" link="gok-gok-chunker.html#gok-chunker-counter-set"/>
+    <function name="gok_chunker_counter_increment ()" link="gok-gok-chunker.html#gok-chunker-counter-increment"/>
+    <function name="gok_chunker_counter_decrement ()" link="gok-gok-chunker.html#gok-chunker-counter-decrement"/>
+    <function name="gok_chunker_state_restart ()" link="gok-gok-chunker.html#gok-chunker-state-restart"/>
+    <function name="gok_chunker_state_next ()" link="gok-gok-chunker.html#gok-chunker-state-next"/>
+    <function name="gok_chunker_state_jump ()" link="gok-gok-chunker.html#gok-chunker-state-jump"/>
+    <function name="gok_chunker_select_chunk ()" link="gok-gok-chunker.html#gok-chunker-select-chunk"/>
+    <function name="gok_chunker_highlight_chunk ()" link="gok-gok-chunker.html#gok-chunker-highlight-chunk"/>
+    <function name="gok_chunker_unhighlight_chunk ()" link="gok-gok-chunker.html#gok-chunker-unhighlight-chunk"/>
+    <function name="gok_chunker_highlight_center_key ()" link="gok-gok-chunker.html#gok-chunker-highlight-center-key"/>
+    <function name="gok_chunker_highlight_first_chunk ()" link="gok-gok-chunker.html#gok-chunker-highlight-first-chunk"/>
+    <function name="gok_chunker_highlight_first_key ()" link="gok-gok-chunker.html#gok-chunker-highlight-first-key"/>
+    <function name="gok_chunker_insert_item_row_ltr ()" link="gok-gok-chunker.html#gok-chunker-insert-item-row-ltr"/>
+    <function name="gok_chunker_insert_item_row_rtl ()" link="gok-gok-chunker.html#gok-chunker-insert-item-row-rtl"/>
+    <function name="gok_chunker_insert_item_col_ttb ()" link="gok-gok-chunker.html#gok-chunker-insert-item-col-ttb"/>
+    <function name="gok_chunker_insert_item_col_btt ()" link="gok-gok-chunker.html#gok-chunker-insert-item-col-btt"/>
+    <function name="gok_chunker_dump_chunks ()" link="gok-gok-chunker.html#gok-chunker-dump-chunks"/>
+    <function name="gok_chunker_dump_chunk ()" link="gok-gok-chunker.html#gok-chunker-dump-chunk"/>
+    <function name="gok_chunker_chunk_group ()" link="gok-gok-chunker.html#gok-chunker-chunk-group"/>
+    <function name="gok_chunker_add_chunkitem ()" link="gok-gok-chunker.html#gok-chunker-add-chunkitem"/>
+    <function name="gok_chunker_count_chunkitems ()" link="gok-gok-chunker.html#gok-chunker-count-chunkitems"/>
+    <function name="gok_chunker_make_2_vertical ()" link="gok-gok-chunker.html#gok-chunker-make-2-vertical"/>
+    <function name="gok_chunker_make_2_horizontal ()" link="gok-gok-chunker.html#gok-chunker-make-2-horizontal"/>
+    <function name="gok_chunker_make_4 ()" link="gok-gok-chunker.html#gok-chunker-make-4"/>
+    <function name="gok_chunker_highlight_chunk_number ()" link="gok-gok-chunker.html#gok-chunker-highlight-chunk-number"/>
+    <function name="gok_chunker_get_chunk ()" link="gok-gok-chunker.html#gok-chunker-get-chunk"/>
+    <function name="gok_chunker_highlight_all_keys ()" link="gok-gok-chunker.html#gok-chunker-highlight-all-keys"/>
+    <function name="gok_chunker_unhighlight_all_keys ()" link="gok-gok-chunker.html#gok-chunker-unhighlight-all-keys"/>
+    <function name="gok_chunker_resolve_overlap ()" link="gok-gok-chunker.html#gok-chunker-resolve-overlap"/>
+    <function name="enum ControlTypes" link="gok-gok-control.html#ControlTypes"/>
+    <function name="enum ControlFillwiths" link="gok-gok-control.html#ControlFillwiths"/>
+    <function name="enum ControlHandlers" link="gok-gok-control.html#ControlHandlers"/>
+    <function name="gok_control_new ()" link="gok-gok-control.html#gok-control-new"/>
+    <function name="gok_control_delete_all ()" link="gok-gok-control.html#gok-control-delete-all"/>
+    <function name="gok_control_get_control_type ()" link="gok-gok-control.html#gok-control-get-control-type"/>
+    <function name="gok_control_get_handler_type ()" link="gok-gok-control.html#gok-control-get-handler-type"/>
+    <function name="gok_control_button_handler ()" link="gok-gok-control.html#gok-control-button-handler"/>
+    <function name="gok_control_add_handler ()" link="gok-gok-control.html#gok-control-add-handler"/>
+    <function name="gok_control_button_callback_open ()" link="gok-gok-control.html#gok-control-button-callback-open"/>
+    <function name="gok_control_button_callback_close ()" link="gok-gok-control.html#gok-control-button-callback-close"/>
+    <function name="MAX_SETTING_NAME" link="gok-gok-data.html#MAX-SETTING-NAME:CAPS"/>
+    <function name="GOK_SETTINGS_FILE" link="gok-gok-data.html#GOK-SETTINGS-FILE:CAPS"/>
+    <function name="MAX_KEY_SPACING" link="gok-gok-data.html#MAX-KEY-SPACING:CAPS"/>
+    <function name="MAX_KEY_WIDTH" link="gok-gok-data.html#MAX-KEY-WIDTH:CAPS"/>
+    <function name="MIN_KEY_WIDTH" link="gok-gok-data.html#MIN-KEY-WIDTH:CAPS"/>
+    <function name="MAX_KEY_HEIGHT" link="gok-gok-data.html#MAX-KEY-HEIGHT:CAPS"/>
+    <function name="MIN_KEY_HEIGHT" link="gok-gok-data.html#MIN-KEY-HEIGHT:CAPS"/>
+    <function name="gok_data_initialize ()" link="gok-gok-data.html#gok-data-initialize"/>
+    <function name="gok_data_construct_setting ()" link="gok-gok-data.html#gok-data-construct-setting"/>
+    <function name="gok_data_read_settings ()" link="gok-gok-data.html#gok-data-read-settings"/>
+    <function name="gok_data_write_settings ()" link="gok-gok-data.html#gok-data-write-settings"/>
+    <function name="gok_data_get_setting ()" link="gok-gok-data.html#gok-data-get-setting"/>
+    <function name="gok_data_create_setting ()" link="gok-gok-data.html#gok-data-create-setting"/>
+    <function name="gok_data_close ()" link="gok-gok-data.html#gok-data-close"/>
+    <function name="gok_data_set_setting ()" link="gok-gok-data.html#gok-data-set-setting"/>
+    <function name="gok_data_get_key_width ()" link="gok-gok-data.html#gok-data-get-key-width"/>
+    <function name="gok_data_set_key_width ()" link="gok-gok-data.html#gok-data-set-key-width"/>
+    <function name="gok_data_get_key_height ()" link="gok-gok-data.html#gok-data-get-key-height"/>
+    <function name="gok_data_set_key_height ()" link="gok-gok-data.html#gok-data-set-key-height"/>
+    <function name="gok_data_get_key_spacing ()" link="gok-gok-data.html#gok-data-get-key-spacing"/>
+    <function name="gok_data_set_key_spacing ()" link="gok-gok-data.html#gok-data-set-key-spacing"/>
+    <function name="gok_data_get_keyboard_x ()" link="gok-gok-data.html#gok-data-get-keyboard-x"/>
+    <function name="gok_data_set_keyboard_x ()" link="gok-gok-data.html#gok-data-set-keyboard-x"/>
+    <function name="gok_data_get_keyboard_y ()" link="gok-gok-data.html#gok-data-get-keyboard-y"/>
+    <function name="gok_data_set_keyboard_y ()" link="gok-gok-data.html#gok-data-set-keyboard-y"/>
+    <function name="gok_data_get_keysize_priority ()" link="gok-gok-data.html#gok-data-get-keysize-priority"/>
+    <function name="gok_data_set_keysize_priority ()" link="gok-gok-data.html#gok-data-set-keysize-priority"/>
+    <function name="gok_data_get_name_accessmethod ()" link="gok-gok-data.html#gok-data-get-name-accessmethod"/>
+    <function name="gok_data_set_name_accessmethod ()" link="gok-gok-data.html#gok-data-set-name-accessmethod"/>
+    <function name="gok_data_get_wordcomplete ()" link="gok-gok-data.html#gok-data-get-wordcomplete"/>
+    <function name="gok_data_set_wordcomplete ()" link="gok-gok-data.html#gok-data-set-wordcomplete"/>
+    <function name="gok_data_get_num_predictions ()" link="gok-gok-data.html#gok-data-get-num-predictions"/>
+    <function name="gok_data_set_num_predictions ()" link="gok-gok-data.html#gok-data-set-num-predictions"/>
+    <function name="gok_data_restore_settings ()" link="gok-gok-data.html#gok-data-restore-settings"/>
+    <function name="gok_data_backup_setting ()" link="gok-gok-data.html#gok-data-backup-setting"/>
+    <function name="gok_data_restore_setting ()" link="gok-gok-data.html#gok-data-restore-setting"/>
+    <function name="gok_data_get_control_values ()" link="gok-gok-data.html#gok-data-get-control-values"/>
+    <function name="gok_data_get_use_gtkplus_theme ()" link="gok-gok-data.html#gok-data-get-use-gtkplus-theme"/>
+    <function name="gok_data_set_use_gtkplus_theme ()" link="gok-gok-data.html#gok-data-set-use-gtkplus-theme"/>
+    <function name="gok_editor_run ()" link="gok-gok-editor.html#gok-editor-run"/>
+    <function name="gok_editor_close ()" link="gok-gok-editor.html#gok-editor-close"/>
+    <function name="gok_editor_on_exit ()" link="gok-gok-editor.html#gok-editor-on-exit"/>
+    <function name="gok_editor_new ()" link="gok-gok-editor.html#gok-editor-new"/>
+    <function name="gok_editor_open_file ()" link="gok-gok-editor.html#gok-editor-open-file"/>
+    <function name="gok_editor_new_file ()" link="gok-gok-editor.html#gok-editor-new-file"/>
+    <function name="gok_editor_touch_file ()" link="gok-gok-editor.html#gok-editor-touch-file"/>
+    <function name="gok_editor_show_parameters ()" link="gok-gok-editor.html#gok-editor-show-parameters"/>
+    <function name="gok_editor_next_key ()" link="gok-gok-editor.html#gok-editor-next-key"/>
+    <function name="gok_editor_previous_key ()" link="gok-gok-editor.html#gok-editor-previous-key"/>
+    <function name="gok_editor_add_key ()" link="gok-gok-editor.html#gok-editor-add-key"/>
+    <function name="gok_editor_delete_key ()" link="gok-gok-editor.html#gok-editor-delete-key"/>
+    <function name="gok_editor_duplicate_key ()" link="gok-gok-editor.html#gok-editor-duplicate-key"/>
+    <function name="gok_editor_update_key ()" link="gok-gok-editor.html#gok-editor-update-key"/>
+    <function name="gok_editor_update_keyboard ()" link="gok-gok-editor.html#gok-editor-update-keyboard"/>
+    <function name="on_editor_keyboard_delete_event ()" link="gok-gok-editor.html#on-editor-keyboard-delete-event"/>
+    <function name="gok_editor_keyboard_key_press ()" link="gok-gok-editor.html#gok-editor-keyboard-key-press"/>
+    <function name="gok_editor_save_current_keyboard ()" link="gok-gok-editor.html#gok-editor-save-current-keyboard"/>
+    <function name="gok_editor_save_current_keyboard_as ()" link="gok-gok-editor.html#gok-editor-save-current-keyboard-as"/>
+    <function name="gok_editor_save_keyboard ()" link="gok-gok-editor.html#gok-editor-save-keyboard"/>
+    <function name="gok_editor_print_outputs ()" link="gok-gok-editor.html#gok-editor-print-outputs"/>
+    <function name="gok_editor_validate_keyboard ()" link="gok-gok-editor.html#gok-editor-validate-keyboard"/>
+    <function name="gok_editor_message_filename_bad ()" link="gok-gok-editor.html#gok-editor-message-filename-bad"/>
+    <function name="gok_editor_update_title ()" link="gok-gok-editor.html#gok-editor-update-title"/>
+    <function name="gok_feedback_new ()" link="gok-gok-feedback.html#gok-feedback-new"/>
+    <function name="gok_feedback_free ()" link="gok-gok-feedback.html#gok-feedback-free"/>
+    <function name="gok_feedback_open ()" link="gok-gok-feedback.html#gok-feedback-open"/>
+    <function name="gok_feedback_close ()" link="gok-gok-feedback.html#gok-feedback-close"/>
+    <function name="gok_feedback_get_first_feedback ()" link="gok-gok-feedback.html#gok-feedback-get-first-feedback"/>
+    <function name="gok_feedback_find_feedback ()" link="gok-gok-feedback.html#gok-feedback-find-feedback"/>
+    <function name="gok_feedback_add_feedback ()" link="gok-gok-feedback.html#gok-feedback-add-feedback"/>
+    <function name="gok_feedback_delete_feedback ()" link="gok-gok-feedback.html#gok-feedback-delete-feedback"/>
+    <function name="gok_feedback_backup ()" link="gok-gok-feedback.html#gok-feedback-backup"/>
+    <function name="gok_feedback_revert ()" link="gok-gok-feedback.html#gok-feedback-revert"/>
+    <function name="gok_gconf_get_int ()" link="gok-gok-gconf.html#gok-gconf-get-int"/>
+    <function name="gok_gconf_set_int ()" link="gok-gok-gconf.html#gok-gconf-set-int"/>
+    <function name="gok_gconf_get_bool ()" link="gok-gok-gconf.html#gok-gconf-get-bool"/>
+    <function name="gok_gconf_set_bool ()" link="gok-gok-gconf.html#gok-gconf-set-bool"/>
+    <function name="gok_gconf_get_string ()" link="gok-gok-gconf.html#gok-gconf-get-string"/>
+    <function name="gok_gconf_set_string ()" link="gok-gok-gconf.html#gok-gconf-set-string"/>
+    <function name="enum KeyStyles" link="gok-gok-key.html#KeyStyles"/>
+    <function name="FONT_SIZE_GROUP_UNDEFINED" link="gok-gok-key.html#FONT-SIZE-GROUP-UNDEFINED:CAPS"/>
+    <function name="FONT_SIZE_GROUP_UNIQUE" link="gok-gok-key.html#FONT-SIZE-GROUP-UNIQUE:CAPS"/>
+    <function name="FONT_SIZE_GROUP_WORDCOMPLETE" link="gok-gok-key.html#FONT-SIZE-GROUP-WORDCOMPLETE:CAPS"/>
+    <function name="gok_key_initialize ()" link="gok-gok-key.html#gok-key-initialize"/>
+    <function name="gok_key_add_label ()" link="gok-gok-key.html#gok-key-add-label"/>
+    <function name="gok_key_set_output ()" link="gok-gok-key.html#gok-key-set-output"/>
+    <function name="gok_key_change_label ()" link="gok-gok-key.html#gok-key-change-label"/>
+    <function name="gok_key_update_label ()" link="gok-gok-key.html#gok-key-update-label"/>
+    <function name="gok_key_get_label_lengthpercell ()" link="gok-gok-key.html#gok-key-get-label-lengthpercell"/>
+    <function name="gok_key_get_label_heightpercell ()" link="gok-gok-key.html#gok-key-get-label-heightpercell"/>
+    <function name="gok_key_calculate_font_size ()" link="gok-gok-key.html#gok-key-calculate-font-size"/>
+    <function name="gok_key_set_font_size ()" link="gok-gok-key.html#gok-key-set-font-size"/>
+    <function name="gok_key_set_button_name ()" link="gok-gok-key.html#gok-key-set-button-name"/>
+    <function name="gok_key_set_button_label ()" link="gok-gok-key.html#gok-key-set-button-label"/>
+    <function name="gok_key_get_label ()" link="gok-gok-key.html#gok-key-get-label"/>
+    <function name="gok_keylabel_new ()" link="gok-gok-key.html#gok-keylabel-new"/>
+    <function name="gok_keylabel_delete ()" link="gok-gok-key.html#gok-keylabel-delete"/>
+    <function name="gok_key_set_cells ()" link="gok-gok-key.html#gok-key-set-cells"/>
+    <function name="gok_key_duplicate ()" link="gok-gok-key.html#gok-key-duplicate"/>
+    <function name="enum KeyboardLayouts" link="gok-gok-keyboard.html#KeyboardLayouts"/>
+    <function name="enum KeyboardTypes" link="gok-gok-keyboard.html#KeyboardTypes"/>
+    <function name="MAX_KEYBOARD_NAME" link="gok-gok-keyboard.html#MAX-KEYBOARD-NAME:CAPS"/>
+    <function name="gok_keyboard_new ()" link="gok-gok-keyboard.html#gok-keyboard-new"/>
+    <function name="gok_keyboard_read ()" link="gok-gok-keyboard.html#gok-keyboard-read"/>
+    <function name="gok_keyboard_delete ()" link="gok-gok-keyboard.html#gok-keyboard-delete"/>
+    <function name="gok_keyboard_delete_key ()" link="gok-gok-keyboard.html#gok-keyboard-delete-key"/>
+    <function name="gok_keyboard_count_rows_columns ()" link="gok-gok-keyboard.html#gok-keyboard-count-rows-columns"/>
+    <function name="gok_keyboard_get_number_rows ()" link="gok-gok-keyboard.html#gok-keyboard-get-number-rows"/>
+    <function name="gok_keyboard_get_number_columns ()" link="gok-gok-keyboard.html#gok-keyboard-get-number-columns"/>
+    <function name="gok_keyboard_add_keys ()" link="gok-gok-keyboard.html#gok-keyboard-add-keys"/>
+    <function name="gok_keyboard_get_name ()" link="gok-gok-keyboard.html#gok-keyboard-get-name"/>
+    <function name="gok_keyboard_set_name ()" link="gok-gok-keyboard.html#gok-keyboard-set-name"/>
+    <function name="gok_keyboard_get_supports_wordcomplete ()" link="gok-gok-keyboard.html#gok-keyboard-get-supports-wordcomplete"/>
+    <function name="gok_keyboard_set_wordcomplete_keys_added ()" link="gok-gok-keyboard.html#gok-keyboard-set-wordcomplete-keys-added"/>
+    <function name="gok_keyboard_get_wordcomplete_keys_added ()" link="gok-gok-keyboard.html#gok-keyboard-get-wordcomplete-keys-added"/>
+    <function name="gok_keyboard_set_commandpredict_keys_added ()" link="gok-gok-keyboard.html#gok-keyboard-set-commandpredict-keys-added"/>
+    <function name="gok_keyboard_get_commandpredict_keys_added ()" link="gok-gok-keyboard.html#gok-keyboard-get-commandpredict-keys-added"/>
+    <function name="gok_keyboard_display ()" link="gok-gok-keyboard.html#gok-keyboard-display"/>
+    <function name="gok_keyboard_find_node ()" link="gok-gok-keyboard.html#gok-keyboard-find-node"/>
+    <function name="gok_keyboard_position_keys ()" link="gok-gok-keyboard.html#gok-keyboard-position-keys"/>
+    <function name="gok_keyboard_initialize ()" link="gok-gok-keyboard.html#gok-keyboard-initialize"/>
+    <function name="gok_key_delete ()" link="gok-gok-keyboard.html#gok-key-delete"/>
+    <function name="gok_key_new ()" link="gok-gok-keyboard.html#gok-key-new"/>
+    <function name="gok_keyboard_layout ()" link="gok-gok-keyboard.html#gok-keyboard-layout"/>
+    <function name="gok_keyboard_branch_gui ()" link="gok-gok-keyboard.html#gok-keyboard-branch-gui"/>
+    <function name="gok_keyboard_branch_gui_actions ()" link="gok-gok-keyboard.html#gok-keyboard-branch-gui-actions"/>
+    <function name="gok_keyboard_branch_edittext ()" link="gok-gok-keyboard.html#gok-keyboard-branch-edittext"/>
+    <function name="gok_chunker_chunk ()" link="gok-gok-keyboard.html#gok-chunker-chunk"/>
+    <function name="gok_chunker_initialize ()" link="gok-gok-keyboard.html#gok-chunker-initialize"/>
+    <function name="gok_chunker_chunk_rows_ttb ()" link="gok-gok-keyboard.html#gok-chunker-chunk-rows-ttb"/>
+    <function name="gok_chunker_chunk_rows_btt ()" link="gok-gok-keyboard.html#gok-chunker-chunk-rows-btt"/>
+    <function name="gok_chunker_chunk_cols_ltr ()" link="gok-gok-keyboard.html#gok-chunker-chunk-cols-ltr"/>
+    <function name="gok_chunker_chunk_cols_rtl ()" link="gok-gok-keyboard.html#gok-chunker-chunk-cols-rtl"/>
+    <function name="gok_chunker_chunk_recursive ()" link="gok-gok-keyboard.html#gok-chunker-chunk-recursive"/>
+    <function name="gok_chunker_find_center ()" link="gok-gok-keyboard.html#gok-chunker-find-center"/>
+    <function name="gok_keyboard_output_selectedkey ()" link="gok-gok-keyboard.html#gok-keyboard-output-selectedkey"/>
+    <function name="gok_keyboard_validate_dynamic_keys ()" link="gok-gok-keyboard.html#gok-keyboard-validate-dynamic-keys"/>
+    <function name="gok_keyboard_fill_row ()" link="gok-gok-keyboard.html#gok-keyboard-fill-row"/>
+    <function name="gok_keyboard_insert_array ()" link="gok-gok-keyboard.html#gok-keyboard-insert-array"/>
+    <function name="gok_keyboard_on_window_resize ()" link="gok-gok-keyboard.html#gok-keyboard-on-window-resize"/>
+    <function name="gok_keyboard_get_keywidth_for_window ()" link="gok-gok-keyboard.html#gok-keyboard-get-keywidth-for-window"/>
+    <function name="gok_keyboard_get_keyheight_for_window ()" link="gok-gok-keyboard.html#gok-keyboard-get-keyheight-for-window"/>
+    <function name="gok_keyboard_set_ignore_resize ()" link="gok-gok-keyboard.html#gok-keyboard-set-ignore-resize"/>
+    <function name="gok_keyboard_get_accessible ()" link="gok-gok-keyboard.html#gok-keyboard-get-accessible"/>
+    <function name="gok_keyboard_set_accessible ()" link="gok-gok-keyboard.html#gok-keyboard-set-accessible"/>
+    <function name="gok_keyboard_calculate_font_size ()" link="gok-gok-keyboard.html#gok-keyboard-calculate-font-size"/>
+    <function name="gok_keyboard_calculate_font_size_group ()" link="gok-gok-keyboard.html#gok-keyboard-calculate-font-size-group"/>
+    <function name="gok_keyboard_update_dynamic ()" link="gok-gok-keyboard.html#gok-keyboard-update-dynamic"/>
+    <function name="gok_keyboard_update_labels ()" link="gok-gok-keyboard.html#gok-keyboard-update-labels"/>
+    <function name="gok_keyslotter_on ()" link="gok-gok-keyslotter.html#gok-keyslotter-on"/>
+    <function name="gok_keyslotter_change_number_predictions ()" link="gok-gok-keyslotter.html#gok-keyslotter-change-number-predictions"/>
+    <function name="gok_keyslotter_add_prediction_keys ()" link="gok-gok-keyslotter.html#gok-keyslotter-add-prediction-keys"/>
+    <function name="gok_log_impl ()" link="gok-gok-log-priv.html#gok-log-impl"/>
+    <function name="gok_log_impl_v ()" link="gok-gok-log-priv.html#gok-log-impl-v"/>
+    <function name="gok_log_enter_impl ()" link="gok-gok-log-priv.html#gok-log-enter-impl"/>
+    <function name="gok_log_leave_impl ()" link="gok-gok-log-priv.html#gok-log-leave-impl"/>
+    <function name="gok_log_reader_free ()" link="gok-gok-log-reader.html#gok-log-reader-free"/>
+    <function name="gok_log_reader_create ()" link="gok-gok-log-reader.html#gok-log-reader-create"/>
+    <function name="gok_log_reader_get_next_command ()" link="gok-gok-log-reader.html#gok-log-reader-get-next-command"/>
+    <function name="gok_log()" link="gok-gok-log.html#gok-log"/>
+    <function name="gok_log_x()" link="gok-gok-log.html#gok-log-x"/>
+    <function name="gok_log_enter()" link="gok-gok-log.html#gok-log-enter"/>
+    <function name="gok_log_leave()" link="gok-gok-log.html#gok-log-leave"/>
+    <function name="MODIFIER_NORMAL" link="gok-gok-modifier.html#MODIFIER-NORMAL:CAPS"/>
+    <function name="enum ModifierStates" link="gok-gok-modifier.html#ModifierStates"/>
+    <function name="enum ModifierTypes" link="gok-gok-modifier.html#ModifierTypes"/>
+    <function name="gok_modifier_add ()" link="gok-gok-modifier.html#gok-modifier-add"/>
+    <function name="gok_modifier_set_pre ()" link="gok-gok-modifier.html#gok-modifier-set-pre"/>
+    <function name="gok_modifier_set_post ()" link="gok-gok-modifier.html#gok-modifier-set-post"/>
+    <function name="gok_modifier_set_type ()" link="gok-gok-modifier.html#gok-modifier-set-type"/>
+    <function name="gok_modifier_output_pre ()" link="gok-gok-modifier.html#gok-modifier-output-pre"/>
+    <function name="gok_modifier_output_post ()" link="gok-gok-modifier.html#gok-modifier-output-post"/>
+    <function name="gok_modifier_all_off ()" link="gok-gok-modifier.html#gok-modifier-all-off"/>
+    <function name="gok_modifier_get_state ()" link="gok-gok-modifier.html#gok-modifier-get-state"/>
+    <function name="gok_modifier_get_type ()" link="gok-gok-modifier.html#gok-modifier-get-type"/>
+    <function name="gok_modifier_get_normal ()" link="gok-gok-modifier.html#gok-modifier-get-normal"/>
+    <function name="gok_modifier_update_modifier_keys ()" link="gok-gok-modifier.html#gok-modifier-update-modifier-keys"/>
+    <function name="gok_output_delete_all ()" link="gok-gok-output.html#gok-output-delete-all"/>
+    <function name="gok_output_new ()" link="gok-gok-output.html#gok-output-new"/>
+    <function name="gok_output_new_from_xml ()" link="gok-gok-output.html#gok-output-new-from-xml"/>
+    <function name="gok_output_send_to_system ()" link="gok-gok-output.html#gok-output-send-to-system"/>
+    <function name="gok_page_accessmethod_initialize ()" link="gok-gok-page-accessmethod.html#gok-page-accessmethod-initialize"/>
+    <function name="gok_page_accessmethod_apply ()" link="gok-gok-page-accessmethod.html#gok-page-accessmethod-apply"/>
+    <function name="gok_page_accessmethod_apply_controls ()" link="gok-gok-page-accessmethod.html#gok-page-accessmethod-apply-controls"/>
+    <function name="gok_page_accessmethod_revert ()" link="gok-gok-page-accessmethod.html#gok-page-accessmethod-revert"/>
+    <function name="gok_page_accessmethod_backup ()" link="gok-gok-page-accessmethod.html#gok-page-accessmethod-backup"/>
+    <function name="gok_page_accessmethod_change_controls ()" link="gok-gok-page-accessmethod.html#gok-page-accessmethod-change-controls"/>
+    <function name="gok_page_accessmethod_draw_controls ()" link="gok-gok-page-accessmethod.html#gok-page-accessmethod-draw-controls"/>
+    <function name="gok_page_accessmethod_update_controls ()" link="gok-gok-page-accessmethod.html#gok-page-accessmethod-update-controls"/>
+    <function name="gok_page_accessmethod_get_displayname ()" link="gok-gok-page-accessmethod.html#gok-page-accessmethod-get-displayname"/>
+    <function name="gok_page_accessmethod_get_name ()" link="gok-gok-page-accessmethod.html#gok-page-accessmethod-get-name"/>
+    <function name="gok_page_actions_initialize ()" link="gok-gok-page-actions.html#gok-page-actions-initialize"/>
+    <function name="gok_page_actions_refresh ()" link="gok-gok-page-actions.html#gok-page-actions-refresh"/>
+    <function name="gok_page_actions_apply ()" link="gok-gok-page-actions.html#gok-page-actions-apply"/>
+    <function name="gok_page_actions_revert ()" link="gok-gok-page-actions.html#gok-page-actions-revert"/>
+    <function name="gok_page_actions_backup ()" link="gok-gok-page-actions.html#gok-page-actions-backup"/>
+    <function name="gok_page_actions_toggle_type_switch ()" link="gok-gok-page-actions.html#gok-page-actions-toggle-type-switch"/>
+    <function name="gok_page_actions_button_clicked_new ()" link="gok-gok-page-actions.html#gok-page-actions-button-clicked-new"/>
+    <function name="gok_page_actions_button_clicked_delete ()" link="gok-gok-page-actions.html#gok-page-actions-button-clicked-delete"/>
+    <function name="gok_page_actions_button_clicked_change_name ()" link="gok-gok-page-actions.html#gok-page-actions-button-clicked-change-name"/>
+    <function name="gok_page_actions_action_changed ()" link="gok-gok-page-actions.html#gok-page-actions-action-changed"/>
+    <function name="gok_page_actions_enable_switch_controls ()" link="gok-gok-page-actions.html#gok-page-actions-enable-switch-controls"/>
+    <function name="gok_page_actions_enable_radios_type ()" link="gok-gok-page-actions.html#gok-page-actions-enable-radios-type"/>
+    <function name="gok_page_actions_fill_combo_action_names ()" link="gok-gok-page-actions.html#gok-page-actions-fill-combo-action-names"/>
+    <function name="gok_page_actions_get_radio_number ()" link="gok-gok-page-actions.html#gok-page-actions-get-radio-number"/>
+    <function name="gok_page_actions_update_controls ()" link="gok-gok-page-actions.html#gok-page-actions-update-controls"/>
+    <function name="gok_page_actions_set_number ()" link="gok-gok-page-actions.html#gok-page-actions-set-number"/>
+    <function name="gok_page_actions_set_state ()" link="gok-gok-page-actions.html#gok-page-actions-set-state"/>
+    <function name="gok_page_actions_set_rate ()" link="gok-gok-page-actions.html#gok-page-actions-set-rate"/>
+    <function name="gok_page_feedbacks_initialize ()" link="gok-gok-page-feedbacks.html#gok-page-feedbacks-initialize"/>
+    <function name="gok_page_feedbacks_refresh ()" link="gok-gok-page-feedbacks.html#gok-page-feedbacks-refresh"/>
+    <function name="gok_page_feedbacks_apply ()" link="gok-gok-page-feedbacks.html#gok-page-feedbacks-apply"/>
+    <function name="gok_page_feedbacks_revert ()" link="gok-gok-page-feedbacks.html#gok-page-feedbacks-revert"/>
+    <function name="gok_page_feedbacks_backup ()" link="gok-gok-page-feedbacks.html#gok-page-feedbacks-backup"/>
+    <function name="gok_page_feedbacks_update_controls ()" link="gok-gok-page-feedbacks.html#gok-page-feedbacks-update-controls"/>
+    <function name="gok_page_feedbacks_button_clicked_change_name ()" link="gok-gok-page-feedbacks.html#gok-page-feedbacks-button-clicked-change-name"/>
+    <function name="gok_page_feedbacks_button_clicked_new ()" link="gok-gok-page-feedbacks.html#gok-page-feedbacks-button-clicked-new"/>
+    <function name="gok_page_feedbacks_fill_combo_feedback_names ()" link="gok-gok-page-feedbacks.html#gok-page-feedbacks-fill-combo-feedback-names"/>
+    <function name="gok_page_feedbacks_button_clicked_delete ()" link="gok-gok-page-feedbacks.html#gok-page-feedbacks-button-clicked-delete"/>
+    <function name="gok_page_feedbacks_check_keyflashing_clicked ()" link="gok-gok-page-feedbacks.html#gok-page-feedbacks-check-keyflashing-clicked"/>
+    <function name="gok_page_feedbacks_spin_keyflashing_changed ()" link="gok-gok-page-feedbacks.html#gok-page-feedbacks-spin-keyflashing-changed"/>
+    <function name="gok_page_feedbacks_check_sound_clicked ()" link="gok-gok-page-feedbacks.html#gok-page-feedbacks-check-sound-clicked"/>
+    <function name="gok_page_feedbacks_entry_soundname_changed ()" link="gok-gok-page-feedbacks.html#gok-page-feedbacks-entry-soundname-changed"/>
+    <function name="gok_settings_page_keysizespace_initialize ()" link="gok-gok-page-keysizespace.html#gok-settings-page-keysizespace-initialize"/>
+    <function name="gok_settings_page_keysizespace_refresh ()" link="gok-gok-page-keysizespace.html#gok-settings-page-keysizespace-refresh"/>
+    <function name="gok_settings_page_keysizespace_ok ()" link="gok-gok-page-keysizespace.html#gok-settings-page-keysizespace-ok"/>
+    <function name="gok_settings_page_keysizespace_revert ()" link="gok-gok-page-keysizespace.html#gok-settings-page-keysizespace-revert"/>
+    <function name="gok_settings_page_keysizespace_backup ()" link="gok-gok-page-keysizespace.html#gok-settings-page-keysizespace-backup"/>
+    <function name="gok_settings_page_keysizespace_display_keysizespacing ()" link="gok-gok-page-keysizespace.html#gok-settings-page-keysizespace-display-keysizespacing"/>
+    <function name="gok_settings_page_keysizespace_set_label_name ()" link="gok-gok-page-keysizespace.html#gok-settings-page-keysizespace-set-label-name"/>
+    <function name="gok_page_wordcomplete_initialize ()" link="gok-gok-page-wordcomplete.html#gok-page-wordcomplete-initialize"/>
+    <function name="gok_page_wordcomplete_refresh ()" link="gok-gok-page-wordcomplete.html#gok-page-wordcomplete-refresh"/>
+    <function name="gok_page_wordcomplete_apply ()" link="gok-gok-page-wordcomplete.html#gok-page-wordcomplete-apply"/>
+    <function name="gok_page_wordcomplete_revert ()" link="gok-gok-page-wordcomplete.html#gok-page-wordcomplete-revert"/>
+    <function name="gok_page_wordcomplete_backup ()" link="gok-gok-page-wordcomplete.html#gok-page-wordcomplete-backup"/>
+    <function name="GOK_PREDICTOR_MAX_VERTICES" link="gok-gok-predictor.html#GOK-PREDICTOR-MAX-VERTICES:CAPS"/>
+    <function name="gok_predictor_open ()" link="gok-gok-predictor.html#gok-predictor-open"/>
+    <function name="gok_predictor_close ()" link="gok-gok-predictor.html#gok-predictor-close"/>
+    <function name="gok_predictor_add_key ()" link="gok-gok-predictor.html#gok-predictor-add-key"/>
+    <function name="gok_predictor_get ()" link="gok-gok-predictor.html#gok-predictor-get"/>
+    <function name="gok_predictor_remove_keyboard ()" link="gok-gok-predictor.html#gok-predictor-remove-keyboard"/>
+    <function name="gok_predictor_remove_key ()" link="gok-gok-predictor.html#gok-predictor-remove-key"/>
+    <function name="gok_predictor_on ()" link="gok-gok-predictor.html#gok-predictor-on"/>
+    <function name="gok_predictor_change_number_predictions ()" link="gok-gok-predictor.html#gok-predictor-change-number-predictions"/>
+    <function name="gok_predictor_add_prediction_keys ()" link="gok-gok-predictor.html#gok-predictor-add-prediction-keys"/>
+    <function name="gok_predictor_predict ()" link="gok-gok-predictor.html#gok-predictor-predict"/>
+    <function name="gok_predictor_get_real ()" link="gok-gok-predictor.html#gok-predictor-get-real"/>
+    <function name="gok_predictor_log ()" link="gok-gok-predictor.html#gok-predictor-log"/>
+    <function name="gok_main_get_command_predictor ()" link="gok-gok-predictor.html#gok-main-get-command-predictor"/>
+    <function name="enum CallIds" link="gok-gok-scanner.html#CallIds"/>
+    <function name="enum RateType" link="gok-gok-scanner.html#RateType"/>
+    <function name="MAX_ACCESS_METHOD_NAME" link="gok-gok-scanner.html#MAX-ACCESS-METHOD-NAME:CAPS"/>
+    <function name="MAX_DESCRIPTION_TEXT" link="gok-gok-scanner.html#MAX-DESCRIPTION-TEXT:CAPS"/>
+    <function name="MAX_RATE_NAME" link="gok-gok-scanner.html#MAX-RATE-NAME:CAPS"/>
+    <function name="MAX_DISPLAY_RATE_NAME" link="gok-gok-scanner.html#MAX-DISPLAY-RATE-NAME:CAPS"/>
+    <function name="COMPARE_NO" link="gok-gok-scanner.html#COMPARE-NO:CAPS"/>
+    <function name="COMPARE_EQUAL" link="gok-gok-scanner.html#COMPARE-EQUAL:CAPS"/>
+    <function name="COMPARE_LESSTHAN" link="gok-gok-scanner.html#COMPARE-LESSTHAN:CAPS"/>
+    <function name="COMPARE_GREATERTHAN" link="gok-gok-scanner.html#COMPARE-GREATERTHAN:CAPS"/>
+    <function name="COMPARE_EQUALORLESSTHAN" link="gok-gok-scanner.html#COMPARE-EQUALORLESSTHAN:CAPS"/>
+    <function name="COMPARE_EQUALORGREATERTHAN" link="gok-gok-scanner.html#COMPARE-EQUALORGREATERTHAN:CAPS"/>
+    <function name="gok_scanner_initialize ()" link="gok-gok-scanner.html#gok-scanner-initialize"/>
+    <function name="gok_scanner_close ()" link="gok-gok-scanner.html#gok-scanner-close"/>
+    <function name="gok_scanner_stop ()" link="gok-gok-scanner.html#gok-scanner-stop"/>
+    <function name="gok_scanner_start ()" link="gok-gok-scanner.html#gok-scanner-start"/>
+    <function name="gok_scanner_change_method ()" link="gok-gok-scanner.html#gok-scanner-change-method"/>
+    <function name="gok_scanner_create_access_method ()" link="gok-gok-scanner.html#gok-scanner-create-access-method"/>
+    <function name="gok_scanner_reset_access_method ()" link="gok-gok-scanner.html#gok-scanner-reset-access-method"/>
+    <function name="gok_scanner_change_state ()" link="gok-gok-scanner.html#gok-scanner-change-state"/>
+    <function name="gok_scanner_next_state ()" link="gok-gok-scanner.html#gok-scanner-next-state"/>
+    <function name="gok_scanner_set_handlers_null ()" link="gok-gok-scanner.html#gok-scanner-set-handlers-null"/>
+    <function name="gok_scanner_read_access_method ()" link="gok-gok-scanner.html#gok-scanner-read-access-method"/>
+    <function name="gok_scanner_construct_state ()" link="gok-gok-scanner.html#gok-scanner-construct-state"/>
+    <function name="gok_scanner_construct_rate ()" link="gok-gok-scanner.html#gok-scanner-construct-rate"/>
+    <function name="gok_scanner_construct_handler ()" link="gok-gok-scanner.html#gok-scanner-construct-handler"/>
+    <function name="gok_scanner_read_rates ()" link="gok-gok-scanner.html#gok-scanner-read-rates"/>
+    <function name="gok_scanner_read_description ()" link="gok-gok-scanner.html#gok-scanner-read-description"/>
+    <function name="gok_scanner_read_operation ()" link="gok-gok-scanner.html#gok-scanner-read-operation"/>
+    <function name="gok_scanner_read_ui_loop ()" link="gok-gok-scanner.html#gok-scanner-read-ui-loop"/>
+    <function name="gok_scanner_read_feedback ()" link="gok-gok-scanner.html#gok-scanner-read-feedback"/>
+    <function name="gok_scanner_read_options ()" link="gok-gok-scanner.html#gok-scanner-read-options"/>
+    <function name="gok_scanner_update_rates ()" link="gok-gok-scanner.html#gok-scanner-update-rates"/>
+    <function name="gok_scanner_get_current_access_method ()" link="gok-gok-scanner.html#gok-scanner-get-current-access-method"/>
+    <function name="gok_scanner_get_first_access_method ()" link="gok-gok-scanner.html#gok-scanner-get-first-access-method"/>
+    <function name="gok_scanner_get_current_state ()" link="gok-gok-scanner.html#gok-scanner-get-current-state"/>
+    <function name="gok_scanner_get_pointer_location ()" link="gok-gok-scanner.html#gok-scanner-get-pointer-location"/>
+    <function name="gok_scanner_timer_set ()" link="gok-gok-scanner.html#gok-scanner-timer-set"/>
+    <function name="gok_scanner_timer_stop ()" link="gok-gok-scanner.html#gok-scanner-timer-stop"/>
+    <function name="gok_scanner_make_type_from_string ()" link="gok-gok-scanner.html#gok-scanner-make-type-from-string"/>
+    <function name="gok_scanner_timer_set_dwell_rate ()" link="gok-gok-scanner.html#gok-scanner-timer-set-dwell-rate"/>
+    <function name="gok_scanner_timer_start_dwell ()" link="gok-gok-scanner.html#gok-scanner-timer-start-dwell"/>
+    <function name="gok_scanner_timer_stop_dwell ()" link="gok-gok-scanner.html#gok-scanner-timer-stop-dwell"/>
+    <function name="gok_scanner_timer_on_dwell ()" link="gok-gok-scanner.html#gok-scanner-timer-on-dwell"/>
+    <function name="gok_scanner_left_button_down ()" link="gok-gok-scanner.html#gok-scanner-left-button-down"/>
+    <function name="gok_scanner_left_button_up ()" link="gok-gok-scanner.html#gok-scanner-left-button-up"/>
+    <function name="gok_scanner_right_button_down ()" link="gok-gok-scanner.html#gok-scanner-right-button-down"/>
+    <function name="gok_scanner_right_button_up ()" link="gok-gok-scanner.html#gok-scanner-right-button-up"/>
+    <function name="gok_scanner_middle_button_down ()" link="gok-gok-scanner.html#gok-scanner-middle-button-down"/>
+    <function name="gok_scanner_middle_button_up ()" link="gok-gok-scanner.html#gok-scanner-middle-button-up"/>
+    <function name="gok_scanner_mouse_movement ()" link="gok-gok-scanner.html#gok-scanner-mouse-movement"/>
+    <function name="gok_scanner_on_timer1 ()" link="gok-gok-scanner.html#gok-scanner-on-timer1"/>
+    <function name="gok_scanner_on_timer2 ()" link="gok-gok-scanner.html#gok-scanner-on-timer2"/>
+    <function name="gok_scanner_on_timer3 ()" link="gok-gok-scanner.html#gok-scanner-on-timer3"/>
+    <function name="gok_scanner_on_timer4 ()" link="gok-gok-scanner.html#gok-scanner-on-timer4"/>
+    <function name="gok_scanner_on_timer5 ()" link="gok-gok-scanner.html#gok-scanner-on-timer5"/>
+    <function name="gok_scanner_on_key_enter ()" link="gok-gok-scanner.html#gok-scanner-on-key-enter"/>
+    <function name="gok_scanner_on_key_leave ()" link="gok-gok-scanner.html#gok-scanner-on-key-leave"/>
+    <function name="gok_scanner_on_switch1_down ()" link="gok-gok-scanner.html#gok-scanner-on-switch1-down"/>
+    <function name="gok_scanner_on_switch1_up ()" link="gok-gok-scanner.html#gok-scanner-on-switch1-up"/>
+    <function name="gok_scanner_on_switch2_down ()" link="gok-gok-scanner.html#gok-scanner-on-switch2-down"/>
+    <function name="gok_scanner_on_switch2_up ()" link="gok-gok-scanner.html#gok-scanner-on-switch2-up"/>
+    <function name="gok_scanner_on_switch3_down ()" link="gok-gok-scanner.html#gok-scanner-on-switch3-down"/>
+    <function name="gok_scanner_on_switch3_up ()" link="gok-gok-scanner.html#gok-scanner-on-switch3-up"/>
+    <function name="gok_scanner_on_switch4_down ()" link="gok-gok-scanner.html#gok-scanner-on-switch4-down"/>
+    <function name="gok_scanner_on_switch4_up ()" link="gok-gok-scanner.html#gok-scanner-on-switch4-up"/>
+    <function name="gok_scanner_on_switch5_down ()" link="gok-gok-scanner.html#gok-scanner-on-switch5-down"/>
+    <function name="gok_scanner_on_switch5_up ()" link="gok-gok-scanner.html#gok-scanner-on-switch5-up"/>
+    <function name="gok_settingsdialog_open ()" link="gok-gok-settings-dialog.html#gok-settingsdialog-open"/>
+    <function name="gok_settingsdialog_close ()" link="gok-gok-settings-dialog.html#gok-settingsdialog-close"/>
+    <function name="gok_settingsdialog_show ()" link="gok-gok-settings-dialog.html#gok-settingsdialog-show"/>
+    <function name="gok_settingsdialog_hide ()" link="gok-gok-settings-dialog.html#gok-settingsdialog-hide"/>
+    <function name="on_button_try ()" link="gok-gok-settings-dialog.html#on-button-try"/>
+    <function name="on_button_revert ()" link="gok-gok-settings-dialog.html#on-button-revert"/>
+    <function name="on_button_ok ()" link="gok-gok-settings-dialog.html#on-button-ok"/>
+    <function name="on_button_cancel ()" link="gok-gok-settings-dialog.html#on-button-cancel"/>
+    <function name="on_button_help ()" link="gok-gok-settings-dialog.html#on-button-help"/>
+    <function name="gok_settingsdialog_refresh ()" link="gok-gok-settings-dialog.html#gok-settingsdialog-refresh"/>
+    <function name="gok_settingsdialog_backup_settings ()" link="gok-gok-settings-dialog.html#gok-settingsdialog-backup-settings"/>
+    <function name="gok_settingsdialog_get_window ()" link="gok-gok-settings-dialog.html#gok-settingsdialog-get-window"/>
+    <function name="gok_sound_initialize ()" link="gok-gok-sound.html#gok-sound-initialize"/>
+    <function name="gok_sound_shutdown ()" link="gok-gok-sound.html#gok-sound-shutdown"/>
+    <function name="gok_sound_play ()" link="gok-gok-sound.html#gok-sound-play"/>
+    <function name="ListChangeListenerCB ()" link="gok-gok-spy-priv.html#ListChangeListenerCB"/>
+    <function name="MouseButtonListenerCB ()" link="gok-gok-spy-priv.html#MouseButtonListenerCB"/>
+    <function name="ListChangeListener" link="gok-gok-spy-priv.html#ListChangeListener"/>
+    <function name="MouseButtonListener" link="gok-gok-spy-priv.html#MouseButtonListener"/>
+    <function name="gok_spy_open ()" link="gok-gok-spy.html#gok-spy-open"/>
+    <function name="gok_spy_close ()" link="gok-gok-spy.html#gok-spy-close"/>
+    <function name="gok_spy_register_appchangelistener ()" link="gok-gok-spy.html#gok-spy-register-appchangelistener"/>
+    <function name="gok_spy_deregister_appchangelistener ()" link="gok-gok-spy.html#gok-spy-deregister-appchangelistener"/>
+    <function name="gok_spy_register_windowchangelistener ()" link="gok-gok-spy.html#gok-spy-register-windowchangelistener"/>
+    <function name="gok_spy_deregister_windowchangelistener ()" link="gok-gok-spy.html#gok-spy-deregister-windowchangelistener"/>
+    <function name="gok_spy_register_mousebuttonlistener ()" link="gok-gok-spy.html#gok-spy-register-mousebuttonlistener"/>
+    <function name="gok_spy_deregister_mousebuttonlistener ()" link="gok-gok-spy.html#gok-spy-deregister-mousebuttonlistener"/>
+    <function name="gok_spy_get_list ()" link="gok-gok-spy.html#gok-spy-get-list"/>
+    <function name="gok_spy_refresh ()" link="gok-gok-spy.html#gok-spy-refresh"/>
+    <function name="gok_spy_free ()" link="gok-gok-spy.html#gok-spy-free"/>
+    <function name="gok_spy_has_child ()" link="gok-gok-spy.html#gok-spy-has-child"/>
+    <function name="gok_wordcomplete_open ()" link="gok-gok-word-complete.html#gok-wordcomplete-open"/>
+    <function name="gok_wordcomplete_close ()" link="gok-gok-word-complete.html#gok-wordcomplete-close"/>
+    <function name="gok_wordcomplete_predict ()" link="gok-gok-word-complete.html#gok-wordcomplete-predict"/>
+    <function name="gok_wordcomplete_add_new_word ()" link="gok-gok-word-complete.html#gok-wordcomplete-add-new-word"/>
+    <function name="_()" link="gok-gok.html#gettext-macro"/>
+    <function name="JOYSTICK_MAXB" link="gok-gtkjoyswitch.html#JOYSTICK-MAXB:CAPS"/>
+    <function name="joystick_callback ()" link="gok-gtkjoyswitch.html#joystick-callback"/>
+    <function name="gok_main_create_window ()" link="gok-main.html#gok-main-create-window"/>
+    <function name="gok_main_display_scan ()" link="gok-main.html#gok-main-display-scan"/>
+    <function name="gok_main_display_scan_previous ()" link="gok-main.html#gok-main-display-scan-previous"/>
+    <function name="gok_main_display_scan_previous_premade ()" link="gok-main.html#gok-main-display-scan-previous-premade"/>
+    <function name="gok_main_display_scan_reset ()" link="gok-main.html#gok-main-display-scan-reset"/>
+    <function name="gok_main_ds ()" link="gok-main.html#gok-main-ds"/>
+    <function name="gok_main_get_first_keyboard ()" link="gok-main.html#gok-main-get-first-keyboard"/>
+    <function name="gok_main_set_first_keyboard ()" link="gok-main.html#gok-main-set-first-keyboard"/>
+    <function name="gok_main_get_current_keyboard ()" link="gok-main.html#gok-main-get-current-keyboard"/>
+    <function name="gok_main_get_main_window ()" link="gok-main.html#gok-main-get-main-window"/>
+    <function name="gok_main_get_foreground_accessible ()" link="gok-main.html#gok-main-get-foreground-accessible"/>
+    <function name="gok_main_resize_window ()" link="gok-main.html#gok-main-resize-window"/>
+    <function name="gok_main_store_window_center ()" link="gok-main.html#gok-main-store-window-center"/>
+    <function name="gok_main_get_foreground_window_accessible ()" link="gok-main.html#gok-main-get-foreground-window-accessible"/>
+    <function name="gok_main_read_keyboards ()" link="gok-main.html#gok-main-read-keyboards"/>
+    <function name="gok_main_read_keyboards_from_dir ()" link="gok-main.html#gok-main-read-keyboards-from-dir"/>
+    <function name="gok_main_on_window_position_change ()" link="gok-main.html#gok-main-on-window-position-change"/>
+    <function name="gok_main_get_our_window_size ()" link="gok-main.html#gok-main-get-our-window-size"/>
+    <function name="gok_main_close ()" link="gok-main.html#gok-main-close"/>
+    <function name="gok_main_display_error ()" link="gok-main.html#gok-main-display-error"/>
+    <function name="gok_main_display_gconf_error ()" link="gok-main.html#gok-main-display-gconf-error"/>
+    <function name="gok_main_app_change_listener ()" link="gok-main.html#gok-main-app-change-listener"/>
+    <function name="gok_main_window_change_listener ()" link="gok-main.html#gok-main-window-change-listener"/>
+    <function name="initSwitchApi ()" link="gok-switchapi.html#initSwitchApi"/>
+    <function name="closeSwitchApi ()" link="gok-switchapi.html#closeSwitchApi"/>
+    <function name="registerSwitchDownListener ()" link="gok-switchapi.html#registerSwitchDownListener"/>
+    <function name="registerSwitchUpListener ()" link="gok-switchapi.html#registerSwitchUpListener"/>
+    <function name="deregisterSwitchDownListener ()" link="gok-switchapi.html#deregisterSwitchDownListener"/>
+    <function name="deregisterSwitchUpListener ()" link="gok-switchapi.html#deregisterSwitchUpListener"/>
+    <function name="MAXWORDLENGTH" link="gok-word-complete.html#MAXWORDLENGTH:CAPS"/>
+    <function name="MAXPREDICTIONS" link="gok-word-complete.html#MAXPREDICTIONS:CAPS"/>
+    <function name="STATE_TEMPORARY" link="gok-word-complete.html#STATE-TEMPORARY:CAPS"/>
+    <function name="STATE_PERMANENT" link="gok-word-complete.html#STATE-PERMANENT:CAPS"/>
+    <function name="PRIORITY_NEWWORD" link="gok-word-complete.html#PRIORITY-NEWWORD:CAPS"/>
+  </functions>
+</book>

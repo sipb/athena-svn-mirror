@@ -1,0 +1,60 @@
+<refentry id="gok-command-common">
+<refmeta>
+<refentrytitle>command-common</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>GOK Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>command-common</refname><refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+
+<synopsis>
+
+
+
+#define     <link linkend="STORAGE-TYPE-COMMAND-VERTEX:CAPS">STORAGE_TYPE_COMMAND_VERTEX</link>
+#define     <link linkend="STORAGE-TYPE-COMMAND-EDGE:CAPS">STORAGE_TYPE_COMMAND_EDGE</link>
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="STORAGE-TYPE-COMMAND-VERTEX:CAPS"/>STORAGE_TYPE_COMMAND_VERTEX</title>
+<indexterm><primary>STORAGE_TYPE_COMMAND_VERTEX</primary></indexterm><programlisting>#define STORAGE_TYPE_COMMAND_VERTEX (short)1
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="STORAGE-TYPE-COMMAND-EDGE:CAPS"/>STORAGE_TYPE_COMMAND_EDGE</title>
+<indexterm><primary>STORAGE_TYPE_COMMAND_EDGE</primary></indexterm><programlisting>#define STORAGE_TYPE_COMMAND_EDGE (short)2
+</programlisting>
+<para>
+
+</para></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

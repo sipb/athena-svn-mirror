@@ -24,7 +24,9 @@
 #endif
 
 #include "gok-repeat.h"
+#include "gok-data.h"
 #include "gok-log.h"
+#include "main.h"
 
 #define MIN_REPEAT_RATE 20
 
@@ -35,7 +37,7 @@ static gboolean gokrepeatstarted = FALSE;
 static GokKey *armed_key = NULL;
 
 /* private prototypes */
-gboolean gok_repeat_on_timer (gpointer);
+static gboolean gok_repeat_on_timer (gpointer);
 
 
 /**
@@ -189,11 +191,12 @@ gok_repeat_key(GokKey* pKey)
 }
 
 /* private timer handler */
-gboolean gok_repeat_on_timer (gpointer data)
+static gboolean 
+gok_repeat_on_timer (gpointer data)
 {
 	gok_log_enter();
 	/* TODO: this key might no longer exist! need to clone...*/
-	gok_keyboard_output_key ((GokKey*)data);
+	gok_keyboard_output_key (gok_main_get_current_keyboard (), (GokKey*)data);
 	
 	gok_log_leave();
 	return TRUE;

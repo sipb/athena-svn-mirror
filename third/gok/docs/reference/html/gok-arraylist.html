@@ -1,0 +1,105 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>arraylist</title><meta name="generator" content="DocBook XSL Stylesheets V1.64.1"><link rel="home" href="index.html" title="[Insert name here] Reference Manual"><link rel="up" href="ch01.html" title="[Insert title here]"><link rel="previous" href="ch01.html" title="[Insert title here]"><link rel="next" href="gok-callbacks.html" title="callbacks"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><link rel="stylesheet" href="style.css" type="text/css"><link rel="chapter" href="ch01.html" title="[Insert title here]"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="ch01.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">[Insert name here] Reference Manual</th><td><a accesskey="n" href="gok-callbacks.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="gok-arraylist"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><table width="100%"><tr><td valign="top"><h2><span class="refentrytitle">arraylist</span></h2><p>arraylist &#8212; </p></td><td valign="top" align="right"></td></tr></table></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+
+
+
+#define     <a href="gok-arraylist.html#Boolean">Boolean</a>
+#define     <a href="gok-arraylist.html#Object">Object</a>
+void        <a href="gok-arraylist.html#arraylist-free">arraylist_free</a>                  (const Arraylist list);
+Arraylist   <a href="gok-arraylist.html#arraylist-create">arraylist_create</a>                (const <a href="gok-arraylist.html#Boolean">Boolean</a> (*equals) (const Object object_1, const Object object_2));
+<a href="gok-arraylist.html#Boolean">Boolean</a>     <a href="gok-arraylist.html#arraylist-add">arraylist_add</a>                   (const Arraylist list,
+                                             <a href="gok-arraylist.html#Object">Object</a> object);
+<a href="gok-arraylist.html#Boolean">Boolean</a>     <a href="gok-arraylist.html#arraylist-remove">arraylist_remove</a>                (const Arraylist list,
+                                             const <a href="gok-arraylist.html#Object">Object</a> object);
+<a href="gok-arraylist.html#Boolean">Boolean</a>     <a href="gok-arraylist.html#arraylist-contains">arraylist_contains</a>              (const Arraylist list,
+                                             const <a href="gok-arraylist.html#Object">Object</a> object);
+int         <a href="gok-arraylist.html#arraylist-index-of">arraylist_index_of</a>              (const Arraylist list,
+                                             const <a href="gok-arraylist.html#Object">Object</a> object);
+<a href="gok-arraylist.html#Boolean">Boolean</a>     <a href="gok-arraylist.html#arraylist-is-empty">arraylist_is_empty</a>              (const Arraylist list);
+int         <a href="gok-arraylist.html#arraylist-size">arraylist_size</a>                  (const Arraylist list);
+<a href="gok-arraylist.html#Object">Object</a>      <a href="gok-arraylist.html#arraylist-get">arraylist_get</a>                   (const Arraylist list,
+                                             const int index);
+void        <a href="gok-arraylist.html#arraylist-clear">arraylist_clear</a>                 (const Arraylist list);
+void        <a href="gok-arraylist.html#arraylist-sort">arraylist_sort</a>                  (const Arraylist list,
+                                             const int (*compare) (const Object object_1, const Object object_2));
+</pre></div><div class="refsect1" lang="en"><a name="id2504975"></a><h2>Description</h2><p>
+
+</p></div><div class="refsect1" lang="en"><a name="id2504985"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2504990"></a><h3><a name="Boolean"></a>Boolean</h3><a class="indexterm" name="id2504998"></a><pre class="programlisting">#define     Boolean</pre><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2505012"></a><h3><a name="Object"></a>Object</h3><a class="indexterm" name="id2505020"></a><pre class="programlisting">#define     Object</pre><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2505035"></a><h3><a name="arraylist-free"></a>arraylist_free ()</h3><a class="indexterm" name="id2505045"></a><pre class="programlisting">void        arraylist_free                  (const Arraylist list);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>list</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2505089"></a><h3><a name="arraylist-create"></a>arraylist_create ()</h3><a class="indexterm" name="id2505102"></a><pre class="programlisting">Arraylist   arraylist_create                (const <a href="gok-arraylist.html#Boolean">Boolean</a> (*equals) (const Object object_1, const Object object_2));</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>equals</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2505162"></a><h3><a name="arraylist-add"></a>arraylist_add ()</h3><a class="indexterm" name="id2505173"></a><pre class="programlisting"><a href="gok-arraylist.html#Boolean">Boolean</a>     arraylist_add                   (const Arraylist list,
+                                             <a href="gok-arraylist.html#Object">Object</a> object);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>list</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>object</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2505250"></a><h3><a name="arraylist-remove"></a>arraylist_remove ()</h3><a class="indexterm" name="id2505260"></a><pre class="programlisting"><a href="gok-arraylist.html#Boolean">Boolean</a>     arraylist_remove                (const Arraylist list,
+                                             const <a href="gok-arraylist.html#Object">Object</a> object);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>list</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>object</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2505338"></a><h3><a name="arraylist-contains"></a>arraylist_contains ()</h3><a class="indexterm" name="id2505349"></a><pre class="programlisting"><a href="gok-arraylist.html#Boolean">Boolean</a>     arraylist_contains              (const Arraylist list,
+                                             const <a href="gok-arraylist.html#Object">Object</a> object);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>list</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>object</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2505426"></a><h3><a name="arraylist-index-of"></a>arraylist_index_of ()</h3><a class="indexterm" name="id2505437"></a><pre class="programlisting">int         arraylist_index_of              (const Arraylist list,
+                                             const <a href="gok-arraylist.html#Object">Object</a> object);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>list</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>object</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2505514"></a><h3><a name="arraylist-is-empty"></a>arraylist_is_empty ()</h3><a class="indexterm" name="id2505525"></a><pre class="programlisting"><a href="gok-arraylist.html#Boolean">Boolean</a>     arraylist_is_empty              (const Arraylist list);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>list</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2505580"></a><h3><a name="arraylist-size"></a>arraylist_size ()</h3><a class="indexterm" name="id2505591"></a><pre class="programlisting">int         arraylist_size                  (const Arraylist list);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>list</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2505647"></a><h3><a name="arraylist-get"></a>arraylist_get ()</h3><a class="indexterm" name="id2505658"></a><pre class="programlisting"><a href="gok-arraylist.html#Object">Object</a>      arraylist_get                   (const Arraylist list,
+                                             const int index);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>list</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>index</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2505734"></a><h3><a name="arraylist-clear"></a>arraylist_clear ()</h3><a class="indexterm" name="id2505745"></a><pre class="programlisting">void        arraylist_clear                 (const Arraylist list);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>list</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2505791"></a><h3><a name="arraylist-sort"></a>arraylist_sort ()</h3><a class="indexterm" name="id2505801"></a><pre class="programlisting">void        arraylist_sort                  (const Arraylist list,
+                                             const int (*compare) (const Object object_1, const Object object_2));</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>list</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>compare</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="ch01.html"><b>&lt;&lt; [Insert title here]</b></a></td><td align="right"><a accesskey="n" href="gok-callbacks.html"><b>callbacks &gt;&gt;</b></a></td></tr></table></body></html>

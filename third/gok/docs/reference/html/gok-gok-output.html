@@ -1,0 +1,41 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>gok-output</title><meta name="generator" content="DocBook XSL Stylesheets V1.64.1"><link rel="home" href="index.html" title="[Insert name here] Reference Manual"><link rel="up" href="ch01.html" title="[Insert title here]"><link rel="previous" href="gok-gok-modifier.html" title="gok-modifier"><link rel="next" href="gok-gok-page-accessmethod.html" title="gok-page-accessmethod"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><link rel="stylesheet" href="style.css" type="text/css"><link rel="chapter" href="ch01.html" title="[Insert title here]"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="gok-gok-modifier.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">[Insert name here] Reference Manual</th><td><a accesskey="n" href="gok-gok-page-accessmethod.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="gok-gok-output"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><table width="100%"><tr><td valign="top"><h2><span class="refentrytitle">gok-output</span></h2><p>gok-output &#8212; </p></td><td valign="top" align="right"></td></tr></table></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+
+
+
+void        <a href="gok-gok-output.html#gok-output-delete-all">gok_output_delete_all</a>           (GokOutput *pOutput);
+GokOutput*  <a href="gok-gok-output.html#gok-output-new">gok_output_new</a>                  (gint Type,
+                                             gchar *Name,
+                                             AccessibleKeySynthType Flag);
+GokOutput*  <a href="gok-gok-output.html#gok-output-new-from-xml">gok_output_new_from_xml</a>         (xmlNode *pNode);
+void        <a href="gok-gok-output.html#gok-output-send-to-system">gok_output_send_to_system</a>       (GokOutput *pOutput,
+                                             gboolean bNoWordCompletion);
+</pre></div><div class="refsect1" lang="en"><a name="id2593200"></a><h2>Description</h2><p>
+
+</p></div><div class="refsect1" lang="en"><a name="id2593209"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2593215"></a><h3><a name="gok-output-delete-all"></a>gok_output_delete_all ()</h3><a class="indexterm" name="id2593227"></a><pre class="programlisting">void        gok_output_delete_all           (GokOutput *pOutput);</pre><p>
+Deletes the given GokOutput and other GokOutputs that are in its list.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>pOutput</tt></i> :</span></td><td> Pointer to the GokOutput that you want deleted.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2593278"></a><h3><a name="gok-output-new"></a>gok_output_new ()</h3><a class="indexterm" name="id2593289"></a><pre class="programlisting">GokOutput*  gok_output_new                  (gint Type,
+                                             gchar *Name,
+                                             AccessibleKeySynthType Flag);</pre><p>
+Creates a new GokOutput and initializes it to the given values.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>Type</tt></i> :</span></td><td> Type of output (e.g. keysym or keycode).
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>Name</tt></i> :</span></td><td> Keycode, Keysym, or UTF-8 string.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>Flag</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> A pointer to the new GokOutput, NULL if not created. 
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2593395"></a><h3><a name="gok-output-new-from-xml"></a>gok_output_new_from_xml ()</h3><a class="indexterm" name="id2593407"></a><pre class="programlisting">GokOutput*  gok_output_new_from_xml         (xmlNode *pNode);</pre><p>
+Creates a new GokOutput and initializes it from the given XML node.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>pNode</tt></i> :</span></td><td> Pointer to the XML node.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> A pointer to the new GokOutput, NULL if not created. 
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2593469"></a><h3><a name="gok-output-send-to-system"></a>gok_output_send_to_system ()</h3><a class="indexterm" name="id2593481"></a><pre class="programlisting">void        gok_output_send_to_system       (GokOutput *pOutput,
+                                             gboolean bNoWordCompletion);</pre><p>
+Sends the given GokOutput to the system. All other GokOutputs that are
+linked to this output are also sent.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>pOutput</tt></i> :</span></td><td> Pointer to a GokOutput that will be sent to the system.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>bNoWordCompletion</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="gok-gok-modifier.html"><b>&lt;&lt; gok-modifier</b></a></td><td align="right"><a accesskey="n" href="gok-gok-page-accessmethod.html"><b>gok-page-accessmethod &gt;&gt;</b></a></td></tr></table></body></html>

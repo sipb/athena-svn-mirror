@@ -1,0 +1,153 @@
+<refentry id="gok-gok-page-keysizespace">
+<refmeta>
+<refentrytitle>gok-page-keysizespace</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>GOK Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>gok-page-keysizespace</refname><refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+
+<synopsis>
+
+
+
+<link linkend="gboolean">gboolean</link>    <link linkend="gok-settings-page-keysizespace-initialize">gok_settings_page_keysizespace_initialize</link>
+                                            (<link linkend="GladeXML">GladeXML</link> *xml);
+<link linkend="void">void</link>        <link linkend="gok-settings-page-keysizespace-refresh">gok_settings_page_keysizespace_refresh</link>
+                                            (void);
+<link linkend="gboolean">gboolean</link>    <link linkend="gok-settings-page-keysizespace-ok">gok_settings_page_keysizespace_ok</link>
+                                            (void);
+<link linkend="gboolean">gboolean</link>    <link linkend="gok-settings-page-keysizespace-revert">gok_settings_page_keysizespace_revert</link>
+                                            (void);
+<link linkend="void">void</link>        <link linkend="gok-settings-page-keysizespace-backup">gok_settings_page_keysizespace_backup</link>
+                                            (void);
+<link linkend="void">void</link>        <link linkend="gok-settings-page-keysizespace-display-keysizespacing">gok_settings_page_keysizespace_display_keysizespacing</link>
+                                            (<link linkend="gint">gint</link> KeyWidth,
+                                             <link linkend="gint">gint</link> KeyHeight,
+                                             <link linkend="gint">gint</link> Space);
+<link linkend="void">void</link>        <link linkend="gok-settings-page-keysizespace-set-label-name">gok_settings_page_keysizespace_set_label_name</link>
+                                            (<link linkend="GtkWidget">GtkWidget</link> *pWidget);
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="gok-settings-page-keysizespace-initialize"/>gok_settings_page_keysizespace_initialize ()</title>
+<indexterm><primary>gok_settings_page_keysizespace_initialize</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gok_settings_page_keysizespace_initialize
+                                            (<link linkend="GladeXML">GladeXML</link> *xml);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>xml</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gok-settings-page-keysizespace-refresh"/>gok_settings_page_keysizespace_refresh ()</title>
+<indexterm><primary>gok_settings_page_keysizespace_refresh</primary></indexterm><programlisting><link linkend="void">void</link>        gok_settings_page_keysizespace_refresh
+                                            (void);</programlisting>
+<para>
+Refreshes the key size and key spacing controls on the key size/spacing page 
+from the gok_data.</para>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="gok-settings-page-keysizespace-ok"/>gok_settings_page_keysizespace_ok ()</title>
+<indexterm><primary>gok_settings_page_keysizespace_ok</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gok_settings_page_keysizespace_ok
+                                            (void);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gok-settings-page-keysizespace-revert"/>gok_settings_page_keysizespace_revert ()</title>
+<indexterm><primary>gok_settings_page_keysizespace_revert</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gok_settings_page_keysizespace_revert
+                                            (void);</programlisting>
+<para>
+Revert to the backup settings for this page and store them in the gok_data.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> TRUE if any of the settings have changed, FALSE 
+if they are all still the same.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gok-settings-page-keysizespace-backup"/>gok_settings_page_keysizespace_backup ()</title>
+<indexterm><primary>gok_settings_page_keysizespace_backup</primary></indexterm><programlisting><link linkend="void">void</link>        gok_settings_page_keysizespace_backup
+                                            (void);</programlisting>
+<para>
+Copies all the member settings to backup.</para>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="gok-settings-page-keysizespace-display-keysizespacing"/>gok_settings_page_keysizespace_display_keysizespacing ()</title>
+<indexterm><primary>gok_settings_page_keysizespace_display_keysizespacing</primary></indexterm><programlisting><link linkend="void">void</link>        gok_settings_page_keysizespace_display_keysizespacing
+                                            (<link linkend="gint">gint</link> KeyWidth,
+                                             <link linkend="gint">gint</link> KeyHeight,
+                                             <link linkend="gint">gint</link> Space);</programlisting>
+<para>
+Displays the example key size and key spacing.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>KeyWidth</parameter>&nbsp;:</term>
+<listitem><simpara> Width of the example keys.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>KeyHeight</parameter>&nbsp;:</term>
+<listitem><simpara> Height of the example keys.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>Space</parameter>&nbsp;:</term>
+<listitem><simpara> Spacing between the example keys.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gok-settings-page-keysizespace-set-label-name"/>gok_settings_page_keysizespace_set_label_name ()</title>
+<indexterm><primary>gok_settings_page_keysizespace_set_label_name</primary></indexterm><programlisting><link linkend="void">void</link>        gok_settings_page_keysizespace_set_label_name
+                                            (<link linkend="GtkWidget">GtkWidget</link> *pWidget);</programlisting>
+<para>
+Helper function that sets the 'name' of the button label.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>pWidget</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

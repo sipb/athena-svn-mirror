@@ -1,0 +1,101 @@
+<refentry id="gok-gok-spy-priv">
+<refmeta>
+<refentrytitle>gok-spy-priv</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>GOK Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>gok-spy-priv</refname><refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+
+<synopsis>
+
+
+
+<link linkend="void">void</link>        (<link linkend="ListChangeListenerCB">*ListChangeListenerCB</link>)         (<link linkend="AccessibleNode">AccessibleNode</link> *plist);
+<link linkend="void">void</link>        (<link linkend="MouseButtonListenerCB">*MouseButtonListenerCB</link>)        (<link linkend="gint">gint</link> mouseButton,
+                                             <link linkend="gint">gint</link> state,
+                                             <link linkend="long-x">long x</link>,
+                                             <link linkend="long-y">long y</link>);
+typedef     <link linkend="ListChangeListener">ListChangeListener</link>;
+typedef     <link linkend="MouseButtonListener">MouseButtonListener</link>;
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="ListChangeListenerCB"/>ListChangeListenerCB ()</title>
+<indexterm><primary>ListChangeListenerCB</primary></indexterm><programlisting><link linkend="void">void</link>        (*ListChangeListenerCB)         (<link linkend="AccessibleNode">AccessibleNode</link> *plist);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>plist</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="MouseButtonListenerCB"/>MouseButtonListenerCB ()</title>
+<indexterm><primary>MouseButtonListenerCB</primary></indexterm><programlisting><link linkend="void">void</link>        (*MouseButtonListenerCB)        (<link linkend="gint">gint</link> mouseButton,
+                                             <link linkend="gint">gint</link> state,
+                                             <link linkend="long-x">long x</link>,
+                                             <link linkend="long-y">long y</link>);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>mouseButton</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>state</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>Param3</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>Param4</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="ListChangeListener"/>ListChangeListener</title>
+<indexterm><primary>ListChangeListener</primary></indexterm><programlisting>typedef void ListChangeListener;
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="MouseButtonListener"/>MouseButtonListener</title>
+<indexterm><primary>MouseButtonListener</primary></indexterm><programlisting>typedef void MouseButtonListener;
+</programlisting>
+<para>
+
+</para></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

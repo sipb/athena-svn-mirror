@@ -221,6 +221,7 @@ GokAccessMethod* gok_scanner_get_current_access_method (void);
 GokAccessMethod* gok_scanner_get_first_access_method (void);
 GokScannerState* gok_scanner_get_current_state (void);
 gboolean gok_scanner_current_state_uses_core_mouse_button(int button);
+gboolean gok_scanner_current_state_uses_corepointer (void);
 void gok_scanner_get_pointer_location (gint* pX, gint* pY);
 gint gok_scanner_timer_set (gint Rate, gint ID);
 gint gok_scanner_timer_stop (gint TimerId);

@@ -602,6 +602,10 @@ on_buttonFeedbackSoundFile_clicked     (GtkButton       *button,
                                         gpointer         user_data);
 
 void
+on_use_gtk_theme_checkbutton_toggled    (GtkToggleButton *button,
+					 gpointer         user_data);
+
+void
 on_buttonChangeFeedbackName_clicked    (GtkButton       *button,
                                         gpointer         user_data);
 

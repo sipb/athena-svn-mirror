@@ -106,7 +106,7 @@ gok.schemas: Makefile gok-with-references.schemas
 	sed s/\$$pkgdatadir/`echo $(pkgdatadir) | sed s/\\\\//\\\\\\\\\\\\//g`/g gok-with-references.schemas > gok.schemas
 
 Keyboard.kbd: FORCE qwerty.kbd
-	cat qwerty.kbd | sed 's/qwerty/Keyboard/' > Keyboard.kbd
+	cat $(srcdir)/qwerty.kbd | sed 's/qwerty/Keyboard/' > Keyboard.kbd
 
 FORCE:
 

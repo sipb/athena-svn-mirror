@@ -11,14 +11,14 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gok.HEAD\n"
-"POT-Creation-Date: 2004-09-10 06:47+0100\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-12-07 12:18-0500\n"
 "PO-Revision-Date: 2003-06-16 03:53+0000\n"
 "Last-Translator: Petar Kajevski <petark@email.com>\n"
 "Language-Team: Macedonian <lug@lists.linux.net.mk>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Report-Msgid-Bugs-To: \n"
 "X-Generator: KBabel 1.0.1\n"
 
 #: automatic-scanning.xml.in.h:1 direct-selection.xml.in.h:1
@@ -38,131 +38,132 @@ msgstr ""
 msgid "Auto Repeat Rate:"
 msgstr ""
 
-#: automatic-scanning.xml.in.h:4
+#. User interface for the access method
+#: automatic-scanning.xml.in.h:5
 msgid "Automatic Scanning"
 msgstr ""
 
-#: automatic-scanning.xml.in.h:5 singlekey-automatic-scanning.xml.in.h:1
+#: automatic-scanning.xml.in.h:6 singlekey-automatic-scanning.xml.in.h:1
 msgid "Autostart (starts automatically)"
 msgstr ""
 
-#: automatic-scanning.xml.in.h:6 inverse-scanning.xml.in.h:4
+#: automatic-scanning.xml.in.h:7 inverse-scanning.xml.in.h:4
 #: singlekey-automatic-scanning.xml.in.h:2
 #: singlekey-inverse-scanning.xml.in.h:2
 #, fuzzy
 msgid "Bottom/Top"
 msgstr "Долу:"
 
-#: automatic-scanning.xml.in.h:7 inverse-scanning.xml.in.h:5
+#: automatic-scanning.xml.in.h:8 inverse-scanning.xml.in.h:5
 msgid "Continuous Cycle On"
 msgstr ""
 
-#: automatic-scanning.xml.in.h:8 inverse-scanning.xml.in.h:6
+#: automatic-scanning.xml.in.h:9 inverse-scanning.xml.in.h:6
 #: singlekey-automatic-scanning.xml.in.h:3
 #: singlekey-inverse-scanning.xml.in.h:3
 msgid "Cycles Before Stopping:"
 msgstr ""
 
-#: automatic-scanning.xml.in.h:9 direct-selection.xml.in.h:5
+#: automatic-scanning.xml.in.h:10 direct-selection.xml.in.h:5
 #: dwell-selection.xml.in.h:4 gok.glade2.h:69 inverse-scanning.xml.in.h:7
 #: singlekey-automatic-scanning.xml.in.h:4
 #: singlekey-inverse-scanning.xml.in.h:4 directed.xml.in.h:4
 msgid "Feedback"
 msgstr "Повратна информација"
 
-#: automatic-scanning.xml.in.h:10
+#: automatic-scanning.xml.in.h:11
 #, fuzzy
 msgid "Feedback Movement"
 msgstr "GOK име на повратната информација"
 
-#: automatic-scanning.xml.in.h:11
+#: automatic-scanning.xml.in.h:12
 #, fuzzy
 msgid "Feedback Selection"
 msgstr "GOK бришење"
 
-#: automatic-scanning.xml.in.h:12 singlekey-automatic-scanning.xml.in.h:7
+#: automatic-scanning.xml.in.h:13 singlekey-automatic-scanning.xml.in.h:7
 msgid "Initial Delay:"
 msgstr ""
 
-#: automatic-scanning.xml.in.h:13 inverse-scanning.xml.in.h:10
+#: automatic-scanning.xml.in.h:14 inverse-scanning.xml.in.h:10
 #: singlekey-automatic-scanning.xml.in.h:8
 #: singlekey-inverse-scanning.xml.in.h:7
 #, fuzzy
 msgid "Left/Right"
 msgstr "Десно:"
 
-#: automatic-scanning.xml.in.h:14 direct-selection.xml.in.h:10
+#: automatic-scanning.xml.in.h:15 direct-selection.xml.in.h:10
 #: dwell-selection.xml.in.h:10 inverse-scanning.xml.in.h:12
 #: singlekey-automatic-scanning.xml.in.h:10
 #: singlekey-inverse-scanning.xml.in.h:9 directed.xml.in.h:8
 msgid "Operation"
 msgstr ""
 
-#: automatic-scanning.xml.in.h:15 direct-selection.xml.in.h:11
+#: automatic-scanning.xml.in.h:16 direct-selection.xml.in.h:11
 #: inverse-scanning.xml.in.h:13 singlekey-automatic-scanning.xml.in.h:11
 #: singlekey-inverse-scanning.xml.in.h:10
 #, fuzzy
 msgid "Options"
 msgstr "Дејства"
 
-#: automatic-scanning.xml.in.h:16 singlekey-automatic-scanning.xml.in.h:12
+#: automatic-scanning.xml.in.h:17 singlekey-automatic-scanning.xml.in.h:12
 msgid ""
 "Press a switch to start scanning.  Press another switch or the same switch "
 "again to select."
 msgstr ""
 
-#: automatic-scanning.xml.in.h:17 singlekey-automatic-scanning.xml.in.h:13
+#: automatic-scanning.xml.in.h:18 singlekey-automatic-scanning.xml.in.h:13
 msgid "Press switch to start"
 msgstr ""
 
-#: automatic-scanning.xml.in.h:18 inverse-scanning.xml.in.h:15
+#: automatic-scanning.xml.in.h:19 inverse-scanning.xml.in.h:15
 #: singlekey-automatic-scanning.xml.in.h:14
 #: singlekey-inverse-scanning.xml.in.h:12
 #, fuzzy
 msgid "Right/Left"
 msgstr "Десно:"
 
-#: automatic-scanning.xml.in.h:19 inverse-scanning.xml.in.h:16
+#: automatic-scanning.xml.in.h:20 inverse-scanning.xml.in.h:16
 #: singlekey-automatic-scanning.xml.in.h:15
 #: singlekey-inverse-scanning.xml.in.h:13 directed.xml.in.h:10
 #, fuzzy
 msgid "Scan Delay:"
 msgstr "Чекање"
 
-#: automatic-scanning.xml.in.h:20 inverse-scanning.xml.in.h:17
+#: automatic-scanning.xml.in.h:21 inverse-scanning.xml.in.h:17
 #: singlekey-automatic-scanning.xml.in.h:16
 #: singlekey-inverse-scanning.xml.in.h:14 directed.xml.in.h:11
 msgid "Scan Speed:"
 msgstr ""
 
-#: automatic-scanning.xml.in.h:21
+#: automatic-scanning.xml.in.h:22
 #, fuzzy
 msgid "Select"
 msgstr "избриши"
 
-#: automatic-scanning.xml.in.h:22
+#: automatic-scanning.xml.in.h:23
 #, fuzzy
 msgid "Start Scanning"
 msgstr "GOK напредно инверзно сканирање"
 
-#: automatic-scanning.xml.in.h:23 inverse-scanning.xml.in.h:21
-#: singlekey-automatic-scanning.xml.in.h:23
+#: automatic-scanning.xml.in.h:24 inverse-scanning.xml.in.h:21
+#: singlekey-automatic-scanning.xml.in.h:24
 #: singlekey-inverse-scanning.xml.in.h:20
 #, fuzzy
 msgid "Top/Bottom"
 msgstr "Долу:"
 
-#: automatic-scanning.xml.in.h:24 inverse-scanning.xml.in.h:22
+#: automatic-scanning.xml.in.h:25 inverse-scanning.xml.in.h:22
 #: singlekey-inverse-scanning.xml.in.h:21 directed.xml.in.h:15
 msgid "Wrap Rows/Columns"
 msgstr ""
 
-#: automatic-scanning.xml.in.h:25
+#: automatic-scanning.xml.in.h:26
 #, fuzzy
 msgid "feedbackmovement"
 msgstr "Дали ова е трајна повратна информација"
 
-#: automatic-scanning.xml.in.h:26
+#: automatic-scanning.xml.in.h:27
 msgid "feedbackselection"
 msgstr ""
 
@@ -245,32 +246,41 @@ msgid "Window"
 msgstr "Листа на прозорци"
 
 #. "back" means go to previous keyboard
-#: gok-controls.kbd.in.h:6 gok/gok-keyboard.c:2476 gok/gok-windowlister.c:130
+#. Translators: short label for go back.
+#: gok-controls.kbd.in.h:6 gok/gok-keyboard.c:2481 gok/gok-windowlister.c:130
 #: launcher.kbd.in.h:5 mouse.kbd.in.h:24 move-resize.kbd.in.h:23
-#: numberpad.kbd.in.h:19 quit.kbd.in.h:4 valuator.kbd.in.h:3
+#: numberpad.kbd.in.h:20 quit.kbd.in.h:4 valuator.kbd.in.h:3
 msgid "back"
 msgstr "назад"
 
-#: gok-with-references.schemas.in.h:1 gok/main.c:284
+#: gok-with-references.schemas.in.h:1
+msgid "$pkgdatadir/goksound1.wav"
+msgstr ""
+
+#: gok-with-references.schemas.in.h:2
+msgid "$pkgdatadir/goksound2.wav"
+msgstr ""
+
+#: gok-with-references.schemas.in.h:3 gok/main.c:286
 msgid ""
 "A multiplier to be applied to input device valuator events before processing"
 msgstr ""
 
-#: gok-with-references.schemas.in.h:2
+#: gok-with-references.schemas.in.h:4
 msgid ""
 "A semicolon-delimited list of fully specified paths to additional word-"
 "completion dictionaries"
 msgstr ""
 
-#: gok-with-references.schemas.in.h:3
+#: gok-with-references.schemas.in.h:5
 msgid "Are the preferences to be restricted?"
 msgstr "Дали да се ограничи изборот на параметри?"
 
-#: gok-with-references.schemas.in.h:4
+#: gok-with-references.schemas.in.h:6
 msgid "Determines the keyboard type used for the default compose keyboard"
 msgstr ""
 
-#: gok-with-references.schemas.in.h:5
+#: gok-with-references.schemas.in.h:7
 msgid ""
 "Does GOK generate its compose keyboard dynamically based on information from "
 "the X Server?"
@@ -278,166 +288,244 @@ msgstr ""
 "Дали GOK динамички ja генерира тастатурata врз основа на информацијата од X "
 "серверот?"
 
-#: gok-with-references.schemas.in.h:6
+#: gok-with-references.schemas.in.h:8
 msgid ""
 "Does each GOK user have a private copy of the word prediction dictionary?"
 msgstr ""
 
-#: gok-with-references.schemas.in.h:7
+#: gok-with-references.schemas.in.h:9
 msgid "Does the GOK window expand to fill the full screen width?"
 msgstr ""
 "Дали прозорецот на GOK се проширува за да ја пополни целата широчина на "
 "екранот?"
 
-#: gok-with-references.schemas.in.h:8
+#: gok-with-references.schemas.in.h:10
 msgid "Does the core pointer follow the GOK keyboard pointer?"
 msgstr "Дали основниот курсор го следи тастатурниот курсор на GOK?"
 
-#: gok-with-references.schemas.in.h:9
+#: gok-with-references.schemas.in.h:11
 msgid "Does this action use key averaging"
 msgstr "Дали ова дејство користи впросечување на отчукувањата"
 
-#: gok-with-references.schemas.in.h:10
+#: gok-with-references.schemas.in.h:12
 msgid "Does this feedback flash"
 msgstr "Дали оваа повратна информација трепка"
 
-#: gok-with-references.schemas.in.h:11
+#: gok-with-references.schemas.in.h:13
 msgid "Does this feedback play a sound"
 msgstr "Дали оваа повратна информација отсвирува звук"
 
-#: gok-with-references.schemas.in.h:12
+#: gok-with-references.schemas.in.h:14
 #, fuzzy
 msgid "Does this feedback speak the label of a GOK key"
 msgstr "Дали оваа повратна информација отсвирува звук"
 
-#: gok-with-references.schemas.in.h:13
+#: gok-with-references.schemas.in.h:15
+#, fuzzy
+msgid "Dwell"
+msgstr "Чекање"
+
+#: gok-with-references.schemas.in.h:16
 msgid "GOK main window anchor location (if a dock), or empty string if not"
 msgstr ""
 "Локација на сидрото на главниот прозорец на GOK (доколку е вкотвен) или "
 "празен стринг, доколку не е"
 
-#: gok-with-references.schemas.in.h:14
+#: gok-with-references.schemas.in.h:17
 msgid ""
 "How many children of each node in the GUI tree to search for accessible "
 "objects"
 msgstr ""
 
-#: gok-with-references.schemas.in.h:15
+#: gok-with-references.schemas.in.h:18
 msgid "How many levels down the GUI tree to search for accessible objects"
 msgstr ""
 
-#: gok-with-references.schemas.in.h:16
+#: gok-with-references.schemas.in.h:19
 msgid "Is this action permanent"
 msgstr "Дали ова е трајнo дејство"
 
-#: gok-with-references.schemas.in.h:17
+#: gok-with-references.schemas.in.h:20
 msgid "Is this feedback permanent"
 msgstr "Дали ова е трајна повратна информација"
 
-#: gok-with-references.schemas.in.h:18
+#: gok-with-references.schemas.in.h:21
 msgid "Is word completion on"
 msgstr "Дали е вклучено довршувањето на зборовите"
 
-#: gok-with-references.schemas.in.h:19
+#: gok-with-references.schemas.in.h:22
+#, fuzzy
+msgid "Key flashing"
+msgstr "<b>Трепкање на тастерите</b>"
+
+#: gok-with-references.schemas.in.h:23
+msgid "Left Mouse Button"
+msgstr ""
+
+#: gok-with-references.schemas.in.h:24
+msgid "Middle Mouse Button"
+msgstr ""
+
+#: gok-with-references.schemas.in.h:25
+msgid "Mouse Button 4"
+msgstr ""
+
+#: gok-with-references.schemas.in.h:26
+msgid "Mouse Button 5"
+msgstr ""
+
+#: gok-with-references.schemas.in.h:27
+#, fuzzy
+msgid "Mouse Pointer"
+msgstr "Основен курсор"
+
+#: gok-with-references.schemas.in.h:28
+msgid "None"
+msgstr ""
+
+#: gok-with-references.schemas.in.h:29
+msgid "Right Mouse Button"
+msgstr ""
+
+#: gok-with-references.schemas.in.h:30
 msgid ""
 "Should be one of the following: xkb, default, alpha, alpha-freq, custom; if "
 "custom, custom_compose_keyboard should be defined."
 msgstr ""
 
-#: gok-with-references.schemas.in.h:20
+#: gok-with-references.schemas.in.h:31
+#, fuzzy
+msgid "Sound one"
+msgstr "Звук"
+
+#: gok-with-references.schemas.in.h:32
+#, fuzzy
+msgid "Sound two"
+msgstr "Звук"
+
+#: gok-with-references.schemas.in.h:33
+#, fuzzy
+msgid "Speech"
+msgstr "избриши"
+
+#: gok-with-references.schemas.in.h:34
+msgid "Switch 1"
+msgstr ""
+
+#: gok-with-references.schemas.in.h:35
+msgid "Switch 2"
+msgstr ""
+
+#: gok-with-references.schemas.in.h:36
+msgid "Switch 3"
+msgstr ""
+
+#: gok-with-references.schemas.in.h:37
+msgid "Switch 4"
+msgstr ""
+
+#: gok-with-references.schemas.in.h:38
+msgid "Switch 5"
+msgstr ""
+
+#: gok-with-references.schemas.in.h:39
 msgid "The access method to use"
 msgstr "Метод за пристап кој треба да се користи"
 
-#: gok-with-references.schemas.in.h:21
+#: gok-with-references.schemas.in.h:40
 msgid "The directory to load access method files from."
 msgstr "Директориум од кој ќе се вчитаат датотеките за методот на пристап"
 
-#: gok-with-references.schemas.in.h:22
+#: gok-with-references.schemas.in.h:41
 msgid "The directory to load dictionary files from."
 msgstr "Директориум од кој ќе се вчитаат датотеките за речникот"
 
-#: gok-with-references.schemas.in.h:23
+#: gok-with-references.schemas.in.h:42
 msgid "The directory to load the gok resource file from."
 msgstr "Директориум од кој ќе се вчитаат датотеките со GOK ресурси"
 
-#: gok-with-references.schemas.in.h:24
+#: gok-with-references.schemas.in.h:43
 #, fuzzy
 msgid "The directory to load user-specific or custom keyboard files from."
 msgstr "Директориум од кој ќе се вчитаат датотеките за тастатурата"
 
-#: gok-with-references.schemas.in.h:25
+#: gok-with-references.schemas.in.h:44
 msgid "The full pathname to a file which defines a custom GOK compose keyboard"
 msgstr ""
 
-#: gok-with-references.schemas.in.h:26
+#: gok-with-references.schemas.in.h:45
 msgid "The key height"
 msgstr "Висина на тастарите"
 
-#: gok-with-references.schemas.in.h:27
+#: gok-with-references.schemas.in.h:46
 msgid "The key width"
 msgstr "Ширина на тастерите"
 
-#: gok-with-references.schemas.in.h:28
+#: gok-with-references.schemas.in.h:47
 msgid "The keyboards X coordinate"
 msgstr "X координантата на тастатурата"
 
-#: gok-with-references.schemas.in.h:29
+#: gok-with-references.schemas.in.h:48
 msgid "The keyboards Y coordinate"
 msgstr "Y координантата на тастатурата"
 
-#: gok-with-references.schemas.in.h:30
+#: gok-with-references.schemas.in.h:49
 msgid "The name of the sound that this feedback will play"
 msgstr "Име на звукот кој ќе го свири повратната информација"
 
-#: gok-with-references.schemas.in.h:31
+#: gok-with-references.schemas.in.h:50
 msgid "The name of the xinput device to use"
 msgstr "Име на xinput уредот кој ќе се користи"
 
-#: gok-with-references.schemas.in.h:32
+#: gok-with-references.schemas.in.h:51
 msgid "The name to display to the user for this action"
 msgstr "Името кое ќе му се прикаже на корисникот за ова дејство"
 
-#: gok-with-references.schemas.in.h:33
+#: gok-with-references.schemas.in.h:52
 msgid "The name to display to the user for this feedback"
 msgstr "Името кое ќе му се прикаже на корисникот за оваа повратна информација"
 
-#: gok-with-references.schemas.in.h:34
+#: gok-with-references.schemas.in.h:53
 msgid "The number if applicable"
 msgstr "Бројот, доколку е соодветно"
 
-#: gok-with-references.schemas.in.h:35
+#: gok-with-references.schemas.in.h:54
 msgid "The number of predictions for word completion"
 msgstr "Број на предвидувања за довршување на зборовите"
 
-#: gok-with-references.schemas.in.h:36
+#: gok-with-references.schemas.in.h:55
 msgid "The number of times this feedback will flash"
 msgstr "Колку пати повратната информација ќе трепне"
 
-#: gok-with-references.schemas.in.h:37
+#: gok-with-references.schemas.in.h:56
 #, fuzzy
 msgid "The primary or system directory to load keyboard files from."
 msgstr "Директориум од кој ќе се вчитаат датотеките за тастатурата"
 
-#: gok-with-references.schemas.in.h:38
+#: gok-with-references.schemas.in.h:57
 msgid "The rate for this action"
 msgstr "Брзината за ова дејство"
 
-#: gok-with-references.schemas.in.h:39
+#: gok-with-references.schemas.in.h:58
 msgid "The space between keys"
 msgstr "Растојание помеѓу тастерите"
 
-#: gok-with-references.schemas.in.h:40
+#: gok-with-references.schemas.in.h:59
 msgid "The state in which this action is activated"
 msgstr "Состојба во која ова дејство е активирана"
 
-#: gok-with-references.schemas.in.h:41
+#: gok-with-references.schemas.in.h:60
 msgid "The type of this action"
 msgstr "Тип на ова дејство"
 
-#: gok-with-references.schemas.in.h:42
+#: gok-with-references.schemas.in.h:61
 msgid ""
 "Whether to use additional word lists when searching for GOK word-completion "
 "candidates"
+msgstr ""
+
+#: gok-with-references.schemas.in.h:62
+msgid "none"
 msgstr ""
 
 #: gok.desktop.in.h:1
@@ -1176,201 +1264,201 @@ msgstr ""
 msgid "(new)"
 msgstr "(ново)"
 
-#: gok/gok-key.c:115
+#: gok/gok-key.c:117
 #, fuzzy
 msgid "Mute"
 msgstr "Менија"
 
-#: gok/gok-key.c:118
+#: gok/gok-key.c:120
 #, fuzzy
 msgid ""
 "Mouse\n"
 "Keys"
 msgstr "Менија"
 
-#: gok/gok-key.c:121
+#: gok/gok-key.c:123
 #, fuzzy
 msgid ""
 "Left\n"
 "Tab"
 msgstr "Лево:"
 
-#: gok/gok-key.c:232
+#: gok/gok-key.c:234
 msgid "Divide"
 msgstr ""
 
-#: gok/gok-key.c:235
+#: gok/gok-key.c:237
 msgid "Multiply"
 msgstr ""
 
-#: gok/gok-key.c:238
+#: gok/gok-key.c:240
 msgid "Subtract"
 msgstr ""
 
-#: gok/gok-key.c:241
+#: gok/gok-key.c:243
 #, fuzzy
 msgid "Addition"
 msgstr "Предвидување"
 
-#: gok/gok-key.c:244
+#: gok/gok-key.c:246
 msgid "Prior"
 msgstr ""
 
-#: gok/gok-key.c:247
+#: gok/gok-key.c:249
 #, fuzzy
 msgid "Next"
 msgstr "Следен тастер"
 
-#: gok/gok-key.c:250 numberpad.kbd.in.h:6
+#: gok/gok-key.c:252 numberpad.kbd.in.h:6
 msgid "Home"
 msgstr ""
 
-#: gok/gok-key.c:253 numberpad.kbd.in.h:4
+#: gok/gok-key.c:255 numberpad.kbd.in.h:4
 msgid "End"
 msgstr ""
 
 #. Translators: this describes the direction gok will move.
-#: gok/gok-key.c:256 move-resize.kbd.in.h:20 numberpad.kbd.in.h:17
+#: gok/gok-key.c:258 move-resize.kbd.in.h:20 numberpad.kbd.in.h:18
 msgid "Up"
 msgstr ""
 
 #. Translators: this describes the direction gok will move.
-#: gok/gok-key.c:259 move-resize.kbd.in.h:6 numberpad.kbd.in.h:3
+#: gok/gok-key.c:261 move-resize.kbd.in.h:6 numberpad.kbd.in.h:3
 #, fuzzy
 msgid "Down"
 msgstr "Помести надолу"
 
 #. Translators: this describes the direction gok will move.
-#: gok/gok-key.c:262 move-resize.kbd.in.h:11 numberpad.kbd.in.h:8
+#: gok/gok-key.c:264 move-resize.kbd.in.h:11 numberpad.kbd.in.h:8
 #, fuzzy
 msgid "Left"
 msgstr "Лево:"
 
 #. Translators: this describes the direction gok will move.
-#: gok/gok-key.c:265 move-resize.kbd.in.h:15 numberpad.kbd.in.h:14
+#: gok/gok-key.c:267 move-resize.kbd.in.h:15 numberpad.kbd.in.h:14
 #, fuzzy
 msgid "Right"
 msgstr "Десно:"
 
-#: gok/gok-key.c:268
+#: gok/gok-key.c:270
 msgid "Begin"
 msgstr ""
 
-#: gok/gok-key.c:271
+#: gok/gok-key.c:273
 msgid "Decimal"
 msgstr ""
 
-#: gok/gok-key.c:274
+#: gok/gok-key.c:276
 msgid "Meta"
 msgstr ""
 
-#: gok/gok-key.c:277
+#: gok/gok-key.c:279
 msgid ""
 "Multi\n"
 "key"
 msgstr ""
 
-#: gok/gok-key.c:280
+#: gok/gok-key.c:282
 msgid ""
 "Eisu\n"
 "toggle"
 msgstr ""
 
-#: gok/gok-key.c:283
+#: gok/gok-key.c:285
 msgid ""
 "Henkan\n"
 "Mode"
 msgstr ""
 
-#: gok/gok-key.c:286
+#: gok/gok-key.c:288
 msgid "Muhenkan"
 msgstr ""
 
-#: gok/gok-key.c:289
+#: gok/gok-key.c:291
 msgid ""
 "Mode\n"
 "switch"
 msgstr ""
 
-#: gok/gok-keyboard.c:150
+#: gok/gok-keyboard.c:155
 #, c-format
 msgid "Xkb extension could not be initialized! (error code %x)"
 msgstr ""
 
-#: gok/gok-keyboard.c:156 gok/gok-keyboard.c:196
+#: gok/gok-keyboard.c:161 gok/gok-keyboard.c:201
 msgid "keyboard description not available!"
 msgstr ""
 
-#: gok/gok-keyboard.c:162 gok/gok-keyboard.c:202 gok/gok-keyboard.c:499
+#: gok/gok-keyboard.c:167 gok/gok-keyboard.c:207 gok/gok-keyboard.c:504
 msgid "Keyboard Geometry cannot be read from your X Server."
 msgstr ""
 
-#: gok/gok-keyboard.c:425
+#: gok/gok-keyboard.c:430
 #, fuzzy
 msgid "Back"
 msgstr "Назад"
 
-#: gok/gok-keyboard.c:443 valuator.kbd.in.h:1
+#: gok/gok-keyboard.c:448 valuator.kbd.in.h:1
 #, fuzzy
 msgid "Repeat Next"
 msgstr "Следен тастер"
 
-#: gok/gok-keyboard.c:456
+#: gok/gok-keyboard.c:461
 msgid "Edit"
 msgstr ""
 
 #. translators: Abbreviation/mnemonic for "numeric keypad", but must be <= 10 chars
-#: gok/gok-keyboard.c:469
+#: gok/gok-keyboard.c:474
 msgid ""
 "Num\n"
 "Pad"
 msgstr ""
 
 #. translators: Abbreviation/mnemonic for "numeric keypad", but must be <= 10 chars
-#: gok/gok-keyboard.c:483 move-resize.kbd.in.h:9
+#: gok/gok-keyboard.c:488 move-resize.kbd.in.h:9
 msgid "Hide"
 msgstr ""
 
 #. translators: "shift" as in "the shift modifier key"
-#: gok/gok-keyboard.c:694
+#: gok/gok-keyboard.c:699
 msgid "shift"
 msgstr ""
 
 #. translators: The context is "key level" as in shift/caps status on keyboard
-#: gok/gok-keyboard.c:706
+#: gok/gok-keyboard.c:711
 msgid "Level 2"
 msgstr ""
 
 #. translators: see note for "Level 2"
-#: gok/gok-keyboard.c:718
+#: gok/gok-keyboard.c:723
 msgid "Level 3"
 msgstr ""
 
 #. translators: this is a label for a 'Back space' key
-#: gok/gok-keyboard.c:730
+#: gok/gok-keyboard.c:735
 msgid ""
 "Back\n"
 "Space"
 msgstr ""
 
 #. translators: this is a label for a "Tab" key, for instance on a keyboard
-#: gok/gok-keyboard.c:741 numberpad.kbd.in.h:16
+#: gok/gok-keyboard.c:746 numberpad.kbd.in.h:16
 msgid "Tab"
 msgstr ""
 
 #. translators: this is a label for a "spacebar" key, for instance on a keyboard
-#: gok/gok-keyboard.c:752
+#: gok/gok-keyboard.c:757
 #, fuzzy
 msgid "space"
 msgstr "вметни"
 
 #. translators: this is a label for an "Enter" or Return key, for instance on a keyboard
-#: gok/gok-keyboard.c:763 numberpad.kbd.in.h:5
+#: gok/gok-keyboard.c:768 numberpad.kbd.in.h:5
 #, fuzzy
 msgid "Enter"
 msgstr "Основен курсор"
 
-#: gok/gok-keyboard.c:801 main.kbd.in.h:7
+#: gok/gok-keyboard.c:806 main.kbd.in.h:7
 #, fuzzy
 msgid "Menus"
 msgstr "Менија"
@@ -1391,7 +1479,7 @@ msgstr "Менија"
 #. * precede alphabetic characters, digits and punctuation should be placed
 #. * at the end of the string.
 #.
-#: gok/gok-keyboard.c:860
+#: gok/gok-keyboard.c:865
 msgid "level 0|abcdefghijklmnopqrstuvwxyz1234567890-=[];'#\\,./"
 msgstr ""
 
@@ -1399,7 +1487,7 @@ msgstr ""
 #. * For languages/locales which use 'upper case', this string should
 #. * correspond to uppercase versions of characters in the 'level 0' string.
 #.
-#: gok/gok-keyboard.c:865
+#: gok/gok-keyboard.c:870
 msgid "level 1|ABCDEFGHIJKLMNOPQRSTUVWXYZ!\"3$%^&*()_+{}:@~<>?"
 msgstr ""
 
@@ -1409,13 +1497,16 @@ msgstr ""
 #. * 'level 3'.  At the translator's discretion, accented characters can be
 #. * placed here and in 'level 3' as well.
 #.
-#: gok/gok-keyboard.c:872 gok/gok-keyboard.c:928
+#.
+#. * Seldom-used or alternate characters can appear in levels 2 and 3 if necessary.
+#.
+#: gok/gok-keyboard.c:877 gok/gok-keyboard.c:933
 msgid "level 2|"
 msgstr ""
 
 #. For locales which need an even larger character set, or offer uppercase versions
 #. * of the 'level2' characters, add them to 'level 3'
-#: gok/gok-keyboard.c:875 gok/gok-keyboard.c:929
+#: gok/gok-keyboard.c:880 gok/gok-keyboard.c:934
 msgid "level 3|"
 msgstr ""
 
@@ -1430,44 +1521,44 @@ msgstr ""
 #. * If level 0 and level 1 refer to upper-and-lower-case in your locale,
 #. * the characters in these two strings should occur in the same relative order.
 #.
-#: gok/gok-keyboard.c:923
+#: gok/gok-keyboard.c:928
 msgid "level 0|etaonrishdlfcmugypwbvkxjqz`1234567890-=\\[];'<,./"
 msgstr ""
 
-#: gok/gok-keyboard.c:924
+#: gok/gok-keyboard.c:929
 msgid "level 1|ETAONRISHDLFCMUGYPWBVKXJQZ~!@#$%^&*()_+|{}:\"><>?"
 msgstr ""
 
 #. change the name of the window to the keyboard name
-#: gok/gok-keyboard.c:1908
+#: gok/gok-keyboard.c:1916
 msgid "GOK - "
 msgstr "GOK - "
 
-#: gok/gok-keyboard.c:2736
+#: gok/gok-keyboard.c:2808
 msgid "GUI"
 msgstr "GUI"
 
 #. translators: "table" as in row/column data structure
-#: gok/gok-keyboard.c:2741 gok/gok-spy.c:1673
+#: gok/gok-keyboard.c:2813 gok/gok-spy.c:1718
 #, fuzzy
 msgid "Table"
 msgstr "ознака"
 
-#: gok/gok-keyboard.c:2746 main.kbd.in.h:9
+#: gok/gok-keyboard.c:2818 main.kbd.in.h:9
 msgid "Toolbars"
 msgstr ""
 
-#: gok/gok-keyboard.c:2750
+#: gok/gok-keyboard.c:2822
 #, fuzzy
 msgid "Applications"
 msgstr "Апликации"
 
-#: gok/gok-keyboard.c:2757
+#: gok/gok-keyboard.c:2832
 #, fuzzy
 msgid "Menu"
 msgstr "Мени"
 
-#: gok/gok-keyboard.c:3527
+#: gok/gok-keyboard.c:3697
 msgid "translator_credits"
 msgstr ""
 "Петар Кајевски (petark@email.com) \n"
@@ -1475,15 +1566,15 @@ msgstr ""
 "Слободен Софтвер Македонија\n"
 "http://www.slobodensoftver.org.mk"
 
-#: gok/gok-keyboard.c:3550 main.kbd.in.h:4
+#: gok/gok-keyboard.c:3720 main.kbd.in.h:4
 msgid "GOK"
 msgstr "GOK"
 
-#: gok/gok-keyboard.c:3552
+#: gok/gok-keyboard.c:3722
 msgid "Dynamic virtual keyboards for the GNOME desktop"
 msgstr "Динамички виртуелни тастатури за GNOME десктопот"
 
-#: gok/gok-keyboard.c:3561
+#: gok/gok-keyboard.c:3731
 msgid "Full Credits"
 msgstr ""
 
@@ -1492,27 +1583,27 @@ msgid "error reading description"
 msgstr ""
 
 #. translators: abbreviated version of "Vertical Scrollbar"
-#: gok/gok-spy.c:1593
+#: gok/gok-spy.c:1638
 msgid "V Scrollbar"
 msgstr ""
 
 #. translators: abbreviated version of "Horizontal Scrollbar"
-#: gok/gok-spy.c:1598
+#: gok/gok-spy.c:1643
 msgid "H Scrollbar"
 msgstr ""
 
 #. create the 'new action name' dialog
-#: gok/gok-page-actions.c:380 gok/gok-page-actions.c:425
-#: gok/gok-page-actions.c:444
+#: gok/gok-page-actions.c:381 gok/gok-page-actions.c:426
+#: gok/gok-page-actions.c:445
 msgid "GOK Action Name"
 msgstr "Име на GOK дејството"
 
 #. add a text label
-#: gok/gok-page-actions.c:386
+#: gok/gok-page-actions.c:387
 msgid "Change the action name:"
 msgstr "Измени го името на дејството"
 
-#: gok/gok-page-actions.c:423
+#: gok/gok-page-actions.c:424
 msgid ""
 "Action name can't be empty.\n"
 "Please enter a new action name."
@@ -1520,7 +1611,7 @@ msgstr ""
 "Името на дејството не може да остане празно\n"
 "Ве молам внесете ново име на дејството"
 
-#: gok/gok-page-actions.c:442
+#: gok/gok-page-actions.c:443
 msgid ""
 "Sorry, that action name already exists.\n"
 "Please enter a new action name"
@@ -1528,17 +1619,17 @@ msgstr ""
 "Извинете, тоа име на дејството веќе постои \n"
 "Ве молам внесете ново име на дејството"
 
-#: gok/gok-page-actions.c:497
+#: gok/gok-page-actions.c:498
 #, c-format
 msgid "New Action %d"
 msgstr "Ново дејство %d"
 
-#: gok/gok-page-actions.c:560
+#: gok/gok-page-actions.c:561
 #, c-format
 msgid "Do you wish to delete this action (%s)?"
 msgstr "Дали сакате да го избришете ова дејство (%s)?"
 
-#: gok/gok-page-actions.c:568
+#: gok/gok-page-actions.c:569
 msgid "GOK Delete Action"
 msgstr "GOK бришење"
 
@@ -1604,7 +1695,7 @@ msgid "Button"
 msgstr "Долу:"
 
 #. and post a warning if the new settings use corepointer
-#: gok/gok-settings-dialog.c:259
+#: gok/gok-settings-dialog.c:260
 msgid "You appear to be configuring GOK to use 'core pointer' mode."
 msgstr ""
 
@@ -1618,7 +1709,7 @@ msgstr "Листа на прозорци"
 msgid "Could not read contents of dictionary file '%s'\n"
 msgstr ""
 
-#: gok/main.c:164
+#: gok/main.c:166
 #, fuzzy
 msgid ""
 "Use the specified access method. NAME is a string and can be found in the "
@@ -1631,20 +1722,20 @@ msgstr ""
 "својството на <gok:accessmethod> тагот. Забелешка името не е нужно исто со "
 "името на xam датотеката."
 
-#: gok/main.c:165
+#: gok/main.c:167
 #, fuzzy
 msgid "NAME"
 msgstr "NAME"
 
-#: gok/main.c:173
+#: gok/main.c:175
 msgid "Start the GOK keyboard editor"
 msgstr "Стартувај го GOK уредувачот на тастатурата"
 
-#: gok/main.c:181
+#: gok/main.c:183
 msgid "Use special, but possibly unstable, gok stuff"
 msgstr "Користи специјални, но потенцијално нестабилни GOK можности"
 
-#: gok/main.c:189
+#: gok/main.c:191
 msgid ""
 "Whenever --geometry is not used gok remembers its position between "
 "invocations and starts in the position that it had when it was last "
@@ -1664,40 +1755,40 @@ msgstr ""
 "remembergeometry кое го принудува GOK да ја запомни својата позиција при "
 "завршувањето со работата, дури и ако е стартуван со --geometry."
 
-#: gok/main.c:190
+#: gok/main.c:192
 #, fuzzy
 msgid "GEOMETRY"
 msgstr "ГЕОМЕТРИЈА"
 
-#: gok/main.c:198
+#: gok/main.c:200
 msgid "Use the specified input device"
 msgstr "Користи го специфицираниот уред за внес"
 
-#: gok/main.c:199
+#: gok/main.c:201
 msgid "DEVICENAME"
 msgstr "DEVICENAME"
 
-#: gok/main.c:207
+#: gok/main.c:209
 msgid "Start GOK with the specified keyboard."
 msgstr "Стартувај го GOK со специфицираната тастатура"
 
-#: gok/main.c:208
+#: gok/main.c:210
 msgid "KEYBOARDNAME"
 msgstr "KEYBOARDNAME"
 
-#: gok/main.c:216
+#: gok/main.c:218
 msgid "List the access methods that can used as options to other arguments."
 msgstr ""
 
-#: gok/main.c:225
+#: gok/main.c:227
 msgid "List the actions that can used as options to other arguments."
 msgstr ""
 
-#: gok/main.c:234
+#: gok/main.c:236
 msgid "GOK will be used to login"
 msgstr "GOK ќе биде користен при најавувањето"
 
-#: gok/main.c:245
+#: gok/main.c:247
 msgid ""
 "Can be used with --geometry.  Forces GOK to remember its position when "
 "shutdown even when it was started with --geometry.  Please see the "
@@ -1707,91 +1798,93 @@ msgstr ""
 "позиција која завршува со работата дури и ако е стартуван со --geometry. За "
 "повеќе информации погледнете ја и дискусијата за знаменцето --geometry."
 
-#: gok/main.c:256
+#: gok/main.c:258
 msgid "Start GOK and hook this action to scan operations. (See --list-actions)"
 msgstr ""
 
-#: gok/main.c:266
+#: gok/main.c:268
 msgid ""
 "Start GOK and hook this action to select operations. (See --list-actions)"
 msgstr ""
 
-#: gok/main.c:275
+#: gok/main.c:277
 msgid "Open the settings dialog box when GOK starts"
 msgstr "Отвори го дијалогот со подесувања при стартирањето на GOK"
 
-#: gok/main.c:588
+#: gok/main.c:590
+#, c-format
 msgid "gok: Unsupported geometry specification\n"
 msgstr "gok: Неподржана спецификација на геометријата\n"
 
-#: gok/main.c:589
+#: gok/main.c:591
+#, c-format
 msgid ""
 "gok: Currently GOK requires that the x, y, width and height all be given\n"
 msgstr ""
 "gok: Во сегашната верзија GOK бара да бидат зададени x, y, ширината и "
 "висината\n"
 
-#: gok/main.c:685
+#: gok/main.c:687
 msgid "XKB extension is required."
 msgstr ""
 
-#: gok/main.c:695
+#: gok/main.c:697
 msgid "Can't initialize actions."
 msgstr "Не можам да ги иницирам дејствата."
 
-#: gok/main.c:705
+#: gok/main.c:707
 msgid "Can't initialize feedbacks."
 msgstr "Не можам да ги иницирам повратните информации."
 
-#: gok/main.c:732
+#: gok/main.c:734
 msgid "Can't create the main GOK window!"
 msgstr "Не можам да го создадам главниот GOK прозорец"
 
-#: gok/main.c:751
+#: gok/main.c:753
 msgid "Can't create the settings dialog window!"
 msgstr "Не можам да го создадам прозорецот со дијалогот за подесувања"
 
-#: gok/main.c:773
+#: gok/main.c:775
 msgid "You are using GOK in 'core pointer' mode."
 msgstr ""
 
-#: gok/main.c:813
+#: gok/main.c:815
 msgid "No keyboards to display!"
 msgstr "Нема тастатури за прикажување!"
 
-#: gok/main.c:949
+#: gok/main.c:951
 msgid "popup menu"
 msgstr ""
 
-#: gok/main.c:1805
+#: gok/main.c:1809
 #, fuzzy
 msgid "Can't create a compose keyboard!"
 msgstr "Не можам да прочитам ниту една тастатура!"
 
-#: gok/main.c:1847
+#: gok/main.c:1851
 msgid "Can't read any keyboards!"
 msgstr "Не можам да прочитам ниту една тастатура!"
 
-#: gok/main.c:1964
+#: gok/main.c:1968
 #, fuzzy
 msgid "could not access method directory key from GConf!"
 msgstr ""
 "не можам да му пристапам наклучот за директориумот на методи на пристап од "
 "GConf!"
 
-#: gok/main.c:1972
+#: gok/main.c:1976
 msgid "possibly unknown access method!"
 msgstr "потенцијално непозната метода на пристап!"
 
-#: gok/main.c:2513
+#: gok/main.c:2517
 msgid "Sorry, GOK can't run because:\n"
 msgstr "Извинете, GOK не може да се изврши бидејќи:\n"
 
-#: gok/main.c:2522
+#: gok/main.c:2526
 msgid "GOK Fatal Error"
 msgstr "GOK Фатална грешка"
 
-#: gok/main.c:2534
+#: gok/main.c:2538
 msgid ""
 "GOK uses GConf 2 to store its settings and requires certain settings to be "
 "in GConf to run.  GOK is currently unable to retrieve those settings.  If "
@@ -1806,7 +1899,7 @@ msgstr ""
 "рестартирате gconfd, користејќи ја следнава команда: 'gconftool-2 --"
 "shutdown' или со одјавување и најавување."
 
-#: gok/main.c:2551
+#: gok/main.c:2555
 msgid ""
 "Currently GOK requires that the x, y, width and height all be given.  Sorry, "
 "your geometry specification will not be used."
@@ -1815,25 +1908,25 @@ msgstr ""
 "висината. Жалам, но вашата спецификација на геометријата нема да биде "
 "користена."
 
-#: gok/main.c:2553
+#: gok/main.c:2557
 msgid "gok: Unsupported geometry specification"
 msgstr "gok: Неподдржана спецификација на геометријата"
 
-#: gok/main.c:2760
+#: gok/main.c:2764
 msgid ""
 "GOK may not work properly, because it could not enable your desktop's "
 "'sticky keys' feature."
 msgstr ""
 
-#: gok/main.c:2767
+#: gok/main.c:2771
 msgid "GOK has enabled Sticky Keys, which it requires.\n"
 msgstr ""
 
-#: gok/main.c:2789
+#: gok/main.c:2793
 msgid "GOK cannot run because XKB display extension is missing.\n"
 msgstr ""
 
-#: gok/main.c:2853
+#: gok/main.c:2857
 msgid ""
 "This means that the device you are using to operate GOK\n"
 "is also controlling the system pointer (or 'mouse pointer').\n"
@@ -1844,7 +1937,7 @@ msgid ""
 "'Extended' input device instead; see GOK Help for more information."
 msgstr ""
 
-#: gok/main.c:2917
+#: gok/main.c:2921
 msgid ""
 "Assistive Technology Support Is Not Enabled.\n"
 "\n"
@@ -1860,11 +1953,11 @@ msgid ""
 "\n"
 msgstr ""
 
-#: gok/main.c:2936
+#: gok/main.c:2940
 msgid "Enable and Log Out"
 msgstr ""
 
-#: gok/main.c:2948
+#: gok/main.c:2952
 msgid "Continue"
 msgstr ""
 
@@ -1886,20 +1979,21 @@ msgstr ""
 msgid "Scanning Direction:"
 msgstr ""
 
-#: singlekey-automatic-scanning.xml.in.h:20
+#. User interface for the access method
+#: singlekey-automatic-scanning.xml.in.h:21
 msgid "Single Key Automatic Scanning"
 msgstr ""
 
-#: singlekey-automatic-scanning.xml.in.h:21
+#: singlekey-automatic-scanning.xml.in.h:22
 #, fuzzy
 msgid "Start Scanning:"
 msgstr "GOK напредно инверзно сканирање"
 
-#: singlekey-automatic-scanning.xml.in.h:22
+#: singlekey-automatic-scanning.xml.in.h:23
 msgid "Start scanning:"
 msgstr ""
 
-#: singlekey-automatic-scanning.xml.in.h:24
+#: singlekey-automatic-scanning.xml.in.h:25
 msgid "Wrap"
 msgstr ""
 
@@ -2097,6 +2191,11 @@ msgstr ""
 #: numberpad.kbd.in.h:15
 msgid "Shift"
 msgstr ""
+
+#: numberpad.kbd.in.h:17
+#, fuzzy
+msgid "Tab&lt;-"
+msgstr "ознака"
 
 #. Translators: short phrase to confirm that user wants to quit.
 #: quit.kbd.in.h:2

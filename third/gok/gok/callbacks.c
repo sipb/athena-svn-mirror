@@ -933,6 +933,13 @@ on_fill_checkbutton_toggled (GtkToggleButton *button,
 }
 
 void
+on_use_gtk_theme_checkbutton_toggled (GtkToggleButton *button,
+				      gpointer user_data)
+{
+	gok_data_set_use_gtkplus_theme (gtk_toggle_button_get_active (button));
+}
+
+void
 on_dock_top_radiobutton_toggled (GtkToggleButton *button, 
 				 gpointer user_data)
 {

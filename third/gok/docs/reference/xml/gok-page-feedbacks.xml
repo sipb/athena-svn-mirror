@@ -1,0 +1,210 @@
+<refentry id="gok-gok-page-feedbacks">
+<refmeta>
+<refentrytitle>gok-page-feedbacks</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>GOK Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>gok-page-feedbacks</refname><refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+
+<synopsis>
+
+
+
+<link linkend="gboolean">gboolean</link>    <link linkend="gok-page-feedbacks-initialize">gok_page_feedbacks_initialize</link>   (<link linkend="GladeXML">GladeXML</link> *xml);
+<link linkend="void">void</link>        <link linkend="gok-page-feedbacks-refresh">gok_page_feedbacks_refresh</link>      (void);
+<link linkend="gboolean">gboolean</link>    <link linkend="gok-page-feedbacks-apply">gok_page_feedbacks_apply</link>        (void);
+<link linkend="gboolean">gboolean</link>    <link linkend="gok-page-feedbacks-revert">gok_page_feedbacks_revert</link>       (void);
+<link linkend="void">void</link>        <link linkend="gok-page-feedbacks-backup">gok_page_feedbacks_backup</link>       (void);
+<link linkend="void">void</link>        <link linkend="gok-page-feedbacks-update-controls">gok_page_feedbacks_update_controls</link>
+                                            (<link linkend="GokFeedback">GokFeedback</link> *pFeedback);
+<link linkend="void">void</link>        <link linkend="gok-page-feedbacks-button-clicked-change-name">gok_page_feedbacks_button_clicked_change_name</link>
+                                            (void);
+<link linkend="void">void</link>        <link linkend="gok-page-feedbacks-button-clicked-new">gok_page_feedbacks_button_clicked_new</link>
+                                            (void);
+<link linkend="void">void</link>        <link linkend="gok-page-feedbacks-fill-combo-feedback-names">gok_page_feedbacks_fill_combo_feedback_names</link>
+                                            (void);
+<link linkend="void">void</link>        <link linkend="gok-page-feedbacks-button-clicked-delete">gok_page_feedbacks_button_clicked_delete</link>
+                                            (void);
+<link linkend="void">void</link>        <link linkend="gok-page-feedbacks-check-keyflashing-clicked">gok_page_feedbacks_check_keyflashing_clicked</link>
+                                            (void);
+<link linkend="void">void</link>        <link linkend="gok-page-feedbacks-spin-keyflashing-changed">gok_page_feedbacks_spin_keyflashing_changed</link>
+                                            (void);
+<link linkend="void">void</link>        <link linkend="gok-page-feedbacks-check-sound-clicked">gok_page_feedbacks_check_sound_clicked</link>
+                                            (void);
+<link linkend="void">void</link>        <link linkend="gok-page-feedbacks-entry-soundname-changed">gok_page_feedbacks_entry_soundname_changed</link>
+                                            (void);
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="gok-page-feedbacks-initialize"/>gok_page_feedbacks_initialize ()</title>
+<indexterm><primary>gok_page_feedbacks_initialize</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gok_page_feedbacks_initialize   (<link linkend="GladeXML">GladeXML</link> *xml);</programlisting>
+<para>
+Initializes this page of the gok settings dialog. This must be called
+prior to any calls on this page.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>xml</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> TRUE if the page was properly initialized, FALSE if not.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gok-page-feedbacks-refresh"/>gok_page_feedbacks_refresh ()</title>
+<indexterm><primary>gok_page_feedbacks_refresh</primary></indexterm><programlisting><link linkend="void">void</link>        gok_page_feedbacks_refresh      (void);</programlisting>
+<para>
+Refreshes the controls on the this page from the gok data.</para>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="gok-page-feedbacks-apply"/>gok_page_feedbacks_apply ()</title>
+<indexterm><primary>gok_page_feedbacks_apply</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gok_page_feedbacks_apply        (void);</programlisting>
+<para>
+Updates the gok data with values from the controls.
+Note: This is not used yet. The control values are updated each time the
+control changes.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> TRUE if any of the data members have changed, FALSE if not.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gok-page-feedbacks-revert"/>gok_page_feedbacks_revert ()</title>
+<indexterm><primary>gok_page_feedbacks_revert</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gok_page_feedbacks_revert       (void);</programlisting>
+<para>
+Revert to the backup settings for this page.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> TRUE if any of the settings have changed, FALSE 
+if they are all still the same.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gok-page-feedbacks-backup"/>gok_page_feedbacks_backup ()</title>
+<indexterm><primary>gok_page_feedbacks_backup</primary></indexterm><programlisting><link linkend="void">void</link>        gok_page_feedbacks_backup       (void);</programlisting>
+<para>
+Copies all the member settings to backup.</para>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="gok-page-feedbacks-update-controls"/>gok_page_feedbacks_update_controls ()</title>
+<indexterm><primary>gok_page_feedbacks_update_controls</primary></indexterm><programlisting><link linkend="void">void</link>        gok_page_feedbacks_update_controls
+                                            (<link linkend="GokFeedback">GokFeedback</link> *pFeedback);</programlisting>
+<para>
+Updates the controls so they reflect the given feedback.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>pFeedback</parameter>&nbsp;:</term>
+<listitem><simpara> Controls are changed to display this feedback.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gok-page-feedbacks-button-clicked-change-name"/>gok_page_feedbacks_button_clicked_change_name ()</title>
+<indexterm><primary>gok_page_feedbacks_button_clicked_change_name</primary></indexterm><programlisting><link linkend="void">void</link>        gok_page_feedbacks_button_clicked_change_name
+                                            (void);</programlisting>
+<para>
+The button "change name" has been clicked so allow the user to change the
+name of the feedback.</para>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="gok-page-feedbacks-button-clicked-new"/>gok_page_feedbacks_button_clicked_new ()</title>
+<indexterm><primary>gok_page_feedbacks_button_clicked_new</primary></indexterm><programlisting><link linkend="void">void</link>        gok_page_feedbacks_button_clicked_new
+                                            (void);</programlisting>
+<para>
+The button "new feedback" has been clicked so add a new feedback.</para>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="gok-page-feedbacks-fill-combo-feedback-names"/>gok_page_feedbacks_fill_combo_feedback_names ()</title>
+<indexterm><primary>gok_page_feedbacks_fill_combo_feedback_names</primary></indexterm><programlisting><link linkend="void">void</link>        gok_page_feedbacks_fill_combo_feedback_names
+                                            (void);</programlisting>
+<para>
+Fills the combo box that displays the feedback names.
+This also displays the name of the current feedback in the entry control.</para>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="gok-page-feedbacks-button-clicked-delete"/>gok_page_feedbacks_button_clicked_delete ()</title>
+<indexterm><primary>gok_page_feedbacks_button_clicked_delete</primary></indexterm><programlisting><link linkend="void">void</link>        gok_page_feedbacks_button_clicked_delete
+                                            (void);</programlisting>
+<para>
+The button "delete feedback" has been clicked so delete the current feedback.</para>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="gok-page-feedbacks-check-keyflashing-clicked"/>gok_page_feedbacks_check_keyflashing_clicked ()</title>
+<indexterm><primary>gok_page_feedbacks_check_keyflashing_clicked</primary></indexterm><programlisting><link linkend="void">void</link>        gok_page_feedbacks_check_keyflashing_clicked
+                                            (void);</programlisting>
+<para>
+The checkbox has been clicked. Update the current feedback with the change.</para>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="gok-page-feedbacks-spin-keyflashing-changed"/>gok_page_feedbacks_spin_keyflashing_changed ()</title>
+<indexterm><primary>gok_page_feedbacks_spin_keyflashing_changed</primary></indexterm><programlisting><link linkend="void">void</link>        gok_page_feedbacks_spin_keyflashing_changed
+                                            (void);</programlisting>
+<para>
+The spin control has changed. Update the current feedback with the change.</para>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="gok-page-feedbacks-check-sound-clicked"/>gok_page_feedbacks_check_sound_clicked ()</title>
+<indexterm><primary>gok_page_feedbacks_check_sound_clicked</primary></indexterm><programlisting><link linkend="void">void</link>        gok_page_feedbacks_check_sound_clicked
+                                            (void);</programlisting>
+<para>
+The checkbox has been clicked. Update the current feedback with the change.</para>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="gok-page-feedbacks-entry-soundname-changed"/>gok_page_feedbacks_entry_soundname_changed ()</title>
+<indexterm><primary>gok_page_feedbacks_entry_soundname_changed</primary></indexterm><programlisting><link linkend="void">void</link>        gok_page_feedbacks_entry_soundname_changed
+                                            (void);</programlisting>
+<para>
+The sound file name has changed. Update the current feedback with the change.</para>
+<para>
+
+</para></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

@@ -1,0 +1,301 @@
+<refentry id="gok-gok-predictor">
+<refmeta>
+<refentrytitle>gok-predictor</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>GOK Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>gok-predictor</refname><refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+
+<synopsis>
+
+
+
+#define     <link linkend="GOK-PREDICTOR-MAX-VERTICES:CAPS">GOK_PREDICTOR_MAX_VERTICES</link>
+<link linkend="Gok-Predictor">Gok_Predictor</link> <link linkend="gok-predictor-open">gok_predictor_open</link>            ();
+<link linkend="void">void</link>        <link linkend="gok-predictor-close">gok_predictor_close</link>             (const <link linkend="Gok-Predictor">Gok_Predictor</link> gok_predictor);
+<link linkend="void">void</link>        <link linkend="gok-predictor-add-key">gok_predictor_add_key</link>           (const <link linkend="Gok-Predictor">Gok_Predictor</link> gok_predictor,
+                                             const <link linkend="Command-Vertex-Data">Command_Vertex_Data</link> vertex_data);
+const <link linkend="Arraylist">Arraylist</link> <link linkend="gok-predictor-get">gok_predictor_get</link>           (const <link linkend="Gok-Predictor">Gok_Predictor</link> gok_predictor,
+                                             const <link linkend="int">int</link> num_predictions,
+                                             const <link linkend="char">char</link> *keyboard_id,
+                                             const <link linkend="Prediction-Algorithm">Prediction_Algorithm</link> algorithm);
+<link linkend="void">void</link>        <link linkend="gok-predictor-remove-keyboard">gok_predictor_remove_keyboard</link>   (const <link linkend="Gok-Predictor">Gok_Predictor</link> gok_predictor,
+                                             const <link linkend="char">char</link> *keyboard_id);
+<link linkend="void">void</link>        <link linkend="gok-predictor-remove-key">gok_predictor_remove_key</link>        (const <link linkend="Gok-Predictor">Gok_Predictor</link> gok_predictor,
+                                             const <link linkend="Command-Vertex-Data">Command_Vertex_Data</link> vertex_data);
+<link linkend="void">void</link>        <link linkend="gok-predictor-on">gok_predictor_on</link>                (<link linkend="gboolean">gboolean</link> bOnOff);
+<link linkend="void">void</link>        <link linkend="gok-predictor-change-number-predictions">gok_predictor_change_number_predictions</link>
+                                            (<link linkend="int">int</link> Number);
+<link linkend="gboolean">gboolean</link>    <link linkend="gok-predictor-add-prediction-keys">gok_predictor_add_prediction_keys</link>
+                                            (<link linkend="GokKeyboard">GokKeyboard</link> *pKeyboard);
+<link linkend="int">int</link>         <link linkend="gok-predictor-predict">gok_predictor_predict</link>           (<link linkend="Gok-Predictor">Gok_Predictor</link> gP);
+<link linkend="GokKey">GokKey</link>*     <link linkend="gok-predictor-get-real">gok_predictor_get_real</link>          (<link linkend="gchar">gchar</link> *pKeyboardName,
+                                             <link linkend="gchar">gchar</link> *pKeyLabel);
+<link linkend="void">void</link>        <link linkend="gok-predictor-log">gok_predictor_log</link>               (<link linkend="Gok-Predictor">Gok_Predictor</link> gP,
+                                             <link linkend="gchar">gchar</link> *keyboardID,
+                                             <link linkend="gchar">gchar</link> *keyID);
+<link linkend="Gok-Predictor">Gok_Predictor</link> <link linkend="gok-main-get-command-predictor">gok_main_get_command_predictor</link>
+                                            (void);
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="GOK-PREDICTOR-MAX-VERTICES:CAPS"/>GOK_PREDICTOR_MAX_VERTICES</title>
+<indexterm><primary>GOK_PREDICTOR_MAX_VERTICES</primary></indexterm><programlisting>#define GOK_PREDICTOR_MAX_VERTICES 1000
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="gok-predictor-open"/>gok_predictor_open ()</title>
+<indexterm><primary>gok_predictor_open</primary></indexterm><programlisting><link linkend="Gok-Predictor">Gok_Predictor</link> gok_predictor_open            ();</programlisting>
+<para>
+Initialization function.
+If a session file exists, it will recreate the previous state.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> a new Gok_Predictor object.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gok-predictor-close"/>gok_predictor_close ()</title>
+<indexterm><primary>gok_predictor_close</primary></indexterm><programlisting><link linkend="void">void</link>        gok_predictor_close             (const <link linkend="Gok-Predictor">Gok_Predictor</link> gok_predictor);</programlisting>
+<para>
+Tear down function.
+Releases the resources used by a Gok_Predictor object.
+Also dumps the data to a session file.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>gok_predictor</parameter>&nbsp;:</term>
+<listitem><simpara> the instance of Gok_Predictor object to destroy
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gok-predictor-add-key"/>gok_predictor_add_key ()</title>
+<indexterm><primary>gok_predictor_add_key</primary></indexterm><programlisting><link linkend="void">void</link>        gok_predictor_add_key           (const <link linkend="Gok-Predictor">Gok_Predictor</link> gok_predictor,
+                                             const <link linkend="Command-Vertex-Data">Command_Vertex_Data</link> vertex_data);</programlisting>
+<para>
+Adds a key to be used for upcoming predictions.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>gok_predictor</parameter>&nbsp;:</term>
+<listitem><simpara> the instance of Gok_Predictor object
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>vertex_data</parameter>&nbsp;:</term>
+<listitem><simpara> a Command_Vertex_Data object that is created by
+command_vertex_data_create(char *keyboard_id, char *key_id,
+COMMAND_VERTEX_DATA_DEFAULT_WEIGHT)
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gok-predictor-get"/>gok_predictor_get ()</title>
+<indexterm><primary>gok_predictor_get</primary></indexterm><programlisting>const <link linkend="Arraylist">Arraylist</link> gok_predictor_get           (const <link linkend="Gok-Predictor">Gok_Predictor</link> gok_predictor,
+                                             const <link linkend="int">int</link> num_predictions,
+                                             const <link linkend="char">char</link> *keyboard_id,
+                                             const <link linkend="Prediction-Algorithm">Prediction_Algorithm</link> algorithm);</programlisting>
+<para>
+Gets the next n predictions according to the algorithm.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>gok_predictor</parameter>&nbsp;:</term>
+<listitem><simpara> the instance of Gok_Predictor object
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>num_predictions</parameter>&nbsp;:</term>
+<listitem><simpara>  number of key predictions to return
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>keyboard_id</parameter>&nbsp;:</term>
+<listitem><simpara> NOT IMPLEMENTED
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>algorithm</parameter>&nbsp;:</term>
+<listitem><simpara> an enumerated type that defines the algorithm used
+for the prediction
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> an Arraylist of Command_Vertex_Data objects
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gok-predictor-remove-keyboard"/>gok_predictor_remove_keyboard ()</title>
+<indexterm><primary>gok_predictor_remove_keyboard</primary></indexterm><programlisting><link linkend="void">void</link>        gok_predictor_remove_keyboard   (const <link linkend="Gok-Predictor">Gok_Predictor</link> gok_predictor,
+                                             const <link linkend="char">char</link> *keyboard_id);</programlisting>
+<para>
+Function to remove a whole keyboard from the prediction.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>gok_predictor</parameter>&nbsp;:</term>
+<listitem><simpara> the instance of Gok_Predictor object
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>keyboard_id</parameter>&nbsp;:</term>
+<listitem><simpara> id of keyboard to remove from prediction
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gok-predictor-remove-key"/>gok_predictor_remove_key ()</title>
+<indexterm><primary>gok_predictor_remove_key</primary></indexterm><programlisting><link linkend="void">void</link>        gok_predictor_remove_key        (const <link linkend="Gok-Predictor">Gok_Predictor</link> gok_predictor,
+                                             const <link linkend="Command-Vertex-Data">Command_Vertex_Data</link> vertex_data);</programlisting>
+<para>
+Function to remove a key from the prediction.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>gok_predictor</parameter>&nbsp;:</term>
+<listitem><simpara> the instance of Gok_Predictor object
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>vertex_data</parameter>&nbsp;:</term>
+<listitem><simpara> a Command_Vertex_Data object that is created by
+command_vertex_data_create(char *keyboard_id, char *key_id,
+COMMAND_VERTEX_DATA_DEFAULT_WEIGHT)
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gok-predictor-on"/>gok_predictor_on ()</title>
+<indexterm><primary>gok_predictor_on</primary></indexterm><programlisting><link linkend="void">void</link>        gok_predictor_on                (<link linkend="gboolean">gboolean</link> bOnOff);</programlisting>
+<para>
+Turns on (or off) the predictor.
+This adds (or removes) the predictor keys to every keyboard that supports 
+command prediction.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>bOnOff</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gok-predictor-change-number-predictions"/>gok_predictor_change_number_predictions ()</title>
+<indexterm><primary>gok_predictor_change_number_predictions</primary></indexterm><programlisting><link linkend="void">void</link>        gok_predictor_change_number_predictions
+                                            (<link linkend="int">int</link> Number);</programlisting>
+<para>
+<parameter>Number</parameter>: Number of prediction keys.
+</para>
+<para>
+Changes the number of word prediction keys displayed on the keyboard. This
+should be called after the user has selected a new number from the settings
+dialog.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>Number</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gok-predictor-add-prediction-keys"/>gok_predictor_add_prediction_keys ()</title>
+<indexterm><primary>gok_predictor_add_prediction_keys</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gok_predictor_add_prediction_keys
+                                            (<link linkend="GokKeyboard">GokKeyboard</link> *pKeyboard);</programlisting>
+<para>
+<parameter>pKeyboard</parameter>: Pointer to the keyboard that gets the new prediction keys.
+</para>
+<para>
+Adds a row of prediction keys to the given keyboard.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>pKeyboard</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> TRUE if the prediction keys were added, FALSE if not.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gok-predictor-predict"/>gok_predictor_predict ()</title>
+<indexterm><primary>gok_predictor_predict</primary></indexterm><programlisting><link linkend="int">int</link>         gok_predictor_predict           (<link linkend="Gok-Predictor">Gok_Predictor</link> gP);</programlisting>
+<para>
+Makes a prediction. If the currently displayed keyboard is showing prediction
+keys then they are filled in with the predictions.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>gP</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> The number of words predicted.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gok-predictor-get-real"/>gok_predictor_get_real ()</title>
+<indexterm><primary>gok_predictor_get_real</primary></indexterm><programlisting><link linkend="GokKey">GokKey</link>*     gok_predictor_get_real          (<link linkend="gchar">gchar</link> *pKeyboardName,
+                                             <link linkend="gchar">gchar</link> *pKeyLabel);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>pKeyboardName</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>pKeyLabel</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gok-predictor-log"/>gok_predictor_log ()</title>
+<indexterm><primary>gok_predictor_log</primary></indexterm><programlisting><link linkend="void">void</link>        gok_predictor_log               (<link linkend="Gok-Predictor">Gok_Predictor</link> gP,
+                                             <link linkend="gchar">gchar</link> *keyboardID,
+                                             <link linkend="gchar">gchar</link> *keyID);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>gP</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>keyboardID</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>keyID</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gok-main-get-command-predictor"/>gok_main_get_command_predictor ()</title>
+<indexterm><primary>gok_main_get_command_predictor</primary></indexterm><programlisting><link linkend="Gok-Predictor">Gok_Predictor</link> gok_main_get_command_predictor
+                                            (void);</programlisting>
+<para>
+Accessor function.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> A pointer to command prediction engine
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

@@ -51,4 +51,6 @@ struct _GokUTF8WordCompleteClass
 	GokWordCompleteClass parent_class;
 };
 
+GType gok_utf8_wordcomplete_get_type (void);
+
 #endif /* #ifndef _GOK_UTF8_WORDCOMPLETE_H__ */

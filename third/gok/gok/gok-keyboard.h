@@ -69,6 +69,7 @@ KEYBOARD_TYPE_MAIN,
 KEYBOARD_TYPE_APPLICATIONS,
 KEYBOARD_TYPE_MENUS,
 KEYBOARD_TYPE_MENUITEMS,
+KEYBOARD_TYPE_ACTIONS,
 KEYBOARD_TYPE_ALLTOOLBARS,
 KEYBOARD_TYPE_TOOLBAR,
 KEYBOARD_TYPE_GUI,
@@ -125,6 +126,8 @@ typedef struct GokKeyboard {
 	gboolean bDynamicallyCreated;
 	gint NumberRows;
 	gint NumberColumns;
+        gint keyWidth;
+        gint keyHeight;
 	gboolean bRequiresLayout;
 	gboolean bLaidOut;
 	gboolean bSupportsWordCompletion;
@@ -180,9 +183,9 @@ gboolean gok_keyboard_xkb_select (Display *display);
 void gok_keyboard_notify_keys_changed (void);
 void gok_keyboard_notify_xkb_event (XkbEvent* event);
 gboolean gok_keyboard_layout (GokKeyboard* pKeyboard, KeyboardLayouts layout, KeyboardShape shape, gboolean force);
-gboolean gok_keyboard_branch_byKey (GokKey* pKey);
+gboolean gok_keyboard_branch_byKey (GokKeyboard *keyboard, GokKey* pKey);
 gboolean gok_keyboard_branch_gui (AccessibleNode* pNodeAccessible, GokSpySearchType type);
-gboolean gok_keyboard_branch_gui_actions (AccessibleNode* pNodeAccessible);
+gboolean gok_keyboard_branch_gui_actions (GokKeyboard *keyboard, AccessibleNode* pNodeAccessible, gint action_ndx);
 gboolean gok_keyboard_branch_edittext (void);
 gboolean gok_chunker_chunk (GokKeyboard* pKeyboard);
 gboolean gok_chunker_chunk_rows_ttb (GokKeyboard* pKeyboard, gint ChunkOrder);
@@ -192,7 +195,7 @@ gboolean gok_chunker_chunk_cols_rtl (GokKeyboard* pKeyboard, gint ChunkOrder);
 gboolean gok_chunker_chunk_recursive (GokKeyboard* pKeyboard, gint ChunkOrder, gint Groups);
 GokKey* gok_chunker_find_center (GokKeyboard* pKeyboard, gint centerRow, gint centerColumn, gint* pRowsDistant, gint* pColumnsDistant);
 GokKey* gok_keyboard_output_selectedkey (void);
-GokKey* gok_keyboard_output_key(GokKey* pKeySelected);
+GokKey* gok_keyboard_output_key(GokKeyboard *keyboard, GokKey* pKeySelected);
 gboolean gok_keyboard_validate_dynamic_keys (Accessible* pAccessibleForeground);
 void gok_keyboard_fill_row (GokKeyboard* pKeyboard, gint RowNumber);
 void gok_keyboard_insert_array (GokKey* pKey);
@@ -210,6 +213,9 @@ gint gok_keyboard_get_keyboards(void);
 GokKey *gok_keyboard_find_key_at (GokKeyboard *pKeyboard, gint x, gint y, GokKey *prev);
 GokKeyboardDirection gok_keyboard_parse_direction (const gchar *string);
 gint gok_keyboard_add_predictions (GokKeyboard *pKeyboard, gchar **list);
+GokKeyboardValueOp gok_keyboard_parse_value_op (const gchar *string);
+gboolean gok_keyboard_update_dynamic_keys (GokKeyboard *pKeyboard, GokSpyUIFlags change_mask, GokSpyUIFlags flags);
+gint gok_keyboard_set_predictions (GokKeyboard *pKeyboard, gchar **list, gchar *add_word);
 
 #ifdef __cplusplus
 }

@@ -31,6 +31,7 @@
 #include <gdk/gdk.h>
 #include <math.h>
 #include "gok-keyboard.h"
+#include "gok-mousecontrol.h"
 #include "callbacks.h"
 #include "gok-branchback-stack.h"
 #include "gok-data.h"
@@ -110,11 +111,15 @@ static int       *m_SectionColStart;
 static int        m_MinSectionTop = G_MAXINT;
 static int        m_MinSectionLeft = G_MAXINT;
 
+static GokKeyboard *_core_compose_keyboard;
+
 /* private prototypes */
 static gboolean gok_keyboard_focus_object (Accessible *accessible);
-static gboolean gok_keyboard_branch_gui_selectaction (AccessibleNode *node);
+static gboolean gok_keyboard_branch_gui_selectaction (GokKeyboard *keyboard, AccessibleNode *node, gint action_ndx);
 static gboolean gok_keyboard_branch_gui_valuator (AccessibleNode* node);
 static gboolean gok_keyboard_do_leaf_action (Accessible *parent);
+static gboolean gok_keyboard_branch_or_invoke_actions (GokKeyboard *keyboard, AccessibleNode *node, gint action_ndx);
+static GokKeyboard* gok_keyboard_get_compose (void);
 
 /**
 * gok_keyboard_initialize
@@ -219,7 +224,7 @@ gok_keyboard_notify_keys_changed (void)
 	    if (gok_main_get_current_keyboard () == tmp) 
 	    {
 		gok_main_display_scan_previous ();
-		gok_main_display_scan (NULL, "Keyboard",
+		gok_main_display_scan (gok_keyboard_get_compose (), "Keyboard",
 				       KEYBOARD_TYPE_UNSPECIFIED, 
 				       KEYBOARD_LAYOUT_UNSPECIFIED,
 				       KEYBOARD_SHAPE_UNSPECIFIED);
@@ -251,7 +256,7 @@ gok_keyboard_notify_xkb_event (XkbEvent *event)
 		/* rebuild GOK's 'Compose' keyboard */
 		if (gok_data_get_use_xkb_kbd () && event->map.changed & XkbKeySymsMask)
 		{
-			GokKeyboard *compose_kbd = gok_main_keyboard_find_byname ("Keyboard");
+			GokKeyboard *compose_kbd = gok_keyboard_get_compose ();
 			GokKeyboard *prev, *next;
 			if (compose_kbd) 
 			{
@@ -1324,6 +1329,8 @@ GokKeyboard* gok_keyboard_new ()
 	pGokKeyboardNew->bCommandPredictionKeysAdded = FALSE;
 	pGokKeyboardNew->expand = GOK_EXPAND_SOMETIMES;
 	pGokKeyboardNew->pAccessible = NULL;
+	pGokKeyboardNew->keyWidth = 0;
+	pGokKeyboardNew->keyHeight = 0;
 	pGokKeyboardNew->flags.value = 0;
 	
 	m_NumberOfKeyboards++;
@@ -1595,19 +1602,20 @@ void gok_keyboard_calculate_font_size (GokKeyboard* pKeyboard)
 	GokKey* pKey;
 	gint sizeFont;
 
+	gint key_width;
+	gint key_height;
+
+	/* if this keyboard doesn't have its own width/height values, use prefs */
+	key_width = pKeyboard->keyWidth ? 
+	    pKeyboard->keyWidth : gok_data_get_key_width ();
+	key_height = pKeyboard->keyHeight ? 
+	    pKeyboard->keyHeight : gok_data_get_key_height ();
+
 	/* any time the key size changes, recalculate the font size */
-	if ((m_WidthKeyFont != gok_data_get_key_width()) ||
-		(m_HeightKeyFont != gok_data_get_key_height()))
+	if ((m_WidthKeyFont != key_width) ||
+		(m_HeightKeyFont != key_height))
 	{
-		m_WidthKeyFont = gok_data_get_key_width();
-		m_HeightKeyFont = gok_data_get_key_height();
-		
-		pKeyboardTemp = gok_main_get_first_keyboard();
-		while (pKeyboardTemp != NULL)
-		{
-			pKeyboardTemp->bFontCalculated = FALSE;
-			pKeyboardTemp = pKeyboardTemp->pKeyboardNext;
-		}
+	        pKeyboard->bFontCalculated = FALSE;
 	}
 	
 	/* check this flag before doing the work */
@@ -2141,9 +2149,9 @@ void gok_keyboard_position_keys (GokKeyboard* pKeyboard, GtkWidget* pWindow)
 	g_assert (pWindow != NULL);
 
 	/* get the key size */
-	/* start with the key size from the gok_data */
-	widthKey = gok_data_get_key_width();
-	heightKey = gok_data_get_key_height();
+	/* start with the key size from the keyboard or gok_data */
+	widthKey = pKeyboard->keyWidth ? pKeyboard->keyWidth : gok_data_get_key_width();
+	heightKey = pKeyboard->keyHeight ? pKeyboard->keyHeight : gok_data_get_key_height();
 	spacingKey = gok_data_get_key_spacing();
 
 	/* if this is an 'expand' keyboard, calculate the effective key width */
@@ -2218,13 +2226,14 @@ gok_keyboard_page_select (AccessibleNode *node)
 		g_assert (selection != NULL);
 		retval = AccessibleSelection_selectChild (selection, index);
 	}
-	
+
 	return retval;
 }
 
 
 /**
 * gok_keyboard_branch_byKey
+* @keyboard: the keyboard containing the key.
 * @pKey: The key that is causes the branch.
 *
 * Branch to another keyboard specified by given key.
@@ -2233,7 +2242,7 @@ gok_keyboard_page_select (AccessibleNode *node)
 * returns: TRUE if keyboard branched, FALSE if not.
 **/
 gboolean 
-gok_keyboard_branch_byKey (GokKey* pKey)
+gok_keyboard_branch_byKey (GokKeyboard *keyboard, GokKey* pKey)
 {
 	gboolean is_branched, is_active;
 	AccessibleStateSet *pStateSet;
@@ -2262,7 +2271,7 @@ gok_keyboard_branch_byKey (GokKey* pKey)
 		case KEYTYPE_BRANCHGUITABLE:
 			gok_log("branch gui TABLE");
 			return gok_keyboard_branch_gui (pKey->accessible_node, 
-							GOK_SPY_SEARCH_TABLE_ROWS);
+							GOK_SPY_SEARCH_TABLE_CELLS);
 			break;
 			
 		case KEYTYPE_BRANCHGUISELECTION:
@@ -2302,7 +2311,9 @@ gok_keyboard_branch_byKey (GokKey* pKey)
 
 	        case KEYTYPE_BRANCHGUISELECTACTION:	
 			gok_log("branch gui_actions");
-			is_branched = gok_keyboard_branch_gui_selectaction (pKey->accessible_node);
+			is_branched = gok_keyboard_branch_gui_selectaction (keyboard, 
+									    pKey->accessible_node,
+									    pKey->action_ndx);
 			return is_branched;
 			break;
 
@@ -2313,7 +2324,8 @@ gok_keyboard_branch_byKey (GokKey* pKey)
 			break;
 		case KEYTYPE_BRANCHGUIACTIONS:
 			gok_log("branch gui_actions");
-			is_branched = gok_keyboard_branch_gui_actions (pKey->accessible_node);
+			is_branched = gok_keyboard_branch_gui_actions (gok_main_get_current_keyboard (),
+								       pKey->accessible_node, pKey->action_ndx);
 			if (!is_branched) 
 			{
 				if (pKey->accessible_node)
@@ -2375,7 +2387,7 @@ gboolean
 gok_keyboard_update_dynamic (GokKeyboard* pKeyboard)
 {
 	AccessibleNode* pNodeAccessible;
-	Accessible* list_parent;
+	Accessible* list_parent = NULL;
 	GSList *nodes = NULL;
 	Accessible* editbox = NULL;
 	AccessibleStateSet *pStateSet;
@@ -2384,6 +2396,7 @@ gok_keyboard_update_dynamic (GokKeyboard* pKeyboard)
 	GokKey* pKeyPrevious;
 	gint column;
 	gboolean is_active;
+	gboolean did_actionkeys = FALSE;
 	
 	gok_log_enter();
 	g_assert(pKeyboard != NULL);
@@ -2413,7 +2426,6 @@ gok_keyboard_update_dynamic (GokKeyboard* pKeyboard)
 	else
 	{
 #endif
-	gok_log("calling get list with accessible [%#x]", pKeyboard->pAccessible);
 
 	/* create new keys for the keyboard */
 	switch (pKeyboard->search_type)
@@ -2421,8 +2433,8 @@ gok_keyboard_update_dynamic (GokKeyboard* pKeyboard)
 	case GOK_SPY_SEARCH_CHILDREN:
 		nodes = gok_spy_get_children (pKeyboard->pAccessible);
 		break;
-	case GOK_SPY_SEARCH_TABLE_ROWS:
-		nodes = gok_spy_get_table_row_nodes (pKeyboard->pAccessible);
+	case GOK_SPY_SEARCH_TABLE_CELLS:
+		nodes = gok_spy_get_table_nodes (pKeyboard->pAccessible);
 		break;
         case GOK_SPY_SEARCH_COMBO:
 		/* sometimes a combobox has an editbox child which we should expose */
@@ -2450,18 +2462,11 @@ gok_keyboard_update_dynamic (GokKeyboard* pKeyboard)
 		nodes =	gok_spy_get_actionable_descendants (pKeyboard->pAccessible, NULL);
 		break;
 	default:
+		gok_log("calling get list with accessible [%#x]", pKeyboard->pAccessible);
 		nodes =	gok_spy_get_list (pKeyboard->pAccessible);
 		break;
 	}
 
-	if (nodes == NULL)
-	{
-		gok_log_x ("Warning: no nodes found!");
-		gok_log_leave();
-		return FALSE;
-	}
-	
-	pNodeAccessible = nodes->data;
 	
 	/* add the new keys to the dynamic keyboard */
 	/* first, add a 'back' key */
@@ -2477,10 +2482,19 @@ gok_keyboard_update_dynamic (GokKeyboard* pKeyboard)
 
 	pKeyPrevious = pKey;
 		
-	/* create all the gui keys as one long row */
 	/* the keys will be repositioned in gok_keyboard_layout */
 	pKeyboard->bLaidOut = FALSE;
 
+	if (nodes == NULL)
+	{
+		gok_log_x ("Warning: no nodes found!");
+		gok_log_leave();
+		return TRUE;
+		/* return FALSE; */
+		/* we need a good (tested) fail gracefully here */
+	}
+	
+	/* create all the gui keys as one long row */
 	column = 1;
 
 	while (nodes)
@@ -2498,12 +2512,51 @@ gok_keyboard_update_dynamic (GokKeyboard* pKeyboard)
 			if (pKeyboard->search_type == GOK_SPY_SEARCH_MENU && 
 			    pNodeAccessible->flags.data.has_context_menu) 
 			{
-				AccessibleAction *action = Accessible_getAction (pNodeAccessible->paccessible);
 				gok_log("setting key type for context menu key to BRANCHGUIACTIONS");
 				pKey->Type = KEYTYPE_BRANCHGUIACTIONS;
 				pKey->Style = KEYSTYLE_BRANCHGUIACTIONS;
 			}
-			else 
+			else if ((pKeyboard->search_type == GOK_SPY_SEARCH_ACTIONABLE) && !did_actionkeys) 
+			{
+				gint action_count, i;
+				did_actionkeys = TRUE;
+				AccessibleAction *action = 
+					Accessible_getAction (pNodeAccessible->paccessible);
+				if (!action) 
+					break;
+				action_count = AccessibleAction_getNActions (action);
+				for (i = 0; i < action_count; ++i)
+				{
+					gchar *action_name;
+					if (i)
+					{
+						pKey = gok_key_new (pKeyPrevious, NULL, pKeyboard);
+					}
+#ifdef GOK_SHOW_ONLY_ACTIONS					
+					else
+					{
+						AccessibleStateSet_unref (pStateSet);
+					}
+#endif /* GOK_SHOW_ONLY_ACTIONS */
+					pKeyPrevious = pKey;					
+					gok_log("setting key type for context menu key to BRANCHGUIACTIONS");
+					pKey->Type = KEYTYPE_BRANCHGUIACTIONS;
+					pKey->Style = KEYSTYLE_BRANCHGUIACTIONS;
+					pKey->Top = 0;
+					pKey->Bottom = 1;
+					pKey->Left = column;
+					pKey->Right = column + 1;
+					pKey->action_ndx = i;
+					gok_spy_accessible_ref (pNodeAccessible->paccessible);
+					pKey->accessible_node = pNodeAccessible;
+					action_name = AccessibleAction_getName (action, i);
+					gok_key_add_label (pKey, action_name ? g_strdup (action_name) : g_strdup (""), 0, 0, NULL);
+				}
+#ifdef GOK_SHOW_ONLY_ACTIONS					
+				break;
+#endif /* GOK_SHOW_ONLY_ACTIONS */
+				}
+			else
 			{
 				switch (Accessible_getRole(pNodeAccessible->paccessible))
 				{
@@ -2518,11 +2571,6 @@ gok_keyboard_update_dynamic (GokKeyboard* pKeyboard)
 					pKey->Type = KEYTYPE_BRANCHMENUITEMS;
 					pKey->Style = gok_style_if_enabled (pStateSet, KEYSTYLE_BRANCHMENUS);
 					break;
-					/* add cases here	
-					   case SPI_ROLE_XXX:
-					   pKey->Type = KEYTYPE_BRANCHXXX;
-					   break;
-					*/
 				case SPI_ROLE_CHECK_BOX:
 				case SPI_ROLE_CHECK_MENU_ITEM:
 				case SPI_ROLE_TOGGLE_BUTTON:
@@ -2554,13 +2602,14 @@ gok_keyboard_update_dynamic (GokKeyboard* pKeyboard)
 					break;
 				case SPI_ROLE_SPIN_BUTTON:
 				case SPI_ROLE_TEXT:
-					/* should only be in the list if it's editable...*/
+					pKey->FontSizeGroup = FONT_SIZE_GROUP_UNIQUE;
 					if (pNodeAccessible->flags.data.is_link) {
 						pKey->Type = KEYTYPE_HYPERLINK;
 						pKey->Style = KEYSTYLE_HYPERLINK;
 						is_active = FALSE;
 					}
 					else {
+						/* should only be in the list if it's editable...*/
 						pKey->Type = KEYTYPE_BRANCHTEXT;
 						if (AccessibleStateSet_contains (pStateSet, SPI_STATE_EDITABLE)) { 
 							pKey->Style = gok_style_if_enabled (pStateSet, KEYSTYLE_BRANCHTEXT);
@@ -2575,7 +2624,7 @@ gok_keyboard_update_dynamic (GokKeyboard* pKeyboard)
 					break;
 				case SPI_ROLE_HTML_CONTAINER: /* TODO: check Hypertext interface instead */
 					pKey->Type = KEYTYPE_BRANCHHYPERTEXT;
-					pKey->Style = KEYSTYLE_BRANCH; /* reuse 'normal' branch style for now. */
+					pKey->Style = KEYSTYLE_BRANCHHYPERTEXT; /* reuse 'normal' branch style for now. */
 					is_active = AccessibleStateSet_contains (pStateSet, 
 										 SPI_STATE_SENSITIVE);
 					pKey->ComponentState.active = is_active;
@@ -2628,29 +2677,52 @@ gok_keyboard_update_dynamic (GokKeyboard* pKeyboard)
 					else {
 						/* this might be a dangerous catch all... */
 						gok_log("setting key type BRANCHGUIACTIONS");
-						pKey->Type = KEYTYPE_BRANCHGUIACTIONS;
-						pKey->Style = gok_style_if_enabled (pStateSet, KEYSTYLE_BRANCHGUIACTIONS);
+						if (list_parent)
+						{
+						    pKey->Type = KEYTYPE_BRANCHGUISELECTACTION;
+						}
+						else
+						{
+						    pKey->Type = KEYTYPE_BRANCHGUIACTIONS;
+						}
+						pKey->Style = gok_style_if_selectable (pStateSet, KEYSTYLE_BRANCHGUIACTIONS);
 						/* for "generic" case we allow selectable but not enabled... */
 						if (pKey->Style != KEYSTYLE_BRANCHGUIACTIONS) {
-						    pKey->Style = gok_style_if_selectable (pStateSet, KEYSTYLE_BRANCHGUIACTIONS);
+						    pKey->Style = gok_style_if_enabled (pStateSet, KEYSTYLE_BRANCHGUIACTIONS);
 						    if (pKey->Style == KEYSTYLE_BRANCHGUIACTIONS) {
-							pKey->Type = KEYTYPE_BRANCHGUISELECTACTION;
+							pKey->Type = KEYTYPE_BRANCHGUIACTIONS;
 						    }
 						}
 					}
 					break;
 				}
 			}
+			if (pNodeAccessible->flags.data.inside_html_container) {
+				if (pKey->FontSizeGroup == FONT_SIZE_GROUP_UNDEFINED) {
+					pKey->FontSizeGroup = FONT_SIZE_GROUP_CONTENT; 
+				}
+				if (pNodeAccessible->flags.data.is_link) {
+						if (pKey->Style != KEYSTYLE_INSENSITIVE)
+						    pKey->Style = KEYSTYLE_HYPERLINK;
+				}
+				else if (pKey->Style == KEYSTYLE_BRANCHGUIACTIONS) {
+						pKey->Style = KEYSTYLE_HTMLACTION;
+				}
+			}
 			AccessibleStateSet_unref (pStateSet);
-			pKey->Top = 0;
-			pKey->Bottom = 1;
-			pKey->Left = column;
-			pKey->Right = column + 1;
-			gok_spy_accessible_ref (pNodeAccessible->paccessible);
-			pKey->accessible_node = pNodeAccessible;
-			
-			gok_log("adding label %s to dynamic key",pNodeAccessible->pname);
-			gok_key_add_label (pKey, pNodeAccessible->pname, 0, 0, NULL);
+			/* is the latest key an action key? (already initialized) */
+			if (!pKey->action_ndx) {
+				/* not an action key so we need to configure. */
+				pKey->Top = 0;
+				pKey->Bottom = 1;
+				pKey->Left = column;
+				pKey->Right = column + 1;
+				gok_spy_accessible_ref (pNodeAccessible->paccessible);
+				pKey->accessible_node = pNodeAccessible;
+				
+				gok_log("adding label %s to dynamic key",pNodeAccessible->pname);
+				gok_key_add_label (pKey, pNodeAccessible->pname, 0, 0, NULL);
+			}
 			
 			column++;
 		}
@@ -2735,7 +2807,7 @@ gok_keyboard_branch_gui (AccessibleNode *pNodeAccessible,
 		pKeyboard->flags.data.gui = 1;
 		gok_keyboard_set_name (pKeyboard, _("GUI"));
 		break;
-	case GOK_SPY_SEARCH_TABLE_ROWS:
+	case GOK_SPY_SEARCH_TABLE_CELLS:
 		pKeyboard->Type = KEYBOARD_TYPE_GUI;
 		pKeyboard->flags.data.gui = 1;
 		gok_keyboard_set_name (pKeyboard, _("Table"));
@@ -2750,12 +2822,14 @@ gok_keyboard_branch_gui (AccessibleNode *pNodeAccessible,
 		gok_keyboard_set_name (pKeyboard, _("Applications"));   
 		break;
 	case GOK_SPY_SEARCH_ACTIONABLE:
+		pKeyboard->Type = KEYBOARD_TYPE_ACTIONS;
+		gok_keyboard_set_name (pKeyboard, "Actions"); /* I18N TODO in HEAD, mark for xlation */
+		break;
 	case GOK_SPY_SEARCH_MENU:
 	default:
 		pKeyboard->Type = KEYBOARD_TYPE_MENUS;
 		pKeyboard->flags.data.menus = 1;
 		gok_keyboard_set_name (pKeyboard, _("Menu"));
-		pKeyboard->search_type = type;
 		break;
 	}
 	
@@ -2776,31 +2850,34 @@ gok_keyboard_branch_gui (AccessibleNode *pNodeAccessible,
 
 /**
 * gok_keyboard_branch_gui_selectaction
-* @pNodeAccessible: the node thich represents the gui widget
+* @node: the node which represents the gui widget
 *
 * Select the given child and invoke the first available action.
 *
-* returns: TRUE if the selection+action were carried out, FALSE if not.
+* returns: TRUE if we branched to a new keyboard, FALSE if not.
 **/
 static gboolean 
-gok_keyboard_branch_gui_selectaction (AccessibleNode* node)
+gok_keyboard_branch_gui_selectaction (GokKeyboard *keyboard, AccessibleNode* node, gint action_ndx)
 {
 	AccessibleSelection* aselection;
 	Accessible *parent;
+	AccessibleTable *table;
 	gboolean retval = FALSE;
+	gboolean selected = FALSE;
 
 	parent = Accessible_getParent (node->paccessible);
 	if (parent) 
 	{
-	        gint index = Accessible_getIndexInParent (node->paccessible);
+		gint index = Accessible_getIndexInParent (node->paccessible);
 		aselection = Accessible_getSelection (parent);
 		if (aselection) 
 		{
-			if ((index >= 0) && AccessibleSelection_selectChild (aselection, index))
+			if ((index >= 0) && 
+			    ((selected = AccessibleSelection_selectChild (aselection, index)) != FALSE))
 			{
-				if (gok_keyboard_branch_gui_actions (node))
+				if (gok_keyboard_branch_or_invoke_actions (keyboard, node, action_ndx))
 				{
-				    gok_log ("SELECTACTION succeeded");
+					gok_log ("SELECTACTION succeeded");
 				    Accessible_unref (parent);
 				    AccessibleSelection_unref (aselection);
 				    return TRUE;
@@ -2808,9 +2885,9 @@ gok_keyboard_branch_gui_selectaction (AccessibleNode* node)
 			}
 			AccessibleSelection_unref (aselection);
 		}
-		if (!retval)
+		if (!selected)
 		{
-		    AccessibleTable *table = Accessible_getTable (parent);
+		    table = Accessible_getTable (parent);
 		    if (table != NULL) 
 		    {
 			gint row = AccessibleTable_getRowAtIndex (table, index);
@@ -2818,20 +2895,19 @@ gok_keyboard_branch_gui_selectaction (AccessibleNode* node)
 			{
 			    AccessibleComponent *component = Accessible_getComponent (node->paccessible);
 			    retval = AccessibleTable_addRowSelection (table, row);
+			    gok_log ("row selection added; grabbing focus");
 			    if (component)
 			    {
-				    AccessibleComponent_grabFocus (component);
-				    AccessibleComponent_unref (component);
+				AccessibleComponent_grabFocus (component);
+				AccessibleComponent_unref (component);
 			    }
 			    if (Accessible_isAction (node->paccessible))
 			    {
-				    AccessibleAction *action = Accessible_getAction (node->paccessible);
-				    retval = retval || AccessibleAction_doAction (action, 0);
-				    AccessibleAction_unref (action);
+				retval = gok_keyboard_branch_or_invoke_actions (keyboard, node, action_ndx);
 			    }
 			    else
 			    {
-				    retval = gok_keyboard_do_leaf_action (node->paccessible) || retval;
+				gok_keyboard_do_leaf_action (node->paccessible);
 			    }
 			}
 			AccessibleTable_unref (table);
@@ -2839,9 +2915,10 @@ gok_keyboard_branch_gui_selectaction (AccessibleNode* node)
 		}
 		Accessible_unref (parent);
 	}
-	if (!retval) 
+	
+	if (retval) 
 	{
-		gok_log ("SELECTACTION failed");
+	    gok_log ("SELECTACTION branched");
 	}
 	return retval;
 }
@@ -2856,6 +2933,7 @@ gok_keyboard_get_actionable_child_count (Accessible *parent)
     gint child_count;
     gint max_actionable = 20;
     gint actionable_count = 0;
+    g_assert (parent);
     child_count = Accessible_getChildCount (parent);
     if (child_count > 0) 
     {
@@ -2901,10 +2979,13 @@ gok_keyboard_do_leaf_action (Accessible *parent)
 	if (Accessible_isAction (child))
 	{
 	    AccessibleAction *action = Accessible_getAction (child);
-	    AccessibleAction_doAction (action, 0);
+	    gchar *action_name = AccessibleAction_getName (action, 0);
+	    gboolean retval;
+	    gok_log ("invoking action %s", action_name);
+	    retval = AccessibleAction_doAction (action, 0);
 	    AccessibleAction_unref (action);
 	    Accessible_unref (child);
-	    return TRUE;
+	    return retval;
 	}
 	else if (gok_keyboard_do_leaf_action (child)) 
 	{
@@ -2915,85 +2996,168 @@ gok_keyboard_do_leaf_action (Accessible *parent)
     return FALSE;
 }
 
+/* helper */
+static gboolean 
+gok_keyboard_has_multi_useful_actions (Accessible* acc, AccessibleAction* action)
+{
+	gint nactions;
+	gboolean retval = FALSE;
+	
+	g_assert (action);
+	nactions = AccessibleAction_getNActions (action);
+	if (nactions <= 1) {
+	                retval = FALSE;
+        }
+	else if ((Accessible_getRole(acc) != SPI_ROLE_PUSH_BUTTON)) {
+			retval = TRUE;
+	}
+	else {
+		/* do the actions all reduce to click? */
+		char* action_name = NULL;
+		action_name = AccessibleAction_getName (action, 0);
+		if (!action_name) { 
+			gok_log_x ("Action has no name!");
+			retval = TRUE; 
+		}
+		else if (strcmp (action_name, "click") != 0) {
+			SPI_freeString (action_name);
+			retval = TRUE; 
+		}
+		else {
+			SPI_freeString (action_name);
+			while (nactions > 1) {
+				action_name = AccessibleAction_getName (action, 1);
+				if (!action_name) { 
+					gok_log_x ("Action has no name!");
+					retval = TRUE; 
+					break;
+				}
+				if ((strcmp (action_name, "press") != 0) && 
+				(strcmp (action_name, "release") != 0)) {
+					SPI_freeString (action_name);
+					retval = TRUE; 
+					break;
+				}
+				SPI_freeString (action_name);
+				nactions--;
+			}
+		}
+	}
+	return retval;
+}
+
+/**
+* gok_keyboard_branch_or_invoke_actions 
+* @node: the AccessibleNode which represents the gui widget
+*
+* If the component associated with @Accessible has only one action, and
+* no actionable children, invoke the singleton, otherwise build a keyboard 
+* showing action(s) and/or actionable children.
+*
+* returns: TRUE if we branch here, false if we do not (i.e. if we invoke instead).
+**/
+static gboolean 
+gok_keyboard_branch_or_invoke_actions (GokKeyboard *keyboard, AccessibleNode *node, gint action_ndx)
+{
+    gboolean retval = FALSE;
+    AccessibleAction *action;
+    gchar *action_name;
+
+    g_assert (keyboard);
+    g_assert (node);
+    g_assert (node->paccessible);
+
+    action = Accessible_getAction (node->paccessible);
+    if (action) 
+    {
+	if (keyboard && (keyboard->search_type == GOK_SPY_SEARCH_ACTIONABLE))
+	{
+	    action_name = AccessibleAction_getName (action, action_ndx);
+	    gok_log ("invoking action %s", action_name);
+	    retval = AccessibleAction_doAction (action, action_ndx);
+	}
+	else if ( gok_keyboard_has_multi_useful_actions (node->paccessible, action) ||
+		 gok_keyboard_get_actionable_child_count (node->paccessible))
+	{
+	    /* 
+	     * branch, don't invoke : note that we don't set retval here, 
+	     * as a branch isn't the same as invocation 
+	     */
+	    gok_keyboard_branch_gui (node, GOK_SPY_SEARCH_ACTIONABLE);
+	}
+	else
+	{
+	    action_name = AccessibleAction_getName (action, action_ndx);
+	    gok_log ("invoking action %s", action_name);
+	    retval = AccessibleAction_doAction (action, action_ndx);
+	}
+	AccessibleAction_unref (action);
+    }
+    return retval;
+}
+
 /**
 * gok_keyboard_branch_gui_actions
-* @pNodeAccessible: the node thich represents the gui widget
+* @pNodeAccessible: the node which represents the gui widget
 *
 * Widgets can have multiple actions - build a keyboard of them.
 *
 * returns: TRUE if the keyboard was displayed, FALSE if not.
 **/
 gboolean 
-gok_keyboard_branch_gui_actions (AccessibleNode* node)
+gok_keyboard_branch_gui_actions (GokKeyboard *keyboard, AccessibleNode* node, gint action_ndx)
 {
 	AccessibleAction* paaction, *child_action;
-	AccessibleSelection* paselection;
+	Accessible* parent = NULL;
+	AccessibleStateSet *stateset = NULL;
 	gint i = 0;
+	gboolean branched = FALSE;
 	paaction = NULL;
 		
 	gok_log_enter();
 
+	g_assert (keyboard);
 	g_assert(node != NULL);
 
-	/* Editable text fields: branch to the composer instead of invoking action */
-        if (Accessible_isEditableText (node->paccessible))
+	parent = Accessible_getParent (node->paccessible);
+	/* handle the "selection" case: always attempt to select the current item */
+	if (Accessible_isSelection (node->paccessible) || 
+         Accessible_isSelection (parent))
 	{
-		if (gok_keyboard_focus_object (node->paccessible))
-		{
-			return gok_main_display_scan (NULL, "Keyboard", KEYBOARD_TYPE_UNSPECIFIED,
-						      KEYBOARD_LAYOUT_UNSPECIFIED, 
-						      KEYBOARD_SHAPE_UNSPECIFIED);
-		}
+	    branched = gok_keyboard_branch_gui_selectaction (keyboard, node, action_ndx);
 	}
+	if (parent)
+         Accessible_unref (parent);
 	
-	/* handle the "selection" case */
-	paselection = Accessible_getSelection (node->paccessible);
-	if (paselection != NULL) 
+	/* Editable text fields: branch to the composer if we've successfully invoked an action */
+	if (!branched && Accessible_isEditableText (node->paccessible) &&
+	    ((stateset = Accessible_getStateSet (node->paccessible)) != NULL) &&
+	    (AccessibleStateSet_contains (stateset, SPI_STATE_EDITABLE)) &&
+	    (gok_keyboard_focus_object (node->paccessible)))
 	{
-	    gok_log_leave ();
-	    return gok_keyboard_branch_gui_selectaction (node);
+	    gok_log ("branching to Compose kbd...\n");
+
+	    branched = gok_main_display_scan (gok_keyboard_get_compose (), "Keyboard", 
+					      KEYBOARD_TYPE_UNSPECIFIED,
+					      KEYBOARD_LAYOUT_UNSPECIFIED, 
+					      KEYBOARD_SHAPE_UNSPECIFIED);
 	}
-	else 
+	else if (!branched)
 	{
-	/* TODO: build a keyboard for a single actionable item if more than one action available */
-	    paaction = Accessible_getAction(node->paccessible);
-	    if (paaction != NULL)
-	    {
-	        /* 
-		 * First we check for actionable children.  For the cases we know of, it's more useful 
-		 * to branch to actionable children at this point than to just do the default action.
-		 * Also, if there is only one actionable child, experience shows that it's better
-		 * to perform the default action on the (single actionable) child than the parent.
-		 */
-                gint n_actionable_children;
-		n_actionable_children = gok_keyboard_get_actionable_child_count (node->paccessible);
-		if (n_actionable_children > 1) 
-		{
-		    return gok_keyboard_branch_gui (node, GOK_SPY_SEARCH_ACTIONABLE);
-		}
-		else if (n_actionable_children == 1) 
-		{
-		    gok_keyboard_do_leaf_action (node->paccessible);
-		}
-		/* otherwise, for now we just perform the first action */
-		else 
-		{
-		    gok_log ("invoking action.. waiting...");
-		    AccessibleAction_doAction(paaction, node->link);
-		    gok_log ("action complete.");
-		    AccessibleAction_unref (paaction);
-		}
-	    }
+	     branched = gok_keyboard_branch_or_invoke_actions (keyboard, node, action_ndx);
 	}
 
+	if (stateset)
+	    AccessibleStateSet_unref (stateset);
+
 	/* branch back when a menu item is activated*/
-	if (gok_spy_is_menu_role(Accessible_getRole(node->paccessible))){
+	if (!branched && gok_spy_is_menu_role(Accessible_getRole(node->paccessible))){
 		gok_log_leave();
 		return gok_main_display_scan_previous();
 	}
 	
 	gok_log_leave();
-	return FALSE;	
+	return branched;	
 }
 
 
@@ -3394,6 +3558,9 @@ gok_keyboard_focus_object (Accessible *accessible)
 {
 	gboolean retval = FALSE;
 	AccessibleComponent *component;
+
+	gok_log ("Attempting to focus object %p :", accessible);
+
 	if (accessible) {
 		component = Accessible_getComponent (accessible);
 		if (component) {
@@ -3401,6 +3568,9 @@ gok_keyboard_focus_object (Accessible *accessible)
 			AccessibleComponent_unref (component);
 		}
 	}
+
+	gok_log ("%s\n", (retval) ? "succeeded" : "failed");
+
 	return retval;
 }
 
@@ -3819,7 +3989,7 @@ GokKey* gok_keyboard_output_selectedkey (void)
 	
 	
 	gok_log_leave();
-	return gok_keyboard_output_key(pKeySelected);
+	return gok_keyboard_output_key(gok_main_get_current_keyboard (), pKeySelected);
 }
 
 /**
@@ -3829,12 +3999,11 @@ GokKey* gok_keyboard_output_selectedkey (void)
 * Synthesize the keyboard output.
 * Possible side effects: makes sound, word completion prediction update.
 **/
-GokKey* gok_keyboard_output_key(GokKey* pKey)
+GokKey* gok_keyboard_output_key(GokKeyboard *keyboard, GokKey* pKey)
 {
 	GokOutput    delim_output;
 	GokKeyboard* pPredictedKeyboard;
 	GokKeyboard* pKeyboardTemp;
-	GokKeyboard* keyboard = gok_main_get_current_keyboard ();
 	GokKey* pKeyTemp;
 	const gchar *str;
 	
@@ -3904,11 +4073,11 @@ GokKey* gok_keyboard_output_key(GokKey* pKey)
 		case KEYTYPE_BRANCHCOMBO:
 		case KEYTYPE_BRANCHGUI:
 		case KEYTYPE_BRANCHHYPERTEXT:
-			gok_keyboard_branch_byKey (pKey);
+			gok_keyboard_branch_byKey (gok_main_get_current_keyboard (), pKey);
 			break;
 
 		case KEYTYPE_BRANCHALPHABET:
-			gok_main_display_scan ( NULL, CORE_KEYBOARD, 
+			gok_main_display_scan ( gok_keyboard_get_compose (), CORE_KEYBOARD, 
 				KEYBOARD_TYPE_UNSPECIFIED, KEYBOARD_LAYOUT_UNSPECIFIED,
 				KEYBOARD_SHAPE_UNSPECIFIED);
 			break;
@@ -3919,7 +4088,8 @@ GokKey* gok_keyboard_output_key(GokKey* pKey)
 					if (gok_keyboard_focus_object 
 						(pKey->accessible_node->paccessible))
 					{
-						gok_main_display_scan ( NULL, "Keyboard", 
+						gok_main_display_scan ( gok_keyboard_get_compose (), 
+									"Keyboard", 
 									KEYBOARD_TYPE_UNSPECIFIED, 
 									KEYBOARD_LAYOUT_UNSPECIFIED,
 									KEYBOARD_SHAPE_UNSPECIFIED);
@@ -3932,7 +4102,8 @@ GokKey* gok_keyboard_output_key(GokKey* pKey)
 			break;
 				
 		case KEYTYPE_COMMANDPREDICT:
-			return gok_keyboard_output_key (pKey->pMimicKey);
+		        return gok_keyboard_output_key (gok_main_get_current_keyboard (),
+							pKey->pMimicKey);
 			break;
 			
 		case KEYTYPE_POINTERCONTROL:	
@@ -3982,7 +4153,7 @@ GokKey* gok_keyboard_output_key(GokKey* pKey)
 			{
 				if (strlen (str)) {
 					delim_output.Type = OUTPUT_KEYSTRING;
-					delim_output.Flag = OUTPUT_KEYSTRING;
+					delim_output.Flag = SPI_KEY_STRING;
 					delim_output.Name = (gchar *) str; 
 					delim_output.pOutputNext = NULL;
 					gok_output_send_to_system (&delim_output, FALSE);
@@ -4011,7 +4182,7 @@ GokKey* gok_keyboard_output_key(GokKey* pKey)
 	        case KEYTYPE_BRANCHGUISELECTION:
 	        case KEYTYPE_BRANCHGUITABLE:
 	        case KEYTYPE_BRANCHGUISELECTACTION:
-			if (!gok_keyboard_branch_byKey (pKey))
+			if (!gok_keyboard_branch_byKey (gok_main_get_current_keyboard (), pKey))
 				gok_main_display_scan_reset ();
 			break;
 			
@@ -4260,10 +4431,10 @@ gboolean gok_keyboard_validate_dynamic_keys (Accessible* pAccessibleForeground)
 
 	gok_log_enter();
 
-	keyboard_ui_flags.value = 0;
 	pKeyboard = gok_main_get_current_keyboard();
-	
-	/* are there any keys that branch to a dynamic keyboard? */
+	keyboard_ui_flags.value = pKeyboard->flags.value; /* safer than initializing to 0 */
+    
+	/* are there any dynamic keys, or keys that branch to a dynamic keyboard */
 	pKey = pKeyboard->pKeyFirst;
 	while (pKey != NULL)
 	{
@@ -4283,17 +4454,18 @@ gboolean gok_keyboard_validate_dynamic_keys (Accessible* pAccessibleForeground)
 		{
 			keyboard_ui_flags.data.editable_text = TRUE;
 		}
+		/* TODO: what about data.context_menu ? */
 		pKey = pKey->pKeyNext;
 	}
 	
-	/* if we have menu or toolbar keys, build a list of 'relevant' UI components */
+	/* if we have branch to dynamic, build a list of 'relevant' UI components */
 	if (keyboard_ui_flags.value)
 	{	
 	    ui_flags = gok_spy_update_component_list (pAccessibleForeground, keyboard_ui_flags);
 	}
 
 	/* enable/disable the branch keys */
-	all_flags_mask.value = 0xFFFF;
+	all_flags_mask.value = ~0;
 	bChanged = gok_keyboard_update_dynamic_keys (pKeyboard, all_flags_mask, ui_flags);
 
 	gok_log_leave();
@@ -4315,7 +4487,6 @@ gboolean gok_keyboard_validate_dynamic_keys (Accessible* pAccessibleForeground)
 void gok_keyboard_on_window_resize ()
 {
 	GokKeyboard* pKeyboard;
-	GokKeyboard* pKeyboardFontMod;
 	GtkWidget* pWindow;
 	gint widthWindow;
 	gint heightWindow;
@@ -4391,18 +4562,13 @@ void gok_keyboard_on_window_resize ()
 
 	if ((gok_data_get_dock_type () == GOK_DOCK_NONE) || 
 		(pKeyboard->expand == GOK_EXPAND_NEVER)) {
-		if (1 /* FIXME: we really want to keep the changes*/) {
-			gok_data_set_key_width (widthKey);
-			gok_data_set_key_height (heightKey);
-		}
-	}
-	
-	/* set this flag on each keyboard so it will calculate a new font size */
-	pKeyboardFontMod = gok_main_get_first_keyboard();
-	while (pKeyboardFontMod != NULL)
-	{
-		pKeyboardFontMod->bFontCalculated = FALSE;
-		pKeyboardFontMod = pKeyboardFontMod->pKeyboardNext;
+	    if ((widthKey != pKeyboard->keyWidth) || 
+		(heightKey != pKeyboard->keyHeight)) 
+	    {
+		 pKeyboard->bFontCalculated = FALSE;
+	         pKeyboard->keyWidth = widthKey;
+	         pKeyboard->keyHeight = heightKey;
+	    }
 	}
 	
 	/* calculate a new font size for the current keyboard */
@@ -4532,7 +4698,7 @@ gok_keyboard_modifier_is_set (guint modifier)
 
 /**
  **/
-GokKeyboardDirection 
+GokKeyboardValueOp 
 gok_keyboard_parse_value_op (const gchar *string)
 {
 	if (!strcmp (string, "less"))
