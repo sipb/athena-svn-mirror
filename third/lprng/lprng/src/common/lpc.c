@@ -8,7 +8,7 @@
  ***************************************************************************/
 
  static char *const _id =
-"$Id: lpc.c,v 1.1.1.1.2.2 1999-09-15 20:56:50 ghudson Exp $";
+"$Id: lpc.c,v 1.1.1.1.2.2.2.1 2000-02-23 19:55:27 tb Exp $";
 
 
 /***************************************************************************
@@ -103,6 +103,7 @@ int main(int argc, char *argv[], char *envp[])
 
 	/*
 	 * set up the user state
+	(void) plp_signal (SIGCHLD, SIG_DFL);
 	 */
 #ifndef NODEBUG
 	Debug = 0;
