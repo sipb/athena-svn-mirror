@@ -294,6 +294,11 @@ following guidelines should help the release go smoothly:
 	  for each platform (in packs/update/platform/*/configfiles)
 	  and make sure that any configuration files which have
 	  changed are listed as changed in the version script.
+	  Finally, the release should be checked to make sure it won't
+	  overflow partitions on any client machines; currently, SGIs
+	  are not a problem (because they have one big partition) and
+	  the most restrictive sizes on Solaris clients are 27713K and
+	  51903K of useable space for the root and /usr partitions.
 
 	* Alpha
 
@@ -316,13 +321,13 @@ following guidelines should help the release go smoothly:
 	  updated.
 
 	  At the end of the alpha phase, a release branch should
-	  be created with a name of the form athena-8_1-public, and
-	  tagged with athena-8_1-beta.  A checked-out tree should be
-	  made in /afs/dev.mit.edu/source for the release branch, with
-	  a name of the form src-8.1.  A final snapshot of the system
-	  packs should be constructed from the release branch, and the
-	  build tree copied into /afs/dev.mit.edu/project/release.
-	  Build machines for the new release should be set up.
+	  be created with a name of the form athena-8_1, and tagged
+	  with athena-8_1-beta.  A checked-out tree should be made in
+	  /afs/dev.mit.edu/source for the release branch, with a name
+	  of the form src-8.1.  A final snapshot of the system packs
+	  should be constructed from the release branch, and the build
+	  tree copied into /afs/dev.mit.edu/project/release.  Build
+	  machines for the new release should be set up.
 
 	* Beta
 
