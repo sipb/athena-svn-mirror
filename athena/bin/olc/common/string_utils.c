@@ -14,12 +14,12 @@
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/string_utils.c,v $
- *      $Author: raeburn $
+ *      $Author: vanharen $
  *
  */
 
 #ifndef lint
-static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/string_utils.c,v 1.8 1990-03-01 17:56:01 raeburn Exp $";
+static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/string_utils.c,v 1.9 1990-04-25 17:04:41 vanharen Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -170,25 +170,62 @@ char *format_time(time_info)
  */
 
 char *
-get_next_word(line, buf) 
-	char *line, *buf;
+get_next_word(line, buf, func)
+     char *line, *buf;
+     int (*func)();
 {
-	char c;			/* Current character. */
-	
-	while ((c = *line) == ' ' || c == '\t')
-		line++;
-	if (c == '\0' || c == '\n') {
-		*buf = '\0';
-		return((char *)NULL);
-	}
-	while ((c = *line) != ' ' && c != '\t' && c != '\n' && c != '\0') {
-		line++;
-		*buf++ = c;
-	}
+  char c;			/* Current character. */
+  int done = FALSE;		/* TRUE when we have hit the next word. */
+  int i;
+
+  while ((c = *line) == ' ' || c == '\t')	/* strip leading whitepace */
+    line++;
+  if (c == '\0' || c == '\n') { /* degenerate case -- nothing to parse */
+    *buf = '\0';
+    return((char *)NULL);
+  }
+
+  while (func(c = *line) && c != '\0')
+    {
+      line++;
+      *buf++ = c;
+    }
+
+#if 0
+    for (i=0; (i < strlen(separators)) && !done; i++)
+    if ((c == separators[i]) || (c == '\0'))
+      done = TRUE;
+    else {
+      *buf++ = c;
+      c = *(++line);
+      i = 0;
+    }
+#endif
+#if 0
+	while ((c = *line) != ' ' && c != '\t' && c != '\n' && c != '\0')
+	  {
+	    line++;
+	    *buf++ = c;
+	  }
+#endif
+
 	*buf = '\0';
 	return(line);
 }
 
+int
+IsAlpha(c)
+     char c;
+{
+  return(isalpha(c));
+}
+
+int
+NotWhiteSpace(c)
+     char (c);
+{
+  return(c != ' ' && c != '\t' && c != '\n');
+}
 
 #if 0 /* unused */
 static char *
@@ -242,7 +279,8 @@ parse_command_line(command_line, arguments)
 
   current = command_line;
   argcount = 0;
-  while ((current = get_next_word(current, buf)) != (char *) NULL) 
+  while ((current = get_next_word(current, buf, NotWhiteSpace))
+	 != (char *) NULL)
     {
       if(buf[0] == '\"')
 	{
@@ -290,18 +328,18 @@ parse_command_line(command_line, arguments)
 
 /*
  * Function:    make_temp_name() creates a temporary file name using the
- *                      current time.
+ *                      process id and a static counter.
  * Arguments:   name:   A pointer to space for the name.
  * Returns:     Nothing.
  * Notes:
  *      Get the process ID from the system and create a filename from it.
  */
 
-static int joe = 0;
-
 void make_temp_name(name)
     char *name;
 {
-    (void) sprintf(name, "/tmp/OLC%d.%d", getpid(), joe++);
-    (void) unlink(name);	/* just to be sure */
+  static int counter = 0;
+
+  (void) sprintf(name, "/tmp/OLC%d.%d", getpid(), counter++);
+  (void) unlink(name);		/* just to be sure */
 }
