@@ -1,4 +1,4 @@
-# $Id: packages,v 1.170 2002-04-27 04:18:38 ghudson Exp $
+# $Id: packages,v 1.171 2002-04-27 04:25:51 ghudson Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -77,7 +77,7 @@ athena/bin/machtype
 athena/bin/mail-dialog		requires gnome-libs
 athena/bin/neos			requires fxcl,krb5,hesiod
 athena/bin/newpag		requires afsbin,openafs
-athena/bin/olc			requires krb5,hesiod,zephyr,et,motif,Mu,wcl
+athena/bin/olc			requires krb5,hesiod,zephyr,et,openmotif,Mu,wcl
 athena/bin/panel-wrapper	requires gnome-libs
 athena/bin/passwd		requires krb5,al
 athena/bin/quota		requires locker,afsbin,openafs
@@ -220,7 +220,7 @@ third/tetex
 third/top			except irix,linux
 third/traceroute		on solaris
 third/transcript		requires perl
-third/wcl			requires motif
+third/wcl			requires openmotif
 third/whois			on irix
 third/x3270
 third/xalf			requires gtk,control-center
