@@ -3,7 +3,7 @@
  *
  *	Created by:	Robert French
  *
- *	$Id: zaway.c,v 1.14 1999-07-21 12:34:22 ghudson Exp $
+ *	$Id: zaway.c,v 1.15 2000-07-05 21:22:06 ghudson Exp $
  *
  *	Copyright (c) 1987, 1993 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -17,7 +17,7 @@
 #include <com_err.h>
 
 #ifndef lint
-static const char rcsid_zaway_c[] = "$Id: zaway.c,v 1.14 1999-07-21 12:34:22 ghudson Exp $";
+static const char rcsid_zaway_c[] = "$Id: zaway.c,v 1.15 2000-07-05 21:22:06 ghudson Exp $";
 #endif
 
 #define MESSAGE_CLASS "MESSAGE"
@@ -113,7 +113,7 @@ int main(argc,argv)
 	}
 
 	fp = fopen(awayfile,"r");
-	if (!fp && argc > 1) {
+	if (!fp && argc > optind) {
 		fprintf(stderr,"File %s not found!\n",awayfile);
 		exit(1);
 	} 
@@ -136,7 +136,8 @@ int main(argc,argv)
 
 	for (;;) {
 		if ((retval = ZReceiveNotice(&notice, (struct sockaddr_in *)0)) != ZERR_NONE) {
-			com_err(argv[0],retval,"while receiving notice");
+			if (retval != ETIMEDOUT)
+				com_err(argv[0],retval,"while receiving notice");
 			continue;
 		}
 
