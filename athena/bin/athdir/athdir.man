@@ -134,8 +134,8 @@ substitutions:
 
 For example, the arch convention uses the string %p/arch/%s/%t.
 .TP 8
-.B \-s \fIrecsep\fR
-Specify the separator when multiple paths are output. By default this
+.B \-r \fIrecsep\fR
+Specify the record separator when multiple paths are output. By default this
 is a newline. It may be useful to specify it to be a space or colon on
 various occasions.
 .TP 8
