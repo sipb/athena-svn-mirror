@@ -15,7 +15,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_dispatch_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/dispatch.c,v 1.29 1989-05-04 17:36:32 jtkohl Exp $";
+static char rcsid_dispatch_c[] = "$Id: dispatch.c,v 1.30 1989-11-10 09:56:19 jtkohl Exp $";
 #endif SABER
 #endif lint
 
@@ -301,6 +301,16 @@ struct sockaddr_in *who;
 		clt_ack(notice, who, AUTH_FAILED);
 		return;
 	    }
+	}
+	if (bcmp(&notice->z_sender_addr.s_addr, &who->sin_addr.s_addr,
+		 sizeof(notice->z_sender_addr.s_addr))) {
+	    /* someone is playing games... */
+	    /* inet_ntoa returns pointer to static area */
+	    /* max size is 255.255.255.255 */
+	    char buffer[16];
+	    (void) strcpy(buffer, inet_ntoa(who->sin_addr));
+	    syslog(LOG_WARNING, "sendit addr mismatch: claimed %s, real %s",
+		   inet_ntoa(notice->z_sender_addr), buffer);
 	}
 	if ((clientlist = subscr_match_list(notice))) {
 		for (ptr = clientlist->q_forw;
