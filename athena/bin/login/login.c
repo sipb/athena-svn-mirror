@@ -1,9 +1,9 @@
 /*
- * $Id: login.c,v 1.93 1997-07-15 14:25:23 danw Exp $
+ * $Id: login.c,v 1.94 1997-07-26 03:03:52 ghudson Exp $
  */
 
 #ifndef lint
-static char *rcsid = "$Id: login.c,v 1.93 1997-07-15 14:25:23 danw Exp $";
+static char *rcsid = "$Id: login.c,v 1.94 1997-07-26 03:03:52 ghudson Exp $";
 #endif
 
 /*
@@ -712,7 +712,7 @@ main(argc, argv)
 		    pwd->pw_passwd = namep = crypt(pp, saltc);
 	    } 
 			    
-	    memset(pp, 0, 8);		/* No, Senator, I don't recall
+	    memset(pp, 0, MAXPWSIZE+1);	  /* No, Senator, I don't recall
 					   anything of that nature ... */
 	    setpriority(PRIO_PROCESS, 0, 0);
 
