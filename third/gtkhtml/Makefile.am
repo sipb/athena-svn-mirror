@@ -11,7 +11,6 @@ SUBDIRS =					\
 	intl					\
 	macros					\
 	src					\
-	capplet					\
 	doc					\
 	art					\
 	$(DIR_COMPONENTS)			\

@@ -22,7 +22,7 @@ AC_SUBST(EDITOR_API_VERSION)
 AM_MAINTAINER_MODE
 AM_ACLOCAL_INCLUDE(macros)
 
-GNOME_INIT(capplet)
+GNOME_INIT
 
 AC_PROG_CC
 AC_ISC_POSIX
@@ -82,12 +82,6 @@ dnl Gnome App Lib checking
 dnl ******************************
 
 HTML_REQUIRE_LIB(Gnome App libraries (GAL), 0.20.1.99, gal)
-
-dnl ******************************
-dnl capplet library check
-dnl ******************************
-
-HTML_REQUIRE_LIB(Gnome configuration applet libraries, 1.0.0, capplet)
 
 dnl ******************************
 dnl GnomePrint checking

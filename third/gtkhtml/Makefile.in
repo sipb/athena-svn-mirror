@@ -161,7 +161,6 @@ SUBDIRS = \
 	intl					\
 	macros					\
 	src					\
-	capplet					\
 	doc					\
 	art					\
 	$(DIR_COMPONENTS)			\
@@ -194,7 +193,7 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 TAR = gtar
 GZIP_ENV = --best
-DIST_SUBDIRS =  intl macros src capplet doc art components po
+DIST_SUBDIRS =  intl macros src doc art components po
 all: all-redirect
 .SUFFIXES:
 $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
