@@ -6,7 +6,7 @@
 #     
 #      $Source: /afs/dev.mit.edu/source/repository/athena/bin/xmore/Makefile,v $
 #      $Author: probe $
-#      $Header: /afs/dev.mit.edu/source/repository/athena/bin/xmore/Makefile,v 1.6 1989-10-15 04:38:25 probe Exp $
+#      $Header: /afs/dev.mit.edu/source/repository/athena/bin/xmore/Makefile,v 1.7 1989-10-21 15:11:15 probe Exp $
 #      
 #         Copyright 1987, 1988 by the Massachusetts Institute of Technology.
 #     
@@ -16,20 +16,9 @@
 # Directories to put the things into on install.
 
 DESTDIR= 
-
-#The directory for the executables.
-
 INSTDIR= /usr/athena
-
-#The directory to put the help file into.	
-
 LIBDIR=/usr/athena/lib
-
-#The directory to put the manual pages into
-
 MANDIR=/usr/man
-#The specific section to put xmore's manual page into, can be one of:
-# 0 - 8, n or l (small L).
 MANSECT=1
 
 CFLAGS= -g -DATHENA -DHELPFILE=\"${LIBDIR}/xmore.help\" ${INCFLAGS}
@@ -51,8 +40,7 @@ pages.o:	pages.c ${INCLUDE}
 ScrollByLine.c: ScrollByLine.c ScrollByLineP.h ScrollByLine.h
 
 install: ;
-	 strip xmore
-	 cp xmore ${DESTDIR}${INSTDIR}
+	 install -s xmore ${DESTDIR}${INSTDIR}/
 	 cp xmore.help ${DESTDIR}${LIBDIR}
 	 cp xmore.man ${DESTDIR}${MANDIR}/man${MANSECT}/xmore.${MANSECT}
 
