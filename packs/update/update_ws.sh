@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: update_ws.sh,v 1.39 1999-03-02 15:55:35 rbasch Exp $
+# $Id: update_ws.sh,v 1.40 1999-08-10 20:22:52 ghudson Exp $
 
 # Copyright 1996 by the Massachusetts Institute of Technology.
 #
@@ -36,7 +36,7 @@ trap "" 1 15
 export CONFDIR LIBDIR PATH HOSTTYPE
 CONFDIR=/etc/athena
 LIBDIR=/srvd/usr/athena/lib/update
-PATH=/bin:/etc:/usr/bin:/usr/ucb:/usr/bsd:/os/bin:/os/etc:/etc/athena:/bin/athena:/os/usr/bin:/usr/athena/etc:/os/usr/ucb:/os/usr/bsd:$LIBDIR
+PATH=/bin:/etc:/usr/bin:/usr/ucb:/usr/bsd:/os/bin:/os/etc:/etc/athena:/bin/athena:/os/usr/bin:/usr/athena/sbin:/os/usr/ucb:/os/usr/bsd:$LIBDIR
 HOSTTYPE=`/bin/athena/machtype`
 
 case "$0" in
@@ -132,7 +132,7 @@ case "$version" in
 	fi
 
 	echo "This system is in the middle of an update.  Please contact"
-	echo "Athena Hotline at x3-1410. Thank you. -Athena Operations"
+	echo "Athena Cluster Services at x3-1410. Thank you. -Athena Operations"
 	exit 1
 	;;
 esac
@@ -171,7 +171,7 @@ if [ -z "$packsnewer" ]; then
 A new Athena release ($NEW_PRODUCTION_RELEASE) is available.  Since it may be
 incompatible with your workstation software, your workstation
 is still using the old system packs.  Please contact Athena
-Hotline (x3-1410) to have your workstation updated.
+Cluster Services (x3-1410) to have your workstation updated.
 EOF
 		fi
 		if [ -n "$NEW_TESTING_RELEASE" ]; then
@@ -181,8 +181,8 @@ A new Athena release ($NEW_TESTING_RELEASE) is now in testing.  You are
 theoretically interested in this phase of testing, but
 because there may be bugs which would inconvenience
 your work, you must update to this release manually.
-Please contact Athena Hotline (x3-1410) if you have
-not received instructions on how to do so.
+Please contact Athena Cluster Services (x3-1410) if 
+you have not received instructions on how to do so.
 EOF
 		fi
 	fi
@@ -195,9 +195,10 @@ if [ "$method" = Auto -a "$AUTOUPDATE" != true -a "$PUBLIC" != true ]; then
 	cat <<EOF
 
 	A new version of Athena software is now available.
-	Please contact Athena Operations to get more information
-	on how to update your workstation yourself, or to schedule
-	us to do it for you. Thank you.  -Athena Operations
+	Please contact Athena Cluster Services (x3-1410) to 
+	get more information on how to update your workstation 
+	yourself, or to schedule us to do it for you. 
+	    Thank you.  -Athena Operations
 EOF
 	if [ ! -f /var/tmp/update.check ]; then
 		logger -t $HOST -p user.notice at revision $version
