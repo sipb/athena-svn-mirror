@@ -1,5 +1,5 @@
 /* 
- *	$Id: Imakefile,v 1.9 1991-06-29 16:01:20 epeisach Exp $
+ *	$Id: Imakefile,v 1.10 1991-09-30 11:13:09 epeisach Exp $
  *	$Author: epeisach $
  *	$Locker:  $
  *
@@ -232,25 +232,61 @@ quota_ncs_cstub.c: quota_ncs.h nidl_structs.h
 quota_ncs_cswtch.c: quota_ncs.h nidl_structs.h
 quota_ncs.h: quota_ncs.idl nidl_structs.h
 
-lpquota.o: quota_ncs.h logger_ncs.h nidl_structs.h quota_err.h
 logger_ncs_sstub.c: logger_ncs.h nidl_structs.h
 logger_ncs_cstub.c: logger_ncs.h nidl_structs.h
 logger_ncs_cswtch.c: logger_ncs.h nidl_structs.h
 logger_ncs.h: logger_ncs.idl logger.h nidl_structs.h
 
-qmain.o: quota_ncs.h logger_ncs.h
-quota_server.o: quota_err.h
-parser.o: logger_ncs.h 
+gquota_dba.o: quota.h gquota_db.h quota_limits.h
+uid_strings.o: quota_limits.h gquota_db.h
+qmain.o: quota_ncs.h logger_ncs.h quota.h quota_limits.h
+qmain.o: quota_db.h gquota_db.h logger.h
+quota_dba.o: quota.h quota_limits.h
+quota_ncs_sstub.o: quota_ncs.h nidl_structs.h
+quota_server.o: quota.h quota_err.h quota_limits.h quota_ncs.h
+quota_server.o: nidl_structs.h quota_db.h gquota_db.h
+quotacap.o: quotacap.c
+server_krb.o: quota.h quota_limits.h quota_ncs.h nidl_structs.h
+quota_notify.o: quota.h quota_limits.h quota_ncs.h
+quota_notify.o: nidl_structs.h quota_err.h
+quota_logger.o: quota.h quota_limits.h quota_ncs.h 
+quota_logger.o:  nidl_structs.h quota_err.h quota_db.h
+strings.o: quota.h logger.h quota_limits.h
+parser.o: logger_ncs.h logger.h quota_ncs.h nidl_structs.h
+journal.o: logger.h 
+user.o: logger.h
+periodic.o: quota.h logger.h 
+logger_ncs_sstub.o: logger_ncs.h nidl_structs.h quota_ncs.h
+logger_server.o: quota.h quota_limits.h quota_ncs.h
+logger_server.o: quota_db.h gquota_db.h logger_ncs.h
+parse_quotacap.o: quota.h
+lpquota.o: quota_ncs.h logger_ncs.h nidl_structs.h quota_err.h quota.h
+lpquota.o: quota_limits.h 
+quota_ncs_cstub.o: quota_ncs.h nidl_structs.h
+quota_ncs_cswtch.o: quota_ncs.h nidl_structs.h logger_ncs.h 
+logger_ncs_cswtch.o: logger_ncs_cswtch.c logger_ncs.h quota_ncs.h
+logger_ncs_cswtch,o: nidl_structs.h 
+printcap.o: ../lp.local.h
+quota_dba.o: quota.h quota_db.h quota_limits.h 
+gquota_dba.o: quota.h gquota_db.h quota_limits.h 
+qdb_create.o: quota_db.h
+dump_db.o: quota_db.h quota_limits.h
+restore_db.o: quota_db.h quota_limits.h
+bill_db.o: quota.h quota_limits.h quota_db.h
+gdump.o: gquota_db.h quota_limits.h
+grestore_db.o: gquota_db.h quota_limits.h
+gbill_db.o: quota.h quota_limits.h gquota_db.h
+
 s_chkaf.o: quota_err.h quota_ncs.h
 #ifdef V1COMP
 qmain.o: quota_ncs_v1.h logger_ncs_v1.h  
 parser.o: logger_ncs_v1.h
 #endif
 
-$(OBJS): config.h
+$(OBJS): config.h mit-copyright.h 
 
 #if 0
-depend: ${SRCS} ${CSRCS} ${LSRCS}
-	makedepend {CFLAGS} ${SRCS} ${CSRCS} ${LSRCS} ${DBSRCS}
+depend:: ${SRCS} ${CSRCS} ${LSRCS} ${SSRCS}
+	makedepend ${CFLAGS} ${SRCS} ${CSRCS} ${LSRCS} ${DBSRCS}
 #endif
 
