@@ -6,3 +6,4 @@ cp $1/packs/config/named.localhost.rev $2
 cp $1/packs/config/named.root $2
 cp $1/packs/config/resolv.conf $2
 cp $1/packs/maint/os/$OS/athena-bind.rc $2
+cp $1/packs/maint/os/$OS/system-bind.sh $2
