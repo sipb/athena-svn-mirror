@@ -1,9 +1,9 @@
 /*
- * $Id: login.c,v 1.65 1993-10-06 15:56:24 probe Exp $
+ * $Id: login.c,v 1.66 1994-04-07 17:22:33 miki Exp $
  */
 
 #ifndef lint
-static char *rcsid = "$Id: login.c,v 1.65 1993-10-06 15:56:24 probe Exp $";
+static char *rcsid = "$Id: login.c,v 1.66 1994-04-07 17:22:33 miki Exp $";
 #endif
 
 /*
@@ -52,13 +52,15 @@ static char sccsid[] = "@(#)login.c	5.15 (Berkeley) 4/12/86";
 #include <dirent.h>
 #include <sys/fcntl.h>
 #include <sys/ttold.h>
+#ifndef POSIX
 #include <sys/ttychars.h>
+#endif
 #include <sys/filio.h>
 #include <sys/sysmacros.h>
 #endif
 #include <sys/wait.h>
 
-#include <sgtty.h>
+
 #include <utmp.h>
 #ifdef SOLARIS
 #include <utmpx.h>
@@ -80,6 +82,8 @@ static char sccsid[] = "@(#)login.c	5.15 (Berkeley) 4/12/86";
 #include <grp.h>
 #ifdef POSIX
 #include <termios.h>
+#else
+#include <sgtty.h>
 #endif
 
 #ifdef ultrix
@@ -206,8 +210,14 @@ struct	passwd newuser = {"\0\0\0\0\0\0\0\0", "*", START_UID, MIT_GID, 0,
 			  NULL, NULL, "/mit/\0\0\0\0\0\0\0\0", NULL };
 #endif /*POSIX*/
 
-struct	sgttyb ttyb;
+
+#ifdef POSIX
+    struct termios tio;
+#else
+    struct	sgttyb ttyb;
+#endif
 struct	utmp utmp;
+int tmpint;
 #ifdef SOLARIS
     struct utmpx utmpx;
     char    term1[64];
@@ -234,14 +244,14 @@ char	*getlongpass();
 char	*stypeof();
 extern	char **environ;
 extern	int errno;
-
+#ifndef POSIX
 struct	tchars tc = {
 	CINTR, CQUIT, CSTART, CSTOP, CEOT, CBRK
 };
 struct	ltchars ltc = {
 	CSUSP, CDSUSP, CRPRNT, CFLUSH, CWERASE, CLNEXT
 };
-
+#endif
 struct winsize win = { 0, 0, 0, 0 };
 
 int	rflag=0;
@@ -302,9 +312,7 @@ main(argc, argv)
     int ldisc = 0, zero = 0, found = 0, i, j;
     char **envnew;
     FILE *nrfd;
-#ifdef POSIX
-    struct termios tio;
-#endif
+
 #ifdef _I386
     struct stat 	pwdbuf;
 #endif
@@ -319,12 +327,27 @@ main(argc, argv)
     struct utmpx *utx_tmp;
 #endif
 
-
+#ifdef POSIX
+    struct sigaction sa;
+    (void) sigemptyset(&sa.sa_mask);
+    sa.sa_flags = 0;
+    sa.sa_handler = (void (*)())timedout;
+    (void) sigaction(SIGALRM, &sa, (struct sigaction *)0);
+    alarm(timeout);
+    sa.sa_handler = SIG_IGN;
+    (void) sigaction(SIGQUIT, &sa, (struct sigaction *)0);
+    (void) sigaction(SIGINT, &sa, (struct sigaction *)0);
+#else
     signal(SIGALRM, timedout);
     alarm(timeout);
     signal(SIGQUIT, SIG_IGN);
     signal(SIGINT, SIG_IGN);
+#endif
+
+
+#ifndef SOLARIS
     setpriority(PRIO_PROCESS, 0, 0);
+#endif
     umask(0);
 #if !defined(VFS) || defined(ultrix)
     quota(Q_SETUID, 0, 0, 0);
@@ -421,7 +444,11 @@ main(argc, argv)
     ioctl(0, TIOCNXCL, 0);
     ioctl(0, FIONBIO, &zero);
     ioctl(0, FIOASYNC, &zero);
+#ifdef POSIX
+    (void)tcgetattr(0, &tio);
+#else
     ioctl(0, TIOCGETP, &ttyb);
+#endif
     /*
      * If talking to an rlogin process,
      * propagate the terminal type and
@@ -429,13 +456,12 @@ main(argc, argv)
      */
     if (rflag || kflag || Kflag)
 #ifdef SOLARIS
-	doremoteterm(term, term1, &ttyb); 
+	doremoteterm(term, term1, &tio); 
 #else
 	doremoteterm(term,  &ttyb); 
 #endif
 
 #ifdef POSIX
-    /* Now setup pty as AIX shells expect */
     (void)tcgetattr(0, &tio);
     
     tio.c_iflag |= (BRKINT|IGNPAR|ISTRIP|IXON|IXANY|ICRNL);
@@ -458,7 +484,12 @@ main(argc, argv)
     ioctl(0, TIOCSETC, &tc);
     ioctl(0, TIOCSETP, &ttyb);
 #endif
-    for (t = getdtablesize(); t > 2; t--)
+#ifdef POSIX
+    tmpint = sysconf(_SC_OPEN_MAX);
+#else
+    tmpint = getdtablesize();
+#endif
+    for (t = tmpint; t > 2; t--)
 	close(t);
     ttyn = ttyname(0);
     if (ttyn == (char *)0 || *ttyn == '\0')
@@ -588,7 +619,9 @@ main(argc, argv)
 	    (void) unlink (tkfile);
 	    setenv(KRB_ENVIRON, tkfile, 1);
 	    
+#ifndef SOLARIS
 	    setpriority(PRIO_PROCESS, 0, -4);
+#endif
 	    pp = getlongpass("Password:");
 
 	    if (!found) { /* check if we can create an entry */
@@ -632,7 +665,9 @@ main(argc, argv)
 			    
 	    bzero(pp, 8);		/* No, Senator, I don't recall
 					   anything of that nature ... */
+#ifndef SOLARIS
 	    setpriority(PRIO_PROCESS, 0, 0);
+#endif
 
 	    if (!invalid && (pwd->pw_uid != 0)) { 
 #ifdef SETPAG
@@ -871,7 +906,11 @@ leavethis:
 	  The effective uid is used under AFS for access.
 	  NFS uses euid and uid for access checking
 	 */
+#ifdef SOLARIS
+	setuid(pwd->pw_uid);
+#else
 	setreuid(geteuid(),pwd->pw_uid);
+#endif
 	if (!invalid && chdir(pwd->pw_dir) < 0) {
 	    if (chdir("/") < 0) {
 		printf("No directory!\n");
@@ -881,7 +920,11 @@ leavethis:
 		pwd->pw_dir = "/";
 	    }
 	}
+#ifdef SOLARIS
+	setuid(getuid());
+#else
 	setreuid(getuid(), getuid());
+#endif
 	/*
 	 * Remote login invalid must have been because
 	 * of a restriction of some sort, no extra chances.
@@ -1130,10 +1173,19 @@ leavethis:
 	break;
     }
 #endif VFS
+#ifdef POSIX
+    sa.sa_handler = SIG_DFL;
+    (void) sigaction(SIGALRM, &sa, (struct sigaction *)0);
+    (void) sigaction(SIGQUIT, &sa, (struct sigaction *)0);
+    (void) sigaction(SIGINT, &sa, (struct sigaction *)0);
+    sa.sa_handler = SIG_IGN;
+    (void) sigaction(SIGTSTP, &sa, (struct sigaction *)0);
+#else
     signal(SIGALRM, SIG_DFL);
     signal(SIGQUIT, SIG_DFL);
     signal(SIGINT, SIG_DFL);
     signal(SIGTSTP, SIG_IGN);
+#endif
     execlp(pwd->pw_shell, minusnam, 0);
     perror(pwd->pw_shell);
     printf("No shell\n");
@@ -1185,8 +1237,15 @@ timedout()
 int	stopmotd;
 catch()
 {
-
+#ifdef POSIX
+	struct sigaction sa;
+	(void) sigemptyset(&sa.sa_mask);
+	sa.sa_flags = 0;
+	sa.sa_handler = SIG_IGN;
+	(void) sigaction(SIGINT, &sa, (struct sigaction *)0);
+#else
 	signal(SIGINT, SIG_IGN);
+#endif
 	stopmotd++;
 }
 
@@ -1215,7 +1274,15 @@ showmotd()
 	register c;
 	int forkval;
 
+#ifdef POSIX
+	struct sigaction sa;
+	(void) sigemptyset(&sa.sa_mask);
+	sa.sa_flags = 0;
+	sa.sa_handler = (void (*)()) catch;
+	(void) sigaction(SIGINT, &sa, (struct sigaction *)0);
+#else
 	signal(SIGINT, catch);
+#endif
 	if (forkval = fork()) { /* parent */
 		if (forkval < 0) {
 			perror("forking for motd service");
@@ -1237,7 +1304,12 @@ showmotd()
 			exit(0);
 		}
 	}
+#ifdef POSIX
+	sa.sa_handler = SIG_IGN;
+	(void) sigaction(SIGINT, &sa, (struct sigaction *)0);
+#else
 	signal(SIGINT, SIG_IGN);
+#endif
 }
 
 #undef	UNKNOWN
@@ -1378,7 +1450,7 @@ getstr(buf, cnt, err)
 char	*speeds[] =
     { "0", "50", "75", "110", "134", "150", "200", "300",
       "600", "1200", "1800", "2400", "4800", "9600", "19200", "38400" };
-#define	NSPEEDS	(sizeof (speeds) / sizeof (speeds[0]))
+#define	NSPEEDS	(sizeof (speeds) / sizeof (<speeds[0]))
 
 #ifdef SOLARIS
 doremoteterm(term, term1, tp)
@@ -1388,11 +1460,16 @@ doremoteterm(term, tp)
 	char *term;
 #endif
 
+#ifdef POSIX
+        struct termios *tp;
+#else
 	struct sgttyb *tp;
+#endif
 {
 	register char *cp = index(term, '/'), **cpp;
 	char *speed;
 #ifdef SOLARIS
+	char *cp-term;
         strncpy(term1, term, cp-term);
         term1[cp-term + 1] ="\0";
 #endif
@@ -1402,13 +1479,24 @@ doremoteterm(term, tp)
 		cp = index(speed, '/');
 		if (cp)
 			*cp++ = '\0';
+#ifdef POSIX
+		(void) cfsetospeed (tp, speed);
+		(void) cfsetispeed(tp, speed);
+#else
 		for (cpp = speeds; cpp < &speeds[NSPEEDS]; cpp++)
 			if (strcmp(*cpp, speed) == 0) {
 				tp->sg_ispeed = tp->sg_ospeed = cpp-speeds;
 				break;
 			}
+#endif
 	}
+#ifdef POSIX
+	tp->c_lflag = ECHO|ECHOE|ECHOK|ICANON|ISIG;
+	tp->c_iflag |= ICRNL|BRKINT;
+	tp->c_oflag |= ONLCR|OPOST|TAB3;
+#else
 	tp->sg_flags = ECHO|CRMOD|ANYP|XTABS;
+#endif
 }
 
 /* BEGIN TRASH
@@ -1497,7 +1585,11 @@ setenv(var, value, clobber)
 dofork()
 {
     int child;
-
+#ifdef POSIX
+    struct sigaction sa;
+    (void) sigemptyset(&sa.sa_mask);
+    sa.sa_flags = 0;
+#endif
     if(!(child=fork()))
 	    return; /* Child process */
 
@@ -1521,8 +1613,13 @@ dofork()
      * group to its process id. Our csh does, anyway, and there is no
      * other way to reliably find out what that shell's pgrp is.
      */
+#ifdef POSIX
+    sa.sa_handler = SIG_IGN;
+    (void) sigaction(SIGHUP, &sa, (struct sigaction *)0);
+#else
     signal(SIGHUP, SIG_IGN);
-    if(-1 == killpg(child, SIGHUP))
+#endif
+    if(-1 == kill(-child, SIGHUP))
       {
 	/* EINVAL shouldn't happen (SIGHUP is a constant),
 	 * ESRCH could, but we ignore it
@@ -1581,8 +1678,6 @@ char *
 getlongpass(prompt)
 char *prompt;
 {
-	struct sgttyb ttyb;
-	int flags;
 	register char *p;
 	register c;
 	FILE *fi;
@@ -1591,16 +1686,40 @@ char *prompt;
 	sigtype (*signal())();
 #endif
 	sigtype (*sig)();
+#ifdef POSIX
+        struct termios tio;
+	tcflag_t flags;
+	struct sigaction sa, osa;
+	(void) sigemptyset(&sa.sa_mask);
+	sa.sa_flags = 0;
+#else
+	struct sgttyb ttyb;
+	int flags;
+#endif
+
+
 
 	if ((fi = fdopen(open("/dev/tty", 2), "r")) == NULL)
 		fi = stdin;
 	else
 		setbuf(fi, (char *)NULL);
+#ifdef POSIX
+	sa.sa_handler = SIG_IGN;
+	(void) sigaction(SIGINT, &sa, &osa);
+#else
 	sig = signal(SIGINT, SIG_IGN);
+#endif
+#ifdef POSIX
+	(void)tcgetattr(fileno(fi), &tio);
+	flags = tio.c_lflag;
+        tio.c_lflag &= ~ECHO;
+	(void)tcsetattr(fileno(fi), TCSANOW, &tio);
+#else
 	ioctl(fileno(fi), TIOCGETP, &ttyb);
 	flags = ttyb.sg_flags;
 	ttyb.sg_flags &= ~ECHO;
 	ioctl(fileno(fi), TIOCSETP, &ttyb);
+#endif
 	fprintf(stderr, "%s", prompt); fflush(stderr);
 	for (p=pbuf; (c = getc(fi))!='\n' && c!=EOF;) {
 		if (p < &pbuf[MAXPWSIZE])
@@ -1608,15 +1727,25 @@ char *prompt;
 	}
 	*p = '\0';
 	fprintf(stderr, "\n"); fflush(stderr);
+#ifdef POSIX
+	tio.c_lflag = flags ;
+	(void)tcsetattr(fileno(fi), TCSANOW, &tio);
+#else
 	ttyb.sg_flags = flags;
 	ioctl(fileno(fi), TIOCSETP, &ttyb);
+#endif
+
+#ifdef POSIX
+	(void) sigaction(SIGINT, &osa, NULL);
+#else
 	signal(SIGINT, sig);
+#endif
 	if (fi != stdin)
 		fclose(fi);
 	pbuf[MAXPWSIZE]='\0';
 	return(pbuf);
 }
-
+/*#endif */
 /* Attach the user's home directory if "attachable" is set.
  */
 attach_homedir()
@@ -2209,7 +2338,7 @@ init_wgfile()
         char wgfile[16];
         char *wgfile1;
 	static char errbuf[1024];
-	strcpy(wgfile, "/tmp/wg.XXXXXX");
+	strcpy(&wgfile[0], "/tmp/wg.XXXXXX");
 	wgfile1 = mktemp(&wgfile[0]);
 	sprintf(errbuf, "WGFILE=%s", wgfile);
         putenv(errbuf);
