@@ -1,15 +1,21 @@
-DEFINES=-DUW $(MACHDEFS) \
-	-I. -I../../athena.bin/attach -I../../bin.athena/attach -I/usr/local/include
+#ifdef UseInstalled
+ATTACH=/source/athena/athena.bin/attach
+#else
+ATTACH=../../athena.bin/attach
+#endif
+
+DEFINES=$(MACHDEFS) -I. -I$(ATTACH) -I/usr/local/include
 
 BINDIR=$(ATHBINDIR)
 INSTOPT=-o root -m 4755
 AFSLIBS= /usr/local/lib/afs/libsys.a
 
-OBJS = quota.o attachtab.o afsquota.o $(MACHOBJS)
+OBJS = quota.o attachtab.o nfs.o afs.o $(MACHOBJS)
 LIBS = $(MACHLIBS) $(AFSLIBS)
 
 #if defined(vax) || defined(ibm032)
 BINDIR=/usr/ucb
+MACHDEFS= -DUW
 MACHLIBS= -lrpcsvc
 #endif
 
@@ -18,13 +24,10 @@ MACHLIBS= -lrpclib
 #endif
 
 #if defined(_IBMR2)
-/* Need to use the local header files and sources */
 MACHOBJS=rcquotaxdr.o rquotaxdr.o mountxdr.o
-INSTOPT=-o root -m 0755
 #endif
 
 #if defined(ultrix) || defined(i386)
-/* Need to use the local header files and sources */
 MACHOBJS=rcquotaxdr.o
 #endif
 
