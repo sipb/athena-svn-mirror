@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_status.c,v 1.5 1989-08-07 15:02:03 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_status.c,v 1.6 1989-08-15 00:32:18 tjcoppet Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -135,7 +135,7 @@ t_display_personal_status(Request,list,chart)
 		printf("You are ");
 	      else
 		printf("%s is ",list->user.username);
-	      printf("You are signed on to OLC!\n");
+	      printf("signed on to OLC!\n");
 	    }
 	}
     }
