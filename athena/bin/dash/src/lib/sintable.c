@@ -9,10 +9,10 @@
  *
  */
 
-#ifndef	lint
+#if  (!defined(lint))  &&  (!defined(SABER))
 static char rcsid[] =
-"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/sintable.c,v 1.1 1991-09-03 11:18:00 vanharen Exp $";
-#endif	lint
+"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/sintable.c,v 1.2 1991-12-17 11:24:03 vanharen Exp $";
+#endif
 
 #include "mit-copyright.h"
 #include <math.h>

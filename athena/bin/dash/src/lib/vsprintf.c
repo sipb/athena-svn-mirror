@@ -15,7 +15,7 @@
  * WARRANTIES OF MERCHANTIBILITY AND FITNESS FOR A PARTICULAR PURPOSE.
  */
 
-#if defined(LIBC_SCCS) && !defined(lint)
+#if defined(LIBC_SCCS) && !defined(lint)  &&  !defined(SABER)
 static char sccsid[] = "@(#)vsprintf.c	5.2 (Berkeley) 6/27/88";
 #endif /* LIBC_SCCS and not lint */
 
