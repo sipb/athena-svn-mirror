@@ -19,7 +19,7 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olcd.h,v $
- *	$Id: olcd.h,v 1.26 1991-01-03 15:28:58 lwvanels Exp $
+ *	$Id: olcd.h,v 1.27 1991-01-15 17:58:38 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
@@ -382,6 +382,7 @@ ERRCODE terminate_log_unanswered P((KNUCKLE *knuckle ));
 /* motd.c */
 void check_motd_timeout P((void ));
 void set_motd_timeout P((KNUCKLE *requester ));
+void log_motd P((char *username ));
 
 /* notify.c */
 ERRCODE write_message P((char *touser , char *tomachine , char *fromuser , char *frommachine , char *message ));
