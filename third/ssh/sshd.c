@@ -18,8 +18,11 @@ agent connections.
 */
 
 /*
- * $Id: sshd.c,v 1.18 1999-03-27 01:59:28 ghudson Exp $
+ * $Id: sshd.c,v 1.19 2000-04-09 21:50:52 rbasch Exp $
  * $Log: not supported by cvs2svn $
+ * Revision 1.18  1999/03/27 01:59:28  ghudson
+ * Nuke broken SGI project management code.
+ *
  * Revision 1.17  1999/03/16 19:03:38  danw
  * log a debugging error if al_acct_create fails
  *
@@ -557,6 +560,11 @@ extern char *setlimits();
 #include <login_cap.h>
 #endif
 
+#ifdef sgi
+#include <capability.h>
+#include <sys/capability.h>
+#endif
+
 #ifdef _PATH_BSHELL
 #define DEFAULT_SHELL		_PATH_BSHELL
 #else
@@ -690,6 +698,9 @@ void do_exec_no_pty(const char *command, struct passwd *pw,
 void do_child(const char *command, struct passwd *pw, const char *term,
 	      const char *display, const char *auth_proto,
 	      const char *auth_data, const char *ttyname);
+
+void ensure_process_capabilities(void);
+void set_user_capabilities(const char *username);
 
 
 /* Signal handler for SIGHUP.  Sshd execs itself when it receives SIGHUP;
@@ -992,6 +1003,9 @@ int main(int ac, char **av)
 #ifdef HAVE_OSF1_C2_SECURITY
   initialize_osf_security(ac, av);
 #endif /* HAVE_OSF1_C2_SECURITY */
+
+  /* Ensure that we have the proper capabilities. */
+  ensure_process_capabilities();
 
   /* If not in debugging mode, and not started from inetd, disconnect from
      the controlling terminal, and fork.  The original process exits. */
@@ -4204,6 +4218,9 @@ void do_child(const char *command, struct passwd *pw, const char *term,
   }
 #endif
 
+  /* Set process capabilities for the user. */
+  set_user_capabilities(user_name);
+
   /* Get the shell from the password data.  An empty shell field is legal,
      and means /bin/sh. */
   shell = (user_shell[0] == '\0') ? DEFAULT_SHELL : user_shell;
@@ -4718,4 +4735,61 @@ void krb_cleanup(void)
       dest_tkt();
       try_afscall(ktc_ForgetAllTokens);
     }
+}
+
+/* Ensure we will be able to set process capabilities after we
+ * setuid().  Currently implemented only on IRIX.
+ */
+void ensure_process_capabilities(void)
+{
+#ifdef sgi
+  if (cap_envl(0, CAP_SETPCAP, (cap_value_t) 0) == -1)
+    fatal("Insufficient privilege");
+#endif
+  return;
+}
+
+/* Set the POSIX capabilities for the user process.  This is called
+ * after we setuid() to the user.
+ * Currently implemented only on IRIX.
+ */
+void set_user_capabilities(const char *username)
+{
+#ifdef sgi
+  struct user_cap *user_cap;
+  char *def_cap;
+  cap_t cap, ocap;
+  cap_value_t capval;
+
+  /* If capabilities are supported, initialize the user's capability
+   * set, defaulting to an empty set if no default capabilities are
+   * defined for the user.
+   */
+  if (sysconf(_SC_CAP) > 0)
+    {
+      user_cap = sgi_getcapabilitybyname(username);
+      def_cap = (user_cap != NULL ? user_cap->ca_default : "all=");
+      cap = cap_from_text(def_cap);
+      if (user_cap != NULL)
+	{
+	  free(user_cap->ca_name);
+	  free(user_cap->ca_default);
+	  free(user_cap->ca_allowed);
+	  free(user_cap);
+	}
+      if (cap == NULL)
+	fatal("Cannot convert user capabilities: %s", strerror(errno));
+      capval = CAP_SETPCAP;
+      ocap = cap_acquire(1, &capval);
+      if (cap_set_proc(cap) == -1)
+	{
+	  cap_surrender(ocap);
+	  cap_free(cap);
+	  fatal("Cannot set process capabilities: %s", strerror(errno));
+	}
+      cap_free(cap);
+      cap_free(ocap);
+    }
+#endif
+  return;
 }
