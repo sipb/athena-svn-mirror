@@ -1,14 +1,20 @@
 /*
- * AFS quota groking routines
- *   Must be separated out, because the NFS code and the AFS code don't like
- *   to be in the same file, due to conflicting RPC include files
+ * AFS quota routines
+ *
+ * $Id: afs.c,v 1.7 1992-04-10 20:24:18 probe Exp $
  */
 
-#include "attach.h"
+#include <stdio.h>
+#include <errno.h>
+#include <sys/types.h>
 
 #include <afs/param.h>
 #include <afs/venus.h>
 #include <afs/afsint.h>
+
+#ifdef _IBMR2
+#include <sys/id.h>
+#endif
 
 extern int uflag,gflag,fsind;
 extern char *fslist[];
@@ -17,31 +23,43 @@ extern int heading_printed;
 #define user_and_groups (!uflag && !gflag)
 
 void *
-getafsquota(ap, explicit)
-    struct _attachtab *ap;
+getafsquota(path, explicit)
+    char *path;
     int explicit;
 {
     static struct VolumeStatus vs;
     struct ViceIoctl ibuf;
     int code;
 
+#ifdef _IBMR2
+    setuidx(ID_EFFECTIVE, getuidx(ID_REAL));
+#else
+    setreuid(geteuid(), getuid());
+#endif
+
     ibuf.out_size=sizeof(struct VolumeStatus);
     ibuf.in_size=0;
     ibuf.out=(caddr_t) &vs;
-    code = pioctl(ap->mntpt,VIOCGETVOLSTAT,&ibuf,1);
+    code = pioctl(path,VIOCGETVOLSTAT,&ibuf,1);
     if (code) {
 	if (explicit || ((errno != EACCES) && (errno != EPERM))) {
 	    fprintf(stderr, "Error getting AFS quota: ");
-	    perror(ap->mntpt);
+	    perror(path);
 	}
-	return(NULL);
     }
-    return((void *)&vs);
+
+#ifdef _IBMR2
+    setuidx(ID_EFFECTIVE, getuidx(ID_SAVED));
+#else
+    setreuid(geteuid(), getuid());
+#endif
+
+    return(code ? (void *)0 : (void *)&vs);
 }
 
 void
-prafsquota(ap,foo,heading_id,heading_name)
-    struct _attachtab *ap;
+prafsquota(path,foo,heading_id,heading_name)
+    char *path;
     void *foo;
     int heading_id;
     char *heading_name;
@@ -50,10 +68,10 @@ prafsquota(ap,foo,heading_id,heading_name)
     char *cp;
 
     vs = (struct VolumeStatus *) foo;
-    cp = ap->mntpt;
+    cp = path;
     if (!user_and_groups) {
 	if (!heading_printed) simpleheading(heading_id,heading_name);
-	if (strlen(ap->mntpt) > 15){
+	if (strlen(path) > 15){
 	    printf("%s\n",cp);
 	    cp = "";
 	}
@@ -81,8 +99,8 @@ prafsquota(ap,foo,heading_id,heading_name)
 }
 
 void
-afswarn(ap,foo,name)
-    struct _attachtab *ap;
+afswarn(path,foo,name)
+    char *path;
     void *foo;
     char *name;
 {
@@ -92,36 +110,10 @@ afswarn(ap,foo,name)
     uid_t uid=getuid();
 
     vs = (struct VolumeStatus *) foo;
-/*
- * Some sort of heuristic is need to avoid printing quota warnings for
- * lockers the user has no control over.  For now, only print warnings if
- * the locker was attached with mode "w"; it is (somewhat) unlikely that a
- * user will be writing to a locker they do not have write permission to,
- * Additionally, only warn the user if if it was they who attached it, or if
- * they are explicitly asking for information on that locker.
- */
 
-  if (vs->MaxQuota && (vs->BlocksInUse >= vs->MaxQuota)) {
-    if (fsind) {
-      for(i=0;i<fsind;i++) {
-	if(!strcmp(fslist[i],ap->mntpt)) {
-	  sprintf(buf,"User %s over disk quota on %s, remove %dK\n", name,
-		  ap->mntpt, (vs->BlocksInUse - vs->MaxQuota));
-	  putwarning(buf);
-	  return;
-	}
-      }
-    }
-    else if (ap->mode == 'w') {
-      for (i = 0; i < ap->nowners; i++) {
-	if (uid != ap->owners[i])
-	  continue;
+    if (vs->MaxQuota && (vs->BlocksInUse >= vs->MaxQuota)) {
 	sprintf(buf,"User %s over disk quota on %s, remove %dK\n", name,
-		ap->mntpt, (vs->BlocksInUse - vs->MaxQuota));
+		path, (vs->BlocksInUse - vs->MaxQuota));
 	putwarning(buf);
-	return;
-      }
     }
-  }
-  return;
 }
