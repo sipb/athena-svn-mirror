@@ -7,7 +7,7 @@ OBJS=		quota.o $(MACHOBJS)
 LIBS=		-lrpcsvc
 #endif
 #ifdef _AIX
-LIBS=		-lrpc
+LIBS=		-lrpclib
 #endif
 
 #if defined(ultrix) || defined(i386)
