@@ -4,7 +4,7 @@
  *	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/znol/znol.c,v $
- *	$Author: cfields $
+ *	$Author: danw $
  *
  *	Copyright (c) 1987 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -17,7 +17,7 @@
 #include <string.h>
 
 #ifndef lint
-static char rcsid_znol_c[] = "$Id: znol.c,v 1.12 1994-11-12 01:25:38 cfields Exp $";
+static char rcsid_znol_c[] = "$Id: znol.c,v 1.13 1997-05-12 20:23:26 danw Exp $";
 #endif 
 
 #define SUBSATONCE 7
@@ -142,8 +142,9 @@ main(argc,argv)
 			*comment_ptr = '\0'; /* Ignore from # onwards */
 		    /* Get rid of old-style nol entries, just in case */
 		    cp = cleanname + strlen(cleanname) - 1;
-		    *cp = '\0';
-		    while(*--cp == ' ')
+		    if (*cp == '\n')
+			*cp = '\0';
+		    while (*--cp == ' ')
 			*cp = '\0';
 		    if (*cleanname == '@' || !*cleanname)
 			continue;
