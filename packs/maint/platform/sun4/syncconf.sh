@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: syncconf.sh,v 1.8 1997-09-29 21:00:24 ghudson Exp $
+# $Id: syncconf.sh,v 1.9 1997-12-30 18:33:10 ghudson Exp $
 
 rcconf=/etc/athena/rc.conf
 rcsync=/var/athena/rc.conf.sync
@@ -98,10 +98,11 @@ handle()
 		move "/etc/hostname.$NETDEV" "/etc/hostname.$NETDEV.saved"
 		move /etc/defaultrouter /etc/defaultrouter.saved
 		move /etc/inet/hosts /etc/inet/hosts.saved
+		move /etc/inet/netmasks /etc/inet/netmasks.saved
 
-		net=`echo $ADDR | awk -F. '{ print $1 "." $2 }'`
-		gateway=$net.0.1
-		broadcast=$net.255.255
+		set -- `/etc/athena/netparams "$ADDR"`
+		netmask=$1
+		gateway=$4
 
 		put	/etc/nodename "$HOST"
 		put	"/etc/hostname.$NETDEV" "$HOST"
@@ -111,8 +112,10 @@ handle()
 		append	/etc/inet/hosts "#"
 		append	/etc/inet/hosts "127.0.0.1  localhost loghost"
 		append	/etc/inet/hosts "$ADDR  $HOST.mit.edu $HOST"
+		put	/etc/inet/netmasks "# Netmask for this host"
+		append	/etc/inet/netmasks "$ADDR	$netmask"
 
-		# Hostname configuration happens prior to rc scripts on
+		# Hostname configuration happens prior to rc2 scripts on
 		# Solaris.
 		if [ "$HOST" != "$oldhost" -o "$ADDR" != "$oldaddr" ]; then
 			mustreboot=1
