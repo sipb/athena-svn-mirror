@@ -478,6 +478,7 @@ int dodir(src,dst,part)
 #define typeofaction (rules[tp->action_ruleno].u.u_action.type)
 #define pflag   (option_on(tp->action_ruleno,'p'))
 #define fflag	(option_on(tp->action_ruleno,'f'))
+#define dflag	(option_on(tp->action_ruleno,'d'))
 
 	/* modemask is not known to switch.c */
 #define modemask (pflag ? 07777 : 00777)

@@ -247,6 +247,10 @@
 #undef	action
 #define	action "ignor"
 	case ACTION_IGNORE:
+	    if (dflag && srctype == TYPE_D && exists
+		&& dodir(srcname, targname, part))
+		printf("The update of %s from %s aborted prematurely.\n",
+		       targname, srcname);
 	    break;
 
 #undef update_error

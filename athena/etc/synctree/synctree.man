@@ -130,6 +130,11 @@ during the copy.
 This mode will force a copy, regardless of whether the source and
 destination file types differ or the destination file was more recent
 than the source.
+.TP
+.B ignore \-d
+Normally, a directory is only descended into if it is copied or
+mapped.  This mode will cause an ignored directory to be descended
+into if the destination directory exists.
 
 .SH AUTHOR
 Tim Shepard,
