@@ -267,7 +267,7 @@ static char *
 oaf_strsignal (int sig)
 {
 	if (sig < NSIG)
-		return sys_siglist[sig];
+		return _sys_siglist[sig];
 	else
 		return "Unknown signal";
 
