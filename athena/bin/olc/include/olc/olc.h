@@ -17,7 +17,7 @@
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/olc.h,v $
  *      $Author: raeburn $
- *      $Id: olc.h,v 1.7 1990-01-04 14:37:44 raeburn Exp $
+ *      $Id: olc.h,v 1.8 1990-01-04 14:46:24 raeburn Exp $
  */
 
 #ifndef __olc_olc_h
@@ -94,10 +94,10 @@ extern char DaemonHost[];
 #define DEFAULT_MAILHUB "Athena.mit.edu"
 
 #ifdef HESIOD
-char **hes_resolve();
-#endif HESIOD
+char **hes_resolve OPrototype((const char *, const char *));
+int hes_error OPrototype ((void));
+#endif
 
-void expand_hostname();
-
+void expand_hostname ();
 
 #endif /* __olc_olc_h */
