@@ -18,7 +18,7 @@
  * For copying and distribution information, see the file "mit-copyright.h."
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/macros.h,v $
- *	$Id: macros.h,v 1.8 1990-08-26 16:24:29 lwvanels Exp $
+ *	$Id: macros.h,v 1.9 1990-12-12 15:25:56 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
@@ -55,7 +55,7 @@
  */
 
 typedef int     ERRCODE;        /* An error code. */
-typedef ERRCODE (*FUNCTION) OPrototype ((int, struct tREQUEST *, int));
+typedef ERRCODE (*FUNCTION) OPrototype ((int, struct tREQUEST *));
 				/* A pointer to a function. */
 typedef int     RESPONSE;       /* A response code. */
 
