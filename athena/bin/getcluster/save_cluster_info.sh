@@ -3,7 +3,7 @@
 # This is normally exected by /etc/rc and each time a workstation is
 # activated.
 #
-# $Id: save_cluster_info.sh,v 1.12 1997-04-01 00:52:59 ghudson Exp $
+# $Id: save_cluster_info.sh,v 1.12.2.1 1997-07-04 00:57:35 ghudson Exp $
 #
 # Use old data from last session if getcluster fails.
 
@@ -16,6 +16,11 @@ if [ "${VERSION}" = "Update" ]; then
 	echo "This system is in the middle of an update."
 	echo "Please contact Athena Operations."
 	exit 1
+fi
+
+# Source existing clusterinfo file to get update timestamp, if any.
+if [ -s /var/athena/clusterinfo.bsh ]; then
+	. /var/athena/clusterinfo.bsh
 fi
 
 /bin/athena/getcluster -b ${HOST} ${VERSION} > /var/athena/clusterinfo.bsh.new
