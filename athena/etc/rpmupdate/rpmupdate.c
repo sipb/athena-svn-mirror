@@ -18,7 +18,7 @@
  * workstation as indicated by the flags.
  */
 
-static const char rcsid[] = "$Id: rpmupdate.c,v 1.11 2002-02-26 15:35:15 ghudson Exp $";
+static const char rcsid[] = "$Id: rpmupdate.c,v 1.12 2002-03-21 05:30:07 ghudson Exp $";
 
 #define _GNU_SOURCE
 #include <sys/types.h>
@@ -324,7 +324,7 @@ static void perform_updates(struct package **pkgtab, int public, int dryrun,
   rpmdb db;
   rpmTransactionSet rpmdep;
   rpmProblemSet probs = NULL;
-  struct rpmDependencyConflict *conflicts;
+  rpmDependencyConflict conflicts;
   int nconflicts;
   rpmdbMatchIterator mi;
   Header h;
