@@ -1,4 +1,4 @@
-# $Id: Makefile.athena,v 1.3 1999-09-02 14:49:57 ghudson Exp $
+# $Id: Makefile.athena,v 1.4 1999-09-03 18:19:30 ghudson Exp $
 
 SHELL=/bin/sh
 
@@ -18,6 +18,5 @@ install:
 	mkdir -p "$$SRVD/usr/athena/etc"
 	mkdir -p "$$SRVD/usr/athena/man/man1"
 	mkdir -p "$$SRVD/usr/athena/man/man8"
-	mkdir -p "$$SRVD/bin"
 	mkdir -p "$$SRVD/etc/athena"
 	${MAKE} install DESTDIR="$$SRVD"
