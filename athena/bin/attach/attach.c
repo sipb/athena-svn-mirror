@@ -1,13 +1,13 @@
 /*	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/attach/attach.c,v $
- *	$Author: probe $
+ *	$Author: miki $
  *
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  */
 
 #ifndef lint
-static char rcsid_attach_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/attach.c,v 1.17 1992-01-27 03:10:43 probe Exp $";
+static char rcsid_attach_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/attach.c,v 1.18 1994-03-25 15:57:14 miki Exp $";
 #endif
 
 #include "attach.h"
@@ -145,7 +145,7 @@ retry:
     strcpy(at.hesiodname, name);
     strcpy(at.host, "?");
     strcpy(at.hostdir, "?");
-    bzero((char *)&at.hostaddr, sizeof(at.hostaddr));
+    memset((char *)&at.hostaddr, 0, sizeof(at.hostaddr));
     at.rmdir = 0;
     at.drivenum = 0;
     at.mode = 'r';
@@ -296,7 +296,7 @@ try_attach(name, hesline, errorout)
 	    (lock_filesystem ? FLAG_LOCKED : 0);
 
     /* Prepare mount options structure */
-    bzero(&mopt, sizeof(mopt));
+    memset(&mopt, 0, sizeof(mopt));
     mopt.type = at.fs->mount_type;
     
     /* Read in default options */
