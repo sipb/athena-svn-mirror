@@ -1,6 +1,6 @@
 # Global cshrc file
 #
-# $Id: cshrc,v 1.14 2000-03-15 15:12:06 rbasch Exp $
+# $Id: cshrc,v 1.15 2001-05-30 19:10:37 ghudson Exp $
 
 # This file is sourced by default user file ~/.cshrc
 
@@ -50,7 +50,7 @@ if (! $?ENV_SET) then
 
 	umask 077				# Strictly protect files
 						#  (does not apply in AFS)
-	limit coredumpsize 0            	# Don't allow coredumps
+	unlimit coredumpsize            	# Don't allow coredumps
 	setenv MORE -se				# Default "more" behavior
 	setenv EDITOR emacs			# Set default editor
 	setenv VISUAL emacs			# Set default screen editor
