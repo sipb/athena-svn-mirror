@@ -18,7 +18,8 @@ to the C shell, or, if the
 .B \-b
 flag is present, in Bourne shell syntax.
 .I Getcluster
-returns an exit status of 1 if any errors were encountered.
+returns an exit status of 2 if no Hesiod information is available, or
+1 if any other error was encountered.
 .PP
 A Hesiod cluster record contains between two and four fields: a
 variable name, a value, an optional version number, and an optional
