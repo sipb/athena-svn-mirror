@@ -59,14 +59,21 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 host_alias = @host_alias@
 host_triplet = @host@
+AR = @AR@
 AS = @AS@
 CATALOGS = @CATALOGS@
 CATOBJEXT = @CATOBJEXT@
 CC = @CC@
+CXX = @CXX@
+CXXCPP = @CXXCPP@
 DATADIRNAME = @DATADIRNAME@
 DLLTOOL = @DLLTOOL@
 ECHO = @ECHO@
+EGREP = @EGREP@
 EXEEXT = @EXEEXT@
+F77 = @F77@
+GCJ = @GCJ@
+GCJFLAGS = @GCJFLAGS@
 GCONFTOOL = @GCONFTOOL@
 GCONF_SCHEMA_CONFIG_SOURCE = @GCONF_SCHEMA_CONFIG_SOURCE@
 GCONF_SCHEMA_FILE_DIR = @GCONF_SCHEMA_FILE_DIR@
@@ -74,6 +81,7 @@ GDK_PIXBUF_CSOURCE = @GDK_PIXBUF_CSOURCE@
 GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
 GMOFILES = @GMOFILES@
 GMSGFMT = @GMSGFMT@
+HAVE_LIB = @HAVE_LIB@
 HOST_ALIAS = @HOST_ALIAS@
 INSTOBJEXT = @INSTOBJEXT@
 INTLLIBS = @INTLLIBS@
@@ -81,6 +89,7 @@ INTLTOOL_CAVES_RULE = @INTLTOOL_CAVES_RULE@
 INTLTOOL_DESKTOP_RULE = @INTLTOOL_DESKTOP_RULE@
 INTLTOOL_DIRECTORY_RULE = @INTLTOOL_DIRECTORY_RULE@
 INTLTOOL_EXTRACT = @INTLTOOL_EXTRACT@
+INTLTOOL_KBD_RULE = @INTLTOOL_KBD_RULE@
 INTLTOOL_KEYS_RULE = @INTLTOOL_KEYS_RULE@
 INTLTOOL_MERGE = @INTLTOOL_MERGE@
 INTLTOOL_OAF_RULE = @INTLTOOL_OAF_RULE@
@@ -94,9 +103,12 @@ INTLTOOL_SOUNDLIST_RULE = @INTLTOOL_SOUNDLIST_RULE@
 INTLTOOL_THEME_RULE = @INTLTOOL_THEME_RULE@
 INTLTOOL_UI_RULE = @INTLTOOL_UI_RULE@
 INTLTOOL_UPDATE = @INTLTOOL_UPDATE@
+INTLTOOL_XAM_RULE = @INTLTOOL_XAM_RULE@
 INTLTOOL_XML_RULE = @INTLTOOL_XML_RULE@
+LIB = @LIB@
 LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
+LTLIB = @LTLIB@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
 MKINSTALLDIRS = @MKINSTALLDIRS@
@@ -109,6 +121,7 @@ POSUB = @POSUB@
 PO_IN_DATADIR_FALSE = @PO_IN_DATADIR_FALSE@
 PO_IN_DATADIR_TRUE = @PO_IN_DATADIR_TRUE@
 RANLIB = @RANLIB@
+RC = @RC@
 STRIP = @STRIP@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
@@ -116,31 +129,22 @@ VERSION = @VERSION@
 icondir = $(pkgdatadir)/icons
 icon_DATA = metacity-window-demo.png
 
-INCLUDES = @METACITY_WINDOW_DEMO_CFLAGS@ @METACITY_MESSAGE_CFLAGS@ \
-	@METACITY_PROPS_CFLAGS@  -DMETACITY_ICON_DIR=\"$(pkgdatadir)/icons\" \
-	-DMETACITY_PROPS_GLADEDIR=\"$(pkgdatadir)/glade\" \
-	-DMETACITY_PROPS_ICON_DIR=\"$(datadir)/pixmaps\" \
-	-DMETACITY_LOCALEDIR=\"$(prefix)/@DATADIRNAME@/locale\"
+INCLUDES = @METACITY_WINDOW_DEMO_CFLAGS@ @METACITY_MESSAGE_CFLAGS@ 	@METACITY_PROPS_CFLAGS@  -DMETACITY_ICON_DIR=\"$(pkgdatadir)/icons\" 	-DMETACITY_PROPS_GLADEDIR=\"$(pkgdatadir)/glade\" 	-DMETACITY_PROPS_ICON_DIR=\"$(datadir)/pixmaps\" 	-DMETACITY_LOCALEDIR=\"$(prefix)/@DATADIRNAME@/locale\"
 
 
-metacity_message_SOURCES = \
-	metacity-message.c
+metacity_message_SOURCES =  	metacity-message.c
 
 
-metacity_window_demo_SOURCES = \
-	metacity-window-demo.c
+metacity_window_demo_SOURCES =  	metacity-window-demo.c
 
 
-metacity_mag_SOURCES = \
-	metacity-mag.c
+metacity_mag_SOURCES =  	metacity-mag.c
 
 
-metacity_grayscale_SOURCES = \
-	metacity-grayscale.c
+metacity_grayscale_SOURCES =  	metacity-grayscale.c
 
 
-metacity_properties_SOURCES = \
-	metacity-properties.c
+metacity_properties_SOURCES =  	metacity-properties.c
 
 
 metacity_properties_LDFLAGS = -export-dynamic
@@ -152,12 +156,12 @@ propicondir = $(datadir)/pixmaps
 propicon_DATA = metacity-properties.png
 
 METACITY_PROPERTIES_DESKTOP_IN = metacity-properties.desktop.in
-@BUILD_CONFIG_DIALOG_TRUE@METACITY_PROPERTIES_DESKTOP = @BUILD_CONFIG_DIALOG_TRUE@metacity-properties.desktop
+@BUILD_CONFIG_DIALOG_TRUE@METACITY_PROPERTIES_DESKTOP = metacity-properties.desktop
 @BUILD_CONFIG_DIALOG_FALSE@METACITY_PROPERTIES_DESKTOP = 
 
 desktopdir = $(datadir)/control-center-2.0/capplets
 desktop_DATA = $(METACITY_PROPERTIES_DESKTOP)
-@BUILD_CONFIG_DIALOG_TRUE@CONFIG_DIALOG = @BUILD_CONFIG_DIALOG_TRUE@metacity-properties
+@BUILD_CONFIG_DIALOG_TRUE@CONFIG_DIALOG = metacity-properties
 @BUILD_CONFIG_DIALOG_FALSE@CONFIG_DIALOG = 
 
 bin_PROGRAMS = metacity-message metacity-window-demo $(CONFIG_DIALOG)
@@ -168,7 +172,7 @@ metacity_message_LDADD = @METACITY_MESSAGE_LIBS@
 metacity_window_demo_LDADD = @METACITY_WINDOW_DEMO_LIBS@
 metacity_mag_LDADD = @METACITY_WINDOW_DEMO_LIBS@
 metacity_grayscale_LDADD = @METACITY_WINDOW_DEMO_LIBS@
-@BUILD_CONFIG_DIALOG_TRUE@metacity_properties_LDADD = @BUILD_CONFIG_DIALOG_TRUE@@METACITY_PROPS_LIBS@
+@BUILD_CONFIG_DIALOG_TRUE@metacity_properties_LDADD = @METACITY_PROPS_LIBS@
 
 EXTRA_DIST = $(icon_DATA) $(ui_DATA) $(propicon_DATA) $(METACITY_PROPERTIES_DESKTOP_IN)
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
@@ -217,7 +221,7 @@ DIST_COMMON =  Makefile.am Makefile.in
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = gtar
+TAR = tar
 GZIP_ENV = --best
 SOURCES = $(metacity_message_SOURCES) $(metacity_window_demo_SOURCES) $(metacity_properties_SOURCES) $(metacity_mag_SOURCES) $(metacity_grayscale_SOURCES)
 OBJECTS = $(metacity_message_OBJECTS) $(metacity_window_demo_OBJECTS) $(metacity_properties_OBJECTS) $(metacity_mag_OBJECTS) $(metacity_grayscale_OBJECTS)
@@ -425,7 +429,7 @@ TAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) $(LISP)
 	  awk '    { files[$$0] = 1; } \
 	       END { for (i in files) print i; }'`; \
 	test -z "$(ETAGS_ARGS)$$unique$(LISP)$$tags" \
-	  || (cd $(srcdir) && etags $(ETAGS_ARGS) $$tags  $$unique $(LISP) -o $$here/TAGS)
+	  || (cd $(srcdir) && etags -o $$here/TAGS $(ETAGS_ARGS) $$tags  $$unique $(LISP))
 
 mostlyclean-tags:
 

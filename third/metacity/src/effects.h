@@ -25,7 +25,7 @@
 #include "util.h"
 #include "screen.h"
 
-#define META_MINIMIZE_ANIMATION_LENGTH 0.35
+#define META_MINIMIZE_ANIMATION_LENGTH 0.25
 #define META_SHADE_ANIMATION_LENGTH 0.2
 
 typedef enum
@@ -40,5 +40,13 @@ void meta_effects_draw_box_animation (MetaScreen     *screen,
                                       MetaRectangle  *destination_rect,
                                       double          seconds_duration,
                                       MetaBoxAnimType anim_type);
+
+void meta_effects_begin_wireframe  (MetaScreen          *screen,
+                                    const MetaRectangle *rect);
+void meta_effects_update_wireframe (MetaScreen          *screen,
+                                    const MetaRectangle *old_rect,
+                                    const MetaRectangle *new_rect);
+void meta_effects_end_wireframe    (MetaScreen          *screen,
+                                    const MetaRectangle *old_rect);
 
 #endif /* META_EFFECTS_H */

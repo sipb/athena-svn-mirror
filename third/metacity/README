@@ -6,15 +6,18 @@ on UNIX keyboards.
 The first release of Metacity was version 2.3. Metacity has no need for
 your petty hangups about version numbers.
 
+The stable releases so far are 2.4.x, 2.6.x, 2.8.0, 2.8.1, 2.8.1.x, 2.8.5
+
+Unstable branches are 2.3.x, 2.5.x, 2.8.2-4)
+
 COMPILING METACITY
 ===
 
-You need GTK+ 2.0, ideally the latest in the 2.0.x series.  For
-multihead/Xinerama support to work, you need GTK+ 2.2.  For
-startup notification to work you need libstartup-notification at
+You need GTK+ 2.2.  For startup notification to work you need
+libstartup-notification at
 http://www.freedesktop.org/software/startup-notification/ or on the
-GNOME ftp site. You also need GConf 1.2 (unless building a funky 
-extra-small embedded metacity with --disable-gconf).
+GNOME ftp site. You also need GConf 1.2 (unless building a funky
+extra-small embedded metacity with --disable-gconf, see below).
 
 REPORTING BUGS AND SUBMITTING PATCHES
 ===
@@ -36,9 +39,9 @@ See the HACKING file for some notes on hacking Metacity.
 SHRINKING METACITY
 ===
 
-Not that metacity is huge (<400K binary last I checked), but about
-half of that is in the preferences handling, in static strings that
-aren't essential, and in the theme engine.
+Not that metacity is huge, but a substantial amount of code is in
+preferences handling, in static strings that aren't essential, and in
+the theme engine.
 
 You can strip about 70K from the metacity binary by compiling with 
 options such as:
@@ -78,7 +81,7 @@ METACITY FEATURES
  - Does not expose the concept of "window manager" to the user.  Some
    of the features in the GNOME control panel and other parts of the
    desktop happen to be implemented in metacity, such as changing your
-   window border theme, or changing your window navigation shorcuts,
+   window border theme, or changing your window navigation shortcuts,
    but the user doesn't need to know this.
 
  - Includes only the window manager; does not try to be a desktop
@@ -184,11 +187,10 @@ METACITY FEATURES
      be respawned. It theoretically restores sizes/positions/workspace
      for session-aware applications.
 
- - Metacity implements much of the new window manager spec from
-   freedesktop.org
-   (http://www.freedesktop.org/standards/wm-spec.html), and much of
-   the ICCCM. But then there are parts of each that it doesn't
-   implement, just because I haven't yet.
+ - Metacity implements much of the EWMH window manager specification
+   from freedesktop.org, as well as the older ICCCM.  Please refer to
+   the COMPLIANCE file for information on metacity compliance with
+   these standards.
 
  - Uses Pango to render text, so has cool i18n capabilities. 
    Supports UTF-8 window titles and such.
@@ -367,9 +369,11 @@ A: This one is also in rationales.txt. Because "ouija board" UI, where
      http://pobox.com/~hp/free-software-ui.html
      http://pobox.com/~hp/features.html   
 
-Q: Why no wireframe move/resize?
+Q: Why does wireframe move/resize suck?
 
-A: Also in rationales.txt. Because it has low usability, and is a pain
+A: You can turn it on with the reduced_resources setting.
+
+   But: it has low usability, and is a pain
    to implement, and there's no reason opaque move/resize should be a
    problem on any setup that can run a modern desktop worth a darn to
    begin with.
@@ -377,6 +381,9 @@ A: Also in rationales.txt. Because it has low usability, and is a pain
    Read these and the bugzilla stuff before asking/commenting:
      http://pobox.com/~hp/free-software-ui.html
      http://pobox.com/~hp/features.html   
+
+   The reason we had to add wireframe anyway was broken 
+   proprietary apps that can't handle lots of resize events.
 
 Q: Why no XYZ?
 

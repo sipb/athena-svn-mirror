@@ -3,9 +3,10 @@ AC_INIT(src/display.c)
 
 AM_CONFIG_HEADER(config.h)
 
-# 0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377, 610, 987 
-# releases on a branch add a 4th version like 2.4.21.1
-AM_INIT_AUTOMAKE(metacity, 2.4.34)
+# we'll hold the 2.8.x versioning for GNOME 2.8, it was also used
+# for GNOME 2.6, then after GNOME 2.8 we'll have the numbers synced
+# with GNOME
+AM_INIT_AUTOMAKE(metacity, 2.8.5)
 
 # Honor aclocal flags
 ACLOCAL="$ACLOCAL $ACLOCAL_FLAGS"
@@ -20,7 +21,23 @@ AC_PROG_INTLTOOL([0.21])
 AC_PROG_CC
 AC_ISC_POSIX
 AC_HEADER_STDC
+AC_LIBTOOL_WIN32_DLL
 AM_PROG_LIBTOOL
+
+#### Integer sizes 
+
+AC_CHECK_SIZEOF(char)
+AC_CHECK_SIZEOF(short)
+AC_CHECK_SIZEOF(long)
+AC_CHECK_SIZEOF(int)
+AC_CHECK_SIZEOF(void *)
+AC_CHECK_SIZEOF(long long)
+AC_CHECK_SIZEOF(__int64)
+
+## byte order
+AC_C_BIGENDIAN
+
+#### Warnings
 
 changequote(,)dnl
 if test "x$GCC" = "xyes"; then
@@ -83,7 +100,7 @@ if test "x$GCC" = "xyes"; then
 fi
 changequote([,])dnl
 
-METACITY_PC_MODULES='gtk+-2.0 >= 2.0.0'
+METACITY_PC_MODULES='gtk+-2.0 >= 2.2.0 pango >= 1.2.0'
 
 AC_ARG_ENABLE(config-dialog,      [  --enable-config-dialog      enable the config dialog that you need with GNOME 2.0 (obsolete with GNOME 2.2)],,enable_config_dialog=no)
 
@@ -109,25 +126,35 @@ AC_ARG_ENABLE(sm,       [  --disable-sm             disable metacity's session m
 
 AC_ARG_ENABLE(startup-notification,   [  --disable-startup-notification             disable metacity's startup notification support, for embedded/size-sensitive custom non-GNOME builds],,enable_startup_notification=auto)
 
+AC_ARG_ENABLE(compositor,   [  --disable-compositor             disable metacity's compositing manager],,enable_compositor=auto)
+
 AC_ARG_ENABLE(xsync,       [  --disable-xsync             disable metacity's use of the XSync extension],,enable_xsync=auto)
+
+AC_ARG_ENABLE(render,       [  --disable-render             disable metacity's use of the RENDER extension],,enable_render=auto)
 
 AC_ARG_ENABLE(shape,       [  --disable-shape             disable metacity's use of the shaped window extension],,enable_shape=auto)
 
 ## try definining HAVE_BACKTRACE
 AC_CHECK_HEADERS(execinfo.h, [AC_CHECK_FUNCS(backtrace)])
 
-ALL_LINGUAS="am az bg ca cs da de el en_GB es et fi fr gl he hu it ja ko lv mk mn ms nl no pl pt pt_BR ro ru sl sk sv tr uk vi zh_CN zh_TW"
+ALL_LINGUAS="am ar az be bg bn bs ca cs cy da de el en_CA en_GB es et eu fa fi fr ga gl gu he hi hr hu id is it ja ko lt lv mk ml mn ms nb nl nn no or pa pl pt pt_BR ro ru sl sk sq sr sr@Latn sv ta th tk tr uk vi wa zh_CN zh_TW"
 AM_GLIB_GNU_GETTEXT
 
 ## here we get the flags we'll actually use
-PKG_CHECK_MODULES(METACITY_MESSAGE, gtk+-2.0 >= 2.0.0)
-PKG_CHECK_MODULES(METACITY_WINDOW_DEMO, gtk+-2.0 >= 2.0.0)
+PKG_CHECK_MODULES(METACITY_MESSAGE, gtk+-2.0 >= 2.2.0)
+PKG_CHECK_MODULES(METACITY_WINDOW_DEMO, gtk+-2.0 >= 2.2.0)
 
 if test x$enable_config_dialog = xyes; then
-   PKG_CHECK_MODULES(METACITY_PROPS, gtk+-2.0 >= 2.0.0 gconf-2.0 >= 1.1.9 libglade-2.0)
+   PKG_CHECK_MODULES(METACITY_PROPS, gtk+-2.0 >= 2.2.0 gconf-2.0 >= 1.1.9 libglade-2.0)
 fi
 
-STARTUP_NOTIFICATION_VERSION=0.4
+if $PKG_CONFIG --atleast-version 1.2.0 pangoxft; then
+   echo "pangoxft found"
+else
+   AC_MSG_ERROR("Pango 1.2.0 or greater based on Xft2 is required")
+fi
+
+STARTUP_NOTIFICATION_VERSION=0.7
 AC_MSG_CHECKING([Startup notification library >= $STARTUP_NOTIFICATION_VERSION])
 if $PKG_CONFIG --atleast-version $STARTUP_NOTIFICATION_VERSION libstartup-notification-1.0; then
    have_startup_notification=yes
@@ -153,14 +180,71 @@ else
   echo "Building without libstartup-notification"
 fi
 
-PKG_CHECK_MODULES(METACITY, $METACITY_PC_MODULES)
+## init this, it gets set either in the compositor check below 
+## or the render-specific check later
+have_xrender=no
 
-if $PKG_CONFIG --atleast-version 2.2.0 gtk+-2.0; then
-   AC_DEFINE(HAVE_GTK_MULTIHEAD,,[gtk+ with multihead support found])
-   with_multihead=yes
+XCOMPOSITE_VERSION=1.0
+AC_MSG_CHECKING([Xcomposite >= $XCOMPOSITE_VERSION])
+if $PKG_CONFIG --atleast-version $XCOMPOSITE_VERSION xcomposite; then
+   have_xcomposite=yes
 else
-   with_multihead=no
+   have_xcomposite=no
 fi
+AC_MSG_RESULT($have_xcomposite)
+
+if test x$enable_compositor = xyes; then
+   have_xcomposite=yes
+   echo "CompositeExt support forced on"
+elif test x$enable_compositor = xauto; then
+   echo "Not building compositing manager by default now, must enable explicitly to get it. And it doesn't work, so don't bother unless you want to hack on it..."
+   have_xcomposite=no
+else
+   have_xcomposite=no
+fi
+
+if test x$have_xcomposite = xyes; then
+  echo "Building with CompositeExt"
+  METACITY_PC_MODULES="$METACITY_PC_MODULES xcomposite >= $XCOMPOSITE_VERSION xfixes xrender xdamage"
+  AC_DEFINE(HAVE_COMPOSITE_EXTENSIONS, , [Building with compositing manager support])
+
+  ## force on render also
+  have_xrender=yes
+else
+  echo "Building without compositing manager"
+fi
+
+## if no compositor, still possibly enable render
+if test x$have_xcomposite = xno; then
+  XRENDER_VERSION=0.0
+  AC_MSG_CHECKING([xrender >= $XRENDER_VERSION])
+  if $PKG_CONFIG --atleast-version $XRENDER_VERSION xrender; then
+     have_xrender=yes
+  else
+     have_xrender=no
+  fi
+  AC_MSG_RESULT($have_xrender)
+
+  if test x$enable_render = xyes; then
+     have_xrender=yes
+     echo "Render support forced on"
+  elif test x$enable_render = xauto; then
+     true
+  else
+     have_xrender=no
+  fi
+
+  if test x$have_xrender = xyes; then
+     echo "Building with Render"
+     METACITY_PC_MODULES="$METACITY_PC_MODULES xrender >= $XRENDER_VERSION"
+  fi
+fi ## have_composite
+
+if test x$have_xrender = xyes; then
+  AC_DEFINE(HAVE_RENDER, , [Building with Render extension support])
+fi
+
+PKG_CHECK_MODULES(METACITY, $METACITY_PC_MODULES)
 
 AC_PATH_XTRA
 
@@ -170,46 +254,51 @@ ALL_X_LIBS="$X_LIBS $X_PRE_LIBS -lX11 $X_EXTRA_LIBS"
 metacity_save_cppflags="$CPPFLAGS"
 CPPFLAGS="$CPPFLAGS $X_CFLAGS"
 
+AC_ARG_ENABLE(xinerama,[  --disable-xinerama          disable metacity's use of the Xinerama extension],
+              try_xinerama=$enable_xinerama,try_xinerama=yes)
+
 use_solaris_xinerama=no
 use_xfree_xinerama=no
-case "$host" in
-    *-*-solaris*)
-        # Check for solaris
-        use_solaris_xinerama=yes
-        AC_CHECK_LIB(Xext, XineramaGetInfo,
-        	     use_solaris_xinerama=yes, use_solaris_xinerama=no,
-                     $ALL_X_LIBS)
-        if test "x$use_solaris_xinerama" = "xyes"; then
-            AC_CHECK_HEADER(X11/extensions/xinerama.h,
-                      	    if test -z "`echo $ALL_X_LIBS | grep "\-lXext" 2> /dev/null`"; then
-                                X_EXTRA_LIBS="-lXext $X_EXTRA_LIBS"
-        	            fi
-                            AC_DEFINE(HAVE_SOLARIS_XINERAMA, , [Have Solaris-style Xinerama])
-          	            AC_DEFINE(HAVE_XINERAMA, , [Have some version of Xinerama]),
-                            use_solaris_xinerama=no,
-                            [#include <X11/Xlib.h>])
-        fi	
-        AC_MSG_CHECKING(for Xinerama support on Solaris)
-        AC_MSG_RESULT($use_solaris_xinerama);
-        ;;
-    *)
-        # Check for XFree
-        use_xfree_xinerama=yes
-        AC_CHECK_LIB(Xinerama, XineramaQueryExtension,
-            [AC_CHECK_HEADER(X11/extensions/Xinerama.h,
-       	                     X_EXTRA_LIBS="-lXinerama $X_EXTRA_LIBS"   
-      	                     if test -z "`echo $ALL_X_LIBS | grep "\-lXext" 2> /dev/null`"; then
-             	                 X_EXTRA_LIBS="-lXext $X_EXTRA_LIBS"
-      	                     fi
-        	             AC_DEFINE(HAVE_XFREE_XINERAMA, , [Have XFree86-style Xinerama])
-      	                     AC_DEFINE(HAVE_XINERAMA,, [Have some version of Xinerama]), 
-      	                     use_xfree_xinerama=no,
-                             [#include <X11/Xlib.h>])],
-            use_xfree_xinerama=no, -lXext $ALL_X_LIBS)
-        AC_MSG_CHECKING(for Xinerama support on XFree86)
-        AC_MSG_RESULT($use_xfree_xinerama);
-        ;;
-esac
+if test "${try_xinerama}" != no; then
+    case "$host" in
+        *-*-solaris*)
+            # Check for solaris
+            use_solaris_xinerama=yes
+            AC_CHECK_LIB(Xext, XineramaGetInfo,
+                         use_solaris_xinerama=yes, use_solaris_xinerama=no,
+                         $ALL_X_LIBS)
+            if test "x$use_solaris_xinerama" = "xyes"; then
+                AC_CHECK_HEADER(X11/extensions/xinerama.h,
+                                if test -z "`echo $ALL_X_LIBS | grep "\-lXext" 2> /dev/null`"; then
+                                    X_EXTRA_LIBS="-lXext $X_EXTRA_LIBS"
+                                fi
+                                AC_DEFINE(HAVE_SOLARIS_XINERAMA, , [Have Solaris-style Xinerama])
+                                AC_DEFINE(HAVE_XINERAMA, , [Have some version of Xinerama]),
+                                use_solaris_xinerama=no,
+                                [#include <X11/Xlib.h>])
+            fi	
+            AC_MSG_CHECKING(for Xinerama support on Solaris)
+            AC_MSG_RESULT($use_solaris_xinerama);
+            ;;
+        *)
+            # Check for XFree
+            use_xfree_xinerama=yes
+            AC_CHECK_LIB(Xinerama, XineramaQueryExtension,
+                [AC_CHECK_HEADER(X11/extensions/Xinerama.h,
+                                 X_EXTRA_LIBS="-lXinerama $X_EXTRA_LIBS"   
+                                 if test -z "`echo $ALL_X_LIBS | grep "\-lXext" 2> /dev/null`"; then
+                                     X_EXTRA_LIBS="-lXext $X_EXTRA_LIBS"
+                                 fi
+                                 AC_DEFINE(HAVE_XFREE_XINERAMA, , [Have XFree86-style Xinerama])
+                                 AC_DEFINE(HAVE_XINERAMA,, [Have some version of Xinerama]), 
+                                 use_xfree_xinerama=no,
+                                 [#include <X11/Xlib.h>])],
+                use_xfree_xinerama=no, -lXext $ALL_X_LIBS)
+            AC_MSG_CHECKING(for Xinerama support on XFree86)
+            AC_MSG_RESULT($use_xfree_xinerama);
+            ;;
+    esac
+fi
 
 CPPFLAGS="$metacity_save_cppflags"
 
@@ -235,13 +324,24 @@ if test "x$found_shape" = "xyes"; then
    AC_DEFINE(HAVE_SHAPE, , [Have the shape extension library])
 fi
 
+found_xkb=no
+AC_CHECK_LIB(X11, XkbQueryExtension,
+               [AC_CHECK_HEADER(X11/XKBlib.h,
+                                found_xkb=yes)],
+	, $ALL_X_LIBS)
+
+if test "x$found_xkb" = "xyes"; then
+   AC_DEFINE(HAVE_XKB, , [Have keyboard extension library])
+fi
+
+
 RANDR_LIBS=
 found_randr=no
 AC_CHECK_LIB(Xrandr, XRRUpdateConfiguration,
                [AC_CHECK_HEADER(X11/extensions/Xrandr.h,
                                 RANDR_LIBS=-lXrandr found_randr=yes,,
 				[#include <X11/Xlib.h>])],
-               , -lXrender $ALL_X_LIBS)
+               , -lXrender -lXext $ALL_X_LIBS)
 
 if test "x$found_randr" = "xyes"; then
    AC_DEFINE(HAVE_RANDR, , [Have the Xrandr extension library])
@@ -341,7 +441,6 @@ src/libmetacity-private.pc
 src/tools/Makefile
 src/themes/Makefile
 po/Makefile.in
-metacity.spec
 ])
 
 if test x$enable_gconf = xno; then
@@ -373,11 +472,13 @@ metacity-$VERSION:
 	GConf:                    ${enable_gconf}
 	XFree86 Xinerama:         ${use_xfree_xinerama}
 	Solaris Xinerama:         ${use_solaris_xinerama}
-	Multihead:                ${with_multihead}
 	Startup notification:     ${have_startup_notification}
+	Compositing manager:      ${have_xcomposite}
 	Session management:       ${found_sm}
 	Shape extension:          ${found_shape}
 	Resize-and-rotate:        ${found_randr}
 	Xsync:                    ${found_xsync}
+	Render:                   ${have_xrender}
         Deprecated config dialog: ${enable_config_dialog}
 "
+# echo "This is the UNSTABLE branch of metacity, use 2.8.1.x for stable (gnome-2-6 branch in CVS)"

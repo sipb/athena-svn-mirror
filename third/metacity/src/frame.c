@@ -2,6 +2,7 @@
 
 /* 
  * Copyright (C) 2001 Havoc Pennington
+ * Copyright (C) 2003, 2004 Red Hat, Inc.
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -21,8 +22,13 @@
 
 #include <config.h>
 #include "frame.h"
+#include "bell.h"
 #include "errors.h"
 #include "keybindings.h"
+
+#ifdef HAVE_RENDER
+#include <X11/extensions/Xrender.h>
+#endif
 
 #define EVENT_MASK (SubstructureRedirectMask |                     \
                     StructureNotifyMask | SubstructureNotifyMask | \
@@ -32,12 +38,67 @@
                     EnterWindowMask | LeaveWindowMask |            \
                     FocusChangeMask |                              \
                     ColormapChangeMask)
+static Visual*
+find_argb_visual (MetaDisplay *display,
+                  int          scr)
+{
+#ifdef HAVE_RENDER
+  XVisualInfo		*xvi;
+  XVisualInfo		template;
+  int			nvi;
+  int			i;
+  XRenderPictFormat	*format;
+  Visual		*visual;
+
+  if (!META_DISPLAY_HAS_RENDER (display))
+    return NULL;
+  
+  template.screen = scr;
+  template.depth = 32;
+  template.class = TrueColor;
+  xvi = XGetVisualInfo (display->xdisplay, 
+                        VisualScreenMask |
+                        VisualDepthMask |
+                        VisualClassMask,
+                        &template,
+                        &nvi);
+  if (!xvi)
+    return 0;
+  
+  visual = NULL;
+
+  for (i = 0; i < nvi; i++)
+    {
+      format = XRenderFindVisualFormat (display->xdisplay, xvi[i].visual);
+      if (format->type == PictTypeDirect && format->direct.alphaMask)
+	{
+          visual = xvi[i].visual;
+          break;
+	}
+    }
+
+  XFree (xvi);
+
+  if (visual)
+    meta_topic (META_DEBUG_COMPOSITOR,
+                "Found ARGB visual 0x%lx\n",
+                (long) visual->visualid);
+  else
+    meta_topic (META_DEBUG_COMPOSITOR,
+                "No ARGB visual found\n");
+  
+  return visual;
+#else  /* RENDER */
+  return NULL;
+#endif /* !RENDER */
+}
 
 void
 meta_window_ensure_frame (MetaWindow *window)
 {
   MetaFrame *frame;
   XSetWindowAttributes attrs;
+  Visual *visual;
   
   if (window->frame)
     return;
@@ -59,9 +120,8 @@ meta_window_ensure_frame (MetaWindow *window)
 
   frame->mapped = FALSE;
   frame->need_reapply_frame_shape = TRUE;
+  frame->is_flashing = FALSE;
   
-  attrs.event_mask = EVENT_MASK;
-
   meta_verbose ("Framing window %s: visual %s default, depth %d default depth %d\n",
                 window->desc,
                 XVisualIDFromVisual (window->xvisual) ==
@@ -75,26 +135,34 @@ meta_window_ensure_frame (MetaWindow *window)
   /* Default depth/visual handles clients with weird visuals; they can
    * always be children of the root depth/visual obviously, but
    * e.g. DRI games can't be children of a parent that has the same
-   * visual as the client.
+   * visual as the client. NULL means default visual.
+   *
+   * We look for an ARGB visual if we can find one, otherwise use
+   * the default of NULL.
    */
   
-  frame->xwindow = XCreateWindow (window->display->xdisplay,
-                                  window->screen->xroot,
-                                  frame->rect.x,
-                                  frame->rect.y,
-                                  frame->rect.width,
-                                  frame->rect.height,
-                                  0,
-                                  window->screen->default_depth,
-                                  CopyFromParent,
-                                  window->screen->default_xvisual,
-                                  CWEventMask,
-                                  &attrs);
+  /* Special case for depth 32 windows (assumed to be ARGB),
+   * we use the window's visual
+   */
+  if (window->depth == 32)
+    visual = window->xvisual;
+  else
+    visual = find_argb_visual(window->display, 
+                              window->screen->number);
 
-  /* So our UI can find the window ID */
-  XFlush (window->display->xdisplay);
-  
+  frame->xwindow = meta_ui_create_frame_window (window->screen->ui,
+                                                window->display->xdisplay,
+                                                visual,
+                                                frame->rect.x,
+                                                frame->rect.y,
+						frame->rect.width,
+						frame->rect.height,
+						frame->window->screen->number);
+
   meta_verbose ("Frame for %s is 0x%lx\n", frame->window->desc, frame->xwindow);
+  attrs.event_mask = EVENT_MASK;
+  XChangeWindowAttributes (window->display->xdisplay,
+			   frame->xwindow, CWEventMask, &attrs);
   
   meta_display_register_x_window (window->display, &frame->xwindow, window);
 
@@ -131,8 +199,6 @@ meta_window_ensure_frame (MetaWindow *window)
   /* stick frame to the window */
   window->frame = frame;
   
-  meta_ui_add_frame (window->screen->ui, frame->xwindow);
-
   if (window->title)
     meta_ui_set_frame_title (window->screen->ui,
                              window->frame->xwindow,
@@ -160,9 +226,11 @@ meta_window_destroy_frame (MetaWindow *window)
   if (window->frame == NULL)
     return;
 
+  meta_verbose ("Unframing window %s\n", window->desc);
+  
   frame = window->frame;
   
-  meta_ui_remove_frame (window->screen->ui, frame->xwindow);
+  meta_bell_notify_frame_destroy (frame);
   
   /* Unparent the client window; it may be destroyed,
    * thus the error trap.
@@ -186,6 +254,8 @@ meta_window_destroy_frame (MetaWindow *window)
                    window->frame->rect.y);
   meta_error_trap_pop (window->display, FALSE);
 
+  meta_ui_destroy_frame_window (window->screen->ui, frame->xwindow);
+
   meta_display_unregister_x_window (window->display,
                                     frame->xwindow);
   
@@ -193,9 +263,6 @@ meta_window_destroy_frame (MetaWindow *window)
 
   /* Move keybindings to window instead of frame */
   meta_window_grab_keys (window);
-  
-  /* should we push an error trap? */
-  XDestroyWindow (window->display->xdisplay, frame->xwindow);
   
   g_free (frame);
   
@@ -257,6 +324,9 @@ meta_frame_get_flags (MetaFrame *frame)
 
   if (frame->window->fullscreen)
     flags |= META_FRAME_FULLSCREEN;
+
+  if (frame->is_flashing)
+    flags |= META_FRAME_IS_FLASHING;
 
   return flags;
 }
@@ -333,23 +403,12 @@ meta_frame_sync_to_window (MetaFrame *frame,
    */
   update_shape (frame);
   
-  if (need_move && need_resize)
-    XMoveResizeWindow (frame->window->display->xdisplay,
-                       frame->xwindow,
-                       frame->rect.x,
-                       frame->rect.y,
-                       frame->rect.width,
-                       frame->rect.height);
-  else if (need_move)
-    XMoveWindow (frame->window->display->xdisplay,
-                 frame->xwindow,
-                 frame->rect.x,
-                 frame->rect.y);
-  else if (need_resize)
-    XResizeWindow (frame->window->display->xdisplay,
-                   frame->xwindow,
-                   frame->rect.width,
-                   frame->rect.height);  
+  meta_ui_move_resize_frame (frame->window->screen->ui,
+			     frame->xwindow,
+			     frame->rect.x,
+			     frame->rect.y,
+			     frame->rect.width,
+			     frame->rect.height);
 
   if (need_resize)
     {
@@ -373,8 +432,9 @@ meta_frame_queue_draw (MetaFrame *frame)
                             frame->xwindow);
 }
 
-void meta_frame_set_screen_cursor (MetaFrame	*frame,
-				   MetaCursor	cursor)
+void
+meta_frame_set_screen_cursor (MetaFrame	*frame,
+			      MetaCursor cursor)
 {
   Cursor xcursor;
   if (cursor == frame->current_cursor)
@@ -386,6 +446,7 @@ void meta_frame_set_screen_cursor (MetaFrame	*frame,
     { 
       xcursor = meta_display_create_x_cursor (frame->window->display, cursor);
       XDefineCursor (frame->window->display->xdisplay, frame->xwindow, xcursor);
+      XFlush (frame->window->display->xdisplay);
       XFreeCursor (frame->window->display->xdisplay, xcursor);
     }
 }

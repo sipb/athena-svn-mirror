@@ -2,6 +2,7 @@
 
 /* 
  * Copyright (C) 2001 Havoc Pennington
+ * Copyright (C) 2003 Red Hat, Inc.
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -62,6 +63,9 @@ static void meta_frames_paint_to_drawable (MetaFrames   *frames,
                                            MetaUIFrame  *frame,
                                            GdkDrawable  *drawable,
                                            GdkRegion    *region);
+
+static void meta_frames_set_window_background (MetaFrames   *frames,
+                                               MetaUIFrame  *frame);
 
 static void meta_frames_calc_geometry (MetaFrames        *frames,
                                        MetaUIFrame         *frame,
@@ -269,8 +273,8 @@ queue_recalc_func (gpointer key, gpointer value, gpointer data)
    * resize may not actually be needed so we always redraw
    * in case of color change.
    */
-  gtk_style_set_background (GTK_WIDGET (frames)->style,
-                            frame->window, GTK_STATE_NORMAL);
+  meta_frames_set_window_background (frames, frame);
+  
   gdk_window_invalidate_rect (frame->window, NULL, FALSE);
   meta_core_queue_frame_resize (gdk_display,
                                 frame->xwindow);
@@ -314,8 +318,8 @@ queue_draw_func (gpointer key, gpointer value, gpointer data)
    * resize may not actually be needed so we always redraw
    * in case of color change.
    */
-  gtk_style_set_background (GTK_WIDGET (frames)->style,
-                            frame->window, GTK_STATE_NORMAL);
+  meta_frames_set_window_background (frames, frame);
+
   gdk_window_invalidate_rect (frame->window, NULL, FALSE);
 }
 
@@ -452,7 +456,6 @@ meta_frames_calc_geometry (MetaFrames        *frames,
 MetaFrames*
 meta_frames_new (int screen_number)
 {
-#ifdef HAVE_GTK_MULTIHEAD
   GdkScreen *screen;
 
   screen = gdk_display_get_screen (gdk_display_get_default (),
@@ -460,32 +463,27 @@ meta_frames_new (int screen_number)
 
   return g_object_new (META_TYPE_FRAMES,
 		       "screen", screen,
-		       NULL);
-#else
-  return g_object_new (META_TYPE_FRAMES,
-		       NULL);
-#endif
-  
+		       NULL);  
 }
 
 void
 meta_frames_manage_window (MetaFrames *frames,
-                           Window      xwindow)
+                           Window      xwindow,
+			   GdkWindow  *window)
 {
   MetaUIFrame *frame;
+  GdkColor col;
+
+  g_assert (window);
 
   frame = g_new (MetaUIFrame, 1);
   
-  frame->window = gdk_window_foreign_new (xwindow);
+  frame->window = window;
 
-  if (frame->window == NULL)
-    {
-      g_free (frame);
-      meta_bug ("Frame 0x%lx doesn't exist\n", xwindow);
-      return;
-    }
-  
   gdk_window_set_user_data (frame->window, frames);
+
+  /* Set the window background to the current style */
+  meta_frames_set_window_background (frames, frame);
 
   /* Don't set event mask here, it's in frame.c */
   
@@ -527,7 +525,7 @@ meta_frames_unmanage_window (MetaFrames *frames,
       
       g_hash_table_remove (frames->frames, &frame->xwindow);
 
-      g_object_unref (G_OBJECT (frame->window));
+      gdk_window_destroy (frame->window);
 
       if (frame->layout)
         g_object_unref (G_OBJECT (frame->layout));
@@ -619,8 +617,8 @@ meta_frames_reset_bg (MetaFrames *frames,
   widget = GTK_WIDGET (frames);
 
   frame = meta_frames_lookup_window (frames, xwindow);
-  
-  gtk_style_set_background (widget->style, frame->window, GTK_STATE_NORMAL);
+
+  meta_frames_set_window_background (frames, frame);
 }
 
 static void
@@ -835,21 +833,15 @@ meta_frames_apply_shapes (MetaFrames *frames,
       Window shape_window;
       Window client_window;
       Region client_xregion;
-#ifdef HAVE_GTK_MULTIHEAD
       GdkScreen *screen;
-#endif
       int screen_number;
       
       meta_topic (META_DEBUG_SHAPES,
                   "Frame 0x%lx needs to incorporate client shape\n",
                   frame->xwindow);
 
-#ifdef HAVE_GTK_MULTIHEAD
       screen = gtk_widget_get_screen (GTK_WIDGET (frames));
       screen_number = gdk_x11_screen_get_screen_number (screen);
-#else
-      screen_number = DefaultScreen (gdk_display);
-#endif
       
       attrs.override_redirect = True;
       
@@ -920,6 +912,25 @@ meta_frames_apply_shapes (MetaFrames *frames,
   
   XDestroyRegion (window_xregion);
 #endif /* HAVE_SHAPE */
+}
+
+void
+meta_frames_move_resize_frame (MetaFrames *frames,
+			       Window      xwindow,
+			       int         x,
+			       int         y,
+			       int         width,
+			       int         height)
+{
+  MetaUIFrame *frame = meta_frames_lookup_window (frames, xwindow);
+  int old_width, old_height;
+  
+  gdk_drawable_get_size (frame->window, &old_width, &old_height);
+
+  gdk_window_move_resize (frame->window, x, y, width, height);
+
+  if (old_width != width || old_height != height)
+    gdk_window_invalidate_rect (frame->window, NULL, FALSE);
 }
 
 void
@@ -1057,11 +1068,8 @@ show_tip_now (MetaFrames *frames)
       /* get conversion delta for root-to-frame coords */
       dx = root_x - x;
       dy = root_y - y;
-#ifdef HAVE_GTK_MULTIHEAD
       screen_number = gdk_screen_get_number (gtk_widget_get_screen (GTK_WIDGET (frames)));
-#else
-      screen_number = DefaultScreen (gdk_display);
-#endif
+      
       meta_fixed_tip_show (gdk_display,
 			   screen_number,
                            rect->x + dx,
@@ -1255,6 +1263,7 @@ meta_frames_button_press_event (GtkWidget      *widget,
                                frame->xwindow,
                                op,
                                TRUE,
+                               meta_ui_get_last_event_serial (gdk_display),
                                event->button,
                                0,
                                event->time,
@@ -1334,6 +1343,7 @@ meta_frames_button_press_event (GtkWidget      *widget,
                                frame->xwindow,
                                op,
                                TRUE,
+                               meta_ui_get_last_event_serial (gdk_display),
                                event->button,
                                0,
                                event->time,
@@ -1353,6 +1363,7 @@ meta_frames_button_press_event (GtkWidget      *widget,
                                    frame->xwindow,
                                    META_GRAB_OP_MOVING,
                                    TRUE,
+                                   meta_ui_get_last_event_serial (gdk_display),
                                    event->button,
                                    0,
                                    event->time,
@@ -1592,6 +1603,7 @@ meta_frames_motion_notify_event     (GtkWidget           *widget,
 {
   MetaUIFrame *frame;
   MetaFrames *frames;
+  MetaGrabOp grab_op;
   
   frames = META_FRAMES (widget);
   
@@ -1602,16 +1614,43 @@ meta_frames_motion_notify_event     (GtkWidget           *widget,
   clear_tip (frames);
 
   frames->last_motion_frame = frame;
+
+  grab_op = meta_core_get_grab_op (gdk_display);
   
-  switch (meta_core_get_grab_op (gdk_display))
+  switch (grab_op)
     {
     case META_GRAB_OP_CLICKING_MENU:
     case META_GRAB_OP_CLICKING_DELETE:
     case META_GRAB_OP_CLICKING_MINIMIZE:
     case META_GRAB_OP_CLICKING_MAXIMIZE:
     case META_GRAB_OP_CLICKING_UNMAXIMIZE:
+      {
+        MetaFrameControl control;
+        int x, y;
+        
+        gdk_window_get_pointer (frame->window, &x, &y, NULL);
+
+        /* Control is set to none unless it matches
+         * the current grab
+         */
+        control = get_control (frames, frame, x, y);
+        if (! ((control == META_FRAME_CONTROL_MENU &&
+                grab_op == META_GRAB_OP_CLICKING_MENU) ||
+               (control == META_FRAME_CONTROL_DELETE &&
+                grab_op == META_GRAB_OP_CLICKING_DELETE) ||
+               (control == META_FRAME_CONTROL_MINIMIZE &&
+                grab_op == META_GRAB_OP_CLICKING_MINIMIZE) ||
+               (control == META_FRAME_CONTROL_MAXIMIZE &&
+                (grab_op == META_GRAB_OP_CLICKING_MAXIMIZE ||
+                 grab_op == META_GRAB_OP_CLICKING_UNMAXIMIZE))))
+          control = META_FRAME_CONTROL_NONE;
+        
+        /* Update prelit control and cursor */
+	meta_frames_update_prelit_control (frames, frame, control);
+
+        /* No tooltip while in the process of clicking */
+      }
       break;
-      
     case META_GRAB_OP_NONE:
       {
         MetaFrameControl control;
@@ -1659,7 +1698,7 @@ meta_frames_expose_event (GtkWidget           *widget,
   MetaFrames *frames;
 
   frames = META_FRAMES (widget);
-    
+
   frame = meta_frames_lookup_window (frames, GDK_WINDOW_XID (event->window));
   if (frame == NULL)
     return FALSE;
@@ -1699,6 +1738,7 @@ meta_frames_paint_to_drawable (MetaFrames   *frames,
   int n_areas;
   int screen_width, screen_height;
   MetaButtonLayout button_layout;
+  MetaGrabOp grab_op;
   
   widget = GTK_WIDGET (frames);
 
@@ -1710,52 +1750,46 @@ meta_frames_paint_to_drawable (MetaFrames   *frames,
       ++i;
     }
 
+  grab_frame = meta_core_get_grab_frame (gdk_display);
+  grab_op = meta_core_get_grab_op (gdk_display);
+  if (grab_frame != frame->xwindow)
+    grab_op = META_GRAB_OP_NONE;
+  
   /* Set prelight state */
   switch (frame->prelit_control)
     {
     case META_FRAME_CONTROL_MENU:
-      button_states[META_BUTTON_TYPE_MENU] = META_BUTTON_STATE_PRELIGHT;
+      if (grab_op == META_GRAB_OP_CLICKING_MENU)
+        button_states[META_BUTTON_TYPE_MENU] = META_BUTTON_STATE_PRESSED;
+      else
+        button_states[META_BUTTON_TYPE_MENU] = META_BUTTON_STATE_PRELIGHT;
       break;
     case META_FRAME_CONTROL_MINIMIZE:
-      button_states[META_BUTTON_TYPE_MINIMIZE] = META_BUTTON_STATE_PRELIGHT;
+      if (grab_op == META_GRAB_OP_CLICKING_MINIMIZE)
+        button_states[META_BUTTON_TYPE_MINIMIZE] = META_BUTTON_STATE_PRESSED;
+      else
+        button_states[META_BUTTON_TYPE_MINIMIZE] = META_BUTTON_STATE_PRELIGHT;
       break;
     case META_FRAME_CONTROL_MAXIMIZE:
+      if (grab_op == META_GRAB_OP_CLICKING_MAXIMIZE)
+        button_states[META_BUTTON_TYPE_MAXIMIZE] = META_BUTTON_STATE_PRESSED;
+      else
+        button_states[META_BUTTON_TYPE_MAXIMIZE] = META_BUTTON_STATE_PRELIGHT;
+      break;
     case META_FRAME_CONTROL_UNMAXIMIZE:
-      button_states[META_BUTTON_TYPE_MAXIMIZE] = META_BUTTON_STATE_PRELIGHT;
+      if (grab_op == META_GRAB_OP_CLICKING_UNMAXIMIZE)
+        button_states[META_BUTTON_TYPE_MAXIMIZE] = META_BUTTON_STATE_PRESSED;
+      else
+        button_states[META_BUTTON_TYPE_MAXIMIZE] = META_BUTTON_STATE_PRELIGHT;
       break;
     case META_FRAME_CONTROL_DELETE:
-      button_states[META_BUTTON_TYPE_CLOSE] = META_BUTTON_STATE_PRELIGHT;
+      if (grab_op == META_GRAB_OP_CLICKING_DELETE)
+        button_states[META_BUTTON_TYPE_CLOSE] = META_BUTTON_STATE_PRESSED;
+      else
+        button_states[META_BUTTON_TYPE_CLOSE] = META_BUTTON_STATE_PRELIGHT;
       break;
     default:
       break;
-    }
-  
-  grab_frame = meta_core_get_grab_frame (gdk_display);
-
-  if (frame->xwindow == grab_frame)
-    {
-      switch (meta_core_get_grab_op (gdk_display))
-        {
-        case META_GRAB_OP_CLICKING_MENU:
-          button_states[META_BUTTON_TYPE_MENU] =
-            META_BUTTON_STATE_PRESSED;
-          break;
-        case META_GRAB_OP_CLICKING_DELETE:
-          button_states[META_BUTTON_TYPE_CLOSE] =
-            META_BUTTON_STATE_PRESSED;
-          break;
-        case META_GRAB_OP_CLICKING_MAXIMIZE:
-        case META_GRAB_OP_CLICKING_UNMAXIMIZE:
-          button_states[META_BUTTON_TYPE_MAXIMIZE] =
-            META_BUTTON_STATE_PRESSED;
-          break;
-	case META_GRAB_OP_CLICKING_MINIMIZE:
-          button_states[META_BUTTON_TYPE_MINIMIZE] =
-            META_BUTTON_STATE_PRESSED;
-          break;
-        default:
-          break;
-        }
     }
 
   /* Map button function states to button position states */
@@ -1862,6 +1896,22 @@ meta_frames_paint_to_drawable (MetaFrames   *frames,
 
   gdk_region_destroy (edges);
   g_free (areas);
+}
+
+static void
+meta_frames_set_window_background (MetaFrames   *frames,
+                                   MetaUIFrame  *frame)
+{
+  gtk_style_set_background (GTK_WIDGET (frames)->style,
+                            frame->window, GTK_STATE_NORMAL);
+
+#if 0
+  /* This is what we want for transparent background */
+  {
+    col.pixel = 0;
+    gdk_window_set_background (window, &col);
+  }
+#endif
 }
 
 static gboolean
@@ -2085,6 +2135,13 @@ get_control (MetaFrames *frames,
 void
 meta_frames_push_delay_exposes (MetaFrames *frames)
 {
+  if (frames->expose_delay_count == 0)
+    {
+      /* Make sure we've repainted things */
+      gdk_window_process_all_updates ();
+      XFlush (gdk_display);
+    }
+  
   frames->expose_delay_count += 1;
 }
 

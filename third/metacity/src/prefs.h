@@ -42,7 +42,11 @@ typedef enum
   META_PREF_DISABLE_WORKAROUNDS,
   META_PREF_COMMANDS,
   META_PREF_BUTTON_LAYOUT,
-  META_PREF_WORKSPACE_NAMES
+  META_PREF_WORKSPACE_NAMES,
+  META_PREF_VISUAL_BELL,
+  META_PREF_AUDIBLE_BELL,
+  META_PREF_VISUAL_BELL_TYPE,
+  META_PREF_REDUCED_RESOURCES
 } MetaPreference;
 
 typedef void (* MetaPrefsChangedFunc) (MetaPreference pref,
@@ -66,6 +70,7 @@ gboolean                    meta_prefs_get_application_based  (void);
 gboolean                    meta_prefs_get_disable_workarounds (void);
 gboolean                    meta_prefs_get_auto_raise         (void);
 int                         meta_prefs_get_auto_raise_delay   (void);
+gboolean                    meta_prefs_get_reduced_resources  (void);
 
 const char*                 meta_prefs_get_command            (int i);
 
@@ -106,6 +111,8 @@ void        meta_prefs_change_workspace_name (int         i,
 #define META_KEYBINDING_CYCLE_PANELS             "cycle_panels"
 #define META_KEYBINDING_CYCLE_PANELS_BACKWARD    "cycle_panels_backward"
 #define META_KEYBINDING_SHOW_DESKTOP             "show_desktop"
+#define META_KEYBINDING_PANEL_MAIN_MENU          "panel_main_menu"
+#define META_KEYBINDING_PANEL_RUN_DIALOG         "panel_run_dialog"
 #define META_KEYBINDING_COMMAND_1                "run_command_1"
 #define META_KEYBINDING_COMMAND_2                "run_command_2"
 #define META_KEYBINDING_COMMAND_3                "run_command_3"
@@ -138,11 +145,14 @@ void        meta_prefs_change_workspace_name (int         i,
 #define META_KEYBINDING_COMMAND_30               "run_command_30"
 #define META_KEYBINDING_COMMAND_31               "run_command_31"
 #define META_KEYBINDING_COMMAND_32               "run_command_32"
+#define META_KEYBINDING_COMMAND_SCREENSHOT       "run_command_screenshot"
+#define META_KEYBINDING_COMMAND_WIN_SCREENSHOT   "run_command_window_screenshot"
 
 /* Window bindings */
 #define META_KEYBINDING_WINDOW_MENU              "activate_window_menu"
 #define META_KEYBINDING_TOGGLE_FULLSCREEN        "toggle_fullscreen"
 #define META_KEYBINDING_TOGGLE_MAXIMIZE          "toggle_maximized"
+#define META_KEYBINDING_TOGGLE_ABOVE             "toggle_above"
 #define META_KEYBINDING_MAXIMIZE                 "maximize"
 #define META_KEYBINDING_UNMAXIMIZE               "unmaximize"
 #define META_KEYBINDING_TOGGLE_SHADE             "toggle_shaded"
@@ -201,6 +211,8 @@ typedef enum _MetaKeyBindingAction
   META_KEYBINDING_ACTION_CYCLE_PANELS,
   META_KEYBINDING_ACTION_CYCLE_PANELS_BACKWARD,
   META_KEYBINDING_ACTION_SHOW_DESKTOP,
+  META_KEYBINDING_ACTION_PANEL_MAIN_MENU,
+  META_KEYBINDING_ACTION_PANEL_RUN_DIALOG,
   META_KEYBINDING_ACTION_COMMAND_1,
   META_KEYBINDING_ACTION_COMMAND_2,
   META_KEYBINDING_ACTION_COMMAND_3,
@@ -212,7 +224,7 @@ typedef enum _MetaKeyBindingAction
   META_KEYBINDING_ACTION_COMMAND_9,
   META_KEYBINDING_ACTION_COMMAND_10,
   META_KEYBINDING_ACTION_COMMAND_11,
-  META_KEYBINDING_ACTION_COMMAND_12,
+  META_KEYBINDING_ACTION_COMMAND_12
 } MetaKeyBindingAction;
 
 typedef struct
@@ -220,6 +232,8 @@ typedef struct
   const char   *name;
   unsigned int  keysym;
   MetaVirtualModifier modifiers;
+  /* for keybindings that can have shift or not like Alt+Tab */
+  gboolean      add_shift;
 } MetaKeyPref;
 
 void meta_prefs_get_screen_bindings (const MetaKeyPref **bindings,
@@ -232,6 +246,18 @@ MetaKeyBindingAction meta_prefs_get_keybinding_action (const char *name);
 void meta_prefs_get_window_binding (const char          *name,
                                     unsigned int        *keysym,
                                     MetaVirtualModifier *modifiers);
+
+typedef enum
+{
+  META_VISUAL_BELL_INVALID = 0,
+  META_VISUAL_BELL_FULLSCREEN_FLASH,
+  META_VISUAL_BELL_FRAME_FLASH
+
+} MetaVisualBellType;
+
+gboolean           meta_prefs_get_visual_bell      (void);
+gboolean           meta_prefs_bell_is_audible      (void);
+MetaVisualBellType meta_prefs_get_visual_bell_type (void);
 
 #endif
 

@@ -59,14 +59,21 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 host_alias = @host_alias@
 host_triplet = @host@
+AR = @AR@
 AS = @AS@
 CATALOGS = @CATALOGS@
 CATOBJEXT = @CATOBJEXT@
 CC = @CC@
+CXX = @CXX@
+CXXCPP = @CXXCPP@
 DATADIRNAME = @DATADIRNAME@
 DLLTOOL = @DLLTOOL@
 ECHO = @ECHO@
+EGREP = @EGREP@
 EXEEXT = @EXEEXT@
+F77 = @F77@
+GCJ = @GCJ@
+GCJFLAGS = @GCJFLAGS@
 GCONFTOOL = @GCONFTOOL@
 GCONF_SCHEMA_CONFIG_SOURCE = @GCONF_SCHEMA_CONFIG_SOURCE@
 GCONF_SCHEMA_FILE_DIR = @GCONF_SCHEMA_FILE_DIR@
@@ -74,6 +81,7 @@ GDK_PIXBUF_CSOURCE = @GDK_PIXBUF_CSOURCE@
 GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
 GMOFILES = @GMOFILES@
 GMSGFMT = @GMSGFMT@
+HAVE_LIB = @HAVE_LIB@
 HOST_ALIAS = @HOST_ALIAS@
 INSTOBJEXT = @INSTOBJEXT@
 INTLLIBS = @INTLLIBS@
@@ -81,6 +89,7 @@ INTLTOOL_CAVES_RULE = @INTLTOOL_CAVES_RULE@
 INTLTOOL_DESKTOP_RULE = @INTLTOOL_DESKTOP_RULE@
 INTLTOOL_DIRECTORY_RULE = @INTLTOOL_DIRECTORY_RULE@
 INTLTOOL_EXTRACT = @INTLTOOL_EXTRACT@
+INTLTOOL_KBD_RULE = @INTLTOOL_KBD_RULE@
 INTLTOOL_KEYS_RULE = @INTLTOOL_KEYS_RULE@
 INTLTOOL_MERGE = @INTLTOOL_MERGE@
 INTLTOOL_OAF_RULE = @INTLTOOL_OAF_RULE@
@@ -94,9 +103,12 @@ INTLTOOL_SOUNDLIST_RULE = @INTLTOOL_SOUNDLIST_RULE@
 INTLTOOL_THEME_RULE = @INTLTOOL_THEME_RULE@
 INTLTOOL_UI_RULE = @INTLTOOL_UI_RULE@
 INTLTOOL_UPDATE = @INTLTOOL_UPDATE@
+INTLTOOL_XAM_RULE = @INTLTOOL_XAM_RULE@
 INTLTOOL_XML_RULE = @INTLTOOL_XML_RULE@
+LIB = @LIB@
 LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
+LTLIB = @LTLIB@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
 MKINSTALLDIRS = @MKINSTALLDIRS@
@@ -109,39 +121,40 @@ POSUB = @POSUB@
 PO_IN_DATADIR_FALSE = @PO_IN_DATADIR_FALSE@
 PO_IN_DATADIR_TRUE = @PO_IN_DATADIR_TRUE@
 RANLIB = @RANLIB@
+RC = @RC@
 STRIP = @STRIP@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
 
 INCLUDES = @METACITY_CFLAGS@
 
-wm_tester_SOURCES = \
-	main.c
+wm_tester_SOURCES =  	main.c
 
 
-test_gravity_SOURCES = \
-	test-gravity.c
+test_gravity_SOURCES =  	test-gravity.c
 
 
-focus_window_SOURCES = \
-	focus-window.c
+focus_window_SOURCES =  	focus-window.c
 
 
-test_resizing_SOURCES = \
-	test-resizing.c
+test_resizing_SOURCES =  	test-resizing.c
 
 
-noinst_PROGRAMS = wm-tester test-gravity test-resizing focus-window
+test_size_hints_SOURCES =  	test-size-hints.c
+
+
+noinst_PROGRAMS = wm-tester test-gravity test-resizing focus-window test-size-hints
 
 wm_tester_LDADD = @METACITY_LIBS@
 test_gravity_LDADD = @METACITY_LIBS@
 test_resizing_LDADD = @METACITY_LIBS@
+test_size_hints_LDADD = @METACITY_LIBS@
 focus_window_LDADD = @METACITY_LIBS@
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../../config.h
 CONFIG_CLEAN_FILES = 
 noinst_PROGRAMS =  wm-tester$(EXEEXT) test-gravity$(EXEEXT) \
-test-resizing$(EXEEXT) focus-window$(EXEEXT)
+test-resizing$(EXEEXT) focus-window$(EXEEXT) test-size-hints$(EXEEXT)
 PROGRAMS =  $(noinst_PROGRAMS)
 
 
@@ -165,6 +178,9 @@ test_resizing_LDFLAGS =
 focus_window_OBJECTS =  focus-window.$(OBJEXT)
 focus_window_DEPENDENCIES = 
 focus_window_LDFLAGS = 
+test_size_hints_OBJECTS =  test-size-hints.$(OBJEXT)
+test_size_hints_DEPENDENCIES = 
+test_size_hints_LDFLAGS = 
 CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
@@ -175,10 +191,10 @@ DIST_COMMON =  Makefile.am Makefile.in
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = gtar
+TAR = tar
 GZIP_ENV = --best
-SOURCES = $(wm_tester_SOURCES) $(test_gravity_SOURCES) $(test_resizing_SOURCES) $(focus_window_SOURCES)
-OBJECTS = $(wm_tester_OBJECTS) $(test_gravity_OBJECTS) $(test_resizing_OBJECTS) $(focus_window_OBJECTS)
+SOURCES = $(wm_tester_SOURCES) $(test_gravity_SOURCES) $(test_resizing_SOURCES) $(focus_window_SOURCES) $(test_size_hints_SOURCES)
+OBJECTS = $(wm_tester_OBJECTS) $(test_gravity_OBJECTS) $(test_resizing_OBJECTS) $(focus_window_OBJECTS) $(test_size_hints_OBJECTS)
 
 all: all-redirect
 .SUFFIXES:
@@ -260,6 +276,10 @@ focus-window$(EXEEXT): $(focus_window_OBJECTS) $(focus_window_DEPENDENCIES)
 	@rm -f focus-window$(EXEEXT)
 	$(LINK) $(focus_window_LDFLAGS) $(focus_window_OBJECTS) $(focus_window_LDADD) $(LIBS)
 
+test-size-hints$(EXEEXT): $(test_size_hints_OBJECTS) $(test_size_hints_DEPENDENCIES)
+	@rm -f test-size-hints$(EXEEXT)
+	$(LINK) $(test_size_hints_LDFLAGS) $(test_size_hints_OBJECTS) $(test_size_hints_LDADD) $(LIBS)
+
 tags: TAGS
 
 ID: $(HEADERS) $(SOURCES) $(LISP)
@@ -278,7 +298,7 @@ TAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) $(LISP)
 	  awk '    { files[$$0] = 1; } \
 	       END { for (i in files) print i; }'`; \
 	test -z "$(ETAGS_ARGS)$$unique$(LISP)$$tags" \
-	  || (cd $(srcdir) && etags $(ETAGS_ARGS) $$tags  $$unique $(LISP) -o $$here/TAGS)
+	  || (cd $(srcdir) && etags -o $$here/TAGS $(ETAGS_ARGS) $$tags  $$unique $(LISP))
 
 mostlyclean-tags:
 
@@ -308,6 +328,7 @@ focus-window.o: focus-window.c
 main.o: main.c
 test-gravity.o: test-gravity.c
 test-resizing.o: test-resizing.c
+test-size-hints.o: test-size-hints.c
 
 info-am:
 info: info-am

@@ -21,6 +21,7 @@
  */
 
 #include <config.h>
+#include "prefs.h"
 #include "ui.h"
 #include "frames.h"
 #include "util.h"
@@ -51,28 +52,6 @@ meta_ui_init (int *argc, char ***argv)
   if (!gtk_init_check (argc, argv))
     meta_fatal ("Unable to open X display %s\n", XDisplayName (NULL));
 
-  {
-    /* FIXME hackaround for Pango opening a separate display
-     * connection and doing a server grab while we have a grab
-     * on the primary display connection. This forces Pango to
-     * go ahead and do its font cache before we try to grab
-     * the server.
-     */  
-    PangoFontMetrics *metrics;
-    PangoLanguage *lang;
-    PangoContext *context;
-    PangoFontDescription *font_desc;
-
-    context = gdk_pango_context_get ();
-    lang = gtk_get_default_language ();
-    font_desc = pango_font_description_from_string ("Sans 12");
-    metrics = pango_context_get_metrics (context, font_desc, lang);    
-    
-    pango_font_metrics_unref (metrics);
-    pango_font_description_free (font_desc);
-    g_object_unref (G_OBJECT (context));
-  }
-
   meta_stock_icons_init ();
 }
 
@@ -91,6 +70,7 @@ struct _EventFunc
 {
   MetaEventFunc func;
   gpointer data;
+  int last_event_serial;
 };
 
 static GdkFilterReturn
@@ -105,7 +85,10 @@ filter_func (GdkXEvent *xevent,
   if ((* ef->func) (xevent, ef->data))
     return GDK_FILTER_REMOVE;
   else
-    return GDK_FILTER_CONTINUE;
+    {
+      ef->last_event_serial = ((XEvent*)xevent)->xany.serial;
+      return GDK_FILTER_CONTINUE;
+    }
 }
 
 static EventFunc *ef = NULL;
@@ -136,6 +119,16 @@ meta_ui_remove_event_func (Display       *xdisplay,
 
   g_free (ef);
   ef = NULL;
+}
+
+int
+meta_ui_get_last_event_serial (Display *xdisplay)
+{
+  g_assert (ef != NULL);
+
+  /* This is technically broken since it's not per-display */
+  
+  return ef->last_event_serial;
 }
 
 MetaUI*
@@ -174,19 +167,87 @@ meta_ui_get_frame_geometry (MetaUI *ui,
                             left_width, right_width);
 }
 
-
-void
-meta_ui_add_frame (MetaUI *ui,
-                   Window  xwindow)
+Window
+meta_ui_create_frame_window (MetaUI *ui,
+                             Display *xdisplay,
+                             Visual *xvisual,
+			     gint x,
+			     gint y,
+			     gint width,
+			     gint height,
+			     gint screen_no)
 {
-  meta_frames_manage_window (ui->frames, xwindow);
+  GdkDisplay *display = gdk_x11_lookup_xdisplay (xdisplay);
+  GdkScreen *screen = gdk_display_get_screen (display, screen_no);
+  GdkWindowAttr attrs;
+  gint attributes_mask;
+  GdkWindow *window;
+  GdkVisual *visual;
+  GdkColormap *cmap = gdk_screen_get_default_colormap (screen);
+  
+  /* Default depth/visual handles clients with weird visuals; they can
+   * always be children of the root depth/visual obviously, but
+   * e.g. DRI games can't be children of a parent that has the same
+   * visual as the client.
+   */
+  if (!xvisual)
+    visual = gdk_screen_get_system_visual (screen);
+  else
+    {
+      visual = gdk_x11_screen_lookup_visual (screen,
+                                             XVisualIDFromVisual (xvisual));
+      cmap = gdk_colormap_new (visual, FALSE);
+    }
+
+  attrs.title = NULL;
+
+  /* frame.c is going to replace the event mask immediately, but
+   * we still have to set it here to let GDK know what it is.
+   */
+  attrs.event_mask =
+    GDK_EXPOSURE_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK |
+    GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK |
+    GDK_ENTER_NOTIFY_MASK | GDK_LEAVE_NOTIFY_MASK | GDK_FOCUS_CHANGE_MASK;
+  attrs.x = x;
+  attrs.y = y;
+  attrs.wclass = GDK_INPUT_OUTPUT;
+  attrs.visual = visual;
+  attrs.colormap = cmap;
+  attrs.window_type = GDK_WINDOW_CHILD;
+  attrs.cursor = NULL;
+  attrs.wmclass_name = NULL;
+  attrs.wmclass_class = NULL;
+  attrs.override_redirect = FALSE;
+
+  attributes_mask = GDK_WA_X | GDK_WA_Y | GDK_WA_VISUAL | GDK_WA_COLORMAP;
+
+  window =
+    gdk_window_new (gdk_screen_get_root_window(screen),
+		    &attrs, attributes_mask);
+
+  gdk_window_resize (window, width, height);
+  
+  meta_frames_manage_window (ui->frames, GDK_WINDOW_XID (window), window);
+
+  return GDK_WINDOW_XID (window);
 }
 
 void
-meta_ui_remove_frame (MetaUI *ui,
-                      Window  xwindow)
+meta_ui_destroy_frame_window (MetaUI *ui,
+			      Window  xwindow)
 {
   meta_frames_unmanage_window (ui->frames, xwindow);
+}
+
+void
+meta_ui_move_resize_frame (MetaUI *ui,
+			   Window frame,
+			   int x,
+			   int y,
+			   int width,
+			   int height)
+{
+  meta_frames_move_resize_frame (ui->frames, frame, x, y, width, height);
 }
 
 void
@@ -312,21 +373,16 @@ meta_image_window_new (Display *xdisplay,
                        int      max_height)
 {
   MetaImageWindow *iw;
-  
+  GdkDisplay *gdisplay;
+  GdkScreen *gscreen;
+    
   iw = g_new (MetaImageWindow, 1);
   iw->window = gtk_window_new (GTK_WINDOW_POPUP);
-
-#ifdef HAVE_GTK_MULTIHEAD
-  {
-    GdkDisplay *gdisplay;
-    GdkScreen *gscreen;
     
-    gdisplay = gdk_x11_lookup_xdisplay (xdisplay);
-    gscreen = gdk_display_get_screen (gdisplay, screen_number);
-    
-    gtk_window_set_screen (GTK_WINDOW (iw->window), gscreen);
-  }
-#endif
+  gdisplay = gdk_x11_lookup_xdisplay (xdisplay);
+  gscreen = gdk_display_get_screen (gdisplay, screen_number);
+  
+  gtk_window_set_screen (GTK_WINDOW (iw->window), gscreen);
  
   gtk_widget_realize (iw->window);
   iw->pixmap = gdk_pixmap_new (iw->window->window,
@@ -413,11 +469,8 @@ get_cmap (GdkPixmap *pixmap)
       else
         {
           meta_verbose ("Using system cmap to snapshot pixmap\n");
-#ifdef HAVE_GTK_MULTIHEAD
           cmap = gdk_screen_get_system_colormap (gdk_drawable_get_screen (pixmap));
-#else
-          cmap = gdk_colormap_get_system ();
-#endif
+
           g_object_ref (G_OBJECT (cmap));
         }
     }
@@ -488,6 +541,7 @@ meta_gdk_pixbuf_get_from_pixmap (GdkPixbuf   *dest,
   GdkColormap *cmap;
   
   retval = NULL;
+  cmap = NULL;
   
   drawable = gdk_xid_table_lookup (xpixmap);
 
@@ -496,18 +550,21 @@ meta_gdk_pixbuf_get_from_pixmap (GdkPixbuf   *dest,
   else
     drawable = gdk_pixmap_foreign_new (xpixmap);
 
-  cmap = get_cmap (drawable);
+  if (drawable)
+    {
+      cmap = get_cmap (drawable);
   
-  retval = gdk_pixbuf_get_from_drawable (dest,
-                                         drawable,
-                                         cmap,
-                                         src_x, src_y,
-                                         dest_x, dest_y,
-                                         width, height);
-
+      retval = gdk_pixbuf_get_from_drawable (dest,
+                                             drawable,
+                                             cmap,
+                                             src_x, src_y,
+                                             dest_x, dest_y,
+                                             width, height);
+    }
   if (cmap)
     g_object_unref (G_OBJECT (cmap));
-  g_object_unref (G_OBJECT (drawable));
+  if (drawable)
+    g_object_unref (G_OBJECT (drawable));
 
   return retval;
 }
@@ -629,6 +686,44 @@ meta_text_property_to_utf8 (Display             *xdisplay,
 }
 
 void
+meta_ui_theme_get_frame_borders (MetaUI *ui,
+                                 MetaFrameType      type,
+                                 MetaFrameFlags     flags,
+                                 int               *top_height,
+                                 int               *bottom_height,
+                                 int               *left_width,
+                                 int               *right_width)
+{
+  int text_height;
+  PangoContext *context;
+  const PangoFontDescription *font_desc;
+  GtkStyle *default_style;
+
+  if (meta_ui_have_a_theme ())
+    {
+      context = gtk_widget_get_pango_context (GTK_WIDGET (ui->frames));
+      font_desc = meta_prefs_get_titlebar_font ();
+
+      if (!font_desc)
+        {
+          default_style = gtk_widget_get_default_style ();
+          font_desc = default_style->font_desc;
+        }
+
+      text_height = meta_pango_font_desc_get_text_height (font_desc, context);
+
+      meta_theme_get_frame_borders (meta_theme_get_current (),
+                                    type, text_height, flags,
+                                    top_height, bottom_height,
+                                    left_width, right_width);
+    }
+  else
+    {
+      *top_height = *bottom_height = *left_width = *right_width = 0;
+    }
+}
+
+void
 meta_ui_set_current_theme (const char *name,
                            gboolean    force_reload)
 {
@@ -743,12 +838,11 @@ meta_ui_window_is_widget (MetaUI *ui,
 
   window = gdk_xid_table_lookup (xwindow);
 
-  if (window &&
-      gdk_window_get_window_type (window) != GDK_WINDOW_FOREIGN)
+  if (window)
     {
       void *user_data = NULL;
       gdk_window_get_user_data (window, &user_data);
-      return user_data != NULL;
+      return user_data != NULL && user_data != ui->frames;
     }
   else
     return FALSE;
@@ -789,9 +883,37 @@ meta_stock_icons_init (void)
       icon_set = gtk_icon_set_new_from_pixbuf (pixbuf);
       gtk_icon_factory_add (factory, items[i].stock_id, icon_set);
       gtk_icon_set_unref (icon_set);
-		
+      
       g_object_unref (G_OBJECT (pixbuf));
     }
 
   g_object_unref (G_OBJECT (factory));
+}
+
+int
+meta_ui_get_double_click_timeout (MetaUI *ui)
+{
+  GtkSettings *settings;
+  int timeout;
+
+  settings = gtk_widget_get_settings (GTK_WIDGET (ui->frames));
+
+  timeout = 250;
+  g_object_get (G_OBJECT (settings), "gtk-double-click-time", &timeout, NULL);
+
+  return timeout;
+}
+
+int
+meta_ui_get_drag_threshold (MetaUI *ui)
+{
+  GtkSettings *settings;
+  int threshold;
+
+  settings = gtk_widget_get_settings (GTK_WIDGET (ui->frames));
+
+  threshold = 8;
+  g_object_get (G_OBJECT (settings), "gtk-dnd-drag-threshold", &threshold, NULL);
+
+  return threshold;
 }

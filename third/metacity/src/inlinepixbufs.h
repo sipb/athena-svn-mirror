@@ -1,6 +1,13 @@
 /* GdkPixbuf RGBA C-Source image dump */
 
+#ifdef __SUNPRO_C
+#pragma align 4 (default_icon_data)
+#endif
+#ifdef __GNUC__
+static const guint8 default_icon_data[] __attribute__ ((__aligned__ (4))) = 
+#else
 static const guint8 default_icon_data[] = 
+#endif
 { ""
   /* Pixbuf magic (0x47646b50) */
   "GdkP"
@@ -135,7 +142,14 @@ static const guint8 default_icon_data[] =
 
 /* GdkPixbuf RGBA C-Source image dump */
 
+#ifdef __SUNPRO_C
+#pragma align 4 (stock_maximize_data)
+#endif
+#ifdef __GNUC__
+static const guint8 stock_maximize_data[] __attribute__ ((__aligned__ (4))) = 
+#else
 static const guint8 stock_maximize_data[] = 
+#endif
 { ""
   /* Pixbuf magic (0x47646b50) */
   "GdkP"
@@ -190,7 +204,14 @@ static const guint8 stock_maximize_data[] =
 
 /* GdkPixbuf RGBA C-Source image dump */
 
+#ifdef __SUNPRO_C
+#pragma align 4 (stock_minimize_data)
+#endif
+#ifdef __GNUC__
+static const guint8 stock_minimize_data[] __attribute__ ((__aligned__ (4))) = 
+#else
 static const guint8 stock_minimize_data[] = 
+#endif
 { ""
   /* Pixbuf magic (0x47646b50) */
   "GdkP"
@@ -240,7 +261,14 @@ static const guint8 stock_minimize_data[] =
 
 /* GdkPixbuf RGBA C-Source image dump */
 
+#ifdef __SUNPRO_C
+#pragma align 4 (stock_delete_data)
+#endif
+#ifdef __GNUC__
+static const guint8 stock_delete_data[] __attribute__ ((__aligned__ (4))) = 
+#else
 static const guint8 stock_delete_data[] = 
+#endif
 { ""
   /* Pixbuf magic (0x47646b50) */
   "GdkP"

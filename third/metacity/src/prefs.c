@@ -29,8 +29,12 @@
 #include <string.h>
 #include <stdlib.h>
 
-#define MAX_REASONABLE_WORKSPACES 32
-#define MAX_COMMANDS 32
+#define MAX_REASONABLE_WORKSPACES 36
+
+#define MAX_COMMANDS (32 + NUM_EXTRA_COMMANDS)
+#define NUM_EXTRA_COMMANDS 2
+#define SCREENSHOT_COMMAND_IDX (MAX_COMMANDS - 2)
+#define WIN_SCREENSHOT_COMMAND_IDX (MAX_COMMANDS - 1)
 
 /* If you add a key, it needs updating in init() and in the gconf
  * notify listener and of course in the .schemas file
@@ -47,12 +51,17 @@
 #define KEY_APPLICATION_BASED "/apps/metacity/general/application_based"
 #define KEY_DISABLE_WORKAROUNDS "/apps/metacity/general/disable_workarounds"
 #define KEY_BUTTON_LAYOUT "/apps/metacity/general/button_layout"
+#define KEY_REDUCED_RESOURCES "/apps/metacity/general/reduced_resources"
 
 #define KEY_COMMAND_PREFIX "/apps/metacity/keybinding_commands/command_"
 #define KEY_SCREEN_BINDINGS_PREFIX "/apps/metacity/global_keybindings"
 #define KEY_WINDOW_BINDINGS_PREFIX "/apps/metacity/window_keybindings"
 
 #define KEY_WORKSPACE_NAME_PREFIX "/apps/metacity/workspace_names/name_"
+
+#define KEY_VISUAL_BELL "/apps/metacity/general/visual_bell"
+#define KEY_AUDIBLE_BELL "/apps/metacity/general/audible_bell"
+#define KEY_VISUAL_BELL_TYPE "/apps/metacity/general/visual_bell_type"
 
 #ifdef HAVE_GCONF
 static GConfClient *default_client = NULL;
@@ -73,6 +82,11 @@ static gboolean application_based = FALSE;
 static gboolean disable_workarounds = FALSE;
 static gboolean auto_raise = FALSE;
 static gboolean auto_raise_delay = 500;
+static gboolean provide_visual_bell = TRUE;
+static gboolean bell_is_audible = TRUE;
+static gboolean reduced_resources = FALSE;
+
+static MetaVisualBellType visual_bell_type = META_VISUAL_BELL_INVALID;
 static MetaButtonLayout button_layout = {
   {
     META_BUTTON_FUNCTION_MENU,
@@ -88,6 +102,7 @@ static MetaButtonLayout button_layout = {
   }
 };
 
+/* The screenshot commands are at the end */
 static char *commands[MAX_COMMANDS] = { NULL, };
 
 static char *workspace_names[MAX_REASONABLE_WORKSPACES] = { NULL, };
@@ -98,6 +113,8 @@ static gboolean update_titlebar_font      (const char *value);
 static gboolean update_mouse_button_mods  (const char *value);
 static gboolean update_focus_mode         (const char *value);
 static gboolean update_theme              (const char *value);
+static gboolean update_visual_bell        (gboolean v1, gboolean v2);
+static gboolean update_visual_bell_type   (const char *value);
 static gboolean update_num_workspaces     (int         value);
 static gboolean update_application_based  (gboolean    value);
 static gboolean update_disable_workarounds (gboolean   value);
@@ -115,6 +132,7 @@ static gboolean update_command            (const char  *name,
                                            const char  *value);
 static gboolean update_workspace_name     (const char  *name,
                                            const char  *value);
+static gboolean update_reduced_resources  (gboolean     value);
 
 static void change_notify (GConfClient    *client,
                            guint           cnxn_id,
@@ -273,7 +291,7 @@ meta_prefs_init (void)
   GError *err = NULL;
   char *str_val;
   int int_val;
-  gboolean bool_val;
+  gboolean bool_val, bool_val_2;
   
   if (default_client != NULL)
     return;
@@ -358,6 +376,25 @@ meta_prefs_init (void)
   cleanup_error (&err);
   update_button_layout (str_val);
   g_free (str_val);
+  
+  bool_val = gconf_client_get_bool (default_client, KEY_VISUAL_BELL,
+                                    &err);
+  cleanup_error (&err);
+  bool_val_2 = gconf_client_get_bool (default_client, KEY_AUDIBLE_BELL,
+                                    &err);
+  cleanup_error (&err);
+  update_visual_bell (bool_val, bool_val_2);
+
+  str_val = gconf_client_get_string (default_client, KEY_VISUAL_BELL_TYPE,
+                                     &err);
+  cleanup_error (&err);
+  update_visual_bell_type (str_val);
+  g_free (str_val);
+
+  bool_val = gconf_client_get_bool (default_client, KEY_REDUCED_RESOURCES,
+				    &err);
+  cleanup_error (&err);
+  update_reduced_resources (bool_val);
 #endif /* HAVE_GCONF */
   
   /* Load keybindings prefs */
@@ -375,7 +412,7 @@ meta_prefs_init (void)
                            NULL,
                            NULL,
                            &err);
-  cleanup_error (&err);
+  cleanup_error (&err);  
 #endif /* HAVE_GCONF */
 }
 
@@ -674,6 +711,67 @@ change_notify (GConfClient    *client,
       if (update_button_layout (str))
         queue_changed (META_PREF_BUTTON_LAYOUT);
     }
+  else if (strcmp (key, KEY_VISUAL_BELL) == 0)
+    {
+      gboolean b;
+
+      if (value && value->type != GCONF_VALUE_BOOL)
+        {
+          meta_warning (_("GConf key \"%s\" is set to an invalid type\n"),
+                        key);
+          goto out;
+        }
+
+      b = value ? gconf_value_get_bool (value) : provide_visual_bell;      
+      if (update_visual_bell (b, bell_is_audible))
+	queue_changed (META_PREF_VISUAL_BELL);	    
+    }
+  else if (strcmp (key, KEY_AUDIBLE_BELL) == 0)
+    {
+      gboolean b;
+
+      if (value && value->type != GCONF_VALUE_BOOL)
+        {
+          meta_warning (_("GConf key \"%s\" is set to an invalid type\n"),
+                        key);
+          goto out;
+        }
+
+      b = value ? gconf_value_get_bool (value) : bell_is_audible;      
+      if (update_visual_bell (provide_visual_bell, b))
+	queue_changed (META_PREF_AUDIBLE_BELL);
+    }
+  else if (strcmp (key, KEY_VISUAL_BELL_TYPE) == 0)
+    {
+      const char * str;
+
+      if (value && value->type != GCONF_VALUE_STRING)
+        {
+          meta_warning (_("GConf key \"%s\" is set to an invalid type\n"),
+                        KEY_VISUAL_BELL_TYPE);
+          goto out;
+        }
+      
+      str = value ? gconf_value_get_string (value) : NULL;
+      if (update_visual_bell_type (str))
+	queue_changed (META_PREF_VISUAL_BELL_TYPE);
+    }
+  else if (strcmp (key, KEY_REDUCED_RESOURCES) == 0)
+    {
+      gboolean b;
+
+      if (value && value->type != GCONF_VALUE_BOOL)
+        {
+          meta_warning (_("GConf key \"%s\" is set to an invalid type\n"),
+                        KEY_REDUCED_RESOURCES);
+          goto out;
+        }
+
+      b = value ? gconf_value_get_bool (value) : reduced_resources;
+
+      if (update_reduced_resources (b))
+        queue_changed (META_PREF_REDUCED_RESOURCES);
+    }
   else
     {
       meta_topic (META_DEBUG_PREFS, "Key %s doesn't mean anything to Metacity\n",
@@ -803,7 +901,50 @@ update_use_system_font (gboolean value)
 
   return old != value;
 }
+
+static MetaVisualBellType
+visual_bell_type_from_string (const char *value)
+{
+  if (value) 
+    {
+      if (!strcmp (value, "fullscreen")) 
+	{
+	  return META_VISUAL_BELL_FULLSCREEN_FLASH;
+	}
+      else if (!strcmp (value, "frame_flash"))
+	{
+	  return META_VISUAL_BELL_FRAME_FLASH;
+	}
+    }
+  return META_VISUAL_BELL_FULLSCREEN_FLASH;
+}
+
+static gboolean
+update_visual_bell_type (const char *value)
+{
+  MetaVisualBellType old_bell_type;
+
+  old_bell_type = visual_bell_type;
+  visual_bell_type = visual_bell_type_from_string (value);
+
+  return (visual_bell_type != old_bell_type);
+}
 #endif /* HAVE_GCONF */
+
+static gboolean
+update_visual_bell (gboolean visual_bell, gboolean audible_bell)
+{
+  gboolean old_visual = provide_visual_bell;
+  gboolean old_audible = bell_is_audible;
+  gboolean has_changed;
+
+  provide_visual_bell = visual_bell;
+  bell_is_audible = audible_bell;
+  has_changed = (old_visual != provide_visual_bell) || 
+    (old_audible != bell_is_audible);
+
+  return has_changed;
+}
 
 #ifdef HAVE_GCONF
 static gboolean
@@ -1137,6 +1278,16 @@ update_auto_raise_delay (int value)
 
   return old != auto_raise_delay;
 }
+
+static gboolean
+update_reduced_resources (gboolean value)
+{
+  gboolean old = reduced_resources;
+
+  reduced_resources = value;
+
+  return old != reduced_resources;
+}
 #endif /* HAVE_GCONF */
 
 #ifdef WITH_VERBOSE_MODE
@@ -1191,6 +1342,22 @@ meta_preference_to_string (MetaPreference pref)
     case META_PREF_WORKSPACE_NAMES:
       return "WORKSPACE_NAMES";
       break;
+
+    case META_PREF_VISUAL_BELL:
+      return "VISUAL_BELL";
+      break;
+
+    case META_PREF_AUDIBLE_BELL:
+      return "AUDIBLE_BELL";
+      break;
+
+    case META_PREF_VISUAL_BELL_TYPE:
+      return "VISUAL_BELL_TYPE";
+      break;
+
+    case META_PREF_REDUCED_RESOURCES:
+      return "REDUCED_RESOURCES";
+      break;
     }
 
   return "(unknown)";
@@ -1229,100 +1396,105 @@ meta_prefs_set_num_workspaces (int n_workspaces)
 
 /* Indexes must correspond to MetaKeybindingAction */
 static MetaKeyPref screen_bindings[] = {
-  { META_KEYBINDING_WORKSPACE_1, 0, 0 },
-  { META_KEYBINDING_WORKSPACE_2, 0, 0 },
-  { META_KEYBINDING_WORKSPACE_3, 0, 0 },
-  { META_KEYBINDING_WORKSPACE_4, 0, 0 },
-  { META_KEYBINDING_WORKSPACE_5, 0, 0 },
-  { META_KEYBINDING_WORKSPACE_6, 0, 0 },
-  { META_KEYBINDING_WORKSPACE_7, 0, 0 },
-  { META_KEYBINDING_WORKSPACE_8, 0, 0 }, 
-  { META_KEYBINDING_WORKSPACE_9, 0, 0 },
-  { META_KEYBINDING_WORKSPACE_10, 0, 0 },
-  { META_KEYBINDING_WORKSPACE_11, 0, 0 },
-  { META_KEYBINDING_WORKSPACE_12, 0, 0 },
-  { META_KEYBINDING_WORKSPACE_LEFT, 0, 0 },
-  { META_KEYBINDING_WORKSPACE_RIGHT, 0, 0 },
-  { META_KEYBINDING_WORKSPACE_UP, 0, 0 },
-  { META_KEYBINDING_WORKSPACE_DOWN, 0, 0 },
-  { META_KEYBINDING_SWITCH_WINDOWS, 0, 0 },
-  { META_KEYBINDING_SWITCH_WINDOWS_BACKWARD, 0, 0 },
-  { META_KEYBINDING_SWITCH_PANELS, 0, 0 },
-  { META_KEYBINDING_SWITCH_PANELS_BACKWARD, 0, 0 },
-  { META_KEYBINDING_CYCLE_WINDOWS, 0, 0 },
-  { META_KEYBINDING_CYCLE_WINDOWS_BACKWARD, 0, 0 },
-  { META_KEYBINDING_CYCLE_PANELS, 0, 0 },
-  { META_KEYBINDING_CYCLE_PANELS_BACKWARD, 0, 0 },
-  { META_KEYBINDING_SHOW_DESKTOP, 0, 0 },
-  { META_KEYBINDING_COMMAND_1, 0, 0 },
-  { META_KEYBINDING_COMMAND_2, 0, 0 },
-  { META_KEYBINDING_COMMAND_3, 0, 0 },
-  { META_KEYBINDING_COMMAND_4, 0, 0 },
-  { META_KEYBINDING_COMMAND_5, 0, 0 },
-  { META_KEYBINDING_COMMAND_6, 0, 0 },
-  { META_KEYBINDING_COMMAND_7, 0, 0 },
-  { META_KEYBINDING_COMMAND_8, 0, 0 }, 
-  { META_KEYBINDING_COMMAND_9, 0, 0 },
-  { META_KEYBINDING_COMMAND_10, 0, 0 },
-  { META_KEYBINDING_COMMAND_11, 0, 0 },
-  { META_KEYBINDING_COMMAND_12, 0, 0 },
-  { META_KEYBINDING_COMMAND_13, 0, 0 },
-  { META_KEYBINDING_COMMAND_14, 0, 0 },
-  { META_KEYBINDING_COMMAND_15, 0, 0 },
-  { META_KEYBINDING_COMMAND_16, 0, 0 },
-  { META_KEYBINDING_COMMAND_17, 0, 0 },
-  { META_KEYBINDING_COMMAND_18, 0, 0 },
-  { META_KEYBINDING_COMMAND_19, 0, 0 },
-  { META_KEYBINDING_COMMAND_20, 0, 0 },
-  { META_KEYBINDING_COMMAND_21, 0, 0 },
-  { META_KEYBINDING_COMMAND_22, 0, 0 },
-  { META_KEYBINDING_COMMAND_23, 0, 0 },
-  { META_KEYBINDING_COMMAND_24, 0, 0 },
-  { META_KEYBINDING_COMMAND_25, 0, 0 },
-  { META_KEYBINDING_COMMAND_26, 0, 0 },
-  { META_KEYBINDING_COMMAND_27, 0, 0 },
-  { META_KEYBINDING_COMMAND_28, 0, 0 },
-  { META_KEYBINDING_COMMAND_29, 0, 0 },
-  { META_KEYBINDING_COMMAND_30, 0, 0 },
-  { META_KEYBINDING_COMMAND_31, 0, 0 },
-  { META_KEYBINDING_COMMAND_32, 0, 0 },
-  { NULL, 0, 0 }
+  { META_KEYBINDING_WORKSPACE_1, 0, 0, FALSE },
+  { META_KEYBINDING_WORKSPACE_2, 0, 0, FALSE },
+  { META_KEYBINDING_WORKSPACE_3, 0, 0, FALSE },
+  { META_KEYBINDING_WORKSPACE_4, 0, 0, FALSE },
+  { META_KEYBINDING_WORKSPACE_5, 0, 0, FALSE },
+  { META_KEYBINDING_WORKSPACE_6, 0, 0, FALSE },
+  { META_KEYBINDING_WORKSPACE_7, 0, 0, FALSE },
+  { META_KEYBINDING_WORKSPACE_8, 0, 0, FALSE }, 
+  { META_KEYBINDING_WORKSPACE_9, 0, 0, FALSE },
+  { META_KEYBINDING_WORKSPACE_10, 0, 0, FALSE },
+  { META_KEYBINDING_WORKSPACE_11, 0, 0, FALSE },
+  { META_KEYBINDING_WORKSPACE_12, 0, 0, FALSE },
+  { META_KEYBINDING_WORKSPACE_LEFT, 0, 0, FALSE },
+  { META_KEYBINDING_WORKSPACE_RIGHT, 0, 0, FALSE },
+  { META_KEYBINDING_WORKSPACE_UP, 0, 0, FALSE },
+  { META_KEYBINDING_WORKSPACE_DOWN, 0, 0, FALSE },
+  { META_KEYBINDING_SWITCH_WINDOWS, 0, 0, TRUE },
+  { META_KEYBINDING_SWITCH_WINDOWS_BACKWARD, 0, 0, TRUE },
+  { META_KEYBINDING_SWITCH_PANELS, 0, 0, TRUE },
+  { META_KEYBINDING_SWITCH_PANELS_BACKWARD, 0, 0, TRUE },
+  { META_KEYBINDING_CYCLE_WINDOWS, 0, 0, TRUE },
+  { META_KEYBINDING_CYCLE_WINDOWS_BACKWARD, 0, 0, TRUE },
+  { META_KEYBINDING_CYCLE_PANELS, 0, 0, TRUE },
+  { META_KEYBINDING_CYCLE_PANELS_BACKWARD, 0, 0, TRUE },
+  { META_KEYBINDING_SHOW_DESKTOP, 0, 0, FALSE },
+  { META_KEYBINDING_PANEL_MAIN_MENU, 0, 0, FALSE },
+  { META_KEYBINDING_PANEL_RUN_DIALOG, 0, 0, FALSE },
+  { META_KEYBINDING_COMMAND_1, 0, 0, FALSE },
+  { META_KEYBINDING_COMMAND_2, 0, 0, FALSE },
+  { META_KEYBINDING_COMMAND_3, 0, 0, FALSE },
+  { META_KEYBINDING_COMMAND_4, 0, 0, FALSE },
+  { META_KEYBINDING_COMMAND_5, 0, 0, FALSE },
+  { META_KEYBINDING_COMMAND_6, 0, 0, FALSE },
+  { META_KEYBINDING_COMMAND_7, 0, 0, FALSE },
+  { META_KEYBINDING_COMMAND_8, 0, 0, FALSE }, 
+  { META_KEYBINDING_COMMAND_9, 0, 0, FALSE },
+  { META_KEYBINDING_COMMAND_10, 0, 0, FALSE },
+  { META_KEYBINDING_COMMAND_11, 0, 0, FALSE },
+  { META_KEYBINDING_COMMAND_12, 0, 0, FALSE },
+  { META_KEYBINDING_COMMAND_13, 0, 0, FALSE },
+  { META_KEYBINDING_COMMAND_14, 0, 0, FALSE },
+  { META_KEYBINDING_COMMAND_15, 0, 0, FALSE },
+  { META_KEYBINDING_COMMAND_16, 0, 0, FALSE },
+  { META_KEYBINDING_COMMAND_17, 0, 0, FALSE },
+  { META_KEYBINDING_COMMAND_18, 0, 0, FALSE },
+  { META_KEYBINDING_COMMAND_19, 0, 0, FALSE },
+  { META_KEYBINDING_COMMAND_20, 0, 0, FALSE },
+  { META_KEYBINDING_COMMAND_21, 0, 0, FALSE },
+  { META_KEYBINDING_COMMAND_22, 0, 0, FALSE },
+  { META_KEYBINDING_COMMAND_23, 0, 0, FALSE },
+  { META_KEYBINDING_COMMAND_24, 0, 0, FALSE },
+  { META_KEYBINDING_COMMAND_25, 0, 0, FALSE },
+  { META_KEYBINDING_COMMAND_26, 0, 0, FALSE },
+  { META_KEYBINDING_COMMAND_27, 0, 0, FALSE },
+  { META_KEYBINDING_COMMAND_28, 0, 0, FALSE },
+  { META_KEYBINDING_COMMAND_29, 0, 0, FALSE },
+  { META_KEYBINDING_COMMAND_30, 0, 0, FALSE },
+  { META_KEYBINDING_COMMAND_31, 0, 0, FALSE },
+  { META_KEYBINDING_COMMAND_32, 0, 0, FALSE },
+  { META_KEYBINDING_COMMAND_SCREENSHOT, 0, 0, FALSE },
+  { META_KEYBINDING_COMMAND_WIN_SCREENSHOT, 0, 0, FALSE },
+  { NULL, 0, 0, FALSE}
 };
 
 static MetaKeyPref window_bindings[] = {
-  { META_KEYBINDING_WINDOW_MENU, 0, 0 },
-  { META_KEYBINDING_TOGGLE_FULLSCREEN, 0, 0 },
-  { META_KEYBINDING_TOGGLE_MAXIMIZE, 0, 0 },
-  { META_KEYBINDING_MAXIMIZE, 0, 0 },
-  { META_KEYBINDING_UNMAXIMIZE, 0, 0 },
-  { META_KEYBINDING_TOGGLE_SHADE, 0, 0 },
-  { META_KEYBINDING_MINIMIZE, 0, 0 },
-  { META_KEYBINDING_CLOSE, 0, 0 },
-  { META_KEYBINDING_BEGIN_MOVE, 0, 0 },
-  { META_KEYBINDING_BEGIN_RESIZE, 0, 0 },
-  { META_KEYBINDING_TOGGLE_STICKY, 0, 0 },
-  { META_KEYBINDING_MOVE_WORKSPACE_1, 0, 0 },
-  { META_KEYBINDING_MOVE_WORKSPACE_2, 0, 0 },
-  { META_KEYBINDING_MOVE_WORKSPACE_3, 0, 0 },
-  { META_KEYBINDING_MOVE_WORKSPACE_4, 0, 0 },
-  { META_KEYBINDING_MOVE_WORKSPACE_5, 0, 0 },
-  { META_KEYBINDING_MOVE_WORKSPACE_6, 0, 0 },
-  { META_KEYBINDING_MOVE_WORKSPACE_7, 0, 0 },
-  { META_KEYBINDING_MOVE_WORKSPACE_8, 0, 0 },
-  { META_KEYBINDING_MOVE_WORKSPACE_9, 0, 0 },
-  { META_KEYBINDING_MOVE_WORKSPACE_10, 0, 0 },
-  { META_KEYBINDING_MOVE_WORKSPACE_11, 0, 0 },
-  { META_KEYBINDING_MOVE_WORKSPACE_12, 0, 0 },
-  { META_KEYBINDING_MOVE_WORKSPACE_LEFT, 0, 0 },
-  { META_KEYBINDING_MOVE_WORKSPACE_RIGHT, 0, 0 },
-  { META_KEYBINDING_MOVE_WORKSPACE_UP, 0, 0 },
-  { META_KEYBINDING_MOVE_WORKSPACE_DOWN, 0, 0 },
-  { META_KEYBINDING_RAISE_OR_LOWER, 0, 0 },
-  { META_KEYBINDING_RAISE, 0, 0 },
-  { META_KEYBINDING_LOWER, 0, 0 },
-  { META_KEYBINDING_MAXIMIZE_VERTICALLY, 0, 0 },
-  { META_KEYBINDING_MAXIMIZE_HORIZONTALLY, 0, 0 },
-  { NULL, 0, 0 }
+  { META_KEYBINDING_WINDOW_MENU, 0, 0, FALSE },
+  { META_KEYBINDING_TOGGLE_FULLSCREEN, 0, 0, FALSE },
+  { META_KEYBINDING_TOGGLE_MAXIMIZE, 0, 0, FALSE },
+  { META_KEYBINDING_TOGGLE_ABOVE, 0, 0, FALSE },
+  { META_KEYBINDING_MAXIMIZE, 0, 0, FALSE },
+  { META_KEYBINDING_UNMAXIMIZE, 0, 0, FALSE },
+  { META_KEYBINDING_TOGGLE_SHADE, 0, 0, FALSE },
+  { META_KEYBINDING_MINIMIZE, 0, 0, FALSE },
+  { META_KEYBINDING_CLOSE, 0, 0, FALSE },
+  { META_KEYBINDING_BEGIN_MOVE, 0, 0, FALSE },
+  { META_KEYBINDING_BEGIN_RESIZE, 0, 0, FALSE },
+  { META_KEYBINDING_TOGGLE_STICKY, 0, 0, FALSE },
+  { META_KEYBINDING_MOVE_WORKSPACE_1, 0, 0, FALSE },
+  { META_KEYBINDING_MOVE_WORKSPACE_2, 0, 0, FALSE },
+  { META_KEYBINDING_MOVE_WORKSPACE_3, 0, 0, FALSE },
+  { META_KEYBINDING_MOVE_WORKSPACE_4, 0, 0, FALSE },
+  { META_KEYBINDING_MOVE_WORKSPACE_5, 0, 0, FALSE },
+  { META_KEYBINDING_MOVE_WORKSPACE_6, 0, 0, FALSE },
+  { META_KEYBINDING_MOVE_WORKSPACE_7, 0, 0, FALSE },
+  { META_KEYBINDING_MOVE_WORKSPACE_8, 0, 0, FALSE },
+  { META_KEYBINDING_MOVE_WORKSPACE_9, 0, 0, FALSE },
+  { META_KEYBINDING_MOVE_WORKSPACE_10, 0, 0, FALSE },
+  { META_KEYBINDING_MOVE_WORKSPACE_11, 0, 0, FALSE },
+  { META_KEYBINDING_MOVE_WORKSPACE_12, 0, 0, FALSE },
+  { META_KEYBINDING_MOVE_WORKSPACE_LEFT, 0, 0, FALSE },
+  { META_KEYBINDING_MOVE_WORKSPACE_RIGHT, 0, 0, FALSE },
+  { META_KEYBINDING_MOVE_WORKSPACE_UP, 0, 0, FALSE },
+  { META_KEYBINDING_MOVE_WORKSPACE_DOWN, 0, 0, FALSE },
+  { META_KEYBINDING_RAISE_OR_LOWER, 0, 0, FALSE },
+  { META_KEYBINDING_RAISE, 0, 0, FALSE },
+  { META_KEYBINDING_LOWER, 0, 0, FALSE },
+  { META_KEYBINDING_MAXIMIZE_VERTICALLY, 0, 0, FALSE },
+  { META_KEYBINDING_MAXIMIZE_HORIZONTALLY, 0, 0, FALSE },
+  { NULL, 0, 0, FALSE }
 };
 
 static void
@@ -1554,15 +1726,31 @@ update_command (const char  *name,
   
   ++p;
 
-  if (!g_ascii_isdigit (*p))
+  if (g_ascii_isdigit (*p))
     {
-      meta_topic (META_DEBUG_KEYBINDINGS,
-                  "Command %s doesn't end in number?\n", name);
-      return FALSE;
+      i = atoi (p);
+      i -= 1; /* count from 0 not 1 */
     }
-  
-  i = atoi (p);
-  i -= 1; /* count from 0 not 1 */
+  else
+    {
+      p = strrchr (name, '/');
+      ++p;
+
+      if (strcmp (p, "command_screenshot") == 0)
+        {
+          i = SCREENSHOT_COMMAND_IDX;
+        }
+      else if (strcmp (p, "command_window_screenshot") == 0)
+        {
+          i = WIN_SCREENSHOT_COMMAND_IDX;
+        }
+      else
+        {
+          meta_topic (META_DEBUG_KEYBINDINGS,
+                      "Command %s doesn't end in number?\n", name);
+          return FALSE;
+        }
+    }
   
   if (i >= MAX_COMMANDS)
     {
@@ -1602,8 +1790,19 @@ char*
 meta_prefs_get_gconf_key_for_command (int i)
 {
   char *key;
-  
-  key = g_strdup_printf (KEY_COMMAND_PREFIX"%d", i + 1);
+
+  switch (i)
+    {
+    case SCREENSHOT_COMMAND_IDX:
+      key = g_strdup (KEY_COMMAND_PREFIX "screenshot");
+      break;
+    case WIN_SCREENSHOT_COMMAND_IDX:
+      key = g_strdup (KEY_COMMAND_PREFIX "window_screenshot");
+      break;
+    default:
+      key = g_strdup_printf (KEY_COMMAND_PREFIX"%d", i + 1);
+      break;
+    }
   
   return key;
 }
@@ -1775,6 +1974,24 @@ meta_prefs_get_button_layout (MetaButtonLayout *button_layout_p)
   *button_layout_p = button_layout;
 }
 
+gboolean
+meta_prefs_get_visual_bell ()
+{
+  return provide_visual_bell;
+}
+
+gboolean
+meta_prefs_bell_is_audible ()
+{
+  return bell_is_audible;
+}
+
+MetaVisualBellType
+meta_prefs_get_visual_bell_type ()
+{
+  return visual_bell_type;
+}
+
 void
 meta_prefs_get_screen_bindings (const MetaKeyPref **bindings,
                                 int                *n_bindings)
@@ -1808,6 +2025,12 @@ int
 meta_prefs_get_auto_raise_delay ()
 {
   return auto_raise_delay;
+}
+
+gboolean
+meta_prefs_get_reduced_resources ()
+{
+  return reduced_resources;
 }
 
 MetaKeyBindingAction

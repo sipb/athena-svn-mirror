@@ -2663,7 +2663,10 @@ get_gc_for_primitive (GtkWidget          *widget,
   meta_color_spec_render (color_spec, widget, &color);
 
   values.foreground = color;
-  gdk_rgb_find_color (widget->style->colormap, &values.foreground);
+
+  gdk_rgb_find_color (gdk_drawable_get_colormap (drawable),
+                      &values.foreground);
+
   values.line_width = line_width;
 
   gc = gdk_gc_new_with_values (drawable, &values,
@@ -4760,8 +4763,10 @@ theme_get_style (MetaTheme     *theme,
       resize = META_FRAME_RESIZE_LAST; /* compiler */
       break;
     }
-
-  if (flags & META_FRAME_HAS_FOCUS)
+  
+  /* re invert the styles used for focus/unfocussed while flashing a frame */
+  if (((flags & META_FRAME_HAS_FOCUS) && !(flags & META_FRAME_IS_FLASHING))
+      || (!(flags & META_FRAME_HAS_FOCUS) && (flags & META_FRAME_IS_FLASHING)))
     focus = META_FRAME_FOCUS_YES;
   else
     focus = META_FRAME_FOCUS_NO;
@@ -5166,7 +5171,7 @@ meta_gtk_widget_get_font_desc (GtkWidget *widget,
 }
 
 int
-meta_pango_font_desc_get_text_height (PangoFontDescription *font_desc,
+meta_pango_font_desc_get_text_height (const PangoFontDescription *font_desc,
                                       PangoContext         *context)
 {
   PangoFontMetrics *metrics;
