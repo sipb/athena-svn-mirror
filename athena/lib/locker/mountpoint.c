@@ -17,7 +17,7 @@
  * creating mountpoints, and the associated security issues.
  */
 
-static const char rcsid[] = "$Id: mountpoint.c,v 1.10 2000-10-13 23:19:27 ghudson Exp $";
+static const char rcsid[] = "$Id: mountpoint.c,v 1.10.2.1 2001-08-21 00:25:39 ghudson Exp $";
 
 #include <sys/stat.h>
 #include <errno.h>
@@ -425,6 +425,12 @@ int locker__remove_mountpoint(locker_context context, locker_attachent *at)
     return LOCKER_SUCCESS;
   else
     return status;
+}
+
+/* Unlock the mountpoint created by locker__build_mountpoint(). */
+void locker__put_mountpoint(locker_context context, locker_attachent *at)
+{
+  release_dirlock(context, at);
 }
 
 /* Lock the dirlock file. type should be F_RDLCK if you are creating
