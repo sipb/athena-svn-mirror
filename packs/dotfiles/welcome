@@ -1,19 +1,22 @@
-Welcome to Project Athena
---------------------------
-- Project Athena is an eight-year experiment to explore the use of
-  computers in university educational programs.  Initiated in May 1983,
-  the project develops computers as useful tools, rather than objects of
-  study, in the education of students at MIT. 
+Welcome to Athena
+-----------------
 
-- Project Athena seeks to support as much of the MIT student and faculty
-  population as possible in a campus-wide distributed service networked 
-  workstation environment.
+- Project Athena was an eight-year experiment (1983-1991) to explore the use
+  of computers in university educational programs.  The Project focused on
+  developing computers as useful tools, rather than as objects of study, in
+  the education of students at MIT. 
+
+- The Athena system, one of the fruits of Project Athena, is a campus-wide
+  distributed computer service consisting of hundreds of networked
+  workstations and related facilities (such as printers and file servers)
+  available to MIT students and faculty to help them achieve their academic
+  goals and learn about computers while at the Institute.
 
 - For help about any aspect of Athena, type:   help   followed by a carriage
   return.  This calls the On-Line Help system (OLH), a menu browser that 
   helps you find information about many Athena topics.  (If a topic is not 
-  described in detail in OLH, the system system usually provides information 
-  on where to find out more about the topic.)  OLH includes:
+  described in detail, OLH usually provides information on where to find out
+  more about the topic.)  OLH includes:
 
     - guides to all aspects of the supported Athena environment, including
       how to get an account, how to login and logout, how to work with the 
@@ -24,7 +27,7 @@ Welcome to Project Athena
     - up-to-date status information on the Athena system, available Athena
       minicourses, and other current events at Athena
 
-    - stock answers to many commonly asked questions about Athena
+    - consultants' stock answers to commonly asked questions about Athena
 
     - a complete set of standard UNIX reference modules ("man pages")
 
@@ -32,14 +35,4 @@ Welcome to Project Athena
   consultant on-line, just type:  olc   followed by a carriage return.  To
   talk to a consultant in person, call X3-4435 (if there is no consultant on 
   duty, you will get a recording informing you of the consulting schedule).
-
-----------
-
-
-
-
-
-
-
-
 
