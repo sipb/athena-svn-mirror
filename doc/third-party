@@ -168,6 +168,7 @@ Distribution sites for software under third
   gtk2                  ftp.gtk.org:pub/gtk
   gtkhtml               ftp.gnome.org:pub/gnome/sources/gtkhtml
   gtkhtml3              ftp.gnome.org:pub/gnome/sources/gtkhtml
+  hicolor-icon-theme	http://freedesktop.org/Software/icon-theme/releases/
   ifplugd		http://0pointer.de/lennart/projects/ifplugd/
   imlib                 (Formerly www.rasterman.com; imlib 1 is dead now)
   inetd                 From NetBSD (ftp.netbsd.org), usr.sbin/inetd
