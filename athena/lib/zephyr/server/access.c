@@ -15,7 +15,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_acl_s_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/access.c,v 1.7 1987-10-15 17:02:18 jtkohl Exp $";
+static char rcsid_acl_s_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/access.c,v 1.8 1987-11-15 23:31:43 jtkohl Exp $";
 #endif SABER
 #endif lint
 
@@ -110,6 +110,8 @@ access_init()
 		}
 		acl->acl_filename = strsave(class);
 		(void) class_setup_restricted(class, acl);
+		zdbug((LOG_DEBUG, "restricted %s by %s",
+		       class, acl->acl_filename));
 	}
 	(void) fclose(registry);
 
