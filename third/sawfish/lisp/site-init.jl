@@ -1,4 +1,4 @@
-;; $Id: site-init.jl,v 1.14 2001-07-16 14:45:08 ghudson Exp $
+;; $Id: site-init.jl,v 1.15 2001-07-18 14:11:20 ghudson Exp $
 ;; Site initialization for Athena
 
 ;; Pick a nice readable default font.
@@ -11,25 +11,33 @@
 ;; Load gnome stuff even if we start before any gnome properties are set.
 (require 'sawfish.wm.state.gnome)
 
+;; Don't load a custom default file; it loses information about which
+;; variables users have set, and it overrides site defaults.
+(setq custom-default-file nil)
+
+;; Define some of the settings from the sawfish custom default file as
+;; site defaults.  What we left out was a setting to enable tooltips,
+;; to disable showing of tooltip doc strings, and to set the worksapce
+;; geometry to contain four workspaces.
+(setq warp-to-selected-windows nil)
+(setq cycle-warp-pointer nil)
+(setq focus-mode 'click)
+(bind-keys window-keymap "Button1-Click1" 'raise-and-pass-through-click)
+
 ;; Focus mode customizations
 (require 'auto-raise)
 (setq focus-windows-on-uniconify t)
-(setq focus-mode 'click)
 (setq raise-windows-on-focus t)
 (setq raise-window-timeout 0)
-
-;; Tooltips seem to be more confusing than helpful at the moment.
-(setq tooltips-enabled '())
 
 ;; Key bindings
 (unbind-keys border-keymap "Button3-Off")
 (bind-keys border-keymap "Button3-Click" 'popup-window-menu)
-(bind-keys window-keymap "Button1-Click1" 'raise-window-and-pass-through-click
-			 "M-Button2-Click1" 'raise-lower-window
-			 "M-Button3-Click1" 'popup-window-menu)
+(bind-keys window-keymap "W-Button2-Click1" 'raise-lower-window
+			 "W-Button3-Click1" 'popup-window-menu)
 (unbind-keys title-keymap "Button2-Move" "Button3-Off")
-(bind-keys title-keymap "Button1-Click2" 'maximize-window-toggle)
-(bind-keys title-keymap "Button3-Click1" 'popup-window-menu)
+(bind-keys title-keymap "Button1-Click2" 'maximize-window-toggle
+			"Button3-Click1" 'popup-window-menu)
 (unbind-keys global-keymap "W-Left" "W-Right")
 
 ;; Special treatment for zwgc windows
