@@ -19,6 +19,8 @@ case `/bin/athena/machtype -c` in
 		df="/bin/df";;
 	PS2*) type="IBM PS/2"
 		df="/bin/df";;
+	POWER*) type="IBM RISC/6000"
+		df="/bin/df";;
 	*) type=`/bin/athena/machtype -c -v`;;
 	esac
 
