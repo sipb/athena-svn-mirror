@@ -14,11 +14,11 @@
 #	endpackage	the name of the package in the package list to
 #			stop building at
 
-# $Revision: 1.60 $
+# $Revision: 1.61 $
 
 umask 2
 
-set machine=`machtype`
+set machine=`/bin/athena/machtype`
 
 set SRVD="/srvd"
 set BUILD="/build"
@@ -26,8 +26,8 @@ set SOURCE="/source"
 
 #set the path to include the right xmkmf and imake
 if ($machine == "sun4") then
-	set AFS="sun4m_53"
-	attach -n -q sunsoft
+	set AFS="sun4m_54"
+	/bin/athena/attach -n -q sunsoft
 else if ($machine == "decmips") then
 	set AFS="pmax_ul4"
 	setenv OSVER `uname -r | sed s/\\.//`
@@ -69,7 +69,7 @@ switch ( $machine )
     breaksw
 
   case sun4
-    set machthird="third/unsupported/transcript-v4.1 third/unsupported/ansi third/unsupported/jove third/unsupported/learn"
+    set machthird="third/supported/talk third/unsupported/x3270 third/unsupported/transcript-v4.1 third/unsupported/ansi third/unsupported/jove third/unsupported/learn"
     breaksw
 
   case rsaix
@@ -89,7 +89,7 @@ set etcs="athena/etc/track athena/etc/rvd athena/etc/newsyslog athena/etc/cleanu
 # Decomissioned 9/95 by fiat
 # athena/bin/xps athena/bin/afs-nfs athena/bin/xprint athena/bin/kerberometer
 
-set bins=" athena/bin/session athena/bin/olc.dev athena/bin/finger athena/bin/ispell athena/bin/Ansi athena/bin/sendbug athena/bin/just athena/bin/rep athena/bin/cxref athena/bin/tarmail athena/bin/access athena/bin/mon athena/bin/dent athena/bin/attach athena/bin/dash athena/bin/xmore athena/bin/mkserv athena/bin/cal athena/bin/scripts athena/bin/xdsc athena/bin/rkinit.76 athena/bin/xversion athena/bin/discuss athena/bin/from athena/bin/delete athena/bin/getcluster athena/bin/gms athena/bin/hostinfo athena/bin/lert athena/bin/machtype athena/bin/login athena/bin/tcsh athena/bin/write athena/bin/tinkerbell athena/bin/athdir athena/ucb/lpr athena/ucb/quota"
+set bins=" athena/bin/session athena/bin/olc.dev athena/bin/finger athena/bin/ispell athena/bin/Ansi athena/bin/sendbug athena/bin/just athena/bin/rep athena/bin/cxref athena/bin/tarmail athena/bin/access athena/bin/mon athena/bin/dent athena/bin/attach athena/bin/dash athena/bin/xmore athena/bin/mkserv athena/bin/cal athena/bin/scripts athena/bin/xdsc athena/bin/rkinit.76 athena/bin/xversion athena/bin/discuss athena/bin/from athena/bin/delete athena/bin/getcluster athena/bin/gms athena/bin/hostinfo athena/bin/lert athena/bin/machtype athena/bin/login athena/bin/tcsh athena/bin/write athena/bin/tinkerbell athena/bin/athdir athena/ucb/lpr athena/ucb/quota athena/bin/telnet"
 
 set machbins=""
 switch ( $machine )
@@ -692,6 +692,27 @@ endif # installonly
 		(echo In $package >>& $outfile)
 if ( $installonly == "0" ) then
 		((cd $BUILD/$package;xmkmf . >>& $outfile ) && \
+		(cd $BUILD/$package;make clean >>& $outfile ) && \
+		(cd $BUILD/$package;make depend >>& $outfile) && \
+		(cd $BUILD/$package;make all >>& $outfile ))
+		if ( $status == 1 ) then
+			echo "We bombed in $package"  >>& $outfile
+			exit -1
+		endif
+endif # installonly
+		(cd $BUILD/$package;make install DESTDIR=$SRVD >>& $outfile )
+		if ( $status == 1 ) then
+			echo "We bombed in $package"  >>& $outfile
+			exit -1
+		endif
+	endif
+	breaksw
+
+	case third/unsupported/x3270
+	if ($machine == "sun4") then
+		(echo In $package >>& $outfile)
+if ( $installonly == "0" ) then
+		((cd $BUILD/$package; /usr/athena/bin/xmkmf >>& $outfile ) && \
 		(cd $BUILD/$package;make clean >>& $outfile ) && \
 		(cd $BUILD/$package;make depend >>& $outfile) && \
 		(cd $BUILD/$package;make all >>& $outfile ))
