@@ -68,7 +68,7 @@ int main(int argc, char **argv)
   hp = hes_resolve(argv[0], "cluster");
   if (hp == NULL)
     {
-      fprintf(stderr, "No Hesiod information available for %s\n", argv[1]);
+      fprintf(stderr, "No Hesiod information available for %s\n", argv[0]);
       return(1);
     }
   shellenv(hp, argv[1], autoupdate, bourneshell);
