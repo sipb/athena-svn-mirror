@@ -3,11 +3,11 @@
  * 		keeping the a specified number of backup files around.
  *
  * 	$Source: /afs/dev.mit.edu/source/repository/athena/etc/newsyslog/newsyslog.c,v $
- * 	$Author: cfields $    $Revision: 1.7 $
+ * 	$Author: ghudson $    $Revision: 1.8 $
  */
 
 #ifndef lint
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/newsyslog/newsyslog.c,v 1.7 1996-08-04 03:18:34 cfields Exp $";
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/newsyslog/newsyslog.c,v 1.8 1998-03-09 04:52:29 ghudson Exp $";
 #endif  /* lint */
 
 #include "config.h"
@@ -145,7 +145,7 @@ int	sleeptm = SLEEP_DELAY;  /* Time to wait after restarting a daemon */
 
 time_t	timenow;		/* Time of the start of newsyslog */
 char	*daytime;		/* timenow in human readable form */
-char    datestamp[DATE_LENGTH+1]; /* timenow in the YYYTMMDD format */
+char    datestamp[DATE_LENGTH+1]; /* timenow in the YYYYMMDD format */
 
 struct flag_entry *flags;	/* List of all config-file flags */
 
