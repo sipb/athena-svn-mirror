@@ -1,0 +1,20 @@
+#!/bin/sh
+
+case "$HOSTTYPE" in
+sun4)
+  # If we are already running Solaris 7, make sure that the hard links
+  # in the locally installed packages are actually hard links.
+  if [ 5.7 = "`uname -r`" ]; then
+    exec < $LIBDIR/solaris7-hardlinks
+    while read linkpath linksrc; do
+      if [ -h "/$linkpath" ]; then
+	rm -f "/$linkpath"
+	(cd `dirname "/$linkpath"` && ln "$linksrc" "/$linkpath")
+      fi
+    done
+  fi
+  ;;
+
+sgi)
+  ;;
+esac

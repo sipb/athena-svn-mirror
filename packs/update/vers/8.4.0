@@ -15,6 +15,10 @@ sun4)
 	echo "/usr/lib/cpp"				>> "$DEADFILES"
 	echo "/usr/ccs/lib/cpp"				>> "$DEADFILES"
 	cat "$LIBDIR/solaris26-7"			>> "$DEADFILES"
+	# Files that are hard links in locally installed Solaris 7 packages
+	# should be cleared out; pkgadd won't replace them if they exist
+	# as symlinks.
+	awk '{ print $1; }' "$LIBDIR/solaris7-hardlinks" >> "$DEAFILES"
 
 	# This file will be inaccurate after we remove the OS links.
 	echo "/var/sadm/install/contents"		>> "$DEADFILES"

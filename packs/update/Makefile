@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.12 2000-05-22 17:39:31 ghudson Exp $
+# $Id: Makefile,v 1.13 2000-06-28 19:02:49 ghudson Exp $
 
 SHELL=/bin/sh
 ATHRETCDIR=/etc/athena
@@ -37,6 +37,7 @@ install:
 	install -c -m 0555 vers/solaris26-pkgs ${DESTDIR}${UPDATE}
 	install -c -m 0555 vers/solaris26-ptchs ${DESTDIR}${UPDATE}
 	install -c -m 0555 vers/solaris26-7 ${DESTDIR}${UPDATE}
+	install -c -m 0555 vers/solaris7-hardlinks ${DESTDIR}${UPDATE}
 	install -c -m 0555 vers/solaris7-local-sun4m ${DESTDIR}${UPDATE}
 	install -c -m 0555 vers/solaris7-local-sun4u ${DESTDIR}${UPDATE}
 	install -c -m 0555 vers/solaris7-nolocal-sun4m ${DESTDIR}${UPDATE}
