@@ -5,7 +5,7 @@
  *      Created by:     Marc Horowitz <marc@athena.mit.edu>
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/tty_filter.c,v $
- *      $Author: jfc $
+ *      $Author: lwvanels $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -13,7 +13,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char rcsid_tty_filter_c[] = "$Id: tty_filter.c,v 1.12 1991-12-30 19:01:54 jfc Exp $";
+static char rcsid_tty_filter_c[] = "$Id: tty_filter.c,v 1.13 1992-08-26 04:21:45 lwvanels Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>
@@ -80,7 +80,8 @@ char **argv;
     string_dictionary_binding *b;
     int isrealtty = string_Eq(drivername, "tty");
 
-    termcap_dict = string_dictionary_Create(7);
+    if (termcap_dict == (string_dictionary) NULL)
+      termcap_dict = string_dictionary_Create(7);
 
     if (!(term = getenv("TERM"))) {	/* Only use termcap if $TERM.	*/
 	if (isrealtty && !notfirst)
