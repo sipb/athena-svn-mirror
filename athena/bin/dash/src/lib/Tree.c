@@ -9,10 +9,10 @@
  *
  */
 
-#ifndef	lint
-static char rcsid[] =
-"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/Tree.c,v 1.1 1991-09-03 11:10:16 vanharen Exp $";
-#endif	lint
+#if  (!defined(lint))  &&  (!defined(SABER))
+static char *rcsid =
+"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/Tree.c,v 1.2 1993-07-01 23:40:23 vanharen Exp $";
+#endif
 
 #include "mit-copyright.h"
 #include <stdio.h>
@@ -41,19 +41,21 @@ static void initialize();
 
 TreeClassRec treeClassRec = {
   {
-    /* class name */	"Tree",
-    /* jet size */	sizeof(TreeRec),
-    /* initialize */	initialize,
-    /* prerealize */    NULL,
-    /* realize */       NULL,
-    /* event */		NULL,
-    /* expose */	NULL,
-    /* querySize */     NULL,
-    /* move */		NULL,
-    /* resize */        NULL,
-    /* destroy */       NULL,
-    /* resources */	resources,
-    /* number of 'em */	XjNumber(resources)
+    /* class name */		"Tree",
+    /* jet size */		sizeof(TreeRec),
+    /* classInitialize */	NULL,
+    /* classInitialized? */	1,
+    /* initialize */		initialize,
+    /* prerealize */    	NULL,
+    /* realize */       	NULL,
+    /* event */			NULL,
+    /* expose */		NULL,
+    /* querySize */     	NULL,
+    /* move */			NULL,
+    /* resize */        	NULL,
+    /* destroy */       	NULL,
+    /* resources */		resources,
+    /* number of 'em */		XjNumber(resources)
   }
 };
 
