@@ -1,0 +1,240 @@
+2000-10-23  John Harper  <jsh@eazel.com>
+
+	* configure.in: version 0.13.2
+
+2000-10-18  John Harper  <john@dcs.warwick.ac.uk>
+
+	* Makefile.in: fix repdoc dependences to refer to the actual
+	file
+
+2000-10-11  John Harper  <john@dcs.warwick.ac.uk>
+
+	* install-aliases: add extra-paranoid quoting
+
+	* configure.in: new option --enable-full-name-terminator (sets
+	existing preprocessor symbol FULL_NAME_TERMINATOR)
+
+2000-10-06  John Harper  <john@dcs.warwick.ac.uk>
+
+	* install-aliases: try to rename libFOO.* as well as FOO.*. On
+	some systems libtool creates module libraries with a `lib'
+	prefix
+
+2000-09-29  John Harper  <john@dcs.warwick.ac.uk>
+
+	* librep.spec.in: override infodir in `make install' command
+
+2000-09-28  John Harper  <john@dcs.warwick.ac.uk>
+
+	* configure.in: version 0.13.1
+
+2000-09-27  John Harper  <john@dcs.warwick.ac.uk>
+
+	* configure.in, config.h.in: check for strncasecmp ()
+
+2000-09-20  John Harper  <john@dcs.warwick.ac.uk>
+
+	* configure.in: version 0.13
+
+2000-09-19  John Harper  <john@dcs.warwick.ac.uk>
+
+	* build-info: use `$LOCALDOMAIN', then `dnsdomainname', before
+	falling back to `domainname'
+
+2000-09-10  Karl M. Hegbloom  <karlheg@debian.org>
+
+	* man/Makefile.in (librep.pdf): New target
+
+	* Makedefs.in (TEXI2PDF): New variable
+
+2000-09-13  John Harper  <john@dcs.warwick.ac.uk>
+
+	* configure.in: version 0.13pre2
+
+2000-09-08  John Harper  <john@dcs.warwick.ac.uk>
+
+	* configure.in: removed hack to look in etc for install-sh
+
+	* man/repl.texi: new chapter `The REPL'
+
+2000-09-05  John Harper  <john@dcs.warwick.ac.uk>
+
+	* configure.in: adapted patch from Jacob for weird debian gmp
+	header file location. Misc other changes to gmp checks
+
+2000-09-04  John Harper  <john@dcs.warwick.ac.uk>
+
+	* librep.spec.in: added `--with-extra-cflags=-fstrength-reduce'
+	to configure. RH force -fno-strength-reduce on i386, this leads
+	to too much register pressure in the vm, spilling one of the
+	fixed regs..
+
+	* configure.in: version to 0.13pre1
+
+2000-09-01  John Harper  <john@dcs.warwick.ac.uk>
+
+	* librep.spec.in: added `Requires: gdbm >= 1.8' to avoid gdbm
+	brain-damage
+
+	* librep.spec.in: install rep_config.h in -devel pkg
+
+2000-08-31  John Harper  <john@dcs.warwick.ac.uk>
+
+	* configure.in: create rep_config.h instead of rep.h
+
+2000-08-29    <john@dcs.warwick.ac.uk>
+
+	* librep.spec.in: librep-devel requires exactly @version@ of
+	librep package
+
+2000-08-17  John Harper  <john@dcs.warwick.ac.uk>
+
+	* configure.in: add -Wpointer-arith when gcc, only add
+	-Wno-implicit-int on solaris
+
+2000-08-11  John Harper  <john@dcs.warwick.ac.uk>
+
+	* configure.in: an additional option for configure,
+	--with-readline-prefix, to specify an alternate path for the
+	readline include/library files (from Albert Chin-A-Young
+	<china@thewrittenword.com>)
+
+2000-08-03  John Harper  <john@dcs.warwick.ac.uk>
+
+	* configure.in, config.h.in: check for strtoq () as well as
+	strtoll ()
+
+2000-08-01  John Harper  <john@dcs.warwick.ac.uk>
+
+	* intl/intl-compat.c, intl/Makefile.in: removed my edits, intl/
+	has no differences to standard gettext intl/ now
+
+	* autogen.sh: new script
+
+	* configure.in: removed ranlib check, remove aux-dir decl.
+	Added check for <libintl.h> if gettext is in libc
+
+	* etc/regexp.patch, etc/gc-cons: deleted
+
+	* etc/install-sh: moved to top-level directory
+
+	* etc/ltmain.sh, etc/ltconfig, etc/config.sub,
+	etc/config.guess: deleted, use libtoolize to create these
+
+2000-07-29  John Harper  <john@dcs.warwick.ac.uk>
+
+	* configure.in: signal an error if no gmp and --without-gmp
+	wasn't given (the error message says to use --without-gmp if
+	that's want is wanted)
+
+2000-07-28  John Harper  <john@dcs.warwick.ac.uk>
+
+	* Makedefs.in: in COMPILE_ENV changed REPEXECDIR to
+	REP_DL_LOAD_PATH
+
+	* configure.in: set GMP_LIBS to -lm if not using gmp
+
+2000-07-24  John Harper  <john@dcs.warwick.ac.uk>
+
+	* install-aliases: don't use -h or -H options to grep. Solaris
+	grep chokes on -H and neither are needed anyway
+
+	* librep.spec.in: added install-aliases
+
+2000-07-23  John Harper  <john@dcs.warwick.ac.uk>
+
+	* librep.spec.in: added rep_INSTALL_ALIASES
+
+	* configure.in: version 0.13-pre, bumped libcurrent and libage
+
+	* install-aliases: script to extract and create aliases from
+	source files (C or Lisp). Installed into $(repcommonexecdir)
+
+2000-07-20  John Harper  <john@dcs.warwick.ac.uk>
+
+	* configure.in: version 0.12.4, bumped ${librevision}
+
+	* Makedefs.in: set libtool mode explicitly
+	* rules.mk.sh: set libtool mode explicitly; include -rpath
+	option
+	(from David Kaelbling <drk@sgi.com>)
+
+2000-07-15  John Harper  <john@dcs.warwick.ac.uk>
+
+	* configure.in: added `--without-gmp' and
+	`--disable-continuations' options
+
+	* config.h.in: added HAVE_STRTOLL, WITH_GMP, WITH_CONTINUATIONS
+
+2000-07-13  John Harper  <john@dcs.warwick.ac.uk>
+
+	* configure.in: redirect stderr to /dev/null when trying to run
+	`aclocal --print-ac-dir'. Apparently this avoids errors if
+	aclocal isn't installed (patch from Albert Chin-A-Young
+	<china@thewrittenword.com>)
+
+2000-07-12  John Harper  <john@dcs.warwick.ac.uk>
+
+	* configure.in: version 0.12.3, bumped ${librevision}
+
+2000-07-10  John Harper  <john@dcs.warwick.ac.uk>
+
+	* configure.in: just use ${host_cpu} when checking for known
+	stack growth directions
+
+	* librep.spec.in: replaced `/usr/info' by `%{_infodir}'
+
+2000-07-06  John Harper  <john@dcs.warwick.ac.uk>
+
+	* Makefile.in, lisp/Makefile.in, man/Makefile.in,
+	src/Makefile.in: updated to partially build in a separate
+	directory. This still doesn't work for Lisp sources (adapted
+	from Martin Pottendorfer <pottendo@utanet.at>)
+
+2000-06-29  John Harper  <john@dcs.warwick.ac.uk>
+
+	* Makefile.in: added repexecdir to installdirs target (for DOC)
+
+2000-06-22  John Harper  <john@dcs.warwick.ac.uk>
+
+	* configure.in: version 0.12.2, incremented librevision
+
+2000-06-18  John Harper  <john@dcs.warwick.ac.uk>
+
+	* configure.in: version 0.12.1, incremented librevision
+
+	* configure.in, config.h.in: check sizeof long and long long
+	(if available), from George Lebl <jirka@5z.com>
+
+2000-06-16  John Harper  <john@dcs.warwick.ac.uk>
+
+	* configure.in: fixed typo when checking for shl_load in libdld
+
+	* configure.in: version 0.12
+
+	* configure.in: check libdld for shl_load
+
+2000-06-09  John Harper  <john@dcs.warwick.ac.uk>
+
+	* Makefile.in: added distclean target as alias for realclean
+
+	* configure.in: changed --with-gmp and --with-gdbm to be more
+	conventional --with-gmp-prefix and --with-gdbm-prefix
+
+	* configure.in: when extracting dependences from C files using
+	GCC, use `-MM' not `-MM -MG' (from Brad Thompson <yak@mit.edu>)
+
+2000-06-07  John Harper  <john@dcs.warwick.ac.uk>
+
+	* configure.in, Makefile.in: moved DOC file to ${repexecdir}
+	since GDBM databases are endian-specific
+
+	[ this is sub-optimal, since the lisp files are shared, but
+	it's okay for now .. ]
+
+2000-05-31  Karl M. Hegbloom  <karlheg@debian.org>
+
+	* Makefile.in (TAGS): Use --regex to grab DEFSTRING, DEFSYM,
+	DEFUN, and DEFUN_INT information also.
+	(TAGS tags): add lowercase target name for lazy typists.
+
