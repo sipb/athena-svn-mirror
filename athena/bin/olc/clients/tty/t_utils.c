@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_utils.c,v $
- *	$Id: t_utils.c,v 1.42 1997-04-30 18:08:32 ghudson Exp $
+ *	$Id: t_utils.c,v 1.43 1997-04-30 18:28:44 ghudson Exp $
  *	$Author: ghudson $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_utils.c,v 1.42 1997-04-30 18:08:32 ghudson Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_utils.c,v 1.43 1997-04-30 18:28:44 ghudson Exp $";
 #endif
 #endif
 
@@ -296,7 +296,7 @@ handle_response(response, req)
       if(isme(req))
 	printf("You have signed off of %s.\n", client_service_name());
       else
-	printf("%s is singed off of %s.\n",req->target.username,
+	printf("%s is signed off of %s.\n",req->target.username,
 	       client_service_name());
       return(SUCCESS);
 
