@@ -1085,11 +1085,13 @@ main(argc, argv)
 
     parse_options(argc, argv, &opts);
 
-    got_k5 = k5_begin(&opts, &k5, &k4);
-    got_k4 = k4_begin(&opts, &k4);
+    if (got_k5 && !k5_begin(&opts, &k5, &k4))
+	exit(1);
+    if (got_k4 && !k4_begin(&opts, &k4))
+	exit(1);
 
     authed_k5 = k5_kinit(&opts, &k5);
-    if (!authed_k4)
+    if (authed_k5 || !got_k5)
 	authed_k4 = k4_kinit(&opts, &k4, k5.ctx);
 #ifdef KRB5_KRB4_COMPAT
     memset(stash_password, 0, sizeof(stash_password));
