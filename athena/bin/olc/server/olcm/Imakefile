@@ -1,6 +1,6 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcm/Imakefile,v $
- * $Id: Imakefile,v 1.4 1991-05-07 22:25:03 lwvanels Exp $
+ * $Id: Imakefile,v 1.5 1991-09-22 11:43:37 lwvanels Exp $
  * Copyright (C) 1991 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  */
@@ -14,6 +14,7 @@ EXTRA_LOAD_FLAGS=-pg
 
 SRCS=	olcm.c
 OBJS=	olcm.o
+LOCAL_LIBRARIES= $(CLIENTLIB) $(COMMONLIB)
 
 #ifdef Profiling
 DEFINES=-DPROFILE
@@ -23,11 +24,12 @@ DEFINES=-DPROFILE
 DEFINES=
 #endif /* Profiling */
 
-SYS_LIBRARIES=  $(KerberosLib)
+SYS_LIBRARIES=  $(HesiodLib) $(KerberosLib) 
+DEPLIBS= $(LOCAL_LIBRARIES)
 
-NormalProgramTarget(olcm,$(OBJS),,,$(SYS_LIBRARIES))
+NormalProgramTarget(olcm,$(OBJS),$(LOCAL_LIBRARIES),$(LOCAL_LIBRARIES),$(SYS_LIBRARIES))
 
-SaberProgramTarget(olcm,$(SRCS),$(OBJS),,$(SYS_LIBRARIES))
+SaberProgramTarget(olcm,$(SRCS),$(OBJS),$(LOCAL_LIBRARIES),$(SYS_LIBRARIES))
 
 #ifdef InstallAltLoc
 InstallProgram(olcm,$(DESTDIR)/usr/athena/etc)
