@@ -17,18 +17,31 @@
 
 BEGIN_GNOME_DECLS
 
+#if 0
 typedef enum {
   GNOME_PRINT_CONTEXT_TYPE_GENERIC_PS
 } GnomePrintContextType;
+#endif
+
+typedef enum {
+	GNOME_PRINT_OUTPUT_NULL,
+	GNOME_PRINT_OUTPUT_FILE,
+	GNOME_PRINT_OUTPUT_PIPE,
+	GNOME_PRINT_OUTPUT_PROGRAM
+} GnomePrintOutputType;
 
 struct _GnomePrintContext
 {
 	GtkObject object;
 
-	GPGC * gc;
+	GPGC *gc;
+	gint level;
+	gboolean has_page;
 
+	GnomePrintOutputType output;
+	gchar *command;
+	gchar *filename;
 	FILE *f;
-	gboolean is_pipe;
 };
 
 /* The method defs, autogenned */
@@ -103,7 +116,7 @@ struct _GnomePrintContextClass
    file or piped to lpr. */
 
 int gnome_print_context_open_file (GnomePrintContext *pc, const char *filename);
-int gnome_print_context_write_file (GnomePrintContext *pc, const char *buf, size_t size);
+int gnome_print_context_write_file (GnomePrintContext *pc, const void *buf, size_t size);
 int gnome_print_context_fprintf (GnomePrintContext *pc, const char *fmt, ...);
 int gnome_print_context_close_file (GnomePrintContext *pc);
 

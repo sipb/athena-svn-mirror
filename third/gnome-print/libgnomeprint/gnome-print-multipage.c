@@ -356,17 +356,19 @@ gnome_print_multipage_init (GnomePrintMultipage *multipage)
 static GList *
 gnome_print_multipage_affine_list_duplicate(GList *affines)
 {
-  gdouble *affine;
-  GList *list;
-  
-  if (affines == NULL)
-    return NULL;
+	GList *list = NULL;
 
-  affine = g_new(gdouble, 6);
-  memcpy(affine, affines->data, sizeof(gdouble) * 6);
-  list = g_list_append(NULL, affine);
-  list = g_list_append(list, gnome_print_multipage_affine_list_duplicate(g_list_next(affines)));
-  return list;
+	while (affines) {
+		gdouble *affine;
+		affine = g_new (gdouble, 6);
+		memcpy (affine, affines->data, sizeof (gdouble) * 6);
+		list = g_list_prepend (list,affine);
+		affines = affines->next;
+	}
+
+	list = g_list_reverse (list);
+
+	return list;
 }
 
 /**

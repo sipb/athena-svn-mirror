@@ -1,314 +1,394 @@
-# gnome-print Finnish translations
+# gnome-print Finnish Translations
 # http://gnome-fi.sourceforge.net/
-# Copyright (C) 2000 Free Software Foundation, Inc.
-# Mikko Rauhala <mjr@iki.fi>, 1999
-# Sami Pesonen <spesonen@dlc.fi>, 2000
+# Copyright (C) 2001 Free Software Foundation, Inc.
+# Mikko Rauhala <mjr@iki.fi>, 1999.
+# Sami Pesonen <spesonen@dlc.fi>, 2000-2001
 #  
 msgid ""
 msgstr ""
-"Project-Id-Version: gnome-print 0.24\n"
-"POT-Creation-Date: 2000-11-09 22:14+0200\n"
-"PO-Revision-Date: 2000-11-09 22:18+02:00\n"
+"Project-Id-Version: gnome-print 0.25\n"
+"POT-Creation-Date: 2001-10-11 20:16-0600\n"
+"PO-Revision-Date: 2001-10-03 22:35+03:00\n"
 "Last-Translator: Sami Pesonen <spesonen@dlc.fi>\n"
 "Language-Team: Finnish <fi@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=iso-8859-15\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: gnome-font-install.c:574
+#: installer/gnome-font-install.c:119
 msgid "Print out debugging information"
 msgstr "Tulosta vianmääritystietoja"
 
-#: gnome-font-install.c:576 gnome-font-install.c:578 gnome-font-install.c:580
-msgid "Does nothing yet."
-msgstr "Ei tee vielä mitään."
+#: installer/gnome-font-install.c:121
+msgid "Search directories recursively for font files"
+msgstr "Etsi tästä polusta alihakemistoineen font-tiedostoja."
 
-#: gnome-font-install.c:585
-msgid "Use this path to write the fontmap file."
-msgstr "Käytä tätä polkua fontmap-tiedoston kirjoittamiseen."
+#: installer/gnome-font-install.c:123
+msgid "Start from zero fontmap, instead of parsing old one"
+msgstr "Aloita kirjasintiedosto tyhjästä vanhan muokkaamisen sijaan"
 
-#: gnome-font-install.c:585 gnome-font-install.c:587 gnome-font-install.c:589
-#: gnome-font-install.c:592 gnome-font-install.c:594
+#: installer/gnome-font-install.c:125
+msgid "Create $HOME/.gnome/fonts/gnome-print.fontmap"
+msgstr "Luo $HOME/.gnome/fonts/gnome-print.fontmap"
+
+#: installer/gnome-font-install.c:127
+msgid "Create $SYSCONFDIR/gnome/fonts/gnome-print.fontmap"
+msgstr "Luo $SYSCONFDIR/gnome/fonts/gnome-print.fontmap"
+
+#: installer/gnome-font-install.c:129
+msgid "Create $DATADIR/gnome/fonts/gnome-print.fontmap"
+msgstr "Luo $DATADIR/gnome/fonts/gnome-print.fontmap"
+
+#: installer/gnome-font-install.c:131
+msgid "Write output fontmap to specified file (- for stdout)"
+msgstr "Kirjoita kirjasinkartta tiedostoon (- tulostaa ruudulle)"
+
+#: installer/gnome-font-install.c:134
+msgid "File describing known aliases"
+msgstr "Tiedostoa kuvaava tunnettua alias"
+
+#: installer/gnome-font-install.c:134
 msgid "PATH"
 msgstr "POLKU"
 
-#: gnome-font-install.c:587
-msgid "Use this path to search for relative afm files."
-msgstr "Käytä tätä polkua suhteellisten afm-tiedostojen hakemiseen."
-
-#: gnome-font-install.c:589
-msgid "Use this path to search for relative pfb files."
-msgstr "Käytä tätä polkua suhteellisten pfb-tiedostojen hakemiseen."
-
-#: gnome-font-install.c:592
-msgid "Use this to set up a key/value pair for afm files."
-msgstr "Käytä tätä afm-tiedostojen avain/arvo-parin alustukseen."
-
-#: gnome-font-install.c:594
-msgid "Use this to set up a key/value pair for pfb files."
-msgstr "Käytä tätä pfb-tiedostojen avain/arvo-parin alustukseen."
-
 #. Family frame
-#: libgnomeprint/gnome-font-dialog.c:138
+#: libgnomeprint/gnome-font-dialog.c:142
 msgid "Font family"
-msgstr "Kirjasin perhe"
+msgstr "Kirjasinperhe"
 
 #. Style frame
-#: libgnomeprint/gnome-font-dialog.c:171
+#: libgnomeprint/gnome-font-dialog.c:175
 msgid "Style"
 msgstr "Tyyli"
 
-#: libgnomeprint/gnome-font-dialog.c:233
+#: libgnomeprint/gnome-font-dialog.c:237
 msgid "Font size:"
-msgstr "Kirjasin koko:"
+msgstr "Kirjasinkoko:"
 
-#: libgnomeprint/gnome-font-dialog.c:754
+#: libgnomeprint/gnome-font-dialog.c:758
 msgid "Font Selection"
 msgstr "Kirjasimen valinta"
 
-#. We have latin encoding
-#: libgnomeprint/gnome-font-face.c:459
+#: libgnomeprint/gnome-font-face.c:605
 msgid "The quick brown fox jumps over the lazy dog."
-msgstr "Nopea ruskea kettu hyppää laiskan koiran yli."
+msgstr "Äidin oma Åke lähtee yöhön vauhdikkaasti."
 
-#: libgnomeprint/gnome-font-face.c:697
+#. Encode empty font
+#: libgnomeprint/gnome-font-face.c:808
 #, c-format
-msgid "Couldn't open font file %s\n"
-msgstr "En voinut avata kirjasintiedostoa %s\n"
+msgid "Couldn't generate pfa for face %s\n"
+msgstr "En voinut luoda pfa:ta ulkonäölle %s\n"
 
-#: libgnomeprint/gnome-font-face.c:1012
+#: libgnomeprint/gnome-font-face.c:925
 #, c-format
 msgid "status loading %s = %d\n"
-msgstr "tila ladatessa %s = %d\n"
+msgstr "lataa %s = %d\n"
 
-#: libgnomeprint/gnome-print-copies.c:232
+#: libgnomeprint/gnome-print-copies.c:238
 msgid "Copies"
 msgstr "Kopioita"
 
-#: libgnomeprint/gnome-print-copies.c:243
+#: libgnomeprint/gnome-print-copies.c:249
 msgid "N_umber of copies:"
 msgstr "K_opioiden lukumäärä:"
 
-#: libgnomeprint/gnome-print-copies.c:264
+#: libgnomeprint/gnome-print-copies.c:270
 msgid "_Collate"
 msgstr "_Lajittele"
 
-#: libgnomeprint/gnome-print-dialog.c:164
+#: libgnomeprint/gnome-print-dialog.c:180
 msgid "Print Range"
 msgstr "Tulostettavat sivut"
 
-#: libgnomeprint/gnome-print-dialog.c:185
-#: libgnomeprint/gnome-print-master-preview.c:681
+#: libgnomeprint/gnome-print-dialog.c:201
+#: libgnomeprint/gnome-print-master-preview.c:696
 msgid "Print"
 msgstr "Tulosta"
 
-#: libgnomeprint/gnome-print-dialog.c:186
+#: libgnomeprint/gnome-print-dialog.c:202
 msgid "Preview"
 msgstr "Esikatselu"
 
-#: libgnomeprint/gnome-print-dialog.c:333
+#: libgnomeprint/gnome-print-dialog.c:353
 msgid "_All"
 msgstr "_Kaikki"
 
-#: libgnomeprint/gnome-print-dialog.c:363
-#: libgnomeprint/gnome-print-dialog.c:377
+#: libgnomeprint/gnome-print-dialog.c:383
+#: libgnomeprint/gnome-print-dialog.c:397
 msgid "_Selection"
 msgstr "_Valitse kirjasinlaji"
 
-#: libgnomeprint/gnome-print-dialog.c:436
+#: libgnomeprint/gnome-print-dialog.c:458
 msgid "from:"
 msgstr "mistä:"
 
-#: libgnomeprint/gnome-print-dialog.c:450
+#: libgnomeprint/gnome-print-dialog.c:472
 msgid "to:"
 msgstr "mihin:"
 
-#: libgnomeprint/gnome-print-dialog.c:495
+#: libgnomeprint/gnome-print-dialog.c:518
 msgid "f_rom:"
 msgstr "_mistä:"
 
-#: libgnomeprint/gnome-print-dialog.c:512
+#: libgnomeprint/gnome-print-dialog.c:535
 msgid "_to:"
-msgstr "_mihin:"
+msgstr "m_ihin:"
 
-#: libgnomeprint/gnome-print-master-preview.c:626
+#: libgnomeprint/gnome-print-file.c:72
+#, c-format
+msgid ""
+"'%s' is about to be overwritten.\n"
+"\n"
+"Do you want to continue?"
+msgstr ""
+"Haluatko korvata tällä tiedostolla\n"
+"aiemmin tallennetun tiedoston '%s'?"
+
+#: libgnomeprint/gnome-print-file.c:169
+msgid "Select output file"
+msgstr "Valitse tulostustiedosto"
+
+#: libgnomeprint/gnome-print-master-preview.c:641
 msgid "Page: "
 msgstr "Sivu: "
 
-#: libgnomeprint/gnome-print-master-preview.c:653
+#: libgnomeprint/gnome-print-master-preview.c:668
 msgid "_First page"
 msgstr "_Ensimmäinen sivu"
 
-#: libgnomeprint/gnome-print-master-preview.c:653
-#: libgnomeprint/gnome-print-master-preview.c:684
+#: libgnomeprint/gnome-print-master-preview.c:668
+#: libgnomeprint/gnome-print-master-preview.c:699
 msgid "Shows the first page"
 msgstr "Näyttää ensimmäisen sivun"
 
-#: libgnomeprint/gnome-print-master-preview.c:656
+#: libgnomeprint/gnome-print-master-preview.c:671
 msgid "_Previous page"
 msgstr "E_dellinen sivu"
 
-#: libgnomeprint/gnome-print-master-preview.c:656
-#: libgnomeprint/gnome-print-master-preview.c:687
+#: libgnomeprint/gnome-print-master-preview.c:671
+#: libgnomeprint/gnome-print-master-preview.c:702
 msgid "Shows the previous page"
 msgstr "Näyttää edellisen sivun"
 
-#: libgnomeprint/gnome-print-master-preview.c:659
+#: libgnomeprint/gnome-print-master-preview.c:674
 msgid "_Next page"
 msgstr "S_euraava sivu"
 
-#: libgnomeprint/gnome-print-master-preview.c:659
-#: libgnomeprint/gnome-print-master-preview.c:690
+#: libgnomeprint/gnome-print-master-preview.c:674
+#: libgnomeprint/gnome-print-master-preview.c:705
 msgid "Shows the next page"
 msgstr "Näyttää seuraavan sivun"
 
-#: libgnomeprint/gnome-print-master-preview.c:662
+#: libgnomeprint/gnome-print-master-preview.c:677
 msgid "_Last page"
 msgstr "_Viimeinen sivu"
 
-#: libgnomeprint/gnome-print-master-preview.c:662
-#: libgnomeprint/gnome-print-master-preview.c:693
+#: libgnomeprint/gnome-print-master-preview.c:677
+#: libgnomeprint/gnome-print-master-preview.c:708
 msgid "Shows the last page"
 msgstr "Näyttää viimeisen sivun"
 
-#: libgnomeprint/gnome-print-master-preview.c:667
+#: libgnomeprint/gnome-print-master-preview.c:682
 msgid "Zoom _in"
 msgstr "S_uurenna"
 
-#: libgnomeprint/gnome-print-master-preview.c:667
+#: libgnomeprint/gnome-print-master-preview.c:682
 msgid "Zooms in"
 msgstr "Suurenna"
 
-#: libgnomeprint/gnome-print-master-preview.c:668
+#: libgnomeprint/gnome-print-master-preview.c:683
 msgid "Zoom _out"
 msgstr "P_ienennä"
 
-#: libgnomeprint/gnome-print-master-preview.c:668
+#: libgnomeprint/gnome-print-master-preview.c:683
 msgid "Zooms out"
 msgstr "Pienennä"
 
-#: libgnomeprint/gnome-print-master-preview.c:675
+#: libgnomeprint/gnome-print-master-preview.c:690
 msgid "_View"
 msgstr "_Näkymä"
 
-#: libgnomeprint/gnome-print-master-preview.c:681
+#: libgnomeprint/gnome-print-master-preview.c:696
 msgid "Prints the current file"
-msgstr "Tulostaa tämänhetkisen tiedoston"
+msgstr "Tulostaa avoimen tiedoston"
 
-#: libgnomeprint/gnome-print-master-preview.c:684
+#: libgnomeprint/gnome-print-master-preview.c:699
 msgid "First"
 msgstr "Ensimmäinen"
 
-#: libgnomeprint/gnome-print-master-preview.c:687
+#: libgnomeprint/gnome-print-master-preview.c:702
 msgid "Back"
 msgstr "Takaisin"
 
-#: libgnomeprint/gnome-print-master-preview.c:690
+#: libgnomeprint/gnome-print-master-preview.c:705
 msgid "Next"
 msgstr "Seuraava"
 
-#: libgnomeprint/gnome-print-master-preview.c:693
+#: libgnomeprint/gnome-print-master-preview.c:708
 msgid "Last"
 msgstr "Viimeinen"
 
-#: libgnomeprint/gnome-print-master-preview.c:696
+#: libgnomeprint/gnome-print-master-preview.c:711
 msgid "Zoom in"
 msgstr "Suurenna"
 
-#: libgnomeprint/gnome-print-master-preview.c:696
+#: libgnomeprint/gnome-print-master-preview.c:711
 msgid "Zooms the page in"
 msgstr "Suurentaa sivua"
 
-#: libgnomeprint/gnome-print-master-preview.c:697
+#: libgnomeprint/gnome-print-master-preview.c:712
 msgid "Zoom out"
 msgstr "Pienennä"
 
-#: libgnomeprint/gnome-print-master-preview.c:697
+#: libgnomeprint/gnome-print-master-preview.c:712
 msgid "Zooms the page out"
 msgstr "Pienentää sivua"
 
-#: libgnomeprint/gnome-print-master-preview.c:698
+#: libgnomeprint/gnome-print-master-preview.c:713
 msgid "Fit"
 msgstr "Sovita"
 
-#: libgnomeprint/gnome-print-master-preview.c:698
+#: libgnomeprint/gnome-print-master-preview.c:713
 msgid "Zooms to fit the whole page"
-msgstr "Tarkentaa koko sivun näkyviin"
+msgstr "Näyttää koko sivun"
 
-#: libgnomeprint/gnome-print-master-preview.c:699
+#: libgnomeprint/gnome-print-master-preview.c:714
 msgid "Fit Wide"
-msgstr "Sovita leveyssuunnassa"
+msgstr "Vaaka"
 
-#: libgnomeprint/gnome-print-master-preview.c:699
+#: libgnomeprint/gnome-print-master-preview.c:714
 msgid "Zooms to fit the width of the page"
-msgstr "Sovittaa sivun näkyviin leveyssuunnassa"
+msgstr "Sovittaa sivun näyttöön/näkymään leveyssuunnassa"
 
-#: libgnomeprint/gnome-print-master-preview.c:700
+#: libgnomeprint/gnome-print-master-preview.c:715
 msgid "Fit Tall"
-msgstr "Sovita pystysuunnassa"
+msgstr "Pysty"
 
-#: libgnomeprint/gnome-print-master-preview.c:700
+#: libgnomeprint/gnome-print-master-preview.c:715
 msgid "Zooms to fit the height of the page"
-msgstr "Sovittaa sivun näkyviin pystysuunnassa"
+msgstr "Sovittaa sivun näyttöön/näkymään pystysuunnassa"
 
-#: libgnomeprint/gnome-printer-dialog.c:180
+#: libgnomeprint/gnome-printer-dialog.c:293
+msgid ""
+"gnome-print-admin was not found.\n"
+"\n"
+"Please install gnome-print-admin to configure this printer"
+msgstr ""
+"gnome-print-adminia ei löytynyt.\n"
+"\n"
+"Asenna gnome-print-admin jos haluat asentaa tämän tulostimen"
+
+#: libgnomeprint/gnome-printer-dialog.c:375
+msgid "Print to file"
+msgstr "Tulosta tiedostoon"
+
+#: libgnomeprint/gnome-printer-dialog.c:392
+msgid "Properties"
+msgstr "Asetukset"
+
+#: libgnomeprint/gnome-printer-dialog.c:500
 msgid "Select printer"
 msgstr "Valitse tulostin"
 
 #.
 #. * Create the profile information display
 #.
-#: libgnomeprint/gnome-printer-dialog.c:189
+#: libgnomeprint/gnome-printer-dialog.c:508
 msgid "State:"
 msgstr "Tila:"
 
-#: libgnomeprint/gnome-printer-dialog.c:190
+#: libgnomeprint/gnome-printer-dialog.c:509
 msgid "Type:"
 msgstr "Tyyppi:"
 
-#: libgnomeprint/gnome-printer-dialog.c:191
+#: libgnomeprint/gnome-printer-dialog.c:510
 msgid "Location:"
 msgstr "Sijainti:"
 
-#: libgnomeprint/gnome-printer-dialog.c:192
+#: libgnomeprint/gnome-printer-dialog.c:511
 msgid "Comment:"
 msgstr "Kommentti:"
 
-#: libgnomeprint/gnome-printer-dialog.c:226
+#: libgnomeprint/gnome-printer-dialog.c:537
 msgid "_Name:"
 msgstr "_Nimi:"
 
-#: libgnomeprint/gnome-printer-dialog.c:235
+#: libgnomeprint/gnome-printer-dialog.c:553
 msgid "_Printer"
 msgstr "_Tulostin"
 
-#: libgnomeprint/gnome-printer-dialog.c:248
+#: libgnomeprint/gnome-printer-dialog.c:570
 msgid "_File"
 msgstr "_Tiedosto"
 
-#: libgnomeprint/gnome-printer-dialog.c:489
+#: libgnomeprint/gnome-printer-dialog.c:907
 msgid "Select Printer"
 msgstr "Valitse tulostin"
 
-#: libgnomeprint/gnome-printer.c:117
+#: libgnomeprint/gnome-printer-profile.c:108 libgpa/gpa-generic-ps.c:170
+#: libgpa/gpa-generic-ps.c:200
+msgid "Generic Postscript"
+msgstr "Yleinen Postscript"
+
+#: libgnomeprint/gnome-printer.c:136 libgpa/gpa-printer.c:169
 msgid "Printer is active"
 msgstr "Tulostin on aktiivinen"
 
-#: libgnomeprint/gnome-printer.c:120
+#: libgnomeprint/gnome-printer.c:139 libgpa/gpa-printer.c:172
 msgid "Printer is ready to print"
 msgstr "Tulostin on valmis tulostamaan"
 
-#: libgnomeprint/gnome-printer.c:123
+#: libgnomeprint/gnome-printer.c:142 libgpa/gpa-printer.c:175
 msgid "Printer is off-line"
-msgstr "Tulostin ei käytettävissä"
+msgstr "Tulostin ei ole käytettävissä"
 
-#: libgnomeprint/gnome-printer.c:126
+#: libgnomeprint/gnome-printer.c:145 libgpa/gpa-printer.c:178
 msgid "Can not communicate with printer"
-msgstr "Tulostimen kanssa ei voi kommunikoida"
+msgstr "Tulostimeen ei saada yhteyttä"
 
-#: libgnomeprint/gnome-printer.c:129
+#: libgnomeprint/gnome-printer.c:148 libgpa/gpa-printer.c:181
 msgid "Unknown status"
-msgstr "Tuntematon tila"
+msgstr "Tila tuntematon"
+
+#: libgpa/gpa-generic-ps.c:64
+msgid "Generic Postscript (Hardcoded)"
+msgstr "Yleinen Postscript (Sisäänkoodattu)"
+
+#: libgpa/gpa-generic-ps.c:65
+msgid "GENERIC-POSTSCRIPT-HARDCODED"
+msgstr "GENERIC-POSTSCRIPT-SISÄÄNKOODATTU"
+
+#: libgpa/gpa-generic-ps.c:66
+msgid "0"
+msgstr "0"
+
+#: libgpa/gpa-generic-ps.c:67
+msgid "GNOME"
+msgstr "GNOME"
+
+#: libgpa/gpa-generic-ps.c:68
+msgid "0.0.0"
+msgstr "0.0.0"
+
+#: libgpa/gpa-generic-ps.c:69
+msgid "Unknown"
+msgstr "Tuntematon"
+
+#: libgpa/gpa-generic-ps.c:70
+msgid "GnomePrint"
+msgstr "GnomePrint"
+
+#: libgpa/gpa-generic-ps.c:86
+msgid "gnome-print-ps2"
+msgstr "gnome-print-ps2"
+
+#: libgpa/gpa-ppd-options.c:431
+msgid "Options"
+msgstr "Asetukset"
+
+#: libgpa/gpa-settings.c:222
+msgid "Default Settings"
+msgstr "Oletusasetukset"
 
 #: tests/testembed.c:18
 msgid "extracts the first font from output.pdf and places it in font.dump."
@@ -317,24 +397,24 @@ msgstr ""
 
 #: tests/testembed.c:21
 msgid "extracts the font header from font.dump"
-msgstr "erottaa kirjasintunnisteen font.dump:sta"
+msgstr "erottaa kirjasintunnisteen font.dump -tiedostosta"
 
 #: tests/testembed.c:23
 msgid "extracts the font body "
-msgstr "erottaa kirjasinrungon"
+msgstr "erottaa kirjasinrungon "
 
 #: tests/testembed.c:25
 msgid "decrypts the font body "
-msgstr "poistaa salauksen kirjasinrungosta"
+msgstr "poistaa salauksen kirjasinrungosta "
 
-#: tests/testprint.c:116 tests/testprint.c:124
+#: tests/testprint.c:118 tests/testprint.c:126
 msgid "Gnome-print test page, rotated"
 msgstr "Gnome-tulostuksen testisivu, käännetty"
 
-#: tests/testprint.c:131
+#: tests/testprint.c:133
 msgid "Gnome-print test page, slanted"
 msgstr "Gnome-tulostuksen testisivu, kallistettu"
 
-#: tests/testprint.c:139
+#: tests/testprint.c:141
 msgid "Gnome-print test page, slanted. Small"
 msgstr "Gnome-tulostuksen testisivu, kallistettu. Pieni"

@@ -3,22 +3,27 @@
  *
  * Authors:
  *   Raph Levien (raph@acm.org)
+ *   Lauris Kaplinski <lauris@helixcode.com>
  *
  */
 
 #include "config.h"
-#include <gtk/gtk.h>
+#include <stdlib.h>
 #include <string.h>
 #include <math.h>
 #include <ctype.h>
+#include <gtk/gtk.h>
 
 #include <libart_lgpl/art_affine.h>
 #include <libgnomeprint/gp-unicode.h>
+#include <libgnomeprint/gnome-printer.h>
 #include <libgnomeprint/gnome-printer-private.h>
 #include <libgnomeprint/gnome-print-private.h>
 #include <libgnomeprint/gnome-print-ps.h>
 #include <libgnomeprint/gnome-font.h>
+#if 0
 #include <libgnomeprint/gnome-font-private.h> /* for glyph_name at moment */
+#endif
 
 typedef enum {
   GNOME_PRINT_PS_TYPE_GENERIC_PS
@@ -49,7 +54,7 @@ struct _GnomePrintPs
   double b;
 
   /* current font */
-  const char *current_font;
+  char *current_font;
   double current_font_size;
   const GnomeFont *current_gnome_font;
 
@@ -249,13 +254,13 @@ gnome_print_ps_setopacity (GnomePrintContext *pc, double opacity)
 }
 
 static int
-gnome_print_ps_setfont_raw (GnomePrintContext *pc, GnomeFontFace * face,
+gnome_print_ps_setfont_raw (GnomePrintContext *pc, const GnomeFontFace * face,
 			    double size)
 {
   GnomePrintPs *ps;
   char *pfa;
   int i;
-  const char *fontname;
+  char *fontname;
 
   g_return_val_if_fail (pc != NULL, -1);
 
@@ -264,25 +269,29 @@ gnome_print_ps_setfont_raw (GnomePrintContext *pc, GnomeFontFace * face,
   if (face == NULL)
     return -1;
 
-  fontname = gnome_font_face_get_ps_name (face);
+  fontname = g_strdup (gnome_font_face_get_ps_name (face));
   for (i = 0; i < ps->n_builtins; i++)
     if (!strcmp (fontname, ps->builtins[i]))
       break;
 
   if (i == ps->n_builtins)
     {
-      fontname = gnome_font_unsized_get_glyph_name (face);
+      gtk_object_get (GTK_OBJECT (face), "pfbname", &fontname, NULL);
       for (i = 0; i < ps->n_fonts; i++)
 	if (!strcmp (fontname, ps->fonts[i]))
 	  break;
       if (i == ps->n_fonts)
 	{
 	  pfa = gnome_font_face_get_pfa (face);
-	  if (pfa == NULL)
+	  if (pfa == NULL) {
+	    g_free (fontname);
 	    return -1;
+	  }
 	  
-	  if (gnome_print_context_fprintf (pc, "%s", pfa) < 0)
+	  if (gnome_print_context_fprintf (pc, "%s", pfa) < 0) {
+	    g_free (fontname);
 	    return -1;
+	  }
 	  
 	  if (ps->n_fonts == ps->n_fonts_max)
 	    ps->fonts = g_realloc (ps->fonts, sizeof (char *) *
@@ -322,13 +331,16 @@ static int
 gnome_print_ps_setfont (GnomePrintContext *pc, GnomeFont *font)
 {
   GnomePrintPs *ps;
+  gint ret;
+
+  ps = GNOME_PRINT_PS (pc);
+
+#if 0
   char *pfa;
   int i;
   const char *fontname;
 
   g_return_val_if_fail (pc != NULL, -1);
-
-  ps = GNOME_PRINT_PS (pc);
 
   if (font == NULL)
     return -1;
@@ -379,6 +391,12 @@ gnome_print_ps_setfont (GnomePrintContext *pc, GnomeFont *font)
 
   ps->current_font = fontname;
   ps->current_font_size = gnome_font_get_size (font);
+
+#else
+
+  ret = gnome_print_ps_setfont_raw (pc, gnome_font_get_face (font), gnome_font_get_size (font));
+#endif
+
   ps->current_gnome_font = font;
   /* FIXME: should we ref the font or are we guaranteed to have it around
      for long enough?  */
@@ -387,10 +405,13 @@ gnome_print_ps_setfont (GnomePrintContext *pc, GnomeFont *font)
   ps->cur_font = 0;
   ps->cur_size = 0;
 
+
+  return ret;
+#if 0
   return gnome_print_context_fprintf (pc,
 				      "/La-%s findfont %g scalefont setfont\n",
 				      fontname, gnome_font_get_size (font));
-
+#endif
 }
 
 static void

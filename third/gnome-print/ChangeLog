@@ -1,4 +1,344 @@
-2000-11-13  root  <chema@celorio.com>
+2001-10-12  Lauris Kaplinski  <lauris@ximian.com>
+
+	* installer/gnome-font-install.c (gfi_process_alias): Check NULL
+	strings before atof
+	(gfi_build_font): Ditto
+
+2001-10-11  Lauris Kaplinski  <lauris@ximian.com>
+
+	* installer/gnome-font-install.c (gfi_read_afm_file_data): Use
+	gf_afm_check for quick test before firing up parseAFM
+	--recursive is disabled by default
+	(gfi_scan_path): Test for circular links, refuse links to '/',
+	'/proc', '/dev'
+
+	* installer/gf-pfb.c (gf_pfb_open): Ignore small files and check
+	mmap for NULL result in addition to -1. Do not mmap more than
+	64K + 6 of file (max PS initial segment length).
+	(gf_afm_check): Quick test for "StartFontMetrics" string
+
+2001-10-09  Havoc Pennington  <hp@redhat.com>
+
+	* installer/gnome-font-install.c (main): improve error handling a
+	bit, don't use g_warning for user mistakes.
+
+	* configure.in (PRINT_INCLUDEDIR): fix for changed gdk-pixbuf
+	header location
+
+2001-10-07  Gediminas Paulauskas <menesis@delfi.lt>
+
+	* configure.in (ALL_LINGUAS): added lv
+
+2001-10-07  Carlos Perelló Marín <carlos@gnome-db.org>
+
+	* configure.in: Added pt to ALL_LINGUAS.
+
+2001-10-02  Lauris Kaplinski  <lauris@ximian.com>
+
+	* configure.in: Use version 0.30
+
+2001-09-23  Lauris Kaplinski  <lauris@ximian.com>
+
+	* installer/Makefile.am (gnome_font_install_SOURCES): Added copy of
+	fontmap and parseAFM.[c,h]
+
+2001-09-16  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* configure.in: Added "nn" to ALL_LINGUAS.
+	
+2001-09-15  Darin Adler  <darin@bentspoon.com>
+
+	* acconfig.h: Add LIBGPA.
+
+2001-09-13  Lauris Kaplinski  <lauris@ximian.com>
+
+	* installer/gf-pfb.c: Reordered #includes to make BSD happy
+
+	* tests/Makefile.am (CPPFLAGS): Pass environment
+
+	* Makefile.am (CPPFLAGS): Pass environment variable
+
+	* gnome-print.spec.in (CFLAGS): Applied patch #60325 (Gregory Leblanc)
+
+2001-08-31  Abel Cheung  <maddog@linux.org.hk>
+
+	* configure.in (ALL_LINGUAS): zh_TW.Big5 -> zh_TW
+
+2001-08-09  Abel Cheung  <maddog@linux.org.hk>
+
+	* configure.in: Add zh_TW.Big5 to ALL_LINGUAS.
+
+2001-07-18  Zbigniew Chyla  <cyba@gnome.pl>
+
+	* profiles/fax-g3.profile: Added Polish translation.
+
+2001-07-08  Lauris Kaplinski  <lauris@ximian.com>
+
+	* tests/testprint3.c (print_test_page): Added test for
+	symbol fonts
+
+2001-05-31  Lauris Kaplinski  <lauris@ximian.com>
+
+	* installer/gnome-font-install.c (main): Set umask to 022
+
+	* Makefile.am: Removed USE_GNOME_FONT
+
+	* configure.in: Version 0.29
+	Removed --with-gnome-font
+	More reasonable libxml version checking
+
+2001-05-29  Darin Adler  <darin@bentspoon.com>
+
+	* ABOUT-NLS: Remove generated file from repository.
+
+2001-05-24  Lauris Kaplinski  <lauris@ximian.com>
+
+	* configure.in: Version 0.29.test
+
+2001-05-22  Lauris Kaplinski  <lauris@ximian.com>
+
+	* installer/gf-pfb.c (gf_pfb_search_def_name): Allow '-' in name
+
+2001-05-21  Lauris Kaplinski  <lauris@ximian.com>
+
+	* installer/gnome-font-install.c: #include <stdio.h> for fprintf
+	Replace g_print (...) with fprintf (stderr, ...)
+	(main): Added warning about no fonts
+	(gfi_try_font_file): Make path absolute, if not already
+
+	* installer/Makefile.am: Added README.installer
+
+	* installer/README.installer: New file
+
+	* installer/gnome-font-install.c: Added POPT_AUTOHELP
+
+2001-05-11  Lauris Kaplinski  <lauris@ximian.com>
+
+	* configure.in: Version 0.29
+
+2001-03-20  Lauris Kaplinski  <lauris@ximian.com>
+
+	* configure.in: Version 0.28
+
+	* run-gnome-font-install: Added IRIX-specific font & exec paths
+
+	* installer/gnome-font-install.c: #include <popt-gnome.h> instead of <popt.h>
+
+2001-03-08  Chema Celorio  <chema@celorio.com>
+
+	* tests/testprint4.c (latin_to_utf8): was not being used, #ifdef
+	out
+
+2001-03-07  Lauris Kaplinski  <lauris@ximian.com>
+
+	* gnome-print.spec.in (Group): Changed fontmap to fontamp2 and added
+	fax profile
+
+2001-03-06  Lauris Kaplinski  <lauris@ximian.com>
+
+	* configure.in: Set version to final 0.26
+
+	* tests/testprint.c (test_dump_metafile): Close context after printing
+
+2001-03-02  Lauris Kaplinski  <lauris@ximian.com>
+
+	* installer/gnome-font-install.c (gfi_process_type1_alias): Read
+	afm file, so we get correct italic angle and weight in case entry
+	does not have them (as is the case with hand-made entries)
+
+	* run-gnome-font-install: Change fontmap file name to fontmap2
+
+2001-02-23  Lauris Kaplinski  <lauris@ximian.com>
+
+	* configure.in: Use version 0.26.pre
+
+2001-02-22  Lauris Kaplinski  <lauris@ximian.com>
+
+	* profiles/fax-g3.profile (driver): Added fax profile
+
+2001-02-21  Lauris Kaplinski  <lauris@ximian.com>
+
+	* tests/testtext.c (print_test_page): Added beginpage
+
+	* tests/testprint3.c (print_test_page): Added beginpage
+
+	* tests/testprint2.c (print_test_page): Added beginpage
+
+	* tests/testprint.c (print_test_page): Added beginpage
+
+2001-02-20  Lauris Kaplinski  <lauris@ximian.com>
+
+	* tests/testprint4.c: Rewrite page description part, now we have nice
+	glyphlist test/demo and will soon have linestyle test/demo too
+
+2001-02-18  Lauris Kaplinski  <lauris@ximian.com>
+
+	* HACKING: New file with some minuscule guidelines
+
+	* AUTHORS: Added Lauris, Chema, Chris
+
+	* MAINTAINERS (Email): Removed other names
+
+2001-02-12  Chema Celorio  <chema@celorio.com>
+
+	* configure.in (have_admin): if --with-admin is specified
+	build with admin support
+
+2001-02-12  Karl Eichwalder  <ke@suse.de>
+
+	* configure.in (AC_INIT): The new gnome-font-install.c now is
+	found in installer/ .
+
+2000-02-11  Lauris Kaplinski  <lauris@ximian.com>
+
+	* installer/gnome-font-install.c: Done .font parsing
+	* installer/Makefile.am: add install hook
+	* Makefile.am: Commented out old font installer
+	* run-gnome-font-install: Some argument changes for new installer
+
+2000-02-08  Lauris Kaplinski  <lauris@ximian.com>
+
+	* installer/gnome-font-install.c: Add some .font file
+	parsing skeleton
+
+2000-12-24  Miguel de Icaza  <miguel@helixcode.com>
+
+	* doc/gnome-print-sections.txt: Update.
+
+	* doc/gnome-print.types: Updated with all the new types.
+
+	* doc/Makefile.am (scan): Do not list individual files, pass the
+	directory with the source code.
+
+2000-12-18  Chema Celorio  <chema@celorio.com>
+
+	* gnome-font-install.c (main): cast args to remove compile warning
+
+	* tests/testprint4.c (do_rosette): remove unused variable
+
+2000-12-18  Chema Celorio  <chema@celorio.com>
+
+	* configure.in (GNOMEPRINT_CURRENT): bump GNOME_PRINT_CURRENT
+	since we added the "-lgpa" flag to the "gnome-config --libs print"
+	we want old programs to keep using the old gnome-print. 
+
+2000-12-17  Chema Celorio  <chema@celorio.com>
+
+	* configure.in (try_admin): compile --with-admin by default
+
+2000-12-11  Chema Celorio  <chema@celorio.com>
+
+       * Mon Dec 11 2000 Chema Celorio <chema@celorio.com>
+       - Added note about this file not beeing maintaned and updated
+         the old description.
+
+
+2000-12-11  Morten Welinder  <terra@diku.dk>
+
+	* gnome-print.spec.in: Update various stuff from requirements to
+ 	pre-requisites.
+
+2000-11-28  Chema Celorio  <chema@celorio.com>
+
+	* data/models/GNOME-TEST-WIDGETS-----.model: add file
+
+2000-11-26  Chema Celorio  <chema@celorio.com>
+
+	* configure.in: s/Gnumeric/gnome-print
+
+2000-11-26  Chema Celorio  <chema@celorio.com>
+
+	* configure.in : check that gnome-xml is version < 2.0.x
+	and warn if not
+
+2000-11-25  Chema Celorio  <chema@celorio.com>
+
+	* configure.in : Fix so that they
+	work with & without gnome-print-admin support
+	* tests/Makefile.am: ditto
+	* installer/Makefile.am :  ditto
+
+2000-11-25  Chema Celorio  <chema@celorio.com>
+
+	* configure.in : added data/ppds/Makefile to AC_OUTPUT
+
+2000-11-25  Chema Celorio  <chema@celorio.com>
+	
+	* Makefile.am (SUBDIRS): make the libgpa directory before
+	libgnomeprint since libgnomeprint depends on libgpa
+	* data/models & data/ppds : Removed Makefile & Makefile.in
+
+2000-11-25  Chema Celorio  <chema@celorio.com>
+
+	* configure.in (GNOMEPRINT_REVISION): remove doc/Makefile.
+	the doc directory is not included in the Subdirs. The doc
+	directory is not building.
+
+2000-11-25  Jaka Mocnik  <jaka@activetools.si>
+
+	* installer/Makefile.am: add $(GNOME_INCLUDEDIR) to INCLUDES as
+	including libart headers requires this.
+
+2000-11-22  Chema Celorio  <chema@celorio.com>
+
+	* configure.in (PRINT_TEST_LIBS): added data & data/models Makefile.am
+
+2000-11-22  Chema Celorio  <chema@celorio.com>
+
+	* data/Makefile.am (SUBDIRS): added
+
+	* Makefile.am (LIBGPA_DIR): added the data directory
+
+2000-11-21  Chema Celorio  <chema@celorio.com>
+
+	* acconfig.h: define ENABLE_LIBGPA
+
+	* Makefile.am (LIBGPA_DIR): added LIBGPA_DIR as an
+	optional directory to build
+
+	* configure.in (GPA_CURRENT): Add libgpa support.
+	And a new flag "with-admin" to configure with
+	libgpa & gnome-print-admin support
+
+	* autogen.sh (PKG_NAME): renamve PKG_NAME from
+	Gnome Printing to Gnome Print
+
+	* configure.in: remove libunicode check, we don't use it
+	anymore.
+	(have_gpa): check for gnome-print-admin support
+
+2000-11-20  John Gotts  <jgotts@linuxsavvy.com>
+
+	* gnome-print.spec.in: Fixed the run-gnome-font-install/no font found
+	problem.
+
+2000-11-19  Lauris Kaplinski  <lauris@helixcode.com>
+
+	* configure.in: Added gnome-font test
+
+	* Makefile.am: Build font installer only if not using gnome-font
+
+	* acconfig.h: #undef USE_GNOME_FONT
+
+2000-11-16  Lauris Kaplinski  <lauris@helixcode.com>
+
+	* installer/*: New experimental font installation tool
+
+	* configure.in: Added installer
+
+	* Makefile.am: Ditto
+
+2000-11-15  Chema Celorio  <chema@celorio.com>
+
+	* configure.in (PRINT_LIBS): remove duct tape
+	
+2000-11-14  jgotts  <jgotts@linuxsavvy.com>
+
+	* gnome-print.spec.in: Added several missing files, deleted an obsolete
+	file.  I don't agree with the run-font-install change, but I'll leave
+	it to a better authority to back it out.
+
+2000-11-13  Chema Celorio <chema@celorio.com>
 
 	* tests/testprint4.c (do_image): gsave the graphic state 300 times
 	and grestore it 300 times to stress test the gsave & grestore operators	

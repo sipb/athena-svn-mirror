@@ -4,8 +4,6 @@
  *
  *  Authors: Chema Celorio <chema@celorio.com
  *
- *  A system print-copies widget.
- *
  *  This program is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU Library General Public License
  *  as published by the Free Software Foundation; either version 2 of
@@ -27,35 +25,7 @@
 
 BEGIN_GNOME_DECLS
 
-int gnome_print_encode_blank    (const guchar *in, gint in_size);
-int gnome_print_encode_rlc      (const guchar *in, guchar *out, gint in_size);
-int gnome_print_encode_tiff     (const guchar *in, guchar *out, gint in_size);
-int gnome_print_encode_drow     (const guchar *in, guchar *out, gint in_size, guchar *seed);
-int gnome_print_encode_hex      (const guchar *in, guchar *out, gint in_size);
-int gnome_print_decode_hex      (const guchar *in, guchar *out, gint in_size);
-int gnome_print_encode_ascii85  (const guchar *in, guchar *out, gint in_size);
-int gnome_print_decode_ascii85  (const guchar *in, guchar *out, gint in_size);
-int gnome_print_encode_deflate  (const guchar *in, guchar *out, gint in_size, gint out_size);
-
-int gnome_print_encode_rlc_wcs     (gint size);
-int gnome_print_encode_tiff_wcs    (gint size);
-int gnome_print_encode_drow_wcs    (gint size);
-int gnome_print_encode_hex_wcs     (gint size);
-int gnome_print_decode_hex_wcs     (gint size);
-int gnome_print_encode_ascii85_wcs (gint size);
-int gnome_print_decode_ascii85_wcs (gint size);
-int gnome_print_encode_deflate_wcs (gint size);
-
-
-
-/* temp, just for comparing speed */
-int gnome_print_encode_ascii85_ (const guchar *in, guchar *out, gint in_size);
-
-/* gnome-print-encode virtual stopwatch */
-#if 0 /* disabled by chema 20-oct-2000 */
-void gnome_print_encode_timer_start (void);
-void gnome_print_encode_timer_end (void);
-#endif
+/* Empty. */
 
 END_GNOME_DECLS
 

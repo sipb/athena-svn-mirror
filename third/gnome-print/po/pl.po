@@ -1,334 +1,438 @@
+# Copyright (C) 2001 Free Software Foundation, Inc.
+# -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+# Aktualn± wersjê tego pliku mo¿esz odnale¼æ w repozytorium cvs.gnome.pl
+# (:pserver:anonymous@cvs.gnome.pl:/home/cvs, puste has³o)
+# Je¶li masz jakiekolwiek uwagi odnosz±ce siê do t³umaczenia lub chcesz
+# pomóc w jego rozwijaniu i pielêgnowaniu, napisz do nas na adres:
+# translators@gnome.pl
+# -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-print\n"
-"POT-Creation-Date: 2000-10-10 16:08+0200\n"
-"PO-Revision-Date: 2000-10-10 16:08+0200\n"
+"POT-Creation-Date: 2001-10-11 20:16-0600\n"
+"PO-Revision-Date: 2001-08-18 20:21+0200\n"
 "Last-Translator: GNOME PL Team <translators@gnome.pl>\n"
 "Language-Team: Polish <pl@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=iso-8859-2\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: gnome-font-install.c:1
+#: installer/gnome-font-install.c:119
 msgid "Print out debugging information"
 msgstr "Wypisywanie informacji o przebiegu programu"
 
-#: gnome-font-install.c:1 gnome-font-install.c:1 gnome-font-install.c:1
-msgid "Does nothing yet."
-msgstr "Nie powoduje (jeszcze) ¿adnych dzia³añ."
+#: installer/gnome-font-install.c:121
+#, fuzzy
+msgid "Search directories recursively for font files"
+msgstr "¦cie¿ka wykorzystywana przy wyszukiwaniu plików .font."
 
-#: gnome-font-install.c:1
-msgid "Use this path to write the fontmap file."
-msgstr "¦cie¿ka wykorzystywana do zapisu pliku fontmap."
+#: installer/gnome-font-install.c:123
+msgid "Start from zero fontmap, instead of parsing old one"
+msgstr ""
 
-#: gnome-font-install.c:1 gnome-font-install.c:1 gnome-font-install.c:1
-#: gnome-font-install.c:1 gnome-font-install.c:1
+#: installer/gnome-font-install.c:125
+msgid "Create $HOME/.gnome/fonts/gnome-print.fontmap"
+msgstr ""
+
+#: installer/gnome-font-install.c:127
+msgid "Create $SYSCONFDIR/gnome/fonts/gnome-print.fontmap"
+msgstr ""
+
+#: installer/gnome-font-install.c:129
+msgid "Create $DATADIR/gnome/fonts/gnome-print.fontmap"
+msgstr ""
+
+#: installer/gnome-font-install.c:131
+msgid "Write output fontmap to specified file (- for stdout)"
+msgstr ""
+
+#: installer/gnome-font-install.c:134
+msgid "File describing known aliases"
+msgstr ""
+
+#: installer/gnome-font-install.c:134
 msgid "PATH"
 msgstr "¦CIE¯KA"
 
-#: gnome-font-install.c:1
-msgid "Use this path to search for relative afm files."
-msgstr "¦cie¿ka wykorzystywana do wyszukiwania plików afm."
-
-#: gnome-font-install.c:1
-msgid "Use this path to search for relative pfb files."
-msgstr "¦cie¿ka wykorzystywana do wyszukiwania plików pfb."
-
-#: gnome-font-install.c:1
-msgid "Use this to set up a key/value pair for afm files."
-msgstr "Wykorzystywane do ustawienia pary klucz/warto¶æ dla plików afm."
-
-#: gnome-font-install.c:1
-msgid "Use this to set up a key/value pair for pfb files."
-msgstr "Wykorzystywane do ustawienia pary klucz/warto¶æ dla plików pfb."
-
 #. Family frame
-#: libgnomeprint/gnome-font-dialog.c:1
+#: libgnomeprint/gnome-font-dialog.c:142
 msgid "Font family"
 msgstr "Rodzina czcionek"
 
 #. Style frame
-#: libgnomeprint/gnome-font-dialog.c:1
+#: libgnomeprint/gnome-font-dialog.c:175
 msgid "Style"
 msgstr "Styl"
 
-#: libgnomeprint/gnome-font-dialog.c:1
+#: libgnomeprint/gnome-font-dialog.c:237
 msgid "Font size:"
 msgstr "Rozmiar czcionki:"
 
-#: libgnomeprint/gnome-font-dialog.c:1
+#: libgnomeprint/gnome-font-dialog.c:758
 msgid "Font Selection"
 msgstr "Wybór czcionki"
 
-#. We have latin encoding
-#: libgnomeprint/gnome-font-face.c:1
+#: libgnomeprint/gnome-font-face.c:605
 msgid "The quick brown fox jumps over the lazy dog."
 msgstr ""
 "Chrz±szcz brzmi w trzcinie w Szczebrzeszynie, a Szczebrzeszyn z tego s³ynie."
 
-#: libgnomeprint/gnome-font-face.c:1
+#. Encode empty font
+#: libgnomeprint/gnome-font-face.c:808
 #, c-format
-msgid "Couldn't open font file %s\n"
-msgstr "Nie mo¿na otworzyæ pliku z czcionk± %s\n"
+msgid "Couldn't generate pfa for face %s\n"
+msgstr "Nie mo¿na wygenerowaæ pfa dla czcionki %s\n"
 
-#: libgnomeprint/gnome-font-face.c:1
+#: libgnomeprint/gnome-font-face.c:925
 #, c-format
 msgid "status loading %s = %d\n"
 msgstr "status odczytu %s: %d\n"
 
-#: libgnomeprint/gnome-print-copies.c:1
+#: libgnomeprint/gnome-print-copies.c:238
 msgid "Copies"
 msgstr "Kopie"
 
-#: libgnomeprint/gnome-print-copies.c:1
+#: libgnomeprint/gnome-print-copies.c:249
 msgid "N_umber of copies:"
 msgstr "_Liczba kopii:"
 
-#: libgnomeprint/gnome-print-copies.c:1
+#: libgnomeprint/gnome-print-copies.c:270
 msgid "_Collate"
 msgstr "Uporz±d_kowane"
 
-#: libgnomeprint/gnome-print-dialog.c:1
+#: libgnomeprint/gnome-print-dialog.c:180
 msgid "Print Range"
 msgstr "Zakres drukowania"
 
-#: libgnomeprint/gnome-print-dialog.c:1
-#: libgnomeprint/gnome-print-master-preview.c:1
+#: libgnomeprint/gnome-print-dialog.c:201
+#: libgnomeprint/gnome-print-master-preview.c:696
 msgid "Print"
-msgstr "Drukuj"
+msgstr "Wydrukuj"
 
-#: libgnomeprint/gnome-print-dialog.c:1
+#: libgnomeprint/gnome-print-dialog.c:202
 msgid "Preview"
 msgstr "Podgl±d"
 
-#: libgnomeprint/gnome-print-dialog.c:1
+#: libgnomeprint/gnome-print-dialog.c:353
 msgid "_All"
 msgstr "_Wszystkie"
 
-#: libgnomeprint/gnome-print-dialog.c:1
-#: libgnomeprint/gnome-print-dialog.c:1
+#: libgnomeprint/gnome-print-dialog.c:383
+#: libgnomeprint/gnome-print-dialog.c:397
 msgid "_Selection"
 msgstr "_Zaznaczenie"
 
-#: libgnomeprint/gnome-print-dialog.c:1
+#: libgnomeprint/gnome-print-dialog.c:458
 msgid "from:"
 msgstr "od:"
 
-#: libgnomeprint/gnome-print-dialog.c:1
+#: libgnomeprint/gnome-print-dialog.c:472
 msgid "to:"
 msgstr "do"
 
-#: libgnomeprint/gnome-print-dialog.c:1
+#: libgnomeprint/gnome-print-dialog.c:518
 msgid "f_rom:"
 msgstr "_od:"
 
-#: libgnomeprint/gnome-print-dialog.c:1
+#: libgnomeprint/gnome-print-dialog.c:535
 msgid "_to:"
 msgstr "_do"
 
-#: libgnomeprint/gnome-print-master-preview.c:1
+#: libgnomeprint/gnome-print-file.c:72
+#, c-format
+msgid ""
+"'%s' is about to be overwritten.\n"
+"\n"
+"Do you want to continue?"
+msgstr ""
+"Ma zostaæ nadpisany plik \"%s\".\n"
+"\n"
+"Czy chcesz kontynuowaæ?"
+
+#: libgnomeprint/gnome-print-file.c:169
+msgid "Select output file"
+msgstr "Wybór pliku wyj¶ciowego"
+
+#: libgnomeprint/gnome-print-master-preview.c:641
 msgid "Page: "
 msgstr "Strona: "
 
-#: libgnomeprint/gnome-print-master-preview.c:1
+#: libgnomeprint/gnome-print-master-preview.c:668
 msgid "_First page"
 msgstr "_Pierwsza strona"
 
-#: libgnomeprint/gnome-print-master-preview.c:1
-#: libgnomeprint/gnome-print-master-preview.c:1
+#: libgnomeprint/gnome-print-master-preview.c:668
+#: libgnomeprint/gnome-print-master-preview.c:699
 msgid "Shows the first page"
 msgstr "Wy¶wietla pierwsz± stronê"
 
-#: libgnomeprint/gnome-print-master-preview.c:1
+#: libgnomeprint/gnome-print-master-preview.c:671
 msgid "_Previous page"
 msgstr "P_oprzednia strona"
 
-#: libgnomeprint/gnome-print-master-preview.c:1
-#: libgnomeprint/gnome-print-master-preview.c:1
+#: libgnomeprint/gnome-print-master-preview.c:671
+#: libgnomeprint/gnome-print-master-preview.c:702
 msgid "Shows the previous page"
 msgstr "Wy¶wietla poprzedni± stronê"
 
-#: libgnomeprint/gnome-print-master-preview.c:1
+#: libgnomeprint/gnome-print-master-preview.c:674
 msgid "_Next page"
 msgstr "_Nastêpna strona"
 
-#: libgnomeprint/gnome-print-master-preview.c:1
-#: libgnomeprint/gnome-print-master-preview.c:1
+#: libgnomeprint/gnome-print-master-preview.c:674
+#: libgnomeprint/gnome-print-master-preview.c:705
 msgid "Shows the next page"
 msgstr "Wy¶wietla nastêpn± stronê"
 
-#: libgnomeprint/gnome-print-master-preview.c:1
+#: libgnomeprint/gnome-print-master-preview.c:677
 msgid "_Last page"
 msgstr "O_statnia strona"
 
-#: libgnomeprint/gnome-print-master-preview.c:1
-#: libgnomeprint/gnome-print-master-preview.c:1
+#: libgnomeprint/gnome-print-master-preview.c:677
+#: libgnomeprint/gnome-print-master-preview.c:708
 msgid "Shows the last page"
 msgstr "Wy¶wietla ostatni± stronê"
 
-#: libgnomeprint/gnome-print-master-preview.c:1
+#: libgnomeprint/gnome-print-master-preview.c:682
 msgid "Zoom _in"
 msgstr "Po_wiêksz"
 
-#: libgnomeprint/gnome-print-master-preview.c:1
+#: libgnomeprint/gnome-print-master-preview.c:682
 msgid "Zooms in"
 msgstr "Pomniejsza"
 
-#: libgnomeprint/gnome-print-master-preview.c:1
+#: libgnomeprint/gnome-print-master-preview.c:683
 msgid "Zoom _out"
 msgstr "Po_mniejsz"
 
-#: libgnomeprint/gnome-print-master-preview.c:1
+#: libgnomeprint/gnome-print-master-preview.c:683
 msgid "Zooms out"
 msgstr "Pomniejsza"
 
-#: libgnomeprint/gnome-print-master-preview.c:1
+#: libgnomeprint/gnome-print-master-preview.c:690
 msgid "_View"
 msgstr "_Widok"
 
-#: libgnomeprint/gnome-print-master-preview.c:1
+#: libgnomeprint/gnome-print-master-preview.c:696
 msgid "Prints the current file"
 msgstr "Drukuje bie¿±cy plik"
 
-#: libgnomeprint/gnome-print-master-preview.c:1
+#: libgnomeprint/gnome-print-master-preview.c:699
 msgid "First"
 msgstr "Pierwsza"
 
-#: libgnomeprint/gnome-print-master-preview.c:1
+#: libgnomeprint/gnome-print-master-preview.c:702
 msgid "Back"
 msgstr "Wstecz"
 
-#: libgnomeprint/gnome-print-master-preview.c:1
+#: libgnomeprint/gnome-print-master-preview.c:705
 msgid "Next"
 msgstr "Naprzód"
 
-#: libgnomeprint/gnome-print-master-preview.c:1
+#: libgnomeprint/gnome-print-master-preview.c:708
 msgid "Last"
 msgstr "Ostatnia"
 
-#: libgnomeprint/gnome-print-master-preview.c:1
+#: libgnomeprint/gnome-print-master-preview.c:711
 msgid "Zoom in"
 msgstr "Powiêksz"
 
-#: libgnomeprint/gnome-print-master-preview.c:1
+#: libgnomeprint/gnome-print-master-preview.c:711
 msgid "Zooms the page in"
 msgstr "Powiêksza stronê"
 
-#: libgnomeprint/gnome-print-master-preview.c:1
+#: libgnomeprint/gnome-print-master-preview.c:712
 msgid "Zoom out"
 msgstr "Pomniejsz"
 
-#: libgnomeprint/gnome-print-master-preview.c:1
+#: libgnomeprint/gnome-print-master-preview.c:712
 msgid "Zooms the page out"
 msgstr "Pomniejsza stronê"
 
-#: libgnomeprint/gnome-print-master-preview.c:1
+#: libgnomeprint/gnome-print-master-preview.c:713
 msgid "Fit"
 msgstr "Dopasuj"
 
-#: libgnomeprint/gnome-print-master-preview.c:1
+#: libgnomeprint/gnome-print-master-preview.c:713
 msgid "Zooms to fit the whole page"
 msgstr "Dopasowuje widok do ca³ej strony"
 
-#: libgnomeprint/gnome-print-master-preview.c:1
+#: libgnomeprint/gnome-print-master-preview.c:714
 msgid "Fit Wide"
 msgstr "Dopasuj X"
 
-#: libgnomeprint/gnome-print-master-preview.c:1
+#: libgnomeprint/gnome-print-master-preview.c:714
 msgid "Zooms to fit the width of the page"
 msgstr "Dopasowuje widok do szeroko¶ci strony"
 
-#: libgnomeprint/gnome-print-master-preview.c:1
+#: libgnomeprint/gnome-print-master-preview.c:715
 msgid "Fit Tall"
 msgstr "Dopasuj Y"
 
-#: libgnomeprint/gnome-print-master-preview.c:1
+#: libgnomeprint/gnome-print-master-preview.c:715
 msgid "Zooms to fit the height of the page"
 msgstr "Dopasowuje widok do wysoko¶ci strony"
 
-#: libgnomeprint/gnome-printer-dialog.c:1
+#: libgnomeprint/gnome-printer-dialog.c:293
+msgid ""
+"gnome-print-admin was not found.\n"
+"\n"
+"Please install gnome-print-admin to configure this printer"
+msgstr ""
+"Nie odnaleziono programu gnome-print-admin.\n"
+"Aby skonfigurowaæ tê drukarkê, zainstaluj gnome-print-admin."
+
+#: libgnomeprint/gnome-printer-dialog.c:375
+msgid "Print to file"
+msgstr "Wydruk do pliku"
+
+#: libgnomeprint/gnome-printer-dialog.c:392
+msgid "Properties"
+msgstr "W³a¶ciwo¶ci"
+
+#: libgnomeprint/gnome-printer-dialog.c:500
 msgid "Select printer"
 msgstr "Wybór drukarki"
 
 #.
 #. * Create the profile information display
 #.
-#: libgnomeprint/gnome-printer-dialog.c:1
+#: libgnomeprint/gnome-printer-dialog.c:508
 msgid "State:"
 msgstr "Stan:"
 
-#: libgnomeprint/gnome-printer-dialog.c:1
+#: libgnomeprint/gnome-printer-dialog.c:509
 msgid "Type:"
 msgstr "Typ:"
 
-#: libgnomeprint/gnome-printer-dialog.c:1
+#: libgnomeprint/gnome-printer-dialog.c:510
 msgid "Location:"
 msgstr "Po³o¿enie:"
 
-#: libgnomeprint/gnome-printer-dialog.c:1
+#: libgnomeprint/gnome-printer-dialog.c:511
 msgid "Comment:"
 msgstr "Komentarz:"
 
-#: libgnomeprint/gnome-printer-dialog.c:1
+#: libgnomeprint/gnome-printer-dialog.c:537
 msgid "_Name:"
 msgstr "_Nazwa"
 
-#: libgnomeprint/gnome-printer-dialog.c:1
+#: libgnomeprint/gnome-printer-dialog.c:553
 msgid "_Printer"
 msgstr "Dr_ukarka"
 
-#: libgnomeprint/gnome-printer-dialog.c:1
+#: libgnomeprint/gnome-printer-dialog.c:570
 msgid "_File"
 msgstr "_Plik"
 
-#: libgnomeprint/gnome-printer-dialog.c:1
+#: libgnomeprint/gnome-printer-dialog.c:907
 msgid "Select Printer"
 msgstr "Wybór drukarki"
 
-#: libgnomeprint/gnome-printer.c:1
+#: libgnomeprint/gnome-printer-profile.c:108 libgpa/gpa-generic-ps.c:170
+#: libgpa/gpa-generic-ps.c:200
+msgid "Generic Postscript"
+msgstr "Zwyk³y PostScript"
+
+#: libgnomeprint/gnome-printer.c:136 libgpa/gpa-printer.c:169
 msgid "Printer is active"
 msgstr "Drukarka jest aktywna"
 
-#: libgnomeprint/gnome-printer.c:1
+#: libgnomeprint/gnome-printer.c:139 libgpa/gpa-printer.c:172
 msgid "Printer is ready to print"
 msgstr "Drukarka jest gotowa do drukowania"
 
-#: libgnomeprint/gnome-printer.c:1
+#: libgnomeprint/gnome-printer.c:142 libgpa/gpa-printer.c:175
 msgid "Printer is off-line"
 msgstr "Drukarka jest w stanie bezczynno¶ci"
 
-#: libgnomeprint/gnome-printer.c:1
+#: libgnomeprint/gnome-printer.c:145 libgpa/gpa-printer.c:178
 msgid "Can not communicate with printer"
 msgstr "Nie mo¿na po³±czyæ siê z drukark±"
 
-#: libgnomeprint/gnome-printer.c:1
+#: libgnomeprint/gnome-printer.c:148 libgpa/gpa-printer.c:181
 msgid "Unknown status"
 msgstr "Nieznany stan"
 
-#: tests/testembed.c:1
+#: libgpa/gpa-generic-ps.c:64
+msgid "Generic Postscript (Hardcoded)"
+msgstr "Zwyk³y PostScript (wbudowany)"
+
+#: libgpa/gpa-generic-ps.c:65
+msgid "GENERIC-POSTSCRIPT-HARDCODED"
+msgstr "GENERIC-POSTSCRIPT-HARDCODED"
+
+#: libgpa/gpa-generic-ps.c:66
+msgid "0"
+msgstr "0"
+
+#: libgpa/gpa-generic-ps.c:67
+msgid "GNOME"
+msgstr "GNOME"
+
+#: libgpa/gpa-generic-ps.c:68
+msgid "0.0.0"
+msgstr "0.0.0"
+
+#: libgpa/gpa-generic-ps.c:69
+msgid "Unknown"
+msgstr "Nieznany"
+
+#: libgpa/gpa-generic-ps.c:70
+msgid "GnomePrint"
+msgstr "GnomePrint"
+
+#: libgpa/gpa-generic-ps.c:86
+msgid "gnome-print-ps2"
+msgstr "gnome-print-ps2"
+
+#: libgpa/gpa-ppd-options.c:431
+msgid "Options"
+msgstr "Opcje"
+
+#: libgpa/gpa-settings.c:222
+msgid "Default Settings"
+msgstr "Ustawienia domy¶lne"
+
+#: tests/testembed.c:18
 msgid "extracts the first font from output.pdf and places it in font.dump."
 msgstr "wy³uskuje pierwsz± czcionê z output.pdf i umieszcza j± w font.dump."
 
-#: tests/testembed.c:1
+#: tests/testembed.c:21
 msgid "extracts the font header from font.dump"
 msgstr "wy³uskuje nag³ówek czcionki z font.dump"
 
-#: tests/testembed.c:1
+#: tests/testembed.c:23
 msgid "extracts the font body "
 msgstr "wy³uskuje dane czcionki"
 
-#: tests/testembed.c:1
+#: tests/testembed.c:25
 msgid "decrypts the font body "
 msgstr "odkodowuje dane czcionki"
 
-#: tests/testprint.c:1 tests/testprint.c:1
+#: tests/testprint.c:118 tests/testprint.c:126
 msgid "Gnome-print test page, rotated"
 msgstr "Strona testowa Gnome-print, obrócona"
 
-#: tests/testprint.c:1
+#: tests/testprint.c:133
 msgid "Gnome-print test page, slanted"
 msgstr "Strona testowa Gnome-print, pochylona"
 
-#: tests/testprint.c:1
+#: tests/testprint.c:141
 msgid "Gnome-print test page, slanted. Small"
 msgstr "Strona testowa Gnome-print, pochylona. Ma³a"
+
+#~ msgid "Output file name"
+#~ msgstr "Nazwa pliku wyj¶ciowego"
+
+#~ msgid "Base for relative afm file names."
+#~ msgstr "Podstawa dla wzglêdnych nazw ¶cie¿ek plików afm."
+
+#~ msgid "Base for relative pfb file names."
+#~ msgstr "Podstawa dla wzglêdnych nazw ¶cie¿ek plików pbf."
+
+#~ msgid "Use this to set up a key/value pair for font files."
+#~ msgstr "Ustawia pary klucz/warto¶æ dla plików z czcionkami."
+
+#~ msgid "KEY,PATH"
+#~ msgstr "KLUCZ,¦CIE¯KA"

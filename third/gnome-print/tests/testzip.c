@@ -4,6 +4,8 @@
 #include <gnome.h>
 
 #include <libgnomeprint/gnome-print-encode.h>
+#include <libgnomeprint/gnome-print-encode-private.h>
+
 
 gint compress_rlc (void);
 

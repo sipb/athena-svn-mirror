@@ -1,21 +1,50 @@
+font_sources = \
+	gt1-parset1.c gt1-parset1.h \
+	gt1-dict.c gt1-dict.h \
+	gt1-namecontext.c gt1-namecontext.h \
+	gt1-region.c gt1-region.h \
+	gt1-misc.h \
+	gt1-value.h \
+	gp-ps-unicode.h gp-ps-unicode.c	\
+	gp-character-block.c gp-character-block.h \
+	gp-fontmap.c gp-fontmap.h \
+	gnome-font.c \
+	gnome-font-private.h \
+	gnome-font-face.c \
+	gnome-rfont.c \
+	gnome-font-family.c gnome-font-family.h
+font_headers = \
+	gnome-font.h \
+	gnome-font-face.h \
+	gnome-rfont.h
 
 lib_LTLIBRARIES = libgnomeprint.la
 
-libgnomeprint_la_LDFLAGS = -version-info $(GNOMEPRINT_CURRENT):$(GNOMEPRINT_REVISION):$(GNOMEPRINT_AGE)
+libgnomeprint_la_LDFLAGS = \
+	-version-info $(GNOMEPRINT_CURRENT):$(GNOMEPRINT_REVISION):$(GNOMEPRINT_AGE)
 
-CPPFLAGS = \
+libgnomeprint_la_LIBADD = \
+	$(GNOMEPRINT_LIBS)   
+
+
+CPPFLAGS = @CPPFLAGS@ \
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" 	\
 	-DBINDIR=\""$(bindir)"\"	\
-	-DDATADIR=\""$(datadir)"\" 
+	-DDATADIR=\""$(datadir)"\" \
+	-DFONTMAPDIR_STATIC=\""$(datadir)/gnome/fonts"\" \
+	-DFONTMAPDIR_DYNAMIC=\""$(sysconfdir)/gnome/fonts"\"
 
 INCLUDES = \
 	-I$(top_srcdir)		\
-	$(GTK_CFLAGS)			\
+	$(GTK_CFLAGS)		\
 	-I$(top_srcdir)/intl 	\
 	-I$(top_builddir)/intl	\
-	$(GNOME_INCLUDEDIR)		\
-	@PRINT_INCLUDEDIR@		\
-	-DPROFILEDIR=\""$(datadir)/gnome-print/$(VERSION)/profiles/"\"
+	$(GNOME_INCLUDEDIR)	\
+	@PRINT_INCLUDEDIR@	\
+	$(GNOME_FONT_CFLAGS)	\
+	-DPROFILEDIR=\""$(datadir)/gnome-print/$(VERSION)/profiles/"\"	\
+	-DGNOMEPRINT_LIBDIR=\""$(libdir)"\"	
+
 
 temp_sources =					\
 	gnome-canvas-hacktext.c		\
@@ -25,16 +54,6 @@ temp_sources =					\
 	gnome-canvas-bpath-private.h	\
 	gnome-canvas-clipgroup.c		\
 	gnome-canvas-clipgroup.h		\
-	gt1-parset1.c				\
-	gt1-parset1.h				\
-	gt1-dict.c				\
-	gt1-dict.h				\
-	gt1-misc.h				\
-	gt1-namecontext.c			\
-	gt1-namecontext.h			\
-	gt1-region.c				\
-	gt1-region.h				\
-	gt1-value.h				\
 	art_rgb_affine_private.h		\
 	art_rgba_rgba_affine.c			\
 	art_rgba_rgba_affine.h			\
@@ -42,12 +61,8 @@ temp_sources =					\
 	art_rgba_svp.h				\
 	text-utils.c               		\
 	text-utils.h   	            		\
-	gp-ps-unicode.h				\
-	gp-ps-unicode.c				\
-	gp-unicode.c				\
-	gp-unicode.h				\
-	gp-character-block.c			\
-	gp-character-block.h
+	gp-unicode.c gp-unicode.h \
+	$(font_sources)
 
 libgnomeprint_la_SOURCES = 		\
 	gnome-print-master.c		\
@@ -58,6 +73,11 @@ libgnomeprint_la_SOURCES = 		\
 	gnome-printer.c 			\
 	gnome-printer-private.h		\
 	gnome-print.c 				\
+	gnome-print-fax.c			\
+	gnome-print-fax.h			\
+	gnome-print-fax-g3.h		\
+	gnome-print-file.c			\
+	gnome-print-file.h			\
 	gnome-print-private.h		\
 	gnome-print-meta.c			\
 	gnome-print-multipage.c		\
@@ -84,16 +104,10 @@ libgnomeprint_la_SOURCES = 		\
 	gnome-print-frgba.c			\
 	gnome-print-rgbp.c		  	\
 	gnome-print-rgbp.h		  	\
-	gnome-font.c 			  	\
-	gnome-font-private.h	  	\
-	gnome-font-face.c		  	\
-	gnome-rfont.c			  	\
-	gnome-font-family.c		  	\
-	gnome-font-family.h		  	\
-	gnome-font-dialog.c        	\
 	gnome-printer-dialog.c     	\
 	gnome-printer-profile.c    	\
 	gnome-printer-profile.h    	\
+	gnome-font-dialog.c        	\
 	gnome-text.c 			  	\
 	gnome-print-i18n.h		  	\
 	parseAFM.c 			  	\
@@ -103,13 +117,14 @@ libgnomeprint_la_SOURCES = 		\
 	gp-gc.c				  	\
 	gp-gc.h				  	\
 	gnome-glyphlist.c		  	\
-	gnome-glyphlist-private.h  	\
+	gnome-glyphlist-private.h  		\
 	gnome-pgl.c			  	\
 	gnome-pgl-private.h		  	\
-	gnome-print-encode.c       	\
+	gnome-print-encode.c       		\
+	gnome-print-encode-private.h		\
 	$(temp_sources)
 
-libgnomeprintincdir = $(includedir)/libgnomeprint
+libgnomeprintincdir = $(includedir)/gnome-1.0/libgnomeprint
 libgnomeprintinc_HEADERS = 		\
 	gnome-print-master.h		\
 	gnome-print-master-preview.h	\
@@ -117,9 +132,6 @@ libgnomeprintinc_HEADERS = 		\
 	gnome-print-copies.h		\
 	gnome-print.h 				\
 	gnome-printer.h 			\
-	gnome-font.h 				\
-	gnome-font-face.h			\
-	gnome-rfont.h				\
 	gnome-printer-dialog.h   	\
 	gnome-print-meta.h			\
 	gnome-print-multipage.h  	\
@@ -132,6 +144,7 @@ libgnomeprintinc_HEADERS = 		\
 	gnome-print-encode.h     	\
 	gnome-text.h				\
 	gnome-glyphlist.h			\
-	gnome-pgl.h
+	gnome-pgl.h			\
+	$(font_headers)
 
 

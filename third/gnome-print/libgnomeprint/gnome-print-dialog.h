@@ -26,6 +26,7 @@
 #include <gtk/gtk.h>
 #include <libgnome/gnome-defs.h>
 #include <libgnomeui/gnome-dialog.h>
+#include <sys/types.h>
 
 BEGIN_GNOME_DECLS
 
@@ -37,7 +38,7 @@ typedef struct _GnomePrintDialog      GnomePrintDialog;
 typedef struct _GnomePrintDialogClass GnomePrintDialogClass;
 
 /* used to track what type of range selector has been setup */
-typedef enum _GnomePrintRangeType {
+typedef enum {
 	GNOME_PRINT_RANGETYPE_NONE,
 	GNOME_PRINT_RANGETYPE_CUSTOM,
 	GNOME_PRINT_RANGETYPE_PAGES,

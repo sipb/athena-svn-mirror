@@ -1,390 +1,436 @@
 # -------------------------------------------------------
 # Copyright (C) 2000 Free Software Foundation, Inc.
 # Fatih Demir <kabalak@gmx.net>, 2000.
-#
+# 
 msgid ""
 msgstr ""
-"Project-Id-Version: gnome-print 0.21pre\n"
-"POT-Creation-Date: 2000-07-24 12:38+0200\n"
-"PO-Revision-Date: 2000-07-24 12:38+0200\n"
-"Last-Translator: Fatih Demir <kabalak@gmx.net>\n"
+"Project-Id-Version: gnome-print 0.26\n"
+"POT-Creation-Date: 2001-10-11 20:16-0600\n"
+"PO-Revision-Date: 2001-02-25 20:27+0100\n"
+"Last-Translator: Görkem Çetin <gorkem@gelecek.com.trt>\n"
 "Language-Team: Turkish <tr@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=iso-8859-9\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: gnome-font-install.c:574
+#: installer/gnome-font-install.c:119
 msgid "Print out debugging information"
 msgstr "Geliþmiþ bilgileri göster"
 
-#: gnome-font-install.c:576 gnome-font-install.c:578 gnome-font-install.c:580
-msgid "Does nothing yet."
-msgstr "Daha hiçbir þey yapmaz ."
-
-#: gnome-font-install.c:585
-msgid "Use this path to write the fontmap file."
-msgstr "Yazý tipi haritasýný yazmak için bu diznilemleri kullan ."
-
-#: gnome-font-install.c:585 gnome-font-install.c:587 gnome-font-install.c:589
-#: gnome-font-install.c:592 gnome-font-install.c:594
-msgid "PATH"
-msgstr "PATH"
-
-#: gnome-font-install.c:587
-msgid "Use this path to search for relative afm files."
-msgstr "Afm dosyalarý için bu dizinlemelere baþvur ."
-
-#: gnome-font-install.c:589
-msgid "Use this path to search for relative pfb files."
-msgstr "Pfb dosyalarý için bu dizinlemelere baþvur ."
-
-#: gnome-font-install.c:592
-msgid "Use this to set up a key/value pair for afm files."
-msgstr "Afm dosyalarý için bir anahtar/deðer badýný kurmak için bunu kullan ."
-
-#: gnome-font-install.c:594
-msgid "Use this to set up a key/value pair for pfb files."
-msgstr "Pfb dosyalarý için bir anahtar/deðer badýný kurmak için bunu kullan ."
-
-#: libgnomeprint/gnome-font-dialog.c:53
-msgid "Extra Light"
-msgstr ""
-
-#: libgnomeprint/gnome-font-dialog.c:54
-msgid "Thin"
-msgstr ""
-
-#: libgnomeprint/gnome-font-dialog.c:55
-msgid "Light"
-msgstr ""
-
-#: libgnomeprint/gnome-font-dialog.c:56
-msgid "Regular"
-msgstr ""
-
-#: libgnomeprint/gnome-font-dialog.c:57
-msgid "Medium"
-msgstr ""
-
-#: libgnomeprint/gnome-font-dialog.c:58
-msgid "Semibold"
-msgstr ""
-
-#: libgnomeprint/gnome-font-dialog.c:59
-msgid "Bold"
-msgstr ""
-
-#: libgnomeprint/gnome-font-dialog.c:60
-msgid "Heavy"
-msgstr ""
-
-#: libgnomeprint/gnome-font-dialog.c:61
-msgid "Extra Bold"
-msgstr ""
-
-#: libgnomeprint/gnome-font-dialog.c:62
+#: installer/gnome-font-install.c:121
 #, fuzzy
-msgid "Black"
-msgstr "Geri"
+msgid "Search directories recursively for font files"
+msgstr ".font dosyasý için bu yolda ara."
 
-#: libgnomeprint/gnome-font-dialog.c:63
-msgid "Extra Black"
+#: installer/gnome-font-install.c:123
+msgid "Start from zero fontmap, instead of parsing old one"
 msgstr ""
 
-#: libgnomeprint/gnome-font-dialog.c:194
-msgid "_Italic"
-msgstr "_Eðik"
-
-#: libgnomeprint/gnome-font-dialog.c:308
-msgid "This is a 2-byte font and may not be displayed correctly."
+#: installer/gnome-font-install.c:125
+msgid "Create $HOME/.gnome/fonts/gnome-print.fontmap"
 msgstr ""
-"Bur bir 2 bayt yazý tipidir ve bundan dolayý doðruca gösterilmeyebilir ."
 
-#: libgnomeprint/gnome-font-dialog.c:481
-msgid "Select font"
-msgstr "Yazý tipini seç"
+#: installer/gnome-font-install.c:127
+msgid "Create $SYSCONFDIR/gnome/fonts/gnome-print.fontmap"
+msgstr ""
 
-#: libgnomeprint/gnome-font-dialog.c:503
+#: installer/gnome-font-install.c:129
+msgid "Create $DATADIR/gnome/fonts/gnome-print.fontmap"
+msgstr ""
+
+#: installer/gnome-font-install.c:131
+msgid "Write output fontmap to specified file (- for stdout)"
+msgstr ""
+
+#: installer/gnome-font-install.c:134
+msgid "File describing known aliases"
+msgstr ""
+
+#: installer/gnome-font-install.c:134
+msgid "PATH"
+msgstr "YOL"
+
+#. Family frame
+#: libgnomeprint/gnome-font-dialog.c:142
+msgid "Font family"
+msgstr "Yazýtipi ailesi"
+
+#. Style frame
+#: libgnomeprint/gnome-font-dialog.c:175
+msgid "Style"
+msgstr "Stil"
+
+#: libgnomeprint/gnome-font-dialog.c:237
+msgid "Font size:"
+msgstr "Yazýtipi büyüklüðü:"
+
+#: libgnomeprint/gnome-font-dialog.c:758
 msgid "Font Selection"
-msgstr "Yazý tipi seçimi"
+msgstr "Yazýtipi Seçimi"
 
-#: libgnomeprint/gnome-font-face.c:288
-msgid "The quick brown fox jumped over the lazy dog."
-msgstr ""
+#: libgnomeprint/gnome-font-face.c:605
+msgid "The quick brown fox jumps over the lazy dog."
+msgstr "Dað baþýný duman almýþ, gümüþ dere durmaz akar."
 
-#: libgnomeprint/gnome-font.c:433
-#, c-format
-msgid "scanning dir %s\n"
-msgstr "%s dizinini okuyorum \n"
+#. Encode empty font
+#: libgnomeprint/gnome-font-face.c:808
+#, fuzzy, c-format
+msgid "Couldn't generate pfa for face %s\n"
+msgstr "%s yazýtipi dosyasý açýlamadý\n"
 
-#: libgnomeprint/gnome-font.c:444
-#, c-format
-msgid "checking file %s\n"
-msgstr "%s dosyasýný kontrol ediyorum \n"
-
-#: libgnomeprint/gnome-font.c:446
-#, c-format
-msgid "%s/%s"
-msgstr "%s/%s"
-
-#: libgnomeprint/gnome-font.c:760
+#: libgnomeprint/gnome-font-face.c:925
 #, c-format
 msgid "status loading %s = %d\n"
 msgstr "yükleme durumu %s = %d\n"
 
-#: libgnomeprint/gnome-font.c:1004
-#, c-format
-msgid "gnome_font_new: font %s not found\n"
-msgstr "gnome_font_new : %s yazý tipi bulunamadý\n"
-
-#. Why print anything here?  An application that does fancy stuff
-#. with fonts surely knows how to deal with an error like this.
-#: libgnomeprint/gnome-font.c:1260
-#, c-format
-msgid "gnome_font_unsized_closest: font family %s not found\n"
-msgstr "gnome_font_unsized_closest : %s yazý tipi ailesi bulunamadý\n"
-
-#. Why print anything here?  An application that does fancy stuff
-#. with fonts surely knows how to deal with an error like this.
-#: libgnomeprint/gnome-font.c:1308
-#, c-format
-msgid "gnome_font_new_closest: font family %s not found\n"
-msgstr "gnome_font_new_closest : %s yazý tipi ailesi bulunamadý\n"
-
-#: libgnomeprint/gnome-font.c:1476
-#, c-format
-msgid "Couldn't open font file %s\n"
-msgstr "%s yazý tipi dosyasýný açamadým\n"
-
-#: libgnomeprint/gnome-print-copies.c:178
+#: libgnomeprint/gnome-print-copies.c:238
 msgid "Copies"
-msgstr "Kopyalar"
+msgstr "Kopya"
 
-#: libgnomeprint/gnome-print-copies.c:189
+#: libgnomeprint/gnome-print-copies.c:249
 msgid "N_umber of copies:"
-msgstr "Kopyalarýn _sayýsý :"
+msgstr "_Kopya sayýsý:"
 
-#: libgnomeprint/gnome-print-copies.c:209
+#: libgnomeprint/gnome-print-copies.c:270
 msgid "_Collate"
-msgstr "_Topla"
+msgstr ""
 
-#: libgnomeprint/gnome-print-dialog.c:151
+#: libgnomeprint/gnome-print-dialog.c:180
 msgid "Print Range"
-msgstr "Yazýcý sýnýrlarý"
+msgstr "Yazýcý Sýnýrlarý"
 
-#: libgnomeprint/gnome-print-dialog.c:173
-#: libgnomeprint/gnome-print-master-preview.c:651
+#: libgnomeprint/gnome-print-dialog.c:201
+#: libgnomeprint/gnome-print-master-preview.c:696
 msgid "Print"
 msgstr "Yazýcý"
 
-#: libgnomeprint/gnome-print-dialog.c:174
+#: libgnomeprint/gnome-print-dialog.c:202
 msgid "Preview"
-msgstr "Önizle"
+msgstr "Önizleme"
 
-#: libgnomeprint/gnome-print-dialog.c:321
+#: libgnomeprint/gnome-print-dialog.c:353
 msgid "_All"
 msgstr "_Hepsi"
 
-#: libgnomeprint/gnome-print-dialog.c:351
-#: libgnomeprint/gnome-print-dialog.c:365
+#: libgnomeprint/gnome-print-dialog.c:383
+#: libgnomeprint/gnome-print-dialog.c:397
 msgid "_Selection"
 msgstr "_Seçim"
 
-#: libgnomeprint/gnome-print-dialog.c:424
+#: libgnomeprint/gnome-print-dialog.c:458
 msgid "from:"
-msgstr "kaynak :"
+msgstr "kaynak:"
 
-#: libgnomeprint/gnome-print-dialog.c:438
+#: libgnomeprint/gnome-print-dialog.c:472
 msgid "to:"
-msgstr "hedef :"
+msgstr "hedef:"
 
-#: libgnomeprint/gnome-print-dialog.c:483
+#: libgnomeprint/gnome-print-dialog.c:518
 msgid "f_rom:"
-msgstr "_kaynak :"
+msgstr "_kaynak:"
 
-#: libgnomeprint/gnome-print-dialog.c:500
+#: libgnomeprint/gnome-print-dialog.c:535
 msgid "_to:"
-msgstr "_hedef :"
+msgstr "_hedef:"
 
-#: libgnomeprint/gnome-print-master-preview.c:596
+#: libgnomeprint/gnome-print-file.c:72
+#, c-format
+msgid ""
+"'%s' is about to be overwritten.\n"
+"\n"
+"Do you want to continue?"
+msgstr ""
+"%s üzerine yazýlacak.\n"
+"\n"
+"Devam etmek istiyor musunuz?"
+
+#: libgnomeprint/gnome-print-file.c:169
+msgid "Select output file"
+msgstr "Yazýcý dosyasýný seçin"
+
+#: libgnomeprint/gnome-print-master-preview.c:641
 msgid "Page: "
-msgstr "Sayfa :"
+msgstr "Sayfa:"
 
-#: libgnomeprint/gnome-print-master-preview.c:623
+#: libgnomeprint/gnome-print-master-preview.c:668
 msgid "_First page"
-msgstr "_Ilk sayfa"
+msgstr "Ý_lk sayfa"
 
-#: libgnomeprint/gnome-print-master-preview.c:623
-#: libgnomeprint/gnome-print-master-preview.c:654
+#: libgnomeprint/gnome-print-master-preview.c:668
+#: libgnomeprint/gnome-print-master-preview.c:699
 msgid "Shows the first page"
-msgstr "Ilk sayfayý gösterir"
+msgstr "Ýlk sayfayý gösterir"
 
-#: libgnomeprint/gnome-print-master-preview.c:626
+#: libgnomeprint/gnome-print-master-preview.c:671
 msgid "_Previous page"
 msgstr "Ö_nceki sayfa"
 
-#: libgnomeprint/gnome-print-master-preview.c:626
-#: libgnomeprint/gnome-print-master-preview.c:657
+#: libgnomeprint/gnome-print-master-preview.c:671
+#: libgnomeprint/gnome-print-master-preview.c:702
 msgid "Shows the previous page"
 msgstr "Önceki sayfayý gösterir"
 
-#: libgnomeprint/gnome-print-master-preview.c:629
+#: libgnomeprint/gnome-print-master-preview.c:674
 msgid "_Next page"
-msgstr "Önü_müzdeki sayfa"
+msgstr "_Sonraki sayfa"
 
-#: libgnomeprint/gnome-print-master-preview.c:629
-#: libgnomeprint/gnome-print-master-preview.c:660
+#: libgnomeprint/gnome-print-master-preview.c:674
+#: libgnomeprint/gnome-print-master-preview.c:705
 msgid "Shows the next page"
-msgstr "Önümüzdeki sayfayý gösterir"
+msgstr "Sonraki sayfayý gösterir"
 
-#: libgnomeprint/gnome-print-master-preview.c:632
+#: libgnomeprint/gnome-print-master-preview.c:677
 msgid "_Last page"
 msgstr "_Son sayfa"
 
-#: libgnomeprint/gnome-print-master-preview.c:632
-#: libgnomeprint/gnome-print-master-preview.c:663
+#: libgnomeprint/gnome-print-master-preview.c:677
+#: libgnomeprint/gnome-print-master-preview.c:708
 msgid "Shows the last page"
 msgstr "Son sayfayý gösterir"
 
-#: libgnomeprint/gnome-print-master-preview.c:637
+#: libgnomeprint/gnome-print-master-preview.c:682
 msgid "Zoom _in"
-msgstr "_Büyült"
+msgstr "_Yakýnlaþ"
 
-#: libgnomeprint/gnome-print-master-preview.c:637
+#: libgnomeprint/gnome-print-master-preview.c:682
 msgid "Zooms in"
-msgstr "Büyültür"
+msgstr "Yakýnlaþýr"
 
-#: libgnomeprint/gnome-print-master-preview.c:638
+#: libgnomeprint/gnome-print-master-preview.c:683
 msgid "Zoom _out"
-msgstr "_Ufalt"
+msgstr "_Uzaklaþ"
 
-#: libgnomeprint/gnome-print-master-preview.c:638
+#: libgnomeprint/gnome-print-master-preview.c:683
 msgid "Zooms out"
-msgstr "Ufaltýr"
+msgstr "Uzaklaþýr"
 
-#: libgnomeprint/gnome-print-master-preview.c:645
+#: libgnomeprint/gnome-print-master-preview.c:690
 msgid "_View"
-msgstr "_Bakýþ"
+msgstr "Ý_zle"
 
-#: libgnomeprint/gnome-print-master-preview.c:651
+#: libgnomeprint/gnome-print-master-preview.c:696
 msgid "Prints the current file"
-msgstr "Þu anki dosyayý yazdýrýr"
+msgstr "Mevcut dosyayý yazdýrýr"
 
-#: libgnomeprint/gnome-print-master-preview.c:654
+#: libgnomeprint/gnome-print-master-preview.c:699
 msgid "First"
-msgstr "Ilk"
+msgstr "Ýlk"
 
-#: libgnomeprint/gnome-print-master-preview.c:657
+#: libgnomeprint/gnome-print-master-preview.c:702
 msgid "Back"
 msgstr "Geri"
 
-#: libgnomeprint/gnome-print-master-preview.c:660
+#: libgnomeprint/gnome-print-master-preview.c:705
 msgid "Next"
-msgstr "Ileri"
+msgstr "Ýleri"
 
-#: libgnomeprint/gnome-print-master-preview.c:663
+#: libgnomeprint/gnome-print-master-preview.c:708
 msgid "Last"
 msgstr "Son"
 
-#: libgnomeprint/gnome-print-master-preview.c:666
+#: libgnomeprint/gnome-print-master-preview.c:711
 msgid "Zoom in"
-msgstr "Büyült"
+msgstr "Yakýnlaþ"
 
-#: libgnomeprint/gnome-print-master-preview.c:666
+#: libgnomeprint/gnome-print-master-preview.c:711
 msgid "Zooms the page in"
 msgstr "Sayfayý büyültülmüþ gösterir"
 
-#: libgnomeprint/gnome-print-master-preview.c:667
+#: libgnomeprint/gnome-print-master-preview.c:712
 msgid "Zoom out"
-msgstr "Ufalt"
+msgstr "Uzaklaþ"
 
-#: libgnomeprint/gnome-print-master-preview.c:667
+#: libgnomeprint/gnome-print-master-preview.c:712
 msgid "Zooms the page out"
-msgstr "Sayfayý ufaltýlmýþ gösterir"
+msgstr "Sayfayý küçültülmüþ gösterir"
 
-#: libgnomeprint/gnome-print-master-preview.c:668
+#: libgnomeprint/gnome-print-master-preview.c:713
 msgid "Fit"
 msgstr "Ayarla"
 
-#: libgnomeprint/gnome-print-master-preview.c:668
+#: libgnomeprint/gnome-print-master-preview.c:713
 msgid "Zooms to fit the whole page"
-msgstr "Tam sayfayý göstermek için ayarlar"
+msgstr "Tüm sayfaya sýðmak için odak ayarý yapar"
 
-#: libgnomeprint/gnome-print-master-preview.c:669
+#: libgnomeprint/gnome-print-master-preview.c:714
 msgid "Fit Wide"
-msgstr "Uzunluða göre ayarla"
+msgstr "Geniþliðe sýðdýr"
 
-#: libgnomeprint/gnome-print-master-preview.c:669
+#: libgnomeprint/gnome-print-master-preview.c:714
 msgid "Zooms to fit the width of the page"
-msgstr "Sayfanýn enini göstermek için ayarla"
+msgstr "Görüntüyü sayfanýn enine sýðdýrýr."
 
-#: libgnomeprint/gnome-print-master-preview.c:670
+#: libgnomeprint/gnome-print-master-preview.c:715
 msgid "Fit Tall"
-msgstr "Uzunluða ayarla"
+msgstr "Uzunluða sýðdýr"
 
-#: libgnomeprint/gnome-print-master-preview.c:670
+#: libgnomeprint/gnome-print-master-preview.c:715
 msgid "Zooms to fit the height of the page"
-msgstr "Sayfanýn yüsekliðini göstermek için ayarla"
+msgstr "Sayfanýn yüksekliðine sýðdýrýr."
 
-#: libgnomeprint/gnome-printer-dialog.c:148
+#: libgnomeprint/gnome-printer-dialog.c:293
+msgid ""
+"gnome-print-admin was not found.\n"
+"\n"
+"Please install gnome-print-admin to configure this printer"
+msgstr ""
+"gnome-print-admin bulunamadý.\n"
+"\n"
+"Lütfen bu yazýcýyý ayarlamak için gnome-print-admin'i kurun."
+
+#: libgnomeprint/gnome-printer-dialog.c:375
+msgid "Print to file"
+msgstr "Dosyaya yazdýr"
+
+#: libgnomeprint/gnome-printer-dialog.c:392
+msgid "Properties"
+msgstr "Özellikler"
+
+#: libgnomeprint/gnome-printer-dialog.c:500
 msgid "Select printer"
-msgstr "Yazýcýyý seç"
+msgstr "Yazýcý seç"
 
 #.
 #. * Create the profile information display
 #.
-#: libgnomeprint/gnome-printer-dialog.c:157
+#: libgnomeprint/gnome-printer-dialog.c:508
 msgid "State:"
 msgstr "Durum:"
 
-#: libgnomeprint/gnome-printer-dialog.c:158
+#: libgnomeprint/gnome-printer-dialog.c:509
 msgid "Type:"
 msgstr "Tür:"
 
-#: libgnomeprint/gnome-printer-dialog.c:159
+#: libgnomeprint/gnome-printer-dialog.c:510
 msgid "Location:"
-msgstr "Yer:"
+msgstr "Konum:"
 
-#: libgnomeprint/gnome-printer-dialog.c:160
+#: libgnomeprint/gnome-printer-dialog.c:511
 msgid "Comment:"
 msgstr "Not:"
 
-#: libgnomeprint/gnome-printer-dialog.c:194
+#: libgnomeprint/gnome-printer-dialog.c:537
 msgid "_Name:"
-msgstr "_Isim:"
+msgstr "Ý_sim:"
 
-#: libgnomeprint/gnome-printer-dialog.c:203
+#: libgnomeprint/gnome-printer-dialog.c:553
 msgid "_Printer"
 msgstr "_Yazýcý"
 
-#: libgnomeprint/gnome-printer-dialog.c:216
+#: libgnomeprint/gnome-printer-dialog.c:570
 msgid "_File"
 msgstr "_Dosya"
 
-#: libgnomeprint/gnome-printer-dialog.c:433
+#: libgnomeprint/gnome-printer-dialog.c:907
 msgid "Select Printer"
-msgstr "Yazýcýyý seç"
+msgstr "Yazýcý Seç"
 
-#: libgnomeprint/gnome-printer.c:120
+#: libgnomeprint/gnome-printer-profile.c:108 libgpa/gpa-generic-ps.c:170
+#: libgpa/gpa-generic-ps.c:200
+msgid "Generic Postscript"
+msgstr "Genel Postscript"
+
+#: libgnomeprint/gnome-printer.c:136 libgpa/gpa-printer.c:169
 msgid "Printer is active"
-msgstr "Yazýcý faal"
+msgstr "Yazýcý etkin"
 
-#: libgnomeprint/gnome-printer.c:123
+#: libgnomeprint/gnome-printer.c:139 libgpa/gpa-printer.c:172
 msgid "Printer is ready to print"
-msgstr "Yazýcý yazmaya hazýr"
+msgstr "Yazýcý hazýr"
 
-#: libgnomeprint/gnome-printer.c:126
+#: libgnomeprint/gnome-printer.c:142 libgpa/gpa-printer.c:175
 msgid "Printer is off-line"
-msgstr "Yazýcý þebekeye baðlý deðildir"
+msgstr "Yazýcý þebekeye baðlý deðil"
 
-#: libgnomeprint/gnome-printer.c:129
+#: libgnomeprint/gnome-printer.c:145 libgpa/gpa-printer.c:178
 msgid "Can not communicate with printer"
-msgstr "Yazýcýyla iletiþim kuramadým"
+msgstr "Yazýcýyla iletiþim kurulamadý"
 
-#: libgnomeprint/gnome-printer.c:132
+#: libgnomeprint/gnome-printer.c:148 libgpa/gpa-printer.c:181
 msgid "Unknown status"
-msgstr "Tanýnmayan durum"
+msgstr "Bilinmeyen durum"
 
-#: testprint.c:116 testprint.c:124
-msgid "Gnome-print test page"
-msgstr "Gnome yazýcý deneme sayfasý"
+#: libgpa/gpa-generic-ps.c:64
+msgid "Generic Postscript (Hardcoded)"
+msgstr "Genel Postscript (Düz)"
+
+#: libgpa/gpa-generic-ps.c:65
+msgid "GENERIC-POSTSCRIPT-HARDCODED"
+msgstr "GENEL-POSTSCRÝPT-HARDCODED"
+
+#: libgpa/gpa-generic-ps.c:66
+msgid "0"
+msgstr "0"
+
+#: libgpa/gpa-generic-ps.c:67
+msgid "GNOME"
+msgstr "GNOME"
+
+#: libgpa/gpa-generic-ps.c:68
+msgid "0.0.0"
+msgstr "0.0.0"
+
+#: libgpa/gpa-generic-ps.c:69
+msgid "Unknown"
+msgstr "Bilinmeyen"
+
+#: libgpa/gpa-generic-ps.c:70
+msgid "GnomePrint"
+msgstr "GnomePrint"
+
+#: libgpa/gpa-generic-ps.c:86
+msgid "gnome-print-ps2"
+msgstr "gnome-print-ps2"
+
+#: libgpa/gpa-ppd-options.c:431
+msgid "Options"
+msgstr "Seçenekler"
+
+#: libgpa/gpa-settings.c:222
+msgid "Default Settings"
+msgstr "Öntanýmlý Ayarlar"
+
+#: tests/testembed.c:18
+msgid "extracts the first font from output.pdf and places it in font.dump."
+msgstr "output.pdf'ten ilk yazýtipini alýr, font.dump'a yerleþtirir."
+
+#: tests/testembed.c:21
+msgid "extracts the font header from font.dump"
+msgstr "font.dump'tan yazýtipi baþlýðýný açar"
+
+#: tests/testembed.c:23
+msgid "extracts the font body "
+msgstr "yazýtipi gövdesini açar "
+
+#: tests/testembed.c:25
+msgid "decrypts the font body "
+msgstr "yazýtipi gövdesinin þifresini açar "
+
+#: tests/testprint.c:118 tests/testprint.c:126
+msgid "Gnome-print test page, rotated"
+msgstr "Gnome-print deneme sayfasý (dönmüþ)"
+
+#: tests/testprint.c:133
+msgid "Gnome-print test page, slanted"
+msgstr "Gnome-print deneme sayfasý (yatýk)"
+
+#: tests/testprint.c:141
+msgid "Gnome-print test page, slanted. Small"
+msgstr "Gnome-print deneme sayfasý (yatýk, küçük)"
+
+#~ msgid "Output file name"
+#~ msgstr "Yazýcý dosyasýnýn adý"
+
+#~ msgid "Base for relative afm file names."
+#~ msgstr "Afm dosya isimleri için taban."
+
+#~ msgid "Base for relative pfb file names."
+#~ msgstr "Pfb dosya isimleri için taban."
+
+#~ msgid "Use this to set up a key/value pair for font files."
+#~ msgstr ""
+#~ "Yazýtipi dosyalarý için bir anahtar/deðer tanýmý yapmak için kullanýn."
+
+#, fuzzy
+#~ msgid "KEY,PATH"
+#~ msgstr "YOL"

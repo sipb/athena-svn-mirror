@@ -21,8 +21,11 @@
  */
 
 #include <config.h>
-#include <gnome.h>
+
 #include <gdk/gdkkeysyms.h>
+#include <gtk/gtkobject.h>
+#include <libgnomeui/gnome-dialog.h>
+
 #include <libgnomeprint/gnome-printer.h>
 #include <libgnomeprint/gnome-print.h>
 #include <libgnomeprint/gnome-print-meta.h>
@@ -116,10 +119,11 @@ gnome_print_master_new (void)
 
 /**
  * gnome_print_master_new_from_dialog:
+ * @dialog: %A GnomePrintDialog
  * 
- * Create a new GnomePrintMaster.  Range values are initialised to
- * sensible defaults.  Other values are initialised from the given
- * dialog.
+ * Create a new GnomePrintMaster based on the values in the
+ * %GnomePrintDialog.  Range values are initialised to sensible
+ * defaults.  Other values are initialised from the given dialog.
  * 
  * Return value: A new GnomePrintMaster.
  **/
@@ -287,7 +291,7 @@ gnome_print_master_preview(GnomePrintMaster *gpm, char *title)
  * Return value: Returns -1 on error.
  **/
 int
-gnome_print_master_print(GnomePrintMaster *gpm)
+gnome_print_master_print (GnomePrintMaster *gpm)
 {
 	int repeat, loop, repeati, loopi, result;
 	int page, pagecount;
@@ -305,8 +309,8 @@ gnome_print_master_print(GnomePrintMaster *gpm)
 	} else
 		gtk_object_ref (GTK_OBJECT (printer));
 
-	output = gnome_print_context_new_with_paper_size (printer,
-											gnome_paper_name (gpm->paper));
+	output = gnome_print_context_new_with_paper_size (printer, gnome_paper_name (gpm->paper));
+
 	if (output == NULL) {
 		gtk_object_unref (GTK_OBJECT (printer));
 		return -1;

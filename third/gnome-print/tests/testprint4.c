@@ -1,4 +1,23 @@
+/*
+ * Test program for gnome-print glyphlists
+ *
+ * Usage: testprint4 [options] filename
+ *
+ * Try it with COPYING file, to see some nice things
+ *
+ * Authors:
+ *   Lauris Kaplinski <lauris@ximian.com>
+ *
+ * Copyright 2000-2001 Ximian, inc.
+ *
+ */
+
 #include <math.h>
+#include <string.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <unistd.h>
 #include <libart_lgpl/art_affine.h>
 #include <gnome.h>
 
@@ -12,14 +31,20 @@
 
 #include "libgnomeprint/gnome-font-dialog.h"
 
-#define P_WIDTH (21 * 72)
-#define P_HEIGHT (30 * 72)
+#define P_WIDTH (21 * 72.0 / 2.54)
+#define P_HEIGHT (30 * 72.0 / 2.54)
+#define MARGIN (2 * 72.0 / 2.54)
+#define LINESPACING 16.0
+#define INDENT 20.0
 
-static int preview_gdk;
-static int preview;
-static int rbuf;
-static int rbuf_alpha;
-static int rbuf_frgba;
+static int preview_gdk = FALSE;
+static int preview = FALSE;
+static int rbuf = FALSE;
+static int rbuf_alpha = FALSE;
+static int rbuf_frgba = FALSE;
+static int gtest = FALSE;
+static char *itest = NULL;
+static char *filename = NULL;
 
 static struct poptOption options [] = {
 	{ "preview", 0, POPT_ARG_NONE, &preview },
@@ -27,286 +52,227 @@ static struct poptOption options [] = {
 	{ "rbuf", 0, POPT_ARG_NONE, &rbuf },
 	{ "rbuf-alpha", 0, POPT_ARG_NONE, &rbuf_alpha },
 	{ "rbuf-frgba", 0, POPT_ARG_NONE, &rbuf_frgba },
+	{ "graphic", 0, POPT_ARG_NONE, &gtest },
+	{ "image", 'i', POPT_ARG_STRING, &itest },
 	{NULL}
 };
 
-static void do_image (GnomePrintContext * pc, gdouble size, gint alpha);
+#if 0
 static gint latin_to_utf8 (guchar * text, guchar * utext, gint ulength);
+#endif
+
+static gint print_paragraph (GnomePrintContext *pc, const guchar *b, const guchar *e, gdouble x0, gdouble *y0, gdouble x1, gdouble y1)
+{
+	GnomeFont *font;
+	GSList *words;
+	const guchar *p;
+	gchar *ub, *u;
+	gdouble fontheight;
+	gint space;
+	gdouble x, y;
+
+	font = gnome_font_new ("Helvetica", 12.0);
+	if (!font) return TRUE;
+	fontheight = gnome_font_get_ascender (font) + gnome_font_get_descender (font);
+	space = gnome_font_face_lookup_default (gnome_font_get_face (font), ' ');
+
+	/* Test for line space */
+	if (*y0 - y1 < fontheight) return TRUE;
+
+	/* Split text into words & convert to utf-8 */
+	ub = g_new (guchar, (e - b) * 2 + 1);
+	u = ub;
+	words = NULL;
+	p = b;
+	while (p < e) {
+		while ((p < e) && (*p <= ' ')) p++;
+		if (p < e) {
+			words = g_slist_prepend (words, u);
+			while ((p < e) && (*p > ' ')) {
+				u += g_unichar_to_utf8 (*p++, u);
+			}
+			*u++ = '\0';
+		}
+	}
+	words = g_slist_reverse (words);
+
+	x = x0 + INDENT;
+	while ((*y0 - y1 >= fontheight) && (words != NULL)) {
+		ArtPoint spadv;
+		gdouble accwidth, spcwidth;
+		gboolean stop;
+		GSList *lw;
+		gint numwords;
+		GnomeGlyphList * gl;
+		/* Find actual Y */
+		y = *y0 - gnome_font_get_ascender (font);
+		/* Find space advance */
+		gnome_font_get_glyph_stdadvance (font, space, &spadv);
+		accwidth = 0.0;
+		spcwidth = 0.0;
+		stop = FALSE;
+		lw = NULL;
+		while ((accwidth <= (x1 - x)) && !stop) {
+			gdouble width;
+			width = gnome_font_get_width_string (font, (gchar *) words->data);
+			if (accwidth > 0.0) spcwidth += spadv.x;
+			if ((accwidth == 0.0) || (accwidth + spcwidth + width < (x1 - x))) {
+				/* We have room */
+				accwidth += width;
+				lw = g_slist_prepend (lw, words->data);
+				words = g_slist_remove (words, words->data);
+				if (!words) stop = TRUE;
+			} else {
+				stop = TRUE;
+			}
+		}
+		lw = g_slist_reverse (lw);
+		/* Typeset */
+		numwords = g_slist_length (lw);
+		if ((numwords > 1) && (words != NULL)) {
+			spcwidth = ((x1 - x) - accwidth) / (numwords - 1);
+		} else {
+			spcwidth = spadv.x;
+		}
+		gl = gnome_glyphlist_from_text_dumb (font, 0x000000ff, 0.0, 0.0, "");
+		gnome_glyphlist_advance (gl, TRUE);
+		while (lw) {
+			guchar *str;
+			str = (guchar *) lw->data;
+			gnome_glyphlist_moveto (gl, x, y);
+			if (!strcmp (str, "GNU")) {
+				gint glyph;
+				gnome_glyphlist_color (gl, 0xff0000ff);
+				gnome_glyphlist_rmoveto (gl, 0.0, -fontheight / 3.0);
+				glyph = gnome_font_face_lookup_default (gnome_font_get_face (font), 'G');
+				gnome_glyphlist_glyph (gl, glyph);
+				gnome_glyphlist_color (gl, 0x00ff00ff);
+				gnome_glyphlist_rmoveto (gl, 0.0, fontheight / 3.0);
+				glyph = gnome_font_face_lookup_default (gnome_font_get_face (font), 'N');
+				gnome_glyphlist_glyph (gl, glyph);
+				gnome_glyphlist_color (gl, 0x0000ffff);
+				gnome_glyphlist_rmoveto (gl, 0.0, fontheight / 3.0);
+				glyph = gnome_font_face_lookup_default (gnome_font_get_face (font), 'U');
+				gnome_glyphlist_glyph (gl, glyph);
+				gnome_glyphlist_color (gl, 0x000000ff);
+				gnome_glyphlist_rmoveto (gl, 0.0, -fontheight / 3.0);
+			} else {
+				gnome_glyphlist_text_dumb (gl, str);
+			}
+			x += gnome_font_get_width_string (font, str);
+			x += spcwidth;
+			lw = g_slist_remove (lw, str);
+		}
+		gnome_print_moveto (pc, 0.0, 0.0);
+		gnome_print_glyphlist (pc, gl);
+		gnome_glyphlist_unref (gl);
+		*y0 = *y0 - LINESPACING;
+		x = x0;
+	}
+
+	if (words) g_slist_free (words);
+
+	g_free (ub);
+
+	gnome_font_unref (font);
+
+	return FALSE;
+}
 
 static void
-do_image (GnomePrintContext * pc, gdouble size, gboolean alpha)
+do_print_text_page (GnomePrintContext *pc)
 {
-	guchar * image;
-	gint x, y;
-	guchar * p;
-	gint save_level = 300;
-	gint i;
+	struct stat s;
+	gint fh, len;
+	guchar *b;
+	gboolean stop = FALSE;
+	gdouble x0, y0, x1, y1;
 
-	image = g_new (guchar, 256 * 256 * 4);
-	for (y = 0; y < 256; y++) {
-		p = image + 256 * 4 * y;
-		for (x = 0; x < 256; x++) {
-			*p++ = x;
-			*p++ = y;
-			*p++ = 0;
-			*p++ = alpha ? x : 0xff;
+	if (!stat (filename, &s) && S_ISREG (s.st_mode)) {
+		len = s.st_size;
+		fh = open (filename, O_RDONLY);
+		if (fh >= 0) {
+			b = g_new (guchar, len + 1);
+			*(b + len) = '\0';
+			read (fh, b, len);
+			close (fh);
+
+			x0 = MARGIN;
+			y0 = P_HEIGHT - MARGIN;
+			x1 = P_WIDTH - MARGIN;
+			y1 = MARGIN;
+			while (!stop) {
+				/* find start of paragraph */
+				while (*b && *b <= ' ') b++;
+				if (*b) {
+					guchar *e;
+					e = strstr (b, "\n\n");
+					if (e == NULL) {
+						e = b;
+						while (*e) e++;
+					}
+					stop = print_paragraph (pc, b, e, x0, &y0, x1, y1);
+					b = e;
+				} else {
+					stop = TRUE;
+				}
+			}
 		}
 	}
 
-	for (i=0;i<save_level;i++)
-		gnome_print_gsave (pc);
-		
-	gnome_print_translate (pc, 0.0, size);
-	gnome_print_scale (pc, size, -size);
-	gnome_print_rgbaimage (pc, image, 256, 256, 4 * 256);
-
-	for (i=0;i<save_level;i++)
-		gnome_print_grestore (pc);
-	
-	g_free (image);
 }
 
 static void
-do_star (GnomePrintContext * pc, gdouble size) {
-	gdouble angle, ra, x, y;
-
-	gnome_print_moveto (pc, 0.5 * size, 0.0);
-
-#define ANGLE (M_PI / 3.0)
-#define HANGLE (M_PI / 6.0)
-
-	for (angle = 0.0; angle < 359.0; angle += 60.0) {
-		ra = angle * M_PI / 180.0;
-		x = size * cos (ra + HANGLE);
-		y = size * sin (ra + HANGLE);
-		gnome_print_lineto (pc, x, y);
-		x = 0.5 * size * cos (ra + ANGLE);
-		y = 0.5 * size * sin (ra + ANGLE);
-		gnome_print_lineto (pc, x, y);
-	}
-
-	gnome_print_closepath (pc);
-}
-
-static void
-do_stars (GnomePrintContext * pc, gdouble size, gint num)
+do_print_test_page (GnomePrintContext *pc)
 {
-	gdouble step, i;
+	gdouble d;
 
-	step = size / ((double) num - 0.99);
-
-	for (i = 0; i < size; i += step) {
-		do_star (pc, size);
-		gnome_print_translate (pc, step, step / 4);
-	}
-}
-
-static void
-do_rosette (GnomePrintContext * pc, GnomeFont * font)
-{
-	static guchar sym[] = {0xce, 0x93, 0xce, 0xb5,
-			       0xce, 0xb9, 0xce, 0xac,
-			       0x20, 0xcf, 0x83, 0xce,
-			       0xb1, 0xcf, 0x82, 0x00};
-	GnomeDisplayFont * df;
-	GnomeFont * tf, * cf;
-	GnomeGlyphList * gl;
-	gdouble angle;
-	gdouble m[6];
-	gchar u[256];
-	gint len;
-
-	tf = gnome_font_new ("Times-Bold", 19.0);
-	g_assert (df = gnome_get_display_font ("ITC Zapf Chancery", GNOME_FONT_BOOK, FALSE, 19.0, 1.0));
-	g_assert (gnome_display_font_get_gdk_font (df));
-	cf = gnome_font_new ("Symbol", 10.0);
-
-	gl = gnome_glyphlist_from_text_dumb (font, 0xff0000ff, 1.0, 0.0, "");
-
-	len = latin_to_utf8 ("ÕÄÖÜ", u, 256);
-	if (len > 0) gnome_glyphlist_text_sized_dumb (gl, u, len);
-	gnome_glyphlist_rmoveto (gl, 12.0, 0.0);
-	gnome_glyphlist_color (gl, 0x00ff00ff);
-	gnome_glyphlist_font (gl, tf);
-	len = latin_to_utf8 ("õäöü", u, 256);
-	if (len > 0) gnome_glyphlist_text_sized_dumb (gl, u, len);
-	gnome_glyphlist_color (gl, 0x0000ffff);
-	gnome_glyphlist_text_dumb (gl, "THIS is ");
-	gnome_glyphlist_color (gl, 0x000000ff);
-	gnome_glyphlist_font (gl, cf);
-	gnome_glyphlist_text_dumb (gl, sym);
-#if 0
-	gnome_glyphlist_text_dumb (gl, "glyphlist");
-#endif
-
-	for (angle = 0.0; angle < 360.0; angle += 78.0) {
-		art_affine_rotate (m, angle);
-		gnome_print_gsave (pc);
-		gnome_print_concat (pc, m);
-		gnome_print_moveto (pc, 0.0, 0.0);
-#if 1
-		gnome_print_glyphlist (pc, gl);
-#else
-		gnome_print_setfont (pc, cf);
-		gnome_print_show (pc, sym);
-#endif
-		gnome_print_grestore (pc);
+	for (d = MARGIN; d < P_WIDTH - MARGIN - 72.0; d += 36.0) {
+		gnome_print_moveto (pc, d, P_HEIGHT - MARGIN - 72.0);
+		gnome_print_lineto (pc, d + 72.0, P_HEIGHT - MARGIN);
+		gnome_print_stroke (pc);
 	}
 }
 
 static void
 do_print (GnomePrintContext * pc, gdouble scale)
 {
-	static double dash[] = {1.0, 2.0, 3.0, 4.0, 5.0, 6.0};
-	static gint n_dash = 6;
-	GnomeFont * font;
-
-	font = gnome_font_new ("Helvetica", 12.0);
-
-	gnome_print_beginpage (pc, "Test");
-
-	gnome_print_scale (pc, scale, scale);
-
-	gnome_print_newpath (pc);
-	gnome_print_moveto (pc, 0.0, 0.0);
-	gnome_print_lineto (pc, 0.0, P_HEIGHT);
-	gnome_print_lineto (pc, P_WIDTH, P_HEIGHT);
-	gnome_print_lineto (pc, P_WIDTH, 0.0);
+	/* Draw box at margins */
+	gnome_print_beginpage (pc, "printtest4 demo page");
+	gnome_print_setrgbcolor (pc, 0.0, 0.0, 0.0);
+	gnome_print_setlinewidth (pc, 1.0);
+	gnome_print_moveto (pc, MARGIN, P_HEIGHT - MARGIN);
+	gnome_print_lineto (pc, P_WIDTH - MARGIN, P_HEIGHT - MARGIN);
+	gnome_print_lineto (pc, P_WIDTH - MARGIN, MARGIN);
+	gnome_print_lineto (pc, MARGIN, MARGIN);
 	gnome_print_closepath (pc);
-	gnome_print_gsave (pc);
-	gnome_print_setopacity (pc, 1.0);
-	gnome_print_setrgbcolor (pc, 0.0, 0.0, 0.0);
-	gnome_print_setlinewidth (pc, 6.0);
 	gnome_print_stroke (pc);
-	gnome_print_grestore (pc);
-	gnome_print_setopacity (pc, 1.0);
-	gnome_print_setrgbcolor (pc, 1.0, 1.0, 1.0);
+
+	if (itest) {
+		GdkPixbuf *pixbuf;
+		pixbuf = gdk_pixbuf_new_from_file (itest);
+		gnome_print_gsave (pc);
+		gnome_print_translate (pc, 200, 200);
 #if 1
-	gnome_print_eofill (pc);
+		gnome_print_rotate (pc, 45);
 #endif
+		gnome_print_scale (pc, gdk_pixbuf_get_width (pixbuf), gdk_pixbuf_get_height (pixbuf));
+		gnome_print_setrgbcolor (pc, 0.9, 0.8, 0.6);
+		gnome_print_moveto (pc, 0, 0);
+		gnome_print_lineto (pc, 0, 1);
+		gnome_print_lineto (pc, 1, 1);
+		gnome_print_lineto (pc, 1, 0);
+		gnome_print_fill (pc);
+		gnome_print_pixbuf (pc, pixbuf);
+		gnome_print_grestore (pc);
+		gdk_pixbuf_unref (pixbuf);
+	} else if (gtest) {
+		do_print_test_page (pc);
+	} else {
+		do_print_text_page (pc);
+	}
 
-	gnome_print_gsave (pc);
-	gnome_print_translate (pc, 100.0, 100.0);
-	gnome_print_newpath (pc);
-	do_stars (pc, 100.0, 5);
-	gnome_print_setrgbcolor (pc, 1.0, 0.5, 0.0);
-	gnome_print_setopacity (pc, 0.7);
-	gnome_print_eofill (pc);
-	gnome_print_grestore (pc);
-
-	gnome_print_gsave (pc);
-	gnome_print_translate (pc, 300.0, 100.0);
-	gnome_print_newpath (pc);
-	do_stars (pc, 100.0, 5);
-	gnome_print_setrgbcolor (pc, 0.0, 0.0, 0.0);
-	gnome_print_setopacity (pc, 1.0);
-	gnome_print_setlinewidth (pc, 4.0);
-	gnome_print_setdash (pc, n_dash, dash, 0.0);
-	gnome_print_stroke (pc);
-	gnome_print_grestore (pc);
-
-	gnome_print_translate (pc, 200, 400);
-
-	gnome_print_gsave (pc);
-	gnome_print_setrgbcolor (pc, 0.0, 0.0, 0.0);
-	gnome_print_scale (pc, 3.0, 3.0);
-	gnome_print_newpath (pc);
-	gnome_print_moveto (pc, 20.0, 20.0);
-/*	gnome_print_show (pc, "Hello");*/
-	gnome_print_grestore (pc);
-
-	gnome_print_newpath (pc);
-
-	gnome_print_gsave (pc);
-	gnome_print_setrgbcolor (pc, 0.0, 0.5, 0.0);
-	gnome_print_setopacity (pc, 0.6);
-	gnome_print_translate (pc, 0.0, 30.0);
-	gnome_print_scale (pc, 2.0, 2.0);
-	do_rosette (pc, font);
-	gnome_print_grestore (pc);
-
-	gnome_print_newpath (pc);
-	gnome_print_moveto (pc, 50.0, 50.0);
-	gnome_print_lineto (pc, 50.0, 250.0);
-	gnome_print_lineto (pc, 250.0, 250.0);
-	gnome_print_lineto (pc, 250.0, 50.0);
-	gnome_print_closepath (pc);
-
-	gnome_print_gsave (pc);
-	gnome_print_setrgbcolor (pc, 0.0, 0.0, 0.0);
-	gnome_print_stroke (pc);
-	gnome_print_grestore (pc);
-
-	gnome_print_gsave (pc);
-#if 1
-	gnome_print_eoclip (pc);
-#endif
-	gnome_print_gsave (pc);
-	gnome_print_setrgbcolor (pc, 1.0, 0.5, 0.0);
-	gnome_print_setopacity (pc, 0.6);
-	gnome_print_translate (pc, 130.0, 130.0);
-	gnome_print_scale (pc, 2.0, 2.0);
-	do_rosette (pc, font);
-	gnome_print_grestore (pc);
-
-	gnome_print_translate (pc, 100.0, 100.0);
-	gnome_print_scale (pc, 0.5, 0.5);
-
-	gnome_print_newpath (pc);
-	do_star (pc, 200.0);
-
-	gnome_print_gsave (pc);
-	gnome_print_setrgbcolor (pc, 0.0, 0.0, 0.0);
-	gnome_print_setlinewidth (pc, 4.0);
-	gnome_print_stroke (pc);
-	gnome_print_grestore (pc);
-
-	gnome_print_gsave (pc);
-	gnome_print_eoclip (pc);
-
-	gnome_print_gsave (pc);
-	gnome_print_setrgbcolor (pc, 0.0, 0.5, 1.0);
-	gnome_print_setopacity (pc, 0.6);
-	gnome_print_translate (pc, 0.0, 0.0);
-	gnome_print_scale (pc, 2.0, 2.0);
-	do_rosette (pc, font);
-	gnome_print_grestore (pc);
-
-	do_image (pc, 150, TRUE);
-
-	gnome_print_translate (pc, 45.0, 45.0);
-	gnome_print_scale (pc, 0.5, 0.5);
-
-	gnome_print_newpath (pc);
-	do_star (pc, 100.0);
-
-	gnome_print_gsave (pc);
-	gnome_print_setlinewidth (pc, 36.0);
-	gnome_print_strokepath (pc);
-
-	gnome_print_gsave (pc);
-	gnome_print_setlinewidth (pc, 2.0);
-	gnome_print_stroke (pc);
-	gnome_print_grestore (pc);
-
-	gnome_print_gsave (pc);
-	gnome_print_setrgbcolor (pc, 1.0, 0.5, 0.5);
-	gnome_print_eofill (pc);
-	gnome_print_grestore (pc);
-
-	gnome_print_gsave (pc);
-	gnome_print_eoclip (pc);
-
-	gnome_print_gsave (pc);
-	gnome_print_setrgbcolor (pc, 0.0, 0.2, 0.0);
-	gnome_print_setopacity (pc, 0.9);
-	gnome_print_translate (pc, 130.0, 130.0);
-	gnome_print_scale (pc, 8.0, 8.0);
-	do_rosette (pc, font);
-	gnome_print_grestore (pc);
-
-	gnome_print_rotate (pc, 30.0);
-	do_image (pc, 100, FALSE);
+	gnome_print_showpage (pc);
 }
 
 static gint
@@ -319,19 +285,20 @@ delete_event (GtkWidget * widget)
 static gint
 do_dialog (void)
 {
-     GnomePrinter *printer;
-     GnomePrintContext *pc;
+	GnomePrinter *printer;
+	GnomePrintContext *pc;
 
-     printer = gnome_printer_dialog_new_modal ();
+	printer = gnome_printer_dialog_new_modal ();
 	
-     if (!printer)
-	  return 0;
+	if (!printer) return 0;
 
-     pc = gnome_print_context_new_with_paper_size (printer, "US-Letter");
+	pc = gnome_print_context_new_with_paper_size (printer, "US-Letter");
 
-     do_print (pc, 1.0);
+	do_print (pc, 1.0);
 
-     return 0;
+	gnome_print_context_close (pc);
+
+	return 0;
 }
 
 
@@ -342,7 +309,7 @@ do_preview (gboolean aa)
 	GnomePrintContext * pc;
 	GnomeFont * font;
 
-	font = gnome_font_new ("Helvetica-Oblique", 18.0);
+	font = gnome_font_new ("Helvetica Oblique", 18.0);
 	w = gnome_font_selection_dialog_new ("Test");
 	gtk_widget_show (w);
 
@@ -419,6 +386,10 @@ do_rbuf (gboolean alpha, gboolean frgba)
 	p2b[5] = PMH;
 
 	buf = g_new (guchar, PMW * PMH * bpp);
+#warning I disabled this code casue it was throwing an error at me
+#if 0	
+	memset (buf, 0xff, PMW * PMH * bpp);
+#endif
 
 	pc = gnome_print_rbuf_new (buf, PMW, PMH, bpp * PMW, p2b, alpha);
 
@@ -426,7 +397,7 @@ do_rbuf (gboolean alpha, gboolean frgba)
 		pc = gnome_print_frgba_new (pc);
 	}
 
-	do_print (pc, 2.0);
+	do_print (pc, 1.0);
 
 	gnome_print_context_close (pc);
 
@@ -449,7 +420,20 @@ do_rbuf (gboolean alpha, gboolean frgba)
 int
 main (int argc, char ** argv)
 {
-	gnome_init_with_popt_table ("TestPrint", "0.1", argc, argv, options, 0, NULL);
+	poptContext ctx = NULL;
+	const char **args;
+
+	gnome_init_with_popt_table ("TestPrint", "0.1", argc, argv, options, 0, &ctx);
+	args = poptGetArgs (ctx);
+	if (!gtest && !itest) {
+		if (!args || !*args) {
+			g_print ("Usage: testprint4 [arguments] file\n");
+			exit (0);
+		}
+		filename = g_strdup (*args);
+	}
+
+	poptFreeContext (ctx);
 
 	if (preview) {
 		do_preview (TRUE);
@@ -474,6 +458,7 @@ main (int argc, char ** argv)
 	return 0;
 }
 
+#if 0
 static gint
 latin_to_utf8 (guchar * text, guchar * utext, gint ulength)
 {
@@ -487,4 +472,5 @@ latin_to_utf8 (guchar * text, guchar * utext, gint ulength)
 
 	return o - utext;
 }
+#endif
 

@@ -18,7 +18,7 @@ typedef struct _GnomePrintPs2Class  GnomePrintPs2Class;
 
 
 GtkType 	      gnome_print_ps2_get_type (void);
-GnomePrintPs2 * gnome_print_ps2_new (GnomePrinter *printer);
+GnomePrintPs2 * gnome_print_ps2_new (GnomePrinter *printer, const char *paper_name);
 
 
 END_GNOME_DECLS

@@ -23,15 +23,16 @@
 
 #include <config.h>
 
-#if ENABLE_SLOW_COMPILATION
-#warning Slow compilation
-#include <gnome.h>
-#else
 #include <glib.h>
 #include <libgnomeprint/gnome-print-encode.h>
+
+#ifdef HAVE_STRING_H
+#include <string.h>
 #endif
 
+#ifdef HAVE_ZLIB_H
 #include "zlib.h"
+#endif
 
 /* TODO : add a parameter to the encodeion methods called "size to beat" so that
    we stop encodeing a row that we know is too large to be chosen. We only need
@@ -64,7 +65,6 @@ int gnome_print_encode_deflate_wcs (gint size);
 /**
  * gnome_print_encode_blank :
  * @in: the row to analiyze
- * @out: not used.
  * @in_size: the size of the row
  * 
  * Scan the row and determine if it is a row with no data
@@ -189,14 +189,15 @@ gint gnome_print_encode_tiff_wcs (gint size)
 }
 
 /**
- * gnome_print_encode_tiff : Implements TIFF encodeion method for
- *                              PCL printers. Reference : [1]Page15-17.
- *             ( it should be useful for other Printer Languages too)
+ * gnome_print_encode_tiff : Implements TIFF encodeion method for PCL printers.
  * @in: the array containing the buffer of bytes that will be converted
  * @out: the output array in TIFF "Packbits"
  * @in_size: the size of the input buffer
+ *
+ * Reference: [1] Page15-17.
+ *             (it should be useful for other Printer Languages too).
  * 
- * returns : the size of the TIFF encodeed string
+ * Returns : the size of the TIFF encodeed string
  **/
 int
 gnome_print_encode_tiff (const guchar *in, guchar *out, gint in_size)

@@ -31,14 +31,51 @@
 
 /*
 
-	minor / not for the first implementation :
-	- add page name to pdf file (set by begin page)
-	- add /Creator ( program name that created the PDF (ie. "gedit", "gnumeric")
+	This driver needs some love. I need to rewrite parts of it.
+	This is the stuff I plan to do :
 
-	later :
-	- add gnome_print_pdf_url & gnome_print_pdf_uri
-	( which will wrap gnome_print_*_show for other drivers 
-	
+	1. Remove the _moveto _lineto _curveto etc .. functions.
+	us gp_gc instead.
+
+	2. We are sucking memory when printing images, althou this is
+	not a problem with your normal Image, for large images is.
+	We need to modify the gnome_print_encode functions so that we can
+	use them "blockified" so we would do something like :
+
+	temp = g_malloc (SOME_CONSTANT_A);
+	gnome_print_encode_ascii85_ini (SOME_CONSTANT_A);
+	while (offset < size) {
+	   gnome_print_encode_ascii85_body (buffer_in, offset, temp)
+		 gnome_print_pdf_write (temp, SOME_CONSTANT_A)
+		 offset += SOME_CONSTANT_A;
+ }
+ gnome_print_endode_ascii85_end (); (or flush ? )
+
+ and thus only using SOME_CONSTANT_A memory for the process.
+
+ 3. Move the gnome-print images printing to gdk_pixbufs. Ref them
+ use them and unref them. For the old functions, create a pixbuf,
+ print with it and destroy it.
+
+ 4. Finish the Font subseting code for type1 fonst. (I think we can also
+ compress the fonts with /Filter .
+
+
+ 5. (minor) Add page name to pdf file (set by begin page)
+ 6. (minor) Add /Creator ( program name that created the PDF (ie. "gedit", "gnumeric")
+
+ 7. Add JPEG Compression. And CCTII (or whatever) compression for images. gdk_pixbuf
+ might do them for us.
+
+ 8. For non ortogonal scales, we are not honoring the scale factors (see setlinewidth
+ for example)
+
+ 9. We need to be able to start writing to disk the content of the pages, we need to
+ compress them so this can be tricky but fun :-).
+ 
+ Chema
+ (Nov 27, 2000)
+
 */
 
 
@@ -54,6 +91,7 @@
 #include <gtk/gtk.h>
 #include <string.h>
 #include <math.h>
+#include <locale.h>
 
 #include <libart_lgpl/art_affine.h>
 #include <libart_lgpl/art_misc.h>
@@ -63,9 +101,14 @@
 #include <libgnomeprint/gnome-print-private.h>
 #include <libgnomeprint/gnome-printer-private.h>
 #include <libgnomeprint/gnome-font.h>
-#include <libgnomeprint/gnome-print-encode.h>
-#include <libgnomeprint/gnome-font-private.h>
+#include <libgnomeprint/gnome-print-encode-private.h>
 #include <libgnomeprint/gnome-print-pdf-type1.h>
+
+#ifdef ENABLE_LIBGPA
+#include <libgpa/gpa-printer.h>
+#include <libgpa/gpa-settings.h>
+#endif
+
 
 #define EOL "\r\n"
 #define GNOME_PRINT_PDF_BUFFER_SIZE 1024
@@ -114,6 +157,13 @@ typedef enum {
 	PDF_IMAGE_RGB,
 }PdfImageType;
 
+/* This are really compression/encoding methods */
+typedef enum {
+	PDF_COMPRESSION_NONE,
+	PDF_COMPRESSION_FLATE,
+	PDF_COMPRESSION_HEX
+}PdfCompressionType;
+
 struct _GnomePrintDash {
   gint   number_values;
   double phase;
@@ -135,7 +185,7 @@ struct _GnomePrintPdfImage {
 	gint image_number;
 	gint object_number;
 	gint image_type;
-	gboolean compressed;
+	PdfCompressionType compr_type;
 };
 
 
@@ -222,6 +272,13 @@ struct _GnomePrintPdf {
 	
 	GnomePrintContext pc;
 
+#ifdef ENABLE_LIBGPA	
+	/* GpaPrinter */
+	GpaPrinter *gpa_printer;
+	GpaSettings *gpa_settings;
+#endif	
+	gboolean ascii_format;
+
 	const GnomePaper *paper;
 
 	/* Graphic states */
@@ -294,6 +351,26 @@ gnome_print_pdf_new_with_paper (GnomePrinter *printer, const gchar *paper_name)
 
 	pdf->paper = paper;
 	
+#ifdef ENABLE_LIBGPA
+	g_return_val_if_fail (GPA_IS_PRINTER (printer->gpa_printer), NULL);
+	/* We take the first settings for now */
+	g_return_val_if_fail (GPA_IS_SETTINGS (printer->gpa_settings), NULL);
+	
+	pdf->gpa_printer  = printer->gpa_printer;
+	pdf->gpa_settings = printer->gpa_settings;
+
+	/* We don't need to ref the printer, because the settings should
+	 * ref it (and unref it) but I don't think libgpa settings is
+	 * refing the printer now. Just be safe now, but FIX gpa-settings
+	 * so that it refs the printer. Or what do you think ? Chema
+	 */
+	gpa_printer_ref (printer->gpa_printer);
+	gpa_settings_ref (printer->gpa_settings);
+
+	pdf->ascii_format = gpa_settings_query_options_boolean (pdf->gpa_settings,
+																													"AsciiFormat");
+#endif
+	
 	pc = GNOME_PRINT_CONTEXT (pdf);
 
 	/* for now, we don't need to require 1.3. This could change ...*/
@@ -347,11 +424,15 @@ gnome_print_pdf_write (GnomePrintContext *pc, const char *format, ...)
 	GnomePrintPdf *pdf;
 	va_list arguments;
 	gchar *text;
+	gchar *oldlocale;
 	
 	g_return_val_if_fail (GNOME_IS_PRINT_CONTEXT (pc), -1);
 	pdf = GNOME_PRINT_PDF (pc);
 	g_return_val_if_fail (pdf != NULL, -1);
 
+	oldlocale = g_strdup (setlocale (LC_NUMERIC, NULL));
+	setlocale (LC_NUMERIC, "C");
+		
 	va_start (arguments, format);
 	text = g_strdup_vprintf (format, arguments);
 	va_end (arguments);
@@ -359,6 +440,9 @@ gnome_print_pdf_write (GnomePrintContext *pc, const char *format, ...)
 	pdf->offset += gnome_print_context_write_file (pc, text, strlen(text));
 
 	g_free (text);
+
+	setlocale (LC_NUMERIC, oldlocale);
+	g_free (oldlocale);			
 	
 	return 0;
 }
@@ -502,16 +586,127 @@ gnome_print_pdf_page_start (GnomePrintContext *pc)
 	return 0;
 }
 
+/**
+ * gnome_print_pdf_compr_from_string:
+ * @str: 
+ * 
+ * Given the string of a compression method, it returns it's
+ * enum value.
+ * 
+ * Return Value: Enum value of the compression. PDF_COMPRESSION_NONE on error;
+ *
+ **/
+#ifdef ENABLE_LIBGPA
+static PdfCompressionType
+gnome_print_pdf_compr_from_string (const gchar *str)
+{
+	g_return_val_if_fail (str != NULL, PDF_COMPRESSION_NONE);
+
+	if (strcmp ("NoCompression", str) == 0)
+		return PDF_COMPRESSION_NONE;
+	else if (strcmp ("FlateCompression", str) == 0)
+		return PDF_COMPRESSION_FLATE;
+	else if (strcmp ("HexEncoded", str) == 0)
+		return PDF_COMPRESSION_HEX;
+	else
+		g_warning ("Could not determine compression from %s\n", str);
+
+	return 	PDF_COMPRESSION_NONE;
+}
+#endif
+
+static gint
+gnome_print_pdf_write_compression_filters (GnomePrintContext *pc, PdfCompressionType compr_type)
+{
+	GnomePrintPdf *pdf;
+	gint ret = 0;
+
+	g_return_val_if_fail (GNOME_IS_PRINT_CONTEXT(pc), -1);
+	pdf = GNOME_PRINT_PDF (pc);
+	g_return_val_if_fail (GNOME_IS_PRINT_PDF (pdf), -1);
+	
+	if (compr_type == PDF_COMPRESSION_NONE &&	!pdf->ascii_format)
+		return ret;
+	
+	ret += gnome_print_pdf_write  (pc, "/Filter [");
+
+	if (pdf->ascii_format && compr_type != PDF_COMPRESSION_HEX)
+		ret += gnome_print_pdf_write  (pc,"/ASCII85Decode ");
+	
+	if (compr_type == PDF_COMPRESSION_FLATE) 
+		ret += gnome_print_pdf_write  (pc, "/FlateDecode ");
+
+	if (compr_type == PDF_COMPRESSION_HEX)
+		ret += gnome_print_pdf_write  (pc,"/ASCIIHexDecode ");
+
+	ret += gnome_print_pdf_write  (pc,"]" EOL);
+
+	return ret;
+}
+
+static gint
+gnome_print_pdf_write_stream (GnomePrintContext *pc,
+															gchar *stream,
+															gint length,
+															PdfCompressionType compr_type)
+{
+	gint ret = 0;
+
+#ifdef ENABLE_LIBGPA
+	GnomePrintPdf *pdf;
+	gchar *compressed_stream = NULL;
+
+	g_return_val_if_fail (GNOME_IS_PRINT_CONTEXT (pc), -1);
+	pdf = GNOME_PRINT_PDF (pc);
+	g_return_val_if_fail (GNOME_IS_PRINT_PDF (pdf), -1);
+	
+	if (pdf->ascii_format && compr_type != PDF_COMPRESSION_HEX) {
+		gint length_needed;
+		gint real_length;
+
+		length_needed = gnome_print_encode_ascii85_wcs (length);
+		compressed_stream	= g_malloc (length_needed);
+		real_length = gnome_print_encode_ascii85 (stream,
+																							compressed_stream,
+																							length);
+		length = real_length;
+		stream = compressed_stream;
+	} 
+	
+#endif
+
+	ret += gnome_print_pdf_write  (pc, "/Length %i" EOL, length);
+	ret += gnome_print_pdf_write_compression_filters (pc, compr_type);
+	ret += gnome_print_pdf_write  (pc, ">>" EOL);
+	ret += gnome_print_pdf_write  (pc, "stream" EOL);
+
+	ret += gnome_print_context_write_file (pc,
+																				 stream,
+																				 length);
+	
+#ifdef ENABLE_LIBGPA
+	if (pdf->ascii_format) {
+		g_free (compressed_stream);
+	}
+#endif
+
+	return ret;
+}
+
+
 static gint
 gnome_print_pdf_page_write_contents (GnomePrintContext *pc, GnomePrintPdfPage *page)
 {
 	GnomePrintPdf *pdf;
-	gboolean compress = FALSE;
+	PdfCompressionType compr_type;
+#ifdef ENABLE_LIBGPA
+	const gchar *compr_string;
+#endif
 	gchar *compressed_stream = NULL;
 	gint ret = 0;
 	gint compressed_stream_length;
 	gint stream_length;
-	gint real_length;
+	gint real_length = 0;
 	
 
 	debug (FALSE, "");
@@ -521,43 +716,47 @@ gnome_print_pdf_page_write_contents (GnomePrintContext *pc, GnomePrintPdfPage *p
 	pdf = GNOME_PRINT_PDF (pc);
 	g_return_val_if_fail (GNOME_IS_PRINT_PDF (pdf), -1);
 
-	if (compress) {
-		/* Compress the buffer */
-		stream_length = strlen (page->stream);
+#ifdef ENABLE_LIBGPA
+	compr_string = gpa_settings_query_options (pdf->gpa_settings, "TextCompression");
+	compr_type = gnome_print_pdf_compr_from_string (compr_string);
+#else
+	compr_type = PDF_COMPRESSION_NONE;
+#endif
+
+	switch (compr_type) {
+	case PDF_COMPRESSION_FLATE:
+		stream_length =  page->stream_used;
 		compressed_stream_length = gnome_print_encode_deflate_wcs (stream_length);
 		compressed_stream	= g_malloc (compressed_stream_length);
 		real_length = gnome_print_encode_deflate (page->stream, compressed_stream,
 																							stream_length, compressed_stream_length);
-		/* */
+		break;
+	case PDF_COMPRESSION_NONE:
+	default:
+		real_length = page->stream_used; 
 	}
 	
-	ret += gnome_print_pdf_object_start (pc, page->object_number_contents);
-	if (compress)
-		ret += gnome_print_pdf_write  (pc,"/Length %i" EOL, real_length + strlen(EOL));
-	else
-		ret += gnome_print_pdf_write  (pc,"/Length %i" EOL, page->stream_used);
-	if (compress) {
-  	ret += gnome_print_pdf_write  (pc,"/Filter ");
-		ret += gnome_print_pdf_write  (pc,"/FlateDecode ");
-		ret += gnome_print_pdf_write  (pc, EOL);
-	}
-	ret += gnome_print_pdf_write  (pc,">>" EOL);
-	ret += gnome_print_pdf_write  (pc,"stream" EOL);
 
-	if (compress) {
-		pdf->offset += gnome_print_context_write_file (pc,
-																									 compressed_stream,
-																									 real_length);
+	ret += gnome_print_pdf_object_start (pc, page->object_number_contents);
+
+	if (compr_type != PDF_COMPRESSION_NONE) {
+		pdf->offset += gnome_print_pdf_write_stream (pc,
+																								 compressed_stream,
+																								 real_length,
+																								 compr_type);
 		ret += gnome_print_pdf_write  (pc, EOL);
 	}	else {
-		ret += gnome_print_pdf_write  (pc,"%s", page->stream);
+		ret += gnome_print_pdf_write  (pc,"/Length %i" EOL, page->stream_used); 
+		ret += gnome_print_pdf_write  (pc,">>" EOL);
+		ret += gnome_print_pdf_write  (pc,"stream" EOL);                
+		ret += gnome_print_pdf_write  (pc, "%s", page->stream);
 	}
 	
-	ret += gnome_print_pdf_write  (pc,"endstream" EOL);
-	ret += gnome_print_pdf_write  (pc,"endobj" EOL);
+	ret += gnome_print_pdf_write  (pc, "endstream" EOL);
+	ret += gnome_print_pdf_write  (pc, "endobj" EOL);
 	ret += gnome_print_pdf_object_end (pc, page->object_number_contents, TRUE);
 
-	if (compress)
+	if (compr_type != PDF_COMPRESSION_NONE)
 		g_free (compressed_stream);
 
 	return ret;
@@ -757,18 +956,19 @@ gnome_print_pdf_font_print_descriptor (GnomePrintContext *pc,
 																			 GnomePrintPdfFont *font)
 {
 	const GnomeFontFace *face;
-	const ArtDRect *rect;
 	guint object_number;
 	guint pfb_object_number;
 	gint ret = 0;
 	gint ascent;
 	gint descent;
-	gint capheight;
 	gint flags;
-	gint italic_angle;
 	gint stemv;
+	gint italic_angle;
+	gint capheight;
 	gint xheight;
-	
+	const ArtDRect *rect;
+	gdouble val;
+
 	debug (FALSE, "");
 
 	g_return_val_if_fail (GNOME_IS_PRINT_CONTEXT (pc), -1);
@@ -788,12 +988,17 @@ gnome_print_pdf_font_print_descriptor (GnomePrintContext *pc,
 
 	ascent = (gint) gnome_font_face_get_ascender (face);
 	descent = (gint) gnome_font_face_get_descender (face);
-	italic_angle = (gint) gnome_font_face_get_italics_angle (face);
-	rect = gnome_font_face_get_stdbbox (face);
-	capheight = (gint) gnome_font_face_get_capheight (face);
 	flags = gnome_font_face_get_pdf_flags (face);
 	stemv = gnome_font_face_get_stemv (face);
-	xheight = gnome_font_face_get_xheight (face);
+
+	/* GnomeFontFace arguments */
+	gtk_object_get (GTK_OBJECT (face), "ItalicAngle", &val, NULL);
+	italic_angle = (gint) val;
+	gtk_object_get (GTK_OBJECT (face), "CapHeight", &val, NULL);
+	capheight = (gint) val;
+	gtk_object_get (GTK_OBJECT (face), "XHeight", &val, NULL);
+	xheight = (gint) val;
+	gtk_object_get (GTK_OBJECT (face), "FontBBox", &rect, NULL);
 	
 	ret += gnome_print_pdf_write  (pc,
 																 "/Type /FontDescriptor" EOL
@@ -946,24 +1151,11 @@ gnome_print_pdf_images (GnomePrintContext *pc, GnomePrintPdfPage *page)
 																	 image->width,
 																	 image->height,
 																	 image_type_text);
-		if (image->compressed)
-			ret += gnome_print_pdf_write  (pc,
-																		 "/Length %i" EOL
-																		 "/Filter /FlateDecode" EOL,
-																		 image->data_length + strlen (EOL));
-		else
-			ret += gnome_print_pdf_write  (pc,
-																		 "/Length %i" EOL
-																		 "/Filter /ASCIIHexDecode" EOL, 
-																		 image->data_length + strlen (EOL));			
-		
-		ret += gnome_print_pdf_write  (pc,
-																	 ">>" EOL
-																	 "stream" EOL);
 
-		pdf->offset += gnome_print_context_write_file (pc,
-																									 image->data,
-																									 image->data_length);
+		pdf->offset += gnome_print_pdf_write_stream (pc,
+																								 image->data,
+																								 image->data_length,
+																								 image->compr_type);
 		
 		ret += gnome_print_pdf_write  (pc, EOL);
 		
@@ -1633,6 +1825,7 @@ gnome_print_pdf_write_content (GnomePrintPdf *pdf, const char *format, ...)
 	va_list arguments;
 	gchar *text;
 	gint text_length;
+	gchar *oldlocale;	
 
 	debug (FALSE, "");
 	
@@ -1641,9 +1834,15 @@ gnome_print_pdf_write_content (GnomePrintPdf *pdf, const char *format, ...)
 	pc = GNOME_PRINT_CONTEXT (pdf);
 	g_return_val_if_fail (GNOME_IS_PRINT_CONTEXT (pc), -1);
 
+	oldlocale = g_strdup (setlocale (LC_NUMERIC, NULL));
+	setlocale (LC_NUMERIC, "C");
+
 	va_start (arguments, format);
 	text = g_strdup_vprintf (format, arguments);
 	va_end (arguments);
+
+	setlocale (LC_NUMERIC, oldlocale);
+	g_free (oldlocale);
 
 	page = pdf->current_page;
 
@@ -1783,6 +1982,7 @@ gnome_print_pdf_setlinewidth (GnomePrintContext *pc, double width)
 	
 	gs = gnome_print_pdf_graphic_state_current (pdf, TRUE);
 
+	/*FIXME ! This is broken !!!!!!!!!!! */
 	gs->linewidth = (fabs (width * gs->ctm[0]) +
 									 fabs (width * gs->ctm[1]) +
 									 fabs (width * gs->ctm[2]) +
@@ -2863,7 +3063,7 @@ gnome_print_pdf_closepath (GnomePrintContext *pc)
 static gint
 gnome_print_pdf_image_load (GnomePrintPdf *pdf, gchar *data, gint width, gint height,
 														gint rowstride, gint bytes_per_pixel, gint image_type,
-														gint data_length, gboolean compressed)
+														gint data_length, PdfCompressionType compr_type)
 {
 	GnomePrintPdfImage *image;
 	GnomePrintPdfPage *page;
@@ -2888,7 +3088,7 @@ gnome_print_pdf_image_load (GnomePrintPdf *pdf, gchar *data, gint width, gint he
 	image->image_number = page->images_number;
 	image->object_number = gnome_print_pdf_object_number (GNOME_PRINT_CONTEXT(pdf));
 	image->image_type = image_type;
-	image->compressed = compressed;
+	image->compr_type = compr_type;
 
 	return image->image_number;
 }
@@ -2902,10 +3102,13 @@ gnome_print_pdf_image_compressed (GnomePrintContext *pc,
 																	gint bytes_per_pixel,
 																	gint image_type)
 {
+	PdfCompressionType compr_type;
+#ifdef ENABLE_LIBGPA
+	const gchar *compr_string;
+#endif
 	GnomePrintPdfGraphicState *gs;
 	GnomePrintPdf *pdf;
-	gboolean compress = FALSE; /* FAlse is NOT working */
-	gchar *image_stream;
+	gchar *image_stream = NULL;
 	gint ret = 0;
 	gint image_number;
 	gint image_stream_size;
@@ -2916,6 +3119,16 @@ gnome_print_pdf_image_compressed (GnomePrintContext *pc,
 	
 	debug (FALSE, "");
 
+#ifdef ENABLE_LIBGPA
+	if (image_type == PDF_IMAGE_GRAYSCALE)
+		compr_string = gpa_settings_query_options (pdf->gpa_settings, "GrayscaleImagesCompression");
+	else
+		compr_string = gpa_settings_query_options (pdf->gpa_settings, "ColorImagesCompression");
+	compr_type = gnome_print_pdf_compr_from_string (compr_string);
+#else
+	compr_type = PDF_COMPRESSION_HEX;
+#endif
+	
 	gs = pdf->graphic_state;
 
 	gnome_print_pdf_graphic_mode_set (pdf, PDF_GRAPHIC_MODE_GRAPHICS);
@@ -2925,29 +3138,57 @@ gnome_print_pdf_image_compressed (GnomePrintContext *pc,
 																				gs->ctm[2],	gs->ctm[3],
 																				gs->ctm[4], gs->ctm[5]);
 	ret += gnome_print_pdf_write_content (pdf, "0 0 m" EOL);
-	
-	if (compress)
+
+	/* 1. Get the required size (after compression) */
+	switch (compr_type) {
+	case PDF_COMPRESSION_FLATE:
 		image_stream_size = gnome_print_encode_deflate_wcs (width * height * bytes_per_pixel);
-	else
+		break;
+	case PDF_COMPRESSION_HEX:
 		image_stream_size = gnome_print_encode_hex_wcs (width * height * bytes_per_pixel);
-	
-	image_stream      = g_new (gchar, image_stream_size);
+		break;
+	case PDF_COMPRESSION_NONE:
+		image_stream_size = width * height * bytes_per_pixel;
+		g_print ("SIze %i\n", image_stream_size);
+		break;
+	default:
+		g_warning ("Compression Method undetermined. [%i]", compr_type);
+		return -1;
+	}
 
-	if (compress)
-		image_stream_size = gnome_print_encode_deflate (data, image_stream,
-																										width * height * bytes_per_pixel,
-																										image_stream_size);
-	else
-		image_stream_size = gnome_print_encode_hex (data, image_stream, width * height * bytes_per_pixel);
+	if (compr_type != PDF_COMPRESSION_NONE) {
+		/* 2. Allocate the buffer */
+		image_stream      = g_new (gchar, image_stream_size);
 
+		/* 3. Compress the image */
+		switch (compr_type) {
+		case PDF_COMPRESSION_FLATE:
+			image_stream_size = gnome_print_encode_deflate (data, image_stream,
+																											width * height * bytes_per_pixel,
+																											image_stream_size);
+			break;
+		case PDF_COMPRESSION_HEX:
+			image_stream_size = gnome_print_encode_hex (data, image_stream,
+																									width * height * bytes_per_pixel);
+			break;
+		case PDF_COMPRESSION_NONE:
+		default:
+			g_warning ("Compression Method undetermined. [%i]", compr_type);
+			return -1;
+		}
+	} else {
+		image_stream = (gchar *)data;
+		g_print ("Compression none ..copy data\n");
+	}
+
+	/* 4. Load it */
 	image_number = gnome_print_pdf_image_load (pdf, image_stream,
 																						 width, height,
 																						 rowstride, bytes_per_pixel,
 																						 image_type, image_stream_size,
-																						 compress);
+																						 compr_type);
 
-	ret += gnome_print_pdf_write_content (pdf, "/Im%i Do" EOL,
-																				image_number);
+	ret += gnome_print_pdf_write_content (pdf, "/Im%i Do" EOL, image_number);
 	
   return 0;
 }
@@ -3167,7 +3408,12 @@ gnome_print_pdf_finalize (GtkObject *object)
 	g_free (pdf->fonts_internal);
 
   (* GTK_OBJECT_CLASS (parent_class)->finalize) (object);
-	
+
+#ifdef ENABLE_LIBGPA
+	gpa_printer_unref (pdf->gpa_printer);
+	gpa_settings_unref (pdf->gpa_settings);
+#endif
+
 }
 
 static void

@@ -1,320 +1,404 @@
-# gnome-print fordansket.
-# Copyright (C) 1999 Free Software Foundation, Inc.
+# Danish translation of gnome-print.
+# Copyright (C) 1999, 2001 Free Software Foundation, Inc.
 # Birger Langkjer <birger.langkjer@image.dk>, 1999.
 # Keld Simonsen <keld@dkuug.dk>, 2000.
+# Ole Laursen <olau@hardworking.dk>, 2001.
 #
-# Fit wide hedder bred ud og Fit tall hedder skræk, 
-# pga. længden. Ændr ikke
+# fit -> tilpas
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-print-0.7\n"
-"POT-Creation-Date: 2000-07-16 17:54+0200\n"
-"PO-Revision-Date: 2000-09-27 22:39+02:00\n"
-"Last-Translator: Keld Simonsen <keld@dkuug.dk>\n"
+"POT-Creation-Date: 2001-10-11 20:16-0600\n"
+"PO-Revision-Date: 2001-10-07 22:35+0200\n"
+"Last-Translator: Ole Laursen <olau@hardworking.dk>\n"
 "Language-Team: Danish <dansk@klid.dk>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=ISO-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: gnome-font-install.c:574
+#: installer/gnome-font-install.c:119
 msgid "Print out debugging information"
 msgstr "Udskriv fejlanalyseringsinformation"
 
-#: gnome-font-install.c:576 gnome-font-install.c:578 gnome-font-install.c:580
-msgid "Does nothing yet."
-msgstr "Gør ikke noget endnu."
+#: installer/gnome-font-install.c:121
+msgid "Search directories recursively for font files"
+msgstr "Søg mapper rekursivt efter skrifttypefiler"
 
-#: gnome-font-install.c:585
-msgid "Use this path to write the fontmap file."
-msgstr "Brug denne sti til at skrive fontmap-filen"
+#: installer/gnome-font-install.c:123
+msgid "Start from zero fontmap, instead of parsing old one"
+msgstr "Begynd uden skrifttypetabel i stedet for at fortolke på den gamle"
 
-#: gnome-font-install.c:585 gnome-font-install.c:587 gnome-font-install.c:589
-#: gnome-font-install.c:592 gnome-font-install.c:594
+#: installer/gnome-font-install.c:125
+msgid "Create $HOME/.gnome/fonts/gnome-print.fontmap"
+msgstr "Opret $HOME/.gnome/fonts/gnome-print.fontmap"
+
+#: installer/gnome-font-install.c:127
+msgid "Create $SYSCONFDIR/gnome/fonts/gnome-print.fontmap"
+msgstr "Opret $SYSCONFDIR/gnome/fonts/gnome-print.fontmap"
+
+#: installer/gnome-font-install.c:129
+msgid "Create $DATADIR/gnome/fonts/gnome-print.fontmap"
+msgstr "Opret $DATADIR/gnome/fonts/gnome-print.fontmap"
+
+#: installer/gnome-font-install.c:131
+msgid "Write output fontmap to specified file (- for stdout)"
+msgstr "Skriv uddataskrifttypetabel til den angivne fil (- for standardud)"
+
+#: installer/gnome-font-install.c:134
+msgid "File describing known aliases"
+msgstr "Fil der angiver kendte aliaser"
+
+#: installer/gnome-font-install.c:134
 msgid "PATH"
-msgstr "PATH"
-
-#: gnome-font-install.c:587
-msgid "Use this path to search for relative afm files."
-msgstr "Brug denne sti til at lede efter korresponderende afm-filer."
-
-#: gnome-font-install.c:589
-msgid "Use this path to search for relative pfb files."
-msgstr "Brug denne sti til at lede efter korresponderende pfb-filer."
-
-#: gnome-font-install.c:592
-msgid "Use this to set up a key/value pair for afm files."
-msgstr "Brug dette til at tildele et nøgle/værdi par til afm-filer."
-
-#: gnome-font-install.c:594
-msgid "Use this to set up a key/value pair for pfb files."
-msgstr "Brug dette til at tildele et nøgle/værdi par til pfb-filer."
+msgstr "STI"
 
 #. Family frame
-#: libgnomeprint/gnome-font-dialog.c:138
+#: libgnomeprint/gnome-font-dialog.c:142
 msgid "Font family"
 msgstr "Skrifttypefamilie"
 
 #. Style frame
-#: libgnomeprint/gnome-font-dialog.c:171
+#: libgnomeprint/gnome-font-dialog.c:175
 msgid "Style"
-msgstr "Stíl"
+msgstr "Stil"
 
-#: libgnomeprint/gnome-font-dialog.c:233
+#: libgnomeprint/gnome-font-dialog.c:237
 msgid "Font size:"
-msgstr "Skrifttypestørrelse"
+msgstr "Skrifttypestørrelse:"
 
-#: libgnomeprint/gnome-font-dialog.c:754
+#: libgnomeprint/gnome-font-dialog.c:758
 msgid "Font Selection"
 msgstr "Skrifttypevalg"
 
-#. We have latin encoding
-#: libgnomeprint/gnome-font-face.c:459
+#: libgnomeprint/gnome-font-face.c:605
 msgid "The quick brown fox jumps over the lazy dog."
-msgstr "Kødpålæg."
+msgstr "Kødpålæg smager godt."
 
-#: libgnomeprint/gnome-font-face.c:697
+#. Encode empty font
+#: libgnomeprint/gnome-font-face.c:808
 #, c-format
-msgid "Couldn't open font file %s\n"
-msgstr "Kunne ikke åbne skrifttypefil %s\n"
+msgid "Couldn't generate pfa for face %s\n"
+msgstr "Kunne ikke generere pfa for typen %s\n"
 
-#: libgnomeprint/gnome-font-face.c:1012
+#: libgnomeprint/gnome-font-face.c:925
 #, c-format
 msgid "status loading %s = %d\n"
-msgstr "status for indlæsning %s = %d\n"
+msgstr "status for indlæsning af %s = %d\n"
 
-#: libgnomeprint/gnome-print-copies.c:232
+#: libgnomeprint/gnome-print-copies.c:238
 msgid "Copies"
 msgstr "Kopier"
 
-#: libgnomeprint/gnome-print-copies.c:243
+#: libgnomeprint/gnome-print-copies.c:249
 msgid "N_umber of copies:"
-msgstr "Antal kopier:"
+msgstr "Antal _kopier:"
 
-#: libgnomeprint/gnome-print-copies.c:264
+#: libgnomeprint/gnome-print-copies.c:270
 msgid "_Collate"
 msgstr "_Saml"
 
-#: libgnomeprint/gnome-print-dialog.c:164
+#: libgnomeprint/gnome-print-dialog.c:180
 msgid "Print Range"
 msgstr "Udskriv område"
 
-#: libgnomeprint/gnome-print-dialog.c:185
-#: libgnomeprint/gnome-print-master-preview.c:680
+#: libgnomeprint/gnome-print-dialog.c:201
+#: libgnomeprint/gnome-print-master-preview.c:696
 msgid "Print"
 msgstr "Udskriv"
 
-#: libgnomeprint/gnome-print-dialog.c:186
+#: libgnomeprint/gnome-print-dialog.c:202
 msgid "Preview"
 msgstr "Vis udskrift"
 
-#: libgnomeprint/gnome-print-dialog.c:333
+#: libgnomeprint/gnome-print-dialog.c:353
 msgid "_All"
 msgstr "_Alt"
 
-#: libgnomeprint/gnome-print-dialog.c:363
-#: libgnomeprint/gnome-print-dialog.c:377
+#: libgnomeprint/gnome-print-dialog.c:383
+#: libgnomeprint/gnome-print-dialog.c:397
 msgid "_Selection"
 msgstr "_Valg"
 
-#: libgnomeprint/gnome-print-dialog.c:436
+#: libgnomeprint/gnome-print-dialog.c:458
 msgid "from:"
 msgstr "fra:"
 
-#: libgnomeprint/gnome-print-dialog.c:450
+#: libgnomeprint/gnome-print-dialog.c:472
 msgid "to:"
 msgstr "til:"
 
-#: libgnomeprint/gnome-print-dialog.c:495
+#: libgnomeprint/gnome-print-dialog.c:518
 msgid "f_rom:"
 msgstr "f_ra:"
 
-#: libgnomeprint/gnome-print-dialog.c:512
+#: libgnomeprint/gnome-print-dialog.c:535
 msgid "_to:"
 msgstr "_til:"
 
-#: libgnomeprint/gnome-print-master-preview.c:625
+#: libgnomeprint/gnome-print-file.c:72
+#, c-format
+msgid ""
+"'%s' is about to be overwritten.\n"
+"\n"
+"Do you want to continue?"
+msgstr ""
+"'%s' er ved at blive overskrevet.\n"
+"\n"
+"Ønsker du at fortsætte?"
+
+#: libgnomeprint/gnome-print-file.c:169
+msgid "Select output file"
+msgstr "Vælg uddatafil"
+
+#: libgnomeprint/gnome-print-master-preview.c:641
 msgid "Page: "
 msgstr "Side:"
 
-#: libgnomeprint/gnome-print-master-preview.c:652
+#: libgnomeprint/gnome-print-master-preview.c:668
 msgid "_First page"
 msgstr "_Første side"
 
-#: libgnomeprint/gnome-print-master-preview.c:652
-#: libgnomeprint/gnome-print-master-preview.c:683
+#: libgnomeprint/gnome-print-master-preview.c:668
+#: libgnomeprint/gnome-print-master-preview.c:699
 msgid "Shows the first page"
 msgstr "Viser første side"
 
-#: libgnomeprint/gnome-print-master-preview.c:655
+#: libgnomeprint/gnome-print-master-preview.c:671
 msgid "_Previous page"
-msgstr "_Forrige side"
+msgstr "F_orrige side"
 
-#: libgnomeprint/gnome-print-master-preview.c:655
-#: libgnomeprint/gnome-print-master-preview.c:686
+#: libgnomeprint/gnome-print-master-preview.c:671
+#: libgnomeprint/gnome-print-master-preview.c:702
 msgid "Shows the previous page"
 msgstr "Viser forrige side"
 
-#: libgnomeprint/gnome-print-master-preview.c:658
+#: libgnomeprint/gnome-print-master-preview.c:674
 msgid "_Next page"
 msgstr "_Næste side"
 
-#: libgnomeprint/gnome-print-master-preview.c:658
-#: libgnomeprint/gnome-print-master-preview.c:689
+#: libgnomeprint/gnome-print-master-preview.c:674
+#: libgnomeprint/gnome-print-master-preview.c:705
 msgid "Shows the next page"
 msgstr "Viser næste side"
 
-#: libgnomeprint/gnome-print-master-preview.c:661
+#: libgnomeprint/gnome-print-master-preview.c:677
 msgid "_Last page"
 msgstr "_Sidste side"
 
-#: libgnomeprint/gnome-print-master-preview.c:661
-#: libgnomeprint/gnome-print-master-preview.c:692
+#: libgnomeprint/gnome-print-master-preview.c:677
+#: libgnomeprint/gnome-print-master-preview.c:708
 msgid "Shows the last page"
 msgstr "Viser sidste side"
 
-#: libgnomeprint/gnome-print-master-preview.c:666
+#: libgnomeprint/gnome-print-master-preview.c:682
 msgid "Zoom _in"
-msgstr "Zoom _in"
+msgstr "Zoom _ind"
 
-#: libgnomeprint/gnome-print-master-preview.c:666
+#: libgnomeprint/gnome-print-master-preview.c:682
 msgid "Zooms in"
-msgstr "Zoomer in"
+msgstr "Zoomer ind"
 
-#: libgnomeprint/gnome-print-master-preview.c:667
+#: libgnomeprint/gnome-print-master-preview.c:683
 msgid "Zoom _out"
 msgstr "Zoom _ud"
 
-#: libgnomeprint/gnome-print-master-preview.c:667
+#: libgnomeprint/gnome-print-master-preview.c:683
 msgid "Zooms out"
 msgstr "Zoomer ud"
 
-#: libgnomeprint/gnome-print-master-preview.c:674
+#: libgnomeprint/gnome-print-master-preview.c:690
 msgid "_View"
 msgstr "_Vis"
 
-#: libgnomeprint/gnome-print-master-preview.c:680
+#: libgnomeprint/gnome-print-master-preview.c:696
 msgid "Prints the current file"
-msgstr "Udskriver aktiv fil"
+msgstr "Udskriver den aktuelle fil"
 
-#: libgnomeprint/gnome-print-master-preview.c:683
+#: libgnomeprint/gnome-print-master-preview.c:699
 msgid "First"
 msgstr "Første"
 
-#: libgnomeprint/gnome-print-master-preview.c:686
+#: libgnomeprint/gnome-print-master-preview.c:702
 msgid "Back"
 msgstr "Tilbage"
 
-#: libgnomeprint/gnome-print-master-preview.c:689
+#: libgnomeprint/gnome-print-master-preview.c:705
 msgid "Next"
 msgstr "Næste"
 
-#: libgnomeprint/gnome-print-master-preview.c:692
+#: libgnomeprint/gnome-print-master-preview.c:708
 msgid "Last"
 msgstr "Sidste"
 
-#: libgnomeprint/gnome-print-master-preview.c:695
+#: libgnomeprint/gnome-print-master-preview.c:711
 msgid "Zoom in"
-msgstr "Zoom in"
+msgstr "Zoom ind"
 
-#: libgnomeprint/gnome-print-master-preview.c:695
+#: libgnomeprint/gnome-print-master-preview.c:711
 msgid "Zooms the page in"
-msgstr "Zoomer in på siden"
+msgstr "Zoomer ind på siden"
 
-#: libgnomeprint/gnome-print-master-preview.c:696
+#: libgnomeprint/gnome-print-master-preview.c:712
 msgid "Zoom out"
 msgstr "Zoom ud"
 
-#: libgnomeprint/gnome-print-master-preview.c:696
+#: libgnomeprint/gnome-print-master-preview.c:712
 msgid "Zooms the page out"
 msgstr "Zoomer ud på siden"
 
-#: libgnomeprint/gnome-print-master-preview.c:697
+#: libgnomeprint/gnome-print-master-preview.c:713
 msgid "Fit"
 msgstr "Tilpas"
 
-#: libgnomeprint/gnome-print-master-preview.c:697
+#: libgnomeprint/gnome-print-master-preview.c:713
 msgid "Zooms to fit the whole page"
-msgstr "Zoomer tilpasset hele siden"
+msgstr "Tilpasser zoom til hele siden"
 
-#: libgnomeprint/gnome-print-master-preview.c:698
+# fordi det er bredden det drejer sig om
+#: libgnomeprint/gnome-print-master-preview.c:714
 msgid "Fit Wide"
 msgstr "Bred ud"
 
-#: libgnomeprint/gnome-print-master-preview.c:698
+#: libgnomeprint/gnome-print-master-preview.c:714
 msgid "Zooms to fit the width of the page"
-msgstr "Zoomer tilpasset bredden på siden"
+msgstr "Tilpasser zoom til sidens bredde"
 
-#: libgnomeprint/gnome-print-master-preview.c:699
+# fordi det er højden det drejer sig om
+#: libgnomeprint/gnome-print-master-preview.c:715
 msgid "Fit Tall"
 msgstr "Stræk"
 
-#: libgnomeprint/gnome-print-master-preview.c:699
+#: libgnomeprint/gnome-print-master-preview.c:715
 msgid "Zooms to fit the height of the page"
-msgstr "Zoomer tilpasset højden på siden"
+msgstr "Tilpasser zoom til sidens højde"
 
-#: libgnomeprint/gnome-printer-dialog.c:180
+#: libgnomeprint/gnome-printer-dialog.c:293
+msgid ""
+"gnome-print-admin was not found.\n"
+"\n"
+"Please install gnome-print-admin to configure this printer"
+msgstr ""
+"gnome-print-admin blev ikke fundet.\n"
+"\n"
+"Installér venligst gnome-print-admin for at opsætte denne printer"
+
+#: libgnomeprint/gnome-printer-dialog.c:375
+msgid "Print to file"
+msgstr "Udskriv til fil"
+
+#: libgnomeprint/gnome-printer-dialog.c:392
+msgid "Properties"
+msgstr "Egenskaber"
+
+#: libgnomeprint/gnome-printer-dialog.c:500
 msgid "Select printer"
 msgstr "Vælg printer"
 
 #.
 #. * Create the profile information display
 #.
-#: libgnomeprint/gnome-printer-dialog.c:189
+#: libgnomeprint/gnome-printer-dialog.c:508
 msgid "State:"
 msgstr "Status:"
 
-#: libgnomeprint/gnome-printer-dialog.c:190
+#: libgnomeprint/gnome-printer-dialog.c:509
 msgid "Type:"
 msgstr "Type:"
 
-#: libgnomeprint/gnome-printer-dialog.c:191
+#: libgnomeprint/gnome-printer-dialog.c:510
 msgid "Location:"
 msgstr "Placering:"
 
-#: libgnomeprint/gnome-printer-dialog.c:192
+#: libgnomeprint/gnome-printer-dialog.c:511
 msgid "Comment:"
 msgstr "Kommentar:"
 
-#: libgnomeprint/gnome-printer-dialog.c:226
+#: libgnomeprint/gnome-printer-dialog.c:537
 msgid "_Name:"
 msgstr "_Navn:"
 
-#: libgnomeprint/gnome-printer-dialog.c:235
+#: libgnomeprint/gnome-printer-dialog.c:553
 msgid "_Printer"
 msgstr "_Printer"
 
-#: libgnomeprint/gnome-printer-dialog.c:248
+#: libgnomeprint/gnome-printer-dialog.c:570
 msgid "_File"
 msgstr "_Fil"
 
-#: libgnomeprint/gnome-printer-dialog.c:489
+#: libgnomeprint/gnome-printer-dialog.c:907
 msgid "Select Printer"
 msgstr "Vælg printer"
 
-#: libgnomeprint/gnome-printer.c:117
+#: libgnomeprint/gnome-printer-profile.c:108 libgpa/gpa-generic-ps.c:170
+#: libgpa/gpa-generic-ps.c:200
+msgid "Generic Postscript"
+msgstr "Generel Postscript"
+
+#: libgnomeprint/gnome-printer.c:136 libgpa/gpa-printer.c:169
 msgid "Printer is active"
 msgstr "Printeren udskriver"
 
-#: libgnomeprint/gnome-printer.c:120
+#: libgnomeprint/gnome-printer.c:139 libgpa/gpa-printer.c:172
 msgid "Printer is ready to print"
 msgstr "Printeren er klar til at udskrive"
 
-#: libgnomeprint/gnome-printer.c:123
+#: libgnomeprint/gnome-printer.c:142 libgpa/gpa-printer.c:175
 msgid "Printer is off-line"
 msgstr "Printeren er slukket"
 
-#: libgnomeprint/gnome-printer.c:126
+#: libgnomeprint/gnome-printer.c:145 libgpa/gpa-printer.c:178
 msgid "Can not communicate with printer"
 msgstr "Kan ikke kommunikere med printer"
 
-#: libgnomeprint/gnome-printer.c:129
+#: libgnomeprint/gnome-printer.c:148 libgpa/gpa-printer.c:181
 msgid "Unknown status"
 msgstr "Ukendt status"
 
+#: libgpa/gpa-generic-ps.c:64
+msgid "Generic Postscript (Hardcoded)"
+msgstr "Generel Postscript (maskinkodet)"
+
+#: libgpa/gpa-generic-ps.c:65
+msgid "GENERIC-POSTSCRIPT-HARDCODED"
+msgstr "GENERAL POSTSCRIPT (MASKINKODET)"
+
+#: libgpa/gpa-generic-ps.c:66
+msgid "0"
+msgstr "0"
+
+#: libgpa/gpa-generic-ps.c:67
+msgid "GNOME"
+msgstr "Gnome"
+
+#: libgpa/gpa-generic-ps.c:68
+msgid "0.0.0"
+msgstr "0.0.0"
+
+#: libgpa/gpa-generic-ps.c:69
+msgid "Unknown"
+msgstr "Ukendt"
+
+#: libgpa/gpa-generic-ps.c:70
+msgid "GnomePrint"
+msgstr "GnomePrint"
+
+#: libgpa/gpa-generic-ps.c:86
+msgid "gnome-print-ps2"
+msgstr "gnome-print-ps2"
+
+#: libgpa/gpa-ppd-options.c:431
+msgid "Options"
+msgstr "Indstillinger"
+
+#: libgpa/gpa-settings.c:222
+msgid "Default Settings"
+msgstr "Standardindstillinger"
+
 #: tests/testembed.c:18
 msgid "extracts the first font from output.pdf and places it in font.dump."
-msgstr "udtrækker den første skrifttype fra output.pdf og gemmer denne i font.dump."
+msgstr ""
+"udtrækker den første skrifttype fra output.pdf og gemmer denne i font.dump."
 
 #: tests/testembed.c:21
 msgid "extracts the font header from font.dump"
@@ -326,16 +410,16 @@ msgstr "udtrækker skrifttypekroppen "
 
 #: tests/testembed.c:25
 msgid "decrypts the font body "
-msgstr "afkrypterer skrifttypekroppen"
+msgstr "dekrypterer skrifttypekroppen"
 
-#: tests/testprint.c:116 tests/testprint.c:124
+#: tests/testprint.c:118 tests/testprint.c:126
 msgid "Gnome-print test page, rotated"
-msgstr "Gnome-print testside, roteret"
+msgstr "Gnome-print-testside, roteret"
 
-#: tests/testprint.c:131
+#: tests/testprint.c:133
 msgid "Gnome-print test page, slanted"
-msgstr "Gnome-print testside, med hældning"
+msgstr "Gnome-print-testside, med hældning"
 
-#: tests/testprint.c:139
+#: tests/testprint.c:141
 msgid "Gnome-print test page, slanted. Small"
-msgstr "Gnome-print testside, med hældning. Lille"
+msgstr "Gnome-print-testside, med hældning. Lille"

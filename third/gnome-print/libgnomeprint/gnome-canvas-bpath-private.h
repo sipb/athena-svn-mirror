@@ -62,6 +62,7 @@ struct _GnomeCanvasBpathPrivGdk {
 	GdkGC * fill_gc;		/* GC for filling */
 	GdkGC * outline_gc;		/* GC for outline */
 
+	gint len_points;		/* Size of the points array */
 	gint num_points;		/* Gdk points in canvas coords */
 	GdkPoint * points;		/* Ivariant: closed paths are before open ones */
 	GSList * closed_paths;		/* List of lengths */

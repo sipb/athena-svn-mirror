@@ -4,9 +4,15 @@
  */
 /* A module for a simple "name context", i.e. lisp-style atoms */
 
+#include "config.h"
+
 #include "gt1-misc.h"
 
 #include "gt1-namecontext.h"
+
+#ifdef HAVE_STRING_H
+#include <string.h>
+#endif
 
 /* btw, I do not know who wrote the following comment. I modified this
    file somewhat from gimp's app/procedural_db.c hash function. */

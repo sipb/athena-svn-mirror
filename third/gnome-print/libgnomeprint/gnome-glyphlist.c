@@ -1,5 +1,6 @@
-#define __GNOME_GLYPHLIST_C__
+#define _GNOME_GLYPHLIST_C_
 
+#include <string.h>
 #include <libgnomeprint/gp-unicode.h>
 #include <libgnomeprint/gnome-glyphlist.h>
 #include <libgnomeprint/gnome-glyphlist-private.h>
@@ -9,9 +10,18 @@ static void gnome_glyphlist_init (GnomeGlyphList * glyphlist);
 
 static void gnome_glyphlist_destroy (GtkObject * object);
 
-static void ggl_ensure_space (GnomeGlyphList * gl, gint num);
-static gint ggl_text_to_unicode (const gchar * text, gint length, gint32 * utext, gint ulength);
-static GnomeFont * ggl_current_font (GnomeGlyphList * gl);
+static void ggl_ensure_glyph_space (GnomeGlyphList * gl, gint space);
+static void ggl_ensure_rule_space (GnomeGlyphList * gl, gint space);
+
+#define GGL_ENSURE_GLYPH_SPACE(ggl,s) {if ((ggl)->g_size < (ggl)->g_length + (s)) ggl_ensure_glyph_space (ggl, s);}
+#define GGL_ENSURE_RULE_SPACE(ggl,s) {if((ggl)->r_size < (ggl)->r_length + (s)) ggl_ensure_rule_space (ggl, s);}
+
+void gnome_glyphlist_moveto_x (GnomeGlyphList * gl, gdouble distance);
+void gnome_glyphlist_moveto_y (GnomeGlyphList * gl, gdouble distance);
+void gnome_glyphlist_rmoveto_x (GnomeGlyphList * gl, gdouble distance);
+void gnome_glyphlist_rmoveto_y (GnomeGlyphList * gl, gdouble distance);
+void gnome_glyphlist_push_cp (GnomeGlyphList * gl);
+void gnome_glyphlist_pop_cp (GnomeGlyphList * gl);
 
 static GtkObjectClass * parent_class;
 
@@ -47,52 +57,488 @@ gnome_glyphlist_class_init (GnomeGlyphListClass * klass)
 }
 
 static void
-gnome_glyphlist_init (GnomeGlyphList * glyphlist)
+gnome_glyphlist_init (GnomeGlyphList * gl)
 {
-	glyphlist->glyphs = g_new (GGLGlyph, 4);
-	glyphlist->length = 0;
-	glyphlist->size = 4;
+	gl->glyphs = NULL;
+	gl->g_length = 0;
+	gl->g_size = 0;
+	gl->rules = NULL;
+	gl->r_length = 0;
+	gl->r_size = 0;
 }
 
 static void
 gnome_glyphlist_destroy (GtkObject * object)
 {
-	GnomeGlyphList * glyphlist;
+	GnomeGlyphList * gl;
 
-	glyphlist = (GnomeGlyphList *) object;
+	gl = (GnomeGlyphList *) object;
 
-	if (glyphlist->glyphs) {
-		gint i;
-		for (i = 0; i < glyphlist->length; i++) {
-			GGLGlyph * glyph;
-			glyph = glyphlist->glyphs + i;
-			while (glyph->info) {
-				GGLInfo * info;
-				info = (GGLInfo *) glyph->info->data;
-				if (info->type == GNOME_GL_FONT) {
-					gnome_font_unref (info->value.font);
-				}
-				g_free (info);
-				glyph->info = g_slist_remove (glyph->info, glyph->info->data);
+	if (gl->glyphs) {
+		g_free (gl->glyphs);
+		gl->glyphs = NULL;
+	}
+
+	if (gl->rules) {
+		gint r;
+		for (r = 0; r < gl->r_length; r++) {
+			if (gl->rules[r].code == GGL_FONT) {
+				gnome_font_unref (gl->rules[r].value.font);
 			}
 		}
-		g_free (glyphlist->glyphs);
-		glyphlist->glyphs = NULL;
-		glyphlist->length = 0;
-		glyphlist->size = 0;
-		while (glyphlist->info) {
-			GGLInfo * info;
-			info = (GGLInfo *) glyphlist->info->data;
-			if (info->type == GNOME_GL_FONT) {
-				gnome_font_unref (info->value.font);
-			}
-			g_free (info);
-			glyphlist->info = g_slist_remove (glyphlist->info, glyphlist->info->data);
-		}
+		g_free (gl->rules);
+		gl->rules = NULL;
 	}
 
 	if (((GtkObjectClass *) (parent_class))->destroy)
 		(* ((GtkObjectClass *) (parent_class))->destroy) (object);
+}
+
+void
+gnome_glyphlist_glyph (GnomeGlyphList * gl, gint glyph)
+{
+	g_return_if_fail (gl != NULL);
+	g_return_if_fail (GNOME_IS_GLYPHLIST (gl));
+	g_return_if_fail (glyph >= 0);
+
+	GGL_ENSURE_GLYPH_SPACE (gl, 1);
+
+	gl->glyphs[gl->g_length] = glyph;
+	gl->g_length++;
+}
+
+void
+gnome_glyphlist_moveto_x (GnomeGlyphList * gl, gdouble distance)
+{
+	gint r;
+
+	g_return_if_fail (gl != NULL);
+	g_return_if_fail (GNOME_IS_GLYPHLIST (gl));
+
+	for (r = gl->r_length - 1; r >= 0; r--) {
+		if (gl->rules[r].code == GGL_POSITION) {
+			g_return_if_fail (gl->rules[r].value.ival <= gl->g_length);
+			if (gl->rules[r].value.ival == gl->g_length) {
+				/* There is ruleset at the end of glyphlist */
+				for (r = r + 1; r < gl->r_length; r++) {
+					if ((gl->rules[r].code == GGL_MOVETOX) || (gl->rules[r].code == GGL_RMOVETOX)) {
+						/* There is moveto or rmoveto in ruleset */
+						gl->rules[r].code = GGL_MOVETOX;
+						gl->rules[r].value.dval = distance;
+						return;
+					}
+				}
+				GGL_ENSURE_RULE_SPACE (gl, 1);
+				gl->rules[r].code = GGL_MOVETOX;
+				gl->rules[r].value.dval = distance;
+				gl->r_length++;
+				return;
+			}
+			break;
+		}
+	}
+
+	GGL_ENSURE_RULE_SPACE (gl, 2);
+	gl->rules[gl->r_length].code = GGL_POSITION;
+	gl->rules[gl->r_length].value.ival = gl->g_length;
+	gl->r_length++;
+	gl->rules[gl->r_length].code = GGL_MOVETOX;
+	gl->rules[gl->r_length].value.dval = distance;
+	gl->r_length++;
+}
+
+void
+gnome_glyphlist_rmoveto_x (GnomeGlyphList * gl, gdouble distance)
+{
+	gint r;
+
+	g_return_if_fail (gl != NULL);
+	g_return_if_fail (GNOME_IS_GLYPHLIST (gl));
+
+	for (r = gl->r_length - 1; r >= 0; r--) {
+		if (gl->rules[r].code == GGL_POSITION) {
+			g_return_if_fail (gl->rules[r].value.ival <= gl->g_length);
+			if (gl->rules[r].value.ival == gl->g_length) {
+				/* There is ruleset at the end of glyphlist */
+				for (r = r + 1; r < gl->r_length; r++) {
+					if ((gl->rules[r].code == GGL_MOVETOX) || (gl->rules[r].code == GGL_RMOVETOX)) {
+						/* There is moveto or rmoveto in ruleset */
+						gl->rules[r].value.dval += distance;
+						return;
+					}
+				}
+				GGL_ENSURE_RULE_SPACE (gl, 1);
+				gl->rules[r].code = GGL_RMOVETOX;
+				gl->rules[r].value.dval = distance;
+				gl->r_length++;
+				return;
+			}
+			break;
+		}
+	}
+
+	GGL_ENSURE_RULE_SPACE (gl, 2);
+	gl->rules[gl->r_length].code = GGL_POSITION;
+	gl->rules[gl->r_length].value.ival = gl->g_length;
+	gl->r_length++;
+	gl->rules[gl->r_length].code = GGL_RMOVETOX;
+	gl->rules[gl->r_length].value.dval = distance;
+	gl->r_length++;
+}
+
+void
+gnome_glyphlist_moveto_y (GnomeGlyphList * gl, gdouble distance)
+{
+	gint r;
+
+	g_return_if_fail (gl != NULL);
+	g_return_if_fail (GNOME_IS_GLYPHLIST (gl));
+
+	for (r = gl->r_length - 1; r >= 0; r--) {
+		if (gl->rules[r].code == GGL_POSITION) {
+			g_return_if_fail (gl->rules[r].value.ival <= gl->g_length);
+			if (gl->rules[r].value.ival == gl->g_length) {
+				/* There is ruleset at the end of glyphlist */
+				for (r = r + 1; r < gl->r_length; r++) {
+					if ((gl->rules[r].code == GGL_MOVETOY) || (gl->rules[r].code == GGL_RMOVETOY)) {
+						/* There is moveto or rmoveto in ruleset */
+						gl->rules[r].code = GGL_MOVETOY;
+						gl->rules[r].value.dval = distance;
+						return;
+					}
+				}
+				GGL_ENSURE_RULE_SPACE (gl, 1);
+				gl->rules[r].code = GGL_MOVETOY;
+				gl->rules[r].value.dval = distance;
+				gl->r_length++;
+				return;
+			}
+			break;
+		}
+	}
+
+	GGL_ENSURE_RULE_SPACE (gl, 2);
+	gl->rules[gl->r_length].code = GGL_POSITION;
+	gl->rules[gl->r_length].value.ival = gl->g_length;
+	gl->r_length++;
+	gl->rules[gl->r_length].code = GGL_MOVETOY;
+	gl->rules[gl->r_length].value.dval = distance;
+	gl->r_length++;
+}
+
+void
+gnome_glyphlist_rmoveto_y (GnomeGlyphList * gl, gdouble distance)
+{
+	gint r;
+
+	g_return_if_fail (gl != NULL);
+	g_return_if_fail (GNOME_IS_GLYPHLIST (gl));
+
+	for (r = gl->r_length - 1; r >= 0; r--) {
+		if (gl->rules[r].code == GGL_POSITION) {
+			g_return_if_fail (gl->rules[r].value.ival <= gl->g_length);
+			if (gl->rules[r].value.ival == gl->g_length) {
+				/* There is ruleset at the end of glyphlist */
+				for (r = r + 1; r < gl->r_length; r++) {
+					if ((gl->rules[r].code == GGL_MOVETOY) || (gl->rules[r].code == GGL_RMOVETOY)) {
+						/* There is moveto or rmoveto in ruleset */
+						gl->rules[r].value.dval += distance;
+						return;
+					}
+				}
+				GGL_ENSURE_RULE_SPACE (gl, 1);
+				gl->rules[r].code = GGL_RMOVETOY;
+				gl->rules[r].value.dval = distance;
+				gl->r_length++;
+				return;
+			}
+			break;
+		}
+	}
+
+	GGL_ENSURE_RULE_SPACE (gl, 2);
+	gl->rules[gl->r_length].code = GGL_POSITION;
+	gl->rules[gl->r_length].value.ival = gl->g_length;
+	gl->r_length++;
+	gl->rules[gl->r_length].code = GGL_RMOVETOY;
+	gl->rules[gl->r_length].value.dval = distance;
+	gl->r_length++;
+}
+
+void
+gnome_glyphlist_moveto (GnomeGlyphList * gl, gdouble x, gdouble y)
+{
+	g_return_if_fail (gl != NULL);
+	g_return_if_fail (GNOME_IS_GLYPHLIST (gl));
+
+	gnome_glyphlist_moveto_x (gl, x);
+	gnome_glyphlist_moveto_y (gl, y);
+}
+
+void
+gnome_glyphlist_rmoveto (GnomeGlyphList * gl, gdouble x, gdouble y)
+{
+	g_return_if_fail (gl != NULL);
+	g_return_if_fail (GNOME_IS_GLYPHLIST (gl));
+
+	gnome_glyphlist_rmoveto_x (gl, x);
+	gnome_glyphlist_rmoveto_y (gl, y);
+}
+
+void
+gnome_glyphlist_push_cp (GnomeGlyphList * gl)
+{
+	gint r;
+
+	g_return_if_fail (gl != NULL);
+	g_return_if_fail (GNOME_IS_GLYPHLIST (gl));
+
+	for (r = gl->r_length - 1; r >= 0; r--) {
+		if (gl->rules[r].code == GGL_POSITION) {
+			g_return_if_fail (gl->rules[r].value.ival <= gl->g_length);
+			if (gl->rules[r].value.ival == gl->g_length) {
+				/* There is ruleset at the end of glyphlist */
+				GGL_ENSURE_RULE_SPACE (gl, 1);
+				gl->rules[r].code = GGL_PUSHCP;
+				gl->r_length++;
+				return;
+			}
+			break;
+		}
+	}
+
+	GGL_ENSURE_RULE_SPACE (gl, 2);
+	gl->rules[gl->r_length].code = GGL_POSITION;
+	gl->rules[gl->r_length].value.ival = gl->g_length;
+	gl->r_length++;
+	gl->rules[gl->r_length].code = GGL_PUSHCP;
+	gl->r_length++;
+}
+
+void
+gnome_glyphlist_pop_cp (GnomeGlyphList * gl)
+{
+	gint r;
+
+	g_return_if_fail (gl != NULL);
+	g_return_if_fail (GNOME_IS_GLYPHLIST (gl));
+
+	for (r = gl->r_length - 1; r >= 0; r--) {
+		if (gl->rules[r].code == GGL_POSITION) {
+			g_return_if_fail (gl->rules[r].value.ival <= gl->g_length);
+			if (gl->rules[r].value.ival == gl->g_length) {
+				/* There is ruleset at the end of glyphlist */
+				GGL_ENSURE_RULE_SPACE (gl, 1);
+				gl->rules[r].code = GGL_POPCP;
+				gl->r_length++;
+				return;
+			}
+			break;
+		}
+	}
+
+	GGL_ENSURE_RULE_SPACE (gl, 2);
+	gl->rules[gl->r_length].code = GGL_POSITION;
+	gl->rules[gl->r_length].value.ival = gl->g_length;
+	gl->r_length++;
+	gl->rules[gl->r_length].code = GGL_POPCP;
+	gl->r_length++;
+}
+
+void
+gnome_glyphlist_advance (GnomeGlyphList * gl, gboolean advance)
+{
+	gint r;
+
+	g_return_if_fail (gl != NULL);
+	g_return_if_fail (GNOME_IS_GLYPHLIST (gl));
+
+	for (r = gl->r_length - 1; r >= 0; r--) {
+		if (gl->rules[r].code == GGL_POSITION) {
+			g_return_if_fail (gl->rules[r].value.ival <= gl->g_length);
+			if (gl->rules[r].value.ival == gl->g_length) {
+				/* There is ruleset at the end of glyphlist */
+				for (r = r + 1; r < gl->r_length; r++) {
+					if (gl->rules[r].code == GGL_ADVANCE) {
+						gl->rules[r].value.bval = advance;
+						return;
+					}
+				}
+				GGL_ENSURE_RULE_SPACE (gl, 1);
+				gl->rules[r].code = GGL_ADVANCE;
+				gl->rules[r].value.bval = advance;
+				gl->r_length++;
+				return;
+			}
+			break;
+		}
+	}
+
+	GGL_ENSURE_RULE_SPACE (gl, 2);
+	gl->rules[gl->r_length].code = GGL_POSITION;
+	gl->rules[gl->r_length].value.ival = gl->g_length;
+	gl->r_length++;
+	gl->rules[gl->r_length].code = GGL_ADVANCE;
+	gl->rules[gl->r_length].value.bval = advance;
+	gl->r_length++;
+}
+
+void
+gnome_glyphlist_letterspace (GnomeGlyphList * gl, gdouble letterspace)
+{
+	gint r;
+
+	g_return_if_fail (gl != NULL);
+	g_return_if_fail (GNOME_IS_GLYPHLIST (gl));
+
+	for (r = gl->r_length - 1; r >= 0; r--) {
+		if (gl->rules[r].code == GGL_POSITION) {
+			g_return_if_fail (gl->rules[r].value.ival <= gl->g_length);
+			if (gl->rules[r].value.ival == gl->g_length) {
+				/* There is ruleset at the end of glyphlist */
+				for (r = r + 1; r < gl->r_length; r++) {
+					if (gl->rules[r].code == GGL_LETTERSPACE) {
+						gl->rules[r].value.dval = letterspace;
+						return;
+					}
+				}
+				GGL_ENSURE_RULE_SPACE (gl, 1);
+				gl->rules[r].code = GGL_LETTERSPACE;
+				gl->rules[r].value.dval = letterspace;
+				gl->r_length++;
+				return;
+			}
+			break;
+		}
+	}
+
+	GGL_ENSURE_RULE_SPACE (gl, 2);
+	gl->rules[gl->r_length].code = GGL_POSITION;
+	gl->rules[gl->r_length].value.ival = gl->g_length;
+	gl->r_length++;
+	gl->rules[gl->r_length].code = GGL_LETTERSPACE;
+	gl->rules[gl->r_length].value.dval = letterspace;
+	gl->r_length++;
+}
+
+void
+gnome_glyphlist_kerning (GnomeGlyphList * gl, gdouble kerning)
+{
+	gint r;
+
+	g_return_if_fail (gl != NULL);
+	g_return_if_fail (GNOME_IS_GLYPHLIST (gl));
+
+	for (r = gl->r_length - 1; r >= 0; r--) {
+		if (gl->rules[r].code == GGL_POSITION) {
+			g_return_if_fail (gl->rules[r].value.ival <= gl->g_length);
+			if (gl->rules[r].value.ival == gl->g_length) {
+				/* There is ruleset at the end of glyphlist */
+				for (r = r + 1; r < gl->r_length; r++) {
+					if (gl->rules[r].code == GGL_KERNING) {
+						gl->rules[r].value.dval = kerning;
+						return;
+					}
+				}
+				GGL_ENSURE_RULE_SPACE (gl, 1);
+				gl->rules[r].code = GGL_KERNING;
+				gl->rules[r].value.dval = kerning;
+				gl->r_length++;
+				return;
+			}
+			break;
+		}
+	}
+
+	GGL_ENSURE_RULE_SPACE (gl, 2);
+	gl->rules[gl->r_length].code = GGL_POSITION;
+	gl->rules[gl->r_length].value.ival = gl->g_length;
+	gl->r_length++;
+	gl->rules[gl->r_length].code = GGL_KERNING;
+	gl->rules[gl->r_length].value.dval = kerning;
+	gl->r_length++;
+}
+
+void
+gnome_glyphlist_font (GnomeGlyphList * gl, GnomeFont * font)
+{
+	gint r;
+
+	g_return_if_fail (gl != NULL);
+	g_return_if_fail (GNOME_IS_GLYPHLIST (gl));
+	g_return_if_fail (font != NULL);
+	g_return_if_fail (GNOME_IS_FONT (font));
+
+	for (r = gl->r_length - 1; r >= 0; r--) {
+		if (gl->rules[r].code == GGL_POSITION) {
+			g_return_if_fail (gl->rules[r].value.ival <= gl->g_length);
+			if (gl->rules[r].value.ival == gl->g_length) {
+				/* There is ruleset at the end of glyphlist */
+				for (r = r + 1; r < gl->r_length; r++) {
+					if (gl->rules[r].code == GGL_FONT) {
+						gnome_font_ref (font);
+						gnome_font_unref (gl->rules[r].value.font);
+						gl->rules[r].value.font = font;
+						return;
+					}
+				}
+				GGL_ENSURE_RULE_SPACE (gl, 1);
+				gl->rules[r].code = GGL_FONT;
+				gnome_font_ref (font);
+				gl->rules[r].value.font = font;
+				gl->r_length++;
+				return;
+			}
+			break;
+		}
+	}
+
+	GGL_ENSURE_RULE_SPACE (gl, 2);
+	gl->rules[gl->r_length].code = GGL_POSITION;
+	gl->rules[gl->r_length].value.ival = gl->g_length;
+	gl->r_length++;
+	gl->rules[gl->r_length].code = GGL_FONT;
+	gnome_font_ref (font);
+	gl->rules[gl->r_length].value.font = font;
+	gl->r_length++;
+}
+
+void
+gnome_glyphlist_color (GnomeGlyphList * gl, guint32 color)
+{
+	gint r;
+
+	g_return_if_fail (gl != NULL);
+	g_return_if_fail (GNOME_IS_GLYPHLIST (gl));
+
+	for (r = gl->r_length - 1; r >= 0; r--) {
+		if (gl->rules[r].code == GGL_POSITION) {
+			g_return_if_fail (gl->rules[r].value.ival <= gl->g_length);
+			if (gl->rules[r].value.ival == gl->g_length) {
+				/* There is ruleset at the end of glyphlist */
+				for (r = r + 1; r < gl->r_length; r++) {
+					if (gl->rules[r].code == GGL_COLOR) {
+						gl->rules[r].value.color = color;
+						return;
+					}
+				}
+				GGL_ENSURE_RULE_SPACE (gl, 1);
+				gl->rules[r].code = GGL_COLOR;
+				gl->rules[r].value.color = color;
+				gl->r_length++;
+				return;
+			}
+			break;
+		}
+	}
+
+	GGL_ENSURE_RULE_SPACE (gl, 2);
+	gl->rules[gl->r_length].code = GGL_POSITION;
+	gl->rules[gl->r_length].value.ival = gl->g_length;
+	gl->r_length++;
+	gl->rules[gl->r_length].code = GGL_COLOR;
+	gl->rules[gl->r_length].value.color = color;
+	gl->r_length++;
 }
 
 GnomeGlyphList *
@@ -101,9 +547,7 @@ gnome_glyphlist_from_text_sized_dumb (GnomeFont * font, guint32 color,
 				      const guchar * text, gint length)
 {
 	GnomeGlyphList * gl;
-	gint32 * utext;
-	gint ulength;
-	gint glyph, i;
+	const guchar * p;
 
 	g_return_val_if_fail (font != NULL, NULL);
 	g_return_val_if_fail (GNOME_IS_FONT (font), NULL);
@@ -112,27 +556,16 @@ gnome_glyphlist_from_text_sized_dumb (GnomeFont * font, guint32 color,
 	gl = gtk_type_new (GNOME_TYPE_GLYPHLIST);
 	gnome_glyphlist_font (gl, font);
 	gnome_glyphlist_color (gl, color);
+	gnome_glyphlist_advance (gl, TRUE);
 	gnome_glyphlist_kerning (gl, kerning);
 	gnome_glyphlist_letterspace (gl, letterspace);
 
-	/*
-	 * Can we expect that unicode string is not longer than original?
-	 */
-
-	if (length < 1) return gl;
-
-	utext = g_new (gint32, length * 2);
-
-	ulength = ggl_text_to_unicode (text, length, utext, length * 2);
-
-	if (ulength > 0) {
-		for (i = 0; i < ulength; i++) {
-			glyph = gnome_font_lookup_default (font, utext[i]);
-			gnome_glyphlist_glyph (gl, glyph);
-		}
+	for (p = text; p && p < (text + length); p = g_utf8_next_char (p)) {
+		gint unival, glyph;
+		unival = g_utf8_get_char (p);
+		glyph = gnome_font_lookup_default (font, unival);
+		gnome_glyphlist_glyph (gl, glyph);
 	}
-
-	g_free (utext);
 
 	return gl;
 }
@@ -152,22 +585,11 @@ gnome_glyphlist_from_text_dumb (GnomeFont * font, guint32 color,
 }
 
 void
-gnome_glyphlist_text_dumb (GnomeGlyphList * gl, const gchar * text)
-{
-	g_return_if_fail (gl != NULL);
-	g_return_if_fail (GNOME_IS_GLYPHLIST (gl));
-	g_return_if_fail (text != NULL);
-
-	gnome_glyphlist_text_sized_dumb (gl, text, strlen (text));
-}
-
-void
 gnome_glyphlist_text_sized_dumb (GnomeGlyphList * gl, const gchar * text, gint length)
 {
 	GnomeFont * font;
-	gint32 * utext;
-	gint ulength;
-	gint glyph, i;
+	const gchar * p;
+	gint r;
 
 	g_return_if_fail (gl != NULL);
 	g_return_if_fail (GNOME_IS_GLYPHLIST (gl));
@@ -175,38 +597,31 @@ gnome_glyphlist_text_sized_dumb (GnomeGlyphList * gl, const gchar * text, gint l
 
 	if (length < 1) return;
 
-	font = ggl_current_font (gl);
-	g_return_if_fail (font != NULL);
-
-	/*
-	 * Can we expect that unicode string is not longer than original?
-	 */
-
-	utext = g_new (gint32, length * 2);
-
-	ulength = ggl_text_to_unicode (text, length, utext, length * 2);
-
-	if (ulength > 0) {
-		for (i = 0; i < ulength; i++) {
-			glyph = gnome_font_lookup_default (font, utext[i]);
-			gnome_glyphlist_glyph (gl, glyph);
+	font = NULL;
+	for (r = gl->r_length - 1; r >= 0; r--) {
+		if (gl->rules[r].code == GGL_FONT) {
+			font = gl->rules[r].value.font;
+			break;
 		}
 	}
+	g_return_if_fail (font != NULL);
 
-	g_free (utext);
+	for (p = text; p && p < (text + length); p = g_utf8_next_char (p)) {
+		gint unival, glyph;
+		unival = g_utf8_get_char (p);
+		glyph = gnome_font_lookup_default (font, unival);
+		gnome_glyphlist_glyph (gl, glyph);
+	}
 }
 
 void
-gnome_glyphlist_glyph (GnomeGlyphList * gl, gint glyph)
+gnome_glyphlist_text_dumb (GnomeGlyphList * gl, const gchar * text)
 {
 	g_return_if_fail (gl != NULL);
 	g_return_if_fail (GNOME_IS_GLYPHLIST (gl));
+	g_return_if_fail (text != NULL);
 
-	ggl_ensure_space (gl, 1);
-	gl->glyphs[gl->length].glyph = glyph;
-	gl->glyphs[gl->length].info = gl->info;
-	gl->info = NULL;
-	gl->length++;
+	gnome_glyphlist_text_sized_dumb (gl, text, strlen (text));
 }
 
 void
@@ -218,202 +633,29 @@ gnome_glyphlist_glyphs (GnomeGlyphList * gl, gint * glyphs, gint num_glyphs)
 	g_return_if_fail (GNOME_IS_GLYPHLIST (gl));
 	g_return_if_fail (glyphs != NULL);
 
-	ggl_ensure_space (gl, num_glyphs);
+	GGL_ENSURE_GLYPH_SPACE (gl, num_glyphs);
 
 	for (i = 0; i < num_glyphs; i++) {
 		gnome_glyphlist_glyph (gl, glyphs[i]);
 	}
 }
 
-void
-gnome_glyphlist_advance (GnomeGlyphList * gl, gboolean advance)
+static void
+ggl_ensure_glyph_space (GnomeGlyphList * gl, gint space)
 {
-	GGLInfo * info;
+	if (gl->g_size >= gl->g_length + space) return;
 
-	g_return_if_fail (gl != NULL);
-	g_return_if_fail (GNOME_IS_GLYPHLIST (gl));
-
-	info = g_new (GGLInfo, 1);
-
-	info->type = GNOME_GL_ADVANCE;
-	info->value.bval = advance;
-
-	gl->info = g_slist_prepend (gl->info, info);
+	gl->g_size += GGL_RULE_BLOCK_SIZE;
+	gl->glyphs = g_renew (gint, gl->glyphs, gl->g_size);
 }
-
-void
-gnome_glyphlist_moveto (GnomeGlyphList * gl, gdouble x, gdouble y)
-{
-	GGLInfo * info;
-
-	g_return_if_fail (gl != NULL);
-	g_return_if_fail (GNOME_IS_GLYPHLIST (gl));
-
-	info = g_new (GGLInfo, 1);
-
-	info->type = GNOME_GL_MOVETOX;
-	info->value.dval = x;
-
-	gl->info = g_slist_prepend (gl->info, info);
-
-	info = g_new (GGLInfo, 1);
-
-	info->type = GNOME_GL_MOVETOY;
-	info->value.dval = y;
-
-	gl->info = g_slist_prepend (gl->info, info);
-}
-
-void
-gnome_glyphlist_rmoveto (GnomeGlyphList * gl, gdouble x, gdouble y)
-{
-	GGLInfo * info;
-
-	g_return_if_fail (gl != NULL);
-	g_return_if_fail (GNOME_IS_GLYPHLIST (gl));
-
-	info = g_new (GGLInfo, 1);
-
-	info->type = GNOME_GL_RMOVETOX;
-	info->value.dval = x;
-
-	gl->info = g_slist_prepend (gl->info, info);
-
-	info = g_new (GGLInfo, 1);
-
-	info->type = GNOME_GL_RMOVETOY;
-	info->value.dval = y;
-
-	gl->info = g_slist_prepend (gl->info, info);
-}
-
-void
-gnome_glyphlist_font (GnomeGlyphList * gl, GnomeFont * font)
-{
-	GGLInfo * info;
-
-	g_return_if_fail (gl != NULL);
-	g_return_if_fail (GNOME_IS_GLYPHLIST (gl));
-	g_return_if_fail (font != NULL);
-	g_return_if_fail (GNOME_IS_FONT (font));
-
-	info = g_new (GGLInfo, 1);
-
-	info->type = GNOME_GL_FONT;
-	info->value.font = font;
-	gnome_font_ref (font);
-
-	gl->info = g_slist_prepend (gl->info, info);
-}
-
-void
-gnome_glyphlist_color (GnomeGlyphList * gl, guint32 color)
-{
-	GGLInfo * info;
-
-	g_return_if_fail (gl != NULL);
-	g_return_if_fail (GNOME_IS_GLYPHLIST (gl));
-
-	info = g_new (GGLInfo, 1);
-
-	info->type = GNOME_GL_COLOR;
-	info->value.color = color;
-
-	gl->info = g_slist_prepend (gl->info, info);
-}
-
-void
-gnome_glyphlist_kerning (GnomeGlyphList * gl, gdouble kerning)
-{
-	GGLInfo * info;
-
-	g_return_if_fail (gl != NULL);
-	g_return_if_fail (GNOME_IS_GLYPHLIST (gl));
-
-	info = g_new (GGLInfo, 1);
-
-	info->type = GNOME_GL_KERNING;
-	info->value.dval = kerning;
-
-	gl->info = g_slist_prepend (gl->info, info);
-}
-
-void
-gnome_glyphlist_letterspace (GnomeGlyphList * gl, gdouble letterspace)
-{
-	GGLInfo * info;
-
-	g_return_if_fail (gl != NULL);
-	g_return_if_fail (GNOME_IS_GLYPHLIST (gl));
-
-	info = g_new (GGLInfo, 1);
-
-	info->type = GNOME_GL_LETTERSPACE;
-	info->value.dval = letterspace;
-
-	gl->info = g_slist_prepend (gl->info, info);
-}
-
-/*
- * Helpers
- */
 
 static void
-ggl_ensure_space (GnomeGlyphList * gl, gint num)
+ggl_ensure_rule_space (GnomeGlyphList * gl, gint space)
 {
-	if (gl->length + num > gl->size) {
-		while (gl->length + num > gl->size) gl->size <<= 1;
-		gl->glyphs = g_renew (GGLGlyph, gl->glyphs, gl->size);
-	}
+	if (gl->r_size >= gl->r_length + space) return;
+
+	gl->r_size += GGL_RULE_BLOCK_SIZE;
+	gl->rules = g_renew (GGLRule, gl->rules, gl->r_size);
 }
-
-static gint
-ggl_text_to_unicode (const gchar * text, gint length, gint32 * utext, gint ulength)
-{
-	const gchar * p;
-	gint32 *o;
-
-	o = utext;
-
-	for (p = text; p && p < (text + length); p = g_utf8_next_char (p)) {
-		*o++ = g_utf8_get_char (p);
-	}
-
-	return o - utext;
-}
-
-static GnomeFont *
-ggl_current_font (GnomeGlyphList * gl)
-{
-	GGLInfo * info;
-	GSList * l;
-	gint i;
-
-	for (l = gl->info; l != NULL; l = l->next) {
-		info = (GGLInfo *) l->data;
-		if (info->type == GNOME_GL_FONT) return info->value.font;
-	}
-
-	for (i = gl->length - 1; i >= 0; i--) {
-		for (l = gl->glyphs[i].info; l != NULL; l = l->next) {
-			info = (GGLInfo *) l->data;
-			if (info->type == GNOME_GL_FONT) return info->value.font;
-		}
-	}
-
-	return NULL;
-}
-
-
-
-
-
-
-
-
-
-
-
-
 
 

@@ -16,7 +16,12 @@
 
 #include <math.h>
 #include <string.h>
-#include <gnome.h>
+
+#include <gtk/gtkobject.h>
+#include <gtk/gtkwidget.h>
+#include <libgnomeui/gnome-canvas.h>
+#include <libgnomeui/gnome-canvas-util.h>
+
 #include "gnome-canvas-clipgroup.h"
 #include <libart_lgpl/art_rect.h>
 #include <libart_lgpl/art_vpath.h>

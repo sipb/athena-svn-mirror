@@ -1,33 +1,44 @@
 noinst_PROGRAMS = 	testprint  \
-			testtext   \
-			testprint2 \
-			testprint3 \
-			testprint4 \
-			testprint5 \
-			testprint6 \
-			testpdf    \
-			testmetrics\
-			testembed  \
-			testzip
+				testtext   \
+				testprint2 \
+				testprint3 \
+				testprint4 \
+				testprint5 \
+				testprint6 \
+				testfax	 \
+				testpdf    \
+				testmetrics\
+				testembed  \
+				testzip
+
+if LIBGPA
+LIBGPA_TEST_CFLAGS = -I$(top_srcdir)/libgpa
+LIBGPA_TEST_LIBS = $(top_builddir)/libgpa/libgpa.la
+else
+LIBGPA_TEST_CFLAGS = 
+LIBGPA_TEST_LIBS =
+endif
 
 INCLUDES = \
-	$(GTK_CFLAGS)			\
+	$(GTK_CFLAGS)				\
 	-I$(top_srcdir)/intl 		\
 	-I$(top_builddir)/intl		\
 	-I$(top_srcdir)			\
 	-I$(top_srcdir)/libgnomeprint	\
-	$(GNOME_INCLUDEDIR)		\
+	$(GNOME_INCLUDEDIR)			\
 	$(PRINT_TEST_CFLAGS)		\
-	-DPROFILEDIR=\""$(profilesdir)"\"
+	$(LIBGPA_TEST_CFLAGS)		\
+	-DPROFILEDIR=\""$(profilesdir)"\" 
 
-CPPFLAGS = \
+CPPFLAGS = @CPPFLAGS@ \
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" 	\
 	-DBINDIR=\""$(bindir)"\"	\
 	-DDATADIR=\""$(datadir)"\"
 
-print_libs =						\
+print_libs =									\
 	$(top_builddir)/libgnomeprint/libgnomeprint.la	\
-	$(PRINT_TEST_LIBS)				\
+	$(PRINT_TEST_LIBS)							\
+	$(LIBGPA_TEST_LIBS)							\
 	$(INTLLIBS)
 
 testprint_SOURCES = testprint.c
@@ -64,6 +75,12 @@ testprint6_SOURCES = testprint6.c
 testprint6_LDFLAGS =
 testprint6_DEPENDENCIES = $(DEPS)
 testprint6_LDADD = \
+	$(print_libs)
+
+testfax_SOURCES = testfax.c
+testfax_LDFLAGS =
+testfax_DEPENDENCIES = $(DEPS)
+testfax_LDADD = \
 	$(print_libs)
 
 testpdf_SOURCES = testpdf.c

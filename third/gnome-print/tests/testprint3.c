@@ -47,6 +47,9 @@ print_test_page (GnomePrintContext *pc)
 	GnomeFont *font;
 	int i;
 	double aff [6];
+	const gchar *sample;
+
+	gnome_print_beginpage (pc, "testprint3 demo page");
 
 	font = gnome_font_new ("Courier", 14);
 	gnome_print_setfont (pc, font);
@@ -166,6 +169,16 @@ print_test_page (GnomePrintContext *pc)
 	gnome_print_moveto (pc, 275, 430);
 	gnome_print_show (pc, "The quick brown fox jumps over the lazy dog\n");
 
+	font = gnome_font_new ("ITC Zapf Dingbats", 20);
+	gnome_print_setfont (pc, font);
+	sample = gnome_font_face_get_sample (gnome_font_get_face (font));
+	gnome_print_moveto (pc, 275, 450);
+	gnome_print_show (pc, sample);
+	font = gnome_font_new ("Symbol", 20);
+	gnome_print_setfont (pc, font);
+	sample = gnome_font_face_get_sample (gnome_font_get_face (font));
+	gnome_print_moveto (pc, 275, 470);
+	gnome_print_show (pc, sample);
 #endif
 
 	gnome_print_showpage (pc);

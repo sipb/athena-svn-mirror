@@ -70,7 +70,7 @@ gint      g_unichar_to_utf8 (gunichar    c,
  */
 
 gboolean g_utf8_validate (const gchar  *str,
-                          gint          len,
+                          gint          max_len,
                           const gchar **end);
 
 END_GNOME_DECLS

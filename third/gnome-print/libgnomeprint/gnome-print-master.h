@@ -37,20 +37,22 @@ BEGIN_GNOME_DECLS
 typedef struct _GnomePrintMaster      GnomePrintMaster;
 typedef struct _GnomePrintMasterClass GnomePrintMasterClass;
 
-guint		gnome_print_master_get_type	(void);
-GnomePrintMaster *gnome_print_master_new	(void);
-GnomePrintMaster *gnome_print_master_new_from_dialog (GnomePrintDialog *dialog);
+guint		   gnome_print_master_get_type	(void);
+GnomePrintMaster  *gnome_print_master_new	(void);
+GnomePrintMaster  *gnome_print_master_new_from_dialog (GnomePrintDialog *dialog);
 GnomePrintContext *gnome_print_master_get_context(GnomePrintMaster *gpm);
 
-void gnome_print_master_set_paper(GnomePrintMaster *gpm, const GnomePaper *printer);
-const GnomePaper * gnome_print_master_get_paper(const GnomePrintMaster *gpm);
+void               gnome_print_master_set_paper (GnomePrintMaster *gpm,
+						 const GnomePaper *paper);
+const GnomePaper * gnome_print_master_get_paper (const GnomePrintMaster *gpm);
 
-void gnome_print_master_set_printer(GnomePrintMaster *gpm, GnomePrinter *printer);
-void gnome_print_master_set_copies(GnomePrintMaster *gpm, int copies, gboolean iscollate);
-void gnome_print_master_close(GnomePrintMaster *gpm);
-int gnome_print_master_get_pages(GnomePrintMaster *gpm);
-int gnome_print_master_print(GnomePrintMaster *gpm);
-/*int gnome_print_master_preview(GnomePrintMaster *gpm, char *title);*/
+void gnome_print_master_set_printer (GnomePrintMaster *gpm,
+				     GnomePrinter *printer);
+void gnome_print_master_set_copies  (GnomePrintMaster *gpm,
+				     int copies, gboolean iscollate);
+void gnome_print_master_close       (GnomePrintMaster *gpm);
+int  gnome_print_master_get_pages   (GnomePrintMaster *gpm);
+int  gnome_print_master_print       (GnomePrintMaster *gpm);
 
 END_GNOME_DECLS
 

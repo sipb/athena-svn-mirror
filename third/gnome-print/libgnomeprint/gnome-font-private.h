@@ -2,7 +2,10 @@
 #define __GNOME_FONT_PRIVATE_H__
 
 #include <libgnome/gnome-defs.h>
+#include <libgnomeprint/gp-character-block.h>
+#include <libgnomeprint/gp-fontmap.h>
 #include <libgnomeprint/gnome-font.h>
+#include <libgnomeprint/gnome-rfont.h>
 #include <libgnomeprint/gt1-parset1.h>
 
 BEGIN_GNOME_DECLS
@@ -45,28 +48,28 @@ typedef struct {
 } GFFGlyphInfo;
 
 struct _GnomeFontFacePrivate {
-	char *font_name;
-	char *afm_fn;
-	char *pfb_fn;
-	char *fullname;
-	char *familyname;
-	char *weight;
-	char *alias;
+	/* Pointer to our fontmap entry */
+	GPFontEntry * entry;
 
 	GnomeFontWeight weight_code;
 	gboolean italic;
 	gboolean fixed_width;
 
-	/* Font metric info follows */
-	/* above is font metric info stored in the fontmap, below is font
-	 * metric info parsed from the afm file. */
+	/* Glyph storage */
 
 	gint num_glyphs;
 	GFFGlyphInfo * glyphs;
-	GHashTable * glyphmap;
+
+	/* Encoding */
+
+	GPUCMap * unimap;
 
 	gint num_private;
 	GHashTable * privencoding;
+
+	/* Font metric info follows */
+	/* above is font metric info stored in the fontmap, below is font
+	 * metric info parsed from the afm file. */
 
 	int   ascender;
 	int   descender;
@@ -76,19 +79,28 @@ struct _GnomeFontFacePrivate {
 	double italics_angle;
 	double xheight;
 	ArtDRect bbox;
-#if 0
-	int  *widths;
-#endif
 	GnomeFontKernPair *kerns;
 	int num_kerns;
 	GnomeFontLigList **ligs; /* one liglist for each glyph */
 
-	int first_cov_page;
-	int num_cov_pages;
-	int **cov_pages; /* each page is an array of 256 ints */
-
 	Gt1LoadedFont * loadedfont;
 };
+
+/*
+ * Removed from the structure:
+
+	int first_cov_page;
+	int num_cov_pages;
+	int **cov_pages;
+	int  *widths;
+	char * afm_fn;
+	char * pfb_fn;
+	char * fullname;
+	char * familyname;
+	char * speciesname;
+	char * psname;
+	char * alias;
+  */
 
 struct _GnomeFontKernPair {
 	int glyph1;
@@ -101,32 +113,18 @@ struct _GnomeFontLigList {
 	int succ, lig;
 };
 
-/* Should be renamed to gnome_xx_get_alias, if preserved */
-
-const char * gnome_font_get_glyph_name (const GnomeFont *font);
-
-/* These should be renamed to gnome_xx_get_alias, if preserved */
-
-const gchar * gnome_font_unsized_get_glyph_name (const GnomeFontFace * face);
-
-/*
- * Returns number of defined glyphs in typeface
- */
-
-gint gnome_font_face_get_num_glyphs (const GnomeFontFace * face);
-
 /*
  * Returns PostScript name for glyph
  */
 
 const gchar * gnome_font_face_get_glyph_ps_name (const GnomeFontFace * face, gint glyph);
+const gchar * gnome_font_unsized_get_glyph_name (const GnomeFontFace * face);
+
+ArtPoint * gnome_rfont_get_glyph_stdkerning (const GnomeRFont * rfont, gint glyph0, gint glyph1, ArtPoint * kerning);
 
 /*
- * Return font caracteristics, grabbed from the AFM file, needed for PDF generation 
+ * AFM metric info can now be retrieved via GtkArg system
  */
-double gnome_font_face_get_capheight    (const GnomeFontFace * face);
-double gnome_font_face_get_italics_angle (const GnomeFontFace * face);
-double gnome_font_face_get_xheight (const GnomeFontFace * face);
 
 END_GNOME_DECLS
 

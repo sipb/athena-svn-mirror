@@ -17,6 +17,8 @@
 BEGIN_GNOME_DECLS
 
 typedef struct _GPCharBlock GPCharBlock;
+typedef struct _GPUCMapEntry GPUCMapEntry;
+typedef struct _GPUCMap GPUCMap;
 
 typedef enum {
 	/* General scripts */
@@ -115,7 +117,8 @@ typedef enum {
 	GP_CB_ARABIC_PRESENTATION_FORMS_B,
 	GP_CB_SPECIALS_1,
 	GP_CB_HALFWIDTH_AND_FULLWIDTH_FORMS,
-	GP_CB_SPECIALS_2
+	GP_CB_SPECIALS_2,
+	GP_CB_END
 } GPCharBlockCode;
 
 struct _GPCharBlock {
@@ -124,7 +127,25 @@ struct _GPCharBlock {
 	gint last;
 };
 
+struct _GPUCMapEntry {
+	const GPCharBlock * block;
+	gint mapped;
+	gint * glyphs;
+};
+
+struct _GPUCMap {
+	gint refcount;
+	GPUCMapEntry * entry[GP_CB_END];
+};
+
 const GPCharBlock * gp_unicode_get_char_block (gint unival);
+
+GPUCMap * gp_uc_map_new (void);
+void gp_uc_map_ref (GPUCMap * map);
+void gp_uc_map_unref (GPUCMap * map);
+
+void gp_uc_map_insert (GPUCMap * map, gint unicode, gint glyph);
+gint gp_uc_map_lookup (GPUCMap * map, gint unicode);
 
 END_GNOME_DECLS
 

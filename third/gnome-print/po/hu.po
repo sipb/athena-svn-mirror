@@ -1,323 +1,453 @@
 # gnome-print hungarian po.
 # Copyright (C) 1999 Free Software Foundation, Inc.
-# Shooby Ban <bansz@szif.hu>, 1999.
+# Szabolcs Ban <shooby@gnome.hu>, 1999.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-print VERSION\n"
-"POT-Creation-Date: 2000-08-11 13:23+0200\n"
-"PO-Revision-Date: 1999-04-09 13:43+0200\n"
-"Last-Translator: Shooby Ban <bansz@szif.hu>\n"
-"Language-Team: Hungarian <hu@li.org>\n"
+"POT-Creation-Date: 2001-10-11 20:16-0600\n"
+"PO-Revision-Date: 2001-05-29 17:16+02:00\n"
+"Last-Translator: Emese Kovacs <emese@gnome.hu>\n"
+"Language-Team: Hungarian <hu@gnome.hu>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=iso-8859-2\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: gnome-font-install.c:574
+#: installer/gnome-font-install.c:119
 msgid "Print out debugging information"
 msgstr "Hibakövetési információk kiírása"
 
-#: gnome-font-install.c:576 gnome-font-install.c:578 gnome-font-install.c:580
-msgid "Does nothing yet."
-msgstr "Nem csinál még semmit."
+#: installer/gnome-font-install.c:121
+#, fuzzy
+msgid "Search directories recursively for font files"
+msgstr "A .font fájlok keresése ezen az útvonalon."
 
-#: gnome-font-install.c:585
-msgid "Use this path to write the fontmap file."
-msgstr "Használd ezt az útvonalat a fontmap fájlhoz."
+#: installer/gnome-font-install.c:123
+msgid "Start from zero fontmap, instead of parsing old one"
+msgstr ""
 
-#: gnome-font-install.c:585 gnome-font-install.c:587 gnome-font-install.c:589
-#: gnome-font-install.c:592 gnome-font-install.c:594
+#: installer/gnome-font-install.c:125
+msgid "Create $HOME/.gnome/fonts/gnome-print.fontmap"
+msgstr ""
+
+#: installer/gnome-font-install.c:127
+msgid "Create $SYSCONFDIR/gnome/fonts/gnome-print.fontmap"
+msgstr ""
+
+#: installer/gnome-font-install.c:129
+msgid "Create $DATADIR/gnome/fonts/gnome-print.fontmap"
+msgstr ""
+
+#: installer/gnome-font-install.c:131
+msgid "Write output fontmap to specified file (- for stdout)"
+msgstr ""
+
+#: installer/gnome-font-install.c:134
+msgid "File describing known aliases"
+msgstr ""
+
+#: installer/gnome-font-install.c:134
 msgid "PATH"
 msgstr "PATH"
 
-#: gnome-font-install.c:587
-msgid "Use this path to search for relative afm files."
-msgstr "Használd ezt az útvonalat az afm fájlok kereséséhez."
-
-#: gnome-font-install.c:589
-msgid "Use this path to search for relative pfb files."
-msgstr "Használd ezt az útvonalat a pfb fájlok kereséséhez. "
-
-#: gnome-font-install.c:592
-msgid "Use this to set up a key/value pair for afm files."
-msgstr "Használd ezt az útvonalat az afm fájlok kulcs/érték képzéshez."
-
-#: gnome-font-install.c:594
-msgid "Use this to set up a key/value pair for pfb files."
-msgstr "Használd ezt az útvonalat a pbf fájlok kulcs/érték képzéséhez."
-
 #. Family frame
-#: libgnomeprint/gnome-font-dialog.c:138
+#: libgnomeprint/gnome-font-dialog.c:142
 msgid "Font family"
-msgstr "Betûtípus család"
+msgstr "Betûcsalád"
 
 #. Style frame
-#: libgnomeprint/gnome-font-dialog.c:171
+#: libgnomeprint/gnome-font-dialog.c:175
 msgid "Style"
 msgstr "Stílus"
 
-#: libgnomeprint/gnome-font-dialog.c:233
+#: libgnomeprint/gnome-font-dialog.c:237
 msgid "Font size:"
-msgstr "Méret:"
+msgstr "Betûméret:"
 
-#: libgnomeprint/gnome-font-dialog.c:752
+#: libgnomeprint/gnome-font-dialog.c:758
 msgid "Font Selection"
-msgstr "Betûkészlet kiválasztás"
+msgstr "Betûkészlet kiválasztása"
 
-#: libgnomeprint/gnome-font-face.c:574
+#: libgnomeprint/gnome-font-face.c:605
 msgid "The quick brown fox jumps over the lazy dog."
 msgstr "Árvíztûrõ tükörfúrógép aábcdeéfghijklmnoóöõpqrstuúüûvxyz"
 
-#: libgnomeprint/gnome-font-face.c:782
+#. Encode empty font
+#: libgnomeprint/gnome-font-face.c:808
 #, c-format
-msgid "Couldn't open font file %s\n"
-msgstr "Nem tudom megnyitni a betûtípus-fájlt: %s\n"
+msgid "Couldn't generate pfa for face %s\n"
+msgstr "Nem sikerült pfa-t generálni %s betûkészlethez\n"
 
-#: libgnomeprint/gnome-font-face.c:1202
+#: libgnomeprint/gnome-font-face.c:925
 #, c-format
 msgid "status loading %s = %d\n"
-msgstr "státusz töltés %s = %d\n"
+msgstr "állapot töltése %s = %d\n"
 
-#: libgnomeprint/gnome-print-copies.c:232
+#: libgnomeprint/gnome-print-copies.c:238
 msgid "Copies"
 msgstr "Példányok"
 
-#: libgnomeprint/gnome-print-copies.c:243
+#: libgnomeprint/gnome-print-copies.c:249
 msgid "N_umber of copies:"
 msgstr "Példányok s_záma:"
 
-#: libgnomeprint/gnome-print-copies.c:264
+#: libgnomeprint/gnome-print-copies.c:270
 msgid "_Collate"
-msgstr "Ö_sszevet"
+msgstr "_Szétválogatás"
 
-#: libgnomeprint/gnome-print-dialog.c:164
+#: libgnomeprint/gnome-print-dialog.c:180
 msgid "Print Range"
 msgstr "Nyomtatandó"
 
-#: libgnomeprint/gnome-print-dialog.c:185
-#: libgnomeprint/gnome-print-master-preview.c:680
+#: libgnomeprint/gnome-print-dialog.c:201
+#: libgnomeprint/gnome-print-master-preview.c:696
 msgid "Print"
-msgstr "Nyomtat"
+msgstr "Nyomtatás"
 
-#: libgnomeprint/gnome-print-dialog.c:186
+#: libgnomeprint/gnome-print-dialog.c:202
 msgid "Preview"
 msgstr "Elõnézet"
 
-#: libgnomeprint/gnome-print-dialog.c:333
+#: libgnomeprint/gnome-print-dialog.c:353
 msgid "_All"
 msgstr "_Mindent"
 
-#: libgnomeprint/gnome-print-dialog.c:363
-#: libgnomeprint/gnome-print-dialog.c:377
+#: libgnomeprint/gnome-print-dialog.c:383
+#: libgnomeprint/gnome-print-dialog.c:397
 msgid "_Selection"
 msgstr "_Kijelölés"
 
-#: libgnomeprint/gnome-print-dialog.c:436
+#: libgnomeprint/gnome-print-dialog.c:458
 msgid "from:"
-msgstr "Ettõl:"
+msgstr "ettõl:"
 
-#: libgnomeprint/gnome-print-dialog.c:450
+#: libgnomeprint/gnome-print-dialog.c:472
 msgid "to:"
 msgstr "eddig:"
 
-#: libgnomeprint/gnome-print-dialog.c:495
+#: libgnomeprint/gnome-print-dialog.c:518
 msgid "f_rom:"
 msgstr "_ettõl:"
 
-#: libgnomeprint/gnome-print-dialog.c:512
+#: libgnomeprint/gnome-print-dialog.c:535
 msgid "_to:"
 msgstr "e_ddig:"
 
-#: libgnomeprint/gnome-print-master-preview.c:625
+#: libgnomeprint/gnome-print-file.c:72
+#, c-format
+msgid ""
+"'%s' is about to be overwritten.\n"
+"\n"
+"Do you want to continue?"
+msgstr ""
+"A következõ fájl felülírás elõtt áll: %s\n"
+"\n"
+"Folytatod?"
+
+#: libgnomeprint/gnome-print-file.c:169
+msgid "Select output file"
+msgstr "Válaszd ki a kimeneti fájlt"
+
+#: libgnomeprint/gnome-print-master-preview.c:641
 msgid "Page: "
 msgstr "Lap: "
 
-#: libgnomeprint/gnome-print-master-preview.c:652
+#: libgnomeprint/gnome-print-master-preview.c:668
 msgid "_First page"
 msgstr "_Elsõ lap"
 
-#: libgnomeprint/gnome-print-master-preview.c:652
-#: libgnomeprint/gnome-print-master-preview.c:683
+#: libgnomeprint/gnome-print-master-preview.c:668
+#: libgnomeprint/gnome-print-master-preview.c:699
 msgid "Shows the first page"
 msgstr "Elsõ lap mutatása"
 
-#: libgnomeprint/gnome-print-master-preview.c:655
+#: libgnomeprint/gnome-print-master-preview.c:671
 msgid "_Previous page"
 msgstr "E_lõzõ lap"
 
-#: libgnomeprint/gnome-print-master-preview.c:655
-#: libgnomeprint/gnome-print-master-preview.c:686
+#: libgnomeprint/gnome-print-master-preview.c:671
+#: libgnomeprint/gnome-print-master-preview.c:702
 msgid "Shows the previous page"
 msgstr "Elõzõ lap mutatása"
 
-#: libgnomeprint/gnome-print-master-preview.c:658
+#: libgnomeprint/gnome-print-master-preview.c:674
 msgid "_Next page"
 msgstr "_Következõ lap"
 
-#: libgnomeprint/gnome-print-master-preview.c:658
-#: libgnomeprint/gnome-print-master-preview.c:689
+#: libgnomeprint/gnome-print-master-preview.c:674
+#: libgnomeprint/gnome-print-master-preview.c:705
 msgid "Shows the next page"
 msgstr "Következõ lap mutatása"
 
-#: libgnomeprint/gnome-print-master-preview.c:661
+#: libgnomeprint/gnome-print-master-preview.c:677
 msgid "_Last page"
 msgstr "_Utolsó lap"
 
-#: libgnomeprint/gnome-print-master-preview.c:661
-#: libgnomeprint/gnome-print-master-preview.c:692
+#: libgnomeprint/gnome-print-master-preview.c:677
+#: libgnomeprint/gnome-print-master-preview.c:708
 msgid "Shows the last page"
 msgstr "Utolsó lap mutatása"
 
-#: libgnomeprint/gnome-print-master-preview.c:666
+#: libgnomeprint/gnome-print-master-preview.c:682
 msgid "Zoom _in"
 msgstr "_Nagyítás"
 
-#: libgnomeprint/gnome-print-master-preview.c:666
+#: libgnomeprint/gnome-print-master-preview.c:682
 msgid "Zooms in"
 msgstr "Nagyítás"
 
-#: libgnomeprint/gnome-print-master-preview.c:667
+#: libgnomeprint/gnome-print-master-preview.c:683
 msgid "Zoom _out"
 msgstr "K_icsinyítés"
 
-#: libgnomeprint/gnome-print-master-preview.c:667
+#: libgnomeprint/gnome-print-master-preview.c:683
 msgid "Zooms out"
 msgstr "Kicsinyítés"
 
-#: libgnomeprint/gnome-print-master-preview.c:674
+#: libgnomeprint/gnome-print-master-preview.c:690
 msgid "_View"
 msgstr "_Nézet"
 
-#: libgnomeprint/gnome-print-master-preview.c:680
+#: libgnomeprint/gnome-print-master-preview.c:696
 msgid "Prints the current file"
 msgstr "Kinyomtatja az aktuális fájlt"
 
-#: libgnomeprint/gnome-print-master-preview.c:683
+#: libgnomeprint/gnome-print-master-preview.c:699
 msgid "First"
 msgstr "Elsõ"
 
-#: libgnomeprint/gnome-print-master-preview.c:686
+#: libgnomeprint/gnome-print-master-preview.c:702
 msgid "Back"
-msgstr "Viszza"
+msgstr "Vissza"
 
-#: libgnomeprint/gnome-print-master-preview.c:689
+#: libgnomeprint/gnome-print-master-preview.c:705
 msgid "Next"
-msgstr "Követk"
+msgstr "Elõre"
 
-#: libgnomeprint/gnome-print-master-preview.c:692
+#: libgnomeprint/gnome-print-master-preview.c:708
 msgid "Last"
-msgstr "Utsó"
+msgstr "Utolsó"
 
-#: libgnomeprint/gnome-print-master-preview.c:695
+#: libgnomeprint/gnome-print-master-preview.c:711
 msgid "Zoom in"
 msgstr "Nagyítás"
 
-#: libgnomeprint/gnome-print-master-preview.c:695
+#: libgnomeprint/gnome-print-master-preview.c:711
 msgid "Zooms the page in"
 msgstr "Nagyítja a lapot"
 
-#: libgnomeprint/gnome-print-master-preview.c:696
+#: libgnomeprint/gnome-print-master-preview.c:712
 msgid "Zoom out"
 msgstr "Kicsinyítés"
 
-#: libgnomeprint/gnome-print-master-preview.c:696
+#: libgnomeprint/gnome-print-master-preview.c:712
 msgid "Zooms the page out"
 msgstr "Kicsinyíti a lapot"
 
-#: libgnomeprint/gnome-print-master-preview.c:697
+#: libgnomeprint/gnome-print-master-preview.c:713
 msgid "Fit"
 msgstr "Egész lapot"
 
-#: libgnomeprint/gnome-print-master-preview.c:697
+#: libgnomeprint/gnome-print-master-preview.c:713
 msgid "Zooms to fit the whole page"
 msgstr "Az egész lapot mutatva méretez"
 
-#: libgnomeprint/gnome-print-master-preview.c:698
+#: libgnomeprint/gnome-print-master-preview.c:714
 msgid "Fit Wide"
 msgstr "Szélességet"
 
-#: libgnomeprint/gnome-print-master-preview.c:698
+#: libgnomeprint/gnome-print-master-preview.c:714
 msgid "Zooms to fit the width of the page"
 msgstr "A lap teljes szélességében mutatva"
 
-#: libgnomeprint/gnome-print-master-preview.c:699
+#: libgnomeprint/gnome-print-master-preview.c:715
 msgid "Fit Tall"
 msgstr "Magasságot"
 
-#: libgnomeprint/gnome-print-master-preview.c:699
+#: libgnomeprint/gnome-print-master-preview.c:715
 msgid "Zooms to fit the height of the page"
 msgstr "A lap teljes magasságában mutatva"
 
-#: libgnomeprint/gnome-printer-dialog.c:180
+#: libgnomeprint/gnome-printer-dialog.c:293
+msgid ""
+"gnome-print-admin was not found.\n"
+"\n"
+"Please install gnome-print-admin to configure this printer"
+msgstr ""
+"A gnome-print-admin nem található.\n"
+"\n"
+"A nyomtató beállításához telepítsd a gnome-print-admin programot."
+
+#: libgnomeprint/gnome-printer-dialog.c:375
+msgid "Print to file"
+msgstr "Nyomtatás fájlba"
+
+#: libgnomeprint/gnome-printer-dialog.c:392
+msgid "Properties"
+msgstr "Tulajdonságok"
+
+#: libgnomeprint/gnome-printer-dialog.c:500
 msgid "Select printer"
 msgstr "Válaszd ki a nyomtatót"
 
 #.
 #. * Create the profile information display
 #.
-#: libgnomeprint/gnome-printer-dialog.c:189
+#: libgnomeprint/gnome-printer-dialog.c:508
 msgid "State:"
 msgstr "Állapot:"
 
-#: libgnomeprint/gnome-printer-dialog.c:190
+#: libgnomeprint/gnome-printer-dialog.c:509
 msgid "Type:"
 msgstr "Típus:"
 
-#: libgnomeprint/gnome-printer-dialog.c:191
+#: libgnomeprint/gnome-printer-dialog.c:510
 msgid "Location:"
 msgstr "Hely:"
 
-#: libgnomeprint/gnome-printer-dialog.c:192
+#: libgnomeprint/gnome-printer-dialog.c:511
 msgid "Comment:"
 msgstr "Megjegyzés:"
 
-#: libgnomeprint/gnome-printer-dialog.c:226
+#: libgnomeprint/gnome-printer-dialog.c:537
 msgid "_Name:"
 msgstr "_Név:"
 
-#: libgnomeprint/gnome-printer-dialog.c:235
+#: libgnomeprint/gnome-printer-dialog.c:553
 msgid "_Printer"
 msgstr "_Nyomtató"
 
-#: libgnomeprint/gnome-printer-dialog.c:248
+#: libgnomeprint/gnome-printer-dialog.c:570
 msgid "_File"
 msgstr "_Fájl"
 
-#: libgnomeprint/gnome-printer-dialog.c:489
+#: libgnomeprint/gnome-printer-dialog.c:907
 msgid "Select Printer"
 msgstr "Válaszd ki a nyomtatót"
 
-#: libgnomeprint/gnome-printer.c:117
+#: libgnomeprint/gnome-printer-profile.c:108 libgpa/gpa-generic-ps.c:170
+#: libgpa/gpa-generic-ps.c:200
+msgid "Generic Postscript"
+msgstr "Általános Postscript"
+
+#: libgnomeprint/gnome-printer.c:136 libgpa/gpa-printer.c:169
 msgid "Printer is active"
 msgstr "A nyomtató aktív"
 
-#: libgnomeprint/gnome-printer.c:120
+#: libgnomeprint/gnome-printer.c:139 libgpa/gpa-printer.c:172
 msgid "Printer is ready to print"
 msgstr "A nyomtató nyomtatásra kész"
 
-#: libgnomeprint/gnome-printer.c:123
+#: libgnomeprint/gnome-printer.c:142 libgpa/gpa-printer.c:175
 msgid "Printer is off-line"
 msgstr "A nyomtató ki van kapcsolva"
 
-#: libgnomeprint/gnome-printer.c:126
+#: libgnomeprint/gnome-printer.c:145 libgpa/gpa-printer.c:178
 msgid "Can not communicate with printer"
-msgstr "Nem tudok a nyomtatóval kommunikálni"
+msgstr "Nem sikerült a kommunikáció a nyomtatóval"
 
-#: libgnomeprint/gnome-printer.c:129
+#: libgnomeprint/gnome-printer.c:148 libgpa/gpa-printer.c:181
 msgid "Unknown status"
-msgstr "Nem ismert állapot"
+msgstr "Ismeretlen állapot"
 
-#: tests/testprint.c:117 tests/testprint.c:125
+#: libgpa/gpa-generic-ps.c:64
+msgid "Generic Postscript (Hardcoded)"
+msgstr "Általános Postscript (bedrótozott)"
+
+#: libgpa/gpa-generic-ps.c:65
+msgid "GENERIC-POSTSCRIPT-HARDCODED"
+msgstr "GENERIC-POSTSCRIPT-HARDCODED"
+
+#: libgpa/gpa-generic-ps.c:66
+msgid "0"
+msgstr "0"
+
+#: libgpa/gpa-generic-ps.c:67
+msgid "GNOME"
+msgstr "GNOME"
+
+#: libgpa/gpa-generic-ps.c:68
+msgid "0.0.0"
+msgstr "0.0.0"
+
+#: libgpa/gpa-generic-ps.c:69
+msgid "Unknown"
+msgstr "Ismeretlen"
+
+#: libgpa/gpa-generic-ps.c:70
+msgid "GnomePrint"
+msgstr "GnomePrint"
+
+#: libgpa/gpa-generic-ps.c:86
+msgid "gnome-print-ps2"
+msgstr "gnome-print-ps2"
+
+#: libgpa/gpa-ppd-options.c:431
+msgid "Options"
+msgstr "Beállítások"
+
+#: libgpa/gpa-settings.c:222
+msgid "Default Settings"
+msgstr "Alapértelmezett beállítások"
+
+#: tests/testembed.c:18
+msgid "extracts the first font from output.pdf and places it in font.dump."
+msgstr ""
+"kiszedi az elsõ betûkészletet az output.pdf fájlból és kiírja azt a font."
+"dump fájlba."
+
+#: tests/testembed.c:21
+msgid "extracts the font header from font.dump"
+msgstr "kiszedi a betûkészlet fejlécét a font.dump fájlból."
+
+#: tests/testembed.c:23
+msgid "extracts the font body "
+msgstr "kiszedi a betûkészlet törzsét "
+
+#: tests/testembed.c:25
+msgid "decrypts the font body "
+msgstr "dekódolja a betûkészlet törzsét "
+
+#: tests/testprint.c:118 tests/testprint.c:126
 msgid "Gnome-print test page, rotated"
 msgstr "Gnome-print tesztlap, forgatott"
 
-#: tests/testprint.c:132
+#: tests/testprint.c:133
 msgid "Gnome-print test page, slanted"
 msgstr "Gnome-print tesztlap, döntött"
 
-#: tests/testprint.c:140
+#: tests/testprint.c:141
 msgid "Gnome-print test page, slanted. Small"
 msgstr "Gnome-print tesztlap, döntött. Kicsi"
+
+#~ msgid "Output file name"
+#~ msgstr "Kimeneti fájl neve"
+
+#~ msgid "Base for relative afm file names."
+#~ msgstr "Kiindulópont a relatív afm fájlnevekhez."
+
+#~ msgid "Base for relative pfb file names."
+#~ msgstr "Kiindulópont a relatív pfb fájlnevekhez."
+
+#~ msgid "Use this to set up a key/value pair for font files."
+#~ msgstr ""
+#~ "Használd ezt, a font fájlokhoz tartozó kulcs/érték pár létrehozásához."
+
+#~ msgid "KEY,PATH"
+#~ msgstr "KEY,PATH"
+
+#~ msgid "Does nothing yet."
+#~ msgstr "Nem csinál még semmit."
+
+#~ msgid "Use this to set up a key/value pair for pfb files."
+#~ msgstr "Használd ezt az útvonalat a pbf fájlok kulcs/érték képzéséhez."
+
+#~ msgid ""
+#~ "GnomePrint could not fetch the printers list from libgpa.\n"
+#~ "Please report this problem to gnome-print@helixcode.com"
+#~ msgstr ""
+#~ "A GnomePrint nem tudta megkapni a nyomtatók listáját a libgpa-tól.\n"
+#~ "Jelentsd ezt a problémát a gnome-print@helixcode.com címen"
 
 #~ msgid "Extra Light"
 #~ msgstr "Extra könnyû"

@@ -128,7 +128,7 @@ gnome_canvas_hacktext_class_init (GnomeCanvasHacktextClass *class)
 	gtk_object_add_arg_type ("GnomeCanvasHacktext::fill_color", GTK_TYPE_STRING, GTK_ARG_WRITABLE, ARG_FILL_COLOR);
 	gtk_object_add_arg_type ("GnomeCanvasHacktext::fill_color_gdk", GTK_TYPE_GDK_COLOR, GTK_ARG_READWRITE, ARG_FILL_COLOR_GDK);
 	gtk_object_add_arg_type ("GnomeCanvasHacktext::fill_color_rgba", GTK_TYPE_UINT, GTK_ARG_READWRITE, ARG_FILL_COLOR_RGBA);
-	gtk_object_add_arg_type ("GnomeCanvasHacktext::font", GTK_TYPE_POINTER, GTK_ARG_READWRITE, ARG_FONT);
+	gtk_object_add_arg_type ("GnomeCanvasHacktext::font", GTK_TYPE_OBJECT, GTK_ARG_READWRITE, ARG_FONT);
 	gtk_object_add_arg_type ("GnomeCanvasHacktext::x", GTK_TYPE_DOUBLE, GTK_ARG_READWRITE, ARG_X);
 	gtk_object_add_arg_type ("GnomeCanvasHacktext::y", GTK_TYPE_DOUBLE, GTK_ARG_READWRITE, ARG_Y);
 
@@ -184,8 +184,6 @@ gnome_canvas_hacktext_destroy (GtkObject *object)
 static void
 art_drect_hacktext (ArtDRect *bbox, GnomeCanvasHacktext *hacktext)
 {
-	GSList * l;
-
 	g_assert (bbox != NULL);
 	g_assert (hacktext != NULL);
 
@@ -197,28 +195,7 @@ art_drect_hacktext (ArtDRect *bbox, GnomeCanvasHacktext *hacktext)
 
 	if (!hacktext->priv->pgl) return;
 
-	bbox->x0 = bbox->y0 = 1.0;
-	bbox->x1 = bbox->y1 = 0.0;
-
-	for (l = hacktext->priv->pgl->strings; l != NULL; l = l->next) {
-		GnomePosString * string;
-		gint i;
-
-		string = (GnomePosString *) l->data;
-
-		for (i = 0; i < string->length; i++) {
-			ArtDRect gbbox;
-
-			gnome_rfont_get_glyph_stdbbox (string->rfont, string->glyphs[i].glyph, &gbbox);
-
-			gbbox.x0 += string->glyphs[i].x;
-			gbbox.y0 += string->glyphs[i].y;
-			gbbox.x1 += string->glyphs[i].x;
-			gbbox.y1 += string->glyphs[i].y;
-
-			art_drect_union (bbox, bbox, &gbbox);
-		}
-	}
+	gnome_pgl_bbox (hacktext->priv->pgl, bbox);
 }
 
 /* Computes the bounding box of the hacktext.  Assumes that the number of points in the hacktext is
@@ -508,7 +485,7 @@ gnome_canvas_hacktext_point (GnomeCanvasItem *item, double mx, double my,
 {
 	GnomeCanvasHacktext * hacktext;
 	gdouble dist, best;
-	GSList * l;
+	gint s;
 
 	hacktext = (GnomeCanvasHacktext *) item;
 
@@ -517,29 +494,28 @@ gnome_canvas_hacktext_point (GnomeCanvasItem *item, double mx, double my,
 	*actual_item = item;
 	best = dist = 1e18;
 
-	for (l = hacktext->priv->pgl->strings; l != NULL; l = l->next) {
+	for (s = 0; s < hacktext->priv->pgl->num_strings; s++) {
 		GnomePosString * string;
 		gint i;
 
-		string = (GnomePosString *) l->data;
+		string = hacktext->priv->pgl->strings + s;
 
-		for (i = 0; i < string->length; i++) {
+		for (i = string->start; i < string->start + string->length; i++) {
 			const ArtSVP * svp;
 			ArtWindRule wind;
 			gdouble x, y;
 
-			x = cx - string->glyphs[i].x;
-			y = cy - string->glyphs[i].y;
+			x = cx - hacktext->priv->pgl->glyphs[i].x;
+			y = cy - hacktext->priv->pgl->glyphs[i].y;
 
-			svp = gnome_rfont_get_glyph_svp (string->rfont, string->glyphs[i].glyph);
+			svp = gnome_rfont_get_glyph_svp (string->rfont, hacktext->priv->pgl->glyphs[i].glyph);
 
-			wind = art_svp_point_wind ((ArtSVP *) svp, x, y);
-
-			if (wind) return 0.0;
-
-			dist = art_svp_point_dist ((ArtSVP *) svp, x, y);
-
-			if (dist < best) best = dist;
+			if (svp) {
+				wind = art_svp_point_wind ((ArtSVP *) svp, x, y);
+				if (wind) return 0.0;
+				dist = art_svp_point_dist ((ArtSVP *) svp, x, y);
+				if (dist < best) best = dist;
+			}
 		}
 	}
 
@@ -568,28 +544,28 @@ static void
 gnome_canvas_hacktext_req_repaint (GnomeCanvasHacktext *hacktext,
 				   ArtIRect *bbox)
 {
-	GSList * l;
+	gint s;
 
 	g_return_if_fail (hacktext->priv);
 
 	if (!hacktext->priv->pgl) return;
 
-	for (l = hacktext->priv->pgl->strings; l != NULL; l = l->next) {
+	for (s = 0; s < hacktext->priv->pgl->num_strings; s++) {
 		GnomePosString * string;
 		gint i;
 
-		string = (GnomePosString *) l->data;
+		string = hacktext->priv->pgl->strings + s;
 
-		for (i = 0; i < string->length; i++) {
+		for (i = string->start; i < string->start + string->length; i++) {
 			ArtDRect gbbox;
 			ArtIRect ibox;
 
-			gnome_rfont_get_glyph_stdbbox (string->rfont, string->glyphs[i].glyph, &gbbox);
+			gnome_rfont_get_glyph_stdbbox (string->rfont, hacktext->priv->pgl->glyphs[i].glyph, &gbbox);
 
-			gbbox.x0 += string->glyphs[i].x;
-			gbbox.y0 += string->glyphs[i].y;
-			gbbox.x1 += string->glyphs[i].x;
-			gbbox.y1 += string->glyphs[i].y;
+			gbbox.x0 += hacktext->priv->pgl->glyphs[i].x;
+			gbbox.y0 += hacktext->priv->pgl->glyphs[i].y;
+			gbbox.x1 += hacktext->priv->pgl->glyphs[i].x;
+			gbbox.y1 += hacktext->priv->pgl->glyphs[i].y;
 
 			art_drect_to_irect (&ibox, &gbbox);
 

@@ -59,6 +59,7 @@ print_test2_page (GnomePrintContext *pc)
 		}
 	}
 
+	gnome_print_beginpage (pc, "testprint demo page");
 	gnome_print_gsave (pc);
 	for (x = 0; x < 200; x += 100)
 		for (y = 0; y < 200; y += 100){
@@ -98,6 +99,7 @@ print_test_page (GnomePrintContext *pc)
   double width;
   gint pixels;
 
+  gnome_print_beginpage (pc, "testprint demo page");
   gnome_print_gsave (pc);
     gnome_print_concat (pc, matrix);
     font = gnome_font_new_closest ("Times", GNOME_FONT_BOLD, 1, 36);
@@ -242,6 +244,7 @@ test_dump_metafile (char *file)
 	
 	meta = gnome_print_meta_new ();
 	print_test_page (GNOME_PRINT_CONTEXT (meta));
+	gnome_print_context_close (GNOME_PRINT_CONTEXT (meta));
 	gnome_print_meta_access_buffer (meta, &data, &len);
 
 	f = fopen (file, "w");
@@ -367,6 +370,8 @@ test_ps (void)
 				return;
 			
 			pc = gnome_print_context_new_with_paper_size (printer, "US-Letter");
+
+			g_return_if_fail (GNOME_IS_PRINT_CONTEXT (pc));
 		}
 	}
 

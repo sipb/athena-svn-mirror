@@ -7,4 +7,6 @@
 #undef VERSION
 #undef HAVE_LIBSM
 #undef HAVE_LIBZ
-
+#undef ENABLE_LIBGPA
+#undef USE_GNOME_FONT
+#undef LIBGPA

@@ -27,6 +27,7 @@
 #include <string.h>
 #include <math.h>
 
+#include <libgnomeprint/gnome-glyphlist-private.h>
 #include <libgnomeprint/gnome-print-private.h>
 #include <libgnomeprint/gnome-print-meta.h>
 
@@ -107,7 +108,8 @@ typedef enum {
 	GNOME_META_SHOWPAGE,
 	GNOME_META_CLOSE,
 	GNOME_META_SETOPACITY,
-	GNOME_META_RGBAIMAGE
+	GNOME_META_RGBAIMAGE,
+	GNOME_META_GLYPHLIST
 } GnomeMetaType;
 
 #ifdef META_DEBUG
@@ -139,7 +141,8 @@ static char *meta_type_names[] = {
 	"SHOWPAGE",
 	"CLOSE",
 	"SETOPACITY",
-	"RGBAIMAGE"
+	"RGBAIMAGE",
+	"GLYPHLIST"
 };
 #endif
 
@@ -609,8 +612,6 @@ meta_close (GnomePrintContext *pc)
 	gint32 l;
 	GnomePrintMeta *meta = GNOME_PRINT_META (pc);
 
-	encode_int (pc, GNOME_META_CLOSE);
-
 	l = g_htonl (meta->buffer_size);
 	/* we cannot just map the header to memory, so poke it manually */
 	/* Note: unaligned access -- MW.  */
@@ -633,6 +634,47 @@ meta_rgbaimage (GnomePrintContext *pc, const char *data,
 {
 	encode_int (pc, GNOME_META_RGBAIMAGE);
 	encode_image (pc, data, width, height, rowstride, 4);
+	return 0;
+}
+
+static int
+meta_glyphlist (GnomePrintContext *pc, GnomeGlyphList *gl)
+{
+	gint i;
+
+	encode_int (pc, GNOME_META_GLYPHLIST);
+	encode_int (pc, gl->g_length);
+	for (i = 0; i < gl->g_length; i++) {
+		encode_int (pc, gl->glyphs[i]);
+	}
+	encode_int (pc, gl->r_length);
+	for (i = 0; i < gl->r_length; i++) {
+		encode_int (pc, gl->rules[i].code);
+		switch (gl->rules[i].code) {
+		case GGL_POSITION:
+		case GGL_ADVANCE:
+		case GGL_COLOR:
+			encode_int (pc, gl->rules[i].value.ival);
+			break;
+		case GGL_MOVETOX:
+		case GGL_MOVETOY:
+		case GGL_RMOVETOX:
+		case GGL_RMOVETOY:
+		case GGL_LETTERSPACE:
+		case GGL_KERNING:
+			encode_double (pc, gl->rules[i].value.dval);
+			break;
+		case GGL_FONT:
+			encode_double (pc, gnome_font_get_size (gl->rules[i].value.font));
+			encode_string (pc, gnome_font_get_name (gl->rules[i].value.font));
+			break;
+		case GGL_PUSHCP:
+		case GGL_POPCP:
+		default:
+			break;
+		}
+	}
+
 	return 0;
 }
 
@@ -678,6 +720,7 @@ gnome_print_meta_class_init (GnomePrintMetaClass *class)
 	pc_class->close = meta_close;
 	pc_class->setopacity = meta_setopacity;
 	pc_class->rgbaimage = meta_rgbaimage;
+	pc_class->glyphlist = meta_glyphlist;
 }
 
 static void
@@ -733,6 +776,9 @@ gnome_print_meta_get_type (void)
  * gnome_print_meta_new:
  *
  * Creates a new Metafile context GnomePrint object.
+ *
+ * Returns: An empty %GnomePrint context that represents a
+ * metafile priting context.
  */
 GnomePrintMeta *
 gnome_print_meta_new (void)
@@ -752,6 +798,9 @@ gnome_print_meta_new (void)
  *
  * Initializes the contents from a buffer that contains a
  * GNOME_METAFILE stream.
+ *
+ * Returns: A new %GnomePrint context that represented the Metafile
+ * printing context.
  */
 GnomePrintMeta *
 gnome_print_meta_new_from (const void *data)
@@ -803,7 +852,7 @@ gnome_print_meta_access_buffer (GnomePrintMeta *meta, void **buffer, int *buflen
 	g_return_val_if_fail (GNOME_IS_PRINT_META (meta), 0);
 
 	p = *buffer = meta->buffer;
-	*((gint *)(p + FILEHEADER_SIZE)) = g_htonl (meta->current);
+	*((gint *)(p + GNOME_METAFILE_SIGNATURE_SIZE)) = g_htonl (meta->current);
 	*buflen = meta->current;
 
 	return 1;
@@ -834,7 +883,7 @@ gnome_print_meta_get_copy (GnomePrintMeta *meta, void **buffer, int *buflen)
 		return 0;
 
 	memcpy (p, meta->buffer, meta->buffer_size);
-	*((gint *)(p + FILEHEADER_SIZE)) = g_htonl (meta->current);
+	*((gint *)(p + GNOME_METAFILE_SIGNATURE_SIZE)) = g_htonl (meta->current);
 	*buflen = meta->current;
 
 	return 1;
@@ -1205,7 +1254,8 @@ do_render (GnomePrintContext *dest, const char *data, int size, int pages)
 			break;
 
 		case GNOME_META_CLOSE:
-			return TRUE;
+			g_warning ("CLOSE encountered in metafile - possible version conflict");
+			break;
 
 		case GNOME_META_SETOPACITY:
 			data = decode_double (data, &o);
@@ -1215,7 +1265,68 @@ do_render (GnomePrintContext *dest, const char *data, int size, int pages)
 		case GNOME_META_RGBAIMAGE:
 			data = decode_image (data, dest, 4);
 			break;
+		case GNOME_META_GLYPHLIST: {
+			GnomeGlyphList *gl;
+			int len, code, ival, i;
+			double dval;
 
+			gl = gtk_type_new (GNOME_TYPE_GLYPHLIST);
+			data = decode_int (data, &len);
+			if (len > 0) {
+				gl->glyphs = g_new (int, len);
+				gl->g_length = len;
+				gl->g_size = len;
+				for (i = 0; i < len; i++) {
+					data = decode_int (data, &ival);
+					gl->glyphs[i] = ival;
+				}
+			}
+			data = decode_int (data, &len);
+			if (len > 0) {
+				gl->rules = g_new (GGLRule, len);
+				gl->r_length = len;
+				gl->r_size = len;
+				for (i = 0; i < len; i++) {
+					data = decode_int (data, &code);
+					gl->rules[i].code = code;
+					switch (code) {
+					case GGL_POSITION:
+					case GGL_ADVANCE:
+					case GGL_COLOR:
+						data = decode_int (data, &ival);
+						gl->rules[i].value.ival = ival;
+						break;
+					case GGL_MOVETOX:
+					case GGL_MOVETOY:
+					case GGL_RMOVETOX:
+					case GGL_RMOVETOY:
+					case GGL_LETTERSPACE:
+					case GGL_KERNING:
+						data = decode_double (data, &dval);
+						gl->rules[i].value.dval = dval;
+						break;
+					case GGL_FONT: {
+						GnomeFont *font;
+						char *name;
+						data = decode_double (data, &dval);
+						data = decode_string (data, &name);
+						font = gnome_font_new (name, dval);
+						if (font == NULL) g_print ("Cannot find font: %s\n", name);
+						g_free (name);
+						gl->rules[i].value.font = font;
+						break;
+					}
+					case GGL_PUSHCP:
+					case GGL_POPCP:
+					default:
+						break;
+					}
+				}
+			}
+			gnome_print_glyphlist (dest, gl);
+			gnome_glyphlist_unref (gl);
+			break;
+		}
 		default:
 			g_warning ("Serious print meta data corruption %d",
 				   opcode);
@@ -1265,7 +1376,7 @@ gnome_print_meta_render (GnomePrintContext *destination, const void *meta_stream
  * Plays the contents of the GnomePrintMeta @source metadata stream
  * into the @destination printer.
  *
- * Returns TRUE on success.
+ * Returns: TRUE on success.
  */
 gboolean
 gnome_print_meta_render_from_object (GnomePrintContext *destination, const GnomePrintMeta *source)
@@ -1337,7 +1448,7 @@ gnome_print_meta_render_page (GnomePrintContext *destination, const void *meta_s
 }
 
 /**
- * gnome_print_meta_render_from_object
+ * gnome_print_meta_render_from_object_page:
  * @destination: Destination printer context.
  * @source: an existing GnomePrintMeta printer context.
  * @page: Page to be rendered.
@@ -1345,10 +1456,12 @@ gnome_print_meta_render_page (GnomePrintContext *destination, const void *meta_s
  * Plays the contents of the GnomePrintMeta @source metadata stream
  * into the @destination printer.  Output commands will only take place for page @page.
  *
- * Returns TRUE on success.
+ * Returns: TRUE on success.
  */
 gboolean
-gnome_print_meta_render_from_object_page (GnomePrintContext *destination, const GnomePrintMeta *source, int page)
+gnome_print_meta_render_from_object_page (GnomePrintContext *destination,
+					  const GnomePrintMeta *source,
+					  int page)
 {
 	g_return_val_if_fail (destination != NULL, FALSE);
 	g_return_val_if_fail (source != NULL, FALSE);

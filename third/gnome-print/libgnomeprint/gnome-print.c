@@ -6,6 +6,7 @@
  *   Raph Levien (raph@acm.org)
  *   Miguel de Icaza (miguel@kernel.org)
  *   Lauris Kaplinski <lauris@ariman.ee>
+ *   Chema Celorio (chema@celorio.com)
  */
 
 /*
@@ -26,16 +27,22 @@
 
 #include <string.h>
 #include <locale.h>
-
-#include <gtk/gtk.h>
 #include <stdio.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <time.h>
+#include <errno.h>
 #include <libart_lgpl/art_affine.h>
 #include <libart_lgpl/art_vpath.h>
 #include <libart_lgpl/art_bpath.h>
-/* gnome.h is only needed for g_concat_string_and_file */
-#include <gnome.h>
+
+#include <libgnome/gnome-defs.h>
+#include <libgnome/gnome-util.h>
 
 #include <libgnomeprint/gp-unicode.h>
+#include <libgnomeprint/gnome-printer.h>
 #include <libgnomeprint/gnome-printer-private.h>
 #include <libgnomeprint/gnome-print.h>
 #include <libgnomeprint/gnome-print-private.h>
@@ -48,12 +55,22 @@
 #include <libgnomeprint/gnome-print-pclv.h>
 #include <libgnomeprint/gnome-print-pixbuf.h>
 #include <libgnomeprint/gnome-print-frgba.h>
+#include <libgnomeprint/gnome-print-fax.h>
 
-#include <libgnomeprint/gnome-font-private.h>
 #include <libgnomeprint/gnome-pgl.h>
 #include <libgnomeprint/gnome-pgl-private.h>
-#include <libgnomeprint/gp-ps-unicode.h>
 
+/* fixme: */
+#ifdef USE_GNOME_FONT
+#include <libgnomefont/gf-ps-unicode.h>
+#define gp_unicode_from_ps gf_unicode_from_ps
+#else
+#include <libgnomeprint/gp-ps-unicode.h>
+#endif
+
+#ifdef ENABLE_LIBGPA
+#include <libgnomeprint/gnome-print-file.h>
+#endif
 
 static void gnome_print_context_class_init (GnomePrintContextClass *klass);
 
@@ -104,20 +121,57 @@ static void
 gnome_print_context_init (GnomePrintContext *pc)
 {
 	pc->gc = gp_gc_new ();
+	pc->level = 0;
+	pc->has_page = FALSE;
 
+	pc->output = GNOME_PRINT_OUTPUT_NULL;
+	pc->command = NULL;
+	pc->filename = NULL;
 	pc->f = NULL;
 }
+
+/**
+ * gnome_print_context_new_with_paper_size:
+ * @printer: Selected #GnomePrinter
+ * @paper_size: Selected paper size
+ *
+ * This method gives you new #GnomePrintContext object, associated with given
+ * #GnomePrinter. You should use the resulting object as 'black box', without
+ * assuming anything about it's type, as depending on situation appropriate
+ * wrapper context may be used instead of direct driver.
+ *
+ * Returns: The new #GnomePrintContext or %NULL, if there is an error
+ */
 
 GnomePrintContext *
 gnome_print_context_new_with_paper_size (GnomePrinter *printer, const char *paper_size)
 {
+	const gchar *driver;
+	
 	g_return_val_if_fail (printer != NULL, NULL);
 	g_return_val_if_fail (GNOME_IS_PRINTER (printer), NULL);
 	g_return_val_if_fail (paper_size != NULL, NULL);
 
-	/* This is just TEMPORARY !*/
+#ifdef ENABLE_LIBGPA
+	/* If print to file pop up a dialog */
+	if ((printer->print_to_file) && (gnome_print_file_dialog (printer) != 0)) return NULL;
 
-	if (strcmp (printer->driver, "gnome-print-ps") == 0) {
+	if (printer->filename == NULL)
+		printer->filename = gnome_printer_dup_command (printer);
+
+	/* Get the driver */
+	driver = gnome_printer_const_get (printer, "Driver");
+	if (!driver || *driver == 0) {
+		g_warning ("Could not get the Driver from the Printer.\n");
+		return NULL;
+	}
+
+#else	
+	driver = printer->driver;
+#endif	
+
+        /* This is just TEMPORARY !, we will prolly use dlopen */
+	if (strcmp (driver, "gnome-print-ps") == 0) {
 		GnomePrintPs *ps;
 		GnomePrintContext *frgba;
 		ps = gnome_print_ps_new (printer);
@@ -126,31 +180,29 @@ gnome_print_context_new_with_paper_size (GnomePrinter *printer, const char *pape
 		frgba = gnome_print_frgba_new ((GnomePrintContext *) ps);
 		gtk_object_unref (GTK_OBJECT (ps));
 		return frgba ? frgba : NULL;
-	}
-	if (strcmp (printer->driver, "gnome-print-ps-rgb") == 0) {
+	} else 	if (strcmp (driver, "gnome-print-ps-rgb") == 0) {
 		GnomePrintPs *ps = gnome_print_ps_new (printer);
 		return ps ? GNOME_PRINT_CONTEXT (ps) : NULL;
-	}
-	if (strcmp (printer->driver, "gnome-print-ps2") == 0) {
+	} else if (strcmp (driver, "gnome-print-ps2") == 0) {
 		GnomePrintPs2 *ps2;
 		GnomePrintContext *frgba;
-		ps2 = gnome_print_ps2_new (printer);
+		ps2 = gnome_print_ps2_new (printer, paper_size);
 		if (!GNOME_IS_PRINT_PS2 (ps2))
 			return NULL;
 		frgba = gnome_print_frgba_new ((GnomePrintContext *) ps2);
 		gtk_object_unref (GTK_OBJECT (ps2));
 		return frgba ? frgba : NULL;
-	}
-	if (strcmp (printer->driver, "gnome-print-pdf") == 0) {
+	} else  if (strcmp (driver, "gnome-print-pdf") == 0) {
 		GnomePrintPdf *pdf = gnome_print_pdf_new_with_paper (printer, paper_size);
 		return pdf ? GNOME_PRINT_CONTEXT (pdf) : NULL;
-	}
-
-	if (strcmp (printer->driver, "gnome-print-pclr") == 0) {
+	} else 	if (strcmp (driver, "gnome-print-pclr") == 0) {
 		return gnome_print_pclr_new (printer, paper_size, 300);
-	}
-	if (strcmp (printer->driver, "gnome-print-pclv") == 0) {
+	} else 	if (strcmp (driver, "gnome-print-pclv") == 0) {
 		return gnome_print_pclv_new (printer, paper_size, 300);
+	} else 	if (strcmp (driver, "gnome-print-fax") == 0) {
+		return gnome_print_fax_new (printer, paper_size, 100);
+	} else {
+		g_warning ("Could not determine the driver to call ..\n");
 	}
 
 #if 0
@@ -169,12 +221,25 @@ gnome_print_context_new_with_paper_size (GnomePrinter *printer, const char *pape
  * 
  * However, this will do for now, and saves making extra classes.
 */
+
+/**
+ * gnome_print_context_new:
+ * @printer: Selected #GnomePrinter
+ *
+ * This method gives you new #GnomePrintContext object, associated with given
+ * #GnomePrinter. You should use the resulting object as 'black box', without
+ * assuming anything about it's type, as depending on situation appropriate
+ * wrapper context may be used instead of direct driver.
+ *
+ * Returns: The new #GnomePrintContext or %NULL, if there is an error
+ */
+
 GnomePrintContext *
 gnome_print_context_new (GnomePrinter *printer)
 {
 	g_return_val_if_fail (printer != NULL, NULL);
 
-	return gnome_print_context_new_with_paper_size (printer, "US-Letter");
+	return gnome_print_context_new_with_paper_size (printer, gnome_paper_name_default ());
 }
 
 static void
@@ -186,6 +251,24 @@ gnome_print_context_finalize (GtkObject *object)
 
 	gp_gc_unref (pc->gc);
 
+	/* If files are still open, we'll delete them */
+	if (pc->f) {
+		switch (pc->output) {
+		case GNOME_PRINT_OUTPUT_FILE:
+		case GNOME_PRINT_OUTPUT_PROGRAM:
+			fclose (pc->f);
+			unlink (pc->filename);
+			break;
+		case GNOME_PRINT_OUTPUT_PIPE:
+			pclose (pc->f);
+			break;
+		default:
+			break;
+		}
+	}
+	if (pc->filename) g_free (pc->filename);
+	if (pc->command) g_free (pc->command);
+
 	(* GTK_OBJECT_CLASS (parent_class)->finalize) (object);
 }
 
@@ -193,13 +276,25 @@ gnome_print_context_finalize (GtkObject *object)
 
 #define PRINT_CLASS(pc) GNOME_PRINT_CONTEXT_CLASS(GTK_OBJECT(pc)->klass)
 
+/* Helper to overcome broken application code */
+static void
+gnome_print_check_page (GnomePrintContext *ctx)
+{
+	if (!ctx->has_page) {
+		g_warning ("Application is sending data but did not call 'beginpage'");
+		gnome_print_beginpage (ctx, "Unnamed page");
+	}
+}
+
 int
 gnome_print_newpath (GnomePrintContext *pc)
 {
 	gint ret = GNOME_PRINT_OK;
 
-	g_return_val_if_fail (pc != NULL, -1);
-	g_return_val_if_fail (GNOME_IS_PRINT_CONTEXT (pc), -1);
+	g_return_val_if_fail (pc != NULL, GNOME_PRINT_ERROR_UNKNOWN);
+	g_return_val_if_fail (GNOME_IS_PRINT_CONTEXT (pc), GNOME_PRINT_ERROR_UNKNOWN);
+	g_return_val_if_fail (pc->gc != NULL, GNOME_PRINT_ERROR_UNKNOWN);
+	gnome_print_check_page (pc);
 
 	if (PRINT_CLASS (pc)->newpath)
 		ret =  PRINT_CLASS(pc)->newpath (pc);
@@ -214,8 +309,10 @@ gnome_print_moveto (GnomePrintContext *pc, double x, double y)
 {
 	gint ret = GNOME_PRINT_OK;
 
-	g_return_val_if_fail (pc != NULL, -1);
-	g_return_val_if_fail (GNOME_IS_PRINT_CONTEXT (pc), -1);
+	g_return_val_if_fail (pc != NULL, GNOME_PRINT_ERROR_UNKNOWN);
+	g_return_val_if_fail (GNOME_IS_PRINT_CONTEXT (pc), GNOME_PRINT_ERROR_UNKNOWN);
+	g_return_val_if_fail (pc->gc != NULL, GNOME_PRINT_ERROR_UNKNOWN);
+	gnome_print_check_page (pc);
 
 	if (PRINT_CLASS (pc)->moveto)
 		ret = PRINT_CLASS(pc)->moveto (pc, x, y);
@@ -230,9 +327,11 @@ gnome_print_lineto (GnomePrintContext *pc, double x, double y)
 {
 	gint ret = GNOME_PRINT_OK;
 
-	g_return_val_if_fail (pc != NULL, -1);
-	g_return_val_if_fail (GNOME_IS_PRINT_CONTEXT (pc), -1);
+	g_return_val_if_fail (pc != NULL, GNOME_PRINT_ERROR_UNKNOWN);
+	g_return_val_if_fail (GNOME_IS_PRINT_CONTEXT (pc), GNOME_PRINT_ERROR_UNKNOWN);
+	g_return_val_if_fail (pc->gc != NULL, GNOME_PRINT_ERROR_UNKNOWN);
 	g_return_val_if_fail (gp_gc_has_currentpoint (pc->gc), GNOME_PRINT_ERROR_NOCURRENTPOINT);
+	gnome_print_check_page (pc);
 
 	if (PRINT_CLASS (pc)->lineto)
 		ret = PRINT_CLASS(pc)->lineto (pc, x, y);
@@ -247,9 +346,11 @@ gnome_print_curveto (GnomePrintContext *pc, double x1, double y1, double x2, dou
 {
 	gint ret = GNOME_PRINT_OK;
 
-	g_return_val_if_fail (pc != NULL, -1);
-	g_return_val_if_fail (GNOME_IS_PRINT_CONTEXT (pc), -1);
+	g_return_val_if_fail (pc != NULL, GNOME_PRINT_ERROR_UNKNOWN);
+	g_return_val_if_fail (GNOME_IS_PRINT_CONTEXT (pc), GNOME_PRINT_ERROR_UNKNOWN);
+	g_return_val_if_fail (pc->gc != NULL, GNOME_PRINT_ERROR_UNKNOWN);
 	g_return_val_if_fail (gp_gc_has_currentpoint (pc->gc), GNOME_PRINT_ERROR_NOCURRENTPOINT);
+	gnome_print_check_page (pc);
 
 	if (PRINT_CLASS (pc)->curveto)
 		ret = PRINT_CLASS(pc)->curveto (pc, x1, y1, x2, y2, x3, y3);
@@ -264,9 +365,12 @@ gnome_print_closepath (GnomePrintContext *pc)
 {
 	gint ret = GNOME_PRINT_OK;
 
-	g_return_val_if_fail (pc != NULL, -1);
-	g_return_val_if_fail (GNOME_IS_PRINT_CONTEXT (pc), -1);
+	g_return_val_if_fail (pc != NULL, GNOME_PRINT_ERROR_UNKNOWN);
+	g_return_val_if_fail (GNOME_IS_PRINT_CONTEXT (pc), GNOME_PRINT_ERROR_UNKNOWN);
+	g_return_val_if_fail (pc->gc != NULL, GNOME_PRINT_ERROR_UNKNOWN);
 	g_return_val_if_fail (gp_gc_has_currentpath (pc->gc), GNOME_PRINT_ERROR_NOCURRENTPATH);
+	g_return_val_if_fail (gp_gc_currentpath_points (pc->gc) > 1, GNOME_PRINT_ERROR_NOCURRENTPATH);
+	gnome_print_check_page (pc);
 
 	if (PRINT_CLASS (pc)->closepath)
 		ret = PRINT_CLASS(pc)->closepath (pc);
@@ -281,8 +385,10 @@ gnome_print_setrgbcolor (GnomePrintContext *pc, double r, double g, double b)
 {
 	gint ret = GNOME_PRINT_OK;
 
-	g_return_val_if_fail (pc != NULL, -1);
-	g_return_val_if_fail (GNOME_IS_PRINT_CONTEXT (pc), -1);
+	g_return_val_if_fail (pc != NULL, GNOME_PRINT_ERROR_UNKNOWN);
+	g_return_val_if_fail (GNOME_IS_PRINT_CONTEXT (pc), GNOME_PRINT_ERROR_UNKNOWN);
+	g_return_val_if_fail (pc->gc != NULL, GNOME_PRINT_ERROR_UNKNOWN);
+	gnome_print_check_page (pc);
 
 	if (PRINT_CLASS (pc)->setrgbcolor)
 		ret = PRINT_CLASS(pc)->setrgbcolor (pc, r, g, b);
@@ -297,9 +403,12 @@ gnome_print_fill (GnomePrintContext *pc)
 {
 	gint ret = GNOME_PRINT_OK;
 
-	g_return_val_if_fail (pc != NULL, -1);
-	g_return_val_if_fail (GNOME_IS_PRINT_CONTEXT (pc), -1);
+	g_return_val_if_fail (pc != NULL, GNOME_PRINT_ERROR_UNKNOWN);
+	g_return_val_if_fail (GNOME_IS_PRINT_CONTEXT (pc), GNOME_PRINT_ERROR_UNKNOWN);
+	g_return_val_if_fail (pc->gc != NULL, GNOME_PRINT_ERROR_UNKNOWN);
 	g_return_val_if_fail (gp_gc_has_currentpath (pc->gc), GNOME_PRINT_ERROR_NOCURRENTPATH);
+	g_return_val_if_fail (gp_gc_currentpath_points (pc->gc) > 1, GNOME_PRINT_ERROR_NOCURRENTPATH);
+	gnome_print_check_page (pc);
 
 	gp_gc_close_all (pc->gc);
 
@@ -316,9 +425,12 @@ gnome_print_eofill (GnomePrintContext *pc)
 {
 	gint ret = GNOME_PRINT_OK;
 
-	g_return_val_if_fail (pc != NULL, -1);
-	g_return_val_if_fail (GNOME_IS_PRINT_CONTEXT (pc), -1);
+	g_return_val_if_fail (pc != NULL, GNOME_PRINT_ERROR_UNKNOWN);
+	g_return_val_if_fail (GNOME_IS_PRINT_CONTEXT (pc), GNOME_PRINT_ERROR_UNKNOWN);
+	g_return_val_if_fail (pc->gc != NULL, GNOME_PRINT_ERROR_UNKNOWN);
 	g_return_val_if_fail (gp_gc_has_currentpath (pc->gc), GNOME_PRINT_ERROR_NOCURRENTPATH);
+	g_return_val_if_fail (gp_gc_currentpath_points (pc->gc) > 1, GNOME_PRINT_ERROR_NOCURRENTPATH);
+	gnome_print_check_page (pc);
 
 	gp_gc_close_all (pc->gc);
 
@@ -335,9 +447,11 @@ gnome_print_setlinewidth (GnomePrintContext *pc, double width)
 {
 	gint ret = GNOME_PRINT_OK;
 
-	g_return_val_if_fail (pc != NULL, -1);
-	g_return_val_if_fail (GNOME_IS_PRINT_CONTEXT (pc), -1);
+	g_return_val_if_fail (pc != NULL, GNOME_PRINT_ERROR_UNKNOWN);
+	g_return_val_if_fail (GNOME_IS_PRINT_CONTEXT (pc), GNOME_PRINT_ERROR_UNKNOWN);
+	g_return_val_if_fail (pc->gc != NULL, GNOME_PRINT_ERROR_UNKNOWN);
 	g_return_val_if_fail (width >= 0, GNOME_PRINT_ERROR_BADVALUE);
+	gnome_print_check_page (pc);
 
 	if (PRINT_CLASS (pc)->setlinewidth)
 		ret = PRINT_CLASS(pc)->setlinewidth (pc, width);
@@ -352,11 +466,11 @@ gnome_print_setmiterlimit (GnomePrintContext *pc, double limit)
 {
 	gint ret = GNOME_PRINT_OK;
 
-	g_return_val_if_fail (pc != NULL, -1);
-	g_return_val_if_fail (GNOME_IS_PRINT_CONTEXT (pc), -1);
+	g_return_val_if_fail (pc != NULL, GNOME_PRINT_ERROR_UNKNOWN);
+	g_return_val_if_fail (GNOME_IS_PRINT_CONTEXT (pc), GNOME_PRINT_ERROR_UNKNOWN);
+	g_return_val_if_fail (pc->gc != NULL, GNOME_PRINT_ERROR_UNKNOWN);
 	g_return_val_if_fail (limit >= 1.0, GNOME_PRINT_ERROR_BADVALUE);
-
-	gp_gc_set_miterlimit (pc->gc, limit);
+	gnome_print_check_page (pc);
 
 	if (PRINT_CLASS (pc)->setmiterlimit)
 		ret = PRINT_CLASS(pc)->setmiterlimit (pc, limit);
@@ -371,9 +485,11 @@ gnome_print_setlinejoin (GnomePrintContext *pc, int jointype)
 {
 	gint ret = GNOME_PRINT_OK;
 
-	g_return_val_if_fail (pc != NULL, -1);
-	g_return_val_if_fail (GNOME_IS_PRINT_CONTEXT (pc), -1);
+	g_return_val_if_fail (pc != NULL, GNOME_PRINT_ERROR_UNKNOWN);
+	g_return_val_if_fail (GNOME_IS_PRINT_CONTEXT (pc), GNOME_PRINT_ERROR_UNKNOWN);
+	g_return_val_if_fail (pc->gc != NULL, GNOME_PRINT_ERROR_UNKNOWN);
 	g_return_val_if_fail ((jointype >= 0) && (jointype < 3), GNOME_PRINT_ERROR_BADVALUE);
+	gnome_print_check_page (pc);
 
 	if (PRINT_CLASS (pc)->setlinejoin)
 		ret = PRINT_CLASS(pc)->setlinejoin (pc, jointype);
@@ -388,9 +504,11 @@ gnome_print_setlinecap (GnomePrintContext *pc, int captype)
 {
 	gint ret = GNOME_PRINT_OK;
 
-	g_return_val_if_fail (pc != NULL, -1);
-	g_return_val_if_fail (GNOME_IS_PRINT_CONTEXT (pc), -1);
+	g_return_val_if_fail (pc != NULL, GNOME_PRINT_ERROR_UNKNOWN);
+	g_return_val_if_fail (GNOME_IS_PRINT_CONTEXT (pc), GNOME_PRINT_ERROR_UNKNOWN);
+	g_return_val_if_fail (pc->gc != NULL, GNOME_PRINT_ERROR_UNKNOWN);
 	g_return_val_if_fail ((captype >= 0) && (captype < 3), GNOME_PRINT_ERROR_BADVALUE);
+	gnome_print_check_page (pc);
 
 	gp_gc_set_linecap (pc->gc, captype);
 
@@ -405,10 +523,11 @@ gnome_print_setdash (GnomePrintContext *pc, int n_values, const double *values, 
 {
 	gint ret = GNOME_PRINT_OK;
 
-	g_return_val_if_fail (pc != NULL, -1);
-	g_return_val_if_fail (GNOME_IS_PRINT_CONTEXT (pc), -1);
-
-	if (n_values != 0) g_return_val_if_fail (values != NULL, GNOME_PRINT_ERROR_BADVALUE);
+	g_return_val_if_fail (pc != NULL, GNOME_PRINT_ERROR_UNKNOWN);
+	g_return_val_if_fail (GNOME_IS_PRINT_CONTEXT (pc), GNOME_PRINT_ERROR_UNKNOWN);
+	g_return_val_if_fail (pc->gc != NULL, GNOME_PRINT_ERROR_UNKNOWN);
+	g_return_val_if_fail (!n_values || (values != NULL), GNOME_PRINT_ERROR_UNKNOWN);
+	gnome_print_check_page (pc);
 
 	if (PRINT_CLASS (pc)->setdash)
 		ret = PRINT_CLASS(pc)->setdash (pc, n_values, values, offset);
@@ -423,9 +542,12 @@ gnome_print_strokepath (GnomePrintContext *pc)
 {
 	gint ret = GNOME_PRINT_OK;
 
-	g_return_val_if_fail (pc != NULL, -1);
-	g_return_val_if_fail (GNOME_IS_PRINT_CONTEXT (pc), -1);
+	g_return_val_if_fail (pc != NULL, GNOME_PRINT_ERROR_UNKNOWN);
+	g_return_val_if_fail (GNOME_IS_PRINT_CONTEXT (pc), GNOME_PRINT_ERROR_UNKNOWN);
+	g_return_val_if_fail (pc->gc != NULL, GNOME_PRINT_ERROR_UNKNOWN);
 	g_return_val_if_fail (gp_gc_has_currentpath (pc->gc), GNOME_PRINT_ERROR_NOCURRENTPATH);
+	g_return_val_if_fail (gp_gc_currentpath_points (pc->gc) > 1, GNOME_PRINT_ERROR_NOCURRENTPATH);
+	gnome_print_check_page (pc);
 
 	if (PRINT_CLASS (pc)->strokepath)
 		ret = PRINT_CLASS(pc)->strokepath (pc);
@@ -440,8 +562,12 @@ gnome_print_stroke (GnomePrintContext *pc)
 {
 	gint ret = GNOME_PRINT_OK;
 
-	g_return_val_if_fail (pc != NULL, -1);
-	g_return_val_if_fail (GNOME_IS_PRINT_CONTEXT (pc), -1);
+	g_return_val_if_fail (pc != NULL, GNOME_PRINT_ERROR_UNKNOWN);
+	g_return_val_if_fail (GNOME_IS_PRINT_CONTEXT (pc), GNOME_PRINT_ERROR_UNKNOWN);
+	g_return_val_if_fail (pc->gc != NULL, GNOME_PRINT_ERROR_UNKNOWN);
+	g_return_val_if_fail (gp_gc_has_currentpath (pc->gc), GNOME_PRINT_ERROR_NOCURRENTPATH);
+	g_return_val_if_fail (gp_gc_currentpath_points (pc->gc) > 1, GNOME_PRINT_ERROR_NOCURRENTPATH);
+	gnome_print_check_page (pc);
 
 	if (PRINT_CLASS (pc)->stroke)
 		ret = PRINT_CLASS(pc)->stroke (pc);
@@ -456,10 +582,12 @@ gnome_print_setfont (GnomePrintContext *pc, GnomeFont *font)
 {
 	gint ret = GNOME_PRINT_OK;
 
-	g_return_val_if_fail (pc != NULL, -1);
-	g_return_val_if_fail (GNOME_IS_PRINT_CONTEXT (pc), -1);
+	g_return_val_if_fail (pc != NULL, GNOME_PRINT_ERROR_UNKNOWN);
+	g_return_val_if_fail (GNOME_IS_PRINT_CONTEXT (pc), GNOME_PRINT_ERROR_UNKNOWN);
+	g_return_val_if_fail (pc->gc != NULL, GNOME_PRINT_ERROR_UNKNOWN);
 	g_return_val_if_fail (font != NULL, GNOME_PRINT_ERROR_BADVALUE);
 	g_return_val_if_fail (GNOME_IS_FONT (font), GNOME_PRINT_ERROR_BADVALUE);
+	gnome_print_check_page (pc);
 
 	if (PRINT_CLASS (pc)->setfont)
 		ret = PRINT_CLASS(pc)->setfont (pc, font);
@@ -472,34 +600,47 @@ gnome_print_setfont (GnomePrintContext *pc, GnomeFont *font)
 int
 gnome_print_show (GnomePrintContext *pc, char const *text)
 {
-	g_return_val_if_fail (pc != NULL, -1);
-	g_return_val_if_fail (GNOME_IS_PRINT_CONTEXT (pc), -1);
+	g_return_val_if_fail (pc != NULL, GNOME_PRINT_ERROR_UNKNOWN);
+	g_return_val_if_fail (GNOME_IS_PRINT_CONTEXT (pc), GNOME_PRINT_ERROR_UNKNOWN);
+	g_return_val_if_fail (pc->gc != NULL, GNOME_PRINT_ERROR_UNKNOWN);
+	g_return_val_if_fail (gp_gc_has_currentpoint (pc->gc), GNOME_PRINT_ERROR_NOCURRENTPOINT);
 	g_return_val_if_fail (text != NULL, GNOME_PRINT_ERROR_BADVALUE);
+	gnome_print_check_page (pc);
 
-	if (PRINT_CLASS (pc)->show_sized)
-		return (* PRINT_CLASS (pc)->show_sized) (pc, text, strlen (text));
-
-	return GNOME_PRINT_OK;
+	return gnome_print_show_sized (pc, text, strlen (text));
 }
 
 int
 gnome_print_show_sized (GnomePrintContext *pc, char const *text, int bytes)
 {
+	const GnomeFont *font;
 	const char *invalid;
 
-	g_return_val_if_fail (pc != NULL, -1);
-	g_return_val_if_fail (GNOME_IS_PRINT_CONTEXT (pc), -1);
-	g_return_val_if_fail (text != NULL, -1);
+	g_return_val_if_fail (pc != NULL, GNOME_PRINT_ERROR_UNKNOWN);
+	g_return_val_if_fail (GNOME_IS_PRINT_CONTEXT (pc), GNOME_PRINT_ERROR_UNKNOWN);
+	g_return_val_if_fail (pc->gc != NULL, GNOME_PRINT_ERROR_UNKNOWN);
+	g_return_val_if_fail (gp_gc_has_currentpoint (pc->gc), GNOME_PRINT_ERROR_NOCURRENTPOINT);
+	g_return_val_if_fail (text != NULL, GNOME_PRINT_ERROR_BADVALUE);
+	g_return_val_if_fail (bytes >= 0, GNOME_PRINT_ERROR_BADVALUE);
+	gnome_print_check_page (pc);
 
 	if (bytes < 1) return GNOME_PRINT_OK;
 
-	if (!g_utf8_validate (text, bytes, &invalid))
-		g_warning ("Could not UTF8 Validate *%s*", text);
-	
 	g_return_val_if_fail (g_utf8_validate (text, bytes, &invalid), GNOME_PRINT_ERROR_TEXTCORRUPT);
 
-	if (PRINT_CLASS (pc)->show_sized)
+	/* fixme: */
+	if (!gp_gc_has_currentpoint (pc->gc)) return GNOME_PRINT_ERROR_NOCURRENTPOINT;
+	font = gp_gc_get_font (pc->gc);
+	if (!font) return -1;
+
+	if (PRINT_CLASS (pc)->show_sized) {
 		return (* PRINT_CLASS (pc)->show_sized) (pc, text, bytes);
+	} else if (PRINT_CLASS (pc)->glyphlist) {
+		GnomeGlyphList *gl;
+		gl = gnome_glyphlist_from_text_sized_dumb ((GnomeFont *) font, gp_gc_get_rgba (pc->gc), 0.0, 0.0, text, bytes);
+		gnome_print_glyphlist (pc, gl);
+		gnome_glyphlist_unref (gl);
+	}
 
 	return GNOME_PRINT_OK;
 }
@@ -508,9 +649,13 @@ gnome_print_show_sized (GnomePrintContext *pc, char const *text, int bytes)
 int
 gnome_print_show_ucs4 (GnomePrintContext *pc, guint32 *buf, gint length)
 {
-	g_return_val_if_fail (pc != NULL, -1);
-	g_return_val_if_fail (GNOME_IS_PRINT_CONTEXT (pc), -1);
-	g_return_val_if_fail (buf != NULL, -1);
+	g_return_val_if_fail (pc != NULL, GNOME_PRINT_ERROR_UNKNOWN);
+	g_return_val_if_fail (GNOME_IS_PRINT_CONTEXT (pc), GNOME_PRINT_ERROR_UNKNOWN);
+	g_return_val_if_fail (pc->gc != NULL, GNOME_PRINT_ERROR_UNKNOWN);
+	g_return_val_if_fail (gp_gc_has_currentpoint (pc->gc), GNOME_PRINT_ERROR_NOCURRENTPOINT);
+	g_return_val_if_fail (buf != NULL, GNOME_PRINT_ERROR_BADVALUE);
+	g_return_val_if_fail (length >= 0, GNOME_PRINT_ERROR_BADVALUE);
+	gnome_print_check_page (pc);
 
 	if (length < 1) return GNOME_PRINT_OK;
 
@@ -543,9 +688,11 @@ gnome_print_concat (GnomePrintContext *pc, const double matrix[6])
 {
 	gint ret = GNOME_PRINT_OK;
 
-	g_return_val_if_fail (pc != NULL, -1);
-	g_return_val_if_fail (GNOME_IS_PRINT_CONTEXT (pc), -1);
-	g_return_val_if_fail (matrix != NULL, -1);
+	g_return_val_if_fail (pc != NULL, GNOME_PRINT_ERROR_UNKNOWN);
+	g_return_val_if_fail (GNOME_IS_PRINT_CONTEXT (pc), GNOME_PRINT_ERROR_UNKNOWN);
+	g_return_val_if_fail (pc->gc != NULL, GNOME_PRINT_ERROR_UNKNOWN);
+	g_return_val_if_fail (matrix != NULL, GNOME_PRINT_ERROR_BADVALUE);
+	gnome_print_check_page (pc);
 
 	if (PRINT_CLASS (pc)->concat)
 		ret = PRINT_CLASS(pc)->concat (pc, matrix);
@@ -560,13 +707,16 @@ gnome_print_gsave (GnomePrintContext *pc)
 {
 	gint ret = GNOME_PRINT_OK;
 
-	g_return_val_if_fail (pc != NULL, -1);
-	g_return_val_if_fail (GNOME_IS_PRINT_CONTEXT (pc), -1);
+	g_return_val_if_fail (pc != NULL, GNOME_PRINT_ERROR_UNKNOWN);
+	g_return_val_if_fail (GNOME_IS_PRINT_CONTEXT (pc), GNOME_PRINT_ERROR_UNKNOWN);
+	g_return_val_if_fail (pc->gc != NULL, GNOME_PRINT_ERROR_UNKNOWN);
+	gnome_print_check_page (pc);
 
 	if (PRINT_CLASS (pc)->gsave)
 		ret = PRINT_CLASS(pc)->gsave (pc);
 
 	gp_gc_gsave (pc->gc);
+	pc->level += 1;
 
 	return ret;
 }
@@ -576,13 +726,18 @@ gnome_print_grestore (GnomePrintContext *pc)
 {
 	gint ret = GNOME_PRINT_OK;
 
-	g_return_val_if_fail (pc != NULL, -1);
-	g_return_val_if_fail (GNOME_IS_PRINT_CONTEXT (pc), -1);
+	g_return_val_if_fail (pc != NULL, GNOME_PRINT_ERROR_UNKNOWN);
+	g_return_val_if_fail (GNOME_IS_PRINT_CONTEXT (pc), GNOME_PRINT_ERROR_UNKNOWN);
+	g_return_val_if_fail (pc->gc != NULL, GNOME_PRINT_ERROR_UNKNOWN);
+	g_return_val_if_fail (pc->level > 0, GNOME_PRINT_ERROR_UNKNOWN);
+	gnome_print_check_page (pc);
+
 
 	if (PRINT_CLASS (pc)->grestore)
 		ret = PRINT_CLASS(pc)->grestore (pc);
 
 	gp_gc_grestore (pc->gc);
+	pc->level -= 1;
 
 	return ret;
 }
@@ -592,14 +747,19 @@ gnome_print_clip (GnomePrintContext *pc)
 {
 	gint ret = GNOME_PRINT_OK;
 
-	g_return_val_if_fail (pc != NULL, -1);
-	g_return_val_if_fail (GNOME_IS_PRINT_CONTEXT (pc), -1);
+	g_return_val_if_fail (pc != NULL, GNOME_PRINT_ERROR_UNKNOWN);
+	g_return_val_if_fail (GNOME_IS_PRINT_CONTEXT (pc), GNOME_PRINT_ERROR_UNKNOWN);
+	g_return_val_if_fail (pc->gc != NULL, GNOME_PRINT_ERROR_UNKNOWN);
 	g_return_val_if_fail (gp_gc_has_currentpath (pc->gc), GNOME_PRINT_ERROR_NOCURRENTPATH);
+	g_return_val_if_fail (gp_gc_currentpath_points (pc->gc) > 1, GNOME_PRINT_ERROR_NOCURRENTPATH);
+	gnome_print_check_page (pc);
 
 	gp_gc_close_all (pc->gc);
 
 	if (PRINT_CLASS (pc)->clip)
 		ret = PRINT_CLASS(pc)->clip (pc, ART_WIND_RULE_NONZERO);
+
+	gp_gc_newpath (pc->gc);
 
 	return ret;
 }
@@ -609,14 +769,19 @@ gnome_print_eoclip (GnomePrintContext *pc)
 {
 	gint ret = GNOME_PRINT_OK;
 
-	g_return_val_if_fail (pc != NULL, -1);
-	g_return_val_if_fail (GNOME_IS_PRINT_CONTEXT (pc), -1);
+	g_return_val_if_fail (pc != NULL, GNOME_PRINT_ERROR_UNKNOWN);
+	g_return_val_if_fail (GNOME_IS_PRINT_CONTEXT (pc), GNOME_PRINT_ERROR_UNKNOWN);
+	g_return_val_if_fail (pc->gc != NULL, GNOME_PRINT_ERROR_UNKNOWN);
 	g_return_val_if_fail (gp_gc_has_currentpath (pc->gc), GNOME_PRINT_ERROR_NOCURRENTPATH);
+	g_return_val_if_fail (gp_gc_currentpath_points (pc->gc) > 1, GNOME_PRINT_ERROR_NOCURRENTPATH);
+	gnome_print_check_page (pc);
 
 	gp_gc_close_all (pc->gc);
 
 	if (PRINT_CLASS (pc)->clip)
 		ret = PRINT_CLASS(pc)->clip (pc, ART_WIND_RULE_ODDEVEN);
+
+	gp_gc_newpath (pc->gc);
 
 	return ret;
 }
@@ -624,9 +789,13 @@ gnome_print_eoclip (GnomePrintContext *pc)
 int
 gnome_print_grayimage (GnomePrintContext *pc, const char *data, int width, int height, int rowstride)
 {
-	g_return_val_if_fail (pc != NULL, -1);
-	g_return_val_if_fail (GNOME_IS_PRINT_CONTEXT (pc), -1);
-	g_return_val_if_fail (data != NULL, -1);
+	g_return_val_if_fail (pc != NULL, GNOME_PRINT_ERROR_UNKNOWN);
+	g_return_val_if_fail (GNOME_IS_PRINT_CONTEXT (pc), GNOME_PRINT_ERROR_UNKNOWN);
+	g_return_val_if_fail (pc->gc != NULL, GNOME_PRINT_ERROR_UNKNOWN);
+	g_return_val_if_fail (data != NULL, GNOME_PRINT_ERROR_BADVALUE);
+	g_return_val_if_fail (width > 0, GNOME_PRINT_ERROR_BADVALUE);
+	g_return_val_if_fail (height > 0, GNOME_PRINT_ERROR_BADVALUE);
+	gnome_print_check_page (pc);
 
 	if (PRINT_CLASS (pc)->grayimage)
 		return PRINT_CLASS(pc)->grayimage (pc, data, width, height, rowstride);
@@ -637,9 +806,13 @@ gnome_print_grayimage (GnomePrintContext *pc, const char *data, int width, int h
 int
 gnome_print_rgbimage (GnomePrintContext *pc, const char *data, int width, int height, int rowstride)
 {
-	g_return_val_if_fail (pc != NULL, -1);
-	g_return_val_if_fail (GNOME_IS_PRINT_CONTEXT (pc), -1);
-	g_return_val_if_fail (data != NULL, -1);
+	g_return_val_if_fail (pc != NULL, GNOME_PRINT_ERROR_UNKNOWN);
+	g_return_val_if_fail (GNOME_IS_PRINT_CONTEXT (pc), GNOME_PRINT_ERROR_UNKNOWN);
+	g_return_val_if_fail (pc->gc != NULL, GNOME_PRINT_ERROR_UNKNOWN);
+	g_return_val_if_fail (data != NULL, GNOME_PRINT_ERROR_BADVALUE);
+	g_return_val_if_fail (width > 0, GNOME_PRINT_ERROR_BADVALUE);
+	g_return_val_if_fail (height > 0, GNOME_PRINT_ERROR_BADVALUE);
+	gnome_print_check_page (pc);
 
 	if (PRINT_CLASS (pc)->rgbimage)
 		return PRINT_CLASS(pc)->rgbimage (pc, data, width, height, rowstride);
@@ -654,9 +827,13 @@ gnome_print_rgbaimage (GnomePrintContext *pc, const char *data, int width, int h
 	const guchar * s;
 	gint x, y, alpha, tmp, ret;
 
-	g_return_val_if_fail (pc != NULL, -1);
-	g_return_val_if_fail (GNOME_IS_PRINT_CONTEXT (pc), -1);
-	g_return_val_if_fail (data != NULL, -1);
+	g_return_val_if_fail (pc != NULL, GNOME_PRINT_ERROR_UNKNOWN);
+	g_return_val_if_fail (GNOME_IS_PRINT_CONTEXT (pc), GNOME_PRINT_ERROR_UNKNOWN);
+	g_return_val_if_fail (pc->gc != NULL, GNOME_PRINT_ERROR_UNKNOWN);
+	g_return_val_if_fail (data != NULL, GNOME_PRINT_ERROR_BADVALUE);
+	g_return_val_if_fail (width > 0, GNOME_PRINT_ERROR_BADVALUE);
+	g_return_val_if_fail (height > 0, GNOME_PRINT_ERROR_BADVALUE);
+	gnome_print_check_page (pc);
 
 	if (PRINT_CLASS (pc)->rgbaimage != NULL) {
 
@@ -698,26 +875,34 @@ gnome_print_rgbaimage (GnomePrintContext *pc, const char *data, int width, int h
 int
 gnome_print_pixbuf (GnomePrintContext *pc, GdkPixbuf *pixbuf)
 {
-       if (gdk_pixbuf_get_has_alpha (pixbuf))
-               return gnome_print_rgbaimage  (pc,
+	g_return_val_if_fail (pc != NULL, GNOME_PRINT_ERROR_UNKNOWN);
+	g_return_val_if_fail (GNOME_IS_PRINT_CONTEXT (pc), GNOME_PRINT_ERROR_UNKNOWN);
+	g_return_val_if_fail (pc->gc != NULL, GNOME_PRINT_ERROR_UNKNOWN);
+	g_return_val_if_fail (pixbuf != NULL, GNOME_PRINT_ERROR_BADVALUE);
+	gnome_print_check_page (pc);
+
+	if (gdk_pixbuf_get_has_alpha (pixbuf))
+		return gnome_print_rgbaimage  (pc,
+					       gdk_pixbuf_get_pixels    (pixbuf),
+					       gdk_pixbuf_get_width     (pixbuf),
+					       gdk_pixbuf_get_height    (pixbuf),
+					       gdk_pixbuf_get_rowstride (pixbuf));
+	else
+		return gnome_print_rgbimage  (pc,
 					      gdk_pixbuf_get_pixels    (pixbuf),
 					      gdk_pixbuf_get_width     (pixbuf),
 					      gdk_pixbuf_get_height    (pixbuf),
 					      gdk_pixbuf_get_rowstride (pixbuf));
-       else
-               return gnome_print_rgbimage  (pc,
-					     gdk_pixbuf_get_pixels    (pixbuf),
-					     gdk_pixbuf_get_width     (pixbuf),
-					     gdk_pixbuf_get_height    (pixbuf),
-					     gdk_pixbuf_get_rowstride (pixbuf));
 }
 
 int
 gnome_print_textline (GnomePrintContext *pc, GnomeTextLine *line)
 {
-	g_return_val_if_fail (pc != NULL, -1);
-	g_return_val_if_fail (GNOME_IS_PRINT_CONTEXT (pc), -1);
-	g_return_val_if_fail (line != NULL, -1);
+	g_return_val_if_fail (pc != NULL, GNOME_PRINT_ERROR_UNKNOWN);
+	g_return_val_if_fail (GNOME_IS_PRINT_CONTEXT (pc), GNOME_PRINT_ERROR_UNKNOWN);
+	g_return_val_if_fail (pc->gc != NULL, GNOME_PRINT_ERROR_UNKNOWN);
+	g_return_val_if_fail (line != NULL, GNOME_PRINT_ERROR_BADVALUE);
+	gnome_print_check_page (pc);
 
 	if (PRINT_CLASS (pc)->textline)
 		return PRINT_CLASS(pc)->textline (pc, line);
@@ -731,8 +916,19 @@ gnome_print_showpage (GnomePrintContext *pc)
 	const GnomeFont * font;
 	gint ret = GNOME_PRINT_OK;
 
-	g_return_val_if_fail (pc != NULL, -1);
-	g_return_val_if_fail (GNOME_IS_PRINT_CONTEXT (pc), -1);
+	g_return_val_if_fail (pc != NULL, GNOME_PRINT_ERROR_UNKNOWN);
+	g_return_val_if_fail (GNOME_IS_PRINT_CONTEXT (pc), GNOME_PRINT_ERROR_UNKNOWN);
+	g_return_val_if_fail (pc->gc != NULL, GNOME_PRINT_ERROR_UNKNOWN);
+	gnome_print_check_page (pc);
+
+	if (pc->level > 0) {
+		g_warning ("Application is trying to print page with nonempty gsave stack");
+		while (pc->level > 0) {
+			gint ret;
+			ret = gnome_print_grestore (pc);
+			g_return_val_if_fail (ret >= 0, ret);
+		}
+	}
 
 	if (PRINT_CLASS (pc)->showpage)
 		ret = PRINT_CLASS(pc)->showpage (pc);
@@ -744,14 +940,20 @@ gnome_print_showpage (GnomePrintContext *pc)
 	gp_gc_set_font (pc->gc, (GnomeFont *) font);
 	gnome_font_unref (font);
 
+	pc->has_page = FALSE;
+
 	return ret;
 }
 
 int
 gnome_print_beginpage (GnomePrintContext *pc, const char *name_of_this_page)
 {
-	g_return_val_if_fail (pc != NULL, -1);
-	g_return_val_if_fail (GNOME_IS_PRINT_CONTEXT (pc), -1);
+	g_return_val_if_fail (pc != NULL, GNOME_PRINT_ERROR_UNKNOWN);
+	g_return_val_if_fail (GNOME_IS_PRINT_CONTEXT (pc), GNOME_PRINT_ERROR_UNKNOWN);
+	g_return_val_if_fail (pc->gc != NULL, GNOME_PRINT_ERROR_UNKNOWN);
+	g_return_val_if_fail (!pc->has_page, GNOME_PRINT_ERROR_UNKNOWN);
+
+	pc->has_page = TRUE;
 
 	if (PRINT_CLASS (pc)->beginpage)
 		return PRINT_CLASS(pc)->beginpage (pc, name_of_this_page);
@@ -764,8 +966,12 @@ gnome_print_setopacity (GnomePrintContext *pc, double opacity)
 {
 	gint ret = GNOME_PRINT_OK;
 
-	g_return_val_if_fail (pc != NULL, -1);
-	g_return_val_if_fail (GNOME_IS_PRINT_CONTEXT (pc), -1);
+	g_return_val_if_fail (pc != NULL, GNOME_PRINT_ERROR_UNKNOWN);
+	g_return_val_if_fail (GNOME_IS_PRINT_CONTEXT (pc), GNOME_PRINT_ERROR_UNKNOWN);
+	g_return_val_if_fail (pc->gc != NULL, GNOME_PRINT_ERROR_UNKNOWN);
+	gnome_print_check_page (pc);
+
+	opacity = CLAMP (opacity, 0.0, 1.0);
 
 	if (PRINT_CLASS (pc)->setopacity)
 		ret = PRINT_CLASS(pc)->setopacity (pc, opacity);
@@ -778,11 +984,38 @@ gnome_print_setopacity (GnomePrintContext *pc, double opacity)
 int
 gnome_print_context_close (GnomePrintContext *pc)
 {
-	g_return_val_if_fail (pc != NULL, -1);
-	g_return_val_if_fail (GNOME_IS_PRINT_CONTEXT (pc), -1);
+	gint ret;
 
-	if (PRINT_CLASS (pc)->close)
-		return PRINT_CLASS(pc)->close (pc);
+	g_return_val_if_fail (pc != NULL, GNOME_PRINT_ERROR_UNKNOWN);
+	g_return_val_if_fail (GNOME_IS_PRINT_CONTEXT (pc), GNOME_PRINT_ERROR_UNKNOWN);
+
+	if (pc->has_page) g_warning ("Closing print context with open page");
+	if (pc->level > 0) g_warning ("Closing print context with nonempty stack");
+
+	if (PRINT_CLASS (pc)->close) {
+		ret = PRINT_CLASS(pc)->close (pc);
+	}
+
+	/* If files are still open, we'll delete them */
+	if (pc->f) {
+		switch (pc->output) {
+		case GNOME_PRINT_OUTPUT_FILE:
+		case GNOME_PRINT_OUTPUT_PROGRAM:
+			fclose (pc->f);
+			unlink (pc->filename);
+			break;
+		case GNOME_PRINT_OUTPUT_PIPE:
+			pclose (pc->f);
+			break;
+		default:
+			break;
+		}
+		pc->f = NULL;
+	}
+	if (pc->filename) g_free (pc->filename);
+	pc->filename = NULL;
+	if (pc->command) g_free (pc->command);
+	pc->filename = NULL;
 
 	return GNOME_PRINT_OK;
 }
@@ -799,8 +1032,10 @@ gnome_print_scale (GnomePrintContext *pc, double sx, double sy)
 {
 	double dst[6];
 
-	g_return_val_if_fail (pc != NULL, -1);
-	g_return_val_if_fail (GNOME_IS_PRINT_CONTEXT (pc), -1);
+	g_return_val_if_fail (pc != NULL, GNOME_PRINT_ERROR_UNKNOWN);
+	g_return_val_if_fail (GNOME_IS_PRINT_CONTEXT (pc), GNOME_PRINT_ERROR_UNKNOWN);
+	g_return_val_if_fail (pc->gc != NULL, GNOME_PRINT_ERROR_UNKNOWN);
+	gnome_print_check_page (pc);
 
 	art_affine_scale (dst, sx, sy);
 	return gnome_print_concat (pc, dst);
@@ -811,8 +1046,10 @@ gnome_print_rotate (GnomePrintContext *pc, double theta)
 {
 	double dst[6];
 
-	g_return_val_if_fail (pc != NULL, -1);
-	g_return_val_if_fail (GNOME_IS_PRINT_CONTEXT (pc), -1);
+	g_return_val_if_fail (pc != NULL, GNOME_PRINT_ERROR_UNKNOWN);
+	g_return_val_if_fail (GNOME_IS_PRINT_CONTEXT (pc), GNOME_PRINT_ERROR_UNKNOWN);
+	g_return_val_if_fail (pc->gc != NULL, GNOME_PRINT_ERROR_UNKNOWN);
+	gnome_print_check_page (pc);
 
 	art_affine_rotate (dst, theta);
 	return gnome_print_concat (pc, dst);
@@ -823,8 +1060,10 @@ gnome_print_translate (GnomePrintContext *pc, double x, double y)
 {
 	double dst[6];
 
-	g_return_val_if_fail (pc != NULL, -1);
-	g_return_val_if_fail (GNOME_IS_PRINT_CONTEXT (pc), -1);
+	g_return_val_if_fail (pc != NULL, GNOME_PRINT_ERROR_UNKNOWN);
+	g_return_val_if_fail (GNOME_IS_PRINT_CONTEXT (pc), GNOME_PRINT_ERROR_UNKNOWN);
+	g_return_val_if_fail (pc->gc != NULL, GNOME_PRINT_ERROR_UNKNOWN);
+	gnome_print_check_page (pc);
 
 	art_affine_translate (dst, x, y);
 	return gnome_print_concat (pc, dst);
@@ -832,7 +1071,6 @@ gnome_print_translate (GnomePrintContext *pc, double x, double y)
 
 /*
  * These functions provide a common interface for writing bytes to the
- *
  * printer.
  */
 
@@ -840,36 +1078,68 @@ gnome_print_translate (GnomePrintContext *pc, double x, double y)
 int
 gnome_print_context_open_file (GnomePrintContext *pc, const char *filename)
 {
-	g_return_val_if_fail (pc != NULL, -1);
-	g_return_val_if_fail (GNOME_IS_PRINT_CONTEXT (pc), -1);
-	g_return_val_if_fail (filename != NULL, -1);
+	g_return_val_if_fail (pc != NULL, GNOME_PRINT_ERROR_UNKNOWN);
+	g_return_val_if_fail (GNOME_IS_PRINT_CONTEXT (pc), GNOME_PRINT_ERROR_UNKNOWN);
+	g_return_val_if_fail (pc->gc != NULL, GNOME_PRINT_ERROR_UNKNOWN);
+	g_return_val_if_fail (filename != NULL, GNOME_PRINT_ERROR_UNKNOWN);
 
-	if (filename[0] == '|')
-	{
+	if (filename[0] == '|') {
+		/* We are pipe */
+		pc->output = GNOME_PRINT_OUTPUT_PIPE;
 		pc->f = popen (filename + 1, "w");
-		pc->is_pipe = TRUE;
-	}
-	else
-	{
-		/* This is not very intelligent, but it worked for me */
-
-		if ((filename[0] == '~') && (filename[1] == '/'))
-		{
-			filename = g_concat_dir_and_file (g_get_home_dir (), &filename[2]);
+	} else if (filename[0] == '*') {
+		/* We are command */
+		/* fixme: */
+		static gint count = 0;
+		guchar fn[64];
+		gint fd = -1;
+		while (fd < 0) {
+			g_snprintf (fn, 64, "/tmp/gp-spool-%d-%d", (gint) time (NULL), count);
+			fd = open (fn, O_WRONLY | O_CREAT | O_EXCL, S_IRUSR | S_IWUSR);
+			g_print ("fd is %d\n", fd);
+			if (fd < 0) {
+				switch (errno) {
+				case EEXIST:
+					count++;
+					break;
+				default:
+					g_warning ("Cannot create temporary spoolfile %s", fn);
+					return -1;
+					break;
+				}
+			}
 		}
-		pc->f = fopen (filename, "w");
-		pc->is_pipe = FALSE;
+		pc->output = GNOME_PRINT_OUTPUT_PROGRAM;
+		pc->command = g_strdup (filename + 1);
+		pc->filename = g_strdup (fn);
+		g_print ("command %s filename %s\n", pc->command, pc->filename);
+		pc->f = fdopen (fd, "w");
+		if (pc->f == NULL) {
+			g_warning ("Cannot reopen temporary spoolfile %s", fn);
+			return -1;
+		}
+	} else {
+		/* We are plain regular file */
+		if ((filename[0] == '~') && (filename[1] == '/')) {
+			pc->filename = g_concat_dir_and_file (g_get_home_dir (), &filename[2]);
+		} else if ((filename[0] != '/') && (filename[0] != '.')) {
+			pc->filename = g_concat_dir_and_file (g_get_home_dir (), filename);
+		} else {
+			pc->filename = g_strdup (filename);
+		}
+		pc->output = GNOME_PRINT_OUTPUT_FILE;
+		pc->f = fopen (pc->filename, "w");
 	}
 	return pc->f != NULL;
 }
 
 /* Return number of bytes written */
 int
-gnome_print_context_write_file (GnomePrintContext *pc, const char *buf, size_t size)
+gnome_print_context_write_file (GnomePrintContext *pc, const void *buf, size_t size)
 {
-	g_return_val_if_fail (pc != NULL, 0);
-	g_return_val_if_fail (GNOME_IS_PRINT_CONTEXT (pc), 0);
-	g_return_val_if_fail (pc->f != NULL, 0);
+	g_return_val_if_fail (pc != NULL, GNOME_PRINT_ERROR_UNKNOWN);
+	g_return_val_if_fail (GNOME_IS_PRINT_CONTEXT (pc), GNOME_PRINT_ERROR_UNKNOWN);
+	g_return_val_if_fail (pc->f != NULL, GNOME_PRINT_ERROR_UNKNOWN);
 
 	return fwrite (buf, sizeof(char), size, pc->f);
 }
@@ -903,19 +1173,41 @@ gnome_print_context_fprintf (GnomePrintContext *pc, const char *fmt, ...)
 int
 gnome_print_context_close_file (GnomePrintContext *pc)
 {
+	gchar c[256];
+
 	g_return_val_if_fail (pc != NULL, -1);
 	g_return_val_if_fail (GNOME_IS_PRINT_CONTEXT (pc), -1);
 
-	if (pc->f != NULL)
-	{
-		if (pc->is_pipe)
-			return pclose (pc->f);
-		else
-			return fclose (pc->f);
+	if (pc->f != NULL) {
+		switch (pc->output) {
+		case GNOME_PRINT_OUTPUT_FILE:
+			if (fclose (pc->f)) g_warning ("Cannot close output file %s", pc->filename);
+			break;
+		case GNOME_PRINT_OUTPUT_PROGRAM:
+			if (fclose (pc->f)) {
+				g_warning ("Cannot close temporary output file %s", pc->filename);
+				perror ("??");
+				break;
+			}
+			g_snprintf (c, 256, pc->command, pc->filename);
+			g_print ("About to execute %s\n", c);
+			if (system (c)) g_warning ("Cannot execute command %s", c);
+			unlink (pc->filename);
+			break;
+		case GNOME_PRINT_OUTPUT_PIPE:
+			if (pclose (pc->f) == -1) g_warning ("Cannot close pipe");
+			break;
+		default:
+			break;
+		}
 		pc->f = NULL;
 	}
-	else
-		return 0;
+	if (pc->filename) g_free (pc->filename);
+	pc->filename = NULL;
+	if (pc->command) g_free (pc->command);
+	pc->filename = NULL;
+
+	return 0;
 }
 
 void
@@ -926,7 +1218,9 @@ gnome_print_bpath (GnomePrintContext * gpc, ArtBpath * bpath, gboolean append)
 
 	g_return_if_fail (gpc != NULL);
 	g_return_if_fail (GNOME_IS_PRINT_CONTEXT (gpc));
+	g_return_if_fail (gpc->gc != NULL);
 	g_return_if_fail (bpath != NULL);
+	gnome_print_check_page (gpc);
 
 	if (bpath->code == ART_END) return;
 
@@ -992,7 +1286,9 @@ gnome_print_vpath (GnomePrintContext * gpc, ArtVpath * vpath, gboolean append)
 
 	g_return_if_fail (gpc != NULL);
 	g_return_if_fail (GNOME_IS_PRINT_CONTEXT (gpc));
+	g_return_if_fail (gpc->gc != NULL);
 	g_return_if_fail (vpath != NULL);
+	gnome_print_check_page (gpc);
 
 	if (vpath->code == ART_END) return;
 
@@ -1041,47 +1337,53 @@ gnome_print_vpath (GnomePrintContext * gpc, ArtVpath * vpath, gboolean append)
 
 /*
  * WARNING: EXPERIMENTAL
+ * This is also complete crap and we'll remove it soon
  */
 
 int
 gnome_print_glyphlist (GnomePrintContext * pc, GnomeGlyphList * glyphlist)
 {
-	g_return_val_if_fail (pc != NULL, -1);
-	g_return_val_if_fail (GNOME_IS_PRINT_CONTEXT (pc), -1);
+	g_return_val_if_fail (pc != NULL, GNOME_PRINT_ERROR_UNKNOWN);
+	g_return_val_if_fail (GNOME_IS_PRINT_CONTEXT (pc), GNOME_PRINT_ERROR_UNKNOWN);
+	g_return_val_if_fail (pc->gc != NULL, GNOME_PRINT_ERROR_UNKNOWN);
 	g_return_val_if_fail (glyphlist != NULL, -1);
 	g_return_val_if_fail (GNOME_IS_GLYPHLIST (glyphlist), -1);
+	gnome_print_check_page (pc);
 
 	if (((GnomePrintContextClass *) ((GtkObject *) pc)->klass)->glyphlist) {
 		return (* ((GnomePrintContextClass *) ((GtkObject *) pc)->klass)->glyphlist) (pc, glyphlist);
 	} else {
 		GnomePosGlyphList * pgl;
 		gdouble affine[6];
-		GSList * l;
+		gint si;
+
 		art_affine_identity (affine);
 		pgl = gnome_pgl_from_gl (glyphlist, affine, 0);
-		for (l = pgl->strings; l != NULL; l = l->next) {
-			GnomePosString *string;
+		for (si = 0; si < pgl->num_strings; si++) {
+			GnomePosString * ps;
 			GnomeFont *font;
 			GnomeFontFace *face;
+			gdouble r, g, b, a;
 			gint i;
-			string = (GnomePosString *) l->data;
-			font = (GnomeFont *) gnome_rfont_get_font (string->rfont);
+
+			ps = pgl->strings + si;
+			font = (GnomeFont *) gnome_rfont_get_font (ps->rfont);
 			face = (GnomeFontFace *) gnome_font_get_face (font);
 			gnome_print_setfont (pc, font);
-			for (i = 0; i < string->length; i++) {
-				gdouble r, g, b, a;
+			r = ((ps->color >> 24) & 0xff) / 255.0;
+			g = ((ps->color >> 16) & 0xff) / 255.0;
+			b = ((ps->color >>  8) & 0xff) / 255.0;
+			a = ((ps->color >>  0) & 0xff) / 255.0;
+			gnome_print_setrgbcolor (pc, r, g, b);
+			gnome_print_setopacity (pc, a);
+			for (i = ps->start; i < ps->start + ps->length; i++) {
 				const gchar *psname;
 				gchar utf[6];
 				gint len;
+
 				/* fixme: We need currentpoint here :( */
-				gnome_print_moveto (pc, string->glyphs[i].x, string->glyphs[i].y);
-				r = ((string->glyphs[i].color >> 24) & 0xff) / 255.0;
-				g = ((string->glyphs[i].color >> 16) & 0xff) / 255.0;
-				b = ((string->glyphs[i].color >>  8) & 0xff) / 255.0;
-				a = ((string->glyphs[i].color >>  0) & 0xff) / 255.0;
-				gnome_print_setrgbcolor (pc, r, g, b);
-				gnome_print_setopacity (pc, a);
-				psname = gnome_font_face_get_glyph_ps_name (face, string->glyphs[i].glyph);
+				gnome_print_moveto (pc, pgl->glyphs[i].x, pgl->glyphs[i].y);
+				psname = gnome_font_face_get_glyph_ps_name (face, pgl->glyphs[i].glyph);
 				len = g_unichar_to_utf8 (gp_unicode_from_ps (psname), utf);
 				gnome_print_show_sized (pc, utf, len);
 			}

@@ -146,8 +146,9 @@ gpp_image (GnomePrintContext *pc, const char *data, int width, int height, int r
 	GnomeCanvasGroup * group;
 	GnomeCanvasItem *item;
 	ArtPixBuf *pixbuf;
-	int size, bpp;
-	void *dup;
+	gint size, bpp;
+        gchar *dup;
+	gint y;
 	
 	/*
 	 * We do convert gray scale images to RGB
@@ -160,32 +161,32 @@ gpp_image (GnomePrintContext *pc, const char *data, int width, int height, int r
 	
 	size = width * height * bpp;
 	dup = art_alloc (size);
-	if (!dup)
-		return -1;
+	if (!dup) return -1;
 
-	if (bytes_per_pixel == 3){
-		memcpy (dup, data, size);
+	if (bytes_per_pixel == 3) {
+		for (y = 0; y < height; y++) {
+			memcpy (dup + y * width * 3, data + y * rowstride, width * 3);
+		}
 		pixbuf = art_pixbuf_new_rgb (dup, width, height, rowstride);
 	} else if (bytes_per_pixel == 4){
-		memcpy (dup, data, size);
+		for (y = 0; y < height; y++) {
+			memcpy (dup + y * width * 4, data + y * rowstride, width * 4);
+		}
 		pixbuf = art_pixbuf_new_rgba (dup, width, height, rowstride);
 	} else if (bytes_per_pixel == 1){
-		const char *source;
-		char *target;
-		int  ix, iy;
-
-		source = data;
-		target = dup;
-
-		for (iy = 0; iy < height; iy++){
-			for (ix = 0; ix < width; ix++){
-				*target++ = *source;
-				*target++ = *source;
-				*target++ = *source;
-				source++;
+		for (y = 0; y < height; y++) {
+			gchar *sp, *dp;
+			gint x;
+			sp = data + y * rowstride;
+			dp = dup + y * width * 3;
+			for (x = 0; x < width; x++){
+				*dp++ = *sp;
+				*dp++ = *sp;
+				*dp++ = *sp;
+				sp++;
 			}
 		}
-		pixbuf = art_pixbuf_new_rgb (dup, width, height, rowstride * 3);
+		pixbuf = art_pixbuf_new_rgb (dup, width, height, width * 3);
 	} else
 		return -1;
 
@@ -196,9 +197,9 @@ gpp_image (GnomePrintContext *pc, const char *data, int width, int height, int r
 		"pixbuf", pixbuf,
 		"x",      0.0,
 		"y",      0.0,
-		"width",  1.0,
-		"height", 1.0,
-		"anchor", GTK_ANCHOR_SW,
+		"width",  (gdouble) width,
+		"height", (gdouble) height,
+		"anchor", GTK_ANCHOR_NW,
 		NULL);
 
 
@@ -206,10 +207,15 @@ gpp_image (GnomePrintContext *pc, const char *data, int width, int height, int r
 	{
 		double transform [6];
 		double flip [6];
-		art_affine_scale (flip, 1.0, -1.0);
+		flip[0] = 1.0 / width;
+		flip[1] = 0.0;
+		flip[2] = 0.0;
+		flip[3] = -1.0 / height;
+		flip[4] = 0.0;
+		flip[5] = 1.0;
 		art_affine_multiply (transform, flip, gp_gc_get_ctm (pc->gc));
 
-		gnome_canvas_item_affine_relative (item, transform);
+		gnome_canvas_item_affine_absolute (item, transform);
 	}
 	
 	return 1;
@@ -311,6 +317,7 @@ gpp_glyphlist (GnomePrintContext *pc, GnomeGlyphList * glyphlist)
 	GnomePrintPreview *pp = GNOME_PRINT_PREVIEW (pc);
 	GnomeCanvasGroup *group;
 	GnomeCanvasItem *item;
+	const ArtPoint zeropoint = {0.0, 0.0};
 	const ArtPoint * cp;
 	ArtPoint p;
 	double transform [6], a[6], inverse[6];
@@ -322,7 +329,11 @@ gpp_glyphlist (GnomePrintContext *pc, GnomeGlyphList * glyphlist)
 	 * Postscript->Canvas translation
 	 */
 	
-	cp = gp_gc_get_currentpoint (pc->gc);
+	if (gp_gc_has_currentpoint (pc->gc)) {
+		cp = gp_gc_get_currentpoint (pc->gc);
+	} else {
+		cp = &zeropoint;
+	}
 
 	memcpy (transform, gp_gc_get_ctm (pc->gc), sizeof (transform));
 	art_affine_scale (a, 1.0, -1.0);

@@ -4,8 +4,14 @@
  */
 /* A simple region-based allocator */
 
+#include "config.h"
+
 #include "gt1-misc.h"
 #include "gt1-region.h"
+
+#ifdef HAVE_STRING_H
+#include <string.h>
+#endif
 
 #define REGION_BLOCK_SIZE 4096
 

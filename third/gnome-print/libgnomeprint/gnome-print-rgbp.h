@@ -45,7 +45,7 @@ struct _GnomePrintRGBPClass {
 GtkType            gnome_print_rgbp_get_type  (void);
 GnomePrintContext *gnome_print_rgbp_new       (const char *paper_size,
 					       int dpi);
-GnomePrintRGBP    *gnome_print_rgbp_construct (GnomePrintRGBP *rgbp,
+GnomePrintRGBP    *gnome_print_rgbp_construct (GnomePrintRGBP   *rgbp,
 					       const GnomePaper *paper_info,
 					       int dpi);
 
