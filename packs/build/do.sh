@@ -1,10 +1,10 @@
 #!/bin/sh
-# $Id: do.sh,v 1.1 1996-10-12 22:02:56 ghudson Exp $
+# $Id: do.sh,v 1.2 1996-10-12 22:23:21 ghudson Exp $
 
 source="/source"
 build="/build"
 srvd="/srvd"
-usage="do [-s srcdir] [-d destdir] [operation]"
+usage="do [-s srcdir] [-d destdir] [configure|clean|all|check|install]"
 
 while getopts s:b:d: opt; do
 	case "$opt" in
