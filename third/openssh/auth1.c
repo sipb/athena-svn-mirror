@@ -462,7 +462,8 @@ do_authentication(void)
 	    packet_send();
 	    packet_write_wait();
 	    
-	    fatal("Login denied: %s", err);
+	    fatal("Login denied: attempted login as %s from %s: %s",
+		  user, get_canonical_hostname(1), err);
 	  }
 	if (!is_local_acct)
 	  {
