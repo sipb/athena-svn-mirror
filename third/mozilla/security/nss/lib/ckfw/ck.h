@@ -35,7 +35,7 @@
 #define CK_H
 
 #ifdef DEBUG
-static const char CK_CVS_ID[] = "@(#) $RCSfile: ck.h,v $ $Revision: 1.1.1.3 $ $Date: 2003-12-24 16:38:30 $ $Name: not supported by cvs2svn $";
+static const char CK_CVS_ID[] = "@(#) $RCSfile: ck.h,v $ $Revision: 1.1.1.4 $ $Date: 2004-02-27 17:26:10 $ $Name: not supported by cvs2svn $";
 #endif /* DEBUG */
 
 /*
