@@ -1,11 +1,11 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.39 1991-07-08 09:17:02 probe Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.40 1991-07-19 13:38:19 probe Exp $
  */
 
 #ifndef lint
 static char *rcsid_login_c =
-    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.39 1991-07-08 09:17:02 probe Exp $";
+    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.40 1991-07-19 13:38:19 probe Exp $";
 #endif	/* lint */
 
 /*
@@ -863,7 +863,18 @@ leavethis:
 		   (st.st_mtime > st.st_atime) ? "new " : "");
     }
 #ifdef VFS
-    (void) system(QUOTAWARN);
+    switch(forkval = fork()) {
+    case -1:
+	printf("Unable to fork to run quota.\n");
+	break;
+    case 0:
+	execlp(QUOTAWARN, "quota", 0);
+	exit(1);
+	/* NOTREACHED */
+    default:
+	while(wait(0) != forkval) ;
+	break;
+    }
 #endif VFS
     signal(SIGALRM, SIG_DFL);
     signal(SIGQUIT, SIG_DFL);
