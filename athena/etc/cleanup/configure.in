@@ -9,25 +9,25 @@ AC_PROG_INSTALL
 
 AC_CHECK_FUNCS(getutxent)
 
-AC_CANONICAL_SYSTEM
-case $target_os in
+AC_CANONICAL_HOST
+case $host_os in
 solaris*)
-	CPPFLAGS="$CPPFLAGS -DSOLARIS"
+	AC_DEFINE(SOLARIS)
 	AC_CHECK_LIB(elf, nlist)
 	AC_CHECK_LIB(kvm, kvm_read)
 	;;
 irix*)
-	CPPFLAGS="$CPPFLAGS -DIRIX"
+	AC_DEFINE(IRIX)
 	;;
 netbsd*)
-	CPPFLAGS="$CPPFLAGS -DNETBSD"
+	AC_DEFINE(NETBSD)
 	AC_CHECK_LIB(kvm, kvm_open)
 	;;
 linux*)
-	CPPFLAGS="$CPPFLAGS -DLINUX"
+	AC_DEFINE(LINUX)
 	;;
 osf*)
-	CPPFLAGS="$CPPFLAGS -DOSF"
+	AC_DEFINE(OSF)
 	;;
 esac
 
