@@ -1,12 +1,12 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/mon/vm.c,v $
- *	$Author: dgg $
+ *	$Author: builder $
  *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/mon/vm.c,v 1.1 1984-12-13 12:01:38 dgg Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/mon/vm.c,v 1.2 1985-11-13 00:05:10 builder Exp $
  */
 
 #ifndef lint
-static char *rcsid_vm_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/mon/vm.c,v 1.1 1984-12-13 12:01:38 dgg Exp $";
+static char *rcsid_vm_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/mon/vm.c,v 1.2 1985-11-13 00:05:10 builder Exp $";
 #endif	lint
 
 /*
@@ -22,7 +22,7 @@ static char *rcsid_vm_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bi
  */
 
 #include "mon.h"
-#include <machine/param.h>	/* defines bytes/page */
+#include <machine/machparam.h>	/* defines bytes/page */
 
 /* Temporary defines */
 #define	PROCS	2
