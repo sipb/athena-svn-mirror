@@ -3,7 +3,12 @@
 #include <X11/cursorfont.h>
 #include <X11/keysym.h>
 #include <X11/IntrinsicP.h>
+#if defined(sgi) || defined(SOLARIS) /* For R5 vs. R4, actually. May not
+				      need this header at all. */
+#include <X11/Xresource.h>
+#else
 #include <X11/Quarks.h>
+#endif
 #include <ctype.h>
 
 #define MONO 0
