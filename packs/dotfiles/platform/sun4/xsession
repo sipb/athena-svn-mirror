@@ -3,7 +3,7 @@
 # Accepts one optional argument "nocalls" (i.e., use no user files)
 # $Author: probe $
 # $Source: /afs/dev.mit.edu/source/repository/packs/dotfiles/platform/sun4/xsession,v $
-# $Header: /afs/dev.mit.edu/source/repository/packs/dotfiles/platform/sun4/xsession,v 1.20 1990-12-23 20:51:45 probe Exp $
+# $Header: /afs/dev.mit.edu/source/repository/packs/dotfiles/platform/sun4/xsession,v 1.21 1990-12-27 18:04:41 probe Exp $
 
 # Note: This shell script deliberately uses the -f flag.
 
@@ -61,7 +61,7 @@ switch (`/bin/athena/machtype -c`)
     case MVAX-II:
 	set sleep_time=10
 	breaksw
-    case RTPC_ROMPC:
+    case RTPC-ROMPC:
 	set sleep_time=6
 	breaksw
     case PS2-*:
