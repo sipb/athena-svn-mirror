@@ -87,6 +87,7 @@ struct option longopts[] = {
 	{"test",	0, 0, 'T'},		/* Do register and SRAM test. */
 	{"verbose",	0, 0, 'v'},		/* Verbose mode */
 	{"version", 0, 0, 'V'},		/* Display version number */
+	{"xperiment", 1, 0, 'x'},   /* experimental prom value hack */
 	{"write-EEPROM", 1, 0, 'w'},/* Actually write the EEPROM with new vals */
 	{ 0, 0, 0, 0 }
 };
@@ -197,8 +198,9 @@ static int emergency_rewrite = 0;
 static unsigned set_ee_rom = 0;
 static unsigned set_ee_rom_val = 0;
 static int opt_dma_diag = 0;
-static unsigned int set_ee_media = 1;
-static unsigned int set_ee_media_auto = 1;
+static unsigned int opt_ee = 0;
+static unsigned int set_ee_media = 0;
+static unsigned int set_ee_media_auto = 0;
 static unsigned int set_ee_media_duplex = 0;
 static unsigned int set_ee_media_speed = 0;
 
@@ -216,7 +218,7 @@ main(int argc, char **argv)
 	int card_num = 0;
 	extern char *optarg;
 
-	while ((c = getopt_long(argc, argv, "#:aA:DeEfF:gG:mp:P:qrRst:vVwWH:BL:S:",
+	while ((c = getopt_long(argc, argv, "#:aA:DeEfF:gG:mp:P:qrRst:vVx:wWH:BL:S:",
 							longopts, &longind))
 		   != -1)
 		switch (c) {
@@ -257,6 +259,7 @@ main(int argc, char **argv)
 		case 't': chip_type = atoi(optarg);	break;
 		case 'v': verbose++;		break;
 		case 'V': show_version++;	break;
+		case 'x': set_ee_media++; opt_ee = atoi(optarg); break;
 		case 'w': do_write_eeprom++;	break;
 		case 'W': opt_watch++;		break;
 		case 'B': opt_flash_show++;	break;
@@ -776,9 +779,19 @@ int vortex_diag(int vendor_id, int dev_id, long ioaddr, int part_idx)
 	}
 	if (set_ee_media) {
 		unsigned short sum = 0;
+		if (opt_ee > 255) {
+			set_ee_media_duplex = 1;
+			opt_ee-= 256;
+		}
+		set_ee_media_speed = opt_ee;
+
+		printf ("duplex: %x, speed: %d.\n", set_ee_media_duplex, set_ee_media_speed);
 		memcpy(new_ee_contents, eeprom_contents, eesize << 1);
+			if (set_ee_media_duplex == 1)
+				new_ee_contents[0xd] |= 0x8000;
+			else
+				new_ee_contents[0xd] &= 0x7fff;
 		if (set_ee_media_auto == 1) {
-			new_ee_contents[0xd] |= 0x8000;
 			new_ee_contents[0x13] &= 0xff8f;
 			new_ee_contents[0x13] |= 0x0180;
 			new_ee_contents[0x15] &= 0xfff4;
@@ -786,15 +799,21 @@ int vortex_diag(int vendor_id, int dev_id, long ioaddr, int part_idx)
 		}
 		else {
 
-			if (set_ee_media_duplex == 1)
-				new_ee_contents[0xd] |= 0x8000;
-			else
-				new_ee_contents[0xd] &= 0x7fff;
 			if (set_ee_media_speed == 100) {
 				new_ee_contents[0x13] &= 0xfe4f;
 				new_ee_contents[0x13] |= 0x0040;
 				new_ee_contents[0x15] &= 0xfff3;
 				new_ee_contents[0x15] |= 0x0003;
+			}
+			else if (set_ee_media_speed == 1) {
+				new_ee_contents[0xd] |= 0x0010;
+				new_ee_contents[0x13] = 0x0160;
+				new_ee_contents[0x15] = 0x0005;
+			}
+			else if (set_ee_media_speed == 2) {
+				new_ee_contents[0xd] |= 0x0010;
+				new_ee_contents[0x13] = 0x0184;
+				new_ee_contents[0x15] = 0x0005;
 			}
 			else { /* assuming only 10baseT remains ! */
 				new_ee_contents[0x13] &= 0xfe0f;
@@ -1041,7 +1060,7 @@ static int do_update(long ioaddr, int addrlen,
 						   i, ee_values[i]);
 				write_eeprom(ioaddr, addrlen, i, ee_values[i]);
 			} else
-				printf(" Would write new %d entry 0x%4.4x (old value 0x%4.4x).\n", 
+				printf(" Would write new 0x%x entry 0x%4.4x (old value 0x%4.4x).\n", 
 					   i, ee_values[i], old_ee_values[i]);
 		}
 	}
