@@ -1,7 +1,7 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/delete/util.h,v $
  * $Author: jik $
- * $Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/util.h,v 1.5 1989-05-04 14:29:19 jik Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/util.h,v 1.6 1989-10-23 13:07:04 jik Exp $
  * 
  * This file is part of a package including delete, undelete,
  * lsdel, expunge and purge.  The software suite is meant as a
@@ -16,7 +16,6 @@ char *append();
 char *convert_to_user_name();
 char *firstpart();
 char *lastpart();
-char *reg_firstpart();
 char *strindex();
 char *strrindex();
 
