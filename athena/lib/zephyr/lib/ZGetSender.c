@@ -4,17 +4,18 @@
  *	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZGetSender.c,v $
- *	$Author: rfrench $
+ *	$Author: raeburn $
  *
- *	Copyright (c) 1987 by the Massachusetts Institute of Technology.
+ *	Copyright (c) 1987, 1991 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZGetSender.c,v 1.7 1988-05-13 15:05:07 rfrench Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZGetSender.c,v 1.8 1991-03-21 11:41:23 raeburn Exp $ */
 
 #ifndef lint
-static char rcsid_ZGetSender_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZGetSender.c,v 1.7 1988-05-13 15:05:07 rfrench Exp $";
-#endif lint
+static char rcsid_ZGetSender_c[] =
+    "$Zephyr: ZGetSender.c,v 1.7 88/05/13 15:05:07 rfrench Exp $";
+#endif
 
 #include <zephyr/mit-copyright.h>
 
@@ -43,19 +44,19 @@ char *ZGetSender()
 	if ((tf_get_pname(pname) == KSUCCESS) &&
 	    (tf_get_pinst(pinst) == KSUCCESS)) {
 	    (void) sprintf(sender, "%s%s%s@%s", pname, (pinst[0]?".":""),
-			   pinst, __Zephyr_realm);
+			   pinst, ZGetRealm ());
 	    tf_close();
 	    return (sender);
 	}
 	tf_close();
     }
-#endif KERBEROS
+#endif
 
     /* XXX a uid_t is a u_short (now),  but getpwuid
      * wants an int. AARGH! */
     pw = getpwuid((int) getuid());
     if (!pw)
 	return ("unknown");
-    (void) sprintf(sender, "%s@%s", pw->pw_name, __Zephyr_realm);
+    (void) sprintf(sender, "%s@%s", pw->pw_name, ZGetRealm ());
     return (sender);
 }
