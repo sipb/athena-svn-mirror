@@ -10,10 +10,10 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/Zinternal.c,v 1.20 1990-10-19 06:19:42 raeburn Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/Zinternal.c,v 1.21 1990-11-09 14:25:45 raeburn Exp $ */
 
 #ifndef lint
-static char rcsid_Zinternal_c[] = "$Id: Zinternal.c,v 1.20 1990-10-19 06:19:42 raeburn Exp $";
+static char rcsid_Zinternal_c[] = "$Id: Zinternal.c,v 1.21 1990-11-09 14:25:45 raeburn Exp $";
 static char copyright[] = "Copyright (c) 1987,1988 by the Massachusetts Institute of Technology.";
 #endif lint
 
@@ -681,14 +681,17 @@ Z_AddField(ptr, field, end)
 {
     register int len;
 
-    len = strlen(field)+1;
+    len = field ? strlen (field) + 1 : 1;
 
     if (*ptr+len > end)
-	return (1);
-    (void) strcpy(*ptr, field);
+	return 1;
+    if (field)
+	(void) strcpy(*ptr, field);
+    else
+	**ptr = '\0';
     *ptr += len;
 
-    return (0);
+    return 0;
 }
 
 struct _Z_InputQ *Z_GetFirstComplete()
