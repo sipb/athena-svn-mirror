@@ -11,7 +11,7 @@
 
 #if  (!defined(lint))  &&  (!defined(SABER))
 static char rcsid[] =
-"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/Drawing.c,v 1.3 1991-12-17 10:27:33 vanharen Exp $";
+"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/Drawing.c,v 1.4 1993-07-02 01:24:13 vanharen Exp $";
 #endif
 
 #include "mit-copyright.h"
@@ -61,19 +61,21 @@ static void realize(), querySize(), destroy();
 
 DrawingClassRec drawingClassRec = {
   {
-    /* class name */	"Drawing",
-    /* jet size   */	sizeof(DrawingRec),
-    /* initialize */	NULL,
-    /* prerealize */    NULL,
-    /* realize */	realize,
-    /* event */		event_handler,
-    /* expose */	NULL,
-    /* querySize */     querySize,
-    /* move */		NULL,
-    /* resize */        NULL,
-    /* destroy */       destroy,
-    /* resources */	resources,
-    /* number of 'em */	XjNumber(resources)
+    /* class name */		"Drawing",
+    /* jet size   */		sizeof(DrawingRec),
+    /* classInitialize */	NULL,
+    /* classInitialized? */	1,
+    /* initialize */		NULL,
+    /* prerealize */    	NULL,
+    /* realize */		realize,
+    /* event */			event_handler,
+    /* expose */		NULL,
+    /* querySize */     	querySize,
+    /* move */			NULL,
+    /* resize */        	NULL,
+    /* destroy */       	destroy,
+    /* resources */		resources,
+    /* number of 'em */		XjNumber(resources)
   }
 };
 
