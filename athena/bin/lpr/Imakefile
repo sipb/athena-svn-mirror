@@ -1,5 +1,5 @@
 /* 
- * $Id: Imakefile,v 1.16 1997-10-13 22:44:10 ghudson Exp $
+ * $Id: Imakefile,v 1.17 1999-02-13 16:55:26 danw Exp $
  *
  * Copyright (c) 1983 Regents of the University of California.
  * All rights reserved.  The Berkeley software License Agreement
@@ -21,7 +21,7 @@
 
 #define ISUBDIRS filters man transcript-v2.1
 
-DEFINES= -DVFS -DHESIOD -DKERBEROS -DZEPHYR -DPQUOTA -DLACL -Iquota
+DEFINES= -DVFS -DHESIOD -DKERBEROS -DZEPHYR -DLACL
 LIBS= -L/usr/athena/lib -lhesiod -lzephyr -lkrb4 -lkrb5 -ldes425 -lcrypto \
 	-lcom_err
 
