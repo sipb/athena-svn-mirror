@@ -1,12 +1,12 @@
 # Prototype user .login file
 #
-# $Id: dot.login,v 1.15 1991-06-08 18:40:59 probe Exp $
+# $Id: dot.login,v 1.16 1999-06-03 14:52:56 danw Exp $
 
 # This file sources a system-wide .login file, which:
 #      - presumes that the .cshrc file has been sourced
-#      - performs standard setups appropriate for tty session
-#      - runs standard startup activities (e.g., check mail)
-#      - source user file ~/.startup.tty, if it exists
+#      - performs standard setup appropriate for a tty session
+#      - runs standard startup activities (e.g., checking mail)
+#      - sources user file ~/.startup.tty, if it exists
 
 set initdir=/usr/athena/lib/init
 
@@ -30,5 +30,5 @@ endif
 # the system-wide login file as a starting point.
 #
 # WARNING: If you revise this .login file, you will not automatically
-# get any changes that Project Athena may make to the system-wide file at 
-# a later date.  Be sure you know what you are doing.
+# get any changes that Athena may make to the system-wide file at a
+# later date. Be sure you know what you are doing.
