@@ -1,0 +1,14 @@
+/.cshrc
+/.login
+/.profile
+/.xsession
+/etc/athena/attach.conf
+/etc/athena/inetd.conf
+/etc/ftpusers
+/etc/syslog.conf
+/etc/athena/newsyslog.conf
+/etc/shells
+/etc/resolv.conf
+/etc/syslog.conf
+/etc/inetd.conf
+/var/spool/cron/crontabs/root"
