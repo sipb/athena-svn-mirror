@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.2 1999-06-04 16:42:28 ghudson Exp $
+# $Id: Makefile,v 1.2.4.1 1999-11-29 15:14:39 tb Exp $
 
 SHELL=/bin/sh
 
@@ -11,28 +11,36 @@ all:
 check:
 
 install:
-	-mkdir -p $(DESTDIR)$(ATHRBINDIR) $(DESTDIR)$(VICE)
+	-mkdir -p $(DESTDIR)$(ATHRBINDIR)
+	-mkdir -p $(DESTDIR)$(VICE)/modload
 	-mkdir -p $(DESTDIR)$(AFSWS)/lib/afs
 	-mkdir -p $(DESTDIR)$(AFSWS)/include/afs
 	-mkdir -p $(DESTDIR)$(AFSWS)/include/rx
-	-mkdir -p $(DESTDIR)/lib/modules/2.2.0
-	-mkdir -p $(DESTDIR)/lib/modules/2.2.1
-	-mkdir -p $(DESTDIR)/lib/modules/2.2.2
 	-mkdir -p $(DESTDIR)/etc/rc.d/init.d
-	-mkdir -p $(DESTDIR)/etc/rc.d/rc.0
-	-mkdir -p $(DESTDIR)/etc/rc.d/rc.2
-	-mkdir -p $(DESTDIR)/etc/rc.d/rc.3
-	install -c -m 444 libafs-2.2.0.mp.o \
-		$(DESTDIR)/lib/modules/2.2.0/libafs.o
-	install -c -m 444 libafs-2.2.1.mp.o \
-		$(DESTDIR)/lib/modules/2.2.1/libafs.o
-	install -c -m 444 libafs-2.2.2.mp.o \
-		$(DESTDIR)/lib/modules/2.2.2/libafs.o
+	-mkdir -p $(DESTDIR)/etc/sysconfig
+	-mkdir -p $(DESTDIR)/usr/vice/cache
+	install -c -m 444 libafs-2.2.0.mp.o $(DESTDIR)$(VICE)/modload
+	install -c -m 444 libafs-2.2.1.mp.o $(DESTDIR)$(VICE)/modload
+	install -c -m 444 libafs-2.2.2.mp.o $(DESTDIR)$(VICE)/modload
+	install -c -m 444 libafs-2.2.3.mp.o $(DESTDIR)$(VICE)/modload
+	install -c -m 444 libafs-2.2.5-15.mp.o $(DESTDIR)$(VICE)/modload
+	install -c -m 444 libafs-2.2.10.mp.o $(DESTDIR)$(VICE)/modload
+	install -c -m 444 libafs-2.2.0.o $(DESTDIR)$(VICE)/modload
+	install -c -m 444 libafs-2.2.1.o $(DESTDIR)$(VICE)/modload
+	install -c -m 444 libafs-2.2.2.o $(DESTDIR)$(VICE)/modload
+	install -c -m 444 libafs-2.2.3.o $(DESTDIR)$(VICE)/modload
+	install -c -m 444 libafs-2.2.5-15.o $(DESTDIR)$(VICE)/modload
+	install -c -m 444 libafs-2.2.10.o $(DESTDIR)$(VICE)/modload
+	ln -s libafs-2.2.10.mp.o \
+		$(DESTDIR)$(VICE)/modload/libafs-2.2.12-20.mp.o
+	ln -s libafs-2.2.10.o $(DESTDIR)$(VICE)/modload/libafs-2.2.12-20.o
 	install -c -m 555 fs $(DESTDIR)$(ATHRBINDIR)
 	install -c -m 555 tokens $(DESTDIR)$(ATHRBINDIR)
 	install -c -m 555 unlog $(DESTDIR)$(ATHRBINDIR)
 	install -c -m 555 afsd $(DESTDIR)$(VICE)
-	install -c -m 555 afs.conf $(DESTDIR)$(VICE)
+	install -c -m 555 ThisCell $(DESTDIR)$(VICE)
+	install -c -m 555 CellServDB $(DESTDIR)$(VICE)
+	install -c -m 555 cacheinfo $(DESTDIR)$(VICE)
 	install -c -m 444 lib/libdes.a $(DESTDIR)$(AFSWS)/lib
 	install -c -m 444 lib/liblwp.a $(DESTDIR)$(AFSWS)/lib
 	install -c -m 444 lib/librx.a $(DESTDIR)$(AFSWS)/lib
@@ -211,13 +219,8 @@ install:
 	install -c -m 444 include/rx/rx_user.h $(DESTDIR)$(AFSWS)/include/rx
 	install -c -m 444 include/rx/rxkad.h $(DESTDIR)$(AFSWS)/include/rx
 	install -c -m 444 include/rx/xdr.h $(DESTDIR)$(AFSWS)/include/rx
-	install -c -m 555 afs.rc $(DESTDIR)/etc/rc.d/init.d
-	rm -f $(DESTDIR)/etc/rc.d/rc.0/[KS]80afs
-	rm -f $(DESTDIR)/etc/rc.d/rc.2/[KS]80afs
-	rm -f $(DESTDIR)/etc/rc.d/rc.3/[KS]80afs
-	ln -s ../init.d/afs $(DESTDIR)/etc/rc.d/rc.0/K80afs
-	ln -s ../init.d/afs $(DESTDIR)/etc/rc.d/rc.2/S80afs
-	ln -s ../init.d/afs $(DESTDIR)/etc/rc.d/rc.3/S80afs
+	install -c -m 555 afs.rc $(DESTDIR)/etc/rc.d/init.d/afs
+	install -c -m 555 afs.conf $(DESTDIR)/etc/sysconfig/afs
 
 clean:
 
