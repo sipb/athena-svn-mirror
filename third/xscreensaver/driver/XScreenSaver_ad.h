@@ -59,8 +59,6 @@
 	       \"Grav (trails)\" 	grav -root -trail -decay		    \\n\
 				drift -root				    \\n\
 				ifs -root				    \\n\
-				julia -root				    \\n\
-				penrose -root				    \\n\
 				sierpinski -root			    \\n\
 				braid -root				    \\n\
 				galaxy -root				    \\n\
