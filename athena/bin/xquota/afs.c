@@ -5,7 +5,7 @@
  * For re-distribution and warranty information, see <mit-copyright.h>
  *
  * 
- * $Id: afs.c,v 1.3 1994-03-30 13:37:15 miki Exp $
+ * $Id: afs.c,v 1.4 1994-08-14 16:39:43 cfields Exp $
  */
 
 #include <sys/types.h>
@@ -17,6 +17,7 @@
 #include <afs/afsint.h>
 
 #ifdef SOLARIS
+#include <sys/ioccom.h>
 #include <sys/fs/ufs_quota.h>
 #else
 #include <ufs/quota.h>
