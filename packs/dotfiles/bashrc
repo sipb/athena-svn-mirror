@@ -1,6 +1,6 @@
 # Global bashrc file
 #
-# $Id: bashrc,v 1.21.2.1 2001-07-10 16:40:10 ghudson Exp $
+# $Id: bashrc,v 1.21.2.2 2001-08-21 00:25:13 ghudson Exp $
 
 # This file is sourced by default user file ~/.bashrc
 
@@ -23,7 +23,6 @@ if [ "${ENV_SET:+set}" != set ]; then
 	umask 077				# Strictly protect files
 						#  (does not apply in AFS)
 	ulimit -c unlimited			# Don't allow coredumps
-	export GNOME_DISABLE_CRASH_DIALOG=1
 	export EDITOR=emacs			# Set default editor
 	export VISUAL=emacs			# Set default screen editor
 	export MM_CHARSET=iso-8859-1
@@ -32,7 +31,7 @@ if [ "${ENV_SET:+set}" != set ]; then
 	# PATH will get set later after .bash_environment is run.
 	case "$HOSTTYPE" in
 	sgi)
-		athena_path=/srvd/patch:/usr/athena/bin:/usr/athena/etc:
+		athena_path=/usr/athena/bin:/usr/athena/etc:
 		athena_path=$athena_path:/bin/athena:/usr/sbin:/usr/bsd:/sbin
 		athena_path=$athena_path:/usr/bin:/bin:/usr/bin/X11
 		athena_path=$athena_path:/usr/andrew/bin:/usr/etc
