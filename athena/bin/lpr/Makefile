@@ -1,7 +1,7 @@
 #	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/Makefile,v $
 #	$Author: epeisach $
 #	$Locker:  $
-#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/Makefile,v 1.16 1990-11-15 15:34:58 epeisach Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/Makefile,v 1.17 1990-11-16 15:07:52 epeisach Exp $
 #
 #
 # Copyright (c) 1983 Regents of the University of California.
@@ -30,6 +30,8 @@ DAEMON=daemon
 SPGRP=daemon
 OPERATOR=OPERATOR
 LN=ln -s
+CC=cc
+
 # OP_GID is the group ID for group operator
 OP_GID = 28
 SRCS=	lpd.c lpr.c lpq.c lprm.c pac.c lpd.c cmds.c cmdtab.c \
@@ -43,7 +45,7 @@ SUBDIR=quota transcript-v2.1 man
 all:	${ALL} FILTERS ${SUBDIR}
 
 ${SUBDIR}: FRC
-	cd $@; make ${MFLAGS} Makefile; make ${MFLAGS} all; cd ..
+	cd $@; make ${MFLAGS} Makefile; make ${MFLAGS} CC=${CC} all; cd ..
 
 FRC:
 
@@ -166,7 +168,7 @@ install:
 	-rm -f ${DESTDIR}/${BINDIR}/lpr.ucb
 	-ln -s lpr ${DESTDIR}/${BINDIR}/lpr.ucb
 	-for i in ${SUBDIR}; do \
-		(cd $$i; make ${MFLAGS} DESTDIR=${DESTDIR} install; cd ..); \
+		(cd $$i; make ${MFLAGS} CC=${CC} DESTDIR=${DESTDIR} install; cd ..); \
 		done
 #	install -c -m 444 printcap ${DESTDIR}/etc/printcap
 	install -c -s -o root -g ${SPGRP} -m 6755 lpd ${DESTDIR}/${LIBDIR}/
@@ -204,5 +206,5 @@ print:
 depend:
 	touch Make.depend; mkdep -fMake.depend ${CFLAGS} ${SRCS}
 	for i in ${SUBDIR}; do \
-		(cd $$i; make ${MFLAGS} depend; cd ..); \
+		(cd $$i; make ${MFLAGS} CC=${CC} depend; cd ..); \
 		done
