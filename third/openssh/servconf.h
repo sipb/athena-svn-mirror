@@ -1,3 +1,5 @@
+/*	$OpenBSD: servconf.h,v 1.59 2002/07/30 17:03:55 markus Exp $	*/
+
 /*
  * Author: Tatu Ylonen <ylo@cs.hut.fi>
  * Copyright (c) 1995 Tatu Ylonen <ylo@cs.hut.fi>, Espoo, Finland
@@ -10,8 +12,6 @@
  * incompatible with the protocol description in the RFC file, it must be
  * called by a name other than "ssh" or "Secure Shell".
  */
-
-/* RCSID("$OpenBSD: servconf.h,v 1.49 2001/08/17 18:59:47 stevesk Exp $"); */
 
 #ifndef SERVCONF_H
 #define SERVCONF_H
@@ -55,6 +55,7 @@ typedef struct {
 	int     x11_forwarding;	/* If true, permit inet (spoofing) X11 fwd. */
 	int     x11_display_offset;	/* What DISPLAY number to start
 					 * searching at */
+	int     x11_use_localhost;	/* If true, use localhost for fake X11 server. */
 	char   *xauth_location;	/* Location of xauth program */
 	int     strict_modes;	/* If true, require string home dir modes. */
 	int     keepalives;	/* If true, set SO_KEEPALIVE. */
@@ -106,7 +107,9 @@ typedef struct {
 	int     challenge_response_authentication;
 	int     permit_empty_passwd;	/* If false, do not permit empty
 					 * passwords. */
+	int     permit_user_env;	/* If true, read ~/.ssh/environment */
 	int     use_login;	/* If true, login(1) is used */
+	int     compression;	/* If true, compression is allowed */
 	int	allow_tcp_forwarding;
 	u_int num_allow_users;
 	char   *allow_users[MAX_ALLOW_USERS];
@@ -125,25 +128,26 @@ typedef struct {
 	int	max_startups_rate;
 	int	max_startups;
 	char   *banner;			/* SSH-2 banner message */
-	int	reverse_mapping_check;	/* cross-check ip and dns */
+	int	verify_reverse_mapping;	/* cross-check ip and dns */
 	int	client_alive_interval;	/*
-					 * poke the client this often to 
-					 * see if it's still there 
+					 * poke the client this often to
+					 * see if it's still there
 					 */
 	int	client_alive_count_max;	/*
 					 * If the client is unresponsive
 					 * for this many intervals above,
-					 * disconnect the session 
+					 * disconnect the session
 					 */
 
 	char   *authorized_keys_file;	/* File containing public keys */
 	char   *authorized_keys_file2;
 	int	pam_authentication_via_kbd_int;
-
 }       ServerOptions;
 
 void	 initialize_server_options(ServerOptions *);
 void	 read_server_config(ServerOptions *, const char *);
 void	 fill_default_server_options(ServerOptions *);
+int	 process_server_config_line(ServerOptions *, char *, const char *, int);
+
 
 #endif				/* SERVCONF_H */

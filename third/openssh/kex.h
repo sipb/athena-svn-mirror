@@ -1,4 +1,4 @@
-/*	$OpenBSD: kex.h,v 1.26 2001/06/26 17:27:23 markus Exp $	*/
+/*	$OpenBSD: kex.h,v 1.32 2002/09/09 14:54:14 markus Exp $	*/
 
 /*
  * Copyright (c) 2000, 2001 Markus Friedl.  All rights reserved.
@@ -72,13 +72,15 @@ struct Enc {
 	char	*name;
 	Cipher	*cipher;
 	int	enabled;
+	u_int	key_len;
+	u_int	block_size;
 	u_char	*key;
 	u_char	*iv;
 };
 struct Mac {
 	char	*name;
 	int	enabled;
-	EVP_MD	*md;
+	const EVP_MD	*md;
 	int	mac_len;
 	u_char	*key;
 	int	key_len;
@@ -100,7 +102,7 @@ struct KexOptions {
 
 struct Kex {
 	u_char	*session_id;
-	int	session_id_len;
+	u_int	session_id_len;
 	Newkeys	*newkeys[MODE_MAX];
 	int	we_need;
 	int	server;
@@ -111,11 +113,12 @@ struct Kex {
 	Buffer	peer;
 	int	done;
 	int	flags;
-	char	*host;
+	char 	*host;
 	char	*client_version_string;
 	char	*server_version_string;
 	int	(*verify_host_key)(Key *);
 	Key	*(*load_host_key)(int);
+	int	(*host_key_index)(Key *);
 	struct  KexOptions options;
 };
 
@@ -123,11 +126,14 @@ Kex	*kex_setup(char *[PROPOSAL_MAX]);
 void	 kex_finish(Kex *);
 
 void	 kex_send_kexinit(Kex *);
-void	 kex_input_kexinit(int, int, void *);
+void	 kex_input_kexinit(int, u_int32_t, void *);
 void	 kex_derive_keys(Kex *, u_char *, BIGNUM *);
 
 void	 kexdh(Kex *);
 void	 kexgex(Kex *);
+#ifdef GSSAPI
+void	 kexgss(Kex *);
+#endif
 
 Newkeys *kex_get_newkeys(int);
 

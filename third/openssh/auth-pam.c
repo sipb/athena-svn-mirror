@@ -25,9 +25,10 @@
 #include "includes.h"
 
 #ifdef USE_PAM
-#include "ssh.h"
 #include "xmalloc.h"
 #include "log.h"
+#include "auth.h"
+#include "auth-options.h"
 #include "auth-pam.h"
 #include "servconf.h"
 #include "canohost.h"
@@ -35,17 +36,21 @@
 
 extern char *__progname;
 
-RCSID("$Id: auth-pam.c,v 1.2 2002-02-15 19:46:58 zacheiss Exp $");
+extern int use_privsep;
+
+RCSID("$Id: auth-pam.c,v 1.3 2003-02-06 03:45:44 zacheiss Exp $");
 
 #define NEW_AUTHTOK_MSG \
-	"Warning: Your password has expired, please change it now"
+	"Warning: Your password has expired, please change it now."
+#define NEW_AUTHTOK_MSG_PRIVSEP \
+	"Your password has expired, the session cannot proceed."
 
 static int do_pam_conversation(int num_msg, const struct pam_message **msg,
 	struct pam_response **resp, void *appdata_ptr);
 
 /* module-local variables */
 static struct pam_conv conv = {
-	do_pam_conversation,
+	(int (*)())do_pam_conversation,
 	NULL
 };
 static char *__pam_msg = NULL;
@@ -54,7 +59,7 @@ static const char *__pampasswd = NULL;
 
 /* states for do_pam_conversation() */
 enum { INITIAL_LOGIN, OTHER } pamstate = INITIAL_LOGIN;
-/* remember whether pam_acct_mgmt() returned PAM_NEWAUTHTOK_REQD */
+/* remember whether pam_acct_mgmt() returned PAM_NEW_AUTHTOK_REQD */
 static int password_change_required = 0;
 /* remember whether the last pam_authenticate() succeeded or not */
 static int was_authenticated = 0;
@@ -99,9 +104,7 @@ static int do_pam_conversation(int num_msg, const struct pam_message **msg,
 	char buf[1024];
 
 	/* PAM will free this later */
-	reply = malloc(num_msg * sizeof(*reply));
-	if (reply == NULL)
-		return PAM_CONV_ERR;
+	reply = xmalloc(num_msg * sizeof(*reply));
 
 	for (count = 0; count < num_msg; count++) {
 		if (pamstate == INITIAL_LOGIN) {
@@ -111,11 +114,11 @@ static int do_pam_conversation(int num_msg, const struct pam_message **msg,
 			 */
 			switch(PAM_MSG_MEMBER(msg, count, msg_style)) {
 			case PAM_PROMPT_ECHO_ON:
-				free(reply);
+				xfree(reply);
 				return PAM_CONV_ERR;
 			case PAM_PROMPT_ECHO_OFF:
 				if (__pampasswd == NULL) {
-					free(reply);
+					xfree(reply);
 					return PAM_CONV_ERR;
 				}
 				reply[count].resp = xstrdup(__pampasswd);
@@ -123,7 +126,7 @@ static int do_pam_conversation(int num_msg, const struct pam_message **msg,
 				break;
 			case PAM_ERROR_MSG:
 			case PAM_TEXT_INFO:
-				if ((*msg)[count].msg != NULL) {
+				if (PAM_MSG_MEMBER(msg, count, msg) != NULL) {
 					message_cat(&__pam_msg, 
 					    PAM_MSG_MEMBER(msg, count, msg));
 				}
@@ -131,7 +134,7 @@ static int do_pam_conversation(int num_msg, const struct pam_message **msg,
 				reply[count].resp_retcode = PAM_SUCCESS;
 				break;
 			default:
-				free(reply);
+				xfree(reply);
 				return PAM_CONV_ERR;
 			}
 		} else {
@@ -153,14 +156,14 @@ static int do_pam_conversation(int num_msg, const struct pam_message **msg,
 				break;
 			case PAM_ERROR_MSG:
 			case PAM_TEXT_INFO:
-				if ((*msg)[count].msg != NULL)
+				if (PAM_MSG_MEMBER(msg, count, msg) != NULL)
 					fprintf(stderr, "%s\n", 
 					    PAM_MSG_MEMBER(msg, count, msg));
 				reply[count].resp = xstrdup("");
 				reply[count].resp_retcode = PAM_SUCCESS;
 				break;
 			default:
-				free(reply);
+				xfree(reply);
 				return PAM_CONV_ERR;
 			}
 		}
@@ -199,10 +202,11 @@ void do_pam_cleanup_proc(void *context)
 }
 
 /* Attempt password authentation using PAM */
-int auth_pam_password(struct passwd *pw, const char *password)
+int auth_pam_password(Authctxt *authctxt, const char *password)
 {
 	extern ServerOptions options;
 	int pam_retval;
+	struct passwd *pw = authctxt->pw;
 
 	do_pam_set_conv(&conv);
 
@@ -247,15 +251,23 @@ int do_pam_account(char *username, char *remote_user)
 	}
 
 	pam_retval = pam_acct_mgmt(__pamh, 0);
+	debug2("pam_acct_mgmt() = %d", pam_retval);
 	switch (pam_retval) {
 		case PAM_SUCCESS:
 			/* This is what we want */
 			break;
+#if 0
 		case PAM_NEW_AUTHTOK_REQD:
-			message_cat(&__pam_msg, NEW_AUTHTOK_MSG);
+			message_cat(&__pam_msg, use_privsep ?
+			    NEW_AUTHTOK_MSG_PRIVSEP : NEW_AUTHTOK_MSG);
 			/* flag that password change is necessary */
 			password_change_required = 1;
+			/* disallow other functionality for now */
+			no_port_forwarding_flag |= 2;
+			no_agent_forwarding_flag |= 2;
+			no_x11_forwarding_flag |= 2;
 			break;
+#endif
 		default:
 			log("PAM rejected by account configuration[%d]: "
 			    "%.200s", pam_retval, PAM_STRERROR(__pamh, 
@@ -294,6 +306,9 @@ void do_pam_setcred(int init)
 {
 	int pam_retval;
 
+	if (__pamh == NULL)
+		return;
+
 	do_pam_set_conv(&conv);
 
 	debug("PAM establishing creds");
@@ -320,7 +335,7 @@ int is_pam_password_change_required(void)
  * Have user change authentication token if pam_acct_mgmt() indicated
  * it was expired.  This needs to be called after an interactive
  * session is established and the user's pty is connected to
- * stdin/stout/stderr.
+ * stdin/stdout/stderr.
  */
 void do_pam_chauthtok(void)
 {
@@ -329,11 +344,23 @@ void do_pam_chauthtok(void)
 	do_pam_set_conv(&conv);
 
 	if (password_change_required) {
+		if (use_privsep)
+			fatal("Password changing is currently unsupported"
+			    " with privilege separation");
 		pamstate = OTHER;
 		pam_retval = pam_chauthtok(__pamh, PAM_CHANGE_EXPIRED_AUTHTOK);
 		if (pam_retval != PAM_SUCCESS)
 			fatal("PAM pam_chauthtok failed[%d]: %.200s",
 			    pam_retval, PAM_STRERROR(__pamh, pam_retval));
+#if 0
+		/* XXX: This would need to be done in the parent process,
+		 * but there's currently no way to pass such request. */
+		no_port_forwarding_flag &= ~2;
+		no_agent_forwarding_flag &= ~2;
+		no_x11_forwarding_flag &= ~2;
+		if (!no_port_forwarding_flag && options.allow_tcp_forwarding)
+			channel_permit_all_opens();
+#endif
 	}
 }
 
@@ -360,7 +387,7 @@ void start_pam(const char *user)
 		fatal("PAM initialisation failed[%d]: %.200s",
 		    pam_retval, PAM_STRERROR(__pamh, pam_retval));
 
-	rhost = get_remote_name_or_ip(utmp_len, options.reverse_mapping_check);
+	rhost = get_remote_name_or_ip(utmp_len, options.verify_reverse_mapping);
 	debug("PAM setting rhost to \"%.200s\"", rhost);
 
 	pam_retval = pam_set_item(__pamh, PAM_RHOST, rhost);
@@ -384,7 +411,7 @@ void start_pam(const char *user)
 	fatal_add_cleanup(&do_pam_cleanup_proc, NULL);
 }
 
-/* Return list of PAM enviornment strings */
+/* Return list of PAM environment strings */
 char **fetch_pam_environment(void)
 {
 #ifdef HAVE_PAM_GETENVLIST
@@ -410,6 +437,16 @@ int do_pam_putenv(char *name, char *value) {
 		xfree(compound);
 	}
 	return(ret);
+}
+
+void free_pam_environment(char **env)
+{
+	int i;
+
+	if (env != NULL) {
+		for (i = 0; env[i] != NULL; i++)
+			xfree(env[i]);
+	}
 }
 
 /* Print any messages that have been generated during authentication */

@@ -12,7 +12,7 @@
  */
 
 #include "includes.h"
-RCSID("$OpenBSD: readconf.c,v 1.91 2001/10/01 21:51:16 markus Exp $");
+RCSID("$OpenBSD: readconf.c,v 1.100 2002/06/19 00:27:55 deraadt Exp $");
 
 #include "ssh.h"
 #include "xmalloc.h"
@@ -41,7 +41,7 @@ RCSID("$OpenBSD: readconf.c,v 1.91 2001/10/01 21:51:16 markus Exp $");
    # that they are given in.
 
    Host *.ngs.fi ngs.fi
-     FallBackToRsh no
+     User foo
 
    Host fake.com
      HostName another.host.name.real.org
@@ -65,7 +65,7 @@ RCSID("$OpenBSD: readconf.c,v 1.91 2001/10/01 21:51:16 markus Exp $");
      ProxyCommand ssh-proxy %h %p
 
    Host *.fr
-     UseRsh yes
+     PublicKeyAuthentication no
 
    Host *.su
      Cipher none
@@ -79,8 +79,6 @@ RCSID("$OpenBSD: readconf.c,v 1.91 2001/10/01 21:51:16 markus Exp $");
      PasswordAuthentication yes
      RSAAuthentication yes
      RhostsRSAAuthentication yes
-     FallBackToRsh no
-     UseRsh no
      StrictHostKeyChecking yes
      KeepAlives no
      IdentityFile ~/.ssh/identity
@@ -94,7 +92,7 @@ RCSID("$OpenBSD: readconf.c,v 1.91 2001/10/01 21:51:16 markus Exp $");
 typedef enum {
 	oBadOption,
 	oForwardAgent, oForwardX11, oGatewayPorts, oRhostsAuthentication,
-	oPasswordAuthentication, oRSAAuthentication, oFallBackToRsh, oUseRsh,
+	oPasswordAuthentication, oRSAAuthentication,
 	oChallengeResponseAuthentication, oXAuthLocation,
 #if defined(KRB4) || defined(KRB5)
 	oKerberosAuthentication,
@@ -121,7 +119,8 @@ typedef enum {
 	oKbdInteractiveAuthentication, oKbdInteractiveDevices, oHostKeyAlias,
 	oDynamicForward, oPreferredAuthentications, oHostbasedAuthentication,
 	oHostKeyAlgorithms, oBindAddress, oSmartcardDevice,
-	oClearAllForwardings, oNoHostAuthenticationForLocalhost 
+	oClearAllForwardings, oNoHostAuthenticationForLocalhost,
+	oDeprecated
 } OpCodes;
 
 /* Textual representations of the tokens. */
@@ -165,8 +164,8 @@ static struct {
 #ifdef AFS
 	{ "afstokenpassing", oAFSTokenPassing },
 #endif
-	{ "fallbacktorsh", oFallBackToRsh },
-	{ "usersh", oUseRsh },
+	{ "fallbacktorsh", oDeprecated },
+	{ "usersh", oDeprecated },
 	{ "identityfile", oIdentityFile },
 	{ "identityfile2", oIdentityFile },			/* alias */
 	{ "hostname", oHostName },
@@ -200,9 +199,9 @@ static struct {
 	{ "hostkeyalgorithms", oHostKeyAlgorithms },
 	{ "bindaddress", oBindAddress },
 	{ "smartcarddevice", oSmartcardDevice },
-	{ "clearallforwardings", oClearAllForwardings }, 
-	{ "nohostauthenticationforlocalhost", oNoHostAuthenticationForLocalhost }, 
-	{ NULL, 0 }
+	{ "clearallforwardings", oClearAllForwardings },
+	{ "nohostauthenticationforlocalhost", oNoHostAuthenticationForLocalhost },
+	{ NULL, oBadOption }
 };
 
 /*
@@ -215,7 +214,7 @@ add_local_forward(Options *options, u_short port, const char *host,
 		  u_short host_port)
 {
 	Forward *fwd;
-#ifndef HAVE_CYGWIN
+#ifndef NO_IPPORT_RESERVED_CONCEPT
 	extern uid_t original_real_uid;
 	if (port < IPPORT_RESERVED && original_real_uid != 0)
 		fatal("Privileged ports can only be forwarded by root.");
@@ -240,7 +239,7 @@ add_remote_forward(Options *options, u_short port, const char *host,
 	Forward *fwd;
 	if (options->num_remote_forwards >= SSH_MAX_FORWARDS_PER_DIRECTION)
 		fatal("Too many remote forwards (max %d).",
-		      SSH_MAX_FORWARDS_PER_DIRECTION);
+		    SSH_MAX_FORWARDS_PER_DIRECTION);
 	fwd = &options->remote_forwards[options->num_remote_forwards++];
 	fwd->port = port;
 	fwd->host = xstrdup(host);
@@ -405,14 +404,6 @@ parse_flag:
 		intptr = &options->afs_token_passing;
 		goto parse_flag;
 #endif
-	case oFallBackToRsh:
-		intptr = &options->fallback_to_rsh;
-		goto parse_flag;
-
-	case oUseRsh:
-		intptr = &options->use_rsh;
-		goto parse_flag;
-
 	case oBatchMode:
 		intptr = &options->batch_mode;
 		goto parse_flag;
@@ -426,7 +417,7 @@ parse_flag:
 		arg = strdelim(&s);
 		if (!arg || *arg == '\0')
 			fatal("%.200s line %d: Missing yes/no/ask argument.",
-			      filename, linenum);
+			    filename, linenum);
 		value = 0;	/* To avoid compiler warning... */
 		if (strcmp(arg, "yes") == 0 || strcmp(arg, "true") == 0)
 			value = 1;
@@ -468,7 +459,7 @@ parse_flag:
 			intptr = &options->num_identity_files;
 			if (*intptr >= SSH_MAX_IDENTITY_FILES)
 				fatal("%.200s line %d: Too many identity files specified (max %d).",
-				      filename, linenum, SSH_MAX_IDENTITY_FILES);
+				    filename, linenum, SSH_MAX_IDENTITY_FILES);
 			charptr =  &options->identity_files[*intptr];
 			*charptr = xstrdup(arg);
 			*intptr = *intptr + 1;
@@ -568,7 +559,7 @@ parse_int:
 		value = cipher_number(arg);
 		if (value == -1)
 			fatal("%.200s line %d: Bad cipher '%s'.",
-			      filename, linenum, arg ? arg : "<NONE>");
+			    filename, linenum, arg ? arg : "<NONE>");
 		if (*activep && *intptr == -1)
 			*intptr = value;
 		break;
@@ -579,7 +570,7 @@ parse_int:
 			fatal("%.200s line %d: Missing argument.", filename, linenum);
 		if (!ciphers_valid(arg))
 			fatal("%.200s line %d: Bad SSH2 cipher spec '%s'.",
-			      filename, linenum, arg ? arg : "<NONE>");
+			    filename, linenum, arg ? arg : "<NONE>");
 		if (*activep && options->ciphers == NULL)
 			options->ciphers = xstrdup(arg);
 		break;
@@ -590,7 +581,7 @@ parse_int:
 			fatal("%.200s line %d: Missing argument.", filename, linenum);
 		if (!mac_valid(arg))
 			fatal("%.200s line %d: Bad SSH2 Mac spec '%s'.",
-			      filename, linenum, arg ? arg : "<NONE>");
+			    filename, linenum, arg ? arg : "<NONE>");
 		if (*activep && options->macs == NULL)
 			options->macs = xstrdup(arg);
 		break;
@@ -601,7 +592,7 @@ parse_int:
 			fatal("%.200s line %d: Missing argument.", filename, linenum);
 		if (!key_names_valid2(arg))
 			fatal("%.200s line %d: Bad protocol 2 host key algorithms '%s'.",
-			      filename, linenum, arg ? arg : "<NONE>");
+			    filename, linenum, arg ? arg : "<NONE>");
 		if (*activep && options->hostkeyalgorithms == NULL)
 			options->hostkeyalgorithms = xstrdup(arg);
 		break;
@@ -614,7 +605,7 @@ parse_int:
 		value = proto_spec(arg);
 		if (value == SSH_PROTO_UNKNOWN)
 			fatal("%.200s line %d: Bad protocol spec '%s'.",
-			      filename, linenum, arg ? arg : "<NONE>");
+			    filename, linenum, arg ? arg : "<NONE>");
 		if (*activep && *intptr == SSH_PROTO_UNKNOWN)
 			*intptr = value;
 		break;
@@ -623,10 +614,10 @@ parse_int:
 		intptr = (int *) &options->log_level;
 		arg = strdelim(&s);
 		value = log_level_number(arg);
-		if (value == (LogLevel) - 1)
+		if (value == SYSLOG_LEVEL_NOT_SET)
 			fatal("%.200s line %d: unsupported log level '%s'",
-			      filename, linenum, arg ? arg : "<NONE>");
-		if (*activep && (LogLevel) * intptr == -1)
+			    filename, linenum, arg ? arg : "<NONE>");
+		if (*activep && (LogLevel) *intptr == SYSLOG_LEVEL_NOT_SET)
 			*intptr = (LogLevel) value;
 		break;
 
@@ -702,13 +693,18 @@ parse_int:
 			value = SSH_ESCAPECHAR_NONE;
 		else {
 			fatal("%.200s line %d: Bad escape character.",
-			      filename, linenum);
+			    filename, linenum);
 			/* NOTREACHED */
 			value = 0;	/* Avoid compiler warning. */
 		}
 		if (*activep && *intptr == -1)
 			*intptr = value;
 		break;
+
+	case oDeprecated:
+		debug("%s line %d: Deprecated option \"%s\"",
+		    filename, linenum, keyword);
+		return 0;
 
 	default:
 		fatal("process_config_line: Unimplemented opcode %d", opcode);
@@ -717,7 +713,7 @@ parse_int:
 	/* Check that there is no garbage at end of line. */
 	if ((arg = strdelim(&s)) != NULL && *arg != '\0') {
 		fatal("%.200s line %d: garbage at end of line; \"%.200s\".",
-		      filename, linenum, arg);
+		     filename, linenum, arg);
 	}
 	return 0;
 }
@@ -759,7 +755,7 @@ read_config_file(const char *filename, const char *host, Options *options)
 	fclose(f);
 	if (bad_options > 0)
 		fatal("%s: terminating, %d bad configuration options",
-		      filename, bad_options);
+		    filename, bad_options);
 	return 1;
 }
 
@@ -805,8 +801,6 @@ initialize_options(Options * options)
 	options->kbd_interactive_devices = NULL;
 	options->rhosts_rsa_authentication = -1;
 	options->hostbased_authentication = -1;
-	options->fallback_to_rsh = -1;
-	options->use_rsh = -1;
 	options->batch_mode = -1;
 	options->check_host_ip = -1;
 	options->strict_host_key_checking = -1;
@@ -834,7 +828,7 @@ initialize_options(Options * options)
 	options->num_local_forwards = 0;
 	options->num_remote_forwards = 0;
 	options->clear_forwardings = -1;
-	options->log_level = (LogLevel) - 1;
+	options->log_level = SYSLOG_LEVEL_NOT_SET;
 	options->preferred_authentications = NULL;
 	options->bind_address = NULL;
 	options->smartcard_device = NULL;
@@ -855,16 +849,14 @@ fill_default_options(Options * options)
 		options->forward_agent = 0;
 	if (options->forward_x11 == -1)
 		options->forward_x11 = 0;
-#ifdef _PATH_XAUTH
 	if (options->xauth_location == NULL)
 		options->xauth_location = _PATH_XAUTH;
-#endif
 	if (options->gateway_ports == -1)
 		options->gateway_ports = 0;
 	if (options->use_privileged_port == -1)
 		options->use_privileged_port = 0;
 	if (options->rhosts_authentication == -1)
-		options->rhosts_authentication = 1;
+		options->rhosts_authentication = 0;
 	if (options->rsa_authentication == -1)
 		options->rsa_authentication = 1;
 	if (options->pubkey_authentication == -1)
@@ -898,13 +890,9 @@ fill_default_options(Options * options)
 	if (options->kbd_interactive_authentication == -1)
 		options->kbd_interactive_authentication = 1;
 	if (options->rhosts_rsa_authentication == -1)
-		options->rhosts_rsa_authentication = 1;
+		options->rhosts_rsa_authentication = 0;
 	if (options->hostbased_authentication == -1)
 		options->hostbased_authentication = 0;
-	if (options->fallback_to_rsh == -1)
-		options->fallback_to_rsh = 0;
-	if (options->use_rsh == -1)
-		options->use_rsh = 0;
 	if (options->batch_mode == -1)
 		options->batch_mode = 0;
 	if (options->check_host_ip == -1)
@@ -963,7 +951,7 @@ fill_default_options(Options * options)
 		options->system_hostfile2 = _PATH_SSH_SYSTEM_HOSTFILE2;
 	if (options->user_hostfile2 == NULL)
 		options->user_hostfile2 = _PATH_SSH_USER_HOSTFILE2;
-	if (options->log_level == (LogLevel) - 1)
+	if (options->log_level == SYSLOG_LEVEL_NOT_SET)
 		options->log_level = SYSLOG_LEVEL_INFO;
 	if (options->clear_forwardings == 1)
 		clear_forwardings(options);

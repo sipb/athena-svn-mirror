@@ -10,7 +10,7 @@
  */
 
 #include "includes.h"
-RCSID("$OpenBSD: auth1.c,v 1.25 2001/06/26 16:15:23 dugsong Exp $");
+RCSID("$OpenBSD: auth1.c,v 1.44 2002/09/26 11:38:43 markus Exp $");
 
 #include "xmalloc.h"
 #include "rsa.h"
@@ -22,9 +22,10 @@ RCSID("$OpenBSD: auth1.c,v 1.25 2001/06/26 16:15:23 dugsong Exp $");
 #include "servconf.h"
 #include "compat.h"
 #include "auth.h"
+#include "channels.h"
 #include "session.h"
-#include "misc.h"
 #include "uidswap.h"
+#include "monitor_wrap.h"
 #include "canohost.h"
 
 #include <al.h>
@@ -76,31 +77,24 @@ do_authloop(Authctxt *authctxt)
 {
 	int authenticated = 0, nonauthentication = 0;
 	u_int bits;
-	RSA *client_host_key;
+	Key *client_host_key;
 	BIGNUM *n;
 	char *client_user, *password;
 	char info[1024];
 	u_int dlen;
-	int plen, nlen, elen;
 	u_int ulen;
 	int type = 0;
 	struct passwd *pw = authctxt->pw;
 
 	debug("Attempting authentication for %s%.100s.",
-	     authctxt->valid ? "" : "illegal user ", authctxt->user);
+	    authctxt->valid ? "" : "illegal user ", authctxt->user);
 
 	/* If the user has no password, accept authentication immediately. */
 	if (options.password_authentication &&
 #if defined(KRB4) || defined(KRB5)
 	    (!options.kerberos_authentication || options.kerberos_or_local_passwd) &&
 #endif
-#ifdef USE_PAM
-	    auth_pam_password(pw, "")) {
-#elif defined(HAVE_OSF_SIA)
-	    0) {
-#else
-	    auth_password(authctxt, "")) {
-#endif
+	    PRIVSEP(auth_password(authctxt, ""))) {
 		auth_log(authctxt, 1, "without authentication", "");
 		return;
 	}
@@ -120,7 +114,7 @@ do_authloop(Authctxt *authctxt)
 		info[0] = '\0';
 
 		/* Get a packet from the client. */
-		type = packet_read(&plen);
+		type = packet_read();
 
 		/* Process the packet. */
 		switch (type) {
@@ -131,35 +125,53 @@ do_authloop(Authctxt *authctxt)
 				verbose("Kerberos authentication disabled.");
 			} else {
 				char *kdata = packet_get_string(&dlen);
-				
-				packet_integrity_check(plen, 4 + dlen, type);
-				
+				packet_check_eom();
+
 				if (kdata[0] == 4) { /* KRB_PROT_VERSION */
 #ifdef KRB4
-					KTEXT_ST tkt;
-					
+					KTEXT_ST tkt, reply;
 					tkt.length = dlen;
 					if (tkt.length < MAX_KTXT_LEN)
 						memcpy(tkt.dat, kdata, tkt.length);
-					
-					if (auth_krb4(authctxt, &tkt, &client_user)) {
+
+					if (PRIVSEP(auth_krb4(authctxt, &tkt,
+					    &client_user, &reply))) {
 						authenticated = 1;
 						snprintf(info, sizeof(info),
 						    " tktuser %.100s",
 						    client_user);
+
+						packet_start(
+						    SSH_SMSG_AUTH_KERBEROS_RESPONSE);
+						packet_put_string((char *)
+						    reply.dat, reply.length);
+						packet_send();
+						packet_write_wait();
 					}
 #endif /* KRB4 */
 				} else {
 #ifdef KRB5
-					krb5_data tkt;
+					krb5_data tkt, reply;
 					tkt.length = dlen;
 					tkt.data = kdata;
-					
-					if (auth_krb5(authctxt, &tkt, &client_user)) {
+
+					if (PRIVSEP(auth_krb5(authctxt, &tkt,
+					    &client_user, &reply))) {
 						authenticated = 1;
 						snprintf(info, sizeof(info),
 						    " tktuser %.100s",
 						    client_user);
+ 
+ 						/* Send response to client */
+ 						packet_start(
+						    SSH_SMSG_AUTH_KERBEROS_RESPONSE);
+ 						packet_put_string((char *)
+						    reply.data, reply.length);
+ 						packet_send();
+ 						packet_write_wait();
+
+ 						if (reply.length)
+ 							xfree(reply.data);
 					}
 #endif /* KRB5 */
 				}
@@ -167,24 +179,11 @@ do_authloop(Authctxt *authctxt)
 			}
 			break;
 #endif /* KRB4 || KRB5 */
-			
-#if defined(AFS) || defined(KRB5)
-		case SSH_CMSG_HAVE_KERBEROS_TGT: {
-		   	/*
-		   	 * This is for backwards compatibility with SSH.COM's
-			 * implementation, which passes the TGT before
-			 * authenticating.
-			 *
-			 * Perhaps this should be disallowed from other
-			 * client versions?
-			 */
-		        int s;
 
-		  	s = do_auth1_kerberos_tgt_pass(authctxt, plen, type);
-			packet_start(s ? SSH_SMSG_SUCCESS : SSH_SMSG_FAILURE);
-			packet_send();
-			packet_write_wait();
-			nonauthentication = 1;
+#if defined(AFS) || defined(KRB5)
+			/* XXX - punt on backward compatability here. */
+		case SSH_CMSG_HAVE_KERBEROS_TGT: {
+		        packet_send_debug("Kerberos TGT passing disabled before authentication.");
 		}
 			break;
 
@@ -194,7 +193,7 @@ do_authloop(Authctxt *authctxt)
 			break;
 #endif /* AFS */
 #endif /* AFS || KRB5 */
-			
+
 		case SSH_CMSG_AUTH_RHOSTS:
 			if (!options.rhosts_authentication) {
 				verbose("Rhosts authentication disabled.");
@@ -207,7 +206,7 @@ do_authloop(Authctxt *authctxt)
 			 * IP-spoofing on a local network.)
 			 */
 			client_user = packet_get_string(&ulen);
-			packet_integrity_check(plen, 4 + ulen, type);
+			packet_check_eom();
 
 			/* Try to authenticate using /etc/hosts.equiv and .rhosts. */
 			authenticated = auth_rhosts(pw, client_user);
@@ -228,24 +227,20 @@ do_authloop(Authctxt *authctxt)
 			client_user = packet_get_string(&ulen);
 
 			/* Get the client host key. */
-			client_host_key = RSA_new();
-			if (client_host_key == NULL)
-				fatal("RSA_new failed");
-			client_host_key->e = BN_new();
-			client_host_key->n = BN_new();
-			if (client_host_key->e == NULL || client_host_key->n == NULL)
-				fatal("BN_new failed");
+			client_host_key = key_new(KEY_RSA1);
 			bits = packet_get_int();
-			packet_get_bignum(client_host_key->e, &elen);
-			packet_get_bignum(client_host_key->n, &nlen);
+			packet_get_bignum(client_host_key->rsa->e);
+			packet_get_bignum(client_host_key->rsa->n);
 
-			if (bits != BN_num_bits(client_host_key->n))
+			if (bits != BN_num_bits(client_host_key->rsa->n))
 				verbose("Warning: keysize mismatch for client_host_key: "
-				    "actual %d, announced %d", BN_num_bits(client_host_key->n), bits);
-			packet_integrity_check(plen, (4 + ulen) + 4 + elen + nlen, type);
+				    "actual %d, announced %d",
+				    BN_num_bits(client_host_key->rsa->n), bits);
+			packet_check_eom();
 
-			authenticated = auth_rhosts_rsa(pw, client_user, client_host_key);
-			RSA_free(client_host_key);
+			authenticated = auth_rhosts_rsa(pw, client_user,
+			    client_host_key);
+			key_free(client_host_key);
 
 			snprintf(info, sizeof info, " ruser %.100s", client_user);
 			break;
@@ -256,9 +251,10 @@ do_authloop(Authctxt *authctxt)
 				break;
 			}
 			/* RSA authentication requested. */
-			n = BN_new();
-			packet_get_bignum(n, &nlen);
-			packet_integrity_check(plen, nlen, type);
+			if ((n = BN_new()) == NULL)
+				fatal("do_authloop: BN_new failed");
+			packet_get_bignum(n);
+			packet_check_eom();
 			authenticated = auth_rsa(pw, n);
 			BN_clear_free(n);
 			break;
@@ -274,19 +270,10 @@ do_authloop(Authctxt *authctxt)
 			 * not visible to an outside observer.
 			 */
 			password = packet_get_string(&dlen);
-			packet_integrity_check(plen, 4 + dlen, type);
+			packet_check_eom();
 
-#ifdef USE_PAM
-			/* Do PAM auth with password */
-			authenticated = auth_pam_password(pw, password);
-#elif defined(HAVE_OSF_SIA)
-			/* Do SIA auth with password */
-			authenticated = auth_sia_password(authctxt->user, 
-			    password);
-#else /* !USE_PAM && !HAVE_OSF_SIA */
 			/* Try authentication with the password. */
-			authenticated = auth_password(authctxt, password);
-#endif /* USE_PAM */
+			authenticated = PRIVSEP(auth_password(authctxt, password));
 
 			memset(password, 0, strlen(password));
 			xfree(password);
@@ -312,7 +299,7 @@ do_authloop(Authctxt *authctxt)
 			if (options.challenge_response_authentication == 1) {
 				char *response = packet_get_string(&dlen);
 				debug("got response '%s'", response);
-				packet_integrity_check(plen, 4 + dlen, type);
+				packet_check_eom();
 				authenticated = verify_response(authctxt, response);
 				memset(response, 'r', dlen);
 				xfree(response);
@@ -337,21 +324,32 @@ do_authloop(Authctxt *authctxt)
 			fatal("INTERNAL ERROR: authenticated invalid user %s",
 			    authctxt->user);
 
+#ifdef _UNICOS
+		if (type == SSH_CMSG_AUTH_PASSWORD && !authenticated)
+			cray_login_failure(authctxt->user, IA_UDBERR);
+		if (authenticated && cray_access_denied(authctxt->user)) {
+			authenticated = 0;
+			fatal("Access denied for user %s.",authctxt->user);
+		}
+#endif /* _UNICOS */
+
 #ifdef HAVE_CYGWIN
 		if (authenticated &&
-		    !check_nt_auth(type == SSH_CMSG_AUTH_PASSWORD,pw->pw_uid)) {
+		    !check_nt_auth(type == SSH_CMSG_AUTH_PASSWORD, pw)) {
 			packet_disconnect("Authentication rejected for uid %d.",
-			(int)pw->pw_uid);
+			pw == NULL ? -1 : pw->pw_uid);
 			authenticated = 0;
 		}
 #else
 		/* Special handling for root */
-		if (authenticated && authctxt->pw->pw_uid == 0 &&
+		if (!use_privsep &&
+		    authenticated && authctxt->pw->pw_uid == 0 &&
 		    !auth_root_allowed(get_authname(type)))
 			authenticated = 0;
 #endif
 #ifdef USE_PAM
-		if (authenticated && !do_pam_account(pw->pw_name, client_user))
+		if (!use_privsep && authenticated && 
+		    !do_pam_account(pw->pw_name, client_user))
 			authenticated = 0;
 #endif
 
@@ -377,11 +375,6 @@ do_authloop(Authctxt *authctxt)
 			return;
 
 		if (authctxt->failures++ > AUTH_FAIL_MAX) {
-#ifdef WITH_AIXAUTHENTICATE
-			loginfailed(authctxt->user,
-			    get_canonical_hostname(options.reverse_mapping_check),
-			    "ssh");
-#endif /* WITH_AIXAUTHENTICATE */
 			packet_disconnect(AUTH_FAIL_MSG, authctxt->user);
 		}
 
@@ -395,8 +388,8 @@ do_authloop(Authctxt *authctxt)
  * Performs authentication of an incoming connection.  Session key has already
  * been exchanged and encryption is enabled.
  */
-void
-do_authentication()
+Authctxt *
+do_authentication(void)
 {
 	Authctxt *authctxt;
 	struct passwd *pw;
@@ -407,19 +400,25 @@ do_authentication()
 	const char *err;
 
 	/* Get the name of the user that we wish to log in as. */
-	packet_read_expect(&plen, SSH_CMSG_USER);
+	packet_read_expect(SSH_CMSG_USER);
 
 	/* Get the user name. */
 	user = packet_get_string(&ulen);
-	packet_integrity_check(plen, (4 + ulen), SSH_CMSG_USER);
+	packet_check_eom();
 
 	if ((style = strchr(user, ':')) != NULL)
 		*style++ = '\0';
 
+#ifdef KRB5
 	/* XXX - SSH.com Kerberos v5 braindeath. */
-	if ((p = strchr(user, '@')) != NULL)
-		*p = '\0';
-	
+	if ((datafellows & SSH_BUG_K5USER) &&
+	    options.kerberos_authentication) {
+		char *p;
+		if ((p = strchr(user, '@')) != NULL)
+			*p = '\0';
+	}
+#endif
+
 	authctxt = authctxt_new();
 	authctxt->user = user;
 	authctxt->style = style;
@@ -468,21 +467,16 @@ do_authentication()
 	  }
 
 	/* Verify that the user is a valid user. */
-	pw = getpwnam(user);
-	if (pw && allowed_user(pw)) {
+	if ((authctxt->pw = PRIVSEP(getpwnamallow(user))) != NULL)
 		authctxt->valid = 1;
-		pw = pwcopy(pw);
-	} else {
+	else
 		debug("do_authentication: illegal user %s", user);
-		pw = NULL;
-	}
-	authctxt->pw = pw;
 
-	setproctitle("%s", pw ? user : "unknown");
+	setproctitle("%s%s", authctxt->pw ? user : "unknown",
+	    use_privsep ? " [net]" : "");
 
 #ifdef USE_PAM
-	if (pw)
-		start_pam(user);
+	PRIVSEP(start_pam(authctxt->pw == NULL ? "NOUSER" : user));
 #endif
 
 	/*
@@ -490,7 +484,8 @@ do_authentication()
 	 * the server. (Unless you are running Windows)
 	 */
 #ifndef HAVE_CYGWIN
-	if (getuid() != 0 && pw && pw->pw_uid != getuid())
+	if (!use_privsep && getuid() != 0 && authctxt->pw &&
+	    authctxt->pw->pw_uid != getuid())
 		packet_disconnect("Cannot change user when server not running as root.");
 #endif
 
@@ -505,6 +500,5 @@ do_authentication()
 	packet_send();
 	packet_write_wait();
 
-	/* Perform session preparation. */
-	do_authenticated(authctxt);
+	return (authctxt);
 }
