@@ -85,8 +85,8 @@ end
 #
 
 if ( ! $?ATHENA_SYS ) then
-  set ATHENA_SYS = `fs sysname | awk -F\' '{ print $2 }'`
-  if ( $ATHENA_SYS == "" ) unset ATHENA_SYS
+  setenv ATHENA_SYS `fs sysname | awk -F\' '{ print $2 }'`
+  if ( $ATHENA_SYS == "" ) unsetenv ATHENA_SYS
 endif
 
 if ( ! $?bindir ) then
@@ -121,7 +121,9 @@ endif
 # interesting output from attach.
 #
 
-if ( $?add_verbose ) attach -n -h $add_attach
+if ( $?add_verbose ) then
+  attach -n -h $add_attach
+endif
 
 set add_dirs = `attach -p $add_attach`
 
