@@ -4,12 +4,16 @@
 ### installation program.  It is called by the first script,
 ### athenainstall.
 
-### $Id: install1.sh,v 1.26 2003-07-29 21:19:04 miki Exp $
+### $Id: install1.sh,v 1.27 2003-08-21 00:48:46 jweiss Exp $
 
 echo "Set some variables"
 PATH=/sbin:/usr/bin:/usr/sbin:/os/usr/bin
 export PATH
 umask 2
+
+# bootdevice is needed if installing 9.1 (and perhaps earlier)
+# versions of Athena.
+bootdevice="disk"; export bootdevice
 
 # Use format to get information about the available drives.
 format < /dev/null | awk '/^[ 	]*[0-9]\./ { print; }' > /tmp/disks
