@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: do-update.sh,v 1.10 1997-03-14 21:41:23 ghudson Exp $
+# $Id: do-update.sh,v 1.11 1997-03-28 10:44:50 ghudson Exp $
 
 # Copyright 1996 by the Massachusetts Institute of Technology.
 #
@@ -202,7 +202,7 @@ if [ "$TRACKOS" = true ]; then
 	esac
 fi
 track -v -F /srvd -T / -d -W /srvd/usr/athena/lib
-rm -f /etc/athena/.rc.conf.sync
+rm -f /var/athena/rc.conf.sync
 
 if [ "$NEWOS" = true ]; then
 	case "$HOSTTYPE" in
