@@ -2,11 +2,11 @@
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/printjob.c,v $
  *	$Author: epeisach $
  *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/printjob.c,v 1.18 1991-06-28 13:17:31 epeisach Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/printjob.c,v 1.19 1991-07-11 10:01:10 epeisach Exp $
  */
 
 #ifndef lint
-static char *rcsid_printjob_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/printjob.c,v 1.18 1991-06-28 13:17:31 epeisach Exp $";
+static char *rcsid_printjob_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/printjob.c,v 1.19 1991-07-11 10:01:10 epeisach Exp $";
 #endif lint
 
 /*
@@ -1104,7 +1104,7 @@ sendmail(user, bombed)
 	char buf[100];
 	struct stat stb;
 	FILE *fp;
-
+#ifdef ALLOW_MAIL
 	pipe(p);
 	if ((s = dofork(DORETURN)) == 0) {		/* child */
 		dup2(p[0], 0);
@@ -1155,6 +1155,7 @@ sendmail(user, bombed)
 	(void) close(p[0]);
 	(void) close(p[1]);
 	wait(&s);
+#endif
 }
 
 #ifdef ZEPHYR
