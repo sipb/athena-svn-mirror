@@ -51,6 +51,12 @@
 /* Define if you have <dirent.h>.  */
 #undef DIRENT
 
+/* Define if you want to disable force_localhost default  */
+#undef DISABLE_FORCE_LOCALHOST
+
+/* Define if you want to disable lpd_bounce default  */
+#undef DISABLE_LPD_BOUNCE
+
 /* Define to 1 if NLS is requested.  */
 #undef ENABLE_NLS
 
@@ -86,7 +92,10 @@
 /* Define if <errno.h> contains a declaration for extern int errno */
 #undef HAVE_ERRNO_DECL
 
-/* Define if you do not have gethostname() defined */
+/* Define if flock definition available */
+#undef HAVE_FLOCK_DEF
+
+/* Define if you have gethostname() defined */
 #undef HAVE_GETHOSTNAME_DEF
 
 /* Define if your system has its own `getloadavg' function.  */
@@ -104,11 +113,17 @@
 /* Define if you have innetgr() defined in include file */
 #undef HAVE_INNETGR_DEF
 
+/* Define if you have Kerberos 4 krb_sendauth defined in include file */
+#undef HAVE_KRB_AUTH_DEF
+
 /* Define if your locale.h file contains LC_MESSAGES.  */
 #undef HAVE_LC_MESSAGES
 
 /* Define if the `long double' type works.  */
 #undef HAVE_LONG_DOUBLE
+
+/* Define if the `long long' type works.  */
+#undef HAVE_LONG_LONG
 
 /* Define if you support file names longer than 14 characters.  */
 #undef HAVE_LONG_FILE_NAMES
@@ -141,6 +156,9 @@
 /* Define to 1 if stpcpy function is available.  */
 #undef HAVE_STPCPY
 
+/* Define if you have strcasecmp definition  */
+#undef HAVE_STRCASECMP_DEF
+
 /* Define if you have the strcoll function and it is properly defined.  */
 #undef HAVE_STRCOLL
 
@@ -161,6 +179,9 @@
 
 /* Define if sys_errlist is defined.  */
 #undef HAVE_SYS_ERRLIST_DEF
+
+/* Define if syslog() defined */
+#undef HAVE_SYSLOG_DEF
 
 /* Define if sys_nerr has number of err strings. */
 #undef HAVE_SYS_NERR
@@ -270,6 +291,10 @@
 /* Define to `long' if <sys/types.h> doesn't define.  */
 #undef off_t
 
+/* make autoconf happy */
+#undef OSNAME
+#undef OSVERSION
+
 /* Define to the name of the distribution.  */
 #undef PACKAGE
 
@@ -282,6 +307,9 @@
 
 /* Define if you need to in order for stat and other things to work.  */
 #undef _POSIX_SOURCE
+
+/* Define if quad_t is NOT present on the system  */
+#undef quad_t
 
 /* Define as the return type of signal handlers (int or void).  */
 #undef RETSIGTYPE
@@ -316,7 +344,9 @@
 #undef STDLIB_DEFINES_RANDOM
 
 /* Define if you have struct stat with st_mtime_nsec */
-#undef ST_MTIME_NSEC
+#undef ST_MTIMENSEC
+/* Define if you have struct stat with st_mtimespec.ts_nsec */
+#undef ST_MTIMESPEC_TV_NSEC
 
 /* Define on SunOS */
 #undef SUNOS

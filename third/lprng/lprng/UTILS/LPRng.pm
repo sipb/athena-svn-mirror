@@ -3,25 +3,47 @@
 # read the lpd.conf file, and set up values from it
 
 package LPRng;
-require 5.004;
+require 5.003;
 use Exporter ();
+
 
 @ISA = qw(Exporter);
 @EXPORT = qw(
-
- $Debug %Init_hash %Pc_hash %Pc_index @Hostname %Keyvals $Pc_value %Args
- $Printer
+Set_Debug
+Setup_LPRng
+Get_printer_name
+FixStrVals
+Setup_pc_entry
+Real_printer
+MatchHost
+MakeMask
+Read_printcap_file
+CheckRecurse
+Read_pc_entry
+Dump_index
+Dump_pc
+Read_conf
+Dump_conf
+Fix_value
+trimall
+Get_remote_pr_host
+Get_Args
+getconnection
+sendit
+sendbuffer
+sendfile
+getopts
 );
 
 use strict;
 use FileHandle;
 use Sys::Hostname;
-use Getopt::Std;
 use Socket;
+use English;
 
  sub FixStrVals( $ \% );
- sub Setup_pc_entry( $ \% \% \%);
- sub Real_printer( $ \% );
+ sub Setup_pc_entry( $ );
+ sub Real_printer( $ );
  sub MatchHost( \@ $ );
  sub MakeMask( $ );
  sub Read_printcap_file( $ \% \% $ $ \@ );
@@ -33,6 +55,11 @@ use Socket;
  sub Dump_conf( $ \% );
  sub Fix_value( $ );
  sub trimall( $ );
+ sub getopts( $;$ );
+
+my(
+$Debug, %Init_hash, %Pc_hash, %Pc_index, @Hostname, %Keyvals, %Args
+);
 
 # permanent values
 # Debug level
@@ -41,15 +68,8 @@ use Socket;
 # %Pc_hash:   printcap entries
 # %Pc_index:  printcap entry names
 # @Hostname:  hostname information, used for 'oh' printcap information
-# %pc:        current printcap information
 # %Args:      command line arguments, processed by getopt
-# $Printer:   selected or current printer
 # 
-
-my(
-$Debug, %Init_hash, %Pc_hash, %Pc_index, @Hostname, %Keyvals, $Pc_value, %Args,
-$Printer
-);
 
 # maximum depth of recursion for printcap file lookup
 my($Max_depth) = 10;
@@ -418,32 +438,67 @@ sub MatchHost( \@ $ )
 #  3. combine the pc values
 # returns: hash of combined values
 
-sub Real_printer( $ \% )
+sub Real_printer( $ )
 {
-	my($name, $Pc_index) = @_;
-	$name = $Pc_index->{$name};
+	my($name) = @_;
+	$name = $Pc_index{$name};
 	return $name;
 }
 
-sub Setup_pc_entry( $ \% \% \%)
+
+sub Setup_pc_entry( $ )
 {
-	my($name, $Pc_hash, $Pc_index, $Init_hash ) = @_;
-	my($real, %hash, $value, $key );
-	$real = Real_printer( $name, %$Pc_index );
+	my($name ) = @_;
+	my($real, %hash, $value, $key, $tc_val, @tc_list, %tc_hash );
+	$real = Real_printer( $name );
 	if( not $real ){
 		return undef;
 	}
 	print "Setup_pc_entry: pr '$name', using real '$real'\n" if $Debug > 2;
-	%hash = %$Init_hash;
+	%hash = %Init_hash;
 	Dump_pc( "Setup_pc_entry: after init", %hash ) if $Debug > 3;
 		
-	$value = $Pc_hash->{$real};
+	$value = $Pc_hash{$real};
 	Dump_pc( "Setup_pc_entry: pc value for '$real'", %$value ) if $Debug > 3;
 	foreach $key (keys %$value){
 		print "Setup_pc_entry: setting '$key'='$value->{$key}'\n" if $Debug > 5;
 		$hash{$key} = $value->{$key};
 	}
 	Dump_pc( "Setup_pc_entry: pr '$name', real '$real'; result", %hash ) if $Debug > 1;
+	# now we have to resolve the TC values
+	#
+	$tc_val = $hash{'tc'};
+	$hash{'tc'} = "";
+	if( $tc_val ){
+		push @tc_list, split( /[\s,;:]/, $tc_val ); 
+	}
+	while( @tc_list ){
+		$tc_val = shift @tc_list; 
+		print "Setup_pc_entry: tc '$tc_val'" if $Debug > 5;
+		$real = Real_printer( $tc_val );
+		if( $tc_hash{$tc_val} ){
+			print STDERR "Setup_pc_entry: Printer '$name' has tc with multiple uses of '$tc_val', really '$real'";
+			return undef;
+		}
+		$tc_hash{$tc_val} = 1;
+		if( not defined $real ){
+			print STDERR "Setup_pc_entry: Printer '$name' missing tc entry for '$tc_val', really '$real'";
+			return undef;
+		}
+		$value = $Pc_hash{$real};
+		foreach $key (keys %$value){
+			print "Setup_pc_entry: setting '$key'='$value->{$key}'\n" if $Debug > 5;
+			if( $key ne 'NAME' ){
+				$hash{$key} = $value->{$key};
+			}
+		}
+		Dump_pc( "Setup_pc_entry: pr '$name', after tc '$real'", %hash ) if $Debug > 1;
+		$tc_val = $hash{'tc'};
+		$hash{'tc'} = "";
+		if( $tc_val ){
+			push @tc_list, split( '\s,;:', $tc_val ); 
+		}
+	}
 	return \%hash;
 }
 
@@ -462,13 +517,17 @@ sub FixStrVals( $ \% )
 	return $str;
 }
 
-sub Get_printer_name( \% \% \%)
+sub Get_Args()
 {
-	my($args,$pc_index,$config) = @_;
+	return( \%Args) ;
+}
+
+sub Get_printer_name()
+{
 	my($printer);
-	$printer ||= $args->{'P'};
-	$printer ||= $pc_index->{'FIRST'};
-	$printer ||= $config->{'default_printer'};
+	$printer ||= $Args{'P'};
+	$printer ||= $Pc_index{'FIRST'};
+	$printer ||= $Init_hash{'default_printer'};
 	print "Get_printer_name: '$printer'\n" if $Debug>0;
 	return( $printer );
 }
@@ -477,14 +536,22 @@ sub Get_printer_name( \% \% \%)
 sub Setup_LPRng( $ )
 {
 	my($opts) = @_;
-	my($pc_path,$file);
+	my($pc_path,$file,$key);
 	# get the command line options
 	die "bad command line options" unless getopts($opts,\%Args);
+	if($Debug>0){
+		print "Setup_LPRng: Args\n";
+		foreach $key (sort keys %Args){
+			print "  '$key'='$Args{$key}'\n";
+		}
+	}
 	# get the hostname information
-	@Hostname = gethostbyname( hostname() );
+	$key = hostname();
+	@Hostname = gethostbyname( $key );
 	# set up the key values
 	$Keyvals{'H'} = $Hostname[0];
-	Read_conf("/var/tmp/LPD/lpd.conf", %Init_hash);
+	#Read_conf("/var/tmp/LPD/lpd.conf", %Init_hash);
+	Read_conf("/etc/lpd.conf", %Init_hash);
 	$pc_path = "/etc/printcap";
 	if( $Init_hash{'printcap_path'} ){
 		$pc_path = $Init_hash{'printcap_path'};
@@ -501,4 +568,278 @@ sub Set_Debug( $ )
 	$Debug = $_[0];
 }
 
+# sub Get_remote_pr_host( $Printer, $Pc_value );
+#  returns: ($pr, $remote, $port)
+#  $pr = remote printer, $remote = remote host, $port = port to use
+#
+#  if Pc_value 
+#    we use the lp value
+#    if no lp value, we use rp, rm value
+#  else
+#    we use the lp value
+#  if the lp value then we split it up
+#
+
+sub Get_remote_pr_host( $ $)
+{
+	my( $prname, $pc ) = @_;
+	my( $lp, $pr, $remote, $port );
+
+	if( defined $pc ){
+		$lp = $pc->{'lp'};
+	} else {
+		$lp = $prname;
+	}
+	# we now check to see if we have pr@host
+	if( defined $lp ){
+		if( $lp =~ /\@/ ){
+			($pr, $remote ) = split( '@', $lp );
+		} else {
+			$pr = $prname
+		}
+	} elsif( defined $pc ){
+		$pr = $pc->{'rp'};
+		$remote = $pc->{'rm'};
+	}
+	if( not $pr ){
+		$pr = $prname;
+	}
+	$pr = $prname if( $pr =~ /%P/ );
+
+	if( not $remote ){
+		if( defined $pc ){
+			$remote = "localhost" if $pc->{'force_localhost'};
+		} else {
+			$remote = "localhost" if $Init_hash{'force_localhost'};
+		}
+	}
+	if( not $remote ){
+		if( defined $pc ){
+			$remote = $pc->{'default_remote_host'};
+		} else {
+			$remote = $Init_hash{'default_remote_host'};
+		}
+	}
+	if( not $remote ){
+		$remote = "localhost";
+	}
+
+	($remote, $port ) = split( '%', $remote );
+
+	if( not $port ){
+		if( defined $pc ){
+			$port = $pc->{'lpd_port'};
+		} else {
+			$port = $Init_hash{'lpd_port'};
+		}
+	}
+	if( not $port ){
+		$port = "printer";
+	}
+	my( $num );
+	$num = getservbyname( $port, "tcp" );
+	return( $pr, $remote, $num );
+}
+
+sub getconnection ($ $)
+{
+	my ($remote,$port) = @_;
+	my ($iaddr,$paddr,$proto);
+	my ($low_port, $high_port, $ports, $t, $euid ) if $Debug>0;
+	$ports = $Init_hash{'originate_port'};
+	if( $ports ){
+		($low_port, $high_port) = split( /[\s,;]+/, $ports );
+		print "low_port '$low_port', high_port '$high_port'\n" if $Debug>0;
+	}
+	$low_port += 0;
+	$high_port += 0;
+	print "num low_port '$low_port', high_port '$high_port'\n" if $Debug>0;
+
+	$iaddr = inet_aton($remote) or die "no host: $remote";
+	$paddr = sockaddr_in($port,$iaddr);
+	$proto = getprotobyname('tcp');
+	print "remote='$remote', port ='$port', iaddr='" . inet_ntoa($iaddr). "'\n" if $Debug;
+	$t = 0;
+	if( $low_port < $high_port and ($EUID == 0 or $UID == 0 ) ){
+		$euid = $EUID;
+		$EUID = 0;
+		while( $t == 0 and $low_port < $high_port ){
+			close(SOCK);
+			socket(SOCK,PF_INET,SOCK_STREAM,$proto) or die "socket: $!";
+			setsockopt( SOCK, SOL_SOCKET, SO_REUSEADDR, 1 )
+				or warn "setsockopt failed - $!\n"; 
+			if( bind( SOCK, sockaddr_in( $low_port, INADDR_ANY ) ) ){
+				$t = 1;
+			} else {
+				print "bind to $low_port failed - $!\n";
+				++$low_port;
+			}
+		}
+		$EUID = $euid;
+	}
+	if( $t == 0 ){
+		close(SOCK);
+		socket(SOCK,PF_INET,SOCK_STREAM,$proto) or die "socket: $!";
+		setsockopt( SOCK, SOL_SOCKET, SO_REUSEADDR, 1 ) or warn "setsockopt failed - $!\n"; 
+	}
+	connect(SOCK,$paddr) or die "connect: $!";
+	print "connection made\n" if $Debug;
+	# unbufferred IO
+	select(SOCK); $| = 1; select(STDOUT);
+	return \*SOCK;
+}
+
+sub sendit( $ $ )
+{
+	my( $SOCK, $line ) = @_;
+	my( $count );
+	print $SOCK $line or die "print to socket failed - $!\n";
+	$line = "";
+	$count = read $SOCK, $line, 1;
+	print "sendit read $count\n" if $Debug;
+	if( !defined($count) ){
+		die "read error on socket - $!\n";
+	}
+	if( !$count ){
+		die "EOF on socket\n";
+	}
+	$count = unpack( "C", $line );
+	if( $count ){
+		print "error: ";
+		while( define ( $line = <$SOCK> ) ){
+			print $line;
+		}
+		print "\n";
+		exit 1;
+	}
+	print "sendit no error\n" if $Debug;
+}
+
+sub sendbuffer( $ $ $ )
+{
+	my($SOCK, $line, $buffer ) = @_;
+	my( $count );
+	print "sendbuffer line '$line'\n" if $Debug;
+	sendit( $SOCK, $line );
+	print "sendbuffer buffer '$buffer'\n" if $Debug;
+	print $SOCK $buffer;
+	print $SOCK "\000";
+	$line = "";
+	$count = read $SOCK, $line, 1;
+	print "sendbuffer read $count\n" if $Debug;
+	if( !defined($count) ){
+		die "read error on socket - $!\n";
+	}
+	if( !$count ){
+		die "EOF on socket\n";
+	}
+	$count = unpack( "C", $line );
+	if( $count ){
+		print "error code: $count\n";
+		while( defined($line = <$SOCK>) ){
+			print $line;
+		}
+		print "\n";
+		exit 1;
+	}
+	print "sendbuffer no error\n" if $Debug;
+}
+
+sub sendfile ( $ $ $ )
+{
+	my( $SOCK, $name, $filename ) = @_;
+	my( $size, $line, $count );
+	open( FILE, "<$filename") or die "cannot open file '$filename'\n";
+	$size = -s FILE;
+	print "sendfile: '$name' size $size\n" if $Debug;
+	sendit( $SOCK, "\003$size $name\n" );
+	print "sendfile: sending file\n" if $Debug;
+	while( $size = read FILE, $line, 1024 ){
+		print "read $size bytes\n" if $Debug;
+		print $SOCK $line;
+	}
+	print "sendfile: finished\n" if $Debug;
+	if( !defined( $size ) ){
+		die "bad read from '$name' - $!\n";
+	}
+	print $SOCK "\000";
+	$line = "";
+	$count = read $SOCK, $line, 1;
+	print "sendfile: read $count\n" if $Debug;
+	if( !defined($count) ){
+		die "read error on socket - $!\n";
+	}
+	if( !$count ){
+		die "EOF on socket\n";
+	}
+	$count = unpack( "C", $line );
+	if( $count ){
+		print "error code: $count\n";
+		while( defined($line = <$SOCK>) ){
+			print $line;
+		}
+		print "\n";
+		exit 1;
+	}
+	print "sendfile: no error\n" if $Debug;
+}
+
+# Usage:
+#   getopts('a:bc');	# -a takes arg. -b & -c not. Sets opt_* as a
+#			#  side effect.
+
+sub getopts ($;$) {
+    my($argumentative, $hash) = @_;
+    my(@args,$first,$rest,$pos);
+    my($errs) = 0;
+
+    @args = split( / */, $argumentative );
+    while(@ARGV && ($_ = $ARGV[0]) =~ /^-(.)(.*)/) {
+	($first,$rest) = ($1,$2);
+	$pos = index($argumentative,$first);
+	if($pos >= 0) {
+	    if(defined($args[$pos+1]) and ($args[$pos+1] eq ':')) {
+		shift(@ARGV);
+		if($rest eq '') {
+		    ++$errs unless @ARGV;
+		    $rest = shift(@ARGV);
+		}
+              if (ref $hash) {
+                  $$hash{$first} = $rest;
+              }
+              else {
+                  ${"opt_$first"} = $rest;
+              }
+	    }
+	    else {
+              if (ref $hash) {
+                  $$hash{$first} += 1;
+              }
+              else {
+                  ${"opt_$first"} += 1;
+              }
+		if($rest eq '') {
+		    shift(@ARGV);
+		}
+		else {
+		    $ARGV[0] = "-$rest";
+		}
+	    }
+	}
+	else {
+	    print STDERR "Unknown option: $first\n";
+	    ++$errs;
+	    if($rest ne '') {
+		$ARGV[0] = "-$rest";
+	    }
+	    else {
+		shift(@ARGV);
+	    }
+	}
+    }
+    $Exporter::ExportLevel++;
+    import Getopt::Std;
+    $errs == 0;
+}
+$Debug = 0;
 1;

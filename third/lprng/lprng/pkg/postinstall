@@ -1,0 +1,4 @@
+# Send hup signal to inetd
+PID=`/usr/bin/ps -e -u 0|/usr/bin/fgrep inetd|/usr/bin/awk '{print $1}'`
+kill -HUP $PID || exit 2
+exit 0

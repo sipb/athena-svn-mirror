@@ -1,4 +1,4 @@
-.ds VE LPRng-3.5.3
+.ds VE LPRng-3.6.1beta43
 .TH LPC 1 \*(VE "LPRng"
 .ig
 lpc.1,v 3.36 1998/03/29 18:37:49 papowell Exp
@@ -9,13 +9,13 @@ lpc \- line printer control program
 .SH SYNOPSIS
 .B lpc
 [
-.B \-A
-]
-[
 .BI \-D debugopts
 ]
 [
 .BI \-P printer
+]
+[
+.BI \-S server
 ]
 [
 .B \-V
@@ -85,8 +85,6 @@ command operates by sending requests to the
 server process to update the information in these files and to signal
 server processes that the information has been updated.
 .SH OPTIONS
-.IP "\fB\-A\fR" 5
-Use authentication when sending command to server.
 .IP "\fB\-P\fIprinter\fR" 5
 Printer spool queue to operate on.
 if no name is given,
@@ -104,6 +102,14 @@ then the request is directly forwarded to the default LPD host,
 which will do a lookup for all of the available printers.
 By specifying ``all@host'',
 the user can control all printers on a given host.
+.IP "\fB\-S\fIserver\fR" 5
+Send commands to this server,
+rather than the one specified by the
+\fB\-P\fIprinter\fR"
+or printcap entry.
+This allows you to use a default printcap entry for
+authentication information or other setup information,
+but direct queries to a specific server.
 .IP "\fB\-V\fR" 5
 Print program version information
 .PP
@@ -249,6 +255,11 @@ Note that due to race conditions and delays,
 that the start command may not be effective this action should
 be monitored to ensure that the job restarts.
 .TP
+local { all | printer ... }
+.br
+Show the configuration and printcap information on the local host.
+This is an extremely useful diagnostic tool.
+.TP
 lpd [printer@[host]]
 .br
 determines if LPD daemon process on the print server is running,
@@ -283,6 +294,11 @@ Action: updates the job holdfile
 .I move
 field with the destination and starts a server process to do the
 job transfer.
+.TP
+msg printer message text
+.br
+Update the status message for the printer.
+An empty message will remove the status message.
 .TP
 noholdall { all | printer* }
 .br

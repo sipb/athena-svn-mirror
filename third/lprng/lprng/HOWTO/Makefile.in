@@ -22,7 +22,10 @@ SHELL =		@SHELL@
 
 DOC=LPRng-HOWTO
 
-all: $(DOC).html $(DOC).ps purge
+all: license.txt $(DOC).html $(DOC).ps purge
+
+license.txt: ../LICENSE
+	cp ../LICENSE license.txt
 
 $(DOC).html: $(DOC).sgml Makefile
 	sgml2html $(DOC).sgml
@@ -56,6 +59,7 @@ clean:
 .PHONY: all clean install ci install.zman update purge
 
 update:
+	updateversion *.sgml
 
 # 
 #
@@ -66,8 +70,9 @@ install:
 realclean mostlyclean distclean:: clean
 	rm -f Makefile
 
-CI=
-CO=-kv
+#CI=
+#CO=-kv
+CO=-l
 cifast ci:
 	checkin() { \
 		rcs -l $$1; \

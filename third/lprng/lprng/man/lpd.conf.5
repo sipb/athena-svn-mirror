@@ -1,4 +1,4 @@
-.ds VE LPRng-3.5.3
+.ds VE LPRng-3.6.1beta43
 .TH LPD.CONF 5 \*(VE "LPRng"
 .SH NAME
 .nf
@@ -260,7 +260,7 @@ and job information.
 The value for the environment variable PATH, both used to find filters
 and passed on to filters run by \fBlpd\fR and \fBlpr\fR.
 .TP
-\fBfix_bad_job\fR (default: yes)
+\fBfix_bad_job\fR (default: no)
 Fix a bad job file - usually by ignoring multiple
 U (unlink) entries,  badly formatted file names,
 or other common botches produced by various PC based
@@ -343,13 +343,6 @@ who originate connections from different interfaces.
 \fBlockfile\fR (default: /var/spool/lpd/lpd.lock.%h)
 The file used to indicate the presence of an \fBlpd\fR
 server running on the host.
-.TP
-\fBlogfile\fR
-(default: /var/spool/lpd/lpd.log.%h)
-The file that \fBlpd\fR initially logs debugging and
-informational messages to. Individual \fBprintcap\fR
-entries can also specify log files for each
-printer.
 .TP
 \fBlogger_destination\fR
 (default: "")
@@ -678,23 +671,28 @@ group and user variables.
 
 .SH EXAMPLE
 .nf
-# LPRng configuration file
+# lpd.conf generated from  on Wed Apr  7 07:59:48 PDT 1999
 
-user daemon
-remote_user daemon_%M
-server_user daemon_%H
+#   The values in this file are the default values.
+#   If you modify the file,  set the value to something other than the default
+#   For example, '# default force_localhost' means
+#     the 'force_localhost' option value is on or 1.
+#   Uncomment this and change it to read 'force_localhost@'
 
-logfile   /var/spool/lpd/lpd.log.%h
-lockfile  /var/spool/lpd/lpd.lock.%h
-
-printcap_path  /etc/printcap:/var/spool/lpd/printcap.%h
-lpd.perms_path /etc/lpd.perms:/var/spool/lpd/lpd.perms.%h
-
-filter_path /bin:/usr/bin:/usr/local/bin:/usr/ucb:/usr/local/bin.%a
-filter_ld_path /lib:/usr/lib:/usr/ucblib:/usr/5lib:/usr/ccs/lib:/usr/openwin/lib
-
-lpd_port  printer
-minfree   1024
+# Purpose: always print banner, ignore lpr -h option 
+#   default ab@
+# Purpose: query accounting server when connected 
+#   default achk@
+# Purpose: accounting at end (see also af, la, ar, as) 
+#   default ae=jobend $H $n $P $k $b $t
+# Purpose: name of accounting file (see also la, ar) 
+#   default af=
+af=acct
+# Purpose: automatically hold all jobs 
+#   default ah@
+ah
+# Purpose: Allow duplicate command line arguments (legacy requirement) 
+#   default allow_duplicate_args@
 .fi
 .SH FILES
 .PP

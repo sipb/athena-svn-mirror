@@ -11,6 +11,258 @@
 # CHANGES,v 3.47 1998/03/29 18:37:09 papowell Exp
 ###########################################################################
 
+Release LPRng 3.6.1 Mon Mar 22 09:42:07 PST 1999
+
+  This release is a major rewrite of the LPRng software and uses
+  dynamic memory allocation and as few static and global variables as possible.
+  This is intended to simplify the porting of the LPRng software
+  to a multi-threaded environment. In addition,  substantial
+  cleanup of much of the code was done.
+
+  Due to time constraints,  some functionality that is present in other
+  test versions was not put into this release.  This includes
+  setting user information by originating IP address.
+  The 4.x.x release will have support for the new IPP print protocol,
+  SNMP MIB,  and a HTTP server interface.
+
+  As far as possible, existing functionality has been preserved,
+  with the following notable exceptions.  These are divergent enough
+  to cause a new major release number to be used, i.e. - 3.6.x
+
+  License
+
+    Due to various technical legal reasons,  the License for this
+  release of LPRng has been changed from the GNU to the slightly
+  different but similar in intent Public.license.
+
+    The main intent of this license was to allow several different
+  versions of LPRng to exist,  some with proprietary software,
+  that could be distributed and not have the proprietary software
+  fall under terms of the GNU license.   Note that distributing
+  LPRng with other operating systems,  binary distributions,  etc.,
+  is still permitted, and in fact encouraged.
+
+  Load Balance Queues and Class types
+
+    Assume: a load balance queue with several printers, say
+       master -> S1, S2;
+    You can now set the class types accepted by S1 and S2, and
+    the Master Queue will check the job types against the class
+    types before sending the job to the appropriate queue.
+
+    What is this all about? If S1 has blue paper you can set the
+  currently printing class to blue (lpc class blue).
+
+    Now do lpr -Pmaster -Cblue and your job will be routed to printers
+  which currently are printing class 'blue'.  Clearly this can be
+  extended to other things besides paper.
+
+    Note that when you use this option you should set the master
+  queues ignore_requested_user_priority flag so that the first
+  letter of the class type is not used as the priority.
+
+  *********************************
+  ******* force_localhost *********  distribution default is ON
+  *********************************
+
+    The Most Frequently Reported Problem with 3.4.X and 3.5.X was the following:
+
+      lpr is not sending jobs to my lpd server.  Why?
+
+  The reason is that other BSD based spoolers ASSUME that the
+  lpd server will be running on localhost,  and the clients
+  (lpr, lpq, etc) will connect to the server.  So the printcap
+  files are written as:
+   lp:sd=/usr/spool/whatever
+     :rm=remoteserver:rp=remoteprinter
+
+  Of course, lpr reads this as meaning 'connect to the remoteserver',
+  and never sends the job to the server running on the localhost.
+
+  The 'force_localhost' option will FORCE lpr, lpc, etc to connect to
+  the localhost UNLESS lpr -Ppr@remoteserver is used, i.e.- a command
+  line override.  In LPRng 3.5.X, the default value of 'force_localhost'
+  was OFF.  In LPRng 3.6.X, the default value is ON.
+
+  Bounce Queues, lpd_bounce,  and LPR Side Filtering
+
+    The lpd_bounce option REPLACES bq=xxx
+  Example:            ->
+    pr:lp=pr@xxx         pr:lpd_bounce
+      :bq=far@server       :lp=far@server
+
+    This makes bounce queues consistent with remote print queues.
+
+    The entire print job job is passed through the various filters,
+  and the entire output is now sent as a single file to the next
+  queue.  The format of this file is set by the bq_output=X option.
+
+    This now allows the full use of leaders, trailers,
+  banner page generation, etc., to be used.
+
+  Printcap tc=xxx:tc=yyy handling
+    printcap includes (tc) are done BEFORE setting the values
+  in the printcap entry,  and in order.  Thus:
+
+     lp:s=X:tc=.t1,.t2:tc=.t3
+     .t1:s=Y
+     .t2:z=W
+     .t3:z=P
+
+   would result (for lp) in:
+     lp:
+      :s=Y # from .t1
+      :z=W # from .t2
+      :z=P # from .t3
+      :s=X
+    and a final result of
+     lp:s=X:z=P
+
+   (Requested by and faultless arguments by: the lprng mailing list...)
+
+  Permissions List File:
+    You can now say XXX=<filename and the whitespace separated
+  contents of the file are used as the options value.
+
+  Example:
+    ACCEPT REMOTEHOST=</usr/local/etc/lpd_hosts
+   and have /usr/local/etc/lpd_hosts contain:
+
+    *.site.com
+    10.0.0.1/24  pc.*.mystuff.org
+
+  LPC Permissions Checking
+
+  You can now use:
+    ACCEPT LPC=hold,remove,topq
+  If you are doing an LPC operation, then this matches the operation.
+  This replaces the lpc_user=.... printcap abomination.
+
+  For example, to allow user X on the server to do hold operations,
+  use:
+
+    ACCEPT LPC=hold USER=x SERVER
+
+  The 'ms', 'sy' and 'ty' serial port configuration options are now
+  the single option 'stty' which makes more sense and is compatible
+  with other LPRng software.
+
+  The 'rt' and 'send_try' options were accidentally aliased - removed
+  the 'rt'.
+
+  There is now finer control for remote LPQ queries.
+   force_lpq_status=KEY=hostlist;KEY=hostlist
+     Specifies a set of hosts and the format for lpq status queries,
+     overridding the requested format.
+      KEY = l (long) or s (short)
+      hostlist = list of IPaddress/Mask or GLOB patterns for hostnames
+     Example:  force_lpq_status=s=*pc.site.com,10.0.25.0/24;l=sunsystem.site.com
+   reverse_lpq_format=hostlist
+     Reverse l and s query formats when a request arrives from these
+     hosts.
+   return_short_status=hostlist
+     Return short_status_length status lines when a request arrives from
+     these hosts
+  short_status_length=N
+     Number of status lines to return when return_short_status matched
+     
+  LPC added commands
+    active   - checks for an active server
+	local (all | printer) - show printcap and configuration information
+      for a local printer.  Debugging aid.
+
+  LPQ added option
+     -L   - equivalent to -llllll....
+
+  CHECKPC
+      checkpc -V now prints out all sorts of additional information for
+    debugging and problem solving.
+      checkpc now checks both for server AND client mode.  No fixing done
+    for client information, just displays it.
+      checkpc now checks for missing tc=xxx entries.
+
+   LPD_CONF_PATH and PRINTCAP_PATH compilation option
+     make LPD_CONF_PATH=/usr/local/etc/lpd.conf
+     make PRINTCAP_PATH=/usr/local/etc/printcap
+       - changes the /etc/lpd.conf and  /etc/printcap file
+     default locations
+
+  AUTHENTICATION
+
+     The entire authentication interface has been redone,  and PGP,
+  Kerberos 5, and MIT Kerberos 4 Print System compatibility has
+  been added.  The permissions checking method has been changed as
+  follows,  with respect to the following keys:
+    AUTH       match or TRUE  if authenticated transfer done
+    AUTHTYPE   matches the authentication type
+    AUTHUSER   client or user's authentication id
+    AUTHFROM   originating server's authentication id when forwarding job
+    AUTHSAMEUSER   match if the client id in the request and the
+               (saved) client ID used to spool a job are identical.
+	AUTHJOB    match or TRUE if a job was submitted with authentication
+
+  Options have been redone to put a bit of consistency into things
+
+    auth=xxx                   authentication type for client to server
+    auth_client_filter=/path   client to server authentication filter
+    auth_forward=xxx           authentication type for forwarding
+    auth_forward_id=xxx        authentication id for remote end when forwarding
+    auth_forward_filter=/path  server to server authentication remote server id
+    auth_recieve_filter=/path  server filter to recieve authentication
+    auth_server_id=xxx         client to server - id of server
+                               receiving server - id for reception
+                               server to server - id for origination
+    pgp_path=/path     path to pgp program for auth=pgp
+    pgp_passphrase=clientkey   file in $(PGPPATH) or $(HOME)/.pgp
+                               holding client passphrase
+    pgp_server_key=~daemon/.pgp/serverkey   file holding LPD server passphrase
+
+  SOLARIS Package Support
+    Start of generating binary distributions.
+    (Contributed by: Martin Forssen <maf@crt.se>)
+
+  LPD lock file:  now defaults to /var/run/lpd
+    (Pointed out by: Martin Forssen <maf@crt.se>)
+
+  %D expansion,  create_files flag
+    If you have %D in a printcap value,  it gets expanded to the
+  current date in YYYY-MM-DD format.  If you have the create_files flag
+  set,  then the files that normally get trimmed (max size specified)
+  are created.  This allow you to do:
+     lf=log-%D
+  Your log files now will have the pathname sd.../log-YYYY-MM-DD
+  and you can now get rolling log files on a daily basis.
+  The files that have this done are the log file, status file,
+  and accounting file.
+
+  PCLBANNER - new banner printing program using PERL produces
+   pcl banner page.
+   lp:bp=/usr/local/.../pclbanner
+     :of=....
+     :if=....
+
+  Bug fixes:
+    Gadzillions.  Many.  Some were not bugs but simply inconsistencies with
+  documentation.  Sometimes documentation changed, sometimes the code.
+
+Release LPRng 3.5.4 Mon Nov  9 10:07:42 PST 1998
+  Bug fixes:
+  Bad link to site in LPRng.smgl documentation.
+   (Reported by: Anthony Thyssen <anthony@cit.gu.edu.au>)
+  LPQ status was missing a space separator when reporting
+    subserver name list.
+   (Spotted by the Eagle Eyes of: John Callaghan <callagh4@pilot.msu.edu>)
+  The xt flag has been expurgated,  totally.  As was documented.
+   (Spotted by: James P. Dugal <jpd@usl.edu>)
+  LPR_bsd option added so that -m does BSD mail option.
+   (Requested by various folks)
+
+  Testers and bug fixers:
+   (Compilation: Bernie Kirby <bernie@ecr.mu.oz.au>)
+
+
+
+
 Release LPRng 3.5.3 Mon Nov  9 10:07:42 PST 1998
   Documentation Error:
     LPRng-HOWTO, Section 8, indicated that the lpd.conf file

@@ -17,6 +17,7 @@
 
 SRC=@srcdir@
 @SET_MAKE@
+INSTALL=@INSTALL@
 
 #=============================================================================
 # List the directories you want to generate:
@@ -34,7 +35,7 @@ all: $(DIRS)
 	TAGS clean uninstall install \
 	info dvi check \
 	realclean mostlyclean distclean \
-	dist ci cifiles FRC default newmake cifast
+	dist update ci cifiles FRC default newmake cifast
 MAKETARGET=all
 
 
@@ -46,24 +47,34 @@ $(ALLDIRS): FRC
 
 FRC:
 
-#install default versions of the lpd.conf and lpd.perm files
-default:
-	cp ${SRC}/lpd.conf ${SRC}/lpd.perms /etc
 
 ###############################################################################
 
-TAGS clean uninstall install: 
+TAGS clean install::
 	$(MAKE) -f Makefile.bsd MAKETARGET=$@ $(DIRS)
+
+install::
+	#install default versions of the lpd.conf and lpd.perm files
+	f=$(LPD_CONF_PATH) ; \
+	if [ -z "$$f" ] ; then f=/etc/lpd.conf; fi; \
+	if [ ! -f "$$f" ] ; then \
+		$(INSTALL) -m 644 $(SRC)/src/lpd.conf $$f; \
+	fi;
+	if [ ! -f /etc/lpd.perms ] ; then \
+		$(INSTALL) -m 644 $(SRC)/lpd.perms /etc/lpd.perms; \
+	else \
+		$(INSTALL) -m 644 $(SRC)/lpd.perms /etc/lpd.perms.sample; \
+	fi;
 
 info dvi check:
 
 realclean mostlyclean distclean: clean
-	$(MAKE) MAKETARGET=$@ $(ALLDIRS)
-	-rm -f config.cache config.h config.log config.status Makefile Makefile.bsd
-
-
+	-rm -f config.cache config.h config.log config.status
+	-rm -f Makefile */Makefile */Makefile.bsd
 
 ###############################################################################
+uninstall:
+	echo "you must uninstall by"
 
 cifast ci: cifiles
 	for i in $(ALLDIRS); do \
@@ -73,8 +84,9 @@ cifast ci: cifiles
 	done; \
 	$(MAKE) MAKETARGET=$@ $(ALLDIRS)
 
-CI=
-CO=-kv
+#CI=
+#CO=-kv
+CO=-l
 
 cifiles: newmake
 	if test ! -d RCS ; then mkdir RCS; fi;
@@ -124,9 +136,11 @@ update:
 		sed "s,VERSION=.*,VERSION=$$D," </tmp/configure.in >configure.in; \
 		cp configure /tmp/configure; \
 		sed "s,VERSION=.*,VERSION=$$D," </tmp/configure >configure ;
+	sed -e 's/"/\\"/g' -e 's/.*/"&",/' ${SRC}/COPYRIGHT > ${SRC}/src/include/copyright.h
+	sed -e 's/"/\\"/g' -e 's/.*/"&",/' ${SRC}/LICENSE > ${SRC}/src/include/license.h
 
 	(cd man; $(MAKE) update)
-	
+
 
 ###############################################################################
 # Make a gnutar distribution
@@ -194,11 +208,20 @@ dist_list:
 		echo $${DIR}/Makefile >>/tmp/X;
 #	cat /tmp/X
 
-dist: dist_list
+dist: update ci newmake dist_list
 	DIR=`pwd | sed 's,.*/,,' `; \
 		cd ..; \
 		tar zXcf /tmp/X $${DIR}.tgz $${DIR}; \
 		md5 $${DIR}.tgz | pgp -fast -u papowell@astart > $${DIR}.tgz.md5
+
+###########################################################################
+
+quick: dist_list
+	echo HOWTO >>/tmp/X
+	echo man >>/tmp/X
+	DIR=`pwd | sed 's,.*/,,' `; \
+	cd ..; \
+	tar zXcf /tmp/X $${DIR}.tgz $${DIR};
 
 dist_doc: dist_list
 	echo src >>/tmp/X
@@ -208,7 +231,7 @@ dist_doc: dist_list
 		cd ..; \
 		tar zXcf /tmp/X $${DIR}_doc.tgz $${DIR}; \
 		md5 $${DIR}_doc.tgz > $${DIR}_doc.md5
-	
+
 dist_src: dist_list
 	echo man >>/tmp/X
 	DIR=`pwd | sed 's,.*/,,' `; \
