@@ -87,12 +87,6 @@ clean-mac:: clean-unix
 
 depend:: 
 
-install:: com_err.h 
-	$(INSTALL_DATA) $(srcdir)/com_err.h  $(DESTDIR)$(KRB5_INCDIR)/com_err.h
-
-install:: mit-sipb-copyright.h
-	$(INSTALL_DATA) $(srcdir)/mit-sipb-copyright.h $(DESTDIR)$(KRB5_INCDIR)/mit-sipb-copyright.h
-
 #
 #install:: compile_et.1
 #	$(INSTALL_DATA) $(srcdir)/compile_et.1 $(DESTDIR)$(CLIENT_MANDIR)/compile_et.1
@@ -118,9 +112,6 @@ clean-mac::
 	$(RM) libcom_err.a
 	$(RM) $(LIBOBJS)
 
-install::
-	$(INSTALL_DATA) libcom_err.a $(DESTDIR)$(KRB5_LIBDIR)/libcom_err.a
-	$(RANLIB)    $(DESTDIR)$(KRB5_LIBDIR)/libcom_err.a
 ## 
 
 clean-unix:: clean-files
