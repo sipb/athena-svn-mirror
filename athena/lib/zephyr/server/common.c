@@ -4,7 +4,7 @@
  *	Created by:	John T. Kohl
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/common.c,v $
- *	$Author: raeburn $
+ *	$Author: lwvanels $
  *
  *	Copyright (c) 1987 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -15,22 +15,24 @@
 
 #ifndef lint
 #ifndef SABER
-static const char rcsid_common_c[] =
-    "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/common.c,v 1.8 1991-01-28 15:06:40 raeburn Exp $";
-#endif SABER
-#endif lint
+static char rcsid_common_c[] =
+    "$Id: common.c,v 1.9 1991-12-04 13:26:00 lwvanels Exp $";
+#endif /* SABER */
+#endif /* lint */
 
+#include <zephyr/zephyr.h>
 #include <stdio.h>
-#include <assert.h>
 #include <ctype.h>
-#include "zserver.h"
+#include <syslog.h>
+#include <string.h>
+#include "unix.h"
 
 /* common routines for the server */
 
 /* copy the string into newly allocated area */
 
 char *
-strsave (const char *sp)
+strsave (Zconst char *sp)
 {
     register char *ret;
 
@@ -45,7 +47,7 @@ strsave (const char *sp)
 /* generic string hash function */
 
 unsigned long
-hash (const char *string)
+hash (Zconst char *string)
 {
 	register unsigned long hval = 0;
 	register char cp;

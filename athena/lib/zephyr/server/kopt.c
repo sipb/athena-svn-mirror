@@ -1,6 +1,6 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/kopt.c,v $
- * $Author: raeburn $
+ * $Author: lwvanels $
  *
  * Copyright 1985, 1986, 1987, 1988, 1990, 1991 by the Massachusetts
  * Institute of Technology.
@@ -17,9 +17,11 @@
  */
 
 #ifndef lint
+#ifndef SABER
 static char *rcsid_rd_req_c =
-    "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/kopt.c,v 1.2 1991-03-08 14:04:25 raeburn Exp $";
+    "$Id: kopt.c,v 1.3 1991-12-04 13:26:06 lwvanels Exp $";
 #endif /* lint */
+#endif /* SABER */
 
 #ifdef KERBEROS
 #ifndef NOENCRYPTION

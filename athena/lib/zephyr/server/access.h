@@ -7,8 +7,8 @@
  * Created by Ken Raeburn.
  *
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/access.h,v $
- * $Author: raeburn $
- * $Id: access.h,v 1.2 1990-11-14 23:54:58 raeburn Exp $
+ * $Author: lwvanels $
+ * $Id: access.h,v 1.3 1991-12-04 13:26:02 lwvanels Exp $
  *
  * Copyright (c) 1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file
@@ -18,7 +18,7 @@
 #include <zephyr/mit-copyright.h>
 
 #include <zephyr/acl.h>
-#include "ZString.h"
+#include "zstring.h"
 #include "unix.h"
 
 typedef	enum _ZAccess_t {
@@ -28,35 +28,25 @@ typedef	enum _ZAccess_t {
 	INSTUID				/* use instance UID identity acl */
 } ZAccess_t;
 
-class ZAcl_t {
-	char *acl_filename;
-	int	acl_types;	/* Flag field indcating which acls
-				 are present.  Used ONLY in access.c */
-    public:
-	int ok (ZString, ZAccess_t);
-	ZAcl_t (const char *path) {
-	    extern char * strsave (const char *);
-	    acl_filename = strsave (path);
-	    acl_types = 0;
-	    check ();
-	}
-	~ZAcl_t () {
-	    xfree (acl_filename);
-	}
-    private:
-	void check (void);
-	void check_acl_type (ZAccess_t, int);
-};
+typedef struct _ZAcl_t {
+  char *acl_filename;
+  int	acl_types;	/* Flag field indcating which acls
+			   are present.  Used ONLY in access.c */
+} ZAcl_t;
 
-inline int access_check(ZString sender, ZAcl_t *acl, ZAccess_t accesstype) {
-    return acl->ok (sender, accesstype);
-}
+#ifdef __STDC__
+# define        P(s) s
+#else
+# define P(s) ()
+#endif
 
 /* found in access.c */
-extern void access_init (void), access_reinit (void);
+extern void access_init P((void)), access_reinit P((void));
 
 /* found in acl_files.c */
-extern "C" int acl_load (char *);
+extern int acl_load P((char *));
+
+#undef P
 
 /* external data relevant */
 extern int zdebug;

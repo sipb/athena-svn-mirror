@@ -3,24 +3,27 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/zstring.h,v $
- *	$Id: zstring.h,v 1.1 1991-11-17 17:19:23 lwvanels Exp $
+ *	$Id: zstring.h,v 1.2 1991-12-04 13:26:18 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
-#include <mit-copyright.h>
+#include <zephyr/mit-copyright.h>
 
 #ifndef __zstring_h
 #define __zstring_h __FILE__
 
-#define ZSTRING_HASH_TABLE_SIZE	1031
+#define ZSTRING_HASH_TABLE_SIZE	1024
 
-typedef struct t_zstring
+#include <stdio.h>
+
+typedef struct _zstring
 {
   char *string;			/* the string itself */
   int len;			/* string length, for speed */
   int ref_count;		/* for gc */
-  struct t_zstring *next;	/* for linking in hash table */
-  struct t_zstring *prev;	/* for linking in hash table */
+  unsigned long hash_val;	/* hash value for this string */
+  struct _zstring *next;	/* for linking in hash table */
+  struct _zstring *prev;	/* for linking in hash table */
 } ZSTRING;
 
 #ifdef __STDC__
@@ -32,8 +35,9 @@ typedef struct t_zstring
 ZSTRING *make_zstring P((char *s, int downcase));
 void free_zstring P((ZSTRING *z));
 ZSTRING *find_zstring P((char *s, int downcase));
-int eq_zstring P((ZSTRING *a, ZSTRING *b));
-
+ZSTRING *dup_zstring P((ZSTRING *z));
+int comp_zstring P((ZSTRING *a, ZSTRING *b));
+void print_zstring_table P((FILE *f));
 
 #undef P
 

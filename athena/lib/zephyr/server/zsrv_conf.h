@@ -4,8 +4,8 @@
  *	Created by:	John T. Kohl
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/zsrv_conf.h,v $
- *	$Author: raeburn $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/zsrv_conf.h,v 1.5 1991-03-22 18:21:37 raeburn Exp $
+ *	$Author: lwvanels $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/zsrv_conf.h,v 1.6 1991-12-04 13:25:58 lwvanels Exp $
  *
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -18,27 +18,27 @@
 
 /* Magic path names */
 #ifndef HESIOD
-#define SERVER_LIST_FILE	Z_LIBDIR "/server.list"
+#define SERVER_LIST_FILE	"/usr/athena/lib/zephyr/server.list"
 #endif /* !HESIOD */
 
 /* ACL's for pre-registered classes */
 /* Directory containing acls and other info */
-#define	ZEPHYR_ACL_DIR		Z_LIBDIR "/"
+#define	ZEPHYR_ACL_DIR		"/usr/athena/lib/zephyr/"
 /* name of the class registry */
 #define	ZEPHYR_CLASS_REGISTRY	"class-registry.acl"
 
 #ifdef KERBEROS
 /* name of file to hold the tickets for keys to exchange with other servers */
-#define	ZEPHYR_TKFILE		Z_LIBDIR "/ztkts"
+#define	ZEPHYR_TKFILE		"/usr/athena/lib/zephy/ztkts"
 
 /* Pathname of Kerberos srvtab file.
    WARNING: lib/ZCheckAuthentication.c needs to have a corresponding
    definition!  */
-#define SERVER_SRVTAB		Z_LIBDIR "/srvtab"
+#define SERVER_SRVTAB		"/usr/athena/lib/zephyr/srvtab"
 #endif
 
 /* default subscription file */
-#define	DEFAULT_SUBS_FILE	Z_LIBDIR "/default.subscriptions"
+#define	DEFAULT_SUBS_FILE	"/usr/athena/lib/zephyr/default.subscriptions"
 
 /* client defines */
 #define	REXMIT_SECS	((long) 20)	/* rexmit delay on normal notices */
