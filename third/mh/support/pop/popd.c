@@ -1,6 +1,6 @@
 /* popd.c - the POP server */
 #ifndef	lint
-static char ident[] = "@(#)$Id: popd.c,v 1.2 1997-12-14 00:32:59 ghudson Exp $";
+static char ident[] = "@(#)$Id: popd.c,v 1.3 1999-01-29 18:24:34 ghudson Exp $";
 #endif	/* lint */
 
 /* Author:	Marshall T. Rose	<MRose@UDel>	(MTR)
@@ -306,11 +306,11 @@ char	**vec;
     (void) gethostname (myhost, sizeof myhost);
     if (hp = gethostbyname (myhost))
 	(void) strcpy (myhost, hp -> h_name);
-#ifndef BSD42
+#ifdef _NFILE
     nbits = _NFILE;
-#else   /* BSD42 */
+#else
     nbits = getdtablesize ();
-#endif  /* BSD42 */
+#endif
 
     for (vec++; ap = *vec; vec++) {
 	if (*ap == '-')
