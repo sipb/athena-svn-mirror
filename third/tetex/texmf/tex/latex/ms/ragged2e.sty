@@ -29,7 +29,7 @@
 %% 
 \NeedsTeXFormat{LaTeX2e}[1996/10/24]
 \ProvidesPackage{ragged2e}
-         [2003/01/26 v2.00 ragged2e Package (MS)]
+         [2003/02/24 v2.02 ragged2e Package (MS)]
 %% \CharacterTable
 %% {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
 %%  Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
@@ -50,8 +50,8 @@
 %% ===================================================================
 %%  @LaTeX-style-file{
 %%     author          = {Martin Schr\"oder},
-%%     version         = "2.00",
-%%     date            = "26 January 2003",
+%%     version         = "2.02",
+%%     date            = "24 February 2003",
 %%     filename        = "ragged2e.sty",
 %%     address         = {Martin Schr\"oder
 %%                        Cr\"usemannallee 3
@@ -114,7 +114,7 @@
   }
 \DeclareOption{raggedrightboxes}{\@raggedtwoe@raggedrightboxes@opt}
 \DeclareOption{raggedrightboxes}{%
-  \if@raggedtwoe@footmisctrue
+  \@raggedtwoe@footmisctrue
   \PassOptionsToPackage{ragged}{footmisc}%
   }
 \newcommand{\@raggedtwoe@abdhook}{%
@@ -158,43 +158,41 @@
 \newlength{\RaggedRightParindent}
 \newlength{\JustifyingParindent}
 \if@raggedtwoe@originalparameters
-   \setlength\CenteringLeftskip{\z@\@plus\@ne fil}
-   \setlength\RaggedLeftLeftskip{\z@\@plus\@ne fil}
-   \setlength\RaggedRightLeftskip\z@skip
-   \setlength\CenteringRightskip{\z@\@plus\@ne fil}
-   \setlength\RaggedLeftRightskip\z@skip
-   \setlength\RaggedRightRightskip{\z@\@plus\@ne fil}
-   \setlength\CenteringParfillskip\z@skip
-   \setlength\RaggedLeftParfillskip\z@skip
-   \setlength\RaggedRightParfillskip{\z@\@plus\@ne fil}
-   \setlength\CenteringParindent\z@
-   \setlength\RaggedLeftParindent\z@
-   \setlength\RaggedRightParindent\z@
+   \CenteringLeftskip\@flushglue
+   \RaggedLeftLeftskip\@flushglue
+   \RaggedRightLeftskip\z@skip
+   \CenteringRightskip@flushglue
+   \RaggedLeftRightskip\z@skip
+   \RaggedRightRightskip\@flushglue
+   \CenteringParfillskip\z@skip
+   \RaggedLeftParfillskip\z@skip
+   \RaggedRightParfillskip\@flushglue
+   \CenteringParindent\z@
+   \RaggedLeftParindent\z@
+   \RaggedRightParindent\z@
 \else
-   \setlength\CenteringLeftskip{\z@\@plus\tw@ em}
-   \setlength\RaggedLeftLeftskip{\z@\@plus\tw@ em}
-   \setlength\RaggedRightLeftskip\z@skip
-   \setlength\CenteringRightskip{\z@\@plus\tw@ em}
-   \setlength\RaggedLeftRightskip\z@skip
-   \setlength\RaggedRightRightskip{\z@\@plus\tw@ em}
-   \setlength\CenteringParfillskip\z@skip
-   \setlength\RaggedLeftParfillskip\z@skip
-   \setlength\RaggedRightParfillskip{\z@\@plus\@ne fil}
-   \setlength\CenteringParindent\z@
-   \setlength\RaggedLeftParindent\z@
-   \setlength\RaggedRightParindent\z@
+   \CenteringLeftskip\z@\@plus\tw@ em
+   \RaggedLeftLeftskip\z@\@plus\tw@ em
+   \RaggedRightLeftskip\z@skip
+   \CenteringRightskip\z@\@plus\tw@ em
+   \RaggedLeftRightskip\z@skip
+   \RaggedRightRightskip\z@\@plus\tw@ em
+   \CenteringParfillskip\z@skip
+   \RaggedLeftParfillskip\z@skip
+   \RaggedRightParfillskip\@flushglue
+   \CenteringParindent\z@
+   \RaggedLeftParindent\z@
+   \RaggedRightParindent\z@
 \fi
-\setlength{\JustifyingParfillskip}{\z@\@plus\@ne fil}
-\setlength{\JustifyingParindent}{1em}
+\JustifyingParfillskip\@flushglue
+\JustifyingParindent1em
 \newif\if@raggedtwoe@spaceskip
 \newcommand{\@raggedtwoe@everyselectfont}{%
   \if@raggedtwoe@spaceskip
     \ifdim\fontdimen\thr@@\font=\z@\relax
-      \setlength\spaceskip\z@
-      \setlength\xspaceskip\z@
+      \spaceskip\z@
     \else
-      \setlength\spaceskip{\fontdimen\tw@\font}%
-      \setlength\xspaceskip{\fontdimen7\font}%
+      \spaceskip\fontdimen\tw@\font
     \fi
   \fi
   }
@@ -203,7 +201,7 @@
 \let\@raggedtwoe@saved@gnewline\@gnewline
 \newcommand*{\@raggedtwoe@gnewline}[1]{%
   \ifvmode
-    \@nolerr
+    \@nolnerr
   \else
     \unskip
     \reserved@e {\reserved@f #1}{\parskip\z@\par}%
@@ -214,11 +212,11 @@
       \let\\\@centercr
    \fi
    \let\@gnewline\@raggedtwoe@gnewline
-   \setlength\leftskip\CenteringLeftskip
-   \setlength\@rightskip\CenteringRightskip
-   \setlength\rightskip\@rightskip
-   \setlength\parfillskip\CenteringParfillskip
-   \setlength\parindent\CenteringParindent
+   \leftskip\CenteringLeftskip
+   \@rightskip\CenteringRightskip
+   \rightskip\@rightskip
+   \parfillskip\CenteringParfillskip
+   \parindent\CenteringParindent
    \@raggedtwoe@spaceskiptrue
    \@raggedtwoe@everyselectfont
    }
@@ -227,11 +225,11 @@
       \let\\\@centercr
    \fi
    \let\@gnewline\@raggedtwoe@gnewline
-   \setlength\leftskip\RaggedLeftLeftskip
-   \setlength\@rightskip\RaggedLeftRightskip
-   \setlength\rightskip\@rightskip
-   \setlength\parfillskip\RaggedLeftParfillskip
-   \setlength\parindent\RaggedLeftParindent
+   \leftskip\RaggedLeftLeftskip
+   \@rightskip\RaggedLeftRightskip
+   \rightskip\@rightskip
+   \parfillskip\RaggedLeftParfillskip
+   \parindent\RaggedLeftParindent
    \@raggedtwoe@spaceskiptrue
    \@raggedtwoe@everyselectfont
    }
@@ -240,49 +238,49 @@
       \let\\\@centercr
    \fi
    \let\@gnewline\@raggedtwoe@gnewline
-   \setlength\leftskip\RaggedRightLeftskip
-   \setlength\@rightskip\RaggedRightRightskip
-   \setlength\rightskip\@rightskip
-   \setlength\parfillskip\RaggedRightParfillskip
-   \setlength\parindent\RaggedRightParindent
+   \leftskip\RaggedRightLeftskip
+   \@rightskip\RaggedRightRightskip
+   \rightskip\@rightskip
+   \parfillskip\RaggedRightParfillskip
+   \parindent\RaggedRightParindent
    \@raggedtwoe@spaceskiptrue
    \@raggedtwoe@everyselectfont
    }
 \newcommand{\justifying}{%
    \let\\\@raggedtwoe@savedcr
    \let\@gnewline\@raggedtwoe@saved@gnewline
-   \setlength\leftskip\z@
-   \setlength\@rightskip\z@
-   \setlength\rightskip\@rightskip
-   \setlength\parfillskip\JustifyingParfillskip
-   \setlength\parindent\JustifyingParindent
+   \leftskip\z@
+   \@rightskip\z@
+   \rightskip\@rightskip
+   \parfillskip\JustifyingParfillskip
+   \parindent\JustifyingParindent
    \@raggedtwoe@spaceskipfalse
    \@raggedtwoe@everyselectfont
    }
 \newenvironment{Center}{%
-   \begin{trivlist}%
-      \Centering\item\relax
-      }{%
-      \end{trivlist}%
-      }
+   \trivlist
+   \Centering\item\relax
+   }{%
+   \endtrivlist
+   }
 \newenvironment{FlushLeft}{%
-   \begin{trivlist}%
-      \RaggedRight\item\relax
-      }{%
-      \end{trivlist}%
-      }
+   \trivlist
+   \RaggedRight\item\relax
+   }{%
+   \endtrivlist
+   }
 \newenvironment{FlushRight}{%
-   \begin{trivlist}%
-      \RaggedLeft\item\relax
-      }{%
-      \end{trivlist}%
-      }
+   \trivlist
+   \RaggedLeft\item\relax
+   }{%
+   \endtrivlist
+   }
 \newenvironment{justify}{%
-   \begin{trivlist}%
-      \justifying\item\relax
-      }{%
-      \end{trivlist}%
-      }
+   \trivlist
+   \justifying\item\relax
+   }{%
+   \endtrivlist
+   }
 \if@raggedtwoe@originalcommands
 \else
    \let\LaTeXcentering\centering

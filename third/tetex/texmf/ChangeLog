@@ -1,3 +1,30 @@
+Fri Feb 28 13:56:15 CET 2003
+	* add doc/latex/styles/multiple-span.txt
+	* move dvipdfm/* to dvipdfm/config
+
+Fri Feb 28 11:54:01 CET 2003
+	* update ragged2e
+
+Thu Feb 27 19:45:43 CET 2003
+	* support uppercase mathtime fonts via aliases
+
+Sat Feb 22 16:37:58 CET 2003
+	* remove g-brief: it is not free software
+
+Thu Feb 20 21:17:04 CET 2003
+	* update shadow.sty
+
+Wed Feb 19 21:41:44 CET 2003
+	* add package mparhack and jurabib
+	* listings package is back (license *is* ok!)
+
+Sun Feb 16 14:52:16 CET 2003
+	* SIunits.cfg updated (only comments have changed in a minor way)
+	* replace old README by new readme in doc/latex/pdfpages
+	* added sihyph23.tex (Slovenian hyphenation patterns)
+
+============================ teTeX-2.0.1 ===================================
+
 Sat Feb 15 19:19:42 CET 2003
 	* was package added
 	* update Catalogue
