@@ -14,6 +14,7 @@ mkdir $RPM_BUILD_ROOT
 ./do.sh -p -s /xxx -d $RPM_BUILD_ROOT install
 
 # Extra files
+mkdir -p $RPM_BUILD_ROOT/etc
 cp lpd.conf.athena $RPM_BUILD_ROOT/etc/lpd.conf
 cp lpd.perms $RPM_BUILD_ROOT/etc/lpd.perms
 %ifos linux
