@@ -9,7 +9,7 @@
  */
 #include <mit-copyright.h>
 #ifndef lint
-static char rcsid_check_viewable_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/gms/check_viewable.c,v 1.3 1988-09-28 23:39:39 eichin Exp $";
+static char rcsid_check_viewable_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/gms/check_viewable.c,v 1.4 1988-10-03 16:52:52 eichin Exp $";
 #endif lint
 
 #include "globalmessage.h"
@@ -64,7 +64,7 @@ Code_t check_viewable(message, checktime, updateuser)
     /* read the file and close it */
     status = read_to_memory(&usertfile, &usersize, ufd);
     /* check the version string */
-    if(status) {
+    if(!status) {
       if(!strncmp(usertfile, GMS_VERSION_STRING, GMS_VERSION_STRING_LEN)) {
 	/* now check for end of first line */
 	ptr = index(usertfile, '\n');
