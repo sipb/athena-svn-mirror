@@ -1,4 +1,4 @@
- /* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.40 1994-05-04 22:40:32 cfields Exp $ */
+ /* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.41 1994-05-04 23:12:07 cfields Exp $ */
  
 #ifdef POSIX
 #include <unistd.h>
@@ -391,19 +391,6 @@ main(argc, argv)
   else
     activation_state = ACTIVATED;
  
-
-  /* Make another connection to the X server so that there won't be a
-   * period where there are no connections to the server, causing it
-   * to reset (as when a config_console is done and console is the
-   * only X program running). I.e., we don't close this connection,
-   * and the X socket is inherited by Xsession.
-   */
-  dpy1 = XOpenDisplay(DisplayString(dpy));
-  
-  if ((i = XConnectionNumber(dpy1)) >= 0) {
-	  fcntl(i, F_SETFD, 0);
-  }
-
   setenv("PATH", defaultpath, 1);
 #ifdef SOLARIS
    sprintf(buf,"hosttype=%s","sun4");
