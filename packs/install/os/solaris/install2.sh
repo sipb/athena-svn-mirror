@@ -143,6 +143,7 @@ cp -p /srvd/etc/athena/*.conf etc/athena/
 echo "Updating dm config"
 cp -p /srvd/etc/athena/login/config etc/athena/login/config
 echo "Editing rc.conf and version"
+/srvd/etc/athena/gettime -s time.mit.edu
 sed -e 	"s#^HOST=[^;]*#HOST=$hostname#
 	s#^ADDR=[^;]*#ADDR=$netaddr#
 	s#^NETDEV=[^;]*#NETDEV=$if#
