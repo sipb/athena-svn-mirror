@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: do-update.sh,v 1.24 1998-04-24 19:10:51 rbasch Exp $
+# $Id: do-update.sh,v 1.25 1998-05-07 18:58:46 ghudson Exp $
 
 # Copyright 1996 by the Massachusetts Institute of Technology.
 #
@@ -148,6 +148,7 @@ if [ "$PUBLIC" = true ]; then
 	sed -n	-e "s/^HOST=[^;]*/HOST=$HOST/" \
 		-e "s/^ADDR=[^;]*/ADDR=$ADDR/" \
 		-e "s/^MACHINE=[^;]*/MACHINE=$MACHINE/" \
+		-e "s/^SYSTEM=[^;]*/SYSTEM=$SYSTEM/" \
 		-e "s/^NETDEV=[^;]*/NETDEV=$NETDEV/" \
 		-e p "/srvd$CONFDIR/rc.conf" > "$CONFDIR/rc.conf"
 else
