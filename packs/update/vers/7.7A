@@ -11,6 +11,8 @@ RSAIX)
 	chque -qbsh -a"up = FALSE"
 	;;
 SUN*)
+	rm -rf /etc/athena/login
+	rm -rf /usr/openwin
 	echo "NEWUNIX=true"		>> ${CONFVARS}
 	echo "NEWBOOT=true"		>> ${CONFVARS}
 	echo "NEWDEV=true"		>> ${CONFVARS}
