@@ -10,23 +10,20 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/data.h,v $
- *	$Id: data.h,v 1.5 1991-03-24 14:25:03 lwvanels Exp $
+ *	$Id: data.h,v 1.6 1991-06-29 18:52:11 lwvanels Exp $
  *      $Author: lwvanels $
  */
 
 #include <mit-copyright.h>
 
-#define ICON_FILE	"xolc.xbm"
-
 /* File locations */
 
-#define HELP_PATH "/mit/xolc/help/"
+#define HELP_PATH "/usr/athena/lib/olc/xolc"
 #define HELP_INIT_NEWQ	"olc.init.newq"
 #define HELP_INIT_CONTQ	"olc.init.contq"
 #define HELP_ASK	"olc.ask"
 #define HELP_REPLAY	"olc.replay"
 
-#define SA_LOC  	"/mit/xolc/xbrowser"
 #define SA_ARGV0	"xbrowser"
 
 /*
