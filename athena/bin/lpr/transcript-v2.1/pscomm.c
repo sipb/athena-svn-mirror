@@ -3,7 +3,7 @@
 _NOTICE N1[] = "Copyright (c) 1985,1986,1987 Adobe Systems Incorporated";
 _NOTICE N2[] = "GOVERNMENT END USERS: See Notice file in TranScript library directory";
 _NOTICE N3[] = "-- probably /usr/lib/ps/Notice";
-_NOTICE RCSID[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/transcript-v2.1/pscomm.c,v 1.18 1997-12-03 22:00:36 ghudson Exp $";
+_NOTICE RCSID[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/transcript-v2.1/pscomm.c,v 1.19 1998-07-06 16:57:15 danw Exp $";
 #endif
 /* pscomm.c
  *
@@ -85,6 +85,9 @@ _NOTICE RCSID[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/tran
  *
  * RCSLOG:
  * $Log: not supported by cvs2svn $
+ * Revision 1.18  1997/12/03 22:00:36  ghudson
+ * NetBSD's stdio is a bit different.
+ *
  * Revision 1.17  1997/07/18 18:53:14  danw
  * from mwhitson: POSIX signal semantics fixes. (sigsetjmp/siglongjmp
  * and SA_RESTART).
@@ -493,7 +496,7 @@ main(argc,argv)            /* MAIN ROUTINE */
 
     char  **av;
     char *filter_name;	/* name by which program was invoked */
-    char magic[11];	/* first few bytes of stdin ?magic number and type */
+    char magic[100];	/* first few bytes of stdin ?magic number and type */
     char msgbuff[100];
     char message[512];
     int  magiccnt;	/* actual number of magic bytes read */
@@ -673,18 +676,24 @@ main(argc,argv)            /* MAIN ROUTINE */
     /* IMPORTANT: in the case of cascaded filters, */ 
     /* stdin may be a pipe! (and hence we cannot seek!) */
 
-    if ((magiccnt = read(fileno(stdin),magic,11)) <= 0) {
+    if ((magiccnt = read(fileno(stdin),magic,100)) <= 0) {
         fprintf(stderr,"%s: bad magic number, EOF\n", prog);
 	VOIDC fflush(stderr);
 	croak(THROW_AWAY);
     }
-    debugp((stderr,"%s: magic number is (%11.11s)\n",prog,magic));
     streamin = stdin;
 
     if (strncmp(magic,"\004%!",3) == 0) {
 	/* PS file from a DOS box... strip the ^D and it's ok */
 	memmove(magic,magic+1,magiccnt-1);
 	magiccnt--;
+    } else if (strncmp(magic,"\e%-12345X@PJL JOB\n@PJL SET RESOLUTION = 600\n@PJL ENTER LANGUAGE = POSTSCRIPT",76) == 0) {
+	/* Another kind of PS file from a DOS box */
+	/* W95 and WNT use slightly different syntax. */
+	if (strncmp(magic+76," \n%!",4) == 0)
+	    memmove(magic,magic+78,magiccnt-=78);
+	else if (strncmp(magic+76,"\n%!",3) == 0)
+	    memmove(magic,magic+77,magiccnt-=77);
     }
 
     if (strncmp(magic,"%!PS-Adobe",10) == 0) {
