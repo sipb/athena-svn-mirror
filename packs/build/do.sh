@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: do.sh,v 1.36 1999-07-14 20:49:39 ghudson Exp $
+# $Id: do.sh,v 1.37 1999-07-14 21:06:47 danw Exp $
 
 source=/mit/source
 srvd=/.srvd
@@ -136,15 +136,16 @@ Linux)
 	ERROR_CFLAGS=-Werror
 	;;
 esac
-export WARN_CFLAGS ERROR_CFLAGS CC
 
 # Determine if gmake is available. (It should be, unless this is a
 # full build and we haven't built it yet.)
 if [ -x $athtoolroot/usr/athena/bin/gmake ]; then
-	make=gmake
+	MAKE=gmake
 else
-	make=make
+	MAKE=make
 fi
+
+export WARN_CFLAGS ERROR_CFLAGS CC MAKE
 
 if [ -r Makefile.athena ]; then
 	export SRVD SOURCE COMPILER CONFIGDIR XCONFIGDIR ATHTOOLROOT
@@ -154,7 +155,7 @@ if [ -r Makefile.athena ]; then
 	CONFIGDIR=$source/packs/build/config
 	XCONFIGDIR=$source/packs/build/xconfig
 	ATHTOOLROOT=$athtoolroot
-	$make $n -f Makefile.athena "$operation"
+	$MAKE $n -f Makefile.athena "$operation"
 elif [ -f configure.in ]; then
 	export ATHTOOLROOT
 	ATHTOOLROOT=$athtoolroot
@@ -182,15 +183,15 @@ elif [ -f configure.in ]; then
 		$maybe "./$configure"
 		;;
 	clean)
-		$make $n clean
+		$MAKE $n clean
 		;;
 	all)
-		$make $n all
+		$MAKE $n all
 		;;
 	check)
 		;;
 	install)
-		$make $n install "DESTDIR=$srvd"
+		$MAKE $n install "DESTDIR=$srvd"
 		;;
 	esac
 elif [ -r Imakefile ]; then
@@ -199,19 +200,19 @@ elif [ -r Imakefile ]; then
 		$maybe imake "-I$source/packs/build/config" \
 			-DUseInstalled "-DTOPDIR=$source/packs/build" \
 			"-DTOOLROOT=$athtoolroot"
-		$maybe $make Makefiles
-		$maybe $make depend
+		$maybe $MAKE Makefiles
+		$maybe $MAKE depend
 		;;
 	clean)
-		$make $n clean
+		$MAKE $n clean
 		;;
 	all)
-		$make $n all
+		$MAKE $n all
 		;;
 	check)
 		;;
 	install)
-		$make $n install install.man "DESTDIR=$srvd"
+		$MAKE $n install install.man "DESTDIR=$srvd"
 		;;
 	esac
 elif [ -r Makefile ]; then
@@ -219,15 +220,15 @@ elif [ -r Makefile ]; then
 	prepare)
 		;;
 	clean)
-		$make $n clean "ATHTOOLROOT=$athtoolroot"
+		$MAKE $n clean "ATHTOOLROOT=$athtoolroot"
 		;;
 	all)
-		$make $n all CC="$CC" "ATHTOOLROOT=$athtoolroot"
+		$MAKE $n all CC="$CC" "ATHTOOLROOT=$athtoolroot"
 		;;
 	check)
 		;;
 	install)
-		$make $n install "DESTDIR=$srvd" "ATHTOOLROOT=$athtoolroot"
+		$MAKE $n install "DESTDIR=$srvd" "ATHTOOLROOT=$athtoolroot"
 		;;
 	esac
 else
