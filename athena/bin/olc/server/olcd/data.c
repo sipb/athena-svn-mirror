@@ -24,7 +24,7 @@
 #include <olcd.h>
 
 static const char rcsid[] =
-    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data.c,v 1.8 1990-02-04 20:30:24 vanharen Exp $";
+    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data.c,v 1.9 1990-02-06 03:44:17 vanharen Exp $";
 
 char *DATABASE_FILE      = "/usr/lib/olc/database";
 char *SPECIALTY_DIR      = "/usr/lib/olc/specialties";
@@ -87,6 +87,8 @@ PROC Proc_List[] =
   OLC_VERIFY_INSTANCE, olc_verify_instance,  "olc verify",
   OLC_DEFAULT_INSTANCE,olc_default_instance, "olc default instance",
   OLC_DUMP,            olc_dump,             "olc dump",
+  OLC_DUMP_REQ_STATS,  olc_dump_req_stats,   "olc request stats",
+  OLC_DUMP_QUES_STATS, olc_dump_ques_stats,  "olc question stats",
   OLC_LOAD_USER,       olc_load_user,        "olc load user",
   OLC_CHANGE_MOTD,     olc_change_motd,      "olc change motd",
   OLC_CHANGE_ACL,      olc_change_acl,       "olc change acl",
