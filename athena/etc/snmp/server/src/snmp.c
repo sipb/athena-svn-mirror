@@ -1,9 +1,12 @@
 #ifndef lint
-static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/snmp.c,v 1.2 1990-05-26 13:40:34 tom Exp $";
+static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/snmp.c,v 2.0 1992-04-22 02:00:11 tom Exp $";
 #endif
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  90/05/26  13:40:34  tom
+ * athena release 7.0e - silenced some common error conditions
+ * 
  * Revision 1.1  90/04/26  17:59:47  tom
  * Initial revision
  * 
@@ -31,7 +34,7 @@ static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snm
  */
 
 /*
- *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/snmp.c,v 1.2 1990-05-26 13:40:34 tom Exp $
+ *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/snmp.c,v 2.0 1992-04-22 02:00:11 tom Exp $
  *
  *  June 28, 1988 - Mark S. Fedor
  *  Copyright (c) NYSERNet Incorporated, 1988, All Rights Reserved
@@ -107,8 +110,18 @@ snmpin(from, size, pkt)
 	 *  If we have Authentication traps enabled, send one out.
 	 */
 	if (check_sess(thesession, sin_from, snmptype) < 0) {
+	  
+#ifdef MIT
+	 /*
+	  * We don not wish to log incorrect session names..
+	  * we're probably the ones providing them!
+	  */
+	        syslog(LOG_ERR, "bad use of session from %s",
+				inet_ntoa(sin_from->sin_addr));
+#else  /* MIT */
 		syslog(LOG_ERR, "bad use of session %s, from %s",
 				thesession, inet_ntoa(sin_from->sin_addr));
+#endif /* MIT */
 		s_stat.badsession++;
 
 		if (send_authen_traps) {
@@ -332,7 +345,9 @@ check_sess(snam, whofrom, what)
 		tmp = tmp->next;
 
 	if (tmp == (struct snmp_session *)NULL) {
+#ifndef MIT
 		syslog(LOG_ERR, "session %s not defined.", snam);
+#endif /* MIT */
 		return(GEN_ERR);
 	}
 	else {
