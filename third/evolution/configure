@@ -470,7 +470,7 @@ ac_includes_default="\
 #endif"
 
 ac_subdirs_all="$ac_subdirs_all libical"
-ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA PACKAGE VERSION ACLOCAL AUTOCONF AUTOMAKE AUTOHEADER MAKEINFO AMTAR install_sh STRIP ac_ct_STRIP INSTALL_STRIP_PROGRAM AWK SET_MAKE CC CFLAGS LDFLAGS CPPFLAGS ac_ct_CC EXEEXT OBJEXT DEPDIR am__include am__quote AMDEP_TRUE AMDEP_FALSE AMDEPBACKSLASH CCDEPMODE RESOLV_LIBS build build_cpu build_vendor build_os host host_cpu host_vendor host_os MAINTAINER_MODE_TRUE MAINTAINER_MODE_FALSE MAINT CPP LEX LEXLIB LEX_OUTPUT_ROOT YACC EGREP LN_S JW HAVE_JW_TRUE HAVE_JW_FALSE HAVE_JW INTLTOOL_DESKTOP_RULE INTLTOOL_DIRECTORY_RULE INTLTOOL_KEYS_RULE INTLTOOL_PROP_RULE INTLTOOL_OAF_RULE INTLTOOL_PONG_RULE INTLTOOL_SERVER_RULE INTLTOOL_SHEET_RULE INTLTOOL_SOUNDLIST_RULE INTLTOOL_UI_RULE INTLTOOL_XAM_RULE INTLTOOL_XML_RULE INTLTOOL_CAVES_RULE INTLTOOL_SCHEMAS_RULE INTLTOOL_THEME_RULE INTLTOOL_EXTRACT INTLTOOL_MERGE INTLTOOL_UPDATE INTLTOOL_PERL USE_NLS MSGFMT GMSGFMT XGETTEXT CATALOGS CATOBJEXT DATADIRNAME GMOFILES INSTOBJEXT INTLLIBS PO_IN_DATADIR_TRUE PO_IN_DATADIR_FALSE POFILES POSUB MKINSTALLDIRS GETTEXT_PACKAGE localedir ECHO RANLIB ac_ct_RANLIB LIBTOOL PURIFY ENABLE_PURIFY_TRUE ENABLE_PURIFY_FALSE SENDMAIL CAMEL_LOCK_HELPER_USER CAMEL_LOCK_HELPER_GROUP ENABLE_IPv6_TRUE ENABLE_IPv6_FALSE DB3_CFLAGS DB3_LDADD LDAP_CFLAGS LDAP_LIBS ENABLE_LDAP_TRUE ENABLE_LDAP_FALSE ENABLE_NNTP_TRUE ENABLE_NNTP_FALSE PTHREAD_LIB THREADS_LIBS THREADS_CFLAGS PKG_CONFIG GTKHTML_CFLAGS GTKHTML_LIBS GTKHTML_DATADIR GNOME_PILOT_CFLAGS GNOME_PILOT_LIBS ENABLE_PILOT_CONDUITS_TRUE ENABLE_PILOT_CONDUITS_FALSE KRB5_CFLAGS KRB5_LDFLAGS KRB4_CFLAGS KRB4_LDFLAGS NSS_CFLAGS NSS_LIBS MANUAL_NSPR_CFLAGS MANUAL_NSPR_LIBS MANUAL_NSS_CFLAGS MANUAL_NSS_LIBS DTAPPINTEGRATE HAVE_DTAPPINTEGRATE_TRUE HAVE_DTAPPINTEGRATE_FALSE OPENSSL_CFLAGS OPENSSL_LDFLAGS WARN_CFLAGS ORBIT_CONFIG ORBIT_IDL ORBIT_CFLAGS ORBIT_LIBS IDL_INCLUDES GLIB_CFLAGS GLIB_LIBS GLIB_GENMARSHAL GOBJECT_QUERY GLIB_MKENUMS GAL_REQUIRED GTKHTML_REQUIRED EVOLUTION_CFLAGS EVOLUTION_LIBS GNOME_FULL_CFLAGS GNOME_FULL_LIBS CAMEL_CFLAGS CAMEL_LIBS E_NAME_CFLAGS E_NAME_LIBS E_UTIL_CFLAGS E_UTIL_LIBS IMPORTERS_CFLAGS IMPORTERS_LIBS LIBFILTER_CFLAGS LIBFILTER_LIBS SHELL_CFLAGS SHELL_LIBS EVOLUTION_ADDRESSBOOK_CFLAGS EVOLUTION_ADDRESSBOOK_LIBS EVOLUTION_ADDRESSBOOK_CONDUIT_CFLAGS EVOLUTION_ADDRESSBOOK_CONDUIT_LIBS EVOLUTION_EXECUTIVE_SUMMARY_CFLAGS EVOLUTION_EXECUTIVE_SUMMARY_LIBS EVOLUTION_CALENDAR_CFLAGS EVOLUTION_CALENDAR_LIBS EVOLUTION_CALENDAR_CONDUIT_CFLAGS EVOLUTION_CALENDAR_CONDUIT_LIBS EVOLUTION_MAIL_CFLAGS EVOLUTION_MAIL_LIBS WOMBAT_CFLAGS WOMBAT_LIBS BASE_VERSION privlibdir privlibexecdir privdatadir privincludedir camel_providerdir componentdir idldir serverdir evolutionuidir imagesdir buttonsdir soundsdir gladedir etspecdir viewsdir HTML_DIR GTKDOC ENABLE_GTK_DOC_TRUE ENABLE_GTK_DOC_FALSE GCONFTOOL GCONF_SCHEMA_CONFIG_SOURCE GCONF_SCHEMA_FILE_DIR GCONF_SCHEMAS_INSTALL_TRUE GCONF_SCHEMAS_INSTALL_FALSE DEFAULT_BINARY_TRUE DEFAULT_BINARY_FALSE HAVE_KDE_APPLNK_TRUE HAVE_KDE_APPLNK_FALSE KDE_APPLNK_DIR subdirs EVOLUTION_DIR LIBOBJS LTLIBOBJS'
+ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA PACKAGE VERSION ACLOCAL AUTOCONF AUTOMAKE AUTOHEADER MAKEINFO AMTAR install_sh STRIP ac_ct_STRIP INSTALL_STRIP_PROGRAM AWK SET_MAKE CC CFLAGS LDFLAGS CPPFLAGS ac_ct_CC EXEEXT OBJEXT DEPDIR am__include am__quote AMDEP_TRUE AMDEP_FALSE AMDEPBACKSLASH CCDEPMODE RESOLV_LIBS build build_cpu build_vendor build_os host host_cpu host_vendor host_os MAINTAINER_MODE_TRUE MAINTAINER_MODE_FALSE MAINT CPP LEX LEXLIB LEX_OUTPUT_ROOT YACC EGREP LN_S JW HAVE_JW_TRUE HAVE_JW_FALSE HAVE_JW INTLTOOL_DESKTOP_RULE INTLTOOL_DIRECTORY_RULE INTLTOOL_KEYS_RULE INTLTOOL_PROP_RULE INTLTOOL_OAF_RULE INTLTOOL_PONG_RULE INTLTOOL_SERVER_RULE INTLTOOL_SHEET_RULE INTLTOOL_SOUNDLIST_RULE INTLTOOL_UI_RULE INTLTOOL_XAM_RULE INTLTOOL_XML_RULE INTLTOOL_CAVES_RULE INTLTOOL_SCHEMAS_RULE INTLTOOL_THEME_RULE INTLTOOL_EXTRACT INTLTOOL_MERGE INTLTOOL_UPDATE INTLTOOL_PERL USE_NLS MSGFMT GMSGFMT XGETTEXT CATALOGS CATOBJEXT DATADIRNAME GMOFILES INSTOBJEXT INTLLIBS PO_IN_DATADIR_TRUE PO_IN_DATADIR_FALSE POFILES POSUB MKINSTALLDIRS GETTEXT_PACKAGE localedir ECHO RANLIB ac_ct_RANLIB LIBTOOL PURIFY ENABLE_PURIFY_TRUE ENABLE_PURIFY_FALSE SENDMAIL CAMEL_LOCK_HELPER_USER CAMEL_LOCK_HELPER_GROUP ENABLE_IPv6_TRUE ENABLE_IPv6_FALSE DB3_CFLAGS PTHREAD_LIB DB3_LDADD LDAP_CFLAGS LDAP_LIBS ENABLE_LDAP_TRUE ENABLE_LDAP_FALSE ENABLE_NNTP_TRUE ENABLE_NNTP_FALSE THREADS_LIBS THREADS_CFLAGS PKG_CONFIG GTKHTML_CFLAGS GTKHTML_LIBS GTKHTML_DATADIR GNOME_PILOT_CFLAGS GNOME_PILOT_LIBS ENABLE_PILOT_CONDUITS_TRUE ENABLE_PILOT_CONDUITS_FALSE KRB5_CFLAGS KRB5_LDFLAGS KRB4_CFLAGS KRB4_LDFLAGS NSS_CFLAGS NSS_LIBS MANUAL_NSPR_CFLAGS MANUAL_NSPR_LIBS MANUAL_NSS_CFLAGS MANUAL_NSS_LIBS DTAPPINTEGRATE HAVE_DTAPPINTEGRATE_TRUE HAVE_DTAPPINTEGRATE_FALSE OPENSSL_CFLAGS OPENSSL_LDFLAGS WARN_CFLAGS ORBIT_CONFIG ORBIT_IDL ORBIT_CFLAGS ORBIT_LIBS IDL_INCLUDES GLIB_CFLAGS GLIB_LIBS GLIB_GENMARSHAL GOBJECT_QUERY GLIB_MKENUMS GAL_REQUIRED GTKHTML_REQUIRED EVOLUTION_CFLAGS EVOLUTION_LIBS GNOME_FULL_CFLAGS GNOME_FULL_LIBS CAMEL_CFLAGS CAMEL_LIBS E_NAME_CFLAGS E_NAME_LIBS E_UTIL_CFLAGS E_UTIL_LIBS IMPORTERS_CFLAGS IMPORTERS_LIBS LIBFILTER_CFLAGS LIBFILTER_LIBS SHELL_CFLAGS SHELL_LIBS EVOLUTION_ADDRESSBOOK_CFLAGS EVOLUTION_ADDRESSBOOK_LIBS EVOLUTION_ADDRESSBOOK_CONDUIT_CFLAGS EVOLUTION_ADDRESSBOOK_CONDUIT_LIBS EVOLUTION_EXECUTIVE_SUMMARY_CFLAGS EVOLUTION_EXECUTIVE_SUMMARY_LIBS EVOLUTION_CALENDAR_CFLAGS EVOLUTION_CALENDAR_LIBS EVOLUTION_CALENDAR_CONDUIT_CFLAGS EVOLUTION_CALENDAR_CONDUIT_LIBS EVOLUTION_MAIL_CFLAGS EVOLUTION_MAIL_LIBS WOMBAT_CFLAGS WOMBAT_LIBS BASE_VERSION privlibdir privlibexecdir privdatadir privincludedir camel_providerdir componentdir idldir serverdir evolutionuidir imagesdir buttonsdir soundsdir gladedir etspecdir viewsdir HTML_DIR GTKDOC ENABLE_GTK_DOC_TRUE ENABLE_GTK_DOC_FALSE GCONFTOOL GCONF_SCHEMA_CONFIG_SOURCE GCONF_SCHEMA_FILE_DIR GCONF_SCHEMAS_INSTALL_TRUE GCONF_SCHEMAS_INSTALL_FALSE DEFAULT_BINARY_TRUE DEFAULT_BINARY_FALSE HAVE_KDE_APPLNK_TRUE HAVE_KDE_APPLNK_FALSE KDE_APPLNK_DIR subdirs EVOLUTION_DIR LIBOBJS LTLIBOBJS'
 ac_subst_files=''
 
 # Initialize some variables set by options.
@@ -11989,7 +11989,324 @@ fi
 echo "$as_me:$LINENO: result: $ac_cv_db3_header_version" >&5
 echo "${ECHO_T}$ac_cv_db3_header_version" >&6
 
-GNOME_PTHREAD_CHECK
+
+	PTHREAD_LIB=""
+	echo "$as_me:$LINENO: checking for pthread_create in -lpthread" >&5
+echo $ECHO_N "checking for pthread_create in -lpthread... $ECHO_C" >&6
+if test "${ac_cv_lib_pthread_pthread_create+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lpthread  $LIBS"
+cat >conftest.$ac_ext <<_ACEOF
+#line $LINENO "configure"
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+
+/* Override any gcc2 internal prototype to avoid an error.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+/* We use char because int might match the return type of a gcc2
+   builtin and then its argument prototype would still apply.  */
+char pthread_create ();
+int
+main ()
+{
+pthread_create ();
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
+  (eval $ac_link) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } &&
+         { ac_try='test -s conftest$ac_exeext'
+  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
+  (eval $ac_try) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; }; then
+  ac_cv_lib_pthread_pthread_create=yes
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+ac_cv_lib_pthread_pthread_create=no
+fi
+rm -f conftest.$ac_objext conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+echo "$as_me:$LINENO: result: $ac_cv_lib_pthread_pthread_create" >&5
+echo "${ECHO_T}$ac_cv_lib_pthread_pthread_create" >&6
+if test $ac_cv_lib_pthread_pthread_create = yes; then
+  PTHREAD_LIB="-lpthread"
+else
+  echo "$as_me:$LINENO: checking for pthread_create in -lpthreads" >&5
+echo $ECHO_N "checking for pthread_create in -lpthreads... $ECHO_C" >&6
+if test "${ac_cv_lib_pthreads_pthread_create+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lpthreads  $LIBS"
+cat >conftest.$ac_ext <<_ACEOF
+#line $LINENO "configure"
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+
+/* Override any gcc2 internal prototype to avoid an error.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+/* We use char because int might match the return type of a gcc2
+   builtin and then its argument prototype would still apply.  */
+char pthread_create ();
+int
+main ()
+{
+pthread_create ();
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
+  (eval $ac_link) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } &&
+         { ac_try='test -s conftest$ac_exeext'
+  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
+  (eval $ac_try) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; }; then
+  ac_cv_lib_pthreads_pthread_create=yes
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+ac_cv_lib_pthreads_pthread_create=no
+fi
+rm -f conftest.$ac_objext conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+echo "$as_me:$LINENO: result: $ac_cv_lib_pthreads_pthread_create" >&5
+echo "${ECHO_T}$ac_cv_lib_pthreads_pthread_create" >&6
+if test $ac_cv_lib_pthreads_pthread_create = yes; then
+  PTHREAD_LIB="-lpthreads"
+else
+  echo "$as_me:$LINENO: checking for pthread_create in -lc_r" >&5
+echo $ECHO_N "checking for pthread_create in -lc_r... $ECHO_C" >&6
+if test "${ac_cv_lib_c_r_pthread_create+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lc_r  $LIBS"
+cat >conftest.$ac_ext <<_ACEOF
+#line $LINENO "configure"
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+
+/* Override any gcc2 internal prototype to avoid an error.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+/* We use char because int might match the return type of a gcc2
+   builtin and then its argument prototype would still apply.  */
+char pthread_create ();
+int
+main ()
+{
+pthread_create ();
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
+  (eval $ac_link) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } &&
+         { ac_try='test -s conftest$ac_exeext'
+  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
+  (eval $ac_try) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; }; then
+  ac_cv_lib_c_r_pthread_create=yes
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+ac_cv_lib_c_r_pthread_create=no
+fi
+rm -f conftest.$ac_objext conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+echo "$as_me:$LINENO: result: $ac_cv_lib_c_r_pthread_create" >&5
+echo "${ECHO_T}$ac_cv_lib_c_r_pthread_create" >&6
+if test $ac_cv_lib_c_r_pthread_create = yes; then
+  PTHREAD_LIB="-lc_r"
+else
+  echo "$as_me:$LINENO: checking for __pthread_attr_init_system in -lpthread" >&5
+echo $ECHO_N "checking for __pthread_attr_init_system in -lpthread... $ECHO_C" >&6
+if test "${ac_cv_lib_pthread___pthread_attr_init_system+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lpthread  $LIBS"
+cat >conftest.$ac_ext <<_ACEOF
+#line $LINENO "configure"
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+
+/* Override any gcc2 internal prototype to avoid an error.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+/* We use char because int might match the return type of a gcc2
+   builtin and then its argument prototype would still apply.  */
+char __pthread_attr_init_system ();
+int
+main ()
+{
+__pthread_attr_init_system ();
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
+  (eval $ac_link) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } &&
+         { ac_try='test -s conftest$ac_exeext'
+  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
+  (eval $ac_try) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; }; then
+  ac_cv_lib_pthread___pthread_attr_init_system=yes
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+ac_cv_lib_pthread___pthread_attr_init_system=no
+fi
+rm -f conftest.$ac_objext conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+echo "$as_me:$LINENO: result: $ac_cv_lib_pthread___pthread_attr_init_system" >&5
+echo "${ECHO_T}$ac_cv_lib_pthread___pthread_attr_init_system" >&6
+if test $ac_cv_lib_pthread___pthread_attr_init_system = yes; then
+  PTHREAD_LIB="-lpthread"
+else
+  echo "$as_me:$LINENO: checking for pthread_create" >&5
+echo $ECHO_N "checking for pthread_create... $ECHO_C" >&6
+if test "${ac_cv_func_pthread_create+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  cat >conftest.$ac_ext <<_ACEOF
+#line $LINENO "configure"
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+/* System header to define __stub macros and hopefully few prototypes,
+    which can conflict with char pthread_create (); below.
+    Prefer <limits.h> to <assert.h> if __STDC__ is defined, since
+    <limits.h> exists even on freestanding compilers.  */
+#ifdef __STDC__
+# include <limits.h>
+#else
+# include <assert.h>
+#endif
+/* Override any gcc2 internal prototype to avoid an error.  */
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+/* We use char because int might match the return type of a gcc2
+   builtin and then its argument prototype would still apply.  */
+char pthread_create ();
+/* The GNU C library defines this for functions which it implements
+    to always fail with ENOSYS.  Some functions are actually named
+    something starting with __ and the normal name is an alias.  */
+#if defined (__stub_pthread_create) || defined (__stub___pthread_create)
+choke me
+#else
+char (*f) () = pthread_create;
+#endif
+#ifdef __cplusplus
+}
+#endif
+
+int
+main ()
+{
+return f != pthread_create;
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
+  (eval $ac_link) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } &&
+         { ac_try='test -s conftest$ac_exeext'
+  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
+  (eval $ac_try) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; }; then
+  ac_cv_func_pthread_create=yes
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+ac_cv_func_pthread_create=no
+fi
+rm -f conftest.$ac_objext conftest$ac_exeext conftest.$ac_ext
+fi
+echo "$as_me:$LINENO: result: $ac_cv_func_pthread_create" >&5
+echo "${ECHO_T}$ac_cv_func_pthread_create" >&6
+
+
+fi
+
+
+fi
+
+
+fi
+
+
+fi
+
+
+
+
 
 echo "$as_me:$LINENO: checking for db3 library name" >&5
 echo $ECHO_N "checking for db3 library name... $ECHO_C" >&6
@@ -18952,6 +19269,7 @@ s,@CAMEL_LOCK_HELPER_GROUP@,$CAMEL_LOCK_HELPER_GROUP,;t t
 s,@ENABLE_IPv6_TRUE@,$ENABLE_IPv6_TRUE,;t t
 s,@ENABLE_IPv6_FALSE@,$ENABLE_IPv6_FALSE,;t t
 s,@DB3_CFLAGS@,$DB3_CFLAGS,;t t
+s,@PTHREAD_LIB@,$PTHREAD_LIB,;t t
 s,@DB3_LDADD@,$DB3_LDADD,;t t
 s,@LDAP_CFLAGS@,$LDAP_CFLAGS,;t t
 s,@LDAP_LIBS@,$LDAP_LIBS,;t t
@@ -18959,7 +19277,6 @@ s,@ENABLE_LDAP_TRUE@,$ENABLE_LDAP_TRUE,;t t
 s,@ENABLE_LDAP_FALSE@,$ENABLE_LDAP_FALSE,;t t
 s,@ENABLE_NNTP_TRUE@,$ENABLE_NNTP_TRUE,;t t
 s,@ENABLE_NNTP_FALSE@,$ENABLE_NNTP_FALSE,;t t
-s,@PTHREAD_LIB@,$PTHREAD_LIB,;t t
 s,@THREADS_LIBS@,$THREADS_LIBS,;t t
 s,@THREADS_CFLAGS@,$THREADS_CFLAGS,;t t
 s,@PKG_CONFIG@,$PKG_CONFIG,;t t

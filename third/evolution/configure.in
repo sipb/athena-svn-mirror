@@ -355,7 +355,7 @@ AC_CACHE_CHECK([db3 header version], ac_cv_db3_header_version,
 	ac_cv_db3_header_version=$evolution_db_version
 ])
 
-GNOME_PTHREAD_CHECK
+EVO_PTHREAD_CHECK
 
 AC_CACHE_CHECK([for db3 library name], ac_cv_db3_ldadd,
 [
