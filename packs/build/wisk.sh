@@ -266,6 +266,7 @@ endif # installonly
 	case third/unsupported/perl-4.036
 	(echo In $package >>& $outfile)
 	set PERLFILES = "  ./x2p/s2p.SH ./x2p/find2perl.SH ./x2p/Makefile.SH ./x2p/cflags.SH ./Makefile.SH ./config_h.SH ./c2ph.SH ./h2ph.SH ./makedepend.SH ./cflags.SH ./makedir.SH"
+if ( $installonly == "0" ) then
 	( cd /build/$package ; cp config.sh.$machine config.sh) 
 	( cd /build/$package  ; cp cppstdin.$machine cppstdin ) 
 	 cd /build/$package ; \
@@ -275,12 +276,26 @@ endif # installonly
 	(( cd /build/$package ;  make clean >>& $outfile) && \
 	( cd /build/$package ;  make depend >>& $outfile) && \
 	( cd /build/$package ;  make >>& $outfile) && \
-	( cd /build/$package ;  make test >>& $outfile) &&\
-	( cd /build/$package ;  make install DESTDIR=$SRVD >>& $outfile) &&\
-	( cd /build/$package ; rm -rf include ) && \
-	( cd  /build/$package/include ) && \
-	( cd /usr/include;  /usr/athena/bin/h2ph * */* ) && \
-	( cd  /build/$package/include ; cp -rp * $SRVD/usr/athena/lib/perl/ ))
+	( cd /build/$package ;  make test >>& $outfile))
+        if ( $status == 1 ) then
+                echo "We bombed in $package" >> & $outfile
+                exit -1
+        endif
+endif #installonly
+
+	cd /build/$package
+	(( make install DESTDIR=$SRVD >>& $outfile) &&\
+	 (( sed -e "s:/usr/:$SRVD/usr/:" h2ph > h2phsrvd ) >>& $outfile) && \
+	 ( chmod 755 h2phsrvd >>& $outfile ) && \
+	 (( cd $SRVD/usr/include; /build/$package/h2phsrvd * */* ) >>& $outfile ) && \
+	 (( sed -e "s:/usr/include:/usr/athena/include:" h2phsrvd > hath2phsrvd ) >>& $outfile) && \
+	 ( chmod 755 hath2phsrvd >>& $outfile ) && \
+	 (( cd $SRVD/usr/athena/include; /build/$package/hath2phsrvd * */* ) >>& $outfile) && \
+	 ( rm -f h2phsrvd hath2phsrvd >>& $outfile ))
+        if ( $status == 1 ) then
+                echo "We bombed in $package" >> & $outfile
+                exit -1
+        endif
 	breaksw
 
 	case third/unsupported/sysinfo
@@ -543,13 +558,14 @@ endif # installonly
 	breaksw
 
 # Mark? Are you piping to true??
+# Changed to || (true)
 	case athena/lib/moira.dev
 	(echo In $package >>& $outfile)
 if ( $installonly == "0" ) then
 	((cd /build/$package ; imake -DTOPDIR=. -I./util/imake.includes >>& $outfile) &&\
 	(cd /build/$package; make Makefiles >>& $outfile) &&\
 	(cd /build/$package; make clean >>& $outfile) &&\
-	((cd /build/$package; make depend >>& $outfile) | (true)) &&\
+	((cd /build/$package; make depend >>& $outfile) || (true)) &&\
 	(cd /build/$package; make all >>& $outfile))
 	if ($status == 1) then
 		echo "We bombed in $package" >>& $outfile
