@@ -3,11 +3,11 @@
  * 		keeping the a specified number of backup files around.
  *
  * 	$Source: /afs/dev.mit.edu/source/repository/athena/etc/newsyslog/newsyslog.c,v $
- * 	$Author: bert $    $Revision: 1.4 $
+ * 	$Author: bert $    $Revision: 1.5 $
  */
 
 #ifndef lint
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/newsyslog/newsyslog.c,v 1.4 1995-11-16 05:03:05 bert Exp $";
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/newsyslog/newsyslog.c,v 1.5 1996-01-29 03:40:46 bert Exp $";
 #endif  /* lint */
 
 #include <sys/types.h>
@@ -59,25 +59,29 @@ static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/new
 #endif
 
 /* special (i.e. non-configurable) flags for logfile entries */
-#define CE_ACTIVE 1	/* Logfile is being turned over */
+#define CE_ACTIVE 1	/* Logfile needs to be turned over */
 #define CE_BINARY 2	/* Logfile is in binary, don't add status messages */
-#define CE_DATED 4	/* Mark the logfile with date, not number */
+#define CE_DATED  4	/* Mark the logfile with date, not number */
 
 #define NONE -1
 
 /* Definitions of the keywords for the logfile.
  * Should not be changed once we come up with good ones and document them. =)
  */
-
-/* This is used to add another post-processing command, like 'gzip -9' */
-#define KEYWORD_EXEC "run"
+/* This is used to add another post-processing command, e.g. 'gzip -9' */
+#define KEYWORD_EXEC "filter"
 /* This describes a process to restart, other than syslogd */
-#define KEYWORD_PID "signal"
+#define KEYWORD_PID  "signal"
 
 /* Definitions of the predefined flag letters. */
 #define FL_BINARY 'B'   /* reserved */
 #define FL_DATED  'D'   /* reserved */
 #define FL_COMPRESS 'Z' /* can be redefined */
+
+/* Define the date format used for generating dated filenames. */
+/***If you change the format, you must change the parsing in valid_date_ext***/
+#define DATE_FORMAT "%Y%m%d"	/* YYYYMMDD, as used by strftime */
+#define DATE_LENGTH 8
 
 struct log_entry {
     char *log;			/* Name of the log */
@@ -133,6 +137,7 @@ int	sleeptm = SLEEP_DELAY;  /* Time to wait after restarting a daemon */
 
 time_t	timenow;		/* Time of the start of newsyslog */
 char	*daytime;		/* timenow in human readable form */
+char    datestamp[DATE_LENGTH+1]; /* timenow in the YYYTMMDD format */
 
 struct flag_entry *flags;	/* List of all config-file flags */
 
@@ -158,13 +163,13 @@ char *son (register char *p)
 int isnumber(char *string)
 {
     while (*string != '\0') {
-	if (*string < '0' || *string > '9') return(0);
+	if (! isdigit(*string)) return(0);
 	string++;
     }
     return(1);
 }
 
-#ifndef SOLARIS
+#ifndef SYSV
 /* Duplicate a string using malloc */
 char *strdup (register char *strp)
 {
@@ -231,18 +236,64 @@ int valid_extension(char* ext)
     return 0;
 }
 
-/* Find the file whose name matches one given, with a valid extension */
-char *matching_file(char* name)
+/* Check if the string is empty, or a dot followed by a valid extension */
+int valid_dot_ext(char* dot)
+{
+    if (!dot)
+	return 0;
+    else if (*dot == '\0')
+	return 1;
+    else if (*dot == '.')
+	return valid_extension(dot + 1);
+
+    return 0;
+}
+
+/* Check if the string is a valid date (YYYYMMDD) plus extension */
+int valid_date_ext(char* date)
+{
+    /* if we're still compiling C code in 2099, something is horribly wrong */
+    return (((date[0]=='1' && date[1]=='9')
+	     || (date[0]=='2' && date[1]=='0')) &&
+	    isdigit(date[2]) && isdigit(date[3]) &&
+	    ((date[4]=='0' && (date[5]>='1' && date[5]<='9'))
+	     || (date[4]=='1' && (date[5]>='0' && date[5]<='2'))) &&
+	    ((date[6]=='0' && (date[7]>='1' && date[7]<='9'))
+	     || ((date[6]=='1' || date[6]=='2') && isdigit(date[7]))
+	     || (date[6]=='3' && (date[7]>='0' && date[7]<='1'))) &&
+	    valid_dot_ext(date + 8)) ;
+}
+
+/* Find the file whose name matches one given, with a valid extension,
+ * subject to the following rules:
+ * (1) If a filename of the form "${name}${root}valid_ext" exists,
+ *     then it is returned.  If there is more than one such file, then
+ *     the file returned is the one whose entry occurs first in the directory.
+ * (2) If not, and if cmp is non-NULL, then filenames of the form
+ *     "${name}YYYYMMDD.valid_ext" are considered.  If there are less
+ *     than ${limit} files, NULL is returned; otherwise the 'cmp-most'
+ *     match is returned; i.e. the match for which cmp returned true
+ *     for all the files it was compared to.
+ * Look below for more directly useful functions that call this one.
+ */
+char *matching_file_compared (char* name, char* root,
+			      int cmp(char*,char*,size_t), int limit)
 {
     DIR *parent;
     struct dirent *dent;
-    char *dirname, *namefrag, *fp;
-    int fraglen, have_path;
+    char *dirname, *namefrag, *fp, *filename;
+    char *cmpmost = NULL;
+    int fraglen, rootlen, have_path, mismatch, matches;
+
+    if (root)
+	rootlen = strlen(root);
+    else
+	rootlen = 0;
 
     /* extract the directory path and the filename fragment. */
     fp = dirname = strdup(name);
     namefrag = strrchr(dirname, '/');
-    if (have_path = (namefrag != NULL)) {
+    if (( have_path = (namefrag != NULL) )) {
 	*(namefrag++) = '\0';
     } else {
 	namefrag = dirname;
@@ -258,33 +309,95 @@ char *matching_file(char* name)
     /* WARNING: on Solaris, -lucb will link with readdir() which
        returns a *different* struct dirent.  libucb: just say no. */
 
+    matches = 0;
     /* find matching directory entry */
     while ((dent=readdir(parent))
-	   && (strncmp(dent->d_name, namefrag, fraglen)
-	       || !valid_extension(dent->d_name + fraglen))) ;
+	   && ((mismatch = strncmp(dent->d_name, namefrag, fraglen))
+	       || (root && strncmp(dent->d_name + fraglen, root, rootlen))
+	       || !valid_dot_ext(dent->d_name + fraglen + rootlen))) {
+	if (!mismatch && cmp && valid_date_ext(dent->d_name + fraglen)) {
+	    matches++;
+	    if ((cmpmost == NULL)
+		|| cmp(dent->d_name+fraglen, cmpmost+fraglen, DATE_LENGTH))
+	    {
+		/* current entry is cmp'er than previous value of cmpmost */
+		if (cmpmost)  free(cmpmost);
+		cmpmost = strdup(dent->d_name);
+	    }
+	}
+    }
 
-    if (dent && dent->d_name) {
-	char *glued = (char*)malloc( strlen(dirname)+strlen(dent->d_name) + 3);
+    /* If we found an entry matching root, use that; if not, use a dated one */
+    if (dent && dent->d_name)
+	filename = dent->d_name;
+    else if (matches >= limit)
+	filename = cmpmost; /* possibly NULL */
+    else
+	filename = NULL;
+
+    if (filename) {
+	char *glued = (char*)malloc( strlen(dirname)+strlen(filename) + 3);
 	if (!glued)
 	    abort();
 
 	/* reconstruct pathname+filename */
 	if (have_path) {
-	    strcpy(glued, dirname);
-	    strcat(glued, "/");
-	    strcat(glued, dent->d_name);
+	    sprintf(glued, "%s/%s", dirname, filename);
 	} else
-	    strcpy(glued, dent->d_name);
+	    strcpy(glued, filename);
 
 	closedir(parent);
+	if (cmpmost)  free(cmpmost);
 	free(fp);
 	return glued;
     } else {
 	closedir(parent);
+	if (cmpmost)  free(cmpmost);
 	free(fp);
 	return (char*)NULL;
     }
 }
+
+/* Comparison functions: true if file1's date is earlier than file2's */
+int cmp_earliest_date (char* file1, char* file2, size_t n)
+{
+    return ( strncmp(file1, file2, n) < 0 );
+}
+
+/* Comparison functions: true if file1's date is later than file2's */
+int cmp_latest_date (char* file1, char* file2, size_t n)
+{
+    return ( strncmp(file1, file2, n) > 0 );
+}
+
+/* Find the file whose name matches one given, with a valid extension */
+char *matching_file(char* name)
+{
+    return matching_file_compared (name, NULL, NULL, -1);
+}
+
+/* Find the newest logfile: ".0" if it exists, or the latest-dated one */
+char *newest_log(char* file)
+{
+    char tmp[MAXPATHLEN];
+
+    sprintf(tmp, "%s.", file);
+    return matching_file_compared(tmp, "0", cmp_latest_date, -1);
+}
+
+/* Find the oldest logfile: ".${numlogs}" if it exists, or else the
+ * first-dated file if there are more than ${numlogs} dated files.
+ */
+char *oldest_log(char* file, int numlogs)
+{
+    char tmp[MAXPATHLEN];
+    char num[MAXPATHLEN];
+
+    sprintf(tmp, "%s.", file);
+    sprintf(num, "%d",  numlogs);
+    return matching_file_compared(tmp, num, cmp_earliest_date, numlogs);
+}
+
 
 /*** examining linked lists of flags ***/
 
@@ -324,7 +437,7 @@ int already_used (char option, struct flag_entry *flags)
 void usage(void)
 {
     fprintf(stderr,
-	    "Usage: %s [-nrv] [-f config-file] [-t restart_time]\n", progname);
+	    "Usage: %s [-nrv] [-f config-file] [-t restart-time]\n", progname);
     exit(1);
 }
 
@@ -338,6 +451,11 @@ void PRS(int argc, char **argv)
     timenow = time((time_t *) 0);
     daytime = ctime(&timenow);
     daytime[strlen(daytime)-1] = '\0';
+    if (!strftime(datestamp, DATE_LENGTH+1,DATE_FORMAT, localtime(&timenow))) {
+	for (c=0; c<DATE_LENGTH; c++)
+	    datestamp[c] = '0';
+	datestamp[DATE_LENGTH] = '\0';
+    }
 
     /* Let's get our hostname */
     /* WARNING: on Solaris, -lnsl has gethostname().
@@ -364,7 +482,7 @@ void PRS(int argc, char **argv)
 	    break;
 	 case 't':
 	    sleeptm = strtol(optarg, &end, 0);
-	    if (*end) /* arg contains non-numeric chars */
+	    if (end && *end) /* arg contains non-numeric chars */
 		usage();
 	    break;
 	 default:
@@ -496,9 +614,11 @@ void parse_logfile_line(char *line, struct log_entry **first,
 
     while (q && *q && !isspace(*q)) {
 	char qq = toupper(*q);
-	if (qq == 'B')
+	if (qq == FL_BINARY)
 	    working->flags |= CE_BINARY;
-	else if ( opt = get_flag_entry(qq, flags_list)) {
+	else if (qq == FL_DATED)
+	    working->flags |= CE_DATED;
+	else if (( opt = get_flag_entry(qq, flags_list) )) {
 	    if ( opt->type == EXEC )
 		grow_option_string( &(working->exec_flags), qq );
 	    else if ( opt->type == PID )
@@ -793,15 +913,12 @@ int sizefile (char *file)
 int age_old_log (char *file)
 {
     struct stat sb;
-    char tmp[MAXPATHLEN];
+    char* last = newest_log(file);
 
-    (void) strcpy(tmp,file);
-    if (stat(strcat(tmp,".0"),&sb) < 0) {
-	char* file = matching_file(strcat(tmp,"."));
-	if (!file || (stat(file, &sb) < 0))
-	    return(-1);
-	free(file);
-    }
+    if (!last || (stat(last, &sb) < 0))
+	return(-1);
+    free(last);
+
 #ifdef MINUTES    /* this is for debugging */
     return( (int) (timenow - sb.st_mtime + 30) / 60);
 #else
@@ -828,13 +945,12 @@ int log_trim(char *log)
 void compress_log(char *log, struct flag_entry *flag)
 {
     int	pid;
-    char	tmp[MAXPATHLEN];
     int     i;
 	
     if (noaction) {
 	printf("flag '%c':\n ", flag->option);
 	for (i=0; i < flag->nargs; i++)   printf(" %s", flag->args[i]);
-	printf(" %s.0\n", log);
+	printf(" %s\n", log);
     } else {
 	pid = fork();
 	if (pid < 0) {
@@ -842,8 +958,7 @@ void compress_log(char *log, struct flag_entry *flag)
 	    perror("fork");
 	    exit(1);
 	} else if (!pid) {
-	    (void) sprintf(tmp,"%s.0",log);
-	    flag->args[flag->nargs] = tmp;
+	    flag->args[flag->nargs] = log;
 	    (void) execv(flag->args[0], flag->args);
 	    fprintf(stderr,"%s: ",progname);
 	    perror(flag->args[0]);
@@ -868,7 +983,7 @@ void restart_proc(char *pidfile, int signum)
 
     if (pid) {
 	if (noaction) {
-	    if (signame = signal_name(signum))
+	    if (( signame = signal_name(signum) ))
 		printf("  kill -%s %d (%s)\n", signame, pid, pidfile);
 	    else
 		printf("  kill -%d %d (%s)\n", signum, pid, pidfile);
@@ -933,7 +1048,7 @@ void do_trim(struct log_entry *ent)
 {
     char    file1[MAXPATHLEN], file2[MAXPATHLEN];
     char    *zfile1, zfile2[MAXPATHLEN];
-    char    dfile[MAXPATHLEN], *freep = NULL;
+    char    *freep = NULL;
     int	fd;
     struct stat st;
     int	numdays = ent->numlogs;
@@ -949,24 +1064,24 @@ void do_trim(struct log_entry *ent)
 #endif
 
     /* Remove oldest log */
-    (void) sprintf(file1,"%s.%d",ent->log,numdays);
-    if (!stat(file1, &st))
-	zfile1 = file1;
-    else {
-	(void) strcpy(dfile, file1);
-	(void) strcat(dfile, ".");
-	zfile1 = freep = matching_file(dfile);
+    zfile1 = freep = oldest_log(ent->log, numdays);
+    while (zfile1) {
+	if (noaction) {
+	    printf("  rm -f %s ...\n", zfile1);
+	    zfile1 = NULL;
+	} else {
+	    (void) unlink(zfile1);
+	    if (freep) { free(freep);  freep = NULL; }
+	    zfile1 = freep = oldest_log(ent->log, numdays);
+	}
     }
 
-    if (noaction) {
-	if (zfile1)
-	    printf("  rm -f %s\n", zfile1);
-    } else {
-	if (zfile1)
-	    (void) unlink(zfile1);
-    }
+    /* Note: if all of the logs are dated, the rolling-over code does nothing.
+     * However, it does no harm, and it is vaguely useful in the transition.
+     */
 
     /* Move down log files */
+    (void) sprintf(file1,"%s.%d", ent->log, numdays);
     while (numdays--) {
 	(void) strcpy(file2,file1);
 	(void) sprintf(file1,"%s.%d",ent->log,numdays);
@@ -974,10 +1089,8 @@ void do_trim(struct log_entry *ent)
 	if (!stat(file1, &st))
 	    zfile1 = file1;
 	else {
-	    (void) strcpy(dfile, file1);
-	    (void) strcat(dfile, ".");
 	    if (freep) { free(freep);  freep = NULL; }
-	    zfile1 = freep = matching_file(dfile);
+	    zfile1 = freep = matching_file(file1);
 	    if (!zfile1) continue;
 	}
 
@@ -996,8 +1109,11 @@ void do_trim(struct log_entry *ent)
 	    (void) chown(zfile2, owner_uid, ent->gid);
 	}
     }
-
     if (freep) { free(freep);  freep = NULL; }
+
+    if (ent->flags & CE_DATED) {    /* if logs are dated, generate new name  */
+	(void) sprintf(file1, "%s.%s", ent->log, datestamp);
+    }
 
     if (noaction) 
 	printf("  mv %s %s\n",ent->log, file1);
@@ -1054,9 +1170,14 @@ void do_compress(struct log_entry *ent)
     char* exec;
     char  old[MAXPATHLEN];
 
+    
+    if (ent->flags & CE_DATED) {
+	sprintf(old, "%s.%s", ent->log, datestamp);
+    } else {
+	sprintf(old, "%s.0", ent->log);
+    }
+
     if (!noaction && !(ent->flags & CE_BINARY)) {
-	strcpy (old, ent->log);
-	strcat (old, ".0");
 	(void) log_trim(old);   /* add a date stamp to old log */
     }
 
@@ -1065,7 +1186,12 @@ void do_compress(struct log_entry *ent)
 	    flg = get_flag_entry(*exec, flags);
 	    if (!flg || (flg->type != EXEC)) abort();
 
-	    compress_log(ent->log, flg);
+	    compress_log(old, flg);
+
+	    if (flg->extension) {
+		strcat(old, ".");
+		strcat(old, flg->extension);
+	    }
 	}
     }
 }
@@ -1100,7 +1226,7 @@ int main(int argc, char **argv)
 	}
 
     for (p = q; p; p = p->next) {
-	if (verbose>1) printf("Compressing %s\n", p->log);
+	if (verbose>1) printf("Processing %s\n", p->log);
 	do_compress(p);
     }
 
