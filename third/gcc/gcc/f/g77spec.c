@@ -1,5 +1,5 @@
 /* Specific flags and argument handling of the Fortran front-end.
-   Copyright (C) 1997, 1999 Free Software Foundation, Inc.
+   Copyright (C) 1997, 1999, 2000 Free Software Foundation, Inc.
 
 This file is part of GNU CC.
 
@@ -46,6 +46,7 @@ Boston, MA 02111-1307, USA.  */
 
 #include "config.h"
 #include "system.h"
+#include "gcc.h"
 #include <f/version.h>
 
 #ifndef MATH_LIBRARY
@@ -85,14 +86,14 @@ typedef enum
 
 /* The original argument list and related info is copied here.  */
 static int g77_xargc;
-static char **g77_xargv;
-static void (*g77_fn)();
+static const char *const *g77_xargv;
+static void lookup_option PARAMS ((Option *, int *, const char **,
+				   const char *));
+static void append_arg PARAMS ((const char *));
 
 /* The new argument list will be built here.  */
 static int g77_newargc;
-static char **g77_newargv;
-
-extern char *version_string;
+static const char **g77_newargv;
 
 /* --- This comes from gcc.c (2.8.1) verbatim: */
 
@@ -136,12 +137,12 @@ static void
 lookup_option (xopt, xskip, xarg, text)
      Option *xopt;
      int *xskip;
-     char **xarg;
-     char *text;
+     const char **xarg;
+     const char *text;
 {
   Option opt = OPTION_;
   int skip;
-  char *arg = NULL;
+  const char *arg = NULL;
 
   if ((skip = SWITCH_TAKES_ARG (text[1])))
     skip -= (text[2] != '\0');	/* See gcc.c. */
@@ -216,7 +217,7 @@ lookup_option (xopt, xskip, xarg, text)
 
 static void
 append_arg (arg)
-     char *arg;
+     const char *arg;
 {
   static int newargsize;
 
@@ -238,7 +239,7 @@ append_arg (arg)
       int i;
 
       newargsize = (g77_xargc << 2) + 20;	/* This should handle all. */
-      g77_newargv = (char **) xmalloc (newargsize * sizeof (char *));
+      g77_newargv = (const char **) xmalloc (newargsize * sizeof (char *));
 
       /* Copy what has been done so far.  */
       for (i = 0; i < g77_newargc; ++i)
@@ -246,29 +247,28 @@ append_arg (arg)
     }
 
   if (g77_newargc == newargsize)
-    (*g77_fn) ("overflowed output arg list for `%s'", arg);
+    fatal ("overflowed output arg list for `%s'", arg);
 
   g77_newargv[g77_newargc++] = arg;
 }
 
 void
-lang_specific_driver (fn, in_argc, in_argv, in_added_libraries)
-     void (*fn)();
+lang_specific_driver (in_argc, in_argv, in_added_libraries)
      int *in_argc;
-     char ***in_argv;
-     int *in_added_libraries;
+     const char *const **in_argv;
+     int *in_added_libraries ATTRIBUTE_UNUSED;
 {
   int argc = *in_argc;
-  char **argv = *in_argv;
+  const char *const *argv = *in_argv;
   int i;
   int verbose = 0;
   Option opt;
   int skip;
-  char *arg;
+  const char *arg;
 
   /* This will be NULL if we encounter a situation where we should not
      link in libf2c.  */
-  char *library = FORTRAN_LIBRARY;
+  const char *library = FORTRAN_LIBRARY;
 
   /* This will become 0 if anything other than -v and kin (like -V)
      is seen, meaning the user is trying to accomplish something.
@@ -303,8 +303,7 @@ lang_specific_driver (fn, in_argc, in_argv, in_added_libraries)
   g77_xargc = argc;
   g77_xargv = argv;
   g77_newargc = 0;
-  g77_newargv = argv;
-  g77_fn = fn;
+  g77_newargv = (const char **) argv;
 
   /* First pass through arglist.
 
@@ -365,7 +364,7 @@ lang_specific_driver (fn, in_argc, in_argv, in_added_libraries)
 
 	case OPTION_v:
 	  if (! verbose)
-	    fprintf (stderr, "g77 version %s (from FSF-g77 version %s)\n",
+	    fprintf (stderr, "g77 version %s (Fortran Frontend version %s)\n",
 		     version_string, ffe_version_string);
 	  verbose = 1;
 	  break;
@@ -382,7 +381,7 @@ lang_specific_driver (fn, in_argc, in_argv, in_added_libraries)
 	case OPTION_version:
 	  printf ("\
 GNU Fortran %s\n\
-Copyright (C) 1997 Free Software Foundation, Inc.\n\
+Copyright (C) 2001 Free Software Foundation, Inc.\n\
 For more version information on components of the GNU Fortran\n\
 compilation system, especially useful when reporting bugs,\n\
 type the command `g77 --verbose'.\n\
@@ -397,7 +396,7 @@ or type the command `info -f g77 Copying'.\n\
 	  break;
 
 	case OPTION_help:
-	  /* Let gcc.c handle this, as the egcs version has a really
+	  /* Let gcc.c handle this, as it has a really
 	     cool facility for handling --help and --verbose --help.  */
 	  return;
 
@@ -428,13 +427,13 @@ For more information on g77 and gcc, type the commands `info -f g77'\n\
 and `info -f gcc' to read the Info documentation.\n\
 \n\
 For bug reporting instructions, please see:\n\
-<URL:http://www.gnu.org/software/gcc/faq.html#bugreport>.\n");
+%s.\n", GCCBUGURL);
 	  exit (0);
 	  break;
 #endif
 
 	case OPTION_driver:
-	  (*fn) ("--driver no longer supported", argv[i]);
+	  fatal ("--driver no longer supported");
 	  break;
 
 	default:
@@ -448,11 +447,11 @@ For bug reporting instructions, please see:\n\
       if (i + skip < argc)
 	i += skip;
       else
-	(*fn) ("argument to `%s' missing", argv[i]);
+	fatal ("argument to `%s' missing", argv[i]);
     }
 
   if ((n_outfiles != 0) && (n_infiles == 0))
-    (*fn) ("No input files; unwilling to write output files");
+    fatal ("No input files; unwilling to write output files");
 
   /* Second pass through arglist, transforming arguments as appropriate.  */
 
@@ -486,7 +485,7 @@ For bug reporting instructions, please see:\n\
 	  if (opt == OPTION_x)
 	    {
 	      /* Track input language. */
-	      char *lang;
+	      const char *lang;
 
 	      if (arg == NULL)
 		lang = argv[i+1];

@@ -414,6 +414,13 @@ extern void *(*_objc_realloc)(void *, size_t);
 extern void *(*_objc_calloc)(size_t, size_t);
 extern void (*_objc_free)(void *);
 
+/*
+**  Hook for method forwarding. This makes it easy to substitute a
+**  library, such as ffcall, that implements closures, thereby avoiding
+**  gcc's __builtin_apply problems.
+*/
+extern IMP (*__objc_msg_forward)(SEL);
+
 Method_t class_get_class_method(MetaClass class, SEL aSel);
 
 Method_t class_get_instance_method(Class class, SEL aSel);
@@ -571,21 +578,23 @@ object_get_super_class
 }
 
 static inline BOOL
-object_is_class(id object)
+object_is_class (id object)
 {
-  return CLS_ISCLASS((Class)object);
+  return ((object != nil)  &&  CLS_ISMETA (object->class_pointer));
+}
+ 
+static inline BOOL
+object_is_instance (id object)
+{
+  return ((object != nil)  &&  CLS_ISCLASS (object->class_pointer));
 }
 
 static inline BOOL
-object_is_instance(id object)
+object_is_meta_class (id object)
 {
-  return (object!=nil)&&CLS_ISCLASS(object->class_pointer);
-}
-
-static inline BOOL
-object_is_meta_class(id object)
-{
-  return CLS_ISMETA((Class)object);
+  return ((object != nil)
+	  &&  !object_is_instance (object)  
+	  &&  !object_is_class (object));
 }
 
 struct sarray* 

@@ -1,5 +1,5 @@
 /* ste.c -- Implementation File (module.c template V1.0)
-   Copyright (C) 1995, 1996 Free Software Foundation, Inc.
+   Copyright (C) 1995, 1996, 2000 Free Software Foundation, Inc.
    Contributed by James Craig Burley.
 
 This file is part of GNU Fortran.
@@ -33,8 +33,9 @@ the Free Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 #include "proj.h"
 
 #if FFECOM_targetCURRENT == FFECOM_targetGCC
-#include "rtl.j"
-#include "toplev.j"
+#include "rtl.h"
+#include "toplev.h"
+#include "ggc.h"
 #endif
 
 #include "ste.h"
@@ -401,7 +402,7 @@ typedef struct gbe_block
   struct gbe_block *outer;
   ffestw block;
   int lineno;
-  char *input_filename;
+  const char *input_filename;
   bool is_stmt;
 } *gbe_block;
 
@@ -438,8 +439,6 @@ ffeste_end_block_ (ffestw block)
   ffeste_top_block_ = b->outer;
 
   free (b);
-
-  clear_momentary ();
 
   ffecom_end_compstmt ();
 }
@@ -481,8 +480,6 @@ ffeste_end_stmt_(void)
 
   free (b);
 
-  clear_momentary ();
-
   ffecom_end_compstmt ();
 }
 
@@ -492,7 +489,6 @@ ffeste_end_stmt_(void)
 #define ffeste_end_block_(b)	\
   do				\
     {				\
-      clear_momentary ();	\
       ffecom_end_compstmt ();	\
     } while(0)
 #define ffeste_start_stmt_() ffeste_start_block_(NULL)
@@ -500,10 +496,8 @@ ffeste_end_stmt_(void)
 
 #endif  /* ! defined (ENABLE_CHECKING) */
 
-/* Begin an iterative DO loop.  Pass the block to start if applicable.
-
-   NOTE: Does _two_ push_momentary () calls, which the caller must
-   undo (by calling ffeste_end_iterdo_).  */
+/* Begin an iterative DO loop.  Pass the block to start if
+   applicable.  */
 
 #if FFECOM_targetCURRENT == FFECOM_targetGCC
 static void
@@ -571,8 +565,6 @@ ffeste_begin_iterdo_ (ffestw block, tree *xtvar, tree *xtincr,
     }
 
   tincr_saved = ffecom_save_tree (tincr);
-
-  preserve_momentary ();
 
   /* Want to have tstart, tend for just this statement. */
 
@@ -958,8 +950,9 @@ ffeste_io_dofio_ (ffebld expr)
   if (size == NULL_TREE)	/* Already filled in for CHARACTER type. */
     {				/* "(ftnlen) sizeof(type)" */
       size = size_binop (CEIL_DIV_EXPR,
-			 TYPE_SIZE (ffecom_tree_type[bt][kt]),
-			 size_int (TYPE_PRECISION (char_type_node)));
+			 TYPE_SIZE_UNIT (ffecom_tree_type[bt][kt]),
+			 size_int (TYPE_PRECISION (char_type_node)
+				   / BITS_PER_UNIT));
 #if 0	/* Assume that while it is possible that char * is wider than
 	   ftnlen, no object in Fortran space can get big enough for its
 	   size to be wider than ftnlen.  I really hope nobody wastes
@@ -976,13 +969,13 @@ ffeste_io_dofio_ (ffebld expr)
       = is_complex ? ffecom_f2c_ftnlen_two_node : ffecom_f2c_ftnlen_one_node;
   else
     {
-      num_elements = size_binop (CEIL_DIV_EXPR,
-				 TYPE_SIZE (TREE_TYPE (TREE_TYPE (variable))),
-				 size);
-      num_elements = size_binop (CEIL_DIV_EXPR,
-				 num_elements,
-				 size_int (TYPE_PRECISION
-					   (char_type_node)));
+      num_elements
+	= size_binop (CEIL_DIV_EXPR,
+		      TYPE_SIZE_UNIT (TREE_TYPE (TREE_TYPE (variable))),
+		      convert (sizetype, size));
+      num_elements = size_binop (CEIL_DIV_EXPR, num_elements,
+				 size_int (TYPE_PRECISION (char_type_node)
+					   / BITS_PER_UNIT));
       num_elements = convert (ffecom_f2c_ftnlen_type_node,
 			      num_elements);
     }
@@ -1049,8 +1042,9 @@ ffeste_io_dolio_ (ffebld expr)
   if (size == NULL_TREE)	/* Already filled in for CHARACTER type. */
     {				/* "(ftnlen) sizeof(type)" */
       size = size_binop (CEIL_DIV_EXPR,
-			 TYPE_SIZE (ffecom_tree_type[bt][kt]),
-			 size_int (TYPE_PRECISION (char_type_node)));
+			 TYPE_SIZE_UNIT (ffecom_tree_type[bt][kt]),
+			 size_int (TYPE_PRECISION (char_type_node)
+				   / BITS_PER_UNIT));
 #if 0	/* Assume that while it is possible that char * is wider than
 	   ftnlen, no object in Fortran space can get big enough for its
 	   size to be wider than ftnlen.  I really hope nobody wastes
@@ -1066,13 +1060,13 @@ ffeste_io_dolio_ (ffebld expr)
     num_elements = ffecom_integer_one_node;
   else
     {
-      num_elements = size_binop (CEIL_DIV_EXPR,
-				 TYPE_SIZE (TREE_TYPE (TREE_TYPE (variable))),
-				 size);
-      num_elements = size_binop (CEIL_DIV_EXPR,
-				 num_elements,
-				 size_int (TYPE_PRECISION
-					   (char_type_node)));
+      num_elements
+	= size_binop (CEIL_DIV_EXPR,
+		      TYPE_SIZE_UNIT (TREE_TYPE (TREE_TYPE (variable))),
+		      convert (sizetype, size));
+      num_elements = size_binop (CEIL_DIV_EXPR, num_elements,
+				 size_int (TYPE_PRECISION (char_type_node)
+					   / BITS_PER_UNIT));
       num_elements = convert (ffecom_f2c_ftnlen_type_node,
 			      num_elements);
     }
@@ -1138,8 +1132,9 @@ ffeste_io_douio_ (ffebld expr)
   if (size == NULL_TREE)	/* Already filled in for CHARACTER type. */
     {				/* "(ftnlen) sizeof(type)" */
       size = size_binop (CEIL_DIV_EXPR,
-			 TYPE_SIZE (ffecom_tree_type[bt][kt]),
-			 size_int (TYPE_PRECISION (char_type_node)));
+			 TYPE_SIZE_UNIT (ffecom_tree_type[bt][kt]),
+			 size_int (TYPE_PRECISION (char_type_node)
+				   / BITS_PER_UNIT));
 #if 0	/* Assume that while it is possible that char * is wider than
 	   ftnlen, no object in Fortran space can get big enough for its
 	   size to be wider than ftnlen.  I really hope nobody wastes
@@ -1156,12 +1151,13 @@ ffeste_io_douio_ (ffebld expr)
       = is_complex ? ffecom_f2c_ftnlen_two_node : ffecom_f2c_ftnlen_one_node;
   else
     {
-      num_elements = size_binop (CEIL_DIV_EXPR,
-				 TYPE_SIZE (TREE_TYPE (TREE_TYPE (variable))),
-				 size);
+      num_elements
+	= size_binop (CEIL_DIV_EXPR,
+		      TYPE_SIZE_UNIT (TREE_TYPE (TREE_TYPE (variable))),
+		      convert (sizetype, size));
       num_elements = size_binop (CEIL_DIV_EXPR, num_elements,
-				 size_int (TYPE_PRECISION
-					   (char_type_node)));
+				 size_int (TYPE_PRECISION (char_type_node)
+					   / BITS_PER_UNIT));
       num_elements = convert (ffecom_f2c_ftnlen_type_node,
 			      num_elements);
     }
@@ -1205,7 +1201,6 @@ ffeste_io_ialist_ (bool have_err,
   static tree f2c_alist_struct = NULL_TREE;
   tree t;
   tree ttype;
-  int yes;
   tree field;
   tree inits, initn;
   bool constantp = TRUE;
@@ -1218,9 +1213,6 @@ ffeste_io_ialist_ (bool have_err,
     {
       tree ref;
 
-      push_obstacks_nochange ();
-      end_temporary_allocation ();
-
       ref = make_node (RECORD_TYPE);
 
       errfield = ffecom_decl_field (ref, NULL_TREE, "err",
@@ -1231,8 +1223,7 @@ ffeste_io_ialist_ (bool have_err,
       TYPE_FIELDS (ref) = errfield;
       layout_type (ref);
 
-      resume_temporary_allocation ();
-      pop_obstacks ();
+      ggc_add_tree_root (&f2c_alist_struct, 1);
 
       f2c_alist_struct = ref;
     }
@@ -1276,17 +1267,13 @@ ffeste_io_ialist_ (bool have_err,
   TREE_CONSTANT (inits) = constantp ? 1 : 0;
   TREE_STATIC (inits) = 1;
 
-  yes = suspend_momentary ();
-
   t = build_decl (VAR_DECL,
-		  ffecom_get_invented_identifier ("__g77_alist_%d", NULL,
+		  ffecom_get_invented_identifier ("__g77_alist_%d",
 						  mynumber++),
 		  f2c_alist_struct);
   TREE_STATIC (t) = 1;
   t = ffecom_start_decl (t, 1);
   ffecom_finish_decl (t, inits, 0);
-
-  resume_momentary (yes);
 
   /* Prepare run-time expressions.  */
 
@@ -1342,7 +1329,6 @@ ffeste_io_cilist_ (bool have_err,
   static tree f2c_cilist_struct = NULL_TREE;
   tree t;
   tree ttype;
-  int yes;
   tree field;
   tree inits, initn;
   bool constantp = TRUE;
@@ -1354,9 +1340,6 @@ ffeste_io_cilist_ (bool have_err,
   if (f2c_cilist_struct == NULL_TREE)
     {
       tree ref;
-
-      push_obstacks_nochange ();
-      end_temporary_allocation ();
 
       ref = make_node (RECORD_TYPE);
 
@@ -1374,8 +1357,7 @@ ffeste_io_cilist_ (bool have_err,
       TYPE_FIELDS (ref) = errfield;
       layout_type (ref);
 
-      resume_temporary_allocation ();
-      pop_obstacks ();
+      ggc_add_tree_root (&f2c_cilist_struct, 1);
 
       f2c_cilist_struct = ref;
     }
@@ -1492,17 +1474,13 @@ ffeste_io_cilist_ (bool have_err,
   TREE_CONSTANT (inits) = constantp ? 1 : 0;
   TREE_STATIC (inits) = 1;
 
-  yes = suspend_momentary ();
-
   t = build_decl (VAR_DECL,
-		  ffecom_get_invented_identifier ("__g77_cilist_%d", NULL,
+		  ffecom_get_invented_identifier ("__g77_cilist_%d",
 						  mynumber++),
 		  f2c_cilist_struct);
   TREE_STATIC (t) = 1;
   t = ffecom_start_decl (t, 1);
   ffecom_finish_decl (t, inits, 0);
-
-  resume_momentary (yes);
 
   /* Prepare run-time expressions.  */
 
@@ -1572,7 +1550,6 @@ ffeste_io_cllist_ (bool have_err,
   static tree f2c_close_struct = NULL_TREE;
   tree t;
   tree ttype;
-  int yes;
   tree field;
   tree inits, initn;
   tree ignore;			/* Ignore length info for certain fields. */
@@ -1586,9 +1563,6 @@ ffeste_io_cllist_ (bool have_err,
     {
       tree ref;
 
-      push_obstacks_nochange ();
-      end_temporary_allocation ();
-
       ref = make_node (RECORD_TYPE);
 
       errfield = ffecom_decl_field (ref, NULL_TREE, "err",
@@ -1601,8 +1575,7 @@ ffeste_io_cllist_ (bool have_err,
       TYPE_FIELDS (ref) = errfield;
       layout_type (ref);
 
-      resume_temporary_allocation ();
-      pop_obstacks ();
+      ggc_add_tree_root (&f2c_close_struct, 1);
 
       f2c_close_struct = ref;
     }
@@ -1632,17 +1605,13 @@ ffeste_io_cllist_ (bool have_err,
   TREE_CONSTANT (inits) = constantp ? 1 : 0;
   TREE_STATIC (inits) = 1;
 
-  yes = suspend_momentary ();
-
   t = build_decl (VAR_DECL,
-		  ffecom_get_invented_identifier ("__g77_cllist_%d", NULL,
+		  ffecom_get_invented_identifier ("__g77_cllist_%d",
 						  mynumber++),
 		  f2c_close_struct);
   TREE_STATIC (t) = 1;
   t = ffecom_start_decl (t, 1);
   ffecom_finish_decl (t, inits, 0);
-
-  resume_momentary (yes);
 
   /* Prepare run-time expressions.  */
 
@@ -1699,7 +1668,6 @@ ffeste_io_icilist_ (bool have_err,
   static tree f2c_icilist_struct = NULL_TREE;
   tree t;
   tree ttype;
-  int yes;
   tree field;
   tree inits, initn;
   bool constantp = TRUE;
@@ -1712,9 +1680,6 @@ ffeste_io_icilist_ (bool have_err,
   if (f2c_icilist_struct == NULL_TREE)
     {
       tree ref;
-
-      push_obstacks_nochange ();
-      end_temporary_allocation ();
 
       ref = make_node (RECORD_TYPE);
 
@@ -1734,8 +1699,7 @@ ffeste_io_icilist_ (bool have_err,
       TYPE_FIELDS (ref) = errfield;
       layout_type (ref);
 
-      resume_temporary_allocation ();
-      pop_obstacks ();
+      ggc_add_tree_root (&f2c_icilist_struct, 1);
 
       f2c_icilist_struct = ref;
     }
@@ -1774,13 +1738,13 @@ ffeste_io_icilist_ (bool have_err,
   else if (unitexp && unitlenexp)
     {
       /* An array, but all the info is constant, so compute now.  */
-      unitnuminit = size_binop (CEIL_DIV_EXPR,
-				TYPE_SIZE (TREE_TYPE (TREE_TYPE (unitexp))),
-				unitlenexp);
-      unitnuminit = size_binop (CEIL_DIV_EXPR,
-				unitnuminit,
-				size_int (TYPE_PRECISION
-					  (char_type_node)));
+      unitnuminit
+	= size_binop (CEIL_DIV_EXPR,
+		      TYPE_SIZE_UNIT (TREE_TYPE (TREE_TYPE (unitexp))),
+		      convert (sizetype, unitlenexp));
+      unitnuminit = size_binop (CEIL_DIV_EXPR, unitnuminit,
+				size_int (TYPE_PRECISION (char_type_node)
+					  / BITS_PER_UNIT));
       unitnumexp = unitnuminit;
     }
   else
@@ -1850,17 +1814,13 @@ ffeste_io_icilist_ (bool have_err,
   TREE_CONSTANT (inits) = constantp ? 1 : 0;
   TREE_STATIC (inits) = 1;
 
-  yes = suspend_momentary ();
-
   t = build_decl (VAR_DECL,
-		  ffecom_get_invented_identifier ("__g77_icilist_%d", NULL,
+		  ffecom_get_invented_identifier ("__g77_icilist_%d",
 						  mynumber++),
 		  f2c_icilist_struct);
   TREE_STATIC (t) = 1;
   t = ffecom_start_decl (t, 1);
   ffecom_finish_decl (t, inits, 0);
-
-  resume_momentary (yes);
 
   /* Prepare run-time expressions.  */
 
@@ -1889,13 +1849,13 @@ ffeste_io_icilist_ (bool have_err,
       && unitexp != error_mark_node
       && unitlenexp != error_mark_node)
     {
-      unitnumexp = size_binop (CEIL_DIV_EXPR,
-			       TYPE_SIZE (TREE_TYPE (TREE_TYPE (unitexp))),
-			       unitlenexp);
-      unitnumexp = size_binop (CEIL_DIV_EXPR,
-			       unitnumexp,
-			       size_int (TYPE_PRECISION
-					 (char_type_node)));
+      unitnumexp
+	= size_binop (CEIL_DIV_EXPR,
+		      TYPE_SIZE_UNIT (TREE_TYPE (TREE_TYPE (unitexp))),
+		      convert (sizetype, unitlenexp));
+      unitnumexp = size_binop (CEIL_DIV_EXPR, unitnumexp,
+			       size_int (TYPE_PRECISION (char_type_node)
+					 / BITS_PER_UNIT));
       ffeste_f2c_compile_ (unitnumfield, unitnumexp);
     }
 
@@ -1951,7 +1911,6 @@ ffeste_io_inlist_ (bool have_err,
   static tree f2c_inquire_struct = NULL_TREE;
   tree t;
   tree ttype;
-  int yes;
   tree field;
   tree inits, initn;
   bool constantp = TRUE;
@@ -1975,9 +1934,6 @@ ffeste_io_inlist_ (bool have_err,
   if (f2c_inquire_struct == NULL_TREE)
     {
       tree ref;
-
-      push_obstacks_nochange ();
-      end_temporary_allocation ();
 
       ref = make_node (RECORD_TYPE);
 
@@ -2041,8 +1997,7 @@ ffeste_io_inlist_ (bool have_err,
       TYPE_FIELDS (ref) = errfield;
       layout_type (ref);
 
-      resume_temporary_allocation ();
-      pop_obstacks ();
+      ggc_add_tree_root (&f2c_inquire_struct, 1);
 
       f2c_inquire_struct = ref;
     }
@@ -2110,17 +2065,13 @@ ffeste_io_inlist_ (bool have_err,
   TREE_CONSTANT (inits) = constantp ? 1 : 0;
   TREE_STATIC (inits) = 1;
 
-  yes = suspend_momentary ();
-
   t = build_decl (VAR_DECL,
-		  ffecom_get_invented_identifier ("__g77_inlist_%d", NULL,
+		  ffecom_get_invented_identifier ("__g77_inlist_%d",
 						  mynumber++),
 		  f2c_inquire_struct);
   TREE_STATIC (t) = 1;
   t = ffecom_start_decl (t, 1);
   ffecom_finish_decl (t, inits, 0);
-
-  resume_momentary (yes);
 
   /* Prepare run-time expressions.  */
 
@@ -2211,7 +2162,6 @@ ffeste_io_olist_ (bool have_err,
   static tree f2c_open_struct = NULL_TREE;
   tree t;
   tree ttype;
-  int yes;
   tree field;
   tree inits, initn;
   tree ignore;			/* Ignore length info for certain fields. */
@@ -2228,9 +2178,6 @@ ffeste_io_olist_ (bool have_err,
   if (f2c_open_struct == NULL_TREE)
     {
       tree ref;
-
-      push_obstacks_nochange ();
-      end_temporary_allocation ();
 
       ref = make_node (RECORD_TYPE);
 
@@ -2256,8 +2203,7 @@ ffeste_io_olist_ (bool have_err,
       TYPE_FIELDS (ref) = errfield;
       layout_type (ref);
 
-      resume_temporary_allocation ();
-      pop_obstacks ();
+      ggc_add_tree_root (&f2c_open_struct, 1);
 
       f2c_open_struct = ref;
     }
@@ -2299,17 +2245,13 @@ ffeste_io_olist_ (bool have_err,
   TREE_CONSTANT (inits) = constantp ? 1 : 0;
   TREE_STATIC (inits) = 1;
 
-  yes = suspend_momentary ();
-
   t = build_decl (VAR_DECL,
-		  ffecom_get_invented_identifier ("__g77_olist_%d", NULL,
+		  ffecom_get_invented_identifier ("__g77_olist_%d",
 						  mynumber++),
 		  f2c_open_struct);
   TREE_STATIC (t) = 1;
   t = ffecom_start_decl (t, 1);
   ffecom_finish_decl (t, inits, 0);
-
-  resume_momentary (yes);
 
   /* Prepare run-time expressions.  */
 
@@ -2993,8 +2935,6 @@ ffeste_R810 (ffestw block, unsigned long casenum)
 	  c->previous_stmt = c->previous_stmt->previous_stmt;
 	}
       while ((c != (ffestwCase) &s->first_rel) && (casenum == c->casenum));
-
-    clear_momentary ();
   }
 #else
 #error
@@ -3324,8 +3264,6 @@ ffeste_R838 (ffelab label, ffebld target)
 				   target_tree,
 				   label_tree);
 	expand_expr_stmt (expr_tree);
-
-	clear_momentary ();
       }
   }
 #else
@@ -3359,8 +3297,6 @@ ffeste_R839 (ffebld target)
       error ("ASSIGNed GOTO target variable is too small");
 
     expand_computed_goto (convert (TREE_TYPE (null_pointer_node), t));
-
-    clear_momentary ();
   }
 #else
 #error
@@ -3575,8 +3511,6 @@ ffeste_R842 (ffebld expr)
     TREE_SIDE_EFFECTS (callit) = 1;
 
     expand_expr_stmt (callit);
-
-    clear_momentary ();
   }
 #else
 #error
@@ -3660,8 +3594,6 @@ ffeste_R843 (ffebld expr)
     TREE_SIDE_EFFECTS (callit) = 1;
 
     expand_expr_stmt (callit);
-
-    clear_momentary ();
   }
 #if 0				/* Old approach for phantom g77 run-time
 				   library. */
@@ -3687,8 +3619,6 @@ ffeste_R843 (ffebld expr)
     TREE_SIDE_EFFECTS (callit) = 1;
 
     expand_expr_stmt (callit);
-
-    clear_momentary ();
   }
 #endif
 #else
@@ -5017,9 +4947,6 @@ ffeste_R1001 (ffests s)
     TREE_CONSTANT (t) = 1;
     TREE_STATIC (t) = 1;
 
-    push_obstacks_nochange ();
-    end_temporary_allocation ();
-
     var = ffecom_lookup_label (ffeste_label_formatdef_);
     if ((var != NULL_TREE)
 	&& (TREE_CODE (var) == VAR_DECL))
@@ -5037,9 +4964,6 @@ ffeste_R1001 (ffests s)
 	expand_decl (var);
 	expand_decl_init (var);
       }
-
-    resume_temporary_allocation ();
-    pop_obstacks ();
 
     ffeste_label_formatdef_ = NULL;
   }

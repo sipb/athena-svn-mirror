@@ -1,5 +1,5 @@
 /* Encoding of types for Objective C.
-   Copyright (C) 1993, 1995, 1996, 1997, 1998 Free Software Foundation, Inc.
+   Copyright (C) 1993, 1995, 1996, 1997, 1998, 2000 Free Software Foundation, Inc.
    Contributed by Kresten Krab Thorup
    Bitfield support by Ovidiu Predescu
 
@@ -46,8 +46,8 @@ Boston, MA 02111-1307, USA.  */
 /* Various hacks for objc_layout_record. These are used by the target
    macros. */
 
-#define TREE_CODE(TYPE) *TYPE
-#define TREE_TYPE(TREE) TREE
+#define TREE_CODE(TYPE) *(TYPE)
+#define TREE_TYPE(TREE) (TREE)
 
 #define RECORD_TYPE     _C_STRUCT_B
 #define UNION_TYPE      _C_UNION_B
@@ -56,12 +56,18 @@ Boston, MA 02111-1307, USA.  */
 
 #define TYPE_FIELDS(TYPE)     objc_skip_typespec (TYPE)
 
-#define DECL_MODE(TYPE)         *(TYPE)
+#define DECL_MODE(TYPE) *(TYPE)
+#define TYPE_MODE(TYPE) *(TYPE)
 
 #define DFmode          _C_DBL
 
 #define get_inner_array_type(TYPE)      ((TYPE) + 1)
 
+/* Some ports (eg ARM) allow the structure size boundary to be
+   selected at compile-time.  We override the normal definition with
+   one that has a constant value for this compilation.  */
+#undef STRUCTURE_SIZE_BOUNDARY
+#define STRUCTURE_SIZE_BOUNDARY (BITS_PER_UNIT * sizeof (struct{char a;}))
 
 static inline int
 atoi (const char* str)
@@ -724,9 +730,7 @@ objc_layout_structure (const char *type,
   layout->record_size = 0;
   layout->record_align = BITS_PER_UNIT;
 
-#ifdef STRUCTURE_SIZE_BOUNDARY
   layout->record_align = MAX (layout->record_align, STRUCTURE_SIZE_BOUNDARY);
-#endif
 }
 
 
@@ -743,15 +747,6 @@ objc_layout_structure_next_member (struct objc_struct_layout *layout)
   /* The current type without the type qualifiers */
   const char *type;
 
-#if 1
-  if (layout->prev_type == NULL)
-    {
-      layout->prev_type = layout->type;
-      layout->type = objc_skip_typespec (layout->prev_type);
-      return YES;
-    }
-#endif
-
   /* Add the size of the previous field to the size of the record.  */
   if (layout->prev_type)
     {
@@ -760,7 +755,6 @@ objc_layout_structure_next_member (struct objc_struct_layout *layout)
       if (*type != _C_BFLD)
         layout->record_size += objc_sizeof_type (type) * BITS_PER_UNIT;
       else {
-        desired_align = 1;
         /* Get the bitfield's type */
         for (bfld_type = type + 1;
              isdigit(*bfld_type);
@@ -878,7 +872,7 @@ void objc_layout_finish_structure (struct objc_struct_layout *layout,
          in the record type.  Round it up to a multiple of the record's
          alignment. */
 
-#ifdef ROUND_TYPE_ALIGN
+#if defined(ROUND_TYPE_ALIGN) && !defined(__sparc__)
       layout->record_align = ROUND_TYPE_ALIGN (layout->original_type,
                                                1,
                                                layout->record_align);

@@ -1,5 +1,6 @@
 /* Code for handling XREF output from GNU C++.
-   Copyright (C) 1992, 93-97, 1998 Free Software Foundation, Inc.
+   Copyright (C) 1992, 1993, 1994, 1995, 1996, 1997, 1998,
+   2000 Free Software Foundation, Inc.
    Contributed by Michael Tiemann (tiemann@cygnus.com)
 
 This file is part of GNU CC.
@@ -26,8 +27,6 @@ Boston, MA 02111-1307, USA.  */
 #include "cp-tree.h"
 #include "input.h"
 #include "toplev.h"
-
-extern char *getpwd PROTO((void));
 
 /* The character(s) used to join a directory specification (obtained with
    getwd or equivalent) with a non-absolute file name.  */
@@ -58,13 +57,11 @@ int flag_gnu_xref;
 #define FALSE 0
 #endif
 
-#define PALLOC(typ) ((typ *) calloc(1,sizeof(typ)))
+#define PALLOC(typ) ((typ *) xcalloc(1,sizeof(typ)))
 
 
 /* Return a malloc'd copy of STR.  */
-#define SALLOC(str) \
- ((char *) ((str) == NULL ? NULL	\
-	    : (char *) strcpy ((char *) malloc (strlen ((str)) + 1), (str))))
+#define SALLOC(str) ((char *) ((str) == NULL ? NULL : xstrdup (str)))
 #define SFREE(str) (str != NULL && (free(str),0))
 
 #define STREQL(s1,s2) (strcmp((s1),(s2)) == 0)
@@ -121,15 +118,15 @@ static	tree		last_fndecl = NULL;
 /*	Forward definitions						*/
 /*									*/
 /************************************************************************/
-static	void		gen_assign PROTO((XREF_FILE, tree));
-static	XREF_FILE	find_file PROTO((const char *));
-static	const char *	filename PROTO((XREF_FILE));
-static	const char *	fctname PROTO((tree));
-static	const char *	declname PROTO((tree));
-static	void		simplify_type PROTO((char *));
-static	const char *	fixname PROTO((const char *, char *));
-static	void		open_xref_file PROTO((const char *));
-static  const char *	classname PROTO((tree));
+static	void		gen_assign PARAMS ((XREF_FILE, tree));
+static	XREF_FILE	find_file PARAMS ((const char *));
+static	const char *	filename PARAMS ((XREF_FILE));
+static	const char *	fctname PARAMS ((tree));
+static	const char *	declname PARAMS ((tree));
+static	void		simplify_type PARAMS ((char *));
+static	const char *	fixname PARAMS ((const char *, char *));
+static	void		open_xref_file PARAMS ((const char *));
+static  const char *	classname PARAMS ((tree));
 
 /* Start cross referencing.  FILE is the name of the file we xref.  */
 
@@ -367,7 +364,6 @@ GNU_xref_decl (fndecl,decl)
   else if (TREE_CODE (decl) == RECORD_TYPE)
     {
       if (CLASSTYPE_DECLARED_CLASS (decl)) cls = "CLASSID";
-      else if (IS_SIGNATURE (decl)) cls = "SIGNATUREID";
       else cls = "STRUCTID";
       decl = TYPE_NAME (decl);
       uselin = TRUE;
@@ -417,8 +413,7 @@ GNU_xref_decl (fndecl,decl)
 	   (cur_scope != NULL ? cur_scope->lid : 0),
 	   cls, fctname(fndecl), buf);
 
-  if (STREQL (cls, "STRUCTID") || STREQL (cls, "UNIONID")
-      || STREQL (cls, "SIGNATUREID"))
+  if (STREQL (cls, "STRUCTID") || STREQL (cls, "UNIONID"))
     {
       cls = "CLASSID";
       fprintf (xref_file, "DCL %s %d %s %d %s %s %s\n",
@@ -546,9 +541,9 @@ static const char *
 classname (cls)
      tree cls;
 {
-  if (cls && TREE_CODE_CLASS (TREE_CODE (cls)) == 't')
+  if (cls && TYPE_P (cls))
     cls = TYPE_NAME (cls);
-  if (cls && TREE_CODE_CLASS (TREE_CODE (cls)) == 'd')
+  if (cls && DECL_P (cls))
     cls = DECL_NAME (cls);
   if (cls && TREE_CODE (cls) == IDENTIFIER_NODE)
     return IDENTIFIER_POINTER (cls);
@@ -614,7 +609,7 @@ GNU_xref_member(cls, fld)
     confg = 1;
 
   pure = 0;
-  if (TREE_CODE (fld) == FUNCTION_DECL && DECL_ABSTRACT_VIRTUAL_P(fld))
+  if (TREE_CODE (fld) == FUNCTION_DECL && DECL_PURE_VIRTUAL_P(fld))
     pure = 1;
 
   d = IDENTIFIER_POINTER(cls);
@@ -816,14 +811,14 @@ open_xref_file(file)
 #ifdef XREF_FILE_NAME
   XREF_FILE_NAME (xref_name, file);
 #else
-  s = rindex (file, '/');
+  s = strrchr (file, '/');
   if (s == NULL)
     sprintf (xref_name, ".%s.gxref", file);
   else
     {
       ++s;
       strcpy (xref_name, file);
-      t = rindex (xref_name, '/');
+      t = strrchr (xref_name, '/');
       ++t;
       *t++ = '.';
       strcpy (t, s);

@@ -1,5 +1,6 @@
 /* Prints out trees in human readable form.
-   Copyright (C) 1992, 93-96, 1998, 1999 Free Software Foundation, Inc.
+   Copyright (C) 1992, 1993, 1994, 1995, 1996, 1998,
+   1999 Free Software Foundation, Inc.
    Hacked by Michael Tiemann (tiemann@cygnus.com)
 
 This file is part of GNU CC.
@@ -31,29 +32,33 @@ print_lang_decl (file, node, indent)
      tree node;
      int indent;
 {
+  if (TREE_CODE (node) == FIELD_DECL)
+    {
+      if (DECL_MUTABLE_P (node))
+	{
+	  indent_to (file, indent + 3);
+	  fprintf (file, " mutable ");
+	}
+      return;
+    }
+
   if (!DECL_LANG_SPECIFIC (node))
     return;
-  /* A FIELD_DECL only has the flags structure, which we aren't displaying
-     anyways.  */
-  if (DECL_MUTABLE_P (node))
-    {
-      indent_to (file, indent + 3);
-      fprintf (file, " mutable ");
-    }
-  if (TREE_CODE (node) == FIELD_DECL)
-    return;
   indent_to (file, indent + 3);
-  if (DECL_MAIN_VARIANT (node))
-    {
-      fprintf (file, " decl-main-variant ");
-      fprintf (file, HOST_PTR_PRINTF, DECL_MAIN_VARIANT (node));
-    }
-  if (DECL_PENDING_INLINE_INFO (node))
+  if (TREE_CODE (node) == FUNCTION_DECL
+      && DECL_PENDING_INLINE_INFO (node))
     {
       fprintf (file, " pending-inline-info ");
       fprintf (file, HOST_PTR_PRINTF, DECL_PENDING_INLINE_INFO (node));
     }
-  if (DECL_TEMPLATE_INFO (node))
+  if (TREE_CODE (node) == TYPE_DECL
+      && DECL_SORTED_FIELDS (node))
+    {
+      fprintf (file, " sorted-fields ");
+      fprintf (file, HOST_PTR_PRINTF, DECL_SORTED_FIELDS (node));
+    }
+  if ((TREE_CODE (node) == FUNCTION_DECL || TREE_CODE (node) == VAR_DECL)
+      && DECL_TEMPLATE_INFO (node))
     {
       fprintf (file, " template-info ");
       fprintf (file, HOST_PTR_PRINTF,  DECL_TEMPLATE_INFO (node));
@@ -66,9 +71,11 @@ print_lang_type (file, node, indent)
      register tree node;
      int indent;
 {
-  if (TREE_CODE (node) == TEMPLATE_TYPE_PARM
-      || TREE_CODE (node) == TEMPLATE_TEMPLATE_PARM)
+  switch (TREE_CODE (node))
     {
+    case TEMPLATE_TYPE_PARM:
+    case TEMPLATE_TEMPLATE_PARM:
+    case BOUND_TEMPLATE_TEMPLATE_PARM:
       indent_to (file, indent + 3);
       fputs ("index ", file);
       fprintf (file, HOST_WIDE_INT_PRINT_DEC, TEMPLATE_TYPE_IDX (node));
@@ -77,20 +84,33 @@ print_lang_type (file, node, indent)
       fputs (" orig_level ", file);
       fprintf (file, HOST_WIDE_INT_PRINT_DEC, TEMPLATE_TYPE_ORIG_LEVEL (node));
       return;
+
+    case FUNCTION_TYPE:
+    case METHOD_TYPE:
+      if (TYPE_RAISES_EXCEPTIONS (node))
+	print_node (file, "throws", TYPE_RAISES_EXCEPTIONS (node), indent + 4);
+      return;
+
+    case RECORD_TYPE:
+    case UNION_TYPE:
+      break;
+
+    default:
+      return;
     }
 
-  if (! (TREE_CODE (node) == RECORD_TYPE
-	 || TREE_CODE (node) == UNION_TYPE))
-    return;
+  if (TYPE_PTRMEMFUNC_P (node))
+    print_node (file, "ptrmemfunc fn type", TYPE_PTRMEMFUNC_FN_TYPE (node),
+		indent + 4);
 
-  if (!TYPE_LANG_SPECIFIC (node))
+  if (! CLASS_TYPE_P (node))
     return;
 
   indent_to (file, indent + 3);
 
   if (TYPE_NEEDS_CONSTRUCTING (node))
     fputs ( "needs-constructor", file);
-  if (TYPE_NEEDS_DESTRUCTOR (node))
+  if (TYPE_HAS_NONTRIVIAL_DESTRUCTOR (node))
     fputs (" needs-destructor", file);
   if (TYPE_HAS_DESTRUCTOR (node))
     fputs (" ~X()", file);
@@ -105,9 +125,9 @@ print_lang_type (file, node, indent)
       else
 	fputs (" X(X&)", file);
     }
-  if (TYPE_GETS_NEW (node) & 1)
+  if (TYPE_HAS_NEW_OPERATOR (node))
     fputs (" new", file);
-  if (TYPE_GETS_NEW (node) & 2)
+  if (TYPE_HAS_ARRAY_NEW_OPERATOR (node))
     fputs (" new[]", file);
   if (TYPE_GETS_DELETE (node) & 1)
     fputs (" delete", file);
@@ -132,6 +152,8 @@ print_lang_type (file, node, indent)
 	fprintf (file, " interface-only");
       if (CLASSTYPE_INTERFACE_UNKNOWN (node))
 	fprintf (file, " interface-unknown");
+      if (CLASSTYPE_VTABLE_NEEDS_WRITING (node))
+	fprintf (file, " vtable-needs-writing");
       print_node (file, "member-functions", CLASSTYPE_METHOD_VEC (node),
 		  indent + 4);
     }

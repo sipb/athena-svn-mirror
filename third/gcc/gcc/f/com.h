@@ -1,5 +1,5 @@
 /* com.h -- Public #include File (module.h template V1.0)
-   Copyright (C) 1995-1997 Free Software Foundation, Inc.
+   Copyright (C) 1995, 1996, 1997, 2000 Free Software Foundation, Inc.
    Contributed by James Craig Burley.
 
 This file is part of GNU Fortran.
@@ -84,66 +84,29 @@ the Free Software Foundation, 59 Temple Place - Suite 330, Boston, MA
    to build the libf2c with which g77-generated code is linked, or there
    will probably be bugs, some of them difficult to detect or even trigger.  */
 
-/* Do we need int (for 32-bit or 64-bit systems) or long (16-bit or
-   normally 32-bit) for f2c-type integers? */
+/* The C front-end provides __g77_integer and __g77_uinteger types so that
+   the appropriately-sized signed and unsigned integer types are available
+   for libf2c.  If you change this, also the definitions of those types
+   in ../c-decl.c. */
+#define FFECOM_f2cINTEGER			\
+  (LONG_TYPE_SIZE == FLOAT_TYPE_SIZE		\
+   ? FFECOM_f2ccodeLONG				\
+   : (INT_TYPE_SIZE == FLOAT_TYPE_SIZE		\
+      ? FFECOM_f2ccodeINT			\
+      : (abort (), -1)))
 
-#ifndef BITS_PER_WORD
-#define BITS_PER_WORD 32
-#endif
+#define FFECOM_f2cLOGICAL FFECOM_f2cINTEGER
 
-#ifndef CHAR_TYPE_SIZE
-#define CHAR_TYPE_SIZE BITS_PER_UNIT
-#endif
-
-#ifndef SHORT_TYPE_SIZE
-#define SHORT_TYPE_SIZE (BITS_PER_UNIT * MIN ((UNITS_PER_WORD + 1) / 2, 2))
-#endif
-
-#ifndef INT_TYPE_SIZE
-#define INT_TYPE_SIZE BITS_PER_WORD
-#endif
-
-#ifndef LONG_TYPE_SIZE
-#define LONG_TYPE_SIZE BITS_PER_WORD
-#endif
-
-#ifndef LONG_LONG_TYPE_SIZE
-#define LONG_LONG_TYPE_SIZE (BITS_PER_WORD * 2)
-#endif
-
-#ifndef WCHAR_UNSIGNED
-#define WCHAR_UNSIGNED 0
-#endif
-
-#ifndef FLOAT_TYPE_SIZE
-#define FLOAT_TYPE_SIZE BITS_PER_WORD
-#endif
-
-#ifndef DOUBLE_TYPE_SIZE
-#define DOUBLE_TYPE_SIZE (BITS_PER_WORD * 2)
-#endif
-
-#ifndef LONG_DOUBLE_TYPE_SIZE
-#define LONG_DOUBLE_TYPE_SIZE (BITS_PER_WORD * 2)
-#endif
-
-#if LONG_TYPE_SIZE == FLOAT_TYPE_SIZE
-#  define FFECOM_f2cINTEGER FFECOM_f2ccodeLONG
-#  define FFECOM_f2cLOGICAL FFECOM_f2ccodeLONG
-#elif INT_TYPE_SIZE == FLOAT_TYPE_SIZE
-#  define FFECOM_f2cINTEGER FFECOM_f2ccodeINT
-#  define FFECOM_f2cLOGICAL FFECOM_f2ccodeINT
-#else
-#  error Cannot find a suitable type for FFECOM_f2cINTEGER
-#endif
-
-#if LONG_TYPE_SIZE == (FLOAT_TYPE_SIZE * 2)
-#  define FFECOM_f2cLONGINT FFECOM_f2ccodeLONG
-#elif LONG_LONG_TYPE_SIZE == (FLOAT_TYPE_SIZE * 2)
-#  define FFECOM_f2cLONGINT FFECOM_f2ccodeLONGLONG
-#else
-#  error Cannot find a suitable type for FFECOM_f2cLONGINT
-#endif
+/* The C front-end provides __g77_longint and __g77_ulongint types so that
+   the appropriately-sized signed and unsigned integer types are available
+   for libf2c.  If you change this, also the definitions of those types
+   in ../c-decl.c. */
+#define FFECOM_f2cLONGINT				\
+ (LONG_TYPE_SIZE == (FLOAT_TYPE_SIZE * 2)		\
+  ? FFECOM_f2ccodeLONG					\
+  : (LONG_LONG_TYPE_SIZE == (FLOAT_TYPE_SIZE * 2)	\
+     ? FFECOM_f2ccodeLONGLONG				\
+     : (abort (), -1)))
 
 #define FFECOM_f2cADDRESS FFECOM_f2ccodeCHARPTR
 #define FFECOM_f2cSHORTINT FFECOM_f2ccodeSHORT
@@ -170,7 +133,7 @@ the Free Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 
 typedef enum
   {
-#define DEFGFRT(CODE,NAME,TYPE,ARGS,VOLATILE,COMPLEX) CODE,
+#define DEFGFRT(CODE,NAME,TYPE,ARGS,VOLATILE,COMPLEX,CONST) CODE,
 #include "com-rt.def"
 #undef DEFGFRT
     FFECOM_gfrt
@@ -182,7 +145,7 @@ typedef enum
 
 #if FFECOM_targetCURRENT == FFECOM_targetGCC
 #ifndef TREE_CODE
-#include "tree.j"
+#include "tree.h"
 #endif
 
 #ifndef BUILT_FOR_270
@@ -238,8 +201,6 @@ struct _ffecom_symbol_
 /* Global objects accessed by users of this module. */
 
 #if FFECOM_targetCURRENT == FFECOM_targetGCC
-extern tree long_integer_type_node;
-extern tree complex_double_type_node;
 extern tree string_type_node;
 extern tree ffecom_integer_type_node;
 extern tree ffecom_integer_zero_node;
@@ -308,8 +269,8 @@ tree ffecom_expr_w (tree type, ffebld expr);
 void ffecom_finish_compile (void);
 void ffecom_finish_decl (tree decl, tree init, bool is_top_level);
 void ffecom_finish_progunit (void);
-tree ffecom_get_invented_identifier (const char *pattern, const char *text,
-				     int number);
+tree ffecom_get_invented_identifier (const char *pattern, ...)
+  ATTRIBUTE_PRINTF_1;
 ffeinfoKindtype ffecom_gfrt_basictype (ffecomGfrt ix);
 ffeinfoKindtype ffecom_gfrt_kindtype (ffecomGfrt ix);
 void ffecom_init_0 (void);
@@ -320,8 +281,9 @@ tree ffecom_lookup_label (ffelab label);
 tree ffecom_make_tempvar (const char *commentary, tree type,
 			  ffetargetCharacterSize size, int elements);
 tree ffecom_modify (tree newtype, tree lhs, tree rhs);
+void ffecom_save_tree_forever (tree t);
 #endif	/* FFECOM_targetCURRENT == FFECOM_targetGCC */
-void ffecom_file (char *name);
+void ffecom_file (const char *name);
 void ffecom_notify_init_storage (ffestorag st);
 void ffecom_notify_init_symbol (ffesymbol s);
 void ffecom_notify_primary_entry (ffesymbol fn);

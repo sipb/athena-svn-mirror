@@ -23,6 +23,11 @@ AC_PREREQ(2.12.1)
 AC_INIT(getarg_.c)
 
 dnl Checks for programs.
+
+dnl FIXME AC_PROG_CC wants CC to be able to link things, but it may
+dnl not be able to.
+define([AC_PROG_CC_WORKS],[])
+
 # For g77 we'll set CC to point at the built gcc, but this will get it into
 # the makefiles
 AC_PROG_CC
@@ -98,6 +103,7 @@ dnl Unfortunately, the message implies we're just checking for -lm...
 AC_CHECK_LIB(m,drem,AC_DEFINE(IEEE_drem))
 
 AC_DEFINE(Skip_f2c_Undefs)
+AC_DEFINE(IEEE_COMPLEX_DIVIDE)
 
 AC_OUTPUT(Makefile)
 
