@@ -1,7 +1,7 @@
 /* 
- * $Id: rk_util.c,v 1.3 1990-07-16 14:15:35 qjb Exp $
+ * $Id: rk_util.c,v 1.4 1994-07-18 21:02:08 cfields Exp $
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/lib/rk_util.c,v $
- * $Author: qjb $
+ * $Author: cfields $
  *
  * This file contains internal routines for general use by the rkinit
  * library and server.  
@@ -11,7 +11,7 @@
  */
 
 #if !defined(lint) && !defined(SABER) && !defined(LOCORE) && defined(RCS_HDRS)
-static char *rcsid = "$Id: rk_util.c,v 1.3 1990-07-16 14:15:35 qjb Exp $";
+static char *rcsid = "$Id: rk_util.c,v 1.4 1994-07-18 21:02:08 cfields Exp $";
 #endif /* lint || SABER || LOCORE || RCS_HDRS */
 
 #include <stdio.h>
@@ -197,7 +197,7 @@ int (*rki_setup_timer(env))()
 {
     bcopy((char *)env, (char *)timeout_env, sizeof(jmp_buf));
     set_timer(RKINIT_TIMEOUTVAL);
-    return((int (*)()) signal(SIGALRM, rki_timeout));
+    return((int (*)()) sigset(SIGALRM, rki_timeout));
 }
 
 #ifdef __STDC__
@@ -208,5 +208,5 @@ void rki_restore_timer(old_alrm)
 #endif /* __STDC__ */
 {
     set_timer(0);
-    (void) signal(SIGALRM, old_alrm);
+    (void) sigset(SIGALRM, old_alrm);
 }
