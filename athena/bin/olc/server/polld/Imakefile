@@ -1,6 +1,6 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/polld/Imakefile,v $
- * $Id: Imakefile,v 1.1 1991-01-08 16:49:38 lwvanels Exp $
+ * $Id: Imakefile,v 1.2 1991-01-20 12:49:26 lwvanels Exp $
  */
 
 /*#define Profiling*/
@@ -35,5 +35,11 @@ SaberProgramTarget(polld,$(SRCS),$(OBJS),$(LOCAL_LIBRARIES),$(SYS_LIBRARIES))
 
 DependTarget()
 LintTarget()
+
+#ifdef TestInstall
+InstallProgram(polld,/mit/olcdev/@sys)
+#else
+InstallProgram(polld,$(DESTDIR)/usr/etc)
+#endif
 
 AllTarget(polld)
