@@ -1,0 +1,80 @@
+
+This file is part of the multicol package.
+------------------------------------------
+
+\def\filedate{92/06/26}
+
+Copyright (C) 1989-1992 by Frank Mittelbach.  All rights reserved.
+
+IMPORTANT NOTICE:
+
+You are not allowed to change this readme file.
+
+For distribution of unchanged and changed versions see file readme.mz.
+
+
+This is the multicol package that contains the multicol.sty option for
+producing multi-column output with standard LaTeX. To generate
+executable files from this package you need the utility programs
+docstrip and doc.sty which are contained in the doc package mz0.
+
+You should get the following files:
+
+
+  multicol.doc     `multicolumn' style for LaTeX, you have to run this
+                   through the docstrip.tex program to produce the
+                   corresponding style file.
+
+  readme.mz        File that describes distribution restrictions and
+                   gives a short overview about other distributions from
+                   Mainz.
+
+  readme.mz1       This file.
+
+  install.mz1      This is the installation script that will produce
+                   the executable files in this package and the driver
+		   files for the documentation.
+
+
+
+To produce the executable files please run install.mz1 through LaTeX or
+TeX, i.e., say
+
+   latex install.mz1
+
+or whatever is necessary to run process a file with LaTeX on your
+system.  This will generate all necessary files. If you already have
+older versions of the files, the script will ask whether or not you
+want to overwrite those versions. Note, that the script calls
+docstrip.tex internally which is distributed in the doc package (MZ0).
+
+This script will produce the following files:
+
+  multicol.sty	The multicol style option for LaTeX.
+  multicol.drv	The driver file for producing the documentation.
+
+
+To produce the documentation run the corresponding driver files
+through LaTeX.  You are allowed to change the driver files to get a
+special layout, etc.  To get an index and history listing run the idx
+and glo files through the program MAKEINDEX.  MAKEINDEX should be part
+of every LaTeX installation.
+
+Please note that you need to specify a style file for MAKEINDEX:
+
+   gind.ist   for the index file   (result should be named *.ind)
+   gglo.ist   for the history file (result should be named *.gls)
+
+Sample invocation for Unix:
+
+   makeindex -s gind.ist multicol
+   makeindex -s gglo.ist -o multicol.gls multicol.glo
+
+The \fileversion and \filedate lines below are generated so that you can
+easily check differences from your version by using diff etc.
+
+        multicol.bug:    \filedate{92/08/17}
+        multicol.doc:    \fileversion{v1.4m}
+        multicol.doc:    \filedate{92/09/04}
+        readme.mz:       \filedate{92/07/07}
+        readme.mz1:      \filedate{92/06/26}

@@ -1,0 +1,83 @@
+%% 
+%% This is file `multicol.drv', generated 
+%% on <1994/5/8> with the docstrip utility (2.0r).
+%% 
+%% The original source files were:
+%% 
+%% multicol.doc  (with options: `driver')
+%% 
+%% This file is part of the multicol package. 
+%% ------------------------------------------ 
+%% 
+%% Copyright (C) 1992 Frank Mittelbach. All rights reserved. 
+%% 
+%% To produce the documentation in the way you like you are allowed to 
+%% change this driver file. 
+%% 
+\def\fileversion{v1.4m}
+\def\filedate{92/09/04}
+\def\docdate {92/09/04}
+
+%% \CheckSum{1101}
+%% \CharacterTable
+%%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%%   Digits        \0\1\2\3\4\5\6\7\8\9
+%%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%%   Dollar        \$     Percent       \%     Ampersand     \&
+%%   Acute accent  \'     Left paren    \(     Right paren   \)
+%%   Asterisk      \*     Plus          \+     Comma         \,
+%%   Minus         \-     Point         \.     Solidus       \/
+%%   Colon         \:     Semicolon     \;     Less than     \<
+%%   Equals        \=     Greater than  \>     Question mark \?
+%%   Commercial at \@     Left bracket  \[     Backslash     \\
+%%   Right bracket \]     Circumflex    \^     Underscore    \_
+%%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%%   Right brace   \}     Tilde         \~}
+%%
+%% Style-option `multicol' to use with LaTeX v2.09
+%% Copyright (C) 1989-1992 Frank Mittelbach, all rights reserved.
+\documentstyle[multicol,doc]{article}
+
+% dimensions from ltugboat.sty:
+
+\setlength{\textwidth}{39pc} \setlength{\textheight}{54pc}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{2pt plus 1pt minus 1pt}
+\setlength{\oddsidemargin}{0pc}
+\setlength{\marginparwidth}{0pc}
+\setlength{\topmargin}{-2.5pc} \setlength{\headsep}{20pt}
+\setlength{\columnsep}{1.5pc}
+
+\setcounter{tracingmulticols}{2}  %  tracing information
+                                  %  about multicol
+\setlength\columnseprule{.4pt}    %  we want a rule between
+                                  %  columns
+
+\setcounter{IndexColumns}{4}           % four column index
+\let\DescribeMacro\SpecialUsageIndex   % \
+\let\DescribeEnv\SpecialEnvIndex       %   > no marginal notes
+\def\PrintMacroName#1{}                % /
+
+%\DisableCrossrefs                     % Partial index
+\RecordChanges                         % Change log
+
+\CodelineIndex                         % Code lines numbered
+\renewcommand{\theCodelineNo}          % (and indexed) but
+  {\scriptsize\rm\arabic{CodelineNo}}  % very small for this
+                                       % article.
+\settowidth\MacroIndent
+  {\scriptsize\rm 00\ }
+
+%\OnlyDescription    % comment out for implementation details
+%\OldMakeindex       % use if your MakeIndex is pre-v2.9
+\begin{document}
+   \typeout{****************************************}
+   \typeout{* Expect some Under- and overfull boxes}
+   \typeout{* and a lot of tracing information.}
+   \typeout{****************************************}
+   \DocInput{multicol.doc}
+\end{document}
+\endinput
+%% 
+%% End of file `multicol.drv'.

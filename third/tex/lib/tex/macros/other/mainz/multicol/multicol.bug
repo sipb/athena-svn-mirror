@@ -1,0 +1,176 @@
+
+This file is part of the multicol package.
+------------------------------------------
+
+\def\filedate{92/08/17}
+
+This file contains problem-records and bug-reports.  Unsolved problems
+and uncorrected but known bugs (so called features) start out with two
+exclamation marks before the number.  Fixed problems will start with two
+asterisks. 
+
+
+
+** (1) FMi 90/05/17: Barbara Beeton reported an extra blank line on
+        the top of a page where a multicols env. ends.  The space is
+        coming from \topskip which is inserted because the boxes
+        produced by multicols have no height.
+       Fixed 90/05/20: Changed \vtop to \vbox in \balance@columns.
+        This made v1.3a because this bug was a bad one.
+
+** (2) FMi 90/08/14: Cameron Smith reported that \multicolsep is
+        always added in full, because of the \penalty 0 coming from
+        \enough@room.
+       Fixed 90/10/09: Changed \penalty to \addpenalty in two places.
+
+** (3) FMi 90/08/26: Bogus{\l}aw Jackowski suggested to suppress the
+        `Footnotes on page ...' warning, if no footnotes are present.
+       Added 91/02/17 to version 1.3c.
+
+** (4) FMi 90/10/01: Reinhard Wonneberger reported that
+        \begin{multicols}{1} doesn't work.
+       Fixed 90/10/09: Case not longer allowed. This might change
+        later on again.
+
+** (5) FMi 90/11/19: If a full or nearly full page is balanced, that
+        contains a lot of shrinkable glue, overfull vboxes during the
+        output routine might happen, since the shrinkability is not
+        taken into account inside the balancing routine.  
+       Temp. fix: insert a hard \newpage or \pagebreak[3] at a
+        suitable spot.
+       Fixed 91/03/03 in v1.3c. There might be still some situations
+        where it is necessary to break by hand.
+
+** (6) FMi 91/02/28: Cameron Smith reported that in certain situations
+        some columns seem to be one line shorter then others.  This is
+        actually not a bug but depends on parameter settings for the
+        document. If there is absolutely no vertical stretchability in
+        a column, the column will not be bottom aligned.
+       Correction: Ensure that your document styles adds enough
+        vertical stretch by making certain parameters (e.g. \parskip)
+        stretchable.
+
+!! (7) FMi 91/03/03: If footnotes are split on a page where balancing
+        is done, desaster might happen. This problem will show up only
+        in very special situations and so far nobody seems to have run
+        into it. It is partly the result of using \insert.
+       Fix: one case is fixed in v1.3c but the general solution will
+        have to wait until multicol gets rewritten for LaTeX3.
+
+** (8) FMi 91/03/03: \raggedcolumns only affected the last page of a
+        multicols environment.
+       Fixed: 91/03/03 in v1.3c. While this was documented correctly I
+        decided that it would be better get the same effect on all
+        pages.
+
+** (9) JEg 91/03/17: If closing end tags are missing inside a
+        multicolumn environment, the error report mentioned the wrong
+        environment (namely multicols).
+       Fixed 91/03/20 in v1.3c. There is no perfect fix for it. LaTeX
+        now reports the correct environment but later runs into a
+        second error. LaTeX3 will hopefully deal with such situations.
+        As consequence of the fix it isn't longer allowed to use
+        \multicols and \endmulticols inside other environment
+        definitions. Instead one has to say \begin{multicols} ...
+        \end{multicols} which might turn out to be a nuisense.
+
+** (10) MBa 91/08: The result of  \botmark might be incorrect since 
+        multicol may consider more material then finally necessary for
+        the constructed page.
+       FMi 92/02/14: fixed in version 1.4a. This fix does not include
+        \topmark which still may come out wrong, but isn't used by
+        LaTeX.
+
+** (11) MBa 91/08: If multicol has to balance material with a huge
+        height, e.g. constructed from \parbox'es, the balancing may fail
+        due to some problems with TeX's \vsplit primitive.
+       FMi 92/02/14: fixed in version 1.4a.
+
+** (12) CRo 91/11: Call to \enough@room is done without surrounding
+        the argument with braces. This does not allow to specify minimal
+        above space directly, i.e., without a parameter. 
+       FMi 92/02/14: fixed in version 1.4a.
+
+** (13) ASa 92/02/12: The result of \firstmark might be wrong on a page
+        where a multicols environment starts and continues over the
+        page boundary. Marks preceding the environment will not be
+        considered.
+       FMi 92/02/14: fixed in version 1.4a.
+
+** (14) FMi 92/03/04: The starting value for balancing columns is now
+        computed with a new algorithm that slightly improves the
+        balancing.
+        Implemented in v1.4d
+        
+** (15) DCa 92/03/12: In certain situations when multicols was preceded
+        by a \section command, the section could appear on a page by
+        itself. This is a consequence of the correction to bug (2).
+        Note however, that it is generally better to put \section
+        commands inside the optional argument of multicols.
+       FMi 92/03/16: fixed in version 1.4e.
+        
+!! (16) FMi 92/03/16: When the material in the optional argument is
+        larger then the \premulticols or its local environment value
+        (second optional argument) then multicols may run into an
+        error. Not sure whether I fix this beside pointing out the
+        correction for the source file in the error message.
+
+** (17) CRo 92/03/06: Typeset the optional first argument within a
+        local group so that it behaves similar to \twocolumn[...]
+        (which is a float internally).
+       FMi 92/03/16: suggestion added in version 1.4e.
+
+** (18) CRo 92/03/06: Setting of \pretolerance should not be prohibit
+        in all case as one my want to use multicols for example on
+        landscape paper, etc.
+       FMi 92/03/20: suggestion added in version 1.4e. New designer
+        parameter is called \multicolspretolerance
+
+** FMi 92/03/16: The version 1.4 includes several enhancements: a new
+        balancing algorithm, the possibility to use multicols anywhere
+        (e.g. in floats), a hopefully correct handling of LaTeX marks.
+        The handling of stared floats, e.g. figure*, was improved to
+        allow for float pages within the multicols environment. 
+
+** (19) PAb 92/04/26: Floats within the multicols environment that
+        have been placed on top of the next page with older releases,
+        now sometimes come out centered on a page by itself.
+       FMi 92/04/26: this is due to the new ability of multicols to
+        produce standard LaTeX float pages. To achieve the old
+        behavior it is necessary to \renewcommand \floatpagefraction
+        to a larger value (the default .5) is horrible anyway.
+
+!! (20) FMi 92/04/19: When the last line of a column contains an
+        unusal large character (like $\langle$) and the page contains
+        a footnote then one may get a slightly overfull \vbox in the
+        output routine.  This depends on the parameter setting for
+        \skip\footnoteins and some other things.
+
+!! (21) DCa 92/06/25: When more than 5 columns are used by multicol we
+        overwrite some already allocated box registers (for example
+        a \strut won't work any longer.
+       FMi 92/06/27: Temp fix: disallow more than 5 columns (v.1.4k)
+        real fix will follow.
+
+** (22) PBe 92/08/14: An indented environment like enumerate inside
+        multicols broken across a page would incorrectly move the
+        whole multicols to the right.
+       FMi 92/08/17: fixed in 1.4l.
+
+** (23) ???: A completely empty multicols environment removed all
+        preceding text on the current page. 
+       FMi 92/09/04: This was long known and after seeing the
+        complicated work-around that Silvio Levy had to do in his geom
+        documentation I thought I better fix this: fixed in 1.4m.
+
+
+The good guys:
+
+   PAb      Peter Abbott
+   PBe      Peter Beckmann
+   MBa      Michael Barr
+   DCa      David Carlisle
+   JEg      Juergen Egeling     
+   FMi      Frank Mittelbach    
+   CRo      Chris Rowley
+   ASa      Alexander Samarin

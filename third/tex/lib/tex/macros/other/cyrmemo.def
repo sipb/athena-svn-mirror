@@ -1,0 +1,81 @@
+%		*****	CYRMEMO.DEF	*****			11 Aug 85, bb
+%
+%	This file contains the instructions necessary to produce the memos
+%	which describe the use of the AMS cyrillic font.  PLAIN is presumed
+%	to be preloaded.  The cyrillic 10-point font is required, as is
+%	the file CYRACC.DEF.
+
+\newfam\cyrfam
+\font\tencyr=mcyr10
+\font\tensmc=amcsc10 \def\smc{\tensmc}
+
+\input cyracc.def
+
+\def\cyr{\tencyr\cyracc}
+
+
+\newif\iffirstpage
+\firstpagetrue
+\newdimen\pagelgt
+\pagelgt=9in
+\newbox\letterhead
+\setbox\letterhead=\vbox{\vskip 1pc
+	\vbox to 0pt{\halign{\hss{#}\hss\cr
+		\bf American Mathematical Society\cr
+		P.\thinspace O.~Box 6248\cr
+		Providence, RI 02940\cr}\vss}}
+\vsize=\pagelgt
+\advance\vsize by-\ht\letterhead
+
+\headline={\iffirstpage \centerline{\bf INTEROFFICE MEMORANDUM}\else
+   \line{\ssub \hfil \rdate\quad Page \folio}\fi}
+\footline={\iffirstpage \rightline{\box\letterhead}\global\vsize=\pagelgt
+   \global\firstpagefalse \fi}
+
+\def \topitem#1#2{\leavevmode \hangindent 5pc \hbox to 5pc{\bf #1\hss}#2\par }
+
+\def \toname #1<{\gdef\mto{\topitem{To:}{#1}}}
+\def \fromname #1<{\gdef\mfrom{\topitem{From:}{#1}}}
+\def \longsub #1<{\gdef\lsub{\topitem{Subject:}{#1}}}
+\def \shortsub #1<{\gdef\ssub{#1}}
+
+\def \date #1<{\gdef\mdate{\topitem{\bf Date:}{#1}}
+		\gdef\rdate{#1}}
+
+\def \topinfo{{\parindent=0pt
+	\parskip=.5\baselineskip
+	\def \\{\hfil\break }
+	\mdate
+	\mto
+	\mfrom
+	\lsub
+	\vskip\baselineskip }}
+
+
+%	Support verbatim listing of TeX source, as defined in TeXbook, p. 421
+%	lifted from MANMAC.TEX, and modified slightly as for TUGboat
+
+\chardef\other=12
+\def\ttverbatim{\begingroup
+  \catcode`\\=\other \catcode`\{=\other
+  \catcode`\}=\other \catcode`\$=\other \catcode`\&=\other
+  \catcode`\#=\other \catcode`\%=\other \catcode`\~=\other
+  \catcode`\_=\other \catcode`\^=\other
+  \obeyspaces \obeylines \tt}
+
+\newdimen\ttrightskip
+\ttrightskip=5pc
+   
+\outer\def\begintt{$$\let\par=\endgraf \ttverbatim \parskip=\z@
+  \catcode`\|=0 \rightskip=-\ttrightskip \ttfinish}
+{\catcode`\|=0 |catcode`|\=\other % | is temporary escape character
+  |obeylines % end of line is active
+  |gdef|ttfinish#1^^M#2\endtt{#1|vbox{#2}|endgroup$$}}
+
+\catcode`\|=\active
+{\obeylines \gdef|{\ttverbatim \spaceskip\ttglue \let^^M=\  \let|=\endgroup}}
+
+\newskip\ttglue
+{\tentt \global\ttglue=.5em plus .25em minus .15em}
+% this should be installed in each font
+

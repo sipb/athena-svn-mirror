@@ -1,0 +1,216 @@
+%%
+%% This file will be generate fast loadable files and documentation
+%% driver files from the doc files in this package when run through
+%% LaTeX or TeX.
+%%
+%% Copyright (C) 1989-1992 by Frank Mittelbach.  All rights reserved.
+%% 
+%% This file is part of the doc package.
+%% 
+%% IMPORTANT NOTICE:
+%% 
+%% You are not allowed to change this file.  You may however copy
+%% this file to a file with a different name and then change the
+%% copy if you obey the restrictions on file changes described in
+%% readme.mz.
+%% 
+%% You are NOT ALLOWED to distribute this file alone.  You are NOT
+%% ALLOWED to take money for the distribution or use of this file
+%% (or a changed version) except for a nominal charge for copying
+%% etc.
+%% 
+%% You are allowed to distribute this file under the condition that
+%% it is distributed together with all files mentioned in
+%% readme.mz0.
+%% 
+%% If you receive only some of these files from someone, complain!
+%% 
+%% However, if these files are distributed by established suppliers
+%% as part of a complete TeX distribution, and the structure of the
+%% distribution would make it difficult to distribute the whole set
+%% of files, *those parties* are allowed to distribute only some of
+%% the files provided that it is made clear that the user will get
+%% a complete distribution-set upon request to that supplier (not
+%% me).  Notice that this permission is not granted to the end
+%% user.
+%% 
+%% 
+%% For error reports in case of UNCHANGED versions see readme.mz
+%% 
+%% 
+%%
+%% --------------- start of docstrip commands ------------------
+%%
+\def\batchfile{install.mz0}
+\input docstrip.doc
+\preamble
+
+Copyright (C) 1989-1992 by Frank Mittelbach.  All rights reserved.
+
+This file is part of the doc package.
+
+IMPORTANT NOTICE:
+
+You are not allowed to change this file.  You may however copy
+this file to a file with a different name and then change the
+copy if you obey the restrictions on file changes described in
+readme.mz.
+
+You are NOT ALLOWED to distribute this file alone.  You are NOT
+ALLOWED to take money for the distribution or use of this file
+(or a changed version) except for a nominal charge for copying
+etc.
+
+You are allowed to distribute this file under the condition that
+it is distributed together with all files mentioned in
+readme.mz0.
+
+If you receive only some of these files from someone, complain!
+
+However, if these files are distributed by established suppliers
+as part of a complete TeX distribution, and the structure of the
+distribution would make it difficult to distribute the whole set
+of files, *those parties* are allowed to distribute only some of
+the files provided that it is made clear that the user will get
+a complete distribution-set upon request to that supplier (not
+me).  Notice that this permission is not granted to the end
+user.
+
+
+For error reports in case of UNCHANGED versions see readme.mz
+
+
+\endpreamble
+
+% ignored commands
+\def\filedate{92/08/30}
+\def\batchfile{docstrip.mz0}
+\input docstrip.doc
+
+
+% programs and styles
+
+\Msg{***********************************************************}
+\Msg{*}
+\Msg{* Below a few questions about your system will be asked.}
+\Msg{* If they look funny on your terminal screen, i.e., without}
+\Msg{* proper linebreaks and instead having the characters}
+\Msg{* \space\space \string^\string^J}
+\Msg{* sometimes between words, then you have an old TeX version}
+\Msg{* at least older than TeX 3.141.}
+\Msg{*}
+\Msg{* This is usually not dangerous but you should upgrade since}
+\Msg{* our software sometimes make use of the terminal linebreak}
+\Msg{* mechanism which had a bug in older TeX releases.}
+\Msg{*}
+\Msg{***********************************************************}
+
+
+\Ask\answer{Does your TeX system support the UNIX notation `./'
+            denoting the current
+         ^^Jdirectory in file names? E.g., will `\string\input{./foo}'
+            find file `foo.tex'
+         ^^Jin the current directory?
+         ^^JIf you are not sure just say no and carry on. You can try
+            try it out later
+         ^^Jand then redo the installation.
+         ^^J^^JPlease answer with `y' or `n'.^^J}
+
+\let\firstanswer\answer
+
+{\ifx\answer\y
+\generateFile{docstrip.tex}{t}{
+   \from{docstrip.doc}{program,stats,unix}}
+\else
+\generateFile{docstrip.tex}{t}{
+   \from{docstrip.doc}{program,stats}}
+\fi}
+
+{\ifx\firstanswer\y
+\generateFile{doc.sty}{t}{
+   \from{doc.doc}{style}}
+\else
+\Ask\answer{Is the multicol style option installed at your system?
+   ^^J^^JAnswering `y' will force doc.sty to call multicol.sty 
+         for formatting
+      ^^Jthe index even if it can't ensure its existence automatically.
+      ^^JIf you plan to install it then answer now with `y'.
+      ^^J^^JPlease answer with `y' or `n'.^^J}
+\ifx\answer\y
+\generateFile{doc.sty}{t}{
+   \from{doc.doc}{style,multicol}}
+\else
+\generateFile{doc.sty}{t}{
+   \from{doc.doc}{style}}
+\fi
+\fi}
+
+
+\generateFile{newdoc.sty}{t}{
+   \from{newdoc.doc}{}}
+
+
+
+% driver files
+
+\preamble
+
+This file is part of the doc package.
+-------------------------------------
+
+Copyright (C) 1992 Frank Mittelbach. All rights reserved.
+
+To produce the documentation in the way you like you are allowed to
+change this driver file. 
+
+\endpreamble
+
+\generateFile{doc.drv}{t}{
+   \from{doc.doc}{driver}}
+
+\generateFile{docstrip.drv}{t}{
+   \from{docstrip.doc}{driver}}
+
+
+
+% MakeIndex style files
+
+
+
+\preamble
+
+This file is part of the doc package.
+-------------------------------------
+
+Copyright (C) 1992 Frank Mittelbach. All rights reserved.
+
+\endpreamble
+
+\postamble
+
+End of file `\noexpand\outFileName'.
+\endpostamble
+
+\generateFile{gind.ist}{t}{
+   \from{doc.doc}{gind}}
+
+\generateFile{gglo.ist}{t}{
+   \from{doc.doc}{gglo}}
+
+
+\Msg{***********************************************************}
+\Msg{*}
+\Msg{* To finish the installation you have to move the following}
+\Msg{* files into a directory searched by TeX:}
+\Msg{*}
+\Msg{* \space\space doc.sty}
+\Msg{* \space\space docstrip.tex}
+\Msg{*}
+\Msg{* Also move the following files into a directory searched}
+\Msg{* by MakeIndex:}
+\Msg{*}
+\Msg{* \space\space gind.ist}
+\Msg{* \space\space gglo.ist}
+\Msg{*}
+\Msg{* Happy TeXing}
+\Msg{***********************************************************}
