@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.21 2004-03-10 01:23:11 zacheiss Exp $
+# $Id: Makefile,v 1.22 2004-03-31 00:38:12 rbasch Exp $
 
 SHELL=/bin/sh
 ATHRETCDIR=/etc/athena
@@ -22,6 +22,8 @@ install:
 	mkdir -p ${DESTDIR}${UPDATE}
 	install -c -m 0555 do-update.sh ${DESTDIR}${UPDATE}/do-update
 	install -c -m 0555 finish-update.sh ${DESTDIR}${UPDATE}/finish-update
+	install -c -m 0555 finish-update-wrapper.sh \
+				${DESTDIR}${UPDATE}/finish-update-wrapper
 	install -c -m 0555 update-environment.sh \
 				${DESTDIR}${UPDATE}/update-environment
 	install -c -m 0555 update_ws.sh ${DESTDIR}/update_ws
@@ -37,6 +39,7 @@ install:
 	install -c -m 0555 vers/solaris-9.2-os-symlinks ${DESTDIR}${UPDATE}
 	install -c -m 0555 vers/solaris-9.2-patches ${DESTDIR}${UPDATE}
 	install -c -m 0555 vers/solaris-9.2-pkgs ${DESTDIR}${UPDATE}
+	install -c -m 0555 vers/solaris-9.2-srvd-files ${DESTDIR}${UPDATE}
 	install -c -m 0555 vers/solaris-9.3-patches ${DESTDIR}${UPDATE}
 	install -c -m 0555 vers/solaris-9.3-pkgs ${DESTDIR}${UPDATE}
 	install -c -m 0555 vers/solaris24-251 ${DESTDIR}${UPDATE}

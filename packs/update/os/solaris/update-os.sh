@@ -1,5 +1,7 @@
 #!/sbin/sh
 
+newvers=$1
+
 CONFVARS=$UPDATE_ROOT/var/athena/update.confvars
 . $CONFVARS
 
@@ -23,6 +25,17 @@ if [ -s "$DEADFILES" ]; then
   sed -e "s|^|$UPDATE_ROOT|" "$DEADFILES" | xargs rm -rf
 fi
 
+# Save any config files that an OS package may touch.
+if [ "$OSCHANGES" = true -a -s "$OSCONFCHG" ]; then
+  echo "Saving config files prior to OS update"
+  for i in `cat $OSCONFCHG`; do
+    if [ -f "$UPDATE_ROOT$i" ]; then
+      rm -rf "$UPDATE_ROOT$i.save-update"
+      cp -p "$UPDATE_ROOT$i" "$UPDATE_ROOT$i.save-update"
+    fi
+  done
+fi
+
 yes="y\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny"
 
 if [ -s "$PACKAGES" ]; then
@@ -34,10 +47,10 @@ if [ -s "$PACKAGES" ]; then
   echo "Installing the os packages"
   for i in `cat "$PACKAGES"`; do
     echo "$i"
-    echo "$yes" | pkgadd -R "$UPDATE_ROOT" -d /install/cdrom "$i"
+    pkgadd -a $LIBDIR/admin-update -n -R "$UPDATE_ROOT" \
+      -d /install/cdrom "$i"
   done 2>>$pkglog
 fi
-
 
 if [ "$NEWOS" = "true" ]; then
   echo "Making adjustments"
@@ -61,17 +74,23 @@ if [ "$OSCHANGES" = true ]; then
   echo "Performing local OS changes"
   sh /srvd/install/oschanges
 
-  # Restore any config file that pkgadd has replaced.
-  echo "Re-copying config files after OS update"
-  if [ -s "$CONFCHG" ]; then
-    for i in `cat $CONFCHG`; do
-      if [ -f "/srvd$i" ]; then
-	rm -rf "$UPDATE_ROOT$i"
-	cp -p "/srvd$i" "$UPDATE_ROOT$i"
+  # Restore any config file that an OS package may have clobbered.
+  echo "Restoring config files after OS update"
+  if [ -s "$OSCONFCHG" ]; then
+    for i in `cat $OSCONFCHG`; do
+      if [ -f "$UPDATE_ROOT$i.save-update" ]; then
+	# If the file has been changed, restore it.  On a private machine,
+	# save the version as edited by Sun packages.
+	cmp -s "$UPDATE_ROOT$i" "$UPDATE_ROOT$i.save-update" || {
+	  if [ false = "$PUBLIC" ]; then
+	    rm -rf "$UPDATE_ROOT$i.sunpkg"
+	    mv "$UPDATE_ROOT$i" "$UPDATE_ROOT$i.sunpkg"
+	  fi
+	  rm -rf "$UPDATE_ROOT$i"
+	  cp -p "$UPDATE_ROOT$i.save-update" "$UPDATE_ROOT$i"
+	}
       fi
-      if [ true = "$PUBLIC" ]; then
-	rm -rf "$UPDATE_ROOT$i.saved"
-      fi
+      rm -rf "$UPDATE_ROOT$i.save-update"
     done
   fi
 fi
@@ -81,12 +100,25 @@ touch $UPDATE_ROOT/reconfigure
 
 echo "Finished os installation"
 
-echo "Tracking the srvd"
-/srvd/usr/athena/lib/update/track-srvd
-rm -f $UPDATE_ROOT/var/athena/rc.conf.sync
+# Install any "core" Athena packages which need updating now; these
+# are the packages needed by finish-update to do its work.
+if [ -s "$MIT_CORE_PACKAGES" ]; then
+  echo "Installing new Athena core packages"
+  for i in `cat "$MIT_CORE_PACKAGES"`; do
+    echo "$i"
+    pkgadd -a $LIBDIR/admin-update -n -R "${UPDATE_ROOT:-/}" \
+      -d /srvd/pkg/$newvers "$i"
+  done
+  echo "Finished installing Athena core packages."
+fi
 
-echo "Copying kernel modules from /srvd/kernel"
-cp -p -r /srvd/kernel/fs/* "$UPDATE_ROOT/kernel/fs"
+# Make sure the target also has a current finish-update script.
+cmp -s /srvd/etc/init.d/finish-update \
+  "$UPDATE_ROOT/etc/init.d/finish-update" || {
+    cp -p /srvd/etc/init.d/finish-update "$UPDATE_ROOT/etc/init.d"
+    rm -f "$UPDATE_ROOT/etc/rc2.d/S70finish-update"
+    ln -s ../init.d/finish-update "$UPDATE_ROOT/etc/rc2.d/S70finish-update"
+}
 
 rm -f "$UPDATE_ROOT/var/spool/cron/crontabs/uucp"
 

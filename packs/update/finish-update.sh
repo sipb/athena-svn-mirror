@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: finish-update.sh,v 1.19 2003-04-10 05:59:55 ghudson Exp $
+# $Id: finish-update.sh,v 1.20 2004-03-31 00:38:13 rbasch Exp $
 
 # Copyright 1996 by the Massachusetts Institute of Technology.
 #
@@ -21,14 +21,39 @@ echo "Starting the second stage of the update at `date`."
 # We get one argument, the new workstation version we're updating to.
 newvers="$1"
 
+. $CONFVARS
 . $CONFDIR/rc.conf
 
-echo "Creating config files for Athena software"
-sh /srvd/install/athchanges
+if [ -s "$MIT_OLD_PACKAGES" ]; then
+  echo "Removing old Athena packages."
+  for i in `cat "$MIT_OLD_PACKAGES"`; do
+    echo "$i"
+    pkgrm -a $LIBDIR/admin-update -n -R "${UPDATE_ROOT:-/}" "$i"
+  done
+  echo "Finished removing old Athena packages."
+fi
+
+if [ -s "$MIT_NONCORE_PACKAGES" ]; then
+  echo "Installing new Athena non-core packages."
+  for i in `cat "$MIT_NONCORE_PACKAGES"`; do
+    echo "$i"
+    pkgadd -a $LIBDIR/admin-update -n -R "${UPDATE_ROOT:-/}" \
+      -d "/srvd/pkg/$newvers" "$i"
+  done
+  echo "Finished installing Athena packages."
+fi
+
+rm -f $UPDATE_ROOT/var/athena/rc.conf.sync
+
+if [ "$OSCHANGES" = true ]; then
+  echo "Creating windex databases."
+  /usr/bin/catman -w -M $UPDATE_ROOT/usr/openwin/share/man:$UPDATE_ROOT/usr/dt/share/man:$UPDATE_ROOT/usr/share/man
+fi
 
 # Remove the version script state files.
 rm -f "$CONFCHG" "$CONFVARS" "$AUXDEVS" "$OLDBINS" "$OLDLIBS" "$DEADFILES"
-rm -f "$CONFIGVERS" "$PACKAGES" "$PATCHES"
+rm -f "$OSCONFCHG" "$PACKAGES" "$PATCHES" "$OLDPKGS" "$OLDPTCHS"
+rm -f "$MIT_CORE_PACKAGES" "$MIT_NONCORE_PACKAGES" "$MIT_OLD_PACKAGES"
 if [ -n "$PACKAGES" ]; then
 	rm -f "$PACKAGES".*
 fi

@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: do-update.sh,v 1.43 2003-07-16 16:55:58 ghudson Exp $
+# $Id: do-update.sh,v 1.44 2004-03-31 00:38:13 rbasch Exp $
 
 # Copyright 1996 by the Massachusetts Institute of Technology.
 #
@@ -51,10 +51,11 @@ echo "Beginning update from $version to $newvers at `date`."
 
 # Remove the version script state files.
 rm -f "$CONFCHG" "$CONFVARS" "$AUXDEVS" "$OLDBINS" "$OLDLIBS" "$DEADFILES"
-rm -f "$CONFIGVERS" "$PACKAGES" "$PATCHES"
+rm -f "$OSCONFCHG" "$PACKAGES" "$PATCHES" "$OLDPKGS" "$OLDPTCHS"
 if [ -n "$PACKAGES" ]; then
       rm -f "$PACKAGES".*
 fi
+rm -f $MIT_CORE_PACKAGES $MIT_NONCORE_PACKAGES $MIT_OLD_PACKAGES
 
 # Get the platform name for Solaris.  "uname -i" is the documented way, but
 # it doesn't work in Solaris 2.4 and prior, and "uname -m" works for now.
@@ -106,6 +107,7 @@ echo "Athena Workstation ($HOSTTYPE) Version Update `date`" >> \
 if [ "$version" != "$newvers" ]; then
 	echo "Version-specific updating.."
 	cp /dev/null "$CONFCHG"
+	cp /dev/null "$OSCONFCHG"
 	cp /dev/null "$CONFVARS"
 	cp /dev/null "$OLDBINS"
 	cp /dev/null "$OLDLIBS"
@@ -125,8 +127,8 @@ fi
 #	$OLDLIBS	A list of libraries to preserve before tracking
 #	$DEADFILES	A list of local files to be removed
 #	$PACKAGES	A list of OS packages to be de/installed
-#	$CONFIGVERS	A list of new/old versions of config files,
-#			left behind by OS installation (Irix only)
+#	$OSCONFCHG	A list of config files to save/restore around
+#			an update to the OS
 #	$CONFVARS	Can set variables to "true", including:
 #		NEWUNIX		Update kernel
 #		NEWBOOT		Boot blocks have changed
@@ -223,6 +225,93 @@ else
 	fi
 fi
 
+# Determine if there are any Athena packages to add or remove.  We do
+# this here because the miniroot may not be able to run the pkg-order
+# program used below.
+
+# The logic here is to compare the package list given by the
+# .order-version file (containing each package name and its version)
+# in the new version's packages directory against the list of
+# packages, with their version numbers, currently installed on the
+# system.  Unique lines in the new version list are packages to be
+# installed or updated.  To determine packages to be removed we
+# compare only the package names from the two lists; packages named in
+# only the currently installed list are slated for removal.
+
+# Most Athena packages are installed in finish-update; if this is a
+# miniroot update, finish-update will not run until after we reboot
+# into the updated root.  However, we must make sure that any packages
+# needed for finish-update to be able to do its work (e.g. AFS) are
+# installed prior to that reboot, since previous versions of such
+# software may not run any more.  These packages are marked as
+# belonging to the "MITcore" category in pkginfo.  So we further
+# separate the list of packages to be added into core and non-core
+# lists; the former are installed by update-os, i.e. prior to
+# rebooting into the updated root.
+
+echo "Determining update actions ..."
+
+old_list=/tmp/old_list$$
+new_list=/tmp/new_list$$
+old_verlist=/tmp/old_verlist$$
+new_verlist=/tmp/new_verlist$$
+add_list=/tmp/add_list$$
+core_list=/tmp/core_list$$
+
+pkgdir="/srvd/pkg/$newvers"
+install_order="$pkgdir/.order-version"
+
+rm -rf $old_list $new_list $old_verlist $new_verlist $add_list $core_list
+
+# Get the list of currently installed Athena packages, with and without
+# version numbers.
+pkginfo -l -R "${UPDATE_ROOT:-/}" | awk '
+	/PKGINST:/ { pkg = $2; }
+	/VERSION:/ { if (pkg ~ /^MIT-/) print pkg, $2; pkg = ""; }' \
+	| sort -u | tee $old_verlist | awk '{ print $1; }' > $old_list
+
+# Sort the package list for the version we are updating to.
+sort -u $install_order | tee $new_verlist | awk '{ print $1; }' > $new_list
+
+# Get the new or updated packages in the new list, stripping off the
+# version number.
+comm -13 $old_verlist $new_verlist | awk '{ print $1; }' > $add_list
+if [ -s $add_list ]; then
+	# We have a list of packages to install.  We must split this list
+	# into lists of core and non-core packages; the former must be
+	# installed by update-os.  So we use pkginfo to select core
+	# packages from the list of packages to be added.
+	pkginfo -c MITcore -d $pkgdir `cat $add_list` 2>/dev/null \
+		| awk '{ print $2; }' | sort -u > $core_list
+	corepkgs=`cat $core_list`
+	if [ -n "$corepkgs" ]; then
+		# We have core packages to install.  Get them in
+		# install order.
+		$LIBDIR/pkg-order -d $pkgdir $corepkgs \
+			> $MIT_CORE_PACKAGES || exit 1
+	fi
+	noncorepkgs=`comm -23 $add_list $core_list`
+	if [ -n "$noncorepkgs" ]; then
+		# We have noncore packages to install.  Get them in
+		# install order.
+		$LIBDIR/pkg-order -d $pkgdir $noncorepkgs \
+			> $MIT_NONCORE_PACKAGES || exit 1
+	fi
+fi
+
+# Get the list of packages present in the old list, but not the new
+# list, i.e. the packages to be removed.
+oldpkgs=`comm -23 $old_list $new_list`
+if [ -n "$oldpkgs" ]; then
+	# Get the order in which to remove the packages; the depend
+	# file should be saved in the system pkg directory.  If
+	# that fails, just remove them in the sorted order.
+	$LIBDIR/pkg-order -r -d /var/sadm/pkg $oldpkgs \
+		> $MIT_OLD_PACKAGES || echo "$oldpkgs" > $MIT_OLD_PACKAGES
+fi
+
+rm -f $old_list $new_list $old_verlist $new_verlist $add_list $core_list
+
 if [ "$MINIROOT" = true ]; then
 	# Set up a miniroot in the swap partition. We will boot into
 	# it, and update-os will be run from there.
@@ -294,7 +383,7 @@ if [ -s "$OLDLIBS" ]; then
 	LD_LIBRARY_PATH=/tmp/lib; export LD_LIBRARY_PATH
 fi
 
-sh /srvd/usr/athena/lib/update/update-os
+sh /srvd/usr/athena/lib/update/update-os "$newvers"
 
 if [ "$NEWOS" = true ]; then
 	# Reboot to finish update.
