@@ -77,6 +77,12 @@ main(argc, argv)
   struct rlimit rl;
 #endif
 
+#ifndef NO_LINEBUF
+  setlinebuf(stdout);
+#else
+  setvbuf(stdout,NULL,_IOLBF,BUFSIZ);
+#endif
+
   printf("SyncTree version %s\n",version_string());
 
   uid = getuid();
@@ -90,12 +96,6 @@ main(argc, argv)
   getrlimit(RLIMIT_STACK,&rl);
   rl.rlim_cur = rl.rlim_max;
   setrlimit(RLIMIT_STACK,&rl);
-#endif
-
-#ifndef NO_LINEBUF
-  setlinebuf(stdout);
-#else
-  setvbuf(stdout,NULL,_IOLBF,BUFSIZ);
 #endif
 
   i = 0;
