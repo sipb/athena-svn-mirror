@@ -12,18 +12,21 @@
  *
  *      Tom Coppeto
  *	Chris VanHaren
+ *	Lucien Van Elsen
  *      MIT Project Athena
  *
  * Copyright (C) 1989,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/utils.c,v $
- *	$Id: utils.c,v 1.11 1990-08-20 15:28:19 lwvanels Exp $
+ *	$Id: utils.c,v 1.12 1990-11-13 18:44:37 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/utils.c,v 1.11 1990-08-20 15:28:19 lwvanels Exp $";
+#ifndef SABER
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/utils.c,v 1.12 1990-11-13 18:44:37 lwvanels Exp $";
+#endif
 #endif
 
 #include <mit-copyright.h>
@@ -50,7 +53,7 @@ fill_request(req)
 #ifdef KERBEROS
   CREDENTIALS k_cred;
   int status;
-#endif KERBEROS
+#endif /* KERBEROS */
 
   bzero(req, sizeof(REQUEST));
 
@@ -79,7 +82,7 @@ fill_request(req)
     }
   else
     fprintf(stderr,"%s\n",krb_err_txt[status]);
-#endif KERBEROS
+#endif /* KERBEROS */
 
   return(SUCCESS);
 }
@@ -122,7 +125,7 @@ open_connection_to_mailhost()
   bcopy(hp_local->h_addr, (char *)&sin.sin_addr, hp_local->h_length);
   sin.sin_family = AF_INET;
   sin.sin_port = sp_local->s_port;
-  if (connect(s, &sin, sizeof(sin)) < 0)
+  if (connect(s, (struct sockaddr *)(&sin), sizeof(sin)) < 0)
     {
       fprintf(stderr,"Unable to connect to mailhost\n");
       return(ERROR);
@@ -152,7 +155,7 @@ query_mailhost(s,name)
   return(code);
  }
 
-#endif ATHENA
+#endif /* ATHENA */
 
 can_receive_mail(name)   /*ARGSUSED*/
      char *name;
@@ -177,9 +180,9 @@ can_receive_mail(name)   /*ARGSUSED*/
   else
     return(SUCCESS);
 
-#else  ATHENA
+#else  /* ATHENA */
   return(SUCCESS);
-#endif ATHENA
+#endif /* ATHENA */
 }
 
 
@@ -263,7 +266,7 @@ expand_hostname(hostname, instance, realm)
 
 #ifdef KERBEROS
       krb_get_lrealm(realm,1);
-#endif KERBEROS
+#endif /* KERBEROS */
 
     }
   else
@@ -277,7 +280,7 @@ expand_hostname(hostname, instance, realm)
 #ifdef REALM
   if(strlen(realm) == 0)
     (void) strcpy(realm, LOCAL_REALM);
-#endif REALM
+#endif /* REALM */
 
   for(i=0; instance[i] != '\0'; i++)
     if(isupper(instance[i]))
@@ -417,4 +420,4 @@ zephyr_subscribe(class, instance, recipient)
   return(SUCCESS);
 }
 
-#endif ZEPHYR
+#endif /* ZEPHYR */
