@@ -28,6 +28,7 @@ mkdir -p $RPM_BUILD_ROOT/var/athena/sessions
 # Extra files; see prep/athena-dm.
 mkdir -p $RPM_BUILD_ROOT/etc/athena/login
 cp config $RPM_BUILD_ROOT/etc/athena/login/config
+install -c -m 555 xwrapper.sh $RPM_BUILD_ROOT/etc/athena/xwrapper
 
 find $RPM_BUILD_ROOT -type f -or -type l |
   sed -e "s|^$RPM_BUILD_ROOT||" \
