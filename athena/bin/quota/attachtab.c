@@ -1,5 +1,5 @@
 /*
- * $Id: attachtab.c,v 1.9 1998-01-08 06:06:20 ghudson Exp $
+ * $Id: attachtab.c,v 1.10 1998-01-09 00:31:33 ghudson Exp $
  *
  * Copyright (c) 1989,1991 by the Massachusetts Institute of Technology.
  *
@@ -7,7 +7,7 @@
  */
 
 #ifndef lint
-static char rcsid_attachtab_c[] = "$Id: attachtab.c,v 1.9 1998-01-08 06:06:20 ghudson Exp $";
+static char rcsid_attachtab_c[] = "$Id: attachtab.c,v 1.10 1998-01-09 00:31:33 ghudson Exp $";
 #endif lint
 
 #include "attach.h"
@@ -74,7 +74,7 @@ void lock_attachtab()
 	if (attach_lock_fd < 0) {
 	    attach_lock_fd = open(lockfn, O_CREAT|O_RDWR, 0644);
 	    if (attach_lock_fd < 0) {
-		fprintf(stderr,"Can't open %s: %s\n", lockfn, sterror(errno));
+		fprintf(stderr,"Can't open %s: %s\n", lockfn, strerror(errno));
 		fprintf(stderr, abort_msg);
 		exit(ERR_FATAL);
 	    }
