@@ -1,0 +1,111 @@
+2000-08-21  Bradford Hovinen  <hovinen@helixcode.com>
+
+	* Makefile.am (INCLUDES): 
+	(session_properties_capplet_LDADD): Add XML cflags/libs
+
+	* session-properties.c (read_from_xml): 
+	(write_to_xml): 
+	(do_get_xml): 
+	(do_set_xml): Implement
+	(main): Run do_{get|set}_xml() on --get and --set
+
+	* startup-programs.c (startup_client_read_from_xml): 
+	(startup_list_read_from_xml): 
+	(startup_client_write_to_xml): 
+	(startup_list_write_to_xml): Implement. Read/write XML
+	descriptions of manual startup programs configured by the
+	session-properties capplet
+
+2000-08-11  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* startup-programs.c: Merge fix for i18n from stable branch.
+	
+1999-10-17  Matthias Warkus  <mawa@iname.com>
+
+	* gnome-session.png: Icon by Benjamin added in all the appropriate
+	places.
+
+1999-09-21 02:53:25 1999  Owen Taylor  <otaylor@redhat.com>
+
+	* gsm-protocol.[ch] session.h: Update to match the latest version
+	in gsm ... in particular, add the ability to set
+	the trash mode.
+
+	* session-properties.c (write_state): Change the trash
+	state in session mananager to match what we are writing.
+	Otherwise, this change won't take effect until next
+	time we log in.
+
+1999-09-12  Ettore Perazzoli  <ettore@comm2000.it>
+
+	* session-properties.c (capplet_build): Connect the `dirty_cb' to
+	the "trash changes" and the "logout prompt" buttons after updating
+	the GUI with `update_gui()', instead of before that.  Otherwise,
+	the callback is called as soon as the status of the toggle buttons
+	is set and the capplet is incorrectly marked as dirty.
+	(main): Removed unused variable `name'.
+	(capplet_build): Connect the "page_shown" to `page_shown()', not
+	`page_hidden()'.
+
+1999-08-22  Tom Tromey  <tromey@cygnus.com>
+
+	* Makefile.am (settingsdir): New macro.
+	(settings_DATA): Likewise.
+	(install-data-local): Removed.
+
+1999-08-23  Jonathan Blandford  <jrb@redhat.com>
+
+	* session-properties.c (main): better error message.
+
+1999-03-30  Owen Taylor  <otaylor@redhat.com>
+
+	* Makefile.am chooser.c: Moved chooser GUI into separate file
+	* startup-programs.c: A simple list of programs to start manually
+	* session-properties.h: New file
+	* session-properties: Remove the active-client list from the
+	  capplet (but add a button to run session-properties), 
+	  add in options for operation-mode (autosave or not)
+	  and prompt-on-logout, add in simple startup-programs list.
+	* sesion-properties.desktop: Change name and description
+	  to match new appearance.
+	
+1999-03-22  Felix Bellaby  <felix@pooh.u-net.com> 
+
+	* session-properties.c: support a warning only mode.
+	* session.h: add user confirmations to warnings. 
+	* gsm-client-row.c: relocate warning handler code into parent:
+	* gsm-protocol.c, gsm-protocol.h: obtain user confirmations.
+
+1999-03-19  Felix Bellaby  <felix@pooh.u-net.com> 
+
+	* session.h: minor protocol refinements. 
+	* gsm-client-*: signal end of session startup. 
+	* session-properties.c: tidy up session chooser implementation.
+	
+1999-03-18  Felix Bellaby  <felix@pooh.u-net.com> 
+
+	* Makefile.am: change files used in build as follows...
+	* gsm-column.*: no longer used.
+	* gsm-client-editor.*: alternative means of editing clients.
+	* gsm-*: change GUI details and add session chooser stuff.
+	* session-properties.c: updated for changs in GUI.
+
+1999-03-12 Felix Bellaby  <felix@pooh.u-net.com> 
+
+	* session.h: protocol extension specs.
+	* gsm-client-*, gsm-column.*: the client list widget code.
+	* gsm-protocol.*: gtk interface to protocol extensions.
+	* session-properties.c: use client list widget.
+	* Makefile.am: build the new code.
+
+1999-02-22  Jonathan Blandford  <jrb@redhat.com>
+
+	* session-properties.c (main): we want to exit on an error.
+
+1999-02-16  Felix Bellaby <felix@pooh.u-net.com>
+
+	* session-properties.c, session-properties.desktop, Makefile.am: 
+	A capplet for configuring which non-session aware programs will
+	be restarted when the current session is next loaded.
+	
+

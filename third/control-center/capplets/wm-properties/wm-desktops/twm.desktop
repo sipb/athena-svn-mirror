@@ -1,0 +1,16 @@
+[Desktop Entry]
+Name=twm
+Name[pt_BR]=twm
+Name[sl]=twm
+Name[cs]=twm
+Name[da]=twm
+Name[el]=twm
+Name[ko]=twm
+Name[fr]=twm
+Name[pl]=twm
+Comment[cs]=Základní správce oken.
+Exec=twm
+TryExec=twm
+
+[Window Manager]
+SessionManaged=false
