@@ -1,12 +1,19 @@
 #
-# $Id: Imakefile,v 1.16 1991-04-08 21:28:01 lwvanels Exp $
+# $Id: Imakefile,v 1.17 1991-04-17 10:57:04 lwvanels Exp $
 # $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/Imakefile,v $
 #
 # Imakefile for top level directory.
 #
 
 #define IHaveSubdirs
-SUBDIRS=common logger clients server browser man lib 
+
+#if HaveSysWCL
+WCLDIR=
+#else
+WCLDIR=wcl
+#endif
+
+SUBDIRS= common logger clients server browser man lib $(WCLDIR)
 RM=rm -f
 MV=mv -f
 
