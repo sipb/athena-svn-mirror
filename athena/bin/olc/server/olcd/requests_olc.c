@@ -20,13 +20,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v $
- *	$Id: requests_olc.c,v 1.54 1993-08-05 19:27:00 vanharen Exp $
- *	$Author: vanharen $
+ *	$Id: requests_olc.c,v 1.55 1993-08-09 11:34:49 thorne Exp $
+ *	$Author: thorne $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v 1.54 1993-08-05 19:27:00 vanharen Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v 1.55 1993-08-09 11:34:49 thorne Exp $";
 #endif
 #endif
 
@@ -549,9 +549,11 @@ olc_done(fd, request)
       target = requester->connected;
 
   text = read_text_from_fd(fd);
-
-  (void) strncpy(target->question->title, text,
+  if (text)
+    (void) strncpy(target->question->title, text,
 		 sizeof(target->question->title) - 1);
+  else
+    (void) strcpy(target->question->title,"");
   target->question->title[sizeof(target->question->title) - 1] = '\0';
   (void) sprintf(msgbuf, "Resolved by %s@%s.", 
 		 requester->user->username,
