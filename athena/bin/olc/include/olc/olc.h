@@ -19,7 +19,7 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/olc.h,v $
- *	$Id: olc.h,v 1.18 1991-02-24 11:46:01 lwvanels Exp $
+ *	$Id: olc.h,v 1.19 1991-04-08 20:59:39 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
@@ -30,15 +30,11 @@
 
 #include <stdio.h>
 #include <string.h>
-#ifdef m68k
+#ifdef _AUX_SOURCE
 #include <strings.h>
 #endif
 
 #include <olc/lang.h>
-
-#if is_cplusplus
-extern "C" {
-#endif
 
 #ifdef KERBEROS
 #include <krb.h>
@@ -46,12 +42,6 @@ extern "C" {
 
 #ifdef HESIOD
 #include <hesiod.h>
-    char **hes_resolve OPrototype((const char *, const char *));
-#if __STDC__
-    int hes_error (void);
-#else
-    int hes_error OPrototype ((void));
-#endif
 #endif
 
 struct tREQUEST;
@@ -74,7 +64,29 @@ struct tREQUEST;
 #define OLC_SERV_NAME  "sloc"                 /* nameservice key */
 #define OLC_SERVICE    "olc"                  /* olc service name */
 #define OLC_PROTOCOL   "tcp"                  /* protocol */
+#ifdef ATHENA
 #define OLC_SERVER     "MATISSE.MIT.EDU"      /* in case life fails */
+#else
+/* Define to be whatever's appropriate for your site.. */
+#define OLC_SERVER	"FOO.BAR.EDU"
+#endif
+
+#define OLC_PROMPT	"olc> "		      /* Default OLC prompt */
+#define OLCR_PROMPT	"olcr> "	      /* Default OLCR prompt */
+
+#define OLC_HELP_DIR	"/usr/athena/lib/olc/olc_help"
+#define OLC_HELP_EXT	".help"
+#define OLC_HELP_FILE	"olc"
+
+#define OLCR_HELP_DIR	"/usr/athena/lib/olc/olcr_help"
+#define OLCR_HELP_EXT	".help"
+#define OLCR_HELP_FILE	"olcr"
+
+#ifdef OLTA
+#define OLC_SERVICE_NAME	"OLC"
+#else
+#define OLC_SERVICE_NAME	"OLTA"
+#endif
 
 #ifdef KERBEROS
 #define K_SERVICE      "olc"                  /* Kerberos service name */
@@ -94,6 +106,11 @@ extern char DaemonHost[];
  */
 
 #define CLIENT_TIME_OUT 300     
-#define DEFAULT_MAILHUB "Athena.mit.edu"
+#ifdef ATHENA
+#define DEFAULT_MAILHUB "athena.mit.edu"
+#else
+/* Define to be whatever's appropriate to your site.. */
+#define DEFAULT_MAILHUB "foo.bar.edu"
+#endif
 
 #endif /* __olc_olc_h */
