@@ -164,6 +164,7 @@ Distribution sites for software under third
 	read-edid	http://web.onetel.net.uk/~elephant/john/programs\
 			/linux/read-edid/
 	rep-gtk		rep-gtk.sourceforge.net:pub/rep-gtk
+	rpm		ftp.rpm.org:pub/rpm/dist
 	rs		From NetBSD (ftp.netbsd.org), usr.bin/rs
 	sawfish		sawmill.sourceforge.net:pub/sawmill
 	sendmail*	ftp.sendmail.org:pub/sendmail
