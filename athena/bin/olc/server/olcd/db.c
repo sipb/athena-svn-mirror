@@ -18,13 +18,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/db.c,v $
- *	$Id: db.c,v 1.17 1992-02-04 21:41:51 lwvanels Exp $
+ *	$Id: db.c,v 1.18 1992-03-16 15:38:35 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/db.c,v 1.17 1992-02-04 21:41:51 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/db.c,v 1.18 1992-03-16 15:38:35 lwvanels Exp $";
 #endif
 #endif
 
@@ -33,6 +33,7 @@ static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 #include <sys/types.h>
 #include <sys/file.h>
 #include <ctype.h>		/* Standard type definitions. */
+#include <pwd.h>
 #include <olcd.h>
 
 extern ACL  Acl_List[];
@@ -180,12 +181,22 @@ get_user_info(user)
   char msgbuf[BUFSIZ];
   char *db, buf[BUFSIZ];            
   char canon[BUFSIZ];
+  struct passwd *pwd;
 
 #ifdef KERBEROS
   sprintf(canon,"%s@%s",user->username,user->realm);
 #else
   sprintf(canon,"%s@%s",user->username,DFLT_SERVER_REALM);
 #endif
+
+#ifdef HESIOD
+  pwd = hes_getpwnam(user->username);
+#else
+  pwd = getpwnam(user->username);
+#endif
+  if (pwd != (struct passwd *) NULL) {
+    strncpy(user->realname,pwd->pw_name,NAME_SIZE);
+  }
 
   if((fp = fopen(DATABASE_FILE,"r")) == (FILE *) NULL)
     {
