@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/utils.c,v $
- *	$Id: utils.c,v 1.10 1990-12-05 21:31:00 lwvanels Exp $
+ *	$Id: utils.c,v 1.11 1990-12-09 17:15:07 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/utils.c,v 1.10 1990-12-05 21:31:00 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/utils.c,v 1.11 1990-12-09 17:15:07 lwvanels Exp $";
 #endif
 #endif
 
@@ -143,7 +143,7 @@ get_list_info(k,data)
   data->ustatus = k->user->status;
   data->ukstatus = k->status;
   data->utime = k->timestamp;
-  if(k->new_messages != (char *) NULL)
+  if(has_new_messages(k))
     data->umessage = TRUE;
   else
     data->umessage = FALSE;
@@ -164,7 +164,7 @@ get_list_info(k,data)
       strcpy(data->connected.machine,k->connected->user->machine);
       strcpy(data->connected.title,k->connected->title);
       data->ctime = k->timestamp;
-      if(k->new_messages != (char *) NULL)
+      if(has_new_messages(k))
 	data->cmessage = TRUE;
       else
 	data->cmessage = FALSE;
