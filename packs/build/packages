@@ -1,4 +1,4 @@
-# $Id: packages,v 1.18 1997-02-25 20:57:30 ghudson Exp $
+# $Id: packages,v 1.19 1997-02-25 21:05:48 ghudson Exp $
 
 # This file gives the list of packages to build for the release, the
 # order they will be built in, and which platforms they will be built
@@ -96,6 +96,7 @@ athena/bin/athdir
 athena/bin/lpr
 athena/bin/quota
 athena/bin/telnet
+athena/bin/xdpr
 athena/bin/xquota		sun4
 third/perl			sun4
 third/transcript
