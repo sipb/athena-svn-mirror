@@ -6,6 +6,7 @@
 #endif
 
 #include "dvips.h" /* The copyright notice there is included too! */
+#include <stdlib.h> /* for malloc, etc. */
 #ifndef SYSV
 extern char *strtok() ; /* some systems don't have this in strings.h */
 #endif
@@ -31,12 +32,13 @@ extern char *strtok() ; /* some systems don't have this in strings.h */
 fontdesctype *fonthead ;      /* list of all fonts mentioned so far */
 fontdesctype *curfnt ;        /* the currently selected font */
 sectiontype *sections ;       /* sections to process document in */
+Boolean partialdownload = 1 ; /* turn on partial downloading */
 Boolean manualfeed ;          /* manual feed? */
 Boolean compressed ;          /* compressed? */
 Boolean downloadpspk ;        /* use PK for downloaded PS fonts? */
 Boolean safetyenclose ;
                           /* enclose in save/restore for stupid spoolers? */
-Boolean removecomments = 1 ;  /* remove comments from included PS? */
+Boolean removecomments = 0 ;  /* remove comments from included PS? */
 Boolean nosmallchars ;        /* disable small char optimization for X4045? */
 Boolean cropmarks ;           /* add cropmarks? */
 Boolean abspage = 0 ;         /* are page numbers absolute? */
@@ -73,12 +75,7 @@ fontmaptype *ffont ;          /* first font in current frame */
 real conv ;                   /* conversion ratio, pixels per DVI unit */
 real vconv ;                  /* conversion ratio, pixels per DVI unit */
 real alpha ;                  /* conversion ratio, DVI unit per TFM unit */
-#ifndef ATARIST
-integer
-#else
-long
-#endif
-mag ;                         /* the magnification of this document */
+double mag ;                  /* the magnification of this document */
 integer num, den ;            /* the numerator and denominator */
 int overridemag ;             /* substitute for mag value in DVI file? */
 int actualdpi = DEFRES ;      /* the actual resolution of the printer */
@@ -151,6 +148,7 @@ Boolean multiplesects ;       /* more than one section? */
 Boolean disablecomments ;     /* should we suppress any EPSF comments? */
 char *printer ;               /* what printer to send this to? */
 char *mfmode ;                /* default MF mode */
+char *mflandmode ;            /* allow an optional landscape mode def */
 frametype frames[MAXFRAME] ;  /* stack for virtual fonts */
 fontdesctype *baseFonts[256] ; /* base fonts for dvi file */
 integer pagecost;               /* memory used on the page being prescanned */
@@ -163,7 +161,6 @@ char xdig[256];                 /* table for reading hexadecimal digits */
 char banner[] = BANNER ;        /* our startup message */
 Boolean noenv = 0 ;             /* ignore PRINTER envir variable? */
 Boolean dopprescan = 0 ;        /* do we do a scan before the prescan? */
-integer lastheadermem ;         /* how much mem did the last header require? */
 extern int dontmakefont ;
 struct papsiz *papsizes ;       /* all available paper size */
 int headersready ;              /* ready to check headers? */
@@ -195,6 +192,11 @@ extern int add_header() ;
 extern int ParsePages() ;
 extern void checkenv() ;
 extern void getpsinfo(), revpslists() ;
+#ifdef HPS
+extern void set_bitfile() ;
+extern void finish_hps() ;
+Boolean HPS_FLAG = 0 ;
+#endif
 #ifdef FONTLIB
 extern void fliload() ;
 #endif
@@ -239,22 +241,22 @@ static char *helparr[] = {
 "f*  Run as filter                  E*  Try to create EPSF",
 "h f Add header file                F*  Send control-D at end",
 "i*  Separate file per section      K*  Pull comments from inclusions",
-"k*  Print crop marks               M*  Don't make fonts",
-"l # Last page                      N*  No structured comments",
-"m*  Manual feed                    O c Set/change paper offset",
+"j*  Download fonts partially       M*  Don't make fonts",
+"k*  Print crop marks               N*  No structured comments",
+"l # Last page                      O c Set/change paper offset",
 #if defined(MSDOS) || defined(OS2)
-"n # Maximum number of pages        P s Load $s.cfg",
+"m*  Manual feed                    P s Load $s.cfg",
 #else
-"n # Maximum number of pages        P s Load config.$s",
+"m*  Manual feed                    P s Load config.$s",
 #endif
-"o f Output file                    R   Run securely",
-"p # First page                     S # Max section size in pages",
-"q*  Run quietly                    T c Specify desired page size",
-"r*  Reverse order of pages         U*  Disable string param trick",
-"s*  Enclose output in save/restore V*  Send downloadable PS fonts as PK",
-"t s Paper format                   X # Horizontal resolution",
-"x # Override dvi magnification     Y # Vertical resolution",  
-"                                   Z*  Compress bitmap fonts",
+"n # Maximum number of pages        R   Run securely",
+"o f Output file                    S # Max section size in pages",
+"p # First page                     T c Specify desired page size",
+"q*  Run quietly                    U*  Disable string param trick",
+"r*  Reverse order of pages         V*  Send downloadable PS fonts as PK",
+"s*  Enclose output in save/restore X # Horizontal resolution",
+"t s Paper format                   Y # Vertical resolution",
+"x # Override dvi magnification     Z*  Compress bitmap fonts",
 /* "-   Interactive query of options", */
 "    # = number   f = file   s = string  * = suffix, `0' to turn off",
 "    c = comma-separated dimension pair (e.g., 3.2in,-32.1cm)", 0} ;
@@ -485,7 +487,7 @@ void main(argc, argv)
 /* we sneak a look at the first arg in case it's debugging */
 #ifdef DEBUG
    if (argc > 1 && strncmp(argv[1], "-d", 2)==0) {
-      if (argv[1][2]==0) {
+      if (argv[1][2]==0 && argc > 2) {
          if (sscanf(argv[2], "%d", &debug_flag)==0)
             debug_flag = 0 ;
       } else {
@@ -507,7 +509,8 @@ void main(argc, argv)
  *   than one file name is given, and uses stdin if none is given.
  */
 #ifdef VMS
-vmscli();
+   vmscli();
+   papsizes = (struct papsiz *)revlist((void *)papsizes) ; /* Added by PWD 21-Mar-1997 */
 #else
    queryoptions = 0;
    do
@@ -539,11 +542,22 @@ case 'c' :
                break ;
 case 'd' :
 #ifdef DEBUG
-               if (*p == 0 && argv[i+1])
-                  p = argv[++i];
-               if (sscanf(p, "%d", &debug_flag)==0)
-                  error("! Bad debug option (-d).");
-               break;
+               {
+                  int old_debug = debug_flag ;
+                  static int warned_already = 0 ;
+
+                  if (*p == 0 && argv[i+1])
+                     p = argv[++i];
+                  if (sscanf(p, "%d", &debug_flag)==0)
+                     error("! Bad debug option (-d).");
+                  if (debug_flag != old_debug && warned_already++ == 0) {
+                     fprintf(stderr,
+  "I found a debug option that was not the first argument to the dvips\n") ;
+                     fprintf(stderr,
+  "command.  Some debugging output may have been lost because of this.\n") ;
+                  }
+                  break;
+               }
 #else
                error("not compiled in debug mode") ;
                break ;
@@ -572,6 +586,9 @@ case 'h' : case 'H' :
                break ;
 case 'i':
                sepfiles = (*p != '0') ;
+               break ;
+case 'j':
+               partialdownload = (*p != '0') ;
                break ;
 case 'k':
                cropmarks = (*p != '0') ;
@@ -705,13 +722,9 @@ case 't' :
 case 'x' : case 'y' :
                if (*p == 0 && argv[i+1])
                   p = argv[++i] ;
-#ifndef ATARIST
-               if (sscanf(p, "%d", &mag)==0 || mag < 10 ||
-#else
-               if (sscanf(p, "%ld", &mag)==0 || mag < 10 ||
-#endif
-                          mag > 100000)
-                  error("! Bad magnification parameter (-x).") ;
+               if (sscanf(p, "%lg", &mag)==0 || mag < 1 ||
+                          mag > 1000000)
+                  error("! Bad magnification parameter (-x or -y).") ;
                overridemag = (c == 'x' ? 1 : -1) ;
                break ;
 case 'C' :
@@ -730,6 +743,8 @@ case 'D' :
                break ;
 case 'E' :
                tryepsf = (*p != '0') ;
+               if (tryepsf && maxsecsize == 0)
+                  maxsecsize = 1 ;
                break ;
 case 'K' :
                removecomments = (*p != '0') ;
@@ -774,28 +789,33 @@ case 'P' :
 		  npapsiz = opapsiz ;
                   while (npapsiz && npapsiz->next)
                      npapsiz = npapsiz->next ;
-                  if (npapsiz) { printf("Got a new papersize\n") ;
+                  if (npapsiz) {
                      npapsiz->next = papsizes ;
                      papsizes = opapsiz ;
                   }
 	       }
                break ;
-case 's' :
+case 's':
                safetyenclose = (*p != '0') ;
                break ;
 case 'V':
                downloadpspk = (*p != '0') ;
                break ;
-case 'Z' :
+case 'Z':
                compressed = (*p != '0') ;
                break ;
-case '?' :
+#ifdef HPS
+case 'z':
+               HPS_FLAG = (*p != '0') ;
+               break ;
+#endif
+case '?':
                (void)fprintf(stderr, banner) ;
                help() ;
                break ;
 default:
                error(
-              "! Bad option, not one of acdefhiklmnopqrstxCDEFKMNOPSTUXYZ?") ;
+     "! Bad option, not one of acdefhijklmnopqrstxyzABCDEFKMNOPSTUXYZ?") ;
             }
          } else {
             if (*iname == 0) {
@@ -840,7 +860,7 @@ default:
             struct papsiz *npapsiz = opapsiz ;
             while (npapsiz && npapsiz->next)
                npapsiz = npapsiz->next ;
-            if (npapsiz) { printf("Got a new papersize\n") ;
+            if (npapsiz) {
                npapsiz->next = papsizes ;
                papsizes = opapsiz ;
             }
@@ -1044,6 +1064,10 @@ default:
       (void)add_header(SPECIALHEADER) ;
    if (usescolor)  /* IBM: color */
       (void)add_header(COLORHEADER) ;
+#ifdef HPS
+   if (HPS_FLAG)
+      (void)add_header(HPSHEADER) ;
+#endif
    sects = sections ;
    totalpages *= collatedcopies ;
    if (sects == NULL || sects->next == NULL) {
@@ -1055,15 +1079,20 @@ default:
    }
    totalpages *= pagecopies ;
    if (tryepsf) {
-      if (totalpages != 1 || paperfmt || landscape || manualfeed ||
+      if (paperfmt || landscape || manualfeed ||
           collatedcopies > 1 || numcopies > 1 || cropmarks ||
-          *iname == 0) {
+          *iname == 0 ||
+           (totalpages > 1 && !(sepfiles && maxsecsize == 1))) {
          error("Can't make it EPSF, sorry") ;
          tryepsf = 0 ;
       }
    }
+#ifdef HPS
+   if (HPS_FLAG)
+      set_bitfile("head.tmp", 0) ;
+#endif
    if (! sepfiles) {
-      initprinter(0) ;
+      initprinter(sections) ;
       outbangspecials() ;
    }
    for (i=0; i<collatedcopies; i++) {
@@ -1079,7 +1108,11 @@ default:
                (void)fprintf(stderr, "(-> %s) ", oname) ;
                prettycolumn += strlen(oname) + 6 ;
             }
-            initprinter(sects->numpages) ;
+#ifdef HPS
+            if (HPS_FLAG)
+               set_bitfile("head.tmp", 0) ;
+#endif
+            initprinter(sects) ;
             outbangspecials() ;
          } else if (! quiet) {
             if (prettycolumn > STDOUTSIZE) {
@@ -1092,12 +1125,22 @@ default:
          (void)fflush(stderr) ;
          dosection(sects, sectioncopies) ;
          sects = sects->next ;
-         if (sepfiles)
+         if (sepfiles) {
+#ifdef HPS
+            if (HPS_FLAG)
+               finish_hps() ;
+#endif
             cleanprinter() ;
+	 }
       }
    }
-   if (! sepfiles)
+   if (! sepfiles) {
+#ifdef HPS
+      if (HPS_FLAG)
+         finish_hps() ;
+#endif
       cleanprinter() ;
+   }
    if (! quiet)
       (void)fprintf(stderr, "\n") ;
 #ifdef DEBUG
@@ -1113,7 +1156,7 @@ default:
    /*NOTREACHED*/
 }
 #ifdef VMS
-#include "[]vmscli.c"
+#include "[.vms]vmscli.c"
 #endif
 
 #ifdef VMCMS  /* IBM: VM/CMS */

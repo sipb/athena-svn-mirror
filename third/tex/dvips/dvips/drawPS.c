@@ -5,7 +5,7 @@
  *
  * (minor mods by don on 5 Jan 90 to accommodate highres PostScript)
  *
- * $Revision: 1.1.1.1 $
+ * $Revision: 1.1.1.2 $
  *
  * $Log: not supported by cvs2svn $
  * Revision 1.1  90/03/10  20:32:48  grunwald
@@ -36,7 +36,7 @@
  */
 #ifndef lint
 char RCSid[] =
-  "@(#)$Header: /afs/dev.mit.edu/source/repository/third/tex/dvips/dvips/drawPS.c,v 1.1.1.1 1996-10-09 06:40:19 ghudson Exp $ (UCLA)";
+  "@(#)$Header: /afs/dev.mit.edu/source/repository/third/tex/dvips/dvips/drawPS.c,v 1.1.1.2 1998-12-04 19:06:04 ghudson Exp $ (UCLA)";
 #endif
 
 /*
@@ -102,7 +102,7 @@ extern void error();
 extern integer hh,vv;           /* the current x,y position in pixel units */
 extern int actualdpi ;
 extern int vactualdpi ;
-extern integer mag ;
+extern double mag ;
 
 #define convRESOLUTION DPI
 #define convVRESOLUTION VDPI
@@ -678,7 +678,7 @@ zPixRound(x, convDPI)      /* return rounded number of pixels */
         register integer x;             /* in DVI units */
         register integer convDPI;       /* dots per inch */
 {
-   return ((integer)(x * (float)mag * (float)convDPI /
+   return ((integer)(x * mag * (float)convDPI /
                     (1000.0 * tpicRESOLUTION))) ;
 }
 

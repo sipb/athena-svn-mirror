@@ -13,12 +13,16 @@
  *   11/3/92: more corrections to VM/CMS port. Now it looks correct
  *   and will be supported by J. Hafner.
  *
-*/
+ */
+/*
+ *   More changes, primarily from Karl Berry, enough for a new version
+ *   number to 8.0; 1 December 1996.  Note that this version computes
+ *   checksums differently (more intelligently).
+ */
 
 #include <stdio.h>
-#if defined(OS2)
 #include <stdlib.h>
-#endif
+#include <ctype.h>
 #if defined(SYSV) || defined(VMS) || defined(__THINK__) || defined(MSDOS) || defined(OS2) || defined(ATARIST)
 #include <string.h>
 #else
@@ -109,6 +113,37 @@ char *staticligkern[] = {
    "% LIGKERN five {} * ; * {} five ; six {} * ; * {} six ;",
    "% LIGKERN seven {} * ; * {} seven ; eight {} * ; * {} eight ;",
    "% LIGKERN nine {} * ; * {} nine ;",
+/* Kern accented characters the same way as their base. */
+  "% LIGKERN Aacute <> A ; aacute <> a ;",
+  "% LIGKERN Acircumflex <> A ; acircumflex <> a ;",
+  "% LIGKERN Adieresis <> A ; adieresis <> a ;",
+  "% LIGKERN Agrave <> A ; agrave <> a ;",
+  "% LIGKERN Aring <> A ; aring <> a ;",
+  "% LIGKERN Atilde <> A ; atilde <> a ;",
+  "% LIGKERN Ccedilla <> C ; ccedilla <> c ;",
+  "% LIGKERN Eacute <> E ; eacute <> e ;",
+  "% LIGKERN Ecircumflex <> E ; ecircumflex <> e ;",
+  "% LIGKERN Edieresis <> E ; edieresis <> e ;",
+  "% LIGKERN Egrave <> E ; egrave <> e ;",
+  "% LIGKERN Iacute <> I ; iacute <> i ;",
+  "% LIGKERN Icircumflex <> I ; icircumflex <> i ;",
+  "% LIGKERN Idieresis <> I ; idieresis <> i ;",
+  "% LIGKERN Igrave <> I ; igrave <> i ;",
+  "% LIGKERN Ntilde <> N ; ntilde <> n ;",
+  "% LIGKERN Oacute <> O ; oacute <> o ;",
+  "% LIGKERN Ocircumflex <> O ; ocircumflex <> o ;",
+  "% LIGKERN Odieresis <> O ; odieresis <> o ;",
+  "% LIGKERN Ograve <> O ; ograve <> o ;",
+  "% LIGKERN Oslash <> O ; oslash <> o ;",
+  "% LIGKERN Otilde <> O ; otilde <> o ;",
+  "% LIGKERN Scaron <> S ; scaron <> s ;",
+  "% LIGKERN Uacute <> U ; uacute <> u ;",
+  "% LIGKERN Ucircumflex <> U ; ucircumflex <> u ;",
+  "% LIGKERN Udieresis <> U ; udieresis <> u ;",
+  "% LIGKERN Ugrave <> U ; ugrave <> u ;",
+  "% LIGKERN Yacute <> Y ; yacute <> y ;",
+  "% LIGKERN Ydieresis <> Y ; ydieresis <> y ;",
+  "% LIGKERN Zcaron <> Z ; zcaron <> z ;",
 /*
  *   These next are only included for deficient afm files that
  *   have the lig characters but not the lig commands.
@@ -135,6 +170,7 @@ struct adobeinfo {
    int llx, lly, urx, ury ;
    struct lig *ligs ;
    struct kern *kerns ;
+   struct adobeptr *kern_equivs ;
    struct pcc *pccs ;
    int wptr, hptr, dptr, iptr ;
 } *adobechars, *adobeptrs[256], *texptrs[256],
@@ -159,6 +195,10 @@ struct kern {
    char *succ ;
    int delta ;
 } ;
+struct adobeptr {
+   struct adobeptr *next;
+   struct adobeinfo *ch;
+};
 struct pcc {
    struct pcc *next ;
    char * partname ;
@@ -194,8 +234,6 @@ void
 error(s)
 register char *s ;
 {
-   extern void exit() ;
-
    (void)fprintf(stderr, "%s\n", s) ;
    if (obuffer[0]) {
       (void)fprintf(stderr, "%s\n", obuffer) ;
@@ -264,13 +302,6 @@ unsigned long len ;
 {
    register char *p ;
    int i ;
-#ifndef IBM6000
-#if defined MSDOS || defined OS2
-   extern void *malloc() ;
-#else
-   extern char *malloc() ;
-#endif
-#endif
 
 #ifdef SMALLMALLOC
    if (len > 65500L)
@@ -362,6 +393,7 @@ newchar() {
    ai->ury = -1 ;
    ai->ligs = NULL ;
    ai->kerns = NULL ;
+   ai->kern_equivs = NULL ;
    ai->pccs = NULL ;
    ai->next = adobechars ;
    adobechars = ai ;
@@ -670,7 +702,7 @@ struct adobeinfo *p ;
       q = p ;
       p = t ;
    }
-   return (void *)q ;
+   return q ;
 }
 
 void
@@ -695,7 +727,8 @@ assignchars() {
       return ;
 /*
  *   Next, we assign all the others, retaining the adobe positions, possibly
- *   multiply assigning characters.
+ *   multiply assigning characters.  Unless the output encoding was
+ *   precisely specified.
  */
    for (ai=adobechars; ai; ai=ai->next)
       if (ai->adobenum >= 0 && ai->texnum < 0 && texptrs[ai->adobenum]==0) {
@@ -741,7 +774,7 @@ finishup:
  *   to be the most important one.  So we reverse the above lists.
  */
    for (ai=adobechars; ai; ai=ai->next)
-      if (ai->texnum >= 0) {
+      if (ai->texnum >= 0 && ai->texnum < 256) {
          j = -1 ;
          while (nexttex[ai->texnum] >= 0) {
             i = nexttex[ai->texnum] ;
@@ -761,24 +794,15 @@ upmap() { /* Compute uppercase mapping, when making a small caps font */
    int i ;
    char lwr[50] ;
 
-/* JLH: changed some lines below to be ascii<->ebcdic independent */
-/* any reason we don't use 'isupper'? */
+/* JLH: changed some lines below to be ascii<->ebcdic independent
+   any reason we don't use 'isupper'?.
+   Looks like we should use isupper to me --karl.  */
    for (Ai=adobechars; Ai; Ai=Ai->next) {
       p = Ai->adobename ;
-#ifndef VMCMS
-      if (*p>=ASCII_A && *p<=ASCII_Z) {
-#else
-      if (ebcdic2ascii[*p]>=ASCII_A && ebcdic2ascii[*p]<=ASCII_Z) {
-#endif
+      if (isupper (*p)) {
          q = lwr ;
          for (; *p; p++)
-#ifndef VMCMS
-            *q++ = ((*p>=ASCII_A && *p<=ASCII_Z) ? *p+32 : *p) ;
-#else
-            *q++ = ((ebcdic2ascii[*p]>=ASCII_A &&
-                        ebcdic2ascii[*p]<=ASCII_Z ) ?
-                            ascii2ebcdic[ebcdic2ascii[*p]+32] : *p) ;
-#endif
+            *q++ = tolower (*p);
          *q = '\0';   /* changed this too! */
 
          if (0 != (ai=findadobe(lwr))) {
@@ -950,13 +974,14 @@ int oldn, newn ;
 
 long checksum() {
    int i ;
-   long s1 = 0, s2 = 0 ;
+   unsigned long s1 = 0, s2 = 0 ;
    char *p ;
    struct adobeinfo *ai ;
 
    for (i=0; i<256; i++)
       if (0 != (ai=adobeptrs[i])) {
-         s1 = (s1 << 1) ^ ai->width ;
+         s1 = ((s1 << 1) ^ (s1>>31)) ^ ai->width ; /* cyclic left shift */
+         s1 &= 0xffffffff; /* in case we're on a 64-bit machine */
          for (p=ai->adobename; *p; p++)
 #ifndef VMCMS
             s2 = (s2 * 3) + *p ;
@@ -1207,11 +1232,7 @@ char vcharbuf[6] ;
 char *vchar(c)
 int c ;
 {
-   if (forceoctal == 0 &&
-/* changed below to ascii<->ebcdic independence: */
-/* any reason we don't use 'isalnum'? */
-         ( (c>=ASCII_0 && c<=ASCII_9) || (c>=ASCII_A && c<=ASCII_Z) ||
-                      (c>=ASCII_a && c<=ASCII_z) ) )
+   if (forceoctal == 0 && isalnum (c))
       (void) sprintf(vcharbuf,"C %c",
 #ifndef VMCMS
       c) ;
@@ -1220,6 +1241,18 @@ int c ;
 #endif
    else (void) sprintf(vcharbuf,"O %o", (unsigned)c) ;
    return (vcharbuf) ;
+}
+
+char vnamebuf[100];
+char *vname (c)
+int c;
+{
+  if (!forceoctal && isalnum (c)) {
+    vnamebuf[0] = 0;
+  } else {
+    sprintf (vnamebuf, " (comment %s)", texptrs[c]->adobename);
+  }
+  return vnamebuf;
 }
 
 void
@@ -1231,6 +1264,7 @@ writevpl()
    register struct kern *nkern ;
    register struct pcc *npcc ;
    struct adobeinfo *asucc, *asub, *api ;
+   struct adobeptr *kern_eq;
    int xoff, yoff, ht ;
    char unlabeled ;
 
@@ -1248,13 +1282,19 @@ writevpl()
    voutln2("(FAMILY %s)" , obuffer) ;
    {
       char tbuf[300] ;
-
-      sprintf(tbuf, "%s + %s", outencoding->name,
+      char *base_encoding = 
 #ifndef VMCMS
-         codingscheme) ;
+         codingscheme ;
 #else
-         ebcodingscheme) ;
+         ebcodingscheme ;
 #endif
+      
+      if (strcmp (outencoding->name, base_encoding) == 0) {
+        sprintf(tbuf, "%s", outencoding->name);
+      } else {
+        sprintf(tbuf, "%s + %s", base_encoding, outencoding->name);
+      }
+
       if (strlen(tbuf) > 39) {
          error("Coding scheme too long; shortening to 39 characters.") ;
          tbuf[39] = 0 ;
@@ -1265,7 +1305,8 @@ writevpl()
    voutln("(DESIGNUNITS R 1000)") ;
    voutln("(COMMENT DESIGNSIZE (1 em) IS IN POINTS)") ;
    voutln("(COMMENT OTHER DIMENSIONS ARE MULTIPLES OF DESIGNSIZE/1000)") ;
-   voutln2("(CHECKSUM O %lo)",cksum ^ 0xffffffff) ;
+   /* Let vptovf compute the checksum. */
+   /* voutln2("(CHECKSUM O %lo)",cksum ^ 0xffffffff) ; */
    if (boundarychar >= 0)
       voutln2("(BOUNDARYCHAR O %lo)", (unsigned long)boundarychar) ;
    vleft() ; voutln("FONTDIMEN") ;
@@ -1282,13 +1323,13 @@ writevpl()
    vright() ;
    vleft() ; voutln("MAPFONT D 0");
    voutln2("(FONTNAME %s)", outname) ;
-   voutln2("(FONTCHECKSUM O %lo)", (unsigned long)cksum) ;
+   /* voutln2("(FONTCHECKSUM O %lo)", (unsigned long)cksum) ; */
    vright() ;
    if (makevpl>1) {
       vleft() ; voutln("MAPFONT D 1");
       voutln2("(FONTNAME %s)", outname) ;
       voutln2("(FONTAT D %d)", (int)(1000.0*capheight+0.5)) ;
-      voutln2("(FONTCHECKSUM O %lo)", (unsigned long)cksum) ;
+      /* voutln2("(FONTCHECKSUM O %lo)", (unsigned long)cksum) ; */
       vright() ;
    }
 
@@ -1327,7 +1368,7 @@ writevpl()
                         if (asub->texnum>=0) {
                            if (unlabeled) {
                               for (j = ai->texnum; j >= 0; j = nexttex[j])
-                                 voutln2("(LABEL %s)", vchar(j)) ;
+                                 voutln3("(LABEL %s)%s", vchar(j), vname(j)) ;
                               unlabeled = 0 ;
                            }
                            for (j = asucc->texnum; j >= 0; j = nexttex[j]) {
@@ -1344,23 +1385,34 @@ writevpl()
                   if (uppercase[j]==NULL) {
                      if (unlabeled) {
                         for (k = ai->texnum; k >= 0; k = nexttex[k])
-                           voutln2("(LABEL %s)", vchar(k)) ;
+                           voutln3("(LABEL %s)%s", vchar(k), vname(k)) ;
                         unlabeled = 0 ;
                      }
+                     /* If other characters have the same kerns as this
+                        one, output the label here.  This makes the TFM
+                        file much smaller than if we output all the
+                        kerns again under a different label.  */
+                     for (kern_eq = ai->kern_equivs; kern_eq;
+                          kern_eq = kern_eq->next) {
+                        k = kern_eq->ch->texnum;
+                        if (k >= 0 && k < 256)
+                          voutln3("(LABEL %s)%s", vchar(k), vname(k)) ;
+                     }
+                     ai->kern_equivs = 0; /* Only output those labels once. */
                      if (uppercase[i]) {
                         if (lowercase[j]) {
                            for (k=lowercase[j]->texnum; k >= 0; k = nexttex[k])
-                              voutln3("(KRN %s R %.1f)", vchar(k),
-                                    capheight*nkern->delta) ;
-                        } else voutln3("(KRN %s R %.1f)",
-                                 vchar(j), capheight*nkern->delta) ;
+                              voutln4("(KRN %s R %.1f)%s", vchar(k),
+                                    capheight*nkern->delta, vname(k)) ;
+                        } else voutln4("(KRN %s R %.1f)%s",
+                                 vchar(j), capheight*nkern->delta, vname(j)) ;
                      } else {
-                        voutln3("(KRN %s R %d)", vchar(j),
-                                nkern->delta) ;
+                        voutln4("(KRN %s R %d)%s", vchar(j),
+                                nkern->delta, vname(j)) ;
                         if (lowercase[j])
                            for (k=lowercase[j]->texnum; k >= 0; k = nexttex[k])
-                              voutln3("(KRN %s R %.1f)", vchar(k),
-                                capheight*nkern->delta) ;
+                              voutln4("(KRN %s R %.1f)%s", vchar(k),
+                                capheight*nkern->delta, vname(k)) ;
                      }
                   }
                }
@@ -1432,7 +1484,7 @@ void usage(f)
 FILE *f ;
 {
    (void)fprintf(f,
- "afm2tfm 7.8, Copyright 1990-93 by Radical Eye Software\n") ;
+ "afm2tfm 8.1, Copyright 1990-97 by Radical Eye Software\n") ;
    (void)fprintf(f,
  "Usage: afm2tfm foo[.afm] [-O] [-u] [-v|-V bar[.vpl]]\n") ;
    (void)fprintf(f,
@@ -1449,7 +1501,6 @@ char *argv[] ;
    register int lastext ;
    register int i ;
    int arginc ;
-   extern void exit() ;
 
    tfmout = (FILE *)NULL ;
    if (argc == 1) {
@@ -1591,14 +1642,14 @@ struct kern *rmkernmatch(k, s)
 struct kern *k ;
 char *s ;
 {
-   struct kern *nk ;
+   struct kern *nkern ;
 
    while (k && strcmp(k->succ, s)==0)
       k = k->next ;
    if (k) {
-      for (nk = k; nk; nk = nk->next)
-         while (nk->next && strcmp(nk->next->succ, s)==0)
-            nk->next = nk->next->next ;
+      for (nkern = k; nkern; nkern = nkern->next)
+         while (nkern->next && strcmp(nkern->next->succ, s)==0)
+            nkern->next = nkern->next->next ;
    }
    return k ;
 }
@@ -1624,6 +1675,24 @@ struct adobeinfo *ai ;
       ai->kerns = 0 ; /* drop them on the floor */
    else
       ai->kerns = rmkernmatch(ai->kerns, s2) ;
+}
+/* Make the kerning for character S1 equivalent to that for S2.
+   If either S1 or S2 do not exist, do nothing.
+   If S1 already has kerning, do nothing.  */
+void
+addkern (s1, s2)
+    char *s1, *s2;
+{
+  struct adobeinfo *ai1 = findadobe (s1);
+  struct adobeinfo *ai2 = findadobe (s2);
+  if (ai1 && ai2 && !ai1->kerns) {
+    /* Put the new one at the head of the list, since order is immaterial.  */
+    struct adobeptr *ap 
+      = (struct adobeptr *) mymalloc((unsigned long)sizeof(struct adobeptr));
+    ap->next = ai2->kern_equivs;
+    ap->ch = ai1;
+    ai2->kern_equivs = ap;
+  }
 }
 int sawligkern ;
 /*
@@ -1661,6 +1730,8 @@ char *s ;
             error("! too few parameters in lig kern data") ;
          if (n == 3 && strcmp(mlist[1], "{}") == 0) { /* rmkern command */
             rmkern(mlist[0], mlist[2], (struct adobeinfo *)0) ;
+         } else if (n == 3 && strcmp(mlist[1], "<>") == 0) { /* addkern */
+            addkern(mlist[0], mlist[2]) ;
          } else if (n == 3 && strcmp(mlist[0], "||") == 0 &&
                               strcmp(mlist[1], "=") == 0) { /* bc command */
             struct adobeinfo *ai = findadobe("||") ;
@@ -1865,7 +1936,6 @@ int argc ;
 char *argv[] ;
 {
    int i ;
-   extern void exit() ;
 
    for (i=0; i<256; i++)
       nexttex[i] = -1 ; /* encoding chains have length 0 */

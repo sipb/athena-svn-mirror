@@ -1471,7 +1471,7 @@ float emwidth, emheight;	/* dimension in pixels */
 			error(fname);
 	}
 	if (f != (FILE *)NULL)
-	    fclose(f);
+	    close_file(f);
 }
 
 #else

@@ -1,3 +1,12 @@
+! EJG 02-Jul-1996
+! Add secure qualifier
+! Add oddpages qualifier
+! Add evenpages qualifier
+! Default mode is letter rather than A4
+! Add downloadPS (as PK) fonts qualifier
+! Add hyperPS qualifier
+! EJG 07-Jul-1996
+! change output qualifier to remove placement=positional
 define verb dvips
 	image tex$postscript:dvips
 	parameter p1,		label=dvifile, prompt="DVI File",
@@ -9,13 +18,13 @@ define verb dvips
 	qualifier last,		default, value(required)
 	qualifier manual,	negatable
 	qualifier number,	default, value(required)
-	qualifier output,	placement=positional,nonnegatable,
-				value(type=$file,required)
+	qualifier output,	nonnegatable,
+				value(type=$file,required) !EJG 07-Jul-1996
 	qualifier start,	default, value(required)
 	qualifier quiet,	negatable
 	qualifier reverse,	negatable
 	qualifier sav_res,	negatable
-	qualifier mode,		value(list,default="a4")
+	qualifier mode,		value(list,default="letter")	! EJG 02-Jul-1996
 	qualifier magnification,default, value(required)
 	qualifier collate,	default, value(default=1)
 	qualifier dpi,		default, value(default=300)
@@ -39,3 +48,8 @@ define verb dvips
 	qualifier makefont,	default, negatable
 	qualifier psize,	value(required)
 	qualifier poffset,	value(required)
+	qualifier secure,	negatable	! EJG 02-Jul-1996
+	qualifier oddpages,	negatable	! EJG 02-Jul-1996
+	qualifier evenpages,	negatable	! EJG 02-Jul-1996
+	qualifier downloadps,	negatable	! EJG 02-Jul-1996
+	qualifier hyperps,	negatable	! EJG 02-Jul-1996

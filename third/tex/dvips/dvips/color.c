@@ -230,12 +230,12 @@ int outtops ;
       colorhash[h] = p ;
    }
    if (outtops) {
-      char *p = csp - 1 ;
-      while (p >= cstack && *p != '\n')
-         p-- ;
-      p++ ;
-      if (strcmp(p, DEFAULTCOLOR)!=0) {
-         colorcmdout(p) ;
+      char *pp = csp - 1 ;
+      while (pp >= cstack && *pp != '\n')
+         pp-- ;
+      pp++ ;
+      if (strcmp(pp, DEFAULTCOLOR)!=0) {
+         colorcmdout(pp) ;
       }
    }
 }

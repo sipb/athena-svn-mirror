@@ -14,11 +14,13 @@ extern void tfmopen(), skipover(), error() ;
 extern shalfword tfmbyte(), dvibyte(), signedbyte(), signedpair() ;
 extern halfword tfm16(), twobytes() ;
 extern integer tfm32(), threebytes(), signedtrio(), signedquad() ;
+extern float *bbdospecial() ;
 
 extern char *nextstring, errbuf[] ;
 extern FILE *tfmfile, *dvifile ;
 extern fontdesctype *baseFonts[] ;
-extern integer firstboploc, num, den, mag ;
+extern integer firstboploc, num, den ;
+extern double mag ;
 extern integer hoff, voff ;
 
 typedef struct {
@@ -117,6 +119,24 @@ extern struct dvistack {
   integer h, v, w, x, y, z ;
 } stack[] ;
 static integer llx, lly, urx, ury ;
+void bbspecial(h, v, nbytes)
+integer h, v ;
+int nbytes ;
+{
+   float *r = bbdospecial(nbytes) ;
+   if (r) {
+      /* convert from magnified PostScript units back to scaled points */
+      real conv = 72.0 * (real)num / (real)den * (real)mag / 254000000.0 ;
+      if (llx > h + r[0] / conv)
+         llx = h + r[0] / conv ;
+      if (lly > v - r[3] / conv)
+         lly = v - r[3] / conv ;
+      if (urx < h + r[2] / conv)
+         urx = h + r[2] / conv ;
+      if (ury < v - r[1] / conv)
+         ury = v - r[1] / conv ;
+   }
+}
 void bbdopage()
 {
    register shalfword cmd ;
@@ -240,14 +260,16 @@ case 243: case 244: case 245: case 246: /*fntdef1 */
          skipover(cmd - 230) ;
          skipover(dvibyte() + dvibyte()) ;
          break ;
-case 239: skipover((int)dvibyte()) ; break ;
-case 240: skipover((int)twobytes()) ; break ;
-case 241: skipover((int)threebytes()) ; break ;
-case 242: skipover((int)signedquad()) ; break ;
+case 239: bbspecial(h, v, (int)dvibyte()) ; break ;
+case 240: bbspecial(h, v, (int)twobytes()) ; break ;
+case 241: bbspecial(h, v, (int)threebytes()) ; break ;
+case 242: bbspecial(h, v, (int)signedquad()) ; break ;
       }
    }
 }
-void findbb() {
+void findbb(bop)
+integer bop ;
+{
    integer curpos = ftell(dvifile) ;
    real conv = 72.0 * (real)num / (real)den * (real)mag / 254000000.0 ;
    real off = 72.0 / conv ;
@@ -256,7 +278,7 @@ void findbb() {
    real hadj = -72.0 * hoff / 4736286.72 ;
    real vadj = 72.0 * voff / 4736286.72 ;
 
-   fseek(dvifile, firstboploc, 0) ;
+   fseek(dvifile, bop, 0) ;
    bbdopage() ;
    fseek(dvifile, curpos, 0) ;
    lly = vsize - 2 * off - lly ;

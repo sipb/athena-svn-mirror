@@ -12,7 +12,11 @@
 /*   This file is the header for dvips's global data structures. */
 
 #define BANNER \
-             "This is dvips 5.58 Copyright 1986, 1994 Radical Eye Software\n"
+"This is dvips 5.76 Copyright 1997 Radical Eye Software (www.radicaleye.com)\n"
+/*   Please don't turn debugging off! */
+#ifndef DEBUG
+#define DEBUG
+#endif
 #include <stdio.h>
 #if defined(SYSV) || defined(VMS) || defined(__THINK__) || defined(MSDOS) || defined(OS2) || defined(ATARIST)
 #include <string.h>
@@ -25,21 +29,9 @@ extern char *sprintf() ;
 #include "paths.h"
 #include "debug.h"
 #ifdef VMS
-#include "[]vms.h"
+#include "[.vms]vms.h"
 #endif /* VMS */
-/*
- *   We use malloc and free; these may need to be customized for your
- *   site.
- */
-#if defined MSDOS || defined OS2 || defined __alpha
-void *malloc() ;
-#else
-#ifndef IBM6000
-char *malloc() ;
-#endif
-#endif
-void free() ;
-char *mymalloc() ;
+#include <stdlib.h>
 /*
  *   Is your malloc big?
  */
@@ -122,7 +114,7 @@ typedef short Boolean ;
 #define RESHASHPRIME (73)
 struct resfont {
    struct resfont *next ;
-   char *Keyname, *PSname, *TeXname ;
+   char *Keyname, *PSname, *TeXname, *Fontfile, *Vectfile;
    char *specialinstructions ;
    char *downloadheader ; /* possibly multiple files */
    quarterword sent ;
@@ -280,3 +272,8 @@ struct papsiz {
 #ifndef VOID
 #define VOID void
 #endif
+
+extern int close_file(), to_close ;
+extern char *mymalloc() ;
+#define USE_PCLOSE (801)
+#define USE_FCLOSE (802)

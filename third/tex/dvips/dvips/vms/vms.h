@@ -12,4 +12,6 @@
 #define getenv vms_getenv
 #define ungetc vms_ungetc
 #define getname vms_getname
+#define popen(pcmd, pmode)  fopen(pcmd, pmode)
+#define pclose(pstream) fclose(pstream)
 #endif /* VMS */

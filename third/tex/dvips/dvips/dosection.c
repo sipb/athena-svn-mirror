@@ -7,10 +7,11 @@
  */
 extern void dopage() ;
 extern void download() ;
+extern void dopsfont() ;
 extern integer signedquad() ;
 extern void skipover() ;
 extern void cmdout() ;
-extern void numout() ;
+extern void numout(), doubleout() ;
 extern void newline() ;
 extern void setup() ;
 extern void skipover() ;
@@ -37,8 +38,12 @@ extern int prettycolumn ;
 extern integer hpapersize, vpapersize ;
 extern integer pagecopies ;
 static int psfont ;
-extern integer mag ;
+extern double mag ;
 extern char *fulliname ;
+#ifdef HPS
+int pagecounter ;
+extern Boolean HPS_FLAG ;
+#endif
 /*
  *   Now we have the main procedure.
  */
@@ -54,16 +59,20 @@ dosection(s, c)
    integer thispage = 0 ;
    char buf[104];
    extern void cleanres() ;
+   dopsfont(s) ;
+#ifdef HPS
+	 if (HPS_FLAG) pagecounter = 0;
+#endif
 
    if (multiplesects) {
-      setup() ;
+     setup() ;
    } else {
       cmdout("TeXDict") ;
       cmdout("begin") ;
    }
    numout(hpapersize) ;
    numout(vpapersize) ;
-   numout(mag) ;
+   doubleout(mag) ;
    numout((integer)DPI) ;
    numout((integer)VDPI) ;
    sprintf(buf, "(%.99s)", fulliname) ;
@@ -183,6 +192,9 @@ dosection(s, c)
       cmdout("eos") ;
    }
    cmdout("end") ;
+#ifdef HPS
+   if (HPS_FLAG) cmdout("\nend") ; /* close off HPSDict */
+#endif
    if (multiplesects && ! disablecomments) {
       newline() ;
       (void)fprintf(bitfile, "%%DVIPSEndSection\n") ;

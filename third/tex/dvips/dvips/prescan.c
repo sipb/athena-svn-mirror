@@ -34,7 +34,8 @@ extern integer pagenum ;
 extern integer maxpages ;
 extern sectiontype *sections ;
 extern FILE *dvifile ;
-extern integer num, den, mag ;
+extern integer num, den ;
+extern double mag ;
 extern int overridemag ;
 extern integer swmem ;
 extern int quiet ;
@@ -63,8 +64,8 @@ readpreamble()
    if (overridemag > 0) (void)signedquad() ;
    else if (overridemag < 0) mag = (mag * signedquad() + 500) / 1000 ;
    else mag = signedquad() ;
-   conv = (real) num * DPI * (real) mag / ( den * 254000000.0 ) ; 
-   vconv = (real) num * VDPI * (real) mag / ( den * 254000000.0 ) ; 
+   conv = (real) num * DPI * mag / ( den * 254000000.0 ) ; 
+   vconv = (real) num * VDPI * mag / ( den * 254000000.0 ) ; 
    alpha = (((real)den / 7227.0) / 0x100000) * (25400000.0 / (real) num) ;
    fsizetol = 1 + (integer)(DPI/(72270.0 * conv)) ;
    if (!pprescan) {

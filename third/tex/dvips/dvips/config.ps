@@ -4,17 +4,24 @@
 *
 m 1000000
 *
-*   And send output by default to the printer.
+*   And send output by default to a file.
 *
-o !lpr
+o
 *
 *   Default resolution.
 *
-D 400
+D 600
+*
+*   Uncomment these if you have PostScript versions of the fonts.
+*
+* p +cmfonts.map
+* p +lafonts.map
+* p +cyrfonts.map
+* p +eufonts.map
 *
 *   Last resort sizes.
 *
-R 100 120 144 300 360 400 432 480
+R 100 120 144 300 360 400 432 480 600 720
 *
 *   Paper size information.  First definition is the default.
 *

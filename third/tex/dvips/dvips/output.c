@@ -24,6 +24,9 @@ extern void send_headers() ;
 extern int add_header() ;
 extern FILE *search() ;
 extern char *getenv() ;
+#ifdef HPS
+extern void fonttableout() ;
+#endif
 extern void makepsname() ;
 extern void handlepapersize() ;
 extern void findbb() ;
@@ -43,6 +46,7 @@ extern Boolean safetyenclose ;
 extern Boolean cropmarks ;
 extern Boolean tryepsf ;
 extern Boolean compressed ;
+extern Boolean sepfiles ;
 extern int numcopies ;
 extern int collatedcopies ;
 extern integer pagecopies ;
@@ -66,6 +70,11 @@ extern char **gargv ;
 extern struct papsiz *papsizes ;
 extern integer hpapersize, vpapersize ;
 char preamblecomment[256] ; /* usually "TeX output ..." */
+void open_output() ;
+#ifdef HPS
+extern Boolean noprocset, HPS_FLAG ;
+extern void set_bitfile() ;
+#endif
 /*
  *   We need a few statics to take care of things.
  */
@@ -82,7 +91,7 @@ static struct papsiz defpapsiz = {
    0, 40258437L, 52099154L, "letter", ""
 } ;
 #ifdef CREATIONDATE
-#if (!defined(VMS) && !defined(MSDOS) && !(defined(OS2) && defined(_MSC_VER)) && !defined(ATARIST)
+#if (!defined(VMS) && !defined(MSDOS) && !(defined(OS2) && defined(_MSC_VER)) && !defined(ATARIST))
  /* VAXC/MSDOS don't like/need this !! */
 #include <sys/types.h>
 #include <sys/time.h> /* time(), at least on BSD Unix */
@@ -204,18 +213,29 @@ copyfile(s)
          prettycolumn += 2 + strlen(s) ;
       }
       if (linepos != 0)
+#ifdef HPS
+        if (!HPS_FLAG && (strcmp(s, "head.tmp") != 0)) /* no initial newline */
+#endif
          (void)putc('\n', bitfile) ;
+/*
+ *   Suggested by Andrew Trevorrow; don't ever BeginFont a file ending in .enc
+ */
+      if (infont && strstr(s,".enc"))
+         infont = 0 ;
       if (! disablecomments)
          if (infigure)
             (void)fprintf(bitfile, "%%%%BeginDocument: %s\n", s) ;
          else if (infont)
             (void)fprintf(bitfile, "%%%%BeginFont: %s\n", infont) ;
+#ifdef HPS
+         else if (noprocset) {}
+#endif
          else
             (void)fprintf(bitfile, "%%%%BeginProcSet: %s\n", s) ;
       c = getc(f) ;
       if (c == 0x80) {
 #if defined MSDOS || defined OS2 || defined(ATARIST)
-         (void)fclose(f) ;  /* close MSDOS font file */
+         (void)close_file(f) ;  /* close MSDOS font file */
          f = search(headerpath, s, READBIN) ;  /* reopen in BINARY mode */
          (void)sprintf(errbuf, "! Couldn't find header file %s", s) ;
          if (f==NULL)
@@ -288,7 +308,7 @@ msdosdone:
             if ((getc(f)=='P'+0x80) && (getc(f)=='S'+0x80)
 	                            && (getc(f)=='F'+0x80)) {
 #if defined MSDOS || defined OS2
-               (void)fclose(f) ;  /* close DOS EPS file */
+               (void)close_file(f) ;  /* close DOS EPS file */
                f = search(headerpath, s, READBIN) ;
                                                    /* reopen in BINARY mode */
                (void)sprintf(errbuf, "! Couldn't find header file %s", s) ;
@@ -307,7 +327,7 @@ msdosdone:
                dosepsend += getc(f) * 256L * 65536 ;
                dosepsend += dosepsbegin;
 #if defined MSDOS || defined OS2
-               (void)fclose(f) ;  /* close DOS EPS file */
+               (void)close_file(f) ;  /* close DOS EPS file */
                f = search(headerpath, s, READ) ;  /* reopen in TEXT mode */
                (void)sprintf(errbuf, "! Couldn't find header file %s", s) ;
                if (f==NULL)
@@ -444,11 +464,14 @@ msdosdone:
          (void)fclose(f) ;
       if (!disablecomments)
          if (infigure)
-            (void)fprintf(bitfile, "%%%%EndDocument\n") ;
+            (void)fprintf(bitfile, "\n%%%%EndDocument\n") ;
          else if (infont)
-            (void)fprintf(bitfile, "%%%%EndFont\n") ;
+            (void)fprintf(bitfile, "\n%%%%EndFont\n") ;
+#ifdef HPS
+         else if (noprocset) {}
+#endif
          else
-            (void)fprintf(bitfile, "%%%%EndProcSet\n") ;
+            (void)fprintf(bitfile, "\n%%%%EndProcSet\n") ;
    }
 }
 
@@ -587,7 +610,7 @@ chrcmd(c)
 
 void
 floatout(n)
-        float n ;
+float n ;
 {
    char buf[20] ;
 
@@ -595,9 +618,18 @@ floatout(n)
    cmdout(buf) ;
 }
 
+void doubleout(n)
+double n ;
+{
+   char buf[40] ;
+
+   (void)sprintf(buf, "%g", n) ;
+   cmdout(buf) ;
+}
+
 void
 numout(n)
-        integer n ;
+integer n ;
 {
    char buf[10] ;
 
@@ -941,22 +973,18 @@ int hed ;
       }
    }
 }
-char *epsftest() {
-   if (tryepsf && totalpages == 1 && paperfmt == 0 && *iname) {
-      findbb() ;
+char *epsftest(bop)
+integer bop ;
+{
+   if (tryepsf && paperfmt == 0 && *iname) {
+      findbb(bop+44) ;
       return nextstring ;
    }
    return 0 ;
 }
 static char *isepsf = 0 ;
 static int endprologsent ;
-void
-initprinter(n)
-int n ; /* number of pages if greater than 0 */
-{
-   void tell_needed_fonts() ;
-
-   n *= pagecopies * collatedcopies ;
+void open_output() {
    if (*oname != 0) {
 /*
  *   We check to see if the first character is a exclamation
@@ -1006,6 +1034,17 @@ int n ; /* number of pages if greater than 0 */
    } else {
       bitfile = stdout ;
    }
+}
+void
+initprinter(sect)
+sectiontype *sect ;
+{
+   void tell_needed_fonts() ;
+   int n = sect->numpages * pagecopies * collatedcopies ;
+#ifdef HPS
+   if (!HPS_FLAG)
+#endif
+      open_output() ;
    findpapersize() ;
    if (disablecomments)
       (void)fprintf(bitfile,
@@ -1015,7 +1054,7 @@ int n ; /* number of pages if greater than 0 */
          (void)fprintf(bitfile,
              "%%!PS (but not EPSF because of memory limits)\n") ;
       else {
-         isepsf = epsftest() ;
+         isepsf = epsftest(sect->bos) ;
          if (isepsf)
             (void)fprintf(bitfile, "%%!PS-Adobe-2.0 EPSF-2.0\n") ;
          else
@@ -1038,7 +1077,7 @@ int n ; /* number of pages if greater than 0 */
  *   644 of the Red book.  But we have to, for many existing
  *   spoolers.
  */
-        (void)fprintf(bitfile, "%%%%Pages: %d%s\n", (n ? n : totalpages),
+        (void)fprintf(bitfile, "%%%%Pages: %d%s\n", (sepfiles ? n : totalpages),
                                                     (reverse?" -1":"")) ;
         (void)fprintf(bitfile, "%%%%PageOrder: %sscend\n", reverse?"De":"A");
       }
@@ -1130,6 +1169,9 @@ void setup() {
       }
       if (manualfeed)
          (void)fprintf(bitfile, "%%%%Feature: *ManualFeed True\n") ;
+#ifdef HPS
+      if (!HPS_FLAG)
+#endif
       if (multiplesects)
          (void)fprintf(bitfile, "%%%%EndSetup\n") ;
    }
@@ -1150,9 +1192,18 @@ void setup() {
    if (endprologsent == 0 && !disablecomments) {
       newline() ;
       endprologsent = 1 ;
-      if (! multiplesects)
-         (void)fprintf(bitfile, "%%%%EndSetup\n") ;
+#ifdef HPS
+      if (!HPS_FLAG)
+#endif
+         if (! multiplesects)
+            (void)fprintf(bitfile, "%%%%EndSetup\n") ;
    }
+#ifdef HPS
+  if (HPS_FLAG) {
+    fclose(bitfile) ;
+    set_bitfile("body.tmp",0) ;
+  }
+#endif
 }
 /*
  *   cleanprinter is the antithesis of the above routine.

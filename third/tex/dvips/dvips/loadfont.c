@@ -217,7 +217,7 @@ pkopen(fd)
                fd->alreadyscaled = 0 ;
                (void)sprintf(errbuf,
                        "Font %s at %d dpi not found; scaling %d instead.",
-                                         name, fd->dpi, lastresortsizes[j]) ;
+                                         n, fd->dpi, lastresortsizes[j]) ;
                error(errbuf) ;
                lectureuser() ;
                return 1 ;

@@ -1,3 +1,14 @@
+/* EJG - 02-Jul-1996 */
+/* fix processing of filter qualifier */
+/* add secure qualifier */
+/* add oddpages qualifier */
+/* add evenpages qualifier */
+/* set sendcontrold only if qualifier present, not if merely negated */
+/* check for setting or resetting disablecomments was cli$_negated in both cases - fix */
+/* add downloadps (as PK) fonts qualifier */
+/* add hyperps qualifier */
+/* EJG - 07-Jul-1996 */
+/* test for INC_COM was looking for negated in both cases, so fixed */
 #ifdef __GNUC__
 #include "ssdef.h"
 #else
@@ -46,6 +57,11 @@ int vmscli()
     static $DESCRIPTOR(qual34,"makefont");
     static $DESCRIPTOR(qual35,"psize");
     static $DESCRIPTOR(qual36,"poffset");
+    static $DESCRIPTOR(qual37,"secure");	/* EJG 02-Jul-1996 */
+    static $DESCRIPTOR(qual38,"oddpages");	/* EJG 02-Jul-1996 */
+    static $DESCRIPTOR(qual39,"evenpages");	/* EJG 02-Jul-1996 */
+    static $DESCRIPTOR(qual40,"downloadps");	/* EJG 02-Jul-1996 */
+    static $DESCRIPTOR(qual41,"hyperps");	/* EJG 02-Jul-1996 */
     static $DESCRIPTOR(dumdum,dummy);
     static $DESCRIPTOR(dvi_file,"dvifile");
     static $DESCRIPTOR(input_file,infnme);
@@ -159,8 +175,11 @@ default:
 
     if(status == CLI$_PRESENT)
         {oname="";
+         filter=1;		/* EJG 02-Jul-1996 */
          noenv=(1==1);
         }
+    else		/* EJG 02-Jul-1996 */
+      filter=0;		/* EJG 02-Jul-1996 */
 
     status = cli$present(&qual9);
      if(status == CLI$_PRESENT)
@@ -215,6 +234,7 @@ default:
          	if ((status=cli$get_value(&qual13,&dumdum,&length))==1)
          	{
          		sscanf(&dummy[0],"%s",pap);
+         		
          		paperfmt = &pap[0] ;
          	}
          	/* end G.Bonacci 20.3.92 */
@@ -253,15 +273,15 @@ default:
 
     status = cli$present(&qual17);
 
-    if(status == CLI$_PRESENT | status==CLI$_DEFAULTED)
+    if(status == CLI$_PRESENT)		/* EJG 02-Jul-1996 */
       sendcontrolD =1;
     else
-    if(status == CLI$_NEGATED)
+    if(status == CLI$_NEGATED | status==CLI$_DEFAULTED)	/* EJG 02-Jul-1996 */
       sendcontrolD =0;
 
     status = cli$present(&qual18);
 
-    if(status == CLI$_NEGATED)
+    if(status == CLI$_PRESENT)		/* EJG 07-Jul-1996 */
      removecomments =0;
     else
     if(status == CLI$_NEGATED)
@@ -269,7 +289,7 @@ default:
 
     status = cli$present(&qual19);
 
-    if(status == CLI$_NEGATED)
+    if(status == CLI$_PRESENT)		/* EJG 02-JUL-1996 */
       disablecomments = 0;
     else
     if(status == CLI$_NEGATED)
@@ -414,5 +434,33 @@ default:
        dummy[length] = '\0';
        handlepapersize(&dummy[0], &hoff, &voff) ;
      }
+
+    status = cli$present(&qual37);		/* EJG 02-Jul-1996 */
+    if(status == CLI$_PRESENT) secure = 1;	/* EJG 02-Jul-1996 */
+    else					/* EJG 02-Jul-1996 */
+    if(status == CLI$_NEGATED | status == CLI$_DEFAULTED) secure = 0;	/* EJG 02-Jul-1996 */
+
+    status = cli$present(&qual38);		/* EJG 02-Jul-1996 */
+    if(status == CLI$_PRESENT) oddpages = 1;	/* EJG 02-Jul-1996 */
+    else					/* EJG 02-Jul-1996 */
+    if(status == CLI$_NEGATED | status == CLI$_DEFAULTED) oddpages = 0;	/* EJG 02-Jul-1996 */
+
+    status = cli$present(&qual39);		/* EJG 02-Jul-1996 */
+    if(status == CLI$_PRESENT) evenpages = 1;	/* EJG 02-Jul-1996 */
+    else					/* EJG 02-Jul-1996 */
+    if(status == CLI$_NEGATED | status == CLI$_DEFAULTED) evenpages = 0; /* EJG 02-Jul-1996 */
+
+    status = cli$present(&qual40);		/* EJG 02-Jul-1996 */
+    if(status == CLI$_PRESENT) downloadpspk = 1; /* EJG 02-Jul-1996 */
+    else					/* EJG 02-Jul-1996 */
+    if(status == CLI$_NEGATED | status == CLI$_DEFAULTED) downloadpspk = 0; /* EJG 02-Jul-1996 */
+
+#ifdef HPS		/* EJG 02-Jul-1996 */
+
+    status = cli$present(&qual41);		/* EJG 02-Jul-1996 */
+    if(status == CLI$_PRESENT) HPS_FLAG = 1;	/* EJG 02-Jul-1996 */
+    else					/* EJG 02-Jul-1996 */
+    if(status == CLI$_NEGATED | status == CLI$_DEFAULTED) HPS_FLAG = 0; /* EJG 02-Jul-1996 */
+#endif			/* EJG 02-Jul-1996 */
 
 }
