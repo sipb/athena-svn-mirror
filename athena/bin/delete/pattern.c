@@ -11,12 +11,17 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_pattern_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/pattern.c,v 1.22 1991-02-28 18:43:11 jik Exp $";
+     static char rcsid_pattern_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/pattern.c,v 1.23 1991-06-04 22:06:14 jik Exp $";
 #endif
 
 #include <stdio.h>
 #include <sys/types.h>
+#ifdef POSIX
+#include <dirent.h>
+#define direct dirent
+#else
 #include <sys/dir.h>
+#endif
 #include <sys/param.h>
 #ifdef SYSV
 #include <string.h>
@@ -57,7 +62,12 @@ int *num1, *num2;
      
      *array1 = (char **) realloc((char *) *array1, (unsigned)
 				 (sizeof(char *) * (*num1 + *num2)));
-     if (! *array1) {
+#ifdef MALLOC_0_RETURNS_NULL
+     if ((! *array1) && (*num1 + *num2))
+#else
+     if (! *array1)
+#endif
+     {
 	  set_error(errno);
 	  error("realloc");
 	  return error_code;
@@ -227,11 +237,13 @@ int options;
      
      if (options & RECURS) {
 	  return_files = (char **) Malloc(0);
+#ifndef MALLOC_0_RETURNS_NULL
 	  if (! return_files) {
 	       set_error(errno);
 	       error("Malloc");
 	       return error_code;
 	  }
+#endif
 	  num_return_files = 0;
 
 	  for (i = 0; i < num_matched_files; i++) {
@@ -435,6 +447,7 @@ Boolean match_undeleted, match_deleted;
 	  *base = '\0';
 
      *found = (char **) Malloc(0);
+#ifndef MALLOC_0_RETURNS_NULL
      if (! *found) {
 	  set_error(errno);
 	  error("Malloc");
@@ -443,6 +456,7 @@ Boolean match_undeleted, match_deleted;
 #endif
 	  return error_code;
      }
+#endif
      *num_found = 0;
      
      dirp = Opendir(base);
@@ -743,11 +757,13 @@ int options;
      /* start: */
      
      *found = (char **) Malloc(0);
+#ifndef MALLOC_0_RETURNS_NULL
      if (! *found) {
 	  set_error(errno);
 	  error("Malloc");
 	  return error_code;
      }
+#endif
      *num_found = 0;
      strcpy(base, name);
 
