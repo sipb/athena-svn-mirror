@@ -1,8 +1,0 @@
-
-* There are some problems building Xalf on Solaris 6. It seems to be a
-  libtool issue. 
-
-* If you have more than one GNOME panel, the --cursor indicator only
-  works on one of the panels. I don't know about any good way of
-  getting the window IDs of all panels: Do you?
-
