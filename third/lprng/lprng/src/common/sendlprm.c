@@ -108,6 +108,19 @@ void Send_lprmrequest( char *printer,	/* name of printer */
 	DEBUG3("Send_lprmrequest: socket %d", sock );
 
 	/* we check if we need to do authentication */
+	if( KA || (Use_auth && strcasecmp( Use_auth, "krb4" ) != 0 )){
+		status = Send_krb4_auth( host, printer, &sock,
+			NORMAL, transfer_timeout );
+
+		if( status ){
+			return;
+		}
+
+		/* Kludge: we don't want to do the things that
+		 * authentication normally entails.
+		 */
+		Use_auth = NULL;
+	}
 	Fix_auth();
 
 	/* now format the option line */
@@ -117,6 +130,10 @@ void Send_lprmrequest( char *printer,	/* name of printer */
 	s = 0;
 	for( ; options && (s = *options); ++options ){
 		int len = strlen(line) - 1;
+		/* compatibility with BSD lprm */
+		if( !strcmp( s, "-" ) != 0 ){
+			s = user;
+		}
 		if( len + strlen(s) >= sizeof(line) - 4){
 			break;
 		}
