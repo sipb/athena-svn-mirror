@@ -1,10 +1,10 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/track/track.h,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.h,v 2.3 1988-02-29 20:33:04 don Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.h,v 3.0 1988-03-09 13:10:22 don Exp $
  */
 
 #ifndef lint
-static char *rcsid_track_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.h,v 2.3 1988-02-29 20:33:04 don Exp $";
+static char *rcsid_track_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.h,v 3.0 1988-03-09 13:10:22 don Exp $";
 #endif lint
 
 #include "mit-copyright.h"
@@ -71,7 +71,14 @@ static char *rcsid_track_h = "$Header: /afs/dev.mit.edu/source/repository/athena
 #define ROOT 1
 #define NAME 2
 
-typedef struct stl {
+typedef struct currentness {
+	char name[ LINELEN];
+	unsigned short cksum;
+	char *link;
+	struct stat sbuf;
+} Currentness;
+
+typedef struct statline {
 	char sortkey[ LINELEN];
 	char line[ LINELEN];
 } Statline ;
@@ -80,19 +87,21 @@ extern Statline *statfilebufs;
 extern int cur_line;
 extern FILE *statfile;
 
-typedef struct ent {
+typedef struct entry {
 	char sortkey[ LINELEN];
 	int keylen;
 	int followlink;
 	char *fromfile;
 	char *tofile;
 	char *cmpfile;
+	struct currentness currency;
 	char *exceptions[WORDMAX];
 	char *cmdbuf;
 } Entry ;
 extern Entry entries[];
 
 extern int errno;
+extern int cksumflag;
 extern int dirflag;
 extern int forceflag;
 extern int incl_devs;
@@ -131,12 +140,12 @@ extern char linebuf[];
 extern int wordcnt;
 extern FILE *yyin,*yyout;
 
-#define TYPE( statbuf) ((int )(statbuf).st_mode & S_IFMT)
-#define MODE( statbuf) ((int )(statbuf).st_mode & 07777)
-#define TIME( statbuf) ((long)(statbuf).st_mtime)
-#define UID( statbuf)  ((int )(statbuf).st_uid)
-#define GID( statbuf)  ((int )(statbuf).st_gid)
-#define DEV( statbuf)  ((int )(statbuf).st_rdev)
+#define TYPE( statbuf) ((statbuf).st_mode & S_IFMT)
+#define MODE( statbuf) ((statbuf).st_mode & 07777)
+#define TIME( statbuf) ((statbuf).st_mtime)
+#define UID( statbuf)  ((statbuf).st_uid)
+#define GID( statbuf)  ((statbuf).st_gid)
+#define DEV( statbuf)  ((statbuf).st_rdev)
 
 extern int access();
 
@@ -148,16 +157,19 @@ long time();
 
 int stat(), lstat();
 extern int (*statf)();
+extern char *statn;
 
 /* track's internal functions which need decl's */
 
-extern char *next_def_except();
-extern struct stat *dec_entry(), *dec_statfile();
+extern unsigned short in_cksum();
+extern struct currentness *dec_entry();
+extern char *dec_statfile();
 extern int entrycmp(), statlinecmp();
 extern char *follow_link();
+extern struct currentness *get_cmp_currency();
 extern char *goodname();
 extern char **initpath();
-extern char *make_name();
+extern char *next_def_except();
 extern FILE *opensubfile();
 extern char *re_conv();
 extern char *resolve();
