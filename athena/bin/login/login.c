@@ -1,11 +1,11 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.26 1989-10-17 10:14:48 probe Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.27 1989-10-18 09:40:47 probe Exp $
  */
 
 #ifndef lint
 static char *rcsid_login_c =
-    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.26 1989-10-17 10:14:48 probe Exp $";
+    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.27 1989-10-18 09:40:47 probe Exp $";
 #endif	/* lint */
 
 /*
@@ -390,12 +390,12 @@ main(argc, argv)
 
 	    if (!invalid && (pwd->pw_uid != 0)) { 
 		    /* if not root, get Kerberos tickets */
-		if(get_krbrlm(realm, 1) != KSUCCESS) {
+		if(krb_get_lrealm(realm, 1) != KSUCCESS) {
 		    SCPYN(realm, KRB_REALM);
 		}
 		strncpy(lusername, utmp.ut_name, NMAX);
 		lusername[NMAX] = '\0';
-		krbval = get_in_tkt(lusername, "", realm,
+		krbval = krb_get_pw_in_tkt(lusername, "", realm,
 				    "krbtgt", realm, KRBTKLIFETIME, pp2);
 		bzero(pp2, MAXPWSIZE+1); /* Yes, he's senile.  He doesn't know
 					    what his administration is doing */
@@ -1628,7 +1628,7 @@ int verify_krb_tgt (realm)
 	perror ("cannot retrieve local hostname");
 	return -1;
     }
-    strncpy (phost, get_phost (hostname), sizeof (phost));
+    strncpy (phost, krb_get_phost (hostname), sizeof (phost));
     phost[sizeof(phost)-1] = 0;
     hp = gethostbyname (hostname);
     if (!hp) {
