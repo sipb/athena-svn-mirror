@@ -1,7 +1,7 @@
 # Prototype file for setting up course-specific environment
-# $Author: mar $
+# $Author: cfields $
 # $Source: /afs/dev.mit.edu/source/repository/packs/dotfiles/env_setup,v $
-# $Header: /afs/dev.mit.edu/source/repository/packs/dotfiles/env_setup,v 1.4 1992-04-27 13:47:46 mar Exp $
+# $Header: /afs/dev.mit.edu/source/repository/packs/dotfiles/env_setup,v 1.5 1995-05-27 20:52:31 cfields Exp $
 
 # Just in case this alias is not already set,
 alias extend 'if (-d \!:2) if ("$\!:1" \!~ *"\!:2"*) set extendyes && \\
@@ -26,7 +26,7 @@ if (! $status) then
 		source $setup_dir/.attachrc
         else
 		# Do minimal environment setup
-		extend PATH $setup_dir/${hosttype}bin
+		extend PATH $setup_dir/${bindir}
 		extend MANPATH $setup_dir/man
         endif  
 else
