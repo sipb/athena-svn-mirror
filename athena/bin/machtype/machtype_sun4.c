@@ -2,10 +2,11 @@
  *  Machtype: determine machine type & display type
  *
  * RCS Info
- *    $Id: machtype_sun4.c,v 1.14 1995-09-04 00:33:04 cfields Exp $
+ *    $Id: machtype_sun4.c,v 1.15 1995-11-30 19:33:17 miki Exp $
  *    $Locker:  $
  */
 
+#define volatile 
 #include <stdio.h>
 #include <string.h>
 #include <kvm.h>
