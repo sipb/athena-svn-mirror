@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_ask.c,v $
- *	$Id: p_ask.c,v 1.9 1990-11-14 12:29:46 lwvanels Exp $
+ *	$Id: p_ask.c,v 1.10 1991-01-03 15:44:05 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_ask.c,v 1.9 1990-11-14 12:29:46 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_ask.c,v 1.10 1991-01-03 15:44:05 lwvanels Exp $";
 #endif
 #endif
 
@@ -96,6 +96,7 @@ do_olc_ask(arguments)
       printf("\tshow  - show new messages\n");
       printf("\tdone  - mark your question resolved\n");
       printf("\tquit  - exit OLC, leaving your question active\n");
+      printf("\thours - Find hours OLC is staffed\n");
       printf("\t?     - see entire listing of commands\n");
     }
   return(status);
