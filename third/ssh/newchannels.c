@@ -16,8 +16,11 @@ arbitrary tcp/ip connections, and the authentication agent connection.
 */
 
 /*
- * $Id: newchannels.c,v 1.1.1.1 1997-10-17 22:26:04 danw Exp $
+ * $Id: newchannels.c,v 1.1.1.2 1998-01-24 01:25:25 danw Exp $
  * $Log: not supported by cvs2svn $
+ * Revision 1.41  1998/01/03 06:41:38  kivinen
+ * 	Fixed bug in allow/deny forward to host name handling.
+ *
  * Revision 1.40  1997/08/21 22:16:26  ylo
  * 	Fixed security bug with port number > 65535 in remote forwarding.
  *
