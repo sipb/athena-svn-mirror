@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.50 2002-05-31 23:05:31 zacheiss Exp $
+# $Id: Makefile,v 1.51 2002-07-31 00:11:51 zacheiss Exp $
 
 SHELL=/bin/sh
 ATHRBINDIR=/bin/athena
@@ -17,6 +17,7 @@ MOIRA=/afs/athena.mit.edu/system/moira
 HELP=/afs/athena.mit.edu/system/help
 MKSERV=/afs/athena.mit.edu/system/mkserv
 TELLME=/afs/athena.mit.edu/system/config/tellme
+PSUTILS=/afs/athena.mit.edu/astaff/project/psutils
 
 # We make a lot of symlinks here, so we're going to make a hack to make it
 # a little more readable.
@@ -53,7 +54,45 @@ SYMLINKS=	${MOIRA}/man/man1/addusr.1	${ATHMANDIR}/man1/addusr.1 \
 		${MKSERV}/man/man8/mkserv.8	${ATHMANDIR}/man8/mkserv.8 \
 		${MKSERV}/man/cat8/mkserv.8	${ATHMANDIR}/cat8/mkserv.8 \
 	${MOIRA}/man/man8/update_server.8  ${ATHMANDIR}/man8/update_server.8 \
-	${MOIRA}/man/cat8/update_server.8  ${ATHMANDIR}/cat8/update_server.8
+	${MOIRA}/man/cat8/update_server.8  ${ATHMANDIR}/cat8/update_server.8 \
+		${PSUTILS}/man/man1/ps4014.1	${ATHMANDIR}/man1/ps4014.1 \
+		${PSUTILS}/man/cat1/ps4014.1	${ATHMANDIR}/cat1/ps4014.1 \
+		${PSUTILS}/man/man1/ps630.1	${ATHMANDIR}/man1/ps630.1 \
+		${PSUTILS}/man/cat1/ps630.1	${ATHMANDIR}/cat1/ps630.1 \
+		${PSUTILS}/man/man1/pscat.1	${ATHMANDIR}/man1/pscat.1 \
+		${PSUTILS}/man/cat1/pscat.1	${ATHMANDIR}/cat1/pscat.1 \
+		${PSUTILS}/man/man1/psdit.1	${ATHMANDIR}/man1/psdit.1 \
+		${PSUTILS}/man/cat1/psdit.1	${ATHMANDIR}/cat1/psdit.1 \
+		${PSUTILS}/man/man1/psdraft.1	${ATHMANDIR}/man1/psdraft.1 \
+		${PSUTILS}/man/cat1/psdraft.1	${ATHMANDIR}/cat1/psdraft.1 \
+		${PSUTILS}/man/man1/psfax.1	${ATHMANDIR}/man1/psfax.1 \
+		${PSUTILS}/man/cat1/psfax.1	${ATHMANDIR}/cat1/psfax.1 \
+		${PSUTILS}/man/man1/psfonts.1	${ATHMANDIR}/man1/psfonts.1 \
+		${PSUTILS}/man/cat1/psfonts.1	${ATHMANDIR}/cat1/psfonts.1 \
+		${PSUTILS}/man/man1/pslpr.1	${ATHMANDIR}/man1/pslpr.1 \
+		${PSUTILS}/man/cat1/pslpr.1	${ATHMANDIR}/cat1/pslpr.1 \
+		${PSUTILS}/man/man1/psnup.1	${ATHMANDIR}/man1/psnup.1 \
+		${PSUTILS}/man/cat1/psnup.1	${ATHMANDIR}/cat1/psnup.1 \
+		${PSUTILS}/man/man1/psplot.1	${ATHMANDIR}/man1/psplot.1 \
+		${PSUTILS}/man/cat1/psplot.1	${ATHMANDIR}/cat1/psplot.1 \
+		${PSUTILS}/man/man1/psrev.1	${ATHMANDIR}/man1/psrev.1 \
+		${PSUTILS}/man/cat1/psrev.1	${ATHMANDIR}/cat1/psrev.1 \
+		${PSUTILS}/man/man1/psroff.1	${ATHMANDIR}/man1/psroff.1 \
+		${PSUTILS}/man/cat1/psroff.1	${ATHMANDIR}/cat1/psroff.1 \
+		${PSUTILS}/man/man1/pssymbols.1	${ATHMANDIR}/man1/pssymbols.1 \
+		${PSUTILS}/man/cat1/pssymbols.1	${ATHMANDIR}/cat1/pssymbols.1 \
+	${PSUTILS}/man/man1/transcript.1	${ATHMANDIR}/man1/transcript.1 \
+	${PSUTILS}/man/cat1/transcript.1	${ATHMANDIR}/cat1/transcript.1 \
+		${PSUTILS}/man/man7/afm.7	${ATHMANDIR}/man7/afm.7 \
+		${PSUTILS}/man/cat7/afm.7	${ATHMANDIR}/cat7/afm.7 \
+	${PSUTILS}/man/man7/postscript.7	${ATHMANDIR}/man7/postscript.7 \
+	${PSUTILS}.man/cat7/postscript.7	${ATHMANDIR}/cat7/postscript.7 \
+		${PSUTILS}/man/man8/pscatmap.8	${ATHMANDIR}/man8/pscatmap.8 \
+		${PSUTILS}/man/cat8/pscatmap.8	${ATHMANDIR}/cat8/pscatmap.8 \
+		${PSUTILS}/man/man8/psdman.8	${ATHMANDIR}/man8/psdman.8 \
+		${PSUTILS}/man/cat8/psdman.8	${ATHMANDIR}/cat8/psdman.8 \
+		${PSUTILS}/man/man8/psint.8	${ATHMANDIR}/man8/psint.8 \
+		${PSUTILS}/man/cat8/psint.8	${ATHMANDIR}/cat8/psint.8
 
 all: ${ATTACHRUN}
 	cd os/${OS} && ${MAKE} $@
@@ -73,6 +112,8 @@ install:
 	mkdir -p ${DESTDIR}${ATHLIBEXECDIR}
 	mkdir -p ${DESTDIR}${ATHMANDIR}/man1
 	mkdir -p ${DESTDIR}${ATHMANDIR}/cat1
+	mkdir -p ${DESTDIR}${ATHMANDIR}/man7
+	mkdir -p ${DESTDIR}${ATHMANDIR}/cat7
 	mkdir -p ${DESTDIR}${ATHMANDIR}/man8
 	mkdir -p ${DESTDIR}${ATHMANDIR}/cat8
 	install -c -m 555 addusr ${DESTDIR}${ATHBINDIR}
