@@ -1,5 +1,5 @@
 #
-# $Id: Imakefile,v 1.1 1991-03-24 18:30:26 lwvanels Exp $
+# $Id: Imakefile,v 1.2 1991-04-08 21:30:20 lwvanels Exp $
 # $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/lib/motif_help/Imakefile,v $
 #
 
@@ -22,3 +22,5 @@ install::
 InstallMultipleDestFlags(install, $(SRCS), \
  $(DESTDIR)/usr/athena/lib/olc/motif_help,$(INSTMANFLAGS))
 #endif
+
+depend::
