@@ -1,7 +1,7 @@
 /* #	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/Imakefile,v $
   #	$Author: epeisach $
   #	$Locker:  $
-  #	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/Imakefile,v 1.4 1991-01-11 10:18:31 epeisach Exp $
+  #	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/Imakefile,v 1.5 1991-01-11 10:25:12 epeisach Exp $
   #
   #
   #     Copyright 1990 Massachusetts Institute of Technology.
@@ -10,14 +10,25 @@
   #     "mit-copyright.h".
 */
 
+/* Define LOCAL_NCS if you are using an ncs tree routed at ./ncs */
+#define LOCAL_NCS
+
 DESTDIR=
 
 /* NDBM is now in config.h */
+#ifdef LOCAL_NCS
 CFLAGS=-O -DHESIOD -DKERBEROS -DZEPHYR -DV1COMPAT ${OCFLAGS}\
 		-I./ncs/include/idl -I. -I..
-LIBS= ${OPTLIBFLAGS} ./ncs/nck/libnck.a  -lhesiod -lzephyr -lacl -lkrb \
+LIBS= -L/usr/athena/lib ${OPTLIBFLAGS} ./ncs/nck/libnck.a  -lhesiod \
+	-lzephyr -lacl -lkrb -ldes -lcom_err ${DBMLIB} ${POSTLIBFLAGS}
+#else
+CFLAGS=-O -DHESIOD -DKERBEROS -DZEPHYR -DV1COMPAT ${OCFLAGS}\
+		-I. -I.. -I/usr/include/idl/c
+LIBS= -L/usr/athena/lib ${OPTLIBFLAGS} -lnck -lhesiod -lzephyr -lacl -lkrb \
 	-ldes -lcom_err ${DBMLIB} ${POSTLIBFLAGS}
-DBLIBS            = ${OPTLIBFLAGS} -lkrb ${DBMLIB} ${POSTLIBFLAGS}
+#endif
+
+DBLIBS            = -L/usr/athena/lib ${OPTLIBFLAGS} -lkrb ${DBMLIB} ${POSTLIBFLAGS}
 
 #if defined(ultrix)
 #if defined(ULTRIX40)
@@ -32,17 +43,22 @@ DBMLIB=-ldbm
 #endif
 
 #ifdef i386
-OPTLIBFLAGS=-L/usr/athena/lib 
 POSTLIBFLAGS=-lbsd
 #endif
 
 #ifdef _IBMR2
-OPTLIBFLAGS=-L/usr/athena/lib 
 POSTLIBFLAGS=-lbsd
 #endif
 
+#ifdef LOCAL_NCS
 NIDL=./ncs/nidl/nidl
 NIDLOPTS=-idir ./ncs/include/idl -m
+#else
+NIDL=/usr/bin/nidl
+NIDLOPTS=-idir /usr/include/idl -m
+#endif /* LOCAL_NCS */
+
+
 .SUFFIXES: .idl .h
 COMPILE_ET=/usr/athena/compile_et
 
@@ -104,12 +120,17 @@ DBOBJS          = dump_db.o restore_db.o bill_db.o \
 
 ALL=	lpqd lpquota qdb_create s_chkaf $(DBPROGRAMS) 
 
+#ifdef LOCAL_NCS
 all:	./ncs/cpp/cpp ./ncs/nidl/nidl ./ncs/nck/libnck.a ${ALL} 
+#else
+all:	${ALL}
+#endif
 
 Makefile: Imakefile ../cppflags
 	-mv -f Makefile Makefile.bak
 	/lib/cpp `../cppflags` Imakefile Makefile 
 
+#ifdef LOCAL_NCS
 ./ncs/cpp/cpp:
 	(cd ncs/cpp; make MFLAGS=$(MFLAGS) )
 
@@ -124,6 +145,7 @@ Makefile: Imakefile ../cppflags
 ./ncs/nck/libnck.a:
 	(cd ncs/nck; make MFLAGS=$(MFLAGS) )
 #endif
+#endif /* LOCAL_NCS */
 
 s_chkaf: ${SOBJS}
 	${CC} -o s_chkaf ${SOBJS} ${LIBS}
