@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: update_ws.sh,v 1.48 2000-05-19 18:54:28 ghudson Exp $
+# $Id: update_ws.sh,v 1.49 2000-05-20 21:58:13 ghudson Exp $
 
 # Copyright 1996 by the Massachusetts Institute of Technology.
 #
@@ -231,7 +231,7 @@ failupdate() {
   if [ Auto = "$method" ]; then
     echo "Attempting to reattach old system packs"
     detach "$SYSLIB"
-    AUTOUPDATE=false getcluster -l /etc/athena/cluster.local \
+    AUTOUPDATE=false getcluster -b -l /etc/athena/cluster.local \
       "$HOST" "$version" > /var/athena/cluster.oldrel
     if [ -s /var/athena/cluster.oldrel ]; then
       . /var/athena/cluster.oldrel
