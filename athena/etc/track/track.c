@@ -1,6 +1,6 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 4.13 1995-05-14 00:54:19 cfields Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 4.14 1995-07-21 00:29:59 cfields Exp $
  *
  *	$Log: not supported by cvs2svn $
  * Revision 4.11  93/04/29  16:12:58  vrt
@@ -153,7 +153,7 @@
  */
 
 #ifndef lint
-static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 4.13 1995-05-14 00:54:19 cfields Exp $";
+static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 4.14 1995-07-21 00:29:59 cfields Exp $";
 #endif lint
 
 #include "bellcore-copyright.h"
@@ -230,9 +230,15 @@ char **argv;
 
 	umask(022);	/* set default umask for daemons */
 
+#ifdef SYSV
+	sigset( SIGINT, (void *)cleanup);
+	sigset( SIGHUP, (void *)cleanup);
+	sigset( SIGPIPE, (void *)cleanup);
+#else
 	signal( SIGINT, cleanup);
 	signal( SIGHUP, cleanup);
 	signal( SIGPIPE, cleanup);
+#endif
 
 	for(i=1;i<argc;i++) {
 		if (argv[i][0] != '-') {
@@ -533,9 +539,6 @@ readstat( types) char *types; {
 	 * flush the kernel's text-table,
 	 * to ensure that the vnodes we've freed get scavenged,
 	 */
-#if !defined(ultrix) && !defined(_AIX) && !defined(SOLARIS)
-	unmount("/");		/* XXX */
-#endif
 #ifdef ultrix
         {
 		dev_t dev;
