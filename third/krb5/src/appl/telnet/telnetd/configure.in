@@ -89,7 +89,7 @@ if test $with_afs != no; then
 	EXTRALIBS="$EXTRALIBS -L$with_afs/lib -L$with_afs/lib/afs -lauth -lsys -lrx -llwp -lsys"
 	AC_CHECK_FUNC(sigvec, :,
 		      [AC_CHECK_LIB(ucb, sigvec,
-				    [LOGINLIBS="$LOGINLIBS -L/usr/ucblib -R/usr/ucblib -lc -lucb"],
+				    [EXTRALIBS="$EXTRALIBS -L/usr/ucblib -R/usr/ucblib -lc -lucb"],
 				    :, -L/usr/ucblib)])
 	AC_CHECK_FUNC(insque, :,
 		      [AC_CHECK_LIB(compat, insque,
