@@ -1,4 +1,4 @@
-.\" $Id: locker_iterate_attachtab.3,v 1.1 1999-02-26 19:05:13 danw Exp $
+.\" $Id: locker_iterate_attachtab.3,v 1.2 1999-03-27 17:34:01 danw Exp $
 .\"
 .\" Copyright 1997 by the Massachusetts Institute of Technology.
 .\"
@@ -23,12 +23,12 @@ attachtab
 .B #include <locker.h>
 .PP
 .B
-typedef int (*locker_callback)(locker_context *, locker_attachent *,
+typedef int (*locker_callback)(locker_context, locker_attachent *,
 .B
 	void *)
 .PP
 .B
-int locker_iterate_attachtab(locker_context *\fIcontext\fP,
+int locker_iterate_attachtab(locker_context \fIcontext\fP,
 .B
 	locker_callback \fItest\fP, void *\fItestarg\fP,
 .B

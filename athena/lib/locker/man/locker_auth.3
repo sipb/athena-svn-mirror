@@ -1,4 +1,4 @@
-.\" $Id: locker_auth.3,v 1.1 1999-02-26 19:05:09 danw Exp $
+.\" $Id: locker_auth.3,v 1.2 1999-03-27 17:33:59 danw Exp $
 .\"
 .\" Copyright 1997 by the Massachusetts Institute of Technology.
 .\"
@@ -23,15 +23,15 @@ to filesystems
 .B #include <locker.h>
 .PP
 .B
-int locker_auth(locker_context *\fIcontext\fP, 
+int locker_auth(locker_context \fIcontext\fP, 
 .B
 	char *\fIfilesystem\fP, int \fIop\fP);
 .B
-int locker_auth_to_host(locker_context *\fIcontext\fP, 
+int locker_auth_to_host(locker_context \fIcontext\fP, 
 .B
 	char *\fIname\fP, char *\fIhost\fP, int \fIop\fP);
 .B
-int locker_auth_to_cell(locker_context *\fIcontext\fP,
+int locker_auth_to_cell(locker_context \fIcontext\fP,
 .B
 	char *\fIname\fP, char *\fIcell\fP, int \fIop\fP);
 .PP

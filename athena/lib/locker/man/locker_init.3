@@ -1,4 +1,4 @@
-.\" $Id: locker_init.3,v 1.1 1999-02-26 19:05:13 danw Exp $
+.\" $Id: locker_init.3,v 1.2 1999-03-27 17:34:00 danw Exp $
 .\"
 .\" Copyright 1997 by the Massachusetts Institute of Technology.
 .\"
@@ -27,7 +27,7 @@ typedef int (*locker_error_fun)(void *\fIdata\fP, char *\fIfmt\fP,
 	va_list \fIarg\fP);
 .PP
 .B
-int locker_init(locker_context **\fIcontextp\fP, uid_t \fIuser\fP,
+int locker_init(locker_context *\fIcontextp\fP, uid_t \fIuser\fP,
 .B
 	locker_error_fun \fIerrfun\fP, void *\fIerrdata\fP)
 .PP
