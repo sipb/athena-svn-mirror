@@ -377,6 +377,20 @@ int Send_files( char *host, char *printer,
 	}
 	write_file = cfp->transfername;
 	if( block_fd == 0 ){
+		if( KA || (Use_auth && strcasecmp( Use_auth, "krb4" ) != 0 )){
+			status = Send_krb4_auth( host, printer, sock,
+				cfp, transfer_timeout );
+
+			if( status ){
+				return(status);
+			}
+
+			/* Kludge: we don't want to do the things that
+			 * authentication normally entails.
+			 */
+			Use_auth = NULL;
+		}
+
 		setstatus( cfp, "sending job '%s' to %s@%s",
 			id, printer, host );
 		plp_snprintf( line, sizeof(line), "%c%s\n",
