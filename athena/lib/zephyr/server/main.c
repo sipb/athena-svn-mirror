@@ -4,7 +4,7 @@
  *	Created by:	John T. Kohl
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/main.c,v $
- *	$Author: jtkohl $
+ *	$Author: raeburn $
  *
  *	Copyright (c) 1987,1988 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -14,13 +14,13 @@
 #include <zephyr/mit-copyright.h>
 
 #ifdef DEBUG
-char version[] = "Zephyr Server (DEBUG) 3.3";
+char version[] = "Zephyr Server (DEBUG) 3.5";
 #else
-char version[] = "Zephyr Server 3.3";
+char version[] = "Zephyr Server 3.5";
 #endif DEBUG
 #ifndef lint
 #ifndef SABER
-static char rcsid_main_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/main.c,v 1.31 1988-07-19 11:54:30 jtkohl Exp $";
+static char rcsid_main_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/main.c,v 1.32 1988-10-19 22:36:45 raeburn Exp $";
 char copyright[] = "Copyright (c) 1987,1988 Massachusetts Institute of Technology.\n";
 #ifdef CONCURRENT
 char concurrent[] = "Brain-dump concurrency enabled";
@@ -85,6 +85,8 @@ static int bye(), dbug_on(), dbug_off(), dump_db(), reset();
 #ifndef DEBUG
 static void detach();
 #endif DEBUG
+/* So lint shuts up: */
+void perror();
 
 static short doreset = 0;		/* if it becomes 1, perform
 					   reset functions */
@@ -167,7 +169,7 @@ char **argv;
 #endif DEBUG
 
 	/* open log */
-	openlog(programname, LOG_PID, LOG_LOCAL6);
+	OPENLOG(programname, LOG_PID, LOG_LOCAL6);
 
 #ifdef DEBUG
 	if (zalone)
@@ -336,15 +338,15 @@ do_net_setup()
 	
 	(void) setservent(1);		/* keep file/connection open */
 	
-	if (!(sp = getservbyname("zephyr-clt", "udp"))) {
-		syslog(LOG_ERR, "zephyr-clt/udp unknown");
+	if (!(sp = getservbyname(SERVER_SVCNAME, "udp"))) {
+		syslog(LOG_ERR, "%s/udp unknown",SERVER_SVCNAME);
 		return(1);
 	}
 	bzero((caddr_t) &sock_sin, sizeof(sock_sin));
 	sock_sin.sin_port = sp->s_port;
 	
-	if (!(sp = getservbyname("zephyr-hm", "udp"))) {
-		syslog(LOG_ERR, "zephyr-hm/udp unknown");
+	if (!(sp = getservbyname(HM_SVCNAME, "udp"))) {
+		syslog(LOG_ERR, "%s/udp unknown", SERVER_SVCNAME);
 		return(1);
 	}
 	hm_port = sp->s_port;
@@ -393,7 +395,9 @@ int sig;
 {
 	server_shutdown();		/* tell other servers */
 	hostm_shutdown();		/* tell our hosts */
+#ifdef KERBEROS
 	(void) dest_tkt();
+#endif
 	syslog(LOG_INFO, "goodbye (sig %d)",sig);
 	exit(0);
 	/*NOTREACHED*/
