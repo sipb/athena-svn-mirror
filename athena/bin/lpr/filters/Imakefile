@@ -1,13 +1,14 @@
-#
-# Copyright (c) 1983 Regents of the University of California.
-# All rights reserved.  The Berkeley software License Agreement
-# specifies the terms and conditions for redistribution.
-#
-#	@(#)Makefile	5.1 (Berkeley) 5/15/85
-#
-#
-# makefile for line printer filters and associated programs
-#
+/* #
+   # Copyright (c) 1983 Regents of the University of California.
+   # All rights reserved.  The Berkeley software License Agreement
+   # specifies the terms and conditions for redistribution.
+   #
+   #	@(#)Makefile	5.1 (Berkeley) 5/15/85
+   #
+   #
+   # makefile for line printer filters and associated programs
+   #
+*/
 
 DESTDIR=
 CFLAGS=	-O
@@ -22,11 +23,15 @@ LN01FILTERS= ln01l ln01p
 VARIAN=	rvsort rvcat vsort vcat vpf vpsf vdmp vpltdmp vplotf vfontinfo vwidth \
 	vfw fcvt rotate rotprt
 
+#if defined(AIX) && defined(_I386)
+OPTLIBS=-lbsd
+#endif
+
 all:	printer
 
 Makefile: Imakefile
 	-mv -f Makefile Makefile.bak
-	/lib/cpp -E Imakefile Makefile 
+	/lib/cpp `../cppflags` Imakefile > Makefile 
 
 printer: ${PRINTER}
 
@@ -120,7 +125,7 @@ rotprt: rotprt.c
 
 ln01filter.c: ln01filter.l
 ln01filter: ln01filter.o
-	${CC} -o ln01filter ${CFLAGS} ln01filter.o
+	${CC} -o ln01filter ${CFLAGS} ln01filter.o ${OPTLIBS}
 
 newln01: newln01.o
 	${CC} -o newln01 ${CFLAGS} newln01.o
@@ -132,4 +137,4 @@ staff_ln03filter: staff_ln03filter.o
 	${CC} -o staff_ln03filter ${CFLAGS} staff_ln03filter.o
 
 ln01raw: ln01raw.o
-	${CC} ${CFLAGS} -o ln01raw ln01raw.o
+	${CC} ${CFLAGS} -o ln01raw ln01raw.o ${OPTLIBS}
