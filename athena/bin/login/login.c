@@ -1,9 +1,9 @@
 /*
- * $Id: login.c,v 1.85 1997-02-19 18:30:26 ghudson Exp $
+ * $Id: login.c,v 1.86 1997-04-21 06:47:13 ghudson Exp $
  */
 
 #ifndef lint
-static char *rcsid = "$Id: login.c,v 1.85 1997-02-19 18:30:26 ghudson Exp $";
+static char *rcsid = "$Id: login.c,v 1.86 1997-04-21 06:47:13 ghudson Exp $";
 #endif
 
 /*
@@ -2313,9 +2313,10 @@ struct passwd *pwd;
 get_groups()
 {
 	FILE *grin,*grout;
-	char **cp,grbuf[4096],*ptr,*pwptr,*numptr,*lstptr,**grname,**grnum;
+	char **cp,grbuf[4096],*ptr,*pwptr,*numptr,*lstptr;
+	char *grname[MAX_GROUPS], *grnum[MAX_GROUPS];
 	char grlst[4096],grtmp[4096],*tmpptr;
-	int ngroups,i,cnt;
+	int ngroups,i,cnt,nalready, namelen;
 	
 	if (inhibitflag)
 		return;
@@ -2341,54 +2342,68 @@ get_groups()
 		return;
 	}
 
+	/* Parse up to MAX_GROUPS group names and gids out of cp[0]. */
+	ptr = cp[0];
 	ngroups = 0;
-	for (ptr=cp[0];*ptr;ptr++)
-		if (*ptr == ':')
-			ngroups++;
-
-	ngroups = (ngroups+1)/2;
-
-	if (ngroups > MAX_GROUPS)
-		ngroups = MAX_GROUPS;
-
-	grname = (char **)malloc(ngroups * sizeof(char *));
-	if (!grname) {
-		fprintf(stderr,"Out of memory!\n");
-		fclose(grin);
-		fclose(grout);
-		unlink("/etc/gtmp");
-		return;
-	}
-
-	grnum = (char **)malloc(ngroups * sizeof(char *));
-	if (!grnum) {
-		fprintf(stderr,"Out of memory!\n");
-		fclose(grin);
-		fclose(grout);
-		unlink("/etc/gtmp");
-		return;
-	}
-
-	for (i=0,ptr=cp[0];i<ngroups;i++) {
-		grname[i] = ptr;
-		ptr = strchr(ptr,':');
-		if (!ptr) {
-			fprintf(stderr,"Internal failure while initializing groups\n");
-			fclose(grin);
-			fclose(grout);
-			free(grname);
-			free(grnum);
-			unlink("/etc/gtmp");
-			return;
-		}
-		*ptr++ = '\0';
-		grnum[i] = ptr;
-		ptr = strchr(ptr,':');
+	while (ngroups < MAX_GROUPS) {
+		grname[ngroups] = ptr;
+		ptr = strchr(ptr, ':');
 		if (!ptr)
-			ptr = grnum[i]+strlen(grnum[i]);
-		*ptr++ = '\0';
+			break;
+		*ptr++ = 0;
+		grnum[ngroups] = ptr;
+		ptr = strchr(ptr, ':');
+		if (ptr)
+			*ptr++ = 0;
+		else
+			break;
+		ngroups++;
 	}
 
+	/* Count the groups the user is currently in which aren't in our
+	 * list. */
+	namelen = strlen(pwd->pw_name);
+	nalready = 0;
+	while (fgets(grbuf,sizeof grbuf,grin)) {
+		/* Find the gid and user list. */
+		ptr = strchr(grbuf, ':');
+		if (!ptr)
+			break;
+		numptr = strchr(ptr + 1, ':');
+		if (!numptr)
+			break;
+		numptr++;
+		ptr = strchr(numptr, ':');
+		if (!ptr)
+			break;
+		*ptr = 0;
+
+		/* If it's in our list of gids, we aren't interested. */
+		for (i = 0; i < ngroups; i++) {
+			if (grnum[i] && !strcmp(numptr, grnum[i]))
+				break;
+		}
+		if (i < ngroups)
+			break;
+
+		/* Now check if the user is in the user list. */
+		while (ptr) {
+			ptr++;
+			if (!strncmp(pwd->pw_name, ptr, namelen) &&
+			    (ptr[namelen] == ',' || ptr[namelen] == ' ' ||
+			     ptr[namelen] == '\n')) {
+				nalready++;
+				break;
+			}
+			ptr = strchr(ptr, ',');
+		}
+	}
+
+	/* Avoid putting the user in more than MAX_GROUPS groups total. */
+	if (ngroups > MAX_GROUPS - nalready)
+		ngroups = MAX_GROUPS - nalready;
+
+	rewind(grin);
 	while (fgets(grbuf,sizeof grbuf,grin) != 0) {
 		if (!*grbuf)
 			break;
@@ -2442,8 +2457,6 @@ get_groups()
 	fclose(grout);
 	rename("/etc/gtmp","/etc/group");
 	unlink("/etc/gtmp");
-	free(grname);
-	free(grnum);
 }
 
 #ifdef SOLARIS

@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.79 1997-02-19 18:30:33 ghudson Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.80 1997-04-21 06:46:52 ghudson Exp $
  */
 
 #include <stdio.h>
@@ -1570,8 +1570,8 @@ char *name;
 char *glist;
 {
     char *cp;			/* temporary */
-    char **gnames = NULL, **gids;/* array of group names, numbers */
-    int i, fd = -1, ngroups;
+    char *gnames[MAX_GROUPS], *gids[MAX_GROUPS];
+    int i, fd = -1, ngroups, nalready;
     int namelen = strlen(name);
     FILE *etc_group, *etc_gtmp;
     static char data[BUFSIZ+MAXGNAMELENGTH];/*  space to add new username */
@@ -1597,39 +1597,70 @@ char *glist;
 	return("Failed to open temporary group file to update your access control groups.");
     }
 
-    /* count groups (there are 2 ':'s in the group list per group, except
-       the first group only has one) */
+    /* Parse up to MAX_GROUPS group names and gids out of glist. */
     cp = glist;
-    ngroups = 1;
-    while (cp = strchr(cp, ':')) {
-	ngroups++;
-	cp++;
-    }
-    ngroups /= 2;
-    if (ngroups > MAX_GROUPS) {
-/*	fprintf(stderr, "Warning - you are in too many groups.  Some of them will be ignored.\n"); */
-	ngroups = MAX_GROUPS;
-    }
-
-    if ((gnames = (char **)malloc(ngroups * sizeof(char *))) == NULL ||
-	(gids = (char **)malloc(ngroups * sizeof(char *))) == NULL) {
-	if (gnames)
-	  free(gnames);
-	(void) fclose(etc_gtmp);
-	(void) fclose(etc_group);
-	(void) unlink("/etc/gtmp");
-	return("Ran out of memory while updating your access control groups");
-    }
-    cp = glist;
-    for (i = 0; i < ngroups; i++) {
-	gnames[i] = cp;
+    ngroups = 0;
+    while (ngroups < MAX_GROUPS) {
+	gnames[ngroups] = cp;
 	cp = strchr(cp, ':');
-	*cp++ = '\0';
-	gids[i] = cp;
-	if (cp = strchr(cp, ':'))
-	  *cp++ = '\0';
+	if (!cp)
+	    break;
+	*cp++ = 0;
+	gids[ngroups] = cp;
+	cp = strchr(cp, ':');
+	if (cp)
+	    *cp++ = 0;
+	else
+	    break;
+	ngroups++;
     }
 
+    /* Make a pass over the group file to count the groups the user is
+     * currently in which aren't in our list. */
+    nalready = 0;
+    while (fgets(data, sizeof(data) - MAXGNAMELENGTH, etc_group)) {
+	char *gid;
+
+	/* Find the gid and user list. */
+	cp = strchr(data, ':');
+	if (!cp)
+	    break;
+	gid = strchr(cp + 1, ':');
+	if (!gid)
+	    break;
+	gid++;
+	cp = strchr(gid, ':');
+	if (!cp)
+	    break;
+	*cp = 0;
+
+	/* If it's in our list of gids, we aren't interested. */
+	for (i = 0; i < ngroups; i++) {
+	    if (gids[i] && !strcmp(gid, gids[i]))
+		break;
+	}
+	if (i < ngroups)
+	    break;
+
+	/* Now check if the user is in the user list. */
+	while (cp) {
+	    cp++;
+	    if (!strncmp(name, cp, namelen) &&
+		(cp[namelen] == ',' || cp[namelen] == ' ' ||
+		 cp[namelen] == '\n')) {
+		nalready++;
+		break;
+	    }
+	    cp = strchr(cp, ',');
+	}
+    }
+
+    /* Avoid putting the user in more than MAX_GROUPS groups total. */
+    if (ngroups > MAX_GROUPS - nalready)
+	ngroups = MAX_GROUPS - nalready;
+
+    /* Now make a second pass, adding the user to groups in our list. */
+    rewind(etc_group);
     while (fgets(data, sizeof(data) - MAXGNAMELENGTH, etc_group)) {
 	char *gpwd, *gid, *guserlist = NULL;
 	int add = -1;	/* index of group entry in user's hesiod list */
@@ -1690,8 +1721,6 @@ char *glist;
       goto fail;
 
     (void) fclose(etc_group);
-    free(gids);
-    free(gnames);
     if (rename("/etc/gtmp", "/etc/group") == 0)
       return(NULL);
     else {
@@ -1702,8 +1731,6 @@ char *glist;
  fail:
     (void) unlink("/etc/gtmp");
     (void) fclose(etc_group);
-    free(gids);
-    free(gnames);
     return("Failed to update your access control groups");
 }
 #endif /* _IBMR2 */
