@@ -37,7 +37,7 @@
 
 #ifndef lint
 static const char rcsid[] =
-    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/log.c,v 1.12 1990-01-10 15:10:45 raeburn Exp $";
+    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/log.c,v 1.13 1990-01-16 04:44:34 raeburn Exp $";
 #endif
 
 static FILE *status_log = (FILE *)NULL;
@@ -114,7 +114,10 @@ ERRCODE
 #if __STDC__
 log_log(const KNUCKLE *knuckle, const char *message, const char *header)
 #else
-log_log (knuckle, message, header) KNUCKLE *knuckle; char *message, header;
+log_log (knuckle, message, header)
+     KNUCKLE *knuckle;
+     char *message;
+     char *header;
 #endif
 {
   FILE *log;		
