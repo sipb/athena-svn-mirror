@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.46 1993-06-18 16:59:52 root Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.47 1993-06-29 14:24:18 vrt Exp $
  */
 
 #include <stdio.h>
@@ -128,6 +128,7 @@ extern int errno, quota_pid;
 
 int homedir_status = HD_LOCAL;
 int added_to_passwd = FALSE;
+#ifdef SOLARIS
 struct passwd *
  get_pwnam(usr)
  char *usr;
@@ -140,6 +141,10 @@ struct passwd *
      pwd->pw_passwd = sp->sp_pwdp;
    return(pwd);
  }
+#else
+#define get_pwnam(x) getpwnam(x)
+#endif
+
 #ifdef XDM
 char *dologin(user, passwd, option, script, tty, session, display, verify)
 struct verify_info *verify;
