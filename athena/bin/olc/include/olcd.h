@@ -19,7 +19,7 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olcd.h,v $
- *	$Id: olcd.h,v 1.37 1991-09-22 12:10:27 lwvanels Exp $
+ *	$Id: olcd.h,v 1.38 1991-10-21 11:08:56 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
@@ -69,7 +69,7 @@
 #define LIST_FILE_NAME 		"/usr/spool/olc/qlist_-1.log"
 #define LIST_TMP_NAME 		"/usr/spool/olc/queue.tmp"
 #define HOURS_FILE		"/usr/athena/lib/olc/hours"
-#define LUMBERJACK_LOC		"/usr/local/lumberjack"
+#define LUMBERJACK_LOC		"/usr/local/bin/lumberjack"
 
 #ifdef KERBEROS
 #define TICKET_FILE		"/usr/spool/olc/tkt.olc"
