@@ -14,7 +14,7 @@
 #	endpackage	the name of the package in the package list to
 #			stop building at
 
-# $Revision: 1.74 $
+# $Revision: 1.75 $
 
 umask 2
 
@@ -57,7 +57,28 @@ setenv INSTOPT "-o root"
 #this script assumes that a dependency list has been generated from somewhere.
 #At the moment that just might be a hard coded list.
 
-set libs1=" athena/lib/et athena/lib/ss athena/lib/hesiod athena/lib/kerberos1 third/supported/kerberos5 "
+# This piece of bogosity was introduced during the 8.0 release cycle
+# after Solaris went early but before Irix went beta.  We decided to go
+# with CNS on Irix (because it works), but to stay with MIT Kerberos on
+# Solaris (because we're really late in the Solaris release cycle).  To
+# complicate matters, Solaris still builds Kerberos in two stages (because
+# we used to build AFS in between).
+#
+# In The Future (tm), this can go away and we can just build
+# third/supported/cns where $krb_stage1 is currently subbed in.
+switch ( $machine )
+  case sun4
+    set krb_stage1="athena/lib/kerberos1"
+    set krb_stage2="athena/lib/kerberos2"
+    breaksw
+
+  case sgi
+    set krb_stage1="third/supported/cns"
+    set krb_stage2=""
+    breaksw
+endsw
+
+set libs1=" athena/lib/et athena/lib/ss athena/lib/hesiod $krb_stage1 third/supported/kerberos5 "
 
 set tools="athena/etc/synctree"
 
@@ -80,7 +101,7 @@ switch ( $machine )
     set machthird="third/unsupported/transcript-v4.1 third/supported/look third/supported/whois third/unsupported/x3270 athena/lib/AL"
 endsw
 
-set libs2="athena/lib/kerberos2 athena/lib/acl athena/lib/gdb athena/lib/gdss athena/lib/zephyr athena/lib/neos"
+set libs2="$krb_stage2 athena/lib/acl athena/lib/gdb athena/lib/gdss athena/lib/zephyr athena/lib/neos"
 
 # athena/lib/moira.dev ; I think this is not ours at the moment.
 
