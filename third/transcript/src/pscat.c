@@ -3,7 +3,7 @@
 _NOTICE N1[] = "Copyright (c) 1985,1987,1990,1991,1992 Adobe Systems Incorporated";
 _NOTICE N2[] = "GOVERNMENT END USERS: See Notice file in TranScript library directory";
 _NOTICE N3[] = "-- probably /usr/lib/ps/Notice";
-_NOTICE RCSID[]="$Header: /afs/dev.mit.edu/source/repository/third/transcript/src/pscat.c,v 1.1.1.1 1996-10-07 20:25:50 ghudson Exp $";
+_NOTICE RCSID[]="$Header: /afs/dev.mit.edu/source/repository/third/transcript/src/pscat.c,v 1.2 1996-10-14 05:00:05 ghudson Exp $";
 #endif
 /* pscat.c
  *
@@ -15,7 +15,7 @@ _NOTICE RCSID[]="$Header: /afs/dev.mit.edu/source/repository/third/transcript/sr
  * troff C/A/T file to PostScript converter
  *
  * RCSLOG:
- * $Log: not supported by cvs2svn $
+ * $/Log: pscat.c,v/$
  * Revision 3.4  1992/11/02  17:24:19  snichols
  * Fixed bug in ReadDistanceInPoints regarding real numbers.
  *
@@ -619,7 +619,7 @@ int 	rm;	/* railmag */
     }
 }
 
-private long labs(n)
+private long abs_long(n)
 long n;
 {
     if (n < 0L) return ((long) -n);
@@ -635,8 +635,8 @@ int pointsize;
     c = cd->pschar;
     SetFont(cd->font,pointsize);
     /* handle positioning error */
-    if ((labs((long)(wantPSx - curPSx)) > tolerableError) ||
-       (labs((long)(wantPSy - curPSy)) > tolerableError)) {
+    if ((abs_long((long)(wantPSx - curPSx)) > tolerableError) ||
+       (abs_long((long)(wantPSy - curPSy)) > tolerableError)) {
 	FlushShow();
 	MoveTo(wantPSx, wantPSy);
 	curPSx = wantPSx;
