@@ -146,44 +146,30 @@ enum        <A
 HREF="gconf-gconf-error.html#GCONFERROR"
 >GConfError</A
 >;
-<A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A>*     <A
+GError*     <A
 HREF="gconf-gconf-error.html#GCONF-ERROR-NEW"
 >gconf_error_new</A
 >                 (<A
 HREF="gconf-gconf-error.html#GCONFERROR"
 >GConfError</A
 > en,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *format,
+                                             const gchar *format,
                                              ...);
 void        <A
 HREF="gconf-gconf-error.html#GCONF-SET-ERROR"
 >gconf_set_error</A
->                 (<A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A> **err,
+>                 (GError **err,
                                              <A
 HREF="gconf-gconf-error.html#GCONFERROR"
 >GConfError</A
 > en,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *format,
+                                             const gchar *format,
                                              ...);
-<A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A>*     <A
+GError*     <A
 HREF="gconf-gconf-error.html#GCONF-COMPOSE-ERRORS"
 >gconf_compose_errors</A
->            (<A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A> *err1,
-                                             <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A> *err2);</PRE
+>            (GError *err1,
+                                             GError *err2);</PRE
 ></TD
 ></TR
 ></TABLE
@@ -196,21 +182,15 @@ NAME="AEN2417"
 ><H2
 >Description</H2
 ><P
->The <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A> object is used to report errors that occur in GConf
+>The GError object is used to report errors that occur in GConf
 library routines. All functions that report errors work the same way:
 <P
 ></P
 ><UL
 ><LI
 ><P
->The last argument to the function is a <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A>**, a pointer to a
-location where a <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A>* can be placed.</P
+>The last argument to the function is a GError**, a pointer to a
+location where a GError* can be placed.</P
 ></LI
 ><LI
 ><P
@@ -226,9 +206,7 @@ error will be returned.</P
 CLASS="SYMBOL"
 >NULL</SPAN
 >, the argument should be the address of a 
-<A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A>* variable, which should be initialized to
+GError* variable, which should be initialized to
 <SPAN
 CLASS="SYMBOL"
 >NULL</SPAN
@@ -236,15 +214,9 @@ CLASS="SYMBOL"
 ></LI
 ><LI
 ><P
->If an error occurs, a <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A> will be allocated and placed in the
-return location; the caller must free the <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A> with
-<A
-HREF=../glib/glib-error-reporting.html#G-ERROR-FREE
->g_error_free</A>(). If no error occurs, the return location will be
+>If an error occurs, a GError will be allocated and placed in the
+return location; the caller must free the GError with
+g_error_free(). If no error occurs, the return location will be
 left untouched. That is, the test <TT
 CLASS="LITERAL"
 >error != NULL</TT
@@ -268,16 +240,10 @@ and you passed a non-<SPAN
 CLASS="SYMBOL"
 >NULL</SPAN
 > value for the last argument
-to the function, a <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A> will be returned. If the return value
-indicates success, then a <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A> will never be returned.  These
+to the function, a GError will be returned. If the return value
+indicates success, then a GError will never be returned.  These
 relationships are guaranteed; that is, you can reliably use the return
-value to decide whether a <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A> was placed in the return
+value to decide whether a GError was placed in the return
 location. If a function does <SPAN
 CLASS="emphasis"
 ><I
@@ -286,9 +252,7 @@ CLASS="EMPHASIS"
 ></SPAN
 > indicate
 success/failure by return value, you must check whether the
-<A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A> is <SPAN
+GError is <SPAN
 CLASS="SYMBOL"
 >NULL</SPAN
 > to detect errors.</P
@@ -403,9 +367,7 @@ CLASS="LITERAL"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->indicates that no error occurred, won't be returned in a <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A>.</TD
+>indicates that no error occurred, won't be returned in a GError.</TD
 ></TR
 ><TR
 ><TD
@@ -675,15 +637,11 @@ CELLPADDING="6"
 ><TD
 ><PRE
 CLASS="PROGRAMLISTING"
-><A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A>*     gconf_error_new                 (<A
+>GError*     gconf_error_new                 (<A
 HREF="gconf-gconf-error.html#GCONFERROR"
 >GConfError</A
 > en,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *format,
+                                             const gchar *format,
                                              ...);</PRE
 ></TD
 ></TR
@@ -788,9 +746,7 @@ CLASS="EMPHASIS"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->newly-allocated <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A>.
+>newly-allocated GError.
 &#13;</TD
 ></TR
 ></TBODY
@@ -818,16 +774,12 @@ CELLPADDING="6"
 ><TD
 ><PRE
 CLASS="PROGRAMLISTING"
->void        gconf_set_error                 (<A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A> **err,
+>void        gconf_set_error                 (GError **err,
                                              <A
 HREF="gconf-gconf-error.html#GCONFERROR"
 >GConfError</A
 > en,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *format,
+                                             const gchar *format,
                                              ...);</PRE
 ></TD
 ></TR
@@ -940,14 +892,8 @@ CELLPADDING="6"
 ><TD
 ><PRE
 CLASS="PROGRAMLISTING"
-><A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A>*     gconf_compose_errors            (<A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A> *err1,
-                                             <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A> *err2);</PRE
+>GError*     gconf_compose_errors            (GError *err1,
+                                             GError *err2);</PRE
 ></TD
 ></TR
 ></TABLE

@@ -120,6 +120,8 @@ PKG_CONFIG = @PKG_CONFIG@
 POFILES = @POFILES@
 POPT_LIBS = @POPT_LIBS@
 POSUB = @POSUB@
+PO_IN_DATADIR_FALSE = @PO_IN_DATADIR_FALSE@
+PO_IN_DATADIR_TRUE = @PO_IN_DATADIR_TRUE@
 RANLIB = @RANLIB@
 REBUILD = @REBUILD@
 STRIP = @STRIP@
@@ -132,12 +134,10 @@ l = @l@
 
 EFENCE = 
 
-INCLUDES = -I$(top_srcdir) -I$(top_builddir) \
-	 $(DEPENDENT_CFLAGS) \
-	 -DG_LOG_DOMAIN=\"GConf-Tests\" -DGCONF_ENABLE_INTERNALS=1
+INCLUDES = -I$(top_srcdir) -I$(top_builddir) 	 $(DEPENDENT_CFLAGS) 	 -DG_LOG_DOMAIN=\"GConf-Tests\" -DGCONF_ENABLE_INTERNALS=1
 
 
-noinst_PROGRAMS = testgconf testlisteners testschemas testchangeset testencode testunique testpersistence testdirlist testaddress
+noinst_PROGRAMS = testgconf testlisteners testschemas testchangeset testencode testunique testpersistence testdirlist testaddress testbackend
 
 TESTLIBS = $(INTLLIBS) $(DEPENDENT_LIBS) $(top_builddir)/gconf/libgconf-$(MAJOR_VERSION).la  $(EFENCE)
 
@@ -176,13 +176,17 @@ testdirlist_LDADD = $(TESTLIBS)
 testaddress_SOURCES = testaddress.c
 
 testaddress_LDADD = $(TESTLIBS)
+
+testbackend_SOURCES = testbackend.c
+
+testbackend_LDADD = $(TESTLIBS)
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
 CONFIG_CLEAN_FILES = 
 noinst_PROGRAMS =  testgconf$(EXEEXT) testlisteners$(EXEEXT) \
 testschemas$(EXEEXT) testchangeset$(EXEEXT) testencode$(EXEEXT) \
 testunique$(EXEEXT) testpersistence$(EXEEXT) testdirlist$(EXEEXT) \
-testaddress$(EXEEXT)
+testaddress$(EXEEXT) testbackend$(EXEEXT)
 PROGRAMS =  $(noinst_PROGRAMS)
 
 
@@ -224,6 +228,10 @@ testaddress_OBJECTS =  testaddress.$(OBJEXT)
 testaddress_DEPENDENCIES =  \
 $(top_builddir)/gconf/libgconf-$(MAJOR_VERSION).la
 testaddress_LDFLAGS = 
+testbackend_OBJECTS =  testbackend.$(OBJEXT)
+testbackend_DEPENDENCIES =  \
+$(top_builddir)/gconf/libgconf-$(MAJOR_VERSION).la
+testbackend_LDFLAGS = 
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 CCLD = $(CC)
@@ -235,8 +243,8 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 TAR = gtar
 GZIP_ENV = --best
-SOURCES = $(testgconf_SOURCES) $(testlisteners_SOURCES) $(testschemas_SOURCES) $(testchangeset_SOURCES) $(testencode_SOURCES) $(testunique_SOURCES) $(testpersistence_SOURCES) $(testdirlist_SOURCES) $(testaddress_SOURCES)
-OBJECTS = $(testgconf_OBJECTS) $(testlisteners_OBJECTS) $(testschemas_OBJECTS) $(testchangeset_OBJECTS) $(testencode_OBJECTS) $(testunique_OBJECTS) $(testpersistence_OBJECTS) $(testdirlist_OBJECTS) $(testaddress_OBJECTS)
+SOURCES = $(testgconf_SOURCES) $(testlisteners_SOURCES) $(testschemas_SOURCES) $(testchangeset_SOURCES) $(testencode_SOURCES) $(testunique_SOURCES) $(testpersistence_SOURCES) $(testdirlist_SOURCES) $(testaddress_SOURCES) $(testbackend_SOURCES)
+OBJECTS = $(testgconf_OBJECTS) $(testlisteners_OBJECTS) $(testschemas_OBJECTS) $(testchangeset_OBJECTS) $(testencode_OBJECTS) $(testunique_OBJECTS) $(testpersistence_OBJECTS) $(testdirlist_OBJECTS) $(testaddress_OBJECTS) $(testbackend_OBJECTS)
 
 all: all-redirect
 .SUFFIXES:
@@ -337,6 +345,10 @@ testdirlist$(EXEEXT): $(testdirlist_OBJECTS) $(testdirlist_DEPENDENCIES)
 testaddress$(EXEEXT): $(testaddress_OBJECTS) $(testaddress_DEPENDENCIES)
 	@rm -f testaddress$(EXEEXT)
 	$(LINK) $(testaddress_LDFLAGS) $(testaddress_OBJECTS) $(testaddress_LDADD) $(LIBS)
+
+testbackend$(EXEEXT): $(testbackend_OBJECTS) $(testbackend_DEPENDENCIES)
+	@rm -f testbackend$(EXEEXT)
+	$(LINK) $(testbackend_LDFLAGS) $(testbackend_OBJECTS) $(testbackend_LDADD) $(LIBS)
 
 tags: TAGS
 

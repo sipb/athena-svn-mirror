@@ -159,24 +159,16 @@ HREF="gconf-gconf-engine.html#GCONFENGINE"
 >* <A
 HREF="gconf-gconf-engine.html#GCONF-ENGINE-GET-FOR-ADDRESS"
 >gconf_engine_get_for_address</A
->   (const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *address,
-                                             <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A> **err);
+>   (const gchar *address,
+                                             GError **err);
 <A
 HREF="gconf-gconf-engine.html#GCONFENGINE"
 >GConfEngine</A
 >* <A
 HREF="gconf-gconf-engine.html#GCONF-ENGINE-GET-LOCAL"
 >gconf_engine_get_local</A
->         (const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *address,
-                                             <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A> **err);
+>         (const gchar *address,
+                                             GError **err);
 void        <A
 HREF="gconf-gconf-engine.html#GCONF-ENGINE-UNREF"
 >gconf_engine_unref</A
@@ -373,12 +365,8 @@ CLASS="PROGRAMLISTING"
 ><A
 HREF="gconf-gconf-engine.html#GCONFENGINE"
 >GConfEngine</A
->* gconf_engine_get_for_address   (const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *address,
-                                             <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A> **err);</PRE
+>* gconf_engine_get_for_address   (const gchar *address,
+                                             GError **err);</PRE
 ></TD
 ></TR
 ></TABLE
@@ -441,9 +429,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->the return location for an allocated <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A>, or <SPAN
+>the return location for an allocated GError, or <SPAN
 CLASS="SYMBOL"
 >NULL</SPAN
 > to ignore errors.</TD
@@ -498,12 +484,8 @@ CLASS="PROGRAMLISTING"
 ><A
 HREF="gconf-gconf-engine.html#GCONFENGINE"
 >GConfEngine</A
->* gconf_engine_get_local         (const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *address,
-                                             <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A> **err);</PRE
+>* gconf_engine_get_local         (const gchar *address,
+                                             GError **err);</PRE
 ></TD
 ></TR
 ></TABLE
@@ -560,9 +542,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->return location of an allocated <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A></TD
+>return location of an allocated GError</TD
 ></TR
 ><TR
 ><TD

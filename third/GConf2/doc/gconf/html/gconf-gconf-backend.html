@@ -121,7 +121,7 @@ NAME="GCONF-GCONF-BACKEND">gconf-backend</H1
 ><DIV
 CLASS="REFNAMEDIV"
 ><A
-NAME="AEN7154"
+NAME="AEN7038"
 ></A
 ><H2
 >Name</H2
@@ -129,7 +129,7 @@ NAME="AEN7154"
 ><DIV
 CLASS="REFSYNOPSISDIV"
 ><A
-NAME="AEN7157"><H2
+NAME="AEN7041"><H2
 >Synopsis</H2
 ><TABLE
 BORDER="0"
@@ -150,42 +150,26 @@ struct      <A
 HREF="gconf-gconf-backend.html#GCONFBACKEND"
 >GConfBackend</A
 >;
-<A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A>*      <A
+gchar*      <A
 HREF="gconf-gconf-backend.html#GCONF-ADDRESS-BACKEND"
 >gconf_address_backend</A
->           (const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *address);
-<A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A>*      <A
+>           (const gchar *address);
+gchar*      <A
 HREF="gconf-gconf-backend.html#GCONF-ADDRESS-RESOURCE"
 >gconf_address_resource</A
->          (const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *address);
-<A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A>*      <A
+>          (const gchar *address);
+gchar*      <A
 HREF="gconf-gconf-backend.html#GCONF-BACKEND-FILE"
 >gconf_backend_file</A
->              (const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *address);
+>              (const gchar *address);
 <A
 HREF="gconf-gconf-backend.html#GCONFBACKEND"
 >GConfBackend</A
 >* <A
 HREF="gconf-gconf-backend.html#GCONF-GET-BACKEND"
 >gconf_get_backend</A
->             (const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *address,
-                                             <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A> **err);
+>             (const gchar *address,
+                                             GError **err);
 void        <A
 HREF="gconf-gconf-backend.html#GCONF-BACKEND-REF"
 >gconf_backend_ref</A
@@ -210,12 +194,8 @@ HREF="gconf-gconf-backend.html#GCONF-BACKEND-RESOLVE-ADDRESS"
 HREF="gconf-gconf-backend.html#GCONFBACKEND"
 >GConfBackend</A
 > *backend,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *address,
-                                             <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A> **err);</PRE
+                                             const gchar *address,
+                                             GError **err);</PRE
 ></TD
 ></TR
 ></TABLE
@@ -223,7 +203,7 @@ HREF=../glib/glib-error-reporting.html#GERROR
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN7184"
+NAME="AEN7068"
 ></A
 ><H2
 >Description</H2
@@ -233,14 +213,14 @@ NAME="AEN7184"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN7187"
+NAME="AEN7071"
 ></A
 ><H2
 >Details</H2
 ><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN7189"
+NAME="AEN7073"
 ></A
 ><H3
 ><A
@@ -372,7 +352,7 @@ HREF="gconf-gconf-backend.html#GCONFBACKENDVTABLE"
 <DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN7198"><P
+NAME="AEN7082"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -885,7 +865,7 @@ CLASS="PARAMETER"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN7312"
+NAME="AEN7196"
 ></A
 ><H3
 ><A
@@ -916,7 +896,7 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN7317"
+NAME="AEN7201"
 ></A
 ><H3
 ><A
@@ -932,11 +912,7 @@ CELLPADDING="6"
 ><TD
 ><PRE
 CLASS="PROGRAMLISTING"
-><A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A>*      gconf_address_backend           (const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *address);</PRE
+>gchar*      gconf_address_backend           (const gchar *address);</PRE
 ></TD
 ></TR
 ></TABLE
@@ -945,7 +921,7 @@ HREF=../glib/glib-basic-types.html#GCHAR
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN7324"><P
+NAME="AEN7208"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -999,7 +975,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN7337"
+NAME="AEN7221"
 ></A
 ><H3
 ><A
@@ -1015,11 +991,7 @@ CELLPADDING="6"
 ><TD
 ><PRE
 CLASS="PROGRAMLISTING"
-><A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A>*      gconf_address_resource          (const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *address);</PRE
+>gchar*      gconf_address_resource          (const gchar *address);</PRE
 ></TD
 ></TR
 ></TABLE
@@ -1028,7 +1000,7 @@ HREF=../glib/glib-basic-types.html#GCHAR
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN7344"><P
+NAME="AEN7228"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -1082,7 +1054,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN7357"
+NAME="AEN7241"
 ></A
 ><H3
 ><A
@@ -1098,11 +1070,7 @@ CELLPADDING="6"
 ><TD
 ><PRE
 CLASS="PROGRAMLISTING"
-><A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A>*      gconf_backend_file              (const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *address);</PRE
+>gchar*      gconf_backend_file              (const gchar *address);</PRE
 ></TD
 ></TR
 ></TABLE
@@ -1111,7 +1079,7 @@ HREF=../glib/glib-basic-types.html#GCHAR
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN7364"><P
+NAME="AEN7248"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -1165,7 +1133,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN7377"
+NAME="AEN7261"
 ></A
 ><H3
 ><A
@@ -1184,12 +1152,8 @@ CLASS="PROGRAMLISTING"
 ><A
 HREF="gconf-gconf-backend.html#GCONFBACKEND"
 >GConfBackend</A
->* gconf_get_backend             (const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *address,
-                                             <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A> **err);</PRE
+>* gconf_get_backend             (const gchar *address,
+                                             GError **err);</PRE
 ></TD
 ></TR
 ></TABLE
@@ -1198,7 +1162,7 @@ HREF=../glib/glib-error-reporting.html#GERROR
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN7385"><P
+NAME="AEN7269"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -1269,7 +1233,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN7402"
+NAME="AEN7286"
 ></A
 ><H3
 ><A
@@ -1297,7 +1261,7 @@ HREF="gconf-gconf-backend.html#GCONFBACKEND"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN7408"><P
+NAME="AEN7292"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -1333,7 +1297,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN7417"
+NAME="AEN7301"
 ></A
 ><H3
 ><A
@@ -1361,7 +1325,7 @@ HREF="gconf-gconf-backend.html#GCONFBACKEND"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN7423"><P
+NAME="AEN7307"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -1397,7 +1361,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN7432"
+NAME="AEN7316"
 ></A
 ><H3
 ><A
@@ -1420,12 +1384,8 @@ HREF="gconf-gconf-sources.html#GCONFSOURCE"
 HREF="gconf-gconf-backend.html#GCONFBACKEND"
 >GConfBackend</A
 > *backend,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *address,
-                                             <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A> **err);</PRE
+                                             const gchar *address,
+                                             GError **err);</PRE
 ></TD
 ></TR
 ></TABLE
@@ -1434,7 +1394,7 @@ HREF=../glib/glib-error-reporting.html#GERROR
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN7441"><P
+NAME="AEN7325"><P
 ></P
 ><TABLE
 BORDER="0"

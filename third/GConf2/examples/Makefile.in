@@ -120,6 +120,8 @@ PKG_CONFIG = @PKG_CONFIG@
 POFILES = @POFILES@
 POPT_LIBS = @POPT_LIBS@
 POSUB = @POSUB@
+PO_IN_DATADIR_FALSE = @PO_IN_DATADIR_FALSE@
+PO_IN_DATADIR_TRUE = @PO_IN_DATADIR_TRUE@
 RANLIB = @RANLIB@
 REBUILD = @REBUILD@
 STRIP = @STRIP@
@@ -130,13 +132,11 @@ absolute_top_srcdir = @absolute_top_srcdir@
 gconflocaledir = @gconflocaledir@
 l = @l@
 
-INCLUDES = -I$(top_srcdir) -I$(top_builddir) \
-	$(DEPENDENT_WITH_GTK_CFLAGS) \
-        -DGCONF_SRCDIR=\""$(absolute_top_srcdir)"\" -DGCONF_SYSCONFDIR=\""$(sysconfdir)"\"
+INCLUDES = -I$(top_srcdir) -I$(top_builddir) 	$(DEPENDENT_WITH_GTK_CFLAGS)         -DGCONF_SRCDIR=\""$(absolute_top_srcdir)"\" -DGCONF_SYSCONFDIR=\""$(sysconfdir)"\"
 
 
 EFENCE = 
-@GTK_TRUE@GTK_EXAMPLES = @GTK_TRUE@basic-gconf-app simple-view simple-controller complex-gconf-app
+@GTK_TRUE@GTK_EXAMPLES = basic-gconf-app simple-view simple-controller complex-gconf-app
 @GTK_FALSE@GTK_EXAMPLES = 
 
 noinst_PROGRAMS = $(GTK_EXAMPLES)
@@ -324,6 +324,21 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
+basic-gconf-app.o: basic-gconf-app.c ../gconf/gconf-client.h \
+	../gconf/gconf.h ../gconf/gconf-schema.h ../gconf/gconf-value.h \
+	../gconf/gconf-error.h ../gconf/gconf-engine.h \
+	../gconf/gconf-enum-types.h ../gconf/gconf-listeners.h \
+	../gconf/gconf-changeset.h
+simple-controller.o: simple-controller.c ../gconf/gconf-client.h \
+	../gconf/gconf.h ../gconf/gconf-schema.h ../gconf/gconf-value.h \
+	../gconf/gconf-error.h ../gconf/gconf-engine.h \
+	../gconf/gconf-enum-types.h ../gconf/gconf-listeners.h \
+	../gconf/gconf-changeset.h
+simple-view.o: simple-view.c ../gconf/gconf-client.h ../gconf/gconf.h \
+	../gconf/gconf-schema.h ../gconf/gconf-value.h \
+	../gconf/gconf-error.h ../gconf/gconf-engine.h \
+	../gconf/gconf-enum-types.h ../gconf/gconf-listeners.h \
+	../gconf/gconf-changeset.h
 
 info-am:
 info: info-am

@@ -139,7 +139,7 @@ CLASS="PROGRAMLISTING"
 
 &lt;!ELEMENT schemalist (schema)*&gt;
 
-&lt;!ELEMENT schema  (key,applyto*,owner?,type,locale*)&gt;
+&lt;!ELEMENT schema  (key,applyto*,owner?,type,default?,locale*)&gt;
 
 &lt;!ELEMENT key     (#PCDATA)&gt;
 
@@ -149,12 +149,13 @@ CLASS="PROGRAMLISTING"
 
 &lt;!ELEMENT type    (#PCDATA)&gt;
 
+&lt;!ELEMENT default (#PCDATA)&gt;
+
 &lt;!ELEMENT locale  (default?,short?,long?)&gt;
 &lt;!ATTLIST locale  name CDATA #REQUIRED&gt;
 
 &lt;!ELEMENT short   (#PCDATA)&gt;
 &lt;!ELEMENT long    (#PCDATA)&gt;
-&lt;!ELEMENT default (#PCDATA)&gt;
         </PRE
 ></TD
 ></TR

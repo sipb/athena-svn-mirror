@@ -142,37 +142,23 @@ CELLPADDING="6"
 CLASS="SYNOPSIS"
 >&#13;
 
-<A
-HREF=../glib/glib-basic-types.html#GBOOLEAN
->gboolean</A>    <A
+gboolean    <A
 HREF="gconf-gconf.html#GCONF-INIT"
 >gconf_init</A
 >                      (int argc,
                                              char **argv,
-                                             <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A> **err);
+                                             GError **err);
 void        <A
 HREF="gconf-gconf.html#GCONF-PREINIT"
 >gconf_preinit</A
->                   (<A
-HREF=../glib/glib-basic-types.html#GPOINTER
->gpointer</A> app,
-                                             <A
-HREF=../glib/glib-basic-types.html#GPOINTER
->gpointer</A> mod_info);
+>                   (gpointer app,
+                                             gpointer mod_info);
 void        <A
 HREF="gconf-gconf.html#GCONF-POSTINIT"
 >gconf_postinit</A
->                  (<A
-HREF=../glib/glib-basic-types.html#GPOINTER
->gpointer</A> app,
-                                             <A
-HREF=../glib/glib-basic-types.html#GPOINTER
->gpointer</A> mod_info);
-<A
-HREF=../glib/glib-basic-types.html#GBOOLEAN
->gboolean</A>    <A
+>                  (gpointer app,
+                                             gpointer mod_info);
+gboolean    <A
 HREF="gconf-gconf.html#GCONF-IS-INITIALIZED"
 >gconf_is_initialized</A
 >            (void);
@@ -183,38 +169,26 @@ HREF="gconf-gconf.html#GCONFNOTIFYFUNC"
 HREF="gconf-gconf-engine.html#GCONFENGINE"
 >GConfEngine</A
 > *conf,
-                                             <A
-HREF=../glib/glib-basic-types.html#GUINT
->guint</A> cnxn_id,
+                                             guint cnxn_id,
                                              <A
 HREF="gconf-gconf-value.html#GCONFENTRY"
 >GConfEntry</A
 > *entry,
-                                             <A
-HREF=../glib/glib-basic-types.html#GPOINTER
->gpointer</A> user_data);
-<A
-HREF=../glib/glib-basic-types.html#GUINT
->guint</A>       <A
+                                             gpointer user_data);
+guint       <A
 HREF="gconf-gconf.html#GCONF-ENGINE-NOTIFY-ADD"
 >gconf_engine_notify_add</A
 >         (<A
 HREF="gconf-gconf-engine.html#GCONFENGINE"
 >GConfEngine</A
 > *conf,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *namespace_section,
+                                             const gchar *namespace_section,
                                              <A
 HREF="gconf-gconf.html#GCONFNOTIFYFUNC"
 >GConfNotifyFunc</A
 > func,
-                                             <A
-HREF=../glib/glib-basic-types.html#GPOINTER
->gpointer</A> user_data,
-                                             <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A> **err);
+                                             gpointer user_data,
+                                             GError **err);
 void        <A
 HREF="gconf-gconf.html#GCONF-ENGINE-NOTIFY-REMOVE"
 >gconf_engine_notify_remove</A
@@ -222,9 +196,7 @@ HREF="gconf-gconf.html#GCONF-ENGINE-NOTIFY-REMOVE"
 HREF="gconf-gconf-engine.html#GCONFENGINE"
 >GConfEngine</A
 > *conf,
-                                             <A
-HREF=../glib/glib-basic-types.html#GUINT
->guint</A> cnxn);
+                                             guint cnxn);
 <A
 HREF="gconf-gconf-value.html#GCONFVALUE"
 >GConfValue</A
@@ -235,12 +207,8 @@ HREF="gconf-gconf.html#GCONF-ENGINE-GET"
 HREF="gconf-gconf-engine.html#GCONFENGINE"
 >GConfEngine</A
 > *conf,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *key,
-                                             <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A> **err);
+                                             const gchar *key,
+                                             GError **err);
 <A
 HREF="gconf-gconf-value.html#GCONFVALUE"
 >GConfValue</A
@@ -251,15 +219,9 @@ HREF="gconf-gconf.html#GCONF-ENGINE-GET-WITH-LOCALE"
 HREF="gconf-gconf-engine.html#GCONFENGINE"
 >GConfEngine</A
 > *conf,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *key,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *locale,
-                                             <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A> **err);
+                                             const gchar *key,
+                                             const gchar *locale,
+                                             GError **err);
 <A
 HREF="gconf-gconf-value.html#GCONFVALUE"
 >GConfValue</A
@@ -271,12 +233,8 @@ HREF="gconf-gconf.html#GCONF-ENGINE-GET-WITHOUT-DEFAULT"
 HREF="gconf-gconf-engine.html#GCONFENGINE"
 >GConfEngine</A
 > *conf,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *key,
-                                             <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A> **err);
+                                             const gchar *key,
+                                             GError **err);
 <A
 HREF="gconf-gconf-value.html#GCONFENTRY"
 >GConfEntry</A
@@ -287,18 +245,10 @@ HREF="gconf-gconf.html#GCONF-ENGINE-GET-ENTRY"
 HREF="gconf-gconf-engine.html#GCONFENGINE"
 >GConfEngine</A
 > *conf,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *key,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *locale,
-                                             <A
-HREF=../glib/glib-basic-types.html#GBOOLEAN
->gboolean</A> use_schema_default,
-                                             <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A> **err);
+                                             const gchar *key,
+                                             const gchar *locale,
+                                             gboolean use_schema_default,
+                                             GError **err);
 <A
 HREF="gconf-gconf-value.html#GCONFVALUE"
 >GConfValue</A
@@ -310,94 +260,58 @@ HREF="gconf-gconf.html#GCONF-ENGINE-GET-DEFAULT-FROM-SCHEMA"
 HREF="gconf-gconf-engine.html#GCONFENGINE"
 >GConfEngine</A
 > *conf,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *key,
-                                             <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A> **err);
-<A
-HREF=../glib/glib-basic-types.html#GBOOLEAN
->gboolean</A>    <A
+                                             const gchar *key,
+                                             GError **err);
+gboolean    <A
 HREF="gconf-gconf.html#GCONF-ENGINE-SET"
 >gconf_engine_set</A
 >                (<A
 HREF="gconf-gconf-engine.html#GCONFENGINE"
 >GConfEngine</A
 > *conf,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *key,
+                                             const gchar *key,
                                              const <A
 HREF="gconf-gconf-value.html#GCONFVALUE"
 >GConfValue</A
 > *value,
-                                             <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A> **err);
-<A
-HREF=../glib/glib-basic-types.html#GBOOLEAN
->gboolean</A>    <A
+                                             GError **err);
+gboolean    <A
 HREF="gconf-gconf.html#GCONF-ENGINE-UNSET"
 >gconf_engine_unset</A
 >              (<A
 HREF="gconf-gconf-engine.html#GCONFENGINE"
 >GConfEngine</A
 > *conf,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *key,
-                                             <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A> **err);
-<A
-HREF=../glib/glib-basic-types.html#GBOOLEAN
->gboolean</A>    <A
+                                             const gchar *key,
+                                             GError **err);
+gboolean    <A
 HREF="gconf-gconf.html#GCONF-ENGINE-ASSOCIATE-SCHEMA"
 >gconf_engine_associate_schema</A
 >   (<A
 HREF="gconf-gconf-engine.html#GCONFENGINE"
 >GConfEngine</A
 > *conf,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *key,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *schema_key,
-                                             <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A> **err);
-<A
-HREF=../glib/glib-singly-linked-lists.html#GSLIST
->GSList</A>*     <A
+                                             const gchar *key,
+                                             const gchar *schema_key,
+                                             GError **err);
+GSList*     <A
 HREF="gconf-gconf.html#GCONF-ENGINE-ALL-ENTRIES"
 >gconf_engine_all_entries</A
 >        (<A
 HREF="gconf-gconf-engine.html#GCONFENGINE"
 >GConfEngine</A
 > *conf,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *dir,
-                                             <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A> **err);
-<A
-HREF=../glib/glib-singly-linked-lists.html#GSLIST
->GSList</A>*     <A
+                                             const gchar *dir,
+                                             GError **err);
+GSList*     <A
 HREF="gconf-gconf.html#GCONF-ENGINE-ALL-DIRS"
 >gconf_engine_all_dirs</A
 >           (<A
 HREF="gconf-gconf-engine.html#GCONFENGINE"
 >GConfEngine</A
 > *conf,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *dir,
-                                             <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A> **err);
+                                             const gchar *dir,
+                                             GError **err);
 void        <A
 HREF="gconf-gconf.html#GCONF-ENGINE-SUGGEST-SYNC"
 >gconf_engine_suggest_sync</A
@@ -405,106 +319,62 @@ HREF="gconf-gconf.html#GCONF-ENGINE-SUGGEST-SYNC"
 HREF="gconf-gconf-engine.html#GCONFENGINE"
 >GConfEngine</A
 > *conf,
-                                             <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A> **err);
-<A
-HREF=../glib/glib-basic-types.html#GBOOLEAN
->gboolean</A>    <A
+                                             GError **err);
+gboolean    <A
 HREF="gconf-gconf.html#GCONF-ENGINE-DIR-EXISTS"
 >gconf_engine_dir_exists</A
 >         (<A
 HREF="gconf-gconf-engine.html#GCONFENGINE"
 >GConfEngine</A
 > *conf,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *dir,
-                                             <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A> **err);
-<A
-HREF=../glib/glib-basic-types.html#GBOOLEAN
->gboolean</A>    <A
+                                             const gchar *dir,
+                                             GError **err);
+gboolean    <A
 HREF="gconf-gconf.html#GCONF-VALID-KEY"
 >gconf_valid_key</A
->                 (const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *key,
-                                             <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> **why_invalid);
-<A
-HREF=../glib/glib-basic-types.html#GBOOLEAN
->gboolean</A>    <A
+>                 (const gchar *key,
+                                             gchar **why_invalid);
+gboolean    <A
 HREF="gconf-gconf.html#GCONF-KEY-IS-BELOW"
 >gconf_key_is_below</A
->              (const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *above,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *below);
-<A
-HREF=../glib/glib-basic-types.html#GDOUBLE
->gdouble</A>     <A
+>              (const gchar *above,
+                                             const gchar *below);
+gdouble     <A
 HREF="gconf-gconf.html#GCONF-ENGINE-GET-FLOAT"
 >gconf_engine_get_float</A
 >          (<A
 HREF="gconf-gconf-engine.html#GCONFENGINE"
 >GConfEngine</A
 > *conf,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *key,
-                                             <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A> **err);
-<A
-HREF=../glib/glib-basic-types.html#GINT
->gint</A>        <A
+                                             const gchar *key,
+                                             GError **err);
+gint        <A
 HREF="gconf-gconf.html#GCONF-ENGINE-GET-INT"
 >gconf_engine_get_int</A
 >            (<A
 HREF="gconf-gconf-engine.html#GCONFENGINE"
 >GConfEngine</A
 > *conf,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *key,
-                                             <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A> **err);
-<A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A>*      <A
+                                             const gchar *key,
+                                             GError **err);
+gchar*      <A
 HREF="gconf-gconf.html#GCONF-ENGINE-GET-STRING"
 >gconf_engine_get_string</A
 >         (<A
 HREF="gconf-gconf-engine.html#GCONFENGINE"
 >GConfEngine</A
 > *conf,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *key,
-                                             <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A> **err);
-<A
-HREF=../glib/glib-basic-types.html#GBOOLEAN
->gboolean</A>    <A
+                                             const gchar *key,
+                                             GError **err);
+gboolean    <A
 HREF="gconf-gconf.html#GCONF-ENGINE-GET-BOOL"
 >gconf_engine_get_bool</A
 >           (<A
 HREF="gconf-gconf-engine.html#GCONFENGINE"
 >GConfEngine</A
 > *conf,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *key,
-                                             <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A> **err);
+                                             const gchar *key,
+                                             GError **err);
 <A
 HREF="gconf-gconf-schema.html#GCONFSCHEMA"
 >GConfSchema</A
@@ -515,43 +385,29 @@ HREF="gconf-gconf.html#GCONF-ENGINE-GET-SCHEMA"
 HREF="gconf-gconf-engine.html#GCONFENGINE"
 >GConfEngine</A
 > *conf,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *key,
-                                             <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A> **err);
-<A
-HREF=../glib/glib-singly-linked-lists.html#GSLIST
->GSList</A>*     <A
+                                             const gchar *key,
+                                             GError **err);
+GSList*     <A
 HREF="gconf-gconf.html#GCONF-ENGINE-GET-LIST"
 >gconf_engine_get_list</A
 >           (<A
 HREF="gconf-gconf-engine.html#GCONFENGINE"
 >GConfEngine</A
 > *conf,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *key,
+                                             const gchar *key,
                                              <A
 HREF="gconf-gconf-value.html#GCONFVALUETYPE"
 >GConfValueType</A
 > list_type,
-                                             <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A> **err);
-<A
-HREF=../glib/glib-basic-types.html#GBOOLEAN
->gboolean</A>    <A
+                                             GError **err);
+gboolean    <A
 HREF="gconf-gconf.html#GCONF-ENGINE-GET-PAIR"
 >gconf_engine_get_pair</A
 >           (<A
 HREF="gconf-gconf-engine.html#GCONFENGINE"
 >GConfEngine</A
 > *conf,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *key,
+                                             const gchar *key,
                                              <A
 HREF="gconf-gconf-value.html#GCONFVALUETYPE"
 >GConfValueType</A
@@ -560,140 +416,84 @@ HREF="gconf-gconf-value.html#GCONFVALUETYPE"
 HREF="gconf-gconf-value.html#GCONFVALUETYPE"
 >GConfValueType</A
 > cdr_type,
-                                             <A
-HREF=../glib/glib-basic-types.html#GPOINTER
->gpointer</A> car_retloc,
-                                             <A
-HREF=../glib/glib-basic-types.html#GPOINTER
->gpointer</A> cdr_retloc,
-                                             <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A> **err);
-<A
-HREF=../glib/glib-basic-types.html#GBOOLEAN
->gboolean</A>    <A
+                                             gpointer car_retloc,
+                                             gpointer cdr_retloc,
+                                             GError **err);
+gboolean    <A
 HREF="gconf-gconf.html#GCONF-ENGINE-SET-FLOAT"
 >gconf_engine_set_float</A
 >          (<A
 HREF="gconf-gconf-engine.html#GCONFENGINE"
 >GConfEngine</A
 > *conf,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *key,
-                                             <A
-HREF=../glib/glib-basic-types.html#GDOUBLE
->gdouble</A> val,
-                                             <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A> **err);
-<A
-HREF=../glib/glib-basic-types.html#GBOOLEAN
->gboolean</A>    <A
+                                             const gchar *key,
+                                             gdouble val,
+                                             GError **err);
+gboolean    <A
 HREF="gconf-gconf.html#GCONF-ENGINE-SET-INT"
 >gconf_engine_set_int</A
 >            (<A
 HREF="gconf-gconf-engine.html#GCONFENGINE"
 >GConfEngine</A
 > *conf,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *key,
-                                             <A
-HREF=../glib/glib-basic-types.html#GINT
->gint</A> val,
-                                             <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A> **err);
-<A
-HREF=../glib/glib-basic-types.html#GBOOLEAN
->gboolean</A>    <A
+                                             const gchar *key,
+                                             gint val,
+                                             GError **err);
+gboolean    <A
 HREF="gconf-gconf.html#GCONF-ENGINE-SET-STRING"
 >gconf_engine_set_string</A
 >         (<A
 HREF="gconf-gconf-engine.html#GCONFENGINE"
 >GConfEngine</A
 > *conf,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *key,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *val,
-                                             <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A> **err);
-<A
-HREF=../glib/glib-basic-types.html#GBOOLEAN
->gboolean</A>    <A
+                                             const gchar *key,
+                                             const gchar *val,
+                                             GError **err);
+gboolean    <A
 HREF="gconf-gconf.html#GCONF-ENGINE-SET-BOOL"
 >gconf_engine_set_bool</A
 >           (<A
 HREF="gconf-gconf-engine.html#GCONFENGINE"
 >GConfEngine</A
 > *conf,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *key,
-                                             <A
-HREF=../glib/glib-basic-types.html#GBOOLEAN
->gboolean</A> val,
-                                             <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A> **err);
-<A
-HREF=../glib/glib-basic-types.html#GBOOLEAN
->gboolean</A>    <A
+                                             const gchar *key,
+                                             gboolean val,
+                                             GError **err);
+gboolean    <A
 HREF="gconf-gconf.html#GCONF-ENGINE-SET-SCHEMA"
 >gconf_engine_set_schema</A
 >         (<A
 HREF="gconf-gconf-engine.html#GCONFENGINE"
 >GConfEngine</A
 > *conf,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *key,
+                                             const gchar *key,
                                              const <A
 HREF="gconf-gconf-schema.html#GCONFSCHEMA"
 >GConfSchema</A
 > *val,
-                                             <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A> **err);
-<A
-HREF=../glib/glib-basic-types.html#GBOOLEAN
->gboolean</A>    <A
+                                             GError **err);
+gboolean    <A
 HREF="gconf-gconf.html#GCONF-ENGINE-SET-LIST"
 >gconf_engine_set_list</A
 >           (<A
 HREF="gconf-gconf-engine.html#GCONFENGINE"
 >GConfEngine</A
 > *conf,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *key,
+                                             const gchar *key,
                                              <A
 HREF="gconf-gconf-value.html#GCONFVALUETYPE"
 >GConfValueType</A
 > list_type,
-                                             <A
-HREF=../glib/glib-singly-linked-lists.html#GSLIST
->GSList</A> *list,
-                                             <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A> **err);
-<A
-HREF=../glib/glib-basic-types.html#GBOOLEAN
->gboolean</A>    <A
+                                             GSList *list,
+                                             GError **err);
+gboolean    <A
 HREF="gconf-gconf.html#GCONF-ENGINE-SET-PAIR"
 >gconf_engine_set_pair</A
 >           (<A
 HREF="gconf-gconf-engine.html#GCONFENGINE"
 >GConfEngine</A
 > *conf,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *key,
+                                             const gchar *key,
                                              <A
 HREF="gconf-gconf-value.html#GCONFVALUETYPE"
 >GConfValueType</A
@@ -702,46 +502,30 @@ HREF="gconf-gconf-value.html#GCONFVALUETYPE"
 HREF="gconf-gconf-value.html#GCONFVALUETYPE"
 >GConfValueType</A
 > cdr_type,
-                                             <A
-HREF=../glib/glib-basic-types.html#GCONSTPOINTER
->gconstpointer</A> address_of_car,
-                                             <A
-HREF=../glib/glib-basic-types.html#GCONSTPOINTER
->gconstpointer</A> address_of_cdr,
-                                             <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A> **err);
+                                             gconstpointer address_of_car,
+                                             gconstpointer address_of_cdr,
+                                             GError **err);
 struct      <A
 HREF="gconf-gconf.html#GCONFENUMSTRINGPAIR"
 >GConfEnumStringPair</A
 >;
-<A
-HREF=../glib/glib-basic-types.html#GBOOLEAN
->gboolean</A>    <A
+gboolean    <A
 HREF="gconf-gconf.html#GCONF-STRING-TO-ENUM"
 >gconf_string_to_enum</A
 >            (<A
 HREF="gconf-gconf.html#GCONFENUMSTRINGPAIR"
 >GConfEnumStringPair</A
 > lookup_table[],
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *str,
-                                             <A
-HREF=../glib/glib-basic-types.html#GINT
->gint</A> *enum_value_retloc);
-const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A>* <A
+                                             const gchar *str,
+                                             gint *enum_value_retloc);
+const gchar* <A
 HREF="gconf-gconf.html#GCONF-ENUM-TO-STRING"
 >gconf_enum_to_string</A
 >           (<A
 HREF="gconf-gconf.html#GCONFENUMSTRINGPAIR"
 >GConfEnumStringPair</A
 > lookup_table[],
-                                             <A
-HREF=../glib/glib-basic-types.html#GINT
->gint</A> enum_value);</PRE
+                                             gint enum_value);</PRE
 ></TD
 ></TR
 ></TABLE
@@ -766,9 +550,7 @@ HREF="gconf-gconf-engine.html#GCONFENGINE"
 request on the server, get values, set values, list directories, and associate
 schema names with keys.</P
 ><P
->Most of this interface is replicated in the <A
-HREF=../gtk/gtkobject.html
->GtkObject</A> wrapper
+>Most of this interface is replicated in the GtkObject wrapper
 (<A
 HREF="gconfclient.html"
 >GConfClient</A
@@ -804,13 +586,9 @@ CELLPADDING="6"
 ><TD
 ><PRE
 CLASS="PROGRAMLISTING"
-><A
-HREF=../glib/glib-basic-types.html#GBOOLEAN
->gboolean</A>    gconf_init                      (int argc,
+>gboolean    gconf_init                      (int argc,
                                              char **argv,
-                                             <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A> **err);</PRE
+                                             GError **err);</PRE
 ></TD
 ></TR
 ></TABLE
@@ -907,9 +685,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->the return location for an allocated <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A>, or <SPAN
+>the return location for an allocated GError, or <SPAN
 CLASS="SYMBOL"
 >NULL</SPAN
 > to ignore errors.</TD
@@ -964,12 +740,8 @@ CELLPADDING="6"
 ><TD
 ><PRE
 CLASS="PROGRAMLISTING"
->void        gconf_preinit                   (<A
-HREF=../glib/glib-basic-types.html#GPOINTER
->gpointer</A> app,
-                                             <A
-HREF=../glib/glib-basic-types.html#GPOINTER
->gpointer</A> mod_info);</PRE
+>void        gconf_preinit                   (gpointer app,
+                                             gpointer mod_info);</PRE
 ></TD
 ></TR
 ></TABLE
@@ -1074,12 +846,8 @@ CELLPADDING="6"
 ><TD
 ><PRE
 CLASS="PROGRAMLISTING"
->void        gconf_postinit                  (<A
-HREF=../glib/glib-basic-types.html#GPOINTER
->gpointer</A> app,
-                                             <A
-HREF=../glib/glib-basic-types.html#GPOINTER
->gpointer</A> mod_info);</PRE
+>void        gconf_postinit                  (gpointer app,
+                                             gpointer mod_info);</PRE
 ></TD
 ></TR
 ></TABLE
@@ -1184,9 +952,7 @@ CELLPADDING="6"
 ><TD
 ><PRE
 CLASS="PROGRAMLISTING"
-><A
-HREF=../glib/glib-basic-types.html#GBOOLEAN
->gboolean</A>    gconf_is_initialized            (void);</PRE
+>gboolean    gconf_is_initialized            (void);</PRE
 ></TD
 ></TR
 ></TABLE
@@ -1283,16 +1049,12 @@ CLASS="PROGRAMLISTING"
 HREF="gconf-gconf-engine.html#GCONFENGINE"
 >GConfEngine</A
 > *conf,
-                                             <A
-HREF=../glib/glib-basic-types.html#GUINT
->guint</A> cnxn_id,
+                                             guint cnxn_id,
                                              <A
 HREF="gconf-gconf-value.html#GCONFENTRY"
 >GConfEntry</A
 > *entry,
-                                             <A
-HREF=../glib/glib-basic-types.html#GPOINTER
->gpointer</A> user_data);</PRE
+                                             gpointer user_data);</PRE
 ></TD
 ></TR
 ></TABLE
@@ -1478,25 +1240,17 @@ CELLPADDING="6"
 ><TD
 ><PRE
 CLASS="PROGRAMLISTING"
-><A
-HREF=../glib/glib-basic-types.html#GUINT
->guint</A>       gconf_engine_notify_add         (<A
+>guint       gconf_engine_notify_add         (<A
 HREF="gconf-gconf-engine.html#GCONFENGINE"
 >GConfEngine</A
 > *conf,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *namespace_section,
+                                             const gchar *namespace_section,
                                              <A
 HREF="gconf-gconf.html#GCONFNOTIFYFUNC"
 >GConfNotifyFunc</A
 > func,
-                                             <A
-HREF=../glib/glib-basic-types.html#GPOINTER
->gpointer</A> user_data,
-                                             <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A> **err);</PRE
+                                             gpointer user_data,
+                                             GError **err);</PRE
 ></TD
 ></TR
 ></TABLE
@@ -1517,9 +1271,7 @@ unnecessary notifications. Note that you should prefer <A
 HREF="gconfclient.html#GCONF-CLIENT-NOTIFY-ADD"
 >gconf_client_notify_add</A
 >()
-if you're using the <A
-HREF=../gtk/gtkobject.html
->GtkObject</A> wrapper library, because
+if you're using the GtkObject wrapper library, because
 <A
 HREF="gconfclient.html#GCONF-CLIENT-NOTIFY-ADD"
 >gconf_client_notify_add</A
@@ -1629,9 +1381,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->the return location for an allocated <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A>, or <SPAN
+>the return location for an allocated GError, or <SPAN
 CLASS="SYMBOL"
 >NULL</SPAN
 > to ignore errors.</TD
@@ -1684,9 +1434,7 @@ CLASS="PROGRAMLISTING"
 HREF="gconf-gconf-engine.html#GCONFENGINE"
 >GConfEngine</A
 > *conf,
-                                             <A
-HREF=../glib/glib-basic-types.html#GUINT
->guint</A> cnxn);</PRE
+                                             guint cnxn);</PRE
 ></TD
 ></TR
 ></TABLE
@@ -1778,12 +1526,8 @@ HREF="gconf-gconf-value.html#GCONFVALUE"
 HREF="gconf-gconf-engine.html#GCONFENGINE"
 >GConfEngine</A
 > *conf,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *key,
-                                             <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A> **err);</PRE
+                                             const gchar *key,
+                                             GError **err);</PRE
 ></TD
 ></TR
 ></TABLE
@@ -1876,9 +1620,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->the return location for an allocated <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A>, or <SPAN
+>the return location for an allocated GError, or <SPAN
 CLASS="SYMBOL"
 >NULL</SPAN
 > to ignore errors.</TD
@@ -1940,15 +1682,9 @@ HREF="gconf-gconf-value.html#GCONFVALUE"
 HREF="gconf-gconf-engine.html#GCONFENGINE"
 >GConfEngine</A
 > *conf,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *key,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *locale,
-                                             <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A> **err);</PRE
+                                             const gchar *key,
+                                             const gchar *locale,
+                                             GError **err);</PRE
 ></TD
 ></TR
 ></TABLE
@@ -2051,9 +1787,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->the return location for an allocated <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A>, or <SPAN
+>the return location for an allocated GError, or <SPAN
 CLASS="SYMBOL"
 >NULL</SPAN
 > to ignore errors.</TD
@@ -2116,12 +1850,8 @@ HREF="gconf-gconf-value.html#GCONFVALUE"
 HREF="gconf-gconf-engine.html#GCONFENGINE"
 >GConfEngine</A
 > *conf,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *key,
-                                             <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A> **err);</PRE
+                                             const gchar *key,
+                                             GError **err);</PRE
 ></TD
 ></TR
 ></TABLE
@@ -2206,9 +1936,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->the return location for an allocated <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A>, or <SPAN
+>the return location for an allocated GError, or <SPAN
 CLASS="SYMBOL"
 >NULL</SPAN
 > to ignore errors.</TD
@@ -2270,18 +1998,10 @@ HREF="gconf-gconf-value.html#GCONFENTRY"
 HREF="gconf-gconf-engine.html#GCONFENGINE"
 >GConfEngine</A
 > *conf,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *key,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *locale,
-                                             <A
-HREF=../glib/glib-basic-types.html#GBOOLEAN
->gboolean</A> use_schema_default,
-                                             <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A> **err);</PRE
+                                             const gchar *key,
+                                             const gchar *locale,
+                                             gboolean use_schema_default,
+                                             GError **err);</PRE
 ></TD
 ></TR
 ></TABLE
@@ -2439,12 +2159,8 @@ HREF="gconf-gconf-value.html#GCONFVALUE"
 HREF="gconf-gconf-engine.html#GCONFENGINE"
 >GConfEngine</A
 > *conf,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *key,
-                                             <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A> **err);</PRE
+                                             const gchar *key,
+                                             GError **err);</PRE
 ></TD
 ></TR
 ></TABLE
@@ -2530,9 +2246,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->the return location for an allocated <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A>, or <SPAN
+>the return location for an allocated GError, or <SPAN
 CLASS="SYMBOL"
 >NULL</SPAN
 > to ignore errors.</TD
@@ -2587,22 +2301,16 @@ CELLPADDING="6"
 ><TD
 ><PRE
 CLASS="PROGRAMLISTING"
-><A
-HREF=../glib/glib-basic-types.html#GBOOLEAN
->gboolean</A>    gconf_engine_set                (<A
+>gboolean    gconf_engine_set                (<A
 HREF="gconf-gconf-engine.html#GCONFENGINE"
 >GConfEngine</A
 > *conf,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *key,
+                                             const gchar *key,
                                              const <A
 HREF="gconf-gconf-value.html#GCONFVALUE"
 >GConfValue</A
 > *value,
-                                             <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A> **err);</PRE
+                                             GError **err);</PRE
 ></TD
 ></TR
 ></TABLE
@@ -2722,9 +2430,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->the return location for an allocated <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A>, or <SPAN
+>the return location for an allocated GError, or <SPAN
 CLASS="SYMBOL"
 >NULL</SPAN
 > to ignore errors.</TD
@@ -2779,18 +2485,12 @@ CELLPADDING="6"
 ><TD
 ><PRE
 CLASS="PROGRAMLISTING"
-><A
-HREF=../glib/glib-basic-types.html#GBOOLEAN
->gboolean</A>    gconf_engine_unset              (<A
+>gboolean    gconf_engine_unset              (<A
 HREF="gconf-gconf-engine.html#GCONFENGINE"
 >GConfEngine</A
 > *conf,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *key,
-                                             <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A> **err);</PRE
+                                             const gchar *key,
+                                             GError **err);</PRE
 ></TD
 ></TR
 ></TABLE
@@ -2876,9 +2576,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->the return location for an allocated <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A>, or <SPAN
+>the return location for an allocated GError, or <SPAN
 CLASS="SYMBOL"
 >NULL</SPAN
 > to ignore errors.</TD
@@ -2933,21 +2631,13 @@ CELLPADDING="6"
 ><TD
 ><PRE
 CLASS="PROGRAMLISTING"
-><A
-HREF=../glib/glib-basic-types.html#GBOOLEAN
->gboolean</A>    gconf_engine_associate_schema   (<A
+>gboolean    gconf_engine_associate_schema   (<A
 HREF="gconf-gconf-engine.html#GCONFENGINE"
 >GConfEngine</A
 > *conf,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *key,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *schema_key,
-                                             <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A> **err);</PRE
+                                             const gchar *key,
+                                             const gchar *schema_key,
+                                             GError **err);</PRE
 ></TD
 ></TR
 ></TABLE
@@ -3063,9 +2753,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->the return location for an allocated <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A>, or <SPAN
+>the return location for an allocated GError, or <SPAN
 CLASS="SYMBOL"
 >NULL</SPAN
 > to ignore errors.</TD
@@ -3120,18 +2808,12 @@ CELLPADDING="6"
 ><TD
 ><PRE
 CLASS="PROGRAMLISTING"
-><A
-HREF=../glib/glib-singly-linked-lists.html#GSLIST
->GSList</A>*     gconf_engine_all_entries        (<A
+>GSList*     gconf_engine_all_entries        (<A
 HREF="gconf-gconf-engine.html#GCONFENGINE"
 >GConfEngine</A
 > *conf,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *dir,
-                                             <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A> **err);</PRE
+                                             const gchar *dir,
+                                             GError **err);</PRE
 ></TD
 ></TR
 ></TABLE
@@ -3169,9 +2851,7 @@ CLASS="PARAMETER"
 HREF="gconf-gconf-value.html#GCONF-ENTRY-FREE"
 >gconf_entry_free</A
 >()
-each list element, then <A
-HREF=../glib/glib-singly-linked-lists.html#G-SLIST-FREE
->g_slist_free</A>() the list itself.</P
+each list element, then g_slist_free() the list itself.</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
@@ -3237,9 +2917,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->the return location for an allocated <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A>, or <SPAN
+>the return location for an allocated GError, or <SPAN
 CLASS="SYMBOL"
 >NULL</SPAN
 > to ignore errors.</TD
@@ -3291,18 +2969,12 @@ CELLPADDING="6"
 ><TD
 ><PRE
 CLASS="PROGRAMLISTING"
-><A
-HREF=../glib/glib-singly-linked-lists.html#GSLIST
->GSList</A>*     gconf_engine_all_dirs           (<A
+>GSList*     gconf_engine_all_dirs           (<A
 HREF="gconf-gconf-engine.html#GCONFENGINE"
 >GConfEngine</A
 > *conf,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *dir,
-                                             <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A> **err);</PRE
+                                             const gchar *dir,
+                                             GError **err);</PRE
 ></TD
 ></TR
 ></TABLE
@@ -3313,12 +2985,8 @@ CLASS="PARAMETER"
 >dir</I
 ></TT
 >. The returned list contains allocated
-strings; you should <A
-HREF=../glib/glib-memory-allocation.html#G-FREE
->g_free</A>() each string in the list, then
-<A
-HREF=../glib/glib-singly-linked-lists.html#G-SLIST-FREE
->g_slist_free</A>() the list itself.</P
+strings; you should g_free() each string in the list, then
+g_slist_free() the list itself.</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
@@ -3384,9 +3052,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->the return location for an allocated <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A>, or <SPAN
+>the return location for an allocated GError, or <SPAN
 CLASS="SYMBOL"
 >NULL</SPAN
 > to ignore errors.</TD
@@ -3439,9 +3105,7 @@ CLASS="PROGRAMLISTING"
 HREF="gconf-gconf-engine.html#GCONFENGINE"
 >GConfEngine</A
 > *conf,
-                                             <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A> **err);</PRE
+                                             GError **err);</PRE
 ></TD
 ></TR
 ></TABLE
@@ -3513,9 +3177,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->the return location for an allocated <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A>, or <SPAN
+>the return location for an allocated GError, or <SPAN
 CLASS="SYMBOL"
 >NULL</SPAN
 > to ignore errors.
@@ -3546,18 +3208,12 @@ CELLPADDING="6"
 ><TD
 ><PRE
 CLASS="PROGRAMLISTING"
-><A
-HREF=../glib/glib-basic-types.html#GBOOLEAN
->gboolean</A>    gconf_engine_dir_exists         (<A
+>gboolean    gconf_engine_dir_exists         (<A
 HREF="gconf-gconf-engine.html#GCONFENGINE"
 >GConfEngine</A
 > *conf,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *dir,
-                                             <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A> **err);</PRE
+                                             const gchar *dir,
+                                             GError **err);</PRE
 ></TD
 ></TR
 ></TABLE
@@ -3640,9 +3296,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->the return location for an allocated <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A>, or <SPAN
+>the return location for an allocated GError, or <SPAN
 CLASS="SYMBOL"
 >NULL</SPAN
 > to ignore errors.</TD
@@ -3697,14 +3351,8 @@ CELLPADDING="6"
 ><TD
 ><PRE
 CLASS="PROGRAMLISTING"
-><A
-HREF=../glib/glib-basic-types.html#GBOOLEAN
->gboolean</A>    gconf_valid_key                 (const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *key,
-                                             <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> **why_invalid);</PRE
+>gboolean    gconf_valid_key                 (const gchar *key,
+                                             gchar **why_invalid);</PRE
 ></TD
 ></TR
 ></TABLE
@@ -3776,9 +3424,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->return location for an explanation of the problem, if any. <A
-HREF=../glib/glib-memory-allocation.html#G-FREE
->g_free</A>() the returned string.</TD
+>return location for an explanation of the problem, if any. g_free() the returned string.</TD
 ></TR
 ><TR
 ><TD
@@ -3830,14 +3476,8 @@ CELLPADDING="6"
 ><TD
 ><PRE
 CLASS="PROGRAMLISTING"
-><A
-HREF=../glib/glib-basic-types.html#GBOOLEAN
->gboolean</A>    gconf_key_is_below              (const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *above,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *below);</PRE
+>gboolean    gconf_key_is_below              (const gchar *above,
+                                             const gchar *below);</PRE
 ></TD
 ></TR
 ></TABLE
@@ -3963,18 +3603,12 @@ CELLPADDING="6"
 ><TD
 ><PRE
 CLASS="PROGRAMLISTING"
-><A
-HREF=../glib/glib-basic-types.html#GDOUBLE
->gdouble</A>     gconf_engine_get_float          (<A
+>gdouble     gconf_engine_get_float          (<A
 HREF="gconf-gconf-engine.html#GCONFENGINE"
 >GConfEngine</A
 > *conf,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *key,
-                                             <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A> **err);</PRE
+                                             const gchar *key,
+                                             GError **err);</PRE
 ></TD
 ></TR
 ></TABLE
@@ -4066,9 +3700,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->the return location for an allocated <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A>, or <SPAN
+>the return location for an allocated GError, or <SPAN
 CLASS="SYMBOL"
 >NULL</SPAN
 > to ignore errors.</TD
@@ -4122,18 +3754,12 @@ CELLPADDING="6"
 ><TD
 ><PRE
 CLASS="PROGRAMLISTING"
-><A
-HREF=../glib/glib-basic-types.html#GINT
->gint</A>        gconf_engine_get_int            (<A
+>gint        gconf_engine_get_int            (<A
 HREF="gconf-gconf-engine.html#GCONFENGINE"
 >GConfEngine</A
 > *conf,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *key,
-                                             <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A> **err);</PRE
+                                             const gchar *key,
+                                             GError **err);</PRE
 ></TD
 ></TR
 ></TABLE
@@ -4225,9 +3851,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->the return location for an allocated <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A>, or <SPAN
+>the return location for an allocated GError, or <SPAN
 CLASS="SYMBOL"
 >NULL</SPAN
 > to ignore errors.</TD
@@ -4281,18 +3905,12 @@ CELLPADDING="6"
 ><TD
 ><PRE
 CLASS="PROGRAMLISTING"
-><A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A>*      gconf_engine_get_string         (<A
+>gchar*      gconf_engine_get_string         (<A
 HREF="gconf-gconf-engine.html#GCONFENGINE"
 >GConfEngine</A
 > *conf,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *key,
-                                             <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A> **err);</PRE
+                                             const gchar *key,
+                                             GError **err);</PRE
 ></TD
 ></TR
 ></TABLE
@@ -4387,9 +4005,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->the return location for an allocated <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A>, or <SPAN
+>the return location for an allocated GError, or <SPAN
 CLASS="SYMBOL"
 >NULL</SPAN
 > to ignore errors.</TD
@@ -4446,18 +4062,12 @@ CELLPADDING="6"
 ><TD
 ><PRE
 CLASS="PROGRAMLISTING"
-><A
-HREF=../glib/glib-basic-types.html#GBOOLEAN
->gboolean</A>    gconf_engine_get_bool           (<A
+>gboolean    gconf_engine_get_bool           (<A
 HREF="gconf-gconf-engine.html#GCONFENGINE"
 >GConfEngine</A
 > *conf,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *key,
-                                             <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A> **err);</PRE
+                                             const gchar *key,
+                                             GError **err);</PRE
 ></TD
 ></TR
 ></TABLE
@@ -4552,9 +4162,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->the return location for an allocated <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A>, or <SPAN
+>the return location for an allocated GError, or <SPAN
 CLASS="SYMBOL"
 >NULL</SPAN
 > to ignore errors.</TD
@@ -4618,12 +4226,8 @@ HREF="gconf-gconf-schema.html#GCONFSCHEMA"
 HREF="gconf-gconf-engine.html#GCONFENGINE"
 >GConfEngine</A
 > *conf,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *key,
-                                             <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A> **err);</PRE
+                                             const gchar *key,
+                                             GError **err);</PRE
 ></TD
 ></TR
 ></TABLE
@@ -4713,9 +4317,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->the return location for an allocated <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A>, or <SPAN
+>the return location for an allocated GError, or <SPAN
 CLASS="SYMBOL"
 >NULL</SPAN
 > to ignore errors.</TD
@@ -4775,22 +4377,16 @@ CELLPADDING="6"
 ><TD
 ><PRE
 CLASS="PROGRAMLISTING"
-><A
-HREF=../glib/glib-singly-linked-lists.html#GSLIST
->GSList</A>*     gconf_engine_get_list           (<A
+>GSList*     gconf_engine_get_list           (<A
 HREF="gconf-gconf-engine.html#GCONFENGINE"
 >GConfEngine</A
 > *conf,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *key,
+                                             const gchar *key,
                                              <A
 HREF="gconf-gconf-value.html#GCONFVALUETYPE"
 >GConfValueType</A
 > list_type,
-                                             <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A> **err);</PRE
+                                             GError **err);</PRE
 ></TD
 ></TR
 ></TABLE
@@ -4908,9 +4504,7 @@ CLASS="LITERAL"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->The integer itself, converted with <A
-HREF=../glib/glib-type-conversion-macros.html#GINT-TO-POINTER-CAPS
->GINT_TO_POINTER</A>()</TD
+>The integer itself, converted with GINT_TO_POINTER()</TD
 ></TR
 ><TR
 ><TD
@@ -4925,9 +4519,7 @@ CLASS="LITERAL"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->The bool itself, converted with <A
-HREF=../glib/glib-type-conversion-macros.html#GINT-TO-POINTER-CAPS
->GINT_TO_POINTER</A>()</TD
+>The bool itself, converted with GINT_TO_POINTER()</TD
 ></TR
 ><TR
 ><TD
@@ -4942,11 +4534,7 @@ CLASS="LITERAL"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->A pointer to <A
-HREF=../glib/glib-basic-types.html#GDOUBLE
->gdouble</A>, which should be freed with <A
-HREF=../glib/glib-memory-allocation.html#G-FREE
->g_free</A>()</TD
+>A pointer to gdouble, which should be freed with g_free()</TD
 ></TR
 ><TR
 ><TD
@@ -4961,11 +4549,7 @@ CLASS="LITERAL"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->A pointer to <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A>, which should be freed with <A
-HREF=../glib/glib-memory-allocation.html#G-FREE
->g_free</A>()</TD
+>A pointer to gchar, which should be freed with g_free()</TD
 ></TR
 ><TR
 ><TD
@@ -5002,9 +4586,7 @@ CLASS="LITERAL"
 CLASS="LITERAL"
 >GCONF_VALUE_STRING</TT
 > cases, you must
-<A
-HREF=../glib/glib-memory-allocation.html#G-FREE
->g_free</A>() each list element. In the <TT
+g_free() each list element. In the <TT
 CLASS="LITERAL"
 >GCONF_VALUE_SCHEMA</TT
 > case you must
@@ -5012,9 +4594,7 @@ CLASS="LITERAL"
 HREF="gconf-gconf-schema.html#GCONF-SCHEMA-FREE"
 >gconf_schema_free</A
 >() each element. In all cases you must free the
-list itself with <A
-HREF=../glib/glib-singly-linked-lists.html#G-SLIST-FREE
->g_slist_free</A>().</P
+list itself with g_slist_free().</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
@@ -5097,9 +4677,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->the return location for an allocated <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A>, or <SPAN
+>the return location for an allocated GError, or <SPAN
 CLASS="SYMBOL"
 >NULL</SPAN
 > to ignore errors.</TD
@@ -5148,15 +4726,11 @@ CELLPADDING="6"
 ><TD
 ><PRE
 CLASS="PROGRAMLISTING"
-><A
-HREF=../glib/glib-basic-types.html#GBOOLEAN
->gboolean</A>    gconf_engine_get_pair           (<A
+>gboolean    gconf_engine_get_pair           (<A
 HREF="gconf-gconf-engine.html#GCONFENGINE"
 >GConfEngine</A
 > *conf,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *key,
+                                             const gchar *key,
                                              <A
 HREF="gconf-gconf-value.html#GCONFVALUETYPE"
 >GConfValueType</A
@@ -5165,15 +4739,9 @@ HREF="gconf-gconf-value.html#GCONFVALUETYPE"
 HREF="gconf-gconf-value.html#GCONFVALUETYPE"
 >GConfValueType</A
 > cdr_type,
-                                             <A
-HREF=../glib/glib-basic-types.html#GPOINTER
->gpointer</A> car_retloc,
-                                             <A
-HREF=../glib/glib-basic-types.html#GPOINTER
->gpointer</A> cdr_retloc,
-                                             <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A> **err);</PRE
+                                             gpointer car_retloc,
+                                             gpointer cdr_retloc,
+                                             GError **err);</PRE
 ></TD
 ></TR
 ></TABLE
@@ -5292,9 +4860,7 @@ CLASS="LITERAL"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->pointer to <A
-HREF=../glib/glib-basic-types.html#GINT
->gint</A></TD
+>pointer to gint</TD
 ></TR
 ><TR
 ><TD
@@ -5309,9 +4875,7 @@ CLASS="LITERAL"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->pointer to <A
-HREF=../glib/glib-basic-types.html#GBOOLEAN
->gboolean</A></TD
+>pointer to gboolean</TD
 ></TR
 ><TR
 ><TD
@@ -5326,9 +4890,7 @@ CLASS="LITERAL"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->pointer to <A
-HREF=../glib/glib-basic-types.html#GDOUBLE
->gdouble</A></TD
+>pointer to gdouble</TD
 ></TR
 ><TR
 ><TD
@@ -5343,9 +4905,7 @@ CLASS="LITERAL"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->pointer to <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A>*</TD
+>pointer to gchar*</TD
 ></TR
 ><TR
 ><TD
@@ -5375,9 +4935,7 @@ HREF="gconf-gconf-schema.html#GCONFSCHEMA"
 In the <TT
 CLASS="LITERAL"
 >GCONF_VALUE_STRING</TT
-> case, you must <A
-HREF=../glib/glib-memory-allocation.html#G-FREE
->g_free</A>() the string(s)
+> case, you must g_free() the string(s)
 stored in the return location(s). In the <TT
 CLASS="LITERAL"
 >GCONF_VALUE_SCHEMA</TT
@@ -5589,9 +5147,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->the return location for an allocated <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A>, or <SPAN
+>the return location for an allocated GError, or <SPAN
 CLASS="SYMBOL"
 >NULL</SPAN
 > to ignore errors.</TD
@@ -5646,21 +5202,13 @@ CELLPADDING="6"
 ><TD
 ><PRE
 CLASS="PROGRAMLISTING"
-><A
-HREF=../glib/glib-basic-types.html#GBOOLEAN
->gboolean</A>    gconf_engine_set_float          (<A
+>gboolean    gconf_engine_set_float          (<A
 HREF="gconf-gconf-engine.html#GCONFENGINE"
 >GConfEngine</A
 > *conf,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *key,
-                                             <A
-HREF=../glib/glib-basic-types.html#GDOUBLE
->gdouble</A> val,
-                                             <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A> **err);</PRE
+                                             const gchar *key,
+                                             gdouble val,
+                                             GError **err);</PRE
 ></TD
 ></TR
 ></TABLE
@@ -5748,9 +5296,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->the return location for an allocated <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A>, or <SPAN
+>the return location for an allocated GError, or <SPAN
 CLASS="SYMBOL"
 >NULL</SPAN
 > to ignore errors.</TD
@@ -5798,21 +5344,13 @@ CELLPADDING="6"
 ><TD
 ><PRE
 CLASS="PROGRAMLISTING"
-><A
-HREF=../glib/glib-basic-types.html#GBOOLEAN
->gboolean</A>    gconf_engine_set_int            (<A
+>gboolean    gconf_engine_set_int            (<A
 HREF="gconf-gconf-engine.html#GCONFENGINE"
 >GConfEngine</A
 > *conf,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *key,
-                                             <A
-HREF=../glib/glib-basic-types.html#GINT
->gint</A> val,
-                                             <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A> **err);</PRE
+                                             const gchar *key,
+                                             gint val,
+                                             GError **err);</PRE
 ></TD
 ></TR
 ></TABLE
@@ -5900,9 +5438,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->the return location for an allocated <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A>, or <SPAN
+>the return location for an allocated GError, or <SPAN
 CLASS="SYMBOL"
 >NULL</SPAN
 > to ignore errors.</TD
@@ -5950,21 +5486,13 @@ CELLPADDING="6"
 ><TD
 ><PRE
 CLASS="PROGRAMLISTING"
-><A
-HREF=../glib/glib-basic-types.html#GBOOLEAN
->gboolean</A>    gconf_engine_set_string         (<A
+>gboolean    gconf_engine_set_string         (<A
 HREF="gconf-gconf-engine.html#GCONFENGINE"
 >GConfEngine</A
 > *conf,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *key,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *val,
-                                             <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A> **err);</PRE
+                                             const gchar *key,
+                                             const gchar *val,
+                                             GError **err);</PRE
 ></TD
 ></TR
 ></TABLE
@@ -6052,9 +5580,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->the return location for an allocated <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A>, or <SPAN
+>the return location for an allocated GError, or <SPAN
 CLASS="SYMBOL"
 >NULL</SPAN
 > to ignore errors.</TD
@@ -6102,21 +5628,13 @@ CELLPADDING="6"
 ><TD
 ><PRE
 CLASS="PROGRAMLISTING"
-><A
-HREF=../glib/glib-basic-types.html#GBOOLEAN
->gboolean</A>    gconf_engine_set_bool           (<A
+>gboolean    gconf_engine_set_bool           (<A
 HREF="gconf-gconf-engine.html#GCONFENGINE"
 >GConfEngine</A
 > *conf,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *key,
-                                             <A
-HREF=../glib/glib-basic-types.html#GBOOLEAN
->gboolean</A> val,
-                                             <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A> **err);</PRE
+                                             const gchar *key,
+                                             gboolean val,
+                                             GError **err);</PRE
 ></TD
 ></TR
 ></TABLE
@@ -6204,9 +5722,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->the return location for an allocated <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A>, or <SPAN
+>the return location for an allocated GError, or <SPAN
 CLASS="SYMBOL"
 >NULL</SPAN
 > to ignore errors.</TD
@@ -6254,22 +5770,16 @@ CELLPADDING="6"
 ><TD
 ><PRE
 CLASS="PROGRAMLISTING"
-><A
-HREF=../glib/glib-basic-types.html#GBOOLEAN
->gboolean</A>    gconf_engine_set_schema         (<A
+>gboolean    gconf_engine_set_schema         (<A
 HREF="gconf-gconf-engine.html#GCONFENGINE"
 >GConfEngine</A
 > *conf,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *key,
+                                             const gchar *key,
                                              const <A
 HREF="gconf-gconf-schema.html#GCONFSCHEMA"
 >GConfSchema</A
 > *val,
-                                             <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A> **err);</PRE
+                                             GError **err);</PRE
 ></TD
 ></TR
 ></TABLE
@@ -6357,9 +5867,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->the return location for an allocated <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A>, or <SPAN
+>the return location for an allocated GError, or <SPAN
 CLASS="SYMBOL"
 >NULL</SPAN
 > to ignore errors.</TD
@@ -6407,25 +5915,17 @@ CELLPADDING="6"
 ><TD
 ><PRE
 CLASS="PROGRAMLISTING"
-><A
-HREF=../glib/glib-basic-types.html#GBOOLEAN
->gboolean</A>    gconf_engine_set_list           (<A
+>gboolean    gconf_engine_set_list           (<A
 HREF="gconf-gconf-engine.html#GCONFENGINE"
 >GConfEngine</A
 > *conf,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *key,
+                                             const gchar *key,
                                              <A
 HREF="gconf-gconf-value.html#GCONFVALUETYPE"
 >GConfValueType</A
 > list_type,
-                                             <A
-HREF=../glib/glib-singly-linked-lists.html#GSLIST
->GSList</A> *list,
-                                             <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A> **err);</PRE
+                                             GSList *list,
+                                             GError **err);</PRE
 ></TD
 ></TR
 ></TABLE
@@ -6530,9 +6030,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->the return location for an allocated <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A>, or <SPAN
+>the return location for an allocated GError, or <SPAN
 CLASS="SYMBOL"
 >NULL</SPAN
 > to ignore errors.</TD
@@ -6580,15 +6078,11 @@ CELLPADDING="6"
 ><TD
 ><PRE
 CLASS="PROGRAMLISTING"
-><A
-HREF=../glib/glib-basic-types.html#GBOOLEAN
->gboolean</A>    gconf_engine_set_pair           (<A
+>gboolean    gconf_engine_set_pair           (<A
 HREF="gconf-gconf-engine.html#GCONFENGINE"
 >GConfEngine</A
 > *conf,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *key,
+                                             const gchar *key,
                                              <A
 HREF="gconf-gconf-value.html#GCONFVALUETYPE"
 >GConfValueType</A
@@ -6597,15 +6091,9 @@ HREF="gconf-gconf-value.html#GCONFVALUETYPE"
 HREF="gconf-gconf-value.html#GCONFVALUETYPE"
 >GConfValueType</A
 > cdr_type,
-                                             <A
-HREF=../glib/glib-basic-types.html#GCONSTPOINTER
->gconstpointer</A> address_of_car,
-                                             <A
-HREF=../glib/glib-basic-types.html#GCONSTPOINTER
->gconstpointer</A> address_of_cdr,
-                                             <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A> **err);</PRE
+                                             gconstpointer address_of_car,
+                                             gconstpointer address_of_cdr,
+                                             GError **err);</PRE
 ></TD
 ></TR
 ></TABLE
@@ -6744,9 +6232,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->the return location for an allocated <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A>, or <SPAN
+>the return location for an allocated GError, or <SPAN
 CLASS="SYMBOL"
 >NULL</SPAN
 > to ignore errors.</TD
@@ -6823,18 +6309,12 @@ CELLPADDING="6"
 ><TD
 ><PRE
 CLASS="PROGRAMLISTING"
-><A
-HREF=../glib/glib-basic-types.html#GBOOLEAN
->gboolean</A>    gconf_string_to_enum            (<A
+>gboolean    gconf_string_to_enum            (<A
 HREF="gconf-gconf.html#GCONFENUMSTRINGPAIR"
 >GConfEnumStringPair</A
 > lookup_table[],
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *str,
-                                             <A
-HREF=../glib/glib-basic-types.html#GINT
->gint</A> *enum_value_retloc);</PRE
+                                             const gchar *str,
+                                             gint *enum_value_retloc);</PRE
 ></TD
 ></TR
 ></TABLE
@@ -6991,15 +6471,11 @@ CELLPADDING="6"
 ><TD
 ><PRE
 CLASS="PROGRAMLISTING"
->const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A>* gconf_enum_to_string           (<A
+>const gchar* gconf_enum_to_string           (<A
 HREF="gconf-gconf.html#GCONFENUMSTRINGPAIR"
 >GConfEnumStringPair</A
 > lookup_table[],
-                                             <A
-HREF=../glib/glib-basic-types.html#GINT
->gint</A> enum_value);</PRE
+                                             gint enum_value);</PRE
 ></TD
 ></TR
 ></TABLE

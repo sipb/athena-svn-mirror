@@ -120,6 +120,8 @@ PKG_CONFIG = @PKG_CONFIG@
 POFILES = @POFILES@
 POPT_LIBS = @POPT_LIBS@
 POSUB = @POSUB@
+PO_IN_DATADIR_FALSE = @PO_IN_DATADIR_FALSE@
+PO_IN_DATADIR_TRUE = @PO_IN_DATADIR_TRUE@
 RANLIB = @RANLIB@
 REBUILD = @REBUILD@
 STRIP = @STRIP@
@@ -130,28 +132,19 @@ absolute_top_srcdir = @absolute_top_srcdir@
 gconflocaledir = @gconflocaledir@
 l = @l@
 
-INCLUDES = -I$(top_srcdir) -I$(top_builddir) -I$(top_builddir)/gconf \
-	$(DEPENDENT_WITH_XML_CFLAGS) $(BDB_CFLAGS) \
-	-DGCONF_ENABLE_INTERNALS=1 -DG_LOG_DOMAIN=\"GConf-Backends\"
+INCLUDES = -I$(top_srcdir) -I$(top_builddir) -I$(top_builddir)/gconf 	$(DEPENDENT_WITH_XML_CFLAGS) $(BDB_CFLAGS) 	-DGCONF_ENABLE_INTERNALS=1 -DG_LOG_DOMAIN=\"GConf-Backends\"
 
 
 EXTRA_DIST = README.bdb
 
 backenddir = $(pkglibdir)/$(MAJOR_VERSION)
-@BDB_TRUE@BDBBACKEND = @BDB_TRUE@libgconfbackend-bdb.la
+@BDB_TRUE@BDBBACKEND = libgconfbackend-bdb.la
 @BDB_FALSE@BDBBACKEND = 
 
 backend_LTLIBRARIES = libgconfbackend-xml.la $(BDBBACKEND)
 noinst_LTLIBRARIES = libgconfbackend-markup.la
 
-libgconfbackend_xml_la_SOURCES = \
-	xml-cache.h		\
-	xml-cache.c		\
-	xml-dir.h		\
-	xml-dir.c		\
-	xml-entry.h		\
-	xml-entry.c		\
-	xml-backend.c
+libgconfbackend_xml_la_SOURCES =  	xml-cache.h			xml-cache.c			xml-dir.h			xml-dir.c			xml-entry.h			xml-entry.c			xml-backend.c
 
 
 libgconfbackend_xml_la_LDFLAGS = -avoid-version -module
@@ -162,9 +155,7 @@ libgconfbackend_bdb_la_SOURCES = bdb.c bdb.h bdb-backend.c val-encode.c val-enco
 libgconfbackend_bdb_la_LDFLAGS = -avoid-version -module
 libgconfbackend_bdb_la_LIBADD = $(DEPENDENT_LIBS) $(BDB_LIBS)
 
-libgconfbackend_markup_la_SOURCES = \
-	markup-tree.h			\
-	markup-tree.c
+libgconfbackend_markup_la_SOURCES =  	markup-backend.c			markup-tree.h				markup-tree.c
 
 
 libgconfbackend_markup_la_LDFLAGS = -avoid-version -module
@@ -189,7 +180,7 @@ libgconfbackend_bdb_la_DEPENDENCIES =
 libgconfbackend_bdb_la_OBJECTS =  bdb.lo bdb-backend.lo val-encode.lo \
 dir-utils.lo
 libgconfbackend_markup_la_DEPENDENCIES = 
-libgconfbackend_markup_la_OBJECTS =  markup-tree.lo
+libgconfbackend_markup_la_OBJECTS =  markup-backend.lo markup-tree.lo
 noinst_PROGRAMS =  xml-test$(EXEEXT)
 PROGRAMS =  $(noinst_PROGRAMS)
 
@@ -367,6 +358,44 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
+markup-backend.lo markup-backend.o : markup-backend.c \
+	../gconf/gconf-backend.h ../gconf/gconf-internals.h ../config.h \
+	../gconf/gconf-error.h ../gconf/gconf-value.h \
+	../gconf/gconf-engine.h ../gconf/gconf-sources.h \
+	../gconf/GConfX.h ../gconf/gconf.h ../gconf/gconf-schema.h \
+	../gconf/gconf-enum-types.h markup-tree.h
+markup-tree.lo markup-tree.o : markup-tree.c ../gconf/gconf-internals.h \
+	../config.h ../gconf/gconf-error.h ../gconf/gconf-value.h \
+	../gconf/gconf-engine.h ../gconf/gconf-sources.h \
+	../gconf/GConfX.h ../gconf/gconf-schema.h markup-tree.h
+xml-backend.o: xml-backend.c ../gconf/gconf-backend.h \
+	../gconf/gconf-internals.h ../config.h ../gconf/gconf-error.h \
+	../gconf/gconf-value.h ../gconf/gconf-engine.h \
+	../gconf/gconf-sources.h ../gconf/GConfX.h ../gconf/gconf.h \
+	../gconf/gconf-schema.h ../gconf/gconf-enum-types.h xml-cache.h \
+	xml-dir.h
+xml-cache.o: xml-cache.c xml-cache.h ../gconf/gconf.h \
+	../gconf/gconf-schema.h ../gconf/gconf-value.h \
+	../gconf/gconf-error.h ../gconf/gconf-engine.h \
+	../gconf/gconf-enum-types.h xml-dir.h \
+	../gconf/gconf-internals.h ../config.h ../gconf/gconf-sources.h \
+	../gconf/GConfX.h
+xml-dir.o: xml-dir.c xml-dir.h ../gconf/gconf.h ../gconf/gconf-schema.h \
+	../gconf/gconf-value.h ../gconf/gconf-error.h \
+	../gconf/gconf-engine.h ../gconf/gconf-enum-types.h xml-entry.h \
+	../gconf/gconf-internals.h ../config.h ../gconf/gconf-sources.h \
+	../gconf/GConfX.h
+xml-entry.o: xml-entry.c xml-entry.h ../gconf/gconf.h \
+	../gconf/gconf-schema.h ../gconf/gconf-value.h \
+	../gconf/gconf-error.h ../gconf/gconf-engine.h \
+	../gconf/gconf-enum-types.h ../gconf/gconf-internals.h \
+	../config.h ../gconf/gconf-sources.h ../gconf/GConfX.h
+xml-test.o: xml-test.c xml-entry.h ../gconf/gconf.h \
+	../gconf/gconf-schema.h ../gconf/gconf-value.h \
+	../gconf/gconf-error.h ../gconf/gconf-engine.h \
+	../gconf/gconf-enum-types.h xml-dir.h xml-cache.h \
+	../gconf/gconf-internals.h ../config.h ../gconf/gconf-sources.h \
+	../gconf/GConfX.h ../gconf/gconf-backend.h
 
 info-am:
 info: info-am

@@ -121,7 +121,7 @@ NAME="GCONF-GCONF-LISTENERS">gconf-listeners</H1
 ><DIV
 CLASS="REFNAMEDIV"
 ><A
-NAME="AEN8431"
+NAME="AEN8315"
 ></A
 ><H2
 >Name</H2
@@ -129,7 +129,7 @@ NAME="AEN8431"
 ><DIV
 CLASS="REFSYNOPSISDIV"
 ><A
-NAME="AEN8434"><H2
+NAME="AEN8318"><H2
 >Synopsis</H2
 ><TABLE
 BORDER="0"
@@ -153,18 +153,10 @@ HREF="gconf-gconf-listeners.html#GCONFLISTENERSCALLBACK"
 HREF="gconf-gconf-listeners.html#GCONFLISTENERS"
 >GConfListeners</A
 > *listeners,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *all_above_key,
-                                             <A
-HREF=../glib/glib-basic-types.html#GUINT
->guint</A> cnxn_id,
-                                             <A
-HREF=../glib/glib-basic-types.html#GPOINTER
->gpointer</A> listener_data,
-                                             <A
-HREF=../glib/glib-basic-types.html#GPOINTER
->gpointer</A> user_data);
+                                             const gchar *all_above_key,
+                                             guint cnxn_id,
+                                             gpointer listener_data,
+                                             gpointer user_data);
 <A
 HREF="gconf-gconf-listeners.html#GCONFLISTENERS"
 >GConfListeners</A
@@ -179,24 +171,16 @@ HREF="gconf-gconf-listeners.html#GCONF-LISTENERS-FREE"
 HREF="gconf-gconf-listeners.html#GCONFLISTENERS"
 >GConfListeners</A
 > *listeners);
-<A
-HREF=../glib/glib-basic-types.html#GUINT
->guint</A>       <A
+guint       <A
 HREF="gconf-gconf-listeners.html#GCONF-LISTENERS-ADD"
 >gconf_listeners_add</A
 >             (<A
 HREF="gconf-gconf-listeners.html#GCONFLISTENERS"
 >GConfListeners</A
 > *listeners,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *listen_point,
-                                             <A
-HREF=../glib/glib-basic-types.html#GPOINTER
->gpointer</A> listener_data,
-                                             <A
-HREF=../glib/glib-miscellaneous-utility-functions.html#GFREEFUNC
->GFreeFunc</A> destroy_notify);
+                                             const gchar *listen_point,
+                                             gpointer listener_data,
+                                             GFreeFunc destroy_notify);
 void        <A
 HREF="gconf-gconf-listeners.html#GCONF-LISTENERS-REMOVE"
 >gconf_listeners_remove</A
@@ -204,9 +188,7 @@ HREF="gconf-gconf-listeners.html#GCONF-LISTENERS-REMOVE"
 HREF="gconf-gconf-listeners.html#GCONFLISTENERS"
 >GConfListeners</A
 > *listeners,
-                                             <A
-HREF=../glib/glib-basic-types.html#GUINT
->guint</A> cnxn_id);
+                                             guint cnxn_id);
 void        <A
 HREF="gconf-gconf-listeners.html#GCONF-LISTENERS-NOTIFY"
 >gconf_listeners_notify</A
@@ -214,19 +196,13 @@ HREF="gconf-gconf-listeners.html#GCONF-LISTENERS-NOTIFY"
 HREF="gconf-gconf-listeners.html#GCONFLISTENERS"
 >GConfListeners</A
 > *listeners,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *all_above,
+                                             const gchar *all_above,
                                              <A
 HREF="gconf-gconf-listeners.html#GCONFLISTENERSCALLBACK"
 >GConfListenersCallback</A
 > callback,
-                                             <A
-HREF=../glib/glib-basic-types.html#GPOINTER
->gpointer</A> user_data);
-<A
-HREF=../glib/glib-basic-types.html#GUINT
->guint</A>       <A
+                                             gpointer user_data);
+guint       <A
 HREF="gconf-gconf-listeners.html#GCONF-LISTENERS-COUNT"
 >gconf_listeners_count</A
 >           (<A
@@ -240,7 +216,7 @@ HREF="gconf-gconf-listeners.html#GCONFLISTENERS"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN8465"
+NAME="AEN8349"
 ></A
 ><H2
 >Description</H2
@@ -250,14 +226,14 @@ NAME="AEN8465"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN8468"
+NAME="AEN8352"
 ></A
 ><H2
 >Details</H2
 ><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN8470"
+NAME="AEN8354"
 ></A
 ><H3
 ><A
@@ -283,7 +259,7 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN8475"
+NAME="AEN8359"
 ></A
 ><H3
 ><A
@@ -303,18 +279,10 @@ CLASS="PROGRAMLISTING"
 HREF="gconf-gconf-listeners.html#GCONFLISTENERS"
 >GConfListeners</A
 > *listeners,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *all_above_key,
-                                             <A
-HREF=../glib/glib-basic-types.html#GUINT
->guint</A> cnxn_id,
-                                             <A
-HREF=../glib/glib-basic-types.html#GPOINTER
->gpointer</A> listener_data,
-                                             <A
-HREF=../glib/glib-basic-types.html#GPOINTER
->gpointer</A> user_data);</PRE
+                                             const gchar *all_above_key,
+                                             guint cnxn_id,
+                                             gpointer listener_data,
+                                             gpointer user_data);</PRE
 ></TD
 ></TR
 ></TABLE
@@ -323,7 +291,7 @@ HREF=../glib/glib-basic-types.html#GPOINTER
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN8485"><P
+NAME="AEN8369"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -427,7 +395,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN8510"
+NAME="AEN8394"
 ></A
 ><H3
 ><A
@@ -455,7 +423,7 @@ HREF="gconf-gconf-listeners.html#GCONFLISTENERS"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN8516"><P
+NAME="AEN8400"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -492,7 +460,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN8525"
+NAME="AEN8409"
 ></A
 ><H3
 ><A
@@ -520,7 +488,7 @@ HREF="gconf-gconf-listeners.html#GCONFLISTENERS"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN8531"><P
+NAME="AEN8415"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -556,7 +524,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN8540"
+NAME="AEN8424"
 ></A
 ><H3
 ><A
@@ -572,21 +540,13 @@ CELLPADDING="6"
 ><TD
 ><PRE
 CLASS="PROGRAMLISTING"
-><A
-HREF=../glib/glib-basic-types.html#GUINT
->guint</A>       gconf_listeners_add             (<A
+>guint       gconf_listeners_add             (<A
 HREF="gconf-gconf-listeners.html#GCONFLISTENERS"
 >GConfListeners</A
 > *listeners,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *listen_point,
-                                             <A
-HREF=../glib/glib-basic-types.html#GPOINTER
->gpointer</A> listener_data,
-                                             <A
-HREF=../glib/glib-miscellaneous-utility-functions.html#GFREEFUNC
->GFreeFunc</A> destroy_notify);</PRE
+                                             const gchar *listen_point,
+                                             gpointer listener_data,
+                                             GFreeFunc destroy_notify);</PRE
 ></TD
 ></TR
 ></TABLE
@@ -595,7 +555,7 @@ HREF=../glib/glib-miscellaneous-utility-functions.html#GFREEFUNC
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN8550"><P
+NAME="AEN8434"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -700,7 +660,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN8575"
+NAME="AEN8459"
 ></A
 ><H3
 ><A
@@ -720,9 +680,7 @@ CLASS="PROGRAMLISTING"
 HREF="gconf-gconf-listeners.html#GCONFLISTENERS"
 >GConfListeners</A
 > *listeners,
-                                             <A
-HREF=../glib/glib-basic-types.html#GUINT
->guint</A> cnxn_id);</PRE
+                                             guint cnxn_id);</PRE
 ></TD
 ></TR
 ></TABLE
@@ -731,7 +689,7 @@ HREF=../glib/glib-basic-types.html#GUINT
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN8582"><P
+NAME="AEN8466"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -784,7 +742,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN8595"
+NAME="AEN8479"
 ></A
 ><H3
 ><A
@@ -804,16 +762,12 @@ CLASS="PROGRAMLISTING"
 HREF="gconf-gconf-listeners.html#GCONFLISTENERS"
 >GConfListeners</A
 > *listeners,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *all_above,
+                                             const gchar *all_above,
                                              <A
 HREF="gconf-gconf-listeners.html#GCONFLISTENERSCALLBACK"
 >GConfListenersCallback</A
 > callback,
-                                             <A
-HREF=../glib/glib-basic-types.html#GPOINTER
->gpointer</A> user_data);</PRE
+                                             gpointer user_data);</PRE
 ></TD
 ></TR
 ></TABLE
@@ -822,7 +776,7 @@ HREF=../glib/glib-basic-types.html#GPOINTER
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN8604"><P
+NAME="AEN8488"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -909,7 +863,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN8625"
+NAME="AEN8509"
 ></A
 ><H3
 ><A
@@ -925,9 +879,7 @@ CELLPADDING="6"
 ><TD
 ><PRE
 CLASS="PROGRAMLISTING"
-><A
-HREF=../glib/glib-basic-types.html#GUINT
->guint</A>       gconf_listeners_count           (<A
+>guint       gconf_listeners_count           (<A
 HREF="gconf-gconf-listeners.html#GCONFLISTENERS"
 >GConfListeners</A
 > *listeners);</PRE
@@ -939,7 +891,7 @@ HREF="gconf-gconf-listeners.html#GCONFLISTENERS"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN8632"><P
+NAME="AEN8516"><P
 ></P
 ><TABLE
 BORDER="0"
