@@ -18,8 +18,8 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/olc.h,v $
- *	$Id: olc.h,v 1.12 1990-07-16 09:50:06 vanharen Exp $
- *	$Author: vanharen $
+ *	$Id: olc.h,v 1.13 1990-07-24 14:08:04 lwvanels Exp $
+ *	$Author: lwvanels $
  */
 
 #include <mit-copyright.h>
@@ -94,7 +94,7 @@ extern char *LOCAL_REALM;
 extern char *LOCAL_REALMS[];
 extern char REALM[];
 extern char INSTANCE[];
-#endif KERBEROS
+#endif /* KERBEROS */
 
 extern PERSON User;
 extern STATUS Status_Table[];
