@@ -16,8 +16,8 @@
  *      Copyright (c) 1985,1988 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/macros.h,v $
- *      $Author: tjcoppet $
- *      $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/macros.h,v 1.2 1989-08-08 10:43:10 tjcoppet Exp $
+ *      $Author: raeburn $
+ *      $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/macros.h,v 1.3 1990-01-04 14:37:04 raeburn Exp $
  */
 
 
@@ -50,8 +50,8 @@
  * Type declarations 
  */
 
-typedef int     (*FUNCTION)();  /* A pointer to a function. */
 typedef int     ERRCODE;        /* An error code. */
+typedef ERRCODE (*FUNCTION)();  /* A pointer to a function. */
 typedef int     RESPONSE;       /* A response code. */
 
 /* Useful macros. */
