@@ -1,3 +1,5 @@
+/* $Id: agetopt.h,v 1.2 1999-03-23 18:24:00 danw Exp $ */
+
 /* Copyright 1998 by the Massachusetts Institute of Technology.
  *
  * Permission to use, copy, modify, and distribute this
