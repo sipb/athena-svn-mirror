@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# $Id: do_update.sh,v 1.2 1995-10-26 22:37:59 cfields Exp $
+# $Id: do_update.sh,v 1.3 1996-05-15 20:33:47 cfields Exp $
 #
 
 ROOT=${ROOT-}; export ROOT
@@ -24,7 +24,7 @@ if [ ! -f ${ROOT}/${CONFDIR}/rc.conf -a -f ${ROOT}/etc/rc.conf ]; then
 fi
 
 echo "Starting update..."
-SITE=/var; export SITE
+SITE=var; export SITE
 SERVERDIR=${SITE}/server; export SERVERDIR
 CP_P=-p; export CP_P
 MTYPE=`/srvd/bin/athena/machtype -c` ; export MTYPE
@@ -35,35 +35,41 @@ KN01)
 	MACH=DS3100; export MACH
 	CP_P=; export CP_P
 	mpublic="	/etc/crontab \
+			/etc/inetd.conf \
 			/etc/elcsd.conf"
 	;;
 KN02)
 	MACH=DS5000; export MACH
 	CP_P=; export CP_P
 	mpublic="	/etc/crontab \
+			/etc/inetd.conf \
 			/etc/elcsd.conf"
 	;;
 KN02ba)
 	MACH=DS5000_100; export MACH
 	CP_P=; export CP_P
 	mpublic="	/etc/crontab \
+			/etc/inetd.conf \
 			/etc/elcsd.conf"
 	;;
 KN02ca)
 	MACH=DSMAXINE; export MACH
 	CP_P=; export CP_P
 	mpublic="	/etc/crontab \
+			/etc/inetd.conf \
 			/etc/elcsd.conf"
 	;;
 KN210)
 	MACH=DS5400; export MACH
 	CP_P=; export CP_P
 	mpublic="	/etc/crontab \
+			/etc/inetd.conf \
 			/etc/elcsd.conf"
 	;;
 POWER*)
 	MACH=RSAIX; export MACH
 	mpublic="	/etc/resolv.conf \
+			/etc/inetd.conf \
 			/etc/syslog.conf"
 	;;
 SPARC/IP*)
@@ -85,6 +91,14 @@ SPARC/*)
 			/etc/minor_perm
 			/etc/system"
 	;;
+IP22)
+	MACH=INDY; export MACH
+	mpublic="	/etc/resolv.conf \
+			/etc/syslog.conf \
+			/etc/inetd.conf \
+			/etc/athena/inetd.conf \
+			/var/spool/cron/crontabs/root"
+	;;
 *)
 	echo "Unknown machine type...exiting"
 	exit 1
@@ -93,16 +107,14 @@ esac
 
 # If we are a public workstation, let us be paranoid and update everything.
 public_files="	/.cshrc \
-		/.cshrc.mine \
 		/.login \
 		/.profile \
-		/.tcshrc \
 		/.xsession \
 		/etc/athena/attach.conf \
-		/etc/inetd.conf \
 		/etc/ftpusers \
 		/etc/syslog.conf \
 		/etc/athena/newsyslog.conf \
+		/etc/shells \
 		${mpublic}"
 
 if [ "${AFSCLIENT}" = "true" ]; then
@@ -124,6 +136,10 @@ fi
 
 case $MTYPE in
 POWER*)
+	;;
+SUN*|SPARC*)
+	;;
+IP22)
 	;;
 *)
 	/srvd/usr/ucb/reset
@@ -163,7 +179,15 @@ fi
 if [ "${PUBLIC}" = "true" ]; then
 	NEWUNIX=true
 	NEWBOOT=true
-	NEWTTYS=true # always false on Solaris?
+	case "${MTYPE}" in
+	SPARC*)
+		;;
+	IP22)
+		;;
+	*)
+		NEWTTYS=true
+		;;
+	esac
 	FULLCOPY=true
 	NEWMAILCF=true
 	for i in $public_files; do echo "$i" >> ${CONFCHG}; done
@@ -192,7 +216,12 @@ POWER*)	echo "Updating root's crontab (old crontab is in /tmp/crontab.old)"
 		cat $LIBDIR/crontab.root.add; \
 		echo "# Athena additions - END") \
 	    | crontab
-
+	;;
+# On SGI, crontab is treated as a normal config file, because it
+# can't easily be edited. I'm just using this case statement because
+# it's here. All platforms should probably do their services by
+# editing them, and the SPARC code above is doing a disservice.
+IP22)
 	echo "Updating /etc/services (old services is in /tmp/services.old)"
 	cp /etc/services /tmp/services.old
 	(sed -e '/Athena additions - BEGIN/,/Athena additions - END/d' \
@@ -202,6 +231,7 @@ POWER*)	echo "Updating root's crontab (old crontab is in /tmp/crontab.old)"
 		echo "# Athena additions - END") > /etc/services
 	;;
 esac
+
 if [ "${AFSCLIENT}" = "true" ]; then
 	# Update CellServDB
 	echo $N "Updating CellServDB.public...$C"
@@ -242,6 +272,7 @@ if [ "${NEWTTYS}" = "true" ]; then
 	esac
 	echo "/etc/athena/login/config" >> ${CONFCHG}
 fi
+
 if [ -s ${CONFCHG} ]; then
 	conf="`cat ${CONFCHG} | sort -u`"
 	if [ "${PUBLIC}" != "true" ]; then
@@ -310,33 +341,39 @@ cd ${ROOT}/; /bin/rm -f restoresymtable
 
 # We could be more intelligent and shutdown everything, but...
 echo $N "Shutting down running services...$C"
-if [ -f /etc/inetd.pid ]; then
-	echo $N "inetd...$C"
-	case $MTYPE in
-	POWER*)
-		/bin/stopsrc -s inetd
-		;;
-	*)
-		kill `cat /etc/inetd.pid` > /dev/null 2>&1
-		;;
-	esac
-fi
-if [ -f /etc/syslog.pid ]; then
-	echo $N "syslogd...$C"
-	kill `cat /etc/syslog.pid` > /dev/null 2>&1
-fi
-if [ -f /etc/snmpd.pid ]; then
-	echo $N "snmpd...$C"
-	kill `cat /etc/snmpd.pid` > /dev/null 2>&1
-fi
-if [ -f /etc/named.pid ]; then
-	echo $N "named...$C"
-	kill `cat /etc/named.pid` > /dev/null 2>&1
-fi
-if [ -f /etc/athena/zhm.pid ]; then
-	echo $N "zhm...$C"
-	kill `cat /etc/athena/zhm.pid` > /dev/null 2>&1
-fi
+case `/bin/athena/machtype` in
+sgi)
+	killall inetd snmpd syslogd snmpd named
+	;;
+*)
+	if [ -f /etc/inetd.pid ]; then
+		echo $N "inetd...$C"
+		case $MTYPE in
+		POWER*)
+			/bin/stopsrc -s inetd
+			;;
+		*)
+			kill `cat /etc/inetd.pid` > /dev/null 2>&1
+			;;
+		esac
+	fi
+	if [ -f /etc/athena/inetd.pid ]; then
+		echo $N "athena inetd...$C"
+		kill `cat /etc/athena/inetd.pid` > /dev/null 2>&1
+	fi
+	if [ -f /etc/syslog.pid ]; then
+		echo $N "syslogd...$C"
+		kill `cat /etc/syslog.pid` > /dev/null 2>&1
+	fi
+	if [ -f /etc/snmpd.pid ]; then
+		echo $N "snmpd...$C"
+		kill `cat /etc/snmpd.pid` > /dev/null 2>&1
+	fi
+	if [ -f /etc/named.pid ]; then
+		echo $N "named...$C"
+		kill `cat /etc/named.pid` > /dev/null 2>&1
+	fi
+esac
 echo "done"
 
 echo "Removing excess kernels..."
@@ -453,6 +490,8 @@ case ${MACH} in
 		;;
 	SUN*)
 		;;
+	INDY)
+		;;
 	*)
 		(cd ${ROOT}/dev; ./MAKEDEV -v ws)
 		;;
@@ -496,6 +535,11 @@ if [ ${XSERVER}x != x ]; then
 	fi
 fi
 
+# Used to reduce code duplication in NEWUNIX and NEWDEV.
+if [ ${MACH} = "SUN4c" ]; then
+	cee=.4c
+fi
+
 if [ "${NEWUNIX}" = "true" ] ; then
 	echo $N "Updating kernel...$C"
 	case ${MACH} in
@@ -511,9 +555,7 @@ if [ "${NEWUNIX}" = "true" ] ; then
 		/bin/rm -f ${ROOT}/vmunix
 		/bin/cp ${CP_P} /srvd/vmunix.5400 ${ROOT}/vmunix
 		;;
-	SUN4c)
-		cee=.4c
-	SUN4m)
+	SUN4c|SUN4m)
 		(cd /srvd/kernel${cee}; tar cf - . ) | (cd /kernel; tar xf - . )
 		(cd /srvd/usr/kernel; tar cf - . ) | (cd /usr/kernel; tar xf - . )
 		(cd /srvd/usr/kvm; tar cf - . ) | (cd /usr/kvm; tar xf - . )
@@ -563,19 +605,20 @@ if [ -d ${ROOT}/${SITE}/server ]; then
 	SUN*)
 		/usr/sbin/in.named /etc/named.boot
 		;;
+	INDY)
+		/usr/sbin/named `cat $CONFIG/named.options 2> /dev/null` < /dev/null
+		;;
 	*)
 		/etc/named /etc/named.boot
 		;;
 	esac
-	/srvd/usr/athena/mkserv -v update
+	${MKSERV} -v update
 fi
 
 if [ "${NEWDEV}" = "true" ] ; then
 	/bin/echo "Moving new devices into place"
 	case ${MACH} in
-	SUN4c)
-		cee=.4c
-	SUN4m)
+	SUN4c|SUN4m)
 	        mkdir /devices.77 /dev.77
 		  cp /usr/sbin/static/mv /tmp/mv
 		  cp /dev/null /reconfigure
@@ -592,24 +635,6 @@ if [ "${NEWDEV}" = "true" ] ; then
 	*)
 		mv /dev /.deleted
 		mv /dev.new /dev
-	esac
-fi
-
-if [ "${NEWAUDIO}" = "true" ] ; then
-	case ${MACH} in
-	SUN4m)
-		case `/bin/athena/machtype -c` in
-		SPARC/5)
-			/bin/echo "Adding audio dev for Sparc 5"
-			/usr/sbin/add_drv  -m '* 0755 root sys' -i 'SUNW,CS4231' /kernel/drv/audiocs > /dev/null 2>&1
-			/usr/sbin/audlinks
-			;;
-		*)
-			;;
-		esac
-		;;
-	*)
-		;;
 	esac
 fi
 
