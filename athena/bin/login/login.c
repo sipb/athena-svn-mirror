@@ -1,9 +1,9 @@
 /*
- * $Id: login.c,v 1.79 1996-06-26 20:47:31 ghudson Exp $
+ * $Id: login.c,v 1.80 1996-08-10 05:35:07 ghudson Exp $
  */
 
 #ifndef lint
-static char *rcsid = "$Id: login.c,v 1.79 1996-06-26 20:47:31 ghudson Exp $";
+static char *rcsid = "$Id: login.c,v 1.80 1996-08-10 05:35:07 ghudson Exp $";
 #endif
 
 /*
@@ -1236,10 +1236,12 @@ leavethis:
 	struct stat st;
 
 	showmotd();
+#ifndef sgi /* Irix does a mail check in the system-wide dotfiles. */
 	strcat(maildir, pwd->pw_name);
 	if (stat(maildir, &st) == 0 && st.st_size != 0)
 	    printf("You have %smail.\n",
 		   (st.st_mtime > st.st_atime) ? "new " : "");
+#endif
     }
 #ifdef VFS
     switch(forkval = fork()) {
@@ -1268,6 +1270,7 @@ leavethis:
     signal(SIGINT, SIG_DFL);
     signal(SIGTSTP, SIG_IGN);
 #endif
+
     execlp(pwd->pw_shell, minusnam, 0);
     perror(pwd->pw_shell);
     printf("No shell\n");
@@ -1382,11 +1385,13 @@ showmotd()
 	        }
 	}
 	else {
+#ifndef sgi /* Irix shows the motd in the system-wide dotfiles. */
 		if ((mf = fopen("/etc/motd", "r")) != NULL) {
 			while ((c = getc(mf)) != EOF && stopmotd == 0)
 				putchar(c);
 			fclose(mf);
 		}
+#endif
 		if (execlp(get_motd, get_motd, "-login", 0) < 0) {
 			/* hide error code if any... */
 			exit(0);
