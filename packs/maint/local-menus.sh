@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: local-menus.sh,v 1.2 2001-06-07 17:14:02 zacheiss Exp $
+# $Id: local-menus.sh,v 1.3 2001-06-12 17:14:22 ghudson Exp $
 
 # Tar file containing menus (a symlink into the AFS system config area).
 menutar=/usr/athena/share/gnome/athena/menus.tar
@@ -31,7 +31,8 @@ if [ ! -s $menutar ]; then
 fi
 
 # Nothing to do if $localtar is up to date.
-if [ -s $localtar ] && [ "`find $menutar -newer $localtar`" != $menutar ]; then
+if [ -s $localtar ] && \
+   [ "`find $menutar -follow -newer $localtar`" != $menutar ]; then
   exit 0
 fi
 
