@@ -2,11 +2,12 @@
  *  Machtype: determine machine type & display type
  *
  * RCS Info
- *    $Id: machtype_solaris.c,v 1.4 2001-03-26 20:26:51 ghudson Exp $
+ *    $Id: machtype_solaris.c,v 1.5 2002-03-21 04:35:51 ghudson Exp $
  */
 
 #define volatile 
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <kvm.h>
 #include <nlist.h>
