@@ -1,11 +1,12 @@
 /*
- * $Header: /afs/dev.mit.edu/source/repository/packs/update/upvers.c,v 1.10 1993-05-20 12:00:31 miki Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/packs/update/upvers.c,v 1.11 1994-05-26 17:57:13 cfields Exp $
  * $Source: /afs/dev.mit.edu/source/repository/packs/update/upvers.c,v $
- * $Author: miki $
+ * $Author: cfields $
  */
  
 #include	<sys/types.h>
 #ifdef SOLARIS
+#include 	<strings.h>
 #include      <dirent.h>
 #else
 #include	<sys/dir.h>
@@ -19,7 +20,7 @@ struct	verfile {
 } vf[1024];
 
 #ifndef lint
-char	rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/packs/update/upvers.c,v 1.10 1993-05-20 12:00:31 miki Exp $";
+char	rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/packs/update/upvers.c,v 1.11 1994-05-26 17:57:13 cfields Exp $";
 #endif
 
 main(argc, argv)
