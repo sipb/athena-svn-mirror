@@ -23,13 +23,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc.c,v $
- *	$Id: olc.c,v 1.26 1991-03-29 01:25:59 lwvanels Exp $
+ *	$Id: olc.c,v 1.27 1991-04-02 13:58:47 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc.c,v 1.26 1991-03-29 01:25:59 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc.c,v 1.27 1991-04-02 13:58:47 lwvanels Exp $";
 #endif
 #endif
 
@@ -162,6 +162,7 @@ main(argc, argv)
   char *tty;		       
   char *prompt;
   char buf[BUFSIZ];
+  ERRCODE status;
 
 /*
  * All client specific stuff should be initialized here, if they wish
@@ -254,8 +255,8 @@ main(argc, argv)
   if (argc)
     {
       OInitialize();
-      do_command(Command_Table, argv);
-      exit(SUCCESS);
+      status = do_command(Command_Table, argv);
+      exit(status);
     }
   else 
     {
