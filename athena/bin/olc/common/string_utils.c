@@ -16,12 +16,12 @@
  * For copying and distribution information, see the file "mit-copyright.h."
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/string_utils.c,v $
- *	$Id: string_utils.c,v 1.11 1990-07-16 08:25:45 lwvanels Exp $
- *	$Author: lwvanels $
+ *	$Id: string_utils.c,v 1.12 1990-07-20 21:12:10 vanharen Exp $
+ *	$Author: vanharen $
  */
 
 #ifndef lint
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/string_utils.c,v 1.11 1990-07-16 08:25:45 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/string_utils.c,v 1.12 1990-07-20 21:12:10 vanharen Exp $";
 #endif
 
 #include <mit-copyright.h>
@@ -162,9 +162,12 @@ char *format_time(time_info)
  * Function: get_next_word() gets the next word out of a line of text
  *		contained in the string <line>.  It takes optional leading
  *		whitespace and then returns a string containing all of
- *		the characters until the next whitespace.
+ *		the characters until the next delimiter.
  * Arguments:	line:	A pointer to the text to be scanned.
  *		buf:	A pointer to a buffer to store the word in.
+ *		func:	A function that returns FALSE when you've hit a
+ * 			delimiter.  Two are provided below, IsAlpha()
+ *			and NotWhiteSpace().
  * Returns:	A pointer after the end of the word.
  * Notes:
  * 	Scan through <line> looking for the first non-whitespace character.
@@ -178,8 +181,6 @@ get_next_word(line, buf, func)
      int (*func)();
 {
   char c;			/* Current character. */
-  int done = FALSE;		/* TRUE when we have hit the next word. */
-  int i;
 
   while ((c = *line) == ' ' || c == '\t')	/* strip leading whitepace */
     line++;
@@ -194,26 +195,8 @@ get_next_word(line, buf, func)
       *buf++ = c;
     }
 
-#if 0
-    for (i=0; (i < strlen(separators)) && !done; i++)
-    if ((c == separators[i]) || (c == '\0'))
-      done = TRUE;
-    else {
-      *buf++ = c;
-      c = *(++line);
-      i = 0;
-    }
-#endif
-#if 0
-	while ((c = *line) != ' ' && c != '\t' && c != '\n' && c != '\0')
-	  {
-	    line++;
-	    *buf++ = c;
-	  }
-#endif
-
-	*buf = '\0';
-	return(line);
+  *buf = '\0';
+  return(line);
 }
 
 int
