@@ -1,4 +1,4 @@
-# $Id: phase3.sh,v 1.20 1997-12-06 20:56:10 ghudson Exp $
+# $Id: phase3.sh,v 1.21 1998-01-09 03:07:07 ghudson Exp $
 # $Source: /afs/dev.mit.edu/source/repository/packs/install/platform/sun4/phase3.sh,v $
 
 # This file is run out of the srvd by phase2.sh after it starts AFS.
@@ -99,7 +99,7 @@ cp -p /os/etc/dgroup.tab etc/dgroup.tab
 
 if=`ifconfig -au | awk -F: '/^[a-z]/ { if ($1 != "lo0") { print $1; exit; } }'`
 if [ -z "$if" ]; then if=le0; fi
-hostname=`echo $hostname | awk -F. '{print $1}' | /usr/bin/tr "[A-Z]" "[a-z]"`
+hostname=`echo $hostname | /usr/bin/tr "[A-Z]" "[a-z]"`
 echo "Host name is $hostname"
 echo "Gateway is $gateway"
 echo "Address is $netaddr"
