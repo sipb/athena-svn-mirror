@@ -1,0 +1,101 @@
+# $Id: Makefile.in,v 1.1 1999-09-28 22:07:17 danw Exp $
+
+SHELL=/bin/sh
+INSTALL=@INSTALL@
+INSTALL_PROGRAM=@INSTALL_PROGRAM@
+RANLIB=@RANLIB@
+VPATH=@srcdir@
+srcdir=@srcdir@
+top_srcdir=@top_srcdir@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+mandir=@mandir@
+
+CC=@CC@
+CPPFLAGS=@CPPFLAGS@
+CFLAGS=@CFLAGS@
+DEFS=@DEFS@
+LDFLAGS=@LDFLAGS@
+LIBS=@LIBS@
+ALL_CFLAGS=-I. ${CPPFLAGS} ${CFLAGS} ${DEFS}
+RPCGENFLAGS=@RPCGENFLAGS@
+
+OBJS=	_fx_lengthen.o fx_create.o fx_move.o _fx_rpc_errno.o fx_delete.o \
+	fx_open.o _fx_shorten.o fx_destroy.o fx_retrieve.o _fx_unshorten.o \
+	fx_directory.o fx_retrieve_file.o fx_acl_add.o \
+	fx_directory_destroy.o fx_send.o fx_acl_del.o fx_host_list.o \
+	fx_send_file.o fx_acl_list.o fx_host_list_destroy.o fx_stat.o \
+	fx_acl_list_destroy.o fx_init.o fx_stat_destroy.o fx_connect.o \
+	fx_list.o libacl.o fx_copy.o fx_list_destroy.o \
+	fxcl_err.o fxserver_err.o krb_err.o rpc_err.o \
+	fx_prot_clnt.o fx_prot_svc.o fx_prot_xdr.o
+
+all: fx libfxcl.a
+
+fx:
+	ln -s . fx
+
+libfxcl.a: ${OBJS}
+	ar cru $@ ${OBJS}
+	${RANLIB} $@
+
+${OBJS}: fxcl.h fx-internal.h fx_prot.h
+fxcl.h: fxcl_err.h fxserver_err.h krb_err.h rpc_err.h
+fx_open.o fx_retrieve.o libacl.o: memory.h
+
+.c.o:
+	${CC} -c ${ALL_CFLAGS} $<
+
+fxcl_err.h fxcl_err.c: fxcl_err.et
+	compile_et fxcl_err.et
+
+fxserver_err.h fxserver_err.c: fxserver_err.et
+	compile_et fxserver_err.et
+
+krb_err.h krb_err.c: krb_err.et
+	compile_et krb_err.et
+
+krb_err.et: mk_krb_err
+	./mk_krb_err > $@
+
+mk_krb_err: mk_krb_err.c
+	$(CC) $(ALL_CFLAGS) -o mk_krb_err mk_krb_err.c $(LDFLAGS) -lkrb4
+
+rpc_err.h rpc_err.c: rpc_err.et
+	compile_et rpc_err.et
+
+fx_prot.h fx_prot_clnt.c fx_prot_svc.c fx_prot_xdr.c: fx_prot.x
+	rpcgen ${RPCGENFLAGS} fx_prot.x
+	cat xdr_extras.c >> fx_prot_xdr.c
+	rm -f fx_prot_svc.c
+	rpcgen ${RPCGENFLAGS} -m -o fx_prot_svc.c fx_prot.x
+
+check:
+
+install:
+	${top_srcdir}/mkinstalldirs ${DESTDIR}${libdir}
+	${top_srcdir}/mkinstalldirs ${DESTDIR}${includedir}/fx
+	${top_srcdir}/mkinstalldirs ${DESTDIR}${mandir}/man3
+	${INSTALL} -m 644 libfxcl.a ${DESTDIR}${libdir}
+	${RANLIB} ${DESTDIR}${libdir}/libfxcl.a
+	chmod u-w ${DESTDIR}${libdir}/libfxcl.a
+	${INSTALL} -m 444 ${srcdir}/fx-internal.h ${DESTDIR}${includedir}/fx
+	${INSTALL} -m 444 ${srcdir}/fxcl.h ${DESTDIR}${includedir}/fx
+	${INSTALL} -m 444 ${srcdir}/memory.h ${DESTDIR}${includedir}/fx
+	${INSTALL} -m 444 fx_prot.h ${DESTDIR}${includedir}/fx
+	${INSTALL} -m 444 fxcl_err.h ${DESTDIR}${includedir}/fx
+	${INSTALL} -m 444 fxserver_err.h ${DESTDIR}${includedir}/fx
+	${INSTALL} -m 444 krb_err.h ${DESTDIR}${includedir}/fx
+	${INSTALL} -m 444 rpc_err.h ${DESTDIR}${includedir}/fx
+	${INSTALL} -m 444 ${srcdir}/fxcl.3 ${DESTDIR}${mandir}/man3
+
+clean:
+	rm -f ${OBJS} libfxcl.a fx
+	rm -f fxcl_err.c fxcl_err.h fxserver_err.c fxserver_err.h
+	rm -f krb_err.c krb_err.h rpc_err.c rpc_err.h
+	rm -f fx_prot.h fx_prot_clnt.c fx_prot_svc.c fx_prot_xdr.c
+
+distclean: clean
+	rm -f config.cache config.log config.status Makefile
