@@ -1,6 +1,6 @@
 #!/usr/athena/bin/perl -w
 
-# $Id: from.pl,v 1.3 2003-05-29 22:05:29 rbasch Exp $
+# $Id: from.pl,v 1.4 2003-09-12 18:55:46 rbasch Exp $
 
 # This is an implementation of the Athena "from" utility using the
 # Perl interface to the Cyrus imclient IMAP library.
@@ -15,7 +15,7 @@ sub send_command($);
 sub search_callback(@);
 sub fetch_callback(@);
 sub number_callback(@);
-sub make_msgspec(@);
+sub make_msgspecs(@);
 sub close_connection();
 sub get_localmail();
 sub get_terminal_width();
@@ -37,6 +37,7 @@ Usage: from [<options>] [<user>]
     -t            display message totals only
     -p            check post office server only
     -u            check local mail only
+    -d            turn on debugging
 EOF
     exit 1;
 }
@@ -86,8 +87,10 @@ exit 0 if $localonly;
 # Connect to the server, and authenticate.
 my $client = Cyrus::IMAP->new($host) ||
     errorout "Cannot connect to IMAP server on $host";
-$client->authenticate(-authz => $username) ||
+unless ($client->authenticate(-authz => $username)) {
+    close_connection();
     errorout "Cannot authenticate to $host";
+}
 
 # Examine the mailbox.  This gives the numbers of existing and recent
 # messages, as well as selecting the mailbox for read-only access.
@@ -114,14 +117,15 @@ if ($totalmsgcount && !($checknew && !$recentmsgcount)) {
     # If there are messages of interest, fetch their size, and any desired
     # headers.
     if (@msgids > 0) {
-	my $msgspec = make_msgspec(@msgids);
 	my $fetch = "RFC822.SIZE";
 	$fetch .= " BODY.PEEK[HEADER.FIELDS (FROM TO SUBJECT DATE)]"
 	    unless $totals_only;
 	$client->addcallback({-trigger => 'FETCH', -flags => $cb_numbered,
 			      -callback => \&fetch_callback,
 			      -rock => \@pomsgs});
-	send_command "UID FETCH $msgspec ($fetch)";
+	foreach (make_msgspecs(@msgids)) {
+	    send_command "UID FETCH $_ ($fetch)";
+	}
     }
 }
 my $msgcount = @pomsgs;
@@ -189,7 +193,12 @@ sub send_command($) {
     print "Sending: $_[0]\n" if $debug;
     my ($status, $text) = $client->send('', '', $_[0]);
     print "Response: status $status, text $text\n" if $debug;
-    errorout "IMAP error for $mbox on $host: $text" if $status ne 'OK';
+    errorout "Premature end-of-file on IMAP connection to $host"
+	if $status eq 'EOF';
+    if ($status ne 'OK') {
+	close_connection();
+	errorout "IMAP error for $mbox on $host: $text" 
+    }
 }
 
 # Callback subroutine to parse the response from a SEARCH command.
@@ -227,17 +236,21 @@ sub fetch_callback(@) {
 # Callback subroutine to parse a numeric value.  The "-rock" hash
 # element is a reference to the scalar in which to store the number.
 sub number_callback(@) {
-  my %cb = @_;
-  print "In number callback: keyword $cb{-keyword}, number $cb{-msgno}\n"
-      if $debug;
-  ${$cb{-rock}} = $cb{-msgno};
+    my %cb = @_;
+    print "In number callback: keyword $cb{-keyword}, number $cb{-msgno}\n"
+	if $debug;
+    ${$cb{-rock}} = $cb{-msgno};
 }
 
 # This subroutine takes a list of IMAP message UID numbers, and constructs
-# a single-string representation of the set, collapsing sequences into
-# ranges where possible.
-sub make_msgspec(@) {
+# single-string representations of the set, collapsing sequences into
+# ranges where possible.  In order to avoid constructing a specification
+# which is too long to be processed, the result is returned as an array
+# of manageably-sized specification strings, currently limited to about
+# 200 characters each.
+sub make_msgspecs(@) {
     return '' if @_ == 0;
+    my @specs = ();
     my $first = shift(@_);
     my $last = $first;
     my $spec = $first;
@@ -246,15 +259,22 @@ sub make_msgspec(@) {
 	    # This UID is not in sequence with the previous element.
 	    # If that marks the end of a range, complete it.
 	    $spec .= ":$last" if ($first != $last);
-	    # Begin a new sequence.
-	    $spec .= ",$_";
+	    # Begin a new sequence.  Create another spec string if the
+	    # current one is getting long.
+	    if (length($spec) > 200) {
+		push @specs, $spec;
+		$spec = $_;
+	    } else {
+		$spec .= ",$_";
+	    }
 	    $first = $_;
 	}
 	$last = $_;
     }
     # Complete the final range if necessary.
     $spec .= ":$last" if ($first != $last);
-    return $spec;
+    push @specs, $spec if ($spec);
+    return @specs;
 }    
 
 # Logout from the IMAP server, and close the connection.
