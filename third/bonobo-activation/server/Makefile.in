@@ -157,7 +157,7 @@ INCLUDES = \
 	-I$(top_builddir) 			\
 	-I$(top_builddir)/bonobo-activation	\
 	-I$(top_srcdir)/bonobo-activation	\
-	-DSERVERINFODIR=\"$(libdir)/bonobo/servers\" \
+	-DSERVERINFODIR=\"$(libdir)/bonobo/servers:/usr/lib/bonobo/servers\" \
         -DSERVER_LOCALEDIR=\""${prefix}/${DATADIRNAME}/locale"\" \
 	$(SERVER_CFLAGS)			\
 	-DSERVER_CONFDIR=\"$(sysconfdir)\"	\
