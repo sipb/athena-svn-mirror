@@ -7,7 +7,7 @@
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zhm/zhm.h,v $
  *      $Author: jtkohl $
- *      $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zhm/zhm.h,v 1.8 1988-06-27 10:55:11 jtkohl Exp $
+ *      $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zhm/zhm.h,v 1.9 1988-10-03 15:57:21 jtkohl Exp $
  *
  *      Copyright (c) 1987 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -16,7 +16,7 @@
 
 #include <zephyr/mit-copyright.h>
 #include <zephyr/zephyr.h>
-#include <syslog.h>
+#include <zephyr/zsyslog.h>
 #include <sys/socket.h>
 #include <sys/param.h>
 #include <netdb.h>
