@@ -1,4 +1,4 @@
-/* $Id: cleanup.c,v 2.4 1992-07-17 15:30:08 miki Exp $
+/* $Id: cleanup.c,v 2.5 1993-04-29 16:39:14 vrt Exp $
  *
  * Cleanup program for stray processes
  *
@@ -17,6 +17,7 @@
  */
 
 #include <stdio.h>
+#include <fcntl.h>
 #include <sys/file.h>
 #include <sys/types.h>
 #include <errno.h>
@@ -33,8 +34,12 @@
 #undef _BSD
 #endif
 #include <nlist.h>
+#ifdef SOLARIS
+#include <kvm.h>
+#include <dirent.h>
+#endif
 
-char *version = "$Id: cleanup.c,v 2.4 1992-07-17 15:30:08 miki Exp $";
+char *version = "$Id: cleanup.c,v 2.5 1993-04-29 16:39:14 vrt Exp $";
 
 #ifdef _AIX
 extern char     *sys_errlist[];
@@ -58,11 +63,19 @@ struct nlist nl[] =
   { "max_proc" },
   { ""}
 #else
+#ifdef SOLARIS
+#define PROC 0
+  { "nproc" },
+#define MAX_PROC 1
+  { "max_nproc" },
+  { ""}
+#else
 #define PROC 0
   { "_proc" },
 #define NPROC 1
   { "_nproc" },
   { ""}
+#endif
 #endif
 };
 
@@ -295,7 +308,10 @@ int *get_logged_in()
     while (read(fd, &u, sizeof(u)) > 0 && i < MAXUSERS) {
 	if (u.ut_name[0] == 0)
 	    continue;
-
+#ifdef SOLARIS
+        if (u.ut_type != USER_PROCESS)
+            continue;
+#endif
 	strncpy(login, u.ut_name, 8);
 	p = getpwnam(login);
 	if (p == 0)
@@ -370,10 +386,19 @@ struct cl_proc *get_processes()
 #ifdef _AIX
     char *kernel = "/unix";
 #else
+#ifdef SOLARIS
+    char *kernel = "/dev/ksyms";
+    kvm_t *kv;
+    int j,pid;
+    DIR *dirp;
+    struct dirent *dp;
+#else
     char *kernel = "/vmunix";
+#endif
 #endif
     char *memory = "/dev/kmem";
 
+#ifndef SOLARIS
     if (nlist(kernel, nl) != 0) {
 	fprintf(stderr, "cleanup: can't get kernel namelist\n");
 	return(NULL);
@@ -384,7 +409,6 @@ struct cl_proc *get_processes()
 		sys_errlist[errno]);
 	return(NULL);
     }
-
 #ifdef _AIX
     nproc = (nl[MAX_PROC].n_value - nl[PROC].n_value) /
       sizeof(nl[MAX_PROC].n_value);
@@ -404,7 +428,6 @@ struct cl_proc *get_processes()
     for (i = 0; i < nproc; i++) {
 #ifdef _AIX
         readx(kmem, &p, sizeof(p), 1);
-#else
 	read(kmem, &p, sizeof(p));
 #endif
 	if (p.p_pid == 0) continue;
@@ -414,10 +437,43 @@ struct cl_proc *get_processes()
 	procs[i].pid = p.p_pid;
 	procs[i].uid = p.p_uid;
     }
-
     close(kmem);
     procs[i].pid = procs[i].uid = -1;
     return(procs);
+#else
+#else /* SOLARIS */
+      kv = kvm_open(NULL,NULL,"/dev/swap",O_RDONLY,NULL);
+      if (kvm_nlist(kv, &nl) < 0) {
+        fprintf(stderr,"%s: can't get namelist\n", "Cleanup");
+        exit(2);
+      }
+    kvm_read(kv,nl[PROC].n_value,&nproc,sizeof(nproc));
+    (void) kvm_setproc(kv);
+      fprintf(stdout,"nproc is %d\n",nproc);
+      i=0;
+      dirp = opendir("/proc");
+      for (j=0;j<2;j++)
+                      dp = readdir(dirp);
+      for (dp = readdir(dirp); dp != NULL; dp = readdir(dirp)) {
+              printf("got dname\n");
+                      sscanf(dp->d_name,"%d",&pid);
+              p = kvm_getproc(kv,pid);
+              printf("Got getproc\n");
+              if ( p != NULL ) {
+                      fprintf(stdout,"pid %d uid %d\n",p->p_epid,p->p_uid);
+                      if (p->p_epid == 0)
+                              continue;
+                      else {
+                              procs[i].pid = p->p_epid;
+                              procs[i].uid = p->p_uid;
+                              i++;
+                      }
+              }
+     }
+    kvm_close(kv);
+    procs[i].pid = procs[i].uid = -1;
+    return(procs);
+#endif
 }
 
 
