@@ -1,9 +1,12 @@
 #ifndef lint
-static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/ext.c,v 1.3 1990-04-24 23:41:35 tom Exp $";
+static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/ext.c,v 1.4 1990-04-25 00:19:55 tom Exp $";
 #endif
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.3  90/04/24  23:41:35  tom
+ * decided to keep athena 1
+ * 
  * Revision 1.1  90/04/23  14:29:00  tom
  * Initial revision
  * 
@@ -27,7 +30,7 @@ static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snm
  */
 
 /*
- *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/ext.c,v 1.3 1990-04-24 23:41:35 tom Exp $
+ *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/ext.c,v 1.4 1990-04-25 00:19:55 tom Exp $
  *
  *  June 28, 1988 - Mark S. Fedor
  *  Copyright (c) NYSERNet Incorporated, 1988, All Rights Reserved
@@ -690,20 +693,25 @@ objident kernVersion = {
         1, 3, 6, 1, 4, 1, 20, 1, 2, 3
 };
 
-objident statTime = {
+objident statOVersion = {
         10,					/* Length of variable */
         1, 3, 6, 1, 4, 1, 20, 1, 3, 1
 };
 
-objident statLoad = {
+objident statTime = {
         10,					/* Length of variable */
         1, 3, 6, 1, 4, 1, 20, 1, 3, 2
+};
+
+objident statLoad = {
+        10,					/* Length of variable */
+        1, 3, 6, 1, 4, 1, 20, 1, 3, 3
 };
 
 #ifdef LOGIN
 objident statLogin = {
         10,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 3
+        1, 3, 6, 1, 4, 1, 20, 1, 3, 4
 };
 #endif LOGIN
 
@@ -1877,6 +1885,7 @@ struct snmp_tree_info  var_tree_info[] = {  /* must be NULL terminated */
 { &rcNOCREATE,   lu_rcvar,    NULL, N_RCNOCREATE,   NULL_OBJINST|VAL_STR  },
 { &rcNOATTACH,   lu_rcvar,    NULL, N_RCNOATTACH,   NULL_OBJINST|VAL_STR  },
 { &relVersion,   lu_relvers,  NULL, N_RELVERSION,   NULL_OBJINST|VAL_STR  },
+{ &statOVersion, lu_relvers,  NULL, N_RELVERSION,   NULL_OBJINST|VAL_STR  },
 { &statTime,     lu_status,   NULL, N_STATTIME,     NULL_OBJINST|VAL_INT },
 { &statLoad,     lu_status,   NULL, N_STATLOAD,     NULL_OBJINST|VAL_INT  },
 #ifdef LOGIN
