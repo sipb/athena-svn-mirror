@@ -7,7 +7,9 @@
 #include <stdio.h>
 #include "copyright.h"
 
+#ifndef sgi
 char *str_concat3(), *ds(), *generate_rqte(), *malloc(), *realloc(), *quote();
+#endif
 long flag_value();
 char *last_token = (char *)NULL;
 FILE *output_file;
