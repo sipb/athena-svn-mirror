@@ -33,11 +33,13 @@
 #include "terminal-widget.h"
 #include "terminal-profile.h"
 #include "terminal.h"
+#include "skey-popup.h"
 #include <libgnome/gnome-util.h> /* gnome_util_user_shell */
 #include <libgnome/gnome-url.h> /* gnome_url_show */
 #include <string.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <sys/wait.h>
 
 struct _TerminalScreenPrivate
 {
@@ -56,6 +58,7 @@ struct _TerminalScreenPrivate
   GtkWidget *title_entry;
   char *working_dir;
   int child_pid;
+  double font_scale;
   guint recheck_working_dir_idle;
 };
 
@@ -65,6 +68,7 @@ enum {
   PROFILE_SET,
   TITLE_CHANGED,
   SELECTION_CHANGED,
+  ENCODING_CHANGED,
   LAST_SIGNAL
 };
 
@@ -87,6 +91,9 @@ static void terminal_screen_widget_child_died        (GtkWidget      *term,
                                                       TerminalScreen *screen);
 
 static void terminal_screen_widget_selection_changed (GtkWidget      *term,
+                                                      TerminalScreen *screen);
+
+static void terminal_screen_widget_encoding_changed  (GtkWidget      *term,
                                                       TerminalScreen *screen);
 
 static void terminal_screen_setup_dnd                (TerminalScreen *screen);
@@ -164,6 +171,8 @@ terminal_screen_init (TerminalScreen *screen)
   screen->priv->recheck_working_dir_idle = 0;
   
   screen->priv->term = terminal_widget_new ();
+
+  screen->priv->font_scale = PANGO_SCALE_MEDIUM;
   
   g_object_ref (G_OBJECT (screen->priv->term));
   gtk_object_sink (GTK_OBJECT (screen->priv->term));
@@ -212,6 +221,10 @@ terminal_screen_init (TerminalScreen *screen)
                                              G_CALLBACK (terminal_screen_widget_selection_changed),
                                              screen);
 
+  terminal_widget_connect_encoding_changed (screen->priv->term,
+                                            G_CALLBACK (terminal_screen_widget_encoding_changed),
+                                            screen);
+
   gtk_widget_show (screen->priv->term);
 }
 
@@ -247,6 +260,15 @@ terminal_screen_class_init (TerminalScreenClass *klass)
                   G_OBJECT_CLASS_TYPE (object_class),
                   G_SIGNAL_RUN_LAST,
                   G_STRUCT_OFFSET (TerminalScreenClass, selection_changed),
+                  NULL, NULL,
+                  g_cclosure_marshal_VOID__VOID,
+                  G_TYPE_NONE, 0);  
+
+  signals[ENCODING_CHANGED] =
+    g_signal_new ("encoding_changed",
+                  G_OBJECT_CLASS_TYPE (object_class),
+                  G_SIGNAL_RUN_LAST,
+                  G_STRUCT_OFFSET (TerminalScreenClass, encoding_changed),
                   NULL, NULL,
                   g_cclosure_marshal_VOID__VOID,
                   G_TYPE_NONE, 0);  
@@ -386,6 +408,15 @@ reread_profile (TerminalScreen *screen)
   terminal_widget_set_scrollback_lines (term,
                                         terminal_profile_get_scrollback_lines (profile));
 
+  if (terminal_profile_get_use_skey (screen->priv->profile))
+    {
+      terminal_widget_skey_match_add (screen->priv->term,
+				      "s/key ([0-9]*) ([-A-Za-z0-9]*)");
+    }
+  else
+    {
+      terminal_widget_skey_match_remove (screen->priv->term);
+    }
   bg_type = terminal_profile_get_background_type (profile);
   
   if (bg_type == TERMINAL_BACKGROUND_IMAGE)
@@ -467,9 +498,9 @@ rebuild_title  (TerminalScreen *screen)
 }
 
 static void
-profile_changed_callback (TerminalProfile          *profile,
-                          TerminalSettingMask       mask,
-                          TerminalScreen           *screen)
+profile_changed_callback (TerminalProfile           *profile,
+                          const TerminalSettingMask *mask,
+                          TerminalScreen            *screen)
 {
   reread_profile (screen);
 }
@@ -502,6 +533,9 @@ update_color_scheme (TerminalScreen *screen)
                               &fg, &bg, palette);
 }
 
+/* Note this can be called on style_set, on prefs changing,
+ * and on setting the font scale factor
+ */
 static void
 terminal_screen_update_on_realize (GtkWidget      *term,
                                    TerminalScreen *screen)
@@ -539,20 +573,33 @@ terminal_screen_update_on_realize (GtkWidget      *term,
                                                    pango_font_description_get_size (term->style->font_desc));
                 }
 
-              terminal_widget_set_pango_font (term,
-                                              terminal_profile_get_font (profile));
+              pango_font_description_set_size (desc,
+                                               screen->priv->font_scale *
+                                               pango_font_description_get_size (desc));
+              
+              terminal_widget_set_pango_font (term, desc);
 
               pango_font_description_free (desc);
             }
         }
       else
         {
-          terminal_widget_set_pango_font (term,
-                                          terminal_profile_get_font (profile));
+          PangoFontDescription *desc;
+
+          desc = pango_font_description_copy (terminal_profile_get_font (profile));
+          pango_font_description_set_size (desc,
+                                           screen->priv->font_scale *
+                                           pango_font_description_get_size (desc));          
+          
+          terminal_widget_set_pango_font (term, desc);
+
+          pango_font_description_free (desc);
         }
     }
   else
     {
+      /* font_scale is not supported in X fonts mode */
+      
       GdkFont *font;
 
       font = NULL;
@@ -972,10 +1019,17 @@ static void
 new_window_callback (GtkWidget      *menu_item,
                      TerminalScreen *screen)
 {
+  char *name;
+
+  name = gdk_screen_make_display_name (gtk_widget_get_screen (menu_item));
+  
   terminal_app_new_terminal (terminal_app_get (),
                              terminal_profile_get_for_new_term (screen->priv->profile),
                              NULL,
-                             FALSE, FALSE, NULL, NULL, NULL, NULL);
+                             FALSE, FALSE, NULL, NULL, NULL, NULL, NULL, 1.0,
+                             NULL, name, -1);
+
+  g_free (name);
 }
 
 static void
@@ -985,7 +1039,8 @@ new_tab_callback (GtkWidget      *menu_item,
   terminal_app_new_terminal (terminal_app_get (),
                              terminal_profile_get_for_new_term (screen->priv->profile),
                              screen->priv->window,
-                             FALSE, FALSE, NULL, NULL, NULL, NULL);
+                             FALSE, FALSE, NULL, NULL, NULL, NULL, NULL, 1.0,
+                             NULL, NULL, -1);
 }
 
 static void
@@ -1187,6 +1242,7 @@ terminal_screen_do_popup (TerminalScreen *screen,
                           GdkEventButton *event)
 {
   GtkWidget *profile_menu;
+  GtkWidget *im_menu;
   GtkWidget *menu_item;
   GList *profiles;
   GList *tmp;
@@ -1292,6 +1348,21 @@ terminal_screen_do_popup (TerminalScreen *screen,
 		   screen);
 
   
+  im_menu = gtk_menu_new ();
+  menu_item = gtk_menu_item_new_with_mnemonic (_("_Input Methods"));
+
+  gtk_menu_item_set_submenu (GTK_MENU_ITEM (menu_item),
+                             im_menu);
+
+  terminal_widget_im_append_menuitems (screen->priv->term,
+		  		       GTK_MENU_SHELL (im_menu));
+
+  gtk_widget_show (im_menu);
+  gtk_widget_show (menu_item);
+
+  gtk_menu_shell_append (GTK_MENU_SHELL (screen->priv->popup_menu),
+                         menu_item);
+
   if (terminal_window_get_menubar_visible (screen->priv->window))
     menu_item = append_menuitem (screen->priv->popup_menu,
 				 _("Hide _Menubar"),
@@ -1358,7 +1429,25 @@ terminal_screen_button_press_event (GtkWidget      *widget,
     terminal_widget_check_match (term,
                                  event->x / char_width,
                                  event->y / char_height);
-  
+
+  if (terminal_profile_get_use_skey (screen->priv->profile))
+    {
+      gchar *skey_match;
+
+      skey_match = terminal_widget_skey_check_match (term,
+						     event->x / char_width,
+						     event->y / char_height);
+      if (skey_match != NULL &&
+	  event->button == 1 &&
+	  event->state & GDK_CONTROL_MASK)
+	{
+	  terminal_skey_do_popup (screen, GTK_WINDOW (terminal_screen_get_window (screen)), skey_match);
+	  g_free (skey_match);
+
+	  return TRUE;
+	}
+    }
+
   if (event->button == 1 || event->button == 2)
     {
       gtk_widget_grab_focus (widget);
@@ -1450,26 +1539,79 @@ terminal_screen_get_working_dir (TerminalScreen *screen)
 {
   g_return_val_if_fail (TERMINAL_IS_SCREEN (screen), NULL);
 
-  /* If we're on Linux and have a child PID, try to update
-   * the working dir
-   */
+  /* Try to update the working dir using various OS-specific mechanisms */
   if (screen->priv->child_pid >= 0)
     {
       char *file;
       char buf[PATH_MAX+1];
       int len;
-      
+
+      /* readlink (/proc/pid/cwd) will work on Linux */
       file = g_strdup_printf ("/proc/%d/cwd", screen->priv->child_pid);
 
       /* Silently ignore failure here, since we may not be on Linux */
       len = readlink (file, buf, sizeof (buf) - 1);
 
-      if (len >= 0)
+      /*
+       * If readlink fails, get the current working directory
+       * using the command 'pwdx'. This is specific to Solaris.
+       */
+      if (len > 0 && buf[0] == '/')
         {
           buf[len] = '\0';
           
           g_free (screen->priv->working_dir);
           screen->priv->working_dir = g_strdup (buf);
+        }
+      else
+        {
+          char *abs_command = NULL;
+          char *exec_command = NULL;
+          char *output = NULL;
+          int exit_status = 0;
+          
+          abs_command = g_find_program_in_path ("pwdx");
+          if (abs_command == NULL)
+            goto pwdx_out;
+
+          exec_command = g_strdup_printf ("%s %d", abs_command, 
+                                          screen->priv->child_pid);
+               
+          if (!g_spawn_command_line_sync (exec_command, &output, 
+                                          NULL, &exit_status, NULL))
+            goto pwdx_out;          
+               
+          if (WIFEXITED (exit_status) &&
+              WEXITSTATUS (exit_status) == 0 &&
+              output) 
+            {
+              /*
+               * 'pwdx' output format is:
+               * <pid>:\t<cwd>\n
+               */
+              char *p;
+
+              p = strstr (output, ":");
+              if (p == NULL)
+                goto pwdx_out;
+
+              ++p;
+                   
+              while (*p == ' ' || *p == '\t')
+                ++p;
+              g_strchomp (p);
+                   
+              if (*p == '/')
+                {
+                  g_free (screen->priv->working_dir);
+                  screen->priv->working_dir = g_strdup (p);
+                }
+            }
+
+        pwdx_out:
+          g_free (abs_command);
+          g_free (exec_command);
+          g_free (output);
         }
       
       g_free (file);
@@ -1503,6 +1645,37 @@ queue_recheck_working_dir (TerminalScreen *screen)
                          screen,
                          NULL);
     }
+}
+
+
+void
+terminal_screen_set_font_scale (TerminalScreen *screen,
+                                double          factor)
+{
+  g_return_if_fail (TERMINAL_IS_SCREEN (screen));
+
+  if (factor < TERMINAL_SCALE_MINIMUM)
+    factor = TERMINAL_SCALE_MINIMUM;
+  if (factor > TERMINAL_SCALE_MAXIMUM)
+    factor = TERMINAL_SCALE_MAXIMUM;
+  
+  screen->priv->font_scale = factor;
+  
+  if (screen->priv->term &&
+      GTK_WIDGET_REALIZED (screen->priv->term))
+    {
+      /* Update the font */
+      terminal_screen_update_on_realize (screen->priv->term,
+                                         screen);
+    }
+}
+
+double
+terminal_screen_get_font_scale (TerminalScreen *screen)
+{
+  g_return_val_if_fail (TERMINAL_IS_SCREEN (screen), 1.0);
+  
+  return screen->priv->font_scale;
 }
 
 static void
@@ -1543,6 +1716,13 @@ terminal_screen_widget_selection_changed (GtkWidget      *term,
                                           TerminalScreen *screen)
 {
   g_signal_emit (G_OBJECT (screen), signals[SELECTION_CHANGED], 0);
+}
+
+static void
+terminal_screen_widget_encoding_changed (GtkWidget      *term,
+                                         TerminalScreen *screen)
+{
+  g_signal_emit (G_OBJECT (screen), signals[ENCODING_CHANGED], 0);
 }
 
 static void

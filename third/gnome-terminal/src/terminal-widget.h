@@ -52,9 +52,15 @@ void       terminal_widget_get_padding                (GtkWidget            *wid
                                                        int                  *ypad);
 void       terminal_widget_match_add                  (GtkWidget            *widget,
                                                        const char           *regexp);
+void       terminal_widget_skey_match_add             (GtkWidget            *widget,
+                                                       const char           *regexp);
 char*      terminal_widget_check_match                (GtkWidget            *widget,
                                                        int                   column,
                                                        int                   row);
+char*      terminal_widget_skey_check_match           (GtkWidget            *widget,
+                                                       int                   column,
+                                                       int                   row);
+void       terminal_widget_skey_match_remove          (GtkWidget            *widget);
 void       terminal_widget_set_word_characters        (GtkWidget            *widget,
                                                        const char           *str);
 void       terminal_widget_set_delete_binding         (GtkWidget            *widget,
@@ -121,6 +127,12 @@ void terminal_widget_connect_selection_changed     (GtkWidget *widget,
 void terminal_widget_disconnect_selection_changed  (GtkWidget *widget,
                                                     GCallback  callback,
                                                     void      *data);
+void terminal_widget_connect_encoding_changed      (GtkWidget *widget,
+                                                    GCallback  callback,
+                                                    void      *data);
+void terminal_widget_disconnect_encoding_changed   (GtkWidget *widget,
+                                                    GCallback  callback,
+                                                    void      *data);
 
 const char* terminal_widget_get_title         (GtkWidget *widget);
 const char* terminal_widget_get_icon_title    (GtkWidget *widget);
@@ -148,6 +160,14 @@ void terminal_widget_set_pango_font (GtkWidget                  *widget,
 
 gboolean terminal_widget_supports_pango_fonts (void);
 
+const char* terminal_widget_get_encoding (GtkWidget  *widget);
+void        terminal_widget_set_encoding (GtkWidget  *widget,
+                                          const char *encoding);
+
+gboolean terminal_widget_supports_dynamic_encoding (void);
+
+void terminal_widget_im_append_menuitems(GtkWidget    *wiget,
+					 GtkMenuShell *menushell);
 
 G_END_DECLS
 

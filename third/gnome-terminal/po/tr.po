@@ -1,462 +1,658 @@
 # Turkish translation of Profterm.
 # Copyright (C) 2002 The Free Software Foundation.
 # This file is distributed under the same license as the Profterm package.
-# Görkem Çetin <gorkem@gelecek.com.tr>, 2002.
+# GÃ¶rkem Ã‡etin <gorkem@gelecek.com.tr>, 2002.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: profterm\n"
-"POT-Creation-Date: 2002-11-26 10:33+0000\n"
+"POT-Creation-Date: 2003-01-20 22:18-0500\n"
 "PO-Revision-Date: 2002-03-04 16:29-0500\n"
-"Last-Translator: Görkem Çetin <gorkem@gelecek.com.tr>\n"
+"Last-Translator: GÃ¶rkem Ã‡etin <gorkem@gelecek.com.tr>\n"
 "Language-Team: Turkish <gnome-turk@gnome.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=ISO-8859-9\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #: gnome-terminal.desktop.in.h:1
 msgid "Command line"
 msgstr ""
 
-#: gnome-terminal.desktop.in.h:2 src/terminal-accels.c:162
-#: src/terminal-profile.c:272 src/terminal-window.c:491 src/terminal.c:928
+#: gnome-terminal.desktop.in.h:2 src/terminal-accels.c:172
+#: src/terminal-profile.c:275 src/terminal-window.c:651 src/terminal.c:1076
 msgid "Terminal"
 msgstr "Terminal"
 
 #: src/eggcellrendererkeys.c:160 src/eggcellrendererkeys.c:161
 msgid "Accelerator key"
-msgstr "Kýsayol tuþu"
+msgstr "KÄ±sayol tuÅŸu"
 
 #: src/eggcellrendererkeys.c:170 src/eggcellrendererkeys.c:171
 #, fuzzy
 msgid "Accelerator modifiers"
-msgstr "_Hýzlandýrýcýlar:"
+msgstr "_HÄ±zlandÄ±rÄ±cÄ±lar:"
 
 #: src/eggcellrendererkeys.c:180
-msgid "Accel Mode"
-msgstr "Kýsayol Türü"
+#, fuzzy
+msgid "Accelerator Mode"
+msgstr "KÄ±sayol tuÅŸu"
 
 #: src/eggcellrendererkeys.c:181
 msgid "The type of accelerator."
 msgstr ""
 
-#: src/eggcellrendererkeys.c:219 src/gnome-terminal.glade2.h:18
-#: src/terminal-accels.c:707
+#: src/eggcellrendererkeys.c:219 src/gnome-terminal.glade2.h:28
+#: src/terminal-accels.c:717
 msgid "Disabled"
-msgstr "Kapalý"
+msgstr "KapalÄ±"
 
-#: src/eggcellrendererkeys.c:330 src/eggcellrendererkeys.c:563
+#: src/eggcellrendererkeys.c:330 src/eggcellrendererkeys.c:564
 msgid "Type a new accelerator, or press Backspace to clear"
-msgstr "Yeni bir kýsayol girin, ya da silme tuþu ile silin."
+msgstr "Yeni bir kÄ±sayol girin, ya da silme tuÅŸu ile silin."
 
-#: src/eggcellrendererkeys.c:566
+#: src/eggcellrendererkeys.c:567
 msgid "Type a new accelerator"
-msgstr "Yeni bir kýsayol girin"
+msgstr "Yeni bir kÄ±sayol girin"
+
+#: src/encoding.c:57
+#, fuzzy
+msgid "Current Locale"
+msgstr "_GÃ¼ncel Profil..."
+
+#: src/encoding.c:60 src/encoding.c:86 src/encoding.c:129 src/encoding.c:177
+#: src/encoding.c:201
+msgid "Western"
+msgstr ""
+
+#: src/encoding.c:62 src/encoding.c:131 src/encoding.c:157 src/encoding.c:197
+msgid "Central European"
+msgstr ""
+
+#: src/encoding.c:64
+msgid "South European"
+msgstr ""
+
+#: src/encoding.c:66 src/encoding.c:82 src/encoding.c:211
+msgid "Baltic"
+msgstr ""
+
+#: src/encoding.c:68 src/encoding.c:133 src/encoding.c:146 src/encoding.c:150
+#: src/encoding.c:161 src/encoding.c:199
+msgid "Cyrillic"
+msgstr ""
+
+#: src/encoding.c:70 src/encoding.c:139 src/encoding.c:155 src/encoding.c:209
+msgid "Arabic"
+msgstr ""
+
+#: src/encoding.c:72 src/encoding.c:167 src/encoding.c:203
+msgid "Greek"
+msgstr ""
+
+#: src/encoding.c:74
+msgid "Hebrew Visual"
+msgstr ""
+
+#: src/encoding.c:76 src/encoding.c:137 src/encoding.c:173 src/encoding.c:207
+msgid "Hebrew"
+msgstr ""
+
+#: src/encoding.c:78 src/encoding.c:135 src/encoding.c:181 src/encoding.c:205
+msgid "Turkish"
+msgstr ""
+
+#: src/encoding.c:80
+msgid "Nordic"
+msgstr ""
+
+#: src/encoding.c:84
+#, fuzzy
+msgid "Celtic"
+msgstr "Metrik:"
+
+#: src/encoding.c:88 src/encoding.c:179
+msgid "Romanian"
+msgstr ""
+
+#: src/encoding.c:91 src/encoding.c:93 src/encoding.c:95 src/encoding.c:97
+#: src/encoding.c:99
+msgid "Unicode"
+msgstr ""
+
+#: src/encoding.c:102
+msgid "Armenian"
+msgstr ""
+
+#: src/encoding.c:104 src/encoding.c:106 src/encoding.c:115
+msgid "Chinese Traditional"
+msgstr ""
+
+#: src/encoding.c:108
+msgid "Cyrillic/Russian"
+msgstr ""
+
+#: src/encoding.c:111 src/encoding.c:142 src/encoding.c:186
+msgid "Japanese"
+msgstr ""
+
+#: src/encoding.c:113 src/encoding.c:144 src/encoding.c:148 src/encoding.c:192
+msgid "Korean"
+msgstr ""
+
+#: src/encoding.c:118 src/encoding.c:120 src/encoding.c:122 src/encoding.c:126
+msgid "Chinese Simplified"
+msgstr ""
+
+#: src/encoding.c:124
+msgid "Georgian"
+msgstr ""
+
+#: src/encoding.c:152 src/encoding.c:183
+msgid "Cyrillic/Ukrainian"
+msgstr ""
+
+#: src/encoding.c:159
+msgid "Croatian"
+msgstr ""
+
+#: src/encoding.c:163
+msgid "Hindi"
+msgstr ""
+
+#: src/encoding.c:165
+msgid "Farsi"
+msgstr ""
+
+#: src/encoding.c:169
+msgid "Gujarati"
+msgstr ""
+
+#: src/encoding.c:171
+msgid "Gurmukhi"
+msgstr ""
+
+#: src/encoding.c:175
+msgid "Icelandic"
+msgstr ""
+
+#: src/encoding.c:188 src/encoding.c:194 src/encoding.c:213
+msgid "Vietnamese"
+msgstr ""
+
+#: src/encoding.c:190
+msgid "Thai"
+msgstr ""
+
+#: src/encoding.c:379
+msgid "User Defined"
+msgstr ""
+
+#: src/encoding.c:442 src/profile-editor.c:889 src/terminal-window.c:2510
+#: src/terminal.c:2735
+#, c-format
+msgid "There was an error displaying help: %s"
+msgstr ""
+
+#: src/encoding.c:764 src/encoding.c:828
+#, fuzzy
+msgid "_Description"
+msgstr "_Eylem"
+
+#: src/encoding.c:773 src/encoding.c:837
+msgid "_Encoding"
+msgstr ""
+
+#: src/encoding.c:1006
+#, c-format
+msgid ""
+"There was an error subscribing to notification of terminal encoding list "
+"changes. (%s)\n"
+msgstr ""
 
 #: src/gnome-terminal.glade2.h:1 src/x-font-selector.c:883
 msgid "*"
 msgstr "*"
 
 #: src/gnome-terminal.glade2.h:2
+#, fuzzy
+msgid "<b>Background</b>"
+msgstr "Arkaplan"
+
+#: src/gnome-terminal.glade2.h:3
+#, fuzzy
+msgid "<b>Command</b>"
+msgstr "Komut"
+
+#: src/gnome-terminal.glade2.h:4
+#, fuzzy
+msgid "<b>Compatibility</b>"
+msgstr "Uyumluluk"
+
+#: src/gnome-terminal.glade2.h:5
+#, fuzzy
+msgid "<b>Foreground and Background</b>"
+msgstr "Ã–nplan ve Arkaplan"
+
+#: src/gnome-terminal.glade2.h:6
+#, fuzzy
+msgid "<b>General</b>"
+msgstr "Genel"
+
+#: src/gnome-terminal.glade2.h:7
+#, fuzzy
+msgid "<b>Palette</b>"
+msgstr "Palet"
+
+#: src/gnome-terminal.glade2.h:8
+msgid "<b>Scrolling</b>"
+msgstr ""
+
+#: src/gnome-terminal.glade2.h:9
+msgid "<b>Title</b>"
+msgstr ""
+
+#: src/gnome-terminal.glade2.h:10
+msgid "<big>S/Key Challenge Response</big>"
+msgstr ""
+
+#: src/gnome-terminal.glade2.h:11
+msgid "<small><i>Maximum</i></small>"
+msgstr ""
+
+#: src/gnome-terminal.glade2.h:12
+msgid "<small><i>None</i></small>"
+msgstr ""
+
+#: src/gnome-terminal.glade2.h:13
 msgid "ASCII DEL"
 msgstr "ASCII DEL"
 
-#: src/gnome-terminal.glade2.h:3
-msgid "Background"
-msgstr "Arkaplan"
+#: src/gnome-terminal.glade2.h:14
+msgid "A_vailable encodings:"
+msgstr ""
 
-#: src/gnome-terminal.glade2.h:4
+#: src/gnome-terminal.glade2.h:15
 msgid "Background image _scrolls"
-msgstr "_Arkaplan rengi kaysýn"
+msgstr "_Arkaplan rengi kaysÄ±n"
 
-#: src/gnome-terminal.glade2.h:5
+#: src/gnome-terminal.glade2.h:16
 msgid "Built-_in schemes:"
-msgstr "Kurulu þemalar:"
+msgstr "Kurulu ÅŸemalar:"
 
-#: src/gnome-terminal.glade2.h:6
+#: src/gnome-terminal.glade2.h:17
 msgid "Built-in _schemes:"
-msgstr "_Kurulu þemalar:"
+msgstr "_Kurulu ÅŸemalar:"
 
-#: src/gnome-terminal.glade2.h:7
+#: src/gnome-terminal.glade2.h:18
 msgid "Choose terminal background color"
-msgstr "Terminal arkaplan rengini seç"
+msgstr "Terminal arkaplan rengini seÃ§"
 
-#: src/gnome-terminal.glade2.h:8
+#: src/gnome-terminal.glade2.h:19
 msgid "Choose terminal text color"
-msgstr "Terminal metin rengini seç"
+msgstr "Terminal metin rengini seÃ§"
 
-#: src/gnome-terminal.glade2.h:9
+#: src/gnome-terminal.glade2.h:20
 msgid "Color _palette:"
 msgstr "Renk _paleti:"
 
-#: src/gnome-terminal.glade2.h:10
+#: src/gnome-terminal.glade2.h:21
 msgid "Colors"
 msgstr "Renkler"
 
-#: src/gnome-terminal.glade2.h:11
-msgid "Command"
-msgstr "Komut"
-
-#: src/gnome-terminal.glade2.h:12
+#: src/gnome-terminal.glade2.h:22
 msgid "Compatibility"
 msgstr "Uyumluluk"
 
-#: src/gnome-terminal.glade2.h:13
+#: src/gnome-terminal.glade2.h:23
 msgid "Control-H"
 msgstr "Control-H"
 
-#: src/gnome-terminal.glade2.h:14
+#: src/gnome-terminal.glade2.h:24
 msgid "Cursor _blinks"
-msgstr "Ýmleç _yapýn sönsün"
+msgstr "Ä°mleÃ§ _yapÄ±n sÃ¶nsÃ¼n"
 
-#: src/gnome-terminal.glade2.h:15
+#: src/gnome-terminal.glade2.h:25
 msgid "Custom co_mmand:"
-msgstr "Özel _komut:"
+msgstr "Ã–zel _komut:"
 
-#: src/gnome-terminal.glade2.h:16
+#: src/gnome-terminal.glade2.h:26
 msgid "Disable all menu m_nemonics (such as Alt+f to open File menu)"
 msgstr ""
 
-#: src/gnome-terminal.glade2.h:17
+#: src/gnome-terminal.glade2.h:27
 msgid "Disable menu acc_ess key (F10 by default)"
 msgstr ""
 
-#: src/gnome-terminal.glade2.h:19
+#: src/gnome-terminal.glade2.h:29
+msgid "E_ncodings shown in menu:"
+msgstr ""
+
+#: src/gnome-terminal.glade2.h:30
 msgid "Effects"
 msgstr "Efektler"
 
-#: src/gnome-terminal.glade2.h:20
+#: src/gnome-terminal.glade2.h:31
 msgid "Escape sequence"
 msgstr "Escape serisi"
 
-#: src/gnome-terminal.glade2.h:21
+#: src/gnome-terminal.glade2.h:32
 msgid "Exit the terminal"
-msgstr "Terminalden çýk"
+msgstr "Terminalden Ã§Ä±k"
 
-#: src/gnome-terminal.glade2.h:22
-msgid "Foreground and Background"
-msgstr "Önplan ve Arkaplan"
-
-#: src/gnome-terminal.glade2.h:23
+#: src/gnome-terminal.glade2.h:33
 msgid "General"
 msgstr "Genel"
 
-#: src/gnome-terminal.glade2.h:24
+#: src/gnome-terminal.glade2.h:34
 msgid "Goes after initial title"
-msgstr "Ýlk baþlýktan sonra gider"
+msgstr "Ä°lk baÅŸlÄ±ktan sonra gider"
 
-#: src/gnome-terminal.glade2.h:25
+#: src/gnome-terminal.glade2.h:35
 msgid "Goes before initial title"
-msgstr "Ýlk baþlýktan önce gider"
+msgstr "Ä°lk baÅŸlÄ±ktan Ã¶nce gider"
 
-#: src/gnome-terminal.glade2.h:26
+#: src/gnome-terminal.glade2.h:36
 msgid "Initial _title:"
-msgstr "Ý_lk baþlýk:"
+msgstr "Ä°_lk baÅŸlÄ±k:"
 
-#: src/gnome-terminal.glade2.h:27
+#: src/gnome-terminal.glade2.h:37
 msgid "Isn't displayed"
-msgstr "Görüntülenmez"
+msgstr "GÃ¶rÃ¼ntÃ¼lenmez"
 
-#: src/gnome-terminal.glade2.h:28
+#: src/gnome-terminal.glade2.h:38
 msgid "Keybindings Editor"
-msgstr "Tuþ Baðýntý Düzenleyici"
+msgstr "TuÅŸ BaÄŸÄ±ntÄ± DÃ¼zenleyici"
 
-#: src/gnome-terminal.glade2.h:29
+#: src/gnome-terminal.glade2.h:39
 msgid "On the left side"
 msgstr "Sol tarafta"
 
-#: src/gnome-terminal.glade2.h:30
-msgid "On the right side"
-msgstr "Sað tarafta"
-
-#: src/gnome-terminal.glade2.h:31
-msgid "Palette"
-msgstr "Palet"
-
-#: src/gnome-terminal.glade2.h:32
-msgid "Palette entry 1"
-msgstr "1. palet giriþi"
-
-#: src/gnome-terminal.glade2.h:33
-msgid "Palette entry 10"
-msgstr "10. palet giriþi"
-
-#: src/gnome-terminal.glade2.h:34
-msgid "Palette entry 11"
-msgstr "11. palet giriþi"
-
-#: src/gnome-terminal.glade2.h:35
-msgid "Palette entry 12"
-msgstr "12. palet giriþi"
-
-#: src/gnome-terminal.glade2.h:36
-msgid "Palette entry 13"
-msgstr "13. palet giriþi"
-
-#: src/gnome-terminal.glade2.h:37
-msgid "Palette entry 14"
-msgstr "14. palet giriþi"
-
-#: src/gnome-terminal.glade2.h:38
-msgid "Palette entry 15"
-msgstr "15. palet giriþi"
-
-#: src/gnome-terminal.glade2.h:39
-msgid "Palette entry 16"
-msgstr "16. palet giriþi"
-
 #: src/gnome-terminal.glade2.h:40
-msgid "Palette entry 2"
-msgstr "2. palet giriþi"
+msgid "On the right side"
+msgstr "SaÄŸ tarafta"
 
 #: src/gnome-terminal.glade2.h:41
-msgid "Palette entry 3"
-msgstr "3. palet giriþi"
+msgid "Palette entry 1"
+msgstr "1. palet giriÅŸi"
 
 #: src/gnome-terminal.glade2.h:42
-msgid "Palette entry 4"
-msgstr "4. palet giriþi"
+msgid "Palette entry 10"
+msgstr "10. palet giriÅŸi"
 
 #: src/gnome-terminal.glade2.h:43
-msgid "Palette entry 5"
-msgstr "5. palet giriþi"
+msgid "Palette entry 11"
+msgstr "11. palet giriÅŸi"
 
 #: src/gnome-terminal.glade2.h:44
-msgid "Palette entry 6"
-msgstr "6. palet giriþi"
+msgid "Palette entry 12"
+msgstr "12. palet giriÅŸi"
 
 #: src/gnome-terminal.glade2.h:45
-msgid "Palette entry 7"
-msgstr "7. palet giriþi"
+msgid "Palette entry 13"
+msgstr "13. palet giriÅŸi"
 
 #: src/gnome-terminal.glade2.h:46
-msgid "Palette entry 8"
-msgstr "8. palet giriþi"
+msgid "Palette entry 14"
+msgstr "14. palet giriÅŸi"
 
 #: src/gnome-terminal.glade2.h:47
-msgid "Palette entry 9"
-msgstr "9. palet giriþi"
+msgid "Palette entry 15"
+msgstr "15. palet giriÅŸi"
 
 #: src/gnome-terminal.glade2.h:48
-msgid "Profile Editor"
-msgstr "Profil Düzenleyici"
+msgid "Palette entry 16"
+msgstr "16. palet giriÅŸi"
 
 #: src/gnome-terminal.glade2.h:49
-msgid "Profile _icon:"
-msgstr "Profil _simgesi:"
+msgid "Palette entry 2"
+msgstr "2. palet giriÅŸi"
 
 #: src/gnome-terminal.glade2.h:50
-msgid "R_un a custom command instead of my shell"
-msgstr "_Kabuk yerine özel bir komut çalýþtýr"
+msgid "Palette entry 3"
+msgstr "3. palet giriÅŸi"
 
 #: src/gnome-terminal.glade2.h:51
-msgid "Replaces initial title"
-msgstr "Ýlk baþlýðýn yerine geçer"
+msgid "Palette entry 4"
+msgstr "4. palet giriÅŸi"
 
 #: src/gnome-terminal.glade2.h:52
-msgid "Restart the command"
-msgstr "Komutu yeniden çalýþtýr"
+msgid "Palette entry 5"
+msgstr "5. palet giriÅŸi"
 
 #: src/gnome-terminal.glade2.h:53
-msgid "S_croll on keystroke"
-msgstr ""
+msgid "Palette entry 6"
+msgstr "6. palet giriÅŸi"
 
 #: src/gnome-terminal.glade2.h:54
-msgid "Sc_roll on output"
-msgstr ""
+msgid "Palette entry 7"
+msgstr "7. palet giriÅŸi"
 
 #: src/gnome-terminal.glade2.h:55
-msgid "Scr_ollback:"
-msgstr ""
+msgid "Palette entry 8"
+msgstr "8. palet giriÅŸi"
 
 #: src/gnome-terminal.glade2.h:56
-msgid "Scrolling"
-msgstr ""
+msgid "Palette entry 9"
+msgstr "9. palet giriÅŸi"
 
 #: src/gnome-terminal.glade2.h:57
-msgid "Select-by-_word characters:"
+msgid "Password:"
 msgstr ""
 
 #: src/gnome-terminal.glade2.h:58
+msgid "Profile Editor"
+msgstr "Profil DÃ¼zenleyici"
+
+#: src/gnome-terminal.glade2.h:59
+msgid "Profile _icon:"
+msgstr "Profil _simgesi:"
+
+#: src/gnome-terminal.glade2.h:60
+msgid "R_un a custom command instead of my shell"
+msgstr "_Kabuk yerine Ã¶zel bir komut Ã§alÄ±ÅŸtÄ±r"
+
+#: src/gnome-terminal.glade2.h:61
+msgid "Replaces initial title"
+msgstr "Ä°lk baÅŸlÄ±ÄŸÄ±n yerine geÃ§er"
+
+#: src/gnome-terminal.glade2.h:62
+msgid "Restart the command"
+msgstr "Komutu yeniden Ã§alÄ±ÅŸtÄ±r"
+
+#: src/gnome-terminal.glade2.h:63
+msgid "S_croll on keystroke"
+msgstr ""
+
+#: src/gnome-terminal.glade2.h:64
+msgid "Sc_roll on output"
+msgstr ""
+
+#: src/gnome-terminal.glade2.h:65
+msgid "Scr_ollback:"
+msgstr ""
+
+#: src/gnome-terminal.glade2.h:66
+msgid "Scrolling"
+msgstr ""
+
+#: src/gnome-terminal.glade2.h:67
+msgid "Select-by-_word characters:"
+msgstr ""
+
+#: src/gnome-terminal.glade2.h:68
 msgid "Show _menubar by default in new terminals"
 msgstr ""
 
-#: src/gnome-terminal.glade2.h:59
+#: src/gnome-terminal.glade2.h:69
+#, fuzzy
+msgid "Terminal Encodings"
+msgstr "Terminal"
+
+#: src/gnome-terminal.glade2.h:70
 msgid "Terminal _bell"
 msgstr "Terminal _zili"
 
-#: src/gnome-terminal.glade2.h:60
+#: src/gnome-terminal.glade2.h:71
 msgid "Terminal applications have these colors available to them."
 msgstr ""
 
-#: src/gnome-terminal.glade2.h:61
+#: src/gnome-terminal.glade2.h:72
 msgid ""
 "The command running inside the terminal may dynamically set a new title."
 msgstr ""
 
-#: src/gnome-terminal.glade2.h:62
+#: src/gnome-terminal.glade2.h:73
 msgid ""
 "These options may cause some applications to behave incorrectly.\n"
 "They are only here to allow you to work around certain applications\n"
 "and operating sytems that expect different terminal behavior."
 msgstr ""
 
-#: src/gnome-terminal.glade2.h:65
-msgid "Title"
-msgstr "_Baþlýk"
-
-#: src/gnome-terminal.glade2.h:66
+#: src/gnome-terminal.glade2.h:76
 msgid "Title and Command"
-msgstr "Baþlýk ve Komut"
+msgstr "BaÅŸlÄ±k ve Komut"
 
-#: src/gnome-terminal.glade2.h:67
+#: src/gnome-terminal.glade2.h:77
 msgid "Use colors from s_ystem theme"
-msgstr "_Sistem temasýnýn renklerini kullan"
+msgstr "_Sistem temasÄ±nÄ±n renklerini kullan"
 
-#: src/gnome-terminal.glade2.h:68
+#: src/gnome-terminal.glade2.h:78
 msgid "When command _exits:"
-msgstr "_Komut çýkýnca:"
+msgstr "_Komut Ã§Ä±kÄ±nca:"
 
-#: src/gnome-terminal.glade2.h:69
+#: src/gnome-terminal.glade2.h:79
 msgid "_Accelerators:"
-msgstr "_Kýsayollar:"
+msgstr "_KÄ±sayollar:"
 
-#: src/gnome-terminal.glade2.h:70
+#: src/gnome-terminal.glade2.h:80
 msgid "_Allow bold text"
-msgstr "_Kalýn metne izin ver"
+msgstr "_KalÄ±n metne izin ver"
 
-#: src/gnome-terminal.glade2.h:71
+#: src/gnome-terminal.glade2.h:81
 msgid "_Background color:"
 msgstr "_Arkaplan rengi:"
 
-#: src/gnome-terminal.glade2.h:72
+#: src/gnome-terminal.glade2.h:82
 msgid "_Background image"
 msgstr "A_rkaplan resmi"
 
-#: src/gnome-terminal.glade2.h:73
+#: src/gnome-terminal.glade2.h:83
 msgid "_Backspace key generates:"
 msgstr ""
 
-#: src/gnome-terminal.glade2.h:74
+#: src/gnome-terminal.glade2.h:84
 msgid "_Delete key generates:"
 msgstr ""
 
-#: src/gnome-terminal.glade2.h:75
+#: src/gnome-terminal.glade2.h:85
 msgid "_Dynamically-set title:"
 msgstr ""
 
-#: src/gnome-terminal.glade2.h:76
+#: src/gnome-terminal.glade2.h:86
 msgid "_Image file:"
-msgstr "_Resim dosyasý:"
+msgstr "_Resim dosyasÄ±:"
 
-#: src/gnome-terminal.glade2.h:77
+#: src/gnome-terminal.glade2.h:87
 msgid "_None (use solid color)"
-msgstr "_Hiçbiri (dolgu rengi kullan)"
+msgstr "_HiÃ§biri (dolgu rengi kullan)"
 
-#: src/gnome-terminal.glade2.h:78
+#: src/gnome-terminal.glade2.h:88
 msgid "_Profile name:"
-msgstr "_Profil adý:"
+msgstr "_Profil adÄ±:"
 
-#: src/gnome-terminal.glade2.h:79
+#: src/gnome-terminal.glade2.h:89
 msgid "_Reset compatibility options to defaults"
 msgstr ""
 
-#: src/gnome-terminal.glade2.h:80
+#: src/gnome-terminal.glade2.h:90
 msgid "_Run command as a login shell"
 msgstr ""
 
-#: src/gnome-terminal.glade2.h:81
+#: src/gnome-terminal.glade2.h:91
 msgid "_Scrollbar is:"
 msgstr ""
 
-#: src/gnome-terminal.glade2.h:82
+#: src/gnome-terminal.glade2.h:92
 msgid "_Shade transparent or image background:"
-msgstr "Þ_effaf arkaplan ya da arkaplan resmi:"
+msgstr "Åž_effaf arkaplan ya da arkaplan resmi:"
 
-#: src/gnome-terminal.glade2.h:83
+#: src/gnome-terminal.glade2.h:93
 msgid "_Text color:"
 msgstr "_Metin rengi:"
 
-#: src/gnome-terminal.glade2.h:84
+#: src/gnome-terminal.glade2.h:94
 msgid "_Transparent background"
-msgstr "Þ_effaf arkaplan"
+msgstr "Åž_effaf arkaplan"
 
-#: src/gnome-terminal.glade2.h:85
+#: src/gnome-terminal.glade2.h:95
 msgid "_Update utmp/wtmp records when command is launched"
 msgstr ""
 
-#: src/gnome-terminal.glade2.h:86
-msgid "_Use the same font as other applications"
+#: src/gnome-terminal.glade2.h:96
+msgid "_Use the same size font as other applications"
 msgstr ""
 
-#: src/gnome-terminal.glade2.h:87
+#: src/gnome-terminal.glade2.h:97
 msgid "_kilobytes"
 msgstr "_kilobayt"
 
-#: src/gnome-terminal.glade2.h:88
+#: src/gnome-terminal.glade2.h:98
 msgid "_lines"
-msgstr "_satýr"
+msgstr "_satÄ±r"
 
-#: src/gnome-terminal.glade2.h:89
+#: src/gnome-terminal.glade2.h:99
 msgid "kilobytes"
 msgstr "kilobayt"
 
-#: src/profile-editor.c:47
+#: src/profile-editor.c:50
 msgid "Black on light yellow"
-msgstr "Açýk sarý üzerine siyah"
+msgstr "AÃ§Ä±k sarÄ± Ã¼zerine siyah"
 
-#: src/profile-editor.c:49
-msgid "White on black"
-msgstr "Siyah üzerine beyaz"
-
-#: src/profile-editor.c:51
+#: src/profile-editor.c:52
 msgid "Black on white"
-msgstr "Beyaz üzerine siyah"
+msgstr "Beyaz Ã¼zerine siyah"
 
-#: src/profile-editor.c:53
+#: src/profile-editor.c:54
+#, fuzzy
+msgid "Gray on black"
+msgstr "Siyah Ã¼zerine yeÅŸil"
+
+#: src/profile-editor.c:56
 msgid "Green on black"
-msgstr "Siyah üzerine yeþil"
+msgstr "Siyah Ã¼zerine yeÅŸil"
 
-#: src/profile-editor.c:66
+#: src/profile-editor.c:58
+msgid "White on black"
+msgstr "Siyah Ã¼zerine beyaz"
+
+#: src/profile-editor.c:71
 msgid "Linux console"
 msgstr "Linux konsolu"
 
-#: src/profile-editor.c:67
+#: src/profile-editor.c:72
 msgid "XTerm"
 msgstr "XTerm"
 
-#: src/profile-editor.c:68
+#: src/profile-editor.c:73
 msgid "Rxvt"
 msgstr "Rxvt"
 
-#: src/profile-editor.c:807 src/profile-editor.c:837
+#: src/profile-editor.c:813 src/profile-editor.c:843
 msgid "Custom"
-msgstr "Özel"
+msgstr "Ã–zel"
 
-#: src/profile-editor.c:883 src/terminal-window.c:2079 src/terminal.c:2262
-#, c-format
-msgid "There was an error displaying help: %s"
-msgstr ""
-
-#: src/profile-editor.c:947
-#, c-format
-msgid ""
-"The file \"%s\" is missing. This indicates that the application is installed "
-"incorrectly, so the profile editor can't be displayed."
-msgstr ""
-
-#: src/profile-editor.c:1253
+#: src/profile-editor.c:1230
 msgid "Choose a terminal font"
-msgstr "Terminal yazýtipini seçin"
+msgstr "Terminal yazÄ±tipini seÃ§in"
 
-#: src/profile-editor.c:1518
+#: src/profile-editor.c:1240 src/simple-x-font-selector.c:327
+msgid "_Font:"
+msgstr "_YazÄ±tipi:"
+
+#: src/profile-editor.c:1515
 #, c-format
 msgid "Editing profile \"%s\""
-msgstr "%s profili düzenleniyor"
-
-#: src/simple-x-font-selector.c:327
-msgid "_Font:"
-msgstr "_Yazýtipi:"
+msgstr "%s profili dÃ¼zenleniyor"
 
 #: src/simple-x-font-selector.c:332
 msgid "Si_ze:"
@@ -519,839 +715,941 @@ msgstr ""
 msgid "MAX_FONTS exceeded. Some fonts may be missing."
 msgstr ""
 
-#: src/terminal-accels.c:71
+#: src/terminal-accels.c:75
 msgid "New Tab"
 msgstr "Yeni _Sekme"
 
-#: src/terminal-accels.c:73
+#: src/terminal-accels.c:77
 msgid "New Window"
 msgstr "_Yeni Pencere"
 
-#: src/terminal-accels.c:75 src/terminal.c:1686
+#: src/terminal-accels.c:79 src/terminal.c:2159
 msgid "New Profile"
 msgstr "_Yeni Profil"
 
-#: src/terminal-accels.c:77
+#: src/terminal-accels.c:81
 msgid "Close Tab"
 msgstr "Sekmeyi Kapat"
 
-#: src/terminal-accels.c:79
+#: src/terminal-accels.c:83
 msgid "Close Window"
 msgstr "Pencereyi Kapat"
 
-#: src/terminal-accels.c:85
+#: src/terminal-accels.c:89
 msgid "Copy"
 msgstr "Kopyala"
 
-#: src/terminal-accels.c:87
+#: src/terminal-accels.c:91
 msgid "Paste"
-msgstr "Yapýþtýr"
+msgstr "YapÄ±ÅŸtÄ±r"
 
-#: src/terminal-accels.c:93
+#: src/terminal-accels.c:97
 msgid "Hide and Show menubar"
-msgstr "Menü çubuðunu gizle/göster"
+msgstr "MenÃ¼ Ã§ubuÄŸunu gizle/gÃ¶ster"
 
-#: src/terminal-accels.c:95
+#: src/terminal-accels.c:99
 msgid "Full Screen"
 msgstr "Tam Ekran"
 
 #: src/terminal-accels.c:101
-msgid "Set Title"
-msgstr "Baþlýðý Düzenle"
+msgid "Zoom In"
+msgstr ""
 
 #: src/terminal-accels.c:103
-msgid "Reset"
-msgstr "Sýfýrla"
+msgid "Zoom Out"
+msgstr ""
 
 #: src/terminal-accels.c:105
-msgid "Reset and Clear"
-msgstr "Sýfýrla ve Temizle"
+msgid "Normal Size"
+msgstr ""
 
 #: src/terminal-accels.c:111
-msgid "Switch to Previous Tab"
-msgstr "Önceki Sekmeye Git"
+msgid "Set Title"
+msgstr "BaÅŸlÄ±ÄŸÄ± DÃ¼zenle"
 
 #: src/terminal-accels.c:113
+msgid "Reset"
+msgstr "SÄ±fÄ±rla"
+
+#: src/terminal-accels.c:115
+msgid "Reset and Clear"
+msgstr "SÄ±fÄ±rla ve Temizle"
+
+#: src/terminal-accels.c:121
+msgid "Switch to Previous Tab"
+msgstr "Ã–nceki Sekmeye Git"
+
+#: src/terminal-accels.c:123
 msgid "Switch to Next Tab"
 msgstr "Sonraki Sekmeye Git"
 
-#: src/terminal-accels.c:115
+#: src/terminal-accels.c:125
 msgid "Switch to Tab 1"
 msgstr "1. Sekmeye Git"
 
-#: src/terminal-accels.c:118
+#: src/terminal-accels.c:128
 msgid "Switch to Tab 2"
 msgstr "2. Sekmeye Git"
 
-#: src/terminal-accels.c:121
+#: src/terminal-accels.c:131
 msgid "Switch to Tab 3"
 msgstr "3. Sekmeye Git"
 
-#: src/terminal-accels.c:124
+#: src/terminal-accels.c:134
 msgid "Switch to Tab 4"
 msgstr "4. Sekmeye Git"
 
-#: src/terminal-accels.c:127
+#: src/terminal-accels.c:137
 msgid "Switch to Tab 5"
 msgstr "5. Sekmeye Git"
 
-#: src/terminal-accels.c:130
+#: src/terminal-accels.c:140
 msgid "Switch to Tab 6"
 msgstr "6. Sekmeye Git"
 
-#: src/terminal-accels.c:133
+#: src/terminal-accels.c:143
 msgid "Switch to Tab 7"
 msgstr "7. Sekmeye Git"
 
-#: src/terminal-accels.c:136
+#: src/terminal-accels.c:146
 msgid "Switch to Tab 8"
 msgstr "8. Sekmeye Git"
 
-#: src/terminal-accels.c:139
+#: src/terminal-accels.c:149
 msgid "Switch to Tab 9"
 msgstr "9. Sekmeye Git"
 
-#: src/terminal-accels.c:142
+#: src/terminal-accels.c:152
 msgid "Switch to Tab 10"
 msgstr "10. Sekmeye Git"
 
-#: src/terminal-accels.c:145
+#: src/terminal-accels.c:155
 msgid "Switch to Tab 11"
 msgstr "11. Sekmeye Git"
 
-#: src/terminal-accels.c:148
+#: src/terminal-accels.c:158
 msgid "Switch to Tab 12"
 msgstr "12. Sekmeye Git"
 
-#: src/terminal-accels.c:154
+#: src/terminal-accels.c:164
 #, fuzzy
 msgid "Contents"
-msgstr "_Yardým Ýçeriði"
+msgstr "_YardÄ±m Ä°Ã§eriÄŸi"
 
-#: src/terminal-accels.c:159
+#: src/terminal-accels.c:169
 #, fuzzy
 msgid "File"
 msgstr "_Dosya"
 
-#: src/terminal-accels.c:160
+#: src/terminal-accels.c:170
 #, fuzzy
 msgid "Edit"
-msgstr "Dü_zenle"
+msgstr "DÃ¼_zenle"
 
-#: src/terminal-accels.c:161
+#: src/terminal-accels.c:171
 msgid "View"
-msgstr "Görüntüle"
+msgstr "GÃ¶rÃ¼ntÃ¼le"
 
-#: src/terminal-accels.c:163
+#: src/terminal-accels.c:173
 msgid "Go"
 msgstr "Git"
 
-#: src/terminal-accels.c:164
+#: src/terminal-accels.c:174
 msgid "Help"
-msgstr "Yardým"
+msgstr "YardÄ±m"
 
-#: src/terminal-accels.c:254 src/terminal-profile.c:388 src/terminal.c:1158
+#: src/terminal-accels.c:264 src/terminal-profile.c:391 src/terminal.c:1465
 #, c-format
 msgid "There was an error loading config from %s. (%s)\n"
 msgstr ""
 
-#: src/terminal-accels.c:268
+#: src/terminal-accels.c:278
 #, c-format
 msgid ""
 "There was an error subscribing to notification of terminal keybinding "
 "changes. (%s)\n"
 msgstr ""
 
-#: src/terminal-accels.c:309
+#: src/terminal-accels.c:319
 #, c-format
 msgid "There was an error loading a terminal keybinding. (%s)\n"
 msgstr ""
 
-#: src/terminal-accels.c:325
+#: src/terminal-accels.c:335
 #, c-format
 msgid "The value of configuration key %s is not valid; value is \"%s\"\n"
 msgstr ""
 
-#: src/terminal-accels.c:348 src/terminal-window.c:773
+#: src/terminal-accels.c:358 src/terminal-window.c:1028
 #, c-format
 msgid ""
 "There was an error loading config value for whether to use mnemonics. (%s)\n"
 msgstr ""
 
-#: src/terminal-accels.c:362
+#: src/terminal-accels.c:372
 #, c-format
 msgid "There was an error subscribing to notification for use_mnemonics (%s)\n"
 msgstr ""
 
-#: src/terminal-accels.c:373
+#: src/terminal-accels.c:383
 #, c-format
 msgid ""
 "There was an error loading config value for whether to use menu "
 "accelerators. (%s)\n"
 msgstr ""
 
-#: src/terminal-accels.c:389
+#: src/terminal-accels.c:399
 #, c-format
 msgid ""
 "There was an error subscribing to notification for use_menu_accelerators (%"
 "s)\n"
 msgstr ""
 
-#: src/terminal-accels.c:767
+#: src/terminal-accels.c:777
 #, c-format
 msgid "Error propagating accelerator change to configuration database: %s\n"
 msgstr ""
 
-#: src/terminal-accels.c:937
+#: src/terminal-accels.c:947
 #, c-format
 msgid "Error setting new accelerator in configuration database: %s\n"
 msgstr ""
 
-#: src/terminal-accels.c:968
+#: src/terminal-accels.c:978
 #, c-format
 msgid "Error setting use_mnemonics key: %s\n"
 msgstr ""
 
-#: src/terminal-accels.c:998
+#: src/terminal-accels.c:1008
 #, c-format
 msgid "Error setting use_menu_accelerators key: %s\n"
 msgstr ""
 
-#: src/terminal-accels.c:1099
-#, c-format
-msgid ""
-"The file \"%s\" is missing. This indicates that the application is installed "
-"incorrectly, so the keybindings dialog can't be displayed."
-msgstr ""
-
-#: src/terminal-accels.c:1154
+#: src/terminal-accels.c:1127
 msgid "_Action"
 msgstr "_Eylem"
 
-#: src/terminal-accels.c:1174
+#: src/terminal-accels.c:1147
 msgid "Accelerator _Key"
-msgstr "Kýsayol _Tuþu"
+msgstr "KÄ±sayol _TuÅŸu"
 
-#: src/terminal-profile.c:403
+#: src/terminal-profile.c:406
 #, c-format
 msgid ""
 "There was an error subscribing to notification of terminal profile changes. "
 "(%s)\n"
 msgstr ""
 
-#: src/terminal-profile.c:998
+#: src/terminal-profile.c:1001
 #, c-format
 msgid "Could not find an icon called \"%s\" for terminal profile \"%s\"\n"
 msgstr ""
 
-#: src/terminal-profile.c:1012
+#: src/terminal-profile.c:1015
 #, c-format
 msgid "Failed to load icon \"%s\" for terminal profile \"%s\": %s\n"
 msgstr ""
 
-#: src/terminal-profile.c:1189
+#: src/terminal-profile.c:1192
 #, c-format
 msgid ""
 "Could not find a background image called \"%s\" for terminal profile \"%s\"\n"
 msgstr ""
 
-#: src/terminal-profile.c:1203
+#: src/terminal-profile.c:1206
 #, c-format
 msgid ""
 "Failed to load background image \"%s\" for terminal profile \"%s\": %s\n"
 msgstr ""
 
-#: src/terminal-profile.c:1830
+#: src/terminal-profile.c:1860
 #, c-format
 msgid ""
 "GNOME Terminal: font name \"%s\" set in configuration database is not valid\n"
 msgstr ""
 
-#: src/terminal-profile.c:2913
+#: src/terminal-profile.c:2161
 #, c-format
 msgid "Error getting default value of %s: %s\n"
 msgstr ""
 
-#: src/terminal-profile.c:2919
+#: src/terminal-profile.c:2167
 #, c-format
 msgid "There wasn't a default value for %s\n"
 msgstr ""
 
-#: src/terminal-profile.c:2934
+#: src/terminal-profile.c:2182
 #, c-format
 msgid "Error setting key %s back to default: %s\n"
 msgstr ""
 
-#: src/terminal-profile.c:3127
+#: src/terminal-profile.c:2385
 #, c-format
 msgid "There was an error forgetting profile dir %s. (%s)\n"
 msgstr ""
 
-#: src/terminal-profile.c:3184
+#: src/terminal-profile.c:2442
 #, c-format
 msgid ""
 "There was an error subscribing to notification of changes to default "
 "profile. (%s)\n"
 msgstr ""
 
-#: src/terminal-profile.c:3229
+#: src/terminal-profile.c:2487
 msgid "_Details"
-msgstr "_Ayrýntýlar"
+msgstr "_AyrÄ±ntÄ±lar"
 
-#: src/terminal-profile.c:3664
+#: src/terminal-profile.c:2922
 #, c-format
 msgid "There was an error creating the profile \"%s\""
 msgstr ""
 
-#: src/terminal-profile.c:3744
+#: src/terminal-profile.c:3002
 msgid "There was an error deleting the profiles"
 msgstr ""
 
-#: src/terminal-profile.c:3813
+#: src/terminal-profile.c:3071
 #, c-format
 msgid "Could not parse string \"%s\" as a color palette\n"
 msgstr ""
 
-#: src/terminal-profile.c:3822
+#: src/terminal-profile.c:3080
 #, c-format
 msgid "Palette had %d entries instead of %d\n"
 msgstr ""
 
-#: src/terminal-screen.c:616
+#: src/terminal-screen.c:663
 #, c-format
 msgid "Could not load font \"%s\"\n"
 msgstr ""
 
-#: src/terminal-screen.c:773
+#: src/terminal-screen.c:820
 #, c-format
 msgid "There was a problem with the command for this terminal: %s"
 msgstr ""
 
-#: src/terminal-screen.c:1088
+#: src/terminal-screen.c:1143
 #, c-format
 msgid ""
 "Could not open the address \"%s\":\n"
 "%s"
 msgstr ""
 
-#: src/terminal-screen.c:1209 src/terminal-window.c:539
+#: src/terminal-screen.c:1265 src/terminal-window.c:699
 msgid "_New Window"
 msgstr "_Yeni Pencere"
 
-#: src/terminal-screen.c:1216 src/terminal-window.c:542
+#: src/terminal-screen.c:1272 src/terminal-window.c:702
 msgid "New _Tab"
 msgstr "Yeni _Sekme"
 
-#: src/terminal-screen.c:1240 src/terminal-window.c:625
+#: src/terminal-screen.c:1296 src/terminal-window.c:803
 msgid "_Profile"
 msgstr "_Profil"
 
-#: src/terminal-screen.c:1290
+#: src/terminal-screen.c:1346
 msgid "_Edit Current Profile..."
-msgstr "_Güncel Profili Düzenle..."
+msgstr "_GÃ¼ncel Profili DÃ¼zenle..."
 
-#: src/terminal-screen.c:1297
+#: src/terminal-screen.c:1352
+msgid "_Input Methods"
+msgstr ""
+
+#: src/terminal-screen.c:1368
 msgid "Hide _Menubar"
-msgstr "Menü Çubuðunu _Gizle"
+msgstr "MenÃ¼ Ã‡ubuÄŸunu _Gizle"
 
-#: src/terminal-screen.c:1302
+#: src/terminal-screen.c:1373
 msgid "Show _Menubar"
-msgstr "_Menü Çubuðunu Göster"
+msgstr "_MenÃ¼ Ã‡ubuÄŸunu GÃ¶ster"
 
-#: src/terminal-screen.c:1311
+#: src/terminal-screen.c:1382
 msgid "Secure _Keyboard"
-msgstr "Güvenli _Klavye"
+msgstr "GÃ¼venli _Klavye"
 
-#: src/terminal-screen.c:1317
+#: src/terminal-screen.c:1388
 msgid "_Open Link"
-msgstr "_Baðlantýyý Aç"
+msgstr "_BaÄŸlantÄ±yÄ± AÃ§"
 
-#: src/terminal-screen.c:1324
+#: src/terminal-screen.c:1395
 msgid "_Copy Link Address"
-msgstr "_Baðlantý Adresini Kopyala"
+msgstr "_BaÄŸlantÄ± Adresini Kopyala"
 
-#: src/terminal-screen.c:1577
+#: src/terminal-screen.c:1757
 msgid "Change terminal title"
-msgstr "Terminal baþlýðýný deðiþtir"
+msgstr "Terminal baÅŸlÄ±ÄŸÄ±nÄ± deÄŸiÅŸtir"
 
-#: src/terminal-screen.c:1604
+#: src/terminal-screen.c:1784
 msgid "_Title:"
-msgstr "_Baþlýk:"
+msgstr "_BaÅŸlÄ±k:"
 
-#: src/terminal-screen.c:1722
+#: src/terminal-screen.c:1902
 #, c-format
 msgid "text/plain dropped on terminal had wrong format (%d) or length (%d)\n"
 msgstr ""
 
-#: src/terminal-screen.c:1745
+#: src/terminal-screen.c:1925
 #, c-format
 msgid "Color dropped on terminal had wrong format (%d) or length (%d)\n"
 msgstr ""
 
-#: src/terminal-screen.c:1788
+#: src/terminal-screen.c:1968
 #, c-format
 msgid "Mozilla url dropped on terminal had wrong format (%d) or length (%d)\n"
 msgstr ""
 
-#: src/terminal-screen.c:1837
+#: src/terminal-screen.c:2017
 #, c-format
 msgid "URI list dropped on terminal had wrong format (%d) or length (%d)\n"
 msgstr ""
 
-#: src/terminal-screen.c:1891
+#: src/terminal-screen.c:2071
 #, c-format
 msgid ""
 "Image filename dropped on terminal had wrong format (%d) or length (%d)\n"
 msgstr ""
 
-#: src/terminal-screen.c:1917
+#: src/terminal-screen.c:2097
 #, c-format
 msgid "Error converting URI \"%s\" into filename: %s\n"
 msgstr ""
 
-#: src/terminal-widget-zvt.c:1034
+#: src/terminal-widget-zvt.c:1069
 #, c-format
 msgid "There was an error creating the child process for this terminal: %s"
 msgstr ""
 
-#: src/terminal-widget-zvt.c:1050
+#: src/terminal-widget-zvt.c:1085
 #, c-format
 msgid "Could not set working directory to \"%s\": %s\n"
 msgstr ""
 
-#: src/terminal-widget-zvt.c:1056
+#: src/terminal-widget-zvt.c:1091
 #, c-format
 msgid "Could not execute command %s: %s\n"
 msgstr ""
 
-#: src/terminal-window.c:438
+#: src/terminal-window.c:466
 #, c-format
 msgid "_%d. %s"
 msgstr ""
 
-#: src/terminal-window.c:441
+#: src/terminal-window.c:469
 #, c-format
 msgid "_%c. %s"
+msgstr ""
+
+#: src/terminal-window.c:613
+msgid "_Add or Remove..."
 msgstr ""
 
 #. This is fairly bogus to have here but I don't know
 #. * where else to put it really
 #.
-#: src/terminal-window.c:547
+#: src/terminal-window.c:707
 msgid "New _Profile..."
 msgstr "_Yeni Profil..."
 
-#: src/terminal-window.c:553
+#: src/terminal-window.c:713
 msgid "_Close Window"
 msgstr "_Pencereyi Kapat"
 
-#: src/terminal-window.c:558
+#: src/terminal-window.c:718
 msgid "C_lose Tab"
 msgstr "Sekmeyi _Kapat"
 
-#: src/terminal-window.c:587
+#: src/terminal-window.c:747
 msgid "C_urrent Profile..."
-msgstr "_Güncel Profil..."
+msgstr "_GÃ¼ncel Profil..."
 
-#: src/terminal-window.c:590
+#: src/terminal-window.c:750
 msgid "_Keybindings..."
-msgstr "_Tuþ baðýntýlarý..."
+msgstr "_TuÅŸ baÄŸÄ±ntÄ±larÄ±..."
 
-#: src/terminal-window.c:593
+#: src/terminal-window.c:753
 msgid "P_rofiles..."
 msgstr "_Profiller..."
 
-#: src/terminal-window.c:606
+#: src/terminal-window.c:766
 msgid "Hide Menu_bar"
-msgstr "Menü Çubuðunu _Gizle"
+msgstr "MenÃ¼ Ã‡ubuÄŸunu _Gizle"
 
-#: src/terminal-window.c:609
+#: src/terminal-window.c:769
 msgid "_Full Screen"
 msgstr "_Tam Ekran"
 
-#: src/terminal-window.c:628
+#: src/terminal-window.c:773
+msgid "_Zoom In"
+msgstr ""
+
+#: src/terminal-window.c:777
+msgid "Zoom _Out"
+msgstr ""
+
+#: src/terminal-window.c:781
+#, fuzzy
+msgid "_Normal Size"
+msgstr "_Normal boyutuna getir"
+
+#: src/terminal-window.c:806
 msgid "_Set Title..."
-msgstr "_Baþlýðý DÜzenle..."
+msgstr "_BaÅŸlÄ±ÄŸÄ± DÃœzenle..."
 
-#: src/terminal-window.c:631
+#: src/terminal-window.c:813
+msgid "_Character Coding"
+msgstr ""
+
+#: src/terminal-window.c:820
 msgid "_Reset"
-msgstr "_Sýfýrla"
+msgstr "_SÄ±fÄ±rla"
 
-#: src/terminal-window.c:634
+#: src/terminal-window.c:823
 msgid "Reset and C_lear"
-msgstr "Sýfýrla ve _Temizle"
+msgstr "SÄ±fÄ±rla ve _Temizle"
 
-#: src/terminal-window.c:648
+#: src/terminal-window.c:837
 msgid "_Previous Tab"
-msgstr "Ö_nceki Sekme"
+msgstr "Ã–_nceki Sekme"
 
-#: src/terminal-window.c:652
+#: src/terminal-window.c:841
 msgid "_Next Tab"
 msgstr "_Sonraki Sekme"
 
-#: src/terminal-window.c:671
+#: src/terminal-window.c:860
 msgid "_Contents"
-msgstr "Ýç_erik"
+msgstr "Ä°Ã§_erik"
 
-#: src/terminal-window.c:680
+#: src/terminal-window.c:869
 msgid "_About"
-msgstr "_Hakkýnda"
+msgstr "_HakkÄ±nda"
 
-#: src/terminal-window.c:792
+#: src/terminal-window.c:1047
 #, c-format
 msgid ""
 "There was an error subscribing to notification of terminal window "
 "configuration changes. (%s)\n"
 msgstr ""
 
-#: src/terminal-window.c:1654
+#: src/terminal-window.c:1922
 msgid "_File"
 msgstr "_Dosya"
 
-#: src/terminal-window.c:1656 src/terminal.c:2293
+#: src/terminal-window.c:1924 src/terminal.c:2766
 msgid "_Edit"
-msgstr "Dü_zenle"
+msgstr "DÃ¼_zenle"
 
-#: src/terminal-window.c:1658
+#: src/terminal-window.c:1926
 msgid "_View"
-msgstr "_Görüntüle"
+msgstr "_GÃ¶rÃ¼ntÃ¼le"
 
-#: src/terminal-window.c:1660
+#: src/terminal-window.c:1928
 msgid "_Terminal"
 msgstr "_Terminal"
 
-#: src/terminal-window.c:1662
+#: src/terminal-window.c:1930
 msgid "_Go"
 msgstr "_Git"
 
-#: src/terminal-window.c:1664
+#: src/terminal-window.c:1932
 msgid "_Help"
-msgstr "_Yardým"
+msgstr "_YardÄ±m"
 
-#: src/terminal-window.c:1783
+#: src/terminal-window.c:2054
 msgid "_Restore normal size"
 msgstr "_Normal boyutuna getir"
 
-#: src/terminal-window.c:1787
+#: src/terminal-window.c:2058
 msgid "_Full screen"
 msgstr "_Tam ekran"
 
-#: src/terminal-window.c:1975
+#: src/terminal-window.c:2254
 msgid ""
 "Your current desktop environment does not support the full screen feature.\n"
 " (In technical terms, you need a window manager with support for the "
 "_NET_WM_STATE_FULLSCREEN property.)"
 msgstr ""
 
-#: src/terminal-window.c:2109
+#: src/terminal-window.c:2540
 msgid "translator_credits"
 msgstr ""
 
-#: src/terminal-window.c:2122
-msgid "Copyright 2002 Havoc Pennington"
-msgstr "Copyright 2002 Havon Pennington"
-
-#: src/terminal-window.c:2123
+#: src/terminal-window.c:2554
 msgid "GNOME Terminal"
 msgstr "GNOME Terminali"
 
-#: src/terminal.c:166
+#: src/terminal.c:177
 msgid "Execute the argument to this option inside the terminal."
 msgstr ""
 
-#: src/terminal.c:175
+#: src/terminal.c:186
 msgid "Execute the remainder of the command line inside the terminal."
 msgstr ""
 
-#: src/terminal.c:184
+#: src/terminal.c:195
 msgid ""
 "Open a new window containing a tab with the given profile. More than one of "
 "these options can be provided."
 msgstr ""
 
-#: src/terminal.c:185 src/terminal.c:194
+#: src/terminal.c:196 src/terminal.c:205
 msgid "PROFILENAME"
 msgstr ""
 
-#: src/terminal.c:193
+#: src/terminal.c:204
 msgid ""
 "Open a new tab in the last-opened window with the given profile. More than "
 "one of these options can be provided."
 msgstr ""
 
-#: src/terminal.c:202
+#: src/terminal.c:213
 msgid ""
 "Open a new window containing a tab with the given profile ID. Used "
 "internally to save sessions."
 msgstr ""
 
-#: src/terminal.c:203 src/terminal.c:212
+#: src/terminal.c:214 src/terminal.c:223
 msgid "PROFILEID"
 msgstr ""
 
-#: src/terminal.c:211
+#: src/terminal.c:222
 msgid ""
 "Open a new tab in the last-opened window with the given profile ID. Used "
 "internally to save sessions."
 msgstr ""
 
-#: src/terminal.c:220
+#: src/terminal.c:231
+msgid ""
+"Set the role for the last-specified window; applies to only one window; can "
+"be specified once for each window you create from the command line."
+msgstr ""
+
+#: src/terminal.c:232
+msgid "ROLE"
+msgstr ""
+
+#: src/terminal.c:240
 msgid ""
 "Turn on the menubar for the last-specified window; applies to only one "
 "window; can be specified once for each window you create from the command "
 "line."
 msgstr ""
 
-#: src/terminal.c:229
+#: src/terminal.c:249
 msgid ""
 "Turn off the menubar for the last-specified window; applies to only one "
 "window; can be specified once for each window you create from the command "
 "line."
 msgstr ""
 
-#: src/terminal.c:238
+#: src/terminal.c:258
 msgid ""
 "X geometry specification (see \"X\" man page), can be specified once per "
 "window to be opened."
 msgstr ""
 
-#: src/terminal.c:239
+#: src/terminal.c:259
 msgid "GEOMETRY"
 msgstr ""
 
-#: src/terminal.c:247
+#: src/terminal.c:267
 msgid ""
 "Do not register with the activation nameserver, do not re-use an active "
 "terminal"
 msgstr ""
 
-#: src/terminal.c:256
+#: src/terminal.c:276
+msgid "ID for startup notification protocol."
+msgstr ""
+
+#: src/terminal.c:285
 #, fuzzy
 msgid "Set the terminal's title"
-msgstr "Terminal profillerini yönet"
+msgstr "Terminal profillerini yÃ¶net"
 
-#: src/terminal.c:257
+#: src/terminal.c:286
 msgid "TITLE"
-msgstr "BAÞLIK"
+msgstr "BAÅžLIK"
 
-#: src/terminal.c:265
+#: src/terminal.c:294
 msgid "Set the terminal's working directory"
-msgstr "Terminalin çalýþma dizinini düzenle"
+msgstr "Terminalin Ã§alÄ±ÅŸma dizinini dÃ¼zenle"
 
-#: src/terminal.c:266
+#: src/terminal.c:295
 msgid "DIRNAME"
-msgstr "DÝZÝNADI"
+msgstr "DÄ°ZÄ°NADI"
 
-#: src/terminal.c:603
+#: src/terminal.c:304
+msgid "Set the terminal's zoom factor (1.0 = normal size)"
+msgstr ""
+
+#: src/terminal.c:305
+msgid "ZOOMFACTOR"
+msgstr ""
+
+#: src/terminal.c:649
 #, c-format
 msgid "Could not load icon \"%s\": %s\n"
 msgstr ""
 
-#: src/terminal.c:668
+#: src/terminal.c:714
 msgid "Option --command/-e requires specifying the command to run\n"
 msgstr ""
 
-#: src/terminal.c:676
+#: src/terminal.c:722
 #, c-format
 msgid "Argument to --command/-e is not a valid command: %s\n"
 msgstr ""
 
-#: src/terminal.c:686 src/terminal.c:708
+#: src/terminal.c:732 src/terminal.c:754
 msgid ""
 "--command/-e/--execute/-x specified more than once for the same window or "
 "tab\n"
 msgstr ""
 
-#: src/terminal.c:700
+#: src/terminal.c:746
 msgid ""
 "Option --execute/-x requires specifying the command to run on the rest of "
 "the command line\n"
 msgstr ""
 
-#: src/terminal.c:725
+#: src/terminal.c:771
 msgid ""
 "Option --window-with-profile requires an argument specifying what profile to "
 "use\n"
 msgstr ""
 
-#: src/terminal.c:742
+#: src/terminal.c:788
 msgid ""
 "Option --tab-with-profile requires an argument specifying what profile to "
 "use\n"
 msgstr ""
 
-#: src/terminal.c:773
+#: src/terminal.c:819
 msgid "--show-menubar option given twice for the same window\n"
 msgstr ""
 
-#: src/terminal.c:799
+#: src/terminal.c:845
 msgid "--hide-menubar option given twice for the same window\n"
 msgstr ""
 
-#: src/terminal.c:822
+#: src/terminal.c:868
+msgid "Option --role requires an argument giving the role\n"
+msgstr ""
+
+#: src/terminal.c:877
+msgid "Two roles given for one window\n"
+msgstr ""
+
+#: src/terminal.c:893
 msgid "Option --geometry requires an argument giving the geometry\n"
 msgstr ""
 
-#: src/terminal.c:831 src/terminal.c:841
+#: src/terminal.c:902 src/terminal.c:912
 msgid "Two geometries given for one window\n"
 msgstr ""
 
-#: src/terminal.c:863
+#: src/terminal.c:934
 msgid "Option --title requires an argument giving the title\n"
 msgstr ""
 
-#: src/terminal.c:871
+#: src/terminal.c:942
 msgid "Two titles given for one tab\n"
 msgstr ""
 
-#: src/terminal.c:886
+#: src/terminal.c:957
 msgid "Option --working-directory requires an argument giving the directory\n"
 msgstr ""
 
-#: src/terminal.c:894
+#: src/terminal.c:965
 msgid "Two working directories given for one tab\n"
 msgstr ""
 
-#: src/terminal.c:903
+#: src/terminal.c:981
+msgid "Option --zoom requires an argument giving the zoom factor\n"
+msgstr ""
+
+#: src/terminal.c:989
+msgid "Two zoom factors given for one tab\n"
+msgstr ""
+
+#: src/terminal.c:1004
+#, c-format
+msgid "\"%s\" is not a valid zoom factor\n"
+msgstr ""
+
+#: src/terminal.c:1012
+#, c-format
+msgid "Zoom factor \"%g\" is too small, using %g\n"
+msgstr ""
+
+#: src/terminal.c:1019
+#, c-format
+msgid "Zoom factor \"%g\" is too large, using %g\n"
+msgstr ""
+
+#: src/terminal.c:1031
 msgid ""
 "Option given which is no longer supported in this version of gnome-terminal; "
 "you might want to create a profile with the desired setting, and use the new "
 "--window-with-profile option\n"
 msgstr ""
 
-#: src/terminal.c:1023
+#: src/terminal.c:1037
+msgid "--startup-id option given twice\n"
+msgstr ""
+
+#: src/terminal.c:1042
+msgid "--startup-id option requires an argument\n"
+msgstr ""
+
+#: src/terminal.c:1159
+msgid "No argument given to --display option\n"
+msgstr ""
+
+#: src/terminal.c:1181
+msgid "No argument given to --screen option\n"
+msgstr ""
+
+#: src/terminal.c:1265
 #, fuzzy, c-format
 msgid "No such profile '%s', using default profile\n"
-msgstr "%s profili yok, öntanýmlý profil kullanýlýyor"
+msgstr "%s profili yok, Ã¶ntanÄ±mlÄ± profil kullanÄ±lÄ±yor"
 
-#: src/terminal.c:1132
+#: src/terminal.c:1427
 #, c-format
 msgid "Invalid argument: \"%s\"\n"
 msgstr ""
 
-#: src/terminal.c:1174
+#: src/terminal.c:1481
 #, c-format
 msgid ""
 "There was an error subscribing to notification of terminal profile list "
 "changes. (%s)\n"
 msgstr ""
 
-#: src/terminal.c:1287
+#: src/terminal.c:1714
 #, c-format
 msgid "Invalid geometry string \"%s\"\n"
 msgstr ""
 
-#: src/terminal.c:1347
+#: src/terminal.c:1774
 #, c-format
 msgid "There was an error getting the list of terminal profiles. (%s)\n"
 msgstr ""
 
-#: src/terminal.c:1580
+#: src/terminal.c:2053
 msgid "You have to name your profile."
 msgstr "Profilinize bir isim vermelisiniz."
 
-#: src/terminal.c:1590
+#: src/terminal.c:2063
 #, c-format
 msgid "You already have a profile called \"%s\""
-msgstr "Zaten %s adýnda bir profiliniz var."
+msgstr "Zaten %s adÄ±nda bir profiliniz var."
 
-#: src/terminal.c:1627
+#: src/terminal.c:2100
 msgid ""
 "The profile you selected as a base for your new profile no longer exists"
 msgstr ""
 
-#: src/terminal.c:1691
+#: src/terminal.c:2164
 msgid "C_reate"
-msgstr "_Oluþtur"
+msgstr "_OluÅŸtur"
 
-#: src/terminal.c:1716
+#: src/terminal.c:2189
 #, fuzzy
 msgid "Profile _name:"
-msgstr "_Profil adý:"
+msgstr "_Profil adÄ±:"
 
-#: src/terminal.c:1720
+#: src/terminal.c:2193
 #, fuzzy
 msgid "Enter profile name"
-msgstr "_Profil adý:"
+msgstr "_Profil adÄ±:"
 
-#: src/terminal.c:1735
+#: src/terminal.c:2208
 msgid "_Base on:"
 msgstr ""
 
-#: src/terminal.c:1883
+#: src/terminal.c:2356
 #, fuzzy
 msgid "Profile list"
-msgstr "Profil Düzenleyici"
+msgstr "Profil DÃ¼zenleyici"
 
-#: src/terminal.c:1956
+#: src/terminal.c:2429
 msgid "You must select one or more profiles to delete."
 msgstr ""
 
-#: src/terminal.c:1979
+#: src/terminal.c:2452
 msgid "You must have at least one profile; you can't delete all of them."
 msgstr ""
 
-#: src/terminal.c:1997
+#: src/terminal.c:2470
 msgid "Delete these two profiles?\n"
 msgstr "Bu iki profil silinsin mi?\n"
 
-#: src/terminal.c:1999
+#: src/terminal.c:2472
 #, c-format
 msgid "Delete these %d profiles?\n"
 msgstr "Bu %d profil silinsin mi?\n"
 
-#: src/terminal.c:2017
+#: src/terminal.c:2490
 #, c-format
 msgid "Delete profile \"%s\"?"
 msgstr "%s profili silinsin mi?"
 
-#: src/terminal.c:2039
+#: src/terminal.c:2512
 #, fuzzy
 msgid "Delete Profile"
 msgstr "%s profili silinsin mi?"
 
-#: src/terminal.c:2326
+#: src/terminal.c:2799
 #, fuzzy
 msgid "Edit Profiles"
-msgstr "%s profili düzenleniyor"
+msgstr "%s profili dÃ¼zenleniyor"
 
-#: src/terminal.c:2366
+#: src/terminal.c:2839
 msgid "Profile _used when launching a new terminal:"
-msgstr "Yeni bir terminal çalýþtýrýldýðý zaman kullanýlacak profil:"
+msgstr "Yeni bir terminal Ã§alÄ±ÅŸtÄ±rÄ±ldÄ±ÄŸÄ± zaman kullanÄ±lacak profil:"
 
-#: src/terminal.c:2388
+#: src/terminal.c:2861
 msgid "_Profiles:"
 msgstr "_Profiller:"
 
-#: src/terminal.c:2437
+#: src/terminal.c:2910
 msgid "Click to open new profile dialog"
 msgstr ""
 
-#: src/terminal.c:2450
+#: src/terminal.c:2923
 msgid "Click to open edit profile dialog"
 msgstr ""
 
-#: src/terminal.c:2460
+#: src/terminal.c:2933
 msgid "Click to delete selected profile"
 msgstr ""
 
-#: src/terminal.c:2509
+#: src/terminal.c:2982
 msgid "Click button to choose profile"
 msgstr ""
 
-#: src/terminal.c:2955
+#: src/terminal.c:3403
+#, c-format
+msgid ""
+"The file \"%s\" is missing. This indicates that the application is installed "
+"incorrectly, so the dialog can't be displayed."
+msgstr ""
+
+#: src/terminal.c:3537
 msgid ""
 "It appears that you do not have gnome-terminal.server installed in a valid "
 "location. Factory mode disabled.\n"
 msgstr ""
 
-#: src/terminal.c:2958
+#: src/terminal.c:3540
 msgid ""
 "Error registering terminal with the activation service; factory mode "
 "disabled.\n"
 msgstr ""
 
-#: src/terminal.c:2993
+#: src/terminal.c:3576
 msgid "Failed to retrieve terminal server from activation server\n"
 msgstr ""
 
@@ -1423,16 +1721,16 @@ msgstr ""
 
 #: src/x-font-selector.c:485
 msgid "Font"
-msgstr "Yazýtipi"
+msgstr "YazÄ±tipi"
 
 #: src/x-font-selector.c:495 src/x-font-selector.c:2173
 #: src/x-font-selector.c:2403
 msgid "Font:"
-msgstr "Yazýtipi:"
+msgstr "YazÄ±tipi:"
 
 #: src/x-font-selector.c:500
 msgid "Font Style:"
-msgstr "Font Biçemi:"
+msgstr "Font BiÃ§emi:"
 
 #: src/x-font-selector.c:505
 msgid "Size:"
@@ -1440,7 +1738,7 @@ msgstr "Boyut:"
 
 #: src/x-font-selector.c:637 src/x-font-selector.c:861
 msgid "Reset Filter"
-msgstr "Filtreyi Sýfýrla"
+msgstr "Filtreyi SÄ±fÄ±rla"
 
 #: src/x-font-selector.c:651
 msgid "Metric:"
@@ -1457,19 +1755,19 @@ msgstr "Benek"
 #. create the text entry widget
 #: src/x-font-selector.c:678
 msgid "Preview:"
-msgstr "Önizle:"
+msgstr "Ã–nizle:"
 
 #: src/x-font-selector.c:709
 msgid "Font Information"
-msgstr "Yazýtipi Bilgisi"
+msgstr "YazÄ±tipi Bilgisi"
 
 #: src/x-font-selector.c:742
 msgid "Requested Font Name:"
-msgstr "Ýstenenen Yazýtipi Adý:"
+msgstr "Ä°stenenen YazÄ±tipi AdÄ±:"
 
 #: src/x-font-selector.c:753
 msgid "Actual Font Name:"
-msgstr "Asýl Yazýtipi Adý:"
+msgstr "AsÄ±l YazÄ±tipi AdÄ±:"
 
 #: src/x-font-selector.c:764
 #, c-format
@@ -1482,11 +1780,11 @@ msgstr "Filtre"
 
 #: src/x-font-selector.c:792
 msgid "Font Types:"
-msgstr "Yazýtipi Türleri:"
+msgstr "YazÄ±tipi TÃ¼rleri:"
 
 #: src/x-font-selector.c:800
 msgid "Bitmap"
-msgstr "Biteþlem"
+msgstr "BiteÅŸlem"
 
 #: src/x-font-selector.c:806
 msgid "Scalable"
@@ -1515,7 +1813,7 @@ msgstr ""
 
 #: src/x-font-selector.c:1785
 msgid "The selected font is not available."
-msgstr "Seçilen yazýtipi bulunamadý."
+msgstr "SeÃ§ilen yazÄ±tipi bulunamadÄ±."
 
 #: src/x-font-selector.c:1791
 msgid "The selected font is not a valid font."
@@ -1535,8 +1833,17 @@ msgstr ""
 
 #: src/x-font-selector.c:3502
 msgid "Font Selection"
-msgstr "Yazýtipi Seçimi"
+msgstr "YazÄ±tipi SeÃ§imi"
 
 #: src/x-font-selector.c:3598
 msgid "Select a font"
-msgstr "Bir yazýtipi seçin"
+msgstr "Bir yazÄ±tipi seÃ§in"
+
+#~ msgid "Copyright 2002 Havoc Pennington"
+#~ msgstr "Copyright 2002 Havon Pennington"
+
+#~ msgid "Accel Mode"
+#~ msgstr "KÄ±sayol TÃ¼rÃ¼"
+
+#~ msgid "Title"
+#~ msgstr "_BaÅŸlÄ±k"

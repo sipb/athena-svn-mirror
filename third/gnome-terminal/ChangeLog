@@ -1,19 +1,278 @@
+2003-01-20  Havoc Pennington  <hp@pobox.com>
+
+	* NEWS: update
+
+	* configure.in: remove warning about unstable branch, and bump 
+	version to 2.2.0
+
+2003-01-16  Havoc Pennington  <hp@redhat.com>
+
+	* src/terminal.c (option_parsing_results_check_for_display_name):
+	when deleting arguments, don't leave duplicate pointers in the 
+	array. Also, don't strip --display/--screen found after 
+	-x argument.
+
+	* src/terminal.c (main): when inserting a --display argument, 
+	do so at argv[1] instead of appending to argv, because appending
+	breaks when using -x
+
+2003-01-11  Christophe Fergeau  <teuf@users.sourceforge.net>
+
+	* src/encondings.c (update_active_encodings_from_string_list): fixed
+	compilation with gcc 2.95
+
+2003-01-10  Pablo Saratxaga  <pablo@mandrakesoft.com>
+
+	* configure.in: Added Amharic (am), Arabic (ar), Macedonian (mk)
+	and Dutch (nl) to ALL_LINGUAS
+
+2003-01-10  Havoc Pennington  <hp@pobox.com>
+
+	* NEWS: update
+
+	* configure.in: 2.1.4
+
+2003-01-09  Nalin Dahyabhai  <nsdahya1@pobox.com>
+
+	* src/encodings.c (update_active_encodings_from_string_list): filter
+	out duplicates, sort so that the current locale encoding is first and
+	UTF-8 (if not the current locale encoding) is second (Red Hat #80604).
+
+2003-01-05  Havoc Pennington  <hp@pobox.com>
+
+	* configure.in: GTK 2.2.0 is required
+
+2003-01-05  Havoc Pennington  <hp@pobox.com>
+
+	* src/terminal-accels.c (terminal_edit_keys_dialog_new): don't
+	leak GladeXML object
+
+	* src/encoding.c (terminal_encoding_dialog_new): don't leak the
+	GladeXML object.
+
+	* src/skey-popup.c (terminal_skey_do_popup): destroy the skey
+	dialog in between uses, I believe this may fix some weirdness 
+	where it sometimes popped up in funny places. 
+	Also, don't leak the GladeXML object.
+
+2003-01-05  Havoc Pennington  <hp@pobox.com>
+
+	* src/encoding.h (enum): fix compilation by adding missing 
+	encoding to enum.
+
+2003-01-02  Havoc Pennington  <hp@redhat.com>
+
+	* src/encoding.c: add ISO-8859-2
+
+2002-12-22  Christian Neumair  <chris@gnome-de.org>
+
+	* src/terminal-window.c: Revamped about dialog (#101812).
+
+2002-12-18  Satyajit Kanungo  <satyajit.kanungo@wipro.com>
+	* src/terminal-screen.c (terminal_screen_get_working_dir): 
+	  Remove the ':' from the output string to get the working
+	  directry correct ( On Solaris bug #79748) 
+
+2002-12-09  Havoc Pennington  <hp@redhat.com>
+
+	* configure.in: 2.1.3
+
+2002-12-09  Artis Trops  <hornet@navigator.lv>
+
+	* configure.in: Added Latvian (lv) to ALL_LINGUAS.
+
+2002-12-08  Havoc Pennington  <hp@pobox.com>
+
+	* src/profile-editor.c: alphabetize the palette and use "gray on
+	black" not "linux console" for consistency and "not weird on
+	solaris" fu
+
+2002-10-25  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* src/profile-editor.c: Add a "Linux console" gray on black colour
+	scheme since it was available in GNOME 1.4 and it is more pleasant
+	on the eyes than white-on-black. Fixes bug #96759.
+
+2002-12-08  Daniel Elstner  <daniel.elstner@gmx.net>
+
+	* src/terminal.c (main): Don't insert NULL pointers in between
+	arguments in argv_copy.  Also, don't increment argc_copy for the
+	trailing NULL terminator.  (#100658)
+
+2002-12-08  Havoc Pennington  <hp@pobox.com>
+
+	* src/gnome-terminal.glade2: change "use the same font" to "use
+	the same size font" - still a slight fib as we'll also copy
+	bold/italic, but keeps people from expecting the family to be
+	copied.
+
+2002-12-07  Havoc Pennington  <hp@pobox.com>
+
+	* src/terminal.c (find_screen_by_display_name): ref the screen 
+	in the fallback gdk_screen_get_default() case
+
+	* src/encoding.c (terminal_encoding_init): indentation stuff
+
+	Patch from Mathias Hasselmann to allow more than 32 settings.
+
+	* src/terminal-profile.[hc]: use a struct instead of an 
+	int to store the flags in TerminalSettingMask
+	
+	* src/profile-editor.c: adapt to TerminalSettingMask changes
+
+2002-12-07  Havoc Pennington  <hp@pobox.com>
+
+	* src/terminal.c (main): don't try to use an empty string
+	DESKTOP_STARTUP_ID (which is common since we set it to empty
+	instead of deleting it in GDK, due to rumored unportability of
+	unsetenv). Also fixes a crash since libstartup-notification was
+	barfing on empty startup ID; fixed in libstartup-notification CVS.
+
+2002-12-06  Havoc Pennington  <hp@pobox.com>
+
+	* src/terminal.c (terminal_app_get_clone_command): only add
+	--working-directory if the working dir is actually available.
+	May fix #87046, though #87046 may have already been fixed.
+
+2002-12-04  Havoc Pennington  <hp@pobox.com>
+
+	* src/terminal.c (terminal_util_load_glade_file): utility function 
+	for loading glade files, to fix up all the error handling 
+	I had all over the place for that, and fix the string for 
+	translators
+
+2002-12-05  Havoc Pennington  <hp@redhat.com>
+
+	* gnome-terminal.desktop.in (StartupNotify): enable startup
+	notification
+
+	* src/terminal-window.c (terminal_window_set_startup_id): new
+	function
+	(terminal_window_show): set the startup ID on the window, 
+	and send the "launch complete" message after we open the 
+	window.
+
+	* src/terminal.c: add --startup-id option and pass --display and
+	--screen to child processes when using the factory
+
+	* configure.in: require startup-notification
+
+2002-12-03  Havoc Pennington  <hp@pobox.com>
+
+	* configure.in: flip default to --with-widget=vte
+
+2002-12-02  Nalin Dahyabhai <nsdahya1@pobox.com>
+
+	* src/terminal-screen.c, src/terminal-screen.h: connect to the
+	terminal widget's encoding_changed signal.  Add an encoding_changed
+	signal which is emitted when we catch the terminal widget's signal.
+	* src/terminal-widget.h: declare connect_encoding_changed()
+	and disconnect_encoding_changed() functions.
+	* src/terminal-widget-vte.c, src/terminal-widget-zvt.c: implement
+	connect_encoding_changed() and disconnect_encoding_changed() functions.
+	* src/terminal-window.c: update the encodings menu when we receive an
+	encoding_changed signal from the terminal screen object, so that we
+	update properly when an application changes the terminal's encoding.
+
+2002-12-02  Havoc Pennington  <hp@pobox.com>
+
+	* src/profile-editor.c (terminal_profile_edit): improve font
+	selector packing
+
+	* src/gnome-terminal.schemas: change update_records to default to
+	true
+
+	* src/gnome-terminal.glade2: UI review updates
+
+	* src/profile-editor.c (terminal_profile_edit): put
+	lines/kilobytes scrollback widgets in a size group
+
+	* src/encoding.c (terminal_encoding_init): fool with indentation
+	and braces
+
+2002-12-01  Havoc Pennington  <hp@pobox.com>
+
+	* src/eggcellrendererkeys.c: update from libegg
+
 2002-11-26  Glynn Foster  <glynn.foster@sun.com>
 
-	* configure.in: 2.0.2
+	* configure.in: 2.1.2
 
-2002-11-09  Fatih Demir <kabalak@gtranslator.org>
+2002-11-22  Nalin Dahyabhai <nalin@redhat.com>
 
-	* configure.in: Added "ta" (Tamil) language to the languages' list.
+	* src/encodings.c, src/encodings.h: don't present the user with
+	encodings which don't pass ASCII through cleanly, either because
+	they don't exist or they aren't ASCII supersets.
+
+2002-11-19  Havoc Pennington  <hp@redhat.com>
+
+	* src/terminal-screen.c (terminal_screen_get_working_dir): apply
+	patch from Deepa Chacko Pillai and Pasupathi for #79748
+	(makes get_working_dir do something useful on Solaris)
+	
+Wed Nov 13 14:27:03 2002  HideToshi Tajima  <hidetoshi.tajima@sun.com>
+
+	* src/terminal-widget-zvt.c (terminal_widget_set_pango_font):
+	enabled pango font for libzvt.(Fix for #78007, #90840, ...)
+
+Sun Nov  3 16:18:07 2002  Jonathan Blandford  <jrb@gnome.org>
+
+	* src/skey/Makefile.am (INCLUDES): de-LART
+
+	* src/skey/config.h: clean up old-school C.
 
 2002-11-03  Dmitry G. Mastrukov  <dmitry@taurussoft.org>
 
 	* configure.in: Added Belarusian to ALL_LINGUAS
 
+2002-10-31  Havoc Pennington  <hp@redhat.com>
+
+	* src/skey/Makefile.am: take -Wall out of cflags; still some 
+	"need to use config.h" problems here, not actually distchecking 
+	2.1.1 until fixed.
+
+	* configure.in: 2.1.1, and add the cool feature summary output at
+	the end of configure.
+
+2002-10-30  Nalin Dahyabhai <nalin@redhat.com>
+
+	* src/terminal-widget-vte.c: Implement
+	terminal_widget_skey_match_remove().
+	* configure.in: Require a sufficiently-new VTE if building with it.
+
+Wed Oct 30 15:22:06 2002  Jonathan Blandford  <jrb@gnome.org>
+
+	* src/gnome-terminal.glade2: Add a new dialog.
+
+	* src/gnome-terminal.schemas: New key to add skey support.
+
+	* src/skey-popup.c: (terminal_skey_do_popup): Popup the skey
+	dialog.
+
+	* src/skey/*: cut-n-paste of a simple skey implementation
+
+	* src/terminal-profile.c:
+	* src/terminal-screen.c:
+	* src/terminal-widget-vte.c:
+	* src/terminal-widget-zvt.c:
+	* src/terminal-widget.h: Add support for skey dingus.
+
+2002-10-30  Havoc Pennington  <hp@pobox.com>
+
+	* src/terminal.c (terminal_app_get_clone_command): don't free the 
+	arg to --command prior to using it (#96788, patch from Brad Garcia)
+
 2002-10-25  Nalin Dahyabhai <nalin@redhat.com>
 
 	* src/terminal-widget-vte.c (terminal_widget_fork_command):  Update to
-	new signature of vte_terminal_fork_command(), fixing Red Hat #76529.
+	match VTE HEAD, fixing Red Hat #76529.
+
+2002-10-24  Nalin Dahyabhai <nalin@redhat.com>
+
+	* src/terminal-screen.c(terminal_screen_do_popup):  Add the terminal
+	widget's input method menu to the popup menu.
+	* src/terminal-widget-vte.c, src/terminal-widget-zvt.c:  Implement
+	terminal_widget_im_append_menuitems().
 
 2002-10-19  Rajkumar Sivasamy  <rajkumar.siva@wipro.com>
 
@@ -21,7 +280,7 @@
 	method to free EggXFontFilter's data.
 	Fixes #89770
 
-Fri Oct 18 10:15:47 2002  HideToshi Tajima  <hidetoshi.tajima@sun.com>
+Fri Oct 18 10:20:54 2002  HideToshi Tajima  <hidetoshi.tajima@sun.com>
 
 	* src/terminal-screen.c (make_font_monospace):
 	  Fix #96114: to responce to "use system font" option
@@ -29,7 +288,7 @@ Fri Oct 18 10:15:47 2002  HideToshi Tajima  <hidetoshi.tajima@sun.com>
 2002-10-16  Nalin Dahyabhai <nalin@redhat.com>
 
 	* src/terminal-widget-vte.c (terminal_widget_set_allow_bold):
-	wire up set_allow_bold for use with vte
+	wire up set_allow_bold for vte
 
 Wed Oct  9 10:11:55 2002  HideToshi Tajima  <hidetoshi.tajima@sun.com>
 
@@ -38,26 +297,104 @@ Wed Oct  9 10:11:55 2002  HideToshi Tajima  <hidetoshi.tajima@sun.com>
 	be performed in terminal widget side - since only the
 	terminal widget know which encoding it is in (#95230)
 
-Tue Oct  8 19:45:54 2002  HideToshi Tajima  <hidetoshi.tajima@sun.com>
+Tue Oct  8 19:40:40 2002  HideToshi Tajima  <hidetoshi.tajima@sun.com>
 
 	* src/terminal-screen.c (drag_data_received):
 	convert drag&drop data back to locale's encoding before sending to
 	terminal (#95230: drag&drop is broken with non-ASCII characters)
+
+2002-10-04  Havoc Pennington  <hp@redhat.com>
+
+        Add View->Zoom In, View->Zoom Out, View->Normal Size, 
+	for bug #94427
+	
+	* src/terminal.c: take --zoom command line option, save --zoom in
+	the session.
+
+	* src/gnome-terminal.schemas: add new keybindings
+
+	* src/terminal-accels.c: add Ctrl++ Ctrl+- Ctrl+= zoom shortcuts
+
+	* src/terminal.c (terminal_app_new_terminal): fix a warning about
+	printf format
+
+	* src/terminal-window.c: add font size menu items
+
+	* src/terminal-screen.c (terminal_screen_get_font_scale): new
+	function
+	(terminal_screen_set_font_scale): new function
+	(terminal_screen_update_on_realize): actually use the font size
+	derived from the system font, was broken before
+
+2002-09-29  Havoc Pennington  <hp@pobox.com>
+
+	* src/eggaccelerators.c: update from libegg, fixes
+	super/meta/hyper to work correctly.
 
 2002-09-23  Ross Burton  <ross@burtonini.com>
 
 	* gnome-terminal.desktop.in: Fix the desktop file so that it
 	validates correctly, and claims to be a GNOME terminal
 	emulator. Closes #91150.
+
+2002-09-23  Marius Andreiana <mandreiana@yahoo.com>
+
+        * help/Makefile.am: added ro subdir
+        * help/ro: added romanian help translation
+	* configure.in: added help/ro/Makefile
+
+2002-09-22  Havoc Pennington  <hp@pobox.com>
+
+	* src/terminal.c (terminal_app_new_terminal): make the window role
+	slightly "more unique" by adding pid and time(NULL) to it.  Also,
+	put "gnome-terminal-" in the role to avoid possible confusion with
+	other apps in the case of a silly window manager.
+
+2002-08-14  Deepa Chacko Pillai <deepa.chacko@wipro.com>
  
+	* src/terminal.c: Set the role for each terminal window.
+	Added a new option '--role' to store the role information.
+
+	* src/terminal.h: Added one more parameter, ie. role, to
+	terminal_app_new_terminal ().
+
+	* src/terminal-screen.c: Added one more parameter, ie. role, to
+	terminal_app_new_terminal ().
+
+	* src/terminal-window.c: Added one more parameter, ie. role, to
+	terminal_app_new_terminal ().
+
 2002-09-20  Narayana Pattipati <narayana.pattipati@wipro.com>
 
         * src/terminal.c : Handled the "die" signal sent by master
         session so that session can kill the terminal. Fixes bug#90612
 
+2002-09-13  Havoc Pennington  <hp@redhat.com>
+
+	* src/encoding.c: wire up the dialog for editing what's in the
+	encoding menu; seems to work fairly well now. 
+	
+	* src/terminal-window.c (terminal_window_init): make encoding menu
+	a submenu of Terminal menu, and update it whenever the terminal 
+	menu is opened.
+
+	* src/gnome-terminal.glade2: make encodings dialog default to
+	!visible, remove rules from tree view
+
 2002-09-03  Marius Andreiana <mandreiana@yahoo.com>
 
 	* configure.in: added 'ro' to ALL_LINGUAS
+
+2002-08-28  Irene Ryan <irene.ryan@sun.com>
+
+	* help/C/gnome-terminal.xml : Updated to reflect changes to the UI and to
+	fix http://bugzilla.gnome.org/show_bug.cgi?id=91029
+	* help/C/gnome-terminal-C.omf : Update to reflect new manual version 
+	number and date
+	
+2002-08-25  Havoc Pennington  <hp@pobox.com>
+
+	* autogen.sh: require automake-1.6
 
 Thu Aug 22 23:40:46 2002  Jonathan Blandford  <jrb@gnome.org>
 
@@ -68,26 +405,12 @@ Thu Aug 22 23:40:46 2002  Jonathan Blandford  <jrb@gnome.org>
 
 2002-08-21  Havoc Pennington  <hp@pobox.com>
 
+	* configure.in: version to 2.1.0, and add a warning at the 
+	end that this is the unstable branch
+
 	* src/profile-editor.c (profile_editor_update_silent_bell): add
 	missing "!" that made the "Terminal bell" setting behave
 	incorrectly
-
-2002-08-20  Peteris Krisjanis <peteris.krisjanis@os.lv>
-
-	* configure.in: Add Latvian (lv) to ALL_LINGUAS
-
-2002-08-20  Yukihiro Nakai  <nakai@gnome.gr.jp>
-
-	* configure.in: Add Japanese(ja) to ALL_LINGUAS
-
-2002-08-16  Sander Vesik <sander.vesik@sun.com>
-
-	* ChangeLog, help/C/gnome-terminal-C.omf,
-	  help/C/gnome-terminal.xml,
-	  help/C/figures/gnome-terminal-default.png,
-	  help/C/figures/gnome-terminal-tabbed.png
-
-	  merge docs changes from HEAD to gnome-2-0
 
 2002-08-19  Padraig O'Briain <padraig.obriain@sun.com>
 
@@ -95,41 +418,59 @@ Thu Aug 22 23:40:46 2002  Jonathan Blandford  <jrb@gnome.org>
 	"Color _palette", "_Scrollbar is:" and "_Delete key generates:".
 	Set step_increment and page_increment for adjustment of GtkHScale
 	darken-background-scale". Fixes #90552.
-	
+
 2002-08-14  Deepa Chacko Pillai <deepa.chacko@wipro.com>
 
-	* terminal.c: Fixes terminal crashes while using
-	command line options (86982). Patch from
+	* terminal.c: Fixes terminal crashes while using 
+	command line options (86982). Patch from 
 	tino.shwarze@informatik.tu-chemnitz.de
 
-2002-08-09  Nalin Dahyabhai  <nalin@redhat.com>
-	* terminal-widget-vte.c: handle widget padding (backport from HEAD).
+2002-08-08  Nalin Dahyabhai  <nalin@redhat.com>
+
+	* terminal-widget-vte.c: Handle widget padding.
 
 2002-08-06  Deepa Natarajan  <deepa.natarajan@wipro.com>
 
 	* terminal-window.c: Allow toggling of Hide/Show Menubar to
 	work with keybindings. Fixes #88761.
 
-2002-08-04  Havoc Pennington  <hp@redhat.com>
+2002-08-02  Yukihiro Nakai <nakai@gnome.gr.jp>
 
-	* autogen.sh: prefer automake 1.4 if found
-
-	* configure.in: bump version to 2.0.1
+	* configure.in: ALL_LINGUAS ja (Japanese)
 
 2002-07-23  Gustavo Noronha Silva <kov@debian.org>
 
-	* configure.in (ALL_LINGUAS): add pt_BR (Brazilian Portuguese).
+	* configure.in: Added Brazilian Portuguese (pt_BR) to
+	  ALL_LINGUAS
 
-2002-07-14  Jordi Mallach  <jordi@sindominio.net>
+2002-07-15  Pablo Saratxaga  <pablo@mandrakesoft.com>
 
-	* configure.in (ALL_LINGUAS): add ca (Catalan).
+	* configure.in: Added Catalan (ca) to ALL_LINGUAS
 
 2002-07-14  Havoc Pennington  <hp@pobox.com>
+
+	* configure.in: bump version to 2.1.0, add warning about unstable
+	branch
+
+2002-07-14  Havoc Pennington  <hp@pobox.com>
+
+        Encoding stuff, not yet working.
+	
+	* src/terminal-widget-vte.c (terminal_widget_set_encoding): new
+	function
 
 	* src/update-from-egg.sh: adapt to libegg reorg
 
 	* src/terminal-accels.c (binding_from_string): fix to allow
 	no-accelerator shortcuts such as F1.
+
+	* src/terminal-window.c: add the encoding menu
+
+	* src/gnome-terminal.schemas: add active_encodings key
+
+	* src/Makefile.am (gnome_terminal_SOURCES): add encoding.[hc]
+
+	* src/encoding.c: new file for choose-an-encoding code
 
 2002-07-13  Havoc Pennington  <hp@pobox.com>
 

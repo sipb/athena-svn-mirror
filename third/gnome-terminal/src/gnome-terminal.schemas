@@ -72,6 +72,28 @@
       </locale>
     </schema>
 
+
+    <schema>
+      <key>/schemas/apps/gnome-terminal/global/active_encodings</key>
+      <applyto>/apps/gnome-terminal/global/active_encodings</applyto>
+      <owner>gnome-terminal</owner>
+      <type>list</type>
+      <list_type>string</list_type>
+      <default>[UTF-8,current]</default>
+      <locale name="C">
+         <short>List of available encodings</short>
+         <long>
+          A subset of possible encodings are presented in 
+          the Encoding submenu. This is a list of encodings
+          to appear there. The special encoding name "current" 
+          means to display the encoding of the current locale.
+         </long>
+      </locale>
+    </schema>
+
+
+
+
     <!-- Per-profile settings -->
 
 
@@ -334,7 +356,7 @@
       <applyto>/apps/gnome-terminal/profiles/Default/update_records</applyto>
       <owner>gnome-terminal</owner>
       <type>bool</type>
-      <default>false</default>
+      <default>true</default>
       <locale name="C">
          <short>Whether to update utmp/wtmp when launching terminal command</short>
          <long>
@@ -570,6 +592,21 @@
     </schema>
 
 
+    <schema>
+      <key>/schemas/apps/gnome-terminal/profiles/Default/use_skey</key>
+      <applyto>/apps/gnome-terminal/profiles/Default/use_skey</applyto>
+      <owner>gnome-terminal</owner>
+      <type>bool</type>
+      <default>true</default>
+      <locale name="C">
+         <short>Support skey dingus clicking</short>
+         <long>
+	 Popup a dialog when an s/key challenge response query is
+         detected and clicked on.  Typing a password into the dialog
+         will send it to the terminal.
+         </long>
+      </locale>
+    </schema>
 
     <!-- Keybindings -->
 
@@ -1023,6 +1060,57 @@
          <short>Accelerator to launch help.</short>
          <long>
           Accelerator key for launching help. Expressed as a string
+          in the same format used for GTK+ resource files.
+          If you set the option to the special string "disabled", then there
+          will be no keybinding for this action.
+         </long>
+      </locale>
+    </schema>
+
+    <schema>
+      <key>/schemas/apps/gnome-terminal/keybindings/zoom_in</key>
+      <applyto>/apps/gnome-terminal/keybindings/zoom_in</applyto>
+      <owner>gnome-terminal</owner>
+      <type>string</type>
+      <default>&lt;Ctrl&gt;plus</default>
+      <locale name="C">
+         <short>Accelerator to make font larger.</short>
+         <long>
+          Accelerator key for making font larger. Expressed as a string
+          in the same format used for GTK+ resource files.
+          If you set the option to the special string "disabled", then there
+          will be no keybinding for this action.
+         </long>
+      </locale>
+    </schema>
+
+    <schema>
+      <key>/schemas/apps/gnome-terminal/keybindings/zoom_out</key>
+      <applyto>/apps/gnome-terminal/keybindings/zoom_out</applyto>
+      <owner>gnome-terminal</owner>
+      <type>string</type>
+      <default>&lt;Ctrl&gt;minus</default>
+      <locale name="C">
+         <short>Accelerator to make font smaller.</short>
+         <long>
+          Accelerator key for making font smaller. Expressed as a string
+          in the same format used for GTK+ resource files.
+          If you set the option to the special string "disabled", then there
+          will be no keybinding for this action.
+         </long>
+      </locale>
+    </schema>
+
+    <schema>
+      <key>/schemas/apps/gnome-terminal/keybindings/zoom_normal</key>
+      <applyto>/apps/gnome-terminal/keybindings/zoom_normal</applyto>
+      <owner>gnome-terminal</owner>
+      <type>string</type>
+      <default>&lt;Ctrl&gt;equal</default>
+      <locale name="C">
+         <short>Accelerator to make font normal-size.</short>
+         <long>
+          Accelerator key for making font the normal size. Expressed as a string
           in the same format used for GTK+ resource files.
           If you set the option to the special string "disabled", then there
           will be no keybinding for this action.

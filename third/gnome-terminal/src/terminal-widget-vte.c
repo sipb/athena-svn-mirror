@@ -29,6 +29,7 @@
 typedef struct
 {
   int foo;
+  int skey_tag;
 } VteData;
 
 static void
@@ -111,12 +112,55 @@ terminal_widget_match_add                  (GtkWidget            *widget,
   vte_terminal_match_add(VTE_TERMINAL(widget), regexp);
 }
 
+void
+terminal_widget_skey_match_add             (GtkWidget            *widget,
+					    const char           *regexp)
+{
+  VteData *data;
+  
+  data = g_object_get_data (G_OBJECT (widget), "terminal-widget-data");
+
+  data->skey_tag = vte_terminal_match_add(VTE_TERMINAL(widget), regexp);
+}
+
+void
+terminal_widget_skey_match_remove          (GtkWidget            *widget)
+{
+  VteData *data;
+  
+  data = g_object_get_data (G_OBJECT (widget), "terminal-widget-data");
+
+  vte_terminal_match_remove(VTE_TERMINAL(widget), data->skey_tag);
+
+  data->skey_tag = -1;
+}
+
 char*
 terminal_widget_check_match (GtkWidget *widget,
 			     int        column,
 			     int        row)
 {
   return vte_terminal_match_check(VTE_TERMINAL(widget), column, row, NULL);
+}
+
+char*
+terminal_widget_skey_check_match (GtkWidget *widget,
+				  int        column,
+				  int        row)
+{
+  VteData *data;
+  gint tag;
+  char *match;
+   
+  data = g_object_get_data (G_OBJECT (widget), "terminal-widget-data");
+
+  match = vte_terminal_match_check(VTE_TERMINAL(widget), column, row, &tag);
+  if (data->skey_tag == tag)
+    return match;
+
+  g_free (match);
+  return NULL;
+      
 }
 
 void
@@ -381,6 +425,22 @@ terminal_widget_disconnect_selection_changed (GtkWidget *widget,
   g_signal_handlers_disconnect_by_func (widget, callback, data);
 }
 
+void
+terminal_widget_connect_encoding_changed      (GtkWidget *widget,
+                                               GCallback  callback,
+                                               void      *data)
+{
+  g_signal_connect (widget, "encoding-changed",
+		    G_CALLBACK (callback), data);
+}
+
+void
+terminal_widget_disconnect_encoding_changed   (GtkWidget *widget,
+                                               GCallback  callback,
+                                               void      *data)
+{
+  g_signal_handlers_disconnect_by_func (widget, callback, data);
+}
 
 const char*
 terminal_widget_get_title (GtkWidget *widget)
@@ -460,11 +520,46 @@ terminal_widget_set_pango_font (GtkWidget                  *widget,
                                 const PangoFontDescription *font_desc)
 {
   g_return_if_fail (font_desc != NULL);
-  vte_terminal_set_font (VTE_TERMINAL(widget), font_desc);
+  vte_terminal_set_font (VTE_TERMINAL (widget), font_desc);
 }
 
 gboolean
 terminal_widget_supports_pango_fonts (void)
 {
   return TRUE;
+}
+
+const char*
+terminal_widget_get_encoding (GtkWidget *widget)
+{
+  return vte_terminal_get_encoding (VTE_TERMINAL (widget));
+}
+
+void
+terminal_widget_set_encoding (GtkWidget  *widget,
+                              const char *encoding)
+{
+  const char *old;
+
+  /* Short-circuit setting the same encoding twice. */
+  old = vte_terminal_get_encoding (VTE_TERMINAL (widget));
+  if ((old && encoding &&
+       strcmp (old, encoding) == 0) ||
+      (old == NULL && encoding == NULL))
+    return;
+  
+  vte_terminal_set_encoding (VTE_TERMINAL (widget),
+                             encoding);
+}
+
+gboolean
+terminal_widget_supports_dynamic_encoding (void)
+{
+  return TRUE;
+}
+
+void
+terminal_widget_im_append_menuitems(GtkWidget *widget, GtkMenuShell *menushell)
+{
+  vte_terminal_im_append_menuitems(VTE_TERMINAL(widget), menushell);
 }
