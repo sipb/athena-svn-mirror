@@ -2,6 +2,54 @@ This is krb5-install.info, produced by makeinfo version 4.0 from
 install.texinfo.
 
 
+File: krb5-install.info,  Node: Limit Access to the KDCs,  Next: Switching Master and Slave KDCs,  Prev: Add Kerberos Principals to the Database,  Up: Installing KDCs
+
+Limit Access to the KDCs
+------------------------
+
+To limit the possibility that your Kerberos database could be
+compromised, MIT recommends that each KDC be a dedicated host, with
+limited access.  If your KDC is also a file server, FTP server, Web
+server, or even just a client machine, someone who obtained root access
+through a security hole in any of those areas could gain access to the
+Kerberos database.
+
+MIT recommends that your KDCs use the following `/etc/inetd.conf' file.
+(Note:  each line beginning with => is a continuation of the previous
+line.):
+
+     #
+     # Configuration file for inetd(1M).  See inetd.conf(4).
+     #
+     # To re-configure the running inetd process, edit this file, then
+     # send the inetd process a SIGHUP.
+     #
+     # Syntax for socket-based Internet services:
+     #  <service_name> <socket_type> <proto> <flags> <user>
+     => <server_pathname> <args>
+     #
+     # Syntax for TLI-based Internet services:
+     #
+     #  <service_name> tli <proto> <flags> <user> <server_pathname> <args>
+     #
+     # Ftp and telnet are standard Internet services.
+     #
+     # This machine is a secure Kerberos Key Distribution Center (KDC).
+     # Services are limited.
+     #
+     #
+     # Time service is used for clock synchronization.
+     #
+     time    stream  tcp     nowait  root    internal
+     time    dgram   udp     wait    root    internal
+     #
+     # Limited Kerberos services
+     #
+     krb5_prop stream tcp nowait root /usr/local/sbin/kpropd  kpropd
+     eklogin   stream tcp nowait root /usr/local/sbin/klogind
+     => klogind -5 -c -e
+
+
 File: krb5-install.info,  Node: Switching Master and Slave KDCs,  Prev: Limit Access to the KDCs,  Up: Installing KDCs
 
 Switching Master and Slave KDCs

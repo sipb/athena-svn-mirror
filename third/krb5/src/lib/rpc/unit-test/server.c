@@ -1,12 +1,12 @@
 /*
  * Copyright 1993 OpenVision Technologies, Inc., All Rights Reserved.
  *
- * $Id: server.c,v 1.1.1.6 2004-02-27 04:18:56 zacheiss Exp $
+ * $Id: server.c,v 1.1.1.7 2005-03-14 19:45:55 zacheiss Exp $
  * $Source: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/rpc/unit-test/server.c,v $
  */
 
 #if !defined(lint) && !defined(__CODECENTER__)
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/rpc/unit-test/server.c,v 1.1.1.6 2004-02-27 04:18:56 zacheiss Exp $";
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/rpc/unit-test/server.c,v 1.1.1.7 2005-03-14 19:45:55 zacheiss Exp $";
 #endif
 
 #include <stdio.h>
@@ -122,14 +122,14 @@ main(int argc, char **argv)
 	  exit(1);
      }
      
-     if (_svcauth_gssapi_set_names(names, 0) == FALSE) {
+     if (svcauth_gssapi_set_names(names, 0) == FALSE) {
 	  fprintf(stderr, "unable to set gssapi names\n");
 	  exit(1);
      }
 
-     _svcauth_gssapi_set_log_badauth_func(rpc_test_badauth, NULL);
-     _svcauth_gssapi_set_log_badverf_func(rpc_test_badverf, NULL);
-     _svcauth_gssapi_set_log_miscerr_func(log_miscerr, NULL);
+     svcauth_gssapi_set_log_badauth_func(rpc_test_badauth, NULL);
+     svcauth_gssapi_set_log_badverf_func(rpc_test_badverf, NULL);
+     svcauth_gssapi_set_log_miscerr_func(log_miscerr, NULL);
 
 #ifdef POSIX_SIGNALS
      (void) sigemptyset(&sa.sa_mask);

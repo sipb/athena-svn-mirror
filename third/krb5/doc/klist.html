@@ -63,8 +63,9 @@
      -<B>s</B>   causes <B>klist</B> to run silently (produce no  output),  but
           to  still  set  the exit status according to whether it
           finds the credentials cache.  The exit status is `0' if
-          <B>klist</B>  finds  a  credentials  cache, and `1' if it does
-          not.
+          <B>klist</B> finds a credentials cache, and `1' if it does not
+          or if the tickets are
+           expired.
 
      -<B>a</B>   display list of addresses in credentials.
 
@@ -114,7 +115,6 @@
 </PRE>
 <H2>SEE ALSO</H2><PRE>
      <B>kinit(1)</B>, <B>kdestroy(1)</B>, <B>krb5(3)</B>
-
 
 
 

@@ -571,8 +571,8 @@ Kerberos V5 to a new platform.
 
 File: krb5-install.info,  Node: Organization of the Source Directory,  Next: Build Requirements,  Prev: Building Kerberos V5,  Up: Building Kerberos V5
 
-Build Requirements
-==================
+Organization of the Source Directory
+====================================
 
 Below is a brief overview of the organization of the complete source
 directory.  More detailed descriptions follow.
@@ -676,7 +676,7 @@ kpasswd
      This program changes a user's Kerberos password.
 
 ksu
-     This program is a Kerberized verions of the `su' program that is
+     This program is a Kerberized version of the `su' program that is
      meant to securely change the real and effective user ID to that of
      the target user and to create a new security context.
 
@@ -805,18 +805,25 @@ The profile directory contains most of the functions which parse the
 Kerberos configuration files (`krb5.conf' and `kdc.conf').  Also in
 this directory are the Kerberos error table library and utilities (et),
 the Sub-system library and utilities (ss), database utilities (db2),
-pseudo-terminal utilities (pty), and bug-reporting program `send-pr'.
+pseudo-terminal utilities (pty), bug-reporting program `send-pr', and a
+generic support library `support' used by several of our other
+libraries.
 
 
 File: krb5-install.info,  Node: Build Requirements,  Next: Unpacking the Sources,  Prev: Organization of the Source Directory,  Up: Building Kerberos V5
 
-Organization of the Source Directory
-====================================
+Build Requirements
+==================
 
 In order to build Kerberos V5, you will need approximately 60-70
 megabytes of disk space.  The exact amount will vary depending on the
 platform and whether the distribution is compiled with debugging symbol
 tables or not.
+
+Your C compiler must conform to ANSI C (ISO/IEC 9899:1990, "c89").
+Some operating systems do not have an ANSI C compiler, or their default
+compiler requires extra command-line options to enable ANSI C
+conformance.
 
 If you wish to keep a separate "build tree", which contains the compiled
 `*.o' file and executables, separate from your source tree, you will
@@ -960,6 +967,11 @@ programs will install into `DESTDIR/PREFIX/bin', the libraries into
 Note that if you want to test the build (see *Note Testing the Build::),
 you usually do not need to do a `make install' first.
 
+Some implementations of `make' allow multiple commands to be run in
+parallel, for faster builds.  We test our Makefiles in parallel builds
+with GNU `make' only; they may not be compatible with other parallel
+build implementations.
+
 
 File: krb5-install.info,  Node: Testing the Build,  Next: Options to Configure,  Prev: Installing the Binaries,  Up: Building Kerberos V5
 
@@ -991,7 +1003,7 @@ client/server activities.
 
 DejaGnu may be found wherever GNU software is archived.
 
-Most of the tests are setup to run as a non-privledged user.  For some
+Most of the tests are setup to run as a non-privileged user.  For some
 of the krb-root tests to work properly, either (a) the user running the
 tests must not have a .k5login file in the home directory or (b) the
 .k5login file must contain an entry for `<username>@KRBTEST.COM'.

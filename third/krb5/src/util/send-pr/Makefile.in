@@ -1,12 +1,11 @@
 thisconfigdir=./../..
 myfulldir=util/send-pr
 mydir=util/send-pr
-MY_SUBDIRS=.
 BUILDTOP=$(REL)..$(S)..
 #
 # Makefile for building a standalone send-pr.
 #
-RELEASE=krb5-1.3.2
+RELEASE=@KRB5_VERSION@
 SUBMITTER=net
 sendprname = krb5-send-pr
 EMACS=emacs
