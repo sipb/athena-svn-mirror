@@ -1,4 +1,4 @@
-/* $Id: xlogin.c,v 1.81 1999-02-24 21:24:53 ghudson Exp $ */
+/* $Id: xlogin.c,v 1.82 1999-04-09 21:41:47 rbasch Exp $ */
  
 #include <unistd.h>
 #include <string.h>
@@ -1881,7 +1881,11 @@ static void setFontPath()
   char *cp, **oldlist;
   int i, j, nold;
   char *dirs;
-  struct stat statbuf;
+  FILE *fp;
+  int c, dirlen;
+  char *fontdirpath;
+  char *fontdir = "fonts.dir";
+  int fontdir_len = strlen(fontdir);
 
   if (!ndirs)
     {
@@ -1921,12 +1925,29 @@ static void setFontPath()
 	  dirlist[i++] = cp;
  	}
 
-      /* Discard new entries which don't exist or aren't directories. */
+      /* Discard new entries which don't contain a fonts directory. */
       j = nold;
       for (i = nold; i < ndirs; i++)
 	{
-	  if (stat(dirlist[i], &statbuf) == 0 && S_ISDIR(statbuf.st_mode))
-	    dirlist[j++] = dirlist[i];
+	  dirlen = strlen(dirlist[i]);
+	  fontdirpath = malloc(dirlen + fontdir_len + 2);
+	  if (fontdirpath == NULL)
+	    localErrorHandler("Out of memory");
+	  sprintf(fontdirpath, "%s%s%s", dirlist[i],
+		  dirlist[i][dirlen - 1] == '/' ? "" : "/", fontdir);
+	  fp = fopen(fontdirpath, "r");
+	  if (fp != NULL)
+	    {
+	      /* First line should be the number of fonts in the directory,
+	       * so make sure the first non-whitespace character is a digit.
+	       */
+	      while ((c = getc(fp)) != EOF && isspace(c))
+		;
+	      if (isdigit(c))
+		dirlist[j++] = dirlist[i];
+	      fclose(fp);
+	    }
+	  free(fontdirpath);
 	}
       ndirs = j;
     }
