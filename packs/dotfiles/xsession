@@ -3,7 +3,7 @@
 # Accepts one optional argument, either "nocalls" (use no user files)
 # or "dash" (use old dash-based interface).
 #
-# $Id: xsession,v 1.20 2004-10-22 18:30:10 ghudson Exp $
+# $Id: xsession,v 1.21 2004-12-17 00:18:21 ghudson Exp $
 
 # Note: This shell script deliberately uses the -f flag.
 
@@ -100,7 +100,7 @@ if ($?ATHENA_DASH_INTERFACE) then
   set default_windowmanager=mwm
   set terminal='xterm -geometry 80x48+0+38'
 else
-  set default_windowmanager=sawfish
+  set default_windowmanager=metacity
   set terminal='gnome-terminal --geometry=80x40-0-52'
 endif
 
@@ -118,12 +118,18 @@ if ( ! $?NOCALLS && -d ~/.gnome && ! -d ~/.gnome2 ) set offer_gnome_upgrade
 
 # Start window manager.  To change your default window manager, set the 
 # WINDOW_MANAGER environment variable in your ~/.environment file.
-if (! $?WINDOW_MANAGER) setenv WINDOW_MANAGER $default_windowmanager
+if ($?WINDOW_MANAGER) then
+  setenv ATHENA_ENVIRONMENT_WINDOW_MANAGER
+else if ( -r ~/.athena-sawfish ) then
+  setenv WINDOW_MANAGER sawfish
+else
+  setenv WINDOW_MANAGER $default_windowmanager
+endif
 
 if ($?verbose_login) echo "Starting $WINDOW_MANAGER window manager..."
 
 if ($?NOCALLS) then
-  (sawfish --no-user-rc &)
+  (metacity &)
 else
   ($WINDOW_MANAGER &)
 endif
@@ -180,6 +186,12 @@ if ( ! $?ATHENA_DASH_INTERFACE) then
     # Xft settings have been propagated, leading to incorrect font
     # selection.
     activation-client -s "iid == 'OAFIID:GNOME_SettingsDaemon'" > /dev/null
+  endif
+
+  if ((! $?ATHENA_ENVIRONMENT_WINDOW_MANAGER) && (! -r ~/.athena-sawfish) \
+      && (-r ~/.sawfish) && (! -r ~/.athena-wm-upgrade-dialog)) then
+    touch ~/.athena-wm-upgrade-dialog
+    zenity --info --text='This Athena release has changed the default window manager from Sawfish to Metacity.  Metacity is faster, more stable, and better-integrated with GNOME than Sawfish, but is not as customizable.\n\nIf you wish to continue using Sawfish, you may do so by selecting Settings -> Revert to Sawfish Window Manager from the foot menu.'
   endif
 
   # Run the GNOME panel unless the user has chosen to skip it.  For

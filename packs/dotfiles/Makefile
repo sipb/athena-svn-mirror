@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.18 2004-06-07 19:10:42 rbasch Exp $
+# $Id: Makefile,v 1.19 2004-12-17 00:18:21 ghudson Exp $
 
 SHELL=/bin/sh
 PROTOTYPE=/usr/prototype_user
@@ -45,6 +45,8 @@ install:
 	install -c -m 0644 bashrc ${DESTDIR}${SYSTEM}
 	install -c -m 0644 bash_login ${DESTDIR}${SYSTEM}
 	install -c -m 0444 renew.1 ${DESTDIR}${ATHMANDIR}/man1
+	install -c -m 0555 revert-to-sawfish.sh \
+	  ${DESTDIR}${SYSTEM}/revert-to-sawfish
 	install -c -m 0644 temp.README ${DESTDIR}${PROTOTMP}/README
 	install -c -m 0644 temp.mh_profile ${DESTDIR}${PROTOTMP}/.mh_profile
 	install -c -m 0644 welcome ${DESTDIR}${PROTOTYPE}
