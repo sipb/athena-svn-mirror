@@ -258,7 +258,7 @@ gnome_vfs_process_free (GnomeVFSProcess *process)
  * 
  * Return value: A numeric value reporting the result of the operation.
  **/
-GnomeVFSProcessRunResult
+GnomeVFSProcessResult
 gnome_vfs_process_signal (GnomeVFSProcess *process,
 			  guint signal_number)
 {

@@ -263,7 +263,7 @@ gnome_vfs_forkexec (const gchar *file_name,
  * 
  * Return value: 
  **/
-GnomeVFSProcessResult
+GnomeVFSProcessRunResult
 gnome_vfs_process_run_cancellable (const gchar *file_name,
 				   const gchar * const argv[],
 				   GnomeVFSProcessOptions options,
