@@ -17,7 +17,7 @@
  * functions to set up and revert user home directories.
  */
 
-static const char rcsid[] = "$Id: homedir.c,v 1.8 1998-07-25 20:58:31 ghudson Exp $";
+static const char rcsid[] = "$Id: homedir.c,v 1.9 1999-03-03 00:48:44 danw Exp $";
 
 #include <hesiod.h>
 #include <stdio.h>
@@ -30,8 +30,11 @@ static const char rcsid[] = "$Id: homedir.c,v 1.8 1998-07-25 20:58:31 ghudson Ex
 #include <errno.h>
 #include <pwd.h>
 #include <dirent.h>
+#include <locker.h>
 #include "al.h"
 #include "al_private.h"
+
+static int discard_locker_error(void *arg, char *fmt, va_list ap);
 
 int al__setup_homedir(const char *username, struct al_record *record,
 		      int havecred, int tmphomedir)
@@ -82,41 +85,22 @@ int al__setup_homedir(const char *username, struct al_record *record,
       return AL_WNOATTACH;
     }
 
-  pid = fork();
-  switch (pid)
+  status = locker_init(&context, local_pwd->pw_uid,
+		       discard_locker_error, NULL);
+  if (status == LOCKER_SUCCESS)
     {
-    case -1:
-      /* If we can't fork, we just lose. */
-      al__free_passwd(local_pwd);
-      return AL_WNOHOMEDIR;
+      status = locker_attach(context, user, NULL,
+			     havecred ? LOCKER_AUTH_DEFAULT : LOCKER_AUTH_NONE,
+			     0, NULL, NULL);
+      locker_end(context);
 
-    case 0:
-      close(STDOUT_FILENO);
-      close(STDERR_FILENO);
-      if (havecred)
-	{
-	  execl(PATH_ATTACH, "attach", "-user", username, "-quiet",
-		"-nozephyr", username, (char *) NULL);
-	}
-      else
-	{
-	  execl(PATH_ATTACH, "attach", "-user", username, "-quiet",
-		"-nozephyr", "-nomap", username, (char *) NULL);
-	}
-      _exit(1);
-
-    default:
-      while ((rpid = waitpid(pid, &status, 0)) < 0 && errno == EINTR)
-	;
-
-      if (rpid == pid && WIFEXITED(status) && WEXITSTATUS(status) == 0 &&
+      if (LOCKER_ATTACH_SUCCESS(status) &&
 	  access(local_pwd->pw_dir, F_OK) == 0)
 	{
 	  record->attached = 1;
 	  al__free_passwd(local_pwd);
 	  return AL_SUCCESS;
 	}
-      break;
     }
 
   /* attach failed somehow. Try to make a local homedir now, unless
@@ -290,4 +274,9 @@ int al__revert_homedir(const char *username, struct al_record *record)
 
   al__free_passwd(local_pwd);
   return AL_SUCCESS;
+}
+
+static int discard_locker_error(void *arg, char *fmt, va_list ap)
+{
+  return LOCKER_SUCCESS;
 }
