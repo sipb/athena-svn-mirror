@@ -521,10 +521,20 @@ bonobo_socket_focus_out_event (GtkWidget *widget, GdkEventFocus *event)
 
 	toplevel = gtk_widget_get_ancestor (widget, GTK_TYPE_WINDOW);
 
-	if (toplevel)
+	if (toplevel && GTK_WIDGET_MAPPED (toplevel)) {
+		/*
+		 * XSetInputFocus() will BadMatch if the window is not viewable;
+		 * that is why we put the test for MAPPED above.  Still, any of
+		 * its ancestors, namely the window manager frame, may not be
+		 * mapped, so we push an error trap anyways.
+		 */
+		gdk_error_trap_push ();
 		XSetInputFocus (GDK_DISPLAY (),
 				GDK_WINDOW_XWINDOW (toplevel->window),
 				RevertToParent, CurrentTime);
+		gdk_flush();
+		gdk_error_trap_pop ();
+	}
 
 	priv->gave_focus = FALSE;
 

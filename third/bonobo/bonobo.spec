@@ -1,6 +1,6 @@
 Name:		 bonobo
 Summary:	 Library for compound documents in GNOME
-Version: 	 1.0.14
+Version: 	 1.0.17
 Release: 	 1_gpp
 License: 	 GPL
 Group:		 System Environment/Libraries

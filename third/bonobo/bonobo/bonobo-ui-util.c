@@ -1261,11 +1261,11 @@ static GHashTable *loaded_node_cache = NULL;
 static void
 free_node_cache_entry (BonoboUINodeCacheEntry *entry)
 {
-	g_free (entry->file_name);
-	g_free (entry->app_datadir);
-	g_free (entry->app_name);
-	g_free (entry->tree);
-	g_free (entry);
+	g_free  (entry->file_name);
+	g_free  (entry->app_datadir);
+	g_free  (entry->app_name);
+	xmlFree (entry->tree);
+	g_free  (entry);
 }
 
 static void
@@ -1276,6 +1276,7 @@ free_loaded_node_cache (void)
 				      (GHFunc) free_node_cache_entry,
 				      NULL);
 		g_hash_table_destroy (loaded_node_cache);
+		loaded_node_cache = NULL;
 	}
 }
 

@@ -57,6 +57,9 @@ main (int argc, char **argv)
 	tmp = gtk_button_new_with_label ("In Container B");
 	gtk_box_pack_start_defaults (GTK_BOX (vbox), tmp);
 
+	tmp = bonobo_widget_new_control ("OAFIID:Bonobo_Sample_Entry", NULL);
+	gtk_box_pack_start_defaults (GTK_BOX (vbox), tmp);
+
 	gtk_widget_show_all (window);
 
 	gtk_main ();

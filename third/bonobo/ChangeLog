@@ -1,3 +1,74 @@
+2001-11-15  Michael Meeks  <michael@ximian.com>
+
+	* Version 1.0.17
+
+2001-11-15  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-ui-component.c
+	(bonobo_ui_component_unset_container): fix Federic's
+	report - doh.
+
+2001-11-15  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-ui-util.c (free_node_cache_entry):
+	xmlFree the entry->tree.
+	(free_loaded_node_cache): NULL the pointer after free.
+
+2001-11-14  Michael Meeks  <michael@ximian.com>
+
+	* Version 1.0.16
+
+2001-11-13  Federico Mena Quintero  <federico@ximian.com>
+
+	* bonobo/bonobo-socket.c (bonobo_socket_focus_out_event): 
+	make conditional on GTK_WIDGET_MAPPED (toplevel)
+
+2001-11-12  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-ui-component.c
+	(bonobo_ui_component_unset_container): fix a silly.
+
+2001-11-12  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-running-context.h: add get_type
+	prototype.
+
+	* bonobo/bonobo-socket.c
+	(bonobo_socket_focus_out_event): kill possible
+	BadMatch.
+
+	* bonobo/bonobo-ui-component.c
+	(bonobo_ui_component_unset_container): fix
+	re-enterancy issue.
+
+	* tests/test-any.c (main): we always HAVE_DYNANY nowadays.
+	beef up regression tests.
+
+2001-11-07  Michael Meeks  <michael@ximian.com>
+
+	* Version 1.0.15
+
+2001-11-06  Federico Mena Quintero  <federico@ximian.com>
+
+	Fix Ximian bug #6150.
+
+	* bonobo/bonobo-plug.c (bonobo_plug_key_release_event): Handle key
+	release events as well; the important part here is the forwarding
+	bit.
+	(event_filter_cb): New function; gets set up both as default event
+	filter and as a filter for all windows that are inferiors of the
+	plug window.  Handles key presses/releases by keeping a table with
+	the original (keyval, state) pairs from X events before they are
+	mangled by gdk_event_translate(); we need the original values so
+	that we can synthesize events for the socket window properly.
+	Also handles CreateNotify events by installing the event filter on
+	the new window.
+	(bonobo_plug_forward_key_event): Renamed from
+	bonobo_plug_forward_key_press().  Tries to get the original event
+	information from the key event table.
+	(bonobo_plug_map): Recursively add event filters for the children
+	of the plug window.
+
 2001-11-01  Michael Meeks  <michael@ximian.com>
 
 	* Version 1.0.14

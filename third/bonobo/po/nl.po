@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: bonobo cvs\n"
-"POT-Creation-Date: 2001-11-01 10:51+0000\n"
+"POT-Creation-Date: 2001-11-15 09:16+1100\n"
 "PO-Revision-Date: 2001-09-29 21:25+0200\n"
 "Last-Translator: Dirk-Jan C. Binnema <dirkjan@gnome.org>\n"
 "Language-Team: Dutch <nl@li.org>\n"
