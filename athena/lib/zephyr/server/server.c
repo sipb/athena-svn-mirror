@@ -15,7 +15,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_server_s_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/server.c,v 1.28 1988-06-15 23:14:06 jtkohl Exp $";
+static char rcsid_server_s_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/server.c,v 1.29 1988-06-15 23:20:14 jtkohl Exp $";
 #endif SABER
 #endif lint
 
@@ -464,7 +464,7 @@ ZClient_t *client;
 			       error_message(retval));
 			return;
 		}
-		srv_forw_reliable(&otherservers[i], pack, packlen, notice);
+		server_forw_reliable(&otherservers[i], pack, packlen, notice);
 	}
 }
 
