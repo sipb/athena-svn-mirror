@@ -1,11 +1,11 @@
-# $Id: Makefile.athena,v 1.1 1997-11-12 21:16:06 danw Exp $
+# $Id: Makefile.athena,v 1.2 1997-11-18 19:32:49 danw Exp $
 
 SHELL=/bin/sh
 
 prepare:
 	rm -f config.cache
 	./configure --disable-suid-ssh --sbindir=/etc/athena \
-		--with-kerberos5=$ATHTOOLROOT/usr/athena \
+		--with-kerberos5=${ATHTOOLROOT}/usr/athena \
 		--enable-kerberos-tgt-passing
 
 clean:
