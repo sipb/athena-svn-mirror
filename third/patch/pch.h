@@ -1,36 +1,25 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/patch/pch.h,v 1.1.1.1 1996-10-06 21:29:01 ghudson Exp $
- *
- * $Log: not supported by cvs2svn $
- * Revision 2.0.1.1  87/01/30  22:47:16  lwall
- * Added do_ed_script().
- * 
- * Revision 2.0  86/09/17  15:39:57  lwall
- * Baseline for netwide release.
- * 
- */
+/* reading patches */
 
-EXT FILE *pfp INIT(Nullfp);		/* patch file pointer */
+/* $Id: pch.h,v 1.1.1.2 1998-02-12 21:43:22 ghudson Exp $ */
 
-void re_patch();
-void open_patch_file();
-void set_hunkmax();
-void grow_hunkmax();
-bool there_is_another_patch();
-int intuit_diff_type();
-void next_intuit_at();
-void skip_to();
-bool another_hunk();
-bool pch_swap();
-char *pfetch();
-short pch_line_len();
-LINENUM pch_first();
-LINENUM pch_ptrn_lines();
-LINENUM pch_newfirst();
-LINENUM pch_repl_lines();
-LINENUM pch_end();
-LINENUM pch_context();
-LINENUM pch_hunk_beg();
-char pch_char();
-char *pfetch();
-char *pgets();
-void do_ed_script();
+LINENUM pch_end PARAMS ((void));
+LINENUM pch_first PARAMS ((void));
+LINENUM pch_hunk_beg PARAMS ((void));
+LINENUM pch_newfirst PARAMS ((void));
+LINENUM pch_prefix_context PARAMS ((void));
+LINENUM pch_ptrn_lines PARAMS ((void));
+LINENUM pch_repl_lines PARAMS ((void));
+LINENUM pch_suffix_context PARAMS ((void));
+bool pch_swap PARAMS ((void));
+bool pch_write_line PARAMS ((LINENUM, FILE *));
+bool there_is_another_patch PARAMS ((void));
+char *pfetch PARAMS ((LINENUM));
+char pch_char PARAMS ((LINENUM));
+int another_hunk PARAMS ((enum diff, int));
+int pch_says_nonexistent PARAMS ((int));
+size_t pch_line_len PARAMS ((LINENUM));
+time_t pch_timestamp PARAMS ((int));
+void do_ed_script PARAMS ((FILE *));
+void open_patch_file PARAMS ((char const *));
+void re_patch PARAMS ((void));
+void set_hunkmax PARAMS ((void));
