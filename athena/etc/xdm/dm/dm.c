@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.55 1998-01-23 21:28:29 danw Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.56 1998-01-31 03:54:34 ghudson Exp $
  *
  * Copyright (c) 1990, 1991 by the Massachusetts Institute of Technology
  * For copying and distribution information, please see the file
@@ -36,7 +36,7 @@ static sigset_t sig_cur;
 #include <al.h>
 
 #ifndef lint
-static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.55 1998-01-23 21:28:29 danw Exp $";
+static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.56 1998-01-31 03:54:34 ghudson Exp $";
 #endif
 
 /* Non-portable termios flags we'd like to set. */
@@ -154,7 +154,7 @@ char **argv;
     char **dmargv, **xargv, **consoleargv = NULL, **loginargv, **parseargs();
     char xpidf[256], line[16], buf[256];
     fd_set readfds;
-    int pgrp, file, tries, console = TRUE;
+    int pgrp, file, tries, console = TRUE, on = 1;
 
     char dpyname[10], dpyacl[40];
     Display *dpy;
@@ -315,10 +315,6 @@ char **argv;
     dup2(1, 2);
 
     /* Set the console characteristics so we don't lose later */
-#ifdef TIOCCONS
-    if (console)
-      ioctl (0, TIOCCONS, 0);		/* Grab the console   */
-#endif  /* TIOCCONS */
     setpgid(0, pgrp=getpid()); /* Reset the tty pgrp  */
     tcsetpgrp(0, pgrp);
 
@@ -463,6 +459,10 @@ char **argv;
 	    (void) setsid();
 	    open(line, O_RDWR, 0);
 	    dup2(1, 2);
+#ifdef TIOCCONS
+	    if (console)
+		ioctl(1, TIOCCONS, &on);
+#endif
 	    (void) sigprocmask(SIG_SETMASK, &sig_zero, (sigset_t *)0);
 	    /* ignoring SIGUSR1 will cause xlogin to send us a SIGUSR1
 	     * when it is ready
@@ -587,10 +587,6 @@ char *msg;
 
     setpgid(0, pgrp=0);		/* We have to reset the tty pgrp */
     tcsetpgrp(0, pgrp);
-#ifdef TIOCCONS
-    ioctl (0, TIOCCONS, 0);		/* Grab the console   */
-    ioctl (1, TIOCCONS, 0);		/* Grab the console   */
-#endif  /* TIOCCONS */
     tcflush(0, TCIOFLUSH);
 
     (void) tcgetattr(0, &ttybuf);
@@ -667,9 +663,6 @@ char **argv;
 	}
 	chown(consolelog, DAEMON, 0);
     }
-#ifdef TIOCCONS
-    ioctl (console_tty, TIOCCONS, 0);		/* Grab the console   */
-#endif /* TIOCCONS */
     line[5] = 't';
 
     gettimeofday(&now, 0);
@@ -679,9 +672,6 @@ char **argv;
 	message("Giving up on console\n");
 #endif
 	/* Set the console characteristics so we don't lose later */
-#ifdef TIOCCONS
-	ioctl (0, TIOCCONS, 0);		/* Grab the console   */
-#endif /* TIOCCONS */
 	setpgid(0, pgrp=getpid());		/* Reset the tty pgrp */
 	tcsetpgrp(0, pgrp);
 	console_failed = TRUE;
@@ -800,10 +790,6 @@ void shutdown()
 
     setpgid(0, pgrp=0);		/* We have to reset the tty pgrp */
     tcsetpgrp(0, pgrp);
-#ifdef TIOCCONS
-    ioctl (0, TIOCCONS, 0);		/* Grab the console   */
-    ioctl (1, TIOCCONS, 0);		/* Grab the console   */
-#endif  /* TIOCCONS */
     tcflush(0, TCIOFLUSH);
 
     (void) tcgetattr(0, &tc);
