@@ -47,7 +47,8 @@ while (<>) {
 	    die "Unrecognized valspec format '$valspec'.\n";
 	}
 	print "  <schema>\n";
-	print "   <key>$key</key>\n";
+	print "   <key>/schemas$key</key>\n";
+	print "   <applyto>$key</applyto>\n";
 	print "   <owner>gnome-panel</owner>\n";
 	print "   <type>$type</type>\n";
 	if ($type eq "list") {
