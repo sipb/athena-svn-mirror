@@ -1,4 +1,4 @@
-# $Id: packages,v 1.164 2002-03-15 21:58:38 ghudson Exp $
+# $Id: packages,v 1.165 2002-04-05 00:45:22 ghudson Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -175,6 +175,7 @@ third/lam
 third/libglade			requires gtk,gnome-libs,libxml
 third/libiconv			except linux
 third/libghttp			except linux
+third/libole2
 third/libpng			except linux requires zlib
 third/librep			requires gmp,gdbm
 third/librsvg			requires freetype,libpng
