@@ -17,11 +17,11 @@
  *      Copyright (c) 1988 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/s_io.c,v $
- *      $Author: vanharen $
+ *      $Author: raeburn $
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/s_io.c,v 1.10 1990-02-16 20:16:00 vanharen Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/s_io.c,v 1.11 1990-02-18 06:50:54 raeburn Exp $";
 #endif
 
 #include <olc/lang.h>
@@ -183,7 +183,9 @@ send_list(fd, request, list)
       frep.user = list->user;
       frep.connected = list->connected;
       strncpy(frep.topic, list->topic, TOPIC_SIZE);
-      strncpy(frep.note, list->note, TOPIC_SIZE);
+      list->topic[TOPIC_SIZE-1] = 0;
+      strncpy(frep.note, list->note, NOTE_SIZE);
+      list->note[NOTE_SIZE-1] = 0;
       frep.nseen              = htonl((u_long) list->nseen);
       frep.ustatus            = htonl((u_long) list->ustatus);
       frep.cstatus            = htonl((u_long) list->cstatus);
