@@ -12,18 +12,21 @@
  *
  *      Tom Coppeto
  *	Chris VanHaren
+ *	Lucien Van Elsen
  *      MIT Project Athena
  *
  * Copyright (C) 1989,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_acl.c,v $
- *	$Id: t_acl.c,v 1.3 1990-07-16 08:08:06 lwvanels Exp $
+ *	$Id: t_acl.c,v 1.4 1990-11-14 14:54:06 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_acl.c,v 1.3 1990-07-16 08:08:06 lwvanels Exp $";
+#ifndef SABER
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_acl.c,v 1.4 1990-11-14 14:54:06 lwvanels Exp $";
+#endif
 #endif
 
 #include <mit-copyright.h>
@@ -59,17 +62,14 @@ t_set_acl(Request,acl,flag)
       fprintf(stderr, 
 	      "No such access list, \"%s\"\n",acl);
       return(ERROR);
-      break;
 
     case ERROR:
       fprintf(stderr, "An error has occurred while setting acl.\n");
       return(ERROR);
-      break;
 
     default:
       if((status = handle_response(status, Request))!=SUCCESS)
 	return(ERROR);
-      break;
     }
 
   return(SUCCESS);
@@ -87,7 +87,7 @@ t_list_acl(Request, acl, file)
   switch(status)
     {
     case SUCCESS:
-      display_file(file,TRUE);
+      display_file(file);
       break;
 
     case ERROR:
@@ -118,7 +118,7 @@ t_get_accesses(Request,file)
   switch(status)
     {
     case SUCCESS:
-      display_file(file,TRUE);
+      display_file(file);
       break;
 
     case ERROR:
