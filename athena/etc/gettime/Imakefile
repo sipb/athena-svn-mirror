@@ -1,8 +1,8 @@
 #
-# $Id: Imakefile,v 1.13 1991-07-19 15:42:16 probe Exp $
+# $Id: Imakefile,v 1.14 1992-04-26 11:42:06 epeisach Exp $
 #
 
-#define ISUBDIRS	cleanup netconfig newsyslog nfsc rvd track xdm
+#define ISUBDIRS	cleanup netconfig newsyslog nfsc rvd synctree track xdm
 
 #ifdef ultrix
 XSCRIPTS=console-getty
