@@ -1,5 +1,5 @@
 /* 
- * $Header: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/rkinitd/krb.c,v 1.1 1989-11-12 19:35:48 qjb Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/rkinitd/krb.c,v 1.2 1990-06-14 08:40:41 qjb Exp $
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/rkinitd/krb.c,v $
  * $Author: qjb $
  *
@@ -7,7 +7,7 @@
  */
 
 #if !defined(lint) && !defined(SABER)
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/rkinitd/krb.c,v 1.1 1989-11-12 19:35:48 qjb Exp $";
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/rkinitd/krb.c,v 1.2 1990-06-14 08:40:41 qjb Exp $";
 #endif lint || SABER
 
 #include <stdio.h>
@@ -157,6 +157,7 @@ static int validate_user(aname, inst, realm, username, errmsg)
 {
     struct passwd *pwnam;	/* For access_check and uid */
     AUTH_DAT auth_dat;
+    int kstatus = KSUCCESS;
 
     SBCLEAR(auth_dat);
 
@@ -169,7 +170,23 @@ static int validate_user(aname, inst, realm, username, errmsg)
     strcpy(auth_dat.pinst, inst);
     strcpy(auth_dat.prealm, realm);
 
-    if (kuserok(&auth_dat, username) != KSUCCESS) {
+    if (seteuid(pwnam->pw_uid) < 0) {
+	sprintf(errmsg, "Failure setting euid to %d: %s\n", pwnam->pw_uid, 
+		sys_errlist[errno]);
+	strcpy(errbuf, errmsg);
+	error();
+	return(FAILURE);
+    }
+    kstatus = kuserok(&auth_dat, username);
+    if (seteuid(0) < 0) {
+	sprintf(errmsg, "Failure setting euid to 0: %s\n", 
+		sys_errlist[errno]);
+	strcpy(errbuf, errmsg);
+	error();
+	return(FAILURE);
+    }
+    
+    if (kstatus != KSUCCESS) {
 	sprintf(errmsg, "%s has not allowed you to log in with", username);
 	if (strlen(auth_dat.pinst))
 	    sprintf(errmsg, "%s %s.%s", errmsg, auth_dat.pname, 
@@ -185,8 +202,8 @@ static int validate_user(aname, inst, realm, username, errmsg)
      * of making the appropriate change. 
      */
     if (setruid(pwnam->pw_uid) < 0) {
-	sprintf(errmsg,
-		"Failure setting ruid to %d: %s\n", sys_errlist[errno]);
+	sprintf(errmsg,	"Failure setting ruid to %d: %s\n", pwnam->pw_uid,
+		sys_errlist[errno]);
 	strcpy(errbuf, errmsg);
 	error();
 	return(FAILURE);
