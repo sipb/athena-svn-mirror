@@ -18,12 +18,12 @@
  * Copyright (C) 1989,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: t_utils.c,v 1.47 1999-05-14 12:10:48 kcr Exp $
+ *	$Id: t_utils.c,v 1.48 1999-05-23 16:04:20 kcr Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: t_utils.c,v 1.47 1999-05-14 12:10:48 kcr Exp $";
+static char rcsid[] ="$Id: t_utils.c,v 1.48 1999-05-23 16:04:20 kcr Exp $";
 #endif
 #endif
 
@@ -654,7 +654,8 @@ what_now(file, edit_first, editor)
       inbuf[0] = '\0';
       while (inbuf[0] == '\0') 
 	{
-	  (void) get_prompted_input("\nWhat now? (type '?' for options): ", 
+	  putchar('\n');
+	  (void) get_prompted_input("What now? (type '?' for options): ", 
 				    inbuf,LINE_SIZE,0);
 	  if (inbuf[0] == '?' || inbuf[0] == '\0' || inbuf[0] == 'h') {
 	    printf("Commands are:\n");
