@@ -1,4 +1,4 @@
-# $Id: phase3.sh,v 1.3 1996-05-29 05:26:10 ghudson Exp $
+# $Id: phase3.sh,v 1.4 1996-06-17 20:39:36 ghudson Exp $
 # $Source: /afs/dev.mit.edu/source/repository/packs/install/platform/sun4/phase3.sh,v $
 
 # This file is run out of the srvd by phase2.sh after it starts AFS.
@@ -42,8 +42,10 @@ mkdir /root/usr/kernel
 /srvd/usr/athena/etc/track -d -F /os/usr/kernel -T /root/usr/kernel  -W /srvd/usr/athena/lib -s stats/usr_kernel_rvd slists/usr_kernel_rvd
 echo "tracking the srvd"
 /srvd/usr/athena/etc/track -d -F /srvd -T /root -W /srvd/usr/athena/lib
-echo "copying afs from /srvd/kernel/fs/afs"
+echo "copying kernel modules from /srvd/kernel"
+cp -p /srvd/kernel/drv/* /root/kernel/drv/
 cp -p /srvd/kernel/fs/* /root/kernel/fs/
+cp -p /srvd/kernel/strmod/* /root/kernel/strmod/
 
 echo "Create devices and dev"
 mkdir /root/dev
