@@ -10,10 +10,10 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZOpenPort.c,v 1.13 1997-09-14 21:52:45 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZOpenPort.c,v 1.14 1998-03-03 21:05:17 ghudson Exp $ */
 
 #ifndef lint
-static char rcsid_ZOpenPort_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZOpenPort.c,v 1.13 1997-09-14 21:52:45 ghudson Exp $";
+static char rcsid_ZOpenPort_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZOpenPort.c,v 1.14 1998-03-03 21:05:17 ghudson Exp $";
 #endif
 
 #include <internal.h>
@@ -24,6 +24,9 @@ Code_t ZOpenPort(port)
 {
     struct sockaddr_in bindin;
     int len;
+#ifdef SO_BSDCOMPAT
+    int on = 1;
+#endif
     
     (void) ZClosePort();
 
@@ -31,6 +34,11 @@ Code_t ZOpenPort(port)
 	__Zephyr_fd = -1;
 	return (errno);
     }
+
+#ifdef SO_BSDCOMPAT
+    /* Prevent Linux from giving us socket errors we don't care about. */
+    setsockopt(__Zephyr_fd, SOL_SOCKET, SO_BSDCOMPAT, &on, sizeof(on));
+#endif
 
     bindin.sin_family = AF_INET;
 
