@@ -20,13 +20,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/io.c,v $
- *	$Id: io.c,v 1.12 1991-03-11 13:40:30 lwvanels Exp $
+ *	$Id: io.c,v 1.13 1991-03-28 13:17:39 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/io.c,v 1.12 1991-03-11 13:40:30 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/io.c,v 1.13 1991-03-28 13:17:39 lwvanels Exp $";
 #endif
 #endif
 
@@ -111,8 +111,10 @@ send_request(fd, request)
 
   strncpy((char *) (net_req.data+24), request->requester.username,10);
   strncpy((char *) (net_req.data+34), request->requester.realname,32);
+#ifdef KERBEROS
   strncpy((char *) (net_req.data+66), request->requester.realm,40);
   strncpy((char *) (net_req.data+106), request->requester.inst,40);
+#endif
   strncpy((char *) (net_req.data+146), request->requester.nickname,16);
   strncpy((char *) (net_req.data+162), request->requester.title,32);
   strncpy((char *) (net_req.data+194), request->requester.machine,32);
@@ -125,8 +127,10 @@ send_request(fd, request)
 
   strncpy((char *) (net_req.data+236), request->target.username,10);
   strncpy((char *) (net_req.data+246), request->target.realname,32);
+#ifdef KERBEROS
   strncpy((char *) (net_req.data+278), request->target.realm,40);
   strncpy((char *) (net_req.data+318), request->target.inst,40);
+#endif
   strncpy((char *) (net_req.data+358), request->target.nickname,16);
   strncpy((char *) (net_req.data+374), request->target.title,32);
   strncpy((char *) (net_req.data+406), request->target.machine,32);
@@ -205,8 +209,10 @@ read_list(fd, list)
   
   strncpy(list->user.username, (char *)net_req.data+132, LOGIN_SIZE+1);
   strncpy(list->user.realname, (char *)net_req.data+142, TITLE_SIZE);
+#ifdef KERBEROS
   strncpy(list->user.realm,    (char *)net_req.data+174, REALM_SZ);
   strncpy(list->user.inst,     (char *)net_req.data+214, INST_SZ);
+#endif
   strncpy(list->user.nickname, (char *)net_req.data+254, STRING_SIZE);
   strncpy(list->user.title,    (char *)net_req.data+270, TITLE_SIZE);
   strncpy(list->user.machine,  (char *)net_req.data+302, TITLE_SIZE);
@@ -216,8 +222,10 @@ read_list(fd, list)
   
   strncpy(list->connected.username, (char *)net_req.data+344, LOGIN_SIZE+1);
   strncpy(list->connected.realname, (char *)net_req.data+354, TITLE_SIZE);
+#ifdef KERBEROS
   strncpy(list->connected.realm,    (char *)net_req.data+386, REALM_SZ);
   strncpy(list->connected.inst,     (char *)net_req.data+426, INST_SZ);
+#endif
   strncpy(list->connected.nickname, (char *)net_req.data+466, STRING_SIZE);
   strncpy(list->connected.title,    (char *)net_req.data+482, TITLE_SIZE);
   strncpy(list->connected.machine,  (char *)net_req.data+514, TITLE_SIZE);
