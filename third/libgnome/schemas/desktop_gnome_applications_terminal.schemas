@@ -129,7 +129,7 @@
 
       <locale name="hu">
         <short>Terminál alkalmazás</short>
-        
+        <long>Terminált igénylő alkalmazások indításakor használandó terminál</long>
       </locale>
 
       <locale name="id">
@@ -432,6 +432,11 @@
       <locale name="hr">
         <short>Izvršni argumenti</short>
         <long>Argument koji se koristi za izvršavanje programa u terminalu određenom pomoću &apos;exec&apos; tipke.</long>
+      </locale>
+
+      <locale name="hu">
+        <short>Végrehajtási argumentumok</short>
+        <long>Az &quot;exec&quot; kulcsban megadott terminálban a programok végrehajtására használt paraméter.</long>
       </locale>
 
       <locale name="id">

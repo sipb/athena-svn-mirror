@@ -1,4 +1,34 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>gnome-help</title><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="GNOME Library Reference Manual"><link rel="up" href="ch01s03.html" title="Displaying help and external info"><link rel="previous" href="ch01s03.html" title="Displaying help and external info"><link rel="next" href="libgnome-gnome-url.html" title="gnome-url"><link rel="chapter" href="libgnome.html" title="GNOME Library (libgnome)"><link rel="refentry" href="libgnome-gnome-program.html" title="gnome-program"><link rel="refentry" href="libgnome-gnome-init.html" title="gnome-init"><link rel="refentry" href="libgnome-gnome-exec.html" title="gnome-exec"><link rel="refentry" href="libgnome-gnome-gconf.html" title="gnome-gconf"><link rel="refentry" href="libgnome-gnome-config.html" title="gnome-config"><link rel="refentry" href="libgnome-gnome-i18n.html" title="gnome-i18n"><link rel="refentry" href="libgnome-gnome-help.html" title="gnome-help"><link rel="refentry" href="libgnome-gnome-url.html" title="gnome-url"><link rel="refentry" href="libgnome-gnome-score.html" title="gnome-score"><link rel="refentry" href="libgnome-gnome-util.html" title="gnome-util"><link rel="refentry" href="libgnome-gnome-sound.html" title="gnome-sound"><link rel="refentry" href="libgnome-gnome-triggers.html" title="gnome-triggers"><link rel="refentry" href="libgnome-libgnometypebuiltins.html" title="libgnometypebuiltins"><link rel="section" href="libgnome-gnome-help.html#id2937856" title="Description"><link rel="section" href="libgnome-gnome-help.html#id2937869" title="Details"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><link rel="stylesheet" href="style.css" type="text/css"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="ch01s03.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="ch01s03.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GNOME Library Reference Manual</th><td><a accesskey="n" href="libgnome-gnome-url.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="libgnome-gnome-help"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">gnome-help</span></h2><p>gnome-help &#8212; Display application and GNOME system help.</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>gnome-help</title><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="GNOME Library Reference Manual"><link rel="up" href="ch01s03.html" title="Displaying help and external info"><link rel="previous" href="ch01s03.html" title="Displaying help and external info"><link rel="next" href="libgnome-gnome-url.html" title="gnome-url"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><style type="text/css">
+        .synopsis, .classsynopsis {
+            background: #eeeeee;
+            border: solid 1px #aaaaaa;
+            padding: 0.5em;
+        }
+        .programlisting {
+            background: #eeeeff;
+            border: solid 1px #aaaaff;
+            padding: 0.5em;
+        }
+        .variablelist {
+            padding: 4px;
+            margin-left: 3em;
+        }
+        .navigation {
+            background: #ffeeee;
+            border: solid 1px #ffaaaa;
+            margin-top: 0.5em;
+            margin-bottom: 0.5em;
+        }
+        .navigation a {
+            color: #770000;
+        }
+        .navigation a:visited {
+            color: #550000;
+        }
+        .navigation .title {
+            font-size: 200%;
+        }
+      </style></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="ch01s03.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="ch01s03.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GNOME Library Reference Manual</th><td><a accesskey="n" href="libgnome-gnome-url.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="libgnome-gnome-help"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">gnome-help</span></h2><p>gnome-help &#8212; Display application and GNOME system help.</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
 
 #include &lt;libgnome/libgnome.h&gt;
 
@@ -38,11 +68,11 @@ gboolean    <a href="libgnome-gnome-help.html#gnome-help-display-uri-with-env">g
                                              char **envp,
                                              GError **error);
 
-</pre></div><div class="refsect1" lang="en"><a name="id2937856"></a><h2>Description</h2><p>
+</pre></div><div class="refsect1" lang="en"><a name="id2718617"></a><h2>Description</h2><p>
 These functions provide a way to display help files that are either installed
 as part of the main GNOME installation or that are specific to the current
 application.
-</p></div><div class="refsect1" lang="en"><a name="id2937869"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2937875"></a><h3><a name="GnomeHelpError"></a>enum GnomeHelpError</h3><a class="indexterm" name="id2937885"></a><pre class="programlisting">typedef enum {
+</p></div><div class="refsect1" lang="en"><a name="id2718630"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2718635"></a><h3><a name="GnomeHelpError"></a>enum GnomeHelpError</h3><a class="indexterm" name="id2718646"></a><pre class="programlisting">typedef enum {
   GNOME_HELP_ERROR_INTERNAL, 
   GNOME_HELP_ERROR_NOT_FOUND
 } GnomeHelpError;
@@ -52,11 +82,11 @@ The different error codes which can be thrown in the <a href="libgnome-gnome-hel
 likely caused by a resource problem or bad installation.
 </td></tr><tr><td><span class="term"><tt class="literal">GNOME_HELP_ERROR_NOT_FOUND</tt></span></td><td>Help file does not exist.
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2937947"></a><h3><a name="GNOME-HELP-ERROR-CAPS"></a>GNOME_HELP_ERROR</h3><a class="indexterm" name="id2937959"></a><pre class="programlisting">#define GNOME_HELP_ERROR (gnome_help_error_quark ())
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2718708"></a><h3><a name="GNOME-HELP-ERROR-CAPS"></a>GNOME_HELP_ERROR</h3><a class="indexterm" name="id2718720"></a><pre class="programlisting">#define GNOME_HELP_ERROR (gnome_help_error_quark ())
 </pre><p>
 The class (or domain) of errors raised directly by the gnome-help module. This
 is used as a value in the domain field of the <span class="type">GError</span> structure.
-</p></div><hr><div class="refsect2" lang="en"><a name="id2937986"></a><h3><a name="gnome-help-display"></a>gnome_help_display ()</h3><a class="indexterm" name="id2937997"></a><pre class="programlisting">gboolean    gnome_help_display              (const char *file_name,
+</p></div><hr><div class="refsect2" lang="en"><a name="id2718746"></a><h3><a name="gnome-help-display"></a>gnome_help_display ()</h3><a class="indexterm" name="id2718757"></a><pre class="programlisting">gboolean    gnome_help_display              (const char *file_name,
                                              const char *link_id,
                                              GError **error);</pre><p>
 Displays the help file specified by <i class="parameter"><tt>file_name</tt></i> at location <i class="parameter"><tt>link_id</tt></i> in the
@@ -69,7 +99,7 @@ requested document.
 occurs during processing, or <tt class="literal">NULL</tt>
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <tt class="literal">TRUE</tt> on success, <tt class="literal">FALSE</tt> otherwise (in which case <i class="parameter"><tt>error</tt></i> will
 contain the actual error).
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2938153"></a><h3><a name="gnome-help-display-with-doc-id"></a>gnome_help_display_with_doc_id ()</h3><a class="indexterm" name="id2938165"></a><pre class="programlisting">gboolean    gnome_help_display_with_doc_id  (<a href="libgnome-gnome-program.html#GnomeProgram">GnomeProgram</a> *program,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2718913"></a><h3><a name="gnome-help-display-with-doc-id"></a>gnome_help_display_with_doc_id ()</h3><a class="indexterm" name="id2718925"></a><pre class="programlisting">gboolean    gnome_help_display_with_doc_id  (<a href="libgnome-gnome-program.html#GnomeProgram">GnomeProgram</a> *program,
                                              const char *doc_id,
                                              const char *file_name,
                                              const char *link_id,
@@ -98,7 +128,7 @@ requested document.
 occurs during processing, or <tt class="literal">NULL</tt>
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <tt class="literal">TRUE</tt> on success, <tt class="literal">FALSE</tt> otherwise (in which case <i class="parameter"><tt>error</tt></i> will
 contain the actual error).
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2938456"></a><h3><a name="gnome-help-display-with-doc-id-and-env"></a>gnome_help_display_with_doc_id_and_env ()</h3><a class="indexterm" name="id2938468"></a><pre class="programlisting">gboolean    gnome_help_display_with_doc_id_and_env
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2719216"></a><h3><a name="gnome-help-display-with-doc-id-and-env"></a>gnome_help_display_with_doc_id_and_env ()</h3><a class="indexterm" name="id2719228"></a><pre class="programlisting">gboolean    gnome_help_display_with_doc_id_and_env
                                             (<a href="libgnome-gnome-program.html#GnomeProgram">GnomeProgram</a> *program,
                                              const char *doc_id,
                                              const char *file_name,
@@ -120,7 +150,7 @@ requested document.
 occurs during processing, or <tt class="literal">NULL</tt>
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <tt class="literal">TRUE</tt> on success, <tt class="literal">FALSE</tt> otherwise (in which case <i class="parameter"><tt>error</tt></i> will
 contain the actual error).
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2938724"></a><h3><a name="gnome-help-display-desktop"></a>gnome_help_display_desktop ()</h3><a class="indexterm" name="id2938737"></a><pre class="programlisting">gboolean    gnome_help_display_desktop      (<a href="libgnome-gnome-program.html#GnomeProgram">GnomeProgram</a> *program,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2719485"></a><h3><a name="gnome-help-display-desktop"></a>gnome_help_display_desktop ()</h3><a class="indexterm" name="id2719497"></a><pre class="programlisting">gboolean    gnome_help_display_desktop      (<a href="libgnome-gnome-program.html#GnomeProgram">GnomeProgram</a> *program,
                                              const char *doc_id,
                                              const char *file_name,
                                              const char *link_id,
@@ -145,7 +175,7 @@ requested document.
 occurs during processing, or <tt class="literal">NULL</tt>
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <tt class="literal">TRUE</tt> on success, <tt class="literal">FALSE</tt> otherwise (in which case <i class="parameter"><tt>error</tt></i> will
 contain the actual error).
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2939001"></a><h3><a name="gnome-help-display-desktop-with-env"></a>gnome_help_display_desktop_with_env ()</h3><a class="indexterm" name="id2939013"></a><pre class="programlisting">gboolean    gnome_help_display_desktop_with_env
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2719761"></a><h3><a name="gnome-help-display-desktop-with-env"></a>gnome_help_display_desktop_with_env ()</h3><a class="indexterm" name="id2719773"></a><pre class="programlisting">gboolean    gnome_help_display_desktop_with_env
                                             (<a href="libgnome-gnome-program.html#GnomeProgram">GnomeProgram</a> *program,
                                              const char *doc_id,
                                              const char *file_name,
@@ -167,7 +197,7 @@ requested document.
 occurs during processing, or <tt class="literal">NULL</tt>
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <tt class="literal">TRUE</tt> on success, <tt class="literal">FALSE</tt> otherwise (in which case <i class="parameter"><tt>error</tt></i> will
 contain the actual error).
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2939264"></a><h3><a name="gnome-help-display-uri"></a>gnome_help_display_uri ()</h3><a class="indexterm" name="id2939275"></a><pre class="programlisting">gboolean    gnome_help_display_uri          (const char *help_uri,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2720024"></a><h3><a name="gnome-help-display-uri"></a>gnome_help_display_uri ()</h3><a class="indexterm" name="id2720035"></a><pre class="programlisting">gboolean    gnome_help_display_uri          (const char *help_uri,
                                              GError **error);</pre><p>
 Displays <i class="parameter"><tt>help_uri</tt></i> in the user's preferred viewer. You should never need to
 call this function directly in code, since it is just a wrapper for
@@ -180,7 +210,7 @@ function).</p><p>
 occurs during processing, or <tt class="literal">NULL</tt>
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <tt class="literal">TRUE</tt> on success, <tt class="literal">FALSE</tt> otherwise (in which case <i class="parameter"><tt>error</tt></i> will
 contain the actual error).
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2939412"></a><h3><a name="gnome-help-display-uri-with-env"></a>gnome_help_display_uri_with_env ()</h3><a class="indexterm" name="id2939424"></a><pre class="programlisting">gboolean    gnome_help_display_uri_with_env (const char *help_uri,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2720173"></a><h3><a name="gnome-help-display-uri-with-env"></a>gnome_help_display_uri_with_env ()</h3><a class="indexterm" name="id2720184"></a><pre class="programlisting">gboolean    gnome_help_display_uri_with_env (const char *help_uri,
                                              char **envp,
                                              GError **error);</pre><p>
 Like <a href="libgnome-gnome-help.html#gnome-help-display-uri"><tt class="function">gnome_help_display_uri()</tt></a>, but the the contents of <i class="parameter"><tt>envp</tt></i>

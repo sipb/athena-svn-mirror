@@ -293,8 +293,8 @@
       </locale>
 
       <locale name="vi">
-        <short>Theme biểu tượng tập tin</short>
-        <long>Theme được dùng để hiển thị biểu tượng tập tin</long>
+        <short>Sắc thái Biểu tượng Tập tin</short>
+        <long>Sắc thái được dùng để hiển thị biểu tượng tập tin</long>
       </locale>
 
       <locale name="wa">

@@ -2,13 +2,13 @@
 # Copyright (C) 2001, 2002, 2003, 2004 Free Software Foundation, Inc.
 # Christian Rose <menthos@menthos.com>, 2001, 2002, 2003, 2004.
 #
-# $Id: sv.po,v 1.1.1.3 2004-09-24 20:16:25 ghudson Exp $
+# $Id: sv.po,v 1.1.1.4 2005-03-10 22:07:49 ghudson Exp $
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: libgnome\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-08-30 16:12+0200\n"
+"POT-Creation-Date: 2005-02-21 13:41+0100\n"
 "PO-Revision-Date: 2004-06-04 12:09+0200\n"
 "Last-Translator: Christian Rose <menthos@menthos.com>\n"
 "Language-Team: Swedish <sv@li.org>\n"
@@ -71,7 +71,7 @@ msgstr ""
 "Kan inte hitta någon terminal, använder xterm, även om det kanske inte "
 "fungerar"
 
-#: libgnome/gnome-gconf.c:174
+#: libgnome/gnome-gconf.c:177
 msgid "GNOME GConf Support"
 msgstr "Stöd för GConf i GNOME"
 

@@ -1,3 +1,33 @@
+=================== 2.8.1 ====================
+
+2005-02-14  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* libgnome/gnome-program.c: (gnome_program_init_paramv):
+	Merge fix for compiler warnings from HEAD.
+
+2005-02-01  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* libgnome/gnome-program.c: Merge fix for 165564.
+
+2005-01-25  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* libgnome/gnome-score.c: (gnome_score_child): Merge
+	fix for bug #149270 from HEAD.
+
+2004-10-27  Thomas Fitzsimmons	<fitzsim@redhat.com>			       
+									       
+					     
+	* schemas/Makefile.am (install-data-local): Install generated	       
+	.schema files from build directory, not source directory.
+
+2004-10-10  Anders Carlsson  <andersca@gnome.org>
+
+	* libgnome/gnome-gconf.c:
+	(gnome_gconf_get_gnome_libs_settings_relative):
+	Escape the app id.
+	
+==================== 2.8.0 ====================
+
 2004-09-12  Anders Carlsson  <andersca@gnome.org>
 
 	* configure.in: Release 2.8.0

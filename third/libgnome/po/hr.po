@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libgnome 0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-08-30 16:12+0200\n"
+"POT-Creation-Date: 2005-02-21 13:41+0100\n"
 "PO-Revision-Date: 2004-03-21 09:22+CET\n"
 "Last-Translator: auto\n"
 "Language-Team: Croatian <lokalizacija@linux.hr>\n"
@@ -66,7 +66,7 @@ msgstr "Događaji korisničkog sučelja"
 msgid "Cannot find a terminal, using xterm, even if it may not work"
 msgstr "Ne mogu pronaći terminal, koristim xterm, iako nebi moglo raditi"
 
-#: libgnome/gnome-gconf.c:174
+#: libgnome/gnome-gconf.c:177
 msgid "GNOME GConf Support"
 msgstr "Podrška za GNOME GConf"
 

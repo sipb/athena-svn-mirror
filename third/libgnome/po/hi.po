@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libgnome.HEAD.hi\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-08-30 16:12+0200\n"
+"POT-Creation-Date: 2005-02-21 13:41+0100\n"
 "PO-Revision-Date: 2004-07-12 12:04+0530\n"
 "Last-Translator: Ravishankar Shrivastava <raviratlami@yahoo.com>\n"
 "Language-Team: Hindi <indlinux-hindi@lists.sourceforge.net>\n"
@@ -71,7 +71,7 @@ msgid "Cannot find a terminal, using xterm, even if it may not work"
 msgstr "टर्मिनल नहीं मिला, एक्सटर्म उपयोग कर रहे, तब भी जब यह कार्य न करे"
 
 # libgnome/gnome-gconf.c:174
-#: libgnome/gnome-gconf.c:174
+#: libgnome/gnome-gconf.c:177
 msgid "GNOME GConf Support"
 msgstr "गनोम जी-कॉन्फ़ समर्थन"
 

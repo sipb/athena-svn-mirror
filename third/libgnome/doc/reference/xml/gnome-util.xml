@@ -74,7 +74,7 @@ functions.
 <title>Details</title>
 <refsect2>
 <title><anchor id="gnome-is-program-in-path"/>gnome_is_program_in_path()</title>
-<indexterm role="deprecated"><primary>gnome_is_program_in_path</primary></indexterm><programlisting>#define     gnome_is_program_in_path(program)</programlisting>
+<indexterm><primary>gnome_is_program_in_path</primary></indexterm><programlisting>#define     gnome_is_program_in_path(program)</programlisting>
 <warning><para><literal>gnome_is_program_in_path</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 Deprecated, use <link linkend="g-find-program-in-path"><type>g_find_program_in_path</type></link></para>
@@ -207,7 +207,7 @@ of environment.</para>
 </para></refsect2>
 <refsect2>
 <title><anchor id="g-concat-dir-and-file"/>g_concat_dir_and_file()</title>
-<indexterm role="deprecated"><primary>g_concat_dir_and_file</primary></indexterm><programlisting>#define     g_concat_dir_and_file(dir,file)</programlisting>
+<indexterm><primary>g_concat_dir_and_file</primary></indexterm><programlisting>#define     g_concat_dir_and_file(dir,file)</programlisting>
 <warning><para><literal>g_concat_dir_and_file</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 Programs should use <link linkend="g-build-filename"><function>g_build_filename()</function></link> instead of this function.
@@ -226,7 +226,7 @@ with seperators appropriate for the filesystem automatically taken care of.
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="g-file-exists"/>g_file_exists()</title>
-<indexterm role="deprecated"><primary>g_file_exists</primary></indexterm><programlisting>#define     g_file_exists(filename)</programlisting>
+<indexterm><primary>g_file_exists</primary></indexterm><programlisting>#define     g_file_exists(filename)</programlisting>
 <warning><para><literal>g_file_exists</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 Programs should use g_file_test(<parameter>filename</parameter>, G_FILE_TEST_EXISTS) instead of this
@@ -242,7 +242,7 @@ function.
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="g-unix-error-string"/>g_unix_error_string()</title>
-<indexterm role="deprecated"><primary>g_unix_error_string</primary></indexterm><programlisting>#define     g_unix_error_string(error_num)</programlisting>
+<indexterm><primary>g_unix_error_string</primary></indexterm><programlisting>#define     g_unix_error_string(error_num)</programlisting>
 <warning><para><literal>g_unix_error_string</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 Programs should use <link linkend="g-strerror"><function>g_strerror()</function></link> instead of this function. Also, note that the
@@ -259,7 +259,7 @@ returned string is only valid until the next call to <link linkend="g-strerror">
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-util-user-home"/>gnome_util_user_home()</title>
-<indexterm role="deprecated"><primary>gnome_util_user_home</primary></indexterm><programlisting>#define     gnome_util_user_home()</programlisting>
+<indexterm><primary>gnome_util_user_home</primary></indexterm><programlisting>#define     gnome_util_user_home()</programlisting>
 <warning><para><literal>gnome_util_user_home</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 Programs should use <link linkend="g-get-home-dir"><function>g_get_home_dir()</function></link> instead of this function.
@@ -271,7 +271,7 @@ Programs should use <link linkend="g-get-home-dir"><function>g_get_home_dir()</f
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="g-copy-vector"/>g_copy_vector()</title>
-<indexterm role="deprecated"><primary>g_copy_vector</primary></indexterm><programlisting>#define     g_copy_vector(vec)</programlisting>
+<indexterm><primary>g_copy_vector</primary></indexterm><programlisting>#define     g_copy_vector(vec)</programlisting>
 <warning><para><literal>g_copy_vector</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 Use <link linkend="g-strdupv"><function>g_strdupv()</function></link> instead of this function.
@@ -286,7 +286,7 @@ Use <link linkend="g-strdupv"><function>g_strdupv()</function></link> instead of
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-libdir-file"/>gnome_libdir_file()</title>
-<indexterm role="deprecated"><primary>gnome_libdir_file</primary></indexterm><programlisting>#define     gnome_libdir_file(f)</programlisting>
+<indexterm><primary>gnome_libdir_file</primary></indexterm><programlisting>#define     gnome_libdir_file(f)</programlisting>
 <warning><para><literal>gnome_libdir_file</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 Programs should use <link linkend="gnome-program-locate-file"><function>gnome_program_locate_file()</function></link> instead of this function.
@@ -302,7 +302,7 @@ library directory (not the application's directory).
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-datadir-file"/>gnome_datadir_file()</title>
-<indexterm role="deprecated"><primary>gnome_datadir_file</primary></indexterm><programlisting>#define     gnome_datadir_file(f)</programlisting>
+<indexterm><primary>gnome_datadir_file</primary></indexterm><programlisting>#define     gnome_datadir_file(f)</programlisting>
 <warning><para><literal>gnome_datadir_file</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 Programs should use <link linkend="gnome-program-locate-file"><function>gnome_program_locate_file()</function></link> instead of this function.
@@ -318,7 +318,7 @@ data directory (not the application's directory).
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-sound-file"/>gnome_sound_file()</title>
-<indexterm role="deprecated"><primary>gnome_sound_file</primary></indexterm><programlisting>#define     gnome_sound_file(f)</programlisting>
+<indexterm><primary>gnome_sound_file</primary></indexterm><programlisting>#define     gnome_sound_file(f)</programlisting>
 <warning><para><literal>gnome_sound_file</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 Programs should use <link linkend="gnome-program-locate-file"><function>gnome_program_locate_file()</function></link> instead of this function.
@@ -334,7 +334,7 @@ sound files directory (not the application's directory).
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-pixmap-file"/>gnome_pixmap_file()</title>
-<indexterm role="deprecated"><primary>gnome_pixmap_file</primary></indexterm><programlisting>#define     gnome_pixmap_file(f)</programlisting>
+<indexterm><primary>gnome_pixmap_file</primary></indexterm><programlisting>#define     gnome_pixmap_file(f)</programlisting>
 <warning><para><literal>gnome_pixmap_file</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 Programs should use <link linkend="gnome-program-locate-file"><function>gnome_program_locate_file()</function></link> instead of this function.
@@ -350,7 +350,7 @@ pixmap directory (not the application's directory).
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-config-file"/>gnome_config_file()</title>
-<indexterm role="deprecated"><primary>gnome_config_file</primary></indexterm><programlisting>#define     gnome_config_file(f)</programlisting>
+<indexterm><primary>gnome_config_file</primary></indexterm><programlisting>#define     gnome_config_file(f)</programlisting>
 <warning><para><literal>gnome_config_file</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 Programs should use <link linkend="gnome-program-locate-file"><function>gnome_program_locate_file()</function></link> instead of this function.
@@ -366,7 +366,7 @@ config directory (not the application's directory).
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-unconditional-libdir-file"/>gnome_unconditional_libdir_file()</title>
-<indexterm role="deprecated"><primary>gnome_unconditional_libdir_file</primary></indexterm><programlisting>#define     gnome_unconditional_libdir_file(f)</programlisting>
+<indexterm><primary>gnome_unconditional_libdir_file</primary></indexterm><programlisting>#define     gnome_unconditional_libdir_file(f)</programlisting>
 <warning><para><literal>gnome_unconditional_libdir_file</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 Programs should use <link linkend="gnome-program-locate-file"><function>gnome_program_locate_file()</function></link> instead of this function.
@@ -382,7 +382,7 @@ library directory (not the application's directory).
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-unconditional-datadir-file"/>gnome_unconditional_datadir_file()</title>
-<indexterm role="deprecated"><primary>gnome_unconditional_datadir_file</primary></indexterm><programlisting>#define     gnome_unconditional_datadir_file(f)</programlisting>
+<indexterm><primary>gnome_unconditional_datadir_file</primary></indexterm><programlisting>#define     gnome_unconditional_datadir_file(f)</programlisting>
 <warning><para><literal>gnome_unconditional_datadir_file</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 Programs should use <link linkend="gnome-program-locate-file"><function>gnome_program_locate_file()</function></link> instead of this function.
@@ -398,7 +398,7 @@ data directory (not the application's directory).
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-unconditional-sound-file"/>gnome_unconditional_sound_file()</title>
-<indexterm role="deprecated"><primary>gnome_unconditional_sound_file</primary></indexterm><programlisting>#define     gnome_unconditional_sound_file(f)</programlisting>
+<indexterm><primary>gnome_unconditional_sound_file</primary></indexterm><programlisting>#define     gnome_unconditional_sound_file(f)</programlisting>
 <warning><para><literal>gnome_unconditional_sound_file</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 Programs should use <link linkend="gnome-program-locate-file"><function>gnome_program_locate_file()</function></link> instead of this function.
@@ -414,7 +414,7 @@ sound files directory (not the application's directory).
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-unconditional-pixmap-file"/>gnome_unconditional_pixmap_file()</title>
-<indexterm role="deprecated"><primary>gnome_unconditional_pixmap_file</primary></indexterm><programlisting>#define     gnome_unconditional_pixmap_file(f)</programlisting>
+<indexterm><primary>gnome_unconditional_pixmap_file</primary></indexterm><programlisting>#define     gnome_unconditional_pixmap_file(f)</programlisting>
 <warning><para><literal>gnome_unconditional_pixmap_file</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 Programs should use <link linkend="gnome-program-locate-file"><function>gnome_program_locate_file()</function></link> instead of this function.
@@ -430,7 +430,7 @@ pixmap directory (not the application's directory).
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-unconditional-config-file"/>gnome_unconditional_config_file()</title>
-<indexterm role="deprecated"><primary>gnome_unconditional_config_file</primary></indexterm><programlisting>#define     gnome_unconditional_config_file(f)</programlisting>
+<indexterm><primary>gnome_unconditional_config_file</primary></indexterm><programlisting>#define     gnome_unconditional_config_file(f)</programlisting>
 <warning><para><literal>gnome_unconditional_config_file</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 Programs should use <link linkend="gnome-program-locate-file"><function>gnome_program_locate_file()</function></link> instead of this function.

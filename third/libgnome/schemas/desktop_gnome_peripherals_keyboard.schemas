@@ -175,7 +175,7 @@
 
       <locale name="hu">
         
-        <long>lehetséges értékek: &quot;on&quot;, &quot;off&quot;, és &quot;custom&quot;.</long>
+        <long>lehetséges értékek: &quot;on&quot; (be), &quot;off&quot; (ki), és &quot;custom&quot; (egyéni).</long>
       </locale>
 
       <locale name="id">
@@ -331,6 +331,11 @@
       <locale name="uk">
         
         <long>можливими значеннями є &quot;on&quot;, &quot;off&quot; та &quot;custom&quot;</long>
+      </locale>
+
+      <locale name="vi">
+        
+        <long>giá trị hợp lệ là &quot;on&quot;, &quot;off&quot;, và &quot;custom&quot;</long>
       </locale>
 
       <locale name="zh_CN">
@@ -499,7 +504,7 @@
       </locale>
 
       <locale name="hu">
-        
+        <short>Billentyűzetcsengő egyéni fájlneve</short>
         <long>A lejátszandó hangjelzés fájlneve</long>
       </locale>
 

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libgnome 2.5.3\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-08-30 16:12+0200\n"
+"POT-Creation-Date: 2005-02-21 13:41+0100\n"
 "PO-Revision-Date: 2004-06-23 21:18+0900\n"
 "Last-Translator: Changwoo Ryu <cwryu@debian.org>\n"
 "Language-Team: GNOME Korea <gnome-kr-hackers@lists.kldp.net>\n"
@@ -70,7 +70,7 @@ msgstr ""
 "터미널을 찾을 수 없습니다, xterm을 사용합니다, 하지만 동작하지 않을 수 있습니"
 "다"
 
-#: libgnome/gnome-gconf.c:174
+#: libgnome/gnome-gconf.c:177
 msgid "GNOME GConf Support"
 msgstr "그놈 GConf 지원"
 
@@ -673,8 +673,8 @@ msgid ""
 "Module to use as the filesystem model for the GtkFileChooser widget. "
 "Possible values are \"gnome-vfs\" and \"gtk+\"."
 msgstr ""
-"GtkFileChooser 위젯의 파일시스템 모델로 사용할 모듈.\n"
-"가능한 값은 \"gnome-vfs\"와 \"gtk+\"입니다."
+"GtkFileChooser 위젯의 파일시스템 모델로 사용할 모듈. 가능한 값은 \"gnome-vfs"
+"\"와 \"gtk+\"입니다."
 
 #: schemas/desktop_gnome_interface.schemas.in.h:19
 msgid "Monospace font"

@@ -71,7 +71,7 @@ deialog &quot;Rhedeg Rhaglen&quot; y panel.</long>
 
       <locale name="en_CA">
         <short>Disable command line</short>
-        <long>Prevent the user from accessing the terminal or specifying a command line to be executed. For example, this would disable access to the panel&apos;s &quot;Run Application&quot; dialog.</long>
+        <long>Prevent the user from accessing the terminal or specifying a command line to be executed. For example, this would disable access to the panel&apos;s &quot;Run Application&quot; dialogue.</long>
       </locale>
 
       <locale name="en_GB">
@@ -121,7 +121,7 @@ deialog &quot;Rhedeg Rhaglen&quot; y panel.</long>
 
       <locale name="hu">
         <short>Parancssor letiltása</short>
-        
+        <long>A felhasználó megakadályozása a terminálhoz való hozzáférésben vagy egy végrehajtandó parancssor megadásában. Például, ez letiltja a hozzáférést a panel &quot;Alkalmazás futtatása&quot; párbeszédablakához.</long>
       </locale>
 
       <locale name="id">
@@ -264,6 +264,11 @@ deialog &quot;Rhedeg Rhaglen&quot; y panel.</long>
         <long>Забороняє користувачу доступ до термінала або командного рядка. Наприклад доступ до діалогового вікна панелі &quot;Виконання програми&quot; буде вимкнено.</long>
       </locale>
 
+      <locale name="vi">
+        <short>Vô hiệu hoá dòng lệnh</short>
+        <long>Ngăn cản người dùng truy cập terminal hoặc thực hiện lệnh bằng dòng lệnh. Ví dụ, vô hiệu hoá hộp thoại &quot;Chạy ứng dụng&quot;.</long>
+      </locale>
+
       <locale name="wa">
         <short>Dismete li roye di cmande</short>
         
@@ -347,7 +352,7 @@ deialog &quot;Rhedeg Rhaglen&quot; y panel.</long>
 
       <locale name="en_CA">
         <short>Disable saving files to disk</short>
-        <long>Prevent the user from saving files to disk. For example, this would disable access to all applications&apos; &quot;Save as&quot; dialogs.</long>
+        <long>Prevent the user from saving files to disk. For example, this would disable access to all applications&apos; &quot;Save as&quot; dialogues.</long>
       </locale>
 
       <locale name="en_GB">
@@ -372,7 +377,7 @@ deialog &quot;Rhedeg Rhaglen&quot; y panel.</long>
 
       <locale name="fr">
         <short>Désactiver l&apos;enregistrement des fichiers sur le disque</short>
-        
+        <long>Interdit à l&apos;utilisateur d&apos;enregistrer des fichiers sur le disque. Par exemple cela désactivera l&apos;accès aux boîtes de dialogue « Enregistrer sous » de toutes les applications.</long>
       </locale>
 
       <locale name="gu">
@@ -397,7 +402,7 @@ deialog &quot;Rhedeg Rhaglen&quot; y panel.</long>
 
       <locale name="hu">
         <short>Fájlok lemezre mentésének letiltása</short>
-        
+        <long>A felhasználó megakadályozása fájlok lemezre mentésében. Például, ez letiltja a hozzáférést az alkalmazások &quot;Mentés másként&quot; párbeszédablakaihoz.</long>
       </locale>
 
       <locale name="id">
@@ -407,7 +412,7 @@ deialog &quot;Rhedeg Rhaglen&quot; y panel.</long>
 
       <locale name="it">
         <short>Disabilita salvataggio file su disco</short>
-        
+        <long>Impedisce all&apos;utente di salvare i file su disco. Per esempio questo disabiliterebbe l&apos;accesso alle finestre di dialogo &quot;Salva come&quot; di tutte le applicazioni.</long>
       </locale>
 
       <locale name="ja">
@@ -527,7 +532,7 @@ deialog &quot;Rhedeg Rhaglen&quot; y panel.</long>
 
       <locale name="th">
         <short>ปิดใช้การบันทึกแฟ้ม</short>
-        
+        <long>ป้อนกันไม่ให้ผู้ใช้บันทึกแฟ้ม  เมนู &quot;บันทึกเป็น&quot; ในโปรแกรมต่างๆ จะใช้ไม่ได้ ฯลฯ</long>
       </locale>
 
       <locale name="tr">
@@ -538,6 +543,11 @@ deialog &quot;Rhedeg Rhaglen&quot; y panel.</long>
       <locale name="uk">
         <short>Вимкнути збереження файлів на диск</short>
         <long>Забороняє користувачу збереження файлів на диск. Наприклад, доступ до діалогового вікна &quot;Зберегти як&quot; буде вимкнено у всіх програмах.</long>
+      </locale>
+
+      <locale name="vi">
+        <short>Vô hiệu hoá lưu lên đĩa</short>
+        <long>Ngăn cản người dùng lưu vào đĩa. Ví dụ, vô hiệu hoá hộp thoại &quot;Lưu mới&quot; trong mọi ứng dụng.</long>
       </locale>
 
       <locale name="wa">
@@ -622,7 +632,7 @@ deialog &quot;Rhedeg Rhaglen&quot; y panel.</long>
 
       <locale name="en_CA">
         <short>Disable printing</short>
-        <long>Prevent the user from printing. For example, this would disable access to all applications&apos; &quot;Print&quot; dialogs.</long>
+        <long>Prevent the user from printing. For example, this would disable access to all applications&apos; &quot;Print&quot; dialogues.</long>
       </locale>
 
       <locale name="en_GB">
@@ -647,7 +657,7 @@ deialog &quot;Rhedeg Rhaglen&quot; y panel.</long>
 
       <locale name="fr">
         <short>Désactiver l&apos;impression</short>
-        
+        <long>Interdit à l&apos;utilisateur d&apos;imprimer. Par exemple, cela désactivera l&apos;accès aux boîtes de dialogue « Imprimer » de toutes les applications.</long>
       </locale>
 
       <locale name="gu">
@@ -672,7 +682,7 @@ deialog &quot;Rhedeg Rhaglen&quot; y panel.</long>
 
       <locale name="hu">
         <short>Nyomtatás letiltása</short>
-        
+        <long>A felhasználó megakadályozása a nyomtatásban. Például, ez letiltja a hozzáférést az alkalmazások &quot;Nyomtatás&quot; párbeszédablakaihoz.</long>
       </locale>
 
       <locale name="id">
@@ -682,7 +692,7 @@ deialog &quot;Rhedeg Rhaglen&quot; y panel.</long>
 
       <locale name="it">
         <short>Disabilita stampa</short>
-        
+        <long>Impedisce all&apos;utente di stampare. Per esempio questo disabiliterebbe l&apos;accesso alle finestre di dialogo &quot;Stampa&quot; di tutte le applicazioni.</long>
       </locale>
 
       <locale name="ja">
@@ -802,7 +812,7 @@ deialog &quot;Rhedeg Rhaglen&quot; y panel.</long>
 
       <locale name="th">
         <short>ปิดใช้การพิมพ์</short>
-        
+        <long>ป้อนกันไม่ให้ผู้ใช้พิมพ์ออกเครื่องพิมพ์  เมนู &quot;พิมพ์&quot; ในโปรแกรมต่างๆ จะใช้ไม่ได้ ฯลฯ</long>
       </locale>
 
       <locale name="tr">
@@ -813,6 +823,11 @@ deialog &quot;Rhedeg Rhaglen&quot; y panel.</long>
       <locale name="uk">
         <short>Вимкнути друк</short>
         <long>Забороняє користувачу друк. Наприклад, доступ до діалогового вікна &quot;Друк&quot; буде вимкнено у всіх програмах.</long>
+      </locale>
+
+      <locale name="vi">
+        <short>Vô hiệu hoá in</short>
+        <long>Ngăn cản người dùng in. Ví dụ, vô hiệu hoá truy câp hộp thoại &quot;In&quot; trong mọi ứng dụng.</long>
       </locale>
 
       <locale name="wa">
@@ -898,7 +913,7 @@ deialog &quot;Rhedeg Rhaglen&quot; y panel.</long>
 
       <locale name="en_CA">
         <short>Disable print setup</short>
-        <long>Prevent the user from modifying print settings. For example, this would disable access to all applications&apos; &quot;Print Setup&quot; dialogs.</long>
+        <long>Prevent the user from modifying print settings. For example, this would disable access to all applications&apos; &quot;Print Setup&quot; dialogues.</long>
       </locale>
 
       <locale name="en_GB">
@@ -923,7 +938,7 @@ deialog &quot;Rhedeg Rhaglen&quot; y panel.</long>
 
       <locale name="fr">
         <short>Désactiver le paramètrage de l&apos;impression</short>
-        
+        <long>Interdit à l&apos;utilisateur de modifier les réglages de l&apos;impression. Par exemple, cela désactivera l&apos;accès aux boîtes de dialogue « Configuration de l&apos;impression » de toutes les applications.</long>
       </locale>
 
       <locale name="gu">
@@ -948,7 +963,7 @@ deialog &quot;Rhedeg Rhaglen&quot; y panel.</long>
 
       <locale name="hu">
         <short>Nyomtatóbeállítás letiltása</short>
-        
+        <long>A felhasználó megakadályozása a nyomtatás beállításainak módosításában. Például, ez letiltja a hozzáférést az alkalmazások &quot;Nyomtatás beállításai&quot; párbeszédablakaihoz.</long>
       </locale>
 
       <locale name="id">
@@ -958,7 +973,7 @@ deialog &quot;Rhedeg Rhaglen&quot; y panel.</long>
 
       <locale name="it">
         <short>Disabilita impostazione stampa</short>
-        
+        <long>Impedisce all&apos;utente di modificare le impostazioni di stampa. Per esempio questo disabiliterebbe l&apos;accesso alle finestre di dialogo &quot;Imposta stampa&quot; di tutte le applicazioni.</long>
       </locale>
 
       <locale name="ja">
@@ -1078,7 +1093,7 @@ deialog &quot;Rhedeg Rhaglen&quot; y panel.</long>
 
       <locale name="th">
         <short>ปิดใช้การปรับแต่งการพิมพ์</short>
-        
+        <long>ป้อนกันไม่ให้ผู้ใช้ปรับแต่งการพิมพ์  เมนู &quot;ปรับแต่งการพิมพ์&quot; ในโปรแกรมต่างๆ จะใช้ไม่ได้ ฯลฯ</long>
       </locale>
 
       <locale name="tr">
@@ -1089,6 +1104,11 @@ deialog &quot;Rhedeg Rhaglen&quot; y panel.</long>
       <locale name="uk">
         <short>Вимкнути налаштовування друку</short>
         <long>Забороняє користувачу змінювати параметри друку. Наприклад, доступ до діалогового вікна &quot;Налаштовування друку&quot; буде вимкнено у всіх програмах.</long>
+      </locale>
+
+      <locale name="vi">
+        <short>Vô hiệu hoá thiết lập in</short>
+        <long>Ngăn cản người dùng hiệu chỉnh thiết lập máy in. Ví dụ, vô hiệu hoá truy cập hộp thoại &quot;Thiết lập in&quot; trong mọi ứng dụng.</long>
       </locale>
 
       <locale name="wa">

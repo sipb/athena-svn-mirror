@@ -138,7 +138,7 @@
       </locale>
 
       <locale name="it">
-        <short>Abilita EDS</short>
+        <short>Abilita ESD</short>
         <long>Abilita il server sonoro all&apos;avvio.</long>
       </locale>
 
@@ -289,7 +289,7 @@
 
       <locale name="vi">
         <short>Bật ESD</short>
-        <long>Bật server âm thanh lúc khởi động.</long>
+        <long>Bật máy chủ âm thanh lúc khởi động.</long>
       </locale>
 
       <locale name="wa">
@@ -410,7 +410,7 @@
 
       <locale name="gu">
         <short>ઘટનાઓ માટેના ધ્વનિઓ</short>
-        <long>શંુ વપરાશકર્તાઓની ઘટનાઓ પર ધ્વનિઓ વગાડવા કે નહિ.</long>
+        <long>શું વપરાશકર્તાઓની ઘટનાઓ પર ધ્વનિઓ વગાડવા કે નહિ.</long>
       </locale>
 
       <locale name="he">

@@ -58,6 +58,7 @@ the user's normal group id.
 <refsect2>
 <title><anchor id="gnome-score-init"/>gnome_score_init ()</title>
 <indexterm><primary>gnome_score_init</primary></indexterm><programlisting><link linkend="gint">gint</link>        gnome_score_init                (const <link linkend="gchar">gchar</link> *gamename);</programlisting>
+<warning><para><literal>gnome_score_init</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 GNOME games should call this routine as the first statement
 in <link linkend="main"><function>main()</function></link> if they have been installed setgid to the "games" group. It
@@ -77,6 +78,7 @@ scores table and then drops the groups privileges.</para>
 <indexterm><primary>gnome_score_log</primary></indexterm><programlisting><link linkend="gint">gint</link>        gnome_score_log                 (<link linkend="gfloat">gfloat</link> score,
                                              const <link linkend="gchar">gchar</link> *level,
                                              <link linkend="gboolean">gboolean</link> higher_to_lower_score_order);</programlisting>
+<warning><para><literal>gnome_score_log</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 Logs a score entry for the user. You should call this every time a game
 ends.  This function takes care of working out whether the user's score made
@@ -105,6 +107,7 @@ program.
                                              <link linkend="gchar">gchar</link> ***names,
                                              <link linkend="gfloat">gfloat</link> **scores,
                                              <link linkend="time-t">time_t</link> **scoretimes);</programlisting>
+<warning><para><literal>gnome_score_get_notable</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 Fetches the most notable players on <parameter>gamename</parameter> at level <parameter>level</parameter>.</para>
 <para>

@@ -1,4 +1,34 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>gnome-util</title><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="GNOME Library Reference Manual"><link rel="up" href="ch01s04.html" title="Miscellaneous"><link rel="previous" href="ch01s04.html" title="Miscellaneous"><link rel="next" href="libgnome-gnome-sound.html" title="gnome-sound"><link rel="chapter" href="libgnome.html" title="GNOME Library (libgnome)"><link rel="refentry" href="libgnome-gnome-program.html" title="gnome-program"><link rel="refentry" href="libgnome-gnome-init.html" title="gnome-init"><link rel="refentry" href="libgnome-gnome-exec.html" title="gnome-exec"><link rel="refentry" href="libgnome-gnome-gconf.html" title="gnome-gconf"><link rel="refentry" href="libgnome-gnome-config.html" title="gnome-config"><link rel="refentry" href="libgnome-gnome-i18n.html" title="gnome-i18n"><link rel="refentry" href="libgnome-gnome-help.html" title="gnome-help"><link rel="refentry" href="libgnome-gnome-url.html" title="gnome-url"><link rel="refentry" href="libgnome-gnome-score.html" title="gnome-score"><link rel="refentry" href="libgnome-gnome-util.html" title="gnome-util"><link rel="refentry" href="libgnome-gnome-sound.html" title="gnome-sound"><link rel="refentry" href="libgnome-gnome-triggers.html" title="gnome-triggers"><link rel="refentry" href="libgnome-libgnometypebuiltins.html" title="libgnometypebuiltins"><link rel="section" href="libgnome-gnome-util.html#id2944765" title="Description"><link rel="section" href="libgnome-gnome-util.html#id2944803" title="Details"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><link rel="stylesheet" href="style.css" type="text/css"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="ch01s04.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="ch01s04.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GNOME Library Reference Manual</th><td><a accesskey="n" href="libgnome-gnome-sound.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="libgnome-gnome-util"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">gnome-util</span></h2><p>gnome-util &#8212; Miscellaneous utility functions.</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>gnome-util</title><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="GNOME Library Reference Manual"><link rel="up" href="ch01s04.html" title="Miscellaneous"><link rel="previous" href="ch01s04.html" title="Miscellaneous"><link rel="next" href="libgnome-gnome-sound.html" title="gnome-sound"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><style type="text/css">
+        .synopsis, .classsynopsis {
+            background: #eeeeee;
+            border: solid 1px #aaaaaa;
+            padding: 0.5em;
+        }
+        .programlisting {
+            background: #eeeeff;
+            border: solid 1px #aaaaff;
+            padding: 0.5em;
+        }
+        .variablelist {
+            padding: 4px;
+            margin-left: 3em;
+        }
+        .navigation {
+            background: #ffeeee;
+            border: solid 1px #ffaaaa;
+            margin-top: 0.5em;
+            margin-bottom: 0.5em;
+        }
+        .navigation a {
+            color: #770000;
+        }
+        .navigation a:visited {
+            color: #550000;
+        }
+        .navigation .title {
+            font-size: 200%;
+        }
+      </style></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="ch01s04.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="ch01s04.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GNOME Library Reference Manual</th><td><a accesskey="n" href="libgnome-gnome-sound.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="libgnome-gnome-util"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">gnome-util</span></h2><p>gnome-util &#8212; Miscellaneous utility functions.</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
 
 #include &lt;libgnome/libgnome.h&gt;
 
@@ -29,7 +59,7 @@ void        <a href="libgnome-gnome-util.html#gnome-clearenv">gnome_clearenv</a>
 #define     <a href="libgnome-gnome-util.html#gnome-unconditional-sound-file">gnome_unconditional_sound_file</a>  (f)
 #define     <a href="libgnome-gnome-util.html#gnome-unconditional-pixmap-file">gnome_unconditional_pixmap_file</a> (f)
 #define     <a href="libgnome-gnome-util.html#gnome-unconditional-config-file">gnome_unconditional_config_file</a> (f)
-</pre></div><div class="refsect1" lang="en"><a name="id2944765"></a><h2>Description</h2><p>
+</pre></div><div class="refsect1" lang="en"><a name="id2725268"></a><h2>Description</h2><p>
 The functions in this section provide some shortcuts to finding certain file
 paths. There are also some functions for manipulating environment variables for
 those systems that do not have <tt class="function"><tt class="function">getenv()</tt></tt> and similar
@@ -38,14 +68,14 @@ functions.
    Many of the function in here are now deprecated in favour of similar
    functions in glib. The preferred replacement function in those cases is
    indicated below.
-   </p></div></div><div class="refsect1" lang="en"><a name="id2944803"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2944808"></a><h3><a name="gnome-is-program-in-path"></a>gnome_is_program_in_path()</h3><a class="indexterm" name="id2944820"></a><pre class="programlisting">#define     gnome_is_program_in_path(program)</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">gnome_is_program_in_path</tt> is deprecated and should not be used in newly-written code.</p></div><p>
+   </p></div></div><div class="refsect1" lang="en"><a name="id2725306"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2725312"></a><h3><a name="gnome-is-program-in-path"></a>gnome_is_program_in_path()</h3><a class="indexterm" name="id2725323"></a><pre class="programlisting">#define     gnome_is_program_in_path(program)</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">gnome_is_program_in_path</tt> is deprecated and should not be used in newly-written code.</p></div><p>
 Deprecated, use <span class="type">g_find_program_in_path</span></p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>program</tt></i> :</span></td><td> A program name.
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <tt class="literal">NULL</tt> if program is not on the path or a string 
 allocated with <tt class="function">g_malloc()</tt> with the full path name of the program
 found.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2944907"></a><h3><a name="g-extension-pointer"></a>g_extension_pointer ()</h3><a class="indexterm" name="id2944918"></a><pre class="programlisting">const char* g_extension_pointer             (const char *path);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2725408"></a><h3><a name="g-extension-pointer"></a>g_extension_pointer ()</h3><a class="indexterm" name="id2725419"></a><pre class="programlisting">const char* g_extension_pointer             (const char *path);</pre><p>
 Extracts the extension from the end of a filename (the part after the final
 '.' in the filename).</p><p>
 
@@ -53,14 +83,14 @@ Extracts the extension from the end of a filename (the part after the final
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> A pointer to the extension part of the filename, or a
 pointer to the end of the string if the filename does not
 have an extension.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2944983"></a><h3><a name="gnome-util-prepend-user-home"></a>gnome_util_prepend_user_home()</h3><a class="indexterm" name="id2944994"></a><pre class="programlisting">#define     gnome_util_prepend_user_home(x)</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2725484"></a><h3><a name="gnome-util-prepend-user-home"></a>gnome_util_prepend_user_home()</h3><a class="indexterm" name="id2725496"></a><pre class="programlisting">#define     gnome_util_prepend_user_home(x)</pre><p>
 Prepends the home directory of the user to a filename.
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>x</tt></i> :</span></td><td>A relative filename in the user's home directory.
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>A string containing <i class="parameter"><tt>x</tt></i> with the user's home directory path prepended.
 The string should be freed with <tt class="function">g_free()</tt> when no longer required.
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2945058"></a><h3><a name="gnome-util-home-file"></a>gnome_util_home_file()</h3><a class="indexterm" name="id2945069"></a><pre class="programlisting">#define     gnome_util_home_file(afile)</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2725559"></a><h3><a name="gnome-util-home-file"></a>gnome_util_home_file()</h3><a class="indexterm" name="id2725570"></a><pre class="programlisting">#define     gnome_util_home_file(afile)</pre><p>
 Similar to <a href="libgnome-gnome-util.html#gnome-util-prepend-user-home"><tt class="function">gnome_util_prepend_user_home()</tt></a>, except that "/home/fred/.gnome2",
 instead of just "/home/fred/" is put on the front.
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>afile</tt></i> :</span></td><td> A filename relative to the user's .gnome2 directory.
@@ -69,11 +99,11 @@ Returns: A string containing <i class="parameter"><tt>afile</tt></i> with the us
 required.
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2945136"></a><h3><a name="gnome-util-user-shell"></a>gnome_util_user_shell ()</h3><a class="indexterm" name="id2945147"></a><pre class="programlisting">char*       gnome_util_user_shell           (void);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2725637"></a><h3><a name="gnome-util-user-shell"></a>gnome_util_user_shell ()</h3><a class="indexterm" name="id2725648"></a><pre class="programlisting">char*       gnome_util_user_shell           (void);</pre><p>
 Retrieves the user's preferred shell.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> A newly allocated string that is the path to the shell.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2945188"></a><h3><a name="gnome-setenv"></a>gnome_setenv ()</h3><a class="indexterm" name="id2945198"></a><pre class="programlisting">int         gnome_setenv                    (const char *name,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2725688"></a><h3><a name="gnome-setenv"></a>gnome_setenv ()</h3><a class="indexterm" name="id2725699"></a><pre class="programlisting">int         gnome_setenv                    (const char *name,
                                              const char *value,
                                              gboolean overwrite);</pre><p>
 Adds "<i class="parameter"><tt>name</tt></i>=<i class="parameter"><tt>value</tt></i>" to the environment. Note that on systems without setenv,
@@ -90,20 +120,20 @@ then <tt class="literal">0</tt> is returned and the value is not changed.</p><p>
 environment.
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <tt class="literal">0</tt> on success, <tt class="literal">-1</tt> on error
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2945384"></a><h3><a name="gnome-unsetenv"></a>gnome_unsetenv ()</h3><a class="indexterm" name="id2945395"></a><pre class="programlisting">void        gnome_unsetenv                  (const char *name);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2725885"></a><h3><a name="gnome-unsetenv"></a>gnome_unsetenv ()</h3><a class="indexterm" name="id2725896"></a><pre class="programlisting">void        gnome_unsetenv                  (const char *name);</pre><p>
 Removes <i class="parameter"><tt>name</tt></i> from the environment.
 In case there is no native implementation of unsetenv,
 this could cause leaks depending on the implementation of
 environment.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>name</tt></i> :</span></td><td> The environment variable to unset.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2945453"></a><h3><a name="gnome-clearenv"></a>gnome_clearenv ()</h3><a class="indexterm" name="id2945464"></a><pre class="programlisting">void        gnome_clearenv                  (void);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2725954"></a><h3><a name="gnome-clearenv"></a>gnome_clearenv ()</h3><a class="indexterm" name="id2725965"></a><pre class="programlisting">void        gnome_clearenv                  (void);</pre><p>
 Clears out the environment completely.
 In case there is no native implementation of clearenv,
 this could cause leaks depending on the implementation
 of environment.</p><p>
 
-</p></div><hr><div class="refsect2" lang="en"><a name="id2945492"></a><h3><a name="g-concat-dir-and-file"></a>g_concat_dir_and_file()</h3><a class="indexterm" name="id2945503"></a><pre class="programlisting">#define     g_concat_dir_and_file(dir,file)</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">g_concat_dir_and_file</tt> is deprecated and should not be used in newly-written code.</p></div><p>
+</p></div><hr><div class="refsect2" lang="en"><a name="id2725993"></a><h3><a name="g-concat-dir-and-file"></a>g_concat_dir_and_file()</h3><a class="indexterm" name="id2726004"></a><pre class="programlisting">#define     g_concat_dir_and_file(dir,file)</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">g_concat_dir_and_file</tt> is deprecated and should not be used in newly-written code.</p></div><p>
 Programs should use <tt class="function">g_build_filename()</tt> instead of this function.
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>dir</tt></i> :</span></td><td>Directory name.
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>file</tt></i> :</span></td><td>Filename.
@@ -111,14 +141,14 @@ Programs should use <tt class="function">g_build_filename()</tt> instead of this
 with seperators appropriate for the filesystem automatically taken care of.
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2945600"></a><h3><a name="g-file-exists"></a>g_file_exists()</h3><a class="indexterm" name="id2945611"></a><pre class="programlisting">#define     g_file_exists(filename)</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">g_file_exists</tt> is deprecated and should not be used in newly-written code.</p></div><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2726099"></a><h3><a name="g-file-exists"></a>g_file_exists()</h3><a class="indexterm" name="id2726110"></a><pre class="programlisting">#define     g_file_exists(filename)</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">g_file_exists</tt> is deprecated and should not be used in newly-written code.</p></div><p>
 Programs should use g_file_test(<i class="parameter"><tt>filename</tt></i>, G_FILE_TEST_EXISTS) instead of this
 function.
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>filename</tt></i> :</span></td><td>Filename.
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>Returns <tt class="literal">TRUE</tt> if <i class="parameter"><tt>filename</tt></i> exists, <tt class="literal">FALSE</tt> otherwise.
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2945693"></a><h3><a name="g-unix-error-string"></a>g_unix_error_string()</h3><a class="indexterm" name="id2945704"></a><pre class="programlisting">#define     g_unix_error_string(error_num)</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">g_unix_error_string</tt> is deprecated and should not be used in newly-written code.</p></div><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2726189"></a><h3><a name="g-unix-error-string"></a>g_unix_error_string()</h3><a class="indexterm" name="id2726201"></a><pre class="programlisting">#define     g_unix_error_string(error_num)</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">g_unix_error_string</tt> is deprecated and should not be used in newly-written code.</p></div><p>
 Programs should use <tt class="function">g_strerror()</tt> instead of this function. Also, note that the
 returned string is only valid until the next call to <tt class="function">g_strerror()</tt> or
 <a href="libgnome-gnome-util.html#g-unix-error-string"><tt class="function">g_unix_error_string()</tt></a>.
@@ -126,81 +156,81 @@ returned string is only valid until the next call to <tt class="function">g_stre
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>A string describing the error code.
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2945804"></a><h3><a name="gnome-util-user-home"></a>gnome_util_user_home()</h3><a class="indexterm" name="id2945815"></a><pre class="programlisting">#define     gnome_util_user_home()</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">gnome_util_user_home</tt> is deprecated and should not be used in newly-written code.</p></div><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2726298"></a><h3><a name="gnome-util-user-home"></a>gnome_util_user_home()</h3><a class="indexterm" name="id2726309"></a><pre class="programlisting">#define     gnome_util_user_home()</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">gnome_util_user_home</tt> is deprecated and should not be used in newly-written code.</p></div><p>
 Programs should use <tt class="function">g_get_home_dir()</tt> instead of this function.
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>The current user's home directory.
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2945871"></a><h3><a name="g-copy-vector"></a>g_copy_vector()</h3><a class="indexterm" name="id2945881"></a><pre class="programlisting">#define     g_copy_vector(vec)</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">g_copy_vector</tt> is deprecated and should not be used in newly-written code.</p></div><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2726362"></a><h3><a name="g-copy-vector"></a>g_copy_vector()</h3><a class="indexterm" name="id2726373"></a><pre class="programlisting">#define     g_copy_vector(vec)</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">g_copy_vector</tt> is deprecated and should not be used in newly-written code.</p></div><p>
 Use <tt class="function">g_strdupv()</tt> instead of this function.
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>vec</tt></i> :</span></td><td>An array of strings. <tt class="literal">NULL</tt> terminated.
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>A copy of the <tt class="literal">NULL</tt>-terminated string array.
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2945962"></a><h3><a name="gnome-libdir-file"></a>gnome_libdir_file()</h3><a class="indexterm" name="id2945973"></a><pre class="programlisting">#define     gnome_libdir_file(f)</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">gnome_libdir_file</tt> is deprecated and should not be used in newly-written code.</p></div><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2726452"></a><h3><a name="gnome-libdir-file"></a>gnome_libdir_file()</h3><a class="indexterm" name="id2726462"></a><pre class="programlisting">#define     gnome_libdir_file(f)</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">gnome_libdir_file</tt> is deprecated and should not be used in newly-written code.</p></div><p>
 Programs should use <a href="libgnome-gnome-program.html#gnome-program-locate-file"><tt class="function">gnome_program_locate_file()</tt></a> instead of this function.
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>f</tt></i> :</span></td><td>Filename.
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>A full path to the file <i class="parameter"><tt>f</tt></i> that is stored in the system's GNOME
 library directory (not the application's directory).
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2946048"></a><h3><a name="gnome-datadir-file"></a>gnome_datadir_file()</h3><a class="indexterm" name="id2946059"></a><pre class="programlisting">#define     gnome_datadir_file(f)</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">gnome_datadir_file</tt> is deprecated and should not be used in newly-written code.</p></div><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2726535"></a><h3><a name="gnome-datadir-file"></a>gnome_datadir_file()</h3><a class="indexterm" name="id2726547"></a><pre class="programlisting">#define     gnome_datadir_file(f)</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">gnome_datadir_file</tt> is deprecated and should not be used in newly-written code.</p></div><p>
 Programs should use <a href="libgnome-gnome-program.html#gnome-program-locate-file"><tt class="function">gnome_program_locate_file()</tt></a> instead of this function.
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>f</tt></i> :</span></td><td>Filename.
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>A full path to the file <i class="parameter"><tt>f</tt></i> that is stored in the system's GNOME
 data directory (not the application's directory).
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2946134"></a><h3><a name="gnome-sound-file"></a>gnome_sound_file()</h3><a class="indexterm" name="id2946145"></a><pre class="programlisting">#define     gnome_sound_file(f)</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">gnome_sound_file</tt> is deprecated and should not be used in newly-written code.</p></div><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2726619"></a><h3><a name="gnome-sound-file"></a>gnome_sound_file()</h3><a class="indexterm" name="id2726630"></a><pre class="programlisting">#define     gnome_sound_file(f)</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">gnome_sound_file</tt> is deprecated and should not be used in newly-written code.</p></div><p>
 Programs should use <a href="libgnome-gnome-program.html#gnome-program-locate-file"><tt class="function">gnome_program_locate_file()</tt></a> instead of this function.
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>f</tt></i> :</span></td><td>Filename.
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>A full path to the file <i class="parameter"><tt>f</tt></i> that is stored in the system's GNOME
 sound files directory (not the application's directory).
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2946220"></a><h3><a name="gnome-pixmap-file"></a>gnome_pixmap_file()</h3><a class="indexterm" name="id2946231"></a><pre class="programlisting">#define     gnome_pixmap_file(f)</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">gnome_pixmap_file</tt> is deprecated and should not be used in newly-written code.</p></div><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2726703"></a><h3><a name="gnome-pixmap-file"></a>gnome_pixmap_file()</h3><a class="indexterm" name="id2726714"></a><pre class="programlisting">#define     gnome_pixmap_file(f)</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">gnome_pixmap_file</tt> is deprecated and should not be used in newly-written code.</p></div><p>
 Programs should use <a href="libgnome-gnome-program.html#gnome-program-locate-file"><tt class="function">gnome_program_locate_file()</tt></a> instead of this function.
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>f</tt></i> :</span></td><td>Filename.
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>A full path to the file <i class="parameter"><tt>f</tt></i> that is stored in the system's GNOME
 pixmap directory (not the application's directory).
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2946306"></a><h3><a name="gnome-config-file"></a>gnome_config_file()</h3><a class="indexterm" name="id2946317"></a><pre class="programlisting">#define     gnome_config_file(f)</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">gnome_config_file</tt> is deprecated and should not be used in newly-written code.</p></div><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2726787"></a><h3><a name="gnome-config-file"></a>gnome_config_file()</h3><a class="indexterm" name="id2726797"></a><pre class="programlisting">#define     gnome_config_file(f)</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">gnome_config_file</tt> is deprecated and should not be used in newly-written code.</p></div><p>
 Programs should use <a href="libgnome-gnome-program.html#gnome-program-locate-file"><tt class="function">gnome_program_locate_file()</tt></a> instead of this function.
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>f</tt></i> :</span></td><td>Filename.
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>A full path to the file <i class="parameter"><tt>f</tt></i> that is stored in the system's GNOME
 config directory (not the application's directory).
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2946392"></a><h3><a name="gnome-unconditional-libdir-file"></a>gnome_unconditional_libdir_file()</h3><a class="indexterm" name="id2946403"></a><pre class="programlisting">#define     gnome_unconditional_libdir_file(f)</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">gnome_unconditional_libdir_file</tt> is deprecated and should not be used in newly-written code.</p></div><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2726870"></a><h3><a name="gnome-unconditional-libdir-file"></a>gnome_unconditional_libdir_file()</h3><a class="indexterm" name="id2726882"></a><pre class="programlisting">#define     gnome_unconditional_libdir_file(f)</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">gnome_unconditional_libdir_file</tt> is deprecated and should not be used in newly-written code.</p></div><p>
 Programs should use <a href="libgnome-gnome-program.html#gnome-program-locate-file"><tt class="function">gnome_program_locate_file()</tt></a> instead of this function.
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>f</tt></i> :</span></td><td>Filename.
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>A full path to the file <i class="parameter"><tt>f</tt></i> that is stored in the system's GNOME
 library directory (not the application's directory).
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2946479"></a><h3><a name="gnome-unconditional-datadir-file"></a>gnome_unconditional_datadir_file()</h3><a class="indexterm" name="id2946492"></a><pre class="programlisting">#define     gnome_unconditional_datadir_file(f)</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">gnome_unconditional_datadir_file</tt> is deprecated and should not be used in newly-written code.</p></div><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2726955"></a><h3><a name="gnome-unconditional-datadir-file"></a>gnome_unconditional_datadir_file()</h3><a class="indexterm" name="id2726968"></a><pre class="programlisting">#define     gnome_unconditional_datadir_file(f)</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">gnome_unconditional_datadir_file</tt> is deprecated and should not be used in newly-written code.</p></div><p>
 Programs should use <a href="libgnome-gnome-program.html#gnome-program-locate-file"><tt class="function">gnome_program_locate_file()</tt></a> instead of this function.
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>f</tt></i> :</span></td><td>Filename.
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>A full path to the file <i class="parameter"><tt>f</tt></i> that is stored in the system's GNOME
 data directory (not the application's directory).
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2946567"></a><h3><a name="gnome-unconditional-sound-file"></a>gnome_unconditional_sound_file()</h3><a class="indexterm" name="id2946579"></a><pre class="programlisting">#define     gnome_unconditional_sound_file(f)</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">gnome_unconditional_sound_file</tt> is deprecated and should not be used in newly-written code.</p></div><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2727041"></a><h3><a name="gnome-unconditional-sound-file"></a>gnome_unconditional_sound_file()</h3><a class="indexterm" name="id2727053"></a><pre class="programlisting">#define     gnome_unconditional_sound_file(f)</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">gnome_unconditional_sound_file</tt> is deprecated and should not be used in newly-written code.</p></div><p>
 Programs should use <a href="libgnome-gnome-program.html#gnome-program-locate-file"><tt class="function">gnome_program_locate_file()</tt></a> instead of this function.
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>f</tt></i> :</span></td><td>Filename.
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>A full path to the file <i class="parameter"><tt>f</tt></i> that is stored in the system's GNOME
 sound files directory (not the application's directory).
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2946655"></a><h3><a name="gnome-unconditional-pixmap-file"></a>gnome_unconditional_pixmap_file()</h3><a class="indexterm" name="id2946667"></a><pre class="programlisting">#define     gnome_unconditional_pixmap_file(f)</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">gnome_unconditional_pixmap_file</tt> is deprecated and should not be used in newly-written code.</p></div><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2727126"></a><h3><a name="gnome-unconditional-pixmap-file"></a>gnome_unconditional_pixmap_file()</h3><a class="indexterm" name="id2727139"></a><pre class="programlisting">#define     gnome_unconditional_pixmap_file(f)</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">gnome_unconditional_pixmap_file</tt> is deprecated and should not be used in newly-written code.</p></div><p>
 Programs should use <a href="libgnome-gnome-program.html#gnome-program-locate-file"><tt class="function">gnome_program_locate_file()</tt></a> instead of this function.
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>f</tt></i> :</span></td><td>Filename.
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>A full path to the file <i class="parameter"><tt>f</tt></i> that is stored in the system's GNOME
 pixmap directory (not the application's directory).
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2946743"></a><h3><a name="gnome-unconditional-config-file"></a>gnome_unconditional_config_file()</h3><a class="indexterm" name="id2946755"></a><pre class="programlisting">#define     gnome_unconditional_config_file(f)</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">gnome_unconditional_config_file</tt> is deprecated and should not be used in newly-written code.</p></div><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2727212"></a><h3><a name="gnome-unconditional-config-file"></a>gnome_unconditional_config_file()</h3><a class="indexterm" name="id2727224"></a><pre class="programlisting">#define     gnome_unconditional_config_file(f)</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">gnome_unconditional_config_file</tt> is deprecated and should not be used in newly-written code.</p></div><p>
 Programs should use <a href="libgnome-gnome-program.html#gnome-program-locate-file"><tt class="function">gnome_program_locate_file()</tt></a> instead of this function.
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>f</tt></i> :</span></td><td>Filename.
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>A full path to the file <i class="parameter"><tt>f</tt></i> that is stored in the system's GNOME

@@ -115,6 +115,7 @@ sub place_normal {
 }   
 
 sub place_local {
+    $FILE	 = $ARGV[0];
     $OUTFILE     = fileparse($FILE, ());
     if (!-e "tmp/") { 
         system("mkdir tmp/"); 

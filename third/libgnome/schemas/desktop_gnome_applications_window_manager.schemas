@@ -73,7 +73,7 @@
 
       <locale name="en_CA">
         <short>Fallback window manager</short>
-        <long>Fallback window manager if user window manager can&apos;t be found</long>
+        <long>Fallback window manager if user window manager cannot be found</long>
       </locale>
 
       <locale name="en_GB">
@@ -119,6 +119,11 @@
       <locale name="hr">
         <short>Rezervni upravitelj prozora</short>
         <long>Rezervni upravitelj prozora ukoliko korisnikov upravitelj prozorima ne može biti pronađen</long>
+      </locale>
+
+      <locale name="hu">
+        <short>Tartalék ablakkezelő</short>
+        <long>Tartalék ablakkezelő, ha a felhasználói ablakkezelő nem használható</long>
       </locale>
 
       <locale name="id">
@@ -414,6 +419,11 @@
       <locale name="hr">
         <short>Korisnički upravitelj prozora</short>
         <long>Upravitelj programa koji prvi pokušava</long>
+      </locale>
+
+      <locale name="hu">
+        <short>Felhasználói ablakkezelő</short>
+        <long>Elsőként elindítani próbált ablakkezelő</long>
       </locale>
 
       <locale name="id">
@@ -718,7 +728,7 @@
 
       <locale name="hu">
         <short>A munkaterületek száma</short>
-        
+        <long>Az ablakkezelő által használandó munkaterületek száma</long>
       </locale>
 
       <locale name="id">
@@ -1024,7 +1034,7 @@
 
       <locale name="hu">
         <short>A munkaterületek nevei</short>
-        
+        <long>Az első ablakkezelő munkaterületeinek neveit tartalmazó lista.</long>
       </locale>
 
       <locale name="id">

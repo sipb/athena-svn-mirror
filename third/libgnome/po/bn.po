@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 2.2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-08-30 16:12+0200\n"
+"POT-Creation-Date: 2005-02-21 13:41+0100\n"
 "PO-Revision-Date: 2003-02-21 05:09+0600\n"
 "Last-Translator: Khandakar Mujahidul Islam <suzan229@yahoo.com>\n"
 "Language-Team:Bengali <gnome-translation@bengalinux.org>\n"
@@ -88,7 +88,7 @@ msgstr ""
 # " এমনকি এটা কাজ নাও করতে পারে"
 # msgstr "একসটারম ব্যবহার করে টারমিনাল পাওয়া যাচ্ছে না,"
 # " এমনকি এটা কাজ নাও করতে পারে"
-#: libgnome/gnome-gconf.c:174
+#: libgnome/gnome-gconf.c:177
 msgid "GNOME GConf Support"
 msgstr "গুহ্‌নোমের জীকন্‌ফ সাহায্য"
 

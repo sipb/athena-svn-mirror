@@ -123,8 +123,8 @@
       </locale>
 
       <locale name="hu">
-        <short>Alapértelmezett súgónéző</short>
-        <long>Alapértelmezett súgónéző</long>
+        <short>Alapértelmezett súgómegjelenítő</short>
+        <long>Alapértelmezett súgómegjelenítő</long>
       </locale>
 
       <locale name="id">
@@ -423,6 +423,11 @@
         <long>Koji uobičajeni preglednik pomoći treba pokrenuti treminal</long>
       </locale>
 
+      <locale name="hu">
+        <short>A súgómegjelenítőnek szüksége van-e terminálra?</short>
+        <long>Az alapértelmezett súgómegjelenítőnek szüksége van-e terminálra a futáshoz?</long>
+      </locale>
+
       <locale name="id">
         <short>Penampil layar bantuan membutuhkan terminal</short>
         <long>Menentukan apakah penampil layar bantu membutuhkan terminal atau tidak</long>
@@ -435,7 +440,7 @@
 
       <locale name="it">
         <short>Il visualizzatore di aiuto necessita di terminale</short>
-        <long>Indica se il visualizzatore di aiuto predefinito necessita di un termiale per essere eseguito</long>
+        <long>Indica se il visualizzatore di aiuto predefinito necessita di un terminale per essere eseguito</long>
       </locale>
 
       <locale name="ja">
@@ -701,7 +706,7 @@
 
       <locale name="gu">
         <short>બ્રાઉઝર દૂરસ્થને સમજે છે</short>
-        <long>શું મૂળભૂત મદદ દર્શક URLs સ્વીકારે છે</long>
+        <long>શું મૂળભૂત મદદ દર્શક URL સ્વીકારે છે</long>
       </locale>
 
       <locale name="he">
@@ -717,6 +722,11 @@
       <locale name="hr">
         <short>Pretraživač razumije udaljenosti</short>
         <long>Koji uobičajeni preglednik pomoći prihvatiti URL-ove</long>
+      </locale>
+
+      <locale name="hu">
+        <short>A böngésző távirányítható-e?</short>
+        <long>Az alapértelmezett súgómegjelenítő elfogad-e URL-eket?</long>
       </locale>
 
       <locale name="id">
@@ -880,7 +890,7 @@
       </locale>
 
       <locale name="vi">
-        
+        <short>Trình duyệt điều khiển từ xa</short>
         <long>Trình xem trợ giúp mặc định có chấp nhận URL không</long>
       </locale>
 

@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libgnome\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-08-30 16:12+0200\n"
+"POT-Creation-Date: 2005-02-21 13:41+0100\n"
 "PO-Revision-Date: 2004-08-29 19:09+0545\n"
 "Last-Translator: Pawan Chitrakar <pawan@nplinux.org>\n"
 "Language-Team: Nepali <info@mpp.org.np>\n"
@@ -65,7 +65,7 @@ msgstr "साझा प्रयोगको घटनाक्रम"
 msgid "Cannot find a terminal, using xterm, even if it may not work"
 msgstr " एक्सपटक प्रयोग गर्दापनि यसले पाम गर्दैन, मोड फेला परेन"
 
-#: libgnome/gnome-gconf.c:174
+#: libgnome/gnome-gconf.c:177
 msgid "GNOME GConf Support"
 msgstr "जीनोम जीकन्फलाई समर्थन गर्छ "
 

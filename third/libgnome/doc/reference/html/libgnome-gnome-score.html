@@ -1,4 +1,34 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>gnome-score</title><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="GNOME Library Reference Manual"><link rel="up" href="ch01s03.html" title="Displaying help and external info"><link rel="previous" href="libgnome-gnome-url.html" title="gnome-url"><link rel="next" href="ch01s04.html" title="Miscellaneous"><link rel="chapter" href="libgnome.html" title="GNOME Library (libgnome)"><link rel="refentry" href="libgnome-gnome-program.html" title="gnome-program"><link rel="refentry" href="libgnome-gnome-init.html" title="gnome-init"><link rel="refentry" href="libgnome-gnome-exec.html" title="gnome-exec"><link rel="refentry" href="libgnome-gnome-gconf.html" title="gnome-gconf"><link rel="refentry" href="libgnome-gnome-config.html" title="gnome-config"><link rel="refentry" href="libgnome-gnome-i18n.html" title="gnome-i18n"><link rel="refentry" href="libgnome-gnome-help.html" title="gnome-help"><link rel="refentry" href="libgnome-gnome-url.html" title="gnome-url"><link rel="refentry" href="libgnome-gnome-score.html" title="gnome-score"><link rel="refentry" href="libgnome-gnome-util.html" title="gnome-util"><link rel="refentry" href="libgnome-gnome-sound.html" title="gnome-sound"><link rel="refentry" href="libgnome-gnome-triggers.html" title="gnome-triggers"><link rel="refentry" href="libgnome-libgnometypebuiltins.html" title="libgnometypebuiltins"><link rel="section" href="libgnome-gnome-score.html#id2943250" title="Description"><link rel="section" href="libgnome-gnome-score.html#id2943301" title="Details"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><link rel="stylesheet" href="style.css" type="text/css"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="libgnome-gnome-url.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="ch01s03.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GNOME Library Reference Manual</th><td><a accesskey="n" href="ch01s04.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="libgnome-gnome-score"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">gnome-score</span></h2><p>gnome-score &#8212; Tracking best scores for games</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>gnome-score</title><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="GNOME Library Reference Manual"><link rel="up" href="ch01s03.html" title="Displaying help and external info"><link rel="previous" href="libgnome-gnome-url.html" title="gnome-url"><link rel="next" href="ch01s04.html" title="Miscellaneous"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><style type="text/css">
+        .synopsis, .classsynopsis {
+            background: #eeeeee;
+            border: solid 1px #aaaaaa;
+            padding: 0.5em;
+        }
+        .programlisting {
+            background: #eeeeff;
+            border: solid 1px #aaaaff;
+            padding: 0.5em;
+        }
+        .variablelist {
+            padding: 4px;
+            margin-left: 3em;
+        }
+        .navigation {
+            background: #ffeeee;
+            border: solid 1px #ffaaaa;
+            margin-top: 0.5em;
+            margin-bottom: 0.5em;
+        }
+        .navigation a {
+            color: #770000;
+        }
+        .navigation a:visited {
+            color: #550000;
+        }
+        .navigation .title {
+            font-size: 200%;
+        }
+      </style></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="libgnome-gnome-url.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="ch01s03.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GNOME Library Reference Manual</th><td><a accesskey="n" href="ch01s04.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="libgnome-gnome-score"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">gnome-score</span></h2><p>gnome-score &#8212; Tracking best scores for games</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
 
 #include &lt;libgnome/libgnome.h&gt;
 
@@ -12,7 +42,7 @@ gint        <a href="libgnome-gnome-score.html#gnome-score-get-notable">gnome_sc
                                              gchar ***names,
                                              gfloat **scores,
                                              time_t **scoretimes);
-</pre></div><div class="refsect1" lang="en"><a name="id2943250"></a><h2>Description</h2><p>
+</pre></div><div class="refsect1" lang="en"><a name="id2723752"></a><h2>Description</h2><p>
 The routines in this module provide a simple way to keep track of users' scores
 in a game.
 </p><p>
@@ -23,7 +53,7 @@ should call <a href="libgnome-gnome-score.html#gnome-score-init"><tt class="func
 This will open a pair of pipes to a child process which can read and write the
 score table and then will drop the group privileges of the main program back to
 the user's normal group id.
-</p></div><div class="refsect1" lang="en"><a name="id2943301"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2943307"></a><h3><a name="gnome-score-init"></a>gnome_score_init ()</h3><a class="indexterm" name="id2943317"></a><pre class="programlisting">gint        gnome_score_init                (const gchar *gamename);</pre><p>
+</p></div><div class="refsect1" lang="en"><a name="id2723803"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2723808"></a><h3><a name="gnome-score-init"></a>gnome_score_init ()</h3><a class="indexterm" name="id2723819"></a><pre class="programlisting">gint        gnome_score_init                (const gchar *gamename);</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">gnome_score_init</tt> is deprecated and should not be used in newly-written code.</p></div><p>
 GNOME games should call this routine as the first statement
 in <tt class="function">main()</tt> if they have been installed setgid to the "games" group. It
 performs the intialization required to later record information in the
@@ -31,9 +61,9 @@ scores table and then drops the groups privileges.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>gamename</tt></i> :</span></td><td> Identifies the game name.
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <tt class="literal">0</tt> on success, returns <tt class="literal">-1</tt> on failure.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2943403"></a><h3><a name="gnome-score-log"></a>gnome_score_log ()</h3><a class="indexterm" name="id2943414"></a><pre class="programlisting">gint        gnome_score_log                 (gfloat score,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2723915"></a><h3><a name="gnome-score-log"></a>gnome_score_log ()</h3><a class="indexterm" name="id2723926"></a><pre class="programlisting">gint        gnome_score_log                 (gfloat score,
                                              const gchar *level,
-                                             gboolean higher_to_lower_score_order);</pre><p>
+                                             gboolean higher_to_lower_score_order);</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">gnome_score_log</tt> is deprecated and should not be used in newly-written code.</p></div><p>
 Logs a score entry for the user. You should call this every time a game
 ends.  This function takes care of working out whether the user's score made
 it into the ten best scores and, if so, records it in the table.</p><p>
@@ -44,11 +74,11 @@ it into the ten best scores and, if so, records it in the table.</p><p>
 low scores.
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <tt class="literal">0</tt> on failure or the status from the gnome-score helper
 program.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2943535"></a><h3><a name="gnome-score-get-notable"></a>gnome_score_get_notable ()</h3><a class="indexterm" name="id2943546"></a><pre class="programlisting">gint        gnome_score_get_notable         (const gchar *gamename,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2724057"></a><h3><a name="gnome-score-get-notable"></a>gnome_score_get_notable ()</h3><a class="indexterm" name="id2724068"></a><pre class="programlisting">gint        gnome_score_get_notable         (const gchar *gamename,
                                              const gchar *level,
                                              gchar ***names,
                                              gfloat **scores,
-                                             time_t **scoretimes);</pre><p>
+                                             time_t **scoretimes);</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">gnome_score_get_notable</tt> is deprecated and should not be used in newly-written code.</p></div><p>
 Fetches the most notable players on <i class="parameter"><tt>gamename</tt></i> at level <i class="parameter"><tt>level</tt></i>.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>gamename</tt></i> :</span></td><td>   The name of the game we want to fetch information from.

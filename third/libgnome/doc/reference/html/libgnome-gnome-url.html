@@ -1,4 +1,34 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>gnome-url</title><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="GNOME Library Reference Manual"><link rel="up" href="ch01s03.html" title="Displaying help and external info"><link rel="previous" href="libgnome-gnome-help.html" title="gnome-help"><link rel="next" href="libgnome-gnome-score.html" title="gnome-score"><link rel="chapter" href="libgnome.html" title="GNOME Library (libgnome)"><link rel="refentry" href="libgnome-gnome-program.html" title="gnome-program"><link rel="refentry" href="libgnome-gnome-init.html" title="gnome-init"><link rel="refentry" href="libgnome-gnome-exec.html" title="gnome-exec"><link rel="refentry" href="libgnome-gnome-gconf.html" title="gnome-gconf"><link rel="refentry" href="libgnome-gnome-config.html" title="gnome-config"><link rel="refentry" href="libgnome-gnome-i18n.html" title="gnome-i18n"><link rel="refentry" href="libgnome-gnome-help.html" title="gnome-help"><link rel="refentry" href="libgnome-gnome-url.html" title="gnome-url"><link rel="refentry" href="libgnome-gnome-score.html" title="gnome-score"><link rel="refentry" href="libgnome-gnome-util.html" title="gnome-util"><link rel="refentry" href="libgnome-gnome-sound.html" title="gnome-sound"><link rel="refentry" href="libgnome-gnome-triggers.html" title="gnome-triggers"><link rel="refentry" href="libgnome-libgnometypebuiltins.html" title="libgnometypebuiltins"><link rel="section" href="libgnome-gnome-url.html#id2941962" title="Description"><link rel="section" href="libgnome-gnome-url.html#id2941977" title="Details"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><link rel="stylesheet" href="style.css" type="text/css"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="libgnome-gnome-help.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="ch01s03.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GNOME Library Reference Manual</th><td><a accesskey="n" href="libgnome-gnome-score.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="libgnome-gnome-url"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">gnome-url</span></h2><p>gnome-url &#8212; Display urls using appropriate viewers.</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>gnome-url</title><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="GNOME Library Reference Manual"><link rel="up" href="ch01s03.html" title="Displaying help and external info"><link rel="previous" href="libgnome-gnome-help.html" title="gnome-help"><link rel="next" href="libgnome-gnome-score.html" title="gnome-score"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><style type="text/css">
+        .synopsis, .classsynopsis {
+            background: #eeeeee;
+            border: solid 1px #aaaaaa;
+            padding: 0.5em;
+        }
+        .programlisting {
+            background: #eeeeff;
+            border: solid 1px #aaaaff;
+            padding: 0.5em;
+        }
+        .variablelist {
+            padding: 4px;
+            margin-left: 3em;
+        }
+        .navigation {
+            background: #ffeeee;
+            border: solid 1px #ffaaaa;
+            margin-top: 0.5em;
+            margin-bottom: 0.5em;
+        }
+        .navigation a {
+            color: #770000;
+        }
+        .navigation a:visited {
+            color: #550000;
+        }
+        .navigation .title {
+            font-size: 200%;
+        }
+      </style></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="libgnome-gnome-help.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="ch01s03.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GNOME Library Reference Manual</th><td><a accesskey="n" href="libgnome-gnome-score.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="libgnome-gnome-url"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">gnome-url</span></h2><p>gnome-url &#8212; Display urls using appropriate viewers.</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
 
 #include &lt;libgnome/libgnome.h&gt;
 
@@ -11,13 +41,13 @@ gboolean    <a href="libgnome-gnome-url.html#gnome-url-show-with-env">gnome_url_
                                              char **envp,
                                              GError **error);
 
-</pre></div><div class="refsect1" lang="en"><a name="id2941962"></a><h2>Description</h2><p>
+</pre></div><div class="refsect1" lang="en"><a name="id2722522"></a><h2>Description</h2><p>
 A GNOME user can configure which viewers they wish to use to view certain
 protocols. Protocols can include http, ftp (where "view" might mean
 "download"), ghelp, etc. This module provides a means for application to
 display a url without having to worry about which viewer is going to ultimately
 handle the job.
-</p></div><div class="refsect1" lang="en"><a name="id2941977"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2941983"></a><h3><a name="GnomeURLError"></a>enum GnomeURLError</h3><a class="indexterm" name="id2941994"></a><pre class="programlisting">typedef enum {
+</p></div><div class="refsect1" lang="en"><a name="id2722538"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2722543"></a><h3><a name="GnomeURLError"></a>enum GnomeURLError</h3><a class="indexterm" name="id2722554"></a><pre class="programlisting">typedef enum {
   GNOME_URL_ERROR_PARSE,
   GNOME_URL_ERROR_LAUNCH,
   GNOME_URL_ERROR_URL,
@@ -36,10 +66,10 @@ The errors that can be returned due to bad parameters being pass to
 </td></tr><tr><td><span class="term"><tt class="literal">GNOME_URL_ERROR_NOT_SUPPORTED</tt></span></td><td>
 </td></tr><tr><td><span class="term"><tt class="literal">GNOME_URL_ERROR_VFS</tt></span></td><td>
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2942119"></a><h3><a name="GNOME-URL-ERROR-CAPS"></a>GNOME_URL_ERROR</h3><a class="indexterm" name="id2942131"></a><pre class="programlisting">#define GNOME_URL_ERROR (gnome_url_error_quark ())
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2722679"></a><h3><a name="GNOME-URL-ERROR-CAPS"></a>GNOME_URL_ERROR</h3><a class="indexterm" name="id2722691"></a><pre class="programlisting">#define GNOME_URL_ERROR (gnome_url_error_quark ())
 </pre><p>
 The class (domain) of errors raised by this module.
-</p></div><hr><div class="refsect2" lang="en"><a name="id2942147"></a><h3><a name="gnome-url-show"></a>gnome_url_show ()</h3><a class="indexterm" name="id2942158"></a><pre class="programlisting">gboolean    gnome_url_show                  (const char *url,
+</p></div><hr><div class="refsect2" lang="en"><a name="id2722708"></a><h3><a name="gnome-url-show"></a>gnome_url_show ()</h3><a class="indexterm" name="id2722718"></a><pre class="programlisting">gboolean    gnome_url_show                  (const char *url,
                                              GError **error);</pre><p>
 Once the input has been converted into a fully qualified url this function
 calls gnome_vfs_url_show. Any error codes returned by gnome-vfs will be wrapped
@@ -51,7 +81,7 @@ qualified url using the gnome_url_get_from_input function.
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>error</tt></i> :</span></td><td> Used to store any errors that result from trying to display the <i class="parameter"><tt>url</tt></i>.
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <tt class="literal">TRUE</tt> if everything went fine, <tt class="literal">FALSE</tt> otherwise (in which case
 <i class="parameter"><tt>error</tt></i> will contain the actual error).
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2942277"></a><h3><a name="gnome-url-show-with-env"></a>gnome_url_show_with_env ()</h3><a class="indexterm" name="id2942288"></a><pre class="programlisting">gboolean    gnome_url_show_with_env         (const char *url,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2722837"></a><h3><a name="gnome-url-show-with-env"></a>gnome_url_show_with_env ()</h3><a class="indexterm" name="id2722848"></a><pre class="programlisting">gboolean    gnome_url_show_with_env         (const char *url,
                                              char **envp,
                                              GError **error);</pre><p>
 Like <a href="libgnome-gnome-url.html#gnome-url-show"><tt class="function">gnome_url_show()</tt></a>, but gnome_vfs_url_show_with_env
