@@ -18,12 +18,12 @@
  * Copyright (C) 1988,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: p_acl.c,v 1.11 1999-07-30 18:24:54 ghudson Exp $
+ *	$Id: p_acl.c,v 1.12 2000-09-26 05:08:05 zacheiss Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: p_acl.c,v 1.11 1999-07-30 18:24:54 ghudson Exp $";
+static char rcsid[] ="$Id: p_acl.c,v 1.12 2000-09-26 05:08:05 zacheiss Exp $";
 #endif
 #endif
 
@@ -88,12 +88,13 @@ do_olc_acl(arguments)
 
       if(is_flag(*arguments,"-list",2))
 	{
-	  list_flag = TRUE;
 	  arguments++;
+	  list_flag = TRUE;
+
 	  if((*arguments != NULL) && (*arguments[0] != '-'))
 	    {
-	      arguments++;
 	      strncpy(acl,*arguments,NAME_SIZE);
+	      arguments++;
 	    }
 	  continue;
 	}
