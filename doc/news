@@ -51,3 +51,5 @@ Changes from release 8.0 to release 8.1:
 
 	* emacs has been upgraded from 19.30 to 19.34.  There should
 	  be no significant user-visible changes.
+
+	* RCS has been upgraded from version 4 to version 5.7.
