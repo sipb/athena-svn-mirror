@@ -1,73 +1,7 @@
 #
-# $Id: Imakefile,v 1.1 1994-03-17 17:02:15 vrt Exp $
+# $Id: Imakefile,v 1.2 1994-08-14 16:35:57 cfields Exp $
 #
 
-#define ISUBDIRS Ansi afs-nfs attach cal cxref dash delete discuss \
-	finger from getcluster gms hostinfo ispell just \
-	kerberometer machtype mkserv mon rep rkinit \
-	sendbug tarmail top viewscribe xcluster xdsc \
-	xmore xprint xps xquota xversion
-
-#if defined(_IBMR2) || defined(sun)
-#ifdef SOLARIS
-#define SUBDIRS tcsh6
-#else
-#define XSUBDIRS tcsh6
-#endif
-#endif
-
-/* Muse is only on ultrix and bsd machines */
-#if defined(ultrix) || defined(vax) || defined(ibm032)
-#define SUBDIRS muse
-#endif
-
-SPECIAL=olc olh
-SCRIPT= psgrind xinfo xlogout olc_answers end_session techinfo sis xtechinfo
-
-/* Current directory C programs */
-SimpleProgram(session_gate,session_gate.o,,$(ATHBINDIR))
-SimpleProgram(dent,dent.o,,$(ATHBINDIR))
-
-/* SPECIAL rules */
-all::	${SPECIAL}
-
-olc:	olc/Makefile FRC
-	-(cd $@; make ${MFLAGS} world)
-olc/Makefile:
-	(cd olc; imake -I./config Makefile)
-
-olh:	olh/Makefile FRC
-	-(cd $@; make ${MFLAGS} world)
-olh/Makefile:
-	(cd olh; imake -I./config Makefile)
-
-foreach_subdirs(install, $(SPECIAL))
-foreach_subdirs(clean, $(SPECIAL))
-foreach_subdirs(depend, $(SPECIAL))
-
-/* Install */
-create_dir($(ATHBINDIR))
-install_file(owl.PS,$(ATHLIBDIR))
-
-install::
-	-for i in ${SCRIPT}; do \
-		install -c -m 755 $$i.sh ${DESTDIR}$(ATHBINDIR)/$$i; \
-		done
-	$(RM)		 ${DESTDIR}$(ATHBINDIR)/help
-	ln -s olh	 ${DESTDIR}$(ATHBINDIR)/help
-	$(RM)		 ${DESTDIR}$(ATHBINDIR)/passwd
-	ln -s kpasswd	 ${DESTDIR}$(ATHBINDIR)/passwd
-	-ln -s $(ATHBINDIR)/session_gate $(DESTDIR)/usr/athena/session_gate
-
-install_man(dent.1,dent.1)
-install_man(end_session.1,end_session.1)
-install_man_links(kpasswd.1,passwd.1)
-install_man(session_gate.1,session_gate.1)
-install_man(xinfo.1,xinfo.1)
-install_man(sis.1,sis.1)
-install_man(xtechinfo.1,xtechinfo.1)
-
-#if defined(vax) || defined(ibm032) || defined(ultrix)
 build_program(access_off,access_off.o,,)
 install_program(access_off,-o root -m 4555,$(ATHBINDIR))
 install_man(access_on.1,access_on.1)
@@ -75,4 +9,3 @@ install_man_links(access_on.1,access_off.1)
 install::
 	$(RM)            ${DESTDIR}$(ATHBINDIR)/access_on
 	ln -s access_off ${DESTDIR}$(ATHBINDIR)/access_on
-#endif
