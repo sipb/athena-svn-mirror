@@ -1,4 +1,4 @@
-# $Id: Makefile.athena,v 1.6 2003-03-13 22:07:10 ghudson Exp $
+# $Id: Makefile.athena,v 1.7 2003-05-20 20:17:12 ghudson Exp $
 
 SHELL=/bin/sh
 ATHRBINDIR=/bin/athena
@@ -297,14 +297,14 @@ install:
 		$$SRVD/etc/sysconfig/openafs ; \
 	   for arch in i386 i586 i686; do \
 		install -c -m 444 $$ATHENA_SYS/dest/root.client${VICE}/modload/libafs-$${LINUX_VERS}.$${arch}.o $$SRVD${VICE}/modload ; \
-		install -c -m 444 $$ATHENA_SYS/dest/root.client${VICE}/modload/libafs-$${LINUX_VERS}.$${arch}.mp.o $$SRVD${VICE}/modload/libafs-$${LINUX_VERS}smp.$${arch}.mp.o ; \
+		install -c -m 444 $$ATHENA_SYS/dest/root.client${VICE}/modload/libafs-$${LINUX_VERS}.$${arch}.mp.o $$SRVD${VICE}/modload/libafs-$${LINUX_VERS}.$${arch}.mp.o ; \
 	   done ; \
 	   rm -f $$SRVD${VICE}/modload/libafs-$${LINUX_VERS}.i486.o ; \
 	   ln -s libafs-$${LINUX_VERS}.i386.o \
 		$$SRVD${VICE}/modload/libafs-$${LINUX_VERS}.i486.o ; \
-	   rm -f $$SRVD${VICE}/modload/libafs-$${LINUX_VERS}smp.i486.mp.o ; \
-	   ln -s libafs-$${LINUX_VERS}smp.i386.mp.o \
-		$$SRVD${VICE}/modload/libafs-$${LINUX_VERS}smp.i486.mp.o \
+	   rm -f $$SRVD${VICE}/modload/libafs-$${LINUX_VERS}.i486.mp.o ; \
+	   ln -s libafs-$${LINUX_VERS}.i386.mp.o \
+		$$SRVD${VICE}/modload/libafs-$${LINUX_VERS}.i486.mp.o \
 	   ;; \
 	sun4) \
 	   mkdir -p $$SRVD/kernel/fs/sparcv9 ; \
