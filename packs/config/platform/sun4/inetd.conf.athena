@@ -13,7 +13,6 @@ eklogin	stream	tcp	nowait	switched	root	/usr/athena/etc/klogind	eklogind
 rkinit	stream	tcp	nowait	switched	root	/usr/athena/etc/rkinitd rkinitd
 finger	stream	tcp	nowait	unswitched	daemon	/usr/sbin/in.fingerd	fingerd
 write	stream	tcp	nowait	unswitched	root	/usr/athena/etc/writed	writed
-talk	dgram	udp	wait	unswitched	root	/usr/sbin/in.talkd	talkd
 gshell	stream	tcp	nowait	unswitched	root	/afs/net/system/gsh/bin/gshd gshd
 time	stream	tcp	nowait	unswitched	root	internal	internal
 time	dgram	udp	nowait	unswitched	root	internal	internal
