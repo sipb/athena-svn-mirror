@@ -1,0 +1,14 @@
+#!/bin/sh
+
+if pkginfo -q MIT-base ; then
+  # Remove /usr/athena/info/dir from the package database for the
+  # following packages, which erroneously installed that file in
+  # earlier versions of 9.3.
+  info_pkgs="MIT-bash MIT-emacs MIT-findutils MIT-gmp MIT-librep"
+  info_pkgs="$info_pkgs MIT-sawfish MIT-tetex"
+
+  for pkg in $info_pkgs ; do
+    removef $pkg /usr/athena/info/dir > /dev/null 2>&1
+    removef -f $pkg > /dev/null 2>&1
+  done
+fi
