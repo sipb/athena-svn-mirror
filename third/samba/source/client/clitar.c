@@ -38,6 +38,7 @@
 #include "includes.h"
 #include "clitar.h"
 #include "../client/client_proto.h"
+#undef HAVE_REGEX_H
 
 static int clipfind(char **aret, int ret, char *tok);
 
