@@ -3,7 +3,7 @@
 _NOTICE N1[] = "Copyright (c) 1985,1987 Adobe Systems Incorporated";
 _NOTICE N2[] = "GOVERNMENT END USERS: See Notice file in TranScript library directory";
 _NOTICE N3[] = "-- probably /usr/lib/ps/Notice";
-_NOTICE RCSID[]= "$Header: /afs/dev.mit.edu/source/repository/third/transcript/src/ps4014.c,v 1.1.1.1 1996-10-07 20:25:49 ghudson Exp $";
+_NOTICE RCSID[]= "$Header: /afs/dev.mit.edu/source/repository/third/transcript/src/ps4014.c,v 1.2 1996-10-14 04:57:59 ghudson Exp $";
 #endif
 /* ps4014.c
  *
@@ -15,6 +15,13 @@ _NOTICE RCSID[]= "$Header: /afs/dev.mit.edu/source/repository/third/transcript/s
  *
  * RCSLOG:
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  1996/04/21 05:33:27  ghudson
+ * "static" applied to structure type declarations (with no variable
+ * declarations) is wrong.
+ *
+ * Revision 1.1  1996/04/20 00:22:51  bert
+ * Initial revision
+ *
  * Revision 3.10  1993/07/08  21:21:12  snichols
  * handle extraneous spaces in graphics mode.
  *
@@ -129,7 +136,7 @@ private Skip4110();
 /* move this to transcript.h some day */
 private char scProlog[512];
 
-private struct Params {
+struct Params {
     char   *scSrcFile;		/* string name of 4014 source file */
     char   *scDstFile;		/* string name of PS destination file */
     char   *scDbgFile;		/* string name of debug output file */
@@ -150,10 +157,10 @@ private struct Params {
 };
 
 
-private struct Real4110 {
+struct Real4110 {
     long    mantissa, exp;
 };				/* 4110-format real number */
-private struct Sts {
+struct Sts {
     short   md;			/* current mode */
     int     xh;			/* current x-position (in 4096ths) */
     int     yh;			/* current y-position (in 4096ths) */
