@@ -91,118 +91,191 @@ Third-party stuff not under third
 Distribution sites for software under third
 -------------------------------------------
 
-	afsbin		See below.
-	ammonite	ftp.gnome.org:pub/GNOME/sources/ammonite
-	aspell		ftp.gnu.org:pub/gnu/aspell
-	aspell-dict	ftp.gnu.org:pub/gnu/aspell
-	audiofile	ftp.gnome.org:pub/GNOME/sources/audiofile
-	bash		ftp.gnu.org:pub/gnu/bash
-	bind		ftp.isc.org:isc/bind/src
-	binutils	ftp.gnu.org:pub/gnu/binutils
-	bonobo		ftp.gnome.org:pub/GNOME/sources/bonobo
-	bonobo-conf	ftp.gnome.org:pub/GNOME/sources/bonobo
-	bzip2		sources.redhat.com:pub/bzip2
-	control-center	ftp.gnome.org:pub/GNOME/sources/control-center
-	cyrus-imapd	ftp.andrew.cmu.edu:pub/cyrus-mail
-	cyrus-sasl	ftp.andrew.cmu.edu:pub/cyrus-mail
-	db		http://www.sleepycat.com/download.html
-	diffutils	ftp.gnu.org:pub/gnu/diffutils
-	eel		ftp.gnome.org:pub/GNOME/sources/eel
-	emacs		ftp.gnu.org:pub/gnu/emacs; see below
-	esound		ftp.gnome.org:pub/GNOME/sources/esound
-	evolution	ftp.gnome.org:pub/GNOME/sources/evolution
-	expat		http://sourceforge.net/projects/expat/
-	fcpackage	http://fontconfig.org/
-	flex		ftp.gnu.org:pub/gnu/non-gnu/flex
-	freetype	ftp.freetype.org:pub/freetype2
-	gcc		ftp.gnu.org:pub/gnu/gcc
-	GConf		ftp.gnome.org:pub/GNOME/sources/GConf
-	gal		ftp.gnome.org:pub/GNOME/sources/gal
-	gdbm		ftp.gnu.org:pub/gnu/gdbm
-	gdk-pixbuf	ftp.gnome.org:pub/GNOME/sources/gdk-pixbuf
-	gettext		ftp.gnu.org:pub/gnu/gettext
-	glib		ftp.gtk.org:pub/gtk
-	gtk		ftp.gtk.org:pub/gtk
-	gtkhtml		ftp.gnome.org:pub/GNOME/sources/gtkhtml
-	gmake		ftp.gnu.org:pub/gnu/make
-	gmp		ftp.gnu.org:pub/gnu/gmp
-	gnome-core	ftp.gnome.org:pub/GNOME/sources/gnome-core
-	gnome-libs	ftp.gnome.org:pub/GNOME/sources/gnome-libs
-	gnome-print	ftp.gnome.org:pub/GNOME/sources/gnome-print
-	gnome-spell	ftp.gnome.org:pub/GNOME/sources/gnome-spell
-	gnome-vfs	ftp.gnome.org:pub/GNOME/sources/gnome-vfs
-	imlib		(Formerly www.rasterman.com; imlib 1 is dead now)
-	inetd		From NetBSD (ftp.netbsd.org), usr.sbin/inetd
-	intlfonts	ftp.gnu.org:pub/gnu/intlfonts
-	ispell		ftp.cs.ucla.edu:pub/ispell-3.1
-	jot		From NetBSD (ftp.netbsd.org), usr.bin/jot
-	jpeg		ftp://ftp.uu.net/graphics/jpeg/
-	kermit		http://www.columbia.edu/kermit
-	krb5*		http://web.mit.edu/network/kerberos-form.html
-	lam		From NetBSD (ftp.netbsd.org), usr.bin/lam
-	libghttp	ftp.gnome.org:pub/GNOME/sources/libghttp
-	libglade	ftp.gnome.org:pub/GNOME/sources/libglade
-	libpng		swrinde.nde.swri.edu:pub/png/src
-	librep		librep.sourceforge.net:pub/librep
-	librsvg		ftp.gnome.org:pub/GNOME/sources/librsvg
-	libungif	prtr-13.ucsc.edu:pub/libungif
-	libxml		ftp.gnome.org:pub/GNOME/sources/libxml
-	libxml2		ftp.gnome.org:pub/GNOME/sources/libxml
-	look		From NetBSD (ftp.netbsd.org), usr.bin/look
-	lprng		ftp.astart.com:pub/LPRng; see below
-	medusa		ftp.gnome.org:pub/GNOME/sources/medusa
-	mdoc		From NetBSD (ftp.netbsd.org), share/tmac
-	nautilus	ftp.gnome.org:pub/GNOME/sources/nautilus
-	nmh		ftp.math.gatech.edu:pub/nmh
-	nvi		http://www.bostic.com/vi/
-	oaf		ftp.gnome.org:pub/GNOME/sources/oaf
-	openafs		http://www.openafs.org/release
-	openssh		ftp.openbsd.org:pub/OpenBSD/OpenSSH
-	openssl		ftp.openssl.org:source
-	ORBit		ftp.gnome.org:pub/GNOME/sources/ORBit
-	patch		ftp.gnu.org:pub/gnu/patch
-	pcre		ftp.sourceforge.net:pub/sourceforge/pcre
-	perl		ftp.cpan.org:pub/CPAN/src
-	pine		ftp.cac.washington.edu:pine
-			ftp.cac.washington.edu:mail/kerberos4-patches.tar.Z
-	pkgconfig	http://www.freedesktop.org/software/pkgconfig.html
-	popt		ftp.rpm.org:pub/rpm/dist/rpm-4.0.x
-	readline	ftp.gnu.org:pub/gnu/readline
-	rcs		ftp.gnu.org:pub/gnu/rcs
-	read-edid	http://web.onetel.net.uk/~elephant/john/programs\
-			/linux/read-edid/
-	rep-gtk		rep-gtk.sourceforge.net:pub/rep-gtk
-	rpm		ftp.rpm.org:pub/rpm/dist
-	rs		From NetBSD (ftp.netbsd.org), usr.bin/rs
-	sawfish		sawmill.sourceforge.net:pub/sawmill
-	sendmail*	ftp.sendmail.org:pub/sendmail
-	ssh*		ftp.cs.hut.fi:pub/ssh
-	sysinfo		http://www.magnicomp.com/
-	talk		From NetBSD (ftp.netbsd.org)
-			usr.bin/talk goes in the talk subdirectory
-			libexec/talkd goes in the talkd subdirectory
-			protocols/talkd.h is from include/protocols,
-			 with some modifications for portability.
-	tcp_wrappers*	ftp.porcupine.org:/pub/security
-	tcsh		ftp.astron.com:pub/tcsh
-	tetex		ctan.tug.org:tex-archive/systems/unix/teTeX
-	texinfo		ftp.gnu.org:pub/gnu/texinfo
-	tiff		ftp.remotesensing.org:pub/libtiff
-	top		ftp.groupsys.com:pub/top
-	traceroute	ftp.ee.lbl.gov (top level)
-	transcript	From Adobe
-	wcl		ftp.x.org:contrib/devel_tools
-			(seems to have disappeared; older versoins than
-			what we have are available in R5contrib)
-	whois		From NetBSD (ftp.netbsd.org), usr.bin/whois
-	x3270		ftp.x.org:contrib/applications
-	xalf		http://www.lysator.liu.se/~astrand/projects/xalf/
-	xmh		From X11R5
-	xml-i18n-tools	ftp.gnome.org:pub/GNOME/sources/xml-18n-tools
-	xntp		ftp.udel.edu:pub/ntp/ntp4
-	xpm		ftp.x.org:contrib/libraries
-	xscreensaver	http://www.jwz.org/xscreensaver/
-	zlib		ftp.info-zip.org:pub/infozip/zlib
+  acme                  ftp.gnome.org:pub/gnome/sources/acme
+  afs-krb5              ftp.cmf.nrl.navy.mil:pub/kerberos5
+  afsbin                See below.
+  ammonite              ftp.gnome.org:pub/gnome/sources/ammonite
+  aspell                ftp.gnu.org:pub/gnu/aspell
+  aspell-dict           ftp.gnu.org:pub/gnu/aspell
+  at-spi                ftp.gnome.org:pub/gnome/sources/at-spi
+  atk                   ftp.gnome.org:pub/gnome/sources/atk
+  audiofile             ftp.gnome.org:pub/gnome/sources/audiofile
+  autoconf              ftp.gnu.org:pub/gnu/autoconf
+  bash                  ftp.gnu.org:pub/gnu/bash
+  bind                  ftp.isc.org:isc/bind/src
+  binutils              ftp.gnu.org:pub/gnu/binutils
+  bison                 ftp.gnu.org:pub/gnu/bison
+  bonobo                ftp.gnome.org:pub/gnome/sources/bonobo
+  bonobo-activation     ftp.gnome.org:pub/gnome/sources/bonobo-activation
+  bonobo-conf           ftp.gnome.org:pub/gnome/sources/bonobo
+  bug-buddy             ftp.gnome.org:pub/gnome/sources/bug-buddy
+  bzip2                 sources.redhat.com:pub/bzip2
+  control-center        ftp.gnome.org:pub/gnome/sources/control-center
+  cyrus-imapd           ftp.andrew.cmu.edu:pub/cyrus-mail
+  cyrus-sasl            ftp.andrew.cmu.edu:pub/cyrus-mail
+  db                    http://www.sleepycat.com/download.html
+  diffutils             ftp.gnu.org:pub/gnu/diffutils
+  eel                   ftp.gnome.org:pub/gnome/sources/eel
+  emacs                 ftp.gnu.org:pub/gnu/emacs; see below
+  enscript              ftp.gnu.org:pub/gnu/enscript
+  eog                   ftp.gnome.org:pub/gnome/sources/eog
+  esound                ftp.gnome.org:pub/gnome/sources/esound
+  evolution             ftp.gnome.org:pub/gnome/sources/evolution
+  expat                 http://sourceforge.net/projects/expat/
+  fcpackage             http://fontconfig.org/
+  file-roller           ftp.gnome.org:pub/gnome/sources/file-roller
+  findutils             ftp.gnu.org:pub/gnu/findutils
+  flex                  ftp.gnu.org:pub/gnu/non-gnu/flex
+  freetype              ftp.freetype.org:pub/freetype2
+  gail                  ftp.gnome.org:pub/gnome/sources/gail
+  gal                   ftp.gnome.org:pub/gnome/sources/gal
+  gal2                  ftp.gnome.org:pub/gnome/sources/gal
+  gcc                   ftp.gnu.org:pub/gnu/gcc
+  GConf                 ftp.gnome.org:pub/gnome/sources/GConf
+  GConf2                ftp.gnome.org:pub/gnome/sources/GConf
+  gconf-editor          ftp.gnome.org:pub/gnome/sources/gconf-editor
+  gdbm                  ftp.gnu.org:pub/gnu/gdbm
+  gdk-pixbuf            ftp.gnome.org:pub/gnome/sources/gdk-pixbuf
+  gedit                 ftp.gnome.org:pub/gnome/sources/gedit
+  gettext               ftp.gnu.org:pub/gnu/gettext
+  ggv                   ftp.gnome.org:pub/gnome/sources/ggv
+  glib                  ftp.gtk.org:pub/gtk
+  glib2                 ftp.gtk.org:pub/gtk
+  gmake                 ftp.gnu.org:pub/gnu/make
+  gmp                   ftp.gnu.org:pub/gnu/gmp
+  gnome-applets         ftp.gnome.org:pub/gnome/sources/gnome-applets
+  gnome-core            ftp.gnome.org:pub/gnome/sources/gnome-core
+  gnome-desktop         ftp.gnome.org:pub/gnome/sources/gnome-desktop
+  gnome-icon-theme      ftp.gnome.org:pub/gnome/sources/gnome-icon-theme
+  gnome-libs            ftp.gnome.org:pub/gnome/sources/gnome-libs
+  gnome-media           ftp.gnome.org:pub/gnome/sources/gnome-media
+  gnome-mime-data       ftp.gnome.org:pub/gnome/sources/gnome-mime-data
+  gnome-panel           ftp.gnome.org:pub/gnome/sources/gnome-panel
+  gnome-print           ftp.gnome.org:pub/gnome/sources/gnome-print
+  gnome-spell           ftp.gnome.org:pub/gnome/sources/gnome-spell
+  gnome-system-monitor  ftp.gnome.org:pub/gnome/sources/gnome-spell
+  gnome-terminal        ftp.gnome.org:pub/gnome/sources/gnome-terminal
+  gnome-themes          ftp.gnome.org:pub/gnome/sources/gnome-themes
+  gnome-utils           ftp.gnome.org:pub/gnome/sources/gnome-utils
+  gnome-vfs             ftp.gnome.org:pub/gnome/sources/gnome-vfs
+  gnome-vfs2            ftp.gnome.org:pub/gnome/sources/gnome-vfs
+  gnome2-user-docs      ftp.gnome.org:pub/gnome/sources/gnome2-user-docs
+  gst-plugins           ftp.gnome.org:pub/gnome/sources/gst-plugsin
+  gstreamer             ftp.gnome.org:pub/gnome/sources/gstreamer
+  gtk                   ftp.gtk.org:pub/gtk
+  gtk-engines           ftp.gtk.org:pub/gtk
+  gtk-thinice-engine    ftp.gtk.org:pub/gtk
+  gtk2                  ftp.gtk.org:pub/gtk
+  gtkhtml               ftp.gnome.org:pub/gnome/sources/gtkhtml
+  gtkhtml3              ftp.gnome.org:pub/gnome/sources/gtkhtml
+  imlib                 (Formerly www.rasterman.com; imlib 1 is dead now)
+  inetd                 From NetBSD (ftp.netbsd.org), usr.sbin/inetd
+  intlfonts             ftp.gnu.org:pub/gnu/intlfonts
+  ispell                ftp.cs.ucla.edu:pub/ispell-3.1
+  jot                   From NetBSD (ftp.netbsd.org), usr.bin/jot
+  jpeg                  ftp://ftp.uu.net/graphics/jpeg/
+  kermit                http://www.columbia.edu/kermit
+  krb5*                 http://web.mit.edu/network/kerberos-form.html
+  lam                   From NetBSD (ftp.netbsd.org), usr.bin/lam
+  libart_lgpl           ftp.gnome.org:pub/gnome/sources/libart_lgpl
+  libbonobo             ftp.gnome.org:pub/gnome/sources/libbonobo
+  libbonoboui           ftp.gnome.org:pub/gnome/sources/libbonoboui
+  libgail-gnome         ftp.gnome.org:pub/gnome/sources/libgail-gnome
+  libghttp              ftp.gnome.org:pub/gnome/sources/libghttp
+  libglade              ftp.gnome.org:pub/gnome/sources/libglade
+  libglade2             ftp.gnome.org:pub/gnome/sources/libglade
+  libgnome              ftp.gnome.org:pub/gnome/sources/libgnome
+  libgnomecanvas        ftp.gnome.org:pub/gnome/sources/libgnomecanvas
+  libgnomeprint         ftp.gnome.org:pub/gnome/sources/libgnomeprint
+  libgnomeprintui       ftp.gnome.org:pub/gnome/sources/libgnomeprintui
+  libgnomeui            ftp.gnome.org:pub/gnome/sources/libgnomeui
+  libgtkhtml            ftp.gnome.org:pub/gnome/sources/libgtkhtml
+  libgtop               ftp.gnome.org:pub/gnome/sources/libgtop
+  libiconv              ftp.gnu.org:pub/gnu/libiconv
+  libIDL                ftp.gnome.org:pub/gnome/sources/libIDL
+  libole2               ftp.gnome.org:pub/gnome/sources/libole2
+  libpng                swrinde.nde.swri.edu:pub/png/src
+  librep                librep.sourceforge.net:pub/librep
+  librsvg               ftp.gnome.org:pub/gnome/sources/librsvg
+  libsoup               ftp.gnome.org:pub/gnome/sources/libsoup
+  libungif              prtr-13.ucsc.edu:pub/libungif
+  libwnck               ftp.gnome.org:pub/gnome/sources/libwnck
+  libxml                ftp.gnome.org:pub/gnome/sources/libxml
+  libxml2               ftp.gnome.org:pub/gnome/sources/libxml
+  libxslt               ftp.gnome.org:pub/gnome/sources/libxslt
+  libzvt                ftp.gnome.org:pub/gnome/sources/libzvt
+  linc                  ftp.gnome.org:pub/gnome/sources/linc
+  look                  From NetBSD (ftp.netbsd.org), usr.bin/look
+  lprng                 ftp.astart.com:pub/LPRng; see below
+  m4                    ftp.gnu.org:pub/gnu/m4
+  mdoc                  From NetBSD (ftp.netbsd.org), share/tmac
+  medusa                ftp.gnome.org:pub/gnome/sources/medusa
+  metacity              ftp.gnome.org:pub/gnome/sources/metacity
+  mingetty              ftp.gnome.org:pub/gnome/sources/mingetty
+  mozilla               ftp.mozilla.org:pub/mozilla.org/mozilla/releases
+  nautilus              ftp.gnome.org:pub/gnome/sources/nautilus
+  nautilus-media        ftp.gnome.org:pub/gnome/sources/nautilus-media
+  nmh                   ftp.math.gatech.edu:pub/nmh
+  nvi                   http://www.bostic.com/vi/
+  oaf                   ftp.gnome.org:pub/gnome/sources/oaf
+  openafs               http://www.openafs.org/release
+  openmotif		http://www.opengroup.org/openmotif
+  openssh               ftp.openbsd.org:pub/OpenBSD/OpenSSH
+  openssl               ftp.openssl.org:source
+  ORBit                 ftp.gnome.org:pub/gnome/sources/ORBit
+  ORBit2                ftp.gnome.org:pub/gnome/sources/ORBit2
+  pango                 ftp.gnome.org:pub/gnome/sources/pango
+  patch                 ftp.gnu.org:pub/gnu/patch
+  pcre                  ftp.sourceforge.net:pub/sourceforge/pcre
+  perl                  ftp.cpan.org:pub/CPAN/src
+  pine                  ftp.cac.washington.edu:pine
+                        ftp.cac.washington.edu:mail/kerberos4-patches.tar.Z
+  pkgconfig             http://www.freedesktop.org/software/pkgconfig.html
+  popt                  ftp.rpm.org:pub/rpm/dist/rpm-4.0.x
+  rcs                   ftp.gnu.org:pub/gnu/rcs
+  read-edid             http://web.onetel.net.uk/~elephant/john/programs\
+                        /linux/read-edid/
+  readline              ftp.gnu.org:pub/gnu/readline
+  redhat-fonts          See README file contained within
+  rep-gtk               rep-gtk.sourceforge.net:pub/rep-gtk
+  rpm                   ftp.rpm.org:pub/rpm/dist
+  rs                    From NetBSD (ftp.netbsd.org), usr.bin/rs
+  sawfish               sawmill.sourceforge.net:pub/sawmill
+  scrollkeeper          ftp.gnome.org:pub/gnome/sources/scrollkeeper
+  sed                   ftp.gnu.org:pub/gnu/sed
+  sendmail*             ftp.sendmail.org:pub/sendmail
+  soup                  ftp.gnome.org:pub/gnome/sources/soup
+  ssh*                  ftp.cs.hut.fi:pub/ssh
+  startup-notification  ftp.gnome.org:pub/gnome/sources/startup-notification
+  sysinfo               http://www.magnicomp.com/
+  talk                  From NetBSD (ftp.netbsd.org)
+                        usr.bin/talk goes in the talk subdirectory
+                        libexec/talkd goes in the talkd subdirectory
+                        protocols/talkd.h is from include/protocols,
+                         with some modifications for portability.
+  tcp_wrappers*         ftp.porcupine.org:/pub/security
+  tcsh                  ftp.astron.com:pub/tcsh
+  tetex                 ctan.tug.org:tex-archive/systems/unix/teTeX
+  texinfo               ftp.gnu.org:pub/gnu/texinfo
+  tiff                  ftp.remotesensing.org:pub/libtiff
+  top                   ftp.groupsys.com:pub/top
+  traceroute            ftp.ee.lbl.gov (top level)
+  transcript            From Adobe
+  vte                   ftp.gnome.org:pub/gnome/sources/vte
+  wcl                   ftp.x.org:contrib/devel_tools
+                        (seems to have disappeared; older versoins than
+                        what we have are available in R5contrib)
+  whois                 From NetBSD (ftp.netbsd.org), usr.bin/whois
+  x11-ssh-askpass       http://www.pobox.com/~jmknoble/software/x11-ssh-askpass
+  x3270                 ftp.x.org:contrib/applications
+  xalf                  http://www.lysator.liu.se/~astrand/projects/xalf/
+  xmh                   From X11R5
+  xml-i18n-tools        ftp.gnome.org:pub/gnome/sources/xml-18n-tools
+  xntp                  ftp.udel.edu:pub/ntp/ntp4
+  xpm                   ftp.x.org:contrib/libraries
+  xscreensaver          http://www.jwz.org/xscreensaver/
+  yelp                  ftp.gnome.org:pub/gnome/sources/yelp
+  zlib                  ftp.info-zip.org:pub/infozip/zlib
 
 PGP Signatures
 --------------
