@@ -64,11 +64,13 @@ following steps while preparing your changes for review:
 	   the submitter, but it greatly increases the effectiveness
 	   of the review process.
 
-	4. Use "cvs diff -c -N" piped to a file to prepare your
+	4. Use "cvs diff -u -N" piped to a file to prepare your
 	   changes.  (Do not cut and paste diffs from an xterm; your
 	   tabs will be converted to spaces.)  If your change
-	   involves lots of reindentation, you may want to also use
-	   the "-w" flag to diff.
+	   involves reindentation of code, you may want to also use
+	   the "-w" flag to diff.  If you find that your change is
+	   clearer when presented as a context diff ("-c" instead of
+	   "-u"), feel free to submit it that way.
 
 	5. Look over your diffs.  Make sure you haven't been sloppy
 	   about spacing, punctuation, and naming, and that you have
