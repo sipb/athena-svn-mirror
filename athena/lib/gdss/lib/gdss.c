@@ -1,7 +1,7 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/gdss/lib/gdss.c,v $
  * $Author: jis $
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/gdss/lib/gdss.c,v 1.2 1991-11-11 00:24:03 jis Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/lib/gdss/lib/gdss.c,v 1.3 1991-11-13 16:38:17 jis Exp $
  */
 /*
  * GDSS The Generic Digital Signature Service
@@ -77,7 +77,7 @@ static int fetchkey()
   unsigned char buffer[512];
 
   if (gdss_have_key) return (0);
-  keyf = fopen("/tmp/gdss_public_key", "r");
+  keyf = fopen("/etc/athena/gdss_public_key", "r");
   if (keyf == NULL) return (-1);
   fread(buffer, 1, 512, keyf);
   fclose(keyf);
@@ -137,7 +137,7 @@ unsigned int *SignatureLen;
 
   if(hp == NULL) return (-1);	/* Could not find host, you lose */
 
-  status = krb_mk_req(&authent, "rcmd", "big-screw", lrealm, cksum);
+  status = krb_mk_req(&authent, "gdss", "big-screw", lrealm, cksum);
   if (status != KSUCCESS) return (status);
   packet[0] = 0;		/* Version 0 of protocol */
   (void) bcopy((char *)hash, (char *)&packet[1], 16);
