@@ -11,7 +11,7 @@
 
 #if  (!defined(lint))  &&  (!defined(SABER))
 static char *rcsid =
-"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/StrToXColor.c,v 1.1 1993-07-02 00:00:58 vanharen Exp $";
+"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/StrToXColor.c,v 1.2 1993-07-02 17:19:35 vanharen Exp $";
 #endif
 
 #include "mit-copyright.h"
@@ -76,7 +76,7 @@ int StrToXPixel(display, string, pixel)
    * parse the resource -- if there are 2 or 3 "words", then
    * assign them to the other addresses.
    */
-  if ((ptr = address2 = index(copy, sep))  !=  NULL)
+  if ((ptr = address2 = (char *) index(copy, sep))  !=  NULL)
     {
       ptr--;			/* strip trailing spaces off word */
       while (isspace(*ptr))	/*   before comma */
@@ -87,7 +87,7 @@ int StrToXPixel(display, string, pixel)
       while (isspace(*address2)) /*   after comma */
 	address2++;
 
-      if ((ptr = address3 = index(address2, sep))  !=  NULL)
+      if ((ptr = address3 = (char *) index(address2, sep))  !=  NULL)
 	{
 	  ptr--;		/* strip trailing spaces off word */
 	  while (isspace(*ptr))	/*   before comma */
