@@ -13,6 +13,8 @@
                        value="The Personal Addressbook Server"/>
 	<oaf_attribute name="description-az" type="string"
                        value="&#197;&#158;&#201;&#153;xsi &#195;&#156;nvan D&#201;&#153;ft&#201;&#153;ri Vericisi"/>
+	<oaf_attribute name="description-bg" type="string"
+                       value="&#209;&#250;&#240;&#226;&#250;&#240; &#237;&#224; &#207;&#229;&#240;&#241;&#238;&#237;&#224;&#235;&#237;&#224;&#242;&#224; &#192;&#228;&#240;&#229;&#241;&#237;&#224; &#202;&#237;&#232;&#227;&#224;"/>
 	<oaf_attribute name="description-da" type="string"
                        value="Personlig adressebogs-server"/>
 	<oaf_attribute name="description-de" type="string"
@@ -85,6 +87,8 @@
                        value="The Personal Calendar Server; calendar factory"/>
 	<oaf_attribute name="description-az" type="string"
                        value="&#197;&#158;&#201;&#153;xsi &#195;&#156;nvan D&#201;&#153;ft&#201;&#153;ri Vericisi; t&#201;&#153;qvim e&#39;malatxanas&#196;&#177;"/>
+	<oaf_attribute name="description-bg" type="string"
+                       value="&#209;&#250;&#240;&#226;&#250;&#240; &#237;&#224; &#207;&#229;&#240;&#241;&#238;&#237;&#224;&#235;&#229;&#237; &#202;&#224;&#235;&#229;&#237;&#228;&#224;&#240;; &#244;&#224;&#225;&#240;&#232;&#234;&#224; &#237;&#224; &#234;&#224;&#235;&#229;&#237;&#228;&#224;&#240;"/>
 	<oaf_attribute name="description-da" type="string"
                        value="Personlig adressebogs-server; fabrik"/>
 	<oaf_attribute name="description-de" type="string"

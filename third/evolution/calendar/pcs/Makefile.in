@@ -81,6 +81,7 @@ DATADIRNAME = @DATADIRNAME@
 DB3_CFLAGS = @DB3_CFLAGS@
 DB3_LDADD = @DB3_LDADD@
 DLLTOOL = @DLLTOOL@
+DTAPPINTEGRATE = @DTAPPINTEGRATE@
 ECHO = @ECHO@
 EVOLUTION_DIR = @EVOLUTION_DIR@
 EXEEXT = @EXEEXT@
@@ -104,6 +105,7 @@ GNOME_LIBDIR = @GNOME_LIBDIR@
 GNOME_LIBS = @GNOME_LIBS@
 GNOME_PILOT_CFLAGS = @GNOME_PILOT_CFLAGS@
 GNOME_PILOT_LIBS = @GNOME_PILOT_LIBS@
+GNOME_PREFIX = @GNOME_PREFIX@
 GNOME_PRINT_CFLAGS = @GNOME_PRINT_CFLAGS@
 GNOME_PRINT_LIBS = @GNOME_PRINT_LIBS@
 GNOME_VFS_CFLAGS = @GNOME_VFS_CFLAGS@
@@ -357,51 +359,6 @@ distdir: $(DISTFILES)
 	  fi; \
 	done
 	$(MAKE) $(AM_MAKEFLAGS) top_distdir="$(top_distdir)" distdir="$(distdir)" dist-hook
-cal-backend-file.o: cal-backend-file.c ../../config.h \
-	../../e-util/e-dbhash.h ../../calendar/cal-util/cal-recur.h \
-	../../calendar/cal-util/cal-component.h \
-	../../libical/src/libical/ical.h \
-	../../calendar/cal-util/cal-util.h cal-backend-file.h \
-	cal-backend.h evolution-calendar.h cal-common.h cal.h \
-	cal-backend-util.h
-cal-backend-util.o: cal-backend-util.c cal-backend-util.h cal-backend.h \
-	../../calendar/cal-util/cal-util.h \
-	../../libical/src/libical/ical.h ../../config.h \
-	../../calendar/cal-util/cal-component.h \
-	../../calendar/cal-util/cal-recur.h evolution-calendar.h \
-	cal-common.h cal.h
-cal-backend.o: cal-backend.c ../../config.h cal-backend.h \
-	../../calendar/cal-util/cal-util.h \
-	../../libical/src/libical/ical.h \
-	../../calendar/cal-util/cal-component.h \
-	../../calendar/cal-util/cal-recur.h evolution-calendar.h \
-	cal-common.h cal.h ../../libversit/vcc.h \
-	../../libversit/vobject.h ../../libversit/port.h
-cal-factory.o: cal-factory.c ../../config.h ../../e-util/e-url.h \
-	evolution-calendar.h cal.h cal-common.h cal-backend.h \
-	../../calendar/cal-util/cal-util.h \
-	../../libical/src/libical/ical.h \
-	../../calendar/cal-util/cal-component.h \
-	../../calendar/cal-util/cal-recur.h cal-factory.h job.h
-cal.o: cal.c ../../config.h ../../libical/src/libical/ical.h cal.h \
-	evolution-calendar.h cal-common.h query.h cal-backend.h \
-	../../calendar/cal-util/cal-util.h \
-	../../calendar/cal-util/cal-component.h \
-	../../calendar/cal-util/cal-recur.h ../../libwombat/wombat.h
-evolution-calendar-common.o: evolution-calendar-common.c \
-	evolution-calendar.h
-evolution-calendar-skels.o: evolution-calendar-skels.c \
-	evolution-calendar.h
-evolution-calendar-stubs.o: evolution-calendar-stubs.c \
-	evolution-calendar.h
-job.o: job.c ../../config.h job.h
-query.o: query.c ../../config.h ../../e-util/e-sexp.h \
-	../../calendar/cal-util/cal-recur.h \
-	../../calendar/cal-util/cal-component.h \
-	../../libical/src/libical/ical.h \
-	../../calendar/cal-util/timeutil.h query.h cal-backend.h \
-	../../calendar/cal-util/cal-util.h evolution-calendar.h \
-	cal-common.h cal.h
 
 info-am:
 info: info-am

@@ -69,6 +69,8 @@
                        value="Alarm notification service"/>
 	<oaf_attribute name="description-az" type="string"
                        value="Alarm verm&#201;&#153; xidm&#201;&#153;ti"/>
+	<oaf_attribute name="description-bg" type="string"
+                       value="&#192;&#235;&#224;&#240;&#236;&#229;&#237;&#238; &#232;&#231;&#226;&#229;&#241;&#242;&#255;&#226;&#224;&#249;&#238; &#238;&#225;&#241;&#235;&#243;&#230;&#226;&#224;&#237;&#229;"/>
 	<oaf_attribute name="description-da" type="string"
                        value="Alarm-tjeneste"/>
 	<oaf_attribute name="description-de" type="string"

@@ -24,6 +24,7 @@
 #include <ical.h>
 #include <bonobo/bonobo-exception.h>
 #include "cal.h"
+#include "cal-backend.h"
 #include "query.h"
 #include "wombat.h"
 
@@ -333,6 +334,11 @@ impl_Cal_get_alarms_in_range (PortableServer_Servant servant,
 	seq = cal_backend_get_alarms_in_range (priv->backend, t_start, t_end, &valid_range);
 	if (!valid_range) {
 		bonobo_exception_set (ev, ex_GNOME_Evolution_Calendar_Cal_InvalidRange);
+		return NULL;
+	}
+
+	if (!seq) {
+		bonobo_exception_set (ev, ex_GNOME_Evolution_Calendar_Cal_NotFound);
 		return NULL;
 	}
 

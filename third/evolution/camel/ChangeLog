@@ -1,3 +1,63 @@
+2002-05-02  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* camel-mime-utils.c (header_decode_mailbox): Fixed the fix for
+	stupidly-broken-mailer bug #5 to work when multiple unescaped
+	characters were in a row. Fixes bug #24140.
+
+2002-04-29  Not Zed  <NotZed@Ximian.com>
+
+	* providers/local/camel-spool-store.c (get_folder_info): We want
+	to set unread_count to get_unread_message_count, not
+	get_message_count().  Might fix #17174.  Also removed FIXME: as it
+	was fixed.
+
+2002-04-16  Not Zed  <NotZed@Ximian.com>
+
+	* providers/local/camel-spool-summary.c (spool_summary_sync_full):
+	Backport from head.  If the last message(s) were deleted, and we
+	had any messages output, account for the lost \n of the following
+	From line by adding an extra \n. fix for #8214.
+	(camel_spool_summary_build_from): Backport from head.  The day
+	number has to be 2 chars wide, space filled to work properly with
+	pine, etc.
+
+2002-04-09  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* camel-store.c (camel_store_init): Make the folder_lock
+	recursive. See bug #22363 for details. Basically,
+	get_folder_info() is requesting a diary folder which in turn
+	connects which then calls get_folder() but deadlocks because
+	get_folder_info already holds the lock.
+
+	* camel-mime-message.c (camel_mime_message_set_date): Don't adjust
+	the timezone offset if we used tm.tm_gmtoff because it is already
+	adjusted.
+
+2002-04-09  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* camel-tcp-stream-ssl.c (stream_connect): Backport non-blocking
+	connect code. Hopefully this fixes the Operation In Progress
+	errors.
+
+2002-04-09  Not Zed  <NotZed@Ximian.com>
+
+	* camel-mime-part.c (construct_from_parser): If we get multiple
+	Content-Type header values, change subsequent headers to
+	X-Invalid-Content-Type so it doesn't wreck processing.  This fixes
+	the reported case in #18929, but i dont know if it fixes the
+	original posters problems.
+
+2002-04-08  Not Zed  <NotZed@Ximian.com>
+
+	* camel-mime-utils.c (base64_decode_step): If we only get passed
+	'=', we back track only if we actually output any data.  Fix for
+	#21716.
+	(quoted_decode): Pass out size_t instead of int, and use 0 instead
+	of -1 for error since its not signed.  This will fix similar bug
+	to above in different circumstances since the result is taken as
+	unsigned.  This is only an internal func.
+	(quoted_encode): Return size_t just for consistency.
+
 2002-02-22  Jeffrey Stedfast  <fejj@ximian.com>
 
 	* camel-mime-part.c (camel_mime_part_set_filename): Set the 'name'

@@ -81,6 +81,7 @@ DATADIRNAME = @DATADIRNAME@
 DB3_CFLAGS = @DB3_CFLAGS@
 DB3_LDADD = @DB3_LDADD@
 DLLTOOL = @DLLTOOL@
+DTAPPINTEGRATE = @DTAPPINTEGRATE@
 ECHO = @ECHO@
 EVOLUTION_DIR = @EVOLUTION_DIR@
 EXEEXT = @EXEEXT@
@@ -104,6 +105,7 @@ GNOME_LIBDIR = @GNOME_LIBDIR@
 GNOME_LIBS = @GNOME_LIBS@
 GNOME_PILOT_CFLAGS = @GNOME_PILOT_CFLAGS@
 GNOME_PILOT_LIBS = @GNOME_PILOT_LIBS@
+GNOME_PREFIX = @GNOME_PREFIX@
 GNOME_PRINT_CFLAGS = @GNOME_PRINT_CFLAGS@
 GNOME_PRINT_LIBS = @GNOME_PRINT_LIBS@
 GNOME_VFS_CFLAGS = @GNOME_VFS_CFLAGS@
@@ -375,53 +377,6 @@ distdir: $(DISTFILES)
 	  fi; \
 	done
 	$(MAKE) $(AM_MAKEFLAGS) top_distdir="$(top_distdir)" distdir="$(distdir)" dist-hook
-addressbook-common.o: addressbook-common.c addressbook.h
-addressbook-skels.o: addressbook-skels.c addressbook.h
-addressbook-stubs.o: addressbook-stubs.c addressbook.h
-pas-backend-card-sexp.o: pas-backend-card-sexp.c pas-backend-card-sexp.h \
-	../../../e-util/e-sexp.h \
-	../../../addressbook/backend/ebook/e-card-simple.h \
-	../../../addressbook/backend/ebook/e-card.h \
-	../../../addressbook/backend/ebook/e-card-types.h \
-	../../../e-util/e-list.h ../../../e-util/e-list-iterator.h \
-	../../../e-util/e-iterator.h
-pas-backend-file.o: pas-backend-file.c ../../../config.h \
-	pas-backend-file.h pas-backend.h addressbook.h pas-book.h \
-	pas-book-view.h ../../../e-util/e-list.h \
-	../../../e-util/e-list-iterator.h ../../../e-util/e-iterator.h \
-	pas-backend.h pas-card-cursor.h ../../../e-util/e-db3-utils.h \
-	../../../addressbook/backend/ebook/e-card-simple.h \
-	../../../addressbook/backend/ebook/e-card.h \
-	../../../addressbook/backend/ebook/e-card-types.h \
-	../../../e-util/e-dbhash.h pas-book.h pas-card-cursor.h \
-	pas-backend-card-sexp.h
-pas-backend-ldap.o: pas-backend-ldap.c ../../../config.h \
-	../../../e-util/e-sexp.h \
-	../../../addressbook/backend/ebook/e-card-simple.h \
-	../../../addressbook/backend/ebook/e-card.h \
-	../../../addressbook/backend/ebook/e-card-types.h \
-	../../../e-util/e-list.h ../../../e-util/e-list-iterator.h \
-	../../../e-util/e-iterator.h pas-backend-ldap.h pas-backend.h \
-	addressbook.h pas-book.h pas-book-view.h pas-backend.h \
-	pas-card-cursor.h pas-backend-card-sexp.h pas-book.h \
-	pas-card-cursor.h
-pas-backend.o: pas-backend.c ../../../config.h pas-backend.h \
-	addressbook.h pas-book.h pas-book-view.h \
-	../../../e-util/e-list.h ../../../e-util/e-list-iterator.h \
-	../../../e-util/e-iterator.h pas-backend.h pas-card-cursor.h
-pas-book-factory.o: pas-book-factory.c ../../../config.h addressbook.h \
-	pas-book-factory.h pas-backend.h addressbook.h pas-book.h \
-	pas-book-view.h ../../../e-util/e-list.h \
-	../../../e-util/e-list-iterator.h ../../../e-util/e-iterator.h \
-	pas-card-cursor.h
-pas-book-view.o: pas-book-view.c ../../../config.h pas-book-view.h \
-	addressbook.h
-pas-book.o: pas-book.c ../../../config.h ../../../e-util/e-list.h \
-	../../../e-util/e-list-iterator.h ../../../e-util/e-iterator.h \
-	pas-book.h addressbook.h pas-book-view.h pas-backend.h \
-	pas-book.h pas-card-cursor.h
-pas-card-cursor.o: pas-card-cursor.c ../../../config.h addressbook.h \
-	pas-card-cursor.h addressbook.h
 
 info-am:
 info: info-am

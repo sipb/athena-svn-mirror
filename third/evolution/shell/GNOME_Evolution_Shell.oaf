@@ -12,8 +12,10 @@
                        value="The Evolution shell."/>
 	<oaf_attribute name="description-az" type="string"
                        value="&#39;Evolution&#39; qab&#196;&#177;&#196;&#159;&#196;&#177;."/>
+	<oaf_attribute name="description-bg" type="string"
+                       value="Shell &#237;&#224; Evolution"/>
 	<oaf_attribute name="description-da" type="string"
-                       value="Evolution skallen."/>
+                       value="Evolution-skallen."/>
 	<oaf_attribute name="description-de" type="string"
                        value="Die Evolution-Shell."/>
 	<oaf_attribute name="description-el" type="string"

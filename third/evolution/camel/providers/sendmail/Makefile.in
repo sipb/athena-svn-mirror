@@ -81,6 +81,7 @@ DATADIRNAME = @DATADIRNAME@
 DB3_CFLAGS = @DB3_CFLAGS@
 DB3_LDADD = @DB3_LDADD@
 DLLTOOL = @DLLTOOL@
+DTAPPINTEGRATE = @DTAPPINTEGRATE@
 ECHO = @ECHO@
 EVOLUTION_DIR = @EVOLUTION_DIR@
 EXEEXT = @EXEEXT@
@@ -104,6 +105,7 @@ GNOME_LIBDIR = @GNOME_LIBDIR@
 GNOME_LIBS = @GNOME_LIBS@
 GNOME_PILOT_CFLAGS = @GNOME_PILOT_CFLAGS@
 GNOME_PILOT_LIBS = @GNOME_PILOT_LIBS@
+GNOME_PREFIX = @GNOME_PREFIX@
 GNOME_PRINT_CFLAGS = @GNOME_PRINT_CFLAGS@
 GNOME_PRINT_LIBS = @GNOME_PRINT_LIBS@
 GNOME_VFS_CFLAGS = @GNOME_VFS_CFLAGS@
@@ -403,35 +405,6 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
-camel-sendmail-provider.lo camel-sendmail-provider.o : \
-	camel-sendmail-provider.c ../../../config.h \
-	../../../camel/camel-provider.h ../../../camel/camel-types.h \
-	../../../camel/camel-object.h camel-sendmail-transport.h \
-	../../../camel/camel-transport.h ../../../camel/camel-service.h \
-	../../../camel/camel-url.h ../../../camel/camel-operation.h \
-	../../../camel/camel-session.h ../../../e-util/e-msgport.h
-camel-sendmail-transport.lo camel-sendmail-transport.o : \
-	camel-sendmail-transport.c ../../../config.h \
-	camel-sendmail-transport.h ../../../camel/camel-transport.h \
-	../../../camel/camel-service.h ../../../camel/camel-object.h \
-	../../../camel/camel-types.h ../../../camel/camel-url.h \
-	../../../camel/camel-provider.h \
-	../../../camel/camel-operation.h \
-	../../../camel/camel-mime-message.h \
-	../../../camel/camel-mime-part.h ../../../camel/camel-medium.h \
-	../../../camel/camel-data-wrapper.h \
-	../../../camel/camel-mime-utils.h \
-	../../../camel/camel-mime-parser.h \
-	../../../camel/camel-mime-filter.h \
-	../../../camel/camel-stream.h \
-	../../../camel/camel-internet-address.h \
-	../../../camel/camel-address.h \
-	../../../camel/camel-mime-filter-bestenc.h \
-	../../../camel/camel-charset-map.h \
-	../../../camel/camel-stream-fs.h \
-	../../../camel/camel-seekable-stream.h \
-	../../../camel/camel-exception.h \
-	../../../camel/camel-exception-list.def
 
 info-am:
 info: info-am

@@ -85,6 +85,7 @@ DATADIRNAME = @DATADIRNAME@
 DB3_CFLAGS = @DB3_CFLAGS@
 DB3_LDADD = @DB3_LDADD@
 DLLTOOL = @DLLTOOL@
+DTAPPINTEGRATE = @DTAPPINTEGRATE@
 ECHO = @ECHO@
 EVOLUTION_DIR = @EVOLUTION_DIR@
 EXEEXT = @EXEEXT@
@@ -108,6 +109,7 @@ GNOME_LIBDIR = @GNOME_LIBDIR@
 GNOME_LIBS = @GNOME_LIBS@
 GNOME_PILOT_CFLAGS = @GNOME_PILOT_CFLAGS@
 GNOME_PILOT_LIBS = @GNOME_PILOT_LIBS@
+GNOME_PREFIX = @GNOME_PREFIX@
 GNOME_PRINT_CFLAGS = @GNOME_PRINT_CFLAGS@
 GNOME_PRINT_LIBS = @GNOME_PRINT_LIBS@
 GNOME_VFS_CFLAGS = @GNOME_VFS_CFLAGS@
@@ -461,42 +463,6 @@ distdir: $(DISTFILES)
 	  fi; \
 	done
 	$(MAKE) $(AM_MAKEFLAGS) top_distdir="$(top_distdir)" distdir="$(distdir)" dist-hook
-cal-client-multi.lo cal-client-multi.o : cal-client-multi.c \
-	../../config.h cal-client-multi.h cal-client.h \
-	../../calendar/cal-util/cal-recur.h \
-	../../calendar/cal-util/cal-component.h \
-	../../libical/src/libical/ical.h \
-	../../calendar/cal-util/cal-util.h cal-query.h \
-	evolution-calendar.h
-cal-client-types.lo cal-client-types.o : cal-client-types.c \
-	../../config.h cal-client-types.h \
-	../../calendar/cal-util/cal-component.h \
-	../../libical/src/libical/ical.h
-cal-client.lo cal-client.o : cal-client.c ../../config.h \
-	cal-client-types.h ../../calendar/cal-util/cal-component.h \
-	../../libical/src/libical/ical.h cal-client.h \
-	../../calendar/cal-util/cal-recur.h \
-	../../calendar/cal-util/cal-util.h cal-query.h \
-	evolution-calendar.h cal-listener.h evolution-calendar.h \
-	../../libwombat/wombat-client.h ../../libwombat/wombat.h
-cal-listener.lo cal-listener.o : cal-listener.c ../../config.h \
-	cal-listener.h evolution-calendar.h
-cal-query.lo cal-query.o : cal-query.c ../../config.h cal-query.h \
-	evolution-calendar.h query-listener.h
-client-test.o: client-test.c ../../config.h cal-client.h \
-	../../calendar/cal-util/cal-recur.h \
-	../../calendar/cal-util/cal-component.h \
-	../../libical/src/libical/ical.h \
-	../../calendar/cal-util/cal-util.h cal-query.h \
-	evolution-calendar.h
-evolution-calendar-common.lo evolution-calendar-common.o : \
-	evolution-calendar-common.c evolution-calendar.h
-evolution-calendar-skels.lo evolution-calendar-skels.o : \
-	evolution-calendar-skels.c evolution-calendar.h
-evolution-calendar-stubs.lo evolution-calendar-stubs.o : \
-	evolution-calendar-stubs.c evolution-calendar.h
-query-listener.lo query-listener.o : query-listener.c ../../config.h \
-	query-listener.h evolution-calendar.h
 
 info-am:
 info: info-am

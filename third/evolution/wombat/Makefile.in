@@ -81,6 +81,7 @@ DATADIRNAME = @DATADIRNAME@
 DB3_CFLAGS = @DB3_CFLAGS@
 DB3_LDADD = @DB3_LDADD@
 DLLTOOL = @DLLTOOL@
+DTAPPINTEGRATE = @DTAPPINTEGRATE@
 ECHO = @ECHO@
 EVOLUTION_DIR = @EVOLUTION_DIR@
 EXEEXT = @EXEEXT@
@@ -104,6 +105,7 @@ GNOME_LIBDIR = @GNOME_LIBDIR@
 GNOME_LIBS = @GNOME_LIBS@
 GNOME_PILOT_CFLAGS = @GNOME_PILOT_CFLAGS@
 GNOME_PILOT_LIBS = @GNOME_PILOT_LIBS@
+GNOME_PREFIX = @GNOME_PREFIX@
 GNOME_PRINT_CFLAGS = @GNOME_PRINT_CFLAGS@
 GNOME_PRINT_LIBS = @GNOME_PRINT_LIBS@
 GNOME_VFS_CFLAGS = @GNOME_VFS_CFLAGS@
@@ -405,28 +407,6 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
-wombat-moniker.o: wombat-moniker.c ../config.h wombat-moniker.h
-wombat-private-moniker.o: wombat-private-moniker.c ../config.h \
-	wombat-private-moniker.h
-wombat.o: wombat.c ../config.h \
-	../addressbook/backend/pas/pas-book-factory.h \
-	../addressbook/backend/pas/pas-backend.h \
-	../addressbook/backend/pas/addressbook.h \
-	../addressbook/backend/pas/pas-book.h \
-	../addressbook/backend/pas/pas-book-view.h ../e-util/e-list.h \
-	../e-util/e-list-iterator.h ../e-util/e-iterator.h \
-	../addressbook/backend/pas/pas-card-cursor.h \
-	../addressbook/backend/pas/pas-backend-file.h \
-	../calendar/pcs/cal-factory.h \
-	../calendar/pcs/evolution-calendar.h \
-	../calendar/pcs/cal-backend-file.h \
-	../calendar/pcs/cal-backend.h ../calendar/cal-util/cal-util.h \
-	../libical/src/libical/ical.h \
-	../calendar/cal-util/cal-component.h \
-	../calendar/cal-util/cal-recur.h ../calendar/pcs/cal-common.h \
-	../calendar/pcs/cal.h \
-	../addressbook/backend/pas/pas-backend-ldap.h wombat-moniker.h \
-	wombat-private-moniker.h
 
 info-am:
 info: info-am

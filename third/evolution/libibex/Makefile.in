@@ -81,6 +81,7 @@ DATADIRNAME = @DATADIRNAME@
 DB3_CFLAGS = @DB3_CFLAGS@
 DB3_LDADD = @DB3_LDADD@
 DLLTOOL = @DLLTOOL@
+DTAPPINTEGRATE = @DTAPPINTEGRATE@
 ECHO = @ECHO@
 EVOLUTION_DIR = @EVOLUTION_DIR@
 EXEEXT = @EXEEXT@
@@ -104,6 +105,7 @@ GNOME_LIBDIR = @GNOME_LIBDIR@
 GNOME_LIBS = @GNOME_LIBS@
 GNOME_PILOT_CFLAGS = @GNOME_PILOT_CFLAGS@
 GNOME_PILOT_LIBS = @GNOME_PILOT_LIBS@
+GNOME_PREFIX = @GNOME_PREFIX@
 GNOME_PRINT_CFLAGS = @GNOME_PRINT_CFLAGS@
 GNOME_PRINT_LIBS = @GNOME_PRINT_LIBS@
 GNOME_VFS_CFLAGS = @GNOME_VFS_CFLAGS@
@@ -383,17 +385,6 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
-block.lo block.o : block.c block.h
-disktail.lo disktail.o : disktail.c block.h index.h
-dumpindex.o: dumpindex.c ibex_internal.h ../config.h \
-	../e-util/e-msgport.h ibex.h block.h wordindex.h index.h
-hash.lo hash.o : hash.c block.h index.h
-ibex_block.lo ibex_block.o : ibex_block.c ../config.h ibex_internal.h \
-	../e-util/e-msgport.h ibex.h block.h wordindex.h index.h
-testindex.o: testindex.c ibex_internal.h ../config.h \
-	../e-util/e-msgport.h ibex.h block.h wordindex.h index.h
-wordindexmem.lo wordindexmem.o : wordindexmem.c block.h index.h \
-	wordindex.h
 
 info-am:
 info: info-am

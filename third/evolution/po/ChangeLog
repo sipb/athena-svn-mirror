@@ -1,30 +1,56 @@
-2002-03-23  gettextize  <bug-gnu-utils@gnu.org>
+2002-05-03  Zbigniew Chyla  <cyba@gnome.pl>
 
-	* Makefile.in.in: Upgrade to gettext-0.10.40.
+	* pl.po: Updated Polish translation by
+	GNOME PL Team <translators@gnome.pl>.
 
-2002-03-22  gettextize  <bug-gnu-utils@gnu.org>
+2002-04-30  Yanko Kaneti <yaneti@declera.com>
 
-	* Makefile.in.in: Upgrade to gettext-0.10.40.
+	* Updated Bulgarian translation by 
+	Borislav Aleksandrov <B.Aleksandrov@cnsys.bg>
 
-2002-03-22  gettextize  <bug-gnu-utils@gnu.org>
+2002-04-18  Yanko Kaneti <yaneti@declera.com>
 
-	* Makefile.in.in: Upgrade to gettext-0.10.40.
+	* Updated Bulgarian translation by 
+	Borislav Aleksandrov <B.Aleksandrov@cnsys.bg>
 
-2002-03-21  gettextize  <bug-gnu-utils@gnu.org>
+2002-04-17  Christophe Merlet  <redfox@eikonex.org>
 
-	* Makefile.in.in: Upgrade to gettext-0.10.40.
+	* fr.po: Updated French translation.
 
-2002-03-21  gettextize  <bug-gnu-utils@gnu.org>
+2002-04-16  Christophe Merlet  <redfox@eikonex.org>
 
-	* Makefile.in.in: Upgrade to gettext-0.10.40.
+	* fr.po: Updated French translation.
 
-2002-03-19  gettextize  <bug-gnu-utils@gnu.org>
+2002-04-15  Changwoo Ryu  <cwryu@debian.org>
 
-	* Makefile.in.in: Upgrade to gettext-0.10.40.
+	* ko.po: Updated Korean translation from Young-Ho Cha
+	<ganadist@chollian.net>.
 
-2002-03-18  gettextize  <bug-gnu-utils@gnu.org>
+2002-04-13  Christophe Merlet  <redfox@eikonex.org>
 
-	* Makefile.in.in: Upgrade to gettext-0.10.38.
+	* fr.po: Updated French translation.
+
+2002-04-08  Christophe Merlet  <redfox@eikonex.org>
+
+	* fr.po: Updated French translation from work of
+	Frederic Riss <frederic.riss@laposte.net>.
+
+2002-04-06  Vincent van Adrighem <V.vanAdrighem@dirck.mine.nu>
+
+	* nl.po: Updated Dutch translation (Tino Meinen).
+
+2002-04-06  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* no.po: Updated Norwegian (bokmål) translation.
+
+2002-04-04  Gustavo Maciel Dias Vieira <gdvieira@zaz.com.br>
+
+	* pt_BR.po: Updated Brazilian Portuguese translation done by
+	Gustavo Maciel Dias Vieira <gdvieira@zaz.com.br>.
+
+2002-03-28  Sami Pesonen  <spesonen@dlc.fi>
+
+	* fi.po: Updated Finnish translation (part 1/2).
 
 2002-03-12  Christophe Merlet  <redfox@eikonex.org>
 
