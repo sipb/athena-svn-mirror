@@ -16,7 +16,7 @@
 #ifndef lint
 #ifndef SABER
 static char rcsid_uloc_c[] =
-  "$Id: uloc.c,v 1.46 1993-04-20 16:04:05 probe Exp $";
+  "$Id: uloc.c,v 1.47 1993-04-20 16:42:14 probe Exp $";
 #endif /* SABER */
 #endif /* lint */
 
@@ -384,7 +384,6 @@ sense_logout(notice, who)
 /*
  * Dispatch a LOCATE notice.
  */
-
 Code_t
 ulocate_dispatch(notice, auth, who, server)
      ZNotice_t *notice;
@@ -410,9 +409,8 @@ ulocate_dispatch(notice, auth, who, server)
 #if 0
 		zdbug((LOG_DEBUG,"locate"));
 #endif
-		/* we are talking to a current-rev client; send an
-		   acknowledgement-message */
-			ack(notice, who);
+		/* we are talking to a current-rev client; send an ack */
+		ack(notice, who);
 		ulogin_locate(notice, who, auth);
 		return(ZERR_NONE);
 	} else {
