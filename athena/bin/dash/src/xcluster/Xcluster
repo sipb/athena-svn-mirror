@@ -16,8 +16,8 @@
 *xclusterWindow.title:		Xcluster
 *xclusterWindow.minWidth:	865
 *xclusterWindow.minHeight:	400
-*xclusterWindow.geometry:	865x755
-*xclusterWindow.defGeometry:	865x755
+*xclusterWindow.geometry:	900x755
+*xclusterWindow.defGeometry:	900x755
 
 *label1.label:			XCLUSTER           Cluster Monitor
 *label1.font:			*-helvetica-bold-r-*--18-*
@@ -25,7 +25,7 @@
 *twin.borderWidth:		0
 
 *text.width:			815
-*text.height:			320
+*text.height:			340
 
 *quit*quitLabel.label:		Quit
 *help*helpLabel.label:		Help
