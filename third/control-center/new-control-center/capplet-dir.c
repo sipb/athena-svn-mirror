@@ -247,7 +247,7 @@ read_entries (CappletDir *dir)
 					entry = capplet_dir_new 
 						(dir, fullpath);
 				} else {
-					test = rindex(child_dir->d_name, '.');
+					test = strrchr(child_dir->d_name, '.');
 
 					if (test && 
 					    !strcmp (".desktop", test)) 
