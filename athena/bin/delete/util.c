@@ -11,7 +11,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_util_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/util.c,v 1.19 1991-02-18 17:51:49 jik Exp $";
+     static char rcsid_util_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/util.c,v 1.20 1991-02-18 19:50:58 jik Exp $";
 #endif
 
 #include <stdio.h>
@@ -33,6 +33,7 @@ typedef unsigned short uid_t;
 #include <errno.h>
 #ifdef AFS_MOUNTPOINTS
 #include <sys/ioctl.h>
+#include <afs/param.h>
 #include <afs/vice.h>
 #include <afs/venus.h>
 #endif
