@@ -7,6 +7,7 @@ echo "NOREMOTE=false;		 export NOREMOTE       # Deny access to remote users not 
 echo "NEWUNIX=true"			>> ${CONFVARS}
 echo "NEWTTYS=true"			>> ${CONFVARS}
 
+echo "/.login"				>> ${CONFCHG}
 echo "/${SITE}/usr/vice/etc/SuidCells"	>> ${CONFCHG}
 
 case "${MACH}" in
@@ -25,5 +26,12 @@ DS*)
 	if [ ${MACH} = "DS5000_100" ]; then
 		rm -f /dev/tty0[2-9]
 	fi
+	;;
+RS*)
+	if [ -f /etc/security/login.cfg ]; then
+		echo "Updating console/remote login banner"
+		sed -e "s/Non-root logins are not supported here at this time.//" /etc/security/login.cfg > /tmp/login.cfg.new
+		cp -p /etc/security/login.cfg /etc/security/login.cfg.orig
+		mv /tmp/login.cfg.new /etc/security/login.cfg
 	;;
 esac
