@@ -1,4 +1,4 @@
-# $Id: packages,v 1.38 1998-04-27 16:56:25 ghudson Exp $
+# $Id: packages,v 1.39 1998-05-08 15:27:14 ghudson Exp $
 
 # This file gives the list of packages to build for the release, the
 # order they will be built in, and which platforms they will be built
@@ -49,6 +49,7 @@ third/ispell
 third/ssh
 third/kermit
 third/xntp
+third/bind
 athena/lib/acl
 athena/lib/zephyr
 athena/lib/neos
@@ -97,6 +98,7 @@ athena/bin/quota
 athena/bin/xdpr
 athena/bin/xquota		sun4
 athena/bin/saferm
+athena/bin/passwd
 third/perl			sun4
 third/transcript
 packs/config
