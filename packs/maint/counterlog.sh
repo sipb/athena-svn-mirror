@@ -22,13 +22,25 @@ if [ -f /etc/athena/no-counterlog ]; then
 fi
 
 if [ ! -s /var/athena/counter-id ]; then
-  if [ -r /dev/urandom ]; then
-    dd if=/dev/urandom bs=8 count=1 2>/dev/null | od -x \
-      | awk '{print $2 $3 $4 $5; exit}' > /var/athena/counter-id
-  else
-    echo "" | awk '{srand; printf "%09d\n", int(rand * 999999999); }' \
-      > /var/athena/counter-id
-  fi
+  case `uname` in
+  Linux)
+    # The output of "hostid" is derived from the machine's IP address,
+    # which isn't the end of the world, but it could result in
+    # duplicate counter IDs when two machines generate their IDs on
+    # the same address (due to DHCP, cluster-services install
+    # addresses, etc.).  Use the MAC address of the first network
+    # device listed in NETDEV, if possible; then fall back to hostid.
+    netdev=`. /etc/athena/rc.conf; echo "${NETDEV%%,*}"`
+    id=`ifconfig "$netdev" | sed -ne 's/://g' -e 's/^.*HWaddr \(.*\)$/\1/p'`
+    : ${id:=`hostid`}
+    ;;
+  SunOS)
+    # The output of "hostid" is taken from the CPU board's ID prom, so
+    # should be unique across machines.
+    id=`hostid`
+    ;;
+  esac
+  echo "$id" > /var/athena/counter-id
   chmod 644 /var/athena/counter-id
 fi
 
