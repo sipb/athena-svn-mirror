@@ -4,14 +4,16 @@
 comment \- comment in a log
 .SH USAGE
 .B comment [<username> <instance id>] [\-file <filename>]
-.B [\-editor <editor>] [-instance <instance id>]
+.B [\-editor <editor>] [-instance <instance id>] [-private]
 .br
 .SH DESCRIPTION
 This command allows consultants to enter messages in the log without
 triggering a notification to the user. These messages are visible
-to the user when the 
+to anyone when the 
 .I replay
-command is used.  
+command is used, unless the
+.I\-private
+flag was used when entering the log.
 .PP
 If no username is specified, the comment will be put in the log of the
 current conversation. You may also specify the question connected to a
@@ -31,3 +33,7 @@ Normally, the file /tmp/OLC<pid> is used as a temporary file
 for editing. This can be overridden with this argument. If this
 argument is used, OLC will not delete the file after the message
 is sent.
+.TP
+.B \-private
+If this flag is used, the comment will be invisible to the average user; it
+will only be visible to people on the MONITOR acl.
