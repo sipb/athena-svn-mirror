@@ -13,7 +13,7 @@
 ## ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
 ## SOFTWARE.
 
-# $Id: Makefile,v 1.2 1999-03-21 20:59:47 ghudson Exp $
+# $Id: Makefile,v 1.3 1999-09-02 14:58:58 ghudson Exp $
 
 DESTDIR=
 CC= cc
@@ -67,10 +67,10 @@ clean: FRC
 depend: ${SRCS}
 	mkdep -p ${CPPFLAGS} -I${INCL} -I${PORTINCL} ${SRCS}
 
-${DESTDIR}${DESTEXEC}:
-	mkdir -p ${DESTDIR}${DESTEXEC}
+${DESTDIR}/usr/athena/etc:
+	mkdir -p ${DESTDIR}/usr/athena/etc
 
-install: ${DESTDIR}${DESTEXEC} ${PROG}${EXE}
+install: ${DESTDIR}/usr/athena/etc ${PROG}${EXE}
 	${INSTALL} ${STRIP} -c ${INSTALL_EXEC} -m 755 ${PROG}${EXE} ${DESTDIR}/usr/athena/etc/${PROG}${EXE}
 
 links: FRC
