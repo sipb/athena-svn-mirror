@@ -1,10 +1,10 @@
 /*
- * $Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/mul.c,v 1.6 1995-11-28 23:55:34 cfields Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/mul.c,v 1.7 1996-07-01 02:36:06 cfields Exp $
  *
  * Copyright (c) 1990 by the Massachusetts Institute of Technology.
  */
 
-static char *rcsid_mul_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/mul.c,v 1.6 1995-11-28 23:55:34 cfields Exp $";
+static char *rcsid_mul_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/mul.c,v 1.7 1996-07-01 02:36:06 cfields Exp $";
 
 
 #include "attach.h"
@@ -29,6 +29,19 @@ int errorout;
 	return SUCCESS;
 }
 
+/*
+ * Detach all of the components of the MUL filesystem in the reverse
+ * order that they were attached. Currently, when detach -a is done,
+ * the components of the MUL are detached before the MUL, so if the
+ * MUL tries to detach them, detach will complain to the user that
+ * they are not attached. This is silly, so we check to make sure that
+ * the components are actually still attached before we try to detach
+ * them. If they are already detached, we stay quiet. Meanwhile, if
+ * we try to detach a component that was there when we started, but
+ * detach returns that it isn't attached, we assume that another
+ * detach was racing with us and don't return failure for the
+ * operation.
+ */
 int mul_detach(atp)
 struct _attachtab *atp;
 {
@@ -45,20 +58,23 @@ struct _attachtab *atp;
     atptmp = attachtab_first;
 
     tempexp = explicit;
-    strcpy(mul_buf, atp->hostdir);
-    cp = &mul_buf[strlen(mul_buf)];
-    while (cp-- >= mul_buf) {
+    mul_buf[0] = ',';
+    strcpy(mul_buf + 1, atp->hostdir);
+
+    while (cp = strrchr(mul_buf, ','))
+      {
+	*cp++ = '\0';
 	explicit = 0;
 	attachtab_first = atptmp;
-	if (cp < mul_buf || *cp == ',') {
-	    if (attachtab_lookup(cp+1)
-		&& detach(cp+1) != SUCCESS
-		&& error_status != ERR_DETACHNOTATTACHED)
+
+	if (attachtab_lookup(cp))
+	  {
+	    attachtab_first = NULL;
+	    if (detach(cp) != SUCCESS &&
+		error_status != ERR_DETACHNOTATTACHED)
 	      status = FAILURE;
-	    if (cp >= mul_buf)
-		*cp = '\0';
-	}
-    }
+	  }
+      }
 
     attachtab_first = atptmp;
     free_attachtab();
