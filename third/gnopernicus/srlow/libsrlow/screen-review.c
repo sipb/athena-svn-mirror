@@ -203,7 +203,9 @@ typedef GList SRWElements;
 
 #define IS_CLIPPING_CONTAINER(a) ( ( (a) != SPI_ROLE_PAGE_TAB ) && 	\
 				   ( (a) != SPI_ROLE_MENU) 	&&	\
-				   ( (a) != -1) )	
+				   ( (a) != -1) )
+#define MAX_PIXELS_PER_COLUMNS	 10000
+#define MIN_PIXELS_PER_COLUMNS	 2
 /*______________________________</MACROS>_____________________________________*/
 
 /*______________________________< GLOBALS>____________________________________*/
@@ -212,7 +214,7 @@ static SRWElements	*elements 		= NULL;
 static SRWLines		*lines			= NULL;
 static GArray 		*lines_index 		= NULL;
 static gint		id 			= 0,
-			pixels_per_column 	= G_MAXINT;
+			pixels_per_column 	= MAX_PIXELS_PER_COLUMNS;
 static glong		align_flags		= 0;
 static SRWBoundaryRect 	clipping_rectangle;
 /*______________________________</GLOBALS>____________________________________*/
@@ -324,7 +326,7 @@ srw_boundary_rect_new0 (void)
 	int 		i;
 		
 	bounds = g_new0 (SRWBoundaryRect *, SPI_LAYER_LAST_DEFINED);
-	for (i = 1; i < SPI_LAYER_LAST_DEFINED; ++i) 
+	for (i = 0; i < SPI_LAYER_LAST_DEFINED; ++i) 
 	{
 		bounds[i] = g_new0 (SRWBoundaryRect, 1);
 		bounds[i]->is_clipped = FALSE;
@@ -343,7 +345,7 @@ srw_boundary_rect_clone (SRWBoundaryRect *bounds[])
 		
 	bounds_clone = 
 		g_new0 (SRWBoundaryRect *, SPI_LAYER_LAST_DEFINED);
-	for (i = 1; i < SPI_LAYER_LAST_DEFINED; ++i) 
+	for (i = 0; i < SPI_LAYER_LAST_DEFINED; ++i) 
 	{
 		bounds_clone[i] = g_new0 (SRWBoundaryRect, 1);
 		*bounds_clone[i] = *bounds[i];
@@ -357,7 +359,7 @@ srw_boundary_rect_free (SRWBoundaryRect **bounds_clone)
 {
 	int 	i;
 	
-	for (i = 1; i < SPI_LAYER_LAST_DEFINED; ++i) 
+	for (i = 0; i < SPI_LAYER_LAST_DEFINED; ++i) 
 	{
 		g_free (bounds_clone[i]);
 		bounds_clone[i] = NULL;
@@ -841,9 +843,12 @@ srw_text_chunk_from_accessible (Accessible	*accessible,
 		    text_chunk->start_offset = start;
 		    text_chunk->end_offset = end ;
 
-		    if (text_chunk->text_bounds.width > 0 && string && strlen (string) )
+		    if (text_chunk->text_bounds.width > 0 && string && g_utf8_strlen (string, -1) )
+		    {
 			pixels_per_column = MIN (text_chunk->text_bounds.width / g_utf8_strlen (string, -1),
 						pixels_per_column);
+			pixels_per_column = MAX (pixels_per_column, MIN_PIXELS_PER_COLUMNS);
+		    }
 		}
 		AccessibleText_unref (text);
 		no_need = FALSE;
@@ -885,6 +890,14 @@ srw_text_chunk_from_accessible (Accessible	*accessible,
 			text_chunk->text_bounds = text_chunk->clip_bounds;
 			text_chunk->start_offset = 0;
 			text_chunk->end_offset = strlen (string);
+
+			if (text_chunk->text_bounds.width > 0 && string && g_utf8_strlen (string,-1) )
+			{
+			    pixels_per_column = MIN (text_chunk->text_bounds.width / g_utf8_strlen (string, -1),
+						pixels_per_column);
+			    pixels_per_column = MAX (pixels_per_column, MIN_PIXELS_PER_COLUMNS);
+			}						
+
 #ifdef SRW_TEXT_CHUNK_DEBUG
 		fprintf (stderr, "\n\nsrw_text_chunk_from_accessible: NOT text |%s| %20s",
 				    string, 
@@ -2681,7 +2694,7 @@ screen_review_init (SRRectangle *clip_rectangle,
   /*new && init*/
     clip_bounds	 = srw_boundary_rect_new0 ();
     id = 0;
-    pixels_per_column = G_MAXINT;
+    pixels_per_column = MAX_PIXELS_PER_COLUMNS;
     lines_index = NULL;
     if (scope_flags & SRW_SCOPE_WINDOW)
     {
@@ -2743,7 +2756,7 @@ screen_review_init (SRRectangle *clip_rectangle,
 		toplevel_bounds.role = -1;/*invalid role*/
     		srw_boundary_rect_clip (&toplevel_bounds, &desktop_bounds);
 
-		for (i = 1; i < SPI_LAYER_LAST_DEFINED; ++i)
+		for (i = 0; i < SPI_LAYER_LAST_DEFINED; ++i)
 		{
 		        *clip_bounds[i] = toplevel_bounds;
 		}

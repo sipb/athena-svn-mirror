@@ -7,7 +7,7 @@ INCLUDES = -I$(top_builddir)    		\
 	   $(LIBKE_CFLAGS)			\
 	   -DG_LOG_DOMAIN=\"gnopernicus\"
 
-LDFLAGS = $(LIBKE_LIBS) @LT_VERSION_INFO@
+AM_LDFLAGS = $(LIBKE_LIBS) @LT_VERSION_INFO@
 
 LDADD = ../../srutil/srutil.la ../../srconf/libsrconf/libsrconf.la $(LIBKE_LIBS)  $(X_LIBS)
 

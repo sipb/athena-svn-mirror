@@ -94,8 +94,10 @@ src_magnifier_send (gchar *magoutput)
 #ifdef SRMAG_DEBUG        
 	fprintf (stderr,"\nXML:%s",magoutput);
 #endif
-	mag_xml_output (magoutput, 
-			strlen (magoutput) );
+	if (g_utf8_validate (magoutput, -1, NULL))
+	    mag_xml_output (magoutput, strlen (magoutput));
+	else
+	    sru_warning ("magnifier output: invalid UTF-8 received");
     }
     busy = FALSE;
 }

@@ -9,20 +9,18 @@ INCLUDES = -I$(top_builddir)			\
 	   -DTTYNAME0=\"$(TTYNAME_0)\" -DTTYNAME1=\"$(TTYNAME_1)\" \
 	   $(BRLTTY_ACTIVE)			\
 	   $(LIBBRL_CFLAGS) 			\
+	   $(BRLTTY_INCLUDE)			\
 	   -DG_LOG_DOMAIN=\"gnopernicus\"
 
-LDFLAGS = $(LIBBRL_LIBS) @LT_VERSION_INFO@
+AM_LDFLAGS = $(LIBBRL_LIBS) @LT_VERSION_INFO@
 
 LDADD = ../../srconf/libsrconf/libsrconf.la	\
-	../../srutil/srutil.la 		\
-	$(LIBBRL_LIBS)
+	../../srutil/srutil.la 			\
+	$(LIBBRL_LIBS)				\
+	$(BRLTTY_LIBRARY)
 
 libbrlincludedir =$(includedir)/gnopernicus-1.0/libbrl
 libbrldir=$(libdir)/gnopernicus-1.0
-
-if BUILD_BRLTTY_SUPPORT
-libbrl_la_LIBADD = -lbrlapi
-endif
 
 libbrlinclude_HEADERS = brlxmlapi.h  
 

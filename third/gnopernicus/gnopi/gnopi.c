@@ -550,6 +550,9 @@ gn_check_accessibility_key (void)
     
     g_object_unref (G_OBJECT (xml));
     
+    AtkObject *obj = gtk_widget_get_accessible (dialog);
+    atk_object_set_role (obj, ATK_ROLE_ALERT);
+    
     response_id = gtk_dialog_run (GTK_DIALOG (dialog));
 
 /*    gtk_widget_destroy (dialog);*/ /* FIXME: if uncomment this it crash the application */
@@ -567,6 +570,9 @@ gn_check_accessibility_key (void)
 	
 	g_object_unref (G_OBJECT (xml));
 	
+        AtkObject *obj = gtk_widget_get_accessible (dialog);
+        atk_object_set_role (obj, ATK_ROLE_ALERT);
+        
 	response_id = gtk_dialog_run (GTK_DIALOG (dialog));
 	
 	gtk_widget_hide (dialog);
@@ -576,10 +582,8 @@ gn_check_accessibility_key (void)
 	if (response_id == GTK_RESPONSE_YES)
 	{
 	    GnomeClient *client = NULL;
-	    if (!(client = gnome_master_client ())) 
-		gtk_main_quit ();
-
-	    gnome_client_request_save (client, GNOME_SAVE_GLOBAL, TRUE, 
+	    if (client = gnome_master_client ()) 
+		gnome_client_request_save (client, GNOME_SAVE_GLOBAL, TRUE, 
 					GNOME_INTERACT_ANY, FALSE, TRUE);
 	    return TRUE;
 	}

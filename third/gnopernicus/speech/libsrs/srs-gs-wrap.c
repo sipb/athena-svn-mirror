@@ -136,8 +136,8 @@ srs_gs_wrap_get_activated_server_from_server_info (Bonobo_ServerInfo *info)
 		  0, NULL, srs_gs_wrap_get_ev ());
     srs_gs_wrap_return_val_if_ev ("Unable to activate server", NULL);
 
-    GNOME_Speech_SynthesisDriver_driverInit (obj, srs_gs_wrap_get_ev ());
-    if (!srs_gs_wrap_check_ev ("Server activation  failed."))
+    if (!GNOME_Speech_SynthesisDriver_driverInit (obj, srs_gs_wrap_get_ev ()) ||
+	!srs_gs_wrap_check_ev ("Server activation  failed."))
     {
     	srs_gs_wrap_gsdriver_unref (obj);
 	obj = NULL;

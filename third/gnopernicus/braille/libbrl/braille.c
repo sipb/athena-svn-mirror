@@ -29,7 +29,7 @@
 #include "baumbrl.h"
 #include "alvabrl.h"
 #include "handybrl.h"
-#ifdef __BRLTTY_SUPPORT__
+#ifdef BRLTTY_SUPPORT
 #include "ttybrl.h"
 #endif
 
@@ -152,7 +152,7 @@ brl_open_device (gchar        *device_name,
 	else if (strcmp("BRLTTY", device_name) == 0)
 	{			
 	    rv = 0;
-#ifdef __BRLTTY_SUPPORT__		
+#ifdef BRLTTY_SUPPORT
 	    rv = brltty_brl_open_device (device_name, port, device_callback, current_device);			
 #endif
 	}

@@ -277,10 +277,14 @@ srs_gs_callback (SRSGSWrapLong 		id,
 	case SRSGSWrapSpeechEnded:
 	    if (srs_gs_outs)
 	    {
-		srs_gs_generate_callback (id, SRS_MARKER_TEXT_ENDED, offset);
+	        SRSGSOut *out = srs_gs_outs->data;
+		if (id == out->idl)
+		{
+		    srs_gs_generate_callback (id, SRS_MARKER_TEXT_ENDED, offset);
 
-		g_idle_add (srs_gs_out_terminate_idle, srs_gs_outs->data);
-		srs_gs_outs = g_slist_delete_link (srs_gs_outs, srs_gs_outs);
+		    g_idle_add (srs_gs_out_terminate_idle, srs_gs_outs->data);
+		    srs_gs_outs = g_slist_delete_link (srs_gs_outs, srs_gs_outs);
+		}
 	    }
 	    break;
 	default:

@@ -1000,11 +1000,90 @@ magui_magnification_options_save_changed (void)
     magconf_save_zoomer_in_schema (DEFAULT_MAGNIFIER_SCHEMA, magnifier_setting);
 }
 #endif
+
+static gboolean
+magui_check_for_valid_screen (const gchar *new_val)
+{
+    GdkDisplay *disp = NULL;
+		
+    if (!new_val)
+		return FALSE;
+    
+    disp = gdk_display_open (new_val);
+    if (disp)
+    {
+	/*gdk_display_close (disp); waiting for bug #85715*/
+	return TRUE;
+    }
+    return FALSE;
+}
+
+static void 
+magui_set_source_screen ()
+{
+    const gchar *sval = 
+	gtk_entry_get_text ( GTK_ENTRY (et_source));
+		
+    if (magui_check_for_valid_screen (sval))
+    {
+        g_free (magnifier_setting->source);
+        magnifier_setting->source = g_strdup (sval);
+
+        magconf_save_item_in_schema (DEFAULT_MAGNIFIER_SCHEMA,
+ 				     GCONF_VALUE_STRING,
+				     MAGNIFIER_SOURCE,
+				     (gpointer)magnifier_setting->source);
+    }
+    else	
+    {
+    	gdk_beep ();
+    	gtk_entry_set_text (GTK_ENTRY (et_source), 
+			    g_strdup (magnifier_setting->source));
+    }
+}
+
+static void
+magui_set_target_screen ()
+{
+    const gchar *sval = 
+	gtk_entry_get_text ( GTK_ENTRY (et_target));
+	
+    if (magui_check_for_valid_screen (sval))
+    {
+	g_free (magnifier_setting->target);
+	magnifier_setting->target = g_strdup (sval);
+	
+	magconf_save_item_in_schema (DEFAULT_MAGNIFIER_SCHEMA,
+				     GCONF_VALUE_STRING,
+				     MAGNIFIER_TARGET,
+				     (gpointer)magnifier_setting->target);
+    }
+    else	
+    {
+	gdk_beep ();
+    	gtk_entry_set_text (GTK_ENTRY (et_target), 
+    			    g_strdup (magnifier_setting->source));
+    }
+}	
+
 void
 magui_magnification_options_response (GtkDialog *dialog,
 				      gint       response_id,
 				      gpointer   user_data)
 {
+    if (response_id == GTK_RESPONSE_APPLY)
+    {
+    	magui_set_source_screen ();
+	magui_set_target_screen ();
+	return;
+    } 
+    else
+    if (response_id == GTK_RESPONSE_OK)
+    {
+	magui_set_source_screen ();
+	magui_set_target_screen ();
+    }
+    else
     if (response_id == GTK_RESPONSE_CLOSE) 
     {
         if (mag_setting_clone_opt)
@@ -1167,40 +1246,6 @@ magui_zp_width_value_changed (GtkWidget *widget,
 				    MAGNIFIER_ZP_WIDTH,
 				    (gpointer)&(magnifier_setting->zp).width);    
     }
-}	
-
-void
-magui_source_changed (GtkWidget *widget,
-			    gpointer user_data)
-{
-    const gchar *sval = 
-	gtk_entry_get_text ( GTK_ENTRY (et_source));
-	
-    g_free (magnifier_setting->source);
-	    	    
-    magnifier_setting->source = g_strdup (sval);
-	
-    magconf_save_item_in_schema (DEFAULT_MAGNIFIER_SCHEMA,
-				GCONF_VALUE_STRING,
-				MAGNIFIER_SOURCE,
-				(gpointer)magnifier_setting->source);    
-}	
-
-void
-magui_target_changed (GtkWidget *widget,
-		      gpointer user_data)
-{
-    const gchar *sval = 
-	gtk_entry_get_text ( GTK_ENTRY (et_target));
-	
-    g_free (magnifier_setting->target);
-	    
-    magnifier_setting->target = g_strdup (sval);
-	
-    magconf_save_item_in_schema (DEFAULT_MAGNIFIER_SCHEMA,
-				GCONF_VALUE_STRING,
-				MAGNIFIER_TARGET,
-				(gpointer)magnifier_setting->target);    
 }	
 
 void
@@ -1505,13 +1550,7 @@ magui_set_handlers_magnification_options(GladeXML *xml)
     gtk_entry_set_editable (GTK_ENTRY (GTK_COMBO (cb_smoothing)->entry), FALSE);
     gtk_entry_set_editable (GTK_ENTRY (GTK_COMBO (cb_mouse_tracking)->entry), FALSE);
     
-    glade_xml_signal_connect (xml, "on_et_source_activate",		
-			    GTK_SIGNAL_FUNC (magui_source_changed));
-
-    glade_xml_signal_connect (xml, "on_et_target_activate",		
-			    GTK_SIGNAL_FUNC (magui_target_changed));
-
-
+    
     g_signal_connect (w_magnification_options, "response",
 		      G_CALLBACK (magui_magnification_options_response), NULL);
     g_signal_connect (w_magnification_options, "delete_event",
@@ -1714,8 +1753,6 @@ magui_set_zoomfactor_x(Magnifier *magnifier_setting)
     sru_return_val_if_fail (magnifier_setting, FALSE);
     if (!w_magnification_options) 
 	return FALSE;
-
-    g_message ("setting spinbutton value to %f", magnifier_setting->zoomfactorx);
 
     gtk_spin_button_set_value   (GTK_SPIN_BUTTON (sp_factorx),
 				magnifier_setting->zoomfactorx);

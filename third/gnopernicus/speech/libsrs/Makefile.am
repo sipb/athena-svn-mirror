@@ -8,7 +8,7 @@ INCLUDES = -I$(top_builddir)  			\
 	   -DSRS_NO_MARKERS_SUPPORTED 		\
 	   -DSRS_ENABLE_OPTIMIZATION
 
-LDFLAGS = $(LIBSRS_LIBS) @LT_VERSION_INFO@ 
+AM_LDFLAGS = $(LIBSRS_LIBS) @LT_VERSION_INFO@
 
 LDADD = ../../srconf/libsrconf/libsrconf.la $(LIBSRS_LIBS)
 

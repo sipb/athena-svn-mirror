@@ -86,7 +86,7 @@ desktop_DATA 	 = $(desktop_in_files:.desktop.in=.desktop)
 
 EXTRA_DIST = ./gnopi_files	\
 	     $(translation_DATA)\
-	     $(desktop_DATA)	\
+	     $(desktop_in_files)\
 	     $(pixmaps_DATA)
 
 dist-hook:

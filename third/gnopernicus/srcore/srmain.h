@@ -46,7 +46,7 @@ gboolean src_kb_cursor_echo	   ();
 
 
 gboolean src_say_message (const gchar *message);
-gboolean login_time;
+extern gboolean login_time;
 
 
 #endif /* _SRMAIN_H_ */

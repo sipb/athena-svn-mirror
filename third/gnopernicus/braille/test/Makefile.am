@@ -23,10 +23,7 @@ INCLUDES = -I$(srcdir)/../libbrl		\
 LDADD =  ../libbrl/libbrl.la			\
 	 ../../srutil/libsrutil.la		\
 	 ../../srconf/libsrconf/libsrconf.la	\
-	    $(LIBBRL_TEST_LIBS)
-
+	 $(LIBBRL_TEST_LIBS)			\
+	 $(BRLTTY_LIBRARY)
 
 EXTRA_DIST = brl_out_test.xml
-
-
-

@@ -1,4 +1,84 @@
 =================
+Changes in 0.9.19
+=================
+Speech:
+    * Improved presentation for character by character navigation.
+
+Braille:
+    * Improved use of brltty.
+    
+Presentation:
+    * Better presentation for combo-boxes which don't implement AtkText.
+    * The presentation for terminals is improved.
+
+Magnifier:
+    * Improved the focus tracking auto by the magnifier when the caret is
+      tracked.
+    * Work with multiple displays is improved when changing the source and/or 
+      target screens. The changes to these values are only applied when the 
+      user presses  the "Apply" or the "OK" buttons that were added to 
+      the "Magnifier Options" widget.
+      
+Miscellaneous:
+    * Gnopernicus's help is updated thank to Irene Ryan (irene.ryan@sun.com).
+    
+=================
+Changes in 0.9.18
+=================
+Speech:
+    * Improved reporting of statusbar objects.
+
+=================
+Changes in 0.9.17
+=================
+Speech:
+    * Word by word navigation even in case of changing current line.
+
+Braille
+    * Support for brltty version 3.6.
+
+=================
+Changes in 0.9.16
+=================
+Speech:
+    * Modify to remove information from queue for an end of speech marker
+      only if the marker is for text for which information is.
+
+
+=================
+Changes in 0.9.15
+=================
+
+Presentation:
+    Gnopernicus now presents context information for when a 
+    toolbar item is focused.
+
+Translation:
+    Added and updated Romanian translation.
+    Updated Canadian English, Italian and Simplified Chinese translations.
+
+
+=================
+Changes in 0.9.14
+=================
+
+Miscelaneous:
+    * Gnopernicus uses now version 1.7 of autotools.
+    
+Translation:
+    * Updated Danish, Korean, Spanish and British translations.
+
+=================
+Changes in 0.9.13
+=================
+
+Miscelaneous:
+    * Gnopernicus uses now version 1.7 of autotools.
+    
+Translation:
+    * Updated Danish, Korean, Spanish and British translations.
+
+=================
 Changes in 0.9.12
 =================
 

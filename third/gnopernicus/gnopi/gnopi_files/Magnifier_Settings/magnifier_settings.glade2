@@ -12,6 +12,11 @@
   <property name="modal">True</property>
   <property name="resizable">True</property>
   <property name="destroy_with_parent">False</property>
+  <property name="decorated">True</property>
+  <property name="skip_taskbar_hint">False</property>
+  <property name="skip_pager_hint">False</property>
+  <property name="type_hint">GDK_WINDOW_TYPE_HINT_DIALOG</property>
+  <property name="gravity">GDK_GRAVITY_NORTH_WEST</property>
   <property name="has_separator">False</property>
   <accessibility>
     <atkproperty name="AtkObject::accessible_name" translatable="yes">Magnifier settings</atkproperty>
@@ -36,6 +41,7 @@
 	      <property name="label">gtk-close</property>
 	      <property name="use_stock">True</property>
 	      <property name="relief">GTK_RELIEF_NORMAL</property>
+	      <property name="focus_on_click">True</property>
 	      <property name="response_id">-7</property>
 	    </widget>
 	  </child>
@@ -48,6 +54,7 @@
 	      <property name="label">gtk-help</property>
 	      <property name="use_stock">True</property>
 	      <property name="relief">GTK_RELIEF_NORMAL</property>
+	      <property name="focus_on_click">True</property>
 	      <property name="response_id">-11</property>
 	      <accelerator key="F1" modifiers="0" signal="clicked"/>
 	    </widget>
@@ -99,6 +106,7 @@
 			  <property name="label" translatable="yes">Set cursor separate from _magnification</property>
 			  <property name="use_underline">True</property>
 			  <property name="relief">GTK_RELIEF_NORMAL</property>
+			  <property name="focus_on_click">True</property>
 			  <property name="active">False</property>
 			  <property name="inconsistent">False</property>
 			  <property name="draw_indicator">True</property>
@@ -123,6 +131,7 @@
 			  <property name="label" translatable="yes">C_ursor on/off</property>
 			  <property name="use_underline">True</property>
 			  <property name="relief">GTK_RELIEF_NORMAL</property>
+			  <property name="focus_on_click">True</property>
 			  <property name="active">False</property>
 			  <property name="inconsistent">False</property>
 			  <property name="draw_indicator">True</property>
@@ -233,6 +242,7 @@
 			  <property name="dither">True</property>
 			  <property name="use_alpha">True</property>
 			  <property name="title" translatable="yes">Pick a color</property>
+			  <property name="focus_on_click">True</property>
 			  <accessibility>
 			    <atkrelation target="lb_cursor_color" type="labelled-by"/>
 			  </accessibility>
@@ -302,6 +312,7 @@
 			  <property name="label" translatable="yes">Cross-hair c_lip on/off</property>
 			  <property name="use_underline">True</property>
 			  <property name="relief">GTK_RELIEF_NORMAL</property>
+			  <property name="focus_on_click">True</property>
 			  <property name="active">False</property>
 			  <property name="inconsistent">False</property>
 			  <property name="draw_indicator">True</property>
@@ -327,6 +338,7 @@
 			  <property name="label" translatable="yes">Cross-hair o_n/off</property>
 			  <property name="use_underline">True</property>
 			  <property name="relief">GTK_RELIEF_NORMAL</property>
+			  <property name="focus_on_click">True</property>
 			  <property name="active">False</property>
 			  <property name="inconsistent">False</property>
 			  <property name="draw_indicator">True</property>
@@ -350,6 +362,7 @@
 			  <property name="label" translatable="yes">Cross-hair color in_verted</property>
 			  <property name="use_underline">True</property>
 			  <property name="relief">GTK_RELIEF_NORMAL</property>
+			  <property name="focus_on_click">True</property>
 			  <property name="active">False</property>
 			  <property name="inconsistent">False</property>
 			  <property name="draw_indicator">True</property>
@@ -459,6 +472,7 @@
 			  <property name="dither">True</property>
 			  <property name="use_alpha">True</property>
 			  <property name="title" translatable="yes">Pick a color</property>
+			  <property name="focus_on_click">True</property>
 			  <accessibility>
 			    <atkrelation target="lb_crosswire_color" type="labelled-by"/>
 			  </accessibility>
@@ -591,6 +605,7 @@
 		      <property name="can_default">True</property>
 		      <property name="can_focus">True</property>
 		      <property name="relief">GTK_RELIEF_NORMAL</property>
+		      <property name="focus_on_click">True</property>
 		      <accessibility>
 			<atkrelation target="lb_zoomer_list" type="labelled-by"/>
 		      </accessibility>
@@ -604,6 +619,10 @@
 			  <property name="yalign">0.5</property>
 			  <property name="xscale">0</property>
 			  <property name="yscale">0</property>
+			  <property name="top_padding">0</property>
+			  <property name="bottom_padding">0</property>
+			  <property name="left_padding">0</property>
+			  <property name="right_padding">0</property>
 
 			  <child>
 			    <widget class="GtkHBox" id="hbox61">
@@ -667,6 +686,7 @@
 		      <property name="can_default">True</property>
 		      <property name="can_focus">True</property>
 		      <property name="relief">GTK_RELIEF_NORMAL</property>
+		      <property name="focus_on_click">True</property>
 		      <accessibility>
 			<atkrelation target="lb_zoomer_list" type="labelled-by"/>
 		      </accessibility>
@@ -680,6 +700,10 @@
 			  <property name="yalign">0.5</property>
 			  <property name="xscale">0</property>
 			  <property name="yscale">0</property>
+			  <property name="top_padding">0</property>
+			  <property name="bottom_padding">0</property>
+			  <property name="left_padding">0</property>
+			  <property name="right_padding">0</property>
 
 			  <child>
 			    <widget class="GtkHBox" id="hbox62">
@@ -791,6 +815,11 @@
   <property name="modal">True</property>
   <property name="resizable">True</property>
   <property name="destroy_with_parent">False</property>
+  <property name="decorated">True</property>
+  <property name="skip_taskbar_hint">False</property>
+  <property name="skip_pager_hint">False</property>
+  <property name="type_hint">GDK_WINDOW_TYPE_HINT_DIALOG</property>
+  <property name="gravity">GDK_GRAVITY_NORTH_WEST</property>
   <property name="has_separator">False</property>
   <accessibility>
     <atkproperty name="AtkObject::accessible_name" translatable="yes">Zoomer Options</atkproperty>
@@ -808,6 +837,19 @@
 	  <property name="layout_style">GTK_BUTTONBOX_END</property>
 
 	  <child>
+	    <widget class="GtkButton" id="applybutton3">
+	      <property name="visible">True</property>
+	      <property name="can_default">True</property>
+	      <property name="can_focus">True</property>
+	      <property name="label">gtk-apply</property>
+	      <property name="use_stock">True</property>
+	      <property name="relief">GTK_RELIEF_NORMAL</property>
+	      <property name="focus_on_click">True</property>
+	      <property name="response_id">-10</property>
+	    </widget>
+	  </child>
+
+	  <child>
 	    <widget class="GtkButton" id="okbutton3">
 	      <property name="visible">True</property>
 	      <property name="can_default">True</property>
@@ -815,6 +857,7 @@
 	      <property name="label">gtk-close</property>
 	      <property name="use_stock">True</property>
 	      <property name="relief">GTK_RELIEF_NORMAL</property>
+	      <property name="focus_on_click">True</property>
 	      <property name="response_id">-7</property>
 	    </widget>
 	  </child>
@@ -827,8 +870,22 @@
 	      <property name="label">gtk-help</property>
 	      <property name="use_stock">True</property>
 	      <property name="relief">GTK_RELIEF_NORMAL</property>
+	      <property name="focus_on_click">True</property>
 	      <property name="response_id">-11</property>
 	      <accelerator key="F1" modifiers="0" signal="clicked"/>
+	    </widget>
+	  </child>
+
+	  <child>
+	    <widget class="GtkButton" id="okbutton4">
+	      <property name="visible">True</property>
+	      <property name="can_default">True</property>
+	      <property name="can_focus">True</property>
+	      <property name="label">gtk-ok</property>
+	      <property name="use_stock">True</property>
+	      <property name="relief">GTK_RELIEF_NORMAL</property>
+	      <property name="focus_on_click">True</property>
+	      <property name="response_id">-5</property>
 	    </widget>
 	  </child>
 	</widget>
@@ -907,6 +964,7 @@
 			  <property name="dither">True</property>
 			  <property name="use_alpha">True</property>
 			  <property name="title" translatable="yes">Pick a color</property>
+			  <property name="focus_on_click">True</property>
 			  <accessibility>
 			    <atkrelation target="lb_border_color" type="labelled-by"/>
 			  </accessibility>
@@ -1015,30 +1073,7 @@
 		  <property name="label_xalign">0</property>
 		  <property name="label_yalign">0.5</property>
 		  <property name="shadow_type">GTK_SHADOW_NONE</property>
-		    
-		  <child>
-		    <widget class="GtkLabel" id="lb_display_screen">
-		      <property name="visible">True</property>
-		      <property name="label" translatable="yes">&lt;b&gt;Display screen&lt;/b&gt;</property>
-		      <property name="use_underline">False</property>
-		      <property name="use_markup">True</property>
-		      <property name="justify">GTK_JUSTIFY_LEFT</property>
-		      <property name="wrap">False</property>
-		      <property name="selectable">False</property>
-		      <property name="xalign">0.5</property>
-		      <property name="yalign">0.5</property>
-		      <property name="xpad">0</property>
-		      <property name="ypad">0</property>
-		      <accessibility>
-		        <atkrelation target="et_target" type="label-for"/>
-			<atkrelation target="et_source" type="label-for"/>
-		      </accessibility>
-		    </widget>
-		    <packing>
-		      <property name="type">label_item</property>
-		    </packing>
-		  </child>     
-		  
+
 		  <child>
 		    <widget class="GtkTable" id="table2">
 		      <property name="visible">True</property>
@@ -1061,10 +1096,9 @@
 			  <property name="invisible_char" translatable="yes">*</property>
 			  <property name="activates_default">False</property>
 			  <accessibility>
-			    <atkrelation target="lb_display_screen" type="labelled-by"/>			  
+			    <atkrelation target="lb_display_screen" type="labelled-by"/>
 			    <atkrelation target="lb_source" type="labelled-by"/>
 			  </accessibility>
-			  <signal name="activate" handler="on_et_source_activate" last_modification_time="Wed, 11 Dec 2002 09:27:14 GMT"/>
 			</widget>
 			<packing>
 			  <property name="left_attach">1</property>
@@ -1087,10 +1121,9 @@
 			  <property name="invisible_char" translatable="yes">*</property>
 			  <property name="activates_default">False</property>
 			  <accessibility>
-			    <atkrelation target="lb_display_screen" type="labelled-by"/>			  
+			    <atkrelation target="lb_display_screen" type="labelled-by"/>
 			    <atkrelation target="lb_target" type="labelled-by"/>
 			  </accessibility>
-			  <signal name="activate" handler="on_et_target_activate" last_modification_time="Wed, 11 Dec 2002 09:28:29 GMT"/>
 			</widget>
 			<packing>
 			  <property name="left_attach">1</property>
@@ -1156,6 +1189,29 @@
 		      </child>
 		    </widget>
 		  </child>
+
+		  <child>
+		    <widget class="GtkLabel" id="lb_display_screen">
+		      <property name="visible">True</property>
+		      <property name="label" translatable="yes">&lt;b&gt;Display screen&lt;/b&gt;</property>
+		      <property name="use_underline">False</property>
+		      <property name="use_markup">True</property>
+		      <property name="justify">GTK_JUSTIFY_LEFT</property>
+		      <property name="wrap">False</property>
+		      <property name="selectable">False</property>
+		      <property name="xalign">0.5</property>
+		      <property name="yalign">0.5</property>
+		      <property name="xpad">0</property>
+		      <property name="ypad">0</property>
+		      <accessibility>
+			<atkrelation target="et_target" type="label-for"/>
+			<atkrelation target="et_source" type="label-for"/>
+		      </accessibility>
+		    </widget>
+		    <packing>
+		      <property name="type">label_item</property>
+		    </packing>
+		  </child>
 		</widget>
 		<packing>
 		  <property name="padding">0</property>
@@ -1172,31 +1228,6 @@
 		  <property name="label_yalign">0.5</property>
 		  <property name="shadow_type">GTK_SHADOW_NONE</property>
 
-		  <child>
-		    <widget class="GtkLabel" id="lb_zoomer_placement">
-		      <property name="visible">True</property>
-		      <property name="label" translatable="yes">&lt;b&gt;Zoomer placement&lt;/b&gt;</property>
-		      <property name="use_underline">False</property>
-		      <property name="use_markup">True</property>
-		      <property name="justify">GTK_JUSTIFY_LEFT</property>
-		      <property name="wrap">False</property>
-		      <property name="selectable">False</property>
-		      <property name="xalign">0.5</property>
-		      <property name="yalign">0.5</property>
-		      <property name="xpad">0</property>
-		      <property name="ypad">0</property>
-		      <accessibility>
-		        <atkrelation target="sp_zp_width" type="label-for"/>
-			<atkrelation target="sp_zp_height" type="label-for"/>
-			<atkrelation target="sp_zp_left" type="label-for"/>
-			<atkrelation target="sp_zp_top" type="label-for"/>
-		      </accessibility>
-		    </widget>
-		    <packing>
-		      <property name="type">label_item</property>
-		    </packing>
-		  </child>     
-		  
 		  <child>
 		    <widget class="GtkVBox" id="vbox24">
 		      <property name="visible">True</property>
@@ -1225,7 +1256,7 @@
 			      <property name="wrap">False</property>
 			      <property name="adjustment">1 0 1024 1 0 0</property>
 			      <accessibility>
-				<atkrelation target="lb_zoomer_placement" type="labelled-by"/>			      
+				<atkrelation target="lb_zoomer_placement" type="labelled-by"/>
 				<atkrelation target="lb_zp_right" type="labelled-by"/>
 			      </accessibility>
 			      <signal name="value_changed" handler="on_sp_zp_width_value_changed" last_modification_time="Sun, 10 Nov 2002 17:08:48 GMT"/>
@@ -1253,7 +1284,7 @@
 			      <property name="wrap">False</property>
 			      <property name="adjustment">1 0 1024 1 0 0</property>
 			      <accessibility>
-			        <atkrelation target="lb_zoomer_placement" type="labelled-by"/>
+				<atkrelation target="lb_zoomer_placement" type="labelled-by"/>
 				<atkrelation target="lb_zp_bottom" type="labelled-by"/>
 			      </accessibility>
 			      <signal name="value_changed" handler="on_sp_zp_height_value_changed" last_modification_time="Sun, 10 Nov 2002 17:08:54 GMT"/>
@@ -1281,7 +1312,7 @@
 			      <property name="wrap">False</property>
 			      <property name="adjustment">1 0 1024 1 0 0</property>
 			      <accessibility>
-			        <atkrelation target="lb_zoomer_placement" type="labelled-by"/>
+				<atkrelation target="lb_zoomer_placement" type="labelled-by"/>
 				<atkrelation target="lb_zp_left" type="labelled-by"/>
 			      </accessibility>
 			      <signal name="value_changed" handler="on_sp_zp_left_value_changed" last_modification_time="Sun, 10 Nov 2002 17:08:40 GMT"/>
@@ -1309,7 +1340,7 @@
 			      <property name="wrap">False</property>
 			      <property name="adjustment">1 0 1024 1 0 0</property>
 			      <accessibility>
-			        <atkrelation target="lb_zoomer_placement" type="labelled-by"/>
+				<atkrelation target="lb_zoomer_placement" type="labelled-by"/>
 				<atkrelation target="lb_zp_top" type="labelled-by"/>
 			      </accessibility>
 			      <signal name="value_changed" handler="on_sp_zp_top_value_changed" last_modification_time="Sun, 10 Nov 2002 17:08:44 GMT"/>
@@ -1448,6 +1479,31 @@
 		      </child>
 		    </widget>
 		  </child>
+
+		  <child>
+		    <widget class="GtkLabel" id="lb_zoomer_placement">
+		      <property name="visible">True</property>
+		      <property name="label" translatable="yes">&lt;b&gt;Zoomer placement&lt;/b&gt;</property>
+		      <property name="use_underline">False</property>
+		      <property name="use_markup">True</property>
+		      <property name="justify">GTK_JUSTIFY_LEFT</property>
+		      <property name="wrap">False</property>
+		      <property name="selectable">False</property>
+		      <property name="xalign">0.5</property>
+		      <property name="yalign">0.5</property>
+		      <property name="xpad">0</property>
+		      <property name="ypad">0</property>
+		      <accessibility>
+			<atkrelation target="sp_zp_width" type="label-for"/>
+			<atkrelation target="sp_zp_height" type="label-for"/>
+			<atkrelation target="sp_zp_left" type="label-for"/>
+			<atkrelation target="sp_zp_top" type="label-for"/>
+		      </accessibility>
+		    </widget>
+		    <packing>
+		      <property name="type">label_item</property>
+		    </packing>
+		  </child>
 		</widget>
 		<packing>
 		  <property name="padding">0</property>
@@ -1485,6 +1541,10 @@
 		      <property name="yalign">0.5</property>
 		      <property name="xscale">1</property>
 		      <property name="yscale">1</property>
+		      <property name="top_padding">0</property>
+		      <property name="bottom_padding">0</property>
+		      <property name="left_padding">0</property>
+		      <property name="right_padding">0</property>
 
 		      <child>
 			<widget class="GtkTable" id="table5">
@@ -1558,6 +1618,7 @@
 			      <property name="tooltip" translatable="yes">Lock zoom factor</property>
 			      <property name="can_focus">True</property>
 			      <property name="relief">GTK_RELIEF_NORMAL</property>
+			      <property name="focus_on_click">True</property>
 			      <property name="active">False</property>
 			      <property name="inconsistent">False</property>
 			      <property name="draw_indicator">True</property>
@@ -1570,6 +1631,10 @@
 				  <property name="yalign">0.5</property>
 				  <property name="xscale">0</property>
 				  <property name="yscale">0</property>
+				  <property name="top_padding">0</property>
+				  <property name="bottom_padding">0</property>
+				  <property name="left_padding">0</property>
+				  <property name="right_padding">0</property>
 
 				  <child>
 				    <widget class="GtkHBox" id="hbox65">
@@ -1989,6 +2054,7 @@
 		      <property name="label" translatable="yes">_None</property>
 		      <property name="use_underline">True</property>
 		      <property name="relief">GTK_RELIEF_NORMAL</property>
+		      <property name="focus_on_click">True</property>
 		      <property name="active">False</property>
 		      <property name="inconsistent">False</property>
 		      <property name="draw_indicator">True</property>
@@ -2013,6 +2079,7 @@
 		      <property name="label" translatable="yes">C_entered</property>
 		      <property name="use_underline">True</property>
 		      <property name="relief">GTK_RELIEF_NORMAL</property>
+		      <property name="focus_on_click">True</property>
 		      <property name="active">False</property>
 		      <property name="inconsistent">False</property>
 		      <property name="draw_indicator">True</property>
@@ -2038,6 +2105,7 @@
 		      <property name="label" translatable="yes">_Auto</property>
 		      <property name="use_underline">True</property>
 		      <property name="relief">GTK_RELIEF_NORMAL</property>
+		      <property name="focus_on_click">True</property>
 		      <property name="active">False</property>
 		      <property name="inconsistent">False</property>
 		      <property name="draw_indicator">True</property>
@@ -2078,6 +2146,7 @@
 		      <property name="label" translatable="yes">_Panning</property>
 		      <property name="use_underline">True</property>
 		      <property name="relief">GTK_RELIEF_NORMAL</property>
+		      <property name="focus_on_click">True</property>
 		      <property name="active">False</property>
 		      <property name="inconsistent">False</property>
 		      <property name="draw_indicator">True</property>
@@ -2099,6 +2168,7 @@
 		      <property name="label" translatable="yes">_Invert</property>
 		      <property name="use_underline">True</property>
 		      <property name="relief">GTK_RELIEF_NORMAL</property>
+		      <property name="focus_on_click">True</property>
 		      <property name="active">False</property>
 		      <property name="inconsistent">False</property>
 		      <property name="draw_indicator">True</property>
