@@ -1,7 +1,7 @@
 /* This file is part of the Project Athena Global Message System.
  * Created by: Mark W. Eichin <eichin@athena.mit.edu>
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/gms/view_message_by_zephyr.c,v $
- * $Author: vrt $
+ * $Author: ghudson $
  *
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -9,18 +9,13 @@
  */
 #include <mit-copyright.h>
 #ifndef lint
-static char rcsid_view_message_by_zephyr_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/gms/view_message_by_zephyr.c,v 1.3 1994-06-28 16:33:22 vrt Exp $";
+static char rcsid_view_message_by_zephyr_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/gms/view_message_by_zephyr.c,v 1.4 1996-09-19 22:39:06 ghudson Exp $";
 #endif lint
 
 #include "globalmessage.h"
 #include <pwd.h>
 #include <stdio.h>
-#include <strings.h>
-#ifndef ultrix
 #include <syslog.h>
-#else
-#include <nsyslog.h>
-#endif
 
 void view_message_by_zephyr(message)
      char *message;
@@ -42,7 +37,7 @@ void view_message_by_zephyr(message)
     }
   }
   /* skip magic headers */
-  ptr = index(message, '\n')+1;
+  ptr = strchr(message, '\n')+1;
   
   /* check that there is *something* after the headers */
   if(*ptr) {
