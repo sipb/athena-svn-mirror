@@ -1,7 +1,7 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/server_krb.c,v $
  *	$Author: epeisach $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/server_krb.c,v 1.2 1990-04-25 11:52:47 epeisach Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/server_krb.c,v 1.3 1990-07-10 17:42:12 epeisach Exp $
  */
 
 /*
@@ -10,12 +10,13 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char quota_server_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/server_krb.c,v 1.2 1990-04-25 11:52:47 epeisach Exp $";
+static char quota_server_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/server_krb.c,v 1.3 1990-07-10 17:42:12 epeisach Exp $";
 #endif (!defined(lint) && !defined(SABER))
 
 #include "mit-copyright.h"
 #include "quota.h"
 #include <krb.h>
+#include "quota_limits.h"
 #include "quota_ncs.h"
 #include <des.h>
 #include <sys/types.h>
@@ -77,11 +78,15 @@ char *principal;
     return(acl_check(aclname, principal));
 }
 
-is_sacct(principal)
+is_sacct(principal, qservice)
 char *principal;
+char *qservice;
 {
     extern char saclname[];
-    return(acl_check(saclname, principal));
+    char aclkey[MAX_K_NAME_SZ + SERV_SZ + 1];
+
+    sprintf(aclkey, "%s:%s", principal, qservice);
+    return(acl_check(saclname, aclkey));
 }
 
 parse_username(name, qprincipal, qinstance, qrealm)
