@@ -3,8 +3,6 @@ Summary: Version 5 of the Kerberos system
 Copyright: MIT
 Group: System Environment/Base
 
-Requires: getty_ps
-
 %description
 The Kerberos secure net authentication system.
 
@@ -59,24 +57,3 @@ find $RPM_BUILD_ROOT -type f -or -type l |
       -e "s|^/etc/ftpusers$|%config \0|" |
   sort > rpm.filelist
 echo "%dir /var/athena/sessions" >> rpm.filelist
-
-%post
-if [ -e /etc/conf.getty ] && grep -s -q LOGIN /etc/conf.getty ; then
-  echo Not updating conf.getty to point at krb5. Current value:
-  grep LOGIN /etc/conf.getty
-else
-  echo LOGIN=/usr/athena/etc/login.krb5 >> /etc/conf.getty
-fi
-
-%triggerin -- initscripts
-# Force use of getty instead of mingetty
-sed -e 's/mingetty/getty/' -e 's/getty\(  *[^ ][^ ]*\)$/getty\1 VC linux/' \
-	< /etc/inittab > /etc/inittab.new
-mv /etc/inittab.new /etc/inittab
-kill -1 1
-
-
-%preun
-[ $1 = 0 ] || exit 0
-sed -e '\,/usr/athena/etc/login.krb5,d' /etc/conf.getty > /etc/conf.getty.new
-mv /etc/conf.getty.new /etc/conf.getty
