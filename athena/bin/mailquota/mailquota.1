@@ -1,0 +1,74 @@
+.\" 
+.\" $Id: mailquota.1,v 1.1 2003-10-10 21:30:45 rbasch Exp $
+.\"
+.TH MAILQUOTA 1 
+.UC 4
+.SH NAME
+mailquota \- display post office resource usage and limits
+.SH SYNOPSIS
+.B mailquota
+[
+.BR \-h " host"
+] [
+.BR \-m " mailbox"
+] [
+.B \-n
+] [ 
+.B \-u " percent"
+] [
+.B \-d
+] [ user ]
+.SH DESCRIPTION
+The 
+.I mailquota
+program displays a user's mail resource usage and limits on the post
+office server.  Quota resources which are displayed, if defined on
+the server, are storage (in kilobytes) and number of messages.
+
+.I mailquota
+understands the following options:
+.TP
+.B \-h \fIhost\fR
+specifies that
+.I host
+should be consulted instead of your default post office server.
+.TP
+.B \-m \fImailbox\fR
+specifies that the quota for the IMAP folder named
+.I mailbox
+should be checked.  If this option is not specified,
+.I mailquota
+checks the quota for the INBOX folder.  (For MIT post office servers,
+the quota applies to the entire INBOX folder hierarchy, so there
+is no need to check other mailboxes).
+.TP
+.B \-n
+specifies that
+.I mailquota
+should only display a quota when any resource usage is above a
+percentage threshold; that threshold's default value is 90, but may be
+set via the
+.B -u
+option.
+.TP
+.B \-u \fIpercent\fR
+specifies the usage percentage threshold.  A defined quota whose
+resource usages are below this threshold will not be displayed.
+Specifying this option implies the
+.B -n
+option; if
+.B -n
+is specified, and this option is not specified, the default usage
+threshold is 90.
+.TP
+.B \-d
+specifies that 
+.I mailquota
+should run in debug mode.
+.TP
+.B \fIuser\fR
+specifies that the mail quota for 
+.I user
+should be checked, rather than the current user.
+.SH "SEE ALSO"
+imtest(1), RFC\-2087 (IMAP4 QUOTA extension)
