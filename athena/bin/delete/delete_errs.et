@@ -5,7 +5,7 @@
 #
 #     $Source: /afs/dev.mit.edu/source/repository/athena/bin/delete/delete_errs.et,v $
 #     $Author: jik $
-#     $Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/delete_errs.et,v 1.2 1989-11-06 19:55:55 jik Exp $
+#     $Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/delete_errs.et,v 1.3 1989-12-28 14:44:22 jik Exp $
 #
 
 	et	del
@@ -42,6 +42,8 @@ ec ENOMATCH,
 	"no match"
 ec EXPUNGE_NOT_EXPUNGED,
 	""
+ec PURGE_TOO_MANY_ARGS,
+	"command takes no arguments"
 ec PAT_NO_FILES_REQUESTED,
 	"internal error: no files requested in call to find_matches or do_match"
 ec PAT_IS_MOUNT,
