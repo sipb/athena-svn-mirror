@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: do.sh,v 1.84 2005-03-15 21:26:13 rbasch Exp $
+# $Id: do.sh,v 1.85 2005-04-06 19:20:24 ghudson Exp $
 
 source=/mit/source
 srvd=/.srvd
@@ -137,8 +137,7 @@ case `uname -s` in
 SunOS)
   OS=solaris
   LD_LIBRARY_PATH=/usr/openwin/lib export LD_LIBRARY_PATH
-  LD_RUN_PATH=/usr/athena/lib:/usr/openwin/lib export LD_RUN_PATH
-  PATH=/usr/ccs/bin:/usr/bin:/usr/ucb:/usr/openwin/bin
+  PATH=/usr/ccs/bin:/usr/bin:/usr/sfw/bin:/usr/openwin/bin
   if [ -d /opt/SUNWspro/bin ]; then
     sprobin=/opt/SUNWspro/bin
   else
