@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.25 1992-07-17 15:38:48 miki Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.26 1992-10-16 08:09:23 probe Exp $
  *
  * Copyright (c) 1990, 1991 by the Massachusetts Institute of Technology
  * For copying and distribution information, please see the file
@@ -46,7 +46,7 @@
 #endif
 
 #ifndef lint
-static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.25 1992-07-17 15:38:48 miki Exp $";
+static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.26 1992-10-16 08:09:23 probe Exp $";
 #endif
 
 #ifndef NULL
@@ -142,7 +142,7 @@ char **argv;
 #if defined(ultrix) && defined(mips)
     int uacbuf[2];
 #endif
-#ifdef _IBMR2
+#if defined(_AIX) && (AIXV == 31)
     fd_set rdlist;
     int pp[2], nfd, nfound;
     struct timeval timeout;
@@ -229,7 +229,7 @@ char **argv;
     /* Fire up X */
     xpid = 0;
     for (tries = 0; tries < 3; tries++) {
-#ifdef _IBMR2
+#if defined(_AIX) && (AIXV == 31)
 	if (xpid != 0) {
 	    kill(xpid, SIGKILL);
 	    alarm(5);
@@ -238,7 +238,7 @@ char **argv;
 	if (pipe(pp) < 0) {
 	    message("Could not establish a pipe");
 	}
-#endif /* _IBMR2 */
+#endif
 #ifdef DEBUG
 	message("Starting X\n");
 #endif
@@ -246,7 +246,7 @@ char **argv;
 	xpid = fork();
 	switch (xpid) {
 	case 0:
-#ifdef _IBMR2
+#if defined(_AIX) && (AIXV == 31)
 	    close(pp[0]);
 	    dup2(pp[1],1);
 #endif
@@ -277,22 +277,7 @@ char **argv;
 		write(file, number(xpid), strlen(number(xpid)));
 		close(file);
 	    }
-#ifndef _IBMR2
-	    if (x_running == NONEXISTANT) break;
-	    alarm(X_START_WAIT);
-	    alarm_running = RUNNING;
-#ifdef DEBUG
-	    message("waiting for X\n");
-#endif
-	    sigpause(0);
-	    if (x_running != RUNNING) {
-		if (alarm_running == NONEXISTANT)
-		  message("dm: Unable to start X\n");
-		else
-		  message("dm: X failed to become ready\n");
-	    }
-	    signal(SIGUSR1, SIG_IGN);
-#else /* _IBMR2 */
+#if defined(_AIX) && (AIXV == 31)
 	    /* have to do it this way, since the Rios X server doesn't
 	     * send signals back when it starts up.  It does, however,
 	     * write the name of the display it started up on to stdout
@@ -335,7 +320,22 @@ char **argv;
 		}
 	    }
 	    close(pp[0]);
-#endif /* _IBMR2 */
+#else /* ! AIX3.1 */
+	    if (x_running == NONEXISTANT) break;
+	    alarm(X_START_WAIT);
+	    alarm_running = RUNNING;
+#ifdef DEBUG
+	    message("waiting for X\n");
+#endif
+	    sigpause(0);
+	    if (x_running != RUNNING) {
+		if (alarm_running == NONEXISTANT)
+		  message("dm: Unable to start X\n");
+		else
+		  message("dm: X failed to become ready\n");
+	    }
+	    signal(SIGUSR1, SIG_IGN);
+#endif /* ! AIX3.1 */
 	}
 	if (x_running == RUNNING) break;
     }
