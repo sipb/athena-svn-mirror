@@ -48,6 +48,10 @@ AFSADJUST=true; 	export AFSADJUST;	#  Adjust AFS cache-size?
 EOF
 
 chkconfig --add afs
+# Force a reset to what's specified in the rc file; we changed it to
+# run after afs in 9.0.
+chkconfig --level 345 afs reset
+
 [ -d /afs ] || mkdir -p /afs
 
 %preun

@@ -2,7 +2,7 @@
 #
 # athena-ws:	Set up initial Athena workstation state.
 #
-# chkconfig: 2345 61 80
+# chkconfig: 2345 47 80
 # description: Initial Athena startup.
 #
 # config: /etc/sysconfig/network
