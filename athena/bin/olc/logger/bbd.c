@@ -3,7 +3,7 @@
  *
  * $Author: lwvanels $
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/logger/bbd.c,v $
- * $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/logger/bbd.c,v 1.9 1991-09-25 15:32:20 lwvanels Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/logger/bbd.c,v 1.10 1991-09-25 15:43:46 lwvanels Exp $
  *
  *
  * Copyright (C) 1991 by the Massachusetts Institute of Technology.
@@ -12,7 +12,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/logger/bbd.c,v 1.9 1991-09-25 15:32:20 lwvanels Exp $";
+static char rcsid_[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/logger/bbd.c,v 1.10 1991-09-25 15:43:46 lwvanels Exp $";
 #endif
 #endif
 
@@ -303,7 +303,8 @@ main(argc, argv)
   while (1) {
     len = sizeof(struct sockaddr_in);
     if ((rlen = recvfrom(fd,buf,1024,0,&from,&len)) < 0) {
-      syslog(LOG_ERR,"recvfrom: %m");
+      if (errno != EINTR)
+	syslog(LOG_ERR,"recvfrom: %m");
       continue;
     }
     oldmask = sigblock(alarmmask);
