@@ -1,7 +1,7 @@
 /* This file is part of the Project Athena Global Message System.
  * Created by: Mark W. Eichin <eichin@athena.mit.edu>
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/gms/get_message_from_server.c,v $
- * $Author: eichin $
+ * $Author: probe $
  *
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -9,7 +9,7 @@
  */
 #include <mit-copyright.h>
 #ifndef lint
-static char rcsid_get_message_from_server_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/gms/get_message_from_server.c,v 1.1 1988-09-26 15:40:43 eichin Exp $";
+static char rcsid_get_message_from_server_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/gms/get_message_from_server.c,v 1.2 1990-07-12 15:15:51 probe Exp $";
 #endif lint
 
 #include "globalmessage.h"
@@ -52,11 +52,6 @@ Code_t get_message_from_server(ret_message, ret_message_size, server)
     gms_service = getservbyname(GMS_SERV_NAME, GMS_SERV_PROTO);
     if(!gms_service) {
       /* getservbyname failed, fall back... */
-      /* Note that hes_getservbyname is broken currently, and does not
-       * convert the service name to host byte order. This should be
-       * fixed in the library; it will not be fixed here, since that
-       * will make it break later.
-       */
       gms_service = hes_getservbyname(GMS_SERV_NAME, GMS_SERV_PROTO);
       if(!gms_service) {
 	/* so did getservbyname, fall back to hard coded? */
