@@ -1,11 +1,11 @@
-# $Id: phase3.sh,v 1.8 1997-02-11 18:31:29 ghudson Exp $
+# $Id: phase3.sh,v 1.9 1997-05-04 04:48:25 ghudson Exp $
 # $Source: /afs/dev.mit.edu/source/repository/packs/install/platform/sun4/phase3.sh,v $
 
 # This file is run out of the srvd by phase2.sh after it starts AFS.
 # The contents of this file used to live in phase2.sh, which is run
 # from the miniroot.
 
-if [ `/srvd/bin/athena/machtype -c` = SPARC/4 ]; then
+if [ `/sbin/machtype -c` = SPARC/4 ]; then
 	echo "Setting monitor resolution..."
 	/os/usr/sbin/eeprom output-device=screen:r1152x900x94
 	/os/usr/sbin/eeprom fcode-debug?=true
@@ -62,10 +62,6 @@ cd /root
 echo "Creating other files/directories on the pack's root..."
 mkdir afs mit mnt 
 ln -s /var/usr/vice usr/vice
-#ln -s /var/adm usr/adm
-#ln -s /var/spool usr/spool
-#ln -s /var/preserve usr/preserve
-cp -p /srvd/.c* /srvd/.l* /srvd/.p* /srvd/.r* /srvd/.x* /root/
 chmod 1777 /root/tmp 
 
 
@@ -138,10 +134,6 @@ cp /dev/null etc/named.local
 echo "Updating var"
 cd /root/var
 cpio -idm </srvd/install/var.cpio
-#ln -s /srvd/var/sadm sadm
-mkdir sadm
-(cd /os/var/sadm;  tar cf - . ) | ( cd /root/var/sadm; tar xf - . )
-cd /root/var
 mkdir tmp 2>/dev/null
 chmod 1777 tmp
 
@@ -157,11 +149,13 @@ cp /dev/null /root/var/adm/utmpx
 cp /dev/null /root/var/adm/wtmp
 cp /dev/null /root/var/adm/wtmpx
 cp /dev/null /root/var/spool/mqueue/syslog
-cp -p /srvd/etc/crontab.root.add  /root/var/spool/cron/crontabs/root
 rm -f /root/var/spool/cron/crontabs/uucp
 echo "Installing bootblocks on root "
-cp -p /ufsboot /root
-installboot /os/usr/platform/`uname -i`/lib/fs/ufs/bootblk $rrootdrive
+# We may need to replace "sun4m" with "`uname -i`" at some point.  Right now
+# (as of 8.1, with a 2.4 miniroot on the install server), `uname -i` doesn't
+# work on the miniroot.
+cp -p /os/platform/sun4m/ufsboot /root
+installboot /os/usr/platform/sun4m/lib/fs/ufs/bootblk $rrootdrive
 cd /root
 
 # Note: device scripts depend on ROOT being set properly.
