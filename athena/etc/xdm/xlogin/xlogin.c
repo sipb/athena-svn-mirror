@@ -1,4 +1,4 @@
- /* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.53 1997-02-04 09:40:56 ghudson Exp $ */
+ /* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.54 1997-02-05 00:05:26 ghudson Exp $ */
  
 #ifdef POSIX
 #include <unistd.h>
@@ -93,6 +93,7 @@ static void blinkOwl(), blinkIs(), initOwl(), adjustOwl();
 static void catch_child(), setFontPath(), setAutoRepeat();
 static Boolean auxConditions();
 static int getAutoRepeat();
+pid_t fork_and_store(pid_t *var);
 void focusACT(), unfocusACT(), runACT(), runCB(), focusCB(), resetCB();
 void idleReset(), loginACT(), localErrorHandler(), setcorrectfocus();
 void sigconsACT(), sigconsCB(), callbackACT(), attachandrunCB();
@@ -250,9 +251,8 @@ int owlNumBitmaps, isNumBitmaps;
 int owlState, owlDelta, isDelta, owlTimeout, isTimeout;
 Pixmap owlBitmaps[20], isBitmaps[20];
 struct timeval starttime;
-int activation_state, activation_pid, activate_count = 0;
-int attach_state, attach_pid;
-int attachhelp_state, attachhelp_pid, quota_pid;
+pid_t activation_pid, attach_pid, attachhelp_pid, quota_pid;
+int activation_state, activate_count = 0, attach_state, attachhelp_state;
 int exiting = FALSE;
 extern char *defaultpath;
 char login[128], passwd[128];
@@ -666,8 +666,7 @@ start_reactivate(data, timerid)
     sigconsCB(NULL, "clear", NULL);
 
     activation_state = REACTIVATING;
-    activation_pid = fork();
-    switch (activation_pid) {
+    switch (fork_and_store(&activation_pid)) {
     case 0:
  	if (activate_count % resources.detach_interval == 0)
  	  execl(resources.reactivate_prog, resources.reactivate_prog,
@@ -1251,7 +1250,7 @@ caddr_t unused;
 
 
     attach_state = -1;
-    switch (attach_pid = fork()) {
+    switch(fork_and_store(&attach_pid)) {
     case 0:
 	execlp("attach", "attach", "-n", "-h", "-q", locker, NULL);
 	fprintf(stderr, "Xlogin warning: unable to attach locker %s\n", locker);
@@ -1958,3 +1957,16 @@ static int getAutoRepeat()
 }
 #endif 
 
+/* Fork, storing the pid in a variable var and returning the pid.  Make sure
+ * that the pid is stored before any SIGCHLD can be delivered. */
+pid_t fork_and_store(pid_t *var)
+{
+    sigset_t mask, omask;
+
+    sigemptyset(&mask);
+    sigaddset(&mask, SIGCHLD);
+    sigprocmask(SIG_BLOCK, &mask, &omask);
+    *var = fork();
+    sigprocmask(SIG_SETMASK, &omask, NULL);
+    return *var;
+}

@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.76 1997-02-04 09:39:20 ghudson Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.77 1997-02-05 00:05:20 ghudson Exp $
  */
 
 #include <stdio.h>
@@ -122,6 +122,7 @@ char *defaultpath = "/srvd/patch:/usr/athena/bin:/bin/athena:/usr/bin/X11:/usr/n
 extern FILE *xdmstream;
 #endif
 
+extern pid_t fork_and_store(pid_t *var);
 extern char *crypt(), *lose(), *getenv();
 extern char *krb_get_phost(); /* should be in <krb.h> */
 char *get_tickets(), *attachhomedir(), *strsave(), *add_to_group();
@@ -129,8 +130,8 @@ char *get_tickets(), *attachhomedir(), *strsave(), *add_to_group();
 char *malloc();
 #endif
 int abort_verify();
-extern int attach_state, attach_pid, attachhelp_state, attachhelp_pid;
-extern int errno, quota_pid;
+extern pid_t attach_pid, attachhelp_pid, quota_pid;
+extern int attach_state, attachhelp_state, errno;
 #ifdef POSIX
 extern sigset_t sig_zero;
 #endif
@@ -359,7 +360,7 @@ char *display;
     /* if mail-check login selected, do that now. */
     if (option == 4) {
 	attach_state = -1;
-	switch(attach_pid = fork()) {
+	switch(fork_and_store(&attach_pid)) {
 	case -1:
 	    fprintf(stderr, "Unable to fork to check your mail.\n");
 	    break;
@@ -398,7 +399,7 @@ char *display;
 	cleanup(pwd);
 	return("An unexpected error occured while entering you in the local password file.");
     }
-    switch(quota_pid = fork()) {
+    switch(fork_and_store(&quota_pid)) {
     case -1:
 	fprintf(stderr, "Unable to fork to check your filesystem quota.\n");
 	break;
@@ -769,7 +770,7 @@ struct passwd *pwd;
 #endif
     if (pwd && homedir_status == HD_ATTACHED) {
 	attach_state = -1;
-	switch (attach_pid = fork()) {
+	switch (fork_and_store(&attach_pid)) {
 	case -1:
 	    fprintf(stderr, "Unable to detach your home directory (could not fork to create attach process).");
 	    break;
@@ -1085,7 +1086,7 @@ struct passwd *pwd;
 
     /* attempt attach now */
     attach_state = -1;
-    switch (attach_pid = fork()) {
+    switch (fork_and_store(&attach_pid)) {
     case -1:
 	return("Unable to attach your home directory (could not fork to create attach process).  Try another workstation.");
     case 0:
@@ -1113,7 +1114,7 @@ struct passwd *pwd;
 		    abort_verify);
 	/* attempt attach again */
 	attach_state = -1;
-	switch (attach_pid = fork()) {
+	switch (fork_and_store(&attach_pid)) {
 	case -1:
 	    return("Unable to attach your home directory (could not fork to create attach process).  Try another workstation.");
 	case 0:
@@ -1170,7 +1171,7 @@ struct passwd *pwd;
 #endif
 
 	attachhelp_state = -1;
-	switch (attachhelp_pid = fork()) {
+	switch (fork_and_store(&attachhelp_pid)) {
 	case -1:
 	    fprintf(stderr, "Warning - could not fork to copy user prototype files into temporary directory.\n");
 	    return (NULL);
