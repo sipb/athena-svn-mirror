@@ -11,15 +11,18 @@
  *      MIT Information Systems
  *
  *      Tom Coppeto
+ *	Chris VanHaren
  *      MIT Project Athena
  *
- *      Copyright (c) 1985,1988 by the Massachusetts Institute of Technology
+ * Copyright (C) 1985,1988,1990 by the Massachusetts Institute of Technology.
+ * For copying and distribution information, see the file "mit-copyright.h."
  *
- *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/macros.h,v $
- *      $Author: vanharen $
- *      $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/macros.h,v 1.5 1990-01-17 03:29:18 vanharen Exp $
+ *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/macros.h,v $
+ *	$Id: macros.h,v 1.6 1990-05-25 15:10:05 vanharen Exp $
+ *	$Author: vanharen $
  */
 
+#include <mit-copyright.h>
 #include <olc/lang.h>
 
 /* 

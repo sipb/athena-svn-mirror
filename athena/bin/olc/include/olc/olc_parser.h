@@ -1,6 +1,6 @@
 /*
  * This file is part of the OLC On-Line Consulting System.
- * It contains definitions common to all parts of OLC.
+ * It contains definitions for the OLC command parser.
  *
  *      Win Treese
  *      Dan Morgan
@@ -13,13 +13,15 @@
  *      Tom Coppeto
  *      MIT Project Athena
  *
- *      Copyright (c) 1985,1988 by the Massachusetts Institute of Technology
+ * Copyright (C) 1985,1988,1990 by the Massachusetts Institute of Technology.
+ * For copying and distribution information, see the file "mit-copyright.h".
  *
- *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/olc_parser.h,v $
- *      $Author: raeburn $
- *      $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/olc_parser.h,v 1.4 1990-02-06 02:51:24 raeburn Exp $
+ *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/olc_parser.h,v $
+ *	$Id: olc_parser.h,v 1.5 1990-05-25 15:17:33 vanharen Exp $
+ *	$Author: vanharen $
  */
 
+#include <mit-copyright.h>
 #include <olc/olc_tty.h>
 
 char **handle_argument();
