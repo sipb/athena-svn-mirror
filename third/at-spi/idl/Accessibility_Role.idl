@@ -264,6 +264,24 @@ module Accessibility {
    * are generally ROLE_APPLICATION objects.
    */
   ROLE_APPLICATION,
+  /*
+   * The object is a dialog or list containing items for insertion 
+   * into an entry widget, for instance a list of words for completion 
+   * of a text entry.
+   */
+  ROLE_AUTOCOMPLETE,
+  /*
+   * The object is an editable text object in a toolbar.
+   */
+  ROLE_EDITBAR,
+  /*
+   * The object is an embedded component container.  This role is a 
+   * "grouping" hint that the contained objects share a context which is 
+   * different from the container in which this accessible is embedded.
+   * In particular, it is used for some kinds of document embedding, and
+   * for embedding of out-of-process component, "panel applets", etc.
+   */
+  ROLE_EMBEDDED,
   /* not a valid role, used for finding end of enumeration. */
   ROLE_LAST_DEFINED
   };

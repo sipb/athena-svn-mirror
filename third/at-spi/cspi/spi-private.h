@@ -57,19 +57,31 @@ typedef struct {
   void           *data; 
 } InternalEvent;
 
+struct _SPIException {
+  SPIExceptionType type;
+  CORBA_Object source;
+  CORBA_Environment *ev;
+  SPIExceptionCode code;
+  char * desc;
+};
+
 #define CSPI_OBJREF(a) (((Accessible *)(a))->objref)
 
-CORBA_Environment     *cspi_ev               (void);
-SPIBoolean             cspi_exception        (void);
-Accessibility_Registry cspi_registry         (void);
-Accessible            *cspi_object_add       (CORBA_Object corba_object);
-void                   cspi_object_ref       (Accessible  *accessible);
-void                   cspi_object_unref     (Accessible  *accessible);
-Accessible            *cspi_object_borrow    (CORBA_Object corba_object);
-Accessible            *cspi_object_take      (CORBA_Object corba_object);
-void                   cspi_object_return    (Accessible  *accessible);
-SPIBoolean             cspi_accessible_is_a  (Accessible  *accessible,
-					      const char  *interface_name);
+CORBA_Environment     *cspi_ev                (void);
+CORBA_Environment     *cspi_peek_ev           (void);
+SPIBoolean             cspi_exception         (void);
+Accessibility_Registry cspi_registry          (void);
+Accessible            *cspi_object_add        (CORBA_Object corba_object);
+void                   cspi_object_ref        (Accessible  *accessible);
+void                   cspi_object_unref      (Accessible  *accessible);
+Accessible            *cspi_object_borrow     (CORBA_Object corba_object);
+Accessible            *cspi_object_take       (CORBA_Object corba_object);
+void                   cspi_object_return     (Accessible  *accessible);
+SPIBoolean             cspi_accessible_is_a   (Accessible  *accessible,
+					       const char  *interface_name);
+void                   cspi_streams_close_all (void);
+gboolean              _cspi_exception_throw (CORBA_Environment *ev, char *desc_prefix);
+
 
 #define cspi_return_if_fail(val)		\
 	if (!(val))				\

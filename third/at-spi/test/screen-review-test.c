@@ -21,6 +21,8 @@
  * Boston, MA 02111-1307, USA.
  */
 
+#include <stdio.h>
+#include <strings.h>
 #include <stdlib.h>
 #include "../cspi/spi-private.h"
 
@@ -329,10 +331,10 @@ text_chunk_list_head_clip (GList *text_chunk_list,
 {
 	GList *target, *iter = next, *prev;
 	prev = iter->prev;
-//	if (chunk->string && strlen (chunk->string)) { 
+/*	if (chunk->string && strlen (chunk->string)) { */
 		text_chunk_list =
 			g_list_insert_before (text_chunk_list, next, chunk);
-//	}
+/*	}*/
 	while (iter && CHUNK_BOUNDS_SPANS_END (chunk, (TextChunk *)iter->data)) {
 #ifdef CLIP_DEBUG			
 			fprintf (stderr, "deleting %s\n",

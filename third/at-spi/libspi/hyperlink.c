@@ -26,6 +26,7 @@
 #include <config.h>
 #include <stdio.h>
 #include <libspi/hyperlink.h>
+#include <libspi/action.h>
 #include <libspi/accessible.h>
 
 /* Static function declarations */
@@ -58,7 +59,7 @@ impl_isValid (PortableServer_Servant _servant,
 BONOBO_TYPE_FUNC_FULL (SpiHyperlink,
 		       Accessibility_Hyperlink,
 		       SPI_TYPE_BASE,
-		       spi_hyperlink);
+		       spi_hyperlink)
 
 
 static void
@@ -91,9 +92,23 @@ spi_hyperlink_new (AtkHyperlink *object)
 
   spi_base_construct (SPI_BASE (new_hyperlink), G_OBJECT(object));
 
+  /* 
+   * some hyperlinks are actionable... this is an ATK convention 
+   * that seems convenient though possibly poorly documented or unintended.
+   */
+  if (ATK_IS_ACTION (object))
+    {
+      /* 
+       * NOTE: we don't cast 'object' to ATK_OBJECT in the call to 
+       * spi_action_interface_new(), because of the above convention, 
+       * even though it means we may be violating the func prototype.
+       * See discussion in bugzilla bug #120659.
+       */
+      bonobo_object_add_interface (bonobo_object (new_hyperlink),
+				   BONOBO_OBJECT (spi_action_interface_new (object)));
+    }
   return new_hyperlink;
 }
-
 
 static AtkHyperlink *
 get_hyperlink_from_servant (PortableServer_Servant servant)

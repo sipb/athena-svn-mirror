@@ -2,8 +2,8 @@
  * AT-SPI - Assistive Technology Service Provider Interface
  * (Gnome Accessibility Project; http://developer.gnome.org/projects/gap)
  *
- * Copyright 2001, 2002 Sun Microsystems Inc.,
- * Copyright 2001, 2002 Ximian, Inc.
+ * Copyright 2001, 2002, 2003 Sun Microsystems Inc.,
+ * Copyright 2001, 2002, 2003 Ximian, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -21,6 +21,7 @@
  * Boston, MA 02111-1307, USA.
  */
 
+#include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
@@ -33,39 +34,27 @@
 #include <libspi/spi-private.h>
 #include "accessible.h"
 #include "application.h"
-
 #include <bonobo-activation/bonobo-activation-register.h>
 
 #undef SPI_BRIDGE_DEBUG
 
 #define DBG(a,b) if(_dbg>=(a))b
 
-static int _dbg = 0;
+int _dbg = 0;
 static CORBA_Environment ev;
 static Accessibility_Registry registry = CORBA_OBJECT_NIL;
 static Accessibility_DeviceEventController device_event_controller = CORBA_OBJECT_NIL;
 static SpiApplication *this_app = NULL;
 static gboolean registry_died = FALSE;
 static gboolean atk_listeners_registered = FALSE;
-static guint toplevel_handler;
-
-/* NOT YET USED
-   static GQuark atk_quark_property_changed_name;
-   static GQuark atk_quark_property_changed_description;
-   static GQuark atk_quark_property_changed_parent;
-   static GQuark atk_quark_property_changed_role;
-   static GQuark atk_quark_property_changed_table_caption;
-   static GQuark atk_quark_property_changed_table_column_description;
-   static GQuark atk_quark_property_changed_table_row_description;
-   static guint atk_signal_property_changed;
-*/
+static gint toplevels = 0;
 
 static guint atk_signal_text_changed;
-static guint atk_signal_child_changed;
+static guint atk_signal_children_changed;
 static guint atk_signal_active_descendant_changed;
+static guint atk_signal_text_selection_changed;
 
 /* NOT YET USED
-   static guint atk_signal_text_selection_changed;
    static guint atk_signal_row_reordered;
    static guint atk_signal_row_inserted;
    static guint atk_signal_row_deleted;
@@ -74,9 +63,15 @@ static guint atk_signal_active_descendant_changed;
    static guint atk_signal_column_deleted;
 */
 
+static guint atk_signal_link_selected;
+static guint atk_signal_bounds_changed;
+
 static Accessibility_Registry spi_atk_bridge_get_registry (void);
 static void     spi_atk_bridge_do_registration         (void);
 static void     spi_atk_bridge_toplevel_added          (AtkObject             *object,
+                                                        guint                 index,
+                                                        AtkObject             *child);
+static void     spi_atk_bridge_toplevel_removed        (AtkObject             *object,
                                                         guint                 index,
                                                         AtkObject             *child);
 
@@ -104,6 +99,9 @@ static gboolean spi_atk_bridge_signal_listener         (GSignalInvocationHint *s
 							gpointer               data);
 static gint     spi_atk_bridge_key_listener            (AtkKeyEventStruct     *event,
 							gpointer               data);
+static void     spi_atk_tidy_windows                   (void);
+static void     deregister_application                 (BonoboObject          *app);
+static void     reinit_register_vars                   (void);
 
 /* For automatic libgnome init */
 extern void gnome_accessibility_module_init     (void);
@@ -124,19 +122,32 @@ extern void gnome_accessibility_module_shutdown (void);
 static void
 spi_atk_bridge_init_event_type_consts ()
 {
-  atk_signal_child_changed = g_signal_lookup ("child_changed", 
+  static gboolean done = FALSE;
+
+  if (done)
+    return;
+
+  atk_signal_children_changed = g_signal_lookup ("children_changed", 
 					      ATK_TYPE_OBJECT);
   atk_signal_text_changed = g_signal_lookup ("text_changed", 
 					     ATK_TYPE_TEXT);
+  atk_signal_bounds_changed = g_signal_lookup ("bounds_changed", 
+					      ATK_TYPE_COMPONENT);
   atk_signal_active_descendant_changed = 
          g_signal_lookup ("active_descendant_changed", 
-		          ATK_TYPE_OBJECT);
+		          ATK_TYPE_OBJECT); 
+  atk_signal_link_selected = g_signal_lookup ("link_selected", 
+					      ATK_TYPE_HYPERTEXT);
+  atk_signal_text_selection_changed = g_signal_lookup ("text_selection_changed", 
+					      ATK_TYPE_TEXT);
+  done = TRUE;
 }
 
 static int
 atk_bridge_init (gint *argc, gchar **argv[])
 {
   const char *debug_env_string = g_getenv ("AT_SPI_DEBUG");
+  gchar *fname;
 
   if (atk_bridge_initialized)
     {
@@ -144,14 +155,23 @@ atk_bridge_init (gint *argc, gchar **argv[])
     }
   atk_bridge_initialized = TRUE;
 
-  if (debug_env_string)
-    _dbg = (int) g_ascii_strtod (debug_env_string, NULL);
+  if (g_getenv ("ATK_BRIDGE_REDIRECT_LOG"))
+  {
+      fname = g_strconcat ("/tmp/", g_get_prgname (), ".at-spi-log");
+      freopen (fname, "w", stderr);
+      g_free (fname);
+  }
+
+  if (debug_env_string) 
+      _dbg = (int) g_ascii_strtod (debug_env_string, NULL);
 
   if (!bonobo_init (argc, argv ? *argv : NULL))
     {
       g_error ("Could not initialize Bonobo");
     }
 
+  /* Create the accessible application server object */
+  this_app = spi_application_new (atk_get_root ());
   /*
    * We only want to enable the bridge for top level
    * applications, we detect bonobo components by seeing
@@ -161,18 +181,22 @@ atk_bridge_init (gint *argc, gchar **argv[])
   if (bonobo_activation_iid_get ())
     {
       DBG (1, g_message ("Found Bonobo component\n"));
-      toplevel_handler = g_signal_connect (atk_get_root (), 
-                                           "children-changed::add",
-                                           (GCallback) spi_atk_bridge_toplevel_added, 
-                                           NULL);
+      g_signal_connect (atk_get_root (), 
+                        "children-changed::add",
+                        (GCallback) spi_atk_bridge_toplevel_added, 
+                        NULL);
+      g_signal_connect (atk_get_root (), 
+                        "children-changed::remove",
+                        (GCallback) spi_atk_bridge_toplevel_removed, 
+                        NULL);
     }
   else
     {
       spi_atk_bridge_do_registration ();
     }
- 
+  spi_atk_register_event_listeners ();
   spi_atk_bridge_init_event_type_consts ();
-
+ 
   return 0;
 }
 
@@ -192,8 +216,8 @@ spi_atk_bridge_do_registration (void)
   bonobo_activate ();
 
   /* Create the accessible application server object */
-
-  this_app = spi_application_new (atk_get_root ());
+  if (this_app == NULL)
+    this_app = spi_application_new (atk_get_root ());
 
   DBG (1, g_message ("About to register application\n"));
 
@@ -210,8 +234,31 @@ spi_atk_bridge_toplevel_added (AtkObject *object,
                                guint     index,
                                AtkObject *child)
 {
-  g_signal_handler_disconnect (object, toplevel_handler);
-  spi_atk_bridge_do_registration ();
+  if (toplevels == 0)
+    {
+      spi_atk_bridge_do_registration ();
+    }
+  toplevels++;
+}
+
+static void
+spi_atk_bridge_toplevel_removed (AtkObject *object,
+                                 guint     index,
+                                 AtkObject *child)
+{
+  BonoboObject *app = (BonoboObject *) this_app;
+
+  toplevels--;
+  if (toplevels == 0)
+    {
+      deregister_application (app);
+      reinit_register_vars ();
+    }
+  if (toplevels < 0)
+    {
+      g_warning ("More toplevels removed than added\n");
+      toplevels = 0;
+    }
 }
 
 static void
@@ -220,7 +267,42 @@ spi_atk_bridge_register_application (Accessibility_Registry registry)
   Accessibility_Registry_registerApplication (spi_atk_bridge_get_registry (),
                                               BONOBO_OBJREF (this_app),
                                               &ev);
-  spi_atk_register_event_listeners ();
+}
+
+/* 
+ * Returns a 'canonicalized' value for DISPLAY,
+ * with the screen number stripped off if present.
+ */
+static const gchar*
+spi_display_name (void)
+{
+    static const char *canonical_display_name = NULL;
+    if (!canonical_display_name)
+    {
+        const gchar *display_env = g_getenv ("AT_SPI_DISPLAY");
+	if (!display_env)
+	{
+	    display_env = g_getenv ("DISPLAY");
+	    if (!display_env || !display_env[0]) 
+		canonical_display_name = ":0";
+	    else
+	    {
+		gchar *display_p, *screen_p;
+		canonical_display_name = g_strdup (display_env);
+		display_p = strrchr (canonical_display_name, ':');
+		screen_p = strrchr (canonical_display_name, '.');
+		if (screen_p && display_p && ((guint) screen_p > (guint) display_p))
+		{
+		    *screen_p = '\0';
+		}
+	    }
+	}
+	else
+	{
+	    canonical_display_name = display_env;
+	}
+    }
+    return canonical_display_name;
 }
 
 static Accessibility_Registry
@@ -228,10 +310,13 @@ spi_atk_bridge_get_registry (void)
 {
   CORBA_Environment ev;
 
-  if (registry_died || (registry == NULL)) {
+  if (registry_died || (registry == CORBA_OBJECT_NIL)) {
 	  CORBA_exception_init (&ev);
 	  if (registry_died) 
 	    DBG (1, g_warning ("registry died! restarting..."));
+	  
+	  bonobo_activation_set_activation_env_value ("AT_SPI_DISPLAY", spi_display_name ());
+
 	  registry = bonobo_activation_activate_from_id (
 		  "OAFIID:Accessibility_Registry:1.0", 0, NULL, &ev);
 	  
@@ -271,7 +356,7 @@ spi_atk_bridget_get_dec (void)
 
   if (BONOBO_EX (&ev))
     {
-      g_warning ("failure: no deviceeventcontroller found\n");
+      g_warning (_("failure: no device event controller found.\n"));
       registry_died = TRUE;
       device_event_controller = CORBA_OBJECT_NIL;
     }
@@ -349,6 +434,7 @@ spi_atk_register_event_listeners (void)
   add_signal_listener ("Gtk:AtkObject:children-changed");
   add_signal_listener ("Gtk:AtkObject:visible-data-changed");
   add_signal_listener ("Gtk:AtkObject:active-descendant-changed");
+  add_signal_listener ("Gtk:AtkComponent:bounds-changed");
   add_signal_listener ("Gtk:AtkSelection:selection-changed");
   add_signal_listener ("Gtk:AtkText:text-selection-changed");
   add_signal_listener ("Gtk:AtkText:text-changed");
@@ -360,6 +446,7 @@ spi_atk_register_event_listeners (void)
   add_signal_listener ("Gtk:AtkTable:column-reordered");
   add_signal_listener ("Gtk:AtkTable:column-deleted");
   add_signal_listener ("Gtk:AtkTable:model-changed");
+  add_signal_listener ("Gtk:AtkHypertext:link-selected");
 /*
  * May add the following listeners to implement preemptive key listening for GTK+
  *
@@ -399,6 +486,10 @@ spi_atk_bridge_exit_func (void)
   this_app = NULL;
 
   /*
+   * Check whether we still have windows which have not been deleted.
+   */
+  spi_atk_tidy_windows ();
+  /*
    *  FIXME: this may be incorrect for apps that do their own bonobo
    *  shutdown, until we can explicitly shutdown to get the ordering
    *  right.
@@ -425,7 +516,10 @@ gnome_accessibility_module_init (void)
 {
   atk_bridge_init (NULL, NULL);
 
-  g_print("Atk Accessibilty bridge initialized\n");
+  if (g_getenv ("AT_BRIDGE_SHUTDOWN"))
+    {
+	g_print("Atk Accessibility bridge initialized\n");
+    }
 }
 
 void
@@ -442,7 +536,10 @@ gnome_accessibility_module_shutdown (void)
   atk_bridge_initialized = FALSE;
   this_app = NULL;
 
-  g_print("Atk Accessibilty bridge shutdown\n");
+  if (g_getenv ("AT_BRIDGE_SHUTDOWN"))
+    {
+	g_print("Atk Accessibility bridge shutdown\n");
+    }
 
   listener_ids = NULL;
   atk_remove_focus_tracker (atk_bridge_focus_tracker_id);
@@ -561,6 +658,13 @@ spi_atk_bridge_property_event_listener (GSignalInvocationHint *signal_hint,
 {
   AtkPropertyValues *values;
   GObject *gobject;
+  const gchar *prop_name;
+  CORBA_any any;
+  const gchar *sp = NULL;
+  AtkObject *ao;
+  SpiAccessible *s_ao = NULL;
+  CORBA_Object c_obj;
+  gint i;
 
 #ifdef SPI_BRIDGE_DEBUG
   GSignalQuery signal_query;
@@ -581,8 +685,101 @@ spi_atk_bridge_property_event_listener (GSignalInvocationHint *signal_hint,
   gobject = g_value_get_object (param_values + 0);
   values = (AtkPropertyValues*) g_value_get_pointer (param_values + 1);
 
-  spi_atk_emit_eventv (gobject, 0, 0, NULL,
-		       "object:property-change:%s", values->property_name);
+  prop_name = values->property_name;
+  if (strcmp (prop_name, "accessible-name") == 0)
+    {
+      sp = atk_object_get_name (ATK_OBJECT (gobject));
+      spi_init_any_string (&any, (gchar **)&sp);
+    }
+  else if (strcmp (prop_name, "accessible-description") == 0)
+    {
+      sp = atk_object_get_description (ATK_OBJECT (gobject));
+      spi_init_any_string (&any, (gchar **)&sp);
+    }
+  else if (strcmp (prop_name, "accessible-parent") == 0)
+    {
+      ao = atk_object_get_parent (ATK_OBJECT (gobject));
+      if (ao) 
+        {
+          s_ao = spi_accessible_new (ao);
+          c_obj = BONOBO_OBJREF (s_ao);
+          spi_init_any_object (&any, &c_obj);
+	}
+      else
+        {
+          spi_init_any_nil (&any);
+        }
+    }
+  else if (strcmp (prop_name, "accessible-table-summary") == 0)
+    {
+      ao = atk_table_get_summary (ATK_TABLE (gobject));
+      if (ao) 
+        {
+          s_ao = spi_accessible_new (ao);
+          c_obj = BONOBO_OBJREF (s_ao);
+          spi_init_any_object (&any, &c_obj);
+	}
+      else
+        {
+          spi_init_any_nil (&any);
+        }
+    }
+  else if (strcmp (prop_name, "accessible-table-column-header") == 0)
+    {
+      i = g_value_get_int (&(values->new_value));
+      ao = atk_table_get_column_header (ATK_TABLE (gobject), i);
+      if (ao) 
+        {
+          s_ao = spi_accessible_new (ao);
+          c_obj = BONOBO_OBJREF (s_ao);
+          spi_init_any_object (&any, &c_obj);
+	}
+      else
+        {
+          spi_init_any_nil (&any);
+        }
+    }
+  else if (strcmp (prop_name, "accessible-table-row-header") == 0)
+    {
+      i = g_value_get_int (&(values->new_value));
+      ao = atk_table_get_row_header (ATK_TABLE (gobject), i);
+      if (ao) 
+        {
+          s_ao = spi_accessible_new (ao);
+          c_obj = BONOBO_OBJREF (s_ao);
+          spi_init_any_object (&any, &c_obj);
+	}
+      else
+        {
+          spi_init_any_nil (&any);
+        }
+    }
+  else if (strcmp (prop_name, "accessible-table-row-description") == 0)
+    {
+      i = g_value_get_int (&(values->new_value));
+      sp = atk_table_get_row_description (ATK_TABLE (gobject), i);
+      spi_init_any_string (&any, (gchar **)&sp);
+    }
+  else if (strcmp (prop_name, "accessible-table-column-description") == 0)
+    {
+      i = g_value_get_int (&(values->new_value));
+      sp = atk_table_get_column_description (ATK_TABLE (gobject), i);
+      spi_init_any_string (&any, (gchar **)&sp);
+    }
+  else if (strcmp (prop_name, "accessible-table-caption-object") == 0)
+    {
+      ao = atk_table_get_caption (ATK_TABLE (gobject));
+      sp = atk_object_get_name (ao);
+      spi_init_any_string (&any, (gchar **)&sp);
+    }
+  else
+    {
+      spi_init_any_nil (&any);
+    }
+
+  spi_atk_emit_eventv (gobject, 0, 0, &any,
+		       "object:property-change:%s", prop_name);
+
 
   return TRUE;
 }
@@ -634,8 +831,8 @@ spi_init_keystroke_from_atk_key_event (Accessibility_DeviceEvent  *keystroke,
   else
 #endif
   if (!event)
-    {
-      g_print ("WARNING: NULL key event!");
+    { /* this doesn't really need translating */
+      g_print (_("WARNING: NULL key event reported."));
     }
   
   keystroke->id        = (CORBA_long) event->keyval;
@@ -644,8 +841,14 @@ spi_init_keystroke_from_atk_key_event (Accessibility_DeviceEvent  *keystroke,
   keystroke->modifiers = (CORBA_unsigned_short) (event->state & 0xFFFF);
   if (event->string)
     {
+      gunichar c;
+
       keystroke->event_string = CORBA_string_dup (event->string);
-      keystroke->is_text = CORBA_TRUE;
+      c = g_utf8_get_char_validated (event->string, -1);
+      if (c > 0 && g_unichar_isprint (c))
+        keystroke->is_text = CORBA_TRUE;
+      else
+        keystroke->is_text = CORBA_FALSE;
     }
   else
     {
@@ -685,7 +888,10 @@ spi_atk_bridge_key_listener (AtkKeyEventStruct *event, gpointer data)
   result = Accessibility_DeviceEventController_notifyListenersSync (
 	  spi_atk_bridget_get_dec (), &key_event, &ev);
 
-  CORBA_exception_free (&ev);
+  if (BONOBO_EX(&ev)) {
+      result = FALSE;
+      CORBA_exception_free (&ev);
+  }
 
   return result;
 }
@@ -704,6 +910,7 @@ spi_atk_bridge_signal_listener (GSignalInvocationHint *signal_hint,
   CORBA_Object c_obj;
   char *sp = NULL;
   AtkObject *ao;
+  AtkText *text;
   gint detail1 = 0, detail2 = 0;
   SpiAccessible *s_ao = NULL;
 #ifdef SPI_BRIDGE_DEBUG
@@ -741,12 +948,48 @@ spi_atk_bridge_signal_listener (GSignalInvocationHint *signal_hint,
       c_obj = BONOBO_OBJREF (s_ao);
       spi_init_any_object (&any, &c_obj);
     }
-  else
+  else if (signal_query.signal_id == atk_signal_link_selected)
     {
       if (G_VALUE_TYPE (param_values + 1) == G_TYPE_INT)
         detail1 = g_value_get_int (param_values + 1);
-      if (G_VALUE_TYPE (param_values + 2) == G_TYPE_INT)
-        detail2 = g_value_get_int (param_values + 2);
+      spi_init_any_nil (&any);
+    }
+  else if (signal_query.signal_id == atk_signal_bounds_changed)
+    {
+      AtkRectangle *atk_rect = NULL;
+
+      if (G_VALUE_HOLDS_BOXED (param_values + 1))
+	  atk_rect = g_value_get_boxed (param_values + 1);
+      spi_init_any_rect (&any, atk_rect);
+    }
+  else if ((signal_query.signal_id == atk_signal_children_changed) && gobject)
+    {
+      ao = atk_object_ref_accessible_child (ATK_OBJECT (gobject), 
+			        	    detail1);
+      if (ao) 
+        {
+          s_ao = spi_accessible_new (ao);
+          c_obj = BONOBO_OBJREF (s_ao);
+          spi_init_any_object (&any, &c_obj);
+	  g_object_unref (ao);
+	}
+      else
+	{
+	  spi_init_any_nil (&any);
+	}
+    }
+  else
+    {
+      if (n_param_values >= 2)
+        {
+          if (G_VALUE_TYPE (param_values + 1) == G_TYPE_INT)
+            detail1 = g_value_get_int (param_values + 1);
+          if (n_param_values >= 3)
+            {
+              if (G_VALUE_TYPE (param_values + 2) == G_TYPE_INT)
+                detail2 = g_value_get_int (param_values + 2);
+            }
+        }
 
       if (signal_query.signal_id == atk_signal_text_changed)
         {
@@ -755,21 +998,12 @@ spi_atk_bridge_signal_listener (GSignalInvocationHint *signal_hint,
 			          detail1+detail2);
           spi_init_any_string (&any, &sp);
         }
-      else if ((signal_query.signal_id == atk_signal_child_changed) && gobject)
+      else if (signal_query.signal_id == atk_signal_text_selection_changed)
         {
-          ao = atk_object_ref_accessible_child (ATK_OBJECT (gobject), 
-					        detail1);
-          if (ao) 
-	    {
-              s_ao = spi_accessible_new (ao);
-              c_obj = BONOBO_OBJREF (s_ao);
-              spi_init_any_object (&any, &c_obj);
-	      g_object_unref (ao);
-	    }
-          else
-	    {
-	      spi_init_any_nil (&any);
-	    }
+          text = ATK_TEXT (gobject);
+ 
+          /* Return NULL as the selected string */
+	  spi_init_any_nil (&any);
         }
       else
         {
@@ -824,3 +1058,44 @@ spi_atk_bridge_window_event_listener (GSignalInvocationHint *signal_hint,
 		       "window:%s", name);
   return TRUE;
 }
+
+static void
+spi_atk_tidy_windows (void)
+{
+  AtkObject *root;
+  gint n_children;
+  gint i;
+
+  root = atk_get_root ();
+  n_children = atk_object_get_n_accessible_children (root);
+  for (i = 0; i < n_children; i++)
+    {
+      AtkObject *child;
+      AtkStateSet *stateset;
+      CORBA_any any;
+      const gchar *name;
+     
+      child = atk_object_ref_accessible_child (root, i);
+      stateset = atk_object_ref_state_set (child);
+      
+      name = atk_object_get_name (child);
+      spi_init_any_string (&any, (char**) &name);
+      if (atk_state_set_contains_state (stateset, ATK_STATE_ACTIVE))
+        {
+          spi_atk_emit_eventv (G_OBJECT (child), 0, 0, &any, "window:deactivate");
+        }
+      g_object_unref (stateset);
+
+      spi_atk_emit_eventv (G_OBJECT (child), 0, 0, &any, "window:destroy");
+      g_object_unref (child);
+    }
+}
+
+static void
+reinit_register_vars (void)
+{
+  registry = CORBA_OBJECT_NIL;
+  device_event_controller = CORBA_OBJECT_NIL;
+  this_app = NULL;
+}
+

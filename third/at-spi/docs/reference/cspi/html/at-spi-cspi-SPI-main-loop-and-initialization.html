@@ -1,0 +1,89 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>SPI main loop and initialization</title><meta name="generator" content="DocBook XSL Stylesheets V1.60.1"><meta name="generator" content="GTK-Doc V1.1 (XML mode)"><style type="text/css">
+        .synopsis, .classsynopsis {
+            background: #eeeeee;
+            border: solid 1px #aaaaaa;
+            padding: 0.5em;
+        }
+        .programlisting {
+            background: #eeeeff;
+            border: solid 1px #aaaaff;
+            padding: 0.5em;
+        }
+        .variablelist {
+            padding: 4px;
+            margin-left: 3em;
+        }
+        .navigation {
+            background: #ffeeee;
+            border: solid 1px #ffaaaa;
+            margin-top: 0.5em;
+            margin-bottom: 0.5em;
+        }
+        .navigation a {
+            color: #770000;
+        }
+        .navigation a:visited {
+            color: #550000;
+        }
+        .navigation .title {
+            font-size: 200%;
+        }
+      </style><link rel="home" href="index.html" title="AT-SPI C Bindings Reference Manual"><link rel="up" href="spi-main.html" title="SPI Main Event Loop and Registry"><link rel="previous" href="spi-main.html" title="SPI Main Event Loop and Registry"><link rel="next" href="at-spi-cspi-Event-Listener-Support.html" title="Event Listener Support"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="spi-main.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="spi-main.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">AT-SPI C Bindings Reference Manual</th><td><a accesskey="n" href="at-spi-cspi-Event-Listener-Support.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="at-spi-cspi-SPI-main-loop-and-initialization"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">SPI main loop and initialization</span></h2><p>SPI main loop and initialization &#8212; </p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+
+
+
+int         <a href="at-spi-cspi-SPI-main-loop-and-initialization.html#SPI-init">SPI_init</a>                        (void);
+void        <a href="at-spi-cspi-SPI-main-loop-and-initialization.html#SPI-event-main">SPI_event_main</a>                  (void);
+void        <a href="at-spi-cspi-SPI-main-loop-and-initialization.html#SPI-event-quit">SPI_event_quit</a>                  (void);
+SPIBoolean  <a href="at-spi-cspi-SPI-main-loop-and-initialization.html#SPI-eventIsReady">SPI_eventIsReady</a>                (void);
+<a href="at-spi-cspi-Event-Listener-Support.html#AccessibleEvent">AccessibleEvent</a>* <a href="at-spi-cspi-SPI-main-loop-and-initialization.html#SPI-nextEvent">SPI_nextEvent</a>              (SPIBoolean waitForEvent);
+int         <a href="at-spi-cspi-SPI-main-loop-and-initialization.html#SPI-exit">SPI_exit</a>                        (void);
+
+void        <a href="at-spi-cspi-SPI-main-loop-and-initialization.html#SPI-freeString">SPI_freeString</a>                  (char *s);
+</pre></div><div class="refsect1" lang="en"><h2>Description</h2><p>
+
+</p></div><div class="refsect1" lang="en"><h2>Details</h2><div class="refsect2" lang="en"><h3><a name="SPI-init"></a>SPI_init ()</h3><pre class="programlisting">int         SPI_init                        (void);</pre><p>
+Connects to the accessibility registry and initializes the SPI.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> 0 on success, otherwise an integer error code.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="SPI-event-main"></a>SPI_event_main ()</h3><pre class="programlisting">void        SPI_event_main                  (void);</pre><p>
+Starts/enters the main event loop for the SPI services.
+</p><p>
+(NOTE: This method does not return control, it is exited via a call to
+ <a href="at-spi-cspi-SPI-main-loop-and-initialization.html#SPI-event-quit">SPI_event_quit</a>() from within an event handler).</p><p>
+
+</p></div><hr><div class="refsect2" lang="en"><h3><a name="SPI-event-quit"></a>SPI_event_quit ()</h3><pre class="programlisting">void        SPI_event_quit                  (void);</pre><p>
+Quits the last main event loop for the SPI services,
+see SPI_event_main</p><p>
+
+</p></div><hr><div class="refsect2" lang="en"><h3><a name="SPI-eventIsReady"></a>SPI_eventIsReady ()</h3><pre class="programlisting">SPIBoolean  SPI_eventIsReady                (void);</pre><p>
+Checks to see if an SPI event is waiting in the event queue.
+Used by clients that don't wish to use <a href="at-spi-cspi-SPI-main-loop-and-initialization.html#SPI-event-main">SPI_event_main</a>().
+</p><p>
+Not Yet Implemented.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> TRUE if an event is waiting, otherwise FALSE.
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="SPI-nextEvent"></a>SPI_nextEvent ()</h3><pre class="programlisting"><a href="at-spi-cspi-Event-Listener-Support.html#AccessibleEvent">AccessibleEvent</a>* SPI_nextEvent              (SPIBoolean waitForEvent);</pre><p>
+Gets the next event in the SPI event queue; blocks if no event
+is pending and <i class="parameter"><tt>waitForEvent</tt></i> is TRUE.
+Used by clients that don't wish to use <a href="at-spi-cspi-SPI-main-loop-and-initialization.html#SPI-event-main">SPI_event_main</a>().
+</p><p>
+Not Yet Implemented.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>waitForEvent</tt></i> :</span></td><td> a SPIBoolean indicating whether to block or not.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the next <a href="at-spi-cspi-Event-Listener-Support.html#AccessibleEvent">AccessibleEvent</a> in the SPI event queue.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="SPI-exit"></a>SPI_exit ()</h3><pre class="programlisting">int         SPI_exit                        (void);</pre><p>
+Disconnects from the Accessibility Registry and releases 
+any floating resources. Call only once at exit.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> 0 if there were no leaks, otherwise non zero.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="SPI-freeString"></a>SPI_freeString ()</h3><pre class="programlisting">void        SPI_freeString                  (char *s);</pre><p>
+Free a character string returned from an at-spi call.  Clients of
+at-spi should use this function instead of free() or g_free().
+A NULL string <i class="parameter"><tt>s</tt></i> will be silently ignored.
+This API should not be used to free strings
+from other libraries or allocated by the client.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>s</tt></i> :</span></td><td> a character string returned from another at-spi call.
+</td></tr></tbody></table></div></div></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="spi-main.html"><b>&lt;&lt; SPI Main Event Loop and Registry</b></a></td><td align="right"><a accesskey="n" href="at-spi-cspi-Event-Listener-Support.html"><b>Event Listener Support &gt;&gt;</b></a></td></tr></table></body></html>

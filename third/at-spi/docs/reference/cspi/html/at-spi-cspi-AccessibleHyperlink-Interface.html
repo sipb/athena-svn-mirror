@@ -1,0 +1,100 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>AccessibleHyperlink Interface</title><meta name="generator" content="DocBook XSL Stylesheets V1.60.1"><meta name="generator" content="GTK-Doc V1.1 (XML mode)"><style type="text/css">
+        .synopsis, .classsynopsis {
+            background: #eeeeee;
+            border: solid 1px #aaaaaa;
+            padding: 0.5em;
+        }
+        .programlisting {
+            background: #eeeeff;
+            border: solid 1px #aaaaff;
+            padding: 0.5em;
+        }
+        .variablelist {
+            padding: 4px;
+            margin-left: 3em;
+        }
+        .navigation {
+            background: #ffeeee;
+            border: solid 1px #ffaaaa;
+            margin-top: 0.5em;
+            margin-bottom: 0.5em;
+        }
+        .navigation a {
+            color: #770000;
+        }
+        .navigation a:visited {
+            color: #550000;
+        }
+        .navigation .title {
+            font-size: 200%;
+        }
+      </style><link rel="home" href="index.html" title="AT-SPI C Bindings Reference Manual"><link rel="up" href="ch05.html" title="Auxiliary Types"><link rel="previous" href="ch05.html" title="Auxiliary Types"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="ch05.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="ch05.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">AT-SPI C Bindings Reference Manual</th></tr></table><div class="refentry" lang="en"><a name="at-spi-cspi-AccessibleHyperlink-Interface"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">AccessibleHyperlink Interface</span></h2><p>AccessibleHyperlink Interface &#8212; </p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+
+
+
+void        <a href="at-spi-cspi-AccessibleHyperlink-Interface.html#AccessibleHyperlink-ref">AccessibleHyperlink_ref</a>         (AccessibleHyperlink *obj);
+void        <a href="at-spi-cspi-AccessibleHyperlink-Interface.html#AccessibleHyperlink-unref">AccessibleHyperlink_unref</a>       (AccessibleHyperlink *obj);
+long        <a href="at-spi-cspi-AccessibleHyperlink-Interface.html#AccessibleHyperlink-getNAnchors">AccessibleHyperlink_getNAnchors</a> (AccessibleHyperlink *obj);
+void        <a href="at-spi-cspi-AccessibleHyperlink-Interface.html#AccessibleHyperlink-getIndexRange">AccessibleHyperlink_getIndexRange</a>
+                                            (AccessibleHyperlink *obj,
+                                             long int *startIndex,
+                                             long int *endIndex);
+<a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a>* <a href="at-spi-cspi-AccessibleHyperlink-Interface.html#AccessibleHyperlink-getObject">AccessibleHyperlink_getObject</a>   (AccessibleHyperlink *obj,
+                                             long int i);
+char*       <a href="at-spi-cspi-AccessibleHyperlink-Interface.html#AccessibleHyperlink-getURI">AccessibleHyperlink_getURI</a>      (AccessibleHyperlink *obj,
+                                             long int i);
+SPIBoolean  <a href="at-spi-cspi-AccessibleHyperlink-Interface.html#AccessibleHyperlink-isValid">AccessibleHyperlink_isValid</a>     (AccessibleHyperlink *obj);
+</pre></div><div class="refsect1" lang="en"><h2>Description</h2><p>
+
+</p></div><div class="refsect1" lang="en"><h2>Details</h2><div class="refsect2" lang="en"><h3><a name="AccessibleHyperlink-ref"></a>AccessibleHyperlink_ref ()</h3><pre class="programlisting">void        AccessibleHyperlink_ref         (AccessibleHyperlink *obj);</pre><p>
+Increment the reference count for an AccessibleHyperlink object.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>obj</tt></i> :</span></td><td> a pointer to the AccessibleHyperlink object on which to operate.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="AccessibleHyperlink-unref"></a>AccessibleHyperlink_unref ()</h3><pre class="programlisting">void        AccessibleHyperlink_unref       (AccessibleHyperlink *obj);</pre><p>
+Decrement the reference count for an AccessibleHyperlink object.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>obj</tt></i> :</span></td><td> a pointer to the AccessibleHyperlink object on which to operate.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="AccessibleHyperlink-getNAnchors"></a>AccessibleHyperlink_getNAnchors ()</h3><pre class="programlisting">long        AccessibleHyperlink_getNAnchors (AccessibleHyperlink *obj);</pre><p>
+Get the total number of anchors which an AccessibleHyperlink implementor has.
+      Though typical hyperlinks have only one anchor, client-side image maps and
+      other hypertext objects may potentially activate or refer to multiple
+      URIs.  For each anchor there is a corresponding URI and object.
+<i class="parameter"><tt>see</tt></i> <a href="at-spi-cspi-AccessibleHyperlink-Interface.html#AccessibleHyperlink-getURI">AccessibleHyperlink_getURI</a>() and <a href="at-spi-cspi-AccessibleHyperlink-Interface.html#AccessibleHyperlink-getObject">AccessibleHyperlink_getObject</a>().</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>obj</tt></i> :</span></td><td> a pointer to the AccessibleHyperlink object on which to operate.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a long indicating the number of anchors in this hyperlink.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="AccessibleHyperlink-getIndexRange"></a>AccessibleHyperlink_getIndexRange ()</h3><pre class="programlisting">void        AccessibleHyperlink_getIndexRange
+                                            (AccessibleHyperlink *obj,
+                                             long int *startIndex,
+                                             long int *endIndex);</pre><p>
+Get the starting and ending character offsets of the text range associated with
+      a AccessibleHyperlink, in its originating AccessibleHypertext.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>obj</tt></i> :</span></td><td> a pointer to the AccessibleHyperlink implementor on which to operate.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>startIndex</tt></i> :</span></td><td> a pointer to a long integer into which the starting
+      offset of the text associated with this AccessibleHyperlink is returned.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>endIndex</tt></i> :</span></td><td> a pointer to a long integer into which the offset of the first character
+      after the text associated with this AccessibleHyperlink is returned.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="AccessibleHyperlink-getObject"></a>AccessibleHyperlink_getObject ()</h3><pre class="programlisting"><a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a>* AccessibleHyperlink_getObject   (AccessibleHyperlink *obj,
+                                             long int i);</pre><p>
+Get the object associated with a particular hyperlink anchor, as an <a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a>.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>obj</tt></i> :</span></td><td> a pointer to the AccessibleHyperlink implementor on which to operate.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>i</tt></i> :</span></td><td> a (zero-index) long integer indicating which hyperlink anchor to query.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> an <a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> that represents the object associated with the <i class="parameter"><tt>ith</tt></i> anchor
+       of the specified AccessibleHyperlink.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="AccessibleHyperlink-getURI"></a>AccessibleHyperlink_getURI ()</h3><pre class="programlisting">char*       AccessibleHyperlink_getURI      (AccessibleHyperlink *obj,
+                                             long int i);</pre><p>
+Get the URI associated with a particular hyperlink anchor.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>obj</tt></i> :</span></td><td> a pointer to the AccessibleHyperlink implementor on which to operate.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>i</tt></i> :</span></td><td> a (zero-index) long integer indicating which hyperlink anchor to query.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a UTF-8 string giving the URI of the <i class="parameter"><tt>ith</tt></i> hyperlink anchor.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="AccessibleHyperlink-isValid"></a>AccessibleHyperlink_isValid ()</h3><pre class="programlisting">SPIBoolean  AccessibleHyperlink_isValid     (AccessibleHyperlink *obj);</pre><p>
+Tell whether an AccessibleHyperlink object is still valid with respect to its
+         originating hypertext object.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>obj</tt></i> :</span></td><td> a pointer to the AccessibleHyperlink on which to operate.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> TRUE of the specified AccessibleHyperlink is still valid with respect
+         to its originating AccessibleHypertext object, FALSE otherwise.
+</td></tr></tbody></table></div></div></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="ch05.html"><b>&lt;&lt; Auxiliary Types</b></a></td><td align="right"></td></tr></table></body></html>

@@ -27,6 +27,7 @@
 #include <config.h>
 #include <atk/atkutil.h>
 #include <libspi/application.h>
+#include <locale.h>
 #include "spi-private.h"
 
 /* Our parent Gtk object type */
@@ -42,24 +43,6 @@ static SpiApplication *the_app;
 static void notify_listeners (GList *listeners,
 			      SpiAccessible *source,
 			      Accessibility_Event *e);
-
-static const char *reverse_lookup_name_for_toolkit_event (char *toolkit_name);
-
-static const char *
-lookup_toolkit_event_for_name (const char *generic_name)
-{
-  char *toolkit_specific_name;
-  SpiApplicationClass *klass = g_type_class_peek (SPI_APPLICATION_TYPE);
-#ifdef SPI_DEBUG
-  fprintf (stderr, "looking for %s in hash table.\n", generic_name);
-#endif
-  toolkit_specific_name =
-    (char *) g_hash_table_lookup (klass->toolkit_event_names, generic_name);
-#ifdef SPI_DEBUG
-  fprintf (stderr, "generic event %s converted to %s\n", generic_name, toolkit_specific_name);
-#endif
-  return toolkit_specific_name;
-}
 
 /*
  * Implemented GObject::finalize
@@ -146,54 +129,6 @@ get_atk_object_ref (GObject *gobject)
 }
 
 static gboolean
-spi_application_object_event_listener (GSignalInvocationHint *signal_hint,
-				       guint                   n_param_values,
-				       const GValue           *param_values,
-				       gpointer                data)
-{
-  Accessibility_Event e;
-  AtkObject     *aobject;
-  SpiAccessible *source;
-  GSignalQuery   signal_query;
-  gchar         *event_name;
-  const char    *generic_name;
-
-  g_return_val_if_fail (the_app != NULL, FALSE);
-  
-  g_signal_query (signal_hint->signal_id, &signal_query);
-
-  /* TODO: move GTK reference out of app.c into bridge */
-  event_name = g_strdup_printf ("Gtk:%s:%s",
-				g_type_name (signal_query.itype),
-				signal_query.signal_name);
-
-  generic_name = reverse_lookup_name_for_toolkit_event (event_name);
-
-  fprintf (stderr, "Received (object) signal %s maps to '%s'\n",
-	   event_name, generic_name);
-
-  g_free (event_name);
-
-  g_return_val_if_fail (generic_name, FALSE);
-
-  aobject = get_atk_object_ref (g_value_get_object (param_values + 0));
-
-  source = spi_accessible_new (aobject);
-  e.type = CORBA_string_dup (generic_name);
-  e.source = CORBA_OBJECT_NIL;
-  e.detail1 = 0;
-  e.detail2 = 0;
-  spi_init_any_nil (&e.any_data);
-  notify_listeners (the_app->toolkit_listeners, source, &e);
-
-  bonobo_object_unref (BONOBO_OBJECT (source));
-
-  g_object_unref (G_OBJECT (aobject));
-
-  return TRUE;
-}
-
-static gboolean
 spi_application_toolkit_event_listener (GSignalInvocationHint *signal_hint,
 					guint                  n_param_values,
 					const GValue          *param_values,
@@ -236,6 +171,34 @@ spi_application_toolkit_event_listener (GSignalInvocationHint *signal_hint,
   return TRUE;
 }
 
+static CORBA_string
+impl_accessibility_application_get_locale (PortableServer_Servant servant,
+					   Accessibility_LOCALE_TYPE lctype,
+					   CORBA_Environment *ev)
+{
+    int category;
+    switch (lctype) 
+    {
+	case Accessibility_LOCALE_TYPE_COLLATE:
+	    category = LC_COLLATE;
+	    break;
+	case Accessibility_LOCALE_TYPE_CTYPE:
+	    category = LC_CTYPE;
+	    break;
+	case Accessibility_LOCALE_TYPE_MONETARY:
+	    category = LC_MONETARY;
+	    break;
+	case Accessibility_LOCALE_TYPE_NUMERIC:
+	    category = LC_NUMERIC;
+	    break;
+	case Accessibility_LOCALE_TYPE_MESSAGES:
+	default:
+	    category = LC_MESSAGES;
+	    break;
+    }
+    return CORBA_string_dup (setlocale (category, NULL));
+}
+
 static void
 impl_accessibility_application_register_toolkit_event_listener (PortableServer_Servant servant,
 								Accessibility_EventListener listener,
@@ -249,30 +212,6 @@ impl_accessibility_application_register_toolkit_event_listener (PortableServer_S
 					      CORBA_Object_duplicate (listener, ev));
 #ifdef SPI_DEBUG
   fprintf (stderr, "registered %d for toolkit events named: %s\n",
-           spi_listener_id,
-           event_name);
-#endif
-}
-
-static void
-impl_accessibility_application_register_object_event_listener (PortableServer_Servant servant,
-							       Accessibility_EventListener listener,
-							       const CORBA_char *event_name,
-							       CORBA_Environment *ev)
-{
-  guint spi_listener_id = 0;
-  const char *toolkit_specific_event_name =
-	  lookup_toolkit_event_for_name (event_name);
-  if (toolkit_specific_event_name)
-  {
-    spi_listener_id =
-       atk_add_global_event_listener (spi_application_object_event_listener,
-				      toolkit_specific_event_name);
-    the_app->toolkit_listeners = g_list_append (the_app->toolkit_listeners,
-					      CORBA_Object_duplicate (listener, ev));
-  }
-#ifdef SPI_DEBUG
-  fprintf (stderr, "registered %d for object events named: %s\n",
            spi_listener_id,
            event_name);
 #endif
@@ -299,22 +238,6 @@ notify_listeners (GList *listeners, SpiAccessible *source, Accessibility_Event *
        */
       CORBA_exception_free (&ev);
     }
-}
-
-static const char *
-reverse_lookup_name_for_toolkit_event (char *toolkit_specific_name)
-{
-    const char *generic_name;
-    SpiApplicationClass *klass = g_type_class_peek (SPI_APPLICATION_TYPE);
-#ifdef SPI_DEBUG
-    fprintf (stderr, "(reverse lookup) looking for %s in hash table.\n", toolkit_specific_name);
-#endif
-    generic_name =
-	    (const char *) g_hash_table_lookup (klass->generic_event_names, toolkit_specific_name);
-#ifdef SPI_DEBUG
-    fprintf (stderr, "toolkit event %s converted to %s\n", toolkit_specific_name, generic_name);
-#endif
-    return generic_name;
 }
 
 static void
@@ -348,6 +271,7 @@ spi_application_class_init (SpiApplicationClass *klass)
   epv->_get_id = impl_accessibility_application_get_id;
   epv->_set_id = impl_accessibility_application_set_id;
   epv->registerToolkitEventListener = impl_accessibility_application_register_toolkit_event_listener;
+  epv->getLocale = impl_accessibility_application_get_locale;
   init_toolkit_names (&klass->generic_event_names, &klass->toolkit_event_names);
 }
 
@@ -360,11 +284,11 @@ spi_application_init (SpiApplication *application)
 
 BONOBO_TYPE_FUNC_FULL (SpiApplication,
 		       Accessibility_Application,
-		       PARENT_TYPE, spi_application);
+		       PARENT_TYPE, spi_application)
 
 SpiApplication *
 spi_application_new (AtkObject *app_root)
 {
   return SPI_APPLICATION (spi_accessible_construct (
-	SPI_APPLICATION_TYPE, app_root));
+			  SPI_APPLICATION_TYPE, app_root));
 }

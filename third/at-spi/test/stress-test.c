@@ -21,6 +21,7 @@
  * Boston, MA 02111-1307, USA.
  */
 
+#include <unistd.h>
 #include <stdlib.h>
 #include "../cspi/spi-private.h" /* A hack for now */
 #include <glib-object.h>
@@ -28,7 +29,8 @@
 #include <atk/atk.h>
 #include <atk/atknoopobject.h>
 #include <bonobo-activation/bonobo-activation-register.h>
-#include <libspi.h>
+#include <bonobo/bonobo-main.h>
+#include <libspi/libspi.h>
 
 int
 main (int argc, char **argv)
@@ -53,7 +55,7 @@ main (int argc, char **argv)
 	g_print ("starting stress test...\n");
 
 	CORBA_exception_init (&ev);
-	
+
 	registry = bonobo_activation_activate_from_id (
 		"OAFIID:Accessibility_Registry:1.0", 0, NULL, &ev);
   

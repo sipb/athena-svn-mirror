@@ -93,26 +93,33 @@ cspi_event (SpiEventListener    *listener,
 {
   GList *l;
   CSpiEventListener *clistener = (CSpiEventListener *) listener;
-  InternalEvent      aevent;
+  InternalEvent     *ievent;
+  AccessibleEvent   *aevent;
   Accessible        *source = cspi_object_borrow (event->source);
   
-  aevent.event.type    = event->type;
-  aevent.event.source  = source;
-  aevent.event.detail1 = event->detail1;
-  aevent.event.detail2 = event->detail2;
-  aevent.id            = _e_id++;
-  aevent.magic         = SPI_INTERNAL_EVENT_MAGIC;
-  aevent.ref_count     = 0;
-  aevent.data          = &event->any_data;
+  ievent = g_new0(InternalEvent, 1);
+  ievent->event.type    = g_strdup (event->type);
+  ievent->event.source  = source;
+  ievent->event.detail1 = event->detail1;
+  ievent->event.detail2 = event->detail2;
+  ievent->id            = _e_id++;
+  ievent->magic         = SPI_INTERNAL_EVENT_MAGIC;
+  ievent->ref_count     = 0;
+  ievent->data          = CORBA_any__alloc ();
+  CORBA_any__copy (ievent->data, &event->any_data);
+  aevent = (AccessibleEvent *)ievent;
+  Accessible_ref (source);
+  AccessibleEvent_ref (aevent);
 
   /* FIXME: re-enterancy hazard on this list */
   for (l = clistener->callbacks; l; l = l->next)
     {
       EventHandler *eh = l->data;
       /* cast hides our private stuff from client handlers */
-      eh->cb.event ((AccessibleEvent *) &aevent, eh->user_data);
+      eh->cb.event (aevent, eh->user_data);
     }
 
+  AccessibleEvent_unref (aevent);
   cspi_object_return (source);
 }
 
@@ -168,7 +175,7 @@ cspi_event_listener_add_cb (AccessibleEventListener  *al,
   g_return_if_fail (CSPI_IS_EVENT_LISTENER (listener));
 
   listener->callbacks = g_list_prepend (listener->callbacks,
-					cspi_event_handler_new (callback, user_data));
+					cspi_event_handler_new ((void *) callback, user_data));
 }
 
 void
@@ -179,7 +186,7 @@ cspi_event_listener_remove_cb (AccessibleEventListener  *al,
 
   g_return_if_fail (CSPI_IS_EVENT_LISTENER (listener));
 
-  listener->callbacks = cspi_event_list_remove_by_cb (listener->callbacks, callback);
+  listener->callbacks = cspi_event_list_remove_by_cb (listener->callbacks, (void *) callback);
 }
 
 /* 
@@ -217,6 +224,7 @@ cspi_device_event (SpiDeviceListener               *listener,
   anevent.timestamp = event->timestamp;
   anevent.keystring = g_strdup (event->event_string);
   anevent.modifiers = event->modifiers;
+  anevent.is_text = event->is_text;
 
   /* FIXME: re-enterancy hazard on this list */
   for (l = clistener->callbacks; l; l = l->next)
@@ -266,7 +274,7 @@ cspi_device_listener_class_init (CSpiDeviceListenerClass *klass)
 
 BONOBO_TYPE_FUNC (CSpiDeviceListener, 
 		  spi_device_listener_get_type (),
-		  cspi_device_listener);
+		  cspi_device_listener)
 
 gpointer
 cspi_device_listener_new (void)
@@ -286,7 +294,7 @@ cspi_device_listener_add_cb (AccessibleDeviceListener  *al,
   g_return_if_fail (CSPI_IS_DEVICE_LISTENER (listener));
 
   listener->callbacks = g_list_prepend (listener->callbacks,
-					cspi_event_handler_new (callback, user_data));
+					cspi_event_handler_new ((void *)callback, user_data));
 }
 
 void
@@ -297,7 +305,7 @@ cspi_device_listener_remove_cb (AccessibleDeviceListener  *al,
 
   g_return_if_fail (CSPI_IS_DEVICE_LISTENER (listener));
 
-  listener->callbacks = cspi_event_list_remove_by_cb (listener->callbacks, callback);
+  listener->callbacks = cspi_event_list_remove_by_cb (listener->callbacks, (void *) callback);
 }
 
 void

@@ -1,0 +1,155 @@
+<refentry id="at-spi-cspi-AccessibleStreamableContent-Interface">
+<refmeta>
+<refentrytitle>AccessibleStreamableContent Interface</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>AT-SPI-CSPI Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>AccessibleStreamableContent Interface</refname><refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+
+<synopsis>
+
+
+
+void        <link linkend="AccessibleStreamableContent-ref">AccessibleStreamableContent_ref</link> (<link linkend="AccessibleStreamableContent">AccessibleStreamableContent</link> *obj);
+void        <link linkend="AccessibleStreamableContent-unref">AccessibleStreamableContent_unref</link>
+                                            (<link linkend="AccessibleStreamableContent">AccessibleStreamableContent</link> *obj);
+char**      <link linkend="AccessibleStreamableContent-getContentTypes">AccessibleStreamableContent_getContentTypes</link>
+                                            (<link linkend="AccessibleStreamableContent">AccessibleStreamableContent</link> *obj);
+<link linkend="SPIBoolean">SPIBoolean</link>  <link linkend="AccessibleStreamableContent-open">AccessibleStreamableContent_open</link>
+                                            (<link linkend="AccessibleStreamableContent">AccessibleStreamableContent</link> *obj,
+                                             const char *content_type);
+<link linkend="SPIBoolean">SPIBoolean</link>  <link linkend="AccessibleStreamableContent-read">AccessibleStreamableContent_read</link>
+                                            (<link linkend="AccessibleStreamableContent">AccessibleStreamableContent</link> *obj,
+                                             void *buff,
+                                             <link linkend="long-int">long int</link> nbytes,
+                                             unsigned int read_type);
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="AccessibleStreamableContent-ref"/>AccessibleStreamableContent_ref ()</title>
+<programlisting>void        AccessibleStreamableContent_ref (<link linkend="AccessibleStreamableContent">AccessibleStreamableContent</link> *obj);</programlisting>
+<para>
+Increment the reference count for an <link linkend="AccessibleStreamableContent">AccessibleStreamableContent</link> object.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>obj</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to the <link linkend="AccessibleStreamableContent">AccessibleStreamableContent</link> implementor on which to
+      operate.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="AccessibleStreamableContent-unref"/>AccessibleStreamableContent_unref ()</title>
+<programlisting>void        AccessibleStreamableContent_unref
+                                            (<link linkend="AccessibleStreamableContent">AccessibleStreamableContent</link> *obj);</programlisting>
+<para>
+Decrement the reference count for an <link linkend="AccessibleStreamableContent">AccessibleStreamableContent</link> object.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>obj</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to the <link linkend="AccessibleStreamableContent">AccessibleStreamableContent</link> implementor
+      on which to operate. 
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="AccessibleStreamableContent-getContentTypes"/>AccessibleStreamableContent_getContentTypes ()</title>
+<programlisting>char**      AccessibleStreamableContent_getContentTypes
+                                            (<link linkend="AccessibleStreamableContent">AccessibleStreamableContent</link> *obj);</programlisting>
+<para>
+Get a list of strings containing the content mimetypes available from an
+      <link linkend="AccessibleStreamableContent">AccessibleStreamableContent</link> implementor.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>obj</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to the <link linkend="AccessibleStreamableContent">AccessibleStreamableContent</link> implementor on which to operate.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> an array of strings, terminated by a NULL string, specifying the
+      mimetypes for which the streamed content is available.
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="AccessibleStreamableContent-open"/>AccessibleStreamableContent_open ()</title>
+<programlisting><link linkend="SPIBoolean">SPIBoolean</link>  AccessibleStreamableContent_open
+                                            (<link linkend="AccessibleStreamableContent">AccessibleStreamableContent</link> *obj,
+                                             const char *content_type);</programlisting>
+<para>
+Open a streaming connection to an AccessibleStreamableContent implementor,
+      of a particular content type</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>obj</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to the <link linkend="AccessibleStreamableContent">AccessibleStreamableContent</link> implementor on which to operate.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>content_type</parameter>&nbsp;:</term>
+<listitem><simpara> a string specifying the content type to retrieve (should match one
+of the return strings from #<link linkend="AccessibleStreamableContent-getContentTypes">AccessibleStreamableContent_getContentTypes</link>()).
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <link linkend="TRUE-CAPS">TRUE</link> if successful, <link linkend="FALSE-CAPS">FALSE</link> if unsuccessful.
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="AccessibleStreamableContent-read"/>AccessibleStreamableContent_read ()</title>
+<programlisting><link linkend="SPIBoolean">SPIBoolean</link>  AccessibleStreamableContent_read
+                                            (<link linkend="AccessibleStreamableContent">AccessibleStreamableContent</link> *obj,
+                                             void *buff,
+                                             <link linkend="long-int">long int</link> nbytes,
+                                             unsigned int read_type);</programlisting>
+<para>
+Copy (read) bytes from the currently open streamable content connection
+    to a buffer.  This is a blocking API, in the sense that it does not 
+    return until the bytes have been read, or an error condition is 
+    detected.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>obj</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to the <link linkend="AccessibleStreamableContent">AccessibleStreamableContent</link> implementor on which to operate.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>buff</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to a buffer into which the resulting bytes read from the stream
+       are to be written.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>nbytes</parameter>&nbsp;:</term>
+<listitem><simpara> a long integer indicating the number of bytes to read/write.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>read_type</parameter>&nbsp;:</term>
+<listitem><simpara> currently unused, specifies behavior of reads for streamed content
+       if blocking is not allowed, etc.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> an integer indicating the number of bytes read, or -1 on error.
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

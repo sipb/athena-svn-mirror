@@ -1,0 +1,87 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>AccessibleHypertext Interface</title><meta name="generator" content="DocBook XSL Stylesheets V1.60.1"><meta name="generator" content="GTK-Doc V1.1 (XML mode)"><style type="text/css">
+        .synopsis, .classsynopsis {
+            background: #eeeeee;
+            border: solid 1px #aaaaaa;
+            padding: 0.5em;
+        }
+        .programlisting {
+            background: #eeeeff;
+            border: solid 1px #aaaaff;
+            padding: 0.5em;
+        }
+        .variablelist {
+            padding: 4px;
+            margin-left: 3em;
+        }
+        .navigation {
+            background: #ffeeee;
+            border: solid 1px #ffaaaa;
+            margin-top: 0.5em;
+            margin-bottom: 0.5em;
+        }
+        .navigation a {
+            color: #770000;
+        }
+        .navigation a:visited {
+            color: #550000;
+        }
+        .navigation .title {
+            font-size: 200%;
+        }
+      </style><link rel="home" href="index.html" title="AT-SPI C Bindings Reference Manual"><link rel="up" href="spi-component.html" title="Subinterface Methods"><link rel="previous" href="at-spi-cspi-AccessibleEditableText-Interface.html" title="AccessibleEditableText Interface"><link rel="next" href="at-spi-cspi-AccessibleImage-Interface.html" title="AccessibleImage Interface"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="at-spi-cspi-AccessibleEditableText-Interface.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="spi-component.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">AT-SPI C Bindings Reference Manual</th><td><a accesskey="n" href="at-spi-cspi-AccessibleImage-Interface.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="at-spi-cspi-AccessibleHypertext-Interface"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">AccessibleHypertext Interface</span></h2><p>AccessibleHypertext Interface &#8212; </p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+
+
+
+void        <a href="at-spi-cspi-AccessibleHypertext-Interface.html#AccessibleHypertext-ref">AccessibleHypertext_ref</a>         (AccessibleHypertext *obj);
+void        <a href="at-spi-cspi-AccessibleHypertext-Interface.html#AccessibleHypertext-unref">AccessibleHypertext_unref</a>       (AccessibleHypertext *obj);
+long        <a href="at-spi-cspi-AccessibleHypertext-Interface.html#AccessibleHypertext-getNLinks">AccessibleHypertext_getNLinks</a>   (AccessibleHypertext *obj);
+AccessibleHyperlink* <a href="at-spi-cspi-AccessibleHypertext-Interface.html#AccessibleHypertext-getLink">AccessibleHypertext_getLink</a>
+                                            (AccessibleHypertext *obj,
+                                             long int linkIndex);
+long        <a href="at-spi-cspi-AccessibleHypertext-Interface.html#AccessibleHypertext-getLinkIndex">AccessibleHypertext_getLinkIndex</a>
+                                            (AccessibleHypertext *obj,
+                                             long int characterOffset);
+</pre></div><div class="refsect1" lang="en"><h2>Description</h2><p>
+
+</p></div><div class="refsect1" lang="en"><h2>Details</h2><div class="refsect2" lang="en"><h3><a name="AccessibleHypertext-ref"></a>AccessibleHypertext_ref ()</h3><pre class="programlisting">void        AccessibleHypertext_ref         (AccessibleHypertext *obj);</pre><p>
+Increment the reference count for an AccessibleHypertext object.
+      Since AccessibleHypertext is derived from AccessibleText,
+      this is the same as <a href="at-spi-cspi-AccessibleText-Interface.html#AccessibleText-unref">AccessibleText_unref</a>().</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>obj</tt></i> :</span></td><td> a pointer to the AccessibleHypertext object on which to operate.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="AccessibleHypertext-unref"></a>AccessibleHypertext_unref ()</h3><pre class="programlisting">void        AccessibleHypertext_unref       (AccessibleHypertext *obj);</pre><p>
+Decrement the reference count for an AccessibleHypertext object.
+      Since AccessibleHypertext is derived from AccessibleText,
+      this is the same as <a href="at-spi-cspi-AccessibleText-Interface.html#AccessibleText-unref">AccessibleText_unref</a>().</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>obj</tt></i> :</span></td><td> a pointer to the AccessibleHypertext object on which to operate.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="AccessibleHypertext-getNLinks"></a>AccessibleHypertext_getNLinks ()</h3><pre class="programlisting">long        AccessibleHypertext_getNLinks   (AccessibleHypertext *obj);</pre><p>
+Get the total number of AccessibleHyperlinks which an
+       AccessibleHypertext implementor has.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>obj</tt></i> :</span></td><td> a pointer to the AccessibleHypertext implementor on which to operate.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a long indicating the number of AccessibleHyperlinks
+       of the AccessibleHypertext implementor, or -1 if
+       the number cannot be determined (for example, if the
+       AccessibleHypertext object is so large that it is not
+       all currently in the memory cache).
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="AccessibleHypertext-getLink"></a>AccessibleHypertext_getLink ()</h3><pre class="programlisting">AccessibleHyperlink* AccessibleHypertext_getLink
+                                            (AccessibleHypertext *obj,
+                                             long int linkIndex);</pre><p>
+Get the AccessibleHyperlink object at a specified index.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>obj</tt></i> :</span></td><td> a pointer to the AccessibleHypertext implementor on which to operate.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>linkIndex</tt></i> :</span></td><td> a (zero-index) long integer indicating which hyperlink to query.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the AccessibleHyperlink object specified by linkIndex.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="AccessibleHypertext-getLinkIndex"></a>AccessibleHypertext_getLinkIndex ()</h3><pre class="programlisting">long        AccessibleHypertext_getLinkIndex
+                                            (AccessibleHypertext *obj,
+                                             long int characterOffset);</pre><p>
+Get the index of the AccessibleHyperlink object at a specified
+       character offset.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>obj</tt></i> :</span></td><td> a pointer to the AccessibleHypertext implementor on which to operate.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>characterOffset</tt></i> :</span></td><td> an integer specifying the character offset to query.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the linkIndex of the AccessibleHyperlink active at
+       character offset <i class="parameter"><tt>characterOffset</tt></i>, or -1 if there is
+       no hyperlink at the specified character offset.
+</td></tr></tbody></table></div></div></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="at-spi-cspi-AccessibleEditableText-Interface.html"><b>&lt;&lt; AccessibleEditableText Interface</b></a></td><td align="right"><a accesskey="n" href="at-spi-cspi-AccessibleImage-Interface.html"><b>AccessibleImage Interface &gt;&gt;</b></a></td></tr></table></body></html>

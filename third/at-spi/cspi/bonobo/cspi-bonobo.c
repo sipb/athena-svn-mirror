@@ -35,13 +35,13 @@ cspi_dup_ref (CORBA_Object object)
 void
 cspi_release_unref (CORBA_Object object)
 {
-  bonobo_object_release_unref (object, NULL);
+    bonobo_object_release_unref (object, NULL); 
 }
 
 SPIBoolean
 cspi_check_ev (const char *error_string)
 {
-  CORBA_Environment *ev = cspi_ev ();
+  CORBA_Environment *ev = cspi_peek_ev ();
 
   if (ev->_major != CORBA_NO_EXCEPTION)
     {
@@ -49,8 +49,10 @@ cspi_check_ev (const char *error_string)
 
       err = bonobo_exception_get_text (ev);
 
-      fprintf (stderr, "Warning: AT-SPI error: %s: %s\n",
-	       error_string, err);
+      if (!_cspi_exception_throw (ev, (char *) error_string)) {
+	fprintf (stderr, "Warning: AT-SPI error: %s: %s\n",
+		 error_string, err);
+      }
 
       g_free (err);
 
@@ -76,6 +78,42 @@ cspi_exception_get_text (void)
   return ret;
 }
 
+/* 
+ * Returns a 'canonicalized' value for DISPLAY,
+ * with the screen number stripped off if present.
+ */
+static const gchar*
+cspi_display_name (void)
+{
+    static const char *canonical_display_name = NULL;
+    if (!canonical_display_name)
+    {
+        const gchar *display_env = g_getenv ("AT_SPI_DISPLAY");
+	if (!display_env)
+	{
+	    display_env = g_getenv ("DISPLAY");
+	    if (!display_env || !display_env[0]) 
+		canonical_display_name = ":0";
+	    else
+	    {
+		gchar *display_p, *screen_p;
+		canonical_display_name = g_strdup (display_env);
+		display_p = strrchr (canonical_display_name, ':');
+		screen_p = strrchr (canonical_display_name, '.');
+		if (screen_p && display_p && ((guint) screen_p > (guint) display_p))
+		{
+		    *screen_p = '\0';
+		}
+	    }
+	}
+	else
+	{
+	    canonical_display_name = display_env;
+	}
+    }
+    return canonical_display_name;
+}
+
 CORBA_Object
 cspi_init (void)
 {
@@ -91,6 +129,9 @@ cspi_init (void)
   obj_id = "OAFIID:Accessibility_Registry:1.0";
 
   CORBA_exception_init (&ev);
+
+  bonobo_activation_set_activation_env_value ("AT_SPI_DISPLAY", 
+					      cspi_display_name ());
 
   registry = bonobo_activation_activate_from_id (
     obj_id, 0, NULL, &ev);

@@ -1,0 +1,413 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>AccessibleText Interface</title><meta name="generator" content="DocBook XSL Stylesheets V1.60.1"><meta name="generator" content="GTK-Doc V1.1 (XML mode)"><style type="text/css">
+        .synopsis, .classsynopsis {
+            background: #eeeeee;
+            border: solid 1px #aaaaaa;
+            padding: 0.5em;
+        }
+        .programlisting {
+            background: #eeeeff;
+            border: solid 1px #aaaaff;
+            padding: 0.5em;
+        }
+        .variablelist {
+            padding: 4px;
+            margin-left: 3em;
+        }
+        .navigation {
+            background: #ffeeee;
+            border: solid 1px #ffaaaa;
+            margin-top: 0.5em;
+            margin-bottom: 0.5em;
+        }
+        .navigation a {
+            color: #770000;
+        }
+        .navigation a:visited {
+            color: #550000;
+        }
+        .navigation .title {
+            font-size: 200%;
+        }
+      </style><link rel="home" href="index.html" title="AT-SPI C Bindings Reference Manual"><link rel="up" href="spi-component.html" title="Subinterface Methods"><link rel="previous" href="at-spi-cspi-AccessibleTable-Interface.html" title="AccessibleTable Interface"><link rel="next" href="at-spi-cspi-AccessibleValue-Interface.html" title="AccessibleValue Interface"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="at-spi-cspi-AccessibleTable-Interface.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="spi-component.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">AT-SPI C Bindings Reference Manual</th><td><a accesskey="n" href="at-spi-cspi-AccessibleValue-Interface.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="at-spi-cspi-AccessibleText-Interface"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">AccessibleText Interface</span></h2><p>AccessibleText Interface &#8212; </p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+
+
+
+enum        <a href="at-spi-cspi-AccessibleText-Interface.html#AccessibleTextBoundaryType">AccessibleTextBoundaryType</a>;
+enum        <a href="at-spi-cspi-AccessibleText-Interface.html#AccessibleTextClipType">AccessibleTextClipType</a>;
+void        <a href="at-spi-cspi-AccessibleText-Interface.html#AccessibleText-ref">AccessibleText_ref</a>              (AccessibleText *obj);
+void        <a href="at-spi-cspi-AccessibleText-Interface.html#AccessibleText-unref">AccessibleText_unref</a>            (AccessibleText *obj);
+SPIBoolean  <a href="at-spi-cspi-AccessibleText-Interface.html#AccessibleText-addSelection">AccessibleText_addSelection</a>     (AccessibleText *obj,
+                                             long int startOffset,
+                                             long int endOffset);
+char*       <a href="at-spi-cspi-AccessibleText-Interface.html#AccessibleText-getAttributes">AccessibleText_getAttributes</a>    (AccessibleText *obj,
+                                             long int offset,
+                                             long int *startOffset,
+                                             long int *endOffset);
+AccessibleTextRange** <a href="at-spi-cspi-AccessibleText-Interface.html#AccessibleText-getBoundedRanges">AccessibleText_getBoundedRanges</a>
+                                            (AccessibleText *obj,
+                                             long int x,
+                                             long int y,
+                                             long int width,
+                                             long int height,
+                                             <a href="at-spi-cspi-AccessibleComponent-Interface.html#AccessibleCoordType">AccessibleCoordType</a> type,
+                                             <a href="at-spi-cspi-AccessibleText-Interface.html#AccessibleTextClipType">AccessibleTextClipType</a> clipTypeX,
+                                             <a href="at-spi-cspi-AccessibleText-Interface.html#AccessibleTextClipType">AccessibleTextClipType</a> clipTypeY);
+long        <a href="at-spi-cspi-AccessibleText-Interface.html#AccessibleText-getCaretOffset">AccessibleText_getCaretOffset</a>   (AccessibleText *obj);
+long        <a href="at-spi-cspi-AccessibleText-Interface.html#AccessibleText-getCharacterCount">AccessibleText_getCharacterCount</a>
+                                            (AccessibleText *obj);
+void        <a href="at-spi-cspi-AccessibleText-Interface.html#AccessibleText-getCharacterExtents">AccessibleText_getCharacterExtents</a>
+                                            (AccessibleText *obj,
+                                             long int offset,
+                                             long int *x,
+                                             long int *y,
+                                             long int *width,
+                                             long int *height,
+                                             <a href="at-spi-cspi-AccessibleComponent-Interface.html#AccessibleCoordType">AccessibleCoordType</a> type);
+long        <a href="at-spi-cspi-AccessibleText-Interface.html#AccessibleText-getNSelections">AccessibleText_getNSelections</a>   (AccessibleText *obj);
+long        <a href="at-spi-cspi-AccessibleText-Interface.html#AccessibleText-getOffsetAtPoint">AccessibleText_getOffsetAtPoint</a> (AccessibleText *obj,
+                                             long int x,
+                                             long int y,
+                                             <a href="at-spi-cspi-AccessibleComponent-Interface.html#AccessibleCoordType">AccessibleCoordType</a> type);
+void        <a href="at-spi-cspi-AccessibleText-Interface.html#AccessibleText-getRangeExtents">AccessibleText_getRangeExtents</a>  (AccessibleText *obj,
+                                             long int startOffset,
+                                             long int endOffset,
+                                             long int *x,
+                                             long int *y,
+                                             long int *width,
+                                             long int *height,
+                                             <a href="at-spi-cspi-AccessibleComponent-Interface.html#AccessibleCoordType">AccessibleCoordType</a> type);
+void        <a href="at-spi-cspi-AccessibleText-Interface.html#AccessibleText-getSelection">AccessibleText_getSelection</a>     (AccessibleText *obj,
+                                             long int selectionNum,
+                                             long int *startOffset,
+                                             long int *endOffset);
+char*       <a href="at-spi-cspi-AccessibleText-Interface.html#AccessibleText-getText">AccessibleText_getText</a>          (AccessibleText *obj,
+                                             long int startOffset,
+                                             long int endOffset);
+char*       <a href="at-spi-cspi-AccessibleText-Interface.html#AccessibleText-getTextBeforeOffset">AccessibleText_getTextBeforeOffset</a>
+                                            (AccessibleText *obj,
+                                             long int offset,
+                                             <a href="at-spi-cspi-AccessibleText-Interface.html#AccessibleTextBoundaryType">AccessibleTextBoundaryType</a> type,
+                                             long int *startOffset,
+                                             long int *endOffset);
+char*       <a href="at-spi-cspi-AccessibleText-Interface.html#AccessibleText-getTextAfterOffset">AccessibleText_getTextAfterOffset</a>
+                                            (AccessibleText *obj,
+                                             long int offset,
+                                             <a href="at-spi-cspi-AccessibleText-Interface.html#AccessibleTextBoundaryType">AccessibleTextBoundaryType</a> type,
+                                             long int *startOffset,
+                                             long int *endOffset);
+char*       <a href="at-spi-cspi-AccessibleText-Interface.html#AccessibleText-getTextAtOffset">AccessibleText_getTextAtOffset</a>  (AccessibleText *obj,
+                                             long int offset,
+                                             <a href="at-spi-cspi-AccessibleText-Interface.html#AccessibleTextBoundaryType">AccessibleTextBoundaryType</a> type,
+                                             long int *startOffset,
+                                             long int *endOffset);
+SPIBoolean  <a href="at-spi-cspi-AccessibleText-Interface.html#AccessibleText-removeSelection">AccessibleText_removeSelection</a>  (AccessibleText *obj,
+                                             long int selectionNum);
+SPIBoolean  <a href="at-spi-cspi-AccessibleText-Interface.html#AccessibleText-setCaretOffset">AccessibleText_setCaretOffset</a>   (AccessibleText *obj,
+                                             long int newOffset);
+SPIBoolean  <a href="at-spi-cspi-AccessibleText-Interface.html#AccessibleText-setSelection">AccessibleText_setSelection</a>     (AccessibleText *obj,
+                                             long int selectionNum,
+                                             long int startOffset,
+                                             long int endOffset);
+void        <a href="at-spi-cspi-AccessibleText-Interface.html#AccessibleTextRange-freeRanges">AccessibleTextRange_freeRanges</a>  (AccessibleTextRange **ranges);
+</pre></div><div class="refsect1" lang="en"><h2>Description</h2><p>
+
+</p></div><div class="refsect1" lang="en"><h2>Details</h2><div class="refsect2" lang="en"><h3><a name="AccessibleTextBoundaryType"></a>enum AccessibleTextBoundaryType</h3><pre class="programlisting">typedef enum
+{
+  SPI_TEXT_BOUNDARY_CHAR,
+  SPI_TEXT_BOUNDARY_CURSOR_POS,
+  SPI_TEXT_BOUNDARY_WORD_START,
+  SPI_TEXT_BOUNDARY_WORD_END,
+  SPI_TEXT_BOUNDARY_SENTENCE_START,
+  SPI_TEXT_BOUNDARY_SENTENCE_END,
+  SPI_TEXT_BOUNDARY_LINE_START,
+  SPI_TEXT_BOUNDARY_LINE_END,
+  SPI_TEXT_BOUNDARY_ATTRIBUTE_RANGE
+} AccessibleTextBoundaryType;
+</pre><p>
+Text boundary types used for specifying boundaries for regions of text</p><p>
+
+</p></div><hr><div class="refsect2" lang="en"><h3><a name="AccessibleTextClipType"></a>enum AccessibleTextClipType</h3><pre class="programlisting">typedef enum
+{
+  SPI_TEXT_CLIP_NONE,
+  SPI_TEXT_CLIP_MIN,
+  SPI_TEXT_CLIP_MAX,
+  SPI_TEXT_CLIP_BOTH
+} AccessibleTextClipType;
+</pre><p>
+Describes the type of clipping required.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><tt class="literal">SPI_TEXT_CLIP_NONE</tt></span></td><td> No clipping to be done
+</td></tr><tr><td><span class="term"><tt class="literal">SPI_TEXT_CLIP_MIN</tt></span></td><td> Text clipped by min coordinate is omitted
+</td></tr><tr><td><span class="term"><tt class="literal">SPI_TEXT_CLIP_MAX</tt></span></td><td> Text clipped by max coordinate is omitted
+</td></tr><tr><td><span class="term"><tt class="literal">SPI_TEXT_CLIP_BOTH</tt></span></td><td> Only text fully within mix/max bound is retained
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="AccessibleText-ref"></a>AccessibleText_ref ()</h3><pre class="programlisting">void        AccessibleText_ref              (AccessibleText *obj);</pre><p>
+Increment the reference count for an AccessibleText object.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>obj</tt></i> :</span></td><td> a pointer to the AccessibleText object on which to operate.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="AccessibleText-unref"></a>AccessibleText_unref ()</h3><pre class="programlisting">void        AccessibleText_unref            (AccessibleText *obj);</pre><p>
+Decrement the reference count for an AccessibleText object.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>obj</tt></i> :</span></td><td> a pointer to the <a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> object on which to operate.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="AccessibleText-addSelection"></a>AccessibleText_addSelection ()</h3><pre class="programlisting">SPIBoolean  AccessibleText_addSelection     (AccessibleText *obj,
+                                             long int startOffset,
+                                             long int endOffset);</pre><p>
+Select some text (add a text selection) in an AccessibleText object.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>obj</tt></i> :</span></td><td> a pointer to the AccessibleText object on which to operate.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>startOffset</tt></i> :</span></td><td> the starting offset of the desired new selection.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>endOffset</tt></i> :</span></td><td> the offset of the first character after the new selection.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> TRUE if successful, FALSE otherwise.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="AccessibleText-getAttributes"></a>AccessibleText_getAttributes ()</h3><pre class="programlisting">char*       AccessibleText_getAttributes    (AccessibleText *obj,
+                                             long int offset,
+                                             long int *startOffset,
+                                             long int *endOffset);</pre><p>
+Get the attributes applied to a range of text from an AccessibleText
+         object, and the bounds of the range.
+         The text attributes correspond to CSS attributes where possible,
+         keys and values are delimited from one another via ":", and
+         the delimiter between key/value pairs is ";". Thus 
+         "font-size:10;foreground-color:0,0,0" would be a valid
+         return string.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>obj</tt></i> :</span></td><td> a pointer to the AccessibleText object to query.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>offset</tt></i> :</span></td><td> a long integer indicating the offset from which the attribute
+       search is based.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>startOffset</tt></i> :</span></td><td> a long indicating the start of the desired text range.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>endOffset</tt></i> :</span></td><td> a long indicating the first character past the desired range.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a text string describing the attributes occurring within the
+         attribute run containing <i class="parameter"><tt>offset</tt></i>, encoded as UTF-8.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="AccessibleText-getBoundedRanges"></a>AccessibleText_getBoundedRanges ()</h3><pre class="programlisting">AccessibleTextRange** AccessibleText_getBoundedRanges
+                                            (AccessibleText *obj,
+                                             long int x,
+                                             long int y,
+                                             long int width,
+                                             long int height,
+                                             <a href="at-spi-cspi-AccessibleComponent-Interface.html#AccessibleCoordType">AccessibleCoordType</a> type,
+                                             <a href="at-spi-cspi-AccessibleText-Interface.html#AccessibleTextClipType">AccessibleTextClipType</a> clipTypeX,
+                                             <a href="at-spi-cspi-AccessibleText-Interface.html#AccessibleTextClipType">AccessibleTextClipType</a> clipTypeY);</pre><p>
+Get the ranges of text from an AccessibleText object which lie within the
+         bounds defined by (<i class="parameter"><tt>x</tt></i>, <i class="parameter"><tt>y</tt></i>) and (<i class="parameter"><tt>x</tt></i>+<i class="parameter"><tt>width</tt></i>, <i class="parameter"><tt>y</tt></i>+<i class="parameter"><tt>height</tt></i>).</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>obj</tt></i> :</span></td><td> a pointer to the AccessibleText object on which to operate.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>x</tt></i> :</span></td><td> the 'starting' x coordinate of the bounding box.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>y</tt></i> :</span></td><td> the 'starting' y coordinate of the bounding box.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>width</tt></i> :</span></td><td> the x extent of the bounding box.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>height</tt></i> :</span></td><td> the y extent of the bounding box.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>type</tt></i> :</span></td><td> an <a href="at-spi-cspi-AccessibleComponent-Interface.html#AccessibleCoordType">AccessibleCoordType</a> indicating the coordinate system to use
+       for the returned values.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>clipTypeX</tt></i> :</span></td><td> an <a href="at-spi-cspi-AccessibleText-Interface.html#AccessibleTextClipType">AccessibleTextClipType</a> indicating how to treat characters that
+       intersect the bounding box's x extents.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>clipTypeY</tt></i> :</span></td><td> an <a href="at-spi-cspi-AccessibleText-Interface.html#AccessibleTextClipType">AccessibleTextClipType</a> indicating how to treat characters that
+       intersect the bounding box's y extents.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a null-terminated list of pointers to AccessibleTextRange structs 
+         detailing the bounded text.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="AccessibleText-getCaretOffset"></a>AccessibleText_getCaretOffset ()</h3><pre class="programlisting">long        AccessibleText_getCaretOffset   (AccessibleText *obj);</pre><p>
+Get the current offset of the text caret in an AccessibleText object.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>obj</tt></i> :</span></td><td> a pointer to the AccessibleText object to query.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a long integer indicating the current position of the text caret.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="AccessibleText-getCharacterCount"></a>AccessibleText_getCharacterCount ()</h3><pre class="programlisting">long        AccessibleText_getCharacterCount
+                                            (AccessibleText *obj);</pre><p>
+Get the character count of an AccessibleText object.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>obj</tt></i> :</span></td><td> a pointer to the AccessibleText object to query.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a long integer indicating the total number of
+             characters in the AccessibleText object.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="AccessibleText-getCharacterExtents"></a>AccessibleText_getCharacterExtents ()</h3><pre class="programlisting">void        AccessibleText_getCharacterExtents
+                                            (AccessibleText *obj,
+                                             long int offset,
+                                             long int *x,
+                                             long int *y,
+                                             long int *width,
+                                             long int *height,
+                                             <a href="at-spi-cspi-AccessibleComponent-Interface.html#AccessibleCoordType">AccessibleCoordType</a> type);</pre><p>
+Get the bounding box containing the glyph representing
+       the character at a particular text offset.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>obj</tt></i> :</span></td><td> a pointer to the AccessibleText object on which to operate.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>offset</tt></i> :</span></td><td> an integer indicating the offset of the text character for
+       whom boundary information is requested.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>x</tt></i> :</span></td><td> a pointer to a long integer into which the nominal x coordinate
+    of the corresponding glyph will be returned.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>y</tt></i> :</span></td><td>a pointer to a long integer into which the nominal y coordinate
+    of the corresponding glyph will be returned.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>width</tt></i> :</span></td><td>a pointer to a long integer into which the width
+    of the corresponding glyph will be returned.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>height</tt></i> :</span></td><td> a pointer to a long integer into which the height
+    of the corresponding glyph will be returned.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>type</tt></i> :</span></td><td> an <a href="at-spi-cspi-AccessibleComponent-Interface.html#AccessibleCoordType">AccessibleCoordType</a> indicating the coordinate system to use
+       for the returned values.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="AccessibleText-getNSelections"></a>AccessibleText_getNSelections ()</h3><pre class="programlisting">long        AccessibleText_getNSelections   (AccessibleText *obj);</pre><p>
+Get the number of active non-contiguous selections for an
+         AccessibleText object.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>obj</tt></i> :</span></td><td> a pointer to the AccessibleText object on which to operate.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a long integer indicating the current
+         number of non-contiguous text selections active
+         within an AccessibleText object.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="AccessibleText-getOffsetAtPoint"></a>AccessibleText_getOffsetAtPoint ()</h3><pre class="programlisting">long        AccessibleText_getOffsetAtPoint (AccessibleText *obj,
+                                             long int x,
+                                             long int y,
+                                             <a href="at-spi-cspi-AccessibleComponent-Interface.html#AccessibleCoordType">AccessibleCoordType</a> type);</pre><p>
+Get the bounding box for a glyph at a certain AccessibleText offset.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>obj</tt></i> :</span></td><td> a pointer to the AccessibleText object on which to operate.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>x</tt></i> :</span></td><td> the x coordinate of the point to be queried.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>y</tt></i> :</span></td><td> the y coordinate of the point to be queried.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>type</tt></i> :</span></td><td> an <a href="at-spi-cspi-AccessibleComponent-Interface.html#AccessibleCoordType">AccessibleCoordType</a> indicating the coordinate system in which
+      the values should be returned.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the offset (as a long integer) at the point (<i class="parameter"><tt>x</tt></i>, <i class="parameter"><tt>y</tt></i>)
+      in the specified coordinate system.
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="AccessibleText-getRangeExtents"></a>AccessibleText_getRangeExtents ()</h3><pre class="programlisting">void        AccessibleText_getRangeExtents  (AccessibleText *obj,
+                                             long int startOffset,
+                                             long int endOffset,
+                                             long int *x,
+                                             long int *y,
+                                             long int *width,
+                                             long int *height,
+                                             <a href="at-spi-cspi-AccessibleComponent-Interface.html#AccessibleCoordType">AccessibleCoordType</a> type);</pre><p>
+Get the bounding box for text within a range in an  AccessibleText object.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>obj</tt></i> :</span></td><td> a pointer to the AccessibleText object on which to operate.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>startOffset</tt></i> :</span></td><td> an integer indicating the offset of the first text character for
+       whom boundary information is requested.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>endOffset</tt></i> :</span></td><td> an integer indicating the offset of the text character 
+       after the last character for whom boundary information is requested.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>x</tt></i> :</span></td><td> a pointer to a long integer into which the nominal x coordinate
+    of the corresponding bounding box will be returned.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>y</tt></i> :</span></td><td>a pointer to a long integer into which the nominal y coordinate
+    of the corresponding bounding box will be returned.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>width</tt></i> :</span></td><td>a pointer to a long integer into which the width
+    of the corresponding bounding box will be returned.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>height</tt></i> :</span></td><td> a pointer to a long integer into which the height
+    of the corresponding bounding box will be returned.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>type</tt></i> :</span></td><td> an <a href="at-spi-cspi-AccessibleComponent-Interface.html#AccessibleCoordType">AccessibleCoordType</a> indicating the coordinate system to use
+       for the returned values.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="AccessibleText-getSelection"></a>AccessibleText_getSelection ()</h3><pre class="programlisting">void        AccessibleText_getSelection     (AccessibleText *obj,
+                                             long int selectionNum,
+                                             long int *startOffset,
+                                             long int *endOffset);</pre><p>
+Get the bounds of the <i class="parameter"><tt>selectionNum</tt></i>-th active text selection for an
+        AccessibleText object.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>obj</tt></i> :</span></td><td> a pointer to the AccessibleText object on which to operate.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>selectionNum</tt></i> :</span></td><td> an integer indicating which selection to query.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>startOffset</tt></i> :</span></td><td> a pointer to a long integer into which the start offset
+          of the selection will be returned.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>endOffset</tt></i> :</span></td><td> a pointer to a long integer into which the start offset
+          of the selection will be returned.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="AccessibleText-getText"></a>AccessibleText_getText ()</h3><pre class="programlisting">char*       AccessibleText_getText          (AccessibleText *obj,
+                                             long int startOffset,
+                                             long int endOffset);</pre><p>
+Get a range of text from an AccessibleText object.  The number of bytes
+         in the returned string may exceed endOffset-startOffset, since
+         UTF-8 is a variable-width encoding.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>obj</tt></i> :</span></td><td> a pointer to the AccessibleText object to query.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>startOffset</tt></i> :</span></td><td> a long indicating the start of the desired text range.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>endOffset</tt></i> :</span></td><td> a long indicating the first character past the desired range.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a text string containing characters from <i class="parameter"><tt>startOffset</tt></i>
+         to <i class="parameter"><tt>endOffset</tt></i>-1, inclusive, encoded as UTF-8.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="AccessibleText-getTextBeforeOffset"></a>AccessibleText_getTextBeforeOffset ()</h3><pre class="programlisting">char*       AccessibleText_getTextBeforeOffset
+                                            (AccessibleText *obj,
+                                             long int offset,
+                                             <a href="at-spi-cspi-AccessibleText-Interface.html#AccessibleTextBoundaryType">AccessibleTextBoundaryType</a> type,
+                                             long int *startOffset,
+                                             long int *endOffset);</pre><p>
+Get delimited text from an AccessibleText object which precedes a given
+         text offset.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>obj</tt></i> :</span></td><td> a pointer to the AccessibleText object on which to operate.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>offset</tt></i> :</span></td><td> a long integer indicating the offset from which the delimiter
+       search is based.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>type</tt></i> :</span></td><td> an <a href="at-spi-cspi-AccessibleText-Interface.html#AccessibleTextBoundaryType">AccessibleTextBoundaryType</a> indicating whether the desired
+      text string is a word, sentence, line, or attribute run.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>startOffset</tt></i> :</span></td><td> a pointer to a long integer which is assigned the
+      starting offset of the returned string, relative to the
+      original AccessibleText.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>endOffset</tt></i> :</span></td><td> a pointer to a long integer which is assigned the
+      ending offset of the returned string, relative to the original
+      AccessibleText.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a UTF-8 string representing the delimited text, both of whose
+         delimiting boundaries are before the current offset, or
+         an empty string if no such text exists.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="AccessibleText-getTextAfterOffset"></a>AccessibleText_getTextAfterOffset ()</h3><pre class="programlisting">char*       AccessibleText_getTextAfterOffset
+                                            (AccessibleText *obj,
+                                             long int offset,
+                                             <a href="at-spi-cspi-AccessibleText-Interface.html#AccessibleTextBoundaryType">AccessibleTextBoundaryType</a> type,
+                                             long int *startOffset,
+                                             long int *endOffset);</pre><p>
+Get delimited text from an AccessibleText object which follows a given
+         text offset.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>obj</tt></i> :</span></td><td> a pointer to the AccessibleText object on which to operate.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>offset</tt></i> :</span></td><td> a long integer indicating the offset from which the delimiter
+       search is based.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>type</tt></i> :</span></td><td> an <a href="at-spi-cspi-AccessibleText-Interface.html#AccessibleTextBoundaryType">AccessibleTextBoundaryType</a> indicating whether the desired
+      text string is a word, sentence, line, or attribute run.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>startOffset</tt></i> :</span></td><td> a pointer to a long integer which is assigned the
+      starting offset of the returned string, relative to the
+      original AccessibleText.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>endOffset</tt></i> :</span></td><td> a pointer to a long integer which is assigned the
+      ending offset of the returned string, relative to the original
+      AccessibleText.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a UTF-8 string representing the delimited text, both of whose
+         delimiting boundaries are after or inclusive of the current
+         offset, or an empty string if no such text exists.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="AccessibleText-getTextAtOffset"></a>AccessibleText_getTextAtOffset ()</h3><pre class="programlisting">char*       AccessibleText_getTextAtOffset  (AccessibleText *obj,
+                                             long int offset,
+                                             <a href="at-spi-cspi-AccessibleText-Interface.html#AccessibleTextBoundaryType">AccessibleTextBoundaryType</a> type,
+                                             long int *startOffset,
+                                             long int *endOffset);</pre><p>
+Get delimited text from an AccessibleText object which includes a given
+         text offset.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>obj</tt></i> :</span></td><td> a pointer to the AccessibleText object on which to operate.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>offset</tt></i> :</span></td><td> a long integer indicating the offset from which the delimiter
+       search is based.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>type</tt></i> :</span></td><td> an <a href="at-spi-cspi-AccessibleText-Interface.html#AccessibleTextBoundaryType">AccessibleTextBoundaryType</a> indicating whether the desired
+      text string is a word, sentence, line, or attribute run.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>startOffset</tt></i> :</span></td><td> a pointer to a long integer which is assigned the
+      starting offset of the returned string, relative to the
+      original AccessibleText.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>endOffset</tt></i> :</span></td><td> a pointer to a long integer which is assigned the
+      ending offset of the returned string, relative to the original
+      AccessibleText.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a UTF-8 string representing the delimited text, whose
+         delimiting boundaries bracket the current offset, or
+         an empty string if no such text exists.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="AccessibleText-removeSelection"></a>AccessibleText_removeSelection ()</h3><pre class="programlisting">SPIBoolean  AccessibleText_removeSelection  (AccessibleText *obj,
+                                             long int selectionNum);</pre><p>
+De-select a text selection.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>obj</tt></i> :</span></td><td> a pointer to the AccessibleText object on which to operate.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>selectionNum</tt></i> :</span></td><td> an integer indicating which (possibly of several)
+        text selection to remove.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> TRUE if successful, FALSE otherwise.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="AccessibleText-setCaretOffset"></a>AccessibleText_setCaretOffset ()</h3><pre class="programlisting">SPIBoolean  AccessibleText_setCaretOffset   (AccessibleText *obj,
+                                             long int newOffset);</pre><p>
+Set the text caret position for an AccessibleText object.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>obj</tt></i> :</span></td><td> a pointer to the AccessibleText object on which to operate.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>newOffset</tt></i> :</span></td><td> the offset to which the text caret is to be moved.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> TRUE if successful, FALSE otherwise.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="AccessibleText-setSelection"></a>AccessibleText_setSelection ()</h3><pre class="programlisting">SPIBoolean  AccessibleText_setSelection     (AccessibleText *obj,
+                                             long int selectionNum,
+                                             long int startOffset,
+                                             long int endOffset);</pre><p>
+Change the bounds of an existing AccessibleText text selection.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>obj</tt></i> :</span></td><td> a pointer to the AccessibleText object on which to operate.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>selectionNum</tt></i> :</span></td><td> a zero-offset index indicating which text selection to modify.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>startOffset</tt></i> :</span></td><td> a long int, the new starting offset for the selection.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>endOffset</tt></i> :</span></td><td> a long int, the desired new offset of the first character
+            after the selection.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> TRUE if successful, FALSE otherwise.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="AccessibleTextRange-freeRanges"></a>AccessibleTextRange_freeRanges ()</h3><pre class="programlisting">void        AccessibleTextRange_freeRanges  (AccessibleTextRange **ranges);</pre><p>
+Free the memory used by a list of AccessibleTextRange structs.
+The argument passed in should be an array of pointers 
+AccessibleTextRange structs.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>ranges</tt></i> :</span></td><td> a pointer to an array of AccessibleTextRange structs.
+</td></tr></tbody></table></div></div></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="at-spi-cspi-AccessibleTable-Interface.html"><b>&lt;&lt; AccessibleTable Interface</b></a></td><td align="right"><a accesskey="n" href="at-spi-cspi-AccessibleValue-Interface.html"><b>AccessibleValue Interface &gt;&gt;</b></a></td></tr></table></body></html>

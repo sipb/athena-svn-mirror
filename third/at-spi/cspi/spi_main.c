@@ -26,15 +26,19 @@
  * Basic SPI initialization and event loop function prototypes
  *
  */
+
+#include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 #include <cspi/spi-private.h>
+#include "spi.h"
 
 #undef DEBUG_OBJECTS
 
 static CORBA_Environment ev = { 0 };
 static Accessibility_Registry registry = CORBA_OBJECT_NIL;
 static GHashTable *live_refs = NULL;
+static GQueue *exception_handlers = NULL;
 
 static guint
 cspi_object_hash (gconstpointer key)
@@ -50,7 +54,7 @@ cspi_object_equal (gconstpointer a, gconstpointer b)
   CORBA_Object objecta = (CORBA_Object) a;
   CORBA_Object objectb = (CORBA_Object) b;
 
-  return CORBA_Object_is_equivalent (objecta, objectb, &ev);
+  return CORBA_Object_is_equivalent (objecta, objectb, cspi_ev ());
 }
 
 static void
@@ -75,6 +79,34 @@ cspi_object_release (gpointer value)
 #endif
 }
 
+gboolean
+_cspi_exception_throw (CORBA_Environment *ev, char *desc_prefix)
+{
+  SPIExceptionHandler *handler = NULL;
+  SPIException ex;
+  if (exception_handlers) handler = g_queue_peek_head (exception_handlers);
+
+  ex.type = SPI_EXCEPTION_SOURCE_UNSPECIFIED;
+  ex.source = CORBA_OBJECT_NIL; /* can we get this from here? */
+  ex.ev = CORBA_exception__copy (ev);
+  switch (ev->_major) {
+  case CORBA_SYSTEM_EXCEPTION:
+    ex.code = SPI_EXCEPTION_UNSPECIFIED;
+    break;
+  case CORBA_USER_EXCEPTION: /* help! how to interpret this? */
+    ex.code = SPI_EXCEPTION_UNSPECIFIED;
+    break;
+  default:
+    ex.code = SPI_EXCEPTION_UNSPECIFIED;
+    break;
+  }
+  
+  if (handler)
+    return (*handler) (&ex, FALSE);
+  else
+    return FALSE; /* means exception was not handled */
+}
+
 SPIBoolean
 cspi_accessible_is_a (Accessible *accessible,
 		      const char *interface_name)
@@ -92,12 +124,13 @@ cspi_accessible_is_a (Accessible *accessible,
 
   if (ev._major != CORBA_NO_EXCEPTION)
     {
-      g_error ("Exception '%s' checking if is '%s'",
-	       cspi_exception_get_text (),
-	       interface_name);
+      g_warning ("Exception '%s' checking if is '%s'",
+		 cspi_exception_get_text (),
+		 interface_name);
+      retval = FALSE;
     }
 
-  if (unknown != CORBA_OBJECT_NIL)
+  else if (unknown != CORBA_OBJECT_NIL)
     {
       retval = TRUE;
       cspi_release_unref (unknown);
@@ -121,6 +154,12 @@ cspi_get_live_refs (void)
 					 cspi_object_release);
     }
   return live_refs;
+}
+
+CORBA_Environment *
+cspi_peek_ev (void)
+{
+  return &ev;
 }
 
 CORBA_Environment *
@@ -229,6 +268,7 @@ cspi_object_borrow (CORBA_Object corba_object)
 void
 cspi_object_return (Accessible *accessible)
 {
+  int old_ref_count;
   g_return_if_fail (accessible != NULL);
 
   if (!accessible->on_loan ||
@@ -239,8 +279,17 @@ cspi_object_return (Accessible *accessible)
   else /* Convert to a permanant ref */
     {
       accessible->on_loan = FALSE;
+      old_ref_count = accessible->ref_count;
       accessible->objref = cspi_dup_ref (accessible->objref);
-      accessible->ref_count--;
+      if (old_ref_count != accessible->ref_count &&
+          accessible->ref_count == 1)
+        {
+            cspi_object_unref (accessible);
+        }
+      else    
+        {
+          accessible->ref_count--;
+        }
     }
 }
 
@@ -281,6 +330,7 @@ cspi_object_unref (Accessible *accessible)
       return;
     }
 
+  g_return_if_fail (accessible->ref_count > 0);
   if (--accessible->ref_count == 0)
     {
       g_hash_table_remove (cspi_get_live_refs (), accessible->objref);
@@ -291,6 +341,8 @@ static void
 cspi_cleanup (void)
 {
   GHashTable *refs;
+
+  cspi_streams_close_all ();
 
   refs = live_refs;
   live_refs = NULL;
@@ -313,7 +365,7 @@ static gboolean SPI_inited = FALSE;
  *
  * Connects to the accessibility registry and initializes the SPI.
  *
- * Returns: 0 on success, otherwise an integer error code.
+ * Returns: 0 on success, otherwise an integer error code.  
  **/
 int
 SPI_init (void)
@@ -330,8 +382,13 @@ SPI_init (void)
   registry = cspi_init ();
 
   g_atexit (cspi_cleanup);
-  
-  return 0;
+
+  /* fprintf (stderr, "registry=%x\n", (int) registry); */
+
+  if ((registry != CORBA_OBJECT_NIL) && (cspi_ping (registry)))
+      return 0;
+  else
+      return 2;
 }
 
 /**
@@ -444,9 +501,14 @@ SPI_exit (void)
   if (live_refs)
     {
       leaked = g_hash_table_size (live_refs);
+#ifdef DEBUG_OBJECTS
+      fprintf (stderr, "Leaked %d SPI handles\n", leaked);
+
 #define PRINT_LEAKS
 #ifdef PRINT_LEAKS
       g_hash_table_foreach (live_refs, report_leaked_ref, NULL);
+#endif
+
 #endif
     }
   else
@@ -454,16 +516,7 @@ SPI_exit (void)
       leaked = 0;
     }
 
-#ifdef DEBUG_OBJECTS
-  if (leaked)
-    {
-      fprintf (stderr, "Leaked %d SPI handles\n", leaked);
-    }
-#endif
-
   cspi_cleanup ();
-
-  fprintf (stderr, "bye-bye!\n");
 
   return leaked;
 }
@@ -485,4 +538,98 @@ SPI_freeString (char *s)
     {
       CORBA_free (s);
     }
+}
+
+/**
+ * SPI_freeRect:
+ * @r: a pointer to an SPIRect returned from another at-spi call.
+ *
+ * Free a SPIRect structure returned from an at-spi call.  Clients of
+ * at-spi should use this function instead of free () or g_free().
+ * A NULL rect @r will be silently ignored.
+ * This API should not be used to free data
+ * from other libraries or allocated by the client.
+ **/
+void
+SPI_freeRect (SPIRect *r)
+{
+  if (r)
+    {
+      /* err, okay, in this case the client _could_ 
+	 have called g_free, but we don't want to guarantee it */
+      g_free (r);
+    }
+}
+
+/**
+ * DOCUMENT_ME!
+ **/
+char *
+SPI_dupString (char *s)
+{
+  if (s)
+    {
+      return CORBA_string_dup (s);
+    }
+  else 
+    return NULL;
+}
+
+/**
+ * DOCUMENT_ME!
+ **/
+SPIBoolean SPI_exceptionHandlerPush (SPIExceptionHandler *handler)
+{
+  if (!exception_handlers)
+    exception_handlers = g_queue_new ();
+  g_queue_push_head (exception_handlers, handler);
+  return TRUE;
+}
+
+/**
+ * DOCUMENT_ME!
+ **/
+SPIExceptionHandler* SPI_exceptionHandlerPop (void)
+{
+  return (SPIExceptionHandler *) g_queue_pop_head (exception_handlers);
+}
+
+/**
+ * DOCUMENT_ME!
+ **/
+SPIExceptionType SPIException_getSourceType (SPIException *err)
+{
+  if (err)
+    return err->type;
+  else
+    return SPI_EXCEPTION_SOURCE_UNSPECIFIED;
+}
+
+/**
+ * DOCUMENT_ME!
+ **/
+SPIExceptionCode SPIException_getExceptionCode (SPIException *err)
+{  
+  return err->code;
+}
+
+/**
+ * DOCUMENT_ME!
+ **/
+Accessible* SPIAccessibleException_getSource (SPIException *err)
+{
+  if (err->type == SPI_EXCEPTION_SOURCE_ACCESSIBLE)
+    return cspi_object_get_ref (err->source, FALSE);
+  return NULL;
+}
+
+/**
+ * DOCUMENT_ME!
+ **/
+char* SPIException_getDescription (SPIException *err)
+{
+  /* TODO: friendlier error messages? */
+  if (err->ev)
+    return CORBA_exception_id (err->ev);
+  return NULL;
 }

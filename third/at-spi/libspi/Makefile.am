@@ -1,14 +1,14 @@
 lib_LTLIBRARIES = libspi.la
 
+#LIBSPI_DEBUG_CFLAGS=-DSPI_DEBUG
+
 INCLUDES = -I$(top_srcdir)	\
            -I$(top_builddir)	\
+           $(LIBSPI_DEBUG_CFLAGS)	\
            $(LIBSPI_CFLAGS)
 
-LDFLAGS = @LDFLAGS@ $(LIBSPI_LIBS) $(XTST_LIBS) @LT_VERSION_INFO@
-
-#DEBUG_CFLAGS=-DSPI_DEBUG
-
-CFLAGS = @CFLAGS@ $(DEBUG_CFLAGS)
+libspi_la_LDFLAGS = @LT_VERSION_INFO@
+libspi_la_LIBADD = $(LIBSPI_LIBS) $(XTST_LIBS)
 
 libspiincludedir = $(includedir)/at-spi-1.0/libspi
 
@@ -33,6 +33,7 @@ libspiinclude_HEADERS =		\
 	remoteobject.h		\
 	selection.h		\
 	stateset.h		\
+	streamablecontent.h	\
 	table.h			\
 	text.h			\
 	value.h
@@ -63,9 +64,10 @@ IDL_DEPS = \
 
 
 BUILT_SOURCES = $(IDL_OUT) Accessibility-imodule.c
-CLEANFILES+= $(IDL_OUT) Accessibility-imodule.c
+CLEANFILES = $(IDL_OUT) Accessibility-imodule.c
 
 libspi_la_SOURCES =		\
+	$(IDL_OUT)		\
 	accessible.c		\
 	action.c		\
 	application.c		\
@@ -80,16 +82,16 @@ libspi_la_SOURCES =		\
 	remoteobject.c		\
 	selection.c		\
 	spi-private.h		\
+	streamablecontent.c	\
 	stateset.c		\
 	table.c			\
 	text.c			\
 	util.c			\
 	value.c			\
 	listener.c		\
-	eventlistener.c		\
-	$(IDL_OUT)
+	eventlistener.c	
 
-accessible.c base.h keystrokelistener.h libspi.h listener.h remoteobject.h : Accessibility.h
+$(top_srcdir)/libspi/accessible.c $(top_srcdir)/libspi/base.h $(top_srcdir)/libspi/keystrokelistener.h $(top_srcdir)/libspi/libspi.h $(top_srcdir)/libspi/listener.h $(top_srcdir)/libspi/remoteobject.h : Accessibility.h
 
 IDLFLAGS = -I$(BONOBO_ACTIVATION_IDL_DIR) \
 	   -I$(LIBBONOBO_IDL_DIR)         \

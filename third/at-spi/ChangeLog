@@ -1,4 +1,1514 @@
-2002-12-17  Bill Haneman <bill.haneman@sun.com
+2004-09-13  Padraig O'Briain <padraig.vriain@sun.com>
+
+	* configure.in, NEWS, README: Revved to 1.6.0.
+
+2004-09-12  Bill Haneman <bill.haneman@sun.com>
+
+	* configure.in: Rev and re-dist, since the 1.5.4 tarball
+	was missing the HTML docs.
+
+2004-09-12  Tomasz Kłoczko <kloczek@pld.org.pl>
+
+	* configure.in: only cleanups:
+	- better looking PKG_CHECK_MODULES() output,
+	- justification,
+	- declare in one common place required versions of other tools using
+	  m4_define().
+
+2004-09-11  J.H.M. Dassen (Ray) <jdassen@debian.org>
+
+	* configure.in: libspi/accessible.c uses ATK_ROLE_EMBEDDED
+	(unconditionally) which was introduced in ATK 1.7.2. Bumped the
+	required ATK version accordingly.
+
+2004-09-03 Bill Haneman    <bill.haneman@sun.com>
+
+	* cspi/bonobo/cspi-bonobo.c:
+	(cspi_display_name): Fix C99ism.
+	* atk-bridge/bridge.c:
+	(spi_display_name): Fix C99ism.
+	Patch from Jens Granseuer, jensgr@gmx.net.
+	
+2004-09-03  Gora Mohanty  <gmohanty@cvs.gnome.org>
+ 
+	* configure.in: Added "or" to ALL_LINGUAS.
+
+2004-08-20  Bill Haneman    <bill.haneman@sun.com>
+
+	* configure.in, NEWS, README: Revved to 1.5.4.
+	
+	* registryd/registry-main.c:
+	(main): Set the reg_env to use AT_SPI_DISPLAY instead of
+	$DISPLAY.  
+	
+	* cspi/bonobo/cspi-bonobo.c:
+	(cspi_display_name): New convenience method, gets DISPLAY with
+	screen number stripped, if AT_SPI_DISPLAY isn't already set.
+	(cspi_init): Set the activation env value above before getting
+	the registry.
+	
+	* atk-bridge/bridge.c:
+	(spi_display_name): Create the AT_SPI_DISPLAY activation
+	environment for an app, based on the DISPLAY environment with the
+	screen number stripped off.
+	(atk_bridge_init):  Allow redirection of error messages to a log.
+	(spi_atk_bridge_get_registry): Call
+	bonobo_activation_set_activation_env_value for AT_SPI_DISPLAY.
+
+	Fixes for bugs #149962, #136986, #144086.
+	
+2004-08-16  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "bs" to ALL_LINGUAS.
+
+2004-08-12  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* configure.in: Added nb to ALL_LINGUAS.
+
+2004-09-03 Bill Haneman <bill.haneman@sun.com>
+
+	* cspi/spi_main.c:
+	(SPI_init): Return error code '2' if the activated
+	registry cannot be pinged. Fixes bug #147648.
+	
+2004-07-28 Bill Haneman <bill.haneman@sun.com>
+
+	* registryd/deviceeventcontroller.c:
+	(spi_dec_init_mouse_listener): Don't do XGrabButton, 
+	rely on timer-poll instead, to avoid conflict with 
+	xstroke.
+	
+2004-07-20  Bill Haneman <bill.haneman@sun.com>
+
+	* configure.in: Revved to 1.5.3.
+
+	* idl/Accessibility_Role.idl: Added ROLE_EMBEDDED (bug #144415).
+
+	* libspi/accessible.c: Added support for ROLE_EMBEDDED.
+
+	* cspi/spi_accessible.c: Support for ROLE_EMBEDDED.
+
+	* cspi/spi-roletypes.h: Added SPI_ROLE_EMBEDDED.
+	
+2004-06-11  Bill Haneman <bill.haneman@sun.com>
+
+	* atk-bridge/bridge.c:
+	(spi_atk_bridge_do_registration): 
+	Register with ATK for AtkComponent:bounds-changed events.
+	(api_atk_bridge_signal_listener): 
+	Marshal the AtkRectangle info into the event notification
+	for object:bounds-changed events.
+	
+	* libspi/util.c:
+	(spi_init_any_rect): New method, inits a corba struct of
+	type Accessibility_BoundingBox from an AtkRectangle.
+
+	* libspi/spi-private.h: Declared spi_init_any_rect (above).
+	
+	* cspi/spi.h:
+	(SPIRect): New struct definition.
+	(SPI_freeRect): New declaration.
+	(AccessibleBoundsChangedEvent_getNewBounds): New, see below.
+
+	* cspi/spi_event.c:
+	(AccessibleBoundsChangedEvent_getNewBounds): New method,
+	implemented.  Gets the bounding box data from the CORBA_any
+	associated with a bounds-changed event notification.
+	(cspi_internal_event_get_rect): New, used internally by above method.
+	
+	* cspi/spi_main.c:
+	(SPI_freeRect): Implemented this new method, for freeing
+	SPIRect structs.
+	
+	* test/event-listener-test.c:
+	(main, report_bounds_event):
+	Added a test for object:bounds-changed events.
+	
+2004-06-01  Bill Haneman <bill.haneman@sun.com>
+
+	* test/login-helper-server-test.c:
+	(main): Fix C99-ism.  Thanks to Jens Granseuer.
+	
+2004-05-28  Padraig O'Briain <padraig.obriain@sun.com>
+
+	* libloginhelper-1.0.pc.in:
+	* idl/Accessibility_LoginHelper.idl: 
+	* login-helper/Makefile.am:
+	* login-helper/login-helper.[ch]:
+	* test/login-helper-client-test.c:
+	* test/login-helper-server-test.c: Added files missing from CVS.
+	Files obtained from at-spi-1.5.2 tarball.
+
+2004-05-27  Bill Haneman <bill.haneman@sun.com>
+
+	* configure.in: Create login-helper/Makefile.  
+	Incremented micro version.
+
+	* Makefile.am:  Add login-helper subdir and pkgconfig data.
+	
+	* login-helper: New subdir.
+
+	* libloginhelper-1.0.pc.in: New.
+
+	* idl/Accessibility_LoginHelper.idl: New file, defines
+	interface whereby authentication clients can identify agents which
+	need access to services during the login process, e.g. screen lock
+	dialogs, etc.
+
+	* login-helper/Makefile.am : New.
+
+	* login-helper/login-helper.[ch] : New, implementation of
+	a LoginHelper base class.  Services needing LoginHelper can subclass.
+
+	* test/Makefile.am : Added test for login-helper, client and
+	server.
+
+	* test/app.c, at.c, keypad-test.c, keysynth-test.c, stress-test.c:
+	Use proper prefix in #include files.
+
+	* test/login-helper-client-test.c: New.
+	
+	* test/login-helper-server-test.c: New.
+
+2004-05-27  Alexander Shopov <ash@contact.bg>
+
+	* configure.in (ALL_LINGUAS): Added "bg" (Bulgarian)
+
+2004-05-14  Padraig O'Briain <padraig.obriain@sun.com>
+
+	* cspi/spi_main.c (cspi_object_unref): Add check that reference count
+	is positive. This should make it easier to detect inapprorpiate unref
+	calls.
+
+2004-05-11  James Henstridge  <james@daa.com.au>
+
+	* configure.in: remove GNOME_PLATFORM_GNOME_2 macro, which is a
+	no-op and deprecated.
+
+2004-05-03  Pablo Saratxaga  <pablo@mandrakesoft.com>
+
+	* configure.in: Added "wa" (Walloon) to ALL_LINGUAS.
+
+2004-04-28 Bill Haneman <billh@gnome.org>
+
+	* Makefile.am: Added --enable-gtk-doc to
+	DISTCHECK_CONFIGURE_FLAGS; fixes make distcheck.
+	
+2004-04-19 Bill Haneman <billh@gnome.org>
+
+	* configure.in: Revved to 1.5.1.
+
+	* registryd/deviceeventcontroller.c:
+	#define XK_LATIN1.
+	(DEControllerPrivateData): Added fields for 
+	reserved_keycode, reserved_keysym, and reserved_reset_timeout.
+	(spi_dec_replace_map_keysym): New internal utility for
+	replacing a keysym in the keymap - used to allow
+	synthesis of individual characters which aren't in the
+	current X keymap.
+	(spi_dec_reset_reserved): New; resets the changed keysym value 
+	in the map.
+	(keycode_for_keysym): We now try to deal with failed
+	XKeysymToKeycode requests by changing a keymap value
+	and returning a reserved keycode.  We now take 
+	a DEController pointer as first arg.
+	(spi_controller_register_with_devices): Call XkbGetMap with 
+	the XkbKeySymsMask.  Find the highest keycode in the current
+	keymap which doesn't have any grabs, and mark that one for
+	temporary re-mapping when out-of-range KeySyms are synthesized.
+	(dec_synth_keycode_press): Call XFlush after synthesizing the key
+	event.
+	
+2004-04-08  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* configure.in: Added "gu" (Gujarati) to ALL_LINGUAS.
+
+2004-03-24  Alexander Winston  <alexander.winston@comcast.net>
+
+	* configure.in: Added "en_CA" (Canadian English) to ALL_LINGUAS.
+
+2004-03-24  Bill Haneman <billh@gnome.org>
+
+	* cspi/spi.h:
+	(AccessibleTable_addRowSelection),
+	(AccessibleTable_addColumnSelection),
+	(AccessibleTable_removeRowSelection),
+	(AccessibleTable_removeColumnSelection):
+	Add declarations for spi wrappers which were
+  	inadvertantly omitted.  Fixes bug #133413.
+
+	* configure.in:
+	Revved to 1.5.0 (unstable series for GNOME 2.7).
+	
+2004-03-24  Bill Haneman <billh@gnome.org>
+
+	* atk-bridge/bridge.c:
+	Bracketed some debug output in 
+	conditionals, to avoid printing it in normal use.
+	Fixes bug #136660.
+
+	* libspi/hyperlink.c:
+	Don't cast 'object' to ATK_OBJECT when constructing
+	an AtkAction interface for a hyperlink.
+	See discussion in bug #120659.
+
+	* test/key-listener-test.c:
+	(report_all_key_event): Send output to stderr,
+	not stdout, for consistency with the rest of the test callbacks.
+
+	* configure.in:
+	Add -lXext to XINPUT_LIBS. Fix for bug #132237.
+	Don't add X_LIBS to CFLAGS (Fix for bug #134332).
+	Incremented to 1.4.1 (but didn't dist yet - I'm going to 
+	try incrementing the revision AFTER doing a dist, at least
+	for awhile).
+	
+2004-03-22  Bill Haneman <billh@gnome.org>
+
+	* configure.in: Revved to 1.4.0, libtool 9.14.9
+
+2004-03-17  Laszlo Peter  <laca@sun.com>
+
+	* libspi-1.0-uninstalled.pc.in: add idldir
+
+	* cspi-1.0-uninstalled.pc.in: add idldir
+
+2004-03-16  Gareth Owen <gowen72@yahoo.com>
+
+	* configure.in: Added "en_GB" to ALL_LINGUAS
+
+2004-03-15  Bill Haneman <billh@gnome.org>
+
+	* configure.in: Revved to 1.3.16, 
+	libtool 9.13.9.
+	
+2004-03-15  Laszlo Peter  <laca@sun.com>
+
+	* libspi-1.0-uninstalled.pc.in: new file
+
+	* cspi-1.0-uninstalled.pc.in: new file
+
+	* configure.in: add the new pc files to AC_OUTPUT
+
+	* Makefile.am: add the new pc files to EXTRA_DIST
+
+2004-03-12  Bill Haneman <billh@gnome.org>
+
+	* atk-bridge/bridge.c:
+	(spi_atk_bridge_key_listener):
+	Make sure to return consumed=FALSE if snoop 
+	event is not dispatched to listener.
+	Fixes #134037.
+	
+2004-03-01  Bill Haneman <billh@gnome.org>
+
+	* configure.in: Revved to 1.3.15, 
+	libtool 9.12.9.
+	
+2004-03-07  Danilo Segan  <dsegan@gmx.net>
+
+	* configure.in: Added "sr@ije" to ALL_LINGUAS.
+
+2004-03-03  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* configure.in: Added "pa" for Punjabi in ALL_LINGUAS.
+
+2004-03-01  Bill Haneman <billh@gnome.org>
+
+	* configure.in: Revved to 1.3.14.
+	
+	* cspi/spi_main.c:
+	(SPI_exit): Removed "bye-bye" exit message.
+	Moved "leak" report to happen before the
+	iteration over the leaked refs list.
+	Don't PRINT_LEAKS unless DEBUG_OBJECTS is also #defined.
+	
+2004-02-24  Bill Haneman <billh@gnome.org>
+
+	* configure.in: Revved to 1.3.13.
+
+	* docs/reference/cspi/Makefile.am:
+	Correct typo that was breaking the docs build.
+
+2004-02-11  Padraig O'Briain <padraig.obriain@sun.com>
+
+	* autogen.sh: Require version 1.7 of automake.
+	
+	* configure.in: call GTK_DOC_CHECK([1.0])
+
+	* atk-bridge/Makefile.am: Remove use of LDFLAGS and CFLAGS
+
+	* docs/reference/cspi/Makefile.am: Update to use new gtk-doc.
+
+	* libspi/Makefile.am: Remove use of LDFLAGS and CFLAGS.
+
+	* test/Makefile.am:  Remove use of CFLAGS.
+
+	This fixes bug #132987.
+
+2004-02-11  Bill Haneman <billh@gnome.org>
+
+	* reverted most of Tomasz' patch below, since it was breaking
+	builds (see bug #134058).
+	
+2004-02-10  Tomasz Kłoczko <kloczek@pld.org.pl>
+
+	* docs/reference/cspi/at-spi-cspi.types: added empty file for
+	  correct pass "make dist" (empty .. because seems no sach types in
+	  header files with gtk-doc markups).
+	* docs/reference/cspi/Makefile.am, configure.in:
+	  Added better gtk-doc support using GTK_DOC_CHECK aclocal macro
+	  from gtk-doc >= 1.0 (modyfications based on scheme from atk).
+	* Makefile.am: added:
+	  DISTCHECK_CONFIGURE_FLAGS = --enable-gtk-doc
+	  for force correct pass generate documentation on "make distcheck".
+	* libspi/Makefile.am: fixes for automake >= 1.6.
+	* configure.in: Trivial cleanup: remove AC_SUBST(CFLAGS),
+	  AC_SUBST(CPPFLAGS) and AC_SUBST(LDFLAGS). This variables are
+	  substed by default.
+
+Sun Feb  8 11:20:50 2004  Matthias Clasen  <maclas@gmx.de>
+
+	* docs/reference/cspi/Makefile.am (install-data-local): Install
+	index.sgml since the doc autobuilder on widget.gnome.org looks for
+	that file.
+
+2004-02-02  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* atk-bridge/bridge.c (spi_atk_tidy_windows): Correct g_free call to
+	g_object_unref.
+
+2004-02-01  Robert Sedak  <robert.sedak@sk.htnet.hr>
+
+        * configure.in: Added "hr" (Croatian) to ALL_LINGUAS.
+
+2004-01-27  Brian Cameron <brian.cameron@sun.com>
+
+	* test/simple-at.c: Fixed null string problems that cause core
+	  dumping problems on Solaris.
+
+2004-01-12  Bill Haneman <billh@gnome.org>
+	
+	* configure.in: Incremented version to 1.3.11.
+
+2004-01-05  Padraig O'Briain  <padraig.obriain@sun.com>
+
+        * docs/reference/cspi/at-spi-cspi-docs.sgml: Added XML in
+        DOCTYPE statement. Fixes bug #129728. Patch supplied by Sebastien
+        Bacher.
+
+2004-01-01  Roozbeh Pournader  <roozbeh@sharif.edu>
+
+	* configure.in: Added "fa" to ALL_LINGUAS.
+
+2003-12-20  Arafat Medini <lumina@silverpen.de>
+
+	* configure.in: Added "ar" to ALL_LINGUAS
+
+2003-12-16	Bill Haneman <billh@gnome.org>
+
+	* registryd/registry-main.c:
+	(main):
+	Set the reg_env DISPLAY variable before registering the
+	activated registry service.  Fixes bug #129479.
+
+2003-12-16	Mohammad DAMT  <mdamt@bisnisweb.com>
+
+	* configure.in: Added "id" in ALL_LINGUAS
+	* po/id.po: Indonesian translation by Ahmad Riza H Nst <ari@160c.afraid.org>
+
+2003-12-15  Padraig O'Briain <padraig.obriain@sun.com>
+
+	* registryd/deviceeventcontroller.c (global_filter_fn):
+	When an event is consumed discard any XEvents were added to
+	the queue while dealing with the the event. This can happen if
+	processing of the event takes a long time. Call XUngrabKeyboard
+	if an event was discarded. This fixes bug $124837.
+	Only call wait_for_release_event for a KeyPress.
+	Use local variable display instead of spi_get_display().
+	(spi_controller_update_key_grabs): Move call to keycode_for_keysym
+	outside for loop.
+
+2003-12-11  Padraig O'Briain <padraig.obriain@sun.com>
+
+	* registryd/deviceeventcontroller.c (spi_dec_translate_mask):
+	Allow for mask to contain values other than NumLock mask.
+	Fixes bug #129103.
+
+2003-12-10  Padraig O'Briain <padraig.obriain@sun.com>
+
+	* registryd/devieceventcontroller.c:
+	(wait_for_release_event): Change first parameter from GdkEvent to 
+	XEvent.
+	(global_filter_fn); Correct call to wait_for_release_event.
+
+	Fixes bug #128912.
+
+2003-12-08  Bill Haneman <billh@gnome.org>
+
+	Version 1.3.10.
+
+	* registryd/ucs2keysym.c: New file.
+
+	* registryd/deviceeventcontroller.c:
+	(dec_keysym_for_unichar): Remove old partial implementation and
+	replace with call to ucs2keysym(), which is much more complete.
+	Thanks to Marcus G. Kuhn who put the original keysym2ucs.c into
+	the public domain.
+
+	Fixes bug #128824.
+
+2003-12-05  Bill Haneman <billh@gnome.org>
+
+	* configure.in: Version 1.3.9.
+
+	* docs/reference/cspi/tmpl/spi_registry.sgml:
+	Added reference to libspi/keymasks.h to the
+        description of Registry queries: AccessibleKeyMaskType.
+	Fixes bug #118103.
+
+2003-12-04  Bill Haneman <billh@gnome.org>
+
+        Fix for bug #121974.
+	
+	* idl/Accessibility_Application.idl:
+	(Accessibility::LOCALE_TYPE): New enum, corresponds to
+	setlocale's LC_TYPEs.
+	(Accessibility::Application::getLocale): New method.
+	Allows clients to query the locale, by type, of an app.
+	
+	* cspi/spi.h:
+	* cspi/spi_application.c:
+	(AccessibleApplication_getLocale): New method, wraps IDL above.
+
+	* libspi/application.c:
+	(spi_application_class_init): Init epv entry for getLocale.
+	(impl_accessibility_application_get_locale): Impl for above.
+
+	* test/test-simple.c:
+	(test_application): Added assertion for getLocale, i.e.
+	that the string from AccessibleApplication_getLocale (app, type) 
+	is the same as that from setlocale (type, NULL);
+
+2003-12-03  Padraig O'Briain <padraig.obriain@sun.com>
+
+	*registryd/deviceeventcontroller.c: Add an idle handler which polls
+	the keyboard on a timeout intil the key state goes from pressed to
+	released. Fixes bug #111429.
+
+2003-12-03  Padraig O'Briain <padraig.obriain@sun.com>
+
+	* atk-bridge/bridge.c: (atk_bridge_init): Create accessible application 
+	root object so that it is present when a context menu in an 
+	out-of-process applet is popped up.
+	(spi_atk_bridge_do_registration): Create acceessible application root
+	object only if it does not exist.
+
+	This fixes bug #125834.
+
+2003-12-01  Bill Haneman <billh@gnome.org>
+
+	Fix for bug #114926.  Thanks to Michael Meeks for some of this patch.
+
+	* cspi/spi.h:
+	Added enum for AccessibleStreamableContentSeekType.
+	(AccessibleStreamableContent_freeContentTypeList): New.
+	
+	* cspi/spi_streamablecontent.c:
+	(accessible_bonobo_stream_client_seek): New private method.
+	(AccessibleStreamableContent_seek): Implemented this method,
+	using Bonobo_Stream_seek.
+	(AccessibleStreamableContent_freeContentTypeList): New method
+	for freeing the return value from 
+	AccessibleStreamableContent_getContentTypes.
+	(stream_cache_item_free): Replaces stream_release; stop leaks.
+	(stream_release): removed.
+	(AccessibleStreamableContent_read): Use properly init'd CORBA_evs, 
+	free the memory properly.
+
+2003-12-02  Padraig O'Briain <padraig.obriain@sun.com>
+
+	Fix for bug #116009.
+
+	* cspi/spi-roletypes.h: Add SPI_ROLE_EDITBAR.
+
+	* cspi/spi_accessible.c (cspi_init_role_table): Add SPI_ROLE_EDITBAR.
+
+	* docs/reference/cspi/tmpl/spi-accessible.sgml: Add SPI_ROLE_EDITBAR
+
+	* idl/Accessibility_Role.idl: Add ROLE_EDITBAR.
+
+2003-12-01  Bill Haneman <billh@gnome.org>
+
+	Fix for bug/rfe #127463.
+	
+	* idl/Accessibility_Accessible.idl:
+	(getLocalizedRoleName): New.
+	(unimplemented4): Removed (replaced by above).
+
+	* libspi/accessible.c:
+	(impl_accessibility_accessible_get_local_role_name): New.
+	(spi_accessible_class_init): Add getLocalizedRoleName entry to
+	epv.
+	
+	* cspi/spi.h:
+	(Accessible_getLocalizedRoleName): New.
+
+	* cspi/spi_accessible.c:
+	(Accessible_getLocalizedRoleName): New.
+	
+2003-12-01  Bill Haneman <billh@gnome.org>
+	
+	Fix for bug #118581.
+	* idl/Accessibility_Text.idl:
+	(getDefaultAttributes): New.
+	(unimplemented4): Removed (replaced by above method).
+
+	* libspi/text.c:
+	(impl_getDefaultAttributes): New method.
+	(spi_text_class_init):
+	initialize the get_default_attributes slot in the epv.
+
+	* cspi/spi.h:
+	(AccessibleText_getDefaultAttributes): New prototype.
+
+	* cspi/spi_text.c:
+	(AccessibleText_getDefaultAttributes): New method.
+
+2003-11-06  Padraig O'Briain <padraig.obriain@sun.com>
+
+	* cspi/spi_accessible.c (cspi_init_relation_type_table): Do not
+	write beyond the end of the table. Fixes bug #120473.
+
+2003-09-30  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "eu" to ALL_LINGUAS.
+
+2003-09-28  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* configure.in: ALL_LINGUAS: Added no.
+
+2003-09-28  Gediminas Paulauskas  <menesis@delfi.lt>
+
+    * configure.in: Added lt to ALL_LINGUAS.
+
+2003-09-25  Padraig O'Briain <padraig.obriain@sun.com>
+
+	* atk-bridge/bridge.c:
+	(atk_bridge_init): Register event listeners always even for 
+	out-of-process applet.
+	(spi_atk_bridge_toplevel_added): Remove call to 
+	spi_atk_bridge_event_type_consts as it is now called in atk_bridge_init
+	(spi_atk_bridge_toplevelk_removed): Remove call to 
+	spi_atk_deregister_event_listenersa as the listeners are now always
+	registered
+	(spi_atk_bridge_register_application): Remove call to
+	spi_atk_register_event_listeners as it is not done in atk_bridge_init
+
+	This fixes bug #120991.
+
+	* libspi/table.c (impl_getColumnDescription): Correct typo,
+	pointed out by Bolian.Yin@sun.com.
+
+2003-09-21  Ãsmund SkjÃ¦veland  <aasmunds@fys.uio.no>
+
+	* configure.in: Added nn to ALL_LINGUAS (which is commented out).
+
+2003-09-08  Bill Haneman <billh@gnome.org>
+
+	* configure.in: Revved to 1.3.7.
+
+	This is the GNOME 2.4.0 release of at-spi.
+
+	* docs/reference/cspi/Makefile.am:
+	Removed spurious inclusion of 'index.sgml' in the
+	html directory; this was breaking make distcheck and
+	also some other build environments.
+
+2003-09-05  Padraig O'Briain <padraig.obriain@sun.com>
+
+	* registryd/registry.[ch}:
+	Add queue_handler_id and focus_object to SpiRegistry data structure.
+	(registry_flush_event_queue): If event being discarded is 
+	"state-change:focused" store object as focus_object.
+	(registry_start_queue): Remove queue handler and focus object
+	if present.
+	(registry_discard_event): New function which discards a focus event
+	if we had stored focus object in the registry.
+	(registry_queue_event): Add new check that is_queueing is set as this
+	function is reentrant.
+	(registry_filer_event): Add call to registry_discard_event.
+	
+	This resolves issues raised in bug #108664.
+	
+2003-09-05  Taneem Ahmed  <taneem@bengalinux.org>
+
+	* configure.in: Added "bn" to ALL_LINGUAS.
+
+2003-09-04  Bill Haneman <billh@gnome.org>
+
+	* cspi/spi_event.c: Documentation improvements for
+	(SPI_registerAccessibleKeylistener).
+
+	* docs/reference/tmpl/spi_registry.sgml:
+	Documentation improvements for SpiAccessibleKeylistenerCB.
+
+2003-09-02  Mugurel Tudor  <mugurelu@go.ro>
+
+	* configure.in: Added "ro" to ALL_LINGUAS.
+
+
+2003-09-01  Padraig O'Briain <padraig.obriain@sun.com>
+
+	* cspi/spi_main.c (cspi_object_return): Ensure that reference count is
+	not decremented to zero. Fixes bug #120725.
+
+2003-08-30  KAMAGASAKO Masatoshi  <emerald@gnome.gr.jp>
+
+	* configure.in: Added "ja" to ALL_LINGUAS.
+
+2003-08-22  SamÃºel JÃ³n Gunnarsson  <sammi@techattack.nu>
+
+	* configure.in: Added "is" to ALL_LINGUAS.
+	
+2003-08-22  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "nl" to ALL_LINGUAS.
+
+2003-08-19  Padraig O'Briain <padraig.obriain@sun.com>
+
+	* cspi/spi-private.h: Add declaration for _cspi_exceptoin_throw
+	* cspi/spi_accessible.c (cspi_init_relation_type_table): Add call
+	to return a value.
+	* cspi/spi_event.c: (AccessibleEvent_unref); Add casts to gfree
+	arguments.
+	* cspi/spi_main.c (SPI_Exception_getSourceType); Return the correct
+	type for unspecified exception.
+	* cspi_streamablecontect): Add include of string.h for memcpy.
+	(stream_release): Correct call to bonobo_object_release_unref
+	(stream_cache_item_free): Correct call to bonobo_object_release_unref
+	* cspi/bonobo/spi-bonobo.c: (cspi_check_event): Add cast to second
+	argument of _cspi_expection_throw.
+	* libspi/hyperlink.c: Add include of libspi/action.h:
+	(spi_hyperlink_new): Cast argument to spi_action_interface_new.
+	* libspi/streamablecontent.c: add include of libspi/component.h.
+	* regisrtyd/deviceeventcontroller.c:
+	(spi_dec_translate_mask): Removed unused variable priv.
+	(dec_synth_keysym): Initialize lock_mods to avoid compilker warning/
+	* registryd/registry.c:
+	(registry_filter_event): Remove unused variable queue_is-empty.
+	(impl_registry_notify_event): Use correct modifier in fprintf call.
+
+	This fixes compiler warnings reported in bug #120220.
+	
+2003-08-18  Padraig O'Briain <padraig.obriain@sun.com>
+
+	* registryd/registryd.c: Remove this file.
+
+2003-08-17  Sanlig Badral  <badral@openmn.org>
+
+	* configure.in: Added mn to ALL_LINGUAS.
+
+2003-08-16  TÃµivo LeedjÃ¤rv  <toivo@linux.ee>
+
+	* configure.in: Added et to ALL_LINGUAS.
+
+2003-08-13  Padraig O'Briain <padraig.obriain@sun.com>
+
+	* test/event-listener-test.c: Change active-descendant to 
+	active-descendant-changed.
+
+2003-08-10  Sami Pesonen  <sampeson@iki.fi>
+
+	* configure.in: Added "fi" in ALL_LINGUAS.
+
+2003-08-08  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* configure.in: Added "hi" in ALL_LINGUAS.
+
+2003-08-08  Padraig O'Briain <padraig.obriain@sun.com>
+
+	* configure.in: Revved to 1.3.6.
+
+	* NEWS: updated.
+	
+2003-08-07  Padraig O'Briain <padraig.obriain@sun.com>
+
+	* registryd/deviceeventcontroller.c
+	(spi_device_event_controller_object_finalize): Fix typo in previous 
+	commit.
+
+2003-08-07  Marc Mulcahy  <marc.mulcahy@sun.com>
+
+	* registryd/deviceeventcontroller.c
+	(spi_device_event_controller_object_finalize): Fix build on
+	systems without XEvIE.
+	
+2003-08-06  Brian Cameron <Brian.Cameron@sun.com>
+
+	* acconfig.h, configure.in, registryd/Makefile.am,
+	  registryd/devicecontoller.[ch]: Add XEViE support.
+
+2003-08-06  Wang Jian  <lark@linux.net.cn>
+
+	* configure.in: Added "zh_CN" to ALL_LINGUAS.
+
+2003-08-06  Metin Amiroff<metin@karegen.com>
+
+	* configure.in: Added "az" (Azerbaijani) to ALL_LINGUAS
+
+2003-08-06  Padraig O'Briain <padraig.obriain@sun.com>
+
+	* idl/Accessibility_Registry.idl: Put MODIFIER_SHIFTLOCk and
+	MODIFIER_ALT in correct place. 
+
+	This fixes part of bug #118114.
+
+2003-07-30  Alessio Frusciante  <algol@firenze.linux.it>
+
+	* configure.in: Added "it" (Italian) to ALL_LINGUAS.
+
+2003-07-28  Changwoo Ryu  <cwryu@debian.org>
+
+	* configure.in: Added "ko" to ALL_LINGUAS.
+
+2003-07-28  Ole Laursen  <olau@hardworking.dk>
+
+	* configure.in: Added "da" to the commented out ALL_LINGUAS.
+
+2003-07-27  Laurent Dhima  <laurenti@alblinux.net>
+
+	* configure.in: Added "sq" to ALL_LINGUAS.
+
+2003-07-27  Hasbullah Bin Pit  <sebol@ikhlas.com>
+                                                                                
+	* configure.in: Added 'ms' (Malay) in ALL_LINGUAS.
+
+2003-07-24  Pablo Saratxaga  <pablo@mandrakesoft.com>
+
+	* configure.in: updated ALL_LINGUAS list
+
+2003-07-24  Dmitry G. Mastrukov  <dmitry@taurussoft.org>
+
+	* configure.in: Added Belarusian to ALL_LINGUAS.
+
+2003-07-23  Padraig O'Briain <padraig.obriain@sun.com>
+
+	* cspi/spi_event.c (AccessibleEvent_unref): Call CORBA_free for
+	event->data.
+	* cspi/bonobo/cspi-bonobo-listener.c (cspi_event): Call 
+	CORBA_any__alloc to allocate CORBA_Any in InternalEvent.
+
+	This fixes bug #116949.
+
+2003-07-22  Padraig O'Briain <padraig.obriain@sun.com>
+
+	* cspi/spi_registry.c (SPI_registerAccessibleKeyStrokeListener):
+	Correct CSPI to SPI in function documentation.
+
+	This fixes bug #118054.
+
+2003-07-16  Dmitry G. Mastrukov  <dmitry@taurussoft.org>
+
+	* configure.in: Added Russian to ALL_LINGUAS.
+
+2003-07-16  Duarte Loreto <happyguy_pt@hotmail.com>
+
+        * configure.in: Added Portuguese (pt) to ALL_LINGUAS.
+
+2003-07-14  Danilo Å Segan  <dsegan@gmx.net>
+
+	* configure.in: Added "sr" and "sr@Latn" (Serbian) to ALL_LINGUAS.
+
+2003-07-10  Joel Brich <joel.brich@laposte.net>
+
+	* configure.in: Added "eo" (Esperanto) to ALL_LINGUAS.
+
+2003-07-07  Pablo Gonzalo del Campo  <pablodc@bigfoot.com>
+
+	* configure.in (ALL_LINGUAS): Added "es" (Spanish).
+
+2003-07-07  Padraig O'Briain <padraig.obriain@sun.com>
+
+	* cspi/spi_event.c (AccessibleEvent_unref): Update code to free
+	resources allocated for AccessibleEvent. See cspi_event().
+
+	* cspi/spi_streamablecontent.c (cspi_streams_close_all): Set
+	static variable streams to NULL.
+
+	* cspi/bonobo/cspi-bonobo-listener.c (cspi_event):
+	Update so that AcessibleEvent_ref will work.
+
+	This fixes bug #116624.
+
+2003-07-06  Jordi Mallach  <jordi@sindominio.net>
+
+	* configure.in (ALL_LINGUAS): Added "ca" (Catalan).
+
+2003-07-06  Christophe Merlet  <redfox@redfoxcenter.org>
+
+	* configure.in: Added "fr" (French) to ALL_LINGUAS.
+
+2003-07-02  Christian Neumair  <chris@gnome-de.org>
+
+	* configure.in: Added "de" (German) to ALL_LINGUAS.
+
+2003-07-01  Dafydd Harries  <daf@parnassus.ath.cx>
+
+	* configure.in: Added "cy" (Welsh) to ALL_LINGUAS.
+
+2003-07-01  Miloslav Trmac  <mitr@volny.cz>
+
+	* configure.in: Addded "cs" to ALL_LINGUAS. Why is it commented out?
+
+2003-07-01  Artur Flinta  <aflinta@cvs.gnome.org>
+
+	* configure.in: Added "pl" to ALL_LINGUAS.
+
+2003-07-01  Gil "Dolfin" Osher <dolfin@rpg.org.il>
+
+	* configure.in: Added "he" (Hebrew) to ALL_LINGUAS.
+
+2003-06-30  Bill Haneman <bill.haneman@sun.com>
+	
+	* libspi/action.c:
+	(get_action_from_servant): 
+	Removed assertion that action is implemented on an AtkObject.
+
+	* libspi/hyperlink.c:
+	(spi_hyperlink_new):
+	Aggregate AccessibleAction interface on the hyperlink object if
+	the object implements AtkAction.  (This convention is used in
+	gtkhtml2.)
+	
+2003-06-30  Bill Haneman <bill.haneman@sun.com>
+
+	* configure.in: Revved to 1.3.5.
+	
+	* registryd/Accessibility_Registry.server.in.in:
+	Marked up appropriate strings for translation.
+	
+	* atk-bridge/bridge.c: Marked a couple of
+	user-visible warnings for translation.  Questionable
+	whether they are really useful, but possibly so.
+
+	
+2003-06-28  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "sv" to ALL_LINGUAS.
+
+2003-06-26  Bill Haneman <bill.haneman@sun.com>
+
+	* registryd/registry.c: 
+	(spi_registry_object_finalize): Unref the deviceeventcontroller.
+	(registry_defer_on_event): Defer focus: events, this is an
+	improvement to the patch for bug #108664.
+
+	* TODO: Update with 2.4/"Dev Complete" items.
+
+2003-06-26  Padraig O'Briain <padraig.obriain@sun.com>
+
+	* atk-bridge/bridge.c:
+	(spi_atk_bridge_init_event_type_consts): Ensure that this function only
+	looks up signals once.
+	(atk_bridge_init): Call spi_atk_bridge_init_event_type_consts only
+	if doing registration.
+	(spi_atk_bridge_toplevel_added): Call spi_bridge_init_event_type_consts
+	when doing registration.
+	
+	This fixes bug #115014.
+
+2003-06-25  Padraig O'Briain <padraig.obriain@sun.com>
+
+	* atk-bridge/bridge.c:
+	(atk_bridge_init): Add signal handler for children-changed:remove on
+	root when in a BonoboComponent.
+	(spi_atk_bridge_toplevel_added): Call spi_atk_bridge_do_registration
+	for first toplevel only other incrememt variable toplevels.
+	(spi_atk_bridge_toplevel_removed): For last toplevel deregister 
+	application and remove listeners.
+	(spi_atk_bridge_get-registry): Change NULL to CORBA_OBJECT_NIL for
+	consistency.
+	(spi_atk_deregister_event_listeners): New function which removes
+	listeners.
+	(reinit_register_vars): New fuction which reinitializes variables.
+
+	This fixes bug #111578.
+
+2003-06-13  Bill Haneman <bill.haneman@sun.com>
+
+	* configure.in: version 1.3.4.
+
+	* cspi/spi_accessible.c:
+	Changed test of obj==NULL to obj==CORBA_OBJECT_NIL.
+
+
+2003-06-13  Michael Meeks  <michael@ximian.com>
+
+	* cspi/bonobo/cspi-bonobo.c (cspi_check_ev): use it.
+
+	* cspi/spi_main.c (cspi_peek_ev): impl.
+
+2003-06-11  Padraig O'Briain <padraig.obriain@sun.com>
+
+	* cspi/spi-roletypes.h: Add role SPI_ROLE_AUTOCOMPLETE
+
+	* cspi/spi_accessible.c (cspi_init_role_table): Add ROLE_AUTOCOMPLETE.
+
+	* docs/reference/cspi/tmpl/spi_accessible.sgml: Add role 
+	SPI_ROLE_AUTOCOMPLETE
+
+	* idl/Accessibility_Role.idl: Add role ROLE_AUTOCOMPLETE
+
+	* libspi_accessible.c(spi_init_role_lookup_table): Add lookup
+	for ROLE_APPLICATION and ROLE_AUTOCOMPLETE
+
+2003-06-11  Bill Haneman <bill.haneman@sun.com>
+
+	* libspi/streamablecontent.h:
+	* libspi/streamablecontent.c:
+	New files, provide implementation/wrappers for
+	Accessibility_StreamableContent.
+
+	* cspi/spi_streamablecontent.c:
+	Connected the C wrappers to the libspi C bindings.
+	(AccessibleStreamableContent_close): New method.
+
+	* cspi/spi.h:
+	(AccessibleStreamableContent_close): New method, needed
+	since we have an "open, [seek], read, close" model in cspi.
+	
+2003-06-11  Bill Haneman <bill.haneman@sun.com>
+
+        Fix for #108664; Padraig's revision of my original patch.
+	
+	* registryd/registry.h:
+	Added event queue list, is_queuing, and exit_notify_timeout
+	to the registry struct.
+	
+	* registryd/registry.c:
+	(registry_init): Initialize new struct from registry.h.
+	(impl_registry_notify_event):
+	Filter events before notifying, in case some need to be
+	deferred, etc.
+	(registry_filter_event): New,
+	we defer certain incoming events (for instance 
+	window:deactivate) because we may wish to hide
+	or reject them based on pending events.  This is
+	mostly a workaround for bug #108664.
+	(registry_queue_event, registry_start_queue): New.
+	(registry_defer_on_event): Test event to see if it
+	initiates queuing.
+	(registry_reset_on_event): Returns TRUE if the
+	event should cause a queue reset.
+	(registry_discard_on_event): Returns TRUE if the event
+	should cause the previous queue contents to be discarded.
+	(registry_timeout_flush_queue): Flushes the pending event
+	queue if no reset/discard-triggering events have come in 
+	within the timeout period.
+	(registry_emit_event): New.
+	(registry_clone_notify_context): New, used when queueing the 
+	event notify contexts.
+
+2003-06-10  Bill Haneman <bill.haneman@sun.com>
+
+	* configure.in: Version revved to 1.3.2, lt 0.9.2
+	Incremented ATK required version to 1.3.4.
+
+	* cspi/spi_registry.c:
+	(SPI_generateKeyEvent):
+	We now pass the keystring along if it's non-null.
+	
+	* registryd/deviceeventcontroller.c:
+	(keysym_mod_mask): New method, returns modifier mask 
+	required to generate a keysym from a given keycode.
+	(dec_synth_keysym): New method.
+	(dec_synth_keystring): New method.
+	(dec_get_modifier_state): New method.
+	(dec_lock_modifiers): New
+	(dec_unlock_modifiers): New.
+	(dec_keysym_for_unichar): New, rather brute-force
+	conversion from UCS-4 to X KeySyms.  Only works for
+	Latin at the moment, with partial implementations for
+	Greek, Hebrew, and (incomplete) Katakana.
+	(impl_generate_keyboard_event): Now implement 
+	"KEYSTRING" synthesis and implement "KEYSYM"
+	synthesis properly.
+	(keycode_from_keysym): Improved, passes a returned
+	modmask value now if the corresponding param is non-NULL.
+	
+	Fixes bugs #92143  and #109776.
+
+	* test/Makefile.am:
+	* test/keysynth-test.c:
+	New test program for key synthesis, to confirm fixes for
+	above bugs.
+
+
+2003-06-10  Padraig O'Briain <padraig.obriain@sun.com>
+
+	* cspi/spi.h: Add relation SPI_RELATION_POPUP_FOR
+
+	* cspi/spi_accessible.c (cspi_init_relation_type_table):
+	Add line for RELATION_POPUP_FOR
+
+	* docs/reference/cspi/tmpl/spi_relation.sgml: 
+	Add relation SPI_RELATION_POPUP_FOR
+
+	* docs/reference/cspi/tmpl/spi_stateset.sgml: 
+	Change state SPI_STATE_INCONSISTENT to SPI_STATE_INDETERMINATE 
+
+	* idl/Accessibility_Reloation.idl: Add RELATION_POPUP_FOR.
+
+	* libspi/relation.c (spi_init_relation_type_table): 
+	Add line for RELATION_POPUP_FOR
+
+2003-06-10  Padraig O'Briain <padraig.obriain@sun.com>
+
+	* cspi/atk-bridge/bridge.c (spi_atk_bridge_exit_func): Check if 
+	there are still windows which have not been deleted and emit 
+	window:deactivate, if necessary and window:destroy events.
+	This fixes bug #114370. The change on June 5th was not correct.
+
+2003-06-09  Bill Haneman <bill.haneman@sun.com>
+
+	* configure.in: Revved to 1.3.3. (lt-version 9:2:9, .so.0.9.2)
+
+	* cspi/spi.h: 
+	(SPI_dupString): Allow dup-ing of a string such that it's safe to
+	SPI_freeString it.
+	New methods for client exception handling and interception.
+	(SPI_exceptionHandlerPush): New - push a handler onto the stack.
+	(SPI_exceptionHandlerPop): You guessed it... 
+	(SPI_getSourceType): Return the type of object which offended.
+	(SPI_getExceptionCode): Return an enum code telling, possibly, 
+	what sort of thing went wrong, i.e. DISCONNECT (object died), etc.
+	(SPIAccessibleException_getSource): get the source object for
+	exceptions that come from Accessibles, if SPIExceptionSourceType is
+	SPI_EXCEPTION_SOURCE_ACCESSIBLE.
+	(SPIException_getDescription): New, returns a string description of
+	the problem.  [Not yet a stable ABI, strings are not frozen]
+
+	* cspi/spi-private.h:
+	Added implementation details of opaque SPIException
+	structure.
+	
+	* cspi/spi_main.c:
+	Implementations of above.  Also
+	(_cspi_exception_throw): new private method that 
+	dispatches exceptions to handlers, called from cspi-bonobo.c
+
+	* cspi/bonobo/cspi-bonobo.c:
+	(cspi_check_ev): call _cspi_exception_throw.
+	Don't print a warning message if the exception has been 
+	handled by _cspi_exception_throw.
+	
+2003-06-05  Padraig O'Briain <padraig.obriain@sun.com>
+
+	* cspi/atk-bridge/bridge.c (spi_atk_bridge_exit_func): Check if 
+	there are still windows which have not been deleted and emit 
+	window:deactivate, if necessary and window:destroy events.
+	This fixes bug #114370.
+
+2003-06-03  Bill Haneman <bill.haneman@sun.com>
+
+	* cspi/spi_main.c:
+	(cspi_accessible_is_a): Make non-fatal 
+	if the object reference is dead.
+
+Mon Jun  2 15:35:29 2003  Jonathan Blandford  <jrb@redhat.com>
+
+	* cspi/spi_main.c: #include <stdio.h>
+	* test/simple-at.c: ditto
+	* test/event-listener-test.c: ditto
+	* test/screen-review-test.c: ditto
+
+2003-05-30  Michael Meeks  <michael@ximian.com>
+
+	* test/test-simple.c (main): use CORBA_ORB_perform_work
+	instead of an unnecessary linc_ call.
+
+2003-05-20  Padraig O'Briain <padraig.obriain@sun.com>
+
+	* cspi/spi-statetypes.h, cspi/docs/tmpl/spi_stateset.sgml:
+	Add SPI_STATE_INDETERMINATE.
+
+	* cspi/spi_accessible.c (spi_state_to_corba): Add support for
+	INDETERMINATE.
+
+	* idl/Accessibility_State.idl: Add support for STATE_INDETERMINATE.
+
+	* libspi/stateset.c (init_state_type_tables): Add support for
+	INDETERMINATE.
+
+2003-05-19  Padraig O'Briain <padraig.obriain@sun.com>
+
+	* configure: Update versions of atk and gail required.
+	This fixes bug #113268.
+	
+2003-05-02  Bill Haneman  <bill.haneman@sun.com>
+
+	* configure.in: Revved micro version to 1.3.1 (because of build fix).
+
+2003-05-02  Frederic Crozat  <fcrozat@mandrakesoft.com>
+
+	* libspi/Makefile.am:
+	Ensure headers are generated before being used by c sources.
+
+2003-05-01  Bill Haneman <bill.haneman@sun.com>
+
+	* configure.in:
+	Simplified lt versioning rules.
+	Incremented version to 1.3.0, to indicate that we're on the
+	unstable branch now.  
+
+2003-04-29  Padraig O'Briain <padraig.obriain@sun.com>
+
+	* docs/reference/cspi/Makefile.am, docs/reference/idl/Makefile.am:
+	Add MKDB_OPTIONS=--outtput-format=xml
+
+	* docs/reference/cspi/at-spi-cspi-docs.sgml
+	docs/reference/idl/at-spi-idl-docs.sgml:
+	Convert to Docbook XML.
+
+	This fixes bug #111793.
+
+2003-04-25  Padraig O'Briain <padraig.obriain@sun.com>
+
+	* cspi/spi-listener.h: Add documentation for AccessibleDeviceEventType,
+	AcccessibleKeyEventType, AccessibleKeyMaskType.
+
+	* cspi/spi-roletypes.h: Update documentation for AccessibleRole.
+
+	* cspi/state-types.h: Add documentation for AccessibleState.
+
+	* cspi/spi.h: Add documentation for AccessibleTextBoundaryType,
+	AccessibleTextClipType, AccessibleRelationType, AccessibleCoordType,
+	AccessibleKeySynthType, AccessibleKeyListenerSyncType, 
+	AccessibleComponentLayer.
+
+	* cspi/spi_event.c, cspi/spi_registry.c, cspi/spi_text.c: Fix bugs 
+	in documentation.
+
+	* docs/reference/cspi/at-spi-cspi-sections.txt: Add undefined symbols.
+
+	* docs/reference/cspi/tmpl/spi_registry.sgml: Add description of 
+	Accessible.  Add description of AccessibleEvent, 
+	AccessibleEventListenerCB.
+
+	* docs/reference/cspi/tmpl/spi_event.sgml: Update with extra 
+	documentation.
+
+	* docs/reference/cspi/tmpl/spi_registry.sgml: Update with extra 
+	documentation. Add description of AccessibleKeystrokeListenerCB,
+	AccessibleKeyEventMask, AccessibleModifierMaskType, 
+	AccessibleKeyMaskType, AccessibleKeystroke, AccessibleDeviceEvent,
+	AccessibleDeviceEventMask, AccessibleDeviceListenerCB. 
+
+	* docs/reference/cspi/tmpl/spi_stateset.sgml: Add description of
+	AccessibleStateSet.
+
+	* docs/reference/cspi/tmpl/spi_text.sgml: Update with extra 
+	documentation.
+
+	This fixes bug #104730.
+
+2003-04-24  Padraig O'Briain <padraig.obriain@sun.com>
+
+	* atk-bridge/bridge.c (spi_init_keystroke_from_atk_key_event):
+	Set is_text field of Accessibility_DeviceEvent data structure.
+
+	* cspi/bonobo/cspi-bonobo-listener.c (cspi_device_event): Set
+	is-text field of AccessibleDeviceEvent data structure.
+
+	This addresses part of bug #108666.
+
+	* registryd/devcieeventcontroller.c: Unset debug option.
+
+2003-04-14  Padraig O'Briain <padraig.obriain@sun.com>
+
+	* cspi/accessible.c:
+	(cpi_initial_relation_type_table): New function which initializes 
+	mapping between Accessibility_RelationType and AccessibleRelationType.
+	(cspi_relation_type_from_spi_relation_type): New function which
+	translates an Accessibility_RelationType into an AccessibleRelationType.
+	(AccessibleRelation_getRelationType): Use 
+	cpi_relation_type_get_spi_relation_type to return correct value.
+	(spi_state_to_corba): Return correct type for default case.
+
+	* cspi/spi_registry.c (SPI_registerAccessibleKeyStrokeListener):
+	Use Accessibility_EventType instead of Accessibility_KeyEventType.
+
+	* cspi/cspi-bonobo-listener.c:
+	Remove semicolon after BONOBO_TYPE_FUNC. Add casts to avoid compiler
+	warnings.
+
+	* libspi/accessible.c, libspi/action.c, libspi/application.c,
+	libspi/base.c, libspi/component.c, libspi.devicelistener.c,
+	libspi/editabletable.c, libspi/hyperlink.c, libspi/hypertext.c,
+	libspi/image.c, libspi/listener.c, libspi/selection.c, 
+	libspi/stateset.c, libspi/table, libspi/text.c, libspi/value.c, 
+	registryd/desktop.c, registryd/registry.c:
+	Remove semicolon after BONOBO_TYPE_FUNC_FULL.
+
+	* libspi/eventlistener.c
+	Remove semicolon after BONOBO_TYPE_FUNC.
+
+	* libspi/relation.c:
+	Remove semicolon after BONOBO_TYPE_FUNC_FULL.
+	(spi_init_relation_type_table): Initialize using correct type.
+
+	* registryd/desktop.c:
+	Remove semicolon after BONOBO_TYPE_FUNC_FULL.
+	(spi_keystroke_from_x_key_event): Use Accessibility_EventType instead 
+	of Accessibility_KeyEventType.
+
+	* test/key-listener-test.c (report_tab_key_event): Use fprintf
+	instead of g_print.
+
+	* tests/simple-at.c, tests/screen-review-test.c:
+	Add include for <strings.h>.
+
+	* tests.stress-test.c:
+	Add includes for <unistd.h> and <bonobo/bonobo-main.h>
+
+	These changes fix compiler warnings when using FORTE compiler on
+	Solaris; fixes bug #107479.
+
+	
+2003-04-10  Bill Haneman <bill.haneman@sun.com>
+
+
+	* configure.in: revved to 1.1.10
+	
+	* libspi/keymasks.h:
+	(SPI_KEYMASK_NUMLOCK): Added.
+
+	* registryd/deviceeventcontroller.c:
+	(spi_key_event_matches_listener): AND with a smaller
+	bitmask (as we should).  
+	(spi_dec_translate_mask): 
+	New method, sets the virtual NumLock modifier bit
+	if numlock is on.  Eventually it can handle other virtual
+	modifier bits if needed, or other marshalling from
+	at-spi modifier masks to platform (X) masks.
+	(spi_dec_key_listener_new):
+	Call spi_dec_translate_mask to set up virtual mod bits
+	in the 'mask' field when creating a new listener struct.
+	(spi_dec_emit_modifier_event):
+	Set the virtual (i.e. NumLock) bits before emitting event.
+	(spi_controller_register_with_devices):
+	Query for the NumLock modifier 'physical' bit if Xkb is
+	present, for use in above methods.
+
+	Fix for 107261.
+	
+2003-04-10  Bill Haneman <bill.haneman@sun.com>
+	
+	* registryd/deviceeventcontroller.c:
+	(spi_keystroke_from_x_key_event):
+	Instead of checking to see if the keysym is
+	printable, check the string from XLookupString
+	if available, get the first unicode character from it,
+	and call g_unichar_isprint to determine whether the
+	is_text flag should be TRUE or FALSE.
+	
+	Fix for bug 110419.
+
+2003-04-02  Padraig O'Briain <padraig.obriain@sun.com>
+
+	* atk-bridge/bridge.c: Add support for extended events
+	* cspi/spi_event.c: Add documentation and implementation for
+	extended events.
+	* tests/event-listener-test.c: Add tests for extended events.
+
+	This fixes bugs #100424 and #100426.
+ 
+2003-04-02  Padraig O'Briain <padraig.obriain@sun.com>
+
+	* configure.in: Add 100 to AT_SPI_BINARY_AGE and update calculation
+	of LT_CURRENT. This fixes bug #89350.
+
+2003-04-01  Padraig O'Briain <padraig.obriain@sun.com>
+
+	* atk-bridge/bridge.c (spi_bridge_signal_listener):  Add check for
+	number of signal parameter values before accessing them. This fixes
+	bug #109626.
+
+2003-04-01  Bill Haneman <bill.haneman@sun.com>
+
+	* configure.in: Fixed duplicate inclusion of -lspi.
+	* branched for gnome-2-2/HEAD.  
+	[created tag "gnome-2-2"]
+
+2003-03-07  Bill Haneman <bill.haneman@sun.com>
+
+	* configure.in: 1.1.9 release.
+	* NEWS: updated.
+	
+2003-03-07  Bill Haneman <bill.haneman@sun.com>
+
+	[needed by GOK, to fix bugs 107985 and 107988]
+	* registryd/deviceeventcontroller.c:
+	(spi_dec_clear_unlatch_pending):
+	New method, unsets the 'unlatch' mask for XkbStateNotifyEvents.
+	(spi_dec_set_unlatch_pending):Revised DEBUG comment.
+	(spi_dec_init_mouse_listener):Emit warning if mouse button
+	passive grab fails.
+	(spi_device_event_controller_forward_mouse_event):
+	Removed unnecessary parens from a conditional.
+	(global_filter_fn):Added TODO comment.
+	(impl_generate_keyboard_event):
+	Cancel a pending relatch if a 'delatching' key was 
+	synthesized.
+	
+2003-03-07  Padraig O'Briain <padraig.obriain@sun.com>
+
+	* atk-bridge/bridge.c:
+	Change atk_signal_child_changed to atk_signal_children_changed. 
+	Reorganize code in spi_atk_bridge_signal_listener().
+
+	* test/event-listener-test.c:
+	Add children_changed_listener and report_children_changed_event()
+	to test AccessibleChildEvent_getChildAccessible.
+
+2003-03-05  Padraig O'Briain <padraig.obriain@sun.com>
+
+	* cspi/spi_event.c (cspi_internal_event_get_text): Change
+	g_strdup to CORBA_String_dup (bug #105291)
+
+	* test/event-listener-test.c (report_text_event): Add call to
+	SPI_freeString.
+
+2003-02-28  Bill Haneman <bill.haneman@sun.com>
+
+	* registryd/deviceeventcontroller.c:
+	(spi_keystroke_from_x_key_event): 
+	Fix string and keysym return codes to match modifier state. 
+	[bug #107256]
+
+2003-02-28  Bill Haneman <bill.haneman@sun.com>
+
+	* registryd/deviceeventcontroller.c:
+	(spi_keystroke_from_x_key_event): 
+	Fix segv due to improper use of isprint(c). [bug #107254]
+
+2003-02-24  Bill Haneman <bill.haneman@sun.com>
+
+	* cspi/spi_text.c:
+	(get_accessible_text_boundary_type):
+	Move default return value to (new) default case in switch.
+	(get_accessible_text_clip_type):
+	Move default return value to (new) default case in switch.
+	
+	* libspi/application.c:
+	(lookup_toolkit_event_for_name, reverse_lookup_name_for_toolkit_event):
+	Remove unused methods.
+	(impl_accessibility_application_register_object_event_listener):
+	Remove unused methods.
+
+	* libspi/value.c:
+	Added #include of <math.h>.
+
+	* registryd/deviceeventcontroller.c:
+	(spi_dec_ungrab_mouse): Bracketed with #ifdefs, since 
+	we don't currently use this method.
+	(spi_dec_init_mouse_listener): Don't call XkbGetMap unless
+	have_xkb is TRUE.
+	(impl_generate_key_event):
+	Remove unused variables.
+	(impl_generate_mouse_event):
+	Initialize button to zero, just in case we get an invalid
+	input.  Added support for mouse buttons 4 and 5.
+	(spi_device_event_controller_new):
+	Removed unused variable declaration for 'private'.
+	(registry.h):
+	Added #include of <gdk/gdk.h>
+
+2003-02-14  Padraig O'Briain <padraig.obriain@sun.com>
+
+	* configure.in: Update to work when X is not installed in expected 
+	location. Fixes bug #105836.
+
+	* atk-bridge/bridge.c
+	(spi_atk_bridge_init_event_type_consts): Look up "link-selected" for
+	AtkHypertext
+	(spi_atk_register_event_listener): Add signal listener for 
+	link-selected
+	(spi_atk_bridge_signal_listener): Event event when link-selected
+	signal is emitted. (bug #104622)
+
+	* cspi/spi_event.c (cspi_internal_event_get_text): Call g_strdup()
+	on returned string. (bug #105291)
+
+	* test/event-listener-test.c: Add test for link-selected.
+	
+2003-02-14  Padraig O'Briain <padraig.obriain@sun.com>
+
+	* atk-bridge/Makefile.am: Correct typo in previous commit.
+
+2003-02-13  Padraig O'Briain <padraig.obriain@sun.com>
+
+	* atk-bridge/Makefile.am: Allow for build directory to be different 
+	from source directory
+
+	* registryd/Makefile.am: Allow for build directory to be different
+	from source directory
+
+	Bug #104744.
+
+2003-01-29  Bill Haneman <bill.haneman@sun.com>
+	
+	* cspi/Makefile.am:
+	Fixed dependencies for libcspi so that libspi gets pulled in
+	properly.  Fixes 104741.
+
+	* cspi/spi.h:
+	* cspi/spi_event.c:
+	Clean up inline docs a little.
+
+2003-01-27  Padraig O'Briain <padraig.obriain@sun.com>
+
+	* registryd/desktop.c: Implement AccessibleComponent for SpiDesktop.
+	This is done by implementing AtkComponent for SpiAtkDesktop, which is
+	the AtkObject within an SpiDesktop.
+	This addresses bug #101524.
+
+	* registryd/deviceeventcontroller.c (spi_device_event_controller_init):
+	Remove call to gdk_init().
+
+	* registryd/registry.c (spi_registry_init): Add call to gdk_init()
+	so that Display is set when SpiDesktop is created.
+
+2003-01-21  Padraig O'Briain <padraig.obriain@sun.com>
+
+	* registryd/deviceeventcontroller.c: Add include of <sys/time.h>
+	This fixes bug #102830.
+
+2003-01-15  Padraig O'Briain <padraig.obriain@sun.com>
+
+	* test/test-simple.c: Update to take account of fact that GailButton 
+	now implements AtkText.
+	(create_text_window): Set name on AtkObject for GtkEntry.
+	(validate_accessible): Check accessible name before calling test_text().
+
+	* libspi/Makefile.am: Fix problem with building outside of source
+	directory. Bug #98120.
+
+	* cpsi/spi_table.c (AccessibleTable_getNSelectedColumns): Fix
+	typo in documentation comments. Bug #94275.
+
+2003-01-15  Padraig O'Briain <padraig.obriain@sun.com>
+
+	* libspi/text.c (impl_getBoundedRanges): Bug fix.
+
+2003-01-10  Padraig O'Briain <padraig.obriain@sun.com>
+
+	* libspi/text.c:
+	Add includes to avoid compiler warnings on Solaris.
+	(impl_getRangeExtents): Bug fix.
+
+2002-12-17  Bill Haneman <bill.haneman@sun.com>
 
         Fix for 100944, [API addition approved by Gman and murrayc].
 	

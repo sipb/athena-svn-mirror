@@ -58,7 +58,7 @@ impl_getKeyBinding (PortableServer_Servant servant,
 BONOBO_TYPE_FUNC_FULL (SpiAction,
 		       Accessibility_Action,
 		       SPI_TYPE_BASE,
-		       spi_action);
+		       spi_action)
 
 static void
 spi_action_class_init (SpiActionClass *klass)
@@ -94,7 +94,8 @@ get_action_from_servant (PortableServer_Servant servant)
 {
   SpiBase *object = SPI_BASE (bonobo_object_from_servant (servant));
   g_return_val_if_fail (object != NULL, NULL);
-  g_return_val_if_fail (ATK_IS_OBJECT(object->gobj), NULL);
+  /* the convention of making hyperlinks actionable breaks the assertion below */
+  /* g_return_val_if_fail (ATK_IS_OBJECT(object->gobj), NULL); */
   return ATK_ACTION (object->gobj);
 }
 

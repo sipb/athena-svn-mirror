@@ -26,8 +26,10 @@
 #include <config.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <atk/atktext.h>
 #include <libspi/text.h>
+#include <libspi/spi-private.h>
 
 /* Our parent Gtk object type */
 #define PARENT_TYPE SPI_TYPE_BASE
@@ -306,6 +308,23 @@ impl_getAttributes (PortableServer_Servant servant,
   return rv;  
 }
 
+static CORBA_string
+impl_getDefaultAttributes (PortableServer_Servant servant,
+			   CORBA_Environment *ev)
+{
+  AtkAttributeSet *set;
+  gint intstart_offset, intend_offset;
+  CORBA_char *rv;
+  AtkText *text = get_text_from_servant (servant);
+
+  g_return_val_if_fail (text != NULL, CORBA_string_dup (""));
+
+  set = atk_text_get_default_attributes (text);
+
+  rv = _string_from_attribute_set (set);
+  atk_attribute_set_free (set);
+  return rv;  
+}
 
 static void 
 impl_getCharacterExtents (PortableServer_Servant servant,
@@ -465,8 +484,11 @@ impl_getRangeExtents(PortableServer_Servant servant,
 
   g_return_if_fail (text != NULL);
   
+  atk_text_get_character_extents (text, startOffset,
+			          &bounds.x, &bounds.y, &bounds.w, &bounds.h,
+				  (AtkCoordType) coordType);
   /* no equivalent ATK API yet, must do the hard way. :-( */
-  for (i = startOffset; i > endOffset; i++) 
+  for (i = startOffset + 1; i < endOffset; i++) 
     {
       atk_text_get_character_extents (text, i,
 				      &cbounds.x, &cbounds.y, &cbounds.w, &cbounds.h,
@@ -554,6 +576,7 @@ impl_getBoundedRanges(PortableServer_Servant servant,
   int curr_offset;
   gint minLineStart, minLineEnd, maxLineStart, maxLineEnd;
   long bounds_min_offset;
+  long bounds_max_offset;
 
   clip.x = x;
   clip.y = y;
@@ -563,14 +586,16 @@ impl_getBoundedRanges(PortableServer_Servant servant,
   /* for horizontal text layouts, at least, the following check helps. */
   bounds_min_offset =  atk_text_get_offset_at_point (text, x, y, 
 						     (AtkCoordType) coordType);
+  bounds_max_offset =  atk_text_get_offset_at_point (text, x + width, y + height, 
+						     (AtkCoordType) coordType);
   atk_text_get_text_at_offset (text, bounds_min_offset, 
 			       ATK_TEXT_BOUNDARY_LINE_START,
 			       &minLineStart, &minLineEnd);
-  atk_text_get_text_at_offset (text, bounds_min_offset, 
+  atk_text_get_text_at_offset (text, bounds_max_offset, 
 			       ATK_TEXT_BOUNDARY_LINE_START,
 			       &maxLineStart, &maxLineEnd);
   startOffset = MIN (minLineStart, maxLineStart);
-  endOffset  = MIN (minLineEnd, maxLineEnd);
+  endOffset  = MAX (minLineEnd, maxLineEnd);
 
   curr_offset = startOffset;
 
@@ -620,6 +645,7 @@ spi_text_class_init (SpiTextClass *klass)
   epv->getTextBeforeOffset = impl_getTextBeforeOffset;
   epv->_get_caretOffset = impl__get_caretOffset;
   epv->getAttributes = impl_getAttributes;
+  epv->getDefaultAttributes = impl_getDefaultAttributes;
   epv->getCharacterExtents = impl_getCharacterExtents;
   epv->_get_characterCount = impl__get_characterCount;
   epv->getOffsetAtPoint = impl_getOffsetAtPoint;
@@ -641,7 +667,7 @@ spi_text_init (SpiText *text)
 BONOBO_TYPE_FUNC_FULL (SpiText,
 		       Accessibility_Text,
 		       PARENT_TYPE,
-		       spi_text);
+		       spi_text)
 
 void
 spi_text_construct (SpiText *text, AtkObject *obj)

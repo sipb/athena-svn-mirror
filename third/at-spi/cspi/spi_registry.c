@@ -306,7 +306,9 @@ SPI_freeDesktopList (Accessible **desktop_list)
  * @listener:  a pointer to the #AccessibleKeystrokeListener for which
  *             keystroke events are requested.
  * @keys:      a pointer to the #AccessibleKeySet indicating which
- *             keystroke events are requested, or #CSPI_KEYSET_ALL_KEYS.
+ *             keystroke events are requested, or #SPI_KEYSET_ALL_KEYS
+ *             to indicate that all keycodes and keyvals for the specified
+ *             modifier set are to be included.
  * @modmask:   an #AccessibleKeyMaskType mask indicating which
  *             key event modifiers must be set in combination with @keys,
  *             events will only be reported for key events for which all
@@ -319,9 +321,12 @@ SPI_freeDesktopList (Accessible **desktop_list)
  *             the behavior of the notification/listener transaction.
  *             
  * Register a listener for keystroke events, either pre-emptively for
- *             all windows (CSPI_KEYLISTENER_ALL_WINDOWS), or
- *             non-preemptively (CSPI_KEYLISTENER_NOSYNC).
- *             ( Other sync_type values may be available in the future.)
+ *             all windows (SPI_KEYLISTENER_ALL_WINDOWS),
+ *             non-preemptively (SPI_KEYLISTENER_NOSYNC), or
+ *             pre-emptively at the toolkit level (SPI_KEYLISTENER_CANCONSUME).
+ *             If ALL_WINDOWS or CANCONSUME are used, the event is consumed
+ *             upon receipt if one of @listener's callbacks returns #TRUE.
+ *             ( Other sync_type values may be available in the future )
  *
  * Returns: #TRUE if successful, otherwise #FALSE.
  **/
@@ -338,7 +343,7 @@ SPI_registerAccessibleKeystrokeListener (AccessibleKeystrokeListener  *listener,
   Accessibility_ControllerEventMask   controller_event_mask;
   Accessibility_DeviceEventController device_event_controller;
   Accessibility_EventListenerMode     listener_mode;
-  Accessibility_KeyEventType          key_event_types [2];
+  Accessibility_EventType             key_event_types [2];
   SPIBoolean                          retval = FALSE;
 
   if (!listener)
@@ -381,11 +386,11 @@ SPI_registerAccessibleKeystrokeListener (AccessibleKeystrokeListener  *listener,
   key_events._buffer = key_event_types;
   if (eventmask & SPI_KEY_PRESSED)
     {
-      key_events._buffer[i++] = Accessibility_KEY_PRESSED;
+      key_events._buffer[i++] = Accessibility_KEY_PRESSED_EVENT;
     }
   if (eventmask & SPI_KEY_RELEASED)
     {
-      key_events._buffer[i++] = Accessibility_KEY_RELEASED;
+      key_events._buffer[i++] = Accessibility_KEY_RELEASED_EVENT;
     }
   key_events._length = i;
   
@@ -474,6 +479,7 @@ SPI_deregisterAccessibleKeystrokeListener (AccessibleKeystrokeListener *listener
  *             the events.
  * @eventmask: an #AccessibleDeviceEventMask mask indicating which
  *             types of key events are requested (#SPI_KEY_PRESSED, etc.).
+ * @filter: Unused parameter.
  *             
  * Register a listener for device events, for instance button events.
  *
@@ -533,6 +539,7 @@ SPI_registerDeviceEventListener (AccessibleDeviceListener  *listener,
  * SPI_deregisterDeviceEventListener:
  * @listener: a pointer to the #AccessibleDeviceListener for which
  *            device events are requested.
+ * @filter: Unused parameter.
  *
  * Removes a device event listener from the registry's listener queue,
  *            ceasing notification of events of the specified type.
@@ -597,11 +604,6 @@ SPI_generateKeyboardEvent (long int keyval,
 			   char *keystring,
 			   AccessibleKeySynthType synth_type)
 {
-/* TODO: check current modifier status and
- *  send keycode to alter, if necessary
- */
-	
-  /* TODO: implement keystring use case */
   Accessibility_KeySynthType keysynth_type;
   Accessibility_DeviceEventController device_event_controller = 
 	  Accessibility_Registry_getDeviceEventController (cspi_registry (), cspi_ev ());
@@ -631,7 +633,7 @@ SPI_generateKeyboardEvent (long int keyval,
 
   Accessibility_DeviceEventController_generateKeyboardEvent (device_event_controller,
 							     keyval,
-							     "",
+							     keystring ? keystring : "",
 							     keysynth_type,
 							     cspi_ev ());
 

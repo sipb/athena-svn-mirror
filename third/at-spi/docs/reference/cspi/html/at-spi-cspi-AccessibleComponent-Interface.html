@@ -1,0 +1,202 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>AccessibleComponent Interface</title><meta name="generator" content="DocBook XSL Stylesheets V1.60.1"><meta name="generator" content="GTK-Doc V1.1 (XML mode)"><style type="text/css">
+        .synopsis, .classsynopsis {
+            background: #eeeeee;
+            border: solid 1px #aaaaaa;
+            padding: 0.5em;
+        }
+        .programlisting {
+            background: #eeeeff;
+            border: solid 1px #aaaaff;
+            padding: 0.5em;
+        }
+        .variablelist {
+            padding: 4px;
+            margin-left: 3em;
+        }
+        .navigation {
+            background: #ffeeee;
+            border: solid 1px #ffaaaa;
+            margin-top: 0.5em;
+            margin-bottom: 0.5em;
+        }
+        .navigation a {
+            color: #770000;
+        }
+        .navigation a:visited {
+            color: #550000;
+        }
+        .navigation .title {
+            font-size: 200%;
+        }
+      </style><link rel="home" href="index.html" title="AT-SPI C Bindings Reference Manual"><link rel="up" href="spi-component.html" title="Subinterface Methods"><link rel="previous" href="at-spi-cspi-AccessibleAction-Interface.html" title="AccessibleAction Interface"><link rel="next" href="at-spi-cspi-AccessibleEditableText-Interface.html" title="AccessibleEditableText Interface"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="at-spi-cspi-AccessibleAction-Interface.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="spi-component.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">AT-SPI C Bindings Reference Manual</th><td><a accesskey="n" href="at-spi-cspi-AccessibleEditableText-Interface.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="at-spi-cspi-AccessibleComponent-Interface"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">AccessibleComponent Interface</span></h2><p>AccessibleComponent Interface &#8212; </p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+
+
+
+enum        <a href="at-spi-cspi-AccessibleComponent-Interface.html#AccessibleCoordType">AccessibleCoordType</a>;
+enum        <a href="at-spi-cspi-AccessibleComponent-Interface.html#AccessibleComponentLayer">AccessibleComponentLayer</a>;
+void        <a href="at-spi-cspi-AccessibleComponent-Interface.html#AccessibleComponent-ref">AccessibleComponent_ref</a>         (AccessibleComponent *obj);
+void        <a href="at-spi-cspi-AccessibleComponent-Interface.html#AccessibleComponent-unref">AccessibleComponent_unref</a>       (AccessibleComponent *obj);
+SPIBoolean  <a href="at-spi-cspi-AccessibleComponent-Interface.html#AccessibleComponent-contains">AccessibleComponent_contains</a>    (AccessibleComponent *obj,
+                                             long int x,
+                                             long int y,
+                                             <a href="at-spi-cspi-AccessibleComponent-Interface.html#AccessibleCoordType">AccessibleCoordType</a> ctype);
+<a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a>* <a href="at-spi-cspi-AccessibleComponent-Interface.html#AccessibleComponent-getAccessibleAtPoint">AccessibleComponent_getAccessibleAtPoint</a>
+                                            (AccessibleComponent *obj,
+                                             long int x,
+                                             long int y,
+                                             <a href="at-spi-cspi-AccessibleComponent-Interface.html#AccessibleCoordType">AccessibleCoordType</a> ctype);
+void        <a href="at-spi-cspi-AccessibleComponent-Interface.html#AccessibleComponent-getExtents">AccessibleComponent_getExtents</a>  (AccessibleComponent *obj,
+                                             long int *x,
+                                             long int *y,
+                                             long int *width,
+                                             long int *height,
+                                             <a href="at-spi-cspi-AccessibleComponent-Interface.html#AccessibleCoordType">AccessibleCoordType</a> ctype);
+void        <a href="at-spi-cspi-AccessibleComponent-Interface.html#AccessibleComponent-getPosition">AccessibleComponent_getPosition</a> (AccessibleComponent *obj,
+                                             long int *x,
+                                             long int *y,
+                                             <a href="at-spi-cspi-AccessibleComponent-Interface.html#AccessibleCoordType">AccessibleCoordType</a> ctype);
+void        <a href="at-spi-cspi-AccessibleComponent-Interface.html#AccessibleComponent-getSize">AccessibleComponent_getSize</a>     (AccessibleComponent *obj,
+                                             long int *width,
+                                             long int *height);
+<a href="at-spi-cspi-AccessibleComponent-Interface.html#AccessibleComponentLayer">AccessibleComponentLayer</a> <a href="at-spi-cspi-AccessibleComponent-Interface.html#AccessibleComponent-getLayer">AccessibleComponent_getLayer</a>
+                                            (AccessibleComponent *obj);
+short       <a href="at-spi-cspi-AccessibleComponent-Interface.html#AccessibleComponent-getMDIZOrder">AccessibleComponent_getMDIZOrder</a>
+                                            (AccessibleComponent *obj);
+SPIBoolean  <a href="at-spi-cspi-AccessibleComponent-Interface.html#AccessibleComponent-grabFocus">AccessibleComponent_grabFocus</a>   (AccessibleComponent *obj);
+</pre></div><div class="refsect1" lang="en"><h2>Description</h2><p>
+
+</p></div><div class="refsect1" lang="en"><h2>Details</h2><div class="refsect2" lang="en"><h3><a name="AccessibleCoordType"></a>enum AccessibleCoordType</h3><pre class="programlisting">typedef enum {
+  SPI_COORD_TYPE_SCREEN,
+  SPI_COORD_TYPE_WINDOW
+} AccessibleCoordType;
+</pre><p>
+Specifies how xy coordinates are to be interpreted. Used by functions such
+as <a href="at-spi-cspi-AccessibleComponent-Interface.html#AccessibleComponent-getPosition">AccessibleComponent_getPosition</a>() and <a href="at-spi-cspi-AccessibleText-Interface.html#AccessibleText-getCharacterExtents">AccessibleText_getCharacterExtents</a>()</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><tt class="literal">SPI_COORD_TYPE_SCREEN</tt></span></td><td> specifies xy coordinates relative to the screen
+</td></tr><tr><td><span class="term"><tt class="literal">SPI_COORD_TYPE_WINDOW</tt></span></td><td> specifies xy coordinates relative to an object's
+top-level window
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="AccessibleComponentLayer"></a>enum AccessibleComponentLayer</h3><pre class="programlisting">typedef enum {
+    SPI_LAYER_INVALID,
+    SPI_LAYER_BACKGROUND,
+    SPI_LAYER_CANVAS,
+    SPI_LAYER_WIDGET,
+    SPI_LAYER_MDI,
+    SPI_LAYER_POPUP,
+    SPI_LAYER_OVERLAY,
+    SPI_LAYER_WINDOW,
+    SPI_LAYER_LAST_DEFINED	
+} AccessibleComponentLayer;
+</pre><p>
+Describes the layer of a component.
+</p><p>
+These enumerated "layer values" are used when determining which UI
+rendering layer a component is drawn into, which can help in making
+determinations of when components occlude one another.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><tt class="literal">SPI_LAYER_INVALID</tt></span></td><td> The layer cannot be determined or is somehow undefined.
+</td></tr><tr><td><span class="term"><tt class="literal">SPI_LAYER_BACKGROUND</tt></span></td><td> Component belongs to the destop background.
+</td></tr><tr><td><span class="term"><tt class="literal">SPI_LAYER_CANVAS</tt></span></td><td> Component is a canvas backdrop or drawing area.
+</td></tr><tr><td><span class="term"><tt class="literal">SPI_LAYER_WIDGET</tt></span></td><td> Component is a 'normal' widget.
+</td></tr><tr><td><span class="term"><tt class="literal">SPI_LAYER_MDI</tt></span></td><td> Component is drawn in the MDI layer and may have valid
+                        Z-information relative to other MDI-layer components.
+</td></tr><tr><td><span class="term"><tt class="literal">SPI_LAYER_POPUP</tt></span></td><td> Component is in the popup layer, above other widgets and
+                        MDI components.
+</td></tr><tr><td><span class="term"><tt class="literal">SPI_LAYER_OVERLAY</tt></span></td><td> Component is in the overlay plane - this value is reserved
+                        for future use.
+</td></tr><tr><td><span class="term"><tt class="literal">SPI_LAYER_WINDOW</tt></span></td><td> Component is in the window layer and have valid Z-information
+                  relative to other window-layer components.
+</td></tr><tr><td><span class="term"><tt class="literal">SPI_LAYER_LAST_DEFINED</tt></span></td><td> Used to determine the last valid value in the enum,
+                        should not be encountered.	
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="AccessibleComponent-ref"></a>AccessibleComponent_ref ()</h3><pre class="programlisting">void        AccessibleComponent_ref         (AccessibleComponent *obj);</pre><p>
+Increment the reference count for an AccessibleComponent.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>obj</tt></i> :</span></td><td> a pointer to an object implementing AccessibleComponent on which to operate.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="AccessibleComponent-unref"></a>AccessibleComponent_unref ()</h3><pre class="programlisting">void        AccessibleComponent_unref       (AccessibleComponent *obj);</pre><p>
+Decrement the reference count for an AccessibleComponent.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>obj</tt></i> :</span></td><td> a pointer to the object implementing AccessibleComponent on which to operate.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="AccessibleComponent-contains"></a>AccessibleComponent_contains ()</h3><pre class="programlisting">SPIBoolean  AccessibleComponent_contains    (AccessibleComponent *obj,
+                                             long int x,
+                                             long int y,
+                                             <a href="at-spi-cspi-AccessibleComponent-Interface.html#AccessibleCoordType">AccessibleCoordType</a> ctype);</pre><p>
+Query whether a given AccessibleComponent contains a particular point.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>obj</tt></i> :</span></td><td> a pointer to the AccessibleComponent to query.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>x</tt></i> :</span></td><td> a long specifying the x coordinate in question.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>y</tt></i> :</span></td><td> a long specifying the y coordinate in question.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>ctype</tt></i> :</span></td><td> the desired coordinate system of the point (<i class="parameter"><tt>x</tt></i>, <i class="parameter"><tt>y</tt></i>)
+        (e.g. CSPI_COORD_TYPE_WINDOW, CSPI_COORD_TYPE_SCREEN).
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a TRUE if the specified component contains the point (<i class="parameter"><tt>x</tt></i>, <i class="parameter"><tt>y</tt></i>),
+         otherwise FALSE.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="AccessibleComponent-getAccessibleAtPoint"></a>AccessibleComponent_getAccessibleAtPoint ()</h3><pre class="programlisting"><a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a>* AccessibleComponent_getAccessibleAtPoint
+                                            (AccessibleComponent *obj,
+                                             long int x,
+                                             long int y,
+                                             <a href="at-spi-cspi-AccessibleComponent-Interface.html#AccessibleCoordType">AccessibleCoordType</a> ctype);</pre><p>
+Get the accessible child at a given coordinate within an AccessibleComponent.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>obj</tt></i> :</span></td><td> a pointer to the AccessibleComponent to query.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>x</tt></i> :</span></td><td> a long specifying the x coordinate of the point in question.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>y</tt></i> :</span></td><td> a long specifying the y coordinate of the point in question.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>ctype</tt></i> :</span></td><td> the coordinate system of the point (<i class="parameter"><tt>x</tt></i>, <i class="parameter"><tt>y</tt></i>)
+        (e.g. CSPI_COORD_TYPE_WINDOW, CSPI_COORD_TYPE_SCREEN).
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a pointer to an <a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> child of the specified component which
+         contains the point (<i class="parameter"><tt>x</tt></i>, <i class="parameter"><tt>y</tt></i>), or NULL of no child contains the point.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="AccessibleComponent-getExtents"></a>AccessibleComponent_getExtents ()</h3><pre class="programlisting">void        AccessibleComponent_getExtents  (AccessibleComponent *obj,
+                                             long int *x,
+                                             long int *y,
+                                             long int *width,
+                                             long int *height,
+                                             <a href="at-spi-cspi-AccessibleComponent-Interface.html#AccessibleCoordType">AccessibleCoordType</a> ctype);</pre><p>
+Get the bounding box of the specified AccessibleComponent.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>obj</tt></i> :</span></td><td> a pointer to the AccessibleComponent to query.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>x</tt></i> :</span></td><td> a pointer to a long into which the minimum x coordinate will be returned.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>y</tt></i> :</span></td><td> a pointer to a long into which the minimum y coordinate will be returned.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>width</tt></i> :</span></td><td> a pointer to a long into which the x extents (width) will be returned.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>height</tt></i> :</span></td><td> a pointer to a long into which the y extents (height) will be returned.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>ctype</tt></i> :</span></td><td> the desired coordinate system into which to return the results,
+        (e.g. CSPI_COORD_TYPE_WINDOW, CSPI_COORD_TYPE_SCREEN).
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="AccessibleComponent-getPosition"></a>AccessibleComponent_getPosition ()</h3><pre class="programlisting">void        AccessibleComponent_getPosition (AccessibleComponent *obj,
+                                             long int *x,
+                                             long int *y,
+                                             <a href="at-spi-cspi-AccessibleComponent-Interface.html#AccessibleCoordType">AccessibleCoordType</a> ctype);</pre><p>
+Get the minimum x and y coordinates of the specified AccessibleComponent.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>obj</tt></i> :</span></td><td> a pointer to the AccessibleComponent to query.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>x</tt></i> :</span></td><td> a pointer to a long into which the minimum x coordinate will be returned.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>y</tt></i> :</span></td><td> a pointer to a long into which the minimum y coordinate will be returned.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>ctype</tt></i> :</span></td><td> the desired coordinate system into which to return the results,
+        (e.g. CSPI_COORD_TYPE_WINDOW, CSPI_COORD_TYPE_SCREEN).
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="AccessibleComponent-getSize"></a>AccessibleComponent_getSize ()</h3><pre class="programlisting">void        AccessibleComponent_getSize     (AccessibleComponent *obj,
+                                             long int *width,
+                                             long int *height);</pre><p>
+Get the size of the specified AccessibleComponent.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>obj</tt></i> :</span></td><td> a pointer to the AccessibleComponent to query.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>width</tt></i> :</span></td><td> a pointer to a long into which the x extents (width) will be returned.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>height</tt></i> :</span></td><td> a pointer to a long into which the y extents (height) will be returned.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="AccessibleComponent-getLayer"></a>AccessibleComponent_getLayer ()</h3><pre class="programlisting"><a href="at-spi-cspi-AccessibleComponent-Interface.html#AccessibleComponentLayer">AccessibleComponentLayer</a> AccessibleComponent_getLayer
+                                            (AccessibleComponent *obj);</pre><p>
+Query which layer the component is painted into, to help determine its 
+     visibility in terms of stacking order.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>obj</tt></i> :</span></td><td> a pointer to the AccessibleComponent to query.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the <a href="at-spi-cspi-AccessibleComponent-Interface.html#AccessibleComponentLayer">AccessibleComponentLayer</a> into which this component is painted.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="AccessibleComponent-getMDIZOrder"></a>AccessibleComponent_getMDIZOrder ()</h3><pre class="programlisting">short       AccessibleComponent_getMDIZOrder
+                                            (AccessibleComponent *obj);</pre><p>
+Query the z stacking order of a component which is in the MDI or window
+      layer. (Bigger z-order numbers mean nearer the top)</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>obj</tt></i> :</span></td><td> a pointer to the AccessibleComponent to query.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a short integer indicating the stacking order of the component 
+      in the MDI layer, or -1 if the component is not in the MDI layer.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="AccessibleComponent-grabFocus"></a>AccessibleComponent_grabFocus ()</h3><pre class="programlisting">SPIBoolean  AccessibleComponent_grabFocus   (AccessibleComponent *obj);</pre><p>
+Attempt to set the keyboard input focus to the specified
+        AccessibleComponent.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>obj</tt></i> :</span></td><td> a pointer to the AccessibleComponent on which to operate.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> TRUE if successful, FALSE otherwise.
+
+</td></tr></tbody></table></div></div></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="at-spi-cspi-AccessibleAction-Interface.html"><b>&lt;&lt; AccessibleAction Interface</b></a></td><td align="right"><a accesskey="n" href="at-spi-cspi-AccessibleEditableText-Interface.html"><b>AccessibleEditableText Interface &gt;&gt;</b></a></td></tr></table></body></html>
