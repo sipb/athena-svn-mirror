@@ -84,7 +84,6 @@ int ssh_gssapi_krb5_init(Authctxt *authctxt) {
 		log("Cannot initialize krb5 context");
 		return 0;
 	}
-	krb5_init_ets(authctxt->krb5_ctx);
 
 	return 1;	
 }			
