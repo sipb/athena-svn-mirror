@@ -1,9 +1,9 @@
 /*
- * $Id: login.c,v 1.45 1992-04-30 14:47:46 lwvanels Exp $
+ * $Id: login.c,v 1.46 1992-05-18 16:43:59 epeisach Exp $
  */
 
 #ifndef lint
-static char *rcsid = "$Id: login.c,v 1.45 1992-04-30 14:47:46 lwvanels Exp $";
+static char *rcsid = "$Id: login.c,v 1.46 1992-05-18 16:43:59 epeisach Exp $";
 #endif
 
 /*
@@ -1392,7 +1392,8 @@ detach_homedir()
 			setuid(pwd->pw_uid);
 			freopen("/dev/null","w",stdout);
 			freopen("/dev/null","w",stderr);
-			execl("/bin/athena/detach","detach",lusername,0);
+			execl("/bin/athena/fsid", "fsid", "-quiet", "-unmap",
+			      "-filsys", lusername, 0);
 			exit (-1);
 		} 
 		while (wait(&status) != pid)
@@ -1424,37 +1425,44 @@ detach_homedir()
 #endif notdef
 }
 
-isremotedir(dname)
-char *dname;
+isremotedir(dir)
+char *dir;
 {
-	int fh, c;
+#ifdef ultrix
+#define REMOTEDONE
+    struct fs_data sbuf;
 
-	/*
-	 * The following lines rely on the 
-	 * behavior of Sun's NFS (present in 3.0 and 3.2)
-	 * which causes a read on an NFS directory (actually any non-reg file)
-	 * to return -1 with errno set to EISDIR.
-	 *
-	 * This is a fast, cheap way to discover whether a user's
-	 * homedir is a remote NFS filesystem.  Naturally, if the NFS semantics
-	 * change, this must also change.
-	 * 
-	 * We return 1 if it is any remote filesystem so that the
-	 * attach_homedir command will run again (sending an "nfsid map"
-	 * command and cleaning up attachtab, if it happens to be out of sync.)
-	 *
-	 * Might want to handle RVD filesystems at some point...
-	 */
+    if (statfs(dir, &sbuf) < 0)
+	return(TRUE);
 
-	fh = open(dname, O_RDONLY);
-	if (fh < 0)
-		return(0);
-	if (read(fh, &c, 1) < 0 && errno == EISDIR) {
-		close(fh);
-		return(1);
-	}
-	close(fh);
-	return(0);
+    switch(sbuf.fd_req.fstype) {
+    case GT_ULTRIX:
+    case GT_CDFS:
+	return(FALSE);
+    }
+    return(TRUE);
+#endif
+    
+#if (defined(vax) || defined(ibm032)) && !defined(REMOTEDONE)
+#define REMOTEDONE
+    int f;
+    char c;
+    struct stat stbuf;
+  
+    if (stat(dir, &stbuf))
+	return(TRUE);
+
+    if ((unsigned short)stbuf.st_dev >= 0xff00)
+	return(TRUE);
+    if (stbuf.st_dev == 0x0001)			/* AFS */
+	return(TRUE);
+
+    return(FALSE);
+#endif
+
+#ifndef REMOTEDONE
+    ERROR --- ROUTINE NOT IMPLEMENTED ON THIS PLATFORM;
+#endif
 }
 
 goodhomedir()
