@@ -1,0 +1,56 @@
+
+AC_INIT(src/main.c)
+
+AM_CONFIG_HEADER(config.h)
+AM_INIT_AUTOMAKE(gconf-editor,0.4.0)
+AM_MAINTAINER_MODE
+
+AC_PROG_INTLTOOL
+
+AC_PROG_CC
+AC_HEADER_STDC
+AM_PROG_LIBTOOL
+
+changequote(,)dnl
+if test "x$GCC" = "xyes"; then
+  case " $CFLAGS " in
+  *[\ \	]-Wall[\ \	]*) ;;
+  *) CFLAGS="$CFLAGS -Wall" ;;
+  esac
+fi
+changequote([,])dnl
+
+if test "x$prefix" = "xNONE"; then
+  GNOMELOCALEDIR=$ac_default_prefix/share/locale
+else
+  GNOMELOCALEDIR=$prefix/share/locale
+fi
+AC_DEFINE_UNQUOTED(GNOMELOCALEDIR, "$GNOMELOCALEDIR")
+
+PKG_CHECK_MODULES(GCONF_EDITOR,
+		  gconf-2.0 >= 1.1.10 \
+		  gtk+-2.0 >= 2.0.2)
+
+AC_PATH_PROG(GLIB_GENMARSHAL, glib-genmarshal)
+
+ALL_LINGUAS="ar az be bg ca cs da de el es et fr gl hi hu it ja ko lv ms no pl pt pt_BR ro ru sk sl sq sv uk vi zh_CN zh_TW"
+
+GETTEXT_PACKAGE=gconf-editor
+AC_SUBST(GETTEXT_PACKAGE)
+AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE, "$GETTEXT_PACKAGE")
+
+AM_GLIB_GNU_GETTEXT
+
+AC_SUBST(CFLAGS)
+AC_SUBST(CPPFLAGS)
+AC_SUBST(LDFLAGS)
+AC_SUBST(GCONF_EDITOR_LIBS)
+AC_SUBST(GCONF_EDITOR_CFLAGS)
+
+AC_OUTPUT([
+Makefile
+data/Makefile
+data/icons/Makefile
+src/Makefile
+po/Makefile.in
+])

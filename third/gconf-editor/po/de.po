@@ -1,0 +1,317 @@
+# German translation for GConf-Editor.
+# Copyright (C) 2002 Free Software Foundation, Inc.
+# Christian Meyer <chrisime@gnome.org>, 2002.
+# Christian Neumair <chris@gnome-de.org>, 2002.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: GConf-Editor (cvs)\n"
+"POT-Creation-Date: 2002-12-10 18:40+0100\n"
+"PO-Revision-Date: 2002-11-27 13:14+0100\n"
+"Last-Translator: Christian Neumair <chris@gnome-de.org>\n"
+"Language-Team: German <gnome-de@gnome.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: data/gconf-editor.desktop.in.h:1
+msgid "Configuration Editor"
+msgstr "Konfigurationseditor"
+
+#: data/gconf-editor.desktop.in.h:2
+msgid "Directly edit your entire configuration database"
+msgstr "Bietet Ihnen direkten Zugriff auf Ihre gesamte Konfigurationsdatenbank"
+
+#: src/gconf-bookmarks-dialog.c:204
+msgid "Edit bookmarks"
+msgstr "Lesezeichen bearbeiten"
+
+#: src/gconf-editor-window.c:159
+msgid "About GConf-Editor"
+msgstr "Info zu GConf-Editor"
+
+#: src/gconf-editor-window.c:187
+msgid "GConf-Editor"
+msgstr "GConf-Editor"
+
+#: src/gconf-editor-window.c:188
+msgid "An editor for the GConf configuration system."
+msgstr "Ein Editor für das GConf-Konfigurationssystem."
+
+#: src/gconf-editor-window.c:189
+msgid "Copyright (C) Anders Carlsson 2001, 2002"
+msgstr "© Anders Carlsson 2001, 2002"
+
+#: src/gconf-editor-window.c:202
+msgid "/_File"
+msgstr "/_Datei"
+
+#: src/gconf-editor-window.c:203 src/gconf-editor-window.c:221
+msgid "/File/tearoff1"
+msgstr "/Datei/Abriss1"
+
+#: src/gconf-editor-window.c:204
+msgid "/File/_New window"
+msgstr "/Datei/_Neues Fenster"
+
+#: src/gconf-editor-window.c:205
+msgid "/File/_Close window"
+msgstr "/Datei/Fenster s_chließen"
+
+#: src/gconf-editor-window.c:206
+msgid "/File/sep1"
+msgstr "/Datei/sep1"
+
+#: src/gconf-editor-window.c:207
+msgid "/File/_Quit"
+msgstr "/Datei/_Beenden"
+
+#: src/gconf-editor-window.c:208
+msgid "/_Edit"
+msgstr "/_Bearbeiten"
+
+#: src/gconf-editor-window.c:209 src/gconf-editor-window.c:222
+msgid "/Edit/tearoff2"
+msgstr "/Bearbeiten/Abriss2"
+
+#: src/gconf-editor-window.c:210
+msgid "/Edit/_Copy key name"
+msgstr "/Bearbeiten/Schlüsselname _kopieren"
+
+#: src/gconf-editor-window.c:211
+msgid "/_Bookmarks"
+msgstr "/_Lesezeichen"
+
+#: src/gconf-editor-window.c:212 src/gconf-editor-window.c:223
+msgid "/Bookmarks/tearoff3"
+msgstr "/_Lesezeichen/Abtrenner3"
+
+#: src/gconf-editor-window.c:213
+msgid "/Bookmarks/_Add bookmark"
+msgstr "/Lesezeichen/Lesezeichen _hinzufügen..."
+
+#: src/gconf-editor-window.c:214
+msgid "/Bookmarks/_Edit bookmarks..."
+msgstr "/Lesezeichen/Lesezeichen _bearbeiten..."
+
+#: src/gconf-editor-window.c:215
+msgid "/_Help"
+msgstr "/_Hilfe"
+
+#: src/gconf-editor-window.c:216 src/gconf-editor-window.c:224
+msgid "/Help/tearoff4"
+msgstr "/Hilfe/Abriss4"
+
+#: src/gconf-editor-window.c:217
+msgid "/Help/_About..."
+msgstr "/Hilfe/_Info..."
+
+#: src/gconf-editor-window.c:228
+msgid "/File/New window"
+msgstr "/Datei/Neues Fenster"
+
+#: src/gconf-editor-window.c:229
+msgid "/File/Close window"
+msgstr "/Datei/Fenster schließen"
+
+#: src/gconf-editor-window.c:230
+msgid "/File/Quit"
+msgstr "/Datei/Beenden"
+
+#: src/gconf-editor-window.c:231
+msgid "/Edit/Copy key name"
+msgstr "/Bearbeiten/Schlüsselname kopieren"
+
+#: src/gconf-editor-window.c:232
+msgid "/Help/About..."
+msgstr "/Hilfe/Info..."
+
+# CHECK
+#: src/gconf-editor-window.c:277
+#, c-format
+msgid ""
+"Couldn't unset key. Error was:\n"
+"%s"
+msgstr ""
+"Schlüssels konnte nicht zurückgesetzt werden. Fehler war:\n"
+"%s"
+
+# CHECK
+#: src/gconf-editor-window.c:301
+#, c-format
+msgid ""
+"Could not create key. The error is:\n"
+"%s"
+msgstr ""
+"Schlüssel konnte nicht erstellt werden. Fehler war:\n"
+"%s"
+
+#: src/gconf-editor-window.c:376
+#, c-format
+msgid ""
+"Could not change key value. Error message:\n"
+"%s"
+msgstr ""
+"Schlüsselwert konnte nicht geändert werden. Fehlermeldung:\n"
+"%s"
+
+#: src/gconf-editor-window.c:407
+msgid ""
+"Currently pairs and schemas can't be edited. This will be change in a later "
+"version."
+msgstr ""
+"Zur Zeit können weder Listen, noch Paare oder Schemata bearbeitet werden. "
+"Dies wird sich in einer späteren Version ändern."
+
+#: src/gconf-editor-window.c:441
+msgid "/_New key..."
+msgstr "/_Neuer Schlüssel..."
+
+#: src/gconf-editor-window.c:442
+msgid "/Edit key..."
+msgstr "/Schlüssel bearbeiten..."
+
+#: src/gconf-editor-window.c:443
+msgid "/sep1"
+msgstr "/sep1"
+
+#: src/gconf-editor-window.c:444
+msgid "/_Unset key"
+msgstr "/Schlüssel zurücksetzen"
+
+#: src/gconf-editor-window.c:448
+msgid "/New key..."
+msgstr "/Neuer Schlüssel..."
+
+#: src/gconf-editor-window.c:449
+msgid "/Unset key"
+msgstr "/Schlüssel nicht setzen"
+
+#: src/gconf-editor-window.c:458 src/gconf-editor-window.c:465
+#: src/gconf-editor-window.c:831
+msgid "GConf editor"
+msgstr "GConf-Editor"
+
+#: src/gconf-editor-window.c:473
+#, c-format
+msgid "GConf editor - %s"
+msgstr "GConf-Editor - %s"
+
+#: src/gconf-editor-window.c:611 src/gconf-editor-window.c:612
+#: src/gconf-editor-window.c:613 src/gconf-editor-window.c:614
+#: src/gconf-editor-window.c:636 src/gconf-editor-window.c:644
+#: src/gconf-editor-window.c:653 src/gconf-editor-window.c:986
+#: src/gconf-editor-window.c:998 src/gconf-editor-window.c:1010
+#: src/gconf-editor-window.c:1025
+msgid "(None)"
+msgstr "(Nicht vorhanden)"
+
+#: src/gconf-editor-window.c:923
+msgid "Name"
+msgstr "Name"
+
+#: src/gconf-editor-window.c:944
+msgid "Value"
+msgstr "Wert"
+
+#. Create details area
+#: src/gconf-editor-window.c:970
+msgid "Key Documentation"
+msgstr "Schlüssel-Dokumentation"
+
+#: src/gconf-editor-window.c:980
+msgid "Key Name:"
+msgstr "Schlüsselname:"
+
+#: src/gconf-editor-window.c:993
+msgid "Key Owner:"
+msgstr "Schlüsselbesitzer:"
+
+#: src/gconf-editor-window.c:1005
+msgid "Short Description:"
+msgstr "Kurzbeschreibung:"
+
+#: src/gconf-editor-window.c:1018
+msgid "Long Description:"
+msgstr "Lange Beschreibung:"
+
+#: src/gconf-key-editor.c:82
+msgid "T_rue"
+msgstr "_Wahr"
+
+#: src/gconf-key-editor.c:85 src/gconf-key-editor.c:244
+#: src/gconf-key-editor.c:484
+msgid "_False"
+msgstr "_Falsch"
+
+#: src/gconf-key-editor.c:121 src/gconf-key-editor.c:153
+msgid "Integer"
+msgstr "Ganzzahl"
+
+#: src/gconf-key-editor.c:123 src/gconf-key-editor.c:155
+msgid "Boolean"
+msgstr "Boolesch"
+
+#: src/gconf-key-editor.c:125 src/gconf-key-editor.c:157
+msgid "String"
+msgstr "Zeichenkette"
+
+#: src/gconf-key-editor.c:127
+msgid "Float"
+msgstr "Fließpunkt"
+
+#: src/gconf-key-editor.c:129
+msgid "List"
+msgstr "Liste"
+
+#: src/gconf-key-editor.c:217
+msgid "Add new list entry"
+msgstr "Einen neuen Listeneintrag hinzufügen"
+
+#: src/gconf-key-editor.c:235
+msgid "_New list element:"
+msgstr "_Neues Listenelement:"
+
+#: src/gconf-key-editor.c:419
+msgid "Key path:"
+msgstr "Schlüsselpfad:"
+
+#: src/gconf-key-editor.c:431
+msgid "Key _name:"
+msgstr "Schlüssel_name:"
+
+#: src/gconf-key-editor.c:444
+msgid "_Type:"
+msgstr "_Typ:"
+
+#: src/gconf-key-editor.c:470 src/gconf-key-editor.c:483
+#: src/gconf-key-editor.c:496 src/gconf-key-editor.c:507
+#: src/gconf-key-editor.c:530
+msgid "Key _value:"
+msgstr "Schlüssel_wert:"
+
+#: src/gconf-key-editor.c:522
+msgid "List _type:"
+msgstr "Listen_typ:"
+
+#: src/gconf-key-editor.c:628
+msgid "New key"
+msgstr "Neuer Schlüssel"
+
+#: src/gconf-key-editor.c:632
+msgid "Edit key"
+msgstr "Schlüssel bearbeiten"
+
+#: src/gconf-message-dialog.c:184
+msgid "_Show this dialog again"
+msgstr "Diesen Dialog erneut an_zeigen"
+
+#: src/main.c:53
+msgid ""
+"This tool allows you to directly edit your configuration database. This is "
+"not the recommended way of setting desktop preferences. Use this tool at "
+"your own risk."
+msgstr ""
+"Dieses Werkzeug erlaubt es Ihnen, die Konfigurationsdatenbank direkt zu "
+"bearbeiten. Dies ist nicht der empfohlene Weg, um Ihre Desktop-Einstellungen "
+"festzulegen. Verwenden Sie dieses Programm mit größer Vorsicht!"
