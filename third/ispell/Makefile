@@ -1,5 +1,5 @@
 #
-# $Id: Makefile,v 1.2 1997-09-29 08:52:35 ghudson Exp $
+# $Id: Makefile,v 1.3 1999-03-01 18:30:26 ghudson Exp $
 #
 # Copyright 1992, 1993, Geoff Kuenning, Granada Hills, CA
 # All rights reserved.
@@ -47,6 +47,11 @@
 #   buildhash <dictfile> <affix-file> <outfile>
 
 # $Log: not supported by cvs2svn $
+# Revision 1.2  1997/09/29 08:52:35  ghudson
+# Treat ispell.info as a source file, like everyone else.  (I would have
+# left things the way they were, but the emacs command for generating
+# the info file doesn't work with 19.34b.)
+#
 # Revision 1.1.1.1  1997/09/03 21:08:11  ghudson
 # Import of ispell 3.1.20
 #
@@ -166,7 +171,6 @@
 EXTRADICT = Use_config.sh
 
 SHELL = /bin/sh
-MAKE = make
 
 #
 #	Set this to "-vx" in the make command line if you need to
