@@ -2,7 +2,7 @@
 #
 # Copyright (C) 1985,1987 Adobe Systems Incorporated. All rights reserved.
 # GOVERNMENT END USERS: See notice of rights in Notice file in release directory.
-# RCSID: $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/transcript-v2.1/Makefile,v 1.8 1990-08-29 10:07:54 epeisach Exp $
+# RCSID: $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/transcript-v2.1/Makefile,v 1.9 1990-08-29 16:51:10 epeisach Exp $
 
 
 LPROGS = pscomm #lps40comm
@@ -24,7 +24,7 @@ programs all:	${LPROGS} ${BPROGS}
 
 Makefile: Imakefile
 	-mv -f Makefile Makefile.bak
-	cc -E Imakefile > Makefile 
+	/lib/cpp `../cppflags` Imakefile Makefile 
 
 pscomm: pscomm.o psutil.o config.o
 		cc ${CFLAGS} -o pscomm pscomm.o psutil.o config.o -lzephyr \
