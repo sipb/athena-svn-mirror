@@ -11,9 +11,7 @@
  * is probably still protected under standard Berkeley copyright agreements.
  */
 
-#ifndef lint
-static char rcsid_mount_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/unmount.c,v 1.2 1990-04-19 12:16:56 jfc Exp $";
-#endif lint
+static char *rcsid_mount_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/unmount.c,v 1.3 1990-07-06 10:01:24 jfc Exp $";
 
 #include "attach.h"
 #include <sys/file.h>
@@ -61,7 +59,7 @@ unmount_42(errname, mntpt)
 #endif /* ultrix */
 
     if (unmount(mntpt) < 0) {
-	if (errno == EINVAL) {
+	if (errno == EINVAL || errno == ENOENT) {
 		fprintf(stderr,
 			"%s: Directory %s appears to already be unmounted\n",
 			errname, mntpt);
