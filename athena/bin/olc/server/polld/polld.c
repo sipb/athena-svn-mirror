@@ -9,13 +9,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/polld/polld.c,v $
- *	$Id: polld.c,v 1.12 1992-08-12 13:43:40 lwvanels Exp $
- *	$Author: lwvanels $
+ *	$Id: polld.c,v 1.13 1994-08-21 18:32:22 cfields Exp $
+ *	$Author: cfields $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/polld/polld.c,v 1.12 1992-08-12 13:43:40 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/polld/polld.c,v 1.13 1994-08-21 18:32:22 cfields Exp $";
 #endif
 #endif
 
@@ -90,6 +90,7 @@ main(argc, argv)
 {
   int nofork = 0;
   int i;
+  int cycle=0;
   long last_cycle = 0L;
   struct timeval tp;
   PTF *users;
@@ -125,6 +126,9 @@ main(argc, argv)
       else
 	strcpy(DaemonInst, argv[i]);
       upcase_string(DaemonInst);
+    }
+    else if (!strcmp (argv[i], "-cycle")) {
+      cycle = 1;
     }
     else {
       fprintf (stderr, "unknown argument: %s\n",argv[i]);
@@ -260,7 +264,7 @@ main(argc, argv)
     exit(1);
   }
 
-  while(1) {
+  do {
     gettimeofday(&tp,0);
     if ((tp.tv_sec -last_cycle) < CYCLE_TIME*60)
       /* If it's been less than CYCLE_TIME minutes, sleep until it's time to */
@@ -292,4 +296,7 @@ main(argc, argv)
       }
     }
   }
+  while(cycle);
+
+  exit(0);
 }
