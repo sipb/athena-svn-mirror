@@ -11,7 +11,7 @@
 
 #if  (!defined(lint))  &&  (!defined(SABER))
 static char rcsid[] =
-"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/console/console.c,v 1.12 1996-09-19 22:19:56 ghudson Exp $";
+"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/console/console.c,v 1.13 1997-04-01 01:12:59 ghudson Exp $";
 #endif
 
 #include "mit-copyright.h"
@@ -39,7 +39,7 @@ static char rcsid[] =
 #endif
 
 #define XENV "XENVIRONMENT"
-#define CONSOLEFILE "/usr/tmp/console.log"
+#define CONSOLEFILE "/var/athena/console.log"
 
 extern int DEBUG;
 

@@ -12,7 +12,7 @@ The \fIconsole\fR program reads standard input and displays it
 in an X window on the screen.  It is intended to be started by \fIdm\fR with
 its input connected to the logical console for the workstation.  Its
 default behavior is to start up unmapped (not visible on the screen),
-reading its initial buffer contents from \fI/usr/tmp/console.log\fR. 
+reading its initial buffer contents from \fI/var/athena/console.log\fR. 
 It will map itself (i.e. become visible on the screen) whenever
 there is new input.  The user may then click its "Hide"
 button to hide the window again until new input comes.  
@@ -23,12 +23,12 @@ it by \fIconfig_console\fR, \fIdm\fR, or \fInanny\fR:
 .TP 8
 .B SIGHUP
 On a hangup signal, \fIconsole\fR attempts to dump the contents
-of its text buffer to \fI/usr/tmp/console.log\fR, and then exits. (\fIDm\fR
+of its text buffer to \fI/var/athena/console.log\fR, and then exits. (\fIDm\fR
 will then usually restart it.)
 .TP 8
 .B SIGFPE
 On an FPE signal, \fIconsole\fR zeroes its text buffer, attempts to
-zero \fI/usr/tmp/console.log\fR, and unmaps its window.
+zero \fI/var/athena/console.log\fR, and unmaps its window.
 .TP 8
 .B SIGUSR1
 On a USR1 signal, \fIconsole\fR maps its window.
@@ -175,11 +175,11 @@ scroll-region and moving the mouse while the mouse-button is
 depressed.
 .SH FILES
 .PP
-/usr/tmp/console.log       console log file
+/var/athena/console.log    console log file
 .br
 /etc/athena/login/Console  application defaults
 .br
-/etc/athena/console.pid    pid of console, if started by \fIdm\fR
+/var/athena/console.pid    pid of console, if started by \fIdm\fR
 .SH "SEE ALSO"
 X(1), config_console(1), show_console(1), hide_console(1), dm(8), nanny(8),
 xrdb(1)
