@@ -1,4 +1,4 @@
- /* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.43 1994-07-28 03:15:49 cfields Exp $ */
+ /* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.44 1994-07-31 03:03:52 cfields Exp $ */
  
 #ifdef POSIX
 #include <unistd.h>
@@ -81,8 +81,9 @@ gid_t def_grplist[] = { 101 };			/* default group list */
 extern void AriRegisterAthena ();
 extern unsigned long random();
 static void move_instructions(), screensave(), unsave(), start_reactivate();
-static void blinkOwl(), initOwl(), adjustOwl(), catch_child(), setFontPath();
-static void setAutoRepeat();
+static void blinkOwl(), blinkIs(), initOwl(), adjustOwl();
+static void catch_child(), setFontPath(), setAutoRepeat();
+static Boolean auxConditions();
 static int getAutoRepeat();
 void focusACT(), unfocusACT(), runACT(), runCB(), focusCB(), resetCB();
 void idleReset(), loginACT(), localErrorHandler(), setcorrectfocus();
@@ -220,7 +221,8 @@ XtActionsRec actions[] = {
 /*
  * Globals.
  */
-XtIntervalId curr_timerid = 0, blink_timerid = 0, react_timerid = 0;
+XtIntervalId curr_timerid = 0, blink_timerid = 0, is_timerid = 0,
+  react_timerid = 0;
 Widget appShell;
 Widget saver, ins;
 Widget savershell[10];
@@ -231,7 +233,7 @@ Display *dpy;
 Window owlWindow, isWindow;
 int owlNumBitmaps, isNumBitmaps;
 unsigned int owlWidth, owlHeight, isWidth, isHeight;
-int owlState, owlDelta, owlTimeout;
+int owlState, owlDelta, isDelta, owlTimeout, isTimeout;
 Pixmap owlBitmaps[20], isBitmaps[20];
 struct timeval starttime;
 int activation_state, activation_pid, activate_count = 0;
@@ -440,6 +442,7 @@ main(argc, argv)
   curr_timerid = XtAddTimeOut(resources.save_timeout * 1000,
 			      screensave, NULL);
   blink_timerid = XtAddTimeOut(1000, blinkOwl, NULL);
+  is_timerid = XtAddTimeOut(1000, blinkIs, NULL);
   gettimeofday(&starttime, NULL);
   resetCB(namew, NULL, NULL);
   if (access(resources.srvdcheck, F_OK) != 0)
@@ -689,6 +692,9 @@ screensave(data, timerid)
   if (blink_timerid != 0)	/* don't blink while screensaved... */
     XtRemoveTimeOut(blink_timerid);
   blink_timerid = 0;
+  if (is_timerid != 0)	/* don't blink while screensaved... */
+    XtRemoveTimeOut(is_timerid);
+  is_timerid = 0;
 
   /* don't let the real screensaver kick in */
   XSetScreenSaver(dpy, 0, -1, DefaultBlanking, DefaultExposures);
@@ -815,6 +821,8 @@ unsave(w, popdown, event, bool)
 			      screensave, NULL);
   blink_timerid = XtAddTimeOut(random() % (10 * 1000),
 			       blinkOwl, NULL);
+  is_timerid = XtAddTimeOut(random() % (10 * 1000),
+			    blinkIs, NULL);
   if (react_timerid != 0)
     XtRemoveTimeOut(react_timerid);
   if (activation_state == REACTIVATING)
@@ -912,7 +920,7 @@ Cardinal *n;
     }
 
     if (access(resources.srvdcheck, F_OK) != 0)
-      tb.ptr = "Workstation failed to activate successfully.  Please notify Athena operations.";
+      tb.ptr = "Workstation failed to activate successfully.  Please notify the Athena Hotline, x1410, hotline@mit.edu.";
     else {
 	setAutoRepeat(autorep);
  	setFontPath();
@@ -977,6 +985,15 @@ Cardinal *n;
 
     target = WcFullNameToWidget(appShell, p[0]);
     XSetInputFocus(dpy, XtWindow(target), RevertToPointerRoot, CurrentTime);
+
+    if (owlState == OWL_SLEEPY)
+      if (blink_timerid != 0)
+	{
+	  XtRemoveTimeOut(blink_timerid);
+	  blink_timerid = 0;
+	  owlDelta = OWL_WAKING;
+	  blinkOwl(NULL, NULL);
+	}
 }
 
 
@@ -1054,7 +1071,7 @@ Cardinal *n;
       sigpause(0);
 #endif
     if (access(resources.srvdcheck, F_OK) != 0) {
-	fprintf(stderr, "Workstation failed to activate successfully.  Please notify Athena operations.");
+	fprintf(stderr, "Workstation failed to activate successfully.\nPlease notify the Athena Hotline, x1410, hotline@mit.edu.");
 	return;
     }
     sigconsCB(NULL, "hide", NULL);
@@ -1330,7 +1347,7 @@ blinkOwl(data, intervalid)
      XtPointer data;
      XtIntervalId *intervalid;
 {
-  static int owlCurBitmap, isCurBitmap;
+  static int owlCurBitmap;
   owlTimeout = 0;
 
   if (owlNumBitmaps == 0) return;
@@ -1339,18 +1356,14 @@ blinkOwl(data, intervalid)
     {
     case OWL_BLINKINGCLOSED:	/* your eyelids are getting heavy... */
       owlCurBitmap++;
-      isCurBitmap++;
       updateOwl();
-      updateIs();
       if (owlCurBitmap == owlNumBitmaps - 1)
 	owlDelta = OWL_BLINKINGOPEN;
       break;
 
     case OWL_BLINKINGOPEN:	/* you will awake, feeling refreshed... */
       owlCurBitmap--;
-      isCurBitmap--;
       updateOwl();
-      updateIs();
       if (owlCurBitmap == ((owlState == OWL_SLEEPY) * (owlNumBitmaps) / 2))
 	{
 	  owlTimeout = random() % (10 * 1000);
@@ -1360,25 +1373,22 @@ blinkOwl(data, intervalid)
 
     case OWL_SLEEPING:		/* transition to sleeping state */
       owlCurBitmap++;
-      isCurBitmap++;
       updateOwl();
-      updateIs();
       if (owlCurBitmap == ((owlState == OWL_SLEEPY) * (owlNumBitmaps) / 2))
 	{
-	  owlState = OWL_SLEEPY;
-	  owlDelta = OWL_STATIC;
+	  owlDelta = OWL_BLINKINGCLOSED;
+	  owlTimeout = random() % (10 * 1000);
 	}
       break;
 
     case OWL_WAKING:		/* transition to waking state */
-      owlCurBitmap--;
-      isCurBitmap--;
+      if (owlCurBitmap)
+	owlCurBitmap--;
       updateOwl();
-      updateIs();
       if (owlCurBitmap == 0)
 	{
-	  owlState = OWL_AWAKE;
-	  owlDelta = OWL_STATIC;
+	  owlDelta = OWL_BLINKINGCLOSED;
+	  owlTimeout = random() % (10 * 1000);
 	}
       break;
 
@@ -1387,8 +1397,49 @@ blinkOwl(data, intervalid)
     }
 
   blink_timerid = XtAddTimeOut((owlTimeout
-				? owlTimeout : resources.blink_timeout),
-			       blinkOwl, NULL);
+				? owlTimeout : resources.blink_timeout +
+				3 * resources.blink_timeout *
+				((owlState == OWL_SLEEPY) &&
+				 (owlDelta != OWL_WAKING))),
+				blinkOwl, NULL);
+}
+
+static void
+blinkIs(data, intervalid)
+     XtPointer data;
+     XtIntervalId *intervalid;
+{
+  static int isCurBitmap;
+  isTimeout = 0;
+
+  if (isNumBitmaps == 0) return;
+
+  switch(isDelta)
+    {
+    case OWL_BLINKINGCLOSED:	/* your eyelids are getting heavy... */
+      isCurBitmap++;
+      updateIs();
+      if (isCurBitmap == isNumBitmaps - 1)
+	isDelta = OWL_BLINKINGOPEN;
+      break;
+
+    case OWL_BLINKINGOPEN:	/* you will awake, feeling refreshed... */
+      isCurBitmap--;
+      updateIs();
+      if (isCurBitmap == 0)
+	{
+	  isTimeout = random() % (10 * 1000);
+	  isDelta = OWL_BLINKINGCLOSED;
+	}
+      break;
+
+    case OWL_STATIC:
+      break;
+    }
+
+  is_timerid = XtAddTimeOut((isTimeout
+			     ? isTimeout : resources.blink_timeout),
+			    blinkIs, NULL);
 }
 
 static void initOwl(search)
@@ -1457,8 +1508,17 @@ static void initOwl(search)
 	    }
 
 	  owlGC = XtGetGC(owl, valuemask, &values);
-	  owlState = OWL_AWAKE;
-	  owlDelta = OWL_BLINKINGCLOSED;
+	  if (auxConditions())
+	    {
+	      owlState = OWL_SLEEPY;
+	      owlDelta = OWL_SLEEPING;
+	    }
+	  else
+	    {
+	      owlState = OWL_AWAKE;
+	      owlDelta = OWL_BLINKINGCLOSED;
+	    }
+	  isDelta = OWL_BLINKINGCLOSED;
 	}
     }
 
@@ -1521,8 +1581,6 @@ static void initOwl(search)
 	  isGC = XtGetGC(is, valuemask, &values);
 	}
     }
-  if (isNumBitmaps != owlNumBitmaps)
-    fprintf(stderr, "number of owl bitmaps differs from number of IS bitmaps (%d != %d)\n", owlNumBitmaps, isNumBitmaps);
 }
 
 static short conditions[] =
@@ -1552,7 +1610,40 @@ static Boolean conditionsMet()
   while ((i < sizeof(conditions)) && (test > conditions[i]))
     i++;
 
+  if (i == sizeof(conditions))
+    return False;
+
   if ((test == conditions[i]) && (now->tm_hour >= 18))
+    return True;
+
+  return False;
+}
+
+static short auxconditions[] =
+{
+  1424, 1427, 1428, 1429, 1430, 1718, 1719, 1720, 1721, 1722
+};
+
+static Boolean auxConditions()
+{
+  time_t t;
+  struct tm *now;
+  short test;
+  int i;
+
+  t = time(0);
+  now = localtime(&t);
+  test = (now->tm_year - 92) * 512 + (now->tm_mon + 1) * 32 + now->tm_mday;
+
+  i = 0;
+  while ((i < sizeof(auxconditions)) && (test > auxconditions[i]))
+    i++;
+
+  if (i == sizeof(auxconditions))
+    return False;
+
+  if ((test == auxconditions[i]) &&
+      (now->tm_hour >= 6) && (now->tm_hour <= 18))
     return True;
 
   return False;
