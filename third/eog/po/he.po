@@ -1,0 +1,946 @@
+# translation of eog.HEAD.he.po to Hebrew
+# translation of eog.gnome-2-0.he.po to Hebrew
+# This file is distributed under the same license as the PACKAGE package.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# Gil 'Dolfin' Osher <dolfin@rpg.org.il>, 2002,2003
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: eog.HEAD.he\n"
+"POT-Creation-Date: 2003-01-28 08:24+0000\n"
+"PO-Revision-Date: 2003-01-11 19:08+0200\n"
+"Last-Translator: Gil 'Dolfin' Osher <dolfin@rpg.org.il>\n"
+"Language-Team: Hebrew <he@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.0\n"
+
+#: collection/GNOME_EOG_Collection.server.in.in.h:1
+msgid "EOG Image Collection Viewer"
+msgstr "מציג אוסף התמונות של עי\"ן"
+
+#: collection/GNOME_EOG_Collection.server.in.in.h:2
+msgid "EOG Image collection view factory"
+msgstr ""
+
+#: collection/GNOME_EOG_Collection.server.in.in.h:3
+msgid "Image Collection"
+msgstr "אוסף תמונות"
+
+#: eog.desktop.in.h:1
+msgid "Eye of Gnome Image Viewer"
+msgstr "מציג התמונות עין הננס"
+
+#: eog.desktop.in.h:2
+msgid "View many different types of images"
+msgstr "הצג הרבה סוגים שונים של תמונות"
+
+#: eog.glade.h:1
+msgid "By c_olor"
+msgstr "לפי _צבע"
+
+#: eog.glade.h:2
+msgid "By check_pattern"
+msgstr "לפי _תבנית משבצות"
+
+#: eog.glade.h:3
+msgid "Eye of Gnome Preferences"
+msgstr "העדפות עין הננס"
+
+#: eog.glade.h:4
+msgid "Image Viewer"
+msgstr "מציג תמונות"
+
+#: eog.glade.h:5
+msgid "Indicate Transparency"
+msgstr "מציין שקיפות"
+
+#: eog.glade.h:6
+msgid "Pick a color"
+msgstr "בחר צבע"
+
+#: eog.glade.h:7
+msgid "_Interpolate image on zoom (better quality but slower)"
+msgstr "_שרבב תמונה בהתקרבות (איכות טובה יותר אך איטי יותר)"
+
+#: eog.schemas.in.h:1
+msgid "Automatically pick window size"
+msgstr "קבע את גודל החלון אוטומטית"
+
+#: eog.schemas.in.h:2
+msgid "Default zoom factor for the full screen view"
+msgstr "פקטור הגדלה ברירת מחדל לתצוגת מסך מלא"
+
+#: eog.schemas.in.h:3
+msgid ""
+"Default zoom factor for the full screen view. Possible values are: 0 (use "
+"1:1 zoom factor), 1 (use the same zoom factor as the image window), 2 (fit "
+"the image to the screen)."
+msgstr ""
+"פקטור הגדלה ברירת מחדל לתצוגת מסך מלא. ערכים אפשריים הם: 0 (השתמש בפקטור "
+"הגדלה 1:1), 1 (השתמש באותו פקטור הגדלה כמו חלון התמונה), 2 (התאם את התמונה "
+"למסך)."
+
+#: eog.schemas.in.h:4
+msgid ""
+"Determines how transparency should be indicated. Valid values are "
+"CHECK_PATTERN and COLOR. If COLOR is choosen, than the trans_color key "
+"determines the used color value."
+msgstr ""
+"מזהה כיצד השקיפות תצויין. ערכים אפשריים הם CHECK_PATTERN ו COLOR. אם COLOR "
+"נבחר, אז המפתח trans_color מזהה את ערך הצבע לשימוש."
+
+#: eog.schemas.in.h:5
+msgid "Fit standard-sized images to the screen"
+msgstr "התאם תמונות בגודל רגיל למסך"
+
+#: eog.schemas.in.h:6
+msgid ""
+"If the transparency key has the value COLOR, then this key determines the "
+"color which is used for indicating transparency."
+msgstr ""
+"אם למפתח השקיפות יש את הערך COLOR, אז המפתח מציין את הצבע לשימוש לציון "
+"השקיפות."
+
+#: eog.schemas.in.h:7
+msgid "Interpolate Image"
+msgstr "שרבב תמונה"
+
+#: eog.schemas.in.h:8
+msgid "Open images in a new window"
+msgstr "פתח תמונות בחלון חדש"
+
+#: eog.schemas.in.h:9
+msgid "Put a bevel around the screen"
+msgstr "שים שיפוע סביב המסך"
+
+#: eog.schemas.in.h:10
+msgid "Scrollbar policy for the full screen view"
+msgstr "מדיניות פס הגלילה לתצוגת מסך מלא"
+
+#: eog.schemas.in.h:11
+msgid "Transparency color"
+msgstr "צבע שקיפות"
+
+#: eog.schemas.in.h:12
+msgid "Transparency indicator"
+msgstr "מציין שקיפות"
+
+#: eog.schemas.in.h:13
+msgid ""
+"Wether the image should be interpolated on zoom or not. This leads to better "
+"quality but is somewhat slower than non interpolated images."
+msgstr ""
+"האם יש לשרבב את התמונה בהתקרבות או לא. זה מוביל לאיכות טובה יותר אך יותר "
+"איטי מתמונות לא משורבבות."
+
+#: eog.schemas.in.h:14
+msgid ""
+"Whether image windows should pick their size and zooming factor "
+"automatically based on the size of the image. If this option is not set, "
+"image windows will get whatever size the window manager assigns to them."
+msgstr ""
+"האם חלונות תמונה צריכים לבחור את גודלם ופקטור ההתקרבות שלהם באופן אוטמטי "
+"בהתבסס על גודל התמונה. אם אפשרות זו לא נקבעה, חלונות התמונה יקבלו את הגודל "
+"שמנהל החלונות יקבע עבורם."
+
+#: eog.schemas.in.h:15
+msgid ""
+"Whether opening an image should create a new window instead of replacing the "
+"image in the current window."
+msgstr "האם פתיחת תמונה צריכה ליצור חלון חדש או להחליף את התמונה בחלון הנוכחי."
+
+#: eog.schemas.in.h:16
+msgid ""
+"Whether the full screen view should display a bevel along the edges of the "
+"screen."
+msgstr "האם תצוגת המסך המלא צריכה להציג שיפוע בקצוות המסך."
+
+#: eog.schemas.in.h:17
+msgid ""
+"Whether to display scrollbars on the full screen view. Possible values are: "
+"1 (automatic; only display scrollbars if the image is larger than the "
+"window), 2 (never display scrollbars)."
+msgstr ""
+"האם להציג פסי גלילה בתצוגת מסך מלא. ערכים אפשריים הם: 1 (אוטומטי; מציג פסי "
+"גלילה רק אם התמונה גדולה מהחלון), 2 (לעולם לא מציג פסי גלילה)."
+
+#: eog.schemas.in.h:18
+msgid ""
+"Whether to fit standard-sized images to the screen when in full screen mode. "
+"These are images with sizes like 320x240, 640x480, 800x800, etc. This "
+"selects whether such images should be scaled to fit the screen regardless of "
+"the setting for the default zoom factor of the full screen view."
+msgstr ""
+"האם להתאים תמונות בגודל רגיל למסך בתצוגת מסך מלא. אלו תמונות בגדלים כמו "
+"320x240, 640x480, 800x600 וכו'. זה מציין אם תמונות כאלו יתרחבו להתאים למסך "
+"בהתעלמות מהגדרות פקטור ההתקרבות ברירת המחדל של תצוגת מסך מלא."
+
+#: libeog/GNOME_EOG.server.in.in.h:1 viewer/eog-image-view.c:721
+msgid "EOG Image"
+msgstr "תמונת עי\"ן"
+
+#: libeog/GNOME_EOG.server.in.in.h:2
+msgid "EOG Image Viewer"
+msgstr "מציג התמונות עי\"ן"
+
+#: libeog/GNOME_EOG.server.in.in.h:3
+msgid "EOG Image viewer factory"
+msgstr ""
+
+#: libeog/GNOME_EOG.server.in.in.h:4
+msgid "Embeddable EOG Image"
+msgstr "תמונת עי\"ן מוטבעת"
+
+#. Second page
+#: libeog/GNOME_EOG.server.in.in.h:5 viewer/eog-print-setup.c:689
+msgid "Image"
+msgstr "תמונה"
+
+#: libeog/image-view.c:1896
+msgid "interpolation type"
+msgstr "סוג שירבוב"
+
+#: libeog/image-view.c:1897
+msgid "the type of interpolation to use"
+msgstr "סוג השירבוב לשימוש"
+
+#: libeog/image-view.c:1903 libeog/image-view.c:1910
+msgid "check type"
+msgstr "סוג משבצות"
+
+#: libeog/image-view.c:1904
+msgid "the type of chequering to use"
+msgstr "הסוג של משבצות הרקע לשימוש"
+
+#: libeog/image-view.c:1911
+msgid "the size of chequers to use"
+msgstr "גודל משבצות הרקע לשימוש"
+
+#: libeog/image-view.c:1917
+msgid "dither"
+msgstr "רעד"
+
+#: libeog/image-view.c:1918
+msgid "dither type"
+msgstr "סוג רעד"
+
+#: libeog/eog-file-selection.c:29 libeog/eog-file-selection.c:46
+msgid "By Extension"
+msgstr "לפי סיומת"
+
+#: libeog/eog-file-selection.c:30
+msgid "BMP"
+msgstr "BMP"
+
+#: libeog/eog-file-selection.c:31
+msgid "GIF"
+msgstr "GIF"
+
+#: libeog/eog-file-selection.c:32
+msgid "ICO"
+msgstr "ICO"
+
+#: libeog/eog-file-selection.c:33 libeog/eog-file-selection.c:48
+msgid "JPEG"
+msgstr "JPEG"
+
+#: libeog/eog-file-selection.c:34 libeog/eog-file-selection.c:51
+msgid "PNG"
+msgstr "PNG"
+
+#: libeog/eog-file-selection.c:35
+msgid "PNM"
+msgstr "PNM"
+
+#: libeog/eog-file-selection.c:36
+msgid "RAS"
+msgstr "RAS"
+
+#: libeog/eog-file-selection.c:37
+msgid "SVG"
+msgstr "SVG"
+
+#: libeog/eog-file-selection.c:38
+msgid "TGA"
+msgstr "TGA"
+
+#: libeog/eog-file-selection.c:39
+msgid "TIFF"
+msgstr "TIFF"
+
+#: libeog/eog-file-selection.c:40
+msgid "XBM"
+msgstr "XBM"
+
+#: libeog/eog-file-selection.c:41 libeog/eog-file-selection.c:54
+msgid "XPM"
+msgstr "XPM"
+
+#: libeog/eog-file-selection.c:207
+msgid "Unsupported file format."
+msgstr "קובץ לא נתמך."
+
+#: libeog/eog-file-selection.c:227
+msgid "Determine File Type:"
+msgstr "זהה סוג קובץ:"
+
+#: libeog/eog-file-selection.c:270
+msgid "Load Image"
+msgstr "טען תמונה"
+
+#: libeog/eog-file-selection.c:276
+msgid "Save Image"
+msgstr "שמור תמונה"
+
+#: shell/eog-shell-ui.xml.h:1
+msgid "About this application"
+msgstr "אודות יישום זה"
+
+#: shell/eog-shell-ui.xml.h:2
+msgid "Cancel"
+msgstr "ביטול"
+
+#: shell/eog-shell-ui.xml.h:3
+msgid "Close window"
+msgstr "סגור חלון"
+
+#: shell/eog-shell-ui.xml.h:4
+msgid "Help On this application"
+msgstr "עזרה ליישום זה"
+
+#: shell/eog-shell-ui.xml.h:5
+msgid "New"
+msgstr "חדש"
+
+#: shell/eog-shell-ui.xml.h:6 shell/main.c:210
+msgid "Open"
+msgstr "פתח"
+
+#: shell/eog-shell-ui.xml.h:7
+msgid "Open a file"
+msgstr "פתח קובץ"
+
+#: shell/eog-shell-ui.xml.h:8
+msgid "Open a new window"
+msgstr "פתח חלון חדש"
+
+#: shell/eog-shell-ui.xml.h:9
+msgid "Open in new window"
+msgstr "פתח בחלון חדש"
+
+#: shell/eog-shell-ui.xml.h:10
+msgid "Open in this window"
+msgstr "פתח בחלון זה"
+
+#: shell/eog-shell-ui.xml.h:11
+msgid "Prefere_nces"
+msgstr "_העדפות"
+
+#: shell/eog-shell-ui.xml.h:12
+msgid "Preferences for EoG components"
+msgstr "העדפות לרכיבי עי\"ן"
+
+#: shell/eog-shell-ui.xml.h:13
+msgid "Quit the program"
+msgstr "צא מהתוכנית"
+
+#: shell/eog-shell-ui.xml.h:14
+msgid "_About"
+msgstr "_אודות"
+
+#: shell/eog-shell-ui.xml.h:15
+msgid "_Close"
+msgstr "_סגור"
+
+#: shell/eog-shell-ui.xml.h:16
+msgid "_Contents"
+msgstr "_תכנים"
+
+#: shell/eog-shell-ui.xml.h:17 viewer/eog-image-view-ui.xml.h:13
+msgid "_Edit"
+msgstr "_עריכה"
+
+#: shell/eog-shell-ui.xml.h:18
+msgid "_File"
+msgstr "_קובץ"
+
+#: shell/eog-shell-ui.xml.h:19
+msgid "_Help"
+msgstr "_עזרה"
+
+#: shell/eog-shell-ui.xml.h:20
+msgid "_New"
+msgstr "_חדש"
+
+#: shell/eog-shell-ui.xml.h:21
+msgid "_Open..."
+msgstr "_פתיחה..."
+
+#: shell/eog-shell-ui.xml.h:22
+msgid "_Quit"
+msgstr "_יציאה"
+
+#. Translators should localize the following string
+#. * which will give them credit in the About box.
+#. * E.g. "Fulano de Tal <fulano@detal.com>"
+#.
+#: shell/eog-window.c:215
+msgid "translator_credits-PLEASE_ADD_YOURSELF_HERE"
+msgstr ""
+"גיל אשר\n"
+"dolfin@rpg.org.il\n"
+"\n"
+"פרויקט linBrew\n"
+"http://linbrew.sourceforge.net"
+
+#: shell/eog-window.c:220 shell/eog-window.c:598 shell/main.c:452
+msgid "Eye of Gnome"
+msgstr "עין הננס"
+
+#: shell/eog-window.c:222
+msgid "Copyright (C) 2000-2002 The Free Software Foundation"
+msgstr "כל הזכויות שמורות (C) 2000-2002 ארגון התוכנה החופשית"
+
+#: shell/eog-window.c:223
+msgid "The GNOME image viewing and cataloging program."
+msgstr "מציג התמונות והקטלוגים של GNOME."
+
+#: shell/eog-window.c:260
+#, c-format
+msgid ""
+"Could not display help for Eye of Gnome.\n"
+"%s"
+msgstr ""
+"לא ניתן להציג עזרה עבור עין הננס.\n"
+"%s"
+
+#: shell/main.c:177
+#, c-format
+msgid ""
+"You are about to open %i windows\n"
+"simultanously. Do you want to open\n"
+"them in a collection instead?"
+msgstr ""
+"אתה עומד לפתוח %i חלונות\n"
+"בו זמנית. האם אתה רוצה לפתוח\n"
+"אותם באוסף במקום?"
+
+#: shell/main.c:182
+msgid "Single Windows"
+msgstr "חלונות בודדים"
+
+#: shell/main.c:183
+msgid "Collection"
+msgstr "אוסף"
+
+#: shell/main.c:207
+#, c-format
+msgid ""
+"You are about to open %i windows\n"
+"simultanously. Do you want to continue?"
+msgstr ""
+"אתה עומד לפתוח %i חלונות\n"
+"בו זמנית. האם ברצונך להמשיך?"
+
+#: shell/main.c:290
+#, c-format
+msgid ""
+"Could not access %s\n"
+"Eye of Gnome will not be able to display this file."
+msgstr ""
+"לא ניתן לגשת ל %s\n"
+"עין הננס לא יוכל להציג קובץ זה."
+
+#: shell/main.c:293
+#, c-format
+msgid ""
+"The following files cannot be displayed because Eye of Gnome was not able to "
+"access them:\n"
+"%s"
+msgstr ""
+"הקבצים הבאים לא יוכלו להיות מוצגים כיוון שעין הננס לא הצליח לגשת עליהם:\n"
+"%s"
+
+#: shell/main.c:464
+msgid "Could not initialize GnomeVFS!\n"
+msgstr "לא ניתן לאתחל את GnomeVFS!\n"
+
+#: shell/main.c:467
+msgid "Could not initialize Bonobo!\n"
+msgstr "לא ניתן לאתחל את Bonobo!\n"
+
+#: shell/util.c:52
+#, c-format
+msgid "Could not open `%s'"
+msgstr "לא ניתן לפתוח '%s'"
+
+#: viewer/eog-image-view-ctrl-ui.xml.h:1
+msgid "Best _Fit"
+msgstr "_ההתאמה הטובה ביותר"
+
+#: viewer/eog-image-view-ctrl-ui.xml.h:2
+msgid "Fit"
+msgstr "התאמה"
+
+#: viewer/eog-image-view-ctrl-ui.xml.h:3 viewer/eog-print-setup.c:79
+msgid "In"
+msgstr "הכנס"
+
+#: viewer/eog-image-view-ctrl-ui.xml.h:4
+msgid "Normal"
+msgstr "רגיל"
+
+#: viewer/eog-image-view-ctrl-ui.xml.h:5
+msgid "Out"
+msgstr "צא"
+
+#: viewer/eog-image-view-ctrl-ui.xml.h:6
+msgid "Zoom _Out"
+msgstr "הת_רחק"
+
+#: viewer/eog-image-view-ctrl-ui.xml.h:7
+msgid "_Normal Size"
+msgstr "גודל _רגיל"
+
+#: viewer/eog-image-view-ctrl-ui.xml.h:8
+msgid "_Zoom In"
+msgstr "הת_קרב"
+
+#: viewer/eog-image-view-ui.xml.h:1
+msgid "Flip Horizontal"
+msgstr "הפוך אופקית"
+
+#: viewer/eog-image-view-ui.xml.h:2
+msgid "Flip Vertical"
+msgstr "הפוך אנכית"
+
+#: viewer/eog-image-view-ui.xml.h:3
+msgid "Full Screen"
+msgstr "מסך מלא"
+
+#: viewer/eog-image-view-ui.xml.h:4
+msgid "Previews the image to be printed"
+msgstr "תצוגה מקדימה של התמונה להדפסה"
+
+#: viewer/eog-image-view-ui.xml.h:5
+msgid "Print Previe_w..."
+msgstr "_תצוגה מקדימה..."
+
+#: viewer/eog-image-view-ui.xml.h:6
+msgid "Print Set_up"
+msgstr "ה_גדרות הדפסה"
+
+#: viewer/eog-image-view-ui.xml.h:7
+msgid "Print image to the printer"
+msgstr "הדפס תמונה למדפסת"
+
+#: viewer/eog-image-view-ui.xml.h:8
+msgid "Rotate 180 Degrees"
+msgstr "סובב 180 מעלות"
+
+#: viewer/eog-image-view-ui.xml.h:9
+msgid "Rotate Clockwise"
+msgstr "סובב עם כיוון השעון"
+
+#: viewer/eog-image-view-ui.xml.h:10
+msgid "Rotate Counter Clockwise"
+msgstr "סובב נגד כיוון השעון"
+
+#: viewer/eog-image-view-ui.xml.h:11
+msgid "Save _As..."
+msgstr "_שמירה בשם..."
+
+#: viewer/eog-image-view-ui.xml.h:12
+msgid "Setup the page settings for your current printer"
+msgstr "הגדר את הגדרות העמוד למדפסת הנוכחית שלך"
+
+#: viewer/eog-image-view-ui.xml.h:14
+msgid "_Print..."
+msgstr "_הדפסה..."
+
+#: viewer/eog-image-view-ui.xml.h:15 collection/eog-collection-view-ui.xml.h:2
+msgid "_View"
+msgstr "_תצוגה"
+
+#: viewer/eog-image-view.c:270
+#, c-format
+msgid "Could not save image as '%s': %s."
+msgstr "לא ניתן לשמור תמונה כ '%s': %s."
+
+#: viewer/eog-image-view.c:954
+msgid "Print Image"
+msgstr "הדפס תמונה"
+
+#: viewer/eog-image-view.c:962
+msgid "Pages"
+msgstr "עמודים"
+
+#: viewer/eog-image-view.c:1049
+msgid "Print Preview"
+msgstr "תמוגה מקדימה"
+
+#: viewer/eog-image-view.c:1055
+msgid "Printing of image failed"
+msgstr "הדפסת התמונה נכשלה"
+
+#: viewer/eog-image-view.c:1873
+msgid "/_Zoom In"
+msgstr "/הת_קרב"
+
+#: viewer/eog-image-view.c:1875
+msgid "/Zoom _Out"
+msgstr "/הת_רחק"
+
+#: viewer/eog-image-view.c:1877
+msgid "/_Normal Size"
+msgstr "/גודל _רגיל"
+
+#: viewer/eog-image-view.c:1879
+msgid "/Best _Fit"
+msgstr "/_ההתאמה הטובה ביותר"
+
+#: viewer/eog-image-view.c:1882
+msgid "/_Close"
+msgstr "/_סגור"
+
+#: viewer/eog-image-view.c:2008
+msgid "Image Width"
+msgstr "רוחב התמונה"
+
+#: viewer/eog-image-view.c:2011
+msgid "Image Height"
+msgstr "גובה התמונה"
+
+#: viewer/eog-image-view.c:2014
+msgid "Window Title"
+msgstr "כותרת החלון"
+
+#: viewer/eog-image-view.c:2017
+msgid "Statusbar Text"
+msgstr "מלל שורת המצב"
+
+#: viewer/eog-image.c:480
+msgid "Couldn't initialize GnomeVFS!\n"
+msgstr "לא ניתן לאתחל את GnomeVFS!\n"
+
+#: viewer/eog-print-setup.c:76
+msgid "pts"
+msgstr "נק'"
+
+#: viewer/eog-print-setup.c:76
+msgid "points"
+msgstr "נקודות"
+
+#: viewer/eog-print-setup.c:77
+msgid "mm"
+msgstr "מ\"מ"
+
+#: viewer/eog-print-setup.c:77
+msgid "millimeter"
+msgstr "מילימטר"
+
+#: viewer/eog-print-setup.c:78
+msgid "cm"
+msgstr "ס\"מ"
+
+#: viewer/eog-print-setup.c:78
+msgid "centimeter"
+msgstr "סנטימטר"
+
+#: viewer/eog-print-setup.c:79
+msgid "inch"
+msgstr "אינץ'"
+
+#: viewer/eog-print-setup.c:469
+msgid "Print Setup"
+msgstr "הגדרות הדפסה"
+
+#: viewer/eog-print-setup.c:476
+msgid "Print"
+msgstr "הדפס"
+
+#: viewer/eog-print-setup.c:478
+msgid "Print preview"
+msgstr "תצוגה מקדימה"
+
+#: viewer/eog-print-setup.c:547
+msgid "Units: "
+msgstr "יחידות: "
+
+#. First page
+#: viewer/eog-print-setup.c:557 viewer/eog-print-setup.c:565
+msgid "Paper"
+msgstr "נייר"
+
+#: viewer/eog-print-setup.c:569
+msgid "Paper size:"
+msgstr "גודל הנייר:"
+
+#. Orientation
+#: viewer/eog-print-setup.c:586
+msgid "Orientation"
+msgstr "יישור"
+
+#: viewer/eog-print-setup.c:593
+msgid "Portrait"
+msgstr "מאונך"
+
+#: viewer/eog-print-setup.c:600
+msgid "Landscape"
+msgstr "מאוזן"
+
+#. Margins
+#: viewer/eog-print-setup.c:609
+msgid "Margins"
+msgstr "שוליים"
+
+#. Top margin
+#: viewer/eog-print-setup.c:617
+msgid "Top:"
+msgstr "למעלה:"
+
+#. Left margin
+#: viewer/eog-print-setup.c:635
+msgid "Left:"
+msgstr "שמאלה:"
+
+#. Right margin
+#: viewer/eog-print-setup.c:653
+msgid "Right:"
+msgstr "ימינה:"
+
+#. Bottom margin
+#: viewer/eog-print-setup.c:671
+msgid "Bottom:"
+msgstr "למטה:"
+
+#. Scale
+#: viewer/eog-print-setup.c:697
+msgid "Scale"
+msgstr "סקאלה"
+
+#: viewer/eog-print-setup.c:701
+msgid "Adjust to:"
+msgstr "יישב:"
+
+#: viewer/eog-print-setup.c:706
+msgid "Fit to page"
+msgstr "התאם לעמוד"
+
+#: viewer/eog-print-setup.c:725
+#, no-c-format
+msgid "% of original size"
+msgstr "% מהגודל המקורי"
+
+#. Center on page
+#: viewer/eog-print-setup.c:731
+msgid "Center"
+msgstr "מרכז"
+
+#: viewer/eog-print-setup.c:735
+msgid "Horizontally"
+msgstr "אופקית"
+
+#: viewer/eog-print-setup.c:742
+msgid "Vertically"
+msgstr "אנכית"
+
+#. Overlap
+#: viewer/eog-print-setup.c:751
+msgid "Overlapping"
+msgstr "חופף"
+
+#: viewer/eog-print-setup.c:755
+msgid "Overlap horizontally by "
+msgstr "חפוף אופקית על-ידי "
+
+#: viewer/eog-print-setup.c:760
+msgid "Overlap vertically by "
+msgstr "חפוך אנכית על-ידי "
+
+#. Third page
+#: viewer/eog-print-setup.c:797
+msgid "Printing"
+msgstr "מדפיס"
+
+#. Helpers
+#: viewer/eog-print-setup.c:805
+msgid "Helpers"
+msgstr "עוזרים"
+
+#: viewer/eog-print-setup.c:806
+msgid "Print cutting help"
+msgstr "עזרה בחתיכת הדפסה"
+
+#: viewer/eog-print-setup.c:812
+msgid "Print overlap help"
+msgstr "עזרה בחפיפת הדפסה"
+
+#. Page order
+#: viewer/eog-print-setup.c:821
+msgid "Page order"
+msgstr "סדר עמודים"
+
+#. Down right
+#: viewer/eog-print-setup.c:827
+msgid "Down, then right"
+msgstr "מטה, אז ימינה"
+
+#. Right down
+#: viewer/eog-print-setup.c:844
+msgid "Right, then down"
+msgstr "ימינה, אז מטה"
+
+#: collection/eog-collection-view-ui.xml.h:1
+msgid "Slide Show"
+msgstr "מצגת"
+
+#~ msgid ""
+#~ "Could not display help for the preferences dialog.\n"
+#~ "%s"
+#~ msgstr ""
+#~ "לא ניתן להציג עזרה לחלון ההעדפות.\n"
+#~ "%s"
+
+#~ msgid "Change preferences"
+#~ msgstr "שנה העדפות"
+
+#~ msgid "Close"
+#~ msgstr "סגור"
+
+#~ msgid "_New Window"
+#~ msgstr "_חלון חדש"
+
+#~ msgid "1:1"
+#~ msgstr "1:1"
+
+#~ msgid "Zoom _1:1"
+#~ msgstr "קרב _1:1"
+
+#~ msgid "Zoom to _Fit"
+#~ msgstr "ה_תאם"
+
+#~ msgid "Check _size"
+#~ msgstr "_גודל משבצות"
+
+#~ msgid "Check _type"
+#~ msgstr "_סוג משבצות"
+
+#~ msgid "Large"
+#~ msgstr "גדול"
+
+#~ msgid "Medium"
+#~ msgstr "בינוני"
+
+#~ msgid "Nea_rest Neighbour"
+#~ msgstr "השכן הקרוב _ביותר"
+
+#~ msgid "Normal (_pseudocolor)"
+#~ msgstr "רגיל (_פסאדו-צבע)"
+
+#~ msgid "Print Pre_view"
+#~ msgstr "תצוגה _מקדימה"
+
+#~ msgid "Print S_etup"
+#~ msgstr "ה_גדרות הדפסה"
+
+#~ msgid "Small"
+#~ msgstr "קטן"
+
+#~ msgid "_Black"
+#~ msgstr "_שחור"
+
+#~ msgid "_Dark"
+#~ msgstr "_חשוך"
+
+#~ msgid "_Dither"
+#~ msgstr "_רעד"
+
+#~ msgid "_Gray"
+#~ msgstr "_אפור"
+
+#~ msgid "_Hyperbolic"
+#~ msgstr "_מוגזם"
+
+#~ msgid "_Interpolation"
+#~ msgstr "_אינטרפולציה"
+
+#~ msgid "_Light"
+#~ msgstr "_בהיר"
+
+#~ msgid "_Maximum (high color)"
+#~ msgstr "_מקסימום (צבע גבוה)"
+
+#~ msgid "_Midtone"
+#~ msgstr "_אמצע"
+
+#~ msgid "_Tiles"
+#~ msgstr "_ריצוף"
+
+#~ msgid "_White"
+#~ msgstr "_לבן"
+
+#~ msgid "Save As"
+#~ msgstr "שמור בשם"
+
+#~ msgid "Display"
+#~ msgstr "תצוגה"
+
+#~ msgid "Dither"
+#~ msgstr "רעד"
+
+#~ msgid "Check Type"
+#~ msgstr "סוג משבצות"
+
+#~ msgid "Check Size"
+#~ msgstr "גודל משבצות"
+
+#~ msgid "Nearest Neighbour Interpolation"
+#~ msgstr "אינטרפולציה עם השכן הקרוב"
+
+#~ msgid "Tiles Interpolation"
+#~ msgstr "אינטרפולציית ריצוף"
+
+#~ msgid "Hyperbolic Interpolation"
+#~ msgstr "אינטרפולציה מוגזמת"
+
+#~ msgid "No dithering"
+#~ msgstr "ללא רעד"
+
+#~ msgid "Normal (pseudocolor) dithering"
+#~ msgstr "רעד רגיל (פסאדו צבע)"
+
+#~ msgid "Maximum (high color) dithering"
+#~ msgstr "מקסימום רעד (צבע גבוה)"
+
+#~ msgid "Dark"
+#~ msgstr "חשוך"
+
+#~ msgid "Midtone"
+#~ msgstr "אמצע"
+
+#~ msgid "Light"
+#~ msgstr "בהיר"
+
+#~ msgid "Black"
+#~ msgstr "שחור"
+
+#~ msgid "Gray"
+#~ msgstr "אפור"
+
+#~ msgid "White"
+#~ msgstr "לבן"
+
+#~ msgid "_Interpolation:"
+#~ msgstr "_אינטרפולציה:"
+
+#~ msgid "_Dither:"
+#~ msgstr "_רעד:"
+
+#~ msgid "Check _type:"
+#~ msgstr "_סוג משבצות:"
+
+#~ msgid "Check _size:"
+#~ msgstr "_גודל משבצות:"

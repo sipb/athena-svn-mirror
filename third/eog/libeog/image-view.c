@@ -19,15 +19,6 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
  */
 
-/* TODO:
- *
- * - Handle GdkEventScroll events; these come from the scrollwheel.
- *
- * - Rewrite scrolling mechanism.
- *
- * - Check if + and - work with caps lock / num lock / etc.
- */
-
 
 
 #include <config.h>
@@ -106,6 +97,10 @@ struct _ImageViewPrivate {
 	/* Check type and size */
 	CheckType check_type;
 	CheckSize check_size;
+	
+	/* Transparency indicator */
+	gboolean use_check_pattern;
+	guint32  transparency_color;
 
 	/* Dither type */
 	GdkRgbDither dither;
@@ -254,6 +249,8 @@ image_view_instance_init (ImageView *view)
 	priv->check_type = CHECK_TYPE_MIDTONE;
 	priv->check_size = CHECK_SIZE_LARGE;
 	priv->dither = GDK_RGB_DITHER_MAX;
+	priv->use_check_pattern = TRUE;
+	priv->transparency_color = CHECK_BLACK;
 
 	/* We don't want to be double-buffered as we are SuperSmart(tm) */
 	gtk_widget_set_double_buffered (GTK_WIDGET (view), FALSE);
@@ -554,38 +551,42 @@ paint_rectangle (ImageView *view, ArtIRect *rect, GdkInterpType interp_type)
 	}
 
 	/* Compute check parameters */
+	if (priv->use_check_pattern) {
+		switch (priv->check_type) {
+		case CHECK_TYPE_DARK:
+			check_1 = CHECK_BLACK;
+			check_2 = CHECK_DARK;
+			break;
+			
+		case CHECK_TYPE_MIDTONE:
+			check_1 = CHECK_DARK;
+			check_2 = CHECK_LIGHT;
+			break;
 
-	switch (priv->check_type) {
-	case CHECK_TYPE_DARK:
-		check_1 = CHECK_BLACK;
-		check_2 = CHECK_DARK;
-		break;
+		case CHECK_TYPE_LIGHT:
+			check_1 = CHECK_LIGHT;
+			check_2 = CHECK_WHITE;
+			break;
+		
+		case CHECK_TYPE_BLACK:
+			check_1 = check_2 = CHECK_BLACK;
+			break;
 
-	case CHECK_TYPE_MIDTONE:
-		check_1 = CHECK_DARK;
-		check_2 = CHECK_LIGHT;
-		break;
+		case CHECK_TYPE_GRAY:
+			check_1 = check_2 = CHECK_GRAY;
+			break;
 
-	case CHECK_TYPE_LIGHT:
-		check_1 = CHECK_LIGHT;
-		check_2 = CHECK_WHITE;
-		break;
+		case CHECK_TYPE_WHITE:
+			check_1 = check_2 = CHECK_WHITE;
+			break;
 
-	case CHECK_TYPE_BLACK:
-		check_1 = check_2 = CHECK_BLACK;
-		break;
-
-	case CHECK_TYPE_GRAY:
-		check_1 = check_2 = CHECK_GRAY;
-		break;
-
-	case CHECK_TYPE_WHITE:
-		check_1 = check_2 = CHECK_WHITE;
-		break;
-
-	default:
-		g_assert_not_reached ();
-		return;
+		default:
+			g_assert_not_reached ();
+			return;
+		}
+	}
+	else {
+		check_1 = check_2 = priv->transparency_color;
 	}
 
 	switch (priv->check_size) {
@@ -1022,7 +1023,7 @@ image_view_size_allocate (GtkWidget *widget, GtkAllocation *allocation)
 					     widget->allocation.width, widget->allocation.height,
 					     allocation->width, allocation->height,
 					     &xofs, &yofs);
-
+		
 		set_default_zoom_anchor (view);
 		priv->need_zoom_change = FALSE;
 	} else {
@@ -1129,17 +1130,6 @@ image_view_button_press_event (GtkWidget *widget, GdkEventButton *event)
 		priv->drag_ofs_y = priv->yofs;
 
 		return TRUE;
-
-	case 4:
-		set_zoom_anchor (view, event->x, event->y);
-		image_view_set_zoom (view, priv->zoomx * 1.05, priv->zoomy * 1.05);
-		return TRUE;
-
-	case 5:
-		set_zoom_anchor (view, event->x, event->y);
-		image_view_set_zoom (view, priv->zoomx / 1.05, priv->zoomy / 1.05);
-		return TRUE;
-
 	default:
 		break;
 	}
@@ -1240,11 +1230,13 @@ image_view_scroll_event (GtkWidget *widget, GdkEventScroll *event)
 		return FALSE;
 	}
 
-	if ((event->state & GDK_SHIFT_MASK) == 0) {
-		set_zoom_anchor (view, event->x, event->y);
-		image_view_set_zoom (view, priv->zoomx * zoom_factor, priv->zoomy * zoom_factor);
-	} else
+	if ((event->state & GDK_SHIFT_MASK) == 0)
+		image_view_set_zoom (view, priv->zoomx * zoom_factor, priv->zoomy * zoom_factor,
+				     TRUE, event->x, event->y);
+	else if ((event->state & GDK_CONTROL_MASK) == 0)
 		scroll_by (view, xofs, yofs);
+	else
+		scroll_by (view, yofs, xofs);
 
 	return TRUE;
 }
@@ -1310,6 +1302,7 @@ image_view_key_press_event (GtkWidget *widget, GdkEventKey *event)
 {
 	ImageView *view;
 	ImageViewPrivate *priv;
+	gboolean handled;
 	gboolean do_zoom;
 	double zoomx, zoomy;
 	gboolean do_scroll;
@@ -1318,13 +1311,15 @@ image_view_key_press_event (GtkWidget *widget, GdkEventKey *event)
 	view = IMAGE_VIEW (widget);
 	priv = view->priv;
 
+	handled = FALSE;
+
 	do_zoom = FALSE;
 	do_scroll = FALSE;
 	xofs = yofs = 0;
 	zoomx = zoomy = 1.0;
 
 	if ((event->state & (GDK_MODIFIER_MASK & ~GDK_LOCK_MASK)) != 0)
-		return FALSE;
+		goto out;
 
 	switch (event->keyval) {
 	case GDK_Up:
@@ -1354,15 +1349,15 @@ image_view_key_press_event (GtkWidget *widget, GdkEventKey *event)
 	case GDK_plus:
 	case GDK_KP_Add:
 		do_zoom = TRUE;
-		zoomx = priv->zoomx * 1.05;
-		zoomy = priv->zoomy * 1.05;
+		zoomx = priv->zoomx * IMAGE_VIEW_ZOOM_MULTIPLIER;
+		zoomy = priv->zoomy * IMAGE_VIEW_ZOOM_MULTIPLIER;
 		break;
 
 	case GDK_minus:
 	case GDK_KP_Subtract:
 		do_zoom = TRUE;
-		zoomx = priv->zoomx / 1.05;
-		zoomy = priv->zoomy / 1.05;
+		zoomx = priv->zoomx / IMAGE_VIEW_ZOOM_MULTIPLIER;
+		zoomy = priv->zoomy / IMAGE_VIEW_ZOOM_MULTIPLIER;
 		break;
 
 	case GDK_1:
@@ -1376,27 +1371,26 @@ image_view_key_press_event (GtkWidget *widget, GdkEventKey *event)
 		break;
 
 	default:
-		return FALSE;
+		goto out;
 	}
 
 	if (do_zoom) {
 		gint x, y;
 
 		gdk_window_get_pointer (widget->window, &x, &y, NULL);
-
-		if (x >= 0 && x < widget->allocation.width
-		    && y >= 0 && y < widget->allocation.height)
-			set_zoom_anchor (view, x, y);
-		else
-			set_default_zoom_anchor (view);
-
-		image_view_set_zoom (view, zoomx, zoomy);
+		image_view_set_zoom (view, zoomx, zoomy, TRUE, x, y);
 	}
 
 	if (do_scroll)
 		scroll_by (view, xofs, yofs);
 
-	return TRUE;
+	handled = TRUE;
+
+ out:
+	if (handled)
+		return TRUE;
+	else
+		return (* GTK_WIDGET_CLASS (parent_class)->key_press_event) (widget, event);
 }
 
 /* Callback used when an adjustment is changed */
@@ -1557,12 +1551,22 @@ image_view_set_pixbuf (ImageView *view, GdkPixbuf *pixbuf)
 /**
  * image_view_set_zoom:
  * @view: An image view.
- * @zoom: Zoom factor.
+ * @zoomx: Horizontal zoom factor.
+ * @zoomy: Vertical zoom factor.
+ * @have_anchor: Whether the anchor point specified by (@anchorx, @anchory)
+ * should be used.
+ * @anchorx: Horizontal anchor point in pixels.
+ * @anchory: Vertical anchor point in pixels.
  *
- * Sets the zoom factor for an image view.
+ * Sets the zoom factor for an image view.  The anchor point can be used to
+ * specify the point that stays fixed when the image is zoomed.  If @have_anchor
+ * is %TRUE, then (@anchorx, @anchory) specify the point relative to the image
+ * view widget's allocation that will stay fixed when zooming.  If @have_anchor
+ * is %FALSE, then the center point of the image view will be used.
  **/
 void
-image_view_set_zoom (ImageView *view, double zoomx, double zoomy)
+image_view_set_zoom (ImageView *view, double zoomx, double zoomy,
+		     gboolean have_anchor, int anchorx, int anchory)
 {
 	ImageViewPrivate *priv;
 
@@ -1584,7 +1588,7 @@ image_view_set_zoom (ImageView *view, double zoomx, double zoomy)
 
 	if (DOUBLE_EQUAL (priv->zoomx, zoomx) &&
 	    DOUBLE_EQUAL (priv->zoomy, zoomy))
-		return;
+		goto out;
 
 	if (!priv->need_zoom_change) {
 		priv->old_zoomx = priv->zoomx;
@@ -1596,6 +1600,15 @@ image_view_set_zoom (ImageView *view, double zoomx, double zoomy)
 	priv->zoomy = zoomy;
 
 	g_signal_emit (view, image_view_signals [ZOOM_CHANGED], 0);
+
+	if (have_anchor) {
+		anchorx = CLAMP (anchorx, 0, GTK_WIDGET (view)->allocation.width);
+		anchory = CLAMP (anchory, 0, GTK_WIDGET (view)->allocation.height);
+		set_zoom_anchor (view, anchorx, anchory);
+	} else
+		set_default_zoom_anchor (view);
+
+ out:
 
 	gtk_widget_queue_resize (GTK_WIDGET (view));
 }
@@ -1686,10 +1699,12 @@ image_view_set_check_type (ImageView *view, CheckType check_type)
 
 	priv = view->priv;
 
-	if (priv->check_type == check_type)
+	if (priv->check_type == check_type &&
+	    priv->use_check_pattern)
 		return;
 
 	priv->check_type = check_type;
+	priv->use_check_pattern = TRUE;
 
 	gtk_widget_queue_draw (GTK_WIDGET (view));
 }
@@ -1731,10 +1746,12 @@ image_view_set_check_size (ImageView *view, CheckSize check_size)
 
 	priv = view->priv;
 
-	if (priv->check_size == check_size)
+	if (priv->check_size == check_size &&
+	    priv->use_check_pattern)
 		return;
 
 	priv->check_size = check_size;
+	priv->use_check_pattern = TRUE;
 
 	gtk_widget_queue_draw (GTK_WIDGET (view));
 }
@@ -1780,6 +1797,32 @@ image_view_set_dither (ImageView *view, GdkRgbDither dither)
 		return;
 
 	priv->dither = dither;
+
+	gtk_widget_queue_draw (GTK_WIDGET (view));
+}
+
+void 
+image_view_set_transparent_color (ImageView *view, const GdkColor *color)
+{
+	ImageViewPrivate *priv;
+	guint32 col = 0;
+	guint32 red_part;
+	guint32 green_part;
+	guint32 blue_part;
+	
+	g_return_if_fail (view != NULL);
+	g_return_if_fail (IS_IMAGE_VIEW (view));
+
+	priv = view->priv;
+
+	red_part = (color->red / 256) << 16;
+	green_part = (color->green / 256) << 8;
+	blue_part = (color->blue / 256);
+
+	col = red_part + green_part + blue_part;
+
+	priv->use_check_pattern = FALSE;
+	priv->transparency_color = col;
 
 	gtk_widget_queue_draw (GTK_WIDGET (view));
 }
@@ -1926,3 +1969,4 @@ image_view_class_init (ImageViewClass *class)
 	widget_class->focus_in_event  = image_view_focus_in_event;
 	widget_class->focus_out_event = image_view_focus_out_event;
 }
+

@@ -4,7 +4,7 @@ AC_INIT(shell/main.c)
 
 AM_CONFIG_HEADER(config.h)
 
-AM_INIT_AUTOMAKE(eog, 1.0.4)
+AM_INIT_AUTOMAKE(eog, 2.2.0)
 
 AM_MAINTAINER_MODE
 
@@ -12,12 +12,12 @@ GNOME_PLATFORM_GNOME_2(yes)
 
 dnl ================= Requirements ================================================
 
-GNOME_VFS_REQUIRED=2.0.0
-LIBGNOMEPRINT_REQUIRED=1.115.0
-LIBGNOMEUI_REQUIRED=2.0.1
-LIBBONOBOUI_REQUIRED=2.0.0
-BONOBO_ACTIVATION_REQUIRED=1.0.2
+GNOME_VFS_REQUIRED=2.0.4
+LIBGNOMEUI_REQUIRED=2.0.6
+LIBBONOBOUI_REQUIRED=2.0.3
+BONOBO_ACTIVATION_REQUIRED=1.0.3
 LIBRSVG_REQUIRED=2.0.1
+LIBGLADE_REQUIRED=2.0.1
 
 dnl ===============================================================================
 
@@ -25,6 +25,7 @@ AC_PROG_CC
 AC_ISC_POSIX
 AC_HEADER_STDC
 AC_ARG_PROGRAM
+AC_PROG_RANLIB
 
 GNOME_COMPILE_WARNINGS
 
@@ -34,7 +35,7 @@ GETTEXT_PACKAGE=eog
 AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE, "$GETTEXT_PACKAGE")
 AC_SUBST(GETTEXT_PACKAGE)
 
-ALL_LINGUAS="az ar be bg ca cs da de el es et fi fr ga gl hu it ja ko lt ms nl nn no pl pt pt_BR ro ru sl sk sq sv ta tr uk vi wa zh_CN zh_TW"
+ALL_LINGUAS="am ar az be bg ca cs da de el es et fi fr ga gl he hu it ja ko lt lv mk mn ms nl nn no pl pt pt_BR ro ru sl sk sq sv ta tr uk vi wa zh_CN zh_TW"
 AM_GLIB_GNU_GETTEXT
 AC_PROG_INTLTOOL
 
@@ -43,6 +44,9 @@ dnl ============================================================================
 AC_SUBST(CFLAGS)
 AC_SUBST(CPPFLAGS)
 AC_SUBST(LDFLAGS)
+
+# glib-genmarshal
+AC_PATH_PROG(GLIB_GENMARSHAL, glib-genmarshal)
 
 ORBIT_IDL="`$PKG_CONFIG --variable=orbit_idl ORBit-2.0`"
 AC_SUBST(ORBIT_IDL)
@@ -66,6 +70,30 @@ fi
 
 AC_SUBST(GCONF_CONFIG_SOURCE)
 AC_SUBST(INSTALL_GCONF_CONFIG_SOURCE)
+
+dnl ******************************************************
+dnl Check if the collection component should be build 
+dnl ******************************************************
+collection=no
+AC_ARG_ENABLE(collection,
+	     [  --enable-collection     Build collection component.],
+	     if test x$enableval = xyes; then
+		     collection=yes
+	     fi)
+AM_CONDITIONAL(ENABLE_COLLECTION, test x$collection = xyes)
+
+dnl ******************************************************
+dnl Check if we have libpreview when the collection is desired
+dnl ******************************************************
+
+libpreview=no
+if test x$collection = xyes; then 
+   LIBPREVIEW_MODULE="libpreview"
+   PKG_CHECK_MODULES(LIBPREVIEW, $LIBPREVIEW_MODULE, libpreview=yes, libpreview=no)
+   AC_SUBST(LIBPREVIEW_CFLAGS)
+   AC_SUBST(LIBPREVIEW_LIBS)
+fi
+AM_CONDITIONAL(ENABLE_LIBPREVIEW, test x$libpreview = xyes)
 
 dnl *******************************************************
 dnl Check for evolution
@@ -116,7 +144,7 @@ dnl  AM_CONDITIONAL(ENABLE_GNOCAM, test x"$gnocam" = "xyes")
 gnocam=no
 AM_CONDITIONAL(ENABLE_GNOCAM, false)
 
-EOG_MODULES="gnome-vfs-2.0 >= $GNOME_VFS_REQUIRED libgnomeprint-2.0 >= $LIBGNOMEPRINT_REQUIRED libgnomeui-2.0 >= $LIBGNOMEUI_REQUIRED libbonoboui-2.0 >= $LIBBONOBOUI_REQUIRED bonobo-activation-2.0 >= $BONOBO_ACTIVATION_REQUIRED librsvg-2.0 >= $LIBRSVG_REQUIRED"
+EOG_MODULES="gnome-vfs-2.0 >= $GNOME_VFS_REQUIRED libgnomeui-2.0 >= $LIBGNOMEUI_REQUIRED libbonoboui-2.0 >= $LIBBONOBOUI_REQUIRED bonobo-activation-2.0 >= $BONOBO_ACTIVATION_REQUIRED librsvg-2.0 >= $LIBRSVG_REQUIRED libglade-2.0 >= $LIBGLADE_REQUIRED"
 PKG_CHECK_MODULES(EOG, $EOG_MODULES)
 AC_SUBST(EOG_CFLAGS)
 AC_SUBST(EOG_LIBS)
@@ -244,6 +272,7 @@ eog.spec
 art/Makefile
 libeog/Makefile
 libeog/cursors/Makefile
+collection/Makefile
 viewer/Makefile
 idl/Makefile
 help/Makefile
@@ -262,5 +291,7 @@ Configuration:
 	Compiler:		  ${CC} 
 
 	Extra Compiler Warnings:  ${EXTRA_WARNING_CFLAGS}
-	
+
+	Build collection view (experimental): ${collection}
+ 	Use libpreview:  ${libpreview}
 "

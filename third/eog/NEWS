@@ -1,35 +1,65 @@
-Version 1.0.4
+Version 2.2.0
 -------------
-* Mem leak fixes (Kjartan Maraas)
-* Handle URIs when file is dropped on an eog launcher (Arvind Samptur)
-* Translation updates:
-  ro, zh_CN, lv, am vi, wa, cs, no, et, el, sq, be.
-
-Version 1.0.3
--------------
-
-* Cover whole screen in fullscreen mode (Jens).
-* Fixed eog.desktop to match the desktop spec - #90956 (Ross Burton).
-* Toggle fullscreen mode with F11 - #89513 (Jens).
-* Use consistent error messages - #85222 (Jens).
-* Doc updates (Sander Vesik, Thomas Meeks).
 * Translation updates.
 
-Version 1.0.2
+Version 1.1.4
+-------------
+* Translation updates.
+
+Version 1.1.3
+-------------
+* Toolbar fix (Christian Neumaier)
+* Translation updates.
+
+Version 1.1.2
+-------------
+
+* Typo fixes. (Kjartan Maraas)
+* Translation updates.
+
+Version 1.1.1
+-------------
+
+* Typo fixes. (Kjartan Maraas)
+* Documentation updates. - #91027 (Irene Ryan)
+* URI handling fixes. (Jens)
+* Don't depend on libgnomeprint until printing is working again. (Jens)
+* Translation updates.
+
+Version 1.1.0
 -------------
 
 * We don't crash anymore if the user doesn't have permissions to read
   a file - #85263 (Federico).
-* We do the right thing to destroy the window list on File/Exit -
-  #86469 (Federico).
-* Components are installed in $(libexec) (Michael).
 * The window is correctly sized upon startup, and you can shrink it
   again - #72352, #75713 (Jens).
-* No distorted view when resizing an empty window - #85927 (Jens).
+* Nautilus will now display "Display as Image", which is better than
+  "Display as EOG Image" - #73651 (Federico).
+* Images now have a simple context menu - #75889 (Federico).
+* We do the right thing to destroy the window list on File/Exit -
+  #86469 (Federico).
+* Filenames with percent signs in them are now handled correctly -
+* #89372 (Federico).
+* The File/Open dialog now displays a list of the supported image
+  types - #85690 (Jens).
+* Removed Tiles interpolation as it does not make sense for EOG. (Federico)
+* Reworked preferences dialog and droped View menu settings. (Jens)
+* Components are installed in $(libexec) (Michael).
+* Restarted work on the collection component, currently disabled 
+  by default (Jens).
+* No distorted view anymore when resizing an empty window. - 
+  #85927 (Jens)
 * DnD into an empty window doesn't open a new window. (Jens)
+* Load control ui xml file correctly (Ross Burton).
+* Fullscreen now uses the whole screen again. (Jens)
+* Better HIG compliance. (Jens)
+* Rotating and flipping images - #68340 (Jens).
+* New Latvian translation (Peteris Krisjanis).
 * New Bulgarian translation (Borislav Aleksandrov).
-* Load control ui xml file correctly - (Ross Burton).
 * New Albanian translation (Laurent Dhima, Christian Rose).
+* Lots of updated translations.
+
+=========== Branch for Gnome 2.2 =================
 
 Version 1.0.1
 -------------

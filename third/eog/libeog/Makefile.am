@@ -1,8 +1,13 @@
+if ENABLE_COLLECTION
+ COLLECTION_FLAGS=-DHAVE_COLLECTION
+endif
+
 SUBDIRS = cursors
 
 INCLUDES =							\
         -DGNOMELOCALEDIR=\""$(prefix)/$(DATADIRNAME)/locale"\"	\
 	-DG_LOG_DOMAIN=\"Eog\"					\
+	$(COLLECTION_FLAGS)					\
 	-DDATADIR=\""$(datadir)"\"				\
 	-I$(srcdir) -I$(top_srcdir)				\
 	-I$(top_srcdir)/src					\
@@ -27,6 +32,10 @@ libeog_a_SOURCES =			\
         accessible-image-view-factory.c	\
         accessible-image-view.h		\
         accessible-image-view.c		\
+	eog-file-selection.h		\
+	eog-file-selection.c		\
+	eog-pixbuf-util.h		\
+	eog-pixbuf-util.c		\
 	image-view.c			\
 	image-view.h			\
 	uta.c				\
@@ -48,6 +57,7 @@ $(CORBA_SOURCES): $(idls)
 
 Eog.h: $(idls)
 
+
 server_in_files = GNOME_EOG.server.in.in
 
 serverdir = $(libdir)/bonobo/servers
@@ -57,7 +67,7 @@ $(server_in_files:.server.in.in=.server.in): $(server_in_files)
 @INTLTOOL_SERVER_RULE@
 
 BUILT_SOURCES=$(CORBA_SOURCES)
-CLEANFILES += $(BUILT_SOURCES) $(server_DATA)
+CLEANFILES = $(BUILT_SOURCES) $(server_DATA)
 
 EXTRA_DIST = $(server_in_files)
 

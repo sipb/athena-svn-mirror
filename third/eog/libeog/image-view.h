@@ -94,7 +94,8 @@ GtkWidget *image_view_new (void);
 void image_view_set_pixbuf (ImageView *view, GdkPixbuf *pixbuf);
 GdkPixbuf *image_view_get_pixbuf (ImageView *view);
 
-void image_view_set_zoom (ImageView *view, double zoomx, double zoomy);
+void image_view_set_zoom (ImageView *view, double zoomx, double zoomy,
+			  gboolean have_anchor, int anchorx, int anchory);
 void image_view_get_zoom (ImageView *view, double *zoomx, double *zoomy);
 
 void image_view_set_interp_type (ImageView *view, GdkInterpType interp_type);
@@ -110,6 +111,8 @@ void image_view_set_dither (ImageView *view, GdkRgbDither dither);
 GdkRgbDither image_view_get_dither (ImageView *view);
 
 void image_view_get_scaled_size (ImageView *view, gint *width, gint *height);
+
+void image_view_set_transparent_color (ImageView *view, const GdkColor *color);
 
 G_END_DECLS
 

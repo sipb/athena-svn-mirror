@@ -1,7 +1,7 @@
 <Root>
 
 <commands>
-	<cmd name="FileNewWindow" _label="_New Window" _tip="Open a new window"
+	<cmd name="FileNewWindow" _label="_New" _tip="Open a new window"
              pixtype="stock" pixname="gtk-new" accel="*Control*n"/>
 
 	<cmd name="FileOpen" _label="_Open..." _tip="Open a file"
@@ -12,13 +12,13 @@
 
         <cmd name="FileExit" _label="_Quit" _tip="Quit the program"
 	     pixtype="stock" pixname="gtk-quit" accel="*Control*q"/>
-	
-	<cmd name="Preferences" _label="_Preferences..." _tip="Change preferences"  sensitive="0"
-	     pixtype="stock" pixname="gtk-preferences"/>
+
+        <cmd name="EditPreferences" _label="Prefere_nces" _tip="Preferences for EoG components"
+             pixtype="stock" pixname="gtk-preferences"/> 	
 
 	<cmd name="HelpAbout" _label="_About" _tip="About this application"
 	     pixtype="stock" pixname="About"/>
-	<cmd name="Help" _label="Contents" _tip="Help On this application"
+	<cmd name="Help" _label="_Contents" _tip="Help On this application"
 	     pixtype="stock" pixname="Help" accel="F1"/>
 
 
@@ -33,7 +33,7 @@
 
 		<menuitem name="FileNewWindow" verb=""/>
 
-		<placeholder name="Open Placeholder" delimit="top">
+		<placeholder name="Open Placeholder">
 			<menuitem name="FileOpen" verb=""/>
 		</placeholder>
 
@@ -46,15 +46,16 @@
 		<menuitem name="FileExit" verb=""/>
 
 	</submenu>
-
+	
 	<submenu name="Edit" _label="_Edit">
-		<menuitem name="Preferences" verb=""/>
+	        <placeholder name="Edit Items Placeholder"/>
+		<separator/>
+		<menuitem name="EditPreferences" verb=""/>
         </submenu>
 
-	<submenu name="View" _label="_View" hidden="1">
-		<placeholder name="View Preferences Placeholder"/>
-		<placeholder name="View Items Placeholder" delimit="top"/>
-	</submenu>
+	<placeholder name="View">
+		<placeholder name="View Items Placeholder"/>
+	</placeholder>
 
 	<submenu name="Help" _label="_Help">
 		<menuitem name="Help" verb=""/>
@@ -63,12 +64,11 @@
 </menu>
 
 <dockitem name="Toolbar" relief="none" homogeneous="1" behavior="exclusive">
+        <toolitem name="TBNew" _label="New" pixtype="stock"
+	          pixname="New" priority="1" verb="FileNewWindow"/>
 
         <toolitem name="TBOpen" _label="Open" pixtype="stock"
-                  pixname="Open" verb="FileOpen"/>
-
-        <toolitem name="TBCloseWindow" _label="Close" pixtype="stock"
-                  pixname="Close" verb="FileCloseWindow"/>
+                  pixname="Open" priority="1" verb="FileOpen"/>
 </dockitem>
 
 <popups>

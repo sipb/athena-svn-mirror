@@ -35,11 +35,11 @@
 #include <bonobo/bonobo-window.h>
 #include <libgnomeui/gnome-window-icon.h>
 #include <libgnomevfs/gnome-vfs.h>
-#include "eog-preferences.h"
 #include "eog-window.h"
 #include "util.h"
 #include "zoom.h"
 #include "Eog.h"
+#include "eog-file-selection.h"
 
 /* Default size for windows */
 
@@ -47,6 +47,7 @@
 #define DEFAULT_WINDOW_HEIGHT 280
 
 #define EOG_VIEWER_CONTROL_IID "OAFIID:GNOME_EOG_Control"
+#define EOG_VIEWER_COLLECTION_IID "OAFIID:GNOME_EOG_CollectionControl"
 #define EOG_WINDOW_DND_POPUP_PATH  "/popups/dragndrop"
 
 /* Private part of the Window structure */
@@ -66,9 +67,6 @@ struct _EogWindowPrivate {
 	/* vbox */
 	GtkWidget           *box;
 	GtkWidget           *ctrl_widget;
-
-	/* preference dialog, if available */
-	GtkWidget           *pref_dlg;
 
 	/* statusbar */
 	GtkWidget *statusbar;
@@ -147,38 +145,6 @@ raise_and_focus (GtkWidget *widget)
 }
 
 static void
-preference_dlg_closed_cb (GtkWidget *dlg, gpointer data)
-{
-	EogWindow *window;
-
-	window = EOG_WINDOW (data);
-	window->priv->pref_dlg = NULL;
-}
-
-/* Settings/Preferences callback */
-static void
-verb_Preferences_cb (BonoboUIComponent *uic, gpointer user_data, const char *cname)
-{
-	EogWindow *window;
-	EogWindowPrivate *priv;
-
-	g_return_if_fail (user_data != NULL);
-	g_return_if_fail (EOG_IS_WINDOW (user_data));
-
-	window = EOG_WINDOW (user_data);
-	priv = window->priv;
-
-	if (priv->pref_dlg == NULL) {
-		priv->pref_dlg = eog_preferences_new (window);
-		g_signal_connect (priv->pref_dlg, "destroy", 
-				  G_CALLBACK (preference_dlg_closed_cb),
-				  window);
-	}
-
-	gtk_window_present (GTK_WINDOW (priv->pref_dlg));
-}
-
-static void
 verb_FileNewWindow_cb (BonoboUIComponent *uic, gpointer user_data, const char *cname)
 {
 	GtkWidget *win;
@@ -204,6 +170,16 @@ static void
 verb_FileExit_cb (BonoboUIComponent *uic, gpointer user_data, const char *cname)
 {
 	eog_window_close_all ();
+}
+
+static void
+verb_EditPreferences_cb (BonoboUIComponent *uic, gpointer user_data, const char *cname)
+{
+	GConfClient *client;
+
+	client = EOG_WINDOW (user_data)->priv->client;
+
+	eog_preferences_show (client);
 }
 
 static void
@@ -323,7 +299,7 @@ activate_uri_cb (BonoboControlFrame *control_frame, const char *uri, gboolean re
 	g_return_if_fail (uri != NULL);
 
 	window = EOG_WINDOW (eog_window_new ());
-	
+
 	eog_window_open (window, uri);
 	gtk_widget_show (GTK_WIDGET (window));
 }
@@ -462,8 +438,6 @@ eog_window_init (EogWindow *window)
 	
 	priv->uri = NULL;
 
-	priv->pref_dlg = NULL;
-	
 	priv->client = gconf_client_get_default ();
 
 	gconf_client_add_dir (priv->client, "/apps/eog",
@@ -581,7 +555,8 @@ open_dnd_files (EogWindow *window, gboolean need_new_window)
 
 	g_return_if_fail (EOG_IS_WINDOW (window));
 
-	if (window->priv->dnd_files == NULL) return;
+	if (window->priv->dnd_files == NULL)
+		return;
 
 	for (l = window->priv->dnd_files; l; l = l->next) {
 		g_assert (l->data != NULL);
@@ -648,7 +623,7 @@ static BonoboUIVerb eog_app_verbs[] = {
 	BONOBO_UI_VERB ("FileOpen",      verb_FileOpen_cb),
 	BONOBO_UI_VERB ("FileCloseWindow", verb_FileCloseWindow_cb),
 	BONOBO_UI_VERB ("FileExit",      verb_FileExit_cb),
-	BONOBO_UI_VERB ("Preferences",   verb_Preferences_cb),
+	BONOBO_UI_VERB ("EditPreferences", verb_EditPreferences_cb),
 	BONOBO_UI_VERB ("HelpAbout",     verb_HelpAbout_cb),
 	BONOBO_UI_VERB ("Help",          verb_HelpContent_cb),
 	BONOBO_UI_VERB ("DnDNewWindow",  verb_DnDNewWindow_cb),
@@ -735,9 +710,9 @@ eog_window_close (EogWindow *window)
 
 /* Open image dialog */
 
-/* Opens an image in a new window */
+/* Opens an image in a new window; takes in an escaped URI */
 static void
-open_new_window (EogWindow *window, const char *filename)
+open_new_window (EogWindow *window, const char *text_uri)
 {
 	EogWindowPrivate *priv;
 	GtkWidget *new_window;
@@ -749,11 +724,11 @@ open_new_window (EogWindow *window, const char *filename)
 	else
 		new_window = eog_window_new ();
 
-	if (eog_window_open (EOG_WINDOW (new_window), filename)) {
+	if (eog_window_open (EOG_WINDOW (new_window), text_uri)) {
 		gtk_widget_show_now (new_window);
 		raise_and_focus (new_window);
 	} else {
-		open_failure_dialog (GTK_WINDOW (new_window), filename);
+		open_failure_dialog (GTK_WINDOW (new_window), text_uri);
 
 		if (new_window != GTK_WIDGET (window))
 			gtk_widget_destroy (new_window);
@@ -769,24 +744,38 @@ open_new_window (EogWindow *window, const char *filename)
 void
 eog_window_open_dialog (EogWindow *window)
 {
-	char *filename;
 	EogWindowPrivate *priv;
+	char *filename = NULL;
+	GtkWidget *dlg;
+	gint response;
 
 	g_return_if_fail (EOG_IS_WINDOW (window));
 
 	priv = window->priv;
 
-	/* FIXME: we should specify only image mime types */
-	filename = bonobo_file_selector_open (
-		GTK_WINDOW (window), FALSE, _("Open Image"), NULL, NULL);
+	dlg = eog_file_selection_new (EOG_FILE_SELECTION_LOAD);
+	gtk_widget_show_all (dlg);
+	response = gtk_dialog_run (GTK_DIALOG (dlg));
+	if (response == GTK_RESPONSE_OK)
+		filename = g_strdup (gtk_file_selection_get_filename (GTK_FILE_SELECTION (dlg)));
 
-	if (filename) {
+	gtk_widget_destroy (dlg);
+
+	if (response == GTK_RESPONSE_OK) {
+		char *escaped;
+
+		escaped = gnome_vfs_escape_path_string (filename);
+
 		if (gconf_client_get_bool (priv->client, "/apps/eog/window/open_new_window", NULL))
-			open_new_window (window, filename);
-		else if (!eog_window_open (window, filename))
-			open_failure_dialog (GTK_WINDOW (window), filename);
-		g_free (filename);
+			open_new_window (window, escaped);
+		else if (!eog_window_open (window, escaped))
+			open_failure_dialog (GTK_WINDOW (window), escaped);
+
+		g_free (escaped);
 	}
+
+	if (filename)
+		g_free (filename);
 }
 
 static void
@@ -895,7 +884,7 @@ get_viewer_control (GnomeVFSURI *uri, GnomeVFSFileInfo *info)
 				     "Bonobo/Control", &ev);
 	if (BONOBO_EX (&ev) || (control == CORBA_OBJECT_NIL))
 		goto ctrl_error;
-	
+
 	/* get PersistFile interface */
 	pfile = Bonobo_Unknown_queryInterface (control, "IDL:Bonobo/PersistFile:1.0", &ev);
 	if (BONOBO_EX (&ev) || (pfile == CORBA_OBJECT_NIL))
@@ -927,6 +916,7 @@ get_viewer_control (GnomeVFSURI *uri, GnomeVFSFileInfo *info)
 	return CORBA_OBJECT_NIL;
 }	
 
+#ifdef HAVE_COLLECTION
 static Bonobo_Control
 get_collection_control (GnomeVFSURI *uri, GnomeVFSFileInfo *info)
 {
@@ -941,41 +931,36 @@ get_collection_control (GnomeVFSURI *uri, GnomeVFSFileInfo *info)
 	
 	/* activate component */
  	CORBA_exception_init (&ev);
-	unknown_obj = (Bonobo_Unknown) bonobo_activation_activate 
-		("repo_ids.has_all(['IDL:GNOME/EOG/ImageCollection:1.0', 'IDL:Bonobo/Control:1.0'])",
-		 NULL, 0, NULL, &ev);
-	if (unknown_obj == CORBA_OBJECT_NIL) return CORBA_OBJECT_NIL;
-	
-	/* get collection image interface */
-        collection = Bonobo_Unknown_queryInterface (unknown_obj, "IDL:GNOME/EOG/ImageCollection:1.0", &ev);
-	if (collection == CORBA_OBJECT_NIL) {
-		Bonobo_Unknown_unref (unknown_obj, &ev);
-		CORBA_Object_release (unknown_obj, &ev);
-		return CORBA_OBJECT_NIL;		
-	}
+	control = bonobo_get_object (EOG_VIEWER_COLLECTION_IID,
+				     "Bonobo/Control", &ev);
+	if (BONOBO_EX (&ev) || (control == CORBA_OBJECT_NIL))
+		goto coll_ctrl_error;
+
+	/* get PersistFile interface */
+	collection = Bonobo_Unknown_queryInterface (control, "IDL:GNOME/EOG/ImageCollection:1.0", &ev);
+	if (BONOBO_EX (&ev) || (collection == CORBA_OBJECT_NIL))
+		goto coll_error;
 
 	/* set uri */
 	eog_uri = (CORBA_char*) gnome_vfs_uri_to_string (uri, GNOME_VFS_URI_HIDE_NONE);
 	GNOME_EOG_ImageCollection_openURI (collection, eog_uri, &ev);
 	g_free (eog_uri);
+	bonobo_object_release_unref (collection, &ev);
 
-	Bonobo_Unknown_unref (collection, &ev);
-	CORBA_Object_release (collection, &ev);
-
-	/* get Control interface */
-	control = Bonobo_Unknown_queryInterface (unknown_obj, "IDL:Bonobo/Control:1.0", &ev);
-	if (control == CORBA_OBJECT_NIL) {
-		Bonobo_Unknown_unref (unknown_obj, &ev);
-		CORBA_Object_release (unknown_obj, &ev);
-		return CORBA_OBJECT_NIL;		
-	}
-
-	/* clean up */ 
-	Bonobo_Unknown_unref (unknown_obj, &ev);
-        CORBA_Object_release (unknown_obj, &ev);
 	CORBA_exception_free (&ev);
 
 	return control;
+
+ coll_error:
+	bonobo_object_release_unref (control, NULL);
+
+ coll_ctrl_error:
+	if (BONOBO_EX (&ev))
+		g_warning ("%s", bonobo_exception_get_text (&ev));
+
+	CORBA_exception_free (&ev);
+
+	return CORBA_OBJECT_NIL;
 }
 
 static Bonobo_Control
@@ -1041,6 +1026,22 @@ get_collection_control_list (GList *text_uri_list)
 
 	return control;
 }
+#else
+
+static Bonobo_Control
+get_collection_control (GnomeVFSURI *uri, GnomeVFSFileInfo *info)
+{
+	return CORBA_OBJECT_NIL;
+}
+
+static Bonobo_Control
+get_collection_control_list (GList *text_uri_list)
+{
+	return CORBA_OBJECT_NIL;
+}
+
+#endif /* HAVE_COLLECTION */
+
 
 void
 adapt_shell_size_to_control (EogWindow *window, Bonobo_Control control)
@@ -1052,8 +1053,6 @@ adapt_shell_size_to_control (EogWindow *window, Bonobo_Control control)
 	gint32 image_width, image_height;
 	int sw, sh;
 	Bonobo_Zoomable zi;
-	double zoom_x;
-	double zoom_y;
 	gboolean need_zoom;
 	int req_width, req_height;
 	int xthick, ythick;
@@ -1137,7 +1136,6 @@ add_control_to_ui (EogWindow *window, Bonobo_Control control)
 {
 	EogWindowPrivate *priv;
 	CORBA_Environment ev;
-	Bonobo_PropertyControl prop_control;
 
 	g_return_if_fail (window != NULL);
 	g_return_if_fail (EOG_IS_WINDOW (window));
@@ -1162,23 +1160,6 @@ add_control_to_ui (EogWindow *window, Bonobo_Control control)
 		priv->ctrl_widget = NULL;
 	}
 
-	/* update sensitivity of the properties menu item */
-	prop_control = Bonobo_Unknown_queryInterface (control, 
-						      "IDL:Bonobo/PropertyControl:1.0", &ev);
-	bonobo_ui_component_set_prop (priv->ui_comp,
-				      "/commands/Preferences",
-				      "sensitive",
-				      prop_control == CORBA_OBJECT_NIL ? "0" : "1",
-				      &ev);
-	
-	bonobo_object_release_unref (prop_control, &ev);
-
-	/* enable view menu */
-	/* FIXME: We should check if the component adds anything to 
-	 *        the menu, so that we don't view an empty menu.
-	 */
-	bonobo_ui_component_set_prop (priv->ui_comp, "/menu/View", "hidden", "0", &ev);
-
 	adapt_shell_size_to_control (window, control);
 
 	CORBA_exception_free (&ev);
@@ -1187,10 +1168,11 @@ add_control_to_ui (EogWindow *window, Bonobo_Control control)
 	check_for_control_properties (window);
 }
 
+
 /**
  * window_open:
  * @window: A window.
- * @filename: An path to the object to load (image/directory).
+ * @filename: An escaped text URI for the object to load.
  *
  * Opens an image file and puts it into a window.  Even if loading fails, the
  * image structure will be created and put in the window.
@@ -1222,10 +1204,8 @@ eog_window_open (EogWindow *window, const char *text_uri)
 					      GNOME_VFS_FILE_INFO_DEFAULT |
 					      GNOME_VFS_FILE_INFO_FOLLOW_LINKS |
 					      GNOME_VFS_FILE_INFO_GET_MIME_TYPE);
-	if (result != GNOME_VFS_OK) {
-		g_warning ("Error while obtaining file informations.");
+	if (result != GNOME_VFS_OK)
 		return FALSE;
-	}
 	
 	control = CORBA_OBJECT_NIL;
 
@@ -1244,7 +1224,6 @@ eog_window_open (EogWindow *window, const char *text_uri)
 	}
 	else {
 		uri_str = gnome_vfs_uri_to_string (uri, GNOME_VFS_URI_HIDE_NONE);
-
 		/* FIXME: The error message should be more specific 
 		 *        (eg. "Unknown file format").
 		 */

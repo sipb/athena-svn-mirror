@@ -5,98 +5,294 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: eog 0.6\n"
-"POT-Creation-Date: 2002-11-17 10:46+0100\n"
+"POT-Creation-Date: 2003-01-28 08:24+0000\n"
 "PO-Revision-Date: 2001-02-10 00:54+0200\n"
 "Last-Translator: Gediminas Paulauskas <menesis@delfi.lt>\n"
 "Language-Team: Lithuanian <komp_lt@konferencijos.lt>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=iso-8859-13\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: collection/GNOME_EOG_Collection.server.in.h:1
-#, fuzzy
-msgid "EOG Image Collection"
-msgstr "EOG paveikslëliø şiûrëklës gamykla"
-
-#: collection/GNOME_EOG_Collection.server.in.h:2
+#: collection/GNOME_EOG_Collection.server.in.in.h:1
 #, fuzzy
 msgid "EOG Image Collection Viewer"
-msgstr "EOG paveikslëliø şiûrëklë"
+msgstr "EOG paveikslÄ—liÅ³ Å¾iÅ«rÄ—klÄ—"
 
-#: collection/GNOME_EOG_Collection.server.in.h:3
+#: collection/GNOME_EOG_Collection.server.in.in.h:2
 #, fuzzy
 msgid "EOG Image collection view factory"
-msgstr "EOG paveikslëliø şiûrëklës gamykla"
+msgstr "EOG paveikslÄ—liÅ³ Å¾iÅ«rÄ—klÄ—s gamykla"
+
+#: collection/GNOME_EOG_Collection.server.in.in.h:3
+#, fuzzy
+msgid "Image Collection"
+msgstr "EOG paveikslÄ—liÅ³ Å¾iÅ«rÄ—klÄ—s gamykla"
 
 #: eog.desktop.in.h:1
 #, fuzzy
 msgid "Eye of Gnome Image Viewer"
-msgstr "EOG paveikslëliø şiûrëklë"
+msgstr "EOG paveikslÄ—liÅ³ Å¾iÅ«rÄ—klÄ—"
 
 #: eog.desktop.in.h:2
 msgid "View many different types of images"
 msgstr ""
 
-#: libeog/GNOME_EOG.server.in.in.h:1 viewer/eog-image-view.c:691
+#: eog.glade.h:1
+msgid "By c_olor"
+msgstr ""
+
+#: eog.glade.h:2
+msgid "By check_pattern"
+msgstr ""
+
+#: eog.glade.h:3
+#, fuzzy
+msgid "Eye of Gnome Preferences"
+msgstr "Gnome Akis"
+
+#: eog.glade.h:4
+msgid "Image Viewer"
+msgstr "PaveikslÄ—liÅ³ Å¾iÅ«rÄ—klÄ—"
+
+#: eog.glade.h:5
+#, fuzzy
+msgid "Indicate Transparency"
+msgstr "Skaidrumo tipas"
+
+#: eog.glade.h:6
+msgid "Pick a color"
+msgstr ""
+
+#: eog.glade.h:7
+msgid "_Interpolate image on zoom (better quality but slower)"
+msgstr ""
+
+#: eog.schemas.in.h:1
+msgid "Automatically pick window size"
+msgstr ""
+
+#: eog.schemas.in.h:2
+msgid "Default zoom factor for the full screen view"
+msgstr ""
+
+#: eog.schemas.in.h:3
+msgid ""
+"Default zoom factor for the full screen view. Possible values are: 0 (use "
+"1:1 zoom factor), 1 (use the same zoom factor as the image window), 2 (fit "
+"the image to the screen)."
+msgstr ""
+
+#: eog.schemas.in.h:4
+msgid ""
+"Determines how transparency should be indicated. Valid values are "
+"CHECK_PATTERN and COLOR. If COLOR is choosen, than the trans_color key "
+"determines the used color value."
+msgstr ""
+
+#: eog.schemas.in.h:5
+#, fuzzy
+msgid "Fit standard-sized images to the screen"
+msgstr "Sutalpinti standartinio dydÅ¾io paveikslÄ—lius Ä¯ ekranÄ…"
+
+#: eog.schemas.in.h:6
+msgid ""
+"If the transparency key has the value COLOR, then this key determines the "
+"color which is used for indicating transparency."
+msgstr ""
+
+#: eog.schemas.in.h:7
+#, fuzzy
+msgid "Interpolate Image"
+msgstr "Interpoliacija"
+
+#: eog.schemas.in.h:8
+#, fuzzy
+msgid "Open images in a new window"
+msgstr "Atidaryti paveikslÄ—lius naujame lange"
+
+#: eog.schemas.in.h:9
+#, fuzzy
+msgid "Put a bevel around the screen"
+msgstr "Rodyti rÄ—melÄ¯ ekrano pakraÅ¡Äiuose"
+
+#: eog.schemas.in.h:10
+msgid "Scrollbar policy for the full screen view"
+msgstr ""
+
+#: eog.schemas.in.h:11
+#, fuzzy
+msgid "Transparency color"
+msgstr "Skaidrumo tipas"
+
+#: eog.schemas.in.h:12
+#, fuzzy
+msgid "Transparency indicator"
+msgstr "Skaidrumo tipas"
+
+#: eog.schemas.in.h:13
+msgid ""
+"Wether the image should be interpolated on zoom or not. This leads to better "
+"quality but is somewhat slower than non interpolated images."
+msgstr ""
+
+#: eog.schemas.in.h:14
+msgid ""
+"Whether image windows should pick their size and zooming factor "
+"automatically based on the size of the image. If this option is not set, "
+"image windows will get whatever size the window manager assigns to them."
+msgstr ""
+
+#: eog.schemas.in.h:15
+msgid ""
+"Whether opening an image should create a new window instead of replacing the "
+"image in the current window."
+msgstr ""
+
+#: eog.schemas.in.h:16
+msgid ""
+"Whether the full screen view should display a bevel along the edges of the "
+"screen."
+msgstr ""
+
+#: eog.schemas.in.h:17
+msgid ""
+"Whether to display scrollbars on the full screen view. Possible values are: "
+"1 (automatic; only display scrollbars if the image is larger than the "
+"window), 2 (never display scrollbars)."
+msgstr ""
+
+#: eog.schemas.in.h:18
+msgid ""
+"Whether to fit standard-sized images to the screen when in full screen mode. "
+"These are images with sizes like 320x240, 640x480, 800x800, etc. This "
+"selects whether such images should be scaled to fit the screen regardless of "
+"the setting for the default zoom factor of the full screen view."
+msgstr ""
+
+#: libeog/GNOME_EOG.server.in.in.h:1 viewer/eog-image-view.c:721
 msgid "EOG Image"
-msgstr "EOG paveikslëlis"
+msgstr "EOG paveikslÄ—lis"
 
 #: libeog/GNOME_EOG.server.in.in.h:2
 msgid "EOG Image Viewer"
-msgstr "EOG paveikslëliø şiûrëklë"
+msgstr "EOG paveikslÄ—liÅ³ Å¾iÅ«rÄ—klÄ—"
 
 #: libeog/GNOME_EOG.server.in.in.h:3
 msgid "EOG Image viewer factory"
-msgstr "EOG paveikslëliø şiûrëklës gamykla"
+msgstr "EOG paveikslÄ—liÅ³ Å¾iÅ«rÄ—klÄ—s gamykla"
 
 #: libeog/GNOME_EOG.server.in.in.h:4
 #, fuzzy
 msgid "Embeddable EOG Image"
-msgstr "EOG paveikslëlis"
+msgstr "EOG paveikslÄ—lis"
 
-#: libeog/image-view.c:1853
+#. Second page
+#: libeog/GNOME_EOG.server.in.in.h:5 viewer/eog-print-setup.c:689
+#, fuzzy
+msgid "Image"
+msgstr "EOG paveikslÄ—lis"
+
+#: libeog/image-view.c:1896
 #, fuzzy
 msgid "interpolation type"
 msgstr "Interpoliacijos tipas"
 
-#: libeog/image-view.c:1854
+#: libeog/image-view.c:1897
 #, fuzzy
 msgid "the type of interpolation to use"
-msgstr "_Hiperbolinë Interpoliacija"
+msgstr "_HiperbolinÄ— Interpoliacija"
 
-#: libeog/image-view.c:1860 libeog/image-view.c:1867
+#: libeog/image-view.c:1903 libeog/image-view.c:1910
 #, fuzzy
 msgid "check type"
-msgstr "Langeliø _tipas"
+msgstr "LangeliÅ³ _tipas"
 
-#: libeog/image-view.c:1861
+#: libeog/image-view.c:1904
 msgid "the type of chequering to use"
 msgstr ""
 
-#: libeog/image-view.c:1868
+#: libeog/image-view.c:1911
 msgid "the size of chequers to use"
 msgstr ""
 
-#: libeog/image-view.c:1874
+#: libeog/image-view.c:1917
 msgid "dither"
 msgstr ""
 
-#: libeog/image-view.c:1875
+#: libeog/image-view.c:1918
 #, fuzzy
 msgid "dither type"
-msgstr "Langeliø _tipas"
+msgstr "LangeliÅ³ _tipas"
 
-#: shell/eog-preferences.c:162
-#, c-format
-msgid ""
-"Could not display help for the preferences dialog.\n"
-"%s"
+#: libeog/eog-file-selection.c:29 libeog/eog-file-selection.c:46
+msgid "By Extension"
 msgstr ""
 
-#: shell/eog-preferences.c:214
+#: libeog/eog-file-selection.c:30
+msgid "BMP"
+msgstr ""
+
+#: libeog/eog-file-selection.c:31
+msgid "GIF"
+msgstr ""
+
+#: libeog/eog-file-selection.c:32
+msgid "ICO"
+msgstr ""
+
+#: libeog/eog-file-selection.c:33 libeog/eog-file-selection.c:48
+msgid "JPEG"
+msgstr ""
+
+#: libeog/eog-file-selection.c:34 libeog/eog-file-selection.c:51
+msgid "PNG"
+msgstr ""
+
+#: libeog/eog-file-selection.c:35
+msgid "PNM"
+msgstr ""
+
+#: libeog/eog-file-selection.c:36
+msgid "RAS"
+msgstr ""
+
+#: libeog/eog-file-selection.c:37
+msgid "SVG"
+msgstr ""
+
+#: libeog/eog-file-selection.c:38
+msgid "TGA"
+msgstr ""
+
+#: libeog/eog-file-selection.c:39
+msgid "TIFF"
+msgstr ""
+
+#: libeog/eog-file-selection.c:40
+msgid "XBM"
+msgstr ""
+
+#: libeog/eog-file-selection.c:41 libeog/eog-file-selection.c:54
+msgid "XPM"
+msgstr ""
+
+#: libeog/eog-file-selection.c:207
+msgid "Unsupported file format."
+msgstr ""
+
+#: libeog/eog-file-selection.c:227
+msgid "Determine File Type:"
+msgstr ""
+
+#: libeog/eog-file-selection.c:270
 #, fuzzy
-msgid "Eye of Gnome Preferences"
-msgstr "Gnome Akis"
+msgid "Load Image"
+msgstr "EOG paveikslÄ—lis"
+
+#: libeog/eog-file-selection.c:276
+#, fuzzy
+msgid "Save Image"
+msgstr "Atidaryti paveikslÄ—lÄ¯"
 
 #: shell/eog-shell-ui.xml.h:1
 msgid "About this application"
@@ -108,49 +304,49 @@ msgstr ""
 
 #: shell/eog-shell-ui.xml.h:3
 #, fuzzy
-msgid "Change preferences"
-msgstr "Nuostatos"
+msgid "Close window"
+msgstr "_UÅ¾daryti Å¡Ä¯ langÄ…"
 
 #: shell/eog-shell-ui.xml.h:4
-msgid "Close"
-msgstr "Uşdaryti"
-
-#: shell/eog-shell-ui.xml.h:5
-#, fuzzy
-msgid "Close window"
-msgstr "_Uşdaryti ğá langà"
-
-#: shell/eog-shell-ui.xml.h:6
-msgid "Contents"
-msgstr ""
-
-#: shell/eog-shell-ui.xml.h:7
 msgid "Help On this application"
 msgstr ""
 
-#: shell/eog-shell-ui.xml.h:8 shell/main.c:205
+#: shell/eog-shell-ui.xml.h:5
+msgid "New"
+msgstr ""
+
+#: shell/eog-shell-ui.xml.h:6 shell/main.c:210
 msgid "Open"
 msgstr "Atidaryti"
 
-#: shell/eog-shell-ui.xml.h:9
+#: shell/eog-shell-ui.xml.h:7
 #, fuzzy
 msgid "Open a file"
-msgstr "Atidaryti paveikslëlio bylà"
+msgstr "Atidaryti paveikslÄ—lio bylÄ…"
+
+#: shell/eog-shell-ui.xml.h:8
+#, fuzzy
+msgid "Open a new window"
+msgstr "Atidaryti paveikslÄ—lius naujame lange"
+
+#: shell/eog-shell-ui.xml.h:9
+#, fuzzy
+msgid "Open in new window"
+msgstr "Atidaryti paveikslÄ—lius naujame lange"
 
 #: shell/eog-shell-ui.xml.h:10
 #, fuzzy
-msgid "Open a new window"
-msgstr "Atidaryti paveikslëlius naujame lange"
+msgid "Open in this window"
+msgstr "Atidaryti paveikslÄ—lius naujame lange"
 
 #: shell/eog-shell-ui.xml.h:11
 #, fuzzy
-msgid "Open in new window"
-msgstr "Atidaryti paveikslëlius naujame lange"
+msgid "Prefere_nces"
+msgstr "Nuostatos"
 
 #: shell/eog-shell-ui.xml.h:12
-#, fuzzy
-msgid "Open in this window"
-msgstr "Atidaryti paveikslëlius naujame lange"
+msgid "Preferences for EoG components"
+msgstr ""
 
 #: shell/eog-shell-ui.xml.h:13
 msgid "Quit the program"
@@ -163,78 +359,68 @@ msgstr ""
 #: shell/eog-shell-ui.xml.h:15
 #, fuzzy
 msgid "_Close"
-msgstr "Uşdaryti"
+msgstr "UÅ¾daryti"
 
 #: shell/eog-shell-ui.xml.h:16
+msgid "_Contents"
+msgstr ""
+
+#: shell/eog-shell-ui.xml.h:17 viewer/eog-image-view-ui.xml.h:13
 msgid "_Edit"
 msgstr ""
 
-#: shell/eog-shell-ui.xml.h:17
+#: shell/eog-shell-ui.xml.h:18
 msgid "_File"
 msgstr ""
 
-#: shell/eog-shell-ui.xml.h:18
+#: shell/eog-shell-ui.xml.h:19
 msgid "_Help"
 msgstr ""
 
-#: shell/eog-shell-ui.xml.h:19
-#, fuzzy
-msgid "_New Window"
-msgstr "Paveikslëliø langai"
-
 #: shell/eog-shell-ui.xml.h:20
 #, fuzzy
-msgid "_Open..."
-msgstr "_Atidaryti paveikslëlá..."
+msgid "_New"
+msgstr "Jokio"
 
 #: shell/eog-shell-ui.xml.h:21
 #, fuzzy
-msgid "_Preferences..."
-msgstr "Nuostatos"
+msgid "_Open..."
+msgstr "_Atidaryti paveikslÄ—lÄ¯..."
 
 #: shell/eog-shell-ui.xml.h:22
 msgid "_Quit"
 msgstr ""
 
-#: shell/eog-shell-ui.xml.h:23
-#, fuzzy
-msgid "_View"
-msgstr "Şiûrëklës"
-
 #. Translators should localize the following string
 #. * which will give them credit in the About box.
 #. * E.g. "Fulano de Tal <fulano@detal.com>"
 #.
-#: shell/eog-window.c:239
+#: shell/eog-window.c:215
 msgid "translator_credits-PLEASE_ADD_YOURSELF_HERE"
 msgstr ""
 
-#: shell/eog-window.c:244 shell/eog-window.c:623 shell/main.c:449
+#: shell/eog-window.c:220 shell/eog-window.c:598 shell/main.c:452
 msgid "Eye of Gnome"
 msgstr "Gnome Akis"
 
-#: shell/eog-window.c:246
+#: shell/eog-window.c:222
 #, fuzzy
 msgid "Copyright (C) 2000-2002 The Free Software Foundation"
 msgstr "Copyright (C) 2000-2001 The Free Software Foundation"
 
-#: shell/eog-window.c:247
+#: shell/eog-window.c:223
 #, fuzzy
 msgid "The GNOME image viewing and cataloging program."
-msgstr "GNOME paveikslëliø şiûrëjimo ir katalogavimo programa"
+msgstr "GNOME paveikslÄ—liÅ³ Å¾iÅ«rÄ—jimo ir katalogavimo programa"
 
-#: shell/eog-window.c:284
+#: shell/eog-window.c:260
 #, c-format
 msgid ""
 "Could not display help for Eye of Gnome.\n"
 "%s"
 msgstr ""
 
-#: shell/eog-window.c:781
-msgid "Open Image"
-msgstr "Atidaryti paveikslëlá"
-
-#: shell/main.c:172
+#: shell/main.c:177
 #, c-format
 msgid ""
 "You are about to open %i windows\n"
@@ -242,30 +428,30 @@ msgid ""
 "them in a collection instead?"
 msgstr ""
 
-#: shell/main.c:177
+#: shell/main.c:182
 #, fuzzy
 msgid "Single Windows"
-msgstr "Paveikslëliø langai"
+msgstr "PaveikslÄ—liÅ³ langai"
 
-#: shell/main.c:178
+#: shell/main.c:183
 msgid "Collection"
 msgstr ""
 
-#: shell/main.c:202
+#: shell/main.c:207
 #, c-format
 msgid ""
 "You are about to open %i windows\n"
 "simultanously. Do you want to continue?"
 msgstr ""
 
-#: shell/main.c:285
+#: shell/main.c:290
 #, c-format
 msgid ""
 "Could not access %s\n"
 "Eye of Gnome will not be able to display this file."
 msgstr ""
 
-#: shell/main.c:289
+#: shell/main.c:293
 #, c-format
 msgid ""
 "The following files cannot be displayed because Eye of Gnome was not able to "
@@ -273,24 +459,24 @@ msgid ""
 "%s"
 msgstr ""
 
-#: shell/main.c:461
-#, fuzzy
-msgid "Could not initialize GnomeVFS!\n"
-msgstr "Negalëjau inicializuoti Bonobo"
-
 #: shell/main.c:464
 #, fuzzy
-msgid "Could not initialize Bonobo!\n"
-msgstr "Negalëjau inicializuoti Bonobo"
+msgid "Could not initialize GnomeVFS!\n"
+msgstr "NegalÄ—jau inicializuoti Bonobo"
 
-#: shell/util.c:48
+#: shell/main.c:467
+#, fuzzy
+msgid "Could not initialize Bonobo!\n"
+msgstr "NegalÄ—jau inicializuoti Bonobo"
+
+#: shell/util.c:52
 #, c-format
 msgid "Could not open `%s'"
-msgstr "Negalëjau atidaryti ¥%s´"
+msgstr "NegalÄ—jau atidaryti â€%sâ€œ"
 
 #: viewer/eog-image-view-ctrl-ui.xml.h:1
-msgid "1:1"
-msgstr "1:1"
+msgid "Best _Fit"
+msgstr ""
 
 #: viewer/eog-image-view-ctrl-ui.xml.h:2
 msgid "Fit"
@@ -301,218 +487,154 @@ msgid "In"
 msgstr "Artyn"
 
 #: viewer/eog-image-view-ctrl-ui.xml.h:4
+msgid "Normal"
+msgstr ""
+
+#: viewer/eog-image-view-ctrl-ui.xml.h:5
 msgid "Out"
 msgstr "Tolyn"
 
-#: viewer/eog-image-view-ctrl-ui.xml.h:5
-msgid "Zoom _1:1"
-msgstr "Tikrasis dydis _1:1"
-
 #: viewer/eog-image-view-ctrl-ui.xml.h:6
-#, fuzzy
-msgid "Zoom _In"
-msgstr "Pritraukti"
-
-#: viewer/eog-image-view-ctrl-ui.xml.h:7
 #, fuzzy
 msgid "Zoom _Out"
 msgstr "Atitraukti"
 
+#: viewer/eog-image-view-ctrl-ui.xml.h:7
+msgid "_Normal Size"
+msgstr ""
+
 #: viewer/eog-image-view-ctrl-ui.xml.h:8
 #, fuzzy
-msgid "Zoom to _Fit"
-msgstr "Atitraukti"
+msgid "_Zoom In"
+msgstr "Pritraukti"
 
 #: viewer/eog-image-view-ui.xml.h:1
-msgid "Check _size"
-msgstr "_Langeliø dydis"
+msgid "Flip Horizontal"
+msgstr ""
 
 #: viewer/eog-image-view-ui.xml.h:2
-msgid "Check _type"
-msgstr "Langeliø _tipas"
+msgid "Flip Vertical"
+msgstr ""
 
 #: viewer/eog-image-view-ui.xml.h:3
 msgid "Full Screen"
 msgstr "Visame ekrane"
 
-#: viewer/eog-image-view-ui.xml.h:4 viewer/preferences.c:63
-msgid "Large"
-msgstr "Dideli"
-
-#: viewer/eog-image-view-ui.xml.h:5 viewer/preferences.c:62
-msgid "Medium"
-msgstr "Vidutiniai"
-
-#: viewer/eog-image-view-ui.xml.h:6
-#, fuzzy
-msgid "Nea_rest Neighbour"
-msgstr "Artimiausio kaimyno interpoliacija"
-
-#: viewer/eog-image-view-ui.xml.h:7
-#, fuzzy
-msgid "Normal (_pseudocolor)"
-msgstr "Normalus (pseudocolor)"
-
-#: viewer/eog-image-view-ui.xml.h:8
+#: viewer/eog-image-view-ui.xml.h:4
 msgid "Previews the image to be printed"
 msgstr ""
 
+#: viewer/eog-image-view-ui.xml.h:5
+msgid "Print Previe_w..."
+msgstr ""
+
+#: viewer/eog-image-view-ui.xml.h:6
+#, fuzzy
+msgid "Print Set_up"
+msgstr "Atidaryti paveikslÄ—lÄ¯"
+
+#: viewer/eog-image-view-ui.xml.h:7
+msgid "Print image to the printer"
+msgstr ""
+
+#: viewer/eog-image-view-ui.xml.h:8
+msgid "Rotate 180 Degrees"
+msgstr ""
+
 #: viewer/eog-image-view-ui.xml.h:9
-msgid "Print Pre_view"
+msgid "Rotate Clockwise"
 msgstr ""
 
 #: viewer/eog-image-view-ui.xml.h:10
-msgid "Print S_etup"
+msgid "Rotate Counter Clockwise"
 msgstr ""
 
 #: viewer/eog-image-view-ui.xml.h:11
-msgid "Print image to the printer"
+msgid "Save _As..."
 msgstr ""
 
 #: viewer/eog-image-view-ui.xml.h:12
 msgid "Setup the page settings for your current printer"
 msgstr ""
 
-#: viewer/eog-image-view-ui.xml.h:13 viewer/preferences.c:61
-msgid "Small"
-msgstr "Maşi"
-
 #: viewer/eog-image-view-ui.xml.h:14
-msgid "_Bilinear"
+msgid "_Print..."
 msgstr ""
 
-#: viewer/eog-image-view-ui.xml.h:15
+#: viewer/eog-image-view-ui.xml.h:15 collection/eog-collection-view-ui.xml.h:2
 #, fuzzy
-msgid "_Black"
-msgstr "Gryna juoda"
+msgid "_View"
+msgstr "Å½iÅ«rÄ—klÄ—s"
 
-#: viewer/eog-image-view-ui.xml.h:16
-msgid "_Dark"
-msgstr ""
-
-#: viewer/eog-image-view-ui.xml.h:17
-msgid "_Dither"
-msgstr ""
-
-#: viewer/eog-image-view-ui.xml.h:18
-#, fuzzy
-msgid "_Gray"
-msgstr "Gryna pilka"
-
-#: viewer/eog-image-view-ui.xml.h:19
-#, fuzzy
-msgid "_Hyperbolic"
-msgstr "_Hiperbolinë Interpoliacija"
-
-#: viewer/eog-image-view-ui.xml.h:20
-msgid "_Interpolation"
-msgstr "_Interpoliacija"
-
-#: viewer/eog-image-view-ui.xml.h:21
-msgid "_Light"
-msgstr ""
-
-#: viewer/eog-image-view-ui.xml.h:22
-#, fuzzy
-msgid "_Maximum (high color)"
-msgstr "Maksimalus (high color)"
-
-#: viewer/eog-image-view-ui.xml.h:23
-#, fuzzy
-msgid "_Midtone"
-msgstr "Vidutiniğki langeliai"
-
-#: viewer/eog-image-view-ui.xml.h:24
-#, fuzzy
-msgid "_None"
-msgstr "Jokio"
-
-#: viewer/eog-image-view-ui.xml.h:25
-msgid "_Print"
-msgstr ""
-
-#: viewer/eog-image-view-ui.xml.h:26
-msgid "_Save As..."
-msgstr ""
-
-#: viewer/eog-image-view-ui.xml.h:27
-msgid "_Tiles"
-msgstr ""
-
-#: viewer/eog-image-view-ui.xml.h:28
-#, fuzzy
-msgid "_White"
-msgstr "Gryna balta"
-
-#: viewer/eog-image-view.c:300
+#: viewer/eog-image-view.c:270
 #, c-format
 msgid "Could not save image as '%s': %s."
 msgstr ""
 
-#: viewer/eog-image-view.c:351
-msgid "Save As"
-msgstr ""
-
-#: viewer/eog-image-view.c:926
+#: viewer/eog-image-view.c:954
 #, fuzzy
 msgid "Print Image"
-msgstr "Atidaryti paveikslëlá"
+msgstr "Atidaryti paveikslÄ—lÄ¯"
 
-#: viewer/eog-image-view.c:934
+#: viewer/eog-image-view.c:962
 #, fuzzy
 msgid "Pages"
 msgstr "Dideli"
 
-#: viewer/eog-image-view.c:1021
+#: viewer/eog-image-view.c:1049
 msgid "Print Preview"
 msgstr ""
 
-#: viewer/eog-image-view.c:1027
+#: viewer/eog-image-view.c:1055
 #, fuzzy
 msgid "Printing of image failed"
-msgstr "Atidaryti paveikslëlio bylà"
+msgstr "Atidaryti paveikslÄ—lio bylÄ…"
 
-#: viewer/eog-image-view.c:1843
-msgid "Display"
-msgstr "Rodymas"
+#: viewer/eog-image-view.c:1873
+#, fuzzy
+msgid "/_Zoom In"
+msgstr "Pritraukti"
 
-#: viewer/eog-image-view.c:2064
-msgid "Interpolation"
-msgstr "Interpoliacija"
+#: viewer/eog-image-view.c:1875
+#, fuzzy
+msgid "/Zoom _Out"
+msgstr "Atitraukti"
 
-#: viewer/eog-image-view.c:2067
-msgid "Dither"
+#: viewer/eog-image-view.c:1877
+msgid "/_Normal Size"
 msgstr ""
 
-#: viewer/eog-image-view.c:2070
-msgid "Check Type"
-msgstr "Langeliø tipas"
+#: viewer/eog-image-view.c:1879
+#, fuzzy
+msgid "/Best _Fit"
+msgstr "Atitraukti"
 
-#: viewer/eog-image-view.c:2073
-msgid "Check Size"
-msgstr "Langeliø dydis"
+#: viewer/eog-image-view.c:1882
+#, fuzzy
+msgid "/_Close"
+msgstr "UÅ¾daryti"
 
-#: viewer/eog-image-view.c:2076
+#: viewer/eog-image-view.c:2008
 #, fuzzy
 msgid "Image Width"
-msgstr "Paveikslëliø langai"
+msgstr "PaveikslÄ—liÅ³ langai"
 
-#: viewer/eog-image-view.c:2079
+#: viewer/eog-image-view.c:2011
 msgid "Image Height"
 msgstr ""
 
-#: viewer/eog-image-view.c:2082
+#: viewer/eog-image-view.c:2014
 msgid "Window Title"
 msgstr ""
 
-#: viewer/eog-image-view.c:2085
+#: viewer/eog-image-view.c:2017
 msgid "Statusbar Text"
 msgstr ""
 
-#: viewer/eog-image.c:470
+#: viewer/eog-image.c:480
 #, fuzzy
 msgid "Couldn't initialize GnomeVFS!\n"
-msgstr "Negalëjau inicializuoti Bonobo"
+msgstr "NegalÄ—jau inicializuoti Bonobo"
 
 #: viewer/eog-print-setup.c:76
 msgid "pts"
@@ -605,17 +727,11 @@ msgstr ""
 msgid "Bottom:"
 msgstr ""
 
-#. Second page
-#: viewer/eog-print-setup.c:689
-#, fuzzy
-msgid "Image"
-msgstr "EOG paveikslëlis"
-
 #. Scale
 #: viewer/eog-print-setup.c:697
 #, fuzzy
 msgid "Scale"
-msgstr "Maşi"
+msgstr "MaÅ¾i"
 
 #: viewer/eog-print-setup.c:701
 msgid "Adjust to:"
@@ -689,116 +805,172 @@ msgstr ""
 msgid "Right, then down"
 msgstr ""
 
-#: viewer/preferences.c:33
-#, fuzzy
-msgid "Nearest Neighbour Interpolation"
-msgstr "Artimiausio kaimyno interpoliacija"
-
-#: viewer/preferences.c:35
-#, fuzzy
-msgid "Tiles Interpolation"
-msgstr "Interpoliacija"
-
-#: viewer/preferences.c:37
-#, fuzzy
-msgid "Bilinear Interpolation"
-msgstr "Interpoliacija"
-
-#: viewer/preferences.c:39
-#, fuzzy
-msgid "Hyperbolic Interpolation"
-msgstr "_Hiperbolinë Interpoliacija"
-
-#: viewer/preferences.c:44
-msgid "No dithering"
+#: collection/eog-collection-view-ui.xml.h:1
+msgid "Slide Show"
 msgstr ""
 
-#: viewer/preferences.c:45
 #, fuzzy
-msgid "Normal (pseudocolor) dithering"
-msgstr "Normalus (_pseudocolor) dithering'as"
+#~ msgid "_New Window"
+#~ msgstr "PaveikslÄ—liÅ³ langai"
 
-#: viewer/preferences.c:46
+#~ msgid "1:1"
+#~ msgstr "1:1"
+
+#~ msgid "Zoom _1:1"
+#~ msgstr "Tikrasis dydis _1:1"
+
 #, fuzzy
-msgid "Maximum (high color) dithering"
-msgstr "_Maksimalus (high color) dithering'as"
+#~ msgid "Zoom to _Fit"
+#~ msgstr "Atitraukti"
 
-#: viewer/preferences.c:51
-msgid "Dark"
-msgstr ""
+#~ msgid "Check _size"
+#~ msgstr "_LangeliÅ³ dydis"
 
-#: viewer/preferences.c:52
+#~ msgid "Check _type"
+#~ msgstr "LangeliÅ³ _tipas"
+
+#~ msgid "Large"
+#~ msgstr "Dideli"
+
+#~ msgid "Medium"
+#~ msgstr "Vidutiniai"
+
 #, fuzzy
-msgid "Midtone"
-msgstr "Vidutiniğki langeliai"
+#~ msgid "Nea_rest Neighbour"
+#~ msgstr "Artimiausio kaimyno interpoliacija"
 
-#: viewer/preferences.c:53
-msgid "Light"
-msgstr ""
-
-#: viewer/preferences.c:54
 #, fuzzy
-msgid "Black"
-msgstr "Gryna juoda"
+#~ msgid "Normal (_pseudocolor)"
+#~ msgstr "Normalus (pseudocolor)"
 
-#: viewer/preferences.c:55
+#~ msgid "Small"
+#~ msgstr "MaÅ¾i"
+
 #, fuzzy
-msgid "Gray"
-msgstr "Gryna pilka"
+#~ msgid "_Black"
+#~ msgstr "Gryna juoda"
 
-#: viewer/preferences.c:56
 #, fuzzy
-msgid "White"
-msgstr "Gryna balta"
+#~ msgid "_Gray"
+#~ msgstr "Gryna pilka"
 
-#: viewer/preferences.c:175
 #, fuzzy
-msgid "_Interpolation:"
-msgstr "_Interpoliacija"
+#~ msgid "_Hyperbolic"
+#~ msgstr "_HiperbolinÄ— Interpoliacija"
 
-#: viewer/preferences.c:187
-msgid "_Dither:"
-msgstr ""
+#~ msgid "_Interpolation"
+#~ msgstr "_Interpoliacija"
 
-#: viewer/preferences.c:199
 #, fuzzy
-msgid "Check _type:"
-msgstr "Langeliø _tipas"
+#~ msgid "_Maximum (high color)"
+#~ msgstr "Maksimalus (high color)"
 
-#: viewer/preferences.c:211
 #, fuzzy
-msgid "Check _size:"
-msgstr "_Langeliø dydis"
+#~ msgid "_Midtone"
+#~ msgstr "VidutiniÅ¡ki langeliai"
 
-#~ msgid "Image Viewer"
-#~ msgstr "Paveikslëliø şiûrëklë"
+#, fuzzy
+#~ msgid "_White"
+#~ msgstr "Gryna balta"
+
+#, fuzzy
+#~ msgid "/Zoom _1:1"
+#~ msgstr "Tikrasis dydis _1:1"
+
+#~ msgid "Check Type"
+#~ msgstr "LangeliÅ³ tipas"
+
+#~ msgid "Check Size"
+#~ msgstr "LangeliÅ³ dydis"
+
+#~ msgid "Close"
+#~ msgstr "UÅ¾daryti"
+
+#, fuzzy
+#~ msgid "Change preferences"
+#~ msgstr "Nuostatos"
+
+#, fuzzy
+#~ msgid "_Preferences..."
+#~ msgstr "Nuostatos"
+
+#~ msgid "Display"
+#~ msgstr "Rodymas"
+
+#, fuzzy
+#~ msgid "Nearest Neighbour Interpolation"
+#~ msgstr "Artimiausio kaimyno interpoliacija"
+
+#, fuzzy
+#~ msgid "Tiles Interpolation"
+#~ msgstr "Interpoliacija"
+
+#, fuzzy
+#~ msgid "Bilinear Interpolation"
+#~ msgstr "Interpoliacija"
+
+#, fuzzy
+#~ msgid "Normal (pseudocolor) dithering"
+#~ msgstr "Normalus (_pseudocolor) dithering'as"
+
+#, fuzzy
+#~ msgid "Maximum (high color) dithering"
+#~ msgstr "_Maksimalus (high color) dithering'as"
+
+#, fuzzy
+#~ msgid "Midtone"
+#~ msgstr "VidutiniÅ¡ki langeliai"
+
+#, fuzzy
+#~ msgid "Black"
+#~ msgstr "Gryna juoda"
+
+#, fuzzy
+#~ msgid "Gray"
+#~ msgstr "Gryna pilka"
+
+#, fuzzy
+#~ msgid "White"
+#~ msgstr "Gryna balta"
+
+#, fuzzy
+#~ msgid "_Interpolation:"
+#~ msgstr "_Interpoliacija"
+
+#, fuzzy
+#~ msgid "Check _type:"
+#~ msgstr "LangeliÅ³ _tipas"
+
+#, fuzzy
+#~ msgid "Check _size:"
+#~ msgstr "_LangeliÅ³ dydis"
 
 #~ msgid "Check size large"
-#~ msgstr "Langeliø dydis didelis"
+#~ msgstr "LangeliÅ³ dydis didelis"
 
 #~ msgid "Check size medium"
-#~ msgstr "Langeliø dydis vidutinis"
+#~ msgstr "LangeliÅ³ dydis vidutinis"
 
 #~ msgid "Check size small"
-#~ msgstr "Langeliø dydis maşas"
+#~ msgstr "LangeliÅ³ dydis maÅ¾as"
 
 #~ msgid "Check type _black"
-#~ msgstr "Langeliø tipas _juodi"
+#~ msgstr "LangeliÅ³ tipas _juodi"
 
 #~ msgid "Check type _dark"
-#~ msgstr "Langeliø tipas _tamsûs"
+#~ msgstr "LangeliÅ³ tipas _tamsÅ«s"
 
 #~ msgid "Check type _gray"
-#~ msgstr "Langeliø tipas _pilki"
+#~ msgstr "LangeliÅ³ tipas _pilki"
 
 #~ msgid "Check type _light"
-#~ msgstr "Langeliø tipas ğvie_sûs"
+#~ msgstr "LangeliÅ³ tipas Å¡vie_sÅ«s"
 
 #~ msgid "Check type _midtone"
-#~ msgstr "Langeliø tipas _vidutiniğki"
+#~ msgstr "LangeliÅ³ tipas _vidutiniÅ¡ki"
 
 #~ msgid "Check type _white"
-#~ msgstr "Langeliø tipas _balti"
+#~ msgstr "LangeliÅ³ tipas _balti"
 
 #~ msgid "Normal (_pseudocolor) dithering"
 #~ msgstr "Normalus (_pseudocolor) dithering'as"
@@ -820,28 +992,25 @@ msgstr "_Langeliø dydis"
 
 #, fuzzy
 #~ msgid "I could not initialize GnomeVFS!\n"
-#~ msgstr "Negalëjau inicializuoti Bonobo"
+#~ msgstr "NegalÄ—jau inicializuoti Bonobo"
 
 #~ msgid "I could not initialize Bonobo"
-#~ msgstr "Negalëjau inicializuoti Bonobo"
+#~ msgstr "NegalÄ—jau inicializuoti Bonobo"
 
 #~ msgid "Copyright (C) 2000-2001 The Free Software Foundation"
 #~ msgstr "Copyright (C) 2000-2001 The Free Software Foundation"
 
-#~ msgid "Preferences"
-#~ msgstr "Nuostatos"
-
 #~ msgid "Open an image file"
-#~ msgstr "Atidaryti paveikslëlio bylà"
+#~ msgstr "Atidaryti paveikslÄ—lio bylÄ…"
 
 #~ msgid "Close the current window"
-#~ msgstr "Uşdaryti esamà langà"
+#~ msgstr "UÅ¾daryti esamÄ… langÄ…"
 
 #~ msgid "_Open Image..."
-#~ msgstr "_Atidaryti paveikslëlá..."
+#~ msgstr "_Atidaryti paveikslÄ—lÄ¯..."
 
 #~ msgid "_Close This Window"
-#~ msgstr "_Uşdaryti ğá langà"
+#~ msgstr "_UÅ¾daryti Å¡Ä¯ langÄ…"
 
 #~ msgid "2:1"
 #~ msgstr "2:1"
@@ -898,70 +1067,61 @@ msgstr "_Langeliø dydis"
 #~ msgstr "1:10"
 
 #~ msgid "Increase zoom factor by 5%%"
-#~ msgstr "Padidinti mastelá 5%%"
+#~ msgstr "Padidinti mastelÄ¯ 5%%"
 
 #~ msgid "Decrease zoom factor by 5%%"
-#~ msgstr "Sumaşinti mastelá 5%%"
+#~ msgstr "SumaÅ¾inti mastelÄ¯ 5%%"
 
 #~ msgid "Display the image at 1:1 scale"
-#~ msgstr "Vaizduoti paveikslëlá tikruoju dydşiu 1:1"
+#~ msgstr "Vaizduoti paveikslÄ—lÄ¯ tikruoju dydÅ¾iu 1:1"
 
 #~ msgid "_Zoom factor"
 #~ msgstr "_Mastelis"
 
 #~ msgid "_Fit to Window"
-#~ msgstr "_Tilpti á langà"
+#~ msgstr "_Tilpti Ä¯ langÄ…"
 
 #~ msgid "Zoom the image to fit in the window"
-#~ msgstr "Pakeisti paveikslëlio mastelá, kad tilptø lange"
+#~ msgstr "Pakeisti paveikslÄ—lio mastelÄ¯, kad tilptÅ³ lange"
 
 #~ msgid "Full _Screen"
 #~ msgstr "_Visame ekrane"
 
 #~ msgid "Use the whole screen for display"
-#~ msgstr "Naudoti visà ekranà vaizdavimui"
+#~ msgstr "Naudoti visÄ… ekranÄ… vaizdavimui"
 
 #~ msgid "Check size"
-#~ msgstr "Langeliø dydis"
+#~ msgstr "LangeliÅ³ dydis"
 
 #~ msgid "Dark checks"
-#~ msgstr "Tamsûs langeliai"
+#~ msgstr "TamsÅ«s langeliai"
 
 #~ msgid "Fit all images to screen"
-#~ msgstr "Sutalpinti visus paveikslëlius á ekranà"
-
-#~ msgid "Fit standard-sized images to screen"
-#~ msgstr "Sutalpinti standartinio dydşio paveikslëlius á ekranà"
+#~ msgstr "Sutalpinti visus paveikslÄ—lius Ä¯ ekranÄ…"
 
 #~ msgid "Hyperbolic (slowest, best quality)"
-#~ msgstr "Hiperbolinis (lëèiausias, geriausia kokybë)"
+#~ msgstr "Hiperbolinis (lÄ—Äiausias, geriausia kokybÄ—)"
 
 #~ msgid "Light checks"
-#~ msgstr "Ğviesûs langeliai"
+#~ msgstr "Å viesÅ«s langeliai"
 
 #~ msgid "Nearest neighbor (fastest, low quality)"
-#~ msgstr "Artimiausio kaimyno (greièiausias, prasta kokybë)"
+#~ msgstr "Artimiausio kaimyno (greiÄiausias, prasta kokybÄ—)"
 
 #~ msgid "Never"
 #~ msgstr "Niekada"
 
 #~ msgid "Only if image does not fit"
-#~ msgstr "Tik jei paveikslëlis netelpa"
+#~ msgstr "Tik jei paveikslÄ—lis netelpa"
 
 #~ msgid "Pick window size and zoom factor automatically"
-#~ msgstr "Parinkti lango dydá ir mastelá automatiğkai"
-
-#~ msgid "Put a bevel around the edge of the screen"
-#~ msgstr "Rodyti rëmelá ekrano pakrağèiuose"
-
-#~ msgid "Transparency type"
-#~ msgstr "Skaidrumo tipas"
+#~ msgstr "Parinkti lango dydÄ¯ ir mastelÄ¯ automatiÅ¡kai"
 
 #~ msgid "Use 1:1 zoom factor"
-#~ msgstr "Naudoti 1:1 mastelá"
+#~ msgstr "Naudoti 1:1 mastelÄ¯"
 
 #~ msgid "Use same zoom factor as image window"
-#~ msgstr "Naudoti tà patá mastelá kaip paveikslëlio lange"
+#~ msgstr "Naudoti tÄ… patÄ¯ mastelÄ¯ kaip paveikslÄ—lio lange"
 
 #~ msgid "Use scrollbars"
 #~ msgstr "Naudoti slankiklius"
