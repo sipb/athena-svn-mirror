@@ -1,20 +1,20 @@
-<?xml version="1.0" encoding="utf-8"?>
 <chapter id="themes-0">
   <title>Customizing the Appearance of the Desktop</title>
   <para>This chapter describes the methods you can use to change the appearance
-of the desktop to enhance the accessibility of the desktop for users with
-visual impairments.</para>
+of the GNOME Desktop
+to enhance the accessibility of the desktop for users with visual impairments.</para>
   <sect1 id="themes-1">
     <title>Customization Options</title>
     <para>There are a number of methods to enable you to customize the appearance
-of the desktop to suit your specific needs, as follows:</para>
+of the GNOME Desktop
+to suit your specific needs, as follows:</para>
     <variablelist>
       <varlistentry>
         <term>Themes</term>
         <listitem>
           <para>Themes are the most effective
 way to change the appearance of the desktop in a consistent manner. See <xref linkend="themes-2"/> for more information about themes and how to use themes
-to achieve the type of desktop that you require.</para>
+to achieve the type of desktop environment that you require.</para>
         </listitem>
       </varlistentry>
       <varlistentry>
@@ -28,10 +28,10 @@ to using themes. See <xref linkend="themes-7"/> for more information.</para>
       </varlistentry>
     </variablelist>
     <para>The following table summarizes the changes that you can
-make to the desktop and where you can make the changes. This manual does not
-provide detailed instructions about how to customize the desktop. For detailed
-instructions about how to use the customization tools that the desktop provides,
-refer to the online help for each tool or to the <citetitle>GNOME 2.0 Desktop User Guide</citetitle>.</para>
+make to the GNOME Desktop and where you can make the changes. This manual does not provide
+detailed instructions about how to customize the desktop. For detailed instructions
+about how to use the customization tools that the desktop provides, refer
+to the online help for each tool or to the <citetitle>GNOME 2.8 Desktop User Guide</citetitle>.</para>
     <table frame="topbot" id="themes-TBL-1">
       <title>Quick Reference to Customizing the Appearance of the Desktop</title>
       <tgroup cols="2" colsep="0" rowsep="0">
@@ -39,62 +39,59 @@ refer to the online help for each tool or to the <citetitle>GNOME 2.0 Desktop Us
         <colspec colname="colspec1" colwidth="14.50*"/>
         <thead>
           <row rowsep="1">
-            <entry>
+            <entry valign="top">
               <para>To change the...</para>
             </entry>
-            <entry>
+            <entry valign="top">
               <para>Use...</para>
             </entry>
           </row>
         </thead>
         <tbody>
           <row>
-            <entry>
-              <para>Overall appearance of the desktop to use high contrast colors,
-low contrast colors, or large print.</para>
+            <entry valign="top">
+              <para>Overall appearance of the desktop to use high
+contrast colors, low contrast colors, or large print.</para>
             </entry>
-            <entry>
+            <entry valign="top">
               <para>The <application>Theme</application> preference tool.</para>
             </entry>
           </row>
           <row>
-            <entry>
+            <entry valign="top">
               <para>Appearance of the desktop background only.</para>
             </entry>
-            <entry>
-              <para>The <application>Background</application> preference tool and
-the <application>Nautilus</application> file manager <guilabel>Preferences</guilabel> dialog.</para>
+            <entry valign="top">
+              <para>The <application>Desktop Background</application> preference tool and the <application>Nautilus</application>
+file manager <guilabel>Backgrounds and Emblems</guilabel> menu item.</para>
             </entry>
           </row>
           <row>
-            <entry>
-              <para>Font displayed on the desktop background and in all desktop
-applications.</para>
+            <entry valign="top">
+              <para>Font displayed on the desktop background and
+in all desktop applications.</para>
             </entry>
-            <entry>
-              <para>The <application>Font</application>
-preference tool.</para>
-            </entry>
-          </row>
-          <row>
-            <entry>
-              <para>Default font settings of the <application> gedit</application>
-text editor or <application>Terminal</application> application. By default, <application> gedit</application> and <application>Terminal</application> use the default
-application font that is specified in the <application>Font</application>
-preference tool.</para>
-            </entry>
-            <entry>
-              <para>The <guilabel>Preferences</guilabel>
-dialog for the application.</para>
+            <entry valign="top">
+              <para>The <application>Fonts</application> preference tool.</para>
             </entry>
           </row>
           <row>
-            <entry colname="colspec0">
-              <para>Appearance of icons and tabs in the <application>Nautilus</application> file manager application.</para>
+            <entry valign="top">
+              <para>Default font settings of the <application> gedit</application> text editor or <application>Terminal</application> application.
+By default, <application> gedit</application> and <application>Terminal</application>
+use the default application font that is specified in the <application>Font</application> preference tool.</para>
             </entry>
-            <entry colname="colspec1">
-              <para>The <guilabel>View</guilabel> menu and the <guilabel>Preferences</guilabel>
-dialog in the <application>Nautilus</application> file manager  application.</para>
+            <entry valign="top">
+              <para>The <guilabel>Preferences</guilabel> dialog for the application.</para>
+            </entry>
+          </row>
+          <row>
+            <entry colname="colspec0" valign="top">
+              <para>Appearance of icons and
+tabs in the <application>Nautilus</application> file manager application.</para>
+            </entry>
+            <entry colname="colspec1" valign="top">
+              <para>The <guilabel>View</guilabel> menu and the <guilabel>Preferences</guilabel> dialog in the <application>Nautilus</application> file manager  application.</para>
             </entry>
           </row>
         </tbody>
@@ -104,7 +101,7 @@ dialog in the <application>Nautilus</application> file manager  application.</pa
   <sect1 id="themes-2">
     <title>Using Themes to Customize the Desktop</title>
     <para>This section describes how to use themes to customize the appearance
-of the desktop.</para>
+of the GNOME Desktop.</para>
     <sect2 id="themes-3">
       <title>Introduction to Themes</title>
       <para>You can use themes to modify and control the appearance of the desktop
@@ -123,7 +120,8 @@ and icons on the desktop for optimum compatibility with the font size. </para>
 the visual appearance of all windows, applications, dialogs, panels, and applets.
 Desktop themes also determine the visual appearance of the GNOME-compliant
 interface items that appear on windows, panels, and applets, such as menus,
-icons, and buttons. Some of the desktop themes that are available in the desktop are designed for special accessibility needs.</para>
+icons, and buttons. Some of the desktop themes that are available in the Desktop
+are designed for special accessibility needs.</para>
           </listitem>
         </varlistentry>
         <varlistentry>
@@ -133,24 +131,18 @@ icons, and buttons. Some of the desktop themes that are available in the desktop
 themes determine the appearance of the frames around windows only.</para>
           </listitem>
         </varlistentry>
-        <varlistentry>
-          <term><application>Nautilus</application> file manager themes</term>
-          <listitem>
-            <para><application>Nautilus</application> file manager themes
-determine the appearance of desktop background objects, <application>Nautilus</application> icons, and the font used on tabs in the <application>Nautilus</application> side pane.</para>
-          </listitem>
-        </varlistentry>
       </variablelist>
     </sect2>
     <sect2 id="themes-4">
       <title>To Choose a Desktop Theme</title>
       <para>To open the <application>Theme</application> preference tool and view
-the desktop themes that are available, choose <menuchoice><guimenu>Applications</guimenu><guisubmenu>Desktop Preferences</guisubmenu><guimenuitem>Theme</guimenuitem></menuchoice>. The <guilabel>Theme Preferences</guilabel>
-dialog is displayed. Click on the <guilabel>Widget Theme</guilabel> tab to
-display the desktop themes that are available. To choose a new theme for the
-desktop, click on a theme in the <guilabel>Widget Theme</guilabel> list box.
-The system automatically applies the theme to the desktop. </para>
-      <para>There are several desktop themes available that suit different accessibility
+the desktop themes that are available, choose <menuchoice><guimenu>Applications</guimenu><guisubmenu>Desktop
+Preferences</guisubmenu><guimenuitem>Theme</guimenuitem></menuchoice>.
+The <guilabel>Theme Preferences</guilabel> dialog is displayed. </para>
+      <para>The most popular desktop themes are listed on the left side of the <guilabel>Theme Preferences</guilabel>dialog. To choose a new theme for the desktop,
+click on a theme in the list box. The system automatically applies the theme
+to the desktop. The view a longer list of desktop themes, click on the <guibutton>Theme Details</guibutton> button. The desktop themes are displayed in the <guilabel>Controls</guilabel> tabbed section of the <guilabel>Theme Details</guilabel>
+dialog. There are several desktop themes available that suit different accessibility
 needs. These themes are described in the following table:</para>
       <table frame="topbot" id="themes-TBL-2">
         <title>Desktop Themes Designed for Accessibility Requirements</title>
@@ -159,89 +151,91 @@ needs. These themes are described in the following table:</para>
           <colspec colname="colspec1" colwidth="50*"/>
           <thead>
             <row rowsep="1">
-              <entry>
+              <entry valign="top">
                 <para>Theme Name</para>
               </entry>
-              <entry>
+              <entry valign="top">
                 <para>Description</para>
               </entry>
             </row>
           </thead>
           <tbody>
             <row>
-              <entry>
+              <entry valign="top">
                 <para>
                   <guilabel>HighContrast</guilabel>
                 </para>
               </entry>
-              <entry>
-                <para>Provides dark text on a light background using high contrast colors.</para>
+              <entry valign="top">
+                <para>Provides dark text on a light background using high
+contrast colors.</para>
               </entry>
             </row>
             <row>
-              <entry colname="colspec0">
+              <entry colname="colspec0" valign="top">
                 <para>
                   <guilabel>HighContrastInverse</guilabel>
                 </para>
               </entry>
-              <entry colname="colspec1">
-                <para>Provides light text on a dark background using
-high contrast colors.</para>
+              <entry colname="colspec1" valign="top">
+                <para>Provides
+light text on a dark background using high contrast colors.</para>
               </entry>
             </row>
             <row>
-              <entry colname="colspec0">
+              <entry colname="colspec0" valign="top">
                 <para>
                   <guilabel>LowContrast</guilabel>
                 </para>
               </entry>
-              <entry colname="colspec1">
-                <para>Uses low contrast colors for the background
-and foreground text. </para>
+              <entry colname="colspec1" valign="top">
+                <para>Uses low contrast colors for
+the background and foreground text. </para>
               </entry>
             </row>
             <row>
-              <entry colname="colspec0">
+              <entry colname="colspec0" valign="top">
                 <para>
                   <guilabel>LargePrint</guilabel>
                 </para>
               </entry>
-              <entry colname="colspec1">
-                <para>Increases the font size to 18pt. The background
-and foreground colors are the same as those specified by the <guilabel>Default</guilabel> desktop theme.</para>
+              <entry colname="colspec1" valign="top">
+                <para>Increases the font size to 18pt.
+The background and foreground colors are the same as those specified by the <guilabel>Default</guilabel> desktop theme.</para>
               </entry>
             </row>
             <row>
-              <entry>
+              <entry valign="top">
                 <para>
                   <guilabel>HighContrastLargePrint</guilabel>
                 </para>
               </entry>
-              <entry>
-                <para>Provides dark text on a light background using high contrast
-colors and increases the font size to 18pt.</para>
+              <entry valign="top">
+                <para>Provides dark text on a light background using high
+contrast colors and increases the font size to 18pt.</para>
               </entry>
             </row>
             <row>
-              <entry>
+              <entry valign="top">
                 <para>
                   <guilabel>HighContrastLargePrintInverse</guilabel>
                 </para>
               </entry>
-              <entry>
-                <para>Provides light text on a dark background using high contrast
-colors and increases the font size to 18pt.</para>
+              <entry valign="top">
+                <para>Provides light text on a dark background using high
+contrast colors and increases the font size to 18pt.</para>
               </entry>
             </row>
             <row>
-              <entry colname="colspec0">
+              <entry colname="colspec0" valign="top">
                 <para>
                   <guilabel>LowContrastLargePrint</guilabel>
                 </para>
               </entry>
-              <entry colname="colspec1">
-                <para>Uses low contrast colors for the background
-and foreground text and increases the font size to 18pt. </para>
+              <entry colname="colspec1" valign="top">
+                <para>Uses
+low contrast colors for the background and foreground text and increases the
+font size to 18pt. </para>
               </entry>
             </row>
           </tbody>
@@ -251,37 +245,56 @@ and foreground text and increases the font size to 18pt. </para>
     <sect2 id="themes-5">
       <title>To Choose a Window Frame Theme</title>
       <para>To open the <application>Theme</application> preference tool and view
-the window frame themes that are available, choose <menuchoice><guimenu>Applications</guimenu><guisubmenu>Desktop Preferences</guisubmenu><guimenuitem>Theme</guimenuitem></menuchoice>. The <guilabel>Theme Preferences</guilabel>
-dialog is displayed. Click on the <guilabel>Window Frames</guilabel> tab to
-display the window frame themes that are available. The <guilabel>Atlanta</guilabel> theme is an accessible theme. </para>
-    </sect2>
-    <sect2 id="themes-18">
-      <title>To Choose a Nautilus Theme</title>
-      <para><application>Nautilus</application> file manager themes determine the
-appearance of desktop background objects, <application>Nautilus</application>
-icons, and the font used on tabs in the <application>Nautilus</application>
-side pane. To select a Nautilus theme, perform the following steps:</para>
+the window frame themes that are available, perform the following steps: </para>
       <orderedlist>
         <listitem>
-          <para>Start the <application>Nautilus</application> file manager.</para>
+          <para>Choose <menuchoice><guimenu>Applications</guimenu><guisubmenu>Desktop
+Preferences</guisubmenu><guimenuitem>Theme</guimenuitem></menuchoice>.
+The <guilabel>Theme Preferences</guilabel> dialog is displayed.</para>
         </listitem>
         <listitem>
-          <para>Choose <menuchoice><guimenu>Edit</guimenu><guimenuitem>Preferences</guimenuitem></menuchoice> to display the <guilabel>Preferences</guilabel> dialog. </para>
+          <para>Click on the <guibutton>Theme Details</guibutton> button.
+The <guilabel>Theme Details</guilabel> dialog is displayed.</para>
         </listitem>
         <listitem>
-          <para>Click on the <guilabel>Appearance</guilabel> category to display
-the <application>Nautilus</application> themes that are available. The accessible <application>Nautilus</application> themes correspond to the accessible desktop themes
-that are listed in <xref linkend="themes-TBL-2"/>.</para>
+          <para>Click on the <guilabel>Window Border</guilabel> tab to display
+the window frame themes that are available. The <guilabel>Atlanta</guilabel>
+theme is an accessible theme. </para>
         </listitem>
         <listitem>
-          <para>Select the theme that matches the desktop theme that you selected.</para>
+          <para>To choose a window frame theme, select a theme from the list
+box, then click <guibutton>Close</guibutton>. </para>
+        </listitem>
+      </orderedlist>
+    </sect2>
+    <sect2 id="themes-19">
+      <title>To Choose an Icon Theme</title>
+      <para>To open the <application>Theme</application> preference tool and view
+the icon themes that are available, perform the following steps: </para>
+      <orderedlist>
+        <listitem>
+          <para>Choose <menuchoice><guimenu>Applications</guimenu><guisubmenu>Desktop
+Preferences</guisubmenu><guimenuitem>Theme</guimenuitem></menuchoice>.
+The <guilabel>Theme Preferences</guilabel> dialog is displayed.</para>
+        </listitem>
+        <listitem>
+          <para>Click on the <guibutton>Theme Details</guibutton> button.
+The <guilabel>Theme Details</guilabel> dialog is displayed.</para>
+        </listitem>
+        <listitem>
+          <para>Click on the <guilabel>Icons</guilabel> tab to display the
+icon themes that are available. </para>
+        </listitem>
+        <listitem>
+          <para>To choose an icon theme, select a theme from the list box,
+then click <guibutton>Close</guibutton>. </para>
         </listitem>
       </orderedlist>
     </sect2>
     <sect2 id="themes-6">
       <title>To Create Your Own Themes</title>
-      <para>For information about how to create your own desktop themes and window frame
-themes, see the <citetitle>GNOME 2.0 Desktop System Administration Guide</citetitle>. </para>
+      <para>For information about how to create your own desktop themes and window
+frame themes, see the <citetitle>GNOME 2.8 Desktop System Administration Guide</citetitle>. </para>
     </sect2>
   </sect1>
   <sect1 id="themes-7">
@@ -292,9 +305,8 @@ individually.</para>
       <title>To Customize the Desktop Background</title>
       <para>The desktop themes do not affect the desktop background. Therefore to
 modify the desktop background to complement your desktop, you must customize
-the desktop background separately using the <application>Background</application>
-preference tool. To start the <application>Background</application> preference
-tool, choose <menuchoice><guimenu>Applications</guimenu><guisubmenu>Desktop Preferences</guisubmenu><guimenuitem>Background</guimenuitem></menuchoice>.</para>
+the desktop background separately using the <application>Desktop Background</application> preference tool. To start the <application>Desktop Background</application> preference tool,choose <menuchoice><guimenu>Applications</guimenu><guisubmenu>Desktop
+Preferences</guisubmenu><guimenuitem>Desktop Background</guimenuitem></menuchoice>.</para>
     </sect2>
     <sect2 id="themes-9">
       <title>To Customize Desktop Background Objects</title>
@@ -303,18 +315,18 @@ controlled by the <application>Nautilus</application> file manager. To change
 the size of the icons, perform the following steps:</para>
       <orderedlist>
         <listitem>
-          <para>Start the <application>Nautilus</application> file manager.</para>
+          <para>Start the file manager.</para>
         </listitem>
         <listitem>
-          <para>Choose <menuchoice><guimenu>Edit</guimenu><guimenuitem>Preferences.</guimenuitem></menuchoice>.</para>
+          <para>Choose <menuchoice><guimenu>Edit</guimenu><guimenuitem>Preferences</guimenuitem></menuchoice>.</para>
         </listitem>
         <listitem>
-          <para>Select the <guilabel>Views</guilabel> category.</para>
+          <para>Select the <guilabel>Views</guilabel> tabbed section.</para>
         </listitem>
         <listitem>
           <para>In the <guilabel>Icon View Defaults</guilabel> group, select
 the zoom level that you require in the <guilabel>Default zoom level</guilabel>
-spin box.</para>
+drop-down list.</para>
         </listitem>
       </orderedlist>
     </sect2>
@@ -322,10 +334,11 @@ spin box.</para>
       <title>To Customize Fonts</title>
       <para>This section describes how to customize the font settings for the desktop
 and frequently-used applications.</para>
-      <para>If you have difficulty with the default font type and font size that is used
-on the desktop and desktop background, you can customize the font settings
-to suit your needs. </para>
-      <para>You can specify individual font settings for the following desktop components and applications: </para>
+      <para>If you have difficulty with the default font type and font size that
+is used on the desktop and desktop background, you can customize the font
+settings to suit your needs. </para>
+      <para>You can specify individual font settings for the following desktop components
+and applications: </para>
       <itemizedlist>
         <listitem>
           <para>Entire desktop excluding the desktop background</para>
@@ -349,7 +362,9 @@ to suit your needs. </para>
         <title>To Customize the Desktop Fonts</title>
         <para>The <application>Font</application> preference tool allows you to specify
 the default fonts for the desktop. </para>
-        <para>To start the <application>Font</application> preference tool, choose <menuchoice><guimenu>Applications</guimenu><guisubmenu>Desktop Preferences</guisubmenu><guimenuitem>Font</guimenuitem></menuchoice>. The <guilabel>Font Preferences</guilabel> dialog contains the following options: </para>
+        <para>To start the <application>Font</application> preference tool, choose <menuchoice><guimenu>Applications</guimenu><guisubmenu>Desktop
+Preferences</guisubmenu><guimenuitem>Font</guimenuitem></menuchoice>.
+The <guilabel>Font Preferences</guilabel> dialog contains the following options: </para>
         <variablelist>
           <varlistentry>
             <term>
@@ -398,7 +413,7 @@ Profile</guimenuitem></menuchoice>. In the <guilabel>General</guilabel> tabbed
 section, specify a font for the window contents as follows:</para>
         <orderedlist>
           <listitem>
-            <para>Deselect the <guilabel>Use the same font as other applications</guilabel> option. </para>
+            <para>Deselect the <guilabel>Use the same font as other applications</guilabel> option.</para>
           </listitem>
           <listitem>
             <para>Click on the font selector button to select the font type
@@ -426,7 +441,7 @@ the text editor window contents. To customize the font settings for the <applica
             <para>Perform one of the following steps:</para>
             <itemizedlist>
               <listitem>
-                <para>To use the default desktop font that is specified in the <application>Font</application> preference tool, select the <guilabel>Use default theme
+                <para>To use the default application font that is specified in the <application>Font</application> preference tool, select the <guilabel>Use default theme
 font</guilabel> option.</para>
               </listitem>
               <listitem>
@@ -479,20 +494,14 @@ users. However, you can choose the window frame theme that best suits your
 needs. </para>
         </listitem>
         <listitem>
-          <para>In the <guilabel>Nautilus Preferences</guilabel> dialog, select
-a <application>Nautilus</application> theme to match the high contrast or
-low contrast desktop theme that you selected. See <xref linkend="themes-18"/>
-for more information.</para>
-        </listitem>
-        <listitem>
-          <para>Use the <application>Background</application> preference tool
-to customize your desktop background as follows:</para>
+          <para>Use the <application>Desktop Background</application> preference
+tool to customize your desktop background as follows:</para>
           <itemizedlist>
             <listitem>
-              <para>Set the <guilabel>Picture Options</guilabel> to <guilabel>No Picture</guilabel>.</para>
+              <para>Set the <guilabel>Desktop Wallpaper</guilabel> to <guilabel>No Wallpaper</guilabel>.</para>
             </listitem>
             <listitem>
-              <para>Set the <guilabel>Background Style</guilabel> to <guilabel>Solid color</guilabel>.</para>
+              <para>Set the <guilabel>Desktop Colors</guilabel> to <guilabel>Solid Color</guilabel>.</para>
             </listitem>
             <listitem>
               <para>Select a background color that suits your needs.</para>
@@ -502,12 +511,13 @@ to customize your desktop background as follows:</para>
         <listitem>
           <para>In the <application>Terminal</application> application, ensure
 that the <guilabel>Use colors from system theme</guilabel> option is selected
-in the <guilabel>Edit Profile</guilabel> dialog.</para>
+in the <guilabel>Colors</guilabel> tabbed section of the <guilabel>Editing
+Profile</guilabel> dialog.</para>
         </listitem>
         <listitem>
           <para>In the <application>gedit</application> application, ensure
 that the <guilabel>Use default theme colors</guilabel> option is selected
-in the <guilabel>Preferences</guilabel> dialog.</para>
+in the <guilabel>Fonts &amp; Colors</guilabel> tabbed section of the <guilabel>Preferences</guilabel> dialog.</para>
         </listitem>
       </orderedlist>
     </sect2>
@@ -529,25 +539,20 @@ large print desktop themes, depending on the contrast level that you prefer.</pa
 increase the font that is displayed on desktop background objects.</para>
         </listitem>
         <listitem>
-          <para>In the <guilabel>Nautilus Preferences</guilabel> dialog, select
-a <application>Nautilus</application> theme to match the large print desktop
-theme that you selected. See <xref linkend="themes-18"/> for more information.</para>
-        </listitem>
-        <listitem>
           <para>Increase the font size that is used to display the contents
 of the <application>Terminal</application> application window. See <xref linkend="themes-12"/>
 for more information.</para>
         </listitem>
         <listitem>
           <para>If the <guilabel>Use default theme font</guilabel> option
-is selected in the <application>gedit</application> <guilabel>Preferences</guilabel> dialog, <application>gedit</application> uses the font size that
+is selected in the <application>gedit</application><guilabel>Preferences</guilabel> dialog, <application>gedit</application> uses the font size that
 is specified in the large print theme that you selected. However, if the <guilabel>Use default theme font</guilabel> option is not selected, increase the font
 size that is used to display the contents of the <application>gedit</application>
 text editor window. See <xref linkend="themes-13"/> for more information.</para>
         </listitem>
         <listitem>
           <para>If you use applications that use panes, such as <application>Nautilus</application> file manager and the Help browser, you may need to
-change the size of panes to accomodate the large print. See the online help
+change the size of panes to accommodate the large print. See the online help
 for the appropriate application for more information.</para>
         </listitem>
       </orderedlist>

@@ -1,9 +1,8 @@
-<?xml version="1.0" encoding="utf-8"?>
 <chapter id="menustructure-0">
   <title>Customizing Menus</title>
   <highlights>
-    <para>The information in this chapter describes how GNOME implements
-menus and how you can customize menus.</para>
+    <para>The information in this chapter describes how the GNOME
+Desktop implements menus and how you can customize menus.</para>
   </highlights>
   <sect1 id="menustructure-1">
     <title>Introduction to Menus</title>
@@ -11,8 +10,8 @@ menus and how you can customize menus.</para>
       <primary>menus</primary>
       <secondary>introduction</secondary>
     </indexterm>
-    <para>The way in which GNOME implements menus in the desktop enables you to
-do the following:</para>
+    <para>The way in which the GNOME Desktop implements menus enables you to do
+the following:</para>
     <itemizedlist>
       <listitem>
         <para>Customize the menu hierarchy easily. The menu hierarchy is
@@ -28,7 +27,7 @@ about the menu hierarchy to applications when you install the applications.</par
         <para>Configure menus so that users cannot modify the menus.</para>
       </listitem>
     </itemizedlist>
-    <para>Menus in the GNOME desktop use the following components:</para>
+    <para>Menus in the GNOME Desktop use the following components:</para>
     <itemizedlist>
       <listitem>
         <para>File abstraction layer</para>
@@ -68,10 +67,10 @@ to the menus.</para>
         <colspec colwidth="50*"/>
         <thead>
           <row rowsep="1">
-            <entry valign="top">
+            <entry>
               <para>Menu</para>
             </entry>
-            <entry valign="top">
+            <entry>
               <para>URI Locations</para>
             </entry>
           </row>
@@ -90,8 +89,7 @@ users</para>
           </row>
           <row>
             <entry valign="top">
-              <para><guimenu>Desktop Preferences</guimenu> menu
-for all users</para>
+              <para><guimenu>Desktop Preferences</guimenu> menu for all users</para>
             </entry>
             <entry valign="top">
               <para>
@@ -104,7 +102,7 @@ for all users</para>
     </table>
   </sect1>
   <sect1 id="menustructure-13">
-    <title>Vfolders</title>
+    <title>Vfolders and Menus</title>
     <indexterm>
       <primary>menus</primary>
       <secondary>vfolders</secondary>
@@ -117,20 +115,13 @@ a <firstterm>vfolder</firstterm> is a virtual representation of items that
 reside in a physical location or physical locations on your system. For example,
 a vfolder might represent the contents of several directories. A vfolder is
 an abstraction from one or more physical locations. In terms of menus in the
-GNOME desktop, a vfolder is a representation in a menu of items that might
+GNOME Desktop, a vfolder is a representation in a menu of items that might
 be physically located in several directories. </para>
-    <indexterm>
-      <primary>menus</primary>
-      <secondary>vfolder information files</secondary>
-    </indexterm>
-    <indexterm>
-      <primary>vfolder information files</primary>
-    </indexterm>
-    <para>A <firstterm>vfolder information file</firstterm> is an XML file that
-describes a vfolder. Vfolder information files specify the structure of your
-menus. Vfolder information files specify the names of your menus, and the
-order in which applications appear in your menus. Vfolder information files
-have a <filename>.vfolder-info</filename> file extension. </para>
+    <para><indexterm><primary>menus</primary><secondary>vfolder information files</secondary></indexterm><indexterm><primary>vfolder information files</primary></indexterm>A <firstterm>vfolder information file</firstterm> is an XML file
+that describes a vfolder. Vfolder information files specify the structure
+of your menus. Vfolder information files specify the names of your menus,
+and the order in which applications appear in your menus. Vfolder information
+files have a <filename>.vfolder-info</filename> file extension. </para>
     <para>The following is an excerpt from a vfolder information file:</para>
     <literallayout>&lt;?xml version=&quot;1.0&quot;?&gt;
 &lt;VFolderInfo&gt;
@@ -165,10 +156,10 @@ in vfolder information files.</para>
         <colspec colname="colspec3" colwidth="66.17*"/>
         <thead>
           <row rowsep="1">
-            <entry valign="top">
+            <entry>
               <para>Element</para>
             </entry>
-            <entry valign="top">
+            <entry>
               <para>Description</para>
             </entry>
           </row>
@@ -257,13 +248,13 @@ hierarchy. Desktop entry files have a <filename>.desktop</filename> file extensi
     <literallayout>[Desktop Entry]
 Encoding=UTF-8
 Name=Calculator
-Comment=Perform simple calculations
-Exec=gnome-calculator
-Icon=gnome-calc3.png
+Comment=Perform calculations
+Exec=gcalctool
+Icon=gcalctool.png
 Terminal=false
 Type=Application
-X-GNOME-DocPath=gnome-calculator/gnome-calculator.xml
-Categories=GNOME;Application;Utility;</literallayout>
+Categories=GNOME;Application;Utility;
+X-GNOME-DocPath=gcalctool/gcalctool.xml</literallayout>
     <para><xref linkend="menustructure-TBL-7"/> describes the most important keys
 in desktop entry files.</para>
     <table frame="topbot" id="menustructure-TBL-7">
@@ -273,10 +264,10 @@ in desktop entry files.</para>
         <colspec colname="colspec1" colwidth="74.75*"/>
         <thead>
           <row rowsep="1">
-            <entry valign="top">
+            <entry>
               <para>Desktop Entry Key</para>
             </entry>
-            <entry valign="top">
+            <entry>
               <para>Description</para>
             </entry>
           </row>
@@ -334,7 +325,7 @@ from the menu. </para>
             <entry colname="colspec1" valign="top">
               <para>Specifies the filename of an
 icon that represents the item. Does not specify the path to the filename,
-or the filename extension. </para>
+or the file extension. </para>
             </entry>
           </row>
           <row>
@@ -375,45 +366,45 @@ links to a file, folder, or FTP site.</para>
           <row>
             <entry colname="colspec0" valign="top">
               <para>
-                <literal>X-GNOME-DocPath</literal>
-              </para>
-            </entry>
-            <entry colname="colspec1" valign="top">
-              <para>Specifies
-the help file to display when you choose <guimenuitem>Help on <replaceable>application_name</replaceable></guimenuitem> from the menu item popup menu.</para>
-            </entry>
-          </row>
-          <row>
-            <entry colname="colspec0" valign="top">
-              <para>
                 <literal>Categories</literal>
               </para>
             </entry>
             <entry colname="colspec1" valign="top">
               <para>Specifies the keywords that describe
 the item. The keywords are separated with semicolons (;). To see a list of
-the standard category keywords, see the following URL: </para>
+the standard category keywords, see the desktop menu specification at the
+following URL: </para>
               <literallayout>
-                <ulink url="http://www.freedesktop.org/standards/VFolderDesktops.txt">http://www.freedesktop.org/standards/VFolderDesktops.txt</ulink>
+                <ulink url="http://www.freedesktop.org">http://www.freedesktop.org</ulink>
               </literallayout>
-              <para>The vfolder information files map the keywords
-to menus.</para>
+              <para>The vfolder information
+files map the keywords to menus.</para>
+            </entry>
+          </row>
+          <row>
+            <entry colname="colspec0" valign="top">
+              <para>
+                <literal>X-GNOME-DocPath</literal>
+              </para>
+            </entry>
+            <entry colname="colspec1" valign="top">
+              <para>Specifies
+the help file to display when you choose <guimenuitem>Help on <replaceable>application-name</replaceable></guimenuitem> from the menu item popup menu.</para>
             </entry>
           </row>
         </tbody>
       </tgroup>
     </table>
-    <para>For more information on the keys in desktop entry files, see the following
-URL: </para>
+    <para>For more information on the keys in desktop entry files, see the desktop
+entry specification at the following URL: </para>
     <literallayout>
-      <ulink url="http://www.freedesktop.org/standards/desktop-entry-spec/desktop-entry-spec.html">http://www.freedesktop.org/standards/desktop-entry-spec/desktop-entry-spec.html</ulink>
+      <ulink url="http://www.freedesktop.org">http://www.freedesktop.org</ulink>
     </literallayout>
     <note>
-      <para>Panel launchers and desktop background objects also use desktop
-entry files. The desktop entry files for launchers and desktop background
-objects provide the same information as for items in a menu. For example,
-the desktop entry files provide the command to run when a user chooses the
-launcher or object.</para>
+      <para>Panel launchers and desktop objects also use desktop entry files.
+The desktop entry files for launchers and desktop objects provide the same
+information as for items in a menu. For example, the desktop entry files provide
+the command to run when a user chooses the launcher or object.</para>
     </note>
   </sect1>
   <sect1 id="menustructure-14">
@@ -444,10 +435,10 @@ in directory entry files.</para>
         <colspec colname="colspec1" colwidth="72.93*"/>
         <thead>
           <row rowsep="1">
-            <entry valign="top">
+            <entry>
               <para>Directory Entry Key</para>
             </entry>
-            <entry valign="top">
+            <entry>
               <para>Description</para>
             </entry>
           </row>
@@ -484,7 +475,7 @@ of the menu. The comment is displayed as a tooltip when you point to the menu. <
             <entry colname="colspec1" valign="top">
               <para>Specifies the filename of an
 icon that represents the menu. Does not specify the path to the filename,
-or the filename extension. </para>
+or the file extension. </para>
             </entry>
           </row>
           <row>
@@ -507,7 +498,7 @@ or the filename extension. </para>
       <primary>menus</primary>
       <secondary>editing</secondary>
     </indexterm>
-    <para>You use the following desktop components to edit menus:</para>
+    <para>You use the following GNOME Desktop components to edit menus:</para>
     <itemizedlist>
       <listitem>
         <para><application>Nautilus</application> file manager</para>
@@ -522,7 +513,7 @@ lists the menus to which you can add items, and the URI locations that correspon
 to the menus.</para>
     <para>When you use panels to customize menus for all users, you use the menu
 item popup menu. For more information, see <citetitle>Working With Menus</citetitle>
-in the <citetitle>GNOME 2.2 Desktop User Guide</citetitle>.</para>
+in the <citetitle>GNOME 2.6 Desktop User Guide</citetitle>.</para>
     <para>You can also use menu configuration files and menu data files to customize
 menus.</para>
     <sect2 id="menustructure-3">
@@ -544,10 +535,11 @@ menus.</para>
         </indexterm>
         <indexterm>
           <primary>file manager</primary>
-          <secondary>adding menus with</secondary>
+          <secondary>adding menus
+with</secondary>
         </indexterm>
-        <para>To add a menu for all users,
-perform the following steps:</para>
+        <para>To add a menu for all users, perform the
+following steps:</para>
         <orderedlist>
           <listitem>
             <para>In a file manager window, access the location where you want
@@ -565,10 +557,6 @@ is automatically updated with the details of the new menu. The name of the
 folder is displayed as the name of the menu.</para>
           </listitem>
         </orderedlist>
-        <note>
-          <para>You might need to reload the display of the file manager window
-before you can type the name for the folder.</para>
-        </note>
         <para>The next time that users log in, the menu is in the assigned location.</para>
       </sect3>
       <sect3 id="menustructure-20">
@@ -581,11 +569,11 @@ before you can type the name for the folder.</para>
         <orderedlist>
           <listitem>
             <para>Create a directory entry file for the item that you want to
-add. Create the directory entry file in the <filename>/usr/gnome/share/gnome/vfolders</filename> directory. For more information on directory entry files, see <xref linkend="menustructure-14"/>. </para>
+add. Create the directory entry file in the <filename>/usr/share/gnome/vfolders</filename> directory. For more information on directory entry files, see <xref linkend="menustructure-14"/>. </para>
           </listitem>
           <listitem>
             <para>Locate the vfolder information file for the location where
-you want to add the menu. For example, to add a menu to the <guimenu>Applications</guimenu> menu, locate the file <filename>/usr/gnome/etc/gnome-vfs-2.0/vfolders/applications-all-users.vfolder-info</filename>. </para>
+you want to add the menu. For example, to add a menu to the <guimenu>Applications</guimenu> menu, locate the file <filename>/etc/gnome-vfs-2.0/vfolders/applications-all-users.vfolder-info</filename>. </para>
           </listitem>
           <listitem>
             <para>In the vfolder information file, add a <literal>&lt;Folder&gt;</literal> element for the new menu. For more information on vfolder information
@@ -644,7 +632,7 @@ on any item in the menu.</para>
           <para>Choose <menuchoice><guimenu>Entire menu</guimenu><guimenuitem>Properties</guimenuitem></menuchoice>. A <guilabel>Launcher Properties</guilabel> dialog is displayed.</para>
         </listitem>
         <listitem>
-          <para>Modify the properties of the menu in the <guilabel>Launcher Properties</guilabel> dialog. For more information on the elements in the <guilabel>Launcher Properties</guilabel> dialog, see <citetitle>Working With Panels</citetitle> in the <citetitle>GNOME 2.2 Desktop User Guide</citetitle>.</para>
+          <para>Modify the properties of the menu in the <guilabel>Launcher Properties</guilabel> dialog. For more information on the elements in the <guilabel>Launcher Properties</guilabel> dialog, see <citetitle>Working With Panels</citetitle> in the <citetitle>GNOME 2.6 Desktop User Guide</citetitle>.</para>
         </listitem>
         <listitem>
           <para>Click <guibutton>OK</guibutton>.</para>
@@ -667,7 +655,7 @@ want to edit. Right-click on the item that you want to edit.</para>
           <para>Choose <guimenuitem>Properties</guimenuitem>. A <guilabel>Launcher Properties</guilabel> dialog is displayed.</para>
         </listitem>
         <listitem>
-          <para>Modify the properties of the menu item in the <guilabel>Launcher Properties</guilabel> dialog. For more information on the elements in the <guilabel>Launcher Properties</guilabel> dialog, see <citetitle>Working With Panels</citetitle> in the <citetitle>GNOME 2.2 Desktop User Guide</citetitle>.</para>
+          <para>Modify the properties of the menu item in the <guilabel>Launcher Properties</guilabel> dialog. For more information on the elements in the <guilabel>Launcher Properties</guilabel> dialog, see <citetitle>Working With Panels</citetitle> in the <citetitle>GNOME 2.6 Desktop User Guide</citetitle>.</para>
         </listitem>
         <listitem>
           <para>Click <guibutton>OK</guibutton>.</para>
@@ -699,7 +687,7 @@ following conditions are true:</para>
     <itemizedlist>
       <listitem>
         <para>A vfolder information file that corresponds to the menu is
-present in the <filename>/etc/gnome-vfs-2.0/vfolder</filename> directory.</para>
+present in the <filename>/etc/gnome-vfs-2.0/vfolders</filename> directory.</para>
       </listitem>
       <listitem>
         <para>The vfolder information file has the same name as the URI
@@ -715,12 +703,12 @@ following steps:</para>
     <orderedlist>
       <listitem>
         <para>Create a vfolder information file for the menu that you want
-to configure in the <filename>/etc/gnome-vfs-2.0/vfolder</filename> directory.</para>
+to configure in the <filename>/etc/gnome-vfs-2.0/vfolders</filename> directory.</para>
       </listitem>
       <listitem>
         <para>Give the vfolder information file the name of the URI location
 that corresponds to the menu that you want to configure. For example, to configure
-the <guimenu>Applications</guimenu> menu, create a vfolder information called <filename>applications.vfolder-info</filename> in the <filename>/etc/gnome-vfs-2.0/vfolder</filename> directory.</para>
+the <guimenu>Applications</guimenu> menu, create a vfolder information called <filename>applications.vfolder-info</filename> in the <filename>/etc/gnome-vfs-2.0/vfolders</filename> directory.</para>
       </listitem>
       <listitem>
         <para>Set the permissions on the vfolder information file to read
