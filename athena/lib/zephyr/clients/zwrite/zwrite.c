@@ -20,7 +20,7 @@
 #include <ctype.h>
 
 #ifndef lint
-static char rcsid_zwrite_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zwrite/zwrite.c,v 1.27 1988-11-23 15:58:30 jtkohl Exp $";
+static char rcsid_zwrite_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zwrite/zwrite.c,v 1.28 1989-04-25 11:33:49 jtkohl Exp $";
 #endif lint
 
 #define DEFAULT_CLASS "MESSAGE"
@@ -154,9 +154,12 @@ main(argc, argv)
     }
 
     if (!nrecips && !(strcmp(class, DEFAULT_CLASS) ||
-		      strcmp(inst, DEFAULT_INSTANCE))) {
+		      (strcmp(inst, DEFAULT_INSTANCE) &&
+		       strcmp(inst, URGENT_INSTANCE)))) {
+	/* must specify recipient if using default class and
+	   (default instance or urgent instance) */
 	fprintf(stderr, "No recipients specified.\n");
-	exit (1);
+	usage(whoami);
     }
 
     if (!signature) {
@@ -376,7 +379,10 @@ usage(s)
     printf("Usage: %s [-a] [-o] [-d] [-v] [-q] [-n] [-t] [-u]\n\
 \t[-c class] [-i inst] [-f fsname] [user ...] [-m message]\n", s);
     printf("\t-f and -c are mutually exclusive\n\
-\t-f and -i are mutually exclusive\n");
+\t-f and -i are mutually exclusive\n\
+\trecipients must be specified unless -c or -f specifies a class\n\
+\tother than the default class or -i or -f specifies an instance\n\
+\tother than the default or urgent instance\n");
     exit(1);
 } 
 
