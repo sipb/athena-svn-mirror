@@ -169,6 +169,11 @@ HesiodLib	=	-L/usr/athena/lib -lhesiod$(LIBSUFFIX)
 /* Define these to use $(LIBSUFFIX) or not, absolute pathnames or not,
    depending on what you have installed.  */
 
+#if 1
+MotifWCLLib	=	/build/third/supported/wcl/Wc/libWc$(LIBSUFFIX).a
+MotifUtilLib	=	-lMu
+RandomIncludes	=	-I/build/third/supported/wcl
+#else
 #if HaveSysWCL
 MotifWCLLib	=	-L/mit/motif/$(MACHINE)lib -lWcm
 #else
@@ -180,6 +185,7 @@ MotifUtilLib	=	-L/mit/motif/$(MACHINE)lib -lMu
 #else
 MotifUtilLib	=	$(TOP)/libMu/libMu$(LIBSUFFIX).a
 #endif
+#endif /* 1 */
 
 CursesLib	=	-lcurses$(LIBSUFFIX) -ltermcap$(LIBSUFFIX)
 ComErrLib	=	-L/usr/athena/lib -lcom_err$(LIBSUFFIX)
@@ -192,4 +198,3 @@ XLib		=	-L/usr/athena/lib -lX11$(LIBSUFFIX)
 
 #define StandardDefines	ZephyrDef HesiodDef KerberosDef AthenaDef \
 LogDef ULogDef SilentDef SyslogDef DiscussDef MachSpecDef PosixDef
-
