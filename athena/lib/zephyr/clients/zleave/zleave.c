@@ -4,7 +4,7 @@
  *      Created by:     David Jedlinsky
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zleave/zleave.c,v $
- *      $Author: opus $
+ *      $Author: rfrench $
  *
  *      Copyright (c) 1987 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -16,7 +16,7 @@
 #include <zephyr/zephyr.h>
 
 #ifndef lint
-static char rcsid_zlocate_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zleave/zleave.c,v 1.3 1987-08-15 01:36:18 opus Exp $";
+static char rcsid_zlocate_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zleave/zleave.c,v 1.4 1987-10-25 01:13:21 rfrench Exp $";
 #endif lint
 
 /*
@@ -76,21 +76,12 @@ char **argv;
 	sprintf(tmpfile, "/tmp/zleave.%d", getuid());
 
 	if (use_zephyr) {
-		envptr = (char *)getenv("WGFILE");
-		if (!envptr) {
-			sprintf(buf,"/tmp/wg.%d",getuid());
-			envptr = buf;
-		} 
-		if (!(fp = fopen(envptr,"r"))) {
+		if ((port = ZGetWGPort()) == -1) {
 			fprintf(stderr,
 				"Can't find WindowGram subscription port.\n");
 			fprintf(stderr,"Will write directly to terminal.\n");
 			use_zephyr = 0;
 		}
-		else {
-			fscanf(fp,"%d",&port);
-			fclose(fp);
-		} 
 	}
 	
 	if (use_zephyr) {
