@@ -94,7 +94,10 @@ long pty_update_utmp (process_type, pid, username, line, host, flags)
 #ifdef __hpux
       strcpy(utmp_id, tmpx);
 #else
-      sprintf(utmp_id, "kl%s", tmpx);
+      if (*(tmpx-1) != '/')
+	sprintf(utmp_id, "k%s", tmpx-1);
+      else
+	sprintf(utmp_id, "k0%s", tmpx);
 #endif
       strncpy(ent.ut_id, utmp_id, sizeof(ent.ut_id));
     }
