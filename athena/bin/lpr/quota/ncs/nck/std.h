@@ -77,6 +77,10 @@ typedef unsigned u_int;
 #endif
 #endif
 
+#ifdef _IBMR2
+#include <sys/select.h>
+#endif
+
 /*
  * Select uses bit masks of file descriptors in longs.  These macros
  * manipulate such bit fields (the filesystem macros use chars).  FD_SETSIZE
