@@ -1,6 +1,6 @@
 %!PS-Adobe-3.0
 %%Creator: groff version 1.10
-%%CreationDate: Tue Mar 16 10:50:07 1999
+%%CreationDate: Thu May  7 13:34:51 1998
 %%DocumentNeededResources: font Times-Roman
 %%DocumentSuppliedResources: procset grops 1.10 0
 %%Pages: 1
@@ -199,14 +199,13 @@ def/PL 792 def/LS false def/ENC0[/asciicircum/asciitilde/Scaron/Zcaron
 %%BeginPageSetup
 BP
 %%EndPageSetup
-/F0 10/Times-Roman@0 SF 2.549(|i)72 12 S 2.549(sa)-2.549 G 2.549(na)
--2.549 G .049(ncillary program e)-2.549 F -.15(xe)-.15 G .049
-(cuted by to perform an inbound zone transfer).15 F 5.048(.I)-.55 G
-2.548(ti)-5.048 G 2.548(sr)-2.548 G .048(arely e)-2.548 F -.15(xe)-.15 G
-.048(cuted directly).15 F 2.548(,a)-.65 G .048(nd then on-)-2.548 F .478
-(ly by system administrators who are trying to deb)72 24 R .478
-(ug a zone transfer problem.)-.2 F .478(See RFC')5.478 F 2.978(s1)-.55 G
-.478(033, 1034, and 1035 for)-2.978 F 1.309
+/F0 10/Times-Roman@0 SF .054(is an ancillary program e)72 12 R -.15(xe)
+-.15 G .054(cuted by to perform an inbound zone transfer).15 F 5.054(.I)
+-.55 G 2.554(ti)-5.054 G 2.553(sr)-2.554 G .053(arely e)-2.553 F -.15
+(xe)-.15 G .053(cuted directly).15 F 2.553(,a)-.65 G .053(nd then only)
+-2.553 F 1.075(by system administrators who are trying to deb)72 24 R
+1.076(ug a zone transfer problem.)-.2 F 1.076(See RFC')6.076 F 3.576(s1)
+-.55 G 1.076(033, 1034, and 1035 for)-3.576 F 1.309
 (more information on the Internet name-domain system.)72 36 R 1.308
 (Options are: speci\214es the name of the zone to be trans-)6.308 F
 2.696(ferred. speci\214es)72 48 R .196
@@ -223,37 +222,31 @@ BP
 (ve)-.25 G 2.869(lo).15 G 2.869(fm)-2.869 G .368(essages printed.)-2.869
 F .368(Speci\214es a log \214le for deb)5.368 F .368(ugging messages.)
 -.2 F .368(The def)5.368 F .368(ault is system- dependent)-.1 F -.2(bu)
-72 96 S 3.53(ti).2 G 3.53(su)-3.53 G 1.03
-(sually in or Note that this only applies if is also speci\214ed.)-3.53
-F 1.031(Speci\214es the name of the into which the zone)6.031 F 1.24
-(changes from Incremental Zone T)72 108 R 1.24
-(ransfer \(IXFR\) should be dumped when it is recei)-.35 F -.15(ve)-.25
-G 3.74(df).15 G 1.24(rom the primary serv)-3.74 F(er)-.15 E(.)-.55 E
-.681
-(Speci\214es a which will contain a protocol trace of the zone transfer)
-72 120 R 5.682(.T)-.55 G .682
-(his is probably only of interest to people de-)-5.682 F -.2(bu)72 132 S
-.273(gging the name serv).2 F .273(er itself.)-.15 F .273(Use a dif)
-5.273 F .273(ferent port number)-.25 F 5.273(.T)-.55 G .273(he def)
--5.273 F .272(ault is the standard port number as returned by)-.1 F .327
-(for the service Perform a restricted transfer of only the SO)72 144 R
-.328(A, NS records and glue A records for the zone. The SO)-.35 F(A)-.35
-E .73(record will not be loaded by b)72 156 R .73
-(ut will be used to determine when to v)-.2 F .729
-(erify the NS records.)-.15 F .729(See the directi)5.729 F 1.029 -.15
-(ve i)-.25 H 3.229(nf).15 G(or)-3.229 E .06(more information.)72 168 R
-.06(Additional ar)5.06 F .06(guments are tak)-.18 F .06(en as name serv)
--.1 F .061(er addresses in so-called syntax no host name are al-)-.15 F
-(lo)72 180 Q .444(wed here.)-.25 F .444
-(At least one address must be speci\214ed.)5.444 F(An)5.444 E 2.944(ya)
--.15 G .443(dditional addresses will be tried, in order)-2.944 F 2.943
-(,i)-.4 G 2.943(ft)-2.943 G .443(he \214rst one)-2.943 F -.1(fa)72 192 S
-.299(ils to transfer to us successfully).1 F 5.299(.T)-.65 G .299
-(he or after name serv)-5.299 F .3
-(er address designates the type of zone transfer to perform.)-.15 F .145
-(Use for a full zone transfer or for an incremental zone transfer)72 204
-R 5.144(.R)-.55 G .144(FC 882, RFC 883, RFC 973, RFC 974, RFC 1033,)
--5.144 F(RFC 1034, RFC 1035, RFC 1123, RFC 1995)72 216 Q EP
+72 96 S 2.899(ti).2 G 2.899(su)-2.899 G .399
+(sually in or Note that this only applies if is also speci\214ed.)-2.899
+F .4(Speci\214es a which will contain a protocol trace of)5.4 F .472
+(the zone transfer)72 108 R 5.472(.T)-.55 G .472
+(his is probably only of interest to people deb)-5.472 F .471
+(ugging the name serv)-.2 F .471(er itself.)-.15 F .471(Use a dif)5.471
+F .471(ferent port)-.25 F(number)72 120 Q 5.417(.T)-.55 G .417(he def)
+-5.417 F .417(ault is the standard port number as returned by for the service Perform a restricted transfer of only)
+-.1 F .259(the SO)72 132 R .259
+(A, NS records and glue A records for the zone. The SO)-.35 F 2.759(Ar)
+-.35 G .259(ecord will not be loaded by b)-2.759 F .258
+(ut will be used to de-)-.2 F .001(termine when to v)72 144 R .001
+(erify the NS records.)-.15 F .002(See the directi)5.002 F .302 -.15
+(ve i)-.25 H 2.502(nf).15 G .002(or more information.)-2.502 F .002
+(Additional ar)5.002 F .002(guments are tak)-.18 F .002(en as)-.1 F .828
+(name serv)72 156 R .827
+(er addresses in so-called syntax no host name are allo)-.15 F .827
+(wed here.)-.25 F .827(At least one address must be speci\214ed.)5.827 F
+(An)72 168 Q 3.341(ya)-.15 G .841
+(dditional addresses will be tried, in order)-3.341 F 3.341(,i)-.4 G
+3.341(ft)-3.341 G .842(he \214rst one f)-3.341 F .842
+(ails to transfer to us successfully)-.1 F 5.842(.R)-.65 G .842
+(FC 882, RFC)-5.842 F
+(883, RFC 973, RFC 974, RFC 1033, RFC 1034, RFC 1035, RFC 1123,)72 180 Q
+EP
 %%Trailer
 end
 %%EOF

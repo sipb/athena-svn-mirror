@@ -1,0 +1,11 @@
+#!/bin/sh
+
+case "$HOSTTYPE" in
+sun4)
+	;;
+
+sgi)
+	echo "NEWOS=true"			>> "$CONFVARS"
+	echo "/var/spool/cron/crontabs/root"	>> "$CONFCHG"
+	;;
+esac

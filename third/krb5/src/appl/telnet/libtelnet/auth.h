@@ -62,8 +62,9 @@
 #define	AUTH_REJECT	0	/* Rejected */
 #define	AUTH_UNKNOWN	1	/* We don't know who he is, but he's okay */
 #define	AUTH_OTHER	2	/* We know him, but not his name */
-#define	AUTH_USER	3	/* We know he name */
+#define	AUTH_USER	3	/* We know his name */
 #define	AUTH_VALID	4	/* We know him, and he needs no password */
+#define	AUTH_CRED	5	/* AUTH_VALID, and he forwarded credentials */
 
 #if	!defined(P)
 #ifdef	__STDC__

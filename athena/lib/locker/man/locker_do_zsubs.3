@@ -1,0 +1,49 @@
+.\" $Id: locker_do_zsubs.3,v 1.1 1999-03-29 17:34:17 danw Exp $
+.\"
+.\" Copyright 1997 by the Massachusetts Institute of Technology.
+.\"
+.\" Permission to use, copy, modify, and distribute this
+.\" software and its documentation for any purpose and without
+.\" fee is hereby granted, provided that the above copyright
+.\" notice appear in all copies and that both that copyright
+.\" notice and this permission notice appear in supporting
+.\" documentation, and that the name of M.I.T. not be used in
+.\" advertising or publicity pertaining to distribution of the
+.\" software without specific, written prior permission.
+.\" M.I.T. makes no representations about the suitability of
+.\" this software for any purpose.  It is provided "as is"
+.\" without express or implied warranty.
+.\"
+.TH LOCKER_DO_ZSUBS 3
+.SH NAME
+locker_do_zsubs \- Process locker-related Zephyr subscriptions/unsubscriptions
+.SH SYNOPSIS
+.nf
+.B #include <locker.h>
+.PP
+.B
+int locker_do_zsubs(locker_context \fIcontext\fP, int \fIop\fP)
+.PP
+.B cc file.c -llocker ...
+.fi
+.SH DESCRIPTION
+This function processes the pending Zephyr subscription or
+unsubscription requests queued up by earlier liblocker operations.
+\fIcontext\fP should be a valid locker context, and \fIop\fP should be
+one of the two constants \fILOCKER_ZEPHYR_SUBSCRIBE\fP or
+\fILOCKER_ZEPHYR_UNSUBSCRIBE\fP.
+.SH RETURN VALUES
+.I locker_do_zsubs
+may return the following values:
+.TP 15
+.I LOCKER_SUCCESS
+The operations succeeded.
+.TP 15
+.I LOCKER_EZEPHYR
+An error occurred in the Zephyr library.
+.SH SEE ALSO
+locker_init(3)
+.SH AUTHOR
+Dan Winship, MIT Information Systems
+.br
+Copyright 1998 by the Massachusetts Institute of Technology.

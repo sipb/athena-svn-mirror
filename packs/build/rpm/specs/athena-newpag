@@ -1,0 +1,10 @@
+Name: athena-newpag
+Summary: A simple Athena utility to create a new AFS Process Authentication Group
+Copyright: MIT
+Group: Applications/Internet
+
+Requires: athena-afs
+
+%description
+A simple Athena utility to create a new AFS Process Authentication Group.
+

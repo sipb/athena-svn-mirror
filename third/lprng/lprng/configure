@@ -899,8 +899,8 @@ fi
   test -z "$CC" && { echo "configure: error: no acceptable cc found in \$PATH" 1>&2; exit 1; }
 fi
 
-echo $ac_n "checking whether the C compiler ($CC $CPPFLAGS $CFLAGS $LDFLAGS) works""... $ac_c" 1>&6
-echo "configure:904: checking whether the C compiler ($CC $CPPFLAGS $CFLAGS $LDFLAGS) works" >&5
+echo $ac_n "checking whether the C compiler ($CC $CFLAGS $LDFLAGS) works""... $ac_c" 1>&6
+echo "configure:904: checking whether the C compiler ($CC $CFLAGS $LDFLAGS) works" >&5
 
 ac_ext=c
 # CFLAGS is not in ac_cpp because -g, -O, etc. are not valid cpp options.
@@ -941,8 +941,8 @@ echo "$ac_t""$ac_cv_prog_cc_works" 1>&6
 if test $ac_cv_prog_cc_works = no; then
   { echo "configure: error: installation or configuration problem: C compiler cannot create executables." 1>&2; exit 1; }
 fi
-echo $ac_n "checking whether the C compiler ($CC $CPPFLAGS $CFLAGS $LDFLAGS) is a cross-compiler""... $ac_c" 1>&6
-echo "configure:946: checking whether the C compiler ($CC $CPPFLAGS $CFLAGS $LDFLAGS) is a cross-compiler" >&5
+echo $ac_n "checking whether the C compiler ($CC $CFLAGS $LDFLAGS) is a cross-compiler""... $ac_c" 1>&6
+echo "configure:946: checking whether the C compiler ($CC $CFLAGS $LDFLAGS) is a cross-compiler" >&5
 echo "$ac_t""$ac_cv_prog_cc_cross" 1>&6
 cross_compiling=$ac_cv_prog_cc_cross
 
@@ -1149,8 +1149,8 @@ fi
   test -z "$CC" && { echo "configure: error: no acceptable cc found in \$PATH" 1>&2; exit 1; }
 fi
 
-echo $ac_n "checking whether the C compiler ($CC $CPPFLAGS $CFLAGS $LDFLAGS) works""... $ac_c" 1>&6
-echo "configure:1154: checking whether the C compiler ($CC $CPPFLAGS $CFLAGS $LDFLAGS) works" >&5
+echo $ac_n "checking whether the C compiler ($CC $CFLAGS $LDFLAGS) works""... $ac_c" 1>&6
+echo "configure:1154: checking whether the C compiler ($CC $CFLAGS $LDFLAGS) works" >&5
 
 ac_ext=c
 # CFLAGS is not in ac_cpp because -g, -O, etc. are not valid cpp options.
@@ -1191,8 +1191,8 @@ echo "$ac_t""$ac_cv_prog_cc_works" 1>&6
 if test $ac_cv_prog_cc_works = no; then
   { echo "configure: error: installation or configuration problem: C compiler cannot create executables." 1>&2; exit 1; }
 fi
-echo $ac_n "checking whether the C compiler ($CC $CPPFLAGS $CFLAGS $LDFLAGS) is a cross-compiler""... $ac_c" 1>&6
-echo "configure:1196: checking whether the C compiler ($CC $CPPFLAGS $CFLAGS $LDFLAGS) is a cross-compiler" >&5
+echo $ac_n "checking whether the C compiler ($CC $CFLAGS $LDFLAGS) is a cross-compiler""... $ac_c" 1>&6
+echo "configure:1196: checking whether the C compiler ($CC $CFLAGS $LDFLAGS) is a cross-compiler" >&5
 echo "$ac_t""$ac_cv_prog_cc_cross" 1>&6
 cross_compiling=$ac_cv_prog_cc_cross
 
@@ -1573,8 +1573,8 @@ fi
   test -z "$CC" && { echo "configure: error: no acceptable cc found in \$PATH" 1>&2; exit 1; }
 fi
 
-echo $ac_n "checking whether the C compiler ($CC $CPPFLAGS $CFLAGS $LDFLAGS) works""... $ac_c" 1>&6
-echo "configure:1578: checking whether the C compiler ($CC $CPPFLAGS $CFLAGS $LDFLAGS) works" >&5
+echo $ac_n "checking whether the C compiler ($CC $CFLAGS $LDFLAGS) works""... $ac_c" 1>&6
+echo "configure:1578: checking whether the C compiler ($CC $CFLAGS $LDFLAGS) works" >&5
 
 ac_ext=c
 # CFLAGS is not in ac_cpp because -g, -O, etc. are not valid cpp options.
@@ -1615,8 +1615,8 @@ echo "$ac_t""$ac_cv_prog_cc_works" 1>&6
 if test $ac_cv_prog_cc_works = no; then
   { echo "configure: error: installation or configuration problem: C compiler cannot create executables." 1>&2; exit 1; }
 fi
-echo $ac_n "checking whether the C compiler ($CC $CPPFLAGS $CFLAGS $LDFLAGS) is a cross-compiler""... $ac_c" 1>&6
-echo "configure:1620: checking whether the C compiler ($CC $CPPFLAGS $CFLAGS $LDFLAGS) is a cross-compiler" >&5
+echo $ac_n "checking whether the C compiler ($CC $CFLAGS $LDFLAGS) is a cross-compiler""... $ac_c" 1>&6
+echo "configure:1620: checking whether the C compiler ($CC $CFLAGS $LDFLAGS) is a cross-compiler" >&5
 echo "$ac_t""$ac_cv_prog_cc_cross" 1>&6
 cross_compiling=$ac_cv_prog_cc_cross
 
@@ -2738,7 +2738,7 @@ if eval "test \"`echo '$''{'ac_cv_lib_$ac_lib_var'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   ac_save_LIBS="$LIBS"
-LIBS="-lkrb5 -lcrypto -lcom_err $LIBS"
+LIBS="-lkrb5 -lk5crypto -lcom_err $LIBS"
 cat > conftest.$ac_ext <<EOF
 #line 2744 "configure"
 #include "confdefs.h"
@@ -2766,20 +2766,20 @@ LIBS="$ac_save_LIBS"
 fi
 if eval "test \"`echo '$ac_cv_lib_'$ac_lib_var`\" = yes"; then
   echo "$ac_t""yes" 1>&6
-  LIBS="-lkrb5 -lcrypto -lcom_err $LIBS"
+  LIBS="-lkrb5 -lk5crypto -lcom_err $LIBS"
 else
   echo "$ac_t""no" 1>&6
 fi
 
 
-echo $ac_n "checking for krb_recvauth in -lkrb""... $ac_c" 1>&6
-echo "configure:2777: checking for krb_recvauth in -lkrb" >&5
-ac_lib_var=`echo krb'_'krb_recvauth | sed 'y%./+-%__p_%'`
+echo $ac_n "checking for krb_recvauth in -lkrb4""... $ac_c" 1>&6
+echo "configure:2777: checking for krb_recvauth in -lkrb4" >&5
+ac_lib_var=`echo krb4'_'krb_recvauth | sed 'y%./+-%__p_%'`
 if eval "test \"`echo '$''{'ac_cv_lib_$ac_lib_var'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   ac_save_LIBS="$LIBS"
-LIBS="-lkrb -ldes  $LIBS"
+LIBS="-lkrb4 -ldes425  $LIBS"
 cat > conftest.$ac_ext <<EOF
 #line 2785 "configure"
 #include "confdefs.h"
@@ -2807,7 +2807,7 @@ LIBS="$ac_save_LIBS"
 fi
 if eval "test \"`echo '$ac_cv_lib_'$ac_lib_var`\" = yes"; then
   echo "$ac_t""yes" 1>&6
-  LIBS="-lkrb -ldes $LIBS"
+  LIBS="-lkrb4 -ldes425 $LIBS"
 else
   echo "$ac_t""no" 1>&6
 fi

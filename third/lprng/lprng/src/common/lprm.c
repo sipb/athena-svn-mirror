@@ -8,7 +8,7 @@
  ***************************************************************************/
 
  static char *const _id =
-"$Id: lprm.c,v 1.1.1.3 2000-03-31 15:47:59 mwhitson Exp $";
+"$Id: lprm.c,v 1.6 2000-03-31 16:21:14 mwhitson Exp $";
 
 
 /***************************************************************************
@@ -148,7 +148,11 @@ int main(int argc, char *argv[], char *envp[])
 
 	Add_line_list(&args,Logname_DYN,0,0,0);
 	for( i = Optind; argv[i]; ++i ){
-		Add_line_list(&args,argv[i],0,0,0);
+		/* Compatibility with BSD lprm */
+		if( !strcmp(argv[i], "-") )
+			Add_line_list(&args,Logname_DYN,0,0,0);
+		else
+			Add_line_list(&args,argv[i],0,0,0);
 	}
 	Check_max(&args,2);
 	args.list[args.count] = 0;
@@ -225,6 +229,10 @@ void Do_removal(char **argv)
 	Get_printer();
 	Fix_Rm_Rp_info();
 	/* fix up authentication */
+	if( Auth_JOB ){
+		/* Fix_auth will update Auth_DYN later */
+		Set_str_value( &PC_entry_line_list, "auth", Auth_JOB );
+	}
 	if( Check_for_rg_group( Logname_DYN ) ){
 		fprintf( stderr,
 			"cannot use printer - not in privileged group\n" );
@@ -309,7 +317,7 @@ void setmessage (va_alist) va_dcl
 extern char *next_opt;
 void usage(void);
 char LPRM_optstr[]   /* LPRM options */
- = "aD:P:U:V" ;
+ = "A:aD:P:U:V" ;
 char CLEAN_optstr[]   /* CLEAN options */
  = "D:" ;
 
@@ -350,6 +358,7 @@ void Get_parms(int argc, char *argv[] )
 	} else {
 		while ((option = Getopt (argc, argv, LPRM_optstr )) != EOF)
 		switch (option) {
+		case 'A': Auth_JOB = safestrdup(Optarg,__FILE__,__LINE__); break;
 		case 'a': All_printers = 1; Set_DYN(&Printer_DYN,"all"); break;
 		case 'D': Parse_debug(Optarg, 1); break;
 		case 'V': ++Verbose; break;
@@ -365,8 +374,7 @@ void Get_parms(int argc, char *argv[] )
 }
 
 char *clean_msg = N_("\
-usage: %s [-A] [-Ddebuglevel] (jobid|user|'all')* [printer]\n\
-  -A           - use authentication\n\
+usage: %s [-Ddebuglevel] (jobid|user|'all')* [printer]\n\
   -Ddebuglevel - debug level\n\
   user           removes user jobs\n\
   all            removes all jobs\n\
@@ -379,9 +387,9 @@ usage: %s [-A] [-Ddebuglevel] (jobid|user|'all')* [printer]\n\
   Note: lprm removes only jobs for which you have removal permission\n");
 
 char *lprm_msg = N_("\
-usage: %s [-A] [-a | -Pprinter] [-Ddebuglevel] (jobid|user|'all')*\n\
+usage: %s [-A type] [-a | -Pprinter] [-Ddebuglevel] (jobid|user|'all')*\n\
   -a           - all printers\n\
-  -A           - use authentication\n\
+  -A type      - use specified type of authentication\n\
   -Pprinter    - printer (default PRINTER environment variable)\n\
   -Uuser       - impersonate this user (root or privileged user only)\n\
   -Ddebuglevel - debug level\n\

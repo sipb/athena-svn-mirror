@@ -41,7 +41,7 @@ long pty_update_utmp (process_type, pid, username, line, host, flags)
     char *username, *line, *host;
     int flags;
 {
-    struct utmp ent, ut;
+    struct utmp ent, ut, *utptr;
 #ifndef HAVE_SETUTENT
     struct stat statb;
     int tty;
@@ -86,6 +86,9 @@ long pty_update_utmp (process_type, pid, username, line, host, flags)
 #endif
 
 #ifndef NO_UT_PID
+#ifdef __linux__ /* Behave like native login. */
+    strncpy(ent.ut_id, line + 8, sizeof(ent.ut_id));
+#else
     if (!strcmp (line, "/dev/console")) {
 #if (defined(sun) && defined(__SVR4))
       strncpy (ent.ut_id, "co", 4);
@@ -98,10 +101,14 @@ long pty_update_utmp (process_type, pid, username, line, host, flags)
 #ifdef __hpux
       strcpy(utmp_id, tmpx);
 #else
-      sprintf(utmp_id, "kl%s", tmpx);
+      if (*(tmpx-1) != '/')
+	sprintf(utmp_id, "k%s", tmpx-1);
+      else
+	sprintf(utmp_id, "k0%s", tmpx);
 #endif
       strncpy(ent.ut_id, utmp_id, sizeof(ent.ut_id));
     }
+#endif /* __linux__ */
     strncpy(ent.ut_user, username, sizeof(ent.ut_user));
 #else
     strncpy(ent.ut_name, username, sizeof(ent.ut_name));
@@ -114,23 +121,29 @@ long pty_update_utmp (process_type, pid, username, line, host, flags)
 
     utmpname(UTMP_FILE);
     setutent();
+
+    /* Look for an existing utmp entry for this line, and use its id
+     * if found.  This also positions the file pointer properly for
+     * pututline().
+     */
+    strncpy(ut.ut_line, ent.ut_line, sizeof(ut.ut_line));
+    utptr = getutline(&ut);
+    if (utptr)
+      {
+	memcpy(ent.ut_id, utptr->ut_id, sizeof(ent.ut_id));
 /* If we need to preserve the user name in the wtmp structure and
  * Our flags tell us we can obtain it from the utmp and we succeed in
  * obtaining it, we then save the utmp structure we obtain, write
  * out the utmp structure and change the username pointer so  it is used by
  * update_wtmp.*/
 #ifdef WTMP_REQUIRES_USERNAME
-    if (( !username[0]) && (flags&PTY_UTMP_USERNAME_VALID)
-	&&line)  
-	{
-	  struct utmp *utptr;
-	  strncpy(ut.ut_line, line, sizeof(ut.ut_line));
-	  utptr = getutline(&ut);
-	  if (utptr)
-	    strncpy(userbuf,utptr->ut_user,sizeof(ut.ut_user));
-	}
+	if (( !username[0]) && (flags&PTY_UTMP_USERNAME_VALID))
+	  strncpy(userbuf,utptr->ut_user,sizeof(ut.ut_user));
 #endif
-
+      }
+    else
+      setutent();		/* Reset the file pointer for pututline(). */
+	
     pututline(&ent);
     endutent();
     
@@ -159,6 +172,7 @@ long pty_update_utmp (process_type, pid, username, line, host, flags)
     utx.ut_tv.tv_sec = ent.ut_time;
     utx.ut_tv.tv_usec = 0;
 #endif
+    utx.ut_pid = pid;
     if (host)
       strncpy(utx.ut_host, host, sizeof(utx.ut_host));
     else

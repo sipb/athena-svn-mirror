@@ -53,6 +53,11 @@ Boston, MA 02111-1307, USA.  */
 #endif
 #include <pop.h>
 
+#ifdef STDC_HEADERS
+#include <string.h>
+#include <stdlib.h>
+#endif
+
 #ifdef sun
 #include <malloc.h>
 #endif /* sun */
@@ -401,7 +406,7 @@ pop_stat (server, count, size)
 
   *count = atoi (&fromserver[4]);
      
-  fromserver = index (&fromserver[4], ' ');
+  fromserver = strchr (&fromserver[4], ' ');
   if (! fromserver)
     {
       strcpy (pop_error,
@@ -498,7 +503,7 @@ pop_list (server, message, IDs, sizes)
 	  return (-1);
 	}
       (*IDs)[0] = atoi (&fromserver[4]);
-      fromserver = index (&fromserver[4], ' ');
+      fromserver = strchr (&fromserver[4], ' ');
       if (! fromserver)
 	{
 	  strcpy (pop_error,
@@ -529,7 +534,7 @@ pop_list (server, message, IDs, sizes)
 	      return (-1);
 	    }
 	  (*IDs)[i] = atoi (fromserver);
-	  fromserver = index (fromserver, ' ');
+	  fromserver = strchr (fromserver, ' ');
 	  if (! fromserver)
 	    {
 	      strcpy (pop_error,

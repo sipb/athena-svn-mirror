@@ -1,0 +1,12 @@
+Name: athena-finger
+Summary: The Athena version of the normal finger utility
+Copyright: MIT and UCB
+Group: Applications/Internet
+
+Requires: athena-hesiod athena-zephyr
+
+%description 
+The finger command displays information about local and remote users
+in a convenient format.  The Athena version contains improvements to
+locate Athena users and knows about the Athena-specific user database
+features.  

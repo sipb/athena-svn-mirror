@@ -1,6 +1,6 @@
 #if !defined(lint) && !defined(SABER)
 static char sccsid[] = "@(#)ns_stats.c	4.10 (Berkeley) 6/27/90";
-static char rcsid[] = "$Id: ns_stats.c,v 1.1.1.3 1999-03-16 19:44:53 danw Exp $";
+static char rcsid[] = "$Id: ns_stats.c,v 1.2 2000-04-22 04:39:52 ghudson Exp $";
 #endif /* not lint */
 
 /*
@@ -57,7 +57,7 @@ static char rcsid[] = "$Id: ns_stats.c,v 1.1.1.3 1999-03-16 19:44:53 danw Exp $"
  */
 
 /*
- * Portions Copyright (c) 1996-1999 by Internet Software Consortium.
+ * Portions Copyright (c) 1996, 1997 by Internet Software Consortium.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -77,15 +77,12 @@ static char rcsid[] = "$Id: ns_stats.c,v 1.1.1.3 1999-03-16 19:44:53 danw Exp $"
 
 #include <sys/types.h>
 #include <sys/param.h>
-#include <sys/socket.h>
-#include <sys/un.h>
 
 #include <netinet/in.h>
 #include <arpa/nameser.h>
 #include <arpa/inet.h>
 
 #include <errno.h>
-#include <resolv.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -106,7 +103,39 @@ static char rcsid[] = "$Id: ns_stats.c,v 1.1.1.3 1999-03-16 19:44:53 danw Exp $"
 
 #include "named.h"
 
-static u_long		typestats[T_ANY+1];
+static u_long typestats[T_ANY+1];
+static const char *typenames[T_ANY+1] = {
+	/* 5 types per line */
+	"Unknown", "A", "NS", "invalid(MD)", "invalid(MF)",
+	"CNAME", "SOA", "MB", "MG", "MR",
+	"NULL", "WKS", "PTR", "HINFO", "MINFO",
+	"MX", "TXT", "RP", "AFSDB", "X25",
+	"ISDN", "RT", "NSAP", "NSAP_PTR", "SIG",
+	"KEY", "PX", "invalid(GPOS)", "AAAA", "LOC",
+	0, 0, 0, 0, 0,
+	0, 0, 0, 0, 0,
+	/* 20 per line */
+	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+	/* 100 */
+	"UINFO", "UID", "GID", "UNSPEC", 0, 0, 0, 0, 0, 0,
+	/* 110 */
+	0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+	/* 120 */
+	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+	/* 200 */
+	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+	/* 240 */
+	0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+	/* 250 */
+	0, 0, "AXFR", "MAILB", "MAILA", "ANY" 
+};
+
 static void		nameserStats(FILE *);
 
 void
@@ -132,39 +161,25 @@ ns_stats() {
 
 	/* query type statistics */
 	fprintf(f, "%lu\tUnknown query types\n", (u_long)typestats[0]);
-	for (i = 1; i < T_ANY+1; i++)
-		fprintf(f, "%lu\t%s queries\n", typestats[i], p_type(i));
+	for(i=1; i < T_ANY+1; i++)
+		if (typestats[i]) {
+			if (typenames[i] != NULL)
+				fprintf(f, "%lu\t%s queries\n",
+					(u_long)typestats[i], typenames[i]);
+			else
+				fprintf(f, "%lu\ttype %d queries\n",
+					(u_long)typestats[i], i);
+		}
 
 	/* name server statistics */
 	nameserStats(f);
 
-	fprintf(f, "--- Statistics Dump --- (%ld) %s",
-		(long)timenow, checked_ctime(&timenow));
-	(void) my_fclose(f);
-
-	/* Now do the memory statistics file */
-	if (!(f = fopen(server_options->memstats_filename, "a"))) {
-	       ns_notice(ns_log_statistics, "cannot open memstat file, \"%s\"",
-			  server_options->memstats_filename);
-		return;
-	}
-
-	fprintf(f, "+++ Memory Statistics Dump +++ (%ld) %s",
-		(long)timenow, checked_ctime(&timenow));
-
-	fprintf(f, "%ld\ttime since boot (secs)\n",
-		(long)(timenow - boottime));
-	fprintf(f, "%ld\ttime since reset (secs)\n",
-		(long)(timenow - resettime));
-
 	fprintf(f, "++ Memory Statistics ++\n");
 	memstats(f);
 	fprintf(f, "-- Memory Statistics --\n");
-
-	fprintf(f, "--- Memory Statistics Dump --- (%ld) %s",
+	fprintf(f, "--- Statistics Dump --- (%ld) %s",
 		(long)timenow, checked_ctime(&timenow));
 	(void) my_fclose(f);
-
 	ns_notice(ns_log_statistics, "done dumping nameserver stats");
 }
 
@@ -355,7 +370,11 @@ ns_logstats(evContext ctx, void *uap, struct timespec due,
 
 	for (i = 0; i < T_ANY+1; i++) {
 		if (typestats[i]) {
-			sprintf(buffer2, "%s=%lu", p_type(i), typestats[i]);
+			if (typenames[i])
+				sprintf(buffer2, " %s=%lu",
+					typenames[i], typestats[i]);
+			else
+				sprintf(buffer2, " %d=%lu", i, typestats[i]);
 			if (strlen(buffer) + strlen(buffer2) >
 			    sizeof(buffer) - 1) {
 				ns_info(ns_log_statistics, buffer);

@@ -1596,10 +1596,38 @@ if test "$enable_locking" = yes; then
 				     [ac_cv_kerberos=no])])
     if test "$ac_cv_kerberos" = yes ; then
       have_kerberos=yes
-      AC_DEFINE(HAVE_KERBEROS)
 
-      # from Tim Showalter <tjs+@andrew.cmu.edu>
-      PASSWD_LIBS="$PASSWD_LIBS -lkrb -ldes"
+      krb_libs=""
+      AC_CHECK_FUNC(gethostbyname, :,
+		    AC_CHECK_LIB(nsl, gethostbyname,
+				 krb_libs="-lnsl $krb_libs", :, $krb_libs))
+      AC_CHECK_FUNC(socket, :,
+		    AC_CHECK_LIB(socket, socket,
+				 krb_libs="-lsocket $krb_libs", :, $krb_libs))
+      AC_CHECK_X_LIB(krb4, krb_mk_req, found_libkrb4=yes, found_libkrb4=no,
+		     -ldes425 -lkrb5 -lk5crypto -lcom_err $krb_libs)
+      if test "$found_libkrb4" = yes ; then
+	PASSWD_LIBS="$PASSWD_LIBS -lkrb4 -ldes425 -lkrb5 -lk5crypto -lcom_err"
+        PASSWD_LIBS="$PASSWD_LIBS $krb_libs"
+      else
+        AC_CHECK_X_LIB(des, des_cbc_encrypt, krb_libs="-ldes $krb_libs", :,
+		       $krb_libs)
+        AC_CHECK_X_LIB(krb, krb_mk_req,
+		       krb_libs="-lkrb $krb_libs"; found_libkrb=yes,
+		       found_libkrb=no,
+		       $krb_libs)
+        if test "$ac_cv_lib_krb_krb_mk_req" = yes ; then
+          PASSWD_LIBS="$PASSWD_LIBS $krb_libs"
+        else
+	  have_kerberos=no
+	fi
+      fi
+
+      if test "$have_kerberos" = yes ; then
+	AC_DEFINE(HAVE_KERBEROS)
+	PASSWD_LIBS="$PASSWD_LIBS $krb_libs"
+      fi
+
       AC_CHECK_FUNC(res_search,,
         AC_CHECK_LIB(resolv,res_search,PASSWD_LIBS="${PASSWD_LIBS} -lresolv",
           AC_MSG_WARN([Can't find DNS resolver libraries needed for Kerberos])
@@ -1811,13 +1839,6 @@ if test "$enable_locking" = yes; then
 fi
 
 
-if test \! -z "$includedir" ; then 
-  INCLUDES="-I$includedir"
-fi
-
-if test \! -z "$libdir" ; then
-  LDFLAGS="$LDFLAGS -L$libdir"
-fi
 
 
 ##### should have options to override the DEPEND crap, I guess...

@@ -1,9 +1,9 @@
 #if !defined(lint) && !defined(SABER)
-static char rcsid[] = "$Id: nsupdate.c,v 1.1.1.3 1999-03-16 19:44:38 danw Exp $";
+static char rcsid[] = "$Id: nsupdate.c,v 1.2 2000-04-22 04:40:19 ghudson Exp $";
 #endif /* not lint */
 
 /*
- * Copyright (c) 1996,1999 by Internet Software Consortium.
+ * Copyright (c) 1996 by Internet Software Consortium.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -34,7 +34,6 @@ static char rcsid[] = "$Id: nsupdate.c,v 1.1.1.3 1999-03-16 19:44:38 danw Exp $"
 #include <string.h>
 #include <ctype.h>
 #include "port_after.h"
-#include "../named/db_defs.h"
 
 /* XXX all of this stuff should come from libbind.a */
 
@@ -98,14 +97,11 @@ struct map opcode_strs[] = {
 };
 #define M_OPCODE_CNT (sizeof(opcode_strs) / sizeof(struct map))
 
-static int getcharstring(char *, char *, int, int, int);
 static char *progname;
 static FILE *log;
 
 static void usage(void);
 static int getword_str(char *, int, char **, char *);
-
-static struct __res_state res;
 
 /*
  * format of file read by nsupdate is kept the same as the log
@@ -126,7 +122,7 @@ main(argc, argv)
 	char **argv;
 {
 	FILE *fp = NULL;
-   char buf[BUFSIZ], buf2[BUFSIZ], hostbuf[100], filebuf[100], data[MAXDATA];
+	char buf[BUFSIZ], buf2[BUFSIZ], hostbuf[100], filebuf[100];
 	char dnbuf[MAXDNAME];
 	u_char packet[PACKETSZ], answer[PACKETSZ];
 	char *host = hostbuf, *batchfile = filebuf;
@@ -134,7 +130,7 @@ main(argc, argv)
 	char section[15], opcode[10];
 	int i, c, n, n1, inside, lineno = 0, vc = 0,
 		debug = 0, r_size, r_section, r_opcode,
-        prompt = 0, ret = 0, stringtobin = 0;
+		prompt = 0, ret = 0;
 	int16_t r_class, r_type;
 	u_int32_t r_ttl;
 	struct map *mp;
@@ -147,7 +143,7 @@ main(argc, argv)
 
 	progname = argv[0];
 
-   while ((c = getopt(argc, argv, "dsv")) != EOF) {
+	while ((c = getopt(argc, argv, "dv")) != EOF) {
 		switch (c) {
 		case 'v':
 			vc = 1;
@@ -155,9 +151,6 @@ main(argc, argv)
 		case 'd':
 			debug = 1;
 			break;
-        case 's':
-             stringtobin = 1;
-             break;
 		default:
 			usage();
 		}
@@ -403,37 +396,9 @@ main(argc, argv)
 		if ( !(rrecp = res_mkupdrec(r_section, r_dname, r_class,
 					    r_type, r_ttl)) ||
 		     (r_size > 0 && !(rrecp->r_data = (u_char *)malloc(r_size))) ) {
-			if (rrecp)
-				res_freeupdrec(rrecp);
 			fprintf(stderr, "saverrec error\n");
 			exit (1);
 		}
-        if (stringtobin) {
-             switch(r_opcode)  {
-             case T_HINFO:
-                  if (!getcharstring(buf,(char *)data,2,2,lineno))
-                       exit(1);
-                  cp = data;
-                  break;
-             case T_ISDN:
-                  if (!getcharstring(buf,(char *)data,1,2,lineno))
-                       exit(1);
-                  cp = data;
-                  break;
-             case T_TXT:
-                  if (!getcharstring(buf,(char *)data,1,0,lineno))
-                       exit(1);
-                  cp = data;
-                  break;
-             case T_X25:
-                  if (!getcharstring(buf,(char *)data,1,1,lineno))
-                       exit(1);
-                  cp = data;
-                  break;
-             default:
-		  NULL;
-             }
-        }
 		rrecp->r_opcode = r_opcode;
 		rrecp->r_size = r_size;
 		(void) strncpy((char *)rrecp->r_data, cp, r_size);
@@ -448,21 +413,20 @@ main(argc, argv)
 			tmprrecp->r_next = rrecp;
 		}
 	    } else { /* end of an update packet */
-		(void) res_ninit(&res);
+		(void) res_init();
 		if (vc)
-		    res.options |= RES_USEVC | RES_STAYOPEN;
+		    _res.options |= RES_USEVC | RES_STAYOPEN;
 		if (debug)
-		    res.options |= RES_DEBUG;
+		    _res.options |= RES_DEBUG;
 		if (rrecp_start) {
-		    if ((n = res_nupdate(&res, rrecp_start)) < 0)
+		    if ((n = res_update(rrecp_start)) < 0)
 			fprintf(stderr, "failed update packet\n");
 	            /* free malloc'ed memory */
         	    while(rrecp_start) {
                 	tmprrecp = rrecp_start;
                 	rrecp_start = rrecp_start->r_next;
-			if (tmprrecp->r_size)
-				free((char *)tmprrecp->r_data);
-			res_freeupdrec(tmprrecp);
+			free((char *)tmprrecp->r_dname);
+                	free((char *)tmprrecp);
         	    }
 		}
 	    }
@@ -504,52 +468,4 @@ getword_str(char *buf, int size, char **startpp, char *endp) {
         }
         *cp = '\0';
         return (cp != buf);
-}
-
-#define MAXCHARSTRING 255
-
-static int
-getcharstring(char *buf, char *data,
-         int minfields, int maxfields, int lineno)
-{
-   int nfield = 0, n = 0, i;
-
-   do {
-        nfield++;
-        i = 0;
-        if (*buf == '"') {
-             buf++;
-             while(buf[i] && buf[i] != '"')
-                  i++;
-        } else {
-             while(isspace(*buf))
-                  i++;
-        }
-        if (i > MAXCHARSTRING) {
-             fprintf(stderr,
-               "%d: RDATA field %d too long",
-               lineno, nfield);
-             return(0);
-        }
-        if (n + i + 1 > MAXDATA) {
-             fprintf(stderr,
-               "%d: total RDATA too long", lineno);
-             return(0);
-        }
-        data[n]=i;
-        memmove(data + 1 + n, buf, i);
-        buf += i + 1;
-        n += i + 1;
-        while(*buf && isspace(*buf))
-             buf++;
-   } while (nfield < maxfields && *buf);
-
-   if (nfield < minfields) {
-        fprintf(stderr,
-             "%d: expected %d RDATA fields, only saw %d",
-             lineno, minfields, nfield);
-        return (0);
-   }
-
-   return (n);
 }

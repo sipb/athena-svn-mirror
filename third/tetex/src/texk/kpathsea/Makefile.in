@@ -152,57 +152,57 @@ install: install-exec install-data
 uninstall: uninstall-exec uninstall-data
 
 install-exec: kpsewhich
-	$(SHELL) $(top_srcdir)/../mkinstalldirs $(bindir) $(scriptdir) \
-	  $(libdir) $(web2cdir)
-	if grep 'original mktexpk --' $(scriptdir)/mktexpk >/dev/null 2>&1\
-	   || test ! -r $(scriptdir)/mktexpk; then \
-	  $(INSTALL_SCRIPT) $(srcdir)/mktexpk $(scriptdir)/mktexpk; \
+	$(SHELL) $(top_srcdir)/../mkinstalldirs ${DESTDIR}$(bindir) ${DESTDIR}$(scriptdir) \
+	  ${DESTDIR}$(libdir) ${DESTDIR}$(web2cdir)
+	if grep 'original mktexpk --' ${DESTDIR}$(scriptdir)/mktexpk >/dev/null 2>&1\
+	   || test ! -r ${DESTDIR}$(scriptdir)/mktexpk; then \
+	  $(INSTALL_SCRIPT) $(srcdir)/mktexpk ${DESTDIR}$(scriptdir)/mktexpk; \
 	else true; fi
-	if grep 'original mktexmf --' $(scriptdir)/mktexmf >/dev/null 2>&1\
-	   || test ! -r $(scriptdir)/mktexmf; then \
-	  $(INSTALL_SCRIPT) $(srcdir)/mktexmf $(scriptdir)/mktexmf; \
+	if grep 'original mktexmf --' ${DESTDIR}$(scriptdir)/mktexmf >/dev/null 2>&1\
+	   || test ! -r ${DESTDIR}$(scriptdir)/mktexmf; then \
+	  $(INSTALL_SCRIPT) $(srcdir)/mktexmf ${DESTDIR}$(scriptdir)/mktexmf; \
 	else true; fi
-	if grep 'original mktextfm --' $(scriptdir)/mktextfm >/dev/null 2>&1\
-	   || test ! -r $(scriptdir)/mktextfm; then \
-	  $(INSTALL_SCRIPT) $(srcdir)/mktextfm $(scriptdir)/mktextfm; \
+	if grep 'original mktextfm --' ${DESTDIR}$(scriptdir)/mktextfm >/dev/null 2>&1\
+	   || test ! -r ${DESTDIR}$(scriptdir)/mktextfm; then \
+	  $(INSTALL_SCRIPT) $(srcdir)/mktextfm ${DESTDIR}$(scriptdir)/mktextfm; \
 	else true; fi
-	if grep 'original mktexlsr --' $(scriptdir)/mktexlsr >/dev/null 2>&1\
-	   || test ! -r $(scriptdir)/mktexlsr; then \
-	  $(INSTALL_SCRIPT) $(srcdir)/mktexlsr $(scriptdir)/mktexlsr; \
+	if grep 'original mktexlsr --' ${DESTDIR}$(scriptdir)/mktexlsr >/dev/null 2>&1\
+	   || test ! -r ${DESTDIR}$(scriptdir)/mktexlsr; then \
+	  $(INSTALL_SCRIPT) $(srcdir)/mktexlsr ${DESTDIR}$(scriptdir)/mktexlsr; \
 	else true; fi
-	$(INSTALL_LIBTOOL_LIBS) $(libdir) lib$(library).la
-	$(INSTALL_LIBTOOL_PROG) $(bindir) kpsewhich
-	$(INSTALL_PROGRAM) kpsestat $(bindir)
-	$(INSTALL_PROGRAM) access $(bindir)
-	$(INSTALL_PROGRAM) readlink $(bindir)
+	$(INSTALL_LIBTOOL_LIBS) ${DESTDIR}$(libdir) lib$(library).la
+	$(INSTALL_LIBTOOL_PROG) ${DESTDIR}$(bindir) kpsewhich
+	$(INSTALL_PROGRAM) kpsestat ${DESTDIR}$(bindir)
+	$(INSTALL_PROGRAM) access ${DESTDIR}$(bindir)
+	$(INSTALL_PROGRAM) readlink ${DESTDIR}$(bindir)
 # Should we install the headers?  They are not just system-dependent,
 # which is bad enough, but even compiler-dependent.
-	$(SHELL) $(top_srcdir)/../mkinstalldirs $(includedir)/kpathsea
+	$(SHELL) $(top_srcdir)/../mkinstalldirs ${DESTDIR}$(includedir)/kpathsea
 	for f in $(install_headers); do \
-	  $(INSTALL_DATA) $$f $(includedir)/kpathsea/; done
-	rm -f $(includedir)/kpathsea/acconfig.h
+	  $(INSTALL_DATA) $$f ${DESTDIR}$(includedir)/kpathsea/; done
+	rm -f ${DESTDIR}$(includedir)/kpathsea/acconfig.h
 	$(POSTINSTALL)
 uninstall-exec:
-	rm -f $(bindir)/kpsewhich
+	rm -f ${DESTDIR}$(bindir)/kpsewhich
 
 install-data: texmf.cnf kpathsea.info install-man
-	$(SHELL) $(top_srcdir)/../mkinstalldirs $(texmf) $(infodir) $(web2cdir)
-	if grep 'original texmf.cnf --' $(web2cdir)/texmf.cnf >/dev/null 2>&1 \
-	   || test ! -r $(web2cdir)/texmf.cnf; then \
-	  $(INSTALL_DATA) texmf.cnf $(web2cdir)/texmf.cnf; \
+	$(SHELL) $(top_srcdir)/../mkinstalldirs ${DESTDIR}$(texmf) ${DESTDIR}$(infodir) ${DESTDIR}$(web2cdir)
+	if grep 'original texmf.cnf --' ${DESTDIR}$(web2cdir)/texmf.cnf >/dev/null 2>&1 \
+	   || test ! -r ${DESTDIR}$(web2cdir)/texmf.cnf; then \
+	  $(INSTALL_DATA) texmf.cnf ${DESTDIR}$(web2cdir)/texmf.cnf; \
 	else true; fi
 	test -r kpathsea.info || cd $(srcdir) && for i in kpathsea.i*; do \
-	  $(INSTALL_DATA) $$i $(infodir)/$$i; done
-	test -r $(infodir)/dir || $(INSTALL_DATA) $(top_srcdir)/../dir $(infodir)
+	  $(INSTALL_DATA) $$i ${DESTDIR}$(infodir)/$$i; done
+	test -r ${DESTDIR}$(infodir)/dir || $(INSTALL_DATA) $(top_srcdir)/../dir ${DESTDIR}$(infodir)
 	if $(SHELL) -c 'install-info --version' >/dev/null 2>&1; then \
-	  install-info --info-dir=$(infodir) $(infodir)/kpathsea.info; \
+	  install-info --info-dir=${DESTDIR}$(infodir) ${DESTDIR}$(infodir)/kpathsea.info; \
 	else true; fi
-	$(INSTALL_DATA) $(srcdir)/mktex.opt $(web2cdir)/mktex.opt
-	$(INSTALL_SCRIPT) $(srcdir)/mktexdir $(web2cdir)/mktexdir
-	$(INSTALL_DATA) $(srcdir)/mktexdir.opt $(web2cdir)/mktexdir.opt
-	$(INSTALL_SCRIPT) $(srcdir)/mktexnam $(web2cdir)/mktexnam
-	$(INSTALL_DATA) $(srcdir)/mktexnam.opt $(web2cdir)/mktexnam.opt
-	$(INSTALL_SCRIPT) $(srcdir)/mktexupd $(web2cdir)/mktexupd
+	$(INSTALL_DATA) $(srcdir)/mktex.opt ${DESTDIR}$(web2cdir)/mktex.opt
+	$(INSTALL_SCRIPT) $(srcdir)/mktexdir ${DESTDIR}$(web2cdir)/mktexdir
+	$(INSTALL_DATA) $(srcdir)/mktexdir.opt ${DESTDIR}$(web2cdir)/mktexdir.opt
+	$(INSTALL_SCRIPT) $(srcdir)/mktexnam ${DESTDIR}$(web2cdir)/mktexnam
+	$(INSTALL_DATA) $(srcdir)/mktexnam.opt ${DESTDIR}$(web2cdir)/mktexnam.opt
+	$(INSTALL_SCRIPT) $(srcdir)/mktexupd ${DESTDIR}$(web2cdir)/mktexupd
 
 uninstall-data:
 	rm -f $(infodir)/kpathsea.i*

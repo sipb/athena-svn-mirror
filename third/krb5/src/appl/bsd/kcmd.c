@@ -1091,6 +1091,9 @@ int len;
 		krb5_random_confounder(8 - len, garbage_buf);
 		/* this "right-justifies" the data in the buffer */
 		(void) memcpy(garbage_buf + 8 - len, buf, len);
+	} else {
+		krb5_random_confounder(8 - len, garbage_buf + len);
+		(void) memcpy(garbage_buf, buf, len);
 	}
 	(void) pcbc_encrypt((len < 8) ? garbage_buf : buf,
 			    des_outpkt+4,

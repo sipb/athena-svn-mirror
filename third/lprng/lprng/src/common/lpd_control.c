@@ -8,7 +8,7 @@
  ***************************************************************************/
 
  static char *const _id =
-"$Id: lpd_control.c,v 1.1.1.3 2000-03-31 15:47:55 mwhitson Exp $";
+"$Id: lpd_control.c,v 1.6 2000-04-03 19:01:47 mwhitson Exp $";
 
 
 #include "lp.h"
@@ -120,6 +120,14 @@ int Job_control( int *sock, char *input )
 	permission = Perms_check( &Perm_line_list, &Perm_check, 0, 0 ); /* queue perm check */
 	DEBUGF(DCTRL1)( "Job_control: checked for '%c', permission %s",
 		Perm_check.service, perm_str(permission) );
+
+	/* Keep a record of what everyone's doing with their bits */
+	if( Perm_check.auth_client_id )
+		logmsg(LOG_INFO, "%s (auth): lpc %s", Perm_check.auth_client_id, 
+		       strstr(input, lpc_command));
+	else
+		logmsg(LOG_INFO, "%s@%s (unauth): lpc %s", user, 
+		       FQDNRemote_FQDN, strstr(input, lpc_command));
 
 	switch( action ){
 		case OP_REREAD:

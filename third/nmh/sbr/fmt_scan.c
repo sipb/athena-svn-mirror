@@ -2,7 +2,7 @@
 /*
  * fmt_scan.c -- format string interpretation
  *
- * $Id: fmt_scan.c,v 1.1.1.1 1999-02-07 18:14:08 danw Exp $
+ * $Id: fmt_scan.c,v 1.2 2000-05-08 17:38:01 ghudson Exp $
  */
 
 #include <h/mh.h>
@@ -729,7 +729,7 @@ fmt_scan (struct format *format, char *scanl, int width, int *dat)
 		*cp++ = c;
 	    while (len > wid) {
 		/* try to break at a comma; failing that, break at a
-		 * space, failing that, just split the line.
+		 * space, failing that, print the whole address
 		 */
 		lastb = 0; sp = lp + wid;
 		while (sp > lp && (c = *--sp) != ',') {
@@ -737,8 +737,19 @@ fmt_scan (struct format *format, char *scanl, int width, int *dat)
 			lastb = sp - 1;
 		}
 		if (sp == lp)
-		    if (! (sp = lastb))
+		    if (! (sp = lastb)) {	/* If no ',' or ' ', */
 			sp = lp + wid - 1;
+			while (c = *++sp) {	/* then search forward. */
+			    if (c == ',')
+				break;
+			    if (isspace(c)) {
+				--sp;
+				break;
+			    }
+			}
+			if (! *sp)	/* If we didn't find comma or space */
+			  break;	/* then PUTS the whole str now */
+		    }
 		len -= sp - lp + 1;
 		while (cp < ep && lp <= sp)
 		    *cp++ = *lp++;

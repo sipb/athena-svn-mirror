@@ -10,8 +10,8 @@ all-unix:: kinit
 all-windows:: $(OUTPRE)kinit.exe
 all-mac::
 
-kinit: kinit.o $(KRB5_BASE_DEPLIBS)
-	$(CC_LINK) -o $@ kinit.o $(KRB5_BASE_LIBS)
+kinit: kinit.o $(KRB4COMPAT_DEPLIBS)
+	$(CC_LINK) -o $@ kinit.o $(BUILDTOP)/krb524/libkrb524.a $(KRB4COMPAT_LIBS)
 
 $(OUTPRE)kinit.exe: $(OUTPRE)kinit.obj $(BUILDTOP)\util\windows\$(OUTPRE)getopt.obj $(KLIB) $(CLIB)
 	link $(EXE_LINKOPTS) -out:$@ $**

@@ -1,0 +1,43 @@
+#if defined(sun) && defined(SVR4)
+#define NOLINT
+#define LintFlags -DSOLARIS -DSYSV -DPOSIX -DPOSIX_FLOCK -I/usr/openwin/include
+#define CcFlags LintFlags
+#define LdPath -L/usr/openwin/lib -Xlinker -R/usr/openwin/lib \
+	-L$(ATHTOOLROOT)$(ATHLIBDIR)
+#define LdLibs -lresolv -lsocket -lnsl -lelf -ldl
+#define CcCmd /usr/gcc/bin/gcc
+#define LdCmd /usr/gcc/bin/gcc
+#define AnsiCcCmd /usr/gcc/bin/gcc
+#define AnsiLdCmd /usr/gcc/bin/gcc
+#define RanLibCmd \:
+#endif
+
+#ifdef sgi
+#define NOLINT
+#define LintFlags -DSYSV -DPOSIX -DPOSIX_FLOCK
+#define CcFlags LintFlags
+#define LdPath -L$(ATHTOOLROOT)$(ATHLIBDIR)
+#define LdLibs  
+#define CcCmd cc
+#define LdCmd cc
+#define AnsiCcCmd cc
+#define AnsiLdCmd cc
+#define RanLibCmd \:
+#endif
+
+#ifdef linux
+#define NOLINT
+#define LintFlags -DPOSIX -I/usr/X11R6/include
+#define CcFlags LintFlags
+#define LdPath -L$(ATHTOOLROOT)$(ATHLIBDIR) -L/usr/X11R6/lib
+#define LdLibs -lresolv
+#define CcCmd cc
+#define LdCmd cc
+#define AnsiCcCmd cc
+#define AnsiLdCmd cc
+#define RanLibCmd ranlib
+#endif
+
+#ifndef NoAFS
+#define AfsDir $(ATHTOOLROOT)/usr/afsws
+#endif

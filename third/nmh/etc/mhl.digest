@@ -1,7 +1,6 @@
-width=80,overflowoffset=10
-leftadjust,compress,compwidth=9
+width=0,leftadjust
 Date:formatfield="%<(nodate{text})%{text}%|%(tws{text})%>"
 From:
 Subject:
 :
-body:nocomponent,overflowoffset=0,noleftadjust,nocompress
+body:nocomponent,noleftadjust

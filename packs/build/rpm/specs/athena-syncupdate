@@ -1,0 +1,9 @@
+Name: athena-syncupdate
+Summary: An Athena utility to sync files to disk before updating them
+Copyright: MIT
+Group: Applications/Text
+
+%description
+The syncupdate utility provides a way to update files without fear
+that the updated file might contain garbled or partial data if the
+machine crashes before the data is written out to disk.

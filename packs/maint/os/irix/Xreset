@@ -1,0 +1,26 @@
+#!/bin/sh
+# $Id: Xreset,v 1.1 2000-04-25 13:51:14 rbasch Exp $
+
+# Xreset
+#
+# This program is run as root by xlogin to reclaim ownership of the
+# devices granted to the user in Xstartup.
+
+cd /dev
+
+chown root dms hdsp/*
+chmod  600 dms hdsp/*
+
+# The video devices are processor-dependent.
+case `uname -m` in
+IP22)
+  chown root vino ev1 mgv
+  chmod  600 vino ev1 mgv
+  ;;
+IP32)
+  chown root vice vicedms vicedbg mvp
+  chmod  600 vice vicedms vicedbg mvp
+  ;;
+esac
+
+exit 0

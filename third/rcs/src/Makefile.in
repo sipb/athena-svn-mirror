@@ -1,6 +1,6 @@
 # Make RCS.
 
-#	$Id: Makefile.in,v 1.1.1.1 1996-10-04 05:52:48 ghudson Exp $
+#	$Id: Makefile.in,v 1.2 1998-02-28 19:05:12 ghudson Exp $
 
 # Copyright 1982, 1988, 1989 Walter Tichy
 # Copyright 1990, 1991, 1992, 1993, 1994, 1995 Paul Eggert
@@ -110,16 +110,16 @@ all :: $(PROGRAMS)
 	$(CC) -c $(ALL_CFLAGS) $<
 
 installdirs :: ../mkinstalldirs
-	$(srcdir)/../mkinstalldirs $(bindir)
+	$(srcdir)/../mkinstalldirs $(DESTDIR)$(bindir)
 
 install :: all installdirs
 	for p in $(PROGRAMS); do \
-	  $(INSTALL_PROGRAM) $$p $(bindir)/$$p; \
+	  $(INSTALL_PROGRAM) $$p $(DESTDIR)$(bindir)/$$p; \
 	done
 
 uninstall ::
 	for p in $(PROGRAMS); do \
-	  $(REMOVE) $(bindir)/$$p; \
+	  $(REMOVE) $(DESTDIR)$(bindir)/$$p; \
 	done
 
 # Install RCS and (if applicable) GNU diff before running these tests.

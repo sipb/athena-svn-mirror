@@ -2892,6 +2892,13 @@ do
 	appendlist=$appendlist:$ac_config_fragdir/$i.in
 done
 krb5_output_list="$krb5_output_list $x/Makefile:$krb5_pre_in:$x/Makefile.in$appendlist:$krb5_post_in"
+x="keytab/any"
+appendlist=''
+for i in libobj
+do
+	appendlist=$appendlist:$ac_config_fragdir/$i.in
+done
+krb5_output_list="$krb5_output_list $x/Makefile:$krb5_pre_in:$x/Makefile.in$appendlist:$krb5_post_in"
 x="keytab/db"
 appendlist=''
 for i in libobj

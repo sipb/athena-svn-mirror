@@ -26,11 +26,11 @@ SHELL = /bin/sh
 # Here are the things that we expect ../configure to edit.
 version=@version@
 prefix=@prefix@
-datadir=@datadir@
+datadir=$(prefix)/share
 srcdir=@srcdir@
 
 # Where to install LEIM files.
-INSTALLDIR=${datadir}/emacs/${version}/leim
+INSTALLDIR=$(DESTDIR)${datadir}/emacs/${version}/leim
 
 # On Xenix and the IBM RS6000, double-dot gets screwed up.
 dot = .
@@ -162,13 +162,13 @@ install: all
 	  echo "Copying leim files to ${INSTALLDIR} ..." ; \
 	  if [ x`(cd ${srcdir}; /bin/pwd)` = x`(/bin/pwd)` ] ; then \
 	    tar -cf - leim-list.el quail skk \
-		| (cd ${INSTALLDIR}; umask 0; tar -xvf - && cat > /dev/null) ;\
+		| (cd ${INSTALLDIR}; tar -xvf - && cat > /dev/null) ;\
 	  else \
 	    tar -cf - leim-list.el quail \
-		| (cd ${INSTALLDIR}; umask 0; tar -xvf - && cat > /dev/null) ;\
+		| (cd ${INSTALLDIR}; tar -xvf - && cat > /dev/null) ;\
 	    cd ${srcdir}; \
 	    tar -cf - quail/* skk \
-		| (cd ${INSTALLDIR}; umask 0; tar -xvf - && cat > /dev/null) ;\
+		| (cd ${INSTALLDIR}; tar -xvf - && cat > /dev/null) ;\
 	  fi; \
 	else true; fi
 	-chmod -R a+r ${INSTALLDIR}

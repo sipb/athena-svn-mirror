@@ -8,7 +8,7 @@
  ***************************************************************************/
 
  static char *const _id =
-"$Id: lpd_remove.c,v 1.1.1.3 2000-03-31 15:48:00 mwhitson Exp $";
+"$Id: lpd_remove.c,v 1.5 2000-04-03 19:01:47 mwhitson Exp $";
 
 
 #include "lp.h"
@@ -237,28 +237,33 @@ void Get_queue_remove( char *user, int *sock, struct line_list *tokens,
 
 		/* we check to see if we can remove this one if we are the user */
 
-		if( control_perm == 0 ){
-			/* now we get the user name and IP address */
-			Perm_check.user = Find_str_value(&job.info,LOGNAME,Value_sep);
-#if 0
-			Perm_check.host = 0;
-			if( (s = Find_str_value(&job.info,FROMHOST,Value_sep)) 
-				&& Find_fqdn( &PermHost_IP, s ) ){
-				Perm_check.host = &PermHost_IP;
-			}
-#endif
-			Perm_check.host = &RemoteHost_IP;
-			Perm_check.service = 'M';
-			permission = Perms_check( &Perm_line_list, &Perm_check, &job, 1 );
-			if( permission == P_REJECT ){
-				plp_snprintf( msg, sizeof(msg), _("  no permissions '%s'\n"),
-					identifier );
-				Write_fd_str( *sock, msg );
-				continue;
-			}
+		/* now we get the user name and IP address */
+		Perm_check.user = Find_str_value(&job.info,LOGNAME,Value_sep);
+		Perm_check.host = 0;
+		if( (s = Find_str_value(&job.info,FROMHOST,Value_sep)) 
+		    && Find_fqdn( &PermHost_IP, s ) ){
+			Perm_check.host = &PermHost_IP;
+		}
+		Perm_check.service = 'M';
+		permission = Perms_check( &Perm_line_list, &Perm_check, &job, 1 );
+		if( permission == P_REJECT && control_perm == 0 ){
+			plp_snprintf( msg, sizeof(msg), _("  no permissions '%s'\n"),
+				      identifier );
+			Write_fd_str( *sock, msg );
+			continue;
 		}
 
 		/* log this to the world */
+		if( permission == P_REJECT ) {
+			/* If someone's using control bits and doesn't
+			   have normal permission, log it for posterity. */
+			if( Perm_check.auth_client_id )
+				logmsg(LOG_INFO, "%s (auth): lprm %s:%s", Perm_check.auth_client_id,
+				       Printer_DYN, identifier);
+			else
+				logmsg(LOG_INFO, "%s@%s (unauth): lprm %s:%s", user,
+				       FQDNRemote_FQDN, Printer_DYN, identifier);
+		}
 		DEBUGF(DLPRM4)("Get_queue_remove: removing '%s'", identifier );
 		plp_snprintf( msg, sizeof(msg), _("  dequeued '%s'\n"),
 			identifier );

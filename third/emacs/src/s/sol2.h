@@ -24,7 +24,7 @@
 #endif /* GCC */
 
 #undef LIBS_SYSTEM
-#define LIBS_SYSTEM -lsocket -lnsl -lkstat
+#define LIBS_SYSTEM -lresolv -lsocket -lnsl -lkstat
 #define HAVE_VFORK
 
 /* Prefer kstat over kvm in getloadavg.c, kstat doesn't require root.

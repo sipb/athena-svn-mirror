@@ -674,9 +674,6 @@ default:
       }
      }
      (void)fclose(deffile) ;
-   } else {
-      if (printer)
-         error("! no such printer (can't find corresponding config file)") ;
    }
 }
 

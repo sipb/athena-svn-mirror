@@ -1,9 +1,9 @@
 #if !defined(lint) && !defined(SABER)
-static char rcsid[] = "$Id: db_dict.c,v 1.1.1.2 1999-03-16 19:45:10 danw Exp $";
+static char rcsid[] = "$Id: db_dict.c,v 1.2 2000-04-22 04:39:41 ghudson Exp $";
 #endif /* not lint */
 
 /*
- * Copyright (c) 1997,1999 by Internet Software Consortium.
+ * Portions Copyright (c) 1997 by Internet Software Consortium.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -25,13 +25,12 @@ static char rcsid[] = "$Id: db_dict.c,v 1.1.1.2 1999-03-16 19:45:10 danw Exp $";
 #include <sys/uio.h>
 #include <sys/param.h>
 #include <sys/stat.h>
-#include <sys/un.h>
 
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <arpa/nameser.h>
 
-#include <isc/assertions.h>
+#include <assert.h>
 #include <errno.h>
 #include <stdlib.h>
 #include <string.h>
@@ -101,8 +100,8 @@ dict_new(const char *text, int length) {
 			return (-ENOMEM);
 		cur_offset = 0;
 	}
-	INSIST(cur_offset >= 0);
-	INSIST(cur_offset + DICT_CONSUMED(length) < DICT_OFFSETMAX);
+	assert(cur_offset >= 0);
+	assert(cur_offset + DICT_CONSUMED(length) < DICT_OFFSETMAX);
 	ret = DICT_INDEX(cur_block, cur_offset);
 	blocks[cur_block][cur_offset] = length;
 	memcpy(&blocks[cur_block][cur_offset+1], text, length);

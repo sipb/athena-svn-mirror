@@ -3846,7 +3846,7 @@ are replaced by the given information:
 %/
 The current working directory.
 .TP 4
-%~
+%~ or %d
 The current working directory, but with one's home directory
 represented by `~' and other users' home directories represented by
 `~user' as per \fBFilename substitution\fR. `~user' substitution
@@ -3908,7 +3908,7 @@ A single `%'.
 %n
 The user name.
 .TP 4
-%d
+%k
 The weekday in `Day' format.
 .TP 4
 %D

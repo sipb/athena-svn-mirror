@@ -58,6 +58,17 @@ static char rcsid[] = "$NetBSD: jot.c,v 1.3 1994/12/02 20:29:43 pk Exp $";
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include "config.h"
+
+#if !defined(HAVE_SRANDOM) || !defined(HAVE_SRANDOM)
+#if defined(HAVE_SRAND48) && defined(HAVE_LRAND48)
+#define srandom srand48
+#define random lrand48
+#else
+#define srandom srand
+#define random rand
+#endif
+#endif
 
 #define	REPS_DEF	100
 #define	BEGIN_DEF	1
@@ -80,11 +91,11 @@ int	nofinalnl;
 char	sepstring[BUFSIZ] = "\n";
 char	format[BUFSIZ];
 
-void	error __P((char *, char *));
-void	getargs __P((int, char *[]));
-void	getformat __P((void));
-int	getprec __P((char *));
-void	putdata __P((double, long));
+void	error(char *, char *);
+void	getargs(int, char *[]);
+void	getformat(void);
+int	getprec(char *);
+void	putdata(double, long);
 
 int
 main(argc, argv)

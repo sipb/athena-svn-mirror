@@ -120,9 +120,6 @@ case "${tcsh_cv_canonical}" in
       *-irix[34]*)
         LIBS='-lsun -lbsd -lc_s'
       ;;
-      *-irix[56]*)
-        LIBS='-lsun -lbsd'
-      ;;
     esac
   ;;
 
@@ -151,7 +148,7 @@ case "${tcsh_cv_canonical}" in
   *-*-solaris2.[45]* ) # Should handle sparc, x86 and powerpc
     tcsh_config_file=sol24
   ;;
-  *-*-solaris2.6* ) # Should handle sparc, x86 and powerpc
+  *-*-solaris2.[67]* ) # Should handle sparc, x86 and powerpc
     tcsh_config_file=sol26
   ;;
 
@@ -238,5 +235,9 @@ if test $ac_cv_func_connect = no; then
   AC_CHECK_LIB(socket, connect)
 fi
 AC_SUBST(DFLAGS)
+
+AC_CHECK_FUNC(res_send, :, AC_CHECK_LIB(resolv, res_send, HES_RES_LIB=-lresolv))
+AC_SUBST(HES_RES_LIB)
+AC_SUBST(lbindir)
 
 AC_OUTPUT(Makefile)

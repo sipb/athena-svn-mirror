@@ -32,7 +32,7 @@
  */
 
 /*
- * Portions Copyright (c) 1996,1999 by Internet Software Consortium.
+ * Portions Copyright (c) 1996 by Internet Software Consortium.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -49,7 +49,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static const char rcsid[] = "$Id: lcl_pw.c,v 1.1.1.3 1999-03-16 19:45:53 danw Exp $";
+static const char rcsid[] = "$Id: lcl_pw.c,v 1.2 2000-04-22 04:41:49 ghudson Exp $";
 #endif /* LIBC_SCCS and not lint */
 
 /* Extern */
@@ -61,10 +61,6 @@ static int __bind_irs_pw_unneeded;
 #else
 
 #include <sys/param.h>
-#include <sys/types.h>
-#include <netinet/in.h>
-#include <arpa/nameser.h>
-#include <resolv.h>
 
 #include <db.h>
 #include <errno.h>
@@ -77,7 +73,6 @@ static int __bind_irs_pw_unneeded;
 #include <utmp.h>
 #include <unistd.h>
 
-#include <isc/memcluster.h>
 #include <irs.h>
 
 #include "port_after.h"
@@ -120,12 +115,12 @@ irs_lcl_pw(struct irs_acc *this) {
 	struct irs_pw *pw;
 	struct pvt *pvt;
 		 
-        if (!(pw = memget(sizeof *pw))) {
+        if (!(pw = malloc(sizeof *pw))) {
 		errno = ENOMEM;
 		return (NULL);
 	}
 	memset(pw, 0x5e, sizeof *pw);
-	if (!(pvt = memget(sizeof *pvt))) {
+	if (!(pvt = malloc(sizeof *pvt))) {
 		free(pw);
 		errno = ENOMEM;
 		return (NULL);
@@ -138,8 +133,6 @@ irs_lcl_pw(struct irs_acc *this) {
 	pw->byuid = pw_byuid;
 	pw->rewind = pw_rewind;
 	pw->minimize = pw_minimize;
-	pw->res_get = NULL;
-	pw->res_set = NULL;
 	return (pw);
 }
 
@@ -154,9 +147,9 @@ pw_close(struct irs_pw *this) {
 		pvt->pw_db = NULL;
 	}
 	if (pvt->line)
-		memput(pvt->line, pvt->max);
-	memput(pvt, sizeof *pvt);
-	memput(this, sizeof *this);
+		free(pvt->line);
+	free(pvt);
+	free(this);
 }
 
 static struct passwd *
@@ -269,20 +262,9 @@ hashpw(struct irs_pw *this, DBT *key) {
 	if ((pvt->pw_db->get)(pvt->pw_db, key, &data, 0))
 		return (0);
 	p = (char *)data.data;
-	if (data.size > pvt->max) {
-		size_t newlen = pvt->max + 1024;
-		char *p = memget(newlen);
-		if (p == NULL) {
-			return (0);
-		}
-		if (pvt->line != NULL) {
-			memcpy(p, pvt->line, pvt->max);
-			memput(pvt->line, pvt->max);
-		}
-		pvt->max = newlen;
-		pvt->line = p;
-	}
-
+	if (data.size > pvt->max &&
+	    (pvt->line = realloc(pvt->line, pvt->max += 1024)) == NULL)
+		return (0);
 	/* THIS CODE MUST MATCH THAT IN pwd_mkdb. */
 	t = pvt->line;
 	l = pvt->line + pvt->max;

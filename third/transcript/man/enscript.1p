@@ -1,10 +1,10 @@
 .TH ENSCRIPT 1 "18 August 1992" "Adobe Systems"
 \" Copyright (c) 1985,1987,1990,1991,1992 Adobe Systems Incorporated. All Rights Reserved.
 \" ATTN GOVERNMENT END USERS: See notice of rights in file XPSLIBDIRX/Notice
-\" RCSID: $Header: /afs/dev.mit.edu/source/repository/third/transcript/man/enscript.1p,v 1.1.1.1 1996-10-07 20:25:38 ghudson Exp $
+\" RCSID: $Header: /afs/dev.mit.edu/source/repository/third/transcript/man/enscript.1p,v 1.2 1996-10-14 05:09:41 ghudson Exp $
 .ds PS P\s-2OST\s+2S\s-2CRIPT\s+2
 .SH NAME
-enscript\(emconvert text files to \*(PS language format for printing
+enscript \- convert text files to PostScript language format for printing
 .SH SYNOPSIS
 .B enscript
 [ 
@@ -184,8 +184,6 @@ sets the width of a tab to be
 .I characters
  number of characters.  This is
 especially useful to get columns to line up correctly when printing with a variable width font.
-.PP
-In BSD Unix systems, the following spooler options are also recognized:
 .TP
 .BI -P printer
 causes the output to be sent to the named printer
@@ -211,27 +209,6 @@ first input file will be used.
 .BI -C class
 set the job classification for use on the burst page.
 .PP
-In System V Unix systems, the following spooler options are also recognized:
-.TP
-.BI -t title
-sets job title for use on the burst page.
-.TP
-.BI -d dest
-causes the output to be sent to the named printer or printer 
-class unless 
-.BI -p file
-is specified. In that case, the printer name is used to access the 
-printer's \*(PS Printer Description file for information, and the
-output is written to 
-the specified file instead of being spooled for printing.
-.TP
-.BI -n n
-causes 
-.I n
-copies of the output to be produced. The default is one.
-.TP
-.BR -w " or " -m
-causes the printer daemon to write or send mail upon job completion.
 .SH ENVIRONMENT
 .IP ENSCRIPT
 string of options to be used by
@@ -244,7 +221,7 @@ prologue and font metric files
 .IP PSTEMPDIR
 path name of a temporary directory to use instead of XPSTEMPDIRX 
 for temporary files.
-.IP "PRINTER (BSD)"
+.IP "PRINTER"
 the name of a printer (as in the 
 .B -P
 option) for 
@@ -258,20 +235,6 @@ will use this printer.  If neither
 nor PRINTER is set,
 .I enscript
 will spool to a printer named "PostScript".
-.IP "LPDEST (System V)"
-the name of a printer (as in the 
-.B -d
-option) for 
-lp
-to use.  If no 
-.B -d
-option is specified,
-lp
-will use this printer.  If neither 
-.B -d 
-nor LPDEST is set,
-.I enscript
-will spool to a printer class named "PostScript".
 .SH FILES
 .TP 2.2i
 XPSLIBDIRX/*.afm
@@ -283,11 +246,7 @@ prologue for
  files
 .br
 .SH "SEE ALSO"
-pr(1), transcript(1), psfonts(1), ps630(1)
-.br
-BSD Unix systems: lpr(1), lpq(1), lprm(1)
-.br
-System V Unix systems: lp(1), cancel(1), lpstat(1)
+pr(1), transcript(1), psfonts(1), ps630(1), lpr(1), lpq(1), lprm(1)
 .SH AUTHOR
 Adobe Systems Incorporated
 .br

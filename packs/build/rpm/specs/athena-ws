@@ -1,0 +1,159 @@
+Name: athena-ws
+Summary: Athena workstation management infrastructure
+Copyright: MIT
+Group: System Environment/Base
+Requires: athena-desync, athena-base, athena-sendmail, athena-gettime, athena-xntp
+
+%description
+Various maintenanance and configuration files required for any
+Athena workstation.
+
+%build
+
+if [ X$RPM_BUILD_ROOT = X ]; then
+cat 1>&2 << MESSAGE
+You must specify a build root in order to build this package.
+Use the --buildroot option to RPM or the buildroot rpmrc entry.
+MESSAGE
+exit 1
+fi
+
+cc -static -g -I/usr/include/rpm rpmupdate.c -o rpmupdate -lrpm -lpopt -ldb1 \
+	-lz -lbz2
+
+%install
+if [ X$RPM_BUILD_ROOT = X ]; then
+  cat 1>&2 << MESSAGE
+You must specify a build root in order to build this package.
+Use the --buildroot option to RPM or the buildroot rpmrc entry.
+MESSAGE
+  exit 1
+fi
+
+rm -rf $RPM_BUILD_ROOT
+mkdir $RPM_BUILD_ROOT
+./do.sh -p -s /xxx -d $RPM_BUILD_ROOT install
+
+#Extra stuff
+mkdir -p $RPM_BUILD_ROOT/{/usr/athena/man,/etc/athena,/etc/cron.d}
+mkdir -p $RPM_BUILD_ROOT/usr/X11R6/lib/X11/app-defaults
+cp masks $RPM_BUILD_ROOT/etc/athena/masks
+cp passwd.fallback $RPM_BUILD_ROOT/etc/passwd.fallback
+cp syslog.conf $RPM_BUILD_ROOT/etc/syslog.conf.athena
+cp update_ws.sh $RPM_BUILD_ROOT/etc/athena/update_ws
+cp update_ws.8 $RPM_BUILD_ROOT/usr/athena/man/man8/update_ws.8
+cp rpmupdate $RPM_BUILD_ROOT/etc/athena/rpmupdate
+cp athena.cron $RPM_BUILD_ROOT/etc/cron.d/athena
+cp XTerm $RPM_BUILD_ROOT/usr/X11R6/lib/X11/app-defaults/XTerm.athena
+chmod +x $RPM_BUILD_ROOT/etc/athena/update_ws
+
+# This file actually goes in the athena-afs package.
+rm $RPM_BUILD_ROOT/etc/athena/config_afs
+
+find $RPM_BUILD_ROOT -type f -or -type l |
+  sed -e "s|^$RPM_BUILD_ROOT||" \
+      -e "s|^/etc/syslog.conf.athena$|%config \0|" |
+  sort > rpm.filelist
+
+%triggerin -- sysklogd
+cp /etc/syslog.conf.athena /etc/syslog.conf
+
+%triggerin -- XFree86
+cp /usr/X11R6/lib/X11/app-defaults/XTerm.athena /usr/X11R6/lib/X11/app-defaults/XTerm
+
+%triggerin -- initscripts
+# Add warnings on disabled consoles pointing people at tty7.
+for i in 1 2 3 4 5 6; do
+  if grep -q ^$i: /etc/inittab; then true; else
+    echo "$i:2345:once:echo \"Type CTRL-ALT-F7 to log in.\" > /dev/tty$i" >> /etc/inittab
+  fi
+done
+
+%triggerin -- dev
+# Make sure the permissions on the sound devices are appropriate
+chmod 666 /dev/{audio,dsp,midi00,mixer,sequencer,sndstat}
+
+%post
+chkconfig --add athena-ws
+chkconfig --add syncconf
+
+# Turn on the sound card for the cluster workstations.  Unfortunately,
+# there is no generic tool, but if we know what kind of card to do, then
+# we can do it.
+if pnpdump | grep -q CS4236B ; then
+  touch /etc/conf.modules
+  if grep -q cs4232 /etc/conf.modules ; then true ; else
+	cat >> /etc/conf.modules << EOF
+alias sound cs4232
+pre-install sound insmod sound dmabuf=1
+alias midi opl3
+options opl3 io=0x388
+options cs4232 io=0x534 irq=5 dma=1 dma2=0 mpuio=0x330 mpuirq=5
+EOF
+  fi
+fi
+
+# Turn on DontZap in the X configuration.
+sed -e 's/#DontZap/DontZap/' < /etc/X11/XF86Config > /etc/X11/XF86Config.new
+mv /etc/X11/XF86Config.new /etc/X11/XF86Config
+
+if grep -q HOST /etc/athena/rc.conf ; then true ; else
+  HOST=`hostname`  
+  cat << EOF >> /etc/athena/rc.conf
+HOST=$HOST;		export HOST		#* Hostname
+EOF
+fi
+
+if grep -q ADDR /etc/athena/rc.conf ; then true ; else
+  ADDR=`ifconfig eth0 | grep inet\ addr | sed -e s/^.*addr:// | awk  '{ print $1 ; }'`
+  cat << EOF >> /etc/athena/rc.conf
+ADDR=$ADDR;		export ADDR		#* Internet address
+EOF
+fi
+
+grep -q NETDEV /etc/athena/rc.conf || cat << EOF >> /etc/athena/rc.conf
+NETDEV=eth0;		export NETDEV		# Network interface
+EOF
+
+if grep -q MACHINE /etc/athena/rc.conf ; then true ; else
+  MACHINE=`uname -m`
+  cat << EOF >> /etc/athena/rc.conf
+MACHINE=$MACHINE;	export MACHINE		# Type of machine
+EOF
+fi
+
+if grep -q SYSTEM /etc/athena/rc.conf ; then true ; else
+  SYSTEM=`uname -s`
+  cat << EOF >> /etc/athena/rc.conf
+SYSTEM=$SYSTEM; 	export SYSTEM		# Type of operating system
+EOF
+fi
+
+grep -q PUBLIC /etc/athena/rc.conf || cat << EOF >> /etc/athena/rc.conf
+PUBLIC=false;		export PUBLIC		# Public workstation?
+EOF
+
+grep -q NOCREATE /etc/athena/rc.conf || cat << EOF >> /etc/athena/rc.conf
+NOCREATE=false;		export NOCREATE		# Disallow the public to login?
+EOF
+
+grep -q NOATTACH /etc/athena/rc.conf || cat << EOF >> /etc/athena/rc.conf
+NOATTACH=false;		export NOATTACH		# Disallow attaching homedirs?
+EOF
+
+grep -q NOREMOTE /etc/athena/rc.conf || cat << EOF >> /etc/athena/rc.conf
+NOREMOTE=false;		export NOREMOTE		# Deny access to remote users not in /etc/passwd
+EOF
+
+grep -q AUTOUPDATE /etc/athena/rc.conf || cat << EOF >> /etc/athena/rc.conf
+AUTOUPDATE=true;	export AUTOUPDATE	# Automatically update?
+EOF
+
+grep -q SYNCCONFIG /etc/athena/rc.conf || cat << EOF >> /etc/athena/rc.conf
+SYNCCONFIG=true;	export SYNCUPDATE	# Syncronize configurations?
+EOF
+
+grep -q MAILRELAY /etc/athena/rc.conf || cat << EOF >> /etc/athena/rc.conf
+MAILRELAY=default;	export MAILRELAY	#* SMTP relay host | default | none
+
+

@@ -80,7 +80,7 @@ Patrick Powell Mon Aug 21 08:48:10 PDT 1995
 #endif /* PAGE_LENGTH */
 
 #ifndef BASELINE_OFFSET
-# define BASELINE_OFFSET 36.0
+# define BASELINE_OFFSET 72.0
 #endif /* not BASELINE_OFFSET */
 
 #ifndef BOTTOM_OFFSET
@@ -88,15 +88,15 @@ Patrick Powell Mon Aug 21 08:48:10 PDT 1995
 #endif /* not BOTTOM_OFFSET */
 
 #ifndef VERTICAL_SPACING
-# define VERTICAL_SPACING 12.0
+# define VERTICAL_SPACING 8.0
 #endif /* not VERTICAL_SPACING */
 
 #ifndef LEFT_MARGIN
-# define LEFT_MARGIN 28.0
+# define LEFT_MARGIN 54.0
 #endif /* not LEFT_MARGIN */
 
 #ifndef RIGHT_MARGIN
-# define RIGHT_MARGIN 28.0
+# define RIGHT_MARGIN 54.0
 #endif /* not RIGHT_MARGIN */
 
 #ifndef FONT
@@ -357,7 +357,7 @@ int main(int argc, char **argv)
 	/* courier 10 has 12 CPI, 12 point line spacing */
     char_width = 72.0/cpi;
     font_size = char_width/.6;
-    vertical_spacing = font_size*1.2;
+    vertical_spacing = font_size*1.0;
   }
   topdrop = header_height + topdrop;
   if( gaudy ){

@@ -35,6 +35,7 @@ LIBS=	ifdef(`confLIBS', `confLIBS')
 
 # location of mailstats binary (usually /usr/sbin or /usr/etc)
 SBINDIR=${DESTDIR}ifdef(`confSBINDIR', `confSBINDIR', `/usr/sbin')
+ATHSBINDIR=athSBINDIR
 
 # additional .o files needed
 OBJADD=	ifdef(`confOBJADD', `confOBJADD')
@@ -82,14 +83,19 @@ mailstats.${MAN8SRC}: mailstats.8
 install: install-mailstats install-docs
 
 install-mailstats: mailstats
-	${INSTALL} -c -o ${BINOWN} -g ${BINGRP} -m ${BINMODE} mailstats ${SBINDIR}
+	mkdir -p ${DESTDIR}${ATHSBINDIR}
+	mkdir -p ${SBINDIR}
+	${INSTALL} -c -o ${BINOWN} -g ${BINGRP} -m ${BINMODE} mailstats ${DESTDIR}${ATHSBINDIR}
+	rm -f ${SBINDIR}/mailstats
+	ln -s ${ATHSBINDIR}/mailstats ${SBINDIR}/mailstats
 
 install-docs: mailstats.${MAN8SRC}
 ifdef(`confNO_MAN_INSTALL', `dnl',
-`	${INSTALL} -c -o ${MANOWN} -g ${MANGRP} -m ${MANMODE} mailstats.${MAN8SRC} ${MAN8}/mailstats.${MAN8EXT}')
+`	mkdir -p ${MAN8}
+	${INSTALL} -c -o ${MANOWN} -g ${MANGRP} -m ${MANMODE} mailstats.${MAN8SRC} ${MAN8}/mailstats.${MAN8EXT}')
 
 clean:
-	rm -f ${OBJS} mailstats mailstats.${MAN8SRC}
+	rm -f ${OBJS} mailstats
 
 ################  Dependency scripts
 include(confBUILDTOOLSDIR/M4/depend/ifdef(`confDEPEND_TYPE', `confDEPEND_TYPE',

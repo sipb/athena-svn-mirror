@@ -1,0 +1,139 @@
+#! /bin/sh
+#
+# AFS	Start and stop AFS components
+# 
+# 
+# chkconfig: 345 60 20
+# description:  AFS is a distributed file system which provides location
+#		transparency, caching and secure authentication.
+#		Additional configuration can be done in the /etc/sysconfig/afs
+#		file. Read the documentation in that file for more information.
+#
+# Note that AFS does not use a pid file in /var/run. It is turned off by
+# unmounting /afs.
+
+
+# Gather up options and post startup script name, if present
+if [ -f /etc/sysconfig/afs ]; then
+	. /etc/sysconfig/afs
+fi
+
+# Athena addition
+athena_afsadjust () {
+	. /etc/athena/rc.conf
+	if [ "true" = $AFSADJUST -o "true" = $PUBLIC ] ; then
+		df -k /usr/vice/cache | awk '
+		  (NR == 2) {
+		    printf "/afs:/usr/vice/cache:";
+		    print int($2 * 3 / 4);
+		  }' > /usr/vice/etc/cacheinfo.new
+		  
+		if df -k /usr/vice/cache | grep /usr/vice/cache ; then
+			mv /usr/vice/etc/cacheinfo.new /usr/vice/etc/cacheinfo
+		else
+			rm /usr/vice/etc/cacheinfo.new
+		fi
+	fi
+}
+
+# is_on returns 1 if value of arg is "on"
+is_on() {
+	if  test "$1" = "on" ; then return 0
+	else return 1
+	fi
+}
+
+# If choose_client can't correctly determine which client to use, set
+# LIBAFS manually.
+choose_client() {
+
+	# Use the second field of the uname -v output instead of just
+	# doing a match on the whole thing to protect against matching
+	# a timezone named SMP -- I don't know of one, but let's be
+	# paranoid.
+
+	set X `uname -v`; shift
+	case $2 in
+	SMP) MP=.mp ;;	# MP system
+	*)   MP= ;;	# SP system
+	esac
+
+	# For now, just use uname -r to get the module version. 
+	VERSION=`uname -r | sed -e 's/-.*$//'`
+
+	LIBAFS=libafs-$VERSION$MP.o
+}
+
+# load_client loads the AFS client module if it's not already loaded. 
+load_client() {
+	# If LIBAFS is set, use it.
+	if [ -z "$LIBAFS" ] ; then
+		# Try to determine the right client.
+		choose_client
+	fi
+    
+	if [ ! -f /usr/vice/etc/modload/$LIBAFS ] ; then
+		echo AFS module $LIBAFS does not exist. Not starting AFS.
+		exit 1
+	fi
+	/sbin/insmod -f -m /usr/vice/etc/modload/$LIBAFS > /usr/vice/etc/modload/libafs.map 2>&1
+}
+
+case "$1" in 
+  start)
+	athena_afsadjust
+
+	# Load kernel extensions
+	if  load_client  ; then :
+	else
+		echo Failed to load AFS client, not starting AFS services.
+		exit 1
+	fi
+
+	echo "Starting AFS services..... "
+	# Start bosserver, it if exists
+	if  is_on $AFS_SERVER && test -x /usr/afs/bin/bossserver  ; then
+		/usr/afs/bin/bosserver 
+	fi
+
+	# Start AFS client
+	if  is_on $AFS_CLIENT && test -x /usr/vice/etc/afsd  ; then
+		/usr/vice/etc/afsd ${OPTIONS}
+
+		# Start AFS version of inetd.conf if present.
+		if  test -f /usr/afsws/etc/inetd.conf -a -x /usr/afsws/etc/inetd.afs ; then
+			/usr/afsws/etc/inetd.afs /usr/afsws/etc/inetd.conf
+		fi
+		$AFS_POST_INIT
+	fi
+
+	;;
+
+  stop)
+	# Stop AFS
+	echo "Stopping AFS services..... "
+
+	if  is_on $AFS_CLIENT  ; then
+		killall inetd.afs
+		umount /afs
+	fi
+
+	if  is_on $AFS_SERVER && test -x /usr/afs/bin/bos ; then
+		echo "Stopping AFS bosserver"
+		/usr/afs/bin/bos shutdown localhost -localauth -wait
+		killall -HUP bosserver
+	fi
+
+	LIBAFS=`/sbin/lsmod | fgrep libafs`
+	if [ -n "$LIBAFS" ] ; then
+		LIBAFS=`echo $LIBAFS | awk 'BEGIN { FS = " " } { print $1 }'`
+		/sbin/rmmod $LIBAFS
+	fi
+
+	;;
+
+  *)
+	echo Usage: 'afs <start|stop>'
+
+esac
+

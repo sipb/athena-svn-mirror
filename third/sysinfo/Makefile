@@ -4,7 +4,7 @@
 # for profit or used for commercial gain and the author is credited 
 # appropriately.
 #
-# $Revision: 1.1.1.3 $
+# $Revision: 1.8 $
 #
 # Sysinfo Makefile
 #
@@ -23,7 +23,7 @@ PROG 		= sysinfo
 # The ${PREFIX} variable determines the top level directory that
 # things are installed under.
 #
-PREFIX		= /var/local
+PREFIX		= /usr/athena
 
 #
 # The bin directory that user's will run the program from.
@@ -36,13 +36,13 @@ BIN 		= ${PREFIX}/bin
 # Directory containing sysinfo.cf configuration files
 #
 #CONFDIR		= /usr/local/lib/${PROG}
-CONFDIR		= ${PREFIX}/${PROG}/conf
+CONFDIR		= ${PREFIX}/lib/${PROG}
 
 #
 # The LIBDIR directory is where all the sysinfo binary executables
 # will be installed.
 #
-LIBDIR		= ${PREFIX}/${PROG}/lib
+LIBDIR		= ${PREFIX}/lib/${PROG}
 
 #
 # Man sections and directories
@@ -89,11 +89,6 @@ INSTALLPROG	= sh ./install.sh
 # 	END OF NORMAL SITE CONFIGURATION
 #
 ###########################################################################
-
-#
-# The make program to use
-#
-MAKE		= make
 
 #
 # The name of the kvm library to use.
@@ -251,20 +246,19 @@ bindist: $(PROG) $(BINDistFiles)
 	rm -f $$vername $$filelist; \
 	echo DIST File is $$vername.tar.gz
 
-install: $(LIBDIR) $(BIN) metasysinfo
+install: ${DESTDIR}$(LIBDIR) ${DESTDIR}$(BIN) metasysinfo
 	@$(MAKE) $(MFLAGS) $(MKPARAMS) install.cf CONFDIR=${CONFDIR}
 	@if [ ! -z "$(LIBDIR)" ]; then \
 		RTPLATFORM=`${BUILDINFO} -rtplatform`; \
-		build/mkdirhier $(LIBDIR)/$${RTPLATFORM}; \
-		echo "$(INSTALLPROG) -c -m 555 $(INSTALLOWN) metasysinfo $(BIN)/$(PROG)"; \
-		$(INSTALLPROG) -c -m 555 $(INSTALLOWN) metasysinfo $(BIN)/$(PROG); \
-		echo "$(INSTALLPROG) -c ${INSTALLOPTS} ${PROG} $(LIBDIR)/$${RTPLATFORM}/${PROG}"; \
-		$(INSTALLPROG) -c ${INSTALLOPTS} ${PROG} $(LIBDIR)/$${RTPLATFORM}/${PROG}; \
-		strip $(LIBDIR)/$${RTPLATFORM}/${PROG}; \
+		build/mkdirhier ${DESTDIR}$(LIBDIR)/$${RTPLATFORM}; \
+		echo "$(INSTALLPROG) -c -m 555 $(INSTALLOWN) metasysinfo ${DESTDIR}$(BIN)/$(PROG)"; \
+		$(INSTALLPROG) -c -m 555 $(INSTALLOWN) metasysinfo ${DESTDIR}$(BIN)/$(PROG); \
+		echo "$(INSTALLPROG) -c ${INSTALLOPTS} ${PROG} ${DESTDIR}$(LIBDIR)/$${RTPLATFORM}/${PROG}"; \
+		$(INSTALLPROG) -c ${INSTALLOPTS} ${PROG} ${DESTDIR}$(LIBDIR)/$${RTPLATFORM}/${PROG}; \
+		strip ${DESTDIR}$(LIBDIR)/$${RTPLATFORM}/${PROG}; \
 	else \
-		echo $(INSTALLPROG) -c ${INSTALLOPTS} ${PROG} ${BIN}/${PROG}; \
-		$(INSTALLPROG) -c ${INSTALLOPTS} ${PROG} ${BIN}/${PROG}; \
-		strip ${BIN}/${PROG}; \
+		echo $(INSTALLPROG) -c ${INSTALLOPTS} ${PROG} ${DESTDIR}${BIN}/${PROG}; \
+		$(INSTALLPROG) -c ${INSTALLOPTS} ${PROG} ${DESTDIR}${BIN}/${PROG}; \
 	fi
 
 metasysinfo: metasysinfo.sh
@@ -272,32 +266,33 @@ metasysinfo: metasysinfo.sh
 	sed -e "s;#LIBDIR#;$(LIBDIR);" < metasysinfo.sh > $@
 	chmod 555 $@
 
-install.man: $(MANFILES) $(ManDir1) $(ManDir5)
+install.man: $(MANFILES) ${DESTDIR}$(ManDir1) ${DESTDIR}$(ManDir5)
 	$(INSTALLPROG) -c -m 444 -o bin -g bin sysinfo.man \
-		${ManDir1}/${PROG}.${ManSect1}
+		${DESTDIR}${ManDir1}/${PROG}.${ManSect1}
 	$(INSTALLPROG) -c -m 444 -o bin -g bin sysinfo.cf.man \
-		${ManDir5}/${PROG}.cf.${ManSect5}
+		${DESTDIR}${ManDir5}/${PROG}.cf.${ManSect5}
 
-$(BIN):
-	build/mkdirhier ${BIN}
+${DESTDIR}$(BIN):
+	build/mkdirhier ${DESTDIR}${BIN}
 
-$(LIBDIR):
-	build/mkdirhier ${LIBDIR}
+${DESTDIR}$(LIBDIR):
+	build/mkdirhier ${DESTDIR}${LIBDIR}
 
-$(CONFDIR):
-	build/mkdirhier ${CONFDIR}
+${DESTDIR}$(CONFDIR):
+	build/mkdirhier ${DESTDIR}${CONFDIR}
 
-$(ManDir1):
-	build/mkdirhier ${ManDir1}
+${DESTDIR}$(ManDir1):
+	build/mkdirhier ${DESTDIR}${ManDir1}
 
-$(ManDir5):
-	build/mkdirhier ${ManDir5}
+${DESTDIR}$(ManDir5):
+	build/mkdirhier ${DESTDIR}${ManDir5}
 
-install.cf: $(CONFDIR)
+install.cf: ${DESTDIR}$(CONFDIR)
 	@for file in config/*.cf config/*.ddb ; do \
 		cf=`echo $$file | sed -e 's;.*/;;'`; \
-		echo $(INSTALLPROG) -c -m 444 $(INSTALLOWN) $$file $(CONFDIR)/$$cf; \
-		$(INSTALLPROG) -c -m 444 $(INSTALLOWN) $$file $(CONFDIR)/$$cf; \
+		echo $(INSTALLPROG) -c -m 444 $(INSTALLOWN) $$file ${DESTDIR}$(CONFDIR)/$$cf; \
+		$(INSTALLPROG) -c -m 444 $(INSTALLOWN) $$file \
+			${DESTDIR}$(CONFDIR)/$$cf; \
 	done
 
 clean:

@@ -1,5 +1,4 @@
-'CC=bcc'
-'BOUNDS=-fbounds-checking'
+'CC=gcc'
 'CDEBUG=-g -O2'
 'DESTBIN=/usr/bin'
 'DESTSBIN=/usr/sbin'

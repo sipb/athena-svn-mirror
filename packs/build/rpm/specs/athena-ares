@@ -1,0 +1,8 @@
+Name: athena-ares
+Summary: An asynchronous resolver library 
+Copyright: MIT
+Group: System Environment/Libraries
+
+%description
+A library to do DNS lookups asynchronously.
+

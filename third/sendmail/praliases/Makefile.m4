@@ -42,6 +42,7 @@ LIBS=	ifdef(`confLIBS', `confLIBS')
 
 # location of praliases binary (usually /usr/sbin or /usr/etc)
 SBINDIR=${DESTDIR}ifdef(`confSBINDIR', `confSBINDIR', `/usr/sbin')
+ATHSBINDIR=athSBINDIR
 
 # additional .o files needed
 OBJADD=	ifdef(`confOBJADD', `confOBJADD')
@@ -89,14 +90,18 @@ praliases.${MAN8SRC}: praliases.8
 install: install-praliases install-docs
 
 install-praliases: praliases
-	${INSTALL} -c -o ${BINOWN} -g ${BINGRP} -m ${BINMODE} praliases ${SBINDIR}
+	mkdir -p ${DESTDIR}${ATHSBINDIR}
+	mkdir -p ${SBINDIR}
+	${INSTALL} -c -o ${BINOWN} -g ${BINGRP} -m ${BINMODE} praliases ${DESTDIR}${ATHSBINDIR}
+	ln -s ${ATHSBINDIR}/praliases ${SBINDIR}/praliases
 
 install-docs: praliases.${MAN8SRC}
 ifdef(`confNO_MAN_INSTALL', `dnl',
-`	${INSTALL} -c -o ${MANOWN} -g ${MANGRP} -m ${MANMODE} praliases.${MAN8SRC} ${MAN8}/praliases.${MAN8EXT}')
+`	mkdir -p ${MAN8}
+	${INSTALL} -c -o ${MANOWN} -g ${MANGRP} -m ${MANMODE} praliases.${MAN8SRC} ${MAN8}/praliases.${MAN8EXT}')
 
 clean:
-	rm -f ${OBJS} praliases praliases.${MAN8SRC}
+	rm -f ${OBJS} praliases
 
 ################  Dependency scripts
 include(confBUILDTOOLSDIR/M4/depend/ifdef(`confDEPEND_TYPE', `confDEPEND_TYPE',

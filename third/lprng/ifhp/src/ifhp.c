@@ -4,7 +4,7 @@
  **************************************************************************/
 /**** HEADER *****/
 #include "patchlevel.h"
- static char *const _id = "$Id: ifhp.c,v 1.1.1.4 1999-05-18 19:17:47 mwhitson Exp $"
+ static char *const _id = "$Id: ifhp.c,v 1.5 1999-05-18 21:22:17 mwhitson Exp $"
  " VERSION " PATCHLEVEL;
 
 #include "ifhp.h"

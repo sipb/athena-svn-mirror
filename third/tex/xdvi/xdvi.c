@@ -78,7 +78,7 @@ static	char	copyright[] =
 #endif
 
 #ifndef	SHRINK
-#define	SHRINK	3
+#define	SHRINK	6
 #endif
 
 #ifndef	BDPI
@@ -329,7 +329,7 @@ static	XtResource	application_resources[] = {
 {"shrinkFactor", "ShrinkFactor", XtRInt, sizeof(int),
   offset(shrinkfactor), XtRImmediate, (XtPointer) SHRINK},
 {"densityPercent", "DensityPercent", XtRInt, sizeof(int),
-  offset(_density), XtRString, "40"},
+  offset(_density), XtRString, "20"},
 #ifdef	GREY
 {"gamma", "Gamma", XtRFloat, sizeof(float),
   offset(_gamma), XtRString, "1"},
@@ -428,13 +428,13 @@ static	XtResource	application_resources[] = {
 {"expert", "Expert", XtRBoolean, sizeof(Boolean),
   offset(expert), XtRString, "false"},
 {"shrinkButton1", "ShrinkButton1", XtRInt, sizeof(int),
-  offset(shrinkbutton[0]), XtRImmediate, (XtPointer) 1},
+  offset(shrinkbutton[0]), XtRImmediate, (XtPointer) 2},
 {"shrinkButton2", "ShrinkButton2", XtRInt, sizeof(int),
-  offset(shrinkbutton[1]), XtRImmediate, (XtPointer) 2},
+  offset(shrinkbutton[1]), XtRImmediate, (XtPointer) 4},
 {"shrinkButton3", "ShrinkButton3", XtRInt, sizeof(int),
-  offset(shrinkbutton[2]), XtRImmediate, (XtPointer) 3},
+  offset(shrinkbutton[2]), XtRImmediate, (XtPointer) 6},
 {"shrinkButton4", "ShrinkButton4", XtRInt, sizeof(int),
-  offset(shrinkbutton[3]), XtRImmediate, (XtPointer) 4},
+  offset(shrinkbutton[3]), XtRImmediate, (XtPointer) 8},
 #endif
 {"magnifierSize1", "MagnifierSize", XtRString, sizeof(char *),
   offset(mg_arg[0]), XtRString, (caddr_t) NULL},

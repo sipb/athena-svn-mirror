@@ -1,0 +1,8 @@
+Name: athena-dotfiles
+Summary: user template and system standard shell dotfiles for Athena
+Copyright: MIT
+Group: System Environment/Shells
+
+%description
+user template and system standard shell dotfiles for Athena
+

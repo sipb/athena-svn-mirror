@@ -1,0 +1,26 @@
+# $Id: Makefile.athena,v 1.11 2000-03-31 15:00:09 ghudson Exp $
+
+SHELL=/bin/sh
+
+dist:
+	cp "$$CONFIG_SITE" config.site.athena
+
+prepare:
+	rm -f config.cache
+	CONFIG_SITE=`pwd`/config.site.athena PERL=/usr/athena/bin/perl \
+		./configure --disable-suid-ssh \
+		--with-kerberos5=${ATHTOOLROOT}/usr/athena \
+		--enable-kerberos-tgt-passing \
+		--with-libwrap=${ATHTOOLROOT}/usr/athena/lib \
+		--with-rsh=/usr/athena/bin/rsh
+
+clean:
+	${MAKE} clean
+
+all:
+	${MAKE} depend all
+
+check:
+
+install:
+	${MAKE} install install_prefix="$$SRVD"

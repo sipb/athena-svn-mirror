@@ -1,111 +1,70 @@
-INSTALLDIR = /usr/local/share/emacs/fonts
+# $Id: Makefile,v 1.5 1999-09-29 20:40:05 danw Exp $
 
-BDFTOPCF = bdftopcf
-MKFONTDIR = mkfontdir
-COMPRESS =
+# Font source directories
+VPATH = Asian Chinese Chinese-BIG Chinese-X Ethiopic European \
+	European-BIG Japanese Japanese-BIG Japanese-X Korean-X Misc
 
-SUBDIRS =	European Asian Chinese Japanese Ethiopic Misc
-SUBDIRS_X =	Chinese-X Japanese-X Korean-X
-SUBDIRS_BIG =	European-BIG  Chinese-BIG Japanese-BIG
+# Tools
+BDFTOPCF=bdftopcf
+MKFONTDIR=mkfontdir
 
-help:
-	@echo "Usage: make [ COMPRESS=compress ] [ all | SUBDIRECTORIES ]"
-	@echo
-	@echo "This Makefile installs all the fonts in the current directory"
-	@echo "to ${INSTALLDIR}."
-	@echo
-	@echo "If you want to install only some portion of fonts,"
-	@echo "give some of the following subdirectories as arguments:"
-	@echo "	${SUBDIRS}"
-	@echo "	${SUBDIRS_X} ${SUBDIRS_BIG}"
-	@echo
-	@echo "If you are using a X window system which can handle compressed"
-	@echo "fonts (*.pcf.Z), give \"COMPRESS=compress\" as an argument."
-	@echo
-	@echo "If you want to install fonts to the different directory,"
-	@echo "give \"INSTALLDIR=_YOUR_INSTALL_DIRECTORY_\" as an argument."
-	@echo
-	@echo "Please read README for how to inform your X server about"
-	@echo "the new fonts."
+# Where to put the founts
+INSTALLDIR = $(DESTDIR)/usr/athena/lib/X11/fonts/intlfonts
 
-${SUBDIRS} ${SUBDIRS_X} ${SUBDIRS_BIG}: FRC
-	@[ -d ${INSTALLDIR} ] || mkdir -p ${INSTALLDIR}
-	@if [ ! -d $@ ] ; then \
-	  if [ -f $@.tar.gz ] ; then \
-	    echo "Extracting the archive file $@.tar.gz ..." ; \
-	    (zcat $@.tar.gz | tar xf -) ; \
-	    chmod a+w $@/*.bdf ; \
-	  elif [ -f $@.tar ] ; then \
-	    echo "Extracting the archive file $@.tar ..." ; \
-	    tar xf $@.tar ; \
-	    chmod a+w $@/*.bdf ; \
-	  else \
-	    echo "Archive file $@.tar.gz does not exist.  Ignore it." ; \
-	  fi ; \
-	else true ; fi
-	@if [ -d $@ ] ; then \
-	  pwd=`pwd` ; \
-	  cd $@ ; \
-	  if [ -z "${COMPRESS}" ] ; then \
-	    for f in *.bdf ; do \
-	      echo Making ${INSTALLDIR}/`basename $${f} .bdf`.pcf ; \
-	      $(BDFTOPCF) $${f} > ${INSTALLDIR}/`basename $${f} .bdf`.pcf ; \
-	    done ; \
-	  else \
-	    for f in *.bdf ; do \
-	      echo Making ${INSTALLDIR}/`basename $${f} .bdf`.pcf.Z ; \
-	      $(BDFTOPCF) $${f} > ${INSTALLDIR}/`basename $${f} .bdf`.pcf ; \
-	      rm -f ${INSTALLDIR}/`basename $${f} .bdf`.pcf.Z ; \
-	      $(COMPRESS) ${INSTALLDIR}/`basename $${f} .bdf`.pcf ; \
-	    done ; \
-	  fi ; \
-	  if [ -f fonts.alias ] ; then \
-	    if [ -f ${INSTALLDIR}/fonts.alias ] ; then \
-	      cat ${INSTALLDIR}/fonts.alias fonts.alias |sort |uniq > temp ; \
-	      cat temp > ${INSTALLDIR}/fonts.alias ; \
-	      rm -f temp ; \
-	    else \
-	      cat fonts.alias > ${INSTALLDIR}/fonts.alias ; \
-	    fi ; \
-	  else true ; fi ; \
-	  cd $${pwd}; \
-	else true ; fi
-	@if [ -d $@ -a ! -f making.all ] ; then \
-	  echo "Building ${INSTALLDIR}/fonts.dir..." ; \
-	  cd ${INSTALLDIR}; ${MKFONTDIR} ; \
-	  echo "-----------------------------------------------------------------------" ; \
-	  echo "Please read README for how to inform your X server about the new fonts." ; \
-	  echo "-----------------------------------------------------------------------" ; \
-	else true ; fi
+# alias files
+aliases = Chinese/fonts.alias European/fonts.alias Japanese-X/fonts.alias \
+	Japanese/fonts.alias
 
-all:
-	@touch making.all
-	make COMPRESS="${COMPRESS}" INSTALLDIR=${INSTALLDIR} \
-		${SUBDIRS} ${SUBDIRS_X} ${SUBDIRS_BIG}
-	@rm -f making.all
-	echo "Building ${INSTALLDIR}/fonts.dir..."
-	cd ${INSTALLDIR}; $(MKFONTDIR)
-	@echo "-----------------------------------------------------------------------"
-	@echo "Please read README for how to inform your X server about the new fonts."
-	@echo "-----------------------------------------------------------------------"
+# fonts to build
+fonts = etl16-viscii.pcf etl24-viscii.pcf mule-indian-1col-24.pcf \
+	mule-indian-24.pcf mule-iscii-24.pcf mule-lao-14.pcf \
+	mule-lao-16.pcf mule-lao-24.pcf mule-tibmdx-16.pcf \
+	mule-tibmdx-1col-16.pcf mule-tibmdx-1col-24.pcf \
+	mule-tibmdx-24.pcf thai-14.pcf thai-16.pcf thai-24.pcf \
+	cns-1-16.pcf cns-1-24.pcf cns-2-16.pcf cns-2-24.pcf \
+	cns-3-24.pcf cns-4-24.pcf cns-5-24.pcf cns-6-24.pcf \
+	cns-7-24.pcf etl14-sisheng.pcf etl16-sisheng.pcf \
+	etl24-sisheng.pcf fonts.alias guobiao16.pcf taipei16.pcf \
+	taipei24.pcf cc40s.pcf cc48s.pcf cns-1-40.pcf cns-2-40.pcf \
+	cns-3-40.pcf cns-4-40.pcf cns-5-40.pcf cns-6-40.pcf \
+	cns-7-40.pcf gb16fs.pcf gb16st.pcf gb24st.pcf \
+	ethiomx16f-uni.pcf ethiomx24f-uni.pcf a18.pcf \
+	etl14-cyrillic.pcf etl14-greek.pcf etl14-koi8.pcf \
+	etl14-latin1.pcf etl14-latin2.pcf etl14-latin3.pcf \
+	etl14-latin4.pcf etl14-latin5.pcf etl16-cyrillic.pcf \
+	etl16-greek.pcf etl16-koi8.pcf etl16-latin1.pcf \
+	etl16-latin2.pcf etl16-latin3.pcf etl16-latin4.pcf \
+	etl16-latin5.pcf etl16b-latin1.pcf etl16bi-latin1.pcf \
+	etl16i-latin1.pcf etl24-cyrillic.pcf etl24-greek.pcf \
+	etl24-koi8.pcf etl24-latin1.pcf etl24-latin2.pcf \
+	etl24-latin3.pcf etl24-latin4.pcf etl24-latin5.pcf \
+	etl40-latin1.pcf a18rk.pcf jiskan16-1978.pcf jisksp16.pcf \
+	k16-1990.pcf kanji18.pcf jisksp40.pcf kanji32.pcf kanji48.pcf \
+	12x24rk.pcf 8x16rk.pcf jiskan16.pcf jiskan24.pcf k14.pcf \
+	hanglg16.pcf hanglm16.pcf hanglm24.pcf etl14-hebrew.pcf \
+	etl14-ipa.pcf etl16-arabic0.pcf etl16-arabic1.pcf \
+	etl16-arabic2.pcf etl16-hebrew.pcf etl16-ipa.pcf \
+	etl24-arabic0.pcf etl24-arabic1.pcf etl24-arabic2.pcf \
+	etl24-hebrew.pcf etl24-ipa.pcf
+
+all: $(fonts) fonts.alias
 
 clean:
-	rm -fr ${SUBDIRS} ${SUBDIRS_X} ${SUBDIRS_BIG}
+	rm -f *.pcf fonts.alias
 
-FRC:
+check:
 
-## The following target should be used only by a maintainer of intlfonts.
-dist: make-dist
-	sh make-dist --dist
+install: all
+	mkdir -p $(INSTALLDIR)
+	cp $(fonts) $(INSTALLDIR)
+	touch $(INSTALLDIR)/fonts.alias
+	cat fonts.alias $(INSTALLDIR)/fonts.alias | sort | uniq > temp
+	mv temp $(INSTALLDIR)/fonts.alias
+	(cd $(INSTALLDIR); $(MKFONTDIR))
 
-arc: make-dist
-	sh make-dist --arc
+fonts.alias: $(aliases)
+	cat $(aliases) | sort | uniq > fonts.alias
 
-split: make-dist
-	sh make-dist --split
-
-diff: make-dist
-	sh make-dist --diff
-
-pack: make-dist
-	sh make-dist --pack
+%.pcf: %.bdf
+	rm -f $@
+	$(BDFTOPCF) $< > $@

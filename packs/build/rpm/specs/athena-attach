@@ -1,0 +1,12 @@
+Name: athena-attach
+Summary: An Athena utility to attach a remote file system to the workstation
+Copyright: MIT
+Group: Applications/Internet
+
+Requires: athena-locker
+
+%description
+The attach utility is a filesystem-independent utility which allows
+you to attach a filesystem to a directory hierarchy on a workstation.
+Currently supported filesystem types are AFS, NFS, and UFS.
+

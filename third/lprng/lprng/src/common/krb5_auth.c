@@ -8,7 +8,7 @@
  ***************************************************************************/
 
  static char *const _id =
-"$Id: krb5_auth.c,v 1.1.1.5 2000-03-31 15:47:53 mwhitson Exp $";
+"$Id: krb5_auth.c,v 1.9 2000-03-31 16:21:13 mwhitson Exp $";
 
 
 #include "lp.h"
@@ -176,8 +176,8 @@
 			retval = 1;
 			goto done;
 		}
-		krb5_xfree(inbuf.data); inbuf.data = 0;
-		krb5_xfree(outbuf.data); outbuf.data = 0;
+		krb5_free_data_contents(context, &inbuf); inbuf.data = 0;
+		krb5_free_data_contents(context, &outbuf); outbuf.data = 0;
 		inbuf.length = 0;
 		outbuf.length = 0;
 	}
@@ -242,7 +242,7 @@ int server_krb5_status( int sock, char *err, int errlen, char *file )
 			retval = 1;
 			goto done;
 		}
-		krb5_xfree(outbuf.data); outbuf.data = 0;
+		krb5_free_data_contents(context, &outbuf); outbuf.data = 0;
 	}
 	DEBUG1("server_krb5_status: done" );
 
@@ -485,8 +485,11 @@ int client_krb5_auth( char *keytabfile, char *service, char *host,
 			goto done;
 		}
 		if((retval = krb5_cc_get_principal(context, ccdef, &client))){
-			plp_snprintf( err, errlen, "krb5_cc_get_principal failed - %s",
-				error_message( retval ) );
+			if( retval == KRB5_FCC_NOFILE )
+				plp_snprintf( err, errlen, "No tickets - try \"lpr -A none\"" );
+			else
+				plp_snprintf( err, errlen, "krb5_cc_get_principal failed - %s",
+					error_message( retval ) );
 			goto done;
 		}
 		if( Is_server ){
@@ -592,7 +595,7 @@ int client_krb5_auth( char *keytabfile, char *service, char *host,
 			goto done;
 		}
 		DEBUG4( "client_krb5_auth: freeing data");
-		krb5_xfree(outbuf.data); outbuf.data = 0;
+		krb5_free_data_contents(context, &outbuf); outbuf.data = 0;
 	}
 	if( len < 0 ){
 		plp_snprintf( err, errlen,
@@ -632,8 +635,8 @@ int client_krb5_auth( char *keytabfile, char *service, char *host,
 			retval = 1;
 			goto done;
 		}
-		krb5_xfree(inbuf.data); inbuf.data = 0;
-		krb5_xfree(outbuf.data); outbuf.data = 0;
+		krb5_free_data_contents(context, &inbuf); inbuf.data = 0;
+		krb5_free_data_contents(context, &outbuf); outbuf.data = 0;
 	}
 	close(fd); fd = -1;
 	fd = Checkread( file, &statb );

@@ -1,4 +1,4 @@
-# Copyright (c) 1996,1999 by Internet Software Consortium
+# Copyright (c) 1996 by Internet Software Consortium
 #
 # Permission to use, copy, modify, and distribute this software for any
 # purpose with or without fee is hereby granted, provided that the above
@@ -13,7 +13,7 @@
 # ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
 # SOFTWARE.
 
-# $Id: Makefile,v 1.1.1.2 1999-03-16 19:46:45 danw Exp $
+# $Id: Makefile,v 1.4 2000-04-22 04:42:27 ghudson Exp $
 
 # these are only appropriate for BSD 4.4 or derivatives, and are used in
 # development.  normal builds will be done in the top level directory and
@@ -30,7 +30,7 @@ INCL= ${TOP}/include
 PORTINCL= ${TOP}/port/${SYSTYPE}/include
 LIBBIND= ${TOP}/lib/libbind.${A}
 RANLIB= ranlib
-AR= ar cru
+AR= ar cruv
 INSTALL= install
 CDEBUG= -g
 
@@ -49,7 +49,7 @@ MARGS =	"SYSTYPE=${SYSTYPE}" "SHELL=${SHELL}" "A=${A}" "O=${O}" \
 
 all::
 
-all depend install::
+all depend::
 	@(cd ${SYSTYPE}; pwd; ${MAKE} ${MARGS} $@)
 
 distclean:: clean

@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/sh.func.c,v 1.1.1.2 1998-10-03 21:10:00 danw Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/sh.func.c,v 1.3 1999-05-24 17:45:22 rbasch Exp $ */
 /*
  * sh.func.c: csh builtin functions
  */
@@ -36,7 +36,7 @@
  */
 #include "sh.h"
 
-RCSID("$Id: sh.func.c,v 1.1.1.2 1998-10-03 21:10:00 danw Exp $")
+RCSID("$Id: sh.func.c,v 1.3 1999-05-24 17:45:22 rbasch Exp $")
 
 #include "ed.h"
 #include "tw.h"
@@ -1692,7 +1692,7 @@ doumask(v, c)
 #  if defined(BSD4_4) && !defined(__386BSD__)
     typedef quad_t RLIM_TYPE;
 #  else
-#   if defined(SOLARIS2)
+#   if defined(SOLARIS2) || defined(sgi)
      typedef rlim_t RLIM_TYPE;
 #   else
      typedef unsigned long RLIM_TYPE;

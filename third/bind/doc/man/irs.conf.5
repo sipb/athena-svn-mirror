@@ -1,4 +1,6 @@
-.\" Copyright (c) 1996,1999 by Internet Software Consortium
+.\" Dummy comment to avoid confusing man
+.so /usr/athena/share/tmac/tmac.doc
+.\" Copyright (c) 1996 by Internet Software Consortium
 .\"
 .\" Permission to use, copy, modify, and distribute this software for any
 .\" purpose with or without fee is hereby granted, provided that the above
@@ -44,7 +46,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\" $Id: irs.conf.5,v 1.1.1.2 1999-03-16 19:43:07 danw Exp $
+.\" $Id: irs.conf.5,v 1.5 2000-04-22 04:38:52 ghudson Exp $
 .\"
 .Dd November 16, 1997
 .Dt IRS.CONF 5
@@ -96,7 +98,6 @@ Access method	Description
 local           Use a local file, usually in /etc
 dns             Use the domain name service (includes hesiod)
 nis             Use the Sun-compatible Network Information Service
-irp		Use the IRP daemon on the localhost.
 .Ed
 .Pp
 Available options:
@@ -139,10 +140,7 @@ protocols	local
 hosts		dns	continue
 hosts		local
 
-# Networks comes first from the local file, and failing 
-# that the, irp daemon
-networks	local	continue
-networks	irp
+networks	local
 
 netgroup        local
 .Ed

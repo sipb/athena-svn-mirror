@@ -339,11 +339,11 @@ AC_SUBST(TERMLIB)
 
 dnl Kerberos 5
 AC_CHECK_LIB(krb5, krb5_init_context,
-	[LIBS="-lkrb5 -lcrypto -lcom_err $LIBS"], , -lcrypto -lcom_err)
+	[LIBS="-lkrb5 -lk5crypto -lcom_err $LIBS"], , -lk5crypto -lcom_err)
 
 dnl Kerberos 4
-AC_CHECK_LIB(krb, krb_recvauth,
-	[LIBS="-lkrb -ldes $LIBS"], , -ldes )
+AC_CHECK_LIB(krb4, krb_recvauth,
+	[LIBS="-lkrb4 -ldes425 $LIBS"], , -ldes425 )
 
 dnl **** end library checks
 

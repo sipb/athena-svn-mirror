@@ -31,6 +31,9 @@
 #if !defined(_MSDOS) && !defined(_WIN32) && !defined(macintosh)    /* Not yet for Windows */
 #include <stdio.h>
 #include <pwd.h>
+#ifdef KRB5_KRB4_COMPAT
+#include <kerberosIV/krb.h>
+#endif
 
 #if defined(_AIX) && defined(_IBMR2)
 #include <sys/access.h>
@@ -75,13 +78,17 @@ krb5_kuserok(context, principal, luser)
     char linebuf[BUFSIZ];
     char *newline;
     int gobble;
+#ifdef KRB5_KRB4_COMPAT
+    char v4_name[ANAME_SZ], v4_inst[INST_SZ], v4_realm[REALM_SZ];
+#endif
 
     /* no account => no access */
     if ((pwd = getpwnam(luser)) == NULL) {
 	return(FALSE);
     }
-    (void) strcpy(pbuf, pwd->pw_dir);
-    (void) strcat(pbuf, "/.k5login");
+    (void) strncpy(pbuf, pwd->pw_dir, sizeof(pbuf) - 1);
+    pbuf[sizeof(pbuf) - 1] = '\0';
+    (void) strncat(pbuf, "/.k5login", sizeof(pbuf) - 1 - strlen(pbuf));
 
     if (access(pbuf, F_OK)) {	 /* not accessible */
 	/*
@@ -100,7 +107,23 @@ krb5_kuserok(context, principal, luser)
 	return(FALSE);			/* no hope of matching */
 
     /* open ~/.k5login */
-    if ((fp = fopen(pbuf, "r")) == NULL) {
+    fp = fopen(pbuf, "r");
+#ifdef KRB5_KRB4_COMPAT
+    if (fp == NULL) {
+	if (krb5_524_conv_principal(context, principal, v4_name, v4_inst,
+				    v4_realm) == 0) {
+	    free(princname);
+	    princname = malloc(MAX_K_NAME_SZ + 1);
+	    if (!princname)
+		return(FALSE);
+	    sprintf(princname, "%s%s%s@%s", v4_name, *v4_inst ? "." : "",
+		    v4_inst, v4_realm);
+	    sprintf(pbuf, "%s/.klogin", pwd->pw_dir);
+	    fp = fopen(pbuf, "r");
+	}
+    }
+#endif
+    if (fp == NULL) {
 	free(princname);
 	return(FALSE);
     }

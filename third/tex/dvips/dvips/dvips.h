@@ -18,11 +18,7 @@
 #define DEBUG
 #endif
 #include <stdio.h>
-#if defined(SYSV) || defined(VMS) || defined(__THINK__) || defined(MSDOS) || defined(OS2) || defined(ATARIST)
 #include <string.h>
-#else
-#include <strings.h>
-#endif
 #if defined(lint) && defined(sun)
 extern char *sprintf() ;
 #endif

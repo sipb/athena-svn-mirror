@@ -1,0 +1,27 @@
+# $Id: Makefile.in,v 1.1 2000-03-25 19:05:26 ghudson Exp $
+
+SHELL=/bin/sh
+VPATH=@srcdir@
+INSTALL=@INSTALL@
+INSTALL_PROGRAM=@INSTALL_PROGRAM@
+srcdir=@srcdir@
+top_srcdir=@top_srcdir@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+bindir=@bindir@
+mandir=@mandir@
+
+all:
+
+check:
+
+install:
+	${top_srcdir}/mkinstalldirs ${DESTDIR}${bindir}
+	${top_srcdir}/mkinstalldirs ${DESTDIR}${mandir}/man1
+	${INSTALL_PROGRAM} athrun.sh ${DESTDIR}${bindir}/athrun
+	${INSTALL} -m 444 ${srcdir}/athrun.1 ${DESTDIR}${mandir}/man1
+
+clean:
+
+distclean: clean
+	rm -f config.cache config.log config.status Makefile

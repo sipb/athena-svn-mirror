@@ -1,0 +1,21 @@
+#!/bin/sh
+
+case "$HOSTTYPE" in
+sun4)
+	echo "Editing rc.conf"
+	rm -f /tmp/rc.conf
+	hostname=`cat /etc/nodename`; export hostname
+	addr=`/sbin/hostinfo  -a $hostname`; export addr;
+	sed -e  "s/^HOST=MITHOST.MIT.EDU/HOST=$hostname/
+	        s/^ADDR=MITADDR/ADDR=$addr/" \
+        < /etc/athena/rc.conf > /tmp/rc.conf
+	mv /etc/athena/rc.conf /etc/athena/rc.conf.old
+	cp /tmp/rc.conf /etc/athena/rc.conf
+	cp -p /srvd/usr/lib/ld.so.1  /usr/lib/ld.so.1-new
+	/usr/sbin/static/mv /usr/lib/ld.so.1     /usr/lib/ld.so.1.old
+	/usr/sbin/static/mv /usr/lib/ld.so.1-new        /usr/lib/ld.so.1
+	/usr/sbin/static/mv /etc/lib/ld.so.1            /etc/lib/ld.so.1.old
+	cp -p /usr/lib/ld.so.1  /etc/lib/ld.so.1
+	echo /etc/rc*.d/*			>> "$DEADFILES"
+	echo "NEWUNIX=true"			>> "$CONFVARS"
+esac

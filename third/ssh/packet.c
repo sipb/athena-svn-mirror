@@ -15,8 +15,17 @@ with the other side.  This same code is used both on client and server side.
 */
 
 /*
- * $Id: packet.c,v 1.1.1.3 1999-03-08 17:43:13 danw Exp $
+ * $Id: packet.c,v 1.3 1999-03-08 18:20:07 danw Exp $
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  1998/06/17 17:29:40  ghudson
+ * Add code from a CORE SDI advisory to prevent connection hijacking.
+ *
+ * Revision 1.1.1.3  1999/03/08 17:43:13  danw
+ * Import of ssh 1.2.26
+ *
+ * Revision 1.1.1.2  1998/05/13 19:11:18  danw
+ * Import of ssh 1.2.23
+ *
  * Revision 1.11  1998/06/11 00:08:44  kivinen
  * 	Crc fixing detection code.
  *
@@ -283,7 +292,7 @@ void packet_decrypt(CipherContext *cc, void *dest, void *src,
   
   assert((bytes % 8) == 0);
   
-  /* $Id: packet.c,v 1.1.1.3 1999-03-08 17:43:13 danw Exp $
+  /* $Id: packet.c,v 1.3 1999-03-08 18:20:07 danw Exp $
    * Cryptographic attack detector for ssh - Modifications for packet.c 
    * (C)1998 CORE-SDI, Buenos Aires Argentina
    * Ariel Futoransky(futo@core-sdi.com)

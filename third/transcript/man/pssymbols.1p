@@ -1,11 +1,11 @@
 .TH PSSYMBOLS 1 "19 August 1992" "Adobe Systems"
 \" Copyright (c) 1987,1992 Adobe Systems Incorporated. All Rights Reserved.
 \" ATTN GOVERNMENT END USERS: See notice of rights in file XPSLIBDIRX/Notice
-\" RCSID: $Header: /afs/dev.mit.edu/source/repository/third/transcript/man/pssymbols.1p,v 1.1.1.1 1996-10-07 20:25:40 ghudson Exp $
+\" RCSID: $Header: /afs/dev.mit.edu/source/repository/third/transcript/man/pssymbols.1p,v 1.2 1996-10-14 05:09:50 ghudson Exp $
 .ds PS P\s-2OST\s+2S\s-2CRIPT\s+2
 .ds TS T\s-2RAN\s+2S\s-2CRIPT\s+2
 .SH NAME
-PSSYMBOLS\(emList of symbols for ditroff in \*(TS system
+pssymbols \- List of symbols for ditroff in TranScript system
 .SH DESCRIPTION
 The following is a list of the symbols that are available in
 psroff(1)

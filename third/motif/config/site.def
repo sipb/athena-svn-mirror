@@ -40,4 +40,11 @@ XCOMM site:  $XConsortium: site.def,v 1.2 91/07/30 20:26:44 rws Exp $
 #define ProjectRoot /usr/X11R5
 */
 
+#if defined(NetBSDArchitecture) || defined(LinuxArchitecture)
+#define ProjectRoot		/usr/athena
+#define AvoidNullMakeCommand	1
+#endif
+
+#define DontBuildMotifDemos
+
 #endif /* AfterVendorCF */

@@ -53,7 +53,7 @@
 
 #ifndef lint
 static char sccsid[] = "@(#)subr.c	5.24 (Berkeley) 3/2/91";
-static char rcsid[] = "$Id: subr.c,v 1.1.1.2 1999-03-16 19:45:16 danw Exp $";
+static char rcsid[] = "$Id: subr.c,v 1.2 2000-04-22 04:40:16 ghudson Exp $";
 #endif /* not lint */
 
 /*
@@ -324,8 +324,7 @@ PrintHostInfo(file, title, hp)
  *  OpenFile --
  *
  *	Parses a command string for a file name and opens
- *	the file. The file name is copued to the argument FILE. The
- * 	parameter SIZE parameter includes space for a null byte.
+ *	the file.
  *
  *  Results:
  *	file pointer	- the open was successful.
@@ -336,14 +335,12 @@ PrintHostInfo(file, title, hp)
  */
 
 FILE *
-OpenFile(string, file, size)
+OpenFile(string, file)
     char *string;
     char *file;
-    size_t size;
 {
 	char	*redirect;
 	FILE	*tmpPtr;
-	int	i;
 
 	/*
 	 *  Open an output file if we see '>' or >>'.
@@ -354,18 +351,12 @@ OpenFile(string, file, size)
 	if (redirect == NULL) {
 	    return(NULL);
 	}
-
-	tmpPtr = NULL;
 	if (redirect[1] == '>') {
-	    i = pickString(redirect + 2, file, size);
-	    if (i > 0) {
-	        tmpPtr = fopen(file, "a+");
-	    }
+	    sscanf(redirect, ">> %s", file);
+	    tmpPtr = fopen(file, "a+");
 	} else {
-	    i = pickString(redirect + 1, file, size);
-	    if (i > 0) {
-		tmpPtr = fopen(file, "w");
-	    }
+	    sscanf(redirect, "> %s", file);
+	    tmpPtr = fopen(file, "w");
 	}
 
 	if (tmpPtr != NULL) {
@@ -481,112 +472,4 @@ DecodeType(type)
 {
 
 	return (sym_ntop(__p_type_syms, type, (int *)0));
-}
-
-
-
-
-/*
- * Skip over leading white space in SRC and then copy the next sequence of
- * non-whitespace characters into DEST. No more than (DEST_SIZE - 1)
- * characters are copied. DEST is always null-terminated. Returns 0 if no
- * characters could be copied into DEST. Returns the number of characters
- * in SRC that were processed (i.e. the count of characters in the leading
- * white space and the first non-whitespace sequence).
- *
- * 	int i;
- * 	char *p = "  foo bar ", *q;
- * 	char buf[100];
- *
- * 	q = p + pickString(p, buf, sizeof buff);
- * 	assert (strcmp (q, " bar ") == 0) ;
- *
- */
-
-int
-pickString(const char *src, char *dest, size_t dest_size) {
-	const char *start;
-	const char *end ;
-	size_t sublen ;
-
-	if (dest_size == 0 || dest == NULL || src == NULL)
-		return 0;
-	
-	for (start = src ; isspace(*start) ; start++)
-		/* nada */ ;
-
-        for (end = start ; *end != '\0' && !isspace(*end) ; end++)
-		/* nada */ ;
-
-	sublen = end - start ;
-	
-	if (sublen == 0 || sublen > (dest_size - 1))
-		return 0;
-
-	strncpy (dest, start, sublen);
-
-	dest[sublen] = '\0' ;
-
-	return (end - src);
-}
-
-
-
-
-/*
- * match the string FORMAT against the string SRC. Leading whitespace in
- * FORMAT will match any amount of (including no) leading whitespace in
- * SRC. Any amount of whitespace inside FORMAT matches any non-zero amount
- * of whitespace in SRC. Value returned is 0 if match didn't occur, or the
- * amount of characters in SRC that did match 
- *
- * 	int i ;
- *
- * 	i = matchString(" a    b c", "a b c") ; 
- * 	assert (i == 5) ;
- * 	i = matchString("a b c", "  a b c");  
- * 	assert (i == 0) ;    becasue no leading white space in format
- * 	i = matchString(" a b c", " a   b     c"); 
- * 	assert(i == 12);
- * 	i = matchString("aa bb ", "aa      bb      ddd sd"); 
- * 	assert(i == 16);
- */
-int
-matchString (const char *format, const char *src) {
-	const char *f = format;
-	const char *s = src;
-
-	if (f == NULL || s == NULL)
-		return 0;
-
-	if (isspace(*f)) {
-		while (isspace(*f))
-			f++ ;
-		while (isspace(*s))
-			s++ ;
-	}
-	
-	while (1) {
-		if (isspace(*f)) {
-			if (!isspace(*s))
-				return 0;
-			while(isspace(*s))
-				s++;
-			/* any amount of whitespace in the format string
-			   will match any amount of space in the source
-			   string. */
-			while (isspace(*f))
-				f++;
-		} else if (*f == '\0') {
-			return (s - src);
-		} else if (*f != *s) {
-			return 0 ;
-		} else {
-			s++ ;
-			f++ ;
-		}
-	}
-
-	/* NOTREACHED */
-	return 0 ;
 }

@@ -1,4 +1,4 @@
-/* $Id: deattack.h,v 1.1.1.1 1999-03-08 17:43:44 danw Exp $
+/* $Id: deattack.h,v 1.1 1998-06-17 17:29:39 ghudson Exp $
  * Cryptographic attack detector for ssh - Header file
  * (C)1998 CORE-SDI, Buenos Aires Argentina
  * Ariel Futoransky(futo@core-sdi.com)

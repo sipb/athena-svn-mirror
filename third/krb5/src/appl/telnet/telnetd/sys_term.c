@@ -1080,7 +1080,7 @@ startslave(host, autologin, autoname)
 	if (!autoname || !autoname[0])
 		autologin = 0;
 
-	if (autologin < auth_level) {
+	if (autologin < auth_level && auth_level != AUTH_CRED) {
 		fatal(net, "Authorization failed");
 		exit(1);
 	}
@@ -1219,12 +1219,6 @@ start_login(host, autologin, name)
 	extern char *getenv();
 	register int pid = getpid();
 
-#ifdef SOLARIS
-	char *term;
-	char termbuf[64];
-#endif
-
-
 	/*
 	 * -h : pass on name of host.
 	 *		WARNING:  -h is accepted by login if and only if
@@ -1236,32 +1230,8 @@ start_login(host, autologin, name)
 	argv = addarg(0, "login");
 
 #if	!defined(NO_LOGIN_H)
-
-# if	defined (AUTHENTICATION) && defined(NO_LOGIN_F) && defined(LOGIN_R)
-	/*
-	 * Don't add the "-h host" option if we are going
-	 * to be adding the "-r host" option down below...
-	 */
-	if ((auth_level < 0) || (autologin != AUTH_VALID))
-# endif
-	{
-		argv = addarg(argv, "-h");
-		argv = addarg(argv, host);
-#ifdef	SOLARIS
-		/*
-		 * SVR4 version of -h takes TERM= as second arg, or -
-		 */
-		term = getenv("TERM");
-		if (term == NULL || term[0] == 0) {
-			term = "-";
-		} else {
-			strcpy(termbuf, "TERM=");
-			strncat(termbuf, term, sizeof(termbuf) - 6);
-			term = termbuf;
-		}
-		argv = addarg(argv, term);
-#endif
-	}
+	argv = addarg(argv, "-h");
+	argv = addarg(argv, host);
 #endif
 #if	!defined(NO_LOGIN_P)
 	argv = addarg(argv, "-p");
@@ -1285,7 +1255,9 @@ start_login(host, autologin, name)
 		argv = addarg(argv, "-s");
 #endif
 #if	defined (AUTHENTICATION)
-	if (auth_level >= 0 && autologin == AUTH_VALID) {
+	if ((auth_level >= 0 && auth_level <= AUTH_VALID &&
+	     autologin >= AUTH_VALID) ||
+	    (auth_level == AUTH_CRED && autologin == AUTH_CRED)) {
 # if	!defined(NO_LOGIN_F)
 #if	defined(LOGIN_CAP_F)
 		argv = addarg(argv, "-F");
@@ -1401,6 +1373,12 @@ start_login(host, autologin, name)
 		close(pty);
 #endif
 	closelog();
+
+	if (decrypt_input)
+		printf("What you type is protected by encryption.\r\n");
+	else
+		printf("Warning: this session is NOT encrypted!\r\n");
+
 	execv(login_program, argv);
 
 	syslog(LOG_ERR, "%s: %m", login_program);

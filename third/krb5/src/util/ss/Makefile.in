@@ -3,6 +3,7 @@ myfulldir=util/ss
 mydir=.
 BUILDTOP=$(REL)$(U)$(S)$(U)
 SED = sed
+INSTALL = :
 
 INSTALLLIB=cp
 INSTALLFILE=cp
@@ -19,7 +20,7 @@ RELDIR=../util/ss
 STOBJLISTS=OBJS.ST
 
 clean-unix:: clean-liblinks clean-libs clean-libobjs
-install-unix:: install-libs
+install-unix::
 
 # hard coded srcdir/.. is so that ss/ss.h works
 

@@ -1,0 +1,10 @@
+Name: athena-tcsh
+Summary: The T C shell, as modified for use on Athena.
+Copyright: BSD
+Group: System Environment/Shells
+
+Requires: athena-hesiod
+
+%description
+The standard user shell on Athena
+

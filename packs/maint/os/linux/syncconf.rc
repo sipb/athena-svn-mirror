@@ -1,0 +1,47 @@
+#!/bin/sh
+#
+# athena-syncconf:	Synchronize config files from athena rc.conf
+#
+# chkconfig: 2345 07 92
+# description: syncconf at boot time startup.
+#
+# config: /etc/sysconfig/network
+# config: /etc/athena/rc.conf
+
+# Source function library
+. /etc/rc.d/init.d/functions
+
+PATH=/etc/athena:/bin/athena:/usr/athena/bin:$PATH
+
+RETVAL=0
+
+# See how we were called
+case "$1" in
+  start)
+	echo -n "Synchronizing workstation configuration: "
+	
+	/etc/athena/syncconf && success "syncconf" || failure "syncconf"
+
+	;;
+
+  stop)
+	;;
+
+  status)
+	;;
+
+  restart)
+	$0 stop
+	$0 start
+	RETVAL=$?
+	;;
+
+  reload)
+	;;
+
+  *)
+	echo "Usage: syncconf {start|stop|status|restart|reload}"
+	exit 1
+esac
+
+exit $RETVAL

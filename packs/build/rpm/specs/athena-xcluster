@@ -1,0 +1,16 @@
+Name: athena-xcluster
+Summary: Utilities to display cluster usage status
+Copyright: MIT
+Group: Applications/Communication
+
+Requires: athena-libXj athena-hesiod
+
+%post
+grep -s -q ^cview /etc/services \
+	|| echo "cview	3704/tcp		# Cluster monitoring" \
+		>> /etc/services
+
+%description
+The cview and xcluster utilities display MIT maps and Athena cluster
+locations and current cluster usage statistics.
+

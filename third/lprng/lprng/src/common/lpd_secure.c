@@ -8,7 +8,7 @@
  ***************************************************************************/
 
  static char *const _id =
-"$Id: lpd_secure.c,v 1.1.1.4 2000-03-31 15:48:02 mwhitson Exp $";
+"$Id: lpd_secure.c,v 1.2 2000-04-03 19:01:48 mwhitson Exp $";
 
 
 #include "lp.h"
@@ -916,13 +916,13 @@ int Receive_k4auth( int *sock, char *input )
 			      k4version);
 	if( Is_server ) (void)To_daemon();
 	DEBUG1("Receive_k4auth: krb_recvauth returned %d, '%s'",
-		k4error, krb4_err_str(k4error) );
+		k4error, krb_err_txt[k4error] );
 	if (k4error != KSUCCESS) {
 		/* erroring out here if the auth failed. */
 	  	status = JFAIL;
 		plp_snprintf( error_msg, sizeof(error_msg),
 		    "kerberos 4 receive authentication failed - '%s'",
-			krb4_err_str(k4error) );
+			krb_err_txt[k4error] );
 	  	goto error;
 	}
 
@@ -942,7 +942,7 @@ int Receive_k4auth( int *sock, char *input )
 	Perm_check.authtype = "kerberos4";
 	Set_str_value(&values,FROM,k4name);
 	/* we will only use this for client to server authentication */
-	if( (status = Check_secure_perms( &values, 0, error_msg, sizeof(error_msg)) ){
+	if( (status = Check_secure_perms( &values, 0, error_msg, sizeof(error_msg)) )){
 		DEBUGF(DRECV1)("Receive_k4auth: Check_secure_perms failed - '%s'",
 			error_msg );
 		goto error;

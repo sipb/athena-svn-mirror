@@ -1,0 +1,6 @@
+#!/bin/sh
+
+# Make sure the MAILRELAY value has a seicolon.
+sed -e '/^MAILRELAY/s|=\([^; 	]*\)\([ 	]\)|=\1;\2|' \
+	< /etc/athena/rc.conf > /etc/athena/rc.conf.new \
+	&& mv /etc/athena/rc.conf.new /etc/athena/rc.conf

@@ -1,0 +1,2918 @@
+% \iffalse meta-comment
+%
+% Copyright (C) 1989-1992 by Frank Mittelbach.  All rights reserved.
+% 
+% This file is part of the doc package.
+% 
+% IMPORTANT NOTICE:
+% 
+% You are not allowed to change this file.  You may however copy
+% this file to a file with a different name and then change the
+% copy if you obey the restrictions on file changes described in
+% readme.mz.
+% 
+% You are NOT ALLOWED to distribute this file alone.  You are NOT
+% ALLOWED to take money for the distribution or use of this file
+% (or a changed version) except for a nominal charge for copying
+% etc.
+% 
+% You are allowed to distribute this file under the condition that
+% it is distributed together with all files mentioned in
+% readme.mz0.
+% 
+% If you receive only some of these files from someone, complain!
+% 
+% However, if these files are distributed by established suppliers
+% as part of a complete TeX distribution, and the structure of the
+% distribution would make it difficult to distribute the whole set
+% of files, *those parties* are allowed to distribute only some of
+% the files provided that it is made clear that the user will get
+% a complete distribution-set upon request to that supplier (not
+% me).  Notice that this permission is not granted to the end
+% user.
+% 
+% 
+% For error reports in case of UNCHANGED versions see readme.mz
+% 
+% 
+% \fi
+
+\def\filename{docstrip.doc}
+\def\fileversion{2.0r}
+\def\filedate{92/08/17}
+\def\docdate {92/08/17}
+
+% \CheckSum{1421}
+%% \CharacterTable
+%%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%%   Digits        \0\1\2\3\4\5\6\7\8\9
+%%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%%   Dollar        \$     Percent       \%     Ampersand     \&
+%%   Acute accent  \'     Left paren    \(     Right paren   \)
+%%   Asterisk      \*     Plus          \+     Comma         \,
+%%   Minus         \-     Point         \.     Solidus       \/
+%%   Colon         \:     Semicolon     \;     Less than     \<
+%%   Equals        \=     Greater than  \>     Question mark \?
+%%   Commercial at \@     Left bracket  \[     Backslash     \\
+%%   Right bracket \]     Circumflex    \^     Underscore    \_
+%%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%%   Right brace   \}     Tilde         \~}
+%%
+%
+%\iffalse
+%
+%% The docstrip program for use with TeX.
+%% Copyright (C) 1989-1991 Frank Mittelbach
+%% Copyright (C) 1992 Johannes Braams, Denys Duchier, Frank Mittelbach
+%% All rights are reserved.
+%%
+% Please report errors to: see readme
+%
+% \fi
+%
+% \changes{2.0q}{92/07/01}{Changed all dates to yy/mm/dd for better
+%                          sorting}
+% \changes{2.0b}{91/05/29}{Added bugfix from Denys}
+% \changes{2.0c}{91/05/29}{Allow almost all characters in guard (DD)}
+% \changes{2.0d}{91/05/31}{Started merging in some of Franks code}
+% \changes{2.0j}{92/03/05}{Wrote introduction}
+% \changes{2.0m}{92/04/21}{Renamed all macros that deal with the parsing
+%                          of boolean expressions}
+% \changes{2.0m}{92/04/25}{Removed dependency from ltugboat,
+%                          incorporated driver file into source.}
+% \changes{2.0m}{92/04/25}{Added some missing percents; corrected some
+%                          typos}
+% \changes{2.0m-DL}{92/05/08}{Various small corrections to English and 
+%                           typos}
+%
+% \DoNotIndex{\#,\$,\%,\&,\@,\\,\{,\},\^,\_,\~,\ }
+% \DoNotIndex{\@ne}
+% \DoNotIndex{\advance,\begingroup,\catcode,\closein,\closeout}
+% \DoNotIndex{\day,\def,\edef,\else,\empty,\endgroup,\errmessage}
+% \DoNotIndex{\expandafter,\fi,\futurelet,\gdef,\global,\if,\ifeof}
+% \DoNotIndex{\ifx,\immediate,\let,\loop,\m@ne,\message,\month}
+% \DoNotIndex{\newcount}
+% \DoNotIndex{\newif,\newlinechar,\newread,\newtoks,\newwrite}
+% \DoNotIndex{\noexpand,\openin,\openout,\par,\read,\relax,\repeat}
+% \DoNotIndex{\space,\the,\undefined,\write,\xdef,\year,\z@}
+%
+% ^^A some definitions for this documentation
+%
+% \newcommand{\ds}{{\sf DocStrip}} ^^A maybe?
+% \newcommand{\bsl}{\protect\bslash}
+% \newcommand{\note}[1]{\marginpar{{\bf #1}}}
+% \newcommand{\netaddress}[1]{{\tt #1}}
+%
+% ^^A override the default in doc.sty
+% \makeatletter
+% \renewenvironment{theglossary}{%
+%    \glossary@prologue%
+%    \GlossaryParms \let\item\@idxitem \ignorespaces}%
+%   {}
+% \makeatother
+%
+% ^^A compatibility with OFSS
+% \ifx\undefined\selectfont \newcommand{\fontshape}[1]{} \fi
+%
+% \MakeShortVerb\|
+%
+% \title{The \ds{} program%
+%         \thanks{This file has version number \fileversion,
+%                 last revised \filedate,
+%                 documentation dated \docdate.}}
+%
+% \author{%
+%   Frank Mittelbach \\
+%   \netaddress{Mittelbach@mzdmza.zdv.uni-mainz.de}
+%  \and
+%   Denys Duchier \\
+%   \netaddress{duchier-denys@cs.yale.edu}
+%  \and
+%   Johannes Braams \\
+%   PTT Research Neher Laboratories\\
+%          P.O. Box 421\\
+%          2260 AK Leidschendam\\
+%   \netaddress{JL\_Braams@research.ptt.nl}}
+%
+% \date{Printed \today}
+%
+% \maketitle
+%
+% \begin{abstract}
+%    This document describes the implementation of the \ds{} program.
+%    The original version of this program was developed by Frank
+%    Mittelbach to accompany his {\tt doc.sty} which enables literate
+%    programming in \LaTeX\@. Denys Duchier rewrote it to run either
+%    with \TeX\ or of \LaTeX, and to allow full boolean expressions in
+%    conditional guards instead of just comma-separated lists.
+%    Johannes Braams re-united the two implementations, documented and
+%    debugged the code.
+% \end{abstract}
+%
+% \section{Introduction}
+%
+%  \subsection{Why the \ds{} program?}
+%    When Frank Mittelbach created the {\tt doc} option, he invented a
+%    way to combine \TeX\ code and its documentation. From then on it
+%    was more or less possible to do literate programming in \TeX.
+%
+%    This way of writing \TeX\ programs obviously has great
+%    advantages, especially when the program becomes larger than a
+%    couple of macros.  There is one drawback however, and that is
+%    that such programs may take longer than expected to run because
+%    \TeX\ is an interpreter and has to decide for each line of the
+%    program file what it has to do with it. Therefore, \TeX\ programs
+%    may be speeded up by removing all comments from them.
+%
+%    By removing the comments from a \TeX\ program a new problem is
+%    introduced. We now have two versions of the program and both of
+%    them {\em have\/} to be maintained. Therefore it would be nice to
+%    have a possibility to remove the comments automatically, instead
+%    of doing it by hand. So we need a program to remove comments from
+%    \TeX\ programs. This could be programmed in any high level
+%    language, but maybe not everybody has the right compiler to
+%    compile the program.  Everybody who wants to remove comments from
+%    \TeX\ programs has \TeX\@.  Therefore the \ds{} program is
+%    implemented entirely in \TeX.
+%
+% \subsection{Functions of the \ds{} program} 
+%
+%    Having created the \ds{} program to remove comment lines from
+%    \TeX\ programs\footnote{Note that only comment lines, that is
+%    lines that start with a single {\tt\%} character, are removed;
+%    all other comments st in the code.} it became feasible to do more
+%    than just strip comments.\\ Wouldn't it be nice to have a way to
+%    include parts of the code only when some condition is set true?
+%    Wouldn't it be as nice to have the possibility to split the
+%    source of a \TeX\ program into several smaller files and combine
+%    them later into one `executable'?\\ Both these wishes have been
+%    implemented in the \ds{} program.
+%
+%  \subsection{How to use the \ds{} program}
+%    A number of ways exist to use the \ds{} program:
+%    \begin{enumerate}
+%    \item The easiest way is to instruct \TeX\ to read the file
+%        {\tt docstrip.tex} and to see what happens. \TeX\ will ask
+%        you a few questions about the file you would like to be
+%        processed. When you have answered these questions it does
+%        its job and strips the comments from your \TeX\ code.
+%    \item When you would like to be able to process more than one
+%        file with one command, or you would like to add a couple of
+%        lines to the beginning (or end) of the stripped file you
+%        can write a `batch file' for \ds{}. The default
+%        name for such a file is {\tt docstrip.cmd}. When a file by
+%        that name  exists in your current directory when you instruct
+%        \TeX\ to read {\tt docstrip.tex} it will verify (by asking you)
+%        that you want
+%        to use {\em that\/} file and if so, will process the commands
+%        in it.
+%
+%        You do not need to use the default name, however. You can
+%        give a batch file any name you like such as, say, {\tt
+%        foo.bar} and then r \TeX\ by using a command such as:
+%    \begin{verbatim}
+%    TeX \def\batchfile{foo.bar}\input docstrip
+%    \end{verbatim}
+%
+% \item You may use yet another way that is only slightly different
+%        from the previous method. You can write a batch file in such
+%        a way that it can be directly processed by \TeX{}. This
+%        allows you to set up a distribution where you can instruct
+%        the user to simply run
+%      \begin{quote}
+%        {\tt TEX} \meta{batch file}
+%      \end{quote}
+%        to generate the executable versions of your files from the
+%        distribution sources. All distributions from Mainz are set up
+%        in this way (also this one); look, for example, at the
+%        installation file for this distribution.  To produce such a
+%        batch file include a statement in your `batch file' that
+%        instructs \TeX\ to read {\tt docstrip.tex}. You should then
+%        also define \verb=\batchfile= to contain the name of that
+%        `batch file'. The beginning of such a file would look like:
+%    \begin{verbatim}
+%    \def\batchfile{install.me}
+%    \input docstrip
+%    ...
+%    \end{verbatim}
+%    \end{enumerate}
+%
+% \section{The user interface}
+%
+% \subsection{The main program}
+% \DescribeMacro{\processbatchFile} The `main program' starts with
+%    trying to process a batch file, this is accomplished by calling
+%    the macro |\processbatchFile|. It counts the number of batch
+%    files it processes, so that when the number of files processed is
+%    still zero after the call to |\processbatchFile| appropriate
+%    action can be taken.
+%
+% \DescribeMacro{\interactive} When no batch files have been processed
+%    the macro |\interactive| is called. It prompts the user for
+%    information. First the extensions of the input and output files
+%    is determined. Then a question about optional code is asked and
+%    finally the user can give a list of files that have to be
+%    processed.
+%
+% \DescribeMacro{\ReportTotals} When the {\tt stats} option is
+%    included in the \ds{}-program it keeps a record of the number of
+%    files and lines that are processed.  Also the number of comments
+%    removed and passed as well as the number of code lines that were
+%    passed to the output are accounted. The macro |\ReportTotals|
+%    shows a summary of this information.
+%
+% \subsection{Batchfile commands}
+%
+%    The commands described in this section are available to build a
+%    batch file.
+%
+% \DescribeMacro{\showprogress}
+% \DescribeMacro{\keepsilent}
+%    When the option {\tt stats} is included in \ds{} it can
+%    write message to the terminal as each line of the input file(s) is
+%    processed. This message consists of a single character, indicating
+%    what the program does with that particular line. We use the
+%    following characters:
+%    \begin{itemize}
+% \item[{\tt \%}] Whenever an input line is removed a
+%        {\tt\%}-character is written to the terminal.
+% \item[{\tt .}] Whenever a code line is passed on to the output file
+%        a {\tt .}-character is written on the terminal.
+% \item[{\tt /}] When a number of empty lines appear in a row in the
+%        input file, at most one of them is retained. The \ds{}
+%        program signals the removal of an empty line with the {\tt
+%        /}-character.
+% \item[{\tt <}] When a `guard line' is found in the input and it
+%        starts a block of optionally included code, this is signalled
+%        on the terminal by showing the {\tt <}-character, together
+%        with the boolean expression of the guard.
+% \item[{\tt >}] The end of a conditionally included block of code is
+%        indicated by showing the {\tt >}-character.
+%    \end{itemize}
+%    This feature is turned on by default when the option {\tt stats} is
+%    included, otherwise it is turned of. The feature can be toggled
+%    with the commands |\showprogress| and |\keepsilent|
+%
+% \DescribeMacro{\preamble}
+% \DescribeMacro{\endpreamble}
+% \DescribeMacro{\postamble}
+% \DescribeMacro{\endpostamble}
+%    It is possible to add a number of lines to the output of
+%    the \ds{} program. The information you want to add to the
+%    start of the output file should be listed between the |\preamble|
+%    and |\endpreamble| commands; the lines you want to add to the end
+%    of the output file should be listed between the |\postamble| and
+%    |\endpostamble| commands. Everything that \ds{} finds
+%    for both the pre- and postamble it writes to the output file, but
+%    preceded with two \%-characters. If you include a |^^M| character
+%    in one of these lines, everything that follows it on the same line
+%    is written to a new line in the output file.
+%    This `feature' can be used to add a |\typeout| or |\message| to the
+%    the stripped file.
+%
+% \DescribeMacro{\generateFile}
+%    The main reason for constructing a \ds{} command file is that
+%    one doesn't want to type in the instructions for \TeX\ each time
+%    a macro file is stripped of its comments. The macro |\generateFile|
+%    is used to tell \TeX\ what to do. Its syntax is:
+%    \begin{quote}
+%    |\generateFile{|\meta{output}|}{|\meta{ask}|}{|[|\from{|^^A
+%                    \meta{input}|}{|\meta{optionlist}|}|]*|}|
+%    \end{quote}
+%    The \meta{output} and \meta{input} are normal file specifications
+%    as are apropriate for your computer system. The \meta{optionlist}
+%    is a comma separated list of `options' that specify which
+%    optional code fragments in \meta{input} should be included in
+%    \meta{output}.  With \meta{ask} you can instruct \TeX\ to either
+%    silently overwrite a previously existing file (|f|) or to issue a
+%    warning and ask you if it should overwrite the existing file
+%    (|t|).
+%
+%    It is possible to specify multiple input files, each with its own
+%    \meta{optionlist}. This is indicated by the notation [\ldots]*.
+%
+% \DescribeMacro{\include}
+% \DescribeMacro{\processFile}
+%    The earlier version of the \ds{} program supported a
+%    different kind of command to tell \TeX\ what to do. This command
+%    is less powerful than |\generateFile|; it can be used when
+%    \meta{output} is created from one \meta{input}. The syntax is:
+%    \begin{quote}
+%    |\include{|\meta{optionlist}|}|
+%
+%    |\processFile{|\meta{name}|}{|\meta{inext}^^A
+%                              |}{|\meta{outext}^^A
+%                              |}{|\meta{ask}|}|
+%    \end{quote}
+%    This command is based on environments where filenames are
+%    constructed of two parts, the name and the extension, separated
+%    with a dot. The syntax of this command assumes that the
+%    \meta{input} and \meta{output} share the same name and only
+%    differ in their extension. This command is retained to be
+%    backwards compatible with the older version of \ds{}, but its use
+%    is not encouraged.
+%
+% \DescribeMacro{\input}
+% \DescribeMacro{\batchinput}
+%    The batch file commands can be put into several batch files which
+%    are then executed from a master batch file. This is, for example,
+%    useful if a distribution consists of several distinct parts. You
+%    can then write individual batch files for every part and in
+%    addition a master file that simply calls the batch files for the
+%    parts.  For this, call the individual batch files from the master
+%    file with the command |\batchinput|.  Don't use |\input| for this
+%    purpose, this command should be used only for calling the \ds{}
+%    program as explained above and is ignored when used for any other
+%    purpose.
+%
+% \section{Conditional inclusion of code}
+%
+%    When you use the \ds{} program to strip comments out of
+%    \TeX\ macro files you have the possibility to make more than one
+%    stripped macro file from one documented file. This is achieved by
+%    the support for optional code. The optional code is marked
+%    in the documented file with a `guard'.
+%
+%    A guard is a boolean expression that is enclosed in |<| and |>|.
+%    It also {\em has\/} to follow the |%| at the beginning of the line.
+%    For example:
+%\begin{verbatim}
+%    ...
+%    %<bool>\TeX code
+%    ...
+%\end{verbatim}
+%    In this example the line of code will be included in \meta{output}
+%    if the option {\tt bool} is present in the \meta{optionlist} of
+%    the |\generateFile| command.
+%
+%    The syntax for the boolean expressions is:
+%
+%\DeleteShortVerb\|
+%    \begin{tabular}{lcl}
+%    \meta{Expression} & $::=$ & \meta{Primary}
+%                            [\{{\tt|}, {\tt,}\} \meta{Primary}]*\\
+%    \meta{Primary}    & $::=$ & 
+%                        \meta{Secondary} [{\tt\&} \meta{Secondary}]*\\
+%    \meta{Secondary}  & $::=$ & 
+%                        \meta{Terminal} $|$ {\tt!}\meta{Secondary}
+%                        $|$ {\tt(}\meta{Expression}{\tt)}\\
+%    \end{tabular}
+%
+%    The {\tt|} stands for disjunction, the {\tt\&} stands for
+%    conjunction and the {\tt!}\ stands for negation. The
+%    \meta{Terminal} is any sequence of letters and evaluates to
+%    \meta{true} iff\footnote{iff stands for `if and only if'} it
+%    occurs in the list of options that have to be included.
+%\MakeShortVerb\|
+%
+%    Two kinds of optional code are supported: one can either have
+%    optional code that `fits' on one line of text, like the example
+%    above, or one can have blocks of optional code.
+%
+%    To distinguish both kinds of optional code the `guard modifier'
+%    has been introduced. The `guard modifier' is one character that
+%    immediately follows the |<| of the guard. It can be either |*|
+%    for the beginning of a block of code, or |/| for the end of
+%    a block of code\footnote{To be compatible with the earlier version
+%    of \ds{} also {\tt +} and {\tt -} are supported as `guard
+%    modifiers'.  However, there is an incompatibility with the
+%    earlier version since a line with a {\tt +}-modified guard is not
+%    included inside a block with a guard that evaluates to false, in
+%    contrast to the previous behaviour.}.  The beginning and ending
+%    guards for a block of code have to be on a line by themselves.
+%
+%    When a block of code is {\em not\/} included, any guards that occur
+%    within that block are {\em not\/} evaluated.
+%
+%\StopEventually{%
+%^^A \section{Conclusion}
+%  \PrintIndex
+%  \PrintChanges
+%^^A \makesignature
+% }
+%
+% \section{The implementation}
+%
+% \subsection{Declarations and initializations}
+%
+%    In order to be able to include the {\tt @}-sign in control
+%    sequences its category code is changed to \meta{letter}.  The
+%    `program' guard here allows most of the code to be excluded when
+%    extracting the driver file.
+%    \begin{macrocode}
+%<*program>
+\catcode`\@=11
+%    \end{macrocode}
+%
+%    When we want to write multiple lines to the terminal with one
+%    statement, we need a character that tells \TeX\ to break the lines.
+%    We use \verb=^^J= for this purpose.
+%    \begin{macrocode}
+\newlinechar=`\^^J
+%    \end{macrocode}
+%
+% \subsubsection{Token registers}
+% \begin{macro}{\TerminalString}
+% \changes{2.0m}{92/04/22}{Renamed from {\tt\bsl boolToks}}
+%    A token register is allocated that will be used to accumulate
+%    the tokens that make up a \meta{Terminal} in the process
+%    of scanning guards.
+%    \begin{macrocode}
+\newtoks\TerminalString
+%    \end{macrocode}
+% \end{macro}
+%
+% \subsubsection{Switches}
+% \begin{macro}{\ifOff}
+% \begin{macro}{\ifGenerate}
+%    The switch \verb=\ifOff= will be used to signal if code lines
+%    have to be included in the output.  The program will check if a
+%    file of the same name as the file it would be creating already
+%    exists. The switch \verb=\ifGenerate= is used to indicate if the
+%    stripped file has to be generated.
+%    \begin{macrocode}
+\newif\ifOff
+\newif\ifGenerate
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\ifContinue}
+%    The switch \verb=\ifContinue= is used in various places in the
+%    program to indicate if a \verb=\loop= has to end.
+%    \begin{macrocode}
+\newif\ifContinue
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\ifTerminal}
+%    The macros that parse the boolean expression in the guards need
+%    a switch to indicate if a \meta{Terminal} has been found.
+% \changes{2.0l}{92/04/17}{Renamed from {\tt\bsl ifName}.}
+%    \begin{macrocode}
+\newif\ifTerminal
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\ifForlist}
+% \changes{2.0g}{91/06/05}{Macro added.}
+%    The program contains an implementation of a for-loop, based on
+%    plain \TeX{}'s \verb=\loop= macros. The implementation needs a
+%    switch to terminate the loop.
+%    \begin{macrocode}
+\newif\ifForlist
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\ifDefault}
+%    The switch \verb=\ifDefault= is used to indicate whether the
+%    default batch file has to be used.
+% \changes{2.0f}{91/06/04}{Macro added.} 
+%    \begin{macrocode}
+\newif\ifDefault
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\ifMoreFiles}
+%    The switch \verb=\ifMoreFiles= is used to decide if the user
+%    wants more files to be processed. It is used only in interactive
+%    mode; initially it evaluates to \meta{true}.
+% \changes{2.0h}{91/06/19}{Macro added.}
+%    \begin{macrocode}
+\newif\ifMoreFiles \MoreFilestrue
+%    \end{macrocode}
+% \end{macro}
+%
+% \subsubsection{Count registers}
+% \begin{macro}{\blockLevel}
+%    Optionally included blocks of code can be nested. The counter
+%    \verb=\blockLevel= will be used to keep track of the level of
+%    nesting.  Its initial value is zero.
+%    \begin{macrocode}
+\newcount\blockLevel \blockLevel\z@
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\offLevel}
+%    The count register  \verb=\offLevel= is used to
+%    count the number of levels since the first block whose guard
+%    evaluated to false.  When this number reaches zero again we set the
+%    switch \verb=\ifOff= to fasle again.
+%    \begin{macrocode}
+\newcount\offLevel \offLevel \z@
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\emptyLines}
+%    The count register \verb=\emptyLines= is used to count the number
+%    of consecutive empty input lines. Only the first will be copied
+%    to the output file.
+% \changes{2.0i}{90/06/27}{Macro added}
+%    \begin{macrocode}
+\newcount\emptyLines \emptyLines \z@
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\processedLines}
+% \begin{macro}{\commentsRemoved}
+% \begin{macro}{\commentsPassed}
+% \begin{macro}{\codeLinesPassed}
+%    To be able to provide the user with some statistics about the
+%    stripping process four counters are allocated if the statistics
+%    have been included when this program was \ds{}ped.  The number of
+%    lines processed is stored in the counter \verb=\processedLines=.
+%    The number of lines containing comments that are not written on
+%    the output file is stored in the counter \verb=\commentsRemoved=;
+%    the number of comments copied to the output file is stored in the
+%    counter \verb=\commentsPassed=.  The number of lines containing
+%    macro code that are copied to the output file is stored in the
+%    counter \verb=\codeLinesPassed=.
+%    \begin{macrocode}
+%<*stats>
+\newcount\processedLines   \processedLines  \z@
+\newcount\commentsRemoved  \commentsRemoved \z@
+\newcount\commentsPassed   \commentsPassed  \z@
+\newcount\codeLinesPassed  \codeLinesPassed \z@
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\NumberOfFiles}
+%    When more than one file is processed, the number of files is
+%    stored in the count register \verb=\NumberOfFiles= when
+%    statistics are included.
+%    \begin{macrocode}
+\newcount\NumberOfFiles \NumberOfFiles\z@
+%    \end{macrocode}
+% \end{macro}
+%
+% \changes{2.0e}{91/05/31}{Added counter allocation for the processing
+%                           of multiple files}
+% \begin{macro}{\TotalprocessedLines}
+% \begin{macro}{\TotalcommentsRemoved}
+% \begin{macro}{\TotalcommentsPassed}
+% \begin{macro}{\TotalcodeLinesPassed}
+%    When more than one file is processed and when statistics have
+%    been included we provide the user also with information about the
+%    total amount of lines processed. For this purpose four more count
+%    registers are allocated here.
+%    \begin{macrocode}
+\newcount\TotalprocessedLines   \TotalprocessedLines  \z@
+\newcount\TotalcommentsRemoved  \TotalcommentsRemoved \z@
+\newcount\TotalcommentsPassed   \TotalcommentsPassed  \z@
+\newcount\TotalcodeLinesPassed  \TotalcodeLinesPassed \z@
+%</stats>
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+% \subsubsection{I/O streams}
+% \begin{macro}{\inFile}
+% \begin{macro}{\outFile}
+%    For reading the file with documented \TeX-code, an input stream
+%    \verb=\inFile= is allocated. The stripped code is written on
+%    the output stream \verb=\outFile=.
+%    \begin{macrocode}
+\newread\inFile
+\newwrite\outFile
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \changes{2.0e}{91/05/31}{Added allocation of extra input stream
+%                          for batch files}
+% \begin{macro}{\batchFile}
+%    For batch file processing an extra input stream is needed.
+%    \begin{macrocode}
+\newread\batchFile
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\ttyin}
+% \begin{macro}{\ttyout}
+%    For the communication with the user an input stream, \verb=\ttyin=
+%    and an output stream, \verb=\ttyout= are allocated.
+%    \begin{macrocode}
+\newread\ttyin
+\newwrite\ttyout
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\batchinput}
+% \changes{2.0n}{92/04/26}{Added macro}
+% \begin{macro}{\skip@input}
+% \changes{2.0j}{92/03/03}{Added macro}
+% \changes{2.0n}{92/04/26}{Argument delimited by space not `relax}
+% \changes{2.0n}{92/04/26}{Macro renamed from `skipinput} When the
+%    file {\tt docstrip.tex} is read because of an \verb=\input=
+%    statement in a batch file we have to prevent an endless loop
+%    (well, limited by \TeX's stack). Therefore we save the original
+%    primitive \verb=\input= and define a new macro with an argument
+%    delimited by \verb*= = (i.e.\ a space) that just gobbles the
+%    argument.  Since the end-of-line character is converted by \TeX{}
+%    to a space.  This means that |\input| is not available as a
+%    command within batch files. We therefore keep a copy of the
+%    original under the name |\batchinput| which can be used if
+%    further batch commands are to be read from a different batch
+%    file.
+%    \begin{macrocode}
+\let\batchinput\input
+\def\skip@input#1 {}
+\let\input\skip@input
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \subsubsection{Empty macros and macros that expand to a string}
+% \begin{macro}{\guardStack}
+%    \changes{2.0k}{92/04/06}{Renamed from {\tt\bsl blockStack}} Because
+%    blocks of code that will conditionally be included in the output
+%    can be nested, a stack is maintained to keep track of these
+%    blocks. The main reason for this is that we want to be able to
+%    check if the blocks are properly nested. The stack itself is
+%    stored in |\guardStack|.
+%    \begin{macrocode}
+\def\guardStack{}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\blockHead}
+%    The macro \verb=\blockHead= is used for storing and retrieving
+%    the boolean expression that starts a block.
+%    \begin{macrocode}
+\def\blockHead{}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\Options}
+% \begin{macro}{\lastOption}
+%    The list of options to include in the output is stored in
+%    \verb=\Options=. The macro \verb=\lastOption= is used to remember
+%    which option was started.
+%    \begin{macrocode}
+\def\Options{}
+\def\lastOption{}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\TrueExpression}
+% \begin{macro}{\FalseExpression}
+%    In the evaluation of the boolean expressions a representation is
+%    needed for \meta{true} and \meta{false}. This representation is
+%    realized by the definition of |\TrueExpression| and
+%    |\FalseExpression|. These macros are meant to be used with \TeX's
+%    |\if|-test.  When the expression |\if\TrueExpression...| is
+%    expanded by \TeX\ it yields |\if TT...|. This test is true and
+%    all instructions following the test (until |\else| or |\fi| is
+%    encountered) will examined.
+%    \begin{macrocode}
+\def\TrueExpression{TT}
+\def\FalseExpression{TF}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\yes}
+% \begin{macro}{\y}
+%    When the user is asked a question that he has to answer with either
+%    \meta{yes} or \meta{no}, his response has to be evaluated. For this
+%    reason the macros \verb=\yes= and \verb=\y= are defined.
+%    \begin{macrocode}
+\def\yes{yes}
+\def\y{y}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\Defaultbatchile}
+% \changes{2.0f}{91/06/04}{Macro added.}
+%    When the \ds{} program has to process a batch file it
+%    can look for a batch file with a default name. This name
+%    is stored in \verb=\DefaultbatchFile=.
+%    \begin{macrocode}
+\def\DefaultbatchFile{docstrip.cmd}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\perCent}
+% \begin{macro}{\DoubleperCent}
+%    To be able to display percent-signs on the terminal, a {\tt\%}
+%    with category code 12 is stored in \verb=\perCent=. The macro
+%    \verb=\DoubleperCent= is used to write two percent-signs when
+%    writing the preamble of the output file.
+%    \begin{macrocode}
+{\catcode`\%=12
+ \gdef\perCent{%}
+ \gdef\DoubleperCent{%% }
+}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%    In order to allow formfeeds in the input we define a one-character
+%    control sequence \verb=^^L=.
+%    \begin{macrocode}
+\def^^L{ }
+%    \end{macrocode}
+%
+% \subsubsection{Miscellaneous variables}
+% \begin{macro}{\inFileName}
+%    The macro \verb=\inFileName= is used to store the name of the
+%    current input file.
+% \end{macro}
+% \begin{macro}{\outFileName}
+%    The macro \verb=\outFileName= is used to store the name of the
+%    current output file.
+% \end{macro}
+% \begin{macro}{\batchfile}
+%    The macro \verb=\batchfile= is used to store the name of the
+%    batch file.
+% \end{macro}
+% \begin{macro}{\inLine}
+%    The macro \verb=\inLine= is used to store the lines, read from
+%    the input file, before further processing.
+% \end{macro}
+% \begin{macro}{\batchLine}
+%    The macro \verb=\batchLine= is used to store the lines, read from
+%    the batch file, before further processing.
+% \end{macro}
+% \begin{macro}{\nextToken}
+%    In this \TeX-program a lot of `peeking ahead' using the
+%    \verb=\futurelet= instruction is done. In such cases the
+%    character that appears first in the input stream is stored in
+%    \verb=\nextToken=.
+% \end{macro}
+% \begin{macro}{\doNext}
+%    Another aspect of this program is that quite often the next action
+%    depends on the evaluation of an \verb=\if= construct. In such cases
+%    the control sequence \verb=\doNext= is \verb=\let= to the macro
+%    that has to be executed.
+% \end{macro}
+% \begin{macro}{\answer}
+%    When some interaction with the user is needed the macro
+%    \verb=\answer= is used to store his response.
+% \end{macro}
+% \begin{macro}{\tmp}
+%    Sometimes something has to be temporarily stored in a control
+%    sequence.  For these purposes the control sequence \verb=\tmp= is
+%    used.
+% \end{macro}
+%
+% \subsection{Support macros}
+%    \subsubsection{The stack mechanism}
+%
+%    It is possible to have `nested guards'. This means that within a
+%    block of optionally included code a subgroup is only included
+%    when an additional option is specified. To keep track of the
+%    nesting of the guards the currently `open' guard can be pushed on
+%    the stack |\guardStack| and later popped off the stack again. The
+%    macros that implement this stack mechanism are loosely based on
+%    code that is developed in the context of the \LaTeX3 project.
+%
+%    To be able to implement a stack mechanism we need a couple of
+%    support macros.
+% \begin{macro}{\eltStart}
+%    \changes{2.0k}{92/04/06}{Macro added}
+% \begin{macro}{\eltEnd}
+%    \changes{2.0k}{92/04/06}{Macro added}
+%    The macros |\eltStart| and |\eltEnd| are used to delimit a stack
+%    element. They are both empty.
+%    \begin{macrocode}
+\def\eltStart{}
+\def\eltEnd{}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\qStop}
+%    \changes{2.0k}{92/04/06}{Macro added}
+%    The macro |\qStop| is a so-called `quark', a macro that expands to
+%    itself\footnote{The concept of `quarks' is developed for the
+%    \LaTeX3 project.}.
+%    \begin{macrocode}
+\def\qStop{\qStop}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\pop}
+%    \changes{2.0k}{92/04/06}{Macro added} The macro
+%    |\pop|\meta{stack}\meta{cs} `pops' the top element from the
+%    stack. It assigns the value of the top element to \meta{cs} and
+%    removes it from \meta{stack}. When \meta{stack} is empty a
+%    warning is issued and \meta{cs} is assigned an empty value.
+%    \begin{macrocode}
+\def\pop#1#2{%
+  \ifx#1\empty
+    \Msg{Warning: Found end guard without matching begin}%
+    \let#2\empty
+  \else
+%    \end{macrocode}
+%    To be able to `peel' off the first guard we use an extra macro
+%    |\popX| that receives both the expanded and the unexpanded stack
+%    in its arguments. The expanded stack is delimited with the quark
+%    |\qStop|.
+%    \begin{macrocode}
+    \def\tmp{\expandafter\popX #1\qStop #1#2}%
+    \expandafter\tmp\fi}
+%    \end{macrocode}
+% \begin{macro}{\popX}
+%    \changes{2.0k}{92/04/06}{Macro added} When the stack is expanded
+%    the elements are surrounded with |\eltStart| and |\eltEnd|. The
+%    first element of the stack is assigned to |#4|.
+%    \begin{macrocode}
+\def\popX\eltStart #1\eltEnd #2\qStop #3#4{\def#3{#2}\def#4{#1}}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\push}
+%    \changes{2.0k}{92/04/06}{Macro added}
+%    Guards can be pushed on the stack using the macro
+%    |\push|\meta{stack}\meta{guard}. Again we need a secondary macro
+%    (|\pushX|) that has both the expanded and the unexpanded stack as
+%    arguments.
+%    \begin{macrocode}
+\def\push#1#2{\expandafter\pushX #1\qStop #1{\eltStart #2\eltEnd}}
+%    \end{macrocode}
+% \begin{macro}{\pushX}
+%    \changes{2.0k}{92/04/06}{Macro added}
+%    The macro |\pushX| picks up the complete expansion of the stack as
+%    its first argument and places the guard in |#3| on the `top'.
+%    \begin{macrocode}
+\def\pushX #1\qStop #2#3{\def #2{#3#1}}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \subsubsection{Programming structures}
+%
+% \begin{macro}{\forlist}
+% \changes{2.0g}{91/06/05}{Macro added.}
+%    When the program is used in interactive mode the
+%    user can supply a list of files that have to be processed.
+%    In order to process this list a for-loop is needed. This
+%    implementation of such a programming construct is based on the
+%    use of the \verb=\loop{=\meta{body}\verb=}\repeat= macro that
+%    is defined in plain \TeX\@. The syntax for this loop is:
+%    \begin{flushleft}
+%    \verb=\for=\meta{control sequence} \verb|:=| \meta{list} 
+%    \verb=\do=\\
+%    \meta{body}\\
+%    \verb=\od=
+%    \end{flushleft}
+%    The \meta{list} should be a comma separated list.
+%
+%    The first actions that have to be taken are to set the switch
+%    \verb=\ifForlist= to \meta{true} and to store the loop condition
+%    in the macro \verb=\ListCondition=. This is done using an
+%    \verb=\edef= to allow for a control sequence that contains a
+%    \meta{list}.
+%    \begin{macrocode}
+\def\forlist#1:=#2\do#3\od{%
+    \edef\ListCondition{#2}%
+    \Forlisttrue
+%    \end{macrocode}
+%    Then we start the loop.
+%    We store the first element from the \verb=\ListCondition= in the
+%    macro that was supplied as the first argument to \verb=\forlist=.
+%    This element is then removed from the \verb=\ListCondition=.
+%    \begin{macrocode}
+    \loop
+      \edef#1{\expandafter\FirstElt\ListCondition,\empty.}%
+      \edef\ListCondition{\expandafter\OtherElts\ListCondition,\empty.}%
+%    \end{macrocode}
+%    When the first element from the \meta{list} is empty, we are done
+%    processing, so we switch \verb=\ifForlist= to \meta{false}.
+%    When it is not empty we execute the third argument that should
+%    contain \TeX\ commands to execute.
+%    \begin{macrocode}
+      \ifx#1\empty \Forlistfalse \else#3\fi
+%    \end{macrocode}
+%    Finally we test the switch \verb=\ifForlist= to decide whether the
+%    loop has to be continued.
+%    \begin{macrocode}
+      \ifForlist
+    \repeat}
+%    \end{macrocode}
+% \begin{macro}{\FirstElt}
+% \changes{2.0g}{91/06/05}{Macro added.}
+%    The macro \verb=\FirstElt= is used to get the first element from a
+%    comma-separated list.
+%    \begin{macrocode}
+\def\FirstElt#1,#2.{#1}
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\OtherElts}
+% \changes{2.0g}{91/06/05}{Macro added.}
+%    The macro \verb=\OtherElts= is used to get all elements {\em but\/}
+%    the first element from a comma-separated list.
+%    \begin{macrocode}
+\def\OtherElts#1,#2.{#2}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\whileswitch}
+% \changes{2.0h}{91/06/19}{Macro added.} When the program is used in
+%    interactive mode the user might want to process several files
+%    with different options or extensions.  This goal could be reached
+%    by running the program several times, but it is more
+%    user-friendly to ask if he would like to process more files when
+%    we are done processing his last request.  To accomplish this we
+%    need the implementation of a {\tt while}-loop.  Again plain
+%    \TeX's \verb=\loop{=\meta{body}\verb=}\repeat= is used to
+%    implement this programming structure.
+%
+%    The syntax for this loop is:
+%    \begin{flushleft}
+%    \verb=\whileswitch=\meta{switch} \verb|\fi| \meta{list}
+%    \verb={=\meta{body}\verb=}=\\
+%    \end{flushleft}
+%    The first argument to this macro has to be a switch, defined
+%    using \verb=\newif=; the second argument contains the statements
+%    to execute while the switch evaluates to \meta{true}.
+%    \begin{macrocode}
+\def\whileswitch#1\fi#2{#1\loop#2#1\repeat\fi}
+%    \end{macrocode}
+% \end{macro}
+%
+% \subsubsection{Input and Output}
+%
+% \begin{macro}{\maybeMsg}
+% \begin{macro}{\showprogress}
+% \begin{macro}{\keepsilent}
+%    When this program is used it can optionally show its progress on
+%    the terminal. In that case it will write a special character to
+%    the terminal (and the transcript file) for each input line. This
+%    option is on by default when statistics are included in {\tt
+%    docstrip.tex}. It is off when statistics are excluded. The
+%    commands \verb=\showprogress= and \verb=\keepsilent= can be used
+%    to choose otherwise.
+%    \begin{macrocode}
+\def\showprogress{\let\maybeMsg\message}
+\def\keepsilent{\let\maybeMsg\gobble}
+%<*stats>
+\showprogress
+%</stats>
+%<-stats>\keepsilent
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\Msg}
+%    For displaying messages on the terminal the macro \verb=\Msg= is
+%    defined to write {\em immediately\/} to \verb=\ttyout=.
+%    \begin{macrocode}
+\def\Msg{\immediate\write\ttyout}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\Ask}
+%    The macro \verb=\Ask{=\meta{cs}{\tt\}\{}\meta{string}{\tt\}}
+%    is a slightly modified copy of the \LaTeX\ macro
+%    \verb=\typein=. It is used to ask the user a question.
+%    The \meta{string} will be displayed on his terminal and
+%    the response will be stored in the \meta{cs}. The trailing space
+%    left over from the carriage return is stripped off by the macro
+%    \verb=\strip=. If the user just types a carriage return, the result
+%    will be an empty macro.
+% \changes{2.0i}{91/06/27}{Added check for just \protect\meta{CR}}
+%    \begin{macrocode}
+\def\iden#1{#1}
+\def\strip#1#2 \gobble{\def #1{#2}}
+\def\@defpar{\par}
+\def\Ask#1#2{%
+    \message{#2}\read\ttyin to #1\ifx#1\@defpar\def#1{}\else
+    \iden{\expandafter\strip\expandafter#1#1\gobble\gobble} \gobble\fi}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\WriteOut}
+% \changes{2.0e}{91/06/01}{Macro added.} When a line has to be written
+%    on the output file this can be done using the macro
+%    \verb=\WriteOut=. It writes a `{\tt.}' on the terminal and
+%    \verb=\immediate=ly writes it argument to \verb=\outFile=.
+%    \begin{macrocode}
+\def\WriteOut#1{\maybeMsg{.}\immediate\write\outFile{#1}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \subsubsection{Miscellaneous}
+% \begin{macro}{\OffStart}
+%    When the start of a block of code that has to be excluded from
+%    the output is encountered the macro \verb=\Offstart= is called.
+%    This macro sets the switch \verb=\ifOff= to \meta{true} and
+%    increments the counter \verb=\offLevel= by $1$.
+%    \begin{macrocode}
+\def\OffStart{\Offtrue\advance\offLevel\@ne}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\OffEnd}
+%    At the end of a block of code that is excluded the macro
+%    \verb=\OffEnd= is called. It decrements the counter by $1$ and if
+%    the value of the counter is $0$, it switches \verb=\ifOff= to
+%    \meta{false}.
+%    \begin{macrocode}
+\def\OffEnd{%
+    \advance\offLevel\m@ne
+    \ifnum\offLevel=\z@
+      \Offfalse
+    \fi}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\gobble}
+% \changes{2.0a}{91/05/25}{Macro added.}
+%    A macro that has an argument and puts it in the bitbucket.
+%    \begin{macrocode}
+\def\gobble#1{}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\Endinput}
+% \changes{2.0f}{91/06/04}{Macro added.} When a {\tt doc} file
+%    contains a \verb+\endinput+ on a line by itself this normally
+%    means that anything following in this file should be ignored.
+%    Therefore we need a macro containing \verb=\endinput= as its
+%    replacement text to check this against \verb=\inLine= (the
+%    current line from the current input file). Of course the
+%    backslash has to have the correct \verb=\catcode=. One way of
+%    doing this is feeding \verb=\\= to the \verb=\string= operation
+%    and afterwards removing one of the \verb=\= characters.
+%    \begin{macrocode}
+\edef\Endinput{\expandafter\gobble\string\\endinput}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\makeOther}
+%    During the process of reading a file with \TeX\ code the category
+%    code of all special characters has to be changed to \meta{other}.
+%    The macro \verb=\makeOther= serves this purpose.
+%    \begin{macrocode}
+\def\makeOther#1{\catcode`#1=12\relax}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\end}
+% \changes{2.0h}{91/06/19}{Macro added.} For now we want the \ds{}
+%    program to be compatible with both plain \TeX\ and \LaTeX\@.
+%    \LaTeX\ version 2.09 hides plain \TeX{}'s \verb=\end= command and
+%    calls it \verb=\@@end=. We unhide it here.
+%    \begin{macrocode}
+\ifx\undefined\@@end\else\let\end\@@end\fi
+%    \end{macrocode}
+% \end{macro}
+%
+% \subsection{The evaluation of boolean expressions}
+%
+%    For clarity we repeat here the syntax for the boolean expressions
+%    as it was given before:
+%
+%\DeleteShortVerb\|
+%    \begin{tabular}{lcl}
+%    \meta{Expression} & $::=$ & \meta{Primary}
+%                                [\{{\tt|}, {\tt,}\} \meta{Primary}]*\\
+%    \meta{Primary}    & $::=$ & 
+%                         \meta{Secondary} [{\tt\&} \meta{Secondary}]*\\
+%    \meta{Secondary}  & $::=$ & 
+%                         \meta{Terminal} $|$ {\tt!}\meta{Secondary}
+%                                  $|$ {\tt(}\meta{Expression}{\tt)}\\
+%    \end{tabular}
+%
+%    The {\tt|} stands for disjunction, the {\tt\&} stands for
+%    conjunction and the {\tt!}\ stands for negation. The
+%    \meta{Terminal} is any sequence of letters and evaluates to
+%    \meta{true} iff it occurs in the list of options that have to be
+%    included.
+%\MakeShortVerb\|
+%
+% \subsubsection{Parsing intermediate results} The parsing of the
+%    boolean expressions has to be carried out very carefully. The
+%    parsing of an expression starts at the `left side'.  Each term in
+%    the expression is fully parsed before the next term is examined.
+%    This parsing occurs inside a group, so macros can be redefined
+%    without affecting the result of the total evaluation.  As a
+%    consequence of this, the result of the evaluation has to be
+%    passed to the outer level. For this purpose the control sequence
+%    |\expressionValue| is used.
+%
+%    This is done as follows:\\ A macro |\doNext| is defined using the
+%    |\edef| command.  It closes the group that was started when the
+%    evaluation of this term started; then it calls the macro
+%    |\PropagateValue| with the result of the evaluation as its
+%    argument.  Note that because of the use of |\edef| the control
+%    sequence |\expressionValue| will be replaced by either {\tt TT}
+%    or {\tt TF} in the replacement text for |\doNext|. The macro is
+%    then executed.
+%\begin{verbatim}
+%  \edef\doNext{\endgroup\noexpand\PropagateValue{\ExpressionValue}}%
+%  \doNext
+%\end{verbatim}
+%
+% \begin{macro}{\PropagateValue}
+%    The `top level' definition of the macro |\PropagateValue| just
+%    stores its (expanded) argument in |\expressionValue|. Note that
+%    this macro is redefined during various phases of the parsing
+%    process.
+%    \begin{macrocode}
+\def\PropagateValue#1\qStop{%
+  \edef\ExpressionValue{#1}}
+%    \end{macrocode}
+%
+% \begin{macro}{\ContinueExpression}
+%    During the parsing of an \meta{Expression} the control sequence
+%    |\PropagateValue| is |\let| to |\ContinueExpression|. The argument
+%    of this macro is either {\tt TT} or {\tt TF}, being the result of
+%    the parsing of the current term.
+%    \begin{macrocode}
+\def\ContinueExpression#1{%
+%    \end{macrocode}
+%    A logical-or of this result and the accumulated result of all
+%    previous terms is performed. This means that if the result so far
+%    was \meta{true} it remains \meta{true}, otherwise the current
+%    term determines the total result so far.
+%    \begin{macrocode}
+  \if\ExpressionValue
+  \else
+    \def\ExpressionValue{#1}%
+  \fi
+%    \end{macrocode}
+%    Then we peek at the next token using |\futurelet| and call
+%    |\ContinueExpressionX| to decide what to do, depending on the
+%    next token.
+%    \begin{macrocode}
+  \futurelet\nextToken\ContinueExpressionX}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\ContinueExpressionX}
+%    When the macro |\ContinueExpressionX| is called, the next token
+%    is stored in the control sequence |\nextToken|.
+%    \begin{macrocode}
+\def\ContinueExpressionX{%
+%    \end{macrocode}
+%\DeleteShortVerb\|
+%    If it is either {\tt|} or {\tt,} the parsing has to continue and
+%    the next \meta{Pimary} term is considered.
+%    \begin{macrocode}
+  \ifx|\nextToken
+    \def\doNext|{\Primary}%
+  \else
+    \ifx,\nextToken
+      \def\doNext,{\Primary}%
+    \else
+%    \end{macrocode}
+%    The only other character that can be encountered is the {\tt)}
+%    that closes the expression. In that case we propagate the value
+%    accumulated so far to the outer level.
+%    \begin{macrocode}
+      \edef\doNext){\endgroup\noexpand\PropagateValue{\ExpressionValue}}
+    \fi
+  \fi
+  \doNext}
+%    \end{macrocode}
+%    Note that the characters {\tt|}, {\tt,} and {\tt)} have remained
+%    in \TeX's input and have to be removed.
+%    This is accomplished by including the character
+%    in the parameter text of the definition of the macro
+%    \verb=\doNext=.
+% \end{macro}
+%\MakeShortVerb\|
+%
+% \begin{macro}{\ContinuePrimary}
+%    During the parsing of a \meta{Primary} term the control sequence
+%    |\PropagateValue| is |\let| to |\ContinuePrimary|. The argument
+%    of this macro is either {\tt TT} or {\tt TF}, being the result of
+%    the parsing of the current term.
+%    \begin{macrocode}
+\def\ContinuePrimary#1{%
+%    \end{macrocode}
+%    A logical-and of this result and the accumulated result of all
+%    previous terms is performed. This means that if the result so far
+%    was \meta{false} it remains \meta{false}, otherwise the current
+%    term determines the total result so far.
+%    \begin{macrocode}
+  \if\ExpressionValue
+    \def\ExpressionValue{#1}%
+  \fi
+%    \end{macrocode}
+%    Then we peek at the next token using |\futurelet| and call
+%    |\ContinuePrimaryX| to decide what to do, depending on the
+%    next token.
+%    \begin{macrocode}
+  \futurelet\nextToken\ContinuePrimaryX}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\ContinuePrimaryX}
+%    When the macro |\ContinuePrimaryX| is called, the next token
+%    is stored in the control sequence |\nextToken|. Because this macro
+%    needs to check if the next token is a `{\tt\&}' we have to change
+%    its category code before |\ContinuePrimaryX| is defined.
+%    \begin{macrocode}
+{\catcode`\&=12
+\gdef\ContinuePrimaryX{%
+%    \end{macrocode}
+%    If the next token is {\tt\&} the parsing has to continue and
+%    the next \meta{Secondary} term is considered.
+%    \begin{macrocode}
+  \ifx&\nextToken
+    \def\doNext&{\Secondary}%
+  \else
+%    \end{macrocode}
+%    Any other character indicates the end of the current term.
+%    In that case we propagate the value accumulated
+%    so far to the outer level.
+%    \begin{macrocode}
+    \edef\doNext{\endgroup\noexpand\PropagateValue{\ExpressionValue}}%
+  \fi
+  \doNext}}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\PropagateNegatedValue}
+%    When a \meta{Secondary} term is preceded by a {\tt!}\ character the
+%    the control sequence |\PropagateValue| is |\let| to
+%    |\PropagateNegatedValue|. The only function of this macro is
+%    to propagate the negation of its argument.
+%    \begin{macrocode}
+\def\PropagateNegatedValue#1{%
+  \edef\doNext{\endgroup
+    \noexpand\PropagateValue
+    {\if#1%
+       \noexpand\FalseExpression
+     \else
+       \noexpand\TrueExpression
+     \fi}}%
+  \doNext}
+%    \end{macrocode}
+% \end{macro}
+%
+% \subsubsection{The evaluation of the boolean expression}
+%
+% \begin{macro}{\Evaluate}
+%    To start the parsing of a boolean expression the macro |\Evaluate|
+%    is called by the macros |\testOption| and |\starOption|
+%
+%    |\Evaluate| encloses its argument with {\tt ()} and appends
+%    |\qStop|.  The result is passed on to \verb=\Expression= for
+%    further processing.  The parentheses are added to ease the
+%    parsing by |\Expression|.
+%    \begin{macrocode}
+\def\Evaluate#1{%
+  \Expression(#1)\qStop}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\Expression}
+%    The definition of the macro |\Expression| includes a `{\tt(}' in
+%    the parameter text of the macro; this causes the immediate
+%    removal of the first parenthesis that encloses the expression.
+%    \begin{macrocode}
+\def\Expression({%
+%    \end{macrocode}
+%    It then starts a group,
+%    \begin{macrocode}
+  \begingroup
+%    \end{macrocode}
+%    initialises the
+%    |\ExpressionValue| to \meta{false}
+%    \begin{macrocode}
+    \let\ExpressionValue\FalseExpression
+%    \end{macrocode}
+%    and calls |\Primary| to
+%    continue the parsing process.
+%    \begin{macrocode}
+    \let\PropagateValue\ContinueExpression
+    \Primary}
+%    \end{macrocode}
+%    |\ExpressionValue| is set to \meta{false} because the logical-or
+%    of this value and the result of the first term will be performed.
+% \end{macro}
+%
+% \begin{macro}{\Primary}
+%    The macro |\Primary| is used to parse \meta{Primary} terms. Like
+%    |\expression| it starts a group. It then initiates the
+%    |ExpressionValue| appropriately and calls |\Secondary| to
+%    continue the parsing process.
+%    \begin{macrocode}
+\def\Primary{%
+  \begingroup
+    \let\ExpressionValue\TrueExpression
+    \let\PropagateValue\ContinuePrimary
+    \Secondary}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\Secondary}
+%    As can be seen in the syntax of boolean expressions a
+%    \meta{Secondary} term can contain three different kinds of term.
+%    When the first token of the \meta{Secondary} is a `{\tt!}' the
+%    result of the parsing of the term should be negated; when the
+%    first token is a `{\tt(}'it indicates the start of a
+%    subexpression. Any other token is part of a \meta{Terminal}.
+%
+%    Therefore we have to inspect the first token of the term and decide
+%    what to do. This is acheived by using |\futurelet| and calling
+%    |\SecondaryX|.
+%    \begin{macrocode}
+\def\Secondary{%
+  \futurelet\nextToken\SecondaryX}
+%    \end{macrocode}
+%
+% \begin{macro}{\SecondaryX}
+%    When this macro is called, the control sequence |\nextToken|
+%    contains a copy of the first character of the term being inspected.
+%    \begin{macrocode}
+\def\SecondaryX{%
+%    \end{macrocode}
+%    When |\nextToken| contains a `{\tt(}' we make sure that calling
+%    |\doNext| is actually a call of |\Expression| to
+%    parse the subexpression.
+%    \begin{macrocode}
+  \ifx\nextToken(\let\doNext\Expression\else
+%    \end{macrocode}
+%    When |\nextToken| contains a `{\tt!}' we make sure that calling
+%    |\doNext| is actually a call of |\Negate| to negate the result
+%    of the following term.
+%    \begin{macrocode}
+  \ifx\nextToken!\let\doNext\Negate\else
+%    \end{macrocode}
+%    If |\nextToken| contains anything else |\doNext| is |\let|
+%    to |\Terminal|.
+%    \begin{macrocode}
+                 \let\doNext\Terminal\fi\fi
+%    \end{macrocode}
+%    The call of |\doNext| will now start the proper macro.
+%    \begin{macrocode}
+  \doNext}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\Negate}
+%    When during the parsing of a \meta{Secondary} term a `|!|' is
+%    encountered the result has to be negated. Therefore a new group
+%    is started, |\PropagateValue| is made equivalent to
+%    |\PropagateNegatedValue| and |\Secondary| is called again.
+%    \begin{macrocode}
+\def\Negate!{%
+  \begingroup
+    \let\PropagateValue\PropagateNegatedValue
+    \Secondary}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\Terminal}
+%    The parsing of a \meta{Terminal} is done token by token. Therefore
+%    we accumulate the tokens that make up the \meta{Terminal} in
+%    the token register |\TerminalString|. This register is cleared and
+%    processing starts with calling |\TerminalX|.
+%    \begin{macrocode}
+\def\Terminal{%
+  \global\TerminalString{}\TerminalX}
+%    \end{macrocode}
+%
+% \begin{macro}{\TerminalX}
+%    The macro |\TerminalX| scoops up the next token and appends it to
+%    |\TerminalString|. It can do that because the token has been
+%    examined before by another macro, either |\Secondary| (at the start
+%    of this process) or |\TerminalXX| (during this process).
+%    \begin{macrocode}
+\def\TerminalX#1{%
+  \global\TerminalString\expandafter{\the\TerminalString#1}%
+%    \end{macrocode}
+%    Now we have to peek at the next token again to decide what the
+%    next action should be. The decision will be taken by |\TerminalXX|.
+%    \begin{macrocode}
+  \futurelet\nextToken\TerminalXX}
+%    \end{macrocode}
+%
+% \begin{macro}{\TerminalXX}
+%\DeleteShortVerb\|\MakeShortVerb\+
+%    The macro +\TerminalXX+ uses the contents of +\nextToken+ to
+%    decide what the next action should be. When +\nextToken+
+%    contains one of `{\tt\&}', `{\tt|}', `{\tt,}', `{\tt!}',
+%    `{\tt(}' or `{\tt)}' the end of the \meta{Terminal} has been
+%    found and processing should stop; when +\nextToken+ contains
+%    any other character it is part of the \meta{Terminal}.
+%
+%    During the definition of the macro the `{\tt\&}' should be
+%    {\tt\&$_{12}$} so its category code needs to be changed.
+%    \begin{macrocode}
+{\catcode`\&=12
+\gdef\TerminalXX{%
+%    \end{macrocode}
+%    A couple of +\ifx+ tests are needed to decide whether the
+%    \meta{Terminal} that is being accumulated has ended. We use
+%    the switch +\ifTerminal+ to inidicate whether this has happend
+%    or not. It is initialised to \meta{false} (meaning: ``the end has
+%    been found'').
+%    \begin{macrocode}
+  \Terminalfalse
+  \ifx &\nextToken \else
+  \ifx |\nextToken \else
+  \ifx ,\nextToken \else
+  \ifx !\nextToken \else
+  \ifx (\nextToken \else
+  \ifx )\nextToken \else
+%    \end{macrocode}
+%    If none of the above tests are \meta{true} the end of the
+%    \meta{Terminal} has {\em not\/} been found, so the switch is
+%    set to \meta{true}.
+%    \begin{macrocode}
+    \Terminaltrue
+  \fi\fi\fi\fi\fi\fi
+%    \end{macrocode}
+%    If the \meta{Terminal} has not ended the next character can be
+%    appended to +\TerminalString+. This is accomplished by the
+%    (recursive) call of +\TerminalX+.
+%    \begin{macrocode}
+  \ifTerminal
+    \let\doNext\TerminalX
+%    \end{macrocode}
+%    When, on the other hand, the end {\em was\/} found, we have to
+%    check whether the option (that is now stored in
+%    +\TerminalString+) was amongst the options that needed to be
+%    included in the output.  This check is performed by the macro
+%    +\SetValue+. It gives +\ExpressionValue+ the appropriate value.
+%    The token register is cleared when its contents are no longer
+%    needed.
+%    \begin{macrocode}
+  \else
+    \edef\doNext{\noexpand\SetValue{\the\TerminalString}}%
+    \global\TerminalString{}%
+  \fi
+%    \end{macrocode}
+%    At this point the macro +\doNext+ `points' to the macro that should
+%    be executed, so we call it. The second brace closes the group that
+%    was started to keep the category change of the character `{\tt\&}'
+%    local.
+%    \begin{macrocode}
+  \doNext}
+}
+%    \end{macrocode}
+%\MakeShortVerb\|\DeleteShortVerb\+
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\SetValue}
+%    The macro |\Setvalue| has to check whether its argument is included
+%    in the option list, stored in |\Options| as a comma-separated list.
+%    \begin{macrocode}
+\def\SetValue#1{%
+%    \end{macrocode}
+%    The actual check will be performed by a temporary macro |\tmp|.
+%    The argument of |\SetValue| is made part of its argument text.
+%    The argument text is delimited by |\qStop|. When |\tmp| is
+%    executed it will have both the expanded optionlist and the
+%    argument of |\SetValue| amongst its parameters. When the argument
+%    of |\Setvalue| does {\em not\/} appear in |\Options| the second
+%    argument of |\tmp| will be empty.
+%    \begin{macrocode}
+  \def\tmp##1,#1,##2\qStop{%
+%    \end{macrocode}
+%    To be able to check if the second argument is empty, we store it
+%    in a temporary control secquence |\tmp|.
+%    \begin{macrocode}
+    \def\tmp{##2}%
+%    \end{macrocode}
+%    Then we define |\doNext|, using |\edef|, to propagate the value
+%    of this expression to the outer level. Because we use |\edef|,
+%    the replacement text of |\doNext| will contain either
+%\begin{verbatim}
+%    \PropagateValue{TF}
+%\end{verbatim}
+%    or
+%\begin{verbatim}
+%    \PropagateValue{FF}
+%\end{verbatim}
+%    \begin{macrocode}
+    \edef\doNext{\noexpand\PropagateValue
+      {\ifx\tmp\empty\FalseExpression\else\TrueExpression\fi}}%
+%    \end{macrocode}
+%    The last action of |\tmp| is to call the macro |\doNext| that it
+%    has just defined.
+%    \begin{macrocode}
+    \doNext}%
+%    \end{macrocode}
+%    As stated before, we need the expansion of |\Options| in the
+%    arguments of |\tmp|, therefore we have to delay the expansion of
+%    |\tmp| using |\expandafter| until |\Options| has been expanded.
+%    \begin{macrocode}
+  \expandafter\tmp\expandafter,\Options,#1,\qStop}
+%    \end{macrocode}
+% \end{macro}
+%
+%  \subsection{Processing the input lines}
+%
+% \begin{macro}{\copyLine}
+%    The macro \verb=\copyLine= writes its argument (which has to be
+%    delimited with \verb=\endLine=) on the output file using the
+%    macro \verb=\WriteOut=.  If statistics are included, the counter
+%    \verb=\codeLinesPassed= is incremented by $1$.
+%    \begin{macrocode}
+\def\copyLine#1\endLine{%
+%<*stats>
+  \advance\codeLinesPassed\@ne
+%</stats>
+  \WriteOut{#1}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\removeLine}
+%    The macro |\removeLine| throws its argument (which has to be
+%    delimited with |\endLine|) away. It writes a `{\tt\%}' on the
+%    terminal if messages are enabled.
+%    \begin{macrocode}
+\def\removeLine#1\endLine{%
+    \maybeMsg{\perCent}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\removeComment}
+%    The macro \verb=\removeComment= has nearly the same function as the
+%    macro \verb=\removeLine=, except that when statistics are included
+%    in the program the removed comment is counted. If statistics are
+%    {\em not\/} included the macro \verb=\removeComment= is \verb=\let=
+%    to \verb=\removeLine=.
+%    \begin{macrocode}
+%<*stats>
+\def\removeComment#1\endLine{%
+    \advance\commentsRemoved\@ne
+    \maybeMsg{\perCent}}
+%</stats>
+%<-stats>\let\removeComment\removeLine
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\putMetaComment}
+%    If a line starts with two consecutive percent signs, it is
+%    considered to be a {\em MetaComment\/}. Such a comment line is
+%    passed on to the output file unmodified.
+%    \begin{macrocode}
+\def\putMetaComment#1\endLine{%
+%    \end{macrocode}
+%    To `close' a pending option the macro \verb=\closeOption= is
+%    called.
+%    \begin{macrocode}
+  \closeOption%
+%    \end{macrocode}
+%    If statistics are included the line is counted.
+%    \begin{macrocode}
+%<*stats>
+  \advance\commentsPassed\@ne
+%</stats>
+%    \end{macrocode}
+%    The macro \verb=\putMetaComment= has one argument, delimited with
+%    \verb=\endLine=. But because of earlier processing the argument
+%    is discarded and \verb=\inLine=, which contains the complete line
+%    as it was read from \verb=\inFile=, is written on
+%    \verb=\outFile=.
+%    \begin{macrocode}
+  \WriteOut{\inLine}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\processLine}
+%    Each line that is read from the input stream has to be processed
+%    to see if it has to be written on the output stream. This task
+%    is performed by calling the macro \verb=\processLine=.
+%    The macro increments the counter \verb=\processedLines= by $1$ if
+%    statistics are included. Then it peeks at the next character
+%    in the input stream by using \verb=\futurelet= and calling
+%    \verb=\processLineX= to do the work.
+%    \begin{macrocode}
+\def\processLine{%
+%<*stats>
+  \advance\processedLines\@ne
+%</stats>
+  \futurelet\nextToken\processLineX}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\processLineX}
+%    The macro \verb=\processLineX= has to check whether the current
+%    line has to be included in the output or not. In order to do
+%    that, it needs to check whether the line starts with a `{\tt\%}'.
+%    Therefore the macro is globally defined within a group. Within
+%    this group the category code of `{\tt\%}' is changed to 12
+%    (other).  Because a comment character is needed, the category
+%    code of `{\tt\#}' is changed to 14 (comment character).
+%
+%    When this macro is executed \TeX\ has stored the next token in
+%    the input stream in \verb=\nextToken=. If it is a `{\tt\%}'
+%    further processing has to be done by \verb=\processLineXX=;
+%    otherwise we close the current option.\\ The setting of the
+%    switch \verb=\ifOff= determines whether the current line is
+%    either removed or copied.  Whatever action has to be taken, it
+%    will be stored in the macro \verb=\doNext=, after the processing
+%    of the \verb=\if=-statements is finished.
+%    \begin{macrocode}
+\begingroup
+\catcode`\%=12 \catcode`\#=14
+\gdef\processLineX{#
+  \ifx%\nextToken
+    \let\doNext\processLineXX
+  \else
+    \closeOption
+    \ifOff
+      \let\doNext\removeLine
+    \else
+      \let\doNext\copyLine
+    \fi
+  \fi
+  \doNext}
+\endgroup
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\processLineXX}
+%    The macro \verb=\processLineXX= simply peeks at the next token and
+%    calls \verb=\processLineXXX= to do whatever is necessary.
+%    \begin{macrocode}
+\def\processLineXX#1{%
+  \futurelet\nextToken\processLineXXX}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\processLineXXX}
+%    This macro is also defined within a group, like the macro
+%    \verb=\processLineX=, because it also has to check if the next
+%    token in the input stream is a `{\tt\%}' character.
+%
+%    If the second token in the current line happens to be a `{\tt\%}',
+%    a \meta{MetaComment} has been found. This has to be copied in its
+%    entirety to the output.
+%    Another possible second character is `{\tt<}', which introduces
+%    a guard expression. The processing of such an expression is
+%    started by calling \verb=\checkOption=.
+%
+%    When the token was neither a `{\tt\%}' nor a `{\tt<}', the line
+%    contains a normal comment that has to be removed. In that case
+%    the current option is closed.  The execution of the macro
+%    \verb=\doNext= will have the desired effect.  Note that the group
+%    is closed, so that all characters will have the category code
+%    that was in effect when the group was started.
+%    \begin{macrocode}
+\begingroup
+\catcode`\%=12 \catcode`\#=14
+\gdef\processLineXXX{#
+  \ifx%\nextToken \let\doNext\putMetaComment \else
+  \ifx<\nextToken \let\doNext\checkOption    \else
+             \closeOption
+             \let\doNext\removeComment  \fi\fi
+  \doNext}
+\endgroup
+%    \end{macrocode}
+% \end{macro}
+%
+%  \subsection{The handling of options}
+%
+% \begin{macro}{\checkOption}
+%    When the macros that process a line have found that the line
+%    starts with `{\tt\%<}', a guard line has been encountered. The
+%    first character of a guard can be an asterisk ({\tt*}), a slash
+%    ({\tt/}) a plus ({\tt+}), a minus ({\tt-}) or any other character
+%    that can be found in an option name. This means that we have to
+%    peek at the next token and call \verb=\checkOptionsX= to decide
+%    what kind of guard we have. Note that the way that
+%    \verb=\checkOption= is defined, means it removes the `{\tt<}'
+%    from the input stream.
+%    \begin{macrocode}
+\def\checkOption<{%
+  \futurelet\nextToken\checkOptionsX}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\checkOptionsX}
+%    The macro \verb=\checkOptionsX= compares the contents of
+%    \verb=\nextToken= with the four possible leading characters and
+%    decides what to do. When the switch \verb=\ifOff= is \meta{true},
+%    the current line will simply be removed.
+%    \begin{macrocode}
+\def\checkOptionsX{%
+  \ifx*\nextToken \let\doNext\starOption  \else
+  \ifx/\nextToken \let\doNext\slashOption \else
+  \ifOff          \let\doNext\removeLine  \else
+  \ifx+\nextToken \let\doNext\plusOption  \else
+  \ifx-\nextToken \let\doNext\minusOption \else
+                  \let\doNext\doOption    \fi\fi\fi\fi\fi
+  \doNext}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\closeOption}
+%    The macro \verb=\closeOption= is used to `close' options. This
+%    means nothing more than writing a `{\tt>}' on the terminal when
+%    necessary.
+%
+%    If \verb=\lastOption= is \verb=\empty= nothing has to be done
+%    because no option has started since the last one was closed. In
+%    the other case, the `{\tt>}' is written on the terminal if
+%    messages are enabled.  Also, the \verb=\lastOption= is made
+%    \verb=\empty=.
+%    \begin{macrocode}
+\def\closeOption{%
+  \ifx\lastOption\empty\else
+    \maybeMsg{>}\let\lastOption\empty\fi}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\doOption}
+%    When no guard modifier is found by \verb=\checkOptionsX=, the
+%    macro \verb=\doOption= is called.  It calls \verb=\testOption=
+%    with an empty first argument to evaluate the boolean expression.
+%    The result of this evaluation is stored in
+%    \verb=\ExpressionValue=. This guard only affects the current
+%    line, so depending on the result of the test
+%    \verb=\if\ExpressionValue=, the current line is either copied to
+%    the output stream or removed.
+%    \begin{macrocode}
+\def\doOption#1>{%
+  \testOption{}{#1}%
+  \if\ExpressionValue \expandafter\copyLine
+  \else         \expandafter\removeLine \fi}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\plusOption}
+%    When a `{\tt+}' is found as a guard modifier, \verb=\plusOption=
+%    is called. This macro is very similar to \verb=\doOption=, the only
+%    difference being that the `{\tt+}' is now passed as the first
+%    argument to \verb=\testOption=.
+%    \begin{macrocode}
+\def\plusOption+#1>{%
+  \testOption+{#1}%
+  \if\ExpressionValue \expandafter\copyLine
+  \else         \expandafter\removeLine \fi}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\minusOption}
+%    When a `{\tt-}' is found as a guard modifier, \verb=\minusOption=
+%    is called. This macro is very similar to \verb=\plusOption=, the
+%    difference is that \verb=\removeLine= and \verb=\copyLine= have
+%    been interchanged.
+%    \begin{macrocode}
+\def\minusOption-#1>{%
+  \testOption-{#1}%
+  \if\ExpressionValue \expandafter\removeLine
+  \else         \expandafter\copyLine \fi}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\starOption}
+%    When a `{\tt*}' is found as a guard modifier, \verb=\starOption=
+%    is called. In this case a block of code will be included in the
+%    output on the condition that the guard expression evaluates to
+%    \meta{true}.
+%    \begin{macrocode}
+\def\starOption*#1>{%
+%    \end{macrocode}
+%    First we close any pending option and optionally write
+%    a message to the terminal to indicate that a new option starts
+%    here.
+%    \begin{macrocode}
+  \closeOption
+  \maybeMsg{<*#1}%
+%    \end{macrocode}
+%    Then we push the current contents of \verb=\blockHead= on the
+%    stack of blocks, \verb=\guardStack= and increment  the counter
+%    \verb=\blockLevel= to indicate that we are now one level of
+%    nesting deeper.
+% \changes{2.0k}{92/04/06}{Use new stack mechanism}
+% \changes{2.0k}{92/04/09}{The macro that holds the guard needs to be
+%    expanded}
+%    \begin{macrocode}
+  \expandafter\push\expandafter\guardStack\expandafter{\blockHead}%
+  \advance\blockLevel\@ne
+%    \end{macrocode}
+%    The guard for this block of code is now stored in
+%    \verb=\blockHead=.
+%    \begin{macrocode}
+  \def\blockHead{#1}%
+%    \end{macrocode}
+%    If this block of code occurs inside another block of code that is
+%    {\em not\/} included in the output, we increment the counter
+%    |\offLevel|. In that case the guard expression will not be
+%    evaluated, because a block inside another block that is excluded
+%    from the output will also be excluded, regardless of the
+%    evaluation of its guard.
+%    \begin{macrocode}
+  \ifOff
+    \advance\offLevel\@ne
+%    \end{macrocode}
+%    When the switch \verb=\ifOff= has the value \meta{false}, we have
+%    to evaluate the guard expression. This is done by calling
+%    |\Evaluate|. That macro leaves the result in |\ExpressionValue|.
+%    If the result turns out to be \meta{false}, we start an `Off'
+%    section by calling \verb=\Offstart=.
+%    \begin{macrocode}
+  \else
+    \Evaluate{#1}%
+    \if\ExpressionValue\else\OffStart\fi
+  \fi
+%    \end{macrocode}
+%    The current line always has to be removed, because it only contains
+%    the guard and possibly a comment.
+%    \begin{macrocode}
+  \removeLine}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\slashOption}
+%    The macro \verb=\slashOption= is the counter part to
+%    \verb=\starOption=.  It indicates the end of a block of
+%    conditonally included code.  We store the argument in the
+%    temporary control sequence \verb=\tmp=.
+%    \begin{macrocode}
+\def\slashOption/#1>{%
+  \def\tmp{#1}%
+%    \end{macrocode}
+%    When the counter \verb=\blockLevel= has a value less than $1$,
+%    this `end-of-block' line has no corresponding `start-of-block'.
+%    Therefore we signal an error and ignore this end of block.
+%    \begin{macrocode}
+  \ifnum\blockLevel<\@ne
+    \errmessage{Spurious end block </\tmp> ignored}%
+%    \end{macrocode}
+%    Next we compare the contents of \verb=\tmp= with the contents
+%    of \verb=\blockHead=. The latter macro contains the last guard for
+%    a block of code that was encounterd. If the contents match, we
+%    pop the previous guard from the stack.
+%    \changes{2.0k}{92/04/06}{Use new stack mechanism}
+%    \begin{macrocode}
+  \else
+    \ifx\tmp\blockHead
+      \pop\guardStack\blockHead
+%    \end{macrocode}
+%    When the contents of the two macros don't match something is
+%    amiss. We signal this to the user, but accept the `end-of-block'.
+%\note{Is this the desired behaviour??}
+%    \begin{macrocode}
+    \else
+      \errmessage{Found </\tmp> instead of <*\blockHead>}%
+    \fi
+%    \end{macrocode}
+%    When the end of a block of optionally included code is encountered
+%    we optionally signal this on the terminal and decrement the counter
+%    \verb=\offLevel=.
+%    \begin{macrocode}
+    \maybeMsg{>}%
+    \advance\blockLevel\m@ne
+%    \end{macrocode}
+%    The last check that has to be made is for the value of the switch
+%    \verb=\ifOff=. If it is \meta{true} we call \verb=\Offend= to
+%    take the appropriate actions. Finally we remove the current line.
+%    \begin{macrocode}
+    \ifOff\OffEnd\fi
+  \fi
+  \removeLine}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\testOption}
+%    The macro \verb=\testOption= is used by the macros that process
+%    the one line guards. First it checks if the guard expression
+%    is present. To accomplish that, it stores the second argument
+%    in a temporary control sequence.
+%    \begin{macrocode}
+\def\testOption#1#2{%
+  \def\tmp{#2}%
+%    \end{macrocode}
+%    When the macro \verb=\tmp= is empty, something is missing.
+%    We signal this to the user and use a dummy guard.
+%    \begin{macrocode}
+  \ifx\tmp\empty
+    \errmessage{Missing option expression!}%
+    \def\tmp{MISSING OPTION}%
+%    \end{macrocode}
+%    When the guard is present we store a `{\tt<}', the guard modifier
+%    and the guard in \verb=\tmp= for future use.
+%    \begin{macrocode}
+  \else
+    \def\tmp{<#1#2}%
+  \fi
+%    \end{macrocode}
+%    The complete guard is now stored in \verb=\tmp=. We use it to
+%    compare with the last guard encountered. If they are the same,
+%    there is nothing more to do.
+%    \begin{macrocode}
+  \ifx\tmp\lastOption
+%    \end{macrocode}
+%    If they are {\em not\/} the same the current line belongs to a
+%    different option than the last line with a guard that has been
+%    processed.  Therefore we close a possibly pending option and make
+%    \verb=\lastOption= point to the contents of \verb=\tmp=.
+%    \begin{macrocode}
+  \else
+    \closeOption
+    \let\lastOption\tmp
+%    \end{macrocode}
+%    Then we optionally signal the start of a new option on the
+%    terminal and evaluate the guard expression.
+%    \begin{macrocode}
+    \maybeMsg{\lastOption}%
+    \Evaluate{#2}%
+  \fi}
+%    \end{macrocode}
+% \end{macro}
+%
+%    \subsection{Batchfile commands}
+%
+% \begin{macro}{\generateFile}
+%    The macro \verb=\generateFile= can be used in batch files to
+%    instruct the \ds{} program to generate an output file from
+%    possibly multiple input files. The first argument is the file to
+%    produce, the second argument indicates if the user has to be
+%    consulted before an existing file is overwritten. The third
+%    argument contains the list of input files. Each entry should have
+%    the format
+%    \verb=\from{=\meta{filename.ext}\verb=}{=\meta{options}\verb=}=.
+%
+%    The macro starts by displaying a message on the terminal to
+%    indicate which file is going to be made.  The switch
+%    \verb=\ifGenerate= is initially set to \meta{true}.
+%
+% \changes{2.0e}{91/06/01}{changed interface to {\tt\bsl generatefileX}}
+% \changes{2.0e}{91/06/01}{Added pre- and postamble support}
+%    \begin{macrocode}
+\def\generateFile#1#2#3{{%
+  \Msg{^^JGenerating file \WriteToDir#1^^J}%
+  \Generatetrue
+%    \end{macrocode}
+%    Next we decide if we have to be careful about overwriting
+%    existing files. If the user specified `{\tt t}' we will ask him
+%    if he wants to overwrite an existing file. If he specified anything
+%    else we simply go ahead.
+%
+%    In order to prevent havoc when \verb=#2= contains garbage or when
+%    it is empty we use a comparison of control sequences instead
+%    of the direct comparison with \verb=\if#2t=.
+%    \begin{macrocode}
+  \def\tmp{#2}\def\t{t}%
+  \ifx\tmp\t
+%    \end{macrocode}
+%    When the second argument to \verb=\generateFile= was `{\tt t}' we
+%    try to open a file with the name of the output file for reading.
+%    If this succeeds the file exists and we ask the user if he wants
+%    to overwrite the file.
+% \changes{2.0p}{92/06/26}{Added `WriteToDir (FMi).}
+%    \begin{macrocode}
+    \immediate\openin\inFile\WriteToDir#1\relax
+    \ifeof\inFile\else
+      \Ask\answer{File \WriteToDir#1 already exists 
+                  \ifx\@empty\WriteToDir somewhere \fi
+                  on the system.^^J% 
+                  Overwrite it%
+                  \ifx\@empty\WriteToDir\space if necessary\fi
+                  ? [y/n]}%
+%    \end{macrocode}
+%    We set the switch \verb=\ifGenerate= according to his answer. We
+%    allow for both ``{\tt y}'' and ``{\tt yes}''.
+%    \begin{macrocode}
+      \ifx\y  \answer \Generatetrue \else
+      \ifx\yes\answer \Generatetrue \else
+                      \Generatefalse\fi\fi\fi
+%    \end{macrocode}
+%    Don't forget to close the file just opened as we want to write
+%    to it.
+%    \begin{macrocode}
+    \immediate\closein\inFile
+  \fi
+%    \end{macrocode}
+%    We store the name of the output file in the macro
+%    \verb=\outFileName= for future use.
+%    \begin{macrocode}
+  \ifGenerate
+    \def\outFileName{#1}%
+%    \end{macrocode}
+%    The macro |\from| will be used for multiple purposes in the
+%    following code.
+%
+%    First |\from| is defined to write a line to the output file,
+%    containing the name of the input file, together with the
+%    options that are included for that file.
+%    \begin{macrocode}
+    \def\from##1##2{\WriteOut{\DoubleperCent ##1 \if!##2!\else
+                              \space (with options: `##2')\fi}}%
+%    \end{macrocode}
+%    The macro \verb=\ReferenceLines= is defined using an \verb=\edef=
+%    instruction. This means that all macros in the replacement text
+%    will be expanded. The third argument to \verb=\generateFile= is
+%    included in the replacement text for \verb=\ReferenceLines=,
+%    while the above definition of \verb=\from= is still valid. Thus,
+%    for each occurence of |\from| in the third argument of
+%    |\generateFile| the current replacement text of |\from| is
+%    included in |\ReferenceLines|.
+%    \begin{macrocode}
+    \edef\ReferenceLines{%
+        \WriteOut{\DoubleperCent ^^J%
+                  \DoubleperCent The original source files were:^^J%
+                  \DoubleperCent }%
+        #3}%
+    \def\from##1##2{\edef\inFileName{\inFileName##1\space}}
+    \def\inFileName{}#3
+%    \end{macrocode}
+%    The macro \verb=\ReferenceLines= will be called by
+%    \verb=\WritePreamble=.  Because it was defined using an expanded
+%    definition we can now safely give \verb=\from= another meaning.
+%    This time it is to define the macros \verb=\inFileName= and
+%    \verb=\Options= to contain its two arguments. These macros are
+%    then used by \verb=\generateFileX=.
+% \changes{2.0f}{91/06/04}{Allow for a control sequence as options
+%    argument}
+%    \begin{macrocode}
+    \def\from##1##2{\def\inFileName{##1}%
+                    \edef\Options{##2}%
+                    \generateFileX}%
+%    \end{macrocode}
+%    Now we can finally open the output file, this time for writing.
+% \changes{2.0q}{92/07/01}{Preceded filename by `WriteToDir}
+%    \begin{macrocode}
+    \immediate\openout\outFile\WriteToDir#1\relax
+%    \end{macrocode}
+%    First we write a preamble to the file,
+%    \begin{macrocode}
+    \WritePreamble
+%    \end{macrocode}
+%    then we execute the commands that are in the third
+%    argument to \verb=\Generatefile=.
+%    \begin{macrocode}
+    #3%
+%    \end{macrocode}
+%    The last action is to write a postamble to the file and close it.
+%    \begin{macrocode}
+    \WritePostamble
+    \immediate\closeout\outFile
+    \let\ReferenceLines\OriginalRefs
+  \else
+%    \end{macrocode}
+%    In case we were not allowed to overwrite an existing file
+%    we inform the user that we are {\em not\/} generating his file.
+%    \begin{macrocode}
+    \Msg{Not generating file #1^^J}%
+  \fi}}
+%    \end{macrocode}
+%
+%  \begin{macro}{\WriteToDir}
+%    The macro |\WriteToDir| is either empty or holds the prefix
+%    necessary to read a file from the current directory. Under UNIX
+%    this is |./| but a lot of other systems addopted this concept. If
+%    we can prefix the
+% \changes{2.0p}{92/06/26}{Macro added (FMi).}
+%    \begin{macrocode}
+\def\WriteToDir{}
+%<+unix>\def\WriteToDir{./}
+%    \end{macrocode}
+%  \end{macro}
+%
+%    To support command files that were written for the first version
+%    of \ds{} the commands |\include| and |\processFile|
+%    are defined here. The use of this interface is not recommended
+%    as it may be removed in a future release of \ds{}.
+%
+% \begin{macro}{\include}
+% \changes{2.0f}{91/06/04}{Macro added} To provide the \ds{} program
+%    with a list of options that should be included in the output the
+%    command \verb=\include{=\meta{Options}\verb=}= can be used. This
+%    macro is meant to be used in conjunction with the
+%    \verb=\processFile= command.
+%    \begin{macrocode}
+\def\include#1{\def\Options{#1}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\processFile}
+% \changes{2.0f}{91/06/04}{Supply {\tt\bsl generateFile} with
+%                          {\tt\bsl Options}}
+%\DeleteShortVerb\|
+%    The macro
+%    \verb=\processFile{=\meta{filename}\verb=}{=\meta{inext}\verb=}{=%
+%\unskip\meta{outext}\verb=}{=\meta{t{\fontshape{n}\tt|}f}\verb=}=
+%    can be used when a single input file is used to produce
+%    a single output file. The macro is also used in the interactive
+%    mode of the \ds{} program.
+%\MakeShortVerb\|
+%
+%    The arguments \meta{inext} and \meta{outext} denote the
+%    extensions of the input and output files respectively. The fourth
+%    argument can be used to specify if an existing file should be
+%    overwritten without asking. If \meta{t} is specified the program
+%    will ask for permission before overwriting an existing file.
+%
+%    This macro is defined using the more generic macro |\generateFile|.
+%    \begin{macrocode}
+\def\processFile#1#2#3#4{%
+  \generateFile{#1.#3}{#4}{\from{#1.#2}{\Options}}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\processfile}
+% \begin{macro}{\generatefile}
+% \changes{2.0m}{91/04/23}{Now issue a warning when {\tt\bsl
+%    processfile} or {\tt\bsl generatefile} are used} An earlier
+%    version of \ds{} used the commands |\processfile| and
+%    |\generatefile| instead of the commands as they are defined in
+%    this version. To remain upwards compatible, we still provide
+%    these commands, but issue a warning when they are used.
+%    \begin{macrocode}
+\def\processfile{\Msg{%
+    ^^Jplease use \string\processFile\space instead of 
+       \string\processfile!^^J}%
+    \processFile}
+\def\generatefile{\Msg{%
+    ^^Jplease use \string\generateFile\space instead of 
+      \string\generatefile!^^J}%
+    \generateFile}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\generateFileX}
+% \changes{2.0f}{91/06/04}{Added check for lines with {\tt\bsl
+%    endinput}} This macro is called by |\generateFile| for each
+%    occurence in its third argument of the control sequence |\from|.
+%
+%    A line is displayed on the terminal, telling the user what we are
+%    about to do.
+%    \begin{macrocode}
+\def\generateFileX{{%
+  \Msg{Processing File \inFileName
+       \ifx\Options\empty\else\space(\Options)\fi
+       \space -> \outFileName^^J}%
+%    \end{macrocode}
+%    Then we try to open the input file. If this doesn't succeed, we
+%    tell the user so and nothing else happens.
+%    \begin{macrocode}
+  \immediate\openin\inFile\inFileName\relax
+  \ifeof\inFile
+    \errmessage{Cannnot find file \inFileName}%
+  \else
+%    \end{macrocode}
+%    When the input file was successfully opened, we change the category
+%    code of a lot of characters to \meta{other} and make sure that
+%    no extra spaces appear in the lines read by setting the
+%    |\endlinechar| to $-1$.
+%    \begin{macrocode}
+    \makeOther\ \makeOther\\\makeOther\$%
+    \makeOther\#\makeOther\^\makeOther\^^K%
+    \makeOther\_\makeOther\^^A\makeOther\%%
+    \makeOther\~\makeOther\{\makeOther\}\makeOther\&%
+    \endlinechar-1\relax
+%    \end{macrocode}
+%    Then we start a loop to process the lines in the file one by one.
+%    \begin{macrocode}
+    \loop
+      \read\inFile to\inLine
+%    \end{macrocode}
+%    The first thing we check is whether the current line
+%    contains an |\endinput|. To allow also real |\endinput|
+%    commands in the source file, |\endinput| is only recognized
+%    when it occurs directly at the beginning of a line.
+%    \begin{macrocode}
+      \ifx\inLine\Endinput
+%    \end{macrocode}
+%    In this case we output a message to inform the programmer (in
+%    case this was a mistake) and end the loop immediately by setting
+%    \verb=Continue= to \meta{false}. Note that \verb=\endinput= is
+%    not placed into the output file. This is important in cases where
+%    the output file is generated from several {\tt doc} files.
+%    \begin{macrocode}
+        \Msg{File \inFileName\space ended by \string\endinput.}%
+        \Continuefalse
+      \else
+%    \end{macrocode}
+% \changes{2.0j}{92/03/03}{First check for end of file before check for
+%    empty lines} When the end of the file is found we have to
+%    interrupt the loop.
+%    \begin{macrocode}
+       \ifeof\inFile
+         \Continuefalse
+%    \end{macrocode}
+% \changes{2.0i}{91/06/27}{Added check for consecutive empty lines}
+%    If the file did not end we check if the input line is empty.
+%    If it is, the counter \verb=\emptyLines= is incremented.
+%    \begin{macrocode}
+       \else
+         \Continuetrue
+         \ifx\inLine\empty
+            \advance\emptyLines\@ne
+          \else
+            \emptyLines\z@
+          \fi
+%    \end{macrocode}
+%    When the number of empty lines seen so far exceeds 1, we skip them.
+%    If it doesn't, the expansion of |\inLine| is fed to |\processLine|
+%    with |\endLine| appended to indicate the end of the line.
+%    \begin{macrocode}
+          \ifnum \emptyLines<2
+            \expandafter\processLine\inLine\endLine
+          \else
+            \maybeMsg{/}%
+          \fi
+       \fi
+      \fi
+%    \end{macrocode}
+%    When the processing of the line is finished, we check if there is
+%    more to do, in which case we repeat the loop.
+%    \begin{macrocode}
+    \ifContinue
+    \repeat
+%    \end{macrocode}
+%    Any option that was not properly `closed' is closed now and the
+%    input file is closed.
+%    \begin{macrocode}
+    \closeOption
+    \immediate\closein\inFile
+%    \end{macrocode}
+%    If the user was interested in statistics, we inform him of the
+%    number of lines processed, the number of comments that were
+%    either removed or passed and the number of codelines that were
+%    written to the output file. Also the totals are updated.
+%    \begin{macrocode}
+%<*stats>
+    \Msg{Lines \space processed: \the\processedLines^^J%
+         Comments removed: \the\commentsRemoved^^J%
+         Comments \space passed: \the\commentsPassed^^J%
+         Codelines passed: \the\codeLinesPassed^^J}%
+      \global\advance\TotalprocessedLines  by \processedLines
+      \global\advance\TotalcommentsRemoved by \commentsRemoved
+      \global\advance\TotalcommentsPassed  by \commentsPassed
+      \global\advance\TotalcodeLinesPassed by \codeLinesPassed
+      \global\advance\NumberOfFiles by \@ne
+%</stats>
+    \fi}}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\WritePreamble}
+% \changes{2.0e}{91/06/01}{Macro added.}
+%    If there is no \verb=\preamble= command in the batch file, or
+%    the \ds{} program is used in interactive mode a
+%    default preamble will be written to the output file. All
+%    lines in this preamble are preceded by two percent characters
+%    to prevent them from being removed from the file by the \ds{}
+%    program.
+%
+%    First a couple of lines, stating what file it is and how it was
+%    created.
+%    \begin{macrocode}
+\def\WritePreamble{%
+    \WriteOut{%
+        \DoubleperCent ^^J%
+        \DoubleperCent This is file `\outFileName', generated %
+                        on <\the\year/\the\month/\the\day> ^^J%
+        \DoubleperCent with the docstrip utility (\fileversion).%
+             }%
+%    \end{macrocode}
+%    Then the |\ReferenceLines| that tell from what source file(s) the
+%    stripped file was created.
+%    \begin{macrocode}
+    \ReferenceLines
+%    \end{macrocode}
+%    Then, a statement that this file should {\em not\/} be distributed
+%    on its own.
+%    \begin{macrocode}
+    \WriteOut{%
+        \DoubleperCent ^^J%
+        \DoubleperCent IMPORTANT NOTICE:^^J%
+        \DoubleperCent You are not allowed to distribute this file.^^J%
+        \DoubleperCent For distribution of the original source see^^J%
+        \DoubleperCent the copyright notice in the file \inFileName.^^J%
+        \DoubleperCent }}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\OriginalRefs}
+% \changes{2.0e}{91/06/01}{Macro added.}
+%    The macro \verb=\OriginalRefs= can be used to include information
+%    in the output file about the documented source files it was
+%    created from.
+%    \begin{macrocode}
+\def\OriginalRefs{%
+    \WriteOut{\DoubleperCent }%
+    \WriteOut{\DoubleperCent The original source file was 
+              `\inFileName'.}%
+    \ifx\Options\empty\else
+        \WriteOut{\DoubleperCent Included options: `\Options'.}\fi
+    \WriteOut{\DoubleperCent }}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\ReferenceLines}
+% \changes{2.0e}{91/06/01}{Macro added.} The macro
+%    \verb=\ReferenceLines= is used by the macro \verb=\WritePreamble=
+%    to include some information on the original source files in the
+%    output file. When the user does not supply a preamble, a default
+%    preamble is used, so also a default value for
+%    \verb=\ReferenceLines= has to be supplied. The macro
+%    \verb=\OriginalRefs= supplies such a default.
+%    \begin{macrocode}
+\let\ReferenceLines\OriginalRefs
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\WritePostamble}
+% \changes{2.0e}{91/06/01}{Macro added.}
+%    The default definition of \verb=\WritePostamble= is to write
+%    a line containing \verb=\endinput= to the output file. The
+%    last line written identifies the file again.
+%    \begin{macrocode}
+\def\WritePostamble{%
+    \WriteOut{\string\endinput}%
+    \WriteOut{\DoubleperCent ^^J%
+              \DoubleperCent End of file `\outFileName'.}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\preamble}
+% \changes{2.0e}{91/06/01}{Macro added.} When a batch file is used the
+%    user can specify a preamble of his own that will be written to
+%    each file that is created. This can be useful to include an extra
+%    copyright notice in the stripped version of a file.  Also a
+%    warning that both versions of a file should {\em always\/} be
+%    distributed together could be written to a stripped file by
+%    including it in such a preamble.
+%
+%    Every line that is written to \verb=\outFile= that belongs to the
+%    preamble is preceded by two percent characters. This will prevent
+%    \ds{} from stripping these lines off the file.
+%
+%    The preamble should be started with the macro \verb=\preamble=;
+%    it is ended by \verb=\endpreamble=. All processing is done within
+%    a group in order to be able to locally redefine some macros.
+%    \begin{macrocode}
+\def\preamble{\begingroup
+%    \end{macrocode}
+%    If the preamble contains an empty line this will end up in
+%    the macro \verb=\batchLine= as \verb=\par=. To be able to
+%    recognize a \verb=\par= we define \verb=\tmp= to contain
+%    \verb=\par=. The macro \verb=\Endpreamble= is defined to contain
+%    \verb=\endpreamble=, which ends the processing of preamble lines.
+%    \begin{macrocode}
+    \def\tmp{\par}%
+    \def\Endpreamble{\endpreamble}%
+%    \end{macrocode}
+%    The preamble lines will be read inside a \verb=\loop=. When
+%    a line is found that contains \verb=\endpreamble= the processing
+%    has to stop. This is controlled by the switch \verb=\ifContinue=.
+%    We initialize it to \meta{true}.
+%    \begin{macrocode}
+    \Continuetrue
+%    \end{macrocode}
+%    The macro \verb=\WritePreamble= will be defined to contain
+%    commands to write all preamble lines to \verb=\outFile=. We start
+%    it off with a couple of lines identifying the file. More lines
+%    will be added as processing continues, therefore the macros
+%    \verb=\inFileName= and \verb=\outFileName= are \verb=\let= to
+%    \verb=\relax=. If this was not done their contents would now be
+%    hard-coded in \verb=\WritePreamble=, which is {\em not\/} what we
+%    want.
+% \changes{2.0h}{91/06/19}{Removed opening of output file as a side
+%    effect.}
+%    \begin{macrocode}
+    \let\inFileName\relax
+    \let\outFileName\relax
+    \let\ReferenceLines\relax
+    \gdef\WritePreamble{%
+        \WriteOut{\DoubleperCent ^^J%
+                  \DoubleperCent This is file `\outFileName',
+                                 generated ^^J%
+                  \DoubleperCent on <\the\year/\the\month/\the\day> with
+                                 the docstrip utility (\fileversion).}%
+        \ReferenceLines}%
+%    \end{macrocode}
+%    Now  each line in the preamble has to be added to
+%    \verb=\WritePreamble=, therfore we start a \verb=\loop= to
+%    \verb=\read= the lines. The control sequence \verb=\batchLine=
+%    is used to store each line.
+%    \begin{macrocode}
+    \loop
+        \read\batchFile to \batchLine
+%    \end{macrocode}
+%    We check to see if the end of the preamble has been found. In that
+%    case the \verb=\loop= has to come to an end, so we set the switch
+%    \verb=\ifContinue= to \meta{false}.
+%    \begin{macrocode}
+        \ifx\batchLine\Endpreamble \Continuefalse
+        \else
+%    \end{macrocode}
+%    If an extra line has been read we add the appropriate
+%    instructions to \verb=\WritePreamble= using \verb=\xdef= (which
+%    does a global expanded definition). If the \verb=\batchLine= was
+%    empty, we write just the two percent characters; otherwise the
+%    complete line is written, preceded by the two percent characters.
+%    \begin{macrocode}
+            \xdef\WritePreamble{%
+                \WritePreamble
+                \WriteOut{\DoubleperCent 
+                          \ifx\batchLine\tmp\else\batchLine\fi}}%
+        \fi
+%    \end{macrocode}
+%    The setting of the switch \verb=\ifContinue= will decide if the
+%    \verb=\loop= continues. If we end the \verb=\loop=, we also have to
+%    close the group.
+%    \begin{macrocode}
+    \ifContinue\repeat
+    \endgroup}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\postamble}
+% \changes{2.0e}{91/06/01}{Macro added.} Just as a preamble can be
+%    specified in a batch file, the same can be done for a {\em
+%    post\/}amble.
+%
+%    The definition for \verb=\postamble= is very much like the one for
+%    \verb=\preamble=; the processing takes place inside a group and
+%    the switch \verb=\ifContinue= is used to control the \verb=\loop=.
+%    \begin{macrocode}
+\def\postamble{\begingroup
+    \Continuetrue
+%    \end{macrocode}
+%    The end of the postamble is indicated by \verb=\endpostamble= and
+%    the postamble can contain empty lines so we have to be able
+%    to check if \verb=\batchLine= contains a \verb=\par=.
+%    \begin{macrocode}
+    \def\Endpostamble{\endpostamble}%
+    \def\tmp{\par}%
+%    \end{macrocode}
+%    We initially define \verb=\WritePostamble= as an empty macro.
+%    Commands will be added to it as we go along.
+%    \begin{macrocode}
+    \gdef\WritePostamble{}%
+%    \end{macrocode}
+%    We start a loop to read lines from the batch file until
+%    \verb=\postamble= is encountered.
+%    \begin{macrocode}
+    \loop
+        \read\batchFile to \batchLine
+        \ifx\batchLine\Endpostamble \Continuefalse
+%    \end{macrocode}
+%    The line just read will be written to \verb=\outFile=, prepended
+%    with two percent characters. The command to do this is appended
+%    to the definition of \verb=\WritePostamble=.
+%    \begin{macrocode}
+        \else
+            \xdef\WritePostamble{%
+               \WritePostamble
+               \WriteOut{\DoubleperCent 
+                         \ifx\batchLine\tmp\else\batchLine\fi}}%
+        \fi
+%    \end{macrocode}
+%    The setting of the switch \verb=\ifContinue= decides if we have
+%    to stop the \verb=\loop=.
+%    \begin{macrocode}
+    \ifContinue\repeat
+    \endgroup}
+%    \end{macrocode}
+% \end{macro}
+%
+%    \subsection{Interaction with the user}
+%
+% \begin{macro}{\processbatchFile}
+% \changes{2.0f}{91/06/04}{Macro added.}
+%    When \ds{} is run it always tries to use a batch file.
+%    For this purpose it calls the macro |\processbatchFile|. The first
+%    thing this macro does, is check wether the user has defined the
+%    control sequence |\batchfile|. If he did, it should contain the
+%    name of the file to process. If he didn't a default name is tried.
+%    Whether or not the default batch file is used is remembered by
+%    setting the switch |\ifDefault| to \meta{true} or \meta{false}.
+%    \begin{macrocode}
+\def\processbatchFile{%
+    \ifx\undefined\batchfile
+      \let\batchfile\DefaultbatchFile
+      \Defaulttrue
+    \else
+      \Defaultfalse
+    \fi
+%    \end{macrocode}
+%    Now we try to open the batch file for reading.
+%    \begin{macrocode}
+    \openin\batchFile \batchfile\relax
+    \ifeof\batchFile
+%    \end{macrocode}
+%    If we didn't succeed in opening the file, we assume that it does
+%    not exist. If we tried the default filename, we silently
+%    continue; the \ds{} program will switch to interactive mode in
+%    this case.
+%    \begin{macrocode}
+      \ifDefault
+      \else
+%    \end{macrocode}
+%    If we failed to open the user-supplied file, something is wrong
+%    and we warn him about it. This will also result in a switch to
+%    interactive mode.
+%    \begin{macrocode}
+        \Msg{**************************************************^^J%
+             * Could not find your \string\batchfile=\batchfile^^J%
+             * Try to continue without it^^J%
+             **************************************************}%
+      \fi
+    \else
+%    \end{macrocode}
+%    When we were successful in opening a file, we again have to check
+%    whether it was the default file. In that case we tell the user
+%    we found that file and ask him if he wants to use it.
+%    \begin{macrocode}
+      \ifDefault
+        \Msg{**************************************************^^J%
+             * Batchfile \DefaultbatchFile\space found Use it? (y/n)?}%
+        \Ask\answer{%
+             **************************************************}%
+      \else
+%    \end{macrocode}
+%    When it was the user-supplied file we can safely assume he wants
+%    to use it so we set |\answer| to {\tt y}.
+%    \begin{macrocode}
+        \let\answer\y
+      \fi
+%    \end{macrocode}
+%    At this point we have successfully opened a batch file for
+%    reading.  If the macro |\answer| contains a {\tt y} we can
+%    proceed. We do that by setting the switch |\ifContinue| to true.
+%    When the batch file contains an |\endinput| we shouldn't
+%    continue, so we make it switch |\ifContinue| to \meta{false}.
+%    \begin{macrocode}
+      \ifx\answer\y
+        \Continuetrue
+        \let\endinput\Continuefalse
+%    \end{macrocode}
+%    The contents of the batch file are read in a loop, line by line.
+%    When the end of the file is found processing should stop.
+%    \begin{macrocode}
+        \loop
+          \ifeof\batchFile
+            \Continuefalse
+          \else
+%    \end{macrocode}
+%    A line is read into the macro |\batchLine|, which is subsequently
+%    executed.
+%    \begin{macrocode}
+            \read\batchFile to \batchLine
+            \batchLine
+          \fi
+%    \end{macrocode}
+%    When the execution of |\batchLine| is finished we check the switch
+%    |\ifContinue| to see if have to continue reading.
+%    \begin{macrocode}
+        \ifContinue\repeat
+      \fi
+    \fi}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\ReportTotals}
+% \changes{2.0g}{91/06/05}{Macro added.} The macro
+%    \verb=\ReportTotals= can be used to report total statistics for
+%    all files processed. This code is only included in the program if
+%    the option {\tt stats} is included.
+%    \begin{macrocode}
+%<*stats>
+\def\ReportTotals{%
+  \ifnum\NumberOfFiles>\@ne
+    \Msg{Overall statistics:^^J%
+         Files \space processed: \the\NumberOfFiles^^J%
+         Lines \space processed: \the\TotalprocessedLines^^J%
+         Comments removed: \the\TotalcommentsRemoved^^J%
+         Comments \space passed: \the\TotalcommentsPassed^^J%
+         Codelines passed: \the\TotalcodeLinesPassed}%
+  \fi}
+%</stats>
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\SetFileNames}
+%    The macro \verb=\SetFileNames= is used when the program runs in
+%    interactive mode and the user was asked to supply extensions and
+%    a list of filenames.
+%    \begin{macrocode}
+\def\SetFileNames{%
+    \edef\inFileName{\MainFileName.\infileext}%
+    \edef\outFileName{\MainFileName.\outfileext}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\CheckFileNames}
+%    In interactive mode, the user gets asked for the extensions for
+%    the input and output files. Also the name or names of the input
+%    files (without extension) is asked for. Then the names of the
+%    input and output files are constructed from this information by
+%    |\SetFileNames|. This assumes that the name of the input file is
+%    the same as the name of the output file. But we should not write
+%    to the same file we're reading from so the extensions should
+%    differ.
+%
+%    The macro |\CheckFileNames| makes sure that the output goes to a
+%    different file to the one where the input comes from.
+%    \begin{macrocode}
+\def\CheckFileNames{%
+    \ifx\inFileName\outFileName
+%    \end{macrocode}
+%    If input and output files are the same we signal an error and stop
+%    processing.
+%    \begin{macrocode}
+      \Msg{^^J%
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!^^J%
+     ! It is not possible to read from and write to the same file !^^J%
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!^^J}%
+      \Continuefalse
+    \else
+%    \end{macrocode}
+%    If they are not the same we check if the input file exists by
+%    trying to open it for reading.
+%    \begin{macrocode}
+      \Continuetrue
+      \immediate\openin\inFile \inFileName\relax
+      \ifeof\inFile
+%    \end{macrocode}
+%    If an end of file was found, the file couldn't be opened, so we
+%    signal an error and stop processing.
+%    \begin{macrocode}
+        \Msg{^^J%
+              !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!^^J%
+              ! Your input file `\inFileName' was not found !^^J%
+              !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!^^J}%
+        \Continuefalse
+      \else
+%    \end{macrocode}
+%    The last check we have to make is if the output file already
+%    exists.  Therefore we try to open it for reading.
+%    As a precaution we first close the input stream.
+% \changes{2.0p}{92/06/26}{Added `WriteToDir (FMi).}
+% \changes{2.0r}{92/08/17}{Use `inFile for reading}
+% \changes{2.0r}{92/08/17}{Moved `closein statements}
+%    \begin{macrocode}
+        \immediate\closein\inFile
+        \immediate\openin\inFile\WriteToDir \outFileName\relax
+        \ifeof\inFile
+%    \end{macrocode}
+%    If this fails, it didn't exist and all is well.
+%    \begin{macrocode}
+          \Continuetrue
+        \else
+%    \end{macrocode}
+%    If opening of the output file for reading succeeded we have to
+%    ask the user if he wants to overwrite it. We assume he doesn't
+%    want to overwrite it, so the switch |\ifContinue| is initially
+%    set to \meta{false}. Only if he answers the question positively
+%    with `{\tt y}' or `{\tt yes}' we set the switch back to
+%    \meta{true}.
+% \changes{2.0p}{92/06/26}{Changed question about overwriting.}
+%    \begin{macrocode}
+          \Continuefalse
+          \Ask\answer{File \WriteToDir\outFileName\space already 
+                      exists 
+                      \ifx\@empty\WriteToDir somewhere \fi
+                      on the system.^^J% 
+                      Overwrite it%
+                      \ifx\@empty\WriteToDir\space if necessary\fi
+                      ? [y/n]}%
+          \ifx\y  \answer \Continuetrue \else
+          \ifx\yes\answer \Continuetrue \else
+          \fi\fi
+        \fi
+%    \end{macrocode}
+%    All checks have been performed now, so we can close any file that
+%    was opened just for this purpose.
+%    \begin{macrocode}
+      \fi
+    \fi
+    \immediate\closein\inFile}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\interactive}
+%    The macro |\interactive| implements the interactive mode of the
+%    \ds{} program. The macro is implemented using the
+%    \meta{while} construction. While the switch |\ifMoreFiles| remains
+%    true, we continue processing.
+%    \begin{macrocode}
+\def\interactive{%
+  \whileswitch\ifMoreFiles\fi%
+%    \end{macrocode}
+%    To keep macro redefinitions local we start a group and ask the
+%    user some questions about what he wants us to do.
+%    \begin{macrocode}
+   {\begingroup
+      \AskQuestions
+%    \end{macrocode}
+%    The names of the files that have to be processed are stored as a
+%    comma-separated list in the macro |\filelist| by |\AskQuestions|.
+%    We use a \meta{for} loop to process the files one by one.
+%    \begin{macrocode}
+      \forlist\MainFileName:=\filelist
+      \do
+%    \end{macrocode}
+%    First the names of the input and output files are constructed
+%    and a check is made if all filename information is correct.
+%    \begin{macrocode}
+        \SetFileNames
+        \CheckFileNames
+        \ifContinue
+%    \end{macrocode}
+%    If everything was well, we can open the output file for writing,
+% \changes{2.0q}{92/07/01}{Preceded filename by `WriteToDir}
+%    \begin{macrocode}
+          \immediate\openout\outFile\WriteToDir\outFileName\relax
+%    \end{macrocode}
+%    write the preamble to it,
+%    \begin{macrocode}
+          \WritePreamble
+%    \end{macrocode}
+%    process the input file,
+%    \begin{macrocode}
+          \generateFileX
+%    \end{macrocode}
+%    write a postamble
+%    \begin{macrocode}
+          \WritePostamble
+%    \end{macrocode}
+%    and close the output file again.
+%    \begin{macrocode}
+          \immediate\closeout\outFile
+        \fi%
+%    \end{macrocode}
+%    This process is repeated until |\filelist| is exhausted.
+%    \begin{macrocode}
+      \od
+    \endgroup
+%    \end{macrocode}
+%    Maybe the user wants more files to be processed, possibly with
+%    another set of options, so we give him the opportunity.
+%    \begin{macrocode}
+    \Ask\answer{More files to process (y/n)?}%
+    \ifx\y  \answer\MoreFilestrue \else
+    \ifx\yes\answer\MoreFilestrue \else
+%    \end{macrocode}
+%    If he didn't want to process any more files, the switch
+%    |\ifMoreFiles| is set to \meta{false} in order to interrupt the
+%    \meta{while} loop.
+%    \begin{macrocode}
+                   \MoreFilesfalse\fi\fi
+   }}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\AskQuestions}
+% \changes{2.0e}{91/06/01}{Macro added.}
+%    The macro |\AskQuestions| is called by |\interactive| to get
+%    some information from the user concerning the files that need
+%    to be processed.
+%    \begin{macrocode}
+\def\AskQuestions{%
+    \Msg{^^J%
+         ****************************************************}%
+%    \end{macrocode}
+%    We want to know the extension of the input files,
+%    \begin{macrocode}
+    \Ask\infileext{%
+         * First type the extension of your input file(s): \space  *}%
+    \Msg{****************************************************^^J^^J%
+         ****************************************************}%
+%    \end{macrocode}
+%    the extension of the output files,
+%    \begin{macrocode}
+    \Ask\outfileext{%
+         * Now type the extension of your output file(s) \space: *}%
+    \Msg{****************************************************^^J^^J%
+         ****************************************************}%
+%    \end{macrocode}
+%    if options are to be included and
+%    \begin{macrocode}
+    \Ask\Options{%
+       * Now type the name(s) of option(s) to include \space\space: *}%
+    \Msg{****************************************************^^J^^J%
+         ****************************************************^^J%
+       * Finally give the list of input file(s) without \space\space*}%
+%    \end{macrocode}
+%    the name of the input file or a list of names, separated by commas.
+%    \begin{macrocode}
+    \Ask\filelist{%
+         * extension seperated by commas if necessary %
+                                  \space\space\space\space: *}%
+    \Msg{****************************************************^^J}}%
+%    \end{macrocode}
+% \end{macro}
+%
+% \subsection{The main program}
+%    When \TeX\ processes the \ds{} program it displays
+%    a message about the version of the program and its function
+%    on the terminal.
+%    \begin{macrocode}
+\Msg{Utility: `docstrip' \fileversion\space <\filedate>^^J%
+     English documentation <\docdate>}%
+\Msg{^^J%
+     **********************************************************^^J%
+     * This program converts documented macro-files into fast *^^J%
+     * loadable files by stripping off (nearly) all comments! *^^J%
+     **********************************************************^^J}%
+%    \end{macrocode}
+%
+%    First we try to process a batch file.
+%    \begin{macrocode}
+\processbatchFile
+%    \end{macrocode}
+%
+%    When the number of files processed is still zero,
+%    no batch file was specified and the default
+%    batch file was not found, so we try interactive mode.
+%    \begin{macrocode}
+  \ifnum\NumberOfFiles=\z@
+    \interactive
+  \fi
+%    \end{macrocode}
+%    When we're done and statistics are included we provide a statistics
+%    report about the complete run. Then we \verb=\end= the \TeX-run.
+%    \begin{macrocode}
+%<*stats>
+\ReportTotals
+%</stats>
+\end
+%</program>
+%    \end{macrocode}
+%
+%
+% \section{Producing the documentation}
+%
+%    We provide a short driver file that can be extracted by the
+%    \ds{} program using the the conditional `{\sf driver}'.  To
+%    allow the use of {\tt docstrip.doc} as a program (e.g., to strip
+%    off its own comments) we don't use a conditional block, but
+%    rather individual `+' guards. Otherwise, {\tt docstrip.doc}
+%    couldn't be run directly through \TeX{} any longer.
+%    \begin{macrocode}
+%<+driver>\documentstyle[doc]{article}
+%<+driver>
+%<+driver>    \EnableCrossrefs
+%<+driver>%    \DisableCrossrefs    % use \DisableCrossrefs if the
+%<+driver>                          % index is ready
+%<+driver>
+%<+driver>   \RecordChanges
+%<+driver>%   \OnlyDescription
+%<+driver>  \CodelineIndex
+%<+driver>
+%<+driver>   \typeout{Expect some Under- and overfull boxes}
+%<+driver>
+%<+driver>\begin{document}
+%<+driver>  \DocInput{docstrip.doc}
+%<+driver>\end{document}
+%    \end{macrocode}
+%
+% \Finale
+\endinput
+

@@ -31,6 +31,9 @@
 #include "com_err.h"
 #include <string.h>
 #include <stdio.h>
+#ifdef KRB5_KRB4_COMPAT
+#include <kerberosIV/krb.h>
+#endif
 
 extern int optind;
 extern char *optarg;
@@ -45,9 +48,10 @@ main(argc, argv)
     int c;
     krb5_ccache cache = NULL;
     char *cache_name = NULL;
-    int code;
+    int code, v4code;
     int errflg=0;
     int quiet = 0;	
+    int v4 = 1;
     
     retval = krb5_init_context(&kcontext);
     if (retval) {
@@ -64,6 +68,7 @@ main(argc, argv)
 	    quiet = 1;
 	    break;	
 	case 'c':
+	    v4 = 0;	/* Don't do krb4 kdestroy if cache name given. */
 	    if (cache == NULL) {
 		cache_name = optarg;
 		
@@ -102,16 +107,33 @@ main(argc, argv)
     code = krb5_cc_destroy (kcontext, cache);
     if (code != 0) {
 	com_err (argv[0], code, "while destroying cache");
-	if (quiet)
-	    fprintf(stderr, "Ticket cache NOT destroyed!\n");
-	else {
+	if (code != KRB5_FCC_NOFILE) {
+	    if (quiet)
+		fprintf(stderr, "Ticket cache NOT destroyed!\n");
+	    else {
 #ifdef __STDC__
-	    fprintf(stderr, "Ticket cache \aNOT\a destroyed!\n");
+		fprintf(stderr, "Ticket cache \aNOT\a destroyed!\n");
 #else
-	    fprintf(stderr, "Ticket cache \007NOT\007 destroyed!\n");
+		fprintf(stderr, "Ticket cache \007NOT\007 destroyed!\n");
 #endif
+	    }
+	    errflg = 1;
 	}
-	exit (1);
     }
-    exit (0);
+#ifdef KRB5_KRB4_COMPAT
+    if (v4) {
+	v4code = dest_tkt();
+	if (v4code == KSUCCESS && code != 0)
+	    fprintf(stderr, "Kerberos 4 ticket file destroyed.\n");
+	if (v4code != KSUCCESS && v4code != RET_TKFIL) {
+	    if (quiet)
+		fprintf(stderr, "Kerberos 4 ticket file NOT destroyed!\n");
+	    else
+		fprintf(stderr,
+			"Kerberos 4 ticket file \007NOT\007 destroyed!\n");
+	    errflg = 1;
+	}
+    }
+#endif
+    exit (errflg);
 }

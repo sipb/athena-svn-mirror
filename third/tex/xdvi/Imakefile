@@ -3,16 +3,18 @@
  */
 
 XCOMM The following four lines are the most crucial ones.
+#if defined(SparcArchitecture) || defined(SGIArchitecture)
 OSDEFS=-DMSBITFIRST
-OPTIONDEFS=-DUSE_PK -DBUTTONS -DGREY
+#endif
+OPTIONDEFS=-DUSE_PK -DBUTTONS -DGREY -DBDPI=600
 DEFAULT_TEXMF_PATH=/usr/local/tex/texmf
-DEFAULT_FONT_SIZES=$(SIZES300)
+DEFAULT_FONT_SIZES=$(SIZES600)
 
 XCOMM It may also be necessary to change the following.
-DEFAULT_FONT_PATH=.:%S
-DEFAULT_VF_PATH=.:%S
-DEFAULT_FIG_PATH=.:%S
-DEFAULT_HEADER_PATH=.:%S
+DEFAULT_FONT_PATH=.:${USRLIBDIR}/tex/fonts/pk
+DEFAULT_VF_PATH=.:${USRLIBDIR}/tex/fonts/vf
+DEFAULT_FIG_PATH=.:${USRLIBDIR}/tex/macros
+DEFAULT_HEADER_PATH=.:${USRLIBDIR}/tex/ps
 
 /* You may need to uncomment this for Solaris 2.x */
 /* LOCAL_LDFLAGS=-R$(USRLIBDIR) */
@@ -57,7 +59,14 @@ config:
 Makefile.cfg: Imakefile mkconfig
 	./mkconfig imake $(DEFS)
 
-include Makefile.cfg
+VARSRCS= pk.c
+VAROBJS= pk.o
+VARLIBS=
+VARDEPLIBS=
+VARLINT=
+LOCAL_LIBRARIES=$(LOCAL_LIBRARIES_TOOL)
+DEPLIBS=$(DEPLIBS_TOOL)
+LINTLIBS=$(LINTLIBS_TOOL)
 
 SRCS=xdvi.c events.c dvi_init.c dvi_draw.c special.c font_open.c filefind.c \
   vf.c util.c $(VARSRCS)

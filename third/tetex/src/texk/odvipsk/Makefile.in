@@ -60,8 +60,8 @@ install: install-exec
 uninstall: uninstall-exec
 
 install-exec: all
-	$(SHELL) $(top_srcdir)/../mkinstalldirs $(bindir) $(scriptdir)
-	for p in $(programs); do $(INSTALL_LIBTOOL_PROG) $(bindir) $$p; done
+	$(SHELL) $(top_srcdir)/../mkinstalldirs ${DESTDIR}$(bindir) ${DESTDIR}$(scriptdir)
+	for p in $(programs); do $(INSTALL_LIBTOOL_PROG) ${DESTDIR}$(bindir) $$p; done
 uninstall-exec:
 	for p in $(programs); do rm -f $(bindir)/$$p; done
 

@@ -16,8 +16,6 @@ clean-unix::
 	$(RM) kpasswd.o kpasswd
 
 install-all install-kdc install-server install-client install-unix::
-	$(INSTALL_PROGRAM) kpasswd $(DESTDIR)$(CLIENT_BINDIR)/`echo kpasswd|sed '$(transform)'`
-	$(INSTALL_DATA) $(srcdir)/kpasswd.M $(DESTDIR)$(CLIENT_MANDIR)/`echo kpasswd|sed '$(transform)'`.1;
 
 all-windows:: $(OUTPRE)kpasswd.exe
 

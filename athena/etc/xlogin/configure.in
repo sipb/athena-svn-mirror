@@ -1,0 +1,36 @@
+# $Id: configure.in,v 1.5 1999-12-22 17:27:47 danw Exp $
+AC_INIT(xlogin.c)
+
+test -z "$lsbindir" && lsbindir='${sbindir}'
+AC_SUBST(lsbindir)
+
+AC_CANONICAL_HOST
+case $host_os in
+solaris*)
+	AC_DEFINE(SOLARIS)
+	AC_DEFINE(SOLARIS_MAE)
+	;;
+esac
+
+AC_SUBST(HOSTTYPE)
+AC_SUBST(ATHENA_MAJOR_VERSION)
+AC_SUBST(ATHENA_MINOR_VERSION)
+AC_PROG_CC
+AC_PROG_INSTALL
+
+ATHENA_AFS("-lsys -lrx -llwp")
+ATHENA_HESIOD
+ATHENA_KRB4
+ATHENA_KRB5
+
+AC_CHECK_FUNC(login, :, AC_CHECK_LIB(util, login))
+AC_CHECK_FUNC(crypt, :, AC_CHECK_LIB(crypt, crypt))
+
+AC_PATH_XTRA
+
+AC_CHECK_HEADERS(crypt.h util.h shadow.h limits.h utmpx.h)
+
+AC_CHECK_FUNCS(getspnam setlogin login getutxent)
+
+dnl #ifdef __NetBSD__  MACHLIBS =-lcompat
+AC_OUTPUT(Makefile)

@@ -76,27 +76,6 @@ TAGS clean install::
 #
 #BSD 	$(MAKE) -f Makefile.bsd MAKETARGET=$@ $(DIRS)
 
-install::
-	#install default versions of the lpd.conf and lpd.perm files
-
-	f=`echo $(LPD_CONF_PATH) | sed -e 's/:.*//'` ; g=lpd.conf; \
-	if [ -z "$$f" ] ; then f=${admindir}/$$g; fi; \
-	if [ ! -d `dirname $$f` ] ; then ${SRC}/mkinstalldirs `dirname $$f` ; fi; \
-	$(INSTALL) -m 644 $$g $$f.sample; \
-	if [ ! -f "$$f" ] ; then \
-		echo $(INSTALL) -m 644 $(SRC)/$$g $$f; \
-		$(INSTALL) -m 644 $(SRC)/$$g $$f; \
-	fi;
-
-	f=`echo $(LPD_PERMS_PATH) | sed -e 's/:.*//'` ; g=lpd.perms; \
-	if [ -z "$$f" ] ; then f=${admindir}/$$g; fi; \
-	if [ ! -d `dirname $$f` ] ; then ${SRC}/mkinstalldirs `dirname $$f` ; fi; \
-	$(INSTALL) -m 644 $$g $$f.sample; \
-	if [ ! -f "$$f" ] ; then \
-		echo $(INSTALL) -m 644 $(SRC)/$$g $$f; \
-		$(INSTALL) -m 644 $(SRC)/$$g $$f; \
-	fi;
-
 info dvi check:
 
 realclean mostlyclean distclean: clean

@@ -1,0 +1,12 @@
+Name: athena-libfxcl
+Summary: The secure file exchange library
+Copyright: MIT
+Group: System Environment/Libraries
+
+Requires: athena-krb5 athena-hesiod
+
+%description
+The File Exchange Client Library helps C programmers write
+applications which imitate the paper handling done in a classroom.  A
+variety of paper types is supported.
+

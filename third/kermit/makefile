@@ -628,6 +628,8 @@ ALL = $(WERMIT)
 all: $(ALL)
 
 install: $(ALL)
+	mkdir -p $(DESTDIR)$(BINDIR)
+	mkdir -p $(DESTDIR)$(MANDIR)
 	cp wermit $(DESTDIR)$(BINDIR)/kermit
 # The following can fail if the program image was already stripped,
 # for example by the link flags in the makefile entry.
@@ -2845,7 +2847,7 @@ linux:
 	$(MAKE) wermit "CC = gcc" "CC2 = gcc" \
 	"CFLAGS = -O -DPOSIX -DDYNAMIC -DCK_CURSES -DCK_POSIX_SIG \
 	-DBIGBUFOK -DTCPSOCKET -DLINUXFSSTND $(KFLAGS)" \
-	"LNKFLAGS = $(LNKFLAGS)" "LIBS = -lcurses -ltermcap"
+	"LNKFLAGS = $(LNKFLAGS)" "LIBS = -lncurses"
 
 #This version was used for Linux prior to C-Kermit 6.0.192.
 #Now the "Linux File System Standard" is considered standard, ditto TCP/IP.

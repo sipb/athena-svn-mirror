@@ -40,13 +40,9 @@
 # endif
 #endif /* __bsdi__ */
 
-/* blargh */
-#undef  Bool
-#undef  True
-#undef  False
-#define Bool  int
-#define True  1
-#define False 0
+#include <X11/Xlib.h>
+#include <X11/Xresource.h>
+#include "prefs.h"
 
 /* The user information we need to store */
 static char realm[REALM_SZ];
@@ -74,7 +70,7 @@ static char *tk_file;
    We don't use the arguments we're given, though.
  */
 Bool
-kerberos_lock_init (int argc, char **argv, Bool verbose_p)
+kerberos_lock_init (saver_preferences *p)
 {
     int k_errno;
     

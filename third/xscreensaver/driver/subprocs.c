@@ -315,7 +315,7 @@ show_job_list (void)
 
 static void clean_job_list (void);
 
-static struct screenhack_job *
+struct screenhack_job *
 make_job (pid_t pid, const char *cmd)
 {
   struct screenhack_job *job = (struct screenhack_job *) malloc (sizeof(*job));
@@ -599,9 +599,8 @@ describe_dead_child (saver_info *si, pid_t kid, int wait_status)
 	 mention them) if we've just killed the subprocess.  But mention them
 	 if they happen on their own.
        */
-      if (!job ||
-	  (exit_status != 0 &&
-	   (p->verbose_p || job->status != job_killed)))
+      if (exit_status != 0 &&
+	  (!job || (p->verbose_p || job->status != job_killed)))
 	fprintf (stderr,
 		 "%s: child pid %lu (%s) exited abnormally (code %d).\n",
 		 blurb(), (unsigned long) kid, name, exit_status);

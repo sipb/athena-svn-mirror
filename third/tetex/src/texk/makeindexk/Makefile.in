@@ -19,16 +19,16 @@ install: install-exec install-data
 uninstall: uninstall-exec uninstall-data
 
 install-exec: $(programs)
-	$(SHELL) $(top_srcdir)/../mkinstalldirs $(bindir)
-	$(INSTALL_LIBTOOL_PROG) $(bindir) $(program)
-	$(INSTALL_SCRIPT) $(srcdir)/mkindex $(scriptdir)/mkindex
+	$(SHELL) $(top_srcdir)/../mkinstalldirs ${DESTDIR}$(bindir)
+	$(INSTALL_LIBTOOL_PROG) ${DESTDIR}$(bindir) $(program)
+	$(INSTALL_SCRIPT) $(srcdir)/mkindex ${DESTDIR}$(scriptdir)/mkindex
 uninstall-exec:
 	cd $(bindir) && rm -f $(program)
 	cd $(scriptdir) && rm -f mkindex
 
 install-data: makeindex.1
-	$(SHELL) $(top_srcdir)/../mkinstalldirs $(mandir)
-	$(INSTALL_DATA) $(srcdir)/makeindex.1 $(mandir)/makeindex.$(manext)
+	$(SHELL) $(top_srcdir)/../mkinstalldirs ${DESTDIR}$(mandir)
+	$(INSTALL_DATA) $(srcdir)/makeindex.1 ${DESTDIR}$(mandir)/makeindex.$(manext)
 
 uninstall-data:
 

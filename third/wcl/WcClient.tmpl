@@ -29,6 +29,7 @@ DEBUG_LIBRARIES = $(DEBUG_CLIENT_LIBS) $(DEBUG_WCL_LIBS)
 ComplexProgramTarget($(CLIENT))
 
 install:: $(CLASS)
+	$(MKDIRHIER) $(DESTDIR)$(XAPPLOADDIR)
 	$(INSTALL) -c $(INSTAPPFLAGS) $(CLASS) $(DESTDIR)$(XAPPLOADDIR)/$(CLASS)
 
 /* Indigo has busted InstallMultipleDestFlags - it does not create dir!

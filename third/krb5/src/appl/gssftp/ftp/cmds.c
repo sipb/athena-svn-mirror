@@ -168,7 +168,7 @@ setpeer(argc, argv)
 		stru = STRU_F;
 		(void) strcpy(bytename, "8"), bytesize = 8;
 		if (autoauth) {
-			if (do_auth() && autoencrypt) {
+			if (do_auth()) {
  				clevel = PROT_P;
 				setpbsz(1<<20);
 				if (command("PROT P") == COMPLETE)

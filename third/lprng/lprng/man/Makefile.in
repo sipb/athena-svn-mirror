@@ -52,26 +52,26 @@ update:
 # Standard man install target.
 #
 install:
-	-${SRC}/mkinstalldirs $(MAN)/man1 $(MAN)/man5 $(MAN)/man8
-	for i in ${SRC}/*.1; do $(MANINSTCMD) $$i $(MAN)/man1/`basename $$i`$(MANEXT); done
-	for i in ${SRC}/*.5; do $(MANINSTCMD) $$i $(MAN)/man5/`basename $$i`$(MANEXT); done
-	for i in ${SRC}/*.8; do $(MANINSTCMD) $$i $(MAN)/man8/`basename $$i`$(MANEXT); done
+	-${SRC}/mkinstalldirs $(DESTDIR)$(MAN)/man1 $(DESTDIR)$(MAN)/man5 $(DESTDIR)$(MAN)/man8
+	for i in ${SRC}/*.1; do $(MANINSTCMD) $$i $(DESTDIR)$(MAN)/man1/`basename $$i`$(MANEXT); done
+	for i in ${SRC}/*.5; do $(MANINSTCMD) $$i $(DESTDIR)$(MAN)/man5/`basename $$i`$(MANEXT); done
+	for i in ${SRC}/*.8; do $(MANINSTCMD) $$i $(DESTDIR)$(MAN)/man8/`basename $$i`$(MANEXT); done
 
 # Install man pages in compressed form.
 #
 install.zman:
 	for i in ${SRC}/*.1; do compress < $$i >/tmp/_; \
-		 $(MANINSTCMD) /tmp/_ $(MAN)/man1.Z/$$i$(MANEXT); rm -f /tmp/_; done
+		 $(MANINSTCMD) /tmp/_ $(DESTDIR)$(MAN)/man1.Z/$$i$(MANEXT); rm -f /tmp/_; done
 	for i in ${SRC}/*.5; do compress < $$i >/tmp/_; \
-		 $(MANINSTCMD) /tmp/_ $(MAN)/man5.Z/$$i$(MANEXT); rm -f /tmp/_; done
+		 $(MANINSTCMD) /tmp/_ $(DESTDIR)$(MAN)/man5.Z/$$i$(MANEXT); rm -f /tmp/_; done
 	for i in ${SRC}/*.8; do compress < $$i >/tmp/_; \
-		 $(MANINSTCMD) /tmp/_ $(MAN)/man8.Z/$$i$(MANEXT); rm -f /tmp/_; done
+		 $(MANINSTCMD) /tmp/_ $(DESTDIR)$(MAN)/man8.Z/$$i$(MANEXT); rm -f /tmp/_; done
 
 uninstall:
-	for i in *.1; do rm -f $(MAN)/man1/$$i$(MANEXT); done
-	for i in *.5; do rm -f $(MAN)/man5/$$i$(MANEXT); done
-	for i in *.8; do rm -f $(MAN)/man8/$$i$(MANEXT); done
-	
+	for i in *.1; do rm -f $(DESTDIR)$(MAN)/man1/$$i$(MANEXT); done
+	for i in *.5; do rm -f $(DESTDIR)$(MAN)/man5/$$i$(MANEXT); done
+	for i in *.8; do rm -f $(DESTDIR)$(MAN)/man8/$$i$(MANEXT); done
+
 realclean mostlyclean distclean:: clean
 	rm -f Makefile
 

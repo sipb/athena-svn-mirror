@@ -8,7 +8,7 @@
  ***************************************************************************/
 
  static char *const _id =
-"$Id: getqueue.c,v 1.1.1.5 2000-03-31 15:48:00 mwhitson Exp $";
+"$Id: getqueue.c,v 1.8 2000-03-31 16:21:12 mwhitson Exp $";
 
 
 /***************************************************************************
@@ -284,6 +284,7 @@ int Setup_cf_info( const char *dir, struct line_list *cf_line_list,
 			case 'M': Is_set_str_value(&job->info,MAILNAME,s+1); break;
 			case 'P': Is_set_str_value(&job->info,LOGNAME,s+1); break;
 			case 'Q': Is_set_str_value(&job->info,QUEUENAME,s+1); break;
+			case 'Z': Is_set_str_value(&job->info,ZNAME,s+1); break;
 			}
 		}
 	}
@@ -541,6 +542,7 @@ void Get_datafile_info( const char *dir, struct line_list *cf_line_list, struct 
 &START_TIME,
 &SUBSERVER,
 &TRANSFERNAME,
+&ZNAME,
 
  0
 };

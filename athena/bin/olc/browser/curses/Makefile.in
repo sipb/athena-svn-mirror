@@ -1,0 +1,58 @@
+# $Id: Makefile.in,v 2.1 1999-03-06 16:47:22 ghudson Exp $
+#
+# Copyright (C) 1999 by the Massachusetts Institute of Technology.
+# For copying and distribution information, see the file "mit-copyright.h".
+
+SHELL=/bin/sh
+VPATH=@srcdir@
+
+INSTALL=@INSTALL@
+INSTALL_PROGRAM=@INSTALL_PROGRAM@
+srcdir=@srcdir@
+top_srcdir=@top_srcdir@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+bindir=@bindir@
+sbindir=@sbindir@
+
+CC=@CC@
+PURIFY=
+LD=${PURIFY} ${CC}
+DEFS=@DEFS@
+CPPFLAGS=@CPPFLAGS@ -I@top_srcdir@/include
+CFLAGS=@CFLAGS@
+LDFLAGS=@LDFLAGS@
+LIBS=$(LOCAL_LIBS) @CURSES_LIBS@ @HESIOD_LIBS@ @LIBS@
+ALL_CFLAGS=${CPPFLAGS} ${CFLAGS} ${DEFS}
+
+PARSERLIB=${top_srcdir}/clients/parser/libparser.a
+TTYLIB=${top_srcdir}/clients/tty/libtty.a
+CLIENTLIB=${top_srcdir}/clients/lib/libclient.a
+COMMONLIB=${top_srcdir}/common/libcommon.a
+CONFIGLIB=${top_srcdir}/cfgfile/libcfgfile.a
+LOGGERLIB=${top_srcdir}/logger/liblogger.a
+LOCAL_LIBS=$(CONFIGLIB) $(LOGGERLIB)
+
+SRCS=cref.c commands.c display.c cref_utils.c globals.c update.c signal.c
+OBJS=cref.o commands.o display.o cref_utils.o globals.o update.o signal.o
+
+all: olc_browser
+
+olc_browser: $(OBJS)
+	${LD} ${LDFLAGS} $(OBJS) ${LIBS} -o $@
+
+.c.o:
+	${CC} -c ${ALL_CFLAGS} $<
+
+install:
+	${top_srcdir}/mkinstalldirs ${DESTDIR}${bindir}
+	${INSTALL_PROGRAM} olc_browser ${DESTDIR}${bindir}
+
+clean:
+	rm -f $(OBJS) olc_browser
+
+distclean: clean
+	rm -f Makefile
+
+depend.in: Makefile.in
+	makedepend -f Makefile.in ${CPPFLAGS} ${DEFS} *.[ch]

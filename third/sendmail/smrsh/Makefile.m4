@@ -33,6 +33,7 @@ LIBS=	ifdef(`confLIBS', `confLIBS')
 
 # location of smrsh binary (usually /usr/libexec or /usr/etc)
 EBINDIR=${DESTDIR}ifdef(`confEBINDIR', `confEBINDIR', `/usr/libexec')
+ATHEBINDIR=athEBINDIR
 
 # additional .o files needed
 OBJADD=	ifdef(`confOBJADD', `confOBJADD')
@@ -81,14 +82,19 @@ smrsh.${MAN8SRC}: smrsh.8
 install: install-smrsh install-docs
 
 install-smrsh: smrsh
-	${INSTALL} -c -o ${BINOWN} -g ${BINGRP} -m ${BINMODE} smrsh ${EBINDIR}
+	mkdir -p ${DESTDIR}${ATHEBINDIR}
+	mkdir -p ${EBINDIR}
+	${INSTALL} -c -o ${BINOWN} -g ${BINGRP} -m ${BINMODE} smrsh ${DESTDIR}${ATHEBINDIR}
+	rm -f ${EBINDIR}/smrsh
+	ln -s ${ATHEBINDIR}/smrsh ${EBINDIR}/smrsh
 
 install-docs: smrsh.${MAN8SRC}
 ifdef(`confNO_MAN_INSTALL', `dnl',
-`	${INSTALL} -c -o ${MANOWN} -g ${MANGRP} -m ${MANMODE} smrsh.${MAN8SRC} ${MAN8}/smrsh.${MAN8EXT}')
+`	mkdir -p ${MAN8}
+	${INSTALL} -c -o ${MANOWN} -g ${MANGRP} -m ${MANMODE} smrsh.${MAN8SRC} ${MAN8}/smrsh.${MAN8EXT}')
 
 clean:
-	rm -f ${OBJS} smrsh smrsh.${MAN8SRC}
+	rm -f ${OBJS} smrsh
 
 ################  Dependency scripts
 include(confBUILDTOOLSDIR/M4/depend/ifdef(`confDEPEND_TYPE', `confDEPEND_TYPE',

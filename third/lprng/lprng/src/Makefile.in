@@ -7,7 +7,7 @@
 #
 ###########################################################################
 # MODULE: Makefile
-# $Id: Makefile.in,v 1.1.1.5 2000-03-31 15:47:48 mwhitson Exp $
+# $Id: Makefile.in,v 1.15 2000-03-31 16:21:11 mwhitson Exp $
 ###########################################################################
 #
 # WARNING: This is a makefile for GNU Make or when modified by BSD Make
@@ -61,15 +61,15 @@ prefix=@prefix@
 # exec prefix
 exec_prefix=@exec_prefix@
 # for binaries
-bindir=@bindir@
+bindir=$(DESTDIR)@bindir@
 # for admin type of binaries
-sbindir=@sbindir@
+sbindir=$(DESTDIR)@sbindir@
 # for the filters
-libexecdir=@libexecdir@
+libexecdir=$(DESTDIR)@libexecdir@
 # for the configuration stuff
-sysconfdir=@sysconfdir@
+sysconfdir=$(DESTDIR)@sysconfdir@
 # locale
-localedir = $(prefix)/@DATADIRNAME@/locale
+localedir = $(DESTDIR)$(prefix)/@DATADIRNAME@/locale
 
 LPD_DIR=	@LPD_DIR@
 FILTER_DIR=	@FILTER_DIR@
@@ -105,7 +105,7 @@ STRIP=@STRIP@
 #  communicate with the existing Kerberos 4 print servers at MIT.
 #
 #  If you still want Kerberos 4,  then uncomment the following line
-# CFLAGS:= $(CFLAGS) -DMIT_KERBEROS4
+CFLAGS:= $(CFLAGS) -DMIT_KERBEROS4
 
 #### ****** TESTING AND SECURITY LOOPHOLE ******************************
 # Define GETENV to allow the LPD_CONFIG environment
@@ -410,7 +410,7 @@ install: all
 	${INSTALLCMD} ${STRIP} -m $(ROOT_PERMS) lpr ${bindir}
 	${INSTALLCMD} ${STRIP} -m $(ROOT_PERMS) lpstat ${bindir}
 	${INSTALLCMD} ${STRIP} -m $(ROOT_PERMS) lpc ${sbindir}
-	${INSTALLCMD} ${STRIP} -m $(ROOT_PERMS) lpd ${LPD_DIR}
+	${INSTALLCMD} ${STRIP} -m $(NORM_PERMS) lpd ${LPD_DIR}
 	${INSTALLCMD} ${STRIP} -m $(NORM_PERMS) lpf ${FILTER_DIR}
 	${INSTALLCMD} ${STRIP} -m $(NORM_PERMS) lpbanner ${FILTER_DIR}
 	${INSTALLCMD}    -m $(NORM_PERMS) pclbanner ${FILTER_DIR}

@@ -8,7 +8,7 @@
  ***************************************************************************/
 
  static char *const _id =
-"$Id: lpr.c,v 1.1.1.3 2000-03-31 15:47:54 mwhitson Exp $";
+"$Id: lpr.c,v 1.9 2000-03-31 16:21:14 mwhitson Exp $";
 
 
 #include "lp.h"
@@ -274,9 +274,9 @@ int main(int argc, char *argv[], char *envp[])
 
 
  char LPR_optstr[]    /* LPR options */
- = "1:2:3:4:#:AC:D:F:J:K:NP:QR:T:U:VZ:bcdfghi:lkm:nprstvw:" ;
+ = "1:2:3:4:#:A:C:D:F:J:K:NP:QR:T:U:VZ:bcdfghi:lkm:nprstvw:z" ;
  char LPR_bsd_optstr[]    /* LPR options */
- = "1:2:3:4:#:AC:D:F:J:K:NP:QR:T:U:VZ:bcdfghi:lkmnprstvw:" ;
+ = "1:2:3:4:#:A:C:D:F:J:K:NP:QR:T:U:VZ:bcdfghi:lkmnprstvw:z" ;
  char LP_optstr[]    /* LP options */
  = 	"cmprswd:D:f:H:n:o:P:q:S:t:T:y:";
 
@@ -284,6 +284,44 @@ void Get_parms(int argc, char *argv[] )
 {
 	int option, i;
 	char *name, *s;
+
+	/* If LPROPT environment variable is set, prepend those
+	 * options to the command line.
+	 */
+	s = getenv( "LPROPT" );
+	if( s ){
+		char *p, *opts, **nargv;
+		int n;
+
+		n = 0;
+		p = opts = safestrdup(s,__FILE__,__LINE__);
+		while( *p ){
+			n++;
+			while( *p && !isspace(*p) )
+				p++;
+			while( isspace(*p) )
+				p++;
+		}
+
+		nargv = malloc_or_die((n + argc + 1) * sizeof(char *),
+				      __FILE__,__LINE__);
+		nargv[0] = argv[0];
+		for( n = 0, p = opts; *p; ){
+			nargv[++n] = p;
+			while( *p && !isspace(*p) )
+				p++;
+			if( *p ){
+				*p++ = '\0';
+				while( isspace(*p) )
+					p++;
+			}
+		}
+		for( i = 1; i < argc; i++ )
+			nargv[n + i] = argv[i];
+
+		argv = nargv;
+		argc += n;
+	}
 
 	if( argv[0] && (name = safestrrchr( argv[0], '/' )) ) {
 		++name;
@@ -386,6 +424,9 @@ void Get_parms(int argc, char *argv[] )
 		case '4':
 		    Check_str_dup( option, &Font4_JOB, Optarg, M_FONT);
 			break;
+		case 'A':
+		    Check_str_dup( option, &Auth_JOB, Optarg, M_DEFAULT);
+		    break;
 		case 'C':
 		    Check_str_dup( option, &Classname_JOB, Optarg,
 			   M_CLASSNAME);
@@ -499,6 +540,9 @@ void Get_parms(int argc, char *argv[] )
 		    break;
 		case 'w':
 		    Check_int_dup( option, &Pwidth, Optarg, 0);
+		    break;
+		case 'z':
+		    Zephyr = 1;
 		    break;
 
 		/* Throw a sop to the whiners - let them wipe themselves out... */
@@ -785,6 +829,26 @@ int Make_job( struct job *job )
 	}
 	if( Force_queuename_DYN ){
 		Set_str_value(&job->info,QUEUENAME,Force_queuename_DYN);
+	}
+
+	/* Figure out how to specify '-z' option */
+	if( Zephyr ){
+		if( Extended_notification_DYN ){
+			static char m[M_MAILNAME+1];
+
+			plp_snprintf( m, M_MAILNAME + 1, "zephyr%%%s",
+				      Logname_DYN );
+			Mailname_JOB = m;
+		} else if( Athena_Z_compat_DYN || KA_DYN ){
+			Zopts_JOB = Logname_DYN;
+		}
+	}
+
+	if( Auth_JOB ){
+		/* Edit our copy of the printcap record: Fix_auth
+		 * will update Auth_DYN from it later.
+		 */
+		Set_str_value(&PC_entry_line_list, "auth", Auth_JOB);
 	}
 
 	get_job_number(job);

@@ -1,0 +1,30 @@
+#!/bin/sh
+# $Id: Xstartup,v 1.1 2000-04-25 13:51:14 rbasch Exp $
+
+# Xstartup
+#
+# This program is run as root by xlogin after the user is verified,
+# with $USER set to the name of the user logging in.  It is used to
+# claim audio and video devices for the user logging in on the
+# console.
+
+cd /dev
+
+# All of the devices below are normally mode 666 except for hdsp0control,
+# which is 600.
+chown $USER dms hdsp/hdsp0r* hdsp/hdsp0master hdsp/hdsp0events
+chmod   600 dms hdsp/hdsp0r* hdsp/hdsp0master hdsp/hdsp0events
+
+# The video devices are processor-dependent.
+case `uname -m` in
+IP22)
+  chown $USER vino ev1 mgv
+  chmod   600 vino ev1 mgv
+  ;;
+IP32)
+  chown $USER vice vicedms vicedbg mvp
+  chmod   600 vice vicedms vicedbg mvp
+  ;;
+esac
+
+exit 0

@@ -1,0 +1,42 @@
+.\" $Id: config_console.1,v 1.1 1999-10-30 11:27:28 kcr Exp $
+.TH CONFIG_CONSOLE 1 "16 November 1990"
+.ds ]W MIT Project Athena
+.SH NAME
+config_console, show_console, hide_console \- reconfigure X console window
+.SH SYNOPSIS
+.nf
+config_console [-hide] [-show] [-config]
+hide_console [-hide] [-show] [-config]
+show_console [-hide] [-show] [-config]
+.fi
+.SH DESCRIPTION
+This program allows the user to manipulate the console window.  If
+invoked as \fBconfig_console\fR or given the \fB-config\fR argument,
+it will reconfigure the console.  This causes the console to re-read
+its resources, re-grab the logical console for the workstation, and
+hide itself.  To change the default behavior of the console, load your
+console resources into the X server with ``xrdb -merge
+\fIfilename\fR'', then invoke \fIconfig_console\fR.  See console(8)
+for a list of resources that are honored.
+
+If the program is called \fBhide_console\fR or it is invoked with the
+\fB-hide\fR argument, instead of reconfiguring the console it will
+make the window disappear until the next time it has something to
+display.
+
+If the program is called \fBshow_console\fR or it is invoked with the
+\fB-show\fR argument, instead of reconfiguring the console it will
+make the window reappear on the screen.
+
+.SH FILES
+/var/athena/console.pid
+
+.SH "SEE ALSO"
+console(8), dm(8), xrdb(1)
+
+.SH AUTHOR
+Mark Rosenstein, MIT Project Athena
+.br
+Copyright (c) 1990 Massachusetts Institute of Technology
+
+

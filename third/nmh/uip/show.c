@@ -2,7 +2,7 @@
 /*
  * show.c -- show/list messages
  *
- * $Id: show.c,v 1.1.1.1 1999-02-07 18:14:17 danw Exp $
+ * $Id: show.c,v 1.3 1999-10-08 22:14:32 danw Exp $
  */
 
 #include <h/mh.h>
@@ -181,6 +181,13 @@ usage:
     }
     procp = vecp;
 
+    /* If showing multiple messages, default to -nocheckmime.
+     * (But just decrement it rather than setting to 0, so user
+     * can specify -checkmime to override.
+     */
+    if (msgp > 1)
+      checkmime--;
+
     if (!context_find ("path"))
 	free (path ("./", TFOLDER));
 
@@ -313,6 +320,14 @@ go_to_it: ;
 	}
 	vec[vecp++] = "-show";
 	vec[vecp] = NULL;
+    }
+
+    /* If the "proc" is "mhshow", add "-file" if showing file or draft.
+     */
+    if (strcmp (r1bindex (proc, '/'), "mhshow") == 0 && (draftsw || file) ) {
+       vec[vecp] = vec[vecp - 1];
+       vec[vecp - 1] = "-file";
+       vec[++vecp] = NULL;
     }
 
     /*

@@ -8,7 +8,7 @@
  ***************************************************************************/
 
  static char *const _id =
-"$Id: sendauth.c,v 1.1.1.4 2000-03-31 15:48:04 mwhitson Exp $";
+"$Id: sendauth.c,v 1.7 2000-05-11 22:01:45 rbasch Exp $";
 
 #include "lp.h"
 #include "lpd.h"
@@ -22,9 +22,7 @@
 #include "krb5_auth.h"
 #include "fileopen.h"
 #include "child.h"
-#if 0
 #include "gethostinfo.h"
-#endif
 /**** ENDINCLUDE ****/
 
 /***************************************************************************
@@ -289,18 +287,11 @@ int Krb5_send( int *sock, int transfer_timeout, char *tempfile,
 			goto error;
 		}
 		close(fd);
-		if( !(principal = Find_str_value(info,"forward_principal",Value_sep))){
-			plp_snprintf( error, errlen, "no server keytab file" );
-			status = JFAIL;
-			goto error;
-		}
+		principal = Find_str_value(info,"forward_principal",
+					   Value_sep);
 	} else {
-		if( !(principal = Find_str_value(info,"server_principal",Value_sep))
-		 && !(principal = Find_str_value(info,"id",Value_sep)) ){
-			plp_snprintf( error, errlen, "no server keytab file" );
-			status = JFAIL;
-			goto error;
-		}
+		if( !(principal = Find_str_value(info,"server_principal",Value_sep)))
+			principal = Find_str_value(info,"id",Value_sep);
 	}
 	service = Find_str_value(info, "service", Value_sep );
 	life = Find_str_value(info, "life", Value_sep );
@@ -738,11 +729,12 @@ int Send_krb4_auth( struct job *job, int *sock, char **real_host,
 	errmsg[0] = 0;
 	status = 0;
 
-	sinaddr->sin_family = Host_IP.h_addrtype;
-	memmove( &sinaddr->sin_addr, Host_IP.h_addr_list.list[0],
+	sinaddr.sin_family = Host_IP.h_addrtype;
+	memmove( &sinaddr.sin_addr, Host_IP.h_addr_list.list[0],
 		Host_IP.h_length );
 
-	*sock = Link_open_list( RemoteHost_DYN, real_host, 0, connect_timeout, &sinaddr );
+	*sock = Link_open_list( RemoteHost_DYN, real_host, 0, connect_timeout, 
+				(struct sockaddr *)&sinaddr );
 	if( *sock < 0 ){
 		/* this is to fix up the error message */
 		return(JSUCC);
@@ -754,19 +746,19 @@ int Send_krb4_auth( struct job *job, int *sock, char **real_host,
 	}
 	if( !safestrchr( host, '.' ) ){
 		if( !(host = Find_fqdn(&LookupHost_IP, host)) ){
-			setstatus(logjob, "cannot find FQDN for '%s'", host );
+			setstatus(job, "cannot find FQDN for '%s'", host );
 			return JFAIL;
 		}
 	}
 	DEBUG1("Send_krb4_auth: FQND host '%s'", host );
-	setstatus(logjob, "sending krb4 auth to %s@%s",
+	setstatus(job, "sending krb4 auth to %s@%s",
 		RemotePrinter_DYN, host);
 	plp_snprintf(line, sizeof(line), "%c%s\n", REQ_K4AUTH, RemotePrinter_DYN);
-	status = Link_send(host, sock, transfer_timeout, line,
+	status = Link_send(host, sock, connect_timeout, line,
 		strlen(line), &ack);
 	DEBUG1("Send_krb4_auth: krb4 auth request ACK status %d, ack %d", status, ack );
 	if( status ){
-		setstatus(logjob, "Printer %s@%s does not support krb4 authentication",
+		setstatus(job, "Printer %s@%s does not support krb4 authentication",
 			RemotePrinter_DYN, host);
 		return JFAIL;
 	}
@@ -776,23 +768,23 @@ int Send_krb4_auth( struct job *job, int *sock, char **real_host,
 	DEBUG1("Send_krb4_auth: krb_sendauth status %d, '%s'",
 		status, krb4_err_str(status) );
 	if( status != KSUCCESS ){
-		setstatus(logjob, "krb4 authentication failed to %s@%s - %s",
+		setstatus(job, "krb4 authentication failed to %s@%s - %s",
 			RemotePrinter_DYN, host, krb4_err_str(status));
 		return JFAIL;
 	}
 	buffer[0] = 0;
-	i = Read_fd_len_timeout(transfer_timeout, *sock, buffer, 1);
+	i = Read_fd_len_timeout(connect_timeout, *sock, buffer, 1);
 	if (i <= 0 || Alarm_timed_out){
 		status = LINK_TRANSFER_FAIL;
 	} else if(buffer[0]){
 		status = LINK_ACK_FAIL;
 	}
 	if(status){
-		setstatus(logjob,
+		setstatus(job,
 			"krb4 authentication failed to %s@%s",
 			RemotePrinter_DYN, host);
 	} else {
-		setstatus(logjob,
+		setstatus(job,
 			"krb4 authentication succeeded to %s@%s",
 			RemotePrinter_DYN, host);
 	}
@@ -857,7 +849,8 @@ struct security *Fix_send_auth( char *name, struct line_list *info,
 		key = "F";
 		from = Find_str_value(info,ID,Value_sep);
 		if(!from)from = Find_str_value(info,"server_principal",Value_sep);
-		if( from == 0 ){
+		if( from == 0 && safestrcmp(tag, "kerberos")
+		    && safestrcmp(tag, "none") ){
 			plp_snprintf(error, errlen,
 			"Send_auth_transfer: '%s' security missing '%s_id' info", tag, tag );
 			goto error;
@@ -870,7 +863,8 @@ struct security *Fix_send_auth( char *name, struct line_list *info,
 			client = (char *)Perm_check.auth_client_id;
 		}
 		if( client == 0 
-			&& !(client = Find_str_value(info,"default_client_name",Value_sep)) ){
+			&& !(client = Find_str_value(info,"default_client_name",Value_sep))
+			&& safestrcmp(tag, "none") ){
 			plp_snprintf(error, errlen,
 			"Send_auth_transfer: security '%s' missing authenticated client", tag );
 			goto error;
@@ -878,7 +872,8 @@ struct security *Fix_send_auth( char *name, struct line_list *info,
 		Set_str_value(info,CLIENT,client);
 		destination = Find_str_value(info,FORWARD_ID,Value_sep);
 		if(!destination)destination = Find_str_value(info,"forward_principal",Value_sep);
-		if( destination == 0 ){
+		if( destination == 0 && safestrcmp(tag, "kerberos")
+		    && safestrcmp(tag, "none") ){
 			plp_snprintf(error, errlen,
 			"Send_auth_transfer: '%s' security missing '%s_forward_id' info", tag, tag );
 			goto error;
@@ -892,7 +887,8 @@ struct security *Fix_send_auth( char *name, struct line_list *info,
 		Set_str_value(info,CLIENT,client);
 		destination = Find_str_value(info,ID,Value_sep);
 		if(!destination)destination = Find_str_value(info,"server_principal",Value_sep);
-		if( destination == 0 ){
+		if( destination == 0 && safestrcmp(tag, "kerberos")
+		    && safestrcmp(tag, "none") ){
 			plp_snprintf(error, errlen,
 			"Send_auth_transfer: '%s' security missing '%s_id' info", tag, tag );
 			goto error;
@@ -953,6 +949,7 @@ void Put_in_auth( int tempfd, const char *key, char *value )
 #endif
 	{ "pgp",       "pgp",      0,           Pgp_send },
 	{ "user",      "user",     0,           User_send },
+	{ "none",      "none",     0,           0 },
 #if defined(USER_SEND)
  USER_SEND
 #endif

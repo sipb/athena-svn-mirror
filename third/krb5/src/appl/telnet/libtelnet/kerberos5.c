@@ -69,6 +69,7 @@
 #include <netdb.h>
 #include <ctype.h>
 #include <syslog.h>
+#include <signal.h>
 
 #ifdef HAVE_STDLIB_H
 #include <stdlib.h>
@@ -85,8 +86,18 @@ extern char *malloc();
 #include "auth.h"
 #include "misc.h"
 
+#include <al.h>
+int k5_haveauth = 0;
+#ifdef SIGSYS
+void try_afscall(int (*func)(void));
+#else
+#define try_afscall(func) func()
+#endif /* SIGSYS */
+int setpag(), ktc_ForgetAllTokens();
+
 extern auth_debug_mode;
 extern int net;
+extern int al_local_acct;
 
 #ifdef	FORWARD
 int forward_flags = 0;  /* Flags get set in telnet/main.c on -f and -F */
@@ -697,15 +708,58 @@ kerberos5_status(ap, name, level)
 	char *name;
 	int level;
 {
+	int ok = 0;
+
 	if (level < AUTH_USER)
 		return(level);
 
-	if (UserNameRequested &&
-	    krb5_kuserok(telnet_context, ticket->enc_part2->client, 
-			 UserNameRequested))
-	{
+	if (UserNameRequested) {
+		int status, *warnings;
+		char *errmem, *err;
+
+		if (!al_local_acct) {
+			if (k5_haveauth)
+				try_afscall(setpag);
+			status = al_acct_create(UserNameRequested, NULL,
+						getpid(), k5_haveauth, 0,
+						&warnings);
+			if (status == AL_WARNINGS) {
+				int i;
+				for (i = 0; warnings[i]; i++) {
+					net_write("Warning: ", 9);
+					err = al_strerror(warnings[i],
+							  &errmem);
+					net_write(err, strlen(err));
+					al_free_errmem(errmem);
+					net_write("\r\n", 2);
+				}
+				free(warnings);
+			} else if (status != AL_SUCCESS) {
+				err = al_strerror(status, &errmem);
+				net_write(err, strlen(err));
+				al_free_errmem(errmem);
+				net_write("\r\n", 2);
+			}
+		}
+
+		ok = krb5_kuserok(telnet_context, ticket->enc_part2->client, 
+				  UserNameRequested);
+
+		if (!al_local_acct) {
+			al_acct_revert(UserNameRequested, getpid());
+			if (k5_haveauth) {
+				try_afscall(ktc_ForgetAllTokens);
+				dest_tkt();
+			}
+		}
+	}
+
+	if (ok) {
 		strcpy(name, UserNameRequested);
-		return(AUTH_VALID);
+		if (k5_haveauth)
+			return(AUTH_CRED);
+		else
+			return(AUTH_VALID);
 	} else
 		return(AUTH_USER);
 }
@@ -854,4 +908,17 @@ cleanup:
 }
 #endif	/* FORWARD */
 
+#ifdef SIGSYS
+void try_afscall(int (*func)(void))
+{
+    struct sigaction sa, osa;
+
+    sigemptyset(&sa.sa_mask);
+    sa.sa_flags = 0;
+    sa.sa_handler = SIG_IGN;
+    sigaction(SIGSYS, &sa, &osa);
+    func();
+    sigaction(SIGSYS, &osa, NULL);
+}
+#endif /* SIGSYS */
 #endif /* KRB5 */

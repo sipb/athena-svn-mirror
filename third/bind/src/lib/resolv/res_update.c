@@ -1,9 +1,9 @@
 #if !defined(lint) && !defined(SABER)
-static char rcsid[] = "$Id: res_update.c,v 1.1.1.3 1999-03-16 19:46:34 danw Exp $";
+static char rcsid[] = "$Id: res_update.c,v 1.2 2000-04-22 04:42:24 ghudson Exp $";
 #endif /* not lint */
 
 /*
- * Copyright (c) 1996-1999 by Internet Software Consortium.
+ * Copyright (c) 1996 by Internet Software Consortium.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -25,15 +25,12 @@ static char rcsid[] = "$Id: res_update.c,v 1.1.1.3 1999-03-16 19:46:34 danw Exp 
  */
 
 #include "port_before.h"
-
 #include <sys/param.h>
 #include <sys/socket.h>
 #include <sys/time.h>
-
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <arpa/nameser.h>
-
 #include <errno.h>
 #include <limits.h>
 #include <netdb.h>
@@ -41,12 +38,7 @@ static char rcsid[] = "$Id: res_update.c,v 1.1.1.3 1999-03-16 19:46:34 danw Exp 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
 #include "port_after.h"
-
-/* Options. Leave them on. */
-#define DEBUG
-#include "res_debug.h"
 
 /*
  * Separate a linked list of records into groups so that all records
@@ -79,8 +71,9 @@ struct zonegrp {
 	struct zonegrp *z_next;
 };
 
+
 int
-res_nupdate(res_state statp, ns_updrec *rrecp_in) {
+res_update(ns_updrec *rrecp_in) {
 	ns_updrec *rrecp, *tmprrecp;
 	u_char buf[PACKETSZ], answer[PACKETSZ], packet[2*PACKETSZ];
 	char name[MAXDNAME], zname[MAXDNAME], primary[MAXDNAME],
@@ -94,6 +87,11 @@ res_nupdate(res_state statp, ns_updrec *rrecp_in) {
 	    newgroup, done, myzone, seen_before, numzones = 0;
 	u_int16_t dlen, class, qclass, type, qtype;
 	u_int32_t ttl;
+
+	if ((_res.options & RES_INIT) == 0 && res_init() == -1) {
+		h_errno = NETDB_INTERNAL;
+		return (-1);
+	}
 
 	for (rrecp = rrecp_in; rrecp; rrecp = rrecp->r_next) {
 		dname = rrecp->r_dname;
@@ -154,19 +152,17 @@ res_nupdate(res_state statp, ns_updrec *rrecp_in) {
 		}
 		if (done)
 		    break;
-		n = res_nmkquery(statp, QUERY, dname, qclass, qtype, NULL,
-				 0, NULL, buf, sizeof buf);
+		n = res_mkquery(QUERY, dname, qclass, qtype, NULL,
+				0, NULL, buf, sizeof buf);
 		if (n <= 0) {
- 			Dprint(statp->options & RES_DEBUG,
-			       (stderr, "res_update: mkquery failed\n"));
+		    fprintf(stderr, "res_update: mkquery failed\n");
 		    return (n);
 		}
-		n = res_nsend(statp, buf, n, answer, sizeof answer);
+		n = res_send(buf, n, answer, sizeof answer);
 		if (n < 0) {
- 			Dprint(statp->options & RES_DEBUG,
-			       (stderr, "res_update: send error for %s\n",
-				rrecp->r_dname));
-			return (n);
+		    fprintf(stderr, "res_update: send error for %s\n",
+			    rrecp->r_dname);
+		    return (n);
 		}
 		if (n < HFIXEDSZ)
 			return (-1);
@@ -212,8 +208,7 @@ res_nupdate(res_state statp, ns_updrec *rrecp_in) {
 			GETSHORT(type, cp);
 			GETSHORT(class, cp);
 			if (type != T_SOA || class != qclass) {
-			    Dprint(statp->options & RES_DEBUG,
-				   (stderr, "unknown answer\n"));
+			    fprintf(stderr, "unknown answer\n");
 			    return (-1);
 			}
 			myzone = 0;
@@ -260,16 +255,14 @@ res_nupdate(res_state statp, ns_updrec *rrecp_in) {
 			if (strcasecmp(dname, zname) != 0 ||
 			    type != T_SOA ||
 			    class != rrecp->r_class) {
-				Dprint(statp->options & RES_DEBUG,
-				       (stderr, "unknown answer\n"));
+				fprintf(stderr, "unknown answer\n");
 				return (-1);
 			}
 			/* FALLTHROUGH */
 		    } else {
-			Dprint(statp->options & RES_DEBUG,
-			       (stderr,
-		       "unknown response: ans=%d, auth=%d, add=%d, rcode=%d\n",
-				ancount, nscount, arcount, hp->rcode));
+			fprintf(stderr,
+		"unknown response: ans=%d, auth=%d, add=%d, rcode=%d\n",
+				ancount, nscount, arcount, hp->rcode);
 			return (-1);
 		    }
 		    if (cp + INT32SZ + INT16SZ > eom)
@@ -369,10 +362,9 @@ res_nupdate(res_state statp, ns_updrec *rrecp_in) {
 			    nscount = ancount;
 			/* fallthrough to process NS and A records */
 		    } else {
-			Dprint(statp->options & RES_DEBUG,
-			       (stderr,
-    "cannot determine nameservers for %s: ans=%d, auth=%d, add=%d, rcode=%d\n",
-				dname, ancount, nscount, arcount, hp->rcode));
+			fprintf(stderr, "cannot determine nameservers for %s:\
+ans=%d, auth=%d, add=%d, rcode=%d\n",
+				dname, ancount, nscount, arcount, hp->rcode);
 			return (-1);
 		    }
 		} else if (qtype == T_A) {
@@ -381,10 +373,9 @@ res_nupdate(res_state statp, ns_updrec *rrecp_in) {
 			ancount = nscount = 0;
 			/* fallthrough to process A records */
 		    } else {
-			Dprint(statp->options & RES_DEBUG,
-			       (stderr,
-	"cannot determine address for %s: ans=%d, auth=%d, add=%d, rcode=%d\n",
-				dname, ancount, nscount, arcount, hp->rcode));
+			fprintf(stderr, "cannot determine address for %s:\
+ans=%d, auth=%d, add=%d, rcode=%d\n",
+				dname, ancount, nscount, arcount, hp->rcode);
 			return (-1);
 		    }
 		}
@@ -455,30 +446,27 @@ res_nupdate(res_state statp, ns_updrec *rrecp_in) {
  	    } /* while */
 	}
 
+	_res.options |= RES_DEBUG;
 	for (zptr = zgrp_start; zptr; zptr = zptr->z_next) {
 
 		/* append zone section */
 		rrecp = res_mkupdrec(ns_s_zn, zptr->z_origin,
 				     zptr->z_class, ns_t_soa, 0);
 		if (rrecp == NULL) {
-			Dprint(statp->options & RES_DEBUG,
-			       (stderr, "saverrec error\n"));
+			fprintf(stderr, "saverrec error\n");
 			fflush(stderr);
 			return (-1);
 		}
 		rrecp->r_grpnext = zptr->z_rr;
 		zptr->z_rr = rrecp;
 
-		n = res_nmkupdate(statp, zptr->z_rr, packet, sizeof packet);
+		n = res_mkupdate(zptr->z_rr, packet, sizeof packet);
 		if (n < 0) {
-			Dprint(statp->options & RES_DEBUG,
-			       (stderr, "res_mkupdate error\n"));
+			fprintf(stderr, "res_mkupdate error\n");
 			fflush(stderr);
 			return (-1);
 		} else
-			Dprint(statp->options & RES_DEBUG,
-			       (stdout,
-				"res_mkupdate: packet size = %d\n", n));
+			fprintf(stdout, "res_mkupdate: packet size = %d\n", n);
 
 		/*
 		 * Override the list of NS records from res_init() with
@@ -504,18 +492,15 @@ res_nupdate(res_state statp, ns_updrec *rrecp_in) {
 			}
 		}
 		for (i = 0; i < MAXNS; i++) {
-			struct sockaddr_in *sin = &statp->nsaddr_list[i];
-
-			sin->sin_addr = zptr->z_ns[i].nsaddr1;
-			sin->sin_family = AF_INET;
-			sin->sin_port = htons(NAMESERVER_PORT);
+			_res.nsaddr_list[i].sin_addr = zptr->z_ns[i].nsaddr1;
+			_res.nsaddr_list[i].sin_family = AF_INET;
+			_res.nsaddr_list[i].sin_port = htons(NAMESERVER_PORT);
 		}
-		statp->nscount = (zptr->z_nscount < MAXNS) ? 
+		_res.nscount = (zptr->z_nscount < MAXNS) ? 
 					zptr->z_nscount : MAXNS;
-		n = res_nsend(statp, packet, n, answer, sizeof(answer));
+		n = res_send(packet, n, answer, sizeof(answer));
 		if (n < 0) {
-			Dprint(statp->options & RES_DEBUG,
-			       (stderr, "res_send: send error, n=%d\n", n));
+			fprintf(stderr, "res_send: send error, n=%d\n", n);
 			break;
 		} else
 			numzones++;

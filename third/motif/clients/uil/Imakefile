@@ -5,7 +5,7 @@ XCOMM
 XCOMM 
 XCOMM Motif Release 1.2.3
 XCOMM 
-XCOMM   $RCSfile: Imakefile,v $ $Revision: 1.1.1.1 $ $Date: 1999-01-30 03:16:37 $
+XCOMM   $RCSfile: Imakefile,v $ $Revision: 1.2 $ $Date: 1999-01-30 03:37:50 $
 
 #define DoNormalLib NormalLibUil
 #define DoSharedLib SharedLibUil
@@ -53,6 +53,7 @@ LibraryObjectRule()
 MComplexProgramTarget(uil,$(LOCAL_LIBRARIES),NullParameter)
 
 SpecialLibObjectRule(UilDB.o,$(ICONFIGFILES),-DLIBDIR=\"$(LIBDIR)\" -DINCDIR=\"$(INCDIR)\")
+UilParser.o: UilParser.c
 
 #if DoSharedLib
 #if DoNormalLib

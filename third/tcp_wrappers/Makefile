@@ -143,8 +143,8 @@ freebsd:
 
 linux:
 	@make REAL_DAEMON_DIR=$(REAL_DAEMON_DIR) STYLE=$(STYLE) \
-	LIBS= RANLIB=ranlib ARFLAGS=rv AUX_OBJ=setenv.o \
-	NETGROUP= TLI= EXTRA_CFLAGS="-DBROKEN_SO_LINGER" all
+	LIBS= RANLIB=ranlib ARFLAGS=rv AUX_OBJ= NETGROUP= TLI= \
+	EXTRA_CFLAGS="-DBROKEN_SO_LINGER -DSYS_ERRLIST_DEFINED" all
 
 # This is good for many SYSV+BSD hybrids with NIS, probably also for HP-UX 7.x.
 hpux hpux8 hpux9 hpux10:
@@ -229,7 +229,7 @@ tandem:
 
 # Amdahl UTS 2.1.5 (Richard.Richmond@bridge.bst.bls.com)
 uts215:
-	@make REAL_DAEMON_DIR=$(REAL_DAEMON_DIR) STYLE=$(STYLE) \   
+	@make REAL_DAEMON_DIR=$(REAL_DAEMON_DIR) STYLE=$(STYLE) \
 	LIBS="-lsocket" RANLIB=echo \
 	ARFLAGS=rv AUX_OBJ=setenv.o NETGROUP=-DNO_NETGROUP TLI= all
 
@@ -610,7 +610,7 @@ TABLES	= -DHOSTS_DENY=\"/etc/hosts.deny\" -DHOSTS_ALLOW=\"/etc/hosts.allow\"
 # Paranoid mode implies hostname lookup. In order to disable hostname
 # lookups altogether, see the next section.
 
-PARANOID= -DPARANOID
+#PARANOID= -DPARANOID
 
 ########################################
 # Optional: turning off hostname lookups

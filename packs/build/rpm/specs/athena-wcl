@@ -1,0 +1,9 @@
+Name: athena-wcl
+Summary: The Widget Creation Library, for Athena
+Copyright: David Smyth
+Group: User Interface/X
+
+Requires: athena-motif
+
+%description
+The Widget Creation Library, for Athena

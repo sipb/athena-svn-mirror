@@ -200,7 +200,7 @@ SUBDIR_MAKEFILES = lib-src/Makefile man/Makefile src/Makefile oldXMenu/Makefile 
 # avoid nuking an existing dir file, so we don't do that here;
 # instead, we have written out explicit code in the `install' targets.
 COPYDIR = ${srcdir}/etc ${srcdir}/lisp
-COPYDESTS = ${etcdir} ${lispdir}
+COPYDESTS = ${DESTDIR}${etcdir} ${DESTDIR}${lispdir}
 
 all: ${SUBDIR}
 
@@ -236,7 +236,7 @@ ${SUBDIR}: ${SUBDIR_MAKEFILES} FRC
 	  CC='${CC}' CFLAGS='${CFLAGS}' CPPFLAGS='${CPPFLAGS}' \
 	  LDFLAGS='${LDFLAGS}' MAKE='${MAKE}'
 
-blessmail: ${SUBDIR_MAKEFILES} src FRC
+blessmail: FRC
 	cd lib-src; $(MAKE) maybe-blessmail $(MFLAGS) \
 	  MAKE='${MAKE}' archlibdir='$(archlibdir)'
 
@@ -283,8 +283,11 @@ leim/Makefile: $(srcdir)/leim/Makefile.in config.status
 ## source exists and is distinct from the destination.
 ### We do install-arch-indep first because
 ### the executable needs the Lisp files and DOC file to work properly.
-install: all install-arch-indep install-arch-dep install-leim blessmail
-	@true
+install: install-arch-indep install-arch-dep install-leim blessmail
+	${INSTALL_DATA} site-lisp/clu-mode.el \
+		${DESTDIR}${datadir}/emacs/site-lisp
+	rm -f ${DESTDIR}${bindir}/movemail
+	ln -s ${archlibdir}/movemail ${DESTDIR}${bindir}/movemail
 
 ### Install the executables that were compiled specifically for this machine.
 ### It would be nice to do something for a parallel make
@@ -295,10 +298,7 @@ install-arch-dep: mkdir
 	    exec_prefix=${exec_prefix} bindir=${bindir} \
 	    libexecdir=${libexecdir} archlibdir=${archlibdir} \
 	    INSTALL_STRIP=${INSTALL_STRIP})
-	${INSTALL_PROGRAM} $(INSTALL_STRIP) src/emacs ${bindir}/emacs-${version}
-	-chmod 1755  ${bindir}/emacs-${version}
-	rm -f ${bindir}/$(EMACS)
-	-ln ${bindir}/emacs-${version} ${bindir}/$(EMACS)
+	${INSTALL_PROGRAM} $(INSTALL_STRIP) src/emacs ${DESTDIR}${bindir}/emacs
 
 ### Install the files that are machine-independent.
 ### Most of them come straight from the distribution;
@@ -336,57 +336,58 @@ install-arch-indep: mkdir
 		rm -f  $${subdir}/[mM]akefile* ; \
 		rm -f  $${subdir}/ChangeLog* ; \
 		rm -f  $${subdir}/dired.todo ; \
+		rm -f  $${subdir}/.rconf ; \
 	      done) ; \
 	done
-	-rm -f ${lispdir}/subdirs.el
-	$(srcdir)/update-subdirs ${lispdir}
-	if [ -f ${datadir}/emacs/${version}/site-lisp/subdirs.el ]; \
+	-rm -f ${DESTDIR}${lispdir}/subdirs.el
+	$(srcdir)/update-subdirs ${DESTDIR}${lispdir}
+	if [ -f ${DESTDIR}${datadir}/emacs/${version}/site-lisp/subdirs.el ]; \
 	then true; \
 	else \
 	  (echo "(if (fboundp 'normal-top-level-add-subdirs-to-load-path)"; \
 	   echo "    (normal-top-level-add-subdirs-to-load-path))") \
-	    > ${datadir}/emacs/${version}/site-lisp/subdirs.el; \
+	    > ${DESTDIR}${datadir}/emacs/${version}/site-lisp/subdirs.el; \
 	fi
-	chmod a+r ${datadir}/emacs/${version}/site-lisp/subdirs.el
-	-if [ -f ${datadir}/emacs/site-lisp/subdirs.el ]; \
+	chmod a+r ${DESTDIR}${datadir}/emacs/${version}/site-lisp/subdirs.el
+	-if [ -f ${DESTDIR}${datadir}/emacs/site-lisp/subdirs.el ]; \
 	then true; \
 	else \
 	  (echo "(if (fboundp 'normal-top-level-add-subdirs-to-load-path)"; \
 	   echo "    (normal-top-level-add-subdirs-to-load-path))") \
-	    > ${datadir}/emacs/site-lisp/subdirs.el; \
+	    > ${DESTDIR}${datadir}/emacs/site-lisp/subdirs.el; \
 	fi
-	-chmod a+r ${datadir}/emacs/site-lisp/subdirs.el
-	if [ `(cd ./etc; /bin/pwd)` != `(cd ${docdir}; /bin/pwd)` ]; \
+	-chmod a+r ${DESTDIR}${datadir}/emacs/site-lisp/subdirs.el
+	if [ `(cd ./etc; /bin/pwd)` != `(cd ${DESTDIR}${docdir}; /bin/pwd)` ]; \
 	then \
 	   echo "Copying etc/DOC-* to ${docdir} ..." ; \
 	   (cd ./etc; tar -cf - DOC*) \
-	     |(cd ${docdir}; umask 0; tar -xvf - && cat > /dev/null); \
-	   (cd $(docdir); chmod a+r DOC*; rm DOC); \
+	     |(cd ${DESTDIR}${docdir}; umask 0; tar -xvf - && cat > /dev/null); \
+	   (cd ${DESTDIR}$(docdir); chmod a+r DOC*; rm DOC); \
 	else true; fi
 	if [ -r ./lisp ] \
 	   && [ -r ./lisp/simple.el ] \
-	   && [ x`(cd ./lisp; /bin/pwd)` != x`(cd ${lispdir}; /bin/pwd)` ] \
+	   && [ x`(cd ./lisp; /bin/pwd)` != x`(cd ${DESTDIR}${lispdir}; /bin/pwd)` ] \
 	   && [ x`(cd ${srcdir}/lisp; /bin/pwd)` != x`(cd ./lisp; /bin/pwd)` ]; \
 	then \
 	   echo "Copying lisp/*.el and lisp/*.elc to ${lispdir} ..." ; \
 	   (cd lisp; tar -cf - *.el *.elc) \
-	     |(cd ${lispdir}; umask 0; tar -xvf - && cat > /dev/null); \
+	     |(cd ${DESTDIR}${lispdir}; umask 0; tar -xvf - && cat > /dev/null); \
 	else true; fi
 	thisdir=`/bin/pwd`; \
-	if [ `(cd ${srcdir}/info && /bin/pwd)` != `(cd ${infodir} && /bin/pwd)` ]; \
+	if [ `(cd ${srcdir}/info && /bin/pwd)` != `(cd ${DESTDIR}${infodir} && /bin/pwd)` ]; \
 	then \
-	  (cd ${infodir};  \
+	  (cd ${DESTDIR}${infodir};  \
 	   if [ -f dir ]; then true; \
 	   else	\
 	     (cd $${thisdir}; \
-	      ${INSTALL_DATA} ${srcdir}/info/dir ${infodir}/dir; \
-	      chmod a+r ${infodir}/dir); \
+	      ${INSTALL_DATA} ${srcdir}/info/dir ${DESTDIR}${infodir}/dir; \
+	      chmod a+r ${DESTDIR}${infodir}/dir); \
 	   fi; \
 	   cd ${srcdir}/info ; \
 	   for f in ccmode* cl* customize* dired-x* ediff* emacs* forms* gnus* info* message* mh-e* reftex* sc* vip* widget*; do \
 	     (cd $${thisdir}; \
-	      ${INSTALL_DATA} ${srcdir}/info/$$f ${infodir}/$$f; \
-	      chmod a+r ${infodir}/$$f); \
+	      ${INSTALL_DATA} ${srcdir}/info/$$f ${DESTDIR}${infodir}/$$f; \
+	      chmod a+r ${DESTDIR}${infodir}/$$f); \
 	   done); \
 	else true; fi
 	-thisdir=`/bin/pwd`; \
@@ -402,8 +403,8 @@ install-arch-indep: mkdir
 	cd ${srcdir}/etc; \
 	for page in emacs etags ctags ; do \
 	  (cd $${thisdir}; \
-	   ${INSTALL_DATA} ${srcdir}/etc/$${page}.1 ${man1dir}/$${page}${manext}; \
-	   chmod a+r ${man1dir}/$${page}${manext}); \
+	   ${INSTALL_DATA} ${srcdir}/etc/$${page}.1 ${DESTDIR}${man1dir}/$${page}${manext}; \
+	   chmod a+r ${DESTDIR}${man1dir}/$${page}${manext}); \
 	done
 
 ### Install LEIM files.  Although they are machine-independent, we
@@ -422,11 +423,12 @@ install-strip:
 ### /usr/local/lib/emacs/19.0/mips-dec-ultrix4.2), we use mkinstalldirs
 ### instead of mkdir.  Not all systems' mkdir programs have the `-p' flag.
 mkdir: FRC
-	$(srcdir)/mkinstalldirs ${COPYDESTS} ${infodir} ${man1dir} \
-	  ${bindir} ${datadir} ${docdir} ${libexecdir} \
-	  ${datadir}/emacs/site-lisp \
-	  ${datadir}/emacs/${version}/site-lisp \
-	  `echo ${locallisppath} | sed 's/:/ /g'`
+	$(srcdir)/mkinstalldirs ${COPYDESTS} ${DESTDIR}${infodir} \
+	  ${DESTDIR}${man1dir} ${DESTDIR}${bindir} ${DESTDIR}${datadir} \
+	  ${DESTDIR}${docdir} ${DESTDIR}${libexecdir} \
+	  ${DESTDIR}${datadir}/emacs/site-lisp \
+	  ${DESTDIR}${datadir}/emacs/${version}/site-lisp \
+	  `echo ${DESTDIR}${locallisppath} | sed 's,:, ${DESTDIR},g'`
 
 ### Delete all the installed files that the `install' target would
 ### create (but not the noninstalled files such as `make all' would
@@ -438,15 +440,15 @@ uninstall:
 	 $(MAKE) $(MFLAGS) uninstall			\
 	    prefix=${prefix} exec_prefix=${exec_prefix}	\
 	    bindir=${bindir} libexecdir=${libexecdir} archlibdir=${archlibdir})
-	for dir in ${lispdir} ${etcdir} ; do 		\
+	for dir in ${DESTDIR}${lispdir} ${DESTDIR}${etcdir} ; do 		\
 	  if [ -d $${dir} ]; then			\
 	    case `(cd $${dir} ; /bin/pwd)` in		\
 	      `(cd ${srcdir} ; /bin/pwd)`* ) ;;		\
 	      * ) rm -rf $${dir} ;;			\
 	    esac ;					\
 	    case $${dir} in				\
-	      ${datadir}/emacs/${version}/* )		\
-	        rm -rf ${datadir}/emacs/${version}	\
+	      ${DESTDIR}${datadir}/emacs/${version}/* )		\
+	        rm -rf ${DESTDIR}${datadir}/emacs/${version}	\
 	      ;;					\
 	    esac ;					\
 	  fi ;						\

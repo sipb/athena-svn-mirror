@@ -8,7 +8,7 @@
  ***************************************************************************/
 
  static char *const _id =
-"$Id: sendmail.c,v 1.1.1.3 2000-03-31 15:47:59 mwhitson Exp $";
+"$Id: sendmail.c,v 1.9 2000-03-31 16:21:14 mwhitson Exp $";
 
 #include "lp.h"
 #include "errorcodes.h"
@@ -28,10 +28,14 @@
 void Sendmail_to_user( int retval, struct job *job )
 {
 	char buffer[LARGEBUFFER];
-	int in[2], out[2], pid, n, len;
-	char *id, *mailname, *s;
+	int in[2], out[2], pid, n, len, longoutput = 1;
+	char *id, *mailname, *s, *process;
 	plp_status_t status;
 	struct line_list files;
+
+	/* Don't notify if we're just forwarding it along. */
+	if (retval == JSUCC && Bounce_queue_dest_DYN)
+	  return;
 
 	/*
 	 * check to see if the user really wanted
@@ -41,14 +45,56 @@ void Sendmail_to_user( int retval, struct job *job )
 	id = Find_str_value(&job->info,IDENTIFIER,Value_sep);
 	if(!id) id = Find_str_value(&job->info,TRANSFERNAME,Value_sep);
 	mailname = Find_str_value(&job->info,MAILNAME,Value_sep);
-	DEBUG2("Sendmail_to_user: MAILNAME '%s' sendmail '%s'", mailname, Sendmail_DYN );
-	if( mailname == 0 || safestrchr( mailname, '%' ) ){
-		mailname = 0;
-		if( retval != JSUCC ){
-			mailname = Mail_operator_on_error_DYN;
+
+	if( mailname == 0 && Athena_Z_compat_DYN ){
+		char *logname, *zname;
+
+		zname = Find_str_value(&job->info,ZNAME,Value_sep);
+		logname = Find_str_value(&job->info,LOGNAME,Value_sep);
+		
+		if( zname && logname && !strcmp(zname, logname) ){
+			mailname = malloc_or_die(8 + strlen(zname),
+						 __FILE__,__LINE__);
+			sprintf(mailname, "zephyr%%%s", zname);
 		}
 	}
-	if( !mailname || !Sendmail_DYN ) return;
+
+	DEBUG2("Sendmail_to_user: MAILNAME '%s' sendmail '%s'", mailname, Sendmail_DYN );
+	if( mailname == 0 ){
+		if( retval != JSUCC ){
+			if ((mailname = Mail_operator_on_error_DYN) == 0) return;
+		} else
+			return;
+	}
+
+	if( !strncmp( mailname, "zephyr%", 7 ) && Zwrite_DYN ){
+		static char zbuf[SMALLBUFFER];
+		char *p;
+
+		mailname += 7;
+
+		/* Make sure printer and user names are sane */
+		for( p = Printer_DYN; *p; p++ ){
+			if( !isalnum(*p) && *p != '_' && *p != '-' )
+				return;
+		}
+		for( p = mailname; *p; p++ ){
+			if( !isalnum(*p) && *p != '_' && *p != '-' )
+				return;
+		}
+
+		if( plp_snprintf( zbuf, sizeof(zbuf),
+			"%s -n -q -d -l -s %s %s",
+			Zwrite_DYN, Printer_DYN,
+			mailname ) >= SMALLBUFFER - 1 )
+			logerr_die( LOG_ERR, "buffer overrun sending zephyr" );
+		process = zbuf;
+		longoutput = 0;
+	} else if( Sendmail_DYN )
+		process = Sendmail_DYN;
+	else
+		return;
+
 	DEBUG2("Sendmail_to_user: using '%s'", mailname );
 	if( pipe(in) == -1 || pipe(out) == -1 ){
 		logerr_die( LOG_ERR, _("Sendmail_to_user: pipe failed") );
@@ -59,32 +105,36 @@ void Sendmail_to_user( int retval, struct job *job )
 	files.list[files.count++] = Cast_int_to_voidstar(in[0]);
 	files.list[files.count++] = Cast_int_to_voidstar(out[1]);
 	files.list[files.count++] = Cast_int_to_voidstar(out[1]);
-	pid = Make_passthrough( Sendmail_DYN, 0, &files, job, 0 );
+	pid = Make_passthrough( process, 0, &files, job, 0 );
 	files.count = 0;
 	Free_line_list(&files);
 
 	close(in[0]);
 	close(out[1]);
 
-	plp_snprintf( buffer, sizeof(buffer),
-		"To: %s\n", mailname );
-	if( retval != JSUCC && Mail_operator_on_error_DYN
-		&& mailname != Mail_operator_on_error_DYN  ){
+	if( longoutput ){
+		plp_snprintf( buffer, sizeof(buffer),
+			"To: %s\n", mailname );
+		if( retval != JSUCC && Mail_operator_on_error_DYN
+			&& mailname != Mail_operator_on_error_DYN  ){
+			len = strlen(buffer);
+			plp_snprintf(buffer+len,sizeof(buffer)-len,
+				"CC: %s\n", Mail_operator_on_error_DYN );
+		}
 		len = strlen(buffer);
 		plp_snprintf(buffer+len,sizeof(buffer)-len,
-			"CC: %s\n", Mail_operator_on_error_DYN );
-	}
-	len = strlen(buffer);
-	plp_snprintf(buffer+len,sizeof(buffer)-len,
-		"From: %s@%s\n",
-		Mail_from_DYN ? Mail_from_DYN : Printer_DYN, FQDNHost_FQDN );
-	len = strlen(buffer);
-	plp_snprintf(buffer+len,sizeof(buffer)-len,
-		"Subject: %s@%s job %s\n\n",
-		Printer_DYN, FQDNHost_FQDN, id );
+			"From: %s@%s\n",
+			Mail_from_DYN ? Mail_from_DYN : Printer_DYN,
+			FQDNHost_FQDN );
+		len = strlen(buffer);
+		plp_snprintf(buffer+len,sizeof(buffer)-len,
+			"Subject: %s@%s job %s\n\n",
+			Printer_DYN, FQDNHost_FQDN, id );
+		len = strlen(buffer);
+	} else
+		len = 0;
 
 	/* now do the message */
-	len = strlen(buffer);
 	plp_snprintf(buffer+len,sizeof(buffer)-len,
 		_("printer %s job %s"), Printer_DYN, id );
 
@@ -107,26 +157,21 @@ void Sendmail_to_user( int retval, struct job *job )
 
 	default:
 		plp_snprintf(buffer+len,sizeof(buffer)-len,
-		_(" died a horrible death.\n"));
+		_(" failed. Make sure that\nthe printer is turned on and has a working network connection.\n"));
 		break;
 	}
 
-	/*
-	 * get the last status of the spooler
-	 */
-	if( (s = Get_file_image( Spool_dir_DYN, Queue_status_file_DYN, Max_status_size_DYN )) ){
-		len = strlen(buffer);
-		plp_snprintf(buffer+len,sizeof(buffer)-len, "\nStatus:\n\n%s", s);
-		if(s) free(s); s = 0;
+	if( longoutput ){
+		/*
+		 * get the last status of the spooler
+		 */
+		if( (s = Get_file_image( Spool_dir_DYN, Queue_status_file_DYN, Max_status_size_DYN )) ){
+			len = strlen(buffer);
+			plp_snprintf(buffer+len,sizeof(buffer)-len, "\nStatus:\n\n%s", s);
+			if(s) free(s); s = 0;
+		}
 	}
 
-	if( Status_file_DYN && (s = Get_file_image( Spool_dir_DYN,
-		Status_file_DYN, Max_status_size_DYN )) ){
-		len = strlen(buffer);
-		plp_snprintf(buffer+len,sizeof(buffer)-len, "\nFilter Status:\n\n%s", s);
-		if(s) free(s); s = 0;
-	}
-	
 	Write_fd_str( in[1], buffer );
 	close( in[1] );
 	buffer[0] = 0;

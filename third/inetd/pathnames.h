@@ -35,7 +35,5 @@
  *	from: @(#)pathnames.h	8.1 (Berkeley) 6/6/93
  */
 
-#include <paths.h>
-
-#define	_PATH_INETDCONF	"/etc/inetd.conf"
-#define _PATH_INETDPID	"/var/run/inetd.pid"
+#define	_PATH_INETDCONF	"/etc/athena/inetd.conf"
+#define _PATH_INETDPID	"/var/athena/inetd.pid"

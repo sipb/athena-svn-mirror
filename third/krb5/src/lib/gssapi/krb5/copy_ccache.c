@@ -1,6 +1,6 @@
 #include "gssapiP_krb5.h"
 
-GSS_DLLIMP OM_uint32 KRB5_CALLCONV 
+OM_uint32
 gss_krb5_copy_ccache(minor_status, cred_handle, out_ccache)
      OM_uint32 *minor_status;
      gss_cred_id_t cred_handle;
@@ -13,11 +13,6 @@ gss_krb5_copy_ccache(minor_status, cred_handle, out_ccache)
    krb5_error_code code;
    krb5_context context;
 
-   /* validate the cred handle */
-   stat = krb5_gss_validate_cred(minor_status, cred_handle);
-   if (stat)
-       return(stat);
-   
    k5creds = (krb5_gss_cred_id_t) cred_handle;
    if (k5creds->usage == GSS_C_ACCEPT) {
        *minor_status = (OM_uint32) G_BAD_USAGE;

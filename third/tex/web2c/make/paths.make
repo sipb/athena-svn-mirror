@@ -42,17 +42,17 @@ mandir = @mandir@/man$(manext)
 # Note that if you make changes below, you will have to make the
 # corresponding changes to texmf.in or texmf.cnf yourself.
 
-# The root of the main tree.
-texmf = @texmfmain@
+# The root of the main tree.  (Local change: only for tex, not mf.)
+texmf = $(datadir)/tex
 
 # The directory used by varfonts.
 vartexfonts = /var/tmp/texfonts
 
 # Regular input files.
-texinputdir = $(texmf)/tex
-mfinputdir = $(texmf)/metafont
-mpinputdir = $(texmf)/metapost
-mftinputdir = $(texmf)/mft
+texinputdir = $(texmf)/macros
+mfinputdir = $(datadir)/mf/macros
+mpinputdir = $(datadir)/mf/metapost
+mftinputdir = $(datadir)/mf/mft
 
 # dvips's epsf.tex, rotate.tex, etc. get installed here;
 # ditto for dvilj's fonts support.
@@ -72,8 +72,8 @@ memdir = $(fmtdir)
 
 # Pool files.
 texpooldir = $(web2cdir)
-mfpooldir = $(texpooldir)
-mppooldir = $(texpooldir)
+mfpooldir = $(datadir)/mf
+mppooldir = $(datadir)/mf
 
 # Where the .map files from fontname are installed.
 fontnamedir = $(texmf)/fontname

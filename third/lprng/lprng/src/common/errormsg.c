@@ -8,7 +8,7 @@
  ***************************************************************************/
 
  static char *const _id =
-"$Id: errormsg.c,v 1.1.1.4 2000-03-31 15:48:02 mwhitson Exp $";
+"$Id: errormsg.c,v 1.3 2000-03-31 16:21:12 mwhitson Exp $";
 
 
 #include "lp.h"
@@ -181,9 +181,7 @@ const char * Errormsg ( int err )
 	stamp_buf[0] = 0;
 
 	if( Is_server || DEBUGL1 ){
-		if( kind > LOG_INFO ){
-			use_syslog(kind, log_buf);
-		}
+		use_syslog(kind, log_buf);
 		n = strlen(stamp_buf); s = stamp_buf+n; n = sizeof(stamp_buf)-n;
 		(void) plp_snprintf( s, n, "%s", Time_str(0,0) );
 		if (ShortHost_FQDN ) {

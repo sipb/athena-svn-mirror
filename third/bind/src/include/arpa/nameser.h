@@ -32,7 +32,7 @@
  */
 
 /*
- * Copyright (c) 1996-1999 by Internet Software Consortium.
+ * Copyright (c) 1996 by Internet Software Consortium.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -49,7 +49,7 @@
  */
 
 /*
- *	$Id: nameser.h,v 1.1.1.3 1999-03-16 19:49:08 danw Exp $
+ *	$Id: nameser.h,v 1.2 2000-04-22 04:40:25 ghudson Exp $
  */
 
 #ifndef _ARPA_NAMESER_H_
@@ -206,12 +206,7 @@ typedef	enum __ns_rcode {
 	ns_r_nxrrset = 8,	/* RRset does not exist */
 	ns_r_notauth = 9,	/* Not authoritative for zone */
 	ns_r_notzone = 10,	/* Zone of record different from zone section */
-	ns_r_max = 11,
-	/* The following are TSIG extended errors */
-	ns_r_badsig = 16,
-	ns_r_badkey = 17,
-	ns_r_badtime = 18,
-	ns_r_badid = 19
+	ns_r_max = 11
 } ns_rcode;
 
 /* BIND_UPDATE */
@@ -244,40 +239,9 @@ struct ns_updrec {
 typedef struct ns_updrec ns_updrec;
 
 /*
- * This structure is used for TSIG authenticated messages
- */
-struct ns_tsig_key {
-        char name[NS_MAXDNAME], alg[NS_MAXDNAME];
-        unsigned char *data;
-        int len;
-};
-typedef struct ns_tsig_key ns_tsig_key;
-
-/*
- * This structure is used for TSIG authenticated TCP messages
- */
-struct ns_tcp_tsig_state {
-	int counter;
-	struct dst_key *key;
-	void *ctx;
-	unsigned char sig[NS_PACKETSZ];
-	int siglen;
-};
-typedef struct ns_tcp_tsig_state ns_tcp_tsig_state;
-
-#define NS_TSIG_FUDGE 300
-#define NS_TSIG_TCP_COUNT 100
-#define NS_TSIG_ALG_HMAC_MD5 "HMAC-MD5.SIG-ALG.REG.INT"
-
-#define NS_TSIG_ERROR_NO_TSIG -10
-#define NS_TSIG_ERROR_NO_SPACE -11
-#define NS_TSIG_ERROR_FORMERR -12
-
-/*
  * Currently defined type values for resources and queries.
  */
 typedef enum __ns_type {
-	ns_t_invalid = 0,	/* Cookie. */
 	ns_t_a = 1,		/* Host address. */
 	ns_t_ns = 2,		/* Authoritative server. */
 	ns_t_md = 3,		/* Mail destination. */
@@ -313,31 +277,21 @@ typedef enum __ns_type {
 	ns_t_srv = 33,		/* Server Selection. */
 	ns_t_atma = 34,		/* ATM Address */
 	ns_t_naptr = 35,	/* Naming Authority PoinTeR */
-	ns_t_kx = 36,		/* Key Exchange */
-	ns_t_cert = 37,		/* Certification record */
 	/* Query type values which do not appear in resource records. */
-	ns_t_tsig = 250,	/* Transaction signature. */
 	ns_t_ixfr = 251,	/* Incremental zone transfer. */
 	ns_t_axfr = 252,	/* Transfer zone of authority. */
 	ns_t_mailb = 253,	/* Transfer mailbox records. */
 	ns_t_maila = 254,	/* Transfer mail agent records. */
 	ns_t_any = 255,		/* Wildcard match. */
-	ns_t_zxfr = 256,	/* BIND-specific, nonstandard. */
 	ns_t_max = 65536
 } ns_type;
-
-#define ns_t_rr_p(t) ((t) < 128) /* Can this type appear in an RR? */
-#define ns_t_udp_p(t) ((t) != ns_t_axfr && (t) != ns_t_zxfr)
-#define ns_t_xfr_p(t) ((t) == ns_t_axfr || (t) == ns_t_ixfr || \
-		       (t) == ns_t_zxfr)
 
 /*
  * Values for class field
  */
 typedef enum __ns_class {
-	ns_c_invalid = 0,	/* Cookie. */
 	ns_c_in = 1,		/* Internet. */
-	ns_c_2 = 2,		/* unallocated/unsupported. */
+				/* Class 2 unallocated/unsupported. */
 	ns_c_chaos = 3,		/* MIT Chaos-net. */
 	ns_c_hs = 4,		/* MIT Hesiod. */
 	/* Query class values which do not appear in resource records */
@@ -345,21 +299,6 @@ typedef enum __ns_class {
 	ns_c_any = 255,		/* Wildcard match. */
 	ns_c_max = 65536
 } ns_class;
-
-typedef enum __ns_key_types {
-	ns_kt_rsa = 1,		/* key type RSA/MD5 */
-	ns_kt_dh  = 2,		/* Diffie Hellman */
-	ns_kt_dsa = 3,		/* Digital Signature Standard (MANDETORY) */
-	ns_kt_private = 254	/* Private key type starts with OID */
-} ns_key_types;
-
-typedef enum __ns_cert_types {
-	cert_t_pkix = 1,	/* PKIX (X.509v3) */
-	cert_t_spki = 2,	/* SPKI */
-	cert_t_pgp  = 3,	/* PGP */
-	cert_t_url  = 253,	/* URL private type */
-	cert_t_oid  = 254	/* OID private type */
-} ns_cert_types;
 
 /*
  * Flags field of the KEY RR rdata
@@ -372,46 +311,27 @@ typedef enum __ns_cert_types {
 /* The type bits can also be interpreted independently, as single bits: */
 #define	NS_KEY_NO_AUTH		0x8000	/* Key unusable for authentication */
 #define	NS_KEY_NO_CONF		0x4000	/* Key unusable for confidentiality */
-#define	NS_KEY_RESERVED2	0x2000	/* Security is *mandatory* if bit=0 */
-#define	NS_KEY_EXTENDED_FLAGS	0x1000	/* reserved - must be zero */
+#define	NS_KEY_EXPERIMENTAL	0x2000	/* Security is *mandatory* if bit=0 */
+#define	NS_KEY_RESERVED3	0x1000  /* reserved - must be zero */
 #define	NS_KEY_RESERVED4	0x0800  /* reserved - must be zero */
-#define	NS_KEY_RESERVED5	0x0400  /* reserved - must be zero */
-#define	NS_KEY_NAME_TYPE	0x0300	/* these bits determine the type */
-#define	NS_KEY_NAME_USER	0x0000	/* key is assoc. with user */
-#define	NS_KEY_NAME_ENTITY	0x0200	/* key is assoc. with entity eg host */
-#define	NS_KEY_NAME_ZONE	0x0100	/* key is zone key */
-#define	NS_KEY_NAME_RESERVED	0x0300	/* reserved meaning */
-#define	NS_KEY_RESERVED8	0x0080  /* reserved - must be zero */
-#define	NS_KEY_RESERVED9	0x0040  /* reserved - must be zero */
+#define	NS_KEY_USERACCOUNT	0x0400	/* key is assoc. with a user acct */
+#define	NS_KEY_ENTITY		0x0200	/* key is assoc. with entity eg host */
+#define	NS_KEY_ZONEKEY		0x0100	/* key is zone key */
+#define	NS_KEY_IPSEC		0x0080  /* key is for IPSEC (host or user)*/
+#define	NS_KEY_EMAIL		0x0040  /* key is for email (MIME security) */
 #define	NS_KEY_RESERVED10	0x0020  /* reserved - must be zero */
 #define	NS_KEY_RESERVED11	0x0010  /* reserved - must be zero */
 #define	NS_KEY_SIGNATORYMASK	0x000F	/* key can sign RR's of same name */
 
-#define	NS_KEY_RESERVED_BITMASK ( NS_KEY_RESERVED2 | \
+#define	NS_KEY_RESERVED_BITMASK ( NS_KEY_RESERVED3 | \
 				  NS_KEY_RESERVED4 | \
-				  NS_KEY_RESERVED5 | \
-				  NS_KEY_RESERVED8 | \
-				  NS_KEY_RESERVED9 | \
 				  NS_KEY_RESERVED10 | \
 				  NS_KEY_RESERVED11 )
 
-#define NS_KEY_RESERVED_BITMASK2 0xFFFF /* no bits defined here */
-
 /* The Algorithm field of the KEY and SIG RR's is an integer, {1..254} */
 #define	NS_ALG_MD5RSA		1	/* MD5 with RSA */
-#define	NS_ALG_DH               2	/* Diffie Hellman KEY */
-#define	NS_ALG_DSA              3	/* DSA KEY */
-#define	NS_ALG_DSS              NS_ALG_DSA
 #define	NS_ALG_EXPIRE_ONLY	253	/* No alg, no security */
 #define	NS_ALG_PRIVATE_OID	254	/* Key begins with OID giving alg */
-
-/* Protocol values  */
-/* value 0 is reserved */
-#define NS_KEY_PROT_TLS         1
-#define NS_KEY_PROT_EMAIL       2
-#define NS_KEY_PROT_DNSSEC      3
-#define NS_KEY_PROT_IPSEC       4
-#define NS_KEY_PROT_ANY		255
 
 /* Signatures */
 #define	NS_MD5RSA_MIN_BITS	 512	/* Size of a mod or exp in bits */
@@ -420,12 +340,6 @@ typedef enum __ns_cert_types {
 #define	NS_MD5RSA_MAX_BYTES	((NS_MD5RSA_MAX_BITS+7/8)*2+3)
 	/* Max length of text sig block */
 #define	NS_MD5RSA_MAX_BASE64	(((NS_MD5RSA_MAX_BYTES+2)/3)*4)
-#define NS_MD5RSA_MIN_SIZE	((NS_MD5RSA_MIN_BITS+7)/8)
-#define NS_MD5RSA_MAX_SIZE	((NS_MD5RSA_MAX_BITS+7)/8)
-
-#define NS_DSA_SIG_SIZE         41
-#define NS_DSA_MIN_SIZE         213
-#define NS_DSA_MAX_BYTES        405
 
 /* Offsets into SIG record rdata to find various values */
 #define	NS_SIG_TYPE	0	/* Type flags */
@@ -442,7 +356,7 @@ typedef enum __ns_cert_types {
 #define	NS_NXT_BIT_SET(  n,p) (p[(n)/NS_NXT_BITS] |=  (0x80>>((n)%NS_NXT_BITS)))
 #define	NS_NXT_BIT_CLEAR(n,p) (p[(n)/NS_NXT_BITS] &= ~(0x80>>((n)%NS_NXT_BITS)))
 #define	NS_NXT_BIT_ISSET(n,p) (p[(n)/NS_NXT_BITS] &   (0x80>>((n)%NS_NXT_BITS)))
-#define NS_NXT_MAX 127
+
 
 /*
  * Inline versions of get/put short/long.  Pointer is advanced.
@@ -491,27 +405,17 @@ typedef enum __ns_cert_types {
 #define ns_put16		__ns_put16
 #define ns_put32		__ns_put32
 #define ns_initparse		__ns_initparse
-#define ns_skiprr		__ns_skiprr
 #define ns_parserr		__ns_parserr
 #define	ns_sprintrr		__ns_sprintrr
 #define	ns_sprintrrf		__ns_sprintrrf
 #define	ns_format_ttl		__ns_format_ttl
 #define	ns_parse_ttl		__ns_parse_ttl
-#define	ns_name_ntol		__ns_name_ntol
 #define	ns_name_ntop		__ns_name_ntop
 #define	ns_name_pton		__ns_name_pton
 #define	ns_name_unpack		__ns_name_unpack
 #define	ns_name_pack		__ns_name_pack
 #define	ns_name_compress	__ns_name_compress
 #define	ns_name_uncompress	__ns_name_uncompress
-#define	ns_name_skip		__ns_name_skip
-#define	ns_sign			__ns_sign
-#define	ns_sign_tcp		__ns_sign_tcp
-#define	ns_sign_tcp_init	__ns_sign_tcp_init
-#define ns_find_tsig		__ns_find_tsig
-#define	ns_verify		__ns_verify
-#define	ns_verify_tcp		__ns_verify_tcp
-#define	ns_verify_tcp_init	__ns_verify_tcp_init
 
 __BEGIN_DECLS
 u_int		ns_get16 __P((const u_char *));
@@ -519,7 +423,6 @@ u_long		ns_get32 __P((const u_char *));
 void		ns_put16 __P((u_int, u_char *));
 void		ns_put32 __P((u_long, u_char *));
 int		ns_initparse __P((const u_char *, int, ns_msg *));
-int		ns_skiprr __P((const u_char *, const u_char *, ns_sect, int));
 int		ns_parserr __P((ns_msg *, ns_sect, int, ns_rr *));
 int		ns_sprintrr __P((const ns_msg *, const ns_rr *,
 				 const char *, const char *, char *, size_t));
@@ -529,7 +432,6 @@ int		ns_sprintrrf __P((const u_char *, size_t, const char *,
 				  char *, size_t));
 int		ns_format_ttl __P((u_long, char *, size_t));
 int		ns_parse_ttl __P((const char *, u_long *));
-int		ns_name_ntol __P((const u_char *, u_char *, size_t));
 int		ns_name_ntop __P((const u_char *, char *, size_t));
 int		ns_name_pton __P((const char *, u_char *, size_t));
 int		ns_name_unpack __P((const u_char *, const u_char *,
@@ -541,19 +443,6 @@ int		ns_name_uncompress __P((const u_char *, const u_char *,
 int		ns_name_compress __P((const char *, u_char *, size_t,
 				      const u_char **, const u_char **));
 int		ns_name_skip __P((const u_char **, const u_char *));
-int		ns_sign __P((u_char *, int *, int, int, void *,
-			     const u_char *, int, u_char *, int *, time_t));
-int		ns_sign_tcp __P((u_char *, int *, int, int,
-				 ns_tcp_tsig_state *, int));
-int		ns_sign_tcp_init __P((void *, const u_char *, int,
-					ns_tcp_tsig_state *));
-u_char		*ns_find_tsig __P((u_char *, u_char *));
-int		ns_verify __P((u_char *, int *, void *,
-			       const u_char *, int, u_char *, int *,
-			       time_t *, int));
-int		ns_verify_tcp __P((u_char *, int *, ns_tcp_tsig_state *, int));
-int		ns_verify_tcp_init __P((void *, const u_char *, int,
-					ns_tcp_tsig_state *));
 __END_DECLS
 
 #ifdef BIND_4_COMPAT

@@ -8,7 +8,7 @@
  ***************************************************************************/
 
  static char *const _id =
-"$Id: lpd_status.c,v 1.1.1.3 2000-03-31 15:48:00 mwhitson Exp $";
+"$Id: lpd_status.c,v 1.5 2000-03-31 16:21:13 mwhitson Exp $";
 
 
 #include "lp.h"
@@ -64,6 +64,19 @@
  * x     Sx                           SxSx    Sx                 Sx    Sx       X
  *                                                                              
  ***************************************************************************/
+
+/* 
+ * Local modification: REQ_DSHORT changed from LPRng specification to
+ * give a more traditional BSDish queue listing, without the LPRng-ish
+ * spewing of the status files for lpq to parse.  This works because
+ * LPRng's lpq defaults to sending REQ_DLONG, whereas BSD (and Athena)
+ * default to REQ_DSHORT.  And we don't think the one-line-per-queue
+ * listing is very useful anyway.
+ *
+ * Todo: add status-file parsing to server, so that information can be
+ * displayed by old clients.
+ *         -mwhitson 2/17/99 
+ */
 
 #define RANKW 7
 #define OWNERW 29
@@ -299,10 +312,8 @@ void Get_queue_status( struct line_list *tokens, int *sock,
 	}
 	Add_line_list(done_list,Printer_DYN,Value_sep,1,1);
 
-	if( displayformat != REQ_DSHORT ){
-		plp_snprintf( header, sizeof(header), "%s: ",
-			Server_queue_name_DYN?"Server Printer":"Printer" );
-	}
+	plp_snprintf( header, sizeof(header), "%s: ",
+		      Server_queue_name_DYN?"Server Printer":"Printer" );
 	len = strlen(header);
 	plp_snprintf( header+len, sizeof(header)-len, "%s@%s ",
 		Printer_DYN, Report_server_as_DYN?Report_server_as_DYN:ShortHost_FQDN );
@@ -371,7 +382,7 @@ void Get_queue_status( struct line_list *tokens, int *sock,
 
 	/* set up the short format for folks */
 
-	if( displayformat == REQ_DLONG && Sort_order.count > 0 ){
+	if( (displayformat == REQ_DLONG || displayformat == REQ_DSHORT) && Sort_order.count > 0 ){
 		/*
 		 Rank  Owner/ID  Class Job Files   Size Time
 		*/
@@ -382,7 +393,7 @@ void Get_queue_status( struct line_list *tokens, int *sock,
 	error[0] = 0;
 
 	for( count = 0;
-		displayformat != REQ_DSHORT && count < Sort_order.count;
+		count < Sort_order.count;
 		++count ){
 
 		Free_job(&job);
@@ -445,7 +456,7 @@ void Get_queue_status( struct line_list *tokens, int *sock,
 			priority = class;
 		}
 
-		if( displayformat == REQ_DLONG ){
+		if( displayformat == REQ_DLONG || displayformat == REQ_DSHORT ){
 			plp_snprintf( msg, sizeof(msg),
 				"%-*s %-*s ", RANKW-1, number, OWNERW-1, identifier );
 			while( (len = strlen(msg)) > (RANKW+OWNERW)
@@ -634,7 +645,7 @@ void Get_queue_status( struct line_list *tokens, int *sock,
 		}
 	}
 
-	if( displayformat != REQ_DSHORT ){
+	{
 		s = 0;
 		if( (s = Comment_tag_DYN) == 0 ){
 			if( (nx = PC_alias_line_list.count) > 1 ){
@@ -783,16 +794,9 @@ void Get_queue_status( struct line_list *tokens, int *sock,
 	}
 
 	/* this gives a short 1 line format with minimum info */
-	if( displayformat == REQ_DSHORT ){
-		len = strlen( header );
-		plp_snprintf( header+len, sizeof(header) - len, _(" %d job%s"),
-			printable, (printable == 1)?"":"s" );
-	}
 	safestrncat( header, "\n" );
 	if( Write_fd_str( *sock, header ) < 0 ) cleanup(0);
 	header[0] = 0;
-
-	if( displayformat == REQ_DSHORT ) goto remote;
 
 	/* now check to see if there is a server and unspooler process active */
 	path = Make_pathname( Spool_dir_DYN, Queue_lock_file_DYN );
@@ -877,12 +881,14 @@ void Get_queue_status( struct line_list *tokens, int *sock,
 	/*
 	 * get the last status of the spooler
 	 */
-	Print_status_info( sock, Spool_dir_DYN, Queue_status_file_DYN,
-		_(" Status: "), status_lines, max_size );
+	if( displayformat != REQ_DSHORT ){
+		Print_status_info( sock, Spool_dir_DYN, Queue_status_file_DYN,
+			_(" Status: "), status_lines, max_size );
 
-	if( Status_file_DYN ){
-		Print_status_info( sock, Spool_dir_DYN, Status_file_DYN,
-			_(" Filter_status: "), status_lines, max_size );
+		if( Status_file_DYN ){
+			Print_status_info( sock, Spool_dir_DYN, Status_file_DYN,
+				_(" Filter_status: "), status_lines, max_size );
+		}
 	}
 
 	s = Join_line_list(&outbuf,"\n");

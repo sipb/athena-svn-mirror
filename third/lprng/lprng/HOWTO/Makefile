@@ -16,7 +16,7 @@
 #
 SRC = .
 
-prefix = /usr/local
+prefix = /usr/athena
 MAN =		$(prefix)/man
 SHELL =		/bin/sh
 

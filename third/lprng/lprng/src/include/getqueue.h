@@ -4,7 +4,7 @@
  * Copyright 1988-2000, Patrick Powell, San Diego, CA
  *     papowell@astart.com
  * See LICENSE for conditions of use.
- * $Id: getqueue.h,v 1.1.1.5 2000-03-31 15:48:09 mwhitson Exp $
+ * $Id: getqueue.h,v 1.4 2000-03-31 16:21:16 mwhitson Exp $
  ***************************************************************************/
 
 
@@ -132,6 +132,7 @@ EXTERN const char * UPDATE			DEFINE( = "update" );
 EXTERN const char * UPDATE_TIME		DEFINE( = "update_time" );
 EXTERN const char * USER			DEFINE( = "user" );
 EXTERN const char * VALUE			DEFINE( = "value" );
+EXTERN const char * ZNAME		DEFINE( = "zname" );
 
 EXTERN const char * PRINTING_DISABLED DEFINE( = "printing_disabled" );
 EXTERN const char * PRINTING_ABORTED DEFINE( = "printing_aborted" );

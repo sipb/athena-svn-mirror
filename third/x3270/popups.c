@@ -498,10 +498,6 @@ va_dcl
 {
 	va_list args;
 	char *s;
-	extern int sys_nerr;
-#if !defined(__FreeBSD__)
-	extern char *sys_errlist[];
-#endif
 
 #if defined(__STDC__)
 	va_start(args, fmt);
@@ -515,12 +511,9 @@ va_dcl
 	(void) vsprintf(vmsgbuf, fmt, args);
 	s = XtNewString(vmsgbuf);
 
-	if (errn > 0) {
-		if (errn < sys_nerr)
-			popup_an_error("%s:\n%s", s, sys_errlist[errn]);
-		else
-			popup_an_error("%s:\nError %d", s, errn);
-	} else
+	if (errn > 0)
+		popup_an_error("%s:\n%s", s, strerror(errn));
+	else
 		popup_an_error(s);
 	XtFree(s);
 }

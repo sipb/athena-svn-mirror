@@ -33,14 +33,11 @@
 .\" "
 .TH FTPD 8
 .SH NAME
-.B ftpd
-\-
-.SM DARPA
-Internet File Transfer Protocol server
+ftpd \- DARPA Internet File Transfer Protocol server
 .SH SYNOPSIS
 .B ftpd
-[\fB\-a \fP|\fB -A\fP] [\fB\-c\fP] [\fB\-C\fP] [\fB\-d\fP] [\fB\-l\fP]
-[\fB\-t\fP \fItimeout\fP] [\fB\-T\fP \fImaxtimeout\fP]
+[\fB\-a \fP|\fB -A\fP] [\fB\-c\fP] [\fB\-C\fP] [\fB\-d\fP] [\fB\-E\fP]
+[\fB\-l\fP] [\fB\-t\fP \fItimeout\fP] [\fB\-T\fP \fImaxtimeout\fP]
 [\fB\-p\fP \fIport\fP] [\fB\-u\fP \fIumask\fP]
 [\fB\-r\fP \fIrealm-file\fP] [\fB\-s\fP \fIsrvtab\fP]
 [\fB\-w\fP[\fBip\fP|\fImaxhostlen\fP[\fB,\fP[\fBno\fP]\fBstriplocal\fP]]]
@@ -79,6 +76,9 @@ less secure connections, and should probably only be used when debugging.
 .TP
 .B \-d
 Debugging information is written to the syslog.
+.TP
+.B \-E
+Don't allow passwords to be typed across unencrypted connections.
 .TP
 .B \-l
 Each

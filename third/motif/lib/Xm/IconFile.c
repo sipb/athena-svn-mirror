@@ -542,8 +542,14 @@ MakeCachedDirEntry(String dirName)
 	 * Allow some 1024 bytes slop in the buffer
 	 */
 	while ( bufLen < max_dir_cache_len ) {
+#ifdef HAS_MODERN_READDIR_R
+		readdir_r(dirDesc, (struct dirent *)(stackBuf+bufLen),
+			  &currDirect);
+		if ( currDirect
+#else
 		if ( (currDirect = readdir_r(dirDesc, 
 					(struct dirent *)(stackBuf+bufLen)))
+#endif
 			== NULL ) {
 			if (!errno)	/* the end of the directory stream */
                 	{

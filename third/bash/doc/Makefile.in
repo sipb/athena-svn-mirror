@@ -104,9 +104,6 @@ bashref.ps: bashref.dvi
 	$(RM) $@
 	$(DVIPS) bashref.dvi
 
-bashref.info: $(srcdir)/bashref.texi $(HSUSER) $(RLUSER)
-	$(MAKEINFO) --no-split -I$(TEXINPUTDIR) $(srcdir)/bashref.texi
-
 bashref.html: bashref.texi $(HSUSER) $(RLUSER)
 	$(TEXI2HTML) -menu -monolithic -I $(TEXINPUTDIR) $(srcdir)/bashref.texi
 
@@ -165,22 +162,21 @@ maintainer-clean:	clean
 	$(RM) Makefile
 
 installdirs:
-	-test -d $(man1dir) || $(SHELL) ${MKDIRS} $(man1dir)
+	-test -d $(man1dir) || $(SHELL) ${MKDIRS} ${DESTDIR}$(man1dir)
 # uncomment the next line to create the directory for the readline man page
-#	-test -d $(man3dir) || $(SHELL) ${MKDIRS} $(man3dir)
-	-test -d $(infodir) || $(SHELL) ${MKDIRS} $(infodir)
+#	-test -d $(man3dir) || $(SHELL) ${MKDIRS} ${DESTDIR}$(man3dir)
+	-test -d $(infodir) || $(SHELL) ${MKDIRS} ${DESTDIR}$(infodir)
 	
-install: info installdirs
-	-$(INSTALL_DATA) $(srcdir)/bash.1 $(man1dir)/bash.${man1ext}
-	-$(INSTALL_DATA) $(srcdir)/bashbug.1 $(man1dir)/bashbug.${man1ext}
+install: installdirs
+	-$(INSTALL_DATA) $(srcdir)/bash.1 ${DESTDIR}$(man1dir)/bash.${man1ext}
 # uncomment the next line to install the readline man page
 #	-$(INSTALL_DATA) $(srcdir)/readline.3 $(man3dir)/readline.${man3ext}
 # uncomment the next line to install the builtins man page
 #	$(INSTALL_DATA) $(srcdir)/builtins.1 $(man1dir)/bash_builtins.${man1ext}
-	-$(INSTALL_DATA) $(srcdir)/bashref.info $(infodir)/bash.info
+	-$(INSTALL_DATA) $(srcdir)/bashref.info ${DESTDIR}$(infodir)/bash.info
 # run install-info if it is present to update the info directory
 	if $(SHELL) -c 'install-info --version' >/dev/null 2>&1; then \
-		install-info --dir-file=$(infodir)/dir $(infodir)/bash.info; \
+		install-info --dir-file=$(infodir)/dir ${DESTDIR}$(infodir)/bash.info; \
 	else true; fi
 
 uninstall:

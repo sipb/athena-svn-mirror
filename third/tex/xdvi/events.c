@@ -215,7 +215,7 @@ static	Arg	command_args[] = {
 	{XtNlabel,	(XtArgVal) NULL},
 	{XtNx,		(XtArgVal) 6},
 	{XtNy,		(XtArgVal) 0},
-	{XtNwidth,	(XtArgVal) 64},
+	{XtNwidth,	(XtArgVal) 80},
 	{XtNheight,	(XtArgVal) 30},
 	{XtNcallback,	(XtArgVal) command_call},
 };

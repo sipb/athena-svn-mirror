@@ -199,19 +199,29 @@ get_ad_tkt(service,sinstance,realm,lifetime)
     memcpy((char *)ses, ptr, 8);
     ptr += 8;
 
+    if (strlen(ptr) >= SNAME_SZ)
+	return(INTK_ERR);
     (void) strcpy(s_name,ptr);
     ptr += strlen(s_name) + 1;
 
+    if (strlen(ptr) >= INST_SZ)
+	return(INTK_ERR);
     (void) strcpy(s_instance,ptr);
     ptr += strlen(s_instance) + 1;
 
+    if (strlen(ptr) >= REALM_SZ)
+	return(INTK_ERR);
     (void) strcpy(rlm,ptr);
     ptr += strlen(rlm) + 1;
 
-    lifetime = (unsigned long) ptr[0];
-    kvno = (unsigned long) ptr[1];
-    tkt->length = (int) ptr[2];
+    lifetime = (unsigned char) ptr[0];
+    kvno = (unsigned char) ptr[1];
+    tkt->length = (unsigned char) ptr[2];
     ptr += 3;
+
+    if (tkt->length + (ptr - (char *) cip->dat) > cip->length)
+	return(INTK_ERR);
+
     memcpy((char *)(tkt->dat), ptr, tkt->length);
     ptr += tkt->length;
 

@@ -8,7 +8,7 @@
  ***************************************************************************/
 
  static char *const _id =
-"$Id: vars.c,v 1.1.1.6 2000-03-31 15:47:50 mwhitson Exp $";
+"$Id: vars.c,v 1.10 2000-04-03 19:01:48 mwhitson Exp $";
 
 
 /* force local definitions */
@@ -97,8 +97,8 @@ struct keywords Pc_var_list[] = {
 { "as",  STRING_K,  &Accounting_start_DYN,0,0,"=jobstart $H $n $P $k $b $t"},
 	/* authentication type for client to server */
 { "auth",  STRING_K, &Auth_DYN,0,0 },
-   /*  client to server authentication filter */
-{ "auth_forward", STRING_K, &Auth_forward_DYN,0,0},
+   /*  Athena compat: 'Z' means zephyr, not "pass to filter" */
+{ "az",  FLAG_K,  &Athena_Z_compat_DYN,0,0},
    /*  end banner printing program overides bp */
 { "be",  STRING_K,  &Banner_end_DYN,0,0},
    /*  Berkeley LPD: job file strictly RFC-compliant */
@@ -207,6 +207,8 @@ struct keywords Pc_var_list[] = {
 { "ignore_requested_user_priority",  FLAG_K,  &Ignore_requested_user_priority_DYN,0,0},
    /*  Running IPV6 */
 { "ipv6",  FLAG_K,  &IPV6Protocol_DYN,0,0},
+   /*  Old Athena Kerberos authentication flag */
+{ "ka",  FLAG_K, &KA_DYN,0,0},
 	/* TCP keepalive enabled */
 { "keepalive", FLAG_K, &Keepalive_DYN,0,0,"1"},
 	/* keytab file location for kerberos, used by server */
@@ -427,6 +429,10 @@ struct keywords Pc_var_list[] = {
 { "user", STRING_K, &Daemon_user_DYN,1,0,"=daemon"},
    /*  wait for EOF on device before closing */
 { "wait_for_eof", FLAG_K, &Wait_for_eof_DYN,0,0,"1"},
+   /*  server supports extended notification (Mzephyr%foo) */
+{ "xn",  FLAG_K, &Extended_notification_DYN,0,0},
+   /* zwrite program */
+{ "zwrite", STRING_K, &Zwrite_DYN,1,0,"=/usr/athena/bin/zwrite"},
 /* END */
 { (char *)0 }
 } ;

@@ -2,7 +2,7 @@
 /*
  * packf.c -- pack a nmh folder into a file
  *
- * $Id: packf.c,v 1.1.1.1 1999-02-07 18:14:15 danw Exp $
+ * $Id: packf.c,v 1.2 2000-01-07 04:43:58 rbasch Exp $
  */
 
 #include <h/mh.h>
@@ -189,7 +189,8 @@ main (int argc, char **argv)
 	}
 
     /* close and unlock maildrop file */
-    mbx_close (file, md);
+    if (mbx_close (file, md) == NOTOK)
+	adios (file, "error writing to file");
 
     context_replace (pfolder, folder);	/* update current folder         */
     if (mp->hghsel != mp->curmsg)

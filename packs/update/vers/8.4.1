@@ -1,0 +1,14 @@
+#!/bin/sh
+
+case "$HOSTTYPE" in
+sun4)
+	echo "/etc/mail/sendmail.cf"			>> "$CONFCHG"
+	echo "OSCHANGES=true"				>> "$CONFVARS"
+
+	# Repair /usr/lib/cpp if it's a symlink left over from 8.3.
+	if [ -h /usr/lib/cpp ]; then
+		rm -f /usr/lib/cpp
+		cp -p /os/usr/lib/cpp /usr/lib/cpp
+	fi
+	;;
+esac

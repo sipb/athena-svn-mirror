@@ -84,8 +84,8 @@ ansi2knr: ansi2knr.o
 	$(LINK) ansi2knr.o $(LIBS)
 
 install: all
-	$(srcdir)/../mkinstalldirs $(bindir)
-	$(INSTALL_PROGRAM) m4 $(bindir)/`echo m4 | sed '$(transform)'`
+	$(srcdir)/../mkinstalldirs ${DESTDIR}$(bindir)
+	$(INSTALL_PROGRAM) m4 ${DESTDIR}$(bindir)/`echo m4 | sed '$(transform)'`
 
 uninstall:
 	rm -f $(bindir)/`echo m4 | sed '$(transform)'`

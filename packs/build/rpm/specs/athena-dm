@@ -1,0 +1,60 @@
+Name: athena-dm
+Summary: The Athena display manager
+Copyright: MIT
+Group: User Interface/X
+
+Requires: athena-libal athena-xlogin athena-console
+
+%description
+The Athena dm takes care of running the X server, xlogin, and the
+Athena console program.  This package causes dm to be run as the X
+login program (when prefdm is invoked through inittab).
+
+%install
+if [ X$RPM_BUILD_ROOT = X ]; then
+  cat 1>&2 << MESSAGE
+You must specify a build root in order to build this package.
+Use the --buildroot option to RPM or the buildroot rpmrc entry.
+MESSAGE
+  exit 1
+fi
+
+rm -rf $RPM_BUILD_ROOT
+mkdir $RPM_BUILD_ROOT
+./do.sh -p -s /xxx -d $RPM_BUILD_ROOT install
+
+mkdir -p $RPM_BUILD_ROOT/var/athena/sessions
+
+# Extra files; see prep/athena-dm.
+mkdir -p $RPM_BUILD_ROOT/etc/athena/login
+cp config $RPM_BUILD_ROOT/etc/athena/login/config
+install -c -m 555 xwrapper.sh $RPM_BUILD_ROOT/etc/athena/xwrapper
+
+find $RPM_BUILD_ROOT -type f -or -type l |
+  sed -e "s|^$RPM_BUILD_ROOT||" \
+      -e "s|^/etc/athena/login/config$|%config \0|" |
+  sort > rpm.filelist
+echo "%dir /var/athena/sessions" >> rpm.filelist
+
+%postun
+[ $1 = 0 ] || exit 0
+if [ -f /etc/X11/prefdm.orig ] ; then
+  mv /etc/X11/prefdm.orig /etc/X11/prefdm
+fi
+
+%post
+
+%triggerin -- initscripts
+# Take over the dm service
+if [ ! -f /etc/X11/prefdm.orig ]; then
+  cp /etc/X11/prefdm /etc/X11/prefdm.orig
+fi
+rm -f /etc/X11/prefdm
+
+cat > /etc/X11/prefdm << EOF
+#!/bin/sh
+/usr/bin/chvt 7
+exec /etc/athena/dm /etc/athena/login/config ttyp0 tty7
+EOF
+chmod +x /etc/X11/prefdm
+

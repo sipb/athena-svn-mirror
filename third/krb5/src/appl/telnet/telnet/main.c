@@ -80,7 +80,7 @@ usage()
 	    prompt,
 #ifdef	AUTHENTICATION
 	    " [-8] [-E] [-K] [-L] [-X atype] [-a] [-d] [-e char] [-k realm]",
-	    "\n\t[-l user] [-f/-F] [-n tracefile] ",
+	    "\n\t[-l user] [-u/-N] [-safe] [-f/-F] [-n tracefile] ",
 #else
 	    " [-8] [-E] [-L] [-a] [-d] [-e char] [-l user] [-n tracefile]",
 	    "\n\t",
@@ -142,7 +142,7 @@ main(argc, argv)
 	rlogin = (strncmp(prompt, "rlog", 4) == 0) ? '~' : _POSIX_VDISABLE;
 	autologin = -1;
 
-	while ((ch = getopt(argc, argv, "8EKLS:X:acde:fFk:l:n:rt:x")) != -1) {
+	while ((ch = getopt(argc, argv, "8EKLNS:X:acde:fFk:l:n:rs:t:ux")) != -1) {
 		switch(ch) {
 		case '8':
 			eight = 3;	/* binary output and input */
@@ -151,12 +151,16 @@ main(argc, argv)
 			rlogin = escape = _POSIX_VDISABLE;
 			break;
 		case 'K':
+		case 'u':
 #ifdef	AUTHENTICATION
 			autologin = 0;
 #endif
 			break;
 		case 'L':
 			eight |= 2;	/* binary output only */
+			break;
+		case 'N':
+			dontfallback = 1;
 			break;
 		case 'S':
 		    {
@@ -249,7 +253,6 @@ main(argc, argv)
 #endif
 			break;
 		case 'l':
-			autologin = 1;
 			user = optarg;
 			break;
 		case 'n':
@@ -271,6 +274,23 @@ main(argc, argv)
 		case 'r':
 			rlogin = '~';
 			break;
+		case 's':
+			if (strcmp(optarg, "afe"))
+				usage();
+#ifdef	ENCRYPTION
+			encrypt_auto(1);
+			decrypt_auto(1);
+			wantencryption = 1;
+			auth_enable_encrypt = 1;
+#endif
+			autologin = 1;
+			dontfallback = 1;
+#if defined(AUTHENTICATION) && defined(KRB5) && defined(FORWARD)
+			forward_flags |= OPTS_FORWARD_CREDS;
+			forward_flags |= OPTS_FORWARDABLE_CREDS;
+#endif
+			fputs(STARTUP_MESSAGE_SAFE, stderr);
+			break;
 		case 't':
 #if defined(TN3270) && defined(unix)
 			transcom = tline;
@@ -288,6 +308,7 @@ main(argc, argv)
 			wantencryption = 1;
 			autologin = 1;
 			auth_enable_encrypt = 1;
+			dontfallback = 1;	/* default krb5 behavior */
 #else
 			fprintf(stderr,
 			    "%s: Warning: -x ignored, no ENCRYPT support.\n",
@@ -300,8 +321,29 @@ main(argc, argv)
 			/* NOTREACHED */
 		}
 	}
-	if (autologin == -1)
-		autologin = (rlogin == _POSIX_VDISABLE) ? 0 : 1;
+	if (autologin == -1) {
+		if (rlogin != _POSIX_VDISABLE)
+			autologin = 1;
+		else if (argc - optind == 1) {
+			/* (User specified destination host, but not port) */
+			/* Try encryption, but don't require it */
+			autologin = 1;
+#ifdef	ENCRYPTION
+			encrypt_auto(1);
+			decrypt_auto(1);
+			wantencryption = 1;
+			auth_enable_encrypt = 1;
+#endif
+#if defined(AUTHENTICATION) && defined(KRB5) && defined(FORWARD)
+			forward_flags |= OPTS_FORWARD_CREDS;
+			forward_flags |= OPTS_FORWARDABLE_CREDS;
+#endif
+			fputs(STARTUP_MESSAGE_DEFAULT, stderr);
+		} else if (user)
+			autologin = 1;
+		else
+			autologin = 0;
+	}
 
 	argc -= optind;
 	argv += optind;

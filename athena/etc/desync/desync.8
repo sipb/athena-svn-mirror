@@ -1,0 +1,100 @@
+.\" $Id: desync.8,v 1.1 1997-03-14 21:20:24 ghudson Exp $
+.\"
+.\" Copyright 1995, 1996, 1997 by the Massachusetts Institute of Technology.
+.\"
+.\" Permission to use, copy, modify, and distribute this
+.\" software and its documentation for any purpose and without
+.\" fee is hereby granted, provided that the above copyright
+.\" notice appear in all copies and that both that copyright
+.\" notice and this permission notice appear in supporting
+.\" documentation, and that the name of M.I.T. not be used in
+.\" advertising or publicity pertaining to distribution of the
+.\" software without specific, written prior permission.
+.\" M.I.T. makes no representations about the suitability of
+.\" this software for any purpose.  It is provided "as is"
+.\" without express or implied warranty.
+.\"
+.TH DESYNC 1 "5 March 1997"
+.SH NAME
+desync \- desynchronize timed jobs on networks
+.SH SYNOPSIS
+.B desync
+[
+.B \-t
+timefile ] [ range ]
+.SH DESCRIPTION
+.I desync
+is a tool which sleeps a random (ip-address seeded) period of time (up
+to an hour, by default) in order to skew the network load from several
+machines running
+.I cron
+jobs that would otherwise be synchronized.
+
+An invocation would appear something like
+
+.nf
+     42 * * * *          desync; /usr/lib/sendmail -q
+.fi
+
+in a crontab file.
+.SH OPTIONS
+.TP 8
+.B range
+This optional range specifies, in seconds, the maximum value for the
+randomly selected sleep time.  The default value is 3600.
+.TP 8
+.B \-t timefile
+This option changes the behavior of
+.I desync
+to make it useful for desynchronizing jobs when sleeping is not
+appropriate.  If
+.I timefile
+does not exist,
+.I desync
+selects a random sleep time using the normal method, adds it to the
+current time value, writes the result into
+.IR timefile ,
+and exits with status 1.  If
+.I timefile
+does exist and the current time is less than the time value listed in
+.IR timefile ,
+then
+.I desync
+takes no action and exits with status 1.  If
+.I timefile
+exists and the current time is equal to or greater than the time value
+listed in
+.IR timefile ,
+then
+.I desync
+unlinks
+.I timefile
+and exits with status 0.  This feature can be used in shell code of
+the following form:
+
+.nf
+	if desync -t /tmp/mytimefile 3600; then
+		echo "Starting the job."
+	else
+		echo "Putting it off until later."
+	fi
+.fi
+
+.SH DIAGNOSTICS
+If
+.I desync
+fails to acquire the machine's IP address from
+.IR rc.conf ,
+it returns an exit status of 2 and does not sleep.
+.SH FILES
+.TP 25
+.B /etc/athena/rc.conf
+Athena startup configuration file
+.SH SEE ALSO
+cron(1)
+.SH AUTHOR
+Craig Fields, MIT Information Systems
+.br
+Greg Hudson, MIT Information Systems
+.br
+Copyright (c) 1995, 1996, 1997, Massachusetts Institute of Technology

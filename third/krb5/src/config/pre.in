@@ -194,7 +194,7 @@ EXEEXT =
 # 	$(CC_LINK) -o $@ foo.o bar.o $(KRB5_BASE_LIBS)
 
 
-CC_LINK=@CC_LINK@
+CC_LINK=@CC_LINK@ $(LDFLAGS)
 
 # this gets set by configure to either $(STLIBEXT) or $(SHLIBEXT),
 # depending on whether we're building with shared libraries.

@@ -12,8 +12,10 @@ krb_err.h: $(SRCTOP)/lib/krb4/krb_err.et
 		$(SRCTOP)/lib/krb4/krb_err.et
 
 install::
+	rm -rf $(DESTDIR)$(KRB5_INCDIR)/kerberosIV
+	ln -s . $(DESTDIR)$(KRB5_INCDIR)/kerberosIV
 	@set -x; for f in $(KRB4_HEADERS) ; \
-	do $(INSTALL_DATA) $(srcdir)/$$f $(DESTDIR)$(KRB5_INCDIR)/kerberosIV/$$f ; \
+	do $(INSTALL_DATA) $(srcdir)/$$f $(DESTDIR)$(KRB5_INCDIR)/$$f ; \
 	done
 
 install:: krb_err.h

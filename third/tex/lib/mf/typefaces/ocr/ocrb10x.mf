@@ -1,5 +1,6 @@
 % This is OCRB10x_mf   (negativ normal)
 %
+mode_setup;
 
 font_identifier:="OCRB10X";
 font_size 10pt#;

@@ -1,0 +1,35 @@
+# $Id: Makefile.athena,v 1.15 2000-04-10 03:14:22 ghudson Exp $
+
+SHELL=/bin/sh
+
+dist:
+
+# We can't use the Athena config.site file because it specifies
+# cc to be gcc.
+prepare:
+	rm -f config.cache
+	. ./compiler && CC=$$cc ./configure --prefix=/usr/gcc
+
+clean:
+	${MAKE} clean
+
+# Unfortunately, this build step cannot be reliably aborted and
+# restarted.
+all:
+	cd libiberty && ${MAKE} all
+	cd texinfo && ${MAKE} all
+	cd gcc && ${MAKE} all LANGUAGES=c
+	cd gcc && ${MAKE} stage1
+	cd libiberty && ${MAKE} clean
+	cd texinfo && ${MAKE} clean
+	${MAKE} all CC="`pwd`/gcc/stage1/xgcc -B`pwd`/gcc/stage1/" \
+		CFLAGS="-g -O2"
+
+check:
+
+install: force
+	mkdir -p "$$SRVD/usr"
+	${MAKE} install "prefix=$$SRVD/usr/gcc" \
+		CC="`pwd`/gcc/stage1/xgcc -B`pwd`/gcc/stage1/" CFLAGS="-g -O2"
+
+force:

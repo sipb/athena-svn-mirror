@@ -1,7 +1,7 @@
 #
 # Makefile for man subdirectory
 #
-# $Id: Makefile.in,v 1.1.1.1 1999-02-07 18:14:22 danw Exp $
+# $Id: Makefile.in,v 1.2 1999-02-13 00:41:06 danw Exp $
 #
 
 VERSION = @VERSION@
@@ -129,28 +129,28 @@ install: install-hdr install-man1 install-man5 install-man8
 
 # install the include file for man pages
 install-hdr:
-	$(top_srcdir)/mkinstalldirs $(etcdir)
-	$(INSTALL_DATA) tmac.h $(etcdir)/tmac.h
+	$(top_srcdir)/mkinstalldirs $(DESTDIR)$(etcdir)
+	$(INSTALL_DATA) tmac.h $(DESTDIR)$(etcdir)/tmac.h
 
 # install the man pages in man1
 install-man1:
-	$(top_srcdir)/mkinstalldirs $(mandir)/man$(manext1)
+	$(top_srcdir)/mkinstalldirs $(DESTDIR)$(mandir)/man$(manext1)
 	for file in $(MAN1); do \
-	  $(INSTALL_DATA) $$file $(mandir)/man$(manext1) ; \
+	  $(INSTALL_DATA) $$file $(DESTDIR)$(mandir)/man$(manext1) ; \
 	done
 
 # install the man pages in man5
 install-man5:
-	$(top_srcdir)/mkinstalldirs $(mandir)/man$(manext5)
+	$(top_srcdir)/mkinstalldirs $(DESTDIR)$(mandir)/man$(manext5)
 	for file in $(MAN5); do \
-	  $(INSTALL_DATA) $$file $(mandir)/man$(manext5) ; \
+	  $(INSTALL_DATA) $$file $(DESTDIR)$(mandir)/man$(manext5) ; \
 	done
 
 # install the man pages in man8
 install-man8:
-	$(top_srcdir)/mkinstalldirs $(mandir)/man$(manext8)
+	$(top_srcdir)/mkinstalldirs $(DESTDIR)$(mandir)/man$(manext8)
 	for file in $(MAN8); do \
-	  $(INSTALL_DATA) $$file $(mandir)/man$(manext8) ; \
+	  $(INSTALL_DATA) $$file $(DESTDIR)$(mandir)/man$(manext8) ; \
 	done
 
 # ========= UNINSTALL TARGETS =========
@@ -159,24 +159,24 @@ uninstall: uninstall-hdr uninstall-man1 uninstall-man5 uninstall-man8
 
 # uninstall the include file for man pages
 uninstall-hdr:
-	rm -f $(etcdir)/tmac.h
+	rm -f $(DESTDIR)$(etcdir)/tmac.h
 
 # uninstall the man pages in man1
 uninstall-man1:
 	for file in $(MAN1); do \
-	  rm -f $(mandir)/man$(manext1)/$$file; \
+	  rm -f $(DESTDIR)$(mandir)/man$(manext1)/$$file; \
 	done
 
 # uninstall the man pages in man5
 uninstall-man5:
 	for file in $(MAN5); do \
-	  rm -f $(mandir)/man$(manext5)/$$file; \
+	  rm -f $(DESTDIR)$(mandir)/man$(manext5)/$$file; \
 	done
 
 # uninstall the man pages in man8
 uninstall-man8:
 	for file in $(MAN8); do \
-	  rm -f $(mandir)/man$(manext8)/$$file; \
+	  rm -f $(DESTDIR)$(mandir)/man$(manext8)/$$file; \
 	done
 
 # ========== DEPENDENCIES FOR CLEANUP ==========

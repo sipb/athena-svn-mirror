@@ -167,22 +167,20 @@ force:
 
 install: installdirs $(STATIC_LIBS)
 	for f in ${INSTALLED_HEADERS}; do \
-		$(INSTALL_DATA) $(srcdir)/$$f $(includedir)/readline ; \
+		$(INSTALL_DATA) $(srcdir)/$$f ${DESTDIR}$(includedir)/readline ; \
 	done
-	-$(MV) $(libdir)/libreadline.a $(libdir)/libreadline.old
-	$(INSTALL_DATA) libreadline.a $(libdir)/libreadline.a
-	-test -n "$(RANLIB)" && $(RANLIB) -t $(libdir)/libreadline.a
-	-$(MV) $(libdir)/libhistory.a $(libdir)/libhistory.old
-	$(INSTALL_DATA) libhistory.a $(libdir)/libhistory.a
-	-test -n "$(RANLIB)" && $(RANLIB) -t $(libdir)/libhistory.a
+	$(INSTALL_DATA) libreadline.a ${DESTDIR}$(libdir)/libreadline.a
+	-test -n "$(RANLIB)" && $(RANLIB) -t ${DESTDIR}$(libdir)/libreadline.a
+	$(INSTALL_DATA) libhistory.a ${DESTDIR}$(libdir)/libhistory.a
+	-test -n "$(RANLIB)" && $(RANLIB) -t ${DESTDIR}$(libdir)/libhistory.a
 	-( if test -d doc ; then \
 		cd doc && \
 		${MAKE} ${MFLAGS} infodir=$(infodir) $@; \
 	  fi )
 
 installdirs: $(srcdir)/support/mkdirs
-	-$(SHELL) $(srcdir)/support/mkdirs $(includedir) \
-		$(includedir)/readline $(libdir) $(infodir) $(man3dir)
+	-$(SHELL) $(srcdir)/support/mkdirs ${DESTDIR}$(includedir) \
+		${DESTDIR}$(includedir)/readline ${DESTDIR}$(libdir) ${DESTDIR}$(infodir) ${DESTDIR}$(man3dir)
 
 uninstall:
 	-test -n "$(includedir)" && cd $(includedir)/readline && \

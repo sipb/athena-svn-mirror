@@ -1,0 +1,15 @@
+#!/bin/sh
+# $Id: Xreset,v 1.1 2000-04-25 13:51:59 rbasch Exp $
+
+# Xreset
+#
+# This program is run as root by xlogin to reclaim ownership of the
+# devices granted to the user in Xstartup.
+
+cd /dev
+
+# Reclaim the audio devices.
+chown root audio audioctl
+chmod  600 audio audioctl
+
+exit 0

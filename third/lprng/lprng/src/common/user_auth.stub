@@ -4,7 +4,7 @@
  * Copyright 1988-1999, Patrick Powell, San Diego, CA
  *     papowell@astart.com
  * See LICENSE for conditions of use.
- * $Id: user_auth.stub,v 1.1.1.1 2000-03-31 15:48:04 mwhitson Exp $
+ * $Id: user_auth.stub,v 1.2 2000-04-03 19:01:48 mwhitson Exp $
  ***************************************************************************/
 
 /*
@@ -149,7 +149,7 @@ int Test_receive( int *sock, char *user, char *jobsize, int from_server,
 	char buffer[LARGEBUFFER];
 	struct stat statb;
 
-#ifdef 0
+#if 0
 	/* this shows how to create a temporary file for private use
 	 * it gets unlinked safely.
 	 */
@@ -244,7 +244,7 @@ int Test_verify( int *sock, char *user, char *jobsize, int from_server,
 	char input[SMALLBUFFER];
 	int len;
 
-#ifdef 0
+#if 0
 	/* this shows how to create a temporary file for private use
 	 * it gets unlinked safely.
 	 */

@@ -86,11 +86,9 @@ static void CheckReadFromPipe();
 static void SystemError(text)
     char* text;
 {
-    extern int sys_nerr;
-    extern char* sys_errlist[];
     char msg[BUFSIZ];
     sprintf( msg, "%s; errno = %d %s", text, errno, 
-	     (errno < sys_nerr) ? sys_errlist[errno] : NULL );
+	     strerror(errno) );
     XtWarning( msg );
 }
 

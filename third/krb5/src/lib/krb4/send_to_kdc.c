@@ -27,8 +27,8 @@
 extern char *malloc(), *calloc(), *realloc();
 #endif
 
+static int cached_krb4_udp_port = 0;
 static int cached_krb_udp_port = 0;
-static int cached_krbsec_udp_port = 0;
 
 static int
 send_recv PROTOTYPE ((KTEXT pkt, KTEXT rpkt, SOCKET f,
@@ -85,8 +85,8 @@ send_to_kdc(pkt,rpkt,realm)
     char krbhst[MAXHOSTNAMELEN];
     char lrealm[REALM_SZ];
     char *scol;
+    int krb4_udp_port = 0;
     int krb_udp_port = 0;
-    int krbsec_udp_port = 0;
     int default_port;
 
     /*
@@ -109,6 +109,15 @@ send_to_kdc(pkt,rpkt,realm)
     /* from now on, exit through rtn label for cleanup */
 
     /* The first time, decide what port to use for the KDC.  */
+    if (cached_krb4_udp_port == 0) {
+        register struct servent FAR *sp;
+        if (sp = getservbyname("kerberos4","udp"))
+	    cached_krb4_udp_port = sp->s_port;
+	else
+	    cached_krb4_udp_port = htons(KERBEROS4_PORT); /* kerberos4/udp */
+        DEB (("cached_krb4_udp_port is %d\n", cached_krb4_udp_port));
+    }
+    /* Use kerberos/udp as a fallback. */
     if (cached_krb_udp_port == 0) {
         register struct servent FAR *sp;
         if (sp = getservbyname("kerberos","udp"))
@@ -116,17 +125,6 @@ send_to_kdc(pkt,rpkt,realm)
 	else
 	    cached_krb_udp_port = htons(KERBEROS_PORT); /* kerberos/udp */
         DEB (("cached_krb_udp_port is %d\n", cached_krb_udp_port));
-    }
-    /* If kerberos/udp isn't 750, try using kerberos-sec/udp (or 750) 
-       as a fallback. */
-    if (cached_krbsec_udp_port == 0 && 
-	cached_krb_udp_port != htons(KERBEROS_PORT)) {
-        register struct servent FAR *sp;
-        if (sp = getservbyname("kerberos-sec","udp"))
-	    cached_krbsec_udp_port = sp->s_port;
-	else
-	    cached_krbsec_udp_port = htons(KERBEROS_PORT); /* kerberos/udp */
-        DEB (("cached_krbsec_udp_port is %d\n", cached_krbsec_udp_port));
     }
 
     memset((char *)&to, 0, S_AD_SZ);
@@ -176,9 +174,9 @@ send_to_kdc(pkt,rpkt,realm)
         }
 #endif
 	if (0 != (scol = strchr(krbhst,':'))) {
-	    krb_udp_port = htons(atoi(scol+1));
+	    krb4_udp_port = htons(atoi(scol+1));
 	    *scol = 0;
-	    if (krb_udp_port == 0) {
+	    if (krb4_udp_port == 0) {
 #ifdef DEBUG
 		if (krb_debug) {
 		    DEB (("bad port number %s\n",scol+1));
@@ -187,10 +185,10 @@ send_to_kdc(pkt,rpkt,realm)
 #endif
 		continue;
 	    }
-	    krbsec_udp_port = 0;
+	    krb_udp_port = 0;
 	} else {
+	    krb4_udp_port = cached_krb4_udp_port;
 	    krb_udp_port = cached_krb_udp_port;
-	    krbsec_udp_port = cached_krbsec_udp_port;
 	    default_port = 1;
 	}
         farkedhost = gethostbyname(krbhst);
@@ -239,13 +237,13 @@ send_to_kdc(pkt,rpkt,realm)
         to.sin_family = host->h_addrtype;
         memcpy((char *)&to.sin_addr, host->h_addr, 
 	       host->h_length);
-        to.sin_port = krb_udp_port;
+        to.sin_port = krb4_udp_port;
         if (send_recv(pkt, rpkt, f, &to, hostlist)) {
             retval = KSUCCESS;
             goto rtn;
         }
-	if (krbsec_udp_port) {
-	  to.sin_port = krbsec_udp_port;
+	if (krb_udp_port) {
+	  to.sin_port = krb_udp_port;
 	  if (send_recv(pkt, rpkt, f, &to, hostlist)) {
             retval = KSUCCESS;
             goto rtn;

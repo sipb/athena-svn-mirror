@@ -1,0 +1,43 @@
+Name: athena-base
+Summary: A few base files needed by any Athena package
+Copyright: MIT
+Group: System Environment/Base
+Requires: sh-utils
+
+%description
+A few base files needed by any Athena package
+
+%install
+if [ X$RPM_BUILD_ROOT = X ]; then
+  cat 1>&2 << MESSAGE
+You must specify a build root in order to build this package.
+Use the --buildroot option to RPM or the buildroot rpmrc entry.
+MESSAGE
+  exit 1
+fi
+
+rm -rf $RPM_BUILD_ROOT
+mkdir $RPM_BUILD_ROOT
+./do.sh -p -s /xxx -d $RPM_BUILD_ROOT install
+
+#Extra stuff
+mkdir -p $RPM_BUILD_ROOT{/usr/athena/man,/etc/athena}
+cp rc.conf $RPM_BUILD_ROOT/etc/athena/rc.conf
+cp mandesc $RPM_BUILD_ROOT/usr/athena/man/mandesc
+
+find $RPM_BUILD_ROOT -type f -or -type l |
+  sed -e "s|^$RPM_BUILD_ROOT||" \
+      -e "s|^/etc/athena/rc.conf$|%config(noreplace) \0|" |
+  sort > rpm.filelist
+
+%post
+
+grep -s -q :101: /etc/group \
+	|| groupadd	-g 101 mit
+
+# Inaugurate /etc/athena/version
+if [ ! -f /etc/athena/version ]; then
+	echo Athena Workstation '(linux)' Version Layered `date` >> \
+		 /etc/athena/version
+fi
+
