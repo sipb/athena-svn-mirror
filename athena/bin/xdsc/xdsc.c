@@ -89,6 +89,7 @@ static void	BuildUserInterface();
 static void	DoTheRightThing();
 static void	DoTheRightThingInReverse();
 static void	CheckEdscVersion();
+static void	BuildSkeleton();
 
 /*
 ** Private globals
@@ -96,7 +97,6 @@ static void	CheckEdscVersion();
 
 static int	filedesparent[2], filedeschild[2];
 static FILE	*inputfile, *outputfile;
-
 static char	*meetinglist;
 
 static Widget	topboxW, botboxW;
@@ -209,6 +209,27 @@ char *argv[];
 	else
 		simplemode = False;
 
+	if (simplemode) {
+		topW = XtInitialize("topwidget", "Lucy", NULL, 0, &argc, argv);
+	}
+	else
+		topW = XtInitialize("topwidget", "Xdsc", NULL, 0, &argc, argv);
+
+	BuildSkeleton();
+
+/*
+** Set our width to 80 chars wide in the current font.  Min value of 500
+** means that all the lower buttons will fit.
+*/
+	char_width = (((TextSinkObject) (toptextW->text.sink))->
+				text_sink.font->max_bounds.width);
+
+	width = 80 * char_width;
+	XtSetArg(args[0], XtNwidth, width < 500 ? 500 : width);
+	XtSetValues(topW, args, 1);
+
+	XtRealizeWidget(topW);
+	XSync(XtDisplay(topW), False);
 
 	if (debug)
 		fprintf (stderr, "Debugging is on\n");
@@ -266,11 +287,6 @@ char *argv[];
 #endif
 #endif
 
-	if (simplemode) {
-		topW = XtInitialize("topwidget", "Lucy", NULL, 0, &argc, argv);
-	}
-	else
-		topW = XtInitialize("topwidget", "Xdsc", NULL, 0, &argc, argv);
 
 	myfree (newpath);
 
@@ -286,21 +302,7 @@ char *argv[];
 		system (commandline);
 	}
 
-	BuildUserInterface ();
-
-/*
-** Set our width to 80 chars wide in the current font.  Min value of 500
-** means that all the lower buttons will fit.
-*/
-	char_width = (((TextSinkObject) (toptextW->text.sink))->
-				text_sink.font->max_bounds.width);
-
-	width = 80 * char_width;
-	XtSetArg(args[0], XtNwidth, width < 500 ? 500 : width);
-	XtSetValues(topW, args, 1);
-
-	XtRealizeWidget(topW);
-
+	BuildUserInterface();
 	dpy = XtDisplay(topW);
 	root_window = XtWindow(topW);
 
@@ -379,6 +381,104 @@ SetUpEdsc()
 	_exit (-1);
 }
 
+/*
+** Put up enough of the application that the user doesn't think it's hung...
+*/
+
+static void
+BuildSkeleton()
+{
+	Arg		args[5];
+	unsigned int	n;
+	static XtActionsRec actions[] = {
+		{"FetchIfNecessary",	FetchIfNecessary},
+		{"MenuCallback",	MenuCallback},
+		{"KeyCallback",		KeyCallback},
+		{"Update",		Update},
+		{"DispatchClick",	DispatchClick},
+		{"TriggerAdd",		TriggerAdd},
+		{"TriggerDelete",	TriggerDelete},
+		{"TriggerFocusMove",	TriggerFocusMove},
+		{"TriggerNum",		TriggerNum},
+		{"TriggerPopdown",	TriggerPopdown},
+		{"TriggerSend",		TriggerSend},
+		{"TriggerWrite",	TriggerWrite},
+		{"DoTheRightThing",	DoTheRightThing},
+		{"DoTheRightThingInReverse",	DoTheRightThingInReverse},
+		{"HelpCB",		HelpCB},
+		{"QuitCB",		QuitCB},
+		{"PopdownCB",		(XtActionProc) PopdownCB},
+		{"Stub",		Stub},
+		{"PrintEvent",		PrintEvent}};
+
+
+	n = 0;
+	paneW = XtCreateManagedWidget(
+			"pane",
+			panedWidgetClass,
+			topW,
+			args,
+			n);
+
+	n = 0;
+	topboxW = XtCreateManagedWidget(
+			"topbox",
+			boxWidgetClass,
+			paneW,
+			args,
+			n);
+
+        XtAppAddActions (       XtWidgetToApplicationContext(topboxW),
+                                actions, XtNumber(actions));
+
+        XawSimpleMenuAddGlobalActions(XtWidgetToApplicationContext(topboxW));
+
+        AddChildren (topboxW, 0);
+
+	n = 0;
+	XtSetArg(args[n], XtNstring, "Please wait...");		n++;
+	XtSetArg(args[n], XtNeditType, XawtextEdit);		n++;
+	XtSetArg(args[n], XtNuseStringInPlace, False);		n++;
+
+	toptextW = (TextWidget) XtCreateManagedWidget(
+			"toptext",
+			asciiTextWidgetClass,
+			paneW,
+			args,
+			n);
+
+	n = 0;
+	XtSetArg(args[n], XtNeditType, XawtextRead);		n++;
+	label1W = XtCreateManagedWidget(
+			"label",
+			asciiTextWidgetClass,
+			paneW,
+			args,
+			n);
+
+	n = 0;
+	botboxW = XtCreateWidget(
+			"botbox",
+			boxWidgetClass,
+			paneW,
+			args,
+			n);
+
+	AddChildren (botboxW, 1);
+
+	if (!simplemode)
+		XtManageChild (botboxW);
+
+	n = 0;
+	XtSetArg(args[n], XtNeditType, XawtextRead);		n++;
+	bottextW = (TextWidget) XtCreateManagedWidget(
+			"bottext",
+			asciiTextWidgetClass,
+			paneW,
+			args,
+			n);
+}
+
 static void
 BuildUserInterface()
 {
@@ -407,6 +507,7 @@ BuildUserInterface()
 		{"Stub",		Stub},
 		{"PrintEvent",		PrintEvent}};
 
+/*
 	n = 0;
 	paneW = XtCreateManagedWidget(
 			"pane",
@@ -430,7 +531,13 @@ BuildUserInterface()
         XawSimpleMenuAddGlobalActions(XtWidgetToApplicationContext(topboxW));
 
         AddChildren (topboxW, 0);
+*/
 
+	n = 0;
+	XtSetArg(args[n], XtNstring, meetinglist);		n++;
+	XtSetValues(toptextW, args, n);
+
+/*
 	n = 0;
 	XtSetArg(args[n], XtNstring, meetinglist);		n++;
 	XtSetArg(args[n], XtNeditType, XawtextEdit);		n++;
@@ -442,7 +549,9 @@ BuildUserInterface()
 			paneW,
 			args,
 			n);
+*/
 
+/*
 	n = 0;
 	XtSetArg(args[n], XtNeditType, XawtextRead);		n++;
 	label1W = XtCreateManagedWidget(
@@ -474,6 +583,7 @@ BuildUserInterface()
 			paneW,
 			args,
 			n);
+*/
 
 /*
 ** Add the pane's accelerators to the text widgets and the other kids.
@@ -611,7 +721,6 @@ XtPointer	call_data;
 		XtSetValues(toptextW, args, n);
 		TakeDownTempMessage();
 		InvalidateHeaders();
-		topscreen = MAIN;
 		MoveToMeeting(INITIALIZE);
 		break;
 
