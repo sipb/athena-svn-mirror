@@ -17,7 +17,7 @@
  * pertaining to lockers.
  */
 
-static const char rcsid[] = "$Id: zephyr.c,v 1.5 1999-09-22 22:25:08 danw Exp $";
+static const char rcsid[] = "$Id: zephyr.c,v 1.6 1999-10-22 16:57:28 danw Exp $";
 
 #include <stdlib.h>
 #include <string.h>
@@ -28,12 +28,6 @@ static const char rcsid[] = "$Id: zephyr.c,v 1.5 1999-09-22 22:25:08 danw Exp $"
 
 #include "locker.h"
 #include "locker_private.h"
-
-/* XXX The old version of attach set timeouts around the Zephyr
- * subscription code. We're not quite sure why. This code doesn't,
- * since it's more annoying to do that in a library context. But
- * if something breaks, this might be why.
- */
 
 /* Magic number taken from zctl sources. */
 #define ZEPHYR_MAXONEPACKET 7
