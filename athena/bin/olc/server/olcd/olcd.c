@@ -44,7 +44,7 @@
 #endif SYSLOG
 
 static const char rcsid[] =
-    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v 1.5 1989-12-14 22:57:49 raeburn Exp $";
+    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v 1.6 1989-12-21 16:52:59 raeburn Exp $";
 
 /* Global variables. */
 
@@ -71,9 +71,14 @@ extern int krb_ap_req_debug;
 static int processing_request;
 static int got_signal;
 static int listening_fd;
-int debug = 0;              /* fudge to make des library work */
 int punt();
 
+
+#ifdef TEST
+#define	ME	"Test OLC daemon"
+#else
+#define	ME	"OLC Daemon"
+#endif
 
 /*
  * Function:	main() is the start-up function for the olcd daemon.
@@ -112,7 +117,6 @@ main(argc, argv)
 #endif HESIOD
 
 #ifdef KERBEROS
-  krb_ap_req_debug = 0;
   strcpy(K_INSTANCEbuf,K_INSTANCE);
   strcpy(SERVER_REALM,DFLT_SERVER_REALM);
 #endif KERBEROS
@@ -301,14 +305,21 @@ main(argc, argv)
       log_error("Can't change wdir.");
     }
 
-  if (!string_eq(hostname, daemon_host_entry->h_name)) 
+  if (!string_eq(hostname, daemon_host_entry->h_name)) {
+#ifdef TEST
       log_error("warning: hesiod information doesn't point here");
+      strcpy (DaemonHost, hostname);
+#else
+      log_error("error: hesiod information doesn't point here; exiting");
+      return 1;
+#endif
+  }
 
 #ifdef KERBEROS
   setenv("KRBTKFILE",TICKET_FILE,TRUE);
 #endif KERBEROS
 
-  log_status("Daemon startup....");
+  log_status (fmt ("%s startup....", ME));
 
   load_db();
   load_data();
@@ -333,6 +344,8 @@ main(argc, argv)
   signal(SIGHUP, punt);	        /* kill -1 $$ */
   signal(SIGTERM, punt);	/* kill $$ */
   signal(SIGPIPE, SIG_IGN);
+
+  get_kerberos_ticket ();
 
   /*
    * Wait for requests (hum drum life of a server)
@@ -364,13 +377,10 @@ main(argc, argv)
 	  else
 	    abort();
 	}
-#ifdef TEST
-      printf("fd: %d\n",s);
-#endif TEST
       process_request(s, &from);
       close(s);
       if (got_signal)
-	punt();
+	  punt(-1);
       n_errs = 0;
     }
 }
@@ -396,14 +406,6 @@ process_request(fd, from)
   int auth;             /* status from authentication */
   struct hostent *hp;	/* host sending request */
   int f;
-
-#ifdef TEST
- if((f = open("/tmp/test", O_CREAT, 0600)) < 0) {
-     fprintf(stderr,"unable to open temp file\n");
- }
- printf("fd: %d\n",f);
- close(f);
-#endif TEST
 
   index = 0;
   processing_request = 1;
@@ -451,11 +453,11 @@ process_request(fd, from)
     {
 
       ++request_count;
-#ifdef	TEST
+#if 0
       printf("%d> Got %s request from %s\n",request_count,
 	     Proc_List[index].description,
 	     request.requester.username);
-#endif	TEST
+#endif
 
       (*(Proc_List[index].olc_proc))(fd, &request, auth);
     }
@@ -525,12 +527,12 @@ flush_olc_userlogs()
  */
 
 int
-punt()
+punt(sig)
+    int sig;
 {
-  char msgbuf[BUFSIZE];
-	
-  sprintf(msgbuf,"OLC Daemon shutting down *now*!");
-  olc_broadcast_message("syslog",msgbuf,"system");
+  olc_broadcast_message("syslog",
+			fmt ("%s shutting down on signal %d.", ME, sig),
+			"system");
 
   close(listening_fd);
   if (processing_request) 
@@ -572,10 +574,10 @@ authenticate(request, addr)
   return(SUCCESS);
 #else KERBEROS
 
-  result = krb_rd_req(&(request->kticket),K_SERVICE,K_INSTANCE,
+  result = krb_rd_req(&(request->kticket),K_SERVICE,K_INSTANCEbuf,
 		      addr,&data,SRVTAB_FILE);
 
-#ifdef TEST
+#if 0
   printf("kerberos result: %d\n",result);
 #endif TEST
 
@@ -592,34 +594,31 @@ int
 get_kerberos_ticket()
 {
   int ret;
-  char mesg[BUF_SIZE];
   char sinstance[INST_SZ];
   char principal[ANAME_SZ];
   char *ptr;
 
-  return;
   strcpy(principal,K_SERVICE);
   strcpy(sinstance,DaemonHost);
   ptr = index(sinstance,'.');
-  *ptr = '\0';
+  if (ptr)
+      *ptr = '\0';
   uncase(sinstance);
 
   if(ticket_time < NOW - ((96L * 5L) - 15L) * 60)
     {
-      sprintf(mesg, "get new tickets: %s %s ", K_SERVICE, sinstance);
-      log_error(mesg);
-      dest_tkt();
-      if((ret = krb_get_svc_in_tkt(K_SERVICE, sinstance, SERVER_REALM, 
-			       "krbtgt", SERVER_REALM,    
-			       96, SRVTAB_FILE)) != KSUCCESS)
-	{
-	  sprintf(mesg,"get_tkt: %s", krb_err_txt[ret]);
-	  log_error(mesg);
-	  ticket_time = 0L;
-	  return(ERROR);
+	log_error (fmt ("get new tickets: %s %s ", K_SERVICE, sinstance));
+	dest_tkt();
+	ret = krb_get_svc_in_tkt(K_SERVICE, sinstance, SERVER_REALM, 
+				 "krbtgt", SERVER_REALM,    
+				 96, SRVTAB_FILE);
+	if (ret != KSUCCESS) {
+	    log_error (fmt ("get_tkt: %s", krb_err_txt[ret]));
+	    ticket_time = 0L;
+	    return(ERROR);
 	}
-      else
-	ticket_time = NOW;
+	else
+	    ticket_time = NOW;
     }
   return(SUCCESS);
 }
