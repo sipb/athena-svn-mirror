@@ -1,7 +1,7 @@
 #!/bin/sh
 # Script to bounce the packs on an Athena workstation
 #
-# $Id: reactivate.sh,v 1.33 1997-12-02 20:23:15 jweiss Exp $
+# $Id: reactivate.sh,v 1.34 1997-12-06 21:18:38 ghudson Exp $
 
 trap "" 1 15
 
@@ -102,6 +102,15 @@ fi
 /etc/athena/cleanup -passwd
 
 if [ "$full" = true ]; then
+	# Remove session files.
+	for i in /var/athena/sessions/*; do
+		# Sanity check.
+		if [ -s $i ]; then
+			logger -p user.notice "Non-empty session record $i"
+		fi
+		rm -f $i
+	end
+
 	# Detach all remote filesystems
 	/bin/athena/detach -O -h -n $quiet $dflags -a
 
