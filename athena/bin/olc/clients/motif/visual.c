@@ -9,7 +9,7 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/visual.c,v $
- *	$Id: visual.c,v 1.10 1992-06-11 17:14:21 lwvanels Exp $
+ *	$Id: visual.c,v 1.10.1.1 1992-08-18 19:34:12 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
@@ -33,6 +33,9 @@
 #include "xolc.h"
 
 #include "xolc.xbm"
+
+/* added by Geetha Vijayan 03/20/92 */
+Widget w_next_btn;
 
 Widget				/* Widget ID's */
   xolc,
@@ -272,6 +275,11 @@ MakeContqForm()
   XtAddCallback(w, XmNactivateCallback, olc_cancel, NULL);
   XtManageChild(w);
 
+/* added by Geetha Vijayan 03/20/92 */
+   w = w_next_btn = XmCreatePushButtonGadget(w_options_rowcol, "next_btn",
+					NULL, 0);
+   XtAddCallback(w, XmNactivateCallback, olc_next, NULL);
+   XtManageChild(w);
   w = w_savelog_btn = XmCreatePushButtonGadget(w_options_rowcol, "savelog_btn",
 					 NULL, 0);
   XtAddCallback(w, XmNactivateCallback, olc_savelog, NULL);
