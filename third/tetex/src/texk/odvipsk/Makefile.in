@@ -1,5 +1,5 @@
-# Makefile for dvipsk -- kb@mail.tug.org. Public domain.
-version = 5.86a
+# Makefile for odvipsk -- kb@mail.tug.org. Public domain.
+version = 5.92b
 
 # Add -DDEFRES=dpi to DEFS to change the default resolution from 600.
 # Add -DSECURE if you will install dvips with special privileges.
@@ -32,19 +32,19 @@ prologues = tex.pro texps.pro texc.pro special.pro finclude.pro \
 objects = dospecial.o dviinput.o emspecial.o fontdef.o loadfont.o       \
 dvips.o tfmload.o download.o prescan.o scanpage.o skippage.o output.o   \
 scalewidth.o dosection.o dopage.o resident.o search.o unpack.o drawPS.o \
-header.o repack.o virtualfont.o dpicheck.o finclude.o t1part.o		\
-pprescan.o papersiz.o color.o bbox.o hps.o
+header.o repack.o virtualfont.o dpicheck.o finclude.o writet1.o		\
+pprescan.o papersiz.o color.o bbox.o hps.o t1part.o
 
 program = odvips
 programs = $(program)
 
 
-default all: $(programs) $(prologues)
+default all: $(programs)
 
 $(program): $(kpathsea) $(objects)
-	$(kpathsea_link) $(objects) $(LOADLIBES)
+	$(kpathsea_link) $(objects) $(LOADLIBES) 
 afm2tfm: $(kpathsea) afm2tfm.o
-	$(kpathsea_link) afm2tfm.o $(LOADLIBES)
+	$(kpathsea_link) afm2tfm.o $(LOADLIBES) 
 # Omit LOADLIBES since no need to dynamically link with kpathsea.
 squeeze: squeeze.o
 	$(link_command) squeeze.o $(LIBS) $(XLOADLIBES)
@@ -55,9 +55,9 @@ texc.lpro: texc.script tex.lpro
 
 ac_include ../make/tkpathsea.mk
 
-check:
-install: install-exec
-uninstall: uninstall-exec
+check: all
+install: install-exec install-data
+uninstall: uninstall-exec uninstall-data
 
 install-exec: all
 	$(SHELL) $(top_srcdir)/../mkinstalldirs ${DESTDIR}$(bindir) ${DESTDIR}$(scriptdir)
