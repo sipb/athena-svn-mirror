@@ -7,7 +7,7 @@
  */
 
 #ifndef lint
-static char rcsid_zephyr_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/zephyr.c,v 1.2 1990-04-19 12:51:12 jfc Exp $";
+static char rcsid_zephyr_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/zephyr.c,v 1.3 1990-04-20 01:30:10 jfc Exp $";
 #endif lint
 
 #include "attach.h"
@@ -35,7 +35,7 @@ static int zephyr_timeout()
 	longjmp(timeout, 1);
 }
 
-static void zephyr_op(func)
+static int zephyr_op(func)
     Code_t (*func)();
 {
     static int inited = 0;
@@ -46,29 +46,29 @@ static void zephyr_op(func)
     sig_catch	(*old_sig_func)();
 
     if (setjmp(timeout))
-	    return;		/* We timed out, punt */
+	    return 1;		/* We timed out, punt */
 
     old_sig_func = signal(SIGALRM, zephyr_timeout);
     alarm(ZEPHYR_TIMEOUT);
     
     if (inited < 0)
-	return;
+	return 1;
 
     if (!num_subs)
-	return;
+	return 0;	/* Can't lose if doing nothing */
 
     if (!inited) {
 	if ((retval = ZInitialize()) != ZERR_NONE) {
 	    fprintf(stderr, "Can't intialize Zephyr library!\n");
 	    inited = -1;
-	    return;
+	    return 1;
 	}
 	if ((wgport = ZGetWGPort()) == -1) {
 	    /*
 	     * Be quiet about windowgram lossage
 	     */
 	    inited = -1;
-	    return;
+	    return 1;
 	}
 	inited = 1;
     }
@@ -82,11 +82,12 @@ static void zephyr_op(func)
 	    fprintf(stderr, "Error while subscribing: %s\n",
 		    error_message(retval));
 	    inited = -1;
-	    return;
+	    return 1;
 	}
     }
     alarm(0);
     (void) signal(SIGALRM, old_sig_func);
+    return 0;
 }
 
 void zephyr_addsub(class)
@@ -103,13 +104,25 @@ void zephyr_addsub(class)
     num_subs++;
 }
 
-void zephyr_sub()
+int zephyr_sub(iszinit)
+int iszinit;
 {
-    zephyr_op(ZSubscribeTo);
+    if(zephyr_op(ZSubscribeTo) && iszinit)
+      {
+	error_status = ERR_ZINITZLOSING;
+	return FAILURE;
+      }
+    return SUCCESS;
 }
 
-void zephyr_unsub()
+int zephyr_unsub(iszinit)
+int iszinit;
 {
-    zephyr_op(ZUnsubscribeTo);
+    if(zephyr_op(ZUnsubscribeTo) && iszinit)
+      {
+	error_status = ERR_ZINITZLOSING;
+	return FAILURE;
+      }
+    return SUCCESS;
 }
 #endif

@@ -7,7 +7,7 @@
  */
 
 #ifndef lint
-static char rcsid_main_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/main.c,v 1.2 1990-04-19 12:06:39 jfc Exp $";
+static char rcsid_main_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/main.c,v 1.3 1990-04-20 01:30:35 jfc Exp $";
 #endif lint
 
 #include "attach.h"
@@ -610,7 +610,7 @@ attachcmd(argc, argv)
 
     /* Flush Zephyr subscriptions */
 #ifdef ZEPHYR
-    zephyr_sub();
+    zephyr_sub(0);
 #endif /* ZEPHYR */
 
     if (gotname == 1)
@@ -761,7 +761,7 @@ detachcmd(argc, argv)
 
     /* Flush Zephyr unsubscriptions */
 #ifdef ZEPHYR
-    zephyr_unsub();
+    zephyr_unsub(0);
 #endif /* ZEPHYR */
     
     if (gotname == 1)
@@ -826,7 +826,6 @@ zinitcmd(argc, argv)
 		}
 	}
 	free_attachtab();
-	zephyr_sub();
-	
+	return((zephyr_sub(1) == FAILURE) ? error_status : 0);
 }
 #endif /* ZEPHYR */
