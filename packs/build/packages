@@ -1,4 +1,4 @@
-# $Id: packages,v 1.301 2005-02-25 06:45:58 ghudson Exp $
+# $Id: packages,v 1.302 2005-02-28 23:26:49 ghudson Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -191,7 +191,7 @@ third/gnome-mag			requires gettext,intltool,libbonobo,ORBit2,glib2,gtk2,at-spi
 third/gnome-media		requires gettext,intltool,glib2,libgnomeui,esound,scrollkeeper,gail,gstreamer
 third/gnome-mime-data		requires gettext,intltool
 third/gnome-netstatus		requires gettext,intltool,libgnomeui,libglade2,gnome-panel,gtk2
-third/gnome-nettool		requires gettext,intltool,libgnomeui,libgnome,gtk2,libglade2,GConf2
+third/gnome-nettool		except solaris requires gettext,intltool,libgnomeui,libgnome,gtk2,libglade2,GConf2
 third/gnome-panel		requires gettext,intltool,glib2,GConf2,gnome-desktop,gtk2,libglade2,libgnome,libgnomeui,ORBit2,gnome-vfs2,libwnck,libbonoboui,pango,libpng
 third/gnome-print		requires gnome-libs,libxml,gdk-pixbuf,freetype,tetex
 third/gnome-speech		requires libbonobo,ORBit2
