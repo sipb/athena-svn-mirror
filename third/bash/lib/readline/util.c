@@ -7,7 +7,7 @@
 
    The GNU Readline Library is free software; you can redistribute it
    and/or modify it under the terms of the GNU General Public License
-   as published by the Free Software Foundation; either version 1, or
+   as published by the Free Software Foundation; either version 2, or
    (at your option) any later version.
 
    The GNU Readline Library is distributed in the hope that it will be
@@ -18,7 +18,7 @@
    The GNU General Public License is often shipped with GNU software, and
    is generally kept in a file called COPYING or LICENSE.  If you do not
    have a copy of the license, write to the Free Software Foundation,
-   675 Mass Ave, Cambridge, MA 02139, USA. */
+   59 Temple Place, Suite 330, Boston, MA 02111 USA. */
 #define READLINE_LIBRARY
 
 #if defined (HAVE_CONFIG_H)
@@ -52,24 +52,10 @@
 /* Some standard library routines. */
 #include "readline.h"
 
+#include "rlprivate.h"
+#include "xmalloc.h"
+
 #define SWAP(s, e)  do { int t; t = s; s = e; e = t; } while (0)
-
-/* Pseudo-globals imported from readline.c */
-extern int readline_echoing_p;
-extern procenv_t readline_top_level;
-extern int rl_line_buffer_len;
-extern Function *rl_last_func;
-
-extern int _rl_defining_kbd_macro;
-extern char *_rl_executing_macro;
-
-/* Pseudo-global functions imported from other library files. */
-extern void _rl_replace_text ();
-extern void _rl_pop_executing_macro ();
-extern void _rl_set_the_line ();
-extern void _rl_init_argument ();
-
-extern char *xmalloc (), *xrealloc ();
 
 /* **************************************************************** */
 /*								    */
@@ -81,10 +67,10 @@ extern char *xmalloc (), *xrealloc ();
    in words, or 1 if it is. */
 
 int _rl_allow_pathname_alphabetic_chars = 0;
-static char *pathname_alphabetic_chars = "/-_=~.#$";
+static const char *pathname_alphabetic_chars = "/-_=~.#$";
 
 int
-alphabetic (c)
+rl_alphabetic (c)
      int c;
 {
   if (ALPHABETIC (c))
@@ -98,16 +84,16 @@ alphabetic (c)
 int
 _rl_abort_internal ()
 {
-  ding ();
+  rl_ding ();
   rl_clear_message ();
   _rl_init_argument ();
-  rl_pending_input = 0;
+  rl_clear_pending_input ();
 
   _rl_defining_kbd_macro = 0;
-  while (_rl_executing_macro)
+  while (rl_executing_macro)
     _rl_pop_executing_macro ();
 
-  rl_last_func = (Function *)NULL;
+  rl_last_func = (rl_command_func_t *)NULL;
   longjmp (readline_top_level, 1);
   return (0);
 }
@@ -127,7 +113,7 @@ rl_tty_status (count, key)
   ioctl (1, TIOCSTAT, (char *)0);
   rl_refresh_line (count, key);
 #else
-  ding ();
+  rl_ding ();
 #endif
   return 0;
 }
@@ -229,13 +215,32 @@ rl_tilde_expand (ignore, key)
    match in s1.  The compare is case insensitive. */
 char *
 _rl_strindex (s1, s2)
-     register char *s1, *s2;
+     register const char *s1, *s2;
 {
   register int i, l, len;
 
   for (i = 0, l = strlen (s2), len = strlen (s1); (len - i) >= l; i++)
     if (_rl_strnicmp (s1 + i, s2, l) == 0)
-      return (s1 + i);
+      return ((char *) (s1 + i));
+  return ((char *)NULL);
+}
+
+/* Find the first occurrence in STRING1 of any character from STRING2.
+   Return a pointer to the character in STRING1. */
+char *
+_rl_strpbrk (string1, string2)
+     const char *string1, *string2;
+{
+  register const char *scan;
+
+  for (; *string1; string1++)
+    {
+      for (scan = string2; *scan; scan++)
+	{
+	  if (*string1 == *scan)
+	    return ((char *)string1);
+	}
+    }
   return ((char *)NULL);
 }
 
@@ -359,7 +364,7 @@ _rl_digit_value (c)
 #undef _rl_savestring
 char *
 _rl_savestring (s)
-     char *s;
+     const char *s;
 {
-  return ((char *)strcpy (xmalloc (1 + (int)strlen (s)), (s)));
+  return (strcpy (xmalloc (1 + (int)strlen (s)), (s)));
 }

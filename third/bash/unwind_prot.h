@@ -16,7 +16,7 @@
 
    You should have received a copy of the GNU General Public License along
    with Bash; see the file COPYING.  If not, write to the Free Software
-   Foundation, 675 Mass Ave, Cambridge, MA 02139, USA. */
+   Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. */
 
 #if !defined (_UNWIND_PROT_H)
 #define _UNWIND_PROT_H
@@ -29,6 +29,7 @@ extern void add_unwind_protect ();
 extern void remove_unwind_protect ();
 extern void run_unwind_protects ();
 extern void unwind_protect_var ();
+extern void clear_unwind_protect_list ();
 
 /* Try to force correct alignment on machines where pointers and ints
    differ in size. */
@@ -55,7 +56,9 @@ typedef union {
 
 /* How to protect a pointer to a string. */
 #define unwind_protect_string(X) \
-  unwind_protect_var ((int *)&(X), (X), sizeof (char *))
+  unwind_protect_var ((int *)&(X), \
+		      ((sizeof (char *) == sizeof (int)) ? (char *) (X) : (char *) &(X)), \
+		       sizeof (char *))
 
 /* How to protect any old pointer. */
 #define unwind_protect_pointer(X) unwind_protect_string (X)

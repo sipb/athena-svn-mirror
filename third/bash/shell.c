@@ -1,30 +1,22 @@
-/* shell.c -- GNU's idea of the POSIX shell specification.
+/* shell.c -- GNU's idea of the POSIX shell specification. */
 
-   This file is part of Bash, the Bourne Again SHell.  Bash is free
-   software; no one can prevent you from reading the source code, or
-   giving it to someone else.  This file is copyrighted under the GNU
-   General Public License, which can be found in the file called
-   COPYING.
+/* Copyright (C) 1987,1991 Free Software Foundation, Inc.
 
-   Copyright (C) 1988, 1991 Free Software Foundation, Inc.
+   This file is part of GNU Bash, the Bourne Again SHell.
 
-   This file is part of GNU Bash.
+   Bash is free software; you can redistribute it and/or modify it
+   under the terms of the GNU General Public License as published by
+   the Free Software Foundation; either version 2, or (at your option)
+   any later version.
 
    Bash is distributed in the hope that it will be useful, but WITHOUT
-   ANY WARRANTY.  No author or distributor accepts responsibility to
-   anyone for the consequences of using it or for whether it serves
-   any particular purpose or works at all, unless he says so in
-   writing.  Refer to the GNU Emacs General Public License for full
-   details.
+   ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+   or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public
+   License for more details.
 
-   Everyone is granted permission to copy, modify and redistribute
-   Bash, but only under the conditions described in the GNU General
-   Public License.  A copy of this license is supposed to have been
-   given to you along with GNU Emacs so you can know your rights and
-   responsibilities.  It should be in a file named COPYING.
-
-   Among other things, the copyright notice and this notice must be
-   preserved on all copies.
+   You should have received a copy of the GNU General Public License
+   along with Bash; see the file COPYING.  If not, write to the Free
+   Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
   Birthdate:
   Sunday, January 10th, 1988.
@@ -91,6 +83,7 @@ extern char **environ;	/* used if no third argument to main() */
 
 extern char *dist_version, *release_status;
 extern int patch_level, build_version;
+extern int shell_level;
 extern int subshell_environment;
 extern int last_command_exit_value;
 extern int line_number;
@@ -209,6 +202,7 @@ struct {
   { "dump-po-strings", Int, &dump_po_strings, (char **)0x0 },
   { "dump-strings", Int, &dump_translatable_strings, (char **)0x0 },
   { "help", Int, &want_initial_help, (char **)0x0 },
+  { "init-file", Charp, (int *)0x0, &bashrc_file },
   { "login", Int, &make_login_shell, (char **)0x0 },
   { "noediting", Int, &no_line_editing, (char **)0x0 },
   { "noprofile", Int, &no_profile, (char **)0x0 },
@@ -238,8 +232,11 @@ char **subshell_envp;
 int default_buffered_input = -1;
 #endif
 
-static int read_from_stdin;		/* -s flag supplied */
-static int want_pending_command;	/* -c flag supplied */
+/* The following two variables are not static so they can show up in $-. */
+int read_from_stdin;		/* -s flag supplied */
+int want_pending_command;	/* -c flag supplied */
+
+static int shell_reinitialized = 0;
 static char *local_pending_command;
 
 static FILE *default_input;
@@ -263,7 +260,7 @@ static void shell_reinitialize ();
 
 static void show_shell_usage ();
 
-#ifdef __CYGWIN32__
+#ifdef __CYGWIN__
 static void
 _cygwin32_check_tmp ()
 {
@@ -277,7 +274,7 @@ _cygwin32_check_tmp ()
 	internal_warning ("/tmp must be a valid directory name");
     }
 }
-#endif /* __CYGWIN32__ */
+#endif /* __CYGWIN__ */
 
 #if defined (NO_MAIN_ENV_ARG)
 /* systems without third argument to main() */
@@ -309,9 +306,9 @@ main (argc, argv, env)
 
   check_dev_tty ();
 
-#ifdef __CYGWIN32__
+#ifdef __CYGWIN__
   _cygwin32_check_tmp ();
-#endif
+#endif /* __CYGWIN__ */
 
   /* Wait forever if we are debugging a login shell. */
   while (debugging_login_shell);
@@ -320,8 +317,8 @@ main (argc, argv, env)
 
   running_setuid = uidget ();
 
-  posixly_correct = (getenv ("POSIXLY_CORRECT") != (char *)NULL) ||
-		    (getenv ("POSIX_PEDANTIC") != (char *)NULL);
+  if (getenv ("POSIXLY_CORRECT") || getenv ("POSIX_PEDANTIC"))
+    posixly_correct = 1;
 
 #if defined (USE_GNU_MALLOC_LIBRARY)
   mcheck (programming_error, (void (*) ())0);
@@ -334,6 +331,8 @@ main (argc, argv, env)
       env = subshell_envp;
       sourced_env = 0;
     }
+
+  shell_reinitialized = 0;
 
   /* Initialize `local' variables for all `invocations' of main (). */
   arg_index = 1;
@@ -457,11 +456,8 @@ main (argc, argv, env)
      other Posix.2 things. */
   if (posixly_correct)
     {
-      posix_initialize (posixly_correct);
-#if defined (READLINE)
-      if (interactive_shell)
-	posix_readline_initialize (posixly_correct);
-#endif
+      bind_variable ("POSIXLY_CORRECT", "y");
+      sv_strict_posix ("POSIXLY_CORRECT");
     }
 
   /* From here on in, the shell must be a normal functioning shell.
@@ -513,7 +509,8 @@ main (argc, argv, env)
     {
       makunbound ("PS1", shell_variables);
       makunbound ("PS2", shell_variables);
-      interactive = expand_aliases = 0;
+      interactive = 0;
+      expand_aliases = posixly_correct;
     }
   else
     {
@@ -540,18 +537,14 @@ main (argc, argv, env)
       exit_immediately_on_error = 0;
 
       run_startup_files ();
-
       exit_immediately_on_error += old_errexit_flag;
     }
 
   /* If we are invoked as `sh', turn on Posix mode. */
   if (act_like_sh)
     {
-      posix_initialize (posixly_correct = 1);
-#if defined (READLINE)
-      if (interactive_shell)
-        posix_readline_initialize (posixly_correct);
-#endif
+      bind_variable ("POSIXLY_CORRECT", "y");
+      sv_strict_posix ("POSIXLY_CORRECT");
     }
 
 #if defined (RESTRICTED_SHELL)
@@ -559,7 +552,8 @@ main (argc, argv, env)
      means that `bash -r' or `set -r' invoked from a startup file will
      turn on the restrictions after the startup files are executed. */
   restricted = saverst || restricted;
-  maybe_make_restricted (shell_name);
+  if (shell_reinitialized == 0)
+    maybe_make_restricted (shell_name);
 #endif /* RESTRICTED_SHELL */
 
   if (wordexp_only)
@@ -572,7 +566,6 @@ main (argc, argv, env)
   if (local_pending_command)
     {
       arg_index = bind_args (argv, arg_index, argc, 0);
-
       startup_state = 2;
 #if defined (ONESHOT)
       run_one_command (local_pending_command);
@@ -603,7 +596,6 @@ main (argc, argv, env)
 
   /* Bind remaining args to $1 ... $n */
   arg_index = bind_args (argv, arg_index, argc, 1);
-
   /* Do the things that should be done only for interactive shells. */
   if (interactive_shell)
     {
@@ -787,11 +779,23 @@ exit_shell (s)
     hangup_all_jobs ();
 
   /* If this shell is interactive, terminate all stopped jobs and
-     restore the original terminal process group. */
-  end_job_control ();
+     restore the original terminal process group.  Don't do this if we're
+     in a subshell and calling exit_shell after, for example, a failed
+     word expansion. */
+  if (subshell_environment == 0)
+    end_job_control ();
 #endif /* JOB_CONTROL */
 
   /* Always return the exit status of the last command to our parent. */
+  exit (s);
+}
+
+/* A wrapper for exit that (optionally) can do other things, like malloc
+   statistics tracing. */
+void
+sh_exit (s)
+     int s;
+{
   exit (s);
 }
 
@@ -810,16 +814,16 @@ exit_shell (s)
 
    then:
 
-         COMMAND	    EXECUTE BASHRC
-         --------------------------------
-         bash -c foo		NO
-         bash foo		NO
-         foo			NO
-         rsh machine ls		YES (for rsh, which calls `bash -c')
-         rsh machine foo	YES (for shell started by rsh) NO (for foo!)
-         echo ls | bash		NO
-         login			NO
-         bash			YES
+	 COMMAND	    EXECUTE BASHRC
+	 --------------------------------
+	 bash -c foo		NO
+	 bash foo		NO
+	 foo			NO
+	 rsh machine ls		YES (for rsh, which calls `bash -c')
+	 rsh machine foo	YES (for shell started by rsh) NO (for foo!)
+	 echo ls | bash		NO
+	 login			NO
+	 bash			YES
 */
 
 static void
@@ -851,27 +855,17 @@ run_startup_files ()
   int old_job_control;
 #endif
   int sourced_login, run_by_ssh;
-  SHELL_VAR *sshvar;
 
   /* get the rshd/sshd case out of the way first. */
   if (interactive_shell == 0 && no_rc == 0 && login_shell == 0 &&
       act_like_sh == 0 && local_pending_command)
     {
-      /* Find out if we were invoked by ssh.  If so, set RUN_BY_SSH to 1. */
-      sshvar = find_variable ("SSH_CLIENT");
-      if (sshvar)
-	{
-	  run_by_ssh = 1;
-	  /* Now that we've tested the variable, we need to unexport it. */
-	  sshvar->attributes &= ~att_exported;
-	  array_needs_making = 1;
-	}
-      else
-	run_by_ssh = 0;
+      run_by_ssh = find_variable ("SSH_CLIENT") != (SHELL_VAR *)0;
+      run_by_ssh |= find_variable ("SSH2_CLIENT") != (SHELL_VAR *)0;
 
       /* If we were run by sshd or we think we were run by rshd, execute
-	 ~/.bashrc. */
-      if (run_by_ssh || isnetconn (fileno (stdin)))
+	 ~/.bashrc if we are a top-level shell. */
+      if ((run_by_ssh || isnetconn (fileno (stdin))) && shell_level < 2)
 	{
 #ifdef SYS_BASHRC
 #  if defined (__OPENNT)
@@ -892,7 +886,15 @@ run_startup_files ()
 
   sourced_login = 0;
 
-  if (login_shell < 0 && posixly_correct == 0)	/* --login flag and not posix */
+  /* A shell begun with the --login flag that is not in posix mode runs
+     the login shell startup files, no matter whether or not it is
+     interactive.  If NON_INTERACTIVE_LOGIN_SHELLS is defined, run the
+     startup files if argv[0][0] == '-' as well. */
+#if defined (NON_INTERACTIVE_LOGIN_SHELLS)
+  if (login_shell && posixly_correct == 0)
+#else
+  if (login_shell < 0 && posixly_correct == 0)
+#endif
     {
       /* We don't execute .bashrc for login shells. */
       no_rc++;
@@ -955,19 +957,19 @@ run_startup_files ()
 	  maybe_execute_file (_prefixInstallPath(SYS_BASHRC, NULL, 0), 1);
 #  else
 	  maybe_execute_file (SYS_BASHRC, 1);
-#  endif`
+#  endif
 #endif
-          maybe_execute_file (bashrc_file, 1);
+	  maybe_execute_file (bashrc_file, 1);
 	}
       /* sh */
       else if (act_like_sh && privileged_mode == 0 && sourced_env++ == 0)
-        execute_env_file (get_string_value ("ENV"));
+	execute_env_file (get_string_value ("ENV"));
     }
   else		/* bash --posix, sh --posix */
     {
       /* bash and sh */
       if (interactive_shell && privileged_mode == 0 && sourced_env++ == 0)
-        execute_env_file (get_string_value ("ENV"));
+	execute_env_file (get_string_value ("ENV"));
     }
 
 #if defined (JOB_CONTROL)
@@ -1011,7 +1013,7 @@ maybe_make_restricted (name)
       set_var_read_only ("SHELL");
       set_var_read_only ("ENV");
       set_var_read_only ("BASH_ENV");
-      restricted++;
+      restricted = 1;
     }
   return (restricted);
 }
@@ -1082,14 +1084,14 @@ run_wordexp (words)
     {
       with_input_from_string (words, "--wordexp");
       if (parse_command () != 0)
-        return (126);
+	return (126);
       if (global_command == 0)
 	{
 	  printf ("0\n0\n");
 	  return (0);
 	}
       if (global_command->type != cm_simple)
-        return (126);
+	return (126);
       wl = global_command->value.Simple->words;
       result = wl ? expand_words_no_vars (wl) : (WORD_LIST *)0;
     }
@@ -1176,7 +1178,7 @@ bind_args (argv, arg_start, arg_end, start_index)
 	  remember_args (args->next, 1);
 	}
       else			/* bind to $1...$n for shell script */
-        remember_args (args, 1);
+	remember_args (args, 1);
 
       dispose_words (args);
     }
@@ -1194,7 +1196,7 @@ static int
 open_shell_script (script_name)
      char *script_name;
 {
-  int fd, e;
+  int fd, e, fd_is_tty;
   char *filename, *path_filename;
   unsigned char sample[80];
   int sample_len;
@@ -1228,8 +1230,14 @@ open_shell_script (script_name)
       exit ((e == ENOENT) ? EX_NOTFOUND : EX_NOINPUT);
     }
 
-  /* Only do this with file descriptors we can seek on. */
-  if (lseek (fd, 0L, 1) != -1)
+#ifdef HAVE_DEV_FD
+  fd_is_tty = isatty (fd);
+#else
+  fd_is_tty = 0;
+#endif
+
+  /* Only do this with non-tty file descriptors we can seek on. */
+  if (fd_is_tty == 0 && (lseek (fd, 0L, 1) != -1))
     {
       /* Check to see if the `file' in `bash file' is a binary file
 	 according to the same tests done by execute_simple_command (),
@@ -1240,7 +1248,7 @@ open_shell_script (script_name)
 	  e = errno;
 	  if ((fstat (fd, &sb) == 0) && S_ISDIR (sb.st_mode))
 	    internal_error ("%s: is a directory", filename);
-          else
+	  else
 	    {
 	      errno = e;
 	      file_error (filename);
@@ -1256,23 +1264,19 @@ open_shell_script (script_name)
       lseek (fd, 0L, 0);
     }
 
-#if defined (BUFFERED_INPUT)
-  default_buffered_input = fd;
-#  if 0
-  /* This is never executed. */
-  if (default_buffered_input == -1)
-    {
-      file_error (filename);
-      exit (EX_NOTFOUND);
-    }
-#  endif
-  SET_CLOSE_ON_EXEC (default_buffered_input);
-#else /* !BUFFERED_INPUT */
   /* Open the script.  But try to move the file descriptor to a randomly
      large one, in the hopes that any descriptors used by the script will
      not match with ours. */
   fd = move_to_high_fd (fd, 0, -1);
 
+#if defined (__CYGWIN__) && defined (O_TEXT)
+  setmode (fd, O_TEXT);
+#endif
+
+#if defined (BUFFERED_INPUT)
+  default_buffered_input = fd;
+  SET_CLOSE_ON_EXEC (default_buffered_input);
+#else /* !BUFFERED_INPUT */
   default_input = fdopen (fd, "r");
 
   if (default_input == 0)
@@ -1286,13 +1290,10 @@ open_shell_script (script_name)
     SET_CLOSE_ON_EXEC (fileno (default_input));
 #endif /* !BUFFERED_INPUT */
 
-  if (interactive_shell == 0 || isatty (fd) == 0)
-    /* XXX - does this really need to be called again here? */
-    init_noninteractive ();
-  else
+  /* Just about the only way for this code to be executed is if something
+     like `bash -i /dev/stdin' is executed. */
+  if (interactive_shell && fd_is_tty)
     {
-      /* I don't believe that this code is ever executed, even in
-	 the presence of /dev/fd. */
       dup2 (fd, 0);
       close (fd);
       fd = 0;
@@ -1303,6 +1304,7 @@ open_shell_script (script_name)
       default_input = stdin;
 #endif
     }
+
   free (filename);
   return (fd);
 }
@@ -1315,10 +1317,10 @@ set_bash_input ()
      no-delay mode. */
 #if defined (BUFFERED_INPUT)
   if (interactive == 0)
-    unset_nodelay_mode (default_buffered_input);
+    sh_unset_nodelay_mode (default_buffered_input);
   else
 #endif /* !BUFFERED_INPUT */
-    unset_nodelay_mode (fileno (stdin));
+    sh_unset_nodelay_mode (fileno (stdin));
 
   /* with_input_from_stdin really means `with_input_from_readline' */
   if (interactive && no_line_editing == 0)
@@ -1454,8 +1456,8 @@ shell_initialize ()
   /* Line buffer output for stderr and stdout. */
   if (shell_initialized == 0)
     {
-      setlinebuf (stderr);
-      setlinebuf (stdout);
+      sh_setlinebuf (stderr);
+      sh_setlinebuf (stdout);
     }
 
   /* Sort the array of shell builtins so that the binary search in
@@ -1560,10 +1562,7 @@ shell_reinitialize ()
   delete_all_variables (shell_variables);
   delete_all_variables (shell_functions);
 
-#if 0
-  /* Pretend the PATH variable has changed. */
-  flush_hashed_filenames ();
-#endif
+  shell_reinitialized = 1;
 }
 
 static void

@@ -17,7 +17,7 @@
 
    You should have received a copy of the GNU General Public License along
    with Bash; see the file COPYING.  If not, write to the Free Software
-   Foundation, 675 Mass Ave, Cambridge, MA 02139, USA. */
+   Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. */
 
 #if !defined (_COMMAND_H_)
 #define _COMMAND_H_
@@ -39,6 +39,9 @@ enum r_instruction {
 #define RESTRICTED_REDIRECT -3	/* can only happen in restricted shells. */
 #define HEREDOC_REDIRECT    -4  /* here-doc temp file can't be created */
 
+#define CLOBBERING_REDIRECT(ri) \
+  (ri == r_output_direction || ri == r_err_and_out)
+
 #define OUTPUT_REDIRECT(ri) \
   (ri == r_output_direction || ri == r_input_output || ri == r_err_and_out)
 
@@ -55,7 +58,7 @@ enum r_instruction {
 /* Command Types: */
 enum command_type { cm_for, cm_case, cm_while, cm_if, cm_simple, cm_select,
 		    cm_connection, cm_function_def, cm_until, cm_group,
-		    cm_arith, cm_cond };
+		    cm_arith, cm_cond, cm_arith_for, cm_subshell };
 
 /* Possible values for the `flags' field of a WORD_DESC. */
 #define W_HASDOLLAR	0x01	/* Dollar sign present. */
@@ -64,12 +67,14 @@ enum command_type { cm_for, cm_case, cm_while, cm_if, cm_simple, cm_select,
 #define W_GLOBEXP	0x08	/* This word is the result of a glob expansion. */
 #define W_NOSPLIT	0x10	/* Do not perform word splitting on this word. */
 #define W_NOGLOB	0x20	/* Do not perform globbing on this word. */
+#define W_NOSPLIT2	0x40	/* Don't split word except for $@ expansion. */
 
 /* Possible values for subshell_environment */
 #define SUBSHELL_ASYNC	0x01	/* subshell caused by `command &' */
 #define SUBSHELL_PAREN	0x02	/* subshell caused by ( ... ) */
 #define SUBSHELL_COMSUB	0x04	/* subshell caused by `command` or $(command) */
 #define SUBSHELL_FORK	0x08	/* subshell caused by executing a disk command */
+#define SUBSHELL_PIPE	0x10	/* subshell from a pipeline element */
 
 /* A structure which represents a word. */
 typedef struct word_desc {
@@ -151,6 +156,10 @@ typedef struct command {
 #if defined (COND_COMMAND)
     struct cond_com *Cond;
 #endif
+#if defined (ARITH_FOR_COMMAND)
+    struct arith_for_com *ArithFor;
+#endif
+    struct subshell_com *Subshell;
   } value;
 } COMMAND;
 
@@ -187,6 +196,17 @@ typedef struct for_com {
 			   During execution, NAME is bound to successive
 			   members of MAP_LIST. */
 } FOR_COM;
+
+#if defined (ARITH_FOR_COMMAND)
+typedef struct arith_for_com {
+  int flags;
+  int line;	/* generally used for error messages */
+  WORD_LIST *init;
+  WORD_LIST *test;
+  WORD_LIST *step;
+  COMMAND *action;
+} ARITH_FOR_COM;
+#endif
 
 #if defined (SELECT_COMMAND)
 /* KSH SELECT command. */
@@ -266,6 +286,11 @@ typedef struct group_com {
   int ignore;			/* See description of CMD flags. */
   COMMAND *command;
 } GROUP_COM;
+
+typedef struct subshell_com {
+  int flags;
+  COMMAND *command;
+} SUBSHELL_COM;
 
 extern COMMAND *global_command;
 

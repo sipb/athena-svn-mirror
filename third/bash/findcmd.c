@@ -6,7 +6,7 @@
 
    Bash is free software; you can redistribute it and/or modify it
    under the terms of the GNU General Public License as published by
-   the Free Software Foundation; either version 1, or (at your option)
+   the Free Software Foundation; either version 2, or (at your option)
    any later version.
 
    Bash is distributed in the hope that it will be useful, but WITHOUT
@@ -160,6 +160,16 @@ is_directory (file)
   return (file_status (file) & FS_DIRECTORY);
 }
 
+int
+executable_or_directory (file)
+     char *file;
+{
+  int s;
+
+  s = file_status (file);
+  return ((s & FS_EXECABLE) || (s & FS_DIRECTORY));
+}
+
 /* Locate the executable file referenced by NAME, searching along
    the contents of the shell PATH variable.  Return a new string
    which is the full pathname to the file, or NULL if the file
@@ -243,10 +253,10 @@ get_next_path_element (path_list, path_index_pointer)
 
   path = extract_colon_unit (path_list, path_index_pointer);
 
-  if (!path)
+  if (path == 0)
     return (path);
 
-  if (!*path)
+  if (*path == '\0')
     {
       free (path);
       path = savestring (".");
@@ -305,12 +315,12 @@ search_for_command (pathname)
       /* If $PATH is in the temporary environment, we've already retrieved
 	 it, so don't bother trying again. */
       if (temp_path)
-        {
+	{
 	  command = find_user_command_in_path (pathname, value_cell (path),
 					       FS_EXEC_PREFERRED|FS_NODIRS);
 	  if (tempvar_p (path))
 	    dispose_variable (path);
-        }
+	}
       else
 	command = find_user_command (pathname);
       if (command && hashing_enabled && temp_path == 0)
@@ -338,7 +348,7 @@ user_command_matches (name, flags, state)
       if (match_list == 0)
 	{
 	  match_list_size = 5;
-	  match_list = (char **)xmalloc (match_list_size * sizeof(char *));
+	  match_list = alloc_array (match_list_size);
 	}
 
       /* Clear out the old match list. */
@@ -402,24 +412,6 @@ user_command_matches (name, flags, state)
   return (match);
 }
 
-/* Turn PATH, a directory, and NAME, a filename, into a full pathname.
-   This allocates new memory and returns it. */
-static char *
-make_full_pathname (path, name, name_len)
-     char *path, *name;
-     int name_len;
-{
-  char *full_path;
-  int path_len;
-
-  path_len = strlen (path);
-  full_path = xmalloc (2 + path_len + name_len);
-  strcpy (full_path, path);
-  full_path[path_len] = '/';
-  strcpy (full_path + path_len + 1, name);
-  return (full_path);
-}
-
 static char *
 find_absolute_program (name, flags)
      char *name;
@@ -458,7 +450,7 @@ find_in_path_element (name, path, flags, name_len, dotinfop)
   if (dot_found_in_search == 0 && *xpath == '.')
     dot_found_in_search = same_file (".", xpath, dotinfop, (struct stat *)NULL);
 
-  full_path = make_full_pathname (xpath, name, name_len);
+  full_path = sh_makepath (xpath, name, 0);
 
   status = file_status (full_path);
 
@@ -575,6 +567,14 @@ find_user_command_in_path (name, path_list, flags)
   /* We didn't find exactly what the user was looking for.  Return
      the contents of FILE_TO_LOSE_ON which is NULL when the search
      required an executable, or non-NULL if a file was found and the
-     search would accept a non-executable as a last resort. */
+     search would accept a non-executable as a last resort.  If the
+     caller specified FS_NODIRS, and file_to_lose_on is a directory,
+     return NULL. */
+  if (file_to_lose_on && (flags & FS_NODIRS) && is_directory (file_to_lose_on))
+    {
+      free (file_to_lose_on);
+      file_to_lose_on = (char *)NULL;
+    }
+
   return (file_to_lose_on);
 }

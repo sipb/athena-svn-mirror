@@ -7,7 +7,7 @@
 
    The GNU Readline Library is free software; you can redistribute it
    and/or modify it under the terms of the GNU General Public License
-   as published by the Free Software Foundation; either version 1, or
+   as published by the Free Software Foundation; either version 2, or
    (at your option) any later version.
 
    The GNU Readline Library is distributed in the hope that it will be
@@ -18,14 +18,12 @@
    The GNU General Public License is often shipped with GNU software, and
    is generally kept in a file called COPYING or LICENSE.  If you do not
    have a copy of the license, write to the Free Software Foundation,
-   675 Mass Ave, Cambridge, MA 02139, USA. */
+   59 Temple Place, Suite 330, Boston, MA 02111 USA. */
 #define READLINE_LIBRARY
 
 #if defined (HAVE_CONFIG_H)
 #  include <config.h>
 #endif
-
-extern char *xmalloc (), *xrealloc ();
 
 #if !defined (BUFSIZ)
 #include <stdio.h>
@@ -40,7 +38,15 @@ extern char *xmalloc (), *xrealloc ();
 #include "rlconf.h"
 #include "readline.h"
 
-extern int _rl_qsort_string_compare ();
+#include "xmalloc.h"
+
+#ifdef __STDC__
+typedef int QSFUNC (const void *, const void *);
+#else
+typedef int QSFUNC ();
+#endif
+
+extern int _rl_qsort_string_compare __P((char **, char **));
 
 FUNMAP **funmap;
 static int funmap_size;
@@ -102,7 +108,7 @@ static FUNMAP default_funmap[] = {
   { "non-incremental-reverse-search-history", rl_noninc_reverse_search },
   { "non-incremental-forward-search-history-again", rl_noninc_forward_search_again },
   { "non-incremental-reverse-search-history-again", rl_noninc_reverse_search_again },
-#ifdef __CYGWIN32__
+#ifdef __CYGWIN__
   { "paste-from-clipboard", rl_paste_from_clipboard },
 #endif
   { "possible-completions", rl_possible_completions },
@@ -136,7 +142,6 @@ static FUNMAP default_funmap[] = {
   { "vi-arg-digit", rl_vi_arg_digit },
   { "vi-back-to-indent", rl_vi_back_to_indent },
   { "vi-bWord", rl_vi_bWord },
-  { "vi-bracktype", rl_vi_bracktype },
   { "vi-bword", rl_vi_bword },
   { "vi-change-case", rl_vi_change_case },
   { "vi-change-char", rl_vi_change_char },
@@ -176,13 +181,13 @@ static FUNMAP default_funmap[] = {
   { "vi-yank-to", rl_vi_yank_to },
 #endif /* VI_MODE */
 
- {(char *)NULL, (Function *)NULL }
+ {(char *)NULL, (rl_command_func_t *)NULL }
 };
 
 int
 rl_add_funmap_entry (name, function)
-     char *name;
-     Function *function;
+     const char *name;
+     rl_command_func_t *function;
 {
   if (funmap_entry + 2 >= funmap_size)
     {
@@ -219,36 +224,27 @@ rl_initialize_funmap ()
 /* Produce a NULL terminated array of known function names.  The array
    is sorted.  The array itself is allocated, but not the strings inside.
    You should free () the array when you done, but not the pointrs. */
-char **
+const char **
 rl_funmap_names ()
 {
-  char **result;
+  const char **result;
   int result_size, result_index;
 
   /* Make sure that the function map has been initialized. */
   rl_initialize_funmap ();
 
-  for (result_index = result_size = 0, result = (char **)NULL; funmap[result_index]; result_index++)
+  for (result_index = result_size = 0, result = (const char **)NULL; funmap[result_index]; result_index++)
     {
       if (result_index + 2 > result_size)
 	{
 	  result_size += 20;
-	  result = (char **)xrealloc (result, result_size * sizeof (char *));
+	  result = (const char **)xrealloc (result, result_size * sizeof (char *));
 	}
 
       result[result_index] = funmap[result_index]->name;
       result[result_index + 1] = (char *)NULL;
     }
 
-  qsort (result, result_index, sizeof (char *), _rl_qsort_string_compare);
+  qsort (result, result_index, sizeof (char *), (QSFUNC *)_rl_qsort_string_compare);
   return (result);
 }
-
-/* Things that mean `Control'. */
-char *possible_control_prefixes[] = {
-  "Control-", "C-", "CTRL-", (char *)NULL
-};
-
-char *possible_meta_prefixes[] = {
-  "Meta", "M-", (char *)NULL
-};

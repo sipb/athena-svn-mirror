@@ -18,7 +18,7 @@
    The GNU General Public License is often shipped with GNU software, and
    is generally kept in a file called COPYING or LICENSE.  If you do not
    have a copy of the license, write to the Free Software Foundation,
-   675 Mass Ave, Cambridge, MA 02139, USA. */
+   59 Temple Place, Suite 330, Boston, MA 02111 USA. */
 #define READLINE_LIBRARY
 
 #if defined (HAVE_CONFIG_H)
@@ -67,44 +67,22 @@ extern int errno;
 /* Some standard library routines. */
 #include "readline.h"
 
+#include "rlprivate.h"
+#include "rlshell.h"
+#include "xmalloc.h"
+
 /* What kind of non-blocking I/O do we have? */
 #if !defined (O_NDELAY) && defined (O_NONBLOCK)
 #  define O_NDELAY O_NONBLOCK	/* Posix style */
 #endif
 
-/* Functions imported from other files in the library. */
-extern char *xmalloc (), *xrealloc ();
-
-/* Variables and functions from macro.c. */
-extern void _rl_add_macro_char ();
-extern void _rl_with_macro_input ();
-extern int _rl_next_macro_key ();
-extern int _rl_defining_kbd_macro;
-
-#if defined (VI_MODE)
-extern void _rl_vi_set_last ();
-extern int _rl_vi_textmod_command ();
-#endif /* VI_MODE */
-
-extern FILE *rl_instream, *rl_outstream;
-extern Function *rl_last_func;
-extern int rl_key_sequence_length;
-extern int rl_pending_input;
-extern int rl_editing_mode;
-
-extern Keymap _rl_keymap;
-
-extern int _rl_convert_meta_chars_to_ascii;
-
-#if defined (__GO32__)
-#  include <pc.h>
-#endif /* __GO32__ */
-
 /* Non-null means it is a pointer to a function to run while waiting for
    character input. */
-Function *rl_event_hook = (Function *)NULL;
+rl_hook_func_t *rl_event_hook = (rl_hook_func_t *)NULL;
 
-Function *rl_getc_function = rl_getc;
+rl_getc_func_t *rl_getc_function = rl_getc;
+
+static int _keyboard_input_timeout = 100000;		/* 0.1 seconds; it's in usec */
 
 /* **************************************************************** */
 /*								    */
@@ -176,17 +154,6 @@ rl_unget_char (key)
 static void
 rl_gather_tyi ()
 {
-#if defined (__GO32__)
-  char input;
-
-  if (isatty (0) && kbhit () && ibuffer_space ())
-    {
-      int i;
-      i = (*rl_getc_function) (rl_instream);
-      rl_stuff_char (i);
-    }
-#else /* !__GO32__ */
-
   int tty;
   register int tem, result;
   int chars_avail;
@@ -204,7 +171,7 @@ rl_gather_tyi ()
   FD_SET (tty, &readfds);
   FD_SET (tty, &exceptfds);
   timeout.tv_sec = 0;
-  timeout.tv_usec = 100000;	/* 0.1 seconds */
+  timeout.tv_usec = _keyboard_input_timeout;
   if (select (tty + 1, &readfds, (fd_set *)NULL, &exceptfds, &timeout) <= 0)
     return;	/* Nothing to read. */
 #endif
@@ -255,7 +222,18 @@ rl_gather_tyi ()
       if (chars_avail)
 	rl_stuff_char (input);
     }
-#endif /* !__GO32__ */
+}
+
+int
+rl_set_keyboard_input_timeout (u)
+     int u;
+{
+  int o;
+
+  o = _keyboard_input_timeout;
+  if (u > 0)
+    _keyboard_input_timeout = u;
+  return (o);
 }
 
 /* Is there input available to be read on the readline input file
@@ -280,7 +258,7 @@ _rl_input_available ()
   FD_SET (tty, &readfds);
   FD_SET (tty, &exceptfds);
   timeout.tv_sec = 0;
-  timeout.tv_usec = 100000;	/* 0.1 seconds */
+  timeout.tv_usec = _keyboard_input_timeout;
   return (select (tty + 1, &readfds, (fd_set *)NULL, &exceptfds, &timeout) > 0);
 #endif
 
@@ -329,6 +307,7 @@ rl_stuff_char (key)
     {
       key = NEWLINE;
       rl_pending_input = EOF;
+      RL_SETSTATE (RL_STATE_INPUTPENDING);
     }
   ibuffer[push_index++] = key;
   if (push_index >= ibuffer_len)
@@ -343,6 +322,16 @@ rl_execute_next (c)
      int c;
 {
   rl_pending_input = c;
+  RL_SETSTATE (RL_STATE_INPUTPENDING);
+  return 0;
+}
+
+/* Clear any pending input pushed with rl_execute_next() */
+int
+rl_clear_pending_input ()
+{
+  rl_pending_input = 0;
+  RL_UNSETSTATE (RL_STATE_INPUTPENDING);
   return 0;
 }
 
@@ -363,7 +352,7 @@ rl_read_key ()
   if (rl_pending_input)
     {
       c = rl_pending_input;
-      rl_pending_input = 0;
+      rl_clear_pending_input ();
     }
   else
     {
@@ -377,6 +366,8 @@ rl_read_key ()
 	  while (rl_event_hook && rl_get_char (&c) == 0)
 	    {
 	      (*rl_event_hook) ();
+	      if (rl_done)		/* XXX - experimental */
+		return ('\n');
 	      rl_gather_tyi ();
 	    }
 	}
@@ -394,13 +385,8 @@ int
 rl_getc (stream)
      FILE *stream;
 {
-  int result, flags;
+  int result;
   unsigned char c;
-
-#if defined (__GO32__)
-  if (isatty (0))
-    return (getkey () & 0x7F);
-#endif /* __GO32__ */
 
   while (1)
     {
@@ -420,40 +406,31 @@ rl_getc (stream)
 #endif
 
 #if defined (EWOULDBLOCK)
-      if (errno == EWOULDBLOCK)
+#  define X_EWOULDBLOCK EWOULDBLOCK
+#else
+#  define X_EWOULDBLOCK -99
+#endif
+
+#if defined (EAGAIN)
+#  define X_EAGAIN EAGAIN
+#else
+#  define X_EAGAIN -99
+#endif
+
+      if (errno == X_EWOULDBLOCK || errno == X_EAGAIN)
 	{
-	  if ((flags = fcntl (fileno (stream), F_GETFL, 0)) < 0)
+	  if (sh_unset_nodelay_mode (fileno (stream)) < 0)
 	    return (EOF);
-	  if (flags & O_NDELAY)
-	    {
-	      flags &= ~O_NDELAY;
-	      fcntl (fileno (stream), F_SETFL, flags);
-	      continue;
-	    }
 	  continue;
 	}
-#endif /* EWOULDBLOCK */
 
-#if defined (_POSIX_VERSION) && defined (EAGAIN) && defined (O_NONBLOCK)
-      if (errno == EAGAIN)
-	{
-	  if ((flags = fcntl (fileno (stream), F_GETFL, 0)) < 0)
-	    return (EOF);
-	  if (flags & O_NONBLOCK)
-	    {
-	      flags &= ~O_NONBLOCK;
-	      fcntl (fileno (stream), F_SETFL, flags);
-	      continue;
-	    }
-	}
-#endif /* _POSIX_VERSION && EAGAIN && O_NONBLOCK */
+#undef X_EWOULDBLOCK
+#undef X_EAGAIN
 
-#if !defined (__GO32__)
       /* If the error that we received was SIGINT, then try again,
 	 this is simply an interrupted system call to read ().
 	 Otherwise, some error ocurred, also signifying EOF. */
       if (errno != EINTR)
 	return (EOF);
-#endif /* !__GO32__ */
     }
 }

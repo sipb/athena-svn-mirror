@@ -48,8 +48,8 @@ lib/readline/display.c
 	  the code that decides whether the cursor is at the beginning of
 	  an otherwise-empty line
 
-				    1/2
-				    ---
+				 1/2/1997
+				 --------
 support/bashbug.sh
 	- fixed a typo, thanks to eggert@twinsun.com
 
@@ -3399,8 +3399,8 @@ parse.y
 
 [bash-2.02-alpha1 frozen]
 
-				  1/6/98
-				  ------
+				 1/6/1998
+				 --------
 lib/glob/fnmatch.c
 	- fix define for isgraph so that it does not return success for space
 	- fix strcompare() so that the call to strcoll is surrounded by
@@ -5034,8 +5034,8 @@ lib/glob/fnmatch.c
 	- include <string.h> or <strings.h> as appropriate for strchr()
 	  declaration
 
-				  1/4/99
-				  ------
+				 1/4/1999
+				 --------
 print_cmd.c
 	- don't print bare words when printing conditional expressions in
 	  print_cond_node, use cprintf("%s", cond->op->word)
@@ -5210,3 +5210,4832 @@ cross-build/opennt.cache
 	  files are
 
 [bash-2.03 released]
+
+				   2/19
+				   ----
+configure.in
+	- changed OPENNT_ROOT to INTERIX_ROOT for building on Interix
+
+support/config.guess
+	- added two stanzas for Interix running on alpha and intel hardware
+
+				   2/22
+				   ----
+config-bot.h
+	- if PROMPT_STRING_DECODE is not defined, #undef PPROMPT before
+	  redefining it, to avoid warning messages
+
+execute_cmd.c
+	- set jobs_hack in execute_subshell_builtin_or_function only if
+	  JOB_CONTROL is defined
+
+				   2/24
+				   ----
+trap.c
+	- fixed an obscure bug caused by a race condition in run_pending_traps.
+	  Read the comments in the source code for a full description of the
+	  problem and solution
+
+				    3/1
+				    ---
+aclocal.m4
+	- new test, BASH_STRUCT_TIMEVAL, which tries to compile a code
+	  fragment that includes <sys/time.h> and <time.h> as appropriate
+	  and defines HAVE_TIMEVAL if the compile succeeds
+
+configure.in
+	- call BASH_STRUCT_TIMEVAL rather than running a pair of
+	  AC_HEADER_EGREPs on sys/time.h and time.h
+
+lib/readline/histfile.c
+	- include "posixstat.h" rather than <sys/stat.h>
+	- in history_truncate_file, only try to truncate if the history file
+	  is a regular file
+
+				    3/2
+				    ---
+aclocal.m4
+	- changed BASH_STRUCT_TIMEVAL back to using a pair of
+	  AC_EGREP_HEADERs instead of compiling a program fragment
+
+lib/readline/readline.c
+	- readline_internal_charloop should cast the first argument to
+	  _rl_dispatch to `unsigned char' to avoid problems with negative
+	  array indices on systems where signed chars are the default
+
+lib/readline/kill.c
+	- instead of doing a sequence of next_history() calls in
+	  rl_yank_nth_arg_internal, save and restore the history
+	  position explicitly after finding the correct entry.  This
+	  attempts to ensure that rl_yank_nth_arg leaves the history
+	  pointer set to the same position as when it was called.
+	  Fix from Vasco Pedro <vp@di.fct.unl.pt>
+
+				    3/5
+				    ---
+redir.c
+	- broke code that opens file for redirection in do_redirection_internal
+	  into a separate function: redir_open(path, flags, mode, ri)
+
+general.h
+	- changed STREQN so that it evaluates to 1 (strings are equivalent)
+	  if N == 0, to match the behavior of strncmp
+
+lib/sh/zwrite.c
+	- new file, zwrite() from builtins/evalstring.c
+
+builtins/evalstring.c
+	- removed private definition of zwrite
+
+builtins/common.c
+	- double_quote needs to protect newlines with backslashes as well
+	- new function, un_double_quote, to remove backslashes proctecting
+	  characters that are special in double quotes
+
+builtins/common.h
+	- new extern declaration for un_double_quote
+
+parse.y
+	- changed read_token_word to requote the expanded value of $'...'
+	  using single_quote
+	- added a new flag to parse_matched_pair: P_ALLOWESC.  It allows
+	  backslashes to quote embedded single quotes, and is used by
+	  the $'...' translation code for better ksh93-compatibility
+	- changed localeexpand to call mk_msgstr on the string passed
+	  before displaying it if all we're doing is displaying translatable
+	  strings in `po' format.  mk_msgstr quotes backslashes and double
+	  quotes in the string passed with backslashes, and encloses the
+	  result in double quotes.  If only -D is supplied, the string is
+	  not changed at all -- this is what ksh93 does
+
+lib/readline/rlconf.h
+	- removed PAREN_MATCHING #define, paren matching is always compiled
+	  into readline
+
+lib/readline/parens.c
+	- removed code that was active if PAREN_MATCHING was not defined
+	- added _rl_enable_paren_matching, which is called when the readline
+	  variable `blink-matching-paren' is assigned a value and changes
+	  the appropriate key bindings in emacs_standard_keymap
+
+lib/readline/bind.c
+	- no more PAREN_MATCHING defines, `blink-matching-paren' is always
+	  available
+	- if `blink-matching-paren' is assigned a value, call
+	  _rl_enable_paren_matching (rl_blink_matching_paren)
+
+lib/readline/emacs_keymap.c
+	- removed PAREN_MATCHING defines; the default key bindings for
+	  ), ], and } are self-insert
+
+				    3/7
+				    ---
+stringlib.c
+	- added an extra argument to ansicstr so that `echo -e' will not
+	  convert \' to '
+
+externs.h
+	- changed extern declaration for ansicstr
+
+parse.y, builtins/{echo,printf}.def
+	- changed calls to ansicstr() appropriately
+
+eval.c
+	- in parse_string_to_word_list, if an unexpected token is encountered
+	  that causes the string to not parse to a simple command, or to
+	  completely consume the string, display an error message and jump
+	  back to the top level after restoring the parsing environment,
+	  returning an error status from the attempted assignment
+
+				    3/8
+				    ---
+lib/glob/fnmatch.c
+	- fixed patscan and extmatch to handle embedded [...](...) patterns
+	  better
+
+tests/{extglob2.{tests,right},run-extglob2}
+	- an additional set of ksh extended globbing tests, cribbed from zsh
+
+				   3/10
+				   ----
+general.c
+	- changed unset_nodelay_mode slightly to make sure it handles both
+	  O_NDELAY and O_NONBLOCK if they have different values; it now
+	  returns a value of 0 on success (or no action); -1 on failure
+
+general.h
+	- changed extern declaration for unset_nodelay_mode
+
+
+lib/readline/shell.c
+	- new function: unset_nodelay_mode; identical to definition in
+	  general.c
+
+lib/readline/input.c
+	- changed rl_getc to call unset_nodelay_mode if the read fails with
+	  errno == EWOULDBLOCK || errno == EAGAIN
+
+				   3/11
+				   ----
+lib/termcap/termcap.c
+	- minor changes from termutils-2.0
+	- minor change to MS-DOS version of valid_filename_p so MS-DOS-specific
+	  code from tgetent() can be removed (from Michel@smr.nl)
+
+lib/readline/bind.c
+	- in _rl_read_file, null-terminate the buffer at the number of
+	  characters actually read, not what stat() says the file size is
+	- use ~/_inputrc as a last-ditch inputrc filename on MS-DOS
+
+lib/readline/complete.c
+	- change printable_part to handle MS-DOS `drive-letter:' pathname
+	  prefixes
+	- removed __GO32__ code, since it's for DJGPP 1.x, which is not
+	  supported any more, and they don't work for DJGPP 2.x
+	- added code to support MS-DOS drive letter prefixes and //X/...
+	  to filename_completion_function
+	- _rl_completion_case_fold defaults to 1 on MS-DOS
+
+lib/readline/{display,input,readline,rltty,signals,terminal}.c
+	- removed __GO32__ code
+
+lib/readline/histfile.c
+	- make read_history_range and history_truncate_file work with the
+	  actual number of characters read from the file, not the file size
+	  as reported by stat()
+
+lib/readline/readline.c
+	- change bind_arrow_keys_internal to bind MS-DOS arrow keys to the
+	  appropriate functions if __MSDOS__ is defined
+
+lib/readline/rltty.c
+	- make sure set_winsize is always defined, with a null body if
+	  TIOCGWINSZ is not defined
+
+lib/readline/shell.c
+	- include <stdio.h>, since this file uses sprintf
+
+support/shobj-conf
+	- MS-DOS does not support shared objects
+
+lib/tilde/tilde.c
+	- change tilde_find_suffix and isolate_tilde_prefix to understand
+	  backslash as a pathname separator on MS-DOS
+
+				   3/12
+				   ----
+lib/readline/{bind,readline,terminal}.c
+	- no longer need to include <signal.h>
+
+lib/readline/terminal.c
+	- don't need to include <setjmp.h>
+
+builtins/history.def
+	- broke the code than handles deleting a particular history entry
+	  from the history list out into a separate function: delete_histent
+	- added `-d offset' option to delete the history entry at position
+	  OFFSET, as displayed when the history is listed
+
+jobs.c, nojobs.c
+	- new function, count_all_jobs(), returns the number of active jobs
+	  in the jobs list
+
+jobs.h
+	- extern declaration for count_all_jobs()
+
+configure.in
+	- check for C library function ttyname()
+
+config.h.in
+	- define HAVE_TTYNAME if configure finds ttyname(3)
+
+parse.y
+	- two new escape sequences for decode_prompt_string:
+
+		\j	number of active jobs in jobs list
+		\l	basename of shell's tty device name
+
+doc/{bash.1,bashref.texi}, lib/readline/doc/hsuser.texi
+	- documented new `history -d' option
+	- documented new \j and \l prompt string expansion sequences
+
+lib/readline/bind.c
+	- new static state variable, currently_reading_init_file, set to
+	  1 while _rl_read_init_file is operating on a file
+	- changed _rl_init_file_error to include the name and line number
+	  from the init file only if currently_reading_init_file is non-zero
+	  (this is needed since applications like bash can call
+	  rl_parse_and_bind, and error messages from those calls would be
+	  misleading if they referred to the last inputrc file read
+
+bashline.c
+	- support for a `extended command keymap', which will allow
+	  readline key sequences to be bound to unix commands using an
+	  auxiliary keymap and a special function that knows how to execute
+	  commands from it
+	- bind_keyseq_to_unix_command supports `bind -x'
+	- bash_execute_unix_command is the readline callback that looks in
+	  an auxiliary keymap to find the shell command to execute for a
+	  particular key sequence
+	- new variable, no_empty_command_completion, which suppresses $PATH
+	  searching for command completion when TAB is typed on an empty
+	  line
+
+bashline.h
+	- extern declaration for new function bind_keyseq_to_unix_command
+
+builtins/bind.def
+	- added `-x' option to bind a key sequence to a shell command
+
+builtins/help.def
+	- added `-s' option to just print a builtin's short_doc
+
+builtins/shopt.def
+	- added new shell option, no_empty_cmd_completion', mirroring value
+	  of no_empty_command_completion
+
+doc/{bash.1,bashref.texi}
+	- documented new `bind -x' option
+	- documented new shopt `no_empty_cmd_completion' option
+	- documented new `help -s' option
+
+Makefile.in
+	- changed RELSTATUS to `devel'
+
+_distribution
+	- changed to `2.04'
+
+				   3/15
+				   ----
+support/shobj-conf
+	- add `-h $@' to linking options on Solaris 2 with gcc
+
+expr.c
+	- changes to add {pre,post}-{inc,dec}rement operators (++id, --id,
+	  id++, id--).  These are somewhat more liberal than ksh93, and
+	  may require more strict syntax checking down the line
+
+tests/arith.{tests,right}
+	- additional tests for {pre,post}-{inc,dec}rement operators
+
+				   3/16
+				   ----
+command.h
+	- structures and types for ksh-93-style arithmetic `for' command
+
+configure.in
+	- new `--enable-arith-for-command' option to compile arithmetic for
+	  command code into the shell
+
+config.h.in
+	- new define, ARITH_FOR_COMMAND, turned on by configure
+
+parse.y
+	- changed read_token_word to parse a set of arithmetic for expressions
+	  between (( and )) as long as the last token read before the `(('
+	  was FOR
+	- added grammar rules to build arithmetic for commands
+
+make_cmd.c
+	- functions to parse (( ... )) into the three sub-expressions needed
+	  for the arithmetic for command and create the command structures
+	  (done this way instead of in the grammar rules to avoid forcing
+	  users to quote special characters between the (( and )) )
+
+make_cmd.h
+	- extern declaration for make_arith_for_command
+
+copy_cmd.c
+	- code to copy arithmetic for commands
+
+dispose_cmd.c
+	- code to dispose of arithmetic for commands
+
+print_cmd.c
+	- code to print arithmetic for commands
+
+execute_cmd.c
+	- code to execute arithmetic for commands and note that they are
+	  shell control structures for the piping code
+
+doc/{bash.1,bashref.texi}
+	 - documented new arithmetic for command
+
+doc/bashref.texi
+	- documented new configure --enable-arith-for-command option
+
+				   3/17
+				   ----
+builtins/read.def
+	- added `-t timeout' option and code to support it
+
+				   3/18
+				   ----
+examples/loadables/Makefile.in
+	- various clean targets need to descend into perl
+
+examples/loadables/perl/Makefile.in
+	- added mostlyclean and maintainer-clean targets
+
+include
+	- new directory, with files from lib/posixheaders
+
+lib/posixheaders
+	- removed
+
+{posixwait,unionwait,maxpath}.h
+	- moved from top src directory to include subdir
+
+Makefile.in,builtins/Makefile.in,lib/{glob,malloc,sh,tilde}/Makefile.in
+	- updated dependencies and file lists for new include directory
+	- added BASHINCDIR variable, added -I${BASHINCDIR} to cc's include path
+
+MANIFEST,support/SYMLINKS
+	- updated for new include directory
+
+lib/readline/{ansi_stdlib,posixdir,posixjmp,posixstat,rlstdc}.h
+	- changed symlinks to point to ../../include rather than
+	  ../posixheaders
+
+builtins/common.h
+	- changed `#include "../stdc.h"' to `#include "stdc.h"'
+
+builtins/{cd,exec,fc,history,pushd,source,type,umask,printf}.def
+builtins/{mkbuiltins,common,evalfile,evalstring,getopt}.c
+	- changed include specifications:
+		../posixstat.h -> posixstat.h
+		../filecntl.h -> filecntl.h
+		../maxpath.h -> maxpath.h
+		../memalloc.h -> memalloc.h
+
+include/shtty.h
+	- new file, contents of bashtty.h and code from jobs.c that includes
+	  the appropriate terminal file
+
+lib/sh/shtty.c
+	- new file with some tty manipulation utility functions
+
+bashtty.h
+	- removed
+
+jobs.c, nojobs.c
+	- include shtty.h instead of bashty.h and other code that includes
+	  the correct system-dependent tty include file
+
+lib/sh/Makefile.in
+	- added shtty.o as part of libsh.a
+
+MANIFEST
+	- added include/shtty.h and lib/sh/shtty.c, removed bashtty.h
+
+				   3/19
+				   ----
+lib/readline/display.c
+	- some more __MSDOS__ code to make readline work better with DJGPP:
+		output \r instead of tputs(term_cr, ...)
+
+lib/readline/terminal.c
+	- some changes for __DJGPP__ (one is of dubious value -- doesn't
+	  DJGPP have a termcap library?)
+
+				   3/23
+				   ----
+configure.in
+	- make sure that the $CC argument to shobj-conf is quoted
+
+support/shobj-conf
+	- changes to SGI SHOBJ_LDFLAGS from David Kaelbling <drk@sgi.com>
+
+				   3/24
+				   ----
+lib/sh/zread.c
+	- interface to read(2) that restarts automatically if errno == EINTR
+
+externs.h
+	- new declarations for functions in lib/sh/{zread,zwrite}.c
+
+lib/sh/Makefile.in, Makefile.in
+	- add zread.c, zread.o to appropriate file lists
+
+{subst,input}.c, builtins/{evalstring.c,read.def}
+	- converted some loops around read() to call zread() instead
+
+lib/readline/rltty.h
+	- new struct _rl_tty_chars to save tty special characters
+
+lib/readline/rltty.c
+	- new function save_tty_chars to save tty special characters
+	  (currently they're only saved -- nothing looks at them yet)
+	- two new internal library functions, _rl_disable_tty_signals ()
+	  and _rl_restore_tty_signals (), intended to disable tty driver
+	  signal processing for readline's literal-next code, so users
+	  can do stuff like ^V^C and have ^C end up in the readline
+	  buffer even if ^C is the terminal's interrupt character
+
+lib/readline/readline.c
+	- changed rl_quoted_insert to disable and restore tty signal
+	  handling around the call to rl_read_key (), so users can put
+	  tty special chars into the readline buffer
+
+				   3/25
+				   ----
+expr.c
+	- added `,' operator (expr1 , expr2) -- both expr1 and expr2 are
+	  evaluated and the return value is the value of expr2.  Precedence
+	  is higher than assignment (which makes it highest)
+	- make `lasttp' (pointer to last token) part of the expression
+	  context that is saved and restored by {push,pop}_context.  This
+	  is used only in error reporting
+
+doc/{bash.1,bashref.texi}
+	- documented new `,' arithmetic operator
+	- cleaned up some of the language concerning variables referenced
+	  by name within an arithmetic expression
+
+lib/readline/readline.c
+	- new application-settable variable, rl_num_chars_to_read, which, if
+	  set to a non-zero value, causes readline to return after reading
+	  that many characters (or at least that many characters, if
+	  rl_startup_hook is used to prime the input buffer) rather than
+	  when reading a character bound to accept-line
+
+lib/readline/readline.h
+	- extern declaration for rl_num_chars_to_read
+
+builtins/read.def
+	- added new `-n nchars' option to read NCHARS from stdin rather than
+	  a complete line.  Works both with and without using readline
+
+doc/{bash.1,builtins.texi}
+	- documented new `read -n nchars' option
+
+				   3/26
+				   ----
+execute_cmd.c
+	- make sure all uses of PIDs are of type pid_t
+
+redir.c
+	- broke stdin_redirects into two functions: stdin_redirection, which
+	  checks a single redirection specification, and a new stdin_redirects,
+	  which does what it did before but calls stdin_redirection for each
+	  redirection in the chain
+
+				   3/29
+				   ----
+aclocal.m4
+	- new test, BASH_CHECK_DEV_STDIN, checks for /dev/stdin.  If it's
+	  present HAVE_DEV_STDIN is defined and it's assumed that /dev/stdout
+	  and /dev/stderr are present as well
+
+configure.in
+	- call BASH_CHECK_DEV_STDIN
+
+config.h.in
+	- add HAVE_DEV_STDIN, initially undefined
+
+test.c
+	- add /dev/std{in,out,err} to the special filenames that are handled
+	  by test_stat() if HAVE_DEV_STDIN is not defined
+
+doc/{bash.1,bashref.texi}
+	- documented conditional expressions' handling of /dev/std{in,out,err}
+
+stringlib.c
+	- new function, find_string_in_alist, to find (or match as an extended
+	  glob pattern) a string in a STRING_INT_ALIST and return the
+	  associated token value
+
+externs.h
+	- extern declaration for find_string_in_alist
+
+redir.c
+	- new STRING_INT_ALIST list of filenames the redirection code handles
+	  specially (_redir_special_filenames)
+	- new function, redir_special_open () to handle filenames found in
+	  _redir_special_filenames (framework for /dev/tcp and /dev/udp, but
+	  those are not implemented get)
+
+doc/{bash.1,bashref.texi}
+	- documented special filename handling in redirections
+
+				   3/30
+				   ----
+builtins/read.def
+	- added `-d delim' option, like ksh93, to read until delim rather
+	  than newline
+
+doc/{bash.1,bashref.texi}
+	- documented new read `-d delim' option
+
+configure.in
+	- look for gethostbyname(3), inet_aton(3)
+	- look for <netdb.h> and <netinet/in.h>
+	- call BASH_FUNC_GETHOSTBYNAME if gethostbyname(3) is not in libc
+	- check for u_int and u_long types, default to `unsigned int' and
+	  `unsigned long' respectively
+	- new enable option `--enable-net-redirections' to compile in the
+	  /dev/tcp and /dev/udp redirection code
+
+aclocal.m4
+	- new macro, BASH_FUNC_GETHOSTBYNAME, looks for gethostbyname(3) in
+	  the socket libraries if it's not found in libc
+
+config.h.in
+	- new defines: HAVE_GETHOSTBYNAME, HAVE_INET_ATON, HAVE_NETDB_H,
+	  HAVE_NETINET_IN_H, NETWORK_REDIRECTIONS
+	- new defines: u_int, u_long
+
+lib/sh/inet_aton.c
+	- new file, from GNU libc, slightly modified to remove inet_addr()
+
+lib/sh/netopen.c
+	- new file, functions to create tcp/udp network connections.  Exports
+	  a single function: netopen(pathname)
+
+externs.h
+	- extern declaration for netopen()
+
+lib/sh/Makefile.in, Makefile.in, MANIFEST
+	- added appropriate references to inet_aton.c and netopen.c
+
+config-bot.h
+	- if HAVE_SYS_SOCKET_H, HAVE_GETPEERNAME, and HAVE_NETINET_IN_H are
+	  all defined, define HAVE_NETWORK
+
+redir.c
+	- call netopen for pathnames of the form /dev/(tcp|udp)/host/port
+	  if HAVE_NETWORK is defined; print a warning message otherwise
+	- /dev/tcp and /dev/udp code is only compiled in if
+	  NETWORK_REDIRECTIONS is defined
+
+				   3/31
+				   ----
+lib/sh/zread.c
+	- new function, zsyncfd(fd) which syncs the kernel's seek pointer on
+	  FD with the last character returned by zreadc()
+
+externs.h
+	- extern declaration for zsyncfd
+
+builtins/read.def
+	- use zreadc if the input is not unbuffered (this cuts the number
+	  of read(2) calls *way* down)
+	- if input is not unbuffered, call zsyncfd before returning to make
+	  sure zreadc's buffering doesn't consume too much input
+
+				    4/1
+				    ---
+Makefile.in
+	- install bashbug with mode 555
+
+				    4/2
+				    ---
+shell.c
+	- make want_pending_command and read_from_stdin global rather than
+	  local variables
+
+flags.c
+	- change which_set_flags to insert `c' and `s' if the `-c' and `-s'
+	  invocation options, respectively, were supplied at shell startup
+
+bashline.c
+	- change bash_directory_completion_hook to change the logic for
+	  deciding whether or not to parameter expand the directory name --
+	  now we expand only if there's a `$' (still has problems if the
+	  user quoted the `$') or a `` pair.  Fixes bug reported by
+	  chuckjr@sinclair.net.  To fix the `$' problem, could possibly
+	  check what the user typed with rl_line_buffer and start, end
+	  parameters to gen_completion_matches
+	- changed attempt_shell_completion to slightly adjust the logic for
+	  deciding whether or not a word is in a command position:  if the
+	  word being completed has a single opening single or double quote
+	  before the command separator, treat it as a candidate for (quoted)
+	  command word completion
+	- now that we understand partially-quoted strings as completion
+	  candidates, we can do command completion on certain unclosed
+	  uses of $(...
+
+subst.c
+	- change extract_delimited_string to not return an error for an
+	  unclosed construct if DOING_COMPLETION is non-zero
+
+				    4/5
+				    ---
+expr.c
+	- fixed `ss=09 ; let ss=10' bug by introducing one-token lookahead
+	  after a string token is parsed.  If the next token is `=', we
+	  don't evaluate the variable's value as an expression, since it's
+	  not going to be used
+
+variables.h
+	- added new member to struct variable: exportstr -- for the future
+	  caching of strings to be placed into the environment
+	- extern declaration for bind_variable_value
+
+variables.c
+	- make sure that the `exportstr' member of a struct variable is
+	  initialized correctly, and put code in to free it where appropriate
+	  (if non-null)
+	- new function, bind_variable_value(VAR, VALUE); make shell variable
+	  VAR have value VALUE
+	- make sure var->exportstr is invalidated when a variable or function
+	  is assigned a value
+
+builtins/declare.def
+	- call bind_variable_value instead of duplicating some of bind_variable
+	  inline
+
+				    4/6
+				    ---
+variables.h
+	- new macros, VSETATTR and VUNSETATTR to set and clear variable
+	  attributes
+
+builtins{read,set,setattr,declare}.def,{execute_cmd,expr,shell,subst,variables}.c
+	- change to use VSETATTR and VUNSETATTR
+
+				    4/7
+				    ---
+doc/Makefile.in
+	- if htmldir is set by configure, install the html files into that
+	  directory with `make install' and remove them with `make uninstall'
+
+Makefile.in,doc/Makefile.in
+	- htmldir is set by configure and passed from the Makefile to the
+	  install in the doc subdirectory
+
+configure.in
+	- substitute `htmldir' into Makefiles
+
+support/config.guess
+	- some small changes for Apple's Rhapsody
+
+lib/termcap/Makefile.in
+	- make the `distclean' and `maintainer-clean' targets remove Makefile
+
+lib/termcap/ltcap.h
+	- new private library include file, for Rhapsody __private_extern__
+	  define
+
+lib/termcap/{termcap,tparam}.c
+	- include "ltcap.h"
+	- if HAVE_CONFIG_H is defined, include <stdlib.h> if HAVE_STDLIB_H is
+	  defined, otherwise declare getenv, malloc, realloc as extern
+	- add __private_extern__ qualifier for extern data that Rhapsody
+	  requires
+
+shell.c
+	- don't run the startup files in the rshd case if shell_level is >= 2
+	  This should catch the case of
+		rsh machine bash -c 'echo a'
+	  running the .bashrc twice, once for the shell started by rshd and
+	  one for the shell running -c command
+
+				    4/8
+				    ---
+variables.c
+	- in initialize_shell_variables, unset the export attribute from
+	  SSH_CLIENT if it exists and we got it from the initial environment
+
+shell.c
+	- don't bother unsetting export attribute from SSH_CLIENT, since we
+	  now do it in initialize_shell_variables
+
+lib/readline/display.c
+	- don't check prompt_this_line[-2] in rl_redisplay if prompt_this_line
+	  isn't at least 2 characters after the start of rl_display_prompt
+
+lib/readline/histfile.c
+	- change the name of the default history file to _history on MS-DOS
+
+lib/readline/histlib.h
+	- add an extern declaration for history_offset
+
+lib/readline/hist{expand,search}.c
+	- remove extern declaration for history_offset; now in histlib.h
+
+lib/readline/xmalloc.h
+	- new file, extern declarations for xmalloc, xrealloc, xfree
+
+lib/readline/rlprivate.h
+	- new file, with extern declarations for `readline private' global
+	  variables and functions
+
+lib/readline/rlshell.h
+	- new file, with extern function declarations for stuff in shell.c
+
+lib/readline/Makefile.in
+	- add dependencies on xmalloc.h, rlshell.h
+	- add xmalloc.h, rlprivate.h to list of header files
+
+MANIFEST
+	- add lib/readline/xmalloc.h, lib/readline/rlprivate.h,
+	  lib/readline/rlshell.h
+
+Makefile.in
+	- add $(RL_LIBSRC)/xmalloc, $(RL_LIBSRC)/rlprivate.h,
+	  $(RL_LIBSRC)/rlshell.h to READLINE_SOURCE variable
+
+lib/readline/{bind,complete,display,funmap,histexpand,histfile,history,input,
+isearch,keymaps,kill,macro,readline,search,shell,util,vi_mode}.c
+	- include "xmalloc.h" rather than extern declarations for xmalloc,
+	  xrealloc, xfree
+
+lib/readline/terminal.c
+	- new function, used in two places, _emx_get_screensize for EMX
+
+lib/readline/readline.c
+	- EMX apparently no longer needs _emx_build_environ
+
+lib/readline/signals.c
+	- support for __EMX__ in rl_signal_handler
+	- don't set the old handler passed to rl_set_sighandler to
+	  rl_signal_handler, because that would cause infinite recursion if
+	  that signal were generated
+
+lib/readline/xmalloc.c
+	- no longer the same as lib/malloc/xmalloc.c, which is no longer
+	  used by anyone
+	- changes to include xmalloc.h, define READLINE_LIBRARY, change
+	  some of the argument types
+
+lib/tilde/tilde.c
+	- add prototypes for extern function declarations if __STDC__
+	  defined
+
+lib/readline/{terminal,bind,readline,nls,histexpand}.c
+	- include "rlshell.h" for function prototypes
+
+				    4/9
+				    ---
+lib/readline/{bind,callback,complete,display,input,isearch,kill,macro,nls,
+parens,readline,rltty,search,signals,terminal,util,vi_mode}.c
+	- include "rlprivate.h"
+	- remove extern declarations already in rlprivate.h
+
+xmalloc.c
+	- xfree should take a PTR_T as its argument
+
+general.h
+	- change prototype for xfree to use void * instead of char *
+
+lib/malloc/malloc.c
+	- define PTR_T like it is defined in general.h
+	- malloc() returns a PTR_T
+	- free() takes a PTR_T as its argument
+	- realloc() returns a PTR_T and takes a PTR_T as its first argument
+	- memalign returns a PTR_T
+	- valloc returns a PTR_T
+	- calloc returns a PTR_T
+	- cfree() takes a PTR_T
+
+variables.c
+	- new function: char **all_variables_matching_prefix (char *prefix)
+
+variables.h
+	- extern declaration for all_variables_matching_prefix
+
+bashline.c
+	- converted variable_completion_function to use
+	  all_variables_matching_prefix
+
+stringlib.c
+	- new function, char **alloc_array(n), allocates an argv-style
+	  array of strings with room for N members
+
+externs.h
+	- extern declaration for alloc_array
+
+				   4/13
+				   ----
+lib/readline/keymaps.c
+	- include "readline.h"
+	- remove extern function declarations
+
+include/stdc.h
+	- break the definition of __P out from a strict __STDC__ block,
+	  since __GNUC__ and __cplusplus also indicate that prototypes
+	  are available
+
+lib/readline/readline.h
+	- adjust conditional declaration of rl_message, since __cplusplus
+	  indicates that prototypes are available
+
+lib/readline/rlstdc.h
+	- private copy, modified, no longer symlinked to ../../include/stdc.h
+	- __P is defined if __GNUC__ or __cplusplus is defined
+	- removed defines for __STRING, const, inline, signed, volatile, since
+	  readline does not use them
+
+lib/readline/{search,readline}.c
+	- extern declaration for _rl_free_history_entry with prototypes,
+	  since it's not in rlprivate.h
+
+lib/readline/history.h
+	- added some missing `extern's in function declarations
+
+lib/readline/undo.c
+	- include "rlprivate.h"
+
+lib/readline/shell.c
+	- include "rlshell.h"
+
+lib/readline/Makefile.in
+	- update dependencies for undo.c, shell.c
+
+lib/tilde/tilde.h
+	- add #define for __P if not already defined
+	- use prototypes in extern function declarations with __P()
+
+lib/readline/doc/rluserman.texinfo
+	- new file, derived from rlman.texinfo
+
+{bashline,findcmd,general,pathexp}.c, builtins/getopts.def
+	- call alloc_array(N) instead of (char **)xmalloc (N * sizeof (char *))
+
+subst.c
+	- added code to implement ksh-93 ${!prefix*} expansion
+
+doc/{bash.1,bashref.texi}
+	- documented new ${!prefix*} expansion
+
+				   4/15
+				   ----
+execute_cmd.c
+	- new variable, this_shell_function, points to SHELL_VAR of currently
+	  executing shell function
+
+variables.c
+	- new dynamic variable, FUNCNAME -- invisible when not executing shell
+	  function
+
+doc/{bash.1,bashref.texi}
+	- documented new FUNCNAME variable
+
+				   4/16
+				   ----
+support/rlvers.sh
+	- add -T option to specify correct termcap library
+
+configure.in
+	- Irix 4.x still needs to link with -lsun if it contains a replacement
+	  getpwent function that works with NIS
+	- if we're configuring with an already-installed readline library,
+	  call BASH_CHECK_LIB_TERMCAP and pass the resulting $TERMCAP_LIB to
+	  support/rlvers.sh
+
+lib/readline/readline.c
+	- in rl_forward, if rl_point ends up being < 0, set it to 0
+
+lib/readline/exammples/excallback.c
+	- new callback example code, from `Jeff Solomon <jsolomon@stanford.edu>'
+
+lib/sh/getcwd.c
+	- define NULL as 0 if not defined by one of the standard include files
+	- cast result of malloc and realloc to (char *) where appropriate
+
+variables.c
+	- new functions for use by dynamic variables: null_assign and
+	  null_array_assign.  Used as assign_func for a particular variable,
+	  they cause assignments to that variable to be silently ignored
+	- FUNCNAME and GROUPS are no longer readonly
+	- FUNCNAME changed to use null_assign
+	- GROUPS changed to use null_array_assign.  This means that the
+	  variable can be unset if desired (like for Oracle startup scripts),
+	  but cannot be assigned to
+
+doc/{bash.1,bashref.texi}
+	- added text about assignments being silently discarded to descriptions
+	  of FUNCNAME and GROUPS
+	- removed text saying that GROUPS is readonly
+	- added standard text about GROUPS being unset and losing its special
+	  properties, even if reset
+
+command.h
+	- new command type, cm_subshell, actually causes the shell to fork
+	  and then executes the command in the SUBSHELL_COM struct
+
+parse.y
+	- ( ... ) now creates a command of type cm_subshell, with the same
+	  flag CMD_WANT_SUBSHELL as previous
+
+make_cmd.c
+	- new function make_subshell_command
+
+make_cmd.h
+	- extern declaration for make_subshell_command
+
+dispose_cmd.c
+	- code to destroy a SUBSHELL_COM
+
+copy_cmd.c
+	- code to duplicate a SUBSHELL_COM
+
+print_cmd.c
+	- code to print a SUBSHELL_COM
+
+execute_cmd.c
+	- broke the code that handles executing commands in subshells out of
+	  execute_command_internal into a new function, execute_in_subshell,
+	  with the same arguments
+	- executing a command of type cm_subshell is just a slightly special
+	  case, handled in execute_in_subshell
+
+				   4/18
+				   ----
+execute_cmd.c
+	- changed code in execute_command_internal that executes subshell
+	  commands to check for command->type == cm_subshell in addition to
+	  checking that commmand->flags & CMD_WANT_SUBSHELL is non-zero
+	- changed execute_in_subshell to set the CMD_NO_FORK flag on the
+	  command to be executed by a command of type cm_subshell
+	  (command->value.Subshell->command), if that command is a simple
+	  command (type == cm_simple) or a nested subshell (type == cm_subshell)
+	  and is not being timed
+	- changed execute_command_internal to just call and return the value
+	  returned by execute_in_subshell if it gets a command of type
+	  cm_subshell with flags including CMD_NO_FORK
+
+lib/malloc/malloc.c
+	- morecore() should always return through morecore_done, not with a
+	  simple `return'
+
+				   4/20
+				   ----
+variables.c
+	- new function, quote_array_assignment_chars, backslash quotes all
+	  `[' and `]' before an `=' in a word that's part of the body of a
+	  compound array assignment.  Needed because we run the list through
+	  the globbing code now.  Don't bother if `=' does not appear in
+	  the string or if the first char is not `['
+	- call quote_array_assignment_chars from assign_array_var_from_string
+	  now
+
+eval.c
+	- moved parse_string_to_word_list to parse.y
+
+parse.y
+	- moved parse_string_to_word_list here.  Much simpler -- no longer
+	  tries to parse a command, but just reads tokens using read_token().
+	  Any token but a WORD or ASSIGNMENT_WORD causes a syntax error.
+	  Don't have to mess around with saving global_command or calling
+	  parse_command, but do need to save and restore the history stuff,
+	  so the array assignment doesn't get saved on the history list
+
+				   4/21
+				   ----
+nojobs.c
+	- changed to use functions in lib/sh/shtty.c (tt{get,set}attr) for
+	  the terminal attributes
+	- added a `flags' field to struct proc_status, flags are PROC_RUNNING
+	  and PROC_NOTIFIED (status has been returned to `wait')
+	- functions check flags & PROC_RUNNING to check whether or not a
+	  particular process is still alive; PROC_RUNNING is reset by
+	  set_pid_status
+	- new function, mark_dead_jobs_as_notified, same function as the one
+	  in jobs.c
+	- cleanup_dead_jobs reaps jobs only if they're dead and not marked
+	  as notified
+	- wait_for_background pids marks all pids as notified and reaps them
+	  before it returns, since it's called by the `wait' builtin
+	- wait_for_single_pid marks the pid being waited for as notified so
+	  its slot can be reclaimed -- it's only called by the `wait' builtin
+	- new function, process_exit_status, to turn what wait(2) takes into
+	  an exit status
+
+				   4/22
+				   ----
+nojobs.c
+	- add_pid takes a new second argument, async_p, which is non-zero if
+	  the process is in the background
+	- new flag, PROC_ASYNC, set by add_pid
+	- set_pid_status now sets the PROC_NOTIFIED flag if PROC_ASYNC is unset,
+	  so foreground jobs get cleaned up right away
+	- changed mark_dead_jobs_as_notified to take a `force' argument; if
+	  non-zero, it marks only enough dead jobs to make the number of
+	  un-notified dead jobs < CHILD_MAX
+	- new function, reap_dead_jobs, same as in jobs.c
+
+execute_cmd.c
+	- don't need separate cases for REAP any more
+
+				   4/23
+				   ----
+builtins/printf.def
+	- new function, tescape, which processes a single backslash
+	  escape sequence and returns the number of characters consumed by
+	  the argument string (code taken from bexpand)
+	- changed bexpand to call tescape rather than do backslash-escape
+	  sequence conversion itself
+	- changed occurrences of `illegal' in error messages to `invalid'
+	- printf no longer calls ansicstr to translate backslash-escape
+	  sequences; the mainline printf code now calls tescape whenever it
+	  hits a backslash
+
+				   4/26
+				   ----
+subst.c
+	- new variable, garglist, set to list of words to be expanded after
+	  leading assignment statements are removed
+	- command_substitute now calls maybe_make_exported_env before making
+	  the child process if there are no variable assignments preceding
+	  the command currently being expanded, or if the command currently
+	  being expanded consists only of variable assignments
+
+execute_cmd.c
+	- the `early fork' code in execute_simple_command now calls
+	  maybe_make_export_env before forking because execute_disk_command
+	  would do that in the vast majority of cases, and this will obviate
+	  the need to do it for subsequent commands if the environment does
+	  not change
+
+				   4/27
+				   ----
+variables.h
+	- more macros to manipulate the exportstr member of a SHELL_VAR
+	- changed initialize_shell_variables to cache the value from the
+	  environment as the initial exportstr for all imported variables
+	- changed make_var_array to use exportstr if it exists, instead
+	  of computing the value
+	- changed make_var_array to cache exportstr for exported functions,
+	  so they don't have to be deparsed every time the export env is
+	  remade
+
+				   4/28
+				   ----
+lib/readline/{histlib,rldefs}.h
+	- changed STREQN macro to evaluate to 1 if the third argument is 0
+
+lib/readline/search.c
+	- changed rl_history_search_{for,back}ward so they leave point at
+	  the end of the line when the string to search for is empty, like
+	  previous-history and next-history
+	- broke common code out of rl_history_search_{for,back}ward into
+	  a new function, rl_history_search_reinit
+	- rewrote rl_history_search_internal to be more like the
+	  non-incremental search functions, use noninc_search_from_pos,
+	  and leave the last history line found in the current line buffer
+	  if the search fails
+	- new function, make_history_line_current, takes care of making
+	  the current line buffer a copy of the history entry passed as an
+	  argument; used by rl_history_search_internal and noninc_dosearch
+
+subst.c
+	- make ${!prefix@} be the same as ${!prefix*} for (undocumented)
+	  ksh93 compatibility
+
+				   4/30
+				   ----
+lib/readline/doc/rltech.texinfo
+	- added note about including <readline/readline.h>, and that <stdio.h>
+	  should be included before readline.h
+
+lib/readline/doc/hstech.texinfo
+	- added note about including <readline/history.h>
+
+lib/readline/doc/manvers.texinfo
+	- updated version to 4.1
+
+lib/readline/{bind,complete,display,isearch,nls,parens,readline,signals,tilde,
+histexpand}.c
+	- added prototypes with __P((...)) for forward static function
+	  declarations
+
+lib/readline/display.c
+	- broke the code that initializes VISIBLE_LINE and INVISIBLE_LINE out
+	  of rl_redisplay into a new function, init_line_structures, which
+	  takes an argument giving the minimum number of characters that the
+	  line must hold 
+	- new function for use by applications that want to display the
+	  initial prompt themselves rather than having the first call to
+	  readline do it:  rl_on_new_line_with_prompt (modified from code in
+	  the CLISP distribution)
+
+lib/readline/readline.c
+	- new external variable, rl_already_prompted, to let readline know
+	  that the prompt string has already been displayed on the screen
+	  before the first call to readline
+	- test rl_already_prompted before displaying the prompt in
+	  readline_internal_setup
+	- if rl_already_prompted is non-zero, readline_internal_setup calls
+	  rl_on_new_line_with_prompt instead of rl_on_new_line
+
+lib/readline/readline.h
+	- extern declaration for rl_on_new_line_with_prompt
+	- extern declaration for rl_already_prompted
+
+lib/readline/doc/rltech.texinfo
+	- documented rl_on_new_line_with_prompt and rl_already_prompted
+
+builtins/read.def
+	- new -s option (silent mode).  Input from a terminal is not echoed
+
+doc/{bash.1,bashref.texi}
+	- documented new `-s' option to read builtin
+
+				    5/3
+				    ---
+lib/readline/vi_mode.c
+	- replaced references to rl_getc with (*rl_getc_function)
+
+[bash-2.04-devel frozen]
+
+				    5/5
+				    ---
+subst.c
+	- make sure that verify_substring_values always passes malloc'd
+	  memory to maybe_expand_string as the string to be expanded,
+	  since it gets freed on errors
+
+support/shobj-conf
+	- don't need -R option for shared libraries on Solaris
+	- new stanza for OSF/1 machines with gcc
+
+lib/readline/readline.c
+	- new variable, rl_gnu_readline_p, always 1.  Available to allow
+	  readline users to test whether or not they're linking against
+	  the true readline, rather than some bogus replacement (from CLISP)
+
+lib/readline/readline.h
+	- extern declaration for rl_gnu_readline_p
+
+hashlib.h, hashcmd.h
+	- added prototypes to extern function declarations
+
+pcomplete.h
+	- new file, declarations for the programmable completion stuff
+
+pcomplib.c
+	- new file, library functions for programmable completion
+
+				    5/6
+				    ---
+builtins/complete.def
+	- new file, interface to programmable completion management
+
+configure.in
+	- new enable argument --enable-progcomp, defines
+	  PROGRAMMABLE_COMPLETION
+
+config.h.in
+	- #define for PROGRAMMABLE_COMPLETION
+
+config-bot.h
+	- if PROGRAMMABLE_COMPLETION is defined and READLINE is not,
+	  #undef PROGRAMMABLE_COMPLETION
+
+pcomplete.c
+	- new file, placeholder for programmable completion generators and
+	  associated functions
+
+Makefile.in, builtins/Makefile.in
+	- changes to add pcomplete.c, builtins/complete.def
+
+				    5/7
+				    ---
+subst.c
+	- new function, #ifdef READLINE, skip_to_delim (s, i, delims).
+	  Starting at s[i], return the index of the first character in s
+	  that is contained in delims.  Understands shell quoting.
+	- added two arguments to list_string_with_quotes: an index to
+	  watch for, and a pointer to int to return the index into the
+	  created word list of the word containing the sentinel.  Now
+	  compiled in all the time.  The returned index starts at 1.
+
+subst.h
+	- extern declarations for char_is_quoted, unclosed_pair, and
+	  skip_to_delim
+	- changed extern declaration for list_string_with_quotes, moved
+	  it out of the #ifdef ARRAY_VARS section
+
+bashline.c
+	- removed extern declarations for char_is_quoted and unclosed_pair
+
+variables.c
+	- new function, SHELL_VAR **all_exported_variables()
+	= new function, SHELL_VAR **all_array_variables(), #ifdef ARRAY_VARS
+
+variables.h
+	- extern declaration for all_exported_variables, all_array_variables
+
+lib/sh/strpbrk.c
+	- replacement if we don't have strpbrk(3)
+
+configure.in, config.h.in
+	- check for strpbrk(3), define HAVE_STRPBRK if found
+
+builtins/shopt.def
+	- new function, char **get_shopt_options (), returns an array of
+	  shopt option names
+
+builtins/set.def
+	- new function, char **get_minus_o_opts (), returns an array of
+	  `set -o' option names
+
+builtins/common.h
+	- extern declarations for get_shopt_options, get_minus_o_opts
+
+				   5/10
+				   ----
+pathexp.c
+	- make the POSIX_GLOB_LIBRARY code implement the GLOBIGNORE stuff
+
+				   5/11
+				   ----
+array.c
+	- new convenience function, char **array_to_argv (ARRAY *),
+	  converts an array to a list of string values
+
+array.h
+	- extern declaration for array_to_argv
+
+execute_cmd.c
+	- new convenience function, int execute_shell_function (SHELL_VAR *,
+	  WORD_LIST *)
+
+execute_cmd.h
+	- extern declaration for execute_shell_function
+
+builtins/evalstring.c
+	- make parse_and_execute unwind_protect current_prompt_string
+	  if the shell is interactive
+
+				   5/12
+				   ----
+variables.c
+	- moved bind_int_variable from expr.c to here; it now returns a
+	  SHELL_VAR *, like the other variable binding functions
+
+variables.h
+	- extern declaration for bind_int_variable
+
+				   5/14
+				   ----
+bashline.c, parse.y, general.c, make_cmd.c, subst.c, braces.c, execute_cmd.c
+	- replaced some common code sequences with calls to substring()
+
+lib/readline/doc/rltech.texinfo
+	- fixed small typo in description of rl_completion_entry_function
+
+				   5/18
+				   ----
+stringlib.c
+	- new function, strcreplace(char *string, int c, char *text, int do_glob)
+	  replaces all occurrences of C in STRING with TEXT.  Backslash may
+	  be used to quote C.  If DO_GLOB is non-zero, the replacement TEXT
+	  is quoted to protect globbing characters.
+
+externs.h
+	- extern declaration for strcreplace
+
+bashhist.c
+	- use strcreplace in expand_histignore_pattern
+
+pcomplete.c
+	- finished initial implementation of programmable completion
+
+alias.c
+	- code to set the aliases itemlist to dirty when an alias is added
+	  or removed, if PROGRAMMABLE_COMPLETION is defined
+
+variables.c
+	- code to set the functions itemlist to dirty when a shell function
+	  is added or removed, if PROGRAMMABLE_COMPLETION is defined
+
+builtins/enable.def
+	- code to set the builtins itemlist to dirty when a shell builtin
+	  is added or removed, if PROGRAMMABLE_COMPLETION is defined
+	- code to set the enabled and disabled itemlists to dirty when a
+	  builtin is enabled or disabled, if PROGRAMMABLE_COMPLETION is
+	  defined
+
+builtins/shopt.def
+	- new shell option, `progcomp', on if programmable_completion_enabled
+	  (from pcomplete.c) is non-zero
+
+doc/{bash.1,bashref.texi}
+	- note that `${' is not eligible for brace expansion to avoid
+	  conflicts with parameter expansion
+
+				   5/19
+				   ----
+builtins/complete.def
+	- added a new `compgen' builtin for use by completion functions
+
+				   5/21
+				   ----
+bashline.c
+	- new function, void clear_hostname_list(void), to delete all the
+	  entries in the hostname completion list
+
+bashline.h
+	- extern declaration for clear_hostname_list
+
+variables.c
+	- changed sv_hostfile to clear the hostname list if $HOSTFILE is
+	  unset
+
+doc/{bash.1,bashref.texi}
+	- documented new behavior of HOSTFILE when it's unset
+	- added some awkwardly-worded text to make it clear that an
+	  interactive shell cannot be started with non-option arguments
+	  or with the -c option
+
+shell.c
+	- restored NON_INTERACTIVE_LOGIN_SHELLS test, so that if it is
+	  defined, shells with argv[0][0] == '-' and not in posix mode
+	  run the startup files even if non-interactive
+
+config-top.h
+	- added commented-out #define for NON_INTERACTIVE_LOGIN_SHELLS
+
+				   5/24
+				   ----
+subst.c
+	- make sure the characters in IFS are cast to unsigned before being
+	  indexed in ifscmap (expand_word_internal)
+
+				   5/25
+				   ----
+parse.y
+	- change grammar rule for arithmetic for expressions to handle a
+	  list_terminator after the `))' instead of requiring a newline_list
+
+subst.c
+	- fix so that variable indirection can reference the shell's special
+	  variables (like $0...$9, $$, $#, etc.)
+
+pcomplete.c
+	- changed gen_wordlist_matches to use split_at_delims to split the
+	  string at $IFS first, then expand each individual word
+
+				   5/27
+				   ----
+lib/readline/histfile.c
+	- change things so that O_BINARY mode is used when reading and writing
+	  the history file on cygwin32 as well as OS/2 (__EMX__)
+
+parse.y
+	- add calls to push_delimiter and pop_delimiter around the call
+	  to parse_matched_pair when parsing $'...' and $"..." so the
+	  history entry is added correctly
+
+				   5/28
+				   ----
+doc/{bash.1,bashref.texi}, lib/readline/doc/rluser.texinfo
+	- documented new programmable completion facilities
+
+doc/bashref.texi
+	- documented new configure `--enable-progcomp' option
+
+				    6/1
+				    ---
+variables.c
+	- if make_local_variable is being asked to make a local shadow
+	  variable of a read-only variable, print an error message and
+	  return NULL
+	- if make_local_variable returns NULL to make_local_array_variable,
+	  just return it
+
+builtins/declare.def
+	- if we're making local variables, and make_local_array_variable or
+	  make_local_variable returns NULL, just flag an error and go on
+
+				    6/2
+				    ---
+Makefile.in
+	- changed release status to `alpha1'
+
+[bash-2.04-alpha1 frozen]
+
+				   6/18
+				   ----
+bashline.c
+	- fixed find_cmd_start so that it doesn't spin-loop on commands with
+	  a command separator like `;' or `&'.  Problem was not incrementing
+	  `os' past the delimiter found
+
+				   6/21
+				   ----
+variables.c
+	- cosmetic change: introduced two macros to encapsulate initialization
+	  of dynamic variables
+
+				   6/23
+				   ----
+pcomplib.c
+	- new function: num_progcomps(void), returns the number of entries in
+	  the programmable completions hash table
+
+pcomplete.h
+	- extern declaration for num_progcomps
+
+bashline.c
+	- make sure some programmable completions have been defined before
+	  diving into the programmable completion code
+
+shell.c
+	- in open_shell_script, move the fd opened to the script to a high
+	  one with move_to_high_fd in all cases -- the buffered input code
+	  still has problems if fd == 0 and later on fd 0 is closed or
+	  redirected (cf. input.c:check_bash_input())
+
+builtins/printf.def
+	- getlong() now calls strtol directly with a third argument of 0 so
+	  it can handle 0x (hex) and 0 (octal) prefixes, which legal_number
+	  does not -- this has implications for arguments to %d that begin
+	  with `0'
+
+lib/sh/getenv.c
+	- make sure that the variable found in the temporary environment has
+	  a non-null value before calling savestring() on it
+
+subst.c
+	- make sure split_at_delims returns 0 in *nwp and *cwp if handed a
+	  null or empty string
+
+pcomplete.c
+	- make sure build_arg_list handles lwords == 0, as it will be if an
+	  empty command line is handed to the programmable completion code
+	  (like compgen -C xyz)
+
+execute_cmd.c
+	- make sure execute_shell_function passes a non-null bitmap of fds to
+	  close to execute_function, allocating and deallocating it locally
+
+sig.c
+	- don't mess with SIGPROF in initialize_terminating_signals
+
+jobs.c, nojobs.c
+	- if the user has requested it with checkwinsize, check for a new
+	  window size after a job exits due to a signal as well as being
+	  stopped
+
+lib/readline/kill.c
+	- changed rl_kill_region to set the point to the beginning of the
+	  region after the kill is performed
+
+				   6/24
+				   ----
+configure.in
+	- make sure ranges ([1-9]*) are protected with [...] for m4 quoting
+
+variables.c
+	- make sure that bind_variable_value honors `set -a' and that it
+	  marks the environment for recreation if necessary
+
+				   6/25
+				   ----
+lib/readline/complete.c
+	- if we're completing at the end of the line, find_completion_word
+	  shouldn't test whether the character is a special word break
+	  char and (possibly) advance rl_point past the end of the buffer
+
+parse.y
+	- change mk_msgstr to write embedded newlines as `\n"<NL>"', as the
+	  PO file format apparently requires
+
+				   6/28
+				   ----
+lib/readline/display.c
+	- code to manage the growth of the inv_lbreaks and vis_lbreaks arrays
+	  beyond 256, since there are pathalogical command lines that can
+	  have more than 256 line breaks for redisplay
+
+				   6/30
+				   ----
+stringlib.c
+	- include pathexp.h for extern declaration of quote_globbing_chars
+
+variables.h
+	- change CACHE_EXPORTSTR to savestring() the value and not set the
+	  att_importstr flag
+
+				    7/6
+				    ---
+support/bashbug.sh
+	- bashbug now accepts --help and --version options
+
+bashline.c
+	- change bash_quote_filename to use single quotes if the user
+	  does not specify an opening quote character and the filename being
+	  completed contains newlines
+
+				    7/8
+				    ---
+configure.in, aclocal.m4, config.h.in
+	- BASH_TYPE_INT32_T --> BASH_TYPE_BITS32_T; int32_t --> bits32_t
+	- BASH_TYPE_U_INT32_T --> BASH_TYPE_U_BITS32_T; u_int32_t --> u_bits32_t
+
+lib/malloc/{malloc,gmalloc}.c, lib/sh/inet_aton.c
+	- int32_t --> bits32_t; u_int32_t --> u_bits32_t
+
+aclocal.m4
+	- new tests: BASH_TYPE_BITS16_T, BASH_TYPE_U_BITS16_T
+
+configure.in
+	- add check for sizeof short, sizeof char
+	- call BASH_TYPE_BITS16_T, BASH_TYPE_U_BITS16_T
+
+config.h.in
+	- new #defines for bits16_t, u_bits16_t
+
+lib/malloc/malloc.c
+	- use u_bits16_t for type of mi_magic2
+
+
+				   7/16
+				   ----
+lib/readline/display.c
+	- new private library function, _rl_strip_prompt, to remove instances
+	  of RL_PROMPT_{START,END}_IGNORE from the passed prompt string
+
+lib/readline/rlprivate.h
+	- extern declaration for _rl_strip_prompt
+
+lib/readline/readline.c
+	- call _rl_strip_prompt before outputting the prompt if we're not
+	  doing any echoing of input chars (readline_echoing_p == 0)
+
+Makefile.in
+	- tentative change to rule for parser-built: use $< instead of
+	  `y.tab.h' in recipe
+
+				   7/19
+				   ----
+support/config.{guess,sub}
+	- add code to handle all versions of Mac OS (e.g., Mac OS X)
+
+				   7/26
+				   ----
+lib/readline/bind.c
+	- on cygwin32, treat \r\n as a line terminator when reading the
+	  inputrc file
+
+				   7/29
+				   ----
+lib/sh/netopen.c
+	- fixed problem in _getaddr with copying the address returned from
+	  gethostbyname to the `struct in_addr *' argument -- hostnames
+	  now work in /dev/(tcp|udp)/host/port
+
+				    8/2
+				    ---
+configure.in
+	- on Apple Rhapsody systems, set LOCAL_CFLAGS to -DRHAPSODY
+
+variables.h
+	- changes from Apple for building fat binaries on Rhapsody,
+	  setting HOSTYPE, OSTYPE, VENDOR, and MACHTYPE
+
+lib/readline/terminal.c
+	- some work on the `dumb terminal' setup code in _rl_init_terminal_io
+	  to make sure it's complete for use by the redisplay code and some
+	  stuff in {readline,complete}.c
+
+lib/readline/display.c
+	- new function, _rl_current_display_line, returns the number of
+	  lines down from the first `screen line' of the current readline
+	  line the cursor is
+
+lib/readline/readline.c
+	- make rl_refresh_line call _rl_current_display_line
+
+lib/readline/rlprivate.h
+	- extern declaration for _rl_current_display_line
+
+				    8/3
+				    ---
+doc/bashref.texi
+	- reorganized slightly:
+		o a new shell builtins chapter
+		o a new shell variables chapter
+		o a new special builtins section
+		o bourne shell features chapter removed
+		o alias builtins moved to the bash builtins section
+		o bourne shell differences moved to appendix
+		o order of readline and history chapters swapped
+		o indices are now unnumbered appendices
+		o some text cleaned up and some explanatory text added
+
+lib/readline/terminal.c
+	- if a calling application is using a custom redisplay function,
+	  don't call tgetent to get the terminal attributes, since those
+	  are used only by the redisplay code.  Still get the window
+	  size, though
+
+lib/glob/fnmatch.c
+	- range comparisons in bracket expressions no longer use strcoll(3),
+	  since in some locales (de, for example), [A-Z] matches all
+	  characters
+
+parse.y, print_cmd.c
+	- some changes to make sure the shell compiles when
+	  DPAREN_ARITHMETIC is not defined but ARITH_FOR_COMMAND is
+
+				    8/5
+				    ---
+redir.c
+	- in the here document code in do_redirection_internal, check
+	  that the file descriptor returned by here_document_to_fd is not
+	  the same as a file descriptor specified as the redirector
+	  before closing it
+
+				    8/6
+				    ---
+parse.y
+	- make sure the pipline rule for `timespec BANG pipeline' sets the
+	  CMD_INVERT_RETURN flag for the pipeline command
+
+builtins/wait.def
+	- use setjmp with a special jump buffer to take longjmps in the
+	  case that a SIGINT is received while waiting for jobs or processes
+	  it makes wait return with a status > 128, as POSIX.2 specifies
+
+{jobs,nojobs}.c
+	- changed wait_sigint_handler to longjmp to wait_intr_buf if it's
+	  executing the wait builtin and SIGINT is trapped.  It calls
+	  trap_handler to make sure a pending trap for SIGINT is set also,
+	  so the trap is taken when the wait builtin returns
+
+				    8/9
+				    ---
+jobs.c
+	- save and restore the value of errno in sigchld_handler
+
+trap.c
+	- save and restore the value of errno in trap_handler
+
+				   8/10
+				   ----
+Makefile.in
+	- changed release status to beta1
+
+				   8/13
+				   ----
+include/posixtime.h
+	- new file to encapsulate the <time.h> and <sys/time.h> mess
+
+Makefile.in
+	- add posixtime.h to list of include files in BASHINCFILES
+	- update dependencies for general.o, execute_cmd.o
+
+general.c, execute_cmd.c, builtins/times.def
+	- include posixtime.h instead of <time.h>, <sys/time.h>
+
+general.c
+	- protect inclusion of <sys/times.h> with HAVE_SYS_TIMES_H check
+
+builtins/Makefile.in
+	- update dependencies for times.o
+
+				   8/16
+				   ----
+lib/sh/timeval.c
+	- moved functions dealing with struct timevals here from general.c
+	  and execute_cmd.c
+
+lib/sh/clock.c
+	- moved functions dealing with clock_ts here from general.c
+	  (print_time_in_hz renamed to print_clock_t)
+
+externs.h
+	- moved extern declarations for timeval_to_secs and print_timeval
+	  here from general.h
+	- moved extern declarations for clock_t_to_secs and print_clock_t
+	  here from general.h
+
+builtins/times.def
+	- calls to print_time_in_hz changed to print_clock_t
+
+Makefile.in
+	- added references for lib/sh/timeval.c and lib/sh/clock.c
+
+lib/sh/Makefile.in
+	- clock.o and timeval.o are now included in libsh.a
+
+				   8/23
+				   ----
+execute_cmd.c
+	- make sure last_command_exit_value is updated before running a
+	  DEBUG trap in the cm_simple case of execute_command_internal
+
+lib/readline/display.c
+	- new function, static void redraw_prompt (char *), used to
+	  redraw the last line of a multiline prompt that possibly
+	  contains terminal escape sequences
+	- call redraw_prompt from _rl_redisplay_after_sigwinch
+
+				   8/24
+				   ----
+lib/readline/bind.c
+	- new struct with names of string-valued readline variables and
+	  handler functions to call when the variable is set
+	- changed rl_variable_bind to use functions to find boolean vars
+	  and string vars in their respective lists
+	- new function, bool_to_int, to translate a boolean value that may
+	  appear as an argument to `set <boolean-var-name>' to 1 or 0
+	- new function, hack_special_boolean_var, called if the element in
+	  the boolean_vars struct has the V_SPECIAL flag set, to provide
+	  any necessary other action when a boolean variable is set
+	- new functions to be called when each string variable is set;
+	  called by rl_variable_bind
+
+execute_cmd.c
+	- do_piping no longer sets pipes to O_TEXT mode if __CYGWIN32__
+	  is defined
+
+				   8/25
+				   ----
+subst.c
+	- parameter_brace_patsub now mallocs a local copy of `patsub', because
+	  if it starts with a `/' we increment it, and functions down the call
+	  chain will free that on an error (and if we pass the incremented
+	  value, will try to free unallocated memory)
+	- pos_params now short-circuits and returns a null string immediately
+	  if start == end, meaning we want 0 positional parameters
+
+				   8/26
+				   ----
+subst.c
+	- fixed pat_subst to correctly handle a null replacement string with
+	  a null pattern string prefixed with `%' or `#'
+
+				    9/3
+				    ---
+variables.c
+	- don't import shell functions from the environment if the shell was
+	  started with -n
+
+				    9/8
+				    ---
+subst.c
+	- if a command substitution is being performed inside a shell function,
+	  catch `return' in command_substitute so that a return inside the
+	  command substitution doesn't jump back to execute_function (or one
+	  of its brethren) and go on with the command
+
+parse.y
+	- in history_delimiting_chars, if the first line is `for var' and
+	  command_oriented_history is active, we don't want a semicolon if
+	  the next token to be read is `in', but we do want one otherwise.
+	  All we can do is check shell_input_line and see if the next chars
+	  are `in' -- if so, we return " "
+
+				   9/16
+				   ----
+builtins/hash.def
+	- don't allow `hash -p /pathname/with/slashes name' if the shell
+	  is restricted
+
+doc/{bash.1,bashref.texi}
+	- updated description of restricted shell mode
+
+lib/readline/display.c
+	- fixed a bug in _rl_update_final which used the inv_lbreaks array
+	  to index into visible_line
+
+jobs.c
+	- waitchld() need not go through the pain of setting up an environment
+	  to execute traps on SIGCHLD if children_exited == 0
+	- waitchld returns -1 if waitpid() returns -1 with errno == ECHILD,
+	  indicating that there are no unwaited-for child processes, and it
+	  has not yet reaped any dead children
+	- wait_for, wait_for_single_pid return -1 if waitchld() returns -1
+	- new function, mark_all_jobs_as_dead
+	- wait_for_background_pids calls mark_all_jobs_as_dead if
+	  wait_for_single_pid returns -1 with errno == ECHILD, since there are
+	  no unwaited-for child processes
+
+subst.c
+	- tentative change: subshells started for command substitution no
+	  longer unconditionally disable job control
+
+				   9/17
+				   ----
+parse.y
+	- new function: save_token_state().  Saves the value of last_read_token
+	  and the two previous tokens in an allocated array and returns the
+	  array
+	- new function: restore_token_state(ts).  TS is an array returned by
+	  save_token_state.  last_read_token and the two previous tokens are
+	  set from the values in TS
+
+trap.c
+	- run_pending_traps calls save_token_state and restore_token_state
+	  around the call to parse_and_execute, which will call the parser
+	  and possibly leave it in a state where reserved words will not be
+	  recognized (_run_trap_internal, too)
+
+				   9/20
+				   ----
+support/bashbug.sh
+	- if sendmail is used as $RMAIL, pass `-i -t' as arguments so changes
+	  made by the user to the recipient headers in the message are
+	  honored
+
+				   9/21
+				   ----
+bashhist.c
+	- if histverify has been set, make sure a `:p' modifier to a history
+	  expansion prints the result
+
+builtins/echo.def
+	- new extern variable, xpg_echo, set to 1 if DEFAULT_ECHO_TO_USG is
+	  defined and 0 otherwise
+	- echo_builtin now sets the initial value of do_v9 from xpg_echo
+
+builtins/shopt.def
+	- new shopt option, `xpg_echo', turns backslash escape expansion by
+	  `echo' on and off at runtime
+
+builtins/{bash.1,bashref.texi}
+	- documented new `xpg_echo' shell option
+
+tests/{builtins.tests,builtins2.sub,shopt.tests}
+	- changes for new `xpg_echo' shell option
+
+configure.in
+	- changes for FreeBSD-3.x ELF to add `-rdynamic' to LOCAL_LDFLAGS.
+	  This allows dynamic loading of builtins
+
+support/shobj-conf
+	- changes to handle FreeBSD-3.x elf or a.out object file formats
+
+				   9/23
+				   ----
+[bash-2.04-beta1 released]
+
+				   9/24
+				   ----
+jobs.c
+	- wait_for returns -1 only if the shell is currently executing the
+	  `wait' builtin, since that's the only thing that cares
+
+execute_cmd.c
+	- moved cases of close_fd_bitmap to before calls to do_piping to
+	  handle some pathological cases
+
+				   9/29
+				   ----
+execute_cmd.c
+	- save the command line in execute_simple_command before making the
+	  export environment, since maybe_make_export_env clobbers
+	  the_printed_command if there are exported functions
+
+				   9/30
+				   ----
+configure.in,config.h.in
+	- check explicitly for setvbuf; define HAVE_SETVBUF if found
+
+configure.in
+	- change opt_gnu_malloc to opt_bash_malloc, since the bash malloc
+	  is not really the gnu malloc anymore
+	- new argument, --with-bash-malloc, identical to --with-gnu-malloc
+	- AC_DEFINE(USING_BASH_MALLOC) if opt_bash_malloc is enabled
+
+config.h.in
+	- new #define for USING_BASH_MALLOC
+
+doc/bashref.texi
+	- updated installation section to add --with-bash-malloc and
+	  change description of --with-gnu-malloc
+
+lib/sh/setlinebuf.c
+	- change name of function to sh_setlinebuf, just returns 0 if
+	  HAVE_SETVBUF and HAVE_SETLINEBUF are undefined
+	- prefer setvbuf to setlinebuf if we have both
+	- if we're using setvbuf, use a local buffer for stdin and stdout
+	  local buffer is BUFSIZ unless we're using the bash malloc
+	  (USING_BASH_MALLOC is defined), in which case it's 1008 (which
+	  the bash malloc rounds up to 1024)
+
+				   10/4
+				   ----
+input.c
+	- if USING_BASH_MALLOC is defined, set the max buffer size to 8176,
+	  which the bash malloc rounds up to 8192
+
+				   10/5
+				   ----
+pcomplete.c
+	- new function, pcomp_filename_completion_function, a wrapper for
+	  filename_completion_function that dequotes the filename first
+
+bashline.c
+	- changed bash_directory_completion_matches to dequote the filename
+	  before passing it (indirectly) to filename_completion_function
+
+execute_cmd.c
+	- change execute_command to defer calling unlink_fifo_list until any
+	  shell function has finished executing (variable_context == 0)
+
+configure.in
+	- added AC_CYGWIN, AC_MINGW32, AC_EXEEXT
+
+				   10/8
+				   ----
+subst.c
+	- expand_word_internal(): changes some things to avoid small (2 or 3
+	  byte) calls to xmalloc -- added a label and some gotos (BEWARE)
+	- changed make_dev_fd_filename so it doesn't call sprintf anymore
+
+				   10/27
+				   -----
+execute_cmd.c
+	- make execute_select_command handle the effects of the `continue'
+	  builtin correctly
+
+				   11/5
+				   ----
+Makefile.in
+	- RELSTATUS changed to `beta2'
+
+				   11/8
+				   ----
+[bash-2.04-beta2 released]
+
+				   11/9
+				   ----
+shell.c
+	- make run_startup_files check for ssh2 as well as ssh1
+
+				   11/19
+				   -----
+parse.y
+	- make sure parsing conditional commands isn't confused by unexpected
+	  tokens (like `[[)]]')
+
+builtins/common.c
+	- fix get_job_spec to return NO_JOB for numeric job specs that are
+	  beyond the size of the jobs table
+
+builtins/type.def
+	- change describe_command to report `not found' if a path search
+	  returns the same string as the command name and the command name
+	  does not match an executable file.  This has implications for
+	  `type' and `command -[vV]'.
+	- if a command is not found in $PATH, but an executable file with the
+	  name supplied exists in the current directory, make the command
+	  into a full pathname for the `command' builtin.  This has
+	  implications for `type' and `command -[vV]'
+
+subst.c
+	- new function, expand_prompt_string, expands prompt string and
+	  returns the string passed if an error occurs
+
+subst.h
+	- extern declaration for expand_prompt_string
+
+parse.y
+	- decode_prompt_string calls expand_prompt_string instead of
+	  expand_string_unsplit
+
+				   11/22
+				   -----
+builtins/echo.def
+	- return EXECUTION_FAILURE if ferror(stdout) is true
+
+				   11/23
+				   -----
+locale.c
+	- if LC_ALL is unset, call setlocale(LC_ALL, lc_all), because lc_all
+	  holds the default locale
+
+				   11/29
+				   -----
+lib/readline/shell.c
+	- define NULL as 0 if it's not defined
+	- change single_quote to allocate 4 characters in new string for
+	  each character in the old one (like builtins/common.c:single_quote)
+
+locale.c
+	- when a locale variable (LC_*) is unset, pass "" to setlocale()
+	  to get the default locale set, since value is NULL
+
+lib/sh/makepath.c
+	- new function, sh_makepath(char *path, char *dir, int flags)
+
+Makefile.in
+	- changed version to beta3
+
+builtins/type.def
+	- changed describe_command to use sh_makepath()
+
+builtins/cd.def
+	- removed private declaration of mkpath(), changed to use sh_makepath
+
+general.c
+	- changed make_absolute to use sh_makepath
+	- changed full_pathname to use sh_makepath
+
+findcmd.c
+	- removed private definition of make_full_pathname, changed to use
+	  sh_makepath
+
+doc/{bashref.texi,bash.1}
+	- added text to description of `getopts' to make it clear that getopts
+	  may be used to parse option characters other than letters, and
+	  that `:' and `?' may not be used as option characters
+
+eval.c
+	- when processing a jump_to_top_level(EXITPROG), make sure the shell
+	  doesn't think it's still in a function by setting variable_context
+	  to 0
+
+doc/rbash.1
+	- a skeletal man page for rbash, adapted from debian
+
+support/bashbug.sh
+	- try to find a default editor if EDITOR is unset, rather than blindly
+	  using `emacs'
+
+				   11/30
+				   -----
+support/config.{guess,sub}
+	- many changes from the latest `automake' distribution, from the
+	  Debian folks
+
+				   12/2
+				   ----
+lib/readline/keymaps.h, lib/tilde/tilde.h
+	- added support for C++ compilation (`extern "C" {...}')
+
+				   12/3
+				   ----
+subst.c
+	- in process_substitute, make sure the child resets the O_NONBLOCK
+	  flag on the file descriptor opened for read to a named pipe
+
+jobs.c
+	- new function, raw_job_exit_status, returns exit status of last job
+	  in pipeline
+	- change job_exit_status to call raw_job_exit_status and pass the
+	  result to process_exit_status
+	- in notify_of_job_status, get termination status from call to
+	  raw_job_exit_status, rather than the first job in the pipeline
+	  (fixes debian bug #15165)
+
+bashhist.c
+	- changed bash_history to not add shell comment lines to the history
+	  file (fixes debian bug #21901).  Uses new function shell_comment(L)
+	  which returns 1 if L is a shell comment line.  Doesn't handle
+	  comments embedded in lines yet
+
+redir.c
+	- when running in POSIX.2 mode, bash no longer performs word splitting
+	  on the expanded value of the word supplied as the filename argument
+	  to a redirection operator (fixes debian bug #30460)
+
+doc/bashref.texi
+	- added new redirection stuff to POSIX Mode section (from previous fix)
+
+				   12/6
+				   ----
+hashlib.h
+	- removed extra semicolon at end of HASH_ENTRIES define
+
+redir.c
+	- replaced toggling of disallow_filename_globbing flag with setting
+	  flags in redirection word to include W_NOGLOB if the shell is in
+	  POSIX mode and not interactive when expanding the filename argument
+	  to a redirection
+
+				   12/7
+				   ----
+builtins/common.c
+	- new function, backslash_quote_for_double_quotes(char *), quotes
+	  characters special when in double quotes in the string passed as
+	  an argument.
+	  #ifdef PROMPT_STRING_DECODE; called by decode_prompt_string
+
+builtins/common.h
+	- extern declaration for backslash_quote_for_double_quotes
+
+parse.y
+	- call backslash_quote_for_double_quotes instead of backslash_quote
+	  in decode_prompt_string
+
+				   12/9
+				   ----
+parse.y
+	- before expanding the \u prompt string escape sequence, make sure
+	  current_user.user_name is non-null and call get_current_user_info
+	  if it is
+
+				   12/10
+				   -----
+support/mkversion.sh
+	- changes to avoid relying on floating point output format, which
+	  can be locale-specific
+
+				   12/14
+				   -----
+print_cmd.c
+	- changes to named_function_string (for normal function printing)
+	  and print_function_def (for printing function definitions embedded
+	  in other commands) to print redirections that should be attached
+	  to the function as a whole after the closing brace
+
+tests/func1.sub
+	- tests for printing functions with attached redirections, called by
+	  func.tests
+
+				   12/16
+				   -----
+lib/readline/complete.c
+	- if we're completing files in the root directory and executing the
+	  visible-stats code, don't pass an empty pathname to
+	  rl_directory_completion_hook, because, for bash, that will be
+	  expanded to the current directory.  Just pass `/' instead.
+
+lib/tilde/tilde.c
+	- fix to tilde_expand_word for Cygwin to avoid creating pathnames
+	  beginning with `//' if $HOME == `/'
+
+variables.c
+	- don't bother with the exportstr validation on cygwin systems,
+	  or even using exportstr at all, since that system has weird
+	  environment variables
+
+				   12/17
+				   -----
+configure.in
+	- new option, --enable-xpg-echo-default, new name for
+	  --enable-usg-echo-default (which is still present for backwards
+	  compatibility)
+
+configure.in, config.h.in, builtins/echo.def
+	- DEFAULT_ECHO_TO_USG -> DEFAULT_ECHO_TO_XPG
+
+				   12/29
+				   -----
+aclocal.m4
+	- changed a couple of tests to avoid creating files with known
+	  names in /tmp
+
+support/rlvers.sh
+	- changed to create files in /tmp/rlvers
+
+support/mksignames.c
+	- now understands the POSIX.1b real-time signal names on systems
+	  that support them
+
+				   12/30
+				   -----
+[bash-2.04-beta3 released]
+
+				   12/31
+				   -----
+redir.c
+	- try some more things to avoid race file replacements in
+	  here_document_to_fd
+
+parse.y
+	- two new functions:
+		get_current_prompt_level: returns 2 if current prompt is $PS2,
+					  1 otherwise
+		set_current_prompt_level: sets current prompt to $PS2 if arg
+					  is 2, $PS1 otherwise
+
+copy_cmd.c
+	- make sure to copy the `line' member in copy_arith_for_command
+
+pcomplete.c
+	- free up `lwords' and `line' after evaluating any command or shell
+	  function in gen_compspec_completions
+	- after filtering any matches specified by cs->filterpat in
+	  gen_compspec_completions, free ret->list (the members have
+	  already been copied or freed by filter_stringlist)
+
+bashline.c
+	- free what find_cmd_name returns after calling the programmable
+	  completion code
+
+				 1/4/2000
+				 --------
+subst.c 
+	- make call_expand_word_internal set w->word to NULL if either
+	  expand_word_error or expand_word_fatal is returned 
+
+				    1/7
+				    ---
+parse.y
+	- two new functions: set_current_prompt_level(int) and
+	  get_current_prompt_level() to set and get the `level' of
+	  current_prompt_string (1 if $PS1, 2 if $PS2)
+
+externs.h
+	- extern declarations for {get,set}_current_prompt_level
+
+builtins/evalstring.c
+	- add an unwind_protect to save and restore the current prompt
+	  string pointers using {get,set}_current_prompt_level
+
+				    1/9
+				    ---
+Makefile.in
+	- changed release status to `beta4'
+
+				   1/18
+				   ----
+[bash-2.04-beta4 released]
+
+				   1/19
+				   ----
+configure.in
+	- moved checks for non-unix variants to beginning of tests
+
+Makefile.in, {builtins,support}/Makefile.in
+	- added some $(EXEEXT) suffixes to generated programs for non-Unix
+	  systems
+
+				   1/20
+				   ----
+parse.y
+	- make get_current_prompt_level return 1 if current_prompt_string is
+	  NULL (as it would be while sourcing startup files)
+
+support/rlvers.sh
+	- rmdir $TDIR in the exit trap
+	- move the exit trap after we successfully create $TDIR
+
+				   1/21
+				   ----
+subst.c
+	- several changes to split_at_delims to make non-whitespace
+	  delimiters create separate fields containing those delimiters,
+	  like the shell parser does with meta characters.  This allows
+	  redirection operators, for example, to be treated as separate
+	  words by the programmable completion code
+
+examples/complete/complete-examples
+	- added new function: _redir_op, which return true if the word
+	  passed as an argument contains a redirection operator (just
+	  bare-bones for now)
+	- changed set completion function to use _redir_op as an example
+
+parse.y
+	- make parse_string_to_word_list save and restore the value of
+	  shell_input_line_terminator, since an assignment like
+	  COMPREPLY=() inside a shell function called by the programmable
+	  completion code can change shell_input_line_terminator out from
+	  underneath shell_getc().  shell_getc will set the input line
+	  terminator to EOF when it gets EOF from the getter function, and
+	  the string getter function returns EOF at EOS.  parse_and_execute
+	  tests for EOS directly and never gets EOF from shell_getc, so it
+	  does not have this problem.
+
+				   1/24
+				   ----
+lib/readline/funmap.c
+	- #define QSFUNC like in complete.c
+	- cast _rl_qsort_string_compare to a QSFUNC * in the call to qsort
+
+lib/readline/terminal.c
+	- correct a typo in usage of the __EMX__ preprocessor define
+	- fix a reversed usage of `#if defined (__DJGPP__)' in 
+	  _rl_control_keypad
+	- remove extern declarations for _rl_in_stream and _rl_out_stream
+
+lib/readline/rlprivate.h
+	- add extern declaration for _rl_in_stream, since there's already
+	  one for _rl_out_stream
+
+builtins/ulimit.def
+	- if bash is using ulimit(2), make sure that getfilesize() returns
+	  the value multiplied by 512 to convert it from a number of blocks
+	  to a number of bytes
+
+				   1/25
+				   ----
+execute_cmd.c
+	- make sure execute_command_internal sets last_command_exit_value
+	  correctly when inverting the return value of a (...) subshell
+	  command
+
+tests/{run-invert,invert.{tests,right}}
+	- new tests for return value inversion
+
+configure.in
+	- compile without bash malloc on m68k-motorola-sysv due to a file
+	  descriptor leak in closedir(3) -- the motorola implementation
+	  requires that freed memory be readable so it can free the dirent
+	  and then look back at it to find the file descriptor
+
+expr.c
+	- fix negative exponents in v**e to return an eval error
+
+				    2/1
+				    ---
+Makefile.in
+	- changed status to beta5
+
+jobs.c
+	- fixed a problem with checking the wrong process when checking to
+	  see whether or not we need to reset the tty state.  The old code
+	  checked the first process in a pipeline; the new code checks all
+	  processes in the pipeline to see whether any of them exited due
+	  to a signal or was stopped.  If none were signalled or stopped,
+	  the code uses the exit status of the last process in the job's
+	  pipeline
+
+				    2/4
+				    ---
+[bash-2.04-beta5 released]
+
+eval.c
+	- call set_current_prompt_level instead of setting prompt_string_pointer
+	  directly
+
+				   2/10
+				   ----
+[bash-2.04-beta5 re-released to net]
+
+				   2/11
+				   ----
+sig.c
+	- make sure SIGCHLD is defined in initialize_shell_signals before
+	  trying to use it in sigdelset() (DJGPP fix)
+
+				   2/14
+				   ----
+lib/sh/shtty.c
+	- include <unistd.h> before <shtty.h>
+	- separate tests for ONLCR, ONOCR, ONLRET to cope with systems like
+	  DJGPP that don't implement the full POSIX termios option set
+
+builtins/psize.sh
+	- set TMPDIR only if it's not already set
+
+lib/glob/glob.c
+	- if a system doesn't define _POSIX_SOURCE but has a `struct dirent'
+	  without a d_ino member, define REAL_DIR_ENTRY to 1 so all entries
+	  are read
+
+configure.in
+	- check for <arpa/inet.h> header file
+
+config.h.in
+	- add HAVE_ARPA_INET_H define
+
+lib/sh/inet_aton.c
+	- don't compile unless HAVE_NETWORK, HAVE_NETINET_IN_H, and
+	  HAVE_ARPA_INET_H are all defined in config.h or config-bot.h
+
+				   2/16
+				   ----
+subst.c
+	- if we have a construct like "${@:-}", we need to note that we're
+	  not using whatever is in $@ (we're using the rhs), so the special
+	  double-quoting $@ rules do not apply
+
+				   2/21
+				   ----
+lib/readline/signals.c
+	- declare SigHandler before using it on non-POSIX systems
+
+lib/sh/{zread,zwrite}.c
+	- include <sys/types.h> unconditionally
+
+configure.in
+	- m68k-motorola-sysv should be m68k-sysv in the section that sets
+	  opt_bash_malloc to no for certain systems
+
+builtins/complete.def
+	- fixed a typo (stoppped) when printing out completion actions
+
+				   2/22
+				   ----
+lib/sh/netopen.c
+	- include <arpa/inet.h> if it's present
+
+aclocal.m4
+	- new macro, BASH_FUNC_INET_ATON, checks for inet_aton(3) including
+	  <netinet/in.h> and <arpa/inet.h>, which some systems require to
+	  resolve the function
+
+configure.in
+	- if autoconf can't fund inet_aton on its own, try BASH_FUNC_INET_ATON
+
+pcomplete.c
+	- fixed a memory leak in gen_wordlist_completions
+	- changed gen_wordlist_completions to do prefix-matching against the
+	  word being completed
+
+doc/bash.1, lib/readline/doc/rluser.texinfo
+	- documented the change in behavior of the -W option to complete and
+	  compgen
+
+builtins/umask.def
+	- if parse_symbolic_mode() returns -1, symbolic_umask needs to return
+	  -1 as well, otherwise the umask will be changed inappropriately
+
+input.c
+	- always compile in getc_with_restart and ungetc_with_restart
+
+parse.y
+	- yy_stream_get and yy_stream_unget now call getc_with_restart and
+	  ungetc_with_restart, respectively, to avoid problems with some
+	  systems not restarting the read(2) when signals that bash handles
+	  are received during the read (since bash installs its signal
+	  handlers without the SA_RESTART flag)
+
+lib/readline/complete.c
+	- don't default rl_completion_case_fold to 1 if __DJGPP__ is defined
+
+				   2/25
+				   ----
+subst.c
+	- renamed `varlist' to `subst_assign_varlist' and made it global
+
+jobs.c
+	- when running a SIGCHLD trap, need to unwind-protect
+	  subst_assign_varlist and set it to NULL before running the trap
+	  command (fix from ericw@bestnet.org and doogie@debian.org)
+
+				   2/28
+				   ----
+lib/readline/doc/rltech.texinfo
+	- document rl_funmap_names()
+
+				   2/29
+				   ----
+subst.c
+	- change split_at_delims to set the current word more appropriately
+	  when the cursor is between two words.  Should probably change this
+	  again to set the current word like this only when the cursor is at
+	  whitespace or another delim just before the word start
+
+				    3/1
+				    ---
+lib/sh/shtty.c
+	- more checks for flag bits being defined before using them
+
+				    3/7
+				    ---
+variables.h
+	- fix typo in COPY_EXPORTSTR definition 
+
+				   3/14
+				   ----
+subst.c
+	- changed split_at_delims so that if the cursor is at whitespace
+	  between words, and we're interested in the current word (cwp != NULL),
+	  make a new empty word and set the cwp to that word
+
+locale.c
+	- support for setting LC_NUMERIC locale category based on value of
+	  LC_NUMERIC shell variable
+
+variables.c
+	- LC_NUMERIC is now treated specially
+
+doc/{bash.1,bashref.texi}
+	- LC_NUMERIC updates
+
+				   3/15
+				   ----
+pcomplete.c
+	- fix to avoid freeing memory twice
+
+				   3/17
+				   ----
+[bash-2.04 released]
+
+				   3/20
+				   ----
+doc/bash.1
+	- minor typo fix to description of `xpg_echo' option in `echo'
+	  description
+
+				   3/23
+				   ----
+parse.y
+	- minor fix to parse_string_to_word_list to allow newlines in
+	  compound array assignments
+
+				   3/27
+				   ----
+lib/readline/rltty.c
+	- fixed a missing-semicolon syntax error in the old 4.3 BSD tty code
+
+support/mksignames.c
+	- if SIGRTMAX is >= 2*NSIG, just #undef SIGRTMIN and SIGRTMAX.  This
+	  is an issue on AIX 4.3 (only, so far) -- checked by configure, which
+	  #defines UNUSABLE_RT_SIGNALS if this is the case
+
+aclocal.m4
+	- new macro, BASH_CHECK_RTSIGS, checks whether or not real-time
+	  signals are defined with large values and defines UNUSABLE_RT_SIGNALS
+	  if they are
+
+config.h.in
+	- place marker for UNDEF_RT_SIGNALS (initially undefined)
+
+configure.in
+	- call BASH_CHECK_RTSIGS in the `bash miscellaneous' section
+
+				   3/29
+				   ----
+
+subst.c
+	- fixed a problem in match_pattern_char, where `string' was checked
+	  for a paren following a [?+!@], rather than `pat'
+	- the code that checks whether or not to exit after a failed
+	  ${word?msg} substitution needs to check interactive_shell rather
+	  than interactive to avoid exiting if such a construct appears in
+	  a sourced file
+
+				   3/31
+				   ----
+
+bashline.c
+	- add `{' to the list of characters that need to be quoted by the
+	  completion code when appearing in a filename
+
+				    4/1
+				    ---
+lib/glob/fnmatch.c
+	- fixed an error in brackmatch() while skipping the rest of a bracket
+	  expression after a character matched.  When `c' was a backslash and
+	  *p was a backslash, as in a pattern like [/\\], the old code didn't
+	  take both backslashes into account and ended up skipping the `]'
+	  after erroneously concluding that it was quoted.  Report and fix
+	  from akim@epita.fr
+
+				    4/3
+				    ---
+lib/readline/rltty.c
+	- slight change to the BSD tty interface code, so that if the first
+	  ioctl fails, get_tty_settings returns -1 immediately
+	- better checking of ioctl return values in BSD tty version of
+	  get_tty_settings
+
+				    4/5
+				    ---
+doc/{bash.1,bashref.texi}
+	- documented use of LINES and COLUMNS variables
+
+				   4/12
+				   ----
+lib/readline/rltty.c
+	- change the SETATTR define for the termio tty driver to use
+	  TCSETAW (the analog of the termios TCSADRAIN)
+
+lib/glob/fnmatch.c
+	- fix for posix-style bracket expressions ([:xxx:], [=x=]) broken
+	  by fix of 4/1 for quotes in bracket expressions
+
+				   4/26
+				   ----
+subst.c
+	- fix to list_string and get_word_from_string to make a non-whitespace
+	  IFS character preceded by IFS whitespace part of the current field
+	  delimiter, not a separate delimiter that would result in a separate
+	  null field when splitting.  cf POSIX.2, 3.6.5, (3)(b).  Bug reported
+	  by amc@cs.berkeley.edu
+	- changed the behavior of the (currently undocumented) ${!prefix@}
+	  expansion to be analogous to the expansion of $@ in other contexts
+	  when double-quoted.  ksh93 seems to do this.  Bug reported by
+	  Ken Pizzini <ken@halcyon.com>
+	- changed read_comsub to ignore NUL bytes in the command substitution
+	  output, printing a warning message for now
+
+parse.y
+	- changed shell_getc to ignore NUL bytes in the input, printing a
+	  warning message for now
+	- changed read_a_line to print a warning when a NUL byte is encountered,
+	  like shell_getc does
+
+				   5/18
+				   ----
+subst.c
+	- make sure split_at_delims uses d2 only if it's non-null
+	- make split_at_delims skip leading newlines in the string to split,
+	  if newline is a delimiter
+
+jobs.c
+	- prevent hanging processes by marking a child process as not running
+	  (even if the shell thinks it is) when waitpid() returns -1/ECHILD --
+	  this indicates that waitpid never returned a reasonable status
+	  for that child though, which may be a symptom of another problem
+
+builtins/cd.def
+	- make `pwd' print an error message if the write fails when displaying
+	  the current directory
+
+lib/readline/histexpand.c
+	- return NULL from history_find_word if history_tokenize_internal
+	  returns (char **)NULL rather than attempting to dereference a
+	  possibly-NULL pointer
+	- change history_tokenize_internal to set *indp to -1 before any
+	  processing if indp is non-null
+
+				   5/19
+				   ----
+builtins/trap.def
+	- when in POSIX.2 mode and printing trap dispositions, print the
+	  signal name without the leading `SIG', as POSIX.2 requires
+
+				   5/23
+				   ----
+lib/readline/readline.c
+	- readline_initialize_everything now assigns $TERM to rl_terminal_name
+	  if the application has left it unset, and calls _rl_init_terminal_io
+	  with the resultant value
+
+lib/readline/doc/rltech.texinfo
+	- updated the description of rl_terminal_name to note initialization
+
+parse.y
+	- change parse_string_to_word_list to save and restore the value of
+	  current_command_line_count before calling back into the parser --
+	  it will screw up history if the string extends over one line.  Bug
+	  reported by Jan.Djarv@mbox200.swipnet.se
+
+				    6/7
+				    ---
+unwind_prot.h
+	- change unwind_protect_string to pass the address of the variable to
+	  unwind_protect_var on machines where ints and char *s are not the
+	  same size
+
+unwind_prot.c
+	- make sure we save the value of a variable in unwind_protect_var on
+	  machines where sizeof(char *) != sizeof(int), not the contents the
+	  value points to.  Fix from Andreas Schwab <schwab@suse.de>
+
+				    6/8
+				    ---
+configure.in
+	- auto-configure MacOS X without bash malloc (like Rhapsody)
+
+				   6/12
+				   ----
+configure.in
+	- replace `cygwin32' with `cygwin'
+
+builtins/evalfile.c
+	- in _evalfile, change all instances of \r to \n in the file to be
+          sourced and evaluated if __CYGWIN__ is defined
+
+input.c
+	- change \r to \n in the buffer argument to make_buffered_stream and
+          after calling zread() from b_fill_buffer if __CYGWIN__ is defined
+
+				   6/29
+				   ----
+lib/sh/Makefile.in
+	- add rest of dependency rules for makepath.o
+
+				    7/3
+				    ---
+jobs.c
+	- changed `int' to `WAIT' in a couple of places for non-POSIX
+	  environments
+
+				    7/5
+				    ---
+locale.c
+	- try to avoid an unnecessary memory allocation in localetrans() in
+	  the case that a translation for the string exists
+
+lib/readline/doc/rluserman.texinfo
+	- change the `direntry' information to make it use rluserman instead
+	  of readline
+
+				    7/6
+				    ---
+execute_cmd.c
+	- changes to execute_in_subshell so it honors a `!' prefixing a command
+	  inside a user subshell (...)
+
+support/config.{guess,sub}
+	- add cases for Apple Darwin (Mac OS X)
+
+configure.in
+	- Apple Darwin (MacOS X) uses its own malloc
+
+lib/readline/readline.h
+	- removed bogus extern declaration of savestring
+
+				    7/7
+				    ---
+builtins/common.c
+	- in get_working_directory, don't count on getcwd returning anything
+	  useful in the buffer passed as the first argument on failure; just
+	  use bash_getcwd_errstr in the error message
+
+examples/loadables/cut.c
+	- loadable version of cut(1), from the FreeBSD source tree
+
+				   7/18
+				   ----
+lib/readline/vi_mode.c
+	- changed two instances of (*rl_getc_function) (rl_instream) to calls
+	  to rl_read_key(), which works better when using the readline
+	  callback interface
+
+builtins/evalfile.c
+	- added FEVAL_CHECKBINARY flag for _evalfile; controls whether a check
+	  for a binary file is performed
+	- FEVAL_CHECKBINARY is not set by source_file or maybe_execute_file,
+	  which means that the startup file execution and the `.' builtin will
+	  not check for binary files
+	- FEVAL_CHECKBINARY is not set by fc_execute_file, so that files
+	  composed of history commands run by the `fc' builtin will not check
+	  for binary files
+
+				   7/21
+				   ----
+shell.c
+	- added `--init-file' as a synonym for `--rcfile'
+
+				   7/26
+				   ----
+support/shobj-conf
+	- added commented-out stanzas for hpux 10 and hpux 11 when the HP
+	  unbundled ANSI C compiler is being used
+
+				   7/27
+				   ----
+shell.c
+	- don't call end_job_control() from exit_shell if subshell_environment
+	  is non-zero, even if the shell is interactive
+
+				    8/1
+				    ---
+bashhist.c
+	- change maybe_add_history to remember if we saved the first line of
+	  a command and don't save the second and subsequent lines of a
+	  multi-line command if we didn't save the first line
+
+configure.in, config.h.in
+	- add autoconf check for getservbyname()
+
+lib/sh/netopen.c
+	- add support for named services in /dev/(tcp|udp)/host/service
+	  translation
+	- make sure _netopen sets errno to something other than 0 if something
+	  goes wrong, so the redirection functions behave
+
+				    8/3
+				    ---
+parse.y
+	- changes to shell_getc so that history saving of blank lines in
+	  multi-line commands does a better job of syntactic correctness
+
+bashline.c
+	- bind ^O to operate-and-get-next in emacs_standard_keymap explicitly,
+	  rather than letting rl_add_defun do it in whatever keymap is current
+
+				    8/4
+				    ---
+builtins/ulimit.def
+	- removed some of the special handling of RLIM_INFINITY -- the old
+	  code would let people use RLIM_INFINITY as a shorthand for setting
+	  the soft limit to the hard limit.  Now, the code just passes
+	  RLIM_INFINITY through if the hard limit is being set, so any kernel
+	  errors will get through
+
+				   8/10
+				   ----
+parse.y
+	- change the grammar rule for group_command so that it's composed of
+	  a compound_list instead of a list, which requires a terminator
+	  This means that you can now do (legal) things like
+
+		{ { echo a b c ; } }
+
+	  since the second close brace will be recognized as such because a
+	  reserved word is legal in that context
+
+				   8/23
+				   ----
+subst.c
+	- fix parameter_brace_substring to free all memory allocated by
+	  get_var_and_type in the VT_ARRAYMEMBER case (returned parameter
+	  `val')
+
+				   8/30
+				   ----
+variables.c
+	- now that we have dynamic array variables, remove the check for
+	  array_p in bind_variable and let array variables with assignment
+	  functions call the assignment function
+
+subst.c
+	- change cond_expand_word to perform tilde expansion (like it should
+	  have done all along)
+
+lib/readline/complete.c
+	- don't allow backslash to quote anything inside a single-quoted
+	  string in find_completion_word
+
+doc/{bash.1,bashref.texi}
+	- note that `set -a' will cause functions to be exported
+
+lib/readline/parens.c
+	- changed the blink timeout so it's settable by the application.  A
+	  new function, int rl_set_paren_blink_timeout (int u), (still
+	  undocumented) will set the timeout to U usec
+
+variables.c
+	- at startup of an interactive login shell, if the current directory
+	  is $HOME, and $HOME and $PWD are not the same, set the current
+	  directory (and $PWD) to $HOME
+	- break code that initializes $PWD and $OLDPWD into set_pwd function
+
+variables.h
+	- new extern declaration for set_pwd()
+
+				    9/6
+				    ---
+lib/readline/{readline,callback}.c
+	- allocate memory for rl_prompt instead of simply using what's passed
+	  as the `prompt' argument to readline() or
+	  rl_callback_handler_install().  This will allow constant strings to
+	  be passed to readline(), since the prompt processing code wants to
+	  write to rl_prompt
+
+lib/sh/pathcanon.c
+	- new file, does pathname canonicalization
+
+externs.h
+	- extern declarations for stuff in lib/sh/pathcanon.c
+
+general.c
+	- canonicalize_pathname now simply calls sh_canonpath()
+
+				    9/7
+				    ---
+pcomplete.h
+	- new member in a `struct compspec': options
+	- define some flag values for options field
+
+pcomplib.c
+	- make sure options field is allocated and copied by compspec utility
+	  functions
+
+builtins/complete.def
+	- add struct for completion options.  These control the `meta-behavior'
+	  of the compspec.  Initially, there are three:
+
+		default - perform bash default completion if programmable
+			  completion produces no matches
+		dirnames - perform directory name completion if programmable
+			   completion produces no matches
+		filenames - tell readline that the compspec produces filenames,
+			    so it can do things like append slashes to
+			    directory names and suppress trailing spaces
+
+	- add `-o option' to complete and compgen, setting new options field
+	  in a compspec
+	- add code to display any -o options when a compspect is printed
+	  with the `-p' option to complete
+
+pcomplete.c
+	- programmable_completions now passes back to the caller in the last
+	  argument any options associated with the active compspec (from the
+	  options field)
+	- change gen_compspec_completions to re-call gen_action_completions
+	  with a CA_DIRECTORY action if the rest of the compspec actions
+	  generate no matches and the COPT_DIRNAMES option is present
+
+bashline.c
+	- if a programmable completion was specified to return filenames with
+	  the `-o filenames' option, set rl_filename_completion_desired to 1
+	  so readline does its special filename-specific things
+	- if a compspec was defined to fall back to the readline default with
+	  the `-o default' option, suppress setting the
+	  rl_attempted_completion_over variable in attempt_shell_completion
+	  so readline will go on and do filename completion
+
+include/ansi_stdlib.h
+	- add extern declarations for atof and strtod
+
+builtins/printf.def
+	- change getdouble() to use strtod (since we provide a version in
+	  libsh if the C library doesn't have one), and change the calling
+	  convention to match the other getXXX functions (take value pointer
+	  as argument, return success or failure).  This makes printf handle
+	  invalid floating point numbers better
+
+doc/bash.1, lib/readline/doc/rluser.texinfo
+	- documented new `-o' option to complete and compgen; described the
+	  arguments and their effects
+
+lib/readline/{macro,util}.c
+	- renamed _rl_executing_macro to rl_executing_macro; made it public
+
+lib/readline/readline.h
+	- new extern declaration for rl_executing_macro
+
+lib/readline/rltech.texinfo
+	- documented rl_executing_macro
+
+				    8/8
+				    ---
+lib/readline/readline.c
+	- new state variable, rl_readline_state
+
+lib/readline/readline.h
+	- extern declaration for rl_readline_state
+	- define some flag bits for rl_readline_state and macros to test and
+	  set them
+
+lib/readline/{readline,complete,isearch,macro,rltty,search,signals,undo,vi_mode}.c
+	- added calls to the macros that set and unset various readline states
+
+lib/readline/readline.c
+	- new private function, _rl_free_saved_history_line, to free up the
+	  history entry saved in saved_line_for_history
+
+lib/readline/search.c
+	- free any saved history entry in rl_history_search_reinit(), because
+	  rl_get_previous_history makes a call to maybe_save_line without
+	  freeing up the saved line when it returns (so rl_get_next_history
+	  can use it)
+	- fix up noninc_search_from_pos to deal with invalid history indices
+	  better
+
+				   9/12
+				   ----
+support/shobj-conf
+	- HPUX 11.0 needs the `-fpic' flag passed to the linker as well as
+	  the compiler
+
+execute_cmd.c
+	- on MS-DOS systems, let the #! checking stuff in execute_shell_script
+	  treat \r as EOL (identical to \n)
+
+input.c
+	- on DJGPP systems, allow buffered_getchar to ignore \r.  Change
+	  suggested by snowball3@bigfoot.com
+
+				   9/13
+				   ----
+lib/sh/tmpfile.c
+	- new file, with functions for creating and (hopefully safely) opening
+	  temporary files for the shell
+
+externs.h
+	- extern declarations for functions in tmpfile.c
+
+variables.c
+	- new function, get_random_number, returns random values from the
+	  shell's (lame) RNG to the rest of the shell
+
+variables.h
+	- new extern declaration for get_random_number()
+
+subst.c
+	- changed make_named_pipe to call sh_mktmpname instead of mktemp
+
+redir.c
+	- changed here_document_to_fd to call sh_mktmpfd instead of using
+	  inline code
+
+builtins/fc.def
+	- changed fc_builtin to call sh_mktmpfp instead of using inline code
+
+builtins/common.h
+	- new extern declaration for fc_execute_file()
+
+bashline.c
+	- if RL_ISSTATE(RL_STATE_INITIALIZED) is 0 in initialize_readline,
+	  call rl_initialize to bind the defaults before setting up our
+	  custom shell functions and key bindings
+
+lib/readline/doc/{rluser,hsuser}.texinfo
+	- some markup changes proposed by dima@chg.ru
+
+lib/readline/rlstdc.h, lib/tilde/tilde.h
+	- to get ready for some `const' changes to the source, define const
+	  as either `__const' (gcc -traditional) or nothing if __STDC__ and
+	  __cplusplus are not defined
+
+lib/readline/readline.c
+	- upped the default readline version to `4.2-alpha'
+
+lib/readline/readline.[ch]
+	- readline now takes a `const char *' as an argument
+
+lib/readline/history.h
+	- read_history(), read_history_range(), write_history(),
+	  append_history(), history_truncate_file() now take `const char *'
+	  filename arguments
+
+lib/readline/histfile.c
+	- history_filename(), read_history(), read_history_range(),
+	  write_history(), append_history(), history_truncate_file(),
+	  history_do_write() now take `const char *' filename arguments
+
+lib/readline/readline.h
+	- rl_read_init_file() now takes a `const char *' filename argument
+
+lib/readline/bind.c
+	- current_readline_init_file is now a `const char *'
+	- _rl_read_init_file(), rl_read_init_file() now take `const char *'
+	  filename arguments
+
+lib/tilde/tilde.c
+	- tilde_expand(), tilde_expand_word() now take a `const char *'
+	  as their first argument
+
+lib/readline/chardefs.h
+	- fixed CTRL_CHAR macro to be right on systems where chars are unsigned
+	  by default
+
+				   9/14
+				   ----
+lib/readline/doc/{rl,hs}tech.texinfo
+	- documented new `const char *' function arguments where appropriate
+
+lib/readline/vi_mode.c
+	- clamp the numeric argument in vi mode at 999999, just like in emacs
+	  mode
+
+lib/readline/doc/rltech.texinfo
+	- documented rl_readline_state and its possible bit values
+
+builtins/source.def
+	- in maybe_pop_dollar_vars, don't overwrite a shell function's
+	  argument list even if the sourced script changes the positional
+	  parameters
+
+lib/readline/{util.c,rlprivate.h}
+	- made _rl_strindex() and _rl_savestring() take `const char *'
+	  arguments
+
+				   9/15
+				   ----
+subst.c
+	- renamed `doing_completion' to `no_longjmp_on_fatal_error', a more
+	  accurate description of its current behavior
+
+pcomplete.[ch], externs.h, lib/sh/stringlist.c
+	- moved the stringlist code from pcomplete.c to lib/sh/stringlist.c
+	- moved the type declaration and extern function declarations from
+	  pcomplete.h to externs.h
+
+stringlib.c, externs.h, lib/sh/stringvec.c
+	- moved the char array code from stringlib.c to lib/sh/stringvec.c
+
+				   9/18
+				   ----
+subst.c
+	- new static variable, expand_no_split_dollar_star, to ensure that
+	  $* isn't `split and rejoined' when expanded via a call to
+	  expand_string_unsplit or expand_word_no_split
+
+				   9/19
+				   ----
+subst.[ch], execute_cmd.c
+	- renamed expand_word_no_split to expand_word_unsplit
+
+copy_cmd.c
+	- in copy_word, just assign w->flags to new_word->flags rather than
+	  bcopying the entire structure
+
+configure.in, config.h.in
+	- add autoconf check for pathconf(3)
+
+lib/sh/tmpfile.c
+	- test for systems with short filenames using pathconf and
+	  _PC_NAME_MAX, so generated temp file names don't exceed that length
+	  (only do this if the file name length is less than 32, since the
+	  current code doesn't generate filenames longer than about 17 chars)
+
+				   9/20
+				   ----
+command.h
+	- added `W_NOSPLIT2' word flag to prepare for supporting weird $@
+	  expansion on the rhs of assignment statements (inspecting the ksh93
+	  behavior, it seems like nothing except $@ is split, and $@ is split
+	  on $IFS and rejoined as a single string)
+
+				   9/21
+				   ----
+subst.c
+	- since verify_substring_values looks for arithmetic expressions
+	  bounded by `:', do some ad-hoc parsing of the substring passed as
+	  the argument to avoid cutting the expression off at the wrong `:'
+	  (since the inclusion of conditional expressions, expressions may
+	  contain a `:').  Do some paren balancing, too.
+
+				   9/22
+				   ----
+command.h
+	- new #define, CLOBBERING_REDIRECT, evaluates to true for any redirect
+	  that will clobber a file and should be subject to `noclobber'
+
+redir.c
+	- changed redir_open to use CLOBBERING_REDIRECT instead of
+	  OUTPUT_REDIRECT.  This means that <> no longer tests the value of
+	  noclobber, as POSIX.2 specifies
+
+parse.y
+	- made a change to cond_term so that expressions like [[ (x) ]] are
+	  parsed correctly
+
+				   9/25
+				   ----
+parse.y
+	- small change to grammar for arith_for_command and special_case_tokens
+	  to allow `do...done' or {...} after ((...)) without an intervening
+	  list_terminator (for ksh93 compatibility)
+
+builtins/printf.def
+	- `printf' now treats \E and \e the same when performing backslash
+	  escape expansion for the %b format character for compatibility with
+	  $'...' quoting (for ksh93 compatibility)
+
+				   9/26
+				   ----
+builtins/source.def
+	- new variable, source_searches_cwd, initially 1.  If non-zero, `.'
+	  searches $PWD for the filename argument if it's not found in $PATH
+
+general.c
+	- changed posix_initialize to turn off source_searches_cwd if posix
+	  mode is being enabled; turn it on if posix mode is being disabled
+	- changed things so interactive_comments is not turned off if posix
+	  mode is disabled, since that's rarely what is desired
+
+variables.c
+	- changed uidset() to set UID and EUID only if they are not already
+	  set when the shell starts up
+	- changed things to HOSTNAME is set only if it's not set when the
+	  shell starts up
+
+execute_cmd.c
+	- changed execute_builtin_or_function so that if a command like
+	  `command exec 4<file' is executed, the effect is as if the `command'
+	  had been omitted, as POSIX.2 requires
+
+subst.c
+	- changed array_length_reference to support ${foo[X]} when foo is not
+	  an array variable and X is 0, @, or * (everything else returns 0)
+	  for ksh compatibility
+	- changed array_value_internal to support ${foo[@]} and ${foo[*]}
+	  when foo is not an array variable (as ksh does)
+
+				   9/27
+				   ----
+general.h
+	- added defines for ABSPATH (absolute pathname), RELPATH (relative
+	  pathname, and ROOTEDPATH (pathname rooted at /), with different
+	  definitions for Unix and Cygwin
+	- added defines for DIRSEP (the directory separator in pathnames,
+	  and ISDIRSEP (whether a particular character is the directory
+	  separator)
+	- added PATHSEP define: takes a character and decides whether it
+	  delimits a filename component of a pathname
+	- changed isletter(c) #define to just call isalpha(c)
+
+lib/sh/pathcanon.c
+	- changed to use new pathname #defines from general.h above
+
+general.c
+	- changed make_absolute, absolute_pathname to understand
+	  Cygwin's idea of an absolute pathname: [[:upper:][:lower:]]:/
+	- rewrote absolute_pathname to use PATHSEP and ABSPATH
+	- changed full_pathname to use ABSPATH
+
+variables.c
+	- changed get_bash_name to use ABSPATH and RELPATH, and to handle the
+	  case when $PWD is unset when it is called
+
+subst.c
+	- if compiling on cygwin, translate \r\n to \n when reading the output
+	  of a command substitution in read_comsub()
+
+				   9/28
+				   ----
+input.c, shell.c, builtins/read.def, lib/tilde/tilde.c
+	- changed __CYGWIN32__ to __CYGWIN__
+
+lib/readline/{bind,funmap,kill}.c, lib/readline/readline.h
+	- changed __CYGWIN32__ to __CYGWIN__
+
+input.c
+	- a couple of minor changes to clean up the code
+
+parse.y
+	- changed shell_getc and shell_ungetc to implement one character of
+	  lookahead/lookbehind when pushing a character back at the start
+	  of an input line (the old code would have discarded it because
+	  shell_input_line_index was 0)
+
+lib/readline{histsearch.c,history.h}
+	- history_search_internal, history_search, history_search_prefix,
+	  history_search_pos now take const char * string arguments
+
+lib/readline/{histexpand.c,history.h}
+	- get_history_event, history_arg_extract, history_tokenize_internal,
+	  history_tokenize now take const char * string arguments
+
+lib/readline/{history.c,history.h}
+	- add_history, replace_history_entry now take const char * string
+	  arguments
+
+lib/readline/{bind.c,readline.h}
+	- rl_add_defun, rl_unbind_command_in_map, rl_set_key, rl_macro_bind,
+	  rl_generic_bind, rl_translate_keyseq, rl_named_function,
+	  rl_function_of_keyseq, rl_variable_bind, rl_get_keymap_by_name
+	  now take const char * string arguments where appropriate
+	- rl_function_dumper, rl_list_funmap_names needed changes to deal
+	  with rl_funmap_names returning const char **
+	- rl_readline_name is now a const char * variable
+
+lib/readline/keymaps.h
+	- duplicate definition of rl_get_keymap_by_name needs const changes
+
+lib/readline/{bind.c,rlprivate.h}
+	- _rl_bind_if_unbound takes a const char * string argument
+
+lib/readline/{funmap.c,readline.h}
+	- rl_add_funmap_entry now takes a const char * string argument
+	- rl_funmap_names now returns a const char **
+	- a FUNMAP now has a const char *name member
+
+lib/readline/{terminal.c,readline.h,rlprivate.h}
+	- _rl_init_terminal_io, rl_get_termcap, rl_reset_terminal,
+	  _rl_output_some_chars now take const char * string arguments
+
+lib/readline/{readline.[ch],rlprivate.h}
+	- rl_library_version and rl_terminal_name are now const char *
+	  variables
+	- rl_insert_text, _rl_replace_text now take const char * string
+	  arguments
+
+lib/readline/{callback.c,readline.h}
+	- rl_callback_handler_install takes a const char * string argument
+
+lib/readline/doc/{rltech,hstech}.texinfo
+	- changed documentation for newly-consted functions and variables
+
+lib/readline/{complete.c,readline.h}
+	- rl_strpbrk now takes const char * string arguments
+	- username_completion_function and filename_completion_function
+	  now take const char * string arguments
+	- rl_basic_word_break_characters, rl_basic_quote_characters,
+	  rl_completer_word_break_characters, rl_completer_quote_characters,
+	  rl_filename_quote_characters, rl_special_prefixes are all
+	  const char * variables
+
+lib/readline/{display.c,rlprivate.h}
+	- _rl_move_cursor_relative takes a const char * string argument
+
+redir.c
+	- change from tbisp@uswest.net to fix a problem with cygwin and
+	  here_document_to_fd, since cygwin doesn't allow a file to be
+	  unlinked if there is a descriptor open on it
+
+display.c
+	- fixed a slight bug in the logic deciding whether or not to redraw
+	  a prompt containing invisible characters in update_line.  Fixes
+	  bug reported by bdluevel@heitec.net
+
+				   9/29
+				   ----
+shell.c
+	- fixed a problem with a too-aggressive setting of restricted shell
+	  mode based on shell_name.  Old code set `restricted' even after a
+	  longjmp due to shell_execve trying to execute an executable script
+	  without a leading `#!', though that case should result in an
+	  unrestricted shell
+
+				   10/2
+				   ----
+copy_cmd.c
+	- make sure copy_function_def copies the `flags' and `line' members
+	  of the function_def
+
+parse.y
+	- make the function_def production take a new function_body parse
+	  unit, which is currently just a group_command (in prep for future
+	  changes)
+
+builtins/printf.def
+	- changed getint, getlong, getulong, getdouble to print warnings on
+	  range errors and return the clamped values that strtol/strtod
+	  return, as POSIX.2 specifies
+
+				   10/3
+				   ----
+parse.y
+	- made a function_def a `command' instead of a `shell_command'
+	  This makes the grammar more closely resemble that supplied in
+	  the POSIX.2 standard
+	- made a `function_body' be like the function_body production in
+	  the POSIX.2 standard.  This relaxes the restriction that the
+	  body be composed of a group_command, but introduces a YACC
+	  shift/reduce conflict
+
+print_cmd.c
+	- changes to named_function_string (for normal function printing)
+	  and print_function_def (for printing function definitions embedded
+	  in other commands) to print redirections that should be attached
+	  to the function as a whole after the closing brace, because of
+	  the changes to the parser
+
+tests/func2.sub
+	- tests for new function declarations whose bodies are not group
+	  commands -- the command printing code still prints them with the
+	  braces
+
+				   10/4
+				   ----
+lib/sh/pathphys.c
+	- new function, sh_physpath, resolves symlinks in pathname passed
+	  as argument
+
+builtins/cd.def
+	- changed pwd_builtin to use sh_physpath if -P supplied or in
+	  physical mode
+	- changed bindpwd to use sh_physpath if the no_symlinks argument is
+	  non-zero
+	- changed change_to_directory to use sh_physpath and set
+	  the_current_working_directory appropriately if the `nolinks'
+	  argument is non-zero
+
+				   10/5
+				   ----
+variables.c, bashline.c, builtins/cd.def
+	- replaced calls to canonicalize_pathname with sh_canonpath
+
+builtins/cd.def
+	- rewrote change_to_directory to make it much shorter and simpler
+
+command.h
+	- added SUBSHELL_PIPE as possible flag value for subshell_environment
+
+execute_cmd.c
+	- execute_simple_command sets SUBSHELL_PIPE in subshell_environment
+	  if the command has a pipe in or out
+
+subst.c
+	- don't reset pipeline_pgrp to shell_pgrp in command_substitute if
+	  we're already in a pipline
+	  ((subshell_environment & SUBSHELL_PIPE) != 0)
+
+				   10/6
+				   ----
+subst.c 
+	- change command_substitute to call setmode(fd, O_TEXT) on the pipe
+	  file descriptor if __CYGWIN__ is defined; remove the other code
+	  that converts CR/LF to LF on cygwin
+
+				   10/9
+				   ----
+stringlib.c
+	- change strcreplace() to make sure that RESIZE_MALLOCED_BUFFER is
+	  called everywhere characters are added
+
+				   10/11
+				   -----
+lib/sh/spell.c
+	- new file, with the spelling correction code from builtins/cd.def
+
+builtins/cd.def
+	- a little surgery on cd_builtin, to make the structure clearer
+
+				   10/12
+				   -----
+builtins/read.def
+	- include fcntl.h and io.h on __CYGWIN__
+	- set mode of fd 0 to O_TEXT if __CYGWIN__ and O_TEXT are both
+	  defined
+
+shell.c
+	- in open_shell_script, set mode of fd opened to the shell script
+	  to O_TEXT if __CYGWIN__ and O_TEXT are both defined
+
+builtins/evalfile.c
+	- changed the __CYGWIN__ code to call setmode(fd, O_TEXT) instead
+	  of translating \r to \n after the read() returns
+
+				   10/13
+				   -----
+lib/sh/strtrans.c, stringlib.c
+	- moved ansicstr() from stringlib.c to new file lib/sh/strtrans.c
+	- new function ansic_quote, to quote a string with $'...'
+
+lib/sh/strindex.c, stringlib.c
+	- moved strindex() from stringlib.c to new file lib/sh/strindex.c
+
+lib/sh/Makefile.in
+	- compile `shquote.c' in as part of the shell library
+	- compile `strtrans.c' in as part of the shell library
+	- compile `strindex.c' in as part of the shell library
+
+Makefile.in
+	- link with libsh before any of the readline libraries
+
+builtins/common.c
+	- removed the functions also appearing in lib/sh/shquote.c
+
+externs.h, builtins/common.h
+	- moved extern declarations for functions in lib/sh/shquote.c to
+	  externs.h from builtins/common.h
+
+variables.c
+	- print_var_value (used in the output of `set') now calls
+	  ansic_quote to quote the value, so any non-printable characters
+	  are displayed
+
+				   10/14
+				   -----
+syntax.h
+	- new file, with definitions from shell.h having to do with shell
+	  syntax, metacharacters, and quoting
+
+parse.y
+	- moved defines for shell metachars and other char class declarations
+	  to syntax.h
+
+shell.h
+	- now includes syntax.h
+
+Makefile.in,builtins/Makefile.in,lib/sh/Makefile.in
+	- added syntax.h to appropriate dependency lists
+
+				   10/16
+				   -----
+mksyntax.c
+	- new program, to build a syntax table for the shell at compile time
+
+Makefile.in
+	- new generated file, syntax.c, generated by mksyntax
+
+general.h
+	- `digit(x)' is now just defined as `isdigit(x)'
+
+syntax.h
+	- now that we have sh_syntaxtab[], change the appropriate defines
+	  to use it
+
+parse.y, subst.c
+	- change checks of member(c, slashify_in_quotes) to test
+	  sh_syntaxtab[c] & CBSDQUOTE
+
+builtins/set.def
+	- corrected the help text for `unset', since PATH and IFS may be
+	  unset
+
+subst.c
+	- changed explicit tests for shell special parameters using member()
+	  or strchr() to test (sh_syntaxtab[c] & CSPECVAR) instead
+	- changed some boilerplate calls to member() that test for validity
+	  of various characters in the expansion process to macros for
+	  efficiency
+
+lib/sh/shquote.c
+	- changed some of the functions to use checks against sh_syntaxtab[]
+	  flag values
+
+				   10/19
+				   -----
+findcmd.c
+	- find_user_command_in_path no longer finds directories if the caller
+	  specified FS_NODIRS in the flags argument.  This fixes the bug of
+	  hashing directory names, at the loss of some information about
+	  attempting to execute directories
+
+builtins/hash.def
+	- hash -p dirname name no longer puts directories into the hash table
+
+				   10/26
+				   -----
+builtins/read.def
+	- make sure that the last unwind-protect added is the one that calls
+	  xfree(input_string), so that this is the top element on the
+	  unwind-protect stack
+	- if xrealloc() is called to increase the size of input_string, make
+	  sure to remove the top element from the unwind-protect stack (the
+	  old xfree) and add a new one, in case realloc() freed the original
+	  input_string and allocated new space.  This fixes the bug of bash
+	  crashing because it's trying to free already-freed memory if the
+	  `read' is interrupted (reported by klausf@Pool.Informatik.RWTH-Aachen.DE)
+
+				   10/27
+				   -----
+subst.c
+	- fixed a problem in expand_word_list_internal so that
+	  last_command_exit_value is set to 1 if a variable assignment fails
+	  and a jump_to_top_level (DISCARD) is taken.  This fixes the problem
+	  of assignment statements to read-only variables appearing to succeed
+	  (though it always worked right in non-interactive posix-mode shells)
+
+				   10/30
+				   -----
+lib/readline/readline.h
+	- rl_completion_entry_function is now of type CPFunction *, since
+	  that's the actual type that's used, and casting function pointers
+	  of different types (which happened all the time as a result), is
+	  problematic on some architectures
+
+lib/readline/complete.c
+	- changed entry function argument to gen_completion_matches to be of
+	  type CPFunction *, since that's how it's used
+	- changed variables that are completion entry function pointers to be
+	  of type CPFunction *, removed problematic typecasts
+
+lib/readline/doc/rltech.texinfo
+	- documented type change for rl_completion_entry_func
+
+lib/readline/rltypedefs.h
+	- new file, with all the readline function typedefs
+
+lib/readline/rltypedefs.h
+	- new typedef, rl_command_func_t, which is a function returning
+	  an int
+	- a KEYMAP_ENTRY now contains a pointer to an rl_command_func_t
+	- new typedef, rl_compentry_func_t, which is a function returning
+	  a char *
+	- new typdef, rl_completion_func_t, which is a function returning
+	  a char **
+	- new typedef, rl_quote_func_t, which is a function returning a
+	  char *
+	- new typedef, rl_dequote_func_t, which is a function returning a
+	  char *
+	- new typedef, rl_compignore_func_t, which is a function returning a
+	  char *
+	- new typedef, rl_compdisp_func_t, which is a void function taking
+	  a char **, int, int argument list
+	- new typedef, rl_hook_func_t, which is a function taking no args
+	  and returning an int (used for input and other hooks)
+	- new typedef, rl_modterm_func_t, which is a void function tkaing
+	  an int, used to modify terminal (rl_prep_term_function)
+	- new typedef, rl_getc_func_t, which is an int-returning function
+	  that takes a FILE *
+	- new typedef, rl_linebuf_func_t, which takes a string and an int
+	  index and returns an int
+	- new generic typedefs, rl_intfunc_t and rl_voidfunc_t, which are
+	  functions which take and return int and void, respectively 
+	- new generic typedef, rl_vintfunc_t, which takes an int and returns
+	  void
+	- new generic typedefs, rl_icpfunc_t and rl_vcpfunc_t, which take a
+	  char * and return int and void, respectively
+	- new generic typedefs, rl_icppfunc_t and rl_vcppfunc_t, which take
+	  a char ** and return int and void, respectively
+
+lib/readline/rlprivate.h
+	- rl_last_func is now of type rl_command_func_t *
+
+lib/readline/readline.c
+	- declare rl_last_func as rl_command_func_t *
+
+lib/readline/{bind,readline,vi_keymap,emacs_keymap,funmap,keymaps,isearch}.c
+lib/readline/readline.h
+	- change appropriate cases of (Function *) to (rl_command_func_t *)
+
+lib/readline/{readline.h,bind.c}
+	- rl_named_function and rl_function_of_keyseq now return a
+	  (rl_command_func_t *)
+
+lib/readline/bind.c
+	- changed type of functions in parser function table from Function *
+	  to _rl_parser_func_t *
+
+lib/readline/funmap.c
+	- removed `vi-bracktype' from vi function map -- it's not a
+	  bindable function
+
+lib/readline/{readline.h,complete.c}
+	- changed appropriate uses of CPFunction * to rl_compentry_func_t *
+	  or rl_quote_func_t *
+
+lib/readline/{rltty.c,readline.h}
+	- rl_prep_term_function is now of type rl_vintfunc_t *
+	- rl_deprep_term_function is now of type rl_voidfunc_t *
+
+lib/readline/{keymaps,history.h}
+	- include rltypedefs.h or <readline/rltypedefs.h> as appropriate
+
+lib/readline/{display.c,readline.h}
+	- rl_redisplay_func is now of type rl_voidfunc_t *
+
+lib/readline/{callbacks.c,readline.h}
+	- the `linefunc' argument to rl_callback_handler_install and the
+	  rl_linefunc variable are now of type rl_vcpfunc_t *
+
+lib/readline/{complete.c,readline.h}
+	- rl_completion_display_matches_hook is now of type
+	  rl_compdisplay_func_t *
+	- rl_directory_completion_hook is now of type rl_icppfunc_t *
+
+lib/readline/{history.h,histexpand.c}
+	- history_inhibit_expansion_function is now of type
+	  rl_linebuf_func_t *
+
+lib/readline/histexpand.c
+	- new private type, _hist_search_func_t, used to indirect through
+	  the various history search functions
+
+lib/tilde/tilde.h
+	- new typedef, tilde_hook_func_t, which takes a char * and returns
+	  a char *
+
+lib/tilde/tilde.[ch]
+	- tilde_expansion_preexpansion_hook and tilde_expansion_failure_hook
+	  are now of type tilde_hook_func_t *
+
+[THERE ARE NO LONGER ANY REFERENCES TO Function *, CPFunction *, or
+CPPFunction * IN THE READLINE SOURCE, WHICH INCLUDES THE TILDE LIBRARY]
+
+{bashline,bracecomp}.c, bashline.h
+	- changes for changed type of rl_completion_entry_func and other
+	  changed types (rl_compentry_func_t, rl_completion_func_t,
+	  const changes for prototypes, etc.)
+
+pathexp.[ch]
+	- shell_glob_filename now takes a `const char *' argument
+	- quote_string_for_globbing now takes a `const char *' argument
+
+				   10/31
+				   -----
+lib/sh/zwrite.c
+	- fix zwrite() to update the buffer pointer in the case of a
+	  partial write, in addition to decreasing the count of bytes to
+	  be written
+
+support/config.{guess,sub}
+	- added entries for MIPS-based Compaq machines running NonStopUX
+
+				   11/1
+				   ----
+lib/readline/undo.c
+	- renamed free_undo_list to be rl_free_undo_list, made a dummy
+	  replacement function free_undo_list that just calls
+	  rl_free_undo_list
+
+lib/readline/readline.h
+	- extern declaration for rl_free_undo_list
+
+lib/readline/{readline,signals}.c
+	- changed calls to free_undo_list to rl_free_undo_list
+
+lib/readline/doc/rltech.texinfo
+	- changed all function types and arguments for new typedefs
+
+				   11/2
+				   ----
+lib/readline/{rlprivate.h,terminal.c,display.c}
+	- term_clreol, term_clrpag, term_cr, term_backspace, term_goto,
+	  term_pc, term_im, term_ei, term_ic, term_ip, term_IC, term_dc,
+	  term_DC, term_forward_char, term_up, term_mm, term_mo, term_ku,
+	  term_kd, term_kr, term_kl, term_ks, term_ke, term_kh, term_kH,
+	  terminal_can_insert variables all now have a _rl_ prefix
+
+lib/readline/{rlprivate.h,terminal.c,display.c, readline.c}
+	- screenheight, screenwidth, screenchars now have an _rl_ prefix
+
+lib/readline/{terminal,complete,isearch,kill,macro,readline,search,undo,util,vi_mode}.c
+	- changed calls to ding to calls to rl_ding
+
+lib/readine/{isearch,readline,search}.c
+	- saved_line_for_history now has an _rl_ prefix
+
+lib/readline/readline.[ch]
+	- renamed maybe_{replace,save,unsave} line to have an rl_ prefix
+
+lib/readline/{readline,search,isearch}.c
+	- changed calls to maybe_{replace,save,unsave} line to call the
+	  rl_-prefixed equivalents
+
+lib/readline/{rlprivate.h,readline.c,util.c}
+	- renamed alphabetic to rl_alphabetic; changed calls
+
+lib/readline/{bind.c,funmap.c,rlprivate.h}
+	- possible_control_prefixes -> _rl_possible_control_prefixes
+	- possible_meta_prefixes -> _rl_possible_meta_prefixes
+
+lib/readline/compat.c
+	- new file for entry points for backwards compatibility functions
+	- moved free_undo_list here from undo.c
+	- maybe_{replace,save,unsave}_line function that call their rl_
+	  counterparts
+	- moved ding() here; it just calls rl_ding()
+	- moved alphabetic here; it just calls _rl_alphabetic()
+
+lib/readline/Makefile.in
+	- make sure compat.o is built and linked appropriately
+
+bashline.c,pcomplete.c
+	- changed calls to ding() to call rl_ding()
+
+support/shobj-conf
+	- changed linux stanza SHLIB_XLDFLAGS to make the `soname' in a
+	  shared library have only the major version number, rather than
+	  major and minor numbers
+	- made analogous changes for bsd/os-4
+	- changed freebsd 3.x stanza to match `freebsdelf[3-9]*' for
+	  FreeBSD elf systems and `freebsdaout[3-9]*' for FreeBSD
+	  a.out systems (are there any?)
+
+lib/readline/doc/{rluser,hsuser}.texinfo
+	- changed uses of @samp to @option where appropriate
+
+doc/bashref.texi
+	- changed uses of @samp to @option where appropriate
+
+				   11/3
+				   ----
+lib/readline/{readline.h,complete.c,compat.c}
+	- completion_matches, username_completion_function,
+	  filename_completion_function all have an rl_ prefix
+
+{bashline,bracecomp,pcomplete}.c
+	- changed calls to completion_matches, username_completion_function,
+	  and filename_completion_function
+
+lib/sh/shquote.c
+	- single_quote, double_quote, un_double_quote, backslash_quote,
+	  backslash_quote_for_double_quotes, contains_shell_metas all now
+	  have an sh_ prefix
+
+externs.h
+	- changed extern declarations for functions from shquote.c
+
+{array,bashline,pcomplete,print_cmd,variables}.c, parse.y
+builtins/{alias,complete,trap,type}.def
+	- changed callers of single_quote
+
+{array,bashline}.c, builtins/setattr.def
+	- changed callers of double_quote
+
+{bashline,bracecomp}.c, parse.y, builtins/printf.def
+	- changed callers of backslash_quote
+
+parse.y
+	- changed callers of backslash_quote_for_double_quotes
+
+{print_cmd,variables}.c
+	- changed callers of contains_shell_metas
+
+lib/readline/{rlshell.h,shell.c,histexpand.c}
+	- single_quote -> sh_single_quote
+
+lib/readline/{rlshell.h,shell.c,input.c}
+general.[ch],shell.c,subst.c
+	 - unset_nodelay_mode -> sh_unset_nodelay_mode
+
+lib/readline/{rlshell.h,shell.c}, lib/tilde/tilde.c, variables.c
+	- get_home_dir -> sh_get_home_dir
+
+lib/readline/rlshell.h,lib/readline/bind,histfile,nls,readline,shell,terminal}.c, lib/tilde/tilde.c, variables.c
+	- get_env_value -> sh_get_env_value
+
+lib/readline/rlshell.h,lib/readline/{shell,terminal}.c
+variables.h,{jobs,nojobs,variables}.c
+	- set_lines_and_columns -> sh_set_lines_and_columns
+
+				   11/6
+				   ----
+configure.in
+	- bash can only link with an already-installed readline library whose
+	  version is 4.2 or greater
+
+variables.h
+	- new variable attribiute, noassign, with its accompanying test macro,
+	  noassign_p.  Completely internal, not user-settable
+
+execute_cmd.c
+	- treat noassign variables like readonly variables, except an attempt
+	  to assign to them does not cause a non-interactive shell in POSIX
+	  mode to abort
+
+{subst,variables}.c,builtins/declare.def
+	- attempts to assign to `noassign' variables return an error status,
+	  but no error messages -- almost identical to readonly variables
+
+variables.c
+	- GROUPS and FUNCNAME are `noassign' variables, meaning assignment to
+	  them is disallowed, but that they may be unset (in which case they
+	  lose their special properties)
+
+doc/{bash.1,bashref.texi}
+	- documented that assignments to GROUPS and FUNCNAME are disallowed
+	  and return an error status
+
+				   11/8
+				   ----
+lib/readline/{funmap.c,bind.c,rlprivate.h}
+	- _rl_possible_{control,meta}_prefixes are now arrays of `const char *'
+	  and are defined in bind.c, since that's where they're used
+
+lib/readline/rltty.c
+	- changed prepare_terminal_settings to take an `oldtio' argument
+	  instead of `otio', which shadows the global declaration
+
+lib/readline/bind.c
+	- the `name' member of a parser_directive element is now a
+	  `const char *'
+	- the `name' member of a boolean_varlist element is now a
+	  `const char *'
+	- the `name' member of a string_varlist element is now a
+	  `const char *'
+	- the `name' member of an assoc_list element is now a
+	  `const char *'
+	- the `name' member of an keymap_names element is now a
+	  `const char *'
+
+lib/readline/display.c
+	- changed scope-local char * variable `temp' to `vtemp' because
+	  there's already a function local variable named `temp' of a
+	  different type (int) in rl_redisplay
+
+lib/readline/util.c
+	- pathname_alphabetic_chars is now `const char *'
+
+lib/readline/terminal.c
+	- the `tc_var' member of a _tc_string element is now a
+	  `const char *'
+
+lib/readline/histexpand.c
+	- changed history_expand_internal to remove the duplicate local
+	  declaration of `t' in the `s'/`&' case
+
+lib/readline/histfile.c
+	- in history_filename, `home' is now a `const char *'
+
+lib/tilde/tilde.c
+	- default_prefixes and default_suffixes are now arrays of
+	  `const char *'
+
+lib/readline/vi_mode.c
+	- vi_motion and vi_texmod are now `const char *'
+
+lib/readline/complete.c
+	- simplified the conditional declaration of getpwent()
+
+variables.[ch]
+	- get_string_value now takes a `const char *' argument
+
+				   11/10
+				   -----
+display.c
+	- changes to expand_prompt and rl_redisplay to keep track of the number
+	  of invisible characters on the first line of the prompt, in case it
+	  takes up more than one physical line, and not all invisible chars are
+	  on the first line
+	- the code that determines the index into the line at which to wrap the
+	  first line if the visible prompt length exceeds the screen width was
+	  changed to use the number of invisible chars in the first physical
+	  prompt line rather than the total number of invisible characters
+	- changed redraw_prompt to save and restore prompt_invis_chars_first_line
+
+subst.c
+	- changed expand_string_internal to savestring() the string argument
+	  to avoid possible doubly-freed memory on substitution errors
+	- fixed expand_word_list_internal so that commands with assignment
+	  statements preceding words that expand to nothing return a failure
+	  status if one of the assignments fails; for example
+
+		readonly TVAR
+		TVAR=7 $ECHO $ABCDE
+	- made sure that all cases of jump_to_top_level set
+	  last_command_exit_value to something non-zero before jumping, since
+	  they are by definition errors
+
+builtins/evalstring.c
+	- changed parse_and_execute to set last_result to EXECUTION_FAILURE
+	  along with last_command_exit_value in the `DISPOSE' case of a
+	  jump_to_top_level, since we can return this value in most
+	  (interactive) circumstances
+
+				   11/14
+				   -----
+general.c
+	- fix legal_number so that it skips any trailing whitespace in its
+	  string argument after strtol returns, since strtol does not
+
+lib/readline/{complete.c,readline.h}
+	- new function pointer, rl_directory_rewrite_hook, identical in effect
+	  to rl_directory_completion_hook except that it does not modify what
+	  is displayed when the possible completions are listed or inserted
+
+bashline.c
+	- changed tcsh_magic_space to try and insert a space closer to where
+	  the point was originally, rather than always inserting it at the
+	  end of the line
+
+				   11/16
+				   -----
+jobs.c
+	- fixed a bug that happened on cygwin systems that caused the jobs
+	  table to fill up if a file sourced from an interactive shell ran
+	  lots of jobs -- notify_and_cleanup() never called notify_of_job_status
+
+subst.c
+	- fixed pat_match to avoid infinite recursion on zero-length matches
+	  from match_pattern
+
+				11/17/2000
+				----------
+[bash-2.05-alpha1 released]
+
+				   11/18
+				   -----
+support/shobj-conf
+	- added GNU Hurd support, identical to linux
+
+variables.c
+	- cygwin systems don't use the exportstr stuff at all, so call
+	  INVALIDATE_EXPORTSTR before testing var->exportstr, since just
+	  blindly using the value_cell will break exported functions that
+	  already have an exportstr set
+	- when recomputing the exported value because valid_exportstr fails,
+	  make sure to call named_function_string if the variable is a shell
+	  function
+
+				   11/20
+				   -----
+variables.c
+	- removed call to valid_exportstr; the exportstr code has been
+	  adequately debugged
+
+lib/glob/fnmatch.c
+	- reverted to the POSIX.2 behavior of using the current locale and
+	  strcoll() to evaluate range expressions in bracket expressions
+
+doc/{bash.1,bashref.texi}
+	- added note to Pattern Matching section emphasizing that the current
+	  locale plays a part in evaluating range expressions within [...]
+
+aclocal.m4
+	- added an #include <unistd.h> to the test for posix sigaction
+	  restarting interrupted system calls
+
+support/config.guess
+	- changes from Tim Mooney to support `letter version' releases of
+	  Tru 64 Unix on the Alpha (e.g., 5.1a)
+
+				   11/21
+				   -----
+lib/sh/pathphys.c
+	- make sure MAXSYMLINKS is defined
+
+aclocal.m4
+	- changed BASH_CHECK_PWFUNCS to just use AC_EGREP_CPP on a file
+	  that includes pwd.h and other header files, checking for getpwuid.
+	  It #defines HAVE_GETPW_DECLS if the egrep succeeds
+
+lib/readline/complete.c
+	- provide extern declaration of getpwent if _POSIX_SOURCE is defined,
+	  since most systems don't declare it in <pwd.h> unless _POSIX_SOURCE
+	  is undefined
+
+				   11/22
+				   -----
+input.c
+	- fixed a small typo in the cygwin-specific code
+
+doc/{bashref.texi,bash.1}
+	- added some more explanatory text about the effect of the current
+	  locale's collating order on range expressions within bracket
+	  expressions
+
+doc/bashref.texi, lib/readline/doc/{rltech,rluser,hstech}.texinfo
+	- changed to use @env instead of @code for the names of environment
+	  and shell variables in text (not in tables yet)
+
+				   11/27
+				   -----
+configure.in
+	- configure without the bash malloc on Interix
+
+lib/readline/doc/rltech.texinfo
+	- changed completion_matches() to rl_completion_matches()
+	- changed filename_completion_function() to
+	  rl_filename_completion_function()
+	- changed username_completion_function() to
+	  rl_username_completion_function()
+
+lib/readline/rlprivate.h
+	- changed declaration of _rl_alphabetic to rl_alphabetic, since that's
+	  what's used in the C files
+
+support/bashbug.sh
+	- Debian has /usr/bin/editor as a link to the system default editor;
+	  make that one of the alternatives if $EDITOR is not set
+	- if the OS provides mktemp(1) or tempfile(1), use those to create
+	  the temp file for the bug report
+
+lib/readline/{readline.[ch], callback.c}
+	- new function, rl_set_prompt, called with prompt string as argument,
+	  sets and, if necessary, expands rl_prompt
+
+lib/readline/{complete.c,compat.c,readline.h}
+	- rl_completion_matches now takes a `const char *' as its first
+	  argument
+	- compute_lcd_of_matches now takes a `const char *' as its third
+	  argument
+
+lib/readline/rltypedefs.h
+	- a rl_completion_func_t now takes a `const char *' as its first
+	  argument
+
+lib/readline/Makefile.in
+	- added dependencies on rltypedefs.h
+
+bashline.c
+	- attempt_shell_completion now takes a `const char *' as its first
+	  argument
+	- removed bogus cast when assigning to rl_attempted_completion_function
+	  and rl_completion_entry_function
+	- bash_directory_completion_matches takes a `const char *' argument
+
+pcomplete.c
+	- gen_matches_from_itemlist, pcomp_filename_completion_function,
+	  gen_action_completions, gen_globpat_matches, gen_wordlist_matches,
+	  gen_compspec_completions now take `const char *' arguments as
+	  appropriate
+	- programmable_completions now takes `const char *' first and 
+	  second arguments
+
+pcomplib.c
+	- find_compspec now takes a `const char *' argument
+
+				   11/29
+				   -----
+shell.c
+	- in open_shell_script, if we have /dev/fd, don't perform the check
+	  for a binary file if isatty(fd) (where fd is opened on the script
+	  name) returns non-zero
+	- in open_shell_script, don't call init_noninteractive again, since it
+	  can undo changes made by the startup files ($BASH_ENV)
+
+input.c
+	- in fd_to_buffered_stream, make sure buffer size (and hence size
+	  arg passed to read(2)) is greater than zero.  This makes
+	  bash /dev/stdin work right.
+	- return -1 from sync_buffered_stream immediately if buffers is NULL
+	  (can happen when running `bash -i /dev/stdin' and executing a
+	  command that requires a fork)
+
+				   11/30
+				   -----
+jobs.c
+	- renamed cont_signal_handler to sigcont_sighandler for consistency
+	- renamed stop_signal_handler to sigstop_sighandler for consistency
+	- if there is no jobs list or no outstanding jobs, return immediately
+	  from notify_of_job_status, before fussing with the signal state
+	- change map_over_jobs to not fuss with the signal state unless there
+	  are jobs
+
+lib/malloc/malloc.c
+	- encapsulated the code to block and unblock signals during morecore()
+	  execution into two functions:  block_signals and unblock_signals
+	- only block signals in morecore() if interrupt_immediately is non-zero
+	  or SIGINT or SIGCHLD is trapped
+
+				   12/1
+				   ----
+lib/readline/readline.c
+	- fix to rl_forward to make sure that lend doesn't get set < 0, since
+	  that will result in rl_point being < 0
+
+				   12/5
+				   ----
+parse.y
+	- fix to parse_matched_pair to allow backslash to escape a ' inside a
+	  $'...' construct inside another grouping construct like ${...}
+	- translate $'...' and $"..." in parse_matched_pair, because nothing
+	  else will do it if such a construct appears inside a grouping
+	  construct
+
+				   12/6
+				   ----
+configure.in
+	- make sure all bracket tests for pattern matching in case statements
+	  are appropriately quoted, so autoconf doesn't swallow the brackets
+	- add -rdynamic to LOCAL_LDFLAGS for freebsd-4.x
+
+examples/loadables/realpath.c
+	- new loadable builtin, canonicalizes pathnames and expands symlinks
+
+builtins/ulimit.def
+	- added undocumented -w option for setting RLIMIT_SWAP, if it's defined
+
+				   12/7
+				   ----
+bashline.c
+	- reordered code in initialize_readline so all of the rl_add_defun
+	  calls are made before the call to rl_initialize, and all of the
+	  rl_{bind,unbind}_key_in_map calls are made after initializing
+	  readline.  This allows the bash-specific function names to be used
+	  in ~/.inputrc
+
+				   12/12
+				   -----
+lib/readline/callback.c
+	- in rl_callback_read_char, loop after returning from
+	  readline_internal_char and test rl_pending_input in case some
+	  function (like the incremental search functions and digit argument
+	  functions) pushed input back with rl_execute_next
+
+lib/readline/readline.h
+	- new rl_state flag:  RL_STATE_INPUTPENDING, indicating that
+	  rl_execute_next has pushed input back for rl_get_key to read
+
+lib/readline/input.c
+	- new function to clear rl_pending_input: rl_clear_pending_input()
+
+lib/readline/{input,readline,signals}.c
+	- when rl_pending_input is set, set state RL_STATE_INPUTPENDING;
+	  unset that state when rl_read_key returns the pending input
+	- call rl_clear_pending_input at appropriate points
+
+				   12/15
+				   -----
+lib/readline/histfile.c
+	- don't leak file descriptors while attempting to truncate a non-regular
+	  file
+
+input.c
+	- make sure check_bash_input sets the close-on-exec flag for the file
+	  descriptor used to save the bash input fd
+
+parse.y
+	- if default_buffered_input gets changed while it's on the saved
+	  stream stack, make sure it gets set to close-on-exec when it's
+	  restored by pop_stream()
+
+				   12/18
+				   -----
+builtins/ulimit.def
+	- change set_limit to account for Cygwin's setdtablesize() being
+	  declared as a void function
+
+support/config.{guess,sub}
+	- change cygwin32 to cygwin
+
+				   12/20
+				   -----
+nojobs.c
+	- make wait_sigint_handler handle the case of interrupt_immediately
+	  being non-zero when it's called, and jump out appropriately
+
+jobs.c
+	- new function to run sigchld traps: run_sigchld_trap(); called from
+	  waitchld
+	- broke the code that computes the printable job status messages for
+	  pretty_print_job out into a separate function
+	- rearranged some code eliminating a useless `else' branch in wait_for
+	- shell_tty_info is now a TTYSTRUCT, using defines from shtty.h
+	- broke the code that sets a job's status after waitpid says its state
+	  has changed and cleans up after a received SIGINT out into a separate
+	  function: set_job_status_and_cleanup
+	- last_stopped_job() -> job_last_stopped() to avoid collision with a
+	  variable name
+	- last_running_job() -> job_last_running() for consistency
+
+				   12/21
+				   -----
+variables.c
+	- new function, print_func_list (SHELL_VAR **list); prints shell
+	  functions from list in a form that may be re-used as input to
+	  redefine the functions
+
+variables.h
+	- new extern declaration for print_func_list
+
+builtins/set.def
+	- set without options now calls print_func_list to have functions
+	  printed in a way that can be reused as input (this affects
+	  `declare' and `declare -p' also)
+
+				   12/27
+				   -----
+general.h
+	- add an ISOCTAL define
+
+builtins/common.h
+	- use ISOCTAL in read_octal function
+
+parse.y
+	- in decode_prompt_string, don't just skip STRING forward by 3 if an
+	  octal sequence is translated; handle sequences of fewer than three
+	  characters by checking each character
+
+				   12/28
+				   -----
+doc/{bash.1,bashref.texi}
+	- make sure `vi-move' is a documented keymap argument to bind's
+	  `-m' option
+
+				   12/29
+				   -----
+variables.c
+	- change print_assignment so that functions are printed in a way that
+	  may be reused as input (without the `=')
+
+				 1/2/2001
+				 --------
+test.c
+	- fix test_command to print an error message if `[' is supplied a
+	  single argument that is not `]'
+
+support/shobj-conf
+	- change test of $SHOBJ_CC from `gcc*' to `*gcc*' to handle full
+	  pathnames
+
+				   1/11
+				   ----
+execute_cmd.c
+	- in initialize_subshell, zero out builtin_env, since those aren't
+	  supposed to be exported
+
+variables.c
+	- new function: shell_var_from_env_string, creates a SHELL_VAR from
+	  a `name=value' style environment string and returns it
+	- new function: bind_name_in_env_array(name, value, array), makes
+	  NAME have VALUE in ARRAY, a temporary environment
+	- new function: bind_tempenv_variable (name, value), makes NAME have
+	  VALUE in one of the temporary environments -- temporary_env,
+	  builtin_env, or function_env
+	- changed bind_variable to call bind_tempenv_variable if one of the
+	  temporary environments is non-null before modifying the
+	  shell_variables table.  This fixes a problem with sourced scripts
+	  modifying variables in a temporary environment, but not seeing the
+	  updated values
+
+				   1/12
+				   ----
+variables.c
+	- changed things so OSTYPE, HOSTTYPE, and MACHTYPE are set only if
+	  they don't have a value at shell startup
+
+				   1/17
+				   ----
+builtins/fc.def
+	- create temp file with MT_USETMPDIR
+
+variables.c
+	- allow function local readonly variables to overwrite (or shadow)
+	  other (calling) function readonly variables, but not global
+	  readonly ones
+
+builtins/wait.def
+	- replace unwind_protect of interrupt_immediately, since that's a
+	  variable that you cannot unwind-protect (the unwind-protect code
+	  uses it)
+
+				   1/22
+				   ----
+Makefile.in
+	- changed RELSTATUS to `beta1'
+
+lib/readline/terminal.c
+	- added rl_set_screen_size function, wrapper around
+	  _rl_set_screen_size so bash doesn't call _rl_ functions
+
+lib/readline/{rlprivate,readline}.h
+	- moved rl_explicit_arg to readline.h
+	- moved rl_numeric_arg to readline.h
+	- moved rl_editing_mode to readline.h
+	- moved rl_last_func to readline.h
+	- added rl_set_screen_size to readline.h
+
+lib/readline/doc/rltech.texinfo
+	- documented rl_explicit_arg, rl_editing_mode, rl_numeric_arg,
+	  rl_last_func
+	- documented rl_set_screen_size
+
+{jobs,nojobs}.c
+	- _rl_set_screen_size -> rl_set_screen_size
+
+{bashline,pcomplete}.c, builtins/set.def
+	- removed extern declarations of variables defined in readline.h
+
+				   1/23
+				   ----
+support/rlvers.sh
+	- use $TMPDIR if it's defined
+	- use $RL_INCDIR (set by -I option, /usr/local/include by default)
+	  as the directory containing the installed readline header files
+	- cd to the temp directory before attempting compilation
+
+configure.in
+	- pass `-I ${includedir}' to rlvers.sh
+
+				   1/29
+				   ----
+subst.c
+	- fixed parameter_brace_expand to only throw away the state of
+	  quoted dollar-at if we're going to be using the rhs of the
+	  brace expansion, since whatever parameter_brace_expand_rhs sets
+	  should be what goes (corrects bad fix of 2/16/2000)
+	- fixed param_expand to only free temp after calling
+	  parameter_brace_expand if it's a quoted null and we *did not*
+	  have a quoted $@, since in that case we want to keep it and
+	  do the $@ special handling (fixes real problem from 2/16/2000)
+
+				   1/30
+				   ----
+variables.c
+	- remove export attribute from SSH2_CLIENT, like SSH_CLIENT
+
+				    2/1
+				    ---
+unwind_prot.c
+	- added new function, clear_unwind_protect_list, to zero out the
+	  unwind_protect list, optionally freeing the elements
+
+unwind_prot.h
+	- new extern declaration for clear_unwind_protect_list
+
+execute_cmd.c
+	- call clear_unwind_protect_list in initialize_subshell.  This fixes
+	  the problem of core dumps when calling a shell script without a
+	  leading `#!' from a shell function or other context with an
+	  unwind-protect list
+	- set variable_context and return_catch_flag to 0 in
+	  initialize_subshell, since a new subshell is no longer in a shell
+	  function
+
+				    2/2
+				    ---
+doc/readline.3
+	- updated the text; clarified several points
+	- changed the usage synopsis to include <readline/readline.h> and
+	  <readline/history.h>
+
+lib/readline/doc/hstech.texinfo
+	- made sure all function prototypes are valid ANSI C (mostly
+	  changing () to (void))
+
+lib/readline/doc/rluser.texinfo
+	- a few clarifications
+
+lib/readline/doc/rltech.texinfo
+	- a few clarifications
+	- added two new subsections for character input and terminal
+	  management
+	- changed all function prototypes to be valid ANSI C (mostly
+	  replacing () with (void))
+	- documented some variables in readline.h but previously not in
+	  the reference manual (rl_num_chars_to_read, rl_dispatching,
+	  rl_gnu_readline_p, rl_completion_type)
+	- documented some functions in readline.h but previously not in
+	  the reference manual (rl_clear_pending_input, rl_prep_terminal,
+	  rl_deprep_terminal, rl_tty_set_default_bindings, rl_alphabetic,
+	  rl_crlf)
+
+lib/readline/readline.h
+	- added extern declaration for rl_clear_pending_input()
+	- added extern declaration for rl_alphabetic
+	- changed rltty_set_default_bindings to rl_tty_set_default_bindings
+	- changed crlf() -> rl_crlf()
+
+lib/readline/rltty.c
+	- new function, rl_tty_set_default_bindings, just calls
+	  rltty_set_default_bindings (needed `rl_' prefix)
+
+lib/readline/readline.c
+	- readline_default_bindings now calls rl_tty_set_default_bindings
+
+lib/readline/terminal.c
+	- renamed crlf() to rl_crlf(); crlf() is still defined for backwards
+	  compatibility 
+
+bashline.c, lib/readline/{complete,display}.c
+	- changed all calls to crlf() to rl_crlf()
+
+test.c
+	- fix filecomp() so that `test file1 -nt file2' doesn't fail if file1
+	  exists but file2 does not
+
+				    2/5
+				    ---
+lib/readline/{terminal,compat}.c
+	- move crlf() backwards-compatibility definition to compat.c
+
+execute_cmd.c
+	- if we're running a command `( command ) &' from a non-interactive
+	  shell, don't unconditionally disable expand_aliases.  Only do it
+	  when running such a command from an interactive shell, since then
+	  we're changing to a non-interactive shell
+
+				    2/6
+				    ---
+[bash-2.05-beta1 released]
+
+lib/readline/compat.c
+	- add extern declaration for rl_crlf()
+
+lib/readline/undo.c
+	- initialize start and end in rl_do_undo to avoid bogus gcc compiler
+	  warning with -Wall
+
+lib/readline/rlprivate.h
+	- fix typo in extern declaration of _rl_current_display_line()
+	- add extern declaration of _rl_free_saved_history_line()
+
+lib/readline/terminal.c
+	- return immediately from _rl_set_screen_size if one of the args is 0
+	- new function, rl_get_screen_size (int *rows, int *cols) to return
+	  readline's idea of the screen dimensions
+
+lib/readline/doc/rltech.texinfo
+	- documented rl_get_screen_size
+
+				    2/7
+				    ---
+pathexp.c
+	- a couple of fixes for the POSIX_GLOB_LIBRARY version of the globbing
+	  code
+
+expr.c
+	- fixed omission of ^= from the special assignment operators
+
+shell.c
+	- change logic for setting `posixly_correct' at shell startup:  if
+	  $POSIXLY_CORRECT or $POSIX_PEDANTIC is found in the environment,
+	  set it to 1, otherwise retain the previous value (which is
+	  initialized to 0)
+
+				   2/10
+				   ----
+builtins/evalstring.c
+	- since subshell_environment is now a flags word, test for the
+	  SUBSHELL_COMSUB bit being set when decided whether or not to
+	  evaluate $(<file), not just for subshell_environment ==
+	  SUBSHELL_COMSUB
+
+				   2/12
+				   ----
+lib/readline/doc/rltech.texinfo
+	- fixed a couple of problems with the documentation for
+	  rl_prep_terminal and rl_deprep_terminal 
+	- added description of rl_set_prompt
+
+support/config.sub
+	- added support for Linux running on the IBM S390
+
+				   2/13
+				   ----
+input.c
+	- new function, fd_is_bash_input (fd), encapsulates the test for
+	  whether or not FD is the file descriptor from which bash is reading
+	  its input
+	- change check_bash_input to call fd_is_bash_input
+	- new function, save_bash_input (fd, new_fd), handles saving the
+	  buffered stream associated with file descriptor FD to one
+	  associated with NEW_FD.  If NEW_FD == -1, this function allocates a
+	  file descriptor itself with fcntl
+	- new function, set_bash_input_fd(fd), sets the fd bash is using to
+	  read input to FD
+	- changed duplicate_buffered_stream to note that the buffer it's
+	  duplicating to was the bash input buffer (B_WASBASHINPUT)
+
+input.h
+	- extern declarations for fd_is_bash_input and save_bash_input
+	- new flag for b->flag: B_WASBASHINPUT
+
+redir.c
+	- in add_undo_redirect, if FD is 0, make the undo redirect be of type
+	  r_duplicating_input instead of r_duplicating_output, since that fd
+	  requires special handling in the presence of buffered streams (fixes
+	  problem with scripts reading input through a pipe restoring bash
+	  input buffered stream correctly after a `read' with an input
+	  redirection
+
+				   2/14
+				   ----
+lib/readline{complete,util}.c
+	- moved rl_strpbrk to util.c with rest of string utility functions,
+	  renamed to _rl_strpbrk
+
+lib/readline/rlprivate.h
+	- extern declaration for _rl_strpbrk
+
+lib/readline/input.c
+	- make the timeout in rl_gather_tyi() be a variable
+	  (_keyboard_input_timeout) rather than a constant
+	- new function, rl_set_keyboard_input_timeout (int u) to set
+	  _keyboard_input_timeout.  The argument is in microseconds; returns
+	  the old value of _keyboard_input_timeout
+	- _rl_input_available uses _keyboard_input_timeout also
+
+lib/readline/readline.h
+	- extern declaration for rl_set_keyboard_input_timeout
+
+lib/readline/doc/rltech.texinfo
+	- documented rl_variable_bind(), rl_macro_bind(), rl_macro_dumper(),
+	  rl_variable_dumper(), rl_push_macro_input(), rl_show_char()
+
+				   2/20
+				   ----
+findcmd.c
+	- new function, executable_or_directory(name), returns 1 if NAME is
+	  an executable file or a directory
+
+findcmd.h
+	- extern declaration for executable_or_directory()
+
+bashline.c
+	- call executable_or_directory() from command_word_completion_function,
+	  which requires a single stat(2), instead of executable_file() and
+	  is_directory(), each of which requires a stat(2)
+
+				   2/21
+				   ----
+execute_cmd.c
+	- changed execute_builtin to handle `return' with a preceding variable
+	  assignment list specially when in POSIX mode.  POSIX says that the
+	  variable assignments should persist after the builtin returns, since
+	  `return' is a special builtin.  Since `return' does a longjmp and
+	  doesn't go through the normal cleanup path, we need to do special
+	  things
+
+variables.c
+	- new function, merge_function_env(), merges the function_env into
+	  the shell_variables table
+
+variables.h
+	- extern declaration for merge_function_env()
+
+execute_cmd.c
+	- changed execute_function to merge any variable assignments preceding
+	  the function call into shell_variables if the shell is running in
+	  POSIX mode
+
+subst.c
+	- changed parameter_brace_expand_error to do tilde expansion on the
+	  rhs of the expansion, if it's not null
+	- changed command_substitute so that the subshell begun to execute
+	  the command substitution inherits the setting of the `-e' option
+	  when in POSIX mode
+
+builtins/break.def
+	- changed check_loop_level to not print a complaining message when
+	  the shell is running in POSIX mode, even if BREAK_COMPLAINS is
+	  defined.  This affects `break' and `continue'
+	- changed `break' and `continue' to return success even if the shell
+	  is not executing a loop, as POSIX specifies
+
+builtins/set.def
+	- changed reset_shell_options() to not clear posixly_correct, so
+	  subshells spawned to execute shell scripts without a leading `#!'
+	  inherit posix mode from their parent shell
+
+variables.c
+	- changed make_new_variable to create the shell_variables hash table
+	  if it hasn't been done yet.  This is needed because bind_variable
+	  may be called before initialize_shell_variables (e.g., when
+	  `bash -o posix' calls bind_variable("POSIXLY_CORRECT", "y") from
+	  parse_shell_options -> set_minus_o_option -> set_posix_mode
+	  This makes `bash --posix' and `bash -o posix' equivalent, as they
+	  should always have been
+	- changed maybe_make_export_env to merge the contents of `builtin_env'
+	  into export_env after function_env and before temporary_env.  This
+	  fixes the problems with variable assignments preceding `eval' or
+	  `source' not making it into the environment passed to executed disk
+	  commands (var=20 eval printenv var)
+
+doc/bashref.texi
+	- noted that variable assignments preceding shell function calls
+	  persist in the shell environment after the function returns when
+	  the shell is running in POSIX mode
+	- noted that when the shell is running in POSIX mode, subshells
+	  spawned to execute command substitutions inherit the value of
+	  the `-e' option from the parent shell
+
+				   2/26
+				   ----
+doc/bashref.texi
+	- augmented description of bash non-posix behavior in posix mode
+	  with information from running the vsc-lite test suite
+
+				   2/28
+				   ----
+general.c
+	- since POSIX.2 says that aliases should be expanded even in
+	  non-interactive shells, enable alias expansion in
+	  posix_initialize() when posix mode is enabled, and set it to the
+	  value of interactive_shell if posix mode is disabled
+
+shell.c
+	- before running the startup scripts, set expand_aliases to
+	  posixly_correct, since we don't want alias expansion in startup
+	  files unless we've been given the --posix invocation option
+
+doc/bashref.texi
+	- added item in BASH Posix Mode section noting that alias expansion
+	  is always enabled when in posix mode
+
+Makefile.in
+	- changed release level to `beta2'
+
+				    3/1
+				    ---
+jobs.c
+	- expanded retcode_name_buffer to 64
+	- changed printable_job_status to conform to posix.2 for text of
+	  stopped job status: `Stopped(SIGTSTP)' or `Stopped(SIGSTOP)'
+
+doc/bashref.texi
+	- Noted above change in posix mode section
+
+				    3/5
+				    ---
+lib/readline/bind.c
+	- changed rl_get_keymap_by_name to work case-insensitively
+
+				    3/6
+				    ---
+doc/readline.{0,3,ps}
+	- removed from distribution; moved to readline distribution
+
+lib/readline/doc/history.3
+	- man page for history library; neither built nor installed
+	  (part of the standalone readline distribution)
+
+lib/readline/histfile.c
+	- changed history_truncate_file to return 0 on success, errno
+	  on failure
+	- changed history_do_write to return errno on a write error.  This
+	  affects write_history and append_history
+
+lib/readline/history.c
+	- max_input_history is now history_max_entries; the old variable is
+	  maintained for backwards compatibility
+
+lib/readline/histexpand.c
+	- the list of delimiters that separate words for history_tokenize
+	  is now a variable: history_word_delimiters; default value is as
+	  before
+	- changed history_expand to return 0 immediately if its second
+	  argument is NULL
+
+bashline.c
+	- changed to use history_max_entries
+
+lib/readline/history.h
+	- extern declaration for history_max_entries
+	- extern declaration for history_word_delimiters
+
+				    3/8
+				    ---
+test.c
+	- changed unary_operator() to return FALSE for non-numeric arguments
+	  to `-t'
+
+				    3/9
+				    ---
+[bash-2.05-beta2 released]
+
+				   3/12
+				   ----
+lib/readline/doc/rltech.texinfo
+	- documented rl_set_paren_blink_timeout()
+	- moved the example function to its own info node
+
+lib/readline/{hstech.texinfo,history.3}
+	- `$' is not in the default value of history_word_delimiters
+
+				   3/13
+				   ----
+bashline.c
+	- in maybe_add_history, if the tests for HISTCONTROL succeed, but
+	  the HISTIGNORE check fails, set first_line_saved to 0
+
+				   3/15
+				   ----
+
+lib/glob/fnmatch.c
+	- fixed a bug in patscan that caused `[' to be treated as special
+	  even inside a nested bracket expression.  It's supposed to lose
+	  it's special handling inside []
+	- fixed a bug in patscan that caused `]' to end an embedded bracket
+	  expression even if it was the first character after the `[' (or
+	  a leading `!' or `^')
+
+				   3/22
+				   ----
+execute_cmd.c
+	- made a small change to shell_execve to report a more user-friendly
+	  error if execve(2) fails because of a `#! interpreter' error with
+	  `interpreter'
+	- in shell_execve, if HAVE_HASH_BANG_EXEC is not defined, make sure
+	  the file length is > 2 characters before attempting to execute an
+	  interpreter
+
+				   3/26
+				   ----
+jobs.c, nojobs.c
+	- give_terminal_to now takes a second argument, FORCE.  If that
+	  second argument is non-zero, give the terminal away no matter
+	  what job_control is set to
+
+jobs.h
+	- changed extern declaration of give_terminal_to
+
+{jobs,sig,subst}.c,parse.y
+	- changed all calls to give_terminal_to to add a second argument
+	  of 0
+
+jobs.c
+	- changed second argument of call to give_terminal_to in
+	  end_job_control to 1, to force this even if job_control is 0.
+	  This fixes the problem of `exec other-job-control-shell' in a
+	  startup file hanging, since run_startup_files sets job_control to 0
+
+subst.c
+	- fixed test of subshell_environment in command_substitute to test the
+	  bit SUBSHELL_ASYNC rather than test equality, since it's now a
+	  bitmask
+
+				   3/27
+				   ----
+shell.c
+	- changed posix initialization calls to set POSIXLY_CORRECT=y and
+	  then call sv_strict_posix, so $SHELLOPTS includes `posix' and
+	  POSIXLY_CORRECT is set, for both the posix command line options
+	  and when act_like_sh is non-zero
+
+redir.c
+	- the `>& filename' redirection now works in posix mode, redirecting
+	  stdout and stderr, since POSIX.2 leaves it unspecified
+
+doc/bashref.texi
+	- removed item about `>& filename' from Bash POSIX Mode section
+
+parse.y
+	- fixed a problem in decode_prompt_string with `\W' not printing
+	  anything if PWD == "//"
+
+lib/readline/input.c
+	- in rl_read_key, after calling (*rl_event_hook), check for rl_done
+	  being set, and return '\n' if it is
+
+Makefile.in
+	- changed RELSTATUS to `release'
+
+				   3/28
+				   ----
+support/bashbug.sh
+	- replace use of $(...) with `...` for the benefit of old versions
+	  of sh
+
+builtins/set.def
+	- changed print_all_shell_variables to not print shell function names
+	  and definitions when in posix mode
+
+doc/bashref.texi
+	- noted change in `set' behavior in posix mode section
+
+				    4/2
+				    ---
+lib/readline/readline.c
+	- changed default value of RL_LIBRARY_VERSION to `4.2'
+
+				    4/5
+				    ---
+[bash-2.05-release frozen]

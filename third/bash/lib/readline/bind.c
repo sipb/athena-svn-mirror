@@ -7,7 +7,7 @@
 
    The GNU Readline Library is free software; you can redistribute it
    and/or modify it under the terms of the GNU General Public License
-   as published by the Free Software Foundation; either version 1, or
+   as published by the Free Software Foundation; either version 2, or
    (at your option) any later version.
 
    The GNU Readline Library is distributed in the hope that it will be
@@ -18,7 +18,7 @@
    The GNU General Public License is often shipped with GNU software, and
    is generally kept in a file called COPYING or LICENSE.  If you do not
    have a copy of the license, write to the Free Software Foundation,
-   675 Mass Ave, Cambridge, MA 02139, USA. */
+   59 Temple Place, Suite 330, Boston, MA 02111 USA. */
 #define READLINE_LIBRARY
 
 #if defined (HAVE_CONFIG_H)
@@ -42,7 +42,6 @@
 #  include "ansi_stdlib.h"
 #endif /* HAVE_STDLIB_H */
 
-#include <signal.h>
 #include <errno.h>
 
 #if !defined (errno)
@@ -58,61 +57,25 @@ extern int errno;
 #include "readline.h"
 #include "history.h"
 
+#include "rlprivate.h"
+#include "rlshell.h"
+#include "xmalloc.h"
+
 #if !defined (strchr) && !defined (__STDC__)
 extern char *strchr (), *strrchr ();
 #endif /* !strchr && !__STDC__ */
 
-extern int _rl_horizontal_scroll_mode;
-extern int _rl_mark_modified_lines;
-extern int _rl_bell_preference;
-extern int _rl_meta_flag;
-extern int _rl_convert_meta_chars_to_ascii;
-extern int _rl_output_meta_chars;
-extern int _rl_complete_show_all;
-extern int _rl_complete_mark_directories;
-extern int _rl_print_completions_horizontally;
-extern int _rl_completion_case_fold;
-extern int _rl_enable_keypad;
-#if defined (PAREN_MATCHING)
-extern int rl_blink_matching_paren;
-#endif /* PAREN_MATCHING */
-#if defined (VISIBLE_STATS)
-extern int rl_visible_stats;
-#endif /* VISIBLE_STATS */
-extern int rl_complete_with_tilde_expansion;
-extern int rl_completion_query_items;
-extern int rl_inhibit_completion;
-extern char *_rl_comment_begin;
-extern unsigned char *_rl_isearch_terminators;
-
-extern int rl_explicit_arg;
-extern int rl_editing_mode;
-extern unsigned char _rl_parsing_conditionalized_out;
-extern Keymap _rl_keymap;
-
-extern char *possible_control_prefixes[], *possible_meta_prefixes[];
-
-/* Functions imported from funmap.c */
-extern char **rl_funmap_names ();
-extern int rl_add_funmap_entry ();
-
-/* Functions imported from util.c */
-extern char *_rl_strindex ();
-
-/* Functions imported from shell.c */
-extern char *get_env_value ();
-
 /* Variables exported by this file. */
 Keymap rl_binding_keymap;
 
-/* Forward declarations */
-void rl_set_keymap_from_edit_mode ();
+static int _rl_read_init_file __P((const char *, int));
+static int glean_key_from_name __P((char *));
+static int substring_member_of_array __P((char *, const char **));
 
-static int _rl_read_init_file ();
-static int glean_key_from_name ();
-static int substring_member_of_array ();
+static int currently_reading_init_file;
 
-extern char *xmalloc (), *xrealloc ();
+/* used only in this file */
+static int _rl_prefer_visible_bell = 1;
 
 /* **************************************************************** */
 /*								    */
@@ -120,13 +83,13 @@ extern char *xmalloc (), *xrealloc ();
 /*								    */
 /* **************************************************************** */
 
-/* rl_add_defun (char *name, Function *function, int key)
+/* rl_add_defun (char *name, rl_command_func_t *function, int key)
    Add NAME to the list of named functions.  Make FUNCTION be the function
    that gets called.  If KEY is not -1, then bind it. */
 int
 rl_add_defun (name, function, key)
-     char *name;
-     Function *function;
+     const char *name;
+     rl_command_func_t *function;
      int key;
 {
   if (key != -1)
@@ -139,7 +102,7 @@ rl_add_defun (name, function, key)
 int
 rl_bind_key (key, function)
      int key;
-     Function *function;
+     rl_command_func_t *function;
 {
   if (key < 0)
     return (key);
@@ -170,7 +133,7 @@ rl_bind_key (key, function)
 int
 rl_bind_key_in_map (key, function, map)
      int key;
-     Function *function;
+     rl_command_func_t *function;
      Keymap map;
 {
   int result;
@@ -189,7 +152,7 @@ int
 rl_unbind_key (key)
      int key;
 {
-  return (rl_bind_key (key, (Function *)NULL));
+  return (rl_bind_key (key, (rl_command_func_t *)NULL));
 }
 
 /* Make KEY do nothing in MAP.
@@ -199,13 +162,13 @@ rl_unbind_key_in_map (key, map)
      int key;
      Keymap map;
 {
-  return (rl_bind_key_in_map (key, (Function *)NULL, map));
+  return (rl_bind_key_in_map (key, (rl_command_func_t *)NULL, map));
 }
 
 /* Unbind all keys bound to FUNCTION in MAP. */
 int
 rl_unbind_function_in_map (func, map)
-     Function *func;
+     rl_command_func_t *func;
      Keymap map;
 {
   register int i, rval;
@@ -214,7 +177,7 @@ rl_unbind_function_in_map (func, map)
     {
       if (map[i].type == ISFUNC && map[i].function == func)
 	{
-	  map[i].function = (Function *)NULL;
+	  map[i].function = (rl_command_func_t *)NULL;
 	  rval = 1;
 	}
     }
@@ -223,10 +186,10 @@ rl_unbind_function_in_map (func, map)
 
 int
 rl_unbind_command_in_map (command, map)
-     char *command;
+     const char *command;
      Keymap map;
 {
-  Function *func;
+  rl_command_func_t *func;
 
   func = rl_named_function (command);
   if (func == 0)
@@ -239,8 +202,8 @@ rl_unbind_command_in_map (command, map)
    place to do bindings is in MAP. */
 int
 rl_set_key (keyseq, function, map)
-     char *keyseq;
-     Function *function;
+     const char *keyseq;
+     rl_command_func_t *function;
      Keymap map;
 {
   return (rl_generic_bind (ISFUNC, keyseq, (char *)function, map));
@@ -251,7 +214,7 @@ rl_set_key (keyseq, function, map)
    necessary.  The initial place to do bindings is in MAP. */
 int
 rl_macro_bind (keyseq, macro, map)
-     char *keyseq, *macro;
+     const char *keyseq, *macro;
      Keymap map;
 {
   char *macro_keys;
@@ -276,7 +239,8 @@ rl_macro_bind (keyseq, macro, map)
 int
 rl_generic_bind (type, keyseq, data, map)
      int type;
-     char *keyseq, *data;
+     const char *keyseq;
+     char *data;
      Keymap map;
 {
   char *keys;
@@ -346,7 +310,8 @@ rl_generic_bind (type, keyseq, data, map)
    non-zero if there was an error parsing SEQ. */
 int
 rl_translate_keyseq (seq, array, len)
-     char *seq, *array;
+     const char *seq;
+     char *array;
      int *len;
 {
   register int i, c, l, temp;
@@ -550,9 +515,9 @@ _rl_untranslate_macro_value (seq)
 /* Return a pointer to the function that STRING represents.
    If STRING doesn't have a matching function, then a NULL pointer
    is returned. */
-Function *
+rl_command_func_t *
 rl_named_function (string)
-     char *string;
+     const char *string;
 {
   register int i;
 
@@ -561,7 +526,7 @@ rl_named_function (string)
   for (i = 0; funmap[i]; i++)
     if (_rl_stricmp (funmap[i]->name, string) == 0)
       return (funmap[i]->function);
-  return ((Function *)NULL);
+  return ((rl_command_func_t *)NULL);
 }
 
 /* Return the function (or macro) definition which would be invoked via
@@ -569,9 +534,9 @@ rl_named_function (string)
    used.  TYPE, if non-NULL, is a pointer to an int which will receive the
    type of the object pointed to.  One of ISFUNC (function), ISKMAP (keymap),
    or ISMACR (macro). */
-Function *
+rl_command_func_t *
 rl_function_of_keyseq (keyseq, map, type)
-     char *keyseq;
+     const char *keyseq;
      Keymap map;
      int *type;
 {
@@ -622,14 +587,14 @@ rl_function_of_keyseq (keyseq, map, type)
 	  return (map[ic].function);
 	}
     }
-  return ((Function *) NULL);
+  return ((rl_command_func_t *) NULL);
 }
 
 /* The last key bindings file read. */
 static char *last_readline_init_file = (char *)NULL;
 
 /* The file we're currently reading key bindings from. */
-static char *current_readline_init_file;
+static const char *current_readline_init_file;
 static int current_readline_init_include_level;
 static int current_readline_init_lineno;
 
@@ -677,9 +642,16 @@ _rl_read_file (filename, sizep)
       return ((char *)NULL);
     }
 
+#if 0
   buffer[file_size] = '\0';
   if (sizep)
     *sizep = file_size;
+#else
+  buffer[i] = '\0';
+  if (sizep)
+    *sizep = i;
+#endif
+
   return (buffer);
 }
 
@@ -689,7 +661,7 @@ rl_re_read_init_file (count, ignore)
      int count, ignore;
 {
   int r;
-  r = rl_read_init_file ((char *)NULL);
+  r = rl_read_init_file ((const char *)NULL);
   rl_set_keymap_from_edit_mode ();
   return r;
 }
@@ -703,14 +675,14 @@ rl_re_read_init_file (count, ignore)
    otherwise errno is returned. */
 int
 rl_read_init_file (filename)
-     char *filename;
+     const char *filename;
 {
   /* Default the filename. */
   if (filename == 0)
     {
       filename = last_readline_init_file;
       if (filename == 0)
-        filename = get_env_value ("INPUTRC");
+        filename = sh_get_env_value ("INPUTRC");
       if (filename == 0)
 	filename = DEFAULT_INPUTRC;
     }
@@ -718,12 +690,17 @@ rl_read_init_file (filename)
   if (*filename == 0)
     filename = DEFAULT_INPUTRC;
 
+#if defined (__MSDOS__)
+  if (_rl_read_init_file (filename, 0) == 0)
+    return 0;
+  filename = "~/_inputrc";
+#endif
   return (_rl_read_init_file (filename, 0));
 }
 
 static int
 _rl_read_init_file (filename, include_level)
-     char *filename;
+     const char *filename;
      int include_level;
 {
   register int i;
@@ -746,6 +723,8 @@ _rl_read_init_file (filename, include_level)
       last_readline_init_file = savestring (filename);
     }
 
+  currently_reading_init_file = 1;
+
   /* Loop over the lines in the file.  Lines that start with `#' are
      comments; all other lines are commands for readline initialization. */
   current_readline_init_lineno = 1;
@@ -755,6 +734,12 @@ _rl_read_init_file (filename, include_level)
     {
       /* Find the end of this line. */
       for (i = 0; line + i != end && line[i] != '\n'; i++);
+
+#if defined (__CYGWIN__)
+      /* ``Be liberal in what you accept.'' */
+      if (line[i] == '\n' && line[i-1] == '\r')
+	line[i - 1] = '\0';
+#endif
 
       /* Mark end of line. */
       line[i] = '\0';
@@ -776,6 +761,7 @@ _rl_read_init_file (filename, include_level)
     }
 
   free (buffer);
+  currently_reading_init_file = 0;
   return (0);
 }
 
@@ -783,9 +769,11 @@ static void
 _rl_init_file_error (msg)
      char *msg;
 {
-  fprintf (stderr, "readline: %s: line %d: %s\n", current_readline_init_file,
- 		   current_readline_init_lineno,
- 		   msg);
+  if (currently_reading_init_file)
+    fprintf (stderr, "readline: %s: line %d: %s\n", current_readline_init_file,
+		     current_readline_init_lineno, msg);
+  else
+    fprintf (stderr, "readline: %s\n", msg);
 }
 
 /* **************************************************************** */
@@ -794,10 +782,21 @@ _rl_init_file_error (msg)
 /*								    */
 /* **************************************************************** */
 
+typedef int _rl_parser_func_t __P((char *));
+
+/* Things that mean `Control'. */
+const char *_rl_possible_control_prefixes[] = {
+  "Control-", "C-", "CTRL-", (const char *)NULL
+};
+
+const char *_rl_possible_meta_prefixes[] = {
+  "Meta", "M-", (const char *)NULL
+};
+
 /* Conditionals. */
 
 /* Calling programs set this to have their argv[0]. */
-char *rl_readline_name = "other";
+const char *rl_readline_name = "other";
 
 /* Stack of previous values of parsing_conditionalized_out. */
 static unsigned char *if_stack = (unsigned char *)NULL;
@@ -919,7 +918,8 @@ static int
 parser_include (args)
      char *args;
 {
-  char *old_init_file, *e;
+  const char *old_init_file;
+  char *e;
   int old_line_number, old_include_level, r;
 
   if (_rl_parsing_conditionalized_out)
@@ -932,7 +932,7 @@ parser_include (args)
   e = strchr (args, '\n');
   if (e)
     *e = '\0';
-  r = _rl_read_init_file (args, old_include_level + 1);
+  r = _rl_read_init_file ((const char *)args, old_include_level + 1);
 
   current_readline_init_file = old_init_file;
   current_readline_init_lineno = old_line_number;
@@ -943,14 +943,14 @@ parser_include (args)
   
 /* Associate textual names with actual functions. */
 static struct {
-  char *name;
-  Function *function;
+  const char *name;
+  _rl_parser_func_t *function;
 } parser_directives [] = {
   { "if", parser_if },
   { "endif", parser_endif },
   { "else", parser_else },
   { "include", parser_include },
-  { (char *)0x0, (Function *)0x0 }
+  { (char *)0x0, (_rl_parser_func_t *)0x0 }
 };
 
 /* Handle a parser directive.  STATEMENT is the line of the directive
@@ -1194,10 +1194,10 @@ rl_parse_and_bind (string)
   key = glean_key_from_name (kname);
 
   /* Add in control and meta bits. */
-  if (substring_member_of_array (string, possible_control_prefixes))
+  if (substring_member_of_array (string, _rl_possible_control_prefixes))
     key = CTRL (_rl_to_upper (key));
 
-  if (substring_member_of_array (string, possible_meta_prefixes))
+  if (substring_member_of_array (string, _rl_possible_meta_prefixes))
     key = META (key);
 
   /* Temporary.  Handle old-style keyname with macro-binding. */
@@ -1232,159 +1232,280 @@ rl_parse_and_bind (string)
    have one of two values; either "On" or 1 for truth, or "Off" or 0 for
    false. */
 
+#define V_SPECIAL	0x1
+
 static struct {
-  char *name;
+  const char *name;
   int *value;
+  int flags;
 } boolean_varlist [] = {
-#if defined (PAREN_MATCHING)
-  { "blink-matching-paren",	&rl_blink_matching_paren },
-#endif
-  { "completion-ignore-case",	&_rl_completion_case_fold },
-  { "convert-meta",		&_rl_convert_meta_chars_to_ascii },
-  { "disable-completion",	&rl_inhibit_completion },
-  { "enable-keypad",		&_rl_enable_keypad },
-  { "expand-tilde",		&rl_complete_with_tilde_expansion },
-  { "horizontal-scroll-mode",	&_rl_horizontal_scroll_mode },
-  { "input-meta",		&_rl_meta_flag },
-  { "mark-directories",		&_rl_complete_mark_directories },
-  { "mark-modified-lines",	&_rl_mark_modified_lines },
-  { "meta-flag",		&_rl_meta_flag },
-  { "output-meta",		&_rl_output_meta_chars },
-  { "print-completions-horizontally", &_rl_print_completions_horizontally },
-  { "show-all-if-ambiguous",	&_rl_complete_show_all },
+  { "blink-matching-paren",	&rl_blink_matching_paren,	V_SPECIAL },
+  { "completion-ignore-case",	&_rl_completion_case_fold,	0 },
+  { "convert-meta",		&_rl_convert_meta_chars_to_ascii, 0 },
+  { "disable-completion",	&rl_inhibit_completion,		0 },
+  { "enable-keypad",		&_rl_enable_keypad,		0 },
+  { "expand-tilde",		&rl_complete_with_tilde_expansion, 0 },
+  { "horizontal-scroll-mode",	&_rl_horizontal_scroll_mode,	0 },
+  { "input-meta",		&_rl_meta_flag,			0 },
+  { "mark-directories",		&_rl_complete_mark_directories,	0 },
+  { "mark-modified-lines",	&_rl_mark_modified_lines,	0 },
+  { "meta-flag",		&_rl_meta_flag,			0 },
+  { "output-meta",		&_rl_output_meta_chars,		0 },
+  { "prefer-visible-bell",	&_rl_prefer_visible_bell,	V_SPECIAL },
+  { "print-completions-horizontally", &_rl_print_completions_horizontally, 0 },
+  { "show-all-if-ambiguous",	&_rl_complete_show_all,		0 },
 #if defined (VISIBLE_STATS)
-  { "visible-stats",		&rl_visible_stats },
+  { "visible-stats",		&rl_visible_stats,		0 },
 #endif /* VISIBLE_STATS */
   { (char *)NULL, (int *)NULL }
 };
 
-int
-rl_variable_bind (name, value)
-     char *name, *value;
+static int
+find_boolean_var (name)
+     char *name;
 {
   register int i;
 
-  /* Check for simple variables first. */
   for (i = 0; boolean_varlist[i].name; i++)
-    {
-      if (_rl_stricmp (name, boolean_varlist[i].name) == 0)
-	{
-	  /* A variable is TRUE if the "value" is "on", "1" or "". */
-	  *boolean_varlist[i].value = *value == 0 ||
-	  			      _rl_stricmp (value, "on") == 0 ||
-				      (value[0] == '1' && value[1] == '\0');
-	  return 0;
-	}
-    }
+    if (_rl_stricmp (name, boolean_varlist[i].name) == 0)
+      return i;
+  return -1;
+}
 
-  /* Not a boolean variable, so check for specials. */
+/* Hooks for handling special boolean variables, where a
+   function needs to be called or another variable needs
+   to be changed when they're changed. */
+static void
+hack_special_boolean_var (i)
+     int i;
+{
+  const char *name;
 
-  /* Editing mode change? */
-  if (_rl_stricmp (name, "editing-mode") == 0)
-    {
-      if (_rl_strnicmp (value, "vi", 2) == 0)
-	{
-#if defined (VI_MODE)
-	  _rl_keymap = vi_insertion_keymap;
-	  rl_editing_mode = vi_mode;
-#endif /* VI_MODE */
-	}
-      else if (_rl_strnicmp (value, "emacs", 5) == 0)
-	{
-	  _rl_keymap = emacs_standard_keymap;
-	  rl_editing_mode = emacs_mode;
-	}
-    }
+  name = boolean_varlist[i].name;
 
-  /* Comment string change? */
-  else if (_rl_stricmp (name, "comment-begin") == 0)
-    {
-      if (*value)
-	{
-	  if (_rl_comment_begin)
-	    free (_rl_comment_begin);
-
-	  _rl_comment_begin = savestring (value);
-	}
-    }
-  else if (_rl_stricmp (name, "completion-query-items") == 0)
-    {
-      int nval = 100;
-      if (*value)
-	{
-	  nval = atoi (value);
-	  if (nval < 0)
-	    nval = 0;
-	}
-      rl_completion_query_items = nval;
-    }
-  else if (_rl_stricmp (name, "keymap") == 0)
-    {
-      Keymap kmap;
-      kmap = rl_get_keymap_by_name (value);
-      if (kmap)
-        rl_set_keymap (kmap);
-    }
-  else if (_rl_stricmp (name, "bell-style") == 0)
-    {
-      if (!*value)
-        _rl_bell_preference = AUDIBLE_BELL;
-      else
-        {
-          if (_rl_stricmp (value, "none") == 0 || _rl_stricmp (value, "off") == 0)
-            _rl_bell_preference = NO_BELL;
-          else if (_rl_stricmp (value, "audible") == 0 || _rl_stricmp (value, "on") == 0)
-            _rl_bell_preference = AUDIBLE_BELL;
-          else if (_rl_stricmp (value, "visible") == 0)
-            _rl_bell_preference = VISIBLE_BELL;
-        }
-    }
+  if (_rl_stricmp (name, "blink-matching-paren") == 0)
+    _rl_enable_paren_matching (rl_blink_matching_paren);
   else if (_rl_stricmp (name, "prefer-visible-bell") == 0)
     {
-      /* Backwards compatibility. */
-      if (*value && (_rl_stricmp (value, "on") == 0 ||
-		     (*value == '1' && !value[1])))
-        _rl_bell_preference = VISIBLE_BELL;
+      if (_rl_prefer_visible_bell)
+	_rl_bell_preference = VISIBLE_BELL;
       else
-        _rl_bell_preference = AUDIBLE_BELL;
+	_rl_bell_preference = AUDIBLE_BELL;
     }
-  else if (_rl_stricmp (name, "isearch-terminators") == 0)
+}
+
+typedef int _rl_sv_func_t __P((const char *));
+
+/* These *must* correspond to the array indices for the appropriate
+   string variable.  (Though they're not used right now.) */
+#define V_BELLSTYLE	0
+#define V_COMBEGIN	1
+#define V_EDITMODE	2
+#define V_ISRCHTERM	3
+#define V_KEYMAP	4
+
+#define	V_STRING	1
+#define V_INT		2
+
+/* Forward declarations */
+static int sv_bell_style __P((const char *));
+static int sv_combegin __P((const char *));
+static int sv_compquery __P((const char *));
+static int sv_editmode __P((const char *));
+static int sv_isrchterm __P((const char *));
+static int sv_keymap __P((const char *));
+
+static struct {
+  const char *name;
+  int flags;
+  _rl_sv_func_t *set_func;
+} string_varlist[] = {
+  { "bell-style",	V_STRING,	sv_bell_style },
+  { "comment-begin",	V_STRING,	sv_combegin },
+  { "completion-query-items", V_INT,	sv_compquery },
+  { "editing-mode",	V_STRING,	sv_editmode },
+  { "isearch-terminators", V_STRING,	sv_isrchterm },
+  { "keymap",		V_STRING,	sv_keymap },
+  { (char *)NULL,	0 }
+};
+
+static int
+find_string_var (name)
+     char *name;
+{
+  register int i;
+
+  for (i = 0; string_varlist[i].name; i++)
+    if (_rl_stricmp (name, string_varlist[i].name) == 0)
+      return i;
+  return -1;
+}
+
+/* A boolean value that can appear in a `set variable' command is true if
+   the value is null or empty, `on' (case-insenstive), or "1".  Any other
+   values result in 0 (false). */
+static int
+bool_to_int (value)
+     char *value;
+{
+  return (value == 0 || *value == '\0' ||
+		(_rl_stricmp (value, "on") == 0) ||
+		(value[0] == '1' && value[1] == '\0'));
+}
+
+int
+rl_variable_bind (name, value)
+     const char *name, *value;
+{
+  register int i;
+  int	v;
+
+  /* Check for simple variables first. */
+  i = find_boolean_var (name);
+  if (i >= 0)
     {
-      /* Isolate the value and translate it into a character string. */
-      int beg, end;
-      char *v;
-
-      v = savestring (value);
-      FREE (_rl_isearch_terminators);
-      if (v[0] == '"' || v[0] == '\'')
-	{
-	  int delim = v[0];
-	  for (beg = end = 1; v[end] && v[end] != delim; end++)
-	    ;
-	}
-      else
-	{
-	  for (beg = end = 0; whitespace (v[end]) == 0; end++)
-	    ;
-	}
-
-      v[end] = '\0';
-      /* The value starts at v + beg.  Translate it into a character string. */
-      _rl_isearch_terminators = (unsigned char *)xmalloc (2 * strlen (v) + 1);
-      rl_translate_keyseq (v + beg, _rl_isearch_terminators, &end);
-      _rl_isearch_terminators[end] = '\0';
-      free (v);
+      *boolean_varlist[i].value = bool_to_int (value);
+      if (boolean_varlist[i].flags & V_SPECIAL)
+	hack_special_boolean_var (i);
+      return 0;
     }
-      
-  /* For the time being, unknown variable names are simply ignored. */
+
+  i = find_string_var (name);
+
+  /* For the time being, unknown variable names or string names without a
+     handler function are simply ignored. */
+  if (i < 0 || string_varlist[i].set_func == 0)
+    return 0;
+
+  v = (*string_varlist[i].set_func) (value);
+  return v;
+}
+
+static int
+sv_editmode (value)
+     const char *value;
+{
+  if (_rl_strnicmp (value, "vi", 2) == 0)
+    {
+#if defined (VI_MODE)
+      _rl_keymap = vi_insertion_keymap;
+      rl_editing_mode = vi_mode;
+#endif /* VI_MODE */
+      return 0;
+    }
+  else if (_rl_strnicmp (value, "emacs", 5) == 0)
+    {
+      _rl_keymap = emacs_standard_keymap;
+      rl_editing_mode = emacs_mode;
+      return 0;
+    }
+  return 1;
+}
+
+static int
+sv_combegin (value)
+     const char *value;
+{
+  if (value && *value)
+    {
+      FREE (_rl_comment_begin);
+      _rl_comment_begin = savestring (value);
+      return 0;
+    }
+  return 1;
+}
+
+static int
+sv_compquery (value)
+     const char *value;
+{
+  int nval = 100;
+
+  if (value && *value)
+    {
+      nval = atoi (value);
+      if (nval < 0)
+	nval = 0;
+    }
+  rl_completion_query_items = nval;
   return 0;
 }
 
+static int
+sv_keymap (value)
+     const char *value;
+{
+  Keymap kmap;
+
+  kmap = rl_get_keymap_by_name (value);
+  if (kmap)
+    {
+      rl_set_keymap (kmap);
+      return 0;
+    }
+  return 1;
+}
+
+#define _SET_BELL(v)	do { _rl_bell_preference = v; return 0; } while (0)
+
+static int
+sv_bell_style (value)
+     const char *value;
+{
+  if (value == 0 || *value == '\0')
+    _SET_BELL (AUDIBLE_BELL);
+  else if (_rl_stricmp (value, "none") == 0 || _rl_stricmp (value, "off") == 0)
+    _SET_BELL (NO_BELL);
+  else if (_rl_stricmp (value, "audible") == 0 || _rl_stricmp (value, "on") == 0)
+    _SET_BELL (AUDIBLE_BELL);
+  else if (_rl_stricmp (value, "visible") == 0)
+    _SET_BELL (VISIBLE_BELL);
+  else
+    return 1;
+}
+#undef _SET_BELL
+
+static int
+sv_isrchterm (value)
+     const char *value;
+{
+  int beg, end, delim;
+  char *v;
+
+  if (value == 0)
+    return 1;
+
+  /* Isolate the value and translate it into a character string. */
+  v = savestring (value);
+  FREE (_rl_isearch_terminators);
+  if (v[0] == '"' || v[0] == '\'')
+    {
+      delim = v[0];
+      for (beg = end = 1; v[end] && v[end] != delim; end++)
+	;
+    }
+  else
+    {
+      for (beg = end = 0; whitespace (v[end]) == 0; end++)
+	;
+    }
+
+  v[end] = '\0';
+
+  /* The value starts at v + beg.  Translate it into a character string. */
+  _rl_isearch_terminators = (unsigned char *)xmalloc (2 * strlen (v) + 1);
+  rl_translate_keyseq (v + beg, _rl_isearch_terminators, &end);
+  _rl_isearch_terminators[end] = '\0';
+
+  free (v);
+  return 0;
+}
+      
 /* Return the character which matches NAME.
    For example, `Space' returns ' '. */
 
 typedef struct {
-  char *name;
+  const char *name;
   int value;
 } assoc_list;
 
@@ -1418,7 +1539,7 @@ glean_key_from_name (name)
 
 /* Auxiliary functions to manage keymaps. */
 static struct {
-  char *name;
+  const char *name;
   Keymap map;
 } keymap_names[] = {
   { "emacs", emacs_standard_keymap },
@@ -1436,12 +1557,12 @@ static struct {
 
 Keymap
 rl_get_keymap_by_name (name)
-     char *name;
+     const char *name;
 {
   register int i;
 
   for (i = 0; keymap_names[i].name; i++)
-    if (strcmp (name, keymap_names[i].name) == 0)
+    if (_rl_stricmp (name, keymap_names[i].name) == 0)
       return (keymap_names[i].map);
   return ((Keymap) NULL);
 }
@@ -1453,7 +1574,7 @@ rl_get_keymap_name (map)
   register int i;
   for (i = 0; keymap_names[i].name; i++)
     if (map == keymap_names[i].map)
-      return (keymap_names[i].name);
+      return ((char *)keymap_names[i].name);
   return ((char *)NULL);
 }
   
@@ -1511,7 +1632,7 @@ void
 rl_list_funmap_names ()
 {
   register int i;
-  char **funmap_names;
+  const char **funmap_names;
 
   funmap_names = rl_funmap_names ();
 
@@ -1601,7 +1722,7 @@ _rl_get_keyname (key)
    sequences that are used to invoke FUNCTION in MAP. */
 char **
 rl_invoking_keyseqs_in_map (function, map)
-     Function *function;
+     rl_command_func_t *function;
      Keymap map;
 {
   register int key;
@@ -1701,7 +1822,7 @@ rl_invoking_keyseqs_in_map (function, map)
    sequences that can be used to invoke FUNCTION using the current keymap. */
 char **
 rl_invoking_keyseqs (function)
-     Function *function;
+     rl_command_func_t *function;
 {
   return (rl_invoking_keyseqs_in_map (function, _rl_keymap));
 }
@@ -1714,8 +1835,8 @@ rl_function_dumper (print_readably)
      int print_readably;
 {
   register int i;
-  char **names;
-  char *name;
+  const char **names;
+  const char *name;
 
   names = rl_funmap_names ();
 
@@ -1723,7 +1844,7 @@ rl_function_dumper (print_readably)
 
   for (i = 0; name = names[i]; i++)
     {
-      Function *function;
+      rl_command_func_t *function;
       char **invokers;
 
       function = rl_named_function (name);
@@ -1880,7 +2001,7 @@ rl_variable_dumper (print_readably)
      int print_readably;
 {
   int i;
-  char *kname;
+  const char *kname;
 
   for (i = 0; boolean_varlist[i].name; i++)
     {
@@ -1968,10 +2089,10 @@ rl_dump_variables (count, key)
 /* Bind key sequence KEYSEQ to DEFAULT_FUNC if KEYSEQ is unbound. */
 void
 _rl_bind_if_unbound (keyseq, default_func)
-     char *keyseq;
-     Function *default_func;
+     const char *keyseq;
+     rl_command_func_t *default_func;
 {
-  Function *func;
+  rl_command_func_t *func;
 
   if (keyseq)
     {
@@ -1984,7 +2105,8 @@ _rl_bind_if_unbound (keyseq, default_func)
 /* Return non-zero if any members of ARRAY are a substring in STRING. */
 static int
 substring_member_of_array (string, array)
-     char *string, **array;
+     char *string;
+     const char **array;
 {
   while (*array)
     {

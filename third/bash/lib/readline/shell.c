@@ -8,7 +8,7 @@
 
    The GNU Readline Library is free software; you can redistribute it
    and/or modify it under the terms of the GNU General Public License
-   as published by the Free Software Foundation; either version 1, or
+   as published by the Free Software Foundation; either version 2, or
    (at your option) any later version.
 
    The GNU Readline Library is distributed in the hope that it will be
@@ -19,7 +19,7 @@
    The GNU General Public License is often shipped with GNU software, and
    is generally kept in a file called COPYING or LICENSE.  If you do not
    have a copy of the license, write to the Free Software Foundation,
-   675 Mass Ave, Cambridge, MA 02139, USA. */
+   59 Temple Place, Suite 330, Boston, MA 02111 USA. */
 #define READLINE_LIBRARY
 
 #if defined (HAVE_CONFIG_H)
@@ -44,26 +44,35 @@
 #  include <strings.h>
 #endif /* !HAVE_STRING_H */
 
+#include <fcntl.h>
 #include <pwd.h>
 
+#include <stdio.h>
+
+#include "rlstdc.h"
+#include "rlshell.h"
+#include "xmalloc.h"
+
 #if !defined (HAVE_GETPW_DECLS)
-extern struct passwd *getpwuid ();
+extern struct passwd *getpwuid __P((uid_t));
 #endif /* !HAVE_GETPW_DECLS */
 
-extern char *xmalloc ();
+#ifndef NULL
+#  define NULL 0
+#endif
 
 /* All of these functions are resolved from bash if we are linking readline
    as part of bash. */
 
 /* Does shell-like quoting using single quotes. */
 char *
-single_quote (string)
+sh_single_quote (string)
      char *string;
 {
   register int c;
   char *result, *r, *s;
 
-  result = (char *)xmalloc (3 + (3 * strlen (string)));
+  result = (char *)xmalloc (3 + (4 * strlen (string)));
   r = result;
   *r++ = '\'';
 
@@ -88,7 +97,7 @@ single_quote (string)
 /* Set the environment variables LINES and COLUMNS to lines and cols,
    respectively. */
 void
-set_lines_and_columns (lines, cols)
+sh_set_lines_and_columns (lines, cols)
      int lines, cols;
 {
   char *b;
@@ -113,14 +122,14 @@ set_lines_and_columns (lines, cols)
 }
 
 char *
-get_env_value (varname)
-     char *varname;
+sh_get_env_value (varname)
+     const char *varname;
 {
   return ((char *)getenv (varname));
 }
 
 char *
-get_home_dir ()
+sh_get_home_dir ()
 {
   char *home_dir;
   struct passwd *entry;
@@ -130,4 +139,38 @@ get_home_dir ()
   if (entry)
     home_dir = entry->pw_dir;
   return (home_dir);
+}
+
+#if !defined (O_NDELAY)
+#  if defined (FNDELAY)
+#    define O_NDELAY FNDELAY
+#  endif
+#endif
+
+int
+sh_unset_nodelay_mode (fd)
+     int fd;
+{
+  int flags, bflags;
+
+  if ((flags = fcntl (fd, F_GETFL, 0)) < 0)
+    return -1;
+
+  bflags = 0;
+
+#ifdef O_NONBLOCK
+  bflags |= O_NONBLOCK;
+#endif
+
+#ifdef O_NDELAY
+  bflags |= O_NDELAY;
+#endif
+
+  if (flags & bflags)
+    {
+      flags &= ~bflags;
+      return (fcntl (fd, F_SETFL, flags));
+    }
+
+  return 0;
 }

@@ -7,7 +7,7 @@ This file is part of GNU Bash, the Bourne Again SHell.
 
 Bash is free software; you can redistribute it and/or modify it under
 the terms of the GNU General Public License as published by the Free
-Software Foundation; either version 1, or (at your option) any later
+Software Foundation; either version 2, or (at your option) any later
 version.
 
 Bash is distributed in the hope that it will be useful, but WITHOUT ANY
@@ -17,7 +17,7 @@ for more details.
 
 You should have received a copy of the GNU General Public License along
 with Bash; see the file COPYING.  If not, write to the Free Software
-Foundation, 675 Mass Ave, Cambridge, MA 02139, USA. */
+Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. */
 
 #include <config.h>
 
@@ -33,8 +33,8 @@ Foundation, 675 Mass Ave, Cambridge, MA 02139, USA. */
 #include <sys/file.h>
 #endif
 
-#include "../posixstat.h"
-#include "../filecntl.h"
+#include "posixstat.h"
+#include "filecntl.h"
 
 #include "../bashansi.h"
 #include <stdio.h>
@@ -205,7 +205,7 @@ main (argc, argv)
 #if !defined (OLDCODE)
       else if (strcmp (arg, "-nodocument") == 0)
 	no_long_document = 1;
-#endif /* !OLDCODE */        
+#endif /* !OLDCODE */	
       else
 	{
 	  fprintf (stderr, "%s: Unknown flag %s.\n", argv[0], arg);
@@ -614,10 +614,10 @@ free_defs (defs)
   if (defs->builtins)
     {
       for (i = 0; builtin = (BUILTIN_DESC *)defs->builtins->array[i]; i++)
-        {
+	{
 	  free_builtin (builtin);
 	  free (builtin);
-        }
+	}
       array_free (defs->builtins);
     }
   free (defs);
@@ -990,9 +990,9 @@ copy_builtin (builtin)
 
   new = (BUILTIN_DESC *)xmalloc (sizeof (BUILTIN_DESC));
 
-  new->name         = savestring (builtin->name);
-  new->shortdoc     = savestring (builtin->shortdoc);
-  new->longdoc      = copy_string_array (builtin->longdoc);
+  new->name = savestring (builtin->name);
+  new->shortdoc = savestring (builtin->shortdoc);
+  new->longdoc = copy_string_array (builtin->longdoc);
   new->dependencies = copy_string_array (builtin->dependencies);
 
   new->function =
@@ -1036,7 +1036,7 @@ char *structfile_header[] = {
   "",
   "   Bash is free software; you can redistribute it and/or modify it",
   "   under the terms of the GNU General Public License as published by",
-  "   the Free Software Foundation; either version 1, or (at your option)",
+  "   the Free Software Foundation; either version 2, or (at your option)",
   "   any later version.",
   "",
   "   Bash is distributed in the hope that it will be useful, but WITHOUT",
@@ -1046,7 +1046,7 @@ char *structfile_header[] = {
   "",
   "   You should have received a copy of the GNU General Public License",
   "   along with Bash; see the file COPYING.  If not, write to the Free",
-  "   Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA. */",
+  "   Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. */",
   "",
   "/* The list of shell builtins.  Each element is name, function, flags,",
   "   long-doc, short-doc.  The long-doc field contains a pointer to an array",
@@ -1151,7 +1151,7 @@ write_builtins (defs, structfile, externfile)
 			     builtin->function);
 
 		  fprintf (externfile, "extern char *%s_doc[];\n",
-			   builtin->docname ?builtin->docname : builtin->name);
+			   builtin->docname ? builtin->docname : builtin->name);
 		}
 
 	      /* Write the structure definition. */

@@ -8,6 +8,25 @@
  * Chet Ramey
  * chet@ins.cwru.edu
  */
+
+/* Copyright (C) 1997 Free Software Foundation, Inc.
+
+   This file is part of GNU Bash, the Bourne Again SHell.
+
+   Bash is free software; you can redistribute it and/or modify it under
+   the terms of the GNU General Public License as published by the Free
+   Software Foundation; either version 2, or (at your option) any later
+   version.
+
+   Bash is distributed in the hope that it will be useful, but WITHOUT ANY
+   WARRANTY; without even the implied warranty of MERCHANTABILITY or
+   FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+   for more details.
+
+   You should have received a copy of the GNU General Public License along
+   with Bash; see the file COPYING.  If not, write to the Free Software
+   Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. */
+
 #include "config.h"
 
 #if defined (ARRAY_VARS)
@@ -345,7 +364,7 @@ ARRAY	*a;
 
 	for (ae = element_forw(a->head); ae != a->head; ae = element_forw(ae)) {
 		indstr = itos (element_index(ae));
-		valstr = element_value (ae) ? double_quote (element_value(ae))
+		valstr = element_value (ae) ? sh_double_quote (element_value(ae))
 					    : (char *)NULL;
 		elen = STRLEN (indstr) + 8 + STRLEN (valstr);
 		RESIZE_MALLOCED_BUFFER (result, rlen, (elen + 1), rsize, rsize);
@@ -382,7 +401,7 @@ ARRAY	*a;
 	if (sv == 0)
 		return ((char *)NULL);
 
-	vstr = single_quote (sv);
+	vstr = sh_single_quote (sv);
 	free (sv);
 	return (vstr);
 }
@@ -441,6 +460,26 @@ ARRAY	*a;
 	return (REVERSE_LIST(list, WORD_LIST *));
 }
 
+char **
+array_to_argv (a)
+ARRAY	*a;
+{
+	char		**ret, *t;
+	int		i;
+	ARRAY_ELEMENT	*ae;
+
+	if (a == 0 || array_empty(a))
+		return ((char **)NULL);
+	ret = alloc_array (array_num_elements (a) + 1);
+	i = 0;
+	for (ae = element_forw(a->head); ae != a->head; ae = element_forw(ae)) {
+		t = element_value (ae);
+		ret[i++] = t ? savestring (t) : (char *)NULL;
+	}
+	ret[i] = (char *)NULL;
+	return (ret);
+}
+	
 ARRAY *
 assign_word_list (array, list)
 ARRAY	*array;
