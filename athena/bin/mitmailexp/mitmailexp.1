@@ -1,0 +1,44 @@
+.\" 
+.\" $Id: mitmailexp.1,v 1.1 2004-01-21 23:17:19 rbasch Exp $
+.\"
+.TH MITMAILEXP 1 
+.SH NAME
+mitmailexp \- expunge deleted messages from an IMAP folder
+.SH SYNOPSIS
+.B mitmailexp
+[
+.B \--debug
+] [
+.B \--help
+] [
+.B \--host
+.I name
+] [
+.B \--mailbox
+.I name
+]
+.SH DESCRIPTION
+The 
+.I mitmailexp
+program 
+expunges all of the messages which have been marked for deletion from
+a mailbox on an IMAP server.
+.SH OPTIONS
+.I mitmailexp
+understands the following options:
+.TP
+.B \--debug
+turn on debugging.
+.TP
+.B \--help
+display usage information and exit.
+.TP
+.B \--host \fIname\fR
+query the given host, instead of the default post office server.
+.TP
+.B \--mailbox \fIname\fR
+expunge deleted messages from the IMAP folder \fIname\fR.  If this
+option is not specified, messages in the INBOX folder are expunged.
+.SH "SEE ALSO"
+mitmaildel(1), mitmailscan(1), mitmailshow(1),
+imtest(1), RFC\-2060 (Internet Message Access Protocol - Version 4rev1)
