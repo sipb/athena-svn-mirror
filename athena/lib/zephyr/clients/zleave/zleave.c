@@ -4,7 +4,7 @@
  *      Created by:     David Jedlinsky
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zleave/zleave.c,v $
- *      $Author: lwvanels $
+ *      $Author: probe $
  *
  *      Copyright (c) 1987,1988 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -16,7 +16,7 @@
 #include <zephyr/zephyr.h>
 
 #ifndef lint
-static char rcsid_zlocate_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zleave/zleave.c,v 1.18 1992-08-20 18:53:08 lwvanels Exp $";
+static char rcsid_zlocate_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zleave/zleave.c,v 1.19 1993-09-24 16:31:06 probe Exp $";
 #endif /* lint */
 
 /*
@@ -319,7 +319,7 @@ char *msg;
 	    }
 	    sprintf(real_message,"%c%s\n%s",'\0',msg,reminder_message);
 
-	    (void) bzero((char *)&notice, sizeof(notice));
+	    (void) _BZERO((char *)&notice, sizeof(notice));
 	    notice.z_kind = ACKED;
 	    notice.z_port = 0;
 	    notice.z_class = MESSAGE_CLASS;
