@@ -1,14 +1,18 @@
 /*
  *   Disk quota reporting program.
  *
- *   $Id: quota.c,v 1.20 1992-07-23 14:52:00 miki Exp $
+ *   $Id: quota.c,v 1.21 1993-07-25 01:26:09 probe Exp $
  */
 
+#ifdef POSIX
+#include <unistd.h>
+#endif
 #include <stdio.h>
 #include <sys/types.h>
 #include <ctype.h>
 #include <errno.h>
 #include <sys/param.h>
+#include <fcntl.h>
 #include <sys/file.h>
 #include <sys/time.h>
 #include <pwd.h>
@@ -28,6 +32,10 @@
 
 #else /* !_IBMR2 */
 
+#if defined(SOLARIS)
+/* Sorry, we do not yet support UFS for Solaris */
+#else
+
 #if defined(ultrix) || defined(_I386)
 #include <sys/stat.h>
 #include <sys/quota.h>
@@ -45,6 +53,7 @@ struct fs_data mountbuffer[NMOUNT];
 #include <mntent.h>
 #endif
 
+#endif /* !SOLARIS */
 #endif /* !_IBMR2 */
 
 #ifdef ultrix
@@ -300,6 +309,10 @@ showquotas(id,name)
 	}
     }
 
+#if defined(SOLARIS)
+    /* Don't bother with NFS/UFS yet */
+#else
+    
 #ifdef _IBMR2
     mntsize = 4096;
     if ((mntbuf = (char *)malloc(mntsize)) == NULL) {
@@ -445,6 +458,7 @@ showquotas(id,name)
 #endif
 
 #endif /* !_IBMR2 */
+#endif /* !SOLARIS */
   
     /* Check afs volumes */
     for(p = attachtab_first; p!=NULL; p=p->next) {
@@ -885,7 +899,7 @@ alldigits(s)
     return (1);
 }
 
-#if !defined(ultrix) && !defined(_I386) && !defined(_IBMR2)
+#if !defined(ultrix) && !defined(_I386) && !defined(_IBMR2) && !defined(SOLARIS)
 dqblk2rcquota(dqblkp, rcquotap, uid)
     struct dqblk *dqblkp;
     struct rcquota *rcquotap;
@@ -972,6 +986,11 @@ fmttime(buf, time)
     sprintf(buf, "%.1f %s", (double)time/cunits[i].c_secs, cunits[i].c_str);
 }
 
+#ifdef SOLARIS
+verify_filesystems()
+{
+}
+#else
 #ifdef _IBMR2
 verify_filesystems()
 {
@@ -1082,6 +1101,7 @@ verify_filesystems()
     }
 }
 #endif /* IBMR2 */
+#endif /* SOLARIS */
 
 #if defined(_I386) || defined(ultrix)
 ultprintquotas(uid, name)
