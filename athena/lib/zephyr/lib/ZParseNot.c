@@ -10,7 +10,7 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZParseNot.c,v 1.2 1987-06-12 16:59:08 rfrench Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZParseNot.c,v 1.3 1987-06-13 16:25:56 rfrench Exp $ */
 
 #include <zephyr/mit-copyright.h>
 
@@ -23,7 +23,6 @@ Code_t ZParseNotice(buffer,len,notice,auth)
 	int		*auth;
 {
 	char *ptr;
-	int i;
 	unsigned int temp[3];
 
 	ptr = buffer;

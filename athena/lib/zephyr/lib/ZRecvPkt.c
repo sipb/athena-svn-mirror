@@ -10,7 +10,7 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZRecvPkt.c,v 1.2 1987-06-12 16:59:18 rfrench Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZRecvPkt.c,v 1.3 1987-06-13 16:26:42 rfrench Exp $ */
 
 #include <zephyr/mit-copyright.h>
 
@@ -25,7 +25,6 @@ Code_t ZReceivePacket(buffer,buffer_len,ret_len)
 	int		*ret_len;
 {
 	int retval;
-	struct _Z_InputQ *old_head;
 	
 	if (ZGetFD() < 0)
 		return (ZERR_NOPORT);
