@@ -117,7 +117,7 @@ retry:
 	s = rresvport(&lport);
 	if (s < 0)
 		return(-1);
-	if (connect(s, (caddr_t)&sin, sizeof(sin), 0) < 0) {
+	if (connect(s, (caddr_t)&sin, sizeof(sin)) < 0) {
 		err = errno;
 		(void) close(s);
 		errno = err;

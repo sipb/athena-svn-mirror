@@ -63,7 +63,7 @@ char *rhost;
     }
     retries = 0;
     while (1) {
-        if (connect(s, (caddr_t)&sin, sizeof(sin), 0) < 0) {
+        if (connect(s, (caddr_t)&sin, sizeof(sin)) < 0) {
             err = errno;
             close(s);
 	    retries = (retries > 5) ? 6 : retries+1;
