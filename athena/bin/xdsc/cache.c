@@ -18,7 +18,7 @@
 
 #define		NUM_CACHED_FILES	5
 
-static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/xdsc/cache.c,v 1.5 1991-02-11 16:15:59 sao Exp $";
+static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/xdsc/cache.c,v 1.6 1991-02-15 13:36:16 sao Exp $";
 
 extern char	*RunCommand();
 extern EntryRec		toplevelbuttons[2][MAX_BUTTONS];
@@ -130,11 +130,13 @@ Boolean	update;
 
 	CacheSurroundingTransactions();
 
-	if ( next > last || current > last)
-		(void) SetUpTransactionNumbers();
-
 	if ( current >  highestseen)
 		highestseen = current;
+
+	if ( next > last || current > last) {
+		MarkLastRead();
+		(void) SetUpTransactionNumbers();
+	}
 
 	if (highestseen == last && topscreen == MAIN)
 		RemoveLetterC();
@@ -309,6 +311,9 @@ SetUpTransactionNumbers()
 		fprintf (stderr, "first is %d, last is %d\n",first, last);
 	}
 
+/*
+** I don't think the following line should be here.
+*/
 	GoToTransaction (highestseen, False);
 
 	return (highestseen);
