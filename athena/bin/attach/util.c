@@ -6,12 +6,14 @@
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  */
 
-static char *rcsid_util_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/util.c,v 1.16 1992-01-06 15:56:32 probe Exp $";
+static char *rcsid_util_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/util.c,v 1.17 1992-07-31 13:25:49 probe Exp $";
 
 #include "attach.h"
 
 #include <sys/stat.h>
+#include <fcntl.h>
 #include <pwd.h>
+#include <grp.h>
 #include <signal.h>
 #ifdef HESIOD
 #include <hesiod.h>
@@ -41,7 +43,12 @@ static missarg();
 
 int		caught_signal = 0;
 static int	in_critical_code_p = 0;
+
+#ifdef POSIX
+static sigset_t	osigmask;
+#else
 static int	osigmask;
+#endif
 
 /*
  * Signal handler for SIGTERM & SIGINT
@@ -60,8 +67,20 @@ sig_catch sig_trap()
  */
 start_critical_code()
 {
+#ifdef POSIX
+    sigset_t sigmask;
+
+    sigemptyset(&sigmask);
+    sigaddset(&sigmask, SIGTSTP);
+    sigaddset(&sigmask, SIGTTIN);
+    sigaddset(&sigmask, SIGTTOU);
+
+    if (in_critical_code_p++ == 0)
+	sigprocmask(SIG_BLOCK, &sigmask, &osigmask);
+#else
     if (in_critical_code_p++ == 0)
 	osigmask=sigblock(sigmask(SIGTSTP)|sigmask(SIGTTIN)|sigmask(SIGTTOU));
+#endif
 }
 
 /*
@@ -72,7 +91,11 @@ end_critical_code()
     if (--in_critical_code_p == 0) {
 	if (caught_signal)
 	    terminate_program();
+#ifdef POSIX
+	sigprocmask(SIG_SETMASK, &osigmask, (sigset_t *)0);
+#else
 	sigsetmask(osigmask);
+#endif
     }
 }
 
@@ -98,6 +121,9 @@ static int mtab_lock_fd = -1;
 lock_mtab()
 {
 	char	*lockfn;
+#ifdef POSIX
+	struct flock fl;
+#endif
 	
 	if (mtab_lock_fd < 0) {
 		if (!(lockfn = malloc(strlen(mtab_fn)+6))) {
@@ -107,15 +133,24 @@ lock_mtab()
 		}
 		(void) strcpy(lockfn, mtab_fn);
 		(void) strcat(lockfn, ".lock");
-		mtab_lock_fd = open(lockfn, O_CREAT, 0644);
+		mtab_lock_fd = open(lockfn, O_CREAT|O_RDWR, 0644);
 		if (mtab_lock_fd < 0) {
 			fprintf(stderr,"Can't open %s: %s\n", lockfn,
 				sys_errlist[errno]);
 			fprintf(stderr, abort_msg);
 			exit(ERR_FATAL);
 		}
-	} 
+	}
+#ifdef POSIX
+	fl.l_type = F_WRLCK;
+	fl.l_whence = SEEK_SET;
+	fl.l_start = 0;
+	fl.l_len = 0;
+	fl.l_pid = getpid();
+	fcntl(mtab_lock_fd, F_SETLKW, &fl);
+#else
 	flock(mtab_lock_fd, LOCK_EX);
+#endif
 }
 
 /*
@@ -404,6 +439,9 @@ int really_in_use(name)
 {
     int fd, ret;
     char filename[BUFSIZ];
+#ifdef POSIX
+    struct flock fl;
+#endif
 
     make_temp_name(filename, name);
 
@@ -414,7 +452,16 @@ int really_in_use(name)
     if (!fd)
 	return (0);
 
+#ifdef POSIX
+    fl.l_type = F_WRLCK;
+    fl.l_whence = SEEK_SET;
+    fl.l_start = 0;
+    fl.l_len = 0;
+    fl.l_pid = getpid();
+    ret = (fcntl(fd, F_SETLK, &fl)==-1 && errno == EAGAIN);
+#else
     ret = (flock(fd, LOCK_EX | LOCK_NB) == -1 && errno == EWOULDBLOCK);
+#endif
 
     close(fd);
     return (ret);
@@ -429,6 +476,9 @@ void mark_in_use(name)
 {
     static int fd;
     static char filename[BUFSIZ];
+#ifdef POSIX
+    struct flock fl;
+#endif
 
     if (!name) {
 	if (debug_flag)
@@ -448,7 +498,7 @@ void mark_in_use(name)
      * it...we'll override them with our new file.
      */
     unlink(filename);
-    fd = open(filename, O_CREAT, 0644);
+    fd = open(filename, O_CREAT|O_RDWR, 0644);
     if (!fd) {
 	    fprintf(stderr,"Can't open %s: %s\n", filename,
 		    sys_errlist[errno]);
@@ -459,7 +509,16 @@ void mark_in_use(name)
     if (debug_flag)
 	    printf("%d\n", fd);
 
+#ifdef POSIX
+    fl.l_type = F_WRLCK;
+    fl.l_whence = SEEK_SET;
+    fl.l_start = 0;
+    fl.l_len = 0;
+    fl.l_pid = getpid();
+    fcntl(fd, F_SETLKW, &fl);
+#else
     flock(fd, LOCK_EX);
+#endif
 }
 
 #ifdef DEBUG
@@ -999,10 +1058,28 @@ int parse_username(s)
 }
 
 
+int parse_groupname(s)
+	const char *s;
+{
+	struct group *gr;
+       
+	gr = getgrnam((char *)s);
+	if (gr)
+		return(gr->gr_gid);
+	else {
+		if (*s == '#')
+			s++;
+		if (isdigit(*s))
+			return(atoi(s));
+		fprintf(stderr, "Can't parse groupname/gid string: %s\n", s);
+		exit(1);
+		/* NOTREACHED */
+	}
+}
+
+
 char *errstr(e)
-
-int e;
-
+    int e;
 {
   if(e < sys_nerr)
     return sys_errlist[e];
