@@ -1,22 +1,23 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# gnome-themes korean translation
+# Copyright (C) 2002 THE gnome-themes'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the gnome-themes package.
+# Young-Ho, Cha <ganadist@mizi.com>, 2002
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gnome-themes 1.0\n"
-"POT-Creation-Date: 2003-02-03 12:59-0800\n"
-"PO-Revision-Date: 2003-01-25 14:46+0900\n"
-"Last-Translator: Young-Ho, Cha <ganadist@chollian.net>\n"
-"Language-Team: GTP Korean <gnome-kr-translation@gnome.or.kr>\n"
+"Project-Id-Version: gnome-themes 2.5.3\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-09-13 13:42+0100\n"
+"PO-Revision-Date: 2004-08-22 03:50+0900\n"
+"Last-Translator: Young-Ho, Cha <ganadist@mizi.com>\n"
+"Language-Team: GNOME Korea <gnome-kr-hackers@lists.kldp.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #: HighContrast/index.theme.in.h:1
 msgid "Black-on-white text and icons"
-msgstr "검은 바탕에 흰 글씨와 아이콘"
+msgstr "흰 바탕에 검은 글씨와 아이콘"
 
 #: HighContrast/index.theme.in.h:2
 msgid "High Contrast"
@@ -28,10 +29,10 @@ msgstr "고대비 역상"
 
 #: HighContrastInverse/index.theme.in.h:2
 msgid "White-on-black text and icons"
-msgstr "흰 바탕에 검은 글씨와 아이콘"
+msgstr "검은 바탕에 흰 글씨와 아이콘"
 
 #: HighContrastLargePrint/index.theme.in.in.h:1
-msgid "High Contrast Large"
+msgid "High Contrast Large Print"
 msgstr "고대비 확대"
 
 #: HighContrastLargePrint/index.theme.in.in.h:2
@@ -78,14 +79,21 @@ msgstr "남십자성"
 msgid "Smooth gradients with teal highlights"
 msgstr "부드럽게 점점 밝아지는 검둥오리색"
 
+#: desktop-themes/Glider/index.theme.in.h:1
+msgid "Glider"
+msgstr "글라이더"
+
+#: desktop-themes/Glider/index.theme.in.h:2
+msgid "Simple, smooth and aesthetically pleasing"
+msgstr "간단, 부드러움 그리고 미적으로 만족스러움"
+
 #: desktop-themes/Grand-Canyon/index.theme.in.h:1
-#, fuzzy
 msgid "Dusty orange appearance"
-msgstr "부드럽고 잔잔한 모양새"
+msgstr "먼지투성이 오렌지색 모양새"
 
 #: desktop-themes/Grand-Canyon/index.theme.in.h:2
 msgid "Grand Canyon"
-msgstr ""
+msgstr "대협곡"
 
 #: desktop-themes/Mist/index.theme.in.h:1
 msgid "A minimalistic appearance"
@@ -105,7 +113,7 @@ msgstr "바닷가의 빛깔"
 
 #: desktop-themes/Simple/index.theme.in.h:1
 msgid "Simple"
-msgstr ""
+msgstr "간단"
 
 #: desktop-themes/Simple/index.theme.in.h:2
 msgid "Thin appearance, high performance"
@@ -121,7 +129,7 @@ msgstr "푸르스름"
 
 #: desktop-themes/Traditional/index.theme.in.h:1
 msgid "Traditional"
-msgstr ""
+msgstr "기본"
 
 #: desktop-themes/Traditional/index.theme.in.h:2
 msgid "Traditional hard-edged 3D appearance"
@@ -142,15 +150,3 @@ msgstr "푸르스름"
 #: icon-themes/Smokey-Red/index.theme.in.h:1
 msgid "Smokey-Red"
 msgstr "붉으스름"
-
-#~ msgid "Default"
-#~ msgstr "기본 테마"
-
-#~ msgid "Plain"
-#~ msgstr "단순"
-
-#~ msgid "Default Gnome Theme"
-#~ msgstr "기본 그놈 테마"
-
-#~ msgid "Gnome"
-#~ msgstr "그놈"

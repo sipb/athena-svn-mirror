@@ -1,3 +1,48 @@
+2004-08-18  Calum Benson  <calum.benson@sun.com>
+
+	Fix issues reported by sparse/gcc (Kjartan Maraas, bug #150348)
+
+	* src/crux-draw.c: (install_focus_hooks), (paint_background_area),
+	(paint_stock_image), (draw_shadow):
+	* src/crux-pixmaps.c: (prepend_to_age_list), (prepend_to_image),
+	(pixmap_cache_set), (pixmap_cache_flush_image), (load_image),
+	(eazel_engine_image_get_pixbuf):
+	* src/crux-rc-parser.c: (read_line_from_file),
+	(parse_gradient_assign), (crux_parse_rc_style):
+
+2004-08-06  Calum Benson  <calum.benson@sun.com>
+
+	reviewed by: <delete if not using a buddy>
+
+	* Makefile.am:
+
+Mon Mar  8 17:09:41 2004  Jonathan Blandford  <jrb@redhat.com>
+
+	* src/crux-draw.c (draw_extension): Language Lawyer patch from
+	Jeff Law: "A compound statement must end with a statement, even if
+	it's an empty statement."
+
+2004-02-12  Dan Williams <dcbw@redhat.com
+
+	* src/crux-draw.c
+
+	Correct drawing of focus around buttons,
+	as it was off by 1 pixel on bottom and right.
+	Also fix some assumptions that Crux is
+	drawing into a window (it could be a pixmap).
+
+2003-09-17  Seth Nickell  <seth@gnome.org>
+
+	* src/Makefile.am:
+
+	Don't build test.
+
+2003-05-09  Calum Benson  <calum.benson@sun.com>
+
+	* src/crux-draw.c: (paint_bullet):
+
+	Patch from Filip Van Raemdonck, fixes #105315.
+
 2003-01-20  Seth Nickell  <snickell@stanford.edu>
 
 	* Makefile.am:

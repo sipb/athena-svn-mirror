@@ -525,7 +525,7 @@ static void draw_flat_box (GtkStyle *style,
 			&& ( (GTK_IS_MENU (gtk_bin_get_child (GTK_BIN (widget)))) 
 				|| (GTK_IS_LABEL (gtk_bin_get_child (GTK_BIN (widget)))) ))
 		{
-			gtk_signal_connect (GTK_OBJECT (widget), "configure_event", (GtkSignalFunc) theme_on_configure, NULL);
+			g_signal_connect (GTK_OBJECT (widget), "configure_event", (GtkSignalFunc) theme_on_configure, NULL);
 			parent_class->draw_flat_box (style, window, state_type, shadow_type, area, widget, detail, x, y, width, height);
 
 			return;

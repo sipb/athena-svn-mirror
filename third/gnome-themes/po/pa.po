@@ -1,0 +1,158 @@
+# translation of pa.po to Punjabi
+# KBST Punjab translation of punlinux.
+# Copyright (C) 2004 THE punlinux'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the punlinux package.
+# jaswinder singh <jaswindersinghra@yahoo.com>, 2004.
+# Amanpreet Singh Alam <aalam@redhat.com>, 2004.
+#
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: pa\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-09-13 13:42+0100\n"
+"PO-Revision-Date: 2004-08-21 16:13+0530\n"
+"Last-Translator: Amanpreet Singh Alam <aalam@redhat.com>\n"
+"Language-Team: Punjabi <fedora-trans-pa@redhat.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.3.1\n"
+"Plural-Forms: Plural-Forms: Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"\n"
+
+#: HighContrast/index.theme.in.h:1
+msgid "Black-on-white text and icons"
+msgstr "ਚਿਟੇ ਉਪਰ ਕਾਲੇ ਪਾਠ ਅਤੇ ਆਈਕਾਨ"
+
+#: HighContrast/index.theme.in.h:2
+msgid "High Contrast"
+msgstr "ਵਧ ਤਣਾਓ"
+
+#: HighContrastInverse/index.theme.in.h:1
+msgid "High Contrast Inverse"
+msgstr "ਉਲਟਾ ਵਧ ਤਣਾਓ"
+
+#: HighContrastInverse/index.theme.in.h:2
+msgid "White-on-black text and icons"
+msgstr "ਕਾਲੇ ਉਪਰ ਚਿਟੇ ਪਾਠ ਅਤੇ ਆਈਕਾਨ"
+
+#: HighContrastLargePrint/index.theme.in.in.h:1
+msgid "High Contrast Large Print"
+msgstr "ਵਧ ਤਣਾਓ ਵਡਾ ਛਾਪਾ"
+
+#: HighContrastLargePrint/index.theme.in.in.h:2
+msgid "Large black-on-white text and icons"
+msgstr "ਚਿਟੇ ਉਪਰ ਕਾਲੇ ਵਡੇ ਪਾਠ ਅਤੇ ਆਈਕਾਨ"
+
+#: HighContrastLargePrintInverse/index.theme.in.in.h:1
+msgid "High Contrast Large Print Inverse"
+msgstr "ਵਧ ਤਣਾਓ ਉਲਟਾ ਵਡਾ ਛਾਪਾ "
+
+#: HighContrastLargePrintInverse/index.theme.in.in.h:2
+msgid "Large white-on-black text and icons"
+msgstr "ਕਾਲੇ ਉਪਰ ਚਿਟੇ ਵਡੇ ਪਾਠ ਅਤੇ ਆਈਕਾਨ"
+
+#: LargePrint/index.theme.in.in.h:1
+msgid "Large Print"
+msgstr "ਵਡਾ ਛਾਪਾ"
+
+#: LargePrint/index.theme.in.in.h:2
+msgid "Large text and icons"
+msgstr "ਵਡੇ ਪਾਠ ਅਤੇ ਆਈਕਾਨ"
+
+#: LowContrast/index.theme.in.h:1
+msgid "Low Contrast"
+msgstr "ਘਟ ਤਣਾਓ"
+
+#: LowContrast/index.theme.in.h:2
+msgid "Muted text and icons"
+msgstr "ਤਬਦੀਲ ਪਾਠ ਅਤੇ ਆਈਕਾਨ"
+
+#: LowContrastLargePrint/index.theme.in.in.h:1
+msgid "Large muted text and icons"
+msgstr "ਵਡੇ ਤਬਦੀਲ ਪਾਠ ਅਤੇ ਆਈਕਾਨ"
+
+#: LowContrastLargePrint/index.theme.in.in.h:2
+msgid "Low Contrast Large Print"
+msgstr "ਘਟ ਤਣਾਓ ਵਡਾ ਛਾਪਾ"
+
+#: desktop-themes/Crux/index.theme.in.h:1 icon-themes/Crux/index.theme.in.h:1
+msgid "Crux"
+msgstr "ਮੂਲ ਪ੍ਰਸ਼ਨ"
+
+#: desktop-themes/Crux/index.theme.in.h:2
+msgid "Smooth gradients with teal highlights"
+msgstr "teal highlights ਨਾਲ ਮੁਲਾਇਮ ਢਾਲ ਦਾ ਦਰਜਾ"
+
+#: desktop-themes/Glider/index.theme.in.h:1
+msgid "Glider"
+msgstr "ਗਲਾਇਡਰ"
+
+#: desktop-themes/Glider/index.theme.in.h:2
+msgid "Simple, smooth and aesthetically pleasing"
+msgstr "ਸਧਾਰਨ, ਹਲਕਾ ਅਤੇ ਸਹਿਜ ਖੁਸ਼ਨੁਮਾ"
+
+#: desktop-themes/Grand-Canyon/index.theme.in.h:1
+msgid "Dusty orange appearance"
+msgstr "ਮਿਟੀ ਵਰਗੀ ਸੰਤਰੀ ਦਿਖ"
+
+#: desktop-themes/Grand-Canyon/index.theme.in.h:2
+msgid "Grand Canyon"
+msgstr "ਮੁਖ ਘਾਟੀ"
+
+#: desktop-themes/Mist/index.theme.in.h:1
+msgid "A minimalistic appearance"
+msgstr "ਇਕ minimalistic ਦਿਖ"
+
+#: desktop-themes/Mist/index.theme.in.h:2
+msgid "Mist"
+msgstr "ਧੁੰਦਲਾ"
+
+#: desktop-themes/Ocean-Dream/index.theme.in.h:1
+msgid "Ocean Dream"
+msgstr "ਮਹਾਂਸਾਗਰੀ ਅਨੁਭਵ"
+
+#: desktop-themes/Ocean-Dream/index.theme.in.h:2
+msgid "The colours of the seashore"
+msgstr "seashore ਦੇ ਰੰਗ"
+
+#: desktop-themes/Simple/index.theme.in.h:1
+msgid "Simple"
+msgstr "ਸਾਧਾਰਣ"
+
+#: desktop-themes/Simple/index.theme.in.h:2
+msgid "Thin appearance, high performance"
+msgstr "ਪਤਲੀ ਦਿਖ,ਵਧੀਆ ਪੇਸ਼ਗੀ"
+
+#: desktop-themes/Smokey-Blue/index.theme.in.h:1
+msgid "A soft glassy appearance"
+msgstr "ਕੋਮਲ ਚਮਕੀਲੀ ਦਿਖ"
+
+#: desktop-themes/Smokey-Blue/index.theme.in.h:2
+msgid "Smokey Blue"
+msgstr "ਧੂੰਏ ਵਰਗਾ ਨੀਲਾ"
+
+#: desktop-themes/Traditional/index.theme.in.h:1
+msgid "Traditional"
+msgstr "ਰਵਾਇਤੀ"
+
+#: desktop-themes/Traditional/index.theme.in.h:2
+msgid "Traditional hard-edged 3D appearance"
+msgstr "ਸਖ਼ਤ ਕਿਨਾਰਿਆਂ ਵਾਲੀ ਰਵਾਇਤੀ 3D ਦਿਖ"
+
+#: icon-themes/Flat-Blue/index.theme.in.h:1
+msgid "Flat-Blue"
+msgstr "ਫਿਕਾ ਨੀਲਾ"
+
+#: icon-themes/Sandy/index.theme.in.h:1
+msgid "Sandy"
+msgstr "ਰੇਤਲਾ"
+
+#: icon-themes/Smokey-Blue/index.theme.in.h:1
+msgid "Smokey-Blue"
+msgstr "ਧੂੰਏ ਵਰਗਾ ਨੀਲਾ"
+
+#: icon-themes/Smokey-Red/index.theme.in.h:1
+msgid "Smokey-Red"
+msgstr "ਧੂੰਏ ਵਰਗਾ ਲਾਲ"

@@ -12,6 +12,11 @@ pixmap_path "@prefix@/share/themes/HighContrastLargePrint/pixmaps"
 
 style "default"
 {
+  engine "hcengine" {}
+
+# For Java Desktop System
+  PanelMenu::stripe-gradient-top = "#000000"
+  PanelMenu::stripe-gradient-bottom = "#000000"
 
   GtkWidget::focus-line-pattern = "\2\1"
   GtkWidget::focus-line-width = 1
@@ -20,13 +25,16 @@ style "default"
   GtkWidget::focus-padding = 0
   GtkEntry::cursor_color    = "#cc0000"
   GtkTextView::cursor_color    = "#cc0000"
+  EelEditableLabel::cursor_color    = "#cc0000"
   GtkTextView::cursor_aspect_ratio = 0.1
   GtkEntry::cursor_aspect_ratio = 0.1
+  EelEditableLabel::cursor_aspect_ratio = 0.1
+  NautilusIconContainer::frame_text = 1
 
-  fg[NORMAL]      = "black"
-  text[NORMAL]      = "black"
-  bg[NORMAL]      = "white"
-  base[NORMAL]    = "white"
+  fg[NORMAL]      = "#000000"
+  text[NORMAL]      = "#000000"
+  bg[NORMAL]      = "#ffffff"
+  base[NORMAL]    = "#ffffff"
 
   fg[INSENSITIVE]      = "#999999"
   text[INSENSITIVE]    = "#999999"
@@ -35,17 +43,17 @@ style "default"
 
   fg[PRELIGHT]    = "#ccccff"
   text[PRELIGHT]    = "#ccccff"
-  bg[PRELIGHT]    = "black"
-  base[PRELIGHT]    = "black"
+  bg[PRELIGHT]    = "#000000"
+  base[PRELIGHT]    = "#000000"
 
-  fg[ACTIVE]      = "black"
-  text[ACTIVE]      = "black"
-  bg[ACTIVE]      = { 0.72, 0.72, 0.57 }
-  base[ACTIVE]      = { 0.72, 0.72, 0.57 }
+  fg[ACTIVE]      = "#000000"
+  text[ACTIVE]      = "#000000"
+  bg[ACTIVE]      =  "#b8b891"
+  base[ACTIVE]      =  "#b8b891"
 
-  fg[SELECTED]    = "white"
-  text[SELECTED]    = "white"
-  bg[SELECTED]    = "black"
+  fg[SELECTED]    = "#ffffff"
+  text[SELECTED]    = "#ffffff"
+  bg[SELECTED]    = "#000000"
   base[SELECTED]    = "#333300"
 
 

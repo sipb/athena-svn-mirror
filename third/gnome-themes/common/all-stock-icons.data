@@ -50,7 +50,7 @@ pixmap_DATA=	stock_about.png stock_add.png stock_apply.png \
 		stock_panel_hide_left.png stock_panel_hide_right.png \
 		media-prev.png media-next.png \
                 media-stop.png media-eject.png \
-                media-play.png media-pause.png \
+                media-play.png media-pause.png media-record.png \
                 media-backward.png media-forward.png \
 		media-backward.png media-forward.png \
 		volume-mute.png volume-zero.png \
@@ -58,5 +58,7 @@ pixmap_DATA=	stock_about.png stock_add.png stock_apply.png \
 		double-click-on.png double-click-off.png double-click-maybe.png \
 		printer-default.png printer-broken.png printer-inkjet.png \
 		printer-personal-laser.png printer-workgroup-laser.png \
+		metacity-minimize.png metacity-maximize.png \
+		metacity-delete.png \
 		$(NULL)
 

@@ -3,7 +3,7 @@ AC_INIT(LargePrint)
 
 AM_CONFIG_HEADER(config.h)
 
-AM_INIT_AUTOMAKE(gnome-themes, 2.2)
+AM_INIT_AUTOMAKE(gnome-themes, 2.8.0)
 
 # Honor aclocal flags
 ACLOCAL="$ACLOCAL $ACLOCAL_FLAGS"
@@ -22,9 +22,7 @@ AM_PROG_LIBTOOL
 PKG_CHECK_MODULES(GTKTHEME,
 		  gtk+-2.0 >= 1.3.11
 		  gdk-pixbuf-2.0 >= 1.3.11
-		  gtk-engines-2
-		  gtk-thinice-engine-2
-		  )
+		  gtk-engines-2)
 
 AC_SUBST(GTKTHEME_CFLAGS)
 AC_SUBST(GTKTHEME_LIBS)
@@ -52,17 +50,11 @@ AC_ARG_ENABLE(all-themes,
  all_themes=no)
 AM_CONDITIONAL(CORE_THEMES_ONLY, test "$all_themes" = no)
 
-#<MIST>
-PKG_CHECK_MODULES(MIST, gtk+-2.0 >= 2.0.0,,
-			AC_MSG_ERROR([GTK+-2.0 is required to compile mist]))
-AC_SUBST(MIST_CFLAGS)
-AC_SUBST(MIST_LIBS)
-
-dnl PKG_CHECK_MODULES(GTK1, gtk+ >= 1.2.10,,
-dnl			AC_MSG_ERROR([GTK+-1.2.10 is required to compile mist]))
-dnl AC_SUBST(GTK1_CFLAGS)
-dnl AC_SUBST(GTK1_LIBS)
-#</MIST>
+# Theme engines
+PKG_CHECK_MODULES(THEME_ENGINE, gtk+-2.0 >= 2.0.0,,
+				 AC_MSG_ERROR([GTK+-2.0 is required to compile theme engines]))
+AC_SUBST(THEME_ENGINE_CFLAGS)
+AC_SUBST(THEME_ENGINE_LIBS)
 
 
 GTK_VERSION=`$PKG_CONFIG --variable=gtk_binary_version gtk+-2.0`
@@ -71,7 +63,7 @@ AC_SUBST(GTK_VERSION)
 ### Icon sizes for all large print themes
 
 
-ALL_LINGUAS="am bg ca cs da de el es fi fr he hu it ja ko lv mk mn ms nl no pl pt pt_BR ro ru sk sl sq sv tr uk vi zh_CN zh_TW"
+ALL_LINGUAS="am ar az be bg bn bs ca cs cy da de el en_CA en_GB es et eu fa fi fr ga gu he hi hr hu id is it ja ko li lt lv mk ml mn ms nb nl nn no pa pl pt pt_BR ro ru sk sl sq sr sr@Latn sv ta th tr uk vi wa zh_CN zh_TW"
 AM_GLIB_GNU_GETTEXT
 
 LARGEPRINT_DND="48,48"
@@ -81,8 +73,9 @@ LARGEPRINT_LARGE_TOOLBAR="48,48"
 LARGEPRINT_SMALL_TOOLBAR="32,32"
 LARGEPRINT_BUTTON="32,32"
 LARGEPRINT_DIALOG="64,64"
+LARGEPRINT_MINI_COMMANDER="24,24"
 
-LARGEPRINT_ICON_SIZES="gtk-dnd=$LARGEPRINT_DND:gtk-menu=$LARGEPRINT_MENU:panel-menu=$LARGEPRINT_PANEL_MENU:gtk-large-toolbar=$LARGEPRINT_LARGE_TOOLBAR:gtk-small-toolbar=$LARGEPRINT_SMALL_TOOLBAR:gtk-button=$LARGEPRINT_BUTTON:gtk-dialog=$LARGEPRINT_DIALOG"
+LARGEPRINT_ICON_SIZES="mini-commander-icon=$LARGEPRINT_MINI_COMMANDER:print-manager=$LARGEPRINT_DIALOG:panel-button=$LARGEPRINT_BUTTON:gtk-dnd=$LARGEPRINT_DND:gtk-menu=$LARGEPRINT_MENU:panel-menu=$LARGEPRINT_PANEL_MENU:gtk-large-toolbar=$LARGEPRINT_LARGE_TOOLBAR:gtk-small-toolbar=$LARGEPRINT_SMALL_TOOLBAR:gtk-button=$LARGEPRINT_BUTTON:gtk-dialog=$LARGEPRINT_DIALOG"
 
 LARGEPRINT_FONT="sans 18"
 
@@ -101,7 +94,12 @@ desktop-themes/Mist/Makefile
 desktop-themes/Ocean-Dream/Makefile
 desktop-themes/Simple/Makefile
 desktop-themes/Smokey-Blue/Makefile
+desktop-themes/Glider/Makefile
 desktop-themes/Traditional/Makefile
+gtk-engines/Makefile
+gtk-engines/Smooth/Makefile
+gtk-engines/hc-engine/Makefile
+gtk-engines/thinice/Makefile
 gtk-themes/Makefile
 gtk-themes/Crux/Makefile
 gtk-themes/Crux/pixmaps/Makefile
@@ -114,6 +112,9 @@ gtk-themes/Mist/Makefile
 gtk-themes/Mist/src/Makefile
 gtk-themes/Mist/Theme/Makefile
 gtk-themes/Smokey-Blue/Makefile
+gtk-themes/Glider/Makefile
+gtk-themes/ThinIce/Makefile
+gtk-themes/ThinIce/gtk-2.0/Makefile
 metacity-themes/Makefile
 icon-themes/Makefile
 icon-themes/Crux/Makefile

@@ -5,11 +5,12 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gnome-themes 2.1.99\n"
-"POT-Creation-Date: 2003-02-03 12:59-0800\n"
-"PO-Revision-Date: 2003-01-31 08:51+0900\n"
+"Project-Id-Version: gnome-themes HEAD\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-09-13 13:42+0100\n"
+"PO-Revision-Date: 2004-08-20 11:07+0900\n"
 "Last-Translator: Takeshi AIHANA <aihana@gnome.gr.jp>\n"
-"Language-Team: Japanese <translation@gnome.gr.jp>\n"
+"Language-Team: Japanese <gnome-translation@gnome.gr.jp>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -31,7 +32,7 @@ msgid "White-on-black text and icons"
 msgstr "黒地に白色のテキストとアイコン"
 
 #: HighContrastLargePrint/index.theme.in.in.h:1
-msgid "High Contrast Large"
+msgid "High Contrast Large Print"
 msgstr "ハイ・コントラスト (大)"
 
 #: HighContrastLargePrint/index.theme.in.in.h:2
@@ -72,11 +73,19 @@ msgstr "ロー・コントラスト (大)"
 
 #: desktop-themes/Crux/index.theme.in.h:1 icon-themes/Crux/index.theme.in.h:1
 msgid "Crux"
-msgstr "Crux"
+msgstr "\"南十字座\""
 
 #: desktop-themes/Crux/index.theme.in.h:2
 msgid "Smooth gradients with teal highlights"
 msgstr "Teal を強調した滑らかなグラデーション"
+
+#: desktop-themes/Glider/index.theme.in.h:1
+msgid "Glider"
+msgstr "\"グライダー\""
+
+#: desktop-themes/Glider/index.theme.in.h:2
+msgid "Simple, smooth and aesthetically pleasing"
+msgstr "シンプル、滑らかで美しい感じ"
 
 #: desktop-themes/Grand-Canyon/index.theme.in.h:1
 msgid "Dusty orange appearance"
@@ -84,7 +93,7 @@ msgstr "やや茶色味かかったオレンジ色の外観"
 
 #: desktop-themes/Grand-Canyon/index.theme.in.h:2
 msgid "Grand Canyon"
-msgstr "グランド・キャニオン"
+msgstr "\"グランド・キャニオン\""
 
 #: desktop-themes/Mist/index.theme.in.h:1
 msgid "A minimalistic appearance"
@@ -92,11 +101,11 @@ msgstr "外観を小さくしたもの"
 
 #: desktop-themes/Mist/index.theme.in.h:2
 msgid "Mist"
-msgstr "ミスト"
+msgstr "\"ミスト\""
 
 #: desktop-themes/Ocean-Dream/index.theme.in.h:1
 msgid "Ocean Dream"
-msgstr "オーシャン・ドリーム"
+msgstr "\"オーシャン・ドリーム\""
 
 #: desktop-themes/Ocean-Dream/index.theme.in.h:2
 msgid "The colours of the seashore"
@@ -104,7 +113,7 @@ msgstr "浜辺の色"
 
 #: desktop-themes/Simple/index.theme.in.h:1
 msgid "Simple"
-msgstr "シンプル"
+msgstr "\"シンプル\""
 
 #: desktop-themes/Simple/index.theme.in.h:2
 msgid "Thin appearance, high performance"
@@ -116,11 +125,11 @@ msgstr "やわらかなガラス状の外観"
 
 #: desktop-themes/Smokey-Blue/index.theme.in.h:2
 msgid "Smokey Blue"
-msgstr "スモーキー・ブルー"
+msgstr "\"スモーキー・ブルー\""
 
 #: desktop-themes/Traditional/index.theme.in.h:1
 msgid "Traditional"
-msgstr "トラディショナル"
+msgstr "\"トラディショナル\""
 
 #: desktop-themes/Traditional/index.theme.in.h:2
 msgid "Traditional hard-edged 3D appearance"

@@ -1,0 +1,10 @@
+[Desktop Entry]
+_Name=Glider
+Type=X-GNOME-Metatheme
+_Comment=Simple, smooth and aesthetically pleasing
+Encoding=UTF-8
+
+[X-GNOME-Metatheme]
+GtkTheme=Glider
+MetacityTheme=Glider
+IconTheme=gnome

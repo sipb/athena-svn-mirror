@@ -7,18 +7,19 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-themes.HEAD.he\n"
-"POT-Creation-Date: 2003-02-03 12:59-0800\n"
-"PO-Revision-Date: 2003-01-31 09:03+0200\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-09-13 13:42+0100\n"
+"PO-Revision-Date: 2003-06-12 15:21+0300\n"
 "Last-Translator: Gil 'Dolfin' Osher <dolfin@rpg.org.il>\n"
 "Language-Team: Hebrew <he@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 1.0\n"
+"X-Generator: KBabel 1.0.1\n"
 
 #: HighContrast/index.theme.in.h:1
 msgid "Black-on-white text and icons"
-msgstr "מלל וסמלים בשחור על לבן"
+msgstr "טקסט וסמלים בשחור על לבן"
 
 #: HighContrast/index.theme.in.h:2
 msgid "High Contrast"
@@ -30,15 +31,15 @@ msgstr "ניגוד גבוה הפוך"
 
 #: HighContrastInverse/index.theme.in.h:2
 msgid "White-on-black text and icons"
-msgstr "מלל וסמלים בלבן על שחור"
+msgstr "טקסט וסמלים בלבן על שחור"
 
 #: HighContrastLargePrint/index.theme.in.in.h:1
-msgid "High Contrast Large"
-msgstr "ניגוד גבוה מוגדל"
+msgid "High Contrast Large Print"
+msgstr "ניגוד גבוה בהדפסה מוגדלת"
 
 #: HighContrastLargePrint/index.theme.in.in.h:2
 msgid "Large black-on-white text and icons"
-msgstr "מלל וסמלים מוגדלים בשחור על לבן"
+msgstr "טקסט וסמלים מוגדלים בשחור על לבן"
 
 #: HighContrastLargePrintInverse/index.theme.in.in.h:1
 msgid "High Contrast Large Print Inverse"
@@ -46,7 +47,7 @@ msgstr "ניגוד גבוה הפוך בהדפסה מוגדלת"
 
 #: HighContrastLargePrintInverse/index.theme.in.in.h:2
 msgid "Large white-on-black text and icons"
-msgstr "מלל וסמלים מוגדלים בלבן על שחור"
+msgstr "טקסט וסמלים מוגדלים בלבן על שחור"
 
 #: LargePrint/index.theme.in.in.h:1
 msgid "Large Print"
@@ -54,7 +55,7 @@ msgstr "הדפסה מוגדלת"
 
 #: LargePrint/index.theme.in.in.h:2
 msgid "Large text and icons"
-msgstr "מלל וסמלים מוגדלים"
+msgstr "טקסט וסמלים מוגדלים"
 
 #: LowContrast/index.theme.in.h:1
 msgid "Low Contrast"
@@ -62,11 +63,11 @@ msgstr "ניגוד נמוך"
 
 #: LowContrast/index.theme.in.h:2
 msgid "Muted text and icons"
-msgstr "מלל וסמלים עמומים"
+msgstr "טקסט וסמלים עמומים"
 
 #: LowContrastLargePrint/index.theme.in.in.h:1
 msgid "Large muted text and icons"
-msgstr "מלל וסמלים מוגדלים עמומים"
+msgstr "טקסט וסמלים מוגדלים עמומים"
 
 #: LowContrastLargePrint/index.theme.in.in.h:2
 msgid "Low Contrast Large Print"
@@ -79,6 +80,14 @@ msgstr "העיקר"
 #: desktop-themes/Crux/index.theme.in.h:2
 msgid "Smooth gradients with teal highlights"
 msgstr "הדרגתיות חלקה עם הדגשי טורקיז"
+
+#: desktop-themes/Glider/index.theme.in.h:1
+msgid "Glider"
+msgstr ""
+
+#: desktop-themes/Glider/index.theme.in.h:2
+msgid "Simple, smooth and aesthetically pleasing"
+msgstr ""
 
 #: desktop-themes/Grand-Canyon/index.theme.in.h:1
 msgid "Dusty orange appearance"

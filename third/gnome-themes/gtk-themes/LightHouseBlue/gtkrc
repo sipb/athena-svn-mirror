@@ -18,6 +18,7 @@ style "default"
   GtkScrollbar::min_slider_length = 14
   GtkCheckButton::indicator_size = 10
   GtkRadioButton::indicator_size = 11
+  GtkCheckMenuItem::indicator_size = 10
   GtkMenuBar::internal_padding = 0
 
   fg[NORMAL]       = "#000000"

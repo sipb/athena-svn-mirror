@@ -1,15 +1,16 @@
 # Swedish messages for gnome-themes.
-# Copyright (C) 2002, 2003 Free Software Foundation, Inc.
+# Copyright (C) 2002, 2003, 2004 Free Software Foundation, Inc.
 # This file is distributed under the same license as the gnome-themes package.
-# Christian Rose <menthos@menthos.com>, 2002, 2003.
+# Christian Rose <menthos@menthos.com>, 2002, 2003, 2004.
 #
-# $Id: sv.po,v 1.1.1.2 2003-02-12 07:08:30 ghudson Exp $
+# $Id: sv.po,v 1.1.1.3 2004-09-24 20:33:48 ghudson Exp $
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-themes\n"
-"POT-Creation-Date: 2003-02-03 12:59-0800\n"
-"PO-Revision-Date: 2003-01-31 00:05+0100\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-09-13 13:42+0100\n"
+"PO-Revision-Date: 2004-08-18 14:54+0200\n"
 "Last-Translator: Christian Rose <menthos@menthos.com>\n"
 "Language-Team: Swedish <sv@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -33,7 +34,7 @@ msgid "White-on-black text and icons"
 msgstr "Text och ikoner i vitt på svart"
 
 #: HighContrastLargePrint/index.theme.in.in.h:1
-msgid "High Contrast Large"
+msgid "High Contrast Large Print"
 msgstr "Stor text med hög kontrast"
 
 #: HighContrastLargePrint/index.theme.in.in.h:2
@@ -80,6 +81,24 @@ msgstr "Crux"
 msgid "Smooth gradients with teal highlights"
 msgstr "Mjuka gradienter med blågröna framtoningar"
 
+# Calum Benson explained:
+#
+# > Is it "Glider" as in the sense of an unmotored aeroplane? Or is there
+# > some other connection that I'm missing with the theme name?
+#
+# Well, it wasn't my choice of name, but my interpretation is a little
+# less literal... given that it's based on the Smooth engine and was
+# originally called "Simply Smooth", I think the new name is just supposed
+# to convey "smooth and effortless" generally.
+#
+#: desktop-themes/Glider/index.theme.in.h:1
+msgid "Glider"
+msgstr "Glidare"
+
+#: desktop-themes/Glider/index.theme.in.h:2
+msgid "Simple, smooth and aesthetically pleasing"
+msgstr "Enkelt, jämnt och estetiskt tilltalande"
+
 #: desktop-themes/Grand-Canyon/index.theme.in.h:1
 msgid "Dusty orange appearance"
 msgstr "Dammigt orange utseende"
@@ -110,7 +129,7 @@ msgstr "Enkel"
 
 #: desktop-themes/Simple/index.theme.in.h:2
 msgid "Thin appearance, high performance"
-msgstr "Tunnt utseende, hög prestanda"
+msgstr "Tunt utseende, hög prestanda"
 
 #: desktop-themes/Smokey-Blue/index.theme.in.h:1
 msgid "A soft glassy appearance"
@@ -144,6 +163,12 @@ msgstr "Rökig-blå"
 msgid "Smokey-Red"
 msgstr "Rökig-röd"
 
+#~ msgid "Simple, smooth, and aesthetically pleasing"
+#~ msgstr "Enkelt, jämnt och estetiskt tilltalande"
+
+#~ msgid "High Contrast Large"
+#~ msgstr "Stor text med hög kontrast"
+
 #~ msgid "Default"
 #~ msgstr "Standard"
 
@@ -155,9 +180,6 @@ msgstr "Rökig-röd"
 
 #~ msgid "Gnome"
 #~ msgstr "Gnome"
-
-#~ msgid "High Contrast Large Print"
-#~ msgstr "Stor text med hög kontrast"
 
 #~ msgid "%P %%"
 #~ msgstr "%P %%"

@@ -17,7 +17,7 @@ theme_init (GTypeModule *module)
 
 /* 
  * Called before GTK+ unloads this module
- * to let us do any neccesary clean up
+ * to let us do any necessary clean up
  */
 G_MODULE_EXPORT void
 theme_exit (void)

@@ -15,16 +15,29 @@ gtk-icon-sizes = "@LARGEPRINT_ICON_SIZES@"
 style "default"
 {
   GtkWidget::focus-line-pattern = "\10\2"
-  GtkWidget::focus-line-width = 2
-  GtkHSV::focus-line-pattern = "\0"
   GtkWidget::interior_focus = 1
   GtkWidget::focus-padding = 0
-  GtkEntry::cursor_color    = { 0.50, 0.00, 0.00 }
+  GtkWidget::focus-line-width = 2
+# GtkWidget::cursor_aspect_ratio = 0.1
+
+  GtkHSV::focus-line-pattern = "\0"
   GtkRange::slider_width = 20
-  GtkTreeView::expander_size = 20
-#  GtkWidget::cursor_aspect_ratio = 0.1
-  GtkTextView::cursor_color    = { 0.50, 0.00, 0.00 }
-  GtkTextView::cursor_aspect_ratio = 0.1
+
+  GtkEntry::cursor_color    = { 0.50, 0.00, 0.00 }
   GtkEntry::cursor_aspect_ratio = 0.1
 
+  GtkTextView::cursor_color    = { 0.50, 0.00, 0.00 }
+  GtkTextView::cursor_aspect_ratio = 0.1
+
+  EelEditableLabel::cursor_color    = { 0.50, 0.00, 0.00 }
+  EelEditableLabel::cursor_aspect_ratio = 0.1
+
+  GtkCheckButton::indicator_size = 18
+  GtkCheckMenuItem::indicator_size = 18
+
+  GtkTreeView::expander_size = 20
+  GtkExpander::expander-size = 24
+  GtkExpander::expander-spacing = 8
+
+  PanelToplevel::arrow-size = 18
 
