@@ -9,7 +9,7 @@
 #define OSMajorVersion    4
 #define OSMinorVersion    50
 
-/**/# platform:  $XConsortium: Mips.cf,v 1.10 91/07/30 20:47:59 rws Exp $
+/**/# platform:  $XConsortium: Mips.cf,v 1.11 92/08/22 11:41:51 rws Exp $
 /**/# operating system:  OSName
 
 /*****************************************************************************
@@ -26,6 +26,7 @@
 
 #define DefaultCCOptions -signed -systype bsd43 -Olimit 2000 -Wf,-XNd8400,-XNp12000
 #define StandardDefines -DMips -DBSD43
+#define PostIncDir /usr/include/bsd43
 #define ExtraLibraries -lmld
 #define ArCmd ar clr
 #define BootstrapCFlags -DMips
