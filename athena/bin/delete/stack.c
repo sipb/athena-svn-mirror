@@ -11,7 +11,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_stack_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/stack.c,v 1.7 1990-06-07 22:34:48 jik Exp $";
+     static char rcsid_stack_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/stack.c,v 1.8 1990-09-26 03:45:37 jik Exp $";
 #endif
 
 #include <sys/types.h>
@@ -119,7 +119,7 @@ int op, bytes;
 	       if (newsize < size) {
 		    size = newsize;
 		    stack = (caddr_t) realloc((char *) stack, (unsigned) size);
-		    if (! stack) {
+		    if ((size != 0) && (! stack)) {
 			 set_error(errno);
 			 error("realloc");
 #ifdef STACK_DEBUG
