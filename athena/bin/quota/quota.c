@@ -1,7 +1,7 @@
 /*
  *   Disk quota reporting program.
  *
- *   $Id: quota.c,v 1.18 1992-06-19 18:20:44 lwvanels Exp $
+ *   $Id: quota.c,v 1.19 1992-06-24 15:53:05 lwvanels Exp $
  */
 
 #include <stdio.h>
@@ -505,20 +505,8 @@ int own(id, dir)
 	return 0;
 
     for(i=0; i<atp->nowners; i++)
-	if (atp->owners[i] == id) {
-#ifdef _IBMR2
-	    setuidx(ID_EFFECTIVE, getuidx(ID_REAL));
-#else
-	    setreuid(geteuid(), getuid());
-#endif
-	    status = (access(dir, W_OK) == 0);
-#ifdef _IBMR2
-	    setuidx(ID_EFFECTIVE, getuidx(ID_SAVED));
-#else
-	    setreuid(geteuid(), getuid());
-#endif
-	    return status;
-	}
+	if (atp->owners[i] == id)
+	    return (access(dir, W_OK) == 0);
 
     return 0;
 }
