@@ -15,7 +15,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_hostm_s_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/hostm.c,v 1.7 1987-07-14 16:50:00 jtkohl Exp $";
+static char rcsid_hostm_s_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/hostm.c,v 1.8 1987-07-14 18:21:23 jtkohl Exp $";
 #endif SABER
 #endif lint
 
@@ -107,7 +107,6 @@ struct sockaddr_in *who;
 ZServerDesc_t *server;
 {
 	ZServerDesc_t *owner;
-	ZHostList_t *host;
 	char *opcode = notice->z_opcode;
 	Code_t retval;
 
@@ -486,9 +485,8 @@ ZServerDesc_t *server;
 {
 	/* undo what we did in host_attach */
 	register ZHostList_t *hlist;
-	register ZServerDesc_t *serv;
 
-	if ((serv = hostm_find_server(addr)) != server) {
+	if (hostm_find_server(addr) != server) {
 		syslog(LOG_WARNING, "host_detach: wrong server");
 		return;
 	}
