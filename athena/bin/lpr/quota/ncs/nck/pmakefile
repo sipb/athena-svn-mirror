@@ -316,7 +316,9 @@ install: all
 	-mkdir ${ETCDIR}
 #ifndef SYS5
 	install -c libnck.a ${LIBDIR}
+#ifndef sparc
 	ranlib ${LIBDIR}/libnck.a
+#endif
 	install -c lb_admin ${ETCDIR}
 	install -c uuid_gen ${ETCDIR}
 	install -c stcode ${ETCDIR}
@@ -351,7 +353,9 @@ libnck.a: ${OBJS}
 	rm -f libnck.a
 	ar cr libnck.a ${OBJS}
 #ifndef SYS5
+#ifndef sparc
 	ranlib libnck.a
+#endif
 #endif
 
 /***************************************************************************/
