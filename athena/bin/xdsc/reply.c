@@ -10,7 +10,7 @@
 #include	<X11/Shell.h>
 #include	"xdsc.h"
 
-static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/xdsc/reply.c,v 1.3 1990-12-07 15:55:05 sao Exp $";
+static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/xdsc/reply.c,v 1.4 1990-12-11 16:34:59 sao Exp $";
 
 extern char	*strchr();
 extern char     *getenv();
@@ -19,6 +19,7 @@ extern char	filebase[];
 extern int	whichTopScreen;
 extern Widget	topW, paneW;
 extern TextWidget	bottextW;
+extern int	char_width;
 
 static int	replynum;
 static char	sourcefile[80];
@@ -50,6 +51,7 @@ int	myreplynum;
 	unsigned int	n;
 	char		subjectline[80];
 	char		buffer[80];
+	char		*ptr1, *ptr2;
 	char		*returndata;
 	Widget		localPaneW, box1W, box2W, button1W, button2W;
 
@@ -72,7 +74,27 @@ int	myreplynum;
 		if ((int) returndata <= 0)  {
 			return;
 		}
+		/*
 		sscanf (returndata, "(%*[^\"]\"%*[^\"]\"%*[^\"]\"%[^\"]%*s", buffer);
+		*/
+
+/*
+**  Find the third quote
+*/
+		for (n = 0, ptr1 = returndata; n < 3; n++)
+			while (*ptr1++ != '\"')
+				;
+/*
+** Copy from just after the third quote to the next non-escaped quote
+*/
+		ptr2 = buffer;
+		while (*ptr1 != '\"') {
+			if (*ptr1 == '\\')
+				ptr1++;
+			*ptr2++ = *ptr1++;
+		}
+		*ptr2 = '\0';
+
 		if (!strncmp (buffer, "Re: ", 4)) {
 			sprintf (subjectline, "%s", buffer);
 		}
@@ -85,9 +107,8 @@ int	myreplynum;
 		sprintf (subjectline, "");
 	}
 
-	CheckButtonSensitivity(BUTTONS_OFF);
-
 	n = 0;
+	XtSetArg(args[n], XtNwidth, 80 * char_width);		n++;
 	sendPopupW = XtCreatePopupShell(	
 			"enterpopup",
 			topLevelShellWidgetClass,
@@ -146,6 +167,7 @@ int	myreplynum;
 	XtSetArg(args[n], XtNstring, subjectline);		n++;
 	XtSetArg(args[n], XtNborderWidth, 0);			n++;
 	XtSetArg(args[n], XtNeditType, XawtextEdit);		n++;
+	XtSetArg(args[n], XtNwidth, 60 * char_width);		n++;
 	sendSubjectTextW = XtCreateManagedWidget(
 			"subjecttext",
 			asciiTextWidgetClass,
@@ -155,6 +177,7 @@ int	myreplynum;
 
 	n = 0;
 	XtSetArg(args[n], XtNeditType, XawtextEdit);		n++;
+	XtSetArg(args[n], XtNwidth, 80 * char_width);		n++;
 	sendTextW = XtCreateManagedWidget(
 			"bodytext",
 			asciiTextWidgetClass,
@@ -243,13 +266,8 @@ XtPointer	call_data;
 
 	sendPopupW = 0;
 	(void) HighestTransaction();
-	sprintf (command, "Reading %s [%d-%d]", 
-			CurrentMtg(0),
-			TransactionNum(FIRST),
-			TransactionNum(LAST));
 
-	PutUpStatusMessage(command);
-	CheckButtonSensitivity(BUTTONS_ON);
+	CheckButtonSensitivity(BUTTONS_UPDATE);
 
 	XFlush(XtDisplay(topW));
 }
@@ -266,8 +284,6 @@ int	current;
 	if (writePopupW)
 		return;
 
-	CheckButtonSensitivity(BUTTONS_OFF);
-
 	sprintf (	destfile, 
 			"%s/xdsc/%s-%d", getenv("HOME"), 
 			CurrentMtg(1), current);
@@ -276,6 +292,7 @@ int	current;
 			"%s-%d", filebase, current);
 
 	n = 0;
+	XtSetArg(args[n], XtNwidth, 80 * char_width);		n++;
 	writePopupW = XtCreatePopupShell(	
 			"writepopup", 
 			topLevelShellWidgetClass,
@@ -355,7 +372,6 @@ XtPointer	call_data;
 	}
 
 	XtDestroyWidget(writePopupW);
-	CheckButtonSensitivity(BUTTONS_ON);
 	writePopupW = 0;
 }
 
@@ -373,19 +389,23 @@ AddMeeting()
 	if (addPopupW)
 		return;
 
+	n = 0;
+	XtSetArg(args[n], XtNwidth, 80 * char_width);		n++;
 	addPopupW = XtCreatePopupShell(	
 			"addpopup",
 			topLevelShellWidgetClass,
 			topW,
-			NULL,
-			0);
+			args,
+			n);
 
+	n = 0;
+	XtSetArg(args[n], XtNwidth, 80 * char_width);		n++;
 	addPaneW = XtCreateManagedWidget(
 			"pane",
 			panedWidgetClass,
 			addPopupW,
-			NULL,
-			0);
+			args,
+			n);
 
 	n = 0;
 	(void) XtCreateManagedWidget(
@@ -415,6 +435,7 @@ AddMeeting()
 	n = 0;
 	XtSetArg(args[n], XtNborderWidth, 0);			n++;
 	XtSetArg(args[n], XtNeditType, XawtextEdit);		n++;
+	XtSetArg(args[n], XtNwidth, 60 * char_width);		n++;
 	addHostTextW = XtCreateManagedWidget(
 			"hosttext",
 			asciiTextWidgetClass,
@@ -441,6 +462,7 @@ AddMeeting()
 	n = 0;
 	XtSetArg(args[n], XtNborderWidth, 0);			n++;
 	XtSetArg(args[n], XtNeditType, XawtextEdit);		n++;
+	XtSetArg(args[n], XtNwidth, 60 * char_width);		n++;
 	addPathTextW = XtCreateManagedWidget(
 			"pathtext",
 			asciiTextWidgetClass,
@@ -499,12 +521,14 @@ AddMeeting()
 	if (addPopupW)
 		return;
 
+	n = 0;
+	XtSetArg(args[n], XtNwidth, 80 * char_width);		n++;
 	addPopupW = XtCreatePopupShell(	
 			"addpopup",
 			topLevelShellWidgetClass,
 			topW,
-			NULL,
-			0);
+			args,
+			n);
 
 	addPaneW = XtCreateManagedWidget(
 			"pane",
@@ -540,6 +564,7 @@ AddMeeting()
 	n = 0;
 	XtSetArg(args[n], XtNborderWidth, 0);			n++;
 	XtSetArg(args[n], XtNeditType, XawtextEdit);		n++;
+	XtSetArg(args[n], XtNwidth, 60 * char_width);		n++;
 /*
 ** Is there a default hostname we can use?
 */
@@ -579,6 +604,7 @@ AddMeeting()
 	n = 0;
 	XtSetArg(args[n], XtNborderWidth, 0);			n++;
 	XtSetArg(args[n], XtNeditType, XawtextEdit);		n++;
+	XtSetArg(args[n], XtNwidth, 60 * char_width);		n++;
 /*
 ** Is there a default pathname we can use?
 */
@@ -679,12 +705,14 @@ DeleteMeeting()
 	if (deletePopupW)
 		return;
 
+	n = 0;
+	XtSetArg(args[n], XtNwidth, 80 * char_width);		n++;
 	deletePopupW = XtCreatePopupShell(	
 			"deletepopup",
 			topLevelShellWidgetClass,
 			topW,
-			NULL,
-			0);
+			args,
+			n);
 
 	deletePaneW = XtCreateManagedWidget(
 			"pane",
@@ -721,6 +749,7 @@ DeleteMeeting()
 	n = 0;
 	XtSetArg(args[n], XtNborderWidth, 0);			n++;
 	XtSetArg(args[n], XtNeditType, XawtextEdit);		n++;
+	XtSetArg(args[n], XtNwidth, 60 * char_width);		n++;
 	if (defaultvalue = GetDefaultValue("Name:")) {
 		XtSetArg(args[n], XtNstring, defaultvalue);	n++;
 	}
@@ -814,7 +843,7 @@ Boolean	deathoption;
 		return;
 
 	n = 0;
-	XtSetArg(args[n], XtNwidth, 300);			n++;
+	XtSetArg(args[n], XtNwidth, (strlen(message)+2) * char_width);	n++;
 	warningPopupW = XtCreatePopupShell(	
 			"warningpopup", 
 			topLevelShellWidgetClass,
@@ -1020,6 +1049,7 @@ PutUpHelp()
 
 	n = 0;
 	XtSetArg(args[n], XtNeditType, XawtextEdit);		n++;
+	XtSetArg(args[n], XtNwidth, 80 * char_width);		n++;
 
 	switch (whichTopScreen) {
 	case MAIN:
