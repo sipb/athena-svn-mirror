@@ -2,7 +2,7 @@
 
 # Top level Xsession file for all users
 #
-# $Id: Xsession.sgi,v 1.6 1996-05-28 00:33:55 cfields Exp $
+# $Id: Xsession.sgi,v 1.7 1996-07-23 20:09:51 cfields Exp $
 
 trap "kdestroy; unlog; fsid -u -f $USER; exit 0" 1 2 15
 
@@ -37,7 +37,7 @@ fi
 case $defsession in
 1|4)
 	if [ -r .xsession ]; then
-		session=".xsession"
+		session="./.xsession"
 
 		configchecks=$dotdesktop/configchecks
 		xsessioncheck=$configchecks/checkxsession
@@ -70,15 +70,7 @@ esac
 
 # Set the tty characteristics of the parent (console window)
 # Redirect stdin since some versions of stty use it instead of stdout.
-if [ "${hosttype}" = "decmips" ]; then
-  stty dec 0<&1 2>/dev/null
-else
-  stty sane 0<&1 2>/dev/null
-fi
-
-if [ "${hosttype}" = "sgi" ]; then
-  stty intr \^C 0<&1 2>/dev/null
-fi
+stty sane intr \^C 0<&1 2>/dev/null
 
 # Make random Athena modifications to keymap if required.
 
@@ -95,7 +87,7 @@ if [ $status != 0 ]; then
 		echo 'Select the login option to "Ignore your customizations"'
 		echo 'to login and repair your dot files.'
 
-		if [ -r $dotdesktop/athenahosts/$host ]; then
+		if [ -r $hostdir/$host ]; then
 		  rm $ldesktop && rm $hostdir/$host
 		fi
 		kdestroy			# destroy tickets.
@@ -107,10 +99,10 @@ if [ $status != 0 ]; then
 fi
 
 
-# Cannot detach homedir here, since this script is executed in the users
+# Cannot detach homedir here, since this script is executed in the user's
 # homedir.
 
-if [ -r $dotdesktop/athenahosts/$host ]; then
+if [ -r $hostdir/$host ]; then
   rm $ldesktop && rm $hostdir/$host
 fi
 
