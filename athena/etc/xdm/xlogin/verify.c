@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.1 1990-11-01 11:37:47 mar Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.2 1990-11-01 18:45:34 mar Exp $
  */
 
 #include <stdio.h>
@@ -6,6 +6,7 @@
 #include <strings.h>
 #include <sys/file.h>
 #include <sys/param.h>
+#include <sys/dir.h>
 #include <netdb.h>
 #include <ttyent.h>
 #include <krb.h>
@@ -18,16 +19,21 @@
 #define TRUE (!FALSE)
 
 #define ROOT 0
-#define LOGIN_TKT_DEFAULT_LIFETIME 108 /* 9 hours */
+#define LOGIN_TKT_DEFAULT_LIFETIME 96 /* 8 hours */
 #define PASSWORD_LEN 14
+
 #define	NOLOGIN "/etc/nologin"
 #define NOCREATE "/etc/nocreate"
 #define NOATTACH "/etc/noattach"
+#define NOWLOCAL "/etc/nowarnlocal"
+#define ATTACH "/bin/athena/attach"
 
 #define file_exists(f) (access((f), F_OK) == 0)
 
 
 char *get_tickets(), *attachhomedir();
+extern int attach_state, attach_pid;
+
 
 char *dologin(user, passwd, option, script, tty)
 char *user;
@@ -72,12 +78,17 @@ char *tty;
     }
 
     sprintf(tkt_file, "/tmp/tkt_%s", tty);
-    setenv("KRBTKFILE", tkt_file);
-    if (!local_ok && ((msg = get_tickets(user, passwd)) != NULL)) {
-	dest_tkt();
-	return(msg);
+    setenv("KRBTKFILE", tkt_file, 1);
+
+    if ((msg = get_tickets(user, passwd)) != NULL) {
+	if (!local_ok) {
+	    cleanup();
+	    return(msg);
+	} else {
+	    fprintf(stderr, "Unable to get full authentication, you will have local access only\nduring this login session.\n");
+	}
     }
-    
+
     /* save encrypted password to put in local password file */
     salt = 9 * getpid();
     saltc[0] = salt & 077;
@@ -145,16 +156,16 @@ char *tty;
 	}
     }
 
+    if (msg = attachhomedir(pwd)) {
+	cleanup();
+	return(msg);
+    }
+
     /* put in password file if necessary */
     if (!local_passwd && add_to_passwd(pwd)) {
 	cleanup();
 	return("An unexpected error occured while entering you in the local password file.");
     }
-
-/*    if (msg = attachhomedir(pwd)) {
-	cleanup();
-	return(msg);
-    } */
 
     /* XXXXXX */
 
@@ -192,7 +203,7 @@ char *get_tickets(username, password)
 char *username;
 char *password;
 {
-    char inst[INST_SZ], realm[REALM_SZ];
+    char pname[ANAME_SZ], inst[INST_SZ], realm[REALM_SZ], passwd[REALM_SZ];
     char hostname[MAXHOSTNAMELEN], phost[INST_SZ];
     char key[8], *rcmd;
     static char errbuf[1024];
@@ -203,6 +214,9 @@ char *password;
     unsigned long addr;
 
     rcmd = "rcmd";
+    strcpy(pname, username);
+    strcpy(passwd, password);
+
     /* inst has to be a buffer instead of the constant "" because
      * krb_get_pw_in_tkt() will write a zero at inst[INST_SZ] to
      * truncate it.
@@ -212,15 +226,18 @@ char *password;
 
     if (krb_get_lrealm(realm, 1) != KSUCCESS)
       strcpy(realm, KRB_REALM);
-    error = krb_get_pw_in_tkt(username, inst, realm, "krbtgt", realm,
-			      LOGIN_TKT_DEFAULT_LIFETIME, password);
+
+    error = krb_get_pw_in_tkt(pname, inst, realm, "krbtgt", realm,
+			      LOGIN_TKT_DEFAULT_LIFETIME, passwd);
     switch (error) {
     case KSUCCESS:
 	break;
     case INTK_BADPW:
 	return("Incorrect password entered.");
+    case KDC_PR_UNKNOWN:
+	return("Unknown username entered.");
     default:
-	sprintf(errbuf, "Unable to authenticate you, kerberos failure %d: %s",
+	sprintf(errbuf, "Unable to authenticate you, kerberos failure %d: %s.  If this problem persists, please report it to Athena hotline.",
 		error, krb_err_txt[error]);
 	return(errbuf);
     }
@@ -261,7 +278,9 @@ char *password;
 
 cleanup()
 {
-    dest_tkt();
+    /* XXXXXXXXX */
+    /* must also detach homedir, clean passwd file */
+/*     dest_tkt(); */
 }
 
 
@@ -302,4 +321,148 @@ struct passwd *p;
     (void) close(fd);
     (void) unlink("/etc/ptmp");
     return(0);
+}
+
+
+char *attachhomedir(pwd)
+struct passwd *pwd;
+{
+    struct stat stb;
+    int i;
+
+    /* Delete empty directory if it exists.  We just try to rmdir the 
+     * directory, and if it's not empty that will fail.
+     */
+    rmdir(pwd->pw_dir);
+
+    /* If a good local homedir exists, use it */
+    if (file_exists(pwd->pw_dir) && !IsRemoteDir(pwd->pw_dir) &&
+	homedirOK(pwd->pw_dir))
+      return(NULL);
+
+    /* Using homedir already there that may or may not be good. */
+    if (file_exists(NOATTACH) && file_exists(pwd->pw_dir) &&
+	homedirOK(pwd->pw_dir)) {
+	printf("This workstation is configured not to attach remote filesystems.\n");
+	printf("Continuing with your local home directory.\n");
+	return(NULL);
+    }
+
+    if (file_exists(NOATTACH))
+      return("This workstation is configured not to create local home directories.  Please contact the system administrator for this machine or a consultant for further information.");
+
+    /* attempt attach now */
+    attach_state = -1;
+    switch (attach_pid = fork()) {
+    case -1:
+	return("Unable to attach your home directory (could not fork to create attach process).  Try another workstation.");
+    case 0:
+	if (setuid(pwd->pw_uid) != 0) {
+	    fprintf(stderr, "Could not execute attach command as user %s,\n",
+		    pwd->pw_name);
+	    fprintf(stderr, "Filesystem mappings may be incorrect.\n");
+	}
+	/* don't do zephyr here since user doesn't have zwgc started anyway */
+	execl(ATTACH, ATTACH, "-quiet", "-nozephyr", pwd->pw_name, NULL);
+	exit(-1);
+    default:
+	break;
+    }
+    while (attach_state == -1) {
+	sigpause(0);
+    }
+
+    if (attach_state != 0 || !file_exists(pwd->pw_dir)) {
+	/* do tempdir here */
+	char buf[BUFSIZ];
+
+	sprintf(buf, "/tmp/%s", pwd->pw_name);
+	pwd->pw_dir = malloc(strlen(buf)+1);
+	strcpy(pwd->pw_dir, buf);
+
+	i = stat(buf, &stb);
+	if (i == 0) {
+	    if (stb.st_mode & S_IFDIR) {
+		fprintf(stderr, "Warning - The temporary directory already exists.\n");
+		return(NULL);
+	    } else unlink(buf);
+	} else if (i != ENOENT)
+	  return("Error while retrieving status of temporary homedir.");
+
+	if (setreuid(ROOT, pwd->pw_uid) != 0)
+	  return("Error while setting owner on temporary home directory.");
+
+	if (system("cp -pr /usr/prototype_user /tmp > /dev/null 2> /dev/null")) {
+	    fprintf(stderr, "Warning - could not copy user prototype files into temporary directory.\n");
+	    mkdir(buf, TEMP_DIR_PERM);
+	    return (NULL);
+	}
+
+	if (rename("/tmp/prototype_user", buf))
+	  return("Unable to put temporary directory into place.  Try again.");
+
+	if (chmod(buf, TEMP_DIR_PERM))
+	  return("Could not change protections on temporary directory.");
+	setreuid(ROOT, ROOT);
+    }
+    return(NULL);
+}
+
+
+/* Function Name: IsRemoteDir
+ * Description: Stolen form athena's version of /bin/login
+ *              returns true of this is an NFS directory.
+ * Arguments: dname - name of the directory.
+ * Returns: true or false to the question (is remote dir).
+ *
+ * The following lines rely on the behavior of Sun's NFS (present in
+ * 3.0 and 3.2) which causes a read on an NFS directory (actually any
+ * non-reg file) to return -1, and AFS which also returns a -1 on
+ * read (although with a different errno).  This is a fast, cheap
+ * way to discover whether a user's homedir is a remote filesystem.
+ * Naturally, if the NFS and/or AFS semantics change, this must also change.
+ */
+
+IsRemoteDir(dir)
+char *dir;
+{
+  int f;
+  char c;
+  
+  if ((f = open(dir, O_RDONLY, 0)) < 0)
+    return(FALSE);
+
+  if (read(f, &c, 1) < 0) {
+      close(f);
+      return(TRUE);
+  }
+
+  close(f);
+  return(FALSE);
+}
+
+
+/* Function Name: homedirOK
+ * Description: checks to see if our homedir is okay, i.e. exists and 
+ *	contains at least 1 file
+ * Arguments: dir - the directory to check.
+ * Returns: TRUE if the homedir is okay.
+ */
+
+int homedirOK(dir)
+char *dir;
+{
+    DIR *dp;
+    struct direct *temp;
+    int count;
+
+    if ((dp = opendir(dir)) == NULL)
+      return(FALSE);
+
+    /* Make sure that there is something here besides . and .. */
+    for (count = 0; count < 3 ; count++)
+      temp = readdir(dp);
+
+    closedir(dp);
+    return(temp != NULL);
 }

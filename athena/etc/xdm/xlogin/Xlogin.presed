@@ -1,4 +1,4 @@
-! $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/Xlogin.presed,v 1.2 1990-10-30 16:22:06 mar Exp $
+! $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/Xlogin.presed,v 1.3 1990-11-01 18:44:57 mar Exp $
 
 xlogin.wcChildren:		login, savershell, instructions, \
 				warningShell, getSessionShell
@@ -44,7 +44,7 @@ xlogin*bottom:			ChainTop
 ! ------------------------------------------------------------
 
 xlogin.Geometry: 		580x305+205+75
-*bitmapFilePath:		/usr/local/xlogin
+*bitmapFilePath:		/mit/xdm/src/xlogin:/usr/lib/X11/bitmaps
 *BorderWidth:			0
 *Background:			white
 *Foreground:			black
@@ -56,17 +56,14 @@ xlogin.Geometry: 		580x305+205+75
 				<Btn2Up>: notify() unset() \n\
 				<Btn3Up>: notify() unset()
 *Text.borderWidth:		3
-*Command.font:			-adobe-new century schoolbook-bold-r-*-140-*
 *Command.borderWidth:		1
-*SimpleMenu*font:		-adobe-new century schoolbook-bold-r-*-140-*
 *SimpleMenu*leftMargin:		25
 *SimpleMenu*rightMargin:	10
-*MenuButton.font:		-adobe-new century schoolbook-bold-r-*-140-*
 *MenuButton.borderWidth:	1
 *SimpleMenu*borderWidth:	1
 *defaultDistance:		20
 *Label*BorderColor:		white
-*Font:				-adobe-new century schoolbook-bold-r-*-180-*
+*Font:				-adobe-new century schoolbook-bold-r-*-140-*
 
 
 ! ------------------------------------------------------------
@@ -80,10 +77,13 @@ xlogin.Geometry: 		580x305+205+75
 *logo*right:			ChainLeft
 
 *eyes.wcClass:			labelWidgetClass
-*eyes.bitmap:			owleyes0.xbm
-*eyes.label:			owleyes0.xbm owleyes1.xbm \
-				owleyes2.xbm owleyes3.xbm \
-				owleyes4.xbm owleyes5.xbm
+*eyes.bitmap:			/mit/xdm/src/xlogin/owleyes0.xbm
+*eyes.label:			/mit/xdm/src/xlogin/owleyes0.xbm \
+				/mit/xdm/src/xlogin/owleyes1.xbm \
+				/mit/xdm/src/xlogin/owleyes2.xbm \
+				/mit/xdm/src/xlogin/owleyes3.xbm \
+				/mit/xdm/src/xlogin/owleyes4.xbm \
+				/mit/xdm/src/xlogin/owleyes5.xbm
 !  defaultDistance = 20, plus offset into owl bitmap of 55, 26
 !  plus 4,2 for normal internal spacing.  geez!
 *eyes.horizDistance:		79
@@ -147,11 +147,13 @@ xlogin.Geometry: 		580x305+205+75
 *userName.width:		110
 *userName.vertDistance:		60
 *userName.horizDistance:	100
+*userName.font:			-adobe-new century schoolbook-bold-r-*-180-*
 *userName.label: 		Username:
 
 *name_input.wcClass:		asciiTextWidgetClass
 *name_input*length:		8
 *name_input*string:		
+*name_input*font:		-adobe-new century schoolbook-bold-r-*-180-*
 *name_input*editType:		edit
 *name_input*useStringInPlace:	TRUE
 *name_input.fromVert:		*welcome
@@ -208,12 +210,14 @@ xlogin.Geometry: 		580x305+205+75
 *password.width:		110
 *password.vertDistance:		5
 *password.horizDistance:	100
+*password.font:			-adobe-new century schoolbook-bold-r-*-180-*
 *password*label: 		Password:
 
 *pword_input.wcClass:		asciiTextWidgetClass
 *pword_input.wcCallback:	WcSetValueCB(this.borderColor: white)
 *pword_input*length:		20
 *pword_input*string:		
+*pword_input*font:		-adobe-new century schoolbook-bold-r-*-180-*
 *pword_input*editType:		edit
 *pword_input*useStringInPlace:	TRUE
 *pword_input.fromVert:		*name_input
@@ -276,7 +280,7 @@ xlogin.Geometry: 		580x305+205+75
 *selection.horizDistance:	35
 *selection.fromVert:		*password
 *selection.vertDistance:	5
-*selection.font:		-adobe-new century schoolbook-medium-r-*-180-*
+*selection.font:		-adobe-new century schoolbook-bold-r-*-180-*
 
 *loptions.wcClass:		menuButtonWidgetClass
 *loptions.vertDistance:		40
@@ -378,11 +382,11 @@ xlogin.Geometry: 		580x305+205+75
 *omenuEntry2.label:		Athena On-Line Help (olh)
 *omenuEntry2.callback:		runCB(/mit/xdm/src/conf/olh)
 *omenuEntry3.label:		Map/Status of Athena Clusters (xcluster)
-*omenuEntry3.callback:		runCB(/mit/xdm/src/conf/xcluster)
+!*omenuEntry3.callback:		runCB(/mit/xdm/src/conf/xcluster)
 *omenuEntry4.label:		MIT On-Line Information (TechInfo)
 *omenuEntry4.callback:		runCB(/mit/xdm/src/conf/techinfo)
 *omenuEntry5.label:		MIT Library Card Catalog (Barton)
-!*omenuEntry5.callback:		runCB(/mit/xdm/src/conf/barton)
+*omenuEntry5.callback:		runCB(/mit/xdm/src/conf/barton)
 *omenuEntry6.label:		Display Workstation Configuration
 *omenuEntry6.callback:		runCB(/mit/xdm/src/conf/machine)
 *omenuEntry7.label:		Other
@@ -411,8 +415,9 @@ xlogin.Geometry: 		580x305+205+75
 *getSessionShell.geometry:	+200+400
 
 *getsession.wcClass:		dialogWidgetClass
-*getsession*icon:		question
+*getsession.icon:		question
 *getsession.label:		Please enter the name of a shell script or program:
+*getsession.label.font:		-adobe-new century schoolbook-bold-r-*-180-*
 *getsession.wcChildren:		doit, abort
 
 *getsession*value.borderWidth:		2
@@ -474,16 +479,20 @@ xlogin.Geometry: 		580x305+205+75
 				WcSetValueCB(*selection.label: )
 
 
-*warningShell.geometry:		400x350+250+300
+*warningShell.geometry:		400x300+285+205
+*warningShell.borderWidth:	3
+*warningShell.borderColor:	black
 
 *warning.wcClass:		dialogWidgetClass
 *warning.icon:			warning
 *warning.label:			Login Failed
+*warning.label.font:		-adobe-new century schoolbook-bold-r-*-240-*
+*warning.label.width:		200
 *warning.value:			this will be replaced before it is used
 *warning.wcChildren:		continue
 
 *warning*value.width:		380
-*warning*value.height:		180
+*warning*value.height:		160
 *warning*value.borderWidth:	0
 *warning*value.autoFill:	True
 *warning*value.resize:		False
