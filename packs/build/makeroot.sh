@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: makeroot.sh,v 1.3 2002-02-18 15:43:33 ghudson Exp $
+# $Id: makeroot.sh,v 1.4 2002-02-28 15:51:08 ghudson Exp $
 
 if [ $# -lt 1 ]; then
   echo "Usage: $0 rootdir [fullversion]" >&2
@@ -11,7 +11,7 @@ ver=$2
 
 case `machtype` in
 linux)
-  sysprefix=/afs/athena.mit.edu/system/rhlinux
+  sysprefix=/afs/.dev.mit.edu/system/rhlinux
   syscontrol=control/control-${ver:-current}
 
   mkdir -p "$root/dev"
