@@ -1,6 +1,6 @@
 #!/dev/null
 #
-# $Id: add.csh,v 1.28 1996-06-06 22:26:37 cfields Exp $
+# $Id: add.csh,v 1.29 1996-06-07 18:48:15 cfields Exp $
 #
 # add <addargs> <-a attachargs> <lockername> <lockername> ...
 #
@@ -220,18 +220,27 @@ foreach add_i ($add_dirs)
   endif
 
 #
-# If we are supposed to move or remove path elements, do it.
+# If we need to remove path elements, do it here. Includes removing
+# elements for the purposes of moving them elsewhere.
 #
   if ( ! $?add_env && ( $?add_front || $?add_remove ) ) then
     if ( $?add_bin ) then
       if ( "$add_newpath" =~ *"$add_bin"* ) then
-        set add_newpath = `echo $add_newpath | sed -e "s-:${add_bin}--g" | sed -e "s-${add_bin}:--g"`  
+        if ( "$add_newpath" =~ "$add_bin"* ) then
+          set add_newpath = `echo $add_newpath | sed -e "s;${add_bin}:;;g"`
+        else
+          set add_newpath = `echo $add_newpath | sed -e "s;:${add_bin};;g"`
+        endif
         if ( $?add_debug ) echo $add_bin removed from \$PATH
       endif
     endif
     if ( $?add_man ) then
       if ( "$add_newmanpath" =~ *"$add_man"* ) then
-        set add_newmanpath = `echo $add_newmanpath | sed -e "s-:${add_man}--g" | sed -e "s-${add_man}:--g"`  
+        if ( "$add_newmanpath" =~ "$add_man"* ) then
+          set add_newmanpath = `echo $add_newmanpath | sed -e "s;${add_man}:;;g"`
+        else
+          set add_newmanpath = `echo $add_newmanpath | sed -e "s;:${add_man};;g"`
+        endif
         if ( $?add_debug ) echo $add_man removed from \$MANPATH
       endif
     endif
