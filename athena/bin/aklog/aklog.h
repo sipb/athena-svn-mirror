@@ -1,5 +1,5 @@
 /* 
- * $Id: aklog.h,v 1.8 1997-11-17 16:23:48 ghudson Exp $
+ * $Id: aklog.h,v 1.9 1998-03-25 16:43:52 danw Exp $
  *
  * Copyright 1990,1991 by the Massachusetts Institute of Technology
  * For distribution and copying rights, see the file "mit-copyright.h"
@@ -30,4 +30,4 @@ typedef struct {
 void aklog(int, char *[], aklog_params *);
 void aklog_init_params(aklog_params *);
 
-#endif __AKLOG_H__
+#endif /* __AKLOG_H__ */
