@@ -56,7 +56,11 @@ static char sccsid[] = "@(#)ftpd.c	5.19 (Berkeley) 11/30/88 + portability hacks 
 #else
 #include <strings.h>
 #endif
+#ifdef ultrix
+#include <nsyslog.h>
+#else
 #include <syslog.h>
+#endif
 #ifdef ATHENA
 #include "athena_ftpd.h"
 #include "krb.h"

@@ -41,7 +41,11 @@ static char sccsid[] = "@(#)ftpcmd.y	5.13 (Berkeley) 11/30/88";
 #include <ctype.h>
 #include <pwd.h>
 #include <setjmp.h>
+#ifndef ultrix
 #include <syslog.h>
+#else
+#include <nsyslog.h>
+#endif
 #ifdef ATHENA
 #include "athena_ftpd.h"
 
