@@ -1,5 +1,5 @@
 /*
- * $Id: Imakefile,v 1.21 1998-12-27 21:36:03 rbasch Exp $
+ * $Id: Imakefile,v 1.22 1999-01-25 21:29:20 ghudson Exp $
  */
 
 #ifdef SOLARIS
@@ -10,6 +10,10 @@ LIBS=-lkvm -ladm
 LIBS=-lelf
 #endif
 
+#if defined(__NetBSD__) || defined(linux)
+#define SCRIPT
+#endif
+
 #if defined(SOLARIS) || defined(sgi)
 INSTALLFLAGS = -m 2755 -o root -g sys
 #endif
@@ -17,6 +21,25 @@ INSTALLFLAGS = -m 2755 -o root -g sys
 NAME=${HOSTTYPE}
 OSNAME=`uname -s`
 OSVERS=`uname -r`
+
+#ifdef SCRIPT
+
+all:: machtype
+
+clean::
+	rm -f machtype
+
+machtype: ${ATHVERS} machtype_${NAME}.sh
+	rm -f $@
+	. ${ATHVERS}; \
+		sed -e "s/@ATHMAJV@/$$major/" -e "s/@ATHMINV@/$$minor/" \
+			-e 's/@ATHSYSCOMPAT@/${ATHENA_SYS_COMPAT}/' \
+			-e 's/@ATHSYS@/${ATHENA_SYS}/' machtype_${NAME}.sh > $@
+	chmod a+x $@
+
+install_program(machtype,,${ATHRBINDIR})
+
+#else
 
 machtype.o:	${ATHVERS} machtype.c
 	$(RM) $@
@@ -27,5 +50,7 @@ machtype.o:	${ATHVERS} machtype.c
 
 build_program(machtype, machtype.o machtype_${NAME}.o,,${LIBS})
 install_program(machtype,${INSTALLFLAGS},${ATHRBINDIR})
+
+#endif
 
 install_man(machtype.1,machtype.1)
