@@ -27,7 +27,7 @@ update.pkglog	. /etc/athena/rc.conf && test true = "$PUBLIC" && test -r /var/ath
 date		date
 uptime		uptime
 partitions	prtvtoc `mount | sed -n -e 's/^\/ on \([^ ]*\).*$/\1/p'`
-df		df -k / /usr /var /usr/vice/cache
+df		df -k / /usr /var /usr/vice/cache | uniq
 interfaces	netstat -in
 routes		netstat -rn
 listeners	netstat -an -f inet -P tcp | grep 'LISTEN$'
