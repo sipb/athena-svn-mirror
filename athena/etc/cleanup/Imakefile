@@ -1,0 +1,9 @@
+#
+# $Header: /afs/dev.mit.edu/source/repository/athena/etc/cleanup/Imakefile,v 1.1 1991-07-30 17:48:32 epeisach Exp $
+#
+
+#ifdef vax
+CC=gcc
+#endif
+
+SimpleProgram(cleanup, cleanup.o,-lhesiod,/etc/athena/)
