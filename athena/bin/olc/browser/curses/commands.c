@@ -133,7 +133,7 @@ next_entry()
 
 up_level()
 {
-  char new_dir[FILENAME_SIZE];		/* New current directory. */
+  char new_dir[MAXPATHLEN];		/* New current directory. */
   char *tail;				/* Ptr. to tail of path. */
   
   strcpy(new_dir, Current_Dir);
@@ -165,7 +165,7 @@ save_to_file()
   char error[ERRSIZE];			/* Error message. */
   int save_ind;			/* Index of desired entry. */
   char msg[LINE_LENGTH];		/* Message for saving file. */
-  char filename[FILENAME_SIZE];		/* Name of file to use. */
+  char filename[MAXPATHLEN];		/* Name of file to use. */
 
   inbuf[0] = (char) NULL;
   message(1, "Save entry? ");
@@ -264,7 +264,7 @@ quit()
 goto_entry()
 {
   char inbuf[LINE_LENGTH];		/* Input buffer. */
-  char new_dir[FILENAME_SIZE];		/* New directory name. */
+  char new_dir[MAXPATHLEN];		/* New directory name. */
   char error[ERRSIZE];
   char line1[ERRSIZE];			/* Error message. */
   char line2[ERRSIZE];
@@ -420,7 +420,7 @@ list_abbrevs()
 insert_entry()
 {
   FILE *fp;				/* File pointer. */
-  char contents[FILENAME_SIZE];		/* Contents filename. */
+  char contents[MAXPATHLEN];		/* Contents filename. */
   char inbuf[LINE_LENGTH];		/* Input buffer. */
   int ind;				/* Entry index. */
   int i;				/* Index variable. */
@@ -428,21 +428,21 @@ insert_entry()
   int type;				/* Type of entry. */
   char type_name[LINE_LENGTH];		/* Name of entry type. */
   char title[LINE_LENGTH];		/* Title of entry. */
-  char filename[FILENAME_SIZE];		/* Filename to use. */
+  char filename[MAXPATHLEN];		/* Filename to use. */
   char formatter[LINE_LENGTH];		/* Text formatter to use. */
   char maintainer[LINE_LENGTH];		/* Maintainer of file. */
-  char newdir[FILENAME_SIZE];		/* New directory pathname. */
-  char newfile[FILENAME_SIZE];		/* New file pathname. */
+  char newdir[MAXPATHLEN];		/* New directory pathname. */
+  char newfile[MAXPATHLEN];		/* New file pathname. */
   int row;				/* Row on screen. */
   char *fullpath;
   char *ptail;
-  char tail[FILENAME_SIZE];
+  char tail[MAXPATHLEN];
   char line1[ERRSIZE];
   char line2[ERRSIZE];
   char log_string[LOG_LENGTH];
-  char install_dir[FILENAME_SIZE];
-  char install_file[FILENAME_SIZE];
-  char install_path[FILENAME_SIZE];
+  char install_dir[MAXPATHLEN];
+  char install_file[MAXPATHLEN];
+  char install_path[MAXPATHLEN];
 
   if (Log_File[0] == (char) NULL)
     {
@@ -663,7 +663,7 @@ else
 delete_entry()
 {
   FILE *fp;				/* File pointer. */
-  char contents[FILENAME_SIZE];		/* Contents filename. */
+  char contents[MAXPATHLEN];		/* Contents filename. */
   char inbuf[LINE_LENGTH];		/* Input buffer. */
   int ind;				/* Entry index. */
   int i;				/* Index variable. */
@@ -672,7 +672,7 @@ delete_entry()
   int j;				/* Index variable. */
   char *fullpath;
   char *ptail;
-  char tail[FILENAME_SIZE];
+  char tail[MAXPATHLEN];
   char line1[ERRSIZE];
   char line2[ERRSIZE];
   char log_string[LOG_LENGTH];
@@ -781,7 +781,7 @@ redisplay()
 
 contents_file()
 {
-  char contents_path[FILENAME_SIZE];
+  char contents_path[MAXPATHLEN];
 
   make_path(Current_Dir,CONTENTS,contents_path);
   clear();
