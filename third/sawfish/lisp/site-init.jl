@@ -1,4 +1,4 @@
-;; $Id: site-init.jl,v 1.19 2003-05-20 18:27:45 ghudson Exp $
+;; $Id: site-init.jl,v 1.20 2003-05-29 16:33:17 ghudson Exp $
 ;; Site initialization for Athena
 
 ;; Pick a nice readable default font.
@@ -69,12 +69,8 @@
 	("Close" delete-window)
 	("Close Forcibly" destroy-window)
 	()
-	("Frame type"
-	 ("Normal" set-frame:default)
-	 ("Title-only" set-frame:shaped)
-	 ("Border-only" set-frame:transient)
-	 ("Top-border" set-frame:shaped-transient)
-	 ("None" set-frame:unframed))
+	("Toggle" . window-ops-toggle-menu)
+	("Frame type" . frame-type-menu)
 	("Frame style" . frame-style-menu)))
 
 (setq root-menu
