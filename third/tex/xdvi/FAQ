@@ -1,0 +1,133 @@
+This file answers the following questions about installing xdvi:
+
+    1.	I have font files cmr10.tfm, etc.  Why can't xdvi use them?
+    2.	I can't seem to set the font path correctly.  Can you help me?
+    3.	xdvi claims to support virtual fonts, but I can't use PostScript
+	virtual fonts (such as helv.vf or phvr.vf) with xdvi.  Why not?
+    4.	I am trying to display PostScript specials with -DPS_GS, but
+	instead I get the message `gs: gs: Malformed ghostview color property.'
+    5.	I am using gs 3.3.3 to render PostScript figures, but find that it
+	cuts some off below or to the right of a certain point, and others
+	are omitted entirely.
+
+----------
+
+1.  I have font files cmr10.tfm, etc.  Why can't xdvi use them?
+
+tfm files contain only minimal information about the characters
+in a font:  just the height, width, depth, and kerning and ligature
+information.  To obtain information about the shapes of the
+characters, xdvi needs pk or gf files.  (pxl files also contain
+this information, but are obsolete.  There are utilities to convert
+them to pk files though.)
+
+----------
+
+2.  I can't seem to set the font path correctly.  Can you help me?
+
+Try
+	xdvi -debug 32 file.dvi
+to find out where xdvi is looking for the fonts.
+
+----------
+
+3.  xdvi claims to support virtual fonts, but I can't use PostScript
+    virtual fonts (such as helv.vf or phvr.vf) with xdvi.  Why not?
+
+The short answer is to quote the man page:
+
+	Virtual fonts are also supported, although xdvi does not
+	have any built-in fonts to which they can refer.
+
+As further explanation, let me begin by pointing out:
+
+	VIRTUAL FONTS ARE NOT FONTS.
+
+Virtual fonts are recipes for building fonts from other fonts.
+In the case of PostScript fonts, those other fonts reside on
+your printer.  Which is fine for dvi-to-PostScript programs
+such as dvips, but it presents a problem for xdvi since it cannot
+access your printer.
+
+There are some solutions, however.
+
+The first solution is to install gsftopk, which uses
+ghostscript to approximate the fonts.  It is made for sites that
+use both xdvi and dvips, although if you just use xdvi it should
+be useful, too.
+
+Another solution is to get these fonts pre-made in common sizes.
+These were made by a program called gsrenderfont (part of the Gnu
+font utilities).
+
+These are all available via anonymous ftp:
+
+gsftopk from math.berkeley.edu:pub/TeX/gsftopk.tar.Z
+pre-made fonts from ftp.cs.umb.edu:pub/tex/psfonts.tar
+gsrenderfont from prep.ai.mit.edu:pub/gnu/fontutils-0.6.tar.gz
+
+----------
+
+4.  I am trying to display PostScript specials with -DPS_GS, but
+    instead I get the message `gs: gs: Malformed ghostview color property.'
+
+xdvi needs at least version 2.6.2 of ghostscript.  It will also run with
+ghostscript 2.6.1, provided you have applied fixes 1-4.  This particular
+error message means that you are running gs 2.6.1 without fixes 1-4.
+Probably you should get ghostscript 2.6.2 from prep.ai.mit.edu (or any of
+its mirror sites).
+
+xdvi will also run with version 3 of ghostscript, but see question #5.
+
+----------
+
+5.  I am using gs 3.3.3 to render PostScript figures, but find that it
+    cuts some off below or to the right of a certain point, and others
+    are omitted entirely.
+
+You should apply the following patch.  This will also fix similar errors
+with ghostview.  This patch supersedes a previous patch I have suggested
+to some people.
+
+*** gdevxini.c.orig	Tue May  2 14:12:52 1995
+--- gdevxini.c	Tue May  2 14:13:57 1995
+***************
+*** 320,345 ****
+  
+  	    /* The following sets the imageable area according to the */
+  	    /* bounding box and margins sent by ghostview.            */
+! 	    {	float m[4];
+! 		m[0] = (llx - left_margin) / 72.0;	/* left */
+! 		m[1] = (lly - bottom_margin) / 72.0;	/* bottom */
+! 		m[2] = xdev->width / xdev->x_pixels_per_inch -
+! 		  (urx + right_margin) / 72.0;		/* right */
+! 		m[3] = xdev->height / xdev->y_pixels_per_inch -
+! 		  (ury + top_margin) / 72.0;		/* top */
+! 
+! 		/******
+! 		 ****** For reasons I don't understand,
+! 		 ****** we have to set the margins to zero here
+! 		 ****** in order for Ghostview to do landscape display right.
+! 		 ******/
+! #if 0
+! 		m[0] = m[1] = m[2] = m[3] = 0;
+! #endif
+! 
+! 		gx_device_set_margins((gx_device *)xdev, m, false);
+! 	    }
+! 
+  	} else if (xdev->pwin == (Window)None) {
+  	    eprintf("gs: Cannot get ghostview property.\n");
+  	    exit(1);
+--- 320,330 ----
+  
+  	    /* The following sets the imageable area according to the */
+  	    /* bounding box and margins sent by ghostview.            */
+! 	    xdev->ImagingBBox[0] = llx - left_margin;
+! 	    xdev->ImagingBBox[1] = lly - bottom_margin;
+! 	    xdev->ImagingBBox[2] = urx + right_margin;
+! 	    xdev->ImagingBBox[3] = ury + top_margin;
+! 	    xdev->ImagingBBox_set = true;
+  	} else if (xdev->pwin == (Window)None) {
+  	    eprintf("gs: Cannot get ghostview property.\n");
+  	    exit(1);

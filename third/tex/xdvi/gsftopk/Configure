@@ -1,0 +1,319 @@
+#! /bin/sh
+#
+# If these # comments don't work, trim them.
+#
+# (If you are trying to port this package to a machine without sh,
+# I would suggest you have a look at the prototypical config_p.h file
+# and edit it to reflect your system. Some packages may include samples
+# of config.h for certain machines, so you might look for one of those.)
+#
+# Yes, you may rip this off to use in other distribution packages. This
+# script belongs to the public domain and cannot be copyrighted.
+#
+# (Note: this Configure script was generated automatically. Rather than
+# working with this copy of Configure, you may wish to get metaconfig.
+# The dist-3.0 package (which contains metaconfig) was posted in
+# comp.sources.misc so you may fetch it yourself from your nearest
+# archive site. Check with Archie if you don't know where that can be.)
+#
+
+# Generated on Tue May 10 14:30:48 PDT 1994 [metaconfig 3.0 PL26]
+#
+# Hacked by hand by Paul Vojta, ignoring an earlier paragraph.  Removed
+# all the questions, and added an argument to specify the C compiler.
+
+# Modifications to this script are Copyright (c) 1994 Paul Vojta.
+# All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in the
+#    documentation and/or other materials provided with the distribution.
+#
+# THIS SOFTWARE IS PROVIDED BY THE AUTHOR AND CONTRIBUTORS ``AS IS'' AND
+# ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+# ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR OR CONTRIBUTORS BE LIABLE
+# FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+# OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+# HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+# LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+# OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+# SUCH DAMAGE.
+
+if test ! -t 0; then
+	echo "You must run Configure from make."
+	exit 1
+fi
+
+: On HP-UX, large Configure scripts may exercise a bug in /bin/sh
+if test -f /hp-ux -a -f /bin/ksh; then
+	if (PATH=.; alias -x) >/dev/null 2>&1; then
+		: already under /bin/ksh
+	else
+		cat <<'EOM'
+(Feeding myself to ksh to avoid nasty sh bug in "here document" expansion.)
+EOM
+		exec /bin/ksh $0 '$@'
+	fi
+else
+	: Warn them if they use ksh on other systems
+	(PATH=.; alias -x) >/dev/null 2>&1 && \
+		cat <<'EOM'
+(I see you are using the Korn shell.  Some ksh's blow up on Configure,
+especially on exotic machines.  If yours does, try the Bourne shell instead.)
+EOM
+fi
+
+: Check for arguments
+if test $# -eq 0; then
+	echo "You must specify an argument saying what C compiler you're using."
+	exit 1
+fi
+
+echo "Sanity check first..."
+cat <<EOF >cfg_test.c
+#include <stdio.h>
+main() {puts("Hello world");}
+EOF
+if $* -o cfg_test cfg_test.c; then
+	: blank line
+else
+	echo ""
+	echo "This is not gonna work.  I'm sorry, but you'll have to edit"
+	echo "config.h by hand."
+	cp config_p.h config.h
+	exit 1
+fi
+
+echo "Checking for whether we should include stdlib.h"
+cat <<EOF >config.h
+/*
+ * This file was generated automatically by the Configure script.
+ * Run Configure again to make any necessary changes, or copy
+ * config_p.h to config.h and then start editing.
+ */
+
+/* Include <stdlib.h>, if it exists. */
+EOF
+cat <<EOF >cfg_test.c
+#include <stdlib.h>
+#include <stdio.h>
+main() {puts("Hello world");}
+EOF
+if $* -c cfg_test.c >/dev/null 2>&1; then
+	stdlib='yes'
+	echo "#include <stdlib.h>" >>config.h
+else
+	stdlib='no'
+	echo "/* #include <stdlib.h> */" >>config.h
+fi
+
+echo "Checking for the presence of stdarg.h"
+cat <<EOF >>config.h
+
+/* Always include this one. */
+#include <stdio.h>
+
+/* Define I_STDARG if there's a stdarg.h. */
+EOF
+cat <<EOF >cfg_test.c
+#include "config.h"
+#include <stdarg.h>
+main() {puts("Hello world");}
+EOF
+if $* -c cfg_test.c >/dev/null 2>&1; then
+	echo "#define I_STDARG" >>config.h
+else
+	echo "#undef I_STDARG" >>config.h
+fi
+
+echo "Checking for whether we have <string.h> or <strings.h>"
+cat <<EOF >>config.h
+
+/* Include either <string.h> or <strings.h> here. */
+EOF
+
+cat <<EOF >cfg_test.c
+#include "config.h"
+#include <string.h>
+main() {puts("Hello world");}
+EOF
+if $* -c cfg_test.c >/dev/null 2>&1; then
+	string='string'
+else
+	string='strings'
+fi
+echo "#include <$string.h>" >>config.h
+
+cat <<EOF >>config.h
+
+/* Include <memory.h>, if appropriate.  Note that it may have been left
+   out even though it exists.  We do this because of conflicts on many
+   systems.  But if it works, then it works. */
+EOF
+memory='no'
+if test "$stdlib $string" = "no string"; then
+	echo "Checking for whether we should include memory.h"
+	cat <<EOF >cfg_test.c
+#include "config.h"
+#include <memory.h>
+main() {puts("Hello world");}
+EOF
+	if $* -c cfg_test.c >/dev/null 2>&1; then
+		memory='yes'
+	fi
+fi
+if test $memory = 'yes'; then
+	echo "#include <memory.h>" >>config.h
+else
+	echo "/* #include <memory.h> */" >>config.h
+fi
+
+cat <<EOF >>config.h
+
+/* Include <unistd.h> if it exists. */
+EOF
+echo "Checking for whether we should include unistd.h"
+cat <<EOF >cfg_test.c
+#include "config.h"
+#include <unistd.h>
+main() {puts("Hello world");}
+EOF
+if $* -c cfg_test.c >/dev/null 2>&1; then
+	echo "#include <unistd.h>" >>config.h
+else
+	echo "/* #include <unistd.h> */" >>config.h
+fi
+
+echo "Checking for the function vfork()"
+cat <<EOF >cfg_test.c
+#include "config.h"
+main() {(void) vfork();}
+EOF
+if $* -o cfg_test cfg_test.c >/dev/null 2>&1; then
+	vfork='yes'
+else
+	vfork='no'
+fi
+
+vforkinc='no'
+if test $vfork = 'yes'; then
+	echo "Testing for the presence of vfork.h"
+	cat <<EOF >cfg_test.c
+#include "config.h"
+#include <vfork.h>
+main() {puts("Hello world");}
+EOF
+	if $* -c cfg_test.c >/dev/null 2>&1; then
+		vforkinc='yes'
+	fi
+fi
+
+cat <<EOF >>config.h
+
+/* If the system has vfork(), then it may require us to include vfork.h */
+EOF
+if test $vforkinc = yes; then
+	echo "#include <vfork.h>" >>config.h
+else
+	echo "/* #include <vfork.h> */" >>config.h
+fi
+
+cat <<EOF >>config.h
+
+/* Define this if POSIX <dirent.h> instead of old <sys/dir.h>. */
+EOF
+echo "Checking for whether to include dirent.h or sys/dir.h"
+cat <<EOF >cfg_test.c
+#include "config.h"
+#include <dirent.h>
+main() {puts("Hello world");}
+EOF
+if $* -c cfg_test.c >/dev/null 2>&1; then
+	echo "#define POSIX_DIRENT" >>config.h
+else
+	echo "/* #define POSIX_DIRENT */" >>config.h
+fi
+
+echo "Checking for bzero()"
+cat <<EOF >>config.h
+
+/* If the system has bzero(), use it; otherwise hope they have memset() */
+EOF
+cat <<EOF >cfg_test.c
+#include "config.h"
+main() {int i; bzero(&i, 1);}
+EOF
+if $* -o cfg_test cfg_test.c >/dev/null 2>&1; then
+	echo "/* #define bzero(s, n)	memset((s), 0, (n)) */" >>config.h
+else
+	echo "#define bzero(s, n)	memset((s), 0, (n))" >>config.h
+fi
+
+echo "Checking for memcmp()"
+cat <<EOF >>config.h
+
+/* If the system has memcmp(), use it; otherwise hope they have bcmp() */
+EOF
+cat <<EOF >cfg_test.c
+#include "config.h"
+main() {char c; memcmp(&c, &c, 1);}
+EOF
+if $* -o cfg_test cfg_test.c >/dev/null 2>&1; then
+	echo "/* #define memcmp	bcmp */" >>config.h
+else
+	echo "#define memcmp	bcmp" >>config.h
+fi
+
+echo "Checking for memcpy()"
+cat <<EOF >>config.h
+
+/* If the system has memcpy(), use it; otherwise hope they have bcopy() */
+EOF
+cat <<EOF >cfg_test.c
+#include "config.h"
+main() {char c; memcpy(&c, &c, 1);}
+EOF
+if $* -o cfg_test cfg_test.c >/dev/null 2>&1; then
+	echo "/* #define memcpy(d, s, n)	bcopy(s, d, n) */" >>config.h
+else
+	echo "#define memcpy(d, s, n)	bcopy(s, d, n)" >>config.h
+fi
+
+echo "Checking for strchr()"
+cat <<EOF >>config.h
+
+/* If the system has strchr(), use it; otherwise hope they have index() */
+/* Likewise for strrchr() and rindex() */
+EOF
+cat <<EOF >cfg_test.c
+#include "config.h"
+main() {char c; (void) strchr("foo", 'b');}
+EOF
+if $* -o cfg_test cfg_test.c >/dev/null 2>&1; then
+	echo "/* #define strchr	index */" >>config.h
+	echo "/* #define strrchr	rindex */" >>config.h
+else
+	echo "#define strchr	index" >>config.h
+	echo "#define strrchr	rindex" >>config.h
+fi
+
+cat <<EOF >>config.h
+
+/* Use vfork() if it's available; otherwise, fork() */
+EOF
+if test $vfork = 'yes'; then
+	echo "/* #define vfork	fork */" >>config.h
+else
+	echo "#define vfork	fork" >>config.h
+fi
+
+rm -f cfg_test.c cfg_test.o cfg_test
+echo "Done."
+exit 0
