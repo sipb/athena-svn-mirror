@@ -1,5 +1,5 @@
 #
-# $Id: Imakefile,v 1.6 1996-12-23 23:17:49 jweiss Exp $
+# $Id: Imakefile,v 1.6.8.1 1999-11-08 20:53:33 tb Exp $
 #
 
 PROJECT= gms
@@ -21,6 +21,10 @@ LIBS= -lhesiod -lcom_err
 error_table(gethost_err)
 error_table(globalmessage_err)
 error_table(hesiod_err)
+
+create_dir($(ATHBINDIR))
+create_dir($(ATHETCDIR))
+create_dir($(ATHMANDIR)/man1)
 
 SimpleProgram(get_message,$(LIB),$(LIBS),$(ATHBINDIR))
 SimpleProgram($(SERVER),message_daemon.o $(LIB),$(LIBS),$(ATHETCDIR))
