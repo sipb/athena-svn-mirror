@@ -22,7 +22,7 @@
 #include <netinet/in.h>
 #include <netdb.h>
 
-static char rcsid[] = "$Id: gettime.c,v 1.13 1997-12-15 00:34:34 cfields Exp $";
+static char rcsid[] = "$Id: gettime.c,v 1.14 1998-01-20 23:05:48 ghudson Exp $";
 
 #define UNIX_OFFSET_TO_1900 ((70 * 365UL + 17) * 24 * 60 * 60)
 #define TIME_SERVICE "time"
@@ -42,7 +42,8 @@ int main(int argc, char **argv)
   struct servent *service_info;
   struct hostent *host_info = NULL;
   struct sockaddr_in time_address;
-  char *time_hostname, buffer[20];
+  char *time_hostname;
+  unsigned char buffer[20];
   int tries, time_socket, result;
   fd_set read_set;
   struct timeval timeout, current_time;
