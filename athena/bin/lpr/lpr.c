@@ -17,13 +17,13 @@
 
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpr.c,v $
- *	$Author: ilham $
+ *	$Author: epeisach $
  *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpr.c,v 1.3 1990-06-01 18:17:25 ilham Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpr.c,v 1.4 1990-06-26 13:44:11 epeisach Exp $
  */
 
 #ifndef lint
-static char *rcsid_lpr_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpr.c,v 1.3 1990-06-01 18:17:25 ilham Exp $";
+static char *rcsid_lpr_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpr.c,v 1.4 1990-06-26 13:44:11 epeisach Exp $";
 #endif lint
 
 /*
@@ -173,7 +173,11 @@ main(argc, argv)
 #else SERVER
 	if (hp = gethostbyname(host)) strcpy(host, hp -> h_name);
 #endif SERVER
+#ifdef LOG_LPR
 	openlog("lpd", 0, LOG_LPR);
+#else
+	openlog("lpd", 0);
+#endif
 
 	while (argc > 1 && argv[1][0] == '-') {
 		argc--;
@@ -372,7 +376,7 @@ main(argc, argv)
 	card('P', person);
 #ifdef KERBEROS
 	if (account)
-		card('Q', itoa(account));
+		card('A', itoa(account));
 #endif KERBEROS
 	if (forms != NULL)
 	        card('F', forms);
@@ -674,7 +678,9 @@ cleanup()
 test(file)
 	char *file;
 {
+#ifndef mips
 	struct exec execb;
+#endif
 	register int fd;
 	register char *cp;
 
@@ -700,6 +706,7 @@ test(file)
 		printf("%s: cannot open %s\n", name, file);
 		return(-1);
 	}
+#ifndef mips
 	if (read(fd, &execb, sizeof(execb)) == sizeof(execb))
 		switch((int) execb.a_magic) {
 		case A_MAGIC1:
@@ -714,6 +721,7 @@ test(file)
 			printf("%s: %s is an archive file", name, file);
 			goto error1;
 		}
+#endif /* mips */
 	(void) close(fd);
 	if (rflag) {
 		if ((cp = rindex(file, '/')) == NULL) {
