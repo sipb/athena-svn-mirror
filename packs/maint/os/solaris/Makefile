@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.17 2004-04-02 22:48:00 rbasch Exp $
+# $Id: Makefile,v 1.18 2004-04-24 14:04:22 rbasch Exp $
 
 ATHRETCDIR=/etc/athena
 ATHETCDIR=/usr/athena/etc
@@ -35,6 +35,7 @@ install:
 	install -c -m 0755 oscheck.sh ${DESTDIR}${ATHETCDIR}/oscheck
 	install -c -m 0755 syncconf.rc ${DESTDIR}${INITD}/syncconf
 	install -c -m 0555 syncconf.sh ${DESTDIR}${ATHRETCDIR}/syncconf
+	install -c -m 0555 verify-pkgs.sh ${DESTDIR}${ATHETCDIR}/verify-pkgs
 	install -c -m 0755 ../../os-checkfiles ${DESTDIR}${ATHETCDIR}
 	rm -f ${DESTDIR}${RC0}/K90athena-ws
 	ln -s ../init.d/athena-ws ${DESTDIR}${RC0}/K90athena-ws
