@@ -1,0 +1,1274 @@
+This is Info file ifhp.info, produced by Makeinfo-1.64 from the input
+file /tmp/sgmltmp.ifhp7895.info.2.
+
+   \input texinfo
+
+
+File: ifhp.info,  Node: Top,  Next: Introduction,  Up: (dir)
+
+IFHP-HOWTO
+**********
+
+     Patrick Powell
+     22 Apr 1999 (For ifhp-3.2.7)
+   `papowell@astart.com'
+
+   The `ifhp' software is an enhanced, extended, highly configurable,
+and portable implementation of a print filter for use with the `ifhp'
+Print spooler software.  It supports network, serial, and parallel
+printers, does page accounting and job recovery, and allows an
+extremely high level of configuration and tuning.  The `ifhp' filter
+gets its flexibility by using a configuration file to set its
+operational characteristics.  The configuration file can contain
+multiple separate printer configurations,  and the desired one can be
+selected by a simple mechanism.  The filter can support vintage text,
+PostScript, PCL, and PJL printers, and can be configured to handle a
+wide range of printer quirks and misimplementations.
+
+* Menu:
+
+* Introduction::
+* Installation and Express Configuration::
+* Configuration Tutorial::
+* Filter Operation Details::
+* Banners and OF Mode Operations::
+* Predefined Options::
+* Configuration Files::
+* Font Download Support::
+* Banner Printing::
+* Accounting::
+* Monitoring Printer Operation::
+* HP JetDirect Card Support::
+
+
+File: ifhp.info,  Node: Introduction,  Next: Installation and Express Configuration,  Prev: Top,  Up: Top
+
+Introduction
+************
+
+   The `ifhp' print filter is the latest in a long evolutionary path of
+print filters for the `ifhp' printing system.  It is intended to unify
+several different methods of controlling printers,  and provide a
+common code base for future development.
+
+   This document is the complete set of references and installation
+guide for the `ifhp' printer.  It covers the compilation and
+installation, initial testing, details of system configuration, and
+various configuration options that would be needed by the system
+administrator.
+
+   The reference for Printer Job Language (PJL) related issues was the
+Printer Job Language Technical Reference Manual, Hewlett Packard, 10th
+Edition, October 1997, and the reference for PCL related issues was the
+PCL 5 Printer Language Technical Reference Manual, First Edition, 1992.
+These manuals are available through the Hewlett Packard Developers
+Program.  See http://www.hp.com/go/devexchange for information on how
+to join.
+
+   Previous releases of `ifhp' had a large selection of `README' files
+which are now incorporated into the `ifhp'-HOWTO document.
+
+   Current information about LPRng, `ifhp' and the latest release can
+be found on the LPRng web page:
+
+   http://www.astart.com/LPRng.html
+
+   There is also a mailing list at `lprng@iona.com'. To subscribe, send
+an email to `lprng-request@iona.com'. The body should contain only the
+word `subscribe'. To get off the list later on, repeat the same
+procedure, but use the word `unsubscribe'.
+
+   Several presentations of LPRng and print spooling software have been
+made at the Large Scale Installation Administrator (LISA) conferences
+and are in the `ifhp' distribution and available on web sites.
+<tt>ifhp</tt> - An Enhanced Printer Spooler System was presented at the
+LISA95 conference, and is in the LPRng distribution as LPRng-LISA95.ps.
+On a more general topic, the slides for the LISA97 tutorial on Printers
+and Network Print Spooling are also in the LPRng distribution in the
+DOC/LISA97 directory.
+
+* Menu:
+
+* Copyright::
+* Disclaimer::
+* Commercial Support::
+* Web Site::
+* FTP Sites::
+* Mailing List::
+* PGP Public Key::
+
+
+File: ifhp.info,  Node: Copyright,  Next: Disclaimer,  Up: Introduction
+
+Copyright
+=========
+
+   Material included in this document from the `ifhp' distribution
+Copyright Patrick Powell 1988-1999, where applicable.
+
+   The rights to distribute this document complete or in part are hereby
+granted for non-commercial purposes. Partial reproductions must
+acknowledge the source.
+
+   Permission to distribute this file together with LPRng and `derived
+works' (as defined in the LPRng license) is explicitly granted. This is
+allowed independent of the license under which the software is
+distributed.
+
+   Citing the document is allowed as long as the source is acknowledged.
+
+
+File: ifhp.info,  Node: Disclaimer,  Next: Commercial Support,  Prev: Copyright,  Up: Introduction
+
+Disclaimer
+==========
+
+   `THE MATERIAL IN THIS HOWTO IS PROVIDED WITHOUT FEE AND AS-IS WITH NO
+WARRANTY REGARDING FITNESS OF USE FOR ANY PURPOSE. THE AUTHOR AND ALL
+CONTRIBUTORS ARE NOT LIABLE FOR ANY DAMAGES, DIRECT OR INDIRECT,
+RESULTING FROM THE USE OF INFORMATION PROVIDED IN THIS DOCUMENT.'
+
+
+File: ifhp.info,  Node: Commercial Support,  Next: Web Site,  Prev: Disclaimer,  Up: Introduction
+
+Commercial Support
+==================
+
+   AStArt Technologies provides commercial support and enhancements for
+LPRng, `ifhp', and other network software.  AStArt provides network and
+system consulting services for UNIX and NT systems, as well as real
+time and network software.
+
+
+File: ifhp.info,  Node: Web Site,  Next: FTP Sites,  Prev: Commercial Support,  Up: Introduction
+
+Web Site
+========
+
+   Web Page:
+
+   http://www.astart.com/lprng.html
+
+
+File: ifhp.info,  Node: FTP Sites,  Next: Mailing List,  Prev: Web Site,  Up: Introduction
+
+FTP Sites
+=========
+
+   The software may be obtained from
+ftp://ftp.astart.com/pub/LPRng/FILTERS(Main site)
+Mirrors:
+ftp://ftp.sage-au.org.au/pub/printing/spooler/lprng (AU)
+ftp://ftp.zod.wau.nl/pub/mirror/plp/LPRng (AU/NZ)
+ftp://gwynne.cs.ualberta.ca/pub/LPRng (CA)
+ftp://ftp.informatik.uni-hamburg.de/pub/os/unix/utils/LPRng (DE)
+ftp://ftp.uni-paderborn.de/pub/unix/printer/plp/LPRng (DE)
+ftp://ftp.iona.ie/pub/plp/LPRng (IE)
+ftp://ftp.chembio.ntnu.no/pub/mirrors/LPRng (NO)
+ftp://ftp.mono.org/pub/LPRng (UK)
+ftp://ftp.cs.columbia.edu/pub/archives/pkg/LPRng (US)
+ftp://ftp.cs.umn.edu/pub/LPRng (US)
+ftp://ftp.iona.com/pub/plp/LPRng (US)
+ftp://uiarchive.uiuc.edu/pub/packages/LPRng (US)
+
+File: ifhp.info,  Node: Mailing List,  Next: PGP Public Key,  Prev: FTP Sites,  Up: Introduction
+
+Mailing List
+============
+
+To join the LPRng mailing list, please send mail to
+lprng-request@iona.ie with the word 'subscribe' in the BODY
+
+
+File: ifhp.info,  Node: PGP Public Key,  Prev: Mailing List,  Up: Introduction
+
+PGP Public Key
+==============
+
+   The LPRng and `ifhp' distributions have an MD5 checksum calculated,
+which is then signed with a PGP public key.  Here is the key for
+validating the checksums:
+     Type Bits/KeyID    Date       User ID
+     pub  1024/00D95C9D 1997/01/31 Patrick A. Powell <papowell@astart.com>
+                                                               Patrick A. Powell <papowell@sdsu.edu>
+     
+     -----BEGIN PGP PUBLIC KEY BLOCK-----
+     Version: 2.6.3i
+     
+     mQCNAzLygTQAAAEEANBW5fPYjN3wSAnP9xWOUc3CvsMUxjip0cN2sY5qrdoJyIhn
+     qbAspBopR+tGQfyp5T7C21yfWRRnfXmoJ3FVtgToAsJUYmzoSFY08eDx+rmSqCLe
+     rdJjX8aG8jVXpGipEo9U4QsUK+OKzx3/y/OaK4cizoWqKvy1l4lEzDsA2VydAAUT
+     tCdQYXRyaWNrIEEuIFBvd2VsbCA8cGFwb3dlbGxAYXN0YXJ0LmNvbT6JAJUDBRA0
+     XonoiUTMOwDZXJ0BAQ2cBAC7zU9Fn3sC3x0USJ+3vjhg/qA+Gjb5Fi1dJd4solc4
+     vJvtf0UL/1/rGipbR+A0XHpHzJUMP9ZfJzKZjaK/d0ZBNlS3i+JnypypeQiAqo9t
+     FV0OyUCwDfWybgAORuAa2V6UJnAhvj/7TpxMmCApolaIb4yFyKunHa8aBxN+17Ro
+     rrQlUGF0cmljayBBLiBQb3dlbGwgPHBhcG93ZWxsQHNkc3UuZWR1PokAlQMFEDLy
+     gTSJRMw7ANlcnQEBYBYD/0zTeoiDNnI+NjaIei6+6z6oakqO70qFVx0FG3aP3kRH
+     WlDhdtFaAuaMRh+RItHfFfcHhw5K7jiJdgKiTgGfj5Vt3OdHYkeeh/sddqgf9YnS
+     tpj0u5NfrotPTUw39n6YTgS5/aW0PQfO9dx7jVUcGeod1TGXTe9mIhDMwDJI4J14
+     =3Zbp
+     -----END PGP PUBLIC KEY BLOCK-----
+
+
+File: ifhp.info,  Node: Installation and Express Configuration,  Next: Configuration Tutorial,  Prev: Introduction,  Up: Top
+
+Installation and Express Configuration
+**************************************
+
+   Before you do an installation, you should read the following
+instructions.  You will need to:
+  1. Use GNU Make.  Don't even think about trying to use another make
+     unless you are a Wizard.  And even the Wizards would download the
+     GNU Make.
+
+  2. Use an ANSI C compiler.
+
+  3. Read the `HOWTO/ifhp-HOWTO.[lcub  ]ps,html,text,...[rcub  ]'
+     file(s).  You are doing this now, so you are off to a good start.
+
+  4. Generate the executables.
+
+  5. Install the configuration files.
+
+  6. Run some simple standalone tests, i.e. - without using the print
+     spooler.
+
+  7. Modify the configuration files to suit your sites requirements.
+
+  8. Install the executables.
+
+  9. Modify the printcap files and/or add other information to the
+     printcap files.
+
+ 10. Try the `ifhp' filter with the working print spooler.
+
+   In addition, you might want to get the following software, which can
+be used with `ifhp'.
+`a2ps - Ascii Text To PostScript Converter'
+     http://www-inf.enst.fr/~demaille/a2ps/ This package does a very
+     good job of text to PostScript conversion.
+
+`enscript - GNU Enscript'
+     http://www.gnu.org/ This package is a simpler version of a2ps, and
+     is faster and smaller.
+
+`Unix File Utility - Determines the type of file'
+     ftp://ftp.astron.com/pub/file/ or ftp://ftp.deshaw.com/pub/file/.
+
+`LPRng Print Spooler'
+     http://www.astart.com
+
+* Menu:
+
+* Configure and Compilation::
+* Printcap Configuration::
+* PS PCL PJL Printer with Network Connection::
+* PS PCL PJL Printer with Parallel Port Connection::
+* PS PCL PJL Printer with Serial Port::
+* PostScript Only Printer::
+* PostScript Only Printer With Text Conversion::
+* Tektronixs Phaser Series Printer with Network Connections::
+
+
+File: ifhp.info,  Node: Configure and Compilation,  Next: Printcap Configuration,  Up: Installation and Express Configuration
+
+Configure and Compilation
+=========================
+
+   The `ifhp' filter uses the AUTOCONF configuration facilty.  The
+following set of commands will generate configuration files and compile
+and install the software and documentation.
+
+   It is highly unlikely that you will encounter problems with
+compilation.  Usually these are due to type definition conflicts in
+include files.  If you encounter these, please report these to the
+LPRng mailing list.
+     configure
+     make all
+     # installs ifhp and textps in /usr/local/lib/filters
+     # installs ifhp.conf in /etc
+     #  (if already present, in /etc/ifhp.conf.sample)
+     make install
+
+
+File: ifhp.info,  Node: Printcap Configuration,  Next: PS PCL PJL Printer with Network Connection,  Prev: Configure and Compilation,  Up: Installation and Express Configuration
+
+Printcap Configuration
+======================
+
+   The basic LPRng printcap configuration is:
+     [num   ] printer setup
+
+     [num   ]  force clients (lpr, lpq, to use server)
+
+     lp:lp=lp@serverhost
+
+     [num   ] server information
+
+     lp:server
+
+     [nbsp  ][nbsp  ]:sd=`spooldir'
+
+     [nbsp  ][nbsp  ]:...
+
+     [nbsp  ][nbsp  ]
+
+     [nbsp  ][nbsp  ][num   ] version 1 - using -T options
+
+     [nbsp  ][nbsp  ][num   ]path to ifhp filter
+
+     [nbsp  ][nbsp  ]:if=/.../ifhp -T`options'
+
+     [nbsp  ][nbsp  ]:of=/.../ifhp -T`options'
+
+     [nbsp  ][nbsp  ]
+
+     [nbsp  ][nbsp  ][num   ] version 2 - using ifhp printcap entry
+
+     [nbsp  ][nbsp  ]:ifhp=`options'
+
+     [nbsp  ][nbsp  ]:if=/.../ifhp
+
+     [nbsp  ][nbsp  ]:of=/.../ifhp
+
+   As shown, options can be passed on the command line using the
+`-Toption,option' method or put into the `:ifhp=option,option' list.
+
+   Since commas are used to separate options in the `-T' option list,
+if you want to specify an option with a list of values the values need
+to separated with a semicolon (`;') as shown below:
+     ifhp -Tconfig=./ifhp.conf;/etc/ifhp.conf;./ifhp.conf
+
+   By convention, the `ifhp' filter takes its input from STDIN (file
+descriptor 0) and expects to write its output to STDOUT (file
+descriptor 1), which is normally connected to a printer.  Error and
+trace information are written to STDERR (file descriptor 2).
+
+   As shipped, the `ifhp.conf' file is configured to support a PJL
+printer which has the following configuration.  The configuration flags
+that support or enable these features are shown as well.
+  1.  PJL support (`pjl').
+
+  2.  PostScript (PS) support (`ps').
+
+  3.  PCL support (`pcl').
+
+  4.  Text files printed as PCL (`text', `default[lowbar]language=pcl').
+
+  5.  Banner printing done by LPRng spooler (`banner@')
+
+  6.  Status reported from printer (over bidirectional file descriptor
+     1)  (`status')
+
+  7.  Synchronize at start and end (`sync')
+
+  8.  Get pagecount information (`pagecount')
+
+   The following printers have specfic configuration sections which are
+invoked by using the `model=name' option.  The HP DeskJet and DesignJet
+printers use the same `hpdj' prefix with the model appended.  See
+Appendix A in the Printer Job Language Technical Reference Manual for a
+detailed explanation of these names.
+     apple     hp4000      hp4          hp4l         hp4lc
+     hp4m      hp4ml       hp4mp        hp4mplus     hp4mv
+     hp4p      hp4pj       hp4plus      hp4si        hp4simx
+     hp4v      hp5         hp5l         hp5m         hp5mp
+     hp5p      hp5si       hp5simopier  hp5simx      hp6l
+     hp6mp     hp6p        hpcolorlj5   hpcolorlj5m  hpcolorlj
+     hpdj1200c hpdj1600c   hpdj2000cp   hpdj200      hpdj220
+     hpdj230   hpdj2500cp  hpdj250c     hpdj330      hpdj350c
+     hpdj350c  hpdj430     hpdj450c     hpdj455ca    hpdj600
+     hpdj650c  hpdj700     hpdj750c     hpdj750cplus hpdj755cm
+     hpiiisi   hpljpro     hppjxl300    postscript   ps
+     tek       qms1725
+
+   In addition to HP printers, there is also generic support for
+PostScript only printers.
+
+
+File: ifhp.info,  Node: PS PCL PJL Printer with Network Connection,  Next: PS PCL PJL Printer with Parallel Port Connection,  Prev: Printcap Configuration,  Up: Installation and Express Configuration
+
+PS PCL PJL Printer with Network Connection
+==========================================
+
+   This is the most common configuration, and the printcap entry would
+have the following format:
+     [num   ] printer setup
+
+     [num   ]  force clients (lpr, lpq, to use server)
+
+     lp:lp=lp@serverhost
+
+     [num   ] server information
+
+     lp:server
+
+     [nbsp  ][nbsp  ]:sd=`spooldir'
+
+     [nbsp  ][nbsp  ]:...
+
+     [nbsp  ][nbsp  ][num   ]:lp=`printer ip address or DNS name'[percnt]9100
+
+     [nbsp  ][nbsp  ][num   ] eg - :lp=nwpr[percnt]9100
+
+     [nbsp  ][nbsp  ][num   ] eg - :lp=10.1.1.1[percnt]9100
+
+     [nbsp  ][nbsp  ]:lp=10.1.1.1[percnt]9100
+
+     [nbsp  ][nbsp  ][num   ]path to ifhp filter
+
+     [nbsp  ][nbsp  ]:if=/.../ifhp
+
+     [nbsp  ][nbsp  ]:of=/.../ifhp
+
+   If you have an HP printer in the above list, you can use:
+     [num   ] printer setup
+
+     [num   ]  force clients (lpr, lpq, to use server)
+
+     lp:lp=lp@serverhost
+
+     [num   ] server information
+
+     lp:server
+
+     [nbsp  ][nbsp  ]:sd=`spooldir'
+
+     [nbsp  ][nbsp  ]:...
+
+     [nbsp  ][nbsp  ]:lp=`printer ip address or DNS name'[percnt]9100
+
+     [nbsp  ][nbsp  ]:ifhp=model=`name'
+     [nbsp  ][nbsp  ][num   ]path to ifhp filter
+
+     [nbsp  ][nbsp  ]:if=/.../ifhp
+
+     [nbsp  ][nbsp  ]:of=/.../ifhp
+
+
+File: ifhp.info,  Node: PS PCL PJL Printer with Parallel Port Connection,  Next: PS PCL PJL Printer with Serial Port,  Prev: PS PCL PJL Printer with Network Connection,  Up: Installation and Express Configuration
+
+PS PCL PJL Printer with Parallel Port Connection
+================================================
+
+   Since the parallel port is unidirectional, you cannot get status
+back, and need to use the `status@' option to prevent the `ifhp' filter
+from expecting it.  The printcap entry would have the following format:
+     [num   ] printer setup
+
+     [num   ]  force clients (lpr, lpq, to use server)
+
+     lp:lp=lp@serverhost
+
+     [num   ] server information
+
+     lp:server
+
+     [nbsp  ][nbsp  ]:sd=`spooldir'
+
+     [nbsp  ][nbsp  ]:...
+
+     [nbsp  ][nbsp  ][num   ] parallel port
+
+     [nbsp  ][nbsp  ]:lp=`/dev/lpt'
+
+     [nbsp  ][nbsp  ]:ifhp=status@
+
+     [nbsp  ][nbsp  ][num   ]path to ifhp filter
+
+     [nbsp  ][nbsp  ]:if=/.../ifhp
+
+     [nbsp  ][nbsp  ]:of=/.../ifhp
+
+
+File: ifhp.info,  Node: PS PCL PJL Printer with Serial Port,  Next: PostScript Only Printer,  Prev: PS PCL PJL Printer with Parallel Port Connection,  Up: Installation and Express Configuration
+
+PS PCL PJL Printer with Serial Port
+===================================
+
+   The LPRng print spooler will open and set the serial line
+characteristics, and pass the open connection to the `ifhp' filter.  The
+`tty' connection must pass all 8 bits with no parity, and should use
+hardware flow control if at all possible.  for your system,
+     [num   ] printer setup
+
+     [num   ]  force clients (lpr, lpq, to use server)
+
+     lp:lp=lp@serverhost
+
+     [num   ] server information
+
+     lp:server
+
+     [nbsp  ][nbsp  ]:sd=`spooldir'
+
+     [nbsp  ][nbsp  ]:...
+
+     [nbsp  ][nbsp  ][num   ] serial port
+
+     [nbsp  ][nbsp  ]:lp=`/dev/ttyxxx'
+
+     [nbsp  ][nbsp  ]:stty=38400 -echo -crmod -raw -oddp -evenp \
+
+     [nbsp  ][nbsp  ]   ixon pass8 -ixany cbreak crtscts
+
+     [nbsp  ][nbsp  ][num   ]path to ifhp filter
+
+     [nbsp  ][nbsp  ]:if=/.../ifhp
+
+     [nbsp  ][nbsp  ]:of=/.../ifhp
+
+
+File: ifhp.info,  Node: PostScript Only Printer,  Next: PostScript Only Printer With Text Conversion,  Prev: PS PCL PJL Printer with Serial Port,  Up: Installation and Express Configuration
+
+PostScript Only Printer
+=======================
+
+   Use the configuration appropriate to the printer connection, and
+then use the `pjl@', `pcl@', and `text@' option to inhibit everything
+but PostScript.
+     [num   ] printer setup
+
+     [num   ]  force clients (lpr, lpq, to use server)
+
+     lp:lp=lp@serverhost
+
+     [num   ] server information
+
+     lp:server
+
+     [nbsp  ][nbsp  ]:sd=`spooldir'
+
+     [nbsp  ][nbsp  ]:...
+
+     [nbsp  ][nbsp  ]:ifhp=pcl@,pjl@,text@
+
+     [nbsp  ][nbsp  ][num   ]path to ifhp filter
+
+     [nbsp  ][nbsp  ]:if=/.../ifhp
+
+     [nbsp  ][nbsp  ]:of=/.../ifhp
+
+   If you have a parallel port printer with no PostScript support, you
+would use:
+     :ifhp=pcl@,pjl@,text@
+
+   An alternative is to use the `model=ps' configuration section of the
+default `/etc/ifhp.conf' file.
+     [num   ] printer setup
+
+     [num   ]  force clients (lpr, lpq, to use server)
+
+     lp:lp=lp@serverhost
+
+     [num   ] server information
+
+     lp:server
+
+     [nbsp  ][nbsp  ]:sd=`spooldir'
+
+     [nbsp  ][nbsp  ]:...
+
+     [nbsp  ][nbsp  ]:ifhp=model=ps
+     [nbsp  ][nbsp  ][num   ]path to ifhp filter
+
+     [nbsp  ][nbsp  ]:if=/.../ifhp
+
+     [nbsp  ][nbsp  ]:of=/.../ifhp
+
+   If your printer does not like to have a PostScript EOJ (Control-D)
+flag at the start of a job, use the `no[lowbar]ps[lowbar]eoj' ( *Note
+PCL and PostScript End of Job Sequences:: ) flags.  flag to remove them.
+
+
+File: ifhp.info,  Node: PostScript Only Printer With Text Conversion,  Next: Tektronixs Phaser Series Printer with Network Connections,  Prev: PostScript Only Printer,  Up: Installation and Express Configuration
+
+PostScript Only Printer With Text Conversion
+============================================
+
+   You can use the PostScript Only configuration above, and add text to
+postscript conversion to it.  This is done by defining the pathname to
+a text to PostScript conversion program and causing ifhp to use the
+program to convert the input file to PostScript.  The `a2ps' program
+can be obtained from http://www-inf.enst.fr/~demaille/a2ps/ and does an
+excellent job.  Also, the `textps' program included with this
+distribution does a (barely) adequate job as well.
+
+   The method outlined here assumes that the input file is a text file
+and that the `a2ps' program will convert it.  The `a2ps' program needs
+to be explicitly told that output is to go to `STDOUT' or file
+descriptor 1.
+     text_converter=/usr/local/bin/a2ps -o-
+     text_converter_output=ps
+     tempfile=/var/tmp/ifhp
+
+     [num   ] printer setup
+
+     [num   ]  force clients (lpr, lpq, to use server)
+
+     lp:lp=lp@serverhost
+
+     [num   ] server information
+
+     lp:server
+
+     [nbsp  ][nbsp  ]:sd=`spooldir'
+
+     [nbsp  ][nbsp  ]:...
+
+     [nbsp  ][nbsp  ]:ifhp=pcl@,pjl@,text@,text[lowbar]converter=...,\
+
+     [nbsp  ][nbsp  ][nbsp  ][nbsp  ][nbsp  ][nbsp  ][nbsp  ]text[lowbar]converter[lowbar]output=ps[nbsp  ]
+
+     [nbsp  ][nbsp  ][num   ]path to ifhp filter
+
+     [nbsp  ][nbsp  ]:if=/.../ifhp
+
+     [nbsp  ][nbsp  ]:of=/.../ifhp
+
+
+File: ifhp.info,  Node: Tektronixs Phaser Series Printer with Network Connections,  Prev: PostScript Only Printer With Text Conversion,  Up: Installation and Express Configuration
+
+Tektronixs Phaser Series Printer with Network Connections
+=========================================================
+
+   The Tektronics Phaser Series printers use the `Appsocket' protocol
+when sending a job to the printer.  This protocol is (briefly):
+  1.  The printer listens for UDP packets on port 9101 and for TCP/IP
+     connections on port 9100.
+
+  2.  When a UDP packet is recieved on port 9101, then a reply packet
+     containing the status is returned to the originator's address.
+     This packet contains an status indication, in a `undefined' format.
+
+  3.  To send a job to the printer,  a TCP/IP connection is opened to
+     port 9100, and a PostScript job is sent.  Only a single job can be
+     sent at a time - a EOJ (CTRL-D) will terminate input and flush all
+     following jobs.
+
+  4. Return status will be sent in the reverse direction until the job
+     has completed, at which point the connection will be closed.
+
+   The `ifhp' program supports the `appsocket' protocol.  In order to
+do so, the following ifhp configuration entry can be used.
+     [ tek ]
+     appsocket
+     pjl@
+     pcl@
+
+   The `appsocket' option will use the appsocket protcol, and cause
+`ifhp' to open and close connections to the printer.  The printcap
+entry should specify `lp=/dev/null' and provide the device IP address
+using the `-Tdev=host[percnt]port' option.
+     [num   ] Phaser Setup
+     lp:server
+
+     [nbsp  ][nbsp  ]:`lp=/dev/null'
+
+     [nbsp  ][nbsp  ]:sd=`spooldir'
+
+     [nbsp  ][nbsp  ]:...
+
+     [nbsp  ][nbsp  ]:ifhp=model=tek,dev=10.0.0.1[percnt]9100
+
+     [nbsp  ][nbsp  ][num   ]path to ifhp filter
+
+     [nbsp  ][nbsp  ]:if=/.../ifhp
+
+     [nbsp  ][nbsp  ]:of=/.../ifhp
+
+
+File: ifhp.info,  Node: Configuration Tutorial,  Next: Filter Operation Details,  Prev: Installation and Express Configuration,  Up: Top
+
+Configuration Tutorial
+**********************
+
+   This section is a basic tutorial on using many of the features of the
+`ifhp' filter.  If you plan to make use of any of the advanced filter
+options or modify the configuration, you should read and try out
+several of the configuration exercises.
+
+* Menu:
+
+* Configuration Files and Testsupport Directory::
+* Output Device Specification::
+* Output to a File::
+* Default ifhp-conf File and Simple CRLF Filter::
+* HP Jetdirect or Compatible Network Interface::
+* Serial Port::
+* Parallel Port::
+* Fine Tuning A Configuration and Printcap Entries::
+* ifhp-conf Defaults::
+* Extending ifhp Capabilties::
+* PCL and PostScript End of Job Sequences::
+
+
+File: ifhp.info,  Node: Configuration Files and Testsupport Directory,  Next: Output Device Specification,  Up: Configuration Tutorial
+
+Configuration Files and Testsupport Directory
+=============================================
+
+   These exercises require the use of several configuration files that
+have predefined values as well as the default `/etc/ifhp.conf' file.
+The test files are normally located in the distribution `testscripts'
+directory.  It is assumed that these exercises will be done in that
+directory.
+
+   The `config=path;path;path' option specifies the list of
+configuration files for `ifhp' to read.  Here is a sample of the
+configuration file `t1.conf':
+     # modify the next line to contain
+     #  the name, IP address, or pathname of the printer
+     dev=CHANGE_THIS
+     debug=3
+     stty=38400 -echo -crmod -raw -oddp -evenp ixon pass8 -ixany cbreak crtscts
+     trace
+     ps@
+     pjl@
+     pcl@
+     text
+
+   The command
+     ifhp -T/etc/ifhp.conf;t1.conf
+
+   will cause the `/etc/ifhp.conf' and then the `t1.conf' file to be
+read and configuration information extracted.
+
+   The various options in this file are quite important for debugging
+and testing.  The `debug' and `trace' options can also be specifed on
+the command line, and cause the debug facilities to be turned on and
+debug trace output to be put to `STDERR'.  Normally, trace output is
+written only to the `statusfile' specified by the command line `-s'
+option or the configuration file `statusfile=path' entry.
+
+   The `text' entry causes the filter to accept text files and simply
+pass them through without processing, and the `ps@' `pjl@' `pcl@'
+entries disable related processing.
+
+
+File: ifhp.info,  Node: Output Device Specification,  Next: Output to a File,  Prev: Configuration Files and Testsupport Directory,  Up: Configuration Tutorial
+
+Output Device Specification
+===========================
+
+   In normal operation, `ifhp' sends its output to `STDOUT' or file
+desciptor 2.  However, when testing or using the `ifhp' filter in
+standalone mode, it is useful to have the filter open the connection to
+a file or device directly.  The following sections discuss how to
+modify the configuration file to do this, as well as how to implement a
+simple a
+
+
+File: ifhp.info,  Node: Output to a File,  Next: Default ifhp-conf File and Simple CRLF Filter,  Prev: Output Device Specification,  Up: Configuration Tutorial
+
+Output to a File
+================
+
+   This method is useful when trying to debug a set of configuration
+options and you want to capture output to a file.  The `dev=path'
+option is used to specify the output pathname.
+  1. In the `testscripts' directory, copy the `t1.conf' file to
+     `ifhp.conf' and edit `ifhp.conf' so it has the following lines:
+          # dev=/tmp/out
+          # debug=3
+          stty=38400 -echo -crmod -raw -oddp -evenp ixon pass8 -ixany cbreak crtscts
+          trace
+          ps@
+          pjl@
+          pcl@
+          text
+
+  2. Run the indicated commands and you should see similar output:
+          ##> ifhp -Tconfig=./ifhp.conf < hi.txt
+          ifhp 12:28:20.603 [6089] Process_job: setting up printer
+          ifhp 12:28:20.605 [6089] Do_accounting: accounting at start, pagecount 0, pages 0
+          ifhp 12:28:20.605 [6089] Process_job: sending job file
+          ifhp 12:28:20.605 [6089] Send_job: starting transfer
+          Hello World
+          
+          ifhp 12:28:20.606 [6089] Send_job: finished writing file, cleaning up
+          ifhp 12:28:20.606 [6089] Process_job: sent job file
+          ifhp 12:28:20.606 [6089] Process_job: doing cleanup
+          ifhp 12:28:20.606 [6089] Do_accounting: accounting at end, pagecount 0, pages 0
+          ifhp 12:28:20.606 [6089] Process_job: done
+
+  3. Now modify the `ifhp.conf' file to look like:
+          dev=/tmp/out
+          debug=3
+          trace
+          ps@
+          pjl@
+          pcl@
+          text
+
+  4. Run indicated commands and you should see similar output:
+          ##[gt    ] ifhp -Tconfig=./ifhp.conf < hi.txt
+          ifhp 12:33:39.504 [6155] Open_device: device '/tmp/out'
+          ifhp 12:33:39.505 [6155] Open_device: device '/tmp/out', attempt 1
+          ifhp 12:33:39.506 [6155] Open_device: success
+          ifhp 12:33:39.506 [6155] main: fd 1 device 0100000
+          [nbsp  ]...
+
+  5. Clearly this is very verbose diagnostic or trace output.  However,
+     if you use `cat /tmp/out' you will see the output has been written
+     correctly.  Try using the following command to redirect trace and
+     error output to a file for later examination.
+          CSH                     SH
+          ifhp ... [lt    ]in [gt    ][amp   ]out      ifhp ... [lt    ]in 2[gt    ]out
+
+
+File: ifhp.info,  Node: Default ifhp-conf File and Simple CRLF Filter,  Next: HP Jetdirect or Compatible Network Interface,  Prev: Output to a File,  Up: Configuration Tutorial
+
+Default ifhp-conf File and Simple CRLF Filter
+=============================================
+
+   In order to simplify operation, if there is a `ifhp.conf' file in
+the current directory, then the `ifhp' program will read this file
+first, followed by `/etc/ifhp.conf' and then rereads the `ifhp.conf'
+This has the effect of extracting critical option information on the
+first pass through `ifhp.conf', then reading the default information
+from `/etc/ifhp.conf', and finally re-reading `ifhp.conf' to override
+any defaults.
+  1. Try the simple commands
+          echo >/tmp/out
+          ifhp <hi.txt
+
+     and note that it produces the same output as befoe.
+
+  2. Now modify the `ifhp.conf' file to contain:
+          dev=/tmp/out
+          debug=3
+          trace
+          ps@
+          pjl@
+          pcl@
+          text
+          crlf
+
+     and do
+          ifhp [lt    ]hi.txt
+
+     again, without clearing the output file.
+
+  3. If you examine `/tmp/out'output using the `od' or `hexdump' file
+     dump programs or the `vi' text editor, you will find that the LF
+     (`\n') character has been replaced by CR LF (`\r\n').
+
+  4. You can use the `ifhp' program as a simple CRLF filter by
+     specifying:
+          ifhp -Tcrlf,language=unknown [lt    ]hi.txt
+
+     The `language=unknown' option specifies that the ifhp program is
+     not to guess at the language type, and then does CRLF translation.
+
+
+
+File: ifhp.info,  Node: HP Jetdirect or Compatible Network Interface,  Next: Serial Port,  Prev: Default ifhp-conf File and Simple CRLF Filter,  Up: Configuration Tutorial
+
+HP Jetdirect or Compatible Network Interface
+============================================
+
+   If a printer has HP Jetdirect compatibility, then the printers
+TCP/IP port 9100 will accept jobs for printing and provide printer
+status.
+
+   Other manufacturers make similar products, and may support
+equivalent functionality on different ports.  If you are using a
+Network Printer Box with multiple printer ports, then each printer port
+is accessible using a specific TCP/IP port.  For example, parallel
+ports P1, P2, and P3 and on a JetDirect box are usually accessed using
+TCP/IP ports 9100, 9101, and 9102 respectively.
+
+   If you are using a Network Printer Box and are connecting to a
+parallel port printer, then you may not get status or error messages
+back from the printer unless both the printer and the Network Printer
+Box use bi-directional communication.
+
+   In the following discussions, we will assume that you have assigned
+an IP address to the printer, and that it is `nwpr', and that status
+and error information is returned over the network connection.
+  1. First, verify that your printer is accessible on the network by
+     using `ping'.  It is amazing how many problems are caused by
+     erroneous network addresses.
+          astart: [percnt] ping nwpr
+
+          PING nwpr.astart.com (10.0.0.10): 56 data bytes
+
+          64 bytes from 10.0.0.10: icmp[lowbar]seq=0 ttl=60 time=4.286 ms
+
+  2. Now use `telnet' to check that you can connect to port 9100.
+          astart: % telnet nwpr 9100
+          Trying 206.71.174.206...
+          Connected to nwpr.astart.com.
+          Escape character is '^]'.
+          ...
+
+  3. If you have a PostScript printer, then you might want to play with
+     the PostScript Interactive mode, described in Appendix D.5 of the
+     PostScript Language Reference Manual by Adobe Systems.  Simply
+     type the command
+          executive
+
+     as the first characters that are sent.  You should see:
+          >># telnet nwpr
+          Connected to nwpr.astart.com.
+          Escape character is '^]'.
+          executive
+          PostScript(r) Version 2013.111
+          (c) Copyright 1984-1993 Adobe Systems Incorporated.
+          Typefaces (c) Copyright 1981 Linotype-Hell AG and/or its subsidiaries.
+          All Rights Reserved.
+          PS>
+
+  4. You may want to try sending a simple file to the printer and
+     examining what happens.  This is easily done using the `netcat'
+     program  by Mudge.  See
+     http://www.l0pht.com/~weld/netcat/index.html for general
+     information.
+
+  5. The `hi.txt' file contains
+          Hello World
+
+          [circ  ]L
+
+     where `[circ  ]L' is the form feed character You can send this
+     file to the printer using:
+          nc printer 9100 [lt    ]hi.txt
+
+     The printer should start up and print a single page of output.
+     You may need to use `CTRL-C' to terminate the `nc' program.
+
+  6. If you have a PostScript printer, you might try sending a simple
+     PostScript test program to the printer as well.  The `ellipse.ps'
+     file can be sent using:
+          nc printer 9100 [lt    ]/tmp/hi1.txt
+
+  7. You can now test the basic `ifhp' functionality.
+
+  8. Copy the `t1.conf' file to `ifhp.conf' and edit is so it has the
+     correct network printer information.
+          [num   ] modify the next line to contain
+
+          [num   ]  the name, IP address, or pathname of the printer
+          dev=`nwpr'[percnt]9100
+
+          debug=3
+
+          trace[lowbar]to[lowbar]stderr
+
+          ps@
+          pjl@
+          pcl@
+          text
+
+  9. Now do the indicated command; you should get similar output
+          astart: % ifhp [lt    ]hi.txt
+
+     Note the extreme verbosity of output.
+
+ 10. At this point you might want to try getting page numbers and doing
+     synchronization.  If you have a HP printer that supports PJL, then
+     modify `t2hp.conf' as above.  This file has the contents:
+          # modify the next line to contain <newline>
+          #  the name, IP address, or pathname of the printer
+          dev=<it/nwpr/%9100 <newline>
+          #debug=3 <newline>
+          trace_to_stderr <newline>
+          text <newline>
+          pjl <newline>
+          sync=pjl <newline>
+          pagecount=pjl <newline>
+
+     Now use the following command and you should see similar output.
+          ifhp '-Tconfig=t2hp.conf;/etc/ifhp.conf;t2hp.conf' [lt    ] hi1.txt
+          ifhp 16:44:16.541 [3199] Process_job: setting up printer
+          ifhp 16:44:16.545 [3199] Do_sync: starting sync using 'pjl'
+          ifhp 16:44:17.935 [3199] Check_device_status: device = 'Toner Low'
+          ifhp 16:44:18.116 [3199] Do_sync: sync done
+          ifhp 16:44:18.117 [3199] Do_pagecount: getting pagecount using 'pjl'
+          ifhp 16:44:20.011 [3199] Do_pagecount: final pagecount 63304
+          ifhp 16:44:20.013 [3199] Do_accounting: accounting at start, pagecount 63304, pages 0
+          ifhp 16:44:20.013 [3199] Process_job: sending job file
+          ifhp 16:44:20.014 [3199] Send_job: starting transfer
+          ifhp 16:44:20.115 [3199] Use_file_util: file identified as 'ascii text ', assigned type 'text'
+          ifhp 16:44:20.119 [3199] Send_job: finished writing file, cleaning up
+          ifhp 16:44:20.119 [3199] Process_job: sent job file
+          ifhp 16:44:20.119 [3199] Process_job: doing cleanup
+          ifhp 16:44:20.120 [3199] Do_sync: starting sync using 'pjl'
+          ifhp 16:44:22.175 [3199] Do_sync: sync done
+          ifhp 16:44:22.176 [3199] Do_waitend: getting end using 'pjl'
+          ifhp 16:44:22.529 [3199] Check_device_status: device = 'Warming Up'
+          ifhp 16:45:04.669 [3199] Check_device_status: device = 'Toner Low'
+          ifhp 16:45:21.361 [3199] Do_pagecount: getting pagecount using 'pjl'
+          ifhp 16:45:23.241 [3199] Do_pagecount: final pagecount 63305
+          ifhp 16:45:23.243 [3199] Do_accounting: accounting at end, pagecount 63305, pages 1
+          ifhp 16:45:23.243 [3199] Process_job: done
+
+ 11. At this point, you should be able to send jobs to the printer, and
+     now need to put these options into the printcap file.  Please see
+     the section on *Note Fine Tuning A Configuration and Printcap
+     Entries::
+
+
+File: ifhp.info,  Node: Serial Port,  Next: Parallel Port,  Prev: HP Jetdirect or Compatible Network Interface,  Up: Configuration Tutorial
+
+Serial Port
+===========
+
+   If your printer is attached using a serial port, then you must make
+sure that the communication channel is configured correctly.  The
+`dev=/dev/ttyxxx' and `stty=...' configuration options will open the
+serial port and configure the line in an appropriate manner.  For
+details on the exact form of the `stty' options, please consult the
+LPRng-HOWTO documentation.
+  1. Copy the `t1.conf' file to `ifhp.conf' and edit it so it has the
+     following lines:
+          [num   ] modify the next line to contain
+
+          [num   ]  the name, IP address, or pathname of the printer
+          dev=`/dev/serialport '
+
+          [num   ]debug=3
+
+          stty=38400 -echo -crmod -raw -oddp -evenp ixon
+          pass8 -ixany cbreak crtscts
+          trace[lowbar]to[lowbar]stderr
+
+          text
+
+     Now run the `ifhp' program as shown below.  You should see output
+     similar to:
+          astart: % ifhp [lt    ]h11.txt
+          ifhp 15:57:23.734 [3096] Process_job: setting up printer
+          ifhp 15:57:23.736 [3096] Do_accounting: accounting at start, pagecount 0, pages 0
+          ifhp 15:57:23.736 [3096] Process_job: sending job file
+          ifhp 15:57:23.736 [3096] Send_job: starting transfer
+          ifhp 15:57:23.737 [3096] Send_job: finished writing file, cleaning up
+          ifhp 15:57:23.737 [3096] Process_job: sent job file
+          ifhp 15:57:23.738 [3096] Process_job: doing cleanup
+          ifhp 15:57:23.738 [3096] Do_accounting: accounting at end, pagecount 0, pages 0
+          ifhp 15:57:23.738 [3096] Process_job: done
+
+     and you should get a printed page.
+
+  2. If you do not get communication, then you will have to start a
+     long and painful process of debugging.  First, check that the
+     various modem control signals are correct.  You should invest a
+     small amount of time and energy and purchase a `breakout box' that
+     shows the status of the various control signals.  If only the
+     `XMIT Data' signal is active, you will need to put a crossover
+     (null modem) between the printer and your serial port.  Check the
+     `DTR' (Data Terminal Ready), `DCD' (Data Carrier Detect), `RTS'
+     (Request To Send), and `CTS' (Clear To Send).  These should all be
+     ON or active.  Some systems will use `RTS' (Request To Send) and
+     `CTS' (Clear To Send) for `hardware flow control' and it is
+     possible that these signals will become stuck.  It is strongly
+     recommended that flow control on the host be turned off, and let
+     the printer do flow control using `RTS' and `CTS'.
+
+  3. Once you get the basic configuration working, then you should
+     follow the basic steps in the previous section on Network
+     Interfaces, and try sending files of different types.
+
+
+File: ifhp.info,  Node: Parallel Port,  Next: Fine Tuning A Configuration and Printcap Entries,  Prev: Serial Port,  Up: Configuration Tutorial
+
+Parallel Port
+=============
+
+   The parallel port configuration is the easiest to implement, but the
+most limited in abilities.
+  1. Copy the `t1.conf' file to `ifhp.conf' and edit it so it has the
+     following lines, with the `dev' value replaced by the correct
+     pathname.
+          [num   ] modify the next line to contain
+
+          [num   ]  the name, IP address, or pathname of the printer
+
+          dev=`/dev/lp'
+
+          debug=3
+
+          stty=38400 -echo -crmod -raw -oddp -evenp ixon pass8 -ixany cbreak crtscts
+
+          trace
+
+          ps@
+
+          pjl@
+
+          pcl@
+
+          text
+
+  2. Now run the `ifhp' program:
+          ifhp [lt    ]hi.txt
+
+  3. You should see output similar to:
+          astart: % ifhp -Tconfig=.../testscripts/t1.conf [lt    ]h11.txt
+          ifhp 15:57:23.734 [3096] Process_job: setting up printer
+          ifhp 15:57:23.736 [3096] Do_accounting: accounting at start, pagecount 0, pages 0
+          ifhp 15:57:23.736 [3096] Process_job: sending job file
+          ifhp 15:57:23.736 [3096] Send_job: starting transfer
+          ifhp 15:57:23.737 [3096] Send_job: finished writing file, cleaning up
+          ifhp 15:57:23.737 [3096] Process_job: sent job file
+          ifhp 15:57:23.738 [3096] Process_job: doing cleanup
+          ifhp 15:57:23.738 [3096] Do_accounting: accounting at end, pagecount 0, pages 0
+          ifhp 15:57:23.738 [3096] Process_job: done
+
+     and you should get a printed page.
+
+
+File: ifhp.info,  Node: Fine Tuning A Configuration and Printcap Entries,  Next: ifhp-conf Defaults,  Prev: Parallel Port,  Up: Configuration Tutorial
+
+Fine Tuning A Configuration and Printcap Entries
+================================================
+
+   If you have followed the above directions, you should now be able to
+use the IFHP filter with very little additional configuration.  You can
+now set up your printcap to use the `ifhp' filter.  The following
+discussion assumes that you are using LPRng.
+
+
+File: ifhp.info,  Node: ifhp-conf Defaults,  Next: Extending ifhp Capabilties,  Prev: Fine Tuning A Configuration and Printcap Entries,  Up: Configuration Tutorial
+
+ifhp-conf Defaults
+==================
+
+   While the above set of exercises are useful for debugging and
+testing, you should always let the LPRng spooler open the printing
+device or make the network connection.
+
+   Examine the `/etc/ifhp.conf' file.  The default configuration is for
+a HP family printer which supports pagecounting using PJL,
+synchronization using PJL, and other standard items.
+
+   If the default configuration does not meet your needs, and you do
+not want to use the printcap `:ifhp' entry or pass options using the
+`-T' command line entries, you can create your own entry in a `/...
+spooldir .../ifhp.conf' file.  This entry should have the form:
+     option
+     [nbsp  ]...
+
+   For example, we might want to configure a printer that supports PCL
+and PostScript, needs to convert Text to PostScript, and does not have
+status capability.  This is similar to an HP3 with a PostScript
+cartridge on a parallel port.
+     status@
+     pjl@
+     pcl
+     ps
+     text@
+     text_converter=/usr/local/bin/a2ps -o-
+     text_converter_output=ps
+
+   An alternative to this method is to create a new entry in the
+`/etc/ifhp.conf' file and reference this.  This method has the benefit
+of centralizing management of the printing configuration.  You usually
+put such an entry at the end of the `/etc/ifhp.conf' file, and it would
+have the form:
+     [ hp3_parallel ]
+     status@
+     pjl@
+     pcl
+     ps
+     text@
+     text_converter=/usr/local/bin/a2ps -o-
+     text_converter_output=ps
+
+   You would modify the printcap so that the model was passed either in
+the `:ifhp' information or as a command line option:
+     printer:...<newline>
+       :if=/.../ifhp -Tmodel=hp3_parallel<newline>
+       :of=/.../ifhp -Tmodel=hp3_parallel<newline>
+       # or you can use this
+       :ifhp=model=hp3_parallel
+
+
+File: ifhp.info,  Node: Extending ifhp Capabilties,  Next: PCL and PostScript End of Job Sequences,  Prev: ifhp-conf Defaults,  Up: Configuration Tutorial
+
+Extending ifhp Capabilties
+==========================
+
+   One problem faced by system administrators is the need to allow
+users to configure various options in a job specific manner.  In order
+to support this, the LPRng print spooler passes the `lpr -Z' command
+line options through to the print spooler, where they are used by the
+`ifhp' filter.
+
+   The details of how these options are used are explained in detail in
+the following sections, but here is an overview of how commands can be
+added.
+
+   The `pjl[lowbar]user[lowbar]opts=[ ... ]',
+`pcl[lowbar]user[lowbar]opts=[ ... ]', and
+`ps[lowbar]user[lowbar]opts=[ ... ]' are options with predefined
+meanings.  The values of these options specify `-Z' and `-T' command
+line options that will be processed by the `ifhp' filter when `pjl',
+`pcl', or `ps' configuration needs to be done.  Here is a sample
+configuration file section, and an example.
+     # we add the upper and lower keywords
+     #  lpr -Zupper  or lpr -Zlower will be specified by the user
+     pjl_user_opts=[ upper lower ]
+     pjl_upper=@PJL SET INTRAY=TRAY1
+     pjl_lower=@PJL SET INTRAY=TRAY2
+     
+     #  lpr -Zpagesetup
+     pcl_user_opts=[ pagesetup ]
+     pcl_pagesetup=[ lines=12 cols=4 ]
+     lines=20
+     pcl_lines=\033*(\%[lcub  ]lines[rcub  ]L
+     cols=2
+     pcl_cols=\033*(\%[lcub  ]cols[rcub  ]C
+
+   If the user specifies `lpr -Zupper', if `PJL' is available on the
+printer (`pjl' is set), then the `-Z' option list is scanned for an
+option that is also in the `pjl[lowbar]user[lowbar]opts'.  The `upper'
+option is found, and then the value for `pjl[lowbar]upper' is located
+and sent to the printer.  By prefixing the context or language that is
+needed, we can have multiple language dependent actions for the same
+option.
+
+   The `lpr -Zpagesetup' option is more complex, mainly due to the
+range of possibilities the PCL offers.  The `pagesetup' option is found
+in the `pcl[lowbar]user[lowbar]opts' list, but when
+`pcl[lowbar]pagesetup' is found, it turns out to be a list of values.
+
+   The list values are expanded in turn, resulting in `pcl[lowbar]lines'
+and `pcl[lowbar]cols' being expanded in turn.  The
+`pcl[lowbar]lines=\033*(\[percnt][lcub  ]lines[rcub  ]L' uses the
+common C/C++/Perl escape sequences, with the following addition:
+`\[percnt][lcub  ]name[rcub  ]' is replaced by the value for the option
+name found by searching in order a a stack of values that have been set
+by the recursive expansion, the `-Z' options, `-T' options, and the
+configuration file.  In this example, we would produce the output string
+     \033*(12L\033*(4C
+
+   For examples of how to add these commands, please examine the default
+`/etc/ifhp.conf'.
+
+
+File: ifhp.info,  Node: PCL and PostScript End of Job Sequences,  Prev: Extending ifhp Capabilties,  Up: Configuration Tutorial
+
+PCL and PostScript End of Job Sequences
+=======================================
+
+   One of the more troublesome problems with printing PCL and PostScript
+jobs is to initialize the printer when a previous job has failed.  This
+is commonly done by prefixing a job file with a `end of job' sequence
+for the particular language.  For PostScript, this the the Control-D
+(`\004') character, and for PCL the ESCAPE E (`\033E') sequence.
+
+   One problem with using this approach is that when you want to prefix
+a job with additional PCL or PostScript, you need to remove the
+existing end of job sequences, or the prefixed commands will have no
+effect.  By default, the `ifhp' filter will do this.  In addition, it
+will also prefix the new commands with an appropriate end of job
+sequence.
+
+   However, there are certain models of printers which do not like to
+have end of job sequences at the start of jobs.  To suppress the
+prefixing of PostScript jobs with the PostScript end of job, set the
+`no[lowbar]ps[lowbar]eoj' flag, and to suppress the prefixing of PCL
+jobs with the PCL end of job, set the `no[lowbar]pcl[lowbar]eoj' flag.
+

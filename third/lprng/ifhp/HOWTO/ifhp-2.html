@@ -41,6 +41,10 @@ which can be used with
 <DT><B>a2ps - Ascii Text To PostScript Converter</B><DD><P>
 <A HREF="http://www-inf.enst.fr/~demaille/a2ps/">http://www-inf.enst.fr/~demaille/a2ps/</A>
 This package does a very good job of text to PostScript conversion.
+<DT><B>enscript - GNU Enscript</B><DD><P>
+<A HREF="http://www.gnu.org">http://www.gnu.org/</A>
+This package is a simpler version of a2ps,
+and is faster and smaller.
 <DT><B>Unix File Utility - Determines the type of file</B><DD><P>
 <A HREF="ftp://ftp.astron.com/pub/file/">ftp://ftp.astron.com/pub/file/</A> or
 <A HREF="ftp://ftp.deshaw.com/pub/file/">ftp://ftp.deshaw.com/pub/file/</A>.
@@ -61,25 +65,12 @@ please report these to the LPRng mailing list.
 configure
 make all
 # installs ifhp and textps in /usr/local/lib/filters
+# installs ifhp.conf in /etc
+#  (if already present, in /etc/ifhp.conf.sample)
 make install
 </PRE>
 </CODE></BLOCKQUOTE>
-<H2><A NAME="ss2.2">2.2 Install ifhp.conf Configuration File</A>
-</H2>
-
-<P>If this is a first time installation,
-you can run
-<BLOCKQUOTE><CODE>
-make init
-</CODE></BLOCKQUOTE>
-
-which will copy the
-<CODE>src/ifhp.conf</CODE>
-file to
-<CODE>/etc/ifhp.conf</CODE>
-If this file already exists,
-it will not be overwritten.
-<H2><A NAME="ss2.3">2.3 Printcap Configuration</A>
+<H2><A NAME="ss2.2">2.2 Printcap Configuration</A>
 </H2>
 
 <P>The basic LPRng printcap configuration is:
@@ -150,41 +141,25 @@ The HP DeskJet and DesignJet printers use the same
 <CODE>hpdj</CODE> prefix with the model appended.
 See Appendix A in the Printer Job Language Technical Reference Manual
 for a detailed explanation of these names.
-<P>
-<CENTER><TABLE BORDER><TR><TD>
-<BR>
-apple </TD><TD> hp4000 </TD><TD> hp4 </TD><TD> hp4l </TD><TD> hp4lc </TD></TR><TR><TD>
-hp4m </TD><TD> hp4ml </TD><TD> hp4mp </TD><TD> hp4mplus </TD><TD> hp4mv </TD></TR><TR><TD>
-hp4p </TD><TD> hp4pj </TD><TD> hp4plus </TD><TD> hp4si </TD><TD> hp4simx </TD></TR><TR><TD>
-hp4v </TD><TD> hp5 </TD><TD> hp5l </TD><TD> hp5m </TD><TD> hp5mp </TD></TR><TR><TD>
-hp5p </TD><TD> hp5si </TD><TD> hp5simopier </TD><TD> hp5simx </TD><TD> hp6l </TD></TR><TR><TD>
-hp6mp </TD><TD> hp6p </TD><TD> hpcolorlj5 </TD><TD> hpcolorlj5m </TD><TD> hpcolorlj </TD></TR><TR><TD>
-hpdj1200c </TD><TD> hpdj1600c </TD><TD> hpdj2000cp </TD><TD> hpdj200 </TD><TD> hpdj220 </TD></TR><TR><TD>
-hpdj230 </TD><TD> hpdj2500cp </TD><TD> hpdj250c </TD><TD> hpdj330 </TD><TD> hpdj350c </TD></TR><TR><TD>
-hpdj350c </TD><TD> hpdj430 </TD><TD> hpdj450c </TD><TD> hpdj455ca </TD><TD> hpdj600 </TD></TR><TR><TD>
-hpdj650c </TD><TD> hpdj700 </TD><TD> hpdj750c </TD><TD> hpdj750cplus </TD><TD> hpdj755cm </TD></TR><TR><TD>
-hpiiisi </TD><TD> hpljpro </TD><TD> hppjxl300 </TD><TD> postscript </TD><TD> ps </TD></TR><TR><TD>
-
-</TD></TR></TABLE></CENTER>
-<P>
-<P>
-<P>
-<P>
-<P>
-<P>
-<P>
-<P>
-<P>
-<P>
-<P>
-<P>
-<P>
-<P>
-<P>
-<P>
+<BLOCKQUOTE><CODE>
+<PRE>
+apple     hp4000      hp4          hp4l         hp4lc
+hp4m      hp4ml       hp4mp        hp4mplus     hp4mv
+hp4p      hp4pj       hp4plus      hp4si        hp4simx
+hp4v      hp5         hp5l         hp5m         hp5mp
+hp5p      hp5si       hp5simopier  hp5simx      hp6l
+hp6mp     hp6p        hpcolorlj5   hpcolorlj5m  hpcolorlj
+hpdj1200c hpdj1600c   hpdj2000cp   hpdj200      hpdj220
+hpdj230   hpdj2500cp  hpdj250c     hpdj330      hpdj350c
+hpdj350c  hpdj430     hpdj450c     hpdj455ca    hpdj600
+hpdj650c  hpdj700     hpdj750c     hpdj750cplus hpdj755cm
+hpiiisi   hpljpro     hppjxl300    postscript   ps
+tek       qms1725
+</PRE>
+</CODE></BLOCKQUOTE>
 <P>In addition to HP printers,
 there is also generic support for PostScript only printers.
-<H2><A NAME="ss2.4">2.4 PS, PCL, PJL Printer with Network Connection</A>
+<H2><A NAME="ss2.3">2.3 PS, PCL, PJL Printer with Network Connection</A>
 </H2>
 
 <P>This is the most common configuration,
@@ -221,7 +196,7 @@ lp:server  <BR>
 &nbsp;&nbsp;:if=/.../ifhp  <BR>
 &nbsp;&nbsp;:of=/.../ifhp  
 </CODE></BLOCKQUOTE>
-<H2><A NAME="ss2.5">2.5 PS, PCL, PJL Printer with Parallel Port Connection</A>
+<H2><A NAME="ss2.4">2.4 PS, PCL, PJL Printer with Parallel Port Connection</A>
 </H2>
 
 <P>Since the parallel port is unidirectional,
@@ -246,7 +221,7 @@ lp:server  <BR>
 &nbsp;&nbsp;:of=/.../ifhp  
 </CODE></BLOCKQUOTE>
 <P>
-<H2><A NAME="ss2.6">2.6 PS, PCL, PJL Printer with Serial Port</A>
+<H2><A NAME="ss2.5">2.5 PS, PCL, PJL Printer with Serial Port</A>
 </H2>
 
 <P>The LPRng print spooler will open and set the serial
@@ -273,7 +248,7 @@ lp:server  <BR>
 &nbsp;&nbsp;:if=/.../ifhp  <BR>
 &nbsp;&nbsp;:of=/.../ifhp  
 </CODE></BLOCKQUOTE>
-<H2><A NAME="ss2.7">2.7 PostScript Only Printer</A>
+<H2><A NAME="ss2.6">2.6 PostScript Only Printer</A>
 </H2>
 
 <P>Use the configuration appropriate to the printer connection,
@@ -322,7 +297,7 @@ use the
 (
 <A HREF="ifhp-3.html#no_ps_eoj">No PS EOJ at Start</A>) flags.
 flag to remove them.
-<H2><A NAME="ss2.8">2.8 PostScript Only Printer With Text Conversion</A>
+<H2><A NAME="ss2.7">2.7 PostScript Only Printer With Text Conversion</A>
 </H2>
 
 <P>You can use the PostScript Only configuration above,
@@ -363,6 +338,58 @@ lp:server  <BR>
 &nbsp;&nbsp;:...  <BR>
 &nbsp;&nbsp;:ifhp=pcl@,pjl@,text@,text_converter=...,\ <BR>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;text_converter_output=ps&nbsp;<BR>
+&nbsp;&nbsp;#path to ifhp filter  <BR>
+&nbsp;&nbsp;:if=/.../ifhp  <BR>
+&nbsp;&nbsp;:of=/.../ifhp  
+</CODE></BLOCKQUOTE>
+<P>
+<H2><A NAME="ss2.8">2.8 Tektronixs Phaser Series Printer with Network Connections</A>
+</H2>
+
+<P>The Tektronics Phaser Series printers use the
+<I>Appsocket</I> protocol when sending a job to the printer.
+This protocol is (briefly):
+<OL>
+<LI> The printer listens for UDP packets on port 9101
+and for TCP/IP connections on port 9100.</LI>
+<LI> When a UDP packet is recieved on port 9101, then a reply
+packet containing the status is returned to the originator's
+address.
+This packet contains an status indication,
+in a <EM>undefined</EM> format.</LI>
+<LI> To send a job to the printer,  a TCP/IP connection is opened to port
+9100,
+and a PostScript job is sent.
+Only a single job can be sent at a time - a EOJ (CTRL-D)
+will terminate input and flush all following jobs.</LI>
+<LI>Return status will be sent in the reverse direction until the job
+has completed,
+at which point the connection will be closed.</LI>
+</OL>
+<P>The <CODE>ifhp</CODE> program supports the <CODE>appsocket</CODE> protocol.
+In order to do so,
+the following ifhp configuration entry can be used.
+<BLOCKQUOTE><CODE>
+<PRE>
+[ tek ]
+appsocket
+pjl@
+pcl@
+</PRE>
+</CODE></BLOCKQUOTE>
+
+The <CODE>appsocket</CODE> option will use the appsocket protcol,
+and cause <CODE>ifhp</CODE> to open and close connections to the printer.
+The printcap entry should specify
+<CODE>lp=/dev/null</CODE>
+and provide the device IP address using the <CODE>-Tdev=host%port</CODE> option.
+<BLOCKQUOTE><CODE>
+# Phaser Setup
+lp:server  <BR>
+&nbsp;&nbsp;:<I>lp=/dev/null</I>  <BR>
+&nbsp;&nbsp;:sd=<I>spooldir</I>  <BR>
+&nbsp;&nbsp;:...  <BR>
+&nbsp;&nbsp;:ifhp=model=tek,dev=10.0.0.1%9100<BR>
 &nbsp;&nbsp;#path to ifhp filter  <BR>
 &nbsp;&nbsp;:if=/.../ifhp  <BR>
 &nbsp;&nbsp;:of=/.../ifhp  

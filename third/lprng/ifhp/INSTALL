@@ -4,14 +4,15 @@ Installation
 
 READ THE README FILE NOW!!!  This is where the directions are.
 
+These are generic installation instructions, and are part of the
+autoconf documentation.
+
 Patrick Powell                 Astart Technologies,
 papowell@astart.com            9475 Chesapeake Drive, Suite D,
 Network and System             San Diego, CA 92123
   Consulting                   619-874-6543 FAX 619-279-8424 
 LPRng - Print Spooler (http://www.astart.com)
 
-These are generic installation instructions, and are part of the
-autoconf documentation.
 
    The `configure' shell script attempts to guess correct values for
 various system-dependent variables used during compilation.  It uses
@@ -176,4 +177,4 @@ operates.
 
 `configure' also accepts some other, not widely useful, options.
 
-$Id: INSTALL,v 1.1.1.1 1999-02-17 15:31:03 ghudson Exp $
+$Id: INSTALL,v 1.1.1.2 1999-05-04 18:50:27 mwhitson Exp $

@@ -3,7 +3,7 @@
  * Copyright 1994-1999 Patrick Powell, San Diego, CA <papowell@astart.com>
  **************************************************************************/
 /**** HEADER *****/
-static char *const _id = "$Id: accounting.c,v 1.1.1.2 1999-04-01 20:09:17 mwhitson Exp $";
+static char *const _id = "$Id: accounting.c,v 1.1.1.3 1999-05-04 18:50:38 mwhitson Exp $";
 
 #include "ifhp.h"
 
@@ -78,13 +78,13 @@ void Do_accounting(int start, int elapsed, int pagecounter, int npages )
 	*s = 0;
 	DEBUG1("Accounting: script '%s', fd %d, Accountfile '%s', output '%s'",
 		Accounting_script, Accounting_fd, Accountfile, list );
-	*s++='\n';
-	*s = 0;
 
 	/* this is probably the best way to do the output */
 	if(Accounting_fd > 0 ||
 	     (Accountfile && (Accounting_fd = open(Accountfile, O_WRONLY|O_APPEND )) >= 0 )) {
 		DEBUG1("Accounting: writing to %d, '%s'", Accounting_fd, list );
+		*s++='\n';
+		*s = 0;
 	    Write_fd_str(Accounting_fd,list);
 	}
 	if( Accounting_script && *Accounting_script ){

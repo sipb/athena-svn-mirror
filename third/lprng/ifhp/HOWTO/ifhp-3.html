@@ -294,7 +294,7 @@ verify that your printer is accessible on the network by using
 It is amazing how many problems are caused by erroneous
 network addresses.
 <BLOCKQUOTE><CODE>
-astart: {298} % ping nwpr <BR>
+astart: % ping nwpr <BR>
 PING nwpr.astart.com (10.0.0.10): 56 data bytes <BR>
 64 bytes from 10.0.0.10: icmp_seq=0 ttl=60 time=4.286 ms 
 </CODE></BLOCKQUOTE>
@@ -304,7 +304,7 @@ PING nwpr.astart.com (10.0.0.10): 56 data bytes <BR>
 to check that you can connect to port 9100.
 <BLOCKQUOTE><CODE>
 <PRE>
-astart: {299} % telnet nwpr 9100
+astart: % telnet nwpr 9100
 Trying 206.71.174.206...
 Connected to nwpr.astart.com.
 Escape character is '^]'.
@@ -400,7 +400,7 @@ text
 <LI>Now do the indicated command; you should get similar output
 <BLOCKQUOTE><CODE>
 <PRE>
-astart: {542} % ifhp &lt;hi.txt
+astart: % ifhp &lt;hi.txt
 </PRE>
 </CODE></BLOCKQUOTE>
 
@@ -499,7 +499,7 @@ program as shown below.
 You should see output similar to:
 <BLOCKQUOTE><CODE>
 <PRE>
-astart: {542} % ifhp &lt;h11.txt
+astart: % ifhp &lt;h11.txt
 ifhp 15:57:23.734 [3096] Process_job: setting up printer
 ifhp 15:57:23.736 [3096] Do_accounting: accounting at start, pagecount 0, pages 0
 ifhp 15:57:23.736 [3096] Process_job: sending job file
@@ -584,7 +584,7 @@ ifhp &lt;hi.txt
 <LI>You should see output similar to:
 <BLOCKQUOTE><CODE>
 <PRE>
-astart: {542} % ifhp -Tconfig=.../testscripts/t1.conf &lt;h11.txt
+astart: % ifhp -Tconfig=.../testscripts/t1.conf &lt;h11.txt
 ifhp 15:57:23.734 [3096] Process_job: setting up printer
 ifhp 15:57:23.736 [3096] Do_accounting: accounting at start, pagecount 0, pages 0
 ifhp 15:57:23.736 [3096] Process_job: sending job file

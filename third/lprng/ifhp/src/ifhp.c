@@ -4,7 +4,7 @@
  **************************************************************************/
 /**** HEADER *****/
 #include "patchlevel.h"
- static char *const _id = "$Id: ifhp.c,v 1.1.1.2 1999-04-01 20:09:11 mwhitson Exp $"
+ static char *const _id = "$Id: ifhp.c,v 1.1.1.3 1999-05-04 18:50:37 mwhitson Exp $"
  " VERSION " PATCHLEVEL;
 
 #include "ifhp.h"
@@ -25,78 +25,85 @@
     struct glyph *glyph;    /* glyphs */
 };
 
-int main(int argc,char *argv[], char *envp[]) ;
-void cleanup(int sig) ;
-void getargs( int argc, char **argv ) ;
-void Init_outbuf() ;
-void Put_outbuf_str( char *s ) ;
-void Put_outbuf_len( char *s, int len ) ;
-void Init_inbuf() ;
-void Put_inbuf_str( char *str ) ;
-void Put_inbuf_len( char *str, int len ) ;
-char *Get_inbuf_str() ;
-void Pr_status( char *str ) ;
-void Check_device_status( char *line ) ;
-void Initialize_parms( struct line_list *list, struct keyvalue *valuelist ) ;
-void Dump_parms( char *title, struct keyvalue *v ) ;
-void Process_job() ;
-void Put_pjl( char *s ) ;
-void Put_pcl( char *s ) ;
-void Put_ps( char *s ) ;
-void Put_fixed( char *s ) ;
-int Get_block_io( int fd ) ;
-void Set_nonblock_io( int fd ) ;
-void Set_block_io( int fd ) ;
-int Read_write_timeout( int readfd, int *flag, int readtimeout,
-	int writefd, char *buffer, int len, int writetimeout,
+extern int main(int argc,char *argv[], char *envp[]) ;
+extern void cleanup(int sig) ;
+extern void getargs( int argc, char **argv ) ;
+extern void Init_outbuf() ;
+extern void Put_outbuf_str( char *s ) ;
+extern void Put_outbuf_len( char *s, int len ) ;
+extern void Init_inbuf() ;
+extern void Put_inbuf_str( char *str ) ;
+extern void Put_inbuf_len( char *str, int len ) ;
+extern char *Get_inbuf_str() ;
+extern void Init_monitorbuf() ;
+extern void Put_monitorbuf_str( char *str ) ;
+extern void Put_monitorbuf_len( char *str, int len ) ;
+extern char *Get_monitorbuf_str() ;
+extern void Pr_status( char *str, int monitor_status ) ;
+extern void Check_device_status( char *line ) ;
+extern void Initialize_parms( struct line_list *list, struct keyvalue *valuelist ) ;
+extern void Dump_parms( char *title, struct keyvalue *v ) ;
+extern void Process_job() ;
+extern void Put_pjl( char *s ) ;
+extern void Put_pcl( char *s ) ;
+extern void Put_ps( char *s ) ;
+extern void Put_fixed( char *s ) ;
+extern int Get_nonblock_io( int fd ) ;
+extern void Set_nonblock_io( int fd ) ;
+extern void Set_block_io( int fd ) ;
+extern int Read_write_timeout( int readfd, int *flag,
+	int writefd, char *buffer, int len, int timeout,
 	int monitorfd ) ;
-int Read_status_line( int fd ) ;
-int Write_out_buffer( int outlen, char *outbuf, int maxtimeout ) ;
-void Resolve_key_val( char *prefix, char *key_val, Wr_out routine ) ;
-int Is_flag( char *s, int *v ) ;
-void Resolve_list( char *prefix, struct line_list *l, Wr_out routine ) ;
-void Resolve_user_opts( char *prefix, struct line_list *only,
+extern int Read_status_line( int fd ) ;
+extern int Read_monitor_status_line( int fd ) ;
+extern int Write_out_buffer( int outlen, char *outbuf, int maxtimeout );
+extern void Resolve_key_val( char *prefix, char *key_val, Wr_out routine ) ;
+extern int Is_flag( char *s, int *v ) ;
+extern void Resolve_list( char *prefix, struct line_list *l, Wr_out routine ) ;
+extern void Resolve_user_opts( char *prefix, struct line_list *only,
 	struct line_list *l, Wr_out routine ) ; char *Find_sub_value( int c, char *id );
 
-char *Fix_option_str( char *str, int remove_ws, int trim ) ;
-char *Fix_option_str( char *str, int remove_ws, int trim ) ;
-char *Find_sub_value( int c, char *id ) ;
-int Builtin( char* prefix, char *id, char *value, Wr_out routine) ;
-int Font_download( char* prefix, char *id, char *value, Wr_out routine) ;
-void Pjl_job() ;
-void Pjl_eoj() ;
-void Pjl_console( int start ) ;
-int Pjl_setvar(char *prefix, char*id, char *value, Wr_out routine) ;
-int Pcl_setvar(char *prefix, char*id, char *value, Wr_out routine ) ;
-void Do_sync( int sync_timeout ) ;
-void Do_waitend( int waitend_timeout ) ;
-int Do_pagecount( int pagecount_timeout ) ;
-int Current_pagecount( int pagecount_timeout, int use_pjl, int use_ps ) ;
-void Send_job() ;
-void Process_OF_mode( int job_timeout ) ;
-void Add_val_to_list( struct line_list *v, int c, char *key, char *sep ) ;
-void Do_banner( char *line ) ;
-void moveto( int x, int y ) ;
-void fontsize( int size ) ;
-void textline( char *line, int start, int end ) ;
-void pcl_banner( char *line, struct line_list *l, struct line_list *rest ) ;
-char *ps_str_fix( char *str ) ;
-void ps_banner( char *line, struct line_list *l, struct line_list *rest ) ;
-void file_banner( char *file ) ;
-void Filter_banner( char *filter, char *line ) ;
-void close_on_exec( int n ) ;
-char *Use_file_util(char *pgm, char *match, struct line_list *args) ;
-void Make_stdin_file() ;
-int Set_mode_lang( char *s, char **mode, char **language ) ;
-int Fd_readable( int fd ) ;
-void Init_job( char *language, char *mode ) ;
-void Term_job( char *mode ) ;
-void Text_banner(void) ;
-void do_char( struct font *font, struct glyph *glyph,
+extern char *Fix_option_str( char *str, int remove_ws, int trim ) ;
+extern char *Fix_option_str( char *str, int remove_ws, int trim ) ;
+extern char *Find_sub_value( int c, char *id ) ;
+extern int Builtin( char* prefix, char *id, char *value, Wr_out routine) ;
+extern int Font_download( char* prefix, char *id, char *value, Wr_out routine) ;
+extern void Pjl_job() ;
+extern void Pjl_eoj() ;
+extern void Pjl_console( int start ) ;
+extern int Pjl_setvar(char *prefix, char*id, char *value, Wr_out routine) ;
+extern int Pcl_setvar(char *prefix, char*id, char *value, Wr_out routine ) ;
+extern void Do_sync( int sync_timeout ) ;
+extern void Do_waitend( int waitend_timeout ) ;
+extern int Do_pagecount( int pagecount_timeout ) ;
+extern int Current_pagecount( int pagecount_timeout, int use_pjl, int use_ps ) ;
+extern void Send_job() ;
+extern void Process_OF_mode( int job_timeout ) ;
+extern void Add_val_to_list( struct line_list *v, int c, char *key, char *sep ) ;
+extern void Do_banner( char *line ) ;
+extern void moveto( int x, int y ) ;
+extern void fontsize( int size ) ;
+extern void textline( char *line, int start, int end ) ;
+extern void pcl_banner( char *line, struct line_list *l, struct line_list *rest ) ;
+extern char *ps_str_fix( char *str ) ;
+extern void ps_banner( char *line, struct line_list *l, struct line_list *rest ) ;
+extern void file_banner( char *file ) ;
+extern void Filter_banner( char *filter, char *line ) ;
+extern void close_on_exec( int n ) ;
+extern void Use_file_util(char *pgm, char *match, struct line_list *args) ;
+extern void Make_stdin_file() ;
+extern int Set_mode_lang( char *s, char **mode, char **language ) ;
+extern int Fd_readable( int fd ) ;
+extern void Init_job( char *language, char *mode ) ;
+extern void Term_job( char *mode ) ;
+extern void Text_banner(void) ;
+extern void do_char( struct font *font, struct glyph *glyph,
 	char *str, int line ) ;
-int bigfont( struct font *font, char *line, struct line_list *l, int start ) ;
-const char *Decode_status (plp_status_t *status);
-void Fix_special_user_opts( struct line_list *opts, char *line );
+extern int bigfont( struct font *font, char *line, struct line_list *l, int start ) ;
+extern const char *Decode_status (plp_status_t *status);
+extern void Fix_special_user_opts( struct line_list *opts, char *line );
+extern int Make_tempfile( char **retval );
+extern int plp_usleep( int i );
 
 /*
  * Main program:
@@ -137,18 +144,27 @@ void Fix_special_user_opts( struct line_list *opts, char *line );
  int Inmax;		/* max buffer size */
  char *Inplace;	/* current input location */
  int Inlen;		/* total input from Inplace */
+ char *Monitorbuf;	/* buffer */
+ int Monitormax;		/* max buffer size */
+ char *Monitorplace;	/* current input location */
+ int Monitorlen;		/* total input from Monitorplace */
 
  char *PJL_UEL_str =  "\033%-12345X";
+ char *PJL_str =  "@PJL\n";
 
 
 int main(int argc,char *argv[], char *envp[])
 {
 	struct stat statb;
 	char *s, *t;
-	int i, use_ps, use_pcl, use_text, use;
+	int i, use_ps, use_pcl, use_text, use, fd;
 	struct line_list l;
 
 	Init_line_list(&l);
+
+	Debug = 0;
+	Trace_on_stderr = 0;
+
 	Argc = argc;
 	Argv = argv;
 	Envp = envp;
@@ -163,6 +179,20 @@ int main(int argc,char *argv[], char *envp[])
 	/* 1. does setup - checks mode */
 
 	/* set up the accounting FD for output */
+	if( fstat(0,&statb) == -1 ){
+		Errorcode = JABORT;
+		fatal( "ifhp: stdin is not open");
+	}
+	if( fstat(1,&statb) == -1 ){
+		Errorcode = JABORT;
+		fatal( "ifhp: stdout is not open");
+	}
+	if( fstat(2,&statb) == -1 ){
+		if( (fd = open( "/dev/null", O_WRONLY )) != 2 ){
+			Errorcode = JABORT;
+			logerr_die( "ifhp: open /dev/null" );
+		}
+	}
 	Accounting_fd = -1;
 	if( fstat( 3, &statb ) == 0 ){
 		Accounting_fd = 3;
@@ -171,71 +201,8 @@ int main(int argc,char *argv[], char *envp[])
 	/* initialize input and output buffers */
 	Init_outbuf();
 	Init_inbuf();
+	Init_monitorbuf();
 
-#if 0
-	Debug = 4;
-	Trace_on_stderr = 1;
-#if 0
-	Statusfile = "status";
-#endif
-#if 0
-	Globmatch("*","");
-	Globmatch("a","a");
-	Globmatch("aa","a");
-	Globmatch("a*","a");
-	Globmatch("a*","ab");
-	Globmatch("*a","a");
-	Globmatch("?a","xa");
-	Globmatch("a?","xa");
-	Globmatch("a?","ax");
-	Globmatch("a[b-d]","ax");
-	Globmatch("a[b-d]","ac");
-	Globmatch("a[b-d]*","ace");
-#endif
-#if 0
-	{
-	struct line_list info, names, order;
-	Init_line_list(&info); Init_line_list(&names); Init_line_list(&order);
-	Config_file = "/tmp/e";
-	Read_file_list( &Raw, Config_file, "\n", 0, 0, 0, 1, 1, 1, 1 );
-	Dump_line_list("Raw-", &Raw );
-	Build_printcap_info( &names, &order, &Model, &Raw );
-	Dump_line_list("PC- Model", &Model );
-	Dump_line_list("PC- names", &names );
-	Dump_line_list("PC- order", &order );
-	s = Select_pc_info( &info,&names,&Model,"lw4", 0, "astart4.astart.com");
-	}
-	exit(0);
-#endif
-#if 0
-	if( DEBUGL1 ){
-		logDebug("main: ENV");
-		for( i = 0; (s = envp[i]); ++i ){
-			logDebug(" [%d] '%s'", i, s );
-		}
-	}
-#endif
-#if 0
-	/* testing for support routines */
-	{
-	struct line_list l;
-	Init_line_list(&l);
-	Split(&l, "v2=val2\nv1=val1\n", "\n", 1, Value_sep, 1, 1, 0, 0 );
-	/*Free_line_list(&l); */
-	Split(&l, "v1=val3\nv2=val4\n", "\n", 1, Value_sep, 1, 1, 0, 0 );
-	Split(&l, "v0=val5\nv6=val6\nv3=val7\n", "\n", 1, Value_sep, 1, 1, 0, 0 );
-	exit(0);
-	}
-#endif
-#if 0
-	DEBUG1("main: banner '%s'", Outbuf );
-	Upperopts['J'-'A'] = "Test Job";
-	Text_banner();
-	DEBUG1("main: banner");
-	Write_fd_str(2,Outbuf);
-	exit(0);
-#endif
-#endif
 
 	/* check the environment variables */
 	if( (s = getenv("PRINTCAP_ENTRY")) ){
@@ -257,6 +224,7 @@ int main(int argc,char *argv[], char *envp[])
 		Debug = atoi(s);
 		DEBUG3("main: Debug '%d'", Debug );
 	}
+	DEBUG1("main: Debug '%d'", Debug );
 	if( Find_exists_value( &Topts, "trace", Value_sep ) ){
 		Trace_on_stderr = Find_flag_value( &Topts, "trace", Value_sep );
 	}
@@ -265,24 +233,28 @@ int main(int argc,char *argv[], char *envp[])
 		Config_file = safestrdup( s,__FILE__,__LINE__);
 		DEBUG3("main: setting Config_file '%s'", Config_file );
 	}
-	if( Find_flag_value(&Topts,"version",Value_sep)
-		|| Find_flag_value(&Zopts,"version",Value_sep) ){
-		char buffer[128];
-		plp_snprintf(buffer,sizeof(buffer),
-			"Version %s - %s\n", PATCHLEVEL, _id );
-			Write_fd_str(2,buffer);
-	}
+
+	/* set the configuration file if not defined yet*/
+#   if !defined(CONFIG_FILE)
+#      define CONFIG_FILE "./ifhp.conf," ADMINDIR "/ifhp.conf,./ifhp.conf"
+#   endif
 
 	if( !Config_file ) Config_file = CONFIG_FILE;
 		
 	Read_file_list( &Raw, Config_file, "\n", 0, 0, 0, 0, 1, 0, 1 );
 	if(DEBUGL5)Dump_line_list("main: Raw", &Raw );
+
+	/* we select the model information from the options first */
 	Model_id = Select_model_info( &Model, &Topts, Model_id );
 	Model_id = Select_model_info( &Model, &Raw, Model_id );
 	DEBUG1("main: model id '%s'", Model_id );
 	if(DEBUGL5)Dump_line_list("main: Model after Raw", &Model );
+
+	/* now we add in the Topts */
 	Merge_list( &Model, &Topts, Value_sep, 1, 1 );
 	if(DEBUGL5)Dump_line_list("main: Model after Topts", &Model );
+
+	/* check for -Zlogall allowed, and set it */
 
 	if( (s = Find_str_value( &Model, "user_opts", Value_sep)) ){
 		Split( &User_opts, s, List_sep, 1, Value_sep, 1, 1, 0  );
@@ -298,9 +270,10 @@ int main(int argc,char *argv[], char *envp[])
 		}
 	}
 
+	/* check for -Tdebug */
 	if( Debug == 0 && (s = Find_str_value( &Model, "debug", Value_sep )) ){
 		Debug = atoi(s);
-		DEBUG3("main: Debug '%d'", Debug );
+		DEBUG1("main: new Debug '%d'", Debug );
 	}
 
 	if(DEBUGL3) Dump_line_list( "main: combined list", &Model );
@@ -382,8 +355,16 @@ int main(int argc,char *argv[], char *envp[])
 	}
 
 	DEBUG1("main: Debug level %d", Debug );
+	if(DEBUGL1)Dump_line_list("Zopts",&Zopts);
+	if(DEBUGL1)Dump_line_list("Topts",&Zopts);
+	/* if we have version request, print out the version */
+	if( Debug || Find_flag_value(&Topts,"version",Value_sep)
+		|| Find_flag_value(&Zopts,"version",Value_sep) ){
+		logmsg( "Version %s", _id );
+	}
 	if(DEBUGL3) Dump_parms( "main- from list", Valuelist );
 	if(DEBUGL3) Dump_line_list( "main: Model", &Model );
+
 
 #if 0
 	{
@@ -400,20 +381,19 @@ int main(int argc,char *argv[], char *envp[])
 	}
 #endif
 
-	(void)signal(SIGINT, cleanup);
-	(void)signal(SIGHUP, cleanup);
-	(void)signal(SIGTERM, cleanup);
-	(void)signal(SIGQUIT, cleanup);
 	(void)signal(SIGPIPE, SIG_IGN);
 
 	/* 2. initializes connection */
 	if( Device ){
+		if( Appsocket && Status ){
+			Open_monitor( Device );
+		}
 		Open_device( Device );
 	}
 	if( Force_status ){
 		Status = 1;
 		DEBUG1( "main: forcing status reading" );
-	} else if( Status && !Fd_readable(1) ){
+	} else if( Status && Monitor_fd < 0 && !Fd_readable(1) ){
 		DEBUG1( "main: device cannot provide status" );
 		Status = 0;
 	}
@@ -498,12 +478,14 @@ void getargs( int argc, char **argv )
 	if( (s = Upperopts['Z'-'A'] ) ){
 		Fix_special_user_opts(&Zopts, s);
 	}
+	if(DEBUGL1)Dump_line_list("getargs: T opts", &Topts);
+	if(DEBUGL1)Dump_line_list("getargs: Z opts", &Zopts);
 }
 
 void Fix_special_user_opts( struct line_list *opts, char *line )
 {
 	struct line_list v;
-	int i;
+	int i, append, c;
 	char *key, *value, *s;
 
 	DEBUG1("Fix_special_user_opts: '%s'", line );
@@ -511,27 +493,28 @@ void Fix_special_user_opts( struct line_list *opts, char *line )
 	Split(&v,line,Filesep,0,0,0,0,0);
 	for( i = 0; i < v.count; ++i ){
 		key = v.list[i];
+		c = 0;
 		if( (value = strpbrk( key, Value_sep )) ){
-			*value++ = 0;
+			c = *value;
+			*value = 0;
 		}
 		DEBUG1("Fix_special_user_opts: '%s'='%s'", key, value );
-		if( value ){
-			if( !strcasecmp( key, "font")
-				){
-				if( (s = Find_str_value(opts,key,Value_sep)) ){
-					DEBUG1("Fix_special_user_opts: old '%s'='%s'", key, s );
-					s = safestrdup3(s,",",value,__FILE__,__LINE__);
-					DEBUG1("Fix_special_user_opts: new '%s'='%s'", key, s );
-					Set_str_value(opts,key,s);
-					if(s) free(s); s = 0;
-				} else {
-					DEBUG1("Fix_special_user_opts: init '%s'='%s'", key, value );
-					Set_str_value(opts,key,value);
-				}
+		if( (append =  !strcasecmp( key, "font")) && value ){
+			if( (s = Find_str_value(opts,key,Value_sep)) ){
+				DEBUG1("Fix_special_user_opts: old '%s'='%s'", key, s );
+				s = safestrdup3(s,",",value+1,__FILE__,__LINE__);
+				DEBUG1("Fix_special_user_opts: new '%s'='%s'", key, s );
+				Set_str_value(opts,key,s);
+				if(s) free(s); s = 0;
 			} else {
-				Set_str_value(opts,key,value);
+				DEBUG1("Fix_special_user_opts: init '%s'='%s'", key, value+1 );
+				Set_str_value(opts,key,value+1);
 			}
-		} else {
+		}
+		if( value ){
+			*value = c;
+		}
+		if( !append ){
 			Add_line_list(opts,key,Value_sep,1,1);
 		}
 	}
@@ -650,9 +633,87 @@ char *Get_inbuf_str()
 		Inplace = s;
 		s = Inbuf;
 		/* DEBUG4("Get_inbuf_str: found '%s', buffer '%s'", s, Inplace); */
-		Pr_status( s );
+		Pr_status( s, 0 );
 	}
 	Inlen = strlen(Inplace);
+	return( s );
+}
+
+
+/*
+ * Monitorput buffer management
+ *  Set up and put values into an input buffer for
+ *  scanning purposes
+ */
+void Init_monitorbuf()
+{
+	Monitormax = LARGEBUFFER;
+	Monitorbuf = realloc_or_die( Monitorbuf, Monitormax+1,__FILE__,__LINE__);
+	Monitorbuf[Monitormax] = 0;
+	Monitorplace = Monitorbuf;
+	Monitorlen = 0;
+	Monitorbuf[0] = 0;
+}
+
+void Put_monitorbuf_str( char *str )
+{
+	int len = strlen( str );
+	Put_monitorbuf_len( str, len );
+}
+
+void Put_monitorbuf_len( char *str, int len )
+{
+	Monitorlen = strlen(Monitorplace);
+	if( Monitorplace != Monitorbuf ){
+		/* we readjust the locations */
+		memmove( Monitorbuf, Monitorplace, Monitorlen+1 );
+		Monitorplace = Monitorbuf;
+	}
+	if( Monitormax - Monitorlen <= (len+1) ){
+		Monitormax += ((LARGEBUFFER + len+1)/1024)*1024;
+		Monitorbuf = realloc_or_die( Monitorbuf, Monitormax+1,__FILE__,__LINE__);
+		if( !Monitorbuf ){
+			Errorcode = JABORT;
+			logerr_die( "Put_outbuf_len: realloc %d failed", len );
+		}
+	}
+	memmove( Monitorplace+Monitorlen, str, len+1 );
+	Monitorlen += len;
+	Monitorbuf[Monitorlen] = 0;
+	DEBUG4("Put_monitorbuf_len: buffer '%s'", Monitorbuf );
+}
+
+/*
+ * char *Get_monitorbuf_str()
+ * return a pointer to a complete line in the input buffer
+ *   This will, in effect, remove the line from the
+ *   buffer, and it should be saved.
+ * Any of the Put_monitorbuf or Get_monitorbuf calls will destroy
+ *   this line.
+ */
+char *Get_monitorbuf_str()
+{
+	char *s = 0;
+	/* DEBUG4("Get_monitorbuf_str: buffer '%s'", Monitorplace); */
+	Monitorlen = strlen(Monitorplace);
+	if( Monitorplace != Monitorbuf ){
+		/* we readjust the locations */
+		memmove( Monitorbuf, Monitorplace, Monitorlen+1 );
+		Monitorplace = Monitorbuf;
+	}
+	/* remove \r */
+	while( (s = strchr( Monitorbuf, '\r' ) ) ){
+		memmove( s, s+1, strlen(s)+1 );
+	}
+	s = strpbrk( Monitorbuf, Line_ends );
+	if( s ){
+		*s++ = 0;
+		Monitorplace = s;
+		s = Monitorbuf;
+		/* DEBUG4("Get_monitorbuf_str: found '%s', buffer '%s'", s, Monitorplace); */
+		Pr_status( s, 1 );
+	}
+	Monitorlen = strlen(Monitorplace);
 	return( s );
 }
 
@@ -676,7 +737,7 @@ char *Get_inbuf_str()
  *
  */
 
-void Pr_status( char *str )
+void Pr_status( char *str, int monitor_status )
 {
 	char *s, *t, *end = 0;
 	int len, i, start;
@@ -706,7 +767,7 @@ void Pr_status( char *str )
 			} else {
 				name = safestrdup(str,__FILE__,__LINE__);
 			}
-		} else if( strstr( str,"%%[" ) ){
+		} else if( monitor_status || strstr( str,"%%[" ) ){
 			int c = 0;
 			/* we do Postscipt status */
 			DEBUG5("Pr_status: doing PostScript status");
@@ -832,6 +893,10 @@ void Check_device_status( char *line )
 {
 	char *old, *end, *t;
 
+	if( line ){
+		t = line + strlen(line) -1;
+		if( cval(t) == ';' ) *t = 0;
+	}
 	line = safestrdup(line,__FILE__,__LINE__);
 	if( (end = strpbrk( line, Value_sep )) ) *end++ = 0;
 
@@ -983,6 +1048,10 @@ void Process_job()
 		Do_sync(Sync_timeout);
 		startpagecount = Do_pagecount(Pagecount_timeout);
 	}
+	if( Monitor_fd > 0 ){
+		close( 1 );
+		Open_device( Device );
+	}
 	time( &current_t );
 	elapsed = current_t - Start_time;
 
@@ -1001,6 +1070,7 @@ void Process_job()
 	if( Pjl ){
 		DEBUG1("Process_job: doing pjl");
 		Put_outbuf_str( PJL_UEL_str );
+		Put_outbuf_str( PJL_str );
 		Pjl_job();
 		Pjl_console(1);
 		if( !Find_first_key( &Model, "pjl_init", Value_sep, 0) ){
@@ -1039,6 +1109,7 @@ void Process_job()
 	if( Pjl ){
 		DEBUG1("Process_job: doing pjl at end");
 		Put_outbuf_str( PJL_UEL_str );
+		Put_outbuf_str( PJL_str );
 		Pjl_eoj();
 		Pjl_console(0);
 		if( !Find_first_key( &Model, "pjl_term", Value_sep, 0) ){
@@ -1063,7 +1134,18 @@ void Process_job()
 	Init_outbuf();
 	DEBUG1("Process_job: end sync and pagecount");
 	if( Status ){
+		/* terminate reading from the socket
+		 * this should cause the printer to simply send back status 
+		 */
+		if( Monitor_fd > 0 ){
+			DEBUG1("Process_job: end shutdown");
+			shutdown( 1, 1 );
+		}
 		Do_waitend(Job_timeout);
+		if( Monitor_fd > 0 ){
+			close( 1 );
+			Open_device( Device );
+		}
 		endpagecount = Do_pagecount(Job_timeout);
 	}
 
@@ -1154,11 +1236,11 @@ void Put_fixed( char *s )
  * Set_block_io(fd)
  *  Set blocking or non-blocking IO
  *  Dies if unsuccessful
- * Get_block_io(fd)
- *  Returns NONBLOCK flag value
+ * Get_nonblock_io(fd)
+ *  Returns O_NONBLOCK flag value
  */
 
-int Get_block_io( int fd )
+int Get_nonblock_io( int fd )
 {
 	int mask;
 	/* we set IO to non-blocking on fd */
@@ -1167,7 +1249,8 @@ int Get_block_io( int fd )
 		Errorcode = JABORT;
 		logerr_die( "ifhp: fcntl fd %d F_GETFL failed", fd );
 	}
-	mask &= NONBLOCK;
+	mask &= O_NONBLOCK;
+	DEBUG4("Get_nonblock_io: fd %d, O_NONBLOCK %d",fd, mask);
 	return( mask );
 }
 
@@ -1180,7 +1263,7 @@ void Set_nonblock_io( int fd )
 		Errorcode = JABORT;
 		logerr_die( "ifhp: fcntl fd %d F_GETFL failed", fd );
 	}
-	mask |= NONBLOCK;
+	mask |= O_NONBLOCK;
 	if( (mask = fcntl( fd, F_SETFL, mask ) ) == -1 ){
 		Errorcode = JABORT;
 		logerr_die( "ifhp: fcntl fd %d F_SETFL failed", fd );
@@ -1196,7 +1279,7 @@ void Set_block_io( int fd )
 		Errorcode = JABORT;
 		logerr_die( "ifhp: fcntl fd %d F_GETFL failed", fd );
 	}
-	mask &= ~NONBLOCK;
+	mask &= ~O_NONBLOCK;
 	if( (mask = fcntl( fd, F_SETFL, mask ) ) == -1 ){
 		Errorcode = JABORT;
 		logerr_die( "ifhp: fcntl fd %d F_SETFL failed", fd );
@@ -1205,8 +1288,9 @@ void Set_block_io( int fd )
 
 
 /*
- * Read_write_timeout( int readfd, int *flag, int readtimeout,
- *	 int writefd, char *buffer, int len, int writetimeout )
+ * Read_write_timeout( int readfd, int *flag,
+ *	int writefd, char *buffer, int len, int timeout,
+ *	int monitorfd )
  *  Write the contents of a buffer to the file descriptor
  *  int readfd: 
  *  int writefd: write file descriptor
@@ -1218,34 +1302,35 @@ void Set_block_io( int fd )
  *    then we wait for the readtimeout length
  */
 
-int Read_write_timeout( int readfd, int *flag, int readtimeout,
-	int writefd, char *buffer, int len, int writetimeout,
+int Read_write_timeout( int readfd, int *flag,
+	int writefd, char *buffer, int len, int timeout,
 	int monitorfd )
 {
 	time_t start_t, current_t;
-	int elapsed, blocking = 0, m, err;
+	int elapsed, nonblocking = 0, m, err;
 	struct timeval timeval, *tp;
     fd_set readfds, writefds; /* for select() */
 
 	DEBUG4(
-	"Read_write_timeout: write(fd %d, len %d, timeout %d) read(fd %d, timeout %d) monitor %d",
-		writefd, len, writetimeout, readfd, readtimeout,monitorfd);
+	"Read_write_timeout: write(fd %d, len %d) timeout %d, read fd %d, monitor fd %d",
+		writefd, len, timeout, readfd, monitorfd);
 
 	time( &start_t );
 
 	if( flag ) *flag = 0;
-	if( len == 0 && flag && readfd >= 0 ){
+	if( len == 0 && flag && (readfd >= 0 || monitorfd >= 0) ){
 		while(1){
-			if( readtimeout > 0 ){
+			if( timeout > 0 ){
 				time( &current_t );
 				elapsed = current_t - start_t;
-				if( readtimeout > 0 && elapsed >= readtimeout ){
+				m = timeout - elapsed;
+				DEBUG4("Read_write_timeout: timeout left %d", m );
+				if( m <= 0 ){
 					break;
 				}
 				memset( &timeval, 0, sizeof(timeval) );
-				timeval.tv_sec = m = readtimeout - elapsed;
+				timeval.tv_sec = m;
 				tp = &timeval;
-				DEBUG4("Read_write_timeout: read timeout now %d", m );
 			} else {
 				tp = 0;
 			}
@@ -1277,11 +1362,11 @@ int Read_write_timeout( int readfd, int *flag, int readtimeout,
 				break;
 			}
 			if( readfd >= 0 && FD_ISSET( readfd, &readfds ) ){
-				*flag = 1;
+				*flag |= 1;
 				break;
 			}
 			if( monitorfd >= 0 && FD_ISSET( monitorfd, &readfds ) ){
-				*flag = 1;
+				*flag |= 2;
 				break;
 			}
 		}
@@ -1289,20 +1374,21 @@ int Read_write_timeout( int readfd, int *flag, int readtimeout,
 		return( len );
 	}
 
-	if( writefd>=0 && (blocking = Get_block_io( writefd ))){
+	if( writefd>=0 && !(nonblocking = Get_nonblock_io( writefd ))){
 		Set_nonblock_io( writefd );
 	}
 	while( len > 0 ){
-		if( writetimeout > 0 ){
+		if( timeout > 0 ){
 			time( &current_t );
 			elapsed = current_t - start_t;
-			if( writetimeout > 0 && elapsed >= writetimeout ){
+			m = timeout - elapsed;
+			DEBUG4("Read_write_timeout: timeout left %d", m );
+			if( m <= 0 ){
 				break;
 			}
 			memset( &timeval, 0, sizeof(timeval) );
-			timeval.tv_sec = m = writetimeout - elapsed;
+			timeval.tv_sec = m;
 			tp = &timeval;
-			DEBUG4("Read_write_timeout: timeout now %d", m );
 		} else {
 			tp = 0;
 		}
@@ -1327,7 +1413,8 @@ int Read_write_timeout( int readfd, int *flag, int readtimeout,
             FD_SET_FIX((fd_set *))&writefds,
             FD_SET_FIX((fd_set *))0, tp );
 		err = errno;
-		DEBUG4("Read_write_timeout: reading and writing, select returned %d", m );
+		DEBUG4("Read_write_timeout: reading and writing, select returned %d",
+			m );
 		if( m < 0 ){
 			/* error */
 			if( err != EINTR ){
@@ -1338,8 +1425,19 @@ int Read_write_timeout( int readfd, int *flag, int readtimeout,
 			/* timeout */
 			break;
 		}
+		if( readfd >=0 && FD_ISSET( readfd, &readfds ) ){
+			DEBUG4("Read_write_timeout: read possible on fd %d", readfd );
+			*flag |= 1;
+			break;
+		}
+		if( monitorfd >=0 && FD_ISSET( monitorfd, &readfds ) ){
+			DEBUG4("Read_write_timeout: monitor possible on fd %d", monitorfd );
+			*flag |= 2;
+			break;
+		}
 		if( writefd>=0 && FD_ISSET( writefd, &writefds ) ){
-			DEBUG4("Read_write_timeout: write possible on fd %d", writefd );
+			DEBUG4("Read_write_timeout: write possible on fd %d, nonblocking %d",
+				writefd, Get_nonblock_io(writefd) );
 			m = write( writefd, buffer, len );
 			DEBUG4("Read_write_timeout: wrote %d", m );
 			if( m < 0 ){
@@ -1355,18 +1453,8 @@ int Read_write_timeout( int readfd, int *flag, int readtimeout,
 				buffer += m;
 			}
 		}
-		if( readfd >=0 && FD_ISSET( readfd, &readfds ) ){
-			DEBUG4("Read_write_timeout: read possible on fd %d", readfd );
-			*flag = 1;
-			break;
-		}
-		if( monitorfd >=0 && FD_ISSET( monitorfd, &readfds ) ){
-			DEBUG4("Read_write_timeout: monitor possible on fd %d", monitorfd );
-			*flag = 1;
-			break;
-		}
 	}
-	if(writefd >= 0 && blocking){
+	if(writefd >= 0 && !nonblocking){
 		Set_block_io( writefd );
 	}
 	DEBUG4("Read_write_timeout: returning %d, flag %d",
@@ -1379,31 +1467,60 @@ int Read_write_timeout( int readfd, int *flag, int readtimeout,
  */
 int Read_status_line( int fd )
 {
-	int blocking, count;
-	char inbuff[SMALLBUFFER];
+	int nonblocking, count;
+	char monitorbuff[SMALLBUFFER];
 
-	inbuff[0] = 0;
-	if((blocking = Get_block_io( fd ))){
+	monitorbuff[0] = 0;
+	if(!(nonblocking = Get_nonblock_io( fd ))){
 		Set_nonblock_io( fd );
 	}
 	/* we read from stdout */
-	count = read( fd, inbuff, sizeof(inbuff) - 1 );
-	if(blocking){
+	count = read( fd, monitorbuff, sizeof(monitorbuff) - 1 );
+	if(!nonblocking){
 		Set_block_io( fd );
 	}
 	if( count > 0 ){
-		inbuff[count] = 0;
-		Put_inbuf_str( inbuff );
+		monitorbuff[count] = 0;
+		Put_inbuf_str( monitorbuff );
 	}
 	DEBUG2("Read_status_line: read fd %d, count %d, '%s'",
-		fd, count, inbuff );
+		fd, count, monitorbuff );
+	return( count );
+}
+
+/*
+ * Read monitor status information from FD
+ */
+int Read_monitor_status_line( int fd )
+{
+	int nonblocking, count;
+	char monitorbuff[SMALLBUFFER];
+
+	monitorbuff[0] = 0;
+	if(!(nonblocking = Get_nonblock_io( fd ))){
+		Set_nonblock_io( fd );
+	}
+	/* we read from stdout */
+	count = read( fd, monitorbuff, sizeof(monitorbuff) - 2 );
+	if(!nonblocking){
+		Set_block_io( fd );
+	}
+	if( count > 0 ){
+		monitorbuff[count++] = '\n';
+		monitorbuff[count] = 0;
+		Put_monitorbuf_str( monitorbuff );
+	} else if( count < 0 ){
+		DEBUG1("Read_monitor_status_line: error '%s'", Errormsg(errno) );
+	}
+	DEBUG2("Read_monitor_status_line: read fd %d, count %d, '%s'",
+		fd, count, monitorbuff );
 	return( count );
 }
 
 /*
  * int Write_out_buffer( int outlen, char *outbuf, int maxtimeout )
- * We output the buffer, but we also read the status line
- * information as well.
+ * We output the buffer to fd1, but we also read the status line
+ * information as well from fd 1 if Status is set
  */
 
 int Write_out_buffer( int outlen, char *outbuf, int maxtimeout )
@@ -1411,9 +1528,12 @@ int Write_out_buffer( int outlen, char *outbuf, int maxtimeout )
 	time_t current_time;
 	int elapsed, timeout, len, flag, read_fd = 1;
 
-	if( Status == 0 ) read_fd = -1;
+	if( Status == 0 ){
+		read_fd = -1;
+	}
 
-	DEBUG1("Write_out_buffer: write len %d, read_fd %d", outlen, read_fd );
+	DEBUG1("Write_out_buffer: write len %d, read_fd %d, maxtimeout %d",
+		outlen, read_fd, maxtimeout );
 	while( outlen > 0 && outbuf ){ 
 		time( &current_time );
 		elapsed = current_time - Start_time;
@@ -1422,8 +1542,9 @@ int Write_out_buffer( int outlen, char *outbuf, int maxtimeout )
 			timeout = maxtimeout - elapsed; 
 			if( timeout <= 0 ) break;
 		}
-		len = Read_write_timeout( read_fd, &flag, 0,
-			1, outbuf, outlen, timeout, -1 );
+		DEBUG1("Write_out_buffer: timeout %d, len %d", timeout, outlen );
+		len = Read_write_timeout( read_fd, &flag,
+			1, outbuf, outlen, timeout, Monitor_fd );
 		DEBUG1("Write_out_buffer: left to write %d", len );
 		if( len < 0 ){
 			outlen = len;
@@ -1431,13 +1552,20 @@ int Write_out_buffer( int outlen, char *outbuf, int maxtimeout )
 			outbuf += (outlen - len);
 			outlen = len;
 		}
-		if( flag ){
-			if( Read_status_line( 1 ) <= 0 ){
+		if( flag & 1 ){
+			if( Read_status_line( read_fd ) <= 0 ){
 				logerr("Write_out_buffer: read from printer failed");
 				break;
+			} else {
+				/* get the status */
+				while( Get_inbuf_str() );
 			}
-			/* get the status */
-			while( Get_inbuf_str() );
+		}
+		if( flag & 2 ){
+			if( Read_monitor_status_line( Monitor_fd ) > 0 ){
+				/* get the status */
+				while( Get_monitorbuf_str() );
+			}
 		}
 	}
 	DEBUG1("Write_out_buffer: done, returning %d", outlen );
@@ -1939,7 +2067,8 @@ void Pjl_eoj()
  *  console@   disables or erases messages on console
  */
 
- char *PJL_RDYMSG_str = "@PJL RDYMSG DISPLAY = \"%s\"";
+ char *PJL_RDYMSG_str  = "@PJL RDYMSG DISPLAY = \"%s ACTV\"";
+ char *PJL_RDYMSG_str2 = "@PJL RDYMSG DISPLAY = \"%s DONE\"";
 
 void Pjl_console( int start )
 {
@@ -1955,11 +2084,16 @@ void Pjl_console( int start )
 		return;
 	}
 	s = "";
-	if( start && ((s = Loweropts['n'-'a']) == 0 || *s == 0) ){
+	if(((s = Loweropts['n'-'a']) == 0 || *s == 0) ){
 		s = name;
 		plp_snprintf(name,sizeof(name), "PID %d", getpid());
 	}
-	plp_snprintf( buffer, sizeof(buffer), PJL_RDYMSG_str, s );
+        if ( start ) {
+	        plp_snprintf( buffer, sizeof(buffer), PJL_RDYMSG_str, s );
+        }
+        else {
+	        plp_snprintf( buffer, sizeof(buffer), PJL_RDYMSG_str2, s );
+        }
 	Put_pjl( buffer );
 }
 
@@ -2062,17 +2196,19 @@ int Pcl_setvar(char *prefix, char*id, char *value, Wr_out routine )
 void Do_sync( int sync_timeout )
 {
 	char buffer[SMALLBUFFER], name[SMALLBUFFER], *s, *sync_str;
-	int len, flag, elapsed, timeout, sync, use, use_ps, use_pjl, c;
+	int len, flag, elapsed, timeout, sync, use, use_ps, use_pjl,
+		use_appsocket, cx, output_fd = 1, input_fd = 1, attempt;
 	time_t start_t, current_t, interval_t;
 
 	time( &start_t );
- again:
 
-	sync_str = s = Find_value(&Model,"sync",Value_sep);
+
+	cx = 0;
+	sync_str = s = (Sync?Sync:"1");
 	DEBUG2("Do_sync: sync is '%s'", s );
 
 	/* we see if we can do sync */
-	use = use_pjl = use_ps = 0;
+	use = use_pjl = use_ps = use_appsocket = 0;
 	if( !Is_flag( s, &use ) ){
 		/* we check to see if the string is specifying */
 		if( !strcasecmp(s,"pjl") && Pjl ){
@@ -2083,6 +2219,12 @@ void Do_sync( int sync_timeout )
 		}
 		use = 1;
 	} else if( use ){
+		if( Monitor_fd > 0 ){
+			output_fd = Monitor_fd;
+			input_fd = -1;
+			use_appsocket = 1;
+			sync_str = "appsocket";
+		}
 		use_pjl = Pjl;
 		use_ps = Ps;
 	} else {
@@ -2099,20 +2241,30 @@ void Do_sync( int sync_timeout )
 	}
 	if( use_pjl ) use_ps = 0;
 	s = use_pjl?"pjl":"ps";
-
 	sync_str = s;
+
 	logmsg("Do_sync: getting sync using '%s'", sync_str );
+	DEBUG2("Do_sync: input fd %d, output fd %d, monitor fd %d",
+		input_fd, output_fd, Monitor_fd );
+
+	attempt = 0;
+	sync = 0;
+
+ again:
+
+	++attempt;
+	DEBUG2("Do_sync: attempt %d", attempt );
 
 	/* get start time */
-	sync = 0;
 	time( &interval_t );
 	Init_outbuf();
 	plp_snprintf( name, sizeof(name), "%d@%s", getpid(), Time_str(0,0) );
 	for( s = name; ( s = strchr(s,':')); ++s) *s = '-';
-	DEBUG2("Do_sync: Ps_status_code '%s', use_pjl %d, use_ps %d",
+	DEBUG2("Do_sync: Ps_status_code '%s', use_pjl %d, use_ps %d, use_appsocket %d",
 			Ps_status_code, use_pjl, use_ps );
 	if( use_pjl ){
 		Put_outbuf_str( PJL_UEL_str );
+		Put_outbuf_str( PJL_str );
 		plp_snprintf( buffer, sizeof(buffer),
 			PJL_ECHO_str, name );
 		Put_pjl( buffer );
@@ -2124,22 +2276,25 @@ void Do_sync( int sync_timeout )
 		if(Pjl){
 			Put_outbuf_str( PJL_UEL_str );
 			if( Pjl_enter ){
+				Put_outbuf_str( PJL_str );
 				Put_outbuf_str( "@PJL ENTER LANGUAGE = POSTSCRIPT\n" );
 			}
 		}
 		Put_outbuf_str( CTRL_D );
-		//Put_outbuf_str( CTRL_T );
-		if( s = strstr(Ps_status_code,"NAME") ){ c = *s; *s = 0; }
+		/* Put_outbuf_str( CTRL_T ); */
+		if( (s = strstr(Ps_status_code,"NAME")) ){ cx = *s; *s = 0; }
 		Put_outbuf_str( Ps_status_code );
 		Put_outbuf_str( name );
-		if( s ){ *s = c; s += 4; Put_outbuf_str( s ); };
+		if( s ){ *s = cx; s += 4; Put_outbuf_str( s ); };
 		Put_outbuf_str( CTRL_D );
 		if(Pjl){
 			Put_outbuf_str( PJL_UEL_str );
 		}
+	} else if( use_appsocket ){
+		Put_outbuf_str( "\r\n" );
 	} else {
 		Errorcode = JABORT;
-		fatal("Do_sync: no way to synchronize printer, need PJL or PS" );
+		fatal("Do_sync: no way to synchronize printer, need PJL, PS, or appsocket" );
 	}
 
 	DEBUG2("Do_sync: using sync '%s'", Outbuf );
@@ -2160,36 +2315,48 @@ void Do_sync( int sync_timeout )
 		} else {
 			timeout = 0;
 		}
+		elapsed = current_t - interval_t;
+		DEBUG3("Do_sync: timeout %d, Sync_interval %d, elpased %d",
+			timeout, Sync_interval, elapsed );
 		if( Sync_interval > 0 ){
-			elapsed = current_t - interval_t;
-			if( elapsed > Sync_interval ){
+			timeout = Sync_interval - elapsed;
+			if( timeout <= 0 ){
 				goto again;
-			}
-			if( timeout == 0 || timeout > Sync_interval ){
-				timeout = Sync_interval;
 			}
 		}
 		DEBUG3("Do_sync: waiting for sync, timeout %d", timeout );
-		len = Read_write_timeout( 1, &flag, timeout,
-			1, Outbuf, Outlen, timeout, -1 );
-		DEBUG3("Do_sync: read/write len '%d'", len );
+		len = Read_write_timeout( input_fd, &flag,
+			output_fd, Outbuf, Outlen, timeout, Monitor_fd );
+		DEBUG3("Do_sync: read/write len '%d', flag %d", len, flag );
 		if( len < 0 ){
 			break;
 		} else if( len >= 0 ){
 			memmove(Outbuf, Outbuf+(Outlen - len), len+1 );
 			Outlen = len;
 		}
-		if( flag ){
-			if( Read_status_line( 1 ) <= 0 ){
-				logerr("Do_sync: read from printer failed");
+		if( (flag & 1) ){
+			if(  Read_status_line( input_fd ) <= 0 ){
+				logerr("Do_sync: read from printer tcp port failed");
 				break;
+			} else {
+				/* get the status */
+				while( Get_inbuf_str() );
 			}
-			/* get the status */
-			while( Get_inbuf_str() );
-			if( (s = Find_str_value( &Devstatus, "echo", Value_sep))
-				&& strstr( s, name ) ){
-				sync = 1;
+		}
+		if( flag & 2 ){
+			if( Read_monitor_status_line( Monitor_fd ) > 0 ){
+				/* get the status */
+				while( Get_monitorbuf_str() );
 			}
+		}
+		if( use_appsocket
+			&& (s = Find_str_value( &Devstatus, "status",Value_sep))
+			&& (strstr(s,"busy") || strstr(s,"idle")) ){
+			sync = 1;
+		}
+		if( (s = Find_str_value( &Devstatus, "echo", Value_sep))
+			&& strstr( s, name ) ){
+			sync = 1;
 		}
 	}
 	DEBUG2("Do_sync: sync %d", sync );
@@ -2210,68 +2377,78 @@ void Do_sync( int sync_timeout )
 
 void Do_waitend( int waitend_timeout )
 {
-	char *s, *t, buffer[SMALLBUFFER];
+	char *sync_str, *s, *t, buffer[SMALLBUFFER];
 	int len, flag, elapsed, timeout, waitend,
-		use, use_pjl, use_ps, use_job, c;
+		use, use_pjl, use_ps, use_appsocket, use_job, c, output_fd = 1,
+		input_fd = 1, n;
 	time_t start_t, current_t, interval_t;
 
 	time( &start_t );
- again:
-	s = Find_value(&Model,"sync",Value_sep);
-	if( s && Find_exists_value(&Model,"waitend",Value_sep) ){
-		s = Find_value(&Model,"waitend",Value_sep);
-	}
+
+	s = (Waitend?Waitend:"1");
 	DEBUG3("Do_waitend: getting end using '%s'", s );
 
 	/* we see if we can do sync */
-	use = use_pjl = use_ps = use_job = 0;
-	if( !Is_flag( s, &use ) ){
-		/* we check to see if the string is specifying */
-		if( !strcasecmp(s,"pjl") ){
-			use_pjl = Pjl;
-		}
-		if( !strcasecmp(s,"ps") ){
-			use_ps = Ps;
-		}
-		use = 1;
-	} else if( use ){
-		use_job = use_pjl = Pjl;
-		use_ps = Ps;
+	use = use_pjl = use_ps = use_job = use_appsocket = 0;
+	if( Monitor_fd > 0 ){
+		output_fd = Monitor_fd;
+		use_appsocket = 1;
+		sync_str = "appsocket";
 	} else {
-		return;
+		if( !Is_flag( s, &use ) ){
+			/* we check to see if the string is specifying */
+			if( !strcasecmp(s,"pjl") ){
+				use_pjl = Pjl;
+			}
+			if( !strcasecmp(s,"ps") ){
+				use_ps = Ps;
+			}
+			use = 1;
+		} else if( use ){
+			use_job = use_pjl = Pjl;
+			use_ps = Ps;
+		} else {
+			return;
+		}
+
+		if( use_pjl
+			&& ( Find_first_key( &Pjl_only, "JOB", 0, 0)
+				|| !Find_first_key( &Pjl_except, "JOB", 0, 0)
+				) ){
+			use_job = 0;
+		}
+		if( use_pjl && use_job == 0
+			&& ( Find_first_key( &Pjl_only, "ECHO", 0, 0)
+				|| !Find_first_key( &Pjl_except, "ECHO", 0, 0)
+				) ){
+			use_pjl = 0;
+		}
+		if( !use_ps && !use_pjl && !use_appsocket ){
+			Errorcode = JABORT;
+			fatal("Do_waitend: waitend '%s' and method not supported", s );
+		}
+		if( use_pjl ) use_ps = 0;
+		sync_str = use_pjl?"pjl":"ps";
+
 	}
 
-	if( use_pjl
-		&& ( Find_first_key( &Pjl_only, "JOB", 0, 0)
-			|| !Find_first_key( &Pjl_except, "JOB", 0, 0)
-			) ){
-		use_job = 0;
-	}
-	if( use_pjl && use_job == 0
-		&& ( Find_first_key( &Pjl_only, "ECHO", 0, 0)
-			|| !Find_first_key( &Pjl_except, "ECHO", 0, 0)
-			) ){
-		use_pjl = 0;
-	}
-	if( !use_ps && !use_pjl ){
-		Errorcode = JABORT;
-		fatal("Do_waitend: waitend '%s' and method not supported", s );
-	}
-	if( use_pjl ) use_ps = 0;
-	s = use_pjl?"pjl":"ps";
-
-	logmsg("Do_waitend: getting end using '%s'", s );
+	logmsg("Do_waitend: getting end using '%s'", sync_str );
 
 	waitend = 0;
 
 	/* find if we need to periodically send the waitend value */
-	DEBUG3("Do_waitend: use_pjl %d, use_job %d, use_ps %d, timeout %d, interval %d",
-		use_pjl, use_job, use_ps, waitend_timeout, Waitend_interval );
+	DEBUG3("Do_waitend: use_pjl %d, use_job %d, use_appsocket %d, use_ps %d, timeout %d, interval %d",
+		use_pjl, use_job, use_appsocket, use_ps, waitend_timeout, Waitend_interval );
 
 	Add_line_list( &Devstatus, "job=", Value_sep, 1, 1 );
 	Add_line_list( &Devstatus, "name=", Value_sep, 1, 1 );
 	Add_line_list( &Devstatus, "echo=", Value_sep, 1, 1 );
 	Add_line_list( &Devstatus, "status=", Value_sep, 1, 1 );
+
+	DEBUG2("Do_waitend: input fd %d, output fd %d, monitor fd %d",
+		input_fd, output_fd, Monitor_fd );
+
+ again:
 
 	Init_outbuf();
 	plp_snprintf( Jobname, sizeof(Jobname), "%s PID %d",
@@ -2279,6 +2456,7 @@ void Do_waitend( int waitend_timeout )
 	for( s = Jobname; ( s = strchr(s,':')); ++s) *s = '-';
 	if( use_pjl ){
 		Put_outbuf_str( PJL_UEL_str );
+		Put_outbuf_str( PJL_str );
 		if( use_job ){
 			plp_snprintf( buffer, sizeof(buffer), Jobstart_str, Jobname );
 			Put_pjl(buffer);
@@ -2297,13 +2475,14 @@ void Do_waitend( int waitend_timeout )
 		if(Pjl){
 			Put_outbuf_str( PJL_UEL_str );
 			if( Pjl_enter ){
+				Put_outbuf_str( PJL_str );
 				Put_outbuf_str( "@PJL ENTER LANGUAGE = POSTSCRIPT\n" );
 			}
 		}
 		Put_outbuf_str( CTRL_D );
 		Put_outbuf_str( CTRL_T );
 		c = 0;
-		if( s = strstr(Ps_status_code,"NAME") ){ c = *s; *s = 0; }
+		if( (s = strstr(Ps_status_code,"NAME")) ){ c = *s; *s = 0; }
 		Put_outbuf_str( Ps_status_code );
 		Put_outbuf_str( Jobname );
 		if( s ){ *s = c; s += 4; Put_outbuf_str( s ); };
@@ -2311,6 +2490,8 @@ void Do_waitend( int waitend_timeout )
 		if(Pjl){
 			Put_outbuf_str( PJL_UEL_str );
 		}
+	} else if( use_appsocket ){
+		Put_outbuf_str( "\r\n" );
 	}
 
 	time( &interval_t );
@@ -2325,6 +2506,8 @@ void Do_waitend( int waitend_timeout )
 
 		/* check for master timeout */
 		if( waitend_timeout > 0 ){
+			DEBUG3("Do_waitend: waitend timeout %d, elapsed %d",
+				waitend_timeout, elapsed );
 			if( elapsed >= waitend_timeout ){
 				break;
 			}
@@ -2334,30 +2517,40 @@ void Do_waitend( int waitend_timeout )
 		}
 		if( Waitend_interval > 0 ){
 			elapsed = current_t - interval_t;
-			if( elapsed > Waitend_interval ){
-				goto again;
-			}
-			if( timeout == 0 || timeout > Waitend_interval ){
-				timeout = Waitend_interval;
-			}
+			timeout = Waitend_interval - elapsed;
+			if( timeout <= 0 ) goto again;
 		}
-		len = Read_write_timeout( 1, &flag, timeout,
-			1, Outbuf, Outlen, timeout, -1 );
-		DEBUG3("Do_waitend: write len %d", len );
+		len = Read_write_timeout( input_fd, &flag,
+			output_fd, Outbuf, Outlen, timeout, Monitor_fd);
+		DEBUG3("Do_waitend: write len %d, flag %d", len, flag );
 		if( len < 0 ){
 			break;
 		} else if( len >= 0 ){
 			memmove(Outbuf, Outbuf+(Outlen - len), len);
 			Outlen = len;
 		}
-		if( flag ){
-			if( Read_status_line( 1 ) <= 0 ){
+		if( flag & 1 ){
+			n = Read_status_line( input_fd );
+			DEBUG3("Do_waitend: Read_status_line returned %d", n );
+			if( n <= 0 && Monitor_fd >= 0 ){
+				waitend = 1;
+			} else if( n <= 0 ){
 				logerr("Do_waitend: read from printer failed");
 				break;
 			}
 			/* get the status */
 			while( Get_inbuf_str() );
-			if(DEBUGL4)Dump_line_list("Do_waitend - Devstatus", &Devstatus );
+		}
+		if( flag & 2 ){
+			if( Monitor_fd >= 0 ){
+				if( Read_monitor_status_line( Monitor_fd ) > 0 ){
+					/* get the status */
+					while( Get_monitorbuf_str() );
+				}
+			}
+		}
+		if( flag ){
+			if(DEBUGL3)Dump_line_list("Do_waitend - Devstatus", &Devstatus );
 			if( use_pjl ){
 				s = Find_str_value( &Devstatus, "job", Value_sep);
 				t = Find_str_value( &Devstatus, "name", Value_sep);
@@ -2411,7 +2604,7 @@ int Do_pagecount( int pagecount_timeout )
 	time_t start_t, current_t;
 	char *s;
 
-	s = Find_value(&Model,"pagecount",Value_sep);
+	s = Pagecount;
 	DEBUG4("Do_pagecount: getting pagecount using '%s'", s );
 
 	/* we see if we can do sync */
@@ -2469,18 +2662,24 @@ int Do_pagecount( int pagecount_timeout )
 				}
 				DEBUG1("Do_pagecount: pagecount poll %d, waiting %d",
 					Pagecount_poll, timeout );
-				len = Read_write_timeout( 1, &flag, timeout,
-					-1, 0, 0, 0, -1 );
+				len = Read_write_timeout( 1, &flag,
+					1, 0, 0, timeout, Monitor_fd );
 				DEBUG1("Do_pagecount: waiting, read len %d", len );
 				if( len < 0 ){
 					break;
 				}
-				if( flag ){
+				if( flag & 1 ){
 					if( Read_status_line( 1 ) <= 0 ){
 						logerr("Do_pagecount: read from printer failed");
 						break;
+					} else {
+						while( Get_inbuf_str() );
 					}
-					while( Get_inbuf_str() );
+				}
+				if( flag & 2 ){
+					if( Read_monitor_status_line( Monitor_fd ) > 0 ){
+						while( Get_monitorbuf_str() );
+					}
 				}
 			}
 			DEBUG1("Do_pagecount: polling, getting count again");
@@ -2498,14 +2697,22 @@ int Current_pagecount( int pagecount_timeout, int use_pjl, int use_ps )
 {
 	int i, len, flag, elapsed, timeout, page, pagecount = 0, found;
 	time_t start_t, current_t, interval_t;
+	int shutdown_done = 0;
 	char *s;
 
 	/* get start time */
 	time( & start_t );
+
  again:
 
 	DEBUG1("Current_pagecount: starting, use_pjl %d, use_ps %d, timeout %d",
 		use_pjl, use_ps, pagecount_timeout );
+
+	if( Monitor_fd > 0 ){
+		close(1);
+		Open_device( Device );
+		shutdown_done = 0;
+	}
 
 	/* remove the old status */
 	Add_line_list( &Devstatus, "pagecount=", Value_sep, 1, 1 );
@@ -2513,6 +2720,7 @@ int Current_pagecount( int pagecount_timeout, int use_pjl, int use_ps )
 	Init_outbuf();
 	if( use_pjl ){
 		Put_outbuf_str( PJL_UEL_str );
+		Put_outbuf_str( PJL_str );
 		Put_pjl( PJL_INFO_PAGECOUNT_str );
 		Put_outbuf_str( PJL_UEL_str );
 	} else if( use_ps ){
@@ -2523,13 +2731,14 @@ int Current_pagecount( int pagecount_timeout, int use_pjl, int use_ps )
 		if( Pjl ){
 			Put_outbuf_str( PJL_UEL_str );
 			if( Pjl_enter ){
+				Put_outbuf_str( PJL_str );
 				Put_outbuf_str( "@PJL ENTER LANGUAGE = POSTSCRIPT\n" );
 			}
 		}
-		Put_outbuf_str( CTRL_D );
+		if( !Appsocket ) Put_outbuf_str( CTRL_D );
 		Put_outbuf_str( Ps_pagecount_code );
 		Put_outbuf_str( "\n" );
-		Put_outbuf_str( CTRL_D );
+		if( !Appsocket ) Put_outbuf_str( CTRL_D );
 		if( Pjl ) Put_outbuf_str( PJL_UEL_str );
 	}
 
@@ -2561,21 +2770,37 @@ int Current_pagecount( int pagecount_timeout, int use_pjl, int use_ps )
 				timeout = Pagecount_interval;
 			}
 		}
-		len = Read_write_timeout( 1, &flag, timeout,
-			1, Outbuf, Outlen, timeout, -1 );
+		len = Read_write_timeout( 1, &flag,
+			1, Outbuf, Outlen, timeout, Monitor_fd );
 		DEBUG1("Current_pagecount: write len %d", len );
+		if( flag & 1 ){
+			if( (i = Read_status_line( 1 )) < 0 ){
+				logerr("Current_pagecount: read from printer failed");
+				break;
+			} else if( i == 0 ){
+				break;
+			} else {
+				while( (s = Get_inbuf_str() ) );
+			}
+		}
+
+		if( flag & 2 ){
+			if( Monitor_fd >= 0 ){
+				if( Read_monitor_status_line( Monitor_fd ) > 0 ){
+					while( (s = Get_monitorbuf_str() ) );
+				}
+			}
+		}
 		if( len < 0 ){
 			break;
 		} else if( len >= 0 ){
 			memmove(Outbuf, Outbuf+(Outlen - len), len);
 			Outlen = len;
-		}
-		if( flag ){
-			if( Read_status_line( 1 ) <= 0 ){
-				logerr("Current_pagecount: read from printer failed");
-				break;
+			if( len == 0 && Monitor_fd >= 0 && shutdown_done == 0 ){
+				DEBUG1("Current_pagecount: shutdown fd 1");
+				shutdown_done = 1;
+				shutdown( 1, 1 );
 			}
-			while( (s = Get_inbuf_str() ) );
 		}
 		if( !Find_first_key( &Devstatus, "pagecount", Value_sep, &i )){
 			s = Find_str_value( &Devstatus, "pagecount", Value_sep );
@@ -2679,6 +2904,9 @@ void Send_job()
 			Errorcode = JABORT;
 			fatal( "Send_job: bad '-Zlanguage=%s' option", s );
 		}
+	} else if( !strncmp( PJL_UEL_str, Outbuf, strlen(PJL_UEL_str)) ){
+		mode = PJL;
+		language = 0;
 	} else if( Outbuf[0] == '\033' ){
 		mode = PCL;
 		language = "PCL";
@@ -2710,12 +2938,12 @@ void Send_job()
 		if( l.count > 1 ){
 			if( Set_mode_lang(l.list[1], &mode, &language) ){
 				Errorcode = JABORT;
-				fatal("Send_job: bad file type '%s'", s);
+				fatal("Send_job: bad file type '%s'", l.list[1]);
 			}
 		}
 		if( l.count < 2 || mode == UNKNOWN ){
 			Errorcode = JABORT;
-			fatal("Send_job: unknown file type '%s'", s);
+			fatal("Send_job: unknown file type");
 		}
 		/* remove first two entries */
 		Remove_line_list(&l,0);
@@ -2740,6 +2968,10 @@ void Send_job()
 	DEBUG1("Send_job: mode '%s' (language %s)", mode, language );
 
 
+	if( mode == PJL && !Pjl ){
+		Errorcode = JABORT;
+		fatal("Send_job: job is PJL and PJL not supported");
+	}
 	if( mode == PCL && !Pcl ){
 		Errorcode = JABORT;
 		fatal("Send_job: job is PCL and PCL not supported");
@@ -2782,7 +3014,7 @@ void Send_job()
 			Errorcode = JABORT;
 			logerr_die( "Send_job: execv failed" );
 		}
-		logmsg("Send_job: started converter");
+		logmsg("Send_job: started converter '%s'", l.list[0]);
 		while( (n = waitpid(pid,&status,0)) != pid );
 		DEBUG1("Send_job: converter pid %d, exit '%s'", pid,
 			Decode_status( &status ) );
@@ -2957,7 +3189,7 @@ void Send_job()
 			i = ((double)(progress_total)/(1024 * (double)progress_k));
 			DEBUG1("Send_job: k total %d, new %d", progress_total, i );
 			if( i > progress_last ){
-				logmsg("Send_job: %d Kbytes done", i);
+				logmsg("Send_job: %d Kbytes done", (progress_total/1024));
 				progress_last = i;
 			}
 		}
@@ -3021,8 +3253,8 @@ void Process_OF_mode( int job_timeout )
     fd_set readfds, writefds; /* for select() */
 	struct timeval timeval, *tp;
 	time_t current_t;
-	int input, output, monitor, state = 0, suspend = 0,
-		inputblocking, outputblocking, monitorblocking,
+	int input, output, state = 0, suspend = 0,
+		inputnonblocking, outputnonblocking, monitornonblocking,
 		elapsed, count = 0, i, m, err, c, banner_done = 0;
 	char *s;
 	char buffer[LARGEBUFFER];
@@ -3040,22 +3272,19 @@ void Process_OF_mode( int job_timeout )
 	DEBUG2("Process_OF_mode: starting, Banner_only '%s', Banner '%s'",
 		Banner_only, Banner);
 
-	input = 0; output = 1; monitor = 1;
-	inputblocking = outputblocking =  monitorblocking = 0;
-	if( Status == 0 ){
-		monitor = -1;
-	}
+	input = 0; output = 1;
+	inputnonblocking = outputnonblocking =  monitornonblocking = 0;
 	
 	Init_outbuf();
 
-	if( (inputblocking = Get_block_io( input ))){
+	if( !(inputnonblocking = Get_nonblock_io( input ))){
 		Set_nonblock_io( input );
 	}
-	if( (outputblocking = Get_block_io( output ))){
+	if( !(outputnonblocking = Get_nonblock_io( output ))){
 		Set_nonblock_io( output );
 	}
-	if( monitor >= 0 && (monitorblocking = Get_block_io( monitor ))){
-		Set_nonblock_io( monitor );
+	if( Monitor_fd >= 0 && !(monitornonblocking = Get_nonblock_io( Monitor_fd ))){
+		Set_nonblock_io( Monitor_fd );
 	}
 	while( input >= 0 || Outlen > 0 ){
 		if( job_timeout > 0 ){
@@ -3073,17 +3302,32 @@ void Process_OF_mode( int job_timeout )
 		}
 		FD_ZERO( &readfds );
 		FD_ZERO( &writefds );
+		m = 0;
 		if( !suspend && input >= 0 ){
 			FD_SET( input, &readfds );
+			if( m <= input ) m = input+1;
 		}
-		if( output >= 0 && Outlen > 0 ){
+		if( Outlen > 0 ){
 			FD_SET( output, &writefds );
+			if( m <= output ) m = output+1;
 		}
-		if( monitor >= 0 ){
-			FD_SET( monitor, &readfds );
+		if( Status ){
+			FD_SET( output, &readfds );
+			if( m <= output ) m = output+1;
 		}
-		m = 4;
-		DEBUG4("Process_OF_mode: starting read select" );
+		if( Monitor_fd >= 0 ){
+			FD_SET( Monitor_fd, &readfds );
+			if( m <= Monitor_fd ) m = Monitor_fd+1;
+		}
+		if(DEBUGL4){
+			logDebug("Process_OF_mode: starting select, %d fds", m );
+			for( i = 0; i < m; ++i ){
+				if( FD_ISSET(i,&readfds) ) logDebug(" read wait fd %d");
+			}
+			for( i = 0; i < m; ++i ){
+				if( FD_ISSET(i,&writefds) ) logDebug(" write wait fd %d");
+			}
+		}
 		m = select( m,
 			FD_SET_FIX((fd_set *))&readfds,
 			FD_SET_FIX((fd_set *))&writefds,
@@ -3109,9 +3353,12 @@ void Process_OF_mode( int job_timeout )
 					Errorcode = JABORT;
 					logerr_die( "cannot open /dev/null" );
 				}
-				if( m != input && dup2(m, input) == -1 ){
-					Errorcode = JABORT;
-					logerr_die( "cannot dup2 /dev/null" );
+				if( m != input ){
+					if( dup2(m, input) == -1 ){
+						Errorcode = JABORT;
+						logerr_die( "cannot dup2 /dev/null" );
+					}
+					close(m);
 				}
 				input = -1;
 			} else {
@@ -3162,15 +3409,22 @@ void Process_OF_mode( int job_timeout )
 				count = 0;
 			}
 		}
-		if( monitor >=0 && FD_ISSET( monitor, &readfds ) ){
+		if( Status && FD_ISSET( output, &readfds ) ){
 			/* we have data available on STDIN */
-			if( Read_status_line( monitor ) <= 0 ){
+			if( Read_status_line( output ) <= 0 ){
 				Errorcode = JFAIL;
 				logerr_die("Process_OF_mode: read from printer failed");
+			} else {
+				while( (s = Get_inbuf_str()) );
 			}
-			while( (s = Get_inbuf_str()) );
 		}
-		if( Outlen > 0 && output>=0 && FD_ISSET( output, &writefds ) ){
+		if( Monitor_fd >=0 && FD_ISSET( Monitor_fd, &readfds ) ){
+			/* we have data available on STDIN */
+			if( Read_monitor_status_line( Monitor_fd ) > 0 ){
+				while( (s = Get_monitorbuf_str()) );
+			}
+		}
+		if( Outlen > 0 && FD_ISSET( output, &writefds ) ){
 			Outbuf[Outlen] = 0;
 			DEBUG4("Process_OF_mode: writing '%s'", Outbuf);
 			m = write( output, Outbuf, Outlen );
@@ -3195,16 +3449,35 @@ void Process_OF_mode( int job_timeout )
 				close( Status_fd );
 				Status_fd = -2;
 			}
+			if( Monitor_fd >= 0 ){
+				logmsg( "Process_OF_mode: monitor FD shutdown %d", output);
+				shutdown( output, 1 );
+				if( Status ){
+					while( Read_status_line( output ) > 0 ){
+						while( (s = Get_inbuf_str()) );
+					}
+				}
+				close( output );
+				logmsg( "Process_OF_mode: closing %d", output);
+			}
 			kill(getpid(), SIGSTOP);
 			logmsg( "Process_OF_mode: active again");
 			suspend = 0;
+			if( Monitor_fd >= 0 ){
+				Open_device( Device );
+				dup2(1,output);
+				Set_nonblock_io( output );
+			}
 		}
 	}
-	if(monitor >= 0 && monitorblocking ){
-		Set_nonblock_io( monitor );
+	if(Monitor_fd >= 0 && !monitornonblocking ){
+		Set_block_io( Monitor_fd );
 	}
-	if(output >= 0 && outputblocking ){
-		Set_nonblock_io( output );
+	if(output >= 0 && !outputnonblocking ){
+		Set_block_io( output );
+	}
+	if(input >= 0 && !inputnonblocking ){
+		Set_block_io( input );
 	}
 	DEBUG4("Process_OF_mode: done" );
 }
@@ -3625,19 +3898,26 @@ void close_on_exec( int n )
 }
 
 /*
- * Use_file_util(char *pgm, int *mode, char **language );
- *
+ * Use_file_util(char *pgm, char *matches, struct line_list *args
+ * 
  * We will need to use the file utility
+ *  pgm = program to invoke
+ *  matches = lines in form of 
+ *      glob   returntype  program
+ *  args = arguments to use if successful
+ * RETURN 0 if no match
+ *        != 0 if match
  */
 
-char *Use_file_util(char *pgm, char *matches, struct line_list *args)
+void Use_file_util(char *pgm, char *matches, struct line_list *args)
 {
 	int i, pid, n, fd;
 	plp_status_t status;
-	char value[LARGEBUFFER], *s, *t;
+	char value[LARGEBUFFER], *s;
 	struct line_list l;
 
 	DEBUG1("Use_file_util: pgm '%s'", pgm);
+	logmsg("Use_file_util: file program = '%s'", pgm );
 	Init_line_list( &l );
 	Free_line_list( args );
 	fd = Make_tempfile(0);
@@ -3684,6 +3964,7 @@ char *Use_file_util(char *pgm, char *matches, struct line_list *args)
 		Errorcode = JABORT;
 		logerr_die("Use_file_util: read failed");
 	}
+	close(fd);
 	value[n] = 0;
 	lowercase(value);
 	while( (s = strchr(value,'\n')) ) *s = ' ';
@@ -3696,17 +3977,26 @@ char *Use_file_util(char *pgm, char *matches, struct line_list *args)
 	}
 	logmsg("Use_file_util: file information = '%s'", value );
 	DEBUG4("Use_file_util: file util done, '%s'", value );
+
 	Free_line_list(&l);
+	Free_line_list(args);
+	/* split the matches up */
 	Split(&l,matches,Line_ends,0,0,0,0, 0 );
 	if(DEBUGL2)Dump_line_list("Use_file_util: matches", &l );
+	/* run down lines */
 	for( i = 0; i < l.count; ++i ){
 		Split(args, l.list[i], Whitespace, 0,0,0,0,0);
+		if( args->count < 3 ){
+			Free_line_list(args);
+			continue;
+		}
 		if(DEBUGL2)Dump_line_list("Use_file_util: checking", args );
 		if( args->count && !Globmatch( args->list[0], value ) ){
 			break;
 		}
 		Free_line_list(args);
 	}
+	Free_line_list(&l);
 	if(DEBUGL2)Dump_line_list("Use_file_util: found", args );
 }
 
@@ -3884,7 +4174,7 @@ void Init_job( char *language, char *mode )
 		Resolve_user_opts( "pcl_", &Pcl_user_opts, &Zopts, Put_pcl );
 	} else if( Ps && mode == PS ){
 		DEBUG1("Init_job: doing ps init");
-		if( !No_PS_EOJ ) Put_outbuf_str(CTRL_D);
+		if( !No_PS_EOJ && !Appsocket ) Put_outbuf_str(CTRL_D);
 		if( Tbcp ){
 			DEBUG3("Init_job: doing TBCP");
 			Put_outbuf_str("\001M");
@@ -5335,3 +5625,26 @@ const char *Decode_status (plp_status_t *status)
     }
     return (msg);
 }
+
+/***************************************************************************
+ * plp_usleep() with select - simple minded way to avoid problems
+ ***************************************************************************/
+int plp_usleep( int i )
+{
+	struct timeval t;
+	DEBUG3("plp_usleep: starting usleep %d", i );
+	if( i > 0 ){
+		memset( &t, 0, sizeof(t) );
+		t.tv_usec = i%1000000;
+		t.tv_sec = i/1000000;
+		DEBUG3("plp_usleep: %d sec, %d microsec", t.tv_sec, t.tv_usec );
+		i = select( 0,
+			FD_SET_FIX((fd_set *))(0),
+			FD_SET_FIX((fd_set *))(0),
+			FD_SET_FIX((fd_set *))(0),
+			&t );
+		DEBUG3("plp_usleep: select done, status %d, errno %d, '%s'", i, errno, Errormsg(errno) );
+	}
+	return( i );
+}
+

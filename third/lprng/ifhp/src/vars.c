@@ -3,7 +3,7 @@
  * Copyright 1994-1999 Patrick Powell, San Diego, CA <papowell@astart.com>
  **************************************************************************/
 /**** HEADER *****/
-static char *const _id = "$Id: vars.c,v 1.1.1.2 1999-04-01 20:09:05 mwhitson Exp $";
+static char *const _id = "$Id: vars.c,v 1.1.1.3 1999-05-04 18:50:34 mwhitson Exp $";
 
 #define EXTERN
 #include "ifhp.h"
@@ -13,6 +13,7 @@ static char *const _id = "$Id: vars.c,v 1.1.1.2 1999-04-01 20:09:05 mwhitson Exp
 struct keyvalue Valuelist[] = {
 
     {  "Accounting_script", "accounting", &Accounting_script, STRV  },
+    {  "Appsocket", "appsocket", (char **)&Appsocket, FLGV  },
     {  "Autodetect", "autodetect", (char **)&Autodetect, FLGV },
     {  "Banner_file", "banner_file", &Banner_file, STRV  },
     {  "Banner_parse_inputline", "banner_parse_inputline", (char **)&Banner_parse_inputline, FLGV },
@@ -32,6 +33,7 @@ struct keyvalue Valuelist[] = {
     {  "Null_pad_count", "nullpad", (char **)&Null_pad_count, INTV },
     {  "No_PCL_EOJ", "no_pcl_eoj", (char **)&No_PCL_EOJ, FLGV },
     {  "No_PS_EOJ", "no_ps_eoj", (char **)&No_PS_EOJ, FLGV },
+    {  "Pagecount", "pagecount", &Pagecount, STRV },
     {  "Pagecount_interval", "pagecount_interval", (char **)&Pagecount_interval, INTV },
     {  "Pagecount_poll", "pagecount_poll", (char **)&Pagecount_poll, INTV },
     {  "Pagecount_timeout", "pagecount_timeout", (char **)&Pagecount_timeout, INTV },
@@ -46,11 +48,13 @@ struct keyvalue Valuelist[] = {
     {  "Status", "status", (char **)&Status, FLGV },
     {  "Stty_args", "stty", &Stty_args, STRV },
     {  "Summaryfile", "summaryfile", &Summaryfile, STRV },
+    {  "Sync", "sync", &Sync, STRV },
     {  "Sync_interval", "sync_interval", (char **)&Sync_interval, INTV },
     {  "Sync_timeout", "sync_timeout", (char **)&Sync_timeout, INTV },
     {  "Tbcp", "tbcp", (char **)&Tbcp, FLGV },
     {  "Text", "text", (char **)&Text, FLGV },
     {  "Trace_on_stderr", "trace", (char **)&Trace_on_stderr, FLGV },
+    {  "Waitend", "waitend", &Waitend, STRV },
     {  "Waitend_interval", "waitend_interval", (char **)&Waitend_interval, INTV },
 
     { 0, 0, 0 }

@@ -7,7 +7,7 @@
 # See LICENSE for conditions of use.
 #
 ###########################################################################
-# $Id: Makefile.bsd,v 1.1.1.1 1999-02-17 15:31:06 ghudson Exp $
+# $Id: Makefile.bsd,v 1.1.1.2 1999-05-04 18:50:51 mwhitson Exp $
 ########################################################################## 
 
 # FAQ Makefile
@@ -20,7 +20,7 @@ SHELL =		/bin/sh
 
 DOC=ifhp
 
-all: $(DOC).html $(DOC).ps $(DOC).txt purge
+all: $(DOC).html $(DOC).info $(DOC).ps $(DOC).txt purge
 #all: $(DOC).txt
 
 $(DOC).html: $(DOC).sgml Makefile

@@ -5,12 +5,13 @@
 #    papowell@astart.com 
 # See LICENSE for conditions of use.
 ###########################################################################
-# $Id: Makefile.bsd,v 1.1.1.1 1999-02-17 15:31:03 ghudson Exp $
+# $Id: Makefile.bsd,v 1.1.1.2 1999-05-04 18:50:32 mwhitson Exp $
 ########################################################################## 
 
 SRC=.
 
 INSTALLCMD=/usr/bin/install -c
+ADMINDIR=/etc
 
 #=============================================================================
 # List the directories you want to generate:
@@ -21,8 +22,6 @@ INSTALLCMD=/usr/bin/install -c
 DIRS= src man
 ALLDIRS= $(DIRS) fonts HOWTO
 TARGET=
-IFHPCONFDIR=/etc
-IFHPCONF=ifhp.conf
 
 # define default target
 MAKETARGET=all
@@ -38,17 +37,19 @@ $(ALLDIRS): FRC
 FRC:
 ###############################################################################
 
-install: 
+install: all init
 	$(MAKE) MAKETARGET=$@ $(DIRS)
 
 ###############################################################################
 
 init:
-	if ! -f $(IFHPCONFDIR); then \
-		$(SRC)/mkinstalldir $(IFHPCONFDIR);
+	if [ ! -d $(ADMINDIR) ] ; then \
+		$(SRC)/mkinstalldir $(ADMINDIR); \
 	fi;
-	if ! -f $(IFHPCONFDIR)$(IFHPCONF) ; then \
-		$(INSTALLCMD) -m 755 $(SRC)/src/$(IFHPCONF) $(IFHPCONFDIR); \
+	if [ ! -f $(ADMINDIR)/ifhp.conf ] ; then \
+		$(INSTALLCMD) -m 755 $(SRC)/ifhp.conf $(ADMINDIR); \
+	else \
+		$(INSTALLCMD) -m 755 $(SRC)/ifhp.conf $(ADMINDIR)/ifhp.conf.sample; \
 	fi;
 		
 ci: cifiles
@@ -108,7 +109,12 @@ shar:
 		shar -S -n $${DIR} -a -s papowell@astart.com \
 		   -c -o /tmp/$${DIR}-Part -L100
 
-dist:
+configure: configure.in
+	autoconf
+	autoheader
+
+dist: configure
+	$(MAKE) ci
 	$(MAKE) update
 	$(MAKE) newmake
 	echo RCS >/tmp/L_X

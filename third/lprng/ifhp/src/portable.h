@@ -595,20 +595,6 @@ XX ** NO VARARGS ** XX
 # undef HAVE_SETPGRP_0
 #endif
 
-/*
- * NONBLOCKING Open and IO - different flags for
- * different systems
- */
-
-#ifndef O_NONBLOCK
-#define O_NONBLOCK 0
-#endif
-
-#ifndef O_NOCTTY
-#define O_NOCTTY 0
-#endif
-
-
 #define NONBLOCK (O_NDELAY|O_NONBLOCK)
 #if defined(HPUX) && HPUX<1100
 #  undef NONBLOCK
@@ -799,4 +785,5 @@ struct sockaddr_in6 {
    };
 #endif
 
+#define STRVAL(X) #X
 #endif	/* PLP_PORTABLE_H */

@@ -2,17 +2,19 @@
 #* LPRng IFHP Filter
 #* Copyright 1994-1999 Patrick Powell, San Diego, CA <papowell@astart.com>
 #*
-#* $Id: Makefile.in,v 1.1.1.1 1999-02-17 15:31:04 ghudson Exp $
+#* $Id: Makefile.in,v 1.1.1.2 1999-05-04 18:50:33 mwhitson Exp $
 #
 
 
 prefix=@prefix@
+ADMINDIR=@ADMINDIR@
+SHELL=@SHELL@
+
 # where the filters are installed:
 INSTDIR=${prefix}/lib/filters
 FONTDIR=${prefix}/lib/filters/fonts
 
 # shell to use
-SHELL=@SHELL@
 
 #
 # the compiler optimisation/debugging flags you wish to use.
@@ -25,7 +27,7 @@ LDFLAGS    =  $(CCOPTFLAGS)
 DEFS=@DEFS@
 
 # use FLAGS for additional flags
-CFLAGS = $(CCOPTFLAGS) $(DEFS) $(FLAGS)
+CFLAGS = $(CCOPTFLAGS) $(DEFS) $(FLAGS) -DADMINDIR=\"$(ADMINDIR)\"
 
 # libraries you will need (found by config), add more to end
 LIBS=@LIBS@
@@ -57,8 +59,8 @@ INCS=$(patsubst %,-I%,$(INCLUDE))
 FLAGS=  $(QUIET) $(INCS)
 
 # commands
-INSTALL=ifhp textps psbanner.ps
-COMMANDS= ifhp textps accounting.sh monitor
+INSTALL=$(SRC)/psbanner.ps $(SRC)/pclbanner
+COMMANDS= ifhp textps accounting.sh
 
 .SUFFIXES: .sh .sh_init
 
@@ -83,7 +85,7 @@ ifhp:	$(OBJS)
 	${CC} ${LDFLAGS} $^ ${LIBS} -o $@
 
 monitor.o $(OBJS): debug.h errormsg.h ifhp.h portable.h \
-	patchlevel.h config.h configfile.h linelist.h
+	patchlevel.h config.h linelist.h
 
 monitor: monitor.o plp_snprintf.o
 	${CC} ${LDFLAGS} $^ ${LIBS} -o $@
@@ -96,15 +98,14 @@ textps: textps.o
 #
 install: all
 	${SRC}/mkinstalldirs $(INSTDIR)
-	for i in $(INSTALL) ; do \
+	for i in $(COMMANDS) ; do \
 		$(INSTALLCMD) -m 755 $$i $(INSTDIR); \
+	done ;
+	for i in $(INSTALL) ; do \
+		$(INSTALLCMD) -m 755 $$i $(INSTDIR)/`basename $$i`; \
 	done ;
 	cd $(INSTDIR); rm -f ofhp banner; \
 		ln -s ifhp ofhp; ln -s ifhp banner
-	@if test ! -f /etc/ifhp.conf; then \
-		echo "You do not have an /etc/ifhp.conf file"; \
-		echo "copy ifhp.conf to /etc/ifhp.conf file"; \
-	fi;
 #
 # Miscellaneous
 #
@@ -130,7 +131,7 @@ ci:
 		if [ -f $$i ]; then checkin $$i; fi; \
 	done;
 
-distclean:
+distclean: clean
 	-rm -f Makefile Makefile.bsd
 
 TAGS:

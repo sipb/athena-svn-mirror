@@ -3,7 +3,7 @@
  * Copyright 1994-1999 Patrick Powell, San Diego, CA <papowell@astart.com>
  **************************************************************************/
 /**** HEADER *****/
-static char *const _id = "$Id: globmatch.c,v 1.1.1.1 1999-02-17 15:31:05 ghudson Exp $";
+static char *const _id = "$Id: globmatch.c,v 1.1.1.2 1999-05-04 18:50:42 mwhitson Exp $";
 
 #include "ifhp.h"
 

@@ -104,6 +104,17 @@ foreach option in predefined list {
         }
 }
 
+// open a direct connection if specified
+if( device specified using -Tdev=device ){
+        // if device is host%port, we open TCP/IP connection
+        fd = open(device);
+        dup fd to 1; close fd;
+}
+if( appsocket procotol specified and TCP/IP device ){
+        udp_socket = open( udp socket to device%port+1 )
+}
+
+
 ###---
 </PRE>
 </CODE></BLOCKQUOTE>
@@ -113,12 +124,13 @@ foreach option in predefined list {
 <BLOCKQUOTE><CODE>
 <PRE>
 ###+++ Synchronization and Pagecount
-if( status returned by printer ){
+if( status returned by printer and sync requested ){
+    // APPSOCKET protocol
     // sync has the form sync@ (none), sync=ps, sync=pjl, ...
-    if( sync=language has value ) do{
-                if( sync TRUE ){
-                        set sync= pjl or ps depending on availability
-                }
+        if( appsocket ){
+                command = "\n\r"
+        } else {
+                // decode status=language and determine sync
         if( sync = pjl and PJL ECHO available ){
             send PJL ECHO command to printer
                 } else if( sync = ps ){
@@ -126,7 +138,13 @@ if( status returned by printer ){
                 } else {
                         terminate with error;
                 }
+        do{
+                send command and wait for timeout;
     } while( no response );
+
+        if( appsocket ){
+                close and reopen TCP/IP connection;
+        }
 
     // pagecount has the form pagecount@ (none),
     //   pagecount=ps, pagecount=pjl, ...
@@ -142,6 +160,10 @@ if( status returned by printer ){
                         terminate with error;
                 }
     } while( no pagecount response );
+
+        if( appsocket ){
+                close and reopen TCP/IP connection;
+        }
 }
 ###---
 </PRE>
@@ -308,7 +330,7 @@ if( language = PCL ){
 // job terminaton
 
 ###+++ Synchronization and Pagecount as above
-if( status ){
+if( waitend ){
         if( sync requested previously ){
                 if( sync with PJL ){
                         wait for end of job using UINFO;
@@ -316,6 +338,9 @@ if( status ){
                         request status using ^T and wait for
                         printing to stop
                 }
+        }
+        if( appsocket ){
+                close and reopen connection;
         }
         get pagecount using previously descibed algorithm
 }
@@ -427,7 +452,7 @@ model_from_option=Q
 <CODE>Q</CODE> option.
 This can be used to select a configuration for the printer
 based on values specifed by the user.
-<H3><A NAME="trace"></A> <A NAME="debug"></A> Debug and Trace On Stderr</H3>
+<H3><A NAME="trace"></A> <A NAME="debug"></A> Debug and Trace</H3>
 
 <P>The value of the
 <CODE>debug</CODE>
@@ -1254,6 +1279,74 @@ Example:
   ]
 </PRE>
 </CODE></BLOCKQUOTE>
+<H2><A NAME="waitend"></A> <A NAME="ss4.10">4.10 End of Job</A>
+</H2>
+
+<P>The <CODE>waitend</CODE> option controls the job termination sequence.
+By default,
+this will do the same work as the
+<CODE>sync</CODE> operation,
+and the option takes the same set of values.
+<P>If <CODE>waitend</CODE>
+is suppressed using <CODE>waitend@</CODE>,
+then as soon as a job has been transferred,
+the next step,
+<CODE>pagecount</CODE>,
+will be attempted.
+If the print job has not finished at this point,
+then erroneous page counts will be reported.
+<P>When using the <CODE>appsocket</CODE> protocol,
+then suppressing <CODE>waitend</CODE> will cause no error messages from the printer to
+be reported.
+<P>
+<H2><A NAME="appsocket"></A> <A NAME="ss4.11">4.11 Tektronix Phaser and AppSocket Support</A>
+</H2>
+
+<P>The Tektronix Phaser PostScript printers uses the AppSocket protcol
+for sending a job to the printer over a network connection.
+The
+<CODE>appsocket</CODE> flag enables this operation.
+The protocol is (briefly):
+<OL>
+<LI> The printer listens for UDP packets on port 9101
+and for TCP/IP connections on port 9100.</LI>
+<LI> When a UDP packet is recieved on port 9101, then a reply
+packet containing the status is returned to the originator's
+address.
+This packet contains an status indication,
+in a <EM>undefined</EM> format.</LI>
+<LI> To send a job to the printer,  a TCP/IP connection is opened to port
+9100,
+and a PostScript job is sent.
+Only a single job can be sent at a time - a EOJ (CTRL-D)
+will terminate input and flush all following jobs.</LI>
+<LI>Return status will be sent in the reverse direction until the job
+has completed,
+at which point the connection will be closed.</LI>
+</OL>
+<P>To use this protocol,
+the printer TCP/IP address and port must be specified using the
+<CODE>-Tdev=host%port</CODE> option;
+usually port is 9100.
+Also,
+the printer device in the printcap entry should be <CODE>lp=/dev/null</CODE>.
+<P>When using the Appsocket protocol,
+the <CODE>ifhp</CODE> filter will open a UDP port and use it to send
+query packets to the printer UDP port 9101.
+In addition,
+it will try to open a connection to port 9100.
+When a connection has been established,
+and pagecount has been determined,
+the connection will be close and reopened.
+<P>After job transfer,
+the connecion will be <CODE>half-closed</CODE>.
+That is,
+the <CODE>shutdown()</CODE> facility will be used to cause the TCP/IP connection
+to be set to closed for transmission but open for reception.
+The printer will send status information until the job is completed,
+and then close the connection.
+<P>If page count information is needed,
+the <CODE>ifhp</CODE> filter will then reopen the connection and get the page count information.
 <HR>
 <A HREF="ifhp-5.html">Next</A>
 <A HREF="ifhp-3.html">Previous</A>

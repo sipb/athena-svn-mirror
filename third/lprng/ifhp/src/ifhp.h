@@ -3,7 +3,7 @@
  * Copyright 1994-1999 Patrick Powell, San Diego, CA <papowell@astart.com>
  **************************************************************************/
 /**** HEADER *****
-$Id: ifhp.h,v 1.1.1.2 1999-04-01 20:09:10 mwhitson Exp $
+$Id: ifhp.h,v 1.1.1.3 1999-05-04 18:50:35 mwhitson Exp $
  **** ENDHEADER ****/
 
 #ifndef _IFHP_H_
@@ -28,7 +28,6 @@ $Id: ifhp.h,v 1.1.1.2 1999-04-01 20:09:10 mwhitson Exp $
 #include "debug.h"
 #include "errormsg.h"
 #include "patchlevel.h"
-#include "configfile.h"
 #include "linelist.h"
 
 /*****************************************************************
@@ -105,6 +104,7 @@ EXTERN char *PCL DEFINE( = "PCL");
 EXTERN char *PS DEFINE( = "PS");
 EXTERN char *TEXT DEFINE( = "TEXT");
 EXTERN char *RAW DEFINE( = "RAW");
+EXTERN char *PJL DEFINE( = "PJL");
 
 /*
  * Standard function prototypes
@@ -113,10 +113,10 @@ EXTERN char *RAW DEFINE( = "RAW");
 /* VARARGS3 */
 #ifdef HAVE_STDARGS
 int	plp_snprintf (char *str, size_t count, const char *fmt, ...);
-int	vplp_snprintf (char *str, size_t count, const char *fmt, va_list arg);
+int	plp_vsnprintf (char *str, size_t count, const char *fmt, va_list arg);
 #else
 int plp_snprintf ();
-int vplp_snprintf ();
+int plp_vsnprintf ();
 #endif
 
 /* dynamic memory allocation */
@@ -135,6 +135,7 @@ extern char *Find_str_value( struct line_list *l, char *key, char *Value_sep );
 extern int Find_flag_value( struct line_list *l, char *key, char *sep );
 
 extern void Open_device( char *device );
+extern void Open_monitor( char *device );
 extern void cleanup(int sig);
 extern int Globmatch( char *pattern, char *str );
 extern void Do_accounting(int start, int elapsed, int pagecounter, int npages );
@@ -171,10 +172,12 @@ EXTERN char *Upperopts[26];	/* upper case options */
 EXTERN char **Envp;			/* environment variables */
 EXTERN char **Argv;			/* parms variables */
 EXTERN int Argc;			/* we have the number of variables */
+EXTERN int Monitor_fd DEFINE( = -1 );	/* for monitoring */
 
 EXTERN time_t Start_time;	/* start time of program */
 
 EXTERN int
+	Appsocket,	/* accounting fd */
 	Accounting_fd,	/* accounting fd */
 	Autodetect,	/* let printer autodetect type */
 	Banner_name,	/* invoked with banner */
@@ -183,7 +186,7 @@ EXTERN int
 	Banner_user,	/* allow user to select a banner */
 	Crlf,		/* only do CRLF */
 	Dev_retries,	/* number of retries on open */
-	Dev_sleep,	/* wait between restries */
+	Dev_sleep DEFINE(=1000),	/* wait between retries in Millisec */
 	Errorcode,		/* exit value */
 	Force_status,	/* even if device is not socket or tty, allow status */
 	Full_time,		/* use Full_time format */
@@ -208,7 +211,6 @@ EXTERN int
 	Status,		/* any type of status - off = write only */
 	Status_fd DEFINE(=-2),	/* status reporting to remote site */
 	Summary_fd DEFINE(=-2),	/* status reporting */
-	Sync,		/* synchronize printer */
 	Sync_interval,	/* sync interval */
 	Sync_timeout,	/* sync timeout */
 	Tbcp,		/* supports Postscript TBCP */
@@ -226,11 +228,14 @@ EXTERN char
 	*Config_file,	/* config file list */
 	*Device,		/* device to open */
 	*Model_id,		/* printer model */
+	*Pagecount,		/* pagecount */
 	*Name,			/* program name */
 	*Remove_ctrl,	/* remove these control chars */
 	*Statusfile,	/* status file */
 	*Stty_args,		/* if device is tty, stty values */
-	*Summaryfile;	/* summary file to set */
+	*Sync,			/* synchronize printer */
+	*Summaryfile,	/* summary file to set */
+	*Waitend;		/* wait for end using sync */
 
 /*
  * set by routines

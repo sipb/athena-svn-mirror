@@ -2,11 +2,11 @@
 <!doctype linuxdoc system>
 <article>
 <!-- must be matched by / article at end -->
-<!-- $Id: ifhp.sgml,v 1.1.1.2 1999-04-01 20:09:20 mwhitson Exp $ -->
+<!-- $Id: ifhp.sgml,v 1.1.1.3 1999-05-04 18:50:50 mwhitson Exp $ -->
 <title> IFHP-HOWTO
 <author> Patrick Powell
 <tt><htmlurl url="mailto:papowell@astart.com" name="papowell@astart.com"></tt>
-<date> 27 Mar 1999 (For ifhp-3.2.1)
+<date> 22 Apr 1999 (For ifhp-3.2.7)
 <abstract>
 The <tt>ifhp</tt> software is an enhanced, extended, highly configurable,
 and portable implementation of a print filter for use with the <tt>ifhp</tt>
@@ -176,7 +176,7 @@ You will need to:
 <item>
    Use an ANSI C compiler.
 <item>
-   Read the <tt>HOWTO/ifhp-HOWTO.{ps,html,text,...}</tt>
+   Read the <tt>HOWTO/ifhp-HOWTO.&lcub;ps,html,text,...&rcub;</tt>
       file(s).
 You are doing this now, so you are off to a good start.
 <item>
@@ -204,6 +204,11 @@ which can be used with
 <htmlurl url="http://www-inf.enst.fr/~demaille/a2ps/"
 name="http://www-inf.enst.fr/~demaille/a2ps/" >
 This package does a very good job of text to PostScript conversion.
+<tag>enscript - GNU Enscript</tag>
+<htmlurl url="http://www.gnu.org"
+name="http://www.gnu.org/" >
+This package is a simpler version of a2ps,
+and is faster and smaller.
 <tag>Unix File Utility - Determines the type of file</tag>
 <htmlurl url="ftp://ftp.astron.com/pub/file/"
 name="ftp://ftp.astron.com/pub/file/"> or
@@ -228,22 +233,11 @@ please report these to the LPRng mailing list.
 configure
 make all
 # installs ifhp and textps in /usr/local/lib/filters
+# installs ifhp.conf in /etc
+#  (if already present, in /etc/ifhp.conf.sample)
 make install
 </verb>
 </tscreen>
-<sect1> Install ifhp.conf Configuration File
-<p>
-If this is a first time installation,
-you can run
-<tscreen>
-make init
-</tscreen>
-which will copy the
-<tt>src/ifhp.conf</tt>
-file to
-<tt>/etc/ifhp.conf</tt>
-If this file already exists,
-it will not be overwritten.
 <sect1> Printcap Configuration
 <p>
 The basic LPRng printcap configuration is:
@@ -319,38 +313,22 @@ The HP DeskJet and DesignJet printers use the same
 <tt/hpdj/ prefix with the model appended.
 See Appendix A in the Printer Job Language Technical Reference Manual
 for a detailed explanation of these names.
-<#if output="html">
-<table>
-<tabular ca="l l l l l">
-apple | hp4000 | hp4 | hp4l | hp4lc @
-hp4m | hp4ml | hp4mp | hp4mplus | hp4mv @
-hp4p | hp4pj | hp4plus | hp4si | hp4simx @
-hp4v | hp5 | hp5l | hp5m | hp5mp @
-hp5p | hp5si | hp5simopier | hp5simx | hp6l @
-hp6mp | hp6p | hpcolorlj5 | hpcolorlj5m | hpcolorlj @
-hpdj1200c | hpdj1600c | hpdj2000cp | hpdj200 | hpdj220 @
-hpdj230 | hpdj2500cp | hpdj250c | hpdj330 | hpdj350c @
-hpdj350c | hpdj430 | hpdj450c | hpdj455ca | hpdj600 @
-hpdj650c | hpdj700 | hpdj750c | hpdj750cplus | hpdj755cm @
-hpiiisi | hpljpro | hppjxl300 | postscript | ps @
-</tabular>
-</table>
-</#if>
-<#unless output="html">
-<tabular ca="l l l l l">
-apple | hp4000 | hp4 | hp4l | hp4lc @
-hp4m | hp4ml | hp4mp | hp4mplus | hp4mv @
-hp4p | hp4pj | hp4plus | hp4si | hp4simx @
-hp4v | hp5 | hp5l | hp5m | hp5mp @
-hp5p | hp5si | hp5simopier | hp5simx | hp6l @
-hp6mp | hp6p | hpcolorlj5 | hpcolorlj5m | hpcolorlj @
-hpdj1200c | hpdj1600c | hpdj2000cp | hpdj200 | hpdj220 @
-hpdj230 | hpdj2500cp | hpdj250c | hpdj330 | hpdj350c @
-hpdj350c | hpdj430 | hpdj450c | hpdj455ca | hpdj600 @
-hpdj650c | hpdj700 | hpdj750c | hpdj750cplus | hpdj755cm @
-hpiiisi | hpljpro | hppjxl300 | postscript | ps @
-</tabular>
-</#unless>
+<tscreen>
+<verb>
+apple     hp4000      hp4          hp4l         hp4lc
+hp4m      hp4ml       hp4mp        hp4mplus     hp4mv
+hp4p      hp4pj       hp4plus      hp4si        hp4simx
+hp4v      hp5         hp5l         hp5m         hp5mp
+hp5p      hp5si       hp5simopier  hp5simx      hp6l
+hp6mp     hp6p        hpcolorlj5   hpcolorlj5m  hpcolorlj
+hpdj1200c hpdj1600c   hpdj2000cp   hpdj200      hpdj220
+hpdj230   hpdj2500cp  hpdj250c     hpdj330      hpdj350c
+hpdj350c  hpdj430     hpdj450c     hpdj455ca    hpdj600
+hpdj650c  hpdj700     hpdj750c     hpdj750cplus hpdj755cm
+hpiiisi   hpljpro     hppjxl300    postscript   ps
+tek       qms1725
+</verb>
+</tscreen>
 <p>
 In addition to HP printers,
 there is also generic support for PostScript only printers.
@@ -532,6 +510,58 @@ lp:server  <newline>
 &nbsp;&nbsp:...  <newline>
 &nbsp;&nbsp:ifhp=pcl@,pjl@,text@,text_converter=...,\ <newline>
 &nbsp;&nbsp&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;text_converter_output=ps&nbsp;<newline>
+&nbsp;&nbsp#path to ifhp filter  <newline>
+&nbsp;&nbsp:if=/.../ifhp  <newline>
+&nbsp;&nbsp:of=/.../ifhp  
+</tscreen>
+<p>
+<sect1>Tektronixs Phaser Series Printer with Network Connections
+<p>
+The Tektronics Phaser Series printers use the
+<it/Appsocket/ protocol when sending a job to the printer.
+This protocol is (briefly):
+<enum>
+<item> The printer listens for UDP packets on port 9101
+and for TCP/IP connections on port 9100.
+<item> When a UDP packet is recieved on port 9101, then a reply
+packet containing the status is returned to the originator's
+address.
+This packet contains an status indication,
+in a <em/undefined/ format.
+<item> To send a job to the printer,  a TCP/IP connection is opened to port
+9100,
+and a PostScript job is sent.
+Only a single job can be sent at a time - a EOJ (CTRL-D)
+will terminate input and flush all following jobs.
+<item>
+Return status will be sent in the reverse direction until the job
+has completed,
+at which point the connection will be closed.
+</enum>
+<p>
+The <tt/ifhp/ program supports the <tt/appsocket/ protocol.
+In order to do so,
+the following ifhp configuration entry can be used.
+<tscreen>
+<verb>
+[ tek ]
+appsocket
+pjl@
+pcl@
+</verb>
+</tscreen>
+The <tt/appsocket/ option will use the appsocket protcol,
+and cause <tt/ifhp/ to open and close connections to the printer.
+The printcap entry should specify
+<tt>lp=/dev/null</tt>
+and provide the device IP address using the <tt/-Tdev=host%port/ option.
+<tscreen>
+# Phaser Setup
+lp:server  <newline>
+&nbsp;&nbsp:<it>lp=/dev/null</it>  <newline>
+&nbsp;&nbsp:sd=<it/spooldir/  <newline>
+&nbsp;&nbsp:...  <newline>
+&nbsp;&nbsp:ifhp=model=tek,dev=10.0.0.1%9100<newline>
 &nbsp;&nbsp#path to ifhp filter  <newline>
 &nbsp;&nbsp:if=/.../ifhp  <newline>
 &nbsp;&nbsp:of=/.../ifhp  
@@ -820,7 +850,7 @@ verify that your printer is accessible on the network by using
 It is amazing how many problems are caused by erroneous
 network addresses.
 <tscreen>
-astart: {298} % ping nwpr <newline>
+astart: % ping nwpr <newline>
 PING nwpr.astart.com (10.0.0.10): 56 data bytes <newline>
 64 bytes from 10.0.0.10: icmp_seq=0 ttl=60 time=4.286 ms 
 </tscreen>
@@ -830,7 +860,7 @@ Now use
 to check that you can connect to port 9100.
 <tscreen>
 <verb>
-astart: {299} % telnet nwpr 9100
+astart: % telnet nwpr 9100
 Trying 206.71.174.206...
 Connected to nwpr.astart.com.
 Escape character is '^]'.
@@ -927,7 +957,7 @@ text
 Now do the indicated command; you should get similar output
 <tscreen>
 <verb>
-astart: {542} % ifhp &lt;hi.txt
+astart: % ifhp &lt;hi.txt
 </verb>
 </tscreen>
 Note the extreme verbosity of output.
@@ -1025,7 +1055,7 @@ program as shown below.
 You should see output similar to:
 <tscreen>
 <verb>
-astart: {542} % ifhp &lt;h11.txt
+astart: % ifhp &lt;h11.txt
 ifhp 15:57:23.734 [3096] Process_job: setting up printer
 ifhp 15:57:23.736 [3096] Do_accounting: accounting at start, pagecount 0, pages 0
 ifhp 15:57:23.736 [3096] Process_job: sending job file
@@ -1110,7 +1140,7 @@ ifhp &lt;hi.txt
 You should see output similar to:
 <tscreen>
 <verb>
-astart: {542} % ifhp -Tconfig=.../testscripts/t1.conf &lt;h11.txt
+astart: % ifhp -Tconfig=.../testscripts/t1.conf &lt;h11.txt
 ifhp 15:57:23.734 [3096] Process_job: setting up printer
 ifhp 15:57:23.736 [3096] Do_accounting: accounting at start, pagecount 0, pages 0
 ifhp 15:57:23.736 [3096] Process_job: sending job file
@@ -1264,9 +1294,9 @@ pjl_lower=@PJL SET INTRAY=TRAY2
 pcl_user_opts=[ pagesetup ]
 pcl_pagesetup=[ lines=12 cols=4 ]
 lines=20
-pcl_lines=\033*(\%{lines}L
+pcl_lines=\033*(\%&lcub;lines&rcub;L
 cols=2
-pcl_cols=\033*(\%{cols}C
+pcl_cols=\033*(\%&lcub;cols&rcub;C
 </verb>
 </tscreen>
 <p>
@@ -1308,10 +1338,10 @@ resulting in
 and
 <tt/pcl_cols/
 being expanded in turn.
-The <tt/pcl_lines=\033*(\%{lines}L/
+The <tt/pcl_lines=\033*(\%&lcub;lines&rcub;L/
 uses the common C/C++/Perl escape sequences,
 with the following addition:
-<tt/\%{name}/
+<tt/\%&lcub;name&rcub;/
 is replaced by the value for the option name found by searching
 in order a
 a stack of values that have been set by the recursive expansion,
@@ -1412,52 +1442,63 @@ in detail.
 <verb>
 ###+++ Initialization and Setup
 // get ifhp information from PRINTCAP_ENTRY environment variable
-if( PRINTCAP_ENTRY environment variable has a value ){
+if( PRINTCAP_ENTRY environment variable has a value )&lcub;
 	split printcap information into printcap fields
-	if( :ifhp=options,options is present in printcap ){
+	if( :ifhp=options,options is present in printcap )&lcub;
 		split the options list and place in the Toptions list
-	}
-}
+	&rcub;
+&rcub;
 foreach option in -Toptions, -Zoptions do
-    if( option = "debug=level"  and Debuglevel not set ){
+    if( option = "debug=level"  and Debuglevel not set )&lcub;
         set Debuglevel = level;
-    }
-    if( option = "trace" ){
+    &rcub;
+    if( option = "trace" )&lcub;
         output error and trace on STDERR
-    }
-    if( option = "config=pathlist" and from -Toption ){
+    &rcub;
+    if( option = "config=pathlist" and from -Toption )&lcub;
         set configuration pathlist = pathlist;
-    }
-    if( option = "model=name" and model not set ){
+    &rcub;
+    if( option = "model=name" and model not set )&lcub;
         set model = name;
-    }
-}
+    &rcub;
+&rcub;
 </verb>
 </tscreen>
 <tt>///</tt> See: <ref id="optioninit" name="Operation Configuration Options">
 <tscreen>
 <verb>
 // extract configuration information
-foreach path in configuration pathlist {
+foreach path in configuration pathlist &lcub;
     open path;
-    for each line in file information {
-		if( line is selected to be in configuration ){
+    for each line in file information &lcub;
+		if( line is selected to be in configuration )&lcub;
 			process input line, adding it to configuration
 			if( line is 'debug=','model='
-			   and the corresponding value not set ){
+			   and the corresponding value not set )&lcub;
 			   set the value;
-			}
-		}
-    }
-}
+			&rcub;
+		&rcub;
+    &rcub;
+&rcub;
 
 // get values of options with predefined meanings
 // these include status, forcestatus, etc
-foreach option in predefined list {
-	if( option=value is in selected configuration information ){
+foreach option in predefined list &lcub;
+	if( option=value is in selected configuration information )&lcub;
 		set option=value;
-	}
-}
+	&rcub;
+&rcub;
+
+// open a direct connection if specified
+if( device specified using -Tdev=device )&lcub;
+	// if device is host%port, we open TCP/IP connection
+	fd = open(device);
+	dup fd to 1; close fd;
+&rcub;
+if( appsocket procotol specified and TCP/IP device )&lcub;
+	udp_socket = open( udp socket to device%port+1 )
+&rcub;
+
 
 ###---
 </verb>
@@ -1466,36 +1507,47 @@ foreach option in predefined list {
 <tscreen>
 <verb>
 ###+++ Synchronization and Pagecount
-if( status returned by printer ){
+if( status returned by printer and sync requested )&lcub;
+    // APPSOCKET protocol
     // sync has the form sync@ (none), sync=ps, sync=pjl, ...
-    if( sync=language has value ) do{
-		if( sync TRUE ){
-			set sync= pjl or ps depending on availability
-		}
-        if( sync = pjl and PJL ECHO available ){
+	if( appsocket )&lcub;
+		command = "\n\r"
+	&rcub; else &lcub;
+		// decode status=language and determine sync
+        if( sync = pjl and PJL ECHO available )&lcub;
             send PJL ECHO command to printer
-		} else if( sync = ps ){
+		&rcub; else if( sync = ps )&lcub;
             send PS program to printer
-		} else {
+		&rcub; else &lcub;
 			terminate with error;
-		}
-    } while( no response );
+		&rcub;
+	do&lcub;
+		send command and wait for timeout;
+    &rcub; while( no response );
+
+	if( appsocket )&lcub;
+		close and reopen TCP/IP connection;
+	&rcub;
 
     // pagecount has the form pagecount@ (none),
     //   pagecount=ps, pagecount=pjl, ...
-    if( pagecount=language has value ) do {
-		if( pagecount TRUE ){
+    if( pagecount=language has value ) do &lcub;
+		if( pagecount TRUE )&lcub;
 			set pagecount= pjl or ps depending on availability
-		}
-        if( pagecount = pjl and PJL INFO available ){
+		&rcub;
+        if( pagecount = pjl and PJL INFO available )&lcub;
            send PJL INFO PAGECOUNT command to printer
-		} else if( pagecount = ps ){
+		&rcub; else if( pagecount = ps )&lcub;
            send PS program to printer
-		} else {
+		&rcub; else &lcub;
 			terminate with error;
-		}
-    } while( no pagecount response );
-}
+		&rcub;
+    &rcub; while( no pagecount response );
+
+	if( appsocket )&lcub;
+		close and reopen TCP/IP connection;
+	&rcub;
+&rcub;
 ###---
 </verb>
 </tscreen>
@@ -1503,30 +1555,30 @@ if( status returned by printer ){
 <tscreen>
 <verb>
 ### PJL Initialization
-if( PJL enabled ){
+if( PJL enabled )&lcub;
     language = "pjl_"
-    foreach option in pjl_init=&lsqb;...&rsqb; {
+    foreach option in pjl_init=&lsqb;...&rsqb; &lcub;
        expand the option using the language value
        #+++ PJL OPTION ACTIONS +++
        if( option in pjl_vars_set=[ ... ]
          and option not in pjl_vars_except
-         expand "@PJL SET OPTION=\%{option}"
+         expand "@PJL SET OPTION=\%&lcub;option&rcub;"
          output = expanded string value
-       } else {
-         if( option value is a string ){
+       &rcub; else &lcub;
+         if( option value is a string )&lcub;
            output = expanded string value;
-         }
-       }
+         &rcub;
+       &rcub;
        // output has the form @PJL COMMAND ....
        if( COMMAND is in pjl_only=[ ... ]
-           and not in pjl_except=[ ... ] ){
+           and not in pjl_except=[ ... ] )&lcub;
            send output to printer
-       }
+       &rcub;
        #--- end PJL OPTION ACTIONS
-    }
-    if( !OF_mode ){
-         foreach option in -Toption=value {
-            if( option in pjl_user_opts ){
+    &rcub;
+    if( !OF_mode )&lcub;
+         foreach option in -Toption=value &lcub;
+            if( option in pjl_user_opts )&lcub;
                 #+++ USER PJL OPTIONS
                 // join 'pjl_' and the option name
                 expand 'pjl_' . option
@@ -1535,17 +1587,17 @@ if( PJL enabled ){
                     ....
                     #-- PJL OPTION ACTIONS +++
                 #--- USER PJL OPTIONS
-            }
-         }
-         foreach option in -Zoption=value {
-            if( option in pjl_user_opts ){
+            &rcub;
+         &rcub;
+         foreach option in -Zoption=value &lcub;
+            if( option in pjl_user_opts )&lcub;
                 // perform USER PJL actions as above
                 #+++ USER PJL OPTIONS
                 #--- USER PJL OPTIONS
-            }
-         }
-    }
-}
+            &rcub;
+         &rcub;
+    &rcub;
+&rcub;
 
 ###--- PJL INITIALIZATION
 </verb>
@@ -1561,80 +1613,80 @@ if( PJL enabled ){
 //  This is the same algorithm as the UNIX FILE utility
 
 language = UNKNOWN
-if( command line -c (binary) option present ){
+if( command line -c (binary) option present )&lcub;
     language = RAW;
-} else if( -Zlanguage=xxx option present ){
+&rcub; else if( -Zlanguage=xxx option present )&lcub;
     language=xxx
-} else if( file is PS file ){
+&rcub; else if( file is PS file )&lcub;
     language=PS
 	if( file starts with PS EOJ (CTRL-D)
-		and no_ps_eoj is set ){
+		and no_ps_eoj is set )&lcub;
 		remove the PS EOJ
-	} else {
+	&rcub; else &lcub;
 		send a PS EOJ first
-	}
-} else if( file is PCL file ){
+	&rcub;
+&rcub; else if( file is PCL file )&lcub;
     language=PCL
 	if( file starts with PCL EOJ (ESC E)
-		and no_pcl_eoj is set ){
+		and no_pcl_eoj is set )&lcub;
 		remove the PCL EOJ
-	}
-} else if( file_util_path=/pathname ){
+	&rcub;
+&rcub; else if( file_util_path=/pathname )&lcub;
     use UNIX file utility to get file type
-}
+&rcub;
 
 if( language = UNKNOWN and
-    default_language option has value ){
+    default_language option has value )&lcub;
     language = value of default_language;
-}
+&rcub;
 
-if( language = TEXT ){
-    if( text_converter=/path option has value ){
+if( language = TEXT )&lcub;
+    if( text_converter=/path option has value )&lcub;
         run text converter on input
-    } else if( printer does not support TEXT output ){
+    &rcub; else if( printer does not support TEXT output )&lcub;
         exit with error;
-    }
+    &rcub;
     language = value of text_converter_output option
-}
+&rcub;
 
-if( language = UNKNOWN ){
+if( language = UNKNOWN )&lcub;
     exit with error;
-}
-if( PJL ENTER supported ){
+&rcub;
+if( PJL ENTER supported )&lcub;
 	use PJL ENTER command to select language;
 	send nullpad NULLS to force full buffer condition
-}
+&rcub;
 </verb>
 </tscreen>
 <tt>///</tt> See: <ref id="languageinit" name="Language Specific Initialization">
 <tscreen>
 <verb>
 // LANGUAGE SPECIFIC INITIALIZATIONS
-if( language = PCL ){
-    foreach option in pcl_init {
+if( language = PCL )&lcub;
+    foreach option in pcl_init &lcub;
         ###+++ expansion 
         do expansion similar to PJL OPTION actions
             using "pcl_" prefix for option lookup;
         ###---
-    }
-    if( not in OF_MODE ){
-        foreach option in -Toption do {
-            if( option in pcl_user_vars=[ ... ] ){
+    &rcub;
+    if( not in OF_MODE )&lcub;
+        foreach option in -Toption do &lcub;
+            if( option in pcl_user_vars=[ ... ] )&lcub;
             ###+++ expansion as above
             ###---
-        }
-        foreach option in -Zoption do {
-            if( option in pcl_user_vars=[ ... ] ){
+        &rcub;
+        foreach option in -Zoption do &lcub;
+            if( option in pcl_user_vars=[ ... ] )&lcub;
             ###+++ expansion as above
             ###---
-        }
-    }
+        &rcub;
+    &rcub;
     remove whitespace and expand string results;
-} else if( language = PS ){
+&rcub; else if( language = PS )&lcub;
     ###+++ language specific actions as above,
       using the ps_ prefix for lookup 
     expand string results but do not remove whitespace
-}
+&rcub;
 </verb>
 </tscreen>
 <tt>///</tt> See: <ref id="filetransfer" name="File Transfer and Error Status Monitoring">
@@ -1643,27 +1695,30 @@ if( language = PCL ){
 Transfer job to printer, reading error and other information
   back from the printer if enabled
 
-if( language = PCL ){
+if( language = PCL )&lcub;
     send PCL End of Job
-} else if( language = PS ){
+&rcub; else if( language = PS )&lcub;
     send PS End of Job
-}
+&rcub;
 
 
 // job terminaton
 
 ###+++ Synchronization and Pagecount as above
-if( status ){
-	if( sync requested previously ){
-		if( sync with PJL ){
+if( waitend )&lcub;
+	if( sync requested previously )&lcub;
+		if( sync with PJL )&lcub;
 			wait for end of job using UINFO;
-		} else if( sync with PS ){
+		&rcub; else if( sync with PS )&lcub;
 			request status using ^T and wait for
 			printing to stop
-		}
-	}
+		&rcub;
+	&rcub;
+	if( appsocket )&lcub;
+		close and reopen connection;
+	&rcub;
 	get pagecount using previously descibed algorithm
-}
+&rcub;
 	
 ###---
 
@@ -1779,7 +1834,7 @@ The above setting will cause the model to be taken from the
 <tt/Q/ option.
 This can be used to select a configuration for the printer
 based on values specifed by the user.
-<sect2>Debug and Trace On Stderr
+<sect2>Debug and Trace
 <label id="debug">
 <label id="trace">
 <p>
@@ -2223,7 +2278,7 @@ For example:
 <tscreen>
 <verb>
 pagecount_ps_code=
-  /p {print} def ( %%&lsqb; pagecount: ) p
+  /p &lcub;print&rcub; def ( %%&lsqb; pagecount: ) p
   statusdict begin pagecount end 20 string cvs p
   ( &rsqb;%% ) p () = flush
 </verb>
@@ -2678,6 +2733,81 @@ Example:
   &rsqb;
 </verb>
 </tscreen>
+<sect1>End of Job
+<label id="waitend">
+<p>
+The <tt/waitend/ option controls the job termination sequence.
+By default,
+this will do the same work as the
+<tt/sync/ operation,
+and the option takes the same set of values.
+<p>
+If <tt/waitend/
+is suppressed using <tt/waitend@/,
+then as soon as a job has been transferred,
+the next step,
+<tt/pagecount/,
+will be attempted.
+If the print job has not finished at this point,
+then erroneous page counts will be reported.
+<p>
+When using the <tt/appsocket/ protocol,
+then suppressing <tt/waitend/ will cause no error messages from the printer to
+be reported.
+<p>
+<sect1>Tektronix Phaser and AppSocket Support
+<label id="appsocket">
+<p>
+The Tektronix Phaser PostScript printers uses the AppSocket protcol
+for sending a job to the printer over a network connection.
+The
+<tt/appsocket/ flag enables this operation.
+The protocol is (briefly):
+<enum>
+<item> The printer listens for UDP packets on port 9101
+and for TCP/IP connections on port 9100.
+<item> When a UDP packet is recieved on port 9101, then a reply
+packet containing the status is returned to the originator's
+address.
+This packet contains an status indication,
+in a <em/undefined/ format.
+<item> To send a job to the printer,  a TCP/IP connection is opened to port
+9100,
+and a PostScript job is sent.
+Only a single job can be sent at a time - a EOJ (CTRL-D)
+will terminate input and flush all following jobs.
+<item>
+Return status will be sent in the reverse direction until the job
+has completed,
+at which point the connection will be closed.
+</enum>
+<p>
+To use this protocol,
+the printer TCP/IP address and port must be specified using the
+<tt/-Tdev=host%port/ option;
+usually port is 9100.
+Also,
+the printer device in the printcap entry should be <tt>lp=/dev/null</tt>.
+<p>
+When using the Appsocket protocol,
+the <tt/ifhp/ filter will open a UDP port and use it to send
+query packets to the printer UDP port 9101.
+In addition,
+it will try to open a connection to port 9100.
+When a connection has been established,
+and pagecount has been determined,
+the connection will be close and reopened.
+<p>
+After job transfer,
+the connecion will be <tt/half-closed/.
+That is,
+the <tt/shutdown()/ facility will be used to cause the TCP/IP connection
+to be set to closed for transmission but open for reception.
+The printer will send status information until the job is completed,
+and then close the connection.
+<p>
+If page count information is needed,
+the <tt/ifhp/ filter will then reopen the connection and get the page count information.
 <sect> Banners and OF Mode Operations
 <label id="banner">
 <label id="banner_file">
@@ -2738,171 +2868,62 @@ The executable output is sent to the printer.
 </descrip>
 <sect>Predefined Options
 <p>
-The following is a list of predefined options.
-<table>
-<tabular ca="ll">
-<tt><ref id="banner" name="banner=LANGUAGE"></tt>
-| Enable OF banner printing using LANGUAGE
-@
-<tt><ref id="banner_file" name="banner_file=PATHNAME"></tt>
-| PATHNAME of PostScript banner file
-@
-<tt><ref id="config" name="config=PATHNAMES"></tt>
-| Configuration file pathnames
-@
-<tt><ref id="crlf" name="crlf FLAG"></tt>
-| Do LF to CRLF translation
-@
-<tt><ref id="debug" name="debug FLAG"></tt>
-| Debugging level
-@
-<tt><ref id="default_language" name="default_language=LANGUAGE"></tt>
-| Default job file language (ps, pcl, raw, text, etc)
-@
-<tt><ref id="endpage" name="endpage=NNN"></tt>
-| PJL JOB command END = NNN value
-@
-<tt><ref id="file_util_path" name="file_util_path=PATHNAME"></tt>
-| Pathname of the UNIX file utility
-@
-<tt><ref id="forcestatus" name="forcestatus FLAG"></tt>
-| Force status reading from the printer if set
-@
-<tt><ref id="language" name="language=LANGUAGE"></tt>
-| Specify job file language to be used (ps, pcl, raw, text, etc)
-@
-<tt><ref id="logall" name="logall FLAG"></tt>
-| Log all status reports from printer if set
-@
-<tt><ref id="nullpad" name="nullpad=COUNT"></tt>
-| Send COUNT nulls to force full buffer condition
-@
-<tt><ref id="model" name="model=NAME"></tt>
-| Specify model name for configuration selection
-@
-<tt><ref id="model_from_option" name="model_from_optin=X"></tt>
-| Specify model name using a command line option value
-@
-<tt><ref id="no_ps_eoj" name="no_ps_eoj FLAG"></tt>
-| No PostScript EOJ (CTRL-D) at start of job
-@
-<tt><ref id="no_pcl_eoj" name="no_pcl_eoj FLAG"></tt>
-| No PCL EOJ (CTRL-D) at start of job
-@
-<tt><ref id="page_length" name="page_length=LINES"></tt>
-| Number of lines on a text page for banner printing
-@
-<tt><ref id="page_width" name="page_width=COLUMNS"></tt>
-| Number of columns on a text page for banner printing
-@
-<tt><ref id="pagecount" name="pagecount=LANGUAGE"></tt>
-| Enable pagecounting using the specified lanague (pjl, ps)
-@
-<tt><ref id="pagecount_interval" name="pagecount_interval=SECONDS"></tt>
-| Send pagecount command at SECONDS interval
-@
-<tt><ref id="pagecount_ps_code" name="pagecount_ps_code=STRING"></tt>
-| PostScript code to get pagecount information 
-@
-<tt><ref id="pagecount_timeout" name="pagecount_timeout=SECONDS"></tt>
-| Timeout getting pagecount after SECONDS
-@
-<tt><ref id="pcl" name="pcl FLAG"></tt>
-| Printer supports PCL if set
-@
-<tt><ref id="pcl_user_opts" name="pcl_user_opts=LIST"></tt>
-| User PCL options supported
-@
-<tt><ref id="pjl" name="pjl FLAG"></tt>
-| Printer supports PJL if set
-@
-<tt><ref id="pjl_console" name="pjl_console FLAG"></tt>
-| Printer supports messages on console
-@
-<tt><ref id="pjl_error_codes" name="pjl_error_codes=LIST"></tt>
-| PJL error messages for error codes
-@
-<tt><ref id="pjl_except" name="pjl_except=LIST"></tt>
-| Do not allow these PJL commands
-@
-<tt><ref id="pjl_init" name="pjl_init=LIST"></tt>
-| PJL initializations to be done
-@
-<tt><ref id="pjl_job" name="pjl_job FLAG"></tt>
-| PJL JOB and EOJ supported
-@
-<tt><ref id="pjl_only" name="pjl_only=LIST"></tt>
-| Allow only these PJL commands
-@
-<tt><ref id="pjl_user_opts" name="pjl_user_opts=LIST"></tt>
-| Allow only these user PJL commands or variables to be set
-@
-<tt><ref id="pjl_vars_except" name="pjl_vars_except=LIST"></tt>
-| Do not allow these PJL variables to be set
-@
-<tt><ref id="pjl_vars_set" name="pjl_vars_set=LIST"></tt>
-| Allow these PJL variables to be set
-@
-<tt><ref id="ps" name="ps FLAG"></tt>
-| Printer supports PostScript (ps)
-@
-<tt><ref id="ps_user_opts" name="ps_user_opts=LIST"></tt>
-| Support these PostScript user options
-@
-<tt><ref id="remove_ctrl" name="remove_ctrl=LIST"></tt>
-| Support these characters from PostScript jobs
-@
-</tabular>
-</table>
-<table>
-<tabular ca="ll">
-<tt><ref id="startpage" name="startpage=NNN"></tt>
-| PJL JOB command START = NNN value
-@
-<tt><ref id="status" name="status FLAG"></tt>
-| Printer supplies status information
-@
-<tt><ref id="statusfile" name="statusfile=PATHNAME"></tt>
-| Status file pathname
-@
-<tt><ref id="statusfile_max" name="statusfile_max=NNN"></tt>
-| Status file has maximum size of NNN Kbytes
-@
-<tt><ref id="statusfile_min" name="statusfile_min=NNN"></tt>
-| Status file has truncated size of NNN Kbytes
-@
-<tt><ref id="summaryfile" name="summaryfile=PATHNAME"></tt>
-| Summary file pathname
-@
-<tt><ref id="sync" name="sync FLAG"></tt>
-| Synchronize printer if set
-@
-<tt><ref id="sync_interval" name="sync_interval=SECONDS"></tt>
-| Send synchronization request at SECONDS interval
-@
-<tt><ref id="sync_timeout" name="sync_timeout=SECONDS"></tt>
-| Timeout synchronization request after SECONDS
-@
-<tt><ref id="tbcp" name="tbcp FLAG"></tt>
-| Use Transparent Binary Communications Protocol for PostScript files
-@
-<tt><ref id="text" name="text FLAG"></tt>
-| Printer supports text mode
-@
-<tt><ref id="text_converter" name="text_converter=PATHNAME"></tt>
-| Pathname of text conversion program
-@
-<tt><ref id="text_converter_output" name="text_converter_output=LANGUAGE"></tt>
-| Job language of text converter output 
-@
-<tt><ref id="text_tempfile" name="text_tempfile=PATHNAME"></tt>
-| Temporary file pathname template 
-@
-<tt><ref id="trace" name="trace FLAG"></tt>
-| Put error and trace messages on STDERR if set
-@
-</tabular>
-</table>
+The following is a list of predefined options. <newline>
+<!-- START OPTIONS -->
+<tt><ref id="appsocket" name="appsocket FLAG"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt> Use Tektronix AppSocket Protocol <newline>
+<tt><ref id="banner" name="banner=LANGUAGE"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt> Enable OF banner printing using LANGUAGE <newline>
+<tt><ref id="banner_file" name="banner_file=PATHNAME"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt> PATHNAME of PostScript banner file <newline>
+<tt><ref id="config" name="config=PATHNAMES"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt> Configuration file pathnames <newline>
+<tt><ref id="crlf" name="crlf FLAG"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt> Do LF to CRLF translation <newline>
+<tt><ref id="debug" name="debug FLAG"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt> Debugging level <newline>
+<tt><ref id="default_language" name="default_language=LANGUAGE"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt> Default job file language (ps, pcl, raw, text, etc) <newline>
+<tt><ref id="endpage" name="endpage=NNN"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt> PJL JOB command END = NNN value <newline>
+<tt><ref id="file_util_path" name="file_util_path=PATHNAME"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt> Pathname of the UNIX file utility <newline>
+<tt><ref id="forcestatus" name="forcestatus FLAG"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt> Force status reading from the printer if set <newline>
+<tt><ref id="language" name="language=LANGUAGE"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt> Specify job file language to be used (ps, pcl, raw, text, etc) <newline>
+<tt><ref id="logall" name="logall FLAG"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt> Log all status reports from printer if set <newline>
+<tt><ref id="nullpad" name="nullpad=COUNT"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt> Send COUNT nulls to force full buffer condition <newline>
+<tt><ref id="model" name="model=NAME"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt> Specify model name for configuration selection <newline>
+<tt><ref id="model_from_option" name="model_from_optin=X"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt> Specify model name using a command line option value <newline>
+<tt><ref id="no_ps_eoj" name="no_ps_eoj FLAG"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt> No PostScript EOJ (CTRL-D) at start of job <newline>
+<tt><ref id="no_pcl_eoj" name="no_pcl_eoj FLAG"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt> No PCL EOJ (CTRL-D) at start of job <newline>
+<tt><ref id="page_length" name="page_length=LINES"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt> Number of lines on a text page for banner printing <newline>
+<tt><ref id="page_width" name="page_width=COLUMNS"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt> Number of columns on a text page for banner printing <newline>
+<tt><ref id="pagecount" name="pagecount=LANGUAGE"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt> Enable pagecounting using the specified lanague (pjl, ps) <newline>
+<tt><ref id="pagecount_interval" name="pagecount_interval=SECONDS"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;</tt> Send pagecount command at SECONDS interval <newline>
+<tt><ref id="pagecount_ps_code" name="pagecount_ps_code=STRING"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt> PostScript code to get pagecount information <newline>
+<tt><ref id="pagecount_timeout" name="pagecount_timeout=SECONDS"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt> Timeout getting pagecount after SECONDS <newline>
+<tt><ref id="pcl" name="pcl FLAG"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt> Printer supports PCL if set <newline>
+<tt><ref id="pcl_user_opts" name="pcl_user_opts=LIST"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt> User PCL options supported <newline>
+<tt><ref id="pjl" name="pjl FLAG"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt> Printer supports PJL if set <newline>
+<tt><ref id="pjl_console" name="pjl_console FLAG"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt> Printer supports messages on console <newline>
+<tt><ref id="pjl_error_codes" name="pjl_error_codes=LIST"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt> PJL error messages for error codes <newline>
+<tt><ref id="pjl_except" name="pjl_except=LIST"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt> Do not allow these PJL commands <newline>
+<tt><ref id="pjl_init" name="pjl_init=LIST"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt> PJL initializations to be done <newline>
+<tt><ref id="pjl_job" name="pjl_job FLAG"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt> PJL JOB and EOJ supported <newline>
+<tt><ref id="pjl_only" name="pjl_only=LIST"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt> Allow only these PJL commands <newline>
+<tt><ref id="pjl_user_opts" name="pjl_user_opts=LIST"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt> Allow only these user PJL commands or variables to be set <newline>
+<tt><ref id="pjl_vars_except" name="pjl_vars_except=LIST"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt> Do not allow these PJL variables to be set <newline>
+<tt><ref id="pjl_vars_set" name="pjl_vars_set=LIST"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt> Allow these PJL variables to be set <newline>
+<tt><ref id="ps" name="ps FLAG"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt> Printer supports PostScript (ps) <newline>
+<tt><ref id="ps_user_opts" name="ps_user_opts=LIST"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt> Support these PostScript user options <newline>
+<tt><ref id="remove_ctrl" name="remove_ctrl=LIST"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt> Support these characters from PostScript jobs <newline>
+<tt><ref id="startpage" name="startpage=NNN"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt> PJL JOB command START = NNN value <newline>
+<tt><ref id="status" name="status FLAG"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt> Printer supplies status information <newline>
+<tt><ref id="statusfile" name="statusfile=PATHNAME"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt> Status file pathname <newline>
+<tt><ref id="statusfile_max" name="statusfile_max=NNN"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt> Status file has maximum size of NNN Kbytes <newline>
+<tt><ref id="statusfile_min" name="statusfile_min=NNN"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt> Status file has truncated size of NNN Kbytes <newline>
+<tt><ref id="summaryfile" name="summaryfile=PATHNAME"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt> Summary file pathname <newline>
+<tt><ref id="sync" name="sync FLAG"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt> Synchronize printer if set <newline>
+<tt><ref id="sync_interval" name="sync_interval=SECONDS"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt> Send synchronization request at SECONDS interval <newline>
+<tt><ref id="sync_timeout" name="sync_timeout=SECONDS"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt> Timeout synchronization request after SECONDS <newline>
+<tt><ref id="tbcp" name="tbcp FLAG"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt> Use Transparent Binary Communications Protocol for PostScript files <newline>
+<tt><ref id="text" name="text FLAG"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt> Printer supports text mode <newline>
+<tt><ref id="text_converter" name="text_converter=PATHNAME"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt> Pathname of text conversion program <newline>
+<tt><ref id="text_converter_output" name="text_converter_output=LANGUAGE"></tt><tt></tt> Job language of text converter output <newline>
+<tt><ref id="text_tempfile" name="text_tempfile=PATHNAME"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt> Temporary file pathname template <newline>
+<tt><ref id="trace" name="trace FLAG"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt> Put error and trace messages on STDERR if set <newline>
+<!-- END OPTIONS -->
 <sect>Configuration Files
 <label id="configfiles"
 <p>
@@ -2956,38 +2977,16 @@ The file has the following structure.
 <item>  Blank lines and lines starting with # are ignored.
 <item>  Keys or flags start in column 1.
 The syntax is similar to the LPRng and BSD
-<tt/printcap/
 file.
-<tabular ca="lll">
-Syntax|
-Equivalent To|
-Class
-@
-flag|
-flag=1|
-FLAG
-@
-flag&commat;|
-flag=0|
-FLAG
-@
-flag=val|
-flag=val (string value)|
-STRING
-@
-flag#val|
-flag=val (string value)|
-STRING
-@
-flag=&rsqb; v v  ... &lsqb; |
-|
-LIST
-@
-(no flag name present)|
-flag=0|
-FLAG
-@
-</tabular>
+<tscreen>
+<verb>
+Syntax             Equivalent To    Class
+flag               flag=1           (FLAG)
+flag&commat;       flag=0           (FLAG)
+flag=val           flag=val (string value) STRING
+flag=&rsqb; v v  ... &lsqb;          LIST
+</verb>
+</tscreen>
 <item>
 Flags are used for options which take a TRUE/FALSE, 0/1, or ON/OFF
 value, and
@@ -3130,7 +3129,7 @@ p1=this is
 p2=[ p3 p4 ]
 p3=a
 p4=test
-p3=living\020\%{p3}
+p3=living\020\%&lcub;p3&rcub;
 </verb>
 </tscreen>
 <p>
@@ -3194,7 +3193,7 @@ introduces a replacement string.  This has the form:
 where nnn are 3 octal digits are replaced
 by the standard PERL or C character substutions.
 <tag/Option Value Replacement/
-<tt/\%format{option}    \%format[option]/
+<tt/\%format&lcub;option&rcub;    \%format[option]/
 <p>
 The option name will be relaced by the formatted option value.
 <tag/Option Search Order/
@@ -3211,7 +3210,7 @@ This stack is searched in oldest to newest order for a match.
 <item>
 If no match was found,
 and the expression has the form
-<tt/{option}/
+<tt/&lcub;option&rcub;/
 then the
 <tt/-Zoption=value/
 command line options will be searched for a match.
@@ -3221,7 +3220,7 @@ then the
 <tt/-Toption=value/
 command line options will be searched for a match.
 This allows the 
-<tt/{option}/
+<tt/&lcub;option&rcub;/
 to start searching from the -Z command line options and
 <tt/[option]/
 to start searching from the -T command line options.
@@ -3244,7 +3243,7 @@ and is similar to the printf format usage:
 </verb>
 </tscreen>
 <p>
-The default format is %d, ie, \%{val} would be \%d{val}.
+The default format is %d, ie, \%&lcub;val&rcub; would be \%d&lcub;val&rcub;.
 The numerical formats supported are: %d, %o, %x, %X, %e, %f, and %g;
 The %s format use the option string value.
 <p>
@@ -3257,9 +3256,9 @@ For example:
 <verb>
 Configuration:
   pjl_user_opts=[ ... outbin intray ...]
-  pjl_outbin=@PJL SET OUTBIN=\%s{outbin}
+  pjl_outbin=@PJL SET OUTBIN=\%s&lcub;outbin&rcub;
   intraynum=4
-  pjl_intray=@PJL SET INTRAY=\%{intraynum}
+  pjl_intray=@PJL SET INTRAY=\%&lcub;intraynum&rcub;
 
 Command:
   ifhp -Zoutbin=LEFT
@@ -3283,7 +3282,7 @@ The
 <tt/pjl_outbin/
 option will be found,
 and the
-<tt/@PJL SET OUTBIN=\%s{outbin}/
+<tt/@PJL SET OUTBIN=\%s&lcub;outbin&rcub;/
 string will be expanded.
 <p>
 Now we need to search for the
@@ -3312,7 +3311,7 @@ and finally in
 <tscreen>
 <verb>
 cpi=5.5
-pcl_cpi=\033\%3.2f{cpi}D
+pcl_cpi=\033\%3.2f&lcub;cpi&rcub;D
 </verb>
 </tscreen>
 <p>
@@ -3321,7 +3320,7 @@ we might need to expand the
 <tt/pcl_cpi/
 option.
 When the
-<tt/pcl_cpi=\033\%3.2f{cpi}D/
+<tt/pcl_cpi=\033\%3.2f&lcub;cpi&rcub;D/
 string is expanded,
 the result is
 <tt/\033\%5.00D/.
@@ -3439,15 +3438,15 @@ pcl_font=[ delete_fonts font_id font_download font_primary ]
 # font control
 #
 font_op=0
-pcl_font_op=\033*c\%{font_op}F
+pcl_font_op=\033*c\%&lcub;font_op&rcub;F
 pcl_delete_fonts=\033*c0F
 
 font_id=1
-pcl_font_id=\033*c\%{font_id}D
+pcl_font_id=\033*c\%&lcub;font_id&rcub;D
 
 # set primary font
 font_primary=1
-pcl_font_primary=\033(\%{font_primary}X
+pcl_font_primary=\033(\%&lcub;font_primary&rcub;X
 
 # font directory
 pcl_fontdir=/usr/local/lib/fonts
@@ -3554,7 +3553,7 @@ The following configuration shows how to set this up.
 pjl_init=[ ... setup  ... ]
 
 setup=initval
-font=\%s{setup}
+font=\%s&lcub;setup&rcub;
 # setup directory
 pjl_fontdir=/usr/local/lib/fonts
 pjl_setup=[ font_download ]

@@ -1,3 +1,65 @@
+Version 3.2.7
+  Rearranged code in Read_write_timeout() so that a read of status is
+  attempted BEFORE exiting on a write error.
+
+  added pclbanner to the distribution
+
+  IFHP recognizes the PJL 'reset' sequence and treats it as a
+  'raw' or unprocessed job.  This allows you to send PJL jobs to the printer
+  and not have them interpreted as PCL.
+
+Version 3.2.6
+  Added a console message for Lexmark and HP Printers that
+    will be 'sticky' and stay visible after the job has been
+    printed.
+  (Provided by: Jason L Tibbitts III <tibbs@uh.edu>)
+
+  Fixed up 'progress' so that it prints Kbytes correctly... sigh.
+
+
+Version 3.2.5
+  changed the a2ps options in ifhp.conf:
+   -q -B -1 -M Letter --borders=no -o-
+  (Suggested by: Jeff Gostin <jgostin@best.com>)
+
+Version 3.2.5
+  Cleaned up documentation,  made sure the various
+  configuration and installation defaults were consistent.
+  Ummm... and also removed a core dump from the distribution.
+   Sigh...
+
+Version 3.2.4
+  Cleaned up Makefile.in so that running configure in another directory
+   will be possible.  That is,
+		cd ifhp...
+		where=`pwd`
+		mkdir ...
+		cd ...
+		sh $where/configure
+   will now work correctly, and you can do a make install in $where 
+
+  Added README.utilities and updated ifhp.conf file so that it has URL
+    and ftp sites for file, enscript and a2ps tools.
+
+  The phaser support did not work with OF and IF filters.
+    More 'shutdowns' and clean up added.
+
+  Sync and waitend made separate operations.
+    You can now skip 'syncing' at the start,  but you 
+    can force 'waitend'.  This is side effect of phaser
+    operation.  You need to read status back from the printer until it closes
+    the reverse connnection.  If you have appsocket with waitend,
+    you will read status back until the job finishes.  If you do
+    appsocket with waitend@,  you will get no status information for job.
+    This is not good,  but gives you very fast throughput.
+
+Version 3.2.3
+  Updated Makefile.in so that when you do $(path)/configure for
+   building in a separate directory,  the right files are found.
+
+Version 3.2.2
+  Added support for Tektronixs Phaser Printers -  using the appsocket protocol
+
 Version 3.2.1
 
   Most of the code seems pretty stable,  so we start a new major release.
@@ -97,4 +159,4 @@ Version 3.1.4
    approach.
       Patrick Powell papowell@astart.com
 
-$Id: CHANGES,v 1.1.1.2 1999-04-01 20:09:02 mwhitson Exp $
+$Id: CHANGES,v 1.1.1.3 1999-05-04 18:50:27 mwhitson Exp $
