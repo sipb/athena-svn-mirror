@@ -1,3 +1,29 @@
+Version 3.2.9
+  Removed '"' from ifhp.conf file that really messed things up.
+
+Version 3.2.8
+  Enabled PCL copies=nnn code
+     (Missing operation reported by: Gerard Kok <kokg@geo.vu.nl>)
+  Fixed pcl_linesperpage=...F instead of E
+     (Reported by: Gerard Kok <kokg@geo.vu.nl>)
+  When you are using the TEXT to XXX translation facility,
+     the .... ZOPTS .... will get replaced with .... -Zzoptions ....
+     and .... TOPTS .... will get replaced with .... -Ttoptions ....
+
+  Updated ifhp.conf file,  added comments,  moved HP5SiMx PostScript
+  to the HP5SiMx section.
+
+  Modified the Pjl_console code to not be 'sticky'.  This was painful.
+	(Suggested by: Olav Kolbu <olav.kolbu@usit.uio.no>)
+
+  After extensive hand to hand combat with QMS printers,
+  discovered that they apparently do NOT return status or PostScript
+  output in a reliable manner.  Added/modified [qms1725] entry
+  to reflect this.  Use appsocket protocol,  but WITHOUT status
+  capability.  Also note that port 35 seems to be used by default,
+  although this can be configured via the TCP/IP telnet interface.
+  (Your milage may vary).
+
 Version 3.2.7
   Rearranged code in Read_write_timeout() so that a read of status is
   attempted BEFORE exiting on a write error.
@@ -159,4 +185,4 @@ Version 3.1.4
    approach.
       Patrick Powell papowell@astart.com
 
-$Id: CHANGES,v 1.1.1.3 1999-05-04 18:50:27 mwhitson Exp $
+$Id: CHANGES,v 1.1.1.4 1999-05-18 19:17:32 mwhitson Exp $

@@ -14,7 +14,9 @@
 <HR>
 <H2><A NAME="s4">4. Filter Operation Details</A></H2>
 
-<P>The
+<P>
+<A NAME="read_write"></A> 
+The
 <CODE>ifhp</CODE>
 filter operates by first reading a configuration file
 to determine the type of printer it is working with,
@@ -108,6 +110,7 @@ foreach option in predefined list {
 if( device specified using -Tdev=device ){
         // if device is host%port, we open TCP/IP connection
         fd = open(device);
+        // Note - option read_write will open the device or file read write
         dup fd to 1; close fd;
 }
 if( appsocket procotol specified and TCP/IP device ){

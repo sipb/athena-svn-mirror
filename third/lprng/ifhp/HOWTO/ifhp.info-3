@@ -1,5 +1,5 @@
 This is Info file ifhp.info, produced by Makeinfo-1.64 from the input
-file /tmp/sgmltmp.ifhp7895.info.2.
+file /tmp/sgmltmp.ifhp19043.info.2.
 
    \input texinfo
 
@@ -126,9 +126,12 @@ Allow these PJL variables to be set
 ` *Note Extending ifhp Capabilties:: '`[nbsp  ][nbsp  ][nbsp  ][nbsp
 ][nbsp  ][nbsp  ][nbsp  ][nbsp  ][nbsp  ][nbsp  ][nbsp  ][nbsp  ][nbsp
 ]' Support these PostScript user options
+` *Note Filter Operation Details:: '`[nbsp  ][nbsp  ][nbsp  ][nbsp
+][nbsp  ][nbsp  ][nbsp  ][nbsp  ][nbsp  ][nbsp  ][nbsp  ][nbsp  ][nbsp
+][nbsp  ][nbsp  ]' Open a file or device read/write
 ` *Note remove[lowbar]ctrl STRING:: '`[nbsp  ][nbsp  ][nbsp  ][nbsp
 ][nbsp  ][nbsp  ][nbsp  ][nbsp  ][nbsp  ][nbsp  ][nbsp  ][nbsp  ][nbsp
-][nbsp  ]' Support these characters from PostScript jobs
+][nbsp  ]' Remove these characters from PostScript jobs
 ` *Note PJL Initialization:: '`[nbsp  ][nbsp  ][nbsp  ][nbsp  ][nbsp
 ][nbsp  ][nbsp  ][nbsp  ][nbsp  ][nbsp  ][nbsp  ][nbsp  ][nbsp  ][nbsp
 ][nbsp  ][nbsp  ][nbsp  ]' PJL JOB command START = NNN value

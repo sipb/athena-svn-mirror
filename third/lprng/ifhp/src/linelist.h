@@ -3,7 +3,7 @@
  * Copyright 1994-1999 Patrick Powell, San Diego, CA <papowell@astart.com>
  **************************************************************************/
 /**** HEADER *****
-$Id: linelist.h,v 1.1.1.3 1999-05-04 18:50:43 mwhitson Exp $
+$Id: linelist.h,v 1.1.1.4 1999-05-18 19:17:51 mwhitson Exp $
  **** HEADER *****/
 
 /*
@@ -75,3 +75,5 @@ extern char *safestrdup3( const char *s1, const char *s2, const char *s3,
 	const char *file, int line );
 extern void Remove_line_list( struct line_list *l, int n );
 extern void Set_str_value( struct line_list *l, char *key, const char *value );
+extern char *Join_line_list( struct line_list *l, char *sep );
+extern char *Join_line_list_with_sep( struct line_list *l, char *sep );

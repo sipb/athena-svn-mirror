@@ -3,7 +3,7 @@
  * Copyright 1994-1999 Patrick Powell, San Diego, CA <papowell@astart.com>
  **************************************************************************/
 /**** HEADER *****/
-static char *const _id = "$Id: open_device.c,v 1.1.1.2 1999-05-04 18:50:44 mwhitson Exp $";
+static char *const _id = "$Id: open_device.c,v 1.1.1.3 1999-05-18 19:17:52 mwhitson Exp $";
 
 #include "ifhp.h"
 
@@ -28,7 +28,7 @@ void Open_device( char *device )
 		while( fd < 0 ){
 			DEBUG1("Open_device: device '%s', attempt %d",
 				device, attempt);
-			fd = open( device, O_WRONLY|O_APPEND|O_CREAT, 0600 );
+			fd = open( device, (Read_write?O_RDWR:O_WRONLY)|O_APPEND|O_CREAT, 0600 );
 			if( fd < 0 ){
 				if( Dev_retries == 0 || (Dev_retries >0 && attempt++ >= Dev_retries) ){
 					Errorcode = JABORT;

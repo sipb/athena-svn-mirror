@@ -2,11 +2,11 @@
 <!doctype linuxdoc system>
 <article>
 <!-- must be matched by / article at end -->
-<!-- $Id: ifhp.sgml,v 1.1.1.3 1999-05-04 18:50:50 mwhitson Exp $ -->
+<!-- $Id: ifhp.sgml,v 1.1.1.4 1999-05-18 19:17:58 mwhitson Exp $ -->
 <title> IFHP-HOWTO
 <author> Patrick Powell
 <tt><htmlurl url="mailto:papowell@astart.com" name="papowell@astart.com"></tt>
-<date> 22 Apr 1999 (For ifhp-3.2.7)
+<date> 17 May 1999 (For ifhp-3.2.9)
 <abstract>
 The <tt>ifhp</tt> software is an enhanced, extended, highly configurable,
 and portable implementation of a print filter for use with the <tt>ifhp</tt>
@@ -1153,6 +1153,14 @@ ifhp 15:57:23.738 [3096] Process_job: done
 </verb>
 </tscreen>
 and you should get a printed page.
+<p>
+If you happen to have an operating system that support bi-directional
+parallel ports, you can add to the ifhp
+<tscreen>
+read_write
+</tscreen>
+which will cause ifhp to open the port read/write.
+
 </enum>
 <sect1> Fine Tuning A Configuration and Printcap Entries
 <label id="finetune"
@@ -1399,6 +1407,7 @@ set the
 flag.
 <sect>Filter Operation Details
 <p>
+<label id="read_write">
 The
 <tt/ifhp/
 filter operates by first reading a configuration file
@@ -1493,6 +1502,7 @@ foreach option in predefined list &lcub;
 if( device specified using -Tdev=device )&lcub;
 	// if device is host%port, we open TCP/IP connection
 	fd = open(device);
+	// Note - option read_write will open the device or file read write
 	dup fd to 1; close fd;
 &rcub;
 if( appsocket procotol specified and TCP/IP device )&lcub;
@@ -2907,7 +2917,8 @@ The following is a list of predefined options. <newline>
 <tt><ref id="pjl_vars_set" name="pjl_vars_set=LIST"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt> Allow these PJL variables to be set <newline>
 <tt><ref id="ps" name="ps FLAG"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt> Printer supports PostScript (ps) <newline>
 <tt><ref id="ps_user_opts" name="ps_user_opts=LIST"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt> Support these PostScript user options <newline>
-<tt><ref id="remove_ctrl" name="remove_ctrl=LIST"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt> Support these characters from PostScript jobs <newline>
+<tt><ref id="read_write" name="read_write FLAG"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt> Open a file or device read/write<newline>
+<tt><ref id="remove_ctrl" name="remove_ctrl=LIST"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt> Remove these characters from PostScript jobs <newline>
 <tt><ref id="startpage" name="startpage=NNN"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt> PJL JOB command START = NNN value <newline>
 <tt><ref id="status" name="status FLAG"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt> Printer supplies status information <newline>
 <tt><ref id="statusfile" name="statusfile=PATHNAME"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt> Status file pathname <newline>

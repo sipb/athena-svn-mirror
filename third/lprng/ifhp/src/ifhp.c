@@ -4,7 +4,7 @@
  **************************************************************************/
 /**** HEADER *****/
 #include "patchlevel.h"
- static char *const _id = "$Id: ifhp.c,v 1.1.1.3 1999-05-04 18:50:37 mwhitson Exp $"
+ static char *const _id = "$Id: ifhp.c,v 1.1.1.4 1999-05-18 19:17:47 mwhitson Exp $"
  " VERSION " PATCHLEVEL;
 
 #include "ifhp.h"
@@ -70,7 +70,7 @@ extern int Builtin( char* prefix, char *id, char *value, Wr_out routine) ;
 extern int Font_download( char* prefix, char *id, char *value, Wr_out routine) ;
 extern void Pjl_job() ;
 extern void Pjl_eoj() ;
-extern void Pjl_console( int start ) ;
+extern void Pjl_console_msg( int start ) ;
 extern int Pjl_setvar(char *prefix, char*id, char *value, Wr_out routine) ;
 extern int Pcl_setvar(char *prefix, char*id, char *value, Wr_out routine ) ;
 extern void Do_sync( int sync_timeout ) ;
@@ -1072,7 +1072,7 @@ void Process_job()
 		Put_outbuf_str( PJL_UEL_str );
 		Put_outbuf_str( PJL_str );
 		Pjl_job();
-		Pjl_console(1);
+		Pjl_console_msg(1);
 		if( !Find_first_key( &Model, "pjl_init", Value_sep, 0) ){
 			s  = Find_str_value( &Model, "pjl_init", Value_sep);
 			DEBUG1("Process_job: 'pjl_init'='%s'", s);
@@ -1110,8 +1110,8 @@ void Process_job()
 		DEBUG1("Process_job: doing pjl at end");
 		Put_outbuf_str( PJL_UEL_str );
 		Put_outbuf_str( PJL_str );
+		Pjl_console_msg(1);
 		Pjl_eoj();
-		Pjl_console(0);
 		if( !Find_first_key( &Model, "pjl_term", Value_sep, 0) ){
 			s  = Find_str_value( &Model, "pjl_term", Value_sep);
 			DEBUG1("Process_job: 'pjl_term'='%s'", s);
@@ -1147,6 +1147,18 @@ void Process_job()
 			Open_device( Device );
 		}
 		endpagecount = Do_pagecount(Job_timeout);
+	}
+	if( Pjl && Pjl_console ){
+		Init_outbuf();
+		Pjl_console_msg(0);
+		DEBUG1("Process_job: doing pjl at end");
+		Put_outbuf_str( PJL_UEL_str );
+		Put_outbuf_str( PJL_str );
+		if( Write_out_buffer( Outlen, Outbuf, Job_timeout ) ){
+			Errorcode = JFAIL;
+			fatal("Process_job: timeout");
+		}
+		Init_outbuf();
 	}
 
 	time( &current_t );
@@ -1697,11 +1709,11 @@ void Resolve_user_opts( char *prefix, struct line_list *only,
 		if( (value = strpbrk( id, Value_sep )) ){ c = *value; *value = 0; }
 		cmp = Find_first_key( only, id, Value_sep, 0 );
 		DEBUG4("Resolve_user_opts: id '%s', Find_first=%d, value '%s'",
-			id, cmp, value );
+			id, cmp, value?(value+1):0 );
+		if( value ){ *value = c; }
 		if( cmp == 0 ){
 			Resolve_key_val( prefix, l->list[i], routine );
 		}
-		if( value ){ *value = c; }
 	}
 }
 
@@ -1994,6 +2006,7 @@ int Font_download( char* prefix, char *id, char *value, Wr_out routine)
  */
 
  char *Jobstart_str="@PJL JOB NAME = \"%s\"";
+ char *Job_display=" DISPLAY = \"%s\" ";
  char Jobname[SMALLBUFFER];
  char *Jobend_str="@PJL EOJ NAME = \"%s\"";
 
@@ -2016,6 +2029,20 @@ void Pjl_job()
 	plp_snprintf( Jobname, sizeof(Jobname), "PID %d", getpid() );
 	plp_snprintf( buffer, sizeof(buffer), Jobstart_str, Jobname );
 	str = safestrdup( buffer,__FILE__,__LINE__);
+
+	if( Pjl_console ){
+		DEBUG2("Pjl_job: pjl_console '%d'", Pjl_console );
+		s = Loweropts['n'-'a'];
+		if( !s ) s = Upperopts['J'-'A'];
+		if( !s ) s = "????";
+		if( s ){
+			plp_snprintf( buffer, sizeof(buffer), Job_display, s );
+			s = str;
+			str = safestrdup2( str, buffer,__FILE__,__LINE__);
+			free(s);
+		}
+	}
+
 	if( (s = Find_exists_value( &Zopts, "startpage", Value_sep))
 		|| (s = Find_exists_value( &Topts, "startpage", Value_sep)) ){
 		n = atoi( s );
@@ -2036,6 +2063,7 @@ void Pjl_job()
 			free(s);
 		}
 	}
+	DEBUG2("Pjl_job: final = '%s'", str );
 	Put_pjl( str );
 	free( str ); str = 0;
 }
@@ -2067,33 +2095,27 @@ void Pjl_eoj()
  *  console@   disables or erases messages on console
  */
 
- char *PJL_RDYMSG_str  = "@PJL RDYMSG DISPLAY = \"%s ACTV\"";
- char *PJL_RDYMSG_str2 = "@PJL RDYMSG DISPLAY = \"%s DONE\"";
+ char *PJL_RDYMSG_str  = "@PJL RDYMSG DISPLAY = \"%s\" ";
 
-void Pjl_console( int start )
+void Pjl_console_msg( int start )
 {
 	char *s, buffer[SMALLBUFFER], name[SMALLBUFFER];
-	int n = 0;
 
-	DEBUG2( "Pjl_console: start %d", start );
-	if( (s = Find_value(&Model,"pjl_console",Value_sep )) ){
-		n = atoi(s);
-	}
-	DEBUG2("Pjl_console: Pjl %d, console '%s', flag %d", Pjl, s, n );
-	if( Pjl == 0 || n == 0 ){
+	DEBUG2("Pjl_console: flag %d, start %d, ", Pjl_console, start );
+	if( Pjl == 0 || Pjl_console == 0 ){
 		return;
 	}
 	s = "";
-	if(((s = Loweropts['n'-'a']) == 0 || *s == 0) ){
-		s = name;
-		plp_snprintf(name,sizeof(name), "PID %d", getpid());
+	if( start ){
+		s = Loweropts['n'-'a'];
+		if( !s ) s = Upperopts['J'-'A'];
+		if( !s ){
+			s = name;
+			plp_snprintf(name,sizeof(name), "PID %d", getpid());
+		}
+		if( strlen(s) > 8 ) s[8] = 0;
 	}
-        if ( start ) {
-	        plp_snprintf( buffer, sizeof(buffer), PJL_RDYMSG_str, s );
-        }
-        else {
-	        plp_snprintf( buffer, sizeof(buffer), PJL_RDYMSG_str2, s );
-        }
+	plp_snprintf( buffer, sizeof(buffer), PJL_RDYMSG_str, s );
 	Put_pjl( buffer );
 }
 
@@ -2854,7 +2876,7 @@ int Current_pagecount( int pagecount_timeout, int use_pjl, int use_ps )
 void Send_job()
 {
 	plp_status_t status;
-	int len = 0, i, c, pid = 0, n, cnt, tempfd;
+	int len = 0, i, j, c, pid = 0, n, cnt, tempfd;
 	char *s, *pgm = 0;
 	int done = 0;
 	char *save_outbuf;
@@ -3002,8 +3024,40 @@ void Send_job()
 			Check_max(&l,1);
 			l.list[l.count] = 0;
 			for( i = 0; i < l.count; ++i ){
-				l.list[i] = Fix_option_str( l.list[i], 0, 1 );
+				s = l.list[i];
+				if( !strcmp( s, "ZOPTS") ){
+					free(l.list[i]); l.list[i] = 0;
+					s = Join_line_list_with_sep(&Zopts,",");
+					if( s ){
+						free(l.list[i]);
+						l.list[i] = safestrdup2("-Z",s,__FILE__,__LINE__);
+						free(s);
+						DEBUG4("Send_job: ZOPTS '%s'", l.list[i] );
+					} else {
+						for( j = i; j < l.count; ++j ){
+							l.list[j] = l.list[j+1];
+						}
+						--i;
+						--l.count;
+					}
+				} else if( !strcmp( s, "TOPTS") ){
+					free(l.list[i]); l.list[i] = 0;
+					s = Join_line_list_with_sep(&Topts,",");
+					if( s ){
+						l.list[i] = safestrdup2("-T",s,__FILE__,__LINE__);
+						DEBUG4("Send_job: TOPTS '%s'", l.list[i] );
+					} else {
+						for( j = i; j < l.count; ++j ){
+							l.list[j] = l.list[j+1];
+						}
+						--i;
+						--l.count;
+					}
+				} else {
+					l.list[i] = Fix_option_str( l.list[i], 0, 1 );
+				}
 			}
+			if(DEBUGL4)Dump_line_list("Send_job: args", &l );
 			if( dup2(tempfd,1) == -1 ){
 				Errorcode = JABORT;
 				logerr_die("Send_job: dup2 failed");
@@ -3092,6 +3146,7 @@ void Send_job()
 		}
 	}
 
+	logmsg( "Send_job: transferring %d Kbytes", (int)((total_size+1023)/1024) );
 	do{
 		len = 0;
 		progress_total += Outlen;
@@ -4024,9 +4079,7 @@ int Make_tempfile( char **retval )
 	if( retval ){
 		*retval = tempfile;
 	} else {
-		if( ! DEBUGL1 ){
-			unlink(tempfile);
-		}
+		unlink(tempfile);
 		free(tempfile); tempfile = 0;
 	}
 	return( fd );

@@ -597,7 +597,16 @@ ifhp 15:57:23.738 [3096] Process_job: done
 </PRE>
 </CODE></BLOCKQUOTE>
 
-and you should get a printed page.</LI>
+and you should get a printed page.
+<P>If you happen to have an operating system that support bi-directional
+parallel ports, you can add to the ifhp
+<BLOCKQUOTE><CODE>
+read_write
+</CODE></BLOCKQUOTE>
+
+which will cause ifhp to open the port read/write.
+<P>
+</LI>
 </OL>
 <H2><A NAME="finetune"></A> <A NAME="ss3.8">3.8 Fine Tuning A Configuration and Printcap Entries</A>
 </H2>
