@@ -1,7 +1,7 @@
 #	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/Makefile,v $
 #	$Author: epeisach $
 #	$Locker:  $
-#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/Makefile,v 1.11 1990-07-02 14:17:24 epeisach Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/Makefile,v 1.12 1990-07-03 16:10:29 epeisach Exp $
 #
 #
 # Copyright (c) 1983 Regents of the University of California.
@@ -52,29 +52,39 @@ lpd:	lpdchar.o s_common.o printcap.o tcp_conn.o
 	${CC} -o lpd lpd.o printjob.o recvjob.o s_displayq.o s_rmjob.o \
 		lpdchar.o s_common.o printcap.o tcp_conn.o ${LIBS}
 
-s_rmjob.o: rmjob.c lp.h lp.local.h
+s_rmjob.c: rmjob.c
 	rm -f s_rmjob.c
 	$(LN) rmjob.c s_rmjob.c
+
+s_rmjob.o: s_rmjob.c lp.h lp.local.h
 	${CC} ${CFLAGS} -c -DSERVER s_rmjob.c
 
-s_common.o: lp.h lp.local.h common.c
+s_common.c: common.c
 	rm -f s_common.c
 	$(LN) common.c s_common.c
+
+s_common.o: lp.h lp.local.h s_common.c
 	${CC} ${CFLAGS} -c -DSERVER s_common.c
 
-s_lpr.o: lpr.c lp.h lp.local.h
+s_lpr.c: lpr.c
 	rm -f s_lpr.c
 	$(LN) lpr.c s_lpr.c
+
+s_lpr.o: s_lpr.c lp.h lp.local.h
 	$(CC) ${CFLAGS} -c -DSERVER s_lpr.c
 
-s_lpq.o: lpq.c lp.h lp.local.h
+s_lpq.c: lpq.c
 	rm -f s_lpq.c
 	$(LN) lpq.c s_lpq.c
+
+s_lpq.o: s_lpq.c lp.h lp.local.h
 	$(CC) ${CFLAGS} -c -DSERVER s_lpq.c
 
-s_lprm.o: lprm.c lp.h lp.local.h
+s_lprm.c: lprm.c
 	rm -f s_lprm.c
 	$(LN) lprm.c s_lprm.c
+
+s_lprm.o: s_lprm.c lp.h lp.local.h
 	$(CC) ${CFLAGS} -c -DSERVER s_lprm.c
 
 lpd.o: lpd.c
