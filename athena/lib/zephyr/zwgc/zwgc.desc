@@ -4,8 +4,8 @@
 #	"mit-copyright.h".
 # 
 #	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/zwgc.desc,v $
-#	$Author: ghudson $
-#	$Id: zwgc.desc,v 1.13 1997-09-14 22:15:08 ghudson Exp $
+#	$Author: danw $
+#	$Id: zwgc.desc,v 1.14 1998-02-03 18:39:07 danw Exp $
 #
 #
 # Default WindowGram description file
@@ -114,7 +114,7 @@ match "message"
 	if ($signature == "") then
 		set ftext = "From: @bold("+protect($sender)+")"
 	else
-		set ftext = "From: @bold("+protect($signature)+" <"+
+		set ftext = "From: @bold(@{"+protect($signature)+"} <"+
 			protect($sender)+">)"
 	endif
 
