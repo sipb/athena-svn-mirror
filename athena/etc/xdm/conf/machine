@@ -1,6 +1,6 @@
 #!/bin/sh
 
-PATH=/bin:/bin/athena:/usr/ucb:/usr/bin:/usr/athena/bin
+PATH=/bin:/bin/athena:/usr/bsd:/usr/ucb:/usr/bin:/usr/athena/bin
 
 if [ -f /etc/athena/rc.conf ]; then
 	. /etc/athena/rc.conf
@@ -31,13 +31,17 @@ case `/bin/athena/machtype -c` in
 		df="/bin/df";;
 	POWER*) type="IBM RISC/6000"
 		df="/bin/df";;
+	SPARC/*) type=`/bin/athena/machtype -c`
+		df="/bin/df -k";;
+	IP22) type=`/bin/athena/machtype -c`
+		df="/bin/df -k";;
 	*) type=`/bin/athena/machtype -c -v`
 		df="/bin/df";;
 	esac
 
 echo `hostname` "is a" $type 					
 echo -n "Release: "						
-/usr/ucb/tail -1 /etc/athena/version | awk '{print $5}'		
+tail -1 /etc/athena/version | awk '{print $5}'		
 echo "System pack attached: " `attach | awk '$2=="/srvd" {print $1}'`
 echo -n "System pack is: " 					
 cat /srvd/.rvdinfo 						
