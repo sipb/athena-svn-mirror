@@ -5,8 +5,11 @@
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/finger/finger.c,v $
  *	$Author: epeisach $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/finger/finger.c,v 1.9 1989-02-09 19:30:32 epeisach Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/finger/finger.c,v 1.10 1990-07-12 15:46:18 epeisach Exp $
  *	$Log: not supported by cvs2svn $
+ * Revision 1.9  89/02/09  19:30:32  epeisach
+ * Fixed bug where zephyr would return not locatable if user on more than once
+ * 
  * Revision 1.8  89/01/23  21:14:45  shanzer
  * Jtkohl's fixes to finger for Zephyr stuff.
  * 
@@ -34,7 +37,7 @@
  */
 
 #ifndef lint
-static char *rcsid_finger_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/finger/finger.c,v 1.9 1989-02-09 19:30:32 epeisach Exp $";
+static char *rcsid_finger_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/finger/finger.c,v 1.10 1990-07-12 15:46:18 epeisach Exp $";
 
 #endif lint
 
@@ -281,7 +284,7 @@ doall()
 		exit(2);
 	}
 	if (unquick) {
-#ifdef ULTRIX30
+#ifdef ultrix
 		setpwent();
 #else
 		extern _pw_stayopen;
@@ -389,7 +392,7 @@ donames(argv)
 	if (unquick) {
 		setpwent();
 		if (!match) {
-#ifndef ULTRIX30
+#ifndef ultrix
 			extern _pw_stayopen;
 
 			_pw_stayopen = 1;
