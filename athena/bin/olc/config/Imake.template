@@ -343,10 +343,10 @@
 #define NoOpCDebugFlags /* as nothing */
 #endif
 #ifndef DefaultCDebugFlags
-#define DefaultCDebugFlags OptimizedCDebugFlags
+#define DefaultCDebugFlags DebuggableCDebugFlags
 #endif
 #ifndef LibraryCDebugFlags
-#define LibraryCDebugFlags OptimizedCDebugFlags
+#define LibraryCDebugFlags DebuggableCDebugFlags
 #endif
 #ifndef DefaultCCOptions
 #define DefaultCCOptions /* as nothing: this is for floating point, etc. */
@@ -581,11 +581,9 @@
     INSTKMEMFLAGS = InstKmemFlags	/* install flags for /dev/kmem progs */
 
           DESTDIR = DestDir		/* root of install */
-#ifdef UseInstalled
-         INCLUDES = -I$(INCROOT)
-#else
-         INCLUDES = -I$(TOP)
-#endif
+
+         INCLUDES = 
+
       CDEBUGFLAGS = DefaultCDebugFlags
         CCOPTIONS = DefaultCCOptions	/* to distinguish from param flags */
       COMPATFLAGS = CompatibilityFlags
