@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.70 1996-05-16 03:40:20 cfields Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.71 1996-06-27 20:01:46 miki Exp $
  */
 
 #include <stdio.h>
@@ -497,8 +497,15 @@ char *display;
 #endif
 
 #ifdef SOLARIS
+#ifdef XDM
+     sprintf(errbuf, "LD_LIBRARY_PATH=%s", "/usr/openwin/lib");
+     environment[i++] = strsave(errbuf);
+     sprintf(errbuf, "OPENWINHOME=%s", "/usr/openwin");
+     environment[i++] = strsave(errbuf);
+ #else
     PASSENV("LD_LIBRARY_PATH");
     PASSENV("OPENWINHOME");
+#endif
 #endif
 
     if (homedir_status == HD_TEMP) {
