@@ -13,6 +13,7 @@
 #include <dirent.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <sys/wait.h>
 #include <errno.h>
 #include <string.h>
 #ifdef ultrix
@@ -26,6 +27,10 @@
 #ifdef hpux
 #define seteuid(x) setresuid(-1, (x), -1)
 #endif /* hpux */
+#ifdef linux
+#include <sys/vfs.h>
+#include <linux/nfs_fs.h>
+#endif
 
 /* Function Name: ALisRemoteDir
  * Arguments: dir - name of the directory.
@@ -55,6 +60,18 @@ char *dir;
     if (statx(dir, &stbuf, 0, STX_NORMAL))
 	return(1);
     return((stbuf.st_flag & FS_REMOTE) ? 1 : 0);
+#endif
+
+#ifdef linux
+#define REMOTEDONE
+    struct statfs sbuf;
+    struct stat stbuf;
+
+    if (statfs(dir, &sbuf) < 0 || sbuf.f_type == NFS_SUPER_MAGIC)
+      return(1);
+    if (stat(dir, &stbuf) < 0 || stbuf.st_dev == 0x0001)
+      return(1);
+    return(0);
 #endif
 
 #ifdef ultrix
@@ -184,7 +201,11 @@ ALgetHomedir(ALsession session)
   /* wait for attach to finish */
   waitpid(ALattach_pid(session), &attach_state, 0);
 
-  if (attach_state != 0 || !ALfileExists(ALpw_dir(session)))
+  /* If we didn't get Permission Denied because of no authentication yet,
+     and if we got nonzero status from attach or no homedir, then... */
+  if ((ALisTrue(session, ALhaveAuthentication) ||
+       WEXITSTATUS(attach_state) != 26) &&
+      (attach_state != 0 || !ALfileExists(ALpw_dir(session))))
     {
       /* do tempdir here */
       char buf[BUFSIZ];
@@ -192,35 +213,40 @@ ALgetHomedir(ALsession session)
       int cp_state;
 
       /* make name of temporary directory */
-      sprintf(buf, "/tmp/%s", ALpw_name(session));
-      strcpy(ALpw_dir(session), buf);
+      sprintf(buf, "HOME=/tmp/%s", ALpw_name(session));
+      strcpy(ALpw_dir(session), buf+5);
 
-      /* make sure /etc/passwd has the right homedir */
+      /* make HOME point to the right homedir */
+      putenv(buf);
+
+      /* If all programs were using this library, we wouldn't need
+	 to modify the passwd file.  As of 12/94, telnetd uses libAL
+	 but login.krb doesn't, so login.krb wouldn't get the right
+	 homedir and would log the user in with home="/" */
       ALmodifyLinesOfFile(session, "/etc/passwd", "/etc/ptmp",
 			  ALmodifyRemoveUser,
 			  ALmodifyAppendPasswd);
-      /* printf("Tried to add %s to /etc/passwd\n", ALpw_dir(session)); */
 
-      i = lstat(buf, &stb);
+      i = lstat(ALpw_dir(session), &stb);
       if (i == 0)
 	{
 	  if ((stb.st_mode & S_IFMT) == S_IFDIR)
-	    ALreturnError(session, ALwarnTempDirExists, buf)
-	  else unlink(buf);
+	    ALreturnError(session, ALwarnTempDirExists, ALpw_dir(session))
+	  else unlink(ALpw_dir(session));
       } else if (errno != ENOENT)
-	ALreturnError(session, (long) errno, buf);
+	ALreturnError(session, (long) errno, ALpw_dir(session));
 
       if (seteuid(ALpw_uid(session)) != 0)
 	warning = ALwarnUidCopy;
 
-      if (mkdir(buf, ALtempDirPerm))
-	ALreturnError(session, (long) errno, buf);
+      if (mkdir(ALpw_dir(session), ALtempDirPerm))
+	ALreturnError(session, (long) errno, ALpw_dir(session));
 
       switch (cp_pid = fork()) {
       case -1:
 	ALreturnError(session, (long) errno, "while forking");
       case 0:
-	execl("/bin/cp", "cp", "-r", ALtempDotfiles, buf, NULL);
+	execl("/bin/cp", "cp", "-r", ALtempDotfiles, ALpw_dir(session), NULL);
 	fprintf(stderr, "Warning - could not copy user prototype files into temporary directory.\n");
 	_exit(-1);
       default:
