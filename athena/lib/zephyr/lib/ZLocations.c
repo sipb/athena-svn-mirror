@@ -5,16 +5,16 @@
  *	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZLocations.c,v $
- *	$Author: jtkohl $
+ *	$Author: raeburn $
  *
  *	Copyright (c) 1987,1988 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZLocations.c,v 1.25 1989-04-26 15:46:33 jtkohl Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZLocations.c,v 1.26 1990-10-19 06:58:51 raeburn Exp $ */
 
 #ifndef lint
-static char rcsid_ZLocations_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZLocations.c,v 1.25 1989-04-26 15:46:33 jtkohl Exp $";
+static char rcsid_ZLocations_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZLocations.c,v 1.26 1990-10-19 06:58:51 raeburn Exp $";
 #endif lint
 
 #include <zephyr/mit-copyright.h>
@@ -106,11 +106,15 @@ Z_SendLocation(class, opcode, auth, format)
 	    } else {
 #endif /* X11 */
 		    ttyp = ttyname(0);
-		    bptr[2] = rindex(ttyp, '/');
-		    if (bptr[2])
+		    if (ttyp) {
+			bptr[2] = rindex(ttyp, '/');
+			if (bptr[2])
 			    bptr[2]++;
-		    else
+			else
 			    bptr[2] = ttyp;
+		    }
+		    else
+			bptr[2] = "unknown";
 		    (void) strcpy(mytty, bptr[2]);
 #ifdef X11
 	    }
