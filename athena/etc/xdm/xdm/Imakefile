@@ -1,4 +1,4 @@
-# $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xdm/Imakefile,v 1.1 1992-04-28 17:00:53 lwvanels Exp $
+# $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xdm/Imakefile,v 1.2 1992-05-03 20:04:46 epeisach Exp $
 # Builds xdm and installs it with Athenized config
 
 #ifdef _AIX
@@ -9,10 +9,17 @@ DEFINES= -I. -DTCPCONN -DUNIXCONN -DXDM
 #else
 /* Not aix or ultrix.  Must be bsd or sunos */
 DEFINES= -I. -DTCPCONN -DUNIXCONN -DX_NOT_POSIX -DX_NOT_STDC_ENV \
-	-DXDM -DSIGNALRETURNSINT
+	-DXDM -DSIGNALRETURNSINT $(AFSINC)
 #endif
 #endif
 
+#if defined(UseInstalled)
+AFSLIBS = /mit/afsdev/bld/dest/lib/afs/libsys.a
+AFSINC = -I/mit/afsdev/bld/dest/include
+#else
+AFSLIBS = /usr/local/lib/afs/libsys.a
+AFSINC = -I/usr/local/include
+#endif
 
 #ifdef sun
 MACHLIBS = -lm
@@ -20,7 +27,7 @@ MACHLIBS = -lm
 #ifdef _IBMR2
 MACHLIBS = -ls -lodm -lcfg
 #endif
-LIBS = -lXaw -lXmu -lXt -lX11  -lXau -lXdmcp -lhesiod -lkrb -ldes $(MACHLIBS)
+LIBS = -lXaw -lXmu -lXt -lX11  -lXau -lXdmcp -lhesiod -lkrb -ldes $(AFSLIBS) $(MACHLIBS)
 
 OBJS = auth.o daemon.o server.o dpylist.o dm.o error.o file.o \
 	greet.o netaddr.o reset.o resource.o protodpy.o policy.o \
