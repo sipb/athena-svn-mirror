@@ -49,10 +49,6 @@ int read_long_pw_string();
 #define PRINC_HEADER "  Principal\n"
 #define PRINC_FORMAT "%s"
 
-extern int errno;
-#ifndef HAVE_SYS_ERRLIST_DECL
-extern char *sys_errlist[];
-#endif
 static int use_preauth = 0;
 
 extern void krb_set_tkt_string();
@@ -79,7 +75,7 @@ copy_keyfile(progname, keyfile, backup_keyfile)
 	if ((keyfile_fd = open(keyfile, O_RDONLY, 0)) < 0) {
 	    if (errno != ENOENT) {
 		(void)fprintf(stderr, "%s: Unable to read %s: %s\n", progname, 
-			      keyfile, sys_errlist[errno]);
+			      keyfile, strerror(errno));
 		exit(1);
 	    }
 	    else {
@@ -88,13 +84,13 @@ copy_keyfile(progname, keyfile, backup_keyfile)
 		     open(keyfile, 
 			  O_WRONLY | O_TRUNC | O_CREAT, SRVTAB_MODE)) < 0) {
 		    (void) fprintf(stderr, "%s: Unable to create %s: %s\n", 
-				   progname, keyfile, sys_errlist[errno]);
+				   progname, keyfile, strerror(errno));
 		    exit(1);
 		}
 		else
 		    if (close(keyfile_fd) < 0) {
 			(void) fprintf(stderr, "%s: Failure closing %s: %s\n",
-				       progname, keyfile, sys_errlist[errno]);
+				       progname, keyfile, strerror(errno));
 			exit(1);
 		    }
 	    }
@@ -107,29 +103,29 @@ copy_keyfile(progname, keyfile, backup_keyfile)
 	 open(backup_keyfile, O_WRONLY | O_TRUNC | O_CREAT, 
 	      keyfile_mode)) < 0) {
 	(void) fprintf(stderr, "%s: Unable to write %s: %s\n", progname, 
-		       backup_keyfile, sys_errlist[errno]);
+		       backup_keyfile, strerror(errno));
 	exit(1);
     }
     do {
 	if ((rcount = read(keyfile_fd, (char *)buf, sizeof(buf))) < 0) {
 	    (void) fprintf(stderr, "%s: Error reading %s: %s\n", progname,
-			   keyfile, sys_errlist[errno]);
+			   keyfile, strerror(errno));
 	    exit(1);
 	}
 	if (rcount && (write(backup_keyfile_fd, buf, rcount) != rcount)) {
 	    (void) fprintf(stderr, "%s: Error writing %s: %s\n", progname,
-			   backup_keyfile, sys_errlist[errno]);
+			   backup_keyfile, strerror(errno));
 	    exit(1);
 	}
     } while (rcount);
     if (close(backup_keyfile_fd) < 0) {
 	(void) fprintf(stderr, "%s: Error closing %s: %s\n", progname,
-		       backup_keyfile, sys_errlist[errno]);
+		       backup_keyfile, strerror(errno));
 	exit(1);
     }
     if (close(keyfile_fd) < 0) {
 	(void) fprintf(stderr, "%s: Error closing %s: %s\n", progname,
-		       keyfile, sys_errlist[errno]);
+		       keyfile, strerror(errno));
 	exit(1);
     }
 }
@@ -145,7 +141,7 @@ safe_read_stdin(prompt, buf, size)
     (void) memset(buf, 0, size);
     if (read(0, buf, size - 1) < 0) {
 	(void) fprintf(stderr, "Failure reading from stdin: %s\n", 
-		       sys_errlist[errno]);
+		       strerror(errno));
 	leave((char *)NULL, 1);
     }
     fflush(stdin);
@@ -163,7 +159,7 @@ safe_write(progname, filename, fd, buf, len)
 {
     if (write(fd, buf, len) != len) {
 	(void) fprintf(stderr, "%s: Failure writing to %s: %s\n", progname,
-		       filename, sys_errlist[errno]);
+		       filename, strerror(errno));
 	(void) close(fd);
 	leave("In progress srvtab in this file.", 1);
     }
@@ -361,7 +357,7 @@ main(argc,argv)
     if (change || flag_delete || list) {
 	if ((backup_keyfile_fd = open(backup_keyfile, O_RDONLY, 0)) < 0) {
 	    (void) fprintf(stderr, "%s: Unable to read %s: %s\n", argv[0],
-			   backup_keyfile, sys_errlist[errno]);
+			   backup_keyfile, strerror(errno));
 	    exit(1);
 	}
     }
@@ -371,7 +367,7 @@ main(argc,argv)
 	     open(work_keyfile, O_WRONLY | O_CREAT | O_TRUNC, 
 		  SRVTAB_MODE)) < 0) {
 	    (void) fprintf(stderr, "%s: Unable to write %s: %s\n", argv[0],
-			   work_keyfile, sys_errlist[errno]);
+			   work_keyfile, strerror(errno));
 	    exit(1);
 	}
     }
@@ -379,7 +375,7 @@ main(argc,argv)
 	if ((work_keyfile_fd =
 	     open(work_keyfile, O_APPEND|O_WRONLY|O_SYNC, SRVTAB_MODE)) < 0) {
 	    (void) fprintf(stderr, "%s: Unable to open %s for append: %s\n",
-			   argv[0], work_keyfile, sys_errlist[errno]);
+			   argv[0], work_keyfile, strerror(errno));
 	    exit(1);
 	}
     }
@@ -490,7 +486,7 @@ main(argc,argv)
 			else {
 			    (void)fprintf(stderr, 
 					  "%s: Unable to revert keyfile: %s\n",
-					  argv[0], sys_errlist[errno]);
+					  argv[0], strerror(errno));
 			    leave("", 1);
 			}
 		    }
@@ -547,20 +543,20 @@ main(argc,argv)
     if (change || flag_delete || list) 
 	if (close(backup_keyfile_fd) < 0) {
 	    (void) fprintf(stderr, "%s: Failure closing %s: %s\n",
-			   argv[0], backup_keyfile, sys_errlist[errno]);
+			   argv[0], backup_keyfile, strerror(errno));
 	    (void) fprintf(stderr, "continuing...\n");
 	}
     
     if (change || flag_delete || add) {
 	if (close(work_keyfile_fd) < 0) {
 	    (void) fprintf(stderr, "%s: Failure closing %s: %s\n",
-			   argv[0], work_keyfile, sys_errlist[errno]);
+			   argv[0], work_keyfile, strerror(errno));
 	    exit(1);
 	}
 	if (rename(work_keyfile, keyfile) < 0) {
 	    (void) fprintf(stderr, "%s: Failure renaming %s to %s: %s\n",
 			   argv[0], work_keyfile, keyfile, 
-			   sys_errlist[errno]);
+			   strerror(errno));
 	    exit(1);
 	}
 	(void) chmod(backup_keyfile, keyfile_mode);
