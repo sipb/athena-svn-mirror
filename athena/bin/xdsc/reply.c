@@ -10,7 +10,7 @@
 #include	<X11/Shell.h>
 #include	"xdsc.h"
 
-static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/xdsc/reply.c,v 1.8 1991-02-11 16:21:13 sao Exp $";
+static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/xdsc/reply.c,v 1.9 1991-02-15 13:34:49 sao Exp $";
 
 extern char	*strchr();
 extern char     *getenv();
@@ -267,7 +267,12 @@ int	myreplynum;
 			args,
 			n);
 	XtAddCallback (buttonW, XtNcallback, SendCB, data);
-	XtSetKeyboardFocus(paneW, data->subjectTextW);
+
+/*
+	XtSetKeyboardFocus(topW, data->sendPopupW);
+	XtSetKeyboardFocus(data->sendPopupW, data->subjectTextW);
+*/
+
 	XtPopup(data->sendPopupW, XtGrabNone);
 }
 
@@ -313,6 +318,10 @@ XtPointer	call_data;
 			n = 0;
 			XtSetArg(args[n], XtNstring, &tempstring);		n++;
 			XtGetValues (data->subjectTextW, args, n);
+
+			for (n = 0; tempstring[n]; n++)
+				if (tempstring[n] == '\n')
+					tempstring[n] = ' ';
 
 			sprintf(command, "%s\n",tempstring);
 
@@ -443,7 +452,10 @@ int	current;
 
 	XtAddCallback (button, XtNcallback, WriteCB, False);
 
-	XtSetKeyboardFocus(paneW, writeTextW);
+/*
+	XtSetKeyboardFocus(topW, writePopupW);
+	XtSetKeyboardFocus(writePopupW, writeTextW);
+*/
 	XtPopup(writePopupW, XtGrabNone);
 }
 
@@ -658,8 +670,14 @@ AddMeeting()
 			n);
 
 	XtAddCallback (addButton2W, XtNcallback, AddCB, False);
-	XtSetKeyboardFocus(paneW, addHostTextW);
+
 	XtPopup(addPopupW, XtGrabNone);
+
+/*
+	XtSetKeyboardFocus(topW, addPopupW);
+	XtSetKeyboardFocus(addPopupW, addHostTextW);
+*/
+
 }
 
 static void
@@ -695,7 +713,7 @@ XtPointer	call_data;
 
 	if (addPopupW) {
 		XtDestroyWidget(addPopupW);
-		XtSetKeyboardFocus(topW, paneW);
+		XtSetKeyboardFocus(topW, topW);
 	}
 
 	addPopupW = 0;
@@ -818,8 +836,13 @@ DeleteMeeting()
 			args,
 			n);
 	XtAddCallback (deleteButton2W, XtNcallback, DeleteCB, False);
-	XtSetKeyboardFocus(paneW, deleteMtgTextW);
+
 	XtPopup(deletePopupW, XtGrabNone);
+/*
+	XtSetKeyboardFocus(deletePopupW, deleteMtgTextW);
+	XtSetKeyboardFocus(topW, deletePopupW);
+*/
+
 }
 
 static void
@@ -954,7 +977,7 @@ Boolean	deathoption;
 	}
 
 	XtInstallAllAccelerators(warningPopupW, paneW);
-	XtSetKeyboardFocus(paneW, warningPopupW);
+	XtSetKeyboardFocus(paneW, warningButtonW);
 
 	XtPopup(warningPopupW, XtGrabNone);
 }
@@ -983,7 +1006,7 @@ XtPointer	call_data;
 		XtDestroyWidget(helpPopupW);
 		helpPopupW = 0;
 	}
-	XtSetKeyboardFocus(paneW, paneW);
+	XtSetKeyboardFocus(topW, topW);
 }
 
 
@@ -1229,7 +1252,11 @@ GetTransactionNum()
 
 	XtAddCallback (button, XtNcallback, NumCB, False);
 
-	XtSetKeyboardFocus(paneW, numTextW);
+/*
+	XtSetKeyboardFocus(numPopupW, numTextW);
+	XtSetKeyboardFocus(topW, numPopupW);
+*/
+
 	XtPopup(numPopupW, XtGrabNone);
 }
 
@@ -1255,7 +1282,7 @@ XtPointer	call_data;
 	}
 
 	XtDestroyWidget(numPopupW);
-	XtSetKeyboardFocus(topW, paneW);
+	XtSetKeyboardFocus(topW, topW);
 	numPopupW = 0;
 }
 
@@ -1381,16 +1408,45 @@ int	*num_params;
 	TransactionRecPtr	i;
 	int			direction = -1;
 	Widget			targetW = 0;
+	Widget			shellparent;
 
 	if (*num_params < 1)
 		return;
 
+/*
+	fprintf (	stderr, 
+			"TriggerFocusMove to %s of %s\n", 
+			params[0], XtName(w));
+*/
+
+	for (	shellparent = XtParent(w); 
+		shellparent && !XtIsShell(shellparent);
+		shellparent = XtParent(shellparent))
+		;
+
+/*
+	if ( !shellparent ) {
+		fprintf (	stderr, 
+				"Widget has no parent shell!\n");
+	}
+	else {
+		fprintf (	stderr, 
+				"Parent shell is %s\n", XtName(shellparent));
+	}
+
+*/
 	if (!strcmp (params[0], "Next"))
 		direction = 2;
 	if (!strcmp (params[0], "Prev"))
 		direction = 1;
 	if (!strcmp (params[0], "Toggle"))
 		direction = 0;
+
+	if (!strcmp (params[0], "Here")) {
+		XtSetKeyboardFocus(topW, shellparent);
+		XtSetKeyboardFocus(shellparent, w);
+		return;
+	}
 
 /*
 ** Was the hit widget in the add-mtg popup?  All keys become toggle.
@@ -1416,6 +1472,8 @@ int	*num_params;
 		}
 	}
 
-	if (targetW)
-		XtSetKeyboardFocus(paneW, targetW);
+	if (targetW) {
+		XtSetKeyboardFocus(topW, shellparent);
+		XtSetKeyboardFocus(shellparent, targetW);
+	}
 }
