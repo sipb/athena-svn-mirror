@@ -5,7 +5,7 @@
  *
  * Copyright (C) 1990 by the Massachusetts Institute of Technology.
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/syslog.c,v $
- * $Id: syslog.c,v 1.1 1990-01-16 04:41:01 raeburn Exp $
+ * $Id: syslog.c,v 1.2 1990-01-16 08:19:19 raeburn Exp $
  */
 
 /*
@@ -26,7 +26,7 @@
 #include "olcd.h"
 
 static const char rcsid[] =
-    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/syslog.c,v 1.1 1990-01-16 04:41:01 raeburn Exp $";
+    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/syslog.c,v 1.2 1990-01-16 08:19:19 raeburn Exp $";
 
 #ifndef SYSLOG
 
@@ -131,10 +131,6 @@ log_error(const char *message)
 log_error (message) char *message;
 #endif
 {
-  char time_buf[32];
-  char *time_string = &time_buf[0];
-
-
 #ifdef SYSLOG
 
   log_to_syslogd (LOG_ERR, message);
@@ -147,7 +143,6 @@ log_error (message) char *message;
   log_to_file (error_log, message);
   olc_broadcast_message("syserror",message, "system");
 #endif
-
 }
 
 /*
@@ -168,11 +163,9 @@ log_status(const char *message)
 log_status(message) char *message;
 #endif
 {
-  char time_buf[32];
-
 #ifdef SYSLOG
 
-  syslog(LOG_INFO,message);
+  log_to_syslogd (LOG_INFO,message);
 
 #else
 
@@ -188,16 +181,14 @@ log_status(message) char *message;
 
 void
 #if __STDC__
-log_admin(char *message)
+log_admin(const char *message)
 #else
 log_admin(message) char *message;
 #endif
 {
-  char time_buf[32];
-
 #ifdef SYSLOG
 
-  syslog(LOG_NOTICE, message);
+  log_to_syslogd (LOG_NOTICE, message);
 
 #else
 
@@ -206,5 +197,19 @@ log_admin(message) char *message;
 
   log_to_file (admin_log, message);
 
+#endif
+}
+
+void
+#if __STDC__
+log_debug (const char *message)
+#else
+log_debug (message) const char *message;
+#endif
+{
+#ifdef SYSLOG
+    log_to_syslogd (LOG_DEBUG, message);
+#else
+    /* ? new log file? */
 #endif
 }
