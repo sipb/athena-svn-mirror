@@ -8,7 +8,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/oreplay/oreplay.c,v 1.16 1991-01-25 13:45:31 lwvanels Exp $";
+static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/oreplay/oreplay.c,v 1.17 1991-01-27 15:05:14 lwvanels Exp $";
 #endif
 #endif
 
@@ -344,6 +344,7 @@ main(argc,argv)
     char username[9];
     char machine[80];
     int inst;
+    char  login_stat[4];
     char  status[10];
     char consultant[9];
     int cinst;
@@ -373,6 +374,7 @@ main(argc,argv)
 	machine[18-len] = '*';
 	machine[19-len] = '\0';
 	inst = atoi(f_gets(input_file,tmp));
+	f_gets(input_file,login_stat);
 	f_gets(input_file,status);
 	f_gets(input_file,consultant);
 	cinst = atoi(f_gets(input_file,tmp));
@@ -384,13 +386,13 @@ main(argc,argv)
 	f_gets(input_file,descr);
 	sprintf(tmp,"%s@%s",username,machine);
 	if (cinst <0)
-	  sprintf(obuf,"%-20s[%d]  %-8s %-8s          %2d %-13s %s %s\n",
-		 tmp, inst, status, consultant, nseen, topic,
-		 date, time);
+	  sprintf(obuf,"%-20s[%d] %1s %-8s %-8s          %2d %-10s %s %s\n",
+		  tmp, inst, login_stat, status, consultant, nseen, topic,
+		  date, time);
 	else
-	  sprintf(obuf,"%-20s[%d]  %-8s %-8s[%2d] %-4s %2d %-13s %s %s\n",
-		 tmp, inst, status, consultant, cinst, cstat, nseen,
-		 topic, date, time);
+	  sprintf(obuf,"%-20s[%d] %1s %-8s %-8s[%2d] %-4s %2d %-10s %s %s\n",
+		  tmp, inst, login_stat, status, consultant, cinst, cstat,
+		  nseen, topic, date, time);
 	write(temp_fd,obuf,strlen(obuf));
       }
     }
