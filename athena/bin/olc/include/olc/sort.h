@@ -6,8 +6,8 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/sort.h,v $
- *	$Id: sort.h,v 1.2 1990-05-25 16:13:15 vanharen Exp $
- *	$Author: vanharen $
+ *	$Id: sort.h,v 1.3 1991-04-08 21:00:58 lwvanels Exp $
+ *	$Author: lwvanels $
  */
 
 #include <mit-copyright.h>
@@ -16,27 +16,6 @@
 #define __olc_sort_h
 
 #include <olc/lang.h>
-
-#if 0
-enum sort_key {
-    sort_key__none=1,
-    sort_key__user_name,
-    sort_key__consultant_name,
-    sort_key__time,
-    sort_key__question_status,
-    sort_key__topic,
-    sort_key__nseen,
-    sort_key__instance,
-    sort_key__connected_consultant, /* puts unconnected consultants last */
-    sort_key__foo
-};
-
-typedef struct {
-    enum sort_key	key : 4;
-    unsigned int	reversed : 1;
-} sort_keys;
-
-#endif
 
 #define sort_key__none			0
 #define sort_key__user_name		1
