@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/data.c,v $
- *	$Id: data.c,v 1.9 1990-11-17 15:10:20 lwvanels Exp $
+ *	$Id: data.c,v 1.10 1990-12-13 16:46:22 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/data.c,v 1.9 1990-11-17 15:10:20 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/data.c,v 1.10 1990-12-13 16:46:22 lwvanels Exp $";
 #endif
 #endif
 
@@ -34,30 +34,6 @@ static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 
 PERSON User;
 char DaemonHost[NAME_SIZE];
-
-STATUS Status_Table[] = 
-{
-  {OFF,           "off"},
-  {ON,            "on"},
-  {FIRST,         "sp1"},
-  {DUTY,          "duty"},
-  {SECOND,        "sp2"},
-  {URGENT,        "urgent"},
-  {BUSY,          "busy"},
-  {CACHED,        "cached"},
-  {PENDING,       "pending"},
-  {NOT_SEEN,      "unseen"},
-  {DONE,          "done"},
-  {CANCEL,        "cancel"},
-  {PICKUP,        "pickup"},
-  {REFERRED,      "refer"},
-  {LOGGED_OUT,    "logout"},
-  {MACHINE_DOWN,  "mach down"},
-  {ACTIVE,        "active"},
-  {SERVICED,      "active"},
-  {UNKNOWN_STATUS,"unknown"},
-};
-
 
 char REALM[40];
 char INSTANCE[40];
