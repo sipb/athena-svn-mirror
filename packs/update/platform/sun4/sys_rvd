@@ -4,7 +4,7 @@ GLOBAL : *.CKP *.local *.pid :
 ##	MIT Project Athena
 ##
 ##	$Source: /afs/dev.mit.edu/source/repository/packs/update/platform/sun4/sys_rvd,v $
-##	$Header: /afs/dev.mit.edu/source/repository/packs/update/platform/sun4/sys_rvd,v 1.3 1993-05-25 14:27:31 root Exp $
+##	$Header: /afs/dev.mit.edu/source/repository/packs/update/platform/sun4/sys_rvd,v 1.4 1993-05-25 15:07:31 root Exp $
 	.:::
 		*4c
 		ufsboot
@@ -32,7 +32,7 @@ GLOBAL : *.CKP *.local *.pid :
 		.pwd.lock
 		clusterinfo
 		clusterinfo.bsh
-		crontabs.root.add
+		crontab.root.add
 		defaultdomain
 		dumpdates
 		ftpusers
