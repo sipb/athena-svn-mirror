@@ -21,7 +21,7 @@
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v 1.9 1990-01-30 03:32:28 vanharen Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v 1.10 1990-01-30 03:59:23 vanharen Exp $";
 #endif
 
 
@@ -777,7 +777,7 @@ olc_cancel(fd, request, auth)
       (void) write_message_to_user(target, msgbuf, NULL_FLAG);
     }
 
-  sprintf(target->question->topic, "hno");
+  strcpy(target->question->topic, "hno");
   terminate_log_answered(target);
   
   if (is_option(request->options, OFF_OPT))
