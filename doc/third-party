@@ -105,6 +105,7 @@ Distribution sites for software under third
 	nmh		ftp.math.gatech.edu:pub/nmh
 	patch		ftp.gnu.org:pub/gnu/patch
 	perl		ftp.gnu.org:pub/gnu/perl
+	readline	ftp.gnu.org:pub/gnu/readline
 	rcs		ftp.gnu.org:pub/gnu/rcs
 	rs		From NetBSD (ftp.netbsd.org), usr.bin/rs
 	sendmail*	ftp.sendmail.org:pub/sendmail
