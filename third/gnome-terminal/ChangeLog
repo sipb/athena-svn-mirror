@@ -1,8 +1,815 @@
-2003-02-05  Havoc Pennington  <hp@pobox.com>
+2004-06-29 Mariano Suárez-Alvarez <msuarezalvarez@arnet.com.ar>
+
+	* configure.in: Version 2.7.3
+
+2004-06-28 Mariano Suárez-Alvarez <msuarezalvarez@arnet.com.ar>
+
+	Correct the usage of lastlog/wtmp/utm according to comment #9 on bug #93906.
+
+	* src/gnome-terminal.glade: Don't say "utmp/wtmp" on our ui, but "login records".
+	* src/gnome-terminal.schemas.in: Ditto.
+	* src/terminal-widget-vte.c, src/terminal-widger.h: add a lastlog argument to 
+	terminal_widget_fork_command, and use the update_records correctly when telling vte to fork the
+	command.
+	* src/terminal-screen.c(terminal_screen_launch_child): call terminal_widget_fork_command with 
+	the correct lastlog setting.
+
+2004-06-28 Mariano Suárez-Alvarez <msuarezalvarez@arnet.com.ar>
+
+	* src/gnome-terminal.schemas.in: translate the default value of 
+	/apps/gnome-terminal/global/active_encodings so that the default menu of encodings  
+	can be set by translators, and add a comment explaining this for translators.
+	See bug #144810. Proposed by Takao Fujiwara.
+
+2004-06-21 Mariano Suárez-Alvarez <msuarezalvarez@arnet.com.ar>
+
+	* src/terminal-window.c(update_copy_sensitivity): don't update the
+	Paste menu item sensitivity, thus reverting the patch from bug
+	#142290: this solved a very annoying poblem with lost mouse clicks due
+	to gtk_clipboard_wait_is_text_available running the main loop (I
+	think). This fixes bug #143990. (Rodd Clarskon, Alexander Winston)
+
+2004-06-07 Mariano Suárez-Alvarez <msuarezalvarez@arnet.com.ar>
+
+	* po/POTFILES.in: gnome-terminal.desktop.in is no longer, long live
+	gnome-terminal.desktop.in.in. Fixes bug #144068. (Gareth Owen,
+	Alexander Winston)
+
+2004-06-07 Mariano Suárez-Alvarez <msuarezalvarez@arnet.com.ar>
+
+	* configure.in: Version 2.7.2 (Yes, we skipped 2!)
+
+2004-06-07 Mariano Suárez-Alvarez <msuarezalvarez@arnet.com.ar>
+
+	* src/terminal-widget-zvt.c: remove this file, as it has not been used
+	in ages.
+	* src/terminal-widget.h, src/terminal-widget-vte.c(terminal_widget_match_add,
+	terminal_widget_skey_match_add, terminal_widget_check_match, 
+	terminal_widget_skey_check_match): add a ‘flavor’ on matches, so that we can 
+	tell them apart when we see them.
+	* src/terminal-screen.c(terminal_screen_init, open_url): rearrange the regexps
+	we use for urls, using the bew flavoring technology. In open_url, do
+	some fixups for mailto: uris missing the scheme and such.
+	
+2004-05-10 Mariano Suárez-Alvarez <msuarezalvarez@arnet.com.ar>
+
+	* src/terminal-profile(color_selection_palette_to_string,
+	  terminal_palette_to_string): we sadly need to use out own function
+	  to make strings from palettes because gtk's does not store all 16
+	  bits needed to exactly match xterm's palette.
+
+2004-05-10 Mariano Suárez-Alvarez <msuarezalvarez@arnet.com.ar>
+
+	* src/terminal-window.c(terminal_window_set_active): move the call to
+	  update_copy_sensitivity to after the call to terminal_window_set_size.
+	  Otherwise new tabs resize the window to the default 80x24 size. See
+	  bug #142366.
+	* various .cvsignore files: add some more stuff.
+	
+2004-05-10 Mariano Suárez-Alvarez <msuarezalvarez@arnet.com.ar>
+
+	* src/terminal-window.c(confirm_close_window): use the GConfClient in
+	  the window, instead of the (possibly different) default one.
+	* src/terminal-window.c(change_configuration_callback): wrap the call
+	  to terminal_screen_set_profile with g_signal_handlers_{,un}block_by_func
+	  to avoid a loop. This fixes a bug which I can't find anynmore...
+
+2004-05-10 Mariano Suárez-Alvarez <msuarezalvarez@arnet.com.ar>
+
+	* configure.in: we need gtk+ >= 2.4.0 by now, and depend on vte
+	  0.11.10 at least.
+
+2004-05-10 Mariano Suárez-Alvarez <msuarezalvarez@arnet.com.ar>
+
+	* src/encoding.c(response_callback): set the link_id to the the
+	  correct id into the docs.
+
+2004-05-10 Mariano Suárez-Alvarez <msuarezalvarez@arnet.com.ar>
+
+	* src/terminal-window.c(update_copy_sensitivity): update the paste
+	items, too. Essentially from a patch by Madhan Raj M on bug #142290.
+
+2004-05-10 Mariano Suárez-Alvarez <msuarezalvarez@arnet.com.ar>
+
+	* src/terminal-window.c(terminal_window_init,
+	  terminal_window_set_menubar_visible, terminal_window_destroy): 
+	  hide/show the menubar instead of removing/adding it to the main vbox.
+	  Also do not keep an extra reference on the menubar, since we don't
+	  need it anymore.
+
+2004-05-10 Mariano Suárez-Alvarez <msuarezalvarez@arnet.com.ar>
+
+	* src/terminal-profile(exit_actions, TerminalExitAction,
+	  terminal_screen_widget_child_died): Add the possibility to hold the
+	  terminal when the command dies. From a patch by Kurt V. Hindenburg  
+	  on bug #110616.
+	* src/gnome-terminal.glade2: add the ui for the previous change, and
+	  fix a couple of repeated IDs on widgets, which incredibly glade does
+	  not catch...
+	* src/terminal-window.c(confirm_close_window): make the default action
+	  on the Cofirm Close dialog be Close, not Cancel.
+
+2004-05-09 Mariano Suárez-Alvarez <msuarezalvarez@arnet.com.ar>
+
+	* src/terminal-profile-c(terminal_palette_xterm): fix this, as it was
+	  not what xterm uses. This probably caused bug #112079, for example.
+
+2004-05-09 Mariano Suárez-Alvarez <msuarezalvarez@arnet.com.ar>
+
+	* src/terminal-screen.c(terminal_screen_do_popup): make the context
+	  menu say 'Close Window' instead of 'Close Tab' when there is only
+	  one tab. Fixes bug 133960.
+	* src/terminal-window.{c,h}(terminal_window_get_screen_count): new
+	  function, used to implement the above change.
+
+2004-05-07 Mariano Suárez-Alvarez <msuarezalvarez@arnet.com.ar>
+
+	* help/xmldocs.make, help/omf.make: move this files to the top_srcdir...
+	* help/Makefile.am: ...and don't add them to EXTRA_DIST here...
+	* Makefile.am: ...but here
+	* help/<language-code>/Makefile.am: change the reference from
+	  $(top_srcdir)/help/xmldocs.make to $(top_srcdir)/xmldocs.make
+
+2004-05-07 Mariano Suárez-Alvarez <msuarezalvarez@arnet.com.ar>
+
+	* autogen.sh: use gnome-common instead of doing everything by hand.
+
+2004-05-07 Mariano Suárez-Alvarez <msuarezalvarez@arnet.com.ar>
+
+	* omf-install/Makefile.am: remove this file, as it is not used by
+	  anything.
+
+2004-05-07 Mariano Suárez-Alvarez <msuarezalvarez@arnet.com.ar>
+
+	* src/gnome-terminal.schemas.in: added the
+	  /schemas/apps/gnome-terminal/global/confirm-close schema, a boolean
+	  which, when true, causes a confirmation dialog when closing a window
+	  with more than one tab.
+	* src/terminal-window.c(terminal_window_init,
+	  terminal_window_delete_event, confirm_close_window): implement the
+	  above key. This comes from bug #87771.
+
+2004-05-07 Mariano Suárez-Alvarez <msuarezalvarez@arnet.com.ar>
+
+	* src/terminal-screen.c: make the Paste menu item in the popup be
+	  insensitive when there is nothing in the clipboard. Caught by Madhan 
+	  Raj M, with patch and all, on bug #142101. 
+
+2004-04-27 Mariano Suárez-Alvarez <msuarezalvarez@arnet.com.ar>
+
+	* src/eggcellrendererkets.c: change the prototypes of
+	  egg_cell_renderer_keys_set_accelerator and 
+	  egg_cell_renderer_keys_get_accelerator so that they match the ones
+	  in the header file. Fixes bug 141221 reported by Stef van der Made.
+
+2004-04-09 Mariano Suárez-Alvarez <msuarezalvarez@arnet.com.ar>
+
+	* src/terminal.c(terminal_util_show_error_dialog): make the error
+	  dialogs have an OK button, not a Close button, which seems to be
+	  more HIGgy.
+	* src/terminal-accels.c(accel_edited_callback,
+	  terminal_edit_keys_dialog_new, cb_check_for_uniqueness): check
+	  keyboard shortcuts for uniqueness before accepting them. Fixes
+	  #128033; essentially from the patch posted there by Kiran Kumar
+	  Immidi.
+
+2004-04-15 Iñaki Larrañaga  <dooteo@euskalgnu.org>
+
+	* configure.in: Added "eu" (Basque) to ALL_LINGUAS.
+
+2004-04-09 Mariano Suárez-Alvarez <msuarezalvarez@arnet.com.ar>
+
+	* configure.in: Bump version to 2.7.0, and added
+	gnome-terminal.desktop.in to the list of substituted-for files.
+	* gnome-terminal.desktop.in: delete this
+	* gnome-terminal.desktop.in.in: and add this with a @VERSION@ field.
+
+2004-04-09  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* configure.in: Added "gu" (Gujarati) to ALL_LINGUAS.
+
+2004-03-22  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* configure.in: Added "pa" (Punjabi) to ALL_LINGUAS.
+
+2004-03-22  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: post-release bump to 2.6.1.
+
+2004-03-22  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: Version 2.6.0.
+
+2004-03-17  Francisco Javier F. Serrador  <serrador@cvs.gnome.org>
+
+	* help/es/*: Updated Spanish translation for Gnome 2.6
+
+2004-03-14  Thomas Vander Stichele <thomas at apestaart dot org>
+
+	* po/tr.po: run gunzip on it, recommit
+
+2004-03-03 Breda McColgan <breda.mccolgan@sun.com>
+
+	* help/C/gnome-terminal.xml: Updated for GNOME 2.6, technical review draft
+	* help/C/gnome-terminal-C.omf: Updated for GNOME 2.6
+	* help/C/l10n.txt: Updated for GNOME 2.6
+	* help/C/figures/gnome-terminal-default.png: Updated for GNOME 2.6
+	* help/C/figures/gnome-terminal-tabbed.png: Updated for GNOME 2.6
+
+2004-03-02 Mariano Suárez-Alvarez <msuarezalvarez@arnet.com.ar>
+
+	* src/terminal-window.c(terminal_window_init): actually pass the
+	menuitem to the window_state_event_callback.
+
+2004-03-02 Mariano Suárez-Alvarez <msuarezalvarez@arnet.com.ar>
+
+	* src/gnome-terminal.glade2: make all dialogs have the DIALOG window
+	type hint, so that they can be used in fullscreen mode. 
+
+2004-02-24 Mariano Suárez-Alvarez <msuarezalvarez@arnet.com.ar>
+
+	* configure.in: 2.5.90
+
+2004-02-22  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "en_CA" to ALL_LINGUAS.
+
+2004-02-21  Paisa Seeluangsawat  <paisa@users.sf.net>
+
+	* configure.in: Added Thai (th) to ALL_LINGUAS.
+
+2004-02-20 Mariano Suárez-Alvarez <msuarezalvarez@arnet.com.ar>
+
+	* src/terminal.c(terminal_util_set_labelled_by): remove this function,
+	  since LABELLED_BY relations are now guessed correctly by gail.
+	* src/terminal_screen.c(terminal_screen_edit_title):
+	* src/terminal.c(terminal_app_new_profile, terminal_app_manage_profiles):
+	* src/simple-x-font-selector.c(egg_xfont_selector_init):
+	  remove calls to terminal_util_set_labelled_by.
+
+	  All this from a patch by Padraig O'Brian, bug #133982.
+
+2004-02-20 Mariano Suárez-Alvarez <msuarezalvarez@arnet.com.ar>
+
+	* src/terminal-screen.c(terminal_screen_do_popup): Fix an accelerator
+	clash in the popup menu. Reported by Ben Maurer, bug #134925.
+
+2004-02-17 Mariano Suárez-Alvarez <msuarezalvarez@arnet.com.ar>
+
+	* configure.in: 2.5.5
+
+2004-02-17 Mariano Suárez-Alvarez <msuarezalvarez@arnet.com.ar>
+
+	* src/Makefile.am: install schemas from $(srcdir)/$(schema_DATA), not
+	just $(schema_DATA). The $(schema_DATA) is not built on disted
+	tarballs. This reverts part of Jason Leach's change of Feb 10th... 
+
+2004-02-15 Mariano Suárez-Alvarez <msuarezalvarez@arnet.com.ar>
+
+	* src/gnome-terminal.glade2: set the New Profile dialog to be
+	invisible, so that we show it when when know its transient parent, as
+	suggested by Owen, bug 134032.
+
+2004-02-09 Mariano Suárez-Alvarez <msuarezalvarez@arnet.com.ar>
+
+	* src/profile-editor.c(terminal_profile_edit): set the use-filechooser
+	property on the background image GnomeFileChooser, so that we use the
+	new file dialog. Caught by Seth, #132906.
+
+2004-02-10  Jason Leach  <leach@wam.umd.edu>
+
+	* src/Makefile.am (install-data-local): Don't install a schema if
+	the user configures with --disable-schemas-install
+	(#106133, Julio Merino)
+
+	* src/Makefile.am (install-data-local): builddir != srcdir fix.
+
+2004-02-09 Mariano Suárez-Alvarez <msuarezalvarez@arnet.com.ar>
+
+	* src/terminal-screen.c(terminal_screen_popup_menu): this callback
+	should return a gboolean.
+
+2004-02-08 Mariano Suárez-Alvarez <msuarezalvarez@arnet.com.ar>
+
+	* src/gnome-terminal.glade2: set accessible names on the two “built-in
+	scheme” option menus in the Color page of the Profile Editor dialog, so
+	they can be told apart. Caught by Muktha Narayan, bug 90530.
+
+2004-02-05 Mariano Suárez-Alvarez <msuarezalvarez@arnet.com.ar>
+
+	* src/terminal.c(parse_options_callback): fix an error string which 
+	did not make sense; Richard Hult, bug 133477.
+
+2004-02-04 Mariano Suárez-Alvarez <msuarezalvarez@arnet.com.ar>
+
+	* configure.in: 2.5.4
+
+2004-02-02 Mariano Suárez-Alvarez <msuarezalvarez@arnet.com.ar>
+
+	* src/terminal.c(terminal_app_get_clone_command): save the geometry of
+	the active tab in the command. Not ideal :-/ Fixes bug 133122.
+
+2004-01-31 Mariano Suárez-Alvarez <msuarezalvarez@arnet.com.ar>
+
+	* src/terminal-screen.c(terminal_screen_get_working_dir): don't run
+	pwdx to get working directory for child in Solaris, but use fun hack
+	in patch by Robert Basch <rbasch@mit.edu>; fixes bug 117775.
+
+2004-01-23 Mariano Suárez-Alvarez <msuarezalvarez@arnet.com.ar>
+
+	* src/profile-editor.c(fontpicker_get_desc, fontpicker_set_if_changed,
+	font_set, terminal_profile_edit): go from GnomeFontPicker to
+	GtkFontButton in the General page of the profile editor.
+
+2004-01-23 Mariano Suárez-Alvarez <msuarezalvarez@arnet.com.ar>
+
+	* src/gnome-terminal.glade2:
+	* src/profile-editor.c(colorpicker_set_if_changed, foreground_color_set, 
+	background_color_set, palette_color_set): go from GnomeColorPicker to
+	GtkColorButton in the Color page of the profile editor.
+
+2004-01-21 Mariano Suárez-Alvarez <msuarezalvarez@arnet.com.ar>
+
+	* src/terminal-window.c(terminal_window_init): use gtk_true instead of 
+	can_activate_accel_callback.
+
+2004-01-21 Mariano Suárez-Alvarez <msuarezalvarez@arnet.com.ar>
+
+	* src/terminal.c(main): move a non-constant initializer down to a more
+	C89ish place. Reported as bug #131614.
+
+2004-01-21 Mariano Suárez-Alvarez <msuarezalvarez@arnet.com.ar>
+
+	* src/terminal-window.c (can_activate_accel_callback,
+	(terminal_window_init): Connect to can-activate-callback and
+	return TRUE to make accels work when the menubar is hidden. 
+	Patch from Richard Hult; fixes bug #129829.
+
+2004-01-03  Robert Sedak  <robert.sedak@sk.htnet.hr>
+
+	* configure.in: Added "hr" in ALL_LINGUAS.
+
+2004-01-01  Åsmund Skjæveland  <aasmunds@fys.uio.no>
+
+	* configure.in: Added 'nn' to ALL_LINGUAS.
+	* po/nn.po: Started Norwegian Nynorsk translation.
+
+2003-12-08 Mariano Suárez-Alvarez <msuarezalvarez@arnet.com.ar>
+
+	* configure.in: 2.5.1
+
+2003-12-01 Mariano Suárez-Alvarez <msuarezalvarez@arnet.com.ar>
+
+	* src/profile-editor.c(terminal_profile_edit): mark the fontsel label
+	as a mnemonic widget for the font selector. Fixes #126180, caught by
+	David Hawthorne, patch by Padraig Obriain.
+	
+2003-11-17 Mariano Suárez-Alvarez <msuarezalvarez@arnet.com.ar>
+
+	* src/terminal-screen.c(open_url): pass the url through
+	gnome_vfs_make_uri_from_input, to fix things like `www.gnome.org'.
+	Bug 127107, Behdad Esfahbod. 
+	* configure.in: ask for gnome-vfs-2.0 to pkg-config.
+	* src/Makefile.am: remove some whitespace
+
+2003-11-12 Mariano Suárez-Alvarez <msuarezalvarez@arnet.com.ar>
+
+	* src/gnome-terminal.schemas.in:
+	* src/terminal-accels.c(terminal_accels_init, disable_mnemonics_toggled): 
+	  Say `access key' instead of `mnemonic'. Fix #113442.
+
+2003-11-04 Mariano Suárez-Alvarez <msuarezalvarez@arnet.com.ar>
+
+	* src/gnome-terminal.glade2: fix an accelerator key clash in the General
+	  page of the profile editor (_Cursor blinks -> Cursor blin_ks) reported
+	  as bug 126196.
+
+2003-11-06  Breda McColgan  <Breda.McColgan@sun.com>
+
+	* help/C/gnome-terminal.xml: Updated for GNOME 2.4.2
+	* help/C/gnome-terminal-C.omf : Updated to reflect new manual version number and date
+	* help/C/l10n.txt: Updated Summary of Changes section
+
+2003-11-04 Mariano Suárez-Alvarez <msuarezalvarez@arnet.com.ar>
+
+        * src/terminal.c(terminal_util_show_help): new function to invoke help
+          and show a dialog if that fails.
+        * src/encoding.c(response_callback):
+        * src/profile-editor.c(editor_response_cb):
+        * src/terminal-window.c(help_callback):
+        * src/terminal.c(manage_profiles_response_cb): use the new
+          terminal_util_show_help function.
+
+2003-10-30 Mariano Suárez-Alvarez <msuarezalvarez@arnet.com.ar>
+
+	* src/terminal-window.c(about_callback): added myself.
+	* src/terminal-window.c(terminal_window_init,terminal_window_set_active): 
+	  listen to the switch_page signal on the notebook, but don't grab the
+	  focus when setting the active page: let the notebook do that. Fixes
+	  125282.
+	
+2003-10-22 Mariano Suárez-Alvarez <msuarezalvarez@arnet.com.ar>
+
+	* configure.in: 2.5.0
+
+2003-10-20 Mariano Suárez-Alvarez <msuarezalvarez@arnet.com.ar>
+
+	* src/gnome-terminal.glade2: 
+	* src/terminal.c(terminal_app_manage_profiles):
+	* src/profile-editor.c(profile_editor_update_visible_name):
+	  Make the dialog titles match the unellipsisied labels of the 
+	  menuitems that make them pop.
+	* src/terminal-screen.c(terminal_screen_do_popup, close_tab_callback):
+	  Reorder items in popup, add a Close Tab item, and add a couple of 
+	  separators; s/New/Open/ in labels.
+	* src/terminal-window.c(menuitem_icon_visibility, append_stock_menuitem,
+	  append_check_menuitem, terminal_window_init,
+	  terminal_window_finalize): various fixes to the
+	  menu item labels, make them follow
+	  /desktop/gnome/interface/menus_have_icons, and change variable
+	  entries to checkbox menu items. 
+	* src/terminal_window.c(terminal_window_set_fullscreen, and related): 
+	  use gtk_window_{,un}fullscreen, and not our private implementation.
+	  Also listen for window_state_event events, so that the Fullscreen 
+	  menuitem reflects reality.
+	* src/terminal_window.c(about_callback): use _("GNOME Terminal") and
+	  not PACKAGE for the app name in the call to gnome_about_new, so that
+	  we get the translated app name and not the tarball name.
+
+	  Most of this comes from bug 76800 and my patch therein.
+	  
+2003-10-20 Mariano Suárez-Alvarez <msuarezalvarez@arnet.com.ar>
+
+	* src/terminal.c(main): free the argv_copy and the options results;
+	  leak reported in bug 124910. Also free argv_copy at the other early
+	  returns, to lighten valgrind output, as suggested in bug 124416.
+	* AUTHORS: added myself.
+
+2003-10-16 Mariano Suárez-Alvarez <msuarezalvarez@arnet.com.ar>
+
+	* src/terminal.c(main): free the popt context when it is no longer
+  	  needed; suggested by bug #124416.
+
+2003-10-14 Mariano Suárez-Alvarez <msuarezalvarez@arnet.com.ar>
+
+	* src/Makefile.am: temporarily remove GNOME_DISABLE_DEPRECATED and
+	  GTK_DISABLE_DEPRECATED from CFLAGS so that we can build against 
+	  gtk+ and libgnomeui from HEAD. Fixes 124557.
+
+2003-10-14 Mariano Suárez-Alvarez <msuarezalvarez@arnet.com.ar>
+
+	* src/terminal-window.c(terminal_window_init): don't listen to
+	  switch_page but to select_page. Also rename the corresponding
+	  callback accordingly. This fixes 98884.
+
+2003-10-12 Mariano Suárez-Alvarez <msuarezalvarez@arnet.com.ar>
+
+	* src/terminal.c(terminal_util_set_unique_role): new funtion, to be
+	  used when setting window roles.
+	* src/encoding.c(terminal_encoding_dialog_new):
+	* src/profile-editor.c(terminal_profile_edit):
+	* src/terminal-accels.c(terminal_edit_keys_dialog_new):
+	* src/terminal-screen.c(terminal_screen_edit_title):
+	* src/terminal-window.c(about_callback):
+	* src/terminal.c(terminal_app_new_term,terminal_app_new_profile,
+	  terminal_app_manage_profiles): set unique role on each dialog.
+	  Fix #90397.
+	* src/terminal-screen.{c,h}: introduce a new icon-title-changed signal,
+	  and handle icon and window titles separately.
+	* src/terminal-window.c(title_changed_callback, icon_title_changed_callback, 
+	  terminal_window_{add,remove}_screen, terminal_window_set_active): connect 
+	  to the new icon-title-changed on screens, and handle it appropriately.
+	  Now we handle icon name control sequences; fixed #84614.
+
+2003-10-10 Mariano Suárez-Alvarez <msuarezalvarez@arnet.com.ar>
+
+	* src/terminal.c: add a --default-working-directory and pass cwd as
+	its argument in factory calls so that starting terminals from command
+	lines preserves the current working directory. See bug 95205.
+	* src/terminal-screen.c(screen_terminal_init): use g_get_current_dir
+	instead of getwcd.
+
+2003-10-02 Mariano Suárez-Alvarez <msuarezalvarez@arnet.com.ar>
+
+	* src/gnome-terminal.schemas.in: Fix bug #113446, systematically 
+	do a systematic s/(accelerator|keybinding)/keyboard shortcut/, and
+	make usage of periods in messages consisten with the rest of GNOME,
+	fixing bug #123695.
+
+2003-09-30 Mariano Suárez-Alvarez <msuarezalvarez@arnet.com.ar>
+
+	* src/terminal-profile(terminal_paletter_from_string),
+	* src/terminal.c(profile_list_delete_selection): use ngettext, fixing
+	bug #106699.
+	* src/terminal-widget-vte.c(terminal_widget_fork_command): make this
+	actually g_set_error its GError argument when there is an error, as
+	seen on bug #123526.
+
+2003-09-22 Mariano Suárez-Alvarez <msuarezalvarez@arnet.com.ar>
+
+	* src/.cvsignore: added gnome-terminal.schemas.
+	* src/terminal.c(parse_options_callback): undeprecate the
+	--use-factory option, which is the default anyways; fixes (half of) 
+	bug 101143.
+
+2003-09-20 Mariano Suárez-Alvarez <msuarezalvarez@arnet.com.ar>
+
+	* src/gnome-terminal.schemas: removed, as this is a generated file.
+	* src/terminal-screen.c(new_window_callback, new_tab_callback): make
+	context menu open new window/tabs in the current tab's working
+	directory. This fixes bug 122542.
+	* src/terminal.c(new_profile_response_callback): gconf-escape the new
+	profile name before creating the profile. This fixes bug 122349.
+
+2003-09-12  Fatih Demir <kabalak@gtranslator.org>
+
+	* configure.in: Added "ta" (Tamil) to the languages' list.
+
+Wed Sep 10 15:03:51 2003  Jonathan Blandford  <jrb@redhat.com>
+
+	* configure.in: Rerelease 2.4.0.1 to fix glib-gettext problem.
+
+2003-09-08  Havoc Pennington  <hp@redhat.com>
+
+	* configure.in: 2.4.0
+
+2003-09-04  Havoc Pennington  <hp@redhat.com>
+
+	* src/terminal-screen.c (reread_profile): remove grouping parens
+	from skey regexp
+
+2003-09-06 Mariano Suárez-Alvarez <msuarezalvarez@arnet.com.ar>
+
+	* src/Makefile.am: added INTLTOOL_SCHEMAS_RULE.
+	* src/gnome-terminal.schemas.in: moved the default value for
+	/schemas/apps/gnome-terminal/profiles/Default/title to the C locale,
+	so that it gets translated.
+
+2003-09-06  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* configure.in: Added "hi" to ALL_LINGUAS.
+
+2003-09-02  Havoc Pennington  <hp@pobox.com>
+
+	* Makefile.am (EXTRA_DIST): add HACKING
+
+2003-08-29 Irene Ryan <irene.ryan@sun.com>
+
+	* help/C/gnome-terminal.xml: updates to Help for GNOME 2.4 release
+	* help/C/gnome-terminal-C.omf: updated manual version info
+	* help/C/l10n.txt: added this new file that contains information 
+	  for L10N teams about how to set up screenshots for inclusion in 
+	  Help and about differences from one version of the Help to another.
+
+2003-07-29 Mariano SuÃ¡rez-Alvarez <msuarezalvarez@arnet.com.ar>
+
+        * src/terminal-profile.c(terminal_profile_forget): fix error message,
+        as suggested in bug 102423.
+	* gnome-terminal.desktop.in: add bug-buddy information, fixing
+	bug 109385.
+	* src/terminal.c(terminal_util_load_glade_file): simplify an error
+	message, as per bug 100335.
+	* src/terminal-screen.c(terminal_screen_init): allow user:passwd in
+	urls. Close bug 5457.
+        
+2003-07-29 Pasupathi Duraisamy <pasupathi.duraisamy@wipro.com>
+
+	* src/gnome-terminal.glade2: Allow only numeric values to spin
+	button. Fixes bug #115439.
+
+2003-07-22 Mariano SuÃ¡rez-Alvarez <msuarezalvarez@arnet.com.ar>
+
+	* src/terminal.c: general make-over of error messages relating to
+	command line options, as suggested in bug 101484.
+
+2003-07-17 Mariano SuÃ¡rez-Alvarez <msuarezalvarez@arnet.com.ar>
+
+	* src/terminal-screen.c: make profiles use the system terminal font,
+	and not only its size. Essentially O. Taylor's patch from bug 106935.
+	This also fixes bug 105540.
+	* src/gnome-terminal.glade2: update the profile editor dialog to
+	reflect the above change.
+
+2003-07-15 Mariano SuÃ¡rez-Alvarez <msuarezalvarez@arnet.com.ar>
+	
+	* src/skey-popup.c(terminal_skey_do_popup): forgot an argument in the
+	last commit.
+
+2003-07-15 Mariano SuÃ¡rez-Alvarez <msuarezalvarez@arnet.com.ar>
+
+	* terminal.c(terminal_util_show_error_dialog): add this function, and
+	use it everywhere else to construct error dialogs (long list of affected
+	functions omitted...)
+	* terminal.c(new_profile_response_callback): move the New Profile
+	dialog to glade-land, making it more HIG-compliant and letting it open a
+	profile editor on the newly created profile.
+	* terminal-screen.c(show_fork_error_dialog): inline this, using
+	terminal_util_show_error_dialog, directly in
+	terminal_screen_launch_child.
+	* gnome-terminal.glade2: add the New Profile dialog.
+
+	Everything, from the patch in bug #117445.
+
+2003-07-15 Mariano SuÃ¡rez-Alvarez <msuarezalvarez@arnet.com.ar>
+
+ 	* src/terminal-window.c(append_stock_menuitem): fix a typo (bug
+ 	#113443)
+ 	* src/gnome-terminal.glade2: s/sytems/systems/ from bug #102420.
+ 	* skey-popup.h: remove astray comment.
+
+2003-07-15  Havoc Pennington  <hp@redhat.com>
 
 	* NEWS: update
 
-	* configure.in: 2.2.1
+	* configure.in: 2.3.2
+
+2003-07-10 John Fleck <jfleck@inkstain.net>
+
+	* help/xmldocs.make
+	* help/omf.make
+	Sync help build stuff with Malcolm's gnome-common
+	versions of these files.
+
+2003-07-03  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* src/eggcellrendererkeys.c:
+	(egg_cell_renderer_keys_set_accelerator): Merge leak fix
+	from stable.
+
+2003-06-30  Mohammad DAMT  <mdamt@bisnisweb.com>
+
+	* po/id.po: Added Indonesian translation
+	* configure.in: Added "id" to ALL_LINGUAS
+
+2003-06-29  Mariano SuÃ¡rez-Alvarez <msuarezalvarez@arnet.com.ar>
+	* src/terminal-window.c(new_window_callback, new_tab_callback): 
+	* src/terminal.c(terminal_app_get_clone_command): 
+	* src/skey/btoe.c: Minor changes to appease gcc.
+	* src/terminal-window.c(fill_in_new_term_submenus): Handle underscores
+	in visible profile names, fixing bug #78903.
+	* src/terminal-screen.c(terminal_screen_init): Fix URL pattern, as in
+	bug #114597.
+	* src/gnome-terminal.glade2:
+	* src/terminal-accels.c(terminal_edit_keys_dialog_new):
+	* src/terminal-window.c(terminal_window_init): Higgify away the words
+	`keybinding', `mnemonic', `accelerator'. Bug #90720.
+
+2003-06-24  Mariano SuÃ¡rez-Alvarez <msuarezalvarez@arnet.com.ar>
+	* src/terminal.c(parse_options_callback): Make `deprecated option'
+	message mention the option; fixes bug #109356.
+
+	* src/terminal.c(terminal_app_get_clone_command): Don't put
+	--use-factory in the clone command. From the patch given in #109356.
+
+	* src/terminal-screen.c(terminal_screen_do_popup): Don't show the 
+	`Open/Copy Link' items in the context menu, unless the click was on a
+	link, and in that case move then to the top. Fixes #110999.
+
+	* src/terminal-window.c(new_window_callback, new_tab_callback): Make
+	new windows/tabs start in the current directory as the current tab.
+	Fixes bug #89029.
+
+2003-06-17  Nalin Dahyabhai <nalin@redhat.com>
+	* src/terminal-widget-vte.c: correctly handle cases where we have
+	more than one URL or skey pattern (which we already do for URLs).
+
+2003-06-17  Taneem Ahmed  <taneem@eyetap.org>
+
+	* configure.in: Added "bn" to ALL_LINGUAS.
+
+2003-06-11  Nalin Dahyabhai <nalin@redhat.com>
+	* src/terminal-widget-vte.c(terminal_widget_check_match): prevent false
+	positives when the matched string matched the skey regex instead of the
+	URL regex.
+	* src/terminal-widget-vte.c(terminal_widget_get_estimated_bytes_per_scrollback_line):
+	tweak estimate to use sizeof(gunichar) instead of sizeof(wchar_t), the
+	terminal widget uses gunichars internally.
+
+2003-06-11  Havoc Pennington  <hp@pobox.com>
+
+	* src/terminal-window.c: remove update_active_encoding_name() 
+	which was pointless; Mariano Suarez-Alvarez #114870
+	
+2003-06-07 Mark Finlay <sisob@eircom.net>
+
+	* gnome-terminal.applications: Added
+	* Makefile.am
+
+	Adding a mimetype for the termial so that you can
+	right click on a folder in nautilus and click 
+	Open with->Terminal. (bug #81603)
+
+2003-06-06  Havoc Pennington  <hp@pobox.com>
+
+	* src/terminal-window.c (reset_tab_menuitems): don't add
+	accelerator for notebook tab 1 if there's only one tab. 
+	Bug #109128 from Paul Duran
+
+2003-06-03  Nalin Dahyabhai <nalin@redhat.com>
+	* src/terminal-window.c (notebook_page_switched_callback): We need
+	to resize the newly-selected widget after we make it the active
+	widget
+
+Mon Jun  2 16:03:48 2003  Jonathan Blandford  <jrb@redhat.com>
+
+	* src/terminal-window.c (notebook_page_switched_callback): We need
+	to update the active widget when we switch panes, #114282
+
+2003-05-30  Havoc Pennington  <hp@pobox.com>
+
+	* src/gnome-terminal.schemas.in: s/app/application/ per
+	Christian Rose suggestion #113561
+
+2003-05-20  Havoc Pennington  <hp@redhat.com>
+
+	* NEWS: update
+
+	* configure.in: bump to 2.3.1
+
+2003-05-06  Danilo ÃÂ egan  <dsegan@gmx.net>
+
+	* configure.in: Added "sr" and "sr@Latn" to ALL_LINGUAS.
+
+2003-05-04  Telsa Gwynne  <hobbit@aloss.ukuu.org.uk>
+
+        * po/cy.po: Added
+        * configure.in: Added cy to ALL_LINGUAS
+
+2003-05-03  Havoc Pennington  <hp@pobox.com>
+
+	* src/gnome-terminal.glade2: fix duplicate mnemonics #82062
+
+2003-04-29  Paul Duffy <dubhthach@frink.nuigalway.ie>
+
+        * configure.in: Added ga to ALL_LINGUAS
+	
+2003-04-24  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* src/skey/skey.c: #include <stdlib.h> to get rid of a warning.
+	* src/Makefile.am: Remove x-font-selector.[ch] from build. Fixes
+	#94887. Fix from <berberic@fmi.uni-passau.de>
+	* src/terminal-window.c, src/terminal-screen.c: Fix for #98589.
+	Menus in terminal have icons even when the option is disabled.
+	From <pasupathi.duraisamy@wipro.com>.
+
+2003-04-22  Laszlo Kovacs <laszlo.kovacs@sun.com>
+	* src/terminal-screen.c:
+	#101529 fixed
+
+2003-04-21  nalin
+	* src/terminal-widget-vte.c(terminal_widget_set_colors): set the color
+	which is used to tint images and desktop pixmaps to the default text
+	background color.
+
+2003-04-17  Mike Lei <mike.lei>
+
+	* configure.in: Added Makefile support for l10n help dirs
+	* help/{de,es,fr,it,sv,ja,ko,zh_CN,zh_TW} doc files
+
+2003-04-15  Shivram U  <shivaram.upadhyayula@wipro.com>
+
+	* src/terminal-window.c (notebook_page_switched_callback): We neednt
+	explicitly set focus to the terminal active tab anymore. (#98884)
+
+2003-04-14 nalin
+	* src/vte.c: hook up background scrolling.
+	* configure.in: require a version of libvte which supports scrolling
+	backgrounds.
+
+2003-04-02  Havoc Pennington  <hp@redhat.com>
+
+	* src/terminal.c: bug #108931. apply patch from Mariano
+	Suarez-Alvarez to add --active command line option and use it to
+	save/restore active tab across sesssions. Also add --tab/--window
+	to make it easier to open tabs/windows with the default profile.
+
+2003-03-13  Havoc Pennington  <hp@pobox.com>
+
+	* src/terminal.c (main): set application name to 
+	"Terminal" (should not introduce a new string 
+	as that string is already in use)
+
+2003-03-13  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "ml" to ALL_LINGUAS.
+
+2003-03-10  Roozbeh Pournader  <roozbeh@sharif.edu>
+
+	* configure.in: Added "fa" to ALL_LINGUAS.
+
+2003-03-08  Metin Amiroff  <metin@karegen.com>
+
+	* configure.in: Added "az" to ALL_LINGUAS.
+
+2003-02-21  Roozbeh Pournader  <roozbeh@sharif.edu>
+
+	* src/encoding.c: Changed "Farsi" to "Persian".
+
+2003-02-20  Alex Duggan  <aldug@astrolinux.com>
+
+	* configure.in:
+	* src/Makefile.am:
+	Remove support for libzvt, bump required vte version to 0.10.22
 
 2003-01-31  Havoc Pennington  <hp@redhat.com>
 
@@ -15,13 +822,6 @@
 
 	* configure.in: Added "sq" to ALL_LINGUAS.
 	
-2003-01-24  Breda McColgan  <Breda.McColgan@sun.com>
-
-        * help/C/gnome-terminal.xml: Updated for GNOME 2.2
-
-        * help/C/gnome-terminal-C.omf : Updated to reflect new manual version
-        number and date
-
 2003-01-24  Alessio Frusciante  <algol@firenze.linux.it>
 
 	* configure.in: Added "it" (Italian) to ALL_LINGUAS.
@@ -35,23 +835,24 @@
 	If the event wouldn't trigger dingus actions or pop up a menu, pass
 	it to the terminal widget for handling (part of #86943).
 
+2003-01-22  Breda McColgan  <Breda.McColgan@sun.com>
+
+	* help/C/gnome-terminal.xml: Updated for GNOME 2.2
+
+	* help/C/gnome-terminal-C.omf : Updated to reflect new manual version 
+	number and date
+
 2003-01-22  Christian Rose  <menthos@menthos.com>
 
 	* configure.in: Added "mn" to ALL_LINGUAS.
 
 2003-01-21  Havoc Pennington  <hp@redhat.com>
 
-        (Change won't be in 2.2.0)
-	
+	* configure.in: say that stable branch is 2.2.x,
+	move version to 2.3.0
+
 	* src/terminal-profile.c: fix from Nalin so that changing the
 	background shading actually works
-
-2003-01-20  Havoc Pennington  <hp@pobox.com>
-
-	* NEWS: update
-
-	* configure.in: remove warning about unstable branch, and bump 
-	version to 2.2.0
 
 2003-01-16  Havoc Pennington  <hp@redhat.com>
 
@@ -1649,7 +2450,7 @@ Sun Mar 17 23:18:43 2002  Jonathan Blandford  <jrb@redhat.com>
 	(initially be "enable/disable mnemonics", currently nothing).
 	Set up accel map connections for keybindings.
 
-2002-03-02  Tivo Leedj�v  <leedjarv@interest.ee>
+2002-03-02  Tivo LeedjÃ¯Â¿Â½v  <leedjarv@interest.ee>
 
 	* configure.in: Added et to ALL_LINGUAS.
 

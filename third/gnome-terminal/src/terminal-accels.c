@@ -355,7 +355,7 @@ terminal_accels_init (GConfClient *conf)
                                            &err);
   if (err)
     {
-      g_printerr (_("There was an error loading config value for whether to use mnemonics. (%s)\n"),
+      g_printerr (_("There was an error loading config value for whether to use menubar access keys. (%s)\n"),
                   err->message);
       g_error_free (err);
     }
@@ -369,7 +369,7 @@ terminal_accels_init (GConfClient *conf)
   
   if (err)
     {
-      g_printerr (_("There was an error subscribing to notification for use_mnemonics (%s)\n"),
+      g_printerr (_("There was an error subscribing to notification on changes on whether to use menubar access keys (%s)\n"),
                   err->message);
       g_error_free (err);
     }
@@ -907,6 +907,35 @@ remove_from_list_callback (GtkObject *object, gpointer data)
   *listp = g_slist_remove (*listp, object);
 }
 
+static gboolean
+cb_check_for_uniqueness (GtkTreeModel *model,
+                         GtkTreePath  *path,
+                         GtkTreeIter  *iter,
+                         gpointer      user_data)
+{
+  KeyEntry *key_entry;
+  KeyEntry *tmp_key_entry;
+ 
+  key_entry = (KeyEntry *) user_data;
+  gtk_tree_model_get (model, iter,
+                      KEYVAL_COLUMN, &tmp_key_entry,
+                      -1);
+ 
+  if (tmp_key_entry != NULL &&
+      key_entry->gconf_keyval == tmp_key_entry->gconf_keyval &&
+      key_entry->gconf_mask   == tmp_key_entry->gconf_mask &&
+      /* be sure we don't claim a key is a dup of itself */
+      strcmp (key_entry->gconf_key, tmp_key_entry->gconf_key) != 0)
+    {
+      key_entry->needs_gconf_sync = FALSE;
+      key_entry->gconf_key = tmp_key_entry->gconf_key;
+      key_entry->user_visible_name = tmp_key_entry->user_visible_name;
+      return TRUE;
+    }
+
+  return FALSE;
+}
+
 static void
 accel_edited_callback (GtkCellRendererText *cell,
                        const char          *path_string,
@@ -915,19 +944,61 @@ accel_edited_callback (GtkCellRendererText *cell,
                        guint                hardware_keycode,
                        gpointer             data)
 {
-  GtkTreeModel *model = (GtkTreeModel *)data;
+  GtkTreeView  *view = (GtkTreeView *) data;
+  GtkTreeModel *model;
   GtkTreePath *path = gtk_tree_path_new_from_string (path_string);
   GtkTreeIter iter;
-  KeyEntry *ke;
+  KeyEntry *ke, tmp_key;
   GError *err;
   char *str;
   
+  model = gtk_tree_view_get_model (view);
+
   gtk_tree_model_get_iter (model, &iter, path);
   gtk_tree_model_get (model, &iter, KEYVAL_COLUMN, &ke, -1);
 
   /* sanity check */
   if (ke == NULL)
     return;
+
+  tmp_key.gconf_keyval = keyval;
+  tmp_key.gconf_mask = mask;
+  tmp_key.gconf_key = ke->gconf_key;
+  tmp_key.user_visible_name = NULL;
+  tmp_key.needs_gconf_sync = TRUE; /* kludge: we'll use this as return flag in the _foreach call */
+
+  if (keyval != 0) 
+    {
+      gtk_tree_model_foreach (model, cb_check_for_uniqueness, &tmp_key);
+
+      if (!tmp_key.needs_gconf_sync)
+        {
+          GtkWidget *dialog;
+          char *name;
+
+          name = egg_virtual_accelerator_name (keyval, mask);
+
+          dialog =
+            gtk_message_dialog_new (GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (view))),
+                                    GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_MODAL,
+                                    GTK_MESSAGE_WARNING,
+                                    GTK_BUTTONS_OK,
+                                    _("The shortcut key \"%s\" is already bound to the \"%s\" action"),
+                                    name,
+                                    tmp_key.user_visible_name ? tmp_key.user_visible_name : tmp_key.gconf_key);
+          g_free (name);
+
+          gtk_dialog_run (GTK_DIALOG (dialog));
+          gtk_widget_destroy (dialog);
+
+          /* set it back to its previous value. */
+          egg_cell_renderer_keys_set_accelerator (EGG_CELL_RENDERER_KEYS (cell),
+                                                  ke->gconf_keyval, ke->gconf_mask);
+          gtk_tree_path_free (path);
+
+          return;
+        }
+    }
 
   str = binding_name (keyval, mask, FALSE);
 
@@ -975,9 +1046,7 @@ disable_mnemonics_toggled (GtkWidget *button,
                              &err);
       if (err != NULL)
         {
-          g_printerr (_("Error setting use_mnemonics key: %s\n"),
-                      err->message);
-          
+          g_printerr (_("Error setting %s config key: %s\n"), CONF_GLOBAL_PREFIX"/use_mnemonics", err->message);
           g_error_free (err);
         }
     }
@@ -1138,13 +1207,13 @@ terminal_edit_keys_dialog_new (GtkWindow *transient_parent)
 				NULL);
   g_signal_connect (G_OBJECT (cell_renderer), "keys_edited",
                     G_CALLBACK (accel_edited_callback),
-                    tree);
+                    w);
   
   g_object_set (G_OBJECT (cell_renderer),
                 "editable", TRUE,
                 NULL);
   column = gtk_tree_view_column_new ();
-  gtk_tree_view_column_set_title (column, _("Accelerator _Key"));
+  gtk_tree_view_column_set_title (column, _("Shortcut _Key"));
   gtk_tree_view_column_pack_start (column, cell_renderer, TRUE);
   gtk_tree_view_column_set_cell_data_func (column, cell_renderer, accel_set_func, NULL, NULL);
   gtk_tree_view_column_set_sort_column_id (column, KEYVAL_COLUMN);  
@@ -1195,6 +1264,8 @@ terminal_edit_keys_dialog_new (GtkWindow *transient_parent)
                     NULL);
   gtk_window_set_default_size (GTK_WINDOW (w),
                                -1, 350);
+
+  terminal_util_set_unique_role (GTK_WINDOW (w), "gnome-terminal-accels");
 
   g_object_unref (G_OBJECT (xml));
   

@@ -170,6 +170,7 @@ static const GConfEnumStringPair scrollbar_positions[] = {
 static const GConfEnumStringPair exit_actions[] = {
   { TERMINAL_EXIT_CLOSE, "close" },
   { TERMINAL_EXIT_RESTART, "restart" },
+  { TERMINAL_EXIT_HOLD, "hold" },
   { -1, NULL }
 };
 
@@ -2382,7 +2383,7 @@ terminal_profile_forget (TerminalProfile *profile)
                                &err);
       if (err)
         {
-          g_printerr (_("There was an error forgetting profile dir %s. (%s)\n"),
+          g_printerr (_("There was an error while removing the configuration directory %s. (%s)\n"),
                       profile->priv->profile_dir, err->message);
           g_error_free (err);
         }
@@ -3047,10 +3048,44 @@ terminal_profile_get_for_new_term (TerminalProfile *current)
   return profile;
 }
 
+/* We need to do this ourselves, because the gtk_color_selection_palette_to_string 
+ * does not carry all the bytes, and xterm's palette is messed up...
+ */
+
+gchar*
+color_selection_palette_to_string (const GdkColor *colors, gint n_colors)
+{
+  gint i;
+  gchar **strs = NULL;
+  gchar *retval;
+  
+  if (n_colors == 0)
+    return g_strdup ("");
+
+  strs = g_new0 (gchar*, n_colors + 1);
+
+  for (i = 0; i < n_colors; ++i)
+    {
+      gchar *ptr;
+      
+      strs[i] = g_strdup_printf ("#%4X%4X%4X", colors[i].red, colors[i].green, colors[i].blue);
+
+      for (ptr = strs[i]; *ptr; ptr++)
+        if (*ptr == ' ')
+          *ptr = '0';
+    }
+
+  retval = g_strjoinv (":", strs);
+
+  g_strfreev (strs);
+
+  return retval;
+}
+
 char*
 terminal_palette_to_string (const GdkColor *palette)
 {
-  return gtk_color_selection_palette_to_string (palette,
+  return color_selection_palette_to_string (palette,
                                                 TERMINAL_PALETTE_SIZE);
 }
 
@@ -3077,7 +3112,9 @@ terminal_palette_from_string (const char     *str,
   if (n_colors < TERMINAL_PALETTE_SIZE)
     {
       if (warn)
-        g_printerr (_("Palette had %d entries instead of %d\n"),
+        g_printerr (ngettext ("Palette had %d entry instead of %d\n",
+                              "Palette had %d entries instead of %d\n",
+			      n_colors),
                     n_colors, TERMINAL_PALETTE_SIZE);
     }
                                                 
@@ -3152,22 +3189,22 @@ terminal_palette_linux[TERMINAL_PALETTE_SIZE] =
 const GdkColor
 terminal_palette_xterm[TERMINAL_PALETTE_SIZE] =
 {
-  { 0, 0x0000, 0x0000, 0x0000 },
-  { 0, 0x6767, 0x0000, 0x0000 },
-  { 0, 0x0000, 0x6767, 0x0000 },
-  { 0, 0x6767, 0x6767, 0x0000 },
-  { 0, 0x0000, 0x0000, 0x6767 },
-  { 0, 0x6767, 0x0000, 0x6767 },
-  { 0, 0x0000, 0x6767, 0x6767 },
-  { 0, 0x6868, 0x6868, 0x6868 },
-  { 0, 0x2a2a, 0x2a2a, 0x2a2a },
-  { 0, 0xffff, 0x0000, 0x0000 },
-  { 0, 0x0000, 0xffff, 0x0000 },
-  { 0, 0xffff, 0xffff, 0x0000 },
-  { 0, 0x0000, 0x0000, 0xffff },
-  { 0, 0xffff, 0x0000, 0xffff },
-  { 0, 0x0000, 0xffff, 0xffff },
-  { 0, 0xffff, 0xffff, 0xffff }
+    {0, 0x0000, 0x0000, 0x0000 },
+    {0, 0xcdcb, 0x0000, 0x0000 },
+    {0, 0x0000, 0xcdcb, 0x0000 },
+    {0, 0xcdcb, 0xcdcb, 0x0000 },
+    {0, 0x1e1a, 0x908f, 0xffff },
+    {0, 0xcdcb, 0x0000, 0xcdcb },
+    {0, 0x0000, 0xcdcb, 0xcdcb },
+    {0, 0xe5e2, 0xe5e2, 0xe5e2 },
+    {0, 0x4ccc, 0x4ccc, 0x4ccc },
+    {0, 0xffff, 0x0000, 0x0000 },
+    {0, 0x0000, 0xffff, 0x0000 },
+    {0, 0xffff, 0xffff, 0x0000 },
+    {0, 0x4645, 0x8281, 0xb4ae },
+    {0, 0xffff, 0x0000, 0xffff },
+    {0, 0x0000, 0xffff, 0xffff },
+    {0, 0xffff, 0xffff, 0xffff }
 };
 
 const GdkColor

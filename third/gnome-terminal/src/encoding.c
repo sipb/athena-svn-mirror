@@ -31,8 +31,6 @@
 #include <gtk/gtkmessagedialog.h>
 #include <gtk/gtktreestore.h>
 
-#include <libgnome/gnome-help.h>
-
 #include <string.h>
 
 /* Overview
@@ -162,7 +160,7 @@ static TerminalEncoding encodings[] = {
   { TERMINAL_ENCODING_MAC_DEVANAGARI, FALSE,
     "MAC_DEVANAGARI", N_("Hindi") },
   { TERMINAL_ENCODING_MAC_FARSI, FALSE,
-    "MAC_FARSI", N_("Farsi") },
+    "MAC_FARSI", N_("Persian") },
   { TERMINAL_ENCODING_MAC_GREEK, FALSE,
     "MAC_GREEK", N_("Greek") },
   { TERMINAL_ENCODING_MAC_GUJARATI, FALSE,
@@ -425,38 +423,9 @@ response_callback (GtkWidget *window,
                    void      *data)
 {
   if (id == GTK_RESPONSE_HELP)
-    {
-      GError *err;
-      err = NULL;
-      gnome_help_display ("gnome-terminal", "gnome-terminal-encodings",
-                          &err);
-      
-      if (err)
-        {
-          GtkWidget *dialog;
-          
-          dialog = gtk_message_dialog_new (GTK_WINDOW (window),
-                                           GTK_DIALOG_DESTROY_WITH_PARENT,
-                                           GTK_MESSAGE_ERROR,
-                                           GTK_BUTTONS_CLOSE,
-                                           _("There was an error displaying help: %s"),
-                                           err->message);
-          
-          g_signal_connect (G_OBJECT (dialog), "response",
-                            G_CALLBACK (gtk_widget_destroy),
-                            NULL);
-          
-          gtk_window_set_resizable (GTK_WINDOW (dialog), FALSE);
-          
-          gtk_widget_show (dialog);
-          
-          g_error_free (err);
-        }
-    }
+    terminal_util_show_help ("gnome-terminal-encoding-add", GTK_WINDOW (window));
   else
-    {
-      gtk_widget_destroy (GTK_WIDGET (window));
-    }
+    gtk_widget_destroy (GTK_WIDGET (window));
 }
 
 enum
@@ -726,6 +695,8 @@ terminal_encoding_dialog_new (GtkWindow *transient_parent)
 
   /* The dialog itself */
   dialog = glade_xml_get_widget (xml, "encodings-dialog");
+
+  terminal_util_set_unique_role (GTK_WINDOW (dialog), "gnome-terminal-encodings");
 
   g_signal_connect (G_OBJECT (dialog), "response",
                     G_CALLBACK (response_callback),

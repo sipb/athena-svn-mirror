@@ -51,15 +51,19 @@ void       terminal_widget_get_padding                (GtkWidget            *wid
                                                        int                  *xpad,
                                                        int                  *ypad);
 void       terminal_widget_match_add                  (GtkWidget            *widget,
-                                                       const char           *regexp);
+                                                       const char           *regexp,
+                                                       int                   flavor);
 void       terminal_widget_skey_match_add             (GtkWidget            *widget,
-                                                       const char           *regexp);
+                                                       const char           *regexp,
+                                                       int                   flavor);
 char*      terminal_widget_check_match                (GtkWidget            *widget,
                                                        int                   column,
-                                                       int                   row);
+                                                       int                   row,
+                                                       int                  *flavor);
 char*      terminal_widget_skey_check_match           (GtkWidget            *widget,
                                                        int                   column,
-                                                       int                   row);
+                                                       int                   row,
+                                                       int                  *flavor);
 void       terminal_widget_skey_match_remove          (GtkWidget            *widget);
 void       terminal_widget_set_word_characters        (GtkWidget            *widget,
                                                        const char           *str);
@@ -141,6 +145,7 @@ gboolean    terminal_widget_get_has_selection (GtkWidget *widget);
 GtkAdjustment* terminal_widget_get_scroll_adjustment (GtkWidget *widget);
 
 gboolean terminal_widget_fork_command      (GtkWidget   *widget,
+                                            gboolean     lastlog,
                                             gboolean     update_records,
                                             const char  *path,
                                             char       **argv,
