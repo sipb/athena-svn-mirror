@@ -5,7 +5,7 @@
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/h/zephyr/zephyr_conf.h,v $
  *	$Author: jtkohl $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/h/zephyr/zephyr_conf.h,v 1.4 1988-11-14 12:01:54 jtkohl Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/h/zephyr/zephyr_conf.h,v 1.5 1989-03-23 09:34:31 jtkohl Exp $
  *
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -29,8 +29,9 @@
 #define	HM_SVCNAME	"zephyr-hm"
 #define	SERVER_SVCNAME	"zephyr-clt"
 
-#if defined(ultrix) && !defined(ULTRIX30)
-/* Ultrix 3.0 has these defined in standard places */
+#if defined(ultrix) && defined(ULTRIX22)
+/* Ultrix 3.0 and beyond have these defined in standard places */
+/* Ultrix 2.2 and previous don't have these defined */
 #define	MAXHOSTNAMELEN	64
 typedef int uid_t;
 typedef int gid_t;
