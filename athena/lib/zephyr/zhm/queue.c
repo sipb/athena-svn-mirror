@@ -4,7 +4,7 @@
  *      Created by:     David C. Jedlinsky
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zhm/queue.c,v $
- *      $Author: jtkohl $
+ *      $Author: lwvanels $
  *
  *      Copyright (c) 1987 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -15,9 +15,9 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_queue_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zhm/queue.c,v 1.11 1988-06-27 10:55:23 jtkohl Exp $";
-#endif SABER
-#endif lint
+static char rcsid_queue_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zhm/queue.c,v 1.12 1991-12-05 15:26:50 lwvanels Exp $";
+#endif /* SABER */
+#endif /* lint */
 
 typedef struct _Queue {
      long timeout;
@@ -87,7 +87,7 @@ int len;
      if (!is_in_queue(notice))
 	  return(ZERR_NONOTICE);
      else
-#endif DEBUG
+#endif /* DEBUG */
 	  return(ZERR_NONE);
 }
 
@@ -112,7 +112,7 @@ struct sockaddr_in *repl;
 	       (void)alarm(0);
 #ifdef DEBUG
 	  dump_queue();
-#endif DEBUG
+#endif /* DEBUG */
 	  return(ZERR_NONE);
      }
 }
@@ -184,7 +184,7 @@ Code_t dump_queue()
 	  srch = srch->q_forw;
      } while (srch != &hm_queue);
 }
-#endif DEBUG
+#endif /* DEBUG */
 
 int queue_len()
 {
