@@ -18,7 +18,7 @@
  * lockers.
  */
 
-static const char rcsid[] = "$Id: attachtab.c,v 1.8 1999-09-10 17:17:04 danw Exp $";
+static const char rcsid[] = "$Id: attachtab.c,v 1.9 1999-10-19 20:25:33 danw Exp $";
 
 #include "locker.h"
 #include "locker_private.h"
@@ -41,22 +41,14 @@ struct locker__dirent {
   time_t ctime;
 };
 
-/* Used by lock_attachtab */
-struct locker__lock_data {
-  int fd;
-  sigset_t omask;
-};
-
 static int delete_attachent(locker_context context, locker_attachent *at);
 static int get_attachent(locker_context context, char *name,
 			 char *mountpoint, int create,
 			 locker_attachent **atp);
 static int read_attachent(locker_context context, int kind,
 			  char *name, locker_attachent **atp);
-static int lock_attachtab(locker_context context,
-			  struct locker__lock_data *lock);
-static void unlock_attachtab(locker_context context,
-			     struct locker__lock_data *lock);
+static int lock_attachtab(locker_context context, int *lock);
+static void unlock_attachtab(locker_context context, int *lock);
 static int compare_locker__dirents(const void *a, const void *b);
 
 /* Public interface to locker__lookup_attachent. */
@@ -79,8 +71,7 @@ int locker__lookup_attachent(locker_context context, char *name,
 			     char *mountpoint, int which,
 			     locker_attachent **atp)
 {
-  int status, i;
-  struct locker__lock_data lock;
+  int status, i, lock;
   locker_attachent *at;
   char **descs, *desc, *p;
   void *cleanup;
@@ -197,8 +188,7 @@ int locker__lookup_attachent_explicit(locker_context context, char *type,
 {
   struct locker_ops *fs;
   locker_attachent *at;
-  int status;
-  struct locker__lock_data lock;
+  int status, lock;
 
   fs = locker__get_fstype(context, type);
   if (!fs)
@@ -230,8 +220,7 @@ int locker__lookup_attachent_explicit(locker_context context, char *type,
 /* Delete an attachent file and its corresponding symlink, if any. */
 static int delete_attachent(locker_context context, locker_attachent *at)
 {
-  int status;
-  struct locker__lock_data lock;
+  int status, lock;
   char *path;
 
   status = lock_attachtab(context, &lock);
@@ -318,8 +307,7 @@ int locker_iterate_attachtab(locker_context context,
 			     locker_callback test, void *testarg,
 			     locker_callback act, void *actarg)
 {
-  int status;
-  struct locker__lock_data lock;
+  int status, lock;
   char *path;
   DIR *dir;
   struct dirent *entry;
@@ -902,13 +890,11 @@ cleanup2:
  *  - prevent other processes from doing the above, to guarantee
  *    a consistent view of the attachtab.
  */
-static int lock_attachtab(locker_context context,
-			  struct locker__lock_data *lock)
+static int lock_attachtab(locker_context context, int *lock)
 {
-  int lockfd, status;
+  int status;
   char *path;
   struct flock fl;
-  sigset_t mask;
 
   /* If the attachtab is already locked (because we're reading a
    * subcomponent of a MUL locker, for instance), just record an
@@ -927,48 +913,35 @@ static int lock_attachtab(locker_context context,
       return LOCKER_ENOMEM;
     }
 
-  lockfd = open(path, O_CREAT | O_TRUNC | O_RDWR, S_IRUSR | S_IWUSR);
+  *lock = open(path, O_CREAT | O_TRUNC | O_RDWR, S_IRUSR | S_IWUSR);
   free (path);
-  if (lockfd < 0)
+  if (*lock < 0)
     {
       locker__error(context, "Could not open attachtab lock file: %s.\n",
 		    strerror(errno));
       return LOCKER_EATTACHTAB;
     }
 
-  /* Protect from ^Z while holding the attachtab lock. */
-  sigemptyset(&mask);
-  sigaddset(&mask, SIGTSTP);
-  sigaddset(&mask, SIGTTOU);
-  sigaddset(&mask, SIGTTIN);
-  sigprocmask(SIG_BLOCK, &mask, &lock->omask);
-
   fl.l_type = F_WRLCK;
   fl.l_whence = SEEK_SET;
   fl.l_start = fl.l_len = 0;
-  status = fcntl(lockfd, F_SETLKW, &fl);
+  status = fcntl(*lock, F_SETLKW, &fl);
   if (status < 0)
     {
-      close(lockfd);
-      sigprocmask(SIG_SETMASK, &lock->omask, NULL);
+      close(*lock);
       locker__error(context, "Could not lock attachtab: %s.\n",
 		    strerror(errno));
       return LOCKER_EATTACHTAB;
     }
 
   context->locks++;
-  lock->fd = lockfd;
   return LOCKER_SUCCESS;
 }
 
-static void unlock_attachtab(locker_context context,
-			     struct locker__lock_data *lock)
+static void unlock_attachtab(locker_context context, int *lock)
 {
   if (--context->locks == 0)
-    {
-      close(lock->fd);
-      sigprocmask(SIG_SETMASK, &lock->omask, NULL);
-    }
+    close(*lock);
 }
 
 static char *kpath[] = {
