@@ -47,18 +47,18 @@ struct bnode_token {
 struct bnode {
     struct bnode *next;		    /* next pointer in top-level's list */
     char *name;			    /* instance name */
-    int32 nextTimeout;		    /* next time this guy should be woken */
-    int32 period;		    /* period between calls */
-    int32 rsTime;		    /* time we started counting restarts */
-    int32 rsCount;		    /* count of restarts since rsTime */
+    afs_int32 nextTimeout;		    /* next time this guy should be woken */
+    afs_int32 period;		    /* period between calls */
+    afs_int32 rsTime;		    /* time we started counting restarts */
+    afs_int32 rsCount;		    /* count of restarts since rsTime */
     struct bnode_type *type;	    /* type object */
     struct bnode_ops *ops;	    /* functions implementing bnode class */
-    int32 procStartTime;		    /* last time a process was started */
-    int32 procStarts;		    /* number of process starts */
-    int32 lastAnyExit;		    /* last time a process exited, for any reason */
-    int32 lastErrorExit;		    /* last time a process exited unexpectedly */
-    int32 errorCode;		    /* last exit return code */
-    int32 errorSignal;		    /* last proc terminating signal */
+    afs_int32 procStartTime;		    /* last time a process was started */
+    afs_int32 procStarts;		    /* number of process starts */
+    afs_int32 lastAnyExit;		    /* last time a process exited, for any reason */
+    afs_int32 lastErrorExit;		    /* last time a process exited unexpectedly */
+    afs_int32 errorCode;		    /* last exit return code */
+    afs_int32 errorSignal;		    /* last proc terminating signal */
     char *lastErrorName;	    /* name of proc that failed last */
     char *notifier;		    /* notifier program to be executed on exits */
     short refCount;		    /* reference count */
@@ -72,18 +72,18 @@ struct bnode_proc {
     struct bnode *bnode;	    /* bnode creating this process */
     char *comLine;		    /* command line used to start this process */
     char *coreName;		    /* optional core file component name */
-    int32 pid;			    /* pid if created */
-    int32 lastExit;		    /* last termination code */
-    int32 lastSignal;		    /* last signal that killed this guy */
-    int32 flags;			    /* flags giving process state */
+    afs_int32 pid;			    /* pid if created */
+    afs_int32 lastExit;		    /* last termination code */
+    afs_int32 lastSignal;		    /* last signal that killed this guy */
+    afs_int32 flags;			    /* flags giving process state */
 };
     
 struct ezbnode {
     struct bnode b;
-    int32 zapTime;		/* time we sent a sigterm */
+    afs_int32 zapTime;		/* time we sent a sigterm */
     char *command;
     struct bnode_proc *proc;
-    int32 lastStart;		/* time last started process */
+    afs_int32 lastStart;		/* time last started process */
     char waitingForShutdown;	/* have we started any shutdown procedure? */
     char running;   /* is process running? */
     char killSent;  /* have we tried sigkill signal? */
@@ -136,7 +136,7 @@ extern int bnode_Init(/* bnode, bnodeops */);
 extern int bnode_Activate(/* bnode */);
 extern int bnode_NewProc(/* bnode, execstring, corename, procaddr */);
 extern int bnode_Init(/* no parms */);
-extern int32 bnode_Create();
+extern afs_int32 bnode_Create();
 extern struct bnode *bnode_FindInstance();
 
 /* End of prolog file bnode.p.h. */

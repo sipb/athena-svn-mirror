@@ -71,9 +71,9 @@ struct xstat_cm_ConnectionInfo {
  */
 struct xstat_cm_ProbeResults {
     int probeNum;			   /*Probe number*/
-    int32 probeTime;			   /*Time probe initiated*/
+    afs_int32 probeTime;			   /*Time probe initiated*/
     struct xstat_cm_ConnectionInfo *connP; /*Connection polled*/
-    int32 collectionNumber;		   /*Collection received*/
+    afs_int32 collectionNumber;		   /*Collection received*/
     AFSCB_CollData data;		   /*Ptr to data collected*/
     int probeOK;			   /*Latest probe successful?*/
 };
@@ -107,7 +107,7 @@ extern int xstat_cm_Init();
      *	  int (*a_ProbeHandler)()	    : Ptr to probe handler fcn.
      *	  int a_flags			    : Various flags.
      *	  int a_numCollections		    : Number of collections desired.
-     *	  int32 *a_collIDP		    : Ptr to collection IDs.
+     *	  afs_int32 *a_collIDP		    : Ptr to collection IDs.
      *
      * Returns:
      *	  0 on success,

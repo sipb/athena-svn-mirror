@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_65/include/afs/prserver.h,v 1.1.1.2 1999-12-22 20:05:19 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_65/include/afs/prserver.h,v 1.1.1.3 2000-04-12 19:44:49 ghudson Exp $ */
 /* $Source: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_65/include/afs/prserver.h,v $ */
 
 /* Copyright (C) 1989 Transarc Corporation - All rights reserved */
@@ -37,22 +37,22 @@
 #define PRDBVERSION	0
 
 struct prheader {
-    int32 version;			/* database version number */
-    int32 headerSize;			/* bytes in header (almost version#) */
-    int32 freePtr;			/* first free entry in freelist */
-    int32 eofPtr;			/* first free byte in file */
-    int32 maxGroup;			/* most negative group id */
-    int32 maxID;			/* largest user id allocated */
-    int32 maxForeign;			/* largest foreign id allocated*/
-    int32 maxInst;			/* largest sub/super id allocated */
-    int32 orphan;			/* groups owned by deleted users */
-    int32 usercount;			/* num users in system */
-    int32 groupcount;			/* num groups in system */
-    int32 foreigncount;			/* num registered foreign users NYI*/
-    int32 instcount;			/* number of sub and super users NYI */
-    int32 reserved[5];			/* just in case */
-    int32 nameHash[HASHSIZE];		/* hash table for names */
-    int32 idHash[HASHSIZE];		/* hash table for ids */
+    afs_int32 version;			/* database version number */
+    afs_int32 headerSize;			/* bytes in header (almost version#) */
+    afs_int32 freePtr;			/* first free entry in freelist */
+    afs_int32 eofPtr;			/* first free byte in file */
+    afs_int32 maxGroup;			/* most negative group id */
+    afs_int32 maxID;			/* largest user id allocated */
+    afs_int32 maxForeign;			/* largest foreign id allocated*/
+    afs_int32 maxInst;			/* largest sub/super id allocated */
+    afs_int32 orphan;			/* groups owned by deleted users */
+    afs_int32 usercount;			/* num users in system */
+    afs_int32 groupcount;			/* num groups in system */
+    afs_int32 foreigncount;			/* num registered foreign users NYI*/
+    afs_int32 instcount;			/* number of sub and super users NYI */
+    afs_int32 reserved[5];			/* just in case */
+    afs_int32 nameHash[HASHSIZE];		/* hash table for names */
+    afs_int32 idHash[HASHSIZE];		/* hash table for ids */
 };
 
 extern struct prheader cheader;
@@ -60,13 +60,13 @@ extern struct prheader cheader;
 #define set_header_word(tt,field,value) \
   pr_Write ((tt), 0, ((char *)&(cheader.field) - (char *)&cheader),   \
 	    ((cheader.field = (value)), (char *)&(cheader.field)),    \
-	    sizeof(int32))
+	    sizeof(afs_int32))
 
 #define inc_header_word(tt,field,inc) \
   pr_Write ((tt), 0, ((char *)&(cheader.field) - (char *)&cheader), \
 	    ((cheader.field = (htonl(ntohl(cheader.field)+(inc)))),	    \
 	     (char *)&(cheader.field)),				    \
-	    sizeof(int32))
+	    sizeof(afs_int32))
 
 #define	PRFREE		1		/* 1 if in free list */
 #define	PRGRP		2		/* 1 if a group entry */
@@ -103,42 +103,42 @@ extern struct prheader cheader;
 #define PR_REMEMBER_TIMES 1
 
 struct prentry {
-    int32 flags;				/* random flags */
-    int32 id;				/* user or group id*/
-    int32 cellid;			/* A foreign users's repsenting group */
-    int32 next;				/* next block same entry (or freelist) */
+    afs_int32 flags;				/* random flags */
+    afs_int32 id;				/* user or group id*/
+    afs_int32 cellid;			/* A foreign users's repsenting group */
+    afs_int32 next;				/* next block same entry (or freelist) */
 #ifdef PR_REMEMBER_TIMES
-    u_int32 createTime, addTime, removeTime, changeTime;
-    int32 reserved[1];
+    afs_uint32 createTime, addTime, removeTime, changeTime;
+    afs_int32 reserved[1];
 #else
-    int32 reserved[5];
+    afs_int32 reserved[5];
 #endif
-    int32 entries[PRSIZE];		/* groups a user is a member of (or list of members */
-    int32 nextID;			/* id hash table next pointer */
-    int32 nextName;			/* name has table next ptr */
-    int32 owner;			/* id of owner of entry */
-    int32 creator;			/* may differ from owner */
-    int32 ngroups;			/* number of groups this user has created
+    afs_int32 entries[PRSIZE];		/* groups a user is a member of (or list of members */
+    afs_int32 nextID;			/* id hash table next pointer */
+    afs_int32 nextName;			/* name has table next ptr */
+    afs_int32 owner;			/* id of owner of entry */
+    afs_int32 creator;			/* may differ from owner */
+    afs_int32 ngroups;			/* number of groups this user has created
 					 * -- 0 for reg group entries
 					 * -- number of foreign users if foreign group */
-    int32 nusers;			/* Users added to foreign group */
-    int32 count;				/* number of members/groups for this group/user */
-    int32 instance;			/* number of sub/super instances for this user NYI */
-    int32 owned;			        /* chain of groups owned by this entry */
-    int32 nextOwned;			/* chain of groups for owner of this entry */
-    int32 parent;			/* ptr to super instance  NYI*/
-    int32 sibling;			/* ptr to sibling instance  NYI*/
-    int32 child;				/* ptr to first child  NYI*/
+    afs_int32 nusers;			/* Users added to foreign group */
+    afs_int32 count;				/* number of members/groups for this group/user */
+    afs_int32 instance;			/* number of sub/super instances for this user NYI */
+    afs_int32 owned;			        /* chain of groups owned by this entry */
+    afs_int32 nextOwned;			/* chain of groups for owner of this entry */
+    afs_int32 parent;			/* ptr to super instance  NYI*/
+    afs_int32 sibling;			/* ptr to sibling instance  NYI*/
+    afs_int32 child;				/* ptr to first child  NYI*/
     char name[PR_MAXNAMELEN];		/* user or group name */
 };
 
 struct contentry {			/* continuation of entry */
-    int32 flags;		    
-    int32 id;
-    int32 cellid;
-    int32 next;
-    int32 reserved[5];
-    int32 entries[COSIZE];
+    afs_int32 flags;		    
+    afs_int32 id;
+    afs_int32 cellid;
+    afs_int32 next;
+    afs_int32 reserved[5];
+    afs_int32 entries[COSIZE];
 };
 
 /* The following are flags for PR_ListEntries() */

@@ -1,10 +1,10 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_65/include/lwp.h,v 1.1.1.2 1999-12-22 20:04:58 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_65/include/lwp.h,v 1.1.1.3 2000-04-12 19:44:27 ghudson Exp $ */
 /* $Source: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_65/include/lwp.h,v $ */
 
 #ifndef __LWP_INCLUDE_
 #define	__LWP_INCLUDE_	1
 #if !defined(lint) && !defined(LOCORE) && defined(RCS_HDRS)
-static char *rcsidlwp = "$Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_65/include/lwp.h,v 1.1.1.2 1999-12-22 20:04:58 ghudson Exp $";
+static char *rcsidlwp = "$Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_65/include/lwp.h,v 1.1.1.3 2000-04-12 19:44:27 ghudson Exp $";
 #endif
 
 /*
@@ -247,8 +247,8 @@ struct lwp_pcb {			/* process control block */
   char		*parm;			/* initial parm for process */
   struct lwp_context
 		context;		/* saved context for next dispatch */
-  int		rused;			/* no of rocks presently in use */
-  struct rock	rlist[MAXROCKS];	/* set of rocks to hide things under */
+  int		lwp_rused;		/* no of rocks presently in use */
+  struct rock	lwp_rlist[MAXROCKS];	/* set of rocks to hide things under */
   struct lwp_pcb *next, *prev;		/* ptrs to next and previous pcb */
   int		level;			/* nesting level of critical sections */
   struct IoRequest	*iomgrRequest;	/* request we're waiting for */

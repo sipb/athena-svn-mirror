@@ -28,72 +28,70 @@
 
 struct blockMark {
     int	count;	    /* actual number of bytes valid in the block */
-    int32 magic;	    
-    int32 spare1;
-    int32 spare2;
-    int32 spare3;
-    int32 spare4;
+    afs_int32 magic;	    
+    afs_int32 spare1;
+    afs_int32 spare2;
+    afs_int32 spare3;
+    afs_int32 spare4;
 };
 
-/* the 16k limit is related to tc_EndMargin in dumps.c*/
+/* The size of a tapeblock is 16KB: contains header info and data */
 #define BUTM_BLOCKSIZE 16384
-#define	BUTM_BLKSIZE   (BUTM_BLOCKSIZE - ((5*sizeof(int32)) + sizeof(int)))   
-                       /* size of data portion of block written on tape:
-			* 16k - sizeof(blockMark) */
+#define BUTM_HDRSIZE   ((5*sizeof(afs_int32)) + sizeof(int))      /* sizeof blockMark */
+#define	BUTM_BLKSIZE   (BUTM_BLOCKSIZE - BUTM_HDRSIZE)
 
 struct butm_tapeInfo {
-    int32  structVersion;
+    afs_int32  structVersion;
     struct {
-	int32 (*mount)();
-	int32 (*dismount)();
-	int32 (*create)();
-	int32 (*readLabel)();
-	int32 (*seek)();
-	int32 (*seekEODump)();
-	int32 (*readFileBegin)();
-	int32 (*readFileData)();
-	int32 (*readFileEnd)();
-	int32 (*writeFileBegin)();
-	int32 (*writeFileData)();
-	int32 (*writeFileEnd)();
-	int32 (*writeEOT)();
-	int32 (*setSize)();
-	int32 (*getSize)();
+	afs_int32 (*mount)();
+	afs_int32 (*dismount)();
+	afs_int32 (*create)();
+	afs_int32 (*readLabel)();
+	afs_int32 (*seek)();
+	afs_int32 (*seekEODump)();
+	afs_int32 (*readFileBegin)();
+	afs_int32 (*readFileData)();
+	afs_int32 (*readFileEnd)();
+	afs_int32 (*writeFileBegin)();
+	afs_int32 (*writeFileData)();
+	afs_int32 (*writeFileEnd)();
+	afs_int32 (*writeEOT)();
+	afs_int32 (*setSize)();
+	afs_int32 (*getSize)();
     } ops;
     char  name[BU_MAXTAPELEN];
-    int32 position;			/* current position of tape */
-    u_int32 posCount;		        /* position in bytes of the tape */
+    afs_int32 position;			/* current position of tape */
+    afs_uint32 posCount;		        /* position in bytes of the tape */
 
     /* the next three fields are used for modeling tape usage */
-    u_int32  nBytes;		        /* number of bytes   written */
-    u_int32  kBytes;		        /* number of Kbytes  written */
-    int32  nRecords;			/* number of records written */
-    int32  nFiles;			/* number of files   written */
+    afs_uint32  nBytes;		        /* number of bytes   written */
+    afs_uint32  kBytes;		        /* number of Kbytes  written */
+    afs_int32  nRecords;			/* number of records written */
+    afs_int32  nFiles;			/* number of files   written */
 
     /* These fields provide the coefficients for the above variables */
-    int32  recordSize;			/* bytes per record */
-    u_int32  tapeSize;		        /* length of tape */
-    int32  coefBytes;			/* length multiplier for bytes */
-    int32  coefRecords;			/*   ditto  records */
-    int32  coefFiles;			/*   ditto  files */
+    afs_int32  recordSize;			/* bytes per record */
+    afs_uint32  tapeSize;		        /* length of tape */
+    afs_int32  coefBytes;			/* length multiplier for bytes */
+    afs_int32  coefRecords;			/*   ditto  records */
+    afs_int32  coefFiles;			/*   ditto  files */
     int   simultaneousTapes;		/* number of tapes mounted simultaneously */
     int   status;			/* status of tape */
     int   flags;			/* e.g. read-only, sequential */
     char  *tcRock;			/* for random tape coordinator storage */
     char  *tmRock;			/* for random tape module storage */
-    int32  sizeflags;			/* What the units of tape size are. */
+    afs_int32  sizeflags;			/* What the units of tape size are. */
 
-    int32  debug;                       /* print debugging info */
-    int32  error;                       /* Error code from butm module */
-    int32  spare[8];
+    afs_int32  debug;                       /* print debugging info */
+    afs_int32  error;                       /* Error code from butm module */
+    afs_int32  spare[8];
 };
 
 struct tapeConfig{
     char device[256];
-    u_int32 capacity;
-    int32 fileMarkSize;			/* size of file marks, in bytes */
-    int32 portOffset;
-    int aixScsi;			/* are we using aix extended scsi drive */
+    afs_uint32 capacity;
+    afs_int32 fileMarkSize;			/* size of file marks, in bytes */
+    afs_int32 portOffset;
 };
 
 /* returns answer in bytes */
@@ -114,18 +112,18 @@ struct tapeConfig{
 #define BUTM_FLAGS_SEQUENTIAL (1<<1)	/* tape is sequential access: sort positions */
 
 struct butm_tapeLabel {
-    int32 structVersion;		/* structure version number */
+    afs_int32 structVersion;		/* structure version number */
     Date creationTime;			/* when tape was first labeled */
     Date expirationDate;		/* when tape can be relabelled */
     char AFSName[BU_MAXTAPELEN];	/* AFS assigned tape name */
     struct ktc_principal creator;	/* person creating tape */
     char cell[BU_MAXCELLLEN];		/* cell which owns tape. */
-    u_int32 dumpid;			/* which dump on this tape  */
-    int32 useCount;			/* # times written */
-    int32 spare[8];			
+    afs_uint32 dumpid;			/* which dump on this tape  */
+    afs_int32 useCount;			/* # times written */
+    afs_int32 spare[8];			
     char comment[96];
     char pName[BU_MAXTAPELEN];          /* permanent user assigned tape name */
-    u_int32 size;
+    afs_uint32 size;
     char dumpPath[BU_MAX_DUMP_PATH];	/* dump schedule path name */
 };
 

@@ -8,7 +8,23 @@
 #define NFS_NOBODY      -2	/* maps Nfs's "nobody" but since not declared by some systems (i.e. Ultrix) we use a constant  */
 #endif
 #define	RMTUSER_REQ		0xabc
-#if defined(AFS_OSF_ENV) || (defined(AFS_SGI61_ENV) && (_MIPS_SZPTR==64))
+
+/**
+  * There is a limitation on the number of bytes that can be passed into
+  * the file handle that nfs passes into AFS.  The limit is 10 bytes.
+  * We pass in an array of long of size 2. On a 32 bit system this would be
+  * 8 bytes. But on a 64 bit system this would be 16 bytes. The first
+  * element of this array is a pointer so we cannot truncate that. But the
+  * second element is the AFS_XLATOR_MAGIC, which we can truncate.
+  * So on a 64 bit system the 10 bytes are used as below
+  * Bytes 1-8 			pointer to vnode
+  * Bytes 9 and 10		AFS_XLATOR_MAGIC
+  *
+  * And hence for 64 bit environments AFS_XLATOR_MAGIC is 8765 which takes
+  * up 2 bytes
+  */
+
+#if defined(AFS_SUN57_64BIT_ENV) || defined(AFS_OSF_ENV) || (defined(AFS_SGI61_ENV) && (_MIPS_SZPTR==64))
 #define	AFS_XLATOR_MAGIC	0x8765		/* XXX */
 #else
 #define	AFS_XLATOR_MAGIC	0x87654321
@@ -30,17 +46,17 @@ struct	exporterops {
 };
 
 struct exporterstats {
-    int32 calls;			/* # of calls to the exporter */
-    int32 rejectedcalls;		/* # of afs rejected  calls */
-    int32 nopag;			/* # of unpagged remote calls */
-    int32 invalidpag;		/* # of invalid pag calls */
+    afs_int32 calls;			/* # of calls to the exporter */
+    afs_int32 rejectedcalls;		/* # of afs rejected  calls */
+    afs_int32 nopag;			/* # of unpagged remote calls */
+    afs_int32 invalidpag;		/* # of invalid pag calls */
 };
 
 struct afs_exporter {
     struct  afs_exporter   *exp_next;
     struct  exporterops	    *exp_op;
-    int32		    exp_states;
-    int32		    exp_type;
+    afs_int32		    exp_states;
+    afs_int32		    exp_type;
     struct  exporterstats   exp_stats;
     char		    *exp_data;
 };
@@ -74,18 +90,18 @@ struct afs_exporter {
 struct afs3_fid {
     u_short len;
     u_short padding;
-    u_int32 Cell;
-    u_int32 Volume;
-    u_int32 Vnode;
-    u_int32 Unique;
+    afs_uint32 Cell;
+    afs_uint32 Volume;
+    afs_uint32 Vnode;
+    afs_uint32 Unique;
 };
 
 struct Sfid {
-    u_int32 padding;
-    u_int32 Cell;
-    u_int32 Volume;
-    u_int32 Vnode;
-    u_int32 Unique;
+    afs_uint32 padding;
+    afs_uint32 Cell;
+    afs_uint32 Volume;
+    afs_uint32 Vnode;
+    afs_uint32 Unique;
 #ifdef	AFS_SUN5_ENV
     struct cred *credp;
 #endif

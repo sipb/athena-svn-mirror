@@ -9,25 +9,25 @@
 /* Network and IP address utility and file parsing functions */
 
 extern int parseNetRestrictFile(
-				u_long outAddrs[], 
-				int32 mask[], 
-				int32 mtu[],
-				u_int32 maxAddrs,
-				u_int32 *nAddrs, 
+				afs_int32 outAddrs[], 
+				afs_int32 mask[], 
+				afs_int32 mtu[],
+				afs_uint32 maxAddrs,
+				afs_uint32 *nAddrs, 
 				char reason[], 
 				const char *fileName
 				);
 
 extern int filterAddrs(
 		       u_long addr1[],u_long addr2[],
-		       int32  mask1[], int32 mask2[],
-		       int32  mtu1[], int32 mtu2[]
+		       afs_int32  mask1[], afs_int32 mask2[],
+		       afs_int32  mtu1[], afs_int32 mtu2[]
 		       );
 
 extern int parseNetFiles(
-			 u_long addrbuf[],
-			 int32  maskbuf[],
-			 int32  mtubuf[],
+			 afs_int32  addrbuf[],
+			 afs_int32  maskbuf[],
+			 afs_int32  mtubuf[],
 			 u_long max,
 			 char reason[],
 			 const char *niFilename,

@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_65/include/rx/rx_multi.h,v 1.1.1.2 1999-12-22 20:05:48 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_65/include/rx/rx_multi.h,v 1.1.1.3 2000-04-12 19:45:39 ghudson Exp $ */
 /* $Source: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_65/include/rx/rx_multi.h,v $ */
 
 /*
@@ -62,7 +62,7 @@ extern void multi_Finalize();
 	rx_FlushWrite(multi_call);\
 	}\
 	while ((multi_i = multi_Select(multi_h)) >= 0) {\
-	    register int32 multi_error;\
+	    register afs_int32 multi_error;\
 	    multi_call = multi_h->calls[multi_i];\
 	    multi_error = rx_EndCall(multi_call, endProc);\
 	    multi_h->calls[multi_i] = (struct rx_call *) 0

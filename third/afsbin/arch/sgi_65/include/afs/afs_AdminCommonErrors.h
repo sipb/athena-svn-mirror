@@ -28,6 +28,8 @@
 #define ADMCANTGETSERVERNAME                     (17175L)
 #define ADMCANTGETLOCALNAME                      (17176L)
 #define ADMMOREDATA                              (17177L)
+#define ADMSOCKFAIL                              (17178L)
+#define ADMTYPEINVALID                           (17179L)
 extern void initialize_ac_error_table ();
 #define ERROR_TABLE_BASE_ac (17152L)
 

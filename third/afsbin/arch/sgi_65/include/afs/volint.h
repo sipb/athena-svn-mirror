@@ -72,34 +72,35 @@
 #define AFS_RXGEN_EXPORT
 #endif /* AFS_NT40_ENV */
 
+#define AFSVolSTATINDEX 16
 #define SIZE 1024
 
 struct volser_status {
-	int32 volID;
-	int32 nextUnique;
+	afs_int32 volID;
+	afs_int32 nextUnique;
 	int type;
-	int32 parentID;
-	int32 cloneID;
-	int32 backupID;
-	int32 restoredFromID;
-	int32 maxQuota;
-	int32 minQuota;
-	int32 owner;
-	int32 creationDate;
-	int32 accessDate;
-	int32 updateDate;
-	int32 expirationDate;
-	int32 backupDate;
-	int32 copyDate;
+	afs_int32 parentID;
+	afs_int32 cloneID;
+	afs_int32 backupID;
+	afs_int32 restoredFromID;
+	afs_int32 maxQuota;
+	afs_int32 minQuota;
+	afs_int32 owner;
+	afs_int32 creationDate;
+	afs_int32 accessDate;
+	afs_int32 updateDate;
+	afs_int32 expirationDate;
+	afs_int32 backupDate;
+	afs_int32 copyDate;
 };
 typedef struct volser_status volser_status;
 bool_t xdr_volser_status();
 
 
 struct destServer {
-	int32 destHost;
-	int32 destPort;
-	int32 destSSID;
+	afs_int32 destHost;
+	afs_int32 destPort;
+	afs_int32 destSSID;
 };
 typedef struct destServer destServer;
 bool_t xdr_destServer();
@@ -107,29 +108,29 @@ bool_t xdr_destServer();
 
 struct volintInfo {
 	char name[32];
-	int32 volid;
-	int32 type;
-	int32 backupID;
-	int32 parentID;
-	int32 cloneID;
-	int32 status;
-	int32 copyDate;
+	afs_int32 volid;
+	afs_int32 type;
+	afs_int32 backupID;
+	afs_int32 parentID;
+	afs_int32 cloneID;
+	afs_int32 status;
+	afs_int32 copyDate;
 	u_char inUse;
 	u_char needsSalvaged;
 	u_char destroyMe;
-	int32 creationDate;
-	int32 accessDate;
-	int32 updateDate;
-	int32 backupDate;
+	afs_int32 creationDate;
+	afs_int32 accessDate;
+	afs_int32 updateDate;
+	afs_int32 backupDate;
 	int dayUse;
 	int filecount;
 	int maxquota;
 	int size;
-	int32 flags;
-	int32 spare0;
-	int32 spare1;
-	int32 spare2;
-	int32 spare3;
+	afs_int32 flags;
+	afs_int32 spare0;
+	afs_int32 spare1;
+	afs_int32 spare2;
+	afs_int32 spare3;
 };
 typedef struct volintInfo volintInfo;
 bool_t xdr_volintInfo();
@@ -155,47 +156,47 @@ bool_t xdr_volintInfo();
 
 struct volintXInfo {
 	char name[32];
-	int32 volid;
-	int32 type;
-	int32 backupID;
-	int32 parentID;
-	int32 cloneID;
-	int32 status;
-	int32 copyDate;
+	afs_int32 volid;
+	afs_int32 type;
+	afs_int32 backupID;
+	afs_int32 parentID;
+	afs_int32 cloneID;
+	afs_int32 status;
+	afs_int32 copyDate;
 	u_char inUse;
-	int32 creationDate;
-	int32 accessDate;
-	int32 updateDate;
-	int32 backupDate;
+	afs_int32 creationDate;
+	afs_int32 accessDate;
+	afs_int32 updateDate;
+	afs_int32 backupDate;
 	int dayUse;
 	int filecount;
 	int maxquota;
 	int size;
-	int32 stat_reads[VOLINT_STATS_NUM_RWINFO_FIELDS];
-	int32 stat_writes[VOLINT_STATS_NUM_RWINFO_FIELDS];
-	int32 stat_fileSameAuthor[VOLINT_STATS_NUM_TIME_FIELDS];
-	int32 stat_fileDiffAuthor[VOLINT_STATS_NUM_TIME_FIELDS];
-	int32 stat_dirSameAuthor[VOLINT_STATS_NUM_TIME_FIELDS];
-	int32 stat_dirDiffAuthor[VOLINT_STATS_NUM_TIME_FIELDS];
+	afs_int32 stat_reads[VOLINT_STATS_NUM_RWINFO_FIELDS];
+	afs_int32 stat_writes[VOLINT_STATS_NUM_RWINFO_FIELDS];
+	afs_int32 stat_fileSameAuthor[VOLINT_STATS_NUM_TIME_FIELDS];
+	afs_int32 stat_fileDiffAuthor[VOLINT_STATS_NUM_TIME_FIELDS];
+	afs_int32 stat_dirSameAuthor[VOLINT_STATS_NUM_TIME_FIELDS];
+	afs_int32 stat_dirDiffAuthor[VOLINT_STATS_NUM_TIME_FIELDS];
 };
 typedef struct volintXInfo volintXInfo;
 bool_t xdr_volintXInfo();
 
 
 struct transDebugInfo {
-	int32 tid;
-	int32 time;
-	int32 creationTime;
-	int32 returnCode;
-	int32 volid;
-	int32 partition;
+	afs_int32 tid;
+	afs_int32 time;
+	afs_int32 creationTime;
+	afs_int32 returnCode;
+	afs_int32 volid;
+	afs_int32 partition;
 	short iflags;
 	char vflags;
 	char tflags;
 	char lastProcName[30];
 	int callValid;
-	int32 readNext;
-	int32 transmitNext;
+	afs_int32 readNext;
+	afs_int32 transmitNext;
 	int lastSendTime;
 	int lastReceiveTime;
 };
@@ -204,7 +205,7 @@ bool_t xdr_transDebugInfo();
 
 
 struct pIDs {
-	int32 partIds[26];
+	afs_int32 partIds[26];
 };
 typedef struct pIDs pIDs;
 bool_t xdr_pIDs();
@@ -224,16 +225,16 @@ bool_t xdr_diskPartition();
 
 struct restoreCookie {
 	char name[32];
-	int32 type;
-	int32 clone;
-	int32 parent;
+	afs_int32 type;
+	afs_int32 clone;
+	afs_int32 parent;
 };
 typedef struct restoreCookie restoreCookie;
 bool_t xdr_restoreCookie();
 
 
 struct replica {
-	int32 trans;
+	afs_int32 trans;
 	struct destServer server;
 };
 typedef struct replica replica;
@@ -249,7 +250,7 @@ bool_t xdr_manyDests();
 
 typedef struct manyResults {
 	u_int manyResults_len;
-	int32 *manyResults_val;
+	afs_int32 *manyResults_val;
 } manyResults;
 bool_t xdr_manyResults();
 
@@ -270,7 +271,7 @@ bool_t xdr_volEntries();
 
 typedef struct partEntries {
 	u_int partEntries_len;
-	int32 *partEntries_val;
+	afs_int32 *partEntries_val;
 } partEntries;
 bool_t xdr_partEntries();
 
@@ -287,14 +288,9 @@ bool_t xdr_volXEntries();
 #define AFSVolHIGHEST_OPCODE	128
 #define AFSVolNUMBER_OPCODES	29
 
-#define AFSVolNO_OF_CLIENT_STAT_FUNCS	31
-
-#define AFSVolNO_OF_SERVER_STAT_FUNCS	29
+#define AFSVolNO_OF_STAT_FUNCS	29
 
 AFS_RXGEN_EXPORT
-extern const char *AFSVolclient_function_names[];
-
-AFS_RXGEN_EXPORT
-extern const char *AFSVolserver_function_names[];
+extern const char *AFSVolfunction_names[];
 
 #endif	/* _RXGEN_VOLINT_ */

@@ -1,5 +1,5 @@
 /* Copyright (C) 1998 Transarc Corporation - All rights reserved.
- * $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_65/include/afs/dirpath.h,v 1.1.1.1 1999-12-22 20:05:03 ghudson Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_65/include/afs/dirpath.h,v 1.1.1.2 2000-04-12 19:44:35 ghudson Exp $
  */
 
 #ifndef _DIRPATH_H

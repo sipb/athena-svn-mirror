@@ -72,7 +72,12 @@
 #define AFS_RXGEN_EXPORT
 #endif /* AFS_NT40_ENV */
 
+#define VL_STATINDEX 15
 #include	"vl_opcodes.h"	/* directly to other places */
+#ifdef KERNEL
+#define	xdr_array(a,b,c,d,e,f)	xdr_arrayN(a,b,c,d,e,f)
+#include "../afs/longc_procs.h"
+#endif
 #define VLDBVERSION_4 4
 #define VLDBVERSION 3
 #define OVLDBVERSION 2
@@ -82,20 +87,20 @@
 #define MAXTYPES 3
 
 struct VldbUpdateEntry {
-	u_int32 Mask;
+	afs_uint32 Mask;
 	char name[VL_MAXNAMELEN];
-	int32 spares3;
-	int32 flags;
-	u_int32 ReadOnlyId;
-	u_int32 BackupId;
-	int32 cloneId;
-	int32 nModifiedRepsites;
-	u_int32 RepsitesMask[OMAXNSERVERS];
-	int32 RepsitesTargetServer[OMAXNSERVERS];
-	int32 RepsitesTargetPart[OMAXNSERVERS];
-	int32 RepsitesNewServer[OMAXNSERVERS];
-	int32 RepsitesNewPart[OMAXNSERVERS];
-	int32 RepsitesNewFlags[OMAXNSERVERS];
+	afs_int32 spares3;
+	afs_int32 flags;
+	afs_uint32 ReadOnlyId;
+	afs_uint32 BackupId;
+	afs_int32 cloneId;
+	afs_int32 nModifiedRepsites;
+	afs_uint32 RepsitesMask[OMAXNSERVERS];
+	afs_int32 RepsitesTargetServer[OMAXNSERVERS];
+	afs_int32 RepsitesTargetPart[OMAXNSERVERS];
+	afs_int32 RepsitesNewServer[OMAXNSERVERS];
+	afs_int32 RepsitesNewPart[OMAXNSERVERS];
+	afs_int32 RepsitesNewFlags[OMAXNSERVERS];
 };
 typedef struct VldbUpdateEntry VldbUpdateEntry;
 bool_t xdr_VldbUpdateEntry();
@@ -124,12 +129,12 @@ bool_t xdr_bulk();
 
 
 struct VldbListByAttributes {
-	u_int32 Mask;
-	int32 server;
-	int32 partition;
-	int32 spares3;
-	int32 volumeid;
-	int32 flag;
+	afs_uint32 Mask;
+	afs_int32 server;
+	afs_int32 partition;
+	afs_int32 spares3;
+	afs_int32 volumeid;
+	afs_int32 flag;
 };
 typedef struct VldbListByAttributes VldbListByAttributes;
 bool_t xdr_VldbListByAttributes();
@@ -141,14 +146,14 @@ bool_t xdr_VldbListByAttributes();
 
 struct vldbentry {
 	char name[VL_MAXNAMELEN];
-	int32 spares3;
-	int32 nServers;
-	int32 serverNumber[OMAXNSERVERS];
-	int32 serverPartition[OMAXNSERVERS];
-	int32 serverFlags[OMAXNSERVERS];
-	u_int32 volumeId[MAXTYPES];
-	int32 cloneId;
-	int32 flags;
+	afs_int32 spares3;
+	afs_int32 nServers;
+	afs_int32 serverNumber[OMAXNSERVERS];
+	afs_int32 serverPartition[OMAXNSERVERS];
+	afs_int32 serverFlags[OMAXNSERVERS];
+	afs_uint32 volumeId[MAXTYPES];
+	afs_int32 cloneId;
+	afs_int32 flags;
 };
 typedef struct vldbentry vldbentry;
 bool_t xdr_vldbentry();
@@ -156,32 +161,32 @@ bool_t xdr_vldbentry();
 
 struct nvldbentry {
 	char name[VL_MAXNAMELEN];
-	int32 nServers;
-	int32 serverNumber[NMAXNSERVERS];
-	int32 serverPartition[NMAXNSERVERS];
-	int32 serverFlags[NMAXNSERVERS];
-	u_int32 volumeId[MAXTYPES];
-	int32 cloneId;
-	int32 flags;
-	int32 matchindex;
-	int32 spares2;
-	int32 spares3;
-	int32 spares4;
-	int32 spares5;
-	int32 spares6;
-	int32 spares7;
-	int32 spares8;
-	int32 spares9;
+	afs_int32 nServers;
+	afs_int32 serverNumber[NMAXNSERVERS];
+	afs_int32 serverPartition[NMAXNSERVERS];
+	afs_int32 serverFlags[NMAXNSERVERS];
+	afs_uint32 volumeId[MAXTYPES];
+	afs_int32 cloneId;
+	afs_int32 flags;
+	afs_int32 matchindex;
+	afs_int32 spares2;
+	afs_int32 spares3;
+	afs_int32 spares4;
+	afs_int32 spares5;
+	afs_int32 spares6;
+	afs_int32 spares7;
+	afs_int32 spares8;
+	afs_int32 spares9;
 };
 typedef struct nvldbentry nvldbentry;
 bool_t xdr_nvldbentry();
 
 
 struct ListAddrByAttributes {
-	int32 Mask;
-	u_int32 ipaddr;
-	int32 index;
-	int32 spare1;
+	afs_int32 Mask;
+	afs_uint32 ipaddr;
+	afs_int32 index;
+	afs_int32 spare1;
 	afsUUID uuid;
 };
 typedef struct ListAddrByAttributes ListAddrByAttributes;
@@ -193,37 +198,37 @@ bool_t xdr_ListAddrByAttributes();
 
 struct uvldbentry {
 	char name[VL_MAXNAMELEN];
-	int32 nServers;
+	afs_int32 nServers;
 	afsUUID serverNumber[NMAXNSERVERS];
-	int32 serverUnique[NMAXNSERVERS];
-	int32 serverPartition[NMAXNSERVERS];
-	int32 serverFlags[NMAXNSERVERS];
-	u_int32 volumeId[MAXTYPES];
-	int32 cloneId;
-	int32 flags;
-	int32 spares1;
-	int32 spares2;
-	int32 spares3;
-	int32 spares4;
-	int32 spares5;
-	int32 spares6;
-	int32 spares7;
-	int32 spares8;
-	int32 spares9;
+	afs_int32 serverUnique[NMAXNSERVERS];
+	afs_int32 serverPartition[NMAXNSERVERS];
+	afs_int32 serverFlags[NMAXNSERVERS];
+	afs_uint32 volumeId[MAXTYPES];
+	afs_int32 cloneId;
+	afs_int32 flags;
+	afs_int32 spares1;
+	afs_int32 spares2;
+	afs_int32 spares3;
+	afs_int32 spares4;
+	afs_int32 spares5;
+	afs_int32 spares6;
+	afs_int32 spares7;
+	afs_int32 spares8;
+	afs_int32 spares9;
 };
 typedef struct uvldbentry uvldbentry;
 bool_t xdr_uvldbentry();
 
 
 struct vital_vlheader {
-	int32 vldbversion;
-	int32 headersize;
-	int32 freePtr;
-	int32 eofPtr;
-	int32 allocs;
-	int32 frees;
-	int32 MaxVolumeId;
-	int32 totalEntries[MAXTYPES];
+	afs_int32 vldbversion;
+	afs_int32 headersize;
+	afs_int32 freePtr;
+	afs_int32 eofPtr;
+	afs_int32 allocs;
+	afs_int32 frees;
+	afs_int32 MaxVolumeId;
+	afs_int32 totalEntries[MAXTYPES];
 };
 typedef struct vital_vlheader vital_vlheader;
 bool_t xdr_vital_vlheader();
@@ -231,10 +236,10 @@ bool_t xdr_vital_vlheader();
 #define MAX_NUMBER_OPCODES 50
 
 struct vldstats {
-	u_int32 start_time;
-	int32 requests[MAX_NUMBER_OPCODES];
-	int32 aborts[MAX_NUMBER_OPCODES];
-	int32 reserved[5];
+	afs_uint32 start_time;
+	afs_int32 requests[MAX_NUMBER_OPCODES];
+	afs_int32 aborts[MAX_NUMBER_OPCODES];
+	afs_int32 reserved[5];
 };
 typedef struct vldstats vldstats;
 bool_t xdr_vldstats();
@@ -242,6 +247,7 @@ bool_t xdr_vldstats();
 #define	VLF_RWEXISTS	    0x1000  /* flags for whole vldb entry */
 #define	VLF_ROEXISTS	    0x2000
 #define	VLF_BACKEXISTS	    0x4000
+#define	VLF_DFSFILESET	    0x8000  /* Volume is really DFS fileset */
 #define	VLSF_NEWREPSITE	    0x01    /* flags for indiv. server entry */
 #define	VLSF_ROVOL	    0x02
 #define	VLSF_RWVOL	    0x04
@@ -271,10 +277,21 @@ bool_t xdr_ubulkentries();
 
 typedef struct bulkaddrs {
 	u_int bulkaddrs_len;
-	u_int32 *bulkaddrs_val;
+	afs_uint32 *bulkaddrs_val;
 } bulkaddrs;
 bool_t xdr_bulkaddrs();
 
+
+struct VLCallBack {
+	afs_uint32 CallBackVersion;
+	afs_uint32 ExpirationTime;
+	afs_uint32 CallBackType;
+	afs_uint32 Handle;
+};
+typedef struct VLCallBack VLCallBack;
+bool_t xdr_VLCallBack();
+
+#if !defined(KERNEL)
 
 typedef struct single_vldbentry *vldblist;
 bool_t xdr_vldblist();
@@ -313,53 +330,16 @@ struct nvldb_list {
 typedef struct nvldb_list nvldb_list;
 bool_t xdr_nvldb_list();
 
-
-typedef struct single_uvldbentry *uvldblist;
-bool_t xdr_uvldblist();
-
-
-struct single_uvldbentry {
-	uvldbentry VldbEntry;
-	uvldblist next_vldb;
-};
-typedef struct single_uvldbentry single_uvldbentry;
-bool_t xdr_single_uvldbentry();
-
-
-struct uvldb_list {
-	uvldblist node;
-};
-typedef struct uvldb_list uvldb_list;
-bool_t xdr_uvldb_list();
-
-
-typedef struct VLCallBack *vlcallback;
-bool_t xdr_vlcallback();
-
-
-struct VLCallBack {
-	u_int32 CallBackVersion;
-	u_int32 ExpirationTime;
-	u_int32 CallBackType;
-	u_int32 Handle;
-};
-typedef struct VLCallBack VLCallBack;
-bool_t xdr_VLCallBack();
-
+#endif /* !defined(KERNEL) */
 
 /* Opcode-related useful stats for package: VL_ */
 #define VL_LOWEST_OPCODE   501
 #define VL_HIGHEST_OPCODE	534
 #define VL_NUMBER_OPCODES	28
 
-#define VL_NO_OF_CLIENT_STAT_FUNCS	28
-
-#define VL_NO_OF_SERVER_STAT_FUNCS	28
+#define VL_NO_OF_STAT_FUNCS	28
 
 AFS_RXGEN_EXPORT
-extern const char *VL_client_function_names[];
-
-AFS_RXGEN_EXPORT
-extern const char *VL_server_function_names[];
+extern const char *VL_function_names[];
 
 #endif	/* _RXGEN_VLDBINT_ */

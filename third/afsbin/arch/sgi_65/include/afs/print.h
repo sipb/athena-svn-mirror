@@ -72,6 +72,7 @@
 #define AFS_RXGEN_EXPORT
 #endif /* AFS_NT40_ENV */
 
+#define PR_STATINDEX 8
 #define PRSUCCESS 0
 #define PR_MAXNAMELEN 64
 #define PR_MAXGROUPS 5000
@@ -80,25 +81,25 @@
 #define COSIZE 39
 
 struct prdebugentry {
-	int32 flags;
-	int32 id;
-	int32 cellid;
-	int32 next;
-	int32 reserved[5];
-	int32 entries[PRSIZE];
-	int32 nextID;
-	int32 nextname;
-	int32 owner;
-	int32 creator;
-	int32 ngroups;
-	int32 nusers;
-	int32 count;
-	int32 instance;
-	int32 owned;
-	int32 nextOwned;
-	int32 parent;
-	int32 sibling;
-	int32 child;
+	afs_int32 flags;
+	afs_int32 id;
+	afs_int32 cellid;
+	afs_int32 next;
+	afs_int32 reserved[5];
+	afs_int32 entries[PRSIZE];
+	afs_int32 nextID;
+	afs_int32 nextname;
+	afs_int32 owner;
+	afs_int32 creator;
+	afs_int32 ngroups;
+	afs_int32 nusers;
+	afs_int32 count;
+	afs_int32 instance;
+	afs_int32 owned;
+	afs_int32 nextOwned;
+	afs_int32 parent;
+	afs_int32 sibling;
+	afs_int32 child;
 	char name[PR_MAXNAMELEN];
 };
 typedef struct prdebugentry prdebugentry;
@@ -106,14 +107,14 @@ bool_t xdr_prdebugentry();
 
 
 struct prcheckentry {
-	int32 flags;
-	int32 id;
-	int32 owner;
-	int32 creator;
-	int32 ngroups;
-	int32 nusers;
-	int32 count;
-	int32 reserved[5];
+	afs_int32 flags;
+	afs_int32 id;
+	afs_int32 owner;
+	afs_int32 creator;
+	afs_int32 ngroups;
+	afs_int32 nusers;
+	afs_int32 count;
+	afs_int32 reserved[5];
 	char name[PR_MAXNAMELEN];
 };
 typedef struct prcheckentry prcheckentry;
@@ -121,14 +122,14 @@ bool_t xdr_prcheckentry();
 
 
 struct prlistentries {
-	int32 flags;
-	int32 id;
-	int32 owner;
-	int32 creator;
-	int32 ngroups;
-	int32 nusers;
-	int32 count;
-	int32 reserved[5];
+	afs_int32 flags;
+	afs_int32 id;
+	afs_int32 owner;
+	afs_int32 creator;
+	afs_int32 ngroups;
+	afs_int32 nusers;
+	afs_int32 count;
+	afs_int32 reserved[5];
 	char name[PR_MAXNAMELEN];
 };
 typedef struct prlistentries prlistentries;
@@ -136,15 +137,15 @@ bool_t xdr_prlistentries();
 
 
 struct PrUpdateEntry {
-	u_int32 Mask;
-	int32 flags;
-	int32 id;
-	int32 owner;
-	int32 creator;
-	int32 ngroups;
-	int32 nusers;
-	int32 count;
-	int32 reserved[5];
+	afs_uint32 Mask;
+	afs_int32 flags;
+	afs_int32 id;
+	afs_int32 owner;
+	afs_int32 creator;
+	afs_int32 ngroups;
+	afs_int32 nusers;
+	afs_int32 count;
+	afs_int32 reserved[5];
 	char name[PR_MAXNAMELEN];
 };
 typedef struct PrUpdateEntry PrUpdateEntry;
@@ -172,14 +173,14 @@ bool_t xdr_namelist();
 
 typedef struct idlist {
 	u_int idlist_len;
-	int32 *idlist_val;
+	afs_int32 *idlist_val;
 } idlist;
 bool_t xdr_idlist();
 
 
 typedef struct prlist {
 	u_int prlist_len;
-	int32 *prlist_val;
+	afs_int32 *prlist_val;
 } prlist;
 bool_t xdr_prlist();
 
@@ -196,14 +197,9 @@ bool_t xdr_prentries();
 #define PR_HIGHEST_OPCODE	521
 #define PR_NUMBER_OPCODES	22
 
-#define PR_NO_OF_CLIENT_STAT_FUNCS	22
-
-#define PR_NO_OF_SERVER_STAT_FUNCS	22
+#define PR_NO_OF_STAT_FUNCS	22
 
 AFS_RXGEN_EXPORT
-extern const char *PR_client_function_names[];
-
-AFS_RXGEN_EXPORT
-extern const char *PR_server_function_names[];
+extern const char *PR_function_names[];
 
 #endif	/* _RXGEN_PTINT_ */
