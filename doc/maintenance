@@ -286,13 +286,14 @@ The getcluster(8) man explains how clients interpret cluster
 information.  This section documents the clusters related to the
 release cycle, and how they should be managed.
 
-There are five clusters for each platform, each named by a phase of
-the release cycle (crash, alpha, beta, early, public) of the form
-PHASE-PLATFORM.  There are two filsys entries for each platform and
-release pointing to system packs for the release,
-athena-PLATFORMsys-XY and dev-PLATFORMsys-XY, where X and Y are the
-major and minor numbers of the release.  For the SGI, we currently
-also have athena-sgi-inst-XY and dev-sgi-inst-XY.
+There are five clusters for each platform, each of the form
+PHASE-PLATFORM, where PHASE is a phase of the release cycle (crash,
+alpha, beta, early, public) and PLATFORM is the machtype name of the
+platform.  There are two filsys entries for each platform and release
+pointing to the athena cell and dev cell system packs for the release;
+they have the form athena-PLATFORMsys-XY and dev-PLATFORMsys-XY, where
+X and Y are the major and minor numbers of the release.  For the SGI,
+we currently also have athena-sgi-inst-XY and dev-sgi-inst-XY.
 
 At the crash and burn, alpha, and beta phases of the release cycle,
 the appropriate cluster (PHASE-PLATFORM) should be updated to include
