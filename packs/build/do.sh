@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: do.sh,v 1.53 2000-04-01 15:49:38 ghudson Exp $
+# $Id: do.sh,v 1.54 2000-04-02 21:53:04 ghudson Exp $
 
 source=/mit/source
 srvd=/afs/dev.mit.edu/system/$ATHENA_SYS/srvd-current
@@ -182,7 +182,7 @@ if [ -r Makefile.athena ]; then
 	SOURCE=$source
 	COMPILER=$CC
 	ATHTOOLROOT=$athtoolroot
-	if [ prep = "$operation" ]; then
+	if [ dist = "$operation" ]; then
 		export CONFIG_SITE XCONFIGDIR
 		CONFIG_SITE=$source/packs/build/config.site
 		XCONFIGDIR=$source/packs/build/xconfig
