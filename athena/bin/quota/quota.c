@@ -548,7 +548,8 @@ getnfsquota(mntp, uid, qvp)
 		break;
 
 	case Q_EPERM:
-		fprintf(stderr, "Warning: no NFS mapping on host: %s\n", hostp);
+		if (vflag)
+		  fprintf(stderr, "Warning: no NFS mapping on host: %s\n", hostp);
 		break;
 
 	default:
