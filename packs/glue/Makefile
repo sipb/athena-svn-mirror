@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.27 1998-06-08 14:11:15 ghudson Exp $
+# $Id: Makefile,v 1.27.2.1 1998-09-24 14:45:23 ghudson Exp $
 
 SHELL=/bin/sh
 ATHRBINDIR=/bin/athena
@@ -6,7 +6,7 @@ ATHBINDIR=/usr/athena/bin
 ATHETCDIR=/usr/athena/etc
 ATHMANDIR=/usr/athena/man
 ATTACHRUN=addusr blanche bos chfn chpobox chsh dcmmaint help klog \
-	listmaint mailmaint moira mrcheck namespace olc_answers olh \
+	listmaint mailmaint moira mrcheck namespace olh \
 	olh_ascii olh_motif pts usermaint userreg vos xinfo
 ANDREW=/afs/athena.mit.edu/astaff/project/andrew/export
 MOIRA=/afs/athena.mit.edu/system/moira
@@ -92,7 +92,7 @@ install:
 	install -c -m 555 moira ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 mrcheck ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 namespace ${DESTDIR}${ATHBINDIR}
-	install -c -m 555 olc_answers ${DESTDIR}${ATHBINDIR}
+	install -c -m 555 olc_answers.sh ${DESTDIR}${ATHBINDIR}/olc_answers
 	install -c -m 555 olh ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 olh_ascii ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 olh_motif ${DESTDIR}${ATHBINDIR}
