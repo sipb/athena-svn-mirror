@@ -35,7 +35,7 @@ Briefly, even if a ``bad guy'' can get sendmail to run a program
 without going through an alias or forward file,
 .I smrsh
 limits the set of programs that he or she can execute.
-.PP
+.Pp
 Briefly,
 .I smrsh
 limits programs to be in the directory
@@ -45,7 +45,7 @@ It also rejects any commands with the characters
 `\`', `<', `>', `|', `;', `&', `$', `(', `)', `\er' (carriage return),
 or `\en' (newline)
 on the command line to prevent ``end run'' attacks.
-.PP
+.Pp
 Initial pathnames on programs are stripped,
 so forwarding to ``/usr/ucb/vacation'',
 ``/usr/bin/vacation'',
@@ -54,7 +54,7 @@ and
 ``vacation''
 all actually forward to
 ``/usr/adm/sm.bin/vacation''.
-.PP
+.Pp
 System administrators should be conservative about populating
 /usr/adm/sm.bin.
 Reasonable additions are
