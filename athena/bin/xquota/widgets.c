@@ -1,7 +1,7 @@
 /*
  * xquota -  X window system quota display program.
  *
- * $Athena: man.c,v 1.7 89/02/15 16:06:44 kit Exp $
+ * $Athena: widgets.c,v 1.1 89/03/05 20:58:28 kit Locked $
  *
  * Copyright 1989 Massachusetts Institute of Technology
  *
@@ -20,7 +20,7 @@
  */
 
 #if ( !defined(lint) && !defined(SABER))
-  static char rcs_version[] = "$Athena: man.c,v 4.7 89/02/15 20:09:34 kit Locked $";
+  static char rcs_version[] = "$Athena: widgets.c,v 1.1 89/03/05 20:58:28 kit Locked $";
 #endif
 
 #include <stdio.h>
@@ -292,7 +292,8 @@ Widget parent;
   Cardinal num_args;
 
   num_args = 0;
-  XtSetArg( arglist[num_args], XtNvertical, FALSE); num_args++;  
+  XtSetArg( arglist[num_args], XtNorientation, XtorientHorizontal);
+  num_args++;  
   XtSetArg( arglist[num_args], XtNskipAdjust, TRUE); num_args++;  
   hpane = XtCreateManagedWidget("hPane", panedWidgetClass, parent,
 				arglist, num_args);
@@ -732,7 +733,7 @@ int quota, used;
   if ( (((int) temp) >= info->warn && !info->flipped) ||
        (((int) temp) < info->warn && info->flipped) ) {
     FlipColors(w);
-    if (info->numbers)
+    if (info->numbers && !info->space_saver)
       FlipColors(info->used_top);
     FlipColors(info->used_widget);
     info->flipped = !info->flipped;
