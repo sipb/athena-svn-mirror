@@ -1,4 +1,4 @@
-# $Id: packages,v 1.269 2004-04-08 19:38:19 zacheiss Exp $
+# $Id: packages,v 1.270 2004-04-09 16:55:11 zacheiss Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -253,6 +253,7 @@ third/nmh			requires krb5,hesiod
 third/nvi			on linux
 third/oaf			requires libxml,ORBit,popt
 third/openafs
+third/openldap			requires openssl,cyrus-sasl
 third/openssh			requires krb5,tcp_wrappers,openssl,al,hesiod
 third/openssl			requires perl
 third/ORBit			requires glib,gettext
