@@ -11,7 +11,7 @@
  */
 
 #if !defined(lint) && !defined(SABER)
-     static char rcsid_directories_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/directories.c,v 1.17 1991-02-20 17:25:53 jik Exp $";
+     static char rcsid_directories_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/directories.c,v 1.18 1991-02-22 06:32:25 jik Exp $";
 #endif
 
 #include <stdio.h>
@@ -136,7 +136,7 @@ filerec **leaf;
      filerec *parent;
      char next_name[MAXNAMLEN];
      char lpath[MAXPATHLEN], built_path[MAXPATHLEN], *ptr;
-     struct stat specs;
+     struct mystat specs;
      int retval;
      
      if (retval = get_specs(path, &specs, DONT_FOLLOW_LINKS)) {
@@ -205,27 +205,40 @@ filerec **leaf;
 
 
 
-
 int get_specs(path, specs, follow)
 char *path;
-struct stat *specs;
+struct mystat *specs;
 int follow; /* follow symlinks or not? */
 {
      int status;
+     struct stat realspecs;
      
      if (strlen(path)) if ((path[strlen(path) - 1] == '/') &&
 			   (strlen(path) != 1))
 	  path[strlen(path) - 1] = '\0';
      if (follow == FOLLOW_LINKS)
-	  status = stat(path, specs);
+	  status = stat(path, &realspecs);
      else 
-	  status = lstat(path, specs);
+	  status = lstat(path, &realspecs);
 
      if (status) {
 	  set_error(errno);
 	  error(path);
 	  return error_code;
      }
+
+     specs->st_dev = realspecs.st_dev;
+     specs->st_ino = realspecs.st_ino;
+     specs->st_mode = realspecs.st_mode;
+     specs->st_size = realspecs.st_size;
+     specs->st_ctime = realspecs.st_ctime;
+#ifdef notdef
+     /*
+      * See comment in directories.h to understand why this is
+      * disabled.
+      */
+     specs->st_blocks = realspecs.st_blocks;
+#endif
 
      return 0;
 }
