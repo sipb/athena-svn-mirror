@@ -1,9 +1,9 @@
 /*
- * $Id: login.c,v 1.64 1993-09-29 14:40:26 mar Exp $
+ * $Id: login.c,v 1.65 1993-10-06 15:56:24 probe Exp $
  */
 
 #ifndef lint
-static char *rcsid = "$Id: login.c,v 1.64 1993-09-29 14:40:26 mar Exp $";
+static char *rcsid = "$Id: login.c,v 1.65 1993-10-06 15:56:24 probe Exp $";
 #endif
 
 /*
@@ -325,7 +325,7 @@ main(argc, argv)
     signal(SIGQUIT, SIG_IGN);
     signal(SIGINT, SIG_IGN);
     setpriority(PRIO_PROCESS, 0, 0);
-    umask(022);
+    umask(0);
 #if !defined(VFS) || defined(ultrix)
     quota(Q_SETUID, 0, 0, 0);
 #endif /* !VFS || ultrix */
