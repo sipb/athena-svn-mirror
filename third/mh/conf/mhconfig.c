@@ -1,18 +1,13 @@
 /* mhconfig.c - configure MH */
 /* cc [-DSYS5] mhconfig.c -o mhconfig */
 #ifndef	lint
-static char ident[] = "@(#)$Id: mhconfig.c,v 1.1.1.1 1996-10-07 07:12:33 ghudson Exp $";
+static char ident[] = "@(#)$Id: mhconfig.c,v 1.2 1996-10-13 18:43:01 ghudson Exp $";
 #endif	/* lint */
 
 #include <ctype.h>
 #include <stdio.h>
-#ifdef	hpux
-#define	SYS5
-#endif
-#ifdef	SYS5
 #define	index	strchr
 #define	rindex	strrchr
-#endif /* SYS5 */
 
 static void insopt(), mkopts();
 
