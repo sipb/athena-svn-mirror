@@ -1,5 +1,5 @@
 /* 
- * $Id: rkinit.c,v 1.2 1990-07-16 14:17:37 qjb Exp $
+ * $Id: rkinit.c,v 1.3 1990-07-17 13:24:33 qjb Exp $
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/rkinit/rkinit.c,v $
  * $Author: qjb $
  *
@@ -7,11 +7,12 @@
  */
 
 #if !defined(lint) && !defined(SABER) && !defined(LOCORE) && defined(RCS_HDRS)
-static char *rcsid = "$Id: rkinit.c,v 1.2 1990-07-16 14:17:37 qjb Exp $";
+static char *rcsid = "$Id: rkinit.c,v 1.3 1990-07-17 13:24:33 qjb Exp $";
 #endif /* lint || SABER || LOCORE || RCS_HDRS */
 
 #include <stdio.h>
 #include <strings.h>
+#include <sys/types.h>
 #include <netdb.h>
 #include <pwd.h>
 #include <krb.h>
