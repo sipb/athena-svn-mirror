@@ -7,7 +7,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2002-04-28 04:19+0200\n"
+"Report-Msgid-Bugs-To: bug-gnu-libiconv@gnu.org\n"
+"POT-Creation-Date: 2004-01-22 11:54+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -15,68 +16,66 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/iconv.c:74
-msgid "Usage: iconv [--binary] [-c] [-s] [-f fromcode] [-t tocode] [file ...]"
-msgstr ""
-
-#: src/iconv.c:76
+#: src/iconv.c:54
 msgid "Usage: iconv [-c] [-s] [-f fromcode] [-t tocode] [file ...]"
 msgstr ""
 
-#: src/iconv.c:79
+#: src/iconv.c:56
 msgid "or:    iconv -l"
 msgstr ""
 
-#: src/iconv.c:89
+#: src/iconv.c:66
+#, c-format
 msgid ""
 "This is free software; see the source for copying conditions.  There is NO\n"
 "warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n"
 msgstr ""
 
-#: src/iconv.c:92
+#: src/iconv.c:69
 #, c-format
 msgid "Written by %s.\n"
 msgstr ""
 
-#: src/iconv.c:129 src/iconv.c:161 src/iconv.c:211
+#: src/iconv.c:105 src/iconv.c:137 src/iconv.c:187
 #, c-format
 msgid "iconv: %s: incomplete character or shift sequence\n"
 msgstr ""
 
-#: src/iconv.c:155 src/iconv.c:206
+#: src/iconv.c:131 src/iconv.c:182
 #, c-format
 msgid "iconv: %s: cannot convert\n"
 msgstr ""
 
-#: src/iconv.c:177 src/iconv.c:216 src/iconv.c:331
+#: src/iconv.c:153 src/iconv.c:192 src/iconv.c:310
 #, c-format
 msgid "iconv: %s: "
 msgstr ""
 
-#: src/iconv.c:225
+#: src/iconv.c:201
 #, c-format
 msgid "iconv: %s: I/O error\n"
 msgstr ""
 
-#: src/iconv.c:315
+#: src/iconv.c:294
 #, c-format
 msgid "iconv: conversion from %s unsupported\n"
 msgstr ""
 
-#: src/iconv.c:317
+#: src/iconv.c:296
 #, c-format
 msgid "iconv: conversion to %s unsupported\n"
 msgstr ""
 
-#: src/iconv.c:319
+#: src/iconv.c:298
 #, c-format
 msgid "iconv: conversion from %s to %s unsupported\n"
 msgstr ""
 
-#: src/iconv.c:323
+#: src/iconv.c:302
 msgid "(stdin)"
 msgstr ""
 
-#: src/iconv.c:344
+#: src/iconv.c:323
+#, c-format
 msgid "iconv: I/O error\n"
 msgstr ""
