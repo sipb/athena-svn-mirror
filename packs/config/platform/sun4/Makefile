@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.9.2.3 1997-07-29 18:21:58 ghudson Exp $
+# $Id: Makefile,v 1.9.2.4 1997-10-13 15:58:45 ghudson Exp $
 
 ETCDIR=/etc
 ATHRETCDIR=/etc/athena
@@ -12,7 +12,7 @@ MAIL=/etc/mail
 CRONTABS=/var/spool/cron/crontabs
 USRLIB=/usr/lib
 
-OPENWINLIBS=libX.so.4 libX11.so.4 libXaw.so.4 libXaw.so.5 libXext.so \
+OPENWINLIBS=libX.so.4 libX11.so.4 libXaw.so.4 libXaw.so.5 libXext.so.0 \
 	libXi.so.5 libXinput.so.0 libXmu.so.4 libXol.so.3 libXt.so.4 \
 	libXtst.so.1
 DTLIBS=libMrm.so.3 libUil.so.3 libXm.so.3
@@ -82,6 +82,8 @@ install:
 		rm -f "${DESTDIR}${USRLIB}/$$i"; \
 		ln -s "../dt/lib/$$i" "${DESTDIR}${USRLIB}/$$i"; \
 	done
+	rm -f "${DESTDIR}${USRLIB}/libucb.so.1"
+	ln -s ../ucblib/libucb.so.1 "${DESTDIR}${USRLIB}/libucb.so.1"
 
 clean:
 
