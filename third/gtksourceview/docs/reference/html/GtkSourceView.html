@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>GtkSourceView</title><meta name="generator" content="DocBook XSL Stylesheets V1.61.2"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><link rel="stylesheet" href="style.css" type="text/css"><link rel="home" href="index.html" title="GtkSourceView Reference Manual"><link rel="up" href="rn01.html" title="API reference"><link rel="previous" href="gtksourceview-GtkSourceMarker.html" title="GtkSourceMarker"><link rel="next" href="GtkSourceLanguage.html" title="GtkSourceLanguage"><link rel="reference" href="rn01.html" title="API reference"><link rel="refentry" href="GtkSourceBuffer.html" title="GtkSourceBuffer"><link rel="refentry" href="gtksourceview-Searching-in-a-GtkSourceBuffer.html" title="Searching in a GtkSourceBuffer"><link rel="refentry" href="gtksourceview-GtkSourceMarker.html" title="GtkSourceMarker"><link rel="refentry" href="GtkSourceView.html" title="GtkSourceView"><link rel="refentry" href="GtkSourceLanguage.html" title="GtkSourceLanguage"><link rel="refentry" href="GtkSourceLanguagesManager.html" title="GtkSourceLanguagesManager"><link rel="refentry" href="GtkSourceStyleScheme.html" title="GtkSourceStyleScheme"><link rel="refentry" href="GtkSourceTag.html" title="GtkSourceTag"><link rel="refentry" href="GtkSourceTagTable.html" title="GtkSourceTagTable"><link rel="refentry" href="gtksourceview-GtkSourceTagStyle.html" title="GtkSourceTagStyle"><link rel="refentry" href="GtkSourcePrintJob.html" title="GtkSourcePrintJob"><link rel="section" href="GtkSourceView.html#id2833223" title="Object Hierarchy"><link rel="section" href="GtkSourceView.html#id2833259" title="Implemented Interfaces"><link rel="section" href="GtkSourceView.html#id2833274" title="Properties"><link rel="section" href="GtkSourceView.html#id2831696" title="Signal Prototypes"><link rel="section" href="GtkSourceView.html#id2831751" title="Description"><link rel="section" href="GtkSourceView.html#id2831761" title="Details"><link rel="section" href="GtkSourceView.html#id2841181" title="Properties"><link rel="section" href="GtkSourceView.html#id2841402" title="Signals"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="gtksourceview-GtkSourceMarker.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="rn01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GtkSourceView Reference Manual</th><td><a accesskey="n" href="GtkSourceLanguage.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="GtkSourceView"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">GtkSourceView</span></h2><p>GtkSourceView &#8212; </p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>GtkSourceView</title><meta name="generator" content="DocBook XSL Stylesheets V1.64.1"><link rel="home" href="index.html" title="GtkSourceView Reference Manual"><link rel="up" href="rn01.html" title="API reference"><link rel="previous" href="gtksourceview-GtkSourceMarker.html" title="GtkSourceMarker"><link rel="next" href="GtkSourceLanguage.html" title="GtkSourceLanguage"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><link rel="stylesheet" href="style.css" type="text/css"><link rel="reference" href="rn01.html" title="API reference"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="gtksourceview-GtkSourceMarker.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="rn01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GtkSourceView Reference Manual</th><td><a accesskey="n" href="GtkSourceLanguage.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="GtkSourceView"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><table width="100%"><tr><td valign="top"><h2><span class="refentrytitle">GtkSourceView</span></h2><p>GtkSourceView &#8212; </p></td><td valign="top" align="right"></td></tr></table></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
 
 #include &lt;gtksourceview/gtksourceview.h&gt;
 
@@ -12,64 +12,34 @@ href="../gtk/GtkWidget.html"
 >GtkWidget</a>*  <a href="GtkSourceView.html#gtk-source-view-new-with-buffer">gtk_source_view_new_with_buffer</a> (<a href="GtkSourceBuffer.html" title="GtkSourceBuffer">GtkSourceBuffer</a> *buffer);
 void        <a href="GtkSourceView.html#gtk-source-view-set-show-line-numbers">gtk_source_view_set_show_line_numbers</a>
                                             (<a href="GtkSourceView.html" title="GtkSourceView">GtkSourceView</a> *view,
-                                             <a
-href="../glib/glib-Basic-Types.html#gboolean"
->gboolean</a> show);
-<a
-href="../glib/glib-Basic-Types.html#gboolean"
->gboolean</a>    <a href="GtkSourceView.html#gtk-source-view-get-show-line-numbers">gtk_source_view_get_show_line_numbers</a>
+                                             gboolean show);
+gboolean    <a href="GtkSourceView.html#gtk-source-view-get-show-line-numbers">gtk_source_view_get_show_line_numbers</a>
                                             (<a href="GtkSourceView.html" title="GtkSourceView">GtkSourceView</a> *view);
 void        <a href="GtkSourceView.html#gtk-source-view-set-show-line-markers">gtk_source_view_set_show_line_markers</a>
                                             (<a href="GtkSourceView.html" title="GtkSourceView">GtkSourceView</a> *view,
-                                             <a
-href="../glib/glib-Basic-Types.html#gboolean"
->gboolean</a> show);
-<a
-href="../glib/glib-Basic-Types.html#gboolean"
->gboolean</a>    <a href="GtkSourceView.html#gtk-source-view-get-show-line-markers">gtk_source_view_get_show_line_markers</a>
+                                             gboolean show);
+gboolean    <a href="GtkSourceView.html#gtk-source-view-get-show-line-markers">gtk_source_view_get_show_line_markers</a>
                                             (<a href="GtkSourceView.html" title="GtkSourceView">GtkSourceView</a> *view);
 void        <a href="GtkSourceView.html#gtk-source-view-set-tabs-width">gtk_source_view_set_tabs_width</a>  (<a href="GtkSourceView.html" title="GtkSourceView">GtkSourceView</a> *view,
-                                             <a
-href="../glib/glib-Basic-Types.html#guint"
->guint</a> width);
-<a
-href="../glib/glib-Basic-Types.html#guint"
->guint</a>       <a href="GtkSourceView.html#gtk-source-view-get-tabs-width">gtk_source_view_get_tabs_width</a>  (<a href="GtkSourceView.html" title="GtkSourceView">GtkSourceView</a> *view);
+                                             guint width);
+guint       <a href="GtkSourceView.html#gtk-source-view-get-tabs-width">gtk_source_view_get_tabs_width</a>  (<a href="GtkSourceView.html" title="GtkSourceView">GtkSourceView</a> *view);
 void        <a href="GtkSourceView.html#gtk-source-view-set-auto-indent">gtk_source_view_set_auto_indent</a> (<a href="GtkSourceView.html" title="GtkSourceView">GtkSourceView</a> *view,
-                                             <a
-href="../glib/glib-Basic-Types.html#gboolean"
->gboolean</a> enable);
-<a
-href="../glib/glib-Basic-Types.html#gboolean"
->gboolean</a>    <a href="GtkSourceView.html#gtk-source-view-get-auto-indent">gtk_source_view_get_auto_indent</a> (<a href="GtkSourceView.html" title="GtkSourceView">GtkSourceView</a> *view);
+                                             gboolean enable);
+gboolean    <a href="GtkSourceView.html#gtk-source-view-get-auto-indent">gtk_source_view_get_auto_indent</a> (<a href="GtkSourceView.html" title="GtkSourceView">GtkSourceView</a> *view);
 void        <a href="GtkSourceView.html#gtk-source-view-set-insert-spaces-instead-of-tabs">gtk_source_view_set_insert_spaces_instead_of_tabs</a>
                                             (<a href="GtkSourceView.html" title="GtkSourceView">GtkSourceView</a> *view,
-                                             <a
-href="../glib/glib-Basic-Types.html#gboolean"
->gboolean</a> enable);
-<a
-href="../glib/glib-Basic-Types.html#gboolean"
->gboolean</a>    <a href="GtkSourceView.html#gtk-source-view-get-insert-spaces-instead-of-tabs">gtk_source_view_get_insert_spaces_instead_of_tabs</a>
+                                             gboolean enable);
+gboolean    <a href="GtkSourceView.html#gtk-source-view-get-insert-spaces-instead-of-tabs">gtk_source_view_get_insert_spaces_instead_of_tabs</a>
                                             (<a href="GtkSourceView.html" title="GtkSourceView">GtkSourceView</a> *view);
 void        <a href="GtkSourceView.html#gtk-source-view-set-show-margin">gtk_source_view_set_show_margin</a> (<a href="GtkSourceView.html" title="GtkSourceView">GtkSourceView</a> *view,
-                                             <a
-href="../glib/glib-Basic-Types.html#gboolean"
->gboolean</a> show);
-<a
-href="../glib/glib-Basic-Types.html#gboolean"
->gboolean</a>    <a href="GtkSourceView.html#gtk-source-view-get-show-margin">gtk_source_view_get_show_margin</a> (<a href="GtkSourceView.html" title="GtkSourceView">GtkSourceView</a> *view);
+                                             gboolean show);
+gboolean    <a href="GtkSourceView.html#gtk-source-view-get-show-margin">gtk_source_view_get_show_margin</a> (<a href="GtkSourceView.html" title="GtkSourceView">GtkSourceView</a> *view);
 void        <a href="GtkSourceView.html#gtk-source-view-set-margin">gtk_source_view_set_margin</a>      (<a href="GtkSourceView.html" title="GtkSourceView">GtkSourceView</a> *view,
-                                             <a
-href="../glib/glib-Basic-Types.html#guint"
->guint</a> margin);
-<a
-href="../glib/glib-Basic-Types.html#guint"
->guint</a>       <a href="GtkSourceView.html#gtk-source-view-get-margin">gtk_source_view_get_margin</a>      (<a href="GtkSourceView.html" title="GtkSourceView">GtkSourceView</a> *view);
+                                             guint margin);
+guint       <a href="GtkSourceView.html#gtk-source-view-get-margin">gtk_source_view_get_margin</a>      (<a href="GtkSourceView.html" title="GtkSourceView">GtkSourceView</a> *view);
 void        <a href="GtkSourceView.html#gtk-source-view-set-marker-pixbuf">gtk_source_view_set_marker_pixbuf</a>
                                             (<a href="GtkSourceView.html" title="GtkSourceView">GtkSourceView</a> *view,
-                                             const <a
-href="../glib/glib-Basic-Types.html#gchar"
->gchar</a> *marker_type,
+                                             const gchar *marker_type,
                                              <a
 href="../gdk-pixbuf/gdk-pixbuf-gdk-pixbuf.html#GdkPixbuf"
 >GdkPixbuf</a> *pixbuf);
@@ -77,24 +47,16 @@ href="../gdk-pixbuf/gdk-pixbuf-gdk-pixbuf.html#GdkPixbuf"
 href="../gdk-pixbuf/gdk-pixbuf-gdk-pixbuf.html#GdkPixbuf"
 >GdkPixbuf</a>*  <a href="GtkSourceView.html#gtk-source-view-get-marker-pixbuf">gtk_source_view_get_marker_pixbuf</a>
                                             (<a href="GtkSourceView.html" title="GtkSourceView">GtkSourceView</a> *view,
-                                             const <a
-href="../glib/glib-Basic-Types.html#gchar"
->gchar</a> *marker_type);
+                                             const gchar *marker_type);
 void        <a href="GtkSourceView.html#gtk-source-view-set-smart-home-end">gtk_source_view_set_smart_home_end</a>
                                             (<a href="GtkSourceView.html" title="GtkSourceView">GtkSourceView</a> *view,
-                                             <a
-href="../glib/glib-Basic-Types.html#gboolean"
->gboolean</a> enable);
-<a
-href="../glib/glib-Basic-Types.html#gboolean"
->gboolean</a>    <a href="GtkSourceView.html#gtk-source-view-get-smart-home-end">gtk_source_view_get_smart_home_end</a>
+                                             gboolean enable);
+gboolean    <a href="GtkSourceView.html#gtk-source-view-get-smart-home-end">gtk_source_view_get_smart_home_end</a>
                                             (<a href="GtkSourceView.html" title="GtkSourceView">GtkSourceView</a> *view);
 
-</pre></div><div class="refsect1" lang="en"><h2>Object Hierarchy</h2><pre class="synopsis">
+</pre></div><div class="refsect1" lang="en"><a name="id2559727"></a><h2>Object Hierarchy</h2><pre class="synopsis">
 
-  <a
-href="../gobject/gobject-The-Base-Object-Type.html#GObject"
->GObject</a>
+  GObject
    +----<a
 href="../gtk/GtkObject.html"
 >GtkObject</a>
@@ -108,49 +70,29 @@ href="../gtk/GtkContainer.html"
 href="../gtk/GtkTextView.html"
 >GtkTextView</a>
                            +----GtkSourceView
-</pre></div><div class="refsect1" lang="en"><h2>Implemented Interfaces</h2><p>
+</pre></div><div class="refsect1" lang="en"><a name="id2559763"></a><h2>Implemented Interfaces</h2><p>
 GtkSourceView implements
- AtkImplementorIface.</p></div><div class="refsect1" lang="en"><h2>Properties</h2><pre class="synopsis">
+ AtkImplementorIface.</p></div><div class="refsect1" lang="en"><a name="id2559778"></a><h2>Properties</h2><pre class="synopsis">
 
-  "<a href="GtkSourceView.html#GtkSourceView--auto-indent">auto-indent</a>"          <a
-href="../glib/glib-Basic-Types.html#gboolean"
->gboolean</a>              : Read / Write
-  "<a href="GtkSourceView.html#GtkSourceView--insert-spaces-instead-of-tabs">insert-spaces-instead-of-tabs</a>" <a
-href="../glib/glib-Basic-Types.html#gboolean"
->gboolean</a>              : Read / Write
-  "<a href="GtkSourceView.html#GtkSourceView--margin">margin</a>"               <a
-href="../glib/glib-Basic-Types.html#guint"
->guint</a>                 : Read / Write
-  "<a href="GtkSourceView.html#GtkSourceView--show-line-markers">show-line-markers</a>"    <a
-href="../glib/glib-Basic-Types.html#gboolean"
->gboolean</a>              : Read / Write
-  "<a href="GtkSourceView.html#GtkSourceView--show-line-numbers">show-line-numbers</a>"    <a
-href="../glib/glib-Basic-Types.html#gboolean"
->gboolean</a>              : Read / Write
-  "<a href="GtkSourceView.html#GtkSourceView--show-margin">show-margin</a>"          <a
-href="../glib/glib-Basic-Types.html#gboolean"
->gboolean</a>              : Read / Write
-  "<a href="GtkSourceView.html#GtkSourceView--smart-home-end">smart-home-end</a>"       <a
-href="../glib/glib-Basic-Types.html#gboolean"
->gboolean</a>              : Read / Write
-  "<a href="GtkSourceView.html#GtkSourceView--tabs-width">tabs-width</a>"           <a
-href="../glib/glib-Basic-Types.html#guint"
->guint</a>                 : Read / Write
-</pre></div><div class="refsect1" lang="en"><h2>Signal Prototypes</h2><pre class="synopsis">
+  "<a href="GtkSourceView.html#GtkSourceView--auto-indent">auto-indent</a>"          gboolean              : Read / Write
+  "<a href="GtkSourceView.html#GtkSourceView--insert-spaces-instead-of-tabs">insert-spaces-instead-of-tabs</a>" gboolean              : Read / Write
+  "<a href="GtkSourceView.html#GtkSourceView--margin">margin</a>"               guint                 : Read / Write
+  "<a href="GtkSourceView.html#GtkSourceView--show-line-markers">show-line-markers</a>"    gboolean              : Read / Write
+  "<a href="GtkSourceView.html#GtkSourceView--show-line-numbers">show-line-numbers</a>"    gboolean              : Read / Write
+  "<a href="GtkSourceView.html#GtkSourceView--show-margin">show-margin</a>"          gboolean              : Read / Write
+  "<a href="GtkSourceView.html#GtkSourceView--smart-home-end">smart-home-end</a>"       gboolean              : Read / Write
+  "<a href="GtkSourceView.html#GtkSourceView--tabs-width">tabs-width</a>"           guint                 : Read / Write
+</pre></div><div class="refsect1" lang="en"><a name="id2506101"></a><h2>Signal Prototypes</h2><pre class="synopsis">
 
 "<a href="GtkSourceView.html#GtkSourceView-redo">redo</a>"      void        user_function      (<a href="GtkSourceView.html" title="GtkSourceView">GtkSourceView</a> *sourceview,
-                                            <a
-href="../glib/glib-Basic-Types.html#gpointer"
->gpointer</a> user_data);
+                                            gpointer user_data);
 "<a href="GtkSourceView.html#GtkSourceView-undo">undo</a>"      void        user_function      (<a href="GtkSourceView.html" title="GtkSourceView">GtkSourceView</a> *sourceview,
-                                            <a
-href="../glib/glib-Basic-Types.html#gpointer"
->gpointer</a> user_data);
-</pre></div><div class="refsect1" lang="en"><h2>Description</h2><p>
+                                            gpointer user_data);
+</pre></div><div class="refsect1" lang="en"><a name="id2506155"></a><h2>Description</h2><p>
 
-</p></div><div class="refsect1" lang="en"><h2>Details</h2><div class="refsect2" lang="en"><h3><a name="GtkSourceView-struct"></a>struct GtkSourceView</h3><a class="indexterm" name="id2831774"></a><pre class="programlisting">struct GtkSourceView;</pre><p>
+</p></div><div class="refsect1" lang="en"><a name="id2506164"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2506170"></a><h3><a name="GtkSourceView-struct"></a>struct GtkSourceView</h3><a class="indexterm" name="id2506178"></a><pre class="programlisting">struct GtkSourceView;</pre><p>
 
-</p></div><hr><div class="refsect2" lang="en"><h3><a name="gtk-source-view-new"></a>gtk_source_view_new ()</h3><a class="indexterm" name="id2831792"></a><pre class="programlisting"><a
+</p></div><hr><div class="refsect2" lang="en"><a name="id2506188"></a><h3><a name="gtk-source-view-new"></a>gtk_source_view_new ()</h3><a class="indexterm" name="id2506196"></a><pre class="programlisting"><a
 href="../gtk/GtkWidget.html"
 >GtkWidget</a>*  gtk_source_view_new             (void);</pre><p>
 Creates a new <a href="GtkSourceView.html" title="GtkSourceView"><span class="type">GtkSourceView</span></a>. An empty default buffer will be
@@ -158,7 +100,7 @@ created for you. If you want to specify your own buffer, consider
 <a href="GtkSourceView.html#gtk-source-view-new-with-buffer"><tt class="function">gtk_source_view_new_with_buffer()</tt></a>.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a new <a href="GtkSourceView.html" title="GtkSourceView"><span class="type">GtkSourceView</span></a>
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="gtk-source-view-new-with-buffer"></a>gtk_source_view_new_with_buffer ()</h3><a class="indexterm" name="id2831856"></a><pre class="programlisting"><a
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2506249"></a><h3><a name="gtk-source-view-new-with-buffer"></a>gtk_source_view_new_with_buffer ()</h3><a class="indexterm" name="id2506260"></a><pre class="programlisting"><a
 href="../gtk/GtkWidget.html"
 >GtkWidget</a>*  gtk_source_view_new_with_buffer (<a href="GtkSourceBuffer.html" title="GtkSourceBuffer">GtkSourceBuffer</a> *buffer);</pre><p>
 Creates a new <a href="GtkSourceView.html" title="GtkSourceView"><span class="type">GtkSourceView</span></a> widget displaying the buffer
@@ -168,126 +110,96 @@ Creates a new <a href="GtkSourceView.html" title="GtkSourceView"><span class="ty
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a new <a
 href="../gtk/GtkTextView.html"
 ><span class="type">GtkTextView</span></a>.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="gtk-source-view-set-show-line-numbers"></a>gtk_source_view_set_show_line_numbers ()</h3><a class="indexterm" name="id2831939"></a><pre class="programlisting">void        gtk_source_view_set_show_line_numbers
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2506332"></a><h3><a name="gtk-source-view-set-show-line-numbers"></a>gtk_source_view_set_show_line_numbers ()</h3><a class="indexterm" name="id2506344"></a><pre class="programlisting">void        gtk_source_view_set_show_line_numbers
                                             (<a href="GtkSourceView.html" title="GtkSourceView">GtkSourceView</a> *view,
-                                             <a
-href="../glib/glib-Basic-Types.html#gboolean"
->gboolean</a> show);</pre><p>
+                                             gboolean show);</pre><p>
 If TRUE line numbers will be displayed beside the text.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>view</tt></i> :</span></td><td> a <a href="GtkSourceView.html" title="GtkSourceView"><span class="type">GtkSourceView</span></a>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>show</tt></i> :</span></td><td> whether line numbers should be displayed
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="gtk-source-view-get-show-line-numbers"></a>gtk_source_view_get_show_line_numbers ()</h3><a class="indexterm" name="id2840015"></a><pre class="programlisting"><a
-href="../glib/glib-Basic-Types.html#gboolean"
->gboolean</a>    gtk_source_view_get_show_line_numbers
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2568610"></a><h3><a name="gtk-source-view-get-show-line-numbers"></a>gtk_source_view_get_show_line_numbers ()</h3><a class="indexterm" name="id2568622"></a><pre class="programlisting">gboolean    gtk_source_view_get_show_line_numbers
                                             (<a href="GtkSourceView.html" title="GtkSourceView">GtkSourceView</a> *view);</pre><p>
 Returns whether line numbers are displayed beside the text.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>view</tt></i> :</span></td><td> a <a href="GtkSourceView.html" title="GtkSourceView"><span class="type">GtkSourceView</span></a>
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> TRUE if the line numbers are displayed.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="gtk-source-view-set-show-line-markers"></a>gtk_source_view_set_show_line_markers ()</h3><a class="indexterm" name="id2840084"></a><pre class="programlisting">void        gtk_source_view_set_show_line_markers
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2568678"></a><h3><a name="gtk-source-view-set-show-line-markers"></a>gtk_source_view_set_show_line_markers ()</h3><a class="indexterm" name="id2568690"></a><pre class="programlisting">void        gtk_source_view_set_show_line_markers
                                             (<a href="GtkSourceView.html" title="GtkSourceView">GtkSourceView</a> *view,
-                                             <a
-href="../glib/glib-Basic-Types.html#gboolean"
->gboolean</a> show);</pre><p>
+                                             gboolean show);</pre><p>
 If TRUE line markers will be displayed beside the text.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>view</tt></i> :</span></td><td> a <a href="GtkSourceView.html" title="GtkSourceView"><span class="type">GtkSourceView</span></a>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>show</tt></i> :</span></td><td> whether line markers should be displayed
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="gtk-source-view-get-show-line-markers"></a>gtk_source_view_get_show_line_markers ()</h3><a class="indexterm" name="id2840160"></a><pre class="programlisting"><a
-href="../glib/glib-Basic-Types.html#gboolean"
->gboolean</a>    gtk_source_view_get_show_line_markers
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2568754"></a><h3><a name="gtk-source-view-get-show-line-markers"></a>gtk_source_view_get_show_line_markers ()</h3><a class="indexterm" name="id2568766"></a><pre class="programlisting">gboolean    gtk_source_view_get_show_line_markers
                                             (<a href="GtkSourceView.html" title="GtkSourceView">GtkSourceView</a> *view);</pre><p>
 Returns whether line markers are displayed beside the text.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>view</tt></i> :</span></td><td> a <a href="GtkSourceView.html" title="GtkSourceView"><span class="type">GtkSourceView</span></a>
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> TRUE if the line markers are displayed.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="gtk-source-view-set-tabs-width"></a>gtk_source_view_set_tabs_width ()</h3><a class="indexterm" name="id2840228"></a><pre class="programlisting">void        gtk_source_view_set_tabs_width  (<a href="GtkSourceView.html" title="GtkSourceView">GtkSourceView</a> *view,
-                                             <a
-href="../glib/glib-Basic-Types.html#guint"
->guint</a> width);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2568823"></a><h3><a name="gtk-source-view-set-tabs-width"></a>gtk_source_view_set_tabs_width ()</h3><a class="indexterm" name="id2568833"></a><pre class="programlisting">void        gtk_source_view_set_tabs_width  (<a href="GtkSourceView.html" title="GtkSourceView">GtkSourceView</a> *view,
+                                             guint width);</pre><p>
 Sets the width of tabulation in characters.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>view</tt></i> :</span></td><td> a <a href="GtkSourceView.html" title="GtkSourceView"><span class="type">GtkSourceView</span></a>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>width</tt></i> :</span></td><td> width of tab in characters
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="gtk-source-view-get-tabs-width"></a>gtk_source_view_get_tabs_width ()</h3><a class="indexterm" name="id2840302"></a><pre class="programlisting"><a
-href="../glib/glib-Basic-Types.html#guint"
->guint</a>       gtk_source_view_get_tabs_width  (<a href="GtkSourceView.html" title="GtkSourceView">GtkSourceView</a> *view);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2568896"></a><h3><a name="gtk-source-view-get-tabs-width"></a>gtk_source_view_get_tabs_width ()</h3><a class="indexterm" name="id2568908"></a><pre class="programlisting">guint       gtk_source_view_get_tabs_width  (<a href="GtkSourceView.html" title="GtkSourceView">GtkSourceView</a> *view);</pre><p>
 Returns the width of tabulation in characters.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>view</tt></i> :</span></td><td> a <a href="GtkSourceView.html" title="GtkSourceView"><span class="type">GtkSourceView</span></a>
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> width of tab.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="gtk-source-view-set-auto-indent"></a>gtk_source_view_set_auto_indent ()</h3><a class="indexterm" name="id2840369"></a><pre class="programlisting">void        gtk_source_view_set_auto_indent (<a href="GtkSourceView.html" title="GtkSourceView">GtkSourceView</a> *view,
-                                             <a
-href="../glib/glib-Basic-Types.html#gboolean"
->gboolean</a> enable);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2568963"></a><h3><a name="gtk-source-view-set-auto-indent"></a>gtk_source_view_set_auto_indent ()</h3><a class="indexterm" name="id2568974"></a><pre class="programlisting">void        gtk_source_view_set_auto_indent (<a href="GtkSourceView.html" title="GtkSourceView">GtkSourceView</a> *view,
+                                             gboolean enable);</pre><p>
 If TRUE auto indentation of text is enabled.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>view</tt></i> :</span></td><td> a <a href="GtkSourceView.html" title="GtkSourceView"><span class="type">GtkSourceView</span></a>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>enable</tt></i> :</span></td><td> whether to enable auto indentation
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="gtk-source-view-get-auto-indent"></a>gtk_source_view_get_auto_indent ()</h3><a class="indexterm" name="id2840443"></a><pre class="programlisting"><a
-href="../glib/glib-Basic-Types.html#gboolean"
->gboolean</a>    gtk_source_view_get_auto_indent (<a href="GtkSourceView.html" title="GtkSourceView">GtkSourceView</a> *view);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2569037"></a><h3><a name="gtk-source-view-get-auto-indent"></a>gtk_source_view_get_auto_indent ()</h3><a class="indexterm" name="id2569048"></a><pre class="programlisting">gboolean    gtk_source_view_get_auto_indent (<a href="GtkSourceView.html" title="GtkSourceView">GtkSourceView</a> *view);</pre><p>
 Returns whether auto indentation of text is enabled.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>view</tt></i> :</span></td><td> a <a href="GtkSourceView.html" title="GtkSourceView"><span class="type">GtkSourceView</span></a>
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> TRUE if auto indentation is enabled.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="gtk-source-view-set-insert-spaces-instead-of-tabs"></a>gtk_source_view_set_insert_spaces_instead_of_tabs ()</h3><a class="indexterm" name="id2840512"></a><pre class="programlisting">void        gtk_source_view_set_insert_spaces_instead_of_tabs
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2569104"></a><h3><a name="gtk-source-view-set-insert-spaces-instead-of-tabs"></a>gtk_source_view_set_insert_spaces_instead_of_tabs ()</h3><a class="indexterm" name="id2569118"></a><pre class="programlisting">void        gtk_source_view_set_insert_spaces_instead_of_tabs
                                             (<a href="GtkSourceView.html" title="GtkSourceView">GtkSourceView</a> *view,
-                                             <a
-href="../glib/glib-Basic-Types.html#gboolean"
->gboolean</a> enable);</pre><p>
+                                             gboolean enable);</pre><p>
 If TRUE any tabulator character inserted is replaced by a group
 of space characters.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>view</tt></i> :</span></td><td> a <a href="GtkSourceView.html" title="GtkSourceView"><span class="type">GtkSourceView</span></a>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>enable</tt></i> :</span></td><td> whether to insert spaces instead of tabs
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="gtk-source-view-get-insert-spaces-instead-of-tabs"></a>gtk_source_view_get_insert_spaces_instead_of_tabs ()</h3><a class="indexterm" name="id2840590"></a><pre class="programlisting"><a
-href="../glib/glib-Basic-Types.html#gboolean"
->gboolean</a>    gtk_source_view_get_insert_spaces_instead_of_tabs
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2569182"></a><h3><a name="gtk-source-view-get-insert-spaces-instead-of-tabs"></a>gtk_source_view_get_insert_spaces_instead_of_tabs ()</h3><a class="indexterm" name="id2569195"></a><pre class="programlisting">gboolean    gtk_source_view_get_insert_spaces_instead_of_tabs
                                             (<a href="GtkSourceView.html" title="GtkSourceView">GtkSourceView</a> *view);</pre><p>
 Returns whether when inserting a tabulator character it should
 be replaced by a group of space characters.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>view</tt></i> :</span></td><td> a <a href="GtkSourceView.html" title="GtkSourceView"><span class="type">GtkSourceView</span></a>
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> TRUE if spaces are inserted instead of tabs.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="gtk-source-view-set-show-margin"></a>gtk_source_view_set_show_margin ()</h3><a class="indexterm" name="id2840658"></a><pre class="programlisting">void        gtk_source_view_set_show_margin (<a href="GtkSourceView.html" title="GtkSourceView">GtkSourceView</a> *view,
-                                             <a
-href="../glib/glib-Basic-Types.html#gboolean"
->gboolean</a> show);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2569252"></a><h3><a name="gtk-source-view-set-show-margin"></a>gtk_source_view_set_show_margin ()</h3><a class="indexterm" name="id2569264"></a><pre class="programlisting">void        gtk_source_view_set_show_margin (<a href="GtkSourceView.html" title="GtkSourceView">GtkSourceView</a> *view,
+                                             gboolean show);</pre><p>
 If TRUE a margin is displayed</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>view</tt></i> :</span></td><td> a <a href="GtkSourceView.html" title="GtkSourceView"><span class="type">GtkSourceView</span></a>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>show</tt></i> :</span></td><td> whether to show a margin
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="gtk-source-view-get-show-margin"></a>gtk_source_view_get_show_margin ()</h3><a class="indexterm" name="id2840732"></a><pre class="programlisting"><a
-href="../glib/glib-Basic-Types.html#gboolean"
->gboolean</a>    gtk_source_view_get_show_margin (<a href="GtkSourceView.html" title="GtkSourceView">GtkSourceView</a> *view);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2569326"></a><h3><a name="gtk-source-view-get-show-margin"></a>gtk_source_view_get_show_margin ()</h3><a class="indexterm" name="id2569337"></a><pre class="programlisting">gboolean    gtk_source_view_get_show_margin (<a href="GtkSourceView.html" title="GtkSourceView">GtkSourceView</a> *view);</pre><p>
 Returns whether a margin is displayed</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>view</tt></i> :</span></td><td> a <a href="GtkSourceView.html" title="GtkSourceView"><span class="type">GtkSourceView</span></a>
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> TRUE if the margin is showed
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="gtk-source-view-set-margin"></a>gtk_source_view_set_margin ()</h3><a class="indexterm" name="id2840796"></a><pre class="programlisting">void        gtk_source_view_set_margin      (<a href="GtkSourceView.html" title="GtkSourceView">GtkSourceView</a> *view,
-                                             <a
-href="../glib/glib-Basic-Types.html#guint"
->guint</a> margin);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2569393"></a><h3><a name="gtk-source-view-set-margin"></a>gtk_source_view_set_margin ()</h3><a class="indexterm" name="id2569402"></a><pre class="programlisting">void        gtk_source_view_set_margin      (<a href="GtkSourceView.html" title="GtkSourceView">GtkSourceView</a> *view,
+                                             guint margin);</pre><p>
 </p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>view</tt></i> :</span></td><td> a <a href="GtkSourceView.html" title="GtkSourceView"><span class="type">GtkSourceView</span></a>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>margin</tt></i> :</span></td><td>
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="gtk-source-view-get-margin"></a>gtk_source_view_get_margin ()</h3><a class="indexterm" name="id2799578"></a><pre class="programlisting"><a
-href="../glib/glib-Basic-Types.html#guint"
->guint</a>       gtk_source_view_get_margin      (<a href="GtkSourceView.html" title="GtkSourceView">GtkSourceView</a> *view);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2569427"></a><h3><a name="gtk-source-view-get-margin"></a>gtk_source_view_get_margin ()</h3><a class="indexterm" name="id2569434"></a><pre class="programlisting">guint       gtk_source_view_get_margin      (<a href="GtkSourceView.html" title="GtkSourceView">GtkSourceView</a> *view);</pre><p>
 </p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>view</tt></i> :</span></td><td> a <a href="GtkSourceView.html" title="GtkSourceView"><span class="type">GtkSourceView</span></a>
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="gtk-source-view-set-marker-pixbuf"></a>gtk_source_view_set_marker_pixbuf ()</h3><a class="indexterm" name="id2840894"></a><pre class="programlisting">void        gtk_source_view_set_marker_pixbuf
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2569483"></a><h3><a name="gtk-source-view-set-marker-pixbuf"></a>gtk_source_view_set_marker_pixbuf ()</h3><a class="indexterm" name="id2569491"></a><pre class="programlisting">void        gtk_source_view_set_marker_pixbuf
                                             (<a href="GtkSourceView.html" title="GtkSourceView">GtkSourceView</a> *view,
-                                             const <a
-href="../glib/glib-Basic-Types.html#gchar"
->gchar</a> *marker_type,
+                                             const gchar *marker_type,
                                              <a
 href="../gdk-pixbuf/gdk-pixbuf-gdk-pixbuf.html#GdkPixbuf"
 >GdkPixbuf</a> *pixbuf);</pre><p>
@@ -296,64 +208,38 @@ href="../gdk-pixbuf/gdk-pixbuf-gdk-pixbuf.html#GdkPixbuf"
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>view</tt></i> :</span></td><td> a <a href="GtkSourceView.html" title="GtkSourceView"><span class="type">GtkSourceView</span></a>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>marker_type</tt></i> :</span></td><td> 
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>pixbuf</tt></i> :</span></td><td>
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="gtk-source-view-get-marker-pixbuf"></a>gtk_source_view_get_marker_pixbuf ()</h3><a class="indexterm" name="id2840974"></a><pre class="programlisting"><a
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2569564"></a><h3><a name="gtk-source-view-get-marker-pixbuf"></a>gtk_source_view_get_marker_pixbuf ()</h3><a class="indexterm" name="id2569571"></a><pre class="programlisting"><a
 href="../gdk-pixbuf/gdk-pixbuf-gdk-pixbuf.html#GdkPixbuf"
 >GdkPixbuf</a>*  gtk_source_view_get_marker_pixbuf
                                             (<a href="GtkSourceView.html" title="GtkSourceView">GtkSourceView</a> *view,
-                                             const <a
-href="../glib/glib-Basic-Types.html#gchar"
->gchar</a> *marker_type);</pre><p>
+                                             const gchar *marker_type);</pre><p>
 </p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>view</tt></i> :</span></td><td> a <a href="GtkSourceView.html" title="GtkSourceView"><span class="type">GtkSourceView</span></a>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>marker_type</tt></i> :</span></td><td> 
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="gtk-source-view-set-smart-home-end"></a>gtk_source_view_set_smart_home_end ()</h3><a class="indexterm" name="id2841049"></a><pre class="programlisting">void        gtk_source_view_set_smart_home_end
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2569638"></a><h3><a name="gtk-source-view-set-smart-home-end"></a>gtk_source_view_set_smart_home_end ()</h3><a class="indexterm" name="id2569646"></a><pre class="programlisting">void        gtk_source_view_set_smart_home_end
                                             (<a href="GtkSourceView.html" title="GtkSourceView">GtkSourceView</a> *view,
-                                             <a
-href="../glib/glib-Basic-Types.html#gboolean"
->gboolean</a> enable);</pre><p>
+                                             gboolean enable);</pre><p>
 If TRUE HOME and END keys will move to the first/last non-space
 character of the line before moving to the start/end.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>view</tt></i> :</span></td><td> a <a href="GtkSourceView.html" title="GtkSourceView"><span class="type">GtkSourceView</span></a>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>enable</tt></i> :</span></td><td> whether to enable smart behavior for HOME and END keys
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="gtk-source-view-get-smart-home-end"></a>gtk_source_view_get_smart_home_end ()</h3><a class="indexterm" name="id2841123"></a><pre class="programlisting"><a
-href="../glib/glib-Basic-Types.html#gboolean"
->gboolean</a>    gtk_source_view_get_smart_home_end
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2569711"></a><h3><a name="gtk-source-view-get-smart-home-end"></a>gtk_source_view_get_smart_home_end ()</h3><a class="indexterm" name="id2569720"></a><pre class="programlisting">gboolean    gtk_source_view_get_smart_home_end
                                             (<a href="GtkSourceView.html" title="GtkSourceView">GtkSourceView</a> *view);</pre><p>
 Returns whether HOME and END keys will move to the first/last non-space
 character of the line before moving to the start/end.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>view</tt></i> :</span></td><td> a <a href="GtkSourceView.html" title="GtkSourceView"><span class="type">GtkSourceView</span></a>
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> TRUE if smart behavior for HOME and END keys is enabled
-</td></tr></tbody></table></div></div></div><div class="refsect1" lang="en"><h2>Properties</h2><div class="refsect2" lang="en"><h3><a name="GtkSourceView--auto-indent"></a>The "<tt class="literal">auto-indent</tt>" property</h3><pre class="programlisting">  "auto-indent"          <a
-href="../glib/glib-Basic-Types.html#gboolean"
->gboolean</a>              : Read / Write</pre><p>Whether to enable auto indentation.</p><p>Default value: FALSE</p></div><hr><div class="refsect2" lang="en"><h3><a name="GtkSourceView--insert-spaces-instead-of-tabs"></a>The "<tt class="literal">insert-spaces-instead-of-tabs</tt>" property</h3><pre class="programlisting">  "insert-spaces-instead-of-tabs" <a
-href="../glib/glib-Basic-Types.html#gboolean"
->gboolean</a>              : Read / Write</pre><p>Whether to insert spaces instead of tabs.</p><p>Default value: FALSE</p></div><hr><div class="refsect2" lang="en"><h3><a name="GtkSourceView--margin"></a>The "<tt class="literal">margin</tt>" property</h3><pre class="programlisting">  "margin"               <a
-href="../glib/glib-Basic-Types.html#guint"
->guint</a>                 : Read / Write</pre><p>Position of the right margin.</p><p>Allowed values: [1,200]</p><p>Default value: 80</p></div><hr><div class="refsect2" lang="en"><h3><a name="GtkSourceView--show-line-markers"></a>The "<tt class="literal">show-line-markers</tt>" property</h3><pre class="programlisting">  "show-line-markers"    <a
-href="../glib/glib-Basic-Types.html#gboolean"
->gboolean</a>              : Read / Write</pre><p>Whether to display line marker pixbufs.</p><p>Default value: FALSE</p></div><hr><div class="refsect2" lang="en"><h3><a name="GtkSourceView--show-line-numbers"></a>The "<tt class="literal">show-line-numbers</tt>" property</h3><pre class="programlisting">  "show-line-numbers"    <a
-href="../glib/glib-Basic-Types.html#gboolean"
->gboolean</a>              : Read / Write</pre><p>Whether to display line numbers.</p><p>Default value: FALSE</p></div><hr><div class="refsect2" lang="en"><h3><a name="GtkSourceView--show-margin"></a>The "<tt class="literal">show-margin</tt>" property</h3><pre class="programlisting">  "show-margin"          <a
-href="../glib/glib-Basic-Types.html#gboolean"
->gboolean</a>              : Read / Write</pre><p>Whether to display the right margin.</p><p>Default value: FALSE</p></div><hr><div class="refsect2" lang="en"><h3><a name="GtkSourceView--smart-home-end"></a>The "<tt class="literal">smart-home-end</tt>" property</h3><pre class="programlisting">  "smart-home-end"       <a
-href="../glib/glib-Basic-Types.html#gboolean"
->gboolean</a>              : Read / Write</pre><p>HOME and END keys move to first/last characters on line first before going to the start/end of the line.</p><p>Default value: TRUE</p></div><hr><div class="refsect2" lang="en"><h3><a name="GtkSourceView--tabs-width"></a>The "<tt class="literal">tabs-width</tt>" property</h3><pre class="programlisting">  "tabs-width"           <a
-href="../glib/glib-Basic-Types.html#guint"
->guint</a>                 : Read / Write</pre><p>Tabs Width.</p><p>Allowed values: [1,32]</p><p>Default value: 8</p></div></div><div class="refsect1" lang="en"><h2>Signals</h2><div class="refsect2" lang="en"><h3><a name="GtkSourceView-redo"></a>The "redo" signal</h3><pre class="programlisting">void        user_function                  (<a href="GtkSourceView.html" title="GtkSourceView">GtkSourceView</a> *sourceview,
-                                            <a
-href="../glib/glib-Basic-Types.html#gpointer"
->gpointer</a> user_data);</pre><p>
+</td></tr></tbody></table></div></div></div><div class="refsect1" lang="en"><a name="id2569778"></a><h2>Properties</h2><div class="refsect2" lang="en"><a name="id2569784"></a><h3><a name="GtkSourceView--auto-indent"></a>The "<tt class="literal">auto-indent</tt>" property</h3><pre class="programlisting">  "auto-indent"          gboolean              : Read / Write</pre><p>Whether to enable auto indentation.</p><p>Default value: FALSE</p></div><hr><div class="refsect2" lang="en"><a name="id2569809"></a><h3><a name="GtkSourceView--insert-spaces-instead-of-tabs"></a>The "<tt class="literal">insert-spaces-instead-of-tabs</tt>" property</h3><pre class="programlisting">  "insert-spaces-instead-of-tabs" gboolean              : Read / Write</pre><p>Whether to insert spaces instead of tabs.</p><p>Default value: FALSE</p></div><hr><div class="refsect2" lang="en"><a name="id2569837"></a><h3><a name="GtkSourceView--margin"></a>The "<tt class="literal">margin</tt>" property</h3><pre class="programlisting">  "margin"               guint                 : Read / Write</pre><p>Position of the right margin.</p><p>Allowed values: [1,200]</p><p>Default value: 80</p></div><hr><div class="refsect2" lang="en"><a name="id2569866"></a><h3><a name="GtkSourceView--show-line-markers"></a>The "<tt class="literal">show-line-markers</tt>" property</h3><pre class="programlisting">  "show-line-markers"    gboolean              : Read / Write</pre><p>Whether to display line marker pixbufs.</p><p>Default value: FALSE</p></div><hr><div class="refsect2" lang="en"><a name="id2569891"></a><h3><a name="GtkSourceView--show-line-numbers"></a>The "<tt class="literal">show-line-numbers</tt>" property</h3><pre class="programlisting">  "show-line-numbers"    gboolean              : Read / Write</pre><p>Whether to display line numbers.</p><p>Default value: FALSE</p></div><hr><div class="refsect2" lang="en"><a name="id2569916"></a><h3><a name="GtkSourceView--show-margin"></a>The "<tt class="literal">show-margin</tt>" property</h3><pre class="programlisting">  "show-margin"          gboolean              : Read / Write</pre><p>Whether to display the right margin.</p><p>Default value: FALSE</p></div><hr><div class="refsect2" lang="en"><a name="id2569942"></a><h3><a name="GtkSourceView--smart-home-end"></a>The "<tt class="literal">smart-home-end</tt>" property</h3><pre class="programlisting">  "smart-home-end"       gboolean              : Read / Write</pre><p>HOME and END keys move to first/last characters on line first before going to the start/end of the line.</p><p>Default value: TRUE</p></div><hr><div class="refsect2" lang="en"><a name="id2569969"></a><h3><a name="GtkSourceView--tabs-width"></a>The "<tt class="literal">tabs-width</tt>" property</h3><pre class="programlisting">  "tabs-width"           guint                 : Read / Write</pre><p>Tabs Width.</p><p>Allowed values: [1,32]</p><p>Default value: 8</p></div></div><div class="refsect1" lang="en"><a name="id2569998"></a><h2>Signals</h2><div class="refsect2" lang="en"><a name="id2570004"></a><h3><a name="GtkSourceView-redo"></a>The "redo" signal</h3><pre class="programlisting">void        user_function                  (<a href="GtkSourceView.html" title="GtkSourceView">GtkSourceView</a> *sourceview,
+                                            gpointer user_data);</pre><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>sourceview</tt></i> :</span></td><td>the object which received the signal.
 
-</td></tr><tr><td><span class="term"><i class="parameter"><tt>user_data</tt></i> :</span></td><td>user data set when the signal handler was connected.</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="GtkSourceView-undo"></a>The "undo" signal</h3><pre class="programlisting">void        user_function                  (<a href="GtkSourceView.html" title="GtkSourceView">GtkSourceView</a> *sourceview,
-                                            <a
-href="../glib/glib-Basic-Types.html#gpointer"
->gpointer</a> user_data);</pre><p>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>user_data</tt></i> :</span></td><td>user data set when the signal handler was connected.</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2570059"></a><h3><a name="GtkSourceView-undo"></a>The "undo" signal</h3><pre class="programlisting">void        user_function                  (<a href="GtkSourceView.html" title="GtkSourceView">GtkSourceView</a> *sourceview,
+                                            gpointer user_data);</pre><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>sourceview</tt></i> :</span></td><td>the object which received the signal.
 

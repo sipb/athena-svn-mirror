@@ -86,8 +86,7 @@ enum        <link linkend="GtkSourceTagStyleMask">GtkSourceTagStyleMask</link>;
 </para></refsect2>
 <refsect2>
 <title><anchor id="GTK-TYPE-SOURCE-TAG-STYLE-CAPS"/>GTK_TYPE_SOURCE_TAG_STYLE</title>
-<indexterm><primary>GTK_TYPE_SOURCE_TAG_STYLE</primary></indexterm><programlisting>#define GTK_TYPE_SOURCE_TAG_STYLE     (gtk_source_tag_style_get_type ())
-</programlisting>
+<indexterm><primary>GTK_TYPE_SOURCE_TAG_STYLE</primary></indexterm><programlisting>#define     GTK_TYPE_SOURCE_TAG_STYLE</programlisting>
 <para>
 
 </para></refsect2>

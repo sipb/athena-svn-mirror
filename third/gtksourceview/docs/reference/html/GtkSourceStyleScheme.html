@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>GtkSourceStyleScheme</title><meta name="generator" content="DocBook XSL Stylesheets V1.61.2"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><link rel="stylesheet" href="style.css" type="text/css"><link rel="home" href="index.html" title="GtkSourceView Reference Manual"><link rel="up" href="rn01.html" title="API reference"><link rel="previous" href="GtkSourceLanguagesManager.html" title="GtkSourceLanguagesManager"><link rel="next" href="GtkSourceTag.html" title="GtkSourceTag"><link rel="reference" href="rn01.html" title="API reference"><link rel="refentry" href="GtkSourceBuffer.html" title="GtkSourceBuffer"><link rel="refentry" href="gtksourceview-Searching-in-a-GtkSourceBuffer.html" title="Searching in a GtkSourceBuffer"><link rel="refentry" href="gtksourceview-GtkSourceMarker.html" title="GtkSourceMarker"><link rel="refentry" href="GtkSourceView.html" title="GtkSourceView"><link rel="refentry" href="GtkSourceLanguage.html" title="GtkSourceLanguage"><link rel="refentry" href="GtkSourceLanguagesManager.html" title="GtkSourceLanguagesManager"><link rel="refentry" href="GtkSourceStyleScheme.html" title="GtkSourceStyleScheme"><link rel="refentry" href="GtkSourceTag.html" title="GtkSourceTag"><link rel="refentry" href="GtkSourceTagTable.html" title="GtkSourceTagTable"><link rel="refentry" href="gtksourceview-GtkSourceTagStyle.html" title="GtkSourceTagStyle"><link rel="refentry" href="GtkSourcePrintJob.html" title="GtkSourcePrintJob"><link rel="section" href="GtkSourceStyleScheme.html#id2784666" title="Object Hierarchy"><link rel="section" href="GtkSourceStyleScheme.html#id2784682" title="Description"><link rel="section" href="GtkSourceStyleScheme.html#id2784691" title="Details"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="GtkSourceLanguagesManager.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="rn01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GtkSourceView Reference Manual</th><td><a accesskey="n" href="GtkSourceTag.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="GtkSourceStyleScheme"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">GtkSourceStyleScheme</span></h2><p>GtkSourceStyleScheme &#8212; </p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>GtkSourceStyleScheme</title><meta name="generator" content="DocBook XSL Stylesheets V1.64.1"><link rel="home" href="index.html" title="GtkSourceView Reference Manual"><link rel="up" href="rn01.html" title="API reference"><link rel="previous" href="GtkSourceLanguagesManager.html" title="GtkSourceLanguagesManager"><link rel="next" href="GtkSourceTag.html" title="GtkSourceTag"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><link rel="stylesheet" href="style.css" type="text/css"><link rel="reference" href="rn01.html" title="API reference"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="GtkSourceLanguagesManager.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="rn01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GtkSourceView Reference Manual</th><td><a accesskey="n" href="GtkSourceTag.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="GtkSourceStyleScheme"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><table width="100%"><tr><td valign="top"><h2><span class="refentrytitle">GtkSourceStyleScheme</span></h2><p>GtkSourceStyleScheme &#8212; </p></td><td valign="top" align="right"></td></tr></table></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
 
 #include &lt;gtksourceview/gtksourcestylescheme.h&gt;
 
@@ -7,25 +7,21 @@ struct      <a href="GtkSourceStyleScheme.html#GtkSourceStyleScheme-struct">GtkS
 struct      <a href="GtkSourceStyleScheme.html#GtkSourceStyleSchemeClass">GtkSourceStyleSchemeClass</a>;
 <a href="gtksourceview-GtkSourceTagStyle.html#GtkSourceTagStyle">GtkSourceTagStyle</a>* <a href="GtkSourceStyleScheme.html#gtk-source-style-scheme-get-tag-style">gtk_source_style_scheme_get_tag_style</a>
                                             (<a href="GtkSourceStyleScheme.html" title="GtkSourceStyleScheme">GtkSourceStyleScheme</a> *scheme,
-                                             const <a
-href="../glib/glib-Basic-Types.html#gchar"
->gchar</a> *style_name);
-const <a
-href="../glib/glib-Basic-Types.html#gchar"
->gchar</a>* <a href="GtkSourceStyleScheme.html#gtk-source-style-scheme-get-name">gtk_source_style_scheme_get_name</a>
+                                             const gchar *style_name);
+const gchar* <a href="GtkSourceStyleScheme.html#gtk-source-style-scheme-get-name">gtk_source_style_scheme_get_name</a>
                                             (<a href="GtkSourceStyleScheme.html" title="GtkSourceStyleScheme">GtkSourceStyleScheme</a> *scheme);
 <a href="GtkSourceStyleScheme.html" title="GtkSourceStyleScheme">GtkSourceStyleScheme</a>* <a href="GtkSourceStyleScheme.html#gtk-source-style-scheme-get-default">gtk_source_style_scheme_get_default</a>
                                             (void);
 
-</pre></div><div class="refsect1" lang="en"><h2>Object Hierarchy</h2><pre class="synopsis">
+</pre></div><div class="refsect1" lang="en"><a name="id2524730"></a><h2>Object Hierarchy</h2><pre class="synopsis">
 
   GInterface
    +----GtkSourceStyleScheme
-</pre></div><div class="refsect1" lang="en"><h2>Description</h2><p>
+</pre></div><div class="refsect1" lang="en"><a name="id2524745"></a><h2>Description</h2><p>
 
-</p></div><div class="refsect1" lang="en"><h2>Details</h2><div class="refsect2" lang="en"><h3><a name="GtkSourceStyleScheme-struct"></a>struct GtkSourceStyleScheme</h3><a class="indexterm" name="id2784705"></a><pre class="programlisting">struct GtkSourceStyleScheme;</pre><p>
+</p></div><div class="refsect1" lang="en"><a name="id2524755"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2524760"></a><h3><a name="GtkSourceStyleScheme-struct"></a>struct GtkSourceStyleScheme</h3><a class="indexterm" name="id2524768"></a><pre class="programlisting">struct GtkSourceStyleScheme;</pre><p>
 
-</p></div><hr><div class="refsect2" lang="en"><h3><a name="GtkSourceStyleSchemeClass"></a>struct GtkSourceStyleSchemeClass</h3><a class="indexterm" name="id2784724"></a><pre class="programlisting">struct GtkSourceStyleSchemeClass {
+</p></div><hr><div class="refsect2" lang="en"><a name="id2524778"></a><h3><a name="GtkSourceStyleSchemeClass"></a>struct GtkSourceStyleSchemeClass</h3><a class="indexterm" name="id2524786"></a><pre class="programlisting">struct GtkSourceStyleSchemeClass {
 
 	GTypeInterface	base_iface;
 
@@ -47,27 +43,23 @@ href="../glib/glib-Basic-Types.html#gchar"
 };
 </pre><p>
 
-</p></div><hr><div class="refsect2" lang="en"><h3><a name="gtk-source-style-scheme-get-tag-style"></a>gtk_source_style_scheme_get_tag_style ()</h3><a class="indexterm" name="id2805069"></a><pre class="programlisting"><a href="gtksourceview-GtkSourceTagStyle.html#GtkSourceTagStyle">GtkSourceTagStyle</a>* gtk_source_style_scheme_get_tag_style
+</p></div><hr><div class="refsect2" lang="en"><a name="id2514896"></a><h3><a name="gtk-source-style-scheme-get-tag-style"></a>gtk_source_style_scheme_get_tag_style ()</h3><a class="indexterm" name="id2532809"></a><pre class="programlisting"><a href="gtksourceview-GtkSourceTagStyle.html#GtkSourceTagStyle">GtkSourceTagStyle</a>* gtk_source_style_scheme_get_tag_style
                                             (<a href="GtkSourceStyleScheme.html" title="GtkSourceStyleScheme">GtkSourceStyleScheme</a> *scheme,
-                                             const <a
-href="../glib/glib-Basic-Types.html#gchar"
->gchar</a> *style_name);</pre><p>
+                                             const gchar *style_name);</pre><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>scheme</tt></i> :</span></td><td>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>style_name</tt></i> :</span></td><td>
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="gtk-source-style-scheme-get-name"></a>gtk_source_style_scheme_get_name ()</h3><a class="indexterm" name="id2781383"></a><pre class="programlisting">const <a
-href="../glib/glib-Basic-Types.html#gchar"
->gchar</a>* gtk_source_style_scheme_get_name
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2506861"></a><h3><a name="gtk-source-style-scheme-get-name"></a>gtk_source_style_scheme_get_name ()</h3><a class="indexterm" name="id2524810"></a><pre class="programlisting">const gchar* gtk_source_style_scheme_get_name
                                             (<a href="GtkSourceStyleScheme.html" title="GtkSourceStyleScheme">GtkSourceStyleScheme</a> *scheme);</pre><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>scheme</tt></i> :</span></td><td>
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="gtk-source-style-scheme-get-default"></a>gtk_source_style_scheme_get_default ()</h3><a class="indexterm" name="id2781434"></a><pre class="programlisting"><a href="GtkSourceStyleScheme.html" title="GtkSourceStyleScheme">GtkSourceStyleScheme</a>* gtk_source_style_scheme_get_default
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2570676"></a><h3><a name="gtk-source-style-scheme-get-default"></a>gtk_source_style_scheme_get_default ()</h3><a class="indexterm" name="id2570684"></a><pre class="programlisting"><a href="GtkSourceStyleScheme.html" title="GtkSourceStyleScheme">GtkSourceStyleScheme</a>* gtk_source_style_scheme_get_default
                                             (void);</pre><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>

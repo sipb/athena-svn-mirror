@@ -57,9 +57,7 @@ G_CONST_RETURN <link linkend="gchar">gchar</link>* <link linkend="gtk-source-mar
 <title>Details</title>
 <refsect2>
 <title><anchor id="GtkSourceMarker"/>GtkSourceMarker</title>
-<indexterm><primary>GtkSourceMarker</primary></indexterm><programlisting>typedef GtkTextMark      GtkSourceMarker;
-</programlisting>
-<para>
+<indexterm><primary>GtkSourceMarker</primary></indexterm><para>
 
 </para></refsect2>
 <refsect2>
