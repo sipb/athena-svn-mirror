@@ -1,0 +1,8 @@
+Name: athena-athlsync
+Summary: Synchronize locker contents to local disk
+Copyright: MIT
+Group: System Environment/Base
+
+%description
+athlsync synchronizes the contents of a locker to local disk, making
+adjustments for copying out of AFS.
