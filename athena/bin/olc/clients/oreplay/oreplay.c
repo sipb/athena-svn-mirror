@@ -8,17 +8,17 @@
 
 #ifndef lint
 #ifndef SABER
-static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/oreplay/oreplay.c,v 1.20 1991-03-28 13:20:48 lwvanels Exp $";
+static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/oreplay/oreplay.c,v 1.21 1991-04-11 09:24:00 lwvanels Exp $";
 #endif
 #endif
 
 #include <stdio.h>
 #include <sys/param.h>
+#include <sys/types.h>
 #include <netinet/in.h>
 #include <netdb.h>
 #include <strings.h>
 #include <ctype.h>
-#include <sys/types.h>
 #include <sys/socket.h>
 #include <sys/file.h>
 #include <sys/stat.h>
