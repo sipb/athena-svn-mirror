@@ -52,6 +52,7 @@ adrconv
 ams
 base
 germbib
+jurabib
 misc
 natbib
 plbib
@@ -83,6 +84,11 @@ geralpha.bst
 gerapali.bst
 gerplain.bst
 gerunsrt.bst
+
+./bibtex/bst/jurabib:
+jurabib.bst
+jureco.bst
+jurunsrt.bst
 
 ./bibtex/bst/misc:
 acm.bst
@@ -919,6 +925,7 @@ bits.html
 bitstrea.html
 bizcard.html
 blackboard.html
+blackletter1.html
 blkarray.html
 blkcntrl.html
 block.html
@@ -1040,6 +1047,7 @@ consdiag.html
 context.html
 contour.html
 cooking.html
+corelfonts.html
 corelpak.html
 count1to.html
 covfonts.html
@@ -1205,6 +1213,7 @@ eurosym.html
 euxm.html
 everysel.html
 everyshi.html
+evweek.html
 exam.html
 examdesign.html
 exams.html
@@ -1235,6 +1244,7 @@ feyn.html
 feynmf.html
 fig2sty.html
 figcaps.html
+figfrag.html
 fihyph.html
 filecontents.html
 filehdr.html
@@ -1517,6 +1527,7 @@ lshort-portuguese.html
 lshort-russian.html
 lshort-slovak.html
 lshort-spanish.html
+lshort-ukr.html
 ltablex.html
 ltnews.html
 ltoh.html
@@ -1884,6 +1895,7 @@ scale.html
 scalefnt.html
 schedule.html
 scientificviewer.html
+sciwordconv.html
 script.html
 scrnger.html
 secdot.html
@@ -2584,17 +2596,18 @@ fancyhdr
 fancyvrb
 floatflt
 footmisc
-g-brief
 general
 geometry
 graphics
 hyperref
 images
 jknappen
+jurabib
 koma-script
 latex2e-html
 leftidx
 lettrine
+listings
 mathtime
 mdwtools
 mfnfss
@@ -2859,10 +2872,6 @@ floatflt.dvi
 README
 footmisc.dvi
 
-./doc/latex/g-brief:
-beispiel.tex
-g-brief.dvi
-
 ./doc/latex/general:
 a.ps
 guide.dvi
@@ -2901,6 +2910,14 @@ redball.gif
 ./doc/latex/jknappen:
 mathbbol.rme
 mathrsfs.rme
+
+./doc/latex/jurabib:
+jb-bibtex-ref.html
+jb-com-ref.html
+jb-opt-ref.html
+jbendoc.dvi
+jbgerdoc.dvi
+jurabib-faq.dvi
 
 ./doc/latex/koma-script:
 INSTALL.TXT
@@ -3177,6 +3194,10 @@ readme
 demo.pdf
 lettrine.dvi
 
+./doc/latex/listings:
+README
+listings.dvi
+
 ./doc/latex/mathtime:
 0readme
 mathtime.dvi
@@ -3277,12 +3298,12 @@ pb-manual.dvi
 pb-manual.tex
 
 ./doc/latex/pdfpages:
-README
 dummy-l.pdf
 dummy.pdf
 pdf-ex.tex
 pdf-hyp.tex
 pdfpages.dvi
+readme
 
 ./doc/latex/platex:
 00readme
@@ -3431,6 +3452,8 @@ layman.dvi
 mathcomp.dvi
 mflogo.dvi
 moreverb.dvi
+mparhack.dvi
+multiple-span.txt
 paralist.dvi
 picinpar.dvi
 picins.txt
@@ -3610,7 +3633,6 @@ cont-pl.html
 
 ./doc/polish/mex:
 00readme
-mex.htm
 mex.html
 mexinfo.eng
 mexinfo.pol
@@ -3637,6 +3659,9 @@ eurotex98-te.pdf
 README
 
 ./dvipdfm:
+config
+
+./dvipdfm/config:
 README.config
 config
 
@@ -10538,7 +10563,7 @@ ptmrc8y.vf
 tibsc.vf
 tirsc.vf
 
-./lsR18954.tmp:
+./lsR22882.tmp:
 
 ./makeindex:
 gglo.ist
@@ -11830,6 +11855,7 @@ nohyphbc.tex
 plhyph.tex
 pt8hyph.tex
 rohyphen.tex
+sihyph23.tex
 skhyph.tex
 skhyph2e.tex
 sphyph.tex
@@ -12083,12 +12109,13 @@ fancyhdr
 fancyheadings
 fancyvrb
 fp
-g-brief
 graphics
 hyperref
 jknappen
+jurabib
 koma-script
 labels
+listings
 lucida
 lucidabr
 mathpple
@@ -12636,10 +12663,6 @@ fp.sty
 fp.tex
 lfp.sty
 
-./tex/latex/g-brief:
-g-brief.cls
-g-brief.sty
-
 ./tex/latex/graphics:
 color.sty
 dvipdf.def
@@ -12702,6 +12725,18 @@ mathrsfs.sty
 ubbold.fd
 ursfs.fd
 
+./tex/latex/jurabib:
+dejbbib.ldf
+dujbbib.ldf
+enjbbib.ldf
+frjbbib.ldf
+itjbbib.ldf
+jblong.cfg
+jurabib.cfg
+jurabib.sty
+nojbbib.ldf
+spjbbib.ldf
+
 ./tex/latex/koma-script:
 DIN.lco
 DINmtext.lco
@@ -12727,6 +12762,15 @@ typearea.sty
 ./tex/latex/labels:
 labels.sty
 olabels.sty
+
+./tex/latex/listings:
+listings.cfg
+lstdoc.sty
+lstlang1.sty
+lstlang2.sty
+lstlang3.sty
+lstmisc.sty
+lstpatch.sty
 
 ./tex/latex/lucida:
 ly1hlce.fd
@@ -12941,6 +12985,7 @@ lettrine.sty
 marvosym.sty
 mathcomp.sty
 moreverb.sty
+mparhack.sty
 mt11p.sty
 multibox.sty
 multind.sty

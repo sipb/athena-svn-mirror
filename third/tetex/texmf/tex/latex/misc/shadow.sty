@@ -1,21 +1,30 @@
+%%
+%% This is file `shadow.sty',
+%%
+%% Copyright 1994, 2003 Mauro Orlandini
+%% 
+%% It may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, either version 1.2
+%% of this license or (at your option) any later version.
+%% The latest version of this license is in
+%%    http://www.latex-project.org/lppl.txt
+%% and version 1.2 or later is part of all distributions of LaTeX
+%% version 1999/12/01 or later.
+%% 
 %%% ======================================================================
-%%%  @LaTeX-style-file{
+%%%  @LaTeX-style{
 %%%     filename        = "shadow.sty",
-%%%     version         = "1.2.1",
-%%%     date            = "16 September 1996",
-%%%     time            = "16:26:21.52 MET",
+%%%     version         = "1.3",
+%%%     date            = "19 February 2003",
 %%%     author          = "Mauro Orlandini",
-%%%     address         = "TeSRE Institute/CNR 
+%%%     address         = "TeSRE Institute/CNR
 %%%                        Area della Ricerca di Bologna
 %%%                        Via Gobetti 101
-%%%                        40129 Bologna - Italy",
-%%%     Email           = "orlandini@tesre.bo.cnr.it (Internet)
-%%%                        38045::ORLANDINI (DECnet)",
+%%%                        40129 Bologna, Italy",
+%%%     e-mail          = "orlandini@bo.iasf.cnr.it",
 %%%     telephone       = "+39 51 639-8667",
 %%%     FAX             = "+39 51 639-8723",
 %%%     supported       = "yes",
-%%%     archived        = "TeX archive",
-%%%     keywords        = "shadow",
 %%%     abstract        = "The command \shabox has the same meaning of the
 %%%                        LaTeX command \fbox except for the fact that a
 %%%                        "shadow" is added to the bottom and the right side
@@ -23,7 +32,6 @@
 %%%                        box, even if the text spans over more than one
 %%%                        line; in this case a warning messagge is given.",
 %%%     codetable       = "ISO/ASCII",
-%%%     checksum        = "15806 84 430 4506",
 %%%     docstring       = "There are three parameters governing:
 %%%                        1. the width of the lines delimiting the box:
 %%%                           \sboxrule
@@ -31,40 +39,38 @@
 %%%                           its contents: \sboxsep
 %%%                        3. the dimension of the shadow: \sdim
 %%%                        Sintax: \shabox{<text>}
-%%%                          where <text> is the text to be put in the
-%%%                          framed box. It can be an entire paragraph.
-%%%                          Adapted from the file dropshadow.tex by
-%%%                          drstrip@cd.sandia.gov.
-%%%                          V1.1  Works in a double column environment.
-%%%                          V1.2  When there is an online shadow box, it
-%%%                                will be centered on the line (in V1.1 the
-%%%                                box was aligned with the baseline).
-%%%                                (Courtesy by Mike Piff)
-%%%                        V1.2.1  Dropped of unwanted CRs by Ralf Nitsch
+%%%                                where <text> is the text to be put in the
+%%%                                framed box. It can be an entire paragraph.
+%%%                        Adapted from the file dropshadow.tex by
+%%%                        drstrip@cd.sandia.gov.
+%%%                        V1.1  Works in a double column environment.
+%%%                        V1.2  When there is an online shadow box, it
+%%%                              will be centered on the line (in V1.1 the
+%%%                              box was aligned with the baseline).
+%%%                              (Courtesy by Mike Piff)"
+%%%                        V1.3  Added a number of missing % signs
+%%%                              no other cleanup done (FMi)
 %%%                        
-%%%                        The checksum field above contains a CRC-16
-%%%                        checksum as the first value, followed by the
-%%%                        equivalent of the standard UNIX wc (word 
-%%%                        count) utility output of lines, words, and
-%%%                        characters.  This is produced by Robert 
-%%%                        Solovay's checksum utility."
 %%% }
 %%% ======================================================================
-\typeout{Style Option: `shadow' v1.2.1 <16 September 1996> (M.O.)}
+%
+%
+\ProvidesPackage{shadow}[2003/02/19 v1.3 shadow boxes (M.O.)]
+
 \newdimen\txtwdth  \newdimen\sht  \newdimen\shw  \newbox\shbox
 \newdimen\sboxsep  \newdimen\sboxrule  \newdimen\sdim
 \sboxsep  = 10pt
 \sdim     = 4pt
 \sboxrule = .4pt
-\def\shabox#1{\setbox\@tempboxa\hbox{#1}% <-- V1.2.1 Added by R. Nitsch
+\def\shabox#1{\setbox\@tempboxa\hbox{#1}%
 \shw\wd\@tempboxa
 \if@twocolumn\txtwdth\columnwidth\else\txtwdth\textwidth\fi
-\ifdim\shw<\txtwdth
-  \leavevmode\setbox\@tempboxa\hbox{#1}% <-- V1.2.1 Added by R. Nitsch
+\ifdim\shw<\txtwdth 
+  \leavevmode\setbox\@tempboxa\hbox{#1}%
 \else
-  \typeout{Shadow Warning: Box dimension greater than textwidth.}
+  \typeout{Shadow Warning: Box dimension greater than textwidth.}%
   \setbox\@tempboxa\vbox{\hsize\txtwdth\advance\hsize-2\sboxsep
-    \advance\hsize-2\sboxrule \advance\hsize-2\sdim \advance\hsize-15pt#1}
+    \advance\hsize-2\sboxrule \advance\hsize-2\sdim \advance\hsize-15pt#1}%
 \fi
  \setbox\shbox\hbox{\@tempdima\sboxrule
      \advance\@tempdima \sboxsep \advance\@tempdima \dp\@tempboxa
@@ -72,13 +78,13 @@
    {\vbox{\hrule \@height \sboxrule
            \hbox{\vrule \@width \sboxrule \hskip\sboxsep
             \vbox{\vskip\sboxsep \box\@tempboxa\vskip\sboxsep}\hskip
-                         \sboxsep\vrule \@width \sboxrule}
-                   \hrule \@height \sboxrule}}}}% <-- V1.2.1 Added by R. Nitsch
+                         \sboxsep\vrule \@width \sboxrule}%
+                   \hrule \@height \sboxrule}}}}%
 \sht\ht\shbox \advance\sht-\sdim
 \leavevmode\vbox{\baselineskip0pt\lineskip0pt\vtop{%%     V1.2
                                                    %%     Added \vtop
                                                    %%     From M.Piff
-             \hbox{\copy\shbox\vrule width\sdim height\sht}
+             \hbox{\copy\shbox\vrule width\sdim height\sht}%
              \hbox{\kern\sdim\vrule height\sdim width \wd\shbox}}}}
 
 \endinput

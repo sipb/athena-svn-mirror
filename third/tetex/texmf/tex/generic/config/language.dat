@@ -69,6 +69,7 @@ ngerman		dehyphn.tex
 %! romanian	rohyphen.tex
 %! russian	ruhyphen.tex	% note: edit ruhyphen.tex for your encoding!
 %! slovak	skhyph.tex      % depends on csplain being installed
+%! slovene	sihyph23.tex
 %! spanish	sphyph.tex
 %! turkish	trhyph.tex
 
@@ -86,7 +87,7 @@ nohyphenation zerohyph.tex
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Please contact me, if for any of the following languages there are
 % freely available hyphenation tables:
-%	catalan esperanto galician slovene swedish
+%	catalan esperanto galician swedish
 % I might want to include them in a future version of this file.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Email   : Thomas Esser, te@dbs.uni-hannover.de

@@ -5,6 +5,9 @@
 % To use the commercial fonts instead of their free "bellek" replacements,
 % replace mt-bellek by mt-yy in updmap and regenerate the map files
 % by running the command ./updmap.
+MTEX MTEX <mtex.pfb
+MTSY MTSY <mtsy.pfb
+RMTMI RMTMI <rmtmi.pfb
 mtex MTEX <mtex.pfb
 mtsy MTSY <mtsy.pfb
 rmtmi RMTMI <rmtmi.pfb
