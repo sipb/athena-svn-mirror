@@ -1,7 +1,7 @@
 /* 
- * $Id: rk_util.c,v 1.5 1995-11-30 19:46:52 miki Exp $
+ * $Id: rk_util.c,v 1.6 1996-01-14 15:43:28 epeisach Exp $
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/lib/rk_util.c,v $
- * $Author: miki $
+ * $Author: epeisach $
  *
  * This file contains internal routines for general use by the rkinit
  * library and server.  
@@ -11,7 +11,7 @@
  */
 
 #if !defined(lint) && !defined(SABER) && !defined(LOCORE) && defined(RCS_HDRS)
-static char *rcsid = "$Id: rk_util.c,v 1.5 1995-11-30 19:46:52 miki Exp $";
+static char *rcsid = "$Id: rk_util.c,v 1.6 1996-01-14 15:43:28 epeisach Exp $";
 #endif /* lint || SABER || LOCORE || RCS_HDRS */
 
 #include <stdio.h>
@@ -27,6 +27,10 @@ static char *rcsid = "$Id: rk_util.c,v 1.5 1995-11-30 19:46:52 miki Exp $";
 #include <rkinit.h>
 #include <rkinit_private.h>
 #include <rkinit_err.h>
+
+#ifdef ultrix
+#define sigset(x,y) signal(x,y)
+#endif
 
 #define RKINIT_TIMEOUTVAL 60
 
