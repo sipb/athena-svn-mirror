@@ -33,7 +33,7 @@
 
 #ifndef lint
 /*static char sccsid[] = "from: @(#)process.c	5.10 (Berkeley) 2/26/91";*/
-static char rcsid[] = "$Id: process.c,v 1.4 1997-10-17 06:51:19 ghudson Exp $";
+static char rcsid[] = "$Id: process.c,v 1.4.10.1 2001-09-16 17:54:29 ghudson Exp $";
 #endif /* not lint */
 
 /*
@@ -55,9 +55,6 @@ static char rcsid[] = "$Id: process.c,v 1.4 1997-10-17 06:51:19 ghudson Exp $";
 #include <string.h>
 #ifdef HAVE_PATHS_H
 #include <paths.h>
-#endif
-#ifndef _PATH_UTMP
-#define _PATH_UTMP GUESSED_PATH_UTMP
 #endif
 #ifndef _PATH_DEV
 #define _PATH_DEV "/dev/"
@@ -187,43 +184,37 @@ do_announce(mp, rp)
 find_user(name, tty)
 	char *name, *tty;
 {
-	struct utmp ubuf;
+	struct utmp *uptr;
 	int status;
-	FILE *fd;
 	struct stat statb;
 	char ftty[20];
 
-	if ((fd = fopen(_PATH_UTMP, "r")) == NULL) {
-		fprintf(stderr, "talkd: can't read %s.\n", _PATH_UTMP);
-		return (FAILED);
-	}
 #define SCMPN(a, b)	strncmp(a, b, sizeof (a))
 	status = NOT_HERE;
 	(void) strcpy(ftty, _PATH_DEV);
-	while (fread((char *) &ubuf, sizeof ubuf, 1, fd) == 1) {
+	while ((uptr = getutent()) != NULL) {
 #ifdef USER_PROCESS
-		if (ubuf.ut_type != USER_PROCESS)
+		if (uptr->ut_type != USER_PROCESS)
 			continue;
 #endif
-		if (SCMPN(ubuf.ut_name, name) == 0) {
+		if (SCMPN(uptr->ut_name, name) == 0) {
 			if (*tty == '\0') {
 				status = PERMISSION_DENIED;
 				/* no particular tty was requested */
-				(void) strcpy(ftty+5, ubuf.ut_line);
+				(void) strcpy(ftty+5, uptr->ut_line);
 				if (stat(ftty,&statb) == 0) {
 					if (!(statb.st_mode & 020))
 						continue;
-					(void) strcpy(tty, ubuf.ut_line);
+					(void) strcpy(tty, uptr->ut_line);
 					status = SUCCESS;
 					break;
 				}
 			}
-			if (strcmp(ubuf.ut_line, tty) == 0) {
+			if (strcmp(uptr->ut_line, tty) == 0) {
 				status = SUCCESS;
 				break;
 			}
 		}
 	}
-	fclose(fd);
 	return (status);
 }

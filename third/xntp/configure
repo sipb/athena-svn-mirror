@@ -3832,7 +3832,7 @@ if test "${ac_cv_lib_readline_readline+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
 else
   ac_check_lib_save_LIBS=$LIBS
-LIBS="-lreadline  $LIBS"
+LIBS="-lreadline -lcurses  $LIBS"
 cat >conftest.$ac_ext <<_ACEOF
 #line 3836 "configure"
 #include "confdefs.h"
@@ -3880,7 +3880,7 @@ if test $ac_cv_lib_readline_readline = yes; then
 #define HAVE_LIBREADLINE 1
 EOF
 
-  LIBS="-lreadline $LIBS"
+  LIBS="-lreadline -lcurses $LIBS"
 
 fi
 
