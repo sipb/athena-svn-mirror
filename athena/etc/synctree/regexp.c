@@ -171,7 +171,7 @@ char *string;
    while(*string != NULL)
       *string++ = toupper(*string);
 }
-#endif
+#endif /* 0 */
 
 
 #ifdef TEST
@@ -187,7 +187,7 @@ main()
     char s1[80], s2[80];
     int s3;
 
- #ifdef POSIX
+#ifdef POSIX
     static struct sigaction sa;
     (void) sigemptyset(&sa.sa_mask);
     sa.sa_flags = 0;
@@ -195,8 +195,7 @@ main()
     (void) sigaction(SIGINT, &sa, (struct sigaction *)0);
 #else
     signal(SIGINT,cleanup);
-
-#endif
+#endif /* POSIX */
 loop:
     printf("Pattern ==> ");
     if (!gets(s1))
@@ -212,4 +211,4 @@ loop:
     printf("%s\n\n", s3 ? "Pattern matched" : "Pattern failed");
     goto loop;
 }
-#endif
+#endif /* test */
