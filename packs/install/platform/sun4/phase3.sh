@@ -1,4 +1,4 @@
-# $Id: phase3.sh,v 1.10.2.3 1997-07-26 19:03:58 ghudson Exp $
+# $Id: phase3.sh,v 1.10.2.4 1997-10-13 16:02:24 ghudson Exp $
 # $Source: /afs/dev.mit.edu/source/repository/packs/install/platform/sun4/phase3.sh,v $
 
 # This file is run out of the srvd by phase2.sh after it starts AFS.
@@ -97,12 +97,14 @@ cp -p /os/etc/driver_aliases etc/driver_aliases
 cp -p /os/etc/device.tab etc/device.tab
 cp -p /os/etc/dgroup.tab etc/dgroup.tab
 
+if=`ifconfig -au | awk -F: '/^[a-z]/ { if ($1 != "lo0") { print $1; exit; } }'`
+if [ -z "$if" ]; then if=le0; fi
 hostname=`echo $hostname | awk -F. '{print $1}' | /usr/bin/tr "[A-Z]" "[a-z]"`
 echo "Host name is $hostname"
 echo "Gateway is $gateway"
 echo "Address is $netaddr"
 echo $hostname >etc/nodename
-echo $hostname >etc/hostname.le0
+echo $hostname >etc/hostname.$if
 echo $gateway >etc/defaultrouter
 cp -p /os/etc/inet/hosts etc/inet/hosts
 cp -p /srvd/etc/inet/netmasks etc/inet/netmasks
@@ -135,7 +137,8 @@ echo "Updating dm config"
 cp -p /srvd/etc/athena/login/config etc/athena/login/config
 echo "Editing rc.conf and version"
 sed -e 	"s/^HOST=NONAME/HOST=$hostname/
-	s/^ADDR=NOADDR/ADDR=$netaddr/" \
+	s/^ADDR=NOADDR/ADDR=$netaddr/
+	s/^NETDEV=NODEV/NETDEV=$if/" \
 	< /srvd/etc/athena/rc.conf > /root/etc/athena/rc.conf
 rm -f /root/.rvdinfo
 echo installed on `date` > /root/etc/athena/version
@@ -161,7 +164,6 @@ cp /dev/null /root/var/adm/sulog
 cp /dev/null /root/var/spool/mqueue/syslog
 rm -f /root/var/spool/cron/crontabs/uucp
 echo "Installing bootblocks on root "
-cp -p "/os/platform/$platform/ufsboot" /root
 installboot "/os/usr/platform/$platform/lib/fs/ufs/bootblk" "$rrootdrive"
 cd /root
 
