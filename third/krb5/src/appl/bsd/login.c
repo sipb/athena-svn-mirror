@@ -605,6 +605,14 @@ int try_krb5 (me_p, pass)
 	return 0;
     }
 
+    if (code = krb5_cc_default(kcontext, &ccache)) {
+      com_err("login", code, "while getting default ccache");
+    } else if (code = krb5_cc_initialize(kcontext, ccache, me)) {
+      com_err("login", code, "when initializing cache");
+    } else if (code = krb5_cc_store_cred(kcontext, ccache, &my_creds)) {
+      com_err("login", code, "while storing credentials");
+    }
+
     krbflag = got_v5_tickets = 1;
 
     return 1;
@@ -1627,13 +1635,9 @@ int main(argc, argv)
      * So, we suck the V5 and V4 krbtgts into memory here, destroy
      * the ccache/ticket file, and recreate them later after the
      * setuid.
-     *
-     * With the new v5 api, v5 tickets are kept in memory until written
-     * out after the setuid.  However, forwarded tickets still
-     * need to be read in and recreated later
      */
 #ifdef KRB5_GET_TICKETS
-    if (forwarded_v5_tickets) {
+    if (got_v5_tickets || forwarded_v5_tickets) {
 	krb5_creds mcreds;
 
 	memset(&mcreds, 0, sizeof(mcreds));
@@ -1684,7 +1688,7 @@ int main(argc, argv)
 #endif /* KRB4_GET_TICKETS */
 
 #ifdef KRB5_GET_TICKETS
-    if (forwarded_v5_tickets)
+    if (got_v5_tickets || forwarded_v5_tickets)
 	destroy_tickets();
 #endif
 #ifdef KRB4_GET_TICKETS
@@ -1730,7 +1734,7 @@ int main(argc, argv)
      */
 
 #ifdef KRB5_GET_TICKETS
-    if (got_v5_tickets) {
+    if (got_v5_tickets && rewrite_ccache) {
 	/* set up credential cache -- obeying KRB5_ENV_CCNAME 
 	   set earlier */
 	/* (KRB5_ENV_CCNAME == "KRB5CCNAME" via osconf.h) */
