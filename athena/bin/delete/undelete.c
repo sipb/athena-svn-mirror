@@ -11,7 +11,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_undelete_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/undelete.c,v 1.17 1989-11-06 19:54:08 jik Exp $";
+     static char rcsid_undelete_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/undelete.c,v 1.18 1989-11-22 21:25:42 jik Exp $";
 #endif
 
 #include <stdio.h>
@@ -31,7 +31,7 @@
 #include "mit-copyright.h"
 #include "errors.h"
 
-extern char *malloc(), *realloc();
+extern char *realloc();
 extern int errno;
 
 int interactive, recursive, verbose, directoriesonly, noop, force;
@@ -258,7 +258,7 @@ int num;
      struct filrec *not_needed;
      int retval;
      
-     filelist = (listrec *) malloc((unsigned) (sizeof(listrec) * num));
+     filelist = (listrec *) Malloc((unsigned) (sizeof(listrec) * num));
      if (! filelist) {
 	  set_error(errno);
 	  error("process_files");
@@ -266,14 +266,14 @@ int num;
      }
      
      for (i = 0; i < num; i++) {
-	  filelist[i].real_name = malloc((unsigned) (strlen(files[i]) + 1));
+	  filelist[i].real_name = Malloc((unsigned) (strlen(files[i]) + 1));
 	  if (! filelist[i].real_name) {
 	       set_error(errno);
 	       error("process_files");
 	       return error_code;
 	  }
 	  (void) strcpy(filelist[i].real_name, files[i]);
-	  filelist[i].user_name = malloc((unsigned) (strlen(files[i]) + 1));
+	  filelist[i].user_name = Malloc((unsigned) (strlen(files[i]) + 1));
 	  if (! filelist[i].user_name) {
 	       set_error(errno);
 	       error("process_files");
