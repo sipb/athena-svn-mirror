@@ -18,17 +18,19 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data.c,v $
- *	$Id: data.c,v 1.11 1990-07-16 08:29:54 lwvanels Exp $
- *	$Author: lwvanels $
+ *	$Id: data.c,v 1.12 1990-07-16 10:08:54 vanharen Exp $
+ *	$Author: vanharen $
  */
 
 #ifndef lint
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data.c,v 1.11 1990-07-16 08:29:54 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data.c,v 1.12 1990-07-16 10:08:54 vanharen Exp $";
 #endif
 
 #include <mit-copyright.h>
 #include <olc/olc.h>
 #include <olcd.h>
+
+#include "lumberjack.h"
 
 char *DATABASE_FILE      = "/usr/lib/olc/database";
 char *SPECIALTY_DIR      = "/usr/lib/olc/specialties";
@@ -53,13 +55,6 @@ char SERVER_REALM[REALM_SZ];
 char K_INSTANCEbuf[INST_SZ];
 #endif KERBEROS
 
-
-/* NF_PREFIX is prepended to the topic to create a specific discuss mtg */
-#ifndef OLZ
-char *NF_PREFIX = "MATISSE.MIT.EDU:/usr/spool/discuss/o";
-#else
-char *NF_PREFIX = "FRIES.MIT.EDU:/usr/spool/discuss/o";
-#endif
 
 /* declaraction of procedure table */
 
