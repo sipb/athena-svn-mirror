@@ -1529,7 +1529,7 @@ fi
 
 # Define the identity of the package.
  PACKAGE=gnome2-user-docs
- VERSION=2.8.0
+ VERSION=2.8.1
 
 
 cat >>confdefs.h <<_ACEOF
@@ -1785,7 +1785,7 @@ fi
 
 
 
-                                                                                                                                                                                                                  ac_config_files="$ac_config_files Makefile gnome-user-docs.spec gnome2-user-guide/Makefile gnome2-user-guide/C/Makefile gnome2-user-guide/de/Makefile gnome2-user-guide/es/Makefile gnome2-user-guide/eu/Makefile gnome2-user-guide/fr/Makefile gnome2-user-guide/hu/Makefile gnome2-user-guide/it/Makefile gnome2-user-guide/ja/Makefile gnome2-user-guide/ko/Makefile gnome2-user-guide/ro/Makefile gnome2-user-guide/sv/Makefile gnome2-user-guide/uk/Makefile gnome2-user-guide/zh_CN/Makefile gnome2-user-guide/zh_TW/Makefile gnome2-accessibility-guide/Makefile gnome2-accessibility-guide/C/Makefile gnome2-system-admin-guide/Makefile gnome2-system-admin-guide/C/Makefile"
+                                                                                ac_config_files="$ac_config_files Makefile gnome-user-docs.spec gnome2-user-guide/Makefile gnome2-user-guide/C/Makefile gnome2-accessibility-guide/Makefile gnome2-accessibility-guide/C/Makefile gnome2-system-admin-guide/Makefile gnome2-system-admin-guide/C/Makefile"
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
 # tests run on this system so they can be shared between configure
@@ -2355,19 +2355,6 @@ do
   "gnome-user-docs.spec" ) CONFIG_FILES="$CONFIG_FILES gnome-user-docs.spec" ;;
   "gnome2-user-guide/Makefile" ) CONFIG_FILES="$CONFIG_FILES gnome2-user-guide/Makefile" ;;
   "gnome2-user-guide/C/Makefile" ) CONFIG_FILES="$CONFIG_FILES gnome2-user-guide/C/Makefile" ;;
-  "gnome2-user-guide/de/Makefile" ) CONFIG_FILES="$CONFIG_FILES gnome2-user-guide/de/Makefile" ;;
-  "gnome2-user-guide/es/Makefile" ) CONFIG_FILES="$CONFIG_FILES gnome2-user-guide/es/Makefile" ;;
-  "gnome2-user-guide/eu/Makefile" ) CONFIG_FILES="$CONFIG_FILES gnome2-user-guide/eu/Makefile" ;;
-  "gnome2-user-guide/fr/Makefile" ) CONFIG_FILES="$CONFIG_FILES gnome2-user-guide/fr/Makefile" ;;
-  "gnome2-user-guide/hu/Makefile" ) CONFIG_FILES="$CONFIG_FILES gnome2-user-guide/hu/Makefile" ;;
-  "gnome2-user-guide/it/Makefile" ) CONFIG_FILES="$CONFIG_FILES gnome2-user-guide/it/Makefile" ;;
-  "gnome2-user-guide/ja/Makefile" ) CONFIG_FILES="$CONFIG_FILES gnome2-user-guide/ja/Makefile" ;;
-  "gnome2-user-guide/ko/Makefile" ) CONFIG_FILES="$CONFIG_FILES gnome2-user-guide/ko/Makefile" ;;
-  "gnome2-user-guide/ro/Makefile" ) CONFIG_FILES="$CONFIG_FILES gnome2-user-guide/ro/Makefile" ;;
-  "gnome2-user-guide/sv/Makefile" ) CONFIG_FILES="$CONFIG_FILES gnome2-user-guide/sv/Makefile" ;;
-  "gnome2-user-guide/uk/Makefile" ) CONFIG_FILES="$CONFIG_FILES gnome2-user-guide/uk/Makefile" ;;
-  "gnome2-user-guide/zh_CN/Makefile" ) CONFIG_FILES="$CONFIG_FILES gnome2-user-guide/zh_CN/Makefile" ;;
-  "gnome2-user-guide/zh_TW/Makefile" ) CONFIG_FILES="$CONFIG_FILES gnome2-user-guide/zh_TW/Makefile" ;;
   "gnome2-accessibility-guide/Makefile" ) CONFIG_FILES="$CONFIG_FILES gnome2-accessibility-guide/Makefile" ;;
   "gnome2-accessibility-guide/C/Makefile" ) CONFIG_FILES="$CONFIG_FILES gnome2-accessibility-guide/C/Makefile" ;;
   "gnome2-system-admin-guide/Makefile" ) CONFIG_FILES="$CONFIG_FILES gnome2-system-admin-guide/Makefile" ;;
