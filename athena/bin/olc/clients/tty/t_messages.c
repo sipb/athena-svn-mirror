@@ -12,18 +12,21 @@
  *
  *      Tom Coppeto
  *	Chris VanHaren
+ *	Lucien Van Elsen
  *      MIT Project Athena
  *
  * Copyright (C) 1989,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_messages.c,v $
- *	$Id: t_messages.c,v 1.13 1990-07-16 08:09:10 lwvanels Exp $
+ *	$Id: t_messages.c,v 1.14 1990-11-14 14:45:32 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_messages.c,v 1.13 1990-07-16 08:09:10 lwvanels Exp $";
+#ifndef SABER
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_messages.c,v 1.14 1990-11-14 14:45:32 lwvanels Exp $";
+#endif
 #endif
 
 #include <mit-copyright.h>
@@ -59,7 +62,7 @@ t_replay(Request, queues, topics, users, stati, file, display)
 	{
 	case SUCCESS:
 	  if (display)
-	    status = display_file(file, TRUE);
+	    status = display_file(file);
 	  break;
 
 	case NOT_CONNECTED:
@@ -82,8 +85,8 @@ t_replay(Request, queues, topics, users, stati, file, display)
 		  "The string \"%s\" is not unique.  Choose one of:\n",
 		  Request->target.username);
 	  strcpy(users, Request->target.username);
-	  (void) t_list_queue(Request, (char *) NULL, (char) NULL, (char) NULL,
-			      users, 0, 0, file, FALSE);
+	  (void) t_list_queue(Request, (char **) NULL, (char *) NULL,
+			      (char *) NULL, users, 0, 0, file, FALSE);
 	  break;
 
 	default:
@@ -168,7 +171,7 @@ t_show_message(Request, file, display, connected, noflush)
     {
     case SUCCESS:
       if (display)
-	display_file(file, TRUE);
+	display_file(file);
       break;
 
     case NOT_CONNECTED:
@@ -215,7 +218,7 @@ t_check_messages(Request)
 	strcat (prompt, " unread message.  Display?  ");
 
 	if (get_yn (prompt) == 'y')
-	    display_file (file, TRUE);
+	    display_file(file);
     }
 
     return status;
@@ -232,7 +235,7 @@ t_check_connected_messages(Request)
     status = OShowMessageIntoFile(Request,file);
     if(status == SUCCESS) {
 	if (get_yn ("User has unread message.  Display?  ") == 'y')
-	    display_file (file, TRUE);
+	    display_file(file);
     }
     unset_option(Request->options,CONNECTED_OPT);
     return status;

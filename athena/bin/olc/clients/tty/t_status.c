@@ -12,18 +12,21 @@
  *
  *      Tom Coppeto
  *	Chris VanHaren
+ *	Lucien Van Elsen
  *      MIT Project Athena
  *
  * Copyright (C) 1989,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_status.c,v $
- *	$Id: t_status.c,v 1.14 1990-07-16 08:10:08 lwvanels Exp $
+ *	$Id: t_status.c,v 1.15 1990-11-14 14:46:28 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_status.c,v 1.14 1990-07-16 08:10:08 lwvanels Exp $";
+#ifndef SABER
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_status.c,v 1.15 1990-11-14 14:46:28 lwvanels Exp $";
+#endif
 #endif
 
 #include <mit-copyright.h>
@@ -92,7 +95,7 @@ t_display_personal_status(Request,list,chart)
 
 #ifdef TEST
   printf("count: %d\n", count);
-#endif TEST
+#endif /* TEST */
 
   if((count == 1) && (list->user.instance == 0) && !chart)
     {

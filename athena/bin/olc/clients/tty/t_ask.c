@@ -12,18 +12,21 @@
  *
  *      Tom Coppeto
  *	Chris VanHaren
+ *	Lucien Van Elsen
  *      MIT Project Athena
  *
  * Copyright (C) 1989,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_ask.c,v $
- *	$Id: t_ask.c,v 1.12 1990-07-16 08:44:51 vanharen Exp $
- *	$Author: vanharen $
+ *	$Id: t_ask.c,v 1.13 1990-11-14 14:44:08 lwvanels Exp $
+ *	$Author: lwvanels $
  */
 
 #ifndef lint
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_ask.c,v 1.12 1990-07-16 08:44:51 vanharen Exp $";
+#ifndef SABER
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_ask.c,v 1.13 1990-11-14 14:44:08 lwvanels Exp $";
+#endif
 #endif
 
 #include <mit-copyright.h>
@@ -172,7 +175,7 @@ t_ask(Request,topic)
       printf(" please type\n\"answers\" at the olc> prompt.  If you find");
       printf(" the answer to your question, type\n\"cancel\" at the olc> ");
       printf("prompt.\n");
-#endif BETH
+#endif /* BETH */
       status = SUCCESS;
       break;
     case CONNECTED:

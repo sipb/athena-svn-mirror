@@ -12,18 +12,21 @@
  *
  *      Tom Coppeto
  *	Chris VanHaren
+ *	Lucien Van Elsen
  *      MIT Project Athena
  *
  * Copyright (C) 1989,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_motd.c,v $
- *	$Id: t_motd.c,v 1.7 1990-07-16 08:09:16 lwvanels Exp $
+ *	$Id: t_motd.c,v 1.8 1990-11-14 14:45:47 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_motd.c,v 1.7 1990-07-16 08:09:16 lwvanels Exp $";
+#ifndef SABER
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_motd.c,v 1.8 1990-11-14 14:45:47 lwvanels Exp $";
+#endif
 #endif
 
 #include <mit-copyright.h>
@@ -44,7 +47,7 @@ t_get_motd(Request,type,file,display_opts)
     {
     case SUCCESS:
       if(display_opts)
-	display_file(file,TRUE);
+	display_file(file);
       else
 	cat_file(file);
       break;
