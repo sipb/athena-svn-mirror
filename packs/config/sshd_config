@@ -1,12 +1,24 @@
-# $Id: sshd_config,v 1.3 2000-12-29 04:26:33 zacheiss Exp $
+# $Id: sshd_config,v 1.4 2001-11-28 19:27:01 zacheiss Exp $
 
 # Athena sshd configuration file
 
 PidFile /var/athena/sshd.pid
+
+# HostKey for protocol version 1
+HostKey /etc/ssh_host_key
+# HostKeys for protocol version 2
+HostKey /etc/ssh_host_rsa_key
+HostKey /etc/ssh_host_dsa_key
+
 RhostsAuthentication no
 RhostsRSAAuthentication no
+HostbasedAuthentication no
 RSAAuthentication no
+PubkeyAuthentication no
 StrictModes no
 KerberosOrLocalPasswd yes
-CheckMail no
-SyslogFacility AUTH
+
+X11Forwarding yes
+X11DisplayOffset 10
+
+Subsystem	sftp	/usr/athena/libexec/sftp-server
