@@ -1,4 +1,4 @@
-dnl $Id: aclocal.m4,v 1.1 1997-09-23 18:53:19 ghudson Exp $
+dnl $Id: aclocal.m4,v 1.2 1997-10-03 17:35:00 ghudson Exp $
 
 dnl Copyright 1996 by the Massachusetts Institute of Technology.
 dnl
@@ -21,6 +21,9 @@ dnl	ATHENA_UTIL_COM_ERR
 dnl		Generates error if com_err not found.
 dnl	ATHENA_UTIL_SS
 dnl		Generates error if ss not found.
+dnl	ATHENA_REGEXP
+dnl		Sets RX_LIBS if rx library used; ensures POSIX regexp
+dnl		support.
 dnl	ATHENA_MOTIF
 dnl		Sets MOTIF_LIBS and defines HAVE_MOTIF if Motif used.
 dnl	ATHENA_MOTIF_REQUIRED
@@ -86,6 +89,25 @@ if test "$ss" != no; then
 else
 	AC_MSG_ERROR(This package requires ss.)
 fi])
+
+dnl ----- Regular expressions -----
+
+AC_DEFUN(ATHENA_REGEXP,
+[AC_ARG_WITH(rx,
+	[  --with-rx=PREFIX        Use installed rx library],
+	[rx="$withval"], [rx=no])
+if test "$rx" != no; then
+	if test "$rx" != yes; then
+		CPPFLAGS="$CPPFLAGS -I$rx/include"
+		LDFLAGS="$LDFLAGS -L$rx/lib"
+	fi
+	AC_CHECK_LIB(rx, regcomp, RX_LIBS=-lrx,
+		     [AC_MSG_ERROR(rx library not found)])
+else
+	AC_CHECK_FUNC(regcomp, :,
+		      [AC_MSG_ERROR(can't find POSIX regexp support)])
+fi
+AC_SUBST(RX_LIBS)])
 
 dnl ----- Motif -----
 
@@ -168,9 +190,9 @@ AC_CHECK_LIB(krb, krb_rd_req, [KRB4_LIBS="-lkrb -ldes"],
 		CPPFLAGS="$ocppflags -I/usr/include/kerberosIV"
 	fi
 	AC_CHECK_LIB(krb4, krb_rd_req,
-		     [KRB4_LIBS="-lkrb4 -lkrb5 -ldes425 -lcrypto -lcom_err"],
+		     [KRB4_LIBS="-lkrb4 -ldes425 -lkrb5 -lcrypto -lcom_err"],
 		     [AC_MSG_ERROR(Kerberos 4 libraries not found)],
-		     -ldes425 -lcom_err)], -ldes)])
+		     -ldes425 -lkrb5 -lcrypto -lcom_err)], -ldes)])
 
 AC_DEFUN(ATHENA_KRB4,
 [AC_ARG_WITH(krb4,
