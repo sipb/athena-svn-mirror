@@ -3,7 +3,6 @@ INCLUDES = 						\
 	-I$(top_builddir) 				\
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\"	\
 	-DDATADIR=\""$(datadir)"\"			\
-        -I$(includedir)					\
 	$(BONOBOX_TEST_CFLAGS)
 
 bin_PROGRAMS = gshell

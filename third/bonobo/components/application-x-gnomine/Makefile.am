@@ -7,7 +7,6 @@ INCLUDES = -I$(top_srcdir)				\
 	-I$(top_builddir)/bonobo			\
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" 	\
 	-DDATADIR=\""$(datadir)"\"			\
-	-I$(includedir)				 	\
 	$(BONOBOX_TEST_CFLAGS)
 
 #bin_PROGRAMS = gnomine bonobo-application-x-mines

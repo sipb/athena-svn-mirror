@@ -170,7 +170,7 @@ idl_DATA = Echo.idl
 
 EXTRA_DIST = $(oaf_DATA) $(idl_DATA)
 
-INCLUDES =          -DGNOMELOCALEDIR=\""$(datadir)/locale"\"        	-DG_LOG_DOMAIN=\"Echo\"					-I. -I$(top_srcdir)/bonobo				-I$(srcdir) -I$(top_srcdir) 				-I$(top_builddir)				        -I$(includedir)                                 	$(BONOBOX_TEST_CFLAGS)
+INCLUDES =          -DGNOMELOCALEDIR=\""$(datadir)/locale"\"        	-DG_LOG_DOMAIN=\"Echo\"					-I. -I$(top_srcdir)/bonobo				-I$(srcdir) -I$(top_srcdir) 				-I$(top_builddir)				        $(BONOBOX_TEST_CFLAGS)
 
 
 MYHACKAROUNDAUTOMAKE = $(shell echo $(ECHO_CORBA_GENERATED))

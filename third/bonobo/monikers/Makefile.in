@@ -141,7 +141,7 @@ cflags_set = @cflags_set@
 cxxflags_set = @cxxflags_set@
 l = @l@
 
-INCLUDES =          -DGNOMELOCALEDIR=\""$(datadir)/locale"\"        	-I. 							-I$(srcdir) -I$(top_srcdir) 				-I$(top_builddir)					-I$(top_srcdir)/bonobo                                  -I$(includedir)                                 	$(BONOBO_TEST_CFLAGS)
+INCLUDES =          -DGNOMELOCALEDIR=\""$(datadir)/locale"\"        	-I. 							-I$(srcdir) -I$(top_srcdir) 				-I$(top_builddir)					-I$(top_srcdir)/bonobo                                  $(BONOBO_TEST_CFLAGS)
 
 
 OAF_FILES =  	Bonobo_Moniker_std.oafinfo			Bonobo_Moniker_gzip.oafinfo			Bonobo_Moniker_http.oafinfo		

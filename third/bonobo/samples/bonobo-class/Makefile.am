@@ -50,7 +50,6 @@ INCLUDES = 						\
 	-I. -I$(top_srcdir)/bonobo			\
 	-I$(srcdir) -I$(top_srcdir) 			\
 	-I$(top_builddir)				\
-        -I$(includedir)                                 \
 	$(BONOBOX_TEST_CFLAGS)
 
 MYHACKAROUNDAUTOMAKE=$(shell echo $(ECHO_CORBA_GENERATED))

@@ -7,7 +7,6 @@ INCLUDES =						\
         -DGNOMELOCALEDIR=\""$(datadir)/locale"\"        \
 	-I$(srcdir) -I$(top_srcdir) 			\
 	-I. -I$(top_srcdir)/bonobo			\
-        -I$(includedir)                                 \
 	$(BONOBOX_TEST_CFLAGS)
 
 bonobo_selector_LDADD = 			\

@@ -143,7 +143,7 @@ l = @l@
 
 bin_PROGRAMS = bonobo-sample-controls sample-control-container
 
-INCLUDES =          -DGNOMELOCALEDIR=\""$(datadir)/locale"\"        	-I$(srcdir) -I$(top_srcdir) 				-I. -I$(top_srcdir)/bonobo			        -I$(includedir)                                 	$(BONOBOX_TEST_CFLAGS)
+INCLUDES =          -DGNOMELOCALEDIR=\""$(datadir)/locale"\"        	-I$(srcdir) -I$(top_srcdir) 				-I. -I$(top_srcdir)/bonobo			        $(BONOBOX_TEST_CFLAGS)
 
 
 bonobo_sample_controls_SOURCES =  	bonobo-clock-control.c					bonobo-clock-control.h					bonobo-calculator-control.c				bonobo-calculator-control.h				sample-control-factory.c

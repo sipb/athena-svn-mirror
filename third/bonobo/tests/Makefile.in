@@ -147,7 +147,7 @@ noinst_PROGRAMS =  	test-any			test-container 			test-moniker			test-properties-
 bonobo_libs =  	$(top_builddir)/bonobo/libbonobo.la			$(BONOBOX_TEST_LIBS)					$(INTLLIBS)
 
 
-INCLUDES =          -DGNOMELOCALEDIR=\""$(datadir)/locale"\"        	-I$(srcdir) -I$(top_srcdir) 				-I. -I$(top_srcdir)/bonobo			        -I$(includedir)                                 	$(BONOBOX_TEST_CFLAGS)
+INCLUDES =          -DGNOMELOCALEDIR=\""$(datadir)/locale"\"        	-I$(srcdir) -I$(top_srcdir) 				-I. -I$(top_srcdir)/bonobo			        $(BONOBOX_TEST_CFLAGS)
 
 
 test_properties_server_SOURCES =  	test-properties-server.c

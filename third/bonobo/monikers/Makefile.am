@@ -4,7 +4,6 @@ INCLUDES =                                              \
 	-I$(srcdir) -I$(top_srcdir) 			\
 	-I$(top_builddir)				\
 	-I$(top_srcdir)/bonobo                          \
-        -I$(includedir)                                 \
 	$(BONOBO_TEST_CFLAGS)
 
 OAF_FILES =					\
