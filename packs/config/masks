@@ -1,0 +1,32 @@
+# $Id: masks,v 1.1 1997-12-30 18:34:26 ghudson Exp $
+
+# This file specifies the netmasks for each network supported by the
+# Athena environment.  The format for lines in the file is:
+#
+#	address		significant-bits	netmask-bits	[gateway]
+#
+# The number of netmask bits for a given IP address is the value of
+# <netmask-bits> on the first line for which <address> matches the
+# first <significant-bits> bits of the given address.  If a gateway
+# is not given, the gateway is assumed to be one greater than the
+# network address.
+#
+# The contents of this file are maintained by Athena release
+# engineering.  If you edit this file on your workstation, it will be
+# replaced at the next update and your changes will be lost.  If you
+# have local changes to make, create or add to
+# /etc/athena/masks.local, which has the same file format as this
+# file.  Entries in /etc/athena/masks.local take precedence over
+# entries in this file.
+#
+# The shell script /etc/athena/netparams uses this file to compute the
+# network, broadcast, and gateway address for a given IP address.  See
+# the comments at the top of that file for usage information.
+
+# MITnet addresses begin with "18" and have a 16-bit netmask.
+18.0.0.0	8	16
+
+# WHOI has a class B subnetted to 22 bits.  128.128.16 has a funny
+# gateway address.
+128.128.16.0	22	22	128.128.16.7
+128.128.0.0	16	22
