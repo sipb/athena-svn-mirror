@@ -1,5 +1,5 @@
 GLOBAL : *.CKP *.local *.pid :
-## $Id: os_rvd,v 1.23 1998-08-13 21:44:53 ghudson Exp $
+## $Id: os_rvd,v 1.24 1998-08-18 17:31:14 ghudson Exp $
 ## Major subscription list for workstations
 ##
 ##	MIT Project Athena
@@ -576,7 +576,6 @@ GLOBAL : *.CKP *.local *.pid :
 		-> C*
 		-> GL
 		-> Xol
-		-> a*
 		-> c*
 		-> h*
 		-> lib*.a
@@ -590,6 +589,9 @@ GLOBAL : *.CKP *.local *.pid :
 		-> xdm*
 		-> xil
 		-> xman.help
+		:
+	/usr/openwin/lib/app-defaults:::
+		-> *
 		:
 	/usr/openwin/lib/X11::::
 	/usr/openwin/lib/X11/fonts:::
