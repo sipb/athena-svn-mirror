@@ -182,7 +182,7 @@ struct tab sitetab[];
 	CDUP	STOU	SMNT	SYST	SIZE	MDTM
 	AUTH	ADAT	PROT    PBSZ
 	CCC
-	ATCH
+	ATCH	AKLG
 
 	UMASK	IDLE	CHMOD
 
@@ -628,13 +628,20 @@ cmd:		USER SP username CRLF
 			auth_data((char *) $3);
 			free((char *) $3);
 		}
-	|	ATCH check_login SP pathname CRLF
+	|	ATCH check_login SP STRING CRLF
 		= {
 			if ($2 && $4 != NULL)
 				attach(pw, (char *) $4);
 			if ($4 != NULL)
 				free((char *) $4);
-		}				
+		}
+	|	AKLG check_login SP STRING CRLF
+		= {
+			if ($2 && $4 != NULL)
+				aklog(pw, (char *) $4);
+			if ($4 != NULL)
+				free((char *) $4);
+		}
 	|	QUIT CRLF
 		= {
 			reply(221, "Goodbye.");
@@ -908,6 +915,7 @@ struct tab cmdtab[] = {		/* In order defined in RFC 765 */
 	{ "SIZE", SIZE, OSTR, 1,	"<sp> path-name" },
 	{ "MDTM", MDTM, OSTR, 1,	"<sp> path-name" },
 	{ "ATCH", ATCH, STR1, 1,	"<sp> filesystem-name" },
+	{ "AKLG", AKLG, STR1, 1,	"<sp> cell" },
 	{ NULL,   0,    0,    0,	0 }
 };
 
