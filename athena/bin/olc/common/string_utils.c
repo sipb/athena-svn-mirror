@@ -14,12 +14,12 @@
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/string_utils.c,v $
- *      $Author: tjcoppet $
+ *      $Author: raeburn $
  *
  */
 
 #ifndef lint
-static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/string_utils.c,v 1.3 1989-11-17 14:01:57 tjcoppet Exp $";
+static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/string_utils.c,v 1.4 1990-01-16 05:27:28 raeburn Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -48,7 +48,7 @@ char *month[] =
  * Notes:
  */
 
-uncase(string)
+void uncase(string)
      char *string;
 {
   char *buf;		/* Temporary buffer. */
@@ -87,7 +87,7 @@ cap(string)
   return(buf);
 }
 
-isnumber(string)
+int isnumber(string)
      char *string;
 {
   while(string && *string)
@@ -111,7 +111,8 @@ extern struct tm *localtime();
  *	the time through the minutes.
  */
 
-time_now_old(time_buf)
+#if 0
+void time_now_old(time_buf)
      char *time_buf;		/* should be at least 18 chars */
 {
   long current_time;     	/* Current time. */
@@ -123,8 +124,9 @@ time_now_old(time_buf)
 	  time_info->tm_year, time_info->tm_mon+1, time_info->tm_mday,
 	  time_info->tm_hour, time_info->tm_min, time_info->tm_sec);
 }
+#endif
 
-time_now(time_buf)
+void time_now(time_buf)
      char *time_buf;
 {
   long current_time;     	/* Current time. */
@@ -187,8 +189,8 @@ get_next_word(line, buf)
 }
 
 
-
-char *
+#if 0 /* unused */
+static char *
 get_next_line(line, buf) 
      char *line, *buf;
 {
@@ -207,6 +209,7 @@ get_next_line(line, buf)
   *buf = '\0';
   return(line);
 }
+#endif
 
 
 #define MAX_ARGS         20             /* Maximum number of arguments. */
@@ -295,10 +298,9 @@ parse_command_line(command_line, arguments)
 
 static int joe = 0;
 
-make_temp_name(name)
+void make_temp_name(name)
         char *name;
 {
         (void) sprintf(name, "/tmp/OLC%d.%d", getpid(), joe++);
         (void) unlink(name);    /* just to be sure */
 }
-
