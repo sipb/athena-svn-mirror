@@ -1,9 +1,12 @@
 /* This file is part of the Hesiod library.
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/hesiod.c,v $
- *	$Author: treese $
+ *	$Author: probe $
  *	$Athena: hesiod.c,v 1.5 88/08/07 22:00:44 treese Locked $
  *	$Log: not supported by cvs2svn $
+ * Revision 1.6  88/08/07  23:17:03  treese
+ * Second-public-distribution
+ * 
  * Revision 1.5  88/08/07  22:00:44  treese
  * Changed T_UNSPECA to T_TXT.
  * Changed C_HESIOD to C_HS.
@@ -28,7 +31,7 @@
 #include "mit-copyright.h"
 
 #ifndef lint
-static char rcsid_hesiod_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/hesiod.c,v 1.6 1988-08-07 23:17:03 treese Exp $";
+static char rcsid_hesiod_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/hesiod.c,v 1.6.1.1 1989-11-03 17:50:12 probe Exp $";
 #endif
 
 #include <stdio.h>
@@ -151,7 +154,7 @@ char *HesiodName, *HesiodNameType;
 	cp = hes_to_bind(HesiodName, HesiodNameType);
 	if (cp == NULL) return(NULL);
 	errno = 0;
-	ns = _resolve(cp, C_HS, T_TXT, NoRetryTime);
+	ns = _resolve(cp, C_HS, T_UNSPECA, NoRetryTime);
 	if (errno == ETIMEDOUT || errno == ECONNREFUSED) {
 		Hes_Errno = HES_ER_NET;
 		return(NULL);
@@ -163,7 +166,7 @@ char *HesiodName, *HesiodNameType;
 	for(i = j = 0, rp = &ns->rr; i < ns->ns_off; rp++, i++) {
 		if (
 		    rp->class == C_HS &&
-		    rp->type == T_TXT) { /* skip CNAME records */
+		    rp->type == T_UNSPECA) { /* skip CNAME records */
 			retvec[j] = calloc((unsigned int) rp->dlen,
 					   sizeof(char));
 			(void) strcpy(retvec[j++], rp->data);
