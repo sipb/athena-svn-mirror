@@ -143,6 +143,10 @@ extern int errno;
 #define MAXIOSIZE (32 * PAGESIZE) /* Don't I/O more than 32 blocks at a time */
 #endif /* VMS */
 
+#ifndef VMS
+#include <sys/file.h>
+#endif /* not VMS */
+
 #ifndef BSD4_1
 #ifdef BSD_SYSTEM /* avoid writing defined (BSD_SYSTEM) || defined (USG)
 	      because the vms compiler doesn't grok `defined' */
@@ -590,10 +594,12 @@ child_setup_tty (out)
 #endif
   s.main.c_lflag &= ~ECHO;	/* Disable echo */
   s.main.c_lflag |= ISIG;	/* Enable signals */
+#if 0  /* This causes bugs in (for instance) telnet to certain sites.  */
   s.main.c_iflag &= ~ICRNL;	/* Disable map of CR to NL on input */
 #ifdef INLCR  /* Just being cautious, since I can't check how
 		 widespread INLCR is--rms.  */
   s.main.c_iflag &= ~INLCR;	/* Disable map of NL to CR on input */
+#endif
 #endif
 #ifdef IUCLC
   s.main.c_iflag &= ~IUCLC;	/* Disable downcasing on input.  */
@@ -1019,6 +1025,7 @@ unrequest_sigio ()
 }
 
 #else /* ! _CX_UX */
+#ifndef MSDOS
 
 void
 request_sigio ()
@@ -1037,7 +1044,8 @@ unrequest_sigio ()
 
   croak ("unrequest_sigio");
 }
- 
+
+#endif /* MSDOS */
 #endif /* _CX_UX */
 #endif /* STRIDE */
 #endif /* FASYNC */
@@ -2801,10 +2809,12 @@ sys_signal (int signal_number, signal_handler_t action)
   struct sigaction new_action, old_action;
   sigemptyset (&new_action.sa_mask);
   new_action.sa_handler = action;
-#ifdef SA_RESTART
+#if defined (SA_RESTART) && ! defined (BROKEN_SA_RESTART)
   /* Emacs mostly works better with restartable system services. If this
-   * flag exists, we probably want to turn it on here.
-   */
+     flag exists, we probably want to turn it on here.
+     However, on some systems this resets the timeout of `select'
+     which means that `select' never finishes if it keeps getting signals.
+     BROKEN_SA_RESTART is defined on those systems.  */
   new_action.sa_flags = SA_RESTART;
 #else
   new_action.sa_flags = 0;

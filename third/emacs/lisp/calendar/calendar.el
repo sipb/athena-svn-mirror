@@ -569,7 +569,7 @@ See the documentation of `diary-date-forms' for an explanation."
       european-date-diary-pattern
     american-date-diary-pattern)
   "*List of pseudo-patterns describing the forms of date used in the diary.
-The patterns on the list must be MUTUALLY EXCLUSIVE and must should not match
+The patterns on the list must be MUTUALLY EXCLUSIVE and must not match
 any portion of the diary entry itself, just the date component.
 
 A pseudo-pattern is a list of regular expressions and the keywords `month',
@@ -1345,6 +1345,9 @@ The Gregorian date Sunday, December 31, 1 BC is imaginary."
 (autoload 'calendar-goto-date "cal-move"
   "Move cursor to DATE."
   t)
+
+(autoload 'calendar-only-one-frame-setup "cal-x"
+  "Start calendar and display it in a dedicated frame.")
 
 (autoload 'calendar-one-frame-setup "cal-x"
   "Start calendar and display it in a dedicated frame together with the diary.")

@@ -156,8 +156,12 @@
        {						    		\
 	 re_char *dtemp = (p) == (str2) ? (end1) : (p);		    	\
 	 re_char *dlimit = ((p) > (str2) && (p) <= (end2)) ? (str2) : (str1); \
+	 re_char *d0 = dtemp;						\
 	 while (dtemp-- > dlimit && !CHAR_HEAD_P (*dtemp));		\
-	 c = STRING_CHAR (dtemp, (p) - dtemp);				\
+	 if (MULTIBYTE_FORM_LENGTH (dtemp, d0 - dtemp) == d0 - dtemp)	\
+	   c = STRING_CHAR (dtemp, d0 - dtemp);				\
+	 else								\
+	   c = d0[-1];							\
        }						    		\
      else						    		\
        (c = ((p) == (str2) ? (end1) : (p))[-1]);			\
@@ -4046,18 +4050,16 @@ re_search_2 (bufp, str1, size1, str2, size2, startpos, range, regs, stop)
 		p--, len++;
 
 	      /* Adjust it. */
-#if 0				/* XXX */
 	      if (MULTIBYTE_FORM_LENGTH (p, len + 1) != (len + 1))
-		;
-	      else
-#endif
-		{
-		  range += len;
-		  if (range > 0)
-		    break;
+		/* The previous character is eight-bit-graphic which
+		   is represented by one byte even in a multibyte
+		   buffer/string.  */
+		len = 0;
+	      range += len;
+	      if (range > 0)
+		break;
 
-		  startpos -= len;
-		}
+	      startpos -= len;
 	    }
 	}
     }
@@ -5833,8 +5835,8 @@ re_exec (s)
 
 int
 regcomp (preg, pattern, cflags)
-    regex_t *preg;
-    const char *pattern;
+    regex_t *__restrict preg;
+    const char *__restrict pattern;
     int cflags;
 {
   reg_errcode_t ret;
@@ -5918,8 +5920,8 @@ WEAK_ALIAS (__regcomp, regcomp)
 
 int
 regexec (preg, string, nmatch, pmatch, eflags)
-    const regex_t *preg;
-    const char *string;
+    const regex_t *__restrict preg;
+    const char *__restrict string;
     size_t nmatch;
     regmatch_t pmatch[];
     int eflags;

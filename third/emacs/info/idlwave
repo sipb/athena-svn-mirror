@@ -1,4 +1,4 @@
-This is ../info/idlwave, produced by makeinfo version 4.0 from
+This is ../info/idlwave, produced by makeinfo version 4.2 from
 idlwave.texi.
 
 INFO-DIR-SECTION Emacs
@@ -166,17 +166,16 @@ together and form a complete development environment.
    Here are a number of screenshots showing IDLWAVE in action.
 
    * XEmacs 21.1 with formatted and fontified code
-     (http://www.strw.leidenuniv.nl/~dominik/Tools/idlwave/font-lock.gif)
+     (http://idlwave.org/screenshots/font-lock.gif)
 
    * XEmacs 21.1 displaying routine info
-     (http://www.strw.leidenuniv.nl/~dominik/Tools/idlwave/rinfo.gif)
+     (http://idlwave.org/screenshots/rinfo.gif)
 
    * XEmacs 21.1 completing a keyword
-     (http://www.strw.leidenuniv.nl/~dominik/Tools/idlwave/complete.gif)
+     (http://idlwave.org/screenshots/complete.gif)
 
    * XEmacs 21.1 with debugging toolbar; execution stopped at a
-     breakpoint
-     (http://www.strw.leidenuniv.nl/~dominik/Tools/idlwave/shell.gif)
+     breakpoint (http://idlwave.org/screenshots/shell.gif)
 
    In this manual, each section contains a list of user options related
 to the subject.  Don't be confused by the shear number of options
@@ -856,10 +855,10 @@ the docs directly, without additional browsing and scrolling.  For this
 online help to work, you need an ASCII version of the IDL documentation
 which is not part of the standard IDLWAVE distribution.  The required
 files can be downloaded from the maintainers webpage
-(http://www.strw.leidenuniv.nl/~dominik/Tools/idlwave).  As the text is
-extracted from PDF files, the formatting of the help text is good for
-normal text, but graphics and multiline equations will not be well
-represented.  See also *Note Documentation Scan::.
+(http://idlwave.org/).  As the text is extracted from PDF files, the
+formatting of the help text is good for normal text, but graphics and
+multiline equations will not be well represented.  See also *Note
+Documentation Scan::.
 
    For routines which are not documented in the IDL manual (for example
 your own routines), the source code is used as help text.  If the
@@ -1745,9 +1744,8 @@ distributed with XEmacs/Emacs and have to be installed separately(1)
 (*note Installing Online Help::).
 
    You can also download IDLWAVE and install it yourself from the
-maintainers webpage
-(http://www.strw.leidenuniv.nl/~dominik/Tools/idlwave).  Follow the
-instructions in the INSTALL file.
+maintainers webpage (http://idlwave.org/).  Follow the instructions in
+the INSTALL file.
 
    ---------- Footnotes ----------
 
@@ -1763,9 +1761,8 @@ Installing Online Help
    If you want to use the online help display, two additional files (an
 ASCII version of the IDL documentation and a topics/code file) must be
 installed.  These files can also be downloaded from the maintainers
-webpage (http://www.strw.leidenuniv.nl/~dominik/Tools/idlwave).  You
-need to place the files somewhere on your system and tell IDLWAVE where
-they are with
+webpage (http://idlwave.org/).  You need to place the files somewhere
+on your system and tell IDLWAVE where they are with
 
      (setq idlwave-help-directory "/path/to/help/files/")
 
@@ -1809,13 +1806,15 @@ The main contributors to the IDLWAVE package have been:
      wrote `idl.el' and `idl-shell.el' and maintained them for several
      years.
 
-   - Carsten Dominik (mailto:dominik@astro.uva.nl), current author and
-     maintainer.  I have been in charge of the package since version
-     3.0. I am also responsible for the manual.
+   - Carsten Dominik (mailto:dominik@astro.uva.nl), who have been in
+     charge of the package since version 3.0, and also wrote this
+     manual.
 
-   - J.D. Smith (mailto:jdsmith@astrosun.tn.cornell.edu) has shaped
-     Object method completion and most new features in version 4.0 with
-     his ideas, bug reports, and patient explanations of IDL internals.
+   - John-David Smith (mailto: jdsmith@astro.cornell.edu), current
+     maintainer, who is also responsible for this manual's maintenance.
+     John-David has also shaped Object method completion and most new
+     features in version 4.0 with his ideas, bug reports, and patient
+     explanations of IDL internals.
 
 The following people have also contributed to the development of IDLWAVE
 with patches, ideas, bug reports and suggestions.
@@ -2181,9 +2180,9 @@ Index
 
 * Menu:
 
-* !DIR, IDL variable <1>:                Routine Info.
-* !DIR, IDL variable <2>:                Load-Path Shadows.
-* !DIR, IDL variable:                    Library Catalog.
+* !DIR, IDL variable <1>:                Load-Path Shadows.
+* !DIR, IDL variable <2>:                Library Catalog.
+* !DIR, IDL variable:                    Routine Info.
 * !PATH, IDL variable <1>:               Routine Definitions.
 * !PATH, IDL variable:                   Routine Info.
 * .emacs:                                Configuration Examples.
@@ -2200,8 +2199,8 @@ Index
 * Breakpoints:                           Breakpoints and Stepping.
 * Buffer, testing for shadowing:         Load-Path Shadows.
 * Buffers, killing:                      Routine Source.
-* Buffers, scanning for routine info <1>: Routine Info.
-* Buffers, scanning for routine info:    Routine Information Sources.
+* Buffers, scanning for routine info <1>: Routine Information Sources.
+* Buffers, scanning for routine info:    Routine Info.
 * Builtin list of routines:              Routine Information Sources.
 * C-c ?:                                 Routine Info.
 * C-c C-d:                               Debugging IDL Programs.
@@ -2274,8 +2273,8 @@ Index
 * Flags, in routine info:                Routine Info.
 * Font lock:                             Syntax Highlighting.
 * Forcing class query.:                  Completion.
-* Foreign code, adapting <1>:            Code Indentation.
-* Foreign code, adapting:                Actions.
+* Foreign code, adapting <1>:            Actions.
+* Foreign code, adapting:                Code Indentation.
 * Formatting, of code:                   Code Formatting.
 * Frame, for shell buffer:               Starting the Shell.
 * FTP site:                              Installing IDLWAVE.
@@ -2284,8 +2283,8 @@ Index
 * Function name completion:              Completion.
 * get_rinfo:                             Documentation Scan.
 * Getting Started:                       Getting Started.
-* Hanging paragraphs <1>:                Comment Indentation.
-* Hanging paragraphs:                    Continuation Lines.
+* Hanging paragraphs <1>:                Continuation Lines.
+* Hanging paragraphs:                    Comment Indentation.
 * Header, for file documentation:        Doc Header.
 * Help application, key bindings:        Online Help.
 * HELP, on expressions:                  Examining Variables.
@@ -2296,17 +2295,17 @@ Index
 * IDL library routine info:              Library Catalog.
 * IDL manual, ASCII version:             Online Help.
 * IDL variable !DIR <1>:                 Load-Path Shadows.
-* IDL variable !DIR <2>:                 Routine Info.
-* IDL variable !DIR:                     Library Catalog.
-* IDL variable !PATH <1>:                Routine Info.
-* IDL variable !PATH:                    Routine Definitions.
+* IDL variable !DIR <2>:                 Library Catalog.
+* IDL variable !DIR:                     Routine Info.
+* IDL variable !PATH <1>:                Routine Definitions.
+* IDL variable !PATH:                    Routine Info.
 * IDL, as Emacs subprocess:              The IDLWAVE Shell.
 * idl-shell.el:                          Introduction.
 * idl.el:                                Introduction.
 * idlw-help.el <1>:                      Documentation Scan.
 * idlw-help.el:                          Online Help.
-* idlw-help.txt <1>:                     Online Help.
-* idlw-help.txt:                         Documentation Scan.
+* idlw-help.txt <1>:                     Documentation Scan.
+* idlw-help.txt:                         Online Help.
 * idlw-rinfo.el:                         Documentation Scan.
 * IDLWAVE in a Nutshell:                 IDLWAVE in a Nutshell.
 * IDLWAVE major mode:                    The IDLWAVE Major Mode.
@@ -2393,8 +2392,8 @@ Index
 * idlwave-shell-use-input-mode-magic:    Using the Shell.
 * idlwave-shell-use-toolbar:             Debugging IDL Programs.
 * idlwave-show-block:                    Block Boundary Check.
-* idlwave-special-lib-alist <1>:         Routine Info.
-* idlwave-special-lib-alist:             Library Catalog.
+* idlwave-special-lib-alist <1>:         Library Catalog.
+* idlwave-special-lib-alist:             Routine Info.
 * idlwave-split-line-string:             Continuation Lines.
 * idlwave-startup-message:               Misc Options.
 * idlwave-store-inquired-class:          Completion.
@@ -2433,9 +2432,9 @@ Index
 * M-?:                                   Online Help.
 * M-C-\:                                 Code Indentation.
 * M-q:                                   Continuation Lines.
-* MacOS <1>:                             The IDLWAVE Shell.
+* MacOS <1>:                             Load-Path Shadows.
 * MacOS <2>:                             Library Catalog.
-* MacOS:                                 Load-Path Shadows.
+* MacOS:                                 The IDLWAVE Shell.
 * Magic spells, for input mode:          Using the Shell.
 * Maintainer, of IDLWAVE:                Acknowledgement.
 * Major mode, idlwave-mode:              The IDLWAVE Major Mode.
@@ -2446,8 +2445,8 @@ Index
 * Module source file:                    Routine Source.
 * Motion commands:                       Motion Commands.
 * Mouse binding to print expressions:    Examining Variables.
-* Multiply defined routines <1>:         Routine Info.
-* Multiply defined routines:             Load-Path Shadows.
+* Multiply defined routines <1>:         Load-Path Shadows.
+* Multiply defined routines:             Routine Info.
 * Nutshell, IDLWAVE in a:                IDLWAVE in a Nutshell.
 * OBJ_NEW, special online help:          Online Help.
 * Object method completion:              Completion.
@@ -2457,8 +2456,8 @@ Index
 * Online Help from the routine info buffer: Routine Info.
 * Online Help in *Completions* buffer:   Completion.
 * Online Help, in the shell:             Using the Shell.
-* Online Help, Installation <1>:         Online Help.
-* Online Help, Installation:             Installing Online Help.
+* Online Help, Installation <1>:         Installing Online Help.
+* Online Help, Installation:             Online Help.
 * Operators, padding with spaces:        Padding Operators.
 * Padding operators with spaces:         Padding Operators.
 * Paragraphs, filling:                   Comment Indentation.
@@ -2490,8 +2489,8 @@ Index
 * Screenshots:                           Introduction.
 * Scrolling the *Completions* window:    Completion.
 * self object, default class:            Completion.
-* Shadows, load-path <1>:                Routine Info.
-* Shadows, load-path:                    Load-Path Shadows.
+* Shadows, load-path <1>:                Load-Path Shadows.
+* Shadows, load-path:                    Routine Info.
 * Shell, basic commands:                 Using the Shell.
 * Shell, querying for routine info <1>:  Routine Information Sources.
 * Shell, querying for routine info:      Routine Info.
@@ -2507,8 +2506,8 @@ Index
 * Starting the shell:                    Starting the Shell.
 * Stepping:                              Breakpoints and Stepping.
 * String splitting:                      Continuation Lines.
-* Subprocess of Emacs, IDL <1>:          The IDLWAVE Shell.
-* Subprocess of Emacs, IDL:              Starting the Shell.
+* Subprocess of Emacs, IDL <1>:          Starting the Shell.
+* Subprocess of Emacs, IDL:              The IDLWAVE Shell.
 * Summary of important commands:         IDLWAVE in a Nutshell.
 * Syntax highlighting:                   Syntax Highlighting.
 * Templates:                             Code Templates.
@@ -2522,8 +2521,8 @@ Index
 * Upgrading from old idl.el:             Upgrading from idl.el.
 * URL, homepage for IDLWAVE:             Installing IDLWAVE.
 * Windows <1>:                           Load-Path Shadows.
-* Windows <2>:                           The IDLWAVE Shell.
-* Windows:                               Library Catalog.
+* Windows <2>:                           Library Catalog.
+* Windows:                               The IDLWAVE Shell.
 * XEmacs package IDLWAVE:                Installing IDLWAVE.
 
 
@@ -2531,51 +2530,51 @@ Index
 Tag Table:
 Node: Top1409
 Node: Introduction4402
-Node: IDLWAVE in a Nutshell7408
-Node: Getting Started9888
-Node: The IDLWAVE Major Mode23952
-Node: Code Formatting25013
-Node: Code Indentation25427
-Node: Comment Indentation26920
-Node: Continuation Lines27877
-Node: Syntax Highlighting30177
-Node: Routine Info30960
-Ref: Routine Info-Footnote-136377
-Node: Online Help36552
-Node: Completion41795
-Node: Routine Source47709
-Node: Resolving Routines48526
-Node: Code Templates49407
-Node: Actions50892
-Node: Block Boundary Check52639
-Node: Padding Operators53669
-Ref: Padding Operators-Footnote-155019
-Node: Case Changes55107
-Node: Doc Header56454
-Node: Motion Commands57490
-Node: Misc Options58257
-Node: The IDLWAVE Shell58841
-Ref: The IDLWAVE Shell-Footnote-159702
-Node: Starting the Shell59814
-Node: Using the Shell61912
-Ref: Using the Shell-Footnote-165332
-Node: Debugging IDL Programs65520
-Node: Compiling Programs67650
-Node: Breakpoints and Stepping69175
-Node: Examining Variables71625
-Node: Installation73787
-Node: Installing IDLWAVE74123
-Ref: Installing IDLWAVE-Footnote-174935
-Node: Installing Online Help75042
-Node: Upgrading from idl.el75639
-Node: Acknowledgement76781
-Node: Sources of Routine Info78281
-Node: Routine Definitions79040
-Node: Routine Information Sources80138
-Node: Library Catalog82342
-Node: Load-Path Shadows84887
-Node: Documentation Scan87450
-Node: Configuration Examples88386
-Node: Index93165
+Node: IDLWAVE in a Nutshell7315
+Node: Getting Started9795
+Node: The IDLWAVE Major Mode23859
+Node: Code Formatting24920
+Node: Code Indentation25334
+Node: Comment Indentation26827
+Node: Continuation Lines27784
+Node: Syntax Highlighting30084
+Node: Routine Info30867
+Ref: Routine Info-Footnote-136284
+Node: Online Help36459
+Node: Completion41669
+Node: Routine Source47583
+Node: Resolving Routines48400
+Node: Code Templates49281
+Node: Actions50766
+Node: Block Boundary Check52513
+Node: Padding Operators53543
+Ref: Padding Operators-Footnote-154893
+Node: Case Changes54981
+Node: Doc Header56328
+Node: Motion Commands57364
+Node: Misc Options58131
+Node: The IDLWAVE Shell58715
+Ref: The IDLWAVE Shell-Footnote-159576
+Node: Starting the Shell59688
+Node: Using the Shell61786
+Ref: Using the Shell-Footnote-165206
+Node: Debugging IDL Programs65394
+Node: Compiling Programs67524
+Node: Breakpoints and Stepping69049
+Node: Examining Variables71499
+Node: Installation73661
+Node: Installing IDLWAVE73997
+Ref: Installing IDLWAVE-Footnote-174776
+Node: Installing Online Help74883
+Node: Upgrading from idl.el75447
+Node: Acknowledgement76589
+Node: Sources of Routine Info78152
+Node: Routine Definitions78911
+Node: Routine Information Sources80009
+Node: Library Catalog82213
+Node: Load-Path Shadows84758
+Node: Documentation Scan87321
+Node: Configuration Examples88257
+Node: Index93036
 
 End Tag Table

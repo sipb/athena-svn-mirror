@@ -1,6 +1,6 @@
 \input texinfo  @c -*-texinfo-*-
 
-@c "@(#)$Name: not supported by cvs2svn $:$Id: eshell.texi,v 1.1.1.1 2002-02-08 04:35:14 zacheiss Exp $"
+@c "@(#)$Name: not supported by cvs2svn $:$Id: eshell.texi,v 1.1.1.2 2004-02-11 19:47:34 zacheiss Exp $"
 
 @c Documentation for Eshell: The Emacs Shell.
 @c Copyright (C) 1999, 2000  Free Software Foundation, Inc.
@@ -236,7 +236,7 @@ there would be no new releases of Eshell.
 As mentioned above, Eshell comes preinstalled as of Emacs 21.  If you're
 using Emacs 20.4 or later, or XEmacs 21, you can download the most
 recent version of Eshell from
-@url{http://www.gci-net.com/users/j/johnw/Emacs/eshell.tar.gz}.
+@url{http://www.gci-net.com/users/j/johnw/Emacs/packages/eshell.tar.gz}.
 
 However, if you are using Emacs 21, you may skip this section.
 
@@ -657,8 +657,8 @@ find this package useful!
 @cindex known bugs
 @cindex bugs, known
 
-Below is complete list of known problems with Eshell version 2.4.1,
-which is the version included with Emacs 21.1.
+Below is complete list of known problems with Eshell version 2.4.2,
+which is the version included with Emacs 21.2.
 
 @table @asis
 @item Differentiate between aliases and functions

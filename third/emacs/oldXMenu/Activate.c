@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/emacs/oldXMenu/Activate.c,v 1.1.1.2 2002-02-08 04:31:06 zacheiss Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/emacs/oldXMenu/Activate.c,v 1.1.1.3 2004-02-11 20:04:10 zacheiss Exp $ */
 /* Copyright    Massachusetts Institute of Technology    1985	*/
 
 #include "copyright.h"

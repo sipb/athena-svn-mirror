@@ -306,7 +306,7 @@ Currently the only supported coded character set is `ucs' (ISO/IEC
 10646: Universal Multi-Octet Coded Character Set).
 
 Optional argument RESTRICTION specifies a way to map the pair of CCS
-and CODE-POINT to a character.   Currently not supported and just ignored."
+and CODE-POINT to a character.  Currently not supported and just ignored."
   (cond ((eq ccs 'ucs)
 	 (cond ((< code-point 160)
 		code-point)
@@ -330,7 +330,9 @@ and CODE-POINT to a character.   Currently not supported and just ignored."
   "Return code-point in coded character set CCS that corresponds to CHAR.
 Return nil if CHAR is not included in CCS.
 Currently the only supported coded character set is `ucs' (ISO/IEC
-10646: Universal Multi-Octet Coded Character Set).
+10646: Universal Multi-Octet Coded Character Set), and CHAR is first
+translated through the translation-table named
+`utf-translation-table-for-encode'.
 
 CHAR should be in one of these charsets:
   ascii, latin-iso8859-1, mule-unicode-0100-24ff, mule-unicode-2500-33ff,
@@ -342,21 +344,27 @@ code-point in CCS.  Currently not supported and just ignored."
   (let* ((split (split-char char))
 	 (charset (car split)))
     (cond ((eq ccs 'ucs)
-	   (cond ((eq charset 'ascii)
-		  char)
-		 ((eq charset 'latin-iso8859-1)
-		  (+ (nth 1 split) 128))
-		 ((eq charset 'mule-unicode-0100-24ff)
-		  (+ #x0100 (+ (* (- (nth 1 split) 32) 96)
-			       (- (nth 2 split) 32))))
-		 ((eq charset 'mule-unicode-2500-33ff)
-		  (+ #x2500 (+ (* (- (nth 1 split) 32) 96)
-			       (- (nth 2 split) 32))))
-		 ((eq charset 'mule-unicode-e000-ffff)
-		  (+ #xe000 (+ (* (- (nth 1 split) 32) 96)
-			       (- (nth 2 split) 32))))
-		 ((eq charset 'eight-bit-control)
-		  char))))))
+	   (let* ((table (get 'utf-translation-table-for-encode
+			      'translation-table))
+		  (trans (aref table char)))
+	     (if trans
+		 (setq split (split-char trans)
+		       charset (car split)))
+	     (cond ((eq charset 'ascii)
+		    char)
+		   ((eq charset 'latin-iso8859-1)
+		    (+ (nth 1 split) 128))
+		   ((eq charset 'mule-unicode-0100-24ff)
+		    (+ #x0100 (+ (* (- (nth 1 split) 32) 96)
+				 (- (nth 2 split) 32))))
+		   ((eq charset 'mule-unicode-2500-33ff)
+		    (+ #x2500 (+ (* (- (nth 1 split) 32) 96)
+				 (- (nth 2 split) 32))))
+		   ((eq charset 'mule-unicode-e000-ffff)
+		    (+ #xe000 (+ (* (- (nth 1 split) 32) 96)
+				 (- (nth 2 split) 32))))
+		   ((eq charset 'eight-bit-control)
+		    char)))))))
 
 
 ;; Coding system stuff
@@ -536,21 +544,77 @@ formats (e.g. iso-latin-1-unix, koi8-r-dos)."
 	  (setq tail (cdr tail)))))
     codings))
 
+(defun map-charset-chars (func charset)
+  "Use FUNC to map over all characters in CHARSET for side effects.
+FUNC is a function of two args, the start and end (inclusive) of a
+character code range.  Thus FUNC should iterate over [START, END]."
+  (let* ((dim (charset-dimension charset))
+	 (chars (charset-chars charset))
+	 (start (if (= chars 94)
+		    33
+		  32)))
+    (if (= dim 1)
+	(funcall func
+		 (make-char charset start)
+		 (make-char charset (+ start chars -1)))
+      (dotimes (i chars)
+	(funcall func
+		 (make-char charset (+ i start) start)
+		 (make-char charset (+ i start) (+ start chars -1)))))))
+
 (defun register-char-codings (coding-system safe-chars)
-  (let ((general (char-table-extra-slot char-coding-system-table 0)))
+  "Add entries for CODING-SYSTEM to `char-coding-system-table'.
+If SAFE-CHARS is a char-table, its non-nil entries specify characters
+which CODING-SYSTEM encodes safely.  If SAFE-CHARS is t, register
+CODING-SYSTEM as a general one which can encode all characters."
+  (let ((general (char-table-extra-slot char-coding-system-table 0))
+	;; Charsets which have some members in the table, but not all
+	;; of them (i.e. not just a generic character):
+	(partials (char-table-extra-slot char-coding-system-table 1)))
     (if (eq safe-chars t)
 	(or (memq coding-system general)
 	    (set-char-table-extra-slot char-coding-system-table 0
 				       (cons coding-system general)))
       (map-char-table
-       (function
-	(lambda (key val)
-	  (if (and (>= key 128) val)
-	      (let ((codings (aref char-coding-system-table key)))
-		(or (memq coding-system codings)
-		    (aset char-coding-system-table key
-			  (cons coding-system codings)))))))
-       safe-chars))))
+       (lambda (key val)
+	 (if (and (>= key 128) val)
+	     (let ((codings (aref char-coding-system-table key))
+		   (charset (char-charset key)))
+	       (unless (memq coding-system codings)
+		 (if (and (generic-char-p key)
+			  (memq charset partials))
+		     ;; The generic char would clobber individual
+		     ;; entries already in the table.  First save the
+		     ;; separate existing entries for all chars of the
+		     ;; charset (with the generic entry added, if
+		     ;; necessary).
+		     (let (entry existing)
+		       (map-charset-chars
+			(lambda (start end)
+			  (while (<= start end)
+			    (setq entry (aref char-coding-system-table start))
+			    (when entry
+			      (push (cons
+				     start
+				     (if (memq coding-system entry)
+					 entry
+				       (cons coding-system entry)))
+				    existing))
+			    (setq start (1+ start))))
+			charset)
+		       ;; Update the generic entry.
+		       (aset char-coding-system-table key
+			     (cons coding-system codings))
+		       ;; Override with the saved entries.
+		       (dolist (elt existing)
+			 (aset char-coding-system-table (car elt) (cdr elt))))
+		   (aset char-coding-system-table key
+			 (cons coding-system codings))
+		   (unless (or (memq charset partials)
+			       (generic-char-p key))
+		     (push charset partials)))))))
+       safe-chars)
+      (set-char-table-extra-slot char-coding-system-table 1 partials))))
 
 
 (defun make-subsidiary-coding-system (coding-system)
@@ -1178,7 +1242,7 @@ For a list of possible values of CODING-SYSTEM, use \\[list-coding-systems]."
 (defalias 'set-clipboard-coding-system 'set-selection-coding-system)
 
 (defun set-selection-coding-system (coding-system)
-  "Make CODING-SYSTEM used for communicating with other X clients .
+  "Make CODING-SYSTEM used for communicating with other X clients.
 When sending or receiving text via cut_buffer, selection, and clipboard,
 the text is encoded or decoded by CODING-SYSTEM."
   (interactive "zCoding system for X selection: ")
@@ -1535,14 +1599,14 @@ or a function symbol which, when called, returns such a cons cell."
 
 (defun make-translation-table (&rest args)
   "Make a translation table from arguments.
-A translation table is a char table intended for for character
+A translation table is a char table intended for character
 translation in CCL programs.
 
-Each argument is a list of elemnts of the form (FROM . TO), where FROM
+Each argument is a list of elements of the form (FROM . TO), where FROM
 is a character to be translated to TO.
 
 FROM can be a generic character (see `make-char').  In this case, TO is
-a generic character containing the same number of characters, or a
+a generic character containing the same number of characters, or an
 ordinary character.  If FROM and TO are both generic characters, all
 characters belonging to FROM are translated to characters belonging to TO
 without changing their position code(s).

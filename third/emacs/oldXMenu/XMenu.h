@@ -1,6 +1,6 @@
 #include "copyright.h"
 
-/* $Header: /afs/dev.mit.edu/source/repository/third/emacs/oldXMenu/XMenu.h,v 1.1.1.2 2002-02-08 04:29:40 zacheiss Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/emacs/oldXMenu/XMenu.h,v 1.1.1.3 2004-02-11 20:02:50 zacheiss Exp $ */
 /* Copyright    Massachusetts Institute of Technology    1985	*/
 
 /*

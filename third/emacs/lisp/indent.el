@@ -78,7 +78,8 @@ The function actually called to indent is determined by the value of
 
 (defun indent-rigidly (start end arg)
   "Indent all lines starting in the region sideways by ARG columns.
-Called from a program, takes three arguments, START, END and ARG."
+Called from a program, takes three arguments, START, END and ARG.
+You can remove all indentation from a region by giving a large negative ARG."
   (interactive "r\np")
   (save-excursion
     (goto-char end)
@@ -468,8 +469,7 @@ Use \\[edit-tab-stops] to edit them interactively."
       (setq tabs (cdr tabs)))
     (if tabs
 	(let ((opoint (point)))
-	  (skip-chars-backward " \t")
-	  (delete-region (point) opoint)
+	  (delete-horizontal-space t)
 	  (indent-to (car tabs)))
       (insert ?\ ))))
 

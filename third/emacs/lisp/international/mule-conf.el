@@ -2,6 +2,7 @@
 
 ;; Copyright (C) 1997 Electrotechnical Laboratory, JAPAN.
 ;; Licensed to the Free Software Foundation.
+;; Copyright (C) 2000, 2001, 2002 Free Software Foundation, Inc.
 
 ;; Keywords: mule, multilingual, character set, coding system
 
@@ -217,7 +218,7 @@
 
 ;; 2-byte 2-column charsets.  Valid range of CHARSET-ID is 245..254.
 
-;; Ethiopic characters (Amahric and Tigrigna).
+;; Ethiopic characters (Amharic and Tigrigna).
 (define-charset 245 'ethiopic
   [2 94 2 0 ?3 0 "Ethiopic" "Ethiopic characters" "Ethiopic characters"])
 
@@ -404,6 +405,209 @@ is treated as a character."
 
 (define-coding-system-alias 'x-ctext 'compound-text)
 (define-coding-system-alias 'ctext 'compound-text)
+
+;; Same as compound-text, but doesn't produce composition escape
+;; sequences.  Used in post-read and pre-write conversions of
+;; ctext-with-extensions, below.  Note that this should not have a
+;; mime-charset property, to prevent it from showing up close to the
+;; beginning of coding systems ordered by priority.
+(make-coding-system
+ 'ctext-no-compositions 2 ?x
+ "Compound text based generic encoding for decoding unknown messages.
+
+Like `compound-text', but does not produce escape sequences for compositions."
+ '((ascii t) (latin-iso8859-1 katakana-jisx0201 t) t t
+   nil ascii-eol ascii-cntl nil locking-shift single-shift nil nil nil
+   init-bol nil nil)
+ '((safe-charsets . t)))
+
+(defvar non-standard-icccm-encodings-alist
+  '(("ISO8859-15" . latin-iso8859-15)
+    ("ISO8859-14" . latin-iso8859-14)
+    ("KOI8-R" . koi8-r)
+    ("BIG5-0" . big5))
+  "Alist of font charset names defined by XLFD, and the corresponding Emacs
+charsets or coding systems.")
+
+;; Functions to support "Non-Standard Character Set Encodings" defined
+;; by the compound text spec.  We support that by converting the leading
+;; sequence of the ``extended segment'' to the corresponding ISO-2022
+;; sequences (if the leading sequence names an Emacs charset), or decode
+;; the segment (if it names a coding system).  Encoding does the reverse.
+(defun ctext-post-read-conversion (len)
+  "Decode LEN characters encoded as Compound Text with Extended Segments."
+  (buffer-disable-undo)	; minimize consing due to insertions and deletions
+  (narrow-to-region (point) (+ (point) len))
+  (save-match-data
+    (let ((pt (point-marker))
+	  (oldpt (point-marker))
+	  (newpt (make-marker))
+	  (modified-p (buffer-modified-p))
+	  (case-fold-search nil)
+	  last-coding-system-used
+	  encoding textlen chset)
+      (while (re-search-forward
+	      "\\(\e\\)%/[0-4]\\([\200-\377][\200-\377]\\)\\([^\002]+\\)\002"
+	      nil 'move)
+	(set-marker newpt (point))
+	(set-marker pt (match-beginning 0))
+	(setq encoding (match-string 3))
+	(setq textlen (- (+ (* (- (aref (match-string 2) 0) 128) 128)
+			    (- (aref (match-string 2) 1) 128))
+			 (1+ (length encoding))))
+	(setq
+	 chset (cdr (assoc-ignore-case encoding
+				       non-standard-icccm-encodings-alist)))
+	(cond ((null chset)
+	       ;; This charset is not supported--leave this extended
+	       ;; segment unaltered and skip over it.
+	       (goto-char (+ (point) textlen)))
+	      ((charsetp chset)
+	     ;; If it's a charset, replace the leading escape sequence
+	     ;; with a standard ISO-2022 sequence.  We will decode all
+	      ;; such segments later, in one go, when we exit the loop
+	       ;; or find an extended segment that names a coding
+	       ;; system, not a charset.
+	       (replace-match
+		(concat "\\1"
+			(if (= 0 (charset-iso-graphic-plane chset))
+			    ;; GL charsets
+			    (if (= 1 (charset-dimension chset)) "(" "$(")
+			  ;; GR charsets
+			  (if (= 96 (charset-chars chset))
+			      "-"
+			    (if (= 1 (charset-dimension chset)) ")" "$)")))
+			(string (charset-iso-final-char chset)))
+		t)
+	       (goto-char (+ (point) textlen)))
+	      ((coding-system-p chset)
+	     ;; If it's a coding system, we need to decode the segment
+	       ;; right away.  But first, decode what we've skipped
+	       ;; across until now.
+	       (when (> pt oldpt)
+		 (decode-coding-region oldpt pt 'ctext-no-compositions))
+	       (delete-region pt newpt)
+	       (set-marker newpt (+ newpt textlen))
+	       (decode-coding-region pt newpt chset)
+	       (goto-char newpt)
+	       (set-marker oldpt newpt))))
+      ;; Decode what's left.
+      (when (> (point) oldpt)
+	(decode-coding-region oldpt (point) 'ctext-no-compositions))
+     ;; This buffer started as unibyte, because the string we get from
+      ;; the X selection is a unibyte string.  We must now make it
+      ;; multibyte, so that the decoded text is inserted as multibyte
+      ;; into its buffer.
+      (set-buffer-multibyte t)
+      (set-buffer-modified-p modified-p)
+      (- (point-max) (point-min)))))
+
+(defvar non-standard-designations-alist
+  '(("$(0" . (big5 "big5-0" 2))
+    ("$(1" . (big5 "big5-0" 2))
+    ;; The following are actually standard; generating extended
+    ;; segments for them is wrong and screws e.g. Latin-9 users
+    ;; pasting into a terminal window.  8859-{10,13,16} aren't Emacs
+    ;; charsets anyhow.  Presumably extended segments should be
+    ;; generated for all the really non-standard Emacs charsets...
+    ;; -- fx
+;;     ("-V"  . (t "iso8859-10" 1))
+;;     ("-Y"  . (t "iso8859-13" 1))
+;;     ("-_"  . (t "iso8859-14" 1))
+;;     ("-b"  . (t "iso8859-15" 1))
+;;     ("-f"  . (t "iso8859-16" 1))
+    )
+  "Alist of ctext control sequences for extended segments.
+
+Each element has the form (CTLSEQ . (ENCODING CHARSET NOCTETS)).  CTLSEQ
+is the control sequence (sans the leading ESC) that introduces the character
+set in the text encoded by compound-text.  ENCODING is a coding system
+symbol; if it is t, it means that the ctext coding system already encodes
+the text correctly, and only the leading control sequence needs to be altered.
+If ENCODING is a coding system, we need to re-encode the text with that
+coding system.  CHARSET is the name of the charset we need to put into
+the leading control sequence.  NOCTETS is the number of octets (bytes) that
+encode each character in this charset.  NOCTETS can be 0 (meaning the number
+of octets per character is variable), 1, 2, 3, or 4.")
+
+(defun ctext-pre-write-conversion (from to)
+  "Encode characters between FROM and TO as Compound Text w/Extended Segments.
+
+If FROM is a string, or if the current buffer is not the one set up for us
+by run_pre_post_conversion_on_str, generate a new temp buffer, insert the
+text, and convert it in the temporary buffer.  Otherwise, convert in-place."
+  (cond ((and (string= (buffer-name) " *code-converting-work*")
+	      (not (stringp from)))
+	 ; Minimize consing due to subsequent insertions and deletions.
+	 (buffer-disable-undo)
+	 (narrow-to-region from to))
+	(t
+	 (let ((buf (current-buffer)))
+	   (set-buffer (generate-new-buffer " *temp"))
+	   (buffer-disable-undo)
+	   (if (stringp from)
+	       (insert from)
+	     (insert-buffer-substring buf from to))
+	   (setq from (point-min) to (point-max)))))
+  (encode-coding-region from to 'ctext-no-compositions)
+  ;; Replace ISO-2022 charset designations with extended segments, for
+  ;; those charsets that are not part of the official X registry.
+  (save-match-data
+    (goto-char (point-min))
+    (let ((newpt (make-marker))
+	  (case-fold-search nil)
+	  pt desig encode-info encoding chset noctets textlen)
+      (set-buffer-multibyte nil)
+      (while ;;  (re-search-forward "\e\\(\$([01]\\|-[VY_bf]\\)" nil 'move)
+	  (re-search-forward "\e\\(\$([01]\\)" nil 'move)
+	(setq desig (match-string 1)
+	      pt (point-marker)
+	      encode-info (cdr (assoc desig non-standard-designations-alist))
+	      encoding (car encode-info)
+	      chset (cadr encode-info)
+	      noctets (car (cddr encode-info)))
+	(skip-chars-forward "^\e")
+	(set-marker newpt (point))
+	(cond
+	 ((eq encoding t)  ; only the leading sequence needs to be changed
+	  (setq textlen (+ (- newpt pt) (length chset) 1))
+	  (replace-match (format "\e%%/%d%c%c%s"
+				 noctets
+				 (+ (/ textlen 128) 128)
+				 (+ (% textlen 128) 128)
+				 chset)
+			 t t))
+	 ((coding-system-p encoding) ; need to recode the entire segment...
+	  (set-marker pt (match-beginning 0))
+	  (decode-coding-region pt newpt 'ctext-no-compositions)
+	  (set-buffer-multibyte t)
+	  (encode-coding-region pt newpt encoding)
+	  (set-buffer-multibyte nil)
+	  (setq textlen (+ (- newpt pt) (length chset) 1))
+	  (goto-char pt)
+	  (insert (format "\e%%/%d%c%c%s"
+			  noctets
+			  (+ (/ textlen 128) 128)
+			  (+ (% textlen 128) 128)
+			  chset))))
+	(goto-char newpt))))
+  (set-buffer-multibyte t)
+  nil)
+
+(make-coding-system
+ 'compound-text-with-extensions 5 ?x
+ "Compound text encoding with extended segments.
+
+This coding system should be used only for X selections.  It is inappropriate
+for decoding and encoding files, process I/O, etc."
+ nil
+ '((post-read-conversion . ctext-post-read-conversion)
+   (pre-write-conversion . ctext-pre-write-conversion)))
+
+(define-coding-system-alias
+  'x-ctext-with-extensions 'compound-text-with-extensions)
+(define-coding-system-alias
+  'ctext-with-extensions 'compound-text-with-extensions)
 
 (make-coding-system
  'iso-safe 2 ?-

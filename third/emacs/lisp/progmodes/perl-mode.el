@@ -105,6 +105,10 @@
   :prefix "perl-"
   :group 'languages)
 
+(defvar perl-mode-abbrev-table nil
+  "Abbrev table in use in perl-mode buffers.")
+(define-abbrev-table 'perl-mode-abbrev-table ())
+
 (defvar perl-mode-map
   (let ((map (make-sparse-keymap)))
     (define-key map "{" 'perl-electric-terminator)
@@ -475,7 +479,7 @@ changed by, or (parse-state) if line starts in a quoted string."
     (beginning-of-line)
     (setq beg (point))
     (setq shift-amt
-	  (cond ((= (char-after bof) ?=) 0)
+	  (cond ((eq (char-after bof) ?=) 0)
 		((listp (setq indent (perl-calculate-indent bof))) indent)
 		((looking-at (or nochange perl-nochange)) 0)
 		(t

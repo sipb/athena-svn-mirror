@@ -1,7 +1,7 @@
-This is ../info/emacs, produced by makeinfo version 4.0 from emacs.texi.
+This is ../info/emacs, produced by makeinfo version 4.3 from emacs.texi.
 
    This is the Fourteenth edition of the `GNU Emacs Manual', updated
-for Emacs version 21.1.
+for Emacs version 21.3.
 
 INFO-DIR-SECTION Emacs
 START-INFO-DIR-ENTRY
@@ -11,9 +11,9 @@ END-INFO-DIR-ENTRY
    Published by the Free Software Foundation 59 Temple Place, Suite 330
 Boston, MA  02111-1307 USA
 
-   Copyright (C) 1985,
-1986,1987,1993,1994,1995,1996,1997,1998,1999,2000,2001    Free Software
-Foundation, Inc.
+   Copyright (C)
+1985,1986,1987,1993,1994,1995,1996,1997,1998,1999,2000,2001,2002
+Free Software Foundation, Inc.
 
    Permission is granted to copy, distribute and/or modify this document
 under the terms of the GNU Free Documentation License, Version 1.1 or
@@ -666,8 +666,10 @@ at the end of a line, a tab, or two spaces; and a character set
 matching whitespace characters, repeated any number of times.
 
    To enter the same regexp interactively, you would type <TAB> to
-enter a tab, and `C-j' to enter a newline.  You would also type single
-backslashes as themselves, instead of doubling them for Lisp syntax.
+enter a tab, and `C-j' to enter a newline.  (When typed interactively,
+`C-j' should be preceded by a `C-q', to prevent Emacs from running the
+command bound to a newline.)  You would also type single backslashes as
+themselves, instead of doubling them for Lisp syntax.
 
 
 File: emacs,  Node: Search Case,  Next: Replace,  Prev: Regexps,  Up: Search
@@ -713,11 +715,12 @@ query-replace' command which finds each occurrence of the pattern and
 asks you whether to replace it.
 
    The replace commands normally operate on the text from point to the
-end of the buffer; however, in Transient Mark mode, when the mark is
-active, they operate on the region.  The replace commands all replace
-one string (or regexp) with one replacement string.  It is possible to
-perform several replacements in parallel using the command
-`expand-region-abbrevs' (*note Expanding Abbrevs::).
+end of the buffer; however, in Transient Mark mode (*note Transient
+Mark::), when the mark is active, they operate on the region.  The
+replace commands all replace one string (or regexp) with one
+replacement string.  It is possible to perform several replacements in
+parallel using the command `expand-region-abbrevs' (*note Expanding
+Abbrevs::).
 
 * Menu:
 

@@ -1,5 +1,5 @@
 /* Fully extensible Emacs, running on Unix, intended for GNU.
-   Copyright (C) 1985,86,87,93,94,95,97,98,1999,2001
+   Copyright (C) 1985,86,87,93,94,95,97,98,1999,2001,2002
       Free Software Foundation, Inc.
 
 This file is part of GNU Emacs.
@@ -261,7 +261,7 @@ Display options:\n\
 --border-width, -bw WIDTH	width of main border\n\
 --cursor-color, -cr COLOR	color of the Emacs cursor indicating point\n\
 --display, -d DISPLAY		use X server DISPLAY\n\
---font, -fn FONT		default font; must be fixed-widthp\n\
+--font, -fn FONT		default font; must be fixed-width\n\
 --foreground-color, -fg COLOR	window foreground color\n\
 --geometry, -g GEOMETRY		window geometry\n\
 --iconic			start Emacs in iconified state\n\
@@ -271,7 +271,7 @@ Display options:\n\
 --mouse-color, -ms COLOR 	mouse cursor color in Emacs window\n\
 --name NAME			title of main Emacs window\n\
 --reverse-video, -r, -rv	switch foreground and background\n\
---title, -T, -wn, TITLE		title for Emacs windows\n\
+--title, -T, -wn TITLE		title for Emacs windows\n\
 --vertical-scroll-bars, -vb	enable vertical scroll bars\n\
 --xrm XRESOURCES		set additional X resources\n\
 \n\
@@ -542,7 +542,7 @@ Any directory names are omitted.")
 
 DEFUN ("invocation-directory", Finvocation_directory, Sinvocation_directory,
   0, 0, 0,
-  "Return the directory name in which the Emacs executable was located")
+  "Return the directory name in which the Emacs executable was located.")
   ()
 {
   return Fcopy_sequence (Vinvocation_directory);
@@ -753,7 +753,7 @@ main (argc, argv, envp)
       else
 	{
 	  printf ("GNU Emacs %s\n", XSTRING (tem)->data);
-	  printf ("Copyright (C) 2001 Free Software Foundation, Inc.\n");
+	  printf ("Copyright (C) 2002 Free Software Foundation, Inc.\n");
 	  printf ("GNU Emacs comes with ABSOLUTELY NO WARRANTY.\n");
 	  printf ("You may redistribute copies of Emacs\n");
 	  printf ("under the terms of the GNU General Public License.\n");
@@ -2135,6 +2135,17 @@ decode_env_path (evarname, defalt)
       /* Add /: to the front of the name
 	 if it would otherwise be treated as magic.  */
       tem = Ffind_file_name_handler (element, Qt);
+
+      /* However, if the handler says "I'm safe",
+	 don't bother adding /:.  */
+      if (SYMBOLP (tem))
+	{
+	  Lisp_Object prop;
+	  prop = Fget (tem, intern ("safe-magic"));
+	  if (! NILP (prop))
+	    tem = Qnil;
+	}
+
       if (! NILP (tem))
 	element = concat2 (build_string ("/:"), element);
 

@@ -1,4 +1,4 @@
-/* Copyright (C) 1985, 1986, 1987, 1988, 1990, 1992, 1999, 2000
+/* Copyright (C) 1985, 1986, 1987, 1988, 1990, 1992, 1999, 2000, 01, 02
    Free Software Foundation, Inc.
 
 This file is part of GNU Emacs.
@@ -404,6 +404,23 @@ Filesz      Memsz       Flags       Align
 
  */
 
+/*
+ * Modified by rdh@yottayotta.com of Yotta Yotta Incorporated.
+ * 
+ * The code originally used mmap() to create a memory image of the new
+ * and old object files.  This had a few handy features: (1) you get
+ * to use a cool system call like mmap, (2) no need to explicitly
+ * write out the new file before the close, and (3) no swap space
+ * requirements.  Unfortunately, mmap() often fails to work with
+ * nfs-mounted file systems.
+ *
+ * So, instead of relying on the vm subsystem to do the file i/o for
+ * us, it's now done explicitly.  A buffer of the right size for the
+ * file is dynamically allocated, and either the old_name is read into
+ * it, or it is initialized with the correct new executable contents,
+ * and then written to new_name.
+ */
+
 #ifndef emacs
 #define fatal(a, b, c) fprintf (stderr, a, b, c), exit (1)
 #include <string.h>
@@ -430,6 +447,18 @@ extern void fatal (char *, ...);
 #if __sgi
 #include <syms.h> /* for HDRR declaration */
 #endif /* __sgi */
+
+#ifndef MAP_ANON
+#ifdef MAP_ANONYMOUS
+#define MAP_ANON MAP_ANONYMOUS
+#else
+#define MAP_ANON 0
+#endif
+#endif
+
+#ifndef MAP_FAILED
+#define MAP_FAILED ((void *) -1)
+#endif
 
 #if defined (__alpha__) && !defined (__NetBSD__) && !defined (__OpenBSD__)
 /* Declare COFF debugging symbol table.  This used to be in
@@ -646,6 +675,12 @@ unexec (new_name, old_name, data_start, bss_start, entry_address)
   /* Pointers to the base of the image of the two files. */
   caddr_t old_base, new_base;
 
+#if MAP_ANON == 0
+  int mmap_fd;
+#else
+# define mmap_fd -1
+#endif
+
   /* Pointers to the file, program and section headers for the old and new
    * files.
    */
@@ -666,8 +701,10 @@ unexec (new_name, old_name, data_start, bss_start, entry_address)
   int old_data_index, new_data2_index;
   int old_mdebug_index;
   struct stat stat_buf;
+  int old_file_size;
 
-  /* Open the old file & map it into the address space. */
+  /* Open the old file, allocate a buffer of the right size, and read
+   * in the file contents. */
 
   old_file = open (old_name, O_RDONLY);
 
@@ -677,16 +714,24 @@ unexec (new_name, old_name, data_start, bss_start, entry_address)
   if (fstat (old_file, &stat_buf) == -1)
     fatal ("Can't fstat (%s): errno %d\n", old_name, errno);
 
-  old_base = mmap ((caddr_t) 0, stat_buf.st_size, PROT_READ, MAP_SHARED,
-		   old_file, 0);
-
-  if (old_base == (caddr_t) -1)
-    fatal ("Can't mmap (%s): errno %d\n", old_name, errno);
-
-#ifdef DEBUG
-  fprintf (stderr, "mmap (%s, %x) -> %x\n", old_name, stat_buf.st_size,
-	   old_base);
+#if MAP_ANON == 0
+  mmap_fd = open ("/dev/zero", O_RDONLY);
+  if (mmap_fd < 0)
+    fatal ("Can't open /dev/zero for reading: errno %d\n", errno);
 #endif
+
+  /* We cannot use malloc here because that may use sbrk.  If it does,
+     we'd dump our temporary buffers with Emacs, and we'd have to be
+     extra careful to use the correct value of sbrk(0) after
+     allocating all buffers in the code below, which we aren't.  */
+  old_file_size = stat_buf.st_size;
+  old_base = mmap (NULL, old_file_size, PROT_READ | PROT_WRITE,
+		   MAP_ANON | MAP_PRIVATE, mmap_fd, 0);
+  if (old_base == MAP_FAILED)
+    fatal ("Can't allocate buffer for %s\n", old_name);
+
+  if (read (old_file, old_base, stat_buf.st_size) != stat_buf.st_size)
+    fatal ("Didn't read all of %s: errno %d\n", old_name, errno);
 
   /* Get pointers to headers & section names */
 
@@ -757,9 +802,9 @@ unexec (new_name, old_name, data_start, bss_start, entry_address)
   if ((unsigned) new_bss_addr < (unsigned) old_bss_addr + old_bss_size)
     fatal (".bss shrank when undumping???\n", 0, 0);
 
-  /* Set the output file to the right size and mmap it.  Set
-   * pointers to various interesting objects.  stat_buf still has
-   * old_file data.
+  /* Set the output file to the right size.  Allocate a buffer to hold
+   * the image of the new file.  Set pointers to various interesting
+   * objects.  stat_buf still has old_file data.
    */
 
   new_file = open (new_name, O_RDWR | O_CREAT, 0666);
@@ -771,16 +816,10 @@ unexec (new_name, old_name, data_start, bss_start, entry_address)
   if (ftruncate (new_file, new_file_size))
     fatal ("Can't ftruncate (%s): errno %d\n", new_name, errno);
 
-#ifdef UNEXEC_USE_MAP_PRIVATE
-  new_base = mmap ((caddr_t) 0, new_file_size, PROT_READ | PROT_WRITE,
-		   MAP_PRIVATE, new_file, 0);
-#else
-  new_base = mmap ((caddr_t) 0, new_file_size, PROT_READ | PROT_WRITE,
-		   MAP_SHARED, new_file, 0);
-#endif
-
-  if (new_base == (caddr_t) -1)
-    fatal ("Can't mmap (%s): errno %d\n", new_name, errno);
+  new_base = mmap (NULL, new_file_size, PROT_READ | PROT_WRITE,
+		   MAP_ANON | MAP_PRIVATE, mmap_fd, 0);
+  if (new_base == MAP_FAILED)
+    fatal ("Can't allocate buffer for %s\n", old_name);
 
   new_file_h = (ElfW(Ehdr) *) new_base;
   new_program_h = (ElfW(Phdr) *) ((byte *) new_base + old_file_h->e_phoff);
@@ -994,11 +1033,28 @@ unexec (new_name, old_name, data_start, bss_start, entry_address)
 		      ".lit4")
 	  || !strcmp ((old_section_names + NEW_SECTION_H (n).sh_name),
 		      ".lit8")
+	  /* The conditional bit below was in Oliva's original code
+	     (1999-08-25) and seems to have been dropped by mistake
+	     subsequently.  It prevents a crash at startup under X in
+	     `IRIX64 6.5 6.5.17m' with c_dev 7.3.1.3m.  It causes no
+	     trouble on the other ELF platforms I could test (Irix
+	     6.5.15m, Solaris 8, Debian Potato x86, Debian Woody
+	     SPARC); however, it's reported to cause crashes under
+	     some version of GNU/Linux.  It's not yet clear what's
+	     changed in that Irix version to cause the problem, or why
+	     the fix sometimes fails under GNU/Linux.  There's
+	     probably no good reason to have something Irix-specific
+	     here, but this will have to do for now.  IRIX6_5 is the
+	     most specific macro we have to test.  -- fx 2002-10-01  */
+#ifdef IRIX6_5
+	  || !strcmp ((old_section_names + NEW_SECTION_H (n).sh_name),
+		      ".got")
+#endif
 	  || !strcmp ((old_section_names + NEW_SECTION_H (n).sh_name),
 		      ".sdata1")
 	  || !strcmp ((old_section_names + NEW_SECTION_H (n).sh_name),
 		      ".data1")
-	  || !strcmp (old_section_names + NEW_SECTION_H (nn).sh_name,
+	  || !strcmp ((old_section_names + NEW_SECTION_H (n).sh_name),
 		      ".sbss"))
 	src = (caddr_t) OLD_SECTION_H (n).sh_addr;
       else
@@ -1172,6 +1228,10 @@ unexec (new_name, old_name, data_start, bss_start, entry_address)
 			".lit4")
 	    || !strcmp ((old_section_names + NEW_SECTION_H (nn).sh_name),
 			".lit8")
+#ifdef IRIX6_5			/* see above */
+	    || !strcmp ((old_section_names + NEW_SECTION_H (nn).sh_name),
+			".got")
+#endif
 	    || !strcmp ((old_section_names + NEW_SECTION_H (nn).sh_name),
 			".sdata1")
 	    || !strcmp ((old_section_names + NEW_SECTION_H (nn).sh_name),
@@ -1198,21 +1258,30 @@ unexec (new_name, old_name, data_start, bss_start, entry_address)
       }
     }
 
-#ifdef UNEXEC_USE_MAP_PRIVATE
-  if (lseek (new_file, 0, SEEK_SET) == -1)
-    fatal ("Can't rewind (%s): errno %d\n", new_name, errno);
+  /* Write out new_file, close it, and free the buffer containing its
+   * contents */
 
   if (write (new_file, new_base, new_file_size) != new_file_size)
-    fatal ("Can't write (%s): errno %d\n", new_name, errno);
-#endif
+    fatal ("Didn't write %d bytes to %s: errno %d\n", 
+	   new_file_size, new_base, errno);
 
-  /* Close the files and make the new file executable.  */
+  if (close (new_file))
+    fatal ("Can't close (%s): errno %d\n", new_name, errno);
+
+  munmap (new_base, new_file_size);
+
+  /* Close old_file, and free the corresponding buffer */
+
+#if MAP_ANON == 0
+  close (mmap_fd);
+#endif
 
   if (close (old_file))
     fatal ("Can't close (%s): errno %d\n", old_name, errno);
 
-  if (close (new_file))
-    fatal ("Can't close (%s): errno %d\n", new_name, errno);
+  munmap (old_base, old_file_size);
+
+  /* Make the new file executable */
 
   if (stat (new_name, &stat_buf) == -1)
     fatal ("Can't stat (%s): errno %d\n", new_name, errno);

@@ -1,10 +1,10 @@
 ;;; fortran.el --- Fortran mode for GNU Emacs
 
-;; Copyright (c) 1986, 93, 94, 95, 97, 98, 99, 2000
+;; Copyright (c) 1986, 93, 94, 95, 97, 98, 99, 2000, 2001
 ;;   Free Software Foundation, Inc.
 
 ;; Author: Michael D. Prange <prange@erl.mit.edu>
-;; Maintainer: Dave Love <fx@gnu.org>
+;; Maintainer: Glenn Morris <gmorris@ast.cam.ac.uk>
 ;; Keywords: languages
 
 ;; This file is part of GNU Emacs.
@@ -30,7 +30,9 @@
 ;;
 ;; Note that it is for editing Fortran77 or Fortran90 fixed source
 ;; form.  For editing Fortran 90 free format source, use `f90-mode'
-;; (f90.el).
+;; (f90.el).  It is meant to support the GNU Fortran language
+;; implemented by g77 (its extensions to Fortran77 and
+;; interpretations, e.g. of blackslash in strings).
 
 ;;; History:
 
@@ -49,7 +51,7 @@
 ;; * Implement insertion and removal of statement continuations in
 ;;   mixed f77/f90 style, with the first `&' past column 72 and the
 ;;   second in column 6.
-;; * Support any other extensions to f77 grokked by GNU Fortran.
+;; * Support any other extensions to f77 grokked by GNU Fortran I've missed.
 
 (defgroup fortran nil
   "Fortran mode for Emacs"
@@ -232,6 +234,7 @@ format style.")
     (modify-syntax-entry ?/ "." table)
     (modify-syntax-entry ?\' "\"" table)
     (modify-syntax-entry ?\" "\"" table)
+    ;; Consistent with GNU Fortran -- see the manual.
     (modify-syntax-entry ?\\ "\\" table)
     ;; This might be better as punctuation, as for C, but this way you
     ;; can treat floating-point numbers as symbols.
@@ -292,7 +295,8 @@ These get fixed-format comments fontified.")
          (regexp-opt '("continue" "format" "end" "enddo" "if" "then"
                        "else" "endif" "elseif" "while" "inquire" "stop"
                        "return" "include" "open" "close" "read" "write"
-                       "format" "print" "select" "case" "cycle" "exit"))))
+                       "format" "print" "select" "case" "cycle" "exit"
+		       "rewind" "backspace"))))
       (fortran-logicals
        (eval-when-compile
          (regexp-opt '("and" "or" "not" "lt" "le" "eq" "ge" "gt" "ne"
@@ -361,7 +365,7 @@ These get fixed-format comments fontified.")
           ;; TAB-formatted line.
           '("^     \\([^ 0]\\)" 1 font-lock-string-face)
           '("^\t\\([1-9]\\)" 1 font-lock-string-face))
-	 (list 
+	 (list
 	  ;; cpp stuff (ugh)
 	  '("^# *[a-z]+" . font-lock-keyword-face))
          ;; The list `fortran-font-lock-keywords-2' less that for types
@@ -929,7 +933,7 @@ Auto-indent does not happen if a numeric ARG is used."
 ;; Note that you can't just check backwards for `subroutine' &c in
 ;; case of un-marked main programs not at the start of the file.
 (defun fortran-beginning-of-subprogram ()
-  "Moves point to the beginning of the current Fortran subprogram."
+  "Move point to the beginning of the current Fortran subprogram."
   (interactive)
   (save-match-data
     (let ((case-fold-search t))
@@ -941,7 +945,7 @@ Auto-indent does not happen if a numeric ARG is used."
 	  (forward-line)))))
 
 (defun fortran-end-of-subprogram ()
-  "Moves point to the end of the current Fortran subprogram."
+  "Move point to the end of the current Fortran subprogram."
   (interactive)
   (save-match-data
     (let ((case-fold-search t))
@@ -959,7 +963,7 @@ Auto-indent does not happen if a numeric ARG is used."
 	(forward-line)))))
 
 (defun fortran-previous-statement ()
-  "Moves point to beginning of the previous Fortran statement.
+  "Move point to beginning of the previous Fortran statement.
 Returns `first-statement' if that statement is the first
 non-comment Fortran statement in the file, and nil otherwise."
   (interactive)
@@ -968,12 +972,14 @@ non-comment Fortran statement in the file, and nil otherwise."
     (setq continue-test
 	  (and
 	   (not (looking-at fortran-comment-line-start-skip))
+           (not (looking-at "^[ \t]*#"))
 	   (or (looking-at
 	        (concat "[ \t]*"
 			(regexp-quote fortran-continuation-string)))
 	       (looking-at " \\{5\\}[^ 0\n]\\|\t[1-9]"))))
     (while (and (setq not-first-statement (= (forward-line -1) 0))
 		(or (looking-at fortran-comment-line-start-skip)
+                    (looking-at "^[ \t]*#")
 		    (looking-at "[ \t]*$\\| \\{5\\}[^ 0\n]\\|\t[1-9]")
 		    (looking-at (concat "[ \t]*" comment-start-skip)))))
     (cond ((and continue-test
@@ -985,7 +991,7 @@ non-comment Fortran statement in the file, and nil otherwise."
 	   'first-statement))))
 
 (defun fortran-next-statement ()
-  "Moves point to beginning of the next Fortran statement.
+  "Move point to beginning of the next Fortran statement.
 Returns `last-statement' if that statement is the last
 non-comment Fortran statement in the file, and nil otherwise."
   (interactive)
@@ -995,6 +1001,7 @@ non-comment Fortran statement in the file, and nil otherwise."
 		      (and (= (forward-line 1) 0)
 			   (not (eobp))))
  		(or (looking-at fortran-comment-line-start-skip)
+                    (looking-at "^[ \t]*#")
  		    (looking-at "[ \t]*$\\|     [^ 0\n]\\|\t[1-9]")
  		    (looking-at (concat "[ \t]*" comment-start-skip)))))
     (if (not not-last-statement)
@@ -1079,12 +1086,13 @@ Return point or nil."
 
 (defun fortran-beginning-do ()
   "Search backwards for first unmatched DO [WHILE].
-Return point or nil."
-  (let ((case-fold-search t))
+Return point or nil.  Ignores labelled DO loops (ie DO 10 ... 10 CONTINUE)."
+  (let ((case-fold-search t)
+        (dostart-re "\\(\\(\\sw\\|\\s_\\)+:[ \t]*\\)?do[ \t]+[^0-9]"))
     (if (save-excursion
 	  (beginning-of-line)
 	  (skip-chars-forward " \t0-9")
-	  (looking-at "\\(\\(\\sw\\|\\s_\\)+:[ \t]*\\)?do[ \t]+"))
+	  (looking-at dostart-re))
 	;; Sitting on one.
 	(match-beginning 0)
       ;; Search for one.
@@ -1096,9 +1104,9 @@ Return point or nil."
 		      (not (and (looking-at fortran-end-prog-re)
 				(fortran-check-end-prog-re))))
 	    (skip-chars-forward " \t0-9")
-	    (cond ((looking-at
-		    "\\(\\(\\sw\\|\\s_\\)+:[ \t]*\\)?do[ \t]+[^0-9]")
+	    (cond ((looking-at dostart-re)
 		   (setq count (1- count)))
+                  ;; Note labelled loop ends not considered.
 		  ((looking-at "end[ \t]*do\\b")
 		   (setq count (1+ count)))))
 	  (and (= count 0)
@@ -1214,7 +1222,7 @@ Return point or nil."
 				  (setq then-test
 					(looking-at
 					 (concat ".*then\\b[ \t]*"
-						 "[^ \t(=a-z[0-9]]"))))))
+						 "[^ \t(=a-z0-9]"))))))
 			    then-test))
 			 (setq count (- count 1)))))
 		  ((looking-at "end[ \t]*if\\b")
@@ -1733,7 +1741,7 @@ Intended as the value of `fill-paragraph-function'."
 	;; paragraph, delimited either by non-comment lines or empty
 	;; comments.  (Get positions as markers, since the
 	;; `indent-region' below can shift the block's end).
-	(let* ((non-empty-comment 
+	(let* ((non-empty-comment
 		(concat fortran-comment-line-start-skip "[^ \t\n]"))
 	       (start (save-excursion
 			;; Find (start of) first line.
@@ -1744,7 +1752,7 @@ Intended as the value of `fill-paragraph-function'."
 			(point-marker)))
 	       (end (save-excursion
 		      ;; Find start of first line past region to fill.
-		      (while (progn 
+		      (while (progn
 			       (forward-line)
 			       (looking-at non-empty-comment)))
 		      (point-marker))))
@@ -1788,7 +1796,7 @@ Intended as the value of `fill-paragraph-function'."
 	  (fortran-previous-statement)))
     (fortran-indent-line)))
 
-(defun fortran-strip-sqeuence-nos (&optional do-space)
+(defun fortran-strip-sequence-nos (&optional do-space)
   "Delete all text in column 72 and up (assumed to be sequence numbers).
 Normally also deletes trailing whitespace after stripping such text.
 Supplying prefix arg DO-SPACE prevents stripping the whitespace."
@@ -1803,28 +1811,29 @@ Supplying prefix arg DO-SPACE prevents stripping the whitespace."
 ;; for it.
 (defun fortran-current-defun ()
   "Function to use for `add-log-current-defun-function' in Fortran mode."
-  ;; We must be inside function body for this to work.
-  (fortran-beginning-of-subprogram)
-  (let ((case-fold-search t))		; case-insensitive
-    ;; search for fortran subprogram start
-    (if (re-search-forward
-	 (concat "^[ \t]*\\(program\\|subroutine\\|function"
-		 "\\|[ \ta-z0-9*()]*[ \t]+function\\|"
-		 "\\(block[ \t]*data\\)\\)")
-	 (save-excursion (fortran-end-of-subprogram)
-			 (point))
-	 t)
-	(or (match-string-no-properties 2)
-	    (progn
-	      ;; move to EOL or before first left paren
-	      (if (re-search-forward "[(\n]" nil t)
-		  (progn (backward-char)
-			 (skip-chars-backward " \t"))
-		(end-of-line))
-	      ;; Use the name preceding that.
-	      (buffer-substring-no-properties (point) (progn (backward-sexp)
-							     (point)))))
-      "main")))
+  (save-excursion
+    ;; We must be inside function body for this to work.
+    (fortran-beginning-of-subprogram)
+    (let ((case-fold-search t))		; case-insensitive
+      ;; search for fortran subprogram start
+      (if (re-search-forward
+           (concat "^[ \t]*\\(program\\|subroutine\\|function"
+                   "\\|[ \ta-z0-9*()]*[ \t]+function\\|"
+                   "\\(block[ \t]*data\\)\\)")
+           (save-excursion (fortran-end-of-subprogram)
+                           (point))
+           t)
+          (or (match-string-no-properties 2)
+              (progn
+                ;; move to EOL or before first left paren
+                (if (re-search-forward "[(\n]" nil t)
+                    (progn (backward-char)
+                           (skip-chars-backward " \t"))
+                  (end-of-line))
+                ;; Use the name preceding that.
+                (buffer-substring-no-properties (point) (progn (backward-sexp)
+                                                               (point)))))
+        "main"))))
 
 (provide 'fortran)
 

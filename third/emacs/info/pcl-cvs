@@ -1,4 +1,4 @@
-This is ../info/pcl-cvs, produced by makeinfo version 4.0 from
+This is ../info/pcl-cvs, produced by makeinfo version 4.2 from
 pcl-cvs.texi.
 
 INFO-DIR-SECTION Emacs
@@ -688,7 +688,7 @@ by the CVS administrator or by extracting a relevant log message from a
 `ChangeLog' file).
 
    If you are editing the files in your Emacs, an automatic
-`revert-buffer' will be performed.  (If the file contains `$Id: pcl-cvs,v 1.1.1.1 2002-02-08 04:20:36 zacheiss Exp $'
+`revert-buffer' will be performed.  (If the file contains `$Id: pcl-cvs,v 1.1.1.2 2004-02-11 19:47:38 zacheiss Exp $'
 keywords, `cvs commit' will write a new file with the new values
 substituted.  The auto-revert makes sure that you get them into your
 buffer).  The revert will not occur if you have modified your buffer,
@@ -742,7 +742,7 @@ File: pcl-cvs,  Node: Adding and removing files,  Next: Undoing changes,  Prev: 
 Adding and removing files
 =========================
 
-   The following commands are available to make it easy to add fuiles to
+   The following commands are available to make it easy to add files to
 and remove them from the CVS repository.
 
 `a'
@@ -1141,22 +1141,22 @@ this manual.
 * cvs-allow-dir-commit:                  Selected files.
 * cvs-auto-remove-directories (variable): Customization.
 * cvs-auto-remove-handled (variable):    Customization.
-* cvs-auto-revert (variable) <1>:        Committing changes.
-* cvs-auto-revert (variable):            Customization.
+* cvs-auto-revert (variable) <1>:        Customization.
+* cvs-auto-revert (variable):            Committing changes.
 * cvs-checkout:                          Entering PCL-CVS.
 * cvs-cvsroot (variable):                Customization.
 * cvs-dired-action:                      Entering PCL-CVS.
 * cvs-dired-use-hook:                    Entering PCL-CVS.
-* cvs-examine <1>:                       Entering PCL-CVS.
-* cvs-examine:                           Updating the buffer.
+* cvs-examine <1>:                       Updating the buffer.
+* cvs-examine:                           Entering PCL-CVS.
 * cvs-filename-face (face):              Customizing Faces.
 * cvs-force-dir-tag (variable):          Tagging files.
 * cvs-handled-face (face):               Customizing Faces.
 * cvs-header-face (face):                Customizing Faces.
 * cvs-help:                              Miscellaneous commands.
 * cvs-idiff-imerge-handlers (variable):  Invoking Ediff.
-* cvs-invert-ignore-marks (variable) <1>: Viewing differences.
-* cvs-invert-ignore-marks (variable):    Tagging files.
+* cvs-invert-ignore-marks (variable) <1>: Tagging files.
+* cvs-invert-ignore-marks (variable):    Viewing differences.
 * cvs-marked-face (face):                Customizing Faces.
 * cvs-mode-acknowledge:                  Removing handled entries.
 * cvs-mode-add:                          Adding and removing files.
@@ -1175,8 +1175,8 @@ this manual.
 * cvs-mode-find-file-other-window:       Editing files.
 * cvs-mode-force-command:                Selected files.
 * cvs-mode-idiff:                        Invoking Ediff.
-* cvs-mode-ignore <1>:                   Removing handled entries.
-* cvs-mode-ignore:                       Ignoring files.
+* cvs-mode-ignore <1>:                   Ignoring files.
+* cvs-mode-ignore:                       Removing handled entries.
 * cvs-mode-ignore, and .cvsignore sorting: Customization.
 * cvs-mode-imerge:                       Invoking Ediff.
 * cvs-mode-log <1>:                      Log View Mode.
@@ -1190,8 +1190,8 @@ this manual.
 * cvs-mode-remove-file:                  Adding and removing files.
 * cvs-mode-remove-handled:               Removing handled entries.
 * cvs-mode-remove-handled (variable):    Removing handled entries.
-* cvs-mode-status <1>:                   Updating the buffer.
-* cvs-mode-status:                       Getting info about files.
+* cvs-mode-status <1>:                   Getting info about files.
+* cvs-mode-status:                       Updating the buffer.
 * cvs-mode-tag:                          Tagging files.
 * cvs-mode-toggle-marks:                 Marking files.
 * cvs-mode-undo-local-changes:           Undoing changes.
@@ -1205,8 +1205,8 @@ this manual.
 * cvs-quickdir:                          Entering PCL-CVS.
 * cvs-rtag:                              Tagging files.
 * cvs-sort-ignore-file (variable):       Customization.
-* cvs-status <1>:                        Entering PCL-CVS.
-* cvs-status:                            Updating the buffer.
+* cvs-status <1>:                        Updating the buffer.
+* cvs-status:                            Entering PCL-CVS.
 * cvs-status-mode:                       Updating the buffer.
 * cvs-unknown-face (face):               Customizing Faces.
 * cvs-update <1>:                        Updating the buffer.
@@ -1249,8 +1249,8 @@ Concept Index
 * Commit buffer:                         Committing changes.
 * Commit message, inserting newline:     Customization.
 * Committing changes:                    Committing changes.
-* Conflicts, how to resolve them <1>:    Viewing differences.
-* Conflicts, how to resolve them:        Invoking Ediff.
+* Conflicts, how to resolve them <1>:    Invoking Ediff.
+* Conflicts, how to resolve them:        Viewing differences.
 * Context diff, how to get:              Customization.
 * Contributors:                          Contributors.
 * Creating the *cvs* buffer:             Entering PCL-CVS.
@@ -1392,21 +1392,21 @@ Node: Committing changes26113
 Node: Editing files28020
 Node: Getting info about files28923
 Node: Adding and removing files29429
-Node: Undoing changes30693
-Node: Removing handled entries31153
-Node: Ignoring files31998
-Node: Viewing differences32543
-Node: Invoking Ediff33664
-Node: Updating files34504
-Node: Tagging files34757
-Node: Miscellaneous commands35520
-Node: Log Edit Mode36422
-Node: Log View Mode37759
-Node: Customization38329
-Node: Customizing Faces41955
-Node: Bugs42724
-Node: Function and Variable Index44270
-Node: Concept Index49251
-Node: Key Index55054
+Node: Undoing changes30692
+Node: Removing handled entries31152
+Node: Ignoring files31997
+Node: Viewing differences32542
+Node: Invoking Ediff33663
+Node: Updating files34503
+Node: Tagging files34756
+Node: Miscellaneous commands35519
+Node: Log Edit Mode36421
+Node: Log View Mode37758
+Node: Customization38328
+Node: Customizing Faces41954
+Node: Bugs42723
+Node: Function and Variable Index44269
+Node: Concept Index49250
+Node: Key Index55053
 
 End Tag Table

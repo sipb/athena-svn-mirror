@@ -100,7 +100,7 @@
   )
 
 (defvar pascal-imenu-generic-expression
-  '("^[ \t]*\\(function\\|procedure\\)[ \t\n]+\\([a-zA-Z0-9_.:]+\\)" . (2))
+  '((nil "^[ \t]*\\(function\\|procedure\\)[ \t\n]+\\([a-zA-Z0-9_.:]+\\)" 2))
   "Imenu expression for Pascal-mode.  See `imenu-generic-expression'.")
 
 (defvar pascal-keywords
@@ -252,7 +252,7 @@ are handled in another way, and should not be added to this list."
   "*Keywords to complete when standing at the first word of a statement.
 These are keywords such as begin, repeat, until, readln.
 The procedures and variables defined within the Pascal program
-are handled in another way,  and should not be added to this list."
+are handled in another way, and should not be added to this list."
   :type '(repeat (string :tag "Keyword"))
   :group 'pascal)
 

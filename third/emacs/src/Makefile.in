@@ -265,7 +265,7 @@ TOOLKIT_DEFINES =
 
 /* C_SWITCH_X_SITE must come before C_SWITCH_X_MACHINE and C_SWITCH_X_SYSTEM
    since it may have -I options that should override those two.  */
-ALL_CFLAGS=-Demacs -DHAVE_CONFIG_H $(TOOLKIT_DEFINES) $(MYCPPFLAG) -I. -I${srcdir} C_SWITCH_MACHINE C_SWITCH_SYSTEM C_SWITCH_SITE C_SWITCH_X_SITE C_SWITCH_X_MACHINE C_SWITCH_X_SYSTEM ${CFLAGS}
+ALL_CFLAGS=-Demacs -DHAVE_CONFIG_H $(TOOLKIT_DEFINES) $(MYCPPFLAGS) -I. -I${srcdir} C_SWITCH_MACHINE C_SWITCH_SYSTEM C_SWITCH_SITE C_SWITCH_X_SITE C_SWITCH_X_MACHINE C_SWITCH_X_SYSTEM ${CFLAGS}
 .c.o:
 	$(CC) -c $(CPPFLAGS) $(ALL_CFLAGS) $<
 
@@ -548,7 +548,7 @@ obj=    dispnew.o frame.o scroll.o xdisp.o xmenu.o window.o \
    These go in the DOC file on all machines
    in case they are needed there.  */
 SOME_MACHINE_OBJECTS = sunfns.o dosfns.o msdos.o \
-  xterm.o xfns.o xmenu.o xselect.o xrdb.o
+  xterm.o xfns.o xmenu.o xselect.o xrdb.o fontset.o
 
 
 #ifdef TERMINFO
@@ -674,6 +674,7 @@ lisp= \
 	${lispsource}international/mule-cmds.elc \
 	${lispsource}international/characters.elc \
 	${lispsource}international/utf-8.elc \
+	${lispsource}international/utf-16.elc \
 	${lispsource}international/latin-1.el \
 	${lispsource}international/latin-2.el \
 	${lispsource}international/latin-3.el \
@@ -701,6 +702,7 @@ lisp= \
 	${lispsource}language/tibetan.elc \
 	${lispsource}language/vietnamese.elc \
 	${lispsource}language/misc-lang.elc \
+	${lispsource}international/ucs-tables.elc \
 	${lispsource}paths.el \
 	${lispsource}register.elc \
 	${lispsource}replace.elc \
@@ -753,6 +755,7 @@ shortlisp= \
 	../lisp/international/mule-cmds.elc \
 	../lisp/international/characters.elc \
 	../lisp/international/utf-8.elc \
+	../lisp/international/utf-16.elc \
 	../lisp/international/latin-1.el \
 	../lisp/international/latin-2.el \
 	../lisp/international/latin-3.el \
@@ -780,6 +783,7 @@ shortlisp= \
 	../lisp/language/tibetan.elc \
 	../lisp/language/vietnamese.elc \
 	../lisp/language/misc-lang.elc \
+	../lisp/international/ucs-tables.elc \
 	../lisp/menu-bar.elc \
 	../lisp/paths.el \
 	../lisp/register.elc \
@@ -1044,7 +1048,7 @@ filelock.o: filelock.c buffer.h systime.h epaths.h $(config_h)
 filemode.o: filemode.c  $(config_h)
 frame.o: frame.c xterm.h window.h frame.h termhooks.h commands.h keyboard.h \
    buffer.h charset.h fontset.h msdos.h dosfns.h dispextern.h $(config_h)
-fontset.o: dispextern.h fontset.h fontset.c ccl.h charset.h frame.h \
+fontset.o: dispextern.h fontset.h fontset.c ccl.h buffer.h charset.h frame.h \
    keyboard.h $(config_h)
 getloadavg.o: getloadavg.c $(config_h)
 indent.o: indent.c frame.h window.h indent.h buffer.h $(config_h) termchar.h \
@@ -1115,9 +1119,9 @@ xfns.o: xfns.c buffer.h frame.h window.h keyboard.h xterm.h dispextern.h \
    $(srcdir)/../lwlib/lwlib.h blockinput.h atimer.h systime.h epaths.h \
    charset.h $(config_h)
 xmenu.o: xmenu.c xterm.h termhooks.h window.h dispextern.h frame.h keyboard.h \
-   $(srcdir)/../lwlib/lwlib.h blockinput.h atimer.h systime.h msdos.h \
-   $(config_h)
-xterm.o: xterm.c xterm.h termhooks.h termopts.h termchar.h window.h \
+   buffer.h $(srcdir)/../lwlib/lwlib.h blockinput.h atimer.h systime.h \
+   msdos.h $(config_h)
+xterm.o: xterm.c xterm.h termhooks.h termopts.h termchar.h window.h buffer.h \
   dispextern.h frame.h disptab.h blockinput.h atimer.h systime.h syssignal.h \
   keyboard.h gnu.h charset.h ccl.h fontset.h composite.h \
   coding.h $(config_h)

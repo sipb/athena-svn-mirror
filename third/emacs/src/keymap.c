@@ -1174,7 +1174,7 @@ current_minor_maps (modeptr, mapptr)
 	    {
 	      val = assq_no_quit (var, lists[0]);
 	      if (!NILP (val))
-		break;
+		continue;
 	    }
 
 	  if (i >= cmm_size)
@@ -3404,7 +3404,7 @@ in the list takes precedence.");
 
   DEFVAR_LISP ("minor-mode-overriding-map-alist", &Vminor_mode_overriding_map_alist,
     "Alist of keymaps to use for minor modes, in current major mode.\n\
-This variable is a alist just like `minor-mode-map-alist', and it is\n\
+This variable is an alist just like `minor-mode-map-alist', and it is\n\
 used the same way (and before `minor-mode-map-alist'); however,\n\
 it is provided for major modes to bind locally.");
   Vminor_mode_overriding_map_alist = Qnil;
