@@ -48,7 +48,7 @@ Here is a sample of the configuration file
 dev=CHANGE_THIS
 debug=3
 stty=38400 -echo -crmod -raw -oddp -evenp ixon pass8 -ixany cbreak crtscts
-trace_on_stderr
+trace
 ps@ 
 pjl@
 pcl@
@@ -68,7 +68,7 @@ and testing.
 The
 <CODE>debug</CODE>
 and
-<CODE>trace_on_stderr</CODE>
+<CODE>trace</CODE>
 options can also be specifed on the command line,
 and cause the debug facilities to be turned on and debug trace output
 to be put to
@@ -128,7 +128,7 @@ so it has the following lines:
 # dev=/tmp/out
 # debug=3
 stty=38400 -echo -crmod -raw -oddp -evenp ixon pass8 -ixany cbreak crtscts
-trace_on_stderr
+trace
 ps@ 
 pjl@
 pcl@
@@ -160,7 +160,7 @@ ifhp 12:28:20.606 [6089] Process_job: done
 <PRE>
 dev=/tmp/out
 debug=3
-trace_on_stderr
+trace
 ps@ 
 pjl@
 pcl@
@@ -229,7 +229,7 @@ and note that it produces the same output as befoe.</LI>
 <PRE>
 dev=/tmp/out
 debug=3
-trace_on_stderr
+trace
 ps@ 
 pjl@
 pcl@
@@ -567,7 +567,7 @@ so it has the following lines, with the
 dev=<I>/dev/lp</I> <BR>
 debug=3 <BR>
 stty=38400 -echo -crmod -raw -oddp -evenp ixon pass8 -ixany cbreak crtscts <BR>
-trace_on_stderr <BR>
+trace <BR>
 ps@ <BR>
 pjl@ <BR>
 pcl@ <BR>

@@ -4,7 +4,7 @@
  **************************************************************************/
 /**** HEADER *****/
 #include "patchlevel.h"
- static char *const _id = "$Id: ifhp.c,v 1.1.1.1 1999-02-17 15:31:03 ghudson Exp $"
+ static char *const _id = "$Id: ifhp.c,v 1.1.1.2 1999-04-01 20:09:11 mwhitson Exp $"
  " VERSION " PATCHLEVEL;
 
 #include "ifhp.h"
@@ -85,16 +85,18 @@ void ps_banner( char *line, struct line_list *l, struct line_list *rest ) ;
 void file_banner( char *file ) ;
 void Filter_banner( char *filter, char *line ) ;
 void close_on_exec( int n ) ;
-char *Use_file_util(char *pgm) ;
+char *Use_file_util(char *pgm, char *match, struct line_list *args) ;
 void Make_stdin_file() ;
-int Set_mode_lang( char *s, int *mode, char **language ) ;
+int Set_mode_lang( char *s, char **mode, char **language ) ;
 int Fd_readable( int fd ) ;
-void Init_job( char *language, int mode ) ;
-void Term_job( int mode ) ;
+void Init_job( char *language, char *mode ) ;
+void Term_job( char *mode ) ;
 void Text_banner(void) ;
 void do_char( struct font *font, struct glyph *glyph,
 	char *str, int line ) ;
 int bigfont( struct font *font, char *line, struct line_list *l, int start ) ;
+const char *Decode_status (plp_status_t *status);
+void Fix_special_user_opts( struct line_list *opts, char *line );
 
 /*
  * Main program:
@@ -161,6 +163,7 @@ int main(int argc,char *argv[], char *envp[])
 	/* 1. does setup - checks mode */
 
 	/* set up the accounting FD for output */
+	Accounting_fd = -1;
 	if( fstat( 3, &statb ) == 0 ){
 		Accounting_fd = 3;
 	}
@@ -254,8 +257,8 @@ int main(int argc,char *argv[], char *envp[])
 		Debug = atoi(s);
 		DEBUG3("main: Debug '%d'", Debug );
 	}
-	if( Find_exists_value( &Topts, "trace_on_stderr", Value_sep ) ){
-		Trace_on_stderr = Find_flag_value( &Topts, "trace_on_stderr", Value_sep );
+	if( Find_exists_value( &Topts, "trace", Value_sep ) ){
+		Trace_on_stderr = Find_flag_value( &Topts, "trace", Value_sep );
 	}
 	/* check for config file */
 	if( (s = Find_str_value(&Topts,"config",Value_sep)) ){
@@ -437,7 +440,7 @@ void getargs( int argc, char **argv )
 	int i, flag;
 	char *arg, *s;
 
-	/* log("testing"); */
+	/* logmsg("testing"); */
 	DEBUG3("getargs: starting, debug %d", Debug);
 	for( i = 1; i < argc; ++i ){
 		arg = argv[i];
@@ -490,11 +493,50 @@ void getargs( int argc, char **argv )
 		Banner_name = 1;
 	}
 	if( (s = Upperopts['T'-'A'] ) ){
-		Split( &Topts, s, ",", 1, Value_sep, 1, 1, 0 );
+		Fix_special_user_opts(&Topts, s);
 	}
 	if( (s = Upperopts['Z'-'A'] ) ){
-		Split( &Zopts, s, ",", 1, Value_sep, 1, 1, 0 );
+		Fix_special_user_opts(&Zopts, s);
 	}
+}
+
+void Fix_special_user_opts( struct line_list *opts, char *line )
+{
+	struct line_list v;
+	int i;
+	char *key, *value, *s;
+
+	DEBUG1("Fix_special_user_opts: '%s'", line );
+	Init_line_list( &v );
+	Split(&v,line,Filesep,0,0,0,0,0);
+	for( i = 0; i < v.count; ++i ){
+		key = v.list[i];
+		if( (value = strpbrk( key, Value_sep )) ){
+			*value++ = 0;
+		}
+		DEBUG1("Fix_special_user_opts: '%s'='%s'", key, value );
+		if( value ){
+			if( !strcasecmp( key, "font")
+				){
+				if( (s = Find_str_value(opts,key,Value_sep)) ){
+					DEBUG1("Fix_special_user_opts: old '%s'='%s'", key, s );
+					s = safestrdup3(s,",",value,__FILE__,__LINE__);
+					DEBUG1("Fix_special_user_opts: new '%s'='%s'", key, s );
+					Set_str_value(opts,key,s);
+					if(s) free(s); s = 0;
+				} else {
+					DEBUG1("Fix_special_user_opts: init '%s'='%s'", key, value );
+					Set_str_value(opts,key,value);
+				}
+			} else {
+				Set_str_value(opts,key,value);
+			}
+		} else {
+			Add_line_list(opts,key,Value_sep,1,1);
+		}
+	}
+	Free_line_list( &v );
+	if(DEBUGL1)Dump_line_list("Fix_special_user_opts", opts );
 }
 
 /*
@@ -504,8 +546,8 @@ void getargs( int argc, char **argv )
  */
 void Init_outbuf()
 {
-	DEBUG1("Init_outbuf: Outbuf 0x%x, Outmax %d, Outlen %d",
-		Outbuf, Outmax, Outlen );
+	DEBUG1("Init_outbuf: Outbuf 0x%lx, Outmax %d, Outlen %d",
+		(long)Outbuf, Outmax, Outlen );
 	if( Outmax <= 0 ) Outmax = OUTBUFFER;
 	if( Outbuf == 0 ) Outbuf = realloc_or_die( Outbuf, Outmax+1,__FILE__,__LINE__);
 	Outlen = 0;
@@ -519,14 +561,14 @@ void Put_outbuf_str( char *s )
 
 void Put_outbuf_len( char *s, int len )
 {
-	DEBUG4("Put_outbuf_len: starting- Outbuf 0x%x, Outmax %d, Outlen %d, len %d",
-		Outbuf, Outmax, Outlen, len );
+	DEBUG4("Put_outbuf_len: starting- Outbuf 0x%lx, Outmax %d, Outlen %d, len %d",
+		(long)Outbuf, Outmax, Outlen, len );
 	if( s == 0 || len <= 0 ) return;
 	if( Outmax - Outlen <= len ){
 		Outmax += ((OUTBUFFER + len)/1024)*1024;
 		Outbuf = realloc_or_die( Outbuf, Outmax+1,__FILE__,__LINE__);
-		DEBUG4("Put_outbuf_len: update- Outbuf 0x%x, Outmax %d, Outlen %d, len %d",
-		Outbuf, Outmax, Outlen, len );
+		DEBUG4("Put_outbuf_len: update- Outbuf 0x%lx, Outmax %d, Outlen %d, len %d",
+		(long)Outbuf, Outmax, Outlen, len );
 		if( !Outbuf ){
 			Errorcode = JABORT;
 			logerr_die( "Put_outbuf_len: realloc %d failed", len );
@@ -655,7 +697,7 @@ void Pr_status( char *str )
 			if( !strcasecmp( s, "ECHO" ) ){
 				/* we have the echo value */
 				if( Logall ){
-					log( "Pr_status: printer status '%s'", str );
+					logmsg( "Pr_status: printer status '%s'", str );
 				}
 				name = safestrdup2("echo=", str,__FILE__,__LINE__);
 				DEBUG5("Pr_status: found echo '%s'", name );
@@ -669,7 +711,7 @@ void Pr_status( char *str )
 			/* we do Postscipt status */
 			DEBUG5("Pr_status: doing PostScript status");
 			if( Logall ){
-				log( "Pr_status: printer status '%s'", str );
+				logmsg( "Pr_status: printer status '%s'", str );
 			}
 			for( i = 0; i < l.count; ++i ){
 				s = l.list[i];
@@ -710,7 +752,7 @@ void Pr_status( char *str )
 			}
 			c = 0;
 		} else if( Logall ) {
-			log( "Pr_status: printer status '%s'", str );
+			logmsg( "Pr_status: printer status '%s'", str );
 		}
 	} else if( str && *str && name && *name  ){
 		DEBUG5("Pr_status: append '%s' '%s'", name, str );
@@ -721,7 +763,7 @@ void Pr_status( char *str )
 	} else if( name && *name ){
 		DEBUG5("Pr_status: found '%s'", name );
 		if( Logall ){
-			log( "Pr_status: printer status '%s'", str );
+			logmsg( "Pr_status: printer status '%s'", str );
 		}
 		/* now we need to find the type of information */ 
 		Free_line_list( &l );
@@ -805,7 +847,7 @@ void Check_device_status( char *line )
 					/* ok, we log it */
 					t = Check_code( end );
 					DEBUG4("Check_device_status: code '%s' = '%s'", line, t);
-					log("Check_device_status: device = '%s'", t );
+					logmsg("Check_device_status: device = '%s'", t );
 				}
 			}
 		} else if( strstr(line,"ustatus") ){
@@ -815,7 +857,7 @@ void Check_device_status( char *line )
 			old = Find_str_value( &Devstatus, line, Value_sep );
 			DEBUG4("Check_device_status: old status '%s', new '%s'", old, end );
 			if( !old || strcmp(old,end) ){
-				log("Check_device_status: %s = '%s'", line, end );
+				logmsg("Check_device_status: %s = '%s'", line, end );
 			}
 		}
 	}
@@ -896,7 +938,7 @@ void Process_job()
 	Init_line_list( &l );
 	Init_outbuf();
 
-	log( "Process_job: setting up printer");
+	logmsg( "Process_job: setting up printer");
 
 	if( (s = Find_str_value( &Model, "pjl_only", Value_sep)) ){
 		Split( &Pjl_only, s, List_sep, 1, 0, 1, 1, 0 );
@@ -984,15 +1026,15 @@ void Process_job()
 		Do_banner("");	
 		Write_fd_str(1, Outbuf );
 	} else if( OF_Mode ){
-		log( "Process_job: starting OF mode passthrough" );
+		logmsg( "Process_job: starting OF mode passthrough" );
 		Process_OF_mode( Job_timeout );
-		log( "Process_job: ending OF mode passthrough" );
+		logmsg( "Process_job: ending OF mode passthrough" );
 	} else {
-		log( "Process_job: sending job file" );
+		logmsg( "Process_job: sending job file" );
 		Send_job();
-		log( "Process_job: sent job file" );
+		logmsg( "Process_job: sent job file" );
 	}
-	log( "Process_job: doing cleanup");
+	logmsg( "Process_job: doing cleanup");
 	Init_outbuf();
 	if( Pjl ){
 		DEBUG1("Process_job: doing pjl at end");
@@ -1028,7 +1070,7 @@ void Process_job()
 	time( &current_t );
 	elapsed = current_t - Start_time;
 	if( !Banner_only ) Do_accounting(0, elapsed, endpagecount, endpagecount - startpagecount );
-	log( "Process_job: done" );
+	logmsg( "Process_job: done" );
 }
 
 /*
@@ -1790,7 +1832,7 @@ int Font_download( char* prefix, char *id, char *value, Wr_out routine)
 		Split(&fontnames,filename,Filesep,0,0,0,0,0);
 	}
 	if( fontnames.count == 0 ){
-		log("Font_download: no 'font' value");
+		logmsg("Font_download: no 'font' value");
 		return(1);
 	}
 	filename = 0;
@@ -1843,13 +1885,11 @@ void Pjl_job()
 	if( Pjl == 0 || n == 0 ){
 		return;
 	}
-	s = Loweropts['n'-'a'];
-	if( s == 0 ) s="";
-	plp_snprintf( Jobname, sizeof(Jobname), "%s%sPID %d",
-		s,*s?" ":"",getpid() );
+	plp_snprintf( Jobname, sizeof(Jobname), "PID %d", getpid() );
 	plp_snprintf( buffer, sizeof(buffer), Jobstart_str, Jobname );
 	str = safestrdup( buffer,__FILE__,__LINE__);
-	if( (s = Find_exists_value( &Topts, "startpage", Value_sep)) ){
+	if( (s = Find_exists_value( &Zopts, "startpage", Value_sep))
+		|| (s = Find_exists_value( &Topts, "startpage", Value_sep)) ){
 		n = atoi( s );
 		if( n > 0 ){
 			plp_snprintf(buffer, sizeof(buffer), " START = %d", n );
@@ -1858,7 +1898,8 @@ void Pjl_job()
 			free(s);
 		}
 	}
-	if( (s = Find_exists_value( &Topts, "endpage", Value_sep)) ){
+	if( (s = Find_exists_value( &Topts, "endpage", Value_sep))
+		|| (s = Find_exists_value( &Topts, "endpage", Value_sep)) ){
 		n = atoi( s );
 		if( n > 0 ){
 			plp_snprintf(buffer, sizeof(buffer), " END = %d", n );
@@ -2013,9 +2054,6 @@ int Pcl_setvar(char *prefix, char*id, char *value, Wr_out routine )
  char *CTRL_T = "\024";
  char *CTRL_D = "\004";
 
- char *PS_status_start = "%!PS-Adobe-2.0\n( %%[ echo: ";
- char *PS_status_end = " ]%% ) print () = flush\n";
-
 /*
  * void Do_sync( int sync_timeout )
  * - get a response from the printer
@@ -2024,7 +2062,7 @@ int Pcl_setvar(char *prefix, char*id, char *value, Wr_out routine )
 void Do_sync( int sync_timeout )
 {
 	char buffer[SMALLBUFFER], name[SMALLBUFFER], *s, *sync_str;
-	int len, flag, elapsed, timeout, sync, use, use_ps, use_pjl;
+	int len, flag, elapsed, timeout, sync, use, use_ps, use_pjl, c;
 	time_t start_t, current_t, interval_t;
 
 	time( &start_t );
@@ -2063,13 +2101,16 @@ void Do_sync( int sync_timeout )
 	s = use_pjl?"pjl":"ps";
 
 	sync_str = s;
-	log("Do_sync: getting sync using '%s'", sync_str );
+	logmsg("Do_sync: getting sync using '%s'", sync_str );
 
 	/* get start time */
 	sync = 0;
 	time( &interval_t );
 	Init_outbuf();
 	plp_snprintf( name, sizeof(name), "%d@%s", getpid(), Time_str(0,0) );
+	for( s = name; ( s = strchr(s,':')); ++s) *s = '-';
+	DEBUG2("Do_sync: Ps_status_code '%s', use_pjl %d, use_ps %d",
+			Ps_status_code, use_pjl, use_ps );
 	if( use_pjl ){
 		Put_outbuf_str( PJL_UEL_str );
 		plp_snprintf( buffer, sizeof(buffer),
@@ -2077,16 +2118,21 @@ void Do_sync( int sync_timeout )
 		Put_pjl( buffer );
 		Put_outbuf_str( PJL_UEL_str );
 	} else if( use_ps ){
+		if( Ps_status_code == 0 ){
+			fatal("Do_sync: sync '%s' and no ps_status_code value", sync_str );
+		}
 		if(Pjl){
 			Put_outbuf_str( PJL_UEL_str );
 			if( Pjl_enter ){
 				Put_outbuf_str( "@PJL ENTER LANGUAGE = POSTSCRIPT\n" );
 			}
 		}
-		Put_outbuf_str( CTRL_T );
-		Put_outbuf_str( PS_status_start );
+		Put_outbuf_str( CTRL_D );
+		//Put_outbuf_str( CTRL_T );
+		if( s = strstr(Ps_status_code,"NAME") ){ c = *s; *s = 0; }
+		Put_outbuf_str( Ps_status_code );
 		Put_outbuf_str( name );
-		Put_outbuf_str( PS_status_end );
+		if( s ){ *s = c; s += 4; Put_outbuf_str( s ); };
 		Put_outbuf_str( CTRL_D );
 		if(Pjl){
 			Put_outbuf_str( PJL_UEL_str );
@@ -2095,6 +2141,8 @@ void Do_sync( int sync_timeout )
 		Errorcode = JABORT;
 		fatal("Do_sync: no way to synchronize printer, need PJL or PS" );
 	}
+
+	DEBUG2("Do_sync: using sync '%s'", Outbuf );
 
 	while( !sync ){
 		flag = 0;
@@ -2149,7 +2197,7 @@ void Do_sync( int sync_timeout )
 		Errorcode = JFAIL;
 		fatal("Do_sync: no response from printer" );
 	}
-	log("Do_sync: sync done");
+	logmsg("Do_sync: sync done");
 }
 
 /*
@@ -2164,7 +2212,7 @@ void Do_waitend( int waitend_timeout )
 {
 	char *s, *t, buffer[SMALLBUFFER];
 	int len, flag, elapsed, timeout, waitend,
-		use, use_pjl, use_ps, use_job;
+		use, use_pjl, use_ps, use_job, c;
 	time_t start_t, current_t, interval_t;
 
 	time( &start_t );
@@ -2199,12 +2247,6 @@ void Do_waitend( int waitend_timeout )
 			) ){
 		use_job = 0;
 	}
-	if( use_pjl
-		&& ( Find_first_key( &Pjl_only, "JOB", 0, 0)
-			|| !Find_first_key( &Pjl_except, "JOB", 0, 0)
-			) ){
-		use_job = 0;
-	}
 	if( use_pjl && use_job == 0
 		&& ( Find_first_key( &Pjl_only, "ECHO", 0, 0)
 			|| !Find_first_key( &Pjl_except, "ECHO", 0, 0)
@@ -2218,7 +2260,7 @@ void Do_waitend( int waitend_timeout )
 	if( use_pjl ) use_ps = 0;
 	s = use_pjl?"pjl":"ps";
 
-	log("Do_waitend: getting end using '%s'", s );
+	logmsg("Do_waitend: getting end using '%s'", s );
 
 	waitend = 0;
 
@@ -2229,18 +2271,18 @@ void Do_waitend( int waitend_timeout )
 	Add_line_list( &Devstatus, "job=", Value_sep, 1, 1 );
 	Add_line_list( &Devstatus, "name=", Value_sep, 1, 1 );
 	Add_line_list( &Devstatus, "echo=", Value_sep, 1, 1 );
+	Add_line_list( &Devstatus, "status=", Value_sep, 1, 1 );
 
 	Init_outbuf();
 	plp_snprintf( Jobname, sizeof(Jobname), "%s PID %d",
 		Time_str(1,0), getpid() );
+	for( s = Jobname; ( s = strchr(s,':')); ++s) *s = '-';
 	if( use_pjl ){
 		Put_outbuf_str( PJL_UEL_str );
-		s = Loweropts['n'-'a'];
-		if( s == 0 ) s="";
-		plp_snprintf( buffer, sizeof(buffer), Jobstart_str, Jobname );
-		Put_pjl(buffer);
 		if( use_job ){
-		Put_pjl( PJL_USTATUS_JOB_str );
+			plp_snprintf( buffer, sizeof(buffer), Jobstart_str, Jobname );
+			Put_pjl(buffer);
+			Put_pjl( PJL_USTATUS_JOB_str );
 			plp_snprintf( buffer, sizeof(buffer), Jobend_str, Jobname );
 			Put_pjl(buffer);
 		} else {
@@ -2249,13 +2291,23 @@ void Do_waitend( int waitend_timeout )
 		}
 		Put_outbuf_str( PJL_UEL_str );
 	} else if( use_ps ){
+		if( Ps_status_code == 0 ){
+			fatal("Do_waitend: no ps_status_code value" );
+		}
 		if(Pjl){
 			Put_outbuf_str( PJL_UEL_str );
 			if( Pjl_enter ){
 				Put_outbuf_str( "@PJL ENTER LANGUAGE = POSTSCRIPT\n" );
 			}
 		}
+		Put_outbuf_str( CTRL_D );
 		Put_outbuf_str( CTRL_T );
+		c = 0;
+		if( s = strstr(Ps_status_code,"NAME") ){ c = *s; *s = 0; }
+		Put_outbuf_str( Ps_status_code );
+		Put_outbuf_str( Jobname );
+		if( s ){ *s = c; s += 4; Put_outbuf_str( s ); };
+		Put_outbuf_str( CTRL_D );
 		if(Pjl){
 			Put_outbuf_str( PJL_UEL_str );
 		}
@@ -2319,14 +2371,12 @@ void Do_waitend( int waitend_timeout )
 					waitend = 1;
 				}
 			} else if( use_ps ){
-				if( (s = Find_str_value( &Devstatus, "status", Value_sep)) ){
-					s = safestrdup(s,__FILE__,__LINE__);
-					DEBUG4("Do_waitend: status '%s'", s );
-					lowercase( s );
-					if( !strstr(s, "printing") ){
-						waitend = 1;
-					}
-					free(s); s = 0;
+				s = Find_str_value( &Devstatus, "echo", Value_sep);
+				DEBUG4("Do_waitend: echo '%s'", s );
+				t = Find_str_value( &Devstatus, "status", Value_sep);
+				DEBUG4("Do_waitend: status '%s'", t );
+				if( s && t && strstr(s,Jobname) && !strstr(s, "printing") ){
+					waitend = 1;
 				}
 			}
 		}
@@ -2381,7 +2431,7 @@ int Do_pagecount( int pagecount_timeout )
 	} else {
 		return 0;
 	}
-	if(use_ps && !Pagecount_ps_code){
+	if(use_ps && !Ps_pagecount_code){
 		use_ps = 0;
 	}
 	if(use_pjl
@@ -2389,7 +2439,7 @@ int Do_pagecount( int pagecount_timeout )
 			||  !Find_first_key( &Pjl_except, "INFO", 0, 0)) ){
 		use_pjl = 0;
 	}
-	if(use_ps && !Pagecount_ps_code){
+	if(use_ps && !Ps_pagecount_code){
 		use_ps = 0;
 	}
 
@@ -2400,13 +2450,13 @@ int Do_pagecount( int pagecount_timeout )
 	if( use_pjl ) use_ps = 0;
 	s = use_pjl?"pjl":"ps";
 
-	log("Do_pagecount: getting pagecount using '%s'", s );
+	logmsg("Do_pagecount: getting pagecount using '%s'", s );
 
 	pagecount = Current_pagecount( pagecount_timeout, use_pjl, use_ps );
 	if( pagecount >= 0 && Pagecount_poll > 0 ){
 		time( &start_t );
 		new_pagecount = pagecount;
-		log("Do_pagecount: pagecount %d, polling in %d seconds",
+		logmsg("Do_pagecount: pagecount %d, polling in %d seconds",
 			pagecount, Pagecount_poll );
 		do{
 			pagecount = new_pagecount;
@@ -2438,7 +2488,7 @@ int Do_pagecount( int pagecount_timeout )
 				use_pjl, use_ps);
 		} while( new_pagecount != pagecount );
 	}
-	log("Do_pagecount: final pagecount %d", pagecount);
+	logmsg("Do_pagecount: final pagecount %d", pagecount);
 	return( pagecount );
 }
 
@@ -2466,23 +2516,24 @@ int Current_pagecount( int pagecount_timeout, int use_pjl, int use_ps )
 		Put_pjl( PJL_INFO_PAGECOUNT_str );
 		Put_outbuf_str( PJL_UEL_str );
 	} else if( use_ps ){
-		if( Pagecount_ps_code && *Pagecount_ps_code ){
-			if( Pjl ){
-				Put_outbuf_str( PJL_UEL_str );
-				if( Pjl_enter ){
-					Put_outbuf_str( "@PJL ENTER LANGUAGE = POSTSCRIPT\n" );
-				}
-			}
-			Put_outbuf_str( CTRL_D );
-			Put_outbuf_str( Pagecount_ps_code );
-			Put_outbuf_str( "\n" );
-			Put_outbuf_str( CTRL_D );
-			if( Pjl ) Put_outbuf_str( PJL_UEL_str );
-		} else {
+		if( !Ps_pagecount_code ){
 			Errorcode = JABORT;
-			fatal("Current_pagecount: no pagecount_ps_code config info");
+			fatal("Current_pagecount: no ps_pagecount_code config info");
 		}
+		if( Pjl ){
+			Put_outbuf_str( PJL_UEL_str );
+			if( Pjl_enter ){
+				Put_outbuf_str( "@PJL ENTER LANGUAGE = POSTSCRIPT\n" );
+			}
+		}
+		Put_outbuf_str( CTRL_D );
+		Put_outbuf_str( Ps_pagecount_code );
+		Put_outbuf_str( "\n" );
+		Put_outbuf_str( CTRL_D );
+		if( Pjl ) Put_outbuf_str( PJL_UEL_str );
 	}
+
+	DEBUG2("Current_pagecount: using '%s'", Outbuf );
 
 	page = 0;
 	found = 0;
@@ -2578,13 +2629,13 @@ int Current_pagecount( int pagecount_timeout, int use_pjl, int use_ps )
 void Send_job()
 {
 	plp_status_t status;
-	int len = 0, i, c, pid = 0, n, p[2], cnt;
+	int len = 0, i, c, pid = 0, n, cnt, tempfd;
 	char *s, *pgm = 0;
 	int done = 0;
 	char *save_outbuf;
 	int save_outlen, save_outmax;
 	struct line_list l;
-	int mode;
+	char *mode;
 	char *language;
 	struct stat statb;
 	int progress_last, total_size, is_file, progress_pc, progress_k,
@@ -2593,7 +2644,7 @@ void Send_job()
 	Init_line_list( &l );
 	Init_outbuf();
 	
-	log( "Send_job: starting transfer" );
+	logmsg( "Send_job: starting transfer" );
 	DEBUG2( "Send_job: want %d", Outmax );
 	while( Outlen < Outmax 
 		&& (len = read( 0, Outbuf+Outlen, Outmax - Outlen )) > 0 ){
@@ -2604,16 +2655,14 @@ void Send_job()
 	if( len < 0 ){
 		Errorcode = JFAIL;
 		logerr_die( "Send_job: read error on stdin" );
-	} else if( len == 0 ){
-		done = 1;
 	}
 	if( Outlen == 0 ){
-		log( "Send_job: zero length job file" );
+		logmsg( "Send_job: zero length job file" );
 		return;
 	}
 	/* defaults */
 	if( !(s = Find_str_value(&Model,"default_language",Value_sep)) ){
-		s = "unknown";
+		s = UNKNOWN;
 	}
 	if( Set_mode_lang( s,  &mode, &language ) ){
 		Errorcode = JABORT;
@@ -2650,19 +2699,30 @@ void Send_job()
 	} else if( mode == UNKNOWN
 		&& (pgm = Find_str_value( &Model, "file_util_path", Value_sep ))){
 		DEBUG2( "Send_job: file_util_path '%s'", pgm );
-		s = Use_file_util(pgm);
-		if( Set_mode_lang(s, &mode, &language) ){
+		s = Find_str_value(&Model, "file_output_match",Value_sep);
+		if( !s ){
 			Errorcode = JABORT;
-			fatal("Send_job: bad file type '%s'", s);
+			fatal("Send_job: missing 'file_output_match' value");
 		}
-		if( mode == UNKNOWN ){
+		Make_stdin_file();
+		Free_line_list(&l);
+		Use_file_util(pgm, s, &l);
+		if( l.count > 1 ){
+			if( Set_mode_lang(l.list[1], &mode, &language) ){
+				Errorcode = JABORT;
+				fatal("Send_job: bad file type '%s'", s);
+			}
+		}
+		if( l.count < 2 || mode == UNKNOWN ){
 			Errorcode = JABORT;
 			fatal("Send_job: unknown file type '%s'", s);
 		}
-		pgm = 0;
-	}
-
-	if( mode == TEXT ){
+		/* remove first two entries */
+		Remove_line_list(&l,0);
+		Remove_line_list(&l,0);
+		/* check to see if no conversion needed */
+		if( l.count == 0 ) pgm = 0;
+	} else if( mode == TEXT ){
 		s = Find_str_value( &Model,
 			"text_converter_output", Value_sep );
 		if( s && Set_mode_lang( s, &mode, &language ) ){
@@ -2674,7 +2734,10 @@ void Send_job()
 			Errorcode = JABORT;
 			fatal("Send_job: job is text, and no converter available");
 		}
+		Free_line_list(&l);
+		Split(&l,pgm,Whitespace,0,0,0,0, 0 );
 	}
+	DEBUG1("Send_job: mode '%s' (language %s)", mode, language );
 
 
 	if( mode == PCL && !Pcl ){
@@ -2694,23 +2757,22 @@ void Send_job()
 		DEBUG2( "Send_job: text_converter '%s'", pgm );
 		/* set up pipe */
 		Make_stdin_file();
-		if( pipe(p) == -1 ){
+		if( lseek(0,0,SEEK_SET) == -1 ){
 			Errorcode = JABORT;
-			logerr_die("Send_job: pipe()) failed");
+			logerr_die("Send_job: lseek failed");
 		}
+		tempfd = Make_tempfile(0);
 		/* fork the process */
 		if( (pid = fork()) == -1 ){
 			Errorcode = JABORT;
 			logerr_die("Send_job: fork failed");
 		} else if( pid == 0 ){
-			Init_line_list(&l);
-			Split(&l,pgm,Whitespace,0,0,0,0, 0 );
 			Check_max(&l,1);
 			l.list[l.count] = 0;
 			for( i = 0; i < l.count; ++i ){
 				l.list[i] = Fix_option_str( l.list[i], 0, 1 );
 			}
-			if( dup2(p[1],1) == -1 ){
+			if( dup2(tempfd,1) == -1 ){
 				Errorcode = JABORT;
 				logerr_die("Send_job: dup2 failed");
 			}
@@ -2720,13 +2782,34 @@ void Send_job()
 			Errorcode = JABORT;
 			logerr_die( "Send_job: execv failed" );
 		}
-		log("Send_job: started converter");
-		if( dup2(p[0],0) == -1 ){
+		logmsg("Send_job: started converter");
+		while( (n = waitpid(pid,&status,0)) != pid );
+		DEBUG1("Send_job: converter pid %d, exit '%s'", pid,
+			Decode_status( &status ) );
+		if( WIFEXITED(status) && (n = WEXITSTATUS(status)) ){
 			Errorcode = JABORT;
-			logerr_die("Send_job: dup2 p[0] failed");
+			fatal("Send_job: converter process exited with status %d", n);
+		} else if( WIFSIGNALED(status) ){
+			Errorcode = JABORT;
+			n = WTERMSIG(status);
+			fatal("Send_job: converter process died with signal %d, '%s'",
+				n, Sigstr(n));
 		}
-		/* close the pipes */
-		close(p[1]); close(p[0]);
+		if( fstat(tempfd,&statb) == -1 ){
+			Errorcode = JABORT;
+			logerr_die("Send_job: dup2 failed");
+		}
+		logmsg("Send_job: converter done, output %ld bytes",
+			(int)(statb.st_size) );
+		if( dup2(tempfd,0) == -1 ){
+			Errorcode = JABORT;
+			logerr_die("Send_job: dup2 failed");
+		}
+		if( tempfd != 0 ) close(tempfd);
+		if( lseek(0,0,SEEK_SET) == -1 ){
+			Errorcode = JABORT;
+			logerr_die("Send_job: lseek failed");
+		}
 	}
 
 
@@ -2867,14 +2950,14 @@ void Send_job()
 			i = ((double)(progress_total)/total_size)*100;
 			DEBUG1("Send_job: pc total %d, new %d", progress_total, i );
 			if( i > progress_last ){
-				log("Send_job: %d percent done", i);
+				logmsg("Send_job: %d percent done", i);
 				progress_last = i;
 			}
 		} else if( progress_k ){
 			i = ((double)(progress_total)/(1024 * (double)progress_k));
 			DEBUG1("Send_job: k total %d, new %d", progress_total, i );
 			if( i > progress_last ){
-				log("Send_job: %d Kbytes done", i);
+				logmsg("Send_job: %d Kbytes done", i);
 				progress_last = i;
 			}
 		}
@@ -2897,24 +2980,11 @@ void Send_job()
 	} while( Outlen > 0 );
 	/* we are done on STDIN */
 	/* close(0); */
-	if( pgm ){
-		while( (n = waitpid(pid,&status,0)) != pid );
-		if( WIFEXITED(status) && (n = WEXITSTATUS(status)) ){
-			Errorcode = JABORT;
-			fatal("Send_job: text process exited with status %d", n);
-		} else if( WIFSIGNALED(status) ){
-			Errorcode = JABORT;
-			n = WTERMSIG(status);
-			fatal("Send_job: text process died with signal %d, '%s'",
-				n, Sigstr(n));
-		}
-		log("Send_job: converter done");
-	}
 	DEBUG1( "Send_job: finished file transfer" );
 
 	Term_job( mode );
 
-	log( "Send_job: finished writing file, cleaning up" );
+	logmsg( "Send_job: finished writing file, cleaning up" );
 }
 
 /*
@@ -3120,9 +3190,13 @@ void Process_OF_mode( int job_timeout )
 		}
 		/* we get a line from the Outbuf and process it */
 		if( Outlen == 0 && suspend ){
-			log( "Process_OF_mode: suspending");
+			logmsg( "Process_OF_mode: suspending");
+			if( Status_fd >= 0 ){
+				close( Status_fd );
+				Status_fd = -2;
+			}
 			kill(getpid(), SIGSTOP);
-			log( "Process_OF_mode: active again");
+			logmsg( "Process_OF_mode: active again");
 			suspend = 0;
 		}
 	}
@@ -3163,7 +3237,8 @@ void Do_banner( char *line )
 {
 	struct line_list l, v;
 	char *t, *s, *u, *last_key = 0, *language = 0;
-	int i, mode = 0;
+	int i;
+	char *mode = 0;
 
 	DEBUG2("Do_banner: Banner '%s' input '%s'", Banner, line );
 	/* we can parse the banner line */
@@ -3464,7 +3539,7 @@ void file_banner( char *file )
 	int fd, n;
 
 	if( (fd = open(file,O_RDONLY)) == -1 ){
-		log("cannot open ps_banner_file '%s' - %s", file, Errormsg(errno));
+		logmsg("cannot open ps_banner_file '%s' - %s", file, Errormsg(errno));
 		return;
 	}
 	while( (n = read(fd, value, sizeof(value))) > 0 ){
@@ -3523,6 +3598,8 @@ void Filter_banner( char *filter, char *line )
 	close(p1[0]);
 	/* ugly, but effective */
 	while( (n =  waitpid( pid, &status, 0 )) != pid );
+	DEBUG1("Filter_banner: pid %d, exit '%s'", pid,
+		Decode_status( &status ) );
 	if( WIFEXITED(status) && (n = WEXITSTATUS(status)) ){
 		Errorcode = JABORT;
 		fatal("Filter_banner: text process exited with status %d", n);
@@ -3532,7 +3609,7 @@ void Filter_banner( char *filter, char *line )
 		fatal("Filter_banner: text process died with signal %d, '%s'",
 			n, Sigstr(n));
 	}
-	log("Filter_banner: converter done");
+	logmsg("Filter_banner: converter done");
 }
 
 /*
@@ -3553,18 +3630,17 @@ void close_on_exec( int n )
  * We will need to use the file utility
  */
 
-char *Use_file_util(char *pgm)
+char *Use_file_util(char *pgm, char *matches, struct line_list *args)
 {
-	int p0[2], p1[2], i, pid, n;
+	int i, pid, n, fd;
 	plp_status_t status;
 	char value[LARGEBUFFER], *s, *t;
 	struct line_list l;
 
+	DEBUG1("Use_file_util: pgm '%s'", pgm);
 	Init_line_list( &l );
-	if( pipe(p0) == -1 || pipe(p1) == -1 ){
-		Errorcode = JABORT;
-		logerr_die("Use_file_util: pipe() failed");
-	}
+	Free_line_list( args );
+	fd = Make_tempfile(0);
 	if( (pid = fork()) == -1 ){
 		Errorcode = JABORT;
 		logerr_die("Use_file_util: fork failed");
@@ -3577,8 +3653,7 @@ char *Use_file_util(char *pgm)
 		for( i = 0; i < l.count; ++i ){
 			l.list[i] = Fix_option_str( l.list[i], 0, 1 );
 		}
-		if( dup2(p0[0],0) == -1 || dup2(p1[1],1) == -1
-			|| dup2(p1[1],2) == -1 ){
+		if( dup2(fd,1) == -1 ){
 			Errorcode = JABORT;
 			logerr_die("Use_file_util: dup2 failed");
 		}
@@ -3587,59 +3662,91 @@ char *Use_file_util(char *pgm)
 		Errorcode = JABORT;
 		logerr_die("Use_file_util: child execve failed");
 	}
-	close(p1[1]); close(p0[0]);
-	for( n = i = 0;
-		(n = write(p0[1], Outbuf+i, Outlen-i)) > 0;
-		i += n );
-	close( p0[1] );
-	/* we put this in value */
-	for( n = i = 0;
-		(n = read(p1[0], value+i, sizeof(value)-i-1 )) > 0;
-		i += n );
-	close(p1[0]);
-	value[i] = 0;
 	/* ugly, but effective */
 	while( (n =  waitpid( pid, &status, 0 )) != pid );
+	DEBUG1("Use_file_util: pid %d, exit '%s'", pid,
+		Decode_status( &status ) );
 	if( WIFEXITED(status) && (n = WEXITSTATUS(status)) ){
 		Errorcode = JABORT;
-		fatal("Use_file_util: text process exited with status %d", n);
+		fatal("Use_file_util: process exited with status %d", n);
 	} else if( WIFSIGNALED(status) ){
 		Errorcode = JABORT;
 		n = WTERMSIG(status);
-		fatal("Use_file_util: text process died with signal %d, '%s'",
+		fatal("Use_file_util: process died with signal %d, '%s'",
 			n, Sigstr(n));
 	}
-	DEBUG4("Use_file_util: file util done, '%s'", value );
-	for( s = value; (s = strpbrk(s,Whitespace)); ++s ){
-		*s = ' ';
-		while( isspace(cval(s+1)) ) memmove(s, s+1, strlen(s)+1);
+	if( lseek(fd,0,SEEK_SET) == -1 ){
+		Errorcode = JABORT;
+		logerr_die("Use_file_util: lseek failed");
 	}
+	value[0] = 0;
+	if( (n = read(fd,value,sizeof(value)-1)) <= 0 ){
+		Errorcode = JABORT;
+		logerr_die("Use_file_util: read failed");
+	}
+	value[n] = 0;
 	lowercase(value);
-	if( (t = strpbrk( value, ":" )) ) ++t; else t = value;
-	while( isspace(cval(t)) ) ++t;
-	memmove( value, t, strlen(t)+1);
-
-	DEBUG4("Use_file_util: file identified as type '%s'", value );
-	if( strstr( value, "postscript" ) ){
-		s = "ps";
-	} else if( strstr( value, "printer job language" ) ){
-		s = "raw";
-	} else if( strstr( value, "pcl" ) ){
-		s = "pcl";
-	} else if( strstr( value, "text" ) ){
-		s = "text";
-	} else {
-		s = "unknown";
+	while( (s = strchr(value,'\n')) ) *s = ' ';
+	for( s = value; s[0] && s[1];  ){
+		if( isspace(cval(s)) && isspace(cval(s+1))){
+			memmove(s,s+1,strlen(s));
+		} else {
+			++s;
+		}
 	}
-	log("Use_file_util: file identified as '%s', assigned type '%s'", value, s );
-	return(s);
+	logmsg("Use_file_util: file information = '%s'", value );
+	DEBUG4("Use_file_util: file util done, '%s'", value );
+	Free_line_list(&l);
+	Split(&l,matches,Line_ends,0,0,0,0, 0 );
+	if(DEBUGL2)Dump_line_list("Use_file_util: matches", &l );
+	for( i = 0; i < l.count; ++i ){
+		Split(args, l.list[i], Whitespace, 0,0,0,0,0);
+		if(DEBUGL2)Dump_line_list("Use_file_util: checking", args );
+		if( args->count && !Globmatch( args->list[0], value ) ){
+			break;
+		}
+		Free_line_list(args);
+	}
+	if(DEBUGL2)Dump_line_list("Use_file_util: found", args );
+}
+
+int Make_tempfile( char **retval )
+{
+	static int count;
+	int fd;
+	char buffer[32];
+	char *tempfile;
+
+	if( !(tempfile = Find_str_value( &Model,"tempfile", Value_sep ))){
+		Errorcode = JABORT;
+		fatal(
+		"Make_tempfile: missing 'tempfile' needed for conversion");
+	}
+	plp_snprintf(buffer,sizeof(buffer),"%02dXXXXXX", count);
+	++count;
+	tempfile = safestrdup2(tempfile,buffer,__FILE__,__LINE__);
+	DEBUG2( "Make_tempfile: tempfile '%s'", tempfile );
+	if( (fd = mkstemp(tempfile)) == -1 ){
+		Errorcode = JABORT;
+		logerr_die("Make_tempfile: could not open '%s'", tempfile);
+	}
+	DEBUG2( "Make_tempfile: new tempfile '%s', fd %d", tempfile, fd );
+	if( retval ){
+		*retval = tempfile;
+	} else {
+		if( ! DEBUGL1 ){
+			unlink(tempfile);
+		}
+		free(tempfile); tempfile = 0;
+	}
+	return( fd );
 }
 
 void Make_stdin_file()
 {
 	int is_file, fd, in, n, i;
 	struct stat statb;
-	char *s, *tempfile;
+	char *s;
 
 	if( fstat( 0, &statb ) < 0 ){
 		Errorcode = JABORT;
@@ -3649,19 +3756,7 @@ void Make_stdin_file()
 	DEBUG2( "Make_stdin_file: input is_file %d, size %d",
 		is_file, (int)statb.st_size );
 	if( !is_file ){
-		if( !(tempfile = Find_str_value( &Model,"text_tempfile", Value_sep ))){
-			Errorcode = JABORT;
-			fatal(
-		"Make_stdin_file: missing 'text_tempfile' needed for conversion");
-		}
-		tempfile = safestrdup2(tempfile,".XXXXXX",__FILE__,__LINE__);
-		DEBUG2( "Make_stdin_file: tempfile '%s'", tempfile );
-		if( (fd = mkstemp(tempfile)) == -1 ){
-			Errorcode = JABORT;
-			logerr_die("Make_stdin_file: could not open '%s'", tempfile);
-		}
-		DEBUG2( "Make_stdin_file: new tempfile '%s', fd %d", tempfile, fd );
-		free(tempfile); tempfile = 0;
+		fd = Make_tempfile( 0 );
 		in = 1;
 		do{
 			n = 0;
@@ -3698,9 +3793,10 @@ void Make_stdin_file()
 		Errorcode = JABORT;
 		logerr_die("Make_stdin_file: lseek failed");
 	}
+	Outlen = 0;
 }
 
-int Set_mode_lang( char *s, int *mode, char **language )
+int Set_mode_lang( char *s, char **mode, char **language )
 {
 	int i = 0;
 	if(!strcasecmp( s, "ps" )){ *mode = PS; *language = "POSTSCRIPT"; }
@@ -3745,7 +3841,7 @@ int Fd_readable( int fd )
 	return( m );
 }
 
-void Init_job( char *language, int mode )
+void Init_job( char *language, char *mode )
 {
 	char buffer[SMALLBUFFER];
 	struct line_list l;
@@ -3821,7 +3917,7 @@ void Init_job( char *language, int mode )
 	Free_line_list(&l);
 }
 
-void Term_job( int mode )
+void Term_job( char *mode )
 {
 	int len;
 
@@ -5210,3 +5306,32 @@ int bigfont( struct font *font, char *line, struct line_list *l, int start )
  struct font Font9x8 = {
 	12, 8, 9, g9x8 
 };
+
+/***************************************************************************
+ * Decode_status (plp_status_t *status)
+ * returns a printable string encoding return status
+ ***************************************************************************/
+
+const char *Decode_status (plp_status_t *status)
+{
+    static char msg[128];
+
+	int n;
+    *msg = 0;		/* just in case! */
+    if (WIFEXITED (*status)) {
+		n = WEXITSTATUS(*status);
+		if( n > 0 && n < 32 ) n += JFAIL-1;
+		(void) plp_snprintf (msg, sizeof(msg),
+		"exit status %d", WEXITSTATUS(*status) );
+    } else if (WIFSTOPPED (*status)) {
+		(void) strcpy(msg, "stopped");
+    } else {
+		(void) plp_snprintf (msg, sizeof(msg), "died%s",
+			WCOREDUMP (*status) ? " and dumped core" : "");
+		if (WTERMSIG (*status)) {
+			(void) plp_snprintf(msg + strlen (msg), sizeof(msg)-strlen(msg),
+				 ", %s", Sigstr ((int) WTERMSIG (*status)));
+		}
+    }
+    return (msg);
+}

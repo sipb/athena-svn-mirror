@@ -13,7 +13,7 @@
 \title{ IFHP-HOWTO}
 \author{Patrick Powell
 {\ttfamily \onlynameurl{papowell@astart.com}}}
-\date{ 5 Feb 1999 (For ifhp-3.1.15)}
+\date{ 27 Mar 1999 (For ifhp-3.2.1)}
 \abstract{The {\ttfamily ifhp} software is an enhanced, extended, highly configurable,
 and portable implementation of a print filter for use with the {\ttfamily ifhp}
 Print spooler software.
@@ -566,7 +566,8 @@ flag to remove them.
 You can use the PostScript Only configuration above,
 and add text to postscript conversion to it.
 This is done by defining the pathname to a text to PostScript
-conversion program.
+conversion program and causing ifhp to use the
+program to convert the input file to PostScript.
 The
 {\itshape a2ps\/}
 program can be obtained from
@@ -575,18 +576,19 @@ and does an excellent job.
 Also,
 the
 {\ttfamily textps}
-program included with this distribution does an adequate job as well.
-You need to specify the path and options to run
-the program and the output format.
-Note that the
+program included with this distribution does a (barely) adequate job as well.
+
+The method outlined here assumes that the input file
+is a text file and that the {\ttfamily a2ps} program will convert it.
+The
 {\ttfamily a2ps} program needs to be explicitly told that output
 is to go to
 {\ttfamily STDOUT} or file descriptor 1.
 \begin{tscreen}
 \begin{verbatim}
-text_converter=/usr/local/filters/textps
 text_converter=/usr/local/bin/a2ps -o-
 text_converter_output=ps
+tempfile=/var/tmp/ifhp
 \end{verbatim}
 \end{tscreen}
 
@@ -647,7 +649,7 @@ Here is a sample of the configuration file
 dev=CHANGE_THIS
 debug=3
 stty=38400 -echo -crmod -raw -oddp -evenp ixon pass8 -ixany cbreak crtscts
-trace_on_stderr
+trace
 ps@ 
 pjl@
 pcl@
@@ -670,7 +672,7 @@ and testing.
 The
 {\ttfamily debug}
 and
-{\ttfamily trace\_on\_stderr}
+{\ttfamily trace}
 options can also be specifed on the command line,
 and cause the debug facilities to be turned on and debug trace output
 to be put to
@@ -733,7 +735,7 @@ so it has the following lines:
 # dev=/tmp/out
 # debug=3
 stty=38400 -echo -crmod -raw -oddp -evenp ixon pass8 -ixany cbreak crtscts
-trace_on_stderr
+trace
 ps@ 
 pjl@
 pcl@
@@ -763,7 +765,7 @@ ifhp 12:28:20.606 [6089] Process_job: done
 \begin{verbatim}
 dev=/tmp/out
 debug=3
-trace_on_stderr
+trace
 ps@ 
 pjl@
 pcl@
@@ -831,7 +833,7 @@ and note that it produces the same output as befoe.
 \begin{verbatim}
 dev=/tmp/out
 debug=3
-trace_on_stderr
+trace
 ps@ 
 pjl@
 pcl@
@@ -1172,7 +1174,7 @@ so it has the following lines, with the
 dev={\itshape /dev/lp\/} \\ 
 debug=3 \\ 
 stty=38400 -echo -crmod -raw -oddp -evenp ixon pass8 -ixany cbreak crtscts \\ 
-trace\_on\_stderr \\ 
+trace \\ 
 ps@ \\ 
 pjl@ \\ 
 pcl@ \\ 
@@ -1517,7 +1519,7 @@ foreach option in -Toptions, -Zoptions do
     if( option = "debug=level"  and Debuglevel not set ){
         set Debuglevel = level;
     }
-    if( option = "trace_on_stderr" ){
+    if( option = "trace" ){
         output error and trace on STDERR
     }
     if( option = "config=pathlist" and from -Toption ){
@@ -1852,7 +1854,7 @@ command line option.
 
 The option lists are scanned for values for the
 {\ttfamily debug},
-{\ttfamily trace\_on\_stderr},
+{\ttfamily trace},
 {\ttfamily config},
 and
 {\ttfamily model}
@@ -1861,17 +1863,39 @@ These options
 have the property that once they are set, then they cannot be modified
 (i.e. - sticky values).
 
+\label{model_from_option}
+There is another,
+and rather bizarre way to specify the printer model,
+and that is the
+{\ttfamily model\_from\_option}
+option in the configuration file.
+This option causes the command line options to be scanned,
+and if there is a value for the command line option then it
+is used as the model.
+For example:
+\begin{tscreen}
+\begin{verbatim}
+model_from_option=Q
+\end{verbatim}
+\end{tscreen}
+
+
+The above setting will cause the model to be taken from the
+{\ttfamily Q} option.
+This can be used to select a configuration for the printer
+based on values specifed by the user.
+
 
 \subsubsection{Debug and Trace On Stderr
 \label{debug}
-\label{trace_on_stderr}}
+\label{trace}}
 
 The value of the
 {\ttfamily debug}
 option sets the debugging level.
 It can be increased, but not decreased.
 The
-{\ttfamily trace\_on\_stderr}
+{\ttfamily trace}
 flag causes debugging information to be sent to STDERR (file descriptor 2)
 as well as to the status file.
 
@@ -2524,14 +2548,30 @@ output if they are sent to the printer without being translated
 into PostScript.
 Also,
 while most PCL printers will accept text files and do a reasonable
-job of printing them,
+job of printing them
 some form of initialization strings or setup may need to be done.
-The following options control text file
-conversion:
-\begin{description}
-\item[{\ttfamily file\_util\_path=/pathname}] \mbox{}
+Finally,
+you might want to try using a
+{\ttfamily MagicFilter}
+that will convert just about any type of file into a PostScript file.
 
-The pathname of the UNIX file utility.
+
+\subsubsection{Default Converter Program}
+
+This method specifies that the default file type
+will be
+{\ttfamily text}.
+If the simple {\ttfamily ifhp} type detection code cannot decide
+what type of file this is,
+it will invoke a converter program.
+This operation is controlled by the following options.
+\begin{description}
+\item[{\ttfamily default\_language=text}] \mbox{}
+
+When the default lanague is {\ttfamily text}
+then the
+{\ttfamily text\_converter} and
+{\ttfamily text\_converter\_output} options are used.
 
 \item[{\ttfamily text\_converter=/pathname}] \mbox{}
 
@@ -2547,9 +2587,10 @@ Language can be
 {\ttfamily raw},
 {\ttfamily unknown}
 
-\item[{\ttfamily text\_tempfile=/pathname}] \mbox{}
+\item[{\ttfamily tempfile=/pathname}] \mbox{}
 
-A temporary file location.
+A temporary file location,  used to store
+intermediate conversion results.
 The
 {\ttfamily /pathname}
 value has the string
@@ -2588,30 +2629,75 @@ are performed.
 These are the same checks that the UNIX
 {\ttfamily file}
 utility uses.
-\item If the file type is still
-{\ttfamily unknown}
-and the
-{\ttfamily file\_util\_path=/path}
-value is defined, then the
-{\ttfamily file}
-utility is run and is used to determine the file type.
-This will determine that the file is a
+\item If the file type is 
 {\ttfamily text}
-file
-or
-{\ttfamily unknown}.
-\item If the file is a
-{\ttfamily text}
-file and the
-{\ttfamily text\_converter=/path}
-option has a value,
-then the specified program is run,
-and its output is used as the converted text file.
-The 
-{\ttfamily text\_converter\_output=language}
-value is used as the output language.
+then the
+{\ttfamily text\_converter}
+program is run to translate the file and the results stored in
+the {\ttfamily tempfile}.
 \end{enumerate}
 
+
+One technique used with varying degrees of sophistication is to
+use a general purpose file to PostScript conversion program.
+These have generally been known as
+{\itshape MagicFilters\/}, due to their high degree of flexibility. 
+
+
+\subsubsection{Pseudo-MagicFilter Support}
+
+As described above,
+the various
+{\itshape MagicFilter\/} packages can do conversion.
+However, most of the time there is only a limited need for the
+general purpose conversions.
+This can be met by using the
+{\ttfamily file} program,  which will determine the type of a file based on
+its contents,
+and having {\ttfamily ifhp} invoke a program based on the type of file found.
+This method is used when
+{\ttfamily default\_language=unknown}
+and the
+{\ttfamily file\_util\_path=/path}
+and
+{\ttfamily file\_output\_match=[ ... ]}
+values are defined.
+A typical configuration is shown below.
+\begin{tscreen}
+\begin{verbatim}
+Configuration:
+# 
+#  Method 2 -
+#    Use the file util and match the output
+# file reports format information
+#  glob text_output_format text_converter
+#  - you do a glob match against pattern and use the converter
+#
+default_language=unknown
+file_util_path=/usr/bin/file -
+file_output_match = [
+# glob   output converter
+ *text*  ps     /usr/local/bin/a2ps -q -B -o-
+ *gif*   ps     /usr/local/bin/gif2ps
+ ]
+\end{verbatim}
+\end{tscreen}
+
+
+The
+{\ttfamily file\_output\_match}
+entry consists of a list of lines containing
+a {\itshape glob\/} pattern,
+a language type ({\ttfamily ps}, {\ttfamily pcl}, or {\ttfamily raw}),
+and a program to invoke to do the conversions.
+
+The
+{\ttfamily file}
+utility is run and its output is matched against the specified
+glob patterns.
+When a match is found the specified program is run,
+with STDIN attached to the original input file and its
+STDOUT sent to the printer.
 
 While this algorithm may appear to be overly complex, it
 will handle a wide range of desired configurations.
@@ -2865,6 +2951,7 @@ The following is a list of predefined options.
 {\ttfamily \ref{logall} {(logall FLAG)}}&  Log all status reports from printer if set\\ 
 {\ttfamily \ref{nullpad} {(nullpad=COUNT)}}&  Send COUNT nulls to force full buffer condition\\ 
 {\ttfamily \ref{model} {(model=NAME)}}&  Specify model name for configuration selection\\ 
+{\ttfamily \ref{model_from_option} {(model\_from\_optin=X)}}&  Specify model name using a command line option value\\ 
 {\ttfamily \ref{no_ps_eoj} {(no\_ps\_eoj FLAG)}}&  No PostScript EOJ (CTRL-D) at start of job\\ 
 {\ttfamily \ref{no_pcl_eoj} {(no\_pcl\_eoj FLAG)}}&  No PCL EOJ (CTRL-D) at start of job\\ 
 {\ttfamily \ref{page_length} {(page\_length=LINES)}}&  Number of lines on a text page for banner printing\\ 
@@ -2909,7 +2996,7 @@ The following is a list of predefined options.
 {\ttfamily \ref{text_converter} {(text\_converter=PATHNAME)}}&  Pathname of text conversion program\\ 
 {\ttfamily \ref{text_converter_output} {(text\_converter\_output=LANGUAGE)}}&  Job language of text converter output\\ 
 {\ttfamily \ref{text_tempfile} {(text\_tempfile=PATHNAME)}}&  Temporary file pathname template\\ 
-{\ttfamily \ref{trace_on_stderr} {(trace\_on\_stderr FLAG)}}&  Put error and trace messages on STDERR if set\\ 
+{\ttfamily \ref{trace} {(trace FLAG)}}&  Put error and trace messages on STDERR if set\\ 
 \end{tabular}
 \end{center}
 \end{table}

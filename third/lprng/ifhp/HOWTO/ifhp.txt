@@ -1,6 +1,6 @@
   IFHP-HOWTO
   Patrick Powell papowell@astart.com
-  5 Feb 1999 (For ifhp-3.1.15)
+  27 Mar 1999 (For ifhp-3.2.1)
 
   The ifhp software is an enhanced, extended, highly configurable, and
   portable implementation of a print filter for use with the ifhp Print
@@ -120,16 +120,18 @@
      4.5 Synchronization and Pagecounts
      4.6 PJL Initialization
      4.7 Text File Conversion
-        4.7.1 No Textfile Conversion Needed
-        4.7.2 Default Passthrough of Unknown File Types
+        4.7.1 Default Converter Program
+        4.7.2 Pseudo-MagicFilter Support
+        4.7.3 No Textfile Conversion Needed
+        4.7.4 Default Passthrough of Unknown File Types
      4.8 Language Specific Initialization
      4.9 File Transfer and Error Status Monitoring
 
   5. Banners and OF Mode Operations
 
   6. Predefined Options
-
   7. Configuration Files
+
      7.1 Configuration Selection
      7.2 Option Use
      7.3 Recursive List Expansion
@@ -196,6 +198,7 @@
 
   Current information about LPRng, ifhp and the latest release can be
   found on the LPRng web page:
+
   http://www.astart.com/LPRng.html
 
   There is also a mailing list at lprng@iona.com. To subscribe, send an
@@ -327,7 +330,6 @@
 
   7. Modify the configuration files to suit your sites requirements.
 
-
   8. Install the executables.
 
   9. Modify the printcap files and/or add other information to the
@@ -392,8 +394,8 @@
          :sd=_s_p_o_o_l_d_i_r
          :...
 
-         # version 1 - using -T options
-         #path to ifhp filter
+    # version 1 - using -T options
+    #path to ifhp filter
     :if=/.../ifhp -Tooppttiioonnss
     :of=/.../ifhp -Tooppttiioonnss
 
@@ -444,8 +446,6 @@
   printers use the same hpdj prefix with the model appended.  See
   Appendix A in the Printer Job Language Technical Reference Manual for
   a detailed explanation of these names.
-
-
 
 
 
@@ -606,18 +606,21 @@
 
   You can use the PostScript Only configuration above, and add text to
   postscript conversion to it.  This is done by defining the pathname to
-  a text to PostScript conversion program.  The _a_2_p_s program can be
-  obtained from http://www-inf.enst.fr/~demaille/a2ps/ and does an
+  a text to PostScript conversion program and causing ifhp to use the
+  program to convert the input file to PostScript.  The _a_2_p_s program can
+  be obtained from http://www-inf.enst.fr/~demaille/a2ps/ and does an
   excellent job.  Also, the textps program included with this
-  distribution does an adequate job as well.  You need to specify the
-  path and options to run the program and the output format.  Note that
-  the a2ps program needs to be explicitly told that output is to go to
-  STDOUT or file descriptor 1.
+  distribution does a (barely) adequate job as well.
+
+  The method outlined here assumes that the input file is a text file
+  and that the a2ps program will convert it.  The a2ps program needs to
+  be explicitly told that output is to go to STDOUT or file descriptor
+  1.
 
 
-       text_converter=/usr/local/filters/textps
        text_converter=/usr/local/bin/a2ps -o-
        text_converter_output=ps
+       tempfile=/var/tmp/ifhp
 
 
 
@@ -658,16 +661,16 @@
   t1.conf:
 
 
-  # modify the next line to contain
-  #  the name, IP address, or pathname of the printer
-  dev=CHANGE_THIS
-  debug=3
-  stty=38400 -echo -crmod -raw -oddp -evenp ixon pass8 -ixany cbreak crtscts
-  trace_on_stderr
-  ps@
-  pjl@
-  pcl@
-  text
+       # modify the next line to contain
+       #  the name, IP address, or pathname of the printer
+       dev=CHANGE_THIS
+       debug=3
+       stty=38400 -echo -crmod -raw -oddp -evenp ixon pass8 -ixany cbreak crtscts
+       trace
+       ps@
+       pjl@
+       pcl@
+       text
 
 
 
@@ -681,11 +684,11 @@
   configuration information extracted.
 
   The various options in this file are quite important for debugging and
-  testing.  The debug and trace_on_stderr options can also be specifed
-  on the command line, and cause the debug facilities to be turned on
-  and debug trace output to be put to STDERR.  Normally, trace output is
-  written only to the statusfile specified by the command line -s option
-  or the configuration file statusfile=path entry.
+  testing.  The debug and trace options can also be specifed on the
+  command line, and cause the debug facilities to be turned on and debug
+  trace output to be put to STDERR.  Normally, trace output is written
+  only to the statusfile specified by the command line -s option or the
+  configuration file statusfile=path entry.
 
   The text entry causes the filter to accept text files and simply pass
   them through without processing, and the ps@ pjl@ pcl@ entries disable
@@ -712,7 +715,7 @@
        # dev=/tmp/out
        # debug=3
        stty=38400 -echo -crmod -raw -oddp -evenp ixon pass8 -ixany cbreak crtscts
-       trace_on_stderr
+       trace
        ps@
        pjl@
        pcl@
@@ -724,18 +727,18 @@
   2. Run the indicated commands and you should see similar output:
 
 
-  ##> ifhp -Tconfig=./ifhp.conf < hi.txt
-  ifhp 12:28:20.603 [6089] Process_job: setting up printer
-  ifhp 12:28:20.605 [6089] Do_accounting: accounting at start, pagecount 0, pages 0
-  ifhp 12:28:20.605 [6089] Process_job: sending job file
-  ifhp 12:28:20.605 [6089] Send_job: starting transfer
-  Hello World
+       ##> ifhp -Tconfig=./ifhp.conf < hi.txt
+       ifhp 12:28:20.603 [6089] Process_job: setting up printer
+       ifhp 12:28:20.605 [6089] Do_accounting: accounting at start, pagecount 0, pages 0
+       ifhp 12:28:20.605 [6089] Process_job: sending job file
+       ifhp 12:28:20.605 [6089] Send_job: starting transfer
+       Hello World
 
-  ifhp 12:28:20.606 [6089] Send_job: finished writing file, cleaning up
-  ifhp 12:28:20.606 [6089] Process_job: sent job file
-  ifhp 12:28:20.606 [6089] Process_job: doing cleanup
-  ifhp 12:28:20.606 [6089] Do_accounting: accounting at end, pagecount 0, pages 0
-  ifhp 12:28:20.606 [6089] Process_job: done
+       ifhp 12:28:20.606 [6089] Send_job: finished writing file, cleaning up
+       ifhp 12:28:20.606 [6089] Process_job: sent job file
+       ifhp 12:28:20.606 [6089] Process_job: doing cleanup
+       ifhp 12:28:20.606 [6089] Do_accounting: accounting at end, pagecount 0, pages 0
+       ifhp 12:28:20.606 [6089] Process_job: done
 
 
 
@@ -745,7 +748,7 @@
 
        dev=/tmp/out
        debug=3
-       trace_on_stderr
+       trace
        ps@
        pjl@
        pcl@
@@ -789,7 +792,6 @@
   /etc/ifhp.conf, and finally re-reading ifhp.conf to override any
   defaults.
 
-
   1. Try the simple commands
 
 
@@ -806,7 +808,7 @@
 
        dev=/tmp/out
        debug=3
-       trace_on_stderr
+       trace
        ps@
        pjl@
        pcl@
@@ -853,9 +855,11 @@
   back from the printer unless both the printer and the Network Printer
   Box use bi-directional communication.
 
+
   In the following discussions, we will assume that you have assigned an
   IP address to the printer, and that it is nwpr, and that status and
   error information is returned over the network connection.
+
   1. First, verify that your printer is accessible on the network by
      using ping.  It is amazing how many problems are caused by
      erroneous network addresses.
@@ -918,10 +922,9 @@
 
        nc printer 9100 <hi.txt
 
-
-
   The printer should start up and print a single page of output.  You
   may need to use CTRL-C to terminate the nc program.
+
   6. If you have a PostScript printer, you might try sending a simple
      PostScript test program to the printer as well.  The ellipse.ps
      file can be sent using:
@@ -971,9 +974,6 @@
 
 
   Now use the following command and you should see similar output.
-
-
-
 
 
 
@@ -1105,7 +1105,7 @@
        debug=3
        stty=38400 -echo -crmod -raw -oddp -evenp ixon pass8 -ixany cbreak
        crtscts
-       trace_on_stderr
+       trace
        ps@
        pjl@
        pcl@
@@ -1344,7 +1344,7 @@
            if( option = "debug=level"  and Debuglevel not set ){
                set Debuglevel = level;
            }
-           if( option = "trace_on_stderr" ){
+           if( option = "trace" ){
                output error and trace on STDERR
            }
            if( option = "config=pathlist" and from -Toption ){
@@ -1698,21 +1698,34 @@
   3. The command line -Zoption list is generated by splitting the
      -Zoption command line option.
 
-  The option lists are scanned for values for the debug,
-  trace_on_stderr, config, and model options.  These options have the
-  property that once they are set, then they cannot be modified (i.e. -
-  sticky values).
+  The option lists are scanned for values for the debug, trace, config,
+  and model options.  These options have the property that once they are
+  set, then they cannot be modified (i.e. - sticky values).
+
+
+  There is another, and rather bizarre way to specify the printer model,
+  and that is the model_from_option option in the configuration file.
+  This option causes the command line options to be scanned, and if
+  there is a value for the command line option then it is used as the
+  model.  For example:
+
+
+       model_from_option=Q
+
+
+
+  The above setting will cause the model to be taken from the Q option.
+  This can be used to select a configuration for the printer based on
+  values specifed by the user.
 
   44..11..11..
 
   DDeebbuugg aanndd TTrraaccee OOnn SSttddeerrrr
 
   The value of the debug option sets the debugging level.  It can be
-  increased, but not decreased.  The trace_on_stderr flag causes
-  debugging information to be sent to STDERR (file descriptor 2) as well
-  as to the status file.
-
-
+  increased, but not decreased.  The trace flag causes debugging
+  information to be sent to STDERR (file descriptor 2) as well as to the
+  status file.
 
   44..11..22..
 
@@ -1762,11 +1775,16 @@
   The next method is use a -Toption command line option.
 
 
-       lp:...
-         :if=/usr/local/ifhp -Tmodel=HP4
 
-       Resulting -Toption List:
-        model=HP4
+
+
+
+
+  lp:...
+    :if=/usr/local/ifhp -Tmodel=HP4
+
+  Resulting -Toption List:
+   model=HP4
 
 
 
@@ -1780,7 +1798,7 @@
   configuration files to read, and the default value is:
 
 
-  config=./ifhp.conf,/etc/ifhp.conf,./ifhp.conf
+       config=./ifhp.conf,/etc/ifhp.conf,./ifhp.conf
 
 
 
@@ -1893,7 +1911,8 @@
   The START and END values can be specified by -Zstart=nnn and -Zend=mmm
   command line options.  The EOJ command has must match the JOB command.
 
-       @PJL EOJ NAME = "..." [ START = nnn ] [ END = nnn ]
+
+  @PJL EOJ NAME = "..." [ START = nnn ] [ END = nnn ]
 
 
   44..44..55..  ppjjll__eenntteerr FFLLAAGG
@@ -1905,9 +1924,6 @@
 
        @PJL ENTER LANGUAGE = PCL
        @PJL ENTER LANGUAGE = POSTSCRIPT
-
-
-
 
 
 
@@ -1961,6 +1977,7 @@
 
 
 
+
   44..55..
 
 
@@ -1978,6 +1995,7 @@
   that it can read FD1.  In order to simplify configuration, the ifhp
   filter will test FD1, and if it is not a serial port or a network
   socket, will set status@ or OFF.
+
   However, there are some devices such as bidirectional printer ports
   that will report status.  By setting forcestatus ON, the filter can be
   forced to check for status.  This can have fatal or unexpected effects
@@ -2026,11 +2044,10 @@
   from vendor to vendor and the pagecount_ps_code=...  option specifies
   the PostScript program to use.  For example:
 
-
-       pagecount_ps_code=
-         /p {print} def ( %%[ pagecount: ) p
-         statusdict begin pagecount end 20 string cvs p
-         ( ]%% ) p () = flush
+  pagecount_ps_code=
+    /p {print} def ( %%[ pagecount: ) p
+    statusdict begin pagecount end 20 string cvs p
+    ( ]%% ) p () = flush
 
 
 
@@ -2044,6 +2061,7 @@
   value is obtained within pagecount_timeout=nnn seconds, then the
   filter exits with an error.  A 0 value or sync_timeout@ disables
   timeouts.
+
   Some printers do not correctly report end of job and must be polled
   until the pagecount information stabilizes.  The PJL TEOJ (True End Of
   Job) PJL has been tried with limited success on various printers to
@@ -2147,11 +2165,20 @@
   hundreds of pages of garbage output if they are sent to the printer
   without being translated into PostScript.  Also, while most PCL
   printers will accept text files and do a reasonable job of printing
-  them, some form of initialization strings or setup may need to be
-  done.  The following options control text file conversion:
+  them some form of initialization strings or setup may need to be done.
+  Finally, you might want to try using a MagicFilter that will convert
+  just about any type of file into a PostScript file.
 
-     file_util_path=/pathname
-        The pathname of the UNIX file utility.
+  44..77..11..  DDeeffaauulltt CCoonnvveerrtteerr PPrrooggrraamm
+
+  This method specifies that the default file type will be text.  If the
+  simple ifhp type detection code cannot decide what type of file this
+  is, it will invoke a converter program.  This operation is controlled
+  by the following options.
+
+     default_language=text
+        When the default lanague is text then the text_converter and
+        text_converter_output options are used.
 
      text_converter=/pathname
         specifies the pathname of a text to language program.
@@ -2160,9 +2187,10 @@
         Specifies the output language of the conversion program.
         Language can be ps, pcl, text, raw, unknown
 
-     text_tempfile=/pathname
-        A temporary file location.  The /pathname value has the string
-        XXXXXX appended to it and is used as input to the POSIX mktemp()
+     tempfile=/pathname
+        A temporary file location,  used to store intermediate
+        conversion results.  The /pathname value has the string XXXXXX
+        appended to it and is used as input to the POSIX mktemp()
         function.
 
   The print file language is determined using the following algorithm.
@@ -2175,7 +2203,6 @@
      to RAW.  (The autodetect option is not recommended for general
      use).
 
-
   3. If there is a -Zlanguage=value command line option, the language is
      set to value.
 
@@ -2183,20 +2210,70 @@
      (language=ps) or PCL (language=pcl) are performed.  These are the
      same checks that the UNIX file utility uses.
 
-  5. If the file type is still unknown and the file_util_path=/path
-     value is defined, then the file utility is run and is used to
-     determine the file type.  This will determine that the file is a
-     text file or unknown.
+  5. If the file type is text then the text_converter program is run to
+     translate the file and the results stored in the tempfile.
 
-  6. If the file is a text file and the text_converter=/path option has
-     a value, then the specified program is run, and its output is used
-     as the converted text file.  The text_converter_output=language
-     value is used as the output language.
+  One technique used with varying degrees of sophistication is to use a
+  general purpose file to PostScript conversion program.  These have
+  generally been known as _M_a_g_i_c_F_i_l_t_e_r_s, due to their high degree of
+  flexibility.
+
+  44..77..22..  PPsseeuuddoo--MMaaggiiccFFiilltteerr SSuuppppoorrtt
+
+  As described above, the various _M_a_g_i_c_F_i_l_t_e_r packages can do
+  conversion.  However, most of the time there is only a limited need
+  for the general purpose conversions.  This can be met by using the
+  file program,  which will determine the type of a file based on its
+  contents, and having ifhp invoke a program based on the type of file
+  found.  This method is used when default_language=unknown and the
+  file_util_path=/path and file_output_match=[ ... ] values are defined.
+  A typical configuration is shown below.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  Configuration:
+  #
+  #  Method 2 -
+  #    Use the file util and match the output
+  # file reports format information
+  #  glob text_output_format text_converter
+  #  - you do a glob match against pattern and use the converter
+  #
+  default_language=unknown
+  file_util_path=/usr/bin/file -
+  file_output_match = [
+  # glob   output converter
+   *text*  ps     /usr/local/bin/a2ps -q -B -o-
+   *gif*   ps     /usr/local/bin/gif2ps
+   ]
+
+
+
+
+  The file_output_match entry consists of a list of lines containing a
+  _g_l_o_b pattern, a language type (ps, pcl, or raw), and a program to
+  invoke to do the conversions.
+
+  The file utility is run and its output is matched against the
+  specified glob patterns.  When a match is found the specified program
+  is run, with STDIN attached to the original input file and its STDOUT
+  sent to the printer.
 
   While this algorithm may appear to be overly complex, it will handle a
   wide range of desired configurations.
 
-  44..77..11..  NNoo TTeexxttffiillee CCoonnvveerrssiioonn NNeeeeddeedd
+  44..77..33..  NNoo TTeexxttffiillee CCoonnvveerrssiioonn NNeeeeddeedd
 
   If your printer can handle text files without conversion, but require
   PCL intialization, then the following combination will simply set the
@@ -2209,7 +2286,7 @@
 
 
 
-  44..77..22..  DDeeffaauulltt PPaasssstthhrroouugghh ooff UUnnkknnoowwnn FFiillee TTyyppeess
+  44..77..44..  DDeeffaauulltt PPaasssstthhrroouugghh ooff UUnnkknnoowwnn FFiillee TTyyppeess
 
   Your printer may be capable of handling a wide variety of job formats.
   If you want to simply pass through files of unknown type or language
@@ -2295,17 +2372,6 @@
   pjl_error_codes option.  Its value is a list of lines, each line
   consisting of an error code followed by the corresonding error
   message:
-
-
-
-
-
-
-
-
-
-
-
 
 
   pjl_error_codes=[
@@ -2396,6 +2462,7 @@
   ``logall FLAG''                   Log all status reports from printer if set
   ``nullpad=COUNT''                 Send COUNT nulls to force full buffer condition
   ``model=NAME''                    Specify model name for configuration selection
+  ``model_from_optin=X''            Specify model name using a command line option value
   ``no_ps_eoj FLAG''                No PostScript EOJ (CTRL-D) at start of job
   ``no_pcl_eoj FLAG''               No PCL EOJ (CTRL-D) at start of job
   ``page_length=LINES''             Number of lines on a text page for banner printing
@@ -2436,8 +2503,7 @@
   ``text_converter=PATHNAME''           Pathname of text conversion program
   ``text_converter_output=LANGUAGE''    Job language of text converter output
   ``text_tempfile=PATHNAME''            Temporary file pathname template
-  ``trace_on_stderr FLAG''              Put error and trace messages on STDERR if set
-
+  ``trace FLAG''                        Put error and trace messages on STDERR if set
 
 
   77..  CCoonnffiigguurraattiioonn FFiilleess

@@ -416,8 +416,8 @@ fmtnum(  union value *value, int base, int dosign, int ljust,
 	int padlen = 0;	/* amount to pad */
 	int caps = 0;
 
-	/* fprintf(stderr,"value 0x%x, base %d, dosign %d, ljust %d, len %d, zpad %d\n",
-		value, base, dosign, ljust, len, zpad );/ **/
+	/* fprintf(stderr,"value 0x%lx, base %d, dosign %d, ljust %d, len %d, zpad %d\n",
+		(long)value, base, dosign, ljust, len, zpad );/ **/
 	uvalue = value->value;
 	if( dosign ){
 		if( value->value < 0 ) {

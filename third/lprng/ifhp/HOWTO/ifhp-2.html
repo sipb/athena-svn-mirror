@@ -328,7 +328,8 @@ flag to remove them.
 <P>You can use the PostScript Only configuration above,
 and add text to postscript conversion to it.
 This is done by defining the pathname to a text to PostScript
-conversion program.
+conversion program and causing ifhp to use the
+program to convert the input file to PostScript.
 The
 <I>a2ps</I>
 program can be obtained from
@@ -337,18 +338,18 @@ and does an excellent job.
 Also,
 the
 <CODE>textps</CODE>
-program included with this distribution does an adequate job as well.
-You need to specify the path and options to run
-the program and the output format.
-Note that the
+program included with this distribution does a (barely) adequate job as well.
+<P>The method outlined here assumes that the input file
+is a text file and that the <CODE>a2ps</CODE> program will convert it.
+The
 <CODE>a2ps</CODE> program needs to be explicitly told that output
 is to go to
 <CODE>STDOUT</CODE> or file descriptor 1.
 <BLOCKQUOTE><CODE>
 <PRE>
-text_converter=/usr/local/filters/textps
 text_converter=/usr/local/bin/a2ps -o-
 text_converter_output=ps
+tempfile=/var/tmp/ifhp
 </PRE>
 </CODE></BLOCKQUOTE>
 

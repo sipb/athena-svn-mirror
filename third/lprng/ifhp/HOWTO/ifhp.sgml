@@ -2,11 +2,11 @@
 <!doctype linuxdoc system>
 <article>
 <!-- must be matched by / article at end -->
-<!-- $Id: ifhp.sgml,v 1.1.1.1 1999-02-17 15:31:05 ghudson Exp $ -->
+<!-- $Id: ifhp.sgml,v 1.1.1.2 1999-04-01 20:09:20 mwhitson Exp $ -->
 <title> IFHP-HOWTO
 <author> Patrick Powell
 <tt><htmlurl url="mailto:papowell@astart.com" name="papowell@astart.com"></tt>
-<date> 5 Feb 1999 (For ifhp-3.1.15)
+<date> 27 Mar 1999 (For ifhp-3.2.1)
 <abstract>
 The <tt>ifhp</tt> software is an enhanced, extended, highly configurable,
 and portable implementation of a print filter for use with the <tt>ifhp</tt>
@@ -496,7 +496,8 @@ flag to remove them.
 You can use the PostScript Only configuration above,
 and add text to postscript conversion to it.
 This is done by defining the pathname to a text to PostScript
-conversion program.
+conversion program and causing ifhp to use the
+program to convert the input file to PostScript.
 The
 <it/a2ps/
 program can be obtained from
@@ -506,18 +507,19 @@ and does an excellent job.
 Also,
 the
 <tt/textps/
-program included with this distribution does an adequate job as well.
-You need to specify the path and options to run
-the program and the output format.
-Note that the
+program included with this distribution does a (barely) adequate job as well.
+<p>
+The method outlined here assumes that the input file
+is a text file and that the <tt/a2ps/ program will convert it.
+The
 <tt/a2ps/ program needs to be explicitly told that output
 is to go to
 <tt/STDOUT/ or file descriptor 1.
 <tscreen>
 <verb>
-text_converter=/usr/local/filters/textps
 text_converter=/usr/local/bin/a2ps -o-
 text_converter_output=ps
+tempfile=/var/tmp/ifhp
 </verb>
 </tscreen>
 <tscreen>
@@ -571,7 +573,7 @@ Here is a sample of the configuration file
 dev=CHANGE_THIS
 debug=3
 stty=38400 -echo -crmod -raw -oddp -evenp ixon pass8 -ixany cbreak crtscts
-trace_on_stderr
+trace
 ps@ 
 pjl@
 pcl@
@@ -592,7 +594,7 @@ and testing.
 The
 <tt/debug/
 and
-<tt/trace_on_stderr/
+<tt/trace/
 options can also be specifed on the command line,
 and cause the debug facilities to be turned on and debug trace output
 to be put to
@@ -651,7 +653,7 @@ so it has the following lines:
 # dev=/tmp/out
 # debug=3
 stty=38400 -echo -crmod -raw -oddp -evenp ixon pass8 -ixany cbreak crtscts
-trace_on_stderr
+trace
 ps@ 
 pjl@
 pcl@
@@ -683,7 +685,7 @@ Now modify the
 <verb>
 dev=/tmp/out
 debug=3
-trace_on_stderr
+trace
 ps@ 
 pjl@
 pcl@
@@ -751,7 +753,7 @@ Now modify the
 <verb>
 dev=/tmp/out
 debug=3
-trace_on_stderr
+trace
 ps@ 
 pjl@
 pcl@
@@ -1091,7 +1093,7 @@ so it has the following lines, with the
 dev=<it>/dev/lp</it> <newline>
 debug=3 <newline>
 stty=38400 -echo -crmod -raw -oddp -evenp ixon pass8 -ixany cbreak crtscts <newline>
-trace_on_stderr <newline>
+trace <newline>
 ps@ <newline>
 pjl@ <newline>
 pcl@ <newline>
@@ -1420,7 +1422,7 @@ foreach option in -Toptions, -Zoptions do
     if( option = "debug=level"  and Debuglevel not set ){
         set Debuglevel = level;
     }
-    if( option = "trace_on_stderr" ){
+    if( option = "trace" ){
         output error and trace on STDERR
     }
     if( option = "config=pathlist" and from -Toption ){
@@ -1748,7 +1750,7 @@ command line option.
 <p>
 The option lists are scanned for values for the
 <tt/debug/,
-<tt/trace_on_stderr/,
+<tt/trace/,
 <tt/config/,
 and
 <tt/model/
@@ -1756,16 +1758,37 @@ options.
 These options
 have the property that once they are set, then they cannot be modified
 (i.e. - sticky values).
+<p>
+<label id="model_from_option">
+There is another,
+and rather bizarre way to specify the printer model,
+and that is the
+<tt/model_from_option/
+option in the configuration file.
+This option causes the command line options to be scanned,
+and if there is a value for the command line option then it
+is used as the model.
+For example:
+<tscreen>
+<verb>
+model_from_option=Q
+</verb>
+</tscreen>
+<p>
+The above setting will cause the model to be taken from the
+<tt/Q/ option.
+This can be used to select a configuration for the printer
+based on values specifed by the user.
 <sect2>Debug and Trace On Stderr
 <label id="debug">
-<label id="trace_on_stderr">
+<label id="trace">
 <p>
 The value of the
 <tt/debug/
 option sets the debugging level.
 It can be increased, but not decreased.
 The
-<tt/trace_on_stderr/
+<tt/trace/
 flag causes debugging information to be sent to STDERR (file descriptor 2)
 as well as to the status file.
 <sect2>Configuration File Paths
@@ -2367,13 +2390,27 @@ output if they are sent to the printer without being translated
 into PostScript.
 Also,
 while most PCL printers will accept text files and do a reasonable
-job of printing them,
+job of printing them
 some form of initialization strings or setup may need to be done.
-The following options control text file
-conversion:
+Finally,
+you might want to try using a
+<tt/MagicFilter/
+that will convert just about any type of file into a PostScript file.
+<sect2>Default Converter Program
+<p>
+This method specifies that the default file type
+will be
+<tt/text/.
+If the simple <tt/ifhp/ type detection code cannot decide
+what type of file this is,
+it will invoke a converter program.
+This operation is controlled by the following options.
 <descrip>
-<tag><tt>file_util_path=/pathname</tt></tag>
-The pathname of the UNIX file utility.
+<tag><tt>default_language=text</tt></tag>
+When the default lanague is <tt/text/
+then the
+<tt/text_converter/ and
+<tt/text_converter_output/ options are used.
 <tag><tt>text_converter=/pathname</tt></tag>
     specifies the pathname of a text to language program.
 <tag><tt>text_converter_output=language</tt></tag>
@@ -2384,8 +2421,9 @@ Language can be
 <tt/text/,
 <tt/raw/,
 <tt/unknown/
-<tag><tt>text_tempfile=/pathname</tt></tag>
-A temporary file location.
+<tag><tt>tempfile=/pathname</tt></tag>
+A temporary file location,  used to store
+intermediate conversion results.
 The
 <tt>/pathname</tt>
 value has the string
@@ -2427,30 +2465,71 @@ These are the same checks that the UNIX
 <tt/file/
 utility uses.
 <item>
-If the file type is still
-<tt/unknown/
+If the file type is 
+<tt/text/
+then the
+<tt/text_converter/
+program is run to translate the file and the results stored in
+the <tt/tempfile/.
+</enum>
+<p>
+One technique used with varying degrees of sophistication is to
+use a general purpose file to PostScript conversion program.
+These have generally been known as
+<em/MagicFilters/, due to their high degree of flexibility. 
+<sect2> Pseudo-MagicFilter Support
+<p>
+As described above,
+the various
+<em/MagicFilter/ packages can do conversion.
+However, most of the time there is only a limited need for the
+general purpose conversions.
+This can be met by using the
+<tt/file/ program,  which will determine the type of a file based on
+its contents,
+and having <tt/ifhp/ invoke a program based on the type of file found.
+This method is used when
+<tt/default_language=unknown/
 and the
 <tt>file_util_path=/path</tt>
-value is defined, then the
+and
+<tt>file_output_match=[ ... ]</tt>
+values are defined.
+A typical configuration is shown below.
+<tscreen>
+<verb>
+Configuration:
+# 
+#  Method 2 -
+#    Use the file util and match the output
+# file reports format information
+#  glob text_output_format text_converter
+#  - you do a glob match against pattern and use the converter
+#
+default_language=unknown
+file_util_path=/usr/bin/file -
+file_output_match = [
+# glob   output converter
+ *text*  ps     /usr/local/bin/a2ps -q -B -o-
+ *gif*   ps     /usr/local/bin/gif2ps
+ ]
+</verb>
+</tscreen>
+<p>
+The
+<tt/file_output_match/
+entry consists of a list of lines containing
+a <it/glob/ pattern,
+a language type (<tt/ps/, <tt/pcl/, or <tt/raw/),
+and a program to invoke to do the conversions.
+<p>
+The
 <tt/file/
-utility is run and is used to determine the file type.
-This will determine that the file is a
-<tt/text/
-file
-or
-<tt/unknown/.
-<item>
-If the file is a
-<tt/text/
-file and the
-<tt>text_converter=/path</tt>
-option has a value,
-then the specified program is run,
-and its output is used as the converted text file.
-The 
-<tt>text_converter_output=language</tt>
-value is used as the output language.
-</enum>
+utility is run and its output is matched against the specified
+glob patterns.
+When a match is found the specified program is run,
+with STDIN attached to the original input file and its
+STDOUT sent to the printer.
 <p>
 While this algorithm may appear to be overly complex, it
 will handle a wide range of desired configurations.
@@ -2701,6 +2780,9 @@ The following is a list of predefined options.
 <tt><ref id="model" name="model=NAME"></tt>
 | Specify model name for configuration selection
 @
+<tt><ref id="model_from_option" name="model_from_optin=X"></tt>
+| Specify model name using a command line option value
+@
 <tt><ref id="no_ps_eoj" name="no_ps_eoj FLAG"></tt>
 | No PostScript EOJ (CTRL-D) at start of job
 @
@@ -2816,7 +2898,7 @@ The following is a list of predefined options.
 <tt><ref id="text_tempfile" name="text_tempfile=PATHNAME"></tt>
 | Temporary file pathname template 
 @
-<tt><ref id="trace_on_stderr" name="trace_on_stderr FLAG"></tt>
+<tt><ref id="trace" name="trace FLAG"></tt>
 | Put error and trace messages on STDERR if set
 @
 </tabular>

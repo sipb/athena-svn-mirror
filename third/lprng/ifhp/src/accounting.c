@@ -3,7 +3,7 @@
  * Copyright 1994-1999 Patrick Powell, San Diego, CA <papowell@astart.com>
  **************************************************************************/
 /**** HEADER *****/
-static char *const _id = "$Id: accounting.c,v 1.1.1.1 1999-02-17 15:31:05 ghudson Exp $";
+static char *const _id = "$Id: accounting.c,v 1.1.1.2 1999-04-01 20:09:17 mwhitson Exp $";
 
 #include "ifhp.h"
 
@@ -23,17 +23,16 @@ void Do_accounting(int start, int elapsed, int pagecounter, int npages )
 	struct line_list l;
 	char *s, *t, *list;
 
-
 	Init_line_list( &l );
 	Check_max( &l, 100 );
 
-	log( "Do_accounting: accounting at %s, pagecount %d, pages %d",
+	logmsg( "Do_accounting: accounting at %s, pagecount %d, pages %d",
 		start?"start":"end", pagecounter, npages);
 	DEBUG3("Accounting script '%s', file '%s', fd %d, npages %d",
 		Accounting_script, Accountfile, Accounting_fd, npages );
 
 	/* we first set up the output line and arguments */
-	Add_line_list( &l, Accounting_script, 0, 0, 0 );
+	Split( &l, Accounting_script, Whitespace, 0, 0, 0, 0, 0 );
 	starts = l.count;
 	if( start ){
 		Add_line_list( &l, "start", 0, 0, 0 );
@@ -76,16 +75,20 @@ void Do_accounting(int start, int elapsed, int pagecounter, int npages )
 			s += strlen(s);
 		}
 	}
-	DEBUG1("Accounting output '%s'", list );
+	*s = 0;
+	DEBUG1("Accounting: script '%s', fd %d, Accountfile '%s', output '%s'",
+		Accounting_script, Accounting_fd, Accountfile, list );
 	*s++='\n';
 	*s = 0;
 
 	/* this is probably the best way to do the output */
 	if(Accounting_fd > 0 ||
 	     (Accountfile && (Accounting_fd = open(Accountfile, O_WRONLY|O_APPEND )) >= 0 )) {
+		DEBUG1("Accounting: writing to %d, '%s'", Accounting_fd, list );
 	    Write_fd_str(Accounting_fd,list);
 	}
 	if( Accounting_script && *Accounting_script ){
+		DEBUG1("Accounting: exec '%s'", Accounting_script );
 		pid = fork();
 		if( pid == -1 ) {
 			Errorcode = JABORT;
@@ -119,4 +122,6 @@ void Do_accounting(int start, int elapsed, int pagecounter, int npages )
 			}
 		}
 	}
+	if( list ) free(list); list = 0;
+	Free_line_list( &l );
 }
