@@ -18,8 +18,11 @@ agent connections.
 */
 
 /*
- * $Id: sshd.c,v 1.16 1999-03-08 18:20:11 danw Exp $
+ * $Id: sshd.c,v 1.17 1999-03-16 19:03:38 danw Exp $
  * $Log: not supported by cvs2svn $
+ * Revision 1.16  1999/03/08 18:20:11  danw
+ * merge changes
+ *
  * Revision 1.15  1999/02/27 17:08:21  ghudson
  * Teach sshd how to switch on SIGUSR1/SIGUSR2.
  * Note: the current implementation only works with LIBWRAP defined,
@@ -2204,6 +2207,7 @@ void do_authentication(char *user, int privileged_port, int cipher_type)
 #endif /* HAVE_LOGIN_CAP_H */
   int status, i;
   char *filetext, *errmem;
+  const char *err;
 
   if (strlen(user) > 255)
     do_authentication_fail_loop();
@@ -2252,7 +2256,7 @@ void do_authentication(char *user, int privileged_port, int cipher_type)
 	 at LOG_ERR. Ssh doesn't provide a primitive way to give an
 	 informative message and disconnect without any bad feelings... */
 
-      char *buf, *err;
+      char *buf;
 
       err = al_strerror(status, &errmem);
       if (filetext && *filetext)
@@ -2276,7 +2280,13 @@ void do_authentication(char *user, int privileged_port, int cipher_type)
     }
   if (!al_local_acct)
     {
-      al_acct_create(user, NULL, getpid(), 0, 0, NULL);
+      status = al_acct_create(user, NULL, getpid(), 0, 0, NULL);
+      if (status != AL_SUCCESS && debug_flag)
+	{
+	  err = al_strerror(status, &errmem);
+	  debug("al_acct_create failed for user %s: %s", user, err);
+	  al_free_errmem(errmem);
+	}
       al_user = xstrdup(user);
       atexit(al_cleanup);
     }
