@@ -32,3 +32,14 @@ show-postscript	mimeutils
 show-text	mimeutils
 show-video	mimeutils
 store-binhex	mimeutils
+
+afmdit		psutils
+pscat		psutils
+pscatmap	psutils
+psdit		psutils
+psdraft		psutils
+pslpr		psutils
+psnup		psutils
+psplot		psutils
+psrev		psutils
+psroff		psutils

@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.49 2002-02-14 05:39:16 zacheiss Exp $
+# $Id: Makefile,v 1.50 2002-05-31 23:05:31 zacheiss Exp $
 
 SHELL=/bin/sh
 ATHRBINDIR=/bin/athena
@@ -11,7 +11,8 @@ ATTACHRUN=addusr blanche chfn chpobox chsh dcmmaint gs help \
 	olh_motif stanley stella usermaint xinfo \
 	show-application show-audio show-binhex show-excel show-image \
 	show-msword show-pdf show-postscript show-text show-video \
-	store-binhex
+	store-binhex afmdit pscat pscatmap psdit psdraft pslpr psnup psplot \
+	psrev psroff
 MOIRA=/afs/athena.mit.edu/system/moira
 HELP=/afs/athena.mit.edu/system/help
 MKSERV=/afs/athena.mit.edu/system/mkserv
@@ -118,6 +119,16 @@ install:
 	install -c -m 555 show-text ${DESTDIR}${ATHLIBEXECDIR}
 	install -c -m 555 show-video ${DESTDIR}${ATHLIBEXECDIR}
 	install -c -m 555 store-binhex ${DESTDIR}${ATHLIBEXECDIR}
+	install -c -m 555 afmdit ${DESTDIR}${ATHBINDIR}
+	install -c -m 555 pscat ${DESTDIR}${ATHBINDIR}
+	install -c -m 555 pscatmap ${DESTDIR}${ATHBINDIR}
+	install -c -m 555 psdit ${DESTDIR}${ATHBINDIR}
+	install -c -m 555 psdraft ${DESTDIR}${ATHBINDIR}
+	install -c -m 555 pslpr ${DESTDIR}${ATHBINDIR}
+	install -c -m 555 psnup ${DESTDIR}${ATHBINDIR}
+	install -c -m 555 psplot ${DESTDIR}${ATHBINDIR}
+	install -c -m 555 psrev ${DESTDIR}${ATHBINDIR}
+	install -c -m 555 psroff ${DESTDIR}${ATHBINDIR}
 	@set ${SYMLINKS}; while [ $$# -ne 0 ]; do \
 		echo rm -f ${DESTDIR}$$2; \
 		rm -f ${DESTDIR}$$2; \
