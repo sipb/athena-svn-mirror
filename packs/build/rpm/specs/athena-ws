@@ -358,6 +358,10 @@ done
 grep "^/usr/athena/lib$" /etc/ld.so.conf >/dev/null 2>&1
 [ $? -ne 0 ] && echo "/usr/athena/lib" >> /etc/ld.so.conf || true
 
+# Remove old files left around by syncconf that the rc scripts don't
+# know to ignore.
+rm -f /etc/sysconfig/network-scripts/*.saved
+
 %preun
 if [ $1 = 0 ]; then
   chkconfig --del athena-ws
