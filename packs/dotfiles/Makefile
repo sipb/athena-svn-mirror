@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.3 1997-02-25 19:04:22 ghudson Exp $
+# $Id: Makefile,v 1.3.2.1 1997-11-04 18:36:23 ghudson Exp $
 
 SHELL=/bin/sh
 PROTOTYPE=/usr/prototype_user
@@ -8,9 +8,11 @@ ATHMANDIR=/usr/athena/man
 
 all:
 	cd platform/${HOSTTYPE} && ${MAKE} $@
+	cd arch/${ATHENA_SYS} && ${MAKE} $@
 
 check:
 	cd platform/${HOSTTYPE} && ${MAKE} $@
+	cd arch/${ATHENA_SYS} && ${MAKE} $@
 
 install:
 	-mkdir -p ${DESTDIR}${PROTOTYPE}
@@ -38,9 +40,12 @@ install:
 	install -c -m 0644 welcome ${DESTDIR}${PROTOTYPE}
 	install -c -m 0644 welcome ${DESTDIR}${PROTOTMP}
 	cd platform/${HOSTTYPE} && ${MAKE} $@
+	cd arch/${ATHENA_SYS} && ${MAKE} $@
 
 clean:
 	cd platform/${HOSTTYPE} && ${MAKE} $@
+	cd arch/${ATHENA_SYS} && ${MAKE} $@
 
 distclean:
 	cd platform/${HOSTTYPE} && ${MAKE} $@
+	cd arch/${ATHENA_SYS} && ${MAKE} $@

@@ -120,8 +120,8 @@ get_names(argc, argv)
 	 * Initialize the message template.
 	 */
 	msg.vers = TALK_VERSION;
-	msg.addr.sa_family = htons(AF_INET);
-	msg.ctl_addr.sa_family = htons(AF_INET);
+	msg.addr.family = htons(AF_INET);
+	msg.ctl_addr.family = htons(AF_INET);
 	msg.id_num = htonl(0);
 	strncpy(msg.l_name, my_name, NAME_SIZE);
 	msg.l_name[NAME_SIZE - 1] = '\0';
