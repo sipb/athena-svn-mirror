@@ -14,12 +14,12 @@
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/string_utils.c,v $
- *      $Author: vanharen $
+ *      $Author: raeburn $
  *
  */
 
 #ifndef lint
-static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/string_utils.c,v 1.7 1990-02-16 21:51:47 vanharen Exp $";
+static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/string_utils.c,v 1.8 1990-03-01 17:56:01 raeburn Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -49,27 +49,17 @@ char *month[] =
  */
 
 void uncase(string)
-     char *string;
+    char *string;
 {
-  char *buf;		/* Temporary buffer. */
-  char *bufp;		/* Pointer within buffer. */
-  int i;		/* Index variable. */
-	
-  i = 0;
-  buf = malloc((unsigned) (strlen(string) + 1));
-  bufp = string;
-  while (isspace(*bufp))
-    bufp++;
-  while ((*bufp != '\0'))
-    {
-      if (isupper(*bufp))
-	buf[i] = tolower(*bufp);
-      else buf[i] = *bufp;
-      i++;
-      bufp++;
+    char *s1 = string;
+
+    while (isspace (*string))
+	string++;
+    while (*string) {
+	*s1++ = isupper (*string) ? tolower (*string) : *string;
+	string++;
     }
-  buf[i] = '\0';
-  (void) strcpy(string, buf);
+    *s1 = '\0';
 }
 
 
@@ -77,26 +67,27 @@ char *
 cap(string)
      char *string;
 {
-  char buf[LINE_SIZE];
-  char c;
+    static char buf[LINE_SIZE];
+    char c;
 
-  strncpy(buf,string,LINE_SIZE);
-  c = buf[0];
-  if(!isupper(buf[0]))
-    buf[0] = toupper(c);
-  return(buf);
+    strncpy(buf,string,LINE_SIZE);
+    c = buf[0];
+    if(!isupper (c))
+	buf[0] = toupper (c);
+    return buf;
 }
 
 int isnumber(string)
      char *string;
 {
-  while(string && *string)
-    {
-      if(!isdigit(*string))
-	return(ERROR);
-      ++string;
+    if (!string)
+	return SUCCESS;
+    while (*string) {
+	if(!isdigit(*string))
+	    return ERROR;
+	++string;
     }
-  return(SUCCESS);
+    return(SUCCESS);
 }
 
 extern struct tm *localtime();
@@ -309,8 +300,8 @@ parse_command_line(command_line, arguments)
 static int joe = 0;
 
 void make_temp_name(name)
-        char *name;
+    char *name;
 {
-        (void) sprintf(name, "/tmp/OLC%d.%d", getpid(), joe++);
-        (void) unlink(name);    /* just to be sure */
+    (void) sprintf(name, "/tmp/OLC%d.%d", getpid(), joe++);
+    (void) unlink(name);	/* just to be sure */
 }
