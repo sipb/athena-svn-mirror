@@ -9,13 +9,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcm/olcm.c,v $
- *      $Id: olcm.c,v 1.11 1992-05-26 18:20:22 lwvanels Exp $
+ *      $Id: olcm.c,v 1.12 1992-08-12 13:41:46 lwvanels Exp $
  *      $Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcm/olcm.c,v 1.11 1992-05-26 18:20:22 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcm/olcm.c,v 1.12 1992-08-12 13:41:46 lwvanels Exp $";
 #endif
 #endif
 
@@ -113,7 +113,7 @@ main(argc,argv)
   extern char *optarg;
   extern int optind;
   REQUEST Request;
-  int instance;
+  int instance,send_default;
   int error,do_send;
 
 #if defined(ultrix)
@@ -133,9 +133,12 @@ main(argc,argv)
   username[0] = '\0';
   strcpy(topic,DFLT_TOPIC);
   strcpy(server,DFLT_SERVER);
+  send_default = 1;
 
-  while ((c = getopt(argc, argv, "s:t:k:")) != EOF)
+  while ((c = getopt(argc, argv, "s:t:k:n")) != EOF)
     switch (c) {
+    case 'n':
+      send_default = 0;
     case 's':
       strncpy(server,optarg,MAXHOSTNAMELEN);
       server[MAXHOSTNAMELEN-1] = '\0';
@@ -151,10 +154,11 @@ main(argc,argv)
 #endif
     default:
 #ifdef KERBEROS
-      fprintf(stderr,"Usage: %s [-t topic] [-s server] [-k service.instance@realm]\n",
-	      argv[0]);
+      fprintf(stderr,"Usage: %s [-t topic] [-s server] [-k service.instance@realm]\n", argv[0]);
+      fprintf(stderr,"\t[-n]\n");
 #else
       fprintf(stderr,"Usage: %s [-t topic] [-s server]\n",argv[0]);
+      fprintf(stderr,"\t[-n]\n");
 #endif
       exit(1);
     }
@@ -259,19 +263,24 @@ main(argc,argv)
 
   error = 0;
   do_send = 0;
-  mail = popen("/usr/lib/sendmail -t", "w");
-  if (mail) {
-    fprintf(mail, "To: %s\n",orig_address);
-    if ((f = fopen(STOCK_HEADER,"r")) != NULL) {
-      while(fgets(buf,BUFSIZ,f) != NULL) {
-	/* Output stock header */
-	fputs(buf,mail);
+  if (send_default) {
+    mail = popen("/usr/lib/sendmail -t", "w");
+    if (mail) {
+      char stock_filename[1024];
+
+      sprintf(stock_filename,"%s_%s",STOCK_HEADER,topic);
+      fprintf(mail, "To: %s\n",orig_address);
+      if ((f = fopen(stock_filename,"r")) != NULL) {
+	while(fgets(buf,BUFSIZ,f) != NULL) {
+	  /* Output stock header */
+	  fputs(buf,mail);
+	}
+	fclose(f);
       }
-      fclose(f);
+    } else {
+      syslog(LOG_ERR,"popen: /usr/lib/sendmail failed: %m");
+      mail = stderr;
     }
-  } else {
-    syslog(LOG_ERR,"popen: /usr/lib/sendmail failed: %m");
-    mail = stderr;
   }
 
   instance = Request.requester.instance;
@@ -285,25 +294,31 @@ main(argc,argv)
     
   case INVALID_TOPIC:
     syslog(LOG_ERR,"topic %s is invalid", topic);
-    fprintf(mail,"An error in the setup has prevented your question from being asked;\n");
-    fprintf(mail,"The topic `%s' which the server tried to use is invalid.\n\n",
+    if (send_default) {
+      fprintf(mail,"An error in the setup has prevented your question from being asked;\n");
+      fprintf(mail,"The topic `%s' which the server tried to use is invalid.\n\n",
 	      topic);
+    }
     error = 1;
     break;
     
   case ERROR:
     syslog(LOG_ERR,"error contacting server %s", server);
-    fprintf(mail,
-	    "An error has occurred while contacting the server.  Please try sending\n");
-    fprintf(mail,
-	    "your question again; if it continues to fail, please contact the consultants\n");
-    fprintf(mail, "by other means.\n\n");
+    if (send_default) {
+      fprintf(mail,
+	      "An error has occurred while contacting the server.  Please try sending\n");
+      fprintf(mail,
+	      "your question again; if it continues to fail, please contact the consultants\n");
+      fprintf(mail, "by other means.\n\n");
+    }
     error = 1;
     break;
     
   case PERMISSION_DENIED:
-    fprintf(mail,"You are not allowed to ask questions on this server.\n");
-    fprintf(mail,"Does defeat the purpose of things, doesn't it?\n");
+    if (send_default) {
+      fprintf(mail,"You are not allowed to ask questions on this server.\n");
+      fprintf(mail,"Does defeat the purpose of things, doesn't it?\n");
+    }
     syslog(LOG_ERR,"user %s: permission denied", username);
     error = 1;
     break;
@@ -313,17 +328,21 @@ main(argc,argv)
   case ALREADY_HAVE_QUESTION:
   case HAS_QUESTION:
     syslog(LOG_INFO,"user %s sending reply", username);
-    fprintf(mail, "You are already asking a question; your message will be \n");
-    fprintf(mail, "appended to the text of your existing question.\n");
+    if (send_default) {
+      fprintf(mail, "You are already asking a question; your message will be \n");
+      fprintf(mail, "appended to the text of your existing question.\n");
+    }
     do_send = 1;
     break;
     
   default:
     syslog(LOG_ERR,"OAsk (VERIFY) Error status %d\n", status);
-    fprintf(mail,"Received unexpected error %d from the server.\n", status);
-    fprintf(mail,"Please try sending your question again; if it\n");
-    fprintf(mail,"continues to fail, please contact the consultants\n");
-    fprintf(mail,"by other means.\n\n");
+    if (send_default) {
+      fprintf(mail,"Received unexpected error %d from the server.\n", status);
+      fprintf(mail,"Please try sending your question again; if it\n");
+      fprintf(mail,"continues to fail, please contact the consultants\n");
+      fprintf(mail,"by other means.\n\n");
+    }
     error = 1;
     break;
   }
@@ -336,24 +355,26 @@ main(argc,argv)
     }
 
     (void) unlink(filename);
-    switch(status) {
-    case SUCCESS:
-    case NOT_CONNECTED:
+    if (send_default) {
+      switch(status) {
+      case SUCCESS:
+      case NOT_CONNECTED:
 /*      fprintf(mail, "Your question has been received and will be forwarded */
 /*      to the first\navailable consultant.\n");  */
 /*      break; */
-    case CONNECTED:
+      case CONNECTED:
 /*      fprintf(mail, "Your question has been received and a consultant is */
 /*      reviewing it now.\n");  */
-      break;
-    default:
-      syslog(LOG_ERR,"OAsk Error status %d\n", status);
-      fprintf(mail,"Received unexpected error %d from the server.\n", status);
-      fprintf(mail,"Please try sending your question again; if it\n");
-      fprintf(mail,"continues to fail, please contact the consultants\n");
-      fprintf(mail,"by other means.\n\n");
-      error = 1;
-      break;
+	break;
+      default:
+	syslog(LOG_ERR,"OAsk Error status %d\n", status);
+	fprintf(mail,"Received unexpected error %d from the server.\n", status);
+	fprintf(mail,"Please try sending your question again; if it\n");
+	fprintf(mail,"continues to fail, please contact the consultants\n");
+	fprintf(mail,"by other means.\n\n");
+	error = 1;
+	break;
+      }
     }
   }
 
@@ -361,20 +382,25 @@ main(argc,argv)
   dest_tkt();
 #endif
 
-  if ((f = fopen(STOCK_FILE,"r")) != NULL) {
-    while(fgets(buf,BUFSIZ,f) != NULL) {
-      /* Output stock reply */
-      fputs(buf,mail);
+  if (send_default) {
+    char stock_filename[1024];
+
+    sprintf(stock_filename,"%s_%s",STOCK_FILE,topic);
+    if ((f = fopen(stock_filename,"r")) != NULL) {
+      while(fgets(buf,BUFSIZ,f) != NULL) {
+	/* Output stock reply */
+	fputs(buf,mail);
+      }
+      fclose(f);
     }
-    fclose(f);
-  }
 
-  if (mail) {
-    fprintf(mail, "Do not reply directly to this message; it was automatically generated.\n");
-    fprintf(mail, ".\n");
-    pclose(mail);
+    if (mail) {
+      fprintf(mail, "Do not reply directly to this message; it was automatically generated.\n");
+      fprintf(mail, ".\n");
+      pclose(mail);
+    }
   }
-
+  exit(0);
 }
 
 
