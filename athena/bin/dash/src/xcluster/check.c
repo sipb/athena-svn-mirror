@@ -10,12 +10,13 @@
  *    then displays it in the main window.
  */
 
-#include "xcluster.h"		/* global include file. */
-
+#include <sys/types.h>
 #include <sys/socket.h>		/* socket definitions */
 #include <netinet/in.h>		/* random network-type defines */
 #include <netdb.h>		/* random network-type defines */
 #include <hesiod.h>		/* hesiod lookup functions */
+
+#include "xcluster.h"		/* global include file. */
 #include "net.h"
 
 #include <Jets.h>
