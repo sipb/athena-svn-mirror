@@ -1,4 +1,4 @@
-# $Id: packages,v 1.303 2005-03-07 19:44:15 ghudson Exp $
+# $Id: packages,v 1.304 2005-03-07 21:17:41 ghudson Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -197,7 +197,7 @@ third/gnome-print		requires gnome-libs,libxml,gdk-pixbuf,freetype,tetex
 third/gnome-speech		requires libbonobo,ORBit2
 third/gnome-spell		requires gettext,aspell,libgnomeui,libbonobo,libbonoboui,libglade2
 third/gnome-terminal		requires gettext,intltool,gtk2,GConf2,libglade2,libgnomeui,vte,startup-notification,Xft
-third/gnome-themes		requires gettext,intltool,gtk2,gtk-engines,gtk-thinice-engine
+third/gnome-themes		requires gettext,intltool,gtk2,gtk-engines
 third/gnome-utils		requires gettext,intltool,libgnome,libgnomeui,libglade2,libbonoboui,gnome-vfs2,gnome-panel,popt,pango,scrollkeeper
 third/gnome-vfs			requires gnome-libs,oaf,GConf,bzip2,gnome-mime-data
 third/gnome-vfs2		requires gettext,intltool,glib2,libxml2,GConf2,libbonobo,ORBit2,gnome-mime-data,bzip2,openssl,openafs,popt
@@ -207,7 +207,6 @@ third/gpdf			requires gettext,intltool,gtk2,libbonobo,libgnomeprint,GConf2
 third/gst-plugins		requires GConf2,gstreamer,glib2,gnome-vfs2,jpeg,libpng,freetype
 third/gstreamer			requires glib2,libxml2,popt
 third/gtk-engines		requires gtk2
-third/gtk-thinice-engine	requires gtk2
 third/gtk			requires glib,gettext
 third/gtk2			requires glib2,pango,atk,tiff,libpng,jpeg
 third/gtkhtml			requires gnome-print,gdk-pixbuf,gal,bonobo,GConf,control-center
