@@ -10,8 +10,9 @@ ln -s /root/usr/ucblib/libucb.so.1 /root/usr/ucblib/libucb.so
 
 
 # removed
-rm /root/etc/rc2.d/S89bdconfig
 rm /root/etc/rc2.d/S85power
+rm /root/etc/rc2.d/S88sendmail
+rm /root/etc/rc2.d/S89bdconfig
 rm /root/etc/rc2.d/S99audit
 
 
