@@ -84,9 +84,7 @@ GNOMEVFS_LIBS = @GNOMEVFS_LIBS@
 GNOME_UTILS_CFLAGS = @GNOME_UTILS_CFLAGS@
 GNOME_UTILS_LIBS = @GNOME_UTILS_LIBS@
 INSTOBJEXT = @INSTOBJEXT@
-INTLDEPS = @INTLDEPS@
 INTLLIBS = @INTLLIBS@
-INTLOBJS = @INTLOBJS@
 INTLTOOL_CAVES_RULE = @INTLTOOL_CAVES_RULE@
 INTLTOOL_DESKTOP_RULE = @INTLTOOL_DESKTOP_RULE@
 INTLTOOL_DIRECTORY_RULE = @INTLTOOL_DIRECTORY_RULE@
@@ -101,6 +99,7 @@ INTLTOOL_SCHEMAS_RULE = @INTLTOOL_SCHEMAS_RULE@
 INTLTOOL_SERVER_RULE = @INTLTOOL_SERVER_RULE@
 INTLTOOL_SHEET_RULE = @INTLTOOL_SHEET_RULE@
 INTLTOOL_SOUNDLIST_RULE = @INTLTOOL_SOUNDLIST_RULE@
+INTLTOOL_THEME_RULE = @INTLTOOL_THEME_RULE@
 INTLTOOL_UI_RULE = @INTLTOOL_UI_RULE@
 INTLTOOL_UPDATE = @INTLTOOL_UPDATE@
 INTLTOOL_XML_RULE = @INTLTOOL_XML_RULE@
@@ -118,7 +117,8 @@ PAM_PREFIX = @PAM_PREFIX@
 PKG_CONFIG = @PKG_CONFIG@
 POFILES = @POFILES@
 POSUB = @POSUB@
-RANLIB = @RANLIB@
+PO_IN_DATADIR_FALSE = @PO_IN_DATADIR_FALSE@
+PO_IN_DATADIR_TRUE = @PO_IN_DATADIR_TRUE@
 SCROLLKEEPER_CONFIG = @SCROLLKEEPER_CONFIG@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
@@ -149,10 +149,15 @@ man_MANS = gnome-system-log.1
 Utilities_in_files = gnome-system-log.desktop.in
 Utilities_DATA = $(Utilities_in_files:.desktop.in=.desktop)
 
+schemadir = $(sysconfdir)/gconf/schemas
+schemas_in_file = logview.schemas.in
+schema_DATA = $(schemas_in_file:.schemas.in=.schemas)
+schema_source_data = $(foreach file, $(schema_DATA), $(srcdir)/$(file))
+
 additional_DATA = gnome-system-log-descript.db                    gnome-system-log-regexp.db 		   gnome-system-log-actions.db
 
 
-EXTRA_DIST =  	$(Utilities_in_files)		$(Utilities_DATA)		$(additional_DATA)		gnome-system-log-pam			gnome-system-log-security.in		$(man_MANS)
+EXTRA_DIST =  	$(Utilities_in_files)		$(Utilities_DATA)		$(additional_DATA)		$(schema_DATA) 			gnome-system-log-pam			gnome-system-log-security.in		$(man_MANS)
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
@@ -177,7 +182,7 @@ man1dir = $(mandir)/man1
 MANS = $(man_MANS)
 
 NROFF = nroff
-DATA =  $(Utilities_DATA) $(additional_DATA)
+DATA =  $(Utilities_DATA) $(additional_DATA) $(schema_DATA)
 
 DIST_COMMON =  ChangeLog Makefile.am Makefile.in \
 gnome-system-log-security.in
@@ -328,6 +333,25 @@ uninstall-additionalDATA:
 	  rm -f $(DESTDIR)$(additionaldir)/$$p; \
 	done
 
+install-schemaDATA: $(schema_DATA)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(schemadir)
+	@list='$(schema_DATA)'; for p in $$list; do \
+	  if test -f $(srcdir)/$$p; then \
+	    echo " $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(schemadir)/$$p"; \
+	    $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(schemadir)/$$p; \
+	  else if test -f $$p; then \
+	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(schemadir)/$$p"; \
+	    $(INSTALL_DATA) $$p $(DESTDIR)$(schemadir)/$$p; \
+	  fi; fi; \
+	done
+
+uninstall-schemaDATA:
+	@$(NORMAL_UNINSTALL)
+	list='$(schema_DATA)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(schemadir)/$$p; \
+	done
+
 # This directory's subdirectories are mostly independent; you can cd
 # into them and run `make' without going through this Makefile.
 # To change the values of `make' variables: instead of editing Makefiles,
@@ -469,14 +493,16 @@ install-exec-am: install-binPROGRAMS
 install-exec: install-exec-recursive
 
 install-data-am: install-man install-UtilitiesDATA \
-		install-additionalDATA install-data-local
+		install-additionalDATA install-schemaDATA \
+		install-data-local
 install-data: install-data-recursive
 
 install-am: all-am
 	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
 install: install-recursive
 uninstall-am: uninstall-binPROGRAMS uninstall-man \
-		uninstall-UtilitiesDATA uninstall-additionalDATA
+		uninstall-UtilitiesDATA uninstall-additionalDATA \
+		uninstall-schemaDATA
 uninstall: uninstall-recursive
 all-am: Makefile $(PROGRAMS) $(MANS) $(DATA)
 all-redirect: all-recursive
@@ -485,7 +511,8 @@ install-strip:
 installdirs: installdirs-recursive
 installdirs-am:
 	$(mkinstalldirs)  $(DESTDIR)$(bindir) $(DESTDIR)$(mandir)/man1 \
-		$(DESTDIR)$(Utilitiesdir) $(DESTDIR)$(additionaldir)
+		$(DESTDIR)$(Utilitiesdir) $(DESTDIR)$(additionaldir) \
+		$(DESTDIR)$(schemadir)
 
 
 mostlyclean-generic:
@@ -525,11 +552,12 @@ maintainer-clean-binPROGRAMS uninstall-binPROGRAMS install-binPROGRAMS \
 mostlyclean-compile distclean-compile clean-compile \
 maintainer-clean-compile install-man1 uninstall-man1 install-man \
 uninstall-man uninstall-UtilitiesDATA install-UtilitiesDATA \
-uninstall-additionalDATA install-additionalDATA install-data-recursive \
-uninstall-data-recursive install-exec-recursive \
-uninstall-exec-recursive installdirs-recursive uninstalldirs-recursive \
-all-recursive check-recursive installcheck-recursive info-recursive \
-dvi-recursive mostlyclean-recursive distclean-recursive clean-recursive \
+uninstall-additionalDATA install-additionalDATA uninstall-schemaDATA \
+install-schemaDATA install-data-recursive uninstall-data-recursive \
+install-exec-recursive uninstall-exec-recursive installdirs-recursive \
+uninstalldirs-recursive all-recursive check-recursive \
+installcheck-recursive info-recursive dvi-recursive \
+mostlyclean-recursive distclean-recursive clean-recursive \
 maintainer-clean-recursive tags tags-recursive mostlyclean-tags \
 distclean-tags clean-tags maintainer-clean-tags distdir info-am info \
 dvi-am dvi check check-am installcheck-am installcheck install-exec-am \
@@ -539,8 +567,15 @@ installdirs mostlyclean-generic distclean-generic clean-generic \
 maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 
 @INTLTOOL_DESKTOP_RULE@
+@INTLTOOL_SCHEMAS_RULE@
 
-install-data-local: gnome-system-log-security
+install-gconf-schemas:
+	if test -z "$(DESTDIR)" ; then \
+		GCONF_CONFIG_SOURCE=$(GCONF_SCHEMA_CONFIG_SOURCE) $(GCONFTOOL) --makefile-install-rule $(schema_source_data) ; \
+	fi
+
+install-data-local: gnome-system-log-security install-gconf-schemas
+
 @CONSOLE_HELPER_TRUE@	$(INSTALL_DATA) -D gnome-system-log-pam $(DESTDIR)$(PAM_PREFIX)/pam.d/gnome-system-log
 @CONSOLE_HELPER_TRUE@	$(INSTALL_DATA) -D gnome-system-log-security $(DESTDIR)$(PAM_PREFIX)/security/console.apps/gnome-system-log
 @CONSOLE_HELPER_TRUE@	$(INSTALL_DATA) -m 755 -d $(DESTDIR)$(sbindir)

@@ -1,4 +1,4 @@
-/* $Id: gdict-applet.c,v 1.1.1.3 2003-01-04 21:13:50 ghudson Exp $ */
+/* $Id: gdict-applet.c,v 1.1.1.4 2003-01-29 20:32:35 ghudson Exp $ */
 
 /*
  *  Papadimitriou Spiros <spapadim+@cs.cmu.edu>

@@ -1,4 +1,4 @@
-/* $Id: gdict-about.c,v 1.1.1.2 2003-01-04 21:13:48 ghudson Exp $ */
+/* $Id: gdict-about.c,v 1.1.1.3 2003-01-29 20:33:24 ghudson Exp $ */
 
 /*
  *  Papadimitriou Spiros <spapadim+@cs.cmu.edu>
@@ -55,9 +55,7 @@ static GtkWidget *gdict_about_new (void)
     
     about = gnome_about_new (_("GNOME Dictionary"), VERSION,
                             _("Copyright 1999 by Mike Hughes"),
-                            _("Client for MIT dictionary server.\n"
-			      "Web: http://gdict.dhs.org/, "
-			      "http://www.psilord.com/code/"),
+                            _("Client for MIT dictionary server.\n"),
 			     (const char **)authors,
 			     (const char **)documenters,
 			     strcmp (translator_credits, "translator_credits") != 0 ? translator_credits : NULL,

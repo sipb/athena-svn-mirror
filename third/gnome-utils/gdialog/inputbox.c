@@ -29,14 +29,14 @@ static void cancelled(GtkWidget *w, gpointer *d)
 
 static void okayed(GtkWidget *w, int button, gpointer *d)
 {
-	if(button==GTK_RESPONSE_OK) {
+	if(button == GTK_RESPONSE_OK) {
 		gchar *p = (gchar *) gtk_entry_get_text(GTK_ENTRY(input));
 
 		write(2,p, strlen(p));
 		write(2, "\n", 1);
 		exit (0);
 	} else if (button == GTK_RESPONSE_CANCEL)
-		exit (1);
+		exit(1);
 }
 
 
@@ -54,56 +54,39 @@ int dialog_inputbox(const char *title, const char *prompt, int height, int width
 	WINDOW *dialog;
 
 	if (gnome_mode) {
-			GtkWidget *w  = gtk_dialog_new_with_buttons (title,
-						NULL,
-						GTK_DIALOG_DESTROY_WITH_PARENT,
-						GTK_STOCK_OK,
-						GTK_RESPONSE_OK,
-						GTK_STOCK_CANCEL,
-						GTK_RESPONSE_CANCEL,
-						NULL);
-
-		GtkWidget *hbox;
-		GtkWidget *vbox;
-		GtkWidget *ibox;
-
+		GtkWidget *w;
 		GList *labellist;
 
-		gtk_dialog_set_default_response (GTK_DIALOG(w),GTK_RESPONSE_OK);
-		gtk_window_set_title(GTK_WINDOW(w), title);
+		w = gtk_dialog_new_with_buttons (title, NULL,
+						GTK_DIALOG_DESTROY_WITH_PARENT,
+						GTK_STOCK_CANCEL,
+						GTK_RESPONSE_CANCEL,
+						GTK_STOCK_OK,
+						GTK_RESPONSE_OK,
+						NULL);
+		gtk_dialog_set_default_response (GTK_DIALOG (w),
+						 GTK_RESPONSE_OK);
+		gtk_window_set_position (GTK_WINDOW (w), GTK_WIN_POS_CENTER);
 
+		label_autowrap (GTK_DIALOG (w)->vbox, prompt, width);
 
-		hbox = gtk_hbox_new(FALSE, 0);
-		vbox = gtk_vbox_new(FALSE, 0);
-		ibox = gtk_vbox_new(FALSE, 0);
+		input = gtk_entry_new ();
+		gtk_box_pack_start (GTK_BOX (GTK_DIALOG (w)->vbox),
+				    input, TRUE, TRUE, GNOME_PAD);
+		gtk_signal_connect_object (GTK_OBJECT (input), "activate",
+		        GTK_SIGNAL_FUNC (gtk_window_activate_default),
+			GTK_OBJECT(w));
 
-
-		label_autowrap(vbox, prompt, width);
-		
-		input = gtk_entry_new();
 		if(init)
 			gtk_entry_set_text(GTK_ENTRY(input),init);
-			gtk_signal_connect_object(GTK_OBJECT(input), "activate",
-                        GTK_SIGNAL_FUNC(gtk_window_activate_default),GTK_OBJECT(w));
 
 		if(GTK_IS_ACCESSIBLE(gtk_widget_get_accessible(input))) {
 			add_atk_namedesc(input, _("GDialog Entry"), _("Enter the text"));
-			labellist = gtk_container_get_children(GTK_CONTAINER(vbox));
+			labellist = gtk_container_get_children(GTK_CONTAINER(GTK_DIALOG(w)->vbox));
 			add_atk_relation(GTK_WIDGET(labellist->data), input, ATK_RELATION_LABEL_FOR);
 			add_atk_relation(input, GTK_WIDGET(labellist->data), ATK_RELATION_LABELLED_BY);
 		}
 
-		gtk_container_set_border_width(GTK_CONTAINER(ibox), GNOME_PAD);
-			
-		gtk_box_pack_start(GTK_BOX(ibox), input, TRUE, TRUE, 0);
-		gtk_box_pack_start(GTK_BOX(vbox), ibox, TRUE, TRUE, 0);
-
-		gtk_box_pack_start(GTK_BOX(hbox), vbox, TRUE, TRUE, 0);
-
-		gtk_box_pack_start(GTK_BOX(GTK_DIALOG(w)->vbox),
-				   hbox,
-				   TRUE, TRUE, GNOME_PAD);
-		gtk_window_set_position(GTK_WINDOW(w), GTK_WIN_POS_CENTER);
 		gtk_signal_connect(GTK_OBJECT(w), "destroy",
 			GTK_SIGNAL_FUNC(cancelled), NULL);
 		gtk_signal_connect(GTK_OBJECT(w), "response",

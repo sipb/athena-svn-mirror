@@ -1,22 +1,717 @@
-2002-09-19  Dennis M. Cranston <dennis_cranston@yahoo.com>
+2003-01-09  Dennis Cranston <dennis_cranston@yahoo.com>
 
-	* help/C/gnome-search-tool.xml:  Change 'Enable' to 
-	'Enabled'.  Bug #91143.
+	* gsearchtool.c:  Do not use the locate command for finding
+	files in the /mnt directory.
+	
+	* gsearchtool-support.[ch]:  Added is_path_in_mount_folder().
+	
+2003-01-05  Dennis Cranston <dennis_cranston@yahoo.com>
+
+	* gsearchtool.c:  Toggle the sensitivity of the contraints
+	while searching.
+	
+2003-01-04  Dennis Cranston <dennis_cranston@yahoo.com>
+
+	* gsearchtool.c:  Minor LEFT_LABEL_SPACING adjustment.
+
+2003-01-04  Dennis Cranston <dennis_cranston@yahoo.com>
+
+	* gsearchtool.c:  Toggle the sensitivity of the results frame 
+	rather than its scrolled window.
+	
+2002-12-29  Dennis Cranston <dennis_cranston@yahoo.com>
+
+	* gsearchtool.c:  Fix bug #101771. Used "Select the '%s' 
+	constraint" for many of the popt argument descriptions.  Also, 
+	changed name->named as it conflicts with gtk+'s name argument.
+
+2002-12-29  Dennis Cranston <dennis_cranston@yahoo.com>
+
+	* gsearchtool.c:  Fix bug #101767.  Removed cryptic use of 
+	%s from the 'No files found', 'One file found', and '%d files found' 
+	messages.
+
+2002-12-16  Dennis Cranston <dennis_cranston@yahoo.com>
+
+	* gsearchtool-support.c:  Apply disclosure widget changes
+	from Arvind Samptur <arvind.samptur@wipro.com> provided
+	in bugzilla report 100992.
+	(class_init) Attached a destroy handler.
+	(cddb_disclosure_destroy) Removed the timer on a destroy.
+	(do_animation) Replaced gtk_timeout_remove() with g_source_remove().
+	
+2002-12-15  Dennis Cranston <dennis_cranston@yahoo.com>
+
+	* gsearchtool.c: Left indent the options contained in 
+	the disclosure widget.
+
+2002-12-07  Dennis Cranston <dennis_cranston@yahoo.com>
+
+	* gsearchtool-callbacks.c:  (size_allocate_cb) 
+	Oops...use gtk_widget_set_size_request().
+	
+2002-12-06  Dennis Cranston <dennis_cranston@yahoo.com>
+
+	* gsearchtool-callbacks.c:  (save_results_cb)  When the user 
+	fails to select a file name in the 'Save Search Results As...' 
+	dialog, don't ask to overwrite a folder.  Instead, display the 
+	appropriate error message.
+	
+2002-12-06  Dennis Cranston <dennis_cranston@yahoo.com>
+
+	* gsearchtool-callbacks.c:  (size_allocate_cb) Call function
+	gtk_widget_set_usize() instead of gtk_widget_set_size_request().
+
+2002-12-06  Dennis Cranston <dennis_cranston@yahoo.com>
+
+	* gsearchtool.c:  Connect the "size_allocate" signal of
+	the find button to size_allocate_cb().
+	
+	* gsearchtool-callbacks.[ch]:  Implement the size_allocate_cb()
+	function.
+	
+2002-12-06  Dennis Cranston <dennis_cranston@yahoo.com>
+
+	* help/C/gnome-search-tool.xml:  Correct the description
+	for the 'contains the text' search rule.  Fixes bug 97363.
+	  
+2002-12-05  Dennis Cranston <dennis_cranston@yahoo.com>
+
+	* gsearchtool.c:  Apply slightly modified patch from
+	Glynn Foster to fix bug report #100448, 'The icon in
+	gnome-search-tool dialog doesn't theme'.
+	 
+2002-12-02  Glynn Foster  <glynn.foster@sun.com>
+
+	* gnome-search-tool.desktop.in: Re-order stuff to be consistant
+	with the other gnome-utils.
+
+2002-11-30  Dennis M. Cranston <dennis_cranston@yahoo.com>
+
+	* gnome-search-tool.desktop.in:  Added StartupNotify=true.
+	 
+2002-11-29  Dennis M. Cranston <dennis_cranston@yahoo.com>
+
+	* gsearchtool.[ch]: Fixed (-Wall) compiler warnings.  
+	Replaced call to bonobo_init() with bonobo_init_full().
+	
+	* gsearchtool-callbacks.[ch]:  Fixed (-Wall) compiler 
+	warnings. Replaced calls to g_return_if_fail() with 
+	g_return_val_if_fail().
+	
+	* gsearchtool-support.[ch]:  Fixed (-Wall) compiler 
+	warnings.  Removed unused global_client_free() function.
+	
+2002-11-29  Fernando Herrera <fherrera@onirica.com>
+
+       * gnome-search-tool.desktop.in: add X-GNOME-BUGZILLA stuff
+
+2002-11-24  Dennis M. Cranston <dennis_cranston@yahoo.com>
+
+	* gsearchtool-callbacks.c:  Fix key_press_cb() 
+	to correctly handle the shift F10 event.  It has 
+	not worked since multiselection was enabled in 
+	the results list.
+	
+2002-11-19  Dennis M. Cranston <dennis_cranston@yahoo.com>
+
+	* gsearchtool.c:  Remove duplicate calls to
+	gtk_tree_view_column_set_sizing().
+	
+2002-11-13  Dennis M. Cranston <dennis_cranston@yahoo.com>
+
+	* gsearchtool-support.c:  Replace use of 
+	_gtk_check_button_get_props() with gtk_widget_style_get().
+	This patch was supplied by the Gman.
+	  
+2002-11-12  Dennis M. Cranston <dennis_cranston@yahoo.com>
+
+	* gsearchtool.[ch]:  If constraints are unavailable
+	make the add button insensitive.
+	 
+2002-11-12  Dennis M. Cranston <dennis_cranston@yahoo.com>
+
+	* gsearchtool.c:  Removed the horizontal separator from 
+	above the button box.
+	
+	* help/C/figures/gnome-search-tool_window.png:  Updated
+	screenshot.
+	
+2002-11-12  Dennis M. Cranston <dennis_cranston@yahoo.com>
+
+	* gsearchtool-support.c:  Patch from "jaiserca@inf.upv.es 
+	(jaiserca)" to fix disclosure widget drawing problems 
+	in RTL (right to left) environments.  Fixes bug 98215.
+	 
+2002-11-08  Dennis M. Cranston <dennis_cranston@yahoo.com>
+
+	* gsearchtool.c:  Fix variable name confusion.
+
+2002-10-31  Dennis M. Cranston <dennis_cranston@yahoo.com>
+
+	* gsearchtool.h: Add a look_in_folder variable to the 
+	search_command structure.
+	
+	* gsearchtool.c:  For handle_search_command_stdout_io(), add
+	a filter to ignore a string returned by the find and locate 
+	commands if the string does not have look_in_folder as its prefix.
+	
+	Solaris' default grep command does not support the q option.  
+	Use the c option as a work around, since counts will be 
+	filtered out of the results. 
+	
+	* gsearchtool.c, gsearchtool-callbacks.c:  When calling 
+	gnome_file_entry_get_full_path() set the file_must_exist 
+	flag to FALSE.
+	
+2002-10-30  Dennis M. Cranston <dennis_cranston@yahoo.com>
+
+	* gsearchtool.c: Support searches of file sizes
+	greater than 2.0 GB by replacing "-size %dc" with 
+	"-size %uc".  Thanks to Pasupathi Duraisamy.
+	
+2002-10-29  Pasupathi Duraisamy <pasupathi.duraisamy@wipro.com>
+
+	* gsearchtool.c: For size type constraint use "-size %dc" 
+	option which is available both on GNU version "find" 
+	command and Solaris specific "find" command. 
+	Fixes Bug#96679
+
+2002-10-26  Dennis M. Cranston <dennis_cranston@yahoo.com>
+
+	* gsearchtool-callbacks.c:  Set the window placement
+	of the 'Save Search Results As...' dialog to 
+	GTK_WIN_POS_CENTER_ON_PARENT.
+	
+2002-10-22  Dennis M. Cranston <dennis_cranston@yahoo.com>
+
+	* gsearchtool.c: Prevent possible warnings in
+	add_file_to_search_results() when gnome-icon-theme
+	is not installed.
+	
+	* gsearchtool-support.c:  Prevent possible warnings
+	in get_file_icon_with_mime_type().
+	  
+2002-10-16  Dennis M. Cranston <dennis_cranston@yahoo.com>
+
+	* gsearchtool-support.c:  Remove work-around to get 
+	the icon for a directory as this has been fixed in
+	libgnomeui.  <<REQUIRES LIBGNOMEUI CVS HEAD>>
+	 
+2002-10-16  Dennis M. Cranston <dennis_cranston@yahoo.com>
+
+	* help/C/figures/gnome-search-tool_window.png:  
+	Updated to include bug report #95339 and the widget 
+	padding changes.
+	
+2002-10-16  Dennis M. Cranston <dennis_cranston@yahoo.com>
+
+	* gsearchtool.c:  Minor padding adjustment to the
+	additional options section.
+	
+2002-10-16  Dennis M. Cranston <dennis_cranston@yahoo.com>
+
+	* gsearchtool.c:  Move the buttons to the bottom of
+	the window.  Fixes bug report #95339.
+	
+2002-10-15  Dennis M. Cranston <dennis_cranston@yahoo.com>
+
+	* gsearchtool.c:  Applied patch to fix bug report #95875 
+	from Hidetoshi Tajima <hidetoshi.tajima@sun.com>. Fixes
+	utf8 conversion problems.  Thanks!!
+	
+2002-10-14  Dennis M. Cranston <dennis_cranston@yahoo.com>
+
+	* gsearchtool.c:  Allow window manager to include the
+	minimize and maximize buttons.  Fix for bug report 
+	#95755.
+	
+2002-10-13  Dennis M. Cranston <dennis_cranston@yahoo.com>
+
+	* gsearchtool-callbacks.c:  Another fix for multiple
+	file selection.  It would be so much nicer if Gtk+
+	did this stuff correctly by default.
+	
+2002-10-13  Dennis M. Cranston <dennis_cranston@yahoo.com>
+
+	* gsearchtool-callbacks.c:  Improved drag and drop 
+	behavior when multiple files have been selected. 
+	
+2002-10-13  Dennis M. Cranston <dennis_cranston@yahoo.com>
+
+	* gsearchtool-callbacks.c:  Fix a possible crash in 
+	file_event_after_cb().
+	
+2002-10-13  Dennis M. Cranston <dennis_cranston@yahoo.com>
+
+	* gsearchtool.c:  Hooked up a handler for the drag_begin
+	signal.
+	
+	* gsearchtool-callbacks.[ch]:  Added drag_begin_file_cb()
+	and set drag image to the stock multiple dnd icon when
+	dragging multiple files.
+	
+2002-10-12  Dennis M. Cranston <dennis_cranston@yahoo.com>
+
+	* gsearchtool.c:  Changed the gtk selection mode to 
+	multiple.  Added event-after and button-release-event
+	signal handlers.
+	
+	* gsearchtool-callbacks.h:  Added file_event_after_cb()
+	and file_button_release_event_cb().
+	
+	* gsearchtool-callbacks.c:  Implemented support for
+	selecting multiple files in the search results list.  
+	Fixes bug report #95457.
+	
+2002-10-11  Dennis M. Cranston <dennis_cranston@yahoo.com>
+
+	* gsearchtool.c:  Added gnome_entry_prepend_history()
+	calls to store the 'File is named' and 'Look in folder'
+	entry values.  <<REQUIRES LIBGNOMEUI CVS HEAD>>
+	
+2002-10-09  Dennis M. Cranston <dennis_cranston@yahoo.com>
+
+	* gsearchtool.c:  Added ability to move files from
+	the results (i.e. added GDK_ACTION_MOVE action).
+	
+2002-10-08  Dennis M. Cranston <dennis_cranston@yahoo.com>
+
+	* gsearchtool.c:  Autosize the tree view columns
+	when displaying the 'no files found' message to
+	prevent the message from being possibly truncated.
+	
+2002-10-08  Dennis M. Cranston <dennis_cranston@yahoo.com>
+
+	* gsearchtool.c:  Renamed the 'autostart' command
+	line argument to 'start'.
+	
+2002-10-08  Dennis M. Cranston <dennis_cranston@yahoo.com>
+
+	* gsearchtool.c, gsearchtool-callbacks.c:  Cleanup 
+	the last two error message dialogs.
+	
+2002-10-08  Dennis M. Cranston <dennis_cranston@yahoo.com>
+
+	* gsearchtool-support.c:  Added escape_single_quotes()
+	for filename in open_file_with_application().
+	
+2002-10-08  Dennis M. Cranston <dennis_cranston@yahoo.com>
+
+	* gsearchtool.c, gsearchtool-callbacks.c:  Cleanup the 
+	various error message dialogs.
+	
+2002-10-07  Dennis M. Cranston <dennis_cranston@yahoo.com>
+
+	* gsearchtool-support.c:  Fixed open_file_with_application() 
+	to correctly handle GnomeVFSMimeApplication command strings
+	containing multiple arguments.
+	
+2002-10-07  Dennis M. Cranston <dennis_cranston@yahoo.com>
+
+	* gsearchtool-support.[ch]:  Added function launch_file().
+	
+	* gsearchtool-callbacks.c:  Added ablity to execute
+	binary programs by calling launch_file() when attempting
+	to open the file.
+	
+2002-10-07  Dennis M. Cranston <dennis_cranston@yahoo.com>
+
+	* gsearchtool-support.c:  Included the missing check
+	for unknown mime types - part of my previous commit.
+	
+2002-10-07  Dennis M. Cranston <dennis_cranston@yahoo.com>
+
+	* gsearchtool-support.c:  Added code to detect the 
+	'link (broken)' file type.
+	
+2002-10-06  Dennis M. Cranston <dennis_cranston@yahoo.com>
+
+	* gsearchtool-support.c:  Improved file type 
+	detection of symbolic links.
+	
+2002-10-06  Dennis M. Cranston <dennis_cranston@yahoo.com>
+
+	* gsearchtool-callbacks.c:  Updated the no viewer
+	available error message dialog.
+	
+2002-10-06  Dennis M. Cranston <dennis_cranston@yahoo.com>
+
+	* gsearchtool.[ch]:  Added icon theme structure to 
+	our interface structure and defined it in main().
+	
+	*gsearchtool-support.[ch]:  Removed get_mime_name().
+	Rewrote get_file_icon_with_mime_type() to use the
+	new icon theme lookup functions.  
+	<< REQUIRES LIBGNOMEUI CVS HEAD>>
+	  
+2002-10-06  Dennis M. Cranston <dennis_cranston@yahoo.com>
+
+	* gsearchtool.c, gsearchtool-support.c:  Improve 
+	file type recognition by replacing calls to the
+	function gnome_vfs_mime_type_from_name() with 
+	gnome_vfs_get_mime_type().
+	
+2002-10-05  Dennis M. Cranston <dennis_cranston@yahoo.com>
+
+	* gsearchtool.c:  Minor string changes.
+	
+	* help/C/gnome-search-tool.xml:  Updated for string
+	changes.
+	
+	* help/C/figures/gnome-search-tool_window.png: Updated
+	for string changes.
+	
+2002-10-05  Dennis M. Cranston <dennis_cranston@yahoo.com>
+
+	* gsearchtool-support.[ch]:  Added function 
+	is_component_action_type().
+	
+	* gsearchtool-callbacks.c:  Fix for bug report #94858, 
+	before opening a file with nautilus call 
+	is_component_action_type() to check that the file has 
+	a default action type of component.  
+	
+2002-10-05  Dennis M. Cranston <dennis_cranston@yahoo.com>
+
+	* gsearchtool-callbacks.c:  Fixed popup menu for 
+	result window's scrolled horizontally.
+	
+2002-10-03  Dennis M. Cranston <dennis_cranston@yahoo.com>
+	
+	* gsearchtool.c:  Update command line argument parsing for 
+	the recent constraint changes.  Also, set the spin button's 
+	initial value based on command line arguments.
+	
+2002-10-03  Dennis M. Cranston <dennis_cranston@yahoo.com>
+
+	* gsearchtool.c:  Use a Gtk spin button entry for
+	constraints of type time and number.
+	 
+2002-10-03  Dennis M. Cranston <dennis_cranston@yahoo.com>
+
+	* gsearchtool.c:  Moved 'File is empty' constraint
+	into the size group.  
+	
+	* help/C/gnome-search-tool.xml:  Updated to reflect
+	new order of constraints.
+	
+2002-10-03  Dennis M. Cranston <dennis_cranston@yahoo.com>
+
+	* gsearchtool.[ch]:  Added support for horizontal 
+	separators in the available search constraints 
+	option menu.  Added several separators to the option 
+	menu and grouped the similar options.  Also, 
+	simplified phrasing of a few the constraints.   
+	
+	* C/help/gnome-search-tool.xml:  Updated to reflect
+	the new search constraint order and phrasing.
+	 
+2002-10-03  Dennis M. Cranston <dennis_cranston@yahoo.com>
+
+	* gsearchtool.c:  In handle_search_command_stderr_io()
+	reset truncate_error_msgs to false when handling
+	the G_IO_HUP signal.
+	
+2002-10-02  Dennis M. Cranston <dennis_cranston@yahoo.com>
+
+	* gsearchtool.c:  Prevent possible search deadlock by 
+	rewriting handle_search_command_stderr_io() to handle 
+	both G_IO_IN and G_IO_HUP signals.
+	
+2002-09-27  Dennis M. Cranston <dennis_cranston@yahoo.com>
+
+	* gsearchtool.c:  Do not escape the pattern string
+	passed to fnmatch().
+	
+2002-09-26  Dennis M. Cranston <dennis_cranston@yahoo.com>
+
+	* gsearchtool.c:  Replace g_pattern_match_string()
+	with fnmatch() so that searches of the type "*.[ch]" 
+	will work.
+	
+2002-09-25  Dennis M. Cranston <dennis_cranston@yahoo.com>
+
+	* gsearchtool.c: Add "'!' -type p" argument to exclude 
+	FIFO pipes from find command results.
+	 
+2002-09-25  Dennis M. Cranston <dennis_cranston@yahoo.com>
+
+        * gnome-search-tool.1: Update man page.
+	
+2002-09-25  Dennis M. Cranston <dennis_cranston@yahoo.com>
+
+	* AUTHORS: added myself.
+	
+2002-09-25  Pat Costello <patrick.costello@sun.com>
+
+	* gnome-search-tool.xml
+	* gnome-search-tool-C.omf
+	* gnome-search-tool_window.png
+	Updates to reflect application UI changes.
+	
+2002-09-23  Dennis M. Cranston <dennis_cranston@yahoo.com>
+
+	* gsearchtool.c:  Cleanup g_path_get_basename() and
+	g_pattern_match_string() warnings.
 	
 2002-09-18  Dennis M. Cranston <dennis_cranston@yahoo.com>
 
-	* gsearchtool.c:  Substitute "-xdev" for "-mount" as the 
-	xdev option is compatible with the current versions of 
-	the GNU, Solaris, HP, and AIX find commands.
+	* gsearchtool.c:  Substitute "-xdev" for "-mount".
+	The xdev option is compatible with the current GNU, 
+	Solaris, HP, and AIX versions of the find command.
 	
+2002-09-16  Dennis M. Cranston <dennis_cranston@yahoo.com>
+
+	* gsearchtool-callbacks.c:  Correct right click and double
+	click handling in the click_file_cb() function.
+	
+2002-09-16  Dennis M. Cranston <dennis_cranston@yahoo.com>
+
+	* gsearchtool-callbacks.c:  Toggle the sensitivity
+	of the "Save Results As..." popup menu option.
+	 
+2002-09-16  Dennis M. Cranston <dennis_cranston@yahoo.com>
+
+	* gsearchtool-callbacks.c:  Fix bug #93435 -- for a
+	dialog window the escape key should close the dialog.
+	So, if a search is not running then close the dialog.
+	
+	* gsearchtool.c:  Append an "(aborted)" message to
+	the status bar text if a search is canceled. 
+	
+2002-09-16  Dennis M. Cranston <dennis_cranston@yahoo.com>
+
+	* gsearchtool.c, gsearchtool-callbacks.[ch]:  Fix bug 
+	#93395 "Popup menu cannot be invoked with the keyboard".
+	
+2002-09-16  Dennis M. Cranston <dennis_cranston@yahoo.com>
+
+	* gsearchtool.c:  Limit the tree view hack to only 
+	the first few pixels.
+	 
+2002-09-15  Dennis M. Cranston <dennis_cranston@yahoo.com>
+	
+	* gsearchtool.c:  Fix the progress bar related warnings
+	caused when the user closes the window while a search 
+	is in progress.
+
+2002-09-15  Dennis M. Cranston <dennis_cranston@yahoo.com>
+	
+	* gsearchtool.c:  Take another 'crack' at my previous 
+	check-in.
+	
+2002-09-15  Dennis M. Cranston <dennis_cranston@yahoo.com>
+
+	* gsearchtool.c:  Implement work around for an annoying tree 
+	view feature -- if the scroll position is at the top of the 
+	tree view then remain at the top.
+	 
+2002-09-14  Dennis M. Cranston <dennis_cranston@yahoo.com>
+
+	* gsearchtool.c:  correct typo in popt usage.
+	
+2002-09-14  Dennis M. Cranston <dennis_cranston@yahoo.com>
+	
+	* gsearchtool-callbacks.c:  (HIG) Remove the '...' from open 
+	and open folder in the popup menu.
+	
+2002-09-14  Dennis M. Cranston <dennis_cranston@yahoo.com>
+
+	* gsearchtool.c:  Do not show the tree view headers unless
+	a file is found.
+	 
+2002-09-14  Dennis M. Cranston <dennis_cranston@yahoo.com>
+
+	* gsearchtool.[ch]:  Add the rest of the popt command line 
+	arguments.  We have an argument for all available constraints.
+	This should finish up bug report #81198.  For details, run 
+	'gnome-search-tool --help'. 
+	
+	* gsearchtool-callbacks.c:  Move window geometry adjustments
+	from add_constraint_cb() to add_constraint().
+	
+2002-09-13  Dennis M. Cranston <dennis_cranston@yahoo.com>
+
+	* gsearchtool.c:  Add popt command line argument handling.
+	This is the first part of my changes for bug report #81198.  
+	The new application options are:
+  	  --name=STRING       Set the text of 'file is named'
+  	  --path=STRING       Set the text of 'look in folder'
+  	  --sortby=STRING     Sort files by one of the following:
+                              name, folder, size, type, or date
+  	  --descending        Set sort order to descending, the
+                              default is ascending
+  	  --autostart         Automatically start a search
+
+2002-09-13  Dennis M. Cranston <dennis_cranston@yahoo.com>
+
+	* gsearchtool.c:  Adjust minimum width.
+	
+2002-09-13  Dennis M. Cranston <dennis_cranston@yahoo.com>
+
+	* gsearchtool.c:  Add gnome search tool image to the 
+	window.  I am told this makes the dialog more inviting.
+	 
+2002-09-12  Dennis M. Cranston <dennis_cranston@yahoo.com>
+
+	* gsearchtool.c:  Fix 'file is named' entry to remember
+	text between runs.
+	
+2002-09-12  Dennis M. Cranston <dennis_cranston@yahoo.com>
+
+	* gsearchtool-callbacks.c:  Fix escape_key_press_cb().
+	
+2002-09-11  Dennis M. Cranston <dennis_cranston@yahoo.com>	
+	 
+	"Time is passing. Yet, for the United States of America, there 
+	will be no forgetting September the 11th. We will remember 
+	every rescuer who died in honor. We will remember every family 
+	that lives in grief. We will remember the fire and ash, the last 
+	phone calls, the funerals of the children." 
+	-- President George W. Bush (11/11/2001)
+	
+	Remember those who lost their lives on September 11, 2001.  
+	Honor the spirit of freedom that will live forever.
+	
+	* gsearchtool.c:  Clicking on the OK button in the browse 
+	dialog would incorrectly start a search, so it had been 
+	commented out.  Fixed this by hooking up a 'key_press_event' 
+	signal for the look in folder entry widget.  Also, filter out 
+	the "No such file or directory" errors from our error message
+	dialog.
+	
+	* gsearchtool-callbacks.[ch]:  Add look_in_folder_key_press_cb().
+		
+2002-09-10  Dennis M. Cranston <dennis_cranston@yahoo.com>
+
+	* gsearchtool.c:  Filter out grep errors from our error 
+	message dialog.  Remove a g_warning() debug statement.
+	
+2002-09-10  Dennis M. Cranston <dennis_cranston@yahoo.com>
+
+	* gsearchtool.c:  Synchronize the default find commands
+	for when additional constraints are shown or hidden.  Since 
+	the "-mount" argument is enabled by default, this means 
+	negating the "Search only this filesystem" constraint.  
+	The constraint is now "Search other filesystems".
+
+2002-09-07  Dennis M. Cranston <dennis_cranston@yahoo.com>
+
+	* gsearchtool.c:  Change the column sizing to use
+	auto mode.
+	
+2002-09-07  Dennis M. Cranston <dennis_cranston@yahoo.com>
+
+	* gsearchtool.c:  Since the menu bar has been removed,
+	apply the dialog window type hint.
+	
+2002-09-05  Dennis M. Cranston <dennis_cranston@yahoo.com>
+
+	* gsearchtool-callbacks.c:  Fix a minor drap and drop
+	crash that would occur if no files were found.
+	
+2002-09-05  Dennis M. Cranston <dennis_cranston@yahoo.com>
+
+	* gsearchtool.c:  Keep the aspect ratio when scaling
+	the icons.
+	
+2002-09-05  Dennis M. Cranston <dennis_cranston@yahoo.com>
+
+	* gsearchtool-support.h:  Add file_extension_is().
+	
+	* gsearchtool-support.c:  Improve the code for grabbing 
+	the icons.  Use the current nautilus theme if available.
+	Fixes bug #92177.
+	
+	* gsearchtool-support.c:  Run nautilus with "--sm-disable 
+	--no-desktop --no-default-window" arguments.  
+	
+	* gsearchtool.c:  Increase the icon size from 20 to 24 pixels.
+	Append the G_DIR_SEPARATOR_S to the search path.
+	
+2002-08-24  Dennis M. Cranston <dennis_cranston@yahoo.com>
+
+	* gsearchtool.c:  Implement drag and drop support to copy
+	files from search results. 
+	
+	* gsearchtool-callbacks.[ch]: Add drag_file_cb().
+	
+2002-08-20  Dennis M. Cranston <dennis_cranston@yahoo.com>
+
+	* gsearchtool.c: ** FIX BUG #81821 **  GUI enhancements
+	
+	Merge tabs together.  Place advanced constraints in a 
+	disclosure widget.  
+	
+	Implement changes suggested from discussions on 
+	usability@gnome.org.  (1) various string changes, (2) remove 
+	the menu bar, (3) add help and close buttons, and (4) add 
+	right click menu for search results.
+	
+	Also, add search by size constraints. Fixes bug #90774.
+	
+	* gsearchtool-support.[ch]:  new files for the support 
+	functions.
+	
+	* gsearchtool-callbacks.[ch]:  new files for callback 
+	functions.
+	
+	* Makefile.am:  build gsearchtool-support.[ch] and
+	gsearchtool-callbacks.[ch].
+	
+2002-08-12  Dennis M. Cranston <dennis_cranston@yahoo.com>
+
+	* gsearchtool.c:  Use the stock button (GTK_STOCK_FIND).
+  	Also, remove a few unused #defines.
+	 
+2002-08-10  Dennis M. Cranston <dennis_cranston@yahoo.com>
+	
+	* gsearchtool.c:  Fix the 'Matches regular expression' 
+	advanced rule.  Use regcomp() & regexec() calls, since
+	the previous logic was not g_spawn_* compatible. 
+
+2002-08-10  Dennis M. Cranston <dennis_cranston@yahoo.com>
+
+	* gsearchtool.c:  Add more appropriate accessibility
+	descriptions for both the 'enabled' check buttons and 
+	the 'remove' buttons.  Also, add a ":" to end of text, 
+	number, and time advanced rule types.  Bug #90278.
+
 2002-08-09  Glynn Foster <glynn.foster@sun.com>
 
-	* gnome-search-tool.1: Update man page.
+        * gnome-search-tool.1: Update man page.
 
+2002-08-04  Dennis M. Cranston <dennis_cranston@yahoo.com>
+
+	* gsearchtool.c:  Add "File contains text" rule
+	for advanced tab.  Bug #83444.
+	
+2002-08-01  Dennis M. Cranston <dennis_cranston@yahoo.com>
+
+	* gsearchtool.c:  For simple searches, filter out the hidden  
+	files from search results.  Bug #84723.
+
+2002-07-31  Dennis M. Cranston <dennis_cranston@yahoo.com>
+
+	* gsearchtool.c:  Use the find command for simple searches of
+	the home directory.  Bug #89535.
+
+2002-07-30  Dennis M. Cranston <dennis_cranston@yahoo.com>
+
+	* gsearchtool.c:  Rewrite of custom fork/exec commands
+	to use glib's g_spawn_* functions.  Fixes #81199.
+	 
 2002-07-29  Frederic Crozat  <fcrozat@mandrakesoft.com>
 
 	* Makefile.am: don't add -I$(includedir), it causes
 	gcc 3.1.x warning when prefix=/usr
+	
+2002-07-16  Glynn Foster  <glynn.foster@sun.com>
+
+ 	* gsearchtool.c: (create_find_page): s/Starting in folder/Start         
+	in folder. Fixes bug #88221. We should do a UI/String review on                                                                                         
+	this stuff though :/                                                    
 
 2002-07-05  Glynn Foster  <glynn.foster@sun.com>
 

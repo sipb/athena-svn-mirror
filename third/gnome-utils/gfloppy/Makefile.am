@@ -13,9 +13,16 @@ Mimedir = $(datadir)/mime-info
 @INTLTOOL_DESKTOP_RULE@
 @INTLTOOL_KEYS_RULE@
 
+schemadir = $(sysconfdir)/gconf/schemas
+schemas_in_file = gfloppy.schemas.in
+schema_DATA = $(schemas_in_file:.schemas.in=.schemas)
+schema_source_data = $(foreach file, $(schema_DATA), $(srcdir)/$(file))
+@INTLTOOL_SCHEMAS_RULE@
+
 EXTRA_DIST = \
 	$(gfloppyapp_in_files) \
 	$(gfloppyapp_DATA) \
+	$(schema_DATA) \
 	gfloppy.keys \
 	gfloppy.keys.in \
 	gfloppy.mime
@@ -34,6 +41,10 @@ install-data-local: gfloppy.desktop gfloppy.keys
 	$(mkinstalldirs) $(DESTDIR)$(Mimedir)
 	$(INSTALL_DATA) $(srcdir)/gfloppy.mime $(DESTDIR)$(Mimedir)/
 	$(INSTALL_DATA) $(srcdir)/gfloppy.keys $(DESTDIR)$(Mimedir)/
+
+	if test -z "$(DESTDIR)" ; then \
+		GCONF_CONFIG_SOURCE=$(GCONF_SCHEMA_CONFIG_SOURCE) $(GCONFTOOL) --makefile-install-rule $(schema_source_data) ; \
+	fi
 
 dist-hook:
 	if test -d pixmaps; then \

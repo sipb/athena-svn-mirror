@@ -55,16 +55,15 @@ int dialog_yesno_with_default(const char *title, const char *prompt, int height,
 	int i, x, y, key = GTK_RESPONSE_YES, button = 0;
 	WINDOW *dialog;
 
-
 	if (gnome_mode) {
 
 		GtkWidget *w  = gtk_dialog_new_with_buttons (title,
 				NULL,
 				GTK_DIALOG_DESTROY_WITH_PARENT,
-				GTK_STOCK_YES,
-				GTK_RESPONSE_YES,
 				GTK_STOCK_NO,
 				GTK_RESPONSE_NO,
+				GTK_STOCK_YES,
+				GTK_RESPONSE_YES,
 				NULL);
 		GtkWidget *hbox;
 		GtkWidget *vbox;
@@ -73,30 +72,11 @@ int dialog_yesno_with_default(const char *title, const char *prompt, int height,
 			gtk_dialog_set_default_response (GTK_DIALOG(w),GTK_RESPONSE_YES);                
 		else
 			gtk_dialog_set_default_response (GTK_DIALOG(w),GTK_RESPONSE_NO);                
-			
-		gtk_window_set_title(GTK_WINDOW(w), title);
-		
-		hbox = gtk_hbox_new(FALSE, 0);
-		vbox = gtk_vbox_new(FALSE, 0);
 
-                if(width != 0)
-                {
-                    label_autowrap(vbox, prompt, width);
-		}
-                else
-                {
-                    GtkWidget *t = gtk_label_new(prompt);
-                    gtk_box_pack_start(GTK_BOX(vbox), t, TRUE, TRUE, 0);
-                    gtk_misc_set_alignment(GTK_MISC(t), -1, 0);
-                }
-                
-		gtk_box_pack_start(GTK_BOX(hbox), vbox, TRUE, TRUE, 0);
+		label_autowrap(GTK_DIALOG (w)->vbox, prompt, width);
 
-		gtk_box_pack_start(GTK_BOX(GTK_DIALOG(w)->vbox), 
-			hbox,
-			TRUE, TRUE, GNOME_PAD);
 		gtk_window_set_position(GTK_WINDOW(w), GTK_WIN_POS_CENTER);
-		
+
 		gtk_signal_connect(GTK_OBJECT(w), "response", GTK_SIGNAL_FUNC(callback_yn), NULL);
 		gtk_signal_connect(GTK_OBJECT(w), "close", GTK_SIGNAL_FUNC(callback_err), NULL);
 		gtk_widget_show_all(w);
@@ -163,13 +143,12 @@ int dialog_yesno_with_default(const char *title, const char *prompt, int height,
 		case 'n':
 			delwin(dialog);
 			return 1;
-
 		case M_EVENT + 'y':	/* mouse enter... */
 		case M_EVENT + 'n':	/* use the code for toggling */
 			if(key == M_EVENT + 'y')
-				button = GTK_RESPONSE_NO;
-			else
 				button = GTK_RESPONSE_YES;
+			else
+				button = GTK_RESPONSE_NO;
 
 		case TAB:
 		case KEY_UP:
@@ -194,11 +173,13 @@ int dialog_yesno_with_default(const char *title, const char *prompt, int height,
 				return 0;
 			else if (button == GTK_RESPONSE_NO)
 				return 1;
+
 		case ESC:
 			break;
 		}
 	}
 
+	
 	delwin(dialog);
 	return -1;		/* ESC pressed */
 }

@@ -1,6 +1,214 @@
+2003-01-27  Glynn Foster  <glynn.foster@sun.com>
+
+	* src/main.c: (main): Feel the pain. Free the icon path and
+	not the image.
+
+2003-01-25  Dennis Cransotn <dennis_cranston@yahoo.com>
+
+	* main.c: (main) Define icon_path, so gfloppy can be compiled.  
+	Also, fix two minor compiler warnings.
+	
+2003-01-22  Glynn Foster  <glynn.foster@sun.com>
+
+	* main.c, gfloppy-config.c: Fixes for #104078, #104333 crashing on startup,
+	thanks to Victor Soroka, Jonathan Blanford and Frederic Crozat. 
+	Add back the window icon using gnome_icon_theme_lookup.
+
+2002-12-02  Glynn Foster  <glynn.foster@sun.com>
+
+	* gfloppy.desktop.in: Update for StartupNotify
+
+2002-11-29  Fernando Herrera <fherrera@onirica.com>
+
+       * gfloppy.desktop.in: add X-GNOME-BUGZILLA stuff
+
+2002-11-19  Stephane Demurget  <demurgets@free.fr>
+
+	* src/gfloppy2.glade: more HIG-compliant simulating the position of
+	the buttons on a dialog. 
+
+2002-10-30  Stephane Demurget  <demurgets@free.fr>
+
+	* src/gfloppy2.glade: made really more HIG-compliant. There's some
+	issues left: how to nicely place the help button, and the ()'d text.
+	Removed the checkbutton to set the volume name on an advice of Calum.
+	I don't know if having an empty volume name is okay (note both mkdosfs,
+
+	* src/main.c (on_format_button_clicked): fixed some weirdness related
+	to the floppy type.
+	Fixed the volume name setting propagation and other thingies.
+	Added a check for spaces in the volume name.
+
+	* src/progress.c (progress_close_callback): killed, since
+	progress_response_callback already handles this.
+	(progress_response_callback): handles delete_event more gracefully.
+	A lot of additionnal fixes and cleanups.
+
+2002-09-19  Jacob Berkman  <jacob@ximian.com>
+
+	* src/Makefile.am (gfloppy_SOURCES): add gfloppy-config.h
+
 2002-08-09  Glynn Foster  <glynn.foster@sun.com>
 
-	* src/gfloppy.1: Update man page.
+        * src/gfloppy.1: Update man page.
+
+2002-07-14  Stephane Demurget  <demurgets@free.fr>
+
+	* src/gfloppy2.glade:
+	* src/main.c: fixed a crash when closing the formatting window due to
+	the progress dialog's parent not being a window. The toplevel widget
+	is now a window, since it will be easier to add more feature and
+	due to a recent commit to libwnck, dialogs which have no parent aren't
+	displayed in the tasklist. I managed to make it similar to a dialog,
+	but that's only temporary, this will evolve in some sort of GnomeApp
+	soon I believe.
+
+	* src/gfloppy.c: get rid of the system () call and use this
+	(execute_fs_creation_cmd): impl. function to spawn the correct
+	command and display the stderr output in a nice error dialog if
+	needed. There's a little check for the mke2fs starting signature
+	because of the output done on stderr whereas mkdosfs does it on	stdout.
+	I suppose they both write all their errors on stderr though.
+	(make_*_cmd): renamed make_*_cmd_args to return the command arguments
+	array to pass to g_spawn as a GPtrArray.
+
+2002-07-13  Stephane Demurget  <demurgets@free.fr>
+
+	* gfloppy.schemas.in:
+	* src/gfloppy-config.[ch]: replaced the quick_format & badblocks_check
+	gconf settings by default_formatting_mode, and changed the type of the
+	fs_type key to a string to allow adding other filesystems.
+	We also check for gconf errors everywhere from now on.
+
+	* src/gfloppy.[ch]:
+	* src/main.c: removed use of quick_format & badblocks_check in
+	favour of a new GFloppyFormattingType, since it's really more logical
+	to use due to the new radiobuttons UI.
+	(quick_format_cb_toggled_cb): kill.
+	(get_selected_formatting_mode): impl. to make the code much cleaner and
+	(on_format_button_clicked): use it here
+	(main): and there.
+
+	* src/gfloppy2.glade: overall cleanup with frames for each physical,
+	filesystem and format mode settings.
+	Rearranged that's stupid UI behaviour in favour of radiobuttons thanks
+	to another good advice from Jonathan.
+	Advice: never use the "coding while being with {friends + beer}" combo,
+	this really doesn't work at all ;)
+	Removed the unuseful left frame & icon here and 
+	* src/main.c (main): there.
+
+2002-07-12  Stephane Demurget  <demurgets@free.fr>
+
+	* gfloppy.schemas.in: made the explanations less redundant and
+	s/bb_check/bad_blocks_check/ which is more significant.
+
+	* src/gfloppy.c (badblocks_check_cleanup): made the code a little bit
+	prettier thanks to Jonathan.
+
+	* src/main.c: removed the type_option global var.
+	(on_format_button_clicked): and use libglade here to get a reference.
+	I also made a mistake syncing with Glynn's latest changes so the code
+	wouldn't compile because of an unknown var.
+
+	* Makefile.am: fix a really stupid bug in my "last change before
+	going to sleep" which was preventing the schema's installation.
+
+2002-07-09  Stephane Demurget  <demurgets@free.fr>
+
+	* .cvsignore: added gfloppy.schemas.
+
+	* src/main.c: rearranged to work with Glynn's latest changes.
+
+	* gfloppy.schemas.in:
+	* src/gfloppy-config.[ch]:
+	* src/main.c: added the prefer_mkdosfs_backend gconf key for the
+	advanced user to choose from the mkdosfs and mtools FAT formatting
+	backends if they are both available. mkdosfs is now the default, as 
+	I don't feel to confident with the new mbadblocks support :)
+
+	* src/gfloppy.c (format_ext2fs): removed the condition on the quick
+	format to put the progress up to 100% when everything is fine.
+	(format_fat): added the fat pendant of the ext2fs bad blocks new check
+	code.
+	(write_badblocks_file): impl. to factorize the bad blocks list -> file
+	managements.
+	(badblocks_check_cleanup): ditto but for freeing the bad blocks check
+	resources.
+	(execute_mbadblocks), (mbadblocks_std*_data_available): impl. to spawn
+	and monitor the mbadblocks command output looking for bad clusters
+	numbers.
+
+	* src/main.c (set_note_label_visibility): deactivate the bad blocks
+	checkbutton and set it unsensitive if we can't make the bad blocks
+	check.
+	(main): moved here the choice of the FAT backend.
+	(set_note_label_visibility): replaced by,
+	(type_option_changed_cb): impl. to take care of the UI consistency
+	using quick_format_cb_toggled_cb as an auxiliary function featuring
+	a signal emition.
+
+2002-07-03  Stephane Demurget  <demurgets@free.fr>
+
+	* gfloppy.schemas.in: added.
+	* Makefile.am: updated for the new gconf schemas.
+	* src/gfloppy-config.[ch]: added.
+	* src/main.c (main): added gconf support to remember the last
+	session settings.
+	
+2002-07-02  Stephane Demurget  <demurgets@free.fr>
+
+	* src/gfloppy.c (format_floppy): no need to duplicates the low-level
+	format code for each method, so it's factorized here now.
+
+	* src/gfloppy2.glade:
+	* src/main.c (set_note_label_visibility): impl. to help user in case
+	mbadblocks isn't installed.
+	(quick_format_button_toggled_cb): impl. to avoid a race condition.
+
+2002-07-01  Stephane Demurget  <demurgets@free.fr>
+
+	* src/gfloppy.c (make_mformat_cmd): added support for the volume name
+	setting plus cleaned the things up.
+
+	* src/main.c (init_commands): removed unuseful statements and only
+	exit if you can't format neither in ext2fs nor in fat. Provides an
+	error dialog if this is the case.
+
+2002-06-30  Stephane Demurget  <demurgets@free.fr>
+
+	* src/fdformat.c (fdformat_disk): changed the error message if the
+	geometry can't be accessed. Maybe explains/close #76496.
+
+	* src/gfloppy2.glade:
+	* src/gfloppy.[ch]:
+	* src/main.c (set_widget_sensitive_from): impl.,
+	(main): and used it to add support for the volume name setting.
+
+	* src/gfloppy.h,
+	* src/gfloppy.c (make_mkdosfs_cmd): impl. Still no used ATM.
+
+	* src/gfloppy.c (format_ext2fs): the initial impl. only detected bad
+	blocks, but didn't mark them. So we now scan the bad blocks just after
+	the low level format (if any), and before passing a bad blocks file to
+	mke2fs -l, so the filesystem is created with the bad blocks marked.
+	The FAT support still need to be impl. the same way, though.
+
+2002-06-29  Stephane Demurget  <demurgets@free.fr>
+
+	* src/badblocks.c (test_ro):
+	* src/gfloppy.c:
+	* src/progress.c: Some love given to this small utility so it could
+	display the number of bad blocks found during the r/o test.
+	Fixes part of #50734.
+
+2002-06-28  Stephane Demurget  <demurgets@free.fr>
+
+	* src/gfloppy.c (format_fat): fixed a bunch of mem leaks.
+
+	* src/progress.c (setup_progress_and_run): fixed the dialog's title
+	and added some padding.
+	(read_stdinput): changed the cancelled dialog to be an info.
 
 2002-07-07  Glynn Foster  <glynn.foster@sun.com>
 

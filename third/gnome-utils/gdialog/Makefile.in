@@ -82,9 +82,7 @@ GNOMEVFS_LIBS = @GNOMEVFS_LIBS@
 GNOME_UTILS_CFLAGS = @GNOME_UTILS_CFLAGS@
 GNOME_UTILS_LIBS = @GNOME_UTILS_LIBS@
 INSTOBJEXT = @INSTOBJEXT@
-INTLDEPS = @INTLDEPS@
 INTLLIBS = @INTLLIBS@
-INTLOBJS = @INTLOBJS@
 INTLTOOL_CAVES_RULE = @INTLTOOL_CAVES_RULE@
 INTLTOOL_DESKTOP_RULE = @INTLTOOL_DESKTOP_RULE@
 INTLTOOL_DIRECTORY_RULE = @INTLTOOL_DIRECTORY_RULE@
@@ -99,6 +97,7 @@ INTLTOOL_SCHEMAS_RULE = @INTLTOOL_SCHEMAS_RULE@
 INTLTOOL_SERVER_RULE = @INTLTOOL_SERVER_RULE@
 INTLTOOL_SHEET_RULE = @INTLTOOL_SHEET_RULE@
 INTLTOOL_SOUNDLIST_RULE = @INTLTOOL_SOUNDLIST_RULE@
+INTLTOOL_THEME_RULE = @INTLTOOL_THEME_RULE@
 INTLTOOL_UI_RULE = @INTLTOOL_UI_RULE@
 INTLTOOL_UPDATE = @INTLTOOL_UPDATE@
 INTLTOOL_XML_RULE = @INTLTOOL_XML_RULE@
@@ -116,7 +115,8 @@ PAM_PREFIX = @PAM_PREFIX@
 PKG_CONFIG = @PKG_CONFIG@
 POFILES = @POFILES@
 POSUB = @POSUB@
-RANLIB = @RANLIB@
+PO_IN_DATADIR_FALSE = @PO_IN_DATADIR_FALSE@
+PO_IN_DATADIR_TRUE = @PO_IN_DATADIR_TRUE@
 SCROLLKEEPER_CONFIG = @SCROLLKEEPER_CONFIG@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
@@ -386,6 +386,17 @@ distdir: $(DISTFILES)
 	      || exit 1; \
 	  fi; \
 	done
+checklist.o: checklist.c dialog.h ../config.h
+dialog.o: dialog.c dialog.h ../config.h
+guage.o: guage.c dialog.h ../config.h
+inputbox.o: inputbox.c dialog.h ../config.h
+menubox.o: menubox.c dialog.h ../config.h
+mouse.o: mouse.c dialog.h ../config.h
+msgbox.o: msgbox.c dialog.h ../config.h
+rc.o: rc.c dialog.h ../config.h colors.h
+textbox.o: textbox.c dialog.h ../config.h
+util.o: util.c dialog.h ../config.h colors.h
+yesno.o: yesno.c dialog.h ../config.h
 
 info-am:
 info: info-recursive

@@ -191,10 +191,10 @@ fdformat_disk (GFloppy *floppy)
 	}
 	
 	if (ioctl(ctrl,FDGETPRM,(long) &param) < 0) {
-		fd_print (floppy, _("ECould not determine current format type"));
+		fd_print (floppy, _("ECould not determine current floppy geometry."));
 		return -1;
 	}
-	
+
 /*	printf(_("%s-sided, %d tracks, %d sec/track. Total capacity %d kB."), 
 	param.head ? _("Double") : _("Single"),param.track,param.sect,param.size >> 1);*/
 	if (format_disk (floppy, ctrl) != 0) {

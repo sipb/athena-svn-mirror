@@ -1,0 +1,439 @@
+<gconfschemafile>
+    <schemalist>
+      <schema>
+        <key>/schemas/apps/gfloppy/default_fs</key>
+        <applyto>/apps/gfloppy/default_fs</applyto>
+        <owner>gfloppy</owner>
+        <type>string</type>
+        <default>ext2</default>
+        <locale name="C">
+          <short>Default filesystem type</short>
+          <long>ext2 for the linux native filesystem or fat for the DOS filesystem.</long>
+        </locale>
+
+        <locale name="ca">
+          <short>Tipus de sistema de fitxers</short>
+          <long>ext2 per al sistema de fitxers natiu o fat per al sistema de fitxers del DOS.</long>
+        </locale>
+
+        <locale name="cs">
+          <short>Výchozí typ systému souborů</short>
+          <long>ext2 pro nativní souborový systém Linuxu, nebo fat pro souborový systém DOS.</long>
+        </locale>
+
+        <locale name="da">
+          <short>Forvalgt filsystemtype</short>
+          <long>Angiv ext2 for det indføde Linux-filsystem eller FAT for filsystemet til DOS.</long>
+        </locale>
+
+        <locale name="de">
+          <short>Vorgabe-Typ des Dateisystems</short>
+          <long>Mögliche Werte sind »ext2« (für das native Linux-Dateisystem) und »fat« (für das DOS-Dateisystem).</long>
+        </locale>
+
+        <locale name="el">
+          <short>Εξ ορισμού τύπος συστήματος αρχείων</short>
+          <long>ext2 για το σύστημα αρχείων linux ή fat για το σύστημα αρχείων DOS.</long>
+        </locale>
+
+        <locale name="es">
+          <short>Tipo de sistema de archivos predeterminado</short>
+          <long>ext2 para el sistema de archivos nativo de Linux o fat para el sistema de archivos DOS.</long>
+        </locale>
+
+        <locale name="et">
+          <short>Failisüsteemi vaiketüüp</short>
+          <long>ext2 - linuxi failisüsteem, fat - DOSi failisüsteem.</long>
+        </locale>
+
+        <locale name="fi">
+          <short>Tiedostojärjestelmän oletustyyppi</short>
+          <long>ext2 = linuxin oma tiedostojärjestelmä, fat = DOS-tiedostojärjestelmä</long>
+        </locale>
+
+        <locale name="fr">
+          <short>Type de système de fichiers par défaut</short>
+          <long>ext2 comme système de fichiers natif linux ou fat pour le système de fichiers DOS.</long>
+        </locale>
+
+        <locale name="hu">
+          <short>Alapértelmezett fájlrendszertípus</short>
+          <long>ext2 a Linux saját fájlrendszeréhez vagy fat a DOS fájlrendszeréhez.</long>
+        </locale>
+
+        <locale name="it">
+          <short>Tipo di file system predefinito</short>
+          <long>ext2 per il filesystem nativo di linux o fat per il filesystem DOS.</long>
+        </locale>
+
+        <locale name="ja">
+          <short>デフォルトのファイルシステム</short>
+          <long>Linux ネイティブ・ファイルシステム (ext2) または DOS ファイルシステム (FAT)</long>
+        </locale>
+
+        <locale name="ko">
+          <short>기본 파일 시스템 형식</short>
+          <long>리눅스 기본 파일시스템인 ext2 또는 도스 파일시스템인 fat</long>
+        </locale>
+
+        <locale name="lv">
+          <short>Noklusētais failsistēmas tips</short>
+          <long>ext2 linux iedzimtajai failsistēmai vai fat DOS failsistēmai.</long>
+        </locale>
+
+        <locale name="mn">
+          <short>Файлын системийн стандарт төрөл</short>
+          <long>Боломжит утгууд »ext2« (native Linux-файлын систем) ба »fat« (DOS-Файлын систем).</long>
+        </locale>
+
+        <locale name="ms">
+          <short>Jenis sistem fail default</short>
+          <long>ext2 untuk sistemfail linux natif atau fat untuk DOS</long>
+        </locale>
+
+        <locale name="nl">
+          <short>Standaard bestandssysteemtype</short>
+          <long>ext2 voor het linux-eigen bestandssysteem of fat voor het DOS-bestandssysteem.</long>
+        </locale>
+
+        <locale name="no">
+          <short>Forvalgt filsystemtype</short>
+          <long>ext2 for linux&apos; eget filsystem eller fat for DOS-filsystemet.</long>
+        </locale>
+
+        <locale name="pl">
+          <short>Domyślny system plików</short>
+          <long>ext2 dla rodzimego systemu plików w Linuksie lub fat dla DOS-owego systemu plików.</long>
+        </locale>
+
+        <locale name="pt_BR">
+          <short>Tipo de sistema de arquivos padrão</short>
+          <long>ext2 para o sistema de arquivos nativo do linux ou fat para sistema de arquivos DOS</long>
+        </locale>
+
+        <locale name="ro">
+          <short>Tipul implicit de sistem de fişiere</short>
+          <long>ext2 pentru sistemul de fişiere nativ linux sau fat pentru sistemul de fişiere DOS.</long>
+        </locale>
+
+        <locale name="sk">
+          <short>Štandardný typ súborového systému</short>
+          <long>ext2 pre Linux alebo fat pre DOS.</long>
+        </locale>
+
+        <locale name="sl">
+          <short>Privzeta vrsta datotečnega sistema</short>
+          <long>ext2 za Linuxu domač datotečni sistem ali fat za datotečni sistem DOSa.</long>
+        </locale>
+
+        <locale name="sv">
+          <short>Standardfilsystemstyp</short>
+          <long>ext2 för linux inbyggda filsystem eller fat för DOS-filsystemet.</long>
+        </locale>
+
+        <locale name="tr">
+          <short>Öntanımlı dosya sistemi türü</short>
+          <long>Linux native dosya sistemi için ext2 ya da DOS dosya sistemi için fat</long>
+        </locale>
+
+        <locale name="vi">
+          <short>Loại hệ thống tập tin mặc định</short>
+          <long>Ext2 cho hệ thống tập tin chuẩn của Linux hoặc FAt cho hệ thống tập tin của DOS</long>
+        </locale>
+
+        <locale name="wa">
+          <short>Prémetowe sôre pol sistinme di fitchîs</short>
+          
+        </locale>
+
+        <locale name="zh_TW">
+          <short>預設檔案系統類型</short>
+          <long>ext2 表示 linux 沿用的檔案系統，或是 fat 表示 DOS 的檔案系統。</long>
+        </locale>
+      </schema>
+
+      <schema>
+        <key>/schemas/apps/gfloppy/default_formatting_mode</key>
+        <applyto>/apps/gfloppy/default_formatting_mode</applyto>
+        <owner>gfloppy</owner>
+        <type>int</type>
+        <default>1</default>
+        <locale name="C">
+          <short>Default formatting mode</short>
+          <long>0 for the quick format, 1 for a standard one (adds a low-level format) and finally 2 for a thorough format (adds a bad blocks scan).</long>
+        </locale>
+
+        <locale name="ca">
+          <short>Mode de format per defecte</short>
+          <long>0 per al format ràpid, 1 per al estàndard (afegeix un format de baix nivell) i 2 per a un format exhaustiu (afegeix un escaneig de blocs amb errors).</long>
+        </locale>
+
+        <locale name="cs">
+          <short>Výchozí režim formátování</short>
+          <long>0 pro rychlé formátování, 1 pro standardní (přidá nízkoúrovňové formátování) a konečně 2 pro důkladné formátování (přidá kontrolu vadných bloků)</long>
+        </locale>
+
+        <locale name="da">
+          <short>Forvalgt formateringstype</short>
+          <long>0 for hurtig formatering, 1 for standard (tilføjer en lavniveauformatering) og 2 for en grundig formatering (tilføjer kontrol for ugyldige blok)</long>
+        </locale>
+
+        <locale name="de">
+          <short>Vorgabe-Formatiermodus</short>
+          <long>Mögliche Werte sind 0 (Schnelle Formatierung), 1 (Standard-Formatierung, einschließlich Low-Level-Formatierung) und 2 (Vollständige Formatierung, zusätzliche Überprüfung auf fehlerhafte Blöcke).</long>
+        </locale>
+
+        <locale name="el">
+          <short>Εξ ορισμού λειτουργία μορφοποίησης</short>
+          <long>0 για γρήφορη μορφοποίηση, 1 για κανονική (προσθέτει μια μορφοποίηση χαμηλού επιπέδου) και τέλος 2 για πλήρη μορφοποίηση (προσθέτει έλεγχο για εσφαλμένους τομείς).</long>
+        </locale>
+
+        <locale name="es">
+          <short>Modo de formateo predeterminado</short>
+          <long>0 para dar formato rápido, 1 para el modo normal (realiza un formato de bajo nivel) y finalmente 2 para un formato completo (realiza un búsqueda de bloques dañados).</long>
+        </locale>
+
+        <locale name="et">
+          <short>Vormindamise vaikeresiim</short>
+          <long>0 - kiire vormindamine, 1 - tavaline (lisab madaltaseme vormindamise), 2 - põhjalik (lisab vigaste blokkide otsingu).</long>
+        </locale>
+
+        <locale name="fi">
+          <short>Oletusalustustapa</short>
+          <long>0 = pika-alustus, 1 = standardi alustus (sisältää matalan tason alustuksen) ja 2 = perinpohjainen alustus (sisältää viallisten lohkojen etsinnän).</long>
+        </locale>
+
+        <locale name="fr">
+          <short>Mode de formatage par défaut</short>
+          <long>0 pour le formatage rapide, 1 pour le standard (ajoute un formatage de bas niveau) et enfin 2 pour un formatage complet (ajoute une vérification des blocs défectueux).</long>
+        </locale>
+
+        <locale name="hu">
+          <short>Alapértelmezett formázási mód</short>
+          <long>0 a gyors formázást, 1 a szabványos formázás (alacsony szintű formázás is) és 2 a teljes formázás (hibás blokkok keresése is)</long>
+        </locale>
+
+        <locale name="it">
+          <short>Modalità di formattazione predefinita</short>
+          
+        </locale>
+
+        <locale name="ja">
+          <short>デフォルトの初期化モード</short>
+          <long>クィック・フォーマット: 0、標準フォーマット (含む、低レベルフォーマット): 1、完全フォーマット (含む、不正ブロックのチェック): 2</long>
+        </locale>
+
+        <locale name="ko">
+          <short>기본 포맷 모드</short>
+          <long>0은 빠른 포맷, 1은 표준 포맷 (저수준 포맷 더함), 그리고 2는 안전포맷 (배드 블럭 검사 더함)입니다.</long>
+        </locale>
+
+        <locale name="lv">
+          <short>Noklusētais formatēšanas režīms</short>
+          <long>0 ātrai formatēšanai, 1 standarta (pievieno zemā-līmeņa formatēšanu) un visbeidzot 2 viscaur formatēšanai (pievieno slikto sektoru skanēšanu).</long>
+        </locale>
+
+        <locale name="mn">
+          <short>Стандарт формат горим</short>
+          <long>Боломжит утгууд 0 (Түргэн формат), 1 (Стандарт формат нэмэлт Low-Level-формат) ба 2 (Бүрэн формат, нэмэлт алдаатай блок шалгалтай).</long>
+        </locale>
+
+        <locale name="ms">
+          <short>Mod pengformatan default</short>
+          <long>0 untuk format pantas, 1 untuk yang piawai (tambah pengformatan aras-rendah) dan akhirnya 2 untuk pengformatan thorough (tambah pengimbasan blok teruk).</long>
+        </locale>
+
+        <locale name="nl">
+          <short>Standaard formatteermodus</short>
+          <long>0 voor de snelle formattering, 1 voor een standaardformattering (op laag niveau) en tenslotte 2 voor een volledige formattering (controleert op onbetrouwbare blokken).</long>
+        </locale>
+
+        <locale name="no">
+          <short>Forvalgt formateringsmodus</short>
+          <long>0 for hurtigformatering, 1 for standard formatering (lavnivåformat) og 2 for grundig formatering (sjekk etter dårlige blokker).</long>
+        </locale>
+
+        <locale name="pl">
+          <short>Domyślny tryb formatowania</short>
+          <long>Wartość 0 oznacza szybkie formatowanie, 1 - standardowe (wraz z formatowaniem niskopoziomowym), a 2 - formatowanie pełne (z wyszukiwaniem błędnych bloków).</long>
+        </locale>
+
+        <locale name="pt_BR">
+          <short>Modo de formatação padrão</short>
+          <long>0 para formatação rapida, 1 para formatação padrão (adiciona formatação de baixo nível) e 2 para formatação completa (adiciona checagem de blocos defeituosos).</long>
+        </locale>
+
+        <locale name="ro">
+          <short>Modul implicit de formatare</short>
+          <long>0 pentru formatare rapidă, 1 pentru cea standard (adaugă o formatare de nivel jos) şi in sfârşit 2 pentru o formatare completă (face şi o scanare pentru sectoare defecte).</long>
+        </locale>
+
+        <locale name="sk">
+          <short>Štandardný režim formátovania</short>
+          <long>0 pre rýchle formátovanie, 1 pre štandardné (nízkoúrovňové formátovanie) a 2 pre priebežné formátovanie (pridá hľadanie chybných blokov).</long>
+        </locale>
+
+        <locale name="sl">
+          <short>Privzet način formatiranja</short>
+          <long>0 za hitro formatiranje, 1 za običajno (doda nizkostopenjsko formatiranje) in 2 za celovito formatiranje (doda preverjanje slabih blokov).</long>
+        </locale>
+
+        <locale name="sv">
+          <short>Standardformateringsläge</short>
+          <long>0 för snabbformatering, 1 för en standardformatering (lägger till en lågnivåformatering) och slutligen 2 för en grundlig formatering (lägger till blockkontroll).</long>
+        </locale>
+
+        <locale name="tr">
+          <short>Öntanımlı biçimlendirme kipi</short>
+          <long>Hızlı biçimlendirme için 0, standart biçimlendirme için 1(düşük seyive biçimlendirme ekler), ve tam biçimlendirme için 2 (bozuk alan denetimi ekler)</long>
+        </locale>
+
+        <locale name="vi">
+          <short>Chế độ định dạng mặc định</short>
+          <long>0 là định dạng nhanh. 1 là định dạng chuẩn (thêm phần định dạng cấp thấp) và cuối cùng là 2 cho định dạng đầy đủ (thêm phần kiểm tra khối hư).</long>
+        </locale>
+
+        <locale name="wa">
+          <short>Prémetou môde d&apos; abwesnaedje</short>
+          
+        </locale>
+
+        <locale name="zh_TW">
+          <short>預設格式化方式</short>
+          <long>0 表示快速格式化，1 表示標準格式化 (加上低階格式化)，而 2 表示較徹底的格式化 (加上壞磁區掃描)。</long>
+        </locale>
+      </schema>
+
+      <schema>
+        <key>/schemas/apps/gfloppy/prefer_mkdosfs_backend</key>
+        <applyto>/apps/gfloppy/prefer_mkdosfs_backend</applyto>
+        <owner>gfloppy</owner>
+        <type>bool</type>
+        <default>TRUE</default>
+        <locale name="C">
+          <short>ADVANCED USERS ONLY - Default backend for FAT formatting</short>
+          <long>TRUE to set mkdosfs as the preferred FAT formatting backend or FALSE to set mtools as the preferred FAT formatting backend.</long>
+        </locale>
+
+        <locale name="ca">
+          <short>NOMÉS USUARIS AVANÇATS - rerefons per al format FAT</short>
+          <long>VERTADER per a establir mkdosfs com el rerefons de format FAT preferit o FALS per a establir mtools com el rerefons de format FAT preferit.</long>
+        </locale>
+
+        <locale name="cs">
+          <short>POUZE PRO POKROČILÉ UŽIVATELE - Výchozí program pro formátování FAT</short>
+          <long>TRUE nastaví jako preferovaný program pro formátování FAT mkdosfs, FALSE nastaví jako preferovaný program pro formátování FAT mtools.</long>
+        </locale>
+
+        <locale name="da">
+          <short>AVANCEREDE BRUGER KUN - forvalgt bagende for FAT-formatering</short>
+          <long>TRUE for at benytte mkdosfs som den foretrukne FAT-formateringsbagende eller FALSE for at benytte mtools som den foretrukne FAT-formateringsbagende.</long>
+        </locale>
+
+        <locale name="de">
+          <short>NUR FÜR ERFAHRENE BENUTZER - Vorgabe-Programm zur FAT-Formatierung</short>
+          <long>Soll mkdosfs als bevorzugtes Programm zur FAT-Formatierung verwendet werden? Andernfalls wird bevorzugt das Programmpaket mtools verwendet.</long>
+        </locale>
+
+        <locale name="el">
+          <short>ΜΟΝΟ ΓΙΑ ΠΡΟΧΩΡΗΜΕΝΟΥΣ ΧΡΗΣΤΕΣ - Εξ ορισμού backend  για μπορφοποίηση FAT </short>
+          <long>TRUE για να ορίσετε το mkdosfs ως προτιμώμενο backend μορφοποίησης FAT, ή FALSE για να ορίσετε το mtools ως προτιμώμενο backend μορφοποίησης FAT.</long>
+        </locale>
+
+        <locale name="es">
+          <short>SOLO PARA USUARIOS AVANZADOS - Aplicación predeterminada de segundo plano para formateo FAT</short>
+          <long>TRUE para seleccionar «mkdosfs» como la aplicación predeterminada de segundo plano para el formateo FAT o FALSE para seleccionar «mtools» como la aplicación predeterminada de segundo plano para el formateo FAT.</long>
+        </locale>
+
+        <locale name="fi">
+          <short>VAIN ASIANTUNTIJOILLE - Oletusohjelma FAT-alustukseen</short>
+          <long>TOSI asettaa FAT-alustuksen oletussovellukseksi mkdosfs:n, EPÄTOSI asettaa FAT-alustuksen oletussovellukseksi mtools:in.</long>
+        </locale>
+
+        <locale name="fr">
+          <short>UTILISATEURS AVANCÉS UNIQUEMENT - utilitaire par défaut pour le formatage FAT</short>
+          <long>VRAI pour définir mkdosfs comme utilitaire préféré de formatage FAT ou FAUX pour définir mtools comme utilitaire préféré de formatage FAT</long>
+        </locale>
+
+        <locale name="hu">
+          <short>CSAK HALADÓ FELHASZNÁLÓKNAK - A FAT formázás alapértelmezett háttere</short>
+          <long>A TRUE (igaz) beállítás az mkdosfs-t jelöli ki az alapértelmezett FAT-formázó programként. A FALSE (hamis) az mtools-t jelöli ki alapértelmezett FAT-formázó programként.</long>
+        </locale>
+
+        <locale name="ja">
+          <short>ADVANCED USERS ONLY - FAT フォーマットのデフォルト・バックエンド</short>
+          <long>TRUE: mkdosfs を FAT フォーマットのバックエンドに指定、FALSE: mtools を FAT フォーマットのバックエンドに指定</long>
+        </locale>
+
+        <locale name="ko">
+          <short>고급 사용자 전용 - FAT 포맷의 기본 백엔드</short>
+          <long>참은 FAT 포맷 백엔드로 mkdosfs로 설정, 거짓은 mtool로 설정</long>
+        </locale>
+
+        <locale name="lv">
+          <short>TIKAI PIEREDZĒJUŠIEM LIETOTĀJIEM - Noklusētā FAT formatēšanas aizmugure</short>
+          <long>TRUE, lai iestatītu mkdosfs kā vēlamo FAT formatēšanas aizmuguri, vai FALSE, lai iestatītu mtools kā vēlamo FAT formatēšanas aizmuguri.</long>
+        </locale>
+
+        <locale name="mn">
+          <short>ЗӨВХӨН ТУРШЛАГАТАЙ ХЭРЭГЛЭГЧ - FAT-форматын стандарт программ</short>
+          <long>mkdosfs -г эрхэм FAT-форматлагчаар хэрэглэх үү? Тийм бол ҮНЭНҮгүй бол mtools программын пакет хэрэглэгдэнэ.</long>
+        </locale>
+
+        <locale name="ms">
+          <short>PENGGUNA MAHIS SAHAJA - Backend default untuk pengformatan FAT</short>
+          <long>BENAR untuk menetapkan mkdosfs sebagai pengformat FAT belakangtabir digemari atau PALSU untuk menetapkan mtools sebagai pengformat FAT belakangtabir digemari.</long>
+        </locale>
+
+        <locale name="nl">
+          <short>ALLEEN VOOR GEVORDERDE GEBRUIKERS - Standaard back-end voor FAT-formattering</short>
+          <long>TRUE om &apos;mkdosfs&apos; in te stellen als geprefereerd FAT-formatteringsback-end of FALSE om &apos;mtools&apos; hiervoor in te stellen.</long>
+        </locale>
+
+        <locale name="no">
+          <short>KUN AVANSERTE BRUKERE - Forvalgt system for FAT-formatering</short>
+          <long>SANN for å sette mkdosfs som foretrukket system for formatering av FAT eller USANN for å bruke mtools.</long>
+        </locale>
+
+        <locale name="pl">
+          <short>TYLKO DLA ZAAWANSOWANYCH UŻYTKOWNIKÓW - domyślny program formatujący dla FAT-u</short>
+          <long>Włączona opcja określa, że jako preferowany program formatujący FAT powinien być użyty mkdosfs. Wyłączenie opcji powoduje przełączenie na program mtools.</long>
+        </locale>
+
+        <locale name="pt_BR">
+          <short>SOMENTE USUÁRIOS AVAÇADOS - Configuração padrão para formatação FAT</short>
+          <long>VERDADEIRO para usar mkdosfs como padrão para formatação FAT ou FALSO para mtools como padrão para formatação FAT.</long>
+        </locale>
+
+        <locale name="ro">
+          <short>PENTRU UTILIZATORI AVANSAŢI - Aplicaţia implicită de formatare FAT</short>
+          <long>TRUE pentru a seta mkdosfs ca aplicaţie preferată pentru formatare FAT sau FALSE pentru a seta mtools ca aplicaţie preferată pentru formatare FAT.</long>
+        </locale>
+
+        <locale name="sk">
+          <short>IBA PRE POKROČILÝCH - Štandardný nástroj pre formátovanie FAT</short>
+          <long>TRUE, ak sa má pre formátovanie FAT použiť mkdosfs, FALSE pre mtools.</long>
+        </locale>
+
+        <locale name="sl">
+          <short>LE NAPREDNI UPORABNIKI - Privzet delavni program za formatiranje FAT</short>
+          <long>TRUE (resnično) za nastavitev mkdosfs kot privzetega delavnega programa za formatiranje FAT ali FALSE za uporabo mtools.</long>
+        </locale>
+
+        <locale name="sv">
+          <short>ENDAST AVANCERADE ANVÄNDARE - Standardbakände för FAT-formatering</short>
+          <long>SANT för att ställa in mkdosfs som den FAT-formateringsbakände som föredras eller FALSKT för att ställa in mtools som den föredragna FAT-formateringsbakänden.</long>
+        </locale>
+
+        <locale name="vi">
+          <short>CHỈ VỚI NGƯỜI DÙNG NÂNG CAO - Backend mặc định cho định dạng FAT</short>
+          <long>TRUE là dùng mkdosfs để định dạng FAT hoặc FALSE là dùng mtools để định dạng FAT.</long>
+        </locale>
+
+        <locale name="zh_TW">
+          <short>※只適合進階使用者※ ─ 格式化 FAT 所使用的預設背景程序</short>
+          <long>TRUE 表示優先使用 mkdosfs 作為格式化 FAT 檔案系統的背景程序，或是 FALSE 表示優先使用 mtools。</long>
+        </locale>
+      </schema>
+    </schemalist>
+</gconfschemafile>

@@ -12,8 +12,7 @@ always_built_SUBDIRS = \
 	gcharmap 	\
 	gcalc 		\
 	gsearchtool	\
-	gdictsrc	\
-	meat-grinder
+	gdictsrc
 
 SUBDIRS = \
 	$(always_built_SUBDIRS)	\
@@ -28,8 +27,8 @@ DIST_SUBDIRS = \
 EXTRA_DIST = \
 	gnome-utils.spec.in \
 	gnome-utils.spec \
-	xmldocs.make \
 	omf.make \
+	xmldocs.make \
 	intltool-extract.in \
 	intltool-merge.in \
 	intltool-update.in

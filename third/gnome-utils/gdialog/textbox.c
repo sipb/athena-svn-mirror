@@ -69,7 +69,6 @@ static GtkTextBuffer *dialog_textbox_load_file (const char *filename)
 
 	return textBuff;
 }
-
 /*
  * Display text from a file in a dialog box.
  */
@@ -106,13 +105,11 @@ int dialog_textbox(const char *title, const char *file, int height, int width)
 		/*
 		 * Create the dialog with everything packed in it nicely.
 		 */
-		dialog  = gtk_dialog_new_with_buttons (title, NULL,
-                                          GTK_DIALOG_DESTROY_WITH_PARENT,
+		dialog = gtk_dialog_new_with_buttons (title, NULL,
+					  GTK_DIALOG_DESTROY_WITH_PARENT,
                                           GTK_STOCK_OK,
                                           GTK_RESPONSE_OK,
                                           NULL);
-		gtk_window_set_position (GTK_WINDOW (dialog),
-					 GTK_WIN_POS_CENTER);		
 
 		sw = gtk_scrolled_window_new (NULL, NULL);
 		gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (sw),
@@ -129,12 +126,14 @@ int dialog_textbox(const char *title, const char *file, int height, int width)
 
 		gtk_widget_set_size_request (textView, 8*width, 7*height);
 
+		gtk_window_set_position (GTK_WINDOW (dialog),
+					 GTK_WIN_POS_CENTER);
+		gtk_widget_show (dialog);
+
 		gtk_signal_connect(GTK_OBJECT(dialog), "close",
 			GTK_SIGNAL_FUNC(cancelled), NULL);
 		gtk_signal_connect(GTK_OBJECT(dialog), "response",
 			GTK_SIGNAL_FUNC(okayed), NULL);
-		gtk_widget_show (dialog);
-		gtk_widget_grab_focus (text);
 		gtk_main();
 		return 0;
 	}

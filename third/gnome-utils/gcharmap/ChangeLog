@@ -1,3 +1,85 @@
+2003-01-24  Glynn Foster  <glynn.foster@sun.com>
+
+	* help/C/gnome-character-map-C.omf:
+	* help/C/gnome-character-map.xml: New 2.2 docs from the Sun
+	team.
+
+2002-12-02  Glynn Foster  <glynn.foster@sun.com>
+
+	* gnome-character-map.desktop.in: Update for StartupNotify
+
+2002-11-18  Fernando Herrera <fherrera@onirica.com>
+
+	* gnome-character-map.desktop.in: add X-GNOME-BUGZILLA stuff
+
+2002-11-07  Emmanuel Vecchia <emmanuel.vecchia@sun.com>
+
+	* src/callbacks.c: (set_status_bar): Fix up the messages
+	sent to the status bar for the character codes. Fixes 
+	#94751.
+
+2002-10-15  Glynn Foster  <glynn.foster@sun.com>
+
+	* src/callbacks.c, src/interface.c: Dup the initial font
+	string - fixes #95757.
+
+2002-09-17  Muktha <muktha.narayan@wipro.com>
+	
+	* src/interface.c, src/callbacks.h, src/callbacks.c: update 
+	  the statusbar when character buttons are navigated with the 
+	  keyboard. Fixes #93475
+
+2002-09-11  Irene Ryan <irene.ryan@sun.com>
+
+	* help/C/gnome-character-map.xml: updated to reflect changes
+	  to the UI.
+	* help/C/gnome-character-map-C.omf: updated to reflect new
+	  release date and version number of manual.
+	* help/C/figures/gnome-character-map.png: reflects updated UI
+	    
+2002-09-06  Glynn Foster  <glynn.foster@sun.com>
+
+	* src/interface.c: Set the mnemonic label for the font selector
+	widget. Fixes #92675.
+
+Fri Aug 30 13:20:12 2002  HideToshi Tajima  <hidetoshi.tajima@sun.com>
+
+	* src/asciiselect.c
+	(spin_button_hex_input_func): add
+	(spin_button_hex_output_func): add
+	(cb_ascii_select_spin_changed): modify
+	(ascii_select_init): modify
+	use hex input and output (like "0x41" for "A") in "Select
+	character" dialog, and change maximum input value to 0xff to 0xffff
+	
+2002-08-22  Glynn Foster  <glynn.foster@sun.com>
+
+	* src/interface.c: s/GNOME Character Map/Character Map as per
+	HIG. Fixes #91440.
+
+2002-08-16  Federic Zhang <federic.zhang@sun.com>
+
+	* src/callbacks.c, src/interface.c, src/interface.h: 
+	Preserve the font across pages.
+
+2002-08-15  Federic Zhang <federic.zhang@sun.com>
+
+	* src/callbacks.c: Insert at cursor. Fixes #90821 in part.
+
+2002-08-15  Hongli Lai	<h.lai@chello.nl>
+
+	* src/interface.[ch]: added main_app_set_font().
+	  Removed unused variables. Added font picker button.
+	* src/callbacks.[ch] (cb_fontpicker_font_set):
+	  Changed arguments. Calls main_app_set_font().
+	* src/asciiselect.c: Removed unused variables. Fixes #86527.
+
+2002-08-15  James Su <suzhe@turbolinux.com.cn>
+
+	* src/callbacks.c, src/callbacks.h, src/interface.c,
+	  src/interface.h: Extend to unicode characters. Fixes 
+	  #87303 in part.
+
 2002-08-12  Glynn Foster <glynn.foster@sun.com>
 
 	* doc/*: Remove, we don't use it anymore.
@@ -7,45 +89,40 @@
 
 2002-08-08  Glynn Foster <glynn.foster@sun.com>
 
-	* src/gnome-character-map.1: Update man page.
+        * src/gnome-character-map.1: Update man page.
 
-2002-08-05  Muktha  <muktha.narayan@wipro.com>
-
-	* src/interface.c, interface.h, asciiselect.c: Make the 
+2002-07-31  Muktha  <muktha.narayan@wipro.com>
+        * src/interface.*, asciiselect.c, callback.*: Make the 
 	character buttons respect the font change. Fixes #86827.
-
-2002-07-15  Glynn Foster  <glynn.foster@sun.com>
-
-	* src/callbacks.c: Remove dumb stuff which breaks the build.
 
 2002-07-11  Glynn Foster  <glynn.foster@sun.com>
 
-        * src/asciiselect.c: (ascii_select_init): Add mnemonics
-        * src/interface.c: (edit_menu_set_sensitivity): De-sensitize the
-        Cut and Copy items when there is nothing in the text entry.
-        * src/menus.c: Change mnemonic to avoid a clash.
-        Fixes #87907, 87908.
+	* src/asciiselect.c: (ascii_select_init): Add mnemonics
+	* src/interface.c: (edit_menu_set_sensitivity): De-sensitize the 
+	Cut and Copy items when there is nothing in the text entry.
+	* src/menus.c: Change mnemonic to avoid a clash. 
+	Fixes #87907, 87908.
 
 2002-07-05  Glynn Foster  <glynn.foster@sun.com>
 
-        * gnome-character-map.desktop.in: s/DocPath/X-GNOME-DocPath.
-        Conforms to spec now.
+	* gnome-character-map.desktop.in: s/DocPath/X-GNOME-DocPath. 
+	Conforms to spec now.
 
 2002-07-05  Glynn Foster  <glynn.foster@sun.com>
 
-        * src/callbacks.c, src/interface.h: Remove some uneccessary
-        headers and rearrange.
+	* src/callbacks.c, src/interface.h: Remove some uneccessary 
+	headers and rearrange.
 
 2002-07-04 John Fleck <jfleck@inkstain.net>
 
-        * help/C/Makefile.am
-        fix typo that was preventing screenshots from being
-        installed
+	* help/C/Makefile.am
+	fix typo that was preventing screenshots from being
+	installed
 
 2002-07-01  Glynn Foster <glynn.foster@sun.com>
 
-        * src/callbacks.c, src/callbacks.h, src/interface.c: Fix silly
-        caused by me and restructure some code.
+	* src/callbacks.c, src/callbacks.h, src/interface.c: Fix silly
+	caused by me and restructure some code.
 
 2002-07-01  Mats-Ole Persson <polli@hadjaha.org>
 

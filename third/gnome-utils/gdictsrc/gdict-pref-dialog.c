@@ -1,4 +1,4 @@
-/* $Id: gdict-pref-dialog.c,v 1.1.1.3 2003-01-04 21:13:43 ghudson Exp $ */
+/* $Id: gdict-pref-dialog.c,v 1.1.1.4 2003-01-29 20:32:42 ghudson Exp $ */
 
 /*
  *  Mike Hughes <mfh@psilord.com>
@@ -215,7 +215,7 @@ create_dialog (GDictPrefDialog *pref_dialog)
     gtk_misc_set_alignment (GTK_MISC (server_label), 1, 0.5);
     gtk_table_attach_defaults (pref_dialog->table, server_label, 0, 1, 0, 1);
     
-    button = gtk_button_new_with_mnemonic (_("De_fault"));
+    button = gtk_button_new_with_mnemonic (_("De_fault Server"));
     gtk_table_attach_defaults (pref_dialog->table, button, 2, 3, 0, 1);
     g_signal_connect (G_OBJECT (button), "clicked",
     		      G_CALLBACK (set_default_server), pref_dialog);
@@ -237,7 +237,7 @@ create_dialog (GDictPrefDialog *pref_dialog)
     g_signal_connect (G_OBJECT (pref_dialog->port_entry), "focus_out_event",
     		      G_CALLBACK (set_port_cb), pref_dialog);
                                
-    button = gtk_button_new_with_mnemonic (_("Def_ault"));
+    button = gtk_button_new_with_mnemonic (_("Def_ault Port"));
     gtk_table_attach_defaults (pref_dialog->table, button, 2, 3, 1, 2);
     g_signal_connect (G_OBJECT (button), "clicked",
     		      G_CALLBACK (set_default_port), pref_dialog);

@@ -29,7 +29,6 @@
 #define MON_WINDOW_HEIGHT          150
 
 #define MON_MAX_NUM_LOGS         4   /* Max. num of logs to monitor       */
-#define MON_MAX_NUM_LINES        100 /* Max. num of lines in window       */
 #define MON_MODE_VISIBLE         1   /* Displays log as it is monitored   */
 #define MON_MODE_INVISIBLE       2   /* Monitors log without output       */
 #define MON_MODE_ICONIFIED       3   /* Monitors log showing only an icon */
@@ -62,7 +61,6 @@ void InitMonitorData (void);
  */
 
 extern GtkWidget *app;
-extern ConfigData *cfg;
 extern Log *curlog, *loglist[];
 extern int numlogs, curlognum;
 
@@ -75,8 +73,6 @@ static int monitorcount = 0;
 static gboolean mon_opts_visible = FALSE, mon_win_visible = FALSE;
 static gboolean mon_exec_actions = FALSE, mon_hide_while_monitor = FALSE;
 static gboolean main_app_hidden = FALSE;
-static long new_pos_offset = 0L;
-static gboolean is_first_line = TRUE;
 
 /* ----------------------------------------------------------------------
    NAME:         MonitorMenu
@@ -87,11 +83,12 @@ static gboolean is_first_line = TRUE;
 void
 MonitorMenu (GtkWidget * widget, gpointer user_data)
 {
-   GtkWidget *hbox, *hbox2;
+   GtkWidget *hbox, *hbox2, *hbox3;
    GtkWidget *label;
    GtkWidget *scrolled_win;
    GtkWidget *list_item;
    GtkWidget *button;       
+   GtkTooltips *tooltips;
    GtkWidget *vbox2;       
    GtkBox *vbox;
    char buffer[10];
@@ -103,28 +100,46 @@ MonitorMenu (GtkWidget * widget, gpointer user_data)
    if (curlog == NULL || mon_opts_visible)
       return;
      
-   /* Clear loglist[i].mon_on flag */
-   for (i=0; i<numlogs; i++)
-     loglist[i]->mon_on = FALSE;
+   monitorcount = 0;
 
    if (monoptions == NULL)
      {
-       /* monoptions = gtk_dialog_new ();   */
-      monoptions = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+      monoptions = gtk_dialog_new ();   
       gtk_container_set_border_width (GTK_CONTAINER (monoptions), 5);
-      gtk_window_set_title (GTK_WINDOW (monoptions), _("Monitor options"));
-      gtk_signal_connect (GTK_OBJECT (monoptions), "destroy",
-			  GTK_SIGNAL_FUNC (close_monitor_options),
-			  NULL);
+      gtk_window_set_title (GTK_WINDOW (monoptions), _("Monitor Options"));
 
-      vbox = (GtkBox *)gtk_vbox_new (FALSE, 2);
-      gtk_container_set_border_width (GTK_CONTAINER (vbox), 4);
-      gtk_container_add (GTK_CONTAINER (monoptions), GTK_WIDGET (vbox));
-      gtk_widget_show (GTK_WIDGET (vbox)); 
+      button = gtk_dialog_add_button (GTK_DIALOG (monoptions),
+                                     "Ac_tions", GTK_RESPONSE_NONE);
+      gtk_signal_connect (GTK_OBJECT (button), "clicked",
+                                     GTK_SIGNAL_FUNC (mon_edit_actions), srclist_view);
 
-      label = gtk_label_new (_("Choose logs to monitor"));
+      button = gtk_dialog_add_button (GTK_DIALOG (monoptions),
+                                     GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL);
+      gtk_signal_connect (GTK_OBJECT (button), "clicked",
+                                     GTK_SIGNAL_FUNC (close_monitor_options), NULL);
+
+      button = gtk_dialog_add_button (GTK_DIALOG (monoptions),
+                                     GTK_STOCK_OK, GTK_RESPONSE_OK);
+      gtk_signal_connect (GTK_OBJECT (button), "clicked",
+                                     GTK_SIGNAL_FUNC (go_monitor_log), NULL);
+
+      gtk_dialog_set_default_response (GTK_DIALOG (monoptions),
+                                     GTK_RESPONSE_OK); 
+   
+      vbox = GTK_BOX (GTK_DIALOG (monoptions)->vbox);
+
+      hbox3 = gtk_hbox_new (FALSE, 2);
+      gtk_box_pack_start (vbox, hbox3, TRUE, TRUE, 0);
+      gtk_widget_show (hbox3);
+
+      label = gtk_label_new (_("Choose logs to monitor:"));
       gtk_misc_set_alignment(GTK_MISC (label), 0.0, 0.0);
-      gtk_box_pack_start (vbox, label, TRUE, TRUE, 0);
+      gtk_box_pack_start (GTK_BOX (hbox3), label, TRUE, TRUE, 0);
+      gtk_widget_show (label);
+
+      label = gtk_label_new (_("Currently monitored logs:"));
+      gtk_misc_set_alignment(GTK_MISC (label), 1.0, 0.0);
+      gtk_box_pack_start (GTK_BOX (hbox3), label, TRUE, TRUE, 0);
       gtk_widget_show (label);
 
       hbox = gtk_hbox_new (FALSE, 2);
@@ -135,7 +150,7 @@ MonitorMenu (GtkWidget * widget, gpointer user_data)
       scrolled_win = gtk_scrolled_window_new (NULL, NULL);
       gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolled_win),
                                       GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
-      gtk_widget_set_usize (scrolled_win, 160, 100);
+      gtk_widget_set_size_request (scrolled_win, 160, 100);
       gtk_container_set_border_width (GTK_CONTAINER (scrolled_win), 3);
       gtk_box_pack_start (GTK_BOX (hbox), scrolled_win, TRUE, TRUE, 0);
       gtk_widget_show (scrolled_win);
@@ -154,29 +169,34 @@ MonitorMenu (GtkWidget * widget, gpointer user_data)
       gtk_container_add (GTK_CONTAINER (scrolled_win), srclist_view);
       gtk_widget_show (srclist_view);
 
-      for (i = 0; i < numlogs; i++)
-        {
-          gtk_list_store_append (srclist, (GtkTreeIter *)&newiter);
-          gtk_list_store_set (srclist, (GtkTreeIter *)&newiter, 0,
-                              loglist[i]->name, 1, i, -1);
-        }
+      for (i = 0; i < numlogs; i++) {
+          if (loglist[i]->mon_on == FALSE) {
+              gtk_list_store_append (srclist, (GtkTreeIter *)&newiter);
+              gtk_list_store_set (srclist, (GtkTreeIter *)&newiter, 0,
+                                  loglist[i]->name, 1, i, -1);
+          }
+      }
 
       vbox2 = gtk_vbox_new (FALSE, 2);
-      gtk_box_pack_start ( GTK_BOX (hbox), vbox2, TRUE, TRUE, 0);
+      gtk_box_pack_start ( GTK_BOX (hbox), vbox2, FALSE, FALSE, 0);
       gtk_widget_show (vbox2);
 
+      tooltips = gtk_tooltips_new ();
+
       /* Arrowed buttons */
-      button = gtk_button_new_with_label (_("Add >>"));
+      button = gtk_button_new_from_stock (GTK_STOCK_ADD);
+      gtk_tooltips_set_tip (tooltips, button, _("Add logs to monitor"), NULL); 
       gtk_widget_show (button);
-      gtk_box_pack_start (GTK_BOX (vbox2), button, FALSE, TRUE, 0);
+      gtk_box_pack_start (GTK_BOX (vbox2), button, FALSE, FALSE, 0);
       gtk_signal_connect (GTK_OBJECT (button), "clicked",
                           (GtkSignalFunc) mon_add_log,
                           NULL);
 
       /* Remove button */ 
-      button = gtk_button_new_with_label (_("Remove <<"));
+      button = gtk_button_new_from_stock (GTK_STOCK_REMOVE);
+      gtk_tooltips_set_tip (tooltips, button, _("Remove logs from monitor"), NULL);
       gtk_widget_show (button);
-      gtk_box_pack_start (GTK_BOX (vbox2), button, FALSE, TRUE, 0);
+      gtk_box_pack_start (GTK_BOX (vbox2), button, FALSE, FALSE, 0);
       gtk_signal_connect (GTK_OBJECT (button), "clicked",
                           (GtkSignalFunc) mon_remove_log,
                           NULL);
@@ -187,7 +207,7 @@ MonitorMenu (GtkWidget * widget, gpointer user_data)
       scrolled_win = gtk_scrolled_window_new (NULL, NULL);
       gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolled_win),
                                       GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
-      gtk_widget_set_usize( scrolled_win, 160, 100);
+      gtk_widget_set_size_request( scrolled_win, 160, 100);
       gtk_box_pack_start (GTK_BOX (hbox), scrolled_win, TRUE, TRUE, 0);
       gtk_widget_show (scrolled_win);
 
@@ -206,13 +226,22 @@ MonitorMenu (GtkWidget * widget, gpointer user_data)
       gtk_container_set_border_width (GTK_CONTAINER (scrolled_win), 3);
       gtk_widget_show (destlist_view);
 
+      for (i = 0; i < numlogs; i++) {
+          if (loglist[i]->mon_on == TRUE) {
+              monitorcount++;
+              gtk_list_store_append (destlist, (GtkTreeIter *)&newiter);
+              gtk_list_store_set (destlist, (GtkTreeIter *)&newiter, 0,
+                                  loglist[i]->name, 1, i, -1);
+          }
+      }
+
       /* Make bottom part of window  -------------------------------- */
       hbox2 = gtk_hbox_new (FALSE, 2);
       gtk_box_pack_start (vbox, hbox2, TRUE, TRUE, 0);
       gtk_widget_show (hbox2);
 
       /* Check boxes */
-      button = gtk_check_button_new_with_label (_("Hide app"));
+      button = gtk_check_button_new_with_mnemonic (_("_Hide Application"));
       gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (button), FALSE);
       gtk_box_pack_start (GTK_BOX (hbox2), button, FALSE, TRUE, 0);
       gtk_signal_connect (GTK_OBJECT (button), "clicked",
@@ -220,7 +249,7 @@ MonitorMenu (GtkWidget * widget, gpointer user_data)
                           srclist_view);
       gtk_widget_show (button);
       
-      button = gtk_check_button_new_with_label (_("Exec actions"));
+      button = gtk_check_button_new_with_mnemonic (_("_Execute Actions"));
       gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (button), TRUE);
       gtk_box_pack_start (GTK_BOX (hbox2), button, FALSE, TRUE, 0);
       gtk_signal_connect (GTK_OBJECT (button), "clicked",
@@ -231,34 +260,8 @@ MonitorMenu (GtkWidget * widget, gpointer user_data)
       mon_hide_while_monitor = FALSE;
       mon_exec_actions = TRUE;
 
-      /* Actions button */
-      button = gtk_button_new_with_label (_("Actions..."));
-      gtk_widget_show (button);
-      gtk_box_pack_start (GTK_BOX (hbox2), button, FALSE, TRUE, 0);
-      gtk_signal_connect (GTK_OBJECT (button), "clicked",
-                          GTK_SIGNAL_FUNC (mon_edit_actions),
-                          srclist_view);
-
-      /* OK button */
-      button = gtk_button_new_from_stock (GNOME_STOCK_BUTTON_OK);
-      gtk_widget_show (button);
-      gtk_box_pack_start (GTK_BOX (hbox2), button, FALSE, TRUE, 0);
-      gtk_signal_connect (GTK_OBJECT (button), "clicked",
-                          GTK_SIGNAL_FUNC (go_monitor_log),
-                          NULL);
-
-      /* Cancel button */
-      button = gtk_button_new_from_stock (GNOME_STOCK_BUTTON_CANCEL);
-      gtk_widget_show (button);
-      gtk_box_pack_start (GTK_BOX (hbox2), button, FALSE, TRUE, 0);
-      gtk_signal_connect (GTK_OBJECT (button), "clicked",
-                          GTK_SIGNAL_FUNC (close_monitor_options),
-                          NULL);
-      gtk_widget_grab_focus (button);
-
    }
    mon_opts_visible = TRUE;
-   monitorcount = 0;
 
    gtk_widget_show (monoptions);
 
@@ -340,6 +343,8 @@ mon_remove_log (GtkWidget *widget,
 
   gtk_tree_selection_get_selected (selection, NULL, &newiter);
   gtk_list_store_remove (destlist, &newiter);
+
+  loglist[sellognum]->mon_on = FALSE; 
 
   monitorcount--;
 }  
@@ -451,7 +456,7 @@ go_monitor_log (GtkWidget * widget, gpointer client_data)
    gtk_container_set_border_width (GTK_CONTAINER (monwindow), 0);
    gtk_window_set_title (GTK_WINDOW (monwindow), _("Monitoring logs..."));
 
-   gtk_widget_set_usize(monwindow, w, h);
+   gtk_widget_set_size_request(monwindow, w, h);
    gtk_widget_set_uposition(monwindow, x, y);
    gtk_signal_connect (GTK_OBJECT (monwindow), "destroy",
 		       GTK_SIGNAL_FUNC (close_monitor_options),
@@ -478,7 +483,7 @@ go_monitor_log (GtkWidget * widget, gpointer client_data)
        
        frame = gtk_frame_new (NULL);
        gtk_container_set_border_width (GTK_CONTAINER (frame), 1);
-       gtk_widget_set_usize (frame, 200, 150);
+       gtk_widget_set_size_request (frame, 200, 150);
        gtk_widget_show (frame);
        
        /* Create destination list */
@@ -530,46 +535,31 @@ go_monitor_log (GtkWidget * widget, gpointer client_data)
 void
 mon_read_last_page (Log *log)
 {
-  Page pg;
-  char buffer[1024], buf[10];
-  int i, j;
-  GtkTreeIter iter;
-  GtkListStore *list;
-  GtkTreePath *path;
+   char buffer[1024];
+   int i;
+   GtkTreeIter iter;
+   GtkListStore *list;
+   GtkTreePath *path;
+ 
+   log->mon_numlines = 0;
+   
+   if (!log->total_lines)
+       return; 
 
-  log->mon_numlines = 0;
-  fseek (log->fp, log->offset_end, SEEK_SET);
-  
-  /* Read pages into buffers --------------------------- */
-  ReadPageUp (log, &pg);
-
-  for (i=pg.ll-5;i<pg.ll;i++)
-    {
-      if (i<0)
-	continue;
-      mon_format_line (buffer, sizeof (buffer), &pg.line[i]);
-      list = (GtkListStore *)
-              gtk_tree_view_get_model (GTK_TREE_VIEW(log->mon_lines));
-      gtk_list_store_append (list, &iter);
-      gtk_list_store_set (list, &iter, 0, buffer, -1);
-      log->mon_numlines++;
-      if (log->mon_numlines > MON_MAX_NUM_LINES)
-	{
-	  for(j=0;j<LINES_P_PAGE;j++)
-	     {
-               g_snprintf (buf, sizeof (buf), "%d", j);
-               gtk_tree_model_get_iter_from_string (GTK_TREE_MODEL(list),
-                                                    &iter, buf); 
-               gtk_list_store_remove (list, &iter);
-             }
-	  log->mon_numlines -= LINES_P_PAGE;
-	}
-        g_snprintf (buf, sizeof (buf), "%d", log->mon_numlines);
-        path = gtk_tree_path_new_from_string (buf);
-        gtk_tree_view_scroll_to_cell (GTK_TREE_VIEW (log->mon_lines),  
-                                  path, NULL, TRUE, 0, 0);
-        gtk_tree_path_free (path);
-    }
+   for (i = 5; i; --i) {
+       mon_format_line (buffer, sizeof(buffer), 
+                        (log->lines)[log->total_lines - i]);
+       list = (GtkListStore *)
+               gtk_tree_view_get_model (GTK_TREE_VIEW(log->mon_lines));
+       gtk_list_store_append (list, &iter);
+       gtk_list_store_set (list, &iter, 0, buffer, -1);
+       log->mon_numlines++;
+   }
+   path = gtk_tree_model_get_path (GTK_TREE_MODEL (list), &iter);
+   gtk_tree_view_scroll_to_cell (GTK_TREE_VIEW (log->mon_lines),
+       path, NULL, TRUE, 0, 0);
+   gtk_tree_path_free (path);
+ 
 }
 
 /* ----------------------------------------------------------------------
@@ -581,60 +571,35 @@ mon_read_last_page (Log *log)
 void
 mon_read_new_lines (Log *log)
 {
-  Page pg;
-  char buffer[1024], buf[10];
-  int i,j;
-  GtkTreeIter iter;
-  GtkListStore *list;
-  GtkTreePath *path;
-  pg.prev = NULL;
+   char buffer[1024];
+   int i;
+   gint lines_read = 0;
+   LogLine **lines;
+   GtkTreeIter iter;
+   GtkTreePath *path;
+   GtkListStore *list;
 
-  if (is_first_line)
-    {
-      new_pos_offset = log->offset_end;
-      is_first_line = FALSE;
-    }
-  fseek (log->fp, new_pos_offset, SEEK_SET);
-  
-  list = (GtkListStore *)
-          gtk_tree_view_get_model (GTK_TREE_VIEW(log->mon_lines));
+   fseek (log->fp, log->offset_end, SEEK_SET);
 
-  /* Read pages into buffers --------------------------- */
-  ReadPageDown (log, &pg, mon_exec_actions);
+   list = (GtkListStore *)
+   gtk_tree_view_get_model (GTK_TREE_VIEW(log->mon_lines));
 
-  /* Get last changed position & start reading next set of lines from there */
-  new_pos_offset = pg.lastchpos;
+   /* Read new lines */
+   lines_read = ReadPageDown (log, &lines, mon_exec_actions);
 
-  while (TRUE) 
-    {
-      for (i=pg.fl;i<pg.ll;i++)
-	{
-	  mon_format_line (buffer, sizeof (buffer), &pg.line[i]);
-	  gtk_list_store_append (list, &iter);
-	  gtk_list_store_set (list, &iter, 0, buffer, -1);
-	  log->mon_numlines++;
-	} 
-      if (log->mon_numlines > MON_MAX_NUM_LINES)
-	{
-	  for(j=0;j<LINES_P_PAGE;j++)
-	    {
-              g_snprintf (buf, sizeof (buf), "%d", j);
-              gtk_tree_model_get_iter_from_string (GTK_TREE_MODEL(list),
-                                                   &iter, buf);
-              gtk_list_store_remove (list, &iter);
-            }
-	  log->mon_numlines -= LINES_P_PAGE;
-	}
-      g_snprintf (buf, sizeof (buf), "%d", log->mon_numlines);
-      path = gtk_tree_path_new_from_string (buf);
-      gtk_tree_view_scroll_to_cell (GTK_TREE_VIEW (log->mon_lines),
-                                    path, NULL, TRUE, 0, 0);
-      gtk_tree_path_free (path);
-      if (pg.islastpage)
-	break;
-      ReadPageDown (log, &pg, mon_exec_actions);
-      new_pos_offset = pg.lastchpos;
-    }
+   for (i = 0;  i < lines_read; ++i ) {
+	   mon_format_line (buffer, sizeof (buffer), lines[i]);
+	   gtk_list_store_insert_before (list, &iter, NULL);
+	   gtk_list_store_set (list, &iter, 0, buffer, -1);
+	   ++log->mon_numlines; 
+   } 
+   if (lines_read) {
+       path = gtk_tree_model_get_path (GTK_TREE_MODEL (list), &iter);
+       gtk_tree_view_scroll_to_cell (GTK_TREE_VIEW (log->mon_lines),
+           path, NULL, TRUE, 0, 0);
+       gtk_tree_path_free (path);
+   }
+
 }
 
 /* ----------------------------------------------------------------------
@@ -645,11 +610,18 @@ mon_read_new_lines (Log *log)
 void
 mon_format_line (char *buffer, int bufsize, LogLine *line)
 {
-	/* FIXME: this should be translated I think */
-	g_snprintf (buffer, bufsize, "%2d/%2d  %2d:%02d:%02d %s %s", 
-		    (int)line->date, (int)line->month+1,
-		    (int)line->hour, (int)line->min, (int)line->sec,
-		    line->process, line->message);
+    if (line == NULL)
+        return;
+
+	g_snprintf (buffer, bufsize, "%s/%s  %s:%s:%s %s %s", 
+		        LocaleToUTF8 (g_strdup_printf ("%2d", line->date)),
+                LocaleToUTF8 (g_strdup_printf ("%2d", line->month+1)),
+		        LocaleToUTF8 (g_strdup_printf ("%2d", line->hour)),
+                LocaleToUTF8 (g_strdup_printf ("%02d", line->min)), 
+                LocaleToUTF8 (g_strdup_printf ("%02d", line->sec)),
+		        LocaleToUTF8 (line->process),
+                LocaleToUTF8 (line->message));
+
 }
 
 /* ----------------------------------------------------------------------
@@ -660,20 +632,20 @@ mon_format_line (char *buffer, int bufsize, LogLine *line)
 gint
 mon_check_logs (gpointer data)
 {
-  int i;
+  gint i;
 
-  for(i=0;i<numlogs;i++)
-    {
-    if (loglist[i]->mon_on != TRUE)
-      continue;
-    if (WasModified(loglist[i]) != TRUE)
-      continue;
-    mon_read_new_lines (loglist[i]);
+  for (i = 0; i < numlogs; i++) {
+      if (loglist[i]->mon_on != TRUE)
+          continue;
+      if (WasModified (loglist[i]) != TRUE)
+          continue;
+      mon_read_new_lines (loglist[i]);
 
-    DB (fprintf (stderr, _("TOUCHED!!\n")));
+      DB (fprintf (stderr, _("TOUCHED!!\n")));
 
-    }
-    return TRUE;
+  }
+  return TRUE;
+
 }
 
 

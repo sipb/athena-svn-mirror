@@ -82,9 +82,7 @@ GNOMEVFS_LIBS = @GNOMEVFS_LIBS@
 GNOME_UTILS_CFLAGS = @GNOME_UTILS_CFLAGS@
 GNOME_UTILS_LIBS = @GNOME_UTILS_LIBS@
 INSTOBJEXT = @INSTOBJEXT@
-INTLDEPS = @INTLDEPS@
 INTLLIBS = @INTLLIBS@
-INTLOBJS = @INTLOBJS@
 INTLTOOL_CAVES_RULE = @INTLTOOL_CAVES_RULE@
 INTLTOOL_DESKTOP_RULE = @INTLTOOL_DESKTOP_RULE@
 INTLTOOL_DIRECTORY_RULE = @INTLTOOL_DIRECTORY_RULE@
@@ -99,6 +97,7 @@ INTLTOOL_SCHEMAS_RULE = @INTLTOOL_SCHEMAS_RULE@
 INTLTOOL_SERVER_RULE = @INTLTOOL_SERVER_RULE@
 INTLTOOL_SHEET_RULE = @INTLTOOL_SHEET_RULE@
 INTLTOOL_SOUNDLIST_RULE = @INTLTOOL_SOUNDLIST_RULE@
+INTLTOOL_THEME_RULE = @INTLTOOL_THEME_RULE@
 INTLTOOL_UI_RULE = @INTLTOOL_UI_RULE@
 INTLTOOL_UPDATE = @INTLTOOL_UPDATE@
 INTLTOOL_XML_RULE = @INTLTOOL_XML_RULE@
@@ -116,7 +115,8 @@ PAM_PREFIX = @PAM_PREFIX@
 PKG_CONFIG = @PKG_CONFIG@
 POFILES = @POFILES@
 POSUB = @POSUB@
-RANLIB = @RANLIB@
+PO_IN_DATADIR_FALSE = @PO_IN_DATADIR_FALSE@
+PO_IN_DATADIR_TRUE = @PO_IN_DATADIR_TRUE@
 SCROLLKEEPER_CONFIG = @SCROLLKEEPER_CONFIG@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
@@ -135,7 +135,7 @@ INCLUDES =  	$(GNOME_UTILS_CFLAGS)					$(GNOMEVFS_CFLAGS)					-DGNOMELOCALEDIR=\
 
 bin_PROGRAMS = gnome-search-tool
 
-gnome_search_tool_SOURCES =  	gsearchtool.c		gsearchtool.h
+gnome_search_tool_SOURCES =  	gsearchtool-support.c   	gsearchtool-support.h   	gsearchtool-callbacks.c 	gsearchtool-callbacks.h 	gsearchtool.c	        	gsearchtool.h
 
 
 gnome_search_tool_LDADD =  	$(GNOME_UTILS_LIBS) 	$(GNOMEVFS_LIBS)
@@ -162,7 +162,8 @@ LIBS = @LIBS@
 X_CFLAGS = @X_CFLAGS@
 X_EXTRA_LIBS = @X_EXTRA_LIBS@
 X_PRE_LIBS = @X_PRE_LIBS@
-gnome_search_tool_OBJECTS =  gsearchtool.o
+gnome_search_tool_OBJECTS =  gsearchtool-support.o \
+gsearchtool-callbacks.o gsearchtool.o
 gnome_search_tool_DEPENDENCIES = 
 gnome_search_tool_LDFLAGS = 
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
@@ -434,7 +435,12 @@ distdir: $(DISTFILES)
 	      || exit 1; \
 	  fi; \
 	done
-gsearchtool.o: gsearchtool.c ../config.h gsearchtool.h
+gsearchtool-callbacks.o: gsearchtool-callbacks.c ../config.h \
+	gsearchtool.h gsearchtool-support.h gsearchtool-callbacks.h
+gsearchtool-support.o: gsearchtool-support.c ../config.h \
+	gsearchtool-support.h gsearchtool-callbacks.h gsearchtool.h
+gsearchtool.o: gsearchtool.c ../config.h gsearchtool.h \
+	gsearchtool-support.h gsearchtool-callbacks.h
 
 info-am:
 info: info-recursive

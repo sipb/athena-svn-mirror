@@ -1,16 +1,16 @@
 # Irish translation of gnome-utils 
 # Copyright (C) 1999 Free Software Foundation, Inc.
-# Se·n ” Ceallaigh <s_oceallaigh@yahoo.com>, 1999.
+# Se√°n √ì Ceallaigh <s_oceallaigh@yahoo.com>, 1999.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-utils 1.0.5\n"
-"POT-Creation-Date: 2002-11-18 21:12+0000\n"
+"POT-Creation-Date: 2003-01-27 11:32+0000\n"
 "PO-Revision-Date: 2000-08-26 19:13+0000\n"
-"Last-Translator: Se·n ” Ceallaigh <s_oceallaigh@yahoo.com>\n"
+"Last-Translator: Se√°n √ì Ceallaigh <s_oceallaigh@yahoo.com>\n"
 "Language-Team: Gaeilge <gaeilge-a@listserv.heanet.ie>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=iso-8859-1\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #: exe-handler/gnome-exe-handler.c:76
@@ -44,7 +44,7 @@ msgstr ""
 #: exe-handler/gnome-exe-handler.c:132
 #, fuzzy, c-format
 msgid "The file `%s' is empty"
-msgstr "Cine·l chor·s comhaid:"
+msgstr "Cine√°l chor√°s comhaid:"
 
 #: exe-handler/gnome-exe-handler.c:137
 #, c-format
@@ -71,342 +71,341 @@ msgstr ""
 
 #. Translator credits
 #: gcalc/gcalc.c:42 gcharmap/src/callbacks.c:46 gdictsrc/gdict-about.c:43
-#: gsearchtool/gsearchtool.c:2002 logview/about.c:52
-#: meat-grinder/meat-grinder.c:475
+#: logview/about.c:52
 msgid "translator_credits"
 msgstr ""
 
-#: gcalc/gcalc.c:60 gcalc/gcalc.c:191
+#: gcalc/gcalc.c:60
 msgid "GNOME Calculator"
 msgstr ""
 
 #: gcalc/gcalc.c:61
-msgid "(C) 1998 the Free Software Foundation"
+msgid "(C) 1998 Free Software Foundation, Inc."
 msgstr ""
 
 #: gcalc/gcalc.c:62
-msgid "Simple double precision calculator similiar to xcalc"
+msgid "Simple double precision calculator similar to xcalc"
 msgstr ""
 
 #: gcalc/gcalc.c:140
 msgid "_Calculator"
 msgstr ""
 
+#: gcalc/gcalc.c:191 gcalc/gnome-calculator.desktop.in.h:1
+msgid "Calculator"
+msgstr ""
+
 #: gcalc/gnome-calc.c:252
 msgid "inf"
 msgstr ""
 
-#: gcalc/gnome-calc.c:475
+#: gcalc/gnome-calc.c:478
 msgid "DEG"
 msgstr ""
 
-#: gcalc/gnome-calc.c:477
+#: gcalc/gnome-calc.c:480
 msgid "RAD"
 msgstr ""
 
-#: gcalc/gnome-calc.c:479
+#: gcalc/gnome-calc.c:482
 msgid "GRAD"
 msgstr ""
 
-#: gcalc/gnome-calc.c:1252
+#: gcalc/gnome-calc.c:1255
 msgid "1/x"
 msgstr ""
 
-#: gcalc/gnome-calc.c:1252
+#: gcalc/gnome-calc.c:1255
 msgid "Inverse"
 msgstr ""
 
-#: gcalc/gnome-calc.c:1253
+#: gcalc/gnome-calc.c:1256
 msgid "x<sup>2</sup>"
 msgstr ""
 
-#: gcalc/gnome-calc.c:1253
+#: gcalc/gnome-calc.c:1256
 #, fuzzy
 msgid "Square"
-msgstr "S·bh·il"
+msgstr "S√°bh√°il"
 
-#: gcalc/gnome-calc.c:1254
+#: gcalc/gnome-calc.c:1257
 msgid "SQRT"
 msgstr ""
 
-#: gcalc/gnome-calc.c:1254
+#: gcalc/gnome-calc.c:1257
 msgid "Square root"
 msgstr ""
 
-#: gcalc/gnome-calc.c:1255
+#: gcalc/gnome-calc.c:1258
 msgid "CE/C"
 msgstr ""
 
-#: gcalc/gnome-calc.c:1255
+#: gcalc/gnome-calc.c:1258
 #, fuzzy
 msgid "Clear"
 msgstr "Druid"
 
-#: gcalc/gnome-calc.c:1256
+#: gcalc/gnome-calc.c:1259
 msgid "AC"
 msgstr ""
 
-#: gcalc/gnome-calc.c:1256
+#: gcalc/gnome-calc.c:1259
 msgid "Reset"
 msgstr ""
 
-#: gcalc/gnome-calc.c:1258
+#: gcalc/gnome-calc.c:1261
 msgid "INV"
 msgstr ""
 
-#: gcalc/gnome-calc.c:1258
+#: gcalc/gnome-calc.c:1261
 msgid "Inverse trigonometry/log function"
 msgstr ""
 
 #. inverse button
-#: gcalc/gnome-calc.c:1259
+#: gcalc/gnome-calc.c:1262
 msgid "sin"
 msgstr ""
 
-#: gcalc/gnome-calc.c:1259
+#: gcalc/gnome-calc.c:1262
 msgid "Sine"
 msgstr ""
 
-#: gcalc/gnome-calc.c:1260
+#: gcalc/gnome-calc.c:1263
 msgid "cos"
 msgstr ""
 
-#: gcalc/gnome-calc.c:1260
+#: gcalc/gnome-calc.c:1263
 #, fuzzy
 msgid "Cosine"
 msgstr "Druid"
 
-#: gcalc/gnome-calc.c:1261
+#: gcalc/gnome-calc.c:1264
 msgid "tan"
 msgstr ""
 
-#: gcalc/gnome-calc.c:1261
+#: gcalc/gnome-calc.c:1264
 msgid "Tangent"
 msgstr ""
 
 #. Ugly hack so that window won't resize when selecting GRAD - there should be a better fix that this
-#: gcalc/gnome-calc.c:1263
+#: gcalc/gnome-calc.c:1266
 msgid " DEG  "
 msgstr ""
 
-#: gcalc/gnome-calc.c:1263
+#: gcalc/gnome-calc.c:1266
 msgid "Switch degrees / radians / grad"
 msgstr ""
 
-#: gcalc/gnome-calc.c:1265
+#: gcalc/gnome-calc.c:1268
 msgid "e"
 msgstr ""
 
-#: gcalc/gnome-calc.c:1265
+#: gcalc/gnome-calc.c:1268
 msgid "Base of Natural Logarithm"
 msgstr ""
 
-#: gcalc/gnome-calc.c:1266
+#: gcalc/gnome-calc.c:1269
 msgid "EE"
 msgstr ""
 
-#: gcalc/gnome-calc.c:1266
+#: gcalc/gnome-calc.c:1269
 msgid "Add digit"
 msgstr ""
 
-#: gcalc/gnome-calc.c:1267
+#: gcalc/gnome-calc.c:1270
 msgid "log"
 msgstr ""
 
-#: gcalc/gnome-calc.c:1267
+#: gcalc/gnome-calc.c:1270
 msgid "Base 10 Logarithm"
 msgstr ""
 
-#: gcalc/gnome-calc.c:1268
+#: gcalc/gnome-calc.c:1271
 msgid "ln"
 msgstr ""
 
-#: gcalc/gnome-calc.c:1268
+#: gcalc/gnome-calc.c:1271
 msgid "Natural Logarithm"
 msgstr ""
 
-#: gcalc/gnome-calc.c:1269
+#: gcalc/gnome-calc.c:1272
 msgid "x<sup>y</sup>"
 msgstr ""
 
-#: gcalc/gnome-calc.c:1269
+#: gcalc/gnome-calc.c:1272
 msgid "Power"
 msgstr ""
 
-#: gcalc/gnome-calc.c:1271
+#: gcalc/gnome-calc.c:1274
 msgid "PI"
 msgstr ""
 
-#: gcalc/gnome-calc.c:1272
+#: gcalc/gnome-calc.c:1275
 msgid "x!"
 msgstr ""
 
-#: gcalc/gnome-calc.c:1272
+#: gcalc/gnome-calc.c:1275
 msgid "Factorial"
 msgstr ""
 
-#: gcalc/gnome-calc.c:1273
+#: gcalc/gnome-calc.c:1276
 msgid "("
 msgstr ""
 
-#: gcalc/gnome-calc.c:1273
+#: gcalc/gnome-calc.c:1276
 msgid "Opening Parenthesis"
 msgstr ""
 
-#: gcalc/gnome-calc.c:1274
+#: gcalc/gnome-calc.c:1277
 msgid ")"
 msgstr ""
 
-#: gcalc/gnome-calc.c:1274
+#: gcalc/gnome-calc.c:1277
 msgid "Closing Parenthesis"
 msgstr ""
 
-#: gcalc/gnome-calc.c:1275
+#: gcalc/gnome-calc.c:1278
 msgid "/"
 msgstr ""
 
-#: gcalc/gnome-calc.c:1275
+#: gcalc/gnome-calc.c:1278
 msgid "Divide by"
 msgstr ""
 
-#: gcalc/gnome-calc.c:1277
+#: gcalc/gnome-calc.c:1280
 msgid "STO"
 msgstr ""
 
-#: gcalc/gnome-calc.c:1277
+#: gcalc/gnome-calc.c:1280
 msgid ""
 "Store the value in the\n"
 "display field in memory"
 msgstr ""
 
-#: gcalc/gnome-calc.c:1278
+#: gcalc/gnome-calc.c:1281
 msgid "7"
 msgstr ""
 
-#: gcalc/gnome-calc.c:1279
+#: gcalc/gnome-calc.c:1282
 msgid "8"
 msgstr ""
 
-#: gcalc/gnome-calc.c:1280
+#: gcalc/gnome-calc.c:1283
 msgid "9"
 msgstr ""
 
-#: gcalc/gnome-calc.c:1281 gfloppy/src/gfloppy2.glade.h:1
+#: gcalc/gnome-calc.c:1284 gfloppy/src/gfloppy2.glade.h:2
 msgid "*"
 msgstr ""
 
-#: gcalc/gnome-calc.c:1281
+#: gcalc/gnome-calc.c:1284
 msgid "Multiply by"
 msgstr ""
 
-#: gcalc/gnome-calc.c:1283
+#: gcalc/gnome-calc.c:1286
 msgid "RCL"
 msgstr ""
 
-#: gcalc/gnome-calc.c:1283
+#: gcalc/gnome-calc.c:1286
 msgid ""
 "Display the value in memory\n"
 "in the display field"
 msgstr ""
 
-#: gcalc/gnome-calc.c:1284
+#: gcalc/gnome-calc.c:1287
 msgid "4"
 msgstr ""
 
-#: gcalc/gnome-calc.c:1285
+#: gcalc/gnome-calc.c:1288
 msgid "5"
 msgstr ""
 
-#: gcalc/gnome-calc.c:1286
+#: gcalc/gnome-calc.c:1289
 msgid "6"
 msgstr ""
 
-#: gcalc/gnome-calc.c:1287
+#: gcalc/gnome-calc.c:1290
 msgid "-"
 msgstr ""
 
-#: gcalc/gnome-calc.c:1287
+#: gcalc/gnome-calc.c:1290
 #, fuzzy
 msgid "Subtract"
 msgstr "Tosaigh"
 
-#: gcalc/gnome-calc.c:1289
+#: gcalc/gnome-calc.c:1292
 msgid "SUM"
 msgstr ""
 
-#: gcalc/gnome-calc.c:1289
+#: gcalc/gnome-calc.c:1292
 msgid ""
 "Add the value in the display\n"
 "field to the value in memory"
 msgstr ""
 
-#: gcalc/gnome-calc.c:1290
+#: gcalc/gnome-calc.c:1293
 msgid "1"
 msgstr ""
 
-#: gcalc/gnome-calc.c:1291
+#: gcalc/gnome-calc.c:1294
 msgid "2"
 msgstr ""
 
-#: gcalc/gnome-calc.c:1292
+#: gcalc/gnome-calc.c:1295
 msgid "3"
 msgstr ""
 
-#: gcalc/gnome-calc.c:1293
+#: gcalc/gnome-calc.c:1296
 msgid "+"
 msgstr ""
 
-#: gcalc/gnome-calc.c:1293
+#: gcalc/gnome-calc.c:1296
 msgid "Add"
 msgstr ""
 
-#: gcalc/gnome-calc.c:1295
+#: gcalc/gnome-calc.c:1298
 msgid "EXC"
 msgstr ""
 
-#: gcalc/gnome-calc.c:1295
+#: gcalc/gnome-calc.c:1298
 msgid ""
 "Exchange the values in the\n"
 "display field and memory"
 msgstr ""
 
-#: gcalc/gnome-calc.c:1296
+#: gcalc/gnome-calc.c:1299
 msgid "0"
 msgstr ""
 
-#: gcalc/gnome-calc.c:1297
+#: gcalc/gnome-calc.c:1300
 msgid "."
 msgstr ""
 
-#: gcalc/gnome-calc.c:1297
+#: gcalc/gnome-calc.c:1300
 msgid "Decimal Point"
 msgstr ""
 
-#: gcalc/gnome-calc.c:1298
+#: gcalc/gnome-calc.c:1301
 msgid "+/-"
 msgstr ""
 
-#: gcalc/gnome-calc.c:1298
+#: gcalc/gnome-calc.c:1301
 msgid "Change sign"
 msgstr ""
 
-#: gcalc/gnome-calc.c:1299
+#: gcalc/gnome-calc.c:1302
 msgid "="
 msgstr ""
 
-#: gcalc/gnome-calc.c:1299
+#: gcalc/gnome-calc.c:1302
 msgid "Calculate"
-msgstr ""
-
-#: gcalc/gnome-calculator.desktop.in.h:1
-msgid "Calculator"
 msgstr ""
 
 #: gcalc/gnome-calculator.desktop.in.h:2
 msgid "Perform simple calculations"
 msgstr ""
 
-#: gcharmap/gnome-character-map.desktop.in.h:1
+#: gcharmap/gnome-character-map.desktop.in.h:1 gcharmap/src/interface.c:160
 msgid "Character Map"
 msgstr ""
 
@@ -414,38 +413,38 @@ msgstr ""
 msgid "Insert special characters into documents"
 msgstr ""
 
-#: gcharmap/src/asciiselect.c:117
+#: gcharmap/src/asciiselect.c:149
 msgid "Select Character"
 msgstr ""
 
-#: gcharmap/src/asciiselect.c:120
+#: gcharmap/src/asciiselect.c:152
 msgid "_Insert"
 msgstr ""
 
-#: gcharmap/src/asciiselect.c:123
+#: gcharmap/src/asciiselect.c:155
 #, fuzzy
 msgid "Character c_ode:"
 msgstr "Tosaigh"
 
-#: gcharmap/src/asciiselect.c:137
+#: gcharmap/src/asciiselect.c:178
 #, fuzzy
 msgid "Ch_aracter:"
 msgstr "Tosaigh"
 
-#: gcharmap/src/asciiselect.c:148
+#: gcharmap/src/asciiselect.c:189
 msgid "Character Code"
 msgstr ""
 
-#: gcharmap/src/asciiselect.c:148
+#: gcharmap/src/asciiselect.c:189
 msgid "Select character code"
 msgstr ""
 
-#: gcharmap/src/asciiselect.c:149
+#: gcharmap/src/asciiselect.c:190
 #, fuzzy
 msgid "Character"
 msgstr "Tosaigh"
 
-#: gcharmap/src/asciiselect.c:149
+#: gcharmap/src/asciiselect.c:190
 msgid "Character to insert"
 msgstr ""
 
@@ -458,59 +457,66 @@ msgid ""
 "Select, copy and paste characters from your font into other applications"
 msgstr ""
 
-#: gcharmap/src/callbacks.c:113
-#, fuzzy
-msgid "del"
-msgstr "Samhail"
-
-#: gcharmap/src/callbacks.c:119
+#: gcharmap/src/callbacks.c:130 gcharmap/src/callbacks.c:138
 #, c-format
-msgid " %s: Character code %d"
+msgid "Character code: (Unicode) U%04lX"
 msgstr ""
 
-#: gcharmap/src/callbacks.c:155
+#: gcharmap/src/callbacks.c:134
+#, c-format
+msgid "Character code: (Unicode) U%04lX, (%s) 0x%s"
+msgstr ""
+
+#: gcharmap/src/callbacks.c:192
 msgid "Text copied to clipboard..."
 msgstr ""
 
-#: gcharmap/src/callbacks.c:172
+#: gcharmap/src/callbacks.c:209
 msgid "Text cut to clipboard..."
 msgstr ""
 
-#: gcharmap/src/callbacks.c:208
+#: gcharmap/src/callbacks.c:259
 msgid "Text pasted from clipboard..."
 msgstr ""
 
-#: gcharmap/src/interface.c:206
-msgid "Gnome Character Map"
-msgstr ""
-
-#: gcharmap/src/interface.c:236
+#: gcharmap/src/interface.c:190
 #, fuzzy
 msgid "Action Toolbar"
-msgstr "Uirlischl·r"
+msgstr "Uirlischl√°r"
 
-#: gcharmap/src/interface.c:240
+#: gcharmap/src/interface.c:194
+#, fuzzy
+msgid "_Font:"
+msgstr "Cl√≥fhoireann"
+
+#. The page selector
+#: gcharmap/src/interface.c:210
+msgid "_Page:"
+msgstr ""
+
+#. end of page selector
+#: gcharmap/src/interface.c:225
 msgid "_Text to copy:"
 msgstr ""
 
-#: gcharmap/src/interface.c:255
+#: gcharmap/src/interface.c:240
 #, fuzzy
 msgid "_Copy"
-msgstr "DÈan CÛip"
+msgstr "D√©an C√≥ip"
 
-#: gcharmap/src/interface.c:277 gcharmap/src/interface.c:278
+#: gcharmap/src/interface.c:262 gcharmap/src/interface.c:263
 msgid "Text to copy"
 msgstr ""
 
-#: gcharmap/src/interface.c:278
+#: gcharmap/src/interface.c:263
 msgid "Entry"
 msgstr ""
 
-#: gcharmap/src/interface.c:279 gcharmap/src/menus.c:77
+#: gcharmap/src/interface.c:264 gcharmap/src/menus.c:77
 msgid "Copy"
-msgstr "DÈan CÛip"
+msgstr "D√©an C√≥ip"
 
-#: gcharmap/src/interface.c:279
+#: gcharmap/src/interface.c:264
 msgid "Copy the text"
 msgstr ""
 
@@ -525,7 +531,7 @@ msgstr ""
 #: gcharmap/src/menus.c:63
 #, fuzzy
 msgid "Ch_aracters"
-msgstr "¡baltachtaÌ"
+msgstr "√Åbaltachta√≠"
 
 #. GNOMEUIINFO_ITEM(N_("Insert"), N_("Insert character(s) by choosing character codes"),
 #. cb_insert_char_click, NULL),
@@ -558,11 +564,11 @@ msgstr ""
 msgid "Indicates the percentage specified at the standard input"
 msgstr ""
 
-#: gdialog/inputbox.c:90
+#: gdialog/inputbox.c:84
 msgid "GDialog Entry"
 msgstr ""
 
-#: gdialog/inputbox.c:90
+#: gdialog/inputbox.c:84
 msgid "Enter the text"
 msgstr ""
 
@@ -582,21 +588,21 @@ msgstr ""
 #: gdictsrc/GNOME_GDictApplet.xml.h:1
 #, fuzzy
 msgid "Look Up Selected Text..."
-msgstr "DÈan CÛip den Tionscadal Roghnaithe"
+msgstr "D√©an C√≥ip den Tionscadal Roghnaithe"
 
 #: gdictsrc/GNOME_GDictApplet.xml.h:2
 #, fuzzy
 msgid "_About..."
-msgstr "F·"
+msgstr "F√°"
 
 #: gdictsrc/GNOME_GDictApplet.xml.h:3
 msgid "_Help"
-msgstr "Cuidi˙"
+msgstr "Cuidi√∫"
 
 #: gdictsrc/GNOME_GDictApplet.xml.h:4
 #, fuzzy
 msgid "_Preferences"
-msgstr "RoghaÌ"
+msgstr "Rogha√≠"
 
 #: gdictsrc/GNOME_GDictApplet.xml.h:5
 msgid "_Show/Hide Definition Window..."
@@ -619,17 +625,16 @@ msgstr ""
 #: gdictsrc/gdict-about.c:56
 #, fuzzy
 msgid "GNOME Dictionary"
-msgstr "Uirlischl·r"
+msgstr "Uirlischl√°r"
 
 #: gdictsrc/gdict-about.c:57
 msgid "Copyright 1999 by Mike Hughes"
 msgstr ""
 
 #: gdictsrc/gdict-about.c:58
-msgid ""
-"Client for MIT dictionary server.\n"
-"Web: http://gdict.dhs.org/, http://www.psilord.com/code/"
-msgstr ""
+#, fuzzy
+msgid "Client for MIT dictionary server.\n"
+msgstr "Rogha√≠"
 
 #: gdictsrc/gdict-app.c:128
 msgid "Spell-checking..."
@@ -659,8 +664,7 @@ msgstr ""
 msgid "Find"
 msgstr ""
 
-#: gdictsrc/gdict-app.c:490 gsearchtool/gsearchtool.c:1507
-#: gsearchtool/gsearchtool.c:1840
+#: gdictsrc/gdict-app.c:490
 msgid "_Find"
 msgstr ""
 
@@ -691,7 +695,7 @@ msgstr ""
 #: gdictsrc/gdict-app.c:749
 #, fuzzy
 msgid "_Dictionary"
-msgstr "Uirlischl·r"
+msgstr "Uirlischl√°r"
 
 #: gdictsrc/gdict-app.c:785 gdictsrc/gnome-dictionary.desktop.in.h:1
 msgid "Dictionary"
@@ -727,7 +731,7 @@ msgstr ""
 #: gdictsrc/gdict-defbox.c:643 gdictsrc/gdict-speller.c:488
 #, fuzzy, c-format
 msgid "Error invoking query: %s"
-msgstr "EFuarthas earr·id le druid gairis %s"
+msgstr "EFuarthas earr√°id le druid gairis %s"
 
 #: gdictsrc/gdict-pref-dialog.c:37
 msgid "Headword:"
@@ -760,12 +764,12 @@ msgstr ""
 #: gdictsrc/gdict-pref-dialog.c:44
 #, fuzzy
 msgid "Cross-reference:"
-msgstr "RoghaÌ"
+msgstr "Rogha√≠"
 
 #: gdictsrc/gdict-pref-dialog.c:186
 #, fuzzy
 msgid "Dictionary Preferences"
-msgstr "RoghaÌ"
+msgstr "Rogha√≠"
 
 #: gdictsrc/gdict-pref-dialog.c:198
 msgid "Smart _lookup"
@@ -774,11 +778,12 @@ msgstr ""
 #: gdictsrc/gdict-pref-dialog.c:211
 #, fuzzy
 msgid "_Server:"
-msgstr "S·bh·il"
+msgstr "S√°bh√°il"
 
 #: gdictsrc/gdict-pref-dialog.c:218
-msgid "De_fault"
-msgstr ""
+#, fuzzy
+msgid "De_fault Server"
+msgstr "S√°bh√°il"
 
 #: gdictsrc/gdict-pref-dialog.c:224
 msgid "Reset server to default"
@@ -790,7 +795,7 @@ msgid "_Port:"
 msgstr "Tosaigh"
 
 #: gdictsrc/gdict-pref-dialog.c:240
-msgid "Def_ault"
+msgid "Def_ault Port"
 msgstr ""
 
 #: gdictsrc/gdict-pref-dialog.c:247
@@ -800,7 +805,7 @@ msgstr ""
 #: gdictsrc/gdict-pref-dialog.c:248
 #, fuzzy
 msgid "Server"
-msgstr "S·bh·il"
+msgstr "S√°bh√°il"
 
 #: gdictsrc/gdict-pref-dialog.c:249
 msgid "Server Entry"
@@ -813,7 +818,7 @@ msgstr ""
 #: gdictsrc/gdict-pref-dialog.c:252
 #, fuzzy
 msgid "Port"
-msgstr "ClÛfhoireann"
+msgstr "Cl√≥fhoireann"
 
 #: gdictsrc/gdict-pref-dialog.c:253
 msgid "Port Entry"
@@ -881,7 +886,7 @@ msgstr ""
 #: gdictsrc/gdict.schemas.in.h:1
 #, fuzzy
 msgid "Dictionary server"
-msgstr "RoghaÌ"
+msgstr "Rogha√≠"
 
 #: gdictsrc/gdict.schemas.in.h:2
 msgid "Port used to connect to server"
@@ -931,12 +936,12 @@ msgstr ""
 #: gfloppy/gfloppy.desktop.in.h:1
 #, fuzzy
 msgid "Floppy Formatter"
-msgstr "CealaÌodh form·id diosca flapach."
+msgstr "Ceala√≠odh form√°id diosca flapach."
 
 #: gfloppy/gfloppy.desktop.in.h:2
 #, fuzzy
 msgid "Format Floppy Disks"
-msgstr "Form·idigh diosca flapach"
+msgstr "Form√°idigh diosca flapach"
 
 #: gfloppy/src/badblocks.c:102
 msgid "MInternal Error: Unable to seek to the correct location."
@@ -947,52 +952,47 @@ msgstr ""
 msgid "MInternal Error: Weird value (%ld) in do_test\n"
 msgstr ""
 
-#: gfloppy/src/badblocks.c:166
-#, c-format
-msgid "EBad block at block %lu"
-msgstr ""
-
 #. while (!i)
 #. ;
-#: gfloppy/src/badblocks.c:260
+#: gfloppy/src/badblocks.c:269
 msgid "MChecking for bad blocks..."
 msgstr ""
 
-#: gfloppy/src/badblocks.c:272
+#: gfloppy/src/badblocks.c:281
 #, c-format
 msgid "MFailed to open device %s for badblock checking\n"
 msgstr ""
 
-#: gfloppy/src/badblocks.c:291 gfloppy/src/gfloppy.c:213
+#: gfloppy/src/badblocks.c:301 gfloppy/src/gfloppy.c:536
 msgid "MChecking for bad blocks... Done"
 msgstr ""
 
 #: gfloppy/src/fdformat.c:44
 msgid "MFormatting the disk..."
-msgstr "MAg form·id an diosca..."
+msgstr "MAg form√°id an diosca..."
 
 #: gfloppy/src/fdformat.c:46
 msgid "EI don't know what this is, but it's very wrong."
-msgstr "EChan fhuil fhios agam goidÈ seo, ach t· sÈ mÌcheart."
+msgstr "EChan fhuil fhios agam goid√© seo, ach t√° s√© m√≠cheart."
 
 #: gfloppy/src/fdformat.c:54 gfloppy/src/fdformat.c:66
 #, c-format
 msgid "EError formatting track #%d"
-msgstr "EFuarthas earr·id le form·id loirg #%d"
+msgstr "EFuarthas earr√°id le form√°id loirg #%d"
 
 #: gfloppy/src/fdformat.c:74
 msgid "EError during completion of formatting"
-msgstr "EFuarthas earr·id le criochnaithe form·ide"
+msgstr "EFuarthas earr√°id le criochnaithe form√°ide"
 
 #. XXXX - need to tell parent we're finished
 #: gfloppy/src/fdformat.c:78
 msgid "MFormatting the disk... Done"
-msgstr "MAg form·id an diosca... DÈanta"
+msgstr "MAg form√°id an diosca... D√©anta"
 
 #. XXXX - tell parent we're starting verify stage
 #: gfloppy/src/fdformat.c:94
 msgid "MVerifying the format..."
-msgstr "MAg fÌor˙ an fhorm·id..."
+msgstr "MAg f√≠or√∫ an fhorm√°id..."
 
 #: gfloppy/src/fdformat.c:99 gfloppy/src/fdformat.c:174
 msgid ""
@@ -1000,14 +1000,14 @@ msgid ""
 "\n"
 "Please confirm that it is not write-protected."
 msgstr ""
-"ECha rabhas ·balta a scrÌobh ar an diosca flapach.\n"
+"ECha rabhas √°balta a scr√≠obh ar an diosca flapach.\n"
 "\n"
-"Cinntigh nach bhfuil sÈ faoi scrÌobh cosanta, le do thoil."
+"Cinntigh nach bhfuil s√© faoi scr√≠obh cosanta, le do thoil."
 
 #: gfloppy/src/fdformat.c:102 gfloppy/src/fdformat.c:177
 #, c-format
 msgid "EInsufficient permissions to open floppy device %s."
-msgstr "ET· easpa ceadanna air chun gaireas flapach %s a fhoscailt."
+msgstr "ET√° easpa ceadanna air chun gaireas flapach %s a fhoscailt."
 
 #: gfloppy/src/fdformat.c:106 gfloppy/src/fdformat.c:181
 msgid ""
@@ -1016,10 +1016,10 @@ msgid ""
 "Please confirm that it is in the drive\n"
 "with the drive door shut."
 msgstr ""
-"ECha rabhas ·balta an diosca flapach a rochtain.\n"
+"ECha rabhas √°balta an diosca flapach a rochtain.\n"
 "\n"
-"Cinntigh go bhfuil sÈ insan tiom·int\n"
-"le doras an tiom·na druidte."
+"Cinntigh go bhfuil s√© insan tiom√°int\n"
+"le doras an tiom√°na druidte."
 
 #: gfloppy/src/fdformat.c:109
 #, c-format
@@ -1028,8 +1028,8 @@ msgid ""
 "\n"
 "Error code %s:%d"
 msgstr ""
-"EFuarthas gn·th-earr·id le rochtain gairis flapach %s.\n"
-"CÛd earr·ide %s:%d"
+"EFuarthas gn√°th-earr√°id le rochtain gairis flapach %s.\n"
+"C√≥d earr√°ide %s:%d"
 
 #: gfloppy/src/fdformat.c:129
 #, c-format
@@ -1037,32 +1037,32 @@ msgid ""
 "ERead Error:\n"
 "Problem reading cylinder %d, expected %d, read %d"
 msgstr ""
-"ELÈamh earr·ide:\n"
-"Fuarthas fadhb le lÈamh sorcÛra %d, ag s˙il le %d, ag lÈamh %d"
+"EL√©amh earr√°ide:\n"
+"Fuarthas fadhb le l√©amh sorc√≥ra %d, ag s√∫il le %d, ag l√©amh %d"
 
 #: gfloppy/src/fdformat.c:132
 #, c-format
 msgid "EProblem reading cylinder %d, expected %d, read %d"
-msgstr "EFuarthas fadhb le lÈamh sorcÛra %d, ag s˙il le %d, ag lÈamh %d"
+msgstr "EFuarthas fadhb le l√©amh sorc√≥ra %d, ag s√∫il le %d, ag l√©amh %d"
 
 #: gfloppy/src/fdformat.c:141
 #, c-format
 msgid "MBad data in cyl %d.  Continuing... "
-msgstr "MD·ta go dona i sorcÛir %d.  Ar lean... "
+msgstr "MD√°ta go dona i sorc√≥ir %d.  Ar lean... "
 
 #: gfloppy/src/fdformat.c:148
 #, c-format
 msgid "EError closing device %s"
-msgstr "EFuarthas earr·id le druid gairis %s"
+msgstr "EFuarthas earr√°id le druid gairis %s"
 
 #: gfloppy/src/fdformat.c:153
 msgid "MVerifying the format... Done"
-msgstr "MAg fÌor˙ an form·ide... DÈanta"
+msgstr "MAg f√≠or√∫ an form√°ide... D√©anta"
 
 #: gfloppy/src/fdformat.c:165
 #, c-format
 msgid "EUnable to write to device %s"
-msgstr "ECha rabhas ·balta a scrÌobh ar ghaireas %s"
+msgstr "ECha rabhas √°balta a scr√≠obh ar ghaireas %s"
 
 #: gfloppy/src/fdformat.c:184
 #, c-format
@@ -1071,104 +1071,192 @@ msgid ""
 "\n"
 "Error code %s"
 msgstr ""
-"EFuarthas gn·th-earr·id le rochtain gairis flapach %s.\n"
+"EFuarthas gn√°th-earr√°id le rochtain gairis flapach %s.\n"
 "\n"
-"CÛd earr·ide %s"
+"C√≥d earr√°ide %s"
 
 #: gfloppy/src/fdformat.c:194
-msgid "ECould not determine current format type"
-msgstr "ECha rabhas ·balta cine·l form·id reatha a aimsi˙"
+#, fuzzy
+msgid "ECould not determine current floppy geometry."
+msgstr "ECha rabhas √°balta cine√°l form√°id reatha a aimsi√∫"
 
-#: gfloppy/src/gfloppy.c:164 gfloppy/src/gfloppy.c:197
+#: gfloppy/src/gfloppy.c:229
+msgid "EError while creating a unique filename for the bad blocks list file."
+msgstr ""
+
+#: gfloppy/src/gfloppy.c:249
+msgid "EError while filling the bad blocks list file."
+msgstr ""
+
+#: gfloppy/src/gfloppy.c:308
+#, c-format
+msgid "EError while spawning the (%s) command: %s."
+msgstr ""
+
+#: gfloppy/src/gfloppy.c:332
+msgid "EUnknown mke2fs starting signature, cancelling."
+msgstr ""
+
+#: gfloppy/src/gfloppy.c:346
+#, c-format
+msgid ""
+"EThe filesystem creation utility (%s) reported the following errors:\n"
+"\n"
+"%s (%d)"
+msgstr ""
+
+#: gfloppy/src/gfloppy.c:363
+msgid "EAbnormal child process termination."
+msgstr ""
+
+#: gfloppy/src/gfloppy.c:388
+#, c-format
+msgid "EError while spawning the mbadblocks command: %s."
+msgstr ""
+
+#: gfloppy/src/gfloppy.c:400
+#, c-format
+msgid ""
+"EThe bad blocks checking utility (mbadblocks) reported the following "
+"errors:\n"
+"%s."
+msgstr ""
+
+#: gfloppy/src/gfloppy.c:443
+msgid "EAbnormal mbadblocks child process termination."
+msgstr ""
+
+#. make the filesystem
+#: gfloppy/src/gfloppy.c:470 gfloppy/src/gfloppy.c:510
 #, fuzzy
 msgid "MMaking filesystem on disk..."
-msgstr "MAg form·id an diosca..."
+msgstr "MAg form√°id an diosca..."
 
-#: gfloppy/src/gfloppy.c:167
+#: gfloppy/src/gfloppy.c:478
 msgid "EUnable to create filesystem correctly."
 msgstr ""
 
-#: gfloppy/src/gfloppy.c:171 gfloppy/src/gfloppy.c:203
+#: gfloppy/src/gfloppy.c:482 gfloppy/src/gfloppy.c:522
 #, fuzzy
 msgid "MMaking filesystem on disk... Done"
-msgstr "MAg form·id an diosca... DÈanta"
+msgstr "MAg form√°id an diosca... D√©anta"
 
-#: gfloppy/src/gfloppy.c:200 gfloppy/src/gfloppy.c:215
-#, fuzzy
-msgid "EUnable to create filesystem."
-msgstr "ECha rabhas ·balta a scrÌobh ar ghaireas %s"
-
-#: gfloppy/src/gfloppy.c:209
+#: gfloppy/src/gfloppy.c:527
 msgid "MChecking for bad blocks... (this might take a while)"
 msgstr ""
 
-#: gfloppy/src/gfloppy2.glade.h:2
-msgid "DOS (fat)"
+#: gfloppy/src/gfloppy.c:532
+msgid "EError while checking the bad blocks."
+msgstr ""
+
+#: gfloppy/src/gfloppy2.glade.h:1
+msgid "    "
 msgstr ""
 
 #: gfloppy/src/gfloppy2.glade.h:3
-msgid "Double Density 3.5\" (720KB)"
+msgid ""
+"<b>Note</b>: The mbadblocks utility isn't installed on this system. It must "
+"be installed in order to make a thorough DOS (fat) formatting."
 msgstr ""
 
 #: gfloppy/src/gfloppy2.glade.h:4
-msgid "Double Density 5.25\" (360KB)"
+msgid "<span weight=\"bold\">Filesystem settings</span>"
 msgstr ""
 
 #: gfloppy/src/gfloppy2.glade.h:5
-#, fuzzy
-msgid "File system _type:"
-msgstr "Cine·l chor·s comhaid:"
+msgid "<span weight=\"bold\">Formatting mode</span>"
+msgstr ""
 
 #: gfloppy/src/gfloppy2.glade.h:6
-#, fuzzy
-msgid "Floppy _density:"
-msgstr "Dl˙s Diosca Flapach:"
+msgid "<span weight=\"bold\">Physical settings</span>"
+msgstr ""
 
 #: gfloppy/src/gfloppy2.glade.h:7
-#, fuzzy
-msgid "Floppy de_vice:"
-msgstr "Dl˙s Diosca Flapach:"
+msgid "DOS (FAT)"
+msgstr ""
 
 #: gfloppy/src/gfloppy2.glade.h:8
-#, fuzzy
-msgid "Format a Floppy"
-msgstr "Form·idigh diosca flapach"
+msgid "Double Density 3.5\" (720KB)"
+msgstr ""
 
 #: gfloppy/src/gfloppy2.glade.h:9
-msgid "High Density 3.5\" (1.44MB)"
+msgid "Double Density 5.25\" (360KB)"
 msgstr ""
 
 #: gfloppy/src/gfloppy2.glade.h:10
-msgid "High Density 5.25\" (1.2MB)"
-msgstr ""
+#, fuzzy
+msgid "File system _type:"
+msgstr "Cine√°l chor√°s comhaid:"
 
 #: gfloppy/src/gfloppy2.glade.h:11
-msgid "Linux Native (ext2)"
-msgstr "Linux D˙chasach (ext2)"
+#, fuzzy
+msgid "Floppy _density:"
+msgstr "Dl√∫s Diosca Flapach:"
 
 #: gfloppy/src/gfloppy2.glade.h:12
 #, fuzzy
-msgid "_Format"
-msgstr "FlÛta"
+msgid "Floppy de_vice:"
+msgstr "Dl√∫s Diosca Flapach:"
 
 #: gfloppy/src/gfloppy2.glade.h:13
 #, fuzzy
-msgid "_Quick format"
-msgstr "Form·id gasta"
+msgid "Floppy formatter"
+msgstr "Ceala√≠odh form√°id diosca flapach."
 
-#: gfloppy/src/main.c:131 gfloppy/src/main.c:174
+#: gfloppy/src/gfloppy2.glade.h:14
+msgid "High Density 3.5\" (1.44MB)"
+msgstr ""
+
+#: gfloppy/src/gfloppy2.glade.h:15
+msgid "High Density 5.25\" (1.2MB)"
+msgstr ""
+
+#: gfloppy/src/gfloppy2.glade.h:16
+msgid "Linux Native (ext2)"
+msgstr "Linux D√∫chasach (ext2)"
+
+#: gfloppy/src/gfloppy2.glade.h:17
+msgid "Thorou_gh (adds a bad blocks check to the standard mode)"
+msgstr ""
+
+#: gfloppy/src/gfloppy2.glade.h:18
+#, fuzzy
+msgid "Volume _name:"
+msgstr "Aimn Comhaid:"
+
+#: gfloppy/src/gfloppy2.glade.h:19
+#, fuzzy
+msgid "_Format"
+msgstr "Fl√≥ta"
+
+#: gfloppy/src/gfloppy2.glade.h:20
+#, fuzzy
+msgid "_Quick (only creates the filesystem)"
+msgstr "ECha rabhas √°balta a scr√≠obh ar ghaireas %s"
+
+#: gfloppy/src/gfloppy2.glade.h:21
+msgid "_Standard (adds a low-level format to the quick mode)"
+msgstr ""
+
+#: gfloppy/src/main.c:132
+msgid ""
+"Neither the mke2fs nor the mkdosfs/mformat applications are installed. You "
+"can't format a floppy without one of them."
+msgstr ""
+
+#: gfloppy/src/main.c:155 gfloppy/src/main.c:199
 #, c-format
 msgid "Unable to open the device %s, formatting cannot continue."
 msgstr ""
 
-#: gfloppy/src/main.c:134 gfloppy/src/main.c:177
+#: gfloppy/src/main.c:158 gfloppy/src/main.c:202
 #, c-format
 msgid ""
 "The device %s is disconnected.\n"
 "Please attach device to continue."
 msgstr ""
 
-#: gfloppy/src/main.c:137 gfloppy/src/main.c:180
+#: gfloppy/src/main.c:161 gfloppy/src/main.c:205
 #, c-format
 msgid ""
 "You do not have the proper permissions to write to %s, formatting will not "
@@ -1176,34 +1264,75 @@ msgid ""
 "Contact your system administrator about getting write permissions."
 msgstr ""
 
-#: gfloppy/src/main.c:291
+#: gfloppy/src/main.c:391
 #, c-format
 msgid ""
 "Could not display help for the floppy formatter.\n"
 "%s"
 msgstr ""
 
-#: gfloppy/src/main.c:359
-msgid "The device to format"
-msgstr "An gearas le form·id"
+#: gfloppy/src/main.c:425
+msgid "The volume name can't contain any blank space."
+msgstr ""
 
-#: gfloppy/src/main.c:360
+#: gfloppy/src/main.c:474
+msgid "The device to format"
+msgstr "An gearas le form√°id"
+
+#: gfloppy/src/main.c:475
 msgid "DEVICE"
 msgstr "GEARAS"
 
-#: gfloppy/src/progress.c:115
+#: gfloppy/src/progress.c:123
+#, c-format
+msgid ""
+"The floppy has been formatted, but <b>%d bad blocks</b> (out of %d) have "
+"been found and marked."
+msgstr ""
+
+#: gfloppy/src/progress.c:126
 msgid "Floppy formatted successfully."
-msgstr "D'Èirigh le form·id diosca flapach go maith."
+msgstr "D'√©irigh le form√°id diosca flapach go maith."
 
-#: gfloppy/src/progress.c:120
+#: gfloppy/src/progress.c:132
 msgid "Floppy formatting cancelled."
-msgstr "CealaÌodh form·id diosca flapach."
+msgstr "Ceala√≠odh form√°id diosca flapach."
 
-#: gfloppy/src/progress.c:161
-msgid "Format progress."
-msgstr "Imeacht form·ide."
+#: gfloppy/src/progress.c:172
+#, fuzzy
+msgid "Format progress"
+msgstr "Imeacht form√°ide."
 
-#: gsearchtool/gnome-search-tool.desktop.in.h:1
+#: gfloppy/gfloppy.schemas.in.h:1
+msgid ""
+"0 for the quick format, 1 for a standard one (adds a low-level format) and "
+"finally 2 for a thorough format (adds a bad blocks scan)."
+msgstr ""
+
+#: gfloppy/gfloppy.schemas.in.h:2
+msgid "ADVANCED USERS ONLY - Default backend for FAT formatting"
+msgstr ""
+
+#: gfloppy/gfloppy.schemas.in.h:3
+#, fuzzy
+msgid "Default filesystem type"
+msgstr "Cine√°l chor√°s comhaid:"
+
+#: gfloppy/gfloppy.schemas.in.h:4
+msgid "Default formatting mode"
+msgstr ""
+
+#: gfloppy/gfloppy.schemas.in.h:5
+msgid ""
+"TRUE to set mkdosfs as the preferred FAT formatting backend or FALSE to set "
+"mtools as the preferred FAT formatting backend."
+msgstr ""
+
+#: gfloppy/gfloppy.schemas.in.h:6
+msgid "ext2 for the linux native filesystem or fat for the DOS filesystem."
+msgstr ""
+
+#: gsearchtool/gnome-search-tool.desktop.in.h:1 gsearchtool/gsearchtool.c:1570
 #, fuzzy
 msgid "Search for Files"
 msgstr "Ordaithe Blaoisce"
@@ -1212,351 +1341,354 @@ msgstr "Ordaithe Blaoisce"
 msgid "Search your disk for files"
 msgstr ""
 
-#: gsearchtool/gsearchtool.c:66
-#, fuzzy
-msgid "File name is"
-msgstr "Ainm comhaid"
+#: gsearchtool/gsearchtool.c:63
+msgid "Contains the text"
+msgstr ""
 
-#: gsearchtool/gsearchtool.c:67
-#, fuzzy
-msgid "File name is not"
-msgstr "Ainm comhaid"
+#: gsearchtool/gsearchtool.c:65
+msgid "Date modified less than (days)"
+msgstr ""
+
+#: gsearchtool/gsearchtool.c:66
+msgid "Date modified more than (days)"
+msgstr ""
 
 #: gsearchtool/gsearchtool.c:68
-msgid "Don't search mounted filesystems"
+msgid "Size at least (kilobytes)"
 msgstr ""
 
 #: gsearchtool/gsearchtool.c:69
-msgid "Follow symbolic links"
+msgid "Size at most (kilobytes)"
 msgstr ""
 
 #: gsearchtool/gsearchtool.c:70
-msgid "Process folder contents depth first"
-msgstr ""
+#, fuzzy
+msgid "File is empty"
+msgstr "Cine√°l chor√°s comhaid:"
 
-#: gsearchtool/gsearchtool.c:71
+#: gsearchtool/gsearchtool.c:72
 msgid "Owned by user"
 msgstr ""
 
-#: gsearchtool/gsearchtool.c:72
+#: gsearchtool/gsearchtool.c:73
 msgid "Owned by group"
 msgstr ""
 
-#: gsearchtool/gsearchtool.c:73
-msgid "Invalid user or group"
-msgstr ""
-
 #: gsearchtool/gsearchtool.c:74
-msgid "Last time modified"
+msgid "Owner is unrecognized"
 msgstr ""
-
-#: gsearchtool/gsearchtool.c:75
-#, fuzzy
-msgid "File is empty"
-msgstr "Cine·l chor·s comhaid:"
 
 #: gsearchtool/gsearchtool.c:76
-msgid "Matches regular expression"
-msgstr ""
-
-#: gsearchtool/gsearchtool.c:274 gsearchtool/gsearchtool.c:943
-msgid "Start folder does not exist."
-msgstr ""
-
-#: gsearchtool/gsearchtool.c:499
-msgid "today at %-I:%M %p"
-msgstr ""
-
-#: gsearchtool/gsearchtool.c:501
-msgid "yesterday at %-I:%M %p"
-msgstr ""
-
-#: gsearchtool/gsearchtool.c:503 gsearchtool/gsearchtool.c:505
-msgid "%m/%-d/%y, %-I:%M %p"
-msgstr ""
-
-#: gsearchtool/gsearchtool.c:518
-msgid "%Y%m%d%H%M%S"
-msgstr ""
-
-#: gsearchtool/gsearchtool.c:533
-msgid "folder"
-msgstr ""
-
-#: gsearchtool/gsearchtool.c:535
 #, fuzzy
-msgid "program"
-msgstr "rÌomhchl·r asdulta"
+msgid "File is not named"
+msgstr "Ainm comhaid"
 
-#: gsearchtool/gsearchtool.c:537
-msgid "symbolic link"
+#: gsearchtool/gsearchtool.c:77
+msgid "File matches regular expression"
 msgstr ""
 
-#: gsearchtool/gsearchtool.c:663
-msgid "No Files Found."
+#: gsearchtool/gsearchtool.c:79
+msgid "Follow symbolic links"
 msgstr ""
 
-#: gsearchtool/gsearchtool.c:736
+#: gsearchtool/gsearchtool.c:80
+#, fuzzy
+msgid "Include other filesystems"
+msgstr "Ordaithe Blaoisce"
+
+#: gsearchtool/gsearchtool.c:398 gsearchtool/gsearchtool.c:824
+msgid "No files found"
+msgstr ""
+
+#: gsearchtool/gsearchtool.c:483
+msgid "Entry changed called for a non entry option!"
+msgstr ""
+
+#: gsearchtool/gsearchtool.c:593
+msgid "Set the text of 'file is named'"
+msgstr ""
+
+#: gsearchtool/gsearchtool.c:594
+msgid "Set the text of 'look in folder'"
+msgstr ""
+
+#: gsearchtool/gsearchtool.c:595
+msgid "Sort files by one of the following: name, folder, size, type, or date"
+msgstr ""
+
+#: gsearchtool/gsearchtool.c:596
+msgid "Set sort order to descending, the default is ascending"
+msgstr ""
+
+#: gsearchtool/gsearchtool.c:597
+msgid "Automatically start a search"
+msgstr ""
+
+#: gsearchtool/gsearchtool.c:601
+#, fuzzy, c-format
+msgid "Select the '%s' constraint"
+msgstr "Ordaithe Blaoisce"
+
+#: gsearchtool/gsearchtool.c:686
+msgid "Invalid option passed to sortby command line argument."
+msgstr ""
+
+#: gsearchtool/gsearchtool.c:815
+msgid "(aborted)"
+msgstr ""
+
+#: gsearchtool/gsearchtool.c:828
+#, fuzzy
+msgid "One file found"
+msgstr "Ainm comhaid"
+
+#: gsearchtool/gsearchtool.c:831
+#, fuzzy, c-format
+msgid "%d files found"
+msgstr "Ainm comhaid"
+
+#: gsearchtool/gsearchtool.c:927
 msgid ""
-"Cannot perform the search.\n"
-"The Bourne shell was not found\n"
-"It is typically installed as /bin/sh or /usr/bin/sh."
+"While searching the following errors were reported.\n"
+"\n"
 msgstr ""
 
-#: gsearchtool/gsearchtool.c:752
-#, fuzzy
-msgid "Searching..."
-msgstr "Folach·n"
-
-#: gsearchtool/gsearchtool.c:866
+#: gsearchtool/gsearchtool.c:931
 msgid ""
 "\n"
 "... Too many errors to display ..."
 msgstr ""
 
-#: gsearchtool/gsearchtool.c:877
-msgid "No files found"
-msgstr ""
-
-#: gsearchtool/gsearchtool.c:880
-msgid "One file found"
-msgstr ""
-
-#: gsearchtool/gsearchtool.c:882
-#, fuzzy, c-format
-msgid "%d files found"
-msgstr "Ainm comhaid"
-
-#: gsearchtool/gsearchtool.c:954 gsearchtool/gsearchtool.c:1671
-msgid "Cannot perform the search. Please specify a search criteria."
-msgstr ""
-
-#: gsearchtool/gsearchtool.c:971 gsearchtool/gsearchtool.c:1692
-msgid ""
-"A search is already running.  Please wait for the search to complete or "
-"cancel it."
-msgstr ""
-
-#: gsearchtool/gsearchtool.c:1005
-msgid "Start folder does not exist"
-msgstr ""
-
-#: gsearchtool/gsearchtool.c:1020
-msgid "Cannot show the search command line. Please specify a search criteria."
-msgstr ""
-
-#: gsearchtool/gsearchtool.c:1024
+#: gsearchtool/gsearchtool.c:944
 #, fuzzy
-msgid "Search Command Line"
+msgid "Search Errors"
 msgstr "Ordaithe Blaoisce"
 
-#: gsearchtool/gsearchtool.c:1042
-msgid ""
-"This is the command line that can be used to execute this search\n"
-"from the console.\n"
-"\n"
-"C_ommand:"
-msgstr ""
-
-#: gsearchtool/gsearchtool.c:1063
-msgid "Command"
-msgstr "Ordaithe"
-
-#: gsearchtool/gsearchtool.c:1064
+#: gsearchtool/gsearchtool.c:982 gsearchtool/gsearchtool.c:1006
 #, fuzzy
-msgid "Command Line Entry"
+msgid "Search for Files Error"
 msgstr "Ordaithe Blaoisce"
 
-#: gsearchtool/gsearchtool.c:1064
-msgid "Use this command line to execute the search from console"
-msgstr ""
-
-#: gsearchtool/gsearchtool.c:1172
-msgid "No viewer available for this mime type."
-msgstr ""
-
-#: gsearchtool/gsearchtool.c:1269
-msgid "Entry changed called for a non entry option!"
-msgstr ""
-
-#: gsearchtool/gsearchtool.c:1339
+#: gsearchtool/gsearchtool.c:1090
 msgid "Search Rule Value Entry"
 msgstr ""
 
-#: gsearchtool/gsearchtool.c:1339
+#: gsearchtool/gsearchtool.c:1091
 msgid "Enter a value for search rule"
 msgstr ""
 
-#: gsearchtool/gsearchtool.c:1354
-msgid "Enabled"
+#: gsearchtool/gsearchtool.c:1125
+#, c-format
+msgid "Click to Remove the '%s' Rule"
 msgstr ""
 
-#: gsearchtool/gsearchtool.c:1362
-msgid "Toggle On/Off to enable/disable the rule"
+#: gsearchtool/gsearchtool.c:1180
+msgid "A_vailable options:"
 msgstr ""
 
-#: gsearchtool/gsearchtool.c:1370
-msgid "Click to Remove the Rule"
-msgstr ""
-
-#: gsearchtool/gsearchtool.c:1416 gsearchtool/gsearchtool.c:1794
-msgid "S_tarting in folder:"
-msgstr ""
-
-#: gsearchtool/gsearchtool.c:1420 gsearchtool/gsearchtool.c:1800
-msgid "Browse"
-msgstr ""
-
-#: gsearchtool/gsearchtool.c:1428 gsearchtool/gsearchtool.c:1429
-#: gsearchtool/gsearchtool.c:1809 gsearchtool/gsearchtool.c:1810
-msgid "Starting folder entry"
-msgstr ""
-
-#: gsearchtool/gsearchtool.c:1428 gsearchtool/gsearchtool.c:1429
-#: gsearchtool/gsearchtool.c:1809 gsearchtool/gsearchtool.c:1810
-msgid "Enter the folder name where you want to start the search"
-msgstr ""
-
-#: gsearchtool/gsearchtool.c:1450
-msgid "Rules:"
-msgstr ""
-
-#: gsearchtool/gsearchtool.c:1470
-msgid "A_dd Rule:"
-msgstr ""
-
-#: gsearchtool/gsearchtool.c:1479
+#: gsearchtool/gsearchtool.c:1193
 #, fuzzy
 msgid "Search Rules Menu"
 msgstr "Ordaithe Blaoisce"
 
-#: gsearchtool/gsearchtool.c:1479
+#: gsearchtool/gsearchtool.c:1194
 msgid "Select a search rule from the menu"
 msgstr ""
 
-#: gsearchtool/gsearchtool.c:1522
-msgid "Click to Add a Rule"
-msgstr ""
-
-#: gsearchtool/gsearchtool.c:1523
-msgid "Click to Start the Search"
-msgstr ""
-
-#: gsearchtool/gsearchtool.c:1524
-msgid "Click to Stop the Search"
-msgstr ""
-
-#: gsearchtool/gsearchtool.c:1529 gsearchtool/gsearchtool.c:1861
+#: gsearchtool/gsearchtool.c:1226
 msgid "S_earch Results"
 msgstr ""
 
-#: gsearchtool/gsearchtool.c:1569 gsearchtool/gsearchtool.c:1901
+#: gsearchtool/gsearchtool.c:1298
 msgid "Name"
 msgstr ""
 
-#: gsearchtool/gsearchtool.c:1591 gsearchtool/gsearchtool.c:1923
+#: gsearchtool/gsearchtool.c:1318
 #, fuzzy
 msgid "Folder"
 msgstr "Comhad"
 
-#: gsearchtool/gsearchtool.c:1603 gsearchtool/gsearchtool.c:1935
+#: gsearchtool/gsearchtool.c:1329
 #, fuzzy
 msgid "Size"
 msgstr "Comhad"
 
-#: gsearchtool/gsearchtool.c:1615 gsearchtool/gsearchtool.c:1947
+#: gsearchtool/gsearchtool.c:1339
 msgid "Type"
 msgstr ""
 
-#: gsearchtool/gsearchtool.c:1626 gsearchtool/gsearchtool.c:1958
+#: gsearchtool/gsearchtool.c:1349
 msgid "Date Modified"
 msgstr ""
 
-#: gsearchtool/gsearchtool.c:1770
+#: gsearchtool/gsearchtool.c:1386
 #, fuzzy
-msgid "Find files _named:"
+msgid "File is _named:"
 msgstr "Ainm comhaid"
 
-#: gsearchtool/gsearchtool.c:1785 gsearchtool/gsearchtool.c:1786
+#: gsearchtool/gsearchtool.c:1401 gsearchtool/gsearchtool.c:1402
 #, fuzzy
 msgid "File Name Entry"
 msgstr "Ainm comhaid"
 
-#: gsearchtool/gsearchtool.c:1785 gsearchtool/gsearchtool.c:1786
+#: gsearchtool/gsearchtool.c:1401 gsearchtool/gsearchtool.c:1402
 msgid "Enter the file name you want to search"
 msgstr ""
 
-#: gsearchtool/gsearchtool.c:1855
+#: gsearchtool/gsearchtool.c:1414
+msgid "_Look in folder:"
+msgstr ""
+
+#: gsearchtool/gsearchtool.c:1420
+msgid "Browse"
+msgstr ""
+
+#: gsearchtool/gsearchtool.c:1429 gsearchtool/gsearchtool.c:1430
+msgid "Starting folder entry"
+msgstr ""
+
+#: gsearchtool/gsearchtool.c:1429 gsearchtool/gsearchtool.c:1430
+msgid "Enter the folder name where you want to start the search"
+msgstr ""
+
+#: gsearchtool/gsearchtool.c:1446 gsearchtool/gsearchtool.c:1447
+#, fuzzy
+msgid "Additional Options"
+msgstr "Uirlischl√°r"
+
+#: gsearchtool/gsearchtool.c:1492
 msgid "Click to Start the search"
 msgstr ""
 
-#: gsearchtool/gsearchtool.c:1856
+#: gsearchtool/gsearchtool.c:1493
 msgid "Click to Stop the search"
 msgstr ""
 
-#: gsearchtool/gsearchtool.c:1978
-#, fuzzy
-msgid "Simple"
-msgstr "Comhad"
-
-#: gsearchtool/gsearchtool.c:1980
-msgid "Advanced"
-msgstr ""
-
-#: gsearchtool/gsearchtool.c:2018
-#: gsearchtool/help/es/gsearchtool.desktop.in.h:1
-msgid "GNOME Search Tool"
-msgstr ""
-
-#: gsearchtool/gsearchtool.c:2019
-msgid "(C) 1998,2002 the Free Software Foundation"
-msgstr ""
-
-#: gsearchtool/gsearchtool.c:2020
-msgid "Frontend to the unix find/locate commands"
-msgstr ""
-
-#: gsearchtool/gsearchtool.c:2060
-#, c-format
-msgid "File %s already exists. Overwrite?"
-msgstr ""
-
-#: gsearchtool/gsearchtool.c:2095
-msgid "Cannot save the results file."
-msgstr ""
-
-#: gsearchtool/gsearchtool.c:2102 meat-grinder/meat-grinder.c:654
-msgid "Save Results"
-msgstr ""
-
-#: gsearchtool/gsearchtool.c:2159
-#, fuzzy
-msgid "S_how Command..."
-msgstr "Ordaithe Blaoisce"
-
-#: gsearchtool/gsearchtool.c:2160
-msgid "Show the command used to perform the search"
-msgstr ""
-
-#: gsearchtool/gsearchtool.c:2163
-msgid "Save Results _As..."
-msgstr ""
-
-#: gsearchtool/gsearchtool.c:2164
-msgid "Save the search results"
-msgstr ""
-
-#: gsearchtool/gsearchtool.c:2179
-#, fuzzy
-msgid "Sear_ch"
-msgstr "Folach·n"
-
-#: gsearchtool/gsearchtool.c:2201
+#: gsearchtool/gsearchtool.c:1566
 msgid "Cannot initialize bonobo."
 msgstr ""
 
-#: gsearchtool/gsearchtool.c:2205
-msgid "Search Tool"
+#: gsearchtool/gsearchtool-callbacks.c:45
+msgid "_Open"
+msgstr ""
+
+#: gsearchtool/gsearchtool-callbacks.c:49
+#, fuzzy
+msgid "O_pen Folder"
+msgstr "Comhad"
+
+#: gsearchtool/gsearchtool-callbacks.c:54
+msgid "_Save Results As..."
+msgstr ""
+
+#: gsearchtool/gsearchtool-callbacks.c:107
+#, fuzzy
+msgid "Can't Display Help"
+msgstr "Ainm Taispe√°ntais X:"
+
+#: gsearchtool/gsearchtool-callbacks.c:128
+#, fuzzy
+msgid "Searching..."
+msgstr "Folach√°n"
+
+#: gsearchtool/gsearchtool-callbacks.c:299
+#, c-format
+msgid "This will open %d separate files. Are you sure you want to do this?"
+msgstr ""
+
+#: gsearchtool/gsearchtool-callbacks.c:302
+#, fuzzy, c-format
+msgid "Open %d Files?"
+msgstr "Comhad"
+
+#: gsearchtool/gsearchtool-callbacks.c:359
+#: gsearchtool/gsearchtool-callbacks.c:620
+#, c-format
+msgid "There is no installed viewer capable of displaying \"%s\"."
+msgstr ""
+
+#: gsearchtool/gsearchtool-callbacks.c:366
+#: gsearchtool/gsearchtool-callbacks.c:627
+msgid "Can't Display Location"
+msgstr ""
+
+#: gsearchtool/gsearchtool-callbacks.c:404
+#, c-format
+msgid "This will open %d separate folders. Are you sure you want to do this?"
+msgstr ""
+
+#: gsearchtool/gsearchtool-callbacks.c:407
+#, fuzzy, c-format
+msgid "Open %d Folders?"
+msgstr "Comhad"
+
+#: gsearchtool/gsearchtool-callbacks.c:446
+msgid "The nautilus file manager is not running."
+msgstr ""
+
+#: gsearchtool/gsearchtool-callbacks.c:729
+msgid "Save Search Results As..."
+msgstr ""
+
+#: gsearchtool/gsearchtool-callbacks.c:772
+#, c-format
+msgid ""
+"Cannot save search results.\n"
+"\"%s\" is a folder."
+msgstr ""
+
+#: gsearchtool/gsearchtool-callbacks.c:800
+#, c-format
+msgid "File \"%s\" already exists. Overwrite?"
+msgstr ""
+
+#: gsearchtool/gsearchtool-callbacks.c:837
+#, c-format
+msgid "Cannot save search results to the file \"%s\"."
+msgstr ""
+
+#: gsearchtool/gsearchtool-support.c:284
+msgid "Expander Size"
+msgstr ""
+
+#: gsearchtool/gsearchtool-support.c:285
+msgid "Size of the expander arrow"
+msgstr ""
+
+#: gsearchtool/gsearchtool-support.c:346
+#, c-format
+msgid ""
+"GConf error:\n"
+"  %s"
+msgstr ""
+
+#: gsearchtool/gsearchtool-support.c:507
+msgid "%Y%m%d%H%M%S"
+msgstr ""
+
+#: gsearchtool/gsearchtool-support.c:538
+msgid "today at %-I:%M %p"
+msgstr ""
+
+#: gsearchtool/gsearchtool-support.c:540
+msgid "yesterday at %-I:%M %p"
+msgstr ""
+
+#: gsearchtool/gsearchtool-support.c:542 gsearchtool/gsearchtool-support.c:544
+msgid "%m/%-d/%y, %-I:%M %p"
+msgstr ""
+
+#: gsearchtool/gsearchtool-support.c:669
+msgid "link (broken)"
+msgstr ""
+
+#: gsearchtool/gsearchtool-support.c:674
+#, c-format
+msgid "link to %s"
+msgstr ""
+
+#: gsearchtool/help/es/gsearchtool.desktop.in.h:1
+msgid "GNOME Search Tool"
 msgstr ""
 
 #: logview/about.c:42
@@ -1565,19 +1697,18 @@ msgstr ""
 
 #: logview/about.c:43
 msgid ""
-"This  program  is  part of  the  GNOME  project for Linux. Logview comes "
-"with ABSOLUTELY NO WARRANTY. This is free software, and you are welcome to "
-"redistribute it under the conditions of the GNU General Public Licence. The "
-"log icon is a courtesy of Tuomas Kuosmanen (a.k.a tigert)."
+"This program is part of the GNOME project. Logview comes with ABSOLUTELY NO "
+"WARRANTY. This is free software, and you are welcome to redistribute it "
+"under the conditions of the GNU General Public Licence. The log icon is a "
+"courtesy of Tuomas Kuosmanen (a.k.a tigert)."
 msgstr ""
 
-#. go get logview.xpm in $(prefix)/share/pixmaps/logview
-#: logview/about.c:72
+#: logview/about.c:61
 #, fuzzy
 msgid "GNOME System Log Viewer"
 msgstr "Dath"
 
-#: logview/about.c:73
+#: logview/about.c:62
 msgid "Copyright (C) 1998"
 msgstr ""
 
@@ -1588,7 +1719,7 @@ msgstr ""
 #: logview/actions.c:84
 #, fuzzy
 msgid "Actions"
-msgstr "Uirlischl·r"
+msgstr "Uirlischl√°r"
 
 #: logview/actions.c:152
 msgid "_Add"
@@ -1597,9 +1728,9 @@ msgstr ""
 #: logview/actions.c:159
 #, fuzzy
 msgid "_Edit"
-msgstr "AstÈigh"
+msgstr "Ast√©igh"
 
-#: logview/actions.c:166 meat-grinder/meat-grinder.c:941
+#: logview/actions.c:166
 msgid "_Remove"
 msgstr ""
 
@@ -1645,12 +1776,12 @@ msgstr ""
 #: logview/actions.c:511
 #, fuzzy
 msgid "description"
-msgstr "Cur sÌos"
+msgstr "Cur s√≠os"
 
 #: logview/actions.c:771
 #, fuzzy
 msgid "_Description:"
-msgstr "Cur sÌos"
+msgstr "Cur s√≠os"
 
 #: logview/actions.c:780
 msgid "Description of this entry."
@@ -1669,56 +1800,6 @@ msgstr ""
 
 #: logview/calendar.c:112
 msgid "Calendar"
-msgstr ""
-
-#.
-#. * 	-------------------
-#. * 	     Defines
-#. * 	-------------------
-#.
-#: logview/config.c:34
-msgid "fixed 12"
-msgstr ""
-
-#. Translators: It seems for asian languages the Bold seems not to work
-#: logview/config.c:36
-msgid "fixed Bold 12"
-msgstr ""
-
-#: logview/config.c:37
-msgid "fixed 10"
-msgstr ""
-
-#. Translators: It seems for asian languages the Bold seems not to work
-#: logview/config.c:39
-msgid "fixed Bold 8"
-msgstr ""
-
-#. Translators: translate to fonts that appear well in the log viewer,
-#. * for example for asian languages, helvetica seems not to work
-#. * well for those
-#: logview/config.c:44
-msgid "Helvetica 14"
-msgstr ""
-
-#: logview/config.c:45
-msgid "Helvetica Bold 14"
-msgstr ""
-
-#: logview/config.c:46
-msgid "Helvetica 12"
-msgstr ""
-
-#: logview/config.c:47
-msgid "Helvetica Bold 12"
-msgstr ""
-
-#: logview/config.c:48
-msgid "Helvetica 10"
-msgstr ""
-
-#: logview/config.c:49
-msgid "Helvetica Bold 10"
 msgstr ""
 
 #: logview/desc_db.c:37
@@ -1744,521 +1825,473 @@ msgstr "Dath"
 msgid "View the system log file"
 msgstr ""
 
-#: logview/info.c:80
+#: logview/info.c:65
 msgid "Log stats"
 msgstr ""
 
-#. Note: we use a real translated string that will appear below to gather
-#. * the length, that way we'll get semi correct results with a lot more
-#. * fonts
-#: logview/info.c:193 logview/info.c:195 logview/zoom.c:220 logview/zoom.c:223
-#: logview/zoom.c:271
-#, fuzzy
-msgid "Date:"
-msgstr "Greamaigh"
-
-#: logview/info.c:204
-msgid "Log information"
-msgstr ""
-
-#: logview/info.c:232
-msgid "Log:"
-msgstr ""
-
-#: logview/info.c:235
+#: logview/info.c:110
 msgid "Size:"
 msgstr ""
 
-#: logview/info.c:238
+#: logview/info.c:110
 msgid "Modified:"
 msgstr ""
 
-#: logview/info.c:241
+#: logview/info.c:111
 #, fuzzy
-msgid "Start date:"
+msgid "Start Date:"
 msgstr "Tosaigh"
 
-#: logview/info.c:244
-msgid "Last date:"
+#: logview/info.c:111
+#, fuzzy
+msgid "Last Date:"
+msgstr "Greamaigh"
+
+#: logview/info.c:111
+msgid "Number of Lines:"
 msgstr ""
 
-#: logview/info.c:247
-msgid "Num. lines:"
+#: logview/info.c:137
+msgid "Log Information"
 msgstr ""
 
-#: logview/info.c:265
+#: logview/info.c:163 logview/zoom.c:157
+msgid "<No log loaded>"
+msgstr ""
+
+#: logview/info.c:186
 #, c-format
 msgid "%ld bytes"
 msgstr ""
 
-#: logview/log_repaint.c:84
+#: logview/log_repaint.c:59
 msgid "January"
 msgstr ""
 
-#: logview/log_repaint.c:84
+#: logview/log_repaint.c:59
 msgid "February"
 msgstr ""
 
-#: logview/log_repaint.c:84
+#: logview/log_repaint.c:59
 #, fuzzy
 msgid "March"
-msgstr "Folach·n"
+msgstr "Folach√°n"
 
-#: logview/log_repaint.c:84
+#: logview/log_repaint.c:59
 msgid "April"
 msgstr ""
 
-#: logview/log_repaint.c:84
+#: logview/log_repaint.c:59
 msgid "May"
 msgstr ""
 
-#: logview/log_repaint.c:85
+#: logview/log_repaint.c:60
 msgid "June"
 msgstr ""
 
-#: logview/log_repaint.c:85
+#: logview/log_repaint.c:60
 msgid "July"
 msgstr ""
 
-#: logview/log_repaint.c:85
+#: logview/log_repaint.c:60
 msgid "August"
 msgstr ""
 
-#: logview/log_repaint.c:85
+#: logview/log_repaint.c:60
 msgid "September"
 msgstr ""
 
-#: logview/log_repaint.c:85
+#: logview/log_repaint.c:60
 msgid "October"
 msgstr ""
 
-#: logview/log_repaint.c:86
+#: logview/log_repaint.c:61
 msgid "November"
 msgstr ""
 
-#: logview/log_repaint.c:86
+#: logview/log_repaint.c:61
 msgid "December"
 msgstr ""
 
 #. Translators: Date only format, %x should well do really
-#: logview/log_repaint.c:511
+#: logview/log_repaint.c:403
 #, c-format
 msgid "%x"
 msgstr ""
 
+#. Translators: Make sure this is only Month and Day format, year
+#. * will be bogus here
+#: logview/log_repaint.c:458
+msgid "%B %e"
+msgstr ""
+
 #. Translators: should be only the time, date could be bogus
-#: logview/log_repaint.c:638
+#: logview/log_repaint.c:524
 #, c-format
 msgid "%X"
 msgstr ""
 
-#. Translators: Make sure this is only Month and Day format, year
-#. * will be bogus here
-#: logview/log_repaint.c:760
-msgid "%B %e"
-msgstr ""
-
-#: logview/logrtns.c:206
+#: logview/logrtns.c:191
 msgid "Not enough memory!\n"
 msgstr ""
 
-#: logview/logrtns.c:214
-msgid "Out of memory!\n"
-msgstr ""
-
-#: logview/logrtns.c:240
+#: logview/logrtns.c:202
 msgid "Unable to open logfile!\n"
 msgstr ""
 
-#: logview/logrtns.c:295
+#: logview/logrtns.c:260
 #, c-format
 msgid "%s is not a regular file."
 msgstr ""
 
-#: logview/logrtns.c:303
+#: logview/logrtns.c:268
 #, c-format
 msgid ""
 "%s is not user readable. Either run the program as root or ask the sysadmin "
 "to change the permissions on the file."
 msgstr ""
 
-#: logview/logrtns.c:320
+#: logview/logrtns.c:285
 #, c-format
 msgid "%s could not be opened."
 msgstr ""
 
-#: logview/logrtns.c:350 logview/logrtns.c:359
+#: logview/logrtns.c:315 logview/logrtns.c:324
 #, c-format
 msgid "%s not a log file."
 msgstr ""
 
-#: logview/logrtns.c:792 logview/logrtns.c:823 logview/logrtns.c:954
+#: logview/logrtns.c:722 logview/logrtns.c:753 logview/logrtns.c:884
 msgid "ReadLogStats: out of memory"
 msgstr ""
 
-#: logview/logview.c:95
+#: logview/logview.c:99
 msgid "S_witch Log"
 msgstr ""
 
-#: logview/logview.c:96
-msgid "Switch log"
+#: logview/logview.c:100
+msgid "Switch between already opened logs"
 msgstr ""
 
-#: logview/logview.c:98
+#: logview/logview.c:106
 msgid "_Monitor..."
 msgstr ""
 
-#: logview/logview.c:99
-msgid "Monitor Log"
+#: logview/logview.c:107
+msgid "Monitor Logs"
 msgstr ""
 
-#: logview/logview.c:102
+#: logview/logview.c:115
 #, fuzzy
 msgid "_Properties"
-msgstr "¡baltachtaÌ"
+msgstr "√Åbaltachta√≠"
 
-#: logview/logview.c:103
+#: logview/logview.c:116
 #, fuzzy
 msgid "Show Log Properties"
-msgstr "Taispe·in `¡baltachtaÌ'"
+msgstr "Taispe√°in `√Åbaltachta√≠'"
 
-#: logview/logview.c:112
+#: logview/logview.c:124
+#, fuzzy
+msgid "Clos_e All"
+msgstr "Druid"
+
+#: logview/logview.c:125
+#, fuzzy
+msgid "Close all Log files"
+msgstr "D√©an √∫s√°id de Iarchomhad"
+
+#: logview/logview.c:137
 #, fuzzy
 msgid "_Calendar"
 msgstr "Druid"
 
-#: logview/logview.c:112
+#: logview/logview.c:138
 msgid "Show Calendar Log"
 msgstr ""
 
-#: logview/logview.c:114
+#: logview/logview.c:144
 msgid "_Entry Detail"
 msgstr ""
 
-#: logview/logview.c:114
+#: logview/logview.c:145
 msgid "Show Entry Detail"
 msgstr ""
 
-#: logview/logview.c:122
+#: logview/logview.c:151
 #, fuzzy
-msgid "About..."
-msgstr "F·"
+msgid "_Collapse All"
+msgstr "Druid"
 
-#: logview/logview.c:123
-msgid "Info about logview"
+#: logview/logview.c:152
+msgid "Collapse all the rows"
 msgstr ""
 
-#: logview/logview.c:130
-msgid "_Log"
-msgstr ""
-
-#: logview/logview.c:334
+#: logview/logview.c:365
 msgid "No log files to open"
 msgstr ""
 
-#. Create App
-#: logview/logview.c:354
-msgid "System Log Viewer"
+#: logview/logview.c:389
+#, fuzzy
+msgid "Date"
+msgstr "Greamaigh"
+
+#: logview/logview.c:389
+msgid "Host Name"
 msgstr ""
 
-#: logview/logview.c:452
+#: logview/logview.c:390
 #, fuzzy
-msgid "Filename: "
-msgstr "Aimn Comhaid:"
+msgid "Process"
+msgstr "Abaltachtam"
 
-#: logview/logview.c:473
+#: logview/logview.c:390
+msgid "Message"
+msgstr ""
+
+#: logview/logview.c:474
 #, fuzzy
 msgid "Last Modified: "
 msgstr "Iarchomhad"
 
-#: logview/logview.c:722 logview/logview.c:788
+#: logview/logview.c:568 logview/logview.c:643
 msgid "Too many open logs. Close one and try again"
 msgstr ""
 
-#: logview/logview.c:734
+#: logview/logview.c:580
 msgid "File already opened"
 msgstr ""
 
-#: logview/logview.c:801
+#: logview/logview.c:656
 msgid "Open new logfile"
 msgstr ""
 
 #: logview/misc.c:56
-msgid "Cannot load required fonts, cannot continue"
-msgstr ""
-
-#: logview/misc.c:91
 #, c-format
 msgid "Error: [%s]\n"
 msgstr ""
 
-#: logview/monitor.c:115
-msgid "Monitor options"
+#: logview/monitor.c:109
+#, fuzzy
+msgid "Monitor Options"
+msgstr "Uirlischl√°r"
+
+#: logview/monitor.c:135
+#, fuzzy
+msgid "Choose logs to monitor:"
+msgstr "Monat√≥ir log cor√°is"
+
+#: logview/monitor.c:140
+msgid "Currently monitored logs:"
 msgstr ""
 
-#: logview/monitor.c:125
-msgid "Choose logs to monitor"
-msgstr ""
+#: logview/monitor.c:188
+#, fuzzy
+msgid "Add logs to monitor"
+msgstr "Monat√≥ir log cor√°is"
 
-#. Arrowed buttons
-#: logview/monitor.c:169
-msgid "Add >>"
-msgstr ""
-
-#. Remove button
-#: logview/monitor.c:177
-msgid "Remove <<"
-msgstr ""
+#: logview/monitor.c:197
+#, fuzzy
+msgid "Remove logs from monitor"
+msgstr "Monat√≥ir log cor√°is"
 
 #. Check boxes
-#: logview/monitor.c:215
-msgid "Hide app"
+#: logview/monitor.c:244
+msgid "_Hide Application"
 msgstr ""
 
-#: logview/monitor.c:223
-msgid "Exec actions"
+#: logview/monitor.c:252
+msgid "_Execute Actions"
 msgstr ""
 
-#. Actions button
-#: logview/monitor.c:235
-msgid "Actions..."
-msgstr ""
-
-#: logview/monitor.c:286
+#: logview/monitor.c:289
 msgid "Too many logs to monitor. Remove one and try again"
 msgstr ""
 
-#: logview/monitor.c:294 logview/monitor.c:332
+#: logview/monitor.c:297 logview/monitor.c:335
 msgid "tmp_list is NULL\n"
 msgstr ""
 
-#: logview/monitor.c:452
+#: logview/monitor.c:457
 msgid "Monitoring logs..."
 msgstr ""
 
-#: logview/monitor.c:673
+#: logview/monitor.c:644
 msgid "TOUCHED!!\n"
 msgstr ""
 
-#: logview/userprefsdialog.c:65
-msgid "hostname column width ( 0 to hide this column ): "
-msgstr ""
-
-#: logview/userprefsdialog.c:66
-#, fuzzy
-msgid "Columns"
-msgstr "Ordaithe"
-
-#: logview/zoom.c:79
+#: logview/zoom.c:63
 msgid "Zoom view"
 msgstr ""
 
-#: logview/zoom.c:233
-#, c-format
-msgid "Log line detail for %s"
-msgstr ""
+#: logview/zoom.c:102
+#, fuzzy
+msgid "Date:"
+msgstr "Greamaigh"
 
-#: logview/zoom.c:236
-msgid "Log line detail for <No log loaded>"
-msgstr ""
-
-#: logview/zoom.c:275
+#: logview/zoom.c:102
 #, fuzzy
 msgid "Process:"
 msgstr "Abaltachtam"
 
-#: logview/zoom.c:278
+#: logview/zoom.c:103
 msgid "Message:"
 msgstr ""
 
-#: logview/zoom.c:281
+#: logview/zoom.c:103
 #, fuzzy
 msgid "Description:"
-msgstr "Cur sÌos"
+msgstr "Cur s√≠os"
+
+#: logview/zoom.c:131
+msgid "Log line detail for"
+msgstr ""
 
 #. Translators: do not include year, it would be bogus
-#: logview/zoom.c:306
+#: logview/zoom.c:185
 msgid "%B %e %X"
 msgstr ""
 
-#: meat-grinder/archive-generator.desktop.in.h:1
-msgid "Archive Generator"
+#: logview/logview.schemas.in.h:1
+msgid "Log file to open up on startup"
 msgstr ""
 
-#: meat-grinder/archive-generator.desktop.in.h:2
-msgid "Create compressed archives containing many files"
-msgstr ""
-
-#: meat-grinder/meat-grinder.c:137
-#, c-format
+#: logview/logview.schemas.in.h:2
 msgid ""
-"Number of files: %d\n"
-"Number of folders: %d"
+"Specifies the log file to open up at startup. The default is either /var/adm/"
+"messages or /var/log/messages, depending on your distribution."
 msgstr ""
 
-#: meat-grinder/meat-grinder.c:143
-msgid ""
-"No files or folders, drop files or folders\n"
-"above to add them to the archive"
-msgstr ""
-
-#: meat-grinder/meat-grinder.c:166
-#, c-format
-msgid "%s removed"
-msgstr ""
-
-#: meat-grinder/meat-grinder.c:328 meat-grinder/meat-grinder.c:333
-#, fuzzy, c-format
-msgid "Failed to create %s"
-msgstr "ECha rabhas ·balta a scrÌobh ar ghaireas %s"
-
-#: meat-grinder/meat-grinder.c:373
-msgid "Archive.tar.gz"
-msgstr ""
-
-#: meat-grinder/meat-grinder.c:493 meat-grinder/meat-grinder.c:977
-msgid "GNOME Archive Generator"
-msgstr ""
-
-#: meat-grinder/meat-grinder.c:495
-msgid "Drag files in to make archives"
-msgstr ""
-
-#: meat-grinder/meat-grinder.c:528
 #, fuzzy
-msgid "All files selected"
-msgstr "nÌl aon tionscadal roghnaithe ann"
+#~ msgid "No files found %s"
+#~ msgstr "Ainm comhaid"
 
-#: meat-grinder/meat-grinder.c:547
-msgid "All files removed"
-msgstr ""
-
-#: meat-grinder/meat-grinder.c:609 meat-grinder/meat-grinder.c:793
 #, fuzzy
-msgid "No filename selected"
-msgstr "nÌl aon tionscadal roghnaithe ann"
+#~ msgid "Failed to create %s"
+#~ msgstr "ECha rabhas √°balta a scr√≠obh ar ghaireas %s"
 
-#: meat-grinder/meat-grinder.c:613
-msgid "File exists, overwrite?"
-msgstr ""
-
-#: meat-grinder/meat-grinder.c:636
-#, c-format
-msgid "%s created"
-msgstr ""
-
-#: meat-grinder/meat-grinder.c:650
-msgid "No items to archive"
-msgstr ""
-
-#: meat-grinder/meat-grinder.c:777
-#, c-format
-msgid "%s added"
-msgstr ""
-
-#: meat-grinder/meat-grinder.c:796
-msgid "File does not exists"
-msgstr ""
-
-#: meat-grinder/meat-grinder.c:810
-msgid "Add file or folder"
-msgstr ""
-
-#: meat-grinder/meat-grinder.c:927
-msgid "_Add file or folder..."
-msgstr ""
-
-#: meat-grinder/meat-grinder.c:928
-msgid "Add a file or folder to archive"
-msgstr ""
-
-#: meat-grinder/meat-grinder.c:931
 #, fuzzy
-msgid "_Create archive..."
-msgstr "Druid"
+#~ msgid "All files selected"
+#~ msgstr "n√≠l aon tionscadal roghnaithe ann"
 
-#: meat-grinder/meat-grinder.c:931
-msgid "Create a new archive from the items"
-msgstr ""
-
-#: meat-grinder/meat-grinder.c:942
-msgid "Remove the selected item"
-msgstr ""
-
-#: meat-grinder/meat-grinder.c:944
 #, fuzzy
-msgid "R_emove All"
-msgstr "Glac ·it an Ioml·in"
+#~ msgid "No filename selected"
+#~ msgstr "n√≠l aon tionscadal roghnaithe ann"
 
-#: meat-grinder/meat-grinder.c:945
-msgid "Remove all items"
-msgstr ""
-
-#: meat-grinder/meat-grinder.c:1016
-msgid "Drop files here to add them to the archive."
-msgstr ""
-
-#. tarball icon
-#: meat-grinder/meat-grinder.c:1028
 #, fuzzy
-msgid "_Create Archive"
-msgstr "Druid"
+#~ msgid "_Create archive..."
+#~ msgstr "Druid"
 
-#: meat-grinder/meat-grinder.c:1036
-msgid ""
-"Drag this button to the destination where you want the archive to be created "
-"or press it to pop up a file selection dialog."
-msgstr ""
+#, fuzzy
+#~ msgid "R_emove All"
+#~ msgstr "Glac √°it an Ioml√°in"
 
-#: meat-grinder/meat-grinder.c:1174
-msgid "Cannot find proper icons anywhere!"
-msgstr ""
+#, fuzzy
+#~ msgid "_Create Archive"
+#~ msgstr "Druid"
 
-#: meat-grinder/meat-grinder.c:1182
-msgid ""
-"Cannot find the archive (tar) program!\n"
-"This is the program used for creating archives."
-msgstr ""
+#, fuzzy
+#~ msgid "EUnable to create filesystem."
+#~ msgstr "ECha rabhas √°balta a scr√≠obh ar ghaireas %s"
+
+#, fuzzy
+#~ msgid "Filesystem settings"
+#~ msgstr "Cine√°l chor√°s comhaid:"
+
+#, fuzzy
+#~ msgid "Formatting mode"
+#~ msgstr "Ag form√°id %s"
+
+#, fuzzy
+#~ msgid "del"
+#~ msgstr "Samhail"
+
+#, fuzzy
+#~ msgid "Format a Floppy"
+#~ msgstr "Form√°idigh diosca flapach"
+
+#, fuzzy
+#~ msgid "_Quick format"
+#~ msgstr "Form√°id gasta"
 
 #~ msgid "Format another floppy?"
-#~ msgstr "Ar mhaith leat diosca flapach eile a fhorm·id?"
+#~ msgstr "Ar mhaith leat diosca flapach eile a fhorm√°id?"
+
+#, fuzzy
+#~ msgid "File name is"
+#~ msgstr "Ainm comhaid"
+
+#, fuzzy
+#~ msgid "program"
+#~ msgstr "r√≠omhchl√°r asdulta"
+
+#, fuzzy
+#~ msgid "Search Command Line"
+#~ msgstr "Ordaithe Blaoisce"
+
+#~ msgid "Command"
+#~ msgstr "Ordaithe"
+
+#, fuzzy
+#~ msgid "Command Line Entry"
+#~ msgstr "Ordaithe Blaoisce"
+
+#, fuzzy
+#~ msgid "Simple"
+#~ msgstr "Comhad"
+
+#, fuzzy
+#~ msgid "S_how Command..."
+#~ msgstr "Ordaithe Blaoisce"
+
+#, fuzzy
+#~ msgid "Sear_ch"
+#~ msgstr "Folach√°n"
 
 #, fuzzy
 #~ msgid "description:"
-#~ msgstr "Cur sÌos"
-
-#~ msgid "Help"
-#~ msgstr "Cuidi˙"
+#~ msgstr "Cur s√≠os"
 
 #, fuzzy
-#~ msgid "Close log"
-#~ msgstr "Druid"
+#~ msgid "About..."
+#~ msgstr "F√°"
+
+#, fuzzy
+#~ msgid "Filename: "
+#~ msgstr "Aimn Comhaid:"
+
+#, fuzzy
+#~ msgid "Columns"
+#~ msgstr "Ordaithe"
+
+#~ msgid "Help"
+#~ msgstr "Cuidi√∫"
 
 #~ msgid "Exit"
-#~ msgstr "AstÈigh"
+#~ msgstr "Ast√©igh"
 
 #, fuzzy
 #~ msgid "Show log stats"
-#~ msgstr "Taispe·in St·daschl·r"
+#~ msgstr "Taispe√°in St√°daschl√°r"
 
 #, fuzzy
 #~ msgid "Store"
 #~ msgstr "Stad"
 
 #~ msgid "About"
-#~ msgstr "F·"
+#~ msgstr "F√°"
 
 #, fuzzy
 #~ msgid "_Text Toolbar"
-#~ msgstr "Uirlischl·r"
+#~ msgstr "Uirlischl√°r"
 
 #, fuzzy
 #~ msgid "_Statusbar"
-#~ msgstr "St·das"
+#~ msgstr "St√°das"
 
 #, fuzzy
 #~ msgid "Preferences..."
-#~ msgstr "RoghaÌ"
+#~ msgstr "Rogha√≠"
 
 #, fuzzy
 #~ msgid "Logview"
@@ -2266,36 +2299,32 @@ msgstr ""
 
 #, fuzzy
 #~ msgid "Show user preferences"
-#~ msgstr "Taispe·in `RoghaÌ'"
+#~ msgstr "Taispe√°in `Rogha√≠'"
 
 #, fuzzy
 #~ msgid "Word definition"
-#~ msgstr "nÌl aon chur sÌos ann"
-
-#, fuzzy
-#~ msgid "Fonts"
-#~ msgstr "ClÛfhoireann"
+#~ msgstr "n√≠l aon chur s√≠os ann"
 
 #, fuzzy
 #~ msgid "Display handle bar"
-#~ msgstr "RÈimse taispe·inte"
+#~ msgstr "R√©imse taispe√°inte"
 
 #, fuzzy
 #~ msgid "GDiskFree Properties"
-#~ msgstr "¡baltachtaÌ"
+#~ msgstr "√Åbaltachta√≠"
 
 #~ msgid "File owner"
-#~ msgstr "⁄inÈir comhaid"
+#~ msgstr "√öin√©ir comhaid"
 
 #~ msgid "Filenames except"
-#~ msgstr "Ainmeacha comhaid ach amh·in"
+#~ msgstr "Ainmeacha comhaid ach amh√°in"
 
 #, fuzzy
 #~ msgid "Command mangled"
 #~ msgstr "Ordaithe"
 
 #~ msgid "no project selected"
-#~ msgstr "nÌl aon tionscadal roghnaithe ann"
+#~ msgstr "n√≠l aon tionscadal roghnaithe ann"
 
 #~ msgid "00:00"
 #~ msgstr "00:00"
@@ -2307,28 +2336,28 @@ msgstr ""
 #~ msgstr "tionscadal %t stadtha"
 
 #~ msgid "program started"
-#~ msgstr "rÌomhchl·r tosaithe"
+#~ msgstr "r√≠omhchl√°r tosaithe"
 
 #~ msgid "no description"
-#~ msgstr "nÌl aon chur sÌos ann"
+#~ msgstr "n√≠l aon chur s√≠os ann"
 
 #~ msgid ""
 #~ "There seems to be another GTimeTracker running.\n"
 #~ "Press OK to start GTimeTracker anyway, or press Cancel to quit."
 #~ msgstr ""
-#~ "Is cos˙il go bhfuil GTimeTracker eile ar si˙il.\n"
-#~ "Br˙igh CEART GO LEOR chun GTimeTracker a chur ar si˙il ar aon nÛs,\n"
-#~ "nÛ br˙igh CEALAIGH chun Èirigh as."
+#~ "Is cos√∫il go bhfuil GTimeTracker eile ar si√∫il.\n"
+#~ "Br√∫igh CEART GO LEOR chun GTimeTracker a chur ar si√∫il ar aon n√≥s,\n"
+#~ "n√≥ br√∫igh CEALAIGH chun √©irigh as."
 
 #~ msgid "Error"
-#~ msgstr "Earr·id"
+#~ msgstr "Earr√°id"
 
 #~ msgid ""
 #~ "An error occured while reading the configuration file.\n"
 #~ "Shall I setup a new configuration?"
 #~ msgstr ""
-#~ "Tharla earr·id fad a bhÌ an comhad cumraÌochta · lÈamh.\n"
-#~ "An mbunfaidh mÈ cumraÌocht ˙r?"
+#~ "Tharla earr√°id fad a bh√≠ an comhad cumra√≠ochta √° l√©amh.\n"
+#~ "An mbunfaidh m√© cumra√≠ocht √∫r?"
 
 #~ msgid "PROJECT"
 #~ msgstr "TIONSCADAL"
@@ -2338,139 +2367,133 @@ msgstr ""
 
 #, fuzzy
 #~ msgid "Could not write the configuration file!"
-#~ msgstr "NÌor Èirigh liom comhad an chumhraÌochta a scrÌobh!"
+#~ msgstr "N√≠or √©irigh liom comhad an chumhra√≠ochta a scr√≠obh!"
 
 #~ msgid "New Project..."
-#~ msgstr "Tionscadal ˙r..."
+#~ msgstr "Tionscadal √∫r..."
 
 #~ msgid "Project Title"
 #~ msgstr "Teideal Tionscadail"
 
 #~ msgid "Description"
-#~ msgstr "Cur sÌos"
+#~ msgstr "Cur s√≠os"
 
 #~ msgid "I could not read the configuration file"
-#~ msgstr "NÌor Èirigh liom comhad na cumhraÌochta a lÈamh"
+#~ msgstr "N√≠or √©irigh liom comhad na cumhra√≠ochta a l√©amh"
 
 #~ msgid "Reload Configuration File"
-#~ msgstr "AthlÛd·il Comhad CumraÌochta"
+#~ msgstr "Athl√≥d√°il Comhad Cumra√≠ochta"
 
 #~ msgid ""
 #~ "This will overwrite your current set of projects.\n"
 #~ "Do you really want to reload the configuration file?"
 #~ msgstr ""
-#~ "ScrÌobhfaidh seo thar fhoireann tionscadala at· agat.\n"
-#~ "An bhfuil athlÛd·il chomhad na cumraÌochta uait?"
+#~ "Scr√≠obhfaidh seo thar fhoireann tionscadala at√° agat.\n"
+#~ "An bhfuil athl√≥d√°il chomhad na cumra√≠ochta uait?"
 
 #~ msgid "_New Project..."
-#~ msgstr "Tionscadal ⁄r..."
+#~ msgstr "Tionscadal √ör..."
 
 #~ msgid "_Reload Configuration File"
-#~ msgstr "AthlÛd·il Comhad CumraÌochta"
+#~ msgstr "Athl√≥d√°il Comhad Cumra√≠ochta"
 
 #~ msgid "_Save Configuration File"
-#~ msgstr "S·bh·il Comhad CumraÌochta"
+#~ msgstr "S√°bh√°il Comhad Cumra√≠ochta"
 
 #~ msgid "Clear _Daily Counter"
-#~ msgstr "Glan ¡iritheoir Laeth˙il"
+#~ msgstr "Glan √Åiritheoir Laeth√∫il"
 
 #~ msgid "Sto_p"
 #~ msgstr "Stad"
 
 #~ msgid "_Timer Running"
-#~ msgstr "AmadÛir ar si˙il"
+#~ msgstr "Amad√≥ir ar si√∫il"
 
 #~ msgid "_Timer"
-#~ msgstr "AmadÛir"
+#~ msgstr "Amad√≥ir"
 
 #~ msgid "Display"
-#~ msgstr "Taispe·ntas"
+#~ msgstr "Taispe√°ntas"
 
 #~ msgid "Show Seconds"
-#~ msgstr "Taispe·in Soicind"
+#~ msgstr "Taispe√°in Soicind"
 
 #~ msgid "Show Status Bar"
-#~ msgstr "Taispe·in St·daschl·r"
+#~ msgstr "Taispe√°in St√°daschl√°r"
 
 #~ msgid "Show Table Header"
-#~ msgstr "Taispe·in CeannlÌne"
+#~ msgstr "Taispe√°in Ceannl√≠ne"
 
 #, fuzzy
 #~ msgid "Show Sub-Projects"
-#~ msgstr "Taispe·in `¡baltachtaÌ'"
+#~ msgstr "Taispe√°in `√Åbaltachta√≠'"
 
 #~ msgid "Toolbar"
-#~ msgstr "Uirlischl·r"
+#~ msgstr "Uirlischl√°r"
 
 #~ msgid "Show Toolbar Icons"
-#~ msgstr "Taispe·in Dealbha Uirlischl·ir"
+#~ msgstr "Taispe√°in Dealbha Uirlischl√°ir"
 
 #~ msgid "Show Toolbar Texts"
-#~ msgstr "Taispe·in TÈacs Uirlischl·ir"
+#~ msgstr "Taispe√°in T√©acs Uirlischl√°ir"
 
 #~ msgid "Show Tooltips"
-#~ msgstr "Taispe·in NodaÌ Uirlise"
+#~ msgstr "Taispe√°in Noda√≠ Uirlise"
 
 #~ msgid "Toolbar Segments"
-#~ msgstr "Teasc·in Uirlischl·ir"
+#~ msgstr "Teasc√°in Uirlischl√°ir"
 
 #~ msgid "Show `New'"
-#~ msgstr "Taispe·in `⁄r'"
+#~ msgstr "Taispe√°in `√ör'"
 
 #~ msgid "Show `Save', `Reload'"
-#~ msgstr "Taispe·in `S·bh·il', `AthlÛd·il'"
+#~ msgstr "Taispe√°in `S√°bh√°il', `Athl√≥d√°il'"
 
 #~ msgid "Show `Cut', `Copy', `Paste'"
-#~ msgstr "Taispe·in `Gearr', `DÈan CÛip', `Greamaigh'"
+#~ msgstr "Taispe√°in `Gearr', `D√©an C√≥ip', `Greamaigh'"
 
 #~ msgid "Show `Timer'"
-#~ msgstr "Taispe·in `AmadÛir'"
+#~ msgstr "Taispe√°in `Amad√≥ir'"
 
 #~ msgid "Show `Preferences'"
-#~ msgstr "Taispe·in `RoghaÌ'"
+#~ msgstr "Taispe√°in `Rogha√≠'"
 
 #~ msgid "Show `Help'"
-#~ msgstr "Taispe·in `Cuidi˙'"
+#~ msgstr "Taispe√°in `Cuidi√∫'"
 
 #~ msgid "Show `Quit'"
-#~ msgstr "Taispe·in `…irigh as'"
+#~ msgstr "Taispe√°in `√âirigh as'"
 
 #~ msgid "Shell Commands"
 #~ msgstr "Ordaithe Blaoisce"
 
 #~ msgid "Switch Project Command:"
-#~ msgstr "Aistrigh Ord˙ Tionscadail:"
+#~ msgstr "Aistrigh Ord√∫ Tionscadail:"
 
 #~ msgid "No Project Command:"
-#~ msgstr "Gan Ord˙ Tionscadail:"
+#~ msgstr "Gan Ord√∫ Tionscadail:"
 
 #~ msgid "Logfile"
 #~ msgstr "Iarchomhad"
 
-#~ msgid "Use Logfile"
-#~ msgstr "DÈan ˙s·id de Iarchomhad"
-
-#~ msgid "Filename:"
-#~ msgstr "Aimn Comhaid:"
-
 #~ msgid "Timeout in secs:"
-#~ msgstr "CrÌochthrÈimhse in soicind:"
+#~ msgstr "Cr√≠ochthr√©imhse in soicind:"
 
 #~ msgid "Misc"
 #~ msgstr "Teibi"
 
 #~ msgid "[GTT]New"
-#~ msgstr "⁄r"
+#~ msgstr "√ör"
 
 #, fuzzy
 #~ msgid "Create a New Project..."
-#~ msgstr "Tionscadal ˙r..."
+#~ msgstr "Tionscadal √∫r..."
 
 #~ msgid "Reload"
-#~ msgstr "AthlÛd·il"
+#~ msgstr "Athl√≥d√°il"
 
 #~ msgid "Save Configuration File"
-#~ msgstr "S·bh·il Comhad CumraÌochta"
+#~ msgstr "S√°bh√°il Comhad Cumra√≠ochta"
 
 #~ msgid "Cut Selected Project"
 #~ msgstr "Gearr Tionscadal Roghnaithe"
@@ -2483,22 +2506,22 @@ msgstr ""
 
 #, fuzzy
 #~ msgid "Edit Project Properties..."
-#~ msgstr "Cuir in Eagar ¡baltachtaÌ..."
+#~ msgstr "Cuir in Eagar √Åbaltachta√≠..."
 
 #~ msgid "Timer"
-#~ msgstr "AmadÛir"
+#~ msgstr "Amad√≥ir"
 
 #~ msgid "Start/Stop Timer"
-#~ msgstr "Tosaigh/Stad AmadÛir"
+#~ msgstr "Tosaigh/Stad Amad√≥ir"
 
 #~ msgid "Prefs"
-#~ msgstr "RoghaÌ"
+#~ msgstr "Rogha√≠"
 
 #~ msgid "Quit GTimeTracker"
-#~ msgstr "…irigh as GTimeTracker"
+#~ msgstr "√âirigh as GTimeTracker"
 
 #~ msgid "Total"
-#~ msgstr "Ioml·n"
+#~ msgstr "Ioml√°n"
 
 #~ msgid "Today"
 #~ msgstr "Inniu"
@@ -2517,25 +2540,21 @@ msgstr ""
 
 #, fuzzy
 #~ msgid "Edit the Start & Stop Times"
-#~ msgstr "Tosaigh/Stad AmadÛir"
+#~ msgstr "Tosaigh/Stad Amad√≥ir"
 
 #, fuzzy
 #~ msgid "New File"
 #~ msgstr "Comhad"
 
 #, fuzzy
-#~ msgid "Open File"
-#~ msgstr "Comhad"
-
-#, fuzzy
 #~ msgid "Save File"
-#~ msgstr "S·bh·il"
+#~ msgstr "S√°bh√°il"
 
 #~ msgid "Project Title:"
 #~ msgstr "Teideal Tionscadail:"
 
 #~ msgid "Project Description:"
-#~ msgstr "Cur SÌos Tionscadail:"
+#~ msgstr "Cur S√≠os Tionscadail:"
 
 #~ msgid "Project"
 #~ msgstr "Tionscadal"
@@ -2546,15 +2565,15 @@ msgstr ""
 
 #, fuzzy
 #~ msgid "Regular"
-#~ msgstr "AthlÛd·il"
+#~ msgstr "Athl√≥d√°il"
 
 #, fuzzy
 #~ msgid "Flat Fee"
-#~ msgstr "FlÛta"
+#~ msgstr "Fl√≥ta"
 
 #, fuzzy
 #~ msgid "minutes"
-#~ msgstr "noimÈid"
+#~ msgstr "noim√©id"
 
 #, fuzzy
 #~ msgid "(empty)"
@@ -2565,11 +2584,11 @@ msgstr ""
 
 #, fuzzy
 #~ msgid "Edit it"
-#~ msgstr "AstÈigh"
+#~ msgstr "Ast√©igh"
 
 #, fuzzy
 #~ msgid "Concat"
-#~ msgstr "ClÛfhoireann"
+#~ msgstr "Cl√≥fhoireann"
 
 #, fuzzy
 #~ msgid "GColorsel"
@@ -2577,7 +2596,7 @@ msgstr ""
 
 #, fuzzy
 #~ msgid "Connect to"
-#~ msgstr "ClÛfhoireann"
+#~ msgstr "Cl√≥fhoireann"
 
 #, fuzzy
 #~ msgid "Create views"
@@ -2585,18 +2604,18 @@ msgstr ""
 
 #, fuzzy
 #~ msgid "Description :"
-#~ msgstr "Cur sÌos"
+#~ msgstr "Cur s√≠os"
 
 #, fuzzy
 #~ msgid "Documents"
-#~ msgstr "¡baltachtaÌ"
+#~ msgstr "√Åbaltachta√≠"
 
 #, fuzzy
 #~ msgid "Drop:"
 #~ msgstr "Abaltachtam"
 
 #~ msgid "Modal"
-#~ msgstr "MÛd˙il"
+#~ msgstr "M√≥d√∫il"
 
 #, fuzzy
 #~ msgid "Mode:"
@@ -2607,11 +2626,11 @@ msgstr ""
 
 #, fuzzy
 #~ msgid "Special properties"
-#~ msgstr "¡baltachtaÌ"
+#~ msgstr "√Åbaltachta√≠"
 
 #, fuzzy
 #~ msgid "Common properties"
-#~ msgstr "¡baltachtaÌ"
+#~ msgstr "√Åbaltachta√≠"
 
 #, fuzzy
 #~ msgid "Blue :"
@@ -2623,7 +2642,7 @@ msgstr ""
 
 #, fuzzy
 #~ msgid "Document/View properties"
-#~ msgstr "¡baltachtaÌ"
+#~ msgstr "√Åbaltachta√≠"
 
 #, fuzzy
 #~ msgid "File saved ..."
@@ -2635,18 +2654,18 @@ msgstr ""
 
 #, fuzzy
 #~ msgid "View properties"
-#~ msgstr "¡baltachtaÌ"
+#~ msgstr "√Åbaltachta√≠"
 
 #, fuzzy
 #~ msgid "Document properties"
-#~ msgstr "¡baltachtaÌ"
+#~ msgstr "√Åbaltachta√≠"
 
 #, fuzzy
 #~ msgid "User Colors"
 #~ msgstr "Dath"
 
 #~ msgid "Float"
-#~ msgstr "FlÛta"
+#~ msgstr "Fl√≥ta"
 
 #~ msgid "Color"
 #~ msgstr "Dath"
@@ -2655,50 +2674,47 @@ msgstr ""
 #~ msgstr "Luach"
 
 #~ msgid "Sorry, no preferences yet."
-#~ msgstr "Gabhaim pard˙n agat, nÌl aon roghaÌ ann go fÛill"
+#~ msgstr "Gabhaim pard√∫n agat, n√≠l aon rogha√≠ ann go f√≥ill"
 
 #~ msgid "Commands"
 #~ msgstr "Ordaithe"
 
 #~ msgid "Save Information to File..."
-#~ msgstr "S·bh·il Comhad CumraÌochta"
-
-#~ msgid "X Display Name:"
-#~ msgstr "Ainm Taispe·ntais X:"
+#~ msgstr "S√°bh√°il Comhad Cumra√≠ochta"
 
 #~ msgid "Percent free"
-#~ msgstr "CÈatad·n at· saor in aisce"
+#~ msgstr "C√©atad√°n at√° saor in aisce"
 
 #~ msgid "None"
 #~ msgstr "Ceann ar bith"
 
 #~ msgid "No"
-#~ msgstr "NÌ hea"
+#~ msgstr "N√≠ hea"
 
 #~ msgid "Model"
 #~ msgstr "Samhail"
 
 #~ msgid "Geometry"
-#~ msgstr "CÈimseata"
+#~ msgstr "C√©imseata"
 
 #~ msgid "Cache"
-#~ msgstr "Folach·n"
+#~ msgstr "Folach√°n"
 
 #~ msgid "Status"
-#~ msgstr "St·das"
+#~ msgstr "St√°das"
 
 #~ msgid "IO Mode"
 #~ msgstr "Modh IO"
 
 #~ msgid "IDE Status"
-#~ msgstr "St·das IDE"
+#~ msgstr "St√°das IDE"
 
 #~ msgid "Current"
 #~ msgstr "Reatha"
 
 #, fuzzy
 #~ msgid "Scale"
-#~ msgstr "S·bh·il"
+#~ msgstr "S√°bh√°il"
 
 #, fuzzy
 #~ msgid "Stripchart"
@@ -2706,29 +2722,29 @@ msgstr ""
 
 #, fuzzy
 #~ msgid "Show values"
-#~ msgstr "Taispe·in St·daschl·r"
+#~ msgstr "Taispe√°in St√°daschl√°r"
 
 #, fuzzy
 #~ msgid "Edit Prefs..."
-#~ msgstr "Cuir in Eagar ¡baltachtaÌ..."
+#~ msgstr "Cuir in Eagar √Åbaltachta√≠..."
 
 #, fuzzy
 #~ msgid "Edit Params..."
-#~ msgstr "Cuir in Eagar ¡baltachtaÌ..."
+#~ msgstr "Cuir in Eagar √Åbaltachta√≠..."
 
 #, fuzzy
 #~ msgid "Parameter"
-#~ msgstr "Patr˙n"
+#~ msgstr "Patr√∫n"
 
 #~ msgid "Filename"
 #~ msgstr "Ainm comhaid"
 
 #~ msgid "Pattern"
-#~ msgstr "Patr˙n"
+#~ msgstr "Patr√∫n"
 
 #, fuzzy
 #~ msgid "Point"
-#~ msgstr "ClÛfhoireann"
+#~ msgstr "Cl√≥fhoireann"
 
 #, fuzzy
 #~ msgid "Add Color"
@@ -2744,14 +2760,14 @@ msgstr ""
 
 #, fuzzy
 #~ msgid "minor"
-#~ msgstr "noimÈid"
+#~ msgstr "noim√©id"
 
 #, fuzzy
 #~ msgid "Pen"
-#~ msgstr "Patr˙n"
+#~ msgstr "Patr√∫n"
 
 #~ msgid "Configuration file name"
-#~ msgstr "Ainm comhaid cumraÌochta"
+#~ msgstr "Ainm comhaid cumra√≠ochta"
 
 #, fuzzy
 #~ msgid "Values"
@@ -2759,7 +2775,7 @@ msgstr ""
 
 #, fuzzy
 #~ msgid "Prefs..."
-#~ msgstr "RoghaÌ"
+#~ msgstr "Rogha√≠"
 
 #~ msgid "Project Time today:"
 #~ msgstr "Am Tionscadail inniu:"
@@ -2772,28 +2788,25 @@ msgstr ""
 
 #, fuzzy
 #~ msgid "Preferences...          "
-#~ msgstr "RoghaÌ"
+#~ msgstr "Rogha√≠"
 
 #~ msgid "_Save..."
-#~ msgstr "S·bh·il"
+#~ msgstr "S√°bh√°il"
 
 #~ msgid "Formatting /dev/floppy"
-#~ msgstr "Ag form·id /dev/floppy"
-
-#~ msgid "Formatting %s"
-#~ msgstr "Ag form·id %s"
+#~ msgstr "Ag form√°id /dev/floppy"
 
 #~ msgid "E_xit"
-#~ msgstr "AstÈigh"
+#~ msgstr "Ast√©igh"
 
 #~ msgid "_About"
-#~ msgstr "F·"
+#~ msgstr "F√°"
 
 #~ msgid "_File"
 #~ msgstr "Comhad"
 
 #~ msgid "Displayed range"
-#~ msgstr "RÈimse taispe·inte"
+#~ msgstr "R√©imse taispe√°inte"
 
 #, fuzzy
 #~ msgid "blue"
@@ -2801,33 +2814,33 @@ msgstr ""
 
 #, fuzzy
 #~ msgid "Load"
-#~ msgstr "AthlÛd·il"
+#~ msgstr "Athl√≥d√°il"
 
 #, fuzzy
 #~ msgid "Battery"
-#~ msgstr "Patr˙n"
+#~ msgstr "Patr√∫n"
 
 #~ msgid "Please enter the name of the new project:"
-#~ msgstr "Iontr·il ainm an tionscadal ˙r, le do thoil:"
+#~ msgstr "Iontr√°il ainm an tionscadal √∫r, le do thoil:"
 
 #, fuzzy
 #~ msgid "Delayed"
-#~ msgstr "AthlÛd·il"
+#~ msgstr "Athl√≥d√°il"
 
 #~ msgid "ERROR"
-#~ msgstr "ERRE¡ID"
+#~ msgstr "ERRE√ÅID"
 
 #~ msgid "Replace %s"
-#~ msgstr "Glac ·it %s"
+#~ msgstr "Glac √°it %s"
 
 #~ msgid "Replace"
-#~ msgstr "Glac ·it"
+#~ msgstr "Glac √°it"
 
 #~ msgid "Custom"
-#~ msgstr "Gn·s"
+#~ msgstr "Gn√°s"
 
 #~ msgid "Editing"
-#~ msgstr "EagarthÛireacht"
+#~ msgstr "Eagarth√≥ireacht"
 
 #~ msgid "MDI Mode"
 #~ msgstr "Modh MIDI"
@@ -2839,7 +2852,7 @@ msgstr ""
 #~ "Linux Native (ext2)\n"
 #~ "Dos (FAT)\n"
 #~ msgstr ""
-#~ "Linux D˙chasach (ext2)\n"
+#~ "Linux D√∫chasach (ext2)\n"
 #~ "Dos (FAT)\n"
 
 #~ msgid ""
@@ -2848,13 +2861,10 @@ msgstr ""
 #~ "Double Density 3.5\" (720 KB)\n"
 #~ "Double Density 5.25\" (360 KB)\n"
 #~ msgstr ""
-#~ "Ard-dl˙s 3.5\" (1.44 MB)\n"
-#~ "Ard-dl˙s 5.25\" (1.2 MB)\n"
-#~ "DÈdhl˙s 3.5\" (720 KB)\n"
-#~ "DÈdhl˙s 5.25\" (360 KB)\n"
-
-#~ msgid "System log monitor"
-#~ msgstr "MonatÛir log cor·is"
+#~ "Ard-dl√∫s 3.5\" (1.44 MB)\n"
+#~ "Ard-dl√∫s 5.25\" (1.2 MB)\n"
+#~ "D√©dhl√∫s 3.5\" (720 KB)\n"
+#~ "D√©dhl√∫s 5.25\" (360 KB)\n"
 
 #~ msgid "SysLog tool"
 #~ msgstr "Uirlis SysLog"

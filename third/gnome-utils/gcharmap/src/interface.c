@@ -61,25 +61,18 @@ create_button (const gchar *label, GtkSignalFunc func)
 
 
 static GtkWidget *
-create_chartable (void)
+create_chartable (MainApp *app)
 {
     GtkWidget *chartable, *button;
     gint v, h;
 
-    chartable = gtk_table_new (8, 24, TRUE);
+    chartable = gtk_table_new (16, 16, TRUE);
 
-    for (v = 0; v <= 3; v++)
+    for (v = 0; v < 16; v++)
     {
-        for (h = 0; h <= 23; h++)
+        for (h = 0; h < 16; h++)
         {
-	    char buf[7];
-            int n;
-            int ch = v * 24 + h + 32;
-	   
-	    n = g_unichar_to_utf8 (ch, buf);
-            buf[n] = 0;
-            
-            button = gtk_button_new_with_label (buf);
+            button = gtk_button_new_with_label ("");
             mainapp->buttons = g_list_append (mainapp->buttons, button);
             gtk_table_attach (GTK_TABLE (chartable), button, h, h + 1, v, v + 1,
               (GtkAttachOptions) (GTK_EXPAND | GTK_SHRINK | GTK_FILL),
@@ -87,61 +80,21 @@ create_chartable (void)
               0, 0);
 
             g_signal_connect (G_OBJECT (button), "clicked",
-              G_CALLBACK (cb_charbtn_click), NULL);
+              G_CALLBACK (cb_charbtn_click), GINT_TO_POINTER (h + v * 16));
             g_signal_connect (G_OBJECT (button), "enter",
-              G_CALLBACK (cb_charbtn_enter), NULL);
+              G_CALLBACK (cb_charbtn_enter), GINT_TO_POINTER (h + v * 16));
             g_signal_connect (G_OBJECT (button), "leave",
-              G_CALLBACK (cb_charbtn_leave), NULL);
-
+              G_CALLBACK (cb_charbtn_leave), GINT_TO_POINTER (h + v * 16));
 
             g_signal_connect (G_OBJECT (button), "focus_in_event",
-              GTK_SIGNAL_FUNC (cb_charbtn_enter), NULL);
+              G_CALLBACK (cb_charbtn_focus_in), GINT_TO_POINTER (h + v * 16));
             g_signal_connect (G_OBJECT (button), "focus_out_event",
-              GTK_SIGNAL_FUNC (cb_charbtn_leave), NULL);
-
+              G_CALLBACK (cb_charbtn_focus_out), GINT_TO_POINTER (h + v * 16));
 
         }
     }
 
-    for (v = 0; v <= 3; v++)
-    {
-        for (h = 0; h <= 23; h++)
-        {
-            char buf[7];
-            int n;
-	    int ch = v * 24 + h + 161;
-	    
-	    if (ch > 0xff)
-		    continue;
-
-            n = g_unichar_to_utf8 (ch, buf);
-            buf[n] = 0;
-	    
-            button = gtk_button_new_with_label (buf);
-            mainapp->buttons = g_list_append (mainapp->buttons, button);
-            gtk_table_attach (GTK_TABLE (chartable), button,
-              h, h + 1, v + 4, v + 5,
-              (GtkAttachOptions) (GTK_EXPAND | GTK_SHRINK | GTK_FILL),
-              (GtkAttachOptions) (GTK_EXPAND | GTK_SHRINK | GTK_FILL),
-              0, 0);
-
-            g_signal_connect (G_OBJECT (button), "clicked",
-              G_CALLBACK (cb_charbtn_click), NULL);
-            g_signal_connect (G_OBJECT (button), "enter",
-              G_CALLBACK (cb_charbtn_enter), NULL);
-            g_signal_connect (G_OBJECT (button), "leave",
-              G_CALLBACK (cb_charbtn_leave), NULL);
-
-
-            g_signal_connect (G_OBJECT (button), "focus_in_event",
-              GTK_SIGNAL_FUNC (cb_charbtn_enter), NULL);
-            g_signal_connect (G_OBJECT (button), "focus_out_event",
-              GTK_SIGNAL_FUNC (cb_charbtn_leave), NULL);
-
-
-        }
-    }
-
+    set_chartable_labels ();
     gtk_widget_show_all (chartable);
     return chartable;
 }
@@ -193,17 +146,18 @@ main_app_create_ui (MainApp *app)
     GtkWidget *vbox, *hbox, *hbox2, *hbox3, *vbox2;
     GtkWidget *vsep, *alabel, *label;
     GtkWidget *chartable;
-    GtkWidget *buttonbox, *button;
+    GtkWidget *button;
     GtkWidget *align;
-    GtkWidget *viewport;
     GtkWidget *image;
+    GtkWidget *fontlabel;
 
+    GtkObject *page_adj;
 
     /* Main window */
     {
         BonoboDockLayoutItem *item;
 
-        app->window = gnome_app_new (_(PACKAGE), _("Gnome Character Map"));
+        app->window = gnome_app_new (_(PACKAGE), _("Character Map"));
         gtk_widget_set_name (app->window, "mainapp");
         
         g_signal_connect_swapped (G_OBJECT (app->window), "destroy",
@@ -236,6 +190,37 @@ main_app_create_ui (MainApp *app)
         gnome_app_add_docked (GNOME_APP (app->window), hbox, _("Action Toolbar"),
           BONOBO_DOCK_ITEM_BEH_EXCLUSIVE | BONOBO_DOCK_ITEM_BEH_NEVER_VERTICAL,
           BONOBO_DOCK_TOP, 2, 0, 1);
+
+        fontlabel = gtk_label_new_with_mnemonic (_("_Font:"));
+        gtk_misc_set_padding (GTK_MISC (fontlabel), GNOME_PAD_SMALL, -1);
+        gtk_box_pack_start (GTK_BOX (hbox), fontlabel, FALSE, TRUE, 0);
+
+        app->fontpicker = gnome_font_picker_new ();
+	gtk_label_set_mnemonic_widget (GTK_LABEL (fontlabel), app->fontpicker);
+        gnome_font_picker_set_mode (GNOME_FONT_PICKER (app->fontpicker),
+                                    GNOME_FONT_PICKER_MODE_FONT_INFO);
+        g_signal_connect (app->fontpicker, "font-set",
+                          G_CALLBACK (cb_fontpicker_font_set), app);
+        gtk_box_pack_start (GTK_BOX (hbox), app->fontpicker, FALSE, TRUE, 0);
+
+        vsep = gtk_vseparator_new ();
+        gtk_box_pack_start (GTK_BOX (hbox), vsep, FALSE, TRUE, 0);
+
+        /* The page selector */
+        alabel = gtk_label_new_with_mnemonic (_("_Page:"));
+        gtk_misc_set_padding (GTK_MISC (alabel), GNOME_PAD_SMALL, -1);
+        gtk_box_pack_start (GTK_BOX (hbox), alabel, FALSE, TRUE, 0);
+
+        page_adj = gtk_adjustment_new (0, 0, 255, 1, 16, 16);
+        app->page_spin = gtk_spin_button_new (GTK_ADJUSTMENT (page_adj), 1, 0);
+        gtk_spin_button_set_update_policy (GTK_SPIN_BUTTON (app->page_spin),
+            GTK_UPDATE_IF_VALID);
+        gtk_label_set_mnemonic_widget (GTK_LABEL (alabel), app->page_spin);
+     
+        gtk_box_pack_start (GTK_BOX (hbox), app->page_spin, TRUE, TRUE, 0);
+        g_signal_connect (G_OBJECT (app->page_spin), "value-changed",
+                            G_CALLBACK (cb_page_select_spin_changed), NULL);
+        /* end of page selector */
 
         alabel = gtk_label_new_with_mnemonic (_("_Text to copy:"));
         gtk_misc_set_padding (GTK_MISC (alabel), GNOME_PAD_SMALL, -1);
@@ -291,7 +276,7 @@ main_app_create_ui (MainApp *app)
 
     /* The character table */
     {
-        chartable = create_chartable ();
+        chartable = create_chartable (app);
         gtk_box_pack_start (GTK_BOX (hbox2), chartable, TRUE, TRUE, 0);
         app->chartable = chartable;
     }
@@ -308,15 +293,19 @@ main_app_create_ui (MainApp *app)
 static void
 main_app_init (MainApp *obj)
 {
+    gchar *defaultfont = g_strdup ("Sans 12");
+   
     mainapp = obj;
+    mainapp->current_page=0;
+    mainapp->font = defaultfont;
+    
     main_app_create_ui (obj);
 }
 
 static void
 main_app_class_init (MainAppClass *klass)
 {
-    GObjectClass *object_class = G_OBJECT_CLASS (klass);
-    
+    /* Do nothing */
 }
 
 GType
@@ -356,9 +345,34 @@ void
 main_app_destroy (MainApp *obj)
 {
     g_return_if_fail (obj != NULL);
-    g_return_if_fail (MAIN_IS_APP (obj) == TRUE);
+    g_return_if_fail (MAIN_IS_APP (obj));
 
     gtk_main_quit ();
+}
+
+
+void
+main_app_set_font (MainApp *app, gchar *font)
+{
+    PangoFontDescription *desc;
+    GList *list;
+
+    g_return_if_fail (app != NULL);
+    g_return_if_fail (font != NULL);
+    g_return_if_fail (MAIN_IS_APP (app));
+
+    desc = pango_font_description_from_string (font);
+    g_return_if_fail (desc != NULL);
+
+    list = app->buttons;
+    while (list != NULL)
+    {
+        GtkWidget *label;
+
+        label = ((GtkBin *) list->data)->child;
+        gtk_widget_modify_font (label, desc);
+        list = list->next;
+    }
 }
 
 

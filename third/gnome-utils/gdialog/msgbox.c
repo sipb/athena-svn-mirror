@@ -20,6 +20,14 @@
 
 #include "dialog.h"
 
+#define DIALOG_INFOBOX_TIMEOUT 5000 /* Quit after 5 sec. in --infobox mode */
+
+static gboolean dialog_infobox_quit (gpointer data)
+{
+	gtk_main_quit ();
+	return FALSE; /* Automatically calls g_source_remove */
+}
+
 static void cancelled(GtkWidget *w, gpointer *d)
 {
 	exit(-1);
@@ -43,35 +51,35 @@ int dialog_msgbox(const char *title, const char *prompt, int height, int width,
 
 
 	if (gnome_mode) {
-		GtkWidget *w  = gtk_dialog_new_with_buttons (title,
-						NULL,
+		GtkWidget *w;
+
+		w = gtk_dialog_new_with_buttons (title, NULL,
 						GTK_DIALOG_DESTROY_WITH_PARENT,
 						GTK_STOCK_OK,
 						GTK_RESPONSE_OK,
 						NULL);
+		gtk_window_set_position (GTK_WINDOW (w), GTK_WIN_POS_CENTER);
 
-		GtkWidget *hbox;
-		GtkWidget *vbox;
+		label_autowrap (GTK_DIALOG (w)->vbox, prompt, width);
 
-		gtk_window_set_title(GTK_WINDOW(w), title);
-
-		hbox = gtk_hbox_new(FALSE, 0);
-		vbox = gtk_vbox_new(FALSE, 0);
-
-
-		label_autowrap(vbox, prompt, width);
-
-		gtk_box_pack_start(GTK_BOX(hbox), vbox, TRUE, TRUE, 0);
-
-		gtk_box_pack_start(GTK_BOX(GTK_DIALOG(w)->vbox),
-				   hbox,
-				   TRUE, TRUE, GNOME_PAD);
-		gtk_window_set_position(GTK_WINDOW(w), GTK_WIN_POS_CENTER);
 		gtk_signal_connect(GTK_OBJECT(w), "close",
 			GTK_SIGNAL_FUNC(cancelled), NULL);
 		gtk_signal_connect_object (GTK_OBJECT (w), "response",
                               GTK_SIGNAL_FUNC (okayed),NULL);
 		gtk_widget_show_all(w);
+
+		/*
+		 * For --infobox mode.
+		 */
+		if (!pause) {
+			if (fork ()) {
+				return 0;
+			} else {
+				g_timeout_add (DIALOG_INFOBOX_TIMEOUT,
+					       dialog_infobox_quit, NULL);
+			}
+		}
+
 		gtk_main();
 		return 0;
 	}
