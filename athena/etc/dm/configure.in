@@ -1,0 +1,20 @@
+AC_INIT(dm.c)
+
+AC_PROG_CC
+AC_PROG_INSTALL
+
+ATHENA_HESIOD
+
+AC_PATH_XTRA
+
+dnl AC_HEADER_STDC
+dnl AC_HEADER_SYS_WAIT
+dnl AC_CHECK_HEADERS(fcntl.h sys/file.h sys/ioctl.h sys/time.h syslog.h unistd.h sys/strredir.h sys/stropts.h utmpx.h)
+AC_CHECK_HEADERS(sys/strredir.h sys/stropts.h utmpx.h)
+
+AC_TYPE_PID_T
+
+dnl AC_CHECK_FUNCS(gettimeofday putenv select strerror)
+
+AC_OUTPUT(Makefile)
+   
