@@ -1,0 +1,85 @@
+x3270 Version 3.1.1 -- New Features and Bug Fixes
+
+x3270 3.1.1.6 is functionally identical to x3270 3.1.0.7, with the following
+exceptions:
+
+IND$FILE File Transfer Support
+
+File transfer with IBM hosts is now supported using the IND$FILE protocol. A
+new File menu item, File Transfer, initiates a transfer.
+
+The IND$FILE program must be installed on the IBM host, and the 3270 cursor
+must be positioned on a field which can accept a TSO or VM/CMS command.
+
+A pop-up menu allows the file names and transfer options to be specified.
+
+Both types of file transfer are supported and automatically recognized: CUT,
+expanding the data into displayable characters a screenful at a time, and
+DFT, exchanging binary data with Structured Fields.
+
+This code was created in collaboration with Dick Altenbern.
+
+Miscellaneous Minor Changes
+
+   * The APL keymap and compose-key map are fully documented on the man
+     page.
+   * Resources for colors and fonts are simplified.
+   * Colors for buttons and input fields have different colors.
+   * Several more Frequently Asked Questions are answered, and more common
+     build problems are addressed, in the documentation.
+
+Changes Since x3270 3.1.1A1
+
+   * Can now build under SunOS 4 / OpenWindows and other X11R4-based
+     systems.
+   * Fixed typos in the APL symbols list on the man page.
+   * Handle some additional exceptions during file transfer.
+   * Allow interaction with the emulator while the file transfer dialog is
+     visible.
+   * Put the name of the file transfer command in a resource,
+     x3270.ftCommand.
+   * Implemented TELNET timing marks.
+   * Added an Icelandic keymap and character set.
+
+Changes Since x3270 3.1.1B2
+
+   * Removed some compiler warnings.
+   * Fixed a longstanding problem where menu items will not highlight if
+     CapsLock or NumLock are active.
+
+Changes Since x3270 3.1.1.3
+
+   * Restored the keypad following the main window around the screen.
+   * Completed the Xaw drop-down menu fix for all possible modifiers. (Bug
+     #355)
+   * Fixed a memory leak in kybd.c (Bug #354)
+   * Added ":" qualifiers to keymaps, to prevent strange behaviors with
+     servers that mix certain keysyms on the same keycode. (Bug #353)
+   * Completed support for the 3270 Character Set attribute. (Bug #350)
+   * Fixed a number of minor 3270 protocol and keyboard interaction bugs.
+   * Restored the PauseScript() and ContinueScript() actions.
+   * Fixed an error in the documentation of the child script interface. (Bug
+     #356)
+   * Extended the operation of the x3270.modifiedSel option to 3279 (full
+     color) mode.
+
+Changes Since x3270 3.1.1.4
+
+   * Fixed a compiler warning. (Bug #357)
+   * Finally fully support Sun numeric keypads, without xmodmap nonsense.
+   * Fixed a formatting bug in the html version of the man page. (Bug #359)
+   * Replaced silent rejection of illegal oversize dimensions with real
+     error messages. (Bug #358)
+   * Fixed a missing backslash on the man page.
+   * Fixed problems with trying to build X3270.ad with gcc. (Partial fix for
+     bug #360)
+
+Changes Since x3270 3.1.1.5
+
+   * Added #ifdefs around an X11R5ism. (Bug #361)
+   * Understand fonts with both "ISO8859" and "iso8859" registries.
+   * Set the MDT for pen-selected fields. (Bug #362)
+   * Added a "Macros" action, to run a macro by name from a keymap or a
+     login macro.
+   * Added x3270.lsm (Linux Software Map).
+   * Fixed X3270.ad generation problem. (Bug #360)

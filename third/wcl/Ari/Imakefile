@@ -1,0 +1,93 @@
+#ifndef WcTopDir
+#define WcTopDir ..
+#endif
+
+#include "../Wc.tmpl"
+
+XCOMM #########################################################################
+XCOMM # SCCS_data: @(#) Imakefile 1.8 94/11/01 10:15:40
+XCOMM #
+XCOMM # Athena Resource Interpreter - Ari/Imakefile
+XCOMM #
+#if !HasSharedLibraries
+          DEPLIBS = $(WCTOPDIR)/Wc/libWc.a $(WCTOPDIR)/Xp/libXp.a
+#endif
+
+    SYS_LIBRARIES = -lm
+
+   CLIENT_LDFLAGS = $(XPLDFLAG)
+      CLIENT_LIBS = $(XPLIB) $(XAWLIB)
+DEBUG_CLIENT_LIBS = $(DEBUGXPLIB) $(DEBUGXAWLIB)
+      CLIENT_INCS = XpLibraryOptions
+
+           CLIENT = Ari
+            CLASS = ARi
+             SRCS = Ari.c
+             OBJS = Ari.o
+
+/* Installed in .../app-defaults/CLIENT
+*/
+         APPDEFS = Demo Hello Scrollbar Box Paned Menu Popup \
+                   Dialog Form ClkLogo Text MultiWin
+
+#include "../WcClient.tmpl"
+
+/* Make the test program which is not installed
+*/
+all:: Test
+
+Test.c: Ari.c
+	rm -f Test.c ; ln Ari.c Test.c
+
+SpecialObjectRule(Test.o,Test.c,$(DEBUG_CLIENT_OPTIONS))
+
+#ifdef NullParameter
+NormalProgramTarget(Test,Test.o,$(DEPLIBS),$(DEBUG_LIBRARIES),NullParameter)
+#else
+NormalProgramTarget(Test,Test.o,$(DEPLIBS),$(DEBUG_LIBRARIES),)
+#endif
+
+clean::
+	rm -f Test.o
+
+#if MakeProfileLibs
+/* Make profiled client to use profiled libraries
+*/
+all:: Profiled
+
+Profiled.c: Test.c
+	rm -f Profiled.c ; ln Test.c Profiled.c
+
+SpecialObjectRule(Profiled.o,Profiled.c,-pg -DPROFILE $(LDOPTIONS))
+
+#ifdef NullParameter
+NormalProgramTarget(Profiled,Profiled.o,$(DEPLIBS),-pg -Bstatic $(LOCAL_LIBRARIES),NullParameter)
+#else
+NormalProgramTarget(Profiled,Profiled.o,$(DEPLIBS),-pg -Bstatic $(LOCAL_LIBRARIES),)
+#endif
+
+clean::
+	rm -f Profiled.o Profiled.c
+
+#endif /*MakeProfileLibs*/
+
+XCOMM #########################################################################
+XCOMM # Targets which make it easier to use SaberC
+XCOMM #
+
+ WCSRC= ../Wc/MapAg.c		../Wc/WcActCB.c		../Wc/WcConvert.c \
+	../Wc/WcCreate.c	../Wc/WcInvoke.c	../Wc/WcLateBind.c \
+	../Wc/WcLoadRes.c	../Wc/WcName.c		../Wc/WcReg.c \
+	../Wc/WcRegXt.c		../Wc/WcSetValue.c	../Wc/WcTemplate.c \
+	../Wc/WcWarn.c
+ XPSRC= ../Xp/Table.c		../Xp/TableLoc.c	../Xp/TableVec.c \
+	../Xp/Xp.c
+
+/* Saber needs Sun, so... */
+ DYN_LINK_FLAGS = -DWC_HAS_dlopen_AND_dlsym
+
+Saber:
+	#load -C $(CFLAGS) $(DEBUG_CLIENT_OPTIONS) $(SRCS) $(LDOPTIONS) $(DEBUG_LIBRARIES)
+
+SaberAll:
+	#load -C $(DYN_LINK_FLAGS) $(CFLAGS) $(DEBUG_CLIENT_OPTIONS) $(SRCS) $(XPSRC) $(WCSRC) $(LDOPTIONS) $(DEBUG_LIBRARIES)

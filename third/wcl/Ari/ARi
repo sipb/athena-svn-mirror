@@ -1,0 +1,13 @@
+! SCCS_data: @(#) ARi 1.3 92/12/04 10:57:34
+!
+! This file gets installed into /usr/lib/X11/app-defaults and is
+! the default resource file loaded when Ari is started.  If the user
+! does not provide a -rf command line option specifiying a user supplied
+! resource file, then Ari loads its Demo resources which provides a
+! simple interface for trying out all of the Ari examples in
+! /usr/lib/X11/app-defaults/Ari
+!
+! NOTE: Nothing but this single WclInitResFile specification should be here!
+!       This resource is set only by the command line arg -rf
+
+Ari*WclInitResFile: Ari/Demo

@@ -1,0 +1,188 @@
+Version 3.2.9
+  Removed '"' from ifhp.conf file that really messed things up.
+
+Version 3.2.8
+  Enabled PCL copies=nnn code
+     (Missing operation reported by: Gerard Kok <kokg@geo.vu.nl>)
+  Fixed pcl_linesperpage=...F instead of E
+     (Reported by: Gerard Kok <kokg@geo.vu.nl>)
+  When you are using the TEXT to XXX translation facility,
+     the .... ZOPTS .... will get replaced with .... -Zzoptions ....
+     and .... TOPTS .... will get replaced with .... -Ttoptions ....
+
+  Updated ifhp.conf file,  added comments,  moved HP5SiMx PostScript
+  to the HP5SiMx section.
+
+  Modified the Pjl_console code to not be 'sticky'.  This was painful.
+	(Suggested by: Olav Kolbu <olav.kolbu@usit.uio.no>)
+
+  After extensive hand to hand combat with QMS printers,
+  discovered that they apparently do NOT return status or PostScript
+  output in a reliable manner.  Added/modified [qms1725] entry
+  to reflect this.  Use appsocket protocol,  but WITHOUT status
+  capability.  Also note that port 35 seems to be used by default,
+  although this can be configured via the TCP/IP telnet interface.
+  (Your milage may vary).
+
+Version 3.2.7
+  Rearranged code in Read_write_timeout() so that a read of status is
+  attempted BEFORE exiting on a write error.
+
+  added pclbanner to the distribution
+
+  IFHP recognizes the PJL 'reset' sequence and treats it as a
+  'raw' or unprocessed job.  This allows you to send PJL jobs to the printer
+  and not have them interpreted as PCL.
+
+Version 3.2.6
+  Added a console message for Lexmark and HP Printers that
+    will be 'sticky' and stay visible after the job has been
+    printed.
+  (Provided by: Jason L Tibbitts III <tibbs@uh.edu>)
+
+  Fixed up 'progress' so that it prints Kbytes correctly... sigh.
+
+
+Version 3.2.5
+  changed the a2ps options in ifhp.conf:
+   -q -B -1 -M Letter --borders=no -o-
+  (Suggested by: Jeff Gostin <jgostin@best.com>)
+
+Version 3.2.5
+  Cleaned up documentation,  made sure the various
+  configuration and installation defaults were consistent.
+  Ummm... and also removed a core dump from the distribution.
+   Sigh...
+
+Version 3.2.4
+  Cleaned up Makefile.in so that running configure in another directory
+   will be possible.  That is,
+		cd ifhp...
+		where=`pwd`
+		mkdir ...
+		cd ...
+		sh $where/configure
+   will now work correctly, and you can do a make install in $where 
+
+  Added README.utilities and updated ifhp.conf file so that it has URL
+    and ftp sites for file, enscript and a2ps tools.
+
+  The phaser support did not work with OF and IF filters.
+    More 'shutdowns' and clean up added.
+
+  Sync and waitend made separate operations.
+    You can now skip 'syncing' at the start,  but you 
+    can force 'waitend'.  This is side effect of phaser
+    operation.  You need to read status back from the printer until it closes
+    the reverse connnection.  If you have appsocket with waitend,
+    you will read status back until the job finishes.  If you do
+    appsocket with waitend@,  you will get no status information for job.
+    This is not good,  but gives you very fast throughput.
+
+Version 3.2.3
+  Updated Makefile.in so that when you do $(path)/configure for
+   building in a separate directory,  the right files are found.
+
+Version 3.2.2
+  Added support for Tektronixs Phaser Printers -  using the appsocket protocol
+
+Version 3.2.1
+
+  Most of the code seems pretty stable,  so we start a new major release.
+  There are mostly minor changes in the code for this release.
+  
+  Added 'PseudoMagicFilter Support' and got text to PS conversion
+  working correctly.
+
+    #
+    # text conversion control
+    #
+    # control text to whatever conversion
+    #
+    # if you cannot find type, then try this file utility
+    #
+    # if the type is text and not supported on your system, do a conversion
+    #  Method 1 - set 'default_language' as text, and run
+    #    the program through a text to known converter
+    #
+    default_language=text
+    text_converter=/usr/local/bin/a2ps -q -B -o-
+    # output of the converter is pcl, ps, or raw
+    text_converter_output=ps
+
+    #
+    #  Method 2 -
+    #    Use the file util and match the output
+    # file reports format information
+    #  glob text_output_format text_converter
+    #  - you do a glob match against pattern and use the converter
+    #
+    default_language=unknown
+    file_util_path=/usr/bin/file -
+    file_output_match = [
+     *text*  ps /usr/local/bin/a2ps -q -B -o-
+     ]
+    # you need a temp file location
+    tempfile=/var/tmp/ifhp
+
+  Added a horrible horrible kludge that allows multiple fonts to be
+  loaded.  You need to use:
+    ifhp -Zfont=this,font=that,...
+  which gets translated into font=this,that and the font handling code
+  then works OK.
+
+  Added a QMS1725 entry that just might work.
+  Fixed up a couple of minor PostScript quirks.
+  Added PJL support for duplex.
+
+Version 3.1.20
+  Documentation.  More Documentation.  More ...
+  Sigh...
+  
+Version 3.1.19
+  Made status messages less verbose.
+  'trace_on_stderr' is now just 'trace' ... Sigh...
+
+Version 3.1.17
+  Changed CRLF back to not effective... Sigh.
+
+Version 3.1.16
+  Fixed a problem with testing short files for file type.
+  (Noted by: Mike Whitson <mwhitson@MIT.EDU>)
+
+  Added ledger paper types.  HP printers are very odd...
+    (John McCash thinks so too)
+
+  Made CRLF the default in ifhp.conf
+
+Version 3.1.15
+   Not distributed
+
+Version 3.1.14
+
+ ifhp.conf:
+  pcl_pagesize \033&l#A - set page size
+    Thu Feb  4 16:52:58 PST 1999
+  remove_control=xyz...
+    if PostScript AND you have a ^x, ^y, ^z, etc., remove it.
+    Suggested use:  remove_control=CT removes CTRL-C, CTRL-T
+    (Suggested by Mike Whitson <mwhitson@MIT.EDU>)
+
+Version 3.1.6 - 3.1.13
+   Lots and lots and lots of changes in ifhp.conf, etc, etc.
+   Stable version approaching.
+
+Version 3.1.5
+   Experiments with various printers showed that the ifhp.conf
+   file needed modification.
+
+   Added a 'banner_only' mode for banner printing only.
+  
+
+Version 3.1.4
+   Sun Dec 27 18:22:44 PST 1998
+   Total rewrite of the ifhp software using a clean room
+   approach.
+      Patrick Powell papowell@astart.com
+
+$Id: CHANGES,v 1.1.1.4 1999-05-18 19:17:32 mwhitson Exp $

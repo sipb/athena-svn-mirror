@@ -1,0 +1,56 @@
+Replied: Sun, 19 Jan 1997 23:02:34 -0500
+Replied: "dyoung@pobox.com mills@udel.edu"
+Received: from copland.udel.edu by huey.udel.edu id aa11534; 19 Jan 97 22:10 EST
+Received: from hermes.cu-online.com (root@hermes.cu-online.com [205.198.248.82]) by copland.udel.edu (8.8.4/8.7.3) with ESMTP id WAA24157 for <mills@udel.edu>; Sun, 19 Jan 1997 22:10:22 -0500 (EST)
+Received: from babba.cu-online.com (dyoung@babba.cu-online.com [205.198.248.21]) by hermes.cu-online.com (8.7.5/8.7.5-cuo-s6) with ESMTP id VAA28312 for <mills@udel.edu>; Sun, 19 Jan 1997 21:16:20 -0600 (CST)
+Received: (from dyoung@localhost) by babba.cu-online.com (8.8.4/8.7.5cuo) id VAA13972 for mills@udel.edu; Sun, 19 Jan 1997 21:09:41 -0600 (CST)
+Date: Sun, 19 Jan 1997 21:09:41 -0600 (CST)
+From: David Young <dyoung@cu-online.com>
+Message-Id: <199701200309.VAA13972@babba.cu-online.com>
+Reply-to: dyoung@pobox.com
+X-Mailer: Mail User's Shell (7.2.5 10/14/92)
+To: mills@udel.edu
+Subject: xntp package compile-time errors w/ RedHat Linux
+
+	The xntp-3.5-88 package -almost- compiles without a hitch
+on RedHat Linux 3.0.3. I've included the errors and warnings the
+compiler emitted, the (naive) steps I took to resolve them, and
+the config.guess file.
+
+	I'm using Linux kernel version 2.0.6 on an i486 with gcc version
+2.7.2.
+
+<config.guess removed>
+
+Some errors & warnings:
+
+gcc -c -DHAVE_CONFIG_H -I. -I. -I.. -I../include  -g -O2 -Wall ntptime.c
+ntptime.c: In function `main':
+ntptime.c:175: warning: implicit declaration of function `syscall'
+ntptime.c:230: warning: implicit declaration of function `__adjtimed'
+ntptime.c:262: warning: passing arg 1 of `ctime' from incompatible pointer type
+ntptime.c:262: warning: unsigned int format, u_long arg (arg 2)
+ntptime.c:262: warning: unsigned int format, u_long arg (arg 3)
+ntptime.c: In function `pll_trap':
+ntptime.c:317: `env' undeclared (first use this function)
+ntptime.c:317: (Each undeclared identifier is reported only once
+ntptime.c:317: for each function it appears in.)
+
+My very naive solutions:
+
+util/ntptime.c:42 s/adjtimed/adjtimex/
+util/ntptime.c:317 enclose siglongjmp(env, 1); in #ifdef SIGSYS / #endif
+util/ntptime.c:262 s/ctime(/ctime((const time_t *)/
+util/ntptime.c:60 move 'extern int syscall P((int, void *, ...));' out
+			of #ifdef's
+util/ntptime.c:262 cast 2nd & 3rd argument to unsigned int
+
+	Write me if you need more information.
+
+Dave
+
+
+-- 
+(Cuteness is not a functional property, of course; I can imagine
+somebody who wasn't actually cute at all but who nevertheless
+functioned exactly as if cute--trust me.) -- Daniel Dennett

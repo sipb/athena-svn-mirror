@@ -1,0 +1,2786 @@
+%!PS-Adobe-3.0
+%%Creator: groff version 1.10
+%%CreationDate: Thu May  7 13:34:23 1998
+%%DocumentNeededResources: font Times-Bold
+%%+ font Times-Italic
+%%+ font Times-Roman
+%%DocumentSuppliedResources: procset grops 1.10 0
+%%Pages: 29
+%%PageOrder: Ascend
+%%Orientation: Portrait
+%%EndComments
+%%BeginProlog
+%%BeginResource: procset grops 1.10 0
+/setpacking where{
+pop
+currentpacking
+true setpacking
+}if
+/grops 120 dict dup begin
+/SC 32 def
+/A/show load def
+/B{0 SC 3 -1 roll widthshow}bind def
+/C{0 exch ashow}bind def
+/D{0 exch 0 SC 5 2 roll awidthshow}bind def
+/E{0 rmoveto show}bind def
+/F{0 rmoveto 0 SC 3 -1 roll widthshow}bind def
+/G{0 rmoveto 0 exch ashow}bind def
+/H{0 rmoveto 0 exch 0 SC 5 2 roll awidthshow}bind def
+/I{0 exch rmoveto show}bind def
+/J{0 exch rmoveto 0 SC 3 -1 roll widthshow}bind def
+/K{0 exch rmoveto 0 exch ashow}bind def
+/L{0 exch rmoveto 0 exch 0 SC 5 2 roll awidthshow}bind def
+/M{rmoveto show}bind def
+/N{rmoveto 0 SC 3 -1 roll widthshow}bind def
+/O{rmoveto 0 exch ashow}bind def
+/P{rmoveto 0 exch 0 SC 5 2 roll awidthshow}bind def
+/Q{moveto show}bind def
+/R{moveto 0 SC 3 -1 roll widthshow}bind def
+/S{moveto 0 exch ashow}bind def
+/T{moveto 0 exch 0 SC 5 2 roll awidthshow}bind def
+/SF{
+findfont exch
+[exch dup 0 exch 0 exch neg 0 0]makefont
+dup setfont
+[exch/setfont cvx]cvx bind def
+}bind def
+/MF{
+findfont
+[5 2 roll
+0 3 1 roll
+neg 0 0]makefont
+dup setfont
+[exch/setfont cvx]cvx bind def
+}bind def
+/level0 0 def
+/RES 0 def
+/PL 0 def
+/LS 0 def
+/MANUAL{
+statusdict begin/manualfeed true store end
+}bind def
+/PLG{
+gsave newpath clippath pathbbox grestore
+exch pop add exch pop
+}bind def
+/BP{
+/level0 save def
+1 setlinecap
+1 setlinejoin
+72 RES div dup scale
+LS{
+90 rotate
+}{
+0 PL translate
+}ifelse
+1 -1 scale
+}bind def
+/EP{
+level0 restore
+showpage
+}bind def
+/DA{
+newpath arcn stroke
+}bind def
+/SN{
+transform
+.25 sub exch .25 sub exch
+round .25 add exch round .25 add exch
+itransform
+}bind def
+/DL{
+SN
+moveto
+SN
+lineto stroke
+}bind def
+/DC{
+newpath 0 360 arc closepath
+}bind def
+/TM matrix def
+/DE{
+TM currentmatrix pop
+translate scale newpath 0 0 .5 0 360 arc closepath
+TM setmatrix
+}bind def
+/RC/rcurveto load def
+/RL/rlineto load def
+/ST/stroke load def
+/MT/moveto load def
+/CL/closepath load def
+/FL{
+currentgray exch setgray fill setgray
+}bind def
+/BL/fill load def
+/LW/setlinewidth load def
+/RE{
+findfont
+dup maxlength 1 index/FontName known not{1 add}if dict begin
+{
+1 index/FID ne{def}{pop pop}ifelse
+}forall
+/Encoding exch def
+dup/FontName exch def
+currentdict end definefont pop
+}bind def
+/DEFS 0 def
+/EBEGIN{
+moveto
+DEFS begin
+}bind def
+/EEND/end load def
+/CNT 0 def
+/level1 0 def
+/PBEGIN{
+/level1 save def
+translate
+div 3 1 roll div exch scale
+neg exch neg exch translate
+0 setgray
+0 setlinecap
+1 setlinewidth
+0 setlinejoin
+10 setmiterlimit
+[]0 setdash
+/setstrokeadjust where{
+pop
+false setstrokeadjust
+}if
+/setoverprint where{
+pop
+false setoverprint
+}if
+newpath
+/CNT countdictstack def
+userdict begin
+/showpage{}def
+}bind def
+/PEND{
+clear
+countdictstack CNT sub{end}repeat
+level1 restore
+}bind def
+end def
+/setpacking where{
+pop
+setpacking
+}if
+%%EndResource
+%%IncludeResource: font Times-Bold
+%%IncludeResource: font Times-Italic
+%%IncludeResource: font Times-Roman
+grops begin/DEFS 1 dict def DEFS begin/u{.001 mul}bind def end/RES 72
+def/PL 792 def/LS false def/ENC0[/asciicircum/asciitilde/Scaron/Zcaron
+/scaron/zcaron/Ydieresis/trademark/quotesingle/.notdef/.notdef/.notdef
+/.notdef/.notdef/.notdef/.notdef/.notdef/.notdef/.notdef/.notdef/.notdef
+/.notdef/.notdef/.notdef/.notdef/.notdef/.notdef/.notdef/.notdef/.notdef
+/.notdef/.notdef/space/exclam/quotedbl/numbersign/dollar/percent
+/ampersand/quoteright/parenleft/parenright/asterisk/plus/comma/hyphen
+/period/slash/zero/one/two/three/four/five/six/seven/eight/nine/colon
+/semicolon/less/equal/greater/question/at/A/B/C/D/E/F/G/H/I/J/K/L/M/N/O
+/P/Q/R/S/T/U/V/W/X/Y/Z/bracketleft/backslash/bracketright/circumflex
+/underscore/quoteleft/a/b/c/d/e/f/g/h/i/j/k/l/m/n/o/p/q/r/s/t/u/v/w/x/y
+/z/braceleft/bar/braceright/tilde/.notdef/quotesinglbase/guillemotleft
+/guillemotright/bullet/florin/fraction/perthousand/dagger/daggerdbl
+/endash/emdash/ff/fi/fl/ffi/ffl/dotlessi/dotlessj/grave/hungarumlaut
+/dotaccent/breve/caron/ring/ogonek/quotedblleft/quotedblright/oe/lslash
+/quotedblbase/OE/Lslash/.notdef/exclamdown/cent/sterling/currency/yen
+/brokenbar/section/dieresis/copyright/ordfeminine/guilsinglleft
+/logicalnot/minus/registered/macron/degree/plusminus/twosuperior
+/threesuperior/acute/mu/paragraph/periodcentered/cedilla/onesuperior
+/ordmasculine/guilsinglright/onequarter/onehalf/threequarters
+/questiondown/Agrave/Aacute/Acircumflex/Atilde/Adieresis/Aring/AE
+/Ccedilla/Egrave/Eacute/Ecircumflex/Edieresis/Igrave/Iacute/Icircumflex
+/Idieresis/Eth/Ntilde/Ograve/Oacute/Ocircumflex/Otilde/Odieresis
+/multiply/Oslash/Ugrave/Uacute/Ucircumflex/Udieresis/Yacute/Thorn
+/germandbls/agrave/aacute/acircumflex/atilde/adieresis/aring/ae/ccedilla
+/egrave/eacute/ecircumflex/edieresis/igrave/iacute/icircumflex/idieresis
+/eth/ntilde/ograve/oacute/ocircumflex/otilde/odieresis/divide/oslash
+/ugrave/uacute/ucircumflex/udieresis/yacute/thorn/ydieresis]def
+/Times-Roman@0 ENC0/Times-Roman RE/Times-Italic@0 ENC0/Times-Italic RE
+/Times-Bold@0 ENC0/Times-Bold RE
+%%EndProlog
+%%Page: 1 1
+%%BeginPageSetup
+BP
+%%EndPageSetup
+/F0 14/Times-Bold@0 SF(Name Ser)193.843 141 Q -.14(ve)-.14 G 3.5(rO).14
+G(perations Guide)-3.5 E -.35(fo)261.236 157.8 S(r).35 E/F1 13
+/Times-Bold@0 SF(BIND)3.5 E/F2 13/Times-Italic@0 SF(Release 4.9.3)253.16
+173.4 Q(Releases fr)241.895 204.6 Q(om 4.9)-.585 E/F3 13/Times-Roman@0
+SF -.195(Pa)258.362 222.8 S(ul V).195 E(ixie)-.78 E/F4 10/Times-Roman@0
+SF(1)-5.2 I F3(<paul@vix.com>)242.363 238.4 Q(Internet Softw)210.435
+258.2 Q(are Consortium)-.13 E(La Honda, CA)249.91 273.8 Q F2
+(Releases thr)228.713 320.6 Q(ough 4.8.3)-.585 E F3 -.325(Kev)243.399
+338.8 S(in J. Dunlap).325 E F4(2)-5.2 I F3(Michael J. Karels)242.331
+354.4 Q(Computer Systems Research Group)195.024 374.2 Q
+(Computer Science Di)216.305 389.8 Q(vision)-.325 E
+(Department of Electrical Engineering and Computer Sciences)127.339
+405.4 Q(Uni)225.795 421 Q -.195(ve)-.325 G(rsity of California).195 E
+(Berk)233.341 436.6 Q(ele)-.13 E 1.69 -.845(y, C)-.195 H 6.5(A9).845 G
+(4720)-6.5 E/F5 10/Times-Bold@0 SF 2.5(1. Intr)72 500.8 R(oduction)-.18
+E F4 .121(The Berk)112 517 R(ele)-.1 E 2.621(yI)-.15 G .121
+(nternet Name Domain \()-2.621 F/F6 9/Times-Roman@0 SF(BIND)A F4 2.621
+(\)i)C .121(mplements an Internet name serv)-2.621 F .122(er for)-.15 F
+/F7 8/Times-Roman@0 SF(BSD)2.622 E F4(-deri)A -.15(ve)-.25 G(d).15 E
+.665(operating systems.)87 529 R(The)5.665 E F6(BIND)3.165 E F4 .665
+(consists of a serv)3.165 F .665(er \(or `)-.15 F(`daemon')-.74 E .665
+('\) called)-.74 F/F8 10/Times-Italic@0 SF(named)3.165 E F4 .665(and a)
+3.165 F F8 -.37(re)3.165 G(solver).37 E F4(library)3.164 E(.)-.65 E
+3.928(An)87 541 S 1.428(ame serv)-3.928 F 1.429(er is a netw)-.15 F
+1.429(ork service that enables clients to name resources or objects and share this)
+-.1 F 1.864(information with other objects in the netw)87 553 R 4.364
+(ork. This)-.1 F 1.864(in ef)4.364 F 1.864(fect is a distrib)-.25 F
+1.863(uted data base system for)-.2 F .94(objects in a computer netw)87
+565 R 3.441(ork. The)-.1 F F6(BIND)3.441 E F4(serv)3.441 E .941
+(er runs in the background, servicing queries on a well)-.15 F(kno)87
+577 Q .017(wn netw)-.25 F .017(ork port.)-.1 F .017
+(The standard port for UDP and TCP is speci\214ed in)5.017 F F8
+(/etc/services)2.516 E F4 5.016(.T)C(he)-5.016 E F8 -.37(re)2.516 G
+(solver).37 E F4 .016(is a)2.516 F .839
+(set of routines residing in a system library that pro)87 589 R .839
+(vides the interf)-.15 F .84(ace that programs can use to access)-.1 F
+(the domain name services.)87 601 Q 1.043(BIND is fully inte)112 617.2 R
+1.043(grated into BSD \(4.3 and later releases\) netw)-.15 F 1.042
+(ork programs for use in storing)-.1 F .061(and retrie)87 629.2 R .061
+(ving host names and address.)-.25 F .062
+(The system administrator can con\214gure the system to use BIND)5.061 F
+.32 LW 76 638.8 72 638.8 DL 80 638.8 76 638.8 DL 84 638.8 80 638.8 DL 88
+638.8 84 638.8 DL 92 638.8 88 638.8 DL 96 638.8 92 638.8 DL 100 638.8 96
+638.8 DL 104 638.8 100 638.8 DL 108 638.8 104 638.8 DL 112 638.8 108
+638.8 DL 116 638.8 112 638.8 DL 120 638.8 116 638.8 DL 124 638.8 120
+638.8 DL 128 638.8 124 638.8 DL 132 638.8 128 638.8 DL 136 638.8 132
+638.8 DL 140 638.8 136 638.8 DL 144 638.8 140 638.8 DL 148 638.8 144
+638.8 DL 152 638.8 148 638.8 DL 156 638.8 152 638.8 DL 160 638.8 156
+638.8 DL 164 638.8 160 638.8 DL 168 638.8 164 638.8 DL 172 638.8 168
+638.8 DL 176 638.8 172 638.8 DL 180 638.8 176 638.8 DL 184 638.8 180
+638.8 DL 188 638.8 184 638.8 DL 192 638.8 188 638.8 DL 196 638.8 192
+638.8 DL 200 638.8 196 638.8 DL 204 638.8 200 638.8 DL 208 638.8 204
+638.8 DL 212 638.8 208 638.8 DL 216 638.8 212 638.8 DL/F9 5
+/Times-Roman@0 SF(1)93.6 649.2 Q F7 .365(This author w)2.365 3.2 N .365
+(as emplo)-.08 F .365(yed by Digital Equipment Corporation')-.08 F 2.365
+(sN)-.44 G(etw)-2.365 E .365(ork Systems Laboratory during the de)-.08 F
+-.12(ve)-.2 G .364(lopment and re-).12 F .541(lease of)72 662 R/F10 7
+/Times-Roman@0 SF(BIND)2.541 E F7 2.541(4.9. Release)2.541 F .541
+(4.9.2 w)2.541 F .541(as sponsored by V)-.08 F .541(ixie Enterprises.)
+-.48 F .542(Releases from 4.9.3 were sponsored by the Internet Softw)
+4.541 F(are)-.08 E(Consortium.)72 671.6 Q F9(2)93.6 682 Q F7 .878
+(This author w)2.878 3.2 N .878(as an emplo)-.08 F .878
+(yee of Digital Equipment Corporation')-.08 F(s)-.44 E F10(UL)2.878 E
+(TRIX)-.644 E F7 .878(Engineering Adv)2.878 F .878(anced De)-.2 F -.12
+(ve)-.2 G .878(lopment Group and).12 F -.08(wa)72 694.8 S 2(so).08 G 2
+(nl)-2 G(oan to CSRG when this w)-2 E(ork w)-.08 E(as done.)-.08 E F10
+(UL)4 E(TRIX)-.644 E F7
+(is a trademark of Digital Equipment Corporation.)2 E EP
+%%Page: 2 2
+%%BeginPageSetup
+BP
+%%EndPageSetup
+/F0 10/Times-Bold@0 SF 208.87(SMM:10-2 Name)72 60 R(Ser)2.5 E -.1(ve)-.1
+G 2.5(rO).1 G(perations Guide f)-2.5 E(or)-.25 E/F1 9/Times-Bold@0 SF
+(BIND)2.5 E/F2 10/Times-Roman@0 SF .502(as a replacement to the older host table lookup of information in the netw)
+87 96 R .501(ork hosts \214le)-.1 F/F3 10/Times-Italic@0 SF(/etc/hosts)
+3.001 E F2 5.501(.T)C(he)-5.501 E(def)87 108 Q
+(ault con\214guration for BSD uses BIND.)-.1 E F0 2.5(2. The)72 144 R
+(Name Ser)2.5 E(vice)-.1 E F2 .122(The basic function of the name serv)
+112 160.2 R .123(er is to pro)-.15 F .123(vide information about netw)
+-.15 F .123(ork objects by answer)-.1 F(-)-.2 E .91(ing queries.)87
+172.2 R .909(The speci\214cations for this name serv)5.91 F .909
+(er are de\214ned in RFC1034, RFC1035 and RFC974.)-.15 F .792
+(These documents can be found in)87 184.2 R F3(/usr/sr)3.292 E
+(c/etc/named/doc)-.37 E F2 .793(in 4.3BSD or)3.293 F F3(ftp)3.293 E F2
+.793(ed from)B F0(ftp.rs.inter)3.293 E(nic.net)-.15 E F2(.)A .124
+(It is also recommended that you read the related manual pages,)87 196.2
+R F3(named)2.623 E F2(\(8\),)1.666 E F3 -.37(re)2.623 G(solver).37 E F2
+.123(\(3\), and)1.666 F F3 -.37(re)2.623 G(solver).37 E F2(\(5\).)1.666
+E .897(The adv)112 212.4 R .897(antage of using a name serv)-.25 F .898
+(er o)-.15 F -.15(ve)-.15 G 3.398(rt).15 G .898
+(he host table lookup for host name resolution is to)-3.398 F -.2(avo)87
+224.4 S .666
+(id the need for a single centralized clearinghouse for all names.).2 F
+.665(The authority for this information)5.665 F(can be dele)87 236.4 Q
+-.05(ga)-.15 G(ted to the dif).05 E(ferent or)-.25 E -.05(ga)-.18 G
+(nizations on the netw).05 E(ork responsible for it.)-.1 E .309(The host table lookup routines require that the master \214le for the entire netw)
+112 252.6 R .309(ork be maintained at)-.1 F 3.983(ac)87 264.6 S 1.483
+(entral location by a fe)-3.983 F 3.983(wp)-.25 G 3.983(eople. This)
+-3.983 F -.1(wo)3.983 G 1.483(rks \214ne for small netw).1 F 1.482
+(orks where there are only a fe)-.1 F(w)-.25 E .784
+(machines and the dif)87 276.6 R .784(ferent or)-.25 F -.05(ga)-.18 G
+.784(nizations responsible for them cooperate.).05 F .785
+(But this does not w)5.784 F .785(ork well)-.1 F(for lar)87 288.6 Q
+(ge netw)-.18 E(orks where machines cross or)-.1 E -.05(ga)-.18 G
+(nizational boundaries.).05 E -.4(Wi)112 304.8 S .162(th the name serv)
+.4 F(er)-.15 E 2.661(,t)-.4 G .161(he netw)-2.661 F .161
+(ork can be brok)-.1 F .161(en into a hierarch)-.1 F 2.661(yo)-.05 G
+2.661(fd)-2.661 G 2.661(omains. The)-2.661 F .161(name space is)2.661 F
+(or)87 316.8 Q -.05(ga)-.18 G 2.236(nized as a tree according to or).05
+F -.05(ga)-.18 G 2.236(nizational or administrati).05 F 2.536 -.15(ve b)
+-.25 H 4.736(oundaries. Each).15 F 2.237(node, called a)4.736 F F3
+(domain)87 328.8 Q F2 4.311(,i)C 4.311(sg)-4.311 G -2.15 -.25(iv e)
+-4.311 H 4.311(nal).25 G 1.81(abel, and the name of the domain is the concatenation of all the labels of the)
+-4.311 F .747(domains from the root to the current domain, listed from right to left separated by dots.)
+87 340.8 R 3.247(Al)5.747 G .747(abel need)-3.247 F .588
+(only be unique within its domain.)87 352.8 R .588
+(The whole space is partitioned into se)5.588 F -.15(ve)-.25 G .588
+(ral areas called).15 F F3(zones)3.088 E F2 3.088(,e)C(ach)-3.088 E
+1.223(starting at a domain and e)87 364.8 R 1.223(xtending do)-.15 F
+1.223(wn to the leaf domains or to domains where other zones start.)-.25
+F .338(Zones usually represent administrati)87 376.8 R .638 -.15(ve b)
+-.25 H 2.838(oundaries. An).15 F -.15(ex)2.838 G .337
+(ample of a host address for a host at the Uni-).15 F -.15(ve)87 388.8 S
+(rsity of California, Berk).15 E(ele)-.1 E 2.5(yw)-.15 G
+(ould look as follo)-2.6 E(ws:)-.25 E F3(monet)137 405 Q F0(.)1.666 E F3
+(Berk)1.666 E(ele)-.1 E(y)-.3 E F0(.)1.666 E F3(EDU)1.666 E F2 1.77
+(The top le)87 421.2 R -.15(ve)-.25 G 4.27(ld).15 G 1.77
+(omain for educational or)-4.27 F -.05(ga)-.18 G 1.77
+(nizations is EDU; Berk).05 F(ele)-.1 E 4.27(yi)-.15 G 4.27(sas)-4.27 G
+1.77(ubdomain of EDU and)-4.27 F(monet is the name of the host.)87 433.2
+Q F0 2.5(3. T)72 469.2 R(ypes of Zones)-.74 E F2 3.665(A`)112 485.4 S
+(`zone')-4.405 E 3.665('i)-.74 G 3.665(sap)-3.665 G 1.165(oint of dele)
+-3.665 F -.05(ga)-.15 G 1.165(tion in the DNS tree.).05 F 1.165
+(It contains all names from a certain point)6.165 F -.74(``)87 497.4 S
+(do).74 E(wnw)-.25 E(ard')-.1 E 3.176('e)-.74 G .676
+(xcept those which are dele)-3.326 F -.05(ga)-.15 G .676
+(ted to other zones.).05 F 3.176(A`)5.676 G(`dele)-3.916 E -.05(ga)-.15
+G .676(tion point').05 F 3.176('h)-.74 G .676(as one or more)-3.176 F F3
+(NS)87 509.4 Q F2 .55(records in the `)3.05 F .55(`parent zone')-.74 F
+.55(', which should be matched by equi)-.74 F -.25(va)-.25 G(lent).25 E
+F3(NS)3.05 E F2 .55(records at the root of the)3.05 F -.74(``)87 521.4 S
+(dele).74 E -.05(ga)-.15 G(ted zone').05 E 2.5('\()-.74 G(i.e., the `)
+-2.5 E(`@')-.74 E 2.5('n)-.74 G(ame in the zone \214le\).)-2.5 E .778
+(Understanding the dif)112 537.6 R .778(ference between a `)-.25 F
+(`zone')-.74 E 3.278('a)-.74 G .779(nd a `)-3.278 F(`domain')-.74 E
+3.279('i)-.74 G 3.279(sc)-3.279 G .779(rucial to the proper opera-)
+-3.279 F .761(tion of a name serv)87 549.6 R(er)-.15 E 5.761(.A)-.55 G
+3.261(sa)-5.761 G 3.261(ne)-3.261 G .761(xample, consider the)-3.411 F
+/F4 9/Times-Roman@0 SF(DEC.COM)3.26 E F3(domain)3.26 E F2 3.26(,w)C .76
+(hich includes names such as)-3.26 F F4(POBO)87 561.6 Q(X1.P)-.36 E
+(A.DEC.COM)-.828 E F2(and)4.446 E F4 -.09(QU)4.446 G(ABBIN.CRL.DEC.COM)
+-.27 E F2 -2.15 -.25(ev e)4.446 H 4.446(nt).25 G 1.947(hough the)-4.446
+F F4(DEC.COM)4.447 E F3(zone)4.447 E F2 1.947(includes only)4.447 F F3
+(dele)87 573.6 Q(gations)-.4 E F2 2.427(for the)4.927 F F4 -.828(PA)
+4.927 G(.DEC.COM).828 E F2(and)4.927 E F4(CRL.DEC.COM)4.927 E F2 4.927
+(zones. A)4.927 F 2.427(zone can map e)4.927 F 2.427(xactly to a single)
+-.15 F 1.232(domain, b)87 585.6 R 1.232(ut could also include only part of a domain \(the rest of which could be dele)
+-.2 F -.05(ga)-.15 G 1.233(ted to other).05 F .629(name serv)87 597.6 R
+3.129(ers\). T)-.15 F .629(echnically speaking, e)-.7 F -.15(ve)-.25 G
+.629(ry name in the DNS tree is a `).15 F(`domain')-.74 E .629(', e)-.74
+F -.15(ve)-.25 G 3.129(ni).15 G 3.128(fi)-3.129 G 3.128(ti)-3.128 G
+3.128(s`)-3.128 G(`termi-)-3.868 E(nal')87 609.6 Q 1.544
+(', that is, has no `)-.74 F(`subdomains')-.74 E 4.044('. T)-.74 F 1.544
+(echnically speaking, e)-.7 F -.15(ve)-.25 G 1.545
+(ry subdomain is a domain and e).15 F -.15(ve)-.25 G(ry).15 E .303
+(domain e)87 621.6 R .303(xcept the root is also a subdomain.)-.15 F
+.302(The terminology is not intuiti)5.302 F .602 -.15(ve a)-.25 H .302
+(nd you w).15 F .302(ould do well to)-.1 F(read RFC')87 633.6 Q 2.5(s1)
+-.55 G(033, 1034, and 1035 to g)-2.5 E
+(ain a complete understanding of this dif)-.05 E
+(\214cult and subtle topic.)-.25 E(Though)112 649.8 Q F4(BIND)3.284 E F2
+.784(is a)3.284 F F3(Domain)3.284 E F2 .784(Name Serv)3.284 F(er)-.15 E
+3.284(,i)-.4 G 3.284(td)-3.284 G .784(eals primarily in terms of)-3.284
+F F3(zones)3.284 E F2 5.784(.T)C(he)-5.784 E F3(primary)3.284 E F2(and)
+3.284 E F3(secondary)87 661.8 Q F2 .98(declarations in the)3.48 F F3
+(named.boot)3.48 E F2 .98(\214le specify)3.48 F F3(zones)3.48 E F2 3.48
+(,n)C(ot)-3.48 E F3(domains)3.48 E F2 5.98(.W)C .98
+(hen you ask someone if)-5.98 F(the)87 673.8 Q 2.741(ya)-.15 G .241
+(re willing to be a secondary serv)-2.741 F .241(er for your `)-.15 F
+(`domain')-.74 E .241(', you are actually asking for secondary ser)-.74
+F(-)-.2 E(vice for some collection of)87 685.8 Q F3(zones)2.5 E F2(.)A
+.965(Each zone will ha)112 702 R 1.265 -.15(ve o)-.2 H .965(ne `).15 F
+(`primary')-.74 E 3.465('s)-.74 G(erv)-3.465 E(er)-.15 E 3.465(,w)-.4 G
+.964(hich loads the zone contents from some local \214le)-3.465 F 1.786
+(which is edited by humans or perhaps generated mechanically from some other local \214le which is)
+87 714 R EP
+%%Page: 3 3
+%%BeginPageSetup
+BP
+%%EndPageSetup
+/F0 10/Times-Bold@0 SF(Name Ser)72 60 Q -.1(ve)-.1 G 2.5(rO).1 G
+(perations Guide f)-2.5 E(or)-.25 E/F1 9/Times-Bold@0 SF 211.564
+(BIND SMM)2.5 F F0(:10-3)A/F2 10/Times-Roman@0 SF .459
+(edited by humans.)87 96 R .459(Then there will be some number of `)
+5.459 F(`secondary')-.74 E 2.959('s)-.74 G(erv)-2.959 E .458
+(ers, which load the zone con-)-.15 F 1.186(tents using the)87 108 R/F3
+9/Times-Roman@0 SF(IP/DNS)3.686 E F2 1.187
+(protocol \(that is, the secondary serv)3.686 F 1.187
+(ers will contact the primary and fetch the)-.15 F .598(zone using)87
+120 R F3(IP/TCP)3.098 E F2 3.098(\). This)B .598(set of serv)3.098 F
+.598
+(ers \(the primary and all of the secondaries\) should be listed in the)
+-.15 F/F4 10/Times-Italic@0 SF(NS)87 132 Q F2 .883
+(records in the parent zone, which will constitute a `)3.382 F(`dele)
+-.74 E -.05(ga)-.15 G(tion').05 E 3.383('. This)-.74 F .883(set of serv)
+3.383 F .883(ers must also be)-.15 F .472
+(listed in the zone \214le itself, usually under the `)87 144 R(`@')-.74
+E 2.972('n)-.74 G .471(ame which is a magic cookie that means the `)
+-2.972 F(`top)-.74 E(le)87 156 Q -.15(ve)-.25 G(l').15 E 3.042('o)-.74 G
+3.042(r`)-3.042 G(`root')-3.782 E 3.042('o)-.74 G 3.042(fc)-3.042 G .543
+(urrent zone.)-3.042 F -1.1(Yo)5.543 G 3.043(uc)1.1 G .543(an list serv)
+-3.043 F .543(ers in the zone')-.15 F 3.043(st)-.55 G(op-le)-3.043 E
+-.15(ve)-.25 G 3.043(l`).15 G(`@')-3.783 E(')-.74 E F4(NS)3.043 E F2
+.543(records that are)3.043 F .449(not in the parent')87 168 R(s)-.55 E
+F4(NS)2.949 E F2(dele)2.949 E -.05(ga)-.15 G .449(tion, b).05 F .449
+(ut you cannot list serv)-.2 F .449(ers in the parent')-.15 F 2.949(sd)
+-.55 G(ele)-2.949 E -.05(ga)-.15 G .449(tion that are not pre-).05 F
+.149(sent in the zone')87 180 R 2.649(s`)-.55 G(`@')-3.389 E 2.649
+('. An)-.74 F 2.649(ys)-.15 G(erv)-2.649 E .149(ers listed in the)-.15 F
+F4(NS)2.649 E F2 .15(records must be con\214gured as authoritati)2.65 F
+.45 -.15(ve \()-.25 H(either).15 E .344
+(primary or secondary\) for the zone.)87 192 R .343(If a serv)5.343 F
+.343(er listed in a)-.15 F F4(NS)2.843 E F2 .343
+(record is not authoritati)2.843 F -.15(ve)-.25 G 2.843(,i).15 G 2.843
+(tw)-2.843 G .343(ill respond)-2.843 F(with a `)87 204 Q(`lame dele)-.74
+E -.05(ga)-.15 G(tion').05 E 2.5('w)-.74 G(hen queried.)-2.5 E F0 2.5
+(4. T)72 240 R(ypes of Ser)-.74 E -.1(ve)-.1 G(rs).1 E F2(Serv)112 256.2
+Q .691(ers do not really ha)-.15 F .991 -.15(ve `)-.2 H(`types')-.59 E
+3.191('. A)-.74 F(serv)3.191 E .691
+(er can be a primary for some zones and a secondary)-.15 F 1.016
+(for others, or it can be only a primary)87 268.2 R 3.515(,o)-.65 G
+3.515(ro)-3.515 G 1.015(nly a secondary)-3.515 F 3.515(,o)-.65 G 3.515
+(ri)-3.515 G 3.515(tc)-3.515 G 1.015(an serv)-3.515 F 3.515(en)-.15 G
+3.515(oz)-3.515 G 1.015(ones and just answer)-3.515 F 2.345
+(queries via its `)87 280.2 R(`cache')-.74 E 4.845('. Pre)-.74 F 2.346
+(vious v)-.25 F 2.346(ersions of this document referred to serv)-.15 F
+2.346(ers as `)-.15 F(`master')-.74 E 4.846('a)-.74 G(nd)-4.846 E -.74
+(``)87 292.2 S(sla).74 E -.15(ve)-.2 G 1.869 -.74('' b).15 H .389
+(ut we no).54 F 2.889(wf)-.25 G .388
+(eel that those distinctions \212 and the assignment of a `)-2.889 F
+(`type')-.74 E 2.888('t)-.74 G 2.888(oan)-2.888 G .388(ame serv)-2.888 F
+.388(er \212)-.15 F(are not useful.)87 304.2 Q F0 2.5(4.1. Caching)87
+328.2 R(Only Ser)2.5 E -.1(ve)-.1 G(r).1 E F2 1.649(All serv)127 344.4 R
+1.649(ers are caching serv)-.15 F 4.149(ers. This)-.15 F 1.649
+(means that the serv)4.149 F 1.65(er caches the information that it)-.15
+F(recei)102 356.4 Q -.15(ve)-.25 G 2.531(sf).15 G .031
+(or use until the data e)-2.531 F 2.531(xpires. A)-.15 F F4(Cac)2.531 E
+.031(hing Only Server)-.15 F F2 .03(is a serv)2.53 F .03
+(er that is not authoritati)-.15 F .33 -.15(ve f)-.25 H(or).15 E(an)102
+368.4 Q 2.838(yz)-.15 G 2.838(one. This)-2.838 F(serv)2.838 E .339
+(er services queries and asks other serv)-.15 F .339(ers, who ha)-.15 F
+.639 -.15(ve t)-.2 H .339(he authority).15 F 2.839(,f)-.65 G .339
+(or the infor)-2.839 F(-)-.2 E .635(mation needed.)102 380.4 R .635
+(All serv)5.635 F .635(ers k)-.15 F .635
+(eep data in their cache until the data e)-.1 F .634(xpires, based on a)
+-.15 F F4(TTL)3.134 E F2(\(`)3.134 E(`T)-.74 E(ime)-.35 E 1.6 -.8(To L)
+102 392.4 T -2.15 -.25(iv e).8 H -.74('').25 G 2.5<298c>.74 G
+(eld which is maintained for all resource records.)-2.5 E F0 2.5
+(4.2. Remote)87 416.4 R(Ser)2.5 E -.1(ve)-.1 G(r).1 E F2 2.695(AR)127
+432.6 S .195(emote Serv)-2.695 F .195(er is an option gi)-.15 F -.15(ve)
+-.25 G 2.695(nt).15 G 2.695(op)-2.695 G .195(eople who w)-2.695 F .195
+(ould lik)-.1 F 2.695(et)-.1 G 2.695(ou)-2.695 G .195(se a name serv)
+-2.695 F .195(er from their)-.15 F -.1(wo)102 444.6 S 1.73(rkstation or on a machine that has a limited amount of memory and CPU c)
+.1 F 4.23(ycles. W)-.15 F 1.73(ith this)-.4 F .161
+(option you can run all of the netw)102 456.6 R .162
+(orking programs that use the name serv)-.1 F .162
+(er without the name serv)-.15 F(er)-.15 E .803
+(running on the local machine.)102 468.6 R .803
+(All of the queries are serviced by a name serv)5.803 F .802
+(er that is running on)-.15 F .198(another machine on the netw)102 480.6
+R 2.698(ork. A)-.1 F .198(host which has an)2.698 F F4(/etc/r)2.698 E
+(esolv)-.37 E(.conf)-.74 E F2 .198(\214le listing only remote hosts,)
+2.698 F .224(and which does not run a name serv)102 492.6 R .223
+(er of its o)-.15 F .223(wn, is sometimes called a Remote Serv)-.25 F
+.223(er \(because the)-.15 F .315(actual serv)102 504.6 R .315
+(er is remote?\) b)-.15 F .316
+(ut more often it is called simply a DNS Client.)-.2 F .316
+(This kind of host is tech-)5.316 F(nically not a `)102 516.6 Q(`serv)
+-.74 E(er')-.15 E(', since it has no cache and does not answer queries.)
+-.74 E F0 2.5(4.3. Sla)87 540.6 R .2 -.1(ve S)-.25 H(er).1 E -.1(ve)-.1
+G(r).1 E F2 3.235(AS)127 556.8 S(la)-3.235 E 1.035 -.15(ve S)-.2 H(erv)
+.15 E .734(er is a serv)-.15 F .734(er that al)-.15 F -.1(wa)-.1 G .734
+(ys forw).1 F .734(ards queries it cannot satisfy from its cache, to a)
+-.1 F<8c78>102 568.8 Q .908(ed list of)-.15 F F4(forwar)3.408 E(ding)
+-.37 E F2(serv)3.408 E .909
+(ers instead of interacting with the name serv)-.15 F .909
+(ers for the root and other)-.15 F 3.308(domains. The)102 580.8 R .808
+(queries to the)3.308 F F4(forwar)3.308 E .808(ding server)-.37 F(s)-.1
+E F2 .808(are recursi)3.308 F 1.108 -.15(ve q)-.25 H 3.308
+(ueries. There).15 F .808(may be one or more)3.308 F(forw)102 592.8 Q
+.214(arding serv)-.1 F .214(ers, and the)-.15 F 2.714(ya)-.15 G .214
+(re tried in turn until the list is e)-2.714 F 2.714(xhausted. A)-.15 F
+(Sla)2.714 E .514 -.15(ve a)-.2 H .215(nd forw).15 F .215(arder con-)-.1
+F .619(\214guration is typically used when you do not wish all the serv)
+102 604.8 R .618(ers at a gi)-.15 F -.15(ve)-.25 G 3.118(ns).15 G .618
+(ite to interact with the)-3.118 F 2.008(rest of the Internet serv)102
+616.8 R 4.508(ers. A)-.15 F 2.008(typical scenario w)4.508 F 2.008
+(ould in)-.1 F -.2(vo)-.4 G(lv).2 E 4.508(ean)-.15 G 2.008(umber of w)
+-4.508 F 2.008(orkstations and a)-.1 F .033
+(departmental timesharing machine with Internet access.)102 628.8 R .033
+(The w)5.033 F .033(orkstations might be administrati)-.1 F -.15(ve)-.25
+G(ly).15 E 1.169(prohibited from ha)102 640.8 R 1.169
+(ving Internet access.)-.2 F 2.769 -.8(To g)6.169 H -2.15 -.25(iv e).8 H
+1.169(the w)3.919 F 1.17(orkstations the appearance of access to the)-.1
+F .589(Internet domain system, the w)102 652.8 R .589
+(orkstations could be Sla)-.1 F .888 -.15(ve s)-.2 H(erv).15 E .588
+(ers to the timesharing machine which)-.15 F -.1(wo)102 664.8 S .044
+(uld forw).1 F .044(ard the queries and interact with other name serv)
+-.1 F .044(ers to resolv)-.15 F 2.544(et)-.15 G .044
+(he query before returning)-2.544 F .301(the answer)102 676.8 R 5.301
+(.A)-.55 G 2.801(na)-5.301 G .301(dded bene\214t of using the forw)
+-2.801 F .3(arding feature is that the central machine de)-.1 F -.15(ve)
+-.25 G .3(lops a).15 F .372
+(much more complete cache of information that all the w)102 688.8 R .373
+(orkstations can tak)-.1 F 2.873(ea)-.1 G(dv)-2.873 E .373(antage of.)
+-.25 F .373(The use)5.373 F .224(of Sla)102 700.8 R .524 -.15(ve m)-.2 H
+.224(ode and forw).15 F .223
+(arding is discussed further under the description of the)-.1 F F4
+(named)2.723 E F2 .223(boot\214le com-)2.723 F(mands.)102 712.8 Q EP
+%%Page: 4 4
+%%BeginPageSetup
+BP
+%%EndPageSetup
+/F0 10/Times-Bold@0 SF 208.87(SMM:10-4 Name)72 60 R(Ser)2.5 E -.1(ve)-.1
+G 2.5(rO).1 G(perations Guide f)-2.5 E(or)-.25 E/F1 9/Times-Bold@0 SF
+(BIND)2.5 E/F2 10/Times-Roman@0 SF 1.173(There is no prohibition ag)127
+96 R 1.173(ainst declaring a serv)-.05 F 1.173(er to be a)-.15 F/F3 10
+/Times-Italic@0 SF(slave)3.673 E F2 -2.15 -.25(ev e)3.673 H 3.673(nt).25
+G 1.173(hough it has)-3.673 F F3(primary)3.674 E F2(and/or)102 108 Q F3
+(secondary)3.423 E F2 .923(zones as well; the ef)3.423 F .922
+(fect will still be that an)-.25 F .922(ything in the local serv)-.15 F
+(er')-.15 E 3.422(sc)-.55 G .922(ache or)-3.422 F
+(zones will be answered, and an)102 120 Q(ything else will be forw)-.15
+E(arded using the)-.1 E F3(forwar)2.5 E(der)-.37 E(s)-.1 E F2(list.)2.5
+E F0 2.5(5. Files)72 156 R F2 .081(The name serv)112 172.2 R .081
+(er uses se)-.15 F -.15(ve)-.25 G .081
+(ral \214les to load its data base.).15 F .081(This section co)5.081 F
+-.15(ve)-.15 G .081(rs the \214les and their for).15 F(-)-.2 E
+(mats needed for)87 184.2 Q F3(named)2.5 E F2(.)A F0 2.5(5.1. Boot)87
+208.2 R(File)2.5 E F2 .051(This is the \214le that is \214rst read when)
+127 224.4 R F3(named)2.551 E F2 .05(starts up.)2.551 F .05
+(This tells the serv)5.05 F .05(er what type of serv)-.15 F(er)-.15 E
+.274(it is, which zones it has authority o)102 236.4 R -.15(ve)-.15 G
+2.775(ra).15 G .275(nd where to get its initial data.)-2.775 F .275
+(The def)5.275 F .275(ault location for this)-.1 F .26(\214le is)102
+248.4 R F3 -.834(/etc /named.boot)2.76 F F2 5.26(.H)1.666 G -.25(ow)
+-5.26 G -2.15 -.25(ev e).25 H 2.76(rt).25 G .26
+(his can be changed by setting the)-2.76 F F3(BOO)2.76 E(TFILE)-.4 E F2
+-.25(va)2.76 G .259(riable when you).25 F(compile)102 260.4 Q F3(named)
+2.5 E F2(or by specifying the location on the command line when)2.5 E F3
+(named)2.5 E F2(is started up.)2.5 E F0 2.5(5.1.1. Domain)102 284.4 R F2
+2.5(Ad)142 300.6 S(ef)-2.5 E
+(ault domain may be speci\214ed for the name serv)-.1 E
+(er using a line such as)-.15 E F3 3.5(domain Berk)167 316.8 R(ele)-.1 E
+(y)-.3 E F0(.)1.666 E F3(Edu)1.666 E F2 .022(Older name serv)117 333 R
+.023(ers use this information when the)-.15 F 2.523(yr)-.15 G(ecei)
+-2.523 E .323 -.15(ve a q)-.25 H .023(uery for a name without a `).15 F
+(`)-.74 E F0(.)A F2 1.503 -.74('' t)D(hat).74 E 1.47(is not kno)117 345
+R 3.97(wn. Ne)-.25 F 1.47(wer designs assume that the resolv)-.25 F
+1.469(er library will append its o)-.15 F 1.469(wn idea of a)-.25 F -.74
+(``)117 357 S(def).74 E .162(ault domain')-.1 F 2.662('t)-.74 G 2.662
+(oa)-2.662 G .462 -.15(ny u)-2.662 H .162(nquali\214ed names.).15 F .162
+(Though the name serv)5.162 F .162(er can still be compiled with)-.15 F
+.269(support for the)117 369 R F3(domain)2.769 E F2(directi)2.769 E .569
+-.15(ve i)-.25 H 2.769(nt).15 G .268(he boot \214le, the def)-2.769 F
+.268(ault is to lea)-.1 F .568 -.15(ve i)-.2 H 2.768(to).15 G .268
+(ut and we strenuously)-2.768 F .066(recommend ag)117 381 R .066
+(ainst its use.)-.05 F .066
+(If you use this feature, clients outside your local domain which send)
+5.066 F .504(you requests about unquali\214ed names will ha)117 393 R
+.804 -.15(ve t)-.2 H .504
+(he implicit quali\214cation of your domain rather).15 F .026
+(than theirs.)117 405 R .026
+(The proper place for this function is on the client, in their)5.026 F
+F0(/etc/r)2.527 E(esolv)-.18 E(.conf)-.7 E F2 .027(\(or equi)2.527 F(v-)
+-.25 E(alent\) \214le.)117 417 Q(Use of the)5 E F3(domain)2.5 E F2
+(directi)2.5 E .3 -.15(ve i)-.25 H 2.5(ny).15 G
+(our boot \214le is strongly discouraged.)-2.5 E F0 2.5(5.1.2. Dir)102
+441 R(ectory)-.18 E F2(The)142 457.2 Q F3(dir)2.664 E(ectory)-.37 E F2
+(directi)2.664 E .464 -.15(ve s)-.25 H .164
+(peci\214es the directory in which the name serv).15 F .163
+(er should run, allo)-.15 F(w-)-.25 E .222
+(ing the other \214le names in the boot \214le to use relati)117 469.2 R
+.522 -.15(ve p)-.25 H .222(ath names.).15 F .222(There can be only one)
+5.222 F F3(dir)2.723 E(ec-)-.37 E(tory)117 481.2 Q F2(directi)2.5 E .3
+-.15(ve a)-.25 H(nd it should be gi).15 E -.15(ve)-.25 G 2.5(nb).15 G
+(efore an)-2.5 E 2.5(yo)-.15 G(ther directi)-2.5 E -.15(ve)-.25 G 2.5
+(st).15 G(hat specify \214le names.)-2.5 E F3(dir)167 497.4 Q 45.25
+(ectory /var/named)-.37 F F2 1.384(If you ha)117 513.6 R 1.684 -.15
+(ve m)-.2 H 1.384(ore than a couple of named \214les to be maintained, you may wish to place the)
+.15 F .648(named \214les in a directory such as /v)117 525.6 R .649
+(ar/named and adjust the directory command properly)-.25 F 5.649(.T)-.65
+G(he)-5.649 E .622(main purposes of this command are to mak)117 537.6 R
+3.121(es)-.1 G .621(ure named is in the proper directory when trying)
+-3.121 F .305(to include \214les by relati)117 549.6 R .605 -.15(ve p)
+-.25 H .305(ath names with $INCLUDE and to allo).15 F 2.805(wn)-.25 G
+.306(amed to run in a location)-2.805 F
+(that is reasonable to dump core if it feels the ur)117 561.6 Q(ge.)-.18
+E F0 2.5(5.1.3. Primary)102 585.6 R(Ser)2.5 E(vice)-.1 E F2 .876
+(The line in the boot \214le that designates the serv)142 601.8 R .875
+(er as a primary master serv)-.15 F .875(er for a zone)-.15 F
+(looks as follo)117 613.8 Q(ws:)-.25 E F3 49.32(primary Berk)167 630 R
+(ele)-.1 E(y)-.3 E F0(.)1.666 E F3 -1.052(Edu ucbhosts)1.666 F F2 .879
+(The \214rst \214eld speci\214es that the serv)117 646.2 R .879
+(er is a primary one for the zone stated in the second \214eld.)-.15 F(The third \214eld is the name of the \214le from which the data is read.)
+117 658.2 Q .009(The abo)142 674.4 R .309 -.15(ve a)-.15 H .008
+(ssumes that the zone you are specifying is a class).15 F F3(IN)2.508 E
+F2 2.508(zone. If)2.508 F .008(you wish to des-)2.508 F .7(ignate a dif)
+117 686.4 R .7(ferent class you can append)-.25 F F3(/class)3.2 E F2
+.701(to the \214rst \214eld, where)3.201 F F3(class)3.201 E F2 .701
+(is either the inte)3.201 F(ger)-.15 E -.25(va)117 698.4 S .9
+(lue or the standard mnemonic for the class.).25 F -.15(Fo)5.899 G 3.399
+(re).15 G .899(xample the line for a primary serv)-3.549 F .899
+(er for a)-.15 F(hesiod class zone looks as follo)117 710.4 Q(ws:)-.25 E
+EP
+%%Page: 5 5
+%%BeginPageSetup
+BP
+%%EndPageSetup
+/F0 10/Times-Bold@0 SF(Name Ser)72 60 Q -.1(ve)-.1 G 2.5(rO).1 G
+(perations Guide f)-2.5 E(or)-.25 E/F1 9/Times-Bold@0 SF 211.564
+(BIND SMM)2.5 F F0(:10-5)A/F2 10/Times-Italic@0 SF 20(primary/HS Berk)
+167 96 R(ele)-.1 E(y)-.3 E F0(.)1.666 E F2 7.5(Edu hesiod.data)1.666 F
+/F3 10/Times-Roman@0 SF .858
+(Note that this support for specifying other than class)117 112.2 R F2
+(IN)3.358 E F3 .858(zones is a compile-time option which)3.358 F(your v)
+117 124.2 Q(endor may not ha)-.15 E .3 -.15(ve e)-.2 H(nabled when the)
+.15 E 2.5(yb)-.15 G(uilt your operating system.)-2.7 E F0 2.5
+(5.1.4. Secondary)102 148.2 R(Ser)2.5 E(vice)-.1 E F3 .947
+(The line for a secondary serv)142 164.4 R .946
+(er is similar to the primary e)-.15 F .946
+(xcept that it lists addresses of)-.15 F(other serv)117 176.4 Q
+(ers \(usually primary serv)-.15 E
+(ers\) from which the zone data will be obtained.)-.15 E F2 40.44
+(secondary Berk)167 192.6 R(ele)-.1 E(y)-.3 E F0(.)1.666 E F2 -1.052
+(Edu 128)1.666 F F0(.)A F2(32)A F0(.)A F2(0)A F0(.)A F2 2.5(10 128)B F0
+(.)A F2(32)A F0(.)A F2(0)A F0(.)A F2 2.5(4u)C(cbhosts.bak)-2.5 E F3
+1.169(The \214rst \214eld speci\214es that the serv)117 208.8 R 1.169
+(er is a secondary serv)-.15 F 1.17
+(er for the zone stated in the second)-.15 F 3.002(\214eld. The)117
+220.8 R(tw)3.002 E 3.002(on)-.1 G(etw)-3.002 E .501
+(ork addresses specify the name serv)-.1 F .501(ers which ha)-.15 F .801
+-.15(ve d)-.2 H .501(ata for the zone.).15 F(Note)5.501 E .607
+(that at least one of these will be a)117 232.8 R F2(primary)3.108 E F3
+3.108(,a)C .608(nd, unless you are using some protocol other than)-3.108
+F/F4 9/Times-Roman@0 SF(IP/DNS)117 244.8 Q F3 .023
+(for your zone transfer mechanism, the others will all be other)2.523 F
+F2(secondary)2.522 E F3(serv)2.522 E 2.522(ers. Ha)-.15 F(ving)-.2 E
+.865(your secondary serv)117 256.8 R .865
+(er pull data from other secondary serv)-.15 F .865
+(ers is usually unwise, since you can)-.15 F .353
+(add delay to the propag)117 268.8 R .352
+(ation of zone updates if your netw)-.05 F(ork')-.1 E 2.852(sc)-.55 G
+(onnecti)-2.852 E .352(vity v)-.25 F .352(aries in pathologi-)-.25 F
+1.002(cal b)117 280.8 R 1.002(ut common w)-.2 F 3.502(ays. The)-.1 F
+1.002(intended use for multiple addresses on a)3.502 F F2(secondary)
+3.502 E F3 1.003(declaration is)3.503 F .596(when the)117 292.8 R F2
+(primary)3.096 E F3(serv)3.096 E .596(er has multiple netw)-.15 F .596
+(ork interf)-.1 F .596(aces and therefore multiple host addresses.)-.1 F
+.339(The secondary serv)117 304.8 R .339
+(er gets its data across the netw)-.15 F .34
+(ork from one of the listed serv)-.1 F 2.84(ers. The)-.15 F(serv)2.84 E
+(er)-.15 E .786(addresses are tried in the order listed.)117 316.8 R
+.785(If a \214lename is present after the list of primary serv)5.785 F
+(ers,)-.15 E .467
+(data for the zone will be dumped into that \214le as a backup.)117
+328.8 R .468(When the serv)5.468 F .468(er is \214rst started, the)-.15
+F .686
+(data is loaded from the backup \214le if possible, and a primary serv)
+117 340.8 R .686(er is then consulted to check)-.15 F .123
+(that the zone is still up-to-date.)117 352.8 R .123
+(Note that listing your serv)5.123 F .123(er as a)-.15 F F2(secondary)
+2.623 E F3(serv)2.623 E .123(er does not nec-)-.15 F .213(essarily mak)
+117 364.8 R 2.713(ei)-.1 G 2.713(to)-2.713 G .213
+(ne \212 the parent zone must)-2.713 F F2(dele)2.713 E(gate)-.4 E F3
+.213(authority to your serv)2.713 F .212(er as well as the pri-)-.15 F
+.631
+(mary and the other secondaries, or you will be transferring a zone o)
+117 376.8 R -.15(ve)-.15 G 3.131(rf).15 G .632(or no reason; no other)
+-3.131 F(serv)117 388.8 Q .539(er will ha)-.15 F .839 -.15(ve a r)-.2 H
+.539(eason to query you for that zone unless the parent zone lists you as a serv)
+.15 F(er)-.15 E(for the zone.)117 400.8 Q .348
+(As with primary you may specify a secondary serv)142 417 R .348
+(er for a class other than)-.15 F F2(IN)2.848 E F3 .349(by append-)2.849
+F(ing)117 429 Q F2(/class)2.5 E F3(to the)2.5 E F2(secondary)2.5 E F3
+-.1(ke)2.5 G(yw)-.05 E(ord, e.g.,)-.1 E F2(secondary/HS)2.5 E F3(.)A F0
+2.5(5.1.5. Stub)102 453 R(Ser)2.5 E(vice)-.1 E F3 1.162
+(The line for a stub serv)142 469.2 R 1.161
+(er is similar to a secondary)-.15 F 6.161(.\()-.65 G 1.161
+(This feature is e)-6.161 F 1.161(xperimental as of)-.15 F(4.9.3.\))117
+481.2 Q F2 16.83(stub Berk)167 497.4 R(ele)-.1 E(y)-.3 E F0(.)1.666 E F2
+23.118(Edu 128)1.666 F F0(.)A F2(32)A F0(.)A F2(0)A F0(.)A F2 2.5
+(10 128)B F0(.)A F2(32)A F0(.)A F2(0)A F0(.)A F2 2.5(4u)C(cbhosts.bak)
+-2.5 E F3(The \214rst \214eld speci\214es that the serv)117 513.6 Q
+(er is a stub serv)-.15 E(er for the zone stated in the second \214eld.)
+-.15 E 1.358
+(Stub zones are intended to ensure that a primary for a zone al)142
+529.8 R -.1(wa)-.1 G 1.358(ys has the correct).1 F F2(NS)3.859 E F3 .49
+(records for children of that zone. If the primary is not a secondary for a child zone it should be)
+117 541.8 R 1.347
+(con\214gured with stub zones for all its children. Stub zones pro)117
+553.8 R 1.348(vide a mechanism to allo)-.15 F(w)-.25 E F2(NS)3.848 E F3
+(records for a zone to be speci\214ed in only one place.)117 565.8 Q F2
+1.28(primary CSIR)167 582 R(O)-.4 E F0(.)1.666 E F2 49.118 -.5(AU c)
+1.666 H(sir).5 E(o.dat)-.45 E 16.83(stub dms.CSIR)167 594 R(O)-.4 E F0
+(.)1.666 E F2 30.508 -.5(AU 1)1.666 H(30).5 E F0(.)A F2(155)A F0(.)A F2
+(16)A F0(.)A F2 5(1d)C(ms.stub)-5 E 16.83(stub dap.CSIR)167 606 R(O)-.4
+E F0(.)1.666 E F2 31.618 -.5(AU 1)1.666 H(30).5 E F0(.)A F2(155)A F0(.)A
+F2(98)A F0(.)A F2 5(1d)C(ap.stub)-5 E F0 2.5(5.1.6. Cache)102 634.2 R
+(Initialization)2.5 E F3 .992(All serv)142 650.4 R .992
+(ers, including `)-.15 F .992(`caching only')-.74 F 3.492('s)-.74 G(erv)
+-3.492 E .992(ers, should ha)-.15 F 1.291 -.15(ve a l)-.2 H .991
+(ine as follo).15 F .991(ws in the boot)-.25 F
+(\214le to prime the name serv)117 662.4 Q(ers cache:)-.15 E F2(cac)167
+678.6 Q(he)-.15 E F0(.)51.99 E F2 -.45(ro)55.55 G(ot).45 E F0(.)A F2
+(cac)A(he)-.15 E F3(Do not put an)117 694.8 Q(ything into your)-.15 E F2
+(cac)2.5 E(he)-.15 E F3(\214les other than root serv)2.5 E
+(er information.)-.15 E .55
+(All cache \214les listed will be read in at named boot time and an)142
+711 R 3.05(yv)-.15 G .55(alues still v)-3.3 F .55(alid will be)-.25 F
+.442(reinstated in the cache.)117 723 R .441(The root name serv)5.441 F
+.441(er information in the cache \214les will be used until a)-.15 F EP
+%%Page: 6 6
+%%BeginPageSetup
+BP
+%%EndPageSetup
+/F0 10/Times-Bold@0 SF 208.87(SMM:10-6 Name)72 60 R(Ser)2.5 E -.1(ve)-.1
+G 2.5(rO).1 G(perations Guide f)-2.5 E(or)-.25 E/F1 9/Times-Bold@0 SF
+(BIND)2.5 E/F2 10/Times-Roman@0 SF 1.112
+(root query is actually answered by one of the name serv)117 96 R 1.113
+(ers in the cache \214le, after which that)-.15 F(answer will be used instead of the cache \214le until the answer times out.)
+117 108 Q .112(As with)142 124.2 R/F3 10/Times-Italic@0 SF(primary)2.612
+E F2(and)2.612 E F3(secondary)2.612 E F2 2.612(,y)C .112
+(ou may specify a secondary serv)-2.612 F .112
+(er for a class other than)-.15 F F3(IN)117 136.2 Q F2(by appending)2.5
+E F3(/class)2.5 E F2(to the)2.5 E F3(cac)2.5 E(he)-.15 E F2 -.1(ke)2.5 G
+(yw)-.05 E(ord, e.g.,)-.1 E F3(class/HS)2.5 E F2(.)A F0 2.5(5.1.7. F)102
+160.2 R(orwarders)-.25 E F2(An)142 176.4 Q 3.62(ys)-.15 G(erv)-3.62 E
+1.12(er can mak)-.15 F 3.62(eu)-.1 G 1.121(se of)-3.62 F F3(forwar)3.621
+E(der)-.37 E(s)-.1 E F2 6.121(.A)C F3(forwar)-2.5 E(der)-.37 E F2 1.121
+(is another serv)3.621 F 1.121(er capable of pro-)-.15 F .256
+(cessing recursi)117 188.4 R .556 -.15(ve q)-.25 H .256(ueries that is willing to try resolving queries on behalf of other systems.)
+.15 F(The)5.256 E F3(forwar)117 200.4 Q(der)-.37 E(s)-.1 E F2
+(command speci\214es forw)2.5 E(arders by internet address as follo)-.1
+E(ws:)-.25 E F3(forwar)167 216.6 Q(der)-.37 E 89.23(s1)-.1 G(28)-89.23 E
+F0(.)A F3(32)A F0(.)A F3(0)A F0(.)A F3 7.5(10 128)B F0(.)A F3(32)A F0(.)
+A F3(0)A F0(.)A F3(4)A F2 1.002(There are tw)117 232.8 R 3.502(om)-.1 G
+1.002(ain reasons for w)-3.502 F 1.002(anting to do so.)-.1 F 1.003
+(First, some systems may not ha)6.002 F 1.303 -.15(ve f)-.2 H 1.003
+(ull net-).15 F -.1(wo)117 244.8 S .38(rk access and may be pre).1 F
+-.15(ve)-.25 G .38(nted from sending an).15 F 2.879(yI)-.15 G 2.879(Pp)
+-2.879 G(ack)-2.879 E .379(ets into the rest of the Internet and)-.1 F
+.33(therefore must rely on a forw)117 256.8 R .33(arder which does ha)
+-.1 F .63 -.15(ve a)-.2 H .33(ccess to the full net.).15 F .33
+(The second reason is)5.33 F 1.372(that the forw)117 268.8 R 1.372
+(arder sees a union of all queries as the)-.1 F 3.872(yp)-.15 G 1.372
+(ass through its serv)-3.872 F 1.371(er and therefore it)-.15 F -.2(bu)
+117 280.8 S .485(ilds up a v).2 F .485
+(ery rich cache of data compared to the cache in a typical w)-.15 F .486
+(orkstation name serv)-.1 F(er)-.15 E(.)-.55 E .551(In ef)117 292.8 R
+.551(fect, the)-.25 F F3(forwar)3.051 E(der)-.37 E F2 .551(becomes a meta-cache that all hosts can bene\214t from, thereby reducing)
+3.051 F
+(the total number of queries from that site to the rest of the net.)117
+304.8 Q .448(The ef)142 321 R .448(fect of `)-.25 F(`forw)-.74 E
+(arders')-.1 E 2.948('i)-.74 G 2.948(st)-2.948 G 2.949(op)-2.948 G .449
+(repend some \214x)-2.949 F .449(ed addresses to the list of name serv)
+-.15 F(ers)-.15 E .807(to be tried for e)117 333 R -.15(ve)-.25 G .806
+(ry query).15 F 5.806(.N)-.65 G .806
+(ormally that list is made up only of higher)-5.806 F .806
+(-authority serv)-.2 F .806(ers dis-)-.15 F(co)117 345 Q -.15(ve)-.15 G
+.93(red via).15 F F3(NS)3.43 E F2 .93(record lookups for the rele)3.43 F
+-.25(va)-.25 G .93(nt domain.).25 F .93(If the forw)5.93 F .93
+(arders do not answer)-.1 F 3.43(,t)-.4 G(hen)-3.43 E 1.513(unless the)
+117 357 R F3(slave)4.013 E F2(directi)4.013 E 1.813 -.15(ve w)-.25 H
+1.513(as gi).05 F -.15(ve)-.25 G 1.513(n, the appropriate serv).15 F
+1.513(ers for the domains will be queried)-.15 F(directly)117 369 Q(.)
+-.65 E F0 2.5(5.1.8. Sla)102 405 R .2 -.1(ve S)-.25 H(er).1 E -.1(ve)-.1
+G(rs).1 E F2(Sla)142 421.2 Q .38 -.15(ve m)-.2 H .08
+(ode is used if the use of forw).15 F .081
+(arders is the only possible w)-.1 F .081(ay to resolv)-.1 F 2.581(eq)
+-.15 G .081(ueries due)-2.581 F 1.059
+(to lack of full net access or if you wish to pre)117 433.2 R -.15(ve)
+-.25 G 1.059(nt the name serv).15 F 1.059(er from using other than the)
+-.15 F(listed forw)117 445.2 Q 2.5(arders. Sla)-.1 F .3 -.15(ve m)-.2 H
+(ode is acti).15 E -.25(va)-.25 G(ted by placing the simple command).25
+E F3(options forwar)167 461.4 Q(d-only)-.37 E F2 .745
+(in the boot\214le.)117 477.6 R .746
+(If this option is used, then you must specify forw)5.745 F 3.246
+(arders. When)-.1 F .746(in sla)3.246 F 1.046 -.15(ve m)-.2 H(ode,).15 E
+.476(the serv)117 489.6 R .476(er will forw)-.15 F .476
+(ard each query to each of the forw)-.1 F .475
+(arders until an answer is found or the list)-.1 F .14(of forw)117 501.6
+R .14(arders is e)-.1 F 2.64(xhausted. The)-.15 F(serv)2.64 E .14
+(er will not try to contact an)-.15 F 2.64(yr)-.15 G .14
+(emote name serv)-2.64 F .14(er other than)-.15 F(those named in the)117
+513.6 Q F3(forwar)2.5 E(der)-.37 E(s)-.1 E F2(list.)2.5 E .856(So while)
+142 529.8 R F3(forwar)3.356 E(der)-.37 E(s)-.1 E F2 .856
+(prepends addresses to the `)3.356 F(`serv)-.74 E .855(er list')-.15 F
+3.355('f)-.74 G .855(or each query)-3.355 F(,)-.65 E F3 .855
+(options for)3.355 F(-)-.2 E(war)117 541.8 Q(d-only)-.37 E F2 .045
+(causes the `)2.545 F(`serv)-.74 E .045(er list')-.15 F 2.546('t)-.74 G
+2.546(oc)-2.546 G(ontain)-2.546 E F3(only)2.546 E F2 .046
+(those addresses listed in the)2.546 F F3(forwar)2.546 E(der)-.37 E(s)
+-.1 E F2(decla-)2.546 E 2.977(rations. Careless)117 553.8 R .477
+(use of the)2.977 F F3 .477(options forwar)2.977 F(d-only)-.37 E F2
+(directi)2.977 E .777 -.15(ve c)-.25 H .476
+(an cause really horrible forw).15 F(arding)-.1 E 1.748
+(loops, since you could end up forw)117 565.8 R 1.749
+(arding queries only to some set of hosts which are also)-.1 F(sla)117
+577.8 Q -.15(ve)-.2 G(s, and one or se).15 E -.15(ve)-.25 G
+(ral of them could be forw).15 E(arding queries back to you.)-.1 E .673
+(Use of the)142 594 R F3 .673(options forwar)3.173 F(d-only)-.37 E F2
+(directi)3.173 E .973 -.15(ve s)-.25 H .672(hould be considered v).15 F
+.672(ery carefully)-.15 F 5.672(.N)-.65 G .672(ote that)-5.672 F
+(this same beha)117 606 Q(viour can be achie)-.2 E -.15(ve)-.25 G 2.5
+(du).15 G(sing the deprecated directi)-2.5 E -.15(ve)-.25 G(,).15 E F3
+(slave)2.5 E F2(.)A F0 2.5(5.1.9. Nonr)102 642 R(ecursi)-.18 E .2 -.1
+(ve S)-.1 H(er).1 E -.1(ve)-.1 G(rs).1 E/F4 9/Times-Roman@0 SF(BIND)142
+658.2 Q F2 2.486 -.55('s s)D 1.386(eparation of authoritati).55 F 1.686
+-.15(ve \()-.25 H 1.386(zone\) and nonauthoritiati).15 F 1.687 -.15
+(ve \()-.25 H 1.387(cache\) data has al).15 F -.1(wa)-.1 G(ys).1 E .665
+(been some)117 670.2 R .664
+(what weak, and pollution of the former via the latter has been kno)-.25
+F .664(wn to occur)-.25 F 5.664(.O)-.55 G(ne)-5.664 E -.1(wa)117 682.2 S
+3.651(yt).1 G 3.651(op)-3.651 G(re)-3.651 E -.15(ve)-.25 G 1.152
+(nt this, as well as to sa).15 F 1.452 -.15(ve m)-.2 H 1.152
+(emory on serv).15 F 1.152(ers carrying a lot of authoritati)-.15 F
+1.452 -.15(ve d)-.25 H(ata).15 E .515(\(e.g., root serv)117 694.2 R .515
+(ers\) is to mak)-.15 F 3.015(es)-.1 G .515(uch serv)-3.015 F .515
+(ers `)-.15 F(`nonrecursi)-.74 E -.15(ve)-.25 G -.7(.').15 G 5.515('T)
+-.04 G .514(his can be achie)-5.515 F -.15(ve)-.25 G 3.014(dv).15 G .514
+(ia the direc-)-3.014 F(ti)117 706.2 Q -.15(ve)-.25 G EP
+%%Page: 7 7
+%%BeginPageSetup
+BP
+%%EndPageSetup
+/F0 10/Times-Bold@0 SF(Name Ser)72 60 Q -.1(ve)-.1 G 2.5(rO).1 G
+(perations Guide f)-2.5 E(or)-.25 E/F1 9/Times-Bold@0 SF 211.564
+(BIND SMM)2.5 F F0(:10-7)A/F2 10/Times-Italic@0 SF(options no-r)167 96 Q
+(ecur)-.37 E(sion)-.1 E/F3 10/Times-Roman@0 SF .732(in the boot\214le.)
+117 112.2 R 3.233(As)5.733 G(erv)-3.233 E .733(er with this option enabled will not attempt to fetch data to help answer)
+-.15 F .459(queries \212 if you ask it for data it does not ha)117 124.2
+R -.15(ve)-.2 G 2.959(,i).15 G 2.959(tw)-2.959 G .459
+(ill send you a referral to a more authorita-)-2.959 F(ti)117 136.2 Q
+1.173 -.15(ve s)-.25 H(erv).15 E .873(er or)-.15 F 3.373(,i)-.4 G 3.373
+(fi)-3.373 G 3.373(ti)-3.373 G 3.373(si)-3.373 G .874(tself authoritati)
+-3.373 F 1.174 -.15(ve f)-.25 H .874(or the zone of the query).15 F
+3.374(,i)-.65 G 3.374(tw)-3.374 G .874(ill send you an ne)-3.374 F -.05
+(ga)-.15 G(ti).05 E -.15(ve)-.25 G(answer)117 148.2 Q(.)-.55 E 2.959(An)
+142 164.4 S(onrecursi)-2.959 E .759 -.15(ve s)-.25 H(erv).15 E .458
+(er can be named in an)-.15 F/F4 9/Times-Roman@0 SF(NS RR)2.958 E F3 -.2
+(bu)2.958 G 2.958(ti).2 G 2.958(tc)-2.958 G .458(annot be listed in the)
+-2.958 F F2 -.37(re)2.958 G(solv).37 E(.conf)-.74 E F3(\214le.)117 176.4
+Q F0 2.5(5.1.10. Query)102 212.4 R(Logging)2.5 E F3 1.262
+(If the \214le system containing your)142 228.6 R F2(syslo)3.762 E(g)-.1
+E F3 1.263(\214le has quite a bit of space, you can consider)3.762 F
+(using the)117 240.6 Q F2(options query-lo)167 256.8 Q(g)-.1 E F3
+(directi)117 273 Q .358 -.15(ve i)-.25 H 2.558(ny).15 G .058
+(our boot\214le.)-2.558 F .058(This will cause your name serv)5.058 F
+.057(er to log e)-.15 F -.15(ve)-.25 G .057(ry query it recei).15 F -.15
+(ve)-.25 G .057(s, which).15 F .45(when combined with a Perl or)117 285
+R F4 -.81(AW)2.95 G(K).81 E F3 .451
+(script to postprocess the logs, can be a useful management)2.95 F
+(tool.)117 297 Q F0 2.5(5.1.11. In)102 333 R -.1(ve)-.4 G
+(rse Query Pseudosupport).1 E F4(BIND)142 349.2 Q F3 .287(by def)2.787 F
+.287(ault does not support in)-.1 F -.15(ve)-.4 G .286
+(rse queries, and this has been kno).15 F .286(wn to cause prob-)-.25 F
+1.314(lems for certain microcomputer operating systems and for older v)
+117 361.2 R 1.314(ersions of)-.15 F F4(BIND)3.814 E F3 -.55('s)C F2
+(nslookup)4.364 E F3 4.126(tool. Y)117 373.2 R 1.626
+(ou may decide that rather than answering with `)-1.1 F 1.626
+(`operation not implemented,)-.74 F -.74('')-.7 G F2(named)4.865 E F3
+.581(should detect the most common in)117 385.2 R -.15(ve)-.4 G .582
+(rse queries and answer them with bogus information.).15 F .582(It is)
+5.582 F .973(better to upgrade your clients to stop depending on in)117
+397.2 R -.15(ve)-.4 G .972(rse queries, b).15 F .972
+(ut if that is not possible,)-.2 F(you should use the)117 409.2 Q F2
+(options fak)167 425.4 Q(e-iquery)-.1 E F3(directi)117 441.6 Q .872 -.15
+(ve i)-.25 H 3.072(ny).15 G .572(our boot\214le.)-3.072 F F2(NO)5.572 E
+(TE:)-.4 E F3 .573(the responses are in f)3.073 F .573
+(act bogus, in that the)-.1 F 3.073(yc)-.15 G(ontain)-3.073 E F4(ISO)
+3.073 E F3(8859)A 1.868(square brack)117 453.6 R 1.868(ets \()-.1 F F0
+([)A F3(and)4.368 E F0(])4.368 E F3 1.868
+(\), so your clients will not be able to do an)B 1.867
+(ything useful with these)-.15 F 3.258(responses. It)117 465.6 R .758
+(has been observ)3.258 F .759(ed that no client e)-.15 F -.15(ve)-.25 G
+3.259(rd).15 G .759(id an)-3.259 F .759(ything useful with real in)-.15
+F -.15(ve)-.4 G .759(rse query).15 F(responses, either)117 477.6 Q(.)
+-.55 E F0 2.5(5.1.12. Setting)102 513.6 R(Name Ser)2.5 E -.1(ve)-.1 G
+2.5(rL).1 G(imits)-2.5 E F3 1.041(Some name serv)142 529.8 R 1.041
+(er operations can be quite resource intensi)-.15 F -.15(ve)-.25 G 3.541
+(,a).15 G 1.04(nd in order to tune your)-3.541 F 1.435
+(system properly it is sometimes necessary to change)117 541.8 R F4
+(BIND)3.935 E F3 2.535 -.55('s i)D 1.435(nternal quotas.).55 F 1.435
+(This is accom-)6.435 F(plished via)117 553.8 Q F2(limit <name> <value>)
+167 570 Q F3(directi)117 586.2 Q -.15(ve)-.25 G 2.5(si).15 G 2.5(nt)-2.5
+G(he boot\214le.)-2.5 E(Limits, and their def)5 E(ault v)-.1 E
+(alues, are as follo)-.25 E(ws:)-.25 E F2(limit tr)167 602.4 Q(ansfer)
+-.15 E(s-in 10)-.1 E F3 .281(This is the number of simultaneous)117
+618.6 R F2(named-xfer)2.78 E F3(processes)2.78 E F4(BIND)2.78 E F3 .28
+(is willing to start.)2.78 F .28(Higher num-)5.28 F .509(bers yield f)
+117 630.6 R .509(aster con)-.1 F -.15(ve)-.4 G -.18(rg).15 G .509
+(ence to primary serv).18 F .509(ers if your secondary serv)-.15 F .51
+(er has hundreds or thou-)-.15 F .694(sands of zones to maintain, b)117
+642.6 R .694
+(ut setting this number too high can cause thrashing due to starv)-.2 F
+(a-)-.25 E 1.936(tion of resources such as netw)117 654.6 R 1.936
+(ork bandwidth or sw)-.1 F 1.936(ap space.)-.1 F F2(NO)6.936 E(TE:)-.4 E
+F3 1.936(this limit can also be)4.436 F -.15(ex)117 666.6 S
+(pressed via the deprecated directi).15 E -.15(ve)-.25 G F2(max-fetc)
+2.65 E 2.5(hN)-.15 G(N)-2.5 E F3(.)A F2(limit tr)167 682.8 Q(ansfer)-.15
+E(s-per)-.1 E(-ns 2)-.2 E F3 .058(This is the number of simultaneous)117
+699 R F2(named-xfer)2.558 E F3(processes)2.558 E F4(BIND)2.558 E F3 .057
+(is willing to initiate)2.558 F F2 .057(to any given)2.557 F 1.718
+(name server)117 711 R F3 6.718(.I)C 4.218(nm)-6.718 G 1.719
+(ost cases, you should not need to change it.)-4.218 F 1.719
+(If your secondary serv)6.719 F 1.719(er is)-.15 F .139
+(pulling hundreds or thousands of zones from a single primary serv)117
+723 R(er)-.15 E 2.639(,i)-.4 G(ncreasing)-2.639 E F2(tr)2.639 E(ansfer)
+-.15 E(s-per)-.1 E(-ns)-.2 E EP
+%%Page: 8 8
+%%BeginPageSetup
+BP
+%%EndPageSetup
+/F0 10/Times-Bold@0 SF 208.87(SMM:10-8 Name)72 60 R(Ser)2.5 E -.1(ve)-.1
+G 2.5(rO).1 G(perations Guide f)-2.5 E(or)-.25 E/F1 9/Times-Bold@0 SF
+(BIND)2.5 E/F2 10/Times-Roman@0 SF .663(may speed con)117 96 R -.15(ve)
+-.4 G -.18(rg).15 G 3.163(ence. It).18 F .663(should be k)3.163 F .663
+(ept as small as possible, to a)-.1 F -.2(vo)-.2 G .664
+(id causing thrashing and).2 F(resource starv)117 108 Q
+(ation on the primary serv)-.25 E(er)-.15 E(.)-.55 E/F3 10
+/Times-Italic@0 SF(limit datasize <system-dependent>)167 124.2 Q F2 .522
+(Most systems ha)117 140.4 R .822 -.15(ve a q)-.2 H .522
+(uota that limits the size of the so-called `).15 F .522(`data se)-.74 F
+(gment,)-.15 E 2.002 -.74('' w)-.7 H .521(hich is where).74 F/F4 9
+/Times-Roman@0 SF(BIND)117 152.4 Q F2 -.1(ke)3.494 G .994
+(eps all of its authority and cache data.).1 F F4(BIND)5.994 E F2 .994
+(will beha)3.494 F 1.294 -.15(ve s)-.2 H .995(uboptimally \(perhaps e)
+.15 F -.15(ve)-.25 G(n).15 E -.15(ex)117 164.4 S 1.226
+(iting\) if it runs up ag).15 F 1.225(ainst this quota.)-.05 F 1.225
+(If your system supports a system call to change this)6.225 F .996
+(quota for a gi)117 176.4 R -.15(ve)-.25 G 3.496(np).15 G .996
+(rocess, you can ask)-3.496 F F4(BIND)3.496 E F2 .996
+(to use that system call via the)3.496 F F3 .997(limit datasize NN)3.497
+F F2(directi)117 188.4 Q -.15(ve)-.25 G 5.37(.T).15 G .37(he v)-5.37 F
+.37(alue gi)-.25 F -.15(ve)-.25 G 2.87(nh).15 G .369
+(ere may be scaled by post\214xing)-2.87 F F3(k)2.869 E F2 .369
+(for 1024X,)2.869 F F3(m)2.869 E F2 .369(for \(1024^2\)X, and)2.869 F F3
+(g)117 200.4 Q F2(for \(1024^3\)X.)2.5 E(In 1995, the root serv)5 E
+(ers all use)-.15 E F3(limit datasize 64m)2.5 E F2(.)A F0 2.5
+(5.1.13. Zone)102 236.4 R -.74(Tr)2.5 G(ansfer Restrictions).74 E F2
+1.417(It may be the case that your or)142 252.6 R -.05(ga)-.18 G 1.417
+(nization does not wish to gi).05 F 1.717 -.15(ve c)-.25 H 1.417
+(omplete lists of your).15 F .711(hosts to an)117 264.6 R .711
+(yone on the Internet who can reach your name serv)-.15 F 3.21
+(ers. While)-.15 F .71(it is still possible for)3.21 F .095(people to `)
+117 276.6 R(`iterate')-.74 E 2.595('t)-.74 G .095
+(hrough your address range, looking for)-2.595 F F3(PTR)2.596 E F2 .096
+(records, and b)2.596 F .096(uild a list of your)-.2 F 1.075
+(hosts the `)117 288.6 R(`slo)-.74 E(w')-.25 E 3.575('w)-.74 G(ay)-3.675
+E 3.575(,i)-.65 G 3.575(ti)-3.575 G 3.575(ss)-3.575 G 1.074
+(till considered reasonable to restrict your e)-3.575 F 1.074
+(xport of zones via the)-.15 F .784(zone transfer protocol.)117 300.6 R
+2.384 -.8(To l)5.784 H .784
+(imit the list of neighbors who can transfer zones from your serv).8 F
+(er)-.15 E(,)-.4 E(use the)117 312.6 Q F3(xfrnets)2.5 E F2(directi)2.5 E
+-.15(ve)-.25 G(.).15 E .068(This directi)142 328.8 R .368 -.15(ve h)-.25
+H .067(as the same syntax as).15 F F3(forwar)2.567 E(der)-.37 E(s)-.1 E
+F2 -.15(ex)2.567 G .067(cept that you can list netw).15 F .067
+(ork numbers)-.1 F(in addition to host addresses.)117 340.8 Q -.15(Fo)5
+G 2.5(re).15 G(xample, you could add the directi)-2.65 E -.15(ve)-.25 G
+F3(xfrnets 16.0.0.0)167 357 Q F2 .671(if you w)117 373.2 R .671
+(anted to permit only hosts on Class A netw)-.1 F .671
+(ork number 16 to transfer zones from your)-.1 F(serv)117 385.2 Q(er)
+-.15 E 7.061(.T)-.55 G 2.061
+(his is not nearly granular enough, and a future v)-7.061 F 2.061
+(ersion of)-.15 F F4(BIND)4.561 E F2 2.061(will permit such)4.561 F .258
+(access-control to be speci\214ed on a per)117 397.2 R .259
+(-host basis rather than the current per)-.2 F .259(-net basis.)-.2 F
+.259(Note that)5.259 F 1.086(while addresses without e)117 409.2 R 1.086
+(xplicit masks are assumed by this directi)-.15 F 1.386 -.15(ve t)-.25 H
+3.585(ob).15 G 3.585(en)-3.585 G(etw)-3.585 E 1.085(orks, you can)-.1 F
+.611(specify a mask which is as granular as you wish, perhaps including all bits of the address such)
+117 421.2 R(that only a single host is gi)117 433.2 Q -.15(ve)-.25 G 2.5
+(nt).15 G(ransfer permission.)-2.5 E -.15(Fo)5 G 2.5(re).15 G
+(xample, consider)-2.65 E F3(xfrnets 16.1.0.2&255.255.255.255)167 449.4
+Q F2 1.588(which w)117 465.6 R 1.588(ould permit only host)-.1 F F3
+(16.1.0.2)4.088 E F2 1.588(to transfer zones from you.)4.088 F 1.588
+(Note that no spaces are)6.588 F(allo)117 477.6 Q(wed surrounding the `)
+-.25 E(`)-.74 E F3(&)A F2 1.48 -.74('' c)D
+(haracter that introduces a netmask.).74 E(The)142 493.8 Q F3(xfrnets)
+2.544 E F2(directi)2.544 E .344 -.15(ve m)-.25 H .044(ay also be gi).15
+F -.15(ve)-.25 G 2.544(na).15 G(s)-2.544 E F3(tcplist)2.544 E F2 .045
+(for compatibility with interim releases of)2.544 F F4(BIND)117 505.8 Q
+F2(4.9.)2.5 E F0 2.5(5.1.14. Sorting)102 541.8 R(Addr)2.5 E(esses)-.18 E
+F2 .712(If there are multiple addresses a)142 558 R -.25(va)-.2 G .712
+(ilable for a name serv).25 F .712(er which)-.15 F F4(BIND)3.211 E F2
+-.1(wa)3.211 G .711(nts to contact,).1 F F4(BIND)117 570 Q F2 .052
+(will try the ones it belie)2.552 F -.15(ve)-.25 G 2.552(sa).15 G .052
+(re `)-2.552 F(`closest')-.74 E 2.552<278c>-.74 G 2.552(rst. `)-2.552 F
+(`Closeness')-.74 E 2.552('i)-.74 G 2.552(sd)-2.552 G .052
+(e\214ned in terms of similar)-2.552 F(-)-.2 E .732
+(ity-of-address; that is, if one address is on the same)117 582 R F3
+(subnet)3.232 E F2 .732(as some interf)3.232 F .731
+(ace of the local host,)-.1 F .683
+(then that address will be tried \214rst.)117 594 R -.15(Fa)5.683 G .684
+(iling that, an address which is on the same).15 F F3(network)3.184 E F2
+(will)3.184 E .835(be tried \214rst.)117 606 R -.15(Fa)5.835 G .835
+(iling that, the).15 F 3.335(yw)-.15 G .835(ill be tried in a more-or)
+-3.335 F .835(-less random order unless the)-.2 F F3(sortlist)3.335 E F2
+(directi)117 618 Q 1.156 -.15(ve w)-.25 H .856(as gi).05 F -.15(ve)-.25
+G 3.356(ni).15 G 3.356(nt)-3.356 G(he)-3.356 E F3(named.boot)3.356 E F2
+(\214le.)3.356 E F3(sortlist)5.856 E F2 .857(has a syntax similar to)
+3.356 F F3(forwar)3.357 E(der)-.37 E(s)-.1 E F2(,)A F3(xfrnets)3.357 E
+F2(,)A(and)117 630 Q F3(bo)3.577 E(gusns)-.1 E F2 3.577<8a79>3.577 G
+1.077(ou gi)-3.577 F 1.377 -.15(ve i)-.25 H 3.577(tal).15 G 1.076
+(ist of dotted-quad netw)-3.577 F 1.076(orks and it uses these to `)-.1
+F(`prefer')-.74 E 3.576('s)-.74 G(ome)-3.576 E .318(remote name serv)117
+642 R .318(er addresses o)-.15 F -.15(ve)-.15 G 2.818(ro).15 G 2.819
+(thers. If)-2.818 F .319(no e)2.819 F .319(xplicit mask is pro)-.15 F
+.319(vided with each element of)-.15 F(a)117 654 Q F3(sortlist)2.5 E F2
+2.5(,o)C(ne will be inferred based on the high order address bits.)-2.5
+E .28(If you are on a Class C net which has a Class B net between you and the rest of the Inter)
+142 670.2 R(-)-.2 E .897(net, you could try to impro)117 682.2 R 1.197
+-.15(ve t)-.15 H .897(he name serv).15 F(er')-.15 E 3.397(sl)-.55 G .897
+(uck in getting answers by listing the Class B)-3.397 F(netw)117 694.2 Q
+(ork')-.1 E 3.121(sn)-.55 G .621(umber in a)-3.121 F F3(sortlist)3.121 E
+F2(directi)3.121 E -.15(ve)-.25 G 5.621(.T).15 G .621(his should ha)
+-5.621 F .921 -.15(ve t)-.2 H .621(he ef).15 F .62(fect of trying `)-.25
+F(`closer')-.74 E 3.12('s)-.74 G(erv)-3.12 E(ers)-.15 E
+(before the more `)117 706.2 Q(`distant')-.74 E 2.5('o)-.74 G 2.5
+(nes. Note)-2.5 F(that this beha)2.5 E(viour is ne)-.2 E 2.5(wa)-.25 G
+2.5(so)-2.5 G(f)-2.5 E F4(BIND 4.9)2.5 E F2(.)A EP
+%%Page: 9 9
+%%BeginPageSetup
+BP
+%%EndPageSetup
+/F0 10/Times-Bold@0 SF(Name Ser)72 60 Q -.1(ve)-.1 G 2.5(rO).1 G
+(perations Guide f)-2.5 E(or)-.25 E/F1 9/Times-Bold@0 SF 211.564
+(BIND SMM)2.5 F F0(:10-9)A/F2 10/Times-Roman@0 SF .194
+(The other and older ef)142 96 R .194(fect of the)-.25 F/F3 10
+/Times-Italic@0 SF(sortlist)2.694 E F2(directi)2.694 E .494 -.15(ve i)
+-.25 H 2.694(st).15 G 2.694(oc)-2.694 G(ause)-2.694 E/F4 9/Times-Roman@0
+SF(BIND)2.694 E F2 .194(to sort the)2.694 F F3(A)2.694 E F2 .195
+(records in)2.695 F(an)117 108 Q 2.565(yr)-.15 G .065
+(esponse it generates, so as to put those which appear on the)-2.565 F
+F3(sortlist)2.564 E F2 .064(earlier than those which)2.564 F .537
+(do not.)117 120 R .538
+(This is not as helpful as you might think, since man)5.537 F 3.038(yc)
+-.15 G .538(lients will reorder the)-3.038 F F3(A)3.038 E F2(records)
+3.038 E .346(either at random or using)117 132 R F4(LIFO)2.845 E F2
+2.845(;a)C .345(lso, consider the f)-2.845 F .345(act that the serv)-.1
+F .345(er w)-.15 F(on')-.1 E 2.845(tb)-.18 G 2.845(ea)-2.845 G .345
+(ble to guess the)-2.845 F(client')117 144 Q 2.751(sn)-.55 G(etw)-2.751
+E .251(ork topology)-.1 F 2.751(,a)-.65 G .251
+(nd so will not be able to accurately order for `)-2.751 F(`closeness')
+-.74 E 2.752('t)-.74 G 2.752(oa)-2.752 G .252(ll pos-)-2.752 F
+(sible clients.)117 156 Q(Doing the ordering in the resolv)5 E
+(er is clearly superior)-.15 E(.)-.55 E .831
+(In actual practice, this directi)142 172.2 R 1.131 -.15(ve i)-.25 H
+3.331(su).15 G .831
+(sed only rarely since it hardwires information which)-3.331 F .631
+(changes rapidly; a netw)117 184.2 R .631(ork which is `)-.1 F(`close')
+-.74 E 3.131('t)-.74 G .631(oday may be `)-3.131 F(`distant')-.74 E
+3.131('n)-.74 G -.15(ex)-3.131 G 3.131(tm).15 G 3.131(onth. Since)-3.131
+F F4(BIND)3.131 E F2 -.2(bu)117 196.2 S .401
+(ilds up a cache of the remote name serv).2 F .4
+(ers' response times, it will quickly con)-.15 F -.15(ve)-.4 G -.18(rg)
+.15 G 2.9(eo).18 G 2.9(n`)-2.9 G(`rea-)-3.64 E(sonable')117 208.2 Q
+2.903('b)-.74 G(eha)-2.903 E(viour)-.2 E 2.903(,w)-.4 G .404(hich isn')
+-2.903 F 2.904(tt)-.18 G .404(he same as `)-2.904 F(`optimal')-.74 E
+2.904('b)-.74 G .404(ut it')-3.104 F 2.904(sc)-.55 G .404(lose enough.)
+-2.904 F .404(Future directions)5.404 F(for)117 220.2 Q F4(BIND)3.213 E
+F2 .713(include choosing addresses based on local interf)3.213 F .712
+(ace metrics \(on hosts that ha)-.1 F 1.012 -.15(ve m)-.2 H(ore).15 E .7
+(than one\) and perhaps on routing table information.)117 232.2 R 2.301
+-.8(We d)5.701 H 3.201(on).8 G .701(ot intend to solv)-3.201 F 3.201(et)
+-.15 G .701(he generalized)-3.201 F -.74(``)117 244.2 S .807
+(multihomed host').74 F 3.307('p)-.74 G .807(roblem, b)-3.307 F .806
+(ut we should be able to do a little better than we')-.2 F .806
+(re doing no)-.5 F -.65(w.)-.25 G(Lik)117 256.2 Q -.25(ew)-.1 G 1.699
+(ise, we hope to see a higher le).25 F -.15(ve)-.25 G 4.199(lr).15 G
+(esolv)-4.199 E 1.7(er library that sorts responses using topology)-.15
+F(information that only e)117 268.2 Q(xists on the client')-.15 E 2.5
+(sh)-.55 G(ost.)-2.5 E F0 2.5(5.1.15. Bogus)102 304.2 R(Name Ser)2.5 E
+-.1(ve)-.1 G(rs).1 E F2 1.546
+(It happens occasionally that some remote name serv)142 320.4 R 1.545
+(er goes `)-.15 F(`bad')-.74 E 4.045('. Y)-.74 F 1.545(ou can tell your)
+-1.1 F .514(name serv)117 332.4 R .515
+(er to refuse to listen to or ask questions of certain other name serv)
+-.15 F .515(ers by listing them)-.15 F .135(in a)117 344.4 R F3(bo)2.635
+E(gusns)-.1 E F2(directi)2.635 E .435 -.15(ve i)-.25 H 2.635(ny).15 G
+(our)-2.635 E F3(named.boot)2.635 E F2 2.635(\214le. Its)2.635 F .135
+(syntax is the same as)2.635 F F3(forwar)2.635 E(der)-.37 E(s)-.1 E F2
+(,)A F3(xfrnets)2.635 E F2 2.635(,a)C(nd)-2.635 E F3(sortlist)117 356.4
+Q F2 2.942<8a79>2.942 G .442(ou just gi)-2.942 F .742 -.15(ve i)-.25 H
+2.942(tal).15 G .443(ist of dotted-quad Internet addresses.)-2.942 F
+.443(Note that zones dele)5.443 F -.05(ga)-.15 G .443(ted to).05 F .034
+(such serv)117 368.4 R .034
+(ers will not be reachable from clients of your serv)-.15 F .033
+(ers; thus you should use this directi)-.15 F -.15(ve)-.25 G
+(sparingly or not at all.)117 380.4 Q F0 2.5(5.1.16. Segmented)102 416.4
+R(Boot Files)2.5 E F2 2.957
+(If you are secondary for a lot of zones, you may \214nd it con)142
+432.6 R -.15(ve)-.4 G 2.958(nient to split your).15 F F3(named.boot)117
+444.6 Q F2 1.424(\214le into a static portion which hardly e)3.924 F
+-.15(ve)-.25 G 3.924(rc).15 G 1.424(hanges \(directi)-3.924 F -.15(ve)
+-.25 G 3.924(ss).15 G 1.423(uch as)-3.924 F F3(dir)3.923 E(ectory)-.37 E
+F2(,)A F3(sortlist)117 456.6 Q F2(,)A F3(xfrnets)3.491 E F2(and)3.491 E
+F3(cac)3.491 E(he)-.15 E F2 .992
+(could go here\), and dynamic portions that change frequently \(all of)
+3.491 F(your)117 468.6 Q F3(primary)3.459 E F2(directi)3.459 E -.15(ve)
+-.25 G 3.458(sm).15 G .958(ight go in one \214le, and all of your)-3.458
+F F3(secondary)3.458 E F2(directi)3.458 E -.15(ve)-.25 G 3.458(sm).15 G
+.958(ight go in)-3.458 F .024(another \214le \212 and either or both of these might be fetched automatically from some neighbor so)
+117 480.6 R 1.154(that the)117 492.6 R 3.653(yc)-.15 G 1.153
+(an change your list of secondary zones without requiring your acti)
+-3.653 F 1.453 -.15(ve i)-.25 H(nterv).15 E(ention\).)-.15 E -1.1(Yo)117
+504.6 S 2.66(uc)1.1 G .16(an accomplish this via the)-2.66 F F3(include)
+2.66 E F2(directi)2.66 E -.15(ve)-.25 G 2.66(,w).15 G .16(hich tak)-2.66
+F .16(es just a single \214le name as its ar)-.1 F(gu-)-.18 E 3.773
+(ment. No)117 516.6 R 1.273(quotes are needed around the \214le name.)
+3.773 F 1.272(The \214le name will be e)6.272 F -.25(va)-.25 G 1.272
+(luated after the).25 F .168(name serv)117 528.6 R .168
+(er has changed its w)-.15 F .169
+(orking directory to that speci\214ed in the)-.1 F F3(dir)2.669 E
+(ectory)-.37 E F2(directi)2.669 E -.15(ve)-.25 G 2.669(,s).15 G 2.669
+(oy)-2.669 G(ou)-2.669 E(can use relati)117 540.6 Q .3 -.15(ve p)-.25 H
+(athnames if your system supports them.).15 E F0 2.5(5.2. Resolv)87
+576.6 R(er Con\214guration)-.1 E F2 .468(The con\214guration \214le')127
+592.8 R 2.968(sn)-.55 G .468(ame is)-2.968 F F3(/etc/r)2.968 E(esolv)
+-.37 E(.conf)-.74 E F2 5.468(.T)C .468
+(his \214le designates the name serv)-5.468 F .467(ers on the)-.15 F
+(netw)102 604.8 Q .357(ork that should be sent queries.)-.1 F .358
+(The resolv)5.357 F .358(er will try to contact a name serv)-.15 F .358
+(er on the localhost)-.15 F .05
+(if it cannot \214nd its con\214guration \214le.)102 616.8 R -1.1(Yo)
+5.05 G 2.55(us)1.1 G .05(hould install the con\214guration \214le on e)
+-2.55 F -.15(ve)-.25 G .05(ry host an).15 F(yw)-.15 E(ay)-.1 E(,)-.65 E
+.46(since this is the only recommended w)102 628.8 R .461
+(ay to specify a system-le)-.1 F -.15(ve)-.25 G 2.961(ld).15 G(ef)-2.961
+E .461(ault domain, and you can still)-.1 F 1.018(list the local host')
+102 640.8 R 3.518(sa)-.55 G 1.018(ddress if it runs a name serv)-3.518 F
+(er)-.15 E 6.018(.I)-.55 G 3.518(ti)-6.018 G 3.518(sc)-3.518 G 1.017
+(onsidered reasonable to create this \214le)-3.518 F -2.15 -.25(ev e)102
+652.8 T 2.785(ni).25 G 2.785(fy)-2.785 G .285(ou run a local serv)-2.785
+F(er)-.15 E 2.785(,s)-.4 G .285
+(ince its contents will be cached by each client of the resolv)-2.785 F
+.286(er library)-.15 F(when the client mak)102 664.8 Q
+(es its \214rst call to a resolv)-.1 E(er routine.)-.15 E(The)127 681 Q
+F3 -.37(re)2.5 G(solv).37 E(.conf)-.74 E F2(\214le contains directi)2.5
+E -.15(ve)-.25 G(s, one per line, of the follo).15 E(wing forms:)-.25 E
+2.5(;c)152 697.2 S(omment)-2.5 E 2.5(#a)152 709.2 S(nother comment)-2.5
+E(domain)152 721.2 Q F3(local-domain)2.5 E EP
+%%Page: 10 10
+%%BeginPageSetup
+BP
+%%EndPageSetup
+/F0 10/Times-Bold@0 SF 203.87(SMM:10-10 Name)72 60 R(Ser)2.5 E -.1(ve)
+-.1 G 2.5(rO).1 G(perations Guide f)-2.5 E(or)-.25 E/F1 9/Times-Bold@0
+SF(BIND)2.5 E/F2 10/Times-Roman@0 SF(search)152 96 Q/F3 10
+/Times-Italic@0 SF(sear)2.5 E -.15(ch)-.37 G(-list).15 E F2(nameserv)152
+108 Q(er)-.15 E F3(server)2.5 E(-addr)-.2 E(ess)-.37 E F2(sortlist)152
+120 Q F3(sort-list)2.5 E F2(options)152 132 Q F3(option-list)2.5 E F2
+.054(Exactly one of the)102 148.2 R F3(domain)2.554 E F2(or)2.554 E F3
+(sear)2.554 E -.15(ch)-.37 G F2(directi)2.704 E -.15(ve)-.25 G 2.554(ss)
+.15 G .054(hould be gi)-2.554 F -.15(ve)-.25 G .054(n, e).15 F .054
+(xactly once.)-.15 F .053(If the)5.053 F F3(sear)2.553 E -.15(ch)-.37 G
+F2(directi)2.703 E -.15(ve)-.25 G .76(is gi)102 160.2 R -.15(ve)-.25 G
+.76(n, the \214rst item in the gi).15 F -.15(ve)-.25 G(n).15 E F3(sear)
+3.26 E -.15(ch)-.37 G(-list).15 E F2 .76(will o)3.26 F -.15(ve)-.15 G
+.76(rride an).15 F 3.26(yp)-.15 G(re)-3.26 E(viously-speci\214ed)-.25 E
+F3(local-domain)3.26 E F2(.)A(The)102 172.2 Q F3(nameserver)3.17 E F2
+(directi)3.17 E .97 -.15(ve m)-.25 H .67(ay be gi).15 F -.15(ve)-.25 G
+3.17(nu).15 G 3.17(pt)-3.17 G 3.17(ot)-3.17 G .67
+(hree times; additional)-3.17 F F3(nameserver)3.17 E F2(directi)3.17 E
+-.15(ve)-.25 G 3.17(sw).15 G .67(ill be)-3.17 F 2.966(ignored. Comments)
+102 184.2 R .466(may be gi)2.966 F -.15(ve)-.25 G 2.966(nb).15 G 2.966
+(ys)-2.966 G .466(tarting a line with a `)-2.966 F(`)-.74 E F0(;)1.666 E
+F2 1.946 -.74('' o)1.666 H 2.966(r`).74 G(`)-3.706 E F0(#)1.666 E F2
+-.74('')1.666 G 2.967(;n).74 G .467(ote that comments were)-2.967 F .798
+(not permitted in v)102 196.2 R .798(ersions of the resolv)-.15 F .797
+(er earlier than the one included with)-.15 F/F4 9/Times-Roman@0 SF .797
+(BIND 4.9)3.297 F F2 3.297<8a73>3.297 G 3.297(oi)-3.297 G 3.297(fy)
+-3.297 G(our)-3.297 E -.15(ve)102 208.2 S(ndor').15 E 2.5(sr)-.55 G
+(esolv)-2.5 E(er supports comments, you kno)-.15 E 2.5(wt)-.25 G(he)-2.5
+E 2.5(ya)-.15 G(re really on the ball.)-2.5 E(The)127 224.4 Q F3
+(local-domain)3.498 E F2 .998(will be appended to an)3.498 F 3.498(yq)
+-.15 G .999(uery-name that does not contain a `)-3.498 F(`)-.74 E F0(.)
+1.666 E F2 -.74('')1.666 G(.).74 E F3(local-)5.999 E(domain)102 236.4 Q
+F2 .629(can be o)3.129 F -.15(ve)-.15 G .629(rridden on a per).15 F .629
+(-process basis by setting the)-.2 F F4(LOCALDOMAIN)3.128 E F2(en)3.128
+E .628(vironment v)-.4 F(ari-)-.25 E 2.5(able. Note)102 248.4 R(that)2.5
+E F3(local-domain)2.5 E F2
+(processing can be disabled by setting an option in the resolv)2.5 E(er)
+-.15 E(.)-.55 E(The)127 264.6 Q F3(sear)2.79 E -.15(ch)-.37 G(-list).15
+E F2 .29(is a list of domains which are tried, in order)2.79 F 2.79(,a)
+-.4 G 2.79(sq)-2.79 G .29(ualifying domains for query-)-2.79 F .688
+(names which do not contain a `)102 276.6 R(`)-.74 E F0(.)1.666 E F2
+-.74('')1.666 G 5.688(.N).74 G .688(ote that)-5.688 F F3(sear)3.188 E
+-.15(ch)-.37 G(-list).15 E F2 .688
+(processing can be disabled by setting an)3.188 F .139
+(option in the resolv)102 288.6 R(er)-.15 E 5.139(.A)-.55 G .139
+(lso note that the en)-5.139 F .14(vironment v)-.4 F .14(ariable `)-.25
+F(`)-.74 E F4(LOCALDOMAIN)A F2 1.62 -.74('' c)D .14(an o).74 F -.15(ve)
+-.15 G .14(rride this).15 F F3(sear)102 300.6 Q -.15(ch)-.37 G(-list).15
+E F2(on a per)2.5 E(-process basis.)-.2 E(The)127 316.8 Q F3(server)
+2.595 E(-addr)-.2 E(ess)-.37 E F2 1.195 -.55('s a)1.666 H .094(re aggre)
+.55 F -.05(ga)-.15 G .094(ted and then used as the def).05 F .094
+(ault destination of queries gener)-.1 F(-)-.2 E .166
+(ated through the resolv)102 328.8 R(er)-.15 E 5.166(.I)-.55 G 2.666(no)
+-5.166 G .166(ther w)-2.666 F .166(ords, this is the w)-.1 F .166
+(ay you tell the resolv)-.1 F .166(er which name serv)-.15 F .167
+(ers it)-.15 F .908(should use.)102 340.8 R .907
+(It is possible for a gi)5.908 F -.15(ve)-.25 G 3.407(nc).15 G .907
+(lient application to o)-3.407 F -.15(ve)-.15 G .907
+(rride this list, and this is often done).15 F 1.498
+(inside the name serv)102 352.8 R 1.498(er \(which is itself a)-.15 F F3
+-.37(re)3.998 G(solver).37 E F2 1.498
+(client\) and in test programs such as)3.998 F F3(nslookup)3.999 E F2(.)
+A .748(Note that if you wish to list the local host in your resolv)102
+364.8 R .748(er con\214guration \214le, you should probably)-.15 F .892
+(use its primary Internet address rather than a local-host alias such as 127.0.0.1 or 0.0.0.0.)
+102 376.8 R .893(This is)5.893 F .192(due to a b)102 388.8 R .192
+(ug in the handling of connected)-.2 F F4(SOCK_DGRAM)2.692 E F2(sock)
+2.692 E .192(ets in some v)-.1 F .192(ersions of the)-.15 F/F5 11
+/Times-Roman@0 SF(BSD)2.692 E F2(net-)2.692 E -.1(wo)102 400.8 S 1.319
+(rking code.).1 F 1.319(If you must use an address-alias, you should prefer 0.0.0.0 \(or simply `)
+6.319 F(`0')-.74 E 1.32('\) o)-.74 F -.15(ve)-.15 G(r).15 E .825
+(127.0.0.1, though be w)102 412.8 R .824
+(arned that depending on the vintage of your)-.1 F F4(BSD)3.324 E F2
+(-deri)A -.15(ve)-.25 G 3.324(dn).15 G(etw)-3.324 E .824(orking code,)
+-.1 F .98(both of them are capable of f)102 424.8 R .98
+(ailing in their o)-.1 F .98(wn w)-.25 F 3.48(ays. If)-.1 F .98
+(your host')3.48 F 3.48(sI)-.55 G 3.48(Pi)-3.48 G .98
+(mplementation does not)-3.48 F .351
+(create a short-circuit route between the def)102 436.8 R .351
+(ault interf)-.1 F .351(ace and the loopback interf)-.1 F .35
+(ace, then you might)-.1 F(also w)102 448.8 Q
+(ant to add a static route \(e)-.1 E(g. in)-.15 E F0(/etc/r)2.5 E
+(c.local)-.18 E F2 2.5(\)t)C 2.5(od)-2.5 G 2.5(os)-2.5 G(o:)-2.5 E F3
+-.45(ro)152 465 S(ute add myhost.domain.name localhost 1).45 E F2(The)
+127 485.4 Q F3(sort-list)3.202 E F2 .702(is a list of IP address, netmask pairs. Addresses returned by gethostbyname are)
+3.202 F .473(sorted to the order speci\214ed by this list.)102 497.4 R
+(An)5.472 E 2.972(ya)-.15 G .472
+(ddresses that do not match the address netmask pair)-2.972 F .346(will be returned after those that do. The netmask is optional and the natural netmask will be used if)
+102 509.4 R(not speci\214ed.)102 521.4 Q(The)127 537.6 Q F3(option-list)
+3.133 E F2 .633(is a list of options which each o)3.133 F -.15(ve)-.15 G
+.633(rride some internal resolv).15 F .632(er v)-.15 F 3.132
+(ariable. Sup-)-.25 F(ported options at this time are:)102 549.6 Q F0
+(deb)102 565.8 Q(ug)-.2 E F2(sets the)127 577.8 Q F4(RES_DEB)2.5 E(UG)
+-.09 E F2(bit in)2.5 E F0(_r)2.5 E(es.options)-.18 E F2(.)A F0(ndots:)
+102 594 Q F3(n)A F2 .366(sets the lo)127 606 R .366
+(wer threshold \(measured in `)-.25 F .366(`number of dots')-.74 F .367
+('\) on names gi)-.74 F -.15(ve)-.25 G 2.867(nt).15 G(o)-2.867 E F3 -.37
+(re)2.867 G(s_query).37 E F2 .367(\(\) such)B 1.283(that names with more than this number of dots will be tried as absolute names before an)
+127 618 R(y)-.15 E F3(local-domain)127 630 Q F2(or)2.5 E F3(sear)2.5 E
+-.15(ch)-.37 G(-list).15 E F2(processing is done.)2.5 E(The def)5 E
+(ault for this internal v)-.1 E(ariable is `)-.25 E(`1')-.74 E('.)-.74 E
+F0 2.5(5.3. Cache)87 666 R(Initialization File)2.5 E 2.5(5.3.1. r)102
+690 R(oot.cache)-.18 E F2 .454(The name serv)142 706.2 R .454
+(er needs to kno)-.15 F 2.954(wt)-.25 G .454(he serv)-2.954 F .454
+(ers that are the authoritati)-.15 F .754 -.15(ve n)-.25 H .454
+(ame serv).15 F .454(ers for the)-.15 F 1.56(root domain of the netw)117
+718.2 R 4.06(ork. T)-.1 F 4.06(od)-.8 G 4.06(ot)-4.06 G 1.56(his we ha)
+-4.06 F 1.86 -.15(ve t)-.2 H 4.06(op).15 G 1.56(rime the name serv)-4.06
+F(er')-.15 E 4.06(sc)-.55 G 1.56(ache with the)-4.06 F EP
+%%Page: 11 11
+%%BeginPageSetup
+BP
+%%EndPageSetup
+/F0 10/Times-Bold@0 SF(Name Ser)72 60 Q -.1(ve)-.1 G 2.5(rO).1 G
+(perations Guide f)-2.5 E(or)-.25 E/F1 9/Times-Bold@0 SF 206.564
+(BIND SMM)2.5 F F0(:10-11)A/F2 10/Times-Roman@0 SF .508
+(addresses of these higher authorities.)117 96 R .509
+(The location of this \214le is speci\214ed in the boot \214le.)5.509 F
+(This)5.509 E 1.018(\214le uses the Standard Resource Record F)117 108 R
+1.018(ormat \(aka. Master\214le F)-.15 F 1.017(ormat\) co)-.15 F -.15
+(ve)-.15 G 1.017(red further on in).15 F(this paper)117 120 Q(.)-.55 E
+F0 2.5(5.4. Domain)87 156 R(Data Files)2.5 E F2 2.275(There are tw)127
+172.2 R 4.775(os)-.1 G 2.275
+(tandard \214les for specifying the data for a domain.)-4.775 F 2.276
+(These are)7.276 F/F3 10/Times-Italic@0 SF(hosts)4.776 E F2(and)4.776 E
+F3(host.r)102 184.2 Q -.15(ev)-.37 G F2 6.19(.T).15 G 1.189
+(hese \214les use the Standard Resource Record F)-6.19 F 1.189(ormat co)
+-.15 F -.15(ve)-.15 G 1.189(red later in this paper).15 F 6.189(.N)-.55
+G(ote)-6.189 E .804(that the \214le names are arbitrary; man)102 196.2 R
+3.304(yn)-.15 G(etw)-3.304 E .804
+(ork administrators prefer to name their zone \214les after)-.1 F .909
+(the domains the)102 208.2 R 3.408(yc)-.15 G .908
+(ontain, especially in the a)-3.408 F -.15(ve)-.2 G .908
+(rage case which is where a gi).15 F -.15(ve)-.25 G 3.408(ns).15 G(erv)
+-3.408 E .908(er is primary)-.15 F(and/or secondary for man)102 220.2 Q
+2.5(yd)-.15 G(if)-2.5 E(ferent zones.)-.25 E F0 2.5(5.4.1. hosts)102
+244.2 R F2 .495
+(This \214le contains all the data about the machines in this zone.)142
+260.4 R .495(The location of this \214le is)5.495 F
+(speci\214ed in the boot \214le.)117 272.4 Q F0 2.5(5.4.2. hosts.r)102
+296.4 R -.15(ev)-.18 G F2 1.077(This \214le speci\214es the IN-ADDR)142
+312.6 R 1.666(.A)1.666 G(RP)-1.666 E 3.577(Ad)-.92 G 3.577(omain. This)
+-3.577 F 1.076(is a special domain for allo)3.576 F(wing)-.25 E .251
+(address to name mapping.)117 324.6 R .251
+(As internet host addresses do not f)5.251 F .252
+(all within domain boundaries, this)-.1 F .624(special domain w)117
+336.6 R .624(as formed to allo)-.1 F 3.124(wi)-.25 G -1.85 -.4(nv e)
+-3.124 H .624(rse mapping.).4 F .624(The IN-ADDR)5.624 F 1.666(.A)1.666
+G(RP)-1.666 E 3.124(Ad)-.92 G .624(omain has four)-3.124 F 1.694(labels preceding it. These labels correspond to the 4 octets of an Internet address.)
+117 348.6 R 1.694(All four)6.694 F 2.101(octets must be speci\214ed e)
+117 360.6 R -.15(ve)-.25 G 4.601(ni).15 G 4.601(fa)-4.601 G 4.601(no)
+-4.601 G 2.101(ctet contains zero.)-4.601 F 2.1
+(The Internet address 128.32.0.4 is)7.101 F .078
+(located in the domain 4)117 372.6 R 1.666(.0.3)1.666 G 1.666(2.1)-1.666
+G -.834(28 . IN-ADDR . ARP)-1.666 F 2.578(A. This)-.92 F(re)2.578 E -.15
+(ve)-.25 G .078(rsal of the address is a).15 F(wkw)-.15 E(ard)-.1 E
+(to read b)117 384.6 Q(ut allo)-.2 E
+(ws for the natural grouping of hosts in a netw)-.25 E(ork.)-.1 E F0 2.5
+(5.4.3. named.local)102 408.6 R F2 .55(This \214le speci\214es the)142
+424.8 R F3(PTR)3.05 E F2 .55(record for the local loopback interf)3.05 F
+.55(ace, better kno)-.1 F .55(wn as)-.25 F F3(local-)3.05 E(host)117
+436.8 Q F2 2.542(,w)C .043(hose netw)-2.542 F .043
+(ork address is 127.0.0.1.)-.1 F .043
+(The location of this \214le is speci\214ed in the boot \214le.)5.043 F
+(It)5.043 E .346(is vitally important to the proper operation of e)117
+448.8 R -.15(ve)-.25 G .346(ry name serv).15 F .346
+(er that the 127.0.0.1 address ha)-.15 F -.15(ve)-.2 G(a)117 460.8 Q F3
+(PTR)3.168 E F2 .668(record pointing back to the name `)3.168 F(`)-.74 E
+F0(localhost.)A F2 -.74('')C 5.668(.T).74 G .668(he name of this)-5.668
+F F3(PTR)3.168 E F2 .669(record is al)3.168 F -.1(wa)-.1 G(ys).1 E -.74
+(``)117 472.8 S F0(1.0.0.127.).74 E F1(IN-ADDR.ARP)A(A)-.666 E F2 -.74
+('')C 5.854(.T).74 G .854(his is necessary if you w)-5.854 F .854
+(ant your users to be able to use host-)-.1 F .015
+(name-authentication \()117 484.8 R F3(hosts.equiv)A F2(or)2.515 E F3
+(~/.rhosts)2.515 E F2 2.515(\)o)C 2.515(nt)-2.515 G .015(he name `)
+-2.515 F(`)-.74 E F0(localhost)A F2 -.74('')C 5.015(.A).74 G 2.515(si)
+-5.015 G .015(mplied by this)-2.515 F F3(PTR)2.515 E F2 1.419
+(record, there should be a `)117 496.8 R(`)-.74 E F0(localhost.)A F3(my)
+A(.dom.ain)-.55 E F2 -.74('')C F3(A)4.658 E F2 1.418
+(record \(with address 127.0.0.1\) in e)3.918 F -.15(ve)-.25 G(ry).15 E
+.491(domain that contains hosts.)117 508.8 R -.74(``)5.492 G F0
+(localhost.).74 E F2 1.972 -.74('' w)D .492
+(ill lose its trailing dot when).74 F F0(1.0.0.127.in-addr)2.992 E(.ar)
+-1 E(pa)-.1 E F2 .451(is queried for; then, the DEFN)117 520.8 R .451
+(AMES and/or DNSRCH resolv)-.35 F .451(er options will cause `)-.15 F(`)
+-.74 E F0(localhost)A F2 -.74('')C .517(to be e)117 532.8 R -.25(va)-.25
+G .517(luated as a host name in the local domain, and that means the top domains \(or ideally)
+.25 F(,)-.65 E -2.15 -.25(ev e)117 544.8 T(ry domain\) in your resolv)
+.25 E(er')-.15 E 2.5(ss)-.55 G(earch path had better ha)-2.5 E .3 -.15
+(ve s)-.2 H(omething by that name.).15 E F0 2.5(5.5. Standard)87 568.8 R
+(Resour)2.5 E(ce Record F)-.18 E(ormat)-.25 E F2 .361
+(The records in the name serv)127 585 R .361
+(er data \214les are called resource records.)-.15 F .36
+(The Standard Resource)5.36 F 1.959(Record F)102 597 R 1.959
+(ormat \(RR\) is speci\214ed in RFC1035.)-.15 F 1.959(The follo)6.959 F
+1.96(wing is a general description of these)-.25 F(records:)102 609 Q F3
+12.5({name} {ttl})102 625.2 R(addr)16.6 E 10.82(-class Recor)-.2 F 2.5
+(dT)-.37 G 13.92(ype Recor)-3.24 F 2.5(dS)-.37 G(peci\214c data)-2.5 E
+F2 1.241(Resource records ha)102 641.4 R 1.541 -.15(ve a s)-.2 H 1.241
+(tandard format sho).15 F 1.241(wn abo)-.25 F -.15(ve)-.15 G 6.241(.T)
+.15 G 1.241(he \214rst \214eld is al)-6.241 F -.1(wa)-.1 G 1.24
+(ys the name of the).1 F .771(domain record and it must al)102 653.4 R
+-.1(wa)-.1 G .771(ys start in column 1.).1 F -.15(Fo)5.771 G 3.271(ra)
+.15 G .771(ll RR')-3.271 F 3.271(so)-.55 G .771
+(ther than the \214rst in a \214le, the)-3.271 F .128
+(name may be left blank; in that case it tak)102 665.4 R .128
+(es on the name of the pre)-.1 F .127(vious RR.)-.25 F .127
+(The second \214eld is an)5.127 F .019(optional time to li)102 677.4 R
+.319 -.15(ve \214)-.25 H 2.519(eld. This).15 F .019(speci\214es ho)2.519
+F 2.519(wl)-.25 G .02(ong this data will be stored in the data base.)
+-2.519 F .02(By lea)5.02 F(v-)-.2 E .276(ing this \214eld blank the def)
+102 689.4 R .276(ault time to li)-.1 F .576 -.15(ve i)-.25 H 2.776(ss)
+.15 G .275(peci\214ed in the)-2.776 F F3 .275(Start Of A)2.775 F
+(uthority)-.2 E F2 .275(resource record \(see)2.775 F(belo)102 701.4 Q
+3.465(w\). The)-.25 F .965
+(third \214eld is the address class; currently)3.465 F 3.466(,o)-.65 G
+.966(nly one class is supported:)-3.466 F F3(IN)3.466 E F2 .966
+(for internet)3.466 F .322(addresses and other internet information.)102
+713.4 R .322(Limited support is included for the)5.322 F F3(HS)2.822 E
+F2 .322(class, which is for)2.822 F EP
+%%Page: 12 12
+%%BeginPageSetup
+BP
+%%EndPageSetup
+/F0 10/Times-Bold@0 SF 203.87(SMM:10-12 Name)72 60 R(Ser)2.5 E -.1(ve)
+-.1 G 2.5(rO).1 G(perations Guide f)-2.5 E(or)-.25 E/F1 9/Times-Bold@0
+SF(BIND)2.5 E/F2 10/Times-Roman@0 SF 1.321(MIT/Athena `)102 96 R
+(`Hesiod')-.74 E 3.821('i)-.74 G 3.821(nformation. The)-3.821 F 1.322
+(fourth \214eld states the type of the resource record.)3.821 F(The)
+6.322 E 1.08(\214elds after that are dependent on the type of the RR.)
+102 108 R 1.08(Case is preserv)6.08 F 1.08
+(ed in names and data \214elds)-.15 F .843
+(when loaded into the name serv)102 120 R(er)-.15 E 5.843(.A)-.55 G .843
+(ll comparisons and lookups in the name serv)-5.843 F .844
+(er data base are)-.15 F(case insensiti)102 132 Q -.15(ve)-.25 G(.).15 E
+F0(The f)102 156 Q(ollo)-.25 E(wing characters ha)-.1 E .2 -.1(ve s)-.25
+H(pecial meanings:).1 E F2 -.74(``)102 172.2 S F0(.).74 E F2 9.64 -.74
+('' A)D
+(free standing dot in the name \214eld refers to the root domain.)3.24 E
+-.74(``)102 188.4 S(@').74 E 3.95('A)-.74 G
+(free standing @ in the name \214eld denotes the current origin.)-1.45 E
+-.74(``)102 204.6 S(\\X').74 E 3.16('W)-.74 G 1.477(here X is an)-3.16 F
+3.977(yc)-.15 G 1.477(haracter other than a digit \(0-9\), quotes that character so that its special)
+-3.977 F(meaning does not apply)127 216.6 Q 5(.F)-.65 G(or e)-5.15 E
+(xample, `)-.15 E(`\\.)-.74 E 1.48 -.74('' c)-.7 H
+(an be used to place a dot character in a label.).74 E -.74(``)102 232.8
+S(\\DDD').74 E(')-.74 E .164(Where each D is a digit, is the octet corresponding to the decimal number described by DDD.)
+127 244.8 R(The resulting octet is assumed to be te)127 256.8 Q
+(xt and is not check)-.15 E(ed for special meaning.)-.1 E -.74(``)102
+273 S 2.5(\(\)).74 G 2.98 -.74('' P)-2.5 H .278
+(arentheses are used to group data that crosses a line.).59 F .277
+(In ef)5.277 F .277(fect, line terminations are not rec-)-.25 F .99
+(ognized within parentheses.)127 285 R .99
+(\(At present, this notation only w)5.99 F .99(orks for SO)-.1 F 3.49
+(AR)-.35 G(R')-3.49 E 3.49(sa)-.55 G .99(nd is not)-3.49 F(optional.\))
+127 297 Q -.74(``)102 313.2 S(;').74 E 10.38('S)-.74 G 1.416
+(emicolon starts a comment; the remainder of the line is ignored.)-10.38
+F 1.415(Note that a completely)6.415 F
+(blank line is also considered a comment, and ignored.)127 325.2 Q -.74
+(``)102 341.4 S(*').74 E 8.16('A)-.74 G 3.192(na)-8.16 G .692
+(sterisk signi\214es wildcarding.)-3.192 F .692
+(Note that this is just another data character whose special)5.692 F
+1.677(meaning comes about only during internal name serv)127 353.4 R
+1.677(er search operations.)-.15 F -.4(Wi)6.677 G 1.677(ldcarding is).4
+F .641(only meaningful for some RR types \(notably)127 365.4 R/F3 10
+/Times-Italic@0 SF(MX)3.142 E F2 .642
+(\), and then only in the name \214eld \212 not in)B(the data \214elds.)
+127 377.4 Q(An)127 393.6 Q .343(ywhere a name appears \212 either in the name \214eld or in some data \214eld de\214ned to contain)
+-.15 F .386(names \212 the current origin will be appended if the name does not end in a `)
+102 405.6 R(`)-.74 E F0(.)1.666 E F2 -.74('')1.666 G 5.386(.T).74 G .386
+(his is useful for)-5.386 F .911(appending the current domain name to the data, such as machine names, b)
+102 417.6 R .91(ut may cause problems)-.2 F 1.503(where you do not w)102
+429.6 R 1.503(ant this to happen.)-.1 F 4.003(Ag)6.503 G 1.504
+(ood rule of thumb is that, if the name is not in the)-4.003 F(domain for which you are creating the data \214le, end the name with a `)
+102 441.6 Q(`)-.74 E F0(.)A F2 -.74('')C(.).74 E F0 2.5(5.5.1. $INCLUDE)
+102 465.6 R F2 .921(An include line be)142 481.8 R .921
+(gins with $INCLUDE, starting in column 1, and is follo)-.15 F .92
+(wed by a \214le)-.25 F 1.085(name, and, optionally)117 493.8 R 3.585
+(,b)-.65 G 3.585(yan)-3.585 G 1.585 -.25(ew t)-3.585 H 1.085
+(emporary $ORIGIN to be used while reading this \214le.).25 F(This)6.086
+E .455(feature is particularly useful for separating dif)117 505.8 R
+.454(ferent types of data into multiple \214les.)-.25 F .454(An e)5.454
+F(xam-)-.15 E(ple w)117 517.8 Q(ould be:)-.1 E
+($INCLUDE /usr/local/adm/named/data/mail-e)167 534 Q(xchanges)-.15 E
+2.075(The line w)117 550.2 R 2.076
+(ould be interpreted as a request to load the \214le)-.1 F F3
+(/usr/local/adm/named/data/mail-)4.576 E -.2(ex)117 562.2 S -.15(ch).2 G
+(ang).15 E(es)-.1 E F2 5.279(.T)C .279
+(he $INCLUDE command does not cause data to be loaded into a dif)-5.279
+F .278(ferent zone or)-.25 F 1.111(tree. This is simply a w)117 574.2 R
+1.111(ay to allo)-.1 F 3.611(wd)-.25 G 1.111(ata for a gi)-3.611 F -.15
+(ve)-.25 G 3.611(np).15 G 1.111(rimary zone to be or)-3.611 F -.05(ga)
+-.18 G 1.112(nized in separate).05 F 3.468(\214les. Not)117 586.2 R
+-2.15 -.25(ev e)3.468 H 3.468(nt).25 G .968(he `)-3.468 F .968
+(`temporary $ORIGIN')-.74 F 3.468('f)-.74 G .968(eature described abo)
+-3.468 F 1.268 -.15(ve i)-.15 H 3.467(ss).15 G(uf)-3.467 E .967
+(\214cient to cause your)-.25 F .562(data to branch out into some other zone \212 zone boundaries can only be introduced in the boot)
+117 598.2 R(\214le.)117 610.2 Q 2.648(A$)142 626.4 S .148
+(INCLUDE \214le must ha)-2.648 F .448 -.15(ve a n)-.2 H .148
+(ame on its \214rst RR.).15 F .147
+(That is, the \214rst character of the \214rst)5.148 F 1.315
+(non-comment line must not be a space.)117 638.4 R 1.316
+(The current def)6.316 F 1.316(ault name in the parent \214le)-.1 F F3
+1.316(does not)3.816 F F2(carry into the $INCLUDE \214le.)117 650.4 Q F0
+2.5(5.5.2. $ORIGIN)102 674.4 R F2 .435(The origin is a w)142 690.6 R
+.434(ay of changing the origin in a data \214le.)-.1 F .434
+(The line starts in column 1, and)5.434 F 1.071(is follo)117 702.6 R
+1.071(wed by a domain origin.)-.25 F 1.071(This seems lik)6.071 F 3.571
+(ei)-.1 G 3.571(tc)-3.571 G 1.071
+(ould be useful for putting more then one)-3.571 F 1.336
+(zone into a data \214le, b)117 714.6 R 1.336(ut that')-.2 F 3.836(sn)
+-.55 G 1.336(ot ho)-3.836 F 3.836(wi)-.25 G 3.836(tw)-3.836 G 3.835
+(orks. The)-3.936 F 1.335(name serv)3.835 F 1.335
+(er fundamentally requires a)-.15 F EP
+%%Page: 13 13
+%%BeginPageSetup
+BP
+%%EndPageSetup
+/F0 10/Times-Bold@0 SF(Name Ser)72 60 Q -.1(ve)-.1 G 2.5(rO).1 G
+(perations Guide f)-2.5 E(or)-.25 E/F1 9/Times-Bold@0 SF 206.564
+(BIND SMM)2.5 F F0(:10-13)A/F2 10/Times-Roman@0 SF(gi)117 96 Q -.15(ve)
+-.25 G 3.67(nz).15 G 1.17
+(one to map entirely to some speci\214c \214le.)-3.67 F -1.1(Yo)6.17 G
+3.67(us)1.1 G 1.17(hould therefore be v)-3.67 F 1.17(ery careful to use)
+-.15 F .585($ORIGIN only once at the top of a \214le, or)117 108 R 3.085
+(,w)-.4 G .584(ithin a \214le, to change to a `)-3.085 F(`lo)-.74 E
+(wer')-.25 E 3.084('d)-.74 G .584(omain in the)-3.084 F 2.5(zone \212)
+117 120 R(ne)2.5 E -.15(ve)-.25 G 2.5(rt).15 G 2.5(os)-2.5 G
+(ome other zone altogether)-2.5 E(.)-.55 E F0 2.5(5.5.3. SO)102 144 R
+2.5(A-S)-.4 G(tart Of A)-2.5 E(uthority)-.5 E/F3 10/Times-Italic@0 SF
+12.5(name {ttl})117 164.4 R(addr)16.6 E 10.82(-class SO)-.2 F 47.22(AO)
+-.55 G 73.77(rigin P)-47.22 F(er)-.8 E(son in c)-.1 E(har)-.15 E -.1(ge)
+-.37 G F2 60.39(@I)117 176.4 S 44.79(NS)-60.39 G 43.55 -.35(OA u)-44.79
+H(cb).35 E -.25(va)-.15 G(x).25 E F0(.)A F2(Berk)A(ele)-.1 E(y)-.15 E F0
+(.)A F2(Edu)A F0(.)A F2(kjd)15 E F0(.)A F2(ucb)A -.25(va)-.15 G(x).25 E
+F0(.)A F2(Berk)A(ele)-.1 E(y)-.15 E F0(.)A F2(Edu)A F0(.)A F2(\()2.5 E
+12.5(1995122103 ;)241.94 188.4 R(Serial)2.5 E 37.5(10800 ;)241.94 200.4
+R(Refresh)2.5 E 42.5(1800 ;)241.94 212.4 R(Retry)2.5 E 27.5(3600000 ;)
+241.94 224.4 R(Expire)2.5 E(259200 \))241.94 236.4 Q 2.5(;M)29.17 G
+(inimum)-2.5 E(The)117 256.8 Q F3 .433(Start of A)2.933 F(uthority)-.2 E
+2.934(,S)-.55 G -.55(OA)-2.934 G(,).55 E F2 .434
+(record designates the start of a zone.)2.934 F .434
+(The name is the name of the)5.434 F .788(zone and is often gi)117 268.8
+R -.15(ve)-.25 G 3.287(na).15 G 3.287(s`)-3.287 G(`@')-4.027 E 3.287('s)
+-.74 G .787(ince this is al)-3.287 F -.1(wa)-.1 G .787
+(ys the current $ORIGIN and the SO).1 F 3.287(AR)-.35 G 3.287(Ri)-3.287
+G(s)-3.287 E 1.008
+(usually the \214rst record of the primary zone \214le.)117 280.8 R
+1.009(Origin is the name of the host on which this)6.008 F .868
+(data \214le resides \(in other w)117 292.8 R .868(ords, the)-.1 F F3
+.868(primary master)3.368 F F2(serv)3.368 E .868(er for this zone.\))
+-.15 F .868(Person in char)5.868 F .868(ge is)-.18 F .67
+(the e-mail address for the person responsible for the name serv)117
+304.8 R(er)-.15 E 3.17(,w)-.4 G .67(ith `)-3.17 F(`@')-.74 E 3.17('c)
+-.74 G .67(hanged to a `)-3.17 F(`.)-.74 E -.74('')-.7 G(.).74 E .994
+(The serial number is the v)117 316.8 R .994
+(ersion number of this data \214le and must be a positi)-.15 F 1.294
+-.15(ve i)-.25 H(nte).15 E(ger)-.15 E 5.994(.T)-.55 G(his)-5.994 E .902
+(number must be incremented whene)117 328.8 R -.15(ve)-.25 G 3.403(rac)
+.15 G .903(hange is made to the data.)-3.403 F .903(Older serv)5.903 F
+.903(ers permitted)-.15 F 1.5(the use of a phantom `)117 340.8 R(`.)-.74
+E 2.98 -.74('' i)-.7 H 4(nt).74 G 1.5
+(his and other numbers in a zone \214le; the meaning of n.m w)-4 F(as)
+-.1 E -.74(``)117 352.8 S(n000m').74 E 3.754('r)-.74 G 1.254
+(ather than the more intuiti)-3.754 F 1.554 -.15(ve `)-.25 H(`n*1000+m')
+-.59 E 3.754('\()-.74 G 1.254(such that 1.234 translated to 1000234)
+-3.754 F .281(rather than to 1234\).)117 364.8 R .281
+(This feature has been deprecated due to its obscurity)5.281 F 2.78(,u)
+-.65 G(npredictability)-2.78 E 2.78(,a)-.65 G(nd)-2.78 E 2.103
+(lack of necessity)117 376.8 R 7.103(.N)-.65 G 2.103(ote that using a `)
+-7.103 F(`YYYYMMDDNN')-.74 E 4.603('n)-.74 G 2.103
+(otation you can still mak)-4.603 F 4.604(e1)-.1 G(00)-4.604 E .075
+(changes per day until the year 4294.)117 388.8 R -1.1(Yo)5.075 G 2.575
+(us)1.1 G .075(hould choose a notation that w)-2.575 F .074
+(orks for you.)-.1 F .074(If you')5.074 F(re)-.5 E 3.091(ac)117 400.8 S
+(le)-3.091 E -.15(ve)-.25 G(r).15 E F3(perl)3.091 E F2 .591
+(programmer you could e)3.091 F -.15(ve)-.25 G 3.091(nu).15 G(se)-3.091
+E F3(RCS)3.091 E F2 -.15(ve)3.091 G .592
+(rsion numbers to help generate your zone).15 F .536(serial numbers.)117
+412.8 R .536(The refresh indicates ho)5.536 F 3.036(wo)-.25 G .536
+(ften, in seconds, the secondary name serv)-3.036 F .535(ers are to)-.15
+F .211(check with the primary name serv)117 424.8 R .212
+(er to see if an update is needed.)-.15 F .212(The retry indicates ho)
+5.212 F 2.712(wl)-.25 G(ong,)-2.712 E .719(in seconds, a secondary serv)
+117 436.8 R .719(er should w)-.15 F .719(ait before retrying a f)-.1 F
+.718(ailed zone transfer)-.1 F 5.718(.E)-.55 G .718(xpire is the)-5.718
+F .286(upper limit, in seconds, that a secondary name serv)117 448.8 R
+.287(er is to use the data before it e)-.15 F .287(xpires for lack)-.15
+F .175(of getting a refresh.)117 460.8 R .175(Minimum is the def)5.175 F
+.175(ault number of seconds to be used for the T)-.1 F .175(ime T)-.35 F
+2.675(oL)-.8 G -2.15 -.25(iv e)-2.675 H .485(\214eld on resource records which do not specify one in the zone \214le.)
+117 472.8 R .486(It is also an enforced mini-)5.486 F .633(mum on T)117
+484.8 R .633(ime T)-.35 F 3.133(oL)-.8 G -2.15 -.25(iv e)-3.133 H .632
+(if it is speci\214ed on some resource record \(RR\) in the zone.)3.382
+F .632(There must)5.632 F(be e)117 496.8 Q(xactly one)-.15 E F3(SO)2.5 E
+(A)-.55 E F2(record per zone.)2.5 E F0 2.5(5.5.4. NS)102 520.8 R 2.5(-N)
+2.5 G(ame Ser)-2.5 E -.1(ve)-.1 G(r).1 E F3 12.5({name} {ttl})117 537 R
+(addr)16.6 E 10.82(-class NS)-.2 F(Name server)16.11 E 2.5(sn)-.1 G(ame)
+-2.5 E F2 42.29(IN NS)194.6 549 R(ucbarpa)15 E F0(.)1.666 E F2(Berk)
+1.666 E(ele)-.1 E(y)-.15 E F0(.)1.666 E F2(Edu)1.666 E F0(.)A F2(The)117
+565.2 Q F3 .043(Name Server)2.543 F F2(record,)2.543 E F3(NS)2.543 E F2
+2.544(,l)C .044(ists a name serv)-2.544 F .044(er responsible for a gi)
+-.15 F -.15(ve)-.25 G 2.544(nd).15 G .044(omain, creating a)-2.544 F F3
+(dele-)2.544 E .431(gation point)117 577.2 R F2 .431(and a)2.931 F F3
+(subzone)2.931 E F2 5.431(.T)C .43(he \214rst name \214eld speci\214es the zone that is serviced by the name)
+-5.431 F(serv)117 589.2 Q(er speci\214ed by the second name.)-.15 E(Ev)5
+E(ery zone needs at least tw)-.15 E 2.5(on)-.1 G(ame serv)-2.5 E(ers.)
+-.15 E EP
+%%Page: 14 14
+%%BeginPageSetup
+BP
+%%EndPageSetup
+/F0 10/Times-Bold@0 SF 203.87(SMM:10-14 Name)72 60 R(Ser)2.5 E -.1(ve)
+-.1 G 2.5(rO).1 G(perations Guide f)-2.5 E(or)-.25 E/F1 9/Times-Bold@0
+SF(BIND)2.5 E F0 2.5(5.5.5. A)102 96 R 2.5(-A)2.5 G(ddr)-2.5 E(ess)-.18
+E/F2 10/Times-Italic@0 SF 14.49({name} {ttl})117 112.2 R(addr)16.6 E
+10.82(-class A)-.2 F(addr)16.11 E(ess)-.37 E/F3 10/Times-Roman@0 SF
+45.44(ucbarpa IN)117 124.2 R 15(A1)44.79 G(28)-15 E F0(.)A F3(32)A F0(.)
+A F3(0)A F0(.)A F3(4)A 42.29(IN A)196.59 136.2 R(10)15 E F0(.)A F3(0)A
+F0(.)A F3(0)A F0(.)A F3(78)A(The)117 152.4 Q F2(Addr)3.753 E(ess)-.37 E
+F3(record,)3.753 E F2(A)3.753 E F3 3.753(,l)C 1.254
+(ists the address for a gi)-3.753 F -.15(ve)-.25 G 3.754(nm).15 G 3.754
+(achine. The)-3.754 F 1.254(name \214eld is the machine)3.754 F .343
+(name and the address is the netw)117 164.4 R .342(ork address.)-.1 F
+.342(There should be one)5.342 F F2(A)2.842 E F3 .342
+(record for each address of)2.842 F(the machine.)117 176.4 Q F0 2.5
+(5.5.6. HINFO)102 200.4 R 2.5(-H)2.5 G(ost Inf)-2.5 E(ormation)-.25 E F2
+12.5({name} {ttl})117 216.6 R(addr)16.6 E 10.82(-class HINFO)-.2 F(Har)
+15 E(dwar)-.37 E 26.05(eO)-.37 G(S)-26.05 E F3 42.29(IN HINFO)194.6
+228.6 R -1.35(VA)15 G 12.5(X-11/780 UNIX)1.35 F F2 .392
+(Host Information)117 244.8 R F3 .393(resource record,)2.892 F F2(HINFO)
+2.893 E F3 2.893(,i)C 2.893(sf)-2.893 G .393(or host speci\214c data.)
+-2.893 F .393(This lists the hardw)5.393 F .393(are and)-.1 F 1.94
+(operating system that are running at the listed host.)117 256.8 R 1.94
+(If you w)6.94 F 1.94(ant to include a space in the)-.1 F 1.154
+(machine name you must quote the name \(using `)117 268.8 R(`"')-.74 E
+3.654('c)-.74 G 3.654(haracters.\) There)-3.654 F 1.155(could be one)
+3.655 F F2(HINFO)3.655 E F3 .654
+(record for each host, though for security reasons most domains don')117
+280.8 R 3.153(th)-.18 G -2.25 -.2(av e)-3.153 H(an)3.353 E(y)-.15 E F2
+(HINFO)3.153 E F3(records)3.153 E(at all.)117 292.8 Q
+(No application depends on them.)5 E F0 2.5(5.5.7. WKS)102 321 R 2.5(-W)
+2.5 G(ell Kno)-3.15 E(wn Ser)-.1 E(vices)-.1 E F2 12.5({name} {ttl})117
+337.2 R(addr)16.6 E 10.82(-class WKS)-.2 F(addr)17.22 E 29.26(ess pr)
+-.37 F 12.39(otocol list)-.45 F(of services)2.5 E F3 42.29(IN WKS)194.6
+349.2 R(128)15 E F0(.)A F3(32)A F0(.)A F3(0)A F0(.)A F3 12.5(10 UDP)B
+(who route timed domain)28.33 E 42.29(IN WKS)194.6 361.2 R(128)15 E F0
+(.)A F3(32)A F0(.)A F3(0)A F0(.)A F3 12.5(10 TCP)B 2.5(\(e)29.99 G
+(cho telnet)-2.5 E(discard sunrpc sftp)397.99 373.2 Q
+(uucp-path systat daytime)397.99 385.2 Q(netstat qotd nntp)397.99 397.2
+Q(link char)397.99 409.2 Q(gen ftp)-.18 E(auth time whois mtp)397.99
+421.2 Q(pop rje \214nger smtp)397.99 433.2 Q(supdup hostnames)397.99
+445.2 Q(domain)397.99 457.2 Q(nameserv)397.99 469.2 Q(er \))-.15 E(The)
+117 485.4 Q F2 -.92(We)2.573 G .073(ll Known Services).92 F F3(record,)
+2.573 E F2(WKS)2.573 E F3 2.573(,d)C .074(escribes the well kno)-2.573 F
+.074(wn services supported by a partic-)-.25 F .367
+(ular protocol at a speci\214ed address.)117 497.4 R .366
+(The list of services and port numbers come from the list of)5.367 F
+1.121(services speci\214ed in)117 509.4 R F2(/etc/services.)3.621 E F3
+1.121(There should be only one)3.621 F F2(WKS)3.622 E F3 1.122
+(record per protocol per ad-)3.622 F 2.5(dress. Note)117 521.4 R
+(that RFC1123 says of)2.5 E F2(WKS)2.5 E F3(records:)2.5 E 2.5
+(2.2 Using)124.5 541.8 R(Domain Name Service)2.5 E(...)124.5 553.8 Q
+(An application SHOULD NO)132 565.8 Q 2.5(Tr)-.4 G
+(ely on the ability to locate a WKS)-2.5 E
+(record containing an accurate listing of all services at a)132 577.8 Q
+(particular host address, since the WKS RR type is not often used)132
+589.8 Q(by Internet sites.)132 601.8 Q 1.6 -.8(To c)5 H
+(on\214rm that a service is present, simply).8 E(attempt to use it.)132
+613.8 Q(...)124.5 625.8 Q 2.5(5.2.12 WKS)132 637.8 R
+(Use in MX Processing: RFC-974, p. 5)2.5 E
+(RFC-974 [SMTP:3] recommended that the domain system be queried)139.5
+661.8 Q(for WKS \("W)139.5 673.8 Q(ell-Kno)-.8 E
+(wn Service"\) records, to v)-.25 E(erify that each)-.15 E
+(proposed mail tar)139.5 685.8 Q(get does support SMTP)-.18 E 5(.L)-1.11
+G(ater e)-5 E(xperience has)-.15 E(sho)139.5 697.8 Q
+(wn that WKS is not widely supported, so the WKS step in MX)-.25 E
+(processing SHOULD NO)139.5 709.8 Q 2.5(Tb)-.4 G 2.5(eu)-2.5 G(sed.)-2.5
+E EP
+%%Page: 15 15
+%%BeginPageSetup
+BP
+%%EndPageSetup
+/F0 10/Times-Bold@0 SF(Name Ser)72 60 Q -.1(ve)-.1 G 2.5(rO).1 G
+(perations Guide f)-2.5 E(or)-.25 E/F1 9/Times-Bold@0 SF 206.564
+(BIND SMM)2.5 F F0(:10-15)A/F2 10/Times-Roman@0 SF(...)124.5 96 Q 2.5
+(6.1.3.6 Status)139.5 108 R(of RR T)2.5 E(ypes)-.8 E(...)124.5 120 Q
+(The TXT and WKS RR types ha)159.5 132 Q .3 -.15(ve n)-.2 H
+(ot been widely used by).15 E
+(Internet sites; as a result, an application cannot rely)159.5 144 Q
+(on the e)159.5 156 Q(xistence of a TXT or WKS RR in most)-.15 E
+(domains.)159.5 168 Q F0 2.5(5.5.8. CN)102 196.2 R(AME - Canonical Name)
+-.2 E/F3 10/Times-Italic@0 SF 32.49(alias {ttl})117 212.4 R(addr)16.6 E
+10.82(-class CN)-.2 F 14.64(AME Canonical)-.27 F(name)2.5 E F2 45.44
+(ucbmonet IN)117 224.4 R(CN)44.79 E 12.5(AME monet)-.35 F(The)117 240.6
+Q F3 .087(Canonical Name)2.587 F F2 .087(resource record,)2.587 F F3(CN)
+2.587 E(AME)-.27 E F2 2.587(,s)C .086
+(peci\214es an alias or nickname for the of)-2.587 F .086(\214cial, or)
+-.25 F 1.322(canonical, host name.)117 252.6 R 1.322
+(This record must be the only one associated with the alias name.)6.322
+F(All)6.322 E .139(other resource records must be associated with the canonical name, not with the nickname.)
+117 264.6 R(An)5.139 E(y)-.15 E .072
+(resource records that include a domain name as their v)117 276.6 R .072
+(alue \(e.g., NS or MX\))-.25 F F3(must)2.572 E F2 .072(list the canon-)
+2.572 F .257(ical name, not the nickname.)117 288.6 R(Similarly)5.257 E
+2.757(,aC)-.65 G -.35(NA)-2.757 G .257(ME will be follo).35 F .256
+(wed when searching for A RRs,)-.25 F -.2(bu)117 300.6 S 3.1(tn).2 G .6
+(ot for MX RRs or NS RRs or most other types of RRs.)-3.1 F(CN)5.601 E
+.601(AMEs are allo)-.35 F .601(wed to point to)-.25 F(other CN)117 312.6
+Q(AMEs, b)-.35 E(ut this is considered slopp)-.2 E -.65(y.)-.1 G .058
+(Nicknames are useful when a well kno)142 328.8 R .058
+(wn host changes its name.)-.25 F .057(In that case, it is usually)5.057
+F 2.771(ag)117 340.8 S .271(ood idea to ha)-2.771 F .571 -.15(ve a)-.2 H
+F3(CN)2.921 E(AME)-.27 E F2 .272
+(record so that people still using the old name will get to the right)
+2.771 F(place.)117 352.8 Q F0 2.5(5.5.9. PTR)102 376.8 R 2.5(-D)2.5 G
+(omain Name P)-2.5 E(ointer)-.2 E F3 12.5(name {ttl})117 393 R(addr)16.6
+E 10.82(-class PTR)-.2 F -.37(re)15.56 G(al name).37 E F2 54.6(7.0 IN)
+117 405 R 12.5(PTR monet)44.79 F F0(.)1.666 E F2(Berk)1.666 E(ele)-.1 E
+(y)-.15 E F0(.)1.666 E F2(Edu)1.666 E F0(.)1.666 E F2(A)117 421.2 Q F3
+.817(Domain Name P)3.317 F(ointer)-.8 E F2(record,)3.317 E F3(PTR)3.317
+E F2 3.317(,a)C(llo)-3.317 E .816
+(ws special names to point to some other location in)-.25 F .841
+(the domain.)117 433.2 R .841(The abo)5.841 F 1.141 -.15(ve ex)-.15 H
+.842(ample of a).15 F F3(PTR)3.342 E F2 .842
+(record is used in setting up re)3.342 F -.15(ve)-.25 G .842
+(rse pointers for the).15 F(special)117 445.2 Q F3(IN-ADDR)3.079 E F0(.)
+1.666 E F3(ARP)1.666 E(A)-.9 E F2 .578(domain. This line is from the e)
+3.079 F(xample)-.15 E F3(hosts.r)3.078 E -.15(ev)-.37 G F2(\214le.)3.228
+E F3(PTR)5.578 E F2 .578(records are)3.078 F 2.786(needed by the)117
+457.2 R F3 -.1(ge)5.286 G(thostbyaddr).1 E F2 5.286(function. Note)5.286
+F 2.786(the trailing `)5.286 F(`)-.74 E F0(.)1.666 E F2 4.266 -.74('' w)
+1.666 H 2.786(hich pre).74 F -.15(ve)-.25 G(nts).15 E/F4 9/Times-Roman@0
+SF(BIND)5.286 E F2(from)5.286 E(appending the current)117 469.2 Q F4
+($ORIGIN)2.5 E F2(to that domain name.)2.5 E F0 2.5(5.5.10. MX)102 493.2
+R 2.5(-M)2.5 G(ail Exchange)-2.5 E F3 68.33(name {ttl})117 509.4 R(addr)
+16.6 E 10.82(-class MX)-.2 F(pr)16.67 E(efer)-.37 E(ence value)-.37 E
+(mail e)14.92 E(xc)-.2 E(hang)-.15 E(e)-.1 E F2(Munnari)117 521.4 Q F0
+(.)1.666 E F2(OZ)1.666 E F0(.)1.666 E F2 -.55(AU)1.666 G F0(.)2.216 E F2
+42.29(IN MX)47.94 F 76.1(0S)15 G(eismo)-76.1 E F0(.)1.666 E F2(CSS)1.666
+E F0(.)1.666 E F2(GO)1.666 E(V)-.5 E F0(.)1.666 E F2(*)117 533.4 Q F0(.)
+1.666 E F2(IL)1.666 E F0(.)1.666 E F2 42.29(IN MX)100.992 F 76.1(0R)15 G
+(ELA)-76.1 E(Y)-1.05 E F0(.)1.666 E F2(CS)1.666 E F0(.)1.666 E F2(NET)
+1.666 E F0(.)1.666 E F3 .727(Mail eXc)117 549.6 R(hang)-.15 E(e)-.1 E F2
+(records,)3.227 E F3(MX)3.227 E F2 3.227(,a)C .727
+(re used to specify a list of hosts which are con\214gured to recei)
+-3.227 F -.15(ve)-.25 G .092(mail sent to this domain name.)117 561.6 R
+(Ev)5.092 E .092(ery name which recei)-.15 F -.15(ve)-.25 G 2.592(sm).15
+G .092(ail should ha)-2.592 F .393 -.15(ve a)-.2 H(n).15 E F3(MX)2.593 E
+F2 .093(since if one)2.593 F .214
+(is not found at the time mail is being deli)117 573.6 R -.15(ve)-.25 G
+.213(red, an).15 F F3(MX)2.713 E F2 .213(will be `)2.713 F(`imputed')
+-.74 E 2.713('w)-.74 G .213(ith a cost of 0 and a)-2.713 F .88
+(destination of the host itself.)117 585.6 R .88(If you w)5.88 F .881
+(ant a host to recei)-.1 F 1.181 -.15(ve i)-.25 H .881(ts o).15 F .881
+(wn mail, you should create an)-.25 F F3(MX)117 597.6 Q F2 .465
+(for your host')2.965 F 2.965(sn)-.55 G .465
+(ame, pointing at your host')-2.965 F 2.964(sn)-.55 G 2.964(ame. It)
+-2.964 F .464(is better to ha)2.964 F .764 -.15(ve t)-.2 H .464
+(his be e).15 F .464(xplicit than)-.15 F 1.198
+(to let it be imputed by remote mailers.)117 609.6 R 1.198
+(In the \214rst e)6.198 F 1.198(xample, abo)-.15 F -.15(ve)-.15 G 3.698
+(,S).15 G(eismo)-3.698 E F0(.)1.666 E F2(CSS)1.666 E F0(.)1.666 E F2(GO)
+1.666 E(V)-.5 E F0(.)1.666 E F2 1.198(is a)3.698 F .693(mail g)117 621.6
+R(ate)-.05 E -.1(wa)-.25 G 3.193(yt).1 G .693(hat kno)-3.193 F .693
+(ws ho)-.25 F 3.192(wt)-.25 G 3.192(od)-3.192 G(eli)-3.192 E -.15(ve)
+-.25 G 3.192(rm).15 G .692(ail to Munnari)-3.192 F F0(.)1.666 E F2(OZ)
+1.666 E F0(.)1.666 E F2 -.55(AU)1.666 G F0(.)2.216 E F2 5.692(.T)C .692
+(hese tw)-5.692 F 3.192(om)-.1 G .692(achines may)-3.192 F(ha)117 633.6
+Q .475 -.15(ve a p)-.2 H(ri).15 E -.25(va)-.25 G .175
+(te connection or use a dif).25 F .175(ferent transport medium.)-.25 F
+.176(The preference v)5.175 F .176(alue is the order)-.25 F .11
+(that a mailer should follo)117 645.6 R 2.61(ww)-.25 G .11
+(hen there is more than one w)-2.61 F .109(ay to deli)-.1 F -.15(ve)-.25
+G 2.609(rm).15 G .109(ail to a single machine.)-2.609 F .009
+(Note that lo)117 657.6 R .009(wer numbers indicate higher precedence, and that mailers are supposed to randomize)
+-.25 F(same-v)117 669.6 Q(alued)-.25 E F3(MX)2.72 E F2 .22
+(hosts so as to distrib)2.72 F .219(ute the load e)-.2 F -.15(ve)-.25 G
+.219(nly if the costs are equal.).15 F .219(See RFC974 for)5.219 F
+(more detailed information.)117 681.6 Q -.4(Wi)142 697.8 S 1.821
+(ldcard names containing the character `).4 F(`*')-.74 E 4.321('m)-.74 G
+1.822(ay be used for mail routing with)-4.321 F F3(MX)4.322 E F2 4.367
+(records. There)117 709.8 R 1.867(are lik)4.367 F 1.867(ely to be serv)
+-.1 F 1.867(ers on the netw)-.15 F 1.866(ork that simply state that an)
+-.1 F 4.366(ym)-.15 G 1.866(ail to a)-4.366 F EP
+%%Page: 16 16
+%%BeginPageSetup
+BP
+%%EndPageSetup
+/F0 10/Times-Bold@0 SF 203.87(SMM:10-16 Name)72 60 R(Ser)2.5 E -.1(ve)
+-.1 G 2.5(rO).1 G(perations Guide f)-2.5 E(or)-.25 E/F1 9/Times-Bold@0
+SF(BIND)2.5 E/F2 10/Times-Roman@0 SF .429
+(domain is to be routed through a relay)117 96 R 5.429(.S)-.65 G .429
+(econd e)-5.429 F .429(xample, abo)-.15 F -.15(ve)-.15 G 2.93(,a).15 G
+.43(ll mail to hosts in the domain)-2.93 F 1.721
+(IL is routed through RELA)117 108 R -1.29(Y.)-1.05 G(CS.NET)1.29 E
+6.721(.T)-.74 G 1.721
+(his is done by creating a wildcard resource record,)-6.721 F .38
+(which states that *.IL has an)117 120 R/F3 10/Times-Italic@0 SF(MX)
+2.881 E F2 .381(of RELA)2.881 F -1.29(Y.)-1.05 G(CS.NET)1.29 E 5.381(.W)
+-.74 G(ildcard)-5.781 E F3(MX)2.881 E F2 .381(records are not v)2.881 F
+.381(ery useful)-.15 F .19
+(in practice, though, since once a mail message gets to the g)117 132 R
+(ate)-.05 E -.1(wa)-.25 G 2.689(yf).1 G .189(or a gi)-2.689 F -.15(ve)
+-.25 G 2.689(nd).15 G .189(omain it still has)-2.689 F .861
+(to be routed)117 144 R F3(within)3.361 E F2 .861
+(that domain and it is not currently possible to ha)3.361 F 1.162 -.15
+(ve a)-.2 H 3.362(na).15 G(pparently-dif)-3.362 E(ferent)-.25 E .229
+(set of)117 156 R F3(MX)2.729 E F2 .229
+(records inside and outside of a domain.)2.729 F .229(If you w)5.229 F
+(on')-.1 E 2.729(tb)-.18 G 2.729(en)-2.729 G .228(eeding an)-2.729 F
+2.728(yM)-.15 G .228(ail Exchanges)-2.728 F .305
+(inside your domain, go ahead and use a wildcard.)117 168 R .306
+(If you w)5.306 F .306(ant to use both wildcard `)-.1 F(`top-le)-.74 E
+-.15(ve)-.25 G(l').15 E(')-.74 E 1.324(and speci\214c `)117 180 R
+(`interior')-.74 E(')-.74 E F3(MX)3.824 E F2 1.324
+(records, note that each speci\214c record will ha)3.824 F 1.624 -.15
+(ve t)-.2 H 3.824(o`).15 G 1.324(`end with')-4.564 F 3.824('a)-.74 G .71
+(complete recitation of the same data that is carried in the top-le)117
+192 R -.15(ve)-.25 G 3.211(lr).15 G 3.211(ecord. This)-3.211 F .711
+(is because the)3.211 F(speci\214c)117 204 Q F3(MX)3.125 E F2 .625
+(records will tak)3.125 F 3.124(ep)-.1 G .624(recedence o)-3.124 F -.15
+(ve)-.15 G 3.124(rt).15 G .624(he top-le)-3.124 F -.15(ve)-.25 G 3.124
+(lw).15 G .624(ildcard records, and must be able)-3.124 F .057
+(to perform the top-le)117 216 R -.15(ve)-.25 G(l').15 E 2.557(si)-.55 G
+2.557(fag)-2.557 G -2.15 -.25(iv e)-2.557 H 2.557(ni).25 G .057
+(nterior domain is to be able to recei)-2.557 F .358 -.15(ve m)-.25 H
+.058(ail from outside the).15 F -.05(ga)117 228 S(te).05 E -.1(wa)-.25 G
+3.8 -.65(y. W).1 H(ildcard).25 E F3(MX)2.5 E F2(records are v)2.5 E
+(ery subtle and you should be careful with them.)-.15 E F0 2.5
+(5.5.11. TXT)102 252 R 2.5(-T)2.5 G(ext)-3.42 E F3 68.33(name {ttl})117
+268.2 R(addr)16.6 E 10.82(-class TXT)-.2 F(string)17.21 E F2(Munnari)117
+280.2 Q F0(.)1.666 E F2(OZ)1.666 E F0(.)1.666 E F2 -.55(AU)1.666 G F0(.)
+2.216 E F2 42.29(IN TXT)47.94 F("foo")15 E(A)117 296.4 Q F3(TXT)3.64 E
+F2 1.14(record contains free-form te)3.64 F 1.139(xtual data.)-.15 F
+1.139(The syntax of the te)6.139 F 1.139(xt depends on the domain)-.15 F
+.145(where it is found; man)117 308.4 R 2.646(ys)-.15 G .146(ystems use)
+-2.646 F F3(TXT)2.646 E F2 .146
+(records to encode local data in a stylized format.)2.646 F(MIT)5.146 E
+(Hesiod is one such system.)117 320.4 Q F0 2.5(5.5.12. RP)102 344.4 R
+2.5(-R)2.5 G(esponsible P)-2.5 E(erson)-.2 E F3 19.16(owner {ttl})117
+360.6 R(addr)16.6 E 10.82(-class RP)-.2 F 36.59(mbox-domain-name TXT)
+15.01 F(-domain-name)-.74 E F2 45.44(franklin IN)117 372.6 R 12.5
+(RP ben.franklin.berk)44.79 F(ele)-.1 E -.65(y.)-.15 G 12.5
+(edu. sysadmins.berk).65 F(ele)-.1 E -.65(y.)-.15 G(edu.).65 E .393
+(The Responsible Person record,)142 393 R F3(RP)2.893 E F2 2.893(,i)C
+.393(denti\214es the name or group name of the responsible)-2.893 F .33
+(person for a host.)117 405 R .331(Often it is desirable to be able to identify the responsible entity for a particu-)
+5.33 F 1.166(lar host.)117 417 R 1.166(When that host is do)6.166 F
+1.165(wn or malfunctioning, you w)-.25 F 1.165(ould w)-.1 F 1.165
+(ant to contact those parties)-.1 F
+(who might be able to repair the host.)117 429 Q 1.118
+(The \214rst \214eld,)142 445.2 R F3(mbox-domain-name)3.618 E F2 3.618
+(,i)C 3.618(sad)-3.618 G 1.119
+(omain name that speci\214es the mailbox for the)-3.618 F 1.38
+(responsible person.)117 457.2 R 1.38
+(Its format in a zone \214le uses the)6.38 F/F4 9/Times-Roman@0 SF(DNS)
+3.88 E F2(con)3.88 E -.15(ve)-.4 G 1.38(ntion for mailbox encoding,).15
+F .401(identical to that used for the)117 469.2 R F3 -.8(Pe)2.901 G -.1
+(rs).8 G(on-in-c).1 E(har)-.15 E -.1(ge)-.37 G F2 .401
+(mailbox \214eld in the SO)3.001 F 2.902(Ar)-.35 G 2.902(ecord. In)
+-2.902 F .402(the e)2.902 F(xample)-.15 E(abo)117 481.2 Q -.15(ve)-.15 G
+2.919(,t).15 G(he)-2.919 E F3(mbox-domain-name)2.919 E F2(sho)2.919 E
+.419(ws the encoding for `)-.25 F(`)-.74 E F0(<ben@franklin.berk)A(eley)
+-.1 E(.edu>)-.7 E F2 -.74('')C 5.418(.T).74 G(he)-5.418 E
+(root domain name \(just `)117 493.2 Q(`)-.74 E F0(.)1.666 E F2 -.74('')
+1.666 G 2.5(\)m).74 G
+(ay be speci\214ed to indicate that no mailbox is a)-2.5 E -.25(va)-.2 G
+(ilable.).25 E .93(The second \214eld,)142 509.4 R F3(TXT)3.43 E
+(-domain-name)-.74 E F2 3.431(,i)C 3.431(sad)-3.431 G .931
+(omain name for which)-3.431 F F3(TXT)3.431 E F2 .931(records e)3.431 F
+3.431(xist. A)-.15 F 1.809(subsequent query can be performed to retrie)
+117 521.4 R 2.108 -.15(ve t)-.25 H 1.808(he associated).15 F F3(TXT)
+4.308 E F2 1.808(resource records at)4.308 F F3(TXT)4.308 E(-)-.74 E
+(domain-name)117 533.4 Q F2 6.415(.T)C 1.415(his pro)-6.415 F 1.415
+(vides a le)-.15 F -.15(ve)-.25 G 3.915(lo).15 G 3.915(fi)-3.915 G 1.416
+(ndirection so that the entity can be referred to from)-3.915 F 2.159
+(multiple places in the)117 545.4 R F4(DNS)4.659 E F2 7.159(.T)C 2.159
+(he root domain name \(just `)-7.159 F(`)-.74 E F0(.)1.666 E F2 -.74('')
+1.666 G 4.658(\)m).74 G 2.158(ay be speci\214ed for)-4.658 F F3(TXT)
+4.658 E(-)-.74 E 1.784
+(domain-name to indicate that no associated TXT RR e)117 557.4 R 4.284
+(xists. In)-.2 F 1.784(the e)4.284 F 1.784(xample abo)-.2 F(ve)-.1 E
+4.284(,`)-.1 G(`)-5.394 E F0(sysad-)A(mins.berk)117 569.4 Q(eley)-.1 E
+(.edu.)-.7 E F3 2.692 -1.11('' i)D 2.972(st)1.11 G .472
+(he name of a TXT r)-2.972 F(ecor)-.37 E 2.972(dt)-.37 G .472
+(hat might contain some te)-2.972 F .472(xt with names and)-.2 F
+(phone number)117 581.4 Q(s.)-.1 E F2 1.167(The format of the)142 597.6
+R F3(RP)3.668 E F2 1.168(record is class-insensiti)3.668 F -.15(ve)-.25
+G 6.168(.M).15 G(ultiple)-6.168 E F3(RP)3.668 E F2 1.168
+(records at a single name)3.668 F
+(may be present in the database, though the)117 609.6 Q 2.5(ys)-.15 G
+(hould ha)-2.5 E .3 -.15(ve i)-.2 H(dentical TTLs.).15 E(The)142 625.8 Q
+F3(RP)2.5 E F2(record is still e)2.5 E(xperimental; not all name serv)
+-.15 E(ers implement or recognize it.)-.15 E F0 2.5(5.5.13. AFSDB)102
+649.8 R 2.5(-D)2.5 G(CE or AFS Ser)-2.5 E -.1(ve)-.1 G(r).1 E F3 39.17
+(name {ttl})117 666 R(addr)16.6 E 10.82(-class AFSDB)-.2 F 13.06
+(subtype server)16.68 F(host name)2.5 E F2(toaster)117 678 Q 45.44
+(.com. IN)-.55 F 12.5(AFSDB 1)44.79 F(jack.toaster)41.11 E(.com.)-.55 E
+EP
+%%Page: 17 17
+%%BeginPageSetup
+BP
+%%EndPageSetup
+/F0 10/Times-Bold@0 SF(Name Ser)72 60 Q -.1(ve)-.1 G 2.5(rO).1 G
+(perations Guide f)-2.5 E(or)-.25 E/F1 9/Times-Bold@0 SF 206.564
+(BIND SMM)2.5 F F0(:10-17)A/F2 10/Times-Roman@0 SF(toaster)117 96 Q
+45.44(.com. IN)-.55 F 12.5(AFSDB 1)44.79 F(jill.toaster)41.11 E(.com.)
+-.55 E(toaster)117 108 Q 45.44(.com. IN)-.55 F 12.5(AFSDB 2)44.79 F
+(track)41.11 E(er)-.1 E(.toaster)-.55 E(.com.)-.55 E/F3 10
+/Times-Italic@0 SF(AFSDB)117 124.2 Q F2 .042
+(records are used to specify the hosts that pro)2.542 F .042
+(vide a style of distrib)-.15 F .042(uted service adv)-.2 F(ertised)-.15
+E 1.758(under this domain name.)117 136.2 R 4.258(As)6.758 G 1.758
+(ubtype v)-4.258 F 1.759(alue \(analogous to the `)-.25 F(`preference')
+-.74 E 4.259('v)-.74 G 1.759(alue in the)-4.509 F F3(MX)4.259 E F2 .478
+(record\) indicates which style of distrib)117 148.2 R .478
+(uted service is pro)-.2 F .478(vided with the gi)-.15 F -.15(ve)-.25 G
+2.978(nn).15 G 2.977(ame. Subtype)-2.978 F(1)2.977 E .021
+(indicates that the named host is an AFS \(R\) database serv)117 160.2 R
+.021(er for the AFS cell of the gi)-.15 F -.15(ve)-.25 G 2.522(nd).15 G
+(omain)-2.522 E 2.592(name. Subtype)117 172.2 R 2.592(2i)2.592 G .092
+(ndicates that the named host pro)-2.592 F .092
+(vides intra-cell name service for the DCE \(R\))-.15 F 4.016
+(cell named by the gi)117 184.2 R -.15(ve)-.25 G 6.516(nd).15 G 4.016
+(omain name.)-6.516 F 4.016(In the e)9.016 F 4.017(xample abo)-.15 F
+-.15(ve)-.15 G 6.517(,j).15 G(ack)-6.517 E F0(.)1.666 E F2(toaster)1.666
+E F0(.)1.666 E F2 4.017(com and)1.666 F(jill)117 196.2 Q F0(.)1.666 E F2
+(toaster)1.666 E F0(.)1.666 E F2 .596
+(com are declared to be AFS database serv)1.666 F .595
+(ers for the toaster)-.15 F F0(.)1.666 E F2 .595(com AFS cell, so that)
+1.666 F .585(AFS clients wishing service from toaster)117 208.2 R F0(.)
+1.666 E F2 .586(com are directed to those tw)1.666 F 3.086(oh)-.1 G .586
+(osts for further infor)-3.086 F(-)-.2 E 3.947(mation. The)117 220.2 R
+1.447(third record declares that track)3.947 F(er)-.1 E F0(.)1.666 E F2
+(toaster)1.666 E F0(.)1.666 E F2 1.446(com houses a directory serv)1.666
+F 1.446(er for the)-.15 F .234(root of the DCE cell toaster)117 232.2 R
+F0(.)1.666 E F2 .235
+(com, so that DCE clients that wish to refer to DCE services should)
+1.666 F .274(consult with the host track)117 244.2 R(er)-.1 E F0(.)1.666
+E F2(toaster)1.666 E F0(.)1.666 E F2 .274(com for further information.)
+1.666 F .274(The DCE sub-type of record)5.274 F .044
+(is usually accompanied by a)117 256.2 R F3(TXT)2.544 E F2 .045
+(record for other information specifying other details to be used)2.545
+F 1.733(in accessing the DCE cell.)117 268.2 R 1.732
+(RFC1183 contains more detailed information on the use of this)6.732 F
+(record type.)117 280.2 Q(The)142 296.4 Q F3(AFSDB)2.5 E F2
+(record is still e)2.5 E(xperimental; not all name serv)-.15 E
+(ers implement or recognize it.)-.15 E F0 2.5(5.5.14. PX)102 332.4 R 2.5
+(-P)2.5 G(ointer to X.400/RFC822 mapping inf)-2.7 E(ormation)-.25 E F3
+85.22(name {ttl})117 348.6 R(addr)16.6 E 10.82(-class PX)-.2 F(pr)15.56
+E 12.3(efer 822-dom)-.37 F(X.400-dom)15.56 E F2(*.ADMD-g)117 360.6 Q
+(arr)-.05 E 45.44(.X42D.it. IN)-.55 F 12.5(PX 50)44.79 F 40.55
+(it. ADMD-g)28.87 F(arr)-.05 E(.C-it.)-.55 E 105.65(*.infn.it. IN)117
+372.6 R 12.5(PX 50)44.79 F 21.94(infn.it. O.PRMD-infn.ADMD-g)28.87 F
+(arr)-.05 E(.C-it.)-.55 E 124.26(*.it. IN)117 384.6 R 12.5(PX 50)44.79 F
+40.55(it. O-g)28.87 F(ate.PRMD-g)-.05 E(arr)-.05 E(.ADMD-g)-.55 E(arr)
+-.05 E(.C-it.)-.55 E(The)142 405 Q F3(PX)4.677 E F2 2.177(records \()
+4.677 F F3 -.8(Po)C 2.177(inter to X.400/RFC822 mapping information).8 F
+F2 4.677(\)a)C 2.178(re used to specify)-4.677 F 1.65(address mapping rules between X.400 O/R addresses and RFC822 style \(domain-style\) mail)
+117 417 R(addresses. F)117 429 Q(or a detailed description of the mapping process please refer to RFC1327.)
+-.15 E(Mapping rules are of 3 dif)142 445.2 Q(ferent types:)-.25 E(1\) mapping from X.400 to RFC822 \(de\214ned as "table 1 rules" in RFC1327\))
+142 461.4 Q(2\) mapping from RFC822 to X.400 \(de\214ned as "table 2 rules" in RFC1327\))
+142 477.6 Q(3\) encoding RFC822 into X.400)142 493.8 Q
+(\(de\214ned as "g)7.5 E(ate table" in RFC1327\))-.05 E 2.38
+(All three types of mapping rules are speci\214ed using)142 510 R F3(PX)
+4.88 E F2 2.38(Resource Records in DNS,)4.88 F .033(although the)117 522
+R F3(name)2.533 E F2 -.25(va)2.533 G .033(lue is dif).25 F .033
+(ferent: for case 1, the)-.25 F F3(name)2.533 E F2 -.25(va)2.533 G .032
+(lue is an X.400 domain in DNS syn-).25 F 1.067
+(tax, whereas for cases 2 and 3 the)117 534 R F3(name)3.567 E F2 -.25
+(va)3.567 G 1.067(lue is an RFC822 domain. Refer to RFC-1664 for).25 F
+.01(details on specifying an X.400 domain in DNS syntax and for the use of the)
+117 546 R F3(X42D)2.509 E F2 -.1(ke)2.509 G(yw)-.05 E .009(ord in it.)
+-.1 F -.8(To)117 558 S .247(ols are a).8 F -.25(va)-.2 G .248
+(ilable to con).25 F -.15(ve)-.4 G .248
+(rt from RFC1327 tables format into DNS \214les syntax.).15 F F3(Pr)
+5.248 E(efer)-.37 E(ence)-.37 E F2(is)2.748 E .391(analogous to the)117
+570 R F3(MX)2.891 E F2 .391
+(RR Preference parameter: it is currently advised to use a \214x)2.891 F
+.39(ed v)-.15 F .39(alue of 50)-.25 F .003(for it.)117 582 R F3(822-dom)
+2.503 E F2(gi)2.503 E -.15(ve)-.25 G 2.503(st).15 G .004
+(he RFC822 part of the mapping rules, and)-2.503 F F3(X.400-dom)2.504 E
+F2(gi)2.504 E -.15(ve)-.25 G 2.504(st).15 G .004(he X.400 part)-2.504 F
+.21(of the mapping rule \(in DNS syntax\). It is currently advised al)
+117 594 R -.1(wa)-.1 G .209(ys to use wildcarded).1 F F3(name)2.709 E F2
+-.25(va)2.709 G(l-).25 E 1.174(ues, as the RFC1327 tables speci\214cations permit wildcard speci\214cations only)
+117 606 R 3.675(.T)-.65 G 1.175(his is to k)-3.675 F(eep)-.1 E 1.106
+(compatibility with e)117 618 R 1.106
+(xisting services using static RFC1327 tables instead of DNS)-.15 F F3
+(PX)3.605 E F2(informa-)3.605 E(tion.)117 630 Q .328(Speci\214cations of mapping rules from X.400 to RFC822 syntax requires the creation of an)
+142 646.2 R 1.178
+(appropriate X.400 domain tree into DNS, including thus speci\214c)117
+658.2 R F3(SO)3.678 E(A)-.55 E F2(and)3.678 E F3(NS)3.678 E F2 1.177
+(records for the)3.678 F 2.622(domain itself. Speci\214cation of mapping rules from RFC822 into X.400 can be embedded)
+117 670.2 R .783(directly into the normal direct)117 682.2 R F3(name)
+3.283 E F2 3.283(tree. Ag)3.283 F .783
+(ain, refer to RFC1664 for details about or)-.05 F -.05(ga)-.18 G(niza-)
+.05 E(tion of this structure.)117 694.2 Q EP
+%%Page: 18 18
+%%BeginPageSetup
+BP
+%%EndPageSetup
+/F0 10/Times-Bold@0 SF 203.87(SMM:10-18 Name)72 60 R(Ser)2.5 E -.1(ve)
+-.1 G 2.5(rO).1 G(perations Guide f)-2.5 E(or)-.25 E/F1 9/Times-Bold@0
+SF(BIND)2.5 E/F2 10/Times-Roman@0 SF -.8(To)142 96 S 1.089
+(ols and library routines, based on the standard resolv).8 F 1.089
+(er ones, are a)-.15 F -.25(va)-.2 G 1.09(ilable to retrie).25 F -.15
+(ve)-.25 G
+(from DNS the appropriate mapping rules in RFC1327 or DNS syntax.)117
+108 Q .384(Once ag)142 124.2 R .384(ain, refer to RFC1664 to use the)
+-.05 F/F3 10/Times-Italic@0 SF(PX)2.884 E F2 .384
+(resource record, and be careful in coordinat-)2.884 F .74(ing the mapping information you can specify in DNS with the same information speci\214ed into)
+117 136.2 R(the RFC1327 static tables.)117 148.2 Q(The)142 164.4 Q F3
+(PX)2.5 E F2(record is still e)2.5 E(xperimental; not all serv)-.15 E
+(ers implement or recognize it.)-.15 E F0 2.5(5.6. Discussion)87 200.4 R
+(about the TTL)2.5 E F2 .466(The T)127 216.6 R .466(ime T)-.35 F 2.966
+(oL)-.8 G -2.15 -.25(iv e)-2.966 H .465(assigned to the records and to the zone via the Minimum \214eld in the SO)
+3.216 F(A)-.35 E .878(record is v)102 228.6 R .878
+(ery important. High v)-.15 F .879(alues will lead to lo)-.25 F .879
+(wer BIND netw)-.25 F .879(ork traf)-.1 F .879(\214c and f)-.25 F .879
+(aster response)-.1 F 2.322(time. Lo)102 240.6 R 2.322(wer v)-.25 F
+2.321(alues will tend to generate lots of requests b)-.25 F 2.321
+(ut will allo)-.2 F 4.821(wf)-.25 G 2.321(aster propag)-4.921 F 2.321
+(ation of)-.05 F(changes.)102 252.6 Q 1.444
+(Only changes and deletions from the zone are af)127 268.8 R 1.444
+(fected by the TTLs.)-.25 F 1.444(Additions propag)6.444 F(ate)-.05 E
+(according to the Refresh v)102 280.8 Q(alue in the SO)-.25 E(A.)-.35 E
+.142(Experience has sho)127 297 R .142(wn that sites use def)-.25 F .141
+(ault TTLs for their zones v)-.1 F .141(arying from around 0.5 day)-.25
+F .541(to around 7 days. Y)102 309 R .541
+(ou may wish to consider boosting the def)-1.1 F .541(ault TTL sho)-.1 F
+.542(wn in former v)-.25 F .542(ersions of)-.15 F 1.912(this guide from one day \(86400 seconds\) to three days \(259200 seconds\). This will drastically)
+102 321 R(reduce the number of requests made to your name serv)102 333 Q
+(ers.)-.15 E .919(If you need f)127 349.2 R .919(ast propag)-.1 F .919
+(ation of changes and deletions, it might be wise to reduce the Mini-)
+-.05 F .329(mum \214eld a fe)102 361.2 R 2.829(wd)-.25 G .328(ays before the change, then do the modi\214cation itself and augment the TTL to its)
+-2.829 F(former v)102 373.2 Q(alue.)-.25 E .645(If you kno)127 389.4 R
+3.145(wt)-.25 G .646(hat your zone is pretty stable \(you mainly add ne)
+-3.145 F 3.146(wr)-.25 G .646(ecords without deleting or)-3.146 F
+(changing old ones\) then you may e)102 401.4 Q -.15(ve)-.25 G 2.5(nw)
+.15 G(ish to consider a TTL higher than three days.)-2.5 E .537
+(Note that in an)127 417.6 R 3.037(yc)-.15 G .537(ase, it mak)-3.037 F
+.537(es no sense to ha)-.1 F .837 -.15(ve r)-.2 H .536
+(ecords with a TTL belo).15 F 3.036(wt)-.25 G .536(he SO)-3.036 F 3.036
+(AR)-.35 G(efresh)-3.036 E(delay)102 429.6 Q 2.5(,a)-.65 G 2.5(sD)-2.5 G
+(elay is the time required for secondaries to get a cop)-2.5 E 2.5(yo)
+-.1 G 2.5(ft)-2.5 G(he ne)-2.5 E(wly modi\214ed zone.)-.25 E F0 2.5
+(5.7. About)87 465.6 R -.63(``)2.5 G(secur).63 E 2.5(ez)-.18 G(ones')
+-2.5 E(')-.63 E F2 .379
+(Secure zones implement named security on a zone by zone basis.)127
+481.8 R .379(It is designed to use a per)5.379 F(-)-.2 E
+(mission list of netw)102 493.8 Q
+(orks or hosts which may obtain particular information from the zone.)
+-.1 E .891(In order to use zone security)127 510 R(,)-.65 E F3(named)
+3.391 E F2 .891(must be compiled with SECURE_ZONES de\214ned and)3.391 F
+.938(you must ha)102 522 R 1.238 -.15(ve a)-.2 H 3.438(tl).15 G .939
+(east one secure_zone TXT RR.)-3.438 F .939(Unless a)5.939 F F3(secur)
+3.439 E(e_zone)-.37 E F2 .939(record e)3.439 F .939(xists for a gi)-.15
+F -.15(ve)-.25 G(n).15 E .841
+(zone, no restrictions will be applied to the data in that zone.)102 534
+R .841(The format of the secure_zone TXT)5.841 F(RR is:)102 546 Q 33.5
+(secure_zone addr)102 562.2 R 33.5(-class TXT string)-.2 F 1.271
+(The addr)127 578.4 R 1.271(-class may be either)-.2 F F3(HS)3.771 E F2
+(or)3.771 E F3(IN)3.771 E F2 6.271(.T)C 1.271
+(he syntax for the TXT string is either `)-6.271 F(`netw)-.74 E(ork)-.1
+E(address:netmask')102 590.4 Q 2.5('o)-.74 G 2.5(r`)-2.5 G
+(`host IP address:H')-3.24 E('.)-.74 E -.74(``)127 606.6 S(netw).74 E
+.033(ork address:netmask')-.1 F 2.533('a)-.74 G(llo)-2.533 E .033
+(ws queries from an entire netw)-.25 F 2.532(ork. If)-.1 F .032
+(the netmask is omitted,)2.532 F(named will use the def)102 618.6 Q
+(ault netmask for the netw)-.1 E(ork address speci\214ed.)-.1 E -.74(``)
+127 634.8 S .418(host IP address:H').74 F 2.918('a)-.74 G(llo)-2.918 E
+.418(ws queries from a host.)-.25 F .418(The `)5.418 F(`H')-.74 E 2.918
+('a)-.74 G .418(fter the `)-2.918 F(`:')-.74 E 2.918('i)-.74 G 2.918(sr)
+-2.918 G .419(equired to dif)-2.918 F(fer)-.25 E(-)-.2 E .218
+(entiate the host address from a netw)102 646.8 R .217(ork address.)-.1
+F .217(Multiple secure_zone TXT RRs are allo)5.217 F .217(wed in the)
+-.25 F(same zone \214le.)102 658.8 Q -.15(Fo)127 675 S 2.971(re).15 G
+.472(xample, you can set up a zone to only answer Hesiod requests from the mask)
+-3.121 F .472(ed class B)-.1 F(netw)102 687 Q
+(ork 130.215.0.0 and from host 128.23.10.56 by adding the follo)-.1 E
+(wing tw)-.25 E 2.5(oT)-.1 G(XT RR')-2.5 E(s:)-.55 E 33.5
+(secure_zone HS TXT `)102 703.2 R(`130.215.0.0:255.255.0.0')-.74 E(')
+-.74 E 33.5(secure_zone HS TXT `)102 715.2 R(`128.23.10.56:H')-.74 E(')
+-.74 E EP
+%%Page: 19 19
+%%BeginPageSetup
+BP
+%%EndPageSetup
+/F0 10/Times-Bold@0 SF(Name Ser)72 60 Q -.1(ve)-.1 G 2.5(rO).1 G
+(perations Guide f)-2.5 E(or)-.25 E/F1 9/Times-Bold@0 SF 206.564
+(BIND SMM)2.5 F F0(:10-19)A/F2 10/Times-Roman@0 SF .866
+(This feature can be used to restrict access to a Hesiod passw)127 96 R
+.867(ord map or to separate internal)-.1 F 1.494(and e)102 108 R 1.494
+(xternal internet address resolution on a \214re)-.15 F -.1(wa)-.25 G
+1.493(ll machine without needing to run a separate).1 F
+(named for internal and e)102 120 Q(xternal address resolution.)-.15 E
+1.064(Note that you will need to include your loopback interf)127 136.2
+R 1.065(ace \(127.0.0.1\) in your secure_zone)-.1 F
+(record, or your local clients w)102 148.2 Q(on')-.1 E 2.5(tb)-.18 G 2.5
+(ea)-2.5 G(ble to resolv)-2.5 E 2.5(en)-.15 G(ames.)-2.5 E F0 2.5
+(5.8. About)87 184.2 R(Hesiod, and HS-class Resour)2.5 E(ce Records)-.18
+E F2 1.537(Hesiod, de)127 200.4 R -.15(ve)-.25 G 1.537(loped by).15 F/F3
+9/Times-Roman@0 SF(MIT)4.037 E F2 1.537
+(Project Athena, is an information service b)4.037 F 1.536(uilt upon)-.2
+F F3(BIND)4.036 E F2 6.536(.I)C(ts)-6.536 E .306
+(intent is similar to that of Sun')102 212.4 R(s)-.55 E F3(NIS)2.806 E
+F2 2.807(:t)C 2.807(of)-2.807 G .307
+(urnish information about users, groups, netw)-2.807 F(ork-accessible)
+-.1 E 1.55(\214le systems, printcaps, and mail service throughout an installation.)
+102 224.4 R 1.549(Aside from its use of)6.549 F F3(BIND)4.049 E F2 .056
+(rather than separate serv)102 236.4 R .056
+(er code another important dif)-.15 F .057(ference between Hesiod and)
+-.25 F F3(NIS)2.557 E F2 .057(is that Hesiod)2.557 F .893
+(is not intended to deal with passw)102 248.4 R .893
+(ords and authentication, b)-.1 F .892
+(ut only with data that are not security)-.2 F(sensiti)102 260.4 Q -.15
+(ve)-.25 G 5.622(.H).15 G .622(esiod serv)-5.622 F .622
+(ers can be implemented by adding resource records to)-.15 F F3(BIND)
+3.123 E F2(serv)3.123 E .623(ers; or the)-.15 F(y)-.15 E
+(can be implemented as separate serv)102 272.4 Q
+(ers separately administered.)-.15 E 3.504 -.8(To l)127 288.6 T 1.903
+(earn about and obtain Hesiod mak).8 F 4.403(ea)-.1 G 4.403(na)-4.403 G
+(non)-4.403 E(ymous)-.15 E F3(FTP)4.403 E F2 1.903(connection to host)
+4.403 F F3 -.999(AT)4.403 G(HEN).999 E(A-)-.315 E(DIST)102 300.6 Q(.MIT)
+-.666 E(.EDU)-.666 E F2 .303(and retrie)2.803 F .604 -.15(ve t)-.25 H
+.304(he compressed tar \214le).15 F F0(/pub/A)2.804 E(THEN)-.95 E
+(A/hesiod.tar)-.2 E(.Z)-1 E F2 5.304(.Y)C .304(ou will not need)-6.404 F
+1.105(the named and resolv)102 312.6 R 1.105
+(er library portions of the distrib)-.15 F 1.104
+(ution because their functionality has already)-.2 F .224(been inte)102
+324.6 R .224(grated into)-.15 F F3 .224(BIND as of 4.9)2.724 F F2 5.225
+(.T)C 2.725(ol)-6.025 G .225(earn ho)-2.725 F 2.725(wH)-.25 G .225
+(esiod functions as part of the Athena computing)-2.725 F(en)102 336.6 Q
+3.092(vironment obtain the paper)-.4 F F0(/pub/A)5.592 E(THEN)-.95 E
+(A/usenix/athena-changes.PS)-.2 E F2 3.091(from the abo)5.592 F -.15(ve)
+-.15 G F3(FTP)5.741 E F2(serv)102 348.6 Q(er host.)-.15 E
+(There is also a tar \214le of sample Hesiod resource \214les.)5 E .471
+(Whether one should use Hesiod class is open to question, since the same services can proba-)
+127 364.8 R .986(bly be pro)102 376.8 R .985
+(vided with class IN, type TXT and type CN)-.15 F .985(AME records.)-.35
+F .985(In either case, the code and)5.985 F
+(documents for Hesiod will suggest ho)102 388.8 Q 2.5(wt)-.25 G 2.5(os)
+-2.5 G(et up and use the service.)-2.5 E .739(Note that while)127 405 R
+F3(BIND)3.239 E F2 .739(includes support for)3.239 F/F4 10
+/Times-Italic@0 SF(HS)3.24 E F2 .74
+(-class queries, the zone transfer logic for non-)B F4(IN)102 417 Q F2
+(-class zones is still e)A(xperimental.)-.15 E F0 2.5(5.9. Sample)87 453
+R(Files)2.5 E F2 1.1(The follo)127 469.2 R 1.099
+(wing section contains sample \214les for the name serv)-.25 F(er)-.15 E
+6.099(.T)-.55 G 1.099(his co)-6.099 F -.15(ve)-.15 G 1.099(rs e).15 F
+1.099(xample boot)-.15 F(\214les for the dif)102 481.2 Q
+(ferent types of serv)-.25 E(ers and e)-.15 E
+(xample domain data base \214les.)-.15 E F0 2.5(5.9.1. Boot)102 505.2 R
+(Files)2.5 E 2.5(5.9.1.1. Primary)117 529.2 R(Ser)2.5 E -.1(ve)-.1 G(r)
+.1 E F2(;)132 549.6 Q 2.5(;B)132 561.6 S
+(oot \214le for Primary Name Serv)-2.5 E(er)-.15 E(;)132 573.6 Q 2.5(;t)
+132 594 S 26.1(ype domain)-2.5 F(source \214le or host)71.66 E(;)132 606
+Q 12.5(directory /usr/local/adm/named)132 618 R 16.94(primary Berk)132
+630 R(ele)-.1 E(y)-.15 E F0(.)A F2 44.7(Edu ucbhosts)B 16.94(primary 32)
+132 642 R F0(.)A F2(128)A F0(.)A F2(in-addr)A F0(.)A F2 20.57
+(arpa ucbhosts)B F0(.)A F2(re)A(v)-.25 E 16.94(primary 0)132 654 R F0(.)
+A F2(0)A F0(.)A F2(127)A F0(.)A F2(in-addr)A F0(.)A F2 18.07(arpa named)
+B F0(.)A F2(local)A(cache)132 666 Q F0(.)28.34 E F2(root)99.16 E F0(.)A
+F2(cache)A EP
+%%Page: 20 20
+%%BeginPageSetup
+BP
+%%EndPageSetup
+/F0 10/Times-Bold@0 SF 203.87(SMM:10-20 Name)72 60 R(Ser)2.5 E -.1(ve)
+-.1 G 2.5(rO).1 G(perations Guide f)-2.5 E(or)-.25 E/F1 9/Times-Bold@0
+SF(BIND)2.5 E F0 2.5(5.9.1.2. Secondary)117 96 R(Ser)2.5 E -.1(ve)-.1 G
+(r).1 E/F2 10/Times-Roman@0 SF(;)132 116.4 Q 2.5(;B)132 128.4 S
+(oot \214le for Secondary Name Serv)-2.5 E(er)-.15 E(;)132 140.4 Q 2.5
+(;t)132 160.8 S 30.54(ype domain)-2.5 F(source \214le or host)71.66 E(;)
+132 172.8 Q 16.94(directory /usr/local/adm/named)132 184.8 R 12.5
+(secondary Berk)132 196.8 R(ele)-.1 E(y)-.15 E F0(.)A F2 44.7(Edu 128)B
+F0(.)A F2(32)A F0(.)A F2(0)A F0(.)A F2 2.5(41)C(28)-2.5 E F0(.)A F2(32)A
+F0(.)A F2(0)A F0(.)A F2(10 ucbhosts.bak)A 12.5(secondary 32)132 208.8 R
+F0(.)A F2(128)A F0(.)A F2(in-addr)A F0(.)A F2 20.57(arpa 128)B F0(.)A F2
+(32)A F0(.)A F2(0)A F0(.)A F2 2.5(41)C(28)-2.5 E F0(.)A F2(32)A F0(.)A
+F2(0)A F0(.)A F2(10 ucbhosts.re)A -.65(v.)-.25 G(bak).65 E 21.38
+(primary 0)132 220.8 R F0(.)A F2(0)A F0(.)A F2(127)A F0(.)A F2(in-addr)A
+F0(.)A F2 18.07(arpa named)B F0(.)A F2(local)A(cache)132 232.8 Q F0(.)
+32.78 E F2(root)99.16 E F0(.)A F2(cache)A F0 2.5(5.9.1.3. Caching)117
+265.2 R(Only Ser)2.5 E -.1(ve)-.1 G(r).1 E F2(;)132 285.6 Q 2.5(;B)132
+297.6 S(oot \214le for Caching Only Name Serv)-2.5 E(er)-.15 E(;)132
+309.6 Q 2.5(;t)132 330 S 26.1(ype domain)-2.5 F(source \214le or host)
+71.66 E(;)132 342 Q 12.5(directory /usr/local/adm/named)132 354 R(cache)
+132 366 Q F0(.)28.34 E F2(root)99.16 E F0(.)A F2(cache)A 16.94
+(primary 0)132 378 R F0(.)A F2(0)A F0(.)A F2(127)A F0(.)A F2(in-addr)A
+F0(.)A F2 18.07(arpa named)B F0(.)A F2(local)A F0 2.5(5.9.2. Remote)102
+434.4 R(Ser)2.5 E -.1(ve)-.1 G 2.5(r/D).1 G(NS Client)-2.5 E 2.5
+(5.9.2.1. /etc/r)117 458.4 R(esolv)-.18 E(.conf)-.7 E F2(domain Berk)132
+486.6 Q(ele)-.1 E(y)-.15 E F0(.)A F2(Edu)A(nameserv)132 498.6 Q(er 128)
+-.15 E F0(.)A F2(32)A F0(.)A F2(0)A F0(.)A F2(4)A(nameserv)132 510.6 Q
+(er 128)-.15 E F0(.)A F2(32)A F0(.)A F2(0)A F0(.)A F2(10)A
+(sortlist 130.155.160.0/255.255.240.0 130.155.0.0)132 522.6 Q EP
+%%Page: 21 21
+%%BeginPageSetup
+BP
+%%EndPageSetup
+/F0 10/Times-Bold@0 SF(Name Ser)72 60 Q -.1(ve)-.1 G 2.5(rO).1 G
+(perations Guide f)-2.5 E(or)-.25 E/F1 9/Times-Bold@0 SF 206.564
+(BIND SMM)2.5 F F0(:10-21)A 2.5(5.9.3. r)102 96 R(oot.cache)-.18 E/F2 10
+/Times-Roman@0 SF(;)117 124.2 Q 17.5(;T)117 136.2 S
+(his \214le holds the information on root name serv)-17.5 E
+(ers needed to)-.15 E 17.5(;i)117 148.2 S
+(nitialize cache of Internet domain name serv)-17.5 E(ers)-.15 E 17.5
+(;\()117 160.2 S(e.g. reference this \214le in the "cache)-17.5 E 5(.<)5
+G(\214le>")-5 E 17.5(;c)117 172.2 S
+(on\214guration \214le of BIND domain name serv)-17.5 E(ers\).)-.15 E(;)
+117 184.2 Q 17.5(;T)117 196.2 S(his \214le is made a)-17.5 E -.25(va)-.2
+G(ilable by InterNIC re).25 E(gistration services)-.15 E 17.5(;u)117
+208.2 S(nder anon)-17.5 E(ymous FTP as)-.15 E 27.5<3b8c>117 220.2 S 37.5
+(le /domain/named.root)-27.5 F 27.5(;o)117 232.2 S 2.5(ns)-27.5 G(erv)
+-2.5 E 25(er FTP)-.15 F(.RS.INTERNIC.NET)-1.11 E 17.5(;-)117 244.2 S
+(OR- under Gopher at)-17.5 E(RS.INTERNIC.NET)10 E 27.5(;u)117 256.2 S
+(nder menu)-27.5 E(InterNIC Re)25 E(gistration Services \(NSI\))-.15 E
+35(;s)117 268.2 S 22.5(ubmenu InterNIC)-35 F(Re)2.5 E(gistration Archi)
+-.15 E -.15(ve)-.25 G(s).15 E 27.5<3b8c>117 280.2 S 37.5(le named.root)
+-27.5 F(;)117 292.2 Q 17.5(;l)117 304.2 S(ast update:)-17.5 E
+(Oct 5, 1994)10 E 17.5(;r)117 316.2 S(elated v)-17.5 E
+(ersion of root zone:)-.15 E(1994100500)7.5 E(;)117 328.2 Q F0(.)117
+344.4 Q F2 12.5(604800 IN NS NS)110.28 F F0(.)A F2(INTERNIC)A F0(.)A F2
+(NET)A F0(.)A F2(NS)117 356.4 Q F0(.)A F2(INTERNIC)A F0(.)A F2(NET)A F0
+(.)A F2 12.5(604800 IN A)26.4 F(198)20.56 E F0(.)A F2(41)A F0(.)A F2(0)A
+F0(.)A F2(4)A F0(.)117 368.4 Q F2 12.5(604800 IN NS NS1)110.28 F F0(.)A
+F2(ISI)A F0(.)A F2(EDU)A F0(.)A F2(NS1)117 380.4 Q F0(.)A F2(ISI)A F0(.)
+A F2(EDU)A F0(.)A F2 12.5(604800 IN A)54.73 F(128)20.56 E F0(.)A F2(9)A
+F0(.)A F2(0)A F0(.)A F2(107)A F0(.)117 392.4 Q F2 12.5(604800 IN NS C)
+110.28 F F0(.)A F2(PSI)A F0(.)A F2(NET)A F0(.)A F2(C)117 404.4 Q F0(.)A
+F2(PSI)A F0(.)A F2(NET)A F0(.)A F2 12.5(604800 IN A)64.72 F(192)20.56 E
+F0(.)A F2(33)A F0(.)A F2(4)A F0(.)A F2(12)A F0(.)117 416.4 Q F2 12.5
+(604800 IN NS TERP)110.28 F F0(.)A F2(UMD)A F0(.)A F2(EDU)A F0(.)A F2
+(TERP)117 428.4 Q F0(.)A F2(UMD)A F0(.)A F2(EDU)A F0(.)A F2 12.5
+(604800 IN A)36.95 F(128)20.56 E F0(.)A F2(8)A F0(.)A F2(10)A F0(.)A F2
+(90)A F0(.)117 440.4 Q F2 12.5(604800 IN NS NS)110.28 F F0(.)A F2 -.35
+(NA)C(SA).35 E F0(.)A F2(GO)A(V)-.5 E F0(.)A F2(NS)117 452.4 Q F0(.)A F2
+-.35(NA)C(SA).35 E F0(.)A F2(GO)A(V)-.5 E F0(.)A F2 12.5(604800 IN A)
+44.47 F(128)20.56 E F0(.)A F2(102)A F0(.)A F2(16)A F0(.)A F2(10)A 12.5
+(604800 IN A)229.78 464.4 R(192)20.56 E F0(.)A F2(52)A F0(.)A F2(195)A
+F0(.)A F2(10)A F0(.)117 476.4 Q F2 12.5(604800 IN NS NS)110.28 F F0(.)A
+F2(ISC)A F0(.)A F2(ORG)A F0(.)A F2(NS)117 488.4 Q F0(.)A F2(ISC)A F0(.)A
+F2(ORG)A F0(.)A F2 12.5(604800 IN A)55.83 F(192)20.56 E F0(.)A F2(5)A F0
+(.)A F2(5)A F0(.)A F2(241)A F0(.)117 500.4 Q F2 12.5(604800 IN NS NS)
+110.28 F F0(.)A F2(NIC)A F0(.)A F2(DDN)A F0(.)A F2(MIL)A F0(.)A F2(NS)
+117 512.4 Q F0(.)A F2(NIC)A F0(.)A F2(DDN)A F0(.)A F2(MIL)A F0(.)A F2
+12.5(604800 IN A)32.79 F(192)20.56 E F0(.)A F2(112)A F0(.)A F2(36)A F0
+(.)A F2(4)A F0(.)117 524.4 Q F2 12.5(604800 IN NS A)110.28 F(OS)-.55 E
+F0(.)A F2(ARL)A F0(.)A F2(ARMY)A F0(.)A F2(MIL)A F0(.)A F2 -.55(AO)117
+536.4 S(S).55 E F0(.)A F2(ARL)A F0(.)A F2(ARMY)A F0(.)A F2(MIL)A F0(.)A
+F2 12.5(604800 IN A)15 F(128)20.56 E F0(.)A F2(63)A F0(.)A F2(4)A F0(.)A
+F2(82)A 12.5(604800 IN A)229.78 548.4 R(192)20.56 E F0(.)A F2(5)A F0(.)A
+F2(25)A F0(.)A F2(82)A F0(.)117 560.4 Q F2 12.5(604800 IN NS NIC)110.28
+F F0(.)A F2(NORDU)A F0(.)A F2(NET)A F0(.)A F2(NIC)117 572.4 Q F0(.)A F2
+(NORDU)A F0(.)A F2(NET)A F0(.)A F2 12.5(604800 IN A)33.07 F(192)20.56 E
+F0(.)A F2(36)A F0(.)A F2(148)A F0(.)A F2(17)A 2.5(;E)117 588.6 S
+(nd of File)-2.5 E EP
+%%Page: 22 22
+%%BeginPageSetup
+BP
+%%EndPageSetup
+/F0 10/Times-Bold@0 SF 203.87(SMM:10-22 Name)72 60 R(Ser)2.5 E -.1(ve)
+-.1 G 2.5(rO).1 G(perations Guide f)-2.5 E(or)-.25 E/F1 9/Times-Bold@0
+SF(BIND)2.5 E F0 2.5(5.9.4. named.local)102 96 R/F2 10/Times-Roman@0 SF
+15(@I)117 128.4 S 15(NS)-15 G 13.2 -.35(OA u)-15 H(cb).35 E -.25(va)-.15
+G(x).25 E F0(.)A F2(Berk)A(ele)-.1 E(y)-.15 E F0(.)A F2 12.5(Edu. kjd)B
+F0(.)A F2(ucb)A -.25(va)-.15 G(x).25 E F0(.)A F2(Berk)A(ele)-.1 E(y)-.15
+E F0(.)A F2(Edu)A F0(.)A F2(\()2.5 E 50.44(1994072100 ;)201.41 140.4 R
+(Serial)2.5 E 75.44(10800 ;)201.41 152.4 R(Refresh)2.5 E 80.44(1800 ;)
+201.41 164.4 R(Retry)2.5 E 65.44(3600000 ;)201.41 176.4 R(Expire)2.5 E
+(259200 \))201.41 188.4 Q 2.5(;M)67.11 G(inimum)-2.5 E 12.5(IN NS)141.21
+200.4 R(ucb)21.87 E -.25(va)-.15 G(x).25 E F0(.)A F2(Berk)A(ele)-.1 E(y)
+-.15 E F0(.)A F2(Edu)A F0(.)A F2 2.5(;p)15 G(edantic)-2.5 E 19.21(1I)117
+212.4 S 15(NP)-19.21 G 13.81(TR localhost)-15 F F0(.)A 2.5
+(5.9.5. host.r)102 244.8 R -.15(ev)-.18 G F2(;)117 273 Q 10(;@)117 285 S
+(\(#\)ucb-hosts.re)-10 E 10(v1)-.25 G 7.5(.1 \(Berk)-10 F(ele)-.1 E 7.5
+(y\) 86/02/05)-.15 F(;)117 297 Q 28.29(@I)117 313.2 S 15(NS)-28.29 G
+13.2 -.35(OA u)-15 H(cb).35 E -.25(va)-.15 G(x).25 E F0(.)A F2(Berk)A
+(ele)-.1 E(y)-.15 E F0(.)A F2(Edu)A F0(.)A F2(kjd)15 E F0(.)A F2(monet)A
+F0(.)A F2(Berk)A(ele)-.1 E(y)-.15 E F0(.)A F2(Edu)A F0(.)A F2(\()2.5 E
+50.44(1986020501 ;)214.7 325.2 R(Serial)2.5 E 75.44(10800 ;)214.7 337.2
+R(Refresh)2.5 E 80.44(1800 ;)214.7 349.2 R(Retry)2.5 E 65.44(3600000 ;)
+214.7 361.2 R(Expire)2.5 E(259200 \))214.7 373.2 Q 2.5(;M)67.11 G
+(inimum)-2.5 E 12.5(IN NS)154.5 385.2 R(ucbarpa)21.87 E F0(.)A F2(Berk)A
+(ele)-.1 E(y)-.15 E F0(.)A F2(Edu)A F0(.)A F2 12.5(IN NS)154.5 397.2 R
+(ucb)21.87 E -.25(va)-.15 G(x).25 E F0(.)A F2(Berk)A(ele)-.1 E(y)-.15 E
+F0(.)A F2(Edu)A F0(.)A F2(0)117 409.2 Q F0(.)A F2 25(0I)C 15(NP)-25 G
+13.81(TR Berk)-15 F(ele)-.1 E(y-net)-.15 E F0(.)A F2(Berk)A(ele)-.1 E(y)
+-.15 E F0(.)A F2(EDU)A F0(.)A F2 12.5(IN A)154.5 421.2 R(255)27.43 E F0
+(.)A F2(255)A F0(.)A F2(255)A F0(.)A F2(0)A(0)117 433.2 Q F0(.)A F2 12.5
+(130 IN PTR)B(csdi)16.31 E(v-net)-.25 E F0(.)A F2(Berk)A(ele)-.1 E(y)
+-.15 E F0(.)A F2(EDU)A F0(.)A F2(4)117 445.2 Q F0(.)A F2 25(0I)C 15(NP)
+-25 G 13.81(TR ucbarpa)-15 F F0(.)A F2(Berk)A(ele)-.1 E(y)-.15 E F0(.)A
+F2(Edu)A F0(.)A F2(6)117 457.2 Q F0(.)A F2 25(0I)C 15(NP)-25 G 13.81
+(TR ernie)-15 F F0(.)A F2(Berk)A(ele)-.1 E(y)-.15 E F0(.)A F2(Edu)A F0
+(.)A F2(7)117 469.2 Q F0(.)A F2 25(0I)C 15(NP)-25 G 13.81(TR monet)-15 F
+F0(.)A F2(Berk)A(ele)-.1 E(y)-.15 E F0(.)A F2(Edu)A F0(.)A F2(10)117
+481.2 Q F0(.)A F2 20(0I)C 15(NP)-20 G 13.81(TR ucb)-15 F -.25(va)-.15 G
+(x).25 E F0(.)A F2(Berk)A(ele)-.1 E(y)-.15 E F0(.)A F2(Edu)A F0(.)A F2
+(6)117 493.2 Q F0(.)A F2 12.5(130 IN PTR)B(monet)16.31 E F0(.)A F2(Berk)
+A(ele)-.1 E(y)-.15 E F0(.)A F2(Edu)A F0(.)A 2.5(5.9.6. Hosts)102 525.6 R
+EP
+%%Page: 23 23
+%%BeginPageSetup
+BP
+%%EndPageSetup
+/F0 10/Times-Bold@0 SF(Name Ser)72 60 Q -.1(ve)-.1 G 2.5(rO).1 G
+(perations Guide f)-2.5 E(or)-.25 E/F1 9/Times-Bold@0 SF 206.564
+(BIND SMM)2.5 F F0(:10-23)A/F2 10/Times-Roman@0 SF(;)117 96 Q 10(;@)117
+108 S 7.5(\(#\)ucb-hosts 1.2 \(berk)-10 F(ele)-.1 E 7.5(y\) 88/02/05)
+-.15 F(;)117 120 Q 45.23(@I)117 136.2 S 15(NS)-45.23 G 29.31 -.35(OA u)
+-15 H(cb).35 E -.25(va)-.15 G(x).25 E F0(.)A F2(Berk)A(ele)-.1 E(y)-.15
+E F0(.)A F2(Edu)A F0(.)A F2(kjd)48.375 E F0(.)A F2(monet)A F0(.)A F2
+(Berk)A(ele)-.1 E(y)-.15 E F0(.)A F2(Edu)A F0(.)A F2(\()2.5 E 83.815
+(1988020501 ;)247.75 148.2 R(Serial)2.5 E 108.815(10800 ;)247.75 160.2 R
+(Refresh)2.5 E 113.815(1800 ;)247.75 172.2 R(Retry)2.5 E 98.815
+(3600000 ;)247.75 184.2 R(Expire)2.5 E(259200 \))247.75 196.2 Q 2.5(;M)
+100.485 G(inimum)-2.5 E 12.5(IN NS)171.44 208.2 R(ucbarpa)37.98 E F0(.)A
+F2(Berk)A(ele)-.1 E(y)-.15 E F0(.)A F2(Edu)A F0(.)A F2 12.5(IN NS)171.44
+220.2 R(ucb)37.98 E -.25(va)-.15 G(x).25 E F0(.)A F2(Berk)A(ele)-.1 E(y)
+-.15 E F0(.)A F2(Edu)A F0(.)A F2 15.83(localhost IN)117 232.2 R 43.54
+(A1)15 G(27)-43.54 E F0(.)A F2(1)A 2.5(;n)247.75 244.2 S
+(ote that 127.1 is the same as 127.0.0.1; see inet\(3n\))-2.5 E 20.29
+(ucbarpa IN)117 256.2 R 43.54(A1)15 G(28)-43.54 E F0(.)A F2(32)A F0(.)A
+F2(4)A 12.5(IN A)171.44 268.2 R(10)43.54 E F0(.)A F2(0)A F0(.)A F2(0)A
+F0(.)A F2(78)A 12.5(IN HINFO)171.44 280.2 R -1.35(VA)20.21 G
+(X-11/780 UNIX)1.35 E 34.73(arpa IN)117 292.2 R(CN)15 E 12.5
+(AME ucbarpa)-.35 F 31.95(ernie IN)117 304.2 R 43.54(A1)15 G(28)-43.54 E
+F0(.)A F2(32)A F0(.)A F2(6)A 12.5(IN HINFO)171.44 316.2 R -1.35(VA)20.21
+G(X-11/780 UNIX)1.35 E 17.51(ucbernie IN)117 328.2 R(CN)15 E 12.5
+(AME ernie)-.35 F 26.94(monet IN)117 340.2 R 43.54(A1)15 G(28)-43.54 E
+F0(.)A F2(32)A F0(.)A F2(7)A 12.5(IN A)171.44 352.2 R(128)43.54 E F0(.)A
+F2(32)A F0(.)A F2(130)A F0(.)A F2(6)A 12.5(IN HINFO)171.44 364.2 R -1.35
+(VA)20.21 G(X-11/750 UNIX)1.35 E 12.5(ucbmonet IN CN)117 376.2 R 12.5
+(AME monet)-.35 F(ucb)117 388.2 Q -.25(va)-.15 G 25.96(xI).25 G 11.04 15
+(NA 1)-25.96 H(0)-15 E F0(.)A F2(2)A F0(.)A F2(0)A F0(.)A F2(78)A 2.5
+(;1)247.75 400.2 S(28.32.10 means 128.32.0.10; see inet\(3n\))-2.5 E
+12.5(IN A)171.44 412.2 R(128)43.54 E F0(.)A F2(32)A F0(.)A F2(10)A 2.5
+(;H)247.75 424.2 S(INFO and WKS are widely unused,)-2.5 E 2.5(;b)247.75
+436.2 S(ut we')-2.7 E(ll sho)-.1 E 2.5(wt)-.25 G(hem as e)-2.5 E
+(xamples.)-.15 E 12.5(IN HINFO)171.44 448.2 R -1.35(VA)20.21 G
+(X-11/750 UNIX)1.35 E 12.5(IN WKS)171.44 460.2 R
+(128.32.0.10 TCP \( echo telnet)28.54 E(discard sunrpc sftp)247.75 472.2
+Q(uucp-path systat daytime)247.75 484.2 Q(netstat qotd nntp)247.75 496.2
+Q(link char)247.75 508.2 Q(gen ftp)-.18 E(auth time whhois mtp)247.75
+520.2 Q(pop rje \214nger smtp)247.75 532.2 Q(supdup hostnames)247.75
+544.2 Q(domain)247.75 556.2 Q(nameserv)247.75 568.2 Q(er \))-.15 E -.25
+(va)117 580.2 S 40.25(xI).25 G 15(NC)-40.25 G -.35(NA)-15 G 12.5(ME ucb)
+.35 F -.25(va)-.15 G(x).25 E(to)117 592.2 Q 24.26(ybox IN)-.1 F 43.54
+(A1)15 G(28)-43.54 E F0(.)A F2(32)A F0(.)A F2(131)A F0(.)A F2(119)A 12.5
+(IN HINFO)171.44 604.2 R(Pro350 R)20.21 E(T11)-.6 E(to)117 616.2 Q 24.26
+(ybox IN)-.1 F 32.15(MX 0)15 F(monet.Berk)5 E(ele)-.1 E -.65(y.)-.15 G
+(Edu.).65 E(csr)117 628.2 Q 37.96(gI)-.18 G 15(NM)-37.96 G 34.65(X0)-15
+G(Ralph.CS)-32.15 E 12.5(IN MX)171.44 640.2 R 2.5(0Z)34.65 G(hou.CS)-2.5
+E 12.5(IN MX)171.44 652.2 R 2.5(0P)34.65 G(ainter)-2.65 E(.CS)-.55 E
+12.5(IN MX)171.44 664.2 R 2.5(0R)34.65 G(iggle.CS)-2.5 E 12.5(IN MX)
+171.44 676.2 R 2.5(0T)34.65 G(erry)-3.2 E(.CS)-.65 E 12.5(IN MX)171.44
+688.2 R 2.5(0K)34.65 G -.25(ev)-2.75 G(in.CS).25 E EP
+%%Page: 24 24
+%%BeginPageSetup
+BP
+%%EndPageSetup
+/F0 10/Times-Bold@0 SF 203.87(SMM:10-24 Name)72 60 R(Ser)2.5 E -.1(ve)
+-.1 G 2.5(rO).1 G(perations Guide f)-2.5 E(or)-.25 E/F1 9/Times-Bold@0
+SF(BIND)2.5 E F0 2.5(6. Setting)72 96 R(up Y)2.5 E(our Own Domain)-1.11
+E/F2 10/Times-Roman@0 SF .86
+(When setting up a domain that is going to be on a public netw)112 112.2
+R .86(ork the site administrator should)-.1 F .375(contact the or)87
+124.2 R -.05(ga)-.18 G .375(nization in char).05 F .375(ge of the netw)
+-.18 F .375(ork and request the appropriate domain re)-.1 F .375
+(gistration form.)-.15 F 1.052(An or)87 136.2 R -.05(ga)-.18 G 1.053
+(nization that belongs to multiple netw).05 F 1.053(orks \(such as the)
+-.1 F/F3 10/Times-Italic@0 SF(Internet)3.553 E F2(and)3.553 E F3(BITNET)
+3.553 E F2 3.553(\)s)C 1.053(hould re)-3.553 F(gister)-.15 E
+(with only one netw)87 148.2 Q(ork.)-.1 E F0 2.5(6.1. Inter)87 172.2 R
+(net)-.15 E F2 .091(Sites on the Internet who need information on setting up a domain should contact the re)
+127 188.4 R(gistrar)-.15 E(for their netw)102 200.4 Q
+(ork, which is one of the follo)-.1 E(wing:)-.25 E(MILnet)102 216.6 Q/F4
+9/Times-Roman@0 SF(HOSTMASTER)15 E F2(@)A F4(NIC)A F0(.)1.666 E F4(DDN)
+1.666 E F0(.)1.666 E F4(MIL)1.666 E F2(other)102 228.6 Q F4(HOSTMASTER)
+25 E F2(@)A F4(INTERNIC)A F0(.)1.666 E F4(NET)1.666 E F2 -1.1(Yo)102
+244.8 S 3.159(um)1.1 G .659(ay also w)-3.159 F .659
+(ant to be placed on the)-.1 F F4(BIND)3.159 E F2 .659
+(mailing list, which is a mail group for people on the)3.159 F 1.533
+(Internet who run)102 256.8 R F4(BIND)4.033 E F2 6.533(.T)C 1.533
+(he group discusses future design decisions, operational problems, and)
+-6.533 F(other related topic.)102 268.8 Q
+(The address to request being placed on this mailing list is:)5 E F3
+(bind-r)152 285 Q -.834(equest @ uunet)-.37 F F0(.)1.666 E F3(uu)1.666 E
+F0(.)1.666 E F3(net)1.666 E F0 2.5(6.2. Subdomains)87 313.2 R
+(of Existing Domains)2.5 E F2 .715(If you w)127 329.4 R .715
+(ant a subdomain of some e)-.1 F .715
+(xisting domain, you should \214nd the contact point for the)-.15 F .77
+(parent domain rather than asking one of the abo)102 341.4 R 1.07 -.15
+(ve t)-.15 H(op-le).15 E -.15(ve)-.25 G 3.27(lr).15 G -.15(eg)-3.27 G
+3.27(istrars. There).15 F .77(should be a con)3.27 F -.15(ve)-.4 G(n-)
+.15 E .714(tion that)102 353.4 R F0 -.18(re)3.214 G(gistrar).18 E F2(@)A
+F3(domain)A F2(or)3.214 E F0(hostmaster)3.214 E F2(@)A F3(domain)A F2
+.715(for an)3.214 F 3.215(yg)-.15 G -2.15 -.25(iv e)-3.215 H 3.215(nd)
+.25 G .715(omain will al)-3.215 F -.1(wa)-.1 G .715(ys be an alias).1 F
+1.08(for that domain')102 365.4 R 3.58(sr)-.55 G -.15(eg)-3.58 G 1.08
+(istrar \(some).15 F 1.08(what analogous to)-.25 F F0(postmaster)3.58 E
+F2 1.08(\), b)B 1.08(ut there is no such con)-.2 F -.15(ve)-.4 G(ntion.)
+.15 E -.35(Tr)102 377.4 S 2.956(yi).35 G 2.956(ta)-2.956 G 2.956(sal)
+-2.956 G .456(ast resort, b)-2.956 F .456(ut \214rst you should e)-.2 F
+.457(xamine the)-.15 F F3(SO)2.957 E(A)-.55 E F2 .457
+(record for the domain and send mail to)2.957 F(the `)102 389.4 Q
+(`responsible person')-.74 E 2.5('s)-.74 G(ho)-2.5 E(wn therein.)-.25 E
+-1.1(Yo)5 G 2.5(uc)1.1 G(an also try)-2.5 E F3(whois)2.5 E F2(.)A F0 2.5
+(7. Domain)72 425.4 R(Management)2.5 E F2
+(This section contains information for starting, controlling and deb)112
+441.6 Q(ugging)-.2 E F3(named)2.5 E F2(.)A F0 2.5(7.1. /etc/r)87 465.6 R
+(c.local)-.18 E F2 .37
+(The hostname should be set to the full domain style name in)127 481.8 R
+F3(/etc/r)2.869 E(c.local)-.37 E F2(using)2.869 E F3 -.834
+(hostname \(1\))2.869 F F2(.)A(The follo)102 493.8 Q
+(wing entry should be added to)-.25 E F3(/etc/r)2.5 E(c.local)-.37 E F2
+(to start up)2.5 E F3(named)2.5 E F2(at system boot time:)2.5 E F3
+(if [ -f /usr/sbin/named ]; then)152 510 Q(/usr/sbin/named)162 522 Q F2
+([options])2.5 E F3 2.5(&e)2.5 G -.15(ch)-2.5 G 2.5(o-).15 G 2.5(n'n)
+-2.5 G 2.5(amed' >/de)-2.5 F(v/console)-.15 E<8c>152 534 Q F2 .582
+(This usually directly follo)102 550.2 R .582(ws the lines that start)
+-.25 F F3(syslo)3.082 E(gd)-.1 E F2(.)A F0 .583(Do Not)5.583 F F2 .583
+(attempt to run)3.083 F F3(named)3.083 E F2(from)3.083 E F3(inetd)3.083
+E F2(.)A(This will continuously restart the name serv)102 562.2 Q
+(er and defeat the purpose of the cache.)-.15 E F0 2.5(7.2. /v)87 586.2
+R(ar/run/named.pid)-.1 E F2(When)127 602.4 Q F3(named)2.605 E F2 .105
+(is successfully started up it writes its process id into the \214le)
+2.605 F F3(/var/run/named.pid)2.605 E F2(.)A .112
+(This is useful to programs that w)102 614.4 R .113
+(ant to send signals to)-.1 F F3(named)2.613 E F2 2.613(.T)C .113
+(he name of this \214le may be changed)-2.613 F(by de\214ning)102 626.4
+Q F3(PIDFILE)2.5 E F2(to the ne)2.5 E 2.5(wn)-.25 G(ame when compiling)
+-2.5 E F3(named)2.5 E F2(.)A F0 2.5(7.3. /etc/hosts)87 650.4 R F2(The)
+127 666.6 Q F3 -.1(ge)4.282 G -.834(thostbyname \(\)).1 F F2 1.782
+(library call can detect if)4.282 F F3(named)4.282 E F2 1.782
+(is running.)4.282 F 1.781(If it is determined that)6.782 F F3(named)102
+678.6 Q F2 .109(is not running it will look in)2.608 F F3(/etc/hosts)
+2.609 E F2 .109(to resolv)2.609 F 2.609(ea)-.15 G 2.609(na)-2.609 G
+2.609(ddress. This)-2.609 F .109(option w)2.609 F .109(as added to allo)
+-.1 F(w)-.25 E F3 -.834(ifcon\214g \(8C\))102 690.6 R F2 .017
+(to con\214gure the machines local interf)2.517 F .016
+(aces and to enable a system manager to access the)-.1 F(netw)102 702.6
+Q .41(ork while the system is in single user mode.)-.1 F .41
+(It is advisable to put the local machines interf)5.41 F(ace)-.1 E EP
+%%Page: 25 25
+%%BeginPageSetup
+BP
+%%EndPageSetup
+/F0 10/Times-Bold@0 SF(Name Ser)72 60 Q -.1(ve)-.1 G 2.5(rO).1 G
+(perations Guide f)-2.5 E(or)-.25 E/F1 9/Times-Bold@0 SF 206.564
+(BIND SMM)2.5 F F0(:10-25)A/F2 10/Times-Roman@0 SF .651
+(addresses and a couple of machine names and address in)102 96 R/F3 10
+/Times-Italic@0 SF(/etc/hosts)3.151 E F2 .651
+(so the system manager can rcp)3.151 F .071
+(\214les from another machine when the system is in single user mode.)
+102 108 R .071(The format of)5.071 F F3(/etc/hosts)2.572 E F2 .072
+(has not)2.572 F .046(changed. See)102 120 R F3 -.834(hosts \(5\))2.546
+F F2 .046(for more information.)2.546 F .045
+(Since the process of reading)5.045 F F3(/etc/hosts)2.545 E F2 .045
+(is slo)2.545 F 1.345 -.65(w, i)-.25 H 2.545(ti).65 G 2.545(sn)-2.545 G
+(ot)-2.545 E
+(advisable to use this option when the system is in multi user mode.)102
+132 Q F0 2.5(7.4. Signals)87 168 R F2 1.162(There are se)127 184.2 R
+-.15(ve)-.25 G 1.162(ral signals that can be sent to the).15 F F3(named)
+3.662 E F2 1.163(process to ha)3.662 F 1.463 -.15(ve i)-.2 H 3.663(td)
+.15 G 3.663(ot)-3.663 G 1.163(asks without)-3.663 F
+(restarting the process.)102 196.2 Q F0 2.5(7.4.1. Reload)102 220.2 R F2
+1.783(SIGHUP - Causes)142 236.4 R F3(named)4.283 E F2 1.782(to read)
+4.283 F F3(named.boot)4.282 E F2 1.782(and reload the database.)4.282 F
+1.782(This is useful)6.782 F .217(when you ha)117 248.4 R .517 -.15
+(ve m)-.2 H .217(ade a change to a `).15 F(`primary')-.74 E 2.717('d)
+-.74 G .217(ata \214le and you w)-2.717 F(ant)-.1 E F3(named)2.717 E F2
+1.318 -.55('s i)1.666 H .218(nternal database).55 F .686
+(to re\215ect the change.)117 260.4 R .686(If you b)5.686 F(uild)-.2 E
+/F4 9/Times-Roman@0 SF(BIND)3.186 E F2 .686(with the)3.186 F F4
+(FORCED_RELO)3.186 E(AD)-.315 E F2 .685(option, then)3.185 F F4(SIGHUP)
+3.185 E F2(also)3.185 E .723(has the ef)117 272.4 R .723
+(fect of scheduling all `)-.25 F(`secondary')-.74 E 3.223('z)-.74 G .723
+(ones for serial-number checks, which could lead)-3.223 F .525
+(to zone transfers ahead of the usual schedule.)117 284.4 R .524
+(Normally serial-number compares are done only)5.525 F(at the interv)117
+296.4 Q(als speci\214ed in the zone')-.25 E(s)-.55 E F4(SO)2.5 E(A)-.315
+E F2(record.)2.5 E F0 2.5(7.4.2. Deb)102 320.4 R(ugging)-.2 E F2(When)
+142 336.6 Q F3(named)4.313 E F2 1.813(is running incorrectly)4.313 F
+4.313(,l)-.65 G 1.813(ook \214rst in)-4.313 F F3(/var/lo)4.313 E
+(g/messa)-.1 E -.1(ge)-.1 G(s).1 E F2 1.814(and check for an)4.314 F(y)
+-.15 E .805(messages logged by)117 348.6 R F3(syslo)3.304 E(g)-.1 E F2
+5.804(.N)C -.15(ex)-5.804 G 3.304(ts).15 G .804
+(end it a signal to see what is happening.)-3.304 F .804
+(Unless you run it)5.804 F 1.826(with the `)117 360.6 R(`-d')-.74 E
+4.327('o)-.74 G(ption,)-4.327 E F3(named)4.327 E F2 1.827(has v)4.327 F
+1.827(ery little to say on its standard output or standard error)-.15 F
+(.)-.55 E(Ev)117 372.6 Q(erything)-.15 E F3(named)2.5 E F2(has to say)
+2.5 E 2.5(,i)-.65 G 2.5(ts)-2.5 G(ays to)-2.5 E F3(syslo)2.5 E(g)-.1 E
+F2(.)A 2.612(SIGINT - Dumps the current data base and cache to)142 388.8
+R F3(/var/tmp/named_dump.db)5.111 E F2(This)5.111 E .791(should gi)117
+400.8 R 1.091 -.15(ve y)-.25 H .792
+(ou an indication to whether the data base w).15 F .792
+(as loaded correctly)-.1 F 5.792(.T)-.65 G .792(he name of the)-5.792 F
+(dump \214le may be changed by de\214ning)117 412.8 Q F3(DUMPFILE)2.5 E
+F2(to the ne)2.5 E 2.5(wn)-.25 G(ame when compiling)-2.5 E F3(named)2.5
+E F2(.)A F3(Note:)117 436.8 Q F2(the follo)2.5 E(wing tw)-.25 E 2.5(os)
+-.1 G(ignals only w)-2.5 E(ork when)-.1 E F3(named)2.5 E F2(is b)2.5 E
+(uilt with)-.2 E F3(DEB)2.5 E(UG)-.1 E F2(de\214ned.)2.5 E 1.104
+(SIGUSR1 - T)142 453 R 1.104(urns on deb)-.45 F 1.104
+(ugging. Each follo)-.2 F 1.103(wing SIGUSR1 increments the deb)-.25 F
+1.103(ug le)-.2 F -.15(ve)-.25 G(l.).15 E .186(The output goes to)117
+465 R F3(/var/tmp/named.run)2.686 E F2 .186(The name of this deb)2.686 F
+.186(ug \214le may be changed by de\214ning)-.2 F F3(DEB)117 477 Q
+(UGFILE)-.1 E F2(to the ne)2.5 E 2.5(wn)-.25 G(ame before compiling)-2.5
+E F3(named)2.5 E F2(.)A(SIGUSR2 - T)142 493.2 Q(urns of)-.45 E 2.5(fd)
+-.25 G(eb)-2.5 E(ugging completely)-.2 E(.)-.65 E -.15(Fo)117 517.2 S
+5.77(rm).15 G 3.27(ore detailed deb)-5.77 F 3.27(ugging, de\214ne DEB)
+-.2 F 3.27(UG when compiling the resolv)-.1 F 3.27(er routines into)-.15
+F F3(/lib/libc.a)117 529.2 Q F2(.)A .924(SIGWINCH - T)142 545.4 R .924
+(oggles tracing of all incoming queries if)-.8 F F3(named)3.425 E F2
+.925(has been compiled with)3.425 F F3(QR)117 557.4 Q(YLOG)-.18 E F2
+3.877(de\214ned. The)3.877 F 1.377
+(trace is sent to syslog, and is huge, b)3.877 F 1.376(ut it is v)-.2 F
+1.376(ery useful for tracking)-.15 F(do)117 569.4 Q(wn problems.)-.25 E
+2.097 -.8(To r)117 593.4 T .498
+(un with tracing of all queries specify the).8 F F3(-q)2.998 E F2 .498
+(\215ag on the command line.)2.998 F .498(If you routinely log)5.498 F
+.134(queries you will probably w)117 605.4 R .133(ant to analyze the results using the dnsstats stats script in the contrib)
+-.1 F(directory)117 617.4 Q(.)-.65 E(SIGIO)142 633.6 Q 2.693(T-D)-.4 G
+.193(umps statistics data into)-2.693 F F3(/var/tmp/named.stats)2.693 E
+F2 .193(if the serv)2.693 F .193(er is b)-.15 F .193(uilt with)-.2 F F3
+(ST)2.694 E -.37(AT)-.5 G(S).37 E F2 2.5(de\214ned. Statistics)117 645.6
+R(are appended to the \214le.)2.5 E F0 2.5(8. Building)72 681.6 R 2.5
+(aS)2.5 G(ystem with a Name Ser)-2.5 E -.1(ve)-.1 G(r).1 E F2 .336
+(BIND is composed of tw)112 697.8 R 2.836(op)-.1 G 2.835(arts. One)
+-2.836 F .335(is the user interf)2.835 F .335(ace called the)-.1 F F3
+-.37(re)2.835 G(solver).37 E F2 .335(which consists of a)2.835 F .293
+(group of routines that reside in the C library)87 709.8 R F3
+(/lib/libc.a)2.793 E F2 5.293(.S)C .293(econd is the actual serv)-5.293
+F .293(er called)-.15 F F3(named)2.793 E F2 5.293(.T)C(his)-5.293 E .066
+(is a daemon that runs in the background and services queries on a gi)87
+721.8 R -.15(ve)-.25 G 2.566(nn).15 G(etw)-2.566 E .066
+(ork port. The standard port)-.1 F EP
+%%Page: 26 26
+%%BeginPageSetup
+BP
+%%EndPageSetup
+/F0 10/Times-Bold@0 SF 203.87(SMM:10-26 Name)72 60 R(Ser)2.5 E -.1(ve)
+-.1 G 2.5(rO).1 G(perations Guide f)-2.5 E(or)-.25 E/F1 9/Times-Bold@0
+SF(BIND)2.5 E/F2 10/Times-Roman@0 SF(for UDP and TCP is speci\214ed in)
+87 96 Q/F3 10/Times-Italic@0 SF(/etc/services)2.5 E F2(.)A F0 2.5
+(8.1. Resolv)87 120 R(er Routines in libc)-.1 E F2 .109(When b)127 136.2
+R .109(uilding your 4.3BSD system you may either b)-.2 F .11
+(uild the C library to use the name serv)-.2 F(er)-.15 E(resolv)102
+148.2 Q .415(er routines or use the host table lookup routines to do host name and address resolution.)
+-.15 F(The)5.415 E(def)102 160.2 Q .939(ault resolv)-.1 F .939
+(er for 4.3BSD uses the name serv)-.15 F(er)-.15 E 5.939(.N)-.55 G -.25
+(ew)-5.939 G .94(er BSD systems include both name serv).25 F(er)-.15 E
+.651(and host table functionality with preference gi)102 172.2 R -.15
+(ve)-.25 G 3.151(nt).15 G 3.151(ot)-3.151 G .651(he name serv)-3.151 F
+.65(er if there is one or if there is a)-.15 F F3(/etc/r)102 184.2 Q
+(esolv)-.37 E(.conf)-.74 E F2(\214le.)2.5 E 3.603
+(Building the C library to use the name serv)127 200.4 R 3.604
+(er changes the w)-.15 F(ay)-.1 E F3 -.1(ge)6.104 G(thostbyname).1 E F2
+(\(3N\),)1.666 E F3 -.1(ge)102 212.4 S(thostbyaddr).1 E F2 6.987
+(\(3N\), and)1.666 F F3(sethostent)9.487 E F2 6.987
+(\(3N\) do their functions.)1.666 F 6.986(The name serv)11.986 F 6.986
+(er renders)-.15 F F3 -.1(ge)102 224.4 S(thostent).1 E F2 .683
+(\(3N\) obsolete, since it has no concept of a ne)1.666 F .684
+(xt line in the database.)-.15 F .684(These library calls)5.684 F(are b)
+102 236.4 Q(uilt with the resolv)-.2 E
+(er routines needed to query the name serv)-.15 E(er)-.15 E(.)-.55 E
+(The)127 252.6 Q F3 -.37(re)4.916 G(solver).37 E F2 2.416
+(contains functions that b)4.916 F 2.416(uild query pack)-.2 F 2.416
+(ets and e)-.1 F 2.415(xchange them with name)-.15 F(serv)102 264.6 Q
+(ers.)-.15 E 1.586(Before b)127 280.8 R 1.587
+(uilding the 4.3BSD C library)-.2 F 4.087(,s)-.65 G 1.587(et the v)
+-4.087 F(ariable)-.25 E F3(HOSTLOOKUP)4.087 E F2 1.587(equal to)4.087 F
+F3(named)4.087 E F2(in)4.087 E F3(/usr/sr)102 292.8 Q(c/lib/libc/Mak)
+-.37 E(e\214le)-.1 E F2 5.99(.Y)C .99(ou then mak)-7.09 F 3.49(ea)-.1 G
+.99(nd install the C library and compiler and then compile)-3.49 F .732
+(the rest of the 4.3BSD system.)102 304.8 R -.15(Fo)5.733 G 3.233(rm).15
+G .733(ore information see section 6.6 of `)-3.233 F .733
+(`Installing and Operating)-.74 F(4.3BSD on the V)102 316.8 Q(AX\210')
+-1.35 E('.)-.74 E 1.341(If your operating system isn')127 333 R 3.841
+(tV)-.18 G 1.341(AX\210 4.3BSD, it is probably the case that your v)
+-5.191 F 1.34(endor has)-.15 F(included)102 345 Q F3 -.37(re)2.98 G
+(solver).37 E F2 .481(support in the supplied C Library)2.98 F 5.481(.Y)
+-.65 G .481(ou should consult your v)-6.581 F(endor')-.15 E 2.981(sd)
+-.55 G(ocumenta-)-2.981 E 1.038
+(tion to \214nd out what has to be done to enable)102 357 R F3 -.37(re)
+3.538 G(solver).37 E F2 3.538(support. Note)3.538 F 1.038(that your v)
+3.538 F(endor')-.15 E(s)-.55 E F3 -.37(re)3.538 G(solver).37 E F2 1.099
+(may be out of date with respect to the one shipped with)102 369 R/F4 9
+/Times-Roman@0 SF(BIND)3.599 E F2 3.599(,a)C 1.099(nd that you might w)
+-3.599 F 1.1(ant to b)-.1 F(uild)-.2 E F4(BIND)102 381 Q F2 1.944 -.55
+('s r)D(esolv).55 E .844
+(er library and install it, and its include \214les, into your system')
+-.15 F 3.343(sc)-.55 G .843(ompile/link path so)-3.343 F(that your o)102
+393 Q(wn netw)-.25 E(ork applications will be able to use the ne)-.1 E
+(wer features.)-.25 E .32 LW 76 680.4 72 680.4 DL 80 680.4 76 680.4 DL
+84 680.4 80 680.4 DL 88 680.4 84 680.4 DL 92 680.4 88 680.4 DL 96 680.4
+92 680.4 DL 100 680.4 96 680.4 DL 104 680.4 100 680.4 DL 108 680.4 104
+680.4 DL 112 680.4 108 680.4 DL 116 680.4 112 680.4 DL 120 680.4 116
+680.4 DL 124 680.4 120 680.4 DL 128 680.4 124 680.4 DL 132 680.4 128
+680.4 DL 136 680.4 132 680.4 DL 140 680.4 136 680.4 DL 144 680.4 140
+680.4 DL 148 680.4 144 680.4 DL 152 680.4 148 680.4 DL 156 680.4 152
+680.4 DL 160 680.4 156 680.4 DL 164 680.4 160 680.4 DL 168 680.4 164
+680.4 DL 172 680.4 168 680.4 DL 176 680.4 172 680.4 DL 180 680.4 176
+680.4 DL 184 680.4 180 680.4 DL 188 680.4 184 680.4 DL 192 680.4 188
+680.4 DL 196 680.4 192 680.4 DL 200 680.4 196 680.4 DL 204 680.4 200
+680.4 DL 208 680.4 204 680.4 DL 212 680.4 208 680.4 DL 216 680.4 212
+680.4 DL/F5 8/Times-Roman@0 SF<8856>93.6 692.4 Q(AX is a T)-1.08 E
+(rademark of Digital Equipment Corporation)-.28 E EP
+%%Page: 27 27
+%%BeginPageSetup
+BP
+%%EndPageSetup
+/F0 10/Times-Bold@0 SF(Name Ser)72 60 Q -.1(ve)-.1 G 2.5(rO).1 G
+(perations Guide f)-2.5 E(or)-.25 E/F1 9/Times-Bold@0 SF 206.564
+(BIND SMM)2.5 F F0(:10-27)A -.55(AC)212.13 96 S(KNO).55 E
+(WLEDGEMENTS \212 4.9.3)-.5 E/F2 10/Times-Roman@0 SF(The)97 112.2 Q/F3
+10/Times-Italic@0 SF(<bind-work)3.458 E(er)-.1 E(s@vix.com>)-.1 E F2
+.958(mailing list w)3.458 F .958(as once ag)-.1 F .959
+(ain of great help; this release w)-.05 F .959(ould not be)-.1 F .252
+(nearly as ready for prime time if not for their ef)72 124.2 R 2.752
+(forts. Special)-.25 F .251(commendations are o)2.752 F .251
+(wed to Robert Elz, Don)-.25 F("T)72 136.2 Q(ruck" Le)-.35 E
+(wis, Bob Halle)-.25 E 1.3 -.65(y, M)-.15 H(ark Andre).65 E
+(ws, Berthold P)-.25 E(af)-.15 E(frath, Ruediger V)-.25 E
+(olk, and Peter K)-1.29 E(och.)-.35 E .787
+(Digital Equipment Corporation, He)97 152.4 R .787(wlett P)-.25 F .787
+(ackard, Silicon Graphics, and SunSoft all made hardw)-.15 F(are)-.1 E
+-.2(av)72 164.4 S 1.157(ailable for inte)-.05 F 1.156
+(gration testing; this made the release f)-.15 F 1.156
+(ar more solid than it w)-.1 F 1.156(ould otherwise ha)-.1 F 1.456 -.15
+(ve b)-.2 H(een.).15 E .686(More hardw)72 176.4 R .686
+(are loans are welcome \212 if you are a system v)-.1 F .687
+(endor and you w)-.15 F .687(ould lik)-.1 F(e)-.1 E/F4 8/Times-Roman@0
+SF(BIND)3.187 E F2 .687(to run `)3.187 F .687(`out of)-.74 F .456
+(the box')72 188.4 R 2.956('o)-.74 G 2.956(ny)-2.956 G .456
+(our platform and are willing to lend some rusty old hardw)-2.956 F .455
+(are for the purpose, please contact)-.1 F(me \()72 200.4 Q F3
+(<paul@vix.or)A(g>)-.37 E F2 2.5(\)t)C 2.5(om)-2.5 G(ak)-2.5 E 2.5(et)
+-.1 G(he arrangements.)-2.5 E 4.346
+(Special thanks to the Internet Softw)97 216.6 R 4.346
+(are Consortium for funding this w)-.1 F 6.846(ork. Contact)-.1 F F3
+(<isc-)6.846 E(info@isc.or)72 228.6 Q(g>)-.37 E F2 .972(if your or)3.472
+F -.05(ga)-.18 G .972(nization w).05 F .972(ould lik)-.1 F 3.472(et)-.1
+G 3.472(op)-3.472 G .972(articipate in funding future releases of)-3.472
+F F4(BIND)3.472 E F2 .971(and other)3.471 F(freely redistrib)72 240.6 Q
+(utable softw)-.2 E(are packages that are in wide use on the Internet.)
+-.1 E F0 -.55(AC)197.495 276.6 S(KNO).55 E(WLEDGEMENTS \212 thr)-.5 E
+(ough 4.9)-.18 E F2 .603(The alpha-test group w)97 292.8 R .603(as e)-.1
+F .603(xtremely helpful in furnishing impro)-.15 F -.15(ve)-.15 G .604
+(ments, \214nding and repairing b).15 F(ugs,)-.2 E .844
+(and being patient.)72 304.8 R 3.344(Iw)5.844 G .844(ould lik)-3.444 F
+3.344(et)-.1 G 3.344(oe)-3.344 G .844
+(xpress special thanks to Brian Reid of Digital Equipment corporation)
+-3.494 F .023(for funding this w)72 316.8 R 2.523(ork. Robert)-.1 F .023
+(Elz, Alan Barrett, P)2.523 F .023(aul Albitz, Bryan Beecher)-.15 F
+2.524(,A)-.4 G(ndre)-2.524 E 2.524(wP)-.25 G .024(artan, Andy Cheren-)
+-2.674 F 1.098(son, T)72 328.8 R 1.098(om Limoncelli, Berthold P)-.8 F
+(af)-.15 E 1.098(frath, Fuat Baran, Anant K)-.25 F(umar)-.15 E 3.598(,A)
+-.4 G 1.098(rt Harkin, W)-3.598 F 1.098(in T)-.4 F 1.097(reese, Don Le)
+-.35 F(wis,)-.25 E 1.605(Christophe W)72 340.8 R 1.606
+(olfhugel, and a cast of dozens all helped out abo)-.8 F 1.906 -.15
+(ve a)-.15 H 1.606(nd be).15 F 1.606(yond the call of duty)-.15 F 6.606
+(.S)-.65 G(pecial)-6.606 E .703
+(thanks to Phil Almquist, who got the project started and contrib)72
+352.8 R .702(uted a lot of the code and \214x)-.2 F .702(ed se)-.15 F
+-.15(ve)-.25 G .702(ral of).15 F(the w)72 364.8 Q(orst b)-.1 E(ugs.)-.2
+E F0 -.55(AC)193.745 400.8 S(KNO).55 E(WLEDGEMENTS \212 thr)-.5 E
+(ough 4.8.3)-.18 E F2(Man)97 417 Q 2.915(yt)-.15 G .415
+(hanks to the users at U. C. Berk)-2.915 F(ele)-.1 E 2.916(yf)-.15 G
+.416(or f)-2.916 F .416(alling into man)-.1 F 2.916(yo)-.15 G 2.916(ft)
+-2.916 G .416(he holes in)-2.916 F -.2(vo)-.4 G(lv).2 E .416
+(ed with inte)-.15 F(grat-)-.15 E .468
+(ing BIND into the system so that others w)72 429 R .467
+(ould be spared the trauma.)-.1 F 2.967(Iw)5.467 G .467(ould also lik)
+-3.067 F 2.967(et)-.1 G 2.967(oe)-2.967 G .467(xtend gratitude)-3.117 F
+.461(to Jim McGinness and Digital Equipment Corporation for permitting me to spend most of my time on this)
+72 441 R(project.)72 453 Q .925(Ralph Campbell, Doug Kingston, Craig P)
+97 469.2 R .924(artridge, Smoot Carl-Mitchell, Mik)-.15 F 3.424(eM)-.1 G
+.924(uuss and e)-3.424 F -.15(ve)-.25 G(ryone).15 E .08(else on the D)72
+481.2 R(ARP)-.4 E 2.58(AI)-.92 G .08(nternet who has contrib)-2.58 F
+.081(uted to the de)-.2 F -.15(ve)-.25 G .081(lopment of BIND.).15 F
+1.681 -.8(To t)5.081 H .081(he members of the orig-).8 F
+(inal BIND project, Douglas T)72 493.2 Q(erry)-.7 E 2.5(,M)-.65 G(ark P)
+-2.5 E(ainter)-.15 E 2.5(,D)-.4 G -.2(av)-2.5 G
+(id Riggle and Songnian Zhou.).2 E 1.14
+(Anne Hughes, Jim Bloom and Kirk McK)97 509.4 R 1.14(usick and the man)
+-.15 F 3.64(yo)-.15 G 1.14(thers who ha)-3.64 F 1.44 -.15(ve r)-.2 H
+-.25(ev).15 G(ie).25 E 1.14(wed this paper)-.25 F(gi)72 521.4 Q
+(ving considerable advice.)-.25 E 1.02(This w)97 537.6 R 1.02(ork w)-.1
+F 1.021(as sponsored by the Defense Adv)-.1 F 1.021
+(anced Research Projects Agenc)-.25 F 3.521(y\()-.15 G 1.021
+(DoD\), Arpa Order)-3.521 F .787(No. 4871 monitored by the Na)72 549.6 R
+-.25(va)-.2 G 3.287(lE).25 G .786
+(lectronics Systems Command under contract No. N00039-84-C-0089.)-3.287
+F 1.209(The vie)72 561.6 R 1.209(ws and conclusions contained in this document are those of the authors and should not be inter)
+-.25 F(-)-.2 E 2.265(preted as representing of)72 573.6 R 2.265
+(\214cial policies, either e)-.25 F 2.264
+(xpressed or implied, of the Defense Research Projects)-.15 F(Agenc)72
+585.6 Q 1.3 -.65(y, o)-.15 H 2.5(ft).65 G(he US Go)-2.5 E -.15(ve)-.15 G
+(rnment, or of Digital Equipment Corporation.).15 E EP
+%%Page: 28 28
+%%BeginPageSetup
+BP
+%%EndPageSetup
+/F0 10/Times-Bold@0 SF 203.87(SMM:10-28 Name)72 60 R(Ser)2.5 E -.1(ve)
+-.1 G 2.5(rO).1 G(perations Guide f)-2.5 E(or)-.25 E/F1 9/Times-Bold@0
+SF(BIND)2.5 E F0(REFERENCES)254.385 96 Q/F2 10/Times-Roman@0 SF 36.73
+([Birrell] Birrell,)72 124.2 R(A. D., Le)2.5 E .001
+(vin, R., Needham, R. M., and Schroeder)-.25 F 2.501(,M)-.4 G .001
+(.D., \231Grape)-2.501 F .001(vine: An Ex)-.25 F(ercise)-.15 E
+(in Distrib)144 136.2 Q(uted Computing.)-.2 E 5<9a49>-.7 G(n)-5 E/F3 10
+/Times-Italic@0 SF(Comm. A.C.M. 25,)2.5 E F2(4:260-274 April 1982.)2.5 E
+28.94([RFC819] Su,)72 152.4 R 4.587(Z. Postel,)4.587 F 2.086
+(J., \231The Domain Naming Con)4.587 F -.15(ve)-.4 G 2.086
+(ntion for Internet User Applications.).15 F<9a>-.7 E F3 2.924
+(Internet Request F)144 164.4 R 2.924(or Comment 819)-1.05 F F2(Netw)
+5.424 E 2.925(ork Information Center)-.1 F 5.425(,S)-.4 G 2.925
+(RI International,)-5.425 F(Menlo P)144 176.4 Q(ark, California.)-.15 E
+(August 1982.)5 E 28.94([RFC974] P)72 192.6 R .933
+(artridge, C., \231Mail Routing and The Domain System.)-.15 F<9a>-.7 E
+F3 .932(Internet Request F)5.933 F .932(or Comment)-1.05 F(974)144 204.6
+Q F2(Netw)3.997 E 1.497(ork Information Center)-.1 F 3.998(,S)-.4 G
+1.498(RI International, Menlo P)-3.998 F 1.498(ark, California.)-.15 F
+(February)6.498 E(1986.)144 216.6 Q 23.94([RFC1032] Stahl,)72 232.8 R
+.202(M., \231Domain Administrators Guide\232)2.702 F F3 .202
+(Internet Request F)2.702 F .202(or Comment 1032)-1.05 F F2(Netw)2.702 E
+(ork)-.1 E(Information Center)144 244.8 Q 2.5(,S)-.4 G
+(RI International, Menlo P)-2.5 E(ark, California.)-.15 E(No)5 E -.15
+(ve)-.15 G(mber 1987.).15 E 23.94([RFC1033] Lottor)72 261 R 4.01(,M)-.4
+G 1.51(., \231Domain Administrators Guide\232)-4.01 F F3 1.51
+(Internet Request F)4.01 F 1.51(or Comment 1033)-1.05 F F2(Net-)4.01 E
+-.1(wo)144 273 S(rk Information Center).1 E 2.5(,S)-.4 G
+(RI International, Menlo P)-2.5 E(ark, California.)-.15 E(No)5 E -.15
+(ve)-.15 G(mber 1987.).15 E 23.94([RFC1034] Mockapetris,)72 289.2 R
+-1.11(P.)3.435 G 3.435<2c99>1.11 G .935(Domain Names - Concept and F)
+-3.435 F(acilities.)-.15 E<9a>-.7 E F3 .934(Internet Request F)5.934 F
+.934(or Com-)-1.05 F 3.071(ment 1034)144 301.2 R F2(Netw)5.571 E 3.071
+(ork Information Center)-.1 F 5.571(,S)-.4 G 3.071
+(RI International, Menlo P)-5.571 F 3.072(ark, California.)-.15 F(No)144
+313.2 Q -.15(ve)-.15 G(mber 1987.).15 E 23.94([RFC1035] Mockapetris,)72
+329.4 R -1.11(P.)3.139 G 3.139<2c99>1.11 G .639
+(Domain Names - Implementation and Speci\214cation.)-3.139 F<9a>-.7 E F3
+.638(Internet Request)5.639 F -1.05(Fo)144 341.4 S 2.889(rC)1.05 G .389
+(omment 1035)-2.889 F F2(Netw)2.889 E .389(ork Information Center)-.1 F
+2.889(,S)-.4 G .389(RI International, Menlo P)-2.889 F .389
+(ark, Califor)-.15 F(-)-.2 E 2.5(nia. No)144 353.4 R -.15(ve)-.15 G
+(mber 1987.).15 E 23.94([RFC1101] Mockapetris,)72 369.6 R -1.11(P.)2.854
+G 2.854<2c99>1.11 G .354(DNS Encoding of Netw)-2.854 F .354
+(ork Names and Other T)-.1 F(ypes.)-.8 E<9a>-.7 E F3 .353
+(Internet Request)5.353 F -1.05(Fo)144 381.6 S 2.889(rC)1.05 G .389
+(omment 1101)-2.889 F F2(Netw)2.889 E .389(ork Information Center)-.1 F
+2.889(,S)-.4 G .389(RI International, Menlo P)-2.889 F .389
+(ark, Califor)-.15 F(-)-.2 E 2.5(nia. April)144 393.6 R(1989.)2.5 E
+23.94([RFC1123] R.)72 409.8 R .294(Braden, Editor)2.794 F 2.794<2c99>-.4
+G .294(Requirements for Internet Hosts -- Application and Support\232)
+-2.794 F F3(Internet)2.793 E .369(Request F)144 421.8 R .369
+(or Comment 1123)-1.05 F F2(Netw)2.869 E .369(ork Information Center)-.1
+F 2.869(,S)-.4 G .369(RI International, Menlo P)-2.869 F(ark,)-.15 E 2.5
+(California. October)144 433.8 R(1989.)2.5 E 23.94([RFC1183] Ev)72 450 R
+1.526(erhart, C., Mamak)-.15 F 1.526
+(os, L., Ullmann, R., and Mockapetris, P)-.1 F 1.526(., \231Ne)-1.11 F
+4.026(wD)-.25 G 1.525(NS RR De\214ni-)-4.026 F(tions\232)144 462 Q F3
+1.688(Internet Request F)4.188 F 1.688(or Comment 1183)-1.05 F F2(Netw)
+4.188 E 1.688(ork Information Center)-.1 F 4.188(,S)-.4 G 1.688
+(RI Interna-)-4.188 F(tional, Menlo P)144 474 Q(ark, California.)-.15 E
+(October 1990.)5 E 23.94([RFC1327] Hardcastle-Kille,)72 490.2 R .805
+(S., \231Mapping between X.400\(1988\) / ISO 10021 and RFC 822\232)3.306
+F F3(Inter)3.305 E(-)-.2 E 1.215(net Request F)144 502.2 R 1.215
+(or Comment 1327)-1.05 F F2(Netw)3.715 E 1.215(ork Information Center)
+-.1 F 3.715(,S)-.4 G 1.215(RI International, Menlo)-3.715 F -.15(Pa)144
+514.2 S(rk, California.).15 E(May 1992.)5 E 23.94([RFC1664] Allocchio,)
+72 530.4 R .14(C., Bonito, A., Cole, B., Giordano, S., Hagens, R., \231Using the Internet DNS to)
+2.64 F(Distrib)144 542.4 Q .263(ute RFC1327 Mail Address Mapping T)-.2 F
+(ables\232)-.8 E F3 .263(Internet Request F)2.763 F .263
+(or Comment 1664)-1.05 F F2(Netw)144 554.4 Q(ork Information Center)-.1
+E 2.5(,S)-.4 G(RI International, Menlo P)-2.5 E(ark, California.)-.15 E
+(August 1994.)5 E 23.94([RFC1713] Romao,)72 570.6 R .174(A., \231T)2.674
+F .174(ools for DNS deb)-.8 F(ugging\232)-.2 E F3 .173
+(Internet Request F)2.673 F .173(or Comment 1713, also FYI27)-1.05 F F2
+(Netw)144 582.6 Q .018(ork Information Center)-.1 F 2.519(,S)-.4 G .019
+(RI International, Menlo P)-2.519 F .019(ark, California.)-.15 F(No)
+5.019 E -.15(ve)-.15 G .019(mber 1994.).15 F([T)72 598.8 Q 41.33
+(erry] T)-.7 F(erry)-.7 E 4.678(,D)-.65 G 4.678(.B)-4.678 G 2.178(., P)
+-4.678 F(ainter)-.15 E 4.678(,M)-.4 G 2.178(., Riggle, D. W)-4.678 F
+2.178(., and Zhou, S.,)-.92 F F3 2.178(The Berk)4.678 F(ele)-.1 E 4.677
+(yI)-.3 G 2.177(nternet Name)-4.677 F .747(Domain Server)144 610.8 R(.)
+-1.11 E F2 .747(Proceedings USENIX Summer Conference, Salt Lak)5.747 F
+3.247(eC)-.1 G(ity)-3.247 E 3.247(,U)-.65 G 3.247(tah. June)-3.247 F
+(1984, pages 23-31.)144 622.8 Q 41.73([Zhou] Zhou,)72 639 R(S.,)2.746 E
+F3 .246(The Design and Implementation of the Berk)2.746 F(ele)-.1 E
+2.746(yI)-.3 G .245(nternet Name Domain \(BIND\))-2.746 F(Server)144 651
+Q(s.)-.1 E F2 .464(UCB/CSD 84/177.)5.464 F(Uni)5.464 E -.15(ve)-.25 G
+.464(rsity of California, Berk).15 F(ele)-.1 E 1.765 -.65(y, C)-.15 H
+.465(omputer Science Di).65 F(vi-)-.25 E 2.5(sion. May)144 663 R(1984.)
+2.5 E 12.85([Mockapetris] Mockapetris,)72 679.2 R -1.11(P.)3.463 G 3.463
+(,D)1.11 G .963(unlap, K,)-3.463 F F3(De)3.463 E .963
+(velopment of the Domain Name System)-.15 F F2 -.4(AC)3.462 G 3.462(MC)
+.4 G(omputer)-3.462 E 2.057(Communications Re)144 691.2 R(vie)-.25 E
+4.557(w1)-.25 G 2.057(8, 4:123-133.)-4.557 F 2.058(Proceedings A)7.057 F
+2.058(CM SIGCOMM '88)-.4 F(Sympo-)7.058 E(sium, August 1988.)144 703.2 Q
+EP
+%%Page: 29 29
+%%BeginPageSetup
+BP
+%%EndPageSetup
+/F0 10/Times-Bold@0 SF(Name Ser)72 60 Q -.1(ve)-.1 G 2.5(rO).1 G
+(perations Guide f)-2.5 E(or)-.25 E/F1 9/Times-Bold@0 SF 206.564
+(BIND SMM)2.5 F F0(:10-29)A/F2 10/Times-Roman@0 SF 48.95([Liu] Liu,)72
+96 R 1.09(C., Albitz, P)3.59 F(.,)-1.11 E/F3 10/Times-Italic@0 SF 1.09
+(DNS and BIND)3.59 F F2 1.09
+(O'Reilly & Associates, Sebastopol, CA, 502 pages,)3.59 F
+(ISBN 0-937175-82-X 1992)144 108 Q EP
+%%Trailer
+end
+%%EOF

@@ -1,0 +1,458 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+ <META NAME="GENERATOR" CONTENT="SGML-Tools 1.0.9">
+ <TITLE> IFHP-HOWTO: Configuration Files</TITLE>
+ <LINK HREF="ifhp-8.html" REL=next>
+ <LINK HREF="ifhp-6.html" REL=previous>
+ <LINK HREF="ifhp.html#toc7" REL=contents>
+</HEAD>
+<BODY>
+<A HREF="ifhp-8.html">Next</A>
+<A HREF="ifhp-6.html">Previous</A>
+<A HREF="ifhp.html#toc7">Contents</A>
+<HR>
+<H2><A NAME="configfiles"></A> <A NAME="s7">7. Configuration Files</A></H2>
+
+<P>Run time options are provided by the
+command line arguments and values in the configuration  files.
+By convention,
+the configuration files are named
+<CODE>ifhp.conf</CODE>.
+<P>In order to provide a flexible run time configuration facility,
+the location of the configuration files is specifed as follows.
+<OL>
+<LI>The default list of configuration files is:<BR>
+<CODE>./ifhp.conf,/etc/ifhp.conf,./ifhp.conf</CODE></LI>
+<LI>The command line option<BR>
+<CODE>-Tconfig=/path,/path,...</CODE><BR>
+can be used to override the default list of configuration files.</LI>
+</OL>
+<P>Here is a section of a simple configuration file.
+<BLOCKQUOTE><CODE>
+<PRE>
+# languages
+pcl
+statusfile=status
+status
+sync=pcl
+sync_interval=20
+# we force pagecounting off
+#pagecount=pcl
+pagecount@
+[ HP4Si ]
+status@
+end
+[ HP5Si ]
+pjl
+sync=pjl
+</PRE>
+</CODE></BLOCKQUOTE>
+<P>The configuration file is used to set flags, option values, and to cause
+various
+<CODE>ifhp</CODE>
+actions.
+The file has the following structure.
+<OL>
+<LI>  Blank lines and lines starting with # are ignored.</LI>
+<LI>  Keys or flags start in column 1.
+The syntax is similar to the LPRng and BSD
+file.
+<BLOCKQUOTE><CODE>
+<PRE>
+Syntax             Equivalent To    Class
+flag               flag=1           (FLAG)
+flag&commat;       flag=0           (FLAG)
+flag=val           flag=val (string value) STRING
+flag=] v v  ... [          LIST
+</PRE>
+</CODE></BLOCKQUOTE>
+</LI>
+<LI>Flags are used for options which take a TRUE/FALSE, 0/1, or ON/OFF
+value, and
+<CODE>ifhp</CODE>
+will substitute the appropriate form or perform the
+assocated action if the flag is TRUE.</LI>
+<LI>Strings are used to set options which require a multicharacter value.
+The special form
+<CODE>flag&commat;</CODE>
+is used to indicate that the operation
+related to this option is not to be performed.</LI>
+<LI>Lists are used to specify a list of options which can be flags or string
+values.
+Lists have the property of
+<EM>recursive evaluation</EM>
+which means that the individual items in the list will be acted upon in order.
+This is discussed later in detail.</LI>
+<LI>The list entries are separated by whitespace,
+and each entry can have the form v, v&commat;,
+v=word, or v1#word, where word does not contain whitespace or
+the [] characters.</LI>
+<LI>Flag values can be spread over multiple lines.  Lines starting with
+whitespace, are treated as a continuation of the previous
+flags line value.  For example:
+<BLOCKQUOTE><CODE>
+<PRE>
+# set string x value 'first\n  second\n  third'
+x= first
+  second
+  third
+# set list y value [ f1 f2 ]
+y=[ f1
+ f2 ]
+</PRE>
+</CODE></BLOCKQUOTE>
+</LI>
+<LI>Selection lines have the form:
+<BLOCKQUOTE><CODE>
+<PRE>
+[ glob glob ... ]
+</PRE>
+</CODE></BLOCKQUOTE>
+
+<P>Selection lines divide the configuration file into sections
+corresponding to a particular printer model.   Configuration
+information is extracted from a file until either an 'end' line
+or a selection line is encountered.
+</LI>
+<LI>An 'end' line consisting of the single work 'end' will terminate
+reading lines from a configuration file.</LI>
+<LI> As the configuration file is read,  flag lines and values are accumulated.
+Later values encountered in the file will replace earlier values.</LI>
+</OL>
+<H2><A NAME="ss7.1">7.1 Configuration Selection</A>
+</H2>
+
+<P>The recommended format for a  configuration file is to put common
+(default) flag settings at the start of the configuration file,
+followed by selection sections with overridding and additional flag
+values.
+<P>To allow a single file to be used for multiple printer configurations,
+you can specify that a section of the file is to be used ONLY by
+a various models of printers.  This is is controlled by the value
+of the 'model' flag and selection lines of the form:
+<BLOCKQUOTE><CODE>
+<PRE>
+  [ glob glob ... ]
+</PRE>
+</CODE></BLOCKQUOTE>
+<P>The first occurrence of a 'model=xx' line in either the -T options
+or the configuration file will set the model flag value to 'xx'.
+<P>The 'model' value is matched against the modelglob values using
+GLOB matching.  For example:
+<BLOCKQUOTE><CODE>
+<PRE>
+hp*      matches hp4 hp5x
+hp[45]   matches hp4 hp5, but not hp5x
+hp[3-6]* matches hp3, hp5, hp5x, but not hpiii
+</PRE>
+</CODE></BLOCKQUOTE>
+<P>If a matching entry is found,  successive lines will be used until
+either another selection line or an 'end' line is encountered.  An
+'end' line will terminate reading the current file, and the next
+configuration file will be read.
+<P>The default list of configuration files is:
+<BLOCKQUOTE><CODE>
+<PRE>
+ifhp.conf, /etc/ifhp.conf, ifhp.conf
+</PRE>
+</CODE></BLOCKQUOTE>
+<P>This arrangement allows you to read the ifhp.conf file to get
+various model settings,  scan the /etc/ifhp.conf file to get the
+generic ones,  and then to rescan the local ifhp.conf file to
+provide overrides to values set in the /etc/ifhp.conf file.
+<H2><A NAME="ss7.2">7.2 Option Use</A>
+</H2>
+
+<P>Options and their values are used to control printer operation.
+There are two types of options:
+those with a predefined or
+<EM>builtin</EM>
+meaning to the
+<CODE>ifhp</CODE>
+filter and those which
+are simply used to supply values for expansion during operation.
+<P>The builtin options are listed in later sections,
+and their use is explained.
+These options can have flag, string, or list values as is appropriate
+to their corresponding actions.
+<H2><A NAME="ss7.3">7.3 Recursive List Expansion</A>
+</H2>
+
+<P>During normal operation,
+the
+<CODE>ifhp</CODE>
+filter will perform an operation by producing a set of strings
+which will be sent to the printer or output device.
+These strings may be obtained by using the values of predefined or builtin
+option names,
+or by expanding a LIST value.
+<P>A LIST value has the form X=[ v1 v2 ... ].
+When a list value is expanded
+each of v1, v2 is examined in turn
+and the corresponding action or string substitution or builtin evaluation
+is carried out.
+If v1 has a string value and is not recognized as a builtin or special option
+then normally the string value will be used.
+<BLOCKQUOTE><CODE>
+<PRE>
+t1=[ p1 p2 p3=end ]
+p1=this is
+p2=[ p3 p4 ]
+p3=a
+p4=test
+p3=living\020\%{p3}
+</PRE>
+</CODE></BLOCKQUOTE>
+<P>For example,
+when expanding
+<CODE>t1</CODE>
+each of
+<CODE>p1</CODE>
+and
+<CODE>p1</CODE>
+is in turn expanded.
+This will produce the strings
+<CODE>"this is"</CODE>,
+<CODE>"a"</CODE>,
+<CODE>"test"</CODE>
+and
+<CODE>"living end"</CODE>
+in turn.
+<P>Some LIST variables are used in
+printer language specific contexts
+and their values are processed appropriately.
+For example,
+pjl_init=[...] specifies a set of operations to be carried
+out for printers that support PJL,
+and pcl_init=[...] for PCL
+printers.  The expansion of the LIST entries is done in the language
+specific context.
+For PJL this requires that the output be well formed PJL commands,
+and for PCL that all whitespace be removed.
+<P>The context dependent expansion is required because sometimes it
+is necessary to do operations both using PJL and PCL or PJL and PS
+combinations to ensure correct printer operation.
+For this reason,  during expansion the language name and an underscore
+is prefixed to the list entry name,  and this is used as the option name during the search.
+<P>For example,  suppose that we have:
+<BLOCKQUOTE><CODE>
+<PRE>
+    pjl_init=[ test ]
+    pcl_init=[ test ]
+    initstr=NO
+    pjl_initstr=&commat;PJL ECHO YES
+    pcl_initstr=\033(*yeS
+</PRE>
+</CODE></BLOCKQUOTE>
+<P>When PJL initialization is done, the 'pjl_test' LIST will be
+expanded, and the PJL string '&commat;PJL ECHO YES' will obtained.
+When PCL language specific processing is done,  then the
+\033(*yeS string will be obtained.
+<H2><A NAME="ss7.4">7.4 String Expansion</A>
+</H2>
+
+<P>String values are encoded using a
+simple PERL/C language like method.  The \ (escape) character
+introduces a replacement string.  This has the form:
+<DL>
+<DT><B>Standard Character Replacement</B><DD><P><CODE> \f \r \n \t \nnn</CODE>
+where nnn are 3 octal digits are replaced
+by the standard PERL or C character substutions.
+<DT><B>Option Value Replacement</B><DD><P><CODE>\%format{option}    \%format[option]</CODE>
+<P>The option name will be relaced by the formatted option value.
+<DT><B>Option Search Order</B><DD><P>The option value is located using a simple set of rules.
+<OL>
+<LI>During a recursive option evaluation,
+expanding
+<CODE>option=word</CODE>
+will push the
+<CODE>option=word</CODE>
+combination onto an evaluation stack.
+This stack is searched in oldest to newest order for a match.</LI>
+<LI>If no match was found,
+and the expression has the form
+<CODE>{option}</CODE>
+then the
+<CODE>-Zoption=value</CODE>
+command line options will be searched for a match.</LI>
+<LI>If no match was found,
+then the
+<CODE>-Toption=value</CODE>
+command line options will be searched for a match.
+This allows the 
+<CODE>{option}</CODE>
+to start searching from the -Z command line options and
+<CODE>[option]</CODE>
+to start searching from the -T command line options.</LI>
+<LI>If no match was found,
+then the configuration information is searched.</LI>
+<LI>If no match was found,
+then the value is considered undefined,
+and a 
+<CODE>"0"</CODE>
+value is used.</LI>
+</OL>
+<DT><B>Format</B><DD><P>The format specifies how the value is to appear,
+and is similar to the printf format usage:
+<BLOCKQUOTE><CODE>
+<PRE>
+   %[-][0][length[.precision]][format]
+</PRE>
+</CODE></BLOCKQUOTE>
+<P>The default format is %d, ie, \%{val} would be \%d{val}.
+The numerical formats supported are: %d, %o, %x, %X, %e, %f, and %g;
+The %s format use the option string value.
+<P>The format is usually not required, except when fractional values of point sizes
+or string substition rather than numerical substition is required.
+</DL>
+<P>For example:
+<BLOCKQUOTE><CODE>
+<PRE>
+Configuration:
+  pjl_user_opts=[ ... outbin intray ...]
+  pjl_outbin=@PJL SET OUTBIN=\%s{outbin}
+  intraynum=4
+  pjl_intray=@PJL SET INTRAY=\%{intraynum}
+
+Command:
+  ifhp -Zoutbin=LEFT
+</PRE>
+</CODE></BLOCKQUOTE>
+<P>During PJL language processing,
+the 
+<CODE>-Z</CODE>
+command line options
+will be scanned for options which appear in the
+<CODE>pjl_user_opts</CODE>
+list.
+The
+<CODE>-Toutbin=LEFT</CODE>
+option will be found and will be expanded in the PJL context
+by prefixing
+<CODE>pjl_</CODE>
+and looking for a string or list value.
+The
+<CODE>pjl_outbin</CODE>
+option will be found,
+and the
+<CODE>@PJL SET OUTBIN=\%s{outbin}</CODE>
+string will be expanded.
+<P>Now we need to search for the
+<CODE>outbin</CODE>
+value.
+We first search for it on the evaluation stack,
+but there is nothing there yet.
+We then search the
+<CODE>-Z</CODE>
+options and find the
+<CODE>outbin</CODE>
+value,
+and substition yields
+<CODE>@PJL SET OUTBIN=LEFT</CODE>.
+<P>Next, the
+<CODE>intray</CODE>
+option is found and
+<CODE>pjl_intray</CODE>
+is expanded,
+which needs a value for
+<CODE>intraynum</CODE>.
+This is found in the configuration information,
+and finally in
+<CODE>@PJL SET INTRAY=4</CODE>.
+<BLOCKQUOTE><CODE>
+<PRE>
+cpi=5.5
+pcl_cpi=\033\%3.2f{cpi}D
+</PRE>
+</CODE></BLOCKQUOTE>
+<P>During PCL option expansion,
+we might need to expand the
+<CODE>pcl_cpi</CODE>
+option.
+When the
+<CODE>pcl_cpi=\033\%3.2f{cpi}D</CODE>
+string is expanded,
+the result is
+<CODE>\033\%5.00D</CODE>.
+If the user has specified
+<CODE>-Tcpi=9</CODE>
+on the command line then the result is
+<CODE>\033\%9.00D</CODE>.
+<H2><A NAME="ss7.5">7.5 Language Context</A>
+</H2>
+
+<P>The Tifhp filter sends initialization and configuration commands to the
+printer.
+Depending on the language,
+these commands have specific forms and requirements.
+Rather than requiring the user to remember the details, Tifhp uses the following conventions.
+<H3>PJL Language</H3>
+
+<P>A PJL command has the form
+<CODE>@PJL OPCODE ...</CODE>.
+A command must start with
+<CODE>@PJL</CODE>
+and consist of a single string value.
+You cannot patch together options to make a single PJL command.
+<OL>
+<LI>Before sending any PJL command to the printer,
+the PJL Universal Exit Command
+(<CODE>\033%-12345X</CODE>)
+string is sent to the printer.</LI>
+<LI>Because not all printers support all PJL commands,
+the Tifhp filter performs a couple of checks using the
+<CODE>pjl_only</CODE>
+and
+<CODE>pjl_except</CODE>
+configuration options.
+The OPCODE must appear in the
+<CODE>pjl_only</CODE>
+list and not in the
+<CODE>pjl_except</CODE>
+list.</LI>
+<LI>Leading and trailing whitespace is removed,
+and all characters are converted to uppercase.</LI>
+<LI>Individual commands have a newline
+(<CODE>\n</CODE>) appended to them before being sent to the printer.</LI>
+</OL>
+<H3>PCL Lanaguage</H3>
+
+<P>When sending PCL initialization strings to a printer,
+it is essential to send nothing that could cause a printable character to
+be sent before the actual file contents.
+Such output could cause the location and positioning of text to be altered
+in unexpected ways.
+To avoid this,
+the following steps are taken when processing PCL strings.
+<OL>
+<LI>Before any PCL string is sent to the printer,
+the PCL End of Job
+(<CODE>\033E</CODE>) string is sent to the printer.</LI>
+<LI>First,
+all whitespace (blanks, tabs, etc) are removed from the string value.</LI>
+<LI>Next, all escaped values are substituted.
+At this point you can
+<EM>force</EM>
+printable strings containing whitespace into the output by using the
+<CODE>\nnn</CODE>
+escape mechanism.</LI>
+</OL>
+<H3>PostScript Language</H3>
+
+<P>The PostScript language processing is very minimal,
+as there are few problems sending PostScript to a printer.
+<OL>
+<LI>Before sending any PostScript initialization strings,
+the PostScript End of Job indicator
+(<CODE>\004</CODE> or Control-D) is sent.</LI>
+<LI>Strings are then expanded and the escape sequences are substituted.</LI>
+<LI>Individual strings have a newline
+(<CODE>\n</CODE>) appended to them before being sent to the printer.</LI>
+</OL>
+<HR>
+<A HREF="ifhp-8.html">Next</A>
+<A HREF="ifhp-6.html">Previous</A>
+<A HREF="ifhp.html#toc7">Contents</A>
+</BODY>
+</HTML>

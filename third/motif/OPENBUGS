@@ -1,0 +1,3663 @@
+#
+# @OSF_COPYRIGHT@
+# (c) Copyright 1990, 1991, 1992, 1993, 1994 OPEN SOFTWARE FOUNDATION, INC.
+# ALL RIGHTS RESERVED
+#  
+#
+#
+# HISTORY
+# Motif Release 1.2.5
+#
+
+CR Number                     : 10113
+Short Description             : MWM does not adjust client window size validly
+Subcomponent or Book Name     : MWM (programmatic interface)
+Found in Baseline             : 1.2.4
+
+CR Number                     : 10110
+Short Description             : Subclassing XmArrowButton causes
+a core dump
+Subcomponent or Book Name     : XmPrimitive
+Found in Baseline             : 1.2.4
+
+CR Number                     : 10107
+Short Description             : MWM does not properly process the
+WM_NORMAL_HINTS properties base_width and height.
+Subcomponent or Book Name     : MWM (programmatic interface)
+Found in Baseline             : 1.2.4
+
+CR Number                     : 10105
+Short Description             : Problem with TextField insert
+cursor when text modified in callbacks
+Subcomponent or Book Name     : XmTextField
+Found in Baseline             : 1.2.4
+
+CR Number                     : 10103
+Short Description             : MWM's f.raise_lower ignores
+"within" and "freeFamily"
+Subcomponent or Book Name     : MWM (user interface)
+Found in Baseline             : 1.2.4
+
+CR Number                     : 10099
+Short Description             : Notepad performance poor when editting large file
+Subcomponent or Book Name     : XmNotebook
+Found in Baseline             : 1.2.3
+
+CR Number                     : 10089
+Short Description             : Cannot specify the Delete key as
+an accelarator.
+Subcomponent or Book Name     : XmPushButton
+Found in Baseline             : 1.2.3
+
+CR Number                     : 10088
+Short Description             : When "editible" is set to TRUE on a Text[Field] with focus, asian IM fails
+Subcomponent or Book Name     : XmTextField
+Found in Baseline             : 1.2.5
+
+CR Number                     : 10087
+Short Description             : If the VendorShell height is set using XtSetValues() before realize, the area for the status display etc. is not allocated.
+Subcomponent or Book Name     : I18N misc
+Found in Baseline             : 1.2.5
+
+CR Number                     : 10086
+Short Description             : Keyboard focus not set properly
+upon closing multiple dialog shells in an application
+Subcomponent or Book Name     : MWM (programmatic interface)
+Found in Baseline             : 1.2.3
+
+CR Number                     : 10085
+Short Description             : The resource XtNinput is ineffective when keyboardFocusPolicy is "pointer"
+Subcomponent or Book Name     : MWM (user interface)
+Found in Baseline             : 1.2.4
+
+CR Number                     : 10084
+Short Description             : Bogus function call to execl in WmFunction.c
+Subcomponent or Book Name     : MWM (programmatic interface)
+Found in Baseline             : 1.2.4
+
+CR Number                     : 10082
+Short Description             : Error in MW_COLORMAP_WINDOWS property fix
+Subcomponent or Book Name     : MWM (client-command interface)
+Found in Baseline             : 1.2.4
+
+CR Number                     : 10080
+Short Description             : Motif color allocation should be changeable.
+Subcomponent or Book Name     : Color
+Found in Baseline             : 1.2.4
+
+CR Number                     : 10078
+Short Description             : Exposed by VTS: RowColumn.c: ButtonMenuPopDown() deref non RowColumnW
+Subcomponent or Book Name     : Menu button interactions
+Found in Baseline             : 1.2.4
+
+CR Number                     : 10077
+Short Description             : ResInd.c crashes because it calls memcpy.
+Subcomponent or Book Name     : Resolution Independence
+Found in Baseline             : 1.2.4
+
+CR Number                     : 10073
+Short Description             : The XmText cannot handle the tab and the long word correctly
+Subcomponent or Book Name     : XmText
+Found in Baseline             : 1.2.4
+
+CR Number                     : 10072
+Short Description             : Menubar shadow gets undrawn
+Subcomponent or Book Name     : Menu button interactions
+Found in Baseline             : 1.2.3
+
+CR Number                     : 10070
+Short Description             : Can't find $LANG/system.mwmrc
+Subcomponent or Book Name     : MWM (programmatic interface)
+Found in Baseline             : 1.2.4
+
+CR Number                     : 10063
+Short Description             : Enhancement of tear off menus
+Subcomponent or Book Name     : TearOff Menus
+Found in Baseline             : 1.2.3
+
+CR Number                     : 10048
+Short Description             : Inserting Cntl-J to single line XmText causes multi-line behavior
+Subcomponent or Book Name     : XmText
+Found in Baseline             : 1.2.4
+
+CR Number                     : 10047
+Short Description             : Problem with Motif Drag and Drop
+Subcomponent or Book Name     : Drag and Drop
+Found in Baseline             : 1.2.3
+
+CR Number                     : 10045
+Short Description             : UIL is not handling floating-point values well
+Subcomponent or Book Name     : UIL
+Found in Baseline             : 1.2.4
+
+CR Number                     : 10044
+Short Description             : RemoveGrab fails to fix grablist if two shells are destroyed.
+Subcomponent or Book Name     : other
+Found in Baseline             : 1.2.4
+
+CR Number                     : 10041
+Short Description             : Menu accelerators don't work if the managing of widgets is deferred.
+Subcomponent or Book Name     : XmPushButton
+Found in Baseline             : 1.2.4
+
+CR Number                     : 10035
+Short Description             : XmText/XmTextField word
+forward/backward inconsistency
+Subcomponent or Book Name     : Programmer's Reference
+Found in Baseline             : 1.2.4
+
+CR Number                     : 10034
+Short Description             : TextWidget selection code
+forgets to use * to dereference pointer
+Subcomponent or Book Name     : XmText
+Found in Baseline             : 1.2.4
+
+CR Number                     : 10032
+Short Description             : Motif cannot handle font with negative lbeagings.
+Subcomponent or Book Name     : XmText
+Found in Baseline             : 1.2.4
+
+CR Number                     : 10029
+Short Description             : pane is 0 height if using a form & setting pane size
+Subcomponent or Book Name     : Geometry Management Mechanism
+Found in Baseline             : 1.2.4
+
+CR Number                     : 10027
+Short Description             : popDownCallback and popUpCallback of the menushell not called.
+Subcomponent or Book Name     : XmCascadeButton
+Found in Baseline             : 1.2.3
+
+CR Number                     : 10026
+Short Description             : The libXm cannot convert the XmString to the Compound Text correctly.
+Subcomponent or Book Name     : Resource Converters
+Found in Baseline             : 1.2.4
+
+CR Number                     : 10025
+Short Description             : The libXm doesn't shorten the blank of the IM status area.
+Subcomponent or Book Name     : XmIm
+Found in Baseline             : 1.2.4
+
+CR Number                     : 10019
+Short Description             : XmTextSetString performs the redundant operation
+Subcomponent or Book Name     : XmText
+Found in Baseline             : 1.2.4
+
+CR Number                     : 10015
+Short Description             : Documentation of XmFMT_8_BIT and XmFMT_16_BIT not clear
+Subcomponent or Book Name     : Programmer's Reference
+Found in Baseline             : 1.2.4
+
+CR Number                     : 10014
+Short Description             : wants Motif accelerators to have same behavior as translations
+Subcomponent or Book Name     : Translations and Virtual Bindings
+Found in Baseline             : 1.2.4
+
+CR Number                     : 10011
+Short Description             : XmDropSiteUpdate() fails to change XmNimportTargets, XmNnumImportTargets
+Subcomponent or Book Name     : Drag and Drop
+Found in Baseline             : 1.2.4
+
+CR Number                     : 10009
+Short Description             : Cannot recreate make file due to IMAKE_CMD rule in Motif.tmpl
+Subcomponent or Book Name     : Build issues
+Found in Baseline             : 1.2.4
+
+CR Number                     : 10006
+Short Description             : Colormaps should be inherited to DragContext
+Subcomponent or Book Name     : Color
+Found in Baseline             : 1.2.4
+
+CR Number                     : 10005
+Short Description             : XmTextField: delete-to-end-of-line() + No pendingDelete bad
+Subcomponent or Book Name     : XmTextField
+Found in Baseline             : 1.2.4
+
+CR Number                     : 10004
+Short Description             : XmTextField: delete-to-start-of-line() + No pendingDelete incosistent
+Subcomponent or Book Name     : XmTextField
+Found in Baseline             : 1.2.4
+
+CR Number                     : 10003
+Short Description             : doc on memory management in the modifyVerify callback struct
+Subcomponent or Book Name     : Programmer's Reference
+Found in Baseline             : 1.2.4
+
+CR Number                     : 10002
+Short Description             : XmTextField: description of clear-selection() bad
+Subcomponent or Book Name     : Programmer's Reference
+Found in Baseline             : 1.2.4
+
+CR Number                     : 9999
+Short Description             : The XmTextField cannot perform the word selection correctly.
+Subcomponent or Book Name     : XmTextField
+Found in Baseline             : 1.2.4
+
+CR Number                     : 9998
+Short Description             : The XmText cannot calculate suitable tab width in the Japanese locale.
+Subcomponent or Book Name     : XmText
+Found in Baseline             : 1.2.4
+
+CR Number                     : 9996
+Short Description             : The XmTextField cannot handle the dropped text correctly.
+Subcomponent or Book Name     : XmTextField
+Found in Baseline             : 1.2.4
+
+CR Number                     : 9995
+Short Description             : The XmTextField cannot perform cut and paste correctly.
+Subcomponent or Book Name     : XmTextField
+Found in Baseline             : 1.2.4
+
+CR Number                     : 9994
+Short Description             : RowColumn child of Form does not resize
+as expected.
+Subcomponent or Book Name     : XmRowColumn (WorkArea|RadioBox)
+Found in Baseline             : 1.2.4
+
+CR Number                     : 9993
+Short Description             : file selection dialog has a problem with very long file names
+Subcomponent or Book Name     : XmFileSelectionBox
+Found in Baseline             : 1.2.4
+
+CR Number                     : 9991
+Short Description             : XmText doens't use XNArea attribute of XIM
+Subcomponent or Book Name     : I18N misc
+Found in Baseline             : 1.2.4
+
+CR Number                     : 9989
+Short Description             : Motif ignores the size change of the IM status area
+Subcomponent or Book Name     : I18N misc
+Found in Baseline             : 1.2.4
+
+CR Number                     : 9979
+Short Description             : setting bg color of scrollbar also sets
+trough color which then is perm.
+Subcomponent or Book Name     : XmScrollBar
+Found in Baseline             : 1.2.4
+
+CR Number                     : 9978
+Short Description             : problem with *XmForm.leftAttachment: ATTACH_FORM
+Subcomponent or Book Name     : XmForm
+Found in Baseline             : 1.2.4
+
+CR Number                     : 9977
+Short Description             : FileSelectionBox should read the cwd env. var. in csh
+Subcomponent or Book Name     : XmFileSelectionBox
+Found in Baseline             : 1.2.4
+
+CR Number                     : 9976
+Short Description             : Memory leak in TextField widget when pasting zero-length selection
+Subcomponent or Book Name     : XmTextField
+Found in Baseline             : 1.2.4
+
+CR Number                     : 9975
+Short Description             : Destroy and create of a Pushbutton widget causes a core dump
+Subcomponent or Book Name     : XmPushButton
+Found in Baseline             : 1.2.4
+
+CR Number                     : 9949
+Short Description             : XmImRegister leaks twelve bytes for ever new shell, plus other memory leaks.
+Subcomponent or Book Name     : Memory issues
+Found in Baseline             : 1.2.4
+
+CR Number                     : 9944
+Short Description             : Mixed DragIcon is clipped when using default state and operation icons
+Subcomponent or Book Name     : Drag and Drop
+Found in Baseline             : 1.2.3
+
+CR Number                     : 9841
+Short Description             : Label: bad handling of case of XmNrecomputeSize=True and label size changes
+Subcomponent or Book Name     : XmPushButton
+Found in Baseline             : 1.2.4
+
+CR Number                     : 9817
+Short Description             : Wrong type for argument to memcpy.
+Subcomponent or Book Name     : OS dependencies
+Found in Baseline             : 1.2.2
+
+CR Number                     : 9816
+Short Description             : Resizing a tear-off resizes the original menu
+Subcomponent or Book Name     : Menu layout
+Found in Baseline             : 1.2.3
+
+CR Number                     : 9774
+Short Description             : Unnecessary procedure call resulting in poor performance
+Subcomponent or Book Name     : Drag and Drop
+Found in Baseline             : 1.2.4
+
+CR Number                     : 9675
+Short Description             : additional description for move-to action
+Subcomponent or Book Name     : XmText
+Found in Baseline             : 1.2.4
+
+CR Number                     : 9456
+Short Description             : XmText(3X) doesn't support the resource for status style.
+Subcomponent or Book Name     : XmText
+Found in Baseline             : 1.2.3
+
+CR Number                     : 9452
+Short Description             : menu accelerator behavior is not documented
+Subcomponent or Book Name     : Menu event handling
+Found in Baseline             : 1.2.3
+
+CR Number                     : 9313
+Short Description             : XmForm ignores the resize request of its child
+Subcomponent or Book Name     : XmForm
+Found in Baseline             : 1.2.4
+
+CR Number                     : 9281
+Short Description             : mwm: Wrong handling of keyboard focus
+Subcomponent or Book Name     : MWM (user interface)
+Found in Baseline             : 1.2.4
+
+CR Number                     : 9266
+Short Description             : RealizeCallback called twice for TransientShell.
+Subcomponent or Book Name     : VendorShell
+Found in Baseline             : 1.2.4
+
+CR Number                     : 9219
+Short Description             : XmDrawingArea documents shadow resources, but doesn't use them
+Subcomponent or Book Name     : Programmer's Reference
+Found in Baseline             : 1.2
+
+CR Number                     : 9179
+Short Description             : XmLabel doesn't make the resize request.
+Subcomponent or Book Name     : XmLabel
+Found in Baseline             : 1.2.4
+
+CR Number                     : 9159
+Short Description             : Problem with a pixmap as a callback parameter in UIL
+Subcomponent or Book Name     : UIL
+Found in Baseline             : 1.2.4
+
+CR Number                     : 9047
+Short Description             : The option menu cascade button visuals change between 1.2.2 and 1.2.3 on the destruction of the associated pulldown.
+Subcomponent or Book Name     : XmRowColumn (WorkArea|RadioBox)
+Found in Baseline             : 1.2.3
+
+CR Number                     : 9021
+Short Description             : Motif binary compatibility mechanism has fatal bug in XmResolve[All]PartOffsets
+Subcomponent or Book Name     : XmPrimitive
+Found in Baseline             : 1.2.3
+
+CR Number                     : 8975
+Short Description             : Need to use "LOGNAME" environment variable with SYSV and SVR4.
+Subcomponent or Book Name     : Build issues
+Found in Baseline             : 1.2.2
+
+CR Number                     : 8950
+Short Description             : Scale widget clips display of value and/or scrollbar.
+Subcomponent or Book Name     : XmScale
+Found in Baseline             : 1.2.4
+
+CR Number                     : 8937
+Short Description             : Customer wants warning if CascadeButton is not correctly parented
+Subcomponent or Book Name     : XmCascadeButton
+Found in Baseline             : 1.2.3
+
+CR Number                     : 8912
+Short Description             : XmFontListEntryLoad documentation doesn't match function of the code
+Subcomponent or Book Name     : XmRenderTable/XmFontList
+Found in Baseline             : 1.2.4
+
+CR Number                     : 8904
+Short Description             : ToggleButton's XmNvalueChangedCallback firing incorrectly
+Subcomponent or Book Name     : XmToggleButton
+Found in Baseline             : 1.2.4
+
+CR Number                     : 8880
+Short Description             : Lib Imakefiles need generic definition of REQUIREDLIBS
+Subcomponent or Book Name     : Build issues
+Found in Baseline             : 1.2.2
+
+CR Number                     : 8878
+Short Description             : List coredump upon drag action when item in the "selected" list but not in the item list
+Subcomponent or Book Name     : XmList
+Found in Baseline             : 1.2.4
+
+CR Number                     : 8776
+Short Description             : extend-start() moves I-beam to pointer position not documented
+Subcomponent or Book Name     : Programmer's Reference
+Found in Baseline             : 1.2.2
+
+CR Number                     : 8772
+Short Description             : key-select() not as documented
+Subcomponent or Book Name     : Programmer's Reference
+Found in Baseline             : 1.2.2
+
+CR Number                     : 8763
+Short Description             : copy-to() action: undocumented feature or bug
+Subcomponent or Book Name     : Programmer's Reference
+Found in Baseline             : 1.2.2
+
+CR Number                     : 8762
+Short Description             : Widget set as the destination widget even when there is no selection
+Subcomponent or Book Name     : Programmer's Reference
+Found in Baseline             : 1.2.2
+
+CR Number                     : 8760
+Short Description             : Description of move-destination() action of Text widget incomplete
+Subcomponent or Book Name     : Programmer's Reference
+Found in Baseline             : 1.2.2
+
+CR Number                     : 8741
+Short Description             : unkill() restores last killed text before the I-beam
+Subcomponent or Book Name     : Programmer's Reference
+Found in Baseline             : 1.2.2
+
+CR Number                     : 8713
+Short Description             : Mwm should make its version number easy to find.
+Subcomponent or Book Name     : MWM (user interface)
+Found in Baseline             : 1.2.3
+
+CR Number                     : 8693
+Short Description             : Shell widget does not remove IM areas which are no more necessary
+Subcomponent or Book Name     : I18N misc
+Found in Baseline             : 1.2.2
+
+CR Number                     : 8591
+Short Description             : BulletinB.c changes shell's XmNmwmFunctions and doesn't use MWM_FUNC_ALL
+Subcomponent or Book Name     : XmBulletinBoard
+Found in Baseline             : 1.1.5
+
+CR Number                     : 8582
+Short Description             : UIL handling of color_table fails between 1.2.2 & 1.2.3
+Subcomponent or Book Name     : UIL
+Found in Baseline             : 1.2.3
+
+CR Number                     : 8544
+Short Description             : Converting compound text to string and back will not result in the same string.
+Subcomponent or Book Name     : I18N misc
+Found in Baseline             : 1.2.2
+
+CR Number                     : 8540
+Short Description             : libXm needs a static copy of regex() and regcmp(), ABI requirement
+Subcomponent or Book Name     : Build issues
+Found in Baseline             : 1.2.2
+
+CR Number                     : 8521
+Short Description             : Limit scope of defines and add define macros to Motif.tmpl
+Subcomponent or Book Name     : Build issues
+Found in Baseline             : 1.2.2
+
+CR Number                     : 8497
+Short Description             : Restore 1.2.2 behavior of
+XmListSelectPos.
+Subcomponent or Book Name     : XmList
+Found in Baseline             : 1.2.3
+
+CR Number                     : 8443
+Short Description             : Idb__INX_SearchIndex may be able to return a random value
+Subcomponent or Book Name     : Mrm library
+Found in Baseline             : 1.2.4
+
+CR Number                     : 8356
+Short Description             : Mwm refuses to move an xterm properly
+Subcomponent or Book Name     : MWM (user interface)
+Found in Baseline             : 1.2.2
+
+CR Number                     : 8319
+Short Description             : Implement new names for values of XmNchildAlignment
+Subcomponent or Book Name     : XmFrame
+Found in Baseline             : 1.2
+
+CR Number                     : 8290
+Short Description             : UIL Compiler fails with "Severe: internal error - submit defect rep."
+Subcomponent or Book Name     : UIL
+Found in Baseline             : 1.2.3
+
+CR Number                     : 8289
+Short Description             : Using supported visual (Truecolor 24) other than default (Pseudocolor 8) causes protocol error if UIL contains an XmMenuBar
+Subcomponent or Book Name     : XmMenuShell
+Found in Baseline             : 1.2.3
+
+CR Number                     : 8243
+Short Description             : events/actions - KEndLine is not working on alpha display in automation.
+Subcomponent or Book Name     : Automation
+Found in Baseline             : 1.2.4
+
+CR Number                     : 8241
+Short Description             : ToggleButton resize problem.
+Subcomponent or Book Name     : XmToggleButton
+Found in Baseline             : 1.2.2
+
+CR Number                     : 8239
+Short Description             : Tests to add to Performance/Post.
+Subcomponent or Book Name     : Performance
+Found in Baseline             : 1.2.3
+
+CR Number                     : 8236
+Short Description             : scripts, run_FontList and run_String in XmString no longer non-interactive.
+Subcomponent or Book Name     : XmString
+Found in Baseline             : 1.2.4
+
+CR Number                     : 8232
+Short Description             : Tests in uil/widgets need to be rerecorded.
+Subcomponent or Book Name     : XmMessageBox BB subclass
+Found in Baseline             : 1.2.4
+
+CR Number                     : 8231
+Short Description             : uil/widgets/menuShell needs to be re-recorded.
+Subcomponent or Book Name     : Menu event handling
+Found in Baseline             : 1.2.4
+
+CR Number                     : 8229
+Short Description             : Compilation warning when building Color.dat.
+Subcomponent or Book Name     : Color
+Found in Baseline             : 1.2.4
+
+CR Number                     : 8227
+Short Description             : README in tests/Performance/DND
+Subcomponent or Book Name     : Drag and Drop
+Found in Baseline             : 1.2.3
+
+CR Number                     : 8225
+Short Description             : Updating README files in tests/uil
+Subcomponent or Book Name     : other
+Found in Baseline             : 1.2.3
+
+CR Number                     : 8223
+Short Description             : SharedTearM1 test does not compile cleanly on OSF/1.
+Subcomponent or Book Name     : TearOff Menus
+Found in Baseline             : 1.2.4
+
+CR Number                     : 8222
+Short Description             : run_dir can not find nawk on the Alpha
+Subcomponent or Book Name     : other
+Found in Baseline             : 1.2.4
+
+CR Number                     : 8221
+Short Description             : Interoperability in Automation
+Subcomponent or Book Name     : Automation
+Found in Baseline             : 1.2.4
+
+CR Number                     : 8219
+Short Description             : MessageDia3 - needs .scr file updated and to be re-recorded.
+Subcomponent or Book Name     : XmMessageBox BB subclass
+Found in Baseline             : 1.2.4
+
+CR Number                     : 8218
+Short Description             : No PrimitiveHelp in PanedWindow
+Subcomponent or Book Name     : XmTrackingLocate/Event
+Found in Baseline             : 1.2.4
+
+CR Number                     : 8217
+Short Description             : SelectBox2 should be added to RUN.custom
+Subcomponent or Book Name     : Selection Protocol
+Found in Baseline             : 1.2.3
+
+CR Number                     : 8215
+Short Description             : Text9 needs to be rerecorded
+Subcomponent or Book Name     : other
+Found in Baseline             : 1.2.4
+
+CR Number                     : 8214
+Short Description             : segv : Text10 segv's or hangs on
+OSF1.
+Subcomponent or Book Name     : XmText
+Found in Baseline             : 1.2.4
+
+CR Number                     : 8208
+Short Description             : uil/dataStructs/Translations should be updated to reflect expected behavior.
+Subcomponent or Book Name     : UIL
+Found in Baseline             : 1.2.4
+
+CR Number                     : 8207
+Short Description             : RUN.custom in ResInd does not find xdpyinfo for HP's
+Subcomponent or Book Name     : other
+Found in Baseline             : 1.2.4
+
+CR Number                     : 8206
+Short Description             : uil/dataStructs Identifier test failed.
+Subcomponent or Book Name     : UIL
+Found in Baseline             : 1.2.4
+
+CR Number                     : 8204
+Short Description             : Cutpaste needs clean up.
+Subcomponent or Book Name     : Clipboard
+Found in Baseline             : 1.2.3
+
+CR Number                     : 8200
+Short Description             : Erratic drawing problem with i18nTextWidget.
+Subcomponent or Book Name     : XmText
+Found in Baseline             : 1.2.2
+
+CR Number                     : 8199
+Short Description             : OptionMenu2 exits with X Error
+when displayed on a Sun
+Subcomponent or Book Name     : other
+Found in Baseline             : 1.2.4
+
+CR Number                     : 8196
+Short Description             : Defunct Form14 and PanedWin3 in Constraint
+Subcomponent or Book Name     : other
+Found in Baseline             : 1.2.4
+
+CR Number                     : 8195
+Short Description             : helloint doesn't work on alphas
+Subcomponent or Book Name     : I18N demo
+Found in Baseline             : 1.2.3
+
+CR Number                     : 8194
+Short Description             : XmFrame problem with XmNverticalChildAlignment values.
+Subcomponent or Book Name     : XmFrame
+Found in Baseline             : 1.2.2
+
+CR Number                     : 8190
+Short Description             : RunUITest script is not working 
+on OSF1
+Subcomponent or Book Name     : MWM (user interface)
+Found in Baseline             : 1.2.4
+
+CR Number                     : 8189
+Short Description             : run_PINames script not working
+on OSF1
+Subcomponent or Book Name     : MWM (programmatic interface)
+Found in Baseline             : 1.2.4
+
+CR Number                     : 8188
+Short Description             : Screen changing to black
+Subcomponent or Book Name     : MWM (programmatic interface)
+Found in Baseline             : 1.2.4
+
+CR Number                     : 8186
+Short Description             : Compilation warnings on OSF1
+Subcomponent or Book Name     : MWM (programmatic interface)
+Found in Baseline             : 1.2.4
+
+CR Number                     : 8184
+Short Description             : TransFamilyM1 test needs some looking into.
+Subcomponent or Book Name     : MWM (user interface)
+Found in Baseline             : 1.2.4
+
+CR Number                     : 8182
+Short Description             : Instructions need a correction in TrackingLocM2 test.
+Subcomponent or Book Name     : XmTrackingLocate/Event
+Found in Baseline             : 1.2.4
+
+CR Number                     : 8179
+Short Description             : Icon in PIHints does not show up when it is supposed to
+Subcomponent or Book Name     : MWM (programmatic interface)
+Found in Baseline             : 1.2.4
+
+CR Number                     : 8176
+Short Description             : helloint demo should be more friendly
+Subcomponent or Book Name     : I18N demo
+Found in Baseline             : 1.2.3
+
+CR Number                     : 8175
+Short Description             : TrackingLocM2 test needs to be 
+revisited
+Subcomponent or Book Name     : XmTrackingLocate/Event
+Found in Baseline             : 1.2.4
+
+CR Number                     : 8171
+Short Description             : visual diffs when the controlpanel_popup overlays the Form on Sun screen
+Subcomponent or Book Name     : XmForm
+Found in Baseline             : 1.2.4
+
+CR Number                     : 8169
+Short Description             : Compilation warnings on Alpha
+Subcomponent or Book Name     : XmDrawingArea
+Found in Baseline             : 1.2.4
+
+CR Number                     : 8168
+Short Description             : Compilation warnings on Alpha
+Subcomponent or Book Name     : TearOff Menus
+Found in Baseline             : 1.2.4
+
+CR Number                     : 8166
+Short Description             : discrepancy between code and doc
+for a field of the _MOTIF_WM_HINTS property
+Subcomponent or Book Name     : MWM (programmatic interface)
+Found in Baseline             : 1.2.4
+
+CR Number                     : 8155
+Short Description             : uil/Manual/validator/RUN script has wrong location of uil
+Subcomponent or Book Name     : UIL
+Found in Baseline             : 1.2.4
+
+CR Number                     : 8151
+Short Description             : Cannot Restore TestWindow1 to previous size since "Restore" option is insensitive.
+Subcomponent or Book Name     : MWM (user interface)
+Found in Baseline             : 1.2.4
+
+CR Number                     : 8149
+Short Description             : pixmap comparison, handle X Errors more graciously
+Subcomponent or Book Name     : Automation
+Found in Baseline             : 1.2.4
+
+CR Number                     : 8148
+Short Description             : Getting warning when 8-bit mnemonic is added to cascade button only on a Sun display
+Subcomponent or Book Name     : Menu event handling
+Found in Baseline             : 1.2.4
+
+CR Number                     : 8141
+Short Description             : Compiler warnings while building uil/Manual/callUil test.
+Subcomponent or Book Name     : UIL
+Found in Baseline             : 1.2.4
+
+CR Number                     : 8138
+Short Description             : DNDProt1 and DNDDrop1 initialize
+Animation Style differently when Receiver is DYNAMIC
+Subcomponent or Book Name     : Drag and Drop
+Found in Baseline             : 1.2.4
+
+CR Number                     : 8134
+Short Description             : Floating point diffs causing visual diffs in slider position
+Subcomponent or Book Name     : Automation
+Found in Baseline             : 1.2.4
+
+CR Number                     : 8132
+Short Description             : The comment in RUN_template is wrong.
+Subcomponent or Book Name     : other
+Found in Baseline             : 1.2.3
+
+CR Number                     : 8129
+Short Description             : run_all in automated tests/uil directories.
+Subcomponent or Book Name     : UIL
+Found in Baseline             : 1.2.3
+
+CR Number                     : 8128
+Short Description             : mwm/MwmUI2.Xdefs needs to be modified.
+Subcomponent or Book Name     : MWM (user interface)
+Found in Baseline             : 1.2.4
+
+CR Number                     : 8127
+Short Description             : Can drop into an insensitive widget.
+Subcomponent or Book Name     : Drag and Drop
+Found in Baseline             : 1.2.3
+
+CR Number                     : 8126
+Short Description             : Displaying a menu doesn't check for pointer already grabbed.
+Subcomponent or Book Name     : Menu event handling
+Found in Baseline             : 1.2.3
+
+CR Number                     : 8124
+Short Description             : event/actions, slider is not being set to correct DragSlider value
+Subcomponent or Book Name     : Automation
+Found in Baseline             : 1.2.4
+
+CR Number                     : 8122
+Short Description             : Need to re-record Button1[a,b] due to a fix with ToggleButton
+Subcomponent or Book Name     : other
+Found in Baseline             : 1.2.4
+
+CR Number                     : 8120
+Short Description             : StringComp needs new recording
+Subcomponent or Book Name     : other
+Found in Baseline             : 1.2.4
+
+CR Number                     : 8117
+Short Description             : events/actions, keyboard binding wrong on DrawArea2 on HP
+Subcomponent or Book Name     : Automation
+Found in Baseline             : 1.2.4
+
+CR Number                     : 8116
+Short Description             : events/actions Menu1 has only
+the right behavior on Alpha
+Subcomponent or Book Name     : Automation
+Found in Baseline             : 1.2.4
+
+CR Number                     : 8114
+Short Description             : Need separate instructions when Drag Op = Copy Only.
+Subcomponent or Book Name     : Drag and Drop
+Found in Baseline             : 1.2.4
+
+CR Number                     : 8113
+Short Description             : The .dat files in tests/Mrm are inaccurate
+Subcomponent or Book Name     : Mrm library
+Found in Baseline             : 1.2.3
+
+CR Number                     : 8112
+Short Description             : in tests/Mrm README and scripts need clean up.
+Subcomponent or Book Name     : Mrm library
+Found in Baseline             : 1.2.3
+
+CR Number                     : 8110
+Short Description             : PopupMenu[4-6] are built but not
+run
+Subcomponent or Book Name     : other
+Found in Baseline             : 1.2.4
+
+CR Number                     : 8109
+Short Description             : ResInd test should be moved to a
+resolution dependent directory in UIL
+Subcomponent or Book Name     : XmToggleButton
+Found in Baseline             : 1.2.4
+
+CR Number                     : 8107
+Short Description             : Instructions for DNDList1 should indicate you need a multi-line Text widget.
+Subcomponent or Book Name     : Drag and Drop
+Found in Baseline             : 1.2.4
+
+CR Number                     : 8106
+Short Description             : RIPushBGad1 needs to be re-recorded
+Subcomponent or Book Name     : other
+Found in Baseline             : 1.2.4
+
+CR Number                     : 8105
+Short Description             : events/actions: KCancel not 
+workong in ScrollText3f
+Subcomponent or Book Name     : Automation
+Found in Baseline             : 1.2.4
+
+CR Number                     : 8104
+Short Description             : bad MComplexProgramTarget_1 rule
+Subcomponent or Book Name     : Build issues
+Found in Baseline             : 1.2.4
+
+CR Number                     : 8103
+Short Description             : No recorded image exists for tests/uil/widgets/label.
+Subcomponent or Book Name     : XmLabel
+Found in Baseline             : 1.2.4
+
+CR Number                     : 8102
+Short Description             : Recorded image for uil/widgets/fsBox does not list directories and files.
+Subcomponent or Book Name     : Automation
+Found in Baseline             : 1.2.4
+
+CR Number                     : 8101
+Short Description             : Text2 needs a new recording
+Subcomponent or Book Name     : XmText
+Found in Baseline             : 1.2.4
+
+CR Number                     : 8100
+Short Description             : Unnecessary NoExpose events from blinking cursor.
+Subcomponent or Book Name     : XmTextField
+Found in Baseline             : 1.2.3
+
+CR Number                     : 8096
+Short Description             : pixmap comparison: Automation
+shows visual diff when color in recording is the same as color in run
+Subcomponent or Book Name     : Automation
+Found in Baseline             : 1.2.4
+
+CR Number                     : 8095
+Short Description             : XmListAddItem function test shows failure in VTS
+Subcomponent or Book Name     : XmList
+Found in Baseline             : 1.2.4
+
+CR Number                     : 8094
+Short Description             : ./tests/uil/NL test fails
+Subcomponent or Book Name     : UIL
+Found in Baseline             : 1.2.4
+
+CR Number                     : 8086
+Short Description             : duplicated directories under uil
+directories
+Subcomponent or Book Name     : Build issues
+Found in Baseline             : 1.2.4
+
+CR Number                     : 8082
+Short Description             : events/actions : KMenuBar not
+working in automation
+Subcomponent or Book Name     : Automation
+Found in Baseline             : 1.2.4
+
+CR Number                     : 8078
+Short Description             : Misleading geometry in StringDisp.
+Subcomponent or Book Name     : XmString
+Found in Baseline             : 1.2.3
+
+CR Number                     : 8073
+Short Description             : DrawArea2 should use a line
+width of 1
+Subcomponent or Book Name     : XmDrawingArea
+Found in Baseline             : 1.2.4
+
+CR Number                     : 8069
+Short Description             : Wrong size mentioned in StringDraw test.
+Subcomponent or Book Name     : XmString
+Found in Baseline             : 1.2.3
+
+CR Number                     : 8066
+Short Description             : README and run_String in tests/XmString are out of date
+Subcomponent or Book Name     : XmString
+Found in Baseline             : 1.2.3
+
+CR Number                     : 8063
+Short Description             : events/actions - KSelect and <Shift> KSelect not working in automation.
+Subcomponent or Book Name     : Automation
+Found in Baseline             : 1.2.4
+
+CR Number                     : 8060
+Short Description             : MessageDia4 test needs to change calls from XtVaSetValues to XtSetValues for automation.
+Subcomponent or Book Name     : XmLabel
+Found in Baseline             : 1.2.4
+
+CR Number                     : 8057
+Short Description             : Navigation8 has compilation 
+warning on Alpha
+Subcomponent or Book Name     : Traversal/Navigation
+Found in Baseline             : 1.2.4
+
+CR Number                     : 8054
+Short Description             : events/actions - Navigation9a, Navigation9b, Navigation9c are generating more printf on OSF1
+Subcomponent or Book Name     : Automation
+Found in Baseline             : 1.2.4
+
+CR Number                     : 8053
+Short Description             : events/actions - Navigation13 has
+1 too many callback printfs on Sun and Alpha
+Subcomponent or Book Name     : Automation
+Found in Baseline             : 1.2.4
+
+CR Number                     : 8050
+Short Description             : Protocol has some compilation
+warnings on Alpha
+Subcomponent or Book Name     : VendorShell
+Found in Baseline             : 1.2.4
+
+CR Number                     : 8046
+Short Description             : MessageDia1, QuestionDia2 and
+WorkingDia1 have compilation warnings on Alpha
+Subcomponent or Book Name     : XmMessageBox BB subclass
+Found in Baseline             : 1.2.4
+
+CR Number                     : 8045
+Short Description             : PopupMenu4 and 5 have compilation
+warnings on alpha
+Subcomponent or Book Name     : XmMenuShell
+Found in Baseline             : 1.2.4
+
+CR Number                     : 8044
+Short Description             : Conversion1 and 2 have compilation
+warnings on Alpha
+Subcomponent or Book Name     : Resource Converters
+Found in Baseline             : 1.2.4
+
+CR Number                     : 8043
+Short Description             : PanedWin13 has compilation warnings on Alpha
+Subcomponent or Book Name     : XmPanedWindow/Sash
+Found in Baseline             : 1.2.4
+
+CR Number                     : 8042
+Short Description             : PanedWin12 has compilation warnings on Alpha
+Subcomponent or Book Name     : XmPanedWindow/Sash
+Found in Baseline             : 1.2.4
+
+CR Number                     : 8041
+Short Description             : Form15 has compilation warnings 
+on alpha
+Subcomponent or Book Name     : XmForm
+Found in Baseline             : 1.2.4
+
+CR Number                     : 8040
+Short Description             : Form1 has compilation warnings
+on alpha
+Subcomponent or Book Name     : XmForm
+Found in Baseline             : 1.2.4
+
+CR Number                     : 8036
+Short Description             : Need new recording for ScrollBar11 due to bug fix
+Subcomponent or Book Name     : other
+Found in Baseline             : 1.2.4
+
+CR Number                     : 8034
+Short Description             : Automation events bugs : Navigation14b shows spurious visual diffs seemingly because 
+focus was not in the window during the recording.
+Subcomponent or Book Name     : Automation
+Found in Baseline             : 1.2.4
+
+CR Number                     : 8031
+Short Description             : Remove Scale2.[prt,vis] from Scrollbar in recordings for 1.2.3
+Subcomponent or Book Name     : other
+Found in Baseline             : 1.2.4
+
+CR Number                     : 8026
+Short Description             : Just posting window menu of test window changes stacking order.
+Subcomponent or Book Name     : MWM (user interface)
+Found in Baseline             : 1.2.4
+
+CR Number                     : 8025
+Short Description             : Instructions for MwmUI5 need to be made clearer in Panel1.
+Subcomponent or Book Name     : MWM (user interface)
+Found in Baseline             : 1.2.4
+
+CR Number                     : 8023
+Short Description             : MwmUI4 test - instruction panel needs some changes.
+Subcomponent or Book Name     : MWM (user interface)
+Found in Baseline             : 1.2.4
+
+CR Number                     : 8021
+Short Description             : Toolkit/Constraint should defunct 
+some files
+Subcomponent or Book Name     : XmForm
+Found in Baseline             : 1.2.4
+
+CR Number                     : 8019
+Short Description             : Menu title in MwmUI3 should read CR 5707 not 5705.
+Subcomponent or Book Name     : MWM (user interface)
+Found in Baseline             : 1.2.4
+
+CR Number                     : 8018
+Short Description             : Toolkit/Buttons directory and run
+Subcomponent or Book Name     : XmPushButton
+Found in Baseline             : 1.2.4
+
+CR Number                     : 8017
+Short Description             : Performance/DND test core dump
+Subcomponent or Book Name     : Performance
+Found in Baseline             : 1.2.4
+
+CR Number                     : 8013
+Short Description             : Extra message being printed from PIProto test.
+Subcomponent or Book Name     : MWM (programmatic interface)
+Found in Baseline             : 1.2.4
+
+CR Number                     : 8011
+Short Description             : Scrollbars not displayed in 
+postSW1
+Subcomponent or Book Name     : Performance
+Found in Baseline             : 1.2.4
+
+CR Number                     : 8009
+Short Description             : tests are missing from Performance/Post/run_all
+Subcomponent or Book Name     : Performance
+Found in Baseline             : 1.2.4
+
+CR Number                     : 8008
+Short Description             : README file in Performance needs 
+to be updated
+Subcomponent or Book Name     : Performance
+Found in Baseline             : 1.2.4
+
+CR Number                     : 8007
+Short Description             : cc warnings
+Subcomponent or Book Name     : Performance
+Found in Baseline             : 1.2.4
+
+CR Number                     : 7998
+Short Description             : shadowThickness forced to 2 for Toggle in PullDown
+Subcomponent or Book Name     : Menu button interactions
+Found in Baseline             : 1.2.4
+
+CR Number                     : 7997
+Short Description             : shadowThickness problems
+Subcomponent or Book Name     : Draw package
+Found in Baseline             : 1.2.4
+
+CR Number                     : 7994
+Short Description             : XmRowColumn code cleanup
+Subcomponent or Book Name     : other
+Found in Baseline             : 1.2
+
+CR Number                     : 7991
+Short Description             : ToggleButton XmNset enum mismatch.
+Subcomponent or Book Name     : XmToggleButton
+Found in Baseline             : 1.2.4
+
+CR Number                     : 7968
+Short Description             : Top list CRs needing testcases can be inadvertently removed from the toplist.
+Subcomponent or Book Name     : other
+Found in Baseline             : 1.2.4
+
+CR Number                     : 7965
+Short Description             : events/actions: some menu tests do not post before a CompareVisual is made, causing an error
+Subcomponent or Book Name     : Automation
+Found in Baseline             : 1.2.4
+
+CR Number                     : 7964
+Short Description             : XmListReplaceItemPos Performance degradation
+Subcomponent or Book Name     : XmList
+Found in Baseline             : 1.2.3
+
+CR Number                     : 7955
+Short Description             : Warning message for Xt warnings has changed.
+Subcomponent or Book Name     : Build issues
+Found in Baseline             : 1.2.4
+
+CR Number                     : 7954
+Short Description             : Automation uses bizarre macro for key handling
+Subcomponent or Book Name     : Automation
+Found in Baseline             : 1.2.4
+
+CR Number                     : 7952
+Short Description             : mvsExtractString is using bad values
+Subcomponent or Book Name     : other
+Found in Baseline             : 1.2.4
+
+CR Number                     : 7900
+Short Description             : Change fg/bg makes Text stipple incorrectly when insensitive
+Subcomponent or Book Name     : XmText
+Found in Baseline             : 1.2.3
+
+CR Number                     : 7899
+Short Description             : Could we mention that wordWrap resource is only valid when scrollHorizontal is False.
+Subcomponent or Book Name     : Programmer's Reference
+Found in Baseline             : 1.2.3
+
+CR Number                     : 7897
+Short Description             : RowCol1 logs two visual differences when run on alpha
+Subcomponent or Book Name     : XmRowColumn (WorkArea|RadioBox)
+Found in Baseline             : 1.2.4
+
+CR Number                     : 7879
+Short Description             : Automation does not perform keys 
+actions when a widget is not traversable
+Subcomponent or Book Name     : Automation
+Found in Baseline             : 1.2.4
+
+CR Number                     : 7875
+Short Description             : Warning missing when ScrollBar
+processing direction is XmMAX_ON_TOP and setting resources
+Subcomponent or Book Name     : XmScrollBar
+Found in Baseline             : 1.2.4
+
+CR Number                     : 7872
+Short Description             : Mwm polls the pointer during window moves.
+Subcomponent or Book Name     : Performance
+Found in Baseline             : 1.2.4
+
+CR Number                     : 7866
+Short Description             : help translations not working on buttons, toggles
+Subcomponent or Book Name     : Translations and Virtual Bindings
+Found in Baseline             : 1.2.3
+
+CR Number                     : 7864
+Short Description             : Commands in .scr file do not match instructions for Menu6 test.
+Subcomponent or Book Name     : Menu event handling
+Found in Baseline             : 1.2.4
+
+CR Number                     : 7861
+Short Description             : Test, pushBtn, should be changed moved to ResInd directory.
+Subcomponent or Book Name     : XmPushButton
+Found in Baseline             : 1.2.4
+
+CR Number                     : 7859
+Short Description             : uil/widgets/fsDia compare visuals due to bad test design.
+Subcomponent or Book Name     : XmFileSelectionBox
+Found in Baseline             : 1.2.4
+
+CR Number                     : 7854
+Short Description             : Setting backgroundPixmap via type converter can result in an X error
+Subcomponent or Book Name     : XmPrimitive
+Found in Baseline             : 1.2.3
+
+CR Number                     : 7848
+Short Description             : D and D can still put text in an unmanaged widget
+Subcomponent or Book Name     : Drag and Drop
+Found in Baseline             : 1.2.3
+
+CR Number                     : 7842
+Short Description             : events/actions: Visual difference in highlight of pushbutton7.
+Subcomponent or Book Name     : Automation
+Found in Baseline             : 1.2.4
+
+CR Number                     : 7823
+Short Description             : test scripts assume shell is /bin/sh
+Subcomponent or Book Name     : OS dependencies
+Found in Baseline             : 1.2
+
+CR Number                     : 7819
+Short Description             : Demos script uses ksh
+Subcomponent or Book Name     : Demos
+Found in Baseline             : 1.2
+
+CR Number                     : 7810
+Short Description             : Mention setting XBMLANGPATH to improve startup performance.
+Subcomponent or Book Name     : Programmer's Reference
+Found in Baseline             : 1.2
+
+CR Number                     : 7768
+Short Description             : UIL internal error encountered.
+Subcomponent or Book Name     : UIL
+Found in Baseline             : 1.2.3
+
+CR Number                     : 7766
+Short Description             : XmTrackingLocate after an accelerator causes focus problem
+Subcomponent or Book Name     : Menu event handling
+Found in Baseline             : 1.2.3
+
+CR Number                     : 7760
+Short Description             : Form1 test creates a too large control panel
+Subcomponent or Book Name     : XmForm
+Found in Baseline             : 1.2.4
+
+CR Number                     : 7759
+Short Description             : Automation generates an X error 
+in PanedWin1 test
+Subcomponent or Book Name     : Automation
+Found in Baseline             : 1.2.4
+
+CR Number                     : 7757
+Short Description             : bug in menu handling
+Subcomponent or Book Name     : Menu event handling
+Found in Baseline             : 1.2.2
+
+CR Number                     : 7705
+Short Description             : tests/Toolkit/Manager/BBoard5 fail
+Subcomponent or Book Name     : XmBulletinBoard
+Found in Baseline             : 1.2.2
+
+CR Number                     : 7702
+Short Description             : ArrowBtn3 tests fail
+Subcomponent or Book Name     : XmArrowButton
+Found in Baseline             : 1.2.2
+
+CR Number                     : 7674
+Short Description             : Minor defect in XmFileSelectionBox
+Subcomponent or Book Name     : XmFileSelectionBox
+Found in Baseline             : 1.2.3
+
+CR Number                     : 7660
+Short Description             : RowColumn get wrong child size from Form
+Subcomponent or Book Name     : XmRowColumn (WorkArea|RadioBox)
+Found in Baseline             : 1.2.2
+
+CR Number                     : 7653
+Short Description             : Vertical menu bars "popdown" menus obscure other menubar entries
+Subcomponent or Book Name     : XmCascadeButton
+Found in Baseline             : 1.2.3
+
+CR Number                     : 7407
+Short Description             : Free Memory Read in DestroyMixedIcon
+Subcomponent or Book Name     : Drag and Drop
+Found in Baseline             : 1.2.4
+
+CR Number                     : 7343
+Short Description             : K<letter> has no effect in 
+Automation
+Subcomponent or Book Name     : Automation
+Found in Baseline             : 1.2.4
+
+CR Number                     : 7291
+Short Description             : Motif1.2.3 build warning
+Subcomponent or Book Name     : C++ .h compile
+Found in Baseline             : 1.2.3
+
+CR Number                     : 7200
+Short Description             : setsid() should be selected by proper POSIX constant, not __OSF1__
+Subcomponent or Book Name     : MWM (user interface)
+Found in Baseline             : 1.2
+
+CR Number                     : 7150
+Short Description             : when clipboard is empty XmclipboardInquireLength() returns ClipboardSuccess rather than ClipboardNoData.
+Subcomponent or Book Name     : Clipboard
+Found in Baseline             : 1.2
+
+CR Number                     : 7142
+Short Description             : mesBox test in uil/widgets
+display warnings
+Subcomponent or Book Name     : UIL
+Found in Baseline             : 1.2.4
+
+CR Number                     : 7029
+Short Description             : missing .dat file for DNDtestGad1.c
+Subcomponent or Book Name     : Drag and Drop
+Found in Baseline             : 1.2.3
+
+CR Number                     : 7008
+Short Description             : Instruction Panel 11 in DNDProt1 inconsistent with result.
+Subcomponent or Book Name     : Drag and Drop
+Found in Baseline             : 1.2.2
+
+CR Number                     : 6990
+Short Description             : Customer wants extended select version of "XmListSelectionPos"
+Subcomponent or Book Name     : XmList
+Found in Baseline             : 1.2.2
+
+CR Number                     : 6852
+Short Description             : XmFocusMovedCallbackStruct has no XmTraversalDirection
+Subcomponent or Book Name     : Traversal/Navigation
+Found in Baseline             : 1.2.4
+
+CR Number                     : 6795
+Short Description             : System modal dialog popped while pulldown posted cause a hang
+Subcomponent or Book Name     : VendorShell
+Found in Baseline             : 1.2
+
+CR Number                     : 6742
+Short Description             : Errors in building automated tests on Sun with shared libraries.
+Subcomponent or Book Name     : Shared library
+Found in Baseline             : 1.2.2
+
+CR Number                     : 6688
+Short Description             : Memory corruption on 64-bit alpha: size computation wrong
+Subcomponent or Book Name     : Drag and Drop
+Found in Baseline             : 1.2.2
+
+CR Number                     : 6611
+Short Description             : Mrm fails to make delayed UIL widget attachment
+Subcomponent or Book Name     : UIL
+Found in Baseline             : 1.2.2
+
+CR Number                     : 6592
+Short Description             : 14 character file names
+Subcomponent or Book Name     : other
+Found in Baseline             : 1.2.4
+
+CR Number                     : 6580
+Short Description             : UIL documentation is unclear as to the boundaries of the file_name type
+Subcomponent or Book Name     : UIL
+Found in Baseline             : 1.2.4
+
+CR Number                     : 6558
+Short Description             : DropConvertIncrCallback calls XtGetSelectionRequest with NULL 3rd param; wrong for Incremental.
+Subcomponent or Book Name     : Drag and Drop
+Found in Baseline             : 1.2
+
+CR Number                     : 6557
+Short Description             : Incorrect documentation of resource for XmDragContext
+Subcomponent or Book Name     : Drag and Drop
+Found in Baseline             : 1.2.3
+
+CR Number                     : 6546
+Short Description             : Documentation for
+compound_string_table function should explicitly require simple strings.
+Subcomponent or Book Name     : Programmer's Guide
+Found in Baseline             : 1.2.1
+
+CR Number                     : 6495
+Short Description             : doc change to indicate that dropSiteStatus may be invalid
+Subcomponent or Book Name     : Drag and Drop
+Found in Baseline             : 1.2.1
+
+CR Number                     : 6476
+Short Description             : description of action cut_primary can easily be misunderstood
+Subcomponent or Book Name     : AES
+Found in Baseline             : 1.2
+
+CR Number                     : 6462
+Short Description             : Default builds of Motif and X11R5 on HP-UX get shared library inconsistencies.
+Subcomponent or Book Name     : Build issues
+Found in Baseline             : 1.2.3
+
+CR Number                     : 6421
+Short Description             : motif submenu covers parent menu, restricts use, when near edge
+Subcomponent or Book Name     : Menu event handling
+Found in Baseline             : 1.2.2
+
+CR Number                     : 6385
+Short Description             : Suggested changes to Motif and X to allow builds in a cross compile environment
+Subcomponent or Book Name     : Build issues
+Found in Baseline             : 1.2.2
+
+CR Number                     : 6380
+Short Description             : Text highlight should be preserved if temporarily obscured by selection.
+Subcomponent or Book Name     : XmText
+Found in Baseline             : 1.2
+
+CR Number                     : 6377
+Short Description             : Resource manager in Automation does not recognize Shell1
+Subcomponent or Book Name     : Automation
+Found in Baseline             : 1.2.4
+
+CR Number                     : 6354
+Short Description             : Make automation know about window decorations.
+Subcomponent or Book Name     : Automation
+Found in Baseline             : 1.2.4
+
+CR Number                     : 6341
+Short Description             : In combos of Drag and Drop test, text widget gets highlighted even though its not a drop site.
+Subcomponent or Book Name     : Drag and Drop
+Found in Baseline             : 1.2.3
+
+CR Number                     : 6336
+Short Description             : Toolkit/Manual/SharedTearM1 segv on the Sun (betelgeuse)
+Subcomponent or Book Name     : other
+Found in Baseline             : 1.2.3
+
+CR Number                     : 6331
+Short Description             : Added option to step through the script and display the line being run
+Subcomponent or Book Name     : Automation
+Found in Baseline             : 1.2.3
+
+CR Number                     : 6330
+Short Description             : VTS bindings are pseudo-bogus
+Subcomponent or Book Name     : VTS tools
+Found in Baseline             : 1.2.3
+
+CR Number                     : 6327
+Short Description             : OptionMenu5 instructions need to
+be changed
+Subcomponent or Book Name     : Menu layout
+Found in Baseline             : 1.2.3
+
+CR Number                     : 6326
+Short Description             : Test Grab1 crashes on Sun and HP and OSF/1.
+Subcomponent or Book Name     : XmTrackingLocate/Event
+Found in Baseline             : 1.2.3
+
+CR Number                     : 6325
+Short Description             : Toolkit/Manual/SharedTearM1 segv when displayed onto a Sun or HP but not 386
+Subcomponent or Book Name     : other
+Found in Baseline             : 1.2.3
+
+CR Number                     : 6323
+Short Description             : Instructions for ListM1 is wrong, no message sent to stdout
+Subcomponent or Book Name     : other
+Found in Baseline             : 1.2.3
+
+CR Number                     : 6322
+Short Description             : Makefile in Toolkit/Manual does not build all the tests
+Subcomponent or Book Name     : other
+Found in Baseline             : 1.2.3
+
+CR Number                     : 6321
+Short Description             : No instructions for Manual/DiaShellM2
+Subcomponent or Book Name     : other
+Found in Baseline             : 1.2.3
+
+CR Number                     : 6318
+Short Description             : When a test is run automated, it
+sometimes doesnt do a printf.
+Subcomponent or Book Name     : Automation
+Found in Baseline             : 1.2.3
+
+CR Number                     : 6317
+Short Description             : Defunct tests/uil/matrix directory, tests no longer useful
+Subcomponent or Book Name     : other
+Found in Baseline             : 1.2.3
+
+CR Number                     : 6315
+Short Description             : Programmer's Reference needs to
+be changed to say that item shown in selection area of option menu is
+first selectable item, not first item.
+Subcomponent or Book Name     : Programmer's Reference
+Found in Baseline             : 1.2.3
+
+CR Number                     : 6314
+Short Description             : List2 - typo introduced into labelString which is causing widgets to be resized and visual differences between releases.
+Subcomponent or Book Name     : XmList
+Found in Baseline             : 1.2.3
+
+CR Number                     : 6301
+Short Description             : QATS visual/size diffs windows should indicate widget name.
+Subcomponent or Book Name     : Automation
+Found in Baseline             : 1.2.3
+
+CR Number                     : 6299
+Short Description             : Errors in building tests on Sun with shared libraries.
+Subcomponent or Book Name     : Shared library
+Found in Baseline             : 1.2.3
+
+CR Number                     : 6298
+Short Description             : Extraneous cursor motion in Text and ScrolledText.
+Subcomponent or Book Name     : VTS widget tests
+Found in Baseline             : 1.2.3
+
+CR Number                     : 6295
+Short Description             : QATS should print panel numbers to the .prt file.
+Subcomponent or Book Name     : Automation
+Found in Baseline             : 1.2.3
+
+CR Number                     : 6294
+Short Description             : AllWidgets tests in Manger is broken
+Subcomponent or Book Name     : XmManager
+Found in Baseline             : 1.2.3
+
+CR Number                     : 6293
+Short Description             : Provide a mechanism so that adding new widgets to QATS is easy
+Subcomponent or Book Name     : Automation
+Found in Baseline             : 1.2.3
+
+CR Number                     : 6284
+Short Description             : Automation seeing diffs that don't exist.
+Subcomponent or Book Name     : Automation
+Found in Baseline             : 1.2.3
+
+CR Number                     : 6279
+Short Description             : No end statment at end of test TextField3
+Subcomponent or Book Name     : XmText
+Found in Baseline             : 1.2.3
+
+CR Number                     : 6278
+Short Description             : Automation is not doing the select for Text4
+Subcomponent or Book Name     : Automation
+Found in Baseline             : 1.2.2
+
+CR Number                     : 6272
+Short Description             : QATS should not be so dependent on the qauser environment
+Subcomponent or Book Name     : Automation
+Found in Baseline             : 1.2.3
+
+CR Number                     : 6271
+Short Description             : QATS should optionally dump screen images if a visual diff is found
+Subcomponent or Book Name     : Automation
+Found in Baseline             : 1.2.3
+
+CR Number                     : 6265
+Short Description             : RIPanedWin3.Scr has a typo
+Subcomponent or Book Name     : Resolution Independence
+Found in Baseline             : 1.2.3
+
+CR Number                     : 6258
+Short Description             : pixmap comparison : many visual diffs when comparing pixmaps in OptionMenu5  (Was :Automation Label Pixmap "white" color wrong.)
+Subcomponent or Book Name     : Automation
+Found in Baseline             : 1.2.3
+
+CR Number                     : 6255
+Short Description             : When an unmanaged ScrolledList is fetched, the ScrolledWindow is managed.
+Subcomponent or Book Name     : Mrm library
+Found in Baseline             : 1.2.2
+
+CR Number                     : 6253
+Short Description             : XmScrollVisible does not work with a very small window.
+Subcomponent or Book Name     : XmScrolledWindow
+Found in Baseline             : 1.2.2
+
+CR Number                     : 6250
+Short Description             : Automation finds non-existent visual differences
+Subcomponent or Book Name     : Automation
+Found in Baseline             : 1.2.3
+
+CR Number                     : 6249
+Short Description             : Form9 test creates a form over a scrollbar when it shouldn't
+Subcomponent or Book Name     : XmForm
+Found in Baseline             : 1.2.3
+
+CR Number                     : 6248
+Short Description             : TrackingLocM2 error - KHelp unposts cascade menu.
+Subcomponent or Book Name     : XmTrackingLocate/Event
+Found in Baseline             : 1.2.2
+
+CR Number                     : 6247
+Short Description             : VenShellM1 Panel 5 test logic erroneous.
+Subcomponent or Book Name     : other
+Found in Baseline             : 1.2.3
+
+CR Number                     : 6236
+Short Description             : DrawingArea input callbacks not called when a child exists.
+Subcomponent or Book Name     : XmDrawingArea
+Found in Baseline             : 1.2
+
+CR Number                     : 6231
+Short Description             : ScrollList3 - showing a vertical size difference between recorded image and run.
+Subcomponent or Book Name     : XmList
+Found in Baseline             : 1.2.3
+
+CR Number                     : 6227
+Short Description             : XmNdragProc callback reasons documented incorrectly (XmCR_DRAG_MOTION and XmCR_OPERATION_CHANGED).
+Subcomponent or Book Name     : Programmer's Reference
+Found in Baseline             : 1.2
+
+CR Number                     : 6192
+Short Description             : bzero used by Uil/Mrm functions
+Subcomponent or Book Name     : UIL
+Found in Baseline             : 1.2.2
+
+CR Number                     : 6186
+Short Description             : Test is broken
+Subcomponent or Book Name     : other
+Found in Baseline             : 1.2.3
+
+CR Number                     : 6184
+Short Description             : _XmClipboardGetSelection() should time out if the CLIPBOARD owner does not respond...
+Subcomponent or Book Name     : Clipboard
+Found in Baseline             : 1.2.2
+
+CR Number                     : 6182
+Short Description             : XmList navigation actions cannot be invoked from accelerators
+Subcomponent or Book Name     : XmList
+Found in Baseline             : 1.2.2
+
+CR Number                     : 6181
+Short Description             : UIL pixmap max size not documented
+Subcomponent or Book Name     : UIL
+Found in Baseline             : 1.2
+
+CR Number                     : 6180
+Short Description             : Initialization time for TextField widget much slower in 1.2 from 1.1
+Subcomponent or Book Name     : XmTextField
+Found in Baseline             : 1.2.2
+
+CR Number                     : 6164
+Short Description             : Scrollbar keeps grab when set insensitive in callback
+Subcomponent or Book Name     : XmScrollBar
+Found in Baseline             : 1.2.2
+
+CR Number                     : 6162
+Short Description             : Right shadow is erased when in the transliteration mode of the over-the-spot
+Subcomponent or Book Name     : I18N misc
+Found in Baseline             : 1.2.2
+
+CR Number                     : 6161
+Short Description             : XmCommand Callback length does not reflect the length of the string
+Subcomponent or Book Name     : Programmer's Reference
+Found in Baseline             : 1.2
+
+CR Number                     : 6149
+Short Description             : Some preprocessors use ## for concatenating tokens but don't define __STDC__ as 1
+Subcomponent or Book Name     : Build issues
+Found in Baseline             : 1.2.2
+
+CR Number                     : 6148
+Short Description             : xmpiano - discrepency between the README file and the popup menu displayed.
+Subcomponent or Book Name     : Demos
+Found in Baseline             : 1.2.3
+
+CR Number                     : 6146
+Short Description             : WORLDOPTS isn't defined in startup Makefile
+Subcomponent or Book Name     : Build issues
+Found in Baseline             : 1.2.2
+
+CR Number                     : 6117
+Short Description             : If List is made insensitive, scrollbars don't work.
+Subcomponent or Book Name     : XmList
+Found in Baseline             : 1.1.5
+
+CR Number                     : 6103
+Short Description             : files in bitmaps are never installed in X-tree
+Subcomponent or Book Name     : Build issues
+Found in Baseline             : 1.2.2
+
+CR Number                     : 6092
+Short Description             : XmScreen's resource XmNmenuCursor is type Cursor, not String.
+Subcomponent or Book Name     : Programmer's Reference
+Found in Baseline             : 1.2
+
+CR Number                     : 6091
+Short Description             : Incorrect include file on XmGetXmScreen manpage.
+Subcomponent or Book Name     : Programmer's Reference
+Found in Baseline             : 1.2
+
+CR Number                     : 6036
+Short Description             : Suppress Text cursor blink while it is being moved.
+Subcomponent or Book Name     : XmText
+Found in Baseline             : 1.2.2
+
+CR Number                     : 6035
+Short Description             : Toggle button indicators do not change state when return key is pressed.
+Subcomponent or Book Name     : XmToggleButton
+Found in Baseline             : 1.2.3
+
+CR Number                     : 6032
+Short Description             : ToggleButton[Gadget] not resizing correctly when the label pixmap is changed
+Subcomponent or Book Name     : XmToggleButton
+Found in Baseline             : 1.2.3
+
+CR Number                     : 6028
+Short Description             : Imakefiles in VTS redefine XMLIB.
+Subcomponent or Book Name     : Build issues
+Found in Baseline             : 1.1.1
+
+CR Number                     : 6013
+Short Description             : Add "Licensee's Defect Number" field to the bugreport template.
+Subcomponent or Book Name     : other
+Found in Baseline             : 1.2.2
+
+CR Number                     : 5987
+Short Description             : import targets set for Drop Site seems to effect the exportTargets in Scale widget.
+Subcomponent or Book Name     : Drag and Drop
+Found in Baseline             : 1.2.3
+
+CR Number                     : 5980
+Short Description             : No default binding to toggle overstrike mode
+Subcomponent or Book Name     : XmText
+Found in Baseline             : 1.2.2
+
+CR Number                     : 5965
+Short Description             : Text Manual highlighting not adjusted correctly when text inserted
+Subcomponent or Book Name     : XmText
+Found in Baseline             : 1.2.2
+
+CR Number                     : 5938
+Short Description             : add I18N MWM title example to Programmer's Guide
+Subcomponent or Book Name     : Programmer's Guide
+Found in Baseline             : 1.2
+
+CR Number                     : 5937
+Short Description             : DND cursor not updated going from invalid to valid drop site when there is no NO_DROP_SITE in between.
+Subcomponent or Book Name     : Drag and Drop
+Found in Baseline             : 1.2.2
+
+CR Number                     : 5927
+Short Description             : VTS uses functions that are deprecated in Motif 1.2 and beyond.
+Subcomponent or Book Name     : Automation
+Found in Baseline             : 1.2.3
+
+CR Number                     : 5898
+Short Description             : Images created using XCreateImage
+should be destroyed using XDestroyImage
+Subcomponent or Book Name     : Memory issues
+Found in Baseline             : 1.2.3
+
+CR Number                     : 5896
+Short Description             : BNF for Resource Definition
+bogus in WML(5X).
+Subcomponent or Book Name     : Programmer's Reference
+Found in Baseline             : 1.2
+
+CR Number                     : 5895
+Short Description             : Setting a messagebox pixmap to null after creation gives X error
+Subcomponent or Book Name     : XmLabel
+Found in Baseline             : 1.2.2
+
+CR Number                     : 5893
+Short Description             : DragOver feedback does not change during drag unless key pressed
+Subcomponent or Book Name     : Drag and Drop
+Found in Baseline             : 1.2.2
+
+CR Number                     : 5888
+Short Description             : UIL compiler accepts more data type as user defined argument types than as documented.
+Subcomponent or Book Name     : WML
+Found in Baseline             : 1.2
+
+CR Number                     : 5887
+Short Description             : uil compiler allows invalid assignments
+to enum-style resources.
+Subcomponent or Book Name     : UIL
+Found in Baseline             : 1.2.1
+
+CR Number                     : 5882
+Short Description             : UIL gave wrong diagnosis information for duplicate definitions in argument list.
+Subcomponent or Book Name     : UIL
+Found in Baseline             : 1.2.1
+
+CR Number                     : 5880
+Short Description             : It is impossible to set the slider color on a scrollbar of a scrolled Text/List
+Subcomponent or Book Name     : XmText
+Found in Baseline             : 1.2.2
+
+CR Number                     : 5876
+Short Description             : CutPaste assigns meaninless property types to Clipboard properties
+Subcomponent or Book Name     : Clipboard
+Found in Baseline             : 1.2.2
+
+CR Number                     : 5872
+Short Description             : Possible error in the first 2 entries of mvsColorAllocInfo array.
+Subcomponent or Book Name     : VTS tools
+Found in Baseline             : 1.1
+
+CR Number                     : 5812
+Short Description             : Warnings compiling VTS on SYSV.4
+Subcomponent or Book Name     : Build issues
+Found in Baseline             : 1.1
+
+CR Number                     : 5808
+Short Description             : FontList example incorrectly has two identical FontSets.
+Subcomponent or Book Name     : Programmer's Guide
+Found in Baseline             : 1.2
+
+CR Number                     : 5800
+Short Description             : _XmStringDrawSegment reads uninitialized memory when automated test DrawArea2 is run.
+Subcomponent or Book Name     : Memory issues
+Found in Baseline             : 1.2.3
+
+CR Number                     : 5799
+Short Description             : QATS can't link with any tests that use lex or yacc due to name space conflicts
+Subcomponent or Book Name     : Automation
+Found in Baseline             : 1.2.3
+
+CR Number                     : 5798
+Short Description             : test Form1 leaks memory when creating XmStrings which do not get freed.
+Subcomponent or Book Name     : Memory issues
+Found in Baseline             : 1.2.3
+
+CR Number                     : 5796
+Short Description             : DrawArea1 test leaks memory. XmStrings created but not freed.
+Subcomponent or Book Name     : Memory issues
+Found in Baseline             : 1.2.3
+
+CR Number                     : 5794
+Short Description             : AutoParser leaks memory
+Subcomponent or Book Name     : Memory issues
+Found in Baseline             : 1.2.3
+
+CR Number                     : 5792
+Short Description             : XmFontListInitFontContext clarification needed
+Subcomponent or Book Name     : Programmer's Reference
+Found in Baseline             : 1.2
+
+CR Number                     : 5791
+Short Description             : _XmStringCharsetCreate leaks memory according to Purify.
+Subcomponent or Book Name     : Memory issues
+Found in Baseline             : 1.2.3
+
+CR Number                     : 5786
+Short Description             : need a sanity check to maintain a minimum width in FSB
+Subcomponent or Book Name     : XmFileSelectionBox
+Found in Baseline             : 1.2.2
+
+CR Number                     : 5780
+Short Description             : Warning messages about scrollbars in ScrolledLists
+Subcomponent or Book Name     : XmList
+Found in Baseline             : 1.2.2
+
+CR Number                     : 5779
+Short Description             : geometry of ToggleButtonGadgets changes while being scrolled in a scroll bar.
+Subcomponent or Book Name     : Geometry Management Mechanism
+Found in Baseline             : 1.2.3
+
+CR Number                     : 5766
+Short Description             : XmManager documentation for XmNinitialFocus resource should be "CSG
+Subcomponent or Book Name     : Programmer's Reference
+Found in Baseline             : 1.2
+
+CR Number                     : 5751
+Short Description             : XmStringInitContext manpage should say it mallocs memory.
+Subcomponent or Book Name     : XmString
+Found in Baseline             : 1.2
+
+CR Number                     : 5749
+Short Description             : Programmer's Reference errors reported by Japan SIG
+Subcomponent or Book Name     : Programmer's Reference
+Found in Baseline             : 1.2
+
+CR Number                     : 5748
+Short Description             : Programmer's Guide errors reported by Japan SIG
+Subcomponent or Book Name     : Programmer's Guide
+Found in Baseline             : 1.2
+
+CR Number                     : 5746
+Short Description             : Change UIL documentation to allow integer expressions in rgb statements
+Subcomponent or Book Name     : UIL
+Found in Baseline             : 1.2.3
+
+CR Number                     : 5745
+Short Description             : If set menubar after mainwindow is realized, it goes in the wrong place.
+Subcomponent or Book Name     : XmMainWindow
+Found in Baseline             : 1.2.2
+
+CR Number                     : 5737
+Short Description             : TearOff title suffix, "Tear Off", requires internationalization capability.
+Subcomponent or Book Name     : TearOff Menus
+Found in Baseline             : 1.2
+
+CR Number                     : 5732
+Short Description             : Add ability for QATS to run through tests backwards and possibly fast forward through parts.
+Subcomponent or Book Name     : Automation
+Found in Baseline             : 1.2.3
+
+CR Number                     : 5719
+Short Description             : 4-byte maximum on size of characters in XmText widgets is not enough.
+Subcomponent or Book Name     : XmText
+Found in Baseline             : 1.2.2
+
+CR Number                     : 5718
+Short Description             : Document or increase the limit on
+the number of instructions allowed for a .dat file.
+Subcomponent or Book Name     : Automation
+Found in Baseline             : 1.2.3
+
+CR Number                     : 5716
+Short Description             : icon position not remembered across restart
+Subcomponent or Book Name     : MWM (user interface)
+Found in Baseline             : 1.2
+
+CR Number                     : 5710
+Short Description             : Avoid colormap flashing when switching between windows with same colormap.
+Subcomponent or Book Name     : MWM (user interface)
+Found in Baseline             : 1.2.2
+
+CR Number                     : 5707
+Short Description             : Trailing spaces in an f.title argument are ignored.
+Subcomponent or Book Name     : MWM (user interface)
+Found in Baseline             : 1.2.3
+
+CR Number                     : 5687
+Short Description             : MrmOpenHierarchy manpage specifies a suffix of ".uil"; should be ".uid".
+Subcomponent or Book Name     : AES
+Found in Baseline             : 1.2
+
+CR Number                     : 5684
+Short Description             : XmClipboardRegisterFormat man page should say ClipboardFail is returned when an already-registered format is re-registered with a *different* length, not same length.
+Subcomponent or Book Name     : Clipboard
+Found in Baseline             : 1.2
+
+CR Number                     : 5681
+Short Description             : XmAddProtocols manpage should have XmRemoveProtocols in Related Information (etc).
+Subcomponent or Book Name     : AES
+Found in Baseline             : 1.2.1
+
+CR Number                     : 5680
+Short Description             : Resources of type string in shell widgets do not return copies of data
+Subcomponent or Book Name     : AES
+Found in Baseline             : 1.2.1
+
+CR Number                     : 5675
+Short Description             : Need to define complete keyboard bindings for DEC PCs
+Subcomponent or Book Name     : Translations and Virtual Bindings
+Found in Baseline             : 1.2.2
+
+CR Number                     : 5671
+Short Description             : XmSTRING_COMPONENT_ enums in XmStringGetNextComponent don't match doc.
+Subcomponent or Book Name     : XmString
+Found in Baseline             : 1.2.3
+
+CR Number                     : 5670
+Short Description             : L-R fonts in R-L versions produce
+L-R compound strings.
+Subcomponent or Book Name     : UIL
+Found in Baseline             : 1.2
+
+CR Number                     : 5666
+Short Description             : XmList selectedItems documentation about updating is incomplete.
+Subcomponent or Book Name     : Programmer's Reference
+Found in Baseline             : 1.2.2
+
+CR Number                     : 5665
+Short Description             : The documentation for XmNdialogStyle should alert user to "grab" issues.
+Subcomponent or Book Name     : Programmer's Guide
+Found in Baseline             : 1.2
+
+CR Number                     : 5660
+Short Description             : UIL XmNvalue for XmText does not handle newline in 16-bit string.
+Subcomponent or Book Name     : UIL
+Found in Baseline             : 1.2.2
+
+CR Number                     : 5658
+Short Description             : mwm's error handlers should print an error message before exiting.
+Subcomponent or Book Name     : MWM (user interface)
+Found in Baseline             : 1.2.2
+
+CR Number                     : 5657
+Short Description             : Text test, Text2 - Instruction Panel #2
+Subcomponent or Book Name     : XmText
+Found in Baseline             : 1.2.3
+
+CR Number                     : 5654
+Short Description             : SVR4 should use poll(), not select(), for microsleep.
+Subcomponent or Book Name     : OS dependencies
+Found in Baseline             : 1.2.2
+
+CR Number                     : 5647
+Short Description             : VTS Release Notes should reflect change to Motif1.2Installed #define.
+Subcomponent or Book Name     : OS dependencies
+Found in Baseline             : 1.1
+
+CR Number                     : 5644
+Short Description             : Cancel key does not restore XmList original position when scrolling.
+Subcomponent or Book Name     : XmList
+Found in Baseline             : 1.2.2
+
+CR Number                     : 5640
+Short Description             : State that user must free memory allocated for rectangles placed into XmDropSiteUpdate or retrieved from XmDropSiteRetrieve.
+Subcomponent or Book Name     : Programmer's Reference
+Found in Baseline             : 1.2.1
+
+CR Number                     : 5638
+Short Description             : Panel 5 in Menu1 gives wrong behavior
+Subcomponent or Book Name     : other
+Found in Baseline             : 1.2.2
+
+CR Number                     : 5635
+Short Description             : ScrollText1, Instruction Panel 3, instruction number 2) looks like incorrect instructions.
+Subcomponent or Book Name     : other
+Found in Baseline             : 1.2.3
+
+CR Number                     : 5625
+Short Description             : mwm should monitor changes in its ints.  For example, it ignores adding an icon window.
+Subcomponent or Book Name     : MWM (programmatic interface)
+Found in Baseline             : 1.2.1
+
+CR Number                     : 5616
+Short Description             : Memory leaks when memory allocated by mvsCopyResource in mvsCpRsc.c isn't freed.
+Subcomponent or Book Name     : other
+Found in Baseline             : 1.1.1
+
+CR Number                     : 5613
+Short Description             : XmScrollBar resource descriptions need work
+Subcomponent or Book Name     : Programmer's Reference
+Found in Baseline             : 1.2
+
+CR Number                     : 5612
+Short Description             : Use of routine CreateRCChildren creates memory leaks in mvsRowCol.c
+Subcomponent or Book Name     : Memory issues
+Found in Baseline             : 1.1.1
+
+CR Number                     : 5611
+Short Description             : List.c does not free string created by XmStringCreate, causing memory leaks.
+Subcomponent or Book Name     : Memory issues
+Found in Baseline             : 1.1.1
+
+CR Number                     : 5610
+Short Description             : VTS is inefficeint at making report files.
+Subcomponent or Book Name     : VTS tools
+Found in Baseline             : 1.1
+
+CR Number                     : 5609
+Short Description             : Release notes needs to explain VF and VMRM report generation better
+Subcomponent or Book Name     : VTS tools
+Found in Baseline             : 1.1
+
+CR Number                     : 5607
+Short Description             : Use of XCreateGC causes memory leaks in VTS.
+Subcomponent or Book Name     : Memory issues
+Found in Baseline             : 1.1.1
+
+CR Number                     : 5606
+Short Description             : String created by XmStringCreate not freed in Box.c
+Subcomponent or Book Name     : Memory issues
+Found in Baseline             : 1.1.1
+
+CR Number                     : 5605
+Short Description             : Use of XtParseTranslationTable causes memory leaks in the VTS.
+Subcomponent or Book Name     : Memory issues
+Found in Baseline             : 1.1.1
+
+CR Number                     : 5603
+Short Description             : Use of XtCreateWidget causes memory leaks in the VTS
+Subcomponent or Book Name     : Memory issues
+Found in Baseline             : 1.1.1
+
+CR Number                     : 5602
+Short Description             : Use of XGetVisualInfo leaks memory in the VTS
+Subcomponent or Book Name     : Memory issues
+Found in Baseline             : 1.1.1
+
+CR Number                     : 5599
+Short Description             : XmScrollBarSetValues ref page has incorrect arg descriptions
+Subcomponent or Book Name     : Programmer's Reference
+Found in Baseline             : 1.2
+
+CR Number                     : 5592
+Short Description             : Some Text tests use functions that are in Obsolete.c
+Subcomponent or Book Name     : other
+Found in Baseline             : 1.2.3
+
+CR Number                     : 5591
+Short Description             : The UIL compiler should have a -c option, allowing the output filename to be generated.
+Subcomponent or Book Name     : UIL
+Found in Baseline             : 1.2.2
+
+CR Number                     : 5584
+Short Description             : PopupMenu1 test is broken
+Subcomponent or Book Name     : XmMenuShell
+Found in Baseline             : 1.2
+
+CR Number                     : 5575
+Short Description             : Motif error and warning messages should be in Messages.c, never inline in the code.
+Subcomponent or Book Name     : I18N misc
+Found in Baseline             : 1.2
+
+CR Number                     : 5543
+Short Description             : VTS builds incorrect Makefile dependencies for vmrm library
+Subcomponent or Book Name     : VTS Mrm tests
+Found in Baseline             : 1.1
+
+CR Number                     : 5541
+Short Description             : $MVROOT/vfonts/MK_MVSFONTS references files exceeding max. char size.
+Subcomponent or Book Name     : VTS tools
+Found in Baseline             : 1.1
+
+CR Number                     : 5540
+Short Description             : XtError should not be called (multiple occurrences)
+Subcomponent or Book Name     : Cxx Foundry Widgets
+Found in Baseline             : 1.0
+
+CR Number                     : 5538
+Short Description             : num_children==0 could cause crash
+Subcomponent or Book Name     : Cxx Foundry Widgets
+Found in Baseline             : 1.0
+
+CR Number                     : 5537
+Short Description             : Illegal index could return garbage
+Subcomponent or Book Name     : Cxx Foundry Widgets
+Found in Baseline             : 1.0
+
+CR Number                     : 5528
+Short Description             : XmClipboardCopy has incomplete description
+Subcomponent or Book Name     : Programmer's Reference
+Found in Baseline             : 1.2
+
+CR Number                     : 5527
+Short Description             : XmDragStart description incomplete
+Subcomponent or Book Name     : Programmer's Reference
+Found in Baseline             : 1.2
+
+CR Number                     : 5525
+Short Description             : Conversion.c in ./tests/lib/Common
+leake memory.
+Subcomponent or Book Name     : Memory issues
+Found in Baseline             : 1.2.3
+
+CR Number                     : 5524
+Short Description             : Automation code leaks memory when string returned by mvsExtractString is not freed.
+Subcomponent or Book Name     : Memory issues
+Found in Baseline             : 1.2.3
+
+CR Number                     : 5523
+Short Description             : GetValuesHook in ResInd.c leaks memory.
+Subcomponent or Book Name     : Memory issues
+Found in Baseline             : 1.2.3
+
+CR Number                     : 5508
+Short Description             : ModifyVerifyCallback does not have an event when dropping or pasting
+Subcomponent or Book Name     : XmText
+Found in Baseline             : 1.2.1
+
+CR Number                     : 5503
+Short Description             : Uil(5) man page has incorrect syntax for controls list.
+Subcomponent or Book Name     : Programmer's Reference
+Found in Baseline             : 1.2.1
+
+CR Number                     : 5500
+Short Description             : VTS test case 3.3.7 is failing the AIX 3.2.3 system
+Subcomponent or Book Name     : VTS input synthesis
+Found in Baseline             : 1.1
+
+CR Number                     : 5499
+Short Description             : VTS Build Bugs
+Subcomponent or Book Name     : VTS tools
+Found in Baseline             : 1.1
+
+CR Number                     : 5495
+Short Description             : Mrm/UIL allows fetching of private objects
+Subcomponent or Book Name     : Mrm library
+Found in Baseline             : 1.2.1
+
+CR Number                     : 5494
+Short Description             : Change XmFontListEntryAppend to XmFontListAppendEntry on page 11-12.
+Subcomponent or Book Name     : Programmer's Guide
+Found in Baseline             : 1.2
+
+CR Number                     : 5484
+Short Description             : Description of XmNinsertPosition in XmRowColumn has ambigous default parameter.
+Subcomponent or Book Name     : XmRowColumn (WorkArea|RadioBox)
+Found in Baseline             : 1.2
+
+CR Number                     : 5470
+Short Description             : An attempt to define a character set variable in a UIL value section generates an error.
+Subcomponent or Book Name     : UIL
+Found in Baseline             : 1.2.1
+
+CR Number                     : 5468
+Short Description             : Documentation for
+XmFontListEntryFree should explicitly note that it takes a pointer!
+Subcomponent or Book Name     : AES
+Found in Baseline             : 1.2
+
+CR Number                     : 5459
+Short Description             : Failure to set tearoff menus' visual resources causes core dumps
+Subcomponent or Book Name     : TearOff Menus
+Found in Baseline             : 1.2.1
+
+CR Number                     : 5457
+Short Description             : UIL compiler doesn't generate error for keysym > 1 char.
+Subcomponent or Book Name     : UIL
+Found in Baseline             : 1.2.2
+
+CR Number                     : 5448
+Short Description             : TransFamily test exits with a signal under automation
+Subcomponent or Book Name     : Automation
+Found in Baseline             : 1.2.2
+
+CR Number                     : 5443
+Short Description             : UIL font and fontset character_set always defaults to ISO8859-1.
+Subcomponent or Book Name     : UIL
+Found in Baseline             : 1.2.1
+
+CR Number                     : 5442
+Short Description             : UIL documentation says that single floats cannot be used in expressions.
+Subcomponent or Book Name     : Programmer's Reference
+Found in Baseline             : 1.2
+
+CR Number                     : 5441
+Short Description             : no warnings generated when widget value can't be converted
+Subcomponent or Book Name     : UIL
+Found in Baseline             : 1.2.1
+
+CR Number                     : 5436
+Short Description             : Default background is bright blue.
+Subcomponent or Book Name     : Color
+Found in Baseline             : 1.2.1
+
+CR Number                     : 5423
+Short Description             : DragSliderValue command fail sometimes.
+Subcomponent or Book Name     : Automation
+Found in Baseline             : 1.2.2
+
+CR Number                     : 5416
+Short Description             : Use sigset()instead of signal() in mwm.
+Subcomponent or Book Name     : MWM (programmatic interface)
+Found in Baseline             : 1.2.1
+
+CR Number                     : 5414
+Short Description             : Illegal C code in Popup Menu example in Programmer's Manual.
+Subcomponent or Book Name     : Programmer's Guide
+Found in Baseline             : 1.2.1
+
+CR Number                     : 5402
+Short Description             : ScrollBars don't Release() using "any" BtnUp
+Subcomponent or Book Name     : XmScrollBar
+Found in Baseline             : 1.2.1
+
+CR Number                     : 5399
+Short Description             : i18n applications, the 64k byte limitation in compound strings is too small
+Subcomponent or Book Name     : XmString
+Found in Baseline             : 1.2.1
+
+CR Number                     : 5395
+Short Description             : Resource XmNdefaultVirtualBindings not correctly dclared in Display.c
+Subcomponent or Book Name     : XmDisplay
+Found in Baseline             : 1.2.2
+
+CR Number                     : 5394
+Short Description             : Mwm stack order behaves incorrectly in explicit mode
+Subcomponent or Book Name     : MWM (programmatic interface)
+Found in Baseline             : 1.2.1
+
+CR Number                     : 5387
+Short Description             : Classes description of XmMainWindow has a typo.
+Subcomponent or Book Name     : XmMainWindow
+Found in Baseline             : 1.2
+
+CR Number                     : 5386
+Short Description             : cannot set the topShadowColor of PushButton & ToggleButton, etc.
+Subcomponent or Book Name     : XmPrimitive
+Found in Baseline             : 1.2.1
+
+CR Number                     : 5385
+Short Description             : Synthetic resources confused.  Values read off the end of the struct.
+Subcomponent or Book Name     : Memory issues
+Found in Baseline             : 1.2.1
+
+CR Number                     : 5371
+Short Description             : When a horizontal scroll bar is not needed, then it disappears and the work area is moved to the minimum scroll position, but the XmNvalueChanged callbacks of the scroll bar are not invoked.
+Subcomponent or Book Name     : XmScrolledWindow
+Found in Baseline             : 1.2.1
+
+CR Number                     : 5366
+Short Description             : lib/Xm fails Form8 test.
+Subcomponent or Book Name     : XmForm
+Found in Baseline             : 1.2.1
+
+CR Number                     : 5363
+Short Description             : formatting error on XmForm(3X) man page
+Subcomponent or Book Name     : Programmer's Reference
+Found in Baseline             : 1.2
+
+CR Number                     : 5354
+Short Description             : Document new Frame alignment constants. Deprecate old constants.
+Subcomponent or Book Name     : Programmer's Reference
+Found in Baseline             : 1.2.1
+
+CR Number                     : 5353
+Short Description             : Performance problem with RowColumn baseline alignment and Label
+WidgetBaseline() method.
+Subcomponent or Book Name     : Performance
+Found in Baseline             : 1.2
+
+CR Number                     : 5351
+Short Description             : Doc doesn't state that XmTextVerifyCallbackStruct never contains a valid event data when the reason is XmCR_MOVING_INSERT_CURSOR .
+Subcomponent or Book Name     : Programmer's Reference
+Found in Baseline             : 1.1.1
+
+CR Number                     : 5350
+Short Description             : Can't set in a resource file the background color of the XmcrolledWindow widget's clipWindow because it's name, "ScrolledWindowClipWindow", is not documented.
+Subcomponent or Book Name     : Programmer's Reference
+Found in Baseline             : 1.2.2
+
+CR Number                     : 5343
+Short Description             : Remember to free strings created by XmStringCreate, etc.
+Subcomponent or Book Name     : Memory issues
+Found in Baseline             : 1.2.2
+
+CR Number                     : 5342
+Short Description             : UilFlags, LOCAL_UILFLAGS and other Imake varables are not documented.
+Subcomponent or Book Name     : Release Notes
+Found in Baseline             : 1.2.1
+
+CR Number                     : 5338
+Short Description             : Calling XmListSelectPos on selected items deselects those items
+Subcomponent or Book Name     : XmList
+Found in Baseline             : 1.2.1
+
+CR Number                     : 5336
+Short Description             : BulletinBoard defaultPosition is changed by DialogShell
+Subcomponent or Book Name     : XmDialogShell
+Found in Baseline             : 1.2.1
+
+CR Number                     : 5332
+Short Description             : Drang and Drop confusing: "the client can specify a custom pixmap in the DragContext resource XmNsourcePixmapIcon"
+Subcomponent or Book Name     : Programmer's Guide
+Found in Baseline             : 1.2.1
+
+CR Number                     : 5329
+Short Description             : VTS contains two functions that are not complete and yet used.
+Subcomponent or Book Name     : VTS widget tests
+Found in Baseline             : 1.1
+
+CR Number                     : 5312
+Short Description             : Warnings and prototypes in wml.
+Subcomponent or Book Name     : WML
+Found in Baseline             : 1.2.2
+
+CR Number                     : 5306
+Short Description             : RS/6000 cpp rejects the "Motif1.2Installed" symbol.
+Subcomponent or Book Name     : other
+Found in Baseline             : 1.1
+
+CR Number                     : 5299
+Short Description             : VTS font filenames are too long.
+Subcomponent or Book Name     : VTS tools
+Found in Baseline             : 1.1
+
+CR Number                     : 5298
+Short Description             : uil doesn't work if LANG=ja_JP.EUC
+Subcomponent or Book Name     : UIL
+Found in Baseline             : 1.2.1
+
+CR Number                     : 5292
+Short Description             : Add support for unpostBehavior resource in Automation
+Subcomponent or Book Name     : Automation
+Found in Baseline             : 1.2.1
+
+CR Number                     : 5291
+Short Description             : Add IconBox testing to Automation
+Subcomponent or Book Name     : Automation
+Found in Baseline             : 1.2.1
+
+CR Number                     : 5290
+Short Description             : Add support for testing RootMenu in Automation
+Subcomponent or Book Name     : Automation
+Found in Baseline             : 1.2.1
+
+CR Number                     : 5289
+Short Description             : Enhance WindowItemCheck in Automation
+Subcomponent or Book Name     : Automation
+Found in Baseline             : 1.2.1
+
+CR Number                     : 5288
+Short Description             : Keybord support for WindowManager commands in Automation
+Subcomponent or Book Name     : Automation
+Found in Baseline             : 1.2.1
+
+CR Number                     : 5287
+Short Description             : When ProcessTraversal is given the parameter TraverseHome it is not always predictable.
+Subcomponent or Book Name     : Traversal/Navigation
+Found in Baseline             : 1.2.1
+
+CR Number                     : 5286
+Short Description             : Add a Motif front end for Automation
+Subcomponent or Book Name     : Automation
+Found in Baseline             : 1.2.1
+
+CR Number                     : 5283
+Short Description             : Investigate adding I18N testing to Automation
+Subcomponent or Book Name     : Automation
+Found in Baseline             : 1.2.1
+
+CR Number                     : 5281
+Short Description             : XmProcessTraversal description is not specific enough.
+Subcomponent or Book Name     : Traversal/Navigation
+Found in Baseline             : 1.2
+
+CR Number                     : 5280
+Short Description             : Better visual comparison of Pixmap resources in Automation
+Subcomponent or Book Name     : Automation
+Found in Baseline             : 1.2.1
+
+CR Number                     : 5279
+Short Description             : Support for Xt creation routines in Automation
+Subcomponent or Book Name     : Automation
+Found in Baseline             : 1.2.1
+
+CR Number                     : 5277
+Short Description             : Enhancement to visual debugging tools
+Subcomponent or Book Name     : Automation
+Found in Baseline             : 1.2.1
+
+CR Number                     : 5276
+Short Description             : Add Automation support for new widgets
+Subcomponent or Book Name     : Automation
+Found in Baseline             : 1.2.1
+
+CR Number                     : 5275
+Short Description             : Visual comparison of cursors
+Subcomponent or Book Name     : Automation
+Found in Baseline             : 1.2.1
+
+CR Number                     : 5274
+Short Description             : Enhance suport for template dialog
+Subcomponent or Book Name     : Automation
+Found in Baseline             : 1.2.1
+
+CR Number                     : 5273
+Short Description             : Performance improvments
+Subcomponent or Book Name     : Automation
+Found in Baseline             : 1.2.1
+
+CR Number                     : 5272
+Short Description             : General cleanup of code.
+Subcomponent or Book Name     : Automation
+Found in Baseline             : 1.2.1
+
+CR Number                     : 5268
+Short Description             : Documention needs to mention that
+XtIsManaged() not reliable in MrmNcreate Callback.
+Subcomponent or Book Name     : other
+Found in Baseline             : 1.2
+
+CR Number                     : 5267
+Short Description             : data return types to UIL callbacks need to be documented
+Subcomponent or Book Name     : UIL
+Found in Baseline             : 1.2
+
+CR Number                     : 5263
+Short Description             : Appendix D, UIL
+Diagnostic Messages, of 1.1 Prog. Guide is missing from 1.2 Prog. Reference.
+Subcomponent or Book Name     : Programmer's Reference
+Found in Baseline             : 1.2
+
+CR Number                     : 5261
+Short Description             : Memory leak in the MVTS?
+Subcomponent or Book Name     : VTS widget tests
+Found in Baseline             : 1.1
+
+CR Number                     : 5257
+Short Description             : windows should be set to 0, not NULL.
+Subcomponent or Book Name     : XmRowColumn (WorkArea|RadioBox)
+Found in Baseline             : 1.2.1
+
+CR Number                     : 5256
+Short Description             : Casting NULL to function pointer gives compiler warnings.
+Subcomponent or Book Name     : XmRowColumn (WorkArea|RadioBox)
+Found in Baseline             : 1.2.1
+
+CR Number                     : 5255
+Short Description             : KeySym can't be compared against NULL.
+Subcomponent or Book Name     : XmRowColumn (WorkArea|RadioBox)
+Found in Baseline             : 1.2.1
+
+CR Number                     : 5254
+Short Description             : 1.2 Programmer's Guide typo
+Subcomponent or Book Name     : Programmer's Guide
+Found in Baseline             : 1.2
+
+CR Number                     : 5253
+Short Description             : Functionality of Shell Modality is not tested in the Test Suite(vts, qats).
+Subcomponent or Book Name     : VendorShell
+Found in Baseline             : 1.1
+
+CR Number                     : 5250
+Short Description             : Default ClickMB does not work.
+Subcomponent or Book Name     : Automation
+Found in Baseline             : 1.2.1
+
+CR Number                     : 5247
+Short Description             : Programmer's Guide p. 11-8 has
+extra argument in call to XmStringCreateLocalized.
+Subcomponent or Book Name     : Programmer's Guide
+Found in Baseline             : 1.2
+
+CR Number                     : 5246
+Short Description             : The XmNdestroyCallback is incorrectly called twice in 1.2 Motif Uil programs.
+Subcomponent or Book Name     : Programmer's Reference
+Found in Baseline             : 1.2.1
+
+CR Number                     : 5245
+Short Description             : no converters for XmNmwmDecorations XmNmwmFunctions
+Subcomponent or Book Name     : VendorShell
+Found in Baseline             : 1.2
+
+
+CR Number                     : 5244
+Short Description             : missing declaration in programGuide
+Subcomponent or Book Name     : Programmer's Guide
+Found in Baseline             : 1.2
+
+CR Number                     : 5240
+Short Description             : Drag & Drop past end of highlighted text is confusing
+Subcomponent or Book Name     : Drag and Drop
+Found in Baseline             : 1.2.1
+
+CR Number                     : 5239
+Short Description             : _XmMenuFocus calls XSetInputFocus with CurrentTime
+Subcomponent or Book Name     : XmRowColumn (WorkArea|RadioBox)
+Found in Baseline             : 1.2
+
+CR Number                     : 5238
+Short Description             : cancelling option menu selection should revert focus back to widget that held focus prior to option menu.
+Subcomponent or Book Name     : Menu button interactions
+Found in Baseline             : 1.2
+
+CR Number                     : 5236
+Short Description             : XmCommand children documentation inadequate
+Subcomponent or Book Name     : Programmer's Reference
+Found in Baseline             : 1.2
+
+CR Number                     : 5234
+Short Description             : MrmFetchWidget man page mentions non-existent values and files.
+Subcomponent or Book Name     : Programmer's Reference
+Found in Baseline             : 1.2
+
+CR Number                     : 5220
+Short Description             : DNDlabel.c fixes in 1.2 programmer's guide
+Subcomponent or Book Name     : Programmer's Guide
+Found in Baseline             : 1.2
+
+CR Number                     : 5213
+Short Description             : When a window is closed, the focus
+goes to the window which previously had it, even when autoKeyFocus is false.
+Subcomponent or Book Name     : MWM (user interface)
+Found in Baseline             : 1.2.1
+
+
+CR Number                     : 5205
+Short Description             : naming of simple menu items described incorrectly
+Subcomponent or Book Name     : Programmer's Reference
+Found in Baseline             : 1.2
+
+CR Number                     : 5199
+Short Description             : arithmetic is done using unsigned in XClearArea
+Subcomponent or Book Name     : Gadget|Primitive|Manager
+Found in Baseline             : 1.2.2
+
+CR Number                     : 5191
+Short Description             : Comparison is made between signed and unsigned values.
+Subcomponent or Book Name     : Menu layout
+Found in Baseline             : 1.2.1
+
+CR Number                     : 5182
+Short Description             : XmStringGetNextSegment
+and XmStringGetLToR should explicitly note need to free by caller.
+Subcomponent or Book Name     : Programmer's Reference
+Found in Baseline             : 1.2
+
+CR Number                     : 5181
+Short Description             : Motif 1.1/1.2 does not underline certain 8-bit mnemonics in labels
+Subcomponent or Book Name     : XmLabel
+Found in Baseline             : 1.2
+
+CR Number                     : 5175
+Short Description             : RemoveAllCallbacks in Destroy maybe inappropriate
+Subcomponent or Book Name     : Gadget|Primitive|Manager
+Found in Baseline             : 1.2.1
+
+CR Number                     : 5169
+Short Description             : description of XmGetPixmapByDepth does not describe bitmap name conventions fully.
+Subcomponent or Book Name     : Pixmap cache
+Found in Baseline             : 1.2.1
+
+CR Number                     : 5168
+Short Description             : Performance improvement for loading Mwm unspecified pixmaps
+Subcomponent or Book Name     : MWM (programmatic interface)
+Found in Baseline             : 1.2
+
+CR Number                     : 5165
+Short Description             : XmStringCreateLocalized documentation misnames header file
+Subcomponent or Book Name     : Programmer's Reference
+Found in Baseline             : 1.2
+
+CR Number                     : 5160
+Short Description             : Application-supplied icon window should be in iconbox even when normalized.
+Subcomponent or Book Name     : MWM (programmatic interface)
+Found in Baseline             : 1.2
+
+CR Number                     : 5159
+Short Description             : Icon label in iconbox not updated when active.
+Subcomponent or Book Name     : MWM (user interface)
+Found in Baseline             : 1.2
+
+CR Number                     : 5157
+Short Description             : filenames longer than 14 characters
+Subcomponent or Book Name     : Automation
+Found in Baseline             : 1.2
+
+CR Number                     : 5148
+Short Description             : XmFontListEntryLoad must advise the user to free returned font list entry after its use.
+Subcomponent or Book Name     : Programmer's Reference
+Found in Baseline             : 1.2.1
+
+CR Number                     : 5146
+Short Description             : mvsGetSubObjects must free memory allocated by XmFontListGetNextFont.
+Subcomponent or Book Name     : Automation
+Found in Baseline             : 1.2.1
+
+CR Number                     : 5144
+Short Description             : XmFontListGetNextFont must advise app to free memory allocated to pointer "charset".
+Subcomponent or Book Name     : Programmer's Reference
+Found in Baseline             : 1.2.1
+
+CR Number                     : 5143
+Short Description             : Provide Imakefiles for ./doc and .doc/man to manipulate and install the manpages, sml macros, etc.
+Subcomponent or Book Name     : other
+Found in Baseline             : 1.2
+
+CR Number                     : 5141
+Short Description             : Drag and Drop loses some events
+Subcomponent or Book Name     : Drag and Drop
+Found in Baseline             : 1.2
+
+CR Number                     : 5137
+Short Description             : Command area of Main Window Widget is not displayed properly
+Subcomponent or Book Name     : XmMainWindow
+Found in Baseline             : 1.2.1
+
+CR Number                     : 5129
+Short Description             : Can not turn off some Mwm bindings.
+Subcomponent or Book Name     : MWM (user interface)
+Found in Baseline             : 1.2
+
+CR Number                     : 5127
+Short Description             : Selection of foreground in Xor GC for rectangle drawing picks random color.
+Subcomponent or Book Name     : Demos
+Found in Baseline             : 1.2
+
+CR Number                     : 5124
+Short Description             : Title text not readable with *cleanText
+Subcomponent or Book Name     : MWM (programmatic interface)
+Found in Baseline             : 1.2
+
+CR Number                     : 5123
+Short Description             : Grabbing colormap focus?
+Subcomponent or Book Name     : MWM (user interface)
+Found in Baseline             : 1.2.1
+
+CR Number                     : 5121
+Short Description             : Add an f.place mwm function
+Subcomponent or Book Name     : MWM (user interface)
+Found in Baseline             : 1.2
+
+CR Number                     : 5120
+Short Description             : Add a resource to allow a lowered window to be raised when button1 is pressed inside the window.
+Subcomponent or Book Name     : MWM (user interface)
+Found in Baseline             : 1.2
+
+CR Number                     : 5118
+Short Description             : Allow Mwm bindings and window menu as a per-client resource
+Subcomponent or Book Name     : MWM (user interface)
+Found in Baseline             : 1.2
+
+CR Number                     : 5112
+Short Description             : cascade buttons first appear
+truncated when run in automation.  Works okay in manual mode (was: 
+OptionMenu3: option menu buttons w/labels that are too wide have the 
+labels shifted right 1 pixel.)
+Subcomponent or Book Name     : Geometry Management Mechanism
+Found in Baseline             : 1.2.1
+
+CR Number                     : 5111
+Short Description             : There needs to be a visual indication of the "editable" setting of a text field.
+Subcomponent or Book Name     : XmTextField
+Found in Baseline             : 1.2
+
+CR Number                     : 5104
+Short Description             : callUIl tests are not correct
+Subcomponent or Book Name     : UIL
+Found in Baseline             : 1.2.1
+
+CR Number                     : 5097
+Short Description             : uil matrix tests are not complete.
+Subcomponent or Book Name     : UIL
+Found in Baseline             : 1.2.1
+
+CR Number                     : 5090
+Short Description             : Many Motif action procs assume certain kinds of events, usually Button.
+Subcomponent or Book Name     : Translations and Virtual Bindings
+Found in Baseline             : 1.2
+
+CR Number                     : 5088
+Short Description             : SelectBox has a misleading resource in it.
+Subcomponent or Book Name     : XmSelectionBox
+Found in Baseline             : 1.2.1
+
+CR Number                     : 5086
+Short Description             : Test fsBox accesses resources that are not documented.
+Subcomponent or Book Name     : XmFileSelectionBox
+Found in Baseline             : 1.2.1
+
+CR Number                     : 5085
+Short Description             : uil test ErrorDia hasdefunct resource.
+Subcomponent or Book Name     : XmDialogShell
+Found in Baseline             : 1.2.1
+
+CR Number                     : 5084
+Short Description             : There should be an API call to selected multiple list items.
+Subcomponent or Book Name     : XmList
+Found in Baseline             : 1.2
+
+CR Number                     : 5079
+Short Description             : scrollwin3 test has vauge wording.
+Subcomponent or Book Name     : XmScrolledWindow
+Found in Baseline             : 1.2.1
+
+CR Number                     : 5077
+Short Description             : ScrollWin3 test expects the focus to go one way and yet the focus doesn't
+Subcomponent or Book Name     : XmScrolledWindow
+Found in Baseline             : 1.2.1
+
+CR Number                     : 5076
+Short Description             : the test ScrollWindow2 expects 10 and a half widgets in the first pane and it shows only 10.
+Subcomponent or Book Name     : XmScrolledWindow
+Found in Baseline             : 1.2.1
+
+CR Number                     : 5074
+Short Description             : Get warnings when compiling tests in Mrm directory.
+Subcomponent or Book Name     : Mrm library
+Found in Baseline             : 1.2.1
+
+CR Number                     : 5073
+Short Description             : Request for a mechanism to obtain different "graying" pixmaps for use with insensitive text.
+Subcomponent or Book Name     : XmLabel
+Found in Baseline             : 1.2
+
+CR Number                     : 5070
+Short Description             : item_position off by one
+Subcomponent or Book Name     : Programmer's Reference
+Found in Baseline             : 1.2
+
+CR Number                     : 5065
+Short Description             : Reduce memory usage in list widget.
+Subcomponent or Book Name     : XmList
+Found in Baseline             : 1.2
+
+CR Number                     : 5059
+Short Description             : Test output does not match dialog description.
+GetValues output for width is 1575 instead of 1990.
+Subcomponent or Book Name     : XmForm
+Found in Baseline             : 1.2.1
+
+CR Number                     : 5055
+Short Description             : Unmanaging children of Form followed by a SetValues and
+remanaging results in warning messages.
+Subcomponent or Book Name     : XmForm
+Found in Baseline             : 1.2.1
+
+CR Number                     : 5053
+Short Description             : Dialog description inadequate or possibly a bug.
+Other children are invisible.
+Subcomponent or Book Name     : XmForm
+Found in Baseline             : 1.2.1
+
+CR Number                     : 5046
+Short Description             : XmScale widget slider goes off the bottom with large value for XmNmaximum.
+Subcomponent or Book Name     : XmScale
+Found in Baseline             : 1.2
+
+CR Number                     : 5045
+Short Description             : XmCreateCommandDialog not documented
+Subcomponent or Book Name     : Programmer's Reference
+Found in Baseline             : 1.2.1
+
+CR Number                     : 5044
+Short Description             : Add the ability to attach a user data pointer to XmList items.
+Subcomponent or Book Name     : XmList
+Found in Baseline             : 1.2
+
+CR Number                     : 5037
+Short Description             : XmListSelect{Item, Pos} doc is incomplete
+Subcomponent or Book Name     : Programmer's Reference
+Found in Baseline             : 1.2.1
+
+CR Number                     : 5028
+Short Description             : When using very large pixmap icons in UIL, the compiler will crash.
+Subcomponent or Book Name     : Mrm library
+Found in Baseline             : 1.2
+
+CR Number                     : 5026
+Short Description             : Automated mwm does not handle certain menu items
+Subcomponent or Book Name     : Automation
+Found in Baseline             : 1.2.1
+
+CR Number                     : 5024
+Short Description             : Request for block cursor in Text and TextField.
+Subcomponent or Book Name     : XmText
+Found in Baseline             : 1.2
+
+CR Number                     : 5020
+Short Description             : wrong doc for defaultVirtualBindings resource
+Subcomponent or Book Name     : Programmer's Reference
+Found in Baseline             : 1.2.1
+
+CR Number                     : 5006
+Short Description             : XmAddProtocolCallbacks needs more overhead to work that it should.
+Subcomponent or Book Name     : Protocols
+Found in Baseline             : 1.2
+
+CR Number                     : 5002
+Short Description             : XmCreateScrolled* creates
+the SW parent _managed_.  This should be documented.
+Subcomponent or Book Name     : Programmer's Reference
+Found in Baseline             : 1.2.1
+
+CR Number                     : 4987
+Short Description             : For XmN<foo>Position
+resources, class should be XmCPosition, not XmCAttachment.
+Subcomponent or Book Name     : AES
+Found in Baseline             : 1.2
+
+CR Number                     : 4977
+Short Description             : Form1.c should allow you to reset the border_width, x and y of form children.
+Subcomponent or Book Name     : XmForm
+Found in Baseline             : 1.2
+
+CR Number                     : 4972
+Short Description             : Request for documentation change to XmText, etc.
+Subcomponent or Book Name     : Programmer's Reference
+Found in Baseline             : 1.2
+
+CR Number                     : 4967
+Short Description             : XmToggleButton(3X) & XmToggleButtonGadget(3X) give incomplete specification
+Subcomponent or Book Name     : Programmer's Reference
+Found in Baseline             : 1.2
+
+CR Number                     : 4965
+Short Description             : Clipping algorithm in dropSite management needs performance tuning
+Subcomponent or Book Name     : Drag and Drop
+Found in Baseline             : 1.2
+
+CR Number                     : 4940
+Short Description             : There is a bug in the mvsgen code for ListKdbCancel. ( it does not reflect the updated status in VTS Rev. C)
+Subcomponent or Book Name     : VTS widget tests
+Found in Baseline             : 1.1
+
+CR Number                     : 4939
+Short Description             : There is a significant amount of hardcoded information in the tools that generate the mvsgen code.
+Subcomponent or Book Name     : VTS tools
+Found in Baseline             : 1.1
+
+CR Number                     : 4938
+Short Description             : VTS references the obsolete resource XmNdefaultFontList.
+Subcomponent or Book Name     : VTS widget tests
+Found in Baseline             : 1.1
+
+CR Number                     : 4937
+Short Description             : Widgets may die in the VTS and yet the tests will still pass the test.
+Subcomponent or Book Name     : VTS widget tests
+Found in Baseline             : 1.1
+
+CR Number                     : 4936
+Short Description             : VTS does not check callbackk information in the callback data structures.
+Subcomponent or Book Name     : VTS widget tests
+Found in Baseline             : 1.1
+
+CR Number                     : 4935
+Short Description             : Mnemonics are not tested in the menu tests.
+Subcomponent or Book Name     : VTS widget tests
+Found in Baseline             : 1.1
+
+CR Number                     : 4932
+Short Description             : Add mode should be converted to be a resource in XmList and XmText. This will extend the coverage of the testing.
+Subcomponent or Book Name     : VTS widget tests
+Found in Baseline             : 1.1
+
+CR Number                     : 4931
+Short Description             : Form widget tests do not support geometry testing.
+Subcomponent or Book Name     : VTS widget tests
+Found in Baseline             : 1.1
+
+CR Number                     : 4930
+Short Description             : VTS does support resources that are conditionally on other resources.
+Subcomponent or Book Name     : VTS widget tests
+Found in Baseline             : 1.1
+
+CR Number                     : 4928
+Short Description             : Add mode in XmList should be made into a resource.
+Subcomponent or Book Name     : XmList
+Found in Baseline             : 1.2
+
+CR Number                     : 4927
+Short Description             : add Mode should be made a resource in Text widgets.
+Subcomponent or Book Name     : XmText
+Found in Baseline             : 1.2
+
+CR Number                     : 4926
+Short Description             : The README gives the wrong command to build DTE tools.
+Subcomponent or Book Name     : Release Notes
+Found in Baseline             : 1.2
+
+CR Number                     : 4925
+Short Description             : Man pages contain formatter
+commands in the .NAME section.
+Subcomponent or Book Name     : Programmer's Reference
+Found in Baseline             : 1.2
+
+CR Number                     : 4915
+Short Description             : MrmOpenHierarchy should use
+	XFILESEARCHPATH.
+Subcomponent or Book Name     : Mrm library
+Found in Baseline             : 1.2
+
+CR Number                     : 4914
+Short Description             : AES description of the functions
+					     XmMainWindowSep[1-3] need changes
+Subcomponent or Book Name     : XmMainWindow
+Found in Baseline             : 1.2
+
+CR Number                     : 4913
+Short Description             : need to clarify AES description
+					     for XmTextPosToXY conv. func.
+Subcomponent or Book Name     : XmText
+Found in Baseline             : 1.2
+
+CR Number                     : 4911
+Short Description             : Motif crashes when using
+a non-default depth visual (MenuShell pb only)
+Subcomponent or Book Name     : Shell
+Found in Baseline             : 1.1.3, 1.2
+
+CR Number                     : 4908
+Short Description             : Some methodology or process needs
+	to be defined to keep motif.wml in sync with toolkit.
+Subcomponent or Book Name     : WML
+Found in Baseline             : 1.2
+
+CR Number                     : 4897
+Short Description             : test expects whichButton == 2 but never sets it up
+Subcomponent or Book Name     : Menu event handling
+Found in Baseline             : 1.2
+
+CR Number                     : 4889
+Short Description             : Mwm doesn't use the Xm pixmap cache, it should or it'll never get XPM support for free.
+Subcomponent or Book Name     : MWM (programmatic interface)
+Found in Baseline             : 1.2
+
+CR Number                     : 4885
+Short Description             : XmListAddItems takes a long time and uses a lot of memeory
+Subcomponent or Book Name     : XmList
+Found in Baseline             : 1.2S3
+
+CR Number                     : 4870
+Short Description             : The description for the flag "only_if_exists" in the function XmInternAtom is not clear in its decription of the flag sense.
+Subcomponent or Book Name     : AES
+Found in Baseline             : 1.2
+
+CR Number                     : 4849
+Short Description             : window without title has 1 pixel thinner resizeBorderWidth
+Subcomponent or Book Name     : MWM (user interface)
+Found in Baseline             : 1.2S3
+
+CR Number                     : 4846
+Short Description             : Scale's DragConvertProc should support STRING target; should not create an intermediate compound string.
+Subcomponent or Book Name     : XmScale
+Found in Baseline             : 1.2S4
+
+CR Number                     : 4834
+Short Description             : bad assumptions in tests/mwm/PI/PIHints
+Subcomponent or Book Name     : other
+Found in Baseline             : 1.1.4
+
+CR Number                     : 4833
+Short Description             : PIColormap doesn't run on a Static GrayScale display; gives an immediate BadMatch error
+Subcomponent or Book Name     : other
+Found in Baseline             : 1.1.4
+
+CR Number                     : 4824
+Short Description             : Should be able to specify ~user/.mwmrc for configFile, as well as ~/.mwmrc.
+Subcomponent or Book Name     : MWM (programmatic interface)
+Found in Baseline             : 1.1.4
+
+CR Number                     : 4792
+Short Description             : Paned Window adds a timer, and does not remove it if the widget is destroyed.
+Subcomponent or Book Name     : XmPanedWindow/Sash
+Found in Baseline             : 1.2S3 BETA
+
+CR Number                     : 4791
+Short Description             : XmInterAtom and XmGetAtomName do double caching with Xlib, it's stupid and should be remove
+Subcomponent or Book Name     : Atom cache
+Found in Baseline             : 1.2
+
+CR Number                     : 4788
+Short Description             : This is a request to add XmGetFocusWidget() into the AES in the next AES revision.
+Subcomponent or Book Name     : other
+Found in Baseline             : 1.2
+
+CR Number                     : 4766
+Short Description             : No comment associated with compound strings
+Subcomponent or Book Name     : UIL
+Found in Baseline             : 1.2S3 BETA
+
+CR Number                     : 4738
+Short Description             : Active label should follow pointer focus in iconbox.
+Subcomponent or Book Name     : MWM (user interface)
+Found in Baseline             : 1.2S3 BETA
+
+CR Number                     : 4676
+Short Description             : CommandCallback, XmCommandError and _XmCommandReturn use XmStringLtoRCreate instead of XmStringCreateSimple
+Subcomponent or Book Name     : XmCommand
+Found in Baseline             : 1.2S3 BETA
+
+CR Number                     : 4649
+Short Description             : wrong character set table in Programmer's Guide
+Subcomponent or Book Name     : Programmer's Guide
+Found in Baseline             : 1.2S1
+
+CR Number                     : 4604
+Short Description             : Default shadow colors on a monochrome screen are inconsistent with those on a color screen.
+Subcomponent or Book Name     : Color
+Found in Baseline             : 1.2S4
+
+CR Number                     : 4596
+Short Description             : To preserve behavior of 1.1 code. DefaultAction callback in List should be documented to return same fields as multiple.
+Subcomponent or Book Name     : other
+Found in Baseline             : 1.2S4
+
+CR Number                     : 4589
+Short Description             : Should XmTextGetLastPosition count the null byte on the end of the string.
+Subcomponent or Book Name     : XmText
+Found in Baseline             : 1.2
+
+CR Number                     : 4588
+Short Description             : XmStringLineCount does not specify what should be retruned when the line is composed of a zero byte long string.
+Subcomponent or Book Name     : XmString
+Found in Baseline             : 1.2
+
+CR Number                     : 4587
+Short Description             : The functions XmTextGetSelectionPosition and XmTextGetLastPosi tion do not adequatly document what a text position is.
+Subcomponent or Book Name     : XmText
+Found in Baseline             : 1.2
+
+CR Number                     : 4586
+Short Description             : the function XmTextPaste claims to generate modifyVerify and valueChanged callbacks.can it generate motionVerify CB's too?
+Subcomponent or Book Name     : XmText
+Found in Baseline             : 1.2
+
+CR Number                     : 4585
+Short Description             : XmTextInsert documentation states that it generates Callbacks but doesn't specify what will happen if string is null.
+Subcomponent or Book Name     : XmText
+Found in Baseline             : 1.2
+
+CR Number                     : 4575
+Short Description             : On Panel4, Icon is suposed to be located at 20,20. It is located at 10,5 at best.
+Subcomponent or Book Name     : MWM (programmatic interface)
+Found in Baseline             : 1.2S4
+
+CR Number                     : 4539
+Short Description             : ResizeBorderWidth class name wrong.
+Subcomponent or Book Name     : Programmer's Reference
+Found in Baseline             : 1.2S3 BETA
+
+CR Number                     : 4514
+Short Description             : Panel 6: error dialog pops up twice first time. Probably test bug in last_focus initialization or change.
+Subcomponent or Book Name     : other
+Found in Baseline             : 1.2S4
+
+CR Number                     : 4509
+Short Description             : Need a new test for setting defaultFontList at create time. List2 uses XtSetValues which does not work.
+Subcomponent or Book Name     : other
+Found in Baseline             : 1.2S4
+
+CR Number                     : 4459
+Short Description             : Subject: XmMainWindow has problems if no XmNworkArea specified. Not sure where the problem actually is. David Lewis.
+Subcomponent or Book Name     : XmMainWindow
+Found in Baseline             : 1.2S3
+
+CR Number                     : 4455
+Short Description             : Resource XmNgeometry is described as CSG. It should be CG to match Xt Specs. See Pir 3048. Dialog Shell man page.
+Subcomponent or Book Name     : other
+Found in Baseline             : 1.2S4
+
+CR Number                     : 4443
+Short Description             : Add a test which creates pulldown menus that have no traversable items (Ie: they're insensitive) & test traversal in menubar
+Subcomponent or Book Name     : other
+Found in Baseline             : 1.2S4
+
+CR Number                     : 4354
+Short Description             : In "REGRESSION" mode, support writing out all relevant test data when user closes via Mwm menu.
+Subcomponent or Book Name     : other
+Found in Baseline             : 1.2S3
+
+CR Number                     : 4282
+Short Description             : Performance enhancement with respect to XmNselectedItem and XmNselectedItemCount
+Subcomponent or Book Name     : XmList
+Found in Baseline             : 1.1
+
+CR Number                     : 4255
+Short Description             : mwm double-click on open window's icon should minimize it, not raise it
+Subcomponent or Book Name     : MWM (programmatic interface)
+Found in Baseline             : 1.2
+
+CR Number                     : 4184
+Short Description             : Window groups iconify together in twm.  Mwm should do the same .
+Subcomponent or Book Name     : MWM (user interface)
+Found in Baseline             : 1.2.1
+
+CR Number                     : 4165
+Short Description             : CommonTestInit(int argc, char **argv) should be CommonTestInit (int *argc, char *
+Subcomponent or Book Name     : other
+Found in Baseline             : 1.2
+
+CR Number                     : 4153
+Short Description             : Setting XmNmultiClick to XmMULTICLICK_KEEP will not return click_count more that 1.
+Subcomponent or Book Name     : MWM (user interface)
+Found in Baseline             : 1.2S3
+
+CR Number                     : 4105
+Short Description             : Forward references in UIL do not work.
+Subcomponent or Book Name     : UIL
+Found in Baseline             : 1.1.3
+
+CR Number                     : 4025
+Short Description             : Rowcolumn is bloated beyond belief, too large!
+Subcomponent or Book Name     : XmRowColumn (WorkArea|RadioBox)
+Found in Baseline             : 1.2S2 BETA
+
+CR Number                     : 4021
+Short Description             : PanedW documentation on XmNinsertPosition Think this is 1.2 - check with David LEwis
+Subcomponent or Book Name     : other
+Found in Baseline             : 1.2
+
+CR Number                     : 4012
+Short Description             : Several tests in Constraint directory need looking into. Instructions don't match what happens.
+Subcomponent or Book Name     : other
+Found in Baseline             : 1.2S3
+
+CR Number                     : 3951
+Short Description             : Request a virtual mwm, one with features similar to tvtwm or swm.
+Subcomponent or Book Name     : MWM (user interface)
+Found in Baseline             : 1.1.1
+
+CR Number                     : 3873
+Short Description             : XmListSetAddMode should check the selection policy before attempting to change the keyboard selection mode.
+Subcomponent or Book Name     : AES
+Found in Baseline             : 1.1
+
+CR Number                     : 3817
+Short Description             : inc(dec)crementCallback will not be called if the user is usin g arrow keys instead of a mouse
+Subcomponent or Book Name     : XmList
+Found in Baseline             : 1.1.3
+
+CR Number                     : 3798
+Short Description             : If in .mwmrc function is bound to <Bnt1Down> in window, multiclick events are not received.
+Subcomponent or Book Name     : MWM (user interface)
+Found in Baseline             : 1.1.3
+
+CR Number                     : 3796
+Short Description             : W/ very large shadows and button sized too small for pixmap, random bits of pixmap can be displayed in random locations.
+Subcomponent or Book Name     : XmDrawnButton
+Found in Baseline             : 1.2S2
+
+CR Number                     : 3779
+Short Description             : The AES should describe the values obtained if the function is applied to an empty widget, or if XmNtopCharacter > text_lengt
+Subcomponent or Book Name     : AES
+Found in Baseline             : 1.1.3
+
+CR Number                     : 3756
+Short Description             : ADD: XmTextSetStringExt(widget, value, topCharacter, cursorPos ition)
+Subcomponent or Book Name     : XmText
+Found in Baseline             : 1.1.3
+
+CR Number                     : 3751
+Short Description             : Need a procedure that returns all the resource records of a wi widget class, including subresources, if any.
+Subcomponent or Book Name     : other
+Found in Baseline             : 1.1
+
+CR Number                     : 3705
+Short Description             : Reseting Form attachments to add new widgets in the Form works improperly (or at least is not documented).
+Subcomponent or Book Name     : XmForm
+Found in Baseline             : 1.2.2
+
+CR Number                     : 3703
+Short Description             : Compilation of uil modules with many included files aborts wit with a "too many open files" error.
+Subcomponent or Book Name     : UIL
+Found in Baseline             : 1.1.3
+
+CR Number                     : 3694
+Short Description             : XtSetValues on Scrolled list doesn't set constraint resourcesX
+Subcomponent or Book Name     : XmList
+Found in Baseline             : 1.1.3
+
+CR Number                     : 3687
+Short Description             : Documentation for string (char *) resources should say when they are copied and who must free them.
+Subcomponent or Book Name     : XmRowColumn (WorkArea|RadioBox)
+Found in Baseline             : 1.2S1
+
+CR Number                     : 3676
+Short Description             : The AES should say that the value returned by XmTextGetString should be the value of the XmNvalue resource.
+Subcomponent or Book Name     : AES
+Found in Baseline             : 1.1.3
+
+CR Number                     : 3675
+Short Description             : The AES should say that the value returned by XmTextGetMax Length is the value of the XmNmaxLength resource.
+Subcomponent or Book Name     : AES
+Found in Baseline             : 1.1.3
+
+CR Number                     : 3659
+Short Description             : Need way to get Text widget's text with word-wrap.
+Subcomponent or Book Name     : XmText
+Found in Baseline             : 1.1.3
+
+CR Number                     : 3603
+Short Description             : Managing and unmanaging children of MainWindow has unpredictab le results.
+Subcomponent or Book Name     : XmMainWindow
+Found in Baseline             : 1.1.1
+
+CR Number                     : 3556
+Short Description             : The actions kill actions in XmText are unclear in their description of what happens to the selection .
+Subcomponent or Book Name     : AES
+Found in Baseline             : 1.1
+
+CR Number                     : 3555
+Short Description             : XmTextSetHightlight() and XmTextFieldSetHighlight() act         differently when 'left' or 'right' is out of range.
+Subcomponent or Book Name     : XmText
+Found in Baseline             : 1.1.2
+
+CR Number                     : 3550
+Short Description             : The action set-insertion-point in XmText does not at all begin  to describe what it does. ( Very vaugely specified action )
+Subcomponent or Book Name     : XmText
+Found in Baseline             : 1.1
+
+CR Number                     : 3532
+Short Description             : SelectionBoxUpOrDown action could use meaningful parameters
+Subcomponent or Book Name     : XmSelectionBox
+Found in Baseline             : 1.1.3
+
+CR Number                     : 3530
+Short Description             : Button Window state tests in tests/mwm/PI/PIIconSt.c fail dues  to race c
+Subcomponent or Book Name     : other
+Found in Baseline             : 1.1.2
+
+CR Number                     : 3494
+Short Description             : You cannot drag the label associated with a OptionMenu. Either label (in and out of the selection area).
+Subcomponent or Book Name     : Drag and Drop
+Found in Baseline             : 1.2
+
+CR Number                     : 3489
+Short Description             : Wml/uil widget class support is inadequate.
+Subcomponent or Book Name     : WML
+Found in Baseline             : 1.1.3
+
+CR Number                     : 3481
+Short Description             : XmNmarginRight destroyed for XmLabel with accelerator text
+Subcomponent or Book Name     : XmLabelGadget
+Found in Baseline             : 1.1.3
+
+CR Number                     : 3449
+Short Description             : Mwm artifacts not always visible on multiscreen systems with color and monochrome visuals.
+Subcomponent or Book Name     : MWM (user interface)
+Found in Baseline             : 1.1.1
+
+CR Number                     : 3445
+Short Description             : RowColumn.c inconsistently uses internal convenience macros
+Subcomponent or Book Name     : XmRowColumn (WorkArea|RadioBox)
+Found in Baseline             : 1.1.3
+
+CR Number                     : 3444
+Short Description             : XmStringLength description is insufficient and needs lots of clarification.  Also, architecturally the semantic of the func
+Subcomponent or Book Name     : AES
+Found in Baseline             : 1.1
+
+CR Number                     : 3431
+Short Description             : tests/Toolkit/Menus tests don't test shared pulldown menus
+Subcomponent or Book Name     : other
+Found in Baseline             : 1.1.3
+
+CR Number                     : 3423
+Short Description             : Use XFILESEARCHPATH for configfile if resource not specified
+Subcomponent or Book Name     : MWM (user interface)
+Found in Baseline             : 1.1.1
+
+CR Number                     : 3387
+Short Description             : Center all multi-line icons
+Subcomponent or Book Name     : MWM (user interface)
+Found in Baseline             : 1.1.2
+
+CR Number                     : 3362
+Short Description             : More aesthetic Icon box icon with a 3-D look.
+Subcomponent or Book Name     : MWM (user interface)
+Found in Baseline             : 1.1.2
+
+CR Number                     : 3307
+Short Description             : Some docs say XmMsubMenuId can be set, some say it can't.
+Subcomponent or Book Name     : Programmer's Guide
+Found in Baseline             : 1.1
+
+CR Number                     : 3302
+Short Description             : Conversion of thousandths inches to hundredths points fails be cause of integer truncation
+Subcomponent or Book Name     : Resource Converters
+Found in Baseline             : 1.1.2
+
+CR Number                     : 3299
+Short Description             : Text action descriptions refer to nonexistent section
+Subcomponent or Book Name     : AES
+Found in Baseline             : 1.1
+
+CR Number                     : 3296
+Short Description             : Very few actions in XmText define which callbacks they invoke but the description says many should be invoked.
+Subcomponent or Book Name     : AES
+Found in Baseline             : 1.1
+
+CR Number                     : 3288
+Short Description             : Test states that sashes should be movable; however they do not move.  Bears investigating.
+Subcomponent or Book Name     : other
+Found in Baseline             : 1.1.3
+
+CR Number                     : 3276
+Short Description             : In some envron with two workstations, when mwm restarts it wil l read a .motifbind file for the wrong workstation
+Subcomponent or Book Name     : other
+Found in Baseline             : 1.1.3
+
+CR Number                     : 3187
+Short Description             : The amount of horizontal paging in XmText is excessive
+Subcomponent or Book Name     : XmText
+Found in Baseline             : 1.1.2
+
+CR Number                     : 3185
+Short Description             : XmNmenuPost handles the modifiers incorrectly.
+Subcomponent or Book Name     : XmRowColumn (WorkArea|RadioBox)
+Found in Baseline             : 1.1.2
+
+CR Number                     : 3137
+Short Description             : Bottom end of a Scale is chopped off on a negative XmNminimum
+Subcomponent or Book Name     : XmScale
+Found in Baseline             : 1.1.2
+
+CR Number                     : 3082
+Short Description             : Can't dynamically set XmNmwm{Functions, InputMode, Decoration and Menus}, although the reference says they are "CSG"
+Subcomponent or Book Name     : other
+Found in Baseline             : 1.1
+
+CR Number                     : 3076
+Short Description             : Resource conversion tests need to be updated to test all of the allowable converters.
+Subcomponent or Book Name     : other
+Found in Baseline             : 1.1.2
+
+CR Number                     : 3059
+Short Description             : Inconsistent behavior in XmText when XmNautoShowCursorPosition  = False.
+Subcomponent or Book Name     : XmText
+Found in Baseline             : 1.1.2
+
+CR Number                     : 3054
+Short Description             : XmNdirSpec resource appears to be ignored at the creation time
+Subcomponent or Book Name     : XmFileSelectionBox
+Found in Baseline             : 1.1.2
+
+CR Number                     : 3052
+Short Description             : XmNprocessingDirection says the default when oriented horiz depends on stringDirection - not true, should say MAX_ON_RIGHT
+Subcomponent or Book Name     : XmScrollBar
+Found in Baseline             : 1.1
+
+CR Number                     : 3032
+Short Description             : bad cutpaste tests
+Subcomponent or Book Name     : Clipboard
+Found in Baseline             : 1.1.2
+
+CR Number                     : 3031
+Short Description             : inefficiency in cutpaste testing
+Subcomponent or Book Name     : Clipboard
+Found in Baseline             : 1.1.2
+
+CR Number                     : 3029
+Short Description             : Page Up/Down keys in scrolltext don't call scrollbars callback s
+Subcomponent or Book Name     : XmScrollBar
+Found in Baseline             : 1.1.1
+
+CR Number                     : 3028
+Short Description             : Add a resource to make constrain children to the clipwindow
+Subcomponent or Book Name     : XmScrolledWindow
+Found in Baseline             : 1.1
+
+CR Number                     : 2990
+Short Description             : Label initialization assumes it is being called by a label or a button
+Subcomponent or Book Name     : XmLabel
+Found in Baseline             : 1.1.1
+
+CR Number                     : 2988
+Short Description             : Additional support for radio boxes would be helpful when using XmVaCreateSimplePulldownMenu().
+Subcomponent or Book Name     : XmRowColumn (WorkArea|RadioBox)
+Found in Baseline             : 1.1.1
+
+CR Number                     : 2963
+Short Description             : menuHistory should be set to the first widget in a radio box. At least before realize, menuHistory is NULL.
+Subcomponent or Book Name     : XmRowColumn (WorkArea|RadioBox)
+Found in Baseline             : 1.2S4
+
+CR Number                     : 2955
+Short Description             : memory allocation and release is "under-specified" in the docs
+Subcomponent or Book Name     : other
+Found in Baseline             : 1.1
+
+CR Number                     : 2947
+Short Description             : 'horizontal_tile' and 'vertical_tile' can't apply to backgroun dPoxmap, as stated in Programmer's Guide.
+Subcomponent or Book Name     : Programmer's Reference
+Found in Baseline             : 1.1.1
+
+CR Number                     : 2938
+Short Description             : Clarify instructions.
+Subcomponent or Book Name     : XmScrolledWindow
+Found in Baseline             : 1.1
+
+CR Number                     : 2930
+Short Description             : Motif should choose an optimal tile size when creating pixmaps .
+Subcomponent or Book Name     : other
+Found in Baseline             : 1.1.1
+
+CR Number                     : 2890
+Short Description             : Documentation fails to indicate required memory frees.
+Subcomponent or Book Name     : XmString
+Found in Baseline             : 1.1.1
+
+CR Number                     : 2834
+Short Description             : Add a test for multiClick behavior & callback for arrow btns and arrow button gadgets.
+Subcomponent or Book Name     : other
+Found in Baseline             : 1.1
+
+CR Number                     : 2804
+Short Description             : mwm does not handle icon sizes properly
+Subcomponent or Book Name     : MWM (user interface)
+Found in Baseline             : 1.1.1
+
+CR Number                     : 2803
+Short Description             : mwm doesn't recognize dynamic changes to MWM_HINTS
+Subcomponent or Book Name     : MWM (programmatic interface)
+Found in Baseline             : 1.1.1
+
+CR Number                     : 2782
+Short Description             : When changing TopItemPosition, and then changing FontList, the TopItemPosition is not preserved.
+Subcomponent or Book Name     : XmList
+Found in Baseline             : 1.1.1
+
+CR Number                     : 2777
+Short Description             : Change xmdialogs to support both primary and full application modal
+Subcomponent or Book Name     : XmDialogShell
+Found in Baseline             : 1.1.1
+
+CR Number                     : 2776
+Short Description             : XmString is supposed to be opaque, but isn't.
+Subcomponent or Book Name     : other
+Found in Baseline             : 1.1.1
+
+CR Number                     : 2764
+Short Description             : There should be a XmGetImage (or XmGetBitmap) preserving hotspot information, for cursors and masks.
+Subcomponent or Book Name     : other
+Found in Baseline             : 1.1.1
+
+CR Number                     : 2763
+Short Description             : The DrawingArea should have an XmFontList and layout_direction
+Subcomponent or Book Name     : XmDrawingArea
+Found in Baseline             : 1.1.1
+
+CR Number                     : 2713
+Short Description             : Motif 1.1 should build with X11R4 truly installed in a nonstandard place.
+Subcomponent or Book Name     : Build issues
+Found in Baseline             : 1.1.1
+
+CR Number                     : 2712
+Short Description             : The documentation tree could be shipped compressed.
+Subcomponent or Book Name     : other
+Found in Baseline             : 1.1.1
+
+CR Number                     : 2696
+Short Description             : Documentation on XmNallowShellResize is *very* misleading
+Subcomponent or Book Name     : XmDialogShell
+Found in Baseline             : 1.1.1
+
+CR Number                     : 2630
+Short Description             : need to have a mwm functtion which will telll the cuurent running mwm' version.
+Subcomponent or Book Name     : MWM (user interface)
+Found in Baseline             : 1.1
+
+CR Number                     : 2578
+Short Description             : Tests get warnings when compiled with prototypes on. Need to setup #ifdef NO_PROTO etc. like Toolkit.
+Subcomponent or Book Name     : Build issues
+Found in Baseline             : 1.1.1
+
+CR Number                     : 2569
+Short Description             : Need test of retrieving XmNitems and using value.
+Subcomponent or Book Name     : XmList
+Found in Baseline             : 1.1.1
+
+CR Number                     : 2556
+Short Description             : "Which button is next" varies depending on whether current button gets unmap/insensitive vs. destroy/unmanage. Why?
+Subcomponent or Book Name     : Traversal/Navigation
+Found in Baseline             : 1.1
+
+CR Number                     : 2483
+Short Description             : Creating a Non-modal sibling from a primary application modal dialog doesn't allow interaction with the sibling
+Subcomponent or Book Name     : other
+Found in Baseline             : 1.1
+
+CR Number                     : 2442
+Short Description             : Need a way to mark in WML and generate appropriate error messages in UIL for overridden resources
+Subcomponent or Book Name     : UIL
+Found in Baseline             : 1.1
+
+CR Number                     : 2402
+Short Description             : Be explicit about returned data that needs to be freed.
+Subcomponent or Book Name     : other
+Found in Baseline             : 1.1
+
+CR Number                     : 2337
+Short Description             : Problems with sizing and resizing widgets based on constraints See long Description for more details.
+Subcomponent or Book Name     : XmToggleButton
+Found in Baseline             : 1.1.1
+
+CR Number                     : 2323
+Short Description             : Need XmStringTable() convenience routines.
+Subcomponent or Book Name     : XmString
+Found in Baseline             : 1.1
+
+CR Number                     : 2302
+Short Description             : the selection box does not resize its list box verticallywhen resized itself; attempts to resize its list box by use of
+Subcomponent or Book Name     : XmSelectionBox
+Found in Baseline             : 0.8
+
+CR Number                     : 2256
+Short Description             : Add doc, resize command with small visItem counts, settable resizePolicy and set/get for height/width.
+Subcomponent or Book Name     : other
+Found in Baseline             : 1.1.1
+
+CR Number                     : 2249
+Short Description             : UID files are not Architecture Independent.
+Subcomponent or Book Name     : UIL
+Found in Baseline             : 1.0.3
+
+CR Number                     : 2224
+Short Description             : Secondary cut/paste in text causes the widget to temporarily get focus/then lose it, generates the FOCUS/LOSING_F callbacks
+Subcomponent or Book Name     : XmText
+Found in Baseline             : 1.1
+
+CR Number                     : 2222
+Short Description             : Make _XmTextPosToLine and _XmTextLineInfo public.
+Subcomponent or Book Name     : XmText
+Found in Baseline             : 1.1
+
+CR Number                     : 1984
+Short Description             : Uid files under UIDPATH can not be found; Also if UIDPATH is specified, uids under default path cannot not found
+Subcomponent or Book Name     : Mrm library
+Found in Baseline             : 1.1
+
+CR Number                     : 1932
+Short Description             : Scale enhancements desired: label position, tick marks, default scaleMultiple, float value, showValue=True
+Subcomponent or Book Name     : XmScale
+Found in Baseline             : 1.1S5
+
+CR Number                     : 1855
+Short Description             : Add labels that describe the tab group status of each group.
+Subcomponent or Book Name     : other
+Found in Baseline             : 1.1S11
+
+CR Number                     : 1829
+Short Description             : In XmScale, Motif should either set XmNinitDelay & repeatDelay to infinity(large value) or allow some resources to be set by
+Subcomponent or Book Name     : XmScale
+Found in Baseline             : 1.1S11
+
+CR Number                     : 1776
+Short Description             : Problem changing color with bitmap labels
+Subcomponent or Book Name     : XmLabel
+Found in Baseline             : 1.0.3
+
+CR Number                     : 1768
+Short Description             : Motif should allow dynamic resource modification.
+Subcomponent or Book Name     : Resource Converters
+Found in Baseline             : 1.0.1
+
+CR Number                     : 1719
+Short Description             : Clipboard ICCCM INCREMENTAL copies can occasionally fail, depending on how application is coded.
+Subcomponent or Book Name     : Clipboard
+Found in Baseline             : 1.1
+
+CR Number                     : 1610
+Short Description             : Support enumerated exit statuses for (command line) uil, using those available for callable uil and C-shell variable $status.
+Subcomponent or Book Name     : UIL
+Found in Baseline             : 1.1S6
+
+CR Number                     : 1470
+Short Description             : Add a test(s) for XMGetVisualPixmap.
+Subcomponent or Book Name     : other
+Found in Baseline             : 1.1
+
+CR Number                     : 1467
+Short Description             : Write testsuite for Resolution Independence code.
+Subcomponent or Book Name     : other
+Found in Baseline             : 1.1
+
+CR Number                     : 1465
+Short Description             : Complete XmString test suite.
+Subcomponent or Book Name     : other
+Found in Baseline             : 1.1
+
+CR Number                     : 1463
+Short Description             : Write a Xdefaults/app-defaults test suite.
+Subcomponent or Book Name     : other
+Found in Baseline             : 1.1S5
+
+CR Number                     : 1462
+Short Description             : When Btn?Down posts a menu, a click should leave the menu posted. It doesn't unless it's Btn1 on menu button.
+Subcomponent or Book Name     : MWM (user interface)
+Found in Baseline             : 1.1
+
+CR Number                     : 1438
+Short Description             : SelectionBox subclasses use a long default, UNSPECIFIED, for both integers and XmStrings.  See attached file.
+Subcomponent or Book Name     : XmCommand
+Found in Baseline             : 1.1S5
+
+CR Number                     : 1269
+Short Description             : UIL creates files with mode 644.  Should take account of umask.
+Subcomponent or Book Name     : Mrm library
+Found in Baseline             : 1.0.A
+
+CR Number                     : 1259
+Short Description             : KCancel causes core dump if the pointer is outside a menu pulled down using keyboard traversal
+Subcomponent or Book Name     : other
+Found in Baseline             : 1.1
+
+CR Number                     : 1201
+Short Description             : (as per reference manual) the RowColumn only revectors callbac ks from pushb and toggle; shouldn't arrow be revectored too?
+Subcomponent or Book Name     : XmRowColumn (WorkArea|RadioBox)
+Found in Baseline             : 1.1
+
+CR Number                     : 1139
+Short Description             : When changing the background color of the parent of a push button gadget, armColor and shadowColor do not change
+Subcomponent or Book Name     : Color
+Found in Baseline             : 1.0.A
+
+CR Number                     : 1117
+Short Description             : If an icon is dragged to the edge of the icon box, the icon box should scroll in the dragged direction.
+Subcomponent or Book Name     : MWM (user interface)
+Found in Baseline             : 1.1S4
+
+CR Number                     : 941
+Short Description             : The RowColumn widget doesn't allow subclasses to inherit its class methods
+Subcomponent or Book Name     : XmRowColumn (WorkArea|RadioBox)
+Found in Baseline             : 1.0.A
+
+CR Number                     : 848
+Short Description             : Implement "clean text" for widgets.
+Subcomponent or Book Name     : other
+Found in Baseline             : 1.0
+
+CR Number                     : 779
+Short Description             : When MrmOpenHierarchy fails, it should free all the memory used so far for the open, loop test shows random failure.
+Subcomponent or Book Name     : Mrm library
+Found in Baseline             : 1.0
+
+CR Number                     : 740
+Short Description             : Some XmList functions which take XmString as  arguments perform their tasks on the first item in a list
+Subcomponent or Book Name     : XmList
+Found in Baseline             : 1.0
+
+CR Number                     : 646
+Short Description             : Double click on window menu button flashes window menu before         killing application
+Subcomponent or Book Name     : MWM (user interface)
+Found in Baseline             : 1.0
+
+CR Number                     : 414
+Short Description             : Motif "PUBLIC" .H files appear to contain "INTERNAL" informa
+Subcomponent or Book Name     : other
+Found in Baseline             : 0.9
+

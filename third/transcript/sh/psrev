@@ -1,0 +1,36 @@
+#!/bin/sh
+# $Header: /afs/dev.mit.edu/source/repository/third/transcript/sh/psrev,v 1.1 1996-10-14 04:49:36 ghudson Exp $
+
+### print out a message, as decided at release-team meeting of  18apr1996
+cat >&2 <<"END_OF_MESSAGE"
+  Starting with Athena release 8.0, psrev is now a script which uses
+  the new pslpr command.  This script may be removed in the next Athena
+  release.  To learn about using the pslpr command, type "man pslpr".
+END_OF_MESSAGE
+
+args=
+reverse="-R"
+
+prefix=
+while [ "$#" != 0 ]; do
+    arg="$prefix$1"
+    prefix=
+    case "$arg" in
+	-s)   prefix="-s" ;;
+	-s*)  args="$args `echo $arg '' | sed -e 's/^-s/-i/' -e 's/,/ -i/g' \
+				-e 's/- /-9999 /g' -e 's/-i-/-i1-/g'`" ;;
+	-R)   reverse="" ;;
+	-*)   echo "$0: illegal option -- \"$arg\"" >&2
+	      exit 2 ;;
+        *)    args="$args $arg" ;;
+    esac
+    shift
+done
+
+case "$prefix" in
+    "")  ;;
+    *)   echo "$0: option requires an argument -- \"$arg\"" >&2
+	 exit 2 ;;
+esac
+
+exec pslpr -p- -f $reverse $args

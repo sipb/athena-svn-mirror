@@ -1,0 +1,22 @@
+Received: from snow-white.ee.udel.edu by whimsy.udel.edu id aa11761;
+          12 Feb 97 21:09 GMT
+Received: from mumps.pfcs.com (mumps.pfcs.com [192.52.69.11]) by pcpsj.pfcs.com (8.6.12/8.6.9) with SMTP id QAA05843 for <stenn@whimsy.udel.edu>; Wed, 12 Feb 1997 16:09:46 -0500
+Received: from brown.pfcs.com by mumps.pfcs.com with SMTP id AA04741
+  (5.67b/IDA-1.5 for <stenn@whimsy.udel.edu>); Wed, 12 Feb 1997 16:09:45 -0500
+From: Harlan Stenn <Harlan.Stenn@pfcs.com>
+Received: (harlan@localhost) by brown.pfcs.com (8.7.5/8.6.9) id QAA05302 for stenn@whimsy.udel.edu; Wed, 12 Feb 1997 16:09:44 -0500 (EST)
+Date: Wed, 12 Feb 1997 16:09:44 -0500 (EST)
+Message-Id: <199702122109.QAA05302@brown.pfcs.com>
+To: stenn@whimsy.udel.edu
+
+--- ntp_io.c-	Wed Feb 12 15:54:38 1997
++++ ntp_io.c	Wed Feb 12 15:58:20 1997
+@@ -2286,7 +2286,7 @@
+   mask = sigmask(SIGIO) | sigmask(SIGALRM);
+   omask = sigblock(0);
+   omask &= ~mask;
+-  if (sigpause(omask))
++  if (sigpause(omask) && (errno != EINTR))
+     msyslog(LOG_ERR, "wait_for_signal: sigspause() failed: %m");
+ }
+ # endif /* HAVE_SIGACTION */

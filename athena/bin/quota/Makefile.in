@@ -1,0 +1,60 @@
+# $Id: Makefile.in,v 1.1 1999-03-29 19:14:13 danw Exp $
+
+SHELL=/bin/sh
+INSTALL=@INSTALL@
+INSTALL_PROGRAM=@INSTALL_PROGRAM@
+RANLIB=@RANLIB@
+VPATH=@srcdir@
+srcdir=@srcdir@
+top_srcdir=@top_srcdir@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+bindir=@bindir@
+lbindir=@lbindir@
+lsbindir=@lsbindir@
+mandir=@mandir@
+
+CC=@CC@
+CPPFLAGS=@CPPFLAGS@
+CFLAGS=@CFLAGS@
+DEFS=@DEFS@
+LDFLAGS=@LDFLAGS@
+LIBS=@LIBS@
+KRB4_LIBS=@KRB4_LIBS@
+ZEPHYR_LIBS=-lzephyr
+AFS_LIBS=-lprot -lauth -lrxkad -lubik @AFS_DIR@/lib/afs/util.a -laudit \
+	 -lsys -lrx -llwp -lsys
+MOST_CFLAGS=
+ALL_CFLAGS=${WARN_CFLAGS} -I. ${CPPFLAGS} ${CFLAGS} ${DEFS}
+ALL_LIBS=-llocker ${AFS_LIBS} ${ZEPHYR_LIBS} ${KRB4_LIBS} \
+	 -lhesiod -lcom_err -lrpcsvc ${LIBS}
+
+OBJS=	quota.o fslist.o afs.o nfs.o ufs.o @RQUOTA_OBJS@
+
+all: quota
+
+quota: ${OBJS}
+	${CC} ${LDFLAGS} -o quota ${OBJS} ${ALL_LIBS}
+
+.c.o:
+	${CC} -c ${ALL_CFLAGS} $<
+
+rquota.x:
+	cp /usr/include/rpcsvc/rquota.x .
+
+rquota_xdr.c: rquota.x
+	rpcgen -C rquota.x
+
+check:
+
+install:
+	${top_srcdir}/mkinstalldirs ${DESTDIR}${bindir}
+	${top_srcdir}/mkinstalldirs ${DESTDIR}${mandir}/man1
+	${INSTALL} -m 4755 -o root quota ${DESTDIR}${bindir}
+	${INSTALL} -m 644 quota.1 ${DESTDIR}${mandir}/man1
+
+clean:
+	rm -f quota ${OBJS} @RQUOTA_JUNK@
+
+distclean: clean
+	rm -f config.cache config.log config.status Makefile

@@ -1,0 +1,53 @@
+<tt><ref id="appsocket" name="appsocket FLAG"></tt> Use Tektronix AppSocket Protocol <newline>
+<tt><ref id="banner" name="banner=LANGUAGE"></tt> Enable OF banner printing using LANGUAGE <newline>
+<tt><ref id="banner_file" name="banner_file=PATHNAME"></tt> PATHNAME of PostScript banner file <newline>
+<tt><ref id="config" name="config=PATHNAMES"></tt> Configuration file pathnames <newline>
+<tt><ref id="crlf" name="crlf FLAG"></tt> Do LF to CRLF translation <newline>
+<tt><ref id="debug" name="debug FLAG"></tt> Debugging level <newline>
+<tt><ref id="default_language" name="default_language=LANGUAGE"></tt> Default job file language (ps, pcl, raw, text, etc) <newline>
+<tt><ref id="endpage" name="endpage=NNN"></tt> PJL JOB command END = NNN value <newline>
+<tt><ref id="file_util_path" name="file_util_path=PATHNAME"></tt> Pathname of the UNIX file utility <newline>
+<tt><ref id="forcestatus" name="forcestatus FLAG"></tt> Force status reading from the printer if set <newline>
+<tt><ref id="language" name="language=LANGUAGE"></tt> Specify job file language to be used (ps, pcl, raw, text, etc) <newline>
+<tt><ref id="logall" name="logall FLAG"></tt> Log all status reports from printer if set <newline>
+<tt><ref id="nullpad" name="nullpad=COUNT"></tt> Send COUNT nulls to force full buffer condition <newline>
+<tt><ref id="model" name="model=NAME"></tt> Specify model name for configuration selection <newline>
+<tt><ref id="model_from_option" name="model_from_optin=X"></tt> Specify model name using a command line option value <newline>
+<tt><ref id="no_ps_eoj" name="no_ps_eoj FLAG"></tt> No PostScript EOJ (CTRL-D) at start of job <newline>
+<tt><ref id="no_pcl_eoj" name="no_pcl_eoj FLAG"></tt> No PCL EOJ (CTRL-D) at start of job <newline>
+<tt><ref id="page_length" name="page_length=LINES"></tt> Number of lines on a text page for banner printing <newline>
+<tt><ref id="page_width" name="page_width=COLUMNS"></tt> Number of columns on a text page for banner printing <newline>
+<tt><ref id="pagecount" name="pagecount=LANGUAGE"></tt> Enable pagecounting using the specified lanague (pjl, ps) <newline>
+<tt><ref id="pagecount_interval" name="pagecount_interval=SECONDS"></tt> Send pagecount command at SECONDS interval <newline>
+<tt><ref id="pagecount_ps_code" name="pagecount_ps_code=STRING"></tt> PostScript code to get pagecount information <newline>
+<tt><ref id="pagecount_timeout" name="pagecount_timeout=SECONDS"></tt> Timeout getting pagecount after SECONDS <newline>
+<tt><ref id="pcl" name="pcl FLAG"></tt> Printer supports PCL if set <newline>
+<tt><ref id="pcl_user_opts" name="pcl_user_opts=LIST"></tt> User PCL options supported <newline>
+<tt><ref id="pjl" name="pjl FLAG"></tt> Printer supports PJL if set <newline>
+<tt><ref id="pjl_console" name="pjl_console FLAG"></tt> Printer supports messages on console <newline>
+<tt><ref id="pjl_error_codes" name="pjl_error_codes=LIST"></tt> PJL error messages for error codes <newline>
+<tt><ref id="pjl_except" name="pjl_except=LIST"></tt> Do not allow these PJL commands <newline>
+<tt><ref id="pjl_init" name="pjl_init=LIST"></tt> PJL initializations to be done <newline>
+<tt><ref id="pjl_job" name="pjl_job FLAG"></tt> PJL JOB and EOJ supported <newline>
+<tt><ref id="pjl_only" name="pjl_only=LIST"></tt> Allow only these PJL commands <newline>
+<tt><ref id="pjl_user_opts" name="pjl_user_opts=LIST"></tt> Allow only these user PJL commands or variables to be set <newline>
+<tt><ref id="pjl_vars_except" name="pjl_vars_except=LIST"></tt> Do not allow these PJL variables to be set <newline>
+<tt><ref id="pjl_vars_set" name="pjl_vars_set=LIST"></tt> Allow these PJL variables to be set <newline>
+<tt><ref id="ps" name="ps FLAG"></tt> Printer supports PostScript (ps) <newline>
+<tt><ref id="ps_user_opts" name="ps_user_opts=LIST"></tt> Support these PostScript user options <newline>
+<tt><ref id="remove_ctrl" name="remove_ctrl=LIST"></tt> Support these characters from PostScript jobs <newline>
+<tt><ref id="startpage" name="startpage=NNN"></tt> PJL JOB command START = NNN value <newline>
+<tt><ref id="status" name="status FLAG"></tt> Printer supplies status information <newline>
+<tt><ref id="statusfile" name="statusfile=PATHNAME"></tt> Status file pathname <newline>
+<tt><ref id="statusfile_max" name="statusfile_max=NNN"></tt> Status file has maximum size of NNN Kbytes <newline>
+<tt><ref id="statusfile_min" name="statusfile_min=NNN"></tt> Status file has truncated size of NNN Kbytes <newline>
+<tt><ref id="summaryfile" name="summaryfile=PATHNAME"></tt> Summary file pathname <newline>
+<tt><ref id="sync" name="sync FLAG"></tt> Synchronize printer if set <newline>
+<tt><ref id="sync_interval" name="sync_interval=SECONDS"></tt> Send synchronization request at SECONDS interval <newline>
+<tt><ref id="sync_timeout" name="sync_timeout=SECONDS"></tt> Timeout synchronization request after SECONDS <newline>
+<tt><ref id="tbcp" name="tbcp FLAG"></tt> Use Transparent Binary Communications Protocol for PostScript files <newline>
+<tt><ref id="text" name="text FLAG"></tt> Printer supports text mode <newline>
+<tt><ref id="text_converter" name="text_converter=PATHNAME"></tt> Pathname of text conversion program <newline>
+<tt><ref id="text_converter_output" name="text_converter_output=LANGUAGE"></tt> Job language of text converter output <newline>
+<tt><ref id="text_tempfile" name="text_tempfile=PATHNAME"></tt> Temporary file pathname template <newline>
+<tt><ref id="trace" name="trace FLAG"></tt> Put error and trace messages on STDERR if set <newline>

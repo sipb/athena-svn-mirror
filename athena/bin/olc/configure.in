@@ -1,0 +1,198 @@
+dnl This is the configuration script template for OLxx services.
+dnl Process this file with autoconf to produce a configure script.
+dnl
+dnl Copyright (C) 1999 by the Massachusetts Institute of Technology.
+dnl For copying and distribution information, see the file "mit-copyright.h".
+dnl
+dnl $Id: configure.in,v 1.1 1999-03-06 16:47:14 ghudson Exp $
+
+AC_REVISION($Id: configure.in,v 1.1 1999-03-06 16:47:14 ghudson Exp $)dnl
+AC_INIT(include/olc/olc.h)dnl
+
+dnl *** defaults specific to MIT Athena (activated by site script) ***
+
+dnl NB: On Athena, you can use --with-machtype and --with-dspipe to force
+dnl different values or (with no arguments) to force a check over $PATH.
+athena_machtype=/bin/athena/machtype
+athena_dspipe=/usr/athena/bin/dspipe
+
+dnl *** Macros.  Not responsible for death and madness. ***
+
+dnl --- ATHENA_LIBPATH_FLAGS(LIBRARY_DIRECTORY, ACTION) ---
+AC_DEFUN(ATHENA_LIBPATH_FLAGS,
+[dnl FIXME banish uname from this macro!
+# For Solaris; some versions of Sun CC require a space after -R and
+# others require no space.  Words are not sufficient . . . .
+case "`(uname -sr) 2>/dev/null`" in
+"SunOS 5"*)
+  AC_MSG_CHECKING(whether -R must be followed by a space)
+  athena_save_LIBS="$LIBS"; LIBS="$LIBS -L$1 -R$1"
+  if test -z "$ac_R_nospace"; then
+     AC_TRY_LINK(, , ac_R_nospace=yes, ac_R_nospace=no)
+  fi
+  if test $ac_R_nospace = yes; then
+    AC_MSG_RESULT(no)
+    libpathflags="-L$1 -R$1"
+  else
+    LIBS="$athena_saveLIBS -L$1 -R $1"
+    if test -z "$ac_R_space"; then
+      AC_TRY_LINK(, , ac_R_space=yes, ac_R_space=no)
+    fi
+    if test $ac_R_space = yes; then
+      AC_MSG_RESULT(yes)
+      libpathflags="-L$1 -R $1"
+    else
+      AC_MSG_RESULT(neither works)
+      libpathflags="-L$1"
+    fi
+  fi
+  LIBS="$athena_save_LIBS" ;;
+*)
+  libpathflags="-L$1" ;;
+esac
+ifelse([$2], , , [$2
+])dnl
+])
+
+dnl *** OLxx configuration options. ***
+
+AC_ARG_ENABLE(olta,
+    [  --enable-olta           Build the server for OLTA rather than OLC.],
+    [olta="$enableval"], [olta=no])
+AC_ARG_ENABLE(owl,
+    [  --enable-owl            Build the server for OWL rather than OLC.],
+    [owl="$enableval"], [owl=no])
+if test "$olta" != no -a "$owl" != no; then
+    AC_MSG_ERROR([You may not specify both --enable-olta and --enable-owl.])
+fi
+dnl NB: the documentation suggests no semicolon after AC_DEFINE(...)
+if test "$olta" != no; then AC_DEFINE(OLTA) fi
+if test "$owl" != no; then  AC_DEFINE(OWL) fi
+
+AC_DEFINE(OLCD_LOG_ACTIONS)
+
+dnl *** Checks for programs. ***
+
+AC_PROG_CC
+AC_PROG_CPP
+AC_PROG_RANLIB
+AC_PROG_INSTALL
+AC_PROG_LN_S
+
+AC_ARG_WITH(machtype,
+    [  --with-machtype=PATH    Specify command to use to get machine info],
+    [machtype="$withval"], [machtype="${athena+$athena_machtype}"])
+if test "$machtype" != no; then
+    AC_PATH_PROG(machtype, machtype)
+    if test -n "$machtype"; then
+	AC_DEFINE_UNQUOTED(MACHTYPE_PATH, "$machtype")
+    fi
+fi
+
+AC_ARG_WITH(dspipe,
+    [  --with-dspipe=PATH      Specify command to use to store dead questions],
+    [dspipe="$withval"], [dspipe="${athena+$athena_dspipe}"])
+if test "$dspipe" != no; then
+    AC_PATH_PROG(dspipe, dspipe)
+    if test -n "$dspipe"; then
+	AC_DEFINE_UNQUOTED(DSPIPE_PATH, "$dspipe")
+	AC_DEFINE(HAVE_DISCUSS)
+	SUBDIR_LUMBERJACK="lumberjack"
+    fi
+fi
+AC_SUBST(SUBDIR_LUMBERJACK)
+
+dnl *** Checks for libraries. ***
+
+ATHENA_UTIL_COM_ERR
+AC_DEFINE(HAVE_COM_ERR)
+ATHENA_KRB4
+ATHENA_HESIOD
+
+AC_CHECK_LIB(zephyr, ZInitialize,
+    [ZEPHYR_LIBS='-lzephyr'; AC_DEFINE(HAVE_ZEPHYR)], :, $KRB4_LIBS)
+AC_SUBST(ZEPHYR_LIBS)
+
+dnl Will this also need -ltermcap?
+AC_CHECK_LIB(curses, initscr, [CURSES_LIBS="-lcurses"],
+    [AC_CHECK_LIB(ncurses, initscr, [CURSES_LIBS="-lncurses"],
+        [AC_MSG_ERROR(No curses library was found.)])])
+AC_SUBST(CURSES_LIBS)
+
+AC_PATH_XTRA
+
+AC_ARG_WITH(motif,
+    [  --with-motif=PATH       Specify the root of the Motif installation],
+    [motif="$withval"], [motif=yes])
+if test "$no_x" != "yes"; then
+    case "$motif" in
+      /*)
+	ATHENA_LIBPATH_FLAGS($motif/lib, MOTIF_LIBS="$libpathflags")
+	MOTIF_CFLAGS="-I$motif/include"
+	;;
+    esac
+    save_LDFLAGS="$LDFLAGS"; LDFLAGS="$LDFLAGS $MOTIF_LIBS"
+    if test "$motif" != "no"; then
+	AC_CHECK_LIB(Xm, XmTextSetString, :, motif=no,
+	    [$X_LIBS -lXt $X_PRE_LIBS -lX11 $X_EXTRA_LIBS])
+    fi
+    if test "$motif" != "no"; then
+	AC_CHECK_LIB(Mu, MuInitialize, :, motif=no,
+	    [-lXm $X_LIBS -lXt $X_PRE_LIBS -lX11 $X_EXTRA_LIBS])
+    fi
+    if test "$motif" != "no"; then
+	AC_CHECK_LIB(Wc, WcWidgetCreation, :, motif=no,
+	    [-lMu -lXm $X_LIBS -lXt $X_PRE_LIBS -lX11 $X_EXTRA_LIBS])
+    fi
+    LDFLAGS="$save_LDFLAGS"
+    if test "$motif" = "no"; then
+	MOTIF_LIBS=; MOTIF_CFLAGS=
+    else
+	SUBDIR_MOTIF=motif; SUBDIR_MOTIF_HELP=motif_help
+    fi
+fi
+AC_SUBST(MOTIF_LIBS)
+AC_SUBST(MOTIF_CFLAGS)
+AC_SUBST(SUBDIR_MOTIF)
+AC_SUBST(SUBDIR_MOTIF_HELP)
+
+dnl *** Checks for header files. ***
+
+AC_HEADER_STDC
+AC_HEADER_DIRENT
+AC_CHECK_HEADERS(fcntl.h syslog.h time.h)
+
+dnl For now, we don't check for any specific properties other than the header
+AC_CHECK_HEADER(termio.h, [AC_DEFINE(HAVE_TERMIO)])
+
+dnl *** Checks for typedefs, structures, and compiler characteristics. ***
+
+AC_TYPE_SIGNAL
+
+dnl *** Checks for library functions. ***
+
+AC_CHECK_FUNCS(sigaction sigprocmask lrand48)
+AC_CHECK_FUNCS(fcntl putenv setpgid setvbuf strerror syslog waitpid)
+AC_CHECK_FUNCS(setpgrp, [AC_FUNC_SETPGRP])
+
+dnl *** Print configuration reminders. ***
+
+if test -z "$athena"; then
+    AC_MSG_WARN(*** Please remember to edit include/site.h for your site.)
+fi
+
+dnl *** Ship it out. ***
+
+AC_CONFIG_HEADER(include/config.h)
+AC_OUTPUT(Makefile common/Makefile cfgfile/Makefile logger/Makefile
+  clients/Makefile clients/parser/Makefile clients/tty/Makefile
+  clients/lib/Makefile clients/oreplay/Makefile clients/olc/Makefile
+  clients/motif/Makefile browser/Makefile browser/curses/Makefile
+  browser/motif/Makefile server/Makefile server/olcd/Makefile
+  server/lumberjack/Makefile server/polld/Makefile server/rpd/Makefile
+  server/olcm/Makefile lib/Makefile lib/olc_help/Makefile
+  lib/olcr_help/Makefile lib/motif_help/Makefile man/Makefile)
+
+dnl Local Variables:
+dnl mode:sh
+dnl End:

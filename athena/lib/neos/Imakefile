@@ -1,0 +1,10 @@
+/* 
+ * Imakefile for turnin and related clients; Athena release
+ *
+ * $Id: Imakefile,v 1.9 1999-01-22 23:17:21 ghudson Exp $
+ *
+ * Copyright (c) 1990, Massachusetts Institute of Technology
+ *
+ */
+
+#define ISUBDIRS ets include protocol lib clients server man

@@ -1,0 +1,64 @@
+.\" $Id: zinit.8,v 1.10 1999-02-26 23:13:11 danw Exp $
+.\"
+.\" Copyright 1997 by the Massachusetts Institute of Technology.
+.\"
+.\" Permission to use, copy, modify, and distribute this
+.\" software and its documentation for any purpose and without
+.\" fee is hereby granted, provided that the above copyright
+.\" notice appear in all copies and that both that copyright
+.\" notice and this permission notice appear in supporting
+.\" documentation, and that the name of M.I.T. not be used in
+.\" advertising or publicity pertaining to distribution of the
+.\" software without specific, written prior permission.
+.\" M.I.T. makes no representations about the suitability of
+.\" this software for any purpose.  It is provided "as is"
+.\" without express or implied warranty.
+.\"
+.TH ZINIT 8
+.SH NAME
+zinit \- zephyr login initialization program
+.SH SYNOPSIS
+zinit [-a] [-m]
+.SH DESCRIPTION
+.I zinit
+is normally executed automatically by \fIzwgc(1)\fR. It reads through
+the attachtab to determine which filesystems have been attached on
+that workstation, and subscribes the user to the appropriate Zephyr
+instances so that he or she will receive messages from Athena
+Operations regarding the filesystems' fileservers.
+
+\fIzinit\fR subscribes to class \fBFILSRV\fR, instances
+\fIservername\fR and \fIservername\fR:\fIpathname\fR for NFS lockers
+found in attachtab, where \fIservername\fR is the name of the machine
+providing the file service. For AFS filesystems, instances \fIcell\fR,
+and \fIcell\fR:\fIvolume\fR are subscribed to, where \fIcell\fR and
+\fIvolume\fR are the cell and volume names of the root of the
+filesystem. In addition, if the root of an AFS filesystem is not
+replicated on multiple servers, instance \fIservername\fP is
+subscribed to.
+
+By default, only messages about filesystems attached by the user
+running attach or root are subscribed to. The
+.B \-a \fPor\fB \-\-all
+option selects all remote filesystems, while
+.B \-m \fPor\fB \-\-me
+selects only those attached by the user.
+
+.SH SEE ALSO
+attach(1), zephyr(1)
+.br
+Project Athena Technical Plan Section E.4.1, `Zephyr Notification
+Service'
+.SH FILES
+.nf
+/etc/athena/attach.conf
+/var/athena/attachtab
+.fi
+.SH AUTHORS
+Dan Winship, MIT Information Systems
+.PP
+based on the original zinit by
+.br
+Theodore Ts'o, Project Athena
+.br
+John Carr, Project Athena)

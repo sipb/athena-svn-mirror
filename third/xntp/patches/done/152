@@ -1,0 +1,41 @@
+Replied: Thu, 26 Jun 1997 22:58:17 -0400
+Replied: "Claude.Erbacher@ec-nantes.fr (C. ERBACHER - Centrale Nantes - Tel :
+Replied: 02 40 37 16 26) "
+Return-Path: erbacher@ecn01.ec-nantes.fr 
+Return-Path: <erbacher@ecn01.ec-nantes.fr>
+Received: from SMILE.ec-nantes.fr (smile.ec-nantes.fr [130.66.33.1])
+	by whimsy.udel.edu (8.8.5/8.8.5) with SMTP id JAA13272
+	for <stenn@whimsy.udel.edu>; Thu, 26 Jun 1997 09:18:00 GMT
+Received: from ecn01 by SMILE.ec-nantes.fr (MX V4.2 AXP) with SMTP; Thu, 26 Jun
+          1997 11:17:24 WET0WET DST
+Date: Thu, 26 Jun 1997 11:09:05 +0100
+Message-ID: <97062611090547@ecn01.ec-nantes.fr>
+From: Claude.Erbacher@ec-nantes.fr (C. ERBACHER - Centrale Nantes - Tel :
+      02 40 37 16 26)
+To: stenn@whimsy.udel.edu
+Subject: error "mlockall(): Operation not applicable" with xntp3-5.90.2-export
+X-VMS-To: SMTP%"stenn@whimsy.udel.edu"
+X-VMS-Cc: ERBACHER
+
+
+	Hello
+
+
+
+	As you recommanded me, I have installed xntp3-5.90.2 with the
+distribution ftp://ftp.udel.edu/pub/ntp/testing/xntp3-5.90.2-export.tar.gz
+
+	I have configure it and make the install. And when I start xntpd,
+I got this error : xntpd[4935]: mlockall(): Operation not applicable
+
+	Any idea ? What is better : 
+
+ -1- : using xntp3-5.90 and ignore those warning messages about _tick
+and _tickadj.
+
+ -2- : using xntp3-5.90.2 and ignore mlockall error
+
+
+	Best regards and a thank you very much for your help.
+
+	Claude ERBACHER

@@ -1,0 +1,18 @@
+#
+# $Id: Makefile.ov,v 1.1.1.1 1996-09-12 04:43:43 ghudson Exp $
+#
+
+TOP = ../..
+include $(TOP)/config.mk/template
+
+unit-test:: unit-test-setup unit-test-body unit-test-cleanup
+
+unit-test-setup::
+	$(START_SERVERS_LOCAL) -v4files -kdcport 750 -keysalt des-cbc-crc:v4
+	$(LOCAL_MAKE_KEYTAB) -princ changepw/kerberos /krb5/ovsec_adm.srvtab
+
+unit-test-body::
+	$(RUNTEST) VFOURSERVER=../kadmind4 --tool v4server
+
+unit-test-cleanup::
+	$(STOP_SERVERS_LOCAL) -v4files

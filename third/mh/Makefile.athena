@@ -1,0 +1,20 @@
+# $Id: Makefile.athena,v 1.4 1997-10-15 22:43:28 ghudson Exp $
+
+SHELL=/bin/sh
+
+prepare:
+	cd conf && $$COMPILER mhconfig.c -o mhconfig
+	cd conf && rm -f MH
+	cd conf && sed -e "s,@TOOLROOT@,$$ATHTOOLROOT,g" "MH.$$HOSTTYPE" > MH
+	cd conf && ./mhconfig MH
+
+clean:
+	${MAKE} clean
+
+all:
+	${MAKE} all
+
+check:
+
+install:
+	${MAKE} install "DESTDIR=$$SRVD"

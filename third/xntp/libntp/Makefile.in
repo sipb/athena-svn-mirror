@@ -1,0 +1,515 @@
+# Makefile.in generated automatically by automake 1.2 from Makefile.am
+
+# Copyright (C) 1994, 1995, 1996, 1997 Free Software Foundation, Inc.
+# This Makefile.in is free software; the Free Software Foundation
+# gives unlimited permission to copy, distribute and modify it.
+
+#AUTOMAKE_OPTIONS = no-dependencies
+
+
+SHELL = /bin/sh
+
+srcdir = @srcdir@
+top_srcdir = @top_srcdir@
+VPATH = @srcdir@
+prefix = @prefix@
+exec_prefix = @exec_prefix@
+
+bindir = @bindir@
+sbindir = @sbindir@
+libexecdir = @libexecdir@
+datadir = @datadir@
+sysconfdir = @sysconfdir@
+sharedstatedir = @sharedstatedir@
+localstatedir = @localstatedir@
+libdir = @libdir@
+infodir = @infodir@
+mandir = @mandir@
+includedir = @includedir@
+oldincludedir = /usr/include
+
+pkgdatadir = $(datadir)/@PACKAGE@
+pkglibdir = $(libdir)/@PACKAGE@
+pkgincludedir = $(includedir)/@PACKAGE@
+
+top_builddir = ..
+
+ACLOCAL = @ACLOCAL@
+AUTOCONF = @AUTOCONF@
+AUTOMAKE = @AUTOMAKE@
+AUTOHEADER = @AUTOHEADER@
+
+INSTALL = @INSTALL@
+INSTALL_PROGRAM = @INSTALL_PROGRAM@
+INSTALL_DATA = @INSTALL_DATA@
+INSTALL_SCRIPT = @INSTALL_SCRIPT@
+transform = @program_transform_name@
+
+NORMAL_INSTALL = true
+PRE_INSTALL = true
+POST_INSTALL = true
+NORMAL_UNINSTALL = true
+PRE_UNINSTALL = true
+POST_UNINSTALL = true
+build_alias = @build_alias@
+build_triplet = @build@
+host_alias = @host_alias@
+host_triplet = @host@
+target_alias = @target_alias@
+target_triplet = @target@
+AUTHCERT = @AUTHCERT@
+AUTHSPEED = @AUTHSPEED@
+AWK = @AWK@
+CC = @CC@
+CFLAGS = @CFLAGS@
+CHUTEST = @CHUTEST@
+CLKTEST = @CLKTEST@
+CPP = @CPP@
+DCFD = @DCFD@
+KEYPARITY = @KEYPARITY@
+LDFLAGS = @LDFLAGS@
+LIBPARSE = @LIBPARSE@
+LN_S = @LN_S@
+MAKEINFO = @MAKEINFO@
+MAKEIPFP = @MAKEIPFP@
+MAKEPC1 = @MAKEPC1@
+MAKEPC2 = @MAKEPC2@
+MAKESP = @MAKESP@
+MAKE_ADJTIMED = @MAKE_ADJTIMED@
+MAKE_LIBPARSE = @MAKE_LIBPARSE@
+MAKE_LIBPARSE_KERNEL = @MAKE_LIBPARSE_KERNEL@
+MAKE_NTPTIME = @MAKE_NTPTIME@
+MAKE_PARSEKMODULE = @MAKE_PARSEKMODULE@
+MAKE_TICKADJ = @MAKE_TICKADJ@
+MD5DRIVER = @MD5DRIVER@
+MKRANDKEYS = @MKRANDKEYS@
+OMAKEIPFP = @OMAKEIPFP@
+PACKAGE = @PACKAGE@
+PROPDELAY = @PROPDELAY@
+RANLIB = @RANLIB@
+TESTDCF = @TESTDCF@
+UNIXCERT = @UNIXCERT@
+VERSION = @VERSION@
+
+noinst_LIBRARIES = libntp.a
+libntp_a_SOURCES = adjtime.c atoint.c atolfp.c atouint.c auth12crypt.c \
+	authdecrypt.c authdes.c authencrypt.c authkeys.c authparity.c \
+	authreadkeys.c authusekey.c buftvtots.c caljulian.c calleapwhen.c \
+	caltontp.c calyearstart.c clocktime.c dofptoa.c dolfptoa.c emalloc.c \
+	fptoa.c fptoms.c getopt.c hextoint.c hextolfp.c humandate.c inttoa.c \
+	lib_strbuf.c memmove.c mfptoa.c mfptoms.c modetoa.c mstolfp.c \
+	msutotsf.c numtoa.c refnumtoa.c numtohost.c octtoint.c prettydate.c \
+	ranny.c tsftomsu.c tstotv.c tvtoa.c tvtots.c uglydate.c uinttoa.c \
+	utvtoa.c machines.c clocktypes.c md5.c a_md5encrypt.c a_md5decrypt.c \
+	a_md512crypt.c decodenetnum.c systime.c msyslog.c syssignal.c \
+	findconfig.c netof.c statestr.c mexit.c
+INCLUDES = -I$(top_srcdir)/include
+ETAGS_ARGS = Makefile.am
+
+noinst_HEADERS = lib_strbuf.h log.h
+
+EXTRA_DIST = libntp.mak README $(HEADERS) adjtimex.c authdes.c.des authdes.c.export log.c makemc.bat messages.mc
+mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
+CONFIG_HEADER = ../config.h
+CONFIG_CLEAN_FILES = 
+LIBRARIES =  $(noinst_LIBRARIES)
+
+
+DEFS = @DEFS@ -I. -I$(srcdir) -I..
+CPPFLAGS = @CPPFLAGS@
+LIBS = @LIBS@
+libntp_a_LIBADD = 
+libntp_a_OBJECTS =  adjtime.o atoint.o atolfp.o atouint.o auth12crypt.o \
+authdecrypt.o authdes.o authencrypt.o authkeys.o authparity.o \
+authreadkeys.o authusekey.o buftvtots.o caljulian.o calleapwhen.o \
+caltontp.o calyearstart.o clocktime.o dofptoa.o dolfptoa.o emalloc.o \
+fptoa.o fptoms.o getopt.o hextoint.o hextolfp.o humandate.o inttoa.o \
+lib_strbuf.o memmove.o mfptoa.o mfptoms.o modetoa.o mstolfp.o \
+msutotsf.o numtoa.o refnumtoa.o numtohost.o octtoint.o prettydate.o \
+ranny.o tsftomsu.o tstotv.o tvtoa.o tvtots.o uglydate.o uinttoa.o \
+utvtoa.o machines.o clocktypes.o md5.o a_md5encrypt.o a_md5decrypt.o \
+a_md512crypt.o decodenetnum.o systime.o msyslog.o syssignal.o \
+findconfig.o netof.o statestr.o mexit.o
+AR = ar
+COMPILE = $(CC) $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
+LINK = $(CC) $(CFLAGS) $(LDFLAGS) -o $@
+HEADERS =  $(noinst_HEADERS)
+
+DIST_COMMON =  README Makefile.am Makefile.in
+
+
+DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
+
+TAR = gtar
+GZIP = --best
+SOURCES = $(libntp_a_SOURCES)
+OBJECTS = $(libntp_a_OBJECTS)
+
+default: all
+
+.SUFFIXES:
+.SUFFIXES: .c .o
+
+Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
+	cd $(top_builddir) \
+	  && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
+
+
+mostlyclean-noinstLIBRARIES:
+
+clean-noinstLIBRARIES:
+	test -z "$(noinst_LIBRARIES)" || rm -f $(noinst_LIBRARIES)
+
+distclean-noinstLIBRARIES:
+
+maintainer-clean-noinstLIBRARIES:
+
+.c.o:
+	$(COMPILE) -c $<
+
+mostlyclean-compile:
+	rm -f *.o core
+
+clean-compile:
+
+distclean-compile:
+	rm -f *.tab.c
+
+maintainer-clean-compile:
+
+libntp.a: $(libntp_a_OBJECTS) $(libntp_a_DEPENDENCIES)
+	rm -f libntp.a
+	$(AR) cru libntp.a $(libntp_a_OBJECTS) $(libntp_a_LIBADD)
+	$(RANLIB) libntp.a
+
+tags: TAGS
+
+ID: $(HEADERS) $(SOURCES)
+	here=`pwd` && cd $(srcdir) && mkid -f$$here/ID $(SOURCES) $(HEADERS)
+
+TAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES)
+	tags=; \
+	here=`pwd`; \
+	test -z "$(ETAGS_ARGS)$(SOURCES)$(HEADERS)$$tags" \
+	  || (cd $(srcdir) && etags $(ETAGS_ARGS) $$tags  $(SOURCES) $(HEADERS) -o $$here/TAGS)
+
+mostlyclean-tags:
+
+clean-tags:
+
+distclean-tags:
+	rm -f TAGS ID
+
+maintainer-clean-tags:
+
+distdir = $(top_builddir)/$(PACKAGE)-$(VERSION)/$(subdir)
+
+subdir = libntp
+
+distdir: $(DISTFILES)
+	@for file in $(DISTFILES); do \
+	  d=$(srcdir); \
+	  test -f $(distdir)/$$file \
+	  || ln $$d/$$file $(distdir)/$$file 2> /dev/null \
+	  || cp -p $$d/$$file $(distdir)/$$file; \
+	done
+a_md512crypt.o a_md512crypt.lo: a_md512crypt.c ../include/ntp_types.h \
+	../include/ntp_machine.h ../config.h ../include/ntp_proto.h \
+	../include/ntp_string.h ../include/md5.h \
+	../include/ntp_stdlib.h ../include/l_stdlib.h
+a_md5decrypt.o a_md5decrypt.lo: a_md5decrypt.c ../include/ntp_types.h \
+	../include/ntp_machine.h ../config.h ../include/ntp_proto.h \
+	../include/ntp_string.h ../include/md5.h \
+	../include/ntp_stdlib.h ../include/l_stdlib.h
+a_md5encrypt.o a_md5encrypt.lo: a_md5encrypt.c ../include/ntp_types.h \
+	../include/ntp_machine.h ../config.h ../include/ntp_proto.h \
+	../include/ntp_string.h ../include/md5.h \
+	../include/ntp_stdlib.h ../include/l_stdlib.h
+adjtime.o adjtime.lo: adjtime.c ../config.h
+atoint.o atoint.lo: atoint.c ../include/ntp_types.h \
+	../include/ntp_machine.h ../config.h ../include/ntp_proto.h \
+	../include/ntp_stdlib.h ../include/ntp_string.h \
+	../include/l_stdlib.h
+atolfp.o atolfp.lo: atolfp.c ../include/ntp_fp.h ../include/ntp_types.h \
+	../include/ntp_machine.h ../config.h ../include/ntp_proto.h \
+	../include/ntp_string.h
+atouint.o atouint.lo: atouint.c ../include/ntp_types.h \
+	../include/ntp_machine.h ../config.h ../include/ntp_proto.h \
+	../include/ntp_stdlib.h ../include/ntp_string.h \
+	../include/l_stdlib.h
+auth12crypt.o auth12crypt.lo: auth12crypt.c ../include/ntp_stdlib.h \
+	../include/ntp_types.h ../include/ntp_machine.h ../config.h \
+	../include/ntp_proto.h ../include/ntp_string.h \
+	../include/l_stdlib.h
+authdecrypt.o authdecrypt.lo: authdecrypt.c ../include/ntp_stdlib.h \
+	../include/ntp_types.h ../include/ntp_machine.h ../config.h \
+	../include/ntp_proto.h ../include/ntp_string.h \
+	../include/l_stdlib.h
+authdes.o authdes.lo: authdes.c ../include/ntp_stdlib.h \
+	../include/ntp_types.h ../include/ntp_machine.h ../config.h \
+	../include/ntp_proto.h ../include/ntp_string.h \
+	../include/l_stdlib.h
+authencrypt.o authencrypt.lo: authencrypt.c ../include/ntp_stdlib.h \
+	../include/ntp_types.h ../include/ntp_machine.h ../config.h \
+	../include/ntp_proto.h ../include/ntp_string.h \
+	../include/l_stdlib.h
+authkeys.o authkeys.lo: authkeys.c ../include/ntp_types.h \
+	../include/ntp_machine.h ../config.h ../include/ntp_proto.h \
+	../include/ntp_string.h ../include/ntp_malloc.h \
+	../include/ntp_stdlib.h ../include/l_stdlib.h
+authparity.o authparity.lo: authparity.c ../include/ntp_stdlib.h \
+	../include/ntp_types.h ../include/ntp_machine.h ../config.h \
+	../include/ntp_proto.h ../include/ntp_string.h \
+	../include/l_stdlib.h
+authreadkeys.o authreadkeys.lo: authreadkeys.c ../include/ntp_stdlib.h \
+	../include/ntp_types.h ../include/ntp_machine.h ../config.h \
+	../include/ntp_proto.h ../include/ntp_string.h \
+	../include/l_stdlib.h ../include/ntp_syslog.h
+authusekey.o authusekey.lo: authusekey.c ../include/ntp_types.h \
+	../include/ntp_machine.h ../config.h ../include/ntp_proto.h \
+	../include/ntp_string.h ../include/ntp_stdlib.h \
+	../include/l_stdlib.h
+buftvtots.o buftvtots.lo: buftvtots.c ../include/ntp_fp.h \
+	../include/ntp_types.h ../include/ntp_machine.h ../config.h \
+	../include/ntp_proto.h ../include/ntp_unixtime.h
+caljulian.o caljulian.lo: caljulian.c ../include/ntp_types.h \
+	../include/ntp_machine.h ../config.h ../include/ntp_proto.h \
+	../include/ntp_calendar.h ../include/ntp_stdlib.h \
+	../include/ntp_string.h ../include/l_stdlib.h
+calleapwhen.o calleapwhen.lo: calleapwhen.c ../include/ntp_types.h \
+	../include/ntp_machine.h ../config.h ../include/ntp_proto.h \
+	../include/ntp_calendar.h ../include/ntp_stdlib.h \
+	../include/ntp_string.h ../include/l_stdlib.h
+caltontp.o caltontp.lo: caltontp.c ../include/ntp_types.h \
+	../include/ntp_machine.h ../config.h ../include/ntp_proto.h \
+	../include/ntp_calendar.h ../include/ntp_stdlib.h \
+	../include/ntp_string.h ../include/l_stdlib.h
+calyearstart.o calyearstart.lo: calyearstart.c ../include/ntp_types.h \
+	../include/ntp_machine.h ../config.h ../include/ntp_proto.h \
+	../include/ntp_calendar.h ../include/ntp_stdlib.h \
+	../include/ntp_string.h ../include/l_stdlib.h
+clocktime.o clocktime.lo: clocktime.c ../include/ntp_fp.h \
+	../include/ntp_types.h ../include/ntp_machine.h ../config.h \
+	../include/ntp_proto.h ../include/ntp_unixtime.h \
+	../include/ntp_stdlib.h ../include/ntp_string.h \
+	../include/l_stdlib.h
+clocktypes.o clocktypes.lo: clocktypes.c ../include/ntp_fp.h \
+	../include/ntp_types.h ../include/ntp_machine.h ../config.h \
+	../include/ntp_proto.h ../include/ntp.h lib_strbuf.h \
+	../include/ntp_refclock.h ../include/ntp_stdlib.h \
+	../include/ntp_string.h ../include/l_stdlib.h
+decodenetnum.o decodenetnum.lo: decodenetnum.c ../include/ntp_stdlib.h \
+	../include/ntp_types.h ../include/ntp_machine.h ../config.h \
+	../include/ntp_proto.h ../include/ntp_string.h \
+	../include/l_stdlib.h
+dofptoa.o dofptoa.lo: dofptoa.c ../include/ntp_fp.h \
+	../include/ntp_types.h ../include/ntp_machine.h ../config.h \
+	../include/ntp_proto.h lib_strbuf.h ../include/ntp_string.h \
+	../include/ntp_stdlib.h ../include/l_stdlib.h
+dolfptoa.o dolfptoa.lo: dolfptoa.c ../include/ntp_fp.h \
+	../include/ntp_types.h ../include/ntp_machine.h ../config.h \
+	../include/ntp_proto.h lib_strbuf.h ../include/ntp_string.h \
+	../include/ntp_stdlib.h ../include/l_stdlib.h
+emalloc.o emalloc.lo: emalloc.c ../include/ntp_types.h \
+	../include/ntp_machine.h ../config.h ../include/ntp_proto.h \
+	../include/ntp_malloc.h ../include/ntp_stdlib.h \
+	../include/ntp_string.h ../include/l_stdlib.h \
+	../include/ntp_syslog.h
+findconfig.o findconfig.lo: findconfig.c ../config.h \
+	../include/ntp_stdlib.h ../include/ntp_types.h \
+	../include/ntp_machine.h ../include/ntp_proto.h \
+	../include/ntp_string.h ../include/l_stdlib.h
+fptoa.o fptoa.lo: fptoa.c ../include/ntp_fp.h ../include/ntp_types.h \
+	../include/ntp_machine.h ../config.h ../include/ntp_proto.h \
+	../include/ntp_stdlib.h ../include/ntp_string.h \
+	../include/l_stdlib.h
+fptoms.o fptoms.lo: fptoms.c ../include/ntp_fp.h ../include/ntp_types.h \
+	../include/ntp_machine.h ../config.h ../include/ntp_proto.h
+getopt.o getopt.lo: getopt.c ../include/ntp_stdlib.h \
+	../include/ntp_types.h ../include/ntp_machine.h ../config.h \
+	../include/ntp_proto.h ../include/ntp_string.h \
+	../include/l_stdlib.h
+hextoint.o hextoint.lo: hextoint.c ../include/ntp_stdlib.h \
+	../include/ntp_types.h ../include/ntp_machine.h ../config.h \
+	../include/ntp_proto.h ../include/ntp_string.h \
+	../include/l_stdlib.h
+hextolfp.o hextolfp.lo: hextolfp.c ../include/ntp_fp.h \
+	../include/ntp_types.h ../include/ntp_machine.h ../config.h \
+	../include/ntp_proto.h ../include/ntp_string.h \
+	../include/ntp_stdlib.h ../include/l_stdlib.h
+humandate.o humandate.lo: humandate.c ../include/ntp_fp.h \
+	../include/ntp_types.h ../include/ntp_machine.h ../config.h \
+	../include/ntp_proto.h ../include/ntp_unixtime.h lib_strbuf.h \
+	../include/ntp_stdlib.h ../include/ntp_string.h \
+	../include/l_stdlib.h
+inttoa.o inttoa.lo: inttoa.c lib_strbuf.h ../include/ntp_types.h \
+	../include/ntp_machine.h ../config.h ../include/ntp_proto.h \
+	../include/ntp_stdlib.h ../include/ntp_string.h \
+	../include/l_stdlib.h
+lib_strbuf.o lib_strbuf.lo: lib_strbuf.c lib_strbuf.h \
+	../include/ntp_types.h ../include/ntp_machine.h ../config.h \
+	../include/ntp_proto.h
+machines.o machines.lo: machines.c ../include/ntp_stdlib.h \
+	../include/ntp_types.h ../include/ntp_machine.h ../config.h \
+	../include/ntp_proto.h ../include/ntp_string.h \
+	../include/l_stdlib.h
+md5.o md5.lo: md5.c ../include/md5.h ../include/ntp_types.h \
+	../include/ntp_machine.h ../config.h ../include/ntp_proto.h
+memmove.o memmove.lo: memmove.c ../config.h
+mexit.o mexit.lo: mexit.c
+mfptoa.o mfptoa.lo: mfptoa.c ../include/ntp_fp.h ../include/ntp_types.h \
+	../include/ntp_machine.h ../config.h ../include/ntp_proto.h \
+	../include/ntp_stdlib.h ../include/ntp_string.h \
+	../include/l_stdlib.h
+mfptoms.o mfptoms.lo: mfptoms.c ../include/ntp_fp.h \
+	../include/ntp_types.h ../include/ntp_machine.h ../config.h \
+	../include/ntp_proto.h ../include/ntp_stdlib.h \
+	../include/ntp_string.h ../include/l_stdlib.h
+modetoa.o modetoa.lo: modetoa.c lib_strbuf.h ../include/ntp_types.h \
+	../include/ntp_machine.h ../config.h ../include/ntp_proto.h \
+	../include/ntp_stdlib.h ../include/ntp_string.h \
+	../include/l_stdlib.h
+mstolfp.o mstolfp.lo: mstolfp.c ../include/ntp_fp.h \
+	../include/ntp_types.h ../include/ntp_machine.h ../config.h \
+	../include/ntp_proto.h ../include/ntp_stdlib.h \
+	../include/ntp_string.h ../include/l_stdlib.h
+msutotsf.o msutotsf.lo: msutotsf.c ../include/ntp_types.h \
+	../include/ntp_machine.h ../config.h ../include/ntp_proto.h
+msyslog.o msyslog.lo: msyslog.c ../config.h ../include/ntp_types.h \
+	../include/ntp_machine.h ../include/ntp_proto.h \
+	../include/ntp_string.h ../include/ntp_stdlib.h \
+	../include/l_stdlib.h ../include/ntp_syslog.h
+netof.o netof.lo: netof.c ../include/ntp_fp.h ../include/ntp_types.h \
+	../include/ntp_machine.h ../config.h ../include/ntp_proto.h \
+	../include/ntp_stdlib.h ../include/ntp_string.h \
+	../include/l_stdlib.h
+numtoa.o numtoa.lo: numtoa.c ../include/ntp_fp.h ../include/ntp_types.h \
+	../include/ntp_machine.h ../config.h ../include/ntp_proto.h \
+	lib_strbuf.h ../include/ntp_stdlib.h ../include/ntp_string.h \
+	../include/l_stdlib.h
+numtohost.o numtohost.lo: numtohost.c ../include/ntp_fp.h \
+	../include/ntp_types.h ../include/ntp_machine.h ../config.h \
+	../include/ntp_proto.h ../include/ntp_stdlib.h \
+	../include/ntp_string.h ../include/l_stdlib.h lib_strbuf.h
+octtoint.o octtoint.lo: octtoint.c ../include/ntp_stdlib.h \
+	../include/ntp_types.h ../include/ntp_machine.h ../config.h \
+	../include/ntp_proto.h ../include/ntp_string.h \
+	../include/l_stdlib.h
+prettydate.o prettydate.lo: prettydate.c ../include/ntp_fp.h \
+	../include/ntp_types.h ../include/ntp_machine.h ../config.h \
+	../include/ntp_proto.h ../include/ntp_unixtime.h lib_strbuf.h \
+	../include/ntp_stdlib.h ../include/ntp_string.h \
+	../include/l_stdlib.h
+ranny.o ranny.lo: ranny.c ../include/ntp_stdlib.h ../include/ntp_types.h \
+	../include/ntp_machine.h ../config.h ../include/ntp_proto.h \
+	../include/ntp_string.h ../include/l_stdlib.h
+refnumtoa.o refnumtoa.lo: refnumtoa.c ../include/ntp_fp.h \
+	../include/ntp_types.h ../include/ntp_machine.h ../config.h \
+	../include/ntp_proto.h lib_strbuf.h ../include/ntp_stdlib.h \
+	../include/ntp_string.h ../include/l_stdlib.h
+statestr.o statestr.lo: statestr.c ../include/ntp_stdlib.h \
+	../include/ntp_types.h ../include/ntp_machine.h ../config.h \
+	../include/ntp_proto.h ../include/ntp_string.h \
+	../include/l_stdlib.h ../include/ntp_fp.h ../include/ntp.h \
+	lib_strbuf.h ../include/ntp_refclock.h ../include/ntp_control.h
+syssignal.o syssignal.lo: syssignal.c ../include/ntp_syslog.h \
+	../include/ntp_stdlib.h ../include/ntp_types.h \
+	../include/ntp_machine.h ../config.h ../include/ntp_proto.h \
+	../include/ntp_string.h ../include/l_stdlib.h
+systime.o systime.lo: systime.c ../config.h ../include/ntp_fp.h \
+	../include/ntp_types.h ../include/ntp_machine.h \
+	../include/ntp_proto.h ../include/ntp_syslog.h \
+	../include/ntp_unixtime.h ../include/ntp_stdlib.h \
+	../include/ntp_string.h ../include/l_stdlib.h
+tsftomsu.o tsftomsu.lo: tsftomsu.c ../include/ntp_fp.h \
+	../include/ntp_types.h ../include/ntp_machine.h ../config.h \
+	../include/ntp_proto.h ../include/ntp_stdlib.h \
+	../include/ntp_string.h ../include/l_stdlib.h
+tstotv.o tstotv.lo: tstotv.c ../include/ntp_types.h \
+	../include/ntp_machine.h ../config.h ../include/ntp_proto.h
+tvtoa.o tvtoa.lo: tvtoa.c lib_strbuf.h ../include/ntp_types.h \
+	../include/ntp_machine.h ../config.h ../include/ntp_proto.h \
+	../include/ntp_stdlib.h ../include/ntp_string.h \
+	../include/l_stdlib.h ../include/ntp_unixtime.h
+tvtots.o tvtots.lo: tvtots.c ../include/ntp_types.h \
+	../include/ntp_machine.h ../config.h ../include/ntp_proto.h
+uglydate.o uglydate.lo: uglydate.c ../include/ntp_fp.h \
+	../include/ntp_types.h ../include/ntp_machine.h ../config.h \
+	../include/ntp_proto.h ../include/ntp_unixtime.h lib_strbuf.h \
+	../include/ntp_stdlib.h ../include/ntp_string.h \
+	../include/l_stdlib.h
+uinttoa.o uinttoa.lo: uinttoa.c lib_strbuf.h ../include/ntp_types.h \
+	../include/ntp_machine.h ../config.h ../include/ntp_proto.h \
+	../include/ntp_stdlib.h ../include/ntp_string.h \
+	../include/l_stdlib.h
+utvtoa.o utvtoa.lo: utvtoa.c lib_strbuf.h ../include/ntp_types.h \
+	../include/ntp_machine.h ../config.h ../include/ntp_proto.h \
+	../include/ntp_stdlib.h ../include/ntp_string.h \
+	../include/l_stdlib.h ../include/ntp_unixtime.h
+
+info:
+dvi:
+check: all
+	$(MAKE)
+installcheck:
+install-exec: 
+	@$(NORMAL_INSTALL)
+
+install-data: 
+	@$(NORMAL_INSTALL)
+
+install: install-exec install-data all
+	@:
+
+uninstall: 
+
+all: Makefile $(LIBRARIES) $(HEADERS)
+
+install-strip:
+	$(MAKE) INSTALL_PROGRAM='$(INSTALL_PROGRAM) -s' INSTALL_SCRIPT='$(INSTALL_PROGRAM)' install
+installdirs:
+
+
+mostlyclean-generic:
+	test -z "$(MOSTLYCLEANFILES)" || rm -f $(MOSTLYCLEANFILES)
+
+clean-generic:
+	test -z "$(CLEANFILES)" || rm -f $(CLEANFILES)
+
+distclean-generic:
+	rm -f Makefile $(DISTCLEANFILES)
+	rm -f config.cache config.log stamp-h stamp-h[0-9]*
+	test -z "$(CONFIG_CLEAN_FILES)" || rm -f $(CONFIG_CLEAN_FILES)
+
+maintainer-clean-generic:
+	test -z "$(MAINTAINERCLEANFILES)" || rm -f $(MAINTAINERCLEANFILES)
+	test -z "$(BUILT_SOURCES)" || rm -f $(BUILT_SOURCES)
+mostlyclean:  mostlyclean-noinstLIBRARIES mostlyclean-compile \
+		mostlyclean-tags mostlyclean-generic
+
+clean:  clean-noinstLIBRARIES clean-compile clean-tags clean-generic \
+		mostlyclean
+
+distclean:  distclean-noinstLIBRARIES distclean-compile distclean-tags \
+		distclean-generic clean
+	rm -f config.status
+
+maintainer-clean:  maintainer-clean-noinstLIBRARIES \
+		maintainer-clean-compile maintainer-clean-tags \
+		maintainer-clean-generic distclean
+	@echo "This command is intended for maintainers to use;"
+	@echo "it deletes files that may require special tools to rebuild."
+
+.PHONY: default mostlyclean-noinstLIBRARIES distclean-noinstLIBRARIES \
+clean-noinstLIBRARIES maintainer-clean-noinstLIBRARIES \
+mostlyclean-compile distclean-compile clean-compile \
+maintainer-clean-compile tags mostlyclean-tags distclean-tags \
+clean-tags maintainer-clean-tags distdir info dvi installcheck \
+install-exec install-data install uninstall all installdirs \
+mostlyclean-generic distclean-generic clean-generic \
+maintainer-clean-generic clean mostlyclean distclean maintainer-clean
+
+
+# Tell versions [3.59,3.63) of GNU make to not export all variables.
+# Otherwise a system limit (for SysV at least) may be exceeded.
+.NOEXPORT:

@@ -1,0 +1,198 @@
+
+
+
+   19 August 1992                                                PSSYMBOLS(1)
+
+
+
+
+
+
+   NAME
+     PSSYMBOLS-List of symbols for ditroff in TRANSCRIPT system
+
+   DESCRIPTION
+     The following is a list of the symbols that are available in psroff(1)
+     (or ditroff) in the TRANSCRIPT release.  The list gives the name of the
+     symbol which is used in troff, and a short description.  If this page is
+     printed on a POSTSCRIPT printer using psroff, the actual representation
+     for the symbol is also shown.  (psroff or ditroff must be used; ptroff
+     will not work.) The description for each symbol is the name by which the
+     symbol is known in Adobe fonts.  The name can be used to find the char-
+     acter in font documentation for the appropriate font(s).
+
+     Many of the symbols below are from the Symbols font.  Some are in each
+     alphabetic font.  Those marked with an asterisk are constructed with
+     POSTSCRIPT language code and so are not necessarily from any font.
+     Characters similar to many of the fonts marked with an asterisk do
+     appear in fonts, though, so the description usually shows the name of a
+     similar character.
+
+     Sym.   Description         Sym.   Description
+
+     \(a+   circleplus          \(aa   acute
+     \(ae   ae                  \(al   aleph
+     \(an   logicaland          \(ap   similar
+     \(ax   circlemultiply      \(be   breve
+     \(br   boxrule*            \(bs   heart
+     \(bt   perpendicular       \(bu   bullet*
+     \(bv   boldvertical*       \(bx   box*
+     \(ca   intersection        \(cd   cedilla
+     \(ci   circle*             \(cm   element
+     \(co   copyright           \(cr   carriagereturn
+     \(ct   cent                \(cu   union
+     \(d<   guillemotleft       \(d>   guillemotright
+     \(da   arrowdown           \(dd   daggerdbl
+     \(de   degree              \(dg   dagger
+     \(di   divide              \(dm   diamond
+     \(dt   dotaccent           \(em   emdash
+     \(en   endash              \(eq   equal
+     \(es   emptyset            \(fa   universal
+     \(fi   fi-ligature         \(fl   fl-ligature
+     \(fm   minute              \(ga   grave
+     \(gr   gradient            \(hc   caron
+     \(hy   hyphen              \(ib   reflexsubset
+     \(if   infinity            \(im   arrowdblright
+     \(io   arrowdblboth        \(ip   reflexsuperset
+     \(is   integral*           \(l<   angleleft
+     \(la   logicaland          \(lb   braceleftbt*
+     \(lc   bracketlefttp*      \(lf   bracketleftbt*
+     \(lh   arrowdblleft        \(lk   braceleftmid*
+
+
+   Adobe Systems                                                            1
+
+
+
+
+
+
+   PSSYMBOLS(1)                                                19 August 1992
+
+
+     \(lo   logicalor           \(lq   quotedblleft
+     \(lt   parenlefttp*        \(m.   dotmath
+     \(ma   macron              \(mc   macron
+     \(mi   minus               \(mo   element
+     \(mt   minute              \(mu   multiply
+     \(n'   quotesingle         \(no   logicalnot
+     \(o/   oslash              \(ob   outlinebullet*
+     \(oe   oe                  \(og   ogonek
+     \(or   bar                 \(pd   partialdiff
+     \(pl   plus                \(pm   perthousand
+     \(po   sterling            \(pp   paragraph
+     \(ps   sterling            \(pt   proportional
+     \(r>   angleright          \(rb   parenrightbt*
+     \(rc   bracketrighttp*     \(rf   bracketrightbt*
+     \(rg   registerserif       \(rh   arrowdblright
+     \(ri   ring                \(rk   bracerightmid*
+     \(rn   radicalex*          \(rq   quotedblright
+     \(rt   parenrighttp*       \(ru   rule*
+     \(sb   propersubset        \(sc   section
+     \(sd   second              \(sl   slash
+     \(sp   propersuperset      \(sq   square*
+     \(sr   radical*            \(ss   germandbls
+     \(te   existential         \(tf   therefore
+     \(tm   trademarkserif      \(ts   sigma1
+     \(ua   arrowup             \(ui   dotlessi
+     \(ul   underline*          \(um   dieresis
+     \(vr   verticalrule*       \(yi   yen
+     \(yn   yen                 \(+-   plusminus
+     \(->   arrowright*         \(..   dieresis
+     \(**   asteriskmath        \(==   equivalence*
+     \(~=   approxequal         \(!!   exclamdown
+     \(!=   notequal            \(!m   notelement
+     \(!s   notsubset           \($D   florin
+     \($J   yen                 \(:>   arrowdblright
+     \(<-   arrowleft*          \(<:   arrowdblleft
+     \(<=   lessequal           \(<>   arrowboth
+     \(>=   greaterequal        \(??   questiondown
+     \(12   1/2*                \(13   1/3*
+     \(14   1/4*                \(18   1/8*
+     \(23   2/3*                \(34   3/4*
+     \(38   3/8*                \(58   5/8*
+     \(78   7/8*                \(AE   AE
+     \(I!   exclamdown          \(I?   questiondown
+     \(O/   Oslash              \(OE   OE
+     \(PL   Lslash              \(Pl   lslash
+     \(*A   Alpha               \(*B   Beta
+     \(*C   Xi                  \(*D   Delta
+     \(*E   Epsilon             \(*F   Phi
+     \(*G   Gamma               \(*H   Theta
+     \(*I   Iota                \(*K   Kappa
+     \(*L   Lambda              \(*M   Mu
+     \(*N   Nu                  \(*O   Omicron
+     \(*P   Pi                  \(*Q   Psi
+     \(*R   Rho                 \(*S   Sigma
+
+
+   2                                                            Adobe Systems
+
+
+
+
+
+
+   19 August 1992                                                PSSYMBOLS(1)
+
+
+     \(*T   Tau                 \(*U   Upsilon
+     \(*W   Omega               \(*X   Chi
+     \(*Y   Eta                 \(*Z   Zeta
+     \(*a   alpha               \(*b   beta
+     \(*c   xi                  \(*d   delta
+     \(*e   epsilon             \(*f   phi
+     \(*g   gamma               \(*h   theta
+     \(*i   iota                \(*k   kappa
+     \(*l   lambda              \(*m   mu
+     \(*n   nu                  \(*o   omicron
+     \(*p   pi                  \(*q   psi
+     \(*r   rho                 \(*s   sigma
+     \(*t   tau                 \(*u   upsilon
+     \(*w   omega               \(*x   chi
+     \(*y   eta                 \(*z   zeta
+
+
+   SEE ALSO
+     transcript(1), psroff(1)
+
+   AUTHOR
+     Adobe Systems Incorporated
+
+   NOTES
+     POSTSCRIPT is a registered trademark of Adobe Systems Incorporated.
+     TRANSCRIPT is a trademark of Adobe Systems Incorporated.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   Adobe Systems                                                            3
+
+
+99

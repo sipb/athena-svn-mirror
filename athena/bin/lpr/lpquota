@@ -1,0 +1,8 @@
+#!/bin/sh
+cat << EOF
+The print quota system is not currently in service. Pages that you
+print will not count towards your print quota. However, the print
+servers are still logging printer usage, and abusing Athena print
+resources is a violation of the Athena Rules of Use.
+EOF
+exit 0

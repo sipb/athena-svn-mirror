@@ -1,0 +1,155 @@
+#!/bin/sh
+TEXMFPATH=$1
+FONTSIZES=$2
+FONTPATH=$3
+VFPATH=$4
+FIGPATH=$5
+HEADERPATH=$6
+shift 6
+
+BUTTONS=''
+A4=''
+TEXFONTS=''
+GREY=''
+MAKEPK=''
+BDPI=''
+PS=''
+DPS=''
+NEWS=''
+GHOST=''
+GSPATH='-DGS_PATH="gs"'
+SHRINK='-DSHRINK=3'
+MFMODE='-DMFMODE=the empty string'
+DEFAULT_CONFIG_PATH=''
+SELFAUTO=''
+CFG2RES=''
+DOSNAMES=''
+
+while test $# -gt 0
+do
+	case $1 in
+	-DBUTTONS)		BUTTONS=y;;
+	-DA4)			A4=y;;
+	-DXDVIFONTS_ONLY)	TEXFONTS=y;;
+	-DGREY)			GREY=y;;
+	-DMAKEPK)		MAKEPK=-DMAKEPKCMD=\\\"MakeTeXPK\\\";;
+	-DMKPK_REDIRECT)	MAKEPK=-DMAKEPKCMD=\\\"MakeTeXPK\\\";;
+	-DMAKEPKCMD=*)		MAKEPK=$1;;
+	-DBDPI=*)		BDPI=$1;;
+	-DPS_DPS)		DPS=y; PS=y;;
+	-DPS_NEWS)		NEWS=y; PS=y;;
+	-DPS_GS)		GHOST=y; PS=y;;
+	-DGS_PATH=*)		GSPATH=$1; GHOST=y; PS=y;;
+	-DSHRINK=*)		SHRINK=$1;;
+	-DMFMODE=*)		MFMODE=$1;;
+	-DDEFAULT_CONFIG_PATH=*) DEFAULT_CONFIG_PATH=$1;;
+	-DSELFAUTO)		SELFAUTO=y;
+		DEFAULT_CONFIG_PATH='-DDEFAULT_CONFIG_PATH="$SELFAUTODIR:$SELFAUTOPARENT"';;
+	-DCFG2RES)		CFG2RES=y;;
+	-DDOSNAMES)		DOSNAMES=y;;
+	esac
+	shift
+done
+
+if test -z "$BUTTONS";	then	echo	'/^#ifbuttons/,/^#/d';	fi
+if test -n "$TEXFONTS";	then	echo	'/^#iftexfonts/,/^#/d';	fi
+if test -z "$GREY";	then	echo	'/^#ifgrey/,/^#/d';	fi
+if test -z "$DPS";	then	echo	'/^#ifdps/,/^#/d';	fi
+if test -z "$NEWS";	then	echo	'/^#ifnews/,/^#/d';	fi
+if test -z "$SELFAUTO";	then	echo	'/^#ifselfauto/,/^#/d';	fi
+if test -z "$DOSNAMES";	then	echo	'/^#ifdosnames/,/^#/d';	fi
+
+if test -z "$DEFAULT_CONFIG_PATH"
+then
+	echo '/^#ifconfig/,/^#/d'
+	CFG2RES=''
+fi
+
+if test -z "$CFG2RES";	then	echo	'/^#ifcfg2res/,/^#/d';	fi
+if test -z "$CFG2RES" || test -z "$BUTTONS";
+			then	echo	'/^#ifcfg2resbuttons/,/^#/d';	fi
+if test -z "$PS" || test -z "$DEFAULT_CONFIG_PATH";
+			then	echo	'/^#ifconfigps/,/^#/d';	fi
+
+if test -z "$GHOST";	then	echo	'/^#ifghost/,/^#/d'
+	else	echo	"s^%%gspath%%^`echo $GSPATH | sed s/-DGS_PATH=//`^"
+	fi
+
+if test -z "$PS";	then	echo	'/^#ifps/,/^#/d'
+	else	echo	'/^#ifnops/,/^#/d'
+	fi
+
+if test -z "$MAKEPK";	then	echo	'/^#ifmakepk/,/^#/d'
+	else	echo	"s^%%mkpk%%^`echo $MAKEPK | sed s/-DMAKEPKCMD=//`^"
+	fi
+
+echo	'/^#/d'
+
+if test -n "$A4"
+then
+	echo	's/%%defaultpagesize%%/21 x 29.7 cm (A4 size)/'
+else
+	echo	's/%%defaultpagesize%%/8.5 x 11 inches/'
+fi
+
+if test -n "$BDPI"
+then
+	echo	"s/%%bdpi%%/`echo $BDPI | sed s/-DBDPI=//`/"
+else
+	echo	's/%%bdpi%%/300/'
+fi
+
+echo "s/%%shrink%%/`echo $SHRINK | sed s/-DSHRINK=//`/"
+echo "s/%%mfmode%%/`echo $MFMODE | sed s/-DMFMODE=//`/"
+
+if test -n "$TEXMFPATH"
+then
+	echo	"s@%%DEFAULT_TEXMF_PATH%%   @.TP 40\\
+.B $TEXMFPATH\\
+@" | sed -e "s@:@\\\\\\
+.TP\\\\\\
+.B @g"
+else
+	echo	'/%%DEFAULT_TEXMF_PATH%%/d'
+fi
+
+if test -n "$DEFAULT_CONFIG_PATH"
+then
+	DEFAULT_CONFIG_PATH=`echo "$DEFAULT_CONFIG_PATH" | sed 's/^-DDEFAULT_CONFIG_PATH="//' | sed 's/"$//'`
+	echo	"s@%%DEFAULT_CONFIG_PATH%%   @.TP 40\\
+.B $DEFAULT_CONFIG_PATH\\
+@" | sed -e "s@:@\\\\\\
+.TP\\\\\\
+.B @g"
+fi
+
+echo	"s/%%DEFAULT_FONT_SIZES%%/$FONTSIZES/" | sed -e "s/:/ :\\\\\\
+/g"
+
+echo	"s@%%DEFAULT_FONT_PATH%%   @.B $FONTPATH\\
+@" | sed -e "s@:@\\\\\\
+.TP\\\\\\
+.B @g"
+
+if test -n "$VFPATH"
+then
+	echo	"s@%%DEFAULT_VF_PATH%%   @.TP\\
+.B $VFPATH\\
+@" | sed -e "s@:@\\\\\\
+.TP\\\\\\
+.B @g"
+else
+	echo	'/%%DEFAULT_VF_PATH%%/d'
+fi
+
+echo	"s@%%DEFAULT_FIG_PATH%%   @.B $FIGPATH\\
+@" | sed -e "s@:@\\\\\\
+.TP\\\\\\
+.B @g"
+
+echo	"s@%%DEFAULT_HEADER_PATH%%   @.B $HEADERPATH\\
+@" | sed -e "s@:@\\\\\\
+.TP\\\\\\
+.B @g"
+
+exit 0

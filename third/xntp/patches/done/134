@@ -1,0 +1,41 @@
+Replied: Mon, 12 May 1997 22:47:36 -0400
+Replied: "mehldau@photogrammetrie.de (Gerhard Mehldau) "
+Return-Path: harlan@clark.net 
+Return-Path: <harlan@clark.net>
+Received: from mail.clark.net (mail.clark.net [168.143.0.10])
+	by whimsy.udel.edu (8.8.5/8.8.5) with ESMTP id DAA17648
+	for <stenn@whimsy.udel.edu>; Fri, 9 May 1997 03:24:34 GMT
+Received: from explorer2.clark.net (harlan@explorer2.clark.net [168.143.0.5]) by mail.clark.net (8.8.5/8.6.5) with ESMTP id XAA19852 for <stenn@whimsy.udel.edu>; Thu, 8 May 1997 23:23:56 -0400 (EDT)
+Received: (from harlan@localhost) by explorer2.clark.net (8.8.5/8.7.1) id XAA11792 for stenn@whimsy.udel.edu; Thu, 8 May 1997 23:24:18 -0400 (EDT)
+Message-Id: <199705090324.XAA11792@explorer2.clark.net>
+From: mehldau@photogrammetrie.de (Gerhard Mehldau)
+Subject: Re: Unknown kernel var _tick
+Newsgroups: comp.protocols.time.ntp
+Date: 7 May 1997 11:36:50 GMT
+Organization: Photogrammetrie GmbH
+
+Bruce Bartram (bwb@etl.noaa.gov) wrote:
+: Howdy,
+:    For SGIs, upgrade to the new version before
+: wasting time on known troubles:
+:      ftp://ftp.udel.edu/pub/ntp/xntp3-5.90.tar.gz
+: (or the export version, of course !)
+
+Thanks, tried that, but even with xntp3-5.90 I still get essentially
+the same error messages (see below).  This time, I have compiled the
+source code on an IRIX 4.0.5F machine.  I get the same error message
+both on this machine and on an IRIX 5.2 machine.
+
+May  7 08:58:24  xntpd[9164]: xntpd 3-5.90 Wed May  7 08:22:51 MDT 1997 (1)
+May  7 08:58:24  xntpd[9164]: Unknown kernel var <_tick>
+May  7 08:58:24  xntpd[9164]: Unknown kernel variable <_tickadj>
+May  7 08:58:24  xntpd[9164]: tickadj = 150, tick = 10000, tvu_maxslew = 14850, est. hz = 100
+May  7 08:58:24  xntpd[9164]: precision = 42 usec
+May  7 08:58:24  xntpd[9164]: read drift of 0.000 from /etc/ntp.drift
+May  7 09:02:41  xntpd[9164]: synchronized to LOCAL(0), stratum=13
+
+---------------------------------------------------------------------------
+    Gerhard Mehldau            http://www.photogrammetrie.de
+    Photogrammetrie GmbH       mailto:mehldau@photogrammetrie.de
+    Anzinger Str. 5            phone: +49 (89) 43 69 2-1 64
+    81671 Munich, Germany      fax:   +49 (89) 43 69 2-1 00

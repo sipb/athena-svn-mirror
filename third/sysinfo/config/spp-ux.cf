@@ -1,0 +1,16 @@
+#
+# $Id: spp-ux.cf,v 1.1.1.2 1998-12-24 22:03:03 ghudson Exp $
+#
+# Copyright (c) 1992-1998 Michael A. Cooper.  
+# This software may be freely used and distributed provided it is not
+# sold for profit or used in part or in whole for commercial gain
+# without prior written agreement, and the author is credited
+# appropriately.
+#
+# 	Convex SPP-UX configuration file for Sysinfo
+#
+include		local.cf
+#
+# Include common HP-UX info
+#
+include		hp-ux-com.cf

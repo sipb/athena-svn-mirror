@@ -1,0 +1,382 @@
+Received: from snow-white.ee.udel.edu by whimsy.udel.edu id aa10851;
+          28 Mar 97 12:06 GMT
+Received: (from jhay@localhost)
+	by zibbi.mikom.csir.co.za (8.8.5/8.8.5) id OAA00692;
+	Fri, 28 Mar 1997 14:06:36 +0200 (SAT)
+From: John Hay <jhay@zibbi.mikom.csir.co.za>
+Message-Id: <199703281206.OAA00692@zibbi.mikom.csir.co.za>
+Subject: xntpd TIOCDCDTIMESTAMP support and NMEA improvements
+To: mills@udel.edu
+Date: Fri, 28 Mar 1997 14:06:36 +0200 (SAT)
+Cc: Harlan Stenn <stenn@whimsy.udel.edu>
+X-Mailer: ELM [version 2.4ME+ PL31 (25)]
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+
+Hi Dave,
+
+Here is my revised patches from the ones I sent you previously. The only
+real change is that I don't have the #ifdef MOTOROLA_NMEAGPS any more.
+After thinking about it, I realized that all other GPS's will ignore it,
+so I just left it in.
+
+The first two patches change xntpd/ntp_refclock.c and html/ldisc.html.
+This is the support for the FreeBSD TIOCDCDTIMESTAMP ioctl. It will
+only be compiled in if that ioctl exists, so it should not interfere
+on other platforms. I documented it in ldisc.html. I'm not sure if
+that is the best place.
+
+The last three patches is some improvements to the NMEA code and the
+start of a doc (driver20.html) for it. The files affected is: xntpd/
+refclock_nmea.c, html/refclock.html and the new driver20.html.
+
+Please feel free to fix the english especially in the docs. English
+is not my native language. Also if you would like to do things
+differently or have suggestions on things that I can do better, I'd
+like to hear them.
+
+Thanks.
+
+PS. Harlan this is cc'ed to you because you asked if I can get rid of
+the #ifdef MOTOROLA_NMEAGPS.
+
+John
+-- 
+John Hay -- John.Hay@mikom.csir.co.za
+
+
+*** xntpd/ntp_refclock.c.orig	Thu Jan 30 09:27:12 1997
+--- xntpd/ntp_refclock.c	Fri Mar 28 12:13:49 1997
+***************
+*** 685,690 ****
+--- 685,693 ----
+  	int i;
+  	l_fp trtmp, tstmp;
+  	char c;
++ #ifdef TIOCDCDTIMESTAMP
++ 	struct timeval dcd_time;
++ #endif
+  
+  	/*
+  	 * Check for the presence of a timestamp left by the tty_clock
+***************
+*** 696,701 ****
+--- 699,727 ----
+  	dpt = (char *)&rbufp->recv_space;
+  	dpend = dpt + rbufp->recv_length;
+  	trtmp = rbufp->recv_time;
++ 
++ #ifdef TIOCDCDTIMESTAMP
++ 	if(ioctl(rbufp->fd, TIOCDCDTIMESTAMP, &dcd_time) != -1) {
++ 		TVTOTS(&dcd_time, &tstmp);
++ 		tstmp.l_ui += JAN_1970;
++ 		L_SUB(&trtmp, &tstmp);
++ 		if (trtmp.l_ui == 0) {
++ #ifdef DEBUG
++ 				if (debug) {
++ 					printf(
++ 				    "refclock_gtlin: fd %d DCDTIMESTAMP %s",
++ 					    rbufp->fd,
++ 					    lfptoa(&tstmp, 6));
++ 					printf(" sigio %s\n",
++ 					    lfptoa(&trtmp, 6));
++ 				}
++ #endif
++ 			trtmp = tstmp;
++ 		} else
++ 			trtmp = rbufp->recv_time;
++ 	}
++ 
++ #else /* TIOCDCDTIMESTAMP */
+  	if (dpend >= dpt + 8) {
+  		if (buftvtots(dpend - 8, &tstmp)) {
+  			L_SUB(&trtmp, &tstmp);
+***************
+*** 718,723 ****
+--- 744,750 ----
+  				trtmp = rbufp->recv_time;
+  		}
+  	}
++ #endif /* TIOCDCDTIMESTAMP */
+  
+  	/*
+  	 * Edit timecode to remove control chars. Don't monkey with the
+*** html/ldisc.html.orig	Thu Oct 10 19:20:41 1996
+--- html/ldisc.html	Fri Mar 28 12:13:50 1997
+***************
+*** 142,145 ****
+--- 142,161 ----
+  the current values of the timestamp and counter are returned in the
+  <code>ppsclockev</code> structure.
+  
++ <p><h4>TIOCDCDTIMESTAMP timestamping</h4>
++ 
++ <p>On FreeBSD 2.2 and later systems the TIOCDCDTIMESTAMP ioctl is used
++ to read the timestamp when the DCD serial go active. To use this the
++ PPS signal must be tied to the serial port DCD signal through the
++ appropriate level converters and pulse stretch circuitry if necessary.
++ This enhances the accuracy of the driver to a few microseconds. Using
++ FreeBSD 2.2 the measured delay between activation of the PPS signal and
++ the time the timestamp is made on a 66MHz 486DX2 is 19us and on a
++ 100MHz Pentium is 6us. The driver does NOT compensate for this.
++ 
++ <p>The TIOCDCDTIMESTAMP timestamping ioctl() is used automatically
++ on FreeBSD systems if available. It is integrated into the
++ refclock_gtlin() function so any driver using it will benefit from
++ the enhanced accuracy.
++ 
+  <hr><address>David L. Mills (mills@udel.edu)</address></body></html>
+*** xntpd/refclock_nmea.c.orig	Tue Feb  4 03:01:37 1997
+--- xntpd/refclock_nmea.c	Fri Mar 28 12:36:47 1997
+***************
+*** 36,41 ****
+--- 36,42 ----
+  #define	DEVICE		"/dev/gps%d"	/* name of radio device */
+  #define	SPEED232	B4800	/* uart speed (4800 bps) */
+  #define	PRECISION	(-9)	/* precision assumed (about 2 ms) */
++ #define	DCD_PRECISION	(-20)	/* precision assumed (about 1 us) */
+  #define	REFID		"GPS\0"	/* reference id */
+  #define	DESCRIPTION	"NMEA GPS Clock" /* who we are */
+  
+***************
+*** 69,74 ****
+--- 70,76 ----
+   */
+  struct nmeaunit {
+  	int	pollcnt;	/* poll message counter */
++ 	int	polled;		/* Hand in a sample? */
+  	l_fp	tstamp;		/* timestamp of last poll */
+  };
+  
+***************
+*** 80,85 ****
+--- 82,88 ----
+  static	void	nmea_receive	P((struct recvbuf *));
+  static	void	nmea_poll	P((int, struct peer *));
+  static	void	gps_send	P((int, char *, struct peer *));
++ static	char	*field_parse	P((char *, int));
+  
+  /*
+   * Transfer vector
+***************
+*** 142,152 ****
+  	/*
+  	 * Initialize miscellaneous variables
+  	 */
+! 	peer->precision = PRECISION;
+  	pp->clockdesc = DESCRIPTION;
+  	memcpy((char *)&pp->refid, REFID, 4);
+  	up->pollcnt = 2;
+  	gps_send(pp->io.fd,"$PMOTG,RMC,0000*1D\r\n", peer);
+  	return (1);
+  }
+  
+--- 145,156 ----
+  	/*
+  	 * Initialize miscellaneous variables
+  	 */
+! 	peer->precision = DCD_PRECISION;
+  	pp->clockdesc = DESCRIPTION;
+  	memcpy((char *)&pp->refid, REFID, 4);
+  	up->pollcnt = 2;
+  	gps_send(pp->io.fd,"$PMOTG,RMC,0000*1D\r\n", peer);
++ 
+  	return (1);
+  }
+  
+***************
+*** 182,188 ****
+  	int i;
+  	char *cp, *dp;
+  	int cmdtype;
+- 	char *field_parse();
+  
+  	/*
+  	 * Initialize pointers and read the timecode and timestamp
+--- 186,191 ----
+***************
+*** 199,212 ****
+  		return;
+  
+  	/*
+! 	 * We get a buffer and timestamp for each <cr>; however, we use
+! 	 * the timestamp of "now" since this may be a broadcast instead
+! 	 * of a poll.  This needs to be checked empirically
+  	 */
+! 	get_systime(&up->tstamp);		/* HACK */
+! 	pp->lastrec = up->tstamp;
+  	up->pollcnt = 2;
+- 	record_clock_stats(&peer->srcadr, pp->lastcode);
+  #ifdef DEBUG
+  	if (debug)
+          	printf("nmea: timecode %d %s\n", pp->lencode,
+--- 202,211 ----
+  		return;
+  
+  	/*
+! 	 * We get a buffer and timestamp for each <cr>.
+  	 */
+! 	pp->lastrec = up->tstamp = trtmp;
+  	up->pollcnt = 2;
+  #ifdef DEBUG
+  	if (debug)
+          	printf("nmea: timecode %d %s\n", pp->lencode,
+***************
+*** 263,268 ****
+--- 262,276 ----
+  
+  	}
+  
++ 	/*
++ 	 * Only go on if we had been polled.
++ 	 */
++ 	if(!up->polled)
++ 		return;
++ 	up->polled = 0;
++ 
++ 	record_clock_stats(&peer->srcadr, pp->lastcode);
++ 
+  	dp = field_parse(cp,9);
+  	/*
+  	 * Convert date and check values.
+***************
+*** 354,359 ****
+--- 362,368 ----
+  	else
+  		up->pollcnt--;
+  	pp->polls++;
++ 	up->polled = 1;
+  
+  	/*
+  	 * usually nmea_receive can get a timestamp every second
+*** html/refclock.html.org	Thu Oct 10 19:20:45 1996
+--- html/refclock.html	Fri Mar 28 12:56:41 1997
+***************
+*** 69,75 ****
+  (<code>ACTS</code>)
+  <br><a href="driver19.html">Type 19</a> Heath WWV/WWVH Receiver
+  (<code>HEATH</code>)
+! <br>Type 20 Generic NMEA GPS Receiver (<code>NMEA</code>)
+  <br>Type 21 TrueTime GPS-VME Interface (HP only) (<code>GPSVME</code>)
+  <br><a href="driver22.html">Type 22</a> PPS Clock Discipline
+  (<code>ATOM</code>)
+--- 69,75 ----
+  (<code>ACTS</code>)
+  <br><a href="driver19.html">Type 19</a> Heath WWV/WWVH Receiver
+  (<code>HEATH</code>)
+! <br><a href="driver20.html">Type 20</a> Generic NMEA GPS Receiver (<code>NMEA</code>)
+  <br>Type 21 TrueTime GPS-VME Interface (HP only) (<code>GPSVME</code>)
+  <br><a href="driver22.html">Type 22</a> PPS Clock Discipline
+  (<code>ATOM</code>)
+*** /dev/null	Fri Mar 28 12:16:36 1997
+--- html/driver20.html	Fri Mar 28 13:03:52 1997
+***************
+*** 0 ****
+--- 1,106 ----
++ <!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML Strict//EN">
++ <html><head><title>
++ Generic NMEA GPS Receiver
++ </title></head><body><h3>
++ Generic NMEA GPS Receiver
++ </h3><hr>
++ 
++ <p><h4>Synopsis</h4>
++ 
++ <p>Address: 127.127.20.<var>u</var>
++ <br>Reference ID: GPS
++ <br>Driver ID: GPS_NMEA
++ <br>Serial Port: <code>/dev/gps<var>u</var></code>; 4800 baud, 8-bits,
++ no parity
++ <br>Features: <code>tty_clk</code>
++ 
++ <p><h4>Description</h4>
++ 
++ <p>This driver supports GPS's with the $GPRMC NMEA output string. The
++ driver expect the GPS to be set up to transmit a $GPRMC message every
++ second.
++ 
++ <p>The accuracy depend on the GPS used. Inexpesive GPS models are
++ available with a claimed PPS signal accuracy of 1us or better relative
++ to the broadcast signal. However, in most cases the actual accuracy is
++ limited by the precision of the timecode and the latencies of the
++ serial interface and operating system.
++ 
++ <p>The $GPRMC message that the GPS transmits look like this:
++ <pre>
++ $GPRMC,POS_UTC,POS_STAT,LAT,LAT_REF,LON,LON_REF,SPD,HDG,DATE,MAG_VAR,MAG_REF*CC&lt;cr&gt;&lt;lf&gt;
++ 
++   POS_UTC  - UTC of position. Hours, minutes and seconds. (hhmmss)
++   POS_STAT - Position status. (A = Data valid, V = Data invalid)
++   LAT      - Latitude (llll.ll)
++   LAT_REF  - Latitude direction. (N = North, S = South)
++   LON      - Longitude (yyyyy.yy)
++   LON_REF  - Longitude direction (E = East, W = West)
++   SPD      - Speed over ground. (knots) (x.x)
++   HDG      - Heading/track made good (degrees True) (x.x)
++   DATE     - Date (ddmmyy)
++   MAG_VAR  - Magnetic variation (degrees) (x.x)
++   MAG_REF  - Magnetic variation (E = East, W = West)
++   CC       - Checksum (optional)
++   &lt;cr&gt;&lt;lf&gt; - Sentence terminator.
++ </pre>
++ 
++ <p>The driver will send a "$PMOTG,RMC,0000*1D&lt;cr&gt;&lt;lf&gt;"
++ message each time a $GPRMC string is needed. This is not needed on most
++ GPS receivers because they automatically send the $GPRMC string every
++ second and will only work on GPS receivers that understand the $PMOTG
++ string. Others will just ignore it.
++ 
++ <p><h4>Setting up the Garmin GPS-25XL</h4>
++ 
++ <p>Switch off all output with by sending it the following string.
++ <pre>"$PGRMO,,2&lt;cr&gt;&lt;lf&gt;"</pre>
++ Now switch only $GPRMC on by sending it the following string.
++ <pre>"$PGRMO,GPRMC,1&lt;cr&gt;&lt;lf&gt;"</pre>
++ 
++ <p>On some systems the PPS signal isn't switched on by default. It can
++ be switched on by sending the following string.
++ <pre>"$PGRMC,,,,,,,,,,,,2&lt;cr&gt;&lt;lf&gt;"</pre>
++ 
++ <p><h4>Monitor Data</h4>
++ 
++ <p>The $GPRMC string that is used is written to the clockstats file.
++ 
++ <p><h4>Fudge Factors</h4>
++ 
++ <dl>
++ 
++ <dt><code>time1 <var>time</var></code>
++ <dd>Specifies the time offset calibration factor, in seconds and
++ fraction, with default 0.0.
++ 
++ <p><dt><code>time2 <var>time</var></code>
++ <dd>Not used by this driver.
++ 
++ <p><dt><code>stratum <var>number</var></code>
++ <dd>Specifies the driver stratum, in decimal from 0 to 15, with default
++ 0.
++ 
++ <p><dt><code>refid <var>string</var></code>
++ <dd>Specifies the driver reference identifier, an ASCII string from one
++ to four characters, with default <code>GPS</code>.
++ 
++ <p><dt><code>flag1 0 | 1</code>
++ <dd>Not used by this driver.
++ 
++ <p><dt><code>flag2 0 | 1</code>
++ <dd>Not used by this driver.
++ 
++ <p><dt><code>flag3 0 | 1</code>
++ <dd>Not used by this driver.
++ 
++ <p><dt><code>flag4 0 | 1</code>
++ <dd>Not used by this driver.
++ 
++ <p>Additional Information
++ 
++ <p><a href="refclock.html"> Reference Clock Drivers</a>
++ 
++ </dl>
++ 
++ <hr><address>David L. Mills (mills@udel.edu)</address></body></html>

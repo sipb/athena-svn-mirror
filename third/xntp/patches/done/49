@@ -1,0 +1,161 @@
+Replied: Wed, 18 Dec 1996 19:54:06 -0500
+Replied: ""Mark A. Lovell" <mlovell@pinnacle.bigrock.com> Mills@huey.udel.edu"
+Received: from [206.169.113.34] by huey.udel.edu id aa07932; 18 Dec 96 16:32 EST
+Received: from pinnacle.bigrock.com (mlovell@pinnacle.bigrock.com [206.169.113.34]) by pinnacle.bigrock.com (8.7.4/8.7.3) with ESMTP id NAA23578 for <Mills@huey.udel.edu>; Wed, 18 Dec 1996 13:32:26 -0800 (PST)
+Message-Id: <199612182132.NAA23578@pinnacle.bigrock.com>
+X-Mailer: exmh version 1.6.5 12/8/95
+To: Mills@huey.udel.edu
+Subject: NTP Patches.
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Wed, 18 Dec 1996 13:32:26 -0800
+From: "Mark A. Lovell" <mlovell@pinnacle.bigrock.com>
+
+Dave,
+
+There are two sets of patches here. The first set is for the xntpd directory. 
+The patches to refclock_true.c are all that are really required. The patch to 
+ntp_request.c corrects a problem compiling with BSDOS/BSDI 2.0+. In doing so, 
+I may have broken it for 1.x machines, you might not want to take it as a 
+result. The second set is a single patch for ntp_machine.h in the include 
+directory. The same caveats apply to it. I'm quite willing to rework the 
+patches so that they effect only 2.0+, but that can get a bit ugly in the 
+code. I'm also not really certain how important 1.x compatibility is, I know 
+of only two systems running it, and they are both scheduled for the scrap heap.
+
+If you have any issues or want me to change things, please feel free to say 
+something.
+
+Regards,
+Mark Lovell
+
+- BEGIN PATCH 1 -
+*** 1.1	1996/12/17 22:19:29
+--- refclock_true.c	1996/12/18 16:59:10
+***************
+*** 26,31 ****
+--- 26,32 ----
+  #include "ntp_refclock.h"
+  #include "ntp_unixtime.h"
+  #include "ntp_stdlib.h"
++ #include "sys/ppsclock.h"
+  
+  /* This should be an atom clock but those are very hard to build.
+   *
+***************
+*** 492,513 ****
+  
+  		true_doevent(peer, e_TS);
+  
+- 		/*
+- 		 * The clock will blurt a timecode every second but we only
+- 		 * want one when polled.  If we havn't been polled, bail out.
+- 		 */
+- 		if (!up->polled)
+- 			return;
+- 		true_doevent(peer, e_Poll);
+- 
+  #ifdef PPS720
+  		/* If it's taken more than 65ms to get here, we'll lose. */
+  		if ((pp->sloppyclockflag & CLK_FLAG4) && up->pcl720init) {
+  			pp->usec = true_sample720();
+  			gettstamp(&pp->lastrec);
+  			true_debug(peer, "true_sample720: %luus\n", pp->usec);
+  		}
+  #endif
+  
+  		/*
+  		 * Process the new sample in the median filter and determine
+--- 493,548 ----
+  
+  		true_doevent(peer, e_TS);
+  
+  #ifdef PPS720
+  		/* If it's taken more than 65ms to get here, we'll lose. */
+  		if ((pp->sloppyclockflag & CLK_FLAG4) && up->pcl720init) {
++ 			l_fp   off;
++ 
++ #ifdef ATOM
++ 			/*
++ 			 * find out what time it really is. Include
++ 			 * the count from the PCL720
++ 			 */
++  			if (!clocktime(pp->day, pp->hour, pp->minute, 
++ 			   pp->second, GMT, pp->lastrec.l_ui, 
++ 			   &pp->yearstart, &off.l_ui)) {
++ 				refclock_report(peer, CEVNT_BADTIME);
++ 				return;
++ 			}
++ #endif
++ 
+  			pp->usec = true_sample720();
++ #ifdef ATOM
++ 			TVUTOTSF(pp->usec, off.l_uf);
++ #endif
++ 
++ 			/*
++ 			 * Stomp all over the timestamp that was pulled out
++ 			 * of the input stream. It's irrelevant since we've
++ 			 * adjusted the input time to reflect now (via pp->usec)
++ 			 * rather than when the data was collected.
++ 			 */
+  			gettstamp(&pp->lastrec);
++ #ifdef ATOM
++ 			/*
++ 			 * Create a true offset for feeding to pps_sample()
++ 			 */
++ 			L_SUB(&off, &pp->lastrec);
++ 
++ 			pps_sample(&off);
++ #endif
+  			true_debug(peer, "true_sample720: %luus\n", pp->usec);
+  		}
+  #endif
++ 
++ 		/*
++ 		 * The clock will blurt a timecode every second but we only
++ 		 * want one when polled.  If we havn't been polled, bail out.
++ 		 */
++ 		if (!up->polled)
++ 			return;
++ 
++ 		true_doevent(peer, e_Poll);
+  
+  		/*
+  		 * Process the new sample in the median filter and determine
+*** 1.1	1996/12/17 22:46:29
+--- ntp_request.c	1996/12/17 22:47:08
+***************
+*** 206,212 ****
+  extern struct peer *sys_peer;
+  
+  #ifndef NTP_SYSCALLS_LIBC
+! #ifndef SYS_NETBSD
+  extern int syscall      P((int, void *, ...));
+  #endif	/*SYS_NETBSD*/
+  #endif /* NTP_SYSCALLS_LIBC */
+--- 206,212 ----
+  extern struct peer *sys_peer;
+  
+  #ifndef NTP_SYSCALLS_LIBC
+! #if !defined(SYS_NETBSD) && !defined(SYS_BSDI)
+  extern int syscall      P((int, void *, ...));
+  #endif	/*SYS_NETBSD*/
+  #endif /* NTP_SYSCALLS_LIBC */
+- END PATCH 1 -
+
+- BEGIN PATCH 2 -
+*** 1.1 1996/12/17 22:33:37
+--- ntp_machine.h       1996/12/17 22:34:17
+***************
+*** 109,115 ****
+   * BSD/OS 2.0 and above
+   */
+  #if defined(SYS_BSDI)
+- # define USE_FSETOWNCTTY      /* this funny system demands a CTTY for FSETOWN */
+  #endif
+  
+  /*
+--- 109,114 ----
+- END PATCH 2 -
+

@@ -1,0 +1,150 @@
+#
+# $Id: freebsd.cf,v 1.1.1.1 1998-12-24 22:02:59 ghudson Exp $
+#
+# Copyright (c) 1992-1998 Michael A. Cooper.  
+# This software may be freely used and distributed provided it is not
+# sold for profit or used in part or in whole for commercial gain
+# without prior written agreement, and the author is credited
+# appropriately.
+#
+# 	FreeBSD configuration file for SysInfo
+#
+# Include local (site specific) config file
+#
+include		local.cf
+include		bsd.cf
+include		pci.cf
+include		scsi.cf
+include		dospart.cf
+#
+# Class of CPU as defined by CPUCLASS_* in <machine/cputypes.h>
+#
+define|CPUclass||0	|i286
+define|CPUclass||1	|i386
+define|CPUclass||2	|i486
+define|CPUclass||3	|i586
+define|CPUclass||4	|i686
+#
+# Types of CPU as defined by CPU_* in <machine/cputypes.h>
+#
+define|CPUtype||0	|i286
+define|CPUtype||1	|i386sx
+define|CPUtype||2	|i386
+define|CPUtype||3	|i486sx
+define|CPUtype||4	|i486
+define|CPUtype||5	|i586
+define|CPUtype||6	|i486dlc
+define|CPUtype||7	|i686
+define|CPUtype||8	|m1sc
+define|CPUtype||9	|m1
+define|CPUtype||10	|blue
+define|CPUtype||11	|m2
+define|CPUtype||12	|nx586
+define|CPUtype||13	|cy486dx
+define|CPUtype||14	|pentiumii
+#
+# Mouse Models from MOUSE_MODEL_* in <machine/mouse.h>
+#
+define|MouseModels||0	|Generic
+define|MouseModels||1	|Glide Point
+define|MouseModels||2	|Net Scroll
+define|MouseModels||3	|Net
+define|MouseModels||4	|Intelli
+define|MouseModels||5	|Think
+define|MouseModels||6	|Easy Scroll
+define|MouseModels||7	|Mouse Man Plus
+#
+# Mouse Interface Types from MOUSE_IF_* in <machine/mouse.h>
+#
+define|MouseIfTypes||0	|Serial
+define|MouseIfTypes||1	|Bus
+define|MouseIfTypes||2	|Inport
+define|MouseIfTypes||3	|PS/2
+define|MouseIfTypes||4	|System
+#
+# Mouse Types from MOUSE_* in <machine/mouse.h>
+#
+define|MouseTypes||0	|mouse
+define|MouseTypes||1	|track ball
+define|MouseTypes||2	|stick
+define|MouseTypes||3	|pad
+#
+# Mouse Protocols from MOUSE_PROTO_* in <machine/mouse.h>
+#
+define|MouseProtocols||0	|Microsoft Serial
+define|MouseProtocols||1	|Mouse Systems
+define|MouseProtocols||2	|Logitech
+define|MouseProtocols||3	|MM series
+define|MouseProtocols||4	|Logitech MouseMan
+define|MouseProtocols||5	|MS/Logitech Bus Mouse
+define|MouseProtocols||6	|MS/ATI InPort
+define|MouseProtocols||7	|PS/2
+define|MouseProtocols||8	|Hitachi Tablet
+define|MouseProtocols||9	|ALPS GlidePoint
+define|MouseProtocols||10	|MS IntelliMouse
+define|MouseProtocols||11	|Kensington Thinking Mouse
+define|MouseProtocols||12	|System Mouse
+#
+# Floppy Controller types from /sys/i386/isa/fdc.h
+#
+define|FloppyCtlrTypes||0	|NEC 765
+define|FloppyCtlrTypes||1	|Intel 82077
+define|FloppyCtlrTypes||2	|NEC 72065
+#
+# Device definetions.
+#
+# 	Format is
+#
+#		KEY |NAME |TYPE |NumID |MODEL INFO |DESCRIPTION |FLAGS |FILE
+#
+# 	The NAME field can have multiple names, each seperated by 
+#	a space (` ').
+#
+# 	Some devices are marked `Zombie' because they usually are
+# 	not indicated as ALIVE by the kernel, but should only
+# 	be found in the device table if they exists.
+#
+device|pci	|bus		|||||PCI
+device|sc	|console	||||System Console
+device|sio	|serial
+device|lpt	|parallel
+device|fdc	|floppyctlr
+device|npx	|generic	||||Math Co-Processor
+device|apm	|generic	||||Advanced Power Management BIOS
+#
+# Controllers
+#
+device|wdc	|ctlr		||		|			||ATA
+device|bt	|ctlr		||Bus Logic	|			||SCSI
+device|uha	|ctlr		||Ultrastore	|			||SCSI
+device|aha	|ctlr		||Adaptec	|154x/164x		||SCSI
+device|aic	|ctlr		||Adaptec	|6260/6360		||SCSI
+device|nca	|ctlr		||		|Generic NCR-5380/53C400||SCSI
+device|sea	|ctlr		||Seagate	|ST01/ST02		||SCSI
+#
+# Tape Drives
+#
+device|wt	|tapedrive	||Archive/Wangtek|QIC-02/QIC-36|Cartridge
+#
+# CD-ROM Drives
+#
+device|cd	|diskdrive/cdrom||		|Generic		||SCSI
+device|mcd	|diskdrive/cdrom||Mitsumi
+device|scd	|diskdrive/cdrom||Sony		|CDU31/33
+#
+# Network Interface cards
+#
+device|ed	|netif	||		|			||ether
+device|ie	|netif	||Intel		|i82586			||ether
+device|ep	|netif	||3Com 		|Etherlink III 3C5x9	||ether
+device|ex	|netif	||Intel		|EtherExpress Pro	||ether
+device|fe	|netif	||Fujitsu	|MB86960A/MB86965A	||ether
+device|le	|netif	||DEC 		|EtherWORKS II/III	||ether
+device|lnc	|netif	||AMD 		|Lance/PCnet 		||ether
+device|ze	|netif	||IBM/National Semiconductor|PCMCIA	||ether
+device|zp	|netif	||3Com		|PCMCIA Etherlink III 3C589||ether
+#
+# Mice
+#
+device|mse	|pointer||		|	|Bus Mouse
+device|psm	|pointer||		|	|PS/2 Mouse

@@ -1,0 +1,20 @@
+# transcript/src/Makefile.qms
+#
+# Copyright (C) 1992 Adobe Systems Incorporated. All rights reserved.
+# GOVERNMENT END USERS: See notice of rights in Notice file in release
+# directory. 
+
+# RCSID: $Header: /afs/dev.mit.edu/source/repository/third/transcript/src/Makeqms.sysv,v 1.1.1.1 1996-10-07 20:25:46 ghudson Exp $
+
+SHELL = /bin/sh
+
+CC = $$CCOMP
+
+CFLAGS = $$CCFLAGS -DQMS
+
+programs: qmscomm
+
+qmscomm: qmscomm.c psutil.o psspool.h qef.h
+	${CC} ${CFLAGS} -o qmscomm qmscomm.c psutil.o $$SOCKFLAGS
+
+

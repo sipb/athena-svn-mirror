@@ -1,0 +1,422 @@
+#
+# @OSF_COPYRIGHT@
+# (c) Copyright 1990, 1991, 1992, 1993, 1994 OPEN SOFTWARE FOUNDATION, INC.
+# ALL RIGHTS RESERVED
+#  
+# HISTORY
+# Motif Release 1.2.5
+
+
+
+      
+
+CR Number                     : 9451
+Short Description             : Text widget line 30000 is marked as NOLINE
+Subcomponent or Book Name     : XmText                                       
+Found in Baseline             : 1.2.3       
+Status                        : cancel
+Fixed in Baseline             : 1.2.5    
+
+CR Number                     : 9450
+Short Description             : Allow topLevel shells to act as transients
+Subcomponent or Book Name     : TopLevelShell                                
+Found in Baseline             : 1.2.3       
+Status                        : cancel
+Fixed in Baseline             : 1.2.5    
+
+
+CR Number                     : 9321
+Short Description             : XmPushButton can ignore the XmNmultiClick resource.
+Subcomponent or Book Name     : XmPushButton                                 
+Found in Baseline             : 1.2.4       
+Status                        : cancel
+Fixed in Baseline             : 1.2.5    
+
+CR Number                     : 9022
+Short Description             : XmStrDefs.h portability - conflicts with cover data types
+Subcomponent or Book Name     : XmStrDefs                                    
+Found in Baseline             : 1.2.3       
+Status                        : cancel
+Fixed in Baseline             : 1.2.5    
+  
+
+CR Number                     : 8654
+Short Description             : UIL file opening problem.
+Subcomponent or Book Name     : Mrm library                                  
+Found in Baseline             : 1.2.3       
+Status                        : cancel
+Fixed in Baseline             : 1.2.5    
+
+CR Number                     : 8646
+Short Description             : Allow menubar to truncate (not wrap) when main window is resizedAllow menubar to truncate (not wrap) when main window is resized.
+Subcomponent or Book Name     : Menu layout                                  
+Found in Baseline             : 1.2.4       
+Status                        : cancel
+Fixed in Baseline             : 1.2.5    
+
+
+CR Number                     : 8123
+Short Description             : Highlighting pixels still there on a Sun display after starting a drag from the highlighted button
+Subcomponent or Book Name     : Drag and Drop                                
+Found in Baseline             : 1.2.4       
+Status                        : cancel
+Fixed in Baseline             : 1.2.5    
+
+CR Number                     : 8038
+Short Description             : Capitalization of XmNwaitForWm is inconsistent with conventions
+Subcomponent or Book Name     : MWM (programmatic interface)                 
+Found in Baseline             : 1.2.3       
+Status                        : cancel
+Fixed in Baseline             : 1.2.5    
+
+   
+CR Number                     : 7246
+Short Description             : The accelarator strings "Ctrl<KeyPress>c" and "Alt<KeyPress>p" doesn't execute with Lock key on.
+Subcomponent or Book Name     : Translations and Virtual Bindings            
+Found in Baseline             : 1.2.1       
+Status                        : cancel
+Fixed in Baseline             : 1.2.5    
+
+CR Number                     : 7111
+Short Description             : Add XmNverticalSpacing and XmNhorizontalSpacing resources to RowColumn.
+Subcomponent or Book Name     : XmRowColumn (WorkArea|RadioBox)              
+Found in Baseline             : 1.2.2       
+Status                        : cancel
+Fixed in Baseline             : 1.2.5    
+
+CR Number                     : 5619
+Short Description             : With keyboardFocusPolicy set to "pointer", mwm get behind sometime.
+Subcomponent or Book Name     : MWM (user interface)                         
+Found in Baseline             : 1.2.2       
+Status                        : cancel
+Fixed in Baseline             : 1.2.5    
+
+CR Number                     : 5553
+Short Description             : Clients need on-line help.
+Subcomponent or Book Name     : MWM (user interface)                         
+Found in Baseline             : 1.2.1       
+Status                        : cancel
+Fixed in Baseline             : 1.2.5    
+
+CR Number                     : 5513
+Short Description             : Add more checkpoints for the status callback to the callable Uil compiler.
+Subcomponent or Book Name     : UIL                                          
+Found in Baseline             : 1.2.1       
+Status                        : cancel
+Fixed in Baseline             : 1.2.5    
+
+CR Number                     : 5486
+Short Description             : app core dump if UIL procedure parameter is unregistered identifier
+Subcomponent or Book Name     : UIL                                          
+Found in Baseline             : 1.2.1       
+Status                        : cancel
+Fixed in Baseline             : 1.2.5    
+
+CR Number                     : 5480
+Short Description             : FontTag case sensitivity causes Font / Compound String mismatch
+Subcomponent or Book Name     : XmString                                     
+Found in Baseline             : 1.2.1       
+Status                        : cancel
+Fixed in Baseline             : 1.2.5    
+
+CR Number                     : 5433
+Short Description             : One Line Description: Add a protocol to get the size and location of the frame (similar to MWM_OFFSET).
+Subcomponent or Book Name     : MWM (programmatic interface)                 
+Found in Baseline             : 1.2.1       
+Status                        : cancel
+Fixed in Baseline             : 1.2.5    
+
+CR Number                     : 5344
+Short Description             : Request some external notification of application startup.
+Subcomponent or Book Name     : MWM (user interface)                         
+Found in Baseline             : 1.2.1       
+Status                        : cancel
+Fixed in Baseline             : 1.2.5    
+
+CR Number                     : 5328
+Short Description             : DrawingArea overrides user translations set at create time.
+Subcomponent or Book Name     : XmDrawingArea                                
+Found in Baseline             : 1.2.1       
+Status                        : cancel
+Fixed in Baseline             : 1.2.5    
+
+CR Number                     : 5304
+Short Description             : No way to pass client_data to drag proc and drop proc
+Subcomponent or Book Name     : Drag and Drop                                
+Found in Baseline             : 1.2.1       
+Status                        : cancel
+Fixed in Baseline             : 1.2.5    
+
+CR Number                     : 5211
+Short Description             : Uil creation of pixmaps inconsistent with non-uil creation.
+Subcomponent or Book Name     : UIL                                          
+Found in Baseline             : 1.2         
+Status                        : cancel
+Fixed in Baseline             : 1.2.5    
+
+CR Number                     : 5162
+Short Description             : List's query proc should understand decrements.
+Subcomponent or Book Name     : XmList                                       
+Found in Baseline             : 1.2.1       
+Status                        : cancel
+Fixed in Baseline             : 1.2.5    
+
+CR Number                     : 5033
+Short Description             : The convience function XmDeactivateProtcol can only be used from a callback routine when used with synthetic events.
+Subcomponent or Book Name     : Protocols                                    
+Found in Baseline             : 1.2         
+Status                        : cancel
+Fixed in Baseline             : 1.2.5    
+
+CR Number                     : 4949
+Short Description             : We need a way to set where each icon goes in the icon box.
+Subcomponent or Book Name     : MWM (user interface)                         
+Found in Baseline             : 1.2         
+Status                        : cancel
+Fixed in Baseline             : 1.2.5    
+
+CR Number                     : 4731
+Short Description             : icon-box-icon & icon-box-ghost should be different contexts.
+Subcomponent or Book Name     : MWM (user interface)                         
+Found in Baseline             : 1.2S3 BETA  
+Status                        : cancel
+Fixed in Baseline             : 1.2.5    
+
+CR Number                     : 4654
+Short Description             : mwm should propagate its display to the processes spawned off of mwm, instead of DISPLAY variable.
+Subcomponent or Book Name     : MWM (user interface)                         
+Found in Baseline             : 1.2S4       
+Status                        : cancel
+Fixed in Baseline             : 1.2.5    
+
+CR Number                     : 4542
+Short Description             : A Motif version of viewres would be useful.  This is a graphical resource browser for the Athena set.
+Subcomponent or Book Name     : Demos                                        
+Found in Baseline             : 1.2S3       
+Status                        : cancel
+Fixed in Baseline             : 1.2.5    
+
+CR Number                     : 4358
+Short Description             : Make location of SYS_MWMRC configurable, not fixed to /usr/lib/X11/system.mwmrc
+Subcomponent or Book Name     : MWM (user interface)                         
+Found in Baseline             : 1.2S4       
+Status                        : cancel
+Fixed in Baseline             : 1.2.5    
+
+CR Number                     : 4304
+Short Description             : Cannot specify a popdown callback when creating a Dial og Shell
+Subcomponent or Book Name     : VendorShell                                  
+Found in Baseline             : 1.1.4       
+Status                        : cancel
+Fixed in Baseline             : 1.2.5    
+
+CR Number                     : 4282
+Short Description             : Performance enhancement with respect to XmNselectedItem and XmNselectedItemCount
+Subcomponent or Book Name     : XmList                                       
+Found in Baseline             : 1.1         
+Status                        : closed
+Fixed in Baseline             : 1.2.5    
+
+CR Number                     : 4216
+Short Description             : mwm rearchitecture needed in order to permit dynamic changes
+Subcomponent or Book Name     : MWM (user interface)                         
+Found in Baseline             : 1.2S3       
+Status                        : cancel
+Fixed in Baseline             : 1.2.5    
+
+CR Number                     : 4170
+Short Description             : Please add printProtocolErrors to help mwm debugging
+Subcomponent or Book Name     : MWM (user interface)                         
+Found in Baseline             : 1.2S2 BETA  
+Status                        : cancel
+Fixed in Baseline             : 1.2.5    
+
+CR Number                     : 4111
+Short Description             : The ability to conditionally compile withint a .uil file has been requested repeatedly by DEC's customers.
+Subcomponent or Book Name     : UIL                                          
+Found in Baseline             : 1.1.3       
+Status                        : cancel
+Fixed in Baseline             : 1.2.5    
+
+CR Number                     : 3960
+Short Description             : mwm now seems to require at least one key binding to be presen t in a keys definition
+Subcomponent or Book Name     : MWM (user interface)                         
+Found in Baseline             : 1.1.3       
+Status                        : cancel
+Fixed in Baseline             : 1.2.5    
+
+CR Number                     : 3804
+Short Description             : focusCallback is called twice if you move the mouse fast, once slowly and not at all after a keyboard action.
+Subcomponent or Book Name     : Traversal/Navigation                         
+Found in Baseline             : 1.2S2       
+Status                        : cancel
+Fixed in Baseline             : 1.2.5    
+
+CR Number                     : 3622
+Short Description             : Using hidden (unrealized) shell, FULL_APPLICATION_MODAL are fully decorated & allow the focus to return on the other window
+Subcomponent or Book Name     : XmDialogShell                                
+Found in Baseline             : 1.1.2       
+Status                        : cancel
+Fixed in Baseline             : 1.2.5    
+
+CR Number                     : 3614
+Short Description             : have icon manager reflect stacking order
+Subcomponent or Book Name     : MWM (user interface)                         
+Found in Baseline             : 1.1.3       
+Status                        : cancel
+Fixed in Baseline             : 1.2.5    
+
+CR Number                     : 3573
+Short Description             : Add a new resource to specify how many pixels user moves the m mouse to the right before the next cascade menu will pop up.
+Subcomponent or Book Name     : XmRowColumn (WorkArea|RadioBox)              
+Found in Baseline             : 1.1.3       
+Status                        : cancel
+Fixed in Baseline             : 1.2.5    
+
+CR Number                     : 3527
+Short Description             : Add Mwm*matteBackgroundPixmap resource.
+Subcomponent or Book Name     : MWM (user interface)                         
+Found in Baseline             : 1.1.3       
+Status                        : cancel
+Fixed in Baseline             : 1.2.5    
+
+CR Number                     : 3521
+Short Description             : User can not set initial place of icons in icon box
+Subcomponent or Book Name     : MWM (user interface)                         
+Found in Baseline             : 1.1.3       
+Status                        : cancel
+Fixed in Baseline             : 1.2.5    
+
+CR Number                     : 3518
+Short Description             : Need a resource for mwm to ignore special keys like num_lock, scroll_lock etc.
+Subcomponent or Book Name     : MWM (user interface)                         
+Found in Baseline             : 1.1.3       
+Status                        : cancel
+Fixed in Baseline             : 1.2.5    
+
+CR Number                     : 3496
+Short Description             : Add a chorded cancel for mouse bindings
+Subcomponent or Book Name     : MWM (user interface)                         
+Found in Baseline             : 1.1.3       
+Status                        : cancel
+Fixed in Baseline             : 1.2.5    
+
+CR Number                     : 3465
+Short Description             : some list routines could return useful info instead of giving warnings
+Subcomponent or Book Name     : XmList                                       
+Found in Baseline             : 1.1.2       
+Status                        : cancel
+Fixed in Baseline             : 1.2.5    
+
+CR Number                     : 3425
+Short Description             : Allow restart from Window Menu
+Subcomponent or Book Name     : MWM (user interface)                         
+Found in Baseline             : 1.1.1       
+Status                        : cancel
+Fixed in Baseline             : 1.2.5    
+
+CR Number                     : 3399
+Short Description             : Add a resource to set focus when shuffling up or down.
+Subcomponent or Book Name     : MWM (user interface)                         
+Found in Baseline             : 1.1.1       
+Status                        : cancel
+Fixed in Baseline             : 1.2.5    
+
+CR Number                     : 3398
+Short Description             : Enhancement request for several new default button and key bindings.
+Subcomponent or Book Name     : MWM (user interface)                         
+Found in Baseline             : 1.1.1       
+Status                        : cancel
+Fixed in Baseline             : 1.2.5    
+
+CR Number                     : 3393
+Short Description             : Double click on the window menu button of the IconBox, should Pack Icons by default.
+Subcomponent or Book Name     : MWM (user interface)                         
+Found in Baseline             : 1.1.1       
+Status                        : cancel
+Fixed in Baseline             : 1.2.5    
+
+CR Number                     : 3388
+Short Description             : Can not keep root icons visible when the window is in the norm al state
+Subcomponent or Book Name     : MWM (user interface)                         
+Found in Baseline             : 1.1.1       
+Status                        : cancel
+Fixed in Baseline             : 1.2.5    
+
+CR Number                     : 3383
+Short Description             : Improve syntax error messages for the .mwmrc file.
+Subcomponent or Book Name     : MWM (programmatic interface)                 
+Found in Baseline             : 1.1.1       
+Status                        : cancel
+Fixed in Baseline             : 1.2.5    
+
+CR Number                     : 3111
+Short Description             : UIL color_table syntax too limiting
+Subcomponent or Book Name     : UIL                                          
+Found in Baseline             : 1.1.2       
+Status                        : cancel
+Fixed in Baseline             : 1.2.5    
+
+CR Number                     : 3077
+Short Description             : Request f.set_geometry function for mwm.  Would allow (for example) keypad keys to place windows explicitly.
+Subcomponent or Book Name     : MWM (user interface)                         
+Found in Baseline             : 1.1         
+Status                        : cancel
+Fixed in Baseline             : 1.2.5    
+
+CR Number                     : 3039
+Short Description             : UIL icon format syntax too limiting
+Subcomponent or Book Name     : Mrm library                                  
+Found in Baseline             : 1.1.2       
+Status                        : cancel
+Fixed in Baseline             : 1.2.5    
+
+CR Number                     : 3016
+Short Description             : Add mwm resource to allow user to size cascade arrow
+Subcomponent or Book Name     : MWM (user interface)                         
+Found in Baseline             : 1.1.2       
+Status                        : cancel
+Fixed in Baseline             : 1.2.5    
+
+CR Number                     : 3005
+Short Description             : BtnxDown should be BtnxClick, to avoid surprises.
+Subcomponent or Book Name     : MWM (programmatic interface)                 
+Found in Baseline             : 1.1.2       
+Status                        : cancel
+Fixed in Baseline             : 1.2.5    
+
+CR Number                     : 2795
+Short Description             : Mrm.h does not define MRMwc... class codes
+Subcomponent or Book Name     : Mrm library                                  
+Found in Baseline             : 1.1         
+Status                        : cancel
+Fixed in Baseline             : 1.2.5    
+
+CR Number                     : 2703
+Short Description             : mwm displays empty icon name for a dec term from a VMS machine .
+Subcomponent or Book Name     : MWM (user interface)                         
+Found in Baseline             : 1.1         
+Status                        : cancel
+Fixed in Baseline             : 1.2.5    
+
+CR Number                     : 2434
+Short Description             : RowColumn widget is grossly inefficient during resize processing.
+Subcomponent or Book Name     : XmRowColumn (WorkArea|RadioBox)              
+Found in Baseline             : 1.1         
+Status                        : cancel
+Fixed in Baseline             : 1.2.5    
+
+CR Number                     : 2276
+Short Description             : All widgets should maintain idea of their maximum, minimum and preferred or optimal sizes.
+Subcomponent or Book Name     : other                                        
+Found in Baseline             : 1.1         
+Status                        : cancel
+Fixed in Baseline             : 1.2.5    
+
+CR Number                     : 2072
+Short Description             : XmCreateSimpleMenuBar makes configuring Help awkward.
+Subcomponent or Book Name     : XmCreateSimple                               
+Found in Baseline             : 1.1         
+Status                        : cancel
+Fixed in Baseline             : 1.2.5    
+

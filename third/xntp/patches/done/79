@@ -1,0 +1,31 @@
+Replied: Thu, 30 Jan 1997 02:27:31 -0500
+Replied: "Scott Ratliff <scottr@carsinfo.com> "
+Received: from snow-white.ee.udel.edu by whimsy.udel.edu id aa06165;
+          29 Jan 97 15:42 GMT
+Received: by carshp.carsinfo.com
+	(1.38.193.5/16.2) id AA12378; Wed, 29 Jan 1997 10:42:09 -0500
+From: Scott Ratliff <scottr@carsinfo.com>
+Subject: Re: Problem w/ 3-5.88.2 on HPUX 9
+To: stenn@whimsy.udel.edu
+Date: Wed, 29 Jan 97 10:42:08 EST
+Cc: scottr@carshp.carsinfo.com
+In-Reply-To: <o4d8upb3id.fsf@whimsy.udel.edu>; from "stenn@whimsy.udel.edu" at Jan 28, 97 9:48 pm
+Mailer: Elm [revision: 70.85.2.1]
+Message-ID:  <9701291542.aa06165@whimsy.udel.edu>
+
+> 
+> What line of ntp_refclock.c did you have to fix to get rid of the
+> function prototype?
+> 
+> H
+> 
+
+Line 129.
+
+Thanks.
+
+Scott Ratliff
+Systems Engineer
+CARS Information Systems Corp.
+scottr@carsinfo.com
+

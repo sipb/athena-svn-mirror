@@ -1,0 +1,18 @@
+! SCCS_data: @(#) PT_DisplayBox 1.1 92/12/08 13:38:59
+!
+! Templates used by PerTem (Template version of Motif Periodic Table)
+!
+
+.wcCreate:		XmpTable
+.wcChildren:		an, w, n
+.layout:		an 1 0 1 1 hH; w 0 1 2 1 ; n 0 2 2 1 hH;
+.rowSpacing:		10
+.borderWidth:		1
+.MarginWidth:		0
+.MarginHeight:		0
+
+.an.wcCreate:		XmLabel
+.an.alignment:		ALIGNMENT_END
+
+.n.wcCreate:		XmPushButton
+.n.activateCallback:	WcPrintTree(^)

@@ -1,0 +1,3 @@
+# $Id: configure.athena,v 1.2 1999-03-21 21:21:23 ghudson Exp $
+
+./configure --enable-subdir=/usr/athena/libexec/xscreensaver --without-gl

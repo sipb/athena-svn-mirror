@@ -1,0 +1,60 @@
+Received: from snow-white.ee.udel.edu by whimsy.udel.edu id aa29544;
+          21 Oct 96 9:29 EDT
+Received: (from nerv@localhost) by nixpbe.pdb.sni.de (8.6.12/8.6.12) id OAA17937 for stenn@whimsy.udel.edu; Mon, 21 Oct 1996 14:28:41 +0100
+Received: from itsrm1.mow.sni.de (itsrm1 [149.202.148.210]) by itsmx1.mow.sni.de (8.7.3/8.7.3) with SMTP id RAA07820 for <stenn@whimsy.udel.edu>; Mon, 21 Oct 1996 17:30:42 +0400 (MDT)
+Date: Mon, 21 Oct 1996 17:30:41 +0400 (MOW)
+From: Andrej Borsenkow <borsenkow.msk@sni.de>
+X-Sender: bor@itsrm1.mow.sni.de
+Reply-To: borsenkow.msk@sni.de
+To: Harlan Stenn <stenn@whimsy.udel.edu>
+Subject: xntpd3-5.86 and SINIX again ;)
+Message-ID: <Pine.SV4.3.95.961021172336.13675B-100000@itsrm1.mow.sni.de>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+
+Hi!
+
+I am very impressed by last version - it works really out of the box on
+our systems (which I can access anyway ;)
+
+Small comment - it appears, that on Intel-based SVR4 systems from SNI
+(MX300/MX500) it is possible to read/write value of tick from kernel. It
+makes preset values unneccessary. At least ones I had to tweak kernel tick
+(because hardware clock gone really mad), so probably it is not so bad at
+all.
+
+Here is patch which explicitly checks for mips-sni-* in configure.in
+
+well done!!!
+
+greetings
+
+-------------------------------------------------------------------------
+Andrej Borsenkow 		Fax:   +7 (095) 252 01 05
+SNI ITS Moscow			Tel:   +7 (095) 252 13 88
+
+NERV:  borsenkow.msk		E-Mail: borsenkow.msk@sni.de
+-------------------------------------------------------------------------
+=======================================
+--- xntp3-5.86/configure.in.org	Mon Oct 21 12:36:11 1996
++++ xntp3-5.86/configure.in	Mon Oct 21 12:36:47 1996
+@@ -1266,7 +1266,7 @@
+ dnl	txc.tick	1	    Linux
+ dnl	(every * 0.1)	50	    WinNT - tickadj is roughly 500/hz
+ dnl	1000000L/hz	(nlist)     (Solaris && !ADJTIME_IS_ACCURATE),
+-dnl				    (RS6000 && !NOKMEM), SINIX
++dnl				    (RS6000 && !NOKMEM), SINIX MIPS
+ 
+ dnl Otherwise, read tick/tickadj.
+ 
+@@ -1284,7 +1284,7 @@
+       *-*-aix*)
+ 	 ans='1000000L/hz'
+ 	 ;;
+-      *-sni-sysv*)
++      mips-sni-sysv*)
+ 	 ans='1000000L/hz'
+ 	 ;;
+       *-fujitsu-uxp*)
+
+

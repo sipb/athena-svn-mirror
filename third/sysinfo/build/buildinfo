@@ -1,0 +1,340 @@
+#!/bin/sh
+#
+# Copyright (c) 1992-1998 Michael A. Cooper.
+# This software may be freely distributed provided it is not sold for 
+# profit and the author is credited appropriately.
+#
+# $Id: buildinfo,v 1.1.1.1 1998-12-24 22:02:58 ghudson Exp $
+#
+# Provide information needed at build time.
+#
+
+PATH=/usr/ucb:/usr/bin:/bin:/usr/bsd:$PATH
+export PATH
+
+Prog=$0
+PR_ALL=0
+PR_APPARCH=0
+PR_CPUARCH=0
+PR_OSVER=0
+PR_OSVERNODOT=0
+PR_OSMVER=0
+PR_OSNAMEMVER=0
+PR_OSNAME=0
+PR_KISA=0
+PR_PLATFORM=0
+PR_RTPLATFORM=0
+PR_DISTNAME=0
+OP_PRODVER=""
+OP_DISTTYPE=""
+FL_REAL=0
+
+if [ $# -eq 0 ]; then
+    PR_ALL=1
+fi
+
+while test $# -ge 1; do
+	case X"$1" in
+	X-all)
+		PR_ALL=1
+		shift
+		;;
+	X-real)
+		FL_REAL=1
+		shift
+		;;
+	X-apparch)
+		PR_APPARCH=1
+		shift
+		;;
+	X-cpuarch)
+		PR_CPUARCH=1
+		shift
+		;;
+	X-osver)
+		PR_OSVER=1
+		shift
+		;;
+	X-osvernodot)
+		PR_OSVERNODOT=1
+		shift
+		;;
+	X-osname)
+		PR_OSNAME=1
+		shift
+		;;
+	X-osmver)
+		PR_OSMVER=1
+		shift
+		;;
+	X-osnamemver)
+		PR_OSNAMEMVER=1
+		shift
+		;;
+	X-kisa)
+		PR_KISA=1
+		shift
+		;;
+	X-platform)
+		PR_PLATFORM=1
+		shift
+		;;
+	X-rtplatform)
+		PR_RTPLATFORM=1
+		shift
+		;;
+	X-distname)
+		PR_DISTNAME=1
+		shift
+		;;
+	X-prodver)
+		OP_PRODVER=$2
+		shift
+		shift
+		;;
+	X-disttype)
+		OP_DISTTYPE=$2
+		shift
+		shift
+		;;
+	X-*)
+		echo "${Prog}: Unknown option $1" 1>&2
+		exit 1
+		;;
+	esac
+done
+
+#
+# Find uname program.
+#
+if [ -f /usr/bin/uname ]; then
+	unameprog=/usr/bin/uname
+elif [ -f /bin/uname ]; then
+	unameprog=/bin/uname
+fi
+
+#
+# Determine our OS name if we can.
+#
+if [ "${unameprog}" ]; then
+    if [ $FL_REAL -eq 0 ]; then
+	osname="`${unameprog} -s | sed -e 's;/;;g'`"
+    else
+	osname="`${unameprog} -s`"
+    fi
+fi
+
+#
+# Check for Convex SPP special handling
+#
+if [ "${osname}" = "HP-UX" ]; then
+	if [ -x /bin/sysinfo ]; then
+		altname="`/bin/sysinfo -sv | awk '{print $1}' | sed -e 's;_.*;;' 2>/dev/null`"
+		if [ ! -z "${altname}" ]; then
+			osname="${altname}"
+		fi
+	fi
+fi
+
+#
+# Try stupid file checks
+#
+if [ -z "${osname}" ]; then
+	if [ -d /NextApps ]; then
+		if [ -f /usr/bin/hostinfo ]; then
+			mver="`/usr/bin/hostinfo | grep -i 'next mach' | awk '{print $3}' | sed -e 's/\..*//'`"
+			osname="nextstep${mver}"
+		else
+			osname="nextstep2"
+		fi
+	elif [ -d /usr/alliant ]; then
+		osname="concentrix"
+	else
+		echo "Unable to determine your OS type.";
+		exit 1;
+	fi
+fi
+
+#
+# Only edit the osname if $FL_REAL is false
+#
+tmposname="`echo ${osname} | tr '[A-Z]' '[a-z]' | sed -e 's;-;;g'`"
+if [ $FL_REAL -eq 0 ]; then
+    osname=$tmposname
+fi
+
+#
+# Get OS Version
+#
+case "${tmposname}" in
+sunos)
+    	if [ -x /bin/isainfo ]; then
+	    	kisa="`/bin/isainfo -k`"
+	else
+		kisa="`${unameprog} -p`"
+	fi
+	if [ -z "${unameprog}" ]; then
+		echo "No uname program found."
+		exit 1
+	fi
+	osver="`${unameprog} -r`"
+	osvernodot=`echo $osver | awk -F. '{print $1 $2}'`
+	;;
+aix)
+	osver="`${unameprog} -v`"
+	if [ "$osver" -eq "4" ]; then
+	    aixosm="`${unameprog} -r`"
+	    osver=${osver}.${aixosm}
+	fi
+	;;
+hpux)
+	# Yes, we really edit even with -real 
+	osver="`${unameprog} -r| sed -e 's;^[A-Za-z]\.;;' -e 's;^[0];;'`"
+	;;
+sppux)
+	osver="`/bin/sysinfo -sv | awk '{print $2}'`"
+	;;
+concentrix)
+	# We don't care what the os version is
+	osver=""
+	;;
+*)
+	if [ -z "${unameprog}" ]; then
+		echo "No uname program found."
+		exit 1
+	fi
+	osver="`${unameprog} -r`"
+	;;
+esac
+
+if [ ! -z "${osver}" ]; then
+    if [ $FL_REAL -eq 0 ]; then
+	# Make '3.0-foo' into '3.0'
+	osver=`echo $osver | sed -e 's;-.*;;g'`
+	# Get the osmver
+	osmver=`echo $osver | sed -e 's;\..*;;g'`
+	if [ -z "${osvernodot}" ]; then
+	    osvernodot=`echo $osver | sed -e 's;\.;;g'`
+	fi
+    fi
+fi
+
+#
+# Get Application Architecture
+#
+case "${osname}" in
+aix)
+    # Hard code since we don't know how else to get this
+    apparch="powerpc"
+    ;;
+hpux)
+    # Hard code since we don't know how else to get this
+    apparch="`${unameprog} -m | sed -e 's;/.*;;' -e 's;9000;pa-risc;'`"
+    ;;
+sunos)
+    if [ "${osmver}" -eq "4" ]; then
+	apparch="`/bin/mach`"
+    else
+	apparch="`${unameprog} -p`"
+    fi
+    ;;
+irix*)
+    apparch="`${unameprog} -p`"
+    ;;
+*)
+    apparch="`${unameprog} -m`"
+    ;;
+esac
+
+#
+# Get CPU Architecture
+#
+case "${osname}" in
+sunos)
+    cpuarch="`${unameprog} -m`"
+    ;;
+*)
+    # Doesn't matter on other platforms
+    cpuarch=${apparch}
+    ;;
+esac
+
+#
+# Let environment $KISA override
+#
+if [ ! -z "$KISA" ]; then
+    kisa="$KISA"
+fi
+
+#
+# Set the platform name.
+#
+if [ ! -z "$kisa" ]; then
+    platform=${kisa}.${osname}.${osver}
+else
+    platform=${apparch}.${osname}.${osver}
+fi
+
+if [ ! -z "$kisa" ]; then
+    rtplatform="${kisa}-${osname}-${osver}"
+else
+    rtplatform="${cpuarch}-${osname}-${osver}"
+fi
+
+
+PRSTR=""
+if [ $PR_ALL -ne 0 -o $PR_OSNAME -ne 0 ]; then
+	PRSTR="$PRSTR $osname"
+fi
+if [ $PR_ALL -ne 0 -o $PR_OSVER -ne 0 ]; then
+	PRSTR="$PRSTR $osver"
+fi
+if [ $PR_ALL -ne 0 -o $PR_OSVERNODOT -ne 0 ]; then
+	PRSTR="$PRSTR $osvernodot"
+fi
+if [ $PR_ALL -ne 0 -o $PR_OSMVER -ne 0 ]; then
+	PRSTR="$PRSTR $osmver"
+fi
+if [ $PR_ALL -ne 0 -o $PR_OSNAMEMVER -ne 0 ]; then
+	PRSTR="$PRSTR ${osname}${osmver}"
+fi
+if [ $PR_ALL -ne 0 -o $PR_APPARCH -ne 0 ]; then
+	PRSTR="$PRSTR $apparch"
+fi
+if [ $PR_ALL -ne 0 -o $PR_CPUARCH -ne 0 ]; then
+	PRSTR="$PRSTR $cpuarch"
+fi
+if [ $PR_ALL -ne 0 -o $PR_PLATFORM -ne 0 ]; then
+	PRSTR="$PRSTR $platform"
+fi
+if [ $PR_ALL -ne 0 -o $PR_RTPLATFORM -ne 0 ]; then
+	PRSTR="$PRSTR $rtplatform"
+fi
+if [ $PR_ALL -ne 0 -o $PR_KISA -ne 0 ]; then
+	PRSTR="$PRSTR $kisa"
+fi
+
+if [ $PR_DISTNAME -ne 0 ]; then
+    if [ -z "$OP_PRODVER" ]; then
+	echo "No -prodver specified."
+	exit 1
+    fi
+    distname=$OP_PRODVER
+    if [ ! -z "$OP_DISTTYPE" ]; then
+	distname="${distname}-${OP_DISTTYPE}"
+    fi
+    distname="${distname}-${platform}"
+    PRSTR="$PRSTR ${distname}"
+fi
+
+#
+# If we did anything, then output result, removing any initial or
+# trailer whitespace, and mapping all upper case letters to lower case.
+#
+if [ ! -z "$PRSTR" ]; then
+    if [ $FL_REAL -eq 0 ]; then
+	echo "$PRSTR" | sed -e 's; $;;' -e 's;^ ;;' | tr '[A-Z]' '[a-z]'
+    else
+	echo "$PRSTR" | sed -e 's; $;;' -e 's;^ ;;'
+    fi
+fi

@@ -1,0 +1,51 @@
+Replied: Sun, 29 Dec 1996 05:00:42 -0500
+Replied: "Larry Schwimmer <rosebud@cyclone.stanford.edu> mills@udel.edu, stenn"
+Received: from copland.udel.edu by huey.udel.edu id aa04353; 28 Dec 96 17:48 EST
+Received: from cyclone.stanford.edu (cyclone.Stanford.EDU [36.220.0.221]) by copland.udel.edu (8.8.4/8.7.3) with ESMTP id RAA19786 for <mills@udel.edu>; Sat, 28 Dec 1996 17:48:27 -0500 (EST)
+Received: (from rosebud@localhost)
+          by cyclone.stanford.edu (8.8.4/8.8.4)
+	  id OAA14484; Sat, 28 Dec 1996 14:48:17 -0800 (PST)
+Date: Sat, 28 Dec 1996 14:48:17 -0800 (PST)
+From: Larry Schwimmer <rosebud@cyclone.stanford.edu>
+Message-Id: <199612282248.OAA14484@cyclone.stanford.edu>
+To: mills@udel.edu
+Subject: PATCH: xntp3-5.87 configure.in
+
+David,
+
+	configure should only add -lsocket and -lnsl for systems
+which require it.  Adding it on 5.x IRIX systems can cause problems.
+Patch follows.
+
+	There's one other item which I don't have a patch for at the
+moment, but wanted to pass on.  The install target uses bin.  Since
+these programs are administrative and usually require root, it seems
+appropriate to use sbin, instead.
+
+			yours,
+				Larry Schwimmer
+				schwim@cyclone.stanford.edu
+				Distributed Computing Operations
+
+
+--- configure.in.orig	Thu Dec 12 21:33:27 1996
++++ configure.in	Sat Dec 28 14:22:19 1996
+@@ -50,9 +50,16 @@
+ AC_CHECK_LIB(kvm, main)		dnl We already know about -lelf here...
+ AC_CHECK_LIB(mld, nlist)
+ AC_CHECK_LIB(ld, nlist)
+-AC_CHECK_LIB(nsl, gethostbyaddr, , , -lsocket)
+ AC_CHECK_LIB(posix4, main)	dnl What function can we look for?
+-AC_CHECK_LIB(socket, socket)
++AC_CHECK_FUNC(gethostbyname)
++if test $ac_cv_func_gethostbyname = no; then
++    AC_CHECK_LIB(nsl, gethostbyname)
++fi
++AC_CHECK_FUNC(connect)
++if test $ac_cv_func_connect = no; then
++    AC_CHECK_LIB(socket, connect)
++fi
++
+ 
+ AC_HEADER_STDC
+ AC_CHECK_HEADERS(errno.h fcntl.h memory.h sgtty.h stdlib.h string.h termio.h)

@@ -1,0 +1,27 @@
+! SCCS_data:    @(#) WcPopCB 1.1 92/12/08 15:10:33
+!
+Mri.wcPopups:	pop
+Mri.wcChildren:	push
+
+*push.wcCreate:			XmPushButton
+!*push.activateCallback: 	WcManage(*pop)
+*push.activateCallback: 	WcPopup(*pop_popup)
+
+*WcPop.pop1.wcCreate:                   XmpCreateTableTransient
+*WcPop.pop1_popup.popupCallback:        WcPositionTransient()
+*WcPop*pop1.wcChildren:                 b
+*WcPop*pop1.b.labelString:              Popup 1
+*WcPop.pop2.wcCreate:                   XmpCreateTableTransient
+*WcPop.pop2_popup.popupCallback:        WcPositionTransient()
+*WcPop*pop2.wcChildren:                 b
+*WcPop*pop2.b.labelString:              Popup 2
+*WcPop*b.activateCallback:              WcPopdown(~)
+
+!*pop.wcCreate:			XmCreateWarningDialog
+!*pop.messageString:		Well, did it work!?!
+!*pop_popup.popupCallback:	WcTrace(popupCallback)
+
+*pop.wcCreate:			XmpCreateTableTransient
+*pop_popup.popupCallback:	WcTrace(popupCallback)
+*pop.wcChildren:		down
+*down.wcCreate:			XmPushButton

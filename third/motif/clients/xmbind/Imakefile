@@ -1,0 +1,23 @@
+XCOMM 
+XCOMM (c) Copyright 1989, 1990, 1991, 1992 OPEN SOFTWARE FOUNDATION, INC. 
+XCOMM ALL RIGHTS RESERVED 
+XCOMM 
+XCOMM 
+XCOMM Motif Release 1.2
+XCOMM 
+XCOMM   $RCSfile: Imakefile,v $ $Revision: 1.1.1.1 $ $Date: 1999-01-30 03:16:39 $
+
+INCLUDES = -I. -I$(INCLUDESRC) -I$(MINCLUDESRC)
+       DEPLIBS1 = XmClientDepLibs
+LOCAL_LIBRARIES = XmClientLibs
+
+SRCS1=	xmbind.c
+
+OBJS1=	xmbind.o
+
+PROGRAMS = xmbind
+
+NormalLibraryObjectRule()
+
+MComplexProgramTarget_1(xmbind,$(LOCAL_LIBRARIES),NullParameter)
+

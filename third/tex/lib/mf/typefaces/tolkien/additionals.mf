@@ -1,0 +1,203 @@
+% Copyright 1988 Michael Urban
+% Everyone is granted permission to copy, modify and redistribute
+% this file, provided that a currently-dated copy of this
+% copyright notice is included in the copy.
+% License is granted to produce fonts based on the information
+% in this file, provided that such fonts are redistributed
+% without charge to any third party.
+
+% SCCS ID @(#)additionals.mf        1.1   10/1/86
+
+def commonr=
+        pickup elvishpen;
+        save x,y,sweep;
+        path sweep;
+        lft x0 = leadgap; top y0 = h;
+        lft x1 = 0; z0-z1 = whatever*(dir tilt);
+        x2 = .75w; top y2=h;
+        rt x3 = w; y3 = .5h;
+        lft x4 = leadgap; y4 = -.65d;
+        x5 = .5w; y5 = -d;
+        x6 = .85w; z6-z5 = whatever*(dir tilt);
+        sweep = (z2..z3{down}..z4{down}..z5{right}..z6);
+        z7 = sweep intersectionpoint 
+                ((-infinity,0)--(infinity,0));
+        draw sweep;
+        draw z1--z0..z7;
+enddef;
+
+beginchar("r", shortwidth, xht#, dep#); "The letter r (romen)";
+        begingroup;
+        commonr;
+        endgroup;
+endchar;
+beginchar(18, shortwidth, xht#, dep#); "The ligature rh (arda)";
+        begingroup;
+        commonr;
+        z8 = point .5 of (z0..z7);
+        x9 = x1;
+        z8-z9 = whatever*(dir tilt);
+        x10 = x0; y10=y9;
+        draw z8--z9..tension 3.0..z10{dir tilt};
+        endgroup;
+endchar;
+        
+def commonl=
+        save x,y;
+        pickup elvishpen;
+        path tilde;
+
+        lft x1=leadgap;top y1=h;
+        rt x4 = w; y4=h;
+        y2-y1 = y4-y3 = 3(y4-y1);
+        z2-z1=z4-z3=whatever*(dir tilt);
+        tilde = ( z1..controls z2 and z3..z4); % straight from Page 152 of MFbook
+        z5 = point .6 of tilde;
+        lft x6 = leadgap+1/20em; y6 = -.25d;
+        x7 = .5[leadgap, w]; bot y7=-d;
+        rt x8 = w-leadgap; y8 = 0;
+        y9=.25h; z9-z8=whatever*(dir (tilt+90));
+        draw tilde;
+        z10 = point .6 of (z5..z6{down});
+enddef;
+beginchar("l", .8em#, xht#, dep#); "The letter l (lambe)";
+        begingroup;
+        commonl;
+        draw z5..z6{down}..z7{right}..z8..z9;
+        endgroup;
+endchar;
+
+beginchar("L", .8em#, xht#, dep#); "The ligature ld (alda)";
+        begingroup;
+        commonl;
+        draw z5..tension 1.5..z10..z9..z8..z7..z6;
+        endgroup;
+endchar;
+
+def commonsz=
+        pickup elvishpen;
+        save x,y,spath;
+        path spath,zspath,zpath;
+        x0 =.9w; top y0=height;
+        x0-x1 = .08w; z0-z1=whatever*(dir(tilt-10));
+        y3=xht/2; lft x3=leadgap;
+        x4 = w/2+leadgap; bot y4=0;
+        rt x5 = w; y5 = xht/2; %z5-z4 = whatever*(dir tilt);
+        z6-z5=whatever*(dir (tilt+90)); 
+        x6=x5-.3w;
+        spath=(z0..z1..tension 2.2..z3{down}..z4{right}..z5{up}..z6{dir(tilt+90)});
+        zspath=(z0..z1..tension 2.2..z3{down}..z4{right}..z5);
+        x7=x3; y7= -.6d;
+        x8=x4; bot y8=-d;
+        x9=x5; y9= -.6d;
+        z10-z9= z6-z5;
+        zpath=(z4..tension 2.2..z7{down}..z8{right}..z9{up}..z10{dir(tilt+90)});
+enddef;
+beginchar("s", shortwidth, cap#, 0); "The letter s (silme)";
+        begingroup;
+        save height;
+        height=h;
+        commonsz;
+        draw spath;
+        endgroup;
+endchar;
+        
+beginchar(3, shortwidth, xht#, dep#); "The letter s reversed (silme nuquerna)";
+        begingroup;
+        save height;
+        height=cap;
+        commonsz;
+        draw (spath rotatedabout ( (.5[leadgap,w],xht/2), 180));
+        endgroup;
+endchar;
+
+beginchar ("z", shortwidth, cap#, dep#); "The letter z (aze)";
+        begingroup;
+        save height; height=h;
+        commonsz;
+        draw zspath;
+        draw zpath;
+        endgroup;
+endchar;
+
+beginchar (26, shortwidth, cap#, dep#); "The letter z reversed (aze nuquerna)";
+
+        begingroup;
+        save height; height=cap;
+        commonsz;
+        draw (zspath rotatedabout ( (.5[leadgap,w],0), 180));
+        draw (zpath rotatedabout ( (.5[leadgap,w],0), 180));
+        endgroup;
+endchar;
+
+beginchar("e", shortwidth, xht#, 0); "The letter e (yanta)";
+        begingroup;
+        save x,y;
+        pickup elvishpen;
+        top y0 = h; x0=.5[0, w];
+        lft x1 = 0; y1=0;
+        y2=0; rt x2=w;
+        y3=y0; x3=x0-.7thick;
+        z4-z1 = whatever*(z0-z2);
+        x1-x4=.2thin;
+        z6-z2 = whatever*(z0-z1);
+        x6=w;
+        draw z3..z0--z2..z6;
+        draw z4..z1--z0;
+        endgroup;
+endchar;
+        
+beginchar("h", shortwidth, cap#, 0); "The letter h (hyarmen)";
+        begingroup;
+        save x,y;
+        pickup elvishpen;
+        top y0 = h; x0=leadgap;
+        lft x1 = leadgap+.3thick; y1=0;
+        y2=0; rt x2=w;
+        y3=y0; x3=x0-.7thick;
+        z4-z1 = whatever*(z0-z2);
+        x1-x4=.2thin;
+        z5 =  point .5 of (z0--z2);
+        z6-z2 = whatever*(z5-z1);
+        x6=w;
+        draw z3..z0--z2..z6;
+        draw z4..z1--z5;
+        endgroup;
+%
+% This character requires a bit more height than the others so that
+% accents get raised enough.  
+%
+        charht := .3[xht#,cap#];
+oldendchar;
+
+beginchar ("u", shortwidth, xht#, 0); "The letter u (ure)";
+        begingroup;
+        save x,y;
+        pickup elvishpen;
+        lft x0 = leadgap;
+        top y1 = h;
+        rt x2 = w;
+        bot y3 = 0;
+        y0 = .65h; x1 = leadgap+.35w;
+        y2 = .35h; x3 = leadgap+.65w;
+        draw z0..z1..z2..z3..cycle;
+        endgroup;
+endchar;
+
+
+beginchar (15, shortwidth+thick#, cap#,0); "The ligature hw (hwesta sindarinwa)";
+        begingroup;
+        save x,y;
+        pickup elvishpen;
+        nutelco(w-thick, longstem, stemdepth)
+        z7=bowpoint;
+        bot y8 = 0; x8=1/2[x7,leadgap];
+        lft x9 = leadgap; y9=1/2xht;
+        top y10 = xht; x10=x8;
+        draw z7{down}..z8{left}..z9{up}..z10{right}..cycle;
+        rt x11 = w-thick; y11 = 0;
+        z12= (w, 0);
+        draw z11--z12;
+        endgroup;
+endchar;
+

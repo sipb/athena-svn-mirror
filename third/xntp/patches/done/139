@@ -1,0 +1,192 @@
+Replied: Fri, 16 May 1997 02:16:53 -0400
+Replied: ""Damon at work" <dhd@exnet.com> "
+Received: from gate3.exnet.com by huey.udel.edu id aa01245; 11 May 97 8:49 EDT
+Received: from exnet.com (assam.exnet.com) by mailgate.exnet.com with SMTP id AA28420
+	(5.67a/IDA-1.4.4 for mills@huey.udel.edu); Sun, 11 May 1997 13:49:50 +0100
+Received: from maildrop.exnet.com (oolong.exnet.com) by exnet.com with SMTP id AA25753
+	(5.67a/IDA-1.4.4 for <mills@huey.udel.edu>); Sun, 11 May 1997 13:49:46 +0100
+From: "Damon at work" <dhd@exnet.com>
+Received: by maildrop.exnet.com (SMI-8.6/client-1.4DHD)
+	id NAA08595; Sun, 11 May 1997 13:49:44 +0100
+Date: Sun, 11 May 1997 13:49:44 +0100
+Message-Id: <199705111249.NAA08595@maildrop.exnet.com>
+To: dhd@exnet.com, mills@huey.udel.edu
+Subject: The context diffs
+
+Here are the context diffs between the original 3-5.90 distribution and
+my hacked version.  I do not have the autoconf (etc) tools to hand so
+you will see that some things were hacked directly into inappropriate
+places (such as config.h.in and the Makefiles), but I hope what I have
+done is clear and easy to do right (ie the way you want).
+
+Again, if there is something more I can usefully do to help, let me
+know, though I think I've used up my time quantum for this w/e
+(girlfriend and business partners both want a timeslice sometime soon
+B^>).
+
+Cheers,
+
+Damon
+
+
+
+
+
+Only in our-xntp3-5.90: Makefile
+Only in our-xntp3-5.90: config.cache
+Only in our-xntp3-5.90: config.h
+diff -c -r xntp3-5.90/config.h.in our-xntp3-5.90/config.h.in
+*** xntp3-5.90/config.h.in	Sat Apr  5 08:31:39 1997
+--- our-xntp3-5.90/config.h.in	Mon May  5 00:31:26 1997
+***************
+*** 650,652 ****
+--- 650,658 ----
+  
+  /* Define if you have the socket library (-lsocket).  */
+  #undef HAVE_LIBSOCKET
++ 
++ 
++ 
++ 
++ /* DHD19970505: ARCRON support. */
++ #define ARCRON_MSF 1
+Only in our-xntp3-5.90: config.log
+Only in our-xntp3-5.90: config.status
+Only in our-xntp3-5.90: stamp-h
+Only in our-xntp3-5.90: tmp.c
+Only in our-xntp3-5.90/adjtimed: Makefile
+Only in our-xntp3-5.90/authstuff: Makefile
+Only in our-xntp3-5.90/authstuff: authcert
+Only in our-xntp3-5.90/authstuff: authspeed
+Only in our-xntp3-5.90/clockstuff: Makefile
+Only in our-xntp3-5.90/include: Makefile
+diff -c -r xntp3-5.90/include/ntp.h our-xntp3-5.90/include/ntp.h
+*** xntp3-5.90/include/ntp.h	Tue Mar 11 04:39:05 1997
+--- our-xntp3-5.90/include/ntp.h	Mon May  5 00:41:01 1997
+***************
+*** 427,432 ****
+--- 427,433 ----
+  #define REFCLK_PTB_ACTS		23	/* PTB Auto Computer Time Service */
+  #define REFCLK_USNO		24	/* Naval Observatory dialup */
+  #define REFCLK_GPS_HP		26	/* HP 58503A Time & Frequency Receiver */
++ #define REFCLK_ARCRON_MSF       27      /* ARCRON MSF radio clock. */
+  #define REFCLK_MAX		30	/* maximum index (room to expand) */
+  
+  /*
+Only in our-xntp3-5.90/kernel: Makefile
+Only in our-xntp3-5.90/kernel/sys: Makefile
+Only in our-xntp3-5.90/libntp: Makefile
+Only in our-xntp3-5.90/libparse: Makefile
+Only in our-xntp3-5.90/ntpdate: .version
+Only in our-xntp3-5.90/ntpdate: Makefile
+Only in our-xntp3-5.90/ntpdate: version.c
+Only in our-xntp3-5.90/ntpq: .version
+Only in our-xntp3-5.90/ntpq: Makefile
+Only in our-xntp3-5.90/ntpq: version.c
+Only in our-xntp3-5.90/ntptrace: .version
+Only in our-xntp3-5.90/ntptrace: Makefile
+Only in our-xntp3-5.90/ntptrace: version.c
+Only in our-xntp3-5.90/parseutil: Makefile
+Only in our-xntp3-5.90/util: Makefile
+Only in our-xntp3-5.90/xntpd: .version
+Only in our-xntp3-5.90/xntpd: Makefile
+diff -c -r xntp3-5.90/xntpd/Makefile.am our-xntp3-5.90/xntpd/Makefile.am
+*** xntp3-5.90/xntpd/Makefile.am	Tue Jan 14 06:13:04 1997
+--- our-xntp3-5.90/xntpd/Makefile.am	Mon May  5 00:27:08 1997
+***************
+*** 19,25 ****
+  	refclock_acts.c refclock_heath.c refclock_nmea.c \
+  	refclock_atom.c refclock_ptbacts.c \
+  	refclock_usno.c refclock_true.c refclock_hpgps.c \
+! 	refclock_gpsvme.c refclock_arbiter.c
+  
+  $(PROGRAMS): $(LDADD)
+  
+--- 19,26 ----
+  	refclock_acts.c refclock_heath.c refclock_nmea.c \
+  	refclock_atom.c refclock_ptbacts.c \
+  	refclock_usno.c refclock_true.c refclock_hpgps.c \
+! 	refclock_gpsvme.c refclock_arbiter.c \
+! 	refclock_arc.c
+  
+  $(PROGRAMS): $(LDADD)
+  
+diff -c -r xntp3-5.90/xntpd/Makefile.in our-xntp3-5.90/xntpd/Makefile.in
+*** xntp3-5.90/xntpd/Makefile.in	Mon Apr  7 06:08:13 1997
+--- our-xntp3-5.90/xntpd/Makefile.in	Mon May  5 00:27:26 1997
+***************
+*** 59,65 ****
+  	refclock_acts.c refclock_heath.c refclock_nmea.c \
+  	refclock_atom.c refclock_ptbacts.c \
+  	refclock_usno.c refclock_true.c refclock_hpgps.c \
+! 	refclock_gpsvme.c refclock_arbiter.c
+  mkinstalldirs = $(top_srcdir)/mkinstalldirs
+  CONFIG_HEADER = ../config.h
+  PROGRAMS = $(bin_PROGRAMS)
+--- 59,66 ----
+  	refclock_acts.c refclock_heath.c refclock_nmea.c \
+  	refclock_atom.c refclock_ptbacts.c \
+  	refclock_usno.c refclock_true.c refclock_hpgps.c \
+! 	refclock_gpsvme.c refclock_arbiter.c \
+! 	refclock_arc.c
+  mkinstalldirs = $(top_srcdir)/mkinstalldirs
+  CONFIG_HEADER = ../config.h
+  PROGRAMS = $(bin_PROGRAMS)
+***************
+*** 86,92 ****
+  refclock_leitch.o refclock_irig.o refclock_msfees.o refclock_trak.o \
+  refclock_datum.o refclock_acts.o refclock_heath.o refclock_nmea.o \
+  refclock_atom.o refclock_ptbacts.o refclock_usno.o refclock_true.o \
+! refclock_hpgps.o refclock_gpsvme.o refclock_arbiter.o
+  EXTRA_xntpd_SOURCES =
+  xntpd_LDADD = $(LDADD)
+  DIST_COMMON = Makefile.am Makefile.in
+--- 87,94 ----
+  refclock_leitch.o refclock_irig.o refclock_msfees.o refclock_trak.o \
+  refclock_datum.o refclock_acts.o refclock_heath.o refclock_nmea.o \
+  refclock_atom.o refclock_ptbacts.o refclock_usno.o refclock_true.o \
+! refclock_hpgps.o refclock_gpsvme.o refclock_arbiter.o \
+! refclock_arc.o
+  EXTRA_xntpd_SOURCES =
+  xntpd_LDADD = $(LDADD)
+  DIST_COMMON = Makefile.am Makefile.in
+Only in our-xntp3-5.90/xntpd: refclock_arc.c
+diff -c -r xntp3-5.90/xntpd/refclock_conf.c our-xntp3-5.90/xntpd/refclock_conf.c
+*** xntp3-5.90/xntpd/refclock_conf.c	Fri Jul  5 05:07:42 1996
+--- our-xntp3-5.90/xntpd/refclock_conf.c	Mon May  5 00:44:36 1997
+***************
+*** 162,167 ****
+--- 162,173 ----
+  #define refclock_gpsvme refclock_none
+  #endif
+  
++ #ifdef ARCRON_MSF
++ extern	struct refclock refclock_arc;
++ #else
++ #define refclock_arc refclock_none
++ #endif
++ 
+  /*
+   * Order is clock_start(), clock_shutdown(), clock_poll(),
+   * clock_control(), clock_init(), clock_buginfo, clock_flags;
+***************
+*** 196,202 ****
+  	&refclock_usno,		/* 24 REFCLK_USNO */
+  	&refclock_true,		/* 25 alias for REFCLK_TRUETIME */
+  	&refclock_hpgps,	/* 26 REFCLK_GPS_HP */
+! 	&refclock_none,		/* 27 reserved */
+  	&refclock_none,		/* 28 reserved */
+  	&refclock_none,		/* 29 reserved */
+  	&refclock_none,		/* 30 reserved */
+--- 202,208 ----
+  	&refclock_usno,		/* 24 REFCLK_USNO */
+  	&refclock_true,		/* 25 alias for REFCLK_TRUETIME */
+  	&refclock_hpgps,	/* 26 REFCLK_GPS_HP */
+! 	&refclock_arc, 		/* 27 REFCLK_ARCRON_MSF */
+  	&refclock_none,		/* 28 reserved */
+  	&refclock_none,		/* 29 reserved */
+  	&refclock_none,		/* 30 reserved */
+Only in our-xntp3-5.90/xntpd: version.c
+Only in our-xntp3-5.90/xntpdc: .version
+Only in our-xntp3-5.90/xntpdc: Makefile
+Only in our-xntp3-5.90/xntpdc: version.c

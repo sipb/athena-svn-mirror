@@ -1,0 +1,326 @@
+From tgl@sss.pgh.pa.us Sun Jun 16 03:34:01 1996
+To: Mills@huey.udel.edu
+cc: ken@sdd.hp.com
+Subject: Re: Proposed change to adjtimed for HPUX 
+In-reply-to: Your message of Fri, 1 Mar 96 14:09:29 EST 
+             <9603011409.aa22376@huey.udel.edu> 
+Date: Sun, 24 Mar 1996 21:14:55 -0500
+From: Tom Lane <tgl@sss.pgh.pa.us>
+
+I finally figured out why I was still getting occasional "Previous time
+adjustment didn't complete" messages even with my revisions to the
+adjtimed daemon.  Should've been obvious.  The daemon process, of course,
+is subject to scheduling delays.  If a near-maximum time slew is requested
+at the top of the second, but the daemon is not dispatched to begin it for
+a few ticks, then the slew will not be complete at the top of the next
+second.
+
+The old version of the daemon was extremely prone to this problem because
+it would always schedule the slew to occur over one full second.  (It
+varied the tickadj delta rather than the time interval over which the
+delta is applied.)  So even a one-tick scheduling delay would trigger a
+complaint.
+
+The patch attached below makes adjtimed work more like the customary
+BSD-ish flavor of adjtime(2): constant slew rate of 5 microsec/tick
+applied over as long a period as needed to get the requested delta.
+This is much less likely to trigger a didn't-complete complaint for slews
+less than the maximum possible slew.  Also, the patch increases the
+process priority (decreases nice setting) to reduce the chances that the
+daemon will not be executed immediately when it needs to run.
+
+In addition to fixing the daemon, the attached patch changes
+ntp_unixclock.c to reduce the maxslew value a little bit when using this
+daemon.  This is the same tweak applied when SLEWALWAYS is defined, and
+it gives further defense against didn't-complete gripes.
+
+Although the patched code can still get the didn't-complete complaint,
+it is much less likely to do so than the original code.  It has a couple
+of other advantages, I think: it works much more like BSD adjtime than the
+old code, so should create fewer compatibility problems; and it works
+correctly for slews exceeding 1 second, which is not an issue for ntpd but
+is an issue for other applications that might like to use this emulation
+of adjtime().
+
+			regards, tom lane
+
+Note: these are diffs against ntpd 3.5a; haven't gotten around to
+downloading the newer releases yet.
+
+*** adjtime/adjtimed.c.orig	Mon Oct  3 06:02:20 1994
+--- adjtime/adjtimed.c	Sat Mar 23 15:43:08 1996
+***************
+*** 18,29 ****
+  
+  /*
+   * Adjust time daemon.
+!  * This deamon adjusts the rate of the system clock a la BSD's adjtime().
+   * The adjtime() routine uses SYSV messages to communicate with this daemon.
+   *
+   * Caveat: This emulation uses an undocumented kernel variable.  As such, it
+!  * cannot be guaranteed to work in future HP-UX releases.  Perhaps a real
+!  * adjtime(2) will be supported in the future.
+   */
+  
+  #include <sys/param.h>
+--- 18,29 ----
+  
+  /*
+   * Adjust time daemon.
+!  * This daemon adjusts the rate of the system clock a la BSD's adjtime().
+   * The adjtime() routine uses SYSV messages to communicate with this daemon.
+   *
+   * Caveat: This emulation uses an undocumented kernel variable.  As such, it
+!  * cannot be guaranteed to work in future HP-UX releases.  Fortunately,
+!  * it will no longer be needed in HPUX 10.01 and later.
+   */
+  
+  #include <sys/param.h>
+***************
+*** 37,42 ****
+--- 37,43 ----
+  #include <fcntl.h>
+  #include <stdio.h>
+  #include <errno.h>
++ #include <unistd.h>
+  #include "ntp_syslog.h"
+  #include "adjtime.h"
+  
+***************
+*** 196,208 ****
+      perror("adjtimed: get message queue id");
+      Exit(1);
+    }
+! 
+    if (plock(PROCLOCK)) {
+        syslog(LOG_ERR, "plock: %m");
+        perror("adjtimed: plock");
+        Cleanup();
+    }
+  
+    for (;;) {
+      if (msgrcv(mqid, &msg.msgp, MSGSIZE, CLIENT, 0) == -1) {
+        if (errno == EINTR) continue;
+--- 197,220 ----
+      perror("adjtimed: get message queue id");
+      Exit(1);
+    }
+!   
+!   /* Lock process in memory to improve response time */
+    if (plock(PROCLOCK)) {
+        syslog(LOG_ERR, "plock: %m");
+        perror("adjtimed: plock");
+        Cleanup();
+    }
+  
++   /* Also raise process priority.
++    * If we do not get run when we want, this leads to bad timekeeping
++    * and "Previous time adjustment didn't complete" gripes from xntpd.
++    */
++   if (nice(-10) == -1) {
++       syslog(LOG_ERR, "nice: %m");
++       perror("adjtimed: nice");
++       Cleanup();
++   }
++ 
+    for (;;) {
+      if (msgrcv(mqid, &msg.msgp, MSGSIZE, CLIENT, 0) == -1) {
+        if (errno == EINTR) continue;
+***************
+*** 252,317 ****
+   */
+  #define DEFAULT_RATE	(MILLION / HZ)
+  #define UNKNOWN_RATE	0L
+! #define SLEW_RATE	(MILLION / DEFAULT_RATE)
+! #define MIN_DELTA	SLEW_RATE
+  static long default_rate = DEFAULT_RATE;
+! static long slew_rate = SLEW_RATE;
+  
+  AdjustClockRate(delta, olddelta)
+       register struct timeval *delta, *olddelta;
+  {
+    register long rate, dt;
+    struct itimerval period, remains;
+-   static long leftover = 0;
+- /*
+-  * rate of change
+-  */
+-   dt = (delta->tv_sec * MILLION) + delta->tv_usec + leftover;
+- 
+-   if (dt < MIN_DELTA && dt > -MIN_DELTA) {
+-     leftover += delta->tv_usec;
+- 
+-     if (olddelta) {
+-       getitimer(ITIMER_REAL, &remains);
+-       dt = ((remains.it_value.tv_sec * MILLION) + remains.it_value.tv_usec) *
+- 		oldrate;
+-       olddelta->tv_sec = dt / MILLION;
+-       olddelta->tv_usec = dt - (olddelta->tv_sec * MILLION); 
+-     }
+  
+!     if (verbose > 2) printf("adjtimed: delta is too small: %dus\n", dt);
+!     if (sysdebug > 2) syslog(LOG_INFO, "delta is too small: %dus", dt);
+!     return (1);
+!   }
+! 
+!   leftover = dt % MIN_DELTA;
+!   dt -= leftover;
+  
+    if (verbose)
+      printf("adjtimed: new correction %.6fs\n", (double)dt / (double)MILLION);
+    if (sysdebug)
+      syslog(LOG_INFO, "new correction %.6fs", (double)dt / (double)MILLION);
+-   if (verbose > 2) printf("adjtimed: leftover %dus\n", leftover);
+-   if (sysdebug > 2) syslog(LOG_INFO, "leftover %dus", leftover);
+-   rate = dt;
+  
+  /*
+!  * The adjustment will always be a multiple of the minimum adjustment.
+!  * So the period will always be a whole second value.
+   */
+-   period.it_value.tv_sec = 1l;
+-   period.it_value.tv_usec = 0;
+- 
+    if (verbose > 1)
+!     printf("adjtimed: will be complete in %ds\n", period.it_value.tv_sec);
+    if (sysdebug > 1)
+!     syslog(LOG_INFO, "will be complete in %ds", period.it_value.tv_sec);
+  /*
+   * adjust the clock rate
+   */
+!   if (SetClockRate((rate / slew_rate) + default_rate) == -1) {
+!     syslog(LOG_ERR, "set clock rate: %m");
+!     perror("adjtimed: set clock rate");
+    }
+  /*
+   * start the timer
+--- 264,319 ----
+   */
+  #define DEFAULT_RATE	(MILLION / HZ)
+  #define UNKNOWN_RATE	0L
+! #define TICK_ADJ	5	/* standard adjustment rate, microsec/tick */
+! 
+  static long default_rate = DEFAULT_RATE;
+! static long tick_rate = HZ;	/* ticks per sec */
+! static long slew_rate = TICK_ADJ * HZ; /* in microsec/sec */
+  
+  AdjustClockRate(delta, olddelta)
+       register struct timeval *delta, *olddelta;
+  {
+    register long rate, dt;
+    struct itimerval period, remains;
+  
+!   dt = (delta->tv_sec * MILLION) + delta->tv_usec;
+  
+    if (verbose)
+      printf("adjtimed: new correction %.6fs\n", (double)dt / (double)MILLION);
+    if (sysdebug)
+      syslog(LOG_INFO, "new correction %.6fs", (double)dt / (double)MILLION);
+  
+  /*
+!  * Apply a slew rate of slew_rate over a period of dt/slew_rate seconds.
+!  */
+!   if (dt > 0) {
+!     rate = slew_rate;
+!   } else {
+!     rate = -slew_rate;
+!     dt = -dt;
+!   }
+!   period.it_value.tv_sec = dt / slew_rate;
+!   period.it_value.tv_usec = (dt % slew_rate) * (MILLION / slew_rate);
+! /*
+!  * Note: we assume the kernel will convert the specified period into ticks
+!  * using the modified clock rate rather than an assumed nominal clock rate,
+!  * and therefore will generate the timer interrupt after the specified
+!  * number of true seconds, not skewed seconds.
+   */
+    if (verbose > 1)
+!     printf("adjtimed: will be complete in %lds %ldus\n",
+! 	   period.it_value.tv_sec, period.it_value.tv_usec);
+    if (sysdebug > 1)
+!     syslog(LOG_INFO, "will be complete in %lds %ldus",
+! 	   period.it_value.tv_sec, period.it_value.tv_usec);
+  /*
+   * adjust the clock rate
+   */
+!   if (dt) {
+!     if (SetClockRate((rate / tick_rate) + default_rate) == -1) {
+!       syslog(LOG_ERR, "set clock rate: %m");
+!       perror("adjtimed: set clock rate");
+!     }
+    }
+  /*
+   * start the timer
+***************
+*** 390,400 ****
+    if (rate != default_rate) {
+      if (verbose > 3) {
+        printf("adjtimed: clock rate (%lu) %ldus/s\n", rate,
+! 		(rate - default_rate) * slew_rate);
+      }
+      if (sysdebug > 3) {
+        syslog(LOG_INFO, "clock rate (%lu) %ldus/s", rate,
+! 		(rate - default_rate) * slew_rate);
+      }
+    }
+  
+--- 392,402 ----
+    if (rate != default_rate) {
+      if (verbose > 3) {
+        printf("adjtimed: clock rate (%lu) %ldus/s\n", rate,
+! 		(rate - default_rate) * tick_rate);
+      }
+      if (sysdebug > 3) {
+        syslog(LOG_INFO, "clock rate (%lu) %ldus/s", rate,
+! 		(rate - default_rate) * tick_rate);
+      }
+    }
+  
+***************
+*** 421,427 ****
+   */
+    default_rate = GetClockRate();
+    if (default_rate == UNKNOWN_RATE) default_rate = DEFAULT_RATE;
+!   slew_rate = (MILLION / default_rate);
+  
+    return (0);
+  } /* InitClockRate */
+--- 423,430 ----
+   */
+    default_rate = GetClockRate();
+    if (default_rate == UNKNOWN_RATE) default_rate = DEFAULT_RATE;
+!   tick_rate = (MILLION / default_rate);
+!   slew_rate = TICK_ADJ * tick_rate;
+  
+    return (0);
+  } /* InitClockRate */
+
+*** xntpd/ntp_unixclock.c.orig	Mon Feb  5 17:58:30 1996
+--- xntpd/ntp_unixclock.c	Sun Mar 24 16:41:51 1996
+***************
+*** 180,185 ****
+--- 180,192 ----
+  	adj_precision = (1<<CLOCK_ADJ) * hz * 0.1;
+  #endif /* SYS_WINNT */
+  #endif /* ADJTIME_IS_ACCURATE */
++ #if defined(SYS_HPUX) && (SYS_HPUX < 10)
++ 	/*
++ 	 * when using adjtimed daemon, need to allow more time
++ 	 * because daemon may not run right away
++ 	 */
++ 	tvu_maxslew = tickadj * (hz-3) * (1<<CLOCK_ADJ);
++ #else
+  #if defined(SLEWALWAYS) && !defined(ADJTIME_IS_ACCURATE)
+  	/*
+  	 * give us more time if we are always slewing... just in case
+***************
+*** 192,197 ****
+--- 199,205 ----
+  	tvu_maxslew = tickadj * hz * (1<<CLOCK_ADJ);
+  #endif /* SYS_WINTNT */
+  #endif /* SLEWALWAYS */
++ #endif /* SYS_HPUX */
+  	if (tvu_maxslew > 999990) {
+  		/*
+  		 * Don't let the maximum slew exceed 1 second in 4.  This
+

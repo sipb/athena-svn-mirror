@@ -1,0 +1,299 @@
+%!PS-Adobe-3.0
+%%Creator: groff version 1.10
+%%CreationDate: Thu May  7 13:34:49 1998
+%%DocumentNeededResources: font Times-Roman
+%%+ font Times-Bold
+%%DocumentSuppliedResources: procset grops 1.10 0
+%%Pages: 1
+%%PageOrder: Ascend
+%%Orientation: Portrait
+%%EndComments
+%%BeginProlog
+%%BeginResource: procset grops 1.10 0
+/setpacking where{
+pop
+currentpacking
+true setpacking
+}if
+/grops 120 dict dup begin
+/SC 32 def
+/A/show load def
+/B{0 SC 3 -1 roll widthshow}bind def
+/C{0 exch ashow}bind def
+/D{0 exch 0 SC 5 2 roll awidthshow}bind def
+/E{0 rmoveto show}bind def
+/F{0 rmoveto 0 SC 3 -1 roll widthshow}bind def
+/G{0 rmoveto 0 exch ashow}bind def
+/H{0 rmoveto 0 exch 0 SC 5 2 roll awidthshow}bind def
+/I{0 exch rmoveto show}bind def
+/J{0 exch rmoveto 0 SC 3 -1 roll widthshow}bind def
+/K{0 exch rmoveto 0 exch ashow}bind def
+/L{0 exch rmoveto 0 exch 0 SC 5 2 roll awidthshow}bind def
+/M{rmoveto show}bind def
+/N{rmoveto 0 SC 3 -1 roll widthshow}bind def
+/O{rmoveto 0 exch ashow}bind def
+/P{rmoveto 0 exch 0 SC 5 2 roll awidthshow}bind def
+/Q{moveto show}bind def
+/R{moveto 0 SC 3 -1 roll widthshow}bind def
+/S{moveto 0 exch ashow}bind def
+/T{moveto 0 exch 0 SC 5 2 roll awidthshow}bind def
+/SF{
+findfont exch
+[exch dup 0 exch 0 exch neg 0 0]makefont
+dup setfont
+[exch/setfont cvx]cvx bind def
+}bind def
+/MF{
+findfont
+[5 2 roll
+0 3 1 roll
+neg 0 0]makefont
+dup setfont
+[exch/setfont cvx]cvx bind def
+}bind def
+/level0 0 def
+/RES 0 def
+/PL 0 def
+/LS 0 def
+/MANUAL{
+statusdict begin/manualfeed true store end
+}bind def
+/PLG{
+gsave newpath clippath pathbbox grestore
+exch pop add exch pop
+}bind def
+/BP{
+/level0 save def
+1 setlinecap
+1 setlinejoin
+72 RES div dup scale
+LS{
+90 rotate
+}{
+0 PL translate
+}ifelse
+1 -1 scale
+}bind def
+/EP{
+level0 restore
+showpage
+}bind def
+/DA{
+newpath arcn stroke
+}bind def
+/SN{
+transform
+.25 sub exch .25 sub exch
+round .25 add exch round .25 add exch
+itransform
+}bind def
+/DL{
+SN
+moveto
+SN
+lineto stroke
+}bind def
+/DC{
+newpath 0 360 arc closepath
+}bind def
+/TM matrix def
+/DE{
+TM currentmatrix pop
+translate scale newpath 0 0 .5 0 360 arc closepath
+TM setmatrix
+}bind def
+/RC/rcurveto load def
+/RL/rlineto load def
+/ST/stroke load def
+/MT/moveto load def
+/CL/closepath load def
+/FL{
+currentgray exch setgray fill setgray
+}bind def
+/BL/fill load def
+/LW/setlinewidth load def
+/RE{
+findfont
+dup maxlength 1 index/FontName known not{1 add}if dict begin
+{
+1 index/FID ne{def}{pop pop}ifelse
+}forall
+/Encoding exch def
+dup/FontName exch def
+currentdict end definefont pop
+}bind def
+/DEFS 0 def
+/EBEGIN{
+moveto
+DEFS begin
+}bind def
+/EEND/end load def
+/CNT 0 def
+/level1 0 def
+/PBEGIN{
+/level1 save def
+translate
+div 3 1 roll div exch scale
+neg exch neg exch translate
+0 setgray
+0 setlinecap
+1 setlinewidth
+0 setlinejoin
+10 setmiterlimit
+[]0 setdash
+/setstrokeadjust where{
+pop
+false setstrokeadjust
+}if
+/setoverprint where{
+pop
+false setoverprint
+}if
+newpath
+/CNT countdictstack def
+userdict begin
+/showpage{}def
+}bind def
+/PEND{
+clear
+countdictstack CNT sub{end}repeat
+level1 restore
+}bind def
+end def
+/setpacking where{
+pop
+setpacking
+}if
+%%EndResource
+%%IncludeResource: font Times-Roman
+%%IncludeResource: font Times-Bold
+grops begin/DEFS 1 dict def DEFS begin/u{.001 mul}bind def end/RES 72
+def/PL 792 def/LS false def/ENC0[/asciicircum/asciitilde/Scaron/Zcaron
+/scaron/zcaron/Ydieresis/trademark/quotesingle/.notdef/.notdef/.notdef
+/.notdef/.notdef/.notdef/.notdef/.notdef/.notdef/.notdef/.notdef/.notdef
+/.notdef/.notdef/.notdef/.notdef/.notdef/.notdef/.notdef/.notdef/.notdef
+/.notdef/.notdef/space/exclam/quotedbl/numbersign/dollar/percent
+/ampersand/quoteright/parenleft/parenright/asterisk/plus/comma/hyphen
+/period/slash/zero/one/two/three/four/five/six/seven/eight/nine/colon
+/semicolon/less/equal/greater/question/at/A/B/C/D/E/F/G/H/I/J/K/L/M/N/O
+/P/Q/R/S/T/U/V/W/X/Y/Z/bracketleft/backslash/bracketright/circumflex
+/underscore/quoteleft/a/b/c/d/e/f/g/h/i/j/k/l/m/n/o/p/q/r/s/t/u/v/w/x/y
+/z/braceleft/bar/braceright/tilde/.notdef/quotesinglbase/guillemotleft
+/guillemotright/bullet/florin/fraction/perthousand/dagger/daggerdbl
+/endash/emdash/ff/fi/fl/ffi/ffl/dotlessi/dotlessj/grave/hungarumlaut
+/dotaccent/breve/caron/ring/ogonek/quotedblleft/quotedblright/oe/lslash
+/quotedblbase/OE/Lslash/.notdef/exclamdown/cent/sterling/currency/yen
+/brokenbar/section/dieresis/copyright/ordfeminine/guilsinglleft
+/logicalnot/minus/registered/macron/degree/plusminus/twosuperior
+/threesuperior/acute/mu/paragraph/periodcentered/cedilla/onesuperior
+/ordmasculine/guilsinglright/onequarter/onehalf/threequarters
+/questiondown/Agrave/Aacute/Acircumflex/Atilde/Adieresis/Aring/AE
+/Ccedilla/Egrave/Eacute/Ecircumflex/Edieresis/Igrave/Iacute/Icircumflex
+/Idieresis/Eth/Ntilde/Ograve/Oacute/Ocircumflex/Otilde/Odieresis
+/multiply/Oslash/Ugrave/Uacute/Ucircumflex/Udieresis/Yacute/Thorn
+/germandbls/agrave/aacute/acircumflex/atilde/adieresis/aring/ae/ccedilla
+/egrave/eacute/ecircumflex/edieresis/igrave/iacute/icircumflex/idieresis
+/eth/ntilde/ograve/oacute/ocircumflex/otilde/odieresis/divide/oslash
+/ugrave/uacute/ucircumflex/udieresis/yacute/thorn/ydieresis]def
+/Times-Bold@0 ENC0/Times-Bold RE/Times-Roman@0 ENC0/Times-Roman RE
+%%EndProlog
+%%Page: 1 1
+%%BeginPageSetup
+BP
+%%EndPageSetup
+/F0 10/Times-Roman@0 SF .08(\(Sign DNS zone database\) is a tool to generate signatures for DNS \(Domain Name System\) resource records.)
+72 12 R .079(It also)5.079 F .019(generates NXT records for each zone.)
+72 24 R .019(Speci\214es a name of the k)5.019 F .319 -.15(ey t)-.1 H
+2.519(ou).15 G .019(se if no signer is de\214ned using the directi)
+-2.519 F .32 -.15(ve i)-.25 H(n).15 E .089(the boot \214les.)72 36 R
+.088(Speci\214es the control \214le for which is in the same format as the BIND-4 \214le.)
+5.088 F .088(Redirect deb)5.088 F .088(ug output to)-.2 F .556
+(the speci\214ed def)72 48 R .556(ault is in the current directory)-.1 F
+5.556(.W)-.65 G .557(rite signed \214les to thie speci\214ed def)-5.556
+F .557(ault is to use Specify the full)-.1 F .551
+(path to this directory; relati)72 60 R .851 -.15(ve p)-.25 H .551
+(aths may not w).15 F 3.051(ork. T)-.1 F .551
+(ime when the signature records are to e)-.35 F 3.051(xpire. Using)-.15
+F .551(either or)3.051 F(sign before the ar)72 72 Q(gument the is interpreted as an absolute time in seconds when the records will e)
+-.18 E(xpire.)-.15 E .06(All such times are interpreted as Uni)77 84 R
+-.15(ve)-.25 G .06(rsal T).15 F 2.56(imes. W)-.35 F .06
+(ith speci\214ed the time is interpreted as an of)-.4 F .06
+(fset into the future.)-.25 F .392
+(If not speci\214ed on the command line, the def)72 96 R .391
+(ault is 3600*24*30 sec \(30 days\).)-.1 F -.15(Fo)5.391 G .391
+(rce the serial number in the SO).15 F(A)-.35 E .43
+(records to the speci\214ed v)72 108 R 2.93(alue. If)-.25 F .43
+(this parameter is not set, the serial number will be set to a v)2.93 F
+.431(alue based on the cur)-.25 F(-)-.2 E .18(rent time.)72 120 R .18(This \215ag will cause NXT records in zones with wildcard records to point to as the ne)
+5.18 F .179(xt host. The purpose)-.15 F 1.188
+(of this \215ag is to hide all information about v)72 132 R 1.189
+(alid names in a zone.)-.25 F -.45(Tu)6.189 G 1.189
+(rn of generation of zone transfer signature).45 F 1.493
+(records, which v)72 144 R 1.492
+(alidate the transfer of an entire zone.)-.25 F 1.492
+(When this \215ag is speci\214ed, the boot \214les are read, NXT)6.492 F
+.271(records are generated and zone \214le is written to the output directory)
+72 156 R 2.772(.N)-.65 G 2.772(oS)-2.772 G .272
+(IG records are generated. This \215ag is use-)-2.772 F .81(ful for quickly checking the format of the data in the boot \214les, and to ha)
+72 168 R 1.109 -.15(ve b)-.2 H .809
+(oot \214les sorted into DNSSEC order).15 F(.)-.55 E .513
+(When this \215ag is present, will v)72 180 R .514(erify all signed records and print out a con\214rmation message for each SIG v)
+-.15 F(eri\214ed.)-.15 E 1.042(The main use of this \215ag is to see ho)
+72 192 R 3.542(wl)-.25 G 1.042(ong it tak)-3.542 F 1.042
+(es to generate each signature.)-.1 F 1.041
+(If this \215ag is speci\214ed, then the)6.042 F(zonek)72 204 Q -.15(ey)
+-.1 G 2.765(su).15 G .265(sed to sign \214les will be updated with ne)
+-2.765 F 2.765(wr)-.25 G 2.765(ecords. Specify)-2.765 F .266
+(this \215ag if one or more of the k)2.765 F -.15(ey)-.1 G 2.766(sh).15
+G -2.25 -.2(av e)-2.766 H(been)2.966 E 2.76(updated. If)72 216 R .26
+(there are no zonek)2.76 F -.15(ey)-.1 G 2.76(ss).15 G .26(peci\214ed in the boot \214les, this \215ag will insert them. Omitting zonek)
+-2.76 F -.15(ey)-.1 G 2.76(sw).15 G .26(ill cause)-2.76 F .74
+(primary nameserv)72 228 R .74(ers to reject the zone.)-.15 F(Deb)5.74 E
+.74(ug le)-.2 F -.15(ve)-.25 G 3.24(lt).15 G 3.24(ou)-3.24 G .741
+(se for running these le)-3.24 F -.15(ve)-.25 G .741
+(ls are the same as those used by).15 F .333(reads BIND-4 and zone \214les, adds SIG and NXT records and writes out the records \(to one \214le per zone, re)
+72 240 R -.05(ga)-.15 G(rdless).05 E .715(of ho)72 252 R 3.215(wm)-.25 G
+(an)-3.215 E 3.215(yi)-.15 G .715(nclude \214les the original zone w)
+-3.215 F .715(as in\).)-.1 F .715
+(The \214les generated by are ordinary te)5.715 F .715
+(xtual zone \214les and are)-.15 F 1.483
+(then normally loaded by to serv)72 264 R 3.983(et)-.15 G 1.483
+(he zone.)-3.983 F/F1 10/Times-Bold@0 SF -.18(re)6.483 G(quir).18 E
+1.483(es that the PRIV)-.18 F -.95(AT)-1.35 G 3.983(Ek).95 G 1.483
+(ey\(s\) r)-4.083 F 1.483(eside in the input dir)-.18 F(ectory)-.18 E F0
+(.)A .905(Making manual changes to the output \214les is hazardous, because most changes will in)
+72 276 R -.25(va)-.4 G .905(lidate one or more signa-).25 F .756
+(tures contained therein.)72 288 R .755(This will cause the zone to f)
+5.756 F .755(ail to load into or will cause subsequent f)-.1 F .755
+(ailures in retrie)-.1 F(ving)-.25 E .629(records from the zone.)72 300
+R .629(It is f)5.629 F .629(ar better to mak)-.1 F 3.129(ec)-.1 G .629
+(hanges in input \214les, and rerun When detects a dele)-3.129 F -.05
+(ga)-.15 G .629(tion point, it).05 F .076
+(creates a special \214le which contains the RR')72 312 R 2.576(st)-.55
+G .076(he parent zone signs for the child zone \(NS, KEY)-2.576 F 2.575
+(,N)-1.29 G .075(XT\). The intent is)-2.575 F .414
+(that the child will include this \214le when loading primary nameserv)
+72 324 R 2.915(ers. Similarly)-.15 F 2.915(,e)-.65 G .415
+(ach zone \214le ends with the com-)-2.915 F 2.702(mand. The)72 336 R
+.202(records in the \214les are omitted from the SIG\(AXFR\) calculations as these records usualy are on a dif)
+2.702 F(fer)-.25 E(-)-.2 E .52(ent signing c)72 348 R 3.021(ycle. The)
+-.15 F(directi)3.021 E .821 -.15(ve c)-.25 H .521
+(an be used to change signers in a zone.).15 F .521
+(If is omitted, signing is turned of)5.521 F 3.021(f. K)-.25 F -.15(ey)
+-.25 G(s).15 E .013(are loaded the \214rst time the k)72 360 R -.15(ey)
+-.1 G 2.512(sa).15 G .012(re accessed.)-2.512 F .012
+(Only records that are signed by the zone signer \(the k)5.012 F .312
+-.15(ey t)-.1 H .012(hat signs the).15 F(SO)72 372 Q .507
+(A\) are included in the SIG\(AXFR\) calculation.)-.35 F .507
+(It is not generally recommended that multiple k)5.507 F -.15(ey)-.1 G
+3.007(ss).15 G .507(ign records)-3.007 F .578
+(in the same zone, unless this is useful for dynamic updates.)72 384 R
+.577(No en)5.578 F .577(vironmental v)-.4 F .577(ariables are used.)-.25
+F .577(RSAREF docu-)5.577 F .992
+(mentation, Internet-Draft on Secure DNS, or its successor)72 396 R
+5.993(.O)-.55 G .993(lafur Gudmundsson \(ogud@tis.com\) The underlying)
+-5.993 F(crypto math is done by the RSAREF or BSAFE libraries.)72 408 Q
+EP
+%%Trailer
+end
+%%EOF

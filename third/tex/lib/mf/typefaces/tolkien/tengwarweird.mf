@@ -1,0 +1,62 @@
+% Copyright 1988 Michael Urban
+% Everyone is granted permission to copy, modify and redistribute
+% this file, provided that a currently-dated copy of this
+% copyright notice is included in the copy.
+% License is granted to produce fonts based on the information
+% in this file, provided that such fonts are redistributed
+% without charge to any third party.
+
+% SCCS ID @(#)tengwar.mf	1.1   10/1/86
+
+mode_setup;
+slant := sind 10/cosd 10;
+currenttransform := identity slanted slant;
+em#:=10pt#; cap#=.7em#; dep#=.4em#; xht#=.4em#;
+shortwidth := .4em#;
+
+slant:=sind 12/cosd 12;
+thick#:=2/80em#; thin#:=1/150em#;
+leadgap# := .08em#;
+bowstart#= .9xht#;
+serifthick# := .01pt#;
+
+tilt:=45; seriftilt := 45; botseriftilt:=45;
+shortstem := .6;
+longstem := .95;
+stemdepth := .9;
+bowsize := .5;
+
+define_pixels(em,cap,dep,xht,bowstart);
+define_pixels(thin,thick,serifthick,leadgap);
+
+pen elvishpen; elvishpen = pensquare xscaled thick yscaled thin rotated tilt;
+
+%
+% Because even "tall" characters want to be accented in the same place,
+% but because we want to use "h" in "beginchar" definitions
+% in a typical plain-MF way,
+% we force all characters to have a character height of xht#.  This is
+% something a kludge, and makes tall characters stick into preceding lines
+% when the baselines are not sufficiently separated.  But that iss how the
+% title-page inscription looks anyway.
+%
+let oldendchar = endchar;
+def endchar=
+	charht := xht#;
+	oldendchar;
+enddef;
+
+input tiw;
+
+font_normal_space .45em#;
+font_normal_stretch .22em#;
+font_normal_shrink .15em#;
+font_slant slant;
+font_x_height xht#;
+font_quad 1em#;
+font_extra_space 1/6em#;
+designsize:=1em#;
+
+input ligtable;
+
+bye;

@@ -1,0 +1,50 @@
+Replied: Sat, 19 Jul 1997 15:09:31 -0400
+Replied: "jeremyp@gsms01.alcatel.com.au (Peter Jeremy) "
+Replied: Mon, 07 Jul 1997 23:25:35 -0400
+Replied: "jeremyp@gsms01.alcatel.com.au (Peter Jeremy) "
+Replied: Mon, 07 Jul 1997 23:20:48 -0400
+Replied: "jeremyp@gsms01.alcatel.com.au (Peter Jeremy) "
+Replied: Mon, 07 Jul 1997 23:10:32 -0400
+Replied: "jeremyp@gsms01.alcatel.com.au (Peter Jeremy) "
+Return-Path: harlan@clark.net 
+Return-Path: <harlan@clark.net>
+Received: from mail.clark.net (mail.clark.net [168.143.0.10])
+	by whimsy.udel.edu (8.8.5/8.8.5) with ESMTP id EAA01757
+	for <stenn@whimsy.udel.edu>; Wed, 2 Jul 1997 04:36:15 GMT
+Received: from explorer2.clark.net (harlan@explorer2.clark.net [168.143.0.5]) by mail.clark.net (8.8.5/8.6.5) with ESMTP id VAA18357 for <stenn@whimsy.udel.edu>; Tue, 1 Jul 1997 21:39:57 -0400 (EDT)
+Received: (from harlan@localhost) by explorer2.clark.net (8.8.5/8.7.1) id VAA24018 for stenn@whimsy.udel.edu; Tue, 1 Jul 1997 21:39:57 -0400 (EDT)
+Message-Id: <199707020139.VAA24018@explorer2.clark.net>
+From: jeremyp@gsms01.alcatel.com.au (Peter Jeremy)
+Subject: Authenticated ntpq commands cause core-dump in xntpd
+Newsgroups: comp.protocols.time.ntp
+Date: 2 Jul 1997 08:03:53 +1000
+Organization: Alcatel Australia Limited
+
+Yesterday, whilst trying to manually force the leap second warning
+on(*) I found bugs in both ntpq and xntpd :-).  I originally found
+these bugs in xntp 3.4y (I know it's obsolete, but I haven't gotten
+around to porting my hacks into a more recent version).  The bugs
+still exist in xntp3-5.89-export, so I suspect it's still in 3-5.90.
+
+In ntpq/ntpq_ops.c, both writelist() and writevar() call doquerylist()
+with the 4th argument (auth) as `0'.  This should be 1 since
+CTL_OP_WRITEVAR requires authentication.
+[HMS: fixed]
+
+I tracked my xntpd core dump to xntpd/ntp_control.c:ctl_error(),
+specifically the code
+   *(u_long *)((u_char *)&rpkt + CTL_HEADER_LEN) = htonl(res_keyid);
+
+Unfortunately, rpkt is only guaranteed to be short aligned, so this
+can cause an alignment error on machines where alignment matters
+(eg SPARC).  (I fixed it by sticking rpkt into a union with a long).
+
+(*) I hadn't seen any incoming leap warning from any upstream feeds by
+    a couple of hours before 0000UT and thought they had all forgotten.
+
+Peter
+-- 
+Peter Jeremy (VK2PJ)                    peter.jeremy@alcatel.com.au
+Alcatel Australia Limited
+41 Mandible St                          Phone: +61 2 9690 5019
+ALEXANDRIA  NSW  2015                   Fax:   +61 2 9690 5247

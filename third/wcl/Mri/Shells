@@ -1,0 +1,78 @@
+! SCCS_data: @(#) Shells 1.1 92/12/04 14:04:09
+!
+! This demonstrates multiple top level shells, and the effects when
+! XmDIALOG_PRIMARY_APPLICATION_MODAL dialogs are popped up.
+!
+! On many Motif implementations, the modality does NOT work correctly
+!
+!==========================================================================
+! Top level shell Mri created by XtInitialize:
+!
+Mri.wcPopups:	FullModal
+Mri.wcChildren:	main
+
+!==========================================================================
+! A dialog which is modal to the entire application.
+!
+*FullModal.wcCreate:	XmCreateInformationDialog
+*FullModal.dialogStyle:	XmDIALOG_FULL_APPLICATION_MODAL
+*FullModal.messageString:	\
+This dialog has dialogStyle set to\n\
+XmDIALOG_FULL_APPLICATION_MODAL
+
+!==========================================================================
+! The Mri shell contains a row column with three items: a label explaining
+! the purpose of this demonstration, a button to pop-up the full modal dialog,
+! and a button to create a new top level shell.
+!
+*main.wcCreate:		XmRowColumn
+*main.wcChildren:	Intro PopupFullModal NewRoot
+
+*Intro.wcCreate:	XmLabel
+*Intro.labelString: \
+This is a demonstration of Motif\n\
+FULL_APPLICATION_MODAL and\n\
+PRIMARY_APPLICATION_MODAL dialogs.\n\
+On most Motif implementations, it\n\
+does not work correctly.
+
+*PopupFullModal.wcCreate:		XmPushButton
+*PopupFullModal.activateCallback:	WcManage( *FullModal )
+
+*NewRoot.wcCreate:		XmPushButton
+*NewRoot.activateCallback:	WcCreateRoot( newTop )
+
+!==========================================================================
+! Each dynamically created top level shell will be of the same form.
+! Created by WcCreateRoot, these are all top level shell widgets, and
+! can be iconified.
+!
+! Each newTop has a single popup dialog.  The modality is restricted to
+! the widget tree under newTop: therefore, when the dialog is popped up,
+! only the specific newTop is "blocked".  ALl other shells SHOULD be active.
+!
+! An observable bug on most Motif platforms: newly created shells will also
+! be locked out until the modal dialog gets popped down.
+!
+*newTop.wcPopups:		ModalDialog
+*newTop.wcChildren:		PopUpModalDialog
+*newTop.wcAfterChildren:	XmpAddMwmCloseCallback( this WcTrace( OK OK ) )
+
+*ModalDialog.wcCreate:			XmCreateInformationDialog
+*ModalDialog.dialogStyle:		XmDIALOG_PRIMARY_APPLICATION_MODAL
+*ModalDialog.messageString:\
+This dialog has dialogStyle set to\n\
+XmDIALOG_PRIMARY_APPLICATION_MODAL
+
+*PopUpModalDialog.wcCreate:		XmPushButton
+*PopUpModalDialog.activateCallback:	WcManage(~*ModalDialog)
+*PopUpModalDialog.labelString: \
+Each newTop has a single popup dialog.  The modality is restricted to\n\
+the widget tree under newTop: therefore, when the dialog is popped up,\n\
+only the specific newTop is "blocked".  ALL other shells SHOULD be active.\n\
+\n\
+An observable bug on most Motif platforms: newly created shells will also\n\
+be locked out until the modal dialog gets popped down.\n\
+\n\
+Press here to popup the tree modal dialog for this topLevelShell.
+

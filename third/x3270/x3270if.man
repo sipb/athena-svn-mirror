@@ -1,0 +1,104 @@
+'\" t
+.TH X3270IF 1 "1 October 1995"
+.SH NAME
+x3270if \-
+command interface to x3270
+.SH SYNOPSIS
+.B x3270if
+[
+.B \-v
+]
+.I action
+[
+.B (
+.I param
+[ ,... ]
+.B )
+]
+.br
+.B x3270if
+[
+.B \-v
+]
+.B \-s
+.I field
+.SH DESCRIPTION
+.B x3270if
+provides an interface between
+.IR x3270 (1)
+and child processes run with the
+.B Script()
+action.
+.LP
+.B x3270if
+performs one of two functions: passing an action and optional parameters to
+.I x3270
+for execution, or reporting the value of one of
+.IR x3270 's
+status fields.
+.LP
+The result of the command execution, or the value of the requested status
+field, is written to standard output.
+.SH OPTIONS
+.TP
+.B \-v
+Turns on verbose debug messages, showing the literal data that is passed
+between
+.I x3270
+and
+.BR x3270if .
+.TP
+.BI \-s " field"
+Causes
+.B 3270if
+to return the value of an
+.I x3270
+status field, rather than passing an action to be executed.
+.I Field
+is an integer in the range 0 through 11, indicating the desired status
+field.
+The indices and meanings of each field are documented on the
+.IR x3270-script (1)
+manual page.
+.SH EXIT STATUS
+If the requested
+.I action
+succeeds,
+.B x3270if
+exits with status 0.
+If the action fails,
+.B x3270if
+exits with status 1.
+If there is an operational error within
+.B x3270if
+itself, such as a command-line syntax error, missing environment
+variable, or closed pipe,
+.B x3270if
+exits with status 2.
+.SH ENVIRONMENT
+.I x3270
+uses a pair of pipes for communication with each child process.
+The values of the file descriptors for these pipes are encoded as text
+in two environment variables, which are required by
+.BR x3270if :
+.TP
+.B X3270OUTPUT
+Output from
+.IR x3270 ,
+input to the child process.
+.TP
+.B X3270INPUT
+Input to
+.IR x3270 ,
+output from the child process.
+.SH "SEE ALSO"
+.IR x3270 (1), " x3270-script" (1)
+.SH COPYRIGHT
+Copyright 1995 by Paul Mattes.
+.RS
+Permission to use, copy, modify, and distribute this software and its
+documentation for any purpose and without fee is hereby granted,
+provided that the above copyright notice appear in all copies and that
+both that copyright notice and this permission notice appear in
+supporting documentation.
+.RE

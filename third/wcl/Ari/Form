@@ -1,0 +1,40 @@
+! SCCS_data: @(#) Form 1.1 92/12/02 14:47:12
+!
+! Note that if children of the form are created in a upper left
+! to lower right order, as specified by the order of the children
+! in the form's wcChildren resource, then one can set the fromHoriz
+! and fromVert constraints on the children as shown here.  
+!
+! If you cannot guarantee this ordering of creation, then you should set
+! the constraints in the wcAfterChildren callback of the form widget.
+! Since this callback is invoked after the children are created but
+! before the children are managed, the form does not first lay out the
+! children, and then gets hit with a request to change everything:
+! form (like any reasonable composite widget) computes the layout
+! of children in its change_managed method, hence the layout calculations
+! are performed after the constraints are set using either approach.
+!
+Ari.wcChildren:		form
+
+*font:			*times-bold-i-*-140-*
+
+*form.wcClassName:	Form
+*form.wcChildren:	label, one, two, three, go
+
+*label.wcClassName:	Label
+*label.label:		Form with Buttons
+
+*one.wcClassName:	Command
+*one.fromVert:		^label
+
+*two.wcClassName:	Command
+*two.fromHoriz:		^label
+
+*three.wcClassName:	Command
+*three.fromHoriz:	^one
+*three.fromVert:	^label
+
+*go.wcClassName:	Command
+*go.fromHoriz:		^three
+*go.fromVert:		^two
+*go.callback:		WcExit()

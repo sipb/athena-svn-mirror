@@ -1,0 +1,54 @@
+! SCCS_data: @(#) ListTable 1.1 92/12/04 13:46:08
+!
+!  Scrolled Lists in XmpTables
+!  ------------------------
+!
+!  This resource file presents the way one must deal with scrolled lists
+!  which are managed by XmpTable widgets.  In the layout resource for the
+!  XmpTable widget, we must name the scrolled window, NOT the list:
+!
+!        *table.layout:          quit    0 0 1 1 h ;\
+!                                slistSW 0 1 1 1
+!
+!  If we simply said "slist" instead of "slistSW" then nothing
+!  appears, because slist is not one of the children of table.
+!  Rather, slistSW is the child of table, and slist is the
+!  child of slistSW.
+!
+!  As an aside, the layout option h on the quit button allow
+!  resizing to work nicely.  Compare the behavior of the XmpTable
+!  with the resize behavior of XmRowColumn.  I think you will
+!  prefer XmpTable over XmRowColumn.
+!
+!  ----------------------------------------------------------------------
+
+!*wcTrace:	True
+
+Mri.wcChildren:		table
+*table.wcCallback:	WcSetValue(~.title: ListTable)
+
+*table.wcCreate:	XmpTable
+*table.wcChildren:	quit, slist
+*table.layout:		quit    0 0 1 1 h ;\
+			slistSW 0 1 1 1
+*table.marginHeight:	3
+*table.marginWidth:	3
+*table.Spacing:		3
+
+*quit.wcCreate:		XmPushButton
+*quit.activateCallback:	WcExit
+*quit.labelString:	Push To Exit
+
+*slist.wcCreate:		XmCreateScrolledList
+*slist.items:			This demo uses the XmpTable widget.,\
+				Try resizing the window.,\
+				You will see the list gets wider\\,,\
+				AND longer - unlike with XmRowColumn.,\
+				foo,bar, baz is a nice item,\
+				zorp,the,quick,brown,fox,\
+				jumped,over,the, lazy, dog, and, blew,\
+				the, candle, out. This\\, and that, and,\
+				more,to,come. That's all.
+*slist.itemCount:		26
+*slist.visibleItemCount:	11
+*slist.selectionPolicy:		EXTENDED_SELECT

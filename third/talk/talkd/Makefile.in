@@ -1,0 +1,40 @@
+# $Id: Makefile.in,v 1.4 1997-03-31 09:44:14 ghudson Exp $
+
+SHELL=/bin/sh
+INSTALL=@INSTALL@
+VPATH=@srcdir@
+srcdir=@srcdir@
+top_srcdir=@top_srcdir@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+sbindir=@sbindir@
+mandir=@mandir@
+
+CC=@CC@
+CPPFLAGS=@CPPFLAGS@
+CFLAGS=@CFLAGS@
+LDFLAGS=@LDFLAGS@
+LIBS=@LIBS@
+ALL_CFLAGS=-I.. ${CPPFLAGS} ${CFLAGS}
+OBJS=announce.o print.o process.o table.o talkd.o
+
+all: talkd
+
+talkd: ${OBJS}
+	${CC} ${LDFLAGS} -o talkd ${OBJS} ${LIBS}
+
+.c.o:
+	${CC} -c ${ALL_CFLAGS} $<
+
+check:
+
+install:
+	${top_srcdir}/mkinstalldirs ${DESTDIR}${sbindir}
+	${top_srcdir}/mkinstalldirs ${DESTDIR}${mandir}/man8
+	${INSTALL} -m 555 talkd ${DESTDIR}${sbindir}
+	${INSTALL} -m 444 ${srcdir}/talkd.8 ${DESTDIR}${mandir}/man8
+
+clean:
+	rm -f ${OBJS} talkd
+
+distclean: clean

@@ -1,0 +1,132 @@
+
+
+
+   18 August 1992                                                   FPCOMM(8)
+
+
+
+
+
+   NAME
+     fpcomm-TRANSCRIPT Ethernet communication filter for communicating with
+     POSTSCRIPT printers via FastPort printer servers
+
+   SYNOPSIS
+     XPSLIBDIRX/fpcomm
+
+   DESCRIPTION
+     This is the low-level TRANSCRIPT Ethernet communication filter for use
+     by the System V or BSD line printer spooling system for communicating
+     with a POSTSCRIPT printer via a MiLAN FastPort print server. It is
+     called from the printer interface script for the printer.  There are a
+     number of options for fpcomm that get set from the configuration file in
+     the spool directory for the printer. The syntax for the .fpconfig file
+     is as follows (any number of the entries can appear.)
+
+
+     hostname _n_a_m_e
+           specifies the IP _n_a_m_e for the FastPort.
+
+     serial
+           sends to the serial port.
+
+     parallel
+           sends to the parallel port.
+
+     ctrld sends a control D before and after the job-this initializes the
+           POSTSCRIPT printer.
+
+     formfeed
+           sends a formfeed after the job.
+
+     dobanner
+           looks for file .banner in the current working directory and sub-
+           mits it before the job.
+
+     startfile _f_i_l_e
+           send _f_i_l_e before the job-this can be used to download an error
+           handler, for example.
+
+     endfile _f_i_l_e
+           sends _f_i_l_e after the job.
+
+     startstring _s_t_r_i_n_g
+           sends _s_t_r_i_n_g before the job. This can be used to set printer
+           modes-i.e., send escape sequences.
+
+     endstring _s_t_r_i_n_g
+           sends _s_t_r_i_n_g after the job-resets the printer through escape
+           sequences to a particular mode)
+
+
+
+   MiLAN Technology                                                         1
+
+
+
+
+
+
+   FPCOMM(8)                                                   18 August 1992
+
+
+     P_CLASS
+           list of names of parallel printers-print on the first available.
+
+     S_CLASS
+           List of names of serial printers-print on the first available.
+
+     mail _u_s_e_r_n_a_m_e
+           sends mail to _u_s_e_r_n_a_m_e with any errors or the destination printer
+           name if P-CLASS or S-CLASS was used.
+
+     program _p_r_o_g_n_a_m_e
+           executes _p_r_o_g_n_a_m_e for error messages or return messages.
+
+     errorfile _f_i_l_e_n_a_m_e
+           stores any errors that occurred in _f_i_l_e_n_a_m_e.
+
+     syslog
+           records error messages in syslog file.
+
+
+     If both startstring and startfile are set, startstring will be sent
+     first followed by startfile.  If both endfile and endstring are, endfile
+     will be sent before endstring.
+
+     The syntax for escape in the start or stop strings is "M-", and the syn-
+     tax for control is "C^".
+
+     Using the .fpconfig file, you can set the printer mode, execute commands
+     after printing, get notifications regarding print jobs etc.  If you do
+     not want to place the .fpconfig file in the spool directory or if you
+     want to call it by some other name, then you can use the PRINTER_CONFIG
+     environment variable to specify the location of the configuration file.
+
+   ENVIRONMENT
+
+     PRINTER_CONFIG
+          location of the configuration file
+
+   SEE ALSO
+     transcript(1), lp(1), lpstat(1), lpsched(1M), lpadmin(1M), psinter-
+     face(8), psint(8)
+     _S_y_s_t_e_m _V _L_i_n_e _P_r_i_n_t_e_r _S_p_o_o_l_i_n_g _U_t_i_l_i_t_i_e_s
+     _4._2_B_S_D _L_i_n_e _P_r_i_n_t_e_r _S_p_o_o_l_e_r _M_a_n_u_a_l
+
+   AUTHOR
+     MiLAN Technology Corporation
+
+   NOTES
+     POSTSCRIPT is a registered trademark of Adobe Systems Incorporated.
+     TRANSCRIPT is a trademark of Adobe Systems Incorporated.
+     Unix is a trademark of AT&T Bell Laboratories.
+     FastPort is a trademark of MiLAN Technology.
+
+
+
+
+   2                                                         MiLAN Technology
+
+
+99

@@ -1,0 +1,28 @@
+% Copyright 1988 Michael Urban
+% Everyone is granted permission to copy, modify and redistribute
+% this file, provided that a currently-dated copy of this
+% copyright notice is included in the copy.
+% License is granted to produce fonts based on the information
+% in this file, provided that such fonts are redistributed
+% without charge to any third party.
+
+% SCCS ID @(#)tiw.mf	1.1   10/1/86
+
+pair bowpoint, barpoint, hookpoint;
+
+input telcor;
+input luvar;
+
+input bars;
+
+input tincotema; input parmatema; 
+input calmatema;
+input quessetema;
+
+input additionals;
+input fullvowels;
+input carriers;
+input accents;
+
+input punctuation;
+input numerals;

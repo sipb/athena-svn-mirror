@@ -1,0 +1,177 @@
+SccsID: %Z% %M% %I% %E% %U%
+
+Widget Creation Library Version 2.5 Distribution
+------------------------------------------------
+
+The distribution contains files which make up the Widget Creation
+Library (Wcl or libWc.a), and resource interpreters and utility
+libraries (which include Table widgets) for each of the following
+widget sets: Athena, Motif, and OpenLook.
+
+Wcl is completely widget set independent.  It provides mechanisms to
+allow an entire user interface to be specified in resource files.
+Basically, this amounts to providing new resources for specifying the
+types of the widgets and the widget heirarchy.  In addition, Wcl
+provides several callbacks and action functions which many programs
+need.
+
+See README20 for general information about Wcl version 2, and README22
+for additional features introduced in Wcl version 2.2 and version 2.1,
+and README23 for new features in Wcl 2.3, and README24 for new features
+in Wcl 2.4.
+
+New Features of Wcl 2.5
+------------------------
+
+This is the last Wcl release from Germany.  Following this release,
+I will again be supporting Wcl from JPL in Pasadena California.
+
+Doc			- A directory with two very simple tutorial text
+			  files which give you hints on how to actually
+			  develop a program and/or libraries using Wcl.
+			  Some improvements were made, for example I
+			  mention that non-visible appShells must have
+			  non-zero sizes.
+
+Mri/Imakefile		- Has been enhanced to properly build a profiled
+			  version of Mri.  This is still labor intensive at
+			  the Imake level, but it works (on SunOS at least).
+
+WcPrint			- It is now easy to override Wcl's default use of
+			  stderr for printing all messages.  You can provide
+			  new, non-vargs replacements to print messages,
+			  and messages with a "printf" like format string
+			  which contains ONLY `%s' format characters.  See
+			  WcCreateP.h, look at the section beginning with
+			  the comment "Override for Default Wcl Error Printing"
+
+XmpAddActionsAndCallbacks
+XmpAddConverters
+XmpAddMotifConverters	- These are called by XmpRegisterMotif(), but allow
+			  applications to get just some of the Xmp things
+			  without registering the Xmp and Motif widgets.
+
+
+New Platform Support
+--------------------
+Interactive 3.0.1	- MakeByHand can be used to build the distribution
+			  by using WcMake1.isc and WcMake2.isc, thanks to
+			  J.J.Bailey (jjb@jagware.acco.com)
+
+AIX and ESIX		- You need to do a tiny bit more work, but I hope
+			  everything you need for these platforms is in the
+			  files by these names.  These files were provided
+			  by Klaus Kretschel <RZ13@dlrvm.bitnet> and
+			  Dave Custer (ddc@druwa.att.com) respectively.
+
+Sorry, but this distribution has NOT been tested on these platforms.
+Next time...
+
+Bug Fixes
+---------
+
+WcSetValues		can now take empty resource values, like this:
+			*foo.activateCallback:	WcSetValue(this.labelString:)
+
+WcCvtStringToWidget	Sometimes did not work when widgets were destroyed
+			because the R4 and R5 conversion cache was being
+			used, but not cleared (it only gets cleared when the
+			`this' widget gets destroyed, NOT when any named
+			widgets are destroyed).  A new style converter is
+			now used on R4 and later builds to avoid this
+			problem.  However, this means YOU may need to change
+			calls to XtAddConverter to be XtAddTypeConverter
+			if YOU register this converter function without
+			using Wcl or Xmp to do it for you.
+
+WcLoadResourceFile	no longer dumps core with multiple application
+			contexts.
+
+WcName.c		has been modified to use isspace(), isalpha() and
+			so on.  This makes these routines portable across
+			character sets. A side effect of this is that
+			Constructors can now be specified in resource files
+			with trailing empty (ignored) parenthesis, like
+			callback procedures.
+
+MapAg.c			MapAg_Forget_Normal() had a bug detected by Purify.
+			Thanks, Ik Su Yoo (ik@mobydick.leis.bellcore.com)
+
+WcTemplate Tracing	Tracing now (again) works correctly.
+
+
+Table Widget
+------------
+
+Table really works much better now.  There was an annoying bug
+where children which got managed and unmanaged multiple times
+would slowly be squashed down to nothing.  This was because I
+tried to be very, very literal with my implementation of Xt
+geometry management.  See Xmp/TableLoc.c XmpTableLocPreferredWidth()
+for a discussion of this point.
+
+Unmanaged Tables (especially when children of popped-down Motif
+dialog shells) now resize correctly when children resize.
+
+A new set of resources sameWidth, sameHeight, sameBorder all of
+class SameSize has been added.  This causes the Table to try and
+maintain the named widgets to be the same size when the table
+does a new re-layout (due to shell resize, child resize, child
+manage/unmanage, etc).
+
+Table now completely forgets about destroyed widgets (it kept a
+pointer to un-managed widgets in the default_layout location list,
+and it now clears this out when children get destroyed).
+
+Make and Imake changes for Clients
+----------------------------------
+
+Build Instructions
+------------------
+
+See README_BUILD for detailed instructions on how to build the
+distribution.
+
+If you are using imake, you MUST provide a Wc.tmpl file.
+The distribution provides two versions of this file,
+one of which may be exactly what you need:
+
+ Wc.tmpl.r5	Should work as-is with X11R5 from mit.
+
+ Wc.tmpl.irix	Should work as-is on Irix (Silicon Graphics) machines with
+		SGI X (R4) and Motif installations.
+
+
+If you are using make, you MUST look at WcMake1.tmpl and WcMake2.tmpl.
+Again, a couple of different versions of these files are provided, but
+you almost certainly must do something to make it build on your
+platform.
+
+ WcMake1.tmpl	These work on my machine
+ WcMake2.tmpl
+
+ WcMake1.svr4	These work on SVR4 machines with X11R4 and Motif 1.1,
+ WcMake2.svr4	and are used to make dynamic libraries.
+
+ WcMake1.svr4-a	These work on SVR4 machines with X11R4 and Motif 1.1.,
+ WcMake2.svr4-a	and are used to create static libraries.
+
+ WcMake1.sco	These work on SCO Open Desk Top machines.  Whew!  Also,
+ WcMake2.sco	installable man pages (*S.z, *C.z) are now provided.
+
+ WcMake1.isc	These work on Interactive 3.0.1 machines,
+ WcMake2.isc	thanks to J.J.Bailey (jjb@jagware.acco.com)
+
+ AIX		What you need to know to build on AIX machines,
+		thanks to Klaus Kretschel <RZ13@dlrvm.bitnet>
+
+ ESIX		What you need to know to build on ESIX machines,
+		thanks to Dave Custer (ddc@druwa.att.com)
+
+Wcl has been built against Motif 1.2 and Xaw3d without any problems.
+
+---------------------------------------------------------------------------
+David E. Smyth			David.Smyth@ap.mchp.sni.de
+Object/X Researcher		AP 154, Carl-Wery-Str 22, Munich 83 Germany
+	Research Grant provided by Esprit Investments Ltd, 
+	major sponsor Siemens Nixdorf Informationssysteme AG

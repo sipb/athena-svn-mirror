@@ -1,0 +1,526 @@
+Replied: Fri, 05 Sep 1997 16:17:49 -0400
+Replied: ""Ulrich Windl" <ulrich.windl@rz.uni-regensburg.de> "
+Return-Path: Ulrich.Windl@rz.uni-regensburg.de 
+Return-Path: <Ulrich.Windl@rz.uni-regensburg.de>
+Received: from rrzs2.rz.uni-regensburg.de (rrzs2.rz.uni-regensburg.de [132.199.1.2])
+	by whimsy.udel.edu (8.8.5/8.8.5) with ESMTP id HAA27016
+	for <stenn@whimsy.udel.edu>; Fri, 5 Sep 1997 07:18:16 GMT
+Received: from ngate.ngate.uni-regensburg.de (ngate.rz.uni-regensburg.de [132.199.3.13])
+	by rrzs2.rz.uni-regensburg.de (8.8.5/8.8.5) with SMTP id JAA19789;
+	Fri, 5 Sep 1997 09:18:11 +0200 (MET DST)
+Received: from rkdvmks1.ngate.uni-regensburg.de by ngate.ngate.uni-regensburg.de; Fri,  5 Sep 97 08:18 MET
+Received: from rkdvmks1.ngate.uni-regensburg.de by kgate.ngate.uni-regensburg.de; Fri,  5 Sep 97 07:18 GMT
+Received: from RKDVMKS1/SpoolDir by rkdvmks1.ngate.uni-regensburg.de (Mercury 1.32);
+    5 Sep 97 09:17:57 +0200
+Received: from SpoolDir by RKDVMKS1 (Mercury 1.32); 5 Sep 97 09:17:47 +0200
+From: "Ulrich Windl" <ulrich.windl@rz.uni-regensburg.de>
+Organization: Universitaet Regensburg, Klinikum
+To: stenn@whimsy.udel.edu
+Date: Fri, 5 Sep 1997 09:17:41 +0200
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+Subject: Some HTML patches
+Cc: kardel@informatik.uni-erlangen.de
+Priority: normal
+X-mailer: Pegasus Mail for Windows (v2.53/R1)
+Message-ID: <732235056CD@rkdvmks1.ngate.uni-regensburg.de>
+Content-Transfer-Encoding: 8bit
+X-MIME-Autoconverted: from Quoted-printable to 8bit by whimsy.udel.edu id HAA27016
+
+Harlan,
+
+I have reviewed three of the HTML files in xntp3-5.90.2. I hope I 
+could improve the appearance of these files. I'm sending a copy to 
+Frank Kardel, because driver8.html first mentions that flags 1 and 2 
+enable filtering of timestamps, but later the document says the flags 
+are unused. According to the source, the flags are stored, but not 
+used. Maybe Frank can say something about it. Personally I think 
+filtering would be good for some platforms (like a HP 9000/827 with a 
+MUX panel that has *polled* serial ports)...
+
+Ulrich
+-------------------
+Harlan,
+
+I have worked on three HTML files in the xntp3-5.90.2 release. I
+corrected a few spelling errors, added more markup (like
+<code>...</code>). Even though it is allowed to leave out the "head"
+and "body" elements in HTML 2, some browsers like Netscape 2 choke
+badly on it. Thus I added these optional tags.
+
+Ulrich
+
+--- /usr/doc/packages/xntpd/driver8.html	Tue Jun 24 19:28:38 1997
++++ driver8.html	Thu Sep  4 21:34:41 1997
+@@ -33,7 +33,7 @@
+ 
+ <p>The reference clock support in xntp contains the necessary
+ configuration tables for those receivers. In addition to supporting
+-several different clock types and 4 devices, the generation a a
++several different clock types and 4 devices, the generation of a
+ PPS signal is also provided as an configuration option. The PPS
+ configuration option uses the receiver generated time stamps for
+ feeding the PPS loopfilter control for much finer clock
+@@ -50,40 +50,44 @@
+ 
+ <p>Fudge factors
+ 
+-<p>Only two fudge factors are utilized. The time1 fudge factor defines
+-the phase offset of the synchronization character to the actual
+-time. On the availability of PPS information the time2 fudge factor
+-defines the skew between the PPS time stamp and the receiver
+-timestamp of the PPS signal. This parameter is usually zero, as
+-usually the PPS signal is believed in time and OS delays should be
+-corrected in the machine specific section of the kernel driver.
+-time2 needs only be set when the actual PPS signal is delayed for
+-some reason. The flag1 enables input filtering. This a median
+-filter with continuous sampling. The flag2 selects averaging of the
+-samples remaining after the filtering. Leap second-handling is
+-controlled with the flag3. When set a leap second will be deleted
+-on receipt of a leap second indication from the receiver. Otherwise
+-the leap second will be added, (which is the default).
+-flag3 should never be set. PPS handling is enabled by adding 128 to
+-the mode parameter in the server/peer command.
++<p>Only two fudge factors are utilized. The <code>time1</code> fudge
++factor defines the phase offset of the synchronization character to
++the actual time. On the availability of PPS information the
++<code>time2</code> fudge factor defines the skew between the PPS time
++stamp and the receiver timestamp of the PPS signal. This parameter is
++usually zero, as usually the PPS signal is believed in time and OS
++delays should be corrected in the machine specific section of the
++kernel driver.  <code>time2</code> needs only be set when the actual
++PPS signal is delayed for some reason.
++
++<p>The <code>flag1</code> enables input filtering. This a median
++filter with continuous sampling. The <code>flag2</code> selects
++averaging of the samples remaining after the filtering. Leap
++second handling is controlled with the <code>flag3</code>. When set a
++leap second will be deleted on receipt of a leap second indication
++from the receiver. Otherwise the leap second will be added, (which is
++the default).  <code>flag3</code> should never be set. PPS handling is
++enabled by adding 128 to the mode parameter in the server/peer
++command.
+ 
+ <p>ntpq (8)
+ 
+ <p>timecode variable
+ 
+ <p>The ntpq program can read clock variables command list several
+-variables. These hold the following information: refclock_time is
+-the local time with the offset to UTC (format HHMM). The currently
+-active receiver flags are listed in refclock_status. Additional
+-feature flags of the receiver are optionally listed in parentheses.
+-The actual time code is listed in timecode. A qualification of the
+-decoded time code format is following in refclock_format. The last
+-piece of information is the overall running time and the
+-accumulated times for the clock event states in refclock_states.
+-When PPS information is present additional variable are available.
+-refclock_ppstime lists then the PPS timestamp and refclock_ppsskew
+-lists the difference between RS232 derived timestamp and the PPS
+-timestamp.
++variables.  These hold the following information:
++<code>refclock_time</code> is the local time with the offset to UTC
++(format HHMM).  The currently active receiver flags are listed in
++<code>refclock_status</code>.  Additional feature flags of the receiver
++are optionally listed in parentheses.  The actual time code is listed
++in <code>timecode</code>.  A qualification of the decoded time code
++format is following in <code>refclock_format</code>.  The last piece of
++information is the overall running time and the accumulated times for
++the clock event states in <code>refclock_states</code>.  When PPS
++information is present additional variable are available.
++<code>refclock_ppstime</code> lists then the PPS timestamp and
++<code>refclock_ppsskew</code> lists the difference between RS232
++derived timestamp and the PPS timestamp.
+ 
+ <p>Currently, fourteen clock types (devices /dev/refclock-0 -
+ /dev/refclock-3) are supported by the PARSE driver.
+@@ -119,7 +123,7 @@
+ </ul>
+ 
+ <p>Actual data formats and set-up requirements of the various clocks can
+-be found in <a href="http:parsedata.html">XNTP PARSE clock data formats</a>.
++be found in <a href="parsedata.html">XNTP PARSE clock data formats</a>.
+ <p>The reference clock support carefully monitors the state
+ transitions of the receiver. All state changes and exceptional
+ events such as loss of time code transmission are logged via the
+@@ -144,14 +148,15 @@
+ details). Meinberg receivers can be connected by feeding the PPS
+ pulse of the receiver via a 1488 level converter to Pin 8 (CD) of a
+ Sun serial zs-port.
+-To select PPS support the STREAMS driver for PARSE must be loaded and
+-the mode parameter ist the mode value of above plus 128. If 128 is
++
++<p>To select PPS support the STREAMS driver for PARSE must be loaded
++and the mode parameter ist the mode value of above plus 128. If 128 is
+ not added to the mode value PPS will be detected to be available but
+-it will not be used. For PPS to be used you MUST add 128 to the
+-mode parameter.
++it will not be used. For PPS to be used you <strong>must</strong> add
++128 to the mode parameter.
+ 
+ <p>There exists a special firmware release for the PZF535 Meinberg
+-receivers. This release (PZFUERL 4.6 (or higher - The UERL is
++receivers. This release (<code>PZFUERL 4.6</code> (or higher - The UERL is
+ important)) is absolutely recommended for XNTP use, as it provides
+ LEAP warning, time code time zone information and alternate antenna
+ indication. Please check with Meinberg for this firmware release.
+@@ -170,12 +175,11 @@
+ transmitter shutdowns you are out of luck unless you have other NTP
+ servers with alternate time sources available.
+ 
+-
+ <p><h4>Monitor Data</h4>
+ 
+-<p>clock states statistics are written hourly the the syslog
++<p>Clock state statistics are written hourly to the syslog
+ service. Online information can be found by examining the 
+-clock variable via the ntpq cv command.
++clock variable via the <code>ntpq cv</code> command.
+ 
+ <p><h4>Fudge Factors</h4>
+ 
+@@ -219,8 +223,12 @@
+ <p>The pare clock mechanismis deviated from the way other xntp reference
+ clocks work. For a short description how to build parse reference clocks
+ see <a href="parsenew.html">making PARSE clocks</a>
++
+ <p>Additional Information
+ 
+-<p><a href="refclock.html"> Reference Clock Drivers</a>
++<p><a href="refclock.html">Reference Clock Drivers</a>
+ 
+-<hr><address><a href="http://www4.informatik.uni-erlangen.de/~kardel">Frank Kardel</a> (<a 
+href="mailto: 
+kardel@informatik.uni-erlangen.de">kardel@informatik.uni-erlangen.de</a>)</address></body><
+tml>
++<hr><address>
++<a href="http://www4.informatik.uni-erlangen.de/~kardel">Frank Kardel</a>
++(<a href="mailto:kardel@informatik.uni-erlangen.de">kardel@informatik.uni-erlangen.de</a>)
++</address></body></html>
+--- /usr/doc/packages/xntpd/parsedata.html	Tue Jun 24 19:28:38 1997
++++ parsedata.html	Thu Sep  4 22:15:46 1997
+@@ -1,12 +1,15 @@
+ <!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML Strict//EN">
++<html><head>
+ <TITLE>XNTP PARSE clock data formats</TITLE>
++</head><body>
+ <h1>XNTP PARSE clock data formats</h1>
+ 
+ <p>The parse driver currently supports several clocks with different
+-query mechanisms. In order for you to find a sample that might be
+-similar to a clock you might want to integrate into parse i'll sum
+-up the major features of the clocks (this information is distributed
+-in the parse/clk_*.c and xntpd/refclock_parse.c files).
++query mechanisms.  In order for you to find a sample that might be
++similar to a clock you might want to integrate into parse i'll sum up
++the major features of the clocks (this information is distributed in
++the <code>parse/clk_*.c</code> and <code>xntpd/refclock_parse.c</code>
++files).
+ 
+ <hr>
+ <h2>Meinberg clocks</h2>
+@@ -17,7 +20,7 @@
+       pattern="\2  .  .  ;  ;   :  :  ;    :  ;        ;   .         .       "
+ </pre>
+         <p>
+-	Meinberg is a german manufacturer of time code receivers. Those clocks
++	Meinberg is a German manufacturer of time code receivers. Those clocks
+ 	have a pretty common output format in the stock version. In order to
+ 	support NTP Meinberg was so kind to produce some special versions of
+ 	the firmware for the use with NTP. So, if you are going to use a
+@@ -32,7 +35,7 @@
+ 	the reception of a question mark or every second. NTP uses the latter
+ 	mechanism. The DCF77 variants have a pretty good relationship between
+ 	RS232 time code and the PPS signal while the GPS receiver has no fixed
+-	timeing between the datagram and the pulse (you need to use PPS with
++	timing between the datagram and the pulse (you need to use PPS with
+ 	GPS!) on DCF77 you might get away without the PPS signal.
+ 	<pre>
+ 	The preferred tty setting for Meinberg is:
+@@ -71,9 +74,10 @@
+     <p>Version for UNI-ERLANGEN Software is: PZFUERL V4.6 (Meinberg)
+ 
+ 
+-    <p>The use of this software release (or higher) is *ABSOLUTELY*
+-    recommended (ask for PZFUERL version as some minor HW fixes have
+-    been introduced) due to the LEAP second support and UTC indication.
++    <p>The use of this software release (or higher) is
++    <strong>absolutely</strong> recommended (ask for PZFUERL version as
++    some minor HW fixes have been introduced) due to the LEAP second
++    support and UTC indication.
+     The standard timecode does not indicate when the timecode is in
+     UTC (by front panel configuration) thus we have no chance to find
+     the correct utc offset. For the standard format do not ever use
+@@ -128,21 +132,24 @@
+     &lt;L&gt;		   = 'L' on 23:59:60
+ </pre>
+ 
+-<p>For the Meinberg parse look into clock_meinberg.c
++<p>For the Meinberg parse look into <code>clk_meinberg.c</code>
+ 
+ <br>
+ <h2>Raw DCF77 Data via serial line</h2>
+-<p>RAWDCF: end=TIMEOUT&gt;1.5s, sync each char (any char),generate psuedo time
+-            codes, fixed format
+ <p>
+-    direct DCF77 code input
++<pre>
++RAWDCF: end=TIMEOUT&gt;1.5s, sync each char (any char),
++      generate psuedo time codes, fixed format
++      direct DCF77 code input
++</pre>
+ 
+-    <p>In Europe it is relatively easy/cheap the receive the german time code
+-    transmitter DCF77. The simplest version to process its signal is to
++    <p>In Europe it is relatively easy/cheap the receive the German time code
++    transmitter DCF77.  The simplest version to process its signal is to
+     feed the 100/200ms pulse of the demodulated AM signal via a level
+-    converter to an RS232 port at 50Baud. parse/clk_rawdcf.c holds all
+-    necessary decoding logic for the time code which is transmitted each
+-    minute for one minute. A bit of the time code is sent once a second.
++    converter to an RS232 port at 50 Baud.
++    <code>parse/clk_rawdcf.c</code> holds all necessary decoding logic for the
++    time code which is transmitted in 59 bits every minute.  One bit
++    of the time code is sent once a second.
+ 
+ <pre>
+ 	The preferred tty setting is:
+@@ -154,7 +161,6 @@
+ 
+ <h2>DCF77 raw time code</h2>
+ 
+-
+ <p>From "Zur Zeit", Physikalisch-Technische Bundesanstalt (PTB), Braunschweig
+ und Berlin, März 1989
+ <br>
+@@ -163,17 +169,17 @@
+ 
+ 	AM:
+ 
+-	time marks are send every second except for the second before the
+-	next minute mark
+-	time marks consist of a reduction of transmitter power to 25%
+-	of the nominal level
+-	the falling edge is the time indication (on time)
+-	time marks of a 100ms duration constitute a logical 0
+-	time marks of a 200ms duration constitute a logical 1
++	* Time marks are sent every second except for the second before the
++	  next minute mark
++	* Time marks consist of a reduction of transmitter power to 25%
++	  of the nominal level
++	* The falling edge is the time indication (on time)
++	* Time marks of a 100ms duration constitute a logical 0
++	* Time marks of a 200ms duration constitute a logical 1
+ 
+ 	FM:
+ 
+-	see the spec. (basically a (non-)inverted psuedo random phase shift)
++	See the spec. (basically a (non-)inverted psuedo random phase shift)
+ 
+ 	Encoding:
+ 
+@@ -203,15 +209,16 @@
+ 	51 - 53	Y1    - BCD (lsb first) Years
+ 	54 - 57	Y10   - BCD (lsb first) 10 Years
+ 	58 		P3    - Date Parity (even)
+-	59		      - usually missing (minute indication), except for leap insertion
++	59		      - usually missing (minute indication),
++                                except for leap insertion
+ </pre>
+ 
+ <hr>
+ <h2>Schmid clock</h2>
+ 
+-<p>
++<pre>
+ 	Schmid clock: needs poll, binary input, end='\xFC', sync start
+-
++</pre>
+ 	<p>
+ 	The Schmid clock is a DCF77 receiver that sends a binary
+ 	time code at the reception of a flag byte. The contents
+@@ -223,7 +230,6 @@
+ 		IFLAG		0
+ 		OFLAG		0
+  		LFLAG		0
+-
+ </PRE>
+ 
+ 
+@@ -281,10 +287,10 @@
+ 
+ <hr>
+ <h2>ELV DCF7000</h2>
+-<p>
++<pre>
+ 	ELV DCF7000: end='\r', pattern="  -  -  -  -  -  -  -  \r"
+-<p>
+-	The ELV DCF7000 is a cheap DCF77 receiver sending each second
++</pre>
++<p>	The ELV DCF7000 is a cheap DCF77 receiver sending each second
+ 	a time code (though not very precise!) delimited by '`r'
+ <pre>
+ 	Timecode
+@@ -295,10 +301,10 @@
+ 		FF&0x4  - unsynchronised
+ </pre>
+ <hr>
+-<h2>HOPF 6021 und Kompatible</h2>
++<h2>HOPF 6021 and compatibles</h2>
+ 
+ <p>
+- HOPF Funkuhr 6021 mit serieller Schnittstelle
++ HOPF Funkuhr 6021 with serial interface
+  Created by F.Schnekenbuehl &lt;frank@comsys.dofn.de&gt; from clk_rcc8000.c
+  Nortel DASA Network Systems GmbH, Department: ND250
+  A Joint venture of Daimler-Benz Aerospace and Nortel.
+@@ -312,7 +318,7 @@
+       dataformat 6021
+       output time and date
+       transmit with control characters
+-      transmit evry second
++      transmit every second
+  
+   Type 6021 Serial Output format
+ 
+@@ -333,7 +339,7 @@
+       x x x 0  - no announcement
+       x x x 1  - Summertime - wintertime - summertime announcement
+       x x 0 x  - Wintertime
+-      x x 1 x  - Summertime
++      x x 1 x  - Summertime (daylight saving time)
+       0 0 x x  - Time/Date invalid
+       0 1 x x  - Internal clock used 
+       1 0 x x  - Radio clock
+@@ -371,3 +377,4 @@
+    CR   Carriage return 
+    LF   Linefeed
+ </pre>   
++</body></html>
+--- /usr/doc/packages/xntpd/parsenew.html	Tue Jun 24 19:28:38 1997
++++ parsenew.html	Thu Sep  4 22:19:04 1997
+@@ -1,5 +1,7 @@
+ <!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML Strict//EN">
++<html><head>
+ <TITLE>Making PARSE Clocks</TITLE>
++</head><body>
+ <h1>How to build new PARSE clocks</h1>
+ 
+ <p>Here is an attempt to sketch out what you need to do in order to
+@@ -8,15 +10,14 @@
+ 
+ <p>Prerequisites:
+ <ul>
+-<li>Does the system you want the clock connect to have the include files
+-termio.h or termios.h ? (You need that for the parse driver)
++<li>Does the system you want the clock connect to have the include
++files <code>termio.h</code> or <code>termios.h</code> ? (You need that
++for the parse driver)
+ </ul>
+ 
+-
+ <p>What to do:
+ 
+-
+-<p>Make a conversion module (libparse/clk_*.c)
++<p>Make a conversion module (<code>libparse/clk_*.c</code>)
+ 
+ <ol>
+ <li>What ist the time code format ?
+@@ -76,9 +77,9 @@
+      usec value. The fields for date and time (down to second resolution)
+      will be ignored.
+ 
+-
+-     <p>Conversion is done in the cvt_* routine in parse/clk_*.c files. look in
+-     them for examples. The basic structure is:
++     <p>Conversion is done in the <code>cvt_*</code> routine in
++     <code>parse/clk_*.c</code> files. look into them for examples.
++     The basic structure is:
+ 
+ <PRE>
+      struct clockformat &lt;yourclock&gt;_format = {
+@@ -101,9 +102,9 @@
+ </PRE>
+ 
+ 
+-<p>The struct clockformat is the interface to the rest of the parse
+-     driver - it holds all information necessary for finding the
+-     clock message and doing the appropriate time stamping.
++<p>The <code>struct clockformat</code> is the interface to the rest of
++the parse driver - it holds all information necessary for finding the
++clock message and doing the appropriate time stamping.
+ 
+ <PRE>
+ struct clockformat
+@@ -137,7 +138,6 @@
+ };
+ </PRE>
+ 
+-
+ <p>The flags:
+ <PRE>
+   F_START         use startsym to find the beginning of the clock data
+@@ -153,24 +153,24 @@
+                   suitable for auto-configuration)
+ </PRE>
+ 
+-
+-<p>The above should have given you some hints on how to build a clk_*.c
+-  file with the time code conversion. See the examples and pick a clock
+-  closest to yours and tweak the code to match your clock.
++  <p>The above should have given you some hints on how to build a
++  <code>clk_*.c</code> file with the time code conversion. See the
++  examples and pick a clock closest to yours and tweak the code to match
++  your clock.
+ 
+ 
+   <p>In order to make your clk_*.c file usable a reference to the clockformat
+   structure must be put into parse_conf.c.
+ </ul>
+ <li>TTY setup and initialisation/configuration will be done in
+-xntpd/refclock_parse.c.
++<code>xntpd/refclock_parse.c</code>.
+ <ul>
+ <li>Find out the exact tty settings for your clock (baud rate, parity,
+ stop bits, character size, ...) and note them in terms of
+ termio*.h c_cflag macros.
+-<li>in xntpd/refclock_parse.c fill out a new the struct clockinfo element
+-(that allocates a new "IP" address - see comments)
+-(see all the other clocks for example)
++<li>in <code>xntpd/refclock_parse.c</code> fill out a new element for
++<code>struct clockinfo</code> (that allocates a new "IP" address - see
++comments) (see all the other clocks for example)
+ <PRE>
+    struct clockinfo
+      {
+@@ -249,15 +249,18 @@
+ The best way is to look which clock comes closest to your and tweak that
+ code.
+ 
+-<p>Two sorts of clocks are used with parse. Clocks that automatically send
+-their time code (once a second) do not need entries in the poll routines because
+-they send the data all the time. The second sort are the clocks that need a
+-command sent to them in order to reply with a time code (like the Trimble
+-clock).
+-
+-<p>For questions: <a href="mailto: 
+kardel@informatik.uni-erlangen.de">kardel@informatik.uni-erlangen.de</a>.
+-
+-<p>Please include an exact description on how your clock works. (initialisation,
+-TTY modes, strings to be sent to it, responses received from the clock).
++<p>Two sorts of clocks are used with parse. Clocks that automatically
++send their time code (once a second) do not need entries in the poll
++routines because they send the data all the time. The second sort are
++the clocks that need a command sent to them in order to reply with a
++time code (like the Trimble clock).
++
++<p>For questions:
++<a href="mailto:kardel@informatik.uni-erlangen.de">kardel@informatik.uni-erlangen.de</a>.
++
++<p>Please include an exact description on how your clock
++works. (initialisation, TTY modes, strings to be sent to it, responses
++received from the clock).
+ <hr><p>
+ <a href="http://www4.informatik.uni-erlangen.de/~kardel">Frank Kardel</a>
++</body></html>

@@ -1,0 +1,128 @@
+			INSTALLATION INSTRUCTIONS
+
+gsftopk is primarily intended for sites using xdvi and dvips; it allows them
+to use PostScript fonts with xdvi.  While there is nothing to prevent this
+program from being used in other contexts, doing so would be difficult for
+non-expert users.
+
+(If you want to install gsftopk with Karl Berry's kpathsea library, see the
+section "Installation with kpathsea" below.)
+
+To install gsftopk, use the following steps.
+
+1.  You _must_ have ghostscript 2.5.2 (or higher) installed on your system.
+
+2.  It is recommended that you also have dvips installed; however, expert
+    users can read the more detailed instructions at the end of this file
+    to find out how to run without dvips.
+
+3.  Edit the makefile according the instructions provided in the comments.
+
+4.  You should now be able to just type "make" and "make install".
+    This installs the gsftopk program, but does not yet set up xdvi to use it.
+    *** if you are using one of the following platforms, then see the
+	notes below.
+		MIPS RC/6280 running RISCos 2
+		HP-UX
+
+5.  Edit the paths in xdvimakepk as you would for the MakeTeXPK script
+    provided with dvips.  Also remember to correctly set the path for the
+    psfonts.map file.  Install xdvimakepk in an appropriate location
+    (probably the same directory as MakeTeXPK).
+
+6.  Recompile xdvi with the flag -DMAKEPKCMD=\"xdvimakepk\" and install it.
+    (Specifically, add the above flag to the definition of OPTIONDEFS in the
+    Imakefile or Makefile and then "rm font_open.o" and "make" and install
+    the binary.)  If your .dvi files use the virtual fonts provided with dvips,
+    then you should remember to also set the DEFAULT_VF_PATH variable in the
+    makefile.
+
+You should now be able to use PostScript fonts with xdvi.
+
+--Paul Vojta, vojta@math.berkeley.edu
+
+
+			NOTES FOR SPECIFIC PLATFORMS
+
+*** RISCOS 2 ON MIPS RC/6280
+
+Before running make, run the command
+
+	setenv CC 'cc -systype svr4'
+
+You will also need to edit config.h by hand, since ld(1) does not return
+an error code.  You need to uncomment the line
+
+	/* #define bzero(s, n)  memset((s), 0, (n)) */
+
+*** HP-UX
+
+Run "make hpux" instead of just plain "make" (unless you are using gcc,
+in which case "make CC=gcc" would work).
+
+
+			INSTALLATION WITH KPATHSEA
+
+Read steps 1 and 2, above.
+
+What follows assumes that the gsftopk directory is installed in the kpathsea
+tools hierarchy: we assume that there is a ../kpathsea directory (as is
+distributed in the xdvi, dvips, or web2c distributions from Karl Berry).
+(You can eventually modify the installation in the top-level build directory
+to automatically build in the gsftopk directory when building the tools.)
+
+Run ./configure in this directory. This will generate a Makefile. Then simply
+type 'make install' to install the program, its manual page, and the render.ps
+file.
+
+Yves Arrouye <Yves.Arrouye@imag.fr>
+
+
+			NOTES FOR THE EXPERT
+
+With a little extra work it is possible to install gsftopk without having
+installed dvips.  All that is needed is to explain some of the makefile
+variables and to describe the format of the file psfonts.map.
+
+The CONFIGPATH is the directory where psfonts.map is to be stored.  It may
+actually be a colon-separated list of paths, although only the first one
+containing a file named ``psfonts.map'' is useful.
+
+The HEADERDIR is the directory where the ``render.ps'' driver file is to
+be stored; also it is a component of the HEADERPATH.  The HEADERPATH is a
+colon-separated list of directories which are searched for files referenced
+in the ``psfonts.map'' file.
+
+Finally, the file ``psfonts.map'' should provide a information on how to access
+each and every file gsftopk is to be expected to create.  Each line of that
+file describes one font.  Each line consists of one or more fields, separated
+by one or more tabs or spaces.  The first field is mandatory; it gives the
+name by which TeX refers to the file.  Other fields are optional and are
+order independent.  They are:
+
+  o	The PS-name of the font.  If absent, it is the same as the TeX name.
+
+  o	The file where the font is located.  This field is identified by
+	preceding the file name with the character `<'.  If absent, it is
+	assumed that the font is built-in to ghostscript.
+
+  o	Special instructions for scaling the font.  This field is identified
+	by enclosing it in quotes; it may therefore contains spaces.
+	The field consists of PostScript instructions for modifying the font.
+	Possibilities include "1.2 ExtendFont" to stretch the font horizontally
+	by 20%, and ".3 SlantFont" to cause the letters to be slanted at a
+	slope of .3.
+
+The file may also contain comment lines.  These are blank lines, or lines
+beginning with `;', `#', or `*'.
+
+The following is a very abbreviated sample psfonts.map:
+
+# Comment and blank lines are ignored.
+
+Times-Roman
+rptmr	Times-Roman
+Optima	<Optima.pfb
+Optima-Slanted Optima <Optima.pfb ".1944 SlantFont"
+Optima-Condensed Optima <Optima.pfb ".82 ExtendFont"
+Optima-Extended Optima <Optima.pfb "1.2 ExtendFont"

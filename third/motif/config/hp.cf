@@ -1,0 +1,160 @@
+/*  
+ * (c) Copyright 1989, 1990, 1991, 1992, 1993 OPEN SOFTWARE FOUNDATION, INC. 
+ * ALL RIGHTS RESERVED 
+*/  
+/*  
+ * Motif Release 1.2.3
+*/  
+XCOMM   $RCSfile: hp.cf,v $ $Revision: 1.1.1.1 $ $Date: 1999-01-30 03:16:29 $
+XCOMM platform:  $XConsortium: hp.cf,v 1.47 91/07/28 22:39:35 rws Exp $
+
+#define OSName                 HP-UX 8.07
+XCOMM operating system:  OSName
+
+#define OSMajorVersion         8
+#define OSMinorVersion         0
+#define XhpCfbServer		YES
+
+#define SystemV                YES
+#define Malloc0ReturnsNull     YES
+
+#ifndef ArchIndependentDefines
+#define ArchIndependentDefines -DSYSV -DNLS16 -DNDEBUG -D__hpux -Dhpux
+#endif
+
+#ifndef CompatibilityDefines
+#define CompatibilityDefines -D__hp9000s800 -Dhp9000s800
+#endif
+
+#define ExtensionOSDefines -DHPINPUT -DXTESTEXT1
+
+#if !HasGcc
+
+#ifndef AnsiDefines
+#define AnsiDefines -D_HPUX_SOURCE -DANSI_CPP
+#endif
+
+#ifndef AnsiOptions
+#define AnsiOptions -Aa
+#endif
+
+#ifdef __hp9000s800
+#  define PexCCOptions      -Wp,-H250000
+#  define StandardDefines   ArchIndependentDefines CompatibilityDefines AnsiDefines
+#  define ServerDefines StandardDefines ExtensionDefines -DXDMCP -DXOS -DBSTORE -DSOFTWARE_CURSOR -DNO_ALLOCA -DSCREEN_PIXMAPS -DMERGE_SAVE_UNDERS -DR5 -DHAS_IFREQ -DFORCE_SEPARATE_PRIVATE
+#  define DefaultCCOptions 	 AnsiOptions +DA1.0
+#  define OptimizedCDebugFlags   +O1
+#else
+#  define PexShmIPC              NO
+#  define LintOpts           -ax -Nd4000 -Ns8000 -Ne700 -Np200 -Na25000
+#  define StandardDefines    -D__hpux -Dhpux -DSYSV -DMERGE -DTDUX -Dhp9000s300
+#  if OSMajorVersion < 8
+#     define DefaultCCOptions   AnsiOptions -Wc,-Nd4000,-Ns4100,-Ne700,-Np200,-Nw300
+#     define PexCCOptions        -Wp,-H150000 -Wc,-Nd4000,-Ns8100,-Ne700,-Np200
+#  else
+#     define OptimizedCDebugFlags   +O1
+#     define DefaultCCOptions       AnsiOptions  
+#     define PexCCOptions        -Wp,-H250000
+#  endif
+#endif
+
+#else /* HasGcc */
+
+#ifndef AnsiDefines
+#define AnsiDefines -D_HPUX_SOURCE
+#endif
+#ifndef AnsiOptions
+#define AnsiOptions -ansi
+#endif
+#define StandardDefines   ArchIndependentDefines CompatibilityDefines AnsiDefines
+#define ServerDefines StandardDefines ExtensionDefines -DXDMCP -DXOS -DBSTORE -DSOFTWARE_CURSOR -DNO_ALLOCA -DSCREEN_PIXMAPS -DMERGE_SAVE_UNDERS -DR5 -DHAS_IFREQ -DFORCE_SEPARATE_PRIVATE
+#define DefaultCCOptions       AnsiOptions  
+#define OptimizedCDebugFlags -O
+
+#endif /* HasGcc */
+
+#define LnCmd                  ln -s
+#define MvCmd                  mv -f
+#define ExecableScripts        YES
+#define HasSockets             YES
+#define HasVFork               YES
+#define RemoveTargetProgramByMoving YES
+#define ExpandManNames         YES
+#define HasPutenv              YES
+#define HasFortran	       YES
+#define HasNdbm		       YES
+#define InstLibFlags	       -m 0444
+
+#ifndef LdCombineFlags
+#define LdCombineFlags		-r
+#endif
+
+#define BuildPex               NO
+#define BuildXInputExt         YES
+#define BuildFontServer        YES
+
+#ifdef __hp9000s800
+#define BuildServer            YES
+#define PrimaryScreenResolution	91
+#else
+#define	BuildServer            NO
+#endif
+
+#define NeedBerklib            (BuildServer|BuildFontServer)
+
+#if OSMajorVersion < 6 || (OSMajorVersion == 6 && OSMinorVersion < 2)
+#  define ConnectionFlags		-DTCPCONN	/* no unix sockets */
+#endif
+
+/*
+ * Define the volume number for "program" man pages
+ */
+#define	ManSuffix	1
+
+/*
+ * Make some choices about shared/archived library usage.
+ *
+ * 1) #define UseSysSrc		-- build clients using system (or user
+ *                                  defined) library locations.
+ *
+ * 2) #define UseInstalled      -- Build using a fully installed environment.
+ *
+ * 3) define NONE of the above -- builds clients with libraries out
+ *                                of their build tree locations.
+ * 4) #define UseArchivedLibs   -- force use of archived libraries with any
+ *                                 of the above. (shared libraries are used
+ *                                 by default.)
+ * Defining "UseSysSrc"  allows the shared library paths
+ * embedded in executables to be correct, while still using headers, 
+ * etc. out of the build tree.  The libraries must already exist in their
+ * designated system locations. (e.g. $(PROJECTROOT)/lib )
+ *
+ * If none of the above is defined, clients will be rebuilt to use installed
+ * libraries just before themselves being installed.
+ */
+
+/*
+ * include shared library build rules
+ */
+
+/*
+ * Generator functions for XMLIB, DEPXMLIB etc.  Suggestion has been
+ * sent to MIT for inclusion in standard Project.tmpl.
+ */
+
+#ifndef SharedLibReferences
+#define SharedLibReferences(varname,libname,libsource,rev) \
+Concat(DEP,varname) = /**/	@@\
+varname = _LibUse(Concat(-l,libname),Concat(libsource/lib,libname.LibSfx(a,sl)))
+#endif
+
+/*
+ * HP-UX 8.07 cc compiler has an acknowledged bug that makes some
+ * shared libraries build incorrectly.
+ */
+
+#if OSMajorVersion < 9
+#define BugAffectingSharedXm
+#endif
+
+#include <hpLib.rules>

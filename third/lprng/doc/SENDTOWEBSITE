@@ -1,0 +1,11 @@
+#!/bin/sh
+ftp -v -n <<'EOF'
+open www.astart.com
+user astart
+cd lprng
+bin
+prompt
+mput *.html
+mput *.gif
+mput *.ppt
+EOF

@@ -1,0 +1,57 @@
+#!_SHELL_
+# Patrick Powell Sun Sep  3 11:23:22 PDT 1995
+# LPRng
+#= File:                                                                   =
+#=   accounting.sh                                                         =
+#=                                                                         =
+#= Synopsis:                                                               = 
+#This program is called at the completion of printing a job by the OF
+#filter.  The accounting file will hold information about the
+#completion of a job.  The accounting file will have the following
+#format:
+#
+#start -qpid -kcontrolfile -nlogin -hhost -Pprinter \
+#     -ppagecounter -Fformt -Ttime
+#end  -bpages -qpid -kcontrolfile -nlogin -hhost -Pprinter \
+#     -ppagecounter -Ffmt -Ttime
+#
+#The accounting program will be called with the following parameters
+#
+#program -bpages -qpid -kcontrolfile \
+#	-nlogin -hhost -Pprinter -ppagecounter -Fformt '-Ttime' accoutingfile
+
+PATH=/bin:/usr/bin:/usr/local/bin
+export PATH
+
+pages=
+pid=
+controlfile=
+login=
+host=
+printer=
+pagecounter=
+format=
+elapsed=
+time=
+accountingfile=
+
+echo $0 $* 1>&2
+
+while [ $# != 0 ];
+do case "$1" in
+ -b* ) pages=`echo "$1" | sed s/..//` ;;
+ -q* ) pid=`echo "$1" | sed s/..//` ;;
+ -k* ) controlfile=`echo "$1" | sed s/..//` ;;
+ -n* ) login=`echo "$1" | sed s/..//` ;;
+ -h* ) host=`echo "$1" | sed s/..//` ;;
+ -P* ) printer=`echo "$1" | sed s/..//` ;;
+ -p* ) pagecounter=`echo "$1" | sed s/..//` ;;
+ -F* ) format=`echo "$1" | sed s/..//` ;;
+ -Z* ) zoption=`echo "$1" |  sed s/..//'`;;
+ -T* ) time=`echo "$1" | sed 's/..//'` ;;
+ -*  ) ;;
+ *   ) accountingfile=$1;;
+ esac;
+ shift;
+done
+echo Dummy Accounting Script pagecount=\'$pages\' pagecounter=\'$pagecounter\' 1>&2

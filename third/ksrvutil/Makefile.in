@@ -1,0 +1,49 @@
+# $Id: Makefile.in,v 1.1 1998-07-16 15:29:14 ghudson Exp $
+
+SHELL=/bin/sh
+VPATH=@srcdir@
+INSTALL=@INSTALL@
+INSTALL_PROGRAM=@INSTALL_PROGRAM@
+srcdir=@srcdir@
+top_srcdir=@top_srcdir@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+bindir=@bindir@
+mandir=@mandir@
+
+CC=@CC@
+DEFS=@DEFS@
+CPPFLAGS=@CPPFLAGS@
+CFLAGS=@CFLAGS@
+LDFLAGS=@LDFLAGS@
+LIBS=@KRB4_LIBS@ @LIBS@
+ALL_CFLAGS=${CPPFLAGS} ${CFLAGS} ${DEFS} -I.
+
+OBJS=kadm_cli_wrap.o kadm_net.o kadm_stream.o ksrvutil.o
+
+all: ksrvutil
+
+ksrvutil: ${OBJS}
+	${CC} ${LDFLAGS} -o $@ ${OBJS} ${LIBS}
+
+kadm_cli_wrap.o kadm_net.o ksrvutil.o: kadm_err.h
+
+kadm_err.h: kadm_err.et
+	compile_et kadm_err.et
+
+.c.o:
+	${CC} -c ${ALL_CFLAGS} $<
+
+check:
+
+install:
+	${top_srcdir}/mkinstalldirs ${DESTDIR}${bindir}
+	${top_srcdir}/mkinstalldirs ${DESTDIR}${mandir}/man8
+	${INSTALL_PROGRAM} ksrvutil ${DESTDIR}${bindir}
+	${INSTALL} -m 444 ${srcdir}/ksrvutil.8 ${DESTDIR}${mandir}/man8
+
+clean:
+	rm -f ${OBJS} ksrvutil kadm_err.c kadm_err.h
+
+distclean: clean
+	rm -f config.cache config.log config.status Makefile

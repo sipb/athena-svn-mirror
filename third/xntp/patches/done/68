@@ -1,0 +1,30 @@
+Forwarded: Fri, 17 Jan 1997 23:42:59 -0500
+Forwarded: "mills@udel.edu "
+Replied: Fri, 17 Jan 1997 23:40:29 -0500
+Replied: "Ulrich Windl <ulrich.windl@rz.uni-regensburg.de> "
+Received: from snow-white.ee.udel.edu by whimsy.udel.edu id aa27743;
+          17 Jan 97 15:11 GMT
+Received: from ngate.ngate.uni-regensburg.de (ngate.rz.uni-regensburg.de) by comsun.rz.uni-regensburg.de with SMTP id AA02462
+  (5.65c/IDA-1.4.4 for <stenn@whimsy.udel.edu>); Fri, 17 Jan 1997 15:30:03 +0100
+Received: from rkdvmks1.ngate.uni-regensburg.de by ngate.ngate.uni-regensburg.de; Fri, 17 Jan 97 13:49 GMT
+Received: from rkdvmks1.ngate.uni-regensburg.de by kgate.ngate.uni-regensburg.de; Fri, 17 Jan 97 12:47 GMT
+Received: from RKDVMKS1/SpoolDir by rkdvmks1.ngate.uni-regensburg.de (Mercury 1.21);
+    17 Jan 97 13:48:48 +0100
+Received: from SpoolDir by RKDVMKS1 (Mercury 1.21); 17 Jan 97 13:48:26 +0100
+From: Ulrich Windl <ulrich.windl@rz.uni-regensburg.de>
+Organization: Universitaet Regensburg, Klinikum
+To: Harlan Stenn <stenn@whimsy.udel.edu>
+Date: Fri, 17 Jan 1997 13:48:24 +0100
+Mime-Version: 1.0
+Content-Length: 84
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
+Subject: xntpd's -a option
+Priority: normal
+X-Mailer: Pegasus Mail for Windows (v2.23)
+Message-Id: <885779054EA@rkdvmks1.ngate.uni-regensburg.de>
+
+Isn't "-a" obsolete now that auth is on by default?
+(Found in the HTML doc)
+
+Ulrich

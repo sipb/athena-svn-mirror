@@ -1,0 +1,132 @@
+
+
+
+   18 August 1992                                                  PSDRAFT(1)
+
+
+
+
+
+
+   NAME
+     psdraft - add "draft" notices on POSTSCRIPT language documents
+
+   SYNOPSIS
+     psdraft [ -s_s_t_r_i_n_g ] [ -x_x_c_o_o_r_d ] [ -y_y_c_o_o_r_d ] [ -f_f_o_n_t ] [ -r_a_n_g_l_e ] [
+     -g_g_r_a_y_l_e_v_e_l ] [ -o ] [ -p_o_u_t_f_i_l_e ] [ -P_p_r_i_n_t_e_r ] [ _f_i_l_e_s ]
+
+   DESCRIPTION
+     _p_s_d_r_a_f_t reads in conforming POSTSCRIPT language files and inserts
+     POSTSCRIPT language code to print a string such as "DRAFT" in the mar-
+     gins, or anywhere on the page.
+
+     For example:
+          psdraft text.ps
+     produces a POSTSCRIPT file that, in addition to the image already
+     described in text.ps, prints the string "DRAFT" rotated 90 degrees in
+     the right margin.
+          psdraft -s"Adobe Confidential" -r45 -x252 -y324 text.ps
+     produces a POSTSCRIPT file that includes the string "Adobe Confidential"
+     in the middle of the page, rotated 45 degrees.
+
+     The possible options are:
+
+     -s_s_t_r_i_n_g
+          puts _s_t_r_i_n_g on the paper.  The default is "DRAFT".
+
+     -r_a_n_g_l_e
+          rotates the string _a_n_g_l_e degrees.  The default is 90.
+
+     -x_x_c_o_o_r_d
+          puts the string at the _x_c_o_o_r_d x-coordinate on the page.  The
+          default is 575.
+
+     -y_y_c_o_o_r_d
+          puts the string at the _y_c_o_o_r_d y-coordinate on the page.  The
+          default is 300.
+
+     -g_g_r_a_y_l_e_v_e_l
+          specifies the gray level for printing the string.  The default is 0
+          (black).
+
+     -f_f_o_n_t
+          sets the font to be used for printing the string.  The default is
+          Times-Roman30.
+
+          Font specifications have two parts: a font name as known to the
+          POSTSCRIPT printer (e.g., Times-Roman, Times-BoldItalic, Helvetica,
+          Courier), and a point size (1 point=1/72 inch; 8 point is a good
+          small point size).  So Courier-Bold8 is 8 point Courier Bold, Hel-
+          vetica12 is 12 point Helvetica.
+
+
+   Adobe Systems                                                            1
+
+
+
+
+
+
+   PSDRAFT(1)                                                  18 August 1992
+
+
+
+     -o   specify that the outline of the font should be used.  Default is
+          not to use outline.
+
+     -p_o_u_t
+          causes the POSTSCRIPT file to be written to the named file rather
+          than being spooled for printing.  As a special case, -p- will send
+          the POSTSCRIPT language document to the standard output (which is
+          the default behavior).
+
+     -P_p_r_i_n_t_e_r
+          specifies that _p_s_d_r_a_f_t should get information about the dimensions
+          of the paper from the POSTSCRIPT Printer Description file for
+          _p_r_i_n_t_e_r. This information is necessary to do rotation.
+
+   ENVIRONMENT
+
+     PPDDIR
+          path for finding POSTSCRIPT Printer Description files.
+
+     PSLIBDIR
+          path name of a directory to use instead of XPSLIBDIRX for then
+          _p_s_d_r_a_f_t prologue
+
+   FILES
+
+     XPSLIBDIRX/psdraft.pro
+                           prologue for _p_s_d_r_a_f_t
+
+   SEE ALSO
+     transcript(1)
+
+   AUTHOR
+     Adobe Systems Incorporated
+
+   NOTES
+     POSTSCRIPT is a trademark of Adobe Systems Incorporated.
+     Times and Helvetica are registered trademarks of Linotype.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   2                                                            Adobe Systems
+
+
+99

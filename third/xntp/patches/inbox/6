@@ -1,0 +1,44 @@
+Replied: Mon, 01 Sep 1997 20:35:46 -0400
+Replied: ""Ulrich Windl" <ulrich.windl@rz.uni-regensburg.de> "
+Replied: Fri, 29 Aug 1997 18:25:44 -0400
+Replied: ""Ulrich Windl" <ulrich.windl@rz.uni-regensburg.de> "
+Return-Path: Ulrich.Windl@rz.uni-regensburg.de 
+Return-Path: <Ulrich.Windl@rz.uni-regensburg.de>
+Received: from rrzs2.rz.uni-regensburg.de (rrzs2.rz.uni-regensburg.de [132.199.1.2])
+	by whimsy.udel.edu (8.8.5/8.8.5) with ESMTP id HAA04110
+	for <stenn@whimsy.udel.edu>; Fri, 22 Aug 1997 07:57:14 GMT
+Received: from ngate.ngate.uni-regensburg.de (ngate.rz.uni-regensburg.de [132.199.3.13])
+	by rrzs2.rz.uni-regensburg.de (8.8.5/8.8.5) with SMTP id JAA25687
+	for <stenn@whimsy.udel.edu>; Fri, 22 Aug 1997 09:57:14 +0200 (MET DST)
+Received: from rkdvmks1.ngate.uni-regensburg.de by ngate.ngate.uni-regensburg.de; Fri, 22 Aug 97 08:57 MET
+Received: from rkdvmks1.ngate.uni-regensburg.de by kgate.ngate.uni-regensburg.de; Fri, 22 Aug 97 07:55 GMT
+Received: from RKDVMKS1/SpoolDir by rkdvmks1.ngate.uni-regensburg.de (Mercury 1.31);
+    22 Aug 97 09:57:10 +0200
+Received: from SpoolDir by RKDVMKS1 (Mercury 1.31); 22 Aug 97 09:57:07 +0200
+From: "Ulrich Windl" <ulrich.windl@rz.uni-regensburg.de>
+Organization: Universitaet Regensburg, Klinikum
+To: stenn@whimsy.udel.edu
+Date: Fri, 22 Aug 1997 09:56:57 +0200
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-transfer-encoding: 7BIT
+Subject: Two minor bugs in 3-5.90.2
+Priority: normal
+X-mailer: Pegasus Mail for Windows (v2.53/R1)
+Message-ID: <5E2C1812BF5@rkdvmks1.ngate.uni-regensburg.de>
+
+Harlan,
+
+playing around with PPS code, I found two minor bugs in xntp3-5.90.2:
+
+In refclock_msfees the file <stropts.h> is unconditionally included. 
+May system did have none, so the make failed. Maybe autoconf should 
+modify the Makefile so that refclock_msfees.c is not selected if 
+there's no <stropts.h>.
+
+In refclock_atom there's a define PPSX that is not present in 
+config.h. If you define it, the make will fail, because "fdpps" is 
+undefined. Solution: Just remove the lines above and below the 
+declaration (a #ifndef .. #endif).
+
+Ulrich

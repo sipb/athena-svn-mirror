@@ -1,0 +1,80 @@
+Replied: Thu, 30 Jan 1997 00:51:24 -0500
+Replied: ""Edward J. Huff" <huffe@carbon.chem.nyu.edu> "
+Received: from snow-white.ee.udel.edu by whimsy.udel.edu id aa08970;
+          30 Jan 97 5:27 GMT
+Received: by carbon.chem.nyu.edu (SMI-8.6/1.20)
+	id AAA06661; Thu, 30 Jan 1997 00:27:49 -0500
+Date: Thu, 30 Jan 1997 00:27:49 -0500
+Message-Id: <199701300527.AAA06661@carbon.chem.nyu.edu>
+From: "Edward J. Huff" <huffe@carbon.chem.nyu.edu>
+To: stenn@whimsy.udel.edu
+Subject: xntp3-5.88 ./configure -msupersparc
+
+Configure should have an option to use -msupersparc on gcc
+otherwise gcc does not use many important instructions available
+on supersparc (including Sparc 10, Sparc 20 workstations).
+
+I noticed that rerunning ./configure with a different option
+didn't change the value (no I haven't read the documentation...)
+but editing config.cache fixed it.
+
+I build ntp3-5.88 with the patch I sent in earlier, it compiles
+and I will be using it.
+
+make clean does not remove the configure cache.
+
+I repeated the build with -msupersparc:
+
+zcat xntp3-5.88.tar.gz | tar xvf -
+cd xntp3-5.88
+mv xntpd/ntp_util.c xntpd/ntp_util.c.orig
+cp ~/ntp/ntp_util.c xntpd/ntp_util.c
+setenv CFLAGS "-O2 -g -msupersparc"
+./configure --enable-hourly-todr-sync --enable-slew-always
+unsetenv CFLAGS
+make
+
+and I installed and am running this version.
+
+
+carbon% diff -c /usr/local/src/ntp/xntp3-5.88mod/xntpd/ntp_util.c.orig \
+/usr/local/src/ntp/xntp3-5.88mod/xntpd/ntp_util.c
+*** /usr/local/src/ntp/xntp3-5.88mod/xntpd/ntp_util.c.orig	Tue Dec 17 19:33:16 1996
+--- /usr/local/src/ntp/xntp3-5.88mod/xntpd/ntp_util.c	Wed Jan 29 22:44:18 1997
+***************
+*** 339,345 ****
+  		}
+  
+  		strcpy(buf, "0");
+! 		if (fscanf(fp, "%s", buf) == 0) {
+  			msyslog(LOG_ERR, "can't read %s: %m",
+  			       stats_drift_file);
+  			(void) fclose(fp);
+--- 339,345 ----
+  		}
+  
+  		strcpy(buf, "0");
+! 		if (fgets(buf, sizeof(buf)-2, fp) == 0 && ferror(fp)) {
+  			msyslog(LOG_ERR, "can't read %s: %m",
+  			       stats_drift_file);
+  			(void) fclose(fp);
+***************
+*** 348,354 ****
+  		}
+  		(void) fclose(fp);
+  		if (!atolfp(buf, &old_drift)) {
+! 			msyslog(LOG_ERR, "drift value %s invalid", buf);
+  			break;
+  		}
+  		loop_config(LOOP_DRIFTCOMP, &old_drift);
+--- 348,356 ----
+  		}
+  		(void) fclose(fp);
+  		if (!atolfp(buf, &old_drift)) {
+! 			msyslog(LOG_ERR, "drift value '%s' from %s invalid", 
+! 				buf, stats_drift_file);
+! 			loop_config(LOOP_DRIFTCOMP, &old_drift);
+  			break;
+  		}
+  		loop_config(LOOP_DRIFTCOMP, &old_drift);
+carbon% 

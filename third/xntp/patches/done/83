@@ -1,0 +1,101 @@
+Replied: Tue, 04 Feb 1997 19:11:17 -0500
+Replied: "Ulrich Windl <ulrich.windl@rz.uni-regensburg.de> "
+Replied: Tue, 04 Feb 1997 18:44:38 -0500
+Replied: "Ulrich Windl <ulrich.windl@rz.uni-regensburg.de> "
+Received: from snow-white.ee.udel.edu by whimsy.udel.edu id aa24091;
+          4 Feb 97 7:34 GMT
+Received: from ngate.ngate.uni-regensburg.de (ngate.rz.uni-regensburg.de) by comsun.rz.uni-regensburg.de with SMTP id AA29894
+  (5.65c/IDA-1.4.4 for <stenn@whimsy.udel.edu>); Tue, 4 Feb 1997 08:34:36 +0100
+Received: from rkdvmks1.ngate.uni-regensburg.de by ngate.ngate.uni-regensburg.de; Tue,  4 Feb 97 08:25 GMT
+Received: from rkdvmks1.ngate.uni-regensburg.de by kgate.ngate.uni-regensburg.de; Tue,  4 Feb 97 07:23 GMT
+Received: from RKDVMKS1/SpoolDir by rkdvmks1.ngate.uni-regensburg.de (Mercury 1.21);
+    4 Feb 97 08:25:16 +0100
+Received: from SpoolDir by RKDVMKS1 (Mercury 1.21); 4 Feb 97 08:24:48 +0100
+From: Ulrich Windl <ulrich.windl@rz.uni-regensburg.de>
+Organization: Universitaet Regensburg, Klinikum
+To: Harlan Stenn <stenn@whimsy.udel.edu>
+Date: Tue, 4 Feb 1997 08:24:38 +0100
+Mime-Version: 1.0
+Content-Length: 2639
+Content-Type: Multipart/Mixed; boundary=Message-Boundary-7187
+Subject: xntp3-5.89.1 - comments
+Priority: normal
+X-Mailer: Pegasus Mail for Windows (v2.23)
+Message-Id: <A301E92543C@rkdvmks1.ngate.uni-regensburg.de>
+
+
+--Message-Boundary-7187
+Content-type: text/plain; charset=US-ASCII
+Content-transfer-encoding: 7BIT
+Content-description: Mail message body
+
+Hello Harlan,
+
+I'll attach a text that summarized my experience with the latest 
+source. Summary: Everything is getting better....
+
+Ulrich
+
+--Message-Boundary-7187
+Content-type: text/plain; charset=US-ASCII
+Content-transfer-encoding: 7BIT
+Content-description: Text from file 'stenn2.txt'
+
+Harlan,
+
+I have some (bad) news for you. Here are my results of compiling
+xntp3-5.89.1 on "i586-pc-linux-gnu":
+
+There are a few Emacs backup files in the ``html'' directory. Maybe
+leave them out from the distribution.
+
+The problem reported previously (for 3-5.88) that some flags in
+config.h are not set correctly is still there, but I know more about
+it: If you re-run ./configure with different reference clocks enabled
+(remember that all parse clocks are off by default), some flags are
+not set correctly because they are cached. An example would be
+``RAWDCF_SETDTR'' that is set correctly if you specify
+``--enable-RAWDCF'' on the very first configure, but fails if you
+re-configure with that option.
+
+Ok, before I begin with compilation messages, I have an other little
+note: For Windows/NT the file ``wininstall/setup.rul'' contains the
+wrong version number (3-5.88). That might cause confusion if ever
+used. Possibly the correct version number should be "configured in". I
+don't run NT...
+
+	gcc -c -DHAVE_CONFIG_H -I. -I. -I.. -I../include  -Wall -O2 -pipe refclock_parse.c
+	refclock_parse.c: In function `rawdcf_init':
+	refclock_parse.c:4217: warning: implicit declaration of function `ioctl'
+
+I thought there was already a patch for that (#include <sys/ioctl.h>).
+This little thing depends on ``RAWDCF_SETDTR''.
+
+	gcc -c -DHAVE_CONFIG_H -I. -I. -I.. -I../include  -Wall -O2 -pipe ntptime.c
+	ntptime.c: In function `main':
+	ntptime.c:177: warning: implicit declaration of function `syscall'
+
+Relevant parts from the configure session seem to be:
+	...
+	checking if declaring 'syscall()' is ok... yes
+	...
+	checking if we have a losing syscall()... no
+	...
+
+Finally a little runtime problem (stupid me!): If a non-root user
+starts xntpd, you get a strange syslog:
+
+Feb  3 21:28:36 elf xntpd[10209]: bind() fd 4, family 2, port 123, addr 00000000, in_classd=0 flags=1 fails: Permission denied
+
+Finally, in xntpdc the help on ``keytype'' has an extra `key':
+	xntpdc> he keytype
+	function: set key type to use for authenticated requests (des|md5)
+	usage: keytype [ key type (md5|des) ]
+	xntpdc>keytype 15 des
+	keytype must be 'md5' or 'des'
+	xntpdc> keytype des
+	xntpdc> 
+
+Ulrich
+
+--Message-Boundary-7187--

@@ -1,0 +1,1141 @@
+This is Info file ifhp.info, produced by Makeinfo-1.64 from the input
+file /tmp/sgmltmp.ifhp19043.info.2.
+
+   \input texinfo
+
+
+File: ifhp.info,  Node: Filter Operation Details,  Next: Banners and OF Mode Operations,  Prev: Configuration Tutorial,  Up: Top
+
+Filter Operation Details
+************************
+
+   The `ifhp' filter operates by first reading a configuration file to
+determine the type of printer it is working with, and then proceeds to
+carry out operations requested by the values of option variables passed
+on the command line or found in the configuration files.  In normal
+operation, input is read from `STDIN' (file descriptor 0), massaged in
+the appropriate manner, and then written out to `STDOUT' (file
+descriptor 1).  Status reports are written to a status file, or
+optionally to `STDERR' (file descriptor 2), together with any error
+messages or diagnostics.
+
+   In addition to normal operation the filter can run in the `OF' mode
+and act as a printer initializer and job terminator.  This is discussed
+in detail in the LPRng documentation.  When in the OF mode, The first
+nonblank input line will be treated as a request to generate a banner.
+The string "\031\001" will cause the filter to suspend operations using
+a SIGSUSP signal.  At this point, job files will be sent to the output
+device by the spooler, and the filter will then be restarted with a
+SIGCONT signal.
+
+   These steps are best explained algorithmically.  The following is a
+`pseudo-code' description of the steps performed during the printing
+activity.  The sections marked with `[num   ][num   ][num   ]' are
+discussed later in this document in detail.
+
+   `///' See: *Note Options Initialization and Setup::
+
+     ###+++ Initialization and Setup
+     // get ifhp information from PRINTCAP_ENTRY environment variable
+     if( PRINTCAP_ENTRY environment variable has a value )[lcub  ]
+             split printcap information into printcap fields
+             if( :ifhp=options,options is present in printcap )[lcub  ]
+                     split the options list and place in the Toptions list
+             [rcub  ]
+     [rcub  ]
+     foreach option in -Toptions, -Zoptions do
+         if( option = "debug=level"  and Debuglevel not set )[lcub  ]
+             set Debuglevel = level;
+         [rcub  ]
+         if( option = "trace" )[lcub  ]
+             output error and trace on STDERR
+         [rcub  ]
+         if( option = "config=pathlist" and from -Toption )[lcub  ]
+             set configuration pathlist = pathlist;
+         [rcub  ]
+         if( option = "model=name" and model not set )[lcub  ]
+             set model = name;
+         [rcub  ]
+     [rcub  ]
+
+   `///' See: *Note Operation Configuration Options::
+
+     // extract configuration information
+     foreach path in configuration pathlist [lcub  ]
+         open path;
+         for each line in file information [lcub  ]
+                     if( line is selected to be in configuration )[lcub  ]
+                             process input line, adding it to configuration
+                             if( line is 'debug=','model='
+                                and the corresponding value not set )[lcub  ]
+                                set the value;
+                             [rcub  ]
+                     [rcub  ]
+         [rcub  ]
+     [rcub  ]
+     
+     // get values of options with predefined meanings
+     // these include status, forcestatus, etc
+     foreach option in predefined list [lcub  ]
+             if( option=value is in selected configuration information )[lcub  ]
+                     set option=value;
+             [rcub  ]
+     [rcub  ]
+     
+     // open a direct connection if specified
+     if( device specified using -Tdev=device )[lcub  ]
+             // if device is host%port, we open TCP/IP connection
+             fd = open(device);
+             // Note - option read_write will open the device or file read write
+             dup fd to 1; close fd;
+     [rcub  ]
+     if( appsocket procotol specified and TCP/IP device )[lcub  ]
+             udp_socket = open( udp socket to device%port+1 )
+     [rcub  ]
+     
+     
+     ###---
+
+   `///' See: *Note Synchronization and Pagecounts::
+
+     ###+++ Synchronization and Pagecount
+     if( status returned by printer and sync requested )[lcub  ]
+         // APPSOCKET protocol
+         // sync has the form sync@ (none), sync=ps, sync=pjl, ...
+             if( appsocket )[lcub  ]
+                     command = "\n\r"
+             [rcub  ] else [lcub  ]
+                     // decode status=language and determine sync
+             if( sync = pjl and PJL ECHO available )[lcub  ]
+                 send PJL ECHO command to printer
+                     [rcub  ] else if( sync = ps )[lcub  ]
+                 send PS program to printer
+                     [rcub  ] else [lcub  ]
+                             terminate with error;
+                     [rcub  ]
+             do[lcub  ]
+                     send command and wait for timeout;
+         [rcub  ] while( no response );
+     
+             if( appsocket )[lcub  ]
+                     close and reopen TCP/IP connection;
+             [rcub  ]
+     
+         // pagecount has the form pagecount@ (none),
+         //   pagecount=ps, pagecount=pjl, ...
+         if( pagecount=language has value ) do [lcub  ]
+                     if( pagecount TRUE )[lcub  ]
+                             set pagecount= pjl or ps depending on availability
+                     [rcub  ]
+             if( pagecount = pjl and PJL INFO available )[lcub  ]
+                send PJL INFO PAGECOUNT command to printer
+                     [rcub  ] else if( pagecount = ps )[lcub  ]
+                send PS program to printer
+                     [rcub  ] else [lcub  ]
+                             terminate with error;
+                     [rcub  ]
+         [rcub  ] while( no pagecount response );
+     
+             if( appsocket )[lcub  ]
+                     close and reopen TCP/IP connection;
+             [rcub  ]
+     [rcub  ]
+     ###---
+
+   `///' See: *Note PJL Initialization::
+
+     ### PJL Initialization
+     if( PJL enabled )[lcub  ]
+         language = "pjl_"
+         foreach option in pjl_init=[lsqb  ]...[rsqb  ] [lcub  ]
+            expand the option using the language value
+            #+++ PJL OPTION ACTIONS +++
+            if( option in pjl_vars_set=[ ... ]
+              and option not in pjl_vars_except
+              expand "@PJL SET OPTION=\%[lcub  ]option[rcub  ]"
+              output = expanded string value
+            [rcub  ] else [lcub  ]
+              if( option value is a string )[lcub  ]
+                output = expanded string value;
+              [rcub  ]
+            [rcub  ]
+            // output has the form @PJL COMMAND ....
+            if( COMMAND is in pjl_only=[ ... ]
+                and not in pjl_except=[ ... ] )[lcub  ]
+                send output to printer
+            [rcub  ]
+            #--- end PJL OPTION ACTIONS
+         [rcub  ]
+         if( !OF_mode )[lcub  ]
+              foreach option in -Toption=value [lcub  ]
+                 if( option in pjl_user_opts )[lcub  ]
+                     #+++ USER PJL OPTIONS
+                     // join 'pjl_' and the option name
+                     expand 'pjl_' . option
+                     // perform PJL actions as above
+                         #+++ PJL OPTION ACTIONS +++
+                         ....
+                         #-- PJL OPTION ACTIONS +++
+                     #--- USER PJL OPTIONS
+                 [rcub  ]
+              [rcub  ]
+              foreach option in -Zoption=value [lcub  ]
+                 if( option in pjl_user_opts )[lcub  ]
+                     // perform USER PJL actions as above
+                     #+++ USER PJL OPTIONS
+                     #--- USER PJL OPTIONS
+                 [rcub  ]
+              [rcub  ]
+         [rcub  ]
+     [rcub  ]
+     
+     ###--- PJL INITIALIZATION
+
+   `///' See: *Note Text File Conversion::
+
+     // language is set to the type of job language
+     // - PS, PCL, TEXT, RAW, UNKNOWN
+     //  the first part of the job file is read and the filter takes
+     //  a (wimpy) guess at the job file based only on the first couple
+     //  of characters;  language is  be PJL, PS, or TEXT, or RAW
+     //  This is the same algorithm as the UNIX FILE utility
+     
+     language = UNKNOWN
+     if( command line -c (binary) option present )[lcub  ]
+         language = RAW;
+     [rcub  ] else if( -Zlanguage=xxx option present )[lcub  ]
+         language=xxx
+     [rcub  ] else if( file is PS file )[lcub  ]
+         language=PS
+             if( file starts with PS EOJ (CTRL-D)
+                     and no_ps_eoj is set )[lcub  ]
+                     remove the PS EOJ
+             [rcub  ] else [lcub  ]
+                     send a PS EOJ first
+             [rcub  ]
+     [rcub  ] else if( file is PCL file )[lcub  ]
+         language=PCL
+             if( file starts with PCL EOJ (ESC E)
+                     and no_pcl_eoj is set )[lcub  ]
+                     remove the PCL EOJ
+             [rcub  ]
+     [rcub  ] else if( file_util_path=/pathname )[lcub  ]
+         use UNIX file utility to get file type
+     [rcub  ]
+     
+     if( language = UNKNOWN and
+         default_language option has value )[lcub  ]
+         language = value of default_language;
+     [rcub  ]
+     
+     if( language = TEXT )[lcub  ]
+         if( text_converter=/path option has value )[lcub  ]
+             run text converter on input
+         [rcub  ] else if( printer does not support TEXT output )[lcub  ]
+             exit with error;
+         [rcub  ]
+         language = value of text_converter_output option
+     [rcub  ]
+     
+     if( language = UNKNOWN )[lcub  ]
+         exit with error;
+     [rcub  ]
+     if( PJL ENTER supported )[lcub  ]
+             use PJL ENTER command to select language;
+             send nullpad NULLS to force full buffer condition
+     [rcub  ]
+
+   `///' See: *Note Language Specific Initialization::
+
+     // LANGUAGE SPECIFIC INITIALIZATIONS
+     if( language = PCL )[lcub  ]
+         foreach option in pcl_init [lcub  ]
+             ###+++ expansion
+             do expansion similar to PJL OPTION actions
+                 using "pcl_" prefix for option lookup;
+             ###---
+         [rcub  ]
+         if( not in OF_MODE )[lcub  ]
+             foreach option in -Toption do [lcub  ]
+                 if( option in pcl_user_vars=[ ... ] )[lcub  ]
+                 ###+++ expansion as above
+                 ###---
+             [rcub  ]
+             foreach option in -Zoption do [lcub  ]
+                 if( option in pcl_user_vars=[ ... ] )[lcub  ]
+                 ###+++ expansion as above
+                 ###---
+             [rcub  ]
+         [rcub  ]
+         remove whitespace and expand string results;
+     [rcub  ] else if( language = PS )[lcub  ]
+         ###+++ language specific actions as above,
+           using the ps_ prefix for lookup
+         expand string results but do not remove whitespace
+     [rcub  ]
+
+   `///' See: *Note File Transfer and Error Status Monitoring::
+
+     Transfer job to printer, reading error and other information
+       back from the printer if enabled
+     
+     if( language = PCL )[lcub  ]
+         send PCL End of Job
+     [rcub  ] else if( language = PS )[lcub  ]
+         send PS End of Job
+     [rcub  ]
+     
+     
+     // job terminaton
+     
+     ###+++ Synchronization and Pagecount as above
+     if( waitend )[lcub  ]
+             if( sync requested previously )[lcub  ]
+                     if( sync with PJL )[lcub  ]
+                             wait for end of job using UINFO;
+                     [rcub  ] else if( sync with PS )[lcub  ]
+                             request status using ^T and wait for
+                             printing to stop
+                     [rcub  ]
+             [rcub  ]
+             if( appsocket )[lcub  ]
+                     close and reopen connection;
+             [rcub  ]
+             get pagecount using previously descibed algorithm
+     [rcub  ]
+     
+     ###---
+     
+     exit
+
+* Menu:
+
+* Options Initialization and Setup::
+* Model Selection::
+* Statusfile Statusfile[lowbar]max Statusfile[lowbar]min::
+* Operation Configuration Options::
+* Synchronization and Pagecounts::
+* PJL Initialization::
+* Text File Conversion::
+* Language Specific Initialization::
+* File Transfer and Error Status Monitoring::
+* End of Job::
+* Tektronix Phaser and AppSocket Support::
+
+
+File: ifhp.info,  Node: Options Initialization and Setup,  Next: Model Selection,  Up: Filter Operation Details
+
+Options Initialization and Setup
+================================
+
+   The `ifhp' filter is designed to work with the LPRng print spooler,
+but will also work with other spooling systems.  The LPRng system will
+set the `PRINTCAP[lowbar]ENTRY' environment variable to the current
+printcap value.  By convention, the filter command line `-Toptions' are
+reserved for the print spooler to pass configurtion inforamtion and the
+`-Zoptions' are passed by the user.  For example, examine the following
+`lpr' command and printcap example:
+     Printcap:
+     pr:...
+       :ifhp=opt1=value1,opt2=value2
+       :if=/usr/ifhp -Topt1=value4,opt3=value3
+     
+     Command:
+     lpr -Zopt4=value4
+     
+     PRINTCAP_ENTRY envionment variable:
+       pr:...\n
+         :ifhp=opt1=value1,opt2=value2\n
+         :if=/usr/ifhp -Topt1=value4,opt3=value3\n
+     
+     Resulting option list:
+     
+     -Toptions:
+       opt1=value4
+       opt2=value2
+       opt3=value3
+     
+     -Zoptions:
+       opt4=value4
+
+   When started, the `ifhp' filter process the environment and command
+line options as follows.
+  1. If the `PRINTCAP[lowbar]ENTRY' environment variable has a value,
+     then this value is used to initialize the `-Toption' list.
+
+  2. If there is a `-Toption' command line option, then these values
+     are added to the option list, overriding values from the
+     `PRINTCAP[lowbar]ENTRY' set.
+
+  3. The command line `-Zoption' list is generated by splitting the
+     `-Zoption' command line option.
+
+   The option lists are scanned for values for the `debug', `trace',
+`config', and `model' options.  These options have the property that
+once they are set, then they cannot be modified (i.e. - sticky values).
+
+   There is another, and rather bizarre way to specify the printer
+model, and that is the `model[lowbar]from[lowbar]option' option in the
+configuration file.  This option causes the command line options to be
+scanned, and if there is a value for the command line option then it is
+used as the model.  For example:
+     model_from_option=Q
+
+   The above setting will cause the model to be taken from the `Q'
+option.  This can be used to select a configuration for the printer
+based on values specifed by the user.
+
+* Menu:
+
+* Debug and Trace::
+* Configuration File Paths::
+
+
+File: ifhp.info,  Node: Debug and Trace,  Next: Configuration File Paths,  Up: Options Initialization and Setup
+
+Debug and Trace
+---------------
+
+   The value of the `debug' option sets the debugging level.  It can be
+increased, but not decreased.  The `trace' flag causes debugging
+information to be sent to STDERR (file descriptor 2) as well as to the
+status file.
+
+
+File: ifhp.info,  Node: Configuration File Paths,  Prev: Debug and Trace,  Up: Options Initialization and Setup
+
+Configuration File Paths
+------------------------
+
+   The main source of configuration information are the configuration
+files.  The
+     config=pathname,pathname
+
+   option can be used to specify the list of configuration files to be
+read.  This can only be done using the `PRINTCAP[lowbar]ENTRY' `:ifhp'
+entry or the `-Tconfig=pathname,pathname' command line option.
+
+
+File: ifhp.info,  Node: Model Selection,  Next: Statusfile Statusfile[lowbar]max Statusfile[lowbar]min,  Prev: Options Initialization and Setup,  Up: Filter Operation Details
+
+Model Selection
+===============
+
+   The `model=name' option is used to establishes the model name for
+extracting configuration information.  For details on this, see *Note
+Configuration Files:: .
+
+   During initialization, the `-Toptions' list is scanned for a
+`-Tmodel=name' entry.  Once the model name is set, it cannot be changed.
+After this, the configuration files are read, and the first `model=name'
+option encountered will set the `model' option to `name'.
+
+   The recommended method of model selection is to specify it in the
+LPRng printcap entry for the printer, using the `:ifhp=...' printcap
+field.  For example:
+     lp:ifhp=model=HP4,status@
+       :if=/usr/local/ifhp
+     
+     Resulting -Toption List:
+      model=HP4
+      status@
+
+   This will cause the `-Toption' list to be initialized as indicated,
+and the `model' option value will be set to `HP4'.
+
+   The next method is use a `-Toption' command line option.
+     lp:...
+       :if=/usr/local/ifhp -Tmodel=HP4
+     
+     Resulting -Toption List:
+      model=HP4
+
+   This will cause the `-Toption' list to be initialized as indicated,
+and the `model' option value will be set to `HP4'.
+
+   Another method is to put the model information in a `./ifhp.conf'
+file in the spool directory of the print queue.  The
+`config=/pathname,/pathname,...' option specifies the list of
+configuration files to read, and the default value is:
+     config=./ifhp.conf,/etc/ifhp.conf,./ifhp.conf
+
+   If the model information is put in the `./ifhp.conf' configuration
+file, the first reading will set the model name, and the name is used
+to select the model information from the `/etc/ifhp.conf' file.  When
+the `./ifhp.conf' is reread,  the values in it can be used to override
+values from the `/etc/ifhp.conf' file.  For example:
+     ./ifhp.conf:
+       model=HP4
+       lines=66
+     
+     /etc/ifhp.conf:
+     [ hp* ]
+      lines=60
+     [ apple* ]
+      lines=20
+
+   When the `./ifhp.conf' is first read, it will establish `model=hp'
+(sticky) and `lines=66'.  When the `/etc/ifhp.conf' file is read, the
+model name matches the `hp*' selector (case insensive GLOB matching is
+used), and the `lines=60' is selected and overrides the `lines=66'
+value.  Finally, when the `./ifhp.conf' file is reread, `lines=66' will
+establish the final value.
+
+
+File: ifhp.info,  Node: Statusfile Statusfile[lowbar]max Statusfile[lowbar]min,  Next: Operation Configuration Options,  Prev: Model Selection,  Up: Filter Operation Details
+
+Statusfile Statusfile[lowbar]max Statusfile[lowbar]min
+======================================================
+
+   The status file pathname is set by the command line `-s /pathname'
+or the `statusfile=/pathname' configurtion file entry.  If the
+`/pathname' file does not exist then it will not be created.  If the
+statusfile is larger than the `statusfile[lowbar]max=max' K bytes
+option value (default 8K), then it will be truncated to
+`statusfile[lowbar]min=min' K bytes.
+
+* Menu:
+
+* Summmaryfile::
+
+
+File: ifhp.info,  Node: Summmaryfile,  Up: Statusfile Statusfile[lowbar]max Statusfile[lowbar]min
+
+Summmaryfile
+------------
+
+   For historical and vintage software compatibility, the
+`summaryfile=/pathname' or `summaryfile=host[percnt]port' option will
+cause either a file to be open or a UDP network connection established
+to the host  and port combination.  Debugging or trace information will
+be written to this file or network connection as well, but the file
+will be truncated each time, holding only the last line of trace
+information.
+
+
+File: ifhp.info,  Node: Operation Configuration Options,  Next: Synchronization and Pagecounts,  Prev: Statusfile Statusfile[lowbar]max Statusfile[lowbar]min,  Up: Filter Operation Details
+
+Operation Configuration Options
+===============================
+
+   The `-Toption=value' and model configuration information is scanned
+to set values of options which control filter activity.  There are some
+options whose related actions do not fall into the simple model of
+string expansion.  These usually require generating commands
+dynamically, or sending files containing font or setup information to
+the printer.  The following is a list of these options.
+
+* Menu:
+
+* status and forcestatus FLAGS::
+* pjl pcl ps and text FLAGS::
+* crlf FLAG::
+* pjl[lowbar]job FLAG::
+* pjl[lowbar]enter FLAG::
+* nullpad STRING::
+* pjl[lowbar]console FLAG::
+* remove[lowbar]ctrl STRING::
+* tbcp FLAG::
+
+
+File: ifhp.info,  Node: status and forcestatus FLAGS,  Next: pjl pcl ps and text FLAGS,  Up: Operation Configuration Options
+
+status and forcestatus FLAGS
+----------------------------
+
+   These options have the side effect of enabling the reception of
+status and error information from the printer.
+
+
+File: ifhp.info,  Node: pjl pcl ps and text FLAGS,  Next: crlf FLAG,  Prev: status and forcestatus FLAGS,  Up: Operation Configuration Options
+
+pjl pcl ps and text FLAGS
+-------------------------
+
+   These flags set the lanaguages that are recognized or processed by
+the filter.
+
+
+File: ifhp.info,  Node: crlf FLAG,  Next: pjl[lowbar]job FLAG,  Prev: pjl pcl ps and text FLAGS,  Up: Operation Configuration Options
+
+crlf FLAG
+---------
+
+   The `crlf' causes LF (`\n') to be translated to CR-LF (`\r\n')
+sequences.  The following options will turn the `ifhp' filter into a
+simple CRLF translation filter.  Note that CRLF translation should have
+no effect on PostScript, Text, or PCL files.
+     status@
+     pjl@
+     ps@
+     pcl@
+     text
+     text_converter_output@
+     text_converter@
+     crlf
+
+
+File: ifhp.info,  Node: pjl[lowbar]job FLAG,  Next: pjl[lowbar]enter FLAG,  Prev: crlf FLAG,  Up: Operation Configuration Options
+
+pjl[lowbar]job FLAG
+-------------------
+
+   If PJL is enabled and this flag is SET, a PJL JOB and PJL EOJ
+command will be generated and sent to the printer.  The JOB command has
+the form:
+     [commat]PJL JOB NAME = "..." [lsqb  ] START = nnn [rsqb  ] [lsqb  ] END = mmm [rsqb  ]
+
+   The START and END values can be specified by `-Zstart=nnn' and
+`-Zend=mmm' command line options.  The EOJ command has must match the
+JOB command.
+     [commat]PJL EOJ NAME = "..." [lsqb  ] START = nnn [rsqb  ] [lsqb  ] END = nnn [rsqb  ]
+
+
+File: ifhp.info,  Node: pjl[lowbar]enter FLAG,  Next: nullpad STRING,  Prev: pjl[lowbar]job FLAG,  Up: Operation Configuration Options
+
+pjl[lowbar]enter FLAG
+---------------------
+
+   If PJL is enabled and this flag is SET, a PJL ENTER LANGUAGE = xx
+command will be generated when PCL or PS files are sent to the printer.
+     @PJL ENTER LANGUAGE = PCL
+     @PJL ENTER LANGUAGE = POSTSCRIPT
+
+
+File: ifhp.info,  Node: nullpad STRING,  Next: pjl[lowbar]console FLAG,  Prev: pjl[lowbar]enter FLAG,  Up: Operation Configuration Options
+
+nullpad STRING
+--------------
+
+   Some older model HP printers required sending a large number of NULL
+(0) characters to force commands in the input buffer to be read.  This
+can be done using the `nullpad' option.
+
+   In practice, this has turned out to be largely historical, as most
+printers do not have this problem.
+
+
+File: ifhp.info,  Node: pjl[lowbar]console FLAG,  Next: remove[lowbar]ctrl STRING,  Prev: nullpad STRING,  Up: Operation Configuration Options
+
+pjl[lowbar]console FLAG
+-----------------------
+
+   When this flag is set, PJL is available, and the PJL `RDYMSG'
+command is supported, then a short message will be put on the console.
+
+
+File: ifhp.info,  Node: remove[lowbar]ctrl STRING,  Next: tbcp FLAG,  Prev: pjl[lowbar]console FLAG,  Up: Operation Configuration Options
+
+remove[lowbar]ctrl STRING
+-------------------------
+
+   The `remove[lowbar]ctrl' string option species a list of (control)
+characters that will be removed from PostScript jobs.  This solves the
+problem of jobs with embedded Control-T or Control-C characters causing
+abnormal printer operation.  For example:
+     remove_ctrl=CT
+
+   would cause Control-C and Control-T characters to be removed.
+
+
+File: ifhp.info,  Node: tbcp FLAG,  Prev: remove[lowbar]ctrl STRING,  Up: Operation Configuration Options
+
+tbcp FLAG
+---------
+
+   The `tbcp' flag can be specified as a user option as well as a
+configuration file option.  If the file type is PostScript and this
+flag is set, then the file is transferred using the Transparent Binary
+Communication Protocol.  (See the Adobe PostScript Language Reference
+Manual for details on the protocol.)
+
+   At the start of the PostScript job, the sequence `\001' `M' is sent.
+Afterwards,  all control characters in the set `0x01, 0x03, 0x04, 0x05,
+0x11, 0x13, 0x14, 0x1C,' are replaced by the two character sequence
+`\001' `X+'@" or `X+'\100" or is sent.  For example:
+     C\001\003   ->  \001\115\103\001\101\001\103 or \001MC\001A\001C
+
+
+File: ifhp.info,  Node: Synchronization and Pagecounts,  Next: PJL Initialization,  Prev: Operation Configuration Options,  Up: Filter Operation Details
+
+Synchronization and Pagecounts
+==============================
+
+   Many printers are able to provide status information back to the
+filter.  It is assumed that in these circumstances file descriptor 1
+(FD1) is `bidirectional' and status information can be read from it.
+When the `status' or `forcestatus' option is TRUE, then the filter
+assumes that it can read FD1.  In order to simplify configuration, the
+`ifhp' filter will test FD1, and if it is not a serial port or a
+network socket, will set `status@' or OFF.
+
+   However, there are some devices such as bidirectional printer ports
+that will report status.  By setting `forcestatus' ON, the filter can
+be forced to check for status.  This can have fatal or unexpected
+effects if status is not returned correctly.
+
+   Synchronization is usually done in order to ensure that a previously
+spooled job or printer action has completed correctly, and the printer
+is ready to accept a new job.  It is usally carried out by sending a
+request to the printer to echo a string back to the filter.  Clearly,
+if the printer cannot provide status or echo values back, then
+synchronization is impossible.
+
+   The value of the `sync' option determines if a PJL ECHO command or
+simple PostScript program is used.  The PostScript program has the form:
+     \004[percnt]!PS-Adobe-2.0
+
+     ( [percnt][percnt][lsqb  ] echo: `TODSTR' ][percnt][percnt] ) print () = flush
+
+     \004
+
+   where `TODSTR' is replaced with the current Time of Day.
+
+   To control obtaining synchronization, the and
+`sync[lowbar]timeout=nnn' options are used.  The PJL or PS command is
+repeated at `sync[lowbar]interval=nnn' second intervals; if nnn is 0,
+then it is sent only once.  If synchronization is not obtained within
+`sync[lowbar]timeout=nnn' seconds, then the filter exits with an error
+status.  A 0 value or `sync[lowbar]timeout@' disables timeouts.
+
+   Pagecounts are used to do accounting and report the number of pages
+used for a job.  Most printer have a hardware based pagecounter
+mechanism whose value can be read by the appropriate PJL command or
+PostScript program.  For example, if the PJL INFO command
+     @PJL INFO PAGECOUNT
+
+   is supported by a printer, the printer will return a status message
+containing the current pagecounter value.  Printers that support
+PostScript may also be able to access the pagecounter value using a
+PostScript program.  The exact details of the PostScript program vary
+from vendor to vendor and the `pagecount[lowbar]ps[lowbar]code=...'
+option specifies the PostScript program to use.  For example:
+     pagecount_ps_code=
+       /p [lcub  ]print[rcub  ] def ( %%[lsqb  ] pagecount: ) p
+       statusdict begin pagecount end 20 string cvs p
+       ( [rsqb  ]%% ) p () = flush
+
+   Pagecounting is supported by the `pagecount='`language',
+`pagecount[lowbar]interval=nnn', and `pagecount[lowbar]timeout=nnn'
+options.  The `pagecount='`language' option enables pagecounting, and
+sets the language to be used.  Currently `ps' (PostScript) and `pjl'
+(PJL) are supported.  The pagecount request is repeated every
+`pagecount[lowbar]interval=nnn' second intervals; if nnn is 0, then it
+is sent only once.  If no pagecount value is obtained within
+`pagecount[lowbar]timeout=nnn' seconds, then the filter exits with an
+error.  A 0 value or `sync[lowbar]timeout@' disables timeouts.
+
+   Some printers do not correctly report end of job and must be polled
+until the pagecount information stabilizes.  The PJL TEOJ (True End Of
+Job) PJL has been tried with limited success on various printers to
+force End of Job reporting only when the job has finished.
+     pjl_init=[ ... teoj ... ]
+     pjl_teoj=[commat]PJL TEOJ=ON
+
+
+File: ifhp.info,  Node: PJL Initialization,  Next: Text File Conversion,  Prev: Synchronization and Pagecounts,  Up: Filter Operation Details
+
+PJL Initialization
+==================
+
+   If a printer supports PJL, the many printer operations can be
+initiated and controlled using PJL commands.  Unfortunately, not all
+printers support the same set of commands.  In addition, not all
+printers support the same set of operations or options.  A PJL command
+has the form:
+     @PJL COMMAND OPTION OPTION ...
+
+   A PJL variable is set using:
+     @PJL SET `var' = `value' ...
+
+   The `pjl[lowbar]only=[ ... ]', `pjl[lowbar]except=[ ... ]',
+`pjl[lowbar]vars[lowbar]set=[ ... ]', and
+`pjl[lowbar]vars[lowbar]except=[ ... ]' options are used to control
+which PJL commands and which PJL variables can be set.  The
+`pjl[lowbar]only' variable lists the commands supported by the printer,
+and the `pjl[lowbar]except' lists commands `not' supported by the
+printer.  Before sending a PJL command, the `ifhp' filter checks to
+make sure that the command name is in `pjl[lowbar]only' and not in
+`pjl[lowbar]except'.  If the tests fail, then tne command is not sent.
+
+   Similarly, when sending a command to set a PJL variable, the
+`pjl[lowbar]vars[lowbar]set' and `pjl[lowbar]vars[lowbar]except' lists
+are checked to determine if the variable name is in
+`pjl[lowbar]vars[lowbar]set' and not in `pjl[lowbar]except' list.  If
+the tests fail, then tne command is not sent.
+
+   If PJL is enabled, then the following actions are taken.
+  1.  PJL Universal Exit Lanaguage (UEL) `\033[percnt]-12345X' is sent
+     to the printer.  This is required to ensure that the following PJL
+     commands are accepted.
+
+  2.  PJL JOB command is sent at the start of job.  The JOB command can
+     be used to select pages or impressions to be printed.  If the
+     `-Zstartpage=nnn' or `-Zendpage=mmm' option is present, then the
+     PJL JOB command has the form:
+          @PJL JOB START=nnn END=mmm
+
+  3.  The `pjl[lowbar]init=[ ... ]' value option is expanded using the
+     PJL (`"pjl[lowbar]"') language context as described above.
+
+  4.  The `-Toption=value's and `-Zoption=value's are scanned for
+     matching option names in the `pjl[lowbar]user[lowbar]opts=[ ... ]'
+     list.  If they are found, then the options are recursively
+     evaluated in the PJL language context.  The expansion alorithm
+     will cause the option value to be used to set PJL variables.  For
+     example:
+          Configuration:
+            pjl_vars_set=[ OUTBIN AUTOSELECT JAM=YES ]
+          
+          Command
+            ifhp -Zoutbin=upper,autoselect,jam
+          
+          PJL command generated:
+            @PJL SET OUTBIN=UPPER
+            @PJL SET AUTOSELECT=ON
+            @PJL SET JAM=YES
+
+
+File: ifhp.info,  Node: Text File Conversion,  Next: Language Specific Initialization,  Prev: PJL Initialization,  Up: Filter Operation Details
+
+Text File Conversion
+====================
+
+   Many PostScript printers cannot handle text files, and produce many
+hundreds of pages of garbage output if they are sent to the printer
+without being translated into PostScript.  Also, while most PCL
+printers will accept text files and do a reasonable job of printing them
+some form of initialization strings or setup may need to be done.
+Finally, you might want to try using a `MagicFilter' that will convert
+just about any type of file into a PostScript file.
+
+* Menu:
+
+* Default Converter Program::
+* Pseudo-MagicFilter Support::
+* No Textfile Conversion Needed::
+* Default Passthrough of Unknown File Types::
+
+
+File: ifhp.info,  Node: Default Converter Program,  Next: Pseudo-MagicFilter Support,  Up: Text File Conversion
+
+Default Converter Program
+-------------------------
+
+   This method specifies that the default file type will be `text'.  If
+the simple `ifhp' type detection code cannot decide what type of file
+this is, it will invoke a converter program.  This operation is
+controlled by the following options.
+``default[lowbar]language=text''
+     When the default lanague is `text' then the
+     `text[lowbar]converter' and `text[lowbar]converter[lowbar]output'
+     options are used.
+
+``text[lowbar]converter=/pathname''
+     specifies the pathname of a text to language program.
+
+``text[lowbar]converter[lowbar]output=language''
+     Specifies the output language of the conversion program.  Language
+     can be `ps', `pcl', `text', `raw', `unknown'
+
+``tempfile=/pathname''
+     A temporary file location,  used to store intermediate conversion
+     results.  The `/pathname' value has the string `XXXXXX' appended
+     to it and is used as input to the POSIX `mktemp()' function.
+
+   The print file language is determined using the following algorithm.
+  1. The default language is set to `unknown' or the
+     `default[lowbar]language=language' value if it exists.
+
+  2. If the command line `-c' (binary) option is present, or the
+     `autodetect' configuration option is TRUE, then the language is
+     set to `RAW'.  (The autodetect option is not recommended for
+     general use).
+
+  3. If there is a `-Zlanguage=value' command line option, the language
+     is set to `value'.
+
+  4. Various simple checks to determine if the file is Postscript
+     (language=`ps') or PCL (language=`pcl') are performed.  These are
+     the same checks that the UNIX `file' utility uses.
+
+  5. If the file type is `text' then the `text[lowbar]converter'
+     program is run to translate the file and the results stored in the
+     `tempfile'.
+
+   One technique used with varying degrees of sophistication is to use
+a general purpose file to PostScript conversion program.  These have
+generally been known as `MagicFilters', due to their high degree of
+flexibility.
+
+
+File: ifhp.info,  Node: Pseudo-MagicFilter Support,  Next: No Textfile Conversion Needed,  Prev: Default Converter Program,  Up: Text File Conversion
+
+Pseudo-MagicFilter Support
+--------------------------
+
+   As described above, the various `MagicFilter' packages can do
+conversion.  However, most of the time there is only a limited need for
+the general purpose conversions.  This can be met by using the `file'
+program,  which will determine the type of a file based on its contents,
+and having `ifhp' invoke a program based on the type of file found.
+This method is used when `default[lowbar]language=unknown' and the
+`file[lowbar]util[lowbar]path=/path' and
+`file[lowbar]output[lowbar]match=[ ... ]' values are defined.  A
+typical configuration is shown below.
+     Configuration:
+     #
+     #  Method 2 -
+     #    Use the file util and match the output
+     # file reports format information
+     #  glob text_output_format text_converter
+     #  - you do a glob match against pattern and use the converter
+     #
+     default_language=unknown
+     file_util_path=/usr/bin/file -
+     file_output_match = [
+     # glob   output converter
+      *text*  ps     /usr/local/bin/a2ps -q -B -o-
+      *gif*   ps     /usr/local/bin/gif2ps
+      ]
+
+   The `file[lowbar]output[lowbar]match' entry consists of a list of
+lines containing a `glob' pattern, a language type (`ps', `pcl', or
+`raw'), and a program to invoke to do the conversions.
+
+   The `file' utility is run and its output is matched against the
+specified glob patterns.  When a match is found the specified program
+is run, with STDIN attached to the original input file and its STDOUT
+sent to the printer.
+
+   While this algorithm may appear to be overly complex, it will handle
+a wide range of desired configurations.
+
+
+File: ifhp.info,  Node: No Textfile Conversion Needed,  Next: Default Passthrough of Unknown File Types,  Prev: Pseudo-MagicFilter Support,  Up: Text File Conversion
+
+No Textfile Conversion Needed
+-----------------------------
+
+   If your printer can handle text files without conversion, but
+require PCL intialization, then the following combination will simply
+set the language to `pcl':
+     text_converter@
+     text_converter_output=pcl
+
+
+File: ifhp.info,  Node: Default Passthrough of Unknown File Types,  Prev: No Textfile Conversion Needed,  Up: Text File Conversion
+
+Default Passthrough of Unknown File Types
+-----------------------------------------
+
+   Your printer may be capable of handling a wide variety of job
+formats.  If you want to simply pass through files of unknown type or
+language then use:
+     text_converter@
+     text_converter_output=raw
+
+
+File: ifhp.info,  Node: Language Specific Initialization,  Next: File Transfer and Error Status Monitoring,  Prev: Text File Conversion,  Up: Filter Operation Details
+
+Language Specific Initialization
+================================
+
+   After determining the output file language type, language specific
+operations are then carried out by expanding the
+`language[lowbar]'`[lowbar]init=[ ... ]' options in the language
+context, and then the options in the `-Toption=value' and
+`-Zoption=value' command line options.  The `-T' options are expanded
+before the `-Z', allowing the `-Z' actions to override any set by the
+`-T' actions.
+
+   As mentioned elsewhere, the reason for the language specific
+processing is to allow different actions for the same command line
+option, depending on the file type that is being processed.  For
+example,  when processing a PCL file it might be necessary to send PCL
+command strings and when processing a PostScript file, you would need
+to send PostScript commands.
+
+
+File: ifhp.info,  Node: File Transfer and Error Status Monitoring,  Next: End of Job,  Prev: Language Specific Initialization,  Up: Filter Operation Details
+
+File Transfer and Error Status Monitoring
+=========================================
+
+   If the printer can return status, i.e., the `status' or `forcestatus'
+flag is set, then the `ifhp' filter will read status information back
+from the printer.
+
+   If the `logall' flag is SET, then all error messages will be written
+to the status or log file.
+
+   If the printer is returning PJL status information, then this has a
+specific format:
+     @PJL UINFO DEVICE
+     CODE=nnnn
+     DISLAY="value"
+     ...
+     
+     @PJL UINFO JOB
+     START
+     ...
+     
+     @PJL UINFO JOB
+     END
+     ...
+
+   The `ifhp' program will extract the `CODE' and job start and end
+flags, and log these as appropriate.
+
+   Unfortunately, some PJL based printers are extremely verbose in
+their generation of status messages.  In order to reduce the amount of
+logging of redundant information, `ifhp' will only record when a device
+status has `changed', rather than when it has been reported.
+
+   The pjl[lowbar]quiet[lowbar]codes=[lsqb  ] code code code [rsqb  ]
+value is used to suppress reporting of selected error codes.  If the
+error code is in the pjl[lowbar]quiet[lowbar]codes list,  then the
+error status will not be reported to the user unless the `logall'
+option is set.  For example:
+       pjl_quiet_codes=[lsqb  ] 10000 10001 10003 10023 10024 35078 [rsqb  ]
+
+   Also, there may be error codes which does not have a builtin error
+message available.  New messages can be added using the
+`pjl[lowbar]error[lowbar]codes' option.  Its value is a list of lines,
+each line consisting of an error code followed by the corresonding
+error message:
+     pjl_error_codes=[lsqb  ]
+        code=msg
+        code=msg
+        ...
+     [rsqb  ]
+     
+     Example:
+       pjl_error_codes=[lsqb  ]
+          10000=powersave mode
+          10001=Ready Online
+          10002=Ready Offline
+          10003=Warming Up
+          10004=Self Test
+          10005=Reset
+       [rsqb  ]
+
+
+File: ifhp.info,  Node: End of Job,  Next: Tektronix Phaser and AppSocket Support,  Prev: File Transfer and Error Status Monitoring,  Up: Filter Operation Details
+
+End of Job
+==========
+
+   The `waitend' option controls the job termination sequence.  By
+default, this will do the same work as the `sync' operation, and the
+option takes the same set of values.
+
+   If `waitend' is suppressed using `waitend@', then as soon as a job
+has been transferred, the next step, `pagecount', will be attempted.
+If the print job has not finished at this point, then erroneous page
+counts will be reported.
+
+   When using the `appsocket' protocol, then suppressing `waitend' will
+cause no error messages from the printer to be reported.
+
+
+File: ifhp.info,  Node: Tektronix Phaser and AppSocket Support,  Prev: End of Job,  Up: Filter Operation Details
+
+Tektronix Phaser and AppSocket Support
+======================================
+
+   The Tektronix Phaser PostScript printers uses the AppSocket protcol
+for sending a job to the printer over a network connection.  The
+`appsocket' flag enables this operation.  The protocol is (briefly):
+  1.  The printer listens for UDP packets on port 9101 and for TCP/IP
+     connections on port 9100.
+
+  2.  When a UDP packet is recieved on port 9101, then a reply packet
+     containing the status is returned to the originator's address.
+     This packet contains an status indication, in a `undefined' format.
+
+  3.  To send a job to the printer,  a TCP/IP connection is opened to
+     port 9100, and a PostScript job is sent.  Only a single job can be
+     sent at a time - a EOJ (CTRL-D) will terminate input and flush all
+     following jobs.
+
+  4. Return status will be sent in the reverse direction until the job
+     has completed, at which point the connection will be closed.
+
+   To use this protocol, the printer TCP/IP address and port must be
+specified using the `-Tdev=host[percnt]port' option; usually port is
+9100.  Also, the printer device in the printcap entry should be
+`lp=/dev/null'.
+
+   When using the Appsocket protocol, the `ifhp' filter will open a UDP
+port and use it to send query packets to the printer UDP port 9101.  In
+addition, it will try to open a connection to port 9100.  When a
+connection has been established, and pagecount has been determined, the
+connection will be close and reopened.
+
+   After job transfer, the connecion will be `half-closed'.  That is,
+the `shutdown()' facility will be used to cause the TCP/IP connection
+to be set to closed for transmission but open for reception.  The
+printer will send status information until the job is completed, and
+then close the connection.
+
+   If page count information is needed, the `ifhp' filter will then
+reopen the connection and get the page count information.
+
+
+File: ifhp.info,  Node: Banners and OF Mode Operations,  Next: Predefined Options,  Prev: Filter Operation Details,  Up: Top
+
+Banners and OF Mode Operations
+******************************
+
+   The OF mode is enabled by the command line -Fo flag or by the file
+name of the executable containing the "of" string.
+
+   When operating in the OF mode,  the filter uses the value of the
+banner key to determine what to do with input.  If banners are disabled
+(`banner[commat]'), then input is simply passed directly to the output.
+The banner[lowbar]suppressed flag allows you to suppress banner printing
+until explicitly requested by a user using the -Zbanner flag.
+``banner=pcl''
+     Uses a built-in PCL banner generator.  Pretty simple output.
+
+`` banner=ps ''
+     Using information from the command line options,  generates
+     PostScript line which set the values of PostScript variables.
+     Then the contents of the file specified by
+     `banner[lowbar]file=/path' are appended.
+          [percnt]!PS-Adobe-2.0
+
+          /Seq (number) def
+
+          /Job (banner) def
+
+          /Host (HOST) def
+
+          /Class (CLASS) def
+
+          /User (USER) def
+
+          /Date (DATE) def
+
+          /Name (NAME) def
+
+          /Line (LINE) def
+
+          /`X' (`command line' `-X' `option value') def
+
+``banner=text''
+     Puts out a simple text based banner.  Uses the command line `-w
+     width' and `-l length' command line options to set the page width
+     in columns and pagelength in lines.  If these are not set, the
+     configuation options `page[lowbar]width=width' and
+     `page[lowbar]length=length' values are used.
+
+``banner=/path''
+     Opens and copies the file directly to the printer.
+
+`` banner=[verbar]/path ''
+     Forks and EXECs the executable specified by `/path', with the same
+     arguments as those passed to the filter.  The executable output is
+     sent to the printer.
+

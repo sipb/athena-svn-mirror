@@ -1,0 +1,86 @@
+% Copyright 1988 Michael Urban
+% Everyone is granted permission to copy, modify and redistribute
+% this file, provided that a currently-dated copy of this
+% copyright notice is included in the copy.
+% License is granted to produce fonts based on the information
+% in this file, provided that such fonts are redistributed
+% without charge to any third party.
+
+% SCCS ID @(#)punctuation.mf	1.1   10/1/86
+
+beginchar (",", 3*leadgap#, xht#, 0); "The punctuation comma (one dot)";
+	begingroup;
+	save x, y;
+	pickup pensquare scaled thick rotated 45;
+	z1 = (1/2w, h/2);
+	drawdot z1;
+	endgroup;
+endchar;
+
+beginchar (";", 2*leadgap#, xht#, 0); "The punctuation semicolon (two dots)";
+	begingroup;
+	save x, y;
+	pickup pensquare scaled thick rotated 45;
+	z1 = (w/2, h-2thin);
+	z2 = (w/2, 2thin);
+	drawdot z1;
+	drawdot z2;
+	endgroup;
+endchar;
+
+beginchar (".", 3*leadgap#, xht#, 0); "The punctuation period (four dots)";
+	begingroup;
+	save x, y;
+	pickup pensquare scaled thick rotated 45;
+	z1 = (w/3, h-2thin);
+	z2 = (w/3, 2thin);
+	z3 = (w, h-2thin);
+	z4 = (w, 2thin);
+	drawdot z1;
+	drawdot z2;
+	drawdot z3;
+	drawdot z4;
+	endgroup;
+endchar;
+
+beginchar ("!", .7shortwidth, cap#, 0); "The exclamation point";
+	begingroup;
+	save x, y;
+	pickup elvishpen;
+	rt x1 = w; top y1=h;
+	y2 = y3 = h/2;
+	z1-z2 = z3-z4 = whatever*(dir 40);
+	x4 = leadgap; %bot y4=0;
+	draw z1..controls z2 and z3..z4;
+	endgroup;
+endchar;
+
+beginchar ("?", .7shortwidth, cap#, 0); "The question mark";
+	begingroup;
+	save x, y;
+	pickup elvishpen;
+	telco (leadgap, longstem, stemdepth);
+	z1 = bowpoint;
+	top y2 = xht; x2 = .6[leadgap, w];
+	rt x3 = w; y3 = .7xht;
+	lft x4 = leadgap; bot y4 = 0;
+	draw z1..tension 2.0..z2..z3..z4;
+	z6-z5 = z2-z1;
+	top y6 = h; x6 = x2;
+	z7-z6 = z3-z2;
+	draw z5..tension 2.0..z6..z7..tension 1.5..z1;
+	endgroup;
+endchar;
+
+beginchar ("-", shortwidth, xht#, 0); "The dash (tilde)";
+	begingroup;
+	save x, y;
+	pickup elvishpen;
+	x1 = leadgap; 
+	x4 = w; 
+	y1 = .4h; y4 = .6h;
+	z2-z1 = z4-z3 = whatever*(dir tilt);
+	y2-y1 = 3 (y4-y1);
+	draw z1..controls z2 and z3..z4;
+	endgroup;
+endchar;

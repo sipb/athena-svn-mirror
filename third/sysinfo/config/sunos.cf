@@ -1,0 +1,798 @@
+#
+# $Id: sunos.cf,v 1.1.1.3 1998-12-24 22:03:03 ghudson Exp $
+#
+# Copyright (c) 1992-1998 Michael A. Cooper.  
+# This software may be freely used and distributed provided it is not
+# sold for profit or used in part or in whole for commercial gain
+# without prior written agreement, and the author is credited
+# appropriately.
+#
+# 	SYSINFO configuration file for SunOS (4.x and 5.x)
+#
+include		scsi.cf
+include		dospart.cf
+#
+# Device definetions.
+#
+# 	Format is
+#
+#		KEY |NAME |TYPE |NumID |MODEL INFO |DESCRIPTION |FLAGS |FILE
+#
+# 	The NAME field can have multiple names, each seperated by 
+#	a space (` ').
+#
+# 	Some devices are marked `Zombie' because they usually are
+# 	not indicated as ALIVE by the kernel, but should only
+# 	be found in the device table if they exists.
+#
+# Network Interfaces
+#
+#	 Driver		Model				 Class
+device	|ie	|netif||Intel		|82586 LAN Co-Processor	||ether
+device	|ei	|netif||Solbourne	|IOASIC AMD Lance Am7990||ether
+device	|le	|netif||AMD		|Lance Am7990		||ether
+device	|ne	|netif||Interphase	|NC400			||ether
+device	|qe	|netif||Sun		|Quad			||ether
+device	|be	|netif||Sun		|BigMAC			||ether100m
+device	|fddi	|netif||Sun		|FDDI/DX DAD		||fddi
+device	|bf	|netif||Sun/Bantam	|FDDI/S SAS		||fddi
+device	|nf	|netif||Sun		|FDDI/S (3.x) SAS	||fddi
+device	|hme SUNW,hme|netif||Sun	|			||ether100m
+device	|qfe SUNW,qfe|netif||Sun	|Quad			||ether100m
+device	|pcelx	|netif||3COM		|EtherLink III PC Card	||ether
+#
+# Disk Drive Drivers
+#
+# 	These values are used to determine what devices are disk drives.
+#	Info about specific devices is read from each device.
+#
+device	|sd	|diskdrive
+device	|sdd	|diskdrive
+device	|xd	|diskdrive
+device	|xy	|diskdrive
+device	|id	|diskdrive
+device	|dad	|diskdrive
+device	|cmdk	|diskdrive	||Common Disk Driver
+# Application Transparent Failover driver for CLARiiON RAID subsystem
+device	|atf	|diskdrive
+#
+# Floppy Disk Drives
+#
+# 	NOTE: 	List non-volmgt devices first because volmgt devs don't
+#		support most dev specific ioctl's
+#
+device	|fdc	|generic/floppyctlr
+device	|fd	|floppy|||||||/dev/rfd%d /vol/dev/rdiskette%d
+device	|fd fdtwo SUNW,fdtwo	|floppy|||Floppy Two||||/dev/rfd%d /vol/dev/rdiskette%d
+device	|fd fdthree SUNW,fdthree|floppy|||Floppy Three||||/dev/rfd%d /vol/dev/rdiskette%d
+#
+# CDROM
+#
+#	The "sr" entry is for SunOS 4.x
+#	The "atapicd" is for ATA CDROM's under SunOS 5.x
+#	All other CDROM's under SunOS 5.x appear as regular diskdrive's.
+#
+device	|sr	|cdrom||||CD-ROM|||/dev/rsr%d /vol/dev/aliases/cdrom%d
+device	|atapicd|diskdrive/cdrom|||||ATA||/dev/rdsk/c0t%dd0s2 /vol/dev/aliases/cdrom%d
+#
+# Controllers
+#
+device	|esp	|generic/ctlr	||	|Generic SCSI			||SCSI
+device	|fas	|generic/ctlr	||Sun	|FAS366				||SCSI
+device	|SUNW,fas|generic/ctlr	||Sun	|FAS366 Fast			||SCSI
+device	|si	|generic/ctlr	||Sun	|SCSI-3				||SCSI
+device	|sm	|generic/ctlr	||Sun	|SCSI-ESP			||SCSI
+device	|sw	|generic/ctlr	||Sun	|SCSI-Weird			||SCSI
+device	|QLGC,isp|generic/ctlr	||Sun	|DWIS/S				||SCSI
+device	|SUNW,isptwo|generic/ctlr||Sun	|Ultra				||SCSI
+device	|ata	|generic/ctlr	||	|Generic ATA 			||ATA
+device	|uata	|generic/ctlr	||	|Generic ATA			||ATA
+device	|glm	|generic/ctlr	||Symbios|53c875 Fast/Ultra/Wide	||SCSI
+#
+# SPARC Storage Array Parts
+#
+device	|SUNW,soc|generic||Sun|Serial Optical Controller|FCS Host Adapter
+device	|SUNW,pln|generic||Sun|SPARCstorage Array|Host Bus Adapter driver
+device	|ssd	|diskdrive
+#
+# Sun Storage Arrays (A5000, etc)
+#
+device	|SUNW,socal socal|generic/diskctlr||Sun|Serial Optical Controller FC-AL
+device	|sf SUNW,sf	|generic||Sun|SOC FC-AL				|SCSI
+device	|ses SUNW,ses	|generic||Sun|SCSI Enclosure Services		|SCSI
+#
+# Disk controllers by controller ID
+#
+#	The ID values are from DKC_* in `/usr/include/sys/dkio.h'.
+#
+#	The Flags field contains the controller specific command to
+#	issue a read command to read a block of data from a disk.
+#	The values are normally found in `/usr/include/sundev/*reg.h' 
+#	as `*_READ' definetions.  (e.g. `XD_READ' for the Xylogics 7053)  
+#	The Flags field is not used under SunOS 5.x.
+#
+#				  ID
+device	||generic/diskctlr|1	|	|CD-ROM			|||-1
+device	||generic/diskctlr|2	|	|WDC 2880		|||-1
+device	||generic/diskctlr|5	|	|DSD 5215		|||-1
+device	||generic/diskctlr|6	|Xylogics|450/451		||SMD	|0x200
+device	||generic/diskctlr|7	|Adaptec|ACB4000		||SCSI	|0x08
+device	||generic/diskctlr|8	|Emulex	|MD21			||SCSI	|0x08
+device	||generic/diskctlr|10	|NCR	|Floppy			||SCSI	|0x08
+device	||generic/diskctlr|11	|Xylogics|7053/753		||SMD	|0x200
+device	||generic/diskctlr|13	|CCS	|compatible		||SCSI	|0x08
+device	||generic/diskctlr|14	|Intel	|82072 Floppy		||	|-1
+device	||generic/diskctlr|15	|Sun	|ISP-80 (Panther) IPI-2	||IPI	|0x10
+device	||generic/diskctlr|16	||Meta-Disk (Virtual Disk) Driver|Virtual||-1
+device	||generic/diskctlr|17	|CDC	|9057-321 (CM-3)	||IPI	|-1
+device	||generic/diskctlr|18	|Fujitsu/Intellistor|M1060	||IPI	|-1
+device	||generic/diskctlr|19	|Intel	|82077 Floppy		||	|-1
+device	||generic/diskctlr|20	|	|			||ATA	|-1
+device	||generic/diskctlr|21	|	|PCMCIA Memory Disk	||	|-1
+device	||generic/diskctlr|22	|	|PCMCIA ATA		||ATA	|-1
+#
+# Tape Drives
+#
+#	Most tape info is read directly from the kernel.
+#
+device	|st	|tapedrive	||		|		||SCSI
+device	|xt	|tapedrive	||Fujitus	|M2444	|1/2 inch tape drive
+device	|xtc	|tapectlr	||Xylogics	|472
+#
+# Frame Buffers
+#
+# The ID values are usually defined as FBTYPE_* in:
+#	/usr/include/sys/fbio.h
+#	/usr/include/sundev/fbio.h
+#
+#      Driver Name		     ID  Description
+device|bwone		|framebuffer|0	|Sun|Black & White
+device|cgone		|framebuffer|1	|Sun|8-bit Color Graphics
+device|bwtwo		|framebuffer|2	|Sun|Black & White memory
+device|cgtwo		|framebuffer|3	|Sun|8-bit Color Graphics w/rasterop
+device|cgtwelve		|framebuffer|4	|Sun|GP1/GP2 Graphics Processor
+device|cgsix		|framebuffer|5	|Sun|Sun386i GX 8-bit Accelerated Color Graphics
+device|cgthree		|framebuffer|6	|Sun|8-bit Color Graphics
+device|cgthree SUNW,501-1415 SUNW,501-1718|framebuffer|6|Sun|8-bit Color Graphics, 13W3 connector
+device|bwtwo		|framebuffer|7	|Sun|B&W memory overlay plane
+device|bwtwo SUNW,501-1419|framebuffer|7|Sun|MG1 B&W memory overlay plane, D connector
+device|bwtwo SUNW,501-1455|framebuffer|7|Sun|MG2 B&W memory overlay plane, 13W3 connector
+device|cgfour		|framebuffer|8	|Sun|8-bit Color Graphics w/memory overlay
+device|cgsix		|framebuffer|12	|Sun|GX 8-bit Accelerated Color Graphics
+device|cgsix SUNW,501-2325 SUNW,501-2922|framebuffer|12	|Sun|TurboGX 8-bit Color Graphics|||DefInfo|tcx
+device|cgsix SUNW,501-2253|framebuffer|12|Sun|TurboGXplus 8-bit Color Graphics|||DefInfo|tcx
+device|cgtwelve		|framebuffer|13	|Sun|GS 24-bit Color Graphics w/rasterop
+device|			|framebuffer|14	||Video Mixing
+device|			|framebuffer|15	||Medical Imaging
+device|			|framebuffer|16	||Plasma Panel
+device|cgtwelve		|framebuffer|17	|Sun|GPSI 24-bit Accelerated Color Graphics
+device|gt		|framebuffer|18	|Sun|GT 24-bit Accelerated Color Graphics
+device|leo SUNW,leo zx	|framebuffer|19	|Sun|ZX 24-bit Accelerated Color Graphics
+device|cgfourteen	|framebuffer|20	|Sun|SX 24-bit Accelerated Color Graphics
+device|tcx SUNW,tcx S24 SUNW,501-2337|framebuffer||Sun|TCX/S24 8/24-bit Color Graphics|||DefInfo|tcx
+#
+# The "define|BoardTypeFFB" entries below override the Model field for
+# all of these "device|ffb" entries here.
+#
+device|ffb SUNW,ffb SUNW,501-2633 SUNW,501-2634 SUNW,501-4172|framebuffer||Sun|Creator 24-bit UPA Color Graphics
+#
+# The 'ffbdbl' entry is hardcoded into os-sunos.[ch]
+#
+device|ffb SUNW,ffb ffbdbl SUNW,501-2634 SUNW,501-3129 SUNW,501-4174|framebuffer||Sun|Creator 3D 24-bit UPA Color Graphics
+#
+# m64/PGX
+#
+device|m64 M64B SUNW,m64B ATY,GT-B|framebuffer|22||PGX PCI 8-bit
+#
+# Haven't actually played with an AFB/Elite3D yet
+#
+device|afb SUNW,afb 	|framebuffer||Sun|Elite 3D 24-bit UPA Color Graphics
+device|afb SUNW,595-4871|framebuffer||Sun|Elite 3D m3 24-bit UPA Color Graphics - Vertical
+device|afb SUNW,595-4878|framebuffer||Sun|Elite 3D m6 24-bit UPA Color Graphics - Horizontal
+device|afb SUNW,595,4870|framebuffer||Sun|Elite 3D m6 24-bit UPA Color Graphics - Vertical
+device|cgeight		|framebuffer
+device|cgnine		|framebuffer
+device|gpone		|framebuffer
+device|taac		|framebuffer
+device|vx		|framebuffer
+#
+#	Bus Info
+#
+device	|vme		|bus	|||VME
+device	|sbus		|bus	|||SBus
+device	|upa		|bus	|||UPA
+device	|isa		|bus	|||ISA
+device	|obio		|bus	|||On Board I/O
+device	|obmem		|bus	|||On Board Memory
+device	|iommu		|bus	|||I/O Memory Management Unit
+device	|eisa		|bus	|||Enhanced ISA
+device	|pnpisa		|bus	|||Plug-N-Play ISA
+device	|mca		|bus	|||Micro Channel Architecture
+device	|pcmcia SUNW,pcmcia|bus	|||PC Card
+device	|pcic		|bus	||Intel|i82365SL PC Card Interface Controller
+device	|pci		|bus	|||PCI
+device	|simba SUNW,simba pci108e,5000		|bridge	|||PCI
+device	|psycho SUNW,psycho pci108e,8000	|bridge	|||UPA<->PCI
+#
+#	Generic and Pseudo devices
+#
+device	|sysboard	|generic	|||System Board
+device	|sbi		|generic	|||SBus Interface
+device	|bootbus	|generic/bus	|||Boot Bus
+device	|cpu-unit	|generic/bus	|||CPU Unit
+device	|io-unit	|generic/bus	|||I/O Unit
+device	|mem-unit	|generic/bus	|||Memory Unit
+device	|dma		|generic	|||Direct Memory Access Driver
+device	|lebuffer	|generic	|||LANCE Buffered Ethernet
+device	|ledma		|generic/pseudo	|||LANCE Ethernet DMA
+device	|espdma		|generic/pseudo	|||SCSI DMA
+device	|openprom	|generic/device	|||Open Boot PROM	|||AssUnit
+device	|eeprom		|generic/device	|||EEPROM		|||AssUnit,Zombie
+device	|SUNW,pn	|generic	|||IPI Bus Connector	|||LENCMP
+device	|ipi3sc		|generic	|||IPI-3 String Controller
+device	|qec		|generic	|||Sun Quad Ethernet Controller
+device	|options	|generic	|||PROM Settings
+device	|aliases	|generic	|||PROM Device Aliases	|||AssUnit,Zombie
+device	|central	|generic	|||System Clock Board
+device	|clock-board	|generic	|||Clock Board
+device	|fhc		|generic	|||FireHost Controller|Utility Bus
+device	|dptctl		|generic/pseudo	|||ISA/SCSI Interface to CMDK
+#
+# 	Miscellaneous devices
+#
+device	|cpu		|cpu
+device	|auxio		|generic	|||Auxiliary I/O|||Zombie
+device	|flashprom	|generic	|||Flash PROM	|||Zombie,AssUnit
+device	|audio		|audio		|||AM79C30A DSC
+device	|audiocs SUNW,CS4231|audio	||Crystal Semiconductor|4231
+device	|zs		|serial		||Zilog|8530
+device	|mti		|generic	|||ALM-1 (Systech MTI-1600)	|16-line terminal multiplexor
+device	|mcp		|generic	|||ALM-2 (Sun MCP/ALM)		|16-line terminal multiplexor
+device	|fpa		|generic	|||Sun-3 FPA			|Weitek-based floating point accesslerator
+device	|des		|generic	|||AmZ8068 Data Ciphering Processor |NBS Data Encryption Standard
+device	|vpc		|generic	||Systech|VPC-2200		|Versatec & Centronics printer/plotter interface
+device	|pp		|parallel	|||Centronics-compatible
+device	|ecpp		|parallel	|||IEEE 1284 ECP, Nibble, and Centronics compatible|||Zombie,AssUnit
+device	|SUNW,lpvi	|generic	||Sun|Sbus Printer Card		|laser printer video interface
+device	|SUNW,DBRIe	|generic/device	||Sun|BRI ISDN and Multimedia codec|ISDN and Audio interface
+device	|db		|generic	||Sun|Dial Box
+device	|pr		|generic	|||PrestoServe			|file system accelerator
+device	|GNP,DEI	|serial		||GNP|DEI Serial Expander	|8 to 32 port terminal multiplexer
+device	|bpp SUNW,bpp	|parallel	||Sun|Bidirectional Parallel Port|||Zombie
+device	|SUNW,xbox	|generic	||Sun|SES|SBus Expansion Subsystem
+device	|SUNW,spif	|serial		||Sun|SPC/S|Serial Parallel Controller
+device	|SUNW,SunPC	|generic	|||SunPC|Intel 486 Accelerator
+device	|kd		|generic	|||	|KeyBoard
+device	|kdmouse	|generic	|||	|Mouse
+device	|asy		|serial		|||	|Asynchronous Serial Ports
+device	|pci1011,24	|generic/mfc	|||Sun	|SunSwift SCSI/Ethernet
+#
+# 	Miscellaneous devices for "fhc"
+#
+device	|ac		|generic	|||Memory Controller
+device	|simm-status	|generic	|||SIMM Status
+device	|environment	|generic	|||Environmental Sensor
+device	|sram		|generic	|||SRAM
+#
+# 	PCI system devices
+#
+device	|ebus		|bridge	||		|PCI<->OnBoard
+device	|se		|serial	||Siemens	|82532 ESCC
+device	|su		|serial	||		|82510/8250/16450/16550AF
+#
+# Definetions
+# 	Format of Definetions is:
+#
+#define	|DefineName	|StringKey	|NumericKey	|StrValue1|StrValue2
+#
+# System Model definetions
+#
+#	Values are from "/usr/include/{sys,machine}/cpu.h".
+# 	On OBP systems, any model not listed here will
+# 	have it's system model name looked up in OBP.
+#
+#			sun4c
+define	|SysModel	||0x51	|SPARCstation 1 (4/60)
+define	|SysModel	||0x52	|SPARCstation IPC (4/40)
+define	|SysModel	||0x53	|SPARCstation 1+ (4/65)
+define	|SysModel	||0x54	|SPARCstation SLC (4/20)
+define	|SysModel	||0x55	|SPARCstation 2 (4/75)
+define	|SysModel	||0x56	|SPARCstation ELC (4/25)
+define	|SysModel	||0x57	|SPARCstation IPX (4/50)
+#			sun4m
+define	|SysModel	||0x71	|SPARCsystem 600 (4/6x0)
+#			sun4
+define	|SysModel	||0x22	|4/110
+define	|SysModel	||0x21	|4/2x0
+define	|SysModel	||0x23	|SPARCsystem 300 (4/3x0)
+define	|SysModel	||0x24	|SPARCsystem 400 (4/4x0)
+#			sun4e
+define	|SysModel	||0x61	|SPARCengine 1E
+#			sun3
+define	|SysModel	||0x12	|3/50
+define	|SysModel	||0x17	|3/60
+define	|SysModel	||0x14	|3/110
+define	|SysModel	||0x11	|3/1x0
+define	|SysModel	||0x13	|3/2x0
+define	|SysModel	||0x18	|3/Eurocard
+#			sun3x
+define	|SysModel	||0x42	|3/80
+define	|SysModel	||0x41	|3/4x0
+#
+# Sub System Model
+#
+# It's important to order the most detailed entries before the less detailed.
+# i.e. The "Ultra-1 170E" should be before the "Ultra-1 170" since the 170E
+# has more detail to it.
+#
+#	FIELD		DESCRIPTION
+#	--------------	-------------------------------------------------------
+#	SYSMODEL	The key name obtained from OBP to use this entry.
+#	EXPANDED NAME	The string used to expand name.  Variables ${} are
+#			case insensitive and defined as follows:
+#
+#			VARIABLE	DESCRIPTION
+#			---------------	---------------------------------------
+#			BannerName	The value "banner" from the OBP.
+#			CPUspeed	The speed (in MHz) of any CPU.
+#			NumCPU		The number of CPUs in the machine.
+#			ClockFreq	The frequency (in MHz) of system clock.
+#
+#	CONDITIONALS	This column contains conditionals of form `key=value'.
+#			Multiple `key=value' statements can be made, each one
+#			seperated by white space.  Each set of conditions for
+#			a given entry must be TRUE for that entry to be used.
+#			The following are valid `key' names:
+#
+#			KEYNAME		DESCRIPTION
+#			---------------	---------------------------------------
+#			CPUspeed	The speed (in MHz) of a CPU.
+#			CPUspeedDelta	The number of MHz that CPUspeed can
+#					vary and still match.  Must use
+#					CPUspeedDelta _BEFORE_ CPUspeed.
+#					Default is 2.
+#			NumCPU		The total number of CPUs in system.
+#			HasDev		Machine has a device named `value'
+#			HasType		Machine has device types
+#					("device_type" from OBP) called `value'
+#
+# For backwards compatibility, the following additional fields are supported:
+#	CPU SPEED	The speed (in MHz) of a CPU required to match entry.
+#	NUM CPU		The number of CPUs required to match entry.
+#	HAS DEVS	Names of devices (white space seperated) required to
+#			match this entry.
+#	HAS DEVTYPES	The names of device types ("device_type" from OBP)
+#			required to match this entry.
+#
+#						       CPUSPEED
+#							-or-
+#							COND- NUM HAS    HAS
+#		     SYSMODEL		||EXPANDED NAME|TIONS|CPU|DEVS|DEVTYPES
+#
+#	Ultra Enterprise [346][05]00 and 450
+define|SubSysModel|SUNW,Ultra-Enterprise||${BannerName}
+#	SPARCstation 4/5
+define|SubSysModel|SUNW,SPARCstation-4||SPARCstation 4 Model ${CPUspeed}
+define|SubSysModel|SUNW,SPARCstation-5||SPARCstation 5 Model ${CPUspeed}
+#	SPARCstation 10
+define|SubSysModel|SUNW,SPARCstation-10||SPARCstation 10 Model 20|33|1|TI,TMS390Z50
+define|SubSysModel|SUNW,SPARCstation-10||SPARCstation 10 Model 202|33|2|TI,TMS390Z50
+define|SubSysModel|SUNW,SPARCstation-10||SPARCstation 10 Model 21|33|1|TI,TMS390Z55
+define|SubSysModel|SUNW,SPARCstation-10||SPARCstation 10 Model 212|33|2|TI,TMS390Z55
+define|SubSysModel|SUNW,SPARCstation-10||SPARCstation 10 Model 30|36|1|TI,TMS390Z50
+define|SubSysModel|SUNW,SPARCstation-10||SPARCstation 10 Model 302|36|2|TI,TMS390Z50
+define|SubSysModel|SUNW,SPARCstation-10||SPARCstation 10 Model 31|36|1|TI,TMS390Z55
+define|SubSysModel|SUNW,SPARCstation-10||SPARCstation 10 Model 312|36|2|TI,TMS390Z55
+define|SubSysModel|SUNW,SPARCstation-10||SPARCstation 10 Model 40|40|1|TI,TMS390Z50
+define|SubSysModel|SUNW,SPARCstation-10||SPARCstation 10 Model 402|40|2|TI,TMS390Z50
+define|SubSysModel|SUNW,SPARCstation-10||SPARCstation 10 Model 41|40|1|TI,TMS390Z55
+define|SubSysModel|SUNW,SPARCstation-10||SPARCstation 10 Model 412|40|2|TI,TMS390Z55
+define|SubSysModel|SUNW,SPARCstation-10||SPARCstation 10 Model 50|50|1|TI,TMS390Z50
+define|SubSysModel|SUNW,SPARCstation-10||SPARCstation 10 Model 502|50|2|TI,TMS390Z50
+define|SubSysModel|SUNW,SPARCstation-10||SPARCstation 10 Model 51|50|1|TI,TMS390Z55
+define|SubSysModel|SUNW,SPARCstation-10||SPARCstation 10 Model 512|50|2|TI,TMS390Z55
+define|SubSysModel|SUNW,SPARCstation-10||SPARCstation 10 Model 60|60|1|TI,TMS390Z50
+define|SubSysModel|SUNW,SPARCstation-10||SPARCstation 10 Model 602|60|2|TI,TMS390Z50
+define|SubSysModel|SUNW,SPARCstation-10||SPARCstation 10 Model 61|60|1|TI,TMS390Z55
+define|SubSysModel|SUNW,SPARCstation-10||SPARCstation 10 Model 612|60|2|TI,TMS390Z55
+define|SubSysModel|SUNW,SPARCstation-10||SPARCstation 10 Model 70|75|1|TI,TMS390Z50
+define|SubSysModel|SUNW,SPARCstation-10||SPARCstation 10 Model 702|75|2|TI,TMS390Z50
+define|SubSysModel|SUNW,SPARCstation-10||SPARCstation 10 Model 71|75|1|TI,TMS390Z55
+define|SubSysModel|SUNW,SPARCstation-10||SPARCstation 10 Model 712|75|2|TI,TMS390Z55
+#	SPARCstation 10SX
+define|SubSysModel|SUNW,SPARCstation-10SX||SPARCstation 10SX Model 20|33|1|TI,TMS390Z50
+define|SubSysModel|SUNW,SPARCstation-10SX||SPARCstation 10SX Model 202|33|2|TI,TMS390Z50
+define|SubSysModel|SUNW,SPARCstation-10SX||SPARCstation 10SX Model 21|33|1|TI,TMS390Z55
+define|SubSysModel|SUNW,SPARCstation-10SX||SPARCstation 10SX Model 212|33|2|TI,TMS390Z55
+define|SubSysModel|SUNW,SPARCstation-10SX||SPARCstation 10SX Model 30|36|1|TI,TMS390Z50
+define|SubSysModel|SUNW,SPARCstation-10SX||SPARCstation 10SX Model 302|36|2|TI,TMS390Z50
+define|SubSysModel|SUNW,SPARCstation-10SX||SPARCstation 10SX Model 31|36|1|TI,TMS390Z55
+define|SubSysModel|SUNW,SPARCstation-10SX||SPARCstation 10SX Model 312|36|2|TI,TMS390Z55
+define|SubSysModel|SUNW,SPARCstation-10SX||SPARCstation 10SX Model 40|40|1|TI,TMS390Z50
+define|SubSysModel|SUNW,SPARCstation-10SX||SPARCstation 10SX Model 402|40|2|TI,TMS390Z50
+define|SubSysModel|SUNW,SPARCstation-10SX||SPARCstation 10SX Model 41|40|1|TI,TMS390Z55
+define|SubSysModel|SUNW,SPARCstation-10SX||SPARCstation 10SX Model 412|40|2|TI,TMS390Z55
+define|SubSysModel|SUNW,SPARCstation-10SX||SPARCstation 10SX Model 50|50|1|TI,TMS390Z50
+define|SubSysModel|SUNW,SPARCstation-10SX||SPARCstation 10SX Model 502|50|2|TI,TMS390Z50
+define|SubSysModel|SUNW,SPARCstation-10SX||SPARCstation 10SX Model 51|50|1|TI,TMS390Z55
+define|SubSysModel|SUNW,SPARCstation-10SX||SPARCstation 10SX Model 512|50|2|TI,TMS390Z55
+define|SubSysModel|SUNW,SPARCstation-10SX||SPARCstation 10SX Model 60|60|1|TI,TMS390Z50
+define|SubSysModel|SUNW,SPARCstation-10SX||SPARCstation 10SX Model 602|60|2|TI,TMS390Z50
+define|SubSysModel|SUNW,SPARCstation-10SX||SPARCstation 10SX Model 61|60|1|TI,TMS390Z55
+define|SubSysModel|SUNW,SPARCstation-10SX||SPARCstation 10SX Model 612|60|2|TI,TMS390Z55
+define|SubSysModel|SUNW,SPARCstation-10SX||SPARCstation 10SX Model 70|75|1|TI,TMS390Z50
+define|SubSysModel|SUNW,SPARCstation-10SX||SPARCstation 10SX Model 702|75|2|TI,TMS390Z50
+define|SubSysModel|SUNW,SPARCstation-10SX||SPARCstation 10SX Model 71|75|1|TI,TMS390Z55
+define|SubSysModel|SUNW,SPARCstation-10SX||SPARCstation 10SX Model 712|75|2|TI,TMS390Z55
+#	SPARCstation 20
+define|SubSysModel|SUNW,SPARCstation-20||SPARCstation 20 Model 50|50|1|TI,TMS390Z50
+define|SubSysModel|SUNW,SPARCstation-20||SPARCstation 20 Model 502|50|2|TI,TMS390Z50
+define|SubSysModel|SUNW,SPARCstation-20||SPARCstation 20 Model 51|50|1|TI,TMS390Z55
+define|SubSysModel|SUNW,SPARCstation-20||SPARCstation 20 Model 512|50|2|TI,TMS390Z55
+define|SubSysModel|SUNW,SPARCstation-20||SPARCstation 20 Model 60|60|1|TI,TMS390Z50
+define|SubSysModel|SUNW,SPARCstation-20||SPARCstation 20 Model 602|60|2|TI,TMS390Z50
+define|SubSysModel|SUNW,SPARCstation-20||SPARCstation 20 Model 61|60|1|TI,TMS390Z55
+define|SubSysModel|SUNW,SPARCstation-20||SPARCstation 20 Model 612|60|2|TI,TMS390Z55
+define|SubSysModel|SUNW,SPARCstation-20||SPARCstation 20 Model 70|75|1|TI,TMS390Z50
+define|SubSysModel|SUNW,SPARCstation-20||SPARCstation 20 Model 702|75|2|TI,TMS390Z50
+define|SubSysModel|SUNW,SPARCstation-20||SPARCstation 20 Model 71|75|1|TI,TMS390Z55
+define|SubSysModel|SUNW,SPARCstation-20||SPARCstation 20 Model 712|75|2|TI,TMS390Z55
+#	SPARCsystem 600 (4/6x0)
+define|SubSysModel|SUNW,SPARCsystem-600||SPARCsystem 600 (4/6x0) Model 20|33|1|TI,TMS390Z55
+define|SubSysModel|SUNW,SPARCsystem-600||SPARCsystem 600 (4/6x0) Model 202|33|2|TI,TMS390Z55
+define|SubSysModel|SUNW,SPARCsystem-600||SPARCsystem 600 (4/6x0) Model 21|33|1|TI,TMS390Z50
+define|SubSysModel|SUNW,SPARCsystem-600||SPARCsystem 600 (4/6x0) Model 212|33|2|TI,TMS390Z50
+define|SubSysModel|SUNW,SPARCsystem-600||SPARCsystem 600 (4/6x0) Model 30|36|1|TI,TMS390Z55
+define|SubSysModel|SUNW,SPARCsystem-600||SPARCsystem 600 (4/6x0) Model 302|36|2|TI,TMS390Z55
+define|SubSysModel|SUNW,SPARCsystem-600||SPARCsystem 600 (4/6x0) Model 31|36|1|TI,TMS390Z50
+define|SubSysModel|SUNW,SPARCsystem-600||SPARCsystem 600 (4/6x0) Model 312|36|2|TI,TMS390Z50
+define|SubSysModel|SUNW,SPARCsystem-600||SPARCsystem 600 (4/6x0) Model 40|40|1|TI,TMS390Z55
+define|SubSysModel|SUNW,SPARCsystem-600||SPARCsystem 600 (4/6x0) Model 402|40|2|TI,TMS390Z55
+define|SubSysModel|SUNW,SPARCsystem-600||SPARCsystem 600 (4/6x0) Model 41|40|1|TI,TMS390Z50
+define|SubSysModel|SUNW,SPARCsystem-600||SPARCsystem 600 (4/6x0) Model 412|40|2|TI,TMS390Z50
+define|SubSysModel|SUNW,SPARCsystem-600||SPARCsystem 600 (4/6x0) Model 50|50|1|TI,TMS390Z55
+define|SubSysModel|SUNW,SPARCsystem-600||SPARCsystem 600 (4/6x0) Model 502|50|2|TI,TMS390Z55
+define|SubSysModel|SUNW,SPARCsystem-600||SPARCsystem 600 (4/6x0) Model 51|50|1|TI,TMS390Z50
+define|SubSysModel|SUNW,SPARCsystem-600||SPARCsystem 600 (4/6x0) Model 512|50|2|TI,TMS390Z50
+define|SubSysModel|SUNW,SPARCsystem-600||SPARCsystem 600 (4/6x0) Model 60|60|1|TI,TMS390Z55
+define|SubSysModel|SUNW,SPARCsystem-600||SPARCsystem 600 (4/6x0) Model 602|60|2|TI,TMS390Z55
+define|SubSysModel|SUNW,SPARCsystem-600||SPARCsystem 600 (4/6x0) Model 61|60|1|TI,TMS390Z50
+define|SubSysModel|SUNW,SPARCsystem-600||SPARCsystem 600 (4/6x0) Model 612|60|2|TI,TMS390Z50
+define|SubSysModel|SUNW,SPARCsystem-600||SPARCsystem 600 (4/6x0) Model 70|75|1|TI,TMS390Z55
+define|SubSysModel|SUNW,SPARCsystem-600||SPARCsystem 600 (4/6x0) Model 702|75|2|TI,TMS390Z55
+define|SubSysModel|SUNW,SPARCsystem-600||SPARCsystem 600 (4/6x0) Model 71|75|1|TI,TMS390Z50
+define|SubSysModel|SUNW,SPARCsystem-600||SPARCsystem 600 (4/6x0) Model 712|75|2|TI,TMS390Z50
+define|SubSysModel|SUNW,SPARCsystem-600||SPARCsystem 600 (4/6x0) Model 81|85|1|TI,TMS390Z50
+define|SubSysModel|SUNW,SPARCsystem-600||SPARCsystem 600 (4/6x0) Model 812|85|2|TI,TMS390Z50
+#	Ultra 1
+define|SubSysModel|SUNW,Ultra-1	||Ultra 1 Model 140	|CPUspeed=143
+define|SubSysModel|SUNW,Ultra-1	||Ultra 1 Model 170E	|CPUspeed=167 hasdev=upa
+define|SubSysModel|SUNW,Ultra-1	||Ultra 1 Model 170	|CPUspeed=167
+define|SubSysModel|SUNW,Ultra-1	||Ultra 1 Model 200E	|CPUspeed=200 hasdev=upa
+#	Ultra 2
+define|SubSysModel|SUNW,Ultra-2	||Ultra 2 Model 1170	|CPUspeed=167 numcpu=1
+define|SubSysModel|SUNW,Ultra-2	||Ultra 2 Model 2170	|CPUspeed=167 numcpu=2
+define|SubSysModel|SUNW,Ultra-2	||Ultra 2 Model ${NumCPU}300|CPUspeedDelta=10 CPUspeed=300
+define|SubSysModel|SUNW,Ultra-2	||Ultra 2 Model ${NumCPU}${CPUspeed}
+#	Ultra 5
+define|SubSysModel|SUNW,Ultra-5_10||Ultra 5 Model 270	|CPUspeedDelta=10 CPUspeed=270 clockfreq=89
+define|SubSysModel|SUNW,Ultra-5_10||Ultra 5 Model 333	|CPUspeedDelta=10 CPUspeed=333 clockfreq=89
+define|SubSysModel|SUNW,Ultra-5_10||Ultra 5		|clockfreq=89
+#	Ultra 10
+define|SubSysModel|SUNW,Ultra-5_10||Ultra 10 Model 300 	|CPUspeedDelta=10 CPUspeed=300 clockfreq=99
+define|SubSysModel|SUNW,Ultra-5_10||Ultra 10 Model 333 	|CPUspeedDelta=10 CPUspeed=333 clockfreq=99
+define|SubSysModel|SUNW,Ultra-5_10||Ultra 10 Model 360 	|CPUspeedDelta=10 CPUspeed=360 clockfreq=99
+define|SubSysModel|SUNW,Ultra-5_10||Ultra 10		|clockfreq=99
+#	Ultra 30
+define|SubSysModel|SUNW,Ultra-30||Ultra 30 Model 250	|CPUspeedDelta=10 CPUspeed=248
+define|SubSysModel|SUNW,Ultra-30||Ultra 30 Model 300	|CPUspeedDelta=10 CPUspeed=300
+define|SubSysModel|SUNW,Ultra-30||Ultra 30 Model ${CPUspeed}
+#	Ultra 60
+define|SubSysModel|SUNW,Ultra-60||Ultra 60 Model ${NumCPU}300	|CPUspeedDelta=10 CPUspeed=300
+define|SubSysModel|SUNW,Ultra-60||Ultra 60 Model ${NumCPU}360	|CPUspeedDelta=10 CPUspeed=360
+define|SubSysModel|SUNW,Ultra-60||Ultra 60 Model ${NumCPU}${CPUspeed}
+#	Ultra 250
+define|SubSysModel|SUNW,Ultra-250||Ultra 250 Model ${NumCPU}250	|CPUspeedDelta=10 CPUspeed=250
+define|SubSysModel|SUNW,Ultra-250||Ultra 250 Model ${NumCPU}300	|CPUspeedDelta=10 CPUspeed=300
+#
+# Expansion definetions for Open Boot PROM variables
+#
+# 		 VARIABLE			EXPANSION
+define	|obp	|dblbuf			||Double Buffered
+define	|obp	|iocache?		||I/O Cache
+define	|obp	|mid			||Module ID
+define	|obp	|mmu-nctx		||Number of MMU Contexts
+define	|obp	|mmu-npmg		||Number of MMU PMGs
+define	|obp	|multiple-cable-i/f?	||Multiple Cable Interface
+define	|obp	|n-xdbus		||Number of XDbus's
+define	|obp	|ncaches		||Number of Caches
+define	|obp	|nmmus			||Number of MMUs
+define	|obp	|scsi-initiator-id	||SCSI Initiator ID
+define	|obp	|sparc-version		||SPARC Version
+define	|obp	|vac-linesize		||Virtual Address Cache Line Size
+define	|obp	|vac-size		||Virtual Address Cache Size
+define	|obp	|vac_hwflush		||Virtual Address Cache HW Flush
+define	|obp	|ecache-size		||External Cache Size
+define	|obp	|ecache-line-size	||External Cache Line Size
+define	|obp	|ecache-associativity	||External Cache Associativity
+define	|obp	|icache-size		||Internal Cache Size
+define	|obp	|icache-line-size	||Internal Cache Line Size
+define	|obp	|icache-associativity	||Internal Cache Associativity
+define	|obp	|dcache-size		||Data Cache Size
+define	|obp	|dcache-line-size	||Data Cache Line Size
+define	|obp	|dcache-associativity	||Data Cache Associativity
+#
+# CPU info
+#
+# NOTES:
+#	- The speed of hyperSPARC CPUs on systems with older OpenBootPROMs
+#	  will almost always appear as 40MHz since those CPUs connect to 
+#	  the system bus at 40MHz, but internelly they run at higher speeds.
+#
+#		 PROM Name	 Speed	 Description
+define	|cpu	|Cypress,CY605	|40	|Model 100 SPARCmodule
+define	|cpu	|TI,TMS390Z50	|33	|Model 20 SuperSPARC SPARCmodule
+define	|cpu	|TI,TMS390Z50	|36	|Model 30 SuperSPARC SPARCmodule
+define	|cpu	|TI,TMS390Z50	|40	|Model 40 SuperSPARC SPARCmodule
+define	|cpu	|TI,TMS390Z55	|40	|Model 41 SuperSPARC SPARCmodule
+define	|cpu	|TI,TMS390Z50	|50	|Model 50 SuperSPARC SPARCmodule
+define	|cpu	|TI,TMS390Z55	|50	|Model 51 SuperSPARC SPARCmodule
+define	|cpu	|TI,TMS390Z50	|60	|Model 60 SuperSPARC SPARCmodule
+define	|cpu	|TI,TMS390Z55	|60	|Model 61 SuperSPARC SPARCmodule
+define	|cpu	|TI,TMS390Z50	|75	|Model 70 SuperSPARC-II SPARCmodule
+define	|cpu	|TI,TMS390Z55	|75	|Model 71 SuperSPARC-II SPARCmodule
+define	|cpu	|TI,TMS390Z55	|85	|Model 81 SuperSPARC-II SPARCmodule
+define	|cpu	|TI,TMS390S10	|0	|microSPARC I
+define	|cpu	|FMI,MB86904	|0	|microSPARC II
+define	|cpu	|Ross,RT626	|150	|150 MHz hyperSPARC
+define	|cpu	|Ross,RT625	|150	|150 MHz hyperSPARC
+define	|cpu	|Ross,RT625	|125	|125 MHz hyperSPARC
+define	|cpu	|Ross,RT625	|100	|100 MHz hyperSPARC
+define	|cpu	|Ross,RT625	|90	|90 MHz hyperSPARC
+define	|cpu	|Ross,RT625	|-1	|hyperSPARC
+define	|cpu	|SUNW,UltraSPARC|143	|Model 140 UltraSPARC
+define	|cpu	|SUNW,UltraSPARC|167	|Model 170 UltraSPARC
+define	|cpu	|SUNW,UltraSPARC|0	|UltraSPARC
+#
+# Kernel Architectures
+#
+# These values are normally defined as *_ARCH in:
+#	/usr/include/sys/cpu.h
+#	/usr/include/machine/cpu.h
+#
+define	|karch			||0x10	|sun3
+define	|karch			||0x40	|sun3x
+define	|karch			||0x20	|sun4
+define	|karch			||0x50	|sun4c
+define	|karch			||0x60	|sun4e
+define	|karch			||0x70	|sun4m
+define	|karch			||0x80	|sun4d
+#
+# Part Info
+#
+#	 	 PART NUMBER	  NAME	  DESCRIPTION
+define	|part	|QLGC,ISP1000	||DWIS/S |Differential Wide SCSI/Sbus
+define	|part	|SUNW,500-1869 	||SBE/S  |SCSI Buffered Ethernet/Sbus
+define	|part	|SUNW,500-1902 	||DSBE/S |Differential SCSI Buffered Ethernet/Sbus
+define	|part	|SUNW,500-2015 	||FSBE/S |Fast SCSI Buffered Ethernet/Sbus
+define	|part	|SUNW,520-1511 	||SPC/S	 |Sun Serial Parallel Controller
+define	|part	|S/ATM 4615 SBus ATM||SunATM|Sun Sbus ATM
+#
+# Kernel Variables
+#
+#		 SYMBOL		  TYPE	 DESCRIPTION
+define|Kernel	|_maxuprc	||int	|Maximum number of processes per user
+define|Kernel	|_maxusers	||int	|Maximum number of users (for system tables)
+define|Kernel	|_npty		||int	|Maximum number of BSD (/dev/ptyXX) pty's
+define|Kernel	|_pt_cnt	||int	|Maximum number of System V (/dev/pts/*) pty's
+define|Kernel	|_vac_size	||int	|Size of the virtual address cache
+define|Kernel	|_ncallout	||int	|Size of the callout table
+define|Kernel	|_ufs_ninode	||int	|Size of the inode table
+define|Kernel	|_ncsize	||int	|Size of the directory name lookup cache
+define|Kernel	|_ndquot	||int	|Size of the quotas table
+define|Kernel	|_udp_cksum	||int	|UDP Check Summing
+define|Kernel	|_nstrpush	||int	|STREAMS: Maximum number of pushes allowed
+define|Kernel	|_nstrevent	||int	|STREAMS: Maximum event size
+define|Kernel	|_strmsgsz	||int	|STREAMS: Maximum message size
+define|Kernel	|_strctlsz	||int	|STREAMS: Maximum size of ctl part of message
+define|Kernel	|_nmblock	||int	|STREAMS: Total block size
+define|Kernel	|_bufhwm	||int	|Maximum memory allowed in buffer cache
+define|Kernel	|_maxclsyspri	||long	|Maximum global priority in sys class
+define|Kernel	|_nautoup	||long	|Auto update time limit (in seconds)
+define|Kernel	|_gpgslo	||long	|Page stealing low water mark
+define|Kernel	|_fsflushr	||long	|fsflush run rate
+define|Kernel	|_minarmem	||long	|Minimum resident memory for avoiding deadlock
+define|Kernel	|_minasmem	||long	|Minimum swapable memory for avoiding deadlock
+define|Kernel	|_version	||string|Kernel Version
+define|Kernel	|_ufs_vfsops	||bool	|Has UFS driver
+define|Kernel	|_nfs_vfsops	||bool	|Has NFS driver
+define|Kernel	|_pcfs_vfsops	||bool	|Has PCFS driver
+define|Kernel	|_rfs_vfsops	||bool	|Has RFS driver
+define|Kernel	|_lo_vfsops	||bool	|Has LOFS driver
+define|Kernel	|_tmp_vfsops	||bool	|Has TMPFS driver
+define|Kernel	|_ipiopen	||bool	|Has IPI driver
+define|Kernel	|_xdopen	||bool	|Has XD driver
+define|Kernel	|_xyopen	||bool	|Has XY driver
+define|Kernel	|_rfopen	||bool	|Has RF driver
+define|Kernel	|_sdopen	||bool	|Has SD driver
+define|Kernel	|_fdopen	||bool	|Has FD driver
+define|Kernel	|_stopen	||bool	|Has ST driver
+define|Kernel	|_tmopen	||bool	|Has TM driver
+define|Kernel	|_xtopen	||bool	|Has XT driver
+define|Kernel	|_sropen	||bool	|Has SR (CDROM) driver
+define|Kernel	|_nfs_getfh	||bool	|Has NFSSERVER
+define|Kernel	|_async_daemon	||bool	|Has NFSCLIENT
+define|Kernel	|_semsys	||bool	|Has IPCSEMAPHORE
+define|Kernel	|_msgsys	||bool	|Has IPCMESSAGE
+define|Kernel	|_shmsys	||bool	|Has IPCSHMEM
+define|Kernel	|_sysacct	||bool	|Has SYSACCT
+#
+# System Configuration
+#
+#	NAME and ID are from <unistd.h> and sysconf(2)
+#
+#	       NAME			 ID	 TYPE DESCRIPTION
+define|SysConf|_SC_ARG_MAX		|1	|long|Max combined size of argv[] and envp[]
+define|SysConf|_SC_CHILD_MAX		|2	|long|Max processes allowed to any UID
+define|SysConf|_SC_CLK_TCK		|3	|long|Clock ticks per second
+define|SysConf|_SC_NGROUPS_MAX		|4	|long|Max simultaneous groups per user
+define|SysConf|_SC_OPEN_MAX		|5	|long|Max open files per process
+define|SysConf|_SC_PAGESIZE		|11	|long|System memory page size
+define|SysConf|_SC_JOB_CONTROL		|6	|bool|Job control supported
+define|SysConf|_SC_SAVED_IDS		|7	|bool|Savid ids (seteuid()) supported
+define|SysConf|_SC_VERSION		|8	|long|Version of POSIX.1 standard supported
+define|SysConf|_SC_XOPEN_VERSION	|12	|long|Version of the X/Open standard supported
+define|SysConf|_SC_LOGNAME_MAX		|10	|long|Max log name
+define|SysConf|_SC_PASS_MAX		|9	|long|Max password length
+define|SysConf|_SC_NPROCESSORS_CONF	|14	|long|Number of processors (CPUs) configured
+define|SysConf|_SC_NPROCESSORS_ONLN	|15	|long|Number of processors (CPUs) online
+define|SysConf|_SC_PHYS_PAGES		|500	|long|Total number of pages of physical memory
+define|SysConf|_SC_AVPHYS_PAGES		|501	|long|Number of pages of physical memory not currently in use
+define|SysConf|_SC_AIO_LISTIO_MAX	|18	|long|Max number of I/O operations in single list I/O call
+define|SysConf|_SC_AIO_MAX		|19	|long|Max number of outstanding asyncronous I/O operations
+define|SysConf|_SC_AIO_PRIO_DELTA_MAX	|20	|long|Max amount a process can decrease its async I/O priority level
+define|SysConf|_SC_DELAYTIMER_MAX	|22	|long|Max number of timer expiration overruns
+define|SysConf|_SC_MQ_OPEN_MAX		|29	|long|Max number of open message queue descriptors per process
+define|SysConf|_SC_MQ_PRIO_MAX		|30	|long|Max number of message priorities supported
+define|SysConf|_SC_RTSIG_MAX		|34	|long|Max number of realtime signals
+define|SysConf|_SC_SEM_NSEMS_MAX	|36	|long|Max number of semaphores per process
+define|SysConf|_SC_SEM_VALUE_MAX	|37	|long|Max value a semaphore may have
+define|SysConf|_SC_SIGQUEUE_MAX		|39	|long|Max number of queued signals per process
+define|SysConf|_SC_TIMER_MAX		|44	|long|Max number of timers per process
+define|SysConf|_SC_ASYNCHRONOUS_IO	|21	|bool|Supports asyncronous I/O
+define|SysConf|_SC_FSYNC		|23	|bool|Supports File Synchronization
+define|SysConf|_SC_MAPPED_FILES		|24	|bool|Supports memory mapped files
+define|SysConf|_SC_MEMLOCK		|25	|bool|Supports process memory locking
+define|SysConf|_SC_MEMLOCK_RANGE	|26	|bool|Supports range memory locking
+define|SysConf|_SC_MEMORY_PROTECTION	|27	|bool|Supports memory protection
+define|SysConf|_SC_MESSAGE_PASSING	|28	|bool|Supports message passing
+define|SysConf|_SC_PRIORITIZED_IO	|31	|bool|Supports prioritized I/O
+define|SysConf|_SC_PRIORITY_SCHEDULING	|32	|bool|Supports process scheduling
+define|SysConf|_SC_REALTIME_SIGNALS	|33	|bool|Supports realtime signals
+define|SysConf|_SC_SEMAPHORES		|35	|bool|Supports semaphores
+define|SysConf|_SC_SHARED_MEMORY_OBJECTS|38|bool|Supports shared memory objects
+define|SysConf|_SC_SYNCRONIZED_IO	|42	|bool|Supports syncronized I/O
+define|SysConf|_SC_TIMERS		|44	|bool|Supports timers
+# 	XPG4 names 
+define|SysConf|_SC_2_C_BIND		|45	|bool|Supports C language binding option
+define|SysConf|_SC_2_C_DEV    		|46	|bool|Supports C language development utilities
+define|SysConf|_SC_2_C_VERSION		|47	|long|Version of ISO POSIX-2 standard (Commands)
+define|SysConf|_SC_2_FORT_DEV 		|48	|bool|Supports FORTRAN Development Utitilies
+define|SysConf|_SC_2_FORT_RUN 		|49	|bool|Supports FORTRAN Run-time Utilities
+define|SysConf|_SC_2_LOCALEDEF		|50	|bool|Supports creation of locales by localedef
+define|SysConf|_SC_2_SW_DEV   		|51	|bool|Supports Software Development Utitility
+define|SysConf|_SC_2_UPE		|52	|bool|Supports User Portability Utilities
+define|SysConf|_SC_2_VERSION		|53	|long|Version of ISO POSIX-2 standard (C Language binding)
+define|SysConf|_SC_BC_BASE_MAX		|54	|long|Maximum obase values allowed by bc
+define|SysConf|_SC_BC_DIM_MAX 		|55	|long|Maximum number of elements in array in bc
+define|SysConf|_SC_BC_SCALE_MAX		|56	|long|Maximum scale value in bc
+define|SysConf|_SC_BC_STRING_MAX	|57	|long|Maximum string constant in bc
+define|SysConf|_SC_COLL_WEIGHTS_MAX	|58	|long|Maximum weights for LC_COLLATE
+define|SysConf|_SC_EXPR_NEST_MAX	|59	|long|Maximum expressionss in expr
+define|SysConf|_SC_LINE_MAX 		|60	|long|Maximum length of input line
+define|SysConf|_SC_RE_DUP_MAX		|61	|long|Maximum repeated _SC_REALTIME_SIGNALS
+define|SysConf|_SC_XOPEN_CRYPT		|62	|bool|Supports X/Open Encryption Features
+define|SysConf|_SC_XOPEN_ENH_I18N	|63	|bool|Supports X/Open Enhanced Internationalization Features
+define|SysConf|_SC_XOPEN_SHM		|64	|bool|Supports X/Open Shared Memory Features
+# 	additional XSH4/XCU4 command names for sysconf
+define|SysConf|_SC_2_CHAR_TERM		|66	|bool|Supports Character Terminals
+define|SysConf|_SC_XOPEN_XCU_VERSION	|67	|long|Version of supported XCU
+# 	additional XPG4v2 (UNIX 95) command names
+define|SysConf|_SC_ATEXIT_MAX		|76	|long|Maximum functions in atexit()
+define|SysConf|_SC_IOV_MAX		|77	|long|Maximum iovec structures for readv()/writev()
+define|SysConf|_SC_XOPEN_UNIX		|78	|bool|Supports X/Open CAE 8/1994
+#	Sun Hardware specific items
+define|SysConf|_SC_COHER_BLKSZ		|503	|long|Coherence block size
+define|SysConf|_SC_SPLIT_CACHE		|504	|bool|Has split cache
+define|SysConf|_SC_ICACHE_SZ		|505	|long|Instruction cache size (bytes)
+define|SysConf|_SC_DCACHE_SZ		|506	|long|Data cache size (bytes)
+define|SysConf|_SC_ICACHE_LINESZ	|507	|long|Instruction cache line size
+define|SysConf|_SC_DCACHE_LINESZ	|508	|long|Data cache line size
+define|SysConf|_SC_ICACHE_BLKSZ		|509	|long|Block size invalidated for icache
+define|SysConf|_SC_DCACHE_BLKSZ		|510	|long|Block size for dcache
+define|SysConf|_SC_DCACHE_TBLKSZ	|511	|long|Block size for dcache prefetch
+define|SysConf|_SC_ICACHE_ASSOC		|512	|long|Icache associativity 1, 2, 3 etc
+define|SysConf|_SC_DCACHE_ASSOC		|513	|long|Dcache associativity 1, 2, 3 etc
+#	Misc
+define|SysConf|_SC_MAXPID		|514	|long|Maximum pid value
+define|SysConf|_SC_STACK_PROT		|515	|long|Default stack protection
+#	POSIX.1c (pthreads) names.
+define|SysConf|_SC_THREAD_DESTRUCTOR_ITERATION|568|bool|Supports Thread Destructor Iteration
+define|SysConf|_SC_GETGR_R_SIZE_MAX	|569	|long|Max size of group entry buffer
+define|SysConf|_SC_GETPW_R_SIZE_MAX	|570	|long|Max size of password entry buffer
+define|SysConf|_SC_LOGIN_NAME_MAX	|571	|long|Max login name
+define|SysConf|_SC_THREAD_KEYS_MAX	|572	|long|Max Thread Keys
+define|SysConf|_SC_THREAD_STACK_MIN	|573	|long|Min Thread Stack
+define|SysConf|_SC_THREAD_THREADS_MAX	|574	|long|Max Threads per process
+define|SysConf|_SC_TTY_NAME_MAX		|575	|long|Max TTY name
+define|SysConf|_SC_THREADS		|576	|bool|Supports POSIX Threads
+define|SysConf|_SC_THREAD_ATTR_STACKADD	|577	|bool|Supports Thread Stack Address Attriutes
+define|SysConf|_SC_THREAD_ATTR_STACKSIZ	|578	|bool|Supports Thread Stack Size Attribute
+define|SysConf|_SC_THREAD_PRIORITY_SCHEDULIN|579|bool|Supports Thread Priority Scheduling
+define|SysConf|_SC_THREAD_PRIO_INHERIT	|580	|bool|Supports Thread Priority Inherit
+define|SysConf|_SC_THREAD_PRIO_PROTECT	|581	|bool|Supports Thread Priority Protection
+define|SysConf|_SC_THREAD_PROCESS_SHARE	|582	|bool|Supports Thread Process Sharing
+define|SysConf|_SC_THREAD_SAFE_FUNCTION	|583	|bool|Supports Thread Safe Functions
+# 	UNIX 98
+define|SysConf|_SC_XOPEN_LEGACY		|717	|bool|Supports X/Open Legacy Feature Group
+define|SysConf|_SC_XOPEN_REALTIME	|718	|bool|Supports X/Open POSIX Realtime Feature Group
+define|SysConf|_SC_XOPEN_REALTIME_THREADS|719	|bool|Supports X/Open POSIX Realtime Threads Feature Group
+define|SysConf|_SC_XBS5_ILP32_OFF32	|720	|bool|Supports X/Open ILP32 w/32-bit offset
+define|SysConf|_SC_XBS5_ILP32_OFFBIG	|721	|bool|Supports X/Open LP32 w/64-bit offset
+define|SysConf|_SC_XBS5_LP64_OFF64	|722	|bool|Supports X/Open LP64, 64-bit offset
+define|SysConf|_SC_XBS5_LP64_OFFBIG	|723	|bool|Supports X/Open LP64, 64-bit offset
+#
+# CD-ROM Speeds
+#	From CDROM_*_SPEED in /usr/include/sys/cdio.h
+#
+define|CDspeed	||0x00	|Normal Speed
+define|CDspeed	||0x01	|2X Speed
+define|CDspeed	||0x03	|4X Speed
+define|CDspeed	||0x0C	|12X Speed
+#
+# AFB/FFB definetions
+#
+#	The BType column corresponds to the OBP "board_type" value.  This
+#	value can be obtained by running "prtconf -vp" and looking for 
+#	the "board_type" property found with "afb" or "ffb".  
+#
+#	These values override the Model field from the "device|framebuffer" 
+#	entries found previously in this file.
+#
+#		     BType	 Model			      Depth Orientation
+define|BoardTypeFFB||0x0008	|Creator 67MHz (FFB)		|24
+define|BoardTypeFFB||0x000b	|Creator 3D 67MHz (FFB)		|24
+define|BoardTypeFFB||0x001b	|Creator 75MHz (FFB)		|24
+define|BoardTypeFFB||0x0020	|Creator series 2 (FFB2)	|24|Vertical
+define|BoardTypeFFB||0x0023	|Creator 3D series 2 (FFB2)	|24|Vertical
+define|BoardTypeFFB||0x0028	|Creator series 2 (FFB2)	|24|Vertical
+define|BoardTypeFFB||0x002b	|Creator 3D series 2 (FFB2)	|24|Vertical
+define|BoardTypeFFB||0x0030	|Creator series 2+ (FFB2+)	|24|Vertical
+define|BoardTypeFFB||0x0033	|Creator 3D series 2+ (FFB2+)	|24|Vertical
+define|BoardTypeFFB||0x0040	|Creator series 2 (FFB2)	|24|Horizontal
+define|BoardTypeFFB||0x0043	|Creator 3D series 2 (FFB2)	|24|Horizontal
+define|BoardTypeFFB||0x0048	|Creator series 2 (FFB2)	|24|Horizontal
+define|BoardTypeFFB||0x004b	|Creator 3D series 2 (FFB2)	|24|Horizontal
+# AFB
+define|BoardTypeAFB||0x0003	|Elite 3D M6 (AFB)		|24|Horizontal
+define|BoardTypeAFB||0x0023	|Elite 3D M6 (AFB)		|24|Vertical
+#
+# Monitor Types.
+#	From Sun FE Handbook
+#	The IDs are often not unique, so some of the entries are vague
+#	and list multiple monitor types (i.e. 16-inch/19-inch)
+#	More consistant info is obtained automatically on VESA
+#	compliant monitors attached to FFB2 and later frame buffers.
+#
+define|MonitorID||0||15-inch/17-inch Entry-Level Color CRT
+define|MonitorID||4||Sony 16-inch/19-inch/20-inch/21-inch Color CRT
+define|MonitorID||3||16-inch/19-inch Color CRT, Not PC Compat
+define|MonitorID||6||Sony 16-inch/17-inch Premium Color CRT
+define|MonitorID||5||Sony N1 GDM-17E10 17-inch Premium Color CRT, .26mm Dot-Pitch, Not PC Compat
+define|MonitorID||2||21-inch/24-inch Color CRT
+#
+# List of different Vendor abbreviations
+#
+define|Vendor|SUNW	||Sun
+define|Vendor|FMI	||Fujitsu
+define|Vendor|QLGC	||Q-Logic

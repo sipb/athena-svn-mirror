@@ -1,0 +1,201 @@
+This is Info file ifhp.info, produced by Makeinfo-1.64 from the input
+file /tmp/sgmltmp.ifhp19043.info.2.
+
+   \input texinfo
+
+
+File: ifhp.info,  Node: BOOTP Information,  Next: Timeouts,  Prev: TCP/IP Network Address,  Up: HP JetDirect Card Support
+
+BOOTP Information
+=================
+
+   If  you have a bootp server, you can put this information in  the
+bootptab  file.   To  use this, you must enable the bootp  option  on
+the printer.  The T144 option specifies a file to be read from the
+bootp server.  This file is read by using  the  TFTP  protocol, and you
+must have a TFTPD server enabled.  Here is a sample bootptab entry.
+     # Example /etc/bootptab: database for bootp server (/etc/bootpd).
+     # Blank lines and lines beginning with '#' are ignored.
+     #
+     # Legend:
+     #
+     #       first field -- hostname
+     #                       (may be full domain name)
+     #
+     #       hd -- home directory
+     #       bf -- bootfile
+     #       cs -- cookie servers
+     #       ds -- domain name servers
+     #       gw -- gateways
+     #       ha -- hardware address
+     #       ht -- hardware type
+     #       im -- impress servers
+     #       ip -- host IP address
+     #       lg -- log servers
+     #       lp -- LPR servers
+     #       ns -- IEN-116 name servers
+     #       rl -- resource location protocol servers
+     #       sm -- subnet mask
+     #       tc -- template host (points to similar host entry)
+     #       to -- time offset (seconds)
+     #       ts -- time servers
+     #
+     # Be careful about including backslashes where they're needed.  Weird (bad)
+     # things can happen when a backslash is omitted where one is intended.
+     #
+     peripheral1:
+     :hn:ht=ether:vm=rfc1048:
+     :ha=08000903212F:
+     :ip=190.40.101.22:
+     :sm=255.255.255.0:
+     :gw=190.40.101.1:
+     :lg=190.40.101.3:
+     :T144="hpnp/peripheral1.cfg":
+
+   If  you  are  using the T144 option, you will need to create the
+configuration file.  The sample configuration file from the HP Direct
+distribution is included below.
+     #
+     # Example HP Network Peripheral Interface configuration file
+     #
+     # Comments begin with '#' and end at the end of the line.
+     # Blank lines are ignored.  Entries cannot span lines.
+     
+     # Name is the peripheral (or node) name.  It is displayed on the peripheral's
+     # self-test page or configuration plot, and when sysName is obtained through
+     # SNMP.  This name can be provided in the BOOTP response or can be specified
+     # in the NPI configuration file to prevent the BOOTP response from overflowing
+     # the packet.  The domain portion of the name is not necessary because the
+     # peripheral does not perform Domain Name System (DNS) searches.  Name is
+     # limited to 64 characters.
+     
+     name: picasso
+     
+     # Location describes the physical location of the peripheral.  This is the
+     # value used by the interface for the MIB-II sysLocation object.  The default
+     # location is undefined.  Only printable ASCII characters are allowed.
+     # Maximum length is 64 characters.
+     
+     location: 1st floor, south wall
+     
+     # Contact is the name of the person who administers or services the peripheral
+     # and may include how to contact this person.  It is limited to 64 characters.
+     # This is the value used by the interface for the MIB-II sysContact object.
+     # The default contact is undefined.  Only printable ASCII characters are
+     # allowed.  Maximum length is 64 characters.
+     
+     contact: Phil, ext 1234
+     
+     # The host access list contains the list of hosts or networks of hosts
+     # that are allowed to connect to the peripheral.  The format is
+     # "allow: netnum [mask]", where netnum is a network number or a host IP
+     # address.  Mask is an address mask of bits to apply to the network number
+     # and connecting host's IP address to verify access to the peripheral.
+     # The mask usually matches the network or subnet mask, but this is not
+     # required.  If netnum is a host IP address, the mask 255.255.255.255 can
+     # be omitted.  Up to ten access list entries are permitted.
+     
+     # to allow all of network 10 to access the peripheral:
+     allow: 10.0.0.0  255.0.0.0
+     
+     # to allow a single host without specifying the mask:
+     allow: 15.1.2.3
+     
+     # Idle timeout is the time (in seconds) after which an idle
+     # print data connection is closed.  A value of zero disables
+     # the timeout mechanism.  The default timeout is 90 seconds.
+     
+     idle-timeout: 120
+     
+     # A community name is a password that allows SNMP access to MIB values on
+     # the network peripheral.  Community names are not highly secure; they are
+     # not encrypted across the network.  The get community name determines which
+     # SNMP GetRequests are responded to.  By default, the network peripheral
+     # responds to all GetRequests.  The get community name is limited to 32
+     # characters.
+     #
+     # For hpnpstat and hpnpadmin, the community name can be stored in
+     # /usr/lib/hpnp/hpnpsnmp.
+     
+     get-community-name: blue
+     
+     # The set community name is similar to the get community name.  The set
+     # community name determines which SNMP SetRequests are responded to.  In
+     # addition, SetRequests are only honored if the sending host is on the
+     # host access list.  By default, the network peripheral does not respond
+     # to any SetRequests.  The set community name is limited to 32 characters.
+     #
+     # The set community name can come from /usr/lib/hpnp/hpnpsnmp
+     # if it is the same as the get community name.  We recommend that the
+     # set community name be different from the get community name though.
+     
+     set-community-name: yellow
+     
+     # SNMP traps are asynchronous notifications of some event that has occurred.
+     # SNMP traps are useful only with network management software.  Traps are
+     # sent to specific hosts and include a trap community name.  Up to four
+     # hosts can be sent SNMP traps.   The trap community name is limited to
+     # 32 characters.  The default name is public.
+     
+     trap-community-name: red
+     
+     # The SNMP trap destination list specifies systems to which SNMP
+     # traps are sent.  Up to four IP addresses are allowed.  If no
+     # trap destinations are listed, traps are not sent.
+     
+     trap-dest: 15.1.2.3
+     trap-dest: 15.2.3.4
+     
+     # The SNMP authentication trap parameter enables or disables the sending
+     # of SNMP authentication traps.  Authentication traps indicate that an SNMP
+     # request was received and the community name check failed.  By default,
+     # the parameter is off.
+     
+     authentication-trap: on
+     
+     # The syslog-facility parameter sets the source facility identifier that the
+     # card uses when issuing syslog messages.  Other facilities, for example,
+     # include the kernel (LOG_KERN), the mail system (LOG_MAIL), and the spooling
+     # system (LOG_LPR).  The card only allows its syslog facility to be configured
+     # to one of the local user values (LOG_LOCAL0 through LOG_LOCAL7).  The
+     # selectable option strings, local0 through local7 (configured to LOG_LOCAL0
+     # through LOG_LOCAL7, respectively) are case insensitive.  The default
+     # syslog-facility for the card is LOG_LPR.
+     
+     syslog-facility: local2
+     
+     # This parameter allows the card to treat hosts on other subnets as if the
+     # hosts were on the card's subnet.  This parameter determines the TCP
+     # Maximum Segment Size (MSS) advertised by the card to hosts on other subnets
+     # and affects the card's initial receive-window size.  The card will use a
+     # TCP MSS of 1460 bytes for local hosts, and 536 bytes for a non-local host.
+     # The default is off, that is, the card will use the maximum packet sizes
+     # only on the card's configured subnet.
+     #
+     # The configuration utility does not allow access to this parameter.  If you
+     # want to configure it, you must manually edit the NPI configuration file
+     # and add it to the bottom of the entry for the network peripheral.
+     
+     subnets-local: on
+     
+     # This parameter affects how the card handles TCP connection requests from
+     # the host.  By default, the JetDirect MPS card will accept a TCP connection
+     # even if the peripheral is off-line.  If this parameter is set to "on", then
+     # the card will only accept a TCP connection when the peripheral is on-line.
+     
+     old-idle-mode: off
+
+
+File: ifhp.info,  Node: Timeouts,  Prev: BOOTP Information,  Up: HP JetDirect Card Support
+
+Timeouts
+========
+
+   You should be aware that the `idle-timeout' value in the
+configuration file will override the value entered on the control panel
+of the printer.
+
+   Also, the `@PJL SET TIMEOUT = NNN' command will override this value
+as well.
+
+

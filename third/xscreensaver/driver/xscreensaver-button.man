@@ -1,0 +1,168 @@
+.TH XSCREENSAVER-BUTTON 1 "23-Feb-99 (1.00)" "X Version 11"
+.SH NAME
+xss-button \- display a button to run xss
+.SH SYNOPSIS
+.B xss-button
+[
+.B \-xss
+.I command
+] [
+.B \-activate
+.I command
+] [
+.B \-prefs
+.I command
+] [
+.B \-logo-width
+.I width
+] [
+.B \-logo-height
+.I height
+] [
+.B \-redirect
+|
+.B \-noredirect
+] [
+.B \-log-file
+.I file
+]
+.SH DESCRIPTION
+The
+.BR xss (1)
+program waits until the keyboard and mouse have been idle for a
+period, then runs a graphics demo chosen at random.  It turns off as
+soon as there is any mouse or keyboard activity.  This program should
+be used to lock your terminal in order to prevent others from using
+it.
+.PP
+.I xss-button
+displays a convenient front-end to
+.BR xss (1).
+It displays a button with the xss logo.  Clicking the left
+mouse button on the logo will activate the screen saver.  Clicking the
+middle or right mouse button will pop up a menu, which will allow you
+to activate the screen saver, configure it, restart it, or exit
+.IR xss-button .
+.SH OPTIONS
+.I xss-button
+accepts all of the standard X Toolkit command line options along with
+the additional options listed below:
+.TP 8
+\fB\-xss\fP \fIcommand\fP
+Runs
+.I command
+as the screen saver driver.  Defaults to running the installed
+.BR xss (1) with the -no-splash option.
+.TP 8
+\fB\-activate\fP \fIcommand\fP
+Runs
+.I command
+as the command to activate the screen saver.  Defaults to running the
+installed
+.BR xss-command (1)
+with the
+.B \-lock
+switch.
+.TP 8
+\fB\-prefs\fP \fIcommand\fP
+Runs
+.I command
+as the command to change screen saver preferences.  Defaults to
+running the installed
+.BR xss-demo (1).
+.TP 8
+\fB\-logo-width\fP \fIwidth\fP
+Sets the width of the
+.RB skull-and- xlogo (1)
+icon.  This also indirectly sets the width of the button window, and
+is probably more useful than using the canonical
+.B \-width
+switch.  Defaults to 48.
+.TP 8
+\fB\-logo-height\fP \fIheight\fP
+Sets the height of the
+.RB skull-and- xlogo (1)
+icon.  This also indirectly sets the height of the button window, and
+is probably more useful than using the canonical
+.B \-height
+switch.  Defaults to 48.
+.TP 8
+.B\-redirect
+Causes standard output and standard error of all child processes to be 
+redirected to a file. This is the default, although the default
+log\-file is \fI/dev/null\fR.
+.TP 8
+.B\-noredirect
+Standard output and standard error will not be redirected.
+.TP 8
+\fB\-log-file\fP \fIfile\fP
+If standard output and standard error are redirected, sends the output 
+to
+.IR file .
+Defaults to \fI/dev/null\fR.
+.SH X DEFAULTS
+This program consists of essentially a single Athena Label widget.
+The program's useful resources are:
+.TP 8
+.B xscreensaver (\fPclass\fB Command)
+Specifies the screen saver driver to run.  Same as the
+.B \-xss
+option.
+.TP 8
+.B activateCommand (\fPclass\fB Command)
+Specifies the command to run to activate the screen saver.  Same as
+the
+.B \-activate
+option.
+.TP 8
+.B prefsCommand (\fPclass\fB Command)
+Specifies the command to run to change screen saver preferences.  Same 
+as the
+.B \-prefs
+option.
+.TP 8
+.B xrogerWidth (\fPclass\fB Width)
+Specifies the width of the xss logo.  Same as the
+.B \-logo-width
+option.  The width of the window is the width of this logo plus the
+border width of the Label widget.
+.TP 8
+.B xrogerHeight (\fPclass\fB Height)
+Specifies the height of the xss logo.  Same as the
+.B \-logo-height
+option.  The height of the window is the height of this logo plus the
+border width of the Label widget.
+.TP 8
+.B redirect (\fPclass\fB Redirect)
+A boolean value specifying whether standard output and standard error
+of child processes should be redirected.  Same as the
+.B \-redirect
+and
+.B \-noredirect
+options.  Defaults to True.
+.TP 8
+.B log-file (\fPclass\fB LogFile)
+The name of the file to send stdout and stderr to, if the
+.B redirect
+resource is True.  Same as the
+.B \-log-file
+option.  Defaults to an unqualified ".xss-log".
+.SH SEE ALSO
+.BR xss (1),
+.BR xss-command (1),
+.BR xss-demo (1)
+.SH BUGS
+The logo should be resized when the window resizes.
+.PP
+The button should perhaps react more intelligently if there is already 
+a screensaver running.  Right now it just dies.
+.PP
+The output from
+.BR xss (1)
+and related commands isn't really relevant to most users, and could
+probably be suppressed somehow.
+.PP
+The default log file should probably have an actual directory attached 
+to it.
+.SH AUTHOR
+David Maze (MIT Information Systems)

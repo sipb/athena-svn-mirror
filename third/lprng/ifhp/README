@@ -1,0 +1,156 @@
+                      README for IFHP
+                    ===================
+
+                Patrick Powell <papowell@astart.com>
+                 Original Sun Oct 29 06:25:05 PST 1995
+                  Revised Sat Dec 19 17:14:25 PST 1998
+
+1.  Problems, Questions, and Answers
+
+    The best place to get answers is the LPRng mailing list.
+    To subscribe, send mail to:
+
+    lprng-request@iona.ie
+
+    with the word
+
+    subscribe 
+
+    in the body.
+
+
+    Patrick Powell                 Astart Technologies,
+    papowell@astart.com            9475 Chesapeake Drive, Suite D,
+    Network and System             San Diego, CA 92123
+      Consulting                   619-874-6543 FAX 619-279-8424 
+    LPRng - Print Spooler (http://www.astart.com)
+
+2. You will need to:
+
+   Use GNU Make.  Don't even think about trying to use another
+     make unless you are a Wizard.  And even the Wizards would
+     download the GNU Make.
+   Use an ANSI C compiler.
+
+   READ the HOWTO/IFHP-HOWTO.{ps,html,text,...}.
+      file(s) in the docs directory.
+   At least read the section on installation.
+  
+   Then do the install.
+
+   You have been warned.
+
+3. Utilities
+
+   If you want to do text to postscript or whatever conversions,
+   you will need a converter and program to determine input file type.
+
+	A2PS - Ascii Text to PostScript Converter
+	   http://www-inf.enst.fr/~demaille/a2ps
+	   ftp://ftp.enst.fr/pub/unix/a2ps/
+
+	file - utility to determine file type
+	   ftp://ftp.astron.com/pub/file/
+	   ftp.deshaw.com/pub/file/
+	   Also available from the RedHat.com SRPMS in (of course) rpm format
+
+    Install these and update the ifhp.conf file with the correct paths to their
+    locations.
+
+    You have been warned.
+
+4. Super Express Install For The Pathologically Impatient
+
+   Right.  I know that you want to get going,  so here is the
+   magic summary.
+
+   configure
+   make all
+   # make install will:
+   #  installs
+   #    /usr/local/lib/filters/ifhp, links ofhp to ifhp,
+   #    /usr/local/lib/filters/textps
+   #    /usr/local/lib/filters/banner.ps
+   #    /usr/local/lib/filters/pclbanner
+   make install
+   #
+   make init
+     (this installs src/ifhp.conf in /etc/ifhp.conf)
+
+    If you have an HP printer that support PJL, PCL, and PS, on a
+    network connection, then simply change your printcap entries
+    to have the form:
+
+   lp:...
+      :if=ifhp
+
+5.  Run time options are provided by the /etc/ifhp.conf file.  This
+    file is extremely complex,  as it has the ability to configure
+    just about any option that you can think of.  See the IFHP-HOWTO
+    file in the docs directory for details.
+
+6.  By default, the if filter will check the job files for printability
+    and/or postscript format.  If it is PostScript,  it will set the
+    printer to PostScript mode using the PJL commands,  otherwise it
+    will set the printer to PCL.  If you do not want this to happen,
+    then print the job as a binary file;  this suppresses the checks.
+    Some LPR spoolers use the 'v' format to indicate a binary file; If
+    this is the case you will need to use the following printcap:
+
+    printer:
+        :of=/usr/local/lib/filters/ofhp:
+        :if=/usr/local/lib/filters/ifhp:
+        :vf=/usr/local/lib/filters/ifhp -c:
+
+    If your LPD server does not allow options in the filter spec,
+    use the following entry and the following shell script:
+        :vf=/usr/local/lib/filters/vfhp.sy:
+    vfhp.sh -
+        #/bin/sh
+        /usr/local/lib/filters/ifhp -c  $*
+
+    In addition, you can 'suggest' a language using lpr -Zlanguage=xxx;
+    this will prove helpful for those difficult files.
+ 
+    See the comments above about 'file' and 'a2ps' - you may need to use this
+    if users keep sending garbage files to the printer.
+
+6. ifhp takes the full range of LPD filter options, and uses or
+    or ignores them as applicable. The following command line options
+    are used:
+    -c  cleartext - dump this directly to the printer, no fonts,
+        no nothing done.  For those desperate people trying to
+        find a way to print those obnoxious files
+
+        Invoke this using the lpr -b  (binary) command
+    -sstatusfile    - the name of a status file that is updated with
+        'rolling status' - i.e. - the last few log messages.
+        The statusfile value is set from the 'ps=statusfile' printcap
+        option
+    -nuser, -hhost, -Jjob  - used by ofhp for banner printing defaults
+    -T[filteroptions,]* - filter options
+    -Z[filteroptions,]* - filter options
+        See the ifhp man page for filteroption details.
+
+7.  IFHP-HOWTO
+
+    This is now the repository for all information on the IFHP filter.
+    It is in the docs/IFHP-HOWTO directory,  and in several formats.
+    Please read this before taking any other steps.
+
+    Note:  there is even a simple tutorial session there, explaining how
+    to set up some options for testing.
+
+8.  pclbanner
+    This is a banner program that produces a PCL banner.  You should set this
+    up using:
+
+    lp:bp=/usr/local/lib/filters/pclbanner
+      :of=/usr/local/lib/filters/ifhp
+      :if=/usr/local/lib/filters/ifhp
+      # let PCL banner get the 'short banner' info and
+      # generate a long banner
+      #   (no form feeds though)
+      :sb:sf
+
+$Id: README,v 1.1.1.2 1999-05-04 18:50:25 mwhitson Exp $

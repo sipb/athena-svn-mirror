@@ -1,0 +1,211 @@
+Replied: Mon, 10 Mar 1997 23:15:22 -0500
+Replied: ""Edward J. Huff" <huffe@carbon.chem.nyu.edu> Mills@huey.udel.edu, Don.Lewis@tsc.tdk.com, WhiskerP@logica.com"
+Received: from snow-white.ee.udel.edu by whimsy.udel.edu id aa19154;
+          11 Mar 97 3:51 GMT
+Received: by carbon.chem.nyu.edu (SMI-8.6/1.20)
+	id WAA06579; Mon, 10 Mar 1997 22:46:54 -0500
+Date: Mon, 10 Mar 1997 22:46:54 -0500
+Message-Id: <199703110346.WAA06579@carbon.chem.nyu.edu>
+From: "Edward J. Huff" <huffe@carbon.chem.nyu.edu>
+To: Mills@huey.udel.edu
+CC: stenn@whimsy.udel.edu, Mills@huey.udel.edu, Don.Lewis@tsc.tdk.com, 
+    WhiskerP@logica.com
+In-reply-to: <9703051100.aa18387@huey.udel.edu> (Mills@huey.udel.edu)
+Subject: Adding volatile to variables shared with signal handlers
+
+Attached find a patch which adds volatile to variables modified by
+the input_handler() signal handler.  I might have missed some.
+
+>   Is the tickadj thing settled? Is the nonblocking I/O thing settled?
+>   There are so many details floating around, I'm not sure everything is
+>   settled. I take it all is documented in the changelog, but the important
+>   things should probably go in the html pages.
+>
+>   Dave
+
+Guys,
+
+I was just reading in revised K&R about "const" qualifiers and noticed
+the definition of "volatile".  Variables shared between mainline code
+and signal handlers should be marked volatile.  (that is, modified by
+signal handlers).  (As someone said earlier in the newsgroup.  I
+thought it wasn't enought to fix the bug -- it wasn't -- but now that
+the bug is fixed, volatile is still needed).
+
+I suppose this doesn't need to be done instantly.  I doubt that it
+will change code except maybe when compiled with -O3.  But it
+constitutes a lurking bug that ought to be fixed before a compiler
+comes along that exposes it.
+
+I've never tried compiling xntpd with gcc -O3, but I use it routinely
+for programs here.  I don't know if it would result in optimizations
+that are invalid without volatile.
+
+I cut input_handler out of ntp_io.c and tried compiling it to see what
+global/static symbols it references.  Some of these should be
+volatile.  e.g. activefds shouldn't be because it is only referenced,
+not modified.  (I kept the #include statements and the input_handler
+function).
+
+This also assumes there aren't any global variables declared in any of
+the header files needed to get input_handler to compile.  Do any of
+you have a better way of finding static/globals used by a function?
+Also, this is only for xntpd input_handler.  I didn't look in the
+other programs.  And I think none of the functions called from within
+input_handler modify any static or global variables.  Is this correct?
+
+Changes would be required in modules other than ntp_io.c.  For
+instance, extern u_long packets_ignored; should be extern volatile
+u_long packets_ignored; in ntp_request.c.
+
+I guess the volatile for inter_list[i].received belongs inside the
+struct declaration for struct interface.
+
+These variables were listed as undefined by gcc when compiling just
+the #includes and the input_handler() function.  I looked at the code
+to see if they are modified:
+
+handler_calls    MODIFIED
+activefds        INPUT ONLY
+maxactivefd      INPUT ONLY
+handler_pkts     MODIFIED
+refio            INPUT ONLY
+free_recvbufs    MODIFIED
+packets_dropped  MODIFIED
+freelist         MODIFIED
+fulllist         MODIFIED
+beginlist	 MODIFIED
+full_recvbufs    MODIFIED
+packets_received MODIFIED
+ninterfaces      INPUT ONLY
+inter_list       MODIFIED?  e.g. inter_list[i].received++
+debug            INPUT ONLY
+packets_ignored  MODIFIED
+
+So I guess if I got this far, I may as well produce the patches.
+I've compiled these but I didn't test it.  Some compilers might
+not like volatile, so there is probably more work to do.
+
+
+carbon% foreach f ( `find . -mtime -2 -type f` )
+? diff -c $f ../../xntp3-5.89.8/$f
+? end
+*** ./include/ntp.h	Mon Mar 10 22:18:04 1997
+--- ../../xntp3-5.89.8/./include/ntp.h	Wed Jan  1 15:05:50 1997
+***************
+*** 225,231 ****
+  	char name[8];		/* name of interface */
+  	int flags;		/* interface flags */
+  	int last_ttl;		/* last TTL specified */
+! 	volatile long received;		/* number of incoming packets */
+  	long sent;		/* number of outgoing packets */
+  	long notsent;		/* number of send failures */
+  };
+--- 225,231 ----
+  	char name[8];		/* name of interface */
+  	int flags;		/* interface flags */
+  	int last_ttl;		/* last TTL specified */
+! 	long received;		/* number of incoming packets */
+  	long sent;		/* number of outgoing packets */
+  	long notsent;		/* number of send failures */
+  };
+*** ./xntpd/ntp_io.c	Mon Mar 10 22:16:03 1997
+--- ../../xntp3-5.89.8/./xntpd/ntp_io.c	Tue Feb 18 20:00:49 1997
+***************
+*** 109,120 ****
+  /*
+   * Memory allocation
+   */
+! volatile u_long full_recvbufs;		/* number of recvbufs on fulllist */
+! volatile u_long free_recvbufs;		/* number of recvbufs on freelist */
+  
+! volatile static	struct recvbuf *freelist;	/* free buffers */
+! volatile static	struct recvbuf *fulllist;	/* lifo buffers with data */
+! volatile static	struct recvbuf *beginlist;	/* fifo buffers with data */
+  
+  u_long total_recvbufs;		/* total recvbufs currently in use */
+  u_long lowater_additions;	/* number of times we have added memory */
+--- 109,120 ----
+  /*
+   * Memory allocation
+   */
+! u_long full_recvbufs;		/* number of recvbufs on fulllist */
+! u_long free_recvbufs;		/* number of recvbufs on freelist */
+  
+! static	struct recvbuf *freelist;	/* free buffers */
+! static	struct recvbuf *fulllist;	/* lifo buffers with data */
+! static	struct recvbuf *beginlist;	/* fifo buffers with data */
+  
+  u_long total_recvbufs;		/* total recvbufs currently in use */
+  u_long lowater_additions;	/* number of times we have added memory */
+***************
+*** 125,138 ****
+  /*
+   * Other statistics of possible interest
+   */
+! volatile u_long packets_dropped;	/* total number of packets dropped on reception */
+! volatile u_long packets_ignored;	/* packets received on wild card interface */
+! volatile u_long packets_received;	/* total number of packets received */
+  u_long packets_sent;	/* total number of packets sent */
+  u_long packets_notsent;	/* total number of packets which couldn't be sent */
+  
+! volatile u_long handler_calls;	/* number of calls to interrupt handler */
+! volatile u_long handler_pkts;	/* number of pkts received by handler */
+  u_long io_timereset;	/* time counters were reset */
+  
+  /*
+--- 125,138 ----
+  /*
+   * Other statistics of possible interest
+   */
+! u_long packets_dropped;	/* total number of packets dropped on reception */
+! u_long packets_ignored;	/* packets received on wild card interface */
+! u_long packets_received;	/* total number of packets received */
+  u_long packets_sent;	/* total number of packets sent */
+  u_long packets_notsent;	/* total number of packets which couldn't be sent */
+  
+! u_long handler_calls;	/* number of calls to interrupt handler */
+! u_long handler_pkts;	/* number of pkts received by handler */
+  u_long io_timereset;	/* time counters were reset */
+  
+  /*
+*** ./xntpd/ntp_request.c	Mon Mar 10 22:14:05 1997
+--- ../../xntp3-5.89.8/./xntpd/ntp_request.c	Mon Jan 13 19:56:11 1997
+***************
+*** 1050,1066 ****
+  	 * Importations from the io module
+  	 */
+  	extern u_long io_timereset;
+! 	volatile extern u_long full_recvbufs;
+! 	volatile extern u_long free_recvbufs;
+  	extern u_long total_recvbufs;
+  	extern u_long lowater_additions;
+! 	volatile extern u_long packets_dropped;
+! 	volatile extern u_long packets_ignored;
+! 	volatile extern u_long packets_received;
+  	extern u_long packets_sent;
+  	extern u_long packets_notsent;
+! 	volatile extern u_long handler_calls;
+! 	volatile extern u_long handler_pkts;
+  
+  	io = (struct info_io_stats *)prepare_pkt(srcadr, inter, inpkt,
+  	    sizeof(struct info_io_stats));
+--- 1050,1066 ----
+  	 * Importations from the io module
+  	 */
+  	extern u_long io_timereset;
+! 	extern u_long full_recvbufs;
+! 	extern u_long free_recvbufs;
+  	extern u_long total_recvbufs;
+  	extern u_long lowater_additions;
+! 	extern u_long packets_dropped;
+! 	extern u_long packets_ignored;
+! 	extern u_long packets_received;
+  	extern u_long packets_sent;
+  	extern u_long packets_notsent;
+! 	extern u_long handler_calls;
+! 	extern u_long handler_pkts;
+  
+  	io = (struct info_io_stats *)prepare_pkt(srcadr, inter, inpkt,
+  	    sizeof(struct info_io_stats));
+carbon% 

@@ -1,0 +1,60 @@
+/* 
+ * (c) Copyright 1989, 1990, 1991, 1992, 1993 OPEN SOFTWARE FOUNDATION, INC. 
+ * ALL RIGHTS RESERVED 
+*/ 
+/* 
+ * Motif Release 1.2.3
+*/ 
+XCOMM   $RCSfile: ultrix.cf,v $ $Revision: 1.1.1.1 $ $Date: 1999-01-30 03:16:29 $
+XCOMM platform:  $XConsortium: ultrix.cf,v 1.45 91/07/30 12:12:11 rws Exp $
+
+#define OSName            Ultrix-32 4.1
+XCOMM operating system:  OSName
+#define OSMajorVersion    4
+#define OSMinorVersion    1
+
+/* Set MotifDefines							*/
+#ifndef MotifDefines
+#define MotifDefines -DSTRINGS_ALIGNED -DNO_REGEX -DNO_REGCOMP -DNO_CONST
+#endif  /* for MotifDefines     */
+
+
+#define HasPutenv YES
+#define HasSaberC YES
+#define HasShm YES
+#define LintLibFlag -o
+#define LintOpts -ax
+
+#ifdef VaxArchitecture
+#define XqdssServer YES
+#define XqvssServer YES
+#define UnalignedReferencesAllowed YES	       /* if arbitrary deref is okay */
+#if HasGcc
+#define BuildPexExt XqdssServer
+#else
+#define BuildPex NO /* compiler runs out of table space */
+#endif
+#endif
+
+#ifdef MipsArchitecture
+#if OSMajorVersion > 4 || (OSMajorVersion == 4 && OSMinorVersion >= 2)
+#define XdecServer YES
+/* Even under ultrix 4.2, the compiler miscompiles some alloca calls */
+#define AllocateLocalDefines /* -DINCLUDE_ALLOCA_H */
+#else
+#define XmfbpmaxServer NO
+#define XcfbpmaxServer YES
+#define AllocateLocalDefines /**/
+#endif
+#define NeedFunctionPrototypes NO
+#define PexCCOptions -Wf,-XNp15000,-XNd15000
+#define DefaultCCOptions        -Wf,-XNh2000,-XNd7000 -Olimit 2000
+#endif
+
+#if HasGcc
+#define CcCmd gcc -ansi -Dvax -Dultrix -fpcc-struct-return
+#define ServerCCOptions /* */
+#define AllocateLocalDefines /* */
+#endif
+
+#define ServerOSDefines AllocateLocalDefines

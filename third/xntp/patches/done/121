@@ -1,0 +1,398 @@
+Replied: Sun, 04 May 1997 02:07:36 -0400
+Replied: "Ulrich Windl <ulrich.windl@rz.uni-regensburg.de> "
+Received: from snow-white.ee.udel.edu by whimsy.udel.edu id aa01446;
+          14 Apr 97 6:48 GMT
+Received: from ngate.ngate.uni-regensburg.de (ngate.rz.uni-regensburg.de) by comsun.rz.uni-regensburg.de with SMTP id AA03574
+  (5.65c/IDA-1.4.4 for <stenn@whimsy.udel.edu>); Mon, 14 Apr 1997 08:48:20 +0200
+Received: from rkdvmks1.ngate.uni-regensburg.de by ngate.ngate.uni-regensburg.de; Mon, 14 Apr 97 07:48 MET
+Received: from rkdvmks1.ngate.uni-regensburg.de by kgate.ngate.uni-regensburg.de; Mon, 14 Apr 97 06:46 GMT
+Received: from RKDVMKS1/SpoolDir by rkdvmks1.ngate.uni-regensburg.de (Mercury 1.31);
+    14 Apr 97 08:47:59 +0200
+Received: from SpoolDir by RKDVMKS1 (Mercury 1.31); 14 Apr 97 08:47:44 +0200
+From: Ulrich Windl <ulrich.windl@rz.uni-regensburg.de>
+Organization: Universitaet Regensburg, Klinikum
+To: Harlan Stenn <stenn@whimsy.udel.edu>
+Date: Mon, 14 Apr 1997 08:47:40 +0200
+Mime-Version: 1.0
+Content-Length: 11787
+Content-Type: Multipart/Mixed; boundary=Message-Boundary-10126
+Subject: Some suggestions to xntp3-5.90
+Priority: normal
+X-Mailer: Pegasus Mail for Windows (v2.23)
+Message-Id: <10A7AEA31D5D@rkdvmks1.ngate.uni-regensburg.de>
+
+
+--Message-Boundary-10126
+Content-type: text/plain; charset=US-ASCII
+Content-transfer-encoding: 7BIT
+Content-description: Mail message body
+
+Harlan,
+
+I have made some pathes that you might consider:
+
+I found out that the sections numbers in ntp_proto.c (related to RFC
+13005, I guess) were outdated. I made a patch to correct these. Also
+I "unfolded" some lines that would easily fit in a single line. Also
+I re-folded a few lines that were folded at an unfortunate place
+(IMHO). In a very few places I indented some lines to follow the
+usual style (unless you have tabwidth=2). The patch should change no
+functionality. Maybe pre-read the patch first.
+
+I did a similar thing to few obvious cases in ntp_loopfilter.c. I 
+added (this time hopefully correct) an additional pair of parentheses 
+in line 570 (gcc complains).
+
+In ntpd.c I have some real new code: I added #defines for POSIX 
+real-time scheduling (as discussed once) and memory locking. I 
+recognized that the code is compatible with the existing fragment for 
+Solaris. Currently the #defines are just turned on in the first two 
+lines of the file. You have to check for these functions, and 
+possibly, whether the user wants them. Also I have just moved the 
+blocks outside from any other block; the idea is that some obsolete 
+stuff (like rtprio) should be abandoned in favour of the newer POSIX 
+style stuff. The code has been tested with Linux kernel 2.0.28 and a 
+recent C library (5.2.x).
+
+Ulrich
+P.S. One file, three patches...
+
+--Message-Boundary-10126
+Content-type: text/plain; charset=US-ASCII
+Content-transfer-encoding: 7BIT
+Content-description: Text from file 'xntp~1.pat'
+
+--- ntp_proto.c.orig	Fri Jan 31 04:31:15 1997
++++ ntp_proto.c	Sun Apr 13 19:10:40 1997
+@@ -105,7 +105,7 @@
+ static	void	clear_all	P((void));
+ 
+ /*
+- * transmit - Transmit Procedure. See Section 3.4.1 of the
++ * transmit - Transmit Procedure. See Section 3.4.2 of the
+  *	specification.
+  */
+ void
+@@ -182,8 +182,7 @@
+ 			int sendlen;
+ 
+ 			xpkt.keyid = htonl(xkeyid);
+-			auth1crypt(xkeyid, (u_int32 *)&xpkt,
+-			    LEN_PKT_NOMAC);
++			auth1crypt(xkeyid, (u_int32 *)&xpkt, LEN_PKT_NOMAC);
+ 			get_systime(&peer->xmt);
+ 			L_ADD(&peer->xmt, &sys_authdelay);
+ 			HTONL_FP(&peer->xmt, &xpkt.xmt);
+@@ -201,8 +200,7 @@
+ 			sendpkt(&peer->srcadr, find_rtt ?
+ 			    any_interface : peer->dstadr,
+ 			    ((peer->cast_flags & MDF_MCAST) && !find_rtt) ?
+-			    peer->ttl : -7, &xpkt, sendlen +
+-			    LEN_PKT_NOMAC);
++			    peer->ttl : -7, &xpkt, sendlen + LEN_PKT_NOMAC);
+ #ifdef DEBUG
+ 			if (debug > 1)
+ 				printf("transmit auth to %s %s\n",
+@@ -259,8 +257,7 @@
+ 			if (peer->flags & FLAG_CONFIG) {
+ 				if (opeer_reach != 0) {
+ 					peer_clear(peer);
+-					peer->timereachable =
+-					    current_time;
++					peer->timereachable = current_time;
+ 				}
+ 			}
+ 
+@@ -304,7 +301,7 @@
+ 				peer->hpoll--;
+ 			L_CLR(&off);
+ 			clock_filter(peer, &off, (s_fp)0,
+-			    (u_fp)NTP_MAXDISPERSE);
++				     (u_fp)NTP_MAXDISPERSE);
+ 			if (peer->flags & FLAG_SYSPEER)
+ 				clock_select();
+ 		} else {
+@@ -344,14 +341,14 @@
+ 		 * Oops, someone did already.
+ 		 */
+ 		TIMER_DEQUEUE(&peer->event_timer);
+-	peer_timer = 1 << (int)max((u_char)min(peer->ppoll,
+-	    peer->hpoll), peer->minpoll);
++	peer_timer = 1 << (int)max((u_char)min(peer->ppoll, peer->hpoll),
++				   peer->minpoll);
+ 	peer->event_timer.event_time = current_time + peer_timer;
+ 	TIMER_ENQUEUE(timerqueue, &peer->event_timer);
+ }
+ 
+ /*
+- * receive - Receive Procedure.  See section 3.4.2 in the specification.
++ * receive - Receive Procedure.  See section 3.4.3 in the specification.
+  */
+ void
+ receive(rbufp)
+@@ -408,7 +405,7 @@
+ 	if (PKT_MODE(pkt->li_vn_mode) == MODE_PRIVATE) {
+ 		if (restrict & RES_NOQUERY)
+ 			return;
+-		process_private(rbufp, ((restrict&RES_NOMODIFY) == 0));
++		process_private(rbufp, ((restrict & RES_NOMODIFY) == 0));
+ 		return;
+ 	}
+ 
+@@ -847,7 +844,7 @@
+ 
+ 
+ /*
+- * process_packet - Packet Procedure, a la Section 3.4.3 of the
++ * process_packet - Packet Procedure, a la Section 3.4.4 of the
+  *	specification. Or almost, at least. If we're in here we have a
+  *	reasonable expectation that we will be having a long term
+  *	relationship with this host.
+@@ -1274,7 +1271,7 @@
+ 
+ 
+ /*
+- * poll_update - update peer poll interval. See Section 3.4.8 of the
++ * poll_update - update peer poll interval. See Section 3.4.9 of the
+  *     spec.
+  */
+ void
+@@ -1333,10 +1330,9 @@
+ 	}
+ 
+ 	/* hpoll <= maxpoll for sure */
+-	newpoll = max((u_char)min(peer->ppoll, peer->hpoll),
+-	    peer->minpoll);
+-	if (randomize == POLL_MAKERANDOM || (randomize ==
+-	     POLL_RANDOMCHANGE && newpoll != oldpoll))
++	newpoll = max((u_char)min(peer->ppoll, peer->hpoll), peer->minpoll);
++	if (randomize == POLL_MAKERANDOM
++	    || (randomize == POLL_RANDOMCHANGE && newpoll != oldpoll))
+ 		new_timer = (1 << (newpoll - 1))
+ 		    + ranp2(newpoll - 1) + current_time;
+ 	else
+@@ -1377,7 +1373,7 @@
+ 
+ 
+ /*
+- * clear - clear peer filter registers.  See Section 3.4.7 of the spec.
++ * clear - clear peer filter registers.  See Section 3.4.8 of the spec.
+  */
+ void
+ peer_clear(peer)
+@@ -1493,8 +1489,7 @@
+ 	 */
+ 	skewmax = 0;
+ 	for (n = 0; n < NTP_SHIFT && sample_delay; n++) {
+-		for (j = 0; j < n && skewmax <
+-		    CLOCK_MAXSEC; j++) {
++		for (j = 0; j < n && skewmax < CLOCK_MAXSEC; j++) {
+ 			if (distance[j] > distance[n]) {
+ 				s_fp ftmp;
+ 
+@@ -1533,8 +1528,7 @@
+ 
+ 		y = 0;
+ 		for (i = NTP_SHIFT - 1; i > 0; i--) {
+-			if (peer->filter_error[ord[i]] >=
+-			    NTP_MAXDISPERSE)
++			if (peer->filter_error[ord[i]] >= NTP_MAXDISPERSE)
+ 				d = NTP_MAXDISPERSE;
+ 			else {
+ 				d = peer->filter_soffset[ord[i]] -
+@@ -1793,10 +1787,9 @@
+ 			nlist = 1;
+ 		} else {
+ 			if (sys_peer != 0) {
+-			  report_event(EVNT_PEERSTCHG,
+-				       (struct peer *)0);
+-			  NLOG(NLOG_SYNCSTATUS)
+-			    msyslog(LOG_INFO, "synchronisation lost");
++				report_event(EVNT_PEERSTCHG, (struct peer *)0);
++				NLOG(NLOG_SYNCSTATUS)
++				    msyslog(LOG_INFO, "synchronisation lost");
+ 			}
+ 			sys_peer = 0;
+ 			sys_stratum = STRATUM_UNSPEC;
+@@ -1823,8 +1816,7 @@
+ 		    L_ISGEQ(&peer->offset, &high)))
+ 			continue;
+ 		peer->correct = 1;
+-		d = peer->synch + ((u_fp)peer->stratum <<
+-		    NTP_DISPFACTOR);
++		d = peer->synch + ((u_fp)peer->stratum << NTP_DISPFACTOR);
+ 		if (j >= NTP_MAXCLOCK) {
+ 			if (d >= synch[j - 1])
+ 				continue;
+@@ -2004,10 +1996,10 @@
+ 
+ #ifdef REFCLOCK
+ 		if (ISREFCLOCKADR(&sys_peer->srcadr))
+-		  src = refnumtoa(sys_peer->srcadr.sin_addr.s_addr);
++			src = refnumtoa(sys_peer->srcadr.sin_addr.s_addr);
+ 		else
+ #endif
+-		  src = ntoa(&sys_peer->srcadr);
++			src = ntoa(&sys_peer->srcadr);
+ 
+ 		sys_poll = sys_peer->minpoll;
+ 		report_event(EVNT_PEERSTCHG, (struct peer *)0);
+@@ -2156,7 +2148,8 @@
+ 
+ #ifdef DEBUG
+ 	if (debug > 1)
+-		printf("fast_xmit(%s, %d)\n", ntoa(&rbufp->recv_srcadr), rmode);
++		printf("fast_xmit(%s, %d)\n",
++		       ntoa(&rbufp->recv_srcadr), rmode);
+ #endif
+ 
+ 	/*
+@@ -2235,7 +2228,7 @@
+  */
+ #define	DUSECS	1000000	/* us in a s */
+ #define	HUSECS	(1 << 20) /* approx DUSECS for shifting etc */
+-#define	MINSTEP	5	/* minimum clock increment (ys) */
++#define	MINSTEP	5	/* minimum clock increment (us) */
+ #define MAXSTEP 20000	/* maximum clock increment (us) */
+ #define MINLOOPS 5	/* minimum number of step samples */
+ 
+--- ntp_loopfilter.c.orig	Sat Apr  5 08:34:15 1997
++++ ntp_loopfilter.c	Sun Apr 13 19:52:13 1997
+@@ -231,7 +231,7 @@
+ 	 * ms), reset the poll interval and wait for further
+ 	 * instructions. Note that the cutout switch is set when the
+ 	 * time is stepped, possibly because the frequency error is off
+-	 * planet. In that case all sanity checks are disables and the
++	 * planet. In that case all sanity checks are disabled and the
+ 	 * discipine loop is on its own. Presumably, the loop will
+ 	 * eventually capture the wayward oscillator (if less than 500
+ 	 * ppm off planet) and converge, which will then reset the
+@@ -317,13 +317,12 @@
+ 		/*
+ 		 * Set the leap bits in the status word.
+ 		 */
+-		if (sys_leap & LEAP_ADDSECOND && sys_leap &
+-		    LEAP_DELSECOND)
+-		ntv.status |= STA_UNSYNC;
++		if (sys_leap & LEAP_ADDSECOND && sys_leap & LEAP_DELSECOND)
++			ntv.status |= STA_UNSYNC;
+ 		else if (sys_leap & LEAP_ADDSECOND)
+-		ntv.status |= STA_INS;
++			ntv.status |= STA_INS;
+ 		else if (sys_leap & LEAP_DELSECOND)
+-		ntv.status |= STA_DEL;
++			ntv.status |= STA_DEL;
+ 
+ 		/*
+ 		 * This astonishingly intricate wonder juggles the
+@@ -410,8 +409,8 @@
+ 	 * by the time constant, which is adjusted in response to the
+ 	 * phase error and dispersion.
+ 	 */ 
+-	} else if (interval < CLOCK_MAXSEC || peer->maxpoll <=
+-	    NTP_MAXDPOLL) {
++	} else if (interval < CLOCK_MAXSEC
++		   || peer->maxpoll <= NTP_MAXDPOLL) {
+ 		long ltmp = interval;
+ 
+ 		tmp = NTP_MAXDPOLL;
+@@ -419,8 +418,7 @@
+ 			tmp--;
+ 			ltmp <<= 1;
+ 		}
+-		tmp = RSH_FRAC_TO_FREQ - tmp + time_constant +
+-		    time_constant;
++		tmp = RSH_FRAC_TO_FREQ - tmp + time_constant + time_constant;
+ 		if (offset < 0)
+ 			drift_comp -= -offset >> tmp;
+ 		else
+@@ -515,8 +513,8 @@
+ 	if (debug > 1)
+ 		printf(
+ 		    "local_clock: phase %s freq %s disp %s poll %d count %d\n",
+-		    mfptoa((clock_adjust < 0 ? -1 : 0), clock_adjust,
+-		    6), fptoa(drift_comp, 3), fptoa(sys_maxd[0], 5),
++		    mfptoa((clock_adjust < 0 ? -1 : 0), clock_adjust, 6),
++		    fptoa(drift_comp, 3), fptoa(sys_maxd[0], 5),
+ 		    sys_poll, tc_counter);
+ #endif /* DEBUG */
+ 
+@@ -567,7 +565,7 @@
+ 		return;
+ 	adjustment = clock_adjust;
+ 	if (adjustment < 0)
+-		adjustment = -(-adjustment >> CLOCK_PHASE + time_constant);
++		adjustment = -(-adjustment >> (CLOCK_PHASE + time_constant));
+ 	else
+ 		adjustment >>= CLOCK_PHASE + time_constant;
+ 	clock_adjust -= adjustment;
+@@ -610,10 +608,10 @@
+ 	 * This routine adjusts the frequency offset. It is used by the
+ 	 * local clock driver to adjust frequency when no external
+ 	 * discipline source is available and by the acts driver when
+-	 * the interval between updates is greater than 1 <<
+-	 * NTP_MAXPOLL. Note that the maximum offset is limited by
+-	 * max_comp when the daemon pll is used, but the maximum may be
+-	 * different when the kernel pll is used.
++	 * the interval between updates is greater than 1 << NTP_MAXPOLL.
++	 * Note that the maximum offset is limited by max_comp when
++	 * the daemon pll is used, but the maximum may be different
++	 * when the kernel pll is used.
+ 	 */
+ 	drift_comp += freq;
+ 	if (drift_comp > max_comp)
+--- ntpd.c.orig	Tue Mar 11 05:53:21 1997
++++ ntpd.c	Sat Apr 12 00:45:20 1997
+@@ -1,3 +1,5 @@
++#define	HAVE_POSIX_SCHED
++#define	HAVE_POSIX_MMAN
+ /*
+  * ntpd.c - main program for the fixed point NTP daemon
+  */
+@@ -41,6 +43,12 @@
+ # endif
+ # include <sys/rtprio.h>
+ #endif
++#if defined(HAVE_POSIX_SCHED)
++# include <sched.h>
++#endif
++#if defined(HAVE_POSIX_MMAN)
++# include <sys/mman.h>
++#endif
+ 
+ #ifdef HAVE_TERMIOS_H
+ # include <termios.h>
+@@ -462,6 +470,13 @@
+ #   endif /* PROCLOCK */
+ #  endif /* not (MCL_CURRENT && MCL_FUTURE) */
+ # endif /* LOCK_PROCESS */
++#if defined(HAVE_POSIX_MMAN)
++  /*
++   * lock the process into memory
++   */
++  if (mlockall(MCL_CURRENT|MCL_FUTURE) < 0)
++    msyslog(LOG_ERR, "mlockall(): %m");
++#endif
+ # if defined(NTPD_PRIO) && NTPD_PRIO != 0
+   /*
+    * Set the priority.
+@@ -474,7 +489,16 @@
+ #  endif /* HAVE_BSD_NICE */
+ # endif /* NTPD_PRIO && NTPD_PRIO != 0 */
+ #endif /* not HAVE RTP_PRIO */
+-
++#if defined(HAVE_POSIX_SCHED)
++  {
++    struct sched_param sched;
++    sched.sched_priority = sched_get_priority_min(SCHED_FIFO);
++    if ( sched_setscheduler(0, SCHED_FIFO, &sched) == -1 )
++    {
++      msyslog(LOG_ERR, "sched_setscheduler(): %m");
++    }
++  }
++#endif /* HAVE_POSIX_SCHED */
+ #ifdef SYS_WINNT
+   process_handle = GetCurrentProcess();
+   if (!SetPriorityClass(process_handle, (DWORD) REALTIME_PRIORITY_CLASS))
+
+--Message-Boundary-10126--

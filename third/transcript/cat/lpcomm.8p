@@ -1,0 +1,66 @@
+
+
+
+   19 August 1992                                                   LPCOMM(8)
+
+
+
+
+
+
+   NAME
+     lpcomm-TRANSCRIPT Centronix parallel communications filter for x86 hosts
+
+   SYNOPSIS
+     XPSLIBDIRX/lpcomm
+
+   DESCRIPTION
+     This is the low-level TRANSCRIPT Centronix parallel communication filter
+     for use by the System V or BSD line printer spooling system on an x86
+     host. It is called from the printer interface script for the printer.
+     The program _l_p_c_o_m_m is the lowest level filter.  It manages communication
+     with the printer; since the parallel interface is one-directional, no
+     status, error, or accounting reporting is supported.  _l_p_c_o_m_m will write
+     a log of each job processed in the log file.
+
+   ENVIRONMENT
+
+     VERBOSELOG=_n_u_m_b_e_r
+          Print verbose log messages
+
+   FILES
+
+     _p_r_i_n_t_e_r-log           printer log file
+
+   SEE ALSO
+     transcript(1), lp(1), lpstat(1), lpsched(1M), lpadmin(1M), psinter-
+     face(8), psint(8)
+     _S_y_s_t_e_m _V _L_i_n_e _P_r_i_n_t_e_r _S_p_o_o_l_i_n_g _U_t_i_l_i_t_i_e_s
+     _4._2_B_S_D _L_i_n_e _P_r_i_n_t_e_r _S_p_o_o_l_e_r _M_a_n_u_a_l
+
+   AUTHOR
+     Adobe Systems Incorporated
+
+   NOTES
+     POSTSCRIPT is a registered trademark of Adobe Systems Incorporated.
+     TRANSCRIPT is a trademark of Adobe Systems Incorporated.
+     Unix is a trademark of AT&T Bell Laboratories.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   Adobe Systems                                                            1
+
+
+99

@@ -1,0 +1,28 @@
+WCTOPDIR = ..
+
+include ../WcMake1.tmpl
+
+#########################################################################
+# SCCS_data: %Z% %M% %I% %E% %U%
+#
+# OpenLook Resource Interpreter - Ori/MakeByHand
+#
+XMULIB = 
+
+   CLIENT_LDFLAGS = $(XOPLDFLAG)
+      CLIENT_LIBS = $(XOPLIB) $(XOLLIB)
+      CLIENT_INCS = $(XOP_LIB_OPTS)
+
+           CLIENT = Ori
+            CLASS = ORi
+             SRCS = Ori.c
+             OBJS = Ori.o
+
+# Installed in .../app-defaults/CLIENT
+#
+         APPDEFS = Abbrev Checks Demo Foot Gauge Goodbye Hello \
+                   MButtSimp MButton Menu Notice SLists SText SWin \
+                   TextF
+
+include ../WcMake2.tmpl
+include ../WcMakeC.tmpl

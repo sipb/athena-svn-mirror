@@ -1,0 +1,70 @@
+# $Id: Makefile.in,v 1.1 1998-12-03 19:39:39 ghudson Exp $
+
+SHELL=/bin/sh
+VPATH=@srcdir@
+INSTALL=@INSTALL@
+INSTALL_PROGRAM=@INSTALL_PROGRAM@
+srcdir=@srcdir@
+top_srcdir=@top_srcdir@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+bindir=@bindir@
+sbindir=@sbindir@
+mandir=@mandir@
+
+CC=@CC@
+DEFS=@DEFS@
+CPPFLAGS=@CPPFLAGS@
+CFLAGS=@CFLAGS@
+LDFLAGS=@LDFLAGS@
+LIBS=@KRB4_LIBS@ -lhesiod @LIBS@
+ALL_CFLAGS=${CPPFLAGS} ${CFLAGS} ${DEFS}
+
+all: lert lertload lertdump lertstop lertsaid lertused lertsrv
+
+lert: lert.o
+	${CC} ${LDFLAGS} -o $@ lert.o ${LIBS}
+
+lertload: lertload.o
+	${CC} ${LDFLAGS} -o $@ lertload.o ${LIBS}
+
+lertdump: lertdump.o
+	${CC} ${LDFLAGS} -o $@ lertdump.o ${LIBS}
+
+lertstop: lertstop.o
+	${CC} ${LDFLAGS} -o $@ lertstop.o ${LIBS}
+
+lertsaid: lertsaid.o
+	${CC} ${LDFLAGS} -o $@ lertsaid.o ${LIBS}
+
+lertused: lertused.o
+	${CC} ${LDFLAGS} -o $@ lertused.o ${LIBS}
+
+lertsrv: lertsrv.o
+	${CC} ${LDFLAGS} -o $@ lertsrv.o ${LIBS}
+
+.c.o:
+	${CC} -c ${ALL_CFLAGS} $<
+
+check:
+
+install:
+	${top_srcdir}/mkinstalldirs ${DESTDIR}${bindir}
+	${top_srcdir}/mkinstalldirs ${DESTDIR}${sbindir}
+	${top_srcdir}/mkinstalldirs ${DESTDIR}${mandir}/man1
+	${INSTALL_PROGRAM} lert ${DESTDIR}${bindir}
+	${INSTALL_PROGRAM} lertload ${DESTDIR}${sbindir}
+	${INSTALL_PROGRAM} lertdump ${DESTDIR}${sbindir}
+	${INSTALL_PROGRAM} lertstop ${DESTDIR}${sbindir}
+	${INSTALL_PROGRAM} lertsaid ${DESTDIR}${sbindir}
+	${INSTALL_PROGRAM} lertused ${DESTDIR}${sbindir}
+	${INSTALL_PROGRAM} lertsrv ${DESTDIR}${sbindir}
+	${INSTALL} -m 444 ${srcdir}/lert.1 ${DESTDIR}${mandir}/man1
+
+clean:
+	rm -f lert.o lert lertload.o lertload lertdump.o lertdump
+	rm -f lertstop.o lertstop lertsaid.o lertsaid lertused.o lertused
+	rm -f lertsrv.o lertsrv
+
+distclean: clean
+	rm -f config.cache config.log config.status Makefile

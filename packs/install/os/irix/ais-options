@@ -1,0 +1,256 @@
+#!/bin/sh
+
+PATH=/usr/sbin:/usr/bsd:/sbin:/usr/bin:/bin:/etc:/usr/etc
+
+prog=`basename $0`
+
+usage="Usage: $prog [--help] [--auto] [--disk busnum devnum] [--diskless] [--boothost host] [--dist path] [--root path] [--swap] [--skiprepart] [--hdrsize megs] [--swapsize megs] [--cachesize megs] [--hostname hostname] [--ipaddr ipaddr]"
+
+#
+# Parse arguments.
+#
+while [ -n "$1" ]; do
+    case "$1" in
+
+    --help)
+	echo $usage
+	exit 0;;
+
+    --auto)
+	AIS_AUTO=1;;
+
+    --disk)
+	AIS_BUS=$2
+	AIS_DEV=$3
+	shift 2;;
+
+    --diskless)
+	AIS_MODE=diskless;;
+
+    --dist)
+	AIS_DIST=$2
+	shift;;
+
+    --root)
+	AIS_ROOT=$2
+	shift;;
+
+    --boothost)
+	AIS_BOOTHOST=$2
+	shift;;
+
+    --swap)
+	AIS_MODE=swap;;
+
+    --skiprepart)
+	AIS_REPARTITION=0;;
+
+    --hdrsize)
+	AIS_HDRSIZE=$2
+	shift;;
+
+    --swapsize)
+	AIS_SWAPSIZE=$2
+	shift;;
+
+    --cachesize)
+	AIS_CACHESIZE=$2
+	shift;;
+
+    --hostname)
+	AIS_HOST=$2
+	shift;;
+
+    --ipaddr)
+	AIS_ADDR=$2
+	shift;;
+
+    *)
+	echo "$prog: Unknown option $1"
+	echo $usage
+	exit 1;;
+    esac
+    shift
+done
+
+#
+# Set up default values (default to internal disk, swap partition, mount
+# on /root, prompt for inputs).
+#
+AIS_CPUBOARD=${AIS_CPUBOARD:-`uname -m`}
+AIS_OSVERSION=${AIS_OSVERSION:-`uname -r`}
+
+eval `hinv | awk '\
+    /CPU: MIPS/			{ p = $3 }				\
+    /Graphics board:/		{ g = $3 }				\
+    /graphics installed/	{ g = $1 }				\
+    END			{ printf("AIS_CPU=%s; AIS_GRAPHICS=%s", p, g); }'`
+
+# MODLOADAFS is separated because AFS is still a bit broken in 6.3.
+# 6.5 added two additional mount points for diskless booting: /usr,
+# and /var/share.
+case ${AIS_OSVERSION} in
+    6.2)
+	AIS_SYS=${AIS_SYS:-sgi_62}
+	AIS_OPSSYS=${AIS_OPSSYS:-62}
+	AIS_MODLOADAFS=${AIS_MODLOADAFS:-1}
+	AIS_DLMOUNTUSR=${AIS_DLMOUNTUSR:-0}
+	AIS_DLMOUNTVARSHARE=${AIS_DLMOUNTVARSHARE:-0}
+	AIS_CACHEFSTYPE=${AIS_CACHEFSTYPE:-efs}
+	;;
+    6.3)
+	AIS_SYS=${AIS_SYS:-sgi_63}
+	AIS_OPSSYS=${AIS_OPSSYS:-63}
+	AIS_MODLOADAFS=${AIS_MODLOADAFS:-0}
+	AIS_DLMOUNTUSR=${AIS_DLMOUNTUSR:-0}
+	AIS_DLMOUNTVARSHARE=${AIS_DLMOUNTVARSHARE:-0}
+	AIS_CACHEFSTYPE=${AIS_CACHEFSTYPE:-efs}
+	;;
+    6.5)
+	AIS_SYS=${AIS_SYS:-sgi_65}
+	AIS_OPSSYS=${AIS_OPSSYS:-65}
+	AIS_MODLOADAFS=${AIS_MODLOADAFS:-0}
+	AIS_DLMOUNTUSR=${AIS_DLMOUNTUSR:-1}
+	AIS_DLMOUNTVARSHARE=${AIS_DLMOUNTVARSHARE:-1}
+	AIS_CACHEFSTYPE=${AIS_CACHEFSTYPE:-xfs}
+	;;
+    *)
+	echo "$0: unknown operating system version (${AIS_OSVERSION})"
+	exit 1
+	;;
+esac
+
+case ${AIS_CPUBOARD} in
+    IP22)
+	AIS_SWAPSIZE=${AIS_SWAPSIZE:-256}
+	;;
+    IP32)
+	AIS_SWAPSIZE=${AIS_SWAPSIZE:-512}
+	;;
+    *)
+	echo "$0: unknown CPU board (${AIS_CPUBOARD})"
+	exit 1
+	;;
+esac
+
+AIS_VERSION=1.1
+AIS_ROOTFSTYPE=${AIS_ROOTFSTYPE:-xfs}
+AIS_AUTO=${AIS_AUTO:-0}
+AIS_BUS=${AIS_BUS:-0}
+AIS_UTIL=${AIS_UTIL:-/ais}
+AIS_DEV=${AIS_DEV:-1}
+AIS_ATHENAVERS=${AIS_ATHENAVERS:-8.2}
+AIS_SYSTEM=${AIS_SYSTEM:-IRIX}
+AIS_DIST=${AIS_DIST:-/install}
+AIS_BASE=${AIS_BASE:-${AIS_DIST}}
+AIS_LIB=${AIS_LIB:-${AIS_BASE}/lib}
+AIS_EXEC=${AIS_EXEC:-${AIS_BASE}/exec}
+AIS_OSLIB=${AIS_OSLIB:-${AIS_LIB}/@sys}
+AIS_AFSDIST=${AIS_AFSDIST:-${AIS_OSLIB}/afsdist/root.client}
+AIS_SRVD=${AIS_SRVD:-/srvd}
+AIS_OS=${AIS_OS:-/os}
+AIS_LOCALBITS=${AIS_LOCALBITS:-"/ram"}
+AIS_ROOT=${AIS_ROOT:-/root}
+AIS_FUTUREROOT=${AIS_FUTUREROOT:-/root}
+AIS_MODE=${AIS_MODE:-root}
+AIS_HDRSIZE=${AIS_HDRSIZE:-2}
+AIS_CACHESIZE=${AIS_CACHESIZE:-100}
+AIS_HOST=${AIS_HOST:-nobody}
+AIS_ADDR=${AIS_ADDR:-0.0.0.0}
+AIS_DOMAIN=${AIS_DOMAIN:-mit.edu}
+AIS_REPARTITION=${AIS_REPARTITION:-1}
+AIS_BOOTHOST=${AIS_BOOTHOST:-tae-kwon-leap}
+AIS_BOOTROOTDIR=${AIS_BOOTROOTDIR:-/var/boot}
+AIS_BOOTSUBDIR=${AIS_BOOTSUBDIR:-sgi/${AIS_OPSSYS}}
+AIS_NFSHOST=${AIS_NFSHOST:-${AIS_BOOTHOST}}
+AIS_NFSROOTDIR=${AIS_NFSROOTDIR:-/inst}
+AIS_NFSSUBDIR=${AIS_NFSSUBDIR:-${AIS_SYS}}
+AIS_LOGFILE=${AIS_LOGFILE:-/var/athena/install.log}
+AIS_MINRAM=${AIS_MINRAM:-64}
+AIS_ATHENAINSTALL=${AIS_ATHENAINSTALL:-0}
+AIS_SWAPFILE=${AIS_SWAPFILE:-/swap/swapfile}
+AIS_SWAPFILESIZE=${AIS_SWAPFILESIZE:-40m}
+AIS_PUBLIC=${AIS_PUBLIC:-true}
+AIS_AUTOUPDATE=${AIS_AUTOUPDATE:-true}
+AIS_RVDCLIENT=${AIS_RVDCLIENT:-true}
+
+export AIS_BOOTROOTDIR AIS_BOOTSUBDIR AIS_VERSION
+export AIS_NFSROOTDIR AIS_NFSSUBDIR AIS_OPSSYS
+export AIS_ROOTFSTYPE AIS_BOOTHOST AIS_NFSHOST AIS_CPU AIS_GRAPHICS
+export AIS_CPUBOARD AIS_OSLIB AIS_SRVD AIS_OS AIS_OSVERSION AIS_REPARTITION
+export AIS_SYS AIS_AFSDIST AIS_AUTO AIS_BUS AIS_BASE AIS_LIB AIS_EXEC
+export AIS_UTIL AIS_DEV AIS_DIST AIS_LOCALBITS AIS_ROOT AIS_FUTUREROOT AIS_MODE
+export AIS_HDRSIZE AIS_SWAPSIZE AIS_CACHESIZE AIS_HOST AIS_ADDR AIS_DOMAIN
+export AIS_MODLOADAFS AIS_ATHENAVERS AIS_SYSTEM AIS_LOGFILE
+export AIS_MINRAM AIS_ATHENAINSTALL AIS_DLMOUNTUSR AIS_DLMOUNTVARSHARE
+export AIS_CACHEFSTYPE AIS_SWAPFILE AIS_SWAPFILESIZE
+export AIS_PUBLIC AIS_AUTOUPDATE AIS_RVDCLIENT
+
+disk=/dev/dsk/dks${AIS_BUS}d${AIS_DEV}
+rdisk=/dev/rdsk/dks${AIS_BUS}d${AIS_DEV}
+basedev="scsi(${AIS_BUS})disk(${AIS_DEV})rdisk(0)"
+disk_vh=${rdisk}vh
+
+if [ ${AIS_CPUBOARD} = "IP32" ]; then
+    basedev="pci(0)${basedev}"
+fi
+
+imagename()
+{
+    board=$1
+    cpu=$2
+    graphics=$3
+
+    bootimage="athena-sgi${AIS_OPSSYS}-"
+
+    AIS_BOARD="CPUBOARD=${board}"
+
+    case ${cpu} in
+	R4400)
+	    hdwr="44"
+	    AIS_ARCH="CPUARCH=R4000"
+	    ;;
+	R4600)
+	    hdwr="46"
+	    AIS_ARCH="CPUARCH=R4000"
+	    ;;
+	R5000)
+	    hdwr="50"
+	    AIS_ARCH="CPUARCH=R5000"
+	    ;;
+	*)
+	    echo "Unrecognized CPU type: ${cpu}"
+	    exit 1
+	    ;;
+    esac
+
+    case ${graphics} in
+	GR3-XZ)
+	    hdwr="${hdwr}xz"
+	    AIS_GFXB="GFXBOARD=EXPRESS"
+	    AIS_SUBG="SUBGR=EXPRESS"
+	    ;;
+	Indy)
+	    hdwr="${hdwr}xl"
+	    if [ ${cpu} = "R5000" ]; then
+		AIS_GFXB="GFXBOARD=NEWPORT"
+		AIS_SUBG="SUBGR=NEWTON"
+	    else
+		AIS_GFXB="GFXBOARD=NEWPORT"
+		AIS_SUBG="SUBGR=NG1"
+	    fi
+	    ;;
+	CRM)
+	    hdwr="${hdwr}cr"
+	    AIS_GFXB="GFXBOARD=CRIME"
+	    AIS_SUBG="SUBGR=CRM"
+	    ;;
+	*)
+	    echo "Unrecognized graphics subsystem: ${graphics}"
+	    exit 1
+	    ;;
+    esac
+
+    bootimage="${bootimage}${hdwr}"
+    export AIS_BOARD AIS_ARCH AIS_GFXB AIS_SUBG
+}

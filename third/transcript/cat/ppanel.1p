@@ -1,0 +1,132 @@
+
+
+
+   18 August 1992                                                   PPANEL(1)
+
+
+
+
+
+
+   NAME
+     ppanel-Motif graphical user interface to TRANSSCRIPT
+
+   SYNOPSIS
+     ppanel [ -P_p_r_i_n_t_e_r ] [ -f_f_i_l_t_e_r ] [ _f_i_l_e_s ]
+
+   DESCRIPTION
+     _p_p_a_n_e_l provides a graphical user interface to all the TRANSSCRIPT pro-
+     grams.  It allows you to translate, manipulate, and print files, as well
+     as save the output to another file, take advantage of POSTSCRIPT
+     printers with fax capabilities, or preview documents if you have an
+     appropriate POSTSCRIPT language document previewer.
+
+     The possible options are:
+
+     -P_p_r_i_n_t_e_r
+          the print panel comes up with _p_r_i_n_t_e_r selected from the list of
+          printers.  The default selection is the value of the PRINTER
+          environment variable.
+
+     -f_f_i_l_t_e_r
+          selects _f_i_l_t_e_r from the list of filters.  The default is the value
+          of the TSFILTER environment variable, if set; if this variable
+          isn't set, the default filter is "none".
+
+   ENVIRONMENT
+
+     PRINTER
+          default printer
+
+     TSFILTER
+          default filter
+
+     PREVIEWER
+          path name for the POSTSCRIPT language document previewer
+
+     PSFAXDB
+          location of the fax phone book
+
+     PSLIBDIR
+          path name of the directory containing preview.info (and
+          printer.list for System V)
+
+   FILES
+
+     XPSLIBDIRX/preview.info
+                           path name for the POSTSCRIPT language document
+                           previewer, which can be overridden by the PRE-
+                           VIEWER environment variable
+
+
+
+   Adobe Systems                                                            1
+
+
+
+
+
+
+   PPANEL(1)                                                   18 August 1992
+
+
+     XPSLIBDIRX/printer.list
+                           list of available printers, for System V machines.
+
+   SEE ALSO
+     transcript(1), enscript(1), ptroff(1), psroff(1), ps4014(1), psplot(1),
+     ps630(1), pslpr(1), psnup(1), psfax(1), psdraft(1)
+     BSD Unix systems: lpr(1), lpq(1), lprm(1).
+     System V Unix systems: lp(1), cancel(1), lpstat(1).
+
+   AUTHOR
+     Adobe Systems Incorporated
+
+   NOTES
+     POSTSCRIPT is a registered trademark of Adobe Systems Incorporated.
+     TRANSSCRIPT is a trademark of Adobe Systems Incorporated.
+     Unix is a trademark of AT&T Bell Laboratories.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   2                                                            Adobe Systems
+
+
+99

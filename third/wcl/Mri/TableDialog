@@ -1,0 +1,77 @@
+! SCCS_data:    @(#) TableDialog 1.2 92/12/08 13:53:04
+!
+! This example demonstrates XmpCreateTableDialog.
+
+Mri.wcPopups:		dialog
+Mri.wcChildren:		rc
+Mri.wcCallback:		WcSetValue(Mri.title:TableDialog)
+
+!--------------------------------------------------------------
+! Top level box to popup the dialog shell
+!
+*rc.wcCreate:		XmRowColumn
+*rc.wcChildren:		pop quit
+*rc*alignment:		XmALIGNMENT_CENTER
+
+*quit.wcClassName:	XmPushButton
+*quit.labelString:	Quit
+*quit.activateCallback:	WcExit
+
+*pop.wcClassName:	XmPushButton
+*pop.labelString:	Popup\nApplication Modal\nTable Dialog
+*pop.activateCallback:	WcManage( *dialog )
+
+!--------------------------------------------------------------
+! Table in a Dialog Shell.
+! The constructor creates a dialog shell with a table child.  The
+! table child gets three children: a work area, a separator, and
+! another area from control buttons.  This is a good typical layout.
+! I use it alot.
+! After the children are created, the defaultButton resource fot the
+! dialog can be set.  We set it to be the ok button.
+!
+*dialog.wcCreate:	XmpCreateTableDialog
+
+#if MOTIF_100
+*dialog.dialogStyle:	DIALOG_APPLICATION_MODAL
+#else
+*dialog.dialogStyle:	DIALOG_PRIMARY_APPLICATION_MODAL
+#endif
+
+*dialog.marginWidth:		0
+*dialog.marginHeight:		0
+*dialog.wcChildren:		work sep ctrl
+*dialog.wcAfterChildren:	WcSetValue( this.defaultButton: this*ok )
+*dialog.layout:			work 0 0 ; sep 0 1 h ; ctrl 0 2 h
+
+!--------------------------------------------------------------
+! The work area within the dialog
+!
+*work.wcCreate:		XmpTable
+*work.wcChildren:	one two three
+*work.layout:		one 0 0 1 2 ; two 1 0 h ; three 1 1
+*work.wcAfterChildren:	XmpAddTabGroup()
+
+*work*wcCreate:		XmPushButton
+*one.labelString:	Try re-sizing\nthis dialog
+*two.labelString:	little
+*three.labelString:	another long label\nfor demonstrating\ntable resizing
+
+!--------------------------------------------------------------
+! A separator spanning the dialog between the work area and the 
+! control button area.
+!
+*sep.wcClassName:	XmSeparator
+
+!--------------------------------------------------------------
+! The control buttons across the bottom, all the same original size,
+! none are ever resized although they get spread out if the dialog
+! is stretched horizontally.
+!
+*ctrl.wcCreate:		XmpTable
+*ctrl.wcChildren:	ok cancel help
+*ctrl.layout:		ok 0 0 WH ; cancel 1 0 WH ; help 2 0 WH
+*ctrl.wcAfterChildren:	WcSameSize( .ok .cancel .help )
+
+*ctrl*wcCreate:		XmPushButton
+*ctrl*activateCallback:	WcUnmanage(~*dialog)

@@ -1,0 +1,45 @@
+Replied: Sat, 19 Jul 1997 14:20:56 -0400
+Replied: "Craig Leres <leres@ee.lbl.gov> "
+Return-Path: leres@ee.lbl.gov 
+Return-Path: <leres@ee.lbl.gov>
+Received: from hot.ee.lbl.gov (hot.ee.lbl.gov [131.243.1.42])
+	by whimsy.udel.edu (8.8.5/8.8.5) with ESMTP id JAA13006
+	for <stenn@whimsy.udel.edu>; Sat, 19 Jul 1997 09:53:19 GMT
+Received: by hot.ee.lbl.gov (8.8.6/1.43r)
+	id CAA19015; Sat, 19 Jul 1997 02:53:17 -0700 (PDT)
+Message-Id: <199707190953.CAA19015@hot.ee.lbl.gov>
+To: stenn@whimsy.udel.edu
+Cc: mills@udel.edu (Dave Mills)
+Subject: caljulian() broken in xntp3-5.90.3?
+Date: Sat, 19 Jul 1997 02:53:17 PDT
+From: Craig Leres <leres@ee.lbl.gov>
+
+I built a xntpd from xntp3-5.90.3 with my prototype Jupiter module and
+it was badly broken. I traced the problem to caljulian() which was
+rewritten between xntp3-5.90 and xntp3-5.90.3. The appended patch seems
+to fix it.
+
+		Craig
+------
+RCS file: RCS/caljulian.c,v
+retrieving revision 1.1
+diff -c -r1.1 caljulian.c
+*** /tmp/,RCSt1a07792	Sat Jul 19 02:49:51 1997
+--- caljulian.c	Sat Jul 19 02:46:30 1997
+***************
+*** 53,59 ****
+      jt->second = ntptime % SECSPERMIN;
+      minutes    = ntptime / SECSPERMIN;
+      jt->minute = minutes % MINSPERHR;
+!     jt->hour   = minutes % HRSPERDAY;
+      
+      /*
+       * Find the day past 1900/01/01 00:00 UTC
+--- 53,59 ----
+      jt->second = ntptime % SECSPERMIN;
+      minutes    = ntptime / SECSPERMIN;
+      jt->minute = minutes % MINSPERHR;
+!     jt->hour   = (minutes / MINSPERHR) % HRSPERDAY;
+      
+      /*
+       * Find the day past 1900/01/01 00:00 UTC

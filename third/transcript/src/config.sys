@@ -1,0 +1,425 @@
+
+# Copyright 1985,1987,1991,1992 (C) Adobe Systems Incorporated.
+# All rights reserved.
+# GOVERNMENT END USERS: See notice of rights in Notice file in release
+# directory. 
+# PostScript is a registered trademark of Adobe Systems Incorporated
+# TranScript is a registered trademark of Adobe Systems Incorporated
+# RCSID: $Header: /afs/dev.mit.edu/source/repository/third/transcript/src/config.sys,v 1.1.1.1 1996-10-07 20:25:48 ghudson Exp $
+#
+# This is a shell script that get's "sourced" when building and
+# installing TranScript software.  It sets up definitions of the
+# places that TranScript wants to do it's work.
+# This script is concerned with the software itself, not with
+# the printers.  Another script (printer.bsd or printer.sysv) is used
+# to configure printers.
+#
+# If you change the values in this script, parts of the TranScript
+# system may need to be remade (recompiled), and reinstalled.
+#
+
+# LINKS - TRUE if your system supports symbolic links, FALSE otherwise.
+LINKS=TRUE
+
+# LP - the pathname for the spooling program on your system (usually either
+# lpr or lp.
+LP=/usr/ucb/lpr
+
+# XPG3 - TRUE if your system is XPG3 compliant, FALSE otherwise.  If you
+# don't if your system is XPG3 compliant, some things to look for are the
+# existence of /usr/include/stdlib.h, /usr/include/dirent.h and the tempnam
+# function.  If your system is missing any of those, set XPG3 to FALSE.
+
+XPG3=FALSE
+
+# SYS - one of SYSV or BSD.  Mostly refers to the spooler and spooling
+# daemon.  If your system uses lpr/lpd, you want BSD; if your system uses
+# lp/lpsched, use SYSV.   
+OPSYS=BSD
+
+# SOLARIS - TRUE if you have Solaris 2.0 or greater, FALSE otherwise.
+# Solaris is mostly SYSV, but there are some differences in the adminstration
+# of the spooling system.
+SOLARIS=FALSE
+
+# CCOMP - path for C compiler.
+CCOMP=/bin/cc
+
+# 
+# BUILDDIR
+#	This is a directory where TranScript will do the compilations and
+#	other work necessary to build a TranScript release.  This allows
+#	a convenient mechanism for cleaning up, and for maintaining
+#	multiple builds of TranScript for different machine types.
+BUILDDIR=/user/transcript/sun4.1
+
+# SRCDIR
+#	This is the directory where the source programs for building
+#	TranScript are stored.  Buildprograms.sh (and the other building
+#	shell scriptswill link (or copy) files from this directory into
+#	BUILDDIR in order to build the release.  This directory is
+#	typically the directory into which you untarred the tape.
+SRCDIR=/usr/local/src/transcript
+
+# BINDIR
+#	This is a directory where TranScript user programs are put.
+#	It should be in the PATH of each user that want's to use them.
+#	Many UNIX sites will keep these kinds of programs separate
+#	from the regular UNIX utilites but in a well-known spot, like
+#	"/usr/local/bin", "/usr/local", etc.  Whatever you choose,
+#	make sure it's in people's search paths.  The TranScript
+#	installation sequence will write in this directory.
+BINDIR=/usr/local/bin
+
+# PSLIBDIR
+#	This is a directory where TranScript keeps lots of things:.
+#	spooler interface filters, font metrics files, prologue files,
+#	and executables needed by TranScript or administrators, but not
+#	by general users.
+PSLIBDIR=/usr/local/lib/ts
+
+# DEFRESPATH
+# 	The default path to look for fonts and other resources.  DEFRESPATH
+# 	should consist of a colon-separated list of directories.  If you only
+# 	have one directory containing resources, no colon is necessary.
+#	The defaults can be overridden by the PSRESOURCEPATH environment
+#	variable.  PSRESOURCEPATH can include the default path by placing
+#	two consecutive colons ("::") in the path.
+#	 
+#	Each directory in the path should contain at least one file with a
+#	.upr extension.  These files are used for locating resources; they
+#	contain mappings from resource name to file name.  As part of the
+#	installation process, afmfiles.upr will be installed along with the
+#	afm files provided in the release into the PSLIBDIR directory, so
+#	$PSLIBDIR should be part of this path.  A fuller explanation of the
+#	format of a .upr file can be found in the upr man page.
+DEFRESPATH=$PSLIBDIR
+
+# PPDDIR
+#	The location of PPD (PostScript Printer Description) files.
+#
+PPDDIR=$PSLIBDIR/ppd
+
+# OWNER GROUP
+#	User and group names for installed files
+#	On BSD systems, this is typically "root" and "staff"
+#
+OWNER=root
+GROUP=staff
+
+# PSTEMPDIR
+#	The temporary directory you want TranScript filters to use
+#	when necessary.  Sometimes this may need to hold a large print
+#	file, so choose a tmp directory on a filesystem with enough
+#	space.
+PSTEMPDIR=/usr/tmp
+
+# NROFF
+#	Some versions of Unix do not come with nroff.  If you do not have
+#	nroff, or would prefer to have already nroff'ed man pages
+#	installed, set NROFF to TRUE.  Note: most versions of Unix put
+#	pre-formatted man pages in the cat? directories rather than the man?
+#	directories. 
+NROFF=FALSE
+
+# EXTCOM, EXTFILES, EXTSYS
+# 	The extensions for man pages; EXTCOM is for man pages for user
+#	commands, EXTFILES for man pages describing file formats, and
+# 	EXTSYS for system commands.  In BSD, these would be 1, 7, and 8,
+#	respectively.  Other versions of Unix use C, F, and ADM.  
+EXTCOM=1
+EXTFILES=7
+EXTSYS=8
+
+# MANCOM MANFILES MANSYS
+#	The place you want the on-line manual pages installed.
+#	If you want them all in the same place, 
+#	(e.g., /usr/man/manl), set them all to that.
+#       Pre-formatted man pages are usually installed in cat? directories.
+MANCOM=/usr/man/man1
+MANFILES=/usr/man/man7
+MANSYS=/usr/man/man8
+
+# DITDIR
+#	This directory will contain the font family directories that
+#	are used by "psroff" and "psdit".
+#	DON'T make it /usr/lib/font/devpsc!
+DITDIR=$PSLIBDIR/ditroff.font
+
+# DITDEFAULT - the default font family. $DITDIR/$DITDEFAULT/devpsc will
+# contain the default font info.
+DITDEFAULT=Times
+
+# MAKEDEV 
+#	is the FULL pathname of the makedev program for ditroff
+#	(for Berkeley ditroff, this file is called "devconfig")
+#	You may have to go hunting to find it (maybe even recompile it)
+#	If you do not have ditroff (i.e., don't have makedev), set 
+#	DITROFFFONTS=0 (see below).
+MAKEDEV=/usr/bin/makedev
+
+# TROFFFONTDIR
+#	This directory will contain the font family directories that
+#	are used by "ptroff" and "pscat".
+#	DON'T make it /usr/lib/font if you can help it!
+TROFFFONTDIR=$PSLIBDIR/troff.font
+
+# TROFFDEFAULT - default font family.  $TROFFFONTDIR/$TROFFDEFUALT  will
+# contain the default font info. 
+TROFFDEFAULT=Times
+
+
+# BANNERFIRST BANNERLAST
+#	These determine the default actions to take with job banner pages.
+#	These pages (printed by the spooler to identify a job) may
+#	be printed either before the job itself, after the job, or both,
+#	or neither.  Note that this is the site-wide default.
+#	These values can be overridden for specific printers using the
+#	.options file in the spool directory (see documentation).
+#	Limitations in the spooler make it difficult to print a trailing
+#	banner correctly. Therefore BANNERLAST may have the following values:
+#	  0: Do not print a trailing banner.
+#	  1: Print a trailing banner after EACH copy when multiple copies
+#	     are specified.  WARNING: This will print the banner from the
+#	     previous job when a lpr -h (no header) job is printed.
+#	  2: Print trailing banners, except for lpr -h jobs.  WARNING: 
+#	     The trailing banner is printed only after the FIRST copy when
+#	     multiple copies are requested.
+BANNERFIRST=0
+BANNERLAST=1
+
+# REVERSE
+#	This indicates whether the default action on a user job is to
+#	reverse the page order in a user job.  It is used with printers
+#	that pile pages "face up".  To specify that no reversal should be
+#	done, use REVERSE= line instead.  Note that this is the site-wide
+#	default.  This value can be overridden for specific printers using the
+#	.options file in the spool directory (see documentation).
+#	If this value is set, you will probably want banners to be
+#	printer AFTER the job is printed (BANNERLAST).
+#REVERSE=1
+REVERSE=
+
+# VERBOSELOG
+#	Indicates that verbose job logging should take place in the 
+#	printer log files.  It can be reset on a per-printer basis,
+#	so don't worry about it here.
+VERBOSELOG=1
+
+# SETCFLAGS
+#	Lists the flags that are to be passed to the "C" compiler (cc)
+#	whenever a program is compiled.  Other flags (such as for type 
+#       of operating system, etc. will get added automatically by the
+#       buildprogs.sh script.  On some systems with ANSI C compilers, there
+#	may be an assumption that function prototypes should be used, yet
+#	not all the libraries used in building the TranScript programs may
+#	support function prototypes.  On such systems (Suns and Sparcs
+#	using the MIT X code fall into this category), you may need to add
+#	"-D_NO_PROTO" to SETCFLAGS to build the print panel.
+SETCFLAGS="-O"
+
+# BUILDPRINTPANEL
+#	If this is set to TRUE, a Motif-based print panel will be built
+#	that serves as a GUI to the TranScript programs.  If you don't have
+#	the Motif libraries, this won't compile, so you want to set
+#	BUILDPRINTPANEL to FALSE.  The print panel also requires that you
+#	have X11R4 or later.
+BUILDPRINTPANEL=TRUE
+
+# XLIBS
+#	This is only relevant if BUILDPRINTPANEL is TRUE.  XLIBS should be
+#	set to pass the linker where to find the X, Xt,  and Motif
+#	libraries. This should be in the form of linker flags, as in 
+#	"-L/usr/local/X11/lib -L/usr/local/motif/lib".  You may not need
+#	more than one -L value, if the Motif libraries are in the same
+#	place as the X libraries.
+#	For Solaris, use -R and a colon separated list of the directories
+#	in addition to -L, so that users don't have to have their
+#	LD_LIBRARY_PATH set to run the program.
+XLIBS="-L/usr/local/X11R4/lib"
+
+# XINCLS
+#	Similar to XLIBS, but for include files.  This should be in the
+#	form of C flags, as in
+#	"-I/usr/local/X11/include -I/usr/local/motif/include". 
+XINCLS="-I/usr/local/X11R4/include"
+
+# SPECIALLIBS
+#	On some machines, extra libraries may be need to compile X
+#	applications, beyond the normal -lXm -lXt -lX11.  SGI is an example
+# 	of this: -lPW is necessary to pull in some routines used by some
+#	Motif widgets.  If no special libraries are needed to compile the
+#	print panel, this should be empty.  On the SGI, this should be
+#	"-lPW".  On Solaris, this should be "-lgen".
+SPECIALLIBS=""
+
+#XRES
+#	XRES is the name of the directory you want the resource file for
+# 	the print panel placed in.  
+XRES=/usr/local/lib/X11R4/app-defaults
+
+#PREVIEWLOC
+#	PREVIEWLOC is the path name of a PostScript previewer, such as
+#	the ShowPage previewer from Adobe, if you have one.  Any X-based
+# 	PostScript previewer that can accept input from a pipe will work
+#	with ppanel.  This will be the default; it can be overridden with
+#	the PREVIEWER environment variable.  If it is null, ppanel will
+#	come up with the preview option grayed out, and not selectable.
+PREVIEWLOC=/usr/local/bin/showpage
+
+# QMS
+#	If this is set to TRUE, qmscomm, a module for communicating over
+#	Ethernet to QMS Ethernet printers, will be built.
+QMS=FALSE
+
+# APPSOCKET
+#	If this is set to TRUE, ascomm, a program for communicating over
+#	TCP/IP to printers supporting the AppSocket protocol, will be
+#	built. 
+APPSOCKET=TRUE
+
+#SOCKFLAGS
+#	This is only relevant for SYSV machines.  Some of the TCP/IP based
+#	comm programs use BSD-style sockets.  SOCKFLAGS contain the
+#	libraries that should be linked in when compiling these programs.
+#	On SCO Unix, these are "-lsocket -lnsl_s"; on AIX, these are
+# 	"-ltli".  For Solaris, use "-lsocket -lnsl".   Some SYSV machines
+#	may have incorporated BSD style sockets; for those machines (like
+#	the SGI), this variable should be "", and you should set
+#	BSDSOCK to true. 
+
+SOCKFLAGS=""
+
+#BSDSOCK
+#	This should be TRUE for all BSD-style machines, and should be TRUE
+#	for any SYSV machine that has BSD-style sockets built in, like the
+#	SGI.  It is FALSE for SYSV machines that need to have libraries
+#	linked in for sockets.
+
+BSDSOCK=TRUE
+
+# PARALLEL
+#  	If this is true, build lpcomm, a communications module for
+#	communicating with printer via Centronics parallel port.  This is
+#	supported on x86 machines.
+PARALLEL=FALSE
+
+# FASTPORT
+# 	If this is true, build fpcomm, a communications module for
+#	communicating with printers via MiLAN Technology's FastPort print
+#	server.  
+FASTPORT=FALSE
+
+# SCOFASTPORT
+# 	If you want to build fpcomm for an SCO machine, set both FASTPORT
+#	and this variable to true; a slightly different version of fpcomm
+#	is needed for SCO Unix.
+SCOFASTPORT=FALSE
+
+# SCOSERIAL
+#	If you want to talk to a printer over a serial port via the
+#	FastPort box from an SCO machine (in addition to the parallel
+#	port), set SCOSERIAl to TRUE, and fpcomm.ser will be built and
+#	installed.  (Don't forget to then specify fpcomm.ser to the
+#	mkprinter.sh script for the printer you want to communicate with in
+#	this fashion.
+SCOSERIAL=FALSE
+
+
+# UDPSTATUS
+#	If your FastPort supports supplying UDP status (version 2.0
+#	firmware or later), set this to TRUE.
+UDPSTATUS=TRUE
+
+# RESOLVLIB
+#	On some systems (Suns and Sparcs, for example), if you wish to have
+#	fpcomm use BIND to resolve hostnames, you must link in the
+#	resolver library.  For Suns and Sparcs, this is "-lresolv".  On
+#	other systems, such as Decstations, no extra library is necessary,
+#	and this should be blank.  If you don't wish to have BIND resolve
+#	hostnames, then this should be left blank.
+RESOLVLIB=""
+
+# CAP
+#	This controls whether or not capcomm, a program for communicating 
+#	with printers on Appletalk, gets built.  You must have the CAP
+#	libraries available on your system to build capcomm.  This has only
+#	been tested for BSD systems, and may not work on SYSV systems.
+CAP=FALSE
+
+# CAPLIB
+#	This is only relevant if CAP is set to TRUE.  CAPLIB should be set
+#	to tell the linker where to find the CAP libraries.  This should be
+# 	in the form of linker flags, as in "-L/usr/local/lib.
+CAPLIB=-L/usr/local/lib
+
+# CAPINCL
+#	Similar to CAPLIB, but for include files.
+CAPINCL=-I/usr/local
+
+
+# TROFFASCIIFONTS - this if for Ultrix on the DecStation, which requires
+# that the troff font width files be in ascii rather than the usual format.
+# This is only known to affect Decstations and possibly MIPS machines
+# running the MIPS operating system.
+
+TROFFASCIIFONTS=FALSE
+
+# FONTFAMILIES
+#	List of the troff/ditroff font families to install.  This sets
+#	up the fonts that will be available in troff/ditroff.  Any font
+#	that is NOT in this list will not be available AT ALL, barring
+#	difficult manual intervention later.  The default is set up for
+#	the standard 13 fonts: the Times, Helvetica, and Courier families,
+#	and the Symbol font.  Other font families may be added.  Each font
+#	FAMILY takes about 35 KB of disk space for ditroff, and 20 KB for
+#	troff.  You may wish to check the documentation for the PostScript
+#	printer(s) at your site to determine which fonts to install.
+#	If all font are installed, about 450 KB of disk space is used.
+#	NOTE: Make sure that ALL values of FONTFAMILIES are commented out
+#	except one.
+#	Examples of recognized font family names are:
+#	AvantGarde  Bookman    Courier   Garamond   Helvetica  HelvNarrow
+#	Lubalin     NewCentury Optima    Palatino   Souvenir   Times
+#	HelvNarrow = Helvetica-Narrow
+#	NewCentury = NewCenturySchlbk
+#	Zapf      = ZapfChancery-MediumItalic
+#	The families in most PostScript printers:
+STANDARD13="Times Helvetica Courier"
+STANDARD35="$STANDARD13 AvantGarde Bookman HelvNarrow NewCentury Palatino Zapf"
+FONTFAMILIES=$STANDARD13
+# FONTFAMILIES=$STANDARD35
+#	All the font families that were shipped:
+# FONTFAMILIES="$STANDARD35 Garamond Optima Souvenir"
+#	DEC printers:
+# FONTFAMILIES="$STANDARD13 AvantGarde Lubalin NewCentury Souvenir"
+#	AB Dick printers:
+# FONTFAMILIES="$STANDARD13 Bookman Garamond Optima Palatino Souvenir Zapf"
+
+# DWB20
+DWB20=FALSE
+
+# PATH
+#	The list of directories that is searched in order to run programs.
+#	This is explained in the /bin/sh documentation.  If the installation
+#	aborts because certain system programs cannot be found, change this
+#	entry to include the correct directories, and follow the directions
+#	for re-running the installation.  Be especially careful to look at
+#	the PATH for "root", since much of the installation is run under
+#	that account.  It is OK to have directories in the list twice, and
+#	to have non-existent directories in the PATH.  The PATH below adds
+#	the directories that are most often left out. 
+PATH=${PATH}:.:/etc:/usr/etc
+
+export LINKS LP XPG3 OPSYS BUILDDIR SRCDIR \
+       BINDIR PSLIBDIR PSTEMPDIR TROFFFONTDIR DITDIR MAKEDEV REVERSE \
+       MANCOM MANFILES MANSYS VERBOSELOG BANNERFIRST BANNERLAST OWNER \
+       GROUP EXTCOM EXTFILES EXTSYS NROFF PPDDIR DEFRESPATH DITDEFAULT \
+       SETCFLAGS DITROFFFONTS TROFFFONTS FONTFAMILIES DITROFFDIRS PATH \
+       DWB20 TROFFASCIIFONTS CCOMP BUILDPRINTPANEL XLIBS XINCLS QMS \
+       SOCKFLAGS BSDSOCK SPECIALLIBS XRES PREVIEWLOC PARALLEL FASTPORT \
+       RESOLVLIB UDPSTATUS CAP CAPLIB CAPINCL SCOFASTPORT SCOSERIAL \
+       SOLARIS APPSOCKET
+
+
+

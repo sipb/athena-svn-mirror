@@ -1,0 +1,26 @@
+! (c) Copyright 1989, 1990, 1991, 1992, 1993, 1994 OPEN SOFTWARE FOUNDATION, INC. 
+! ALL RIGHTS RESERVED 
+! 
+! Motif Release 1.2.4
+!
+!
+! "Siemens Nixdorf Informationssysteme AG"
+! SNI MFII keyboard
+
+osfCancel	:	<Key>Escape
+osfLeft		:	<Key>Left
+osfUp		:	<Key>Up
+osfRight	:	<Key>Right
+osfDown		:	<Key>Down
+osfEndLine	:	<Key>End
+osfBeginLine	:	<Key>Home
+osfPageUp	:	<Key>Prior
+osfPageDown	:	<Key>Next
+osfBackSpace	:	<Key>BackSpace
+osfDelete	:	<Key>Delete
+osfInsert	:	<Key>Insert
+osfAddMode	: Shift <Key>F8
+osfHelp		:	<Key>F1
+osfActivate	:	<Key>KP_Enter
+osfMenu		: Shift <Key>F10
+osfMenuBar	:	<Key>F10

@@ -1,0 +1,12 @@
+; mhl.forward
+;
+; default message filter for `forw' (forw -format)
+;
+width=0,leftadjust
+Date:formatfield="%<(nodate{text})%{text}%|%(tws{text})%>"
+From:
+To:
+cc:
+Subject:
+:
+body:nocomponent,noleftadjust

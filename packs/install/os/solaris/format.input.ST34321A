@@ -1,0 +1,67 @@
+# Disk geometry: <ST34321A cyl 8892 alt 2 hd 15 sec 63>
+#
+# Part      Tag    Flag     Cylinders        Size            Blocks
+#   0       root    wm       0 -  216      100.13MB    (217/0/0)   205065
+#   1       swap    wu     772 - 1881      512.18MB    (1110/0/0) 1048950
+#   2     backup    wu       0 - 8891        4.01GB    (8892/0/0) 8402940
+#   3 unassigned    wm    1882 - 2098      100.13MB    (217/0/0)   205065
+#   4 unassigned    wm       0               0         (0/0/0)          0
+#   5        usr    wm     217 -  771      256.09MB    (555/0/0)   524475
+#   6        var    wm    2099 - 8891        3.06GB    (6793/0/0) 6419385
+#   7 unassigned    wm       0               0         (0/0/0)          0
+
+partition
+
+0
+root
+wm
+0
+217c
+
+1
+swap
+wu
+772
+1110c
+
+2
+backup
+wu
+0
+8892c
+
+3
+unassigned
+wm
+1882
+217c
+
+4
+unassigned
+wm
+0
+0c
+
+5
+usr
+wm
+217
+555c
+
+6
+var
+wm
+2099
+6793c
+
+7
+unassigned
+wm
+0
+0c
+
+label
+y
+print
+q
+q

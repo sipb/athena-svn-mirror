@@ -1,0 +1,229 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+ <META NAME="GENERATOR" CONTENT="SGML-Tools 1.0.9">
+ <TITLE> IFHP-HOWTO: Accounting</TITLE>
+ <LINK HREF="ifhp-11.html" REL=next>
+ <LINK HREF="ifhp-9.html" REL=previous>
+ <LINK HREF="ifhp.html#toc10" REL=contents>
+</HEAD>
+<BODY>
+<A HREF="ifhp-11.html">Next</A>
+<A HREF="ifhp-9.html">Previous</A>
+<A HREF="ifhp.html#toc10">Contents</A>
+<HR>
+<H2><A NAME="s10">10. Accounting</A></H2>
+
+<P>In Academic institutions, avoiding printing accounting has been
+regarded as a challenge,  an ongoing game of fat cat and poor starving
+mouse, between the Adminstration and the downtrodden, poor, overcharged
+student.  The following is a lighthearted ramble down the dark lane of
+printing accounting.
+<P>We will disregard the fact that if most students put as much effort
+into their studies as in finding ways to avoid accounting procedures
+then they would be Rhodes Scholar material,  but I digress...
+<H2><A NAME="ss10.1">10.1 Page Accounting Algorithm</A>
+</H2>
+
+<P>The accounting procedures put into the LPRng and the ifhp filters may
+appear to be extraordinarily complex,  but believe me, they are not.
+Firstly, we make the assumption that the printer has some sort of
+non-volatile page counter mechanism that is reliable and impervious to
+power on/off cycles.  Without this mechanism the enterprising student
+ummm... user will simply turn off the printer.  Software that prescans
+jobs for line counts and pages is notoriously unreliable,  given even
+the most modest efforts of users to hide these procedures.   The cost
+of running a PostScript simulator simply to do accounting has its
+flaws; without ensuring that the simulator has all of the interesting
+security loopholes closed, such as opening files, etc.,  it can become
+a trap door to hell for the system administrator.
+<P>Secondly,  we must make the assumption that the student... uhhh...
+user will not be able to tinker with the page counter mechanism, i.e.-
+they will not be able to roll back the odometer on the printer,
+<I>for the duration of a single job</I>.
+I will digress and point out that a student
+actually did this for a challenge;  it only took him a couple of weeks
+of study and a fully equipped microcontroller lab, and two (2) laser
+printers which he ruined in the experiment.
+HP was not amused when we
+sent them back under warranty,  claiming that this our 'normal lab usage.'
+<P>Lastly,  you should not mind a small amount of pilferage, or a few
+pages here and there being charged to the wrong account.
+<P>The basic mechanism the ifhp filter uses is to record the page
+counter value at the start and end of each part of a print job. Each
+record has the form:
+<BLOCKQUOTE><CODE>
+<PRE>
+start -qpagecounter ....
+end  -ppages -qpagecounter -telapasedtime ....
+</PRE>
+</CODE></BLOCKQUOTE>
+<P>When we use the OF filter and/or banners,  we will see the
+individual jobs bracketed by the OF filter records:
+<BLOCKQUOTE><CODE>
+<PRE>
+start -q100 -Fo -kcfA100taco -uuser -hhost -R...  
+start -q101 -Ff -kcfA100taco -uuser -hhost -R...  
+end  -p1 -q102 -Ff -kcfA100taco -uuser -hhost -R...  
+start -q102 -Ff -kcfA100taco -uuser -hhost -R...
+end  -p3 -q105 -Ff -kcfA100taco -uuser -hhost -R...  
+end  -p5 -q105 -Fo -kcfA100taco -uuser -hhost -R...
+</PRE>
+</CODE></BLOCKQUOTE>
+<P>It should be clear from the above that all we need to do is to add up
+the values for the -Fo (OF) filter lines and we are done.
+<P>Unfortunately,  this is too simplistic.  If for some reason the job is
+killed or terminates due to error conditions,  the OF filter may not
+get to finish its work.  Thus,  we may see the following:
+<BLOCKQUOTE><CODE>
+<PRE>
+start -q100 -Fo -kcfA100taco -uuser -hhost -R...  
+start -q101 -Ff -kcfA100taco -uuser -hhost -R...  
+start -q110 -Fo -kcfA101taco -uuser -hhost -R...
+</PRE>
+</CODE></BLOCKQUOTE>
+<P>This is a clear indication that the user's job has been terminated.  In
+this case we need to use the differences between pagecounters of the start
+records to do accounting.
+<P>There is a caveat to all of this;  that is the problem of the last dead
+job in the list.  If the last line in the accounting file is:
+<BLOCKQUOTE><CODE>
+<PRE>
+start -q110 -Fo -kcfA101taco -uuser -hhost -R...
+</PRE>
+</CODE></BLOCKQUOTE>
+
+is the last job finished or did it abort?
+<H2><A NAME="ss10.2">10.2 You Used 2000 Pages, Out of Quota</A>
+</H2>
+
+<P>Now we move on to the problem of real time accounting.  Due to limited
+budgets, etc., many institutions would like to strictly enforce limits
+on paper use by students. As jobs are printed their accounts should be
+docked for the amount of paper use.  One way to do this is to have an
+external accounting procedure update a shared database.  The
+ifhp
+filter
+has provision for a shell script to be invoked
+at the start and end of print job;
+this is done by both the OF and IF filter.  Thus, we can blithely
+assume that there is a central database carefully getting updates
+from the LPRng software, probaly from dozens of different printers,
+and updating the accounting information,
+and that this program can query the database,
+check limits,
+and terminate printing if the limits are exceeded.
+<P>The first question to be asked is simple:  is this worth it?
+Perhaps doing accounting as a batch job once an hour/four times
+a day/once a day is cheaper than buiding an running such a database.
+If it costs $5K/year for the database software, you might just consider
+ignorng the 10,000 pages that get lost in the shuffle and use
+a simple set of awk/sed/perl scripts to update a database once
+an hour.
+<H2><A NAME="ss10.3">10.3 Bad Jobs - Who Do We Bill?</A>
+</H2>
+
+<P>We inevitably run into an interesting question:
+what happens if a job does not complete correctly?
+<P>If you use the completion of the OF filter as a success status, I have
+to point out that many students... ummm... users soon find ways to send
+jobs to the printer that will cause it to lock up after their output
+has been printed. These jobs require power cycling of the printer and
+restarting the filter; a bit extreme, perhaps, but it has happened.
+<P>I suggest that you simply adopt a 'bill to last user of record'
+attitude,  using the pagecount information as follows:
+<BLOCKQUOTE><CODE>
+<PRE>
+start OF -- starting point for THIS job
+start IF --  nice information, but not useful
+start IF --
+end OF -- ending point for this job - can record infomaiton
+
+start OF --
+if no end OF for previous job,  then treat as end OF and
+          update accounting.
+</PRE>
+</CODE></BLOCKQUOTE>
+<P>Now somebody is sure to complain that they got charged for a bunch of
+pages that they did not use.  This is inevitable;  always carry a
+can of oil for the squeaky wheels.  I might make the observation that
+once is accident, twice is coincidence, but three times is malice;
+be wary of the constant complainer and check out not only him but
+also his co-workers.
+<H2><A NAME="ss10.4">10.4 How Do We Update The Database</A>
+</H2>
+
+<P>I suggest that database update be done as follows:
+maintain a 'last page reported' record for each printer in the
+database.
+<P>When a successful job reports in,  check to see that the recorded pagecount
+for the printer is in agreement with the one that is reported.
+<P>If this is not the case then you have had some unsuccessful jobs.
+In this case I strongly recommend that you have a means to request the
+accounting reporting program to go back through the accounting file and
+find the last report for the page counter value and try to backtrack
+through the accounting files.  The accounting file is one of the first
+things to be attacked by students... Ummm...  users.  It should NOT be
+kept on and NFS exported or mounted file system.  It should be
+carefully pruned and copied, perhaps on an hourly basis.
+<P>Now some adminstrators have fallen in love with network based printers;
+do not believe ANYTHING that comes over a network connection without
+some form of authentication;  PGP has some very nice Public Key
+mechansims for handling this.  This is a major weakness in using a
+database for keeping track of accounting - a weak authentication
+mechanism may lead to denial of service attacks by students flooding
+the database with bogus print usage reports;  suddenly NOBODY can print
+and the adminstrator is driven to turning off accounting.
+<P>Good luck.  I am never suprised when I encounter yet another wrinkle in
+this area.
+<H2><A NAME="ss10.5">10.5 Accounting Shell Script</A>
+</H2>
+
+<P>The 
+<BLOCKQUOTE><CODE>
+<PRE>
+accounting=/pathname
+</PRE>
+</CODE></BLOCKQUOTE>
+
+specifies a program to run
+at the start and end of the
+<CODE>ifhp</CODE> activity.
+For an example of a simple script,
+see the accounting.sh script in the distribution.
+<H2><A NAME="ss10.6">10.6 Pagecounter Values</A>
+</H2>
+
+<P>The only reliable way to do page counting in the face of
+PostScript,
+PCL,
+and other mystical printer job languages is to query the printer
+and get the current value of a hardware page counter.
+Unfortuately,
+this may not be a trivial matter.
+<OL>
+<LI>The page counter may not be updated in real time.
+This means that you may need to wait a couple of seconds until you are
+sure that the pages have been recorded.
+Usually this occurs when the pages leave the print engine
+and are put in the output tray.</LI>
+<LI>Printers do job batching,
+and when they report job completion the job is still being printed.</LI>
+<LI>Some printers report
+<I>impressions</I>,
+i.e.- sides of pages printed,
+rather than pages.
+If you are doing duplex printing then you may find that your
+paper count and your page (impression) count differ.</LI>
+<LI>Some printers simply lack page reporting.</LI>
+</OL>
+<P>Given these problems,
+it is more than reasonable to reconsider the need for accounting,
+or to work closely with the printer vendor to understand the
+interactions of print jobs and reporting of page counts.
+<HR>
+<A HREF="ifhp-11.html">Next</A>
+<A HREF="ifhp-9.html">Previous</A>
+<A HREF="ifhp.html#toc10">Contents</A>
+</BODY>
+</HTML>
