@@ -1,6 +1,6 @@
 /* client.c - connect to a server */
 #ifndef	lint
-static char ident[] = "@(#)$Id: client.c,v 1.2 1997-12-14 00:33:14 ghudson Exp $";
+static char ident[] = "@(#)$Id: client.c,v 1.3 1998-02-17 01:32:49 ghudson Exp $";
 #endif	/* lint */
 
 #if	defined(SYS5) && defined(AUX)
@@ -216,6 +216,7 @@ register char *response;
     register struct sockaddr_in *isock = &in_socket;
 #ifdef KPOP
     int rem;
+    char *instance;
 #endif	/* KPOP */
 
     for (ap = nets; ap < ne; ap++)
@@ -262,13 +263,20 @@ register char *response;
 
 #ifdef KPOP
     if (kservice) {	/* "pop" */
+	instance = strdup(hp->h_name);
+	if (instance == NULL) {
+	    close(sd);
+	    (void) strcpy(response, "Out of memory.");
+	    return OOPS2;
+	}
 	ticket = (KTEXT)malloc( sizeof(KTEXT_ST) );
-	rem = krb_sendauth(0L, sd, ticket, kservice, hp->h_name,
-			   (char *) krb_realmofhost(hp->h_name),
+	rem = krb_sendauth(0L, sd, ticket, kservice, instance,
+			   (char *) krb_realmofhost(instance),
 			   (unsigned long)0, &msg_data, &cred, schedule,
 			   (struct sockaddr_in *)NULL,
 			   (struct sockaddr_in *)NULL,
 			   "KPOPV0.1");
+	free(instance);
 	if (rem != KSUCCESS) {
 	    close(sd);
 	    (void) strcpy(response, "Post office refused connection: ");
