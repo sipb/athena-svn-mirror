@@ -205,6 +205,7 @@ subdirs:: FRC								@@\
 	do_subdirs_flags(subdirs,)
 
 #define do_subdirs_imakefile(subdirs)					@@\
+	foreach_subdirs(install.man, subdirs)				@@\
 Makefiles:: Makefile							@@\
 	@echo "### Making Makefiles in $(CWD)"				@@\
 	@-for d in subdirs; \						@@\
