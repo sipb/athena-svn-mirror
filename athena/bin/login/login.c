@@ -1,9 +1,9 @@
 /*
- * $Id: login.c,v 1.69 1994-05-24 15:58:26 cfields Exp $
+ * $Id: login.c,v 1.70 1994-06-23 12:32:13 vrt Exp $
  */
 
 #ifndef lint
-static char *rcsid = "$Id: login.c,v 1.69 1994-05-24 15:58:26 cfields Exp $";
+static char *rcsid = "$Id: login.c,v 1.70 1994-06-23 12:32:13 vrt Exp $";
 #endif
 
 /*
@@ -67,7 +67,9 @@ static char sccsid[] = "@(#)login.c	5.15 (Berkeley) 4/12/86";
 #include <signal.h>
 #include <pwd.h>
 #include <stdio.h>
+#ifndef _IBMR2
 #include <lastlog.h>
+#endif
 #include <errno.h>
 #ifndef SOLARIS
 #include <ttyent.h>
@@ -95,6 +97,9 @@ static char sccsid[] = "@(#)login.c	5.15 (Berkeley) 4/12/86";
 #define INITTAB
 #define NGROUPS NGROUPS_MAX
 #endif
+#ifdef _IBMR2
+#defined NGROUPS 16
+#endif
 
 typedef struct in_addr inaddr_t;
 
@@ -104,7 +109,9 @@ typedef struct in_addr inaddr_t;
 typedef int sigtype;
 #endif
 
+#ifndef SOLARIS
 #define SETPAG
+#endif
 
 #define TTYGRPNAME	"tty"		/* name of group to own ttys */
 #define TTYGID(gid)	tty_gid(gid)	/* gid that owns all ttys */
@@ -228,7 +235,9 @@ char	term[64];
 
 struct	passwd *pwd;
 struct	passwd *hes_getpwnam();
+#if !defined(sun) && !defined(_IBMR2)
 char	*strcat(), *rindex(), *index(), *malloc(), *realloc();
+#endif
 int	timedout();
 char	*ttyname();
 char	*crypt();
@@ -268,7 +277,7 @@ char	*rhost;
 
 AUTH_DAT *kdata = (AUTH_DAT *)NULL;
 
-#ifndef SOLARIS
+#if !defined(SOLARIS) && !defined(_IBMR2)
 union wait waitstat;
 #endif
 
