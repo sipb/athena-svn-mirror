@@ -12,13 +12,13 @@
 /etc/ftpusers
 /etc/ifhp.conf
 /etc/lpd.conf
-/etc/resolv.conf
 /etc/mail/aliases
 /etc/mail/sendmail.cf
 /etc/named.conf
 /etc/ntp.conf
+/etc/resolv.conf
 /etc/shells
 /etc/sshd_config
-/var/spool/cron/crontabs/root
 /etc/syslog.conf
 /etc/system
+/var/spool/cron/crontabs/root
