@@ -23,13 +23,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v $
- *	$Id: olcd.c,v 1.42 1991-04-09 14:02:40 lwvanels Exp $
+ *	$Id: olcd.c,v 1.43 1991-04-10 11:12:07 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v 1.42 1991-04-09 14:02:40 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v 1.43 1991-04-10 11:12:07 lwvanels Exp $";
 #endif
 #endif
 
@@ -44,6 +44,7 @@ static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 #include <errno.h>		/* Standard error numbers. */
 #include <pwd.h>		/* Password entry defintions. */
 #include <signal.h>		/* Signal definitions. */
+#include <strings.h>
 
 #ifdef ZEPHYR
 #include <zephyr/zephyr.h>
