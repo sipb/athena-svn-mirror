@@ -17,6 +17,8 @@
 char *conspid = "/var/athena/console.pid";
 char *conslog = "/var/athena/console.log";
 
+static int setconsio(cons_state *c, int on_off);
+
 cons_state *cons_init(void)
 {
   cons_state *c;
@@ -69,12 +71,25 @@ int cons_fd_tty(cons_state *c)
   return c->tty_fd;
 }
 
+int cons_fd_read(cons_state *c)
+{
+  if (c == NULL || c->gotpty == 0)
+    return -1;
+
+  return c->fd[0];
+}
+
 char *cons_name(cons_state *c)
 {
   if (c == NULL || c->gotpty == 0)
     return NULL;
 
   return c->ttydev;
+}
+
+char *cons_dev()
+{
+  return CONSOLE_DEVICE;
 }
 
 void cons_io(cons_state *c)
@@ -130,15 +145,43 @@ int cons_getpty(cons_state *c)
 
 int cons_grabcons(cons_state *c)
 {
-  int on = 1;
+  return setconsio(c, 1);
+}
+
+int cons_ungrabcons(cons_state *c)
+{
+  return setconsio(c, 0);
+}
+
+/* Grab or relinquish /dev/console output for the tty,
+ * according to the value of on_off.
+ */
+static int setconsio(cons_state *c, int on_off)
+{
+  int ioret;
 
   if (c == NULL || c->gotpty == 0)
     return 1;
 
-  if (ioctl(c->tty_fd, TIOCCONS, (char *) &on) == -1)
-    return 1;
+  ioret = ioctl(c->tty_fd, TIOCCONS, (char *) &on_off);
+  if (ioret == -1 && errno == EIO)
+    {
+      /* XXX On IRIX, the TIOCCONS ioctl fails with EIO after the tty
+       * has been opened as the controlling tty for a session (as is
+       * done by elmer).  This works around the problem by reopening
+       * the tty in that case.
+       */
+      int fd;
 
-  return 0;
+      fd = open(c->ttydev, O_RDWR | O_NOCTTY);
+      if (fd >= 0)
+	{
+	  close(c->tty_fd);
+	  c->tty_fd = fd;
+	  ioret = ioctl(c->tty_fd, TIOCCONS, (char *) &on_off);
+	}
+    }
+  return (ioret == -1) ? 1 : 0;
 }
 
 int cons_start(cons_state *c)
