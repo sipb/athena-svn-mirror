@@ -7,7 +7,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/oreplay/oreplay.c,v 1.8 1990-12-12 14:20:38 lwvanels Exp $";
+static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/oreplay/oreplay.c,v 1.9 1990-12-12 14:47:21 lwvanels Exp $";
 #endif
 #endif
 
@@ -64,6 +64,8 @@ main(argc,argv)
   output_fd = 1;
   hp = NULL;
 
+  buf = index(argv[0],'/');
+  if (buf != NULL) argv[0] = buf+1;
   if (!strcmp(argv[0],"olist"))
     i_list = 1;
 
@@ -210,7 +212,7 @@ main(argc,argv)
   }
   buf = malloc(len);
   total_read = 0;
-  if (!gimme_raw) {
+  if (!gimme_raw && i_list) {
     /* Format list to output it... */
     temp_fd = output_fd;  /* Save the "real" output file descriptor away so */
 			  /* we can output to a temp file, which we will */
@@ -229,7 +231,7 @@ main(argc,argv)
   }
   close(sock);
 
-  if (!gimme_raw) {
+  if (!gimme_raw && i_list) {
     FILE *input_file;
     char qname[10];
     char username[9];
