@@ -2372,7 +2372,11 @@ zvt_term_key_press (GtkWidget *widget, GdkEventKey *event)
     if (term->swap_del_key)
       *p++ = '\177';
     else
+#ifdef sgi
       *p++ = 8;
+#else
+      *p++ = '\177';
+#endif
     break;
   case GDK_KP_Right:
   case GDK_Right:
