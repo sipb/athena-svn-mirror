@@ -4,32 +4,30 @@
  *	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZCkIfNot.c,v $
- *	$Author: jtkohl $
+ *	$Author: jfc $
  *
  *	Copyright (c) 1987,1988 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZCkIfNot.c,v 1.9 1988-06-29 16:41:06 jtkohl Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZCkIfNot.c,v 1.10 1991-06-20 14:35:39 jfc Exp $ */
 
 #ifndef lint
-static char rcsid_ZCheckIfNotice_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZCkIfNot.c,v 1.9 1988-06-29 16:41:06 jtkohl Exp $";
-#endif lint
-
-#include <zephyr/mit-copyright.h>
+static char rcsid_ZCheckIfNotice_c[] = "$Id: ZCkIfNot.c,v 1.10 1991-06-20 14:35:39 jfc Exp $";
+#endif
 
 #include <zephyr/zephyr_internal.h>
 
 Code_t ZCheckIfNotice(notice, from, predicate, args)
     ZNotice_t *notice;
     struct sockaddr_in *from;
-    int (*predicate)();
+    register int (*predicate)();
     char *args;
 {
     ZNotice_t tmpnotice;
     Code_t retval;
-    char *buffer;
-    struct _Z_InputQ *qptr;
+    register char *buffer;
+    register struct _Z_InputQ *qptr;
 
     if ((retval = Z_ReadEnqueue()) != ZERR_NONE)
 	return (retval);
