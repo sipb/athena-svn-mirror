@@ -79,11 +79,11 @@ short option from its arguments; either a space or an = separates a long
 option from an argument. 
 .sp
 The popt library is highly portable and should work on any POSIX 
-platform.  The latest version is always available from: 
-ftp://ftp.redhat.com/pub/redhat/code/popt.
+platform.  The latest version is distributed with rpm and is always available
+from: ftp://ftp.rpm.org/pub/rpm/dist.
 .sp
-It may be redistributed under either the GNU General Public License 
-or the GNU Library General Public License, at the distributor's discretion.
+It may be redistributed under the X consortium license, see the file COPYING
+in the popt source distribution for details.
 .SH "BASIC POPT USAGE"
 .SS "1. THE OPTION TABLE"
 Applications provide popt with information on their command-line 
@@ -136,7 +136,9 @@ For numeric values, if the \fIargInfo\fR value is bitwise or'd with one of
 \fBPOPT_ARGFLAG_OR\fR, \fBPOPT_ARGFLAG_AND\fR, or \fBPOPT_ARGFLAG_XOR\fR,
 the value is saved by performing an OR, AND, or XOR.
 If the \fIargInfo\fR value is bitwise or'd with \fBPOPT_ARGFLAG_NOT\fR,
-the value will be negated before saving.
+the value will be negated before saving. For the common operations of
+setting and/or clearing bits, \fBPOPT_BIT_SET\fR and \fBPOPT_BIT_CLR\fR
+have the appropriate flags set to perform bit operations.
 .sp
 If the \fIargInfo\fR value is bitwise or'd with \fBPOPT_ARGFLAG_ONEDASH\fR,
 the long argument may be given with a single - instead of two. For example,
@@ -169,6 +171,12 @@ specified to win; for example, "rm -i -f".  \fBPOPT_ARG_VAL\fP causes
 the parsing function not to return a value, since the value of \fIval\fP
 has already been used.
 .sp
+If the \fIargInfo\fR value is bitwise or'd with \fBPOPT_ARGFLAG_OPTIONAL\fR,
+the argument to the long option may be omitted. If the long option
+is used without an argument, a default value of zero or NULL will be saved
+(if the arg pointer is present), otherwise behavior will be identical to
+a long option with argument.
+.sp
 .RI "The next option, " val ", is the value popt's parsing function 
 should return when the option is encountered.  If it is 0, the parsing
 function does not return a value, instead parsing the next 
@@ -195,9 +203,12 @@ a different way, you need to explicitly add the option entries to your programs
 If the \fIargInfo\fR value is bitwise or'd with \fBPOPT_ARGFLAG_DOC_HIDDEN\fR,
 the argument will not be shown in help output.
 .sp
+If the \fIargInfo\fR value is bitwise or'd with \fBPOPT_ARGFLAG_SHOW_DEFAULT\fR,
+the inital value of the arg will be shown in help output.
+.sp
 The final structure in the table should have all the pointer values set
 .RB "to " NULL " and all the arithmetic values set to 0, marking the "
-end of the table.
+.RB "end of the table. The macro " POPT_TABLEEND " is provided to do that.
 .sp
 There are two types of option table entries which do not specify command
 line options. When either of these types of entries are used, the
@@ -269,8 +280,17 @@ two arguments specify the command-line arguments to parse. These are
 .RB "passed to the program's " main() " function. The " 
 .IR options " parameter points to the table of command-line options, "
 which was described in the previous section. The final parameter, 
-.IR flags ",is not currently used but should always be specified as 
-0 for compatibility with future versions of the popt library.
+.IR flags ,
+can take one of three values:
+.br
+.TS
+lfB lfB
+lfB lfR.
+Value	Description
+POPT_CONTEXT_NO_EXEC	Ignore exec expansions
+POPT_CONTEXT_KEEP_FIRST	Do not ignore argv[0]
+POPT_CONTEXT_POSIXMEHARDER	Options cannot follow arguments
+.TE
 .sp
 .RB "A " poptContext " keeps track of which options have already been "
 parsed and which remain, among other things. If a program wishes to 
@@ -742,4 +762,4 @@ Erik W. Troan (Addison-Wesley, 1998; ISBN 0-201-30821-5), Chapter 24.
 .sp
 .BR popt.ps " is a Postscript version of the above cited book "
 chapter. It can be found in the source archive for popt available at: 
-ftp://ftp.redhat.com/pub/redhat/code/popt
+ftp://ftp.rpm.org/pub/rpm.
