@@ -1,7 +1,7 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/gdss/lib/rgdss.c,v $
  * $Author: ghudson $
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/gdss/lib/rgdss.c,v 1.5 1996-09-20 04:33:30 ghudson Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/lib/gdss/lib/rgdss.c,v 1.6 1996-11-15 01:11:44 ghudson Exp $
  */
 /*
  * GDSS The Generic Digital Signature Service
@@ -13,8 +13,8 @@
 #include <BigRSA.h>
 #include <krb.h>
 #include <gdss.h>
-
-#define	NULL	(unsigned char *)0
+#include <stdio.h>
+#include <time.h>
 
 int gdss_rsign(signature, hash, name, instance, realm, key)
 unsigned char *signature;
@@ -27,7 +27,6 @@ RSAKeyStorage *key;
   unsigned char *cp, *ip;
   unsigned int the_time;
   register int i;
-  void time();
   register int status;
   int loopcnt;
   int siglen;
