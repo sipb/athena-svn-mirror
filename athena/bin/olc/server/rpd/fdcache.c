@@ -4,7 +4,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/rpd/fdcache.c,v 1.9 1991-04-08 21:18:39 lwvanels Exp $";
+static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/rpd/fdcache.c,v 1.10 1991-04-11 09:30:43 lwvanels Exp $";
 #endif
 #endif
 
@@ -136,7 +136,7 @@ get_log(username,instance,result)
     cache[new].inode = file_stat.st_ino;
 
     /* Malloc buffer big enough for the file */
-    if ((cache[new].question = malloc(file_stat.st_size)) == NULL) {
+    if ((cache[new].question = (char *) malloc(file_stat.st_size)) == NULL) {
       syslog(LOG_ERR,"get_log: malloc: error alloc'ing %d bytes\n",
 	      file_stat.st_size);
       close(fd);
@@ -205,7 +205,7 @@ get_log(username,instance,result)
       ptr->last_mod = file_stat.st_mtime;
 
       /* Alloc new amount of memory */
-      if ((ptr->question = malloc(file_stat.st_size)) == NULL) {
+      if ((ptr->question = (char *) malloc(file_stat.st_size)) == NULL) {
 	syslog(LOG_ERR,"get_log: malloc: error alloc'ing %d bytes\n",
 		file_stat.st_size);
 	delete_entry(ptr);
