@@ -1,4 +1,4 @@
-# $Id: packages,v 1.103 2000-03-25 19:05:12 ghudson Exp $
+# $Id: packages,v 1.104 2000-03-31 15:54:04 ghudson Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -109,7 +109,7 @@ athena/lib/ares
 athena/lib/athdir		package libathdir
 athena/lib/et			package libet
 athena/lib/gms			requires et
-athena/lib/fxcl			requires krb5,hesiod
+athena/lib/fxcl			requires krb5,hesiod package libfxcl
 athena/lib/hesiod
 athena/lib/larv			requires hesiod
 athena/lib/locker		requires zephyr,krb5,hesiod,afsbin,et
