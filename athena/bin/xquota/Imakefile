@@ -3,7 +3,7 @@
  *       Created: 	October 22, 1987
  *       By:		Chris D. Peterson
  *    
- * $Id: Imakefile,v 1.8 1992-10-05 15:36:57 miki Exp $
+ * $Id: Imakefile,v 1.9 1992-11-06 03:55:15 probe Exp $
  *
  *       
  * Copyright (c) 1987, 1988, 1991 by the Massachusetts Institute of Technology.
@@ -13,11 +13,11 @@
  */
     
 #if defined(vax) && !defined(ultrix) || defined(ibm032) || defined(sun)
-INCFLAGS= -I. -I/usr/local/include
+INCFLAGS= -I. -I$(AFSDIR)/include
 #ifdef sun
-LIBS= -lXaw -lXt -lXmu -lX11 -lXext -lhesiod -lrpcsvc -lm /usr/local/lib/afs/libsys.a
+LIBS= -lXaw -lXt -lXmu -lX11 -lXext -lhesiod -lrpcsvc -lm $(AFSDIR)/lib/afs/libsys.a
 #else
-LIBS= -lXaw -lXt -lXmu -lX11 -lXext -lhesiod -lrpcsvc /usr/local/lib/afs/libsys.a
+LIBS= -lXaw -lXt -lXmu -lX11 -lXext -lhesiod -lrpcsvc $(AFSDIR)/lib/afs/libsys.a
 #endif
 HELPFILES= -DDEFAULTS_FILE=\"${ATHXAPPDIR}/Xquota.ad\"\
 	   -DTOP_HELP_FILE=\"${ATHXAPPDIR}/top_help.txt\"\

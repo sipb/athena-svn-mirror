@@ -1,9 +1,7 @@
 #ifdef UseInstalled
 ATTACH=/source/athena/athena.bin/attach
-AFSDIR=/mit/afsdev/bld/dest
 #else
 ATTACH=../../athena.bin/attach
-AFSDIR=/usr/local
 #endif
 
 DEFINES=$(MACHDEFS) -I. -I$(ATTACH) -I$(AFSDIR)/include

@@ -1,11 +1,5 @@
 DEFINES=-DRVD -DNAMESERVER -DVFS $(MACHDEP)
 
-#ifdef UseInstalled
-AFSDIR = /mit/afsdev/bld/dest
-#else
-AFSDIR = /usr/local
-#endif
-
 AFSLIBS = $(AFSDIR)/lib/afs/libauth.a $(AFSDIR)/lib/afs/libsys.a
 
 #ifdef ultrix
