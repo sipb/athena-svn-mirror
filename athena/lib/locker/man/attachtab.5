@@ -1,0 +1,89 @@
+.\" $Id: attachtab.5,v 1.1 1999-02-26 19:05:07 danw Exp $
+.\"
+.\" Copyright 1997 by the Massachusetts Institute of Technology.
+.\"
+.\" Permission to use, copy, modify, and distribute this
+.\" software and its documentation for any purpose and without
+.\" fee is hereby granted, provided that the above copyright
+.\" notice appear in all copies and that both that copyright
+.\" notice and this permission notice appear in supporting
+.\" documentation, and that the name of M.I.T. not be used in
+.\" advertising or publicity pertaining to distribution of the
+.\" software without specific, written prior permission.
+.\" M.I.T. makes no representations about the suitability of
+.\" this software for any purpose.  It is provided "as is"
+.\" without express or implied warranty.
+.\"
+.TH ATTACHTAB 5
+.SH NAME
+/var/athena/attachtab/ \- Files used by liblocker
+.SH DESCRIPTION
+The attachtab directory contains two files and three directories used
+by liblocker to keep track of attached filesystems.
+.PP
+.TP 8
+.B /var/athena/attachtab/.lock
+This is used as a lock file to synchronize access to the
+.B lockers
+and
+.B mountpoints
+directories, which record attached lockers.
+.TP 8
+.B /var/athena/attachtab/.dirlock
+This is used to synchronize access to the
+.B directories
+subdirectory, which records directories that have been created by
+liblocker.
+.TP 8
+.B /var/athena/attachtab/mountpoints
+This directory contains a file for each locker that has been attached.
+The files each consist of 9 lines containing the following data:
+.PP
+.RS 10
+.nf
+version number (currently 1)
+locker name
+mountpoint
+filesystem type (eg AFS, NFS)
+IP address of the filesystem host (or 0.0.0.0)
+path to the locker or hostname:path
+authentication mode (one of 'r', 'w', 'n', or 'm')
+flags (from the locker_attachent \fIflags\fP field)
+# of owners:owner uid:owner uid:...
+.fi
+.RE
+.TP 8
+.B /var/athena/attachtab/lockers
+This directory contains symlinks to the
+.B mountpoints
+directory; for each named locker which is attached on its normal
+mountpoint, there will be a symlink from the locker name in the
+.B lockers
+directory to the locker mountpoint in the
+.B mountpoints
+directory.
+.TP 8
+.B /var/athena/attachtab/directories
+This directory contains an empty file for each directory which
+liblocker has created. This information is used to ensure that created
+directories are later removed when all of the filesystems mounted in
+them are detached.
+.PP
+Filenames in the
+.B mountpoints
+and
+.B directories
+subdirectories are directory names with slashes replaced by "_=" and
+underscores replaced by "__".
+.SH FILES
+The location of the attachtab directory can be overridden by the
+.B attachtab
+option in
+.I /etc/athena/attach.conf
+.SH SEE ALSO
+attach.conf(5), attach(1), locker_attach(3),
+locker_iterate_attachtab(3)
+.SH AUTHOR
+Dan Winship, MIT Information Systems
+.br
+Copyright 1998 by the Massachusetts Institute of Technology.

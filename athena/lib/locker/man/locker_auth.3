@@ -1,0 +1,112 @@
+.\" $Id: locker_auth.3,v 1.1 1999-02-26 19:05:09 danw Exp $
+.\"
+.\" Copyright 1997 by the Massachusetts Institute of Technology.
+.\"
+.\" Permission to use, copy, modify, and distribute this
+.\" software and its documentation for any purpose and without
+.\" fee is hereby granted, provided that the above copyright
+.\" notice appear in all copies and that both that copyright
+.\" notice and this permission notice appear in supporting
+.\" documentation, and that the name of M.I.T. not be used in
+.\" advertising or publicity pertaining to distribution of the
+.\" software without specific, written prior permission.
+.\" M.I.T. makes no representations about the suitability of
+.\" this software for any purpose.  It is provided "as is"
+.\" without express or implied warranty.
+.\"
+.TH LOCKER_AUTH 3
+.SH NAME
+locker_auth, locker_auth_to_host, locker_auth_to_cell \- Authenticate
+to filesystems
+.SH SYNOPSIS
+.nf
+.B #include <locker.h>
+.PP
+.B
+int locker_auth(locker_context *\fIcontext\fP, 
+.B
+	char *\fIfilesystem\fP, int \fIop\fP);
+.B
+int locker_auth_to_host(locker_context *\fIcontext\fP, 
+.B
+	char *\fIname\fP, char *\fIhost\fP, int \fIop\fP);
+.B
+int locker_auth_to_cell(locker_context *\fIcontext\fP,
+.B
+	char *\fIname\fP, char *\fIcell\fP, int \fIop\fP);
+.PP
+.B cc file.c -llocker ...
+.fi
+.SH DESCRIPTION
+These functions are used to authenticate to filesystems. For all of
+these functions, the
+.I op
+argument is one of the following values defined in locker.h:
+.RS 8
+.TP 8
+.I LOCKER_AUTH_AUTHENTICATE
+Authenticate to the filesystem.
+.TP 8
+.I LOCKER_AUTH_UNAUTHENTICATE
+Suggest that liblocker dispose of authentication to the filesystem.
+(The filesystem-specific code may ignore this suggestion.)
+.TP 8
+.I LOCKER_AUTH_PURGEUSER
+Ask the remote server to purge all mappings for the user from all
+hosts. (Only meaningful for Kerberized NFS.) This option can only be
+used by trusted users, as specified in
+.BR attach.conf (5)
+.TP 8
+.I LOCKER_AUTH_PURGE
+Ask the remote server to purge all mappings for this host. (Only
+meaningful for Kerberized NFS.)
+.RE
+.PP
+.B locker_auth
+attempts to perform the given operation to the named locker, which
+must be attached.
+.B locker_auth_to_host
+attempts a Kerberized NFS authentication operation to the given host.
+.B locker_auth_to_cell
+authenticates to the named AFS cell.
+.PP
+For
+.B locker_auth_to_host
+and
+.B locker_auth_to_cell\fP,
+.I name
+is the name of a locker or program which will be used in any error
+messages it prints.
+.SH RETURN VALUES
+The auth functions can return the following values:
+.TP 15
+.I LOCKER_SUCCESS
+The operation was succesfully performed (or ignored).
+.TP 15
+.I LOCKER_EAUTH
+Authentication failed.
+.TP 15
+.I LOCKER_EUNKNOWN
+No such filesystem.
+.TP 15
+.I LOCKER_EHESIOD
+Error looking up locker in Hesiod.
+.TP 15
+.I LOCKER_EPARSE
+Unable to parse filesystem description.
+.TP 15
+.I LOCKER_EPERM
+Untrusted user attempted privileged operation.
+.TP 15
+.I LOCKER_EATTACHTAB
+Error creating or reading the attachtab entry corresponding to this
+locker.
+.TP 15
+.I LOCKER_ENOMEM
+Memory was exhausted.
+.SH SEE ALSO
+locker_init(3), locker_attach(3)
+.SH AUTHOR
+Dan Winship, MIT Information Systems
+.br
+Copyright 1998 by the Massachusetts Institute of Technology.

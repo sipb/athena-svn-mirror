@@ -1,0 +1,83 @@
+.\" $Id: locker_iterate_attachtab.3,v 1.1 1999-02-26 19:05:13 danw Exp $
+.\"
+.\" Copyright 1997 by the Massachusetts Institute of Technology.
+.\"
+.\" Permission to use, copy, modify, and distribute this
+.\" software and its documentation for any purpose and without
+.\" fee is hereby granted, provided that the above copyright
+.\" notice appear in all copies and that both that copyright
+.\" notice and this permission notice appear in supporting
+.\" documentation, and that the name of M.I.T. not be used in
+.\" advertising or publicity pertaining to distribution of the
+.\" software without specific, written prior permission.
+.\" M.I.T. makes no representations about the suitability of
+.\" this software for any purpose.  It is provided "as is"
+.\" without express or implied warranty.
+.\"
+.TH LOCKER_ITERATE_ATTACHTAB 3
+.SH NAME
+locker_iterate_attachtab \- Iterate through the entries in the
+attachtab
+.SH SYNOPSIS
+.nf
+.B #include <locker.h>
+.PP
+.B
+typedef int (*locker_callback)(locker_context *, locker_attachent *,
+.B
+	void *)
+.PP
+.B
+int locker_iterate_attachtab(locker_context *\fIcontext\fP,
+.B
+	locker_callback \fItest\fP, void *\fItestarg\fP,
+.B
+	locker_callback \fIact\fP, void *\fIactarg\fP)
+.PP
+.B cc file.c -llocker ...
+.fi
+.SH DESCRIPTION
+The
+.B locker_iterate_attachtab
+function reads each attachtab entry in the attachtab directory in
+turn. For each attached locker, the
+.I test
+function (if non-NULL) is called with a
+.I locker_attachent
+corresponding to that locker, and the supplied
+.I testarg\fP.
+If
+.I test
+returns true (or was NULL),
+.B locker_iterate_attachtab
+then calls the
+.I act
+function, with the same
+.I locker_attachent
+and the
+.I actarg\fP.
+.PP
+As a side effect,
+.B locker_iterate_attachtab
+deletes any empty or malformed entries from the attachtab directory.
+.PP
+See
+.BR locker_read_attachent (3)
+for more information about the format of a
+.I locker_attachent\fP.
+.SH RETURN VALUES
+.B locker_iterate_attachtab
+returns
+.I LOCKER_EATTACHTAB
+if it couldn't open or lock the attachtab directory,
+.I LOCKER_ENOMEM
+if it runs out of memory,
+or
+.I LOCKER_SUCCESS
+if it runs successfully.
+.SH SEE ALSO
+locker_init(3), locker_check_owner(3), locker_check_host(3)
+.SH AUTHOR
+Dan Winship, MIT Information Systems
+.br
+Copyright 1998 by the Massachusetts Institute of Technology.

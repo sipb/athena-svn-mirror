@@ -1,0 +1,75 @@
+.\" $Id: locker_zsubs.3,v 1.1 1999-02-26 19:05:14 danw Exp $
+.\"
+.\" Copyright 1997 by the Massachusetts Institute of Technology.
+.\"
+.\" Permission to use, copy, modify, and distribute this
+.\" software and its documentation for any purpose and without
+.\" fee is hereby granted, provided that the above copyright
+.\" notice appear in all copies and that both that copyright
+.\" notice and this permission notice appear in supporting
+.\" documentation, and that the name of M.I.T. not be used in
+.\" advertising or publicity pertaining to distribution of the
+.\" software without specific, written prior permission.
+.\" M.I.T. makes no representations about the suitability of
+.\" this software for any purpose.  It is provided "as is"
+.\" without express or implied warranty.
+.\"
+.TH LOCKER_ZSUBS 3
+.SH NAME
+locker_zsubs \- Deal with zephyr subscriptions for a locker
+.SH SYNOPSIS
+.nf
+.B #include <locker.h>
+.PP
+.B
+void locker_zsubs(locker_context *\fIcontext\fP,
+.B
+	char *\fIfilesystem\fP, int \fIop\fP)
+.PP
+.B cc file.c -llocker ...
+.fi
+.SH DESCRIPTION
+This function adds or removes zephyr subscriptions associated with a
+locker. The
+.I op
+argument should be either
+.I LOCKER_ZEPHYR_SUBSCRIBE
+or
+.I LOCKER_ZEPHYR_UNSUBSCRIBE,
+and
+.I filesystem
+should be the name of an attached filesystem.
+.SH RETURN VALUES
+.B locker_zsubs
+can return the following values:
+.TP 15
+.I LOCKER_SUCCESS
+The operation was succesfully performed.
+.TP 15
+.I LOCKER_EZEPHYR
+An error occurred in the zephyr library.
+.TP 15
+.I LOCKER_EUNKNOWN
+No such filesystem.
+.TP 15
+.I LOCKER_EHESIOD
+Error looking up locker in Hesiod.
+.TP 15
+.I LOCKER_EPARSE
+Unable to parse filesystem description.
+.TP 15
+.I LOCKER_EPERM
+Untrusted user attempted privileged operation.
+.TP 15
+.I LOCKER_EATTACHTAB
+Error creating or reading the attachtab entry corresponding to this
+locker.
+.TP 15
+.I LOCKER_ENOMEM
+Memory was exhausted.
+.SH SEE ALSO
+locker_init(3), locker_attach(3), zephyr(1)
+.SH AUTHOR
+Dan Winship, MIT Information Systems
+.br
+Copyright 1998 by the Massachusetts Institute of Technology.

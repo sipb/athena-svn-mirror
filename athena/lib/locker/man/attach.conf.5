@@ -1,0 +1,228 @@
+.\" $Id: attach.conf.5,v 1.1 1999-02-26 19:05:06 danw Exp $
+.\"
+.\" Copyright 1997 by the Massachusetts Institute of Technology.
+.\"
+.\" Permission to use, copy, modify, and distribute this
+.\" software and its documentation for any purpose and without
+.\" fee is hereby granted, provided that the above copyright
+.\" notice appear in all copies and that both that copyright
+.\" notice and this permission notice appear in supporting
+.\" documentation, and that the name of M.I.T. not be used in
+.\" advertising or publicity pertaining to distribution of the
+.\" software without specific, written prior permission.
+.\" M.I.T. makes no representations about the suitability of
+.\" this software for any purpose.  It is provided "as is"
+.\" without express or implied warranty.
+.\"
+.TH ATTACH.CONF 5
+.SH NAME
+attach.conf \- attach configuration file
+.SH DESCRIPTION
+The behavior of 
+.BR attach (1)\fP,
+.BR detach (1)\fP,
+and other programs using liblocker is controlled by attach.conf. These
+programs read /etc/athena/attach.conf when they start up, so the
+system administrator can customize their behavior without needing to
+recompile the programs.
+
+The format of attach.conf is line oriented, with one configuration
+option per line.  Blank lines and lines which begin with a pound sign
+(#) are ignored as comments.  The configuration keyword is the first
+whitespace-delimited string on the line, with its arguments following
+it, also delimited by whitespace.
+
+There are several different types of keywords, which determine what
+type of argument or arguments they require.
+.IP boolean
+Keywords of type boolean are typically options which can be
+enabled or disabled, as specified by their arguments.  Legal arguments
+are 
+.I on 
+or 
+.IR off .
+.IP string
+Keywords of type string are typically filenames.  Any argument
+is legal; the configuration option is assigned the first
+argument following the keyword.
+.IP user-list
+Keywords of type user-list take one or more arguments, separated by
+spaces. Each argument may either be a username or a uid.
+.IP regexp-argument
+Keywords of type regexp-argument take the first argument as a regular
+expression.  The remainder of the line is kept as a string which
+applies if the regular expression matches the filesystem being
+attached or detached.  
+.IP regexp-list
+Keywords of type regexp-list take one or more space-separated
+arguments, which are regular expressions. All of the regexp-list
+keywords come in positive/negative pairs (e.g.
+.I mountpoint
+and
+.I nomountpoint\fP).
+When testing one of the conditions (such as whether or not the given
+mountpoint is allowed), each regexp is tested in series, in the order
+they appear in the config file. If a regexp on a line with the
+positive keyword matches first, the string is accepted. If it matches
+first on a line with the negative keyword, it is rejected. The default
+value for each keyword is noted below.
+.PP
+The following keywords are supported in attach.conf:
+.IP "ownercheck (type boolean) (default: off)"
+If this option is on, then only the user which attached a filesystem
+may detach it.  
+.I Trusted users
+(as specified by the 
+.B trusted 
+keyword) may use the -override (-O) flag to forcibly detach a
+filesystem attached by another user.
+.IP "keep-mount (type boolean) (default: off)"
+If this option is on, then when a user attaches a filesystem
+which is already mounted but not in attachtab a flag is set so that
+when that filesystem is detached, its entry is removed from attachtab
+without unmounting it.  This is useful to prevent users from being
+able to forcibly unmount partitions by attaching them and then
+detaching them.
+.IP "nfs-root-hack (type boolean) (default: on)"
+This option affects the construction of the default mount point for
+explicit NFS attaches.  The default mount point is constructed by
+appending the value of 
+.I nfs-mount-dir 
+followed by the hostname of the NFS server, followed by the remotely
+mounted directory.  If 
+.I nfs-root-hack
+is on, then if the remotely mounted directory is the root (/), it is
+replaced by ``/root'' for the purposes of contructing the default
+mount point.
+.IP "nfs-mount-dir (type string) (default: /)"
+This option affects the construction of the default mount point for
+explicit NFS attaches.  See the description for
+.I nfs-root-hack
+above.
+.IP "attachtab (type string) (default: /var/athena/attachtab)"
+This option specifies the location of the
+.I attachtab(5)
+directory.  It is generally located in /var/athena.
+.IP "trusted (type user-list) (default: root)"
+This option allows the system administrator to specify a list of
+trusted users who are allowed to use certain restricted options found
+in 
+.I attach(1)
+and 
+.IR detach(1) .
+This includes the ability to detach a filesystem owned by another user
+(if ownercheck is enabled) and the ability to force a filesystem to be
+mounted without the nosuid mount option.
+.IP "nosetuid or nosuid (type regexp-list)"
+Filesystems which match the regular expresions listed as arguments are
+mounted with the nosuid flag.  This instructs the operating system to
+disregard set-uid flags found on files in the mounted filesystem.
+(See mount(8) for more information.) This is the default.
+.IP "setuid or suid (type regexp-list)"
+Filesystems which match the regular expresions listed as arguments are
+mounted without the nosuid flag.
+.IP "allow (type regexp-list)"
+Filesystems which match the regular expresions listed as arguments may
+be mounted with attach. This is the default.
+.IP "noallow (type regexp-list)"
+Filesystems which match the regular expresions listed as arguments may
+not be mounted with attach.  This prohibition can be bypassed with the
+-override (-O) flag, if the user is one of the ``trusted users.''
+.IP "mountpoint (type regexp-list)"
+Mountpoint which match one of the regular expressions listed as
+arguments are allowed. This is the default.
+.IP "nomountpoint (type regexp-list)"
+Mountpoint which match one of the regular expressions listed as
+arguments are not allowed.   This prohibition can be bypassed with the
+-override (-O) flag, if the user is one of the ``trusted users.''
+.IP "filesystem (type string-argument)"
+This keyword allows the system administrator to give a filesystem
+definition for a filesystem.  Definitions in attach.conf take
+precedence over Hesiod(3) definitions..
+.IP "defoptions (type regexp-argument)"
+Filesystems which match the regular expressions listed as arguments are
+mounted with the specified argument as default mount options. This is
+particularly useful in forcing the default NFS packet size to
+something which can be handled by local gateways. This can be done
+including the following line in attach.conf:
+.IP
+defoptions {nfs}:.*	rsize=1024,wsize=1024
+.IP "options (type regexp-argument)"
+Filesystems which match the regular expressions listed are mounted
+with the specified argument as mount options which cannot be
+overridden by the user.
+.IP "allowoptions (type regexp-argument)"
+The argument is a comma-delimited list of mount options which the user
+may specify (using the -o flag to attach) when mounting filesystems
+which match the regular expression. Any user-specified options which
+do not appear in this list will be ignored.
+.PP
+.SH "FILESYSTEM DEFINITIONS"
+Filesystem definitions are used by attach to determine how a named
+filesystem should be attached.  These definitions can be found either
+in attach.conf or by performing Hesiod(3) lookup.  In general, the
+definition consists of a filesystem type (NFS, AFS, etc.)
+followed by information specific to that fileststem type.  Here are
+some typical filesystem definitions, as would be found in
+attach.conf (in Hesiod, the first two fields would be absent and the
+definition would be keyed to a filesystem name):
+
+.nf
+filesystem zip		UFS /dev/sd1a w /zip
+filesystem priam:slush	NFS /slush priam w /priam/slush
+filesystem user.d	AFS /afs/athena/user/d w /mit/user.d
+filesystem games	ERR Sorry, the games filesystem is not available
+.fi
+.SH "EXTENSIONS TO REGULAR EXPRESSIONS"
+Regular expressions in an attach.conf file can be prefixed by a 
+.IR type-delimiter ,
+an optional string delimited by curly braces and followed a colon.  If
+this string is present, it consists of a list of filesystem types
+separated by commas.  The regular expression is matched against the
+filesystem only if the filesystem type matches one of the filesystem
+types listed in the 
+.IR type-delimiter .
+The 
+.I type-delimiter
+may be prefixed by a caret (^), which reverses the
+.I type-delimiter
+check.  That is, the regular expression is considered only if the
+filesystem type is 
+.I not
+one listed in the
+.IR type-delimiter .
+The 
+.I type-delimiter
+may be further optionally prefixed with either a plus (+) or minus (-) sign.
+If present, the plus sign indicates that the regular expression should
+be considered only if the filesystem was explicitly defined on the
+command line.  Likewise, the minus sign indicates that the regular
+expression should be considered only if the filesystem was not
+explicitly defined. (The plus or minus must come before the caret if
+both are present.)
+.SH EXAMPLES
+.IP
+nomountpoint		^/mit/[^/]*/.
+mountpoint		^/mit/
+nomountpoint		^/mit
+.PP
+This will allow lockers to be attached in /mit, but not on /mit
+itself, or subdirectories of /mit. The first line prohibits
+mountpoints that have `/mit/', some text, and then a `/' with at least
+one character following it. That prohibits mounting in subdirectories
+of /mit. The second line allows anything underneath /mit that the
+first line didn't prohibit. The final line prohibits attaching a
+locker to /mit itself.
+.IP
+options	{nfs}:.*	nodev
+noallow {-}:r$ {^afs} games
+.PP
+The first line specifies that all NFS lockers must be mounted with the
+'nodev' mount option. The second line states that untrusted users will
+not be allowed to attach Hesiod or attach.conf-defined lockers whose
+names end with the letter `r', or any non-AFS lockers, or the games
+locker.
+.SH FILES
+/etc/athena/attach.conf
+.SH SEE ALSO
+attach(1), attachtab(5)
