@@ -12,18 +12,21 @@
  *
  *      Tom Coppeto
  *	Chris VanHaren
+ *	Lucien Van Elsen
  *      MIT Project Athena
  *
  * Copyright (C) 1988,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/init.c,v $
- *	$Id: init.c,v 1.8 1990-09-14 00:17:29 lwvanels Exp $
+ *	$Id: init.c,v 1.9 1990-11-13 18:49:20 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/init.c,v 1.8 1990-09-14 00:17:29 lwvanels Exp $";
+#ifndef SABER
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/init.c,v 1.9 1990-11-13 18:49:20 lwvanels Exp $";
+#endif
 #endif
 
 #include <mit-copyright.h>
@@ -73,7 +76,7 @@ OInitialize()
       else
 	  h = *hp;
 
-#endif HESIOD
+#endif /* HESIOD */
 
       if (!h) {
 	  fprintf (stderr, "Can't find OLC server host!\n");
