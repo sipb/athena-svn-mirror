@@ -10,8 +10,8 @@
 *borderWidth:			1
 
 *window.BorderWidth:		2
-*window.geometry:		503x207-0+30
-*window.defGeometry:		503x207-0+30
+*window.geometry:		GEOMETRY
+*window.defGeometry:		GEOMETRY
 *window.title:			Console
 *window.deleteProc:		delete()
 *window.mapNotifyProc:		mapnotify()
