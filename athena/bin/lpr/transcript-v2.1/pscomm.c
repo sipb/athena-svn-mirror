@@ -3,7 +3,7 @@
 _NOTICE N1[] = "Copyright (c) 1985,1986,1987 Adobe Systems Incorporated";
 _NOTICE N2[] = "GOVERNMENT END USERS: See Notice file in TranScript library directory";
 _NOTICE N3[] = "-- probably /usr/lib/ps/Notice";
-_NOTICE RCSID[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/transcript-v2.1/pscomm.c,v 1.3 1990-04-16 17:07:58 epeisach Exp $";
+_NOTICE RCSID[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/transcript-v2.1/pscomm.c,v 1.4 1990-07-03 16:29:45 epeisach Exp $";
 #endif
 /* pscomm.c
  *
@@ -81,6 +81,10 @@ _NOTICE RCSID[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/tran
  *
  * RCSLOG:
  * $Log: not supported by cvs2svn $
+ * Revision 1.3  90/04/16  17:07:58  epeisach
+ * Added zephyr notification and mediacost and account number logging.
+ * Format of dump file changed.
+ * 
  * Revision 1.2  89/05/22  10:58:39  epeisach
  * Fixed RT problem in dealing with '\]' which vax does not complain about.
  * 
@@ -386,7 +390,11 @@ main(argc,argv)            /* MAIN ROUTINE */
     VOIDC signal(SIGEMT, GotEmtSig);
 
 #ifdef SYSLOG
+#ifdef LOG_LPR
 	openlog("lpcomm", LOG_PID, LOG_LPR);
+#else
+	openlog("lpcomm", LOG_PID);
+#endif
 #endif
 
     /* parse command-line arguments */
