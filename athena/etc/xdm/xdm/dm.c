@@ -56,6 +56,10 @@
 
 extern int	errno;
 
+#ifdef POSIX
+sigset_t sig_zero;
+#endif
+
 #ifdef SVR4
 extern FILE    *fdopen();
 #endif
