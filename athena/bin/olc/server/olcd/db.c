@@ -17,12 +17,12 @@
  * Copyright (C) 1988,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: db.c,v 1.24 1999-06-28 22:52:40 ghudson Exp $
+ *	$Id: db.c,v 1.25 1999-06-29 21:30:14 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: db.c,v 1.24 1999-06-28 22:52:40 ghudson Exp $";
+static char rcsid[] ="$Id: db.c,v 1.25 1999-06-29 21:30:14 ghudson Exp $";
 #endif
 #endif
 
@@ -48,7 +48,7 @@ static int get_user_info (USER *user );
  * Notes:
  */
 
-
+void
 get_specialties(user)
      USER *user;
 {

@@ -10,12 +10,12 @@
  * Copyright (C) 1988-1997 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: backup-bin.c,v 1.2 1999-06-28 22:52:38 ghudson Exp $
+ *	$Id: backup-bin.c,v 1.3 1999-06-29 21:30:10 ghudson Exp $
  */
 
 #ifndef SABER
 #ifndef lint
-static char rcsid[] ="$Id: backup-bin.c,v 1.2 1999-06-28 22:52:38 ghudson Exp $";
+static char rcsid[] ="$Id: backup-bin.c,v 1.3 1999-06-29 21:30:10 ghudson Exp $";
 #endif
 #endif
 
@@ -52,7 +52,7 @@ static char *KNUCKLE_SEP   = "  new knuckle: ";
 static char *BLANK_SEP     = "  a blank:     ";
 static char *TRANS_SEP     = "  new train:   ";
 
-static type_buf[BUF_SIZE];
+static char type_buf[BUF_SIZE];
 static int skip;
 
 static int
