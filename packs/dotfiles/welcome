@@ -1,5 +1,3 @@
-******* NEEDS REVISION *******
-
 Welcome to Project Athena
 --------------------------
 - Project Athena is an eight-year experiment to explore the use of
@@ -11,35 +9,37 @@ Welcome to Project Athena
   population as possible in a campus-wide distributed service networked 
   workstation environment.
 
-- Project Athena has prepared a set of files, containing information on many
-  Athena topics.  The files provide up to date status information on the
-  Athena system, summaries of Athena features, as well as instructions
-  for learning more about them.  This set of files is kept in a directory
-  named `info'.
+- For help about any aspect of Athena, type:   help   followed by a carriage
+  return.  This calls the On-Line Help system (OLH), a menu browser that 
+  helps you find information about many Athena topics.  (If a topic is not 
+  described in detail in OLH, the system system usually provides information 
+  on where to find out more about the topic.)  OLH includes:
 
-  Type the following lines (where [CR] means `Hit the RETURN key') to
-  learn more about what these files contain and how to read them:
+    - guides to all aspects of the supported Athena environment, including
+      how to get an account, how to login and logout, how to work with the 
+      UNIX operating system, and how to use some of the most popular
+      software on Athena (including software that can help you use Athena
+      to write papers or analyze data)
 
-      attach info [CR]
-      more /mit/info/README [CR]
+    - up-to-date status information on the Athena system, available Athena
+      minicourses, and other current events at Athena
 
-- If you have trouble, call X3-4435 to talk to an Athena User Consultant. 
-  If there is no consultant on duty, you will get a recording informing you
-  of the consulting schedule.
+    - stock answers to many commonly asked questions about Athena
 
-- Documentation is available on line.  In addition, there are reference copies
-  in the clusters and copies can be purchased at the Graphic Arts Quick Copy
-  Centers: 11-004 and W20-028.  Start with the "Essential" series and the
-  documentation catalog.
+    - a complete set of standard UNIX reference modules ("man pages")
 
-- To access on-line documentation, just type:  help  followed by a carriage
-  return.  The On-Line Help system incorporates lots of information about
-  Athena in a menu-based hierarchy that is easy to browse.
- 
-- Type:  man <program name>  followed by a carriage return to view online
-  manual pages for commands.  For example, type:    man ls   to find out 
-  how to list your files.  Use man to see the manual pages for other
-  useful commands like:  emacs, apropos, and more.
+- If you have trouble, you can contact an Athena User Consultant.  To get a
+  consultant on-line, just type:  olc   followed by a carriage return.  To
+  talk to a consultant in person, call X3-4435 (if there is no consultant on 
+  duty, you will get a recording informing you of the consulting schedule).
 
 ----------
+
+
+
+
+
+
+
+
 
