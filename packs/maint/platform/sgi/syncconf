@@ -1,5 +1,7 @@
 #!/bin/sh
 
+ECHO=echo
+ECHO1=echo
 CONFIG=/etc/config
 SETCONFIG="/sbin/chkconfig -f"
 RCCONF=/etc/athena/rc.conf
@@ -8,7 +10,7 @@ RCSYNC=/etc/athena/.rc.conf.sync
 configbool()
 {
   if [ $debug = 1 ]; then
-    echo $SETCONFIG "$1" "$2"
+    $ECHO1 $SETCONFIG "$1" "$2"
   else
     $SETCONFIG "$1" "$2"
   fi
@@ -17,7 +19,7 @@ configbool()
 configopt()
 {
   if [ $debug = 1 ]; then
-    echo "echo $2 > $CONFIG/$1"
+    $ECHO1 "echo $2 > $CONFIG/$1"
   else
     echo "$2" > "$CONFIG/$1"
   fi
@@ -35,7 +37,7 @@ syncvar()
 remove()
 {
   if [ $debug = 1 ]; then
-    echo rm -f "$1"
+    $ECHO1 rm -f "$1"
   else
     rm -f "$1"
   fi
@@ -44,7 +46,7 @@ remove()
 move()
 {
   if [ $debug = 1 ]; then
-    echo mv "$1" "$2"
+    $ECHO1 mv "$1" "$2"
   else
     mv "$1" "$2"
   fi
@@ -53,7 +55,7 @@ move()
 put()
 {
   if [ $debug = 1 ]; then
-    echo echo "$2 > $1"
+    $ECHO1 echo "$2 > $1"
   else
     echo "$2" > "$1"
   fi
@@ -62,20 +64,21 @@ put()
 append()
 {
   if [ $debug = 1 ]; then
-    echo echo "$2 >> $1"
+    $ECHO1 echo "$2 >> $1"
   else
     echo "$2" >> "$1"
   fi
 }
 
-usage()
-{
-  echo "Usage: syncconf\c"
-  for k in $ALL; do
-    echo " [$k]\c"
-  done
-  echo ""
-}
+while [ -n "$1" ]; do
+  case "$1" in
+    -n)  debug=1 ;;
+    -q1) ECHO1=: ;;
+    -q)  ECHO=: ;;
+     *)  echo "Usage: syncconf [-n] [-q]"; exit ;;
+  esac
+  shift
+done
 
 debug=1
 
@@ -86,6 +89,8 @@ fi
 
 ALL="timeclient timehub timesrv afsclient nfssrv nfsclient sendmail snmp savecore account quotas host addr"
 
+$ECHO "Synchronizing configuration... \c"
+
 . $RCCONF
 
 if test -f $RCSYNC; then
@@ -94,20 +99,15 @@ else
   CHANGES="$ALL"
 fi
 
-if [ "$CHANGES" = "" -a "$*" = "" ]; then
-  echo "No changes to synchronize."
+if [ "$CHANGES" = "" ]; then
+  $ECHO "No changes to synchronize."
   exit
 fi
 
-j="$*"
+j=$CHANGES
 
-if [ "$j" = "" ]; then
-  j=$CHANGES
-fi
-
-echo "Synchronizing configuration... \c"
 for i in $j; do
-  echo "$i \c"
+  $ECHO "$i \c"
 
   case "$i" in
   TIMECLIENT|timeclient)
@@ -135,7 +135,7 @@ for i in $j; do
       fi
 
       if [ "${TIMECLIENT}" = "false" ]; then
-        AFSTIME = "-nosettime "
+        AFSTIME="-nosettime "
       fi
 
       syncvar afsd.options "${AFSTIME}-stat 2000 -dcache 800 -daemons $AFSCLIENTNUM -volumes 70"
@@ -224,13 +224,14 @@ for i in $j; do
     ;;
 
   *)
-    usage
-    exit
+    $ECHO ""
+    echo "syncconf: unknown variable $i"
+    ;;
   esac
 
 done
 
-echo ""
+$ECHO ""
 
 cat > $RCSYNC << EOF
 if [ \$TIMECLIENT != $TIMECLIENT ]; then CHANGES="\$CHANGES TIMECLIENT"; fi
