@@ -1,7 +1,7 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/qmain.c,v $
- *	$Author: epeisach $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/qmain.c,v 1.3 1990-07-11 10:07:38 epeisach Exp $
+ *	$Author: ilham $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/qmain.c,v 1.4 1990-07-11 13:17:31 ilham Exp $
  */
 
 /*
@@ -11,7 +11,7 @@
 
 
 #if (!defined(lint) && !defined(SABER))
-static char qmain_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/qmain.c,v 1.3 1990-07-11 10:07:38 epeisach Exp $";
+static char qmain_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/qmain.c,v 1.4 1990-07-11 13:17:31 ilham Exp $";
 #endif (!defined(lint) && !defined(SABER))
 
 #include "mit-copyright.h"
@@ -261,6 +261,8 @@ read_quotacap()
     DQ = qgetnum("dq");
     if (DQ = -1)
 	DQ = qdefault= DEFQUOTA;
+    else
+	qdefault = DQ;
 
     QD = qgetnum("qd");
     if (QD = -1)
