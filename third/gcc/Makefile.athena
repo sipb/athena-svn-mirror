@@ -1,4 +1,4 @@
-# $Id: Makefile.athena,v 1.17 2003-01-24 19:37:56 ghudson Exp $
+# $Id: Makefile.athena,v 1.18 2003-01-24 21:35:39 ghudson Exp $
 
 SHELL=/bin/sh
 
@@ -11,12 +11,13 @@ SHELL=/bin/sh
 # in CVS is expensive.  So we'll move it around here.  (Which means
 # we have to remember what stuff is ours and move it back.)
 dist:
-	mkdir .src obj
+	mkdir .src
 	mv * .src
 	mv .src src
 	mv src/Makefile.athena .
 	mv src/athena-version .
 	mv src/compiler .
+	mkdir obj
 
 # We can't use the Athena config.site file because it specifies
 # cc to be gcc.
