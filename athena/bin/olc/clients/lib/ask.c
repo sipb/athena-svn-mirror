@@ -18,12 +18,12 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/ask.c,v $
- *	$Id: ask.c,v 1.8 1990-07-16 08:13:43 lwvanels Exp $
- *	$Author: lwvanels $
+ *	$Id: ask.c,v 1.9 1990-07-16 09:23:50 vanharen Exp $
+ *	$Author: vanharen $
  */
 
 #ifndef lint
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/ask.c,v 1.8 1990-07-16 08:13:43 lwvanels Exp $";
+static const char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/ask.c,v 1.9 1990-07-16 09:23:50 vanharen Exp $";
 #endif
 
 #include <mit-copyright.h>
@@ -37,6 +37,8 @@ OAsk(Request,topic,file)
 {
   int fd;
   int status;
+  FILE *f;
+  char s[BUF_SIZE], machinfo[BUF_SIZE];
  
   Request->request_type = OLC_ASK;
   status = open_connection_to_daemon(Request, &fd);
@@ -66,6 +68,24 @@ OAsk(Request,topic,file)
 
   write_file_to_fd(fd,file);
   read_response(fd,&status);
+
+  if (status != SUCCESS)
+    {
+      close(fd);
+      return(status);
+    }
+
+  f = popen("/bin/athena/machtype -c -d -M -v", "r");
+  machinfo[0] = '\0';
+  while (fgets(s, BUF_SIZE, f) != NULL)
+    {
+      strncat(machinfo, s, strlen(s) - 1);
+      strcat(machinfo, ", ");
+    }
+  machinfo[strlen(machinfo) - 2] = '\0';
+  write_text_to_fd(fd, machinfo);
+  read_response(fd, &status);
+
   if ((status == CONNECTED) || (status == NOT_CONNECTED))
     read_int_from_fd(fd,&(Request->requester.instance));
   close(fd);
