@@ -5,7 +5,7 @@
  *      Created by:     Marc Horowitz <marc@athena.mit.edu>
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/xshow.c,v $
- *      $Author: jtkohl $
+ *      $Author: marc $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -13,7 +13,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char rcsid_xshow_c[] = "$Id: xshow.c,v 1.4 1989-11-17 09:58:26 jtkohl Exp $";
+static char rcsid_xshow_c[] = "$Id: xshow.c,v 1.5 1989-11-30 21:32:35 marc Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>
@@ -362,6 +362,19 @@ void fixup_and_draw(dpy, style, auxblocks, blocks, num, lines, numlines,
 		  gram_ypos, gram_xsize, gram_ysize, beepcount);
 }
 
+/* Silly almost-but-not-quite-useless helper function */
+char *no_dots_downcase_var(str)
+     char *str;
+{
+   char *var;
+
+   var = string_Downcase(var_get_variable(str));
+   while (*var++)
+      if (*var == '.')
+	 *var = '_';
+   return(var);
+}
+
 #define MODE_TO_FONT(dpy,style,mode) \
   get_font((dpy),(style),(mode)->font?(mode)->font:(mode)->substyle, \
 	   (mode)->size, (mode)->bold+(mode)->italic*2)
@@ -397,10 +410,11 @@ void xshow(dpy, desc, numstr, numnl)
 
     style = var_get_variable("style");
     if (style[0] == '\0') {
-       style = string_Concat(var_get_variable("class"),".");
-       style = string_Concat2(style,var_get_variable("instance"));
+       style = string_Concat(no_dots_downcase_var("class"),".");
+       style = string_Concat2(style,no_dots_downcase_var("instance"));
        style = string_Concat2(style,".");
-       style = string_Concat2(style,var_get_variable("sender"));
+       style = string_Concat2(style,no_dots_downcase_var("sender"));
+       string_Downcase(style);
     }
 
     for (; desc->code!=DT_EOF; desc=desc->next) {
