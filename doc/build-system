@@ -8,12 +8,12 @@ programs or libraries.
 	* It should use feature tests, not platform tests.
 
 	* Once the appropriate configuration steps (e.g. running
-	  configure) have been done, "make all" should generate all
-	  automatically generated files without ever modifying any
-	  source files.  (For example, "make all" should not try to
-	  regenerate configure from configure.in, and a build system
-	  should not wait until "make install" time to generate a file
-	  which is going to be installed.)
+	  configure or imake) have been done, "make all" should
+	  generate all automatically generated files without ever
+	  modifying any source files.  (For example, "make all" should
+	  not try to regenerate configure from configure.in, and a
+	  build system should not wait until "make install" time to
+	  generate a file which is going to be installed.)
 
 	* "make install" should install all files appropriate for the
 	  target directories without modifying any files in the build
@@ -45,11 +45,17 @@ programs or libraries.
 	  built, but it is not okay to rely on make command-line
 	  parameters passed in from the parent directory.
 
-Your build system should use Autoconf.  Autoconf is not perfect, but
-it's the only reasonable package out there for doing feature tests as
-opposed to platform tests.  See the Autoconf info pages (available in
-the default emacs info menu) for information about using Autoconf in
-general.
+There are two supported Athena build systems: one which uses Autoconf
+and one which uses a straight Makefile.
+
+Using Autoconf
+--------------
+
+For packages in the "athena" hierarchy, we use autoconf.  Autoconf is
+not perfect, but it's the only reasonable package out there for doing
+feature tests as opposed to platform tests.  See the Autoconf info
+pages (available in the default emacs info menu) for information about
+using Autoconf in general.
 
 When we build the program for the Athena environment, we will use a
 config.site file (already written; you don't need to write it or point
@@ -95,8 +101,8 @@ to it) which does the following:
 	  the Athena environment, use the following in your
 	  configure.in:
 
-		lbindir=${lbindir-'$(exec_prefix)/bin'}
-		lsbindir=${lsbindir-'$(exec_prefix)/sbin'}
+		lbindir=${lbindir-'$(bindir)'}
+		lsbindir=${lsbindir-'$(sbindir)'}
 		AC_SUBST(lbindir)
 		AC_SUBST(lsbindir)
 
@@ -110,3 +116,27 @@ The build environment will ensure that the following things are true:
 
 	* The environment variable CONFIG_SITE points to the Athena
 	  config.site file.
+
+Using a straight Makefile
+-------------------------
+
+For packages in the "packs" hierarchy, and in some parts of the
+"third" hierarchy where we construct the build system by hand, we use
+a straight Makefile, since feature tests are not necessary for the
+packs hierarchy.
+
+The build system will ensure that the same environment variables are
+set as for using Autoconf.  In addition, the environment variable CC
+will be set to the appropriate compiler for the current platform.  You
+should be very sparing in your use of C source code in packages using
+a straight Makefile, but for small, portable C programs it's okay.
+
+The subdirectories "platform/$HOSTTYPE" or "arch/$ATHENA_SYS" should
+be used for platform or system-dependent components of a package using
+a straight Makefile.
+
+Start each Makefile with "# $Id: $" and "SHELL=/bin/sh".  The latter
+is to work around a bug in the Irix make where it runs commands under
+${SHELL} rather than /bin/sh.  Also necessary for Irix is using
+"-mkdir -p" instead of "mkdir -p", since mkdir -p under Irix gives an
+error when the directory already exists (in violation of IEEE 1003.2).
