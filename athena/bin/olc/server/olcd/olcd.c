@@ -23,13 +23,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v $
- *	$Id: olcd.c,v 1.59 1993-08-09 11:37:40 thorne Exp $
- *	$Author: thorne $
+ *	$Id: olcd.c,v 1.60 1995-05-14 01:10:22 cfields Exp $
+ *	$Author: cfields $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v 1.59 1993-08-09 11:37:40 thorne Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v 1.60 1995-05-14 01:10:22 cfields Exp $";
 #endif
 #endif
 
@@ -62,9 +62,7 @@ static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 #include <arpa/inet.h>		/* inet_* defs */
 
 #include <olcd.h>
-#ifdef DBMALLOC                  /* using a debugging malloc */
-#include <malloc.h>    
-#endif  
+
 /* Global variables. */
 
 #ifdef NEEDS_SELECT_MACROS
@@ -178,9 +176,9 @@ main (argc, argv)
 union dbmalloptarg m;
 
 m.i = M_HANDLE_CORE;
-dbmallopt(MALLOC_WARN,m);
-m.str = "/usr/spool/olc/malloc_err_log");
-dbmallopt(MALLOC_ERRFILE,m);
+dbmallopt(MALLOC_WARN,&m);
+m.str = "/usr/spool/olc/malloc_err_log";
+dbmallopt(MALLOC_ERRFILE,&m);
 
 #endif /* DBMALLOC */
 
@@ -681,8 +679,8 @@ process_request (fd, from)
 		inet_ntoa(from->sin_addr));
 	log_error(msgbuf);
     }
-    (void) strcpy(&request.requester.machine[0], hp ? hp->h_name :
-		  inet_ntoa(from->sin_addr));
+    (void) strncpy(&request.requester.machine[0], hp ? hp->h_name :
+		  inet_ntoa(from->sin_addr),TITLE_SIZE);
 
     /* authenticate requestor using kerberos if available */
 
@@ -692,6 +690,18 @@ process_request (fd, from)
 	send_response(fd,auth);
 	return;
     }
+    /* check that client hasn't sent bad request packet by 
+       overflowing username */
+    if (request.target.username[LOGIN_SIZE-1] != 0 ||
+	request.requester.username[LOGIN_SIZE-1] != 0)
+      {
+	log_error("bad request: username overflowed");
+	send_response(fd,TARGET_NOT_FOUND); /* should be a better error code
+					       but client can't be changed now
+					       to understand ST */
+	return;
+      }
+    
     while  ((type != proc_list[ind].proc_code)
 	    && (proc_list[ind].proc_code != UNKNOWN_REQUEST))
 	ind++;
@@ -913,12 +923,16 @@ authenticate(request, addr)
     return(SUCCESS);
 #else /* KERBEROS */
 
-    result = krb_rd_req(&(request->kticket),K_SERVICE,K_INSTANCEbuf,
+    result = krb_rd_req(&(request->kticket),K_SERVICE,K_INSTANCE,
 			addr,&data,"");
 
     strcpy(request->requester.username,data.pname);
     strcpy(request->requester.realm,data.prealm);
-
+/* check if default realm and deny if not. -- should be fixed
+right, but....... ST  XXXX
+if (strcmp(data.prealm,DFLT_SERVER_REALM) != 0)
+return -1;
+*/
     return(result);
 #endif /* KERBEROS */
 }
@@ -933,7 +947,8 @@ get_kerberos_ticket()
   char principal[ANAME_SZ];
   char buf[BUFSIZ];
   char *ptr;
-  
+  char primary_name[100];
+
   /* If the ticket time is going to expire in 15 minutes or less, get a */
   /* new one */
   if(ticket_time < NOW - ((DEFAULT_TKT_LIFE * 5L) - 15L) * 60)
@@ -944,16 +959,27 @@ get_kerberos_ticket()
       if (ptr)
 	*ptr = '\0';
       uncase(sinstance);
-      sprintf(buf,"get new tickets: %s %s ", K_SERVICE, sinstance);
+
+      /* it looks like K_SERVICE is being nulled out - wade 3/6/94 */
+      /* sprintf(buf,"get new tickets: %s %s ", K_SERVICE, sinstance); */
+      strcpy(primary_name,"olc");
+      sprintf(buf,"get new tickets: [%s] [%s] ", primary_name, sinstance);
 
       log_status(buf);
-      dest_tkt();
-      ret = krb_get_svc_in_tkt(K_SERVICE, sinstance, SERVER_REALM,
+      /* dest_tkt(); wade 3/10/94  try not destroying tickets */
+      strcpy(primary_name,"olc");
+      ret = krb_get_svc_in_tkt(primary_name, sinstance, SERVER_REALM,
 			       "krbtgt", SERVER_REALM,
 			       DEFAULT_TKT_LIFE, KEYFILE);
+
+      /* these two lines are for debugging */
+      sprintf(buf,"check arguments: [%s] [%s] ", primary_name, sinstance);
+      log_status(buf);
+
       if (ret != KSUCCESS) {
 	sprintf(buf,"get_tkt: %s", krb_err_txt[ret]);
-	log_error(buf);
+	/* log_error(buf);    *** since we are losing tickets, don't send zephyr msg */
+        log_status(buf);
 	ticket_time = 0L;
 	return(ERROR);
       }
