@@ -6,7 +6,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/rpd/fdcache.c,v 1.11 1991-04-18 22:25:11 lwvanels Exp $";
+static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/rpd/fdcache.c,v 1.12 1993-05-16 19:27:29 vanharen Exp $";
 #endif
 #endif
 
@@ -75,10 +75,11 @@ flush_cache()
  */
 
 char *
-get_log(username,instance,result)
+get_log(username,instance,result, censored)
      char *username;
      int instance;
      int *result;
+     int censored;
 {
   int hash,found;
   int fd;
@@ -86,6 +87,46 @@ get_log(username,instance,result)
   struct entry *head,*ptr;
   char filename[MAXPATHLEN];
   struct stat file_stat;
+
+  if (censored)			/* if censored, screw the cache stuff... */
+    {
+      char *ptr;
+
+      sprintf(filename,"%s/%s_%d.log.censored",
+	      LOG_DIRECTORY,username,instance);
+      if ((fd = open(filename,O_RDONLY,0)) < 0)
+	{
+	  *result = 0;
+	  return(NULL);
+	}
+      if (fstat(fd,&file_stat) < 0)
+	{
+	  syslog(LOG_ERR,"fstat: %m on %d",fd);
+	  close(fd);
+	  *result = errno;
+	  return(NULL);
+	}
+      /* Malloc buffer big enough for the file */
+      if ((ptr = (char *) malloc(file_stat.st_size)) == NULL)
+	{
+	  syslog(LOG_ERR,"get_log: malloc: error alloc'ing %d bytes\n",
+		 file_stat.st_size);
+	  close(fd);
+	  *result = -1;
+	  return(NULL);
+	}
+      if (read(fd, ptr, file_stat.st_size) != file_stat.st_size)
+	{
+	  syslog(LOG_ERR,"fdcache: read: %m on %d",fd);
+	  close(fd);
+	  free(ptr);
+	  *result = -1;
+	  return(NULL);
+	}
+      /* Set result to file size, and return pointer to text */
+      *result = file_stat.st_size;
+      return(ptr);
+    }
 
   /* Mark and Increment clock hand */
   cache[clock_hand].use = 1;
@@ -197,7 +238,7 @@ get_log(username,instance,result)
       /* Nope, it's an imposter.  Close the current one, and treat as a new */
       /* question */
       delete_entry(ptr);
-      return(get_log(username,instance,result));
+      return(get_log(username,instance,result, censored));
     }
 
     /* Check to see if the cache is current */
