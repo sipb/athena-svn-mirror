@@ -11,12 +11,15 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_util_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/util.c,v 1.16 1990-06-06 19:06:49 jik Exp $";
+     static char rcsid_util_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/util.c,v 1.17 1990-06-07 13:05:30 jik Exp $";
 #endif
 
 #include <stdio.h>
 #include <sys/param.h>
 #include <sys/types.h>
+#ifdef SYSV /* SYSV doesn't define uid_t */
+typedef unsigned short uid_t;
+#endif
 #include <sys/stat.h>
 #include <sys/dir.h>
 #ifdef SYSV
