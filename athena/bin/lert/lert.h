@@ -121,3 +121,12 @@
 #ifndef TRUE
 #define TRUE  1
 #endif
+
+#if defined (HAVE_DB_H) && !defined (HAVE_NDBM_H)
+#define DB_DBM_HSEARCH 1
+#include <db.h>
+#elif defined (HAVE_NDBM_H)
+#include <ndbm.h>
+#else
+#error Cannot find a suitable database header
+#endif
