@@ -6,8 +6,8 @@
  * For copying and distribution information, see the file "mit-copyright.h."
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/common.h,v $
- *	$Id: common.h,v 1.2 1990-05-25 15:06:11 vanharen Exp $
- *	$Author: vanharen $
+ *	$Id: common.h,v 1.3 1990-08-26 17:46:28 lwvanels Exp $
+ *	$Author: lwvanels $
  */
 
 #include <mit-copyright.h>
@@ -48,7 +48,7 @@ extern "C" {
     extern int sread OPrototype ((int, char *, int));
     extern int swrite OPrototype ((int, char *, int));
     extern void time_now OPrototype ((char *));
-    extern char * format_time OPrototype ((struct tm *));
+    extern char * format_time OPrototype ((char *,struct tm *));
     extern void uncase OPrototype ((char *));
     extern ERRCODE write_file_to_fd OPrototype ((int, char *));
     extern ERRCODE write_int_to_fd OPrototype ((int, int));
