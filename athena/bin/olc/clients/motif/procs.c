@@ -11,11 +11,11 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/procs.c,v $
- *      $Author: vrt $
+ *      $Author: cfields $
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/procs.c,v 1.24 1994-03-14 15:27:59 vrt Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/procs.c,v 1.25 1994-08-21 18:17:59 cfields Exp $";
 #endif
 
 #include <mit-copyright.h>
@@ -90,7 +90,12 @@ reaper(sig)
 #ifndef _POSIX_SOURCE
   signal(SIGCHLD, reaper);
 #endif
+
+#ifdef POSIX
+   pid = waitpid(-1, &foo, WNOHANG);
+#else
   pid = wait3(&foo,WNOHANG,0);
+#endif
   if (pid <= 0)
 #ifdef VOID_SIGRET
     return;
@@ -116,7 +121,15 @@ static int
 #endif
 view_ready(sig)
 {
+#ifdef POSIX
+  struct sigaction act;
+  sigemptyset(&act.sa_mask);
+  act.sa_flags = 0;
+  act.sa_handler= (void (*)()) SIG_IGN;
+  sigaction(SIGUSR1, &act, NULL);
+#else
   signal(SIGUSR1, SIG_IGN);
+#endif
   STANDARD_CURSOR;
 #ifdef VOID_SIGRET
   return;
