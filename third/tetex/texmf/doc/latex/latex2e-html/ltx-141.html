@@ -1,0 +1,70 @@
+<html>
+<head><title>Help On LaTeX Sectioning</title></head>
+<body bgcolor="#ffffff" text="#000000" link="#000099" vlink="#cc0000" alink="#cc0000">
+<h1><font size="-2">Hypertext Help with LaTeX</font><br><font color="#cc0000">Sectioning</font></h1>
+<p>
+ Sectioning  commands  provide  the means  to structure  your text into
+ units. The <a href="ltx-22.html">document style</a> determines which
+ sectioning commands are supported. They should be used with the 
+ following heirarchy:
+  <ul>
+  <li><tt>\part</tt>
+  <li><tt>\chapter</tt> (report style only)
+  <li><tt>\section</tt>
+  <li><tt>\subsection</tt>
+  <li><tt>\subsubsection</tt>
+  <li><tt>\paragraph</tt>
+  <li><tt>\subparagraph</tt>
+  <li><tt>\subsubparagraph</tt> (milstd and book-form styles only)
+  <li><tt>\subsubsubparagraph</tt> (milstd and book-form styles only)
+  </ul>
+<p>
+ The <a href="ltx-3.html">counter</a> for each level is reset when the
+ level above is incremented (except chapters are numbered sequentially
+ regardless of the part).
+<p>
+ All sectioning commands take the same general form:
+<pre>
+  <tt>\chapter[optional]{title}</tt>
+  <a href="ltx-252.html">\label{lab}</a> <a href="ltx-434.html">%</a> optional, for cross referencing
+   text for this unit ...
+   ...
+</pre>
+ In addition  to providing  the  heading  in the  text,  the  mandatory
+ argument of the sectioning command can appear in two other places:
+<ol>
+ <li>the table of contents
+ <li>the running head at the top of the page
+</ol>
+ You may not want the same thing to appear in these other two places as
+ appears in the text heading.  To handle this situation, the sectioning
+ commands have an optional  argument  that provides  the text for these
+ other two purposes.
+<p>
+The <tt>title</tt> or <tt>optional</tt> title are moving arguments so
+<a href="fragile.html">fragile</a> commands contained in these 
+arguments must be protected.
+<p>
+ All the sectioning commands have *-forms that print a title, but do not
+ print a number with the title and do not incement the relevant 
+ <a href="ltx-3.html">counter</a> and do not make an entry in the 
+ <a href="toc.html">table of contents</a>.
+<p>
+ A blank line before or after a sectioning command has no effect.
+<hr>
+Related topics
+<ul>
+<li><a href="ltx-252.html"><tt>\label</tt></a>
+<li><A href="ltx-142.html"><tt>\appendix</tt></A>
+</ul>
+<hr>
+See also <a href="ltx-3.html">Counters</a>,
+  <a href="ltx-13.html">Cross References</a><br>
+See also <a href="toc.html">Table of Contents</a><br>
+Back to <a href="ltx-2.html">LaTeX Table of Contents</a>
+<hr>
+<address>
+Revised: Sheldon Green, 14 Jul 1995.
+</address>
+</body>
+</html>

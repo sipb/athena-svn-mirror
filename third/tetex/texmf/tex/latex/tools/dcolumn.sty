@@ -1,0 +1,69 @@
+%%
+%% This is file `dcolumn.sty',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% dcolumn.dtx  (with options: `package')
+%% 
+%% This is a generated file.
+%% 
+%% Copyright 1993 1994 1995 1996 1997 1998 1999
+%% The LaTeX3 Project and any individual authors listed elsewhere
+%% in this file.
+%% 
+%% This file is part of the Standard LaTeX `Tools Bundle'.
+%% -------------------------------------------------------
+%% 
+%%  This file, and all the other files in this bundle as listed below,
+%%  may be distributed under the terms of the LaTeX Project Public
+%%  License, as described in lppl.txt in the base LaTeX distribution.
+%%  Either version 1.0 or, at your option, any later version.
+%% 
+%% File: dcolumn.dtx Copyright (C) 1992-1996 David Carlisle
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{dcolumn}
+          [1996/09/23 v1.04 decimal alignment package (DPC)]
+\RequirePackage{array}
+\def\DC@#1#2#3{%
+  \uccode`\~=`#1\relax
+  \m@th
+  \afterassignment\DC@x\count@#3\relax{#1}{#2}}
+\def\DC@x#1\relax#2#3{%
+  \ifnum\z@>\count@
+    \expandafter\DC@centre
+  \else
+    \expandafter\DC@right
+  \fi
+  {#2}{#3}{#1}}
+\def\DC@centre#1#2#3{%
+  \let\DC@end\DC@endcentre
+  \uppercase{\def~}{$\egroup\setbox\tw@=\hbox\bgroup${#2}}%
+  \setbox\tw@=\hbox{${\phantom{{#2}}}$}%
+  \setbox\z@=\hbox\bgroup$\mathcode`#1="8000 }
+\def\DC@endcentre{$\egroup
+    \ifdim \wd\z@>\wd\tw@
+      \setbox\tw@=\hbox to\wd\z@{\unhbox\tw@\hfill}%
+    \else
+      \setbox\z@=\hbox to\wd\tw@{\hfill\unhbox\z@}\fi
+    \box\z@\box\tw@}
+\def\DC@right#1#2#3{%
+  \ifx\relax#3\relax
+    \hfill
+    \let\DC@rl\bgroup
+  \else
+    \edef\DC@rl{to\the\count@\dimen@ii\bgroup\hss\hfill}%
+    \count@\@gobble#3\relax
+  \fi
+  \let\DC@end\DC@endright
+  \uppercase{\def~}{$\egroup\setbox\tw@\hbox to\dimen@\bgroup${#2}}%
+   \setbox\z@\hbox{$1$}\dimen@ii\wd\z@
+   \dimen@\count@\dimen@ii
+   \setbox\z@\hbox{${#2}$}\advance\dimen@\wd\z@
+   \setbox\tw@\hbox to\dimen@{}%
+   \setbox\z@\hbox\DC@rl$\mathcode`#1="8000 }
+\def\DC@endright{$\hfil\egroup\box\z@\box\tw@}
+\newcolumntype{D}[3]{>{\DC@{#1}{#2}{#3}}c<{\DC@end}}
+\endinput
+%%
+%% End of file `dcolumn.sty'.

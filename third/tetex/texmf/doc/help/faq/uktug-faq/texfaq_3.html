@@ -1,0 +1,254 @@
+<HTML>
+<HEAD>
+<TITLE>TeX Frequently Asked Questions - Section 3</TITLE>
+<!-- File version: 2.2n -->
+<!-- File date: 1999/06/05 -->
+
+<!-- Creator: faq2html.el, running on XEmacs 20.4 "Em -->
+<!-- CreationDate: Sat Jun  5 14:50:13 1999  te -->
+</HEAD>
+
+<BODY>
+Go to the <A HREF="texfaq_0.html">first</A>, <A HREF="texfaq_2.html">previous</A>, <A HREF="texfaq_4.html">next</A>, <A HREF="texfaq_17.html">last</A> section, <A HREF="texfaq_toc.html">table of contents</A>.
+<HR>
+
+<H1><A NAME="SEC3">Bits and pieces of TeX</A></H1>
+
+
+<H2><A NAME="QU26">What is a DVI file?</A></H2>
+
+<P>
+A DVI file (that is, a file with the type or extension <CODE>.dvi</CODE>) is
+TeX's main output file, using TeX in its broadest sense to
+include LaTeX, etc.  `DVI' is supposed to be an acronym for
+DeVice-Independent, meaning that the file can be
+printed on almost any
+kind of typographic output device.  The DVI file is designed to be
+read by a driver (<A HREF="texfaq_3.html#QU27">DVI drivers</A>) to produce
+further output designed specifically for a particular printer (e.g., a
+LaserJet) or to be used as input to a previewer for display on a
+computer screen.  DVI files use TeX's internal coding; a TeX
+input file should produce the same DVI file regardless of which
+implementation of TeX is used to produce it.
+
+<P>
+A DVI file contains all the information that is needed for printing 
+or previewing except for the actual bitmaps or outlines of fonts, and 
+possibly material to be introduced by means of
+  <A HREF="texfaq_3.html#QU31"><CODE>\special</CODE> commands</A>.
+
+<P>
+The canonical reference for the structure of a DVI file is the
+source of <I>dvitype</I> (<A HREF="ftp://ftp.dante.de/tex-archive/systems/knuth/texware/dvitype.web"><TT>systems/knuth/texware/dvitype.web</TT></A>).
+
+
+
+<H2><A NAME="QU27">What is a driver?</A></H2>
+
+<P>
+A driver is a program that takes as input a <CODE>dvi</CODE> file
+(<A HREF="texfaq_3.html#QU26">DVI files</A>)  and
+(usually) produces a file that can be sent to a typographic
+output device, called a printer for short.
+
+<P>
+A driver will usually be specific to a particular printer,
+although any PostScript printer ought to be able to print
+the output from a PostScript driver.
+
+<P>
+As well as the DVI file, the driver needs font information.
+Font information may be held as bitmaps or as outlines, or simply as a
+set of pointers into the fonts that the printer itself `has'.
+Each driver will expect the font information in
+a particular form.  For more information on the forms of fonts,
+see questions <A HREF="texfaq_3.html#QU28"><CODE>pk</CODE> files</A>,
+<A HREF="texfaq_3.html#QU29"><CODE>tfm</CODE> files</A>,
+<A HREF="texfaq_3.html#QU30">virtual fonts</A>
+and <A HREF="texfaq_11.html#QU59">Using PostScript fonts with TeX</A>.
+
+
+
+<H2><A NAME="QU28">What are PK files?</A></H2>
+
+<P>
+PK files (packed raster) contain font bitmaps. The output
+from
+  <A HREF="texfaq_10.html#QU56">METAFONT</A>
+includes a generic font (GF) file and the
+utility <I>gftopk</I> produces the PK file from that.
+There are a lot of PK files, as one is needed for each font,
+that is each magnification (size) of each design (point) size for each
+weight for each family.  Further, since the PK files for one printer
+do not necessarily work well for another, the whole set needs to be
+duplicated for each printer type at a site.  As a result, they are
+often held in an elaborate directory structure, or in `font library
+files', to regularise access.
+
+
+
+<H2><A NAME="QU29">What are TFM files?</A></H2>
+
+<P>
+TFM stands for TeX font metrics, and TFM files hold
+information about the sizes of the characters of the font in question,
+and about ligatures and kerns within that font.  One TFM file is
+needed for each font used by TeX, that is for each design (point)
+size for each weight for each family; one TFM file serves for all
+magnifications, so that there are (typically) fewer TFM files than
+there are PK files.  The important point is that TFM files are
+used by TeX (LaTeX, etc.), but are not, generally, needed by the
+printer driver.
+
+
+
+<H2><A NAME="QU30">Virtual fonts</A></H2>
+
+<P>
+Virtual fonts for TeX were first implemented by David Fuchs in the
+early days of TeX, but for most people they started when Knuth
+redefined the format, and wrote some support software, in 1989.
+Virtual fonts provide a way of telling TeX about something more
+complicated than just a one-to-one character mapping. The entities you
+define in a virtual font look like characters to TeX (they appear
+with their sizes in a font metric file), but the DVI processor may
+expand them to something quite different. You can use this facility
+just to remap characters, to make a composite font with glyphs drawn
+from several sources, or to build up an effect in arbitrarily
+complicated ways - a virtual font may contain anything which is
+legal in a DVI file.
+In practice, the most common use of virtual fonts is to remap
+PostScript fonts (see <A HREF="texfaq_11.html#QU61">font metrics</A>) or to
+build `fake' maths fonts.
+
+<P>
+It is important to realise that TeX itself does <EM>not</EM> see
+virtual fonts; for every virtual font read by the DVI driver there
+is a corresponding TFM file read by TeX. Virtual fonts are normally
+created in a single ASCII <CODE>vpl</CODE> (Virtual Property List) file, which
+includes both sets of information. The <I>vptovf</I> program is
+then used to the create the binary TFM and VF files.  The
+commonest way (nowadays) of generating <CODE>vpl</CODE> files is to use the
+<I>fontinst</I> package, which is described in detail
+together with the discussion of
+<A HREF="texfaq_11.html#QU61">PostScript font metrics</A>.
+<A HREF="ftp://ftp.dante.de/tex-archive/fonts/utilities/qdtexvpl"><TT>fonts/utilities/qdtexvpl</TT></A> is another utility for creating ad-hoc virtual
+fonts.
+
+
+<H2><A NAME="QU31"><CODE>\special</CODE> commands</A></H2>
+
+<P>
+TeX provides the means to express things that device drivers can
+do, but about which TeX itself knows nothing.  For example, TeX
+itself knows nothing about how to include PostScript figures into
+documents, or how to set the colour of printed text; but some device
+drivers do.
+
+<P>
+Such things are introduced to your document by means of <CODE>\special</CODE>
+commands; all that TeX does with these commands is to expand their
+arguments and then pass the command to the DVI file.  In most
+cases, there are macro packages provided (often with the driver) that
+provide a comprehensible interface to the <CODE>\special</CODE>; for example,
+there's little point including a figure if you leave no gap for it in
+your text, and changing colour proves to be a particularly fraught
+operation that requires real wizardry. LaTeX2e
+has standard graphics and colour packages that make file inclusion,
+rotation, scaling and colour via <CODE>\special</CODE>s all easy.
+
+<P>
+The allowable arguments of <CODE>\special</CODE> depend on the device driver
+you're using.  Apart from the examples above, there are <CODE>\special</CODE>
+commands in the emTeX drivers (e.g., <I>dvihplj</I>, <I>dviscr</I>,
+<EM>etc</EM>.) that will draw lines at arbitrary orientations, and
+commands in <I>dvitoln03</I> that permit the page to be set in
+landscape orientation.
+
+
+<H2><A NAME="QU32">Documented LaTeX sources (<CODE>.dtx</CODE> files)</A></H2>
+
+<P>
+LaTeX2e, and many support macro packages, are now written in a
+  <A HREF="texfaq_8.html#QU48">literate programming</A> style,
+with source and documentation in the
+same file.  This format, known as `doc', was originated by Frank
+Mittelbach. The documented sources conventionally have the suffix
+<CODE>.dtx</CODE>, and should normally be stripped of documentation
+before use with LaTeX.  Alternatively you can run LaTeX on a
+<CODE>.dtx</CODE> file to produce a nicely formatted version of the
+documented code. An installation script (with suffix
+<CODE>.ins</CODE>) is usually provided, which needs the standard LaTeX2e
+<I>docstrip</I> package (among other things, the installation
+process strips all the comments that make up the documentation for
+speed when loading the file into a running LaTeX system).  Several
+packages can be included in one <CODE>.dtx</CODE> file, with conditional
+sections, and there facilities for indices of macros etc.  Anyone can
+write <CODE>.dtx</CODE> files; the format is explained in
+<EM>The LaTeX Companion</EM>
+(see <A HREF="texfaq_2.html#QU19">books on TeX</A>). There are
+no programs yet to assist in composition.
+
+<P>
+<CODE>.dtx</CODE> files are not used by LaTeX after they have been
+processed to produce <CODE>.sty</CODE> or <CODE>.cls</CODE> (or whatever)
+files.  They need not be kept with the working system; however, for
+many packages the <CODE>.dtx</CODE> file is the primary source of
+documentation, so you may want to keep <CODE>.dtx</CODE> files elsewhere.
+
+
+<H2><A NAME="QU33">What are the EC fonts?</A></H2>
+
+<P>
+A font consists of a number of <EM>glyphs</EM>.  In order that the
+glyphs may be printed, there has to be some way of accessing them; in
+TeX they're arranged in a numerical order called an
+<EM>encoding</EM>, and their number in the encoding is used.  For
+various reasons, Knuth chose rather eccentric encodings; in
+particular, he chose different encodings for different fonts.
+
+<P>
+When TeX version 3 arrived, some at least of the reasons for the
+eccentricity of
+Knuth's encodings went away, and at TUG's Cork meeting, an encoding for
+a set of 256 glyphs, for use in TeX text, was defined.  The
+intention was that these glyphs should cover `most' European
+languages, in the sense of including all accented letters needed.
+(Knuth's CMR fonts missed things necessary for Icelandic,
+Polish and Sami, for example, but the Cork fonts have them.)
+  <A HREF="texfaq_16.html#QU116">LaTeX2e</A>
+refers to the Cork encoding as T1, and provides the means to
+use fonts thus encoded to avoid problems with the interaction of
+accents and hyphenation 
+(see <A HREF="texfaq_14.html#QU95">hyphenation of accented words</A>).
+
+<P>
+The only METAFONT-fonts that conform to the Cork encoding are the
+EC fonts (available as <A HREF="ftp://ftp.dante.de/tex-archive/fonts/ec"><TT>fonts/ec</TT></A>).  They look
+CM-like, and are now regarded as `stable' (in the same sense
+that the CM fonts are stable: their metrics are unlikely ever
+to change).  Their serious
+disadvantage for the casual user is
+that they are large - each EC font is roughly twice the size
+of the corresponding CM font; what's more, until corresponding
+fonts for mathematics are produced, the CM fonts must be
+retained.
+
+<P>
+The EC fonts supersede the experimental DC fonts, which
+have now been removed from the archives.  They are distributed with a
+set of `Text Companion' (TC) fonts that provide glyphs for
+symbols commonly used in text.  The TC fonts are encoded
+according to the LaTeX TS1 encoding, and are not viewed as
+`stable' in the same way as are the EC fonts are.
+
+<P>
+The Cork encoding is also implemented by the
+  <A HREF="texfaq_11.html#QU59">PSNFSS system</A>,
+for PostScript fonts.
+
+
+<HR>
+Go to the <A HREF="texfaq_0.html">first</A>, <A HREF="texfaq_2.html">previous</A>, <A HREF="texfaq_4.html">next</A>, <A HREF="texfaq_17.html">last</A> section, <A HREF="texfaq_toc.html">table of contents</A>.
+</BODY>
+</HTML>

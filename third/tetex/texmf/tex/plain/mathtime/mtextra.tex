@@ -1,0 +1,51 @@
+%% This is for the support of the alternate MathScript fonts MTLS and MTLSB
+%% The alternate script fonts are a bit lighter than the original MTMS, MTMSB.
+%% This code defining \MTLS and \MTLSB goes into mtplus.tex, right after the
+%% corresponding definitions for \MTMS and \MTMSB.  Use \MTLS and \MTLSB
+%% just as you would \MTMS and \MTMSB
+
+\def\MTLS#1#2#3{%
+ \alloc@@8\fam\chardef\sixt@@n\MTLSfam
+ \dimen@#1\relax\PSZ@
+ \FONT@{MTLS}\nextiii@\textfont\MTLSfam\next@\skewchar\next@'52
+ \dimen@#2\relax\PSZ@
+ \FONT@{MTLS}\nextiii@\scriptfont\MTLSfam\next@\skewchar\next@'52
+ \dimen@#3\relax\PSZ@
+ \FONT@{MTLS}\nextiii@\scriptscriptfont\MTLSfam\next@
+ \skewchar\next@'52\relax
+ \def\script{\futurelet\next\script@}%
+ \def\script@{\ifx\next*\expandafter\script@@\else\expandafter\script@@@\fi}%
+ \def\script@@*##1{\edef\next@{\ifx##1A48\else\ifx##1E49\else\ifx##1G50\else
+  \ifx##1g51\else\ifx##1I52\else\ifx##1L53\else\ifx##1Q54\else
+  \ifx##1S55\else\ifx##1r56\else\ifx##1z57\else\ifx##1i123\else
+  \ifx##1j124\else\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi}%
+  \ifx\next@\empty\script@@@{##1}\else
+  \count@=\MTLSfam 
+  \multiply\count@256 
+  \advance\count@\next@
+  \mathchar\count@\relax\fi}%
+ \def\script@@@##1{{\fam\MTLSfam\relax##1}}%
+}
+\def\MTLSB#1#2#3{%
+ \alloc@@8\fam\chardef\sixt@@n\MTLSBfam
+ \dimen@#1\relax\PSZ@
+ \FONT@{MTLSB}\nextiii@\textfont\MTLSBfam\next@\skewchar\next@'52
+ \dimen@#2\relax\PSZ@
+ \FONT@{MTLSB}\nextiii@\scriptfont\MTLSBfam\next@\skewchar\next@'52
+ \dimen@#3\relax\PSZ@
+ \FONT@{MTLSB}\nextiii@\scriptscriptfont\MTLSBfam\next@
+ \skewchar\next@'52\relax
+ \def\bscript{\futurelet\next\bscript@}%
+ \def\bscript@{\ifx\next*\expandafter\bscript@@
+  \else\expandafter\bscript@@@\fi}%
+ \def\bscript@@*##1{\edef\next@{\ifx##1A48\else\ifx##1E49\else\ifx##1G50\else
+  \ifx##1g51\else\ifx##1I52\else\ifx##1L53\else\ifx##1Q54\else
+  \ifx##1S55\else\ifx##1r56\else\ifx##1z57\else\ifx##1i123\else
+  \ifx##1j124\else1\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi}%
+  \ifx\next@\empty\bscript@@@{##1}\else
+  \count@=\MTLSBfam 
+  \multiply\count@256 
+  \advance\count@\next@
+  \mathchar\count@\relax\fi}%
+ \def\bscript@@@##1{{\fam\MTLSBfam\relax##1}}%
+}

@@ -1,0 +1,123 @@
+<HTML>
+<HEAD>
+<TITLE>TeX Frequently Asked Questions - Section 6</TITLE>
+<!-- File version: 2.2n -->
+<!-- File date: 1999/06/05 -->
+
+<!-- Creator: faq2html.el, running on XEmacs 20.4 "Em -->
+<!-- CreationDate: Sat Jun  5 14:50:13 1999  te -->
+</HEAD>
+
+<BODY>
+Go to the <A HREF="texfaq_0.html">first</A>, <A HREF="texfaq_5.html">previous</A>, <A HREF="texfaq_7.html">next</A>, <A HREF="texfaq_17.html">last</A> section, <A HREF="texfaq_toc.html">table of contents</A>.
+<HR>
+
+<H1><A NAME="SEC6">DVI Drivers and Previewers</A></H1>
+
+
+<H2><A NAME="QU41">DVI to PostScript conversion programs</A></H2>
+
+<P>
+The best public domain DVI to PostScript conversion program which
+runs under many operating systems is Tom Rokicki's <I>dvips</I>.
+<I>dvips</I> is written in C and ports easily to other operating
+systems; it is available as <A HREF="ftp://ftp.dante.de/tex-archive/dviware/dvips"><TT>dviware/dvips</TT></A>
+
+<P>
+VMS versions are available through the DECUS library
+(see <A HREF="texfaq_4.html#QU34">sources of software</A>), 
+and also as part of the \CTAN{} distribution of TeX for VMS
+(<A HREF="ftp://ftp.dante.de/tex-archive/systems/OpenVMS/TEX97_CTAN.ZIP"><TT>systems/OpenVMS/TEX97_CTAN.ZIP</TT></A>).
+
+<P>
+A precompiled version for MS-DOS is available from <A HREF="ftp://ftp.dante.de/tex-archive/systems/msdos/dviware/dvips"><TT>systems/msdos/dviware/dvips</TT></A>
+
+<P>
+Karl Berry's version of <I>dvips</I> (called <I>dvipsk</I>)
+has a configure script and path searching code similar to that in his
+other programs (<EM>e.g.</EM>, <I>web2c</I>); it is available from
+<A HREF="ftp://ftp.dante.de/tex-archive/dviware/dvipsk"><TT>dviware/dvipsk</TT></A>
+
+<P>
+Another good portable program is <I>dvitops</I> by James Clark,
+which is also written in C and will compile under Unix, MS-DOS, VMS,
+and Primos; however, it does not support virtual fonts.  It is
+available from
+<A HREF="ftp://ftp.dante.de/tex-archive/dviware/dvitops"><TT>dviware/dvitops</TT></A>
+
+<P>
+Macintosh users can use either the excellent drivers built into OzTeX
+or Textures, or a port of <I>dvips</I> in the CMacTeX package.
+
+
+<H2><A NAME="QU42">DVI drivers for HP LaserJet</A></H2>
+
+<P>
+The emTeX package (see <A HREF="texfaq_5.html#QU38">TeX systems</A>)
+contains a driver for the LaserJet, <I>dvihplj</I>.
+
+<P>
+Version 2.10 of the Beebe drivers supports the LaserJet. These drivers
+will compile under Unix, VMS, and on the Atari ST and
+DEC-20's, and are available from <A HREF="ftp://ftp.dante.de/tex-archive/dviware/beebe"><TT>dviware/beebe</TT></A>
+
+<P>
+Karl Berry's <I>dviljk</I>, which has the same path-searching code
+as his <I>dvipsk</I> (see
+<A HREF="texfaq_6.html#QU41">DVI to PostScript programs</A>), is available in
+<A HREF="ftp://ftp.dante.de/tex-archive/dviware/dviljk"><TT>dviware/dviljk</TT></A>
+
+
+<H2><A NAME="QU43">DVI previewers</A></H2>
+
+<P>
+EmTeX and gTeX for the PC, and OzTeX for the Macintosh, all
+come with previewers that can be used on those platforms. There is a
+good OS/2 Presentation Manager previewer in emTeX, and a public
+domain Windows previewer (<A HREF="ftp://ftp.dante.de/tex-archive/dviware/dviwin"><TT>dviware/dviwin</TT></A>).  Commercial PC TeX
+packages  (see <A HREF="texfaq_5.html#QU40">commercial vendors</A>)
+have good MS-DOS and Windows previewers.
+
+<P>
+Previewers available for other operating systems include:
+<DL>
+<DT><I>xdvi</I>
+<DD>The most widely used previewer for the X Window System
+  (and hence almost any Unix or modern VMS workstation); available in
+  <A HREF="ftp://ftp.dante.de/tex-archive/dviware/xdvi"><TT>dviware/xdvi</TT></A>
+
+<P>
+  Karl Berry's version of <I>xdvi</I>, called <I>xdvik</I>,
+  has features analogous to his <I>dvipsk</I>
+  (see <A HREF="texfaq_6.html#QU41">DVI to PostScript programs</A>);
+  it is available in <A HREF="ftp://ftp.dante.de/tex-archive/dviware/xdvik"><TT>dviware/xdvik</TT></A>
+<DT><I>dvipage</I>
+<DD>For SunView on (old enough) Sun workstations. This was
+  published in volume 15 of <SAMP>comp.sources.unix</SAMP> and is
+  archived in <A HREF="ftp://ftp.dante.de/tex-archive/dviware/dvipage"><TT>dviware/dvipage</TT></A>
+<DT><I>xtex</I>
+<DD>An older previewer for the X Window System; available in
+  <A HREF="ftp://ftp.dante.de/tex-archive/dviware/seetex"><TT>dviware/seetex</TT></A>
+<DT><I>dviapollo</I>
+<DD>For Apollo Domain workstations; available in
+  <A HREF="ftp://ftp.dante.de/tex-archive/dviware/dviapollo"><TT>dviware/dviapollo</TT></A>
+<DT><I>dvidis</I>
+<DD>For (old enough, VMS) VAXSTATIONS running
+  VWS; available in <A HREF="ftp://ftp.dante.de/tex-archive/dviware/dvidis"><TT>dviware/dvidis</TT></A>
+<DT><I>dvitovdu</I>
+<DD>for Tektronix 4010-compatible and other terminals
+  under Unix and VMS; available as <A HREF="ftp://ftp.dante.de/tex-archive/dviware/dvitovdu"><TT>dviware/dvitovdu</TT></A>
+<DT><I>dvi2tty</I>
+<DD>A DVI to ASCII conversion program, for normal
+  terminals; available as <A HREF="ftp://ftp.dante.de/tex-archive/dviware/dvi2tty"><TT>dviware/dvi2tty</TT></A>
+<DT><I>texsgi</I>
+<DD>For SGI under Irix; both a binary and source are
+  available, but be sure to get the fonts as well.  Available as
+  <A HREF="ftp://ftp.dante.de/tex-archive/dviware/texsgi"><TT>dviware/texsgi</TT></A>
+</DL>
+
+
+<HR>
+Go to the <A HREF="texfaq_0.html">first</A>, <A HREF="texfaq_5.html">previous</A>, <A HREF="texfaq_7.html">next</A>, <A HREF="texfaq_17.html">last</A> section, <A HREF="texfaq_toc.html">table of contents</A>.
+</BODY>
+</HTML>

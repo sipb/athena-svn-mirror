@@ -1,0 +1,241 @@
+%% 
+%% This is file `dbold.tex',
+%% generated with the docstrip utility.
+%% 
+%% The original source files were:
+%% 
+%% dinbrief.dtx  (with options: `dinbriefold')
+%% 
+%% Copyright (C) 1993, 96 by Richard Gussmann, University of Karlsruhe. 
+%% For additional copyright information see further down in this file. 
+%% 
+%% This file is part of the dinbrief-class. 
+%% ---------------------------------------- 
+%% 
+%% This system is distributed in the hope that it will be useful, 
+%% but WITHOUT ANY WARRANTY; without even the implied warranty of 
+%% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
+%% 
+%% 
+%% IMPORTANT NOTICE: 
+%% 
+%% For error reports in case of UNCHANGED versions see readme files. 
+%% 
+%% Please do not request updates from us directly. Distribution is 
+%% done through Mail-Servers and TeX organizations. 
+%% 
+%% You are not allowed to change this file. 
+%% 
+%% You are allowed to distribute this file under the condition that 
+%% it is distributed together with all files mentioned in 00readme.. 
+%% 
+%% If you receive only some of these files from someone, complain! 
+%% 
+%% You are NOT ALLOWED to distribute this file alone. You are NOT 
+%% ALLOWED to take money for the distribution or use of either this 
+%% file or a changed version, except for a nominal charge for copying 
+%% etc. 
+%%
+%% \CharacterTable
+%%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%%   Digits        \0\1\2\3\4\5\6\7\8\9
+%%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%%   Dollar        \$     Percent       \%     Ampersand     \&
+%%   Acute accent  \'     Left paren    \(     Right paren   \)
+%%   Asterisk      \*     Plus          \+     Comma         \,
+%%   Minus         \-     Point         \.     Solidus       \/
+%%   Colon         \:     Semicolon     \;     Less than     \<
+%%   Equals        \=     Greater than  \>     Question mark \?
+%%   Commercial at \@     Left bracket  \[     Backslash     \\
+%%   Right bracket \]     Circumflex    \^     Underscore    \_
+%%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%%   Right brace   \}     Tilde         \~}
+%%
+ %
+ % example letter, example receiver addresses
+ %
+ % Most of the following code has taken from the dinbrief released
+ % at May 11th, 1992. This code is originated by Rainer Sengerling.
+ %
+ % The following example contains all commands of the old dinbrief.sty
+ % API (application programming interface). We recommend to use the
+ % new dinbrief API which is much more powerfull. The outcome may be
+ % quiet unsatisfied if you mix both APIs. We had made a few changes
+ % to adapt the file to \LaTeXe.
+ %
+\expandafter\ifx\csname documentclass\endcsname\relax
+    \documentstyle[german]{dinbrief}
+    \typeout{Using the command \string\documentstyle.}
+  \else
+    \documentclass[10pt]{dinbrief}
+    \usepackage{german}
+    \typeout{Using the command \string\documentclass.}
+  \fi
+
+\Etihoehe{41mm}%
+\Etirand{46.3mm}%
+\Etizahl{6}%
+\makelabels
+\spare{1}
+ %\pagestyle{empty}
+\begin{document}
+ %
+ % Musterbrief -- Anfang
+ % In der vorliegenden Version (beachte Auskommentierungen mit %)
+ % liefert er das Anwendungsbeispiel 4 von DIN 5008
+ %
+\begin{letter}{%
+Stadt G"ottingen\\
+Stadtbauamt\\
+Postfach 28 17\par
+3400 G"ottingen
+}
+\Postvermerk{Einschreiben}
+\Behandlungsvermerk{E\ i\ l\ t}
+\Datum{G"ottingen, 29.04.86}
+\Absender{Klaus Waldmann\\B"urgerstra"se 135\\3400 G"ottingen\\::Tel.\
+(05 51) 9 34 56}
+\Retourlabel
+\Fenster
+\Retouradresse{K. Waldmann $\cdot$ B"urgerstr.\ 135 $\cdot$
+               3400 G"ottingen}
+\Betreff{Mein Bauvorhaben Waldrebenweg 9}
+\signature{K. Waldmann}
+\opening{Sehr geehrte Damen und Herren,}
+den Antrag zur Genehmigung f"ur den Neubau eines Einfamilienhauses auf
+meinem Grund\-st"uck G"ottingen, Waldrebenweg 9, hat der Architekt,
+Herr Dipl.-Ing.\ G. Schwarz, mit allen erforderlichen Unterlagen am
+03.01.86 eingereicht. Die Baugenehmigung habe ich bis heute nicht
+erhaltern.
+
+\Einrueckung{%Der folgende Text wird eingerueckt
+Da ich die Finanzierung des Bauvorhabens ohne die Baugenehmigung nicht
+endg"ultig kl"aren kann und der Beginn der Bauarbeiten nicht verz"ogert
+werden soll, bitte ich dringend, das Genehmigungsverfahren zu
+beschleunigen.
+}  % Ende der Einrueckung
+
+Gleichzeitig bitte ich um Auskunft, ob damit zu rechnen ist, da"s der
+nur geschotterte Waldrebenweg in absehbarer Zeit zu einer "`Stra"se im
+vorl"aufigen Ausbau"' umgestaltet wird.
+
+\anlagenrechts
+\Anlagen{2 Anlagen}
+\Verteiler{Verteiler:\\Landratsamt}
+
+\closing{Mit freundlichen Gr"u"sen}
+\ps{Also bis bald!}
+\end{letter}
+
+ % normgerecht geschriebene Adressen
+
+\begin{letter}{Frau\\Erika Werner\\bei M"uller\\Bahnhofstr.\ 4 -- 6
+
+8580 Bayreuth}
+\end{letter}
+
+\begin{letter}{Frau\\ Annemarie Hartmann\\Vogelsangstr.\ 17 II\par
+2870 Delmenhorst}
+\Postvermerk{Briefdrucksache}
+\end{letter}
+
+\begin{letter}{02694/73\\Herrn Gutsverwalter\\Dipl.-Ldw.\ Otto Winter\\
+Hauptstr.\ 3
+
+8221 Alm Post Neukirchen}
+\Postvermerk{Nicht nachsenden}
+\end{letter}
+
+\begin{letter}{Eheleute\\Erika und Hans M"uller\\Hochstr.\ 4
+
+4709 Bergkamen}
+\Postvermerk{Warensendung}
+\end{letter}
+
+\begin{letter}{Herrn Staatsanwalt\\Dr.\ Ernst Meyer und Frau\\
+Talblick 2
+
+8200 Rosenheim}
+\Postvermerk{Eilzustellung -- auch nachts}
+\end{letter}
+
+\begin{letter}{Herrn Rechtsanwalt\\Dr.\ Otto Freiherr von Bergheim\\
+Leonhard-Eck-Str.\ 7 W 36
+
+8000 M"unchen 19}
+\Postvermerk{Einschreiben -- R"uckschein}
+\end{letter}
+
+\begin{letter}{Herrn Direktor\\Dipl.-Kfm.\ Kurt Gr"aser\\Massivbau AG\\
+Postfach 21 03 14
+
+5600 Wuppertal 21}
+\end{letter}
+
+\begin{letter}{Frau Luise Weber\\Herrn Max Weber\\Rosenstra"se 35
+
+7030 B"oblingen}
+\end{letter}
+
+\begin{letter}{Lack- und Farbwerke\\Dr.\ Hans Sendler \& Co.\\
+Abt.\ FDM 412/10\\Postfach 80 19 36\par
+6230 Frankfurt 80}
+\end{letter}
+
+\begin{letter}{Lehmann \& Krause KG\\z.\ H. Herrn E. Winkelmann\\
+Gartenhaus III r.\\Johannisberger Str.\ 5 a\par 1000 Berlin 31}
+\end{letter}
+
+\begin{letter}{W"aschegro"shandel\\Robert Bergmann\\Venloer
+Stra"se 80 -- 82\par 5000 K"oln 30}
+\end{letter}
+
+\begin{letter}{Firma\\Otto Pfleiderer\\Braunenweiler\\Hauptstr.\ 5\par
+7968 Saulgau 1}
+\Postvermerk{Drucksache}
+\end{letter}
+
+\begin{letter}{Amtsgericht Leer\\Grundbuchamt\\Postfach 11 24\par
+2950 Leer}
+\end{letter}
+
+\begin{letter}{Regierungspr"asident\\Dezernat 44.II.2\\
+Postfach 59 07\par 4400 M"unster}
+\end{letter}
+
+\begin{letter}{Nassauische Heimst"atte GmbH\\
+Abt.\ Landestreuhandstelle\\Postfach 10 29 17\par 6000 Frankfurt 1}
+\end{letter}
+
+\begin{letter}{Volksbank Friedberg\\Hauptzweigstelle Bad Nauheim\\
+Aliceplatz 4\par 6350 Bad Nauheim}
+\end{letter}
+
+\begin{letter}{VEB Ph"onix-Apparatewerk\\
+Absatzabteilung\\Inselstr.\ 14/20
+
+DDR-7021 Leipzig}
+\Postvermerk{Einschreiben}
+\end{letter}
+
+\begin{letter}{Mevrouv J. de Vries\\ Poste restante A. Cuypstraat\\
+Postbus 99730\\1000 NA AMSTERDAM
+
+NIEDERLANDE}
+\end{letter}
+
+\begin{letter}{Monsieur P. Dubois\\Expert en assurances\\
+Escalier 3, b\^atiment C\\4, rue Jean Jaur\`es
+
+F-58500 CLAMECY}
+\end{letter}
+
+\begin{letter}{Mr.\ W. Smith\\514 Kingsbridge Road\\PURLEY, SURREY\\DE
+1\\GROSSBRITANNIEN CRZ 4TH}
+\end{letter}
+
+\end{document}
+\endinput
+%% 
+%% End of file `dbold.tex'.

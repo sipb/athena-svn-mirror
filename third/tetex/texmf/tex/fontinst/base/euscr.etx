@@ -1,0 +1,141 @@
+%%% ====================================================================
+%%%  @TeX-font-encoding-file{
+%%%     author          = "Matthias Clasen and Ulrik Vieth",
+%%%     version         = "1.801",
+%%%     date            = "29 June 1998",
+%%%     time            = "23:56:54 CEST",
+%%%     filename        = "euscr.etx",
+%%%     email           = "vieth@thphy.uni-duesseldorf.de",
+%%%     URL             = "http://www.thphy.uni-duesseldorf.de/~vieth/",
+%%%     checksum        = "52299 141 246 3788",
+%%%     codetable       = "ISO/ASCII",
+%%%     keywords        = "encoding, math, TeX, PostScript",
+%%%     supported       = "yes",
+%%%     abstract        = "This is the Euler Script encoding as a TeX
+%%%                        font encoding file, for use with the fontinst
+%%%                        utility.",
+%%%     package         = "fontinst",
+%%%     dependencies    = "fontinst.sty, fontdoc.sty",
+%%%  }
+%%% ====================================================================
+
+\relax
+\documentclass[twocolumn]{article}
+\usepackage{fontdoc}
+
+\useexamplefont{eusm10}
+
+\title{The AMS Euler Script encoding vector (OMS-subset)}
+\author{Matthias Clasen and Ulrik Vieth}
+
+\begin{document}
+\maketitle
+
+\encoding
+
+\comment{\section{Default values}}
+
+\setstr{codingscheme}{TEX MATH SYMBOLS SUBSET}
+\setint{italicslant}{0}
+
+\ifisglyph{x}\then
+   \setint{xheight}{\height{x}}
+\else
+   \setint{xheight}{500}
+\fi
+
+\comment{\section{Default font dimensions}}
+
+\setint{fontdimen(1)}{\int{italicslant}} % italic slant
+\setint{fontdimen(2)}{0}                 % interword space
+\setint{fontdimen(3)}{0}                 % interword stretch
+\setint{fontdimen(4)}{0}                 % interword shrink
+\setint{fontdimen(5)}{\int{xheight}}     % x-height
+\setint{fontdimen(6)}{1000}              % quad
+\setint{fontdimen(7)}{0}                 % extra space after .
+
+\comment{The following font dimensions are taken from \texttt{eusm10}.}
+
+\setint{fontdimen(8)}{378}
+\setint{fontdimen(9)}{270}
+\setint{fontdimen(10)}{297}
+\setint{fontdimen(11)}{378}
+\setint{fontdimen(12)}{162}
+\setint{fontdimen(13)}{405}
+\setint{fontdimen(14)}{378}
+\setint{fontdimen(15)}{324}
+\setint{fontdimen(16)}{189}
+\setint{fontdimen(17)}{243}
+\setint{fontdimen(18)}{405}
+\setint{fontdimen(19)}{27}
+\setint{fontdimen(20)}{2198}
+\setint{fontdimen(21)}{1000}
+\setint{fontdimen(22)}{257}
+
+
+\comment{\section{The encoding}}
+
+\setslotcomment{The symbol `\slotexample'.}
+
+\nextslot{24}
+\setslot{similar}\endsetslot
+
+\nextslot{48}
+\setslot{skewchar}\endsetslot
+
+\nextslot{58}
+\setslot{logicalnot}\endsetslot
+\nextslot{60}
+\setslot{Rfraktur}\endsetslot
+\setslot{Ifraktur}\endsetslot
+\nextslot{64}
+\setslot{aleph}\endsetslot
+
+\setslotcomment{The script letter `\slotexample'.}
+
+\nextslot{65}
+\setslot{Acal}\endsetslot
+\setslot{Bcal}\endsetslot
+\setslot{Ccal}\endsetslot
+\setslot{Dcal}\endsetslot
+\setslot{Ecal}\endsetslot
+\setslot{Fcal}\endsetslot
+\setslot{Gcal}\endsetslot
+\setslot{Hcal}\endsetslot
+\setslot{Ical}\endsetslot
+\setslot{Jcal}\endsetslot
+\setslot{Kcal}\endsetslot
+\setslot{Lcal}\endsetslot
+\setslot{Mcal}\endsetslot
+\setslot{Ncal}\endsetslot
+\setslot{Ocal}\endsetslot
+\setslot{Pcal}\endsetslot
+\setslot{Qcal}\endsetslot
+\setslot{Rcal}\endsetslot
+\setslot{Scal}\endsetslot
+\setslot{Tcal}\endsetslot
+\setslot{Ucal}\endsetslot
+\setslot{Vcal}\endsetslot
+\setslot{Wcal}\endsetslot
+\setslot{Xcal}\endsetslot
+\setslot{Ycal}\endsetslot
+\setslot{Zcal}\endsetslot
+
+\setslotcomment{The symbol `\slotexample'.}
+
+\nextslot{94}
+\setslot{logicaland}\endsetslot
+\setslot{logicalor}\endsetslot
+\nextslot{102}
+\setslot{braceleft}\endsetslot
+\setslot{braceright}\endsetslot
+\nextslot{106}
+\setslot{bar}\endsetslot
+\nextslot{110}
+\setslot{backslash}\endsetslot
+\nextslot{120}
+\setslot{section}\endsetslot
+
+\endencoding
+
+\end{document}

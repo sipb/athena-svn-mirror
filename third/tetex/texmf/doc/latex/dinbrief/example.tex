@@ -1,0 +1,118 @@
+%% 
+%% This is file `example.tex',
+%% generated with the docstrip utility.
+%% 
+%% The original source files were:
+%% 
+%% dinbrief.dtx  (with options: `example')
+%% 
+%% Copyright (C) 1993, 96 by Richard Gussmann, University of Karlsruhe. 
+%% For additional copyright information see further down in this file. 
+%% 
+%% This file is part of the dinbrief-class. 
+%% ---------------------------------------- 
+%% 
+%% This system is distributed in the hope that it will be useful, 
+%% but WITHOUT ANY WARRANTY; without even the implied warranty of 
+%% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
+%% 
+%% 
+%% IMPORTANT NOTICE: 
+%% 
+%% For error reports in case of UNCHANGED versions see readme files. 
+%% 
+%% Please do not request updates from us directly. Distribution is 
+%% done through Mail-Servers and TeX organizations. 
+%% 
+%% You are not allowed to change this file. 
+%% 
+%% You are allowed to distribute this file under the condition that 
+%% it is distributed together with all files mentioned in 00readme.. 
+%% 
+%% If you receive only some of these files from someone, complain! 
+%% 
+%% You are NOT ALLOWED to distribute this file alone. You are NOT 
+%% ALLOWED to take money for the distribution or use of either this 
+%% file or a changed version, except for a nominal charge for copying 
+%% etc. 
+%%
+%% \CharacterTable
+%%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%%   Digits        \0\1\2\3\4\5\6\7\8\9
+%%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%%   Dollar        \$     Percent       \%     Ampersand     \&
+%%   Acute accent  \'     Left paren    \(     Right paren   \)
+%%   Asterisk      \*     Plus          \+     Comma         \,
+%%   Minus         \-     Point         \.     Solidus       \/
+%%   Colon         \:     Semicolon     \;     Less than     \<
+%%   Equals        \=     Greater than  \>     Question mark \?
+%%   Commercial at \@     Left bracket  \[     Backslash     \\
+%%   Right bracket \]     Circumflex    \^     Underscore    \_
+%%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%%   Right brace   \}     Tilde         \~}
+%%
+
+\expandafter\ifx\csname documentclass\endcsname\relax
+    \documentstyle[german]{dinbrief}
+  \else
+    \documentclass[10pt]{dinbrief}
+    \usepackage{german}
+  \fi
+
+\input brfkopf
+
+
+\pagestyle{contheadings}
+
+\begin{document}
+
+\bottomtext{%
+  \makebox[\textwidth][c]{\small\sf
+   Bankverbindung $\cdot$ Kreissparkasse Gralsruhe %
+   (BLZ~999~500~00) 98~765~4
+  }
+}
+
+\date{9.~Juli 1999}
+
+\setlength{\topmargin}{-15pt}
+\backaddress{\FS}
+
+\begin{letter}{Prof.\ Dr.\ Hans Forschegut\\
+               Institut f"ur Abfallbeseitigung\\
+               Fachhochschule Waldstadt\\
+               Postfach 3322\\[\medskipamount]
+               1100 Waldstadt}
+\yourmail{\ }
+\subject{Bitte um "Uberlassung einer Sammlung von Alka-Seltzer Flaschen}
+
+\opening{Sehr geehrter Herr Prof.\ Forschegut,}
+
+von Kollegen habe ich erfahren, da"s sich bei Ihnen eine gro"se
+Anzahl von Alka-Seltzer Flaschen mit nur noch einer Tablette
+angesammelt hat, da eine Flasche 25~Tabletten enth"alt, der
+Beipackzettel aber angibt, da"s stets 2~Tabletten gleichzeitig
+einzunehmen sind.
+
+Ich forsche gerade im Bereich m"oglicher Anwendungen einzelner
+Schmerztabletten. Falls Sie so freundlich w"aren, Ihre Alka-Seltzer
+Sammlung f"ur unser Projekt zu stiften, w"urde ich Ihnen gerne
+Vorabdrucke aller zuk"unftigen Forschungsberichte zur Verf"ugung
+stellen, die wir "uber dieses kritische Problem ver"offentlichen.
+
+\closing{Mit freundlichen Gr"u"sen}
+
+\ps{Falls Sie es w"unschen, lasse ich "uberpr"ufen, ob Sie Ihre
+    Schenkung in Verbindung mit unserer Forschung von der Steuer
+    absetzen k"onnen.}
+\encl{Forschungsbericht Nr.\ 6/99 des IfA}
+\cc{Future Pharma\\
+    Bundesministerium zur Unterst"utzung der Pharmaindustrie}
+
+\end{letter}
+
+\end{document}
+\endinput
+%% 
+%% End of file `example.tex'.

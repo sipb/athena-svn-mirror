@@ -1,0 +1,62 @@
+<html>
+<head><title>Help On LaTeX \makebox</title></head>
+<body bgcolor="#ffffff" text="#000000" link="#000099" vlink="#cc0000" alink="#cc0000">
+<h1><font size="-2">Hypertext Help with LaTeX</font><br><font color="#cc0000">\makebox</font></h1>
+<h2>Normal use</h2>
+ <tt>\makebox[width][position]{text}</tt>
+<p>
+ The <tt>\makebox</tt> command creates a box to contain the specified 
+ <tt>text</tt>.  The
+ width  of the box may be specified  by the optional <tt>width</tt> argument.  
+ The <tt>text</tt> in the box is set in LR mode.
+<p>
+ If the optional <tt>width</tt> argument is used, the optional 
+ <tt>position</tt> argument may also be used to specify the position of
+ <tt>text</tt> within the box as follows:
+<ul>
+<li><tt>l</tt> - flushleft
+<li><tt>r</tt> - flushright
+<li><tt>s</tt> - interword space adjusted so <tt>text</tt> fills box exactly
+</ul>
+The default horizontal and vertical positioning (if the second optional
+argument is omitted) is to center <tt>text</tt>
+in the box.
+<p>
+Note that <tt>text</tt> may overflow the box, in which case it is 
+typeset on top of the adjacent text.  While this is generally undesirable, 
+it can also be used to create special effects.
+<p>
+The <tt>\makebox</tt> command is <a href="fragile.html">fragile</a>.
+<p>
+See <tt><a href="ltx-265.html">\mbox</a></tt>, 
+  <tt><a href="ltx-237.html">\framebox</a></tt><br>
+See also: <A href="ltx-143.html">Spaces and Boxes</A>.
+
+<h2>In picture environment</h2>
+ <tt>\makebox(width,height)[position]{ ... }</tt>
+<p>
+ The <tt>\makebox</tt>  command for the picture  environment  is similar  to the
+ normal  <tt>\makebox</tt>  command  except  that you must specify  a width  and
+ height (note that these are in parentheses) in multiples of 
+ <a href="unitlength.html"><tt>\unitlength</tt></a>.
+<p>
+ The optional argument, <tt>position</tt>,  specifies  the quadrant that your
+ text appears in.  You may select up to two of the following:
+<ul>
+<li><TT>t</TT> Moves the item to the top of the rectangle
+<li><TT>b</TT> Moves the item to the bottom
+<li><TT>l</TT> Moves the item to the left
+<li><TT>r</TT> Moves the item to the right
+</ul>
+The default horizontal and vertical positioning is to center <tt>text</tt>
+in the box.
+<hr>
+See also <a href="ltx-143.html">Spaces and Boxes</a>, 
+ <A href="ltx-43.html">Picture Environment</A><br> 
+Return to <a href="ltx-2.html">LaTeX Table of Contents</a>
+<hr>
+<address>
+Revised: Sheldon Green, 5 Dec 1995.
+</address>
+</body>
+</html>

@@ -1,0 +1,35 @@
+<html>
+<head><title>Help On LaTeX \parbox</title></head>
+<body bgcolor="#ffffff" text="#000000" link="#000099" vlink="#cc0000" alink="#cc0000">
+<h1><font size="-2">Hypertext Help with LaTeX</font><br><font color="#cc0000">\parbox</font></h1>
+<p>
+ <tt>\parbox[position]{width}{text}</tt>
+<p>
+
+ A parbox is a box whose contents  are created in paragraph  mode.  The
+ <tt>\parbox</tt> has two mandatory arguments:
+<ul>
+<li> <tt>width</tt>:  specifies the width of the parbox, and
+<li> <tt>text</tt>:  the text that goes inside the parbox.
+</ul>
+ LaTeX will position a parbox so its center lines up with the center of
+ the text line.  An optional  first argument allows you to
+ line up either the top or bottom line in the parbox, by using as optional 
+ <tt>position</tt> argument <tt>t</tt> or <tt>b</tt>, respectively .
+<p>
+ A <tt>\parbox</tt>  command  is used for a parbox  containing  a small piece of
+ text, with nothing fancy inside.  In particular, you shouldn't use any
+ of the paragraph-making  environments  inside a <tt>\parbox</tt> argument.  For
+ larger pieces  of text, including  ones containing  a paragraph-making
+ environment, you should use a <a href="ltx-267.html">minipage</a> environment.
+<p>
+The <tt>\parbox</tt> command is <a href="fragile.html">fragile</a>.
+<hr>
+See <a href="ltx-143.html">Spaces and Boxes</a><br>
+Back to the <a href="ltx-2.html">Table of Contents</a>
+<hr>
+<address>
+Revised: Sheldon Green, 8 Aug 1995.
+</address>
+</body>
+</html>

@@ -1,0 +1,62 @@
+[This file is in koi8-r encoding] -*-coding: koi8-r;-*-
+
+1) the following command shows useless (because of \lefthyphenmin=2)
+or incorrect patterns which set hyphenation after the first letter:
+
+grep '^\..[0-9]' ruhyph*.tex
+
+ruhyphas.tex:
+.×8Ó8Ô8Ò8
+.Ï5×Ø4
+.Ï4Ô×ÅÒÄ
+.Ï4Ô×ÅÒÖÄ
+
+ruhyphzn.tex:
+.Ï2Â3ÒÏÓ
+.Ï4Ó4Ô3ÒÏÅ
+.Ï4Ó4Ô3ÒÏÉ
+.Ï4Ó4Ô3ÒÏÊ
+.Ï4Ó4Ô3ÒÏÀ
+.Ï4Ó4Ô3ÒÏÑ
+
+2) the following command shows useless (because of \righthyphenmin=2)
+or incorrect patterns which set hyphenation before the last letter:
+
+grep '[0-9].\.$' ruhyph*.tex
+
+ruhyphas.tex:
+.ÕÌØ5Å.
+.Ä×Ï5Å6Ë.
+
+ruhyphzn.tex:
+1Ó2ÒÅ3Ä.
+
+3) the patterns for the whole words shown by the command
+
+grep '^\..*\.$' ruhyph*.tex
+
+are also questionable (probably it is better to store them in
+\hyphenation list). Such patterns occur in ruhyphas.tex and
+ruhyphzn.tex.
+
+4) to ensure that there will be absolutely no -xx breaks for English
+words when the combined Russian-English hyphenation is used, a changed
+English patterns should be used, with removed `strange' patterns
+matching the regexp "[0-9][a-z][a-z]\." (see the file enrhm2.tex).
+
+5) [not a bug] should the main hyphenation files be sorted using
+`sorthyph' script?
+
+6) Known cases of bad hyphenation (to be fixed by authors of
+corresponding patterns). All found hyphenation positions are shown.
+Bad positions are marked with `='. Please send additional examples of
+bad hyphenation for various patterns in this collection to email
+addresses given at the end of README. See also some other examples
+in the file release.notes of Alexander Lebedev's patterns at
+ftp://mch5.chem.msu.su/pub/russian/hyphen/ruhyphal.tar.gz
+
+ruhyphas.tex:
+
+  ÓÉÎ-È-ÒÏÔ=ÒÏÎ-ÎÙÊ
+  ÍÅ=ÖÁ=ÔÏÍ-ÎÙÊ
+  ÐÏÄ-Ô×ÅÒÖ=ÄÁ-ÀÔ

@@ -1,0 +1,416 @@
+<HTML>
+<HEAD>
+<TITLE>TeX Frequently Asked Questions - Section 14</TITLE>
+<!-- File version: 2.2n -->
+<!-- File date: 1999/06/05 -->
+
+<!-- Creator: faq2html.el, running on XEmacs 20.4 "Em -->
+<!-- CreationDate: Sat Jun  5 14:50:14 1999  te -->
+</HEAD>
+
+<BODY>
+Go to the <A HREF="texfaq_0.html">first</A>, <A HREF="texfaq_13.html">previous</A>, <A HREF="texfaq_15.html">next</A>, <A HREF="texfaq_17.html">last</A> section, <A HREF="texfaq_toc.html">table of contents</A>.
+<HR>
+
+<H1><A NAME="SEC14">Things are Going Wrong...</A></H1>
+
+
+<H2><A NAME="QU93">Weird hyphenation of words</A></H2>
+
+<P>
+You may have a version mismatch problem. TeX's hyphenation system changed
+between version 2.9 and 3.0.  If you are using (<CODE>plain</CODE>) TeX
+version 3.0 or later, make sure your <TT>plain.tex</TT> file has a
+version number which is at least 3.0.  If you are using LaTeX 2.09 you
+should consider upgrading to LaTeX2e; if for some reason you can't, the
+last version of LaTeX 2.09, released on 25 March 1992, is available
+(for the time being at least) from <A HREF="ftp://ftp.dante.de/tex-archive/obsolete/macros/latex209/distribs/latex209.tar"><TT>obsolete/macros/latex209/distribs/latex209.tar</TT></A> and ought
+to solve this problem.
+
+<P>
+If you're using LaTeX2e, the problem probably arises from your
+<CODE>hyphen.cfg</CODE> file, which has to be created if you're using a
+multi-lingual version.
+
+<P>
+For the curious, here's what happened:
+before TeX 3.0 the hyphenation algorithm would not
+break a word if the part before the break was not at least two
+characters long, and the part after the break at least three 
+characters long. Starting with version 3.0 the parameters
+<CODE>\lefthyphenmin</CODE> and <CODE>\righthyphenmin</CODE> control the length of these
+fragments. These are set to 2 and 3, respectively, in the new
+<CODE>plain</CODE> and <CODE>lplain</CODE> formats.  They can be set to any value, of course,
+but if <CODE>\lefthyphenmin</CODE>+<CODE>\righthyphenmin</CODE> is greater than 62, all
+hyphenation is suppressed.
+
+<P>
+A further source of oddity can derive from the 1995 release of
+  <A HREF="texfaq_3.html#QU33">Cork-encoded fonts</A>,
+which introduced an alternative hyphen character.  The LaTeX2e
+configuration files in the font release specified use of the
+alternative hyphen, and this could produce odd effects with words
+containing an explicit hyphen.  The font configuration files in the
+December 1995 release of LaTeX2e do <EM>not</EM> use the alternative
+hyphen character, thus removing this source of problems.
+
+
+<H2><A NAME="QU94">(Merely) peculiar hyphenation</A></H2>
+
+<P>
+You may have found that TeX's famed automatic word-division does
+not produce the break-points recommended by your dictionary. This may be
+because TeX is set up for American English, whose rules for word
+division (as specified, for example, in Webster's Dictionary) are
+completely different from the British ones (as specified, for example,
+in the Oxford Dictionaries). This problem is being addressed by the UK
+TeX User community (see <CITE>Baskerville</CITE>, issue 4.4) but an entirely
+satisfactory solution will take time.  An interim hyphenation file is
+available in <A HREF="ftp://ftp.dante.de/tex-archive/language/hyphenation/ukhyphen.tex"><TT>language/hyphenation/ukhyphen.tex</TT></A>
+
+
+<H2><A NAME="QU95">Accented words aren't hyphenated</A></H2>
+
+<P>
+TeX's algorithm for hyphenation gives up when it encounters an
+<CODE>\accent</CODE> command; there are good reasons for this, but it means
+that quality typesetting in non-English languages can be difficult.
+
+<P>
+For TeX itself, avoiding this effect means using Cork-encoded fonts
+(<A HREF="texfaq_3.html#QU33">the EC fonts</A>) which contain accented letters as
+single glyphs.  In the future, perhaps,
+  <A HREF="texfaq_16.html#QU118">Omega</A>
+will provide a rather different solution.
+
+
+<H2><A NAME="QU96">Enlarging TeX</A></H2>
+
+<P>
+People sometimes get messages saying `memory capacity exceeded'.
+Most of the time this error can be fixed
+<EM>without</EM> enlarging TeX. The most common causes are unmatched braces,
+extra-long lines, and poorly-written macros. Extra-long lines are
+often introduced when files are transferred incorrectly between
+operating systems, and line-endings are not preserved properly (the
+tell-tale sign of an extra-long line error is the complaint
+that the `<CODE>buf_size</CODE>' has overflowed).
+
+<P>
+If you really need to extend your TeX's capacity, the proper method
+depends on your installation. In the purest form, you
+change the parameters in module 11 of the WEB source.
+In less pure forms, you might need to modify a
+change file, or perhaps change some environment variables; emTeX
+allows you to adjust the memory allocation criteria on the command
+line.  Consult the documentation that came with your implementation.
+
+
+<H2><A NAME="QU97">Moving tables and figures in LaTeX</A></H2>
+
+<P>
+Tables and figures have a tendency to surprise, by <EM>floating</EM>
+away from where they were specified to appear.  This is in fact
+perfectly ordinary document design; any professional typesetting
+package will float figures and tables to where they'll fit without
+violating the certain typographic rules.  Even if you use the
+placement specifier <CODE>h</CODE> for `here', the figure or table will not be
+printed `here' if doing so would break the rules; the rules themselves
+are pretty simple, and are given on page 198, section C.9 of the
+LaTeX manual.  In the worst case, LaTeX's rules can cause the
+floating items to pile up to the extent that you get an error message
+saying ``Too many unprocessed floats''; this means that the limited
+set of registers in which LaTeX stores floating items is full.
+What follows is a simple checklist of things to do to solve these
+problems (the checklist talks throughout about figures, but applies
+equally well to tables).
+<UL>
+<LI> Are the placement parameters on your figures right?  The
+  default (<CODE>tbp</CODE>) is reasonable; you should never simply say `<CODE>h</CODE>',
+  for example, since that says ``if it can't go here, it can't go
+  anywhere'', and as a result all subsequent floats pile up behind it.
+<LI> Can you perhaps prevent your figures from floating by adjusting
+  LaTeX's placement parameters?  Again, the defaults are
+  reasonable, but can be overridden in case of problems.  The
+  parameters are described on pages 199-200, section C.9 of the
+  LaTeX manual.
+<LI> Are there places in your document where you could `naturally'
+  put a <CODE>\clearpage</CODE> command?  If so, do: the backlog of floats is
+  cleared after a <CODE>\clearpage</CODE>.  (Note that the <CODE>\chapter</CODE>
+  command implicitly executes <CODE>\clearpage</CODE>, so you can't float past
+  the end of a chapter.)
+<LI> Have a look at the LaTeX2e <CODE>afterpage</CODE> package (part of
+  <A HREF="ftp://ftp.dante.de/tex-archive/macros/latex/required/tools"><TT>macros/latex/required/tools</TT></A>).  Its documentation gives as an example the idea
+  of putting <CODE>\clearpage</CODE> <EM>after</EM> the current page (where it
+  will clear the backlog, but not cause an ugly gap in your text), but
+  also admits that the package is somewhat fragile (though it's improving).
+<LI> As a last resort, try the package <A HREF="ftp://ftp.dante.de/tex-archive/macros/latex209/contrib/misc/morefloats.sty"><TT>macros/latex209/contrib/misc/morefloats.sty</TT></A>; this
+  `simply' increases the number of floating inserts that LaTeX can
+  handle at one time (from 18 to 36), but that may suit your needs.
+<LI> If you actually <EM>wanted</EM> all your figures to float to the
+  end (<EM>e.g</EM>., for submitting a draft copy of a paper), don't
+  rely on LaTeX's mechanism: get the package <A HREF="ftp://ftp.dante.de/tex-archive/macros/latex/contrib/supported/endfloat"><TT>macros/latex/contrib/supported/endfloat</TT></A> to do
+  the job for you.
+</UL>
+
+
+<H2><A NAME="QU98"><CODE>\pagestyle{empty}</CODE> on first page in LaTeX</A></H2>
+
+<P>
+If you use <CODE>\pagestyle{empty}</CODE>, but the first page is numbered anyway,
+you are probably using the <CODE>\maketitle</CODE> command too. This is not a bug
+but a feature! The standard LaTeX styles are written so that
+initial pages (pages containing a <CODE>\maketitle</CODE>, <CODE>\part</CODE>, or
+<CODE>\chapter</CODE>) have a different page style from the rest of the document; 
+Hence, the commands internally issue <CODE>\thispagestyle{plain}</CODE>. This is
+usually not acceptable behaviour if the surrounding page style is
+`empty'.
+
+<P>
+Possible workarounds include: 
+<UL>
+<LI> Put <CODE>\thispagestyle{empty}</CODE> immediately after the <CODE>\maketitle</CODE>
+  command, with no blank line between them.
+<LI> Use <TT>fancyhdr.sty</TT>, which allows you to customise the
+  style for initial pages independently of that for body pages.  It is
+  available in <A HREF="ftp://ftp.dante.de/tex-archive/macros/latex/contrib/supported/fancyhdr"><TT>macros/latex/contrib/supported/fancyhdr</TT></A>
+<LI> Use <TT>nopageno.sty</TT>, which suppresses this behaviour.  It is
+  available in <A HREF="ftp://ftp.dante.de/tex-archive/macros/latex/contrib/supported/carlisle/nopageno.sty"><TT>macros/latex/contrib/supported/carlisle/nopageno.sty</TT></A>
+</UL>
+
+
+<H2><A NAME="QU99">Underlined text won't break</A></H2>
+
+<P>
+Knuth made no provision for underlining text: he took the view that
+underlining is not a typesetting operation, but rather one that
+provides emphasis on typewriters, which typically offer but one
+typeface.  The corresponding technique in typeset text is to switch
+from upright to italic text (or vice-versa): the LaTeX command
+<CODE>\emph</CODE> does just that to its argument.
+
+<P>
+Nevertheless, typographically illiterate people (such as those that
+specify double-spaced
+ <A HREF="texfaq_12.html#QU66">thesis styles</A>)
+continue to require underlining of us, so LaTeX as distributed
+defines an <CODE>\underline</CODE> command that applies the mathematical
+`underbar' operation to text.  This technique is not entirely
+satisfactory, however: the text gets stuck into a box, and won't break
+at line end.
+
+<P>
+The solution is the package <A HREF="ftp://ftp.dante.de/tex-archive/macros/latex/contrib/other/misc/ulem.sty"><TT>macros/latex/contrib/other/misc/ulem.sty</TT></A>, which redefines the
+<CODE>\emph</CODE> command to underline its argument; the underlined text thus
+produced behaves as ordinary emphasised text, and will break over the
+end of a line.  (The package is capable of other peculiar effects,
+too: read its documentation, contained within the file itself.)
+
+
+<H2><A NAME="QU100">Odd behaviour of <CODE>\rm</CODE>, <CODE>\bf</CODE>, <EM>etc</EM>.</A></H2>
+
+<P>
+If commands such as <CODE>\rm</CODE> and <CODE>\bf</CODE> have suddenly stopped working in 
+LaTeX in the way that you expect, it is likely that your system
+administrator has installed a version of LaTeX 2.09 with
+<A HREF="texfaq_16.html#QU115">NFSS</A>.
+Complain loudly; ask 
+your system administrator to replace this version with
+<A HREF="texfaq_16.html#QU116">LaTeX2e</A>,
+in which commands such as <CODE>\rm</CODE> and <CODE>\bf</CODE> work just as before if you
+are using one of the standard classes -<CODE>article</CODE>, <CODE>report</CODE> and <CODE>book</CODE>
+(among others).  In the meantime, use the option
+<TT>oldlfont.sty</TT>, which should have been installed at the same time
+as NFSS.
+
+
+<H2><A NAME="QU101">Old LaTeX font references such as <CODE>\tenrm</CODE></A></H2>
+
+<P>
+LaTeX 2.09 defined a large set of commands for access to the fonts
+that it had built in to itself.  For example, various flavours of
+<CODE>cmr</CODE> could be found as <CODE>\fivrm</CODE>, <CODE>\sixrm</CODE>, <CODE>\sevrm</CODE>,
+<CODE>\egtrm</CODE>, <CODE>\ninrm</CODE>, <CODE>\tenrm</CODE>, <CODE>\elvrm</CODE>, <CODE>\twlrm</CODE>,
+<CODE>\frtnrm</CODE>, <CODE>\svtnrm</CODE>, <CODE>\twtyrm</CODE> and <CODE>\twfvrm</CODE>.
+These commands were never documented, but certain packages
+nevertheless used them to achieve effects they needed.
+
+<P>
+Since the commands weren't public, they weren't included in LaTeX2e;
+to use the unconverted LaTeX 2.09 packages under LaTeX2e, you need
+also to include the package <TT>rawfonts.sty</TT> (which is part of the
+LaTeX2e distribution).
+
+
+<H2><A NAME="QU102">Missing symbols</A></H2>
+
+<P>
+If some symbols, such as <CODE>\Box</CODE> and <CODE>\lhd</CODE>, no longer appear to 
+exist, then your system administrator has probably upgraded your
+version of LaTeX to either
+<A HREF="texfaq_16.html#QU115">NFSS</A> or <A HREF="texfaq_16.html#QU116">LaTeX2e</A>.
+In the former case, use
+<TT>oldlfont.sty</TT> (see <A HREF="texfaq_14.html#QU100">problems with <CODE>\rm</CODE>, etc.</A>).
+In the latter, use the package <TT>latexsym</TT>, which is part of the
+LaTeX2e distribution, or the package <TT>amsfonts</TT>, if
+it is available.
+
+
+<H2><A NAME="QU103">LaTeX gets cross-references wrong</A></H2>
+
+<P>
+Sometimes, however many times you run LaTeX, the cross-references
+are just wrong. Remember that
+the <CODE>\label</CODE> command must come <EM>after</EM> the <CODE>\caption</CODE> command, or
+be part of it. For example,
+<PRE>
+\begin{figure}          \begin{figure}
+\caption{A Figure}  or  \caption{A Figure%
+\label{fig}                   \label{fig}}
+\end{figure}            \end{figure}
+</PRE>
+
+
+<H2><A NAME="QU104"><CODE>\@</CODE> and <CODE>@</CODE> in macro names</A></H2>
+
+<P>
+A common source of problems in a LaTeX document is the diagnostic
+about the appearance of the command <CODE>\@</CODE>, or about other commands
+containing the character <CODE>@</CODE>.  The most common complaint is ``You
+can't use `<CODE>\spacefactor</CODE>' in vertical mode'', but others occur.
+
+<P>
+Such problems are usually caused by including a LaTeX2e class or
+package file into a LaTeX document by some means other than
+<CODE>\documentclass</CODE> or <CODE>\usepackage</CODE>.  LaTeX defines internal
+commands whose names contain the character <CODE>@</CODE>; this enables it to
+avoid clashes between its internal names and names that we would
+normally use in our documents.  In order that these commands may work
+at all, <CODE>\documentclass</CODE> and <CODE>\usepackage</CODE> play around with the
+meaning of <CODE>@</CODE>.  Solve this problem by using the correct command to
+include the file.
+
+<P>
+But, you will say, ``<EM>The LaTeX Companion</EM> tells me to use
+commands containing <CODE>@</CODE>!''
+
+<P>
+Indeed; for example, there's a lengthy section about
+<CODE>\@startsection</CODE> and how to use it to control the appearance of
+section titles.  Page 15 of <EM>The Companion</EM> explains this; and
+suggests that you make such changes in the document preamble, between
+<CODE>\makeatletter</CODE> and <CODE>\makeatother</CODE>.  So the definition of
+<CODE>\subsection</CODE> on page 26 could be:
+
+
+<PRE>
+  \makeatletter
+  \renewcommand{\subsection}{\@startsection
+    {subsection}%                    % name
+    ...
+    {\normalfont\normalsize\itshape}}% style
+  \makeatother
+</PRE>
+
+
+<H2><A NAME="QU105">Where are the <CODE>msx</CODE> and <CODE>msy</CODE> fonts?</A></H2>
+
+<P>
+The <CODE>msx</CODE> and <CODE>msy</CODE> fonts were designed by the American Mathematical
+Society in the very early days of TeX, for use in typesetting
+papers for mathematical journals.  They were designed using the `old'
+METAFONT, which wasn't portable and is no longer available; for a long
+time they were only available in 300dpi versions which only
+imperfectly matched modern printers.  The AMS has now redesigned the
+fonts, using the current version of METAFONT, and the new versions are
+called the <CODE>msa</CODE> and <CODE>msb</CODE> families; they are available from
+<A HREF="ftp://ftp.dante.de/tex-archive/fonts/ams/amsfonts/sources/symbols"><TT>fonts/ams/amsfonts/sources/symbols</TT></A>
+
+<P>
+Nevertheless, <CODE>msx</CODE> and <CODE>msy</CODE> continue to turn up to plague us.  There
+are, of course, still sites that haven't got around to upgrading; but,
+even if everyone upgraded, there would still be the problem of old
+documents that specify them.
+
+<P>
+If you have a <CODE>.tex</CODE> source that requests <CODE>msx</CODE> and <CODE>msy</CODE>, the best
+technique is to edit it so that it requests <CODE>msa</CODE> and <CODE>msb</CODE> (you only
+need to change the single letter in the font names).
+
+<P>
+If you have a DVI file that requests the fonts, there is a package
+of
+<A HREF="texfaq_3.html#QU30">virtual fonts</A>
+to map the old to the new series; it's available in <A HREF="ftp://ftp.dante.de/tex-archive/fonts/vf-files/msx2msa"><TT>fonts/vf-files/msx2msa</TT></A>
+
+
+<H2><A NAME="QU106">Where are the <CODE>am</CODE> fonts?</A></H2>
+
+<P>
+One <EM>still</EM> occasionally comes across a request for the <CODE>am</CODE>
+series of fonts.  The initials stood for `Almost [Computer] Modern',
+and they were the predecessors of the Computer Modern fonts that we
+all know and love (or hate).
+There's not a lot one can do with these
+fonts; they are (as their name implies) almost (but not quite) the
+same as the <CODE>cm</CODE> series; if you're faced with a document that requests
+them, all you can reasonably do is to edit the document.  The
+appearance of DVI files that request them is sufficiently rare that
+no-one has undertaken the mammoth task of creating a translation of
+them by means of virtual fonts; however, most drivers let you have a
+configuration file in which you can specify font substitutions. If you
+specify that every <CODE>am</CODE> font should be replaced by its corresponding
+<CODE>cm</CODE> font, the output should be almost correct.
+
+
+<H2><A NAME="QU107">`String too long' in BibTeX</A></H2>
+
+<P>
+The BibTeX diagnostic ``Warning-you've exceeded 1000, the
+<CODE>global-string-size</CODE>, for entry <CODE>foo</CODE>'' usually arises from a very
+large abstract or annotation included in the database.  The diagnostic
+usually arises because of an infelicity in the coding of
+<TT>abstract.bst</TT>, or styles derived from it.  (One doesn't
+ordinarily output annotations in other styles.)
+
+<P>
+The solution is to make a copy of the style file (or get a clean copy
+from CTAN - <A HREF="ftp://ftp.dante.de/tex-archive/biblio/bibtex/contrib/abstract.bst"><TT>biblio/bibtex/contrib/abstract.bst</TT></A>), and rename it (e.g., on a
+long file-name system to <TT>abstract-long.bst</TT>).  Now edit it: find
+function <CODE>output.nonnull</CODE> and
+<UL>
+<LI> change its first line (line 60 in the version on CTAN)
+  from <CODE>&quot;{ 's :=&quot;</CODE> to <CODE>&quot;{ swap$&quot;</CODE>, and
+<LI> delete its last line, which just says <CODE>&quot;s&quot;</CODE> (line 84 in the
+  version on CTAN).
+</UL>
+Finally, change your <CODE>\bibliographystyle</CODE> command to refer to the
+name of the new file.
+
+<P>
+This technique applies equally to any bibliography style: the same
+change can be made to any similar <CODE>output.nonnull</CODE> function.
+
+<P>
+If you're reluctant to make this sort of change, the only way forward
+is to take the entry out of the database, so that you don't encounter
+BibTeX's limit, but you may need to retain the entry because it
+will be included in the typeset document.  In such cases, put the body
+of the entry in a separate file:
+<PRE>
+  @article{long.boring,
+    author =    &quot;Fred Verbose&quot;,
+    ...
+    abstract =  &quot;{\input{abstracts/long.tex}}&quot;
+  }
+</PRE>
+<P>
+In this way, you arrange that all BibTeX has to deal with is the
+file name, though it will tell TeX (when appropriate) to include
+all the long text.
+
+
+<HR>
+Go to the <A HREF="texfaq_0.html">first</A>, <A HREF="texfaq_13.html">previous</A>, <A HREF="texfaq_15.html">next</A>, <A HREF="texfaq_17.html">last</A> section, <A HREF="texfaq_toc.html">table of contents</A>.
+</BODY>
+</HTML>

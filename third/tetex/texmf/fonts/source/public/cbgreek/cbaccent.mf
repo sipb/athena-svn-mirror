@@ -1,0 +1,520 @@
+% Copyright (C) 1997, 1999 Claudio Beccari
+% file cbaccent.mf v.1.0
+%
+% The accent macros that follow  are  used  by  all  the  vowel  macros  for
+% generating the ligatures; they mostly come from Computer Modern.
+%
+% CB added the tests on boolean  monotoniko whose value is set either by the
+% driver files or it is false by default. Fixed the currentbreadth problem,
+% and changed several dimensions so as to work well with different parameter
+% settings.
+%
+% Several accents were completely redesigned, in particular grave and acute
+% and their combinations with diaeresis or breadths are such that do not
+% change  according to the letter they accompany;  in  a  different  way
+% also the circumflex and the diaeresis have been modified accordingly.
+%
+% Booleans monotoniko and toniko are remains of a previous test version
+% where the monotoniko accent  was the single one for modern Greek designed as 
+% a vertical stroke; thanks to Apostolos Syropoulos this feature has been
+% eliminated.
+
+boolean toniko, squeeze;     
+
+% minimum distance between vowel and accent 
+%def separator=max(1,vround(1/20x_height)) enddef; 
+def separator=max(1,vround(x_height/10)) enddef; 
+     
+def grave(expr center) =
+numeric acc_sgn,acc_displ; acc_displ:=center;
+if monotoniko:
+  acc_sgn:=0;
+else:
+  acc_sgn:=+1;
+fi
+generate_grave; 
+enddef;
+     
+def acute(expr center) =
+numeric acc_sgn,acc_displ; acc_displ:=center; 
+if monotoniko:
+  acc_sgn:=0;
+else:
+  acc_sgn:=-1;
+fi
+generate_grave; 
+enddef;
+     
+% The next definition draws both the grave (as its name suggests) and the
+% acute accents, the difference being the value of acc_sgn, where
+% acc_sgn=+1 tilts the accent to the left (grave)
+% acc_sgn=-1 tilts the accent to the right (acute)
+% acc_sgn=0 does not tilt the accent (monotoniko)
+
+vardef generate_grave=
+  numeric accent_tilt, alto, basso; accent_tilt:=30;
+  alto:=h;  basso:=vround .8[h,x_height];
+  1/3[x22,x21]=acc_displ;
+if serifs: pickup crisp.nib;
+  accent_tilt:= acc_sgn*(accent_tilt+angle(alto-basso,.5currentbreadth));
+  pos22(max(stem/5,currentbreadth+eps),accent_tilt); pos21(stem,accent_tilt);
+  if monotoniko:
+    bot y22=basso; top y21=alto; x22-x21=(alto-basso)*sind accent_tilt;
+  else:
+    bot y22=basso; top y21+.5stem=alto; 
+    z21-z22=whatever*dir(90+accent_tilt);
+  fi
+  filldraw circ_stroke z21e--z22e;  % diagonal
+else: pickup fine.nib; 
+  accent_tilt:= acc_sgn*accent_tilt;
+  pos21(stem,0); pos22(vair,0);
+  top y21=alto; bot y22=basso; x22-x21=(alto-basso)*sind accent_tilt;
+  filldraw stroke z21e--z22e; % diagonal
+fi 
+penlabels(21,22);
+currentbreadth:=0;
+enddef;
+     
+def circumflex(expr center)=
+if monotoniko:
+  grave(center);
+else:
+  generate_circumflex(center); 
+fi
+enddef;
+     
+def generate_circumflex(expr center)=
+numeric mid_width; 
+if slitex: %                            for slides it looks like a cap 
+  mid_width=vair;
+  pos21(vair,-180); pos23(vair,0); y21=y23;
+  lft x21r=hround(center-max(3u,2w/5)); rt x23r=hround(center+max(3u,2w/5));
+  x22=center; pos22(mid_width,90); 
+  bot y23=vround(max(h-2mid_width,x_height+mid_width));
+  top y22r=h+o; 
+  if bot y23>=top y22r: bot y23:= top y22r-mid_width; fi
+  filldraw stroke z21e{up}...z22e...{down}z23e;
+else:
+  mid_width=if squeeze:.3 else: .5 fi [vair,stem];
+  pickup fine.nib; pos21(hround(mid_width-eps),180); pos22(vair,90);
+  pos23(mid_width,90); pos24(vair,90); pos25(hround(mid_width-eps),180);
+  lft x21r=hround(center-max(3u,w/3)); rt x25l=hround(center+max(3u,w/3));
+  x22-x21=x23-x22=x24-x23=x25-x24;
+  if h=Circ_ht:
+    bot y21=bot y24l=vround(.45[h,x_height+.5mid_width]);
+  else:
+    bot y21=bot y24l=vround(max(.8[h,x_height],x_height+o+separator));
+  fi
+  top y22r=top y25=h; y23=.5[y22,y24];
+  filldraw stroke z21e{up}...z22e{right}..z23e..{right}z24e...{up}z25e; % stroke
+fi
+penlabels(21,22,23,24,25);
+currentbreadth:=0;
+enddef;
+     
+vardef diaeresis(expr center)=
+  generate_diaeresis(center,dot_size,dot_size+1/8w,h,x_height+separator);
+enddef;
+     
+vardef diaeresis_acute(expr center)=
+  acute(center);
+  generate_diaeresis(center,.9dot_size,1.5(x21-x22)+dot_size,.5[h,x_height],x_height+separator);
+enddef;
+     
+vardef diaeresis_grave(expr center)=
+  grave(center);
+  generate_diaeresis(center,.9dot_size,1.5(x22-x21)+dot_size,.5[h,x_height],x_height+separator);
+enddef;
+     
+vardef diaeresis_circumflex(expr center)=
+  if monotoniko: 
+    grave(center);
+    generate_diaeresis(center,.9dot_size,-1,.5[h,x_height],x_height+separator);
+  else:
+    generate_circumflex(center);
+    numeric sp_bottom, sp_top;
+    if (not slitex):
+      sp_top=vround(.15[bot y21l,x_height]); 
+      sp_top+sp_bottom=bot y21l+x_height;
+    else:
+      sp_top=vround(.5[bot y21l,bot y22l]-separator); 
+      sp_bottom=vround(x_height+separator);
+    fi
+    generate_diaeresis(center,5/8dot_size,11/8dot_size,sp_top,sp_bottom);
+  fi
+enddef;
+     
+vardef generate_diaeresis(expr center,target_dot_diam,sep,eff_h,base)=
+pickup tiny.nib; numeric dot_diam;
+dot_diam:=max(tiny.breadth,hround(target_dot_diam));
+pos31(dot_diam,0); pos32(dot_diam,90); x31=x32; top y32r=vround(eff_h);
+if bot y32l<base: y32l:=min(y32r-eps,base+.5currentbreadth); fi
+y31=.5[y32l,y32r];
+pos33(dot_diam,0); penpos34(y32r-y32l,90); y33=y34=y31; x33=x34;
+if sep>=0 : center=.5[x31,x33]; x33-x31=sep;
+else:
+  y35l=y35r=.5[y31,y32]; z35l=whatever[z21l,z22l]; z35r=whatever[z21r,z22r];
+  rt x31r=hround((min(x35l,x35r)-.5currentbreadth)-.05w);
+  lft x33l=hround((max(x35l,x35r)+.5currentbreadth)+.05w);
+fi
+dot(31,32); dot(33,34);
+penlabels(31,32,33,34,35);
+currentbreadth:=0;
+enddef;
+     
+def rough(suffix $,@)(expr dot_size,depth,shear) =
+ if (not monotoniko):  
+   pickup fine.nib; pos$(dot_size,90);
+   if square_dots: pos$'(dot_size,180); z$'=z$; dot($',$);  % squarish dot
+    comma_join_:=max(fine.breadth,floor .7dot_size);
+    comma_bot_:=max(fine.breadth,floor .5dot_size);
+    pos@0(comma_join_,180); pos@1(comma_join_,180);
+    pos@2(comma_bot_,180); y@0=y$; y@1=y$l; y@2=y@1+dot_size-depth;
+    x@0r=x@1r=x$'r; lft x@2r=good.x(x$-eps);
+    filldraw stroke z@0e--z@1e..z@2e;  % tail
+   else: pos@1(vair,90); pos@2(vair,180); pos@3(vair,-90);
+    z@1r=z$r; lft x@2r=hround(x$-.5depth+.5shear);
+    x@3+.5vair=x$+.5dot_size+shear;
+    y@2=.5[y@1,y@3]; bot y@3r=vround(top y@1r-depth);
+    y_:=ypart((z@1{left}...z@2{down}...z@3)
+     intersectiontimes (z$l{left}..{right}z$r)); if y_<0: y_:=1; fi
+    filldraw z$r{right}..subpath (0,y_) of (z$l{left}..{right}z$r)--cycle; % dot
+    filldraw stroke z@1e{left}...z@2e{down}...{right}z@3e;   % tail
+   fi
+   penlabels(@1,@2,@3); 
+ fi
+ currentbreadth:=0;
+ enddef;
+     
+def smooth(suffix $,@)(expr dot_size,depth,shear) =
+ if not monotoniko:  
+   pickup fine.nib; pos$(dot_size,90);
+   if square_dots: pos$'(dot_size,0); z$'=z$; dot($',$);  % squarish dot
+    comma_join_:=max(fine.breadth,floor .7dot_size);
+    comma_bot_:=max(fine.breadth,floor .5dot_size);
+    pos@0(comma_join_,0); pos@1(comma_join_,0);
+    pos@2(comma_bot_,0); y@0=y$; y@1=y$l; y@2=y@1+dot_size-depth;
+    x@0r=x@1r=x$'r; rt x@2r=good.x(x$-eps);
+    filldraw stroke z@0e--z@1e..z@2e;  % tail
+   else: pos@1(vair,90); pos@2(vair,0); pos@3(vair,-90);
+    z@1r=z$r; rt x@2r=hround(x$+.5depth+.5shear);
+    x@3-.5vair=hround(x$-.5dot_size+shear);
+    y@2=.5[y@1,y@3]; bot y@3r=vround(top y@1r-depth);
+    y_:=ypart((z@1{right}...z@2{down}...z@3)
+     intersectiontimes (z$l{right}..{left}z$r)); if y_<0: y_:=1; fi
+    filldraw z$r{left}..subpath (0,y_) of (z$l{right}..{left}z$r)--cycle; % dot
+    filldraw stroke z@1e{right}...z@2e{down}...{left}z@3e;  % tail
+   fi
+   penlabels(@1,@2,@3); 
+ fi
+ currentbreadth:=0;
+ enddef;
+     
+vardef spirit(expr center) text type=
+numeric sp_bottom, sp_height;
+sp_bottom=h-sp_height=max(.8[h,x_height],x_height+o+separator);
+numeric dot_diam#; dot_diam# = 3/4dot_size#;
+define_whole_blacker_pixels(dot_diam);
+dot_diam:=max(fine.breadth,min(dot_diam,floor(2/3sp_height)));
+x31 if1type0:-else:+fi.5dot_diam=hround(center if1type0:-else:+fi.5dot_diam);
+y31+.5dot_diam=h;
+if1type0:smooth else:rough fi (31,a,dot_diam,sp_height,0);
+penlabels(31);
+enddef;
+     
+vardef spirit_acute(expr center) text type =
+numeric sp_bottom, sp_height, sp_box;
+sp_box:=.8*(h-x_height);
+sp_bottom=h-sp_height=max(.8[h,x_height],x_height+o+separator);
+numeric dot_diam#; dot_diam# = 3/4dot_size#;
+define_whole_blacker_pixels(dot_diam);
+dot_diam:=max(fine.breadth,min(dot_diam,floor(2/3sp_height)));
+if monotoniko: 
+  grave(center); 
+else:
+  acute(center+if slitex:6/20 else:4/20fi sp_box);
+  if 1type0:      
+    x31=hround(lft x22l-if serifs:.5
+                    elseif slitex: .2
+                             else:.4
+                                fi sp_box);% smooth acute
+  else: 
+    x31+.5dot_diam=
+        hround(lft x22l if serifs:-1/20
+                    elseif slitex: -2/20
+                             else:+1/20
+                                fi sp_box); % rough acute
+  fi
+  y31+.5dot_diam=h;
+  if1type0:smooth else:rough fi (31,a,dot_diam,sp_height,0);
+fi
+enddef;
+     
+vardef spirit_grave(expr center) text type =
+numeric sp_bottom, sp_height,sp_box;
+sp_box:=.8*(h-x_height);
+sp_bottom=h-sp_height=max(.8[h,x_height],x_height+o+separator);
+numeric dot_diam#; dot_diam# = 3/4dot_size#;
+define_whole_blacker_pixels(dot_diam);
+dot_diam:=max(fine.breadth,min(dot_diam,floor(2/3sp_height)));
+if monotoniko: 
+  grave(center); 
+else:
+  grave(center+if serifs:12elseif slitex:10 else:9fi/20sp_box);
+  if 1type0:      
+   x31=hround(lft x21l-.5sp_height if serifs:- 1/10sp_box fi); %smooth grave
+  else: 
+   x31+.5dot_diam=hround(lft x21l if serifs or slitex:-3/20sp_box fi); % rough grave
+  fi
+  y31+.5dot_diam=h;
+  if1type0:smooth else:rough fi (31,a,dot_diam,sp_height,0);
+fi
+enddef;
+     
+vardef spirit_circumflex(expr center) text type=
+if monotoniko: 
+   grave(center); 
+else:
+   generate_circumflex(center);
+   numeric sp_bottom, sp_height, sp_top, box_top;
+   box_top=bot if slitex: y22l else: y23l fi;
+   sp_top=sp_bottom+sp_height=vround(.15[box_top,x_height]);
+   sp_bottom=x_height+separator;
+   numeric dot_diam#; dot_diam# = 5/8dot_size#;
+   define_whole_blacker_pixels(dot_diam);
+   pickup fine.nib;
+   dot_diam:=max(fine.breadth,min(dot_diam,floor(2/3sp_height-eps)));
+   x31 if1type0:-else:+fi.5dot_diam=hround(center if1type0:-else:+fi.5dot_diam);
+   y31+.5dot_diam=vround(sp_top);
+   if1type0:smooth else:rough fi (31,a,dot_diam,sp_height,0);
+fi
+penlabels(31);
+enddef;
+     
+def iota_sub(expr pos_stem) =
+if not monotoniko:
+  if known pic.iota:
+    addto currentpicture also pic.iota shifted (hround(pos_stem),0);
+  else:
+    picture temp_picture; temp_picture=currentpicture; clearit;
+    if cursive and serifs and not monospace:
+      pickup pencircle xscaled stem yscaled hair;
+      x51=0; 
+      top y51=vround(-o-separator);
+      x52=x51; 
+      bot y52=vround(-desc_depth);
+      draw  z52--z51;
+      pickup pencircle scaled hair;
+      y53=y52+1/2hair; 
+      lft x53=hround(x52+u);
+      draw z53--(z52+(.5u,0))--z52;
+    else:
+      pickup fine.nib; 
+      x51=0; pos51(stem,180); top y51=vround(-o-separator);
+      x52=x51; pos52(stem,180); bot y52=-iota_dp;
+      filldraw circ_stroke z52e--z51e; 
+    fi
+    if not working_hard : picture pic.iota; pic.iota=currentpicture; fi
+    currentpicture:=currentpicture shifted (hround(pos_stem),0);
+    addto currentpicture also temp_picture;
+  fi 
+fi
+currentbreadth:=0;
+enddef;
+
+
+
+
+numeric acc_width#; acc_width#:=if monotoniko: 4u# else:9u# fi;
+
+cmchar "Grave accent";
+beginchar("`",if monospace:9else:3fi u#,acc_ht#,0);
+adjust_fit(0,0);
+numeric center; 
+numeric acc_sgn; acc_sgn:=+1;
+grave(if monospace:19/36else:2/3fi w);
+endchar;
+
+     
+cmchar "Acute accent";
+beginchar("'",if monospace:9else:3fi u#,acc_ht#,0);
+adjust_fit(0,0);
+numeric center; 
+numeric acc_sgn; acc_sgn:=-1;
+acute(if monospace:17/36else:1/3fi w);
+endchar;
+     
+cmchar "Circumflex accent";
+beginchar("~",if monospace:9else:6fi u#,circ_ht#,0);
+adjust_fit(0,0);
+numeric center;
+numeric mid_width; 
+squeeze:=false;
+if slitex: %                            without serifs it looks like a cap 
+ mid_width=vair; 
+ pos21(vair,-180); pos23(vair,0); pos22(mid_width,90);
+ lft x21r=0; rt x23r=w; x22=.5[x21,x23];  
+ y21=y23; 
+ bot y23=vround max(x_height+o+separator+.5*(body_height-h),
+    1/3 [x_height,h]-.5mid_width);
+ top y22r=vround(.5[h,body_height]+o);
+ filldraw stroke z21e{up}...z22e...{down}z23e;
+else:
+ mid_width=.5[vair,stem]; 
+ pickup fine.nib; pos21(hround(mid_width-eps),180); pos22(vair,90);
+ pos23(mid_width,90); pos24(vair,90); pos25(hround(mid_width-eps),180);
+ lft x21r=0if monospace:+u fi; 
+ rt x25l=w if monospace:-u fi; 
+ x22-x21=x23-x22=x24-x23=x25-x24;
+ bot y21=bot y24l=vround(max(h-3mid_width,x_height+mid_width));
+ top y22r=top y25=h; y23=.5[y22,y24];
+ filldraw stroke z21e{up}...z22e{right}..z23e..{right}z24e...{up}z25e; % stroke
+fi
+penlabels(21,22,23,24,25);
+currentbreadth:=0;
+endchar;
+     
+cmchar "Diaeresis";
+beginchar(oct"042",if monospace:9else:4fi u#,circ_ht#,0);
+adjust_fit(0,0);
+numeric dot_diam, center, sep; 
+sep:=4u-tiny; center:=.5w;
+dot_diam:=max(tiny.breadth,hround(dot_size));
+pos31(dot_diam,0); pos32(dot_diam,90); x31=x32; 
+y32=.5[x_height+separator,circ_ht];
+y31=.5[y32l,y32r];
+pos33(dot_diam,0); penpos34(y32r-y32l,90); y33=y34=y31; x33=x34;
+if sep>0 : 
+  center=.5[x31,x33]; x33-x31=sep;
+else:
+  y35l=y35r=.5[y31,y32]; z35l=whatever[z21l,z22l]; z35r=whatever[z21r,z22r];
+  rt x31r=hround((min(x35l,x35r)-.5currentbreadth)-.05w);
+  lft x33l=hround((max(x35l,x35r)+.5currentbreadth)+.05w);
+fi
+dot(31,32); dot(33,34);
+penlabels(31,32,33,34,35);
+endchar;
+     
+cmchar "Rough breathing";
+beginchar("<",if monospace:9else:4fi u#,acc_ht#,0);
+adjust_fit(0,0);
+toniko:=monotoniko; monotoniko:=false;
+spirit(.5w)<; monotoniko:=toniko;
+endchar;
+     
+cmchar "Smooth breathing";
+beginchar(">",if monospace:9else:5fi u#,acc_ht#,0);
+adjust_fit(0,0);
+toniko:=monotoniko; monotoniko:=false;
+spirit(.5w)>; monotoniko:=toniko; 
+endchar;
+     
+cmchar "Rough breathing with acute";
+beginchar(oct"126",if monospace:9else:5fi u#,acc_ht#,0);
+adjust_fit(0,0);
+toniko:=monotoniko; monotoniko:=false;
+spirit_acute(.5w)<; monotoniko:=toniko; 
+endchar;
+     
+cmchar "Rough breathing with grave";
+beginchar(oct"103",if monospace:9else:5fi u#,acc_ht#,0);
+adjust_fit(0,0);
+toniko:=monotoniko; monotoniko:=false;
+spirit_grave(.5w)<; monotoniko:=toniko; 
+endchar;
+     
+cmchar "Rough breathing with circumflex";
+beginchar(oct"100",if monospace:9else:6fi u#,Circ_ht#,0);
+adjust_fit(0,0);
+toniko:=monotoniko; monotoniko:=false;
+squeeze:=true;
+spirit_circumflex(.5w)<; monotoniko:=toniko; 
+endchar;
+     
+cmchar "Smooth breathing with acute";
+beginchar(oct"136",if monospace:9else:5fi u#,acc_ht#,0);
+adjust_fit(0,0);
+toniko:=monotoniko; monotoniko:=false;
+spirit_acute(.5w)>; monotoniko:=toniko; 
+endchar;
+     
+cmchar "Smooth breathing with grave";
+beginchar(oct"137",if monospace:9else:5fi u#,acc_ht#,0);
+adjust_fit(0,0);
+toniko:=monotoniko; monotoniko:=false;
+spirit_grave(.5w)>; monotoniko:=toniko; 
+endchar;
+     
+
+cmchar "Smooth breathing and circumflex";
+beginchar(oct"134",if monospace:9else:6fi u#,Circ_ht#,0);
+adjust_fit(0,0);
+toniko:=monotoniko; monotoniko:=false;
+squeeze:=true;
+spirit_circumflex(.5w)>; monotoniko:=toniko; 
+endchar;
+
+     
+cmchar "Diaeresis with acute"; 
+beginchar(oct"043",if monospace:9else:5fi u#,acc_ht#,0);
+adjust_fit(0,0);
+toniko:=monotoniko; monotoniko:=false;
+diaeresis_acute(.5w); monotoniko:=toniko;
+endchar;
+
+     
+cmchar "Diaeresis with grave";
+beginchar(oct"044",if monospace:9else:5fi u#,acc_ht#,0);
+adjust_fit(0,0);
+toniko:=monotoniko; monotoniko:=false;
+diaeresis_grave(.5w); monotoniko:=toniko; 
+endchar;
+
+     
+cmchar "Diaeresis with circumflex";
+beginchar(oct"040",if monospace:9else:8fi u#,Circ_ht#,0);
+adjust_fit(0,0);
+toniko:=monotoniko; monotoniko:=false;
+squeeze:=true;
+diaeresis_circumflex(.5w); 
+monotoniko:=toniko;
+endchar;
+
+     
+cmchar "Iota subscript";
+beginchar("|",if monospace:9else:2fi u#,0,.6desc_depth#);
+adjust_fit(0,0);
+toniko:=monotoniko; monotoniko:=false;
+iota_sub(.5w); monotoniko:=toniko; 
+endchar;
+     
+cmchar "Breve accent";
+beginchar(oct"036",9u#,min(asc_height#,2x_height#),0);
+italcorr h#*slant+.5vair#-1.5u#;
+adjust_fit(0,0);
+pickup crisp.nib; pos1(vair,-180); pos3(vair,0);
+top y1=top y3=h; lft x1r=w-rt x3r=hround(2u-.5vair);
+numeric mid_thickness; mid_thickness=vround 1/3[vair,stem];
+pos2(mid_thickness,-90); x2=.5w;
+%bot y2r=vround max(x_height+o+tiny,1/3[x_height,h]+o-.5mid_thickness);
+bot y2r=vround (1/3[x_height,h]+o-.5mid_thickness);
+filldraw stroke z1e{down}...z2e{right}...{up}z3e;  % stroke
+currentbreadth:=0;
+endchar;
+     
+ cmchar "Macron (bar) accent";
+numeric macron_breadth#; macron_breadth#=.2[vair#,stem#];
+beginchar(oct"037",9u#,.4[x_height#,asc_height#]+macron_breadth#,0);
+italcorr h#*slant-.75u#;
+adjust_fit(0,0);
+numeric macron_breadth; macron_breadth:=Vround .2[vair,stem];
+pickup if serifs: crisp.nib else: fine.nib fi;
+pos1(macron_breadth,90); pos2(macron_breadth,90);
+top y1r=top y2r=h+o; lft x1=w-rt x2=hround 1.25u;
+filldraw stroke z1e--z2e;  % bar
+currentbreadth:=0;
+endchar;
+
+
+
+endinput;

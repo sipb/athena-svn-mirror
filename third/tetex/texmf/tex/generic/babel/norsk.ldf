@@ -1,0 +1,110 @@
+%%
+%% This is file `norsk.ldf',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% norsk.dtx  (with options: `code')
+%% Copyright 1998-1999 Johannes L. Braams and any individual authors
+%% listed elsewhere in this file.  All rights reserved.
+%% 
+%% For further copyright information see any other copyright notices in
+%% this file.
+%% 
+%% This file is part of the Babel system release 3.6.
+%% --------------------------------------------------
+%% 
+%% It may be distributed under the terms of the LaTeX Project Public
+%% License, as described in lppl.txt in the base LaTeX distribution.
+%% Either version 1.0 or, at your option, any later version.
+\ProvidesLanguage{norsk}
+        [1999/04/22 v1.2j Norsk support from the babel system]
+%%File `norsk.dtx'
+%% Babel package for LaTeX version 2e
+%% Copyright (C) 1989 - 1999
+%%           by Johannes Braams, TeXniek
+%% Please report errors to: J.L. Braams
+%%                          JLBraams@cistron.nl
+\LdfInit\CurrentOption{captions\CurrentOption}
+\ifx\l@norsk\@undefined
+    \@nopatterns{Norsk}
+    \adddialect\l@norsk0\fi
+\@namedef{\CurrentOption hyphenmins}{\@ne\tw@}
+\def\bbl@tempa{norsk}
+\ifx\CurrentOption\bbl@tempa
+  \def\captionsnorsk{%
+    \def\prefacename{Forord}%
+    \def\refname{Referanser}%
+    \def\abstractname{Sammendrag}%
+    \def\bibname{Bibliografi}%      or Litteraturoversikt
+    \def\chaptername{Kapittel}%
+    \def\appendixname{Tillegg}%    or Appendiks
+    \def\contentsname{Innhold}%
+    \def\listfigurename{Figurer}%  or Figurliste
+    \def\listtablename{Tabeller}%  or Tabelliste
+    \def\indexname{Register}%
+    \def\figurename{Figur}%
+    \def\tablename{Tabell}%
+    \def\partname{Del}%
+    \def\enclname{Vedlegg}%
+    \def\ccname{Kopi sendt}%
+    \def\headtoname{Til}% in letter
+    \def\pagename{Side}%
+    \def\seename{Se}%
+    \def\alsoname{Se ogs\aa{}}%
+    \def\proofname{Bevis}%
+    }
+\else
+  \adddialect\l@nynorsk\l@norsk
+  \def\captionsnynorsk{%
+    \def\prefacename{Forord}%
+    \def\refname{Referansar}%
+    \def\abstractname{Samandrag}%
+    \def\bibname{Litteratur}%     or Litteraturoversyn
+    \def\chaptername{Kapittel}%
+    \def\appendixname{Tillegg}%   or Appendiks
+    \def\contentsname{Innhald}%
+    \def\listfigurename{Figurar}% or Figurliste
+    \def\listtablename{Tabellar}% or Tabelliste
+    \def\indexname{Register}%
+    \def\figurename{Figur}%
+    \def\tablename{Tabell}%
+    \def\partname{Del}%
+    \def\enclname{Vedlegg}%
+    \def\ccname{Kopi sendt}%
+    \def\headtoname{Til}% in letter
+    \def\pagename{Side}%
+    \def\seename{Sj\aa{}}%
+    \def\alsoname{Sj\aa{} ogs\aa{}}%
+    \def\proofname{Bevis}%
+    }
+\fi
+\@namedef{date\CurrentOption}{%
+  \def\today{\number\day.~\ifcase\month\or
+    januar\or februar\or mars\or april\or mai\or juni\or
+    juli\or august\or september\or oktober\or november\or desember
+    \fi
+    \space\number\year}}
+\@namedef{extras\CurrentOption}{\bbl@frenchspacing}
+\@namedef{noextras\CurrentOption}{\bbl@nonfrenchspacing}
+\ldf@finish\CurrentOption
+%%
+%% \CharacterTable
+%%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%%   Digits        \0\1\2\3\4\5\6\7\8\9
+%%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%%   Dollar        \$     Percent       \%     Ampersand     \&
+%%   Acute accent  \'     Left paren    \(     Right paren   \)
+%%   Asterisk      \*     Plus          \+     Comma         \,
+%%   Minus         \-     Point         \.     Solidus       \/
+%%   Colon         \:     Semicolon     \;     Less than     \<
+%%   Equals        \=     Greater than  \>     Question mark \?
+%%   Commercial at \@     Left bracket  \[     Backslash     \\
+%%   Right bracket \]     Circumflex    \^     Underscore    \_
+%%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%%   Right brace   \}     Tilde         \~}
+%%
+\endinput
+%%
+%% End of file `norsk.ldf'.

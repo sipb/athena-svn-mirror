@@ -1,0 +1,196 @@
+%%
+%% This is file `pst-gr3d.tex',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% pst-gr3d.dtx  (with options: `pst-gr3d')
+%% 
+%% IMPORTANT NOTICE:
+%% 
+%% For the copyright see the source file.
+%% 
+%% Any modified versions of this file must be renamed
+%% with new filenames distinct from pst-gr3d.tex.
+%% 
+%% For distribution of the original source see the terms
+%% for copying and modification in the file pst-gr3d.dtx.
+%% 
+%% This generated file may be distributed as long as the
+%% original source files, as listed above, are part of the
+%% same distribution. (The sources need not necessarily be
+%% in the same archive or directory.)
+%%
+%% Package `pst-gr3d.ins'
+%%
+%% Denis Girou (CNRS/IDRIS - France) <Denis.Girou@idris.fr>
+%% September 16, 1998
+%%
+%%
+%% Denis Girou, <Denis.Girou@idris.fr>, 1998.
+%%
+%% This program can be redistributed and/or modified under the terms
+%% of the LaTeX Project Public License Distributed from CTAN
+%% archives in directory macros/latex/base/lppl.txt.
+%%
+%% DESCRIPTION:
+%%   `pst-gr3d' is PSTricks package to draw three dimensional grids
+%%   with various customizations.
+%%
+\def\fileversion{1.2}
+\def\filedate{98/09/16}
+\message{`PST-Grids3d v\fileversion, \filedate\space (Denis Girou)}
+\csname PSTGridsThreeD\endcsname
+\let\PSTGridsThreeD\endinput
+\ifx\PSTricksLoaded\endinput\else\input pstricks.tex\fi
+\ifx\PSTnodesLoaded\endinput\else\input pst-node.tex\fi
+\ifx\PSTthreeDLoaded\endinput\else\input pst-3d.tex\fi
+\ifx\MultidoLoaded\endinput\else\input multido.tex\fi
+\input pst-key.tex
+\edef\PstAtCode{\the\catcode`\@}
+\catcode`\@=11\relax
+\def\psset@PstDebug#1{\pst@getint{#1}\psk@PstDebug}
+\newif\ifPst@PstPicture
+\define@key{psset}{PstPicture}[true]{\@nameuse{Pst@PstPicture#1}}
+\newif\ifPst@GridThreeDNodes
+\define@key{psset}{GridThreeDNodes}[true]{\@nameuse{Pst@GridThreeDNodes#1}}
+\define@key{psset}{GridThreeDXUnit}{%
+\pst@cntg=#1\relax
+\edef\psk@GridThreeDXUnit{\the\pst@cntg}}
+\define@key{psset}{GridThreeDYUnit}{%
+\pst@cntg=#1\relax
+\edef\psk@GridThreeDYUnit{\the\pst@cntg}}
+\define@key{psset}{GridThreeDZUnit}{%
+\pst@cntg=#1\relax
+\edef\psk@GridThreeDZUnit{\the\pst@cntg}}
+\define@key{psset}{GridThreeDXPos}{%
+\pst@cntg=#1\relax
+\edef\psk@GridThreeDXPos{\the\pst@cntg}}
+\define@key{psset}{GridThreeDYPos}{%
+\pst@cntg=#1\relax
+\edef\psk@GridThreeDYPos{\the\pst@cntg}}
+\define@key{psset}{GridThreeDZPos}{%
+\pst@cntg=#1\relax
+\edef\psk@GridThreeDZPos{\the\pst@cntg}}
+\def\psset@Rx#1{\psset@XnodesepA{#1}}
+\def\psset@Ry#1{\psset@offsetA{#1}}
+\psset@viewpoint{1.2 -0.6 0.8}
+\setkeys{psset}{%
+PstDebug=0,PstPicture=true,GridThreeDNodes=false,
+GridThreeDXPos=1,GridThreeDYPos=1,GridThreeDZPos=1,
+GridThreeDXUnit=1,GridThreeDYUnit=1,GridThreeDZUnit=1}
+\def\PstGridThreeD{%
+\@ifnextchar[\@PstGridThreeD{\@PstGridThreeD[]}}
+\def\@PstGridThreeD[#1](#2,#3,#4){{%
+\psset{dimen=middle}%
+\setkeys{psset}{#1}%
+\pst@cnta=#2
+\advance\pst@cnta\m@ne
+\pst@cnth=\pst@cnta
+\multiply\pst@cnth\psk@GridThreeDXUnit
+\divide\pst@cnth\tw@
+\ifodd\pst@cnth
+  \edef\Pst@PictureYmin{-\the\pst@cnth}%
+\else
+  \edef\Pst@PictureYmin{-\the\pst@cnth.5}%
+\fi
+\pst@cntb=#3
+\advance\pst@cntb\m@ne
+\pst@cntc=#4
+\advance\pst@cntc\m@ne
+\pst@cntg=\pst@cntb
+\multiply\pst@cntg\psk@GridThreeDYUnit
+\divide\pst@cnta\tw@
+\pst@cnth=\pst@cnta
+\multiply\pst@cnth\psk@GridThreeDXUnit
+\advance\pst@cntg\pst@cnth
+\pst@cnth=\pst@cntb
+\advance\pst@cnth\m@ne
+\multiply\pst@cnth\psk@GridThreeDYUnit
+\divide\pst@cnth\tw@
+\pst@cntd=\pst@cntc
+\multiply\pst@cntd\psk@GridThreeDZUnit
+\advance\pst@cntd\pst@cnth
+\ifnum\pst@cnth=\z@
+  \edef\Pst@PictureYmax{\the\pst@cntd.5}%
+\else
+  \edef\Pst@PictureYmax{\the\pst@cntd}%
+\fi
+\ifPst@PstPicture
+  \ifnum\psk@PstDebug>\z@
+    \psframebox[framesep=0]{%
+  \fi
+  \pspicture(0,\Pst@PictureYmin)(\the\pst@cntg,\Pst@PictureYmax)
+\fi
+\pst@cntd=\psk@GridThreeDXPos
+\advance\pst@cntd\m@ne
+\multiply\pst@cntd\psk@GridThreeDXUnit
+\pst@cntg=\psk@GridThreeDYPos
+\advance\pst@cntg\m@ne
+\multiply\pst@cntg\psk@GridThreeDYUnit
+\pst@cnth=\psk@GridThreeDZPos
+\advance\pst@cnth\m@ne
+\multiply\pst@cnth\psk@GridThreeDZUnit
+\ifx\PstGridThreeDHookZFace\empty
+\else
+  \multido{\iz=\pst@cntc+-\psk@GridThreeDZUnit}{#4}{% Z face hook
+    \ThreeDput[normal=0 0 1](\pst@cntd,\pst@cntg,\iz){\PstGridThreeDHookZFace}}
+\fi
+\multido{\ix=\pst@cntd+\psk@GridThreeDXUnit}{#2}{%
+  \ThreeDput[normal=1 0 0](\ix,\pst@cntg,\pst@cnth){%
+    \PstGridThreeDHookXFace
+    \psgrid[xunit=\psk@GridThreeDYUnit,yunit=\psk@GridThreeDZUnit,
+            subgriddiv=0,gridlabels=0](\pst@cntb,\pst@cntc)}}
+\pst@cnta=#3
+\advance\pst@cnta\m@ne
+\multiply\pst@cnta\psk@GridThreeDYUnit
+\advance\pst@cnta\pst@cntg
+\multido{\iy=\pst@cnta+-\psk@GridThreeDYUnit}{#3}{%
+  \ThreeDput[normal=0 1 0](\pst@cntd,\iy,\pst@cnth){%
+    \PstGridThreeDYFace{#2}{#4}{\iy}}}
+\PstGridThreeD@HookEnd
+
+\ifPst@PstPicture
+  \endpspicture
+  \ifnum\psk@PstDebug>\z@
+    }
+  \fi
+\fi}}
+\def\PstGridThreeDYFace#1#2#3{%
+\pst@cnta=#1
+\advance\pst@cnta\m@ne
+\pst@cntb=#2
+\advance\pst@cntb\m@ne
+\PstGridThreeDHookYFace%
+\psgrid[xunit=\psk@GridThreeDXUnit,yunit=\psk@GridThreeDZUnit,
+        subgriddiv=0,gridlabels=0](-\pst@cnta,\pst@cntb)
+\pst@cntg=#3%
+\advance\pst@cntg\@ne
+\multido{\ia=0+-\psk@GridThreeDXUnit}{#1}{%
+  \pst@cnth=\multidocount
+  \multido{\ib=0+\psk@GridThreeDZUnit}{#2}{%
+    \ifPst@GridThreeDNodes
+      \pnode(\ia,\ib){Gr3dNode\the\pst@cnth\the\pst@cntg\the\multidocount}
+    \fi
+    \ifx\PstGridThreeDHookNode\empty
+    \else
+      \rput(\ia,\ib){\PstGridThreeDHookNode}
+    \fi}}}
+\def\PstGridThreeDHookNode{}
+\def\PstGridThreeDHookXFace{}
+\def\PstGridThreeDHookYFace{}
+\def\PstGridThreeDHookZFace{}
+\def\PstGridThreeDHookEnd{}
+\def\PstGridThreeD@HookEnd{%
+\def\PstGridThreeD@HookEnd{}%
+\PstGridThreeDHookEnd}
+\def\PstGridThreeDNodeProcessor#1{%
+\psset{unit=0.3}
+\pspicture(-0.5,-0.5)(0.5,0.5)
+  \pscircle*[linecolor=#1]{0.5}
+  \pscircle*[linecolor=white]{0.2}
+\endpspicture}
+\catcode`\@=\PstAtCode\relax
+\endinput
+%%
+%% End of file `pst-gr3d.tex'.

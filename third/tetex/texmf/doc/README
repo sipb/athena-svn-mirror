@@ -1,0 +1,20 @@
+This directory contains the documentation for the tex system.
+
+Some directory contain a Makefile that can be used to build
+some extra PostScript documentation.
+
+To make the documentation, simply type "make".
+
+If you add new documentation, you can recreate the file
+
+	helpindex.html
+
+with the command
+
+	./mkhtml > helpindex.html
+
+The file helpindex.html can be viewed by any WWW browser, such as
+Moasic, lynx, lemacs, xemacs (with w3 mode). It allows you to browse through
+all *.dvi and *.ps files below this directory.
+
+	Thomas Esser (te@informatik.uni-hannover.de), Sep. 1994

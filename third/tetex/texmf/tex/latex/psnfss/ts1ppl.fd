@@ -1,0 +1,40 @@
+%Filename: ts1ppl.fd
+%Created by: tex Fam_613
+%Created using fontinst v1.800
+
+%THIS FILE SHOULD BE PUT IN A TEX INPUTS DIRECTORY
+
+\ProvidesFile{ts1ppl.fd}
+   [1998/07/06 Fontinst v1.800 font definitions for TS1/ppl.]
+
+\DeclareFontFamily{TS1}{ppl}{}
+
+\DeclareFontShape{TS1}{ppl}{m}{n}{
+   <-> pplr8c
+}{}
+
+\DeclareFontShape{TS1}{ppl}{m}{sl}{
+   <-> pplro8c
+}{}
+
+\DeclareFontShape{TS1}{ppl}{m}{it}{
+   <-> pplri8c
+}{}
+
+\DeclareFontShape{TS1}{ppl}{b}{n}{
+   <-> pplb8c
+}{}
+
+\DeclareFontShape{TS1}{ppl}{b}{sl}{
+   <-> pplbo8c
+}{}
+
+\DeclareFontShape{TS1}{ppl}{b}{it}{
+   <-> pplbi8c
+}{}
+
+\DeclareFontShape{TS1}{ppl}{bx}{n}{<->ssub * ppl/b/n}{}
+\DeclareFontShape{TS1}{ppl}{bx}{sl}{<->ssub * ppl/b/sl}{}
+\DeclareFontShape{TS1}{ppl}{bx}{it}{<->ssub * ppl/b/it}{}
+
+\endinput

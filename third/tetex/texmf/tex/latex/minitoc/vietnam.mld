@@ -1,0 +1,14 @@
+% vietnamese titles for minitoc.sty
+%
+
+\def\mtctitle{M\d{u}c l\d{u}c}
+\def\mlftitle{Danh s\'ach h\`inh v\~e}
+\def\mlttitle{Danh s\'ach b\h{a}ng}
+
+\def\ptctitle{M\d{u}c l\d{u}c}
+\def\plftitle{Danh s\'ach h\`inh v\~e}
+\def\plttitle{Danh s\'ach b\h{a}ng}
+
+\def\stctitle{M\d{u}c l\d{u}c}
+\def\slftitle{Danh s\'ach h\`inh v\~e}
+\def\slttitle{Danh s\'ach b\h{a}ng}

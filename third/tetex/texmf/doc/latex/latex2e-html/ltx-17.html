@@ -1,0 +1,51 @@
+<html>
+<head><title>Help On LaTeX Commands</title>
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#000099" vlink="#cc0000" alink="#cc0000">
+
+<h1><font size="-2">Hypertext Help with LaTeX</font><br><font color="#cc0000">LaTex Commands</font></h1>
+
+<p>Commands take one of two forms:</p>
+
+<ul>
+  <li>a backslash (<tt>\</tt>) followed by a single special character
+  <li>a backslash (<tt>\</tt>) followed by a string of letters
+</ul>
+
+<p>The second case is case-sensitive; 
+<a href="ltx-405.html"><tt>\Gamma</tt></a> is different from 
+<a href="ltx-405.html"><tt>\gamma</tt></a>.
+These commands are terminated by a nonletter, i.e., a blank, a number,
+a punctuation mark or special character. </p>
+
+<p>For commands which produce text a trailing blank is interpreted as the
+end of the command, which does not automatically create a space, so
+you may have to do something to create an
+<a href="ltx-431.html">interword space</a> after this text.</p>
+
+<p>Commands may have mandatory arguments, which are input in braces 
+(<tt>{}</tt>).
+They may also have optional arguments, which are input in square brackets
+(<tt>[]</tt>).</p>
+
+<H2>Defining new commands, etc.</H2>
+
+<p>See: </p>
+
+<ul>
+<li><A href="ltx-18.html"><tt>\newcommand</tt></A>
+<li><A href="ltx-19.html"><tt>\newenvironment</tt></A>
+<li><A href="ltx-20.html"><tt>\newtheorem</tt></A>
+<li><A href="ltx-21.html"><tt>\newfont</tt></A>
+</ul>
+These must be used for entities which are not already defined.  To 
+redefine something use, for example,
+<A href="ltx-18.html"><tt>\renewcommand</tt></A>.
+<hr>
+Return to the <a href="ltx-2.html">LaTeX Table of Contents</a>
+<hr>
+<address>
+Revised: Sheldon Green, 03 Nov 1995.
+</address>
+</body>
+</html>

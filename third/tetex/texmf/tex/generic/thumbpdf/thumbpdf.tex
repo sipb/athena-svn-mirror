@@ -1,0 +1,209 @@
+% File:        thumbpdf.tex
+% Project:     thumbpdf
+% Version:     1999/05/05 v1.4
+% Author:      Heiko Oberdiek
+%
+% Copyright:   Copyright (C) 1999 Heiko Oberdiek.
+%
+%              This program can be redistributed and/or modified
+%              under the terms of the LaTeX Project Public License
+%              distributed from CTAN archives in directory
+%              macros/latex/base/lppl.txt; either version 1 of
+%              the License, or (at your option) any later version.
+%
+%              See file "readme.txt" for a list of files that
+%              belong to this project.
+%
+% Function:    Program to include thumbnails as images.
+%              It looks for thumbnail files 'thumb???.png' and
+%              includes them as images in the output pdf file
+%              'thumbpdf.pdf'. The perl script 'thumbpdf(.pl)'
+%              automatically calls pdftex with this file to
+%              generate 'thumbpdf.pdf' and produces 'thumbdta.tex'
+%              that contains the necessary pdf image objects.
+%              These are then read by the package 'thumbpdf.sty'.
+%
+% Requirement: * pdf(e)tex
+%              * thumb???.png
+%
+% Use:         pdftex thumbpdf
+%              Because it takes some time to look for 1000 thumbnail
+%              files, a maximum number can be specified:
+%              pdftex \def\thumbmax{20}\input thumbpdf
+%
+% History:     1999/02/14 v1.0: first public release
+%              1999/02/23 v1.1
+%              1999/03/01 v1.2
+%              1999/03/12 v1.3: Copyright: LPPL
+%              1999/05/05 v1.4
+
+\immediate\write-1{%
+  File: thumbpdf.tex 1999/05/05 v1.4 %
+  Program to include thumbnails as images (HO)%
+}
+\immediate\write16{%
+****************************************************************}
+\immediate\write16{%
+* Generating 'thumbpdf.pdf', each page with a found thumbnail. *}
+\immediate\write16{%
+****************************************************************}
+
+\def\END{\csname @@end\endcsname\end}
+
+% Check, if LaTeX format
+\ifx\mbox\undefined
+\else
+  \immediate\write16{%
+    !!! Process this file '\jobname.tex' with 'pdf(e)tex' %
+    (plain format) !!!%
+  }%
+  \expandafter\END
+\fi
+
+% Check if pdfTeX
+\ifx\pdfoutput\undefined
+  \immediate\write16{%
+    !!! Process this file '\jobname.tex' with 'pdf(e)tex' %
+    (NOT tex) !!!%
+  }%
+  \expandafter\END
+\fi
+
+\pdfoutput=1
+
+% this file is tested with pdftex 0.13a
+% but for downward compatibilty a trick from Hans Hagen:
+\ifnum\pdftexversion<13 \ifnum\expandafter `\pdftexrevision<`s
+  \let\normalpdfimage\pdfimage
+  \def\grabpdfimage#1#2{\normalpdfimage#1 #2\relax}
+  \def\pdfimage#1#{\grabpdfimage{#1}}
+\fi\fi
+
+% max. 106x106 / 72 dpi
+\hsize 1.5in
+\vsize 1.5in
+
+\nopagenumbers
+
+\newcount\thumbcount
+\def\thumbcountstep{\advance\thumbcount by 1 }
+
+\def\thumbfilename{thumb%
+  \ifnum\thumbcount<100 0\fi
+  \ifnum\thumbcount<10 0\fi
+  \the\thumbcount
+  .png%
+}
+
+\newread\thumbread
+\def\ifthumbexists{%
+  \openin\thumbread=\thumbfilename\relax
+  \ifeof\thumbread
+    \expandafter\noneofone
+  \else
+    \closein\thumbread
+    \expandafter\firstofone
+  \fi
+}
+\def\noneofone#1{}
+\def\firstofone#1{#1}
+
+\def\iffileexists#1{%
+  \openin\thumbread=#1\relax
+  \ifeof\thumbread
+    \expandafter\secondoftwo
+  \else
+    \closein\thumbread
+    \expandafter\firstoftwo
+  \fi
+}
+\long\def\firstoftwo#1#2{#1}
+\long\def\secondoftwo#1#2{#2}
+
+\let\listthumbs\empty
+
+\def\printthumbfile{%
+  \vfill\eject
+  \centerline{%
+    \pdfimage height \vsize {\thumbfilename}%
+  }%
+}
+
+\def\processthumb{%
+  \edef\listthumbs{\listthumbs\space\the\thumbcount}%
+  \printthumbfile
+  \pageno=\thumbcount
+}
+
+\expandafter\ifx\csname thumbmax\endcsname\relax
+  \def\thumbmax{999}%
+\fi
+
+\ifnum\thumbmax>999
+  \immediate\write16{%
+    !!! Warning: \thumbmax\space too large, %
+    999 is the highest supported thumbnail number!%
+  }%
+  \def\thumbmax{999}%
+\fi
+
+\immediate\write16{* Looking for thumbnails 0..\thumbmax:}
+
+\thumbcount=\thumbmax\relax
+\advance\thumbcount by 1
+\edef\thumbmax{\the\thumbcount}%
+\thumbcount=0
+\loop
+\ifnum\thumbcount<\thumbmax\relax
+  \ifthumbexists\processthumb
+  \thumbcountstep
+\repeat
+
+\def\END{%
+  \ifx\allthumbs\empty
+  \else
+    \pdfobj{/ListThumbs\listthumbs}%
+  \fi
+  \vfill\eject
+  \csname bye\endcsname % \bye is \outer
+}
+
+% thumbopt.tex
+\iffileexists{thumbopt}{}{\END}
+
+\def\thumb{\futurelet\nexttoken\thumbA}
+\let\braceleft=[
+\def\thumbA{%
+  \if\nexttoken\braceleft
+    \expandafter\thumbB
+  \else
+    \expandafter\thumbC
+  \fi
+}
+\def\thumbC#1{\thumbB[#1]{#1}}
+\def\thumbB[#1]#2{% #1: label, #2: file[.png]
+  \iffileexists{#2.png}{%
+    \def\thumbfilename{#2.png}%
+  }{%
+    \iffileexists{#2}{%
+      \def\thumbfilename{#2}%
+    }{%
+      \let\thumbfilename\empty
+    }%
+  }%
+  \ifx\thumbfilename\empty
+    \immediate\write16{%
+      !!! Warning: Thumbnail '#2' does not exist!"}%
+  \else
+    \edef\listthumbs{\listthumbs\space{#1}}%
+    \printthumbfile
+    \advance\thumbcount by -1
+    \pageno=\thumbcount
+  \fi
+}
+
+\immediate\write16{* Looking for extra thumbnails:}
+\thumbcount=0
+\input thumbopt
+
+\END

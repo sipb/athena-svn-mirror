@@ -1,0 +1,573 @@
+Path: senator-bedfellow.mit.edu!bloom-beacon.mit.edu!news.kodak.com!news-nysernet-16.sprintlink.net!news-east1.sprintlink.net!news-peer1.sprintlink.net!news.sprintlink.net!news-hh.maz.net!fu-berlin.de!news.uni-stuttgart.de!news.urz.uni-heidelberg.de!german
+From: dantefaq@dante.de (DE-TeX-FAQ-Maintainer)
+Newsgroups: de.comp.text.tex,de.answers,news.answers
+Subject: TeX, LaTeX, DANTE e.V.: FAQ - Fragen und Antworten (Part 10 of 11)
+Supersedes: <de-tex-faq-10-922970460@dante.de>
+Followup-To: de.comp.text.tex
+Date: 11 May 1999 15:40:33 GMT
+Organization: DANTE, Deutschsprachige Anwendervereinigung TeX e.V.
+Lines: 546
+Approved: news-answers-request@MIT.EDU
+Distribution: world
+Expires: 25 Jun 99 17:39:26
+Message-ID: <de-tex-faq-10-926437166@dante.de>
+References: <de-tex-faq-1-926437166@dante.de>
+Reply-To: dantefaq@dante.de (DE-TeX-FAQ-Maintainer)
+NNTP-Posting-Host: sun.dante.de
+Mime-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 8bit
+Summary: This posting contains a list of Frequently Asked Questions
+         (and their answers) about the typesetting system TeX and
+         about DANTE e.V., the german-speaking TeX users group.
+         It is in German and uses the ISO Latin-1 character set.
+Keywords: FAQ TYPESETTING TeX USERGROUP DANTE
+Originator: german@sun.dante.de
+Xref: senator-bedfellow.mit.edu de.comp.text.tex:16692 de.answers:3303 news.answers:157708
+
+Posted-By: auto-faq 3.3 (Perl 5.003)
+Archive-name: de-tex-faq/part10
+Posting-Frequency: monthly
+Copyright-Notice: siehe Abschnitt 1.1/see Section 1.1
+URL: http://www.dante.de/faq/de-tex-faq/
+
+--- DE-TeX-FAQ Beginn Teil 10 ---
+
+
+  Fragen und Antworten (FAQ) über das Textsatzsystem TeX und DANTE,
+            Deutschsprachige Anwendervereinigung TeX e.V.
+                                   
+           Bernd Raichle, Thomas Hafner und Rolf Niepraschk
+                                   
+                      (Version 51 vom Mai 1999)
+  _________________________________________________________________
+
+10 METAFONT und Schriften (Fortsetzung)
+                                    
+10.1 Die EC-Schriftfamilie und andere T1-kodierte Schriften
+
+10.1.1 Wozu benötige ich neben der Computer-Modern-Schriftfamilie noch
+       eine weitere Familie, die fast dasselbe Aussehen hat?
+
+Die Schriften der Computer-Modern-(CM)-Familie enthalten nur jeweils
+128 verschiedene Zeichen. Es fehlen daher beispielsweise Umlaute und
+alle akzentuierten Zeichen anderer europäischer Sprachen. Diese
+Zeichen müssen bei Verwendung der CM-Schriften durch eine
+Box-Konstruktion aus Einzelzeichen zusammengebaut werden. Da TeX zur
+Trennung von Wörtern die Codes der Zeichen in der jeweiligen Schrift
+verwendet, werden Wörter mit Umlauten nur unvollständig, fehlerhaft
+oder überhaupt nicht getrennt.
+
+Diese Nachteile vermeiden die EC-Schriften, indem sie in die bisher
+ungenutzten 128 Zeichenpositionen akzentuierte Zeichen legen. Außerdem
+wurden die Positionen der `unteren' 128 Zeichen im Vergleich zu den
+CM-Schriften klarer strukturiert. So wurden die Positionen, die in den
+CM-Schriften mit den griechischen Großbuchstaben belegt sind, die für
+den mathematischen Formelsatz genutzt werden, in den EC-Schriften mit
+Lettern für gewöhnlichen Text belegt. So werden die Zeichen für Text-
+und mathematischen Formelsatz sauber in entsprechende Fonts
+voneinander getrennt, um die dadurch auftretenden Seiteneffekte zu
+vermeiden und um Schriften einfacher kombinieren zu können.
+
+Ein weiterer Vorteil der EC-Schriften ist beispielsweise das
+Vorhandensein von Lettern für Anführungszeichen und auch die bei
+einigen Lettern korrigierte Unterschneidung, wie bei ,,Av''. Hierdurch
+ergibt sich beim Wechsel von CM- zu EC-Schriften jedoch in den meisten
+Fällen ein geänderter Umbruch.
+
+10.1.2 Was ist die Kodierung `T1'?
+
+Die Kodierung der EC-Schriften, die auf der TeX-Tagung TUG'90 in
+Cork/Irland festgelegt wurde, wird in LaTeX2e als `T1'-Kodierung
+bezeichnet. Diese Kodierung entspricht im wesentlichen dem Code ISO
+8859-1 (Latin-1) mit dem Unterschied, daß das scharfe s zu den anderen
+akzentuierten Kleinbuchstaben auf Position 255 gesetzt wurde und daß
+die in ISO Latin-1 mit Control-Zeichen belegten Bereiche 0-31 mit
+Akzenten, Anführungszeichen und Ligaturen bzw. 128-159 mit Lettern aus
+ISO Latin-2 (für die osteuropäischen Sprachen) belegt wurden. Eine
+Kodierungstabelle findet man beispielsweise in `dcdoc.tex', der
+Dokumentation der T1-kodierten EC-Schriftfamilie.
+
+Hinweis: Mit LaTeX2e kann man mit Hilfe des standardmäßig enthaltenen
+Pakets `fontenc' sehr einfach mit
+
+\usepackage[T1]{fontenc}
+
+T1-kodierte Schriften verwenden, falls wie bei den EC-Schriften die
+zugehörigen .fd-Dateien vorhanden sind. (Mit dem Paket `inputenc' kann
+man die verwendete Kodierung der (La)TeX-Eingabedatei festlegen; diese
+hat jedoch mit der Kodierung der Schrift _nichts_ zu tun!)
+
+dcdoc.tex:  CTAN: fonts/ec/src/dcdoc.tex
+
+10.1.3 Was sind die EC-Schriften? Was sind die DC-Schriften? Wo liegt der
+       Unterschied zwischen DC- und EC-Schriften?
+
+Bis Mitte Januar 1997 gab es die DC-Schriften `nur' als Testversion,
+von denen die Versionen 1.0, 1.1, 1.2 und 1.3, teilweise in mehreren
+Patchleveln, veröffentlicht wurden. Diese Testversionen hatten noch
+den einen oder anderen Fehler und die Schriftdefinitionen wurden
+verändert und weiterentwickelt, so daß die tfm-Dateien der einzelnen
+Versionen untereinander inkompatibel sind. Es kann also sein, daß ein
+Dokument, das DC-Schriften verwendet, mit einer neuen Version der
+DC-Schriften bzw. den EC-Schriften einen anderen Umbruch haben wird.
+Die endgültige, ausgetestete, stabile Version der DC-Schriften heißt
+European/Extended-Computer-Modern-(EC)-Schriften. Sie ist ab Mitte
+Januar 1997 verfügbar und wird ab dem LaTeX2e-Release vom Dezember
+1996 unterstützt (siehe Abschnitt 10.1.4). Die EC-Schriften sollen
+ebenso stabil wie die CM-Schriften sein, d.h. die tfm-Dateien dieser
+Schriftfamilien sollten sich nicht mehr ändern.
+
+10.1.4 Wie kann ich mit LaTeX2e die neuen EC-Schriften verwenden? ...oder
+       muß ich dazu gar alle .fd-Dateien selbst ändern?
+
+Um mit LaTeX2e die EC-Schriften ohne viel Aufwand benutzen zu können,
+benötigt man die LaTeX2e-Version vom Dezember 1996 oder neuer. Mit
+dieser muß nurmehr in der Präambel die Zeile \usepackage[T1]{fontenc}
+eingefügt werden.
+
+Ab LaTeX2e vom Juni 1997 werden die EC-Schriften automatisch als die
+T1-kodierten CM-Schriften deklariert, so daß keine weiteren
+Installationsschritte notwendig sind. Mit der älteren Version vom
+Dezember 1996 werden die .fd-Dateien so konfiguriert, daß die
+DC-Schriften v1.2/1.3 verwendet werden. Damit stattdessen die
+EC-Schriften verwendet werden, müssen zusätzlich mit Hilfe der Datei
+``ec.ins'' die entsprechenden .fd-Dateien ausgepackt werden. Näheres
+dazu findet man in der Datei ``install.txt'' im LaTeX2e-Paket.
+
+10.1.5 Wozu dienen die `tc'-Schriften? Was ist die Kodierung `TS1'?
+
+Es gibt mehr als 256 Zeichen, die man in einem Text verwenden will.
+Deshalb werden selten benötigte, jedoch nützliche Zeichen, die nicht
+mehr in der T1-Kodierung Platz fanden, in einer sogenannten `text
+companion'-Schrift in der Kodierung `TS1' zusammengefaßt. Diese
+Schriften sind passend zur Hauptschrift entworfen und können daher
+problemlos mit dieser verwendet werden. Die endgültige Menge von
+Lettern einer Text-Companion-Schrift und deren Kodierung `TS1' ist
+z.Zt. noch nicht vollständig festgelegt und kann sich in späteren
+Versionen ändern. Dabei können nur Zeichen hinzukommen; die schon in
+der TS1-Kodierung vorhandenen Zeichen werden ihre Position nicht mehr
+ändern.
+
+Die Text-Companion-(tc)-Schriften sind im EC-Schrift-Pakets enthalten.
+Seit LaTeX2e <1997/12/01> ist das Paket `textcomp' fester Bestandteil
+von LaTeX. Gegenüber früheren Versionen dieses Pakets haben sich
+jedoch einige Anweisungen geändert: \textcentigrade wurde z.B. zu
+\textcelcius. Durch das Paket `tccompat' sind die alten Anweisungen
+wieder verfügbar.
+
+Eine Kodierungstabelle der Text-Companion-Schriften findet man in
+`dcdoc.tex', der Dokumentation der EC-Schriftfamilie. Das Paket
+`mathcomp' stellt einige ausgewählte Zeichnen aus den TC-Schriften zur
+Benutzung im Math-Modus zur Verfügung, darunter \tcohm, \tccentigrade,
+\tcmu (mu), \tcperthousend, \tcpertenthousend, \tcdigitoldstyle{0-9}.
+
+Will man PostScript-Schriften in TS1-Kodierung benutzen, so sollte man
+sich die aktuellsten PostScript-Anpassungen besorgen. Seit Februar
+1997 gibt es zumindest für die Standard-PostScript-Schriften
+entsprechende virtuelle Fonts und .fd-Dateien für LaTeX2e.
+
+tc-Fonts: CTAN: fonts/ec/
+dcdoc.tex: CTAN: fonts/ec/src/dcdoc.tex
+textcomp: CTAN: macros/latex/base/
+CTAN: macros/latex/unpacked/ (LaTeX2e-Verteilung)
+tccompat: CTAN: macros/latex/contrib/supported/jknappen/
+mathcomp: CTAN: macros/latex/contrib/supported/mathcomp/
+psfonts: CTAN: fonts/psfonts/adobe/
+(Standard-PS-Schriftanpassungen)
+
+10.1.6 LaTeX2e verlangt `ecrm1000' oder `dcr1000', ich kann diesen Font
+       aber nicht finden und habe nur Fonts wie `dcr10'. Was mache ich
+       falsch?
+
+Die aktuellste Version der DC-Schriften ist EC v1.0, man sollte nur
+noch diese einsetzen.
+
+Ab der Version 1.2 der DC-Schriften, die Jörg Knappen Anfang September
+1995 veröffentlichte, wird für die DC- und EC-Schriften ein anderes
+Schema zur Benennung der Dateinamen verwendet. Dieses löste das alte
+Schema für die Version 1.1 ab, die im März 1992(!) erstellt wurden.
+
+Folgte die Version 1.1 dem CM-Vorbild und fügte dem Basisnamen der
+Schrift noch die Entwurfsgröße in Punkt, also z.B. `dcr' + 10 =>
+`dcr10', so wird ab Version 1.2 die Entwurfsgröße in 1/100 Punkt und
+immer vierstellig angegeben, wie z.B. `dcr' + 10*100 => `dcr1000'.
+Dadurch können nun auch nicht ganzzahlige Entwurfsgrößen
+unproblematisch erfaßt werden. Beispielsweise hat `dcr' in der
+Entwurfsgröße 17.28 pt den Namen `dcr1728'.
+
+Zur Veröffentlichung der EC-Schriften Mitte Januar 1997 wurde dieses
+Namensschema nochmals leicht geändert. Der Basisnamen ist nun immer
+vier Zeichen lang, beispielsweise `ecrm' statt `dcr'.
+
+Mit den neuen Versionen wurden neben dieser Nomenklatur auch sehr
+viele Dinge im Aussehen der einzelnen Zeichen, den Ligaturen und den
+Unterschneidungen (`Kerning') geändert, so daß ein Umstieg auf die
+EC-Schriften angebracht ist.
+
+10.1.7 Ich habe bisher die DC-Schriften Version 1.1, 1.2 oder 1.3
+       verwendet und habe sehr viele Dokumente. Wie kann ich jetzt am
+       einfachsten auf die EC-Schriften umsteigen?
+
+LaTeX2e unterstützt seit der Version vom Dezember 1996 die neuen
+EC-Schriften (siehe Abschnitt 10.1.4), daher sollte diese oder eine
+neuere LaTeX2e-Version installiert werden. Ist ein Dokument als
+LaTeX-Eingabedatei vorhanden, übersetzt man dieses einfach mit der
+neuen LaTeX2e-Version nochmals.
+
+Für andere (La)TeX-Dokumente oder dvi-Dateien, von denen man den
+Quelltext nicht besitzt, gibt es momentan folgende Möglichkeiten:
+  * Für die Version 1.3pl4 der DC-Schriften gibt es virtuelle Fonts,
+    die alle Zugriffe auf die DC-Schriften auf die entsprechenden
+    EC-Schriften, die installiert sein müssen, abbilden. Die
+    virtuellen Fonts stellen einen vollwertigen Ersatz dar, sind
+    klein, können für alle Ausgabegeräte verwendet werden und man kann
+    daher die pk-Dateien der DC-Schriften für alle Ausgabegeräte
+    löschen. Das Druckergebnis ist nicht unterscheidbar.
+    Für Version 1.2 und 1.3 kleiner Patchlevel 4 können die virtuellen
+    Fonts für Version 1.3pl4 verwendet werden. Die dabei auftretenden
+    Prüfsummenfehler (`checksum error') der dvi-Treiber kann ignoriert
+    werden. Die Unterschiede im Druckergebnis ist minimal. Alte
+    Dokumente, die als dvi-Datei vorliegen, kann man mit dem Tool
+    `dvicopy' und diesen virtuellen Fonts in dvi-Dateien wandeln, die
+    nur die EC-Schriften referenzieren.
+  * Für die Version 1.1 der DC-Schriften gibt es momentan noch keinen
+    einfachen Weg. Ein einfaches Umbenennen (oder Setzen eines `Links'
+    unter Unix) von beispielsweise ``ecrm1000.tfm'' nach ``dcr10.tfm''
+    ergibt andere Druckergebnisse durch die stärkeren Unterschiede in
+    den Maßen der Lettern und deren Positionierung zwischen der EC-
+    und dieser sehr alten DC-Version, sollte aber für
+    Korrekturausdrucke ausreichen.
+    Eventuell wird es auch für die Version 1.1 der DC-Schriften
+    virtuelle Fonts geben, die diese auf die EC-Schriften abbilden.
+    
+vf-dc13: CTAN: fonts/dc/
+
+10.1.8 Gibt es die zu den EC-Schriften gehörenden Schriften für den
+       mathematischen Formelsatz?
+
+Nein, leider noch nicht. Zur Zeit existiert ein gemeinsames
+LaTeX3-/TUG-Technical-Working-Group-(TWG)-Projekt; Barbara Beeton,
+Herausgeberin des TUGboat und Mitarbeiterin bei der American
+Mathematical Society (AMS), ist Vorsitzende dieser TWG. Die
+Arbeitsgruppe hat die nicht-triviale Aufgabe, alle benötigten
+mathematischen Zeichen zusammenzutragen und entsprechende
+Schriftkodierungen festzulegen. Informationen über die bisher
+erarbeiteten Konzepte kann man in CTAN: info/ltx3pub/l3d007.tex
+finden.
+
+10.1.9 Wieso werden bei Verwendung von EC-Schriften noch die alten
+       CM-Schriften geladen? Ich dachte, daß die EC- die CM-Schriften
+       vollständig ersetzen können?
+
+Da noch keine mathematischen Schriften speziell für die EC-Schriften
+existieren, werden die der CM-Schriften verwendet. Die
+CM-Textschriften enthalten jedoch die großen griechischen Buchstaben
+für den mathematischen Formelsatz, so daß auch weiterhin diese
+Textschriften zusätzlich zu den EC-Textschriften geladen werden
+müssen.
+
+10.1.10 Nach dem Umstieg von DC-Fonts v1.1 auf v1.2/1.3 fehlt in der
+        Ausgabe das kleine scharfe s (\ss), das grosse \SS funktioniert
+        dagegen. Wieso?
+
+Die Datei ``dxbase.mf'', mit der man eine neue METAFONT-Base-Datei
+erzeugen kann, hat sich geändert. Wenn man noch die alte Datei aus
+v1.1 zur Erzeugung der neuen DC-Fonts v1.2/1.3 verwendet, hat man u.a.
+den Fehler, daß das kleine \ss nicht korrekt erzeugt wird.
+
+Abhilfe: Grundsätzlich keine spezielle Base-Datei für die EC- oder
+DC-Fonts verwenden, sondern die normale `Plain'-Base verwenden. (Der
+Zeitgewinn von ca. einer Sekunde pro Font, der früher sehr viel größer
+war, geht durch Probleme wie das hier beschriebene wieder verloren.)
+Hat man solch `kaputte' EC- oder DC-Fonts, muß man diese danach
+nochmals komplett neu berechnen.
+
+10.1.11 Beim Umstieg auf DC-Fonts v1.3 erhalte ich nur Fehlermeldung von
+        METAFONT (`Incomplete if ...') oder ich erhalte den Hinweis, daß
+        die Versionen meines METAFONT/plain.mf zu alt ist.
+
+Die METAFONT-Quellen setzen die Benutzung einer relativ neuen
+METAFONT-Version voraus und verwenden Definitionen aus der Datei
+`plain.mf', die in `plain.mf' v2.0 noch nicht enthalten waren. Deshalb
+ist es ratsam, diese Gelegenheit zu nutzen und eine möglichst neue
+Version zu installieren (siehe Abschnitt 3.1.7).
+
+Ansonsten sollte man bei der Generierung der DC-Fonts darauf achten,
+daß die Dateien
+plain.mf
+modes.mf % oder eine lokale `Mode-Definition'-Datei
+
+in allen Fällen _vor_
+dxbase.mf
+
+geladen wird. (Am besten ist es, wenn man sich _keine_ spezielle
+dx-Base-Datei erzeugt, sondern die normale Plain-Base-Datei verwendet,
+da die DC-Fonts dann `dxbase.mf' automatisch bei Bedarf nachladen.)
+
+10.1.12 Mit den neuen DC-Fonts 1.3 von Juni 1996 und `modes.mf' 3.x gibt
+        es für einen 300dpi-Drucker keine Probleme. Bei einem
+        360dpi-Drucker (nechi, lqhires) werden von METAFONT aber statt
+        *.360gf-Dateien nur *.300gf-Dateien erzeugt.
+
+Ein Fehler der DC-Fonts Version 1.3 Patchlevel 0 bzw. 1 in der Datei
+`dxbase.mf' bei Verwendung von `modes.mf' v3.x führt zu diesem
+Verhalten, wenn ein `mode_def' wie `nechi' einen anderen `mode_def'
+verwendet und dabei nur einige Parameter anders setzt. Er tritt also
+nur bei einigen `mode_def' auf.
+
+Dieser Fehler ist durch DC-Fonts 1.3 Patchlevel 2 (von Anfang Juli
+1996) behoben. Danach wurden noch weitere Fehler im Zusammenhang mit
+dem `compound word mark' behoben, so daß man möglichst auf die
+aktuellste Version in Form der EC-Schriften umsteigen sollte.
+
+10.1.13 Gibt es eine Schrift mit Mediävalziffern/Minuskelziffern und wie
+        kann ich alle Zahlen in einem Dokument in Mediävalziffern
+        ausgeben?
+
+Mediävalziffern erhält man in Plain-TeX durch \oldstyle{1234567890},
+in LaTeX2e mit \oldstylenums{1234567890}, da TeXs
+Math-Italic-Schriften diese Ziffernform bereits enthalten.
+
+Will man alle Zahlen in einem Dokument in Mediävalziffern ausgeben,
+ohne diese explizit mit \oldstyle bzw. \oldstylenums auszeichnen zu
+müssen, so benötigt man spezielle Text-Fonts, in denen die meist
+üblichen Versalziffern durch Mediävalziffern ersetzt wurden. Dies ist
+in den ECO-Schriften der Fall, die auf den EC-Schriften basieren und
+die als `virtuelle Schriften' die Ziffernformen ersetzen.
+
+ECO-Fonts:  CTAN: fonts/eco/
+
+10.2 PostScript-Schriften (*)
+
+10.2.1 Gibt es die CM-Fonts auch als PostScript-(Type-1)-Schriften? (*)
+
+Die Knuth'sche Computer-Modern-(CM)-Familie, die zusätzlichen
+LaTeX-CM-Fonts und die AMS-Fonts zum mathematischen Formelsatz wurden
+von Bluesky und Y&Y in Type-1-Format umgesetzt und vor einiger Zeit
+der Öffentlichkeit frei verwendbar zur Verfügung gestellt, wobei die
+Rechte und die Weiterentwicklung weiterhin bei einem Konsortium
+verbleiben, in dem auch die AMS mitwirkt. Einige der in den
+`Bluesky'-Schriften fehlenden Schriften, wie einige AMS-Schriften, die
+Logo- und Manual-Fonts sind seit Ende 1997, Anfang 1998 ebenso im
+Type-1-Format verfügbar.
+
+Das Schriftpaket `Bakoma' enthält diese Schriften sowohl im Type-1-
+als auch im True-Type-Format. Da diese jedoch Nutzungbeschränkungen
+unterliegen, sollte man die `Bluesky'-Schriften vorziehen.
+
+Das Paket `type1cm' von David Carlisle enthält außerdem geänderte
+LaTeX2e-fd-Dateien für die PostScript-CM-Schriften, in denen die
+üblichen festen Größenabstufungen durch Bereiche abgedeckt werden, da
+die PostScript-Schriften skalierbar sind. Die mit diesen fd-Dateien
+erzeugten dvi-Dateien können daher unübliche Schriftgrößen verwenden,
+so daß die Weitergabe an andere problematischer sein kann.
+
+Bluesky:  CTAN: fonts/cm/ps-type1/bluesky/
+AMS-Fonts:  CTAN: fonts/amsfonts/ps-type1/
+Logo:  CTAN: fonts/mflogo/ps-type1/hoekwater/
+Manual:  CTAN: fonts/manual/ps-type1/hoekwater/
+Bakoma:  CTAN: fonts/cm/ps-type1/bakoma/
+type1cm:  CTAN: macros/latex/contrib/supported/type1cm/
+
+10.2.2 Gibt es die EC-Schriftfamilie auch als
+       PostScript-(Type-1)-Schriften?
+
+Bis vor kurzem gab es die EC-Schriften nicht im Type-1-Format.
+Inzwischen wird eine kommerzielle Version der EC- und TC-Schriften von
+Micropress Inc. zusammen mit deren VTeX-System angeboten. Diese
+enthalten 555 vorkompilierte Schriften.
+
+Die nur gegen eine Lizenzgebühr benutzbare Schriftfamilie EM von Y&Y
+enthält zwar alle Lettern der EC-Schriften, jedoch unterscheiden sich
+die tfm-Informationen der in T1-Kodierung verwendeten EM- von den
+Original-EC-Schriften. Man erhält daher einen anderen Umbruch, so daß
+sie keinen Ersatz darstellen.
+
+Unter dem Namen `Bakoma-DC' ist die Version 1.1 der DC-Fonts, die
+total veraltete Testversion der EC-Fonts, in Type-1-Format verfügbar.
+Da sich die tfm-Informationen der DC-Fonts ebenso von denen der
+EC-Fonts unterscheiden und man die DC-Fonts nicht mehr verwenden
+sollte, wird von deren Gebrauch abgeraten.
+
+Ein nicht ganz vollwertiger Ersatz von EC-Schriften im Type-1-Format,
+mit denen man denselben Umbruch wie mit den EC-Schriften erhält,
+besteht darin, T1-kodierte virtuelle Fonts zu benutzen, die die
+Schriften der Computer-Modern-(CM)-Familie verwenden, da die
+CM-Schriftfamilie in Type-1-Format vorliegt. Solche virtuelle
+Schriften sind unter dem Namen Almost-European-(AE)-Schriften und
+unter dem Namen ZE verfügbar.
+
+AE-Fonts: CTAN: fonts/ae/
+ZE-Fonts: CTAN: fonts/ze/
+DC-1.1-Type-1: CTAN: fonts/dc1.1-obsolete/
+
+10.2.3 Wie installiere ich mit `dvips' eine neue PostScript-Schrift, so
+       daß ich diese unter (La)TeX verwenden kann?
+
+Schritt 0 - Dokumentation lesen:
+
+Zuerst sollte man sich die Dokumentation zum `dvips' durchlesen. Diese
+beschreibt die wichtigsten Schritte, auch wenn die dort beschriebenen
+Dateinamen und die Kodierungen für die PS-Schriften veraltet sind
+(gilt zumindest für die Doku bis dvips Version 5.58). Außerdem sollte
+man Karl Berrys Fontname, `Filenames for TeX fonts', in der Version
+2.0 (oder neuer) durchlesen, in dem ein für alle TeX-Systeme
+verwendbares, einheitliches Namensschema bschrieben wird.
+
+Schritt 1 - TeX-Anpassungen besorgen oder selbst generieren:
+
+Gibt es auf CTAN im `psfonts'-Verzeichnis bereits fertige Anpassungen?
+Wenn ja, sollte man diese verwenden. Wenn nein, sollte man sich das
+Tool `fontinst' besorgen, mit dem man relativ einfach aus der mit dem
+PostScript-Font mitgelieferten afm-Datei die notwendigen virtuellen
+Fonts (vf-Dateien) mit den entsprechenden Fontkodierungen und
+Font-Definitions-(fd)-Dateien für LaTeX2e erzeugen lassen kann. Für
+Textschriften sollten zumindest vf-Dateien für OT1-Kodierung, besser
+auch noch für T1-Kodierung erzeugt werden.
+
+Schritt 2 - PS- und TeX-Font-Dateien installieren:
+
+Nach Schritt 1 sollten beispielsweise für die Schrift `URW Antiqua
+Regular Roman Condensed' bzw. nach Berrys Namenschema `uaqr...c...'
+folgende Dateien vorhanden sein:
+  * PS-Schrift und zugehörige Font-Metrik: uaqr8ac.{pfb,afm}
+  * virtueller Font, zugehörige TeX-Font-Metriken und PS-Reencoding:
+    uaqrrc.{vpl,vf,tfm} Roman (`raw, 7-bit')
+    uaqr7tc.{vpl,vf,tfm} TeX-Text-/OT1-/CM-Encoding (`7-bit')
+    uaqr8rc.{vpl,vf,tfm} TeX Base-1 Encoding (`raw, 8-bit')
+    uaqr8tc.{vpl,vf,tfm} Cork-TeX-Text-/T1-/EC-Encoding (`8-bit')
+    8r.enc PS-Reencoding, in `fontname' enthalten
+  * LaTeX2e-Font-Definition-Files:
+    ot1uaq.fd (vormals: OT1uaq.fd)
+    t1uaq.fd (vormals: T1uaq.fd)
+    antiqua.sty
+    
+und noch einige weitere Dateien für die `slanted'- und `small
+caps'-Varianten, die man mit `fontinst' erzeugen kann.
+
+Diese Dateien werden nun in folgende Verzeichnisse gelegt:
+
+  *.fd, *.sty ==> TEXINPUTS (TeX)
+  *.tfm ==> TEXFONTS bzw. `T'-Eintrag (TeX + dvips)
+  *.vf ==> `V'-Eintrag oder VFFONTS (dvips)
+  *.pfb/pfa ==> `H'-Eintrag oder DVIPSHEADERS (dvips)
+  
+Schritt 3 - Map-Datei des PS-Fonts für `dvips' erzeugen:
+
+Map-Datei für `dvips' erzeugen, in der die Zuordnung des Font-Namens
+in TeX zu dem in PS verwendeten festgelegt wird und evtl. die zu
+ladenden pfb-/pfa- und PS-Reencoding-Dateien angegeben werden. In
+unserem Beispiel enthält die Map-Datei `uaq.map' die Zeile
+uaqr8rc URWAntiquaT-RegularCondensed "TeXBase1Encoding ReEncodeFont"
+        <8r.enc <uaqr8ac.pfb
+
+(dies muss eine einzige Zeile sein, sie wurde hier nur umbrochen, um
+eine zu lange Zeilen zu vermeiden!) und evtl. noch Zeilen für weitere
+Schriften und Varianten.
+
+Diese Map-Datei in ein Verzeichnis legen, in dem `dvips' nach
+PS-Header-Dateien sucht (DVIPSHEADERS bzw. `H'-Eintrag in
+`config.ps').
+
+Schritt 4 - `dvips'-Konfigurationsdatei anpassen:
+
+Konfigurationsdatei ``config.ps'' des `dvips' ändern: Die in Schritt 3
+erstellte Map-Datei durch die in ``config.ps'' neu einzutragende Zeile
+
+p +uaq.map
+
+zusätzlich zur Standard-Map-Datei ``psfonts.map'' laden. (Ältere
+`dvips'-Versionen verstehen das `+' nicht; bei diesen muß man den
+Inhalt der Map-Datei ``uaq.map'' an die Datei ``psfonts.map'' anhängen
+und die obige Zeile in ``config.ps'' ist wegzulassen.) Außerdem sollte
+man noch überprüfen, ob das Verzeichnis, in dem die Map-Datei und die
+pfb-/pfa-Dateien zu finden sind, im Suchpfad nach PS-Header-Dateien
+enthalten ist (DVIPSHEADERS bzw. `H'-Eintrag in ``config.ps'').
+
+Schritt 5 - Anpassungen testen und verwenden:
+
+Mit LaTeX2e kann man unsere Beispielschrift einfach mittels des Pakets
+`antiqua' verwenden, da diese Schrift damit als \rmdefault-Schrift
+verwendet wird. Ohne dieses Package kann man auch durch die Anweisung
+\usefont{OT1}{uaq}{m}{n} diese Schrift kurz austesten. LaTeX2e müßte
+dazu die fd- und tfm-Dateien finden und einlesen können. `dvips'
+benutzt dann die angepaßte Konfigurationsdatei, die virtuellen
+Schriften `uaqr*.vf', die Map-Datei ``uaq.map'', die eigentliche
+PS-Schrift `uaqr8ac.pfb' und schließlich noch ``8r.enc''.
+
+Für die PostScript-Schriften, die standardmäßig mit den meisten
+PostScript-fähigen Druckern mitgeliefert werden, als auch einigen
+freien Schriften und der Lucida-Schriftfamilie existiert in Form von
+`psnfss' eine Menge von LaTeX2e-Paketen.
+
+Unter Plain-TeX kann man diese Schrift relativ einfach z.B. durch die
+Anweisung \font\rmantiqua=uaqr7tc laden und anschließend verwenden.
+Zur Verwendung der T1-kodierten Variante `uaqr8tc' sind, wie bei der
+Verwendung der EC-/DC-Schriften unter Plain-TeX, noch einige
+Anpassungen notwendig.
+
+Unter LaTeX 2.09 gilt dasselbe wie für Plain-TeX, nur sollte man hier
+besser \newfont{\rmantiqua}{uaqr7tc} verwenden. Will man diese Schrift
+und deren Varianten statt den CM-Schriften in einem Dokument
+verwenden, so sind größere Änderungen notwendig, die den Rahmen dieser
+FAQ sprengen würden. Am einfachsten ist ein Umstieg auf LaTeX2e!
+
+dvips.tex: CTAN: dviware/dvips/
+fontname: CTAN: info/fontname/
+8r.enc: CTAN: info/fontname/8r.enc
+psfonts: CTAN: fonts/psfonts/...
+CTAN: fonts/psfonts/urw/antiqua/ (unsere Beispielschrift)
+fontinst: CTAN: fonts/utilities/fontinst/
+psnfss: CTAN: macros/latex/required/psnfss/
+CTAN: info/installing_psnfss_on_emtex.pdf
+TeX Font Guide: http://www-theorie.physik.unizh.ch/~ichbin/texfonts/
+
+10.3 TrueType-Schriften (*)
+
+10.3.1 Wie kann ich TrueType-Schriften in LaTeX verwenden? (*)
+
+Es gibt prinzipiell drei Möglichkeiten:
+  * ttf2pk:
+    Dieses Programm konvertiert beliebige TrueType-Schriften (auch
+    asiatische!) in PK-Dateien. Quellcode, Dokumentation etc. findet
+    man im FreeType-Paket: http://www.freetype.org/projects.htm
+    MikTeX und fpTeX enthalten bereits Binaries; die neuesten
+    teTeX-Beta-Distributionen haben Unterstützung für ttf2pk in den
+    Skripten (man muß also nur ttf2pk kompilieren).
+  * TTF -> PS-Fonts:
+    Auch hier gibt es mehrere Ansätze.
+       + ttf2pfb:
+         Konvertiert TrueType-Fonts (auch asiatische!) in Type-1
+         PostScript-Schriften. Nachteile: Unterstützung von
+         Komposit-TTFs derzeit nur beschränkt möglich; außerdem geht
+         das Hinting (d.h. die Anpassung an kleine Schriftgrößen)
+         verloren.
+         http://www.freetype.org/projects.htm
+       + ttf2pt1:
+         [nie verwendet; kann vermutlich asiatische Fonts bzw. Fonts
+         mit mehr als 256 Glyphen nicht behandeln.]
+         http://www.netspace.net.au/~mheath/ttf2pt1/
+       + TTF -> PS-Fonts im Type-42-Format:
+         Erzeugt eine `Wrapper-Datei' um den TrueType-Font.
+         GhostScript und neuere PS-Interpreter haben ein eingebautes
+         TrueType-Modul, welches das Type-42-Format verstehen kann -
+         allerdings ist der TrueType-Rasterer von GhostScript eher
+         schlecht. [nie verwendet; kann vermutlich asiatische Fonts
+         bzw. Fonts mit mehr als 256 Glyphen nicht behandeln.]
+  * ttf2mf:
+    [nie verwendet; kann vermutlich asiatische Fonts bzw. Fonts mit
+    mehr als 256 Glyphen nicht behandeln.]
+    CTAN: support/ttf2mf/
+    
+Mehr Informationen dazu findet man in dem Artikel ,,Using TrueType
+fonts with TeX (LaTeX) and pdfTeX (pdfLaTeX)'' von Damir Rakityansky:
+
+  http://quantum.bitp.kiev.ua/radamir/ttf-tex.htm
+  
+Weiterführende Informationen und Links gibt es auch von
+
+  http://www.freetype.org
+  
+
+--- DE-TeX-FAQ Ende Teil 10 ---

@@ -1,0 +1,59 @@
+<html>
+<head><title>Help On LaTeX fragile commands</title></head>
+<body bgcolor="#ffffff" text="#000000" link="#000099" vlink="#cc0000" alink="#cc0000">
+<h1><font size="-2">Hypertext Help with LaTeX</font><br><font color="#cc0000">Fragile and Robust commands</font></h1>
+LaTeX commands are either <em>robust</em> or <em>fragile</em>.  Fragile 
+commands need special care <em>if they are part of a moving argument</em>.
+<p>
+Arguments to some LaTeX commands are called <em>moving arguments</em> because 
+they may be "moved" to other places in the document. For example, the argument
+of <a href="ltx-141.html">Sectioning comands</a> may be moved
+to the <a href="ltx-170.html">Table of Contents</a>.  Other examples
+of moving arguments include:
+<ul>
+<li>arguments of <a href="caption.html"><tt>\caption</tt></a> commands
+<li>terminal input and output, <a href="ltx-174.html"><tt>\typeout</tt></a>
+    and <a href="ltx-175.html"><tt>\typein</tt></a>
+<li>commands that <a href="ltx-264.html">produce page headings</a>
+<li>the <a href="ltx-91.html">Letter Environment</a>
+<li>the <a href="ltx-324.html"><tt>\thanks</tt></a> command
+<li> an <tt>@</tt> expression in the <a href="ltx-202.html">Array</a> or 
+    <a href="ltx-68.html">Tabular</a> environment
+</ul>
+A fragile command that appears in a moving argument must be preceded by a 
+<tt>\protect</tt> command.  The <tt>\protect</tt> applies only to the
+immediately following command; if arguments of this command also contain
+fragile commands, the latter must be protected with their own <tt>\protect</tt>.
+
+<h2>Some fragile commands</h2>
+The following list is not exhaustive, but illustrates the kind of commands
+which are fragile
+<ul>
+<li>All commands that have an optional argument are fragile.
+<li>Environments delimited by <tt>\begin ... \end</tt> are fragile. 
+<li><a href="ltx-421.html">Display math</a> environment delimited by
+    <tt>\[ ... \]</tt>
+<li><a href="ltx-115.html">Math environment</a> <tt>\( ... \)</tt>
+  <ul><li>However, <tt>$ ... $</tt> is robust</ul>
+<li>Line breaks, <a href="ltx-181.html"><tt>\\</tt></a>
+<li><a href="item.html"><tt>\item</tt></a> commands
+<li><a href="ltx-231.html"><tt>\footnote</tt></a> commands
+</ul>
+
+<h2>Some robust commands</h2>
+In general, commands which change <a href="ltx-176.html">Type face or
+Type style</a> are robust.
+<p>
+<a href="ltx-86.html">Length commands</a> are robust and should 
+<strong>not</strong> be preceded by a <tt>\protect</tt> command. Nor
+should a <tt>\protect</tt> command be used in the argument to 
+<a href="ltx-195.html"><tt>\addtocounter</tt></a> or 
+<a href="ltx-310.html"><tt>\setcounter</tt></a> command.
+<hr>
+Return to <a href="ltx-2.html">LaTeX Table of Contents</a>
+<hr>
+<address>
+Revised: Sheldon Green, 29 Sep 1995.
+</address>
+</body>
+</html>

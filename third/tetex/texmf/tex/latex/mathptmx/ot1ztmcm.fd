@@ -1,0 +1,17 @@
+%Filename: ot1ztmcm.fd
+%Created by: tex fontptcmx
+%Created using fontinst v1.800
+
+%THIS FILE SHOULD BE PUT IN A TEX INPUTS DIRECTORY
+
+\ProvidesFile{ot1ztmcm.fd}
+   [1998/07/01 Fontinst v1.800 font definitions for OT1/ztmcm.]
+
+\DeclareFontFamily{OT1}{ztmcm}{}
+
+\DeclareFontShape{OT1}{ztmcm}{m}{n}{
+   <-> zptmcm7t
+}{}
+
+
+\endinput

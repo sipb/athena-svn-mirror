@@ -1,0 +1,82 @@
+<html>
+<head><title>Help On LaTeX Math Formulas</title></head>
+<body bgcolor="#ffffff" text="#000000" link="#000099" vlink="#cc0000" alink="#cc0000">
+<h1><font size="-2">Hypertext Help with LaTeX</font><br><font color="#cc0000">Math Formulas</font></h1>
+<p>
+ There  are four environments  that  put LaTeX  in math  mode:  
+<ul><li><a href="#math">math</a> (see below)
+    <li><a href="ltx-421.html">displaymath</a>
+    <li><a href="ltx-223.html">eqnarray</a>
+    <li><a href="ltx-224.html">equation</a>
+</ul>
+ All four of these environments are typeset in math  
+ <a href="ltx-130.html">mode</a>, using a math italic font and  LaTeX
+ ideas about spacing in math mode.  (See also <a href="mathfonts.html">math
+ fonts and styles</a>.)
+<p>
+ The math environment is for formulas that
+ appear right in the text.  The displaymath, eqnarray, and equation
+ environments are for formulas that apppear on their own line(s). 
+ The math environment  can be used in both paragraph  and LR mode,  but
+ displaymath, eqnarray,  and  equation  environments  can  be  used  only  
+ in paragraph  mode.
+
+<h2><a name="math">Math environment</a></h2>
+ The math environment may be specified, as with all environments, by
+<pre>
+  <tt>\begin{math}  math equation \end{math}</tt>
+</pre>
+ However, it is used so often that it has two equivalent shorter forms:
+<pre>
+  <tt>\( math equation \)</tt> 
+</pre>
+or just
+<pre>
+  <tt>$ math equation $</tt>
+</pre>
+In <a href="versions.html">LaTeX2e</a> one can also use
+<pre>
+  <tt><a href="ensuremath.html">\ensuremath</a>{math equation}</tt>
+</pre>
+<p>
+For example, 
+<a href="ltx-179.html">Subscripts</a> and 
+<a href="ltx-180.html">superscripts</a> can only be used in math
+mode. To include these in running text one could use:
+<pre>
+  <tt>The formula for water is H$_2$O.
+  If the hypotenuse is $c$, then $c^2=a^2+b^2$.</tt>
+</pre>
+Note that it is standard to use math mode for letters, such as the
+the <tt>$c$</tt> above, which are math variables.
+<hr>
+<h2>Related topics</H2>
+<ul>
+<li><a href="ltx-421.html">Displaymath environment</a>
+<li><a href="ltx-223.html">Eqnarray environment</a>
+<li><a href="ltx-224.html">Equation environment</a>
+<p>
+<li><a href="ltx-130.html">LaTeX Modes</a>
+<p>
+<li><a href="mathfonts.html">Math fonts and styles</a>
+<li><A href="ltx-179.html">Subscripts</A> and 
+    <a href="ltx-180.html">Superscripts</a>
+<li><A href="ltx-117.html">Math Symbols</A>
+<li><A href="ltx-118.html">Spacing in Math Mode</A>
+<li><A href="ltx-119.html">Math Miscellany</A>
+<li><a href="ellipses.html">Ellipses</a>
+<p>
+<li><a href="boldmath.html"><tt>\boldmath</tt></a> for a bold math font
+<li><a href="ltx-235.html"><tt>\frac</tt></a> for generating built-up fractions
+<li><a href="stackrel.html"><tt>\stackrel</tt></a> for putting things above 
+   each other
+<li><a href="ltx-319.html"><tt>\sqrt</tt></a> for square (and nth) roots
+</ul>
+<p>
+Back to the <a href="ltx-2.html">Table of Contents</a>
+<hr>
+<address>
+Revised: Sheldon Green, 31 May 1995.
+</address>
+</body>
+</html>

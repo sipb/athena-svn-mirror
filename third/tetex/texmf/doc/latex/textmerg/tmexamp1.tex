@@ -1,0 +1,25 @@
+%% 
+%% This is file `tmexamp1.tex', generated 
+%% on <1995/1/3> with the docstrip utility (2.2i).
+%% 
+%% The original source files were:
+%% 
+%% textmerg.dtx  (with options: `examp')
+\documentclass[12pt]{letter}
+\usepackage{textmerg}
+\begin{document}
+\Fields{\Title\Forenames\Surname
+   \Address\Grade}
+\Merge{results.dat}{%
+\begin{letter}{\Title\ \Forenames\
+   \Surname\\\Address}
+   \opening{Dear \Title\ \Surname,}
+   This letter is to inform you
+   that you obtained grade \Grade\ in
+   your recent examinations.
+   \closing{Yours faithfully,}
+\end{letter}}
+\end{document}
+\endinput
+%% 
+%% End of file `tmexamp1.tex'.

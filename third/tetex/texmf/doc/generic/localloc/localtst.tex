@@ -1,0 +1,117 @@
+%% 
+%% This is file `localtst.tex',
+%% generated with the docstrip utility.
+%% 
+%% The original source files were:
+%% 
+%% localloc.dtx  (with options: `test')
+%% 
+%% This is a file of the `localloc' package reimplementing 
+%% plain-TeX's and LaTeX's basic allocation macros to allow 
+%% local allocation of registers. 
+%% 
+%% -- Copyright (C) 1991-1995 Bernd Raichle. All rights reserved -- 
+%% 
+%% This package is distributed in the hope that it will be useful, 
+%% but WITHOUT ANY WARRANTY; without even the implied warranty of 
+%% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
+%% 
+%% 
+%% IMPORTANT NOTICE: 
+%% 
+%% Copying of this file is authorized only if either 
+%% (1) you make absolutely no changes to your copy, including name, or 
+%% (2) if you do make changes, you name it something other than 
+%% localloc.dtx, localloc.doc, localloc.tex, or localloc.sty. 
+%% 
+%% For error reports see original source file `localloc.dtx'. 
+%% 
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname ProvidesPackage\endcsname\relax
+\else
+  \NeedsTeXFormat{LaTeX2e}
+  \ProvidesFile{localtst.tex}%
+    [1995/09/24 v1.1b %
+     Additional LaTeX Kernel Macros (local allocation)]
+\fi
+\edef\FORMAT{%
+  \expandafter\ifx\csname documentstyle\endcsname\relax 0%
+  \else\expandafter\ifx\csname documentclass\endcsname\relax
+  1\else 2\fi\fi}
+\immediate\write16{=====>>> You are using %
+  \ifcase\FORMAT plainTeX\or LaTeX 2.09\or LaTeX 2e\else ??\fi}
+\ifcase\FORMAT
+  \input localloc.sty\relax \or
+  \documentstyle[localloc]{article}\begin{document}\or
+  \documentclass{article}\usepackage{localloc}\begin{document}\fi
+\tracingstats=1
+\def\Message#1{\immediate\write16{#1}}
+\def\RegVal#1{\the\csname test#1\endcsname}
+\def\ShowSet#1{\if l#1local\else global\fi:
+   \RegVal{i#1} \RegVal{ii#1}/\RegVal{iii#1}
+   \RegVal{iv#1}}
+\def\ShowAll#1{\Message{#1 -- \ShowSet{g} -- \ShowSet{l}}}
+\def\ShowIns{\Message{Insertions:
+   \the\testinsi, \the\testinsii, \the\testinsiii}}
+\chardef\testig=0    \chardef\testil=0
+\chardef\testiig=0   \chardef\testiil=0
+\chardef\testiiig=0  \chardef\testiiil=0
+\chardef\testivg=0   \chardef\testivl=0
+\chardef\testinsii=0 \chardef\testinsiii=0
+\newinsert\testinsi
+{\count0=\testinsi \advance\count0 -2
+ \loop\csname newbox\endcsname\testig
+ \ifnum\testig<\count0\repeat}
+\newbox\testig \lnewbox\testil
+\ShowAll{Level 0}
+\begingroup
+ \lnewbox\testiil \newbox\testiig
+ \ShowAll{Level 1}
+ \begingroup
+  \newbox\testivg \lnewbox\testivl
+  \ShowAll{Level 2}\ShowIns
+ \endgroup
+ \lnewbox\testiiil \newbox\testiiig
+ \ShowAll{Level 1b}
+ \csname newinsert\endcsname\testinsii
+ \ShowIns
+ \begingroup
+  \newbox\testivg \lnewbox\testivl
+  \ShowAll{Level 2}
+ \endgroup
+ \ShowAll{Level 1b}
+\endgroup
+\newinsert\testinsiii
+\ShowAll{Level 0}\ShowIns
+\begingroup
+ \lnewbox\testiil \newbox\testiig
+ \lnewbox\testiiil \newbox\testiiig
+ \ShowAll{Level 1}
+ \begingroup
+  \newbox\testivg \lnewbox\testivl
+  \newbox\testvg \lnewbox\testvl
+  \ShowAll{Level 2}\ShowIns
+ \endgroup
+ \ShowAll{Level 1}
+\endgroup
+\ShowAll{Level 0}
+\end{document}
+%% \CharacterTable
+%%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%%   Digits        \0\1\2\3\4\5\6\7\8\9
+%%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%%   Dollar        \$     Percent       \%     Ampersand     \&
+%%   Acute accent  \'     Left paren    \(     Right paren   \)
+%%   Asterisk      \*     Plus          \+     Comma         \,
+%%   Minus         \-     Point         \.     Solidus       \/
+%%   Colon         \:     Semicolon     \;     Less than     \<
+%%   Equals        \=     Greater than  \>     Question mark \?
+%%   Commercial at \@     Left bracket  \[     Backslash     \\
+%%   Right bracket \]     Circumflex    \^     Underscore    \_
+%%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%%   Right brace   \}     Tilde         \~}
+%%
+\endinput
+%% 
+%% End of file `localtst.tex'.

@@ -1,0 +1,90 @@
+%%
+%% This is file `lwncmr.fd',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% lwncmlh.fdd  (with options: `fd,LWNcmr')
+%% This is a generated file.
+%% 
+%% Copyright 1999 Johannes L. Braams and any individual authors
+%% listed elsewhere in this file.  All rights reserved.
+%% 
+%% For further copyright information, and conditions for modification
+%% and distribution, see any other copyright notices in this file.
+%% 
+%% This file is part of the Babel system, release 3.6.
+%% ---------------------------------------------------
+%% 
+%% It may be distributed under the terms of the LaTeX Project Public
+%% License, as described in lppl.txt in the base LaTeX distribution.
+%% Either version 1.0 or, at your option, any later version.
+%% 
+%% In particular, permission is granted to customize the declarations in
+%% this file to serve the needs of your installation.
+%% 
+%% However, NO PERMISSION is granted to distribute a modified version
+%% of this file under its original name.
+%% File `lwncmlh.fdd'
+%% Copyright (C) 1995-1997 Olga Lapko, Johannes L. Braams,
+%% Copyright (C) 1998-1999 Werner Lemberg, Vladimir Volovich.
+\ProvidesFile{lwncmr.fd}
+        [1999/03/10 v3.1b Computer Modern Cyrillic font definitions]
+\DeclareFontFamily{LWN}{cmr}{\hyphenchar\font45 }
+\DeclareFontShape{LWN}{cmr}{m}{n}{%
+  <5><6><7><8><9><10><12>gen*wnr%
+  <10.95>wnr10%
+  <14.4>wnr12%
+  <17.28><20.74><24.88>wnr17}{}
+\DeclareFontShape{LWN}{cmr}{m}{sl}{%
+  <5><6><7>wnsl8%
+  <8><9>gen*wnsl%
+  <10><10.95>wnsl10%
+  <12><14.4><17.28><20.74><24.88>wnsl12}{}
+\DeclareFontShape{LWN}{cmr}{m}{it}{%
+  <5><6><7>wnti7%
+  <8>wnti8%
+  <9>wnti9%
+  <10><10.95>wnti10%
+  <12><14.4><17.28><20.74><24.88>wnti12}{}
+\DeclareFontShape{LWN}{cmr}{m}{sc}{%
+  <5><6><7><8><9><10><10.95><12>%
+  <14.4><17.28><20.74><24.88>wncsc10}{}
+\DeclareFontShape{LWN}{cmr}{m}{ui}{%
+  <5><6><7><8><9><10><10.95><12>%
+  <14.4><17.28><20.74><24.88>wnu10}{}
+\DeclareFontShape{LWN}{cmr}{b}{n}{%
+  <5><6><7><8><9><10><10.95><12>%
+  <14.4><17.28><20.74><24.88>wnb10}{}
+\DeclareFontShape{LWN}{cmr}{bx}{n}{%
+  <5><6><7><8><9>gen*wnbx%
+  <10><10.95>wnbx10%
+  <12><14.4><17.28><20.74><24.88>wnbx12}{}
+\DeclareFontShape{LWN}{cmr}{bx}{sl}{%
+  <5><6><7><8><9>%
+  <10><10.95><12><14.4><17.28><20.74><24.88>wnbxsl10}{}
+\DeclareFontShape{LWN}{cmr}{bx}{it}{%
+  <5><6><7><8><9>%
+  <10><10.95><12><14.4><17.28><20.74><24.88>wnbxti10}{}
+\DeclareFontShape{LWN}{cmr}{bx}{ui}{%
+  <->ssub*cmr/m/ui}{}
+%%
+%% \CharacterTable
+%%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%%   Digits        \0\1\2\3\4\5\6\7\8\9
+%%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%%   Dollar        \$     Percent       \%     Ampersand     \&
+%%   Acute accent  \'     Left paren    \(     Right paren   \)
+%%   Asterisk      \*     Plus          \+     Comma         \,
+%%   Minus         \-     Point         \.     Solidus       \/
+%%   Colon         \:     Semicolon     \;     Less than     \<
+%%   Equals        \=     Greater than  \>     Question mark \?
+%%   Commercial at \@     Left bracket  \[     Backslash     \\
+%%   Right bracket \]     Circumflex    \^     Underscore    \_
+%%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%%   Right brace   \}     Tilde         \~}
+%%
+\endinput
+%%
+%% End of file `lwncmr.fd'.

@@ -1,0 +1,49 @@
+Polish                               | English
+---------------------------------------------------------------------------
+AUTORZY WERSJI POLSKIEJ              | AUTHORS OF POLISH COMPUTER CONCRETE
+COMPUTER CONCRETE (PC):              | VERSION (PC):
+                Bogus\l{}aw Jackowski i Marek Ry\'cko
+---------------------------------------------------------------------------
+Pliki stanowiace zrodlo polskiej     | The files:
+wersji rodziny fontow Computer       |
+Concrete, tzn.:                      |
+
+    FIC_MIC.MF, PCMI10.MF, PCR10.MF, PCR5.MF, PCR6.MF, PCR7.MF,
+    PCR8.MF, PCR9.MF, PCSL10.MF, PCSLC9.MF, PCTI10.MF oraz PCCSC10.MF
+
+sa dobrem wspolnym na takiej         | are the Polish version of Computer
+zasadzie jak fonty PL (polska        | Concrete and belong to the public
+wersja rodziny Computer Modern)      | domain under conditions similar
+-- p. odnosna dokumentacja dolaczona | to those of D. E. Knuth specified for
+do pakietu MeX (pliki MEXINFO.POL    | the Computer Modern family of fonts.
+i MEXINFO.ENG). W szczegolnosci moga | In particular, only the authors
+byc przekazywane jedynie w calosci   | are entitled to modify this file.
+i niezmienione, a do zmian uprawnieni|
+sa wylacznie autorzy.                |
+                                     |
+Do wygenerowania fontow za pomoca    | In order to generate the Polish
+METAFONT-a potrzebne sa programy     | version of Computer Concrete fonts
+METAFONT-owe znajdujace sie          | using METAFONT, appropriate METAFONT
+w pakiecie MeX.                      | files from the MeX package are
+                                     | necessary; see the files MEXINFO.POL
+                                     | and/or MEXINFO.ENG.
+              CTAN://language/polish/mex105.zip
+lub                                  | or
+              CTAN://language/polish/pl-mf.zip
+Niezbedne sa zrodla oryginalnych     | The original Computer Concrete
+fontow Computer Concrete             | source files are necessary
+              CTAN://fonts/concrete/
+---------------------------------------------------------------------------
+       HISTORIA                      |                HISTORY
+                                     |
+Wer. 1.00 (dokladnej daty nie ma)    |  Ver. 1.00 (exact date not fixed)
+                                     |
+Wer. 1.01 (18.XII.1992)              |  Ver. 1.01 (18 Dec 1992)
+Modyfikacja pliku FIC_MIC.MF         |  Modification of the file FIC_MIC.MF
+zgodna ze zmianami w fontach PL      |  in accordance with changes  in PL
+(plik FIK_MIK.MF)                    |  fonts (file FIK_MIK.MF)
+                                     |
+Wer. 1.02 (9.VI.1998)                |  Ver. 1.02 (9 Jun 1998)
+Dodany brakujacy font pcsl10.mf      |  Missing pcsl10.mf added 
+---------------------------------------------------------------------------
+

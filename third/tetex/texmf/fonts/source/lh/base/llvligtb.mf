@@ -1,0 +1,133 @@
+%
+% llvligtb.mf
+%
+%% Cyrillic font container with T2 encoding beta-support
+%
+% This file is future part of lxfonts package
+% Version 3.1 // Patchlevel=0
+% (c) O.Lapko
+%
+% This package belongs to the public domain under conditions similar to
+% those of D. E. Knuth specified for the Computer Modern family of fonts.
+% In particular, only the authors are entitled to modify this file
+% and to save it under the same name.
+%
+% Content:
+%
+% Ligatures
+% This file should be called for NOT monospaced fonts !
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+LHver_check(3,2);  % like |version_check| in ec
+
+% The following ligatures are integrated:
+%
+% for CM fonts:
+% !`
+% ?`
+% for T2
+% --  gives -
+% --- gives --
+% -<hyphenchar> gives <hyphenchar>
+% common
+% <<
+% >>
+% ,,(LH:in new version only)
+% ''
+% ``
+%
+
+if known spanish_shriek: % for CM fonts only
+
+   ligtable "!": "`" =: spanish_shriek;
+   ligtable "?": "`" =: spanish_query;
+
+fi
+
+if genmode="ex": % for T2 only
+
+   %english quotes
+   ligtable
+    "`":  "`"=:oct"020",%ec:``
+          oct"020" kern 2u#,%ec:``
+          "?" kern 2u#,
+          "!" kern 2u#;
+
+   ligtable
+    "'":  "'"=:oct"021",%ec:''
+          oct"021" kern 2u#,%ec:''
+          "?" kern 2u#,
+          "!" kern 2u#;
+
+   %dashes
+   ligtable
+    "-":  "-" =: oct"025", %endash
+     oct"177" =: oct"177"; % <hyphen><hyphenchar> => <hyphenchar>
+
+   ligtable
+    oct"025": "-"=: oct"026";  % "---"  => cyremdash in t2 !!!
+
+fi
+
+
+% ligatures for cyrillic quotes
+if (altcoding and (ligs <> 0)) % for CM
+   or (genmode="ex"): % if T2 started
+
+   ligtable "<": "<" =: CYR_.flqq;     % "<<"
+   ligtable ">": ">" =: CYR_.frqq;     % ">>"
+
+   if known CYR_.baseqq:
+      ligtable ",": "," =: CYR_.baseqq;% ",,"
+   fi
+fi  % ligatures for cyrillic quotes
+
+k#:=-.5u#; ku#:=-1u#; kk#:=-1.5u#; kkk#:=-2u#; % four degrees of kerning
+
+% kerning for T2 only
+if genmode="ex":
+   if (known boundarychar): if (boundarychar>=0):
+      ligtable boundarychar:
+         oct"020" 	kern -kk#,%ec:``
+	 oct"021"	kern -kk#,%ec:''
+	 CYR_.baseqq 	kern -kk#,%t2:,,
+         oct"055" 	kern -kk#,%-
+	 oct"140" 	kern -kk#,%`
+	 oct"047" 	kern -kk#;%'
+   fi fi
+
+   ligtable oct"020":    %ec:``
+        oct"140" 	kern 2u#,%`
+	oct"020" 	kern 2u# %ec:``
+	if (known boundarychar): if (boundarychar>=0):
+	   , boundarychar kern -kk#
+	fi fi
+   ;
+
+   ligtable oct"021":    %ec:''
+        oct"047" 	kern 2u#,%'
+	oct"021" 	kern 2u# %ec:''
+	if (known boundarychar): if (boundarychar>=0):
+	   , boundarychar kern -kk#
+	fi fi
+   ;
+
+   if (known CYR_.baseqq): if (CYR_.baseqq>=0): %t2:,,
+      ligtable CYR_.baseqq:
+        oct"015" 	kern 2u#,%ec:,
+	"," 		kern 2u#,
+      oct"015":
+        CYR_.baseqq 	kern 2u# %t2:,,
+	if (known boundarychar): if (boundarychar>=0):
+	   , boundarychar kern -kk#
+	fi fi
+   ;
+   fi fi
+
+   ligtable CYR_.frqq:   %t2:>>
+        "." kern kk#, "," kern kk#;
+
+fi % for T2 only
+
+endinput;

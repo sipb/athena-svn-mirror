@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- The basic design of the DTD for the TeX Catalogue
+
+Copyright (c) 1999 Graham J. Williams
+
+The CATALOGUE has a MAINTAINER which records the email address of the
+person maintaining the catalogue, a DATESTAMP to record when it was
+last modified, and a LICENSE to indicate that it can not be taken by
+someone else and copyrighted.  It is to be freely available under
+terms similar to the intent of the FSF GPL. All three attributes must
+be provided.
+
+The CATALOGUE consists of a collection of zero or more ENTITYs.
+
+An ENTITY has an ID that is used internally to identify the entity.
+Could also serve as a sorting key, although ENTITY->ABOUT->NAME might
+be the better one to sort on, since it can be any general name, as
+typically what the package is know by (and is not restricted to be an
+XML ID, which can not, for example, start with a numeral). The
+DATESTAMP attribute records the last time the entry was updated and
+the MODIFIER attribute is the email address of the person who updated
+it.
+
+An ENTITY consists of at least an ABOUT, but also possibly a
+DESCRIPTION and information abuot DISTRIBUTIONs.
+
+The ABOUT element records general information about the package,
+including a mandatory CAPTION (at least it probably should be
+mandatory, but is not presently).
+
+TODO
+
+    Complete the description of the DTD
+
+-->
+
+<!ELEMENT catalogue (entry)*>
+<!ATTLIST catalogue 
+  maintainer CDATA #REQUIRED
+  datestamp  CDATA #REQUIRED
+  license    CDATA #REQUIRED>
+
+<!ELEMENT entry (about, description?, distribution?)>
+<!ATTLIST entry 
+  id        ID    #REQUIRED
+  datestamp CDATA #REQUIRED
+  modifier  CDATA #IMPLIED>
+
+<!ELEMENT about        (name, caption, author+, home?, license, version?, xref*)>
+<!ELEMENT description  (abstract?, documentation*, platform?)>
+<!ELEMENT distribution (ctan?, texlive?, tetex?, miktex?)>
+
+<!ELEMENT author       (name, email*)>
+<!ELEMENT version      ((number , released?) | (released , number?))>
+
+<!ELEMENT license EMPTY>
+<!--
+The empty LICENSE element consists the TYPE attribute which indicates
+the type of license under which the package is available.  In general,
+UNKNOWN and OTHER licenses are specifically excluded from free
+distributions. Please refer to CTAN:/help/Catalogue/licenses.html, 
+or http://www.cmis.csiro.au/Graham.Williams/TeX/licenses.html, for 
+details.
+
+The other information records the authority of the license.
+-->
+<!ATTLIST license 
+  type (dfsg|gpl|lgpl|lppl|nocommercial|nondfsg
+       |nosell|nosource|pd|shareware|unknown) "unknown"
+  source    CDATA #IMPLIED
+  authority CDATA #IMPLIED
+  date      CDATA #IMPLIED>
+
+
+<!ELEMENT xref (#PCDATA)>
+<!ATTLIST xref refid IDREFS #IMPLIED>
+
+<!ELEMENT documentation (#PCDATA)>
+<!ATTLIST documentation
+  location   (ctan|ftp|http)           #IMPLIED
+  type       (dvi|html|pdf|ps|unknown) "unknown"
+  compressed (gz)                      #IMPLIED>
+
+<!ELEMENT abstract (#PCDATA|xref)*>
+<!ELEMENT ctan     (#PCDATA)>
+<!ELEMENT email    (#PCDATA)>
+<!ELEMENT home     (#PCDATA)>
+<!ELEMENT miktex   (#PCDATA)>
+<!ELEMENT name     (#PCDATA)>
+<!ELEMENT number   (#PCDATA)>
+<!ELEMENT platform (#PCDATA)>
+<!ELEMENT released (#PCDATA)>
+<!ELEMENT tetex    (#PCDATA)>
+<!ELEMENT texlive  (#PCDATA)>
+<!ELEMENT caption  (#PCDATA|xref)*>

@@ -1,0 +1,10 @@
+% Copyright (C) 1997, 1999 Claudio Beccari
+%% file glwc v.1.0
+%
+% creates the invisible slide font glxc by redefining extra_endchar
+%
+extra_endchar:=extra_endchar & "clearit";
+input glxc;
+endinput;
+
+

@@ -1,0 +1,310 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% CMYK-HAX.TEX:
+% E  This is a set of TeX macros supporting color separation and
+%    substitution using TeX/PostScript environment. Needs DVIPS and
+%    COLORDVI from standard DVIPS distribution.
+%
+% P  Zestaw makr TeX-owo-PostScript-owych do tworzenia wyci/ag/ow barwnych
+%    i podmiany kolor/ow. Wsp/o/lpracuje ze sterownikiem DVIPS
+%    i zestawem makr COLORDVI (ze standardowej dystrybucji DVIPS-a);
+%
+% AUTHORS' COORDINATES:
+%   BOP s.c.
+%   ul. Piastowska 70, 80-363 Gda\'nsk, Poland
+%   tel. +48 58 53-46-59
+%   email: jacko@ipipan.gda.pl
+%
+% VERSION 0.60, 11 IV 1997
+%   
+% HISTORY:  
+%  E  version released during the GUST annual meeting Bacho\TeX'95.
+%  P  wersja udost/epniona podczas Bacho\TeX'95.
+% VERSION 0.51, 5 V 1995:
+%  E  macro \CMYKinit added (it places necessary def's in a PS prolog).
+%  P  dodane zosta/lo makro inicjalizacyjne `\CMYKinit',
+%     kt/ore umieszcza w prologu PS u/zywane definicje.
+% VERSION 0.52, 27 VI 1995:
+%  E  the `currentpoint' fault in case of empty current path; now `currentpoint'
+%     is called by the `stopped' command, which makes an error action
+%     availlable.
+%  P  `currentpoint' generowa/l b/l/ad gdy bie/z/aca /scie/zki by/la pusta;
+%     obecnie `currentpoint' jest wykonywane przez `stopped',
+%     co daje mo/zliwo/s/c zareagowania na b/l/ad.
+% VERSION 0.53, 23 VII 1996:
+%  E   1. the constant `epsilon=0.005' entered to do approximed
+%         color comparations.
+%      2. \PSscreen became a \special.
+%  P   1. wprowadzono sta/l/a `epsilon=0.005', kt/ora jest dok/ladno/sci/a
+%         por/ownania kolor/ow.
+%      2. \PSscreen by/l dot/ad makrem TeX-owym o tre/sci PS-owej
+%         sensowne jest, aby sta/l si/e \specialem
+% VERSION 0.54, 8 XI 1996 r.
+%  E   `show'  redefinition allows the text outlining.
+%  P   redefinicja `show'  umo/zliwia ju/z dok/ladanie obw/odki do tekst/ow.
+% VERSION 0.60, 11 IV 1997:
+%  E   processing of CMYK bitmaps enabled
+%  P   umo/zliwia przetwarzanie bitmap CMYK
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 
+\edef\slashcatcode {\the\catcode`\/}
+\catcode`\/12
+%
+\def\CMYKinit {\special {! userdict begin
+ /ori_setcmykcolor where {pop} {/ori_setcmykcolor /setcmykcolor load def} ifelse
+ /ori_setrgbcolor where {pop} {/ori_setrgbcolor /setrgbcolor load def} ifelse
+ /ori_fill where {pop} {/ori_fill /fill load def} ifelse
+ /ori_eofill where {pop} {/ori_eofill /eofill load def} ifelse
+ /ori_stroke where {pop} {/ori_stroke /stroke load def} ifelse
+ /ori_setgray where {pop} {/ori_setgray /setgray load def} ifelse
+ /ori_show where {pop} {/ori_show /show load def} ifelse
+ /ori_colorimage where {pop} {/ori_colorimage /colorimage load def} ifelse
+ /setcmykcolor {ori_setcmykcolor} def
+ /setgray {ori_setgray currentcmykcolor setcmykcolor} def 
+ /setrgbcolor {ori_setrgbcolor currentcmykcolor setcmykcolor} def 
+ %
+ /to_change_bitmap false def
+ /to_sep_bitmap false def
+ /changebits {} def
+ /hax_pxl 4 string def
+ /hax_bitmap{/hax_buf exch def
+   /hax_bl hax_buf length def
+   /hax_nl hax_bl pxl_fl add 4 idiv 4 mul def
+   /hax_dl hax_nl pxl_fl sub def
+   /hax_tl hax_bl hax_dl sub def
+   new_buf_known not {/new_buf hax_bl 4 add string def
+     /pxl_f 4 string def
+     /new_buf_known true def} if
+   pxl_fl 0 ne {new_buf 0 pxl_f putinterval} if
+   new_buf pxl_fl hax_buf 0 hax_dl getinterval putinterval
+   pxl_f 0 hax_buf hax_dl hax_tl getinterval putinterval
+   /pxl_fl hax_tl def
+   /hax_buf new_buf 0 hax_nl getinterval def
+   0 4 hax_buf length 4 sub {/buf_idx exch def
+     to_change_bitmap {
+       hax_buf buf_idx 4 getinterval
+       changebits
+       hax_buf exch buf_idx exch putinterval
+     } if
+     to_sep_bitmap {
+       hax_buf buf_idx 4 getinterval
+       hax_sep 1 getinterval
+       hax_pxl 0 <00 00 00 00> putinterval
+       hax_pxl exch 3 exch putinterval
+       hax_buf buf_idx hax_pxl putinterval
+     } if
+   } for
+   hax_buf} def
+ %
+ /hax_pstr 1024 string def
+ /colorimage {
+   /ncomp exch def
+   ncomp 4 eq {
+   /multi exch def
+   multi {multi ncomp ori_colorimage} {dup
+     /datasrc exch def
+     type /filetype eq
+     /pxl_fl 0 def
+     /new_buf_known false def
+     {{datasrc hax_pstr readstring pop hax_bitmap}}
+     {{datasrc hax_bitmap}} ifelse
+     multi ncomp ori_colorimage
+   } ifelse} {ncomp ori_colorimage} ifelse} def
+ %
+ /trueunit {0 matrix defaultmatrix matrix currentmatrix matrix invertmatrix
+  matrix concatmatrix dtransform dup mul exch dup mul add sqrt} def
+ /truebp {trueunit} def
+ /truept {72.27 div 72 mul trueunit} def
+ /truemm {25.4 div 72 mul trueunit} def
+ /truecm {2.54 div 72 mul trueunit} def
+ /truein {72 mul trueunit} def
+ /truedd {72.27 div 1238 mul 1157 div 72 mul trueunit} def
+ /truecc {72.27 div 1238 mul 1157 div 12 mul 72 mul trueunit} def
+ /epsilon 0.005 def
+ %
+end}}
+%
+%\def\CMYKgray {\special {! userdict begin
+% /setgray {ori_setgray currentcmykcolor setcmykcolor} def } end}
+%
+\def\PSbegingroup {\begingroup \special{ps: save }}
+\def\PSendgroup {\special{ps: restore }\endgroup}
+%
+\def\forcolor #1{\def\thecolor{#1}}
+\def\checkcolor {\thecolor\space count 4 lt {(Not CMYK ) print} if
+%   k_ eq exch y_ eq and exch m_ eq and exch c_ eq and }
+%  zamiast powy/zszego -- por/ownanie kolor/ow z dok/ladno/sci/a epsilon
+   k_ sub abs epsilon le exch
+   y_ sub abs epsilon le and exch
+   m_ sub abs epsilon le and exch
+   c_ sub abs epsilon le and }
+%
+\def\forbitmap #1{\def\thebitcolor{<#1>}}
+\def\checkbitcolor {dup \thebitcolor\space eq }
+%
+\def\changefill #1{%
+   \edef\changefills{\changefills \checkcolor
+     {#1 ori_setcmykcolor} if }}
+\def\changestroke #1{%
+   \edef\changestrokes{\changestrokes \checkcolor 
+     {#1 ori_setcmykcolor} if }}
+\def\changecolor #1{%
+   \edef\changecolors{\changecolors \checkcolor
+     {#1 ori_setcmykcolor} if }}
+\def\addfill #1{%
+   \edef\addfills{\addfills \checkcolor {addfill} if }%
+   \edef\changefills{\changefills \checkcolor
+     {#1 ori_setcmykcolor} if }}
+\def\addstroke #1{%
+   \edef\addstrokes{\addstrokes \checkcolor {addstroke} if }%
+   \edef\changestrokes{\changestrokes \checkcolor
+     {#1 ori_setcmykcolor} if }}
+\def\addcolor #1{\addstroke{#1}\addfill{#1}}
+\def\delfill {%
+   \edef\delfills{\delfills \checkcolor {delfill} if }}
+\def\delstroke {%
+   \edef\delstrokes{\delstrokes \checkcolor {delstroke} if }}
+\def\delcolor {%
+   \edef\delcolors{\delcolors \checkcolor {delfill delstroke} if }}
+\def\strokehook #1{%
+   \edef\strokehooks{\strokehooks \checkcolor {#1} if }}
+\def\fillhook #1{%
+   \edef\fillhooks{\fillhooks \checkcolor {#1} if }}
+\def\strokeup {%
+   \edef\changestrokes{\changestrokes \checkcolor {upstroke} if }}
+\def\fillup {%
+   \edef\changestrokes{\changestrokes \checkcolor {upfill} if }}
+\def\changebitmap #1{%
+   \special{ps: userdict begin /to_change_bitmap true def end }
+   \edef\changebits{\changebits \checkbitcolor {pop <#1>} if }}
+%
+\def\setCMYKchange{%
+  \edef\changestrokes{}%
+  \edef\changefills{}%
+  \edef\changecolors{}%
+  \edef\addstrokes{}%
+  \edef\addfills{}%
+  \edef\delstrokes{}%
+  \edef\delfills{}%
+  \edef\delcolors{}%
+  \edef\strokehooks{}%
+  \edef\fillhooks{}%
+  \edef\changebits{}%
+  }
+%
+\def\fillinitials{%
+ /to_fill true def
+ /to_stroke false def
+ /to_upstroke false def
+}
+\def\strokeinitials{%
+ /to_fill false def
+ /to_stroke true def
+ /to_upstroke true def
+}
+%
+\def\useCMYKchange{%
+ \special{ps: userdict begin
+ %
+ /addfill {/to_fill true def} def
+ /delfill {/to_fill false def} def
+ /upfill {/to_upstroke false def} def
+ /addstroke {/to_stroke true def upstroke} def
+ /delstroke {/to_stroke false def} def
+ /upstroke {/to_upstroke true def} def
+ /current_point {{currentpoint} stopped {0 0} if} def
+ %
+ /do_stroke {to_stroke
+  {gsave \changestrokes \strokehooks ori_stroke grestore} if} def
+ %
+ /eofill {userdict begin \fillinitials \delfills \delcolors \addstrokes
+  current_point
+  to_upstroke {} {do_stroke} ifelse
+  to_fill {gsave \changefills \fillhooks ori_eofill grestore} if
+  to_upstroke {do_stroke} if
+  newpath moveto end} def
+ %
+ /fill {userdict begin \fillinitials \delfills \delcolors \addstrokes
+  current_point
+  to_upstroke {} {do_stroke} ifelse
+  to_fill {gsave \changefills \fillhooks ori_fill grestore} if
+  to_upstroke {do_stroke} if
+  newpath moveto end} def
+ %
+ /stroke {userdict begin \strokeinitials \delstrokes \delcolors \addfills
+  current_point
+  to_upstroke {} {do_stroke} ifelse
+  to_fill {gsave \changefills \fillhooks ori_eofill grestore} if
+  to_upstroke {do_stroke} if
+  newpath moveto end} def
+ %
+ /show {userdict begin \fillinitials \delfills \delcolors \addstrokes
+  to_upstroke {} {dup false gsave charpath do_stroke grestore} ifelse
+  to_fill {dup gsave ori_show grestore} {} ifelse
+  to_upstroke {dup false gsave charpath do_stroke grestore} if
+  false charpath current_point newpath moveto
+  end} def
+ %
+ /setcmykcolor {userdict begin /k_ exch def /y_ exch def /m_ exch def /c_ exch def
+  c_ m_ y_ k_ ori_setcmykcolor \changecolors end} def
+ %
+ /changebits {\changebits} def
+ %
+ currentcmykcolor setcmykcolor
+end}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\def\cyan    {1 0 0 0}
+\def\magenta {0 1 0 0}
+\def\yellow  {0 0 1 0}
+\def\black   {0 0 0 1}
+%
+\def\ScreenFrequency {}
+\def\Cangle {15}
+\def\Mangle {75}
+\def\Yangle {0}
+\def\Kangle {45}
+%
+\def\PSscreen #1{\ifx\ScreenFrequency\empty
+  \special{ps: currentscreen exch pop #1 exch setscreen}%
+  \else
+  \special{ps: currentscreen exch pop exch pop
+  \ScreenFrequency\space exch #1 exch setscreen}%
+  \fi}
+%
+\def\projectCMYK #1{%
+ \edef\projectcolor{#1}%
+ \ifx\projectcolor\cyan
+ \special{ps: userdict begin
+     /hax_sep 0 def
+     /ori_setcmykcolor {pop pop pop 1 exch sub ori_setgray} def end}%
+     \PSscreen\Cangle
+ \else \ifx\projectcolor\magenta
+ \special{ps: userdict begin
+     /hax_sep 1 def
+     /ori_setcmykcolor {pop pop exch pop 1 exch sub ori_setgray} def end}%
+     \PSscreen\Mangle
+ \else \ifx\projectcolor\yellow
+ \special{ps: userdict begin
+     /hax_sep 2 def
+     /ori_setcmykcolor {pop exch pop exch pop 1 exch sub ori_setgray} def end}%
+     \PSscreen\Yangle
+ \else \ifx\projectcolor\black
+ \special{ps: userdict begin
+     /hax_sep 3 def
+     /ori_setcmykcolor {exch pop exch pop exch pop 1 exch sub ori_setgray} def end}%
+     \PSscreen\Kangle
+ \fi \fi \fi \fi
+ \special{ps: userdict begin /to_sep_bitmap true def end}
+ %
+}
+%
+\def\CMYKlabels #1{{#1% #1 is a font csname
+ \Cyan{CYAN}
+ \Magenta{MAGENTA}
+ \Yellow{YELLOW}
+ \Black{BLACK}}}
+%
+\CMYKinit 
+%
+\catcode`\/\slashcatcode
+%
+\endinput

@@ -1,0 +1,63 @@
+%%
+%% This is file `ucmtt.fd',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% cmfonts.fdd  (with options: `fd,Ucmtt')
+%% 
+%% This is a generated file.
+%% 
+%% Copyright 1993 1994 1995 1996 1997 1998 1999
+%% The LaTeX3 Project and any individual authors listed elsewhere
+%% in this file.
+%% 
+%% This file is part of the LaTeX2e system.
+%% ----------------------------------------
+%% 
+%% It may be distributed under the terms of the LaTeX Project Public
+%% License, as described in lppl.txt in the base LaTeX distribution.
+%% Either version 1.0 or, at your option, any later version.
+%% 
+%% In particular, permission is granted to customize the declarations in
+%% this file to serve the needs of your installation.
+%% 
+%% However, NO PERMISSION is granted to distribute a modified version
+%% of this file under its original name.
+%% 
+\ProvidesFile{ucmtt.fd}
+        [1998/03/27 v2.5g Standard LaTeX font definitions]
+\DeclareFontFamily{U}{cmtt}{\hyphenchar \font\m@ne}
+\DeclareFontShape{U}{cmtt}{m}{n}%
+     {%
+      <5><6><7><8>cmtt8<9>cmtt9%
+      <10><10.95>cmtt10%
+      <12><14.4><17.28><20.74><24.88>cmtt12%
+      }{}
+%%%%%% make sure subst shapes are available
+\DeclareFontShape{U}{cmtt}{m}{it}%
+     {%
+      <5><6><7><8><9>%
+      <10><10.95><12><14.4><17.28><20.74><24.88>cmitt10%
+      }{}
+\DeclareFontShape{U}{cmtt}{m}{sl}%
+     {%
+      <5><6><7><8><9>%
+      <10><10.95><12><14.4><17.28><20.74><24.88>cmsltt10%
+      }{}
+\DeclareFontShape{U}{cmtt}{m}{sc}%
+     {%
+      <5><6><7><8><9>%
+      <10><10.95><12><14.4><17.28><20.74><24.88>cmtcsc10%
+      }{}
+\DeclareFontShape{U}{cmtt}{m}{ui}%
+  {<->sub*cmtt/m/it}{}
+\DeclareFontShape{U}{cmtt}{bx}{n}%
+  {<->sub*cmtt/m/n}{}
+\DeclareFontShape{U}{cmtt}{bx}{it}%
+  {<->sub*cmtt/m/it}{}
+\DeclareFontShape{U}{cmtt}{bx}{ui}%
+  {<->sub*cmtt/m/it}{}
+\endinput
+%%
+%% End of file `ucmtt.fd'.

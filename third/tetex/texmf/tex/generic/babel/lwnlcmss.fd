@@ -1,0 +1,75 @@
+%%
+%% This is file `lwnlcmss.fd',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% lwncmlh.fdd  (with options: `fd,LWNlcmss')
+%% This is a generated file.
+%% 
+%% Copyright 1999 Johannes L. Braams and any individual authors
+%% listed elsewhere in this file.  All rights reserved.
+%% 
+%% For further copyright information, and conditions for modification
+%% and distribution, see any other copyright notices in this file.
+%% 
+%% This file is part of the Babel system, release 3.6.
+%% ---------------------------------------------------
+%% 
+%% It may be distributed under the terms of the LaTeX Project Public
+%% License, as described in lppl.txt in the base LaTeX distribution.
+%% Either version 1.0 or, at your option, any later version.
+%% 
+%% In particular, permission is granted to customize the declarations in
+%% this file to serve the needs of your installation.
+%% 
+%% However, NO PERMISSION is granted to distribute a modified version
+%% of this file under its original name.
+%% File `lwncmlh.fdd'
+%% Copyright (C) 1995-1997 Olga Lapko, Johannes L. Braams,
+%% Copyright (C) 1998-1999 Werner Lemberg, Vladimir Volovich.
+\ProvidesFile{lwnlcmss.fd}
+        [1999/03/10 v3.1b Computer Modern Cyrillic font definitions]
+\DeclareFontFamily{LWN}{lcmss}{\hyphenchar\font45 }
+\DeclareFontShape{LWN}{lcmss}{m}{n}{%
+  <7><8><10><12>%
+  <13.82><16.59><19.907><23.89><28.66><34.4><41.28>lwnss8}{}
+\DeclareFontShape{LWN}{lcmss}{m}{In}{%
+  <7><8><10><12>%
+  <13.82><16.59><19.907><23.89><28.66><34.4><41.28>ilwnss8}{}
+\DeclareFontShape{LWN}{lcmss}{m}{sl}{%
+  <13.82><16.59><19.907><23.89><28.66><34.4><41.28>lwnssi8}{}
+\DeclareFontShape{LWN}{lcmss}{m}{Isl}{%
+  <13.82><16.59><19.907><23.89><28.66><34.4><41.28>ilwnssi8}{}
+\DeclareFontShape{LWN}{lcmss}{m}{it}{%
+  <->sub*lcmss/m/sl}{}
+\DeclareFontShape{LWN}{lcmss}{m}{Iit}{%
+  <->sub*lcmss/m/Isl}{}
+\DeclareFontShape{LWN}{lcmss}{bx}{n}{%
+  <13.82><16.59><19.907><23.89><28.66><34.4><41.28>lwnssb8}{}
+\DeclareFontShape{LWN}{lcmss}{bx}{In}{%
+  <13.82><16.59><19.907><23.89><28.66><34.4><41.28>ilwnssb8}{}
+\DeclareFontShape{LWN}{lcmss}{m}{ui}{%
+  <->sub*cmr/m/ui}{}
+\DeclareFontShape{LWN}{lcmss}{bx}{ui}{%
+  <->sub*cmr/m/ui}{}
+%%
+%% \CharacterTable
+%%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%%   Digits        \0\1\2\3\4\5\6\7\8\9
+%%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%%   Dollar        \$     Percent       \%     Ampersand     \&
+%%   Acute accent  \'     Left paren    \(     Right paren   \)
+%%   Asterisk      \*     Plus          \+     Comma         \,
+%%   Minus         \-     Point         \.     Solidus       \/
+%%   Colon         \:     Semicolon     \;     Less than     \<
+%%   Equals        \=     Greater than  \>     Question mark \?
+%%   Commercial at \@     Left bracket  \[     Backslash     \\
+%%   Right bracket \]     Circumflex    \^     Underscore    \_
+%%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%%   Right brace   \}     Tilde         \~}
+%%
+\endinput
+%%
+%% End of file `lwnlcmss.fd'.

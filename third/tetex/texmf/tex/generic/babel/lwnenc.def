@@ -1,0 +1,157 @@
+%%
+%% This is file `lwnenc.def',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% lwn.dtx  (with options: `LWN')
+%% Copyright 1998-1999 Johannes L. Braams and any individual authors
+%% listed elsewhere in this file.  All rights reserved.
+%% 
+%% For further copyright information see any other copyright notices in
+%% this file.
+%% 
+%% This file is part of the Babel system release 3.6.
+%% --------------------------------------------------
+%% 
+%% It may be distributed under the terms of the LaTeX Project Public
+%% License, as described in lppl.txt in the base LaTeX distribution.
+%% Either version 1.0 or, at your option, any later version.
+%% File `lwn.dtx'
+%% Copyright (C) 1996 Sebastian Rahtz, M. Ellert, F. Widmann,
+%% Copyright (C) 1995-1997 Olga Lapko, Johannes L. Braams,
+%% Copyright (C) 1998-1999 Werner Lemberg, Vladimir Volovich.
+\NeedsTeXFormat{LaTeX2e}[1998/12/01]
+\ProvidesFile{lwnenc.def}
+  [1999/03/10 v3.1b Cyrillic encoding definition file]
+\DeclareFontEncoding{LWN}{}{}
+\DeclareFontSubstitution{LWN}{cmr}{m}{n}
+\DeclareErrorFont{LWN}{cmr}{m}{n}{10}
+\DeclareTextAccent{\"}{LWN}{32}
+\DeclareTextAccent{\'}{LWN}{38}
+\DeclareTextAccent{\u}{LWN}{64}
+\DeclareTextAccent{\U}{LWN}{36}
+\DeclareTextSymbol{\CYRNJE}{LWN}{0}
+\DeclareTextSymbol{\CYRLJE}{LWN}{1}
+\DeclareTextSymbol{\CYRDZHE}{LWN}{2}
+\DeclareTextSymbol{\CYREREV}{LWN}{3}
+\DeclareTextSymbol{\CYRII}{LWN}{4}
+\DeclareTextSymbol{\CYRIE}{LWN}{5}
+\DeclareTextSymbol{\CYRDJE}{LWN}{6}
+\DeclareTextSymbol{\CYRTSHE}{LWN}{7}
+\DeclareTextSymbol{\cyrnje}{LWN}{8}
+\DeclareTextSymbol{\cyrlje}{LWN}{9}
+\DeclareTextSymbol{\cyrdzhe}{LWN}{10}
+\DeclareTextSymbol{\cyrerev}{LWN}{11}
+\DeclareTextSymbol{\cyrii}{LWN}{12}
+\DeclareTextSymbol{\cyrie}{LWN}{13}
+\DeclareTextSymbol{\cyrdje}{LWN}{14}
+\DeclareTextSymbol{\cyrtshe}{LWN}{15}
+\DeclareTextSymbol{\CYRYU}{LWN}{16}
+\DeclareTextSymbol{\CYRZH}{LWN}{17}
+\DeclareTextSymbol{\CYRISHRT}{LWN}{18}
+\DeclareTextSymbol{\CYRYO}{LWN}{19}
+\DeclareTextSymbol{\CYRIZH}{LWN}{20}
+\DeclareTextSymbol{\CYRFITA}{LWN}{21}
+\DeclareTextSymbol{\CYRDZE}{LWN}{22}
+\DeclareTextSymbol{\CYRYA}{LWN}{23}
+\DeclareTextSymbol{\cyryu}{LWN}{24}
+\DeclareTextSymbol{\cyrzh}{LWN}{25}
+\DeclareTextSymbol{\cyrishrt}{LWN}{26}
+\DeclareTextSymbol{\cyryo}{LWN}{27}
+\DeclareTextSymbol{\cyrizh}{LWN}{28}
+\DeclareTextSymbol{\cyrfita}{LWN}{29}
+\DeclareTextSymbol{\cyrdze}{LWN}{30}
+\DeclareTextSymbol{\cyrya}{LWN}{31}
+\DeclareTextSymbol{\CYRYAT}{LWN}{35}
+\DeclareTextSymbol{\cyryat}{LWN}{43}
+\DeclareTextSymbol{\i}{LWN}{61}
+\DeclareTextSymbol{\CYRA}{LWN}{65}
+\DeclareTextSymbol{\CYRB}{LWN}{66}
+\DeclareTextSymbol{\CYRC}{LWN}{67}
+\DeclareTextSymbol{\CYRD}{LWN}{68}
+\DeclareTextSymbol{\CYRE}{LWN}{69}
+\DeclareTextSymbol{\CYRF}{LWN}{70}
+\DeclareTextSymbol{\CYRG}{LWN}{71}
+\DeclareTextSymbol{\CYRH}{LWN}{72}
+\DeclareTextSymbol{\CYRI}{LWN}{73}
+\DeclareTextSymbol{\CYRJE}{LWN}{74}
+\DeclareTextSymbol{\CYRK}{LWN}{75}
+\DeclareTextSymbol{\CYRL}{LWN}{76}
+\DeclareTextSymbol{\CYRM}{LWN}{77}
+\DeclareTextSymbol{\CYRN}{LWN}{78}
+\DeclareTextSymbol{\CYRO}{LWN}{79}
+\DeclareTextSymbol{\CYRP}{LWN}{80}
+\DeclareTextSymbol{\CYRCH}{LWN}{81}
+\DeclareTextSymbol{\CYRR}{LWN}{82}
+\DeclareTextSymbol{\CYRS}{LWN}{83}
+\DeclareTextSymbol{\CYRT}{LWN}{84}
+\DeclareTextSymbol{\CYRU}{LWN}{85}
+\DeclareTextSymbol{\CYRV}{LWN}{86}
+\DeclareTextSymbol{\CYRSHCH}{LWN}{87}
+\DeclareTextSymbol{\CYRSH}{LWN}{88}
+\DeclareTextSymbol{\CYRERY}{LWN}{89}
+\DeclareTextSymbol{\CYRZ}{LWN}{90}
+\DeclareTextSymbol{\CYRSFTSN}{LWN}{94}
+\DeclareTextSymbol{\CYRHRDSN}{LWN}{95}
+\DeclareTextSymbol{\cyra}{LWN}{97}
+\DeclareTextSymbol{\cyrb}{LWN}{98}
+\DeclareTextSymbol{\cyrc}{LWN}{99}
+\DeclareTextSymbol{\cyrd}{LWN}{100}
+\DeclareTextSymbol{\cyre}{LWN}{101}
+\DeclareTextSymbol{\cyrf}{LWN}{102}
+\DeclareTextSymbol{\cyrg}{LWN}{103}
+\DeclareTextSymbol{\cyrh}{LWN}{104}
+\DeclareTextSymbol{\cyri}{LWN}{105}
+\DeclareTextSymbol{\cyrje}{LWN}{106}
+\DeclareTextSymbol{\cyrk}{LWN}{107}
+\DeclareTextSymbol{\cyrl}{LWN}{108}
+\DeclareTextSymbol{\cyrm}{LWN}{109}
+\DeclareTextSymbol{\cyrn}{LWN}{110}
+\DeclareTextSymbol{\cyro}{LWN}{111}
+\DeclareTextSymbol{\cyrp}{LWN}{112}
+\DeclareTextSymbol{\cyrch}{LWN}{113}
+\DeclareTextSymbol{\cyrr}{LWN}{114}
+\DeclareTextSymbol{\cyrs}{LWN}{115}
+\DeclareTextSymbol{\cyrt}{LWN}{116}
+\DeclareTextSymbol{\cyru}{LWN}{117}
+\DeclareTextSymbol{\cyrv}{LWN}{118}
+\DeclareTextSymbol{\cyrshch}{LWN}{119}
+\DeclareTextSymbol{\cyrsh}{LWN}{120}
+\DeclareTextSymbol{\cyrery}{LWN}{121}
+\DeclareTextSymbol{\cyrz}{LWN}{122}
+\DeclareTextSymbol{\cyrsftsn}{LWN}{126}
+\DeclareTextSymbol{\cyrhrdsn}{LWN}{127}
+\DeclareTextSymbol{\textquoteleft}{LWN}{96}
+\DeclareTextSymbol{\textquoteright}{LWN}{39}
+\DeclareTextSymbol{\textquotedblleft}{LWN}{92}
+\DeclareTextSymbol{\textquotedblright}{LWN}{34}
+\DeclareTextSymbol{\guillemotleft}{LWN}{60}
+\DeclareTextSymbol{\guillemotright}{LWN}{62}
+\DeclareTextSymbol{\textendash}{LWN}{123}
+\DeclareTextSymbol{\textemdash}{LWN}{124}
+\DeclareTextSymbol{\textnumero}{LWN}{125}
+\DeclareTextComposite{\U}{LWN}{I}{18}
+\DeclareTextComposite{\U}{LWN}{i}{26}
+\DeclareTextComposite{\"}{LWN}{E}{19}
+\DeclareTextComposite{\"}{LWN}{e}{27}
+%%
+%% \CharacterTable
+%%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%%   Digits        \0\1\2\3\4\5\6\7\8\9
+%%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%%   Dollar        \$     Percent       \%     Ampersand     \&
+%%   Acute accent  \'     Left paren    \(     Right paren   \)
+%%   Asterisk      \*     Plus          \+     Comma         \,
+%%   Minus         \-     Point         \.     Solidus       \/
+%%   Colon         \:     Semicolon     \;     Less than     \<
+%%   Equals        \=     Greater than  \>     Question mark \?
+%%   Commercial at \@     Left bracket  \[     Backslash     \\
+%%   Right bracket \]     Circumflex    \^     Underscore    \_
+%%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%%   Right brace   \}     Tilde         \~}
+%%
+\endinput
+%%
+%% End of file `lwnenc.def'.

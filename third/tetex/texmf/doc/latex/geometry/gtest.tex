@@ -1,0 +1,42 @@
+\documentclass[a4paper,12pt]{article}
+
+% uncomment one of \usepackage commands below
+%------------------------------------------------------------------
+% \usepackage{geometry}% uses the default layout.
+% \usepackage[width=10cm, left=5cm, vscale=0.8, nohead]{geometry}
+% \usepackage[width=17cm, marginparwidth=4cm,reversemp]{geometry}
+% \usepackage[hdivide={1cm,,2cm}, vdivide={3cm,8in,}, nohead]{geometry}
+% \usepackage[headsep=20pt, head=40pt,foot=40pt]{geometry}
+% \usepackage[margin=30pt, head=20pt, twosideshift=20pt]{geometry}
+% \usepackage[margin=2cm, marginparwidth=4cm, twoside]{geometry}
+% \usepackage[headsep=20pt, head=40pt,foot=20pt]{geometry}
+% \usepackage[text={6in,8in}, top=1.2in, left=2cm,nohead]{geometry}
+  \usepackage[margin=20pt,head=20pt,headsep=20pt,foot=20pt]{geometry}
+%------------------------------------------------------------------
+\geometry{verbose}% appends verbose option.
+\usepackage{showframe}
+
+\begin{document}
+% \printparam % option for showframe.sty
+\def\fox{A quick brown fox jumps over the lazy dog.}
+\def\foxes{\fox\ \fox\ \fox\ \fox\ \fox\ \fox\ \fox} 
+\def\note{This is a marginal note.}
+\def\notes{\note\ \note\ \note\ \note\ \note}
+\def\mpi{\marginpar{\footnotesize\notes}}
+\def\mpii{\marginpar[\footnotesize$\Rightarrow$ 
+This is a \textbf{left-side} 
+marginal note. \notes]{\footnotesize$\Leftarrow$\ \notes}}
+\makeatletter
+\@ifundefined{geometry}{}{%
+\ifGeom@includemp\else\let\mpi\relax\let\mpii\relax\fi}
+\makeatother
+\foxes\vfill\centerline{$\vdots$}\vfill%
+\foxes\ \foxes\mpi\ \foxes%
+\vfill\centerline{$\vdots$}\vfill\foxes
+\clearpage
+\foxes\ \foxes\mpii\ \foxes\ \foxes%
+\vfill\centerline{$\vdots$}\vfill\foxes
+\clearpage
+\foxes\ \foxes\mpii\foxes\ \foxes%
+\vfill\centerline{$\vdots$}\vfill\foxes
+\end{document}

@@ -1,0 +1,55 @@
+<html>
+<head><title>Help On LaTeX Styles</title></head>
+<body bgcolor="#ffffff" text="#000000" link="#000099" vlink="#cc0000" alink="#cc0000">
+<h1><font size="-2">Hypertext Help with LaTeX</font><br><font color="#cc0000">Styles</font></h1>
+ The following type style commands are supported by LaTeX. Note
+ that <a href="versions.html">LaTeX2e</a> differs on this point, 
+ having instead a <a href="fonts2e.html">Font Selection</a> scheme,
+ but the following should still work (certainly in 2.09 mode).
+  <ul>
+  <li><a href="ltx-304.html"><tt>\rm</tt></a> Roman.
+  <li><a href="ltx-249.html"><tt>\it</tt></a> Italics.
+  <li><a href="ltx-221.html"><tt>\em</tt></a> Emphasis 
+     (toggles between <tt>\it</tt> and <tt>\rm</tt>).
+  <li><a href="emph.html"><tt>\emph</tt></a> (LaTeX2e emphasis command)
+  <li><a href="ltx-204.html"><tt>\bf</tt></a> Boldface.
+  <li><a href="ltx-316.html"><tt>\sl</tt></a> Slanted.
+  <li><a href="ltx-313.html"><tt>\sf</tt></a> Sans serif.
+  <li><a href="ltx-308.html"><tt>\sc</tt></a> Small caps.
+  <li><a href="ltx-331.html"><tt>\tt</tt></a> Typewriter.
+<p>
+  <li><a href="boldmath.html"><tt>\boldmath</tt> and <tt>\unboldmath</tt></a>
+    (affects math mode fonts only)
+  </ul>
+These are LaTeX 
+<a href="declarations.html"><em>delcarations</em></a> (with the exception of 
+<a href="emph.html"><tt>\emph</tt></a>), 
+i.e., they do not act on an argument, but change the way LaTeX prints the
+following text.  The <em>scope</em> of a declaration is ended by a right
+brace (<tt>}</tt>) or an <tt>\end{}</tt> command whose matching
+left brace (<tt>{</tt>) or <tt>\begin{}</tt> precedes the declaration.
+<p>
+Thus, for a short piece of italics or bold-face text one would use
+<pre>
+  This is {\it italics} and this is {\bf in boldface}.
+</pre>
+which would be set as "This is <em>italics</em> and this is 
+<strong>in boldface</strong>.
+<p>
+In LaTeX2e the 
+<a href="emph.html"><tt>\emph</tt></a> command is considered more 
+suitable for short stretches of emphasized text.  A typical use would be
+<pre>
+  <tt>This is \emph{emphasized text}.</tt>
+</pre>
+<hr>
+See also Typeface <a href="ltx-178.html">Sizes</a><br>
+LaTeX2e <a href="fonts2e.html">Font Selection</a><br>
+See also <a href="mathfonts.html">Math fonts and styles</a><br>
+Return to <a href="ltx-2.html">LaTeX Table of Contents</a>
+<hr>
+<address>
+Revised: Sheldon Green, 19 May 1995.
+</address>
+</body>
+</html>

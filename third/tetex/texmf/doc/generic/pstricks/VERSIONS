@@ -1,0 +1,52 @@
+                        PSTricks current file versions
+                                 (May 3, 1999)
+                        ------------------------------
+
+
+generic directory:
+-----------------
+
+-------------------------------------------
+|     File     |   Version   |    Date    |
+-------------------------------------------
+| dvipsone.con |          97 | 1994/03/29 |
+| multido.tex  |         1.4 | 1993/01/14 |
+| pst-3d.tex   |          97 | 1997/03/25 |
+| pst-char.tex | 97 patch  3 | 1999/03/11 |
+| pst-coil.tex | 97 patch  2 | 1998/03/19 |
+| pst-eps.tex  | 97 patch  1 | 1997/05/05 |
+| pst-fill.tex | 97 patch  1 | 1997/11/05 |
+| pst-grad.tex | 97 patch  1 | 1997/04/28 |
+| pst-node.tex | 97 patch  9 | 1999/04/14 |
+| pst-plot.tex | 97 patch  1 | 1997/04/28 |
+| psttext.tex  |          97 | 1997/03/25 |
+| psttree.tex  | 97 patch  3 | 1997/09/24 |
+| pstricks.con | 97 patch  2 | 1997/04/28 |
+| pstricks.tex | 97 patch 10 | 1999/03/24 |
+| textures.con |          97 | 1997/03/01 |
+| vtex.con     | 97 patch  2 | 1998/07/10 |
+-------------------------------------------
+
+
+dvips directory:
+---------------
+
+-------------------------------------------
+|     File     |   Version   |    Date    |
+-------------------------------------------
+| pst-coil.pro |  97 patch 1 | 1998/06/02 |
+| pst-dots.pro |          97 | 1993/05/07 |
+| pst-grad.pro |          97 | 1993/05/12 |
+| pst-node.pro |  97 patch 1 | 1997/05/09 |
+| pst-text.pro |          97 | 1997/04/20 |
+| pstricks.pro |  97 patch 3 | 1998/06/01 |
+-------------------------------------------
+
+doc directory:
+-------------
+
+-------------------------------------------
+|     File     |   Version   |    Date    |
+-------------------------------------------
+| pstricks.bug | 97 patch  4 | 1999/03/24 |
+-------------------------------------------

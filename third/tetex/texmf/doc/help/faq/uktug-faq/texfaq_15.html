@@ -1,0 +1,323 @@
+<HTML>
+<HEAD>
+<TITLE>TeX Frequently Asked Questions - Section 15</TITLE>
+<!-- File version: 2.2n -->
+<!-- File date: 1999/06/05 -->
+
+<!-- Creator: faq2html.el, running on XEmacs 20.4 "Em -->
+<!-- CreationDate: Sat Jun  5 14:50:14 1999  te -->
+</HEAD>
+
+<BODY>
+Go to the <A HREF="texfaq_0.html">first</A>, <A HREF="texfaq_14.html">previous</A>, <A HREF="texfaq_16.html">next</A>, <A HREF="texfaq_17.html">last</A> section, <A HREF="texfaq_toc.html">table of contents</A>.
+<HR>
+
+<H1><A NAME="SEC15">Why does it <EM>do</EM> that?</A></H1>
+
+
+<H2><A NAME="QU108">What's going on in my <CODE>\include</CODE> commands?</A></H2>
+
+<P>
+The original LaTeX provided the <CODE>\include</CODE> command to address the
+problem of long documents: with the relatively slow computers of the
+time, the companion <CODE>\includeonly</CODE> facility was a boon.  With the
+vast increase in computer speed, <CODE>\includeonly</CODE> is less valuable
+(though it still has its place in some very large projects).
+Nevertheless, the facility is retained in current LaTeX, and causes
+some confusion to those who misunderstand it.
+
+<P>
+In order for <CODE>\includeonly</CODE> to work, <CODE>\include</CODE> makes a separate
+<CODE>.aux</CODE> file for each included file, and makes a `checkpoint' of
+important parameters (such as page, figure, table and footnote
+numbers); as a direct result, it <EM>must</EM> clear the current page
+both before and after the <CODE>\include</CODE> command.  What's more, this
+mechanism doesn't work if a <CODE>\include</CODE> command appears in a file
+that was <CODE>\include</CODE>d itself: LaTeX diagnoses this as an error.
+
+<P>
+So, we can now answer the two commonest questions about <CODE>\include</CODE>:
+<UL>
+<LI> Why does LaTeX throw a page before and after <CODE>\include</CODE>
+  commands?
+
+<P>
+  Answer: because it has to.  If you don't like it, replace the
+  <CODE>\include</CODE> command with <CODE>\input</CODE> - you won't be able to use
+  <CODE>\includeonly</CODE> any more, but you probably don't need it anyway, so
+  don't worry.
+
+
+<LI> Why can't I nest <CODE>\include</CODE>d files? - I always used to be
+  able to under LaTeX 2.09.
+
+<P>
+  Answer: in fact, you couldn't, even under LaTeX 2.09, but the failure
+  wasn't diagnosed.  However, since you were happy with the behaviour
+  under LaTeX 2.09, replace the <CODE>\include</CODE> commands with <CODE>\input</CODE>
+  commands (with <CODE>\clearpage</CODE> as appropriate).
+</UL>
+
+
+
+<H2><A NAME="QU109">Why does it ignore paragraph parameters?</A></H2>
+
+<P>
+When TeX is laying out text, it doesn't work from word to word, or
+from line to line; the smallest complete unit it formats is the
+paragraph.  The paragraph is laid down in a buffer, as it appears, and
+isn't touched further until the end-paragraph marker is processed.
+It's at this point that the paragraph parameters have effect; and it's
+because of this sequence that one often makes mistakes that lead to
+the paragraph parameters not doing what one would have hoped (or
+expected).
+
+<P>
+Consider the following sequence of LaTeX:
+<PRE>
+  {\raggedright % declaration for ragged text
+  Here's text to be ranged left in our output,
+  but it's the only such paragraph, so we now
+  end the group.}
+
+  Here's more that needn't be ragged...
+</PRE>
+<P>
+TeX will open a group, and set the ragged-setting parameters within
+that group; it will then save a couple of sentences of text and
+close the group (thus restoring the previous value of the
+ragged-setting parameters).  Then it encounters a blank line, which it
+knows to treat as a <CODE>\par</CODE> token, so it typesets the two sentences;
+but because the enclosing group has now been closed, the parameter
+settings have been lost, and the paragraph will be typeset normally.
+
+<P>
+The solution is simple: close the paragraph inside the group, so that
+the setting parameters remain in place.  An appropriate way of doing
+that is to replace the last three lines above with:
+<PRE>
+  end the group.\par}
+  Here's more that needn't be ragged...
+</PRE>
+<P>
+In this way, the paragraph is completed while the setting parameters
+are still in force within the enclosing group.
+
+<P>
+Another alternative is to define an environment that does the
+appropriate job for you.  For the above example, LaTeX already
+defines an appropriate one:
+<PRE>
+\begin{flushleft}
+  Here's text to be ranged left...
+\end{flushleft}
+</PRE>
+
+
+<H2><A NAME="QU110">What's the reason for `protection'?</A></H2>
+
+<P>
+Sometimes LaTeX saves data it will reread later. These data are
+often the argument of some command; they are the so-called moving
+arguments.  (`Moving' because data are moved around.)  Places to look for
+are all arguments that may go into table of contents, list of figures,
+<EM>etc</EM>.; namely, data that are written to an auxiliary file and
+read in later.  Other places are those data that might appear in head-
+or footlines.  Section headers and figure captions are the most
+prominent examples; there's a complete list in Lamport's book
+(see <A HREF="texfaq_2.html#QU19">TeX-related books</A>).
+
+<P>
+What's going on really, behind the scenes? The commands in the moving
+arguments are already expanded to their internal structure during the
+process of saving. Sometimes this expansion results in invalid TeX
+code when processed again. ``<CODE>\protect</CODE><CODE>\cmd</CODE>'' tells LaTeX to save
+<CODE>\cmd</CODE> as <CODE>\cmd</CODE>, without expansion.
+
+<P>
+What is a `fragile command'?  It's a command that expands into illegal
+TeX code during the save process.
+
+<P>
+What is a `robust command'?  It's a command that expands into legal
+TeX code during the save process.
+
+<P>
+No-one (of course) likes this situation; the LaTeX3 team have
+removed the need for protection of some things in the production of
+LaTeX2e, but the techniques available to them within current
+LaTeX mean that this is an expensive exercise.  It remains a
+long-term aim of the team to remove all need for these things.
+
+
+<H2><A NAME="QU111">Why doesn't <CODE>\verb</CODE> work within...?</A></H2>
+
+<P>
+The LaTeX verbatim commands work by changing category codes.  Knuth
+says of this sort of thing ``Some care is needed to get the timing
+right...'', since once the category code has been assigned to a
+character, it doesn't change.  So <CODE>\verb</CODE> has to assume that it is
+getting the first look at its parameter text; if it isn't, TeX has
+already assigned category codes so that <CODE>\verb</CODE> doesn't have a
+chance.  For example:
+<PRE>
+    \verb+\error+
+</PRE>
+<P>
+will work (typesetting `<CODE>\error</CODE>'), but
+<PRE>
+    \newcommand{\unbrace}[1]{#1}
+    \unbrace{\verb+\error+}
+</PRE>
+<P>
+will not (it will attempt to execute <CODE>\error</CODE>).  Other errors one
+may encounter are `<CODE>\verb</CODE> ended by end of line', or even `<CODE>\verb</CODE>
+illegal in command argument'.
+
+<P>
+This is why the LaTeX book insists that verbatim
+commands must not appear in the argument of any other command; they
+aren't just fragile, they're quite unusable in any command parameter,
+regardless of
+<A HREF="texfaq_15.html#QU110"><CODE>\protect</CODE>ion</A>.
+
+
+<H2><A NAME="QU112">Case-changing oddities</A></H2>
+
+<P>
+TeX provides two primitive commands <CODE>\uppercase</CODE> and
+<CODE>\lowercase</CODE> to change the case of text; they're not much used, but
+are capable creating confusion.
+
+<P>
+The two commands do not expand the text that is their parameter -
+the result of <CODE>\uppercase{abc}</CODE> is `<CODE>ABC</CODE>', but <CODE>\uppercase{\abc}</CODE>
+is always `<CODE>\abc</CODE>', whatever the meaning of <CODE>\abc</CODE>.  The commands
+are simply interpreting a table of equivalences between upper- and
+lowercase characters.
+They have (for example) no mathematical sense, and
+<PRE>
+  \uppercase{About $y=f(x)$}
+</PRE>
+<P>
+will produce
+<PRE>
+  ABOUT $Y=F(X)$
+</PRE>
+<P>
+which is probably not what is wanted.
+
+<P>
+In addition, <CODE>\uppercase</CODE> and <CODE>\lowercase</CODE> do not deal very well
+with non-American characters, for example <CODE>\uppercase{\ae}</CODE> is the
+same as <CODE>\ae</CODE>.
+
+<P>
+LaTeX provides commands <CODE>\MakeUppercase</CODE> and <CODE>\MakeLowercase</CODE>
+which fixes the latter problem.  These commands are used in the
+standard classes to produce upper case running heads for chapters
+and sections.
+
+<P>
+Unfortunately <CODE>\MakeUppercase</CODE> and <CODE>\MakeLowercase</CODE> do not solve
+the other problems with <CODE>\uppercase</CODE>, so for example a section
+title containing <CODE>\begin{tabular}</CODE> ... <CODE>\end{tabular}</CODE> will
+produce a running head containing <CODE>\begin{TABULAR}</CODE>.  The simplest
+solution to this problem is using a user-defined command, for
+example: 
+<PRE>
+   \newcommand{\mytable}{\begin{tabular}...
+      \end{tabular}}
+   \section{A section title \protect\mytable{}
+       with a table}
+</PRE>
+<P>
+Note that <CODE>\mytable</CODE> has to be protected, otherwise it will be
+expanded and made upper case.
+
+
+<H2><A NAME="QU113">Why are <CODE>#</CODE> signs doubled in macros?</A></H2>
+
+<P>
+The way to think of this is that <CODE>##</CODE> gets replaced by <CODE>#</CODE> in just the
+same way that <CODE>#1</CODE> gets replaced by `whatever is the first argument'.
+
+<P>
+So if you define a macro and use it as:
+<PRE>
+  \def\a#1{+++#1+++#1+++#1+++}  \a{b}
+</PRE>
+<P>
+the macro expansion produces `+++b+++b+++b+++',
+which people find normal.  However, if we now replace part of the macro:
+<PRE>
+  \def\a#1{+++#1+++\def\x #1{xxx#1}}
+</PRE>
+<P>
+<CODE>\a{b}</CODE> will expand to `+++b+++<CODE>\def\x b{xxxb}</CODE>'.  This
+defines <CODE>\x</CODE> to be a macro <EM>delimited</EM> by <CODE>b</CODE>, and taking no
+arguments, which people may find strange, even though it is just a
+specialisation of the example above.  If you want <CODE>\a</CODE> to
+define <CODE>\x</CODE> to be a macro with one argument, you need to write:
+<PRE>
+  \def\a#1{+++#1+++\def\x ##1{xxx##1}}
+</PRE>
+<P>
+and <CODE>\a{b}</CODE> will expand to 
+`+++b+++<CODE>\def\x #1{xxx#1}</CODE>', because <CODE>#1</CODE> gets replaced by `b'
+and <CODE>##</CODE> gets replaced by <CODE>#</CODE>.
+
+<P>
+To nest a definition inside a definition inside a definition then
+you need <CODE>####1</CODE>, as at each stage <CODE>##</CODE> is replaced by
+<CODE>#</CODE>.  At the next level you need 8 <CODE>#</CODE>s each time, and so on.
+
+
+<H2><A NAME="QU114">Why does LaTeX split footnotes across pages?</A></H2>
+
+<P>
+LaTeX splits footnotes when it can think of nothing better to do.
+Typically, when this happens, the footnote mark is at the bottom of
+the page, and the complete footnote would overfill the page.  LaTeX
+could try to salvage this problem by making the page short of both the
+footnote and the line with the footnote mark, but its priorities told
+it that splitting the footnote would be preferable.
+
+<P>
+As always, the best solution is to change your text so that the
+problem doesn't occur in the first place.  Consider whether the text
+that bears the footnote could move earlier in the current page, or on
+to the next page.
+
+<P>
+If this isn't possible, you might want to change LaTeX's perception
+of its priorities: they're controlled by
+<CODE>\interfootnotelinepenalty</CODE> - the larger it is, the less willing
+LaTeX is to split footnotes.
+
+<P>
+Setting
+<PRE>
+  \interfootnotelinepenalty=10000
+</PRE>
+<P>
+inhibits split footnotes altogether, which will cause `<CODE>Underfull</CODE>
+<CODE>\vbox</CODE>' messages unless you also specify <CODE>\raggedbottom</CODE>.  The
+default value of the penalty is 100, which is rather mild.
+
+<P>
+An alternative technique is to juggle with the actual size of the
+pages.  <CODE>\enlargethispage</CODE> changes the size of the current page by
+its argument (for example, you might say
+<CODE>\enlargethispage{\baselineskip}</CODE> to add a single line to the page,
+but you can use any ordinary TeX length such as <CODE>15mm</CODE> or <CODE>-20pt</CODE>
+as argument).  Reducing the size of the current page could force the
+offending text to the next page; increasing the size of the page may
+allow the footnote to be included in its entirety.  It may be
+necessary to change the size of more than one page.
+
+
+<HR>
+Go to the <A HREF="texfaq_0.html">first</A>, <A HREF="texfaq_14.html">previous</A>, <A HREF="texfaq_16.html">next</A>, <A HREF="texfaq_17.html">last</A> section, <A HREF="texfaq_toc.html">table of contents</A>.
+</BODY>
+</HTML>

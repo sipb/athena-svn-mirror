@@ -1,0 +1,45 @@
+%%
+%% This is file `t1lcmtt.fd',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% slifonts.fdd  (with options: `lcmtt,fd,ec')
+%% 
+%% This is a generated file.
+%% 
+%% Copyright 1993 1994 1995 1996 1997 1998 1999
+%% The LaTeX3 Project and any individual authors listed elsewhere
+%% in this file.
+%% 
+%% This file is part of the LaTeX2e system.
+%% ----------------------------------------
+%% 
+%% It may be distributed under the terms of the LaTeX Project Public
+%% License, as described in lppl.txt in the base LaTeX distribution.
+%% Either version 1.0 or, at your option, any later version.
+%% 
+%% In particular, permission is granted to customize the declarations in
+%% this file to serve the needs of your installation.
+%% 
+%% However, NO PERMISSION is granted to distribute a modified version
+%% of this file under its original name.
+%% 
+\ProvidesFile{t1lcmtt.fd}
+        [1998/06/12 v2.2e Standard LaTeX slide font definitions]
+  \DeclareFontFamily{T1}{lcmtt}{\hyphenchar\font\m@ne}
+ \DeclareFontShape{T1}{lcmtt}{m}{n}{%
+      <13.82><16.59><19.907><23.89><28.66><34.4><41.28>%
+  ecltt8%
+      }{}
+  \DeclareFontShape{T1}{lcmtt}{m}{In}{%
+      <13.82><16.59><19.907><23.89><28.66><34.4><41.28>%
+  iecltt8%
+      }{}
+  \DeclareFontShape{T1}{lcmtt}{m}{it}{%
+      <13.82><16.59><19.907><23.89><28.66><34.4><41.28>%
+  ecit1000%
+      }{}
+\endinput
+%%
+%% End of file `t1lcmtt.fd'.

@@ -1,0 +1,94 @@
+%%
+%% This is file `athnum.sty',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% athnum.dtx  (with options: `package')
+%% 
+%% This is a generated file.
+%% 
+%% Copyright 1989-1999 Johannes L. Braams and any individual authors
+%% listed elsewhere in this file.  All rights reserved.
+%% 
+%% This file is part of the Babel system release 3.6.
+%% --------------------------------------------------
+%% 
+%% It may be distributed under the terms of the LaTeX Project Public
+%% License, as described in lppl.txt in the base LaTeX distribution.
+%% Either version 1.0 or, at your option, any later version.
+%% \CheckSum{116}
+%% \CharacterTable
+%%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%%   Digits        \0\1\2\3\4\5\6\7\8\9
+%%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%%   Dollar        \$     Percent       \%     Ampersand     \&
+%%   Acute accent  \'     Left paren    \(     Right paren   \)
+%%   Asterisk      \*     Plus          \+     Comma         \,
+%%   Minus         \-     Point         \.     Solidus       \/
+%%   Colon         \:     Semicolon     \;     Less than     \<
+%%   Equals        \=     Greater than  \>     Question mark \?
+%%   Commercial at \@     Left bracket  \[     Backslash     \\
+%%   Right bracket \]     Circumflex    \^     Underscore    \_
+%%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%%   Right brace   \}     Tilde         \~}
+%% This is file `athnum.dtx'
+%% (c) 1997-1999 Apostolos Syropoulos.
+%% All rights reserved.
+\NeedsTeXFormat{LaTeX2e}[1996/01/01]
+\ProvidesPackage{athnum}[1997/09/22\space v1.0]
+\typeout{Package: `athnum' v1.0\space <1997/09/22> (A. Syropoulos)}
+\@ifpackagewith{babel}{greek}{}{%
+   \@ifpackagewith{babel}{polutonikogreek}{}{%
+     \PackageError{athnum}{%
+     `greek' option of the `babel'\MessageBreak
+      package hasn't been loaded}{%
+      The commands provided by this package\MessageBreak
+      are specially designed for greek language\MessageBreak
+      typesetting with the `babel' package. Load\MessageBreak
+      it with at least the `greek' option.}\relax
+      }}
+\DeclareTextCommand{\PiDelta}{LGR}{\char"02\relax}
+\DeclareTextCommand{\PiEta}{LGR}{\char"03\relax}
+\DeclareTextCommand{\PiChi}{LGR}{\char"04\relax}
+\DeclareTextCommand{\PiMu}{LGR}{\char"05\relax}
+\newcount\@ath@num
+\DeclareRobustCommand*{\athnum}[1]{%
+        \@ath@num#1\relax
+        \ifnum\@ath@num<\@ne%
+          \space%
+          \PackageWarning{athnum}{%
+          Illegal value (\the\@ath@num) for athenian numeral}%
+        \else\ifnum\@ath@num>249999%
+          \space%
+          \PackageWarning{athnum}{%
+          Illegal value (\the\@ath@num) for athenian numeral}%
+        \else
+            \@whilenum\@ath@num>49999\do{%
+               \PiMu\advance\@ath@num-50000}%
+            \@whilenum\@ath@num>9999\do{%
+               M\advance\@ath@num-\@M}%
+            \ifnum\@ath@num>4999%
+               \PiChi\advance\@ath@num-5000%
+            \fi\relax
+            \@whilenum\@ath@num>999\do{%
+               Q\advance\@ath@num-\@m}%
+            \ifnum\@ath@num>499%
+               \PiEta\advance\@ath@num-500%
+            \fi\relax
+            \@whilenum\@ath@num>99\do{%
+               H\advance\@ath@num-100}%
+            \ifnum\@ath@num>49%
+               \PiDelta\advance\@ath@num-50%
+            \fi\relax
+            \@whilenum\@ath@num>9\do{%
+               D\advance\@ath@num by-10}%
+            \@whilenum\@ath@num>4\do{%
+               P\advance\@ath@num-5}%
+            \ifcase\@ath@num\or I\or II\or III\or IIII\fi%
+   \fi\fi}
+\let\@athnum\athnum
+\endinput
+%%
+%% End of file `athnum.sty'.

@@ -1,0 +1,153 @@
+$Id: czytaj.txt,v 1.1.1.1 2000-03-10 17:57:26 ghudson Exp $
+**********************************************************************
+*                                                                    *
+*                   PLaTeX czyli LaTeX2e po polsku                   *
+*                                                                    *
+*                                                                    *
+*                                                                    *
+*  Copyright (C) 1994 by Mariusz Olko.                               *
+*  Copyright (C) 1997 by Mariusz Olko and Marcin Woli\'nski.         *
+*                                                                    *
+**********************************************************************
+
+
+--- Informacje ogolne
+
+Pakiet PLaTeX dostarcza narzedzi potrzebnych do skladu dokumentow
+w jezyku polskim LaTeXem 2e.  Glowne cechy pakietu
+
+* wspiera sklad czcionkami `pl' pochodzacymi z pakietu MeX
+* wspiera sklad czcionkami w ukladzie T1 znanymi jako czcionki EC
+* umozliwia skompilowanie dokumentu nawet wtedy gdy dostepne sa
+  jedynie czcionki `cm'
+* wspolpracuje z polskimi wzorcami przenoszenia
+* dziala z _formatem_ Babel z polskimi wzorcami przenoszenia
+* pozwala wygenerowac format LaTeX z polskimi wzorcami przenoszenia,
+  zgodny z Bablem ale bez jego makr
+* wspomaga notacje `ciachowa'
+* posiada tryb 99.99% zgodnosci z LaMeXem
+* wspomaga prace z roznymi wejsciowymi stronami kodowymi
+
+Dodatkowo dolaczone sa dwa style napisane przez Marcina Wolinskiego, ktore
+pozwola posluzyc sie LaTeXem 2e w najbardziej nawet nieprzyjaznym otoczeniu.
+
+* styl OT1patch dorabia ogonki wg najlepszych znanych standardow do
+  oryginalnych czcionek CM (kod Leszka Holenderskiego).
+* styl plpref pozwala na uzyskanie polskich liter przy pomocy innego znaku
+  niz / uzywanego standardowo w stylach MeXopodobnych (pomocny np. do
+  robienia wydrukow z CWEBa).
+
+Nie zachecamy (wraz z Marcinem ;-) do stosowania tych pakietow, poza
+szczegolnymi przypadkami.
+  Czcionki polskie sa powszechnie dostepne w MeXu od lat a obecnie
+rowniez w zestawie czcionek EC dostepnych w wiekszosci dystrybucji
+TeXa i zawsze beda dawac lepsze efekty niz stosowanie protez zawartych
+w OT1patch.  Poza tym uzywanie OT1patch nie pozwala na pelne
+zastosowanie polskich wzorcow przenoszenia.
+  Notacje nieciachowe sa rozpowszechnione tu i owdzie.  Niezaleznie od
+opinii na dobor takiego czy innego znaku jako prefix uwazamy, ze im
+mniej sprzecznych ,,standardow'' tym lepiej.  Uzywajcie ciacha gdzie mozna!
+
+
+--- Pliki wchodzace w sklad pakietu
+
+W sklad pakietu wchodzi kilka plikow zawierajacych udokumentowane 
+(w wiekszosci :-) zrodla makr.
+
+* polski.dtx - zawiera zrodla stylu polski
+* strony.dtx - plik z wejsciowymi stronami kodowymi dla LaTeXa oraz
+  definicja ukladu czcionek OT4
+* plfonts.fdd - definicje czcionek `pl' do wykorzystania przez NFSS
+* platex.ins - glowny skrypt instalacyjny
+* polski.ins - skrypt generujacy podstawowe pliki pakietu
+* plprefix.dtx - zawiera zrodla stylu pozwalajacego na uzyskiwanie
+  polskich liter przy pomocy znakow innych niz /
+* plprefix.ins - skrypt instalacyjny dla plprefix.sty
+* ot1patch.dtx - zawiera zrodla stylu dorabiajacego ogonki
+  do czcionek CM
+* ot1patch.ins - skrypt instalacyjny dla ot1patch.sty
+* czytaj.txt - ten plik
+* readme.txt - opis instalacji po angielsku
+* conowego.txt - lista zmian w pakiecie
+
+--- Instalacja pakietu
+
+Po rozpakowaniu plikow nalezy wygenerowac wszystkie potrzebne pliki
+uruchamiajac skrypt platex.ins
+      tex platex.ins 
+Skrypt wygeneruje na poczatek podstawowe pliki pakietu tzn. styl
+polski.sty, plik konfigurujacy wzorce przenoszenia wyrazow wczytywane
+przez LaTeX oraz opisy wejsciowych stron kodowych.  Nastepnie
+uzytkownik jest pytany czy ma zainstalowane czcionki `pl' pochodzace z
+instalacji MeXa.  Jesli czcionki sa zainstalowane, generowane sa pliki
+definiujace polskie czcionki dla LaTeXa.  Jesli czcionki nie sa
+zainstalowane w systemie, nalezy zadbac aby nie bylo tez pliku
+ot4cmr.fd na sciezce LaTeXa, aby nie wprowadzic w blad procedury
+rozpoznajacej srodowisko w stylu polski.sty.  Na zakonczenie nalezy
+skopiowac pliki *.fd *.sty *.def *.cfg oraz plhyph.tex do katalogu
+czytanego przez TeXa podczas kompilacji.
+
+Ostatnim etapem jest wygenerowanie nowego formatu LaTeXa.  Jest to
+potrzebne dla umieszczenia w formacie polskich wzorcow przenoszenia.
+
+Style plprefix oraz ot1patch mozna wygenerowac uzywajac ich wlasnych
+skryptow instalacyjnych.  Mozna to zrobic wydajac polecenia
+	tex plprefix.ins
+	tex ot1patch.ins
+
+
+--- Dokumentacja
+
+Pliki dtx zawieraja teksty makr wraz z dokumentacja.  Sa one gotowe
+do wydruku po przepuszczeniu przez LaTeX.  Instrukcje poslugiwania sie
+stylem polski mozna uzyskac uruchamiajac
+    latex polski.dtx
+a dalej uzywajac swojego ulubionego podgladacza.
+
+
+--- Osmiobitowe wprowadzanie polskich liter
+
+Niezawodnym sposobem wprowadzania osmiobitowych znakow jest
+wygenerowanie formatu ze strona kodowa zaszyta wewnatrz.  Jest to
+rozwiazanie mniej elastyczne jesli chodzi o prace z kilkoma stronami
+kodowymi na raz, ale za to bardziej bezpieczne ze wzgledu na
+wspolprace z programami zewnetrznymi.  W przypadku pracy z emTeXem
+mozna uzyc strony kodowej dostarczanej z MeXem i wygenerowac format
+LaTeX komenda
+    tex386  /i/o/r /cmaz2pl /mt13000 latex.ltx
+Tak wygenerowany LaTeX bedzie prawidlowo rozumial teksty przygotowane
+w stronie kodowej Mazovii.
+
+Poprzednia wersje pakietu mozna bylo wywolac z parametrem okreslajacym
+strone kodowa uzywana na wejsciu.  W obecnej wersji zrezygnowalem z
+tego rozwiazania aby nie ponosic odpowiedzialnosci z ograniczenia,
+ktore to rozwiazanie narzuca.  Osoby, ktore chca z tego rozwiazania
+nadal korzystac, moga to zrobic wolajac bezposrednio LaTeXowy pakiet
+inputenc, np.
+    \documentclass{...}
+    \usepackage{polski}
+    \usepackage[mazovia]{inputenc}
+Podczas instalacji pakietu nadal tworzone sa odpowiednie pliki ze
+stronami kodowymi:
+cp1250      - dla Windowsowej strony centralnoeuropejskiej
+amigapl     - dla polskiej strony kodowej uzywanej na Amidze
+mazovia     - dla popularnej strony kodowej na PCetach.
+Pliki dla DOSowskiej i ISOowskiej strony Latin2 dostepne sa teraz
+w standardowej dystrybucji LaTeXa pod nazwami cp852 oraz latin2.
+
+Wiekszosc instalacji TeXowych czyta osmiobitowe znaki zawarte w
+dokumentach.  Niektore z nich wymagaja uzycia do tego specjalnej opcji
+podczas generowania formatu.  W przypadku emTeXa format nalezy
+wygenerowac komenda 
+    tex386 /i /8 /mt13000 latex.ltx
+Parametr /mt zwieksza wewnetrzne tablice emTeXa tak by zmiescily sie
+dwa komplety wzorcow przenoszenia, amerykanski i polski.
+
+
+
+
+--- Podziekowania
+
+* Markowi i Jackowi za MeXa i LaMeXa
+* Robert Ramiega przyslal tablice kodowa uzywana na Amidze
+ 

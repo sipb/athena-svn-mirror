@@ -1,0 +1,53 @@
+%Filename: OT1bch.fd
+%Created by: tex charter
+%Created using fontinst v1.504
+
+%THIS FILE SHOULD BE PUT IN A TEX INPUTS DIRECTORY
+
+\ProvidesFile{OT1bch.fd}
+   [1996/01/27 Fontinst v1.504 font definitions for OT1/bch.]
+
+\DeclareFontFamily{OT1}{bch}{}
+
+\DeclareFontShape{OT1}{bch}{b}{n}{
+   <-> bchb7t
+}{}
+
+\DeclareFontShape{OT1}{bch}{b}{sc}{
+   <-> bchbc7t
+}{}
+
+\DeclareFontShape{OT1}{bch}{b}{sl}{
+   <-> bchbo7t
+}{}
+
+\DeclareFontShape{OT1}{bch}{b}{it}{
+   <-> bchbi7t
+}{}
+
+\DeclareFontShape{OT1}{bch}{m}{n}{
+   <-> bchr7t
+}{}
+
+\DeclareFontShape{OT1}{bch}{m}{sc}{
+   <-> bchrc7t
+}{}
+
+\DeclareFontShape{OT1}{bch}{m}{sl}{
+   <-> bchro7t
+}{}
+
+\DeclareFontShape{OT1}{bch}{m}{it}{
+   <-> bchri7t
+}{}
+
+\DeclareFontShape{OT1}{bch}{bx}{n}{<->ssub * bch/b/n}{}
+\DeclareFontShape{OT1}{bch}{bx}{sc}{<->ssub * bch/b/sc}{}
+\DeclareFontShape{OT1}{bch}{bx}{sl}{<->ssub * bch/b/sl}{}
+\DeclareFontShape{OT1}{bch}{bx}{it}{<->ssub * bch/b/it}{}
+\DeclareFontShape{OT1}{bch}{l}{n}{<->ssub * bch/m/n}{}
+\DeclareFontShape{OT1}{bch}{l}{sc}{<->ssub * bch/m/sc}{}
+\DeclareFontShape{OT1}{bch}{l}{sl}{<->ssub * bch/m/sl}{}
+\DeclareFontShape{OT1}{bch}{l}{it}{<->ssub * bch/m/it}{}
+
+\endinput

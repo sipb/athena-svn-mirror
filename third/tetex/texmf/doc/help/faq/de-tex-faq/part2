@@ -1,0 +1,529 @@
+Path: senator-bedfellow.mit.edu!bloom-beacon.mit.edu!newsfeed.sgi.net!nntp.abs.net!news.algonet.se!algonet!news-feed.inet.tele.dk!bofh.vszbr.cz!newsfeed.tli.de!newscore.gigabell.net!newscore.ipf.de!news.fh-hannover.de!news.uni-stuttgart.de!news.urz.uni-heidelberg.de!german
+From: dantefaq@dante.de (DE-TeX-FAQ-Maintainer)
+Newsgroups: de.comp.text.tex,de.answers,news.answers
+Subject: TeX, LaTeX, DANTE e.V.: FAQ - Fragen und Antworten (Part 2 of 11)
+Supersedes: <de-tex-faq-2-922970460@dante.de>
+Followup-To: de.comp.text.tex
+Date: 11 May 1999 15:39:28 GMT
+Organization: DANTE, Deutschsprachige Anwendervereinigung TeX e.V.
+Lines: 502
+Approved: news-answers-request@MIT.EDU
+Distribution: world
+Expires: 25 Jun 99 17:39:26
+Message-ID: <de-tex-faq-2-926437166@dante.de>
+References: <de-tex-faq-1-926437166@dante.de>
+Reply-To: dantefaq@dante.de (DE-TeX-FAQ-Maintainer)
+NNTP-Posting-Host: sun.dante.de
+Mime-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 8bit
+Summary: This posting contains a list of Frequently Asked Questions
+         (and their answers) about the typesetting system TeX and
+         about DANTE e.V., the german-speaking TeX users group.
+         It is in German and uses the ISO Latin-1 character set.
+Keywords: FAQ TYPESETTING TeX USERGROUP DANTE
+Originator: german@sun.dante.de
+Xref: senator-bedfellow.mit.edu de.comp.text.tex:16699 de.answers:3309 news.answers:157714
+
+Posted-By: auto-faq 3.3 (Perl 5.003)
+Archive-name: de-tex-faq/part2
+Posting-Frequency: monthly
+Copyright-Notice: siehe Abschnitt 1.1/see Section 1.1
+URL: http://www.dante.de/faq/de-tex-faq/
+
+--- DE-TeX-FAQ Beginn Teil 2 ---
+
+
+  Fragen und Antworten (FAQ) über das Textsatzsystem TeX und DANTE,
+            Deutschsprachige Anwendervereinigung TeX e.V.
+                                   
+           Bernd Raichle, Thomas Hafner und Rolf Niepraschk
+                                   
+                      (Version 51 vom Mai 1999)
+  _________________________________________________________________
+
+2 TeX-Anwendervereinigungen, TeX-Literatur, Tagungen
+                                    
+2.1 DANTE e.V.
+
+2.1.1 Was ist DANTE e.V.?
+
+DANTE e.V. steht für Deutschsprachige Anwendervereinigung TeX. Dies
+ist der Zusammenschluß von deutschsprachigen TeX-Anwendern, TeXies,
+TeXnikern und sonstigen TeX-Arbeitern in einer Gemeinschaft. Der
+Verein wurde am 14. April 1989 in Heidelberg gegründet, ist in das
+Vereinsregister eingetragen und vom Finanzamt als gemeinnützig
+anerkannt worden.
+
+2.1.2 Wie erreiche ich DANTE e.V.?
+
+Post: DANTE, Deutschsprachige Anwendervereingung TeX e.V.
+Postfach 101840
+69008 Heidelberg
+Telefon: (06221) 29766
+Fax: (06221) 167906
+E-Mail: `dante@dante.de'
+
+Am einfachsten wird es wohl via E-Mail gehen. Unter der angegebenen
+Telefonnummer meldet sich in den meisten Fällen ein Anrufbeantworter.
+Es gibt aber feste Zeiten, zu denen man jemanden sprechen kann. Diese
+Zeiten werden auch über den Anrufbeantworter bekanntgegeben.
+
+2.1.3 Welchen Zweck hat DANTE e.V.?
+
+Dazu sagt die Satzung von DANTE e.V.:
+
+Zweck des Vereins ist es, alle Interessenten in geeigneter Weise bei
+der Anwendung von TeX-Sofware zu unterstützen, insbesondere durch
+Erfahrungsaustausch mit den Anwendern. Ferner soll die weitere
+Entwicklung von TeX unterstützt werden. Hierzu gehören
+ 1. die Beratung und Zusammenarbeit mit Anwendern der TeX-Software,
+ 2. die Unterbreitung von Mitgliedervorschlägen für zukünftige
+    Versionen und Komponenten der TeX-Software,
+ 3. die Zusammenarbeit mit anderen nationalen und internationalen
+    Benutzerorganisationen,
+ 4. die Förderung von Literatur, die TeX betrifft,
+ 5. die Vertretung nationaler Belange in der TeX Users Group,
+ 6. die Organisation von Schulungen.
+    
+2.2 Wie werde ich Mitglied bei DANTE e.V.? (*)
+
+2.2.1 Wieso sollte ich Mitglied bei DANTE e.V. werden?
+
+Natürlich kann niemand gezwungen werden, bei DANTE e.V. Mitglied zu
+werden. Es sollte aber bedacht werden, daß die Dienstleistungen von
+DANTE e.V. nur erbracht werden können, weil es Leute gibt, die DANTE
+e.V. unterstützen.
+
+Neben diesem eher ideellen Grund hat eine Mitgliedschaft bei DANTE
+e.V. auch viele Vorteile:
+  * Informationen aus erster Hand durch
+       + die viermal im Jahr erscheinende Mitgliedszeitschrift ``Die
+         TeXnische Komödie'',
+       + die Möglichkeit, Bücher über TeX, LaTeX, PostScript etc. über
+         DANTE e.V. zu beziehen,
+       + `elektronische' Medien in Form von E-Mail-Diskussionslisten
+         wie TeX-D-L, die archiviert über die Software-Verteilung
+         bezogen werden können,
+       + den WWW-Server http://www.dante.de/.
+  * Bezug von Software, wie kompletten TeX-Versionen für Ihr
+    Rechnersystem, von Makropaketen und Schriften über
+       + CTAN, an dessen Aufbau und Verwaltung Mitglieder von DANTE
+         e.V. maßgeblich beteiligt waren und sind und dessen deutscher
+         Knoten von DANTE e.V. finanziert wird,
+       + eine vereinseigene Mailbox mit einer Kopie des CTAN-Inhalts
+         (per Telefon und Modem erreichbar; Standort: Heidelberg),
+       + eine Software-Verteilung auf CD-ROM und Disketten (und
+         teilweise auch auf anderen Medien, wie DAT und MO) für
+         Personen ohne Netzzugang.
+  * Beratung und Schulung, wie beispielsweise
+       + Telefon-Hotline,
+       + Kurse für Anfänger und Fortgeschrittene,
+       + Tutorien.
+  * Kontaktmöglichkeiten über
+       + nationale und internationale Tagungen,
+       + Mitgliederversammlungen (halbjährlich),
+       + regionale Stammtische (monatlich).
+  * usw.
+    
+Einige dieser Leistungen können auch von Nicht-Mitgliedern genutzt
+werden. In der Regel stehen sie jedoch nur Mitgliedern im vollen
+Umfang zur Verfügung!
+
+2.2.2 Wie werde ich Mitglied?
+
+Mitglied bei DANTE e.V. zu werden, ist einfach: Mitgliedsantrag
+ausfüllen und unterschrieben an
+
+  DANTE, Deutschsprachige Anwendervereinigung TeX e.V.
+  Postfach 101840
+  D-69008 Heidelberg
+  
+schicken. Den Mitgliedsbeitrag sollten Sie auf das auf dem Antrag
+angegebene Konto überweisen. Bitte keine andere DANTE e.V. gehörende
+Kontonummer verwenden, dies würde die Bearbeitung verzögern! Nach dem
+Eingang Ihres Antrags und des Mitgliedsbeitrags erhalten Sie eine
+Bestätigung Ihrer Mitgliedschaft, eine Vereinssatzung, die in diesem
+Jahr bisher erschienenen Ausgaben der Mitgliedszeitschrift und weitere
+Informationen, wie beispielsweise über die Mailbox von DANTE e.V.,
+Software und Bücher.
+
+Einen Mitgliedsantrag erhalten Sie
+  * als dvi- oder als PostScript-Datei per
+    CTAN: usergrps/dante/antrag.dvi bzw. per
+    CTAN: usergrps/dante/antrag.ps oder
+  * per Post: Fordern Sie über obige Adresse ein Antragsformular an.
+    
+Der Mitgliedsbeitrag gilt für das laufende Kalenderjahr (1.1.-31.12.)
+und beträgt
+  * Einzelbeitrag für Privatpersonen: 80,-- DM
+  * Ermäßigter Einzelbeitrag für Schüler/innen, Studierende,
+    Rentner/innen, Arbeitslose, Zivil- und Wehrdienstleistende
+    (entsprechende Bescheinigung nötig!): 60,-- DM
+  * für Institutionen des öffentlichen Rechts und
+    Forschungseinrichtungen: 120,-- DM
+  * für Firmen, die TeX anwenden: 300,-- DM
+  * für Firmen, die Produkte in Verbindung mit TeX anbieten: 500,-- DM
+    
+2.2.3 Ich habe den Mitgliedsantrag vor zwei bis drei Wochen abgeschickt,
+      den Beitrag gleich danach auf das Konto überwiesen und bisher noch
+      nichts erhalten. Ist dies normal? (*)
+
+Ja, eine gewisse Verzögerung ist normal. Ein Mitgliedsantrag wird
+zügig bearbeitet, sobald der Antrag per Post im Büro von DANTE e.V.
+eintrifft und überprüft werden konnte, daß der Mitgliedsbeitrag auf
+dem Konto eingegangen ist. Man sollte dabei nicht die optimistischen,
+sondern die üblichen Laufzeiten für Briefe und Geldüberweisungen
+zugrundelegen. Außerdem ist es wichtig, daß (a) der Beitrag auf das
+angegebene Konto und nicht auf eines der anderen Konten von DANTE e.V.
+überwiesen wurde und (b) bei einer ermäßigten Mitgliedschaft die
+entsprechende Bescheinigung beigelegt wurde. Beides verursacht sonst
+weitere Verzögerungen durch notwendige Umbuchungen und Rückfragen.
+
+2.3 TeX-Nutzergruppen und Tagungskalender
+
+2.3.1 TeX-Anwendervereinigungen
+
+Neben DANTE e.V. gibt es noch weitere TeX-Anwendervereinigungen. Als
+erstes ist hier die TUG zu nennen, die internationale `TeX Users
+Group'. Sie ist die erste und damit die älteste
+TeX-Anwendervereinigung.
+
+  TeX Users Group
+  1466 NW Front Avenue
+  Suite 3141
+  Portland, OR 97209-2820, USA
+  Tel.: +1 503 223-9994
+  Fax: +1 503 223-3960
+  E-Mail: `tug@mail.tug.org'
+  
+Weitere Informationen über die TUG finden Sie auf CTAN im Verzeichnis
+CTAN: usergrps/tug/ oder dem WWW-Server http://www.tug.org/.
+
+Neben TUG und DANTE e.V. gibt es weitere nationale
+Anwendervereinigungen. Als Auswahl seien folgende Vereine genannt:
+
+NTG Nederlandstalige TeX Gebruikersgroep (Niederlande)
+GUST Grupa Uzytkowników Systemu TeX (Polen)
+GUTenberg Groupe francophone des Utilisateurs de TeX
+(französischsprachige Länder)
+CsTUG Ceskoslovenské sdruzení uzivatelu TeXu
+(Tschechische/Slowakische Republik)
+UK TUG UK TeX Users' Group (Großbritannien)
+
+Über einige dieser nationalen Anwendervereinigungen können Sie weitere
+Informationen, Antragsformulare, Ankündigungen u.ä. auf CTAN in den
+Verzeichnissen unter CTAN: usergrps/ finden.
+
+Außerdem finden Sie über die Seite http://www.dante.de/ im `World Wide
+Web' (WWW) weitere Informationen zu DANTE e.V., TUG, Verweise zu den
+WWW-Seiten der anderen TeX-Anwendervereinigungen, einen Tagungs- und
+Veranstaltungskalender und vieles mehr.
+
+2.3.2 Mitgliedszeitschriften der TeX-Anwendervereinigungen
+
+Jede der `großen' TeX-Anwendervereinigungen gibt eine
+Mitgliedszeitschrift und Vereinsnachrichten heraus:
+  * ``Die TeXnische Komödie''
+    Mitgliedszeitschrift von DANTE e.V., erscheint vierteljährlich,
+    deutsch.
+  * TUGboat
+    Mitgliedszeitschrift der TUG, erscheint vierteljährlich (ein Band
+    ist Konferenzband der TUG-Konferenz), englisch, enthält viele
+    informative Artikel über TeX, METAFONT und Fonts.
+  * TeX and TUG News (TTN) - Erscheinen eingestellt.
+    Ehemalig separat herausgegebene Vereinsnachrichten der TUG,
+    erschien vierteljährlich, englisch, enthält aktuellere
+    Informationen über Vereinsinterna, Tips, Berichte etc.; nach
+    Ausgabe Vol. 4 No. 2 ist TTN in TUGboat integriert.
+  * Minutes and APendiceS (MAPS)
+    Mitgliedszeitschrift der NTG, erscheint halbjährlich,
+    niederländisch und englisch, enthält häufig Vorabdrucke und
+    Nachdrucke aus anderen Mitgliedszeitschriften, wie TUGboat,
+    Baskerville etc.
+  * Baskerville
+    Mitgliedszeitschrift der UK TUG, erscheint 4-6mal jährlich (eine
+    davon ist die UK TUG TeX FAQ), englisch, enthält einige Nachdrucke
+    aus anderen Zeitschriften und Proceedings.
+  * Cahiers GUTenberg
+    Veröffentlichung der GUTenberg, erscheint dreimal jährlich,
+    französisch.
+  * Lettre GUTenberg
+    Vereinsnachrichten der GUTenberg, erscheint ???, französisch.
+    
+2.3.3 Tagungen und Veranstaltungen
+
+Die TeX-Anwendervereinigungen führen regelmäßig Tagungen, Tutorien,
+Mitgliederversammlungen etc. durch:
+  * DANTE e.V.
+    Jährliche Tagung, Mitgliederversammlung und Tutorien (3 bis 3 1/2
+    Tage) im Frühjahr; meist im Februar oder März.
+    Jährliche Mitgliederversammlung mit Tutorien (1 bis 1 1/2 Tage) im
+    Herbst; meist im September oder Oktober.
+  * Europäische Anwendervereinigungen
+    Jährliche europäische Tagung; meist im September; entfällt im
+    allgemeinen in den Jahren, in denen die TUG in Europa eine Tagung
+    ausrichtet.
+  * TUG
+    Jährliche weltweite Tagung; meist Ende Juli, Anfang August; im
+    Wechsel an einem Ort der Westküste der USA, der Ostküste und in
+    Europa.
+    
+Auch Personen, die noch nicht Mitglied bei einer Anwendervereinigung
+sind, können an den Tagungen teilnehmen.
+
+Tutorien, die DANTE e.V. vor oder nach einer Mitgliederversammlung
+durchführt, sind frei und können kostenlos besucht werden.
+
+2.3.4 Tagungskalender
+
+Im folgenden finden Sie eine Auswahl der in nächster Zeit
+stattfindenden Tagungen im TeX-Umfeld. Die WWW-Seite
+
+  http://www.dante.de/dante/Tagungen.html
+  
+enthält genauere Hinweise und Informationen.
+
+15.-19.08.1999: TUG'99 - 20th annual meeting of the TeX User Group
+Univ. of British Columbia, Vancouver, Canada
+20.-23.09.1999: EuroTeX'99 - 11th European TeX Conference
+Universität Heidelberg
+
+2.4 Literatur (*)
+
+2.4.1 Bücherliste
+
+Es wird hier nur eine kleine Auswahl von hauptsächlich
+deutschsprachigen Büchern vorgestellt. Am besten selbst in der
+Bibliothek oder Buchhandlung schmökern, was für einen das Beste ist.
+  * Detig, Christine: Der LaTeX Wegweiser.
+    Int'l Thompson Publ., 1997, ISBN 3-8266-0256-0, 29,80 DM
+    Anm.: leichtverständliche Einführung in LaTeX2e mit den
+    wichtigsten LaTeX-Erweiterungspaketen und Hilfswerkzeugen, für
+    Anfänger
+  * Abdelhamid, Rames: Das Vieweg LaTeX2e Buch.
+    Vieweg Verlag Wiesbaden 1995, ISBN 3-528-25145-X, 44,-- DM
+    Anm.: für Anfänger
+  * Knappen, Jörg: Schnell ans Ziel mit LaTeX2e.
+    Oldenbourg-Verlag, 1997, ISBN 3-486-24199-0, 48,-- DM
+    Anm.: enthält Kapitel über Feinheiten des Text- und Formelsatzes
+    sowie einen Index vom Formelsymbol bis zu Befehlsnamen, für
+    Anfänger und Fortgeschrittene
+  * Lamport, Leslie: Das LaTeX Handbuch.
+    Verlag Addison-Wesley, 1995, ISBN 3-89319-826-1, 69,90 DM
+    Anm.: _die_ LaTeX(2e)-Referenz, für Anfänger
+  * Goossens, Michel u.a.: Der LaTeX-Begleiter.
+    Verlag Addison-Wesley, 1995, ISBN 3-89319-646-3, 79,90 DM
+    Anm.: Tips, Tricks, viele LaTeX(2e)-Makropakete, für
+    Fortgeschrittene und fortgeschrittene Anfänger, aufgrund des
+    Titelbildes das sog. `Bernhardiner-Buch'; Kapitel 8 ``Higher
+    Mathematics'' liegt auf englisch in einer überarbeiteten Fassung
+    auf CTAN: info/companion-rev/ch8.ps bzw.
+    CTAN: info/companion-rev/ch8.pdf vor
+  * Goossens, Michel; Rahtz, Sebastian; Mittelbach, Frank: The LaTeX
+    Graphics Companion (englisch).
+    Verlag Addison-Wesley-Longman, 1997, ISBN 0-201-85469-4
+    Anm.: Ergänzt den LaTeX-Begleiter um alles, was mit
+    Graphikeinbindung, Farbe und PostScript-Schriften zu tun hat
+  * Katzenbeisser, Stefan: Von der Idee zum Dokument - Einführung in
+    TeX und LaTeX.
+    Oldenbourg-Verlag, 2. Auflage, 1997, ISBN 3-486-24182-6, 68,-- DM
+    Anm.:
+  * Maurer: Textverarbeitung mit LaTeX2e unter Unix.
+    Carl Hanser Verlag, München, ISBN 3-446-18909-2, 49,80 DM
+    Anm.:
+  * Schwarz, Stefan; Potucek, Rudolf: Das TeXikon - Referenzhandbuch
+    für TeX, LaTeX und LaTeX2e.
+    Verlag Addison-Wesley, 1997, ISBN 3-89319-690-0, 69,90 DM
+    Anm.:
+  * Heilmann, Axel: LaTeX-Vademecum, Ein Kompaktführer für Einsteiger
+    und Fortgeschrittene.
+    Verlag Springer, ISBN 3-540-60522-3, 38,-- DM
+    Anm.: kleines und praktisches Nachschlagewerk, kann und will nicht
+    den LaTeX-Begleiter ersetzen, ist aber eine gute Ergänzung
+  * Dietsche, Luzia; Lammarsch, Joachim: LaTeX zum Loslegen.
+    Springer-Verlag, 1994, ISBN 3-540-56545-0, 39,-- DM
+    Anm.: Schnellkurs in LaTeX 2.09, für Anfänger
+  * Wonneberger, R.: Kompaktführer LaTeX.
+    Verlag Addison-Wesley, 1993, ISBN 3-89319-589-0, 29,80 DM
+    Anm.: Name sagt alles, LaTeX 2.09, für den knappen Geldbeutel
+  * Sowa, Friedhelm: TeX/LaTeX und Graphik, ein Überblick über die
+    Verfahren.
+    Springer-Verlag, 1994, ISBN 3-540-56468-3, 39,-- DM
+    Anm.: der `Nothelfer', wenn es um TeX und Graphik geht
+  * Schwarz, Norbert: Einführung in TeX.
+    Oldenbourg-Verlag, 1991, ISBN 3-486-24349-7, 69,-- DM
+    Anm.: TeX und Plain-TeX, kein LaTeX(!), für Fortgeschrittene;
+    Parallelausgabe: Schwarz, Norbert: Einführung in TeX incl.
+    Version 3.0. Verlag Addison-Wesley, 3. überarbeitete Auflage,
+    Nachdruck 1993, ISBN 3-89319-345-6, 69,-- DM
+  * Kopka, Helmut: LaTeX, Band 1: Einführung.
+    Verlag Addison-Wesley, 2., überarbeitete Auflage, 1996, ISBN
+    3-8273-1025-3, 69,90 DM
+    Anm.: Ab der 2. Auflage auch LaTeX2e, im Anhang gute
+    Befehlsübersicht, für Anfänger
+  * Kopka, Helmut: LaTeX, Band 2: Ergänzungen.
+    Verlag Addison-Wesley, 2. überarbeitete Auflage, 1997, ISBN
+    3-8273-1229-9, 69,90 DM
+    Anm.: Name sagt alles, die 1. Auflage enthielt noch
+    LaTeX2e-Einführung
+  * Kopka, Helmut: LaTeX, Band 3: Erweiterungen.
+    Verlag Addison-Wesley, 1996, ISBN 3-89319-666-8, 69,90 DM
+    Anm.: Interna von LaTeX2e und 2.09 sowie Low-Level-TeX-Befehle
+  * Kopka, Helmut und Daly, Patrick W.: A Guide to LaTeX2e (englisch).
+    Verlag Addison-Wesley, 2. Aufl., 1995, ISBN 0-201-42777-X, ca.
+    ??? DM
+    Anm.: Englische Übersetzung des ``Kopka'' mit vielen
+    Überarbeitungen und Anpassungen für englischsprachige Benutzer
+  * Grätzer, George: An Introduction to LaTeX and AMS-LaTeX
+    (englisch).
+    Verlag Birkhäuser, Boston, 1996, 2nd Printing, 1997, ISBN
+    0-8176-3805-9, $58,50
+    Anm.: Ausführliche Darstellung von AMS-LaTeX und AMS-Fonts,
+    dadurch auch auf anspruchsvollen Formelsatz
+  * Walsh, Norman: Making TeX Work (englisch).
+    Verlag O'Reilly&Associates Inc., 1994, ISBN 1-56592-051-1, ca.
+    60,-- DM
+    Anm.: Gute Einführung und Übersicht; Fundgrube für Tools, Makro-
+    pakete, Schriften; teilweise mit genauerer Beschreibung
+    
+Hinweise: Als LaTeX-Anfänger sollte man sich ein ausführliches
+Lehrbuch (z.B. `Detig', `Abdelhamid', `Knappen', `Lamport',
+`Kopka'/Band 1, `Kopka/Daly') besorgen. Frei verfügbare Literatur, wie
+die LaTeX2e-Kurzbeschreibung (siehe Abschnitt 2.4.2), reicht Anfängern
+mit Computer-Vorkenntnissen eventuell auch aus. Sobald man als
+LaTeX-Anwender die ersten Schritte gemacht hat, sind der
+`LaTeX-Begleiter' und der `LaTeX Graphics Companion' eine wahre
+Fundgrube. Muß oder will man sein eigenes TeX-System selbst
+installieren und verwalten, gibt der wenn auch mittlerweile veraltete
+`Walsh' eine gute Erklärung und Übersicht der einzelnen Teile des
+Textsatzsystems TeX und darüber hinaus viele Hinweise und eine
+Auswahl, was es sonst noch an Umgebungen, Hilfsprogrammen, Schriften
+etc. gibt.
+
+Das Standardwerk für TeX-Anfänger und alle Makroautoren ist Knuths
+`TeXbook', das man sich auch zulegen sollte, wenn man zuerst mit Hilfe
+des in Deutsch geschriebenen `Schwarz (N.)' einsteigen will.
+
+2.4.2 Frei verfügbare (La)TeX- und METAFONT-Einführungen (*)
+
+Diese Dokumente sind von den Autoren als (La)TeX-Eingabedateien auf
+CTAN zur freien Verfügung gestellt worden. Sie finden diese und
+weitere Dokumente meist im Verzeichnis CTAN: info/. Folgende Liste
+stellt eine kleine Auswahl dar:
+  * Schmidt, Walter; Knappen, Jörg; Partl, Hubert et al.:
+    LaTeX2e-Kurzbeschreibung
+    CTAN: info/lshort/german/
+    Anm.: Zum Einstieg in LaTeX(2e) völlig ausreichend, für Anfänger.
+  * Tobias Oetiker: The Not So Short Introduction to LaTeX2e
+    CTAN: info/lshort/english/
+    Anm.: Basierte auf der LaTeX-Kurzbeschreibung, etwas
+    ausführlicher. In englischer Sprache, übersetzt in weitere
+    Sprachen.
+  * Partl, Hubert; Kielhorn, Axel: Layout-Änderungen mit LaTeX
+    CTAN: macros/latex/contrib/supported/refman/
+    Anm.: Wie verändere ich X? Anhand von Beispielen aus `refman.sty'
+  * Schrod, Joachim: The Components of TeX (englisch)
+    CTAN: info/components-of-TeX/
+    Anm.: Übersicht über die Teile und der von diesen Teilen
+    angefaßten Dateien eines TeX-Systems
+  * Warbrick, Jon: Essential LateX (englisch)
+    CTAN: info/latex-essential/
+    Anm.: LaTeX 2.09, ganz kurz gefaßt.
+  * Doob, Michael: A Gentle Introduction to TeX (englisch)
+    CTAN: info/gentle.tex
+    Anm.: Kurzbeschreibung von TeX, nicht LaTeX!
+  * Tobin, Geoffrey: METAFONT for Beginners (englisch)
+    CTAN: info/metafont-for-beginners.tex
+    Anm.: Enthält das Wichtigste, um mit METAFONT aus vorhandenen
+    mf-Sources Fonts zur Nutzung mit TeX zu generieren.
+  * Reckdahl, Keith: Using Imported Graphics in LaTeX2e (englisch)
+    CTAN: info/epslatex.ps
+    CTAN: info/epslatex.pdf
+    Anm.: Was Sie schon immer über die Einbindung von
+    Encapsulated-PostScript-(EPS)-Bildern, BoundingBox, die Benutzung
+    des `graphics'-Pakets und weiterer LaTeX-Umgebungen und -Pakete
+    wie `PSfrag' wissen wollten.
+  * Jürgens, Manuela: LaTeX - eine Einführung und ein bißchen mehr ...
+    ftp://ftp.fernuni-hagen.de/pub/pdf/urz-broschueren/a0269502.pdf
+    Anm.: Einstiegsbroschüre der Fern-Uni Hagen
+  * Jürgens, Manuela: LaTeX - Fortgeschrittene Anwendungen
+    ftp://ftp.fernuni-hagen.de/pub/pdf/urz-broschueren/a0279510.pdf
+    Anm.: Broschüre der Fern-Uni Hagen
+    
+Neben diesen Dokumenten, die noch zum Druck gedacht sind, gibt es
+vermehrt auch nicht zum Druck gedachte `Online-Quellen':
+  * Hypertext Help with LaTeX
+       + http://www.giss.nasa.gov/latex/
+       + http://www-ti.informatik.uni-tuebingen.de/~frech/latex/
+       + ftp://molscat.giss.nasa.gov/pub/LaTeX/latex.tar.gz
+  * LaTeX2e Help
+       + CTAN: info/latex2e-help-texinfo/latex2e.html
+  * Literaturverzeichnis zu TeX&Co.
+       + http://www.loria.fr/services/tex/english/texbib.html
+    
+2.4.3 Typographie-Bücher
+
+  * Tschichold, Jan: Erfreuliche Drucksachen durch gute Typographie:
+    eine Fibel für jedermann.
+    Maro-Verlag, Augsburg, 2. Auflage 1992, ISBN 3-87512-403-0,
+    32,-- DM
+    Anm.: allgemeiner Überblick, Elementarkenntnisse
+  * Tschichold, Jan: Ausgewählte Aufsätze über Fragen der Gestalt des
+    Buches und der Typographie.
+    Birkhäuser-Verlag, Basel, 2. Auflage 1987, ISBN 3-7643-1946-1,
+    58,-- DM
+    Anm.: Eines der wichtigsten Bücher über typographische Prinzipien
+    beim Buchsatz, Sammlung von Tschicholds `klassischen' Artikel
+  * Tschichold, Jan: Die neue Typographie.
+    Brinkmann und Bose, 3. Auflage 1995, ISBN 3-922660-23-1, 80,-- DM
+  * Aicher, Otl: Typographie.
+    Ernst-Verlag, Lüdenscheid, 1988, ISBN 3-433-03090-6
+  * Spiekermann, Erik: Ursache & Wirkung: ein typografischer Roman.
+    Verlag H. Schmidt, Mainz, faksimilierter Nachdruck, 1994, ISBN
+    3-87439-307-0, 38,-- DM
+  * Simoneit, Manfred: Typographisches Gestalten.
+    Polygraph-Verlag, Frankfurt/M., 4. Auflage, 1993, ISBN
+    3-87641-253-6, 256 S., 144,-- DM
+  * Luidl, Philipp: Typografie.
+    Schlütersche Verlagsanstalt, 6. Auflage, 1989, ISBN 3-87706-290-3,
+    146 S., 79,-- DM
+  * Weidemann, Kurt: Wo der Buchstabe das Wort führt.
+    Verlag Cantz, Ostfildern, 2. Auflage, 19??, ISBN 3-89322-521-8,
+    168,-- DM
+    Anm.: ``highly recommended'', Grundsätzliches über das Thema
+  * Willberg, Hans Peter; Forssman, Friedrich: Lesetypographie.
+    Verlag H. Schmidt, Mainz, 1997, ISBN-3-87439-375-5, 168,-- DM
+    Anm.: Handbuch, das Anregungen geben will, Lösungsmöglichkeiten
+    für typographische Probleme vergleichend vorstellt; eher für
+    jemand, der schon Grundkenntnisse hat
+  * Bringhurst, Robert: The Elements of Typographic Style.
+    Hartley & Marks, 2. Auflage, 1996, ISBN 0-88179-132-6, ??? DM
+    Anm.: ``highly recommended'', sagt kurz und knapp das Wesentliche
+    und weist auf viele Fehler hin
+    
+2.4.4 Schriftenkataloge
+
+  * Sauthoff, Daniel u.a.: Schriften erkennen: eine Typologie der
+    Satzschriften für Studenten, Grafiker, Setzer, Kunsterzieher und
+    alle PC-User.
+    Verlag H. Schmidt, Mainz, Neuausgabe, 1996, ISBN 3-87439-373-9,
+    24,80 DM
+    Anm.: Grundlage, Geschichte und einfacher Einstieg in die
+    Klassifikation von Schriften, für Einsteiger
+  * Kern, Michael; Koch, Sieghart (Hrsg.): ÜberSicht.
+    Verlag H. Schmidt, Mainz, 1991, ISBN 3-87439-230-9, 429 S.,
+    148,-- DM
+    Anm.: 3 Indizes: Blindtextprobe, Zeichenvorrat der Schriften,
+    Buchstabenverzeichnis (alle ``M'' auf einen Blick).
+    
+2.4.5 Ich hab im Buch ``Der LaTeX-Begleiter'' bzw. ``The LaTeX
+      Companion'' ein interessantes Paket gefunden. Wo kann ich es auf
+      CTAN finden?
+
+Die Datei ``companion.ctan'' zählt alle im Buch erwähnten Pakete auf.
+
+companion.ctan: CTAN: info/companion.ctan
+
+
+--- DE-TeX-FAQ Ende Teil 2 ---

@@ -1,0 +1,52 @@
+%%% ====================================================================
+%%%  @TeX-font-metrics-file{
+%%%     author          = "Ulrik Vieth",
+%%%     version         = "1.801",
+%%%     date            = "30 June 1998",
+%%%     time            = "00:02:05 CEST",
+%%%     filename        = "unsetnum.mtx",
+%%%     email           = "vieth@thphy.uni-duesseldorf.de",
+%%%     URL             = "http://www.thphy.uni-duesseldorf.de/~vieth/",
+%%%     checksum        = "41769 52 143 1513",
+%%%     codetable       = "ISO/ASCII",
+%%%     keywords        = "metrics, raw, TeX, PostScript",
+%%%     supported       = "yes",
+%%%     abstract        = "This is a metrics file, for use with the
+%%%                        fontinst utility.  It makes glyph names
+%%%                        for numerals undefined.",
+%%%     package         = "fontinst",
+%%%     dependencies    = "fontinst.sty, fontdoc.sty",
+%%%  }
+%%% ====================================================================
+
+\relax
+
+\documentclass[twocolumn]{article}
+\usepackage{fontdoc}
+
+\title{The {\tt unsetnum.mtx} metrics file}
+\author{Ulrik Vieth}
+\date{30 June 1998 \\
+Version 1.801}
+
+\begin{document}
+\maketitle
+
+This document describes the {\tt unsetnum.mtx} metrics file, which is
+used to make glyph names for numerals undefined.
+
+\metrics
+
+\unsetglyph{zero}
+\unsetglyph{one}
+\unsetglyph{two}
+\unsetglyph{three}
+\unsetglyph{four}
+\unsetglyph{five}
+\unsetglyph{six}
+\unsetglyph{seven}
+\unsetglyph{eight}
+\unsetglyph{nine}
+
+\endmetrics
+\end{document}

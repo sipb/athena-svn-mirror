@@ -1,0 +1,54 @@
+%%
+%% This is file `draftcopy-test-9.tex',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% draftcopy.doc  (with options: `test9')
+%% 
+%% IMPORTANT NOTICE:
+%% 
+%% For the copyright see the source file.
+%% 
+%% Any modified versions of this file must be renamed
+%% with new filenames distinct from draftcopy-test-9.tex.
+%% 
+%% For distribution of the original source see the terms
+%% for copying and modification in the file draftcopy.doc.
+%% 
+%% This generated file may be distributed as long as the
+%% original source files, as listed above, are part of the
+%% same distribution. (The sources need not necessarily be
+%% in the same archive or directory.)
+\iffalse
+\fi
+
+
+
+
+
+
+
+\documentclass[a5paper]{article}
+\usepackage[light,firsttwo,outline,bottomafter]{draftcopy}
+\newcommand{\xx}{
+Test9: This is a test page \thepage \vfill
+This is a testpage \thepage \newpage
+}
+\draftcopyName{\today}{140}
+\draftcopySetScale{70}
+\begin{document}
+Should print the current date |verb\today| on the
+first two pages, light, outlined.\\
+Should print the current date on bottom of the page on the first
+two pages.\\
+\verb|\usepackage[light,firsttwo,outline,bottomafter]{draftcopy}|\\
+and \\
+\verb|\draftcopyName{\today}{155}|\\
+\verb|\draftcopySetScale{70}|\\
+in the preamble
+\xx\xx\xx\xx
+\end{document}
+\endinput
+%%
+%% End of file `draftcopy-test-9.tex'.

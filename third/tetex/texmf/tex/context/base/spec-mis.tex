@@ -1,0 +1,89 @@
+%D \module
+%D   [       file=spec-mis,
+%D        version=1997.04.01,
+%D          title=\CONTEXT\ Special Macros,
+%D       subtitle=Miscellaneous Macros,
+%D         author=Hans Hagen,
+%D           date=\currentdate,
+%D      copyright={PRAGMA / Hans Hagen \& Ton Otten}]
+%C
+%C This module is part of the \CONTEXT\ macro||package and is
+%C therefore copyrighted by \PRAGMA. See licen-en.pdf for 
+%C details. 
+
+%D Quite some modules in this group are dedicated to supporting
+%D \PDF\ directly by means of \PDFTEX or indirectly by using
+%D Acrobat Distiller. This module implements some common
+%D features. 
+
+\writestatus{loading}{Context Special Macros / Miscellaneous Macros}
+
+\unprotect
+
+%D \macros
+%D   {URLhash}
+%D
+%D A rather trivial macro: 
+
+\expandafter\def\expandafter\URLhash\expandafter{\string#}
+
+%D \macros 
+%D   {ifusepagedestinations}
+%D 
+%D In \PDF\ version 1.0 only page references were supported,
+%D while in \DVIWINDO\ 1.N only named references were accepted.
+%D Therefore \CONTEXT\ supports both methods of referencing. In
+%D \PDF\ version 1.1 named destinations arrived. Lack of
+%D continuous support of version 1.1 viewers for \MSDOS\
+%D therefore sometimes forces us to prefer page references. As
+%D a bonus, they are faster too and have no limitations. How
+%D fortunate we were having both mechanisms available when the
+%D version 3.0 (\PDF\ version 1.2) viewers proved to be too 
+%D bugged to support named destinations. 
+
+\newif\ifusepagedestinations
+
+%D \macros 
+%D   {dodoinsertfile,dofileinsertion,
+%D    definefileinsertion,doiffileinsertionsupported}
+%D 
+%D File insertion depend on the driver or \TEX\ variant used.
+%D All driver modules use the same scheme for file insertion,
+%D and therefore have the next macro in common: 
+
+\def\dododoinsertfile[#1][#2,#3][#4,#5]%
+  {\def\fileinsertionclass{do#1insert}%
+   \doifdefinedelse{\fileinsertionclass#3}
+     {\def\next{\getvalue{\fileinsertionclass#3}}}
+     {\doifdefinedelse{\fileinsertionclass#2}
+        {\def\next{\getvalue{\fileinsertionclass#2}}}
+        {\def\next{\gobbleninearguments}}}%
+   \next{#4}{#5}}
+
+\def\dodoinsertfile#1#2#3%
+  {\dododoinsertfile[#1][#2][#3]}
+
+\def\definefileinsertion#1#2%
+  {\addtocommalist{#2}\supportedfileinsertions
+   \setvalue{do#1insert#2}}
+
+\def\dofileinsertion#1#2%
+  {\getvalue{do#1insert#2}}
+
+\newevery \everyresetspecials \relax
+
+\appendtoks \let\supportedfileinsertions\empty \to \everyresetspecials
+
+\let\supportedfileinsertions\empty
+
+\def\doiffileinsertionsupportedelse#1%
+  {\ExpandBothAfter\doifinstringelse{#1}{\c!tex,\c!tmp,\supportedfileinsertions}}
+
+%D This macro is called with 10 arguments, where the first 
+%D one specifies the driver, like \type{yy} or \type{tr}. The
+%D second argument is a \type{{type,method}} pair and the 
+%D third the filename. 
+
+\protect
+
+\endinput

@@ -1,0 +1,69 @@
+%Filename: t1phv.fd
+%Created by: tex Fam_29901
+%Created using fontinst v1.800
+
+%THIS FILE SHOULD BE PUT IN A TEX INPUTS DIRECTORY
+
+\ProvidesFile{t1phv.fd}
+   [1998/07/06 Fontinst v1.800 font definitions for T1/phv.]
+
+\DeclareFontFamily{T1}{phv}{}
+
+\DeclareFontShape{T1}{phv}{m}{n}{
+   <-> phvr8t
+}{}
+
+\DeclareFontShape{T1}{phv}{m}{sc}{
+   <-> phvrc8t
+}{}
+
+\DeclareFontShape{T1}{phv}{m}{sl}{
+   <-> phvro8t
+}{}
+
+\DeclareFontShape{T1}{phv}{mc}{n}{
+   <-> phvr8tn
+}{}
+
+\DeclareFontShape{T1}{phv}{mc}{sc}{
+   <-> phvrc8tn
+}{}
+
+\DeclareFontShape{T1}{phv}{mc}{sl}{
+   <-> phvro8tn
+}{}
+
+\DeclareFontShape{T1}{phv}{b}{n}{
+   <-> phvb8t
+}{}
+
+\DeclareFontShape{T1}{phv}{b}{sc}{
+   <-> phvbc8t
+}{}
+
+\DeclareFontShape{T1}{phv}{b}{sl}{
+   <-> phvbo8t
+}{}
+
+\DeclareFontShape{T1}{phv}{bc}{n}{
+   <-> phvb8tn
+}{}
+
+\DeclareFontShape{T1}{phv}{bc}{sc}{
+   <-> phvbc8tn
+}{}
+
+\DeclareFontShape{T1}{phv}{bc}{sl}{
+   <-> phvbo8tn
+}{}
+
+\DeclareFontShape{T1}{phv}{m}{it}{<->ssub * phv/m/sl}{}
+\DeclareFontShape{T1}{phv}{mc}{it}{<->ssub * phv/mc/sl}{}
+\DeclareFontShape{T1}{phv}{bx}{n}{<->ssub * phv/b/n}{}
+\DeclareFontShape{T1}{phv}{bx}{sc}{<->ssub * phv/b/sc}{}
+\DeclareFontShape{T1}{phv}{bx}{sl}{<->ssub * phv/b/sl}{}
+\DeclareFontShape{T1}{phv}{b}{it}{<->ssub * phv/b/sl}{}
+\DeclareFontShape{T1}{phv}{bx}{it}{<->ssub * phv/b/it}{}
+\DeclareFontShape{T1}{phv}{bc}{it}{<->ssub * phv/bc/sl}{}
+
+\endinput

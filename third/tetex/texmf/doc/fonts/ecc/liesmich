@@ -1,0 +1,158 @@
+=> see  `readme'  for  an  english  version of  this file <=
+
+************************************************************
+*          Die Schriftfamilie EUROPEAN CONCRETE            *
+*                                                          *
+*                      1998/11/14                          *
+*                                                          *
+*                     Version 1.0                          *
+************************************************************
+
+Was ist neu?
+============
+
+In der vorliegenden Version 1.0 vom 14. Nov. 1998 wurden
+einige Entwurfsparameter der Fonts korrigiert, die in v0.9
+falsch waren.  Sie entsprechen nun genau den OT1-kodierten
+und den mathematischen Concrete-Fonts.  In einigen Faellen
+war es nicht zu vermeiden, dass sich die Metriken (tfm)
+dabei aenderten.
+
+
+
+Uebersicht
+==========
+
+`European Concrete' ist eine Implementierung der
+Concrete-Fonts von Donald Knuth in T1- und TS1- Kodierung,
+also in Form der europaeischen Schriften mit
+Textcompanion-Sybolen.  Das Verzeichnis src der vorliegenden
+Verteilung enthaelt die folgenden METAFONT-Dateien:
+
+conc??pt, coni10pt              gemeinsame Entwurfsparameter
+eorm5.mf       EC roman medium    5pt
+eorm6.mf                          6pt
+eorm7.mf                          7pt
+eorm8.mf                          8pt
+eorm9.mf                          9pt
+eorm10.mf                        10pt
+eosl9.mf       EC slanted         9pt
+eosl5,mf                          5pt
+eosl6.mf                          6pt
+eosl7.mf                          7pt
+eosl8.mf                          8pt
+eosl9.mf                          9pt
+eosl10.mf                        10pt
+eeocc10.mf     EC small capitals 10pt
+eoti10.mf      EC text italic    10pt
+torm5.mf       TC roman medium    5pt
+torm6.mf                          6pt
+torm7.mf                          7pt
+torm8.mf                          8pt
+torm9.mf                          9pt
+torm10.mf                        10pt
+tosl5.mf                          5pt
+tosl6.mf                          6pt
+tosl7.mf                          7pt
+tosl8.mf                          8pt
+tosl9.mf       TC slanted         9pt      
+tosl10.mf                        10pt
+toti10.mf      TC italic         10pt 
+tcssdc10.mf    TC Sans Serif demibold condensed 10pt
+
+Das Namensschema lehnt sich an J. Knappens EC-Fonts an:
+  eo.. = Text-Font, T1-codiert
+  to.. = Text-Companion-Font, TS1-codiert
+
+Im Verzeichnis tfm befindet sich eine tfm-Datei fuer jeden 
+der o.g Fonts.
+
+Weitere Dateien:
+
+liesmich        die Datei, die Sie gerade lesen
+readme          die englische Version davon
+
+
+
+Installation der Schriften
+==========================
+
+Kopieren Sie alle Dateien aus dem Unterverzeichnis src
+dieser Sammlung in ein Verzeichnis, wo METAFONT nach
+Eingabedateien sucht.  Kopieren Sie alle Dateien aus dem
+Unterverzeichnis tfm dieser Sammlung in ein Verzeichnis, wo
+TeX seine Font-Metriken sucht.  Damit die Pixelfonts erzeugt
+werden koennen, muessen auch die Quelldateien von J.Knappens
+EC-Fonts, Version 1.0 oder spaeter, verfuegbar sein.
+
+Eine Schrift mit der Bezeichnung `ecssdc10' ist Bestandteil
+der EC-Fonts.  Auch wenn Sie diese installiert haben, fehlt
+moeglicherweise auf Ihrem Computer noch die zugehoerige
+Metrik-Datei `ecssdc10.tfm'.  Sie muessen sie dann
+nachtraeglich erzeugen und bei den anderen EC-Font-Metriken
+abspeichern, da die Schrift im Zusammenhang mit den
+Concrete-Fonts evtl. benoetigt wird.
+
+
+
+FAQs
+====
+
+Wie kann ich die EC-Concrete-Fonts in LaTeX benutzen?
+
+       Man benoetigt passende Font-Definition-Files und das
+       Package `ccfonts'.  Beides findet sich im CTAN unter
+       `macros/latex/contrib/supported/ccfonts'.
+ 
+Warum ist hier eine Schrift mit der Bezeichnung tcssdc10
+enthalten?  Sie gehoert doch nicht zu den Concrete-Fonts.
+
+       Es wird empfohlen, ecssdc10 als Ersatz fuer den in
+       Concrete fehlenden fetten Schriftschnitt zu benutzen.
+       Der entsprechende Text-Companion-Font dazu, also
+       tcssdc10, ist in der Version 1.0 der EC-Fonts aber
+       derzeit (Apr.  1997) nicht enthalten.  Deshalb habe
+       ich ihn hier vorgesehen.  (Sollten Sie diese Schrift
+       im Rahmen einer spaeteren Verteilung von EC bekommen
+       haben, brauchen Sie sie nicht noch einmal zu
+       installieren.)
+
+Warum werden fehlende Entwurfsgroessen nicht interpoliert,
+sondern von METAFONT skaliert?
+
+       Knuths originale Concrete-Fonts enthalten -- anders
+       als Computer Modern -- keine Entwurfsgroessen > 10pt.
+       Fuer eine Interpolation ist also derzeit keine
+       ausreichende Grundlage vorhanden.  Empfinden Sie die
+       vergroesserten Fonts als haesslich?
+
+
+
+Bekannte Fehler und Maengel
+===========================
+
+Es fehlen die T1/TS1-Versionen der Grafitti-Schrift ccslc9.
+
+
+
+Zukuenftige Aenderungen und Ergaenzungen
+========================================
+
+Die EC-Concrete-Fonts werden alle Ergaenzungen und
+Aenderungen an J. Knappens EC(-Modern-)Verteilung
+automatisch nachvollziehen.
+
+
+
+Kommentare, Fehlermeldungen und Verbesserungsvorschlaege
+========================================================
+
+... senden Sie bitte an den Autor:
+
+Walter Schmidt <wschmi@ibm.net>
+
+Bitte entnehmen Sie meine aktuelle E-Mail-Adresse der
+jeweils neuesten Version der vorliegenden Datei.
+
+-- end of file `liesmich' --
+

@@ -1,0 +1,74 @@
+%Filename: ot1hlst.fd
+%Created by: tex Fam_14298
+%Created using fontinst v1.800
+
+%THIS FILE SHOULD BE PUT IN A TEX INPUTS DIRECTORY
+
+\ProvidesFile{ot1hlst.fd}
+   [1998/07/06 Fontinst v1.800 font definitions for OT1/hlst.]
+
+\@ifundefined{DeclareLucidaFontShape}{%
+\def\DeclareLucidaFontShape#1#2#3#4#5#6{%
+\DeclareFontShape{#1}{#2}{#3}{#4}{<->#5}{#6}}}{}
+\DeclareFontFamily{OT1}{hlst}{}
+
+\DeclareLucidaFontShape{OT1}{hlst}{m}{n}{
+hlsrt7t
+}{}
+
+\DeclareLucidaFontShape{OT1}{hlst}{m}{sc}{
+hlsrct7t
+}{}
+
+\DeclareLucidaFontShape{OT1}{hlst}{m}{sl}{
+hlsrot7t
+}{}
+
+\DeclareLucidaFontShape{OT1}{hlst}{mc}{n}{
+hlsrt7tn
+}{}
+
+\DeclareLucidaFontShape{OT1}{hlst}{mc}{sc}{
+hlsrct7tn
+}{}
+
+\DeclareLucidaFontShape{OT1}{hlst}{mc}{sl}{
+hlsrot7tn
+}{}
+
+\DeclareLucidaFontShape{OT1}{hlst}{b}{n}{
+hlsbt7t
+}{}
+
+\DeclareLucidaFontShape{OT1}{hlst}{b}{sc}{
+hlsbct7t
+}{}
+
+\DeclareLucidaFontShape{OT1}{hlst}{b}{sl}{
+hlsbot7t
+}{}
+
+\DeclareLucidaFontShape{OT1}{hlst}{bc}{n}{
+hlsbt7tn
+}{}
+
+\DeclareLucidaFontShape{OT1}{hlst}{bc}{sc}{
+hlsbct7tn
+}{}
+
+\DeclareLucidaFontShape{OT1}{hlst}{bc}{sl}{
+hlsbot7tn
+}{}
+
+\DeclareFontShape{OT1}{hlst}{m}{it}{<->ssub * hlst/m/sl}{}
+\DeclareFontShape{OT1}{hlst}{mc}{it}{<->ssub * hlst/mc/sl}{}
+\DeclareFontShape{OT1}{hlst}{bx}{n}{<->ssub * hlst/b/n}{}
+\DeclareFontShape{OT1}{hlst}{bx}{sc}{<->ssub * hlst/b/sc}{}
+\DeclareFontShape{OT1}{hlst}{bx}{sl}{<->ssub * hlst/b/sl}{}
+\DeclareFontShape{OT1}{hlst}{b}{it}{<->ssub * hlst/b/sl}{}
+\DeclareFontShape{OT1}{hlst}{bx}{it}{<->ssub * hlst/b/it}{}
+\DeclareFontShape{OT1}{hlst}{bc}{it}{<->ssub * hlst/bc/sl}{}
+
+\DeclareFontShape{OT1}{hlst}{m}{ui}{<->ssub * hlst/m/it}{}
+\DeclareFontShape{OT1}{hlst}{b}{ui}{<->ssub * hlst/b/it}{}
+\endinput

@@ -1,0 +1,62 @@
+%% This is file `aeguill.sty' 
+% This file gives french guillemets (and not guillemots!)
+% built with the LASY fonts or with the EC fonts. 
+% This is useful in conjunction with the ae package
+% (this package loads the ae package in case it has not been loaded)
+% and with or without the french package.
+%
+% In order to get the guillemets, it is necessary to either type
+% \guillemotleft and \guillemotright, or to use an 8 bit encoding
+% (such as ISO-Latin1) which selects these two commands, 
+% or, if you use the french package, to type << or >>.
+%
+% By default, you get the EC guillemets and if this package is loaded
+% with the `cm' option, you get the LASY guillemets. 
+% The difference between the default case and with
+% using only T1 encoding and not this package is that in this case
+% all characters use the CM fonts, except the guillemets. Therefore,
+% CM are used a maximum, but the EC look is mostly retained.
+% 
+\def\fileversion{0.91}
+\def\filedate{1998/07/23}
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{aeguill}[\filedate\space\fileversion\space
+AE fonts with french guillemets (D. Roegel)]
+\RequirePackage{ae}
+\RequirePackage{latexsym}
+\newif\if@ae@ec
+\DeclareOption{ec}{\@ae@ectrue}
+\DeclareOption{cm}{\@ae@ecfalse}
+\ExecuteOptions{ec}
+\ProcessOptions
+\newcommand{\aeguills}{%
+  \def\@LP{(}
+  \def\@RP{)}
+  \def\ly{\fontencoding{U}\fontfamily{lasy}%
+          \fontseries{m}\fontshape{n}\selectfont}
+  \if@ae@ec
+    \def\@oguills{{\fontencoding{T1}\fontfamily{cmr}\selectfont\symbol{19}}}%
+    \def\@fguills{{\fontencoding{T1}\fontfamily{cmr}\selectfont\symbol{20}}}%
+  \else
+    \def\@oguills{\nobreak\leavevmode
+                \hbox{{\ly\@LP\kern-0.20em\@LP\kern+0.20em}}\nobreak}%
+    \def\@fguills{\nobreak\leavevmode
+                \hbox{{\ly\kern+0.20em\@RP\kern-0.20em\@RP}}%
+                \ifdim\fontdimen\@ne\font>\z@\/\fi}
+  \fi
+  \let\guillemotleft=\@oguills
+  \let\guillemotright=\@fguills
+  }
+\newcommand\@redefGuillInGOfrench{%
+   \ifx\GOfrench\undefined
+     \aeguills
+   \else
+      \let\AEGUILL@GOfrench\GOfrench
+      \gdef\GOfrench{\AEGUILL@GOfrench
+                     \aeguills
+                     }
+   \fi
+   }
+\AtBeginDocument{\@redefGuillInGOfrench}%
+\endinput
+

@@ -1,0 +1,114 @@
+%%
+%% This is file `lstalgol.sty',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% listings.dtx  (with options: `keywordcomments')
+%% lstdrvrs.dtx  (with options: `algol')
+%% 
+%% (w)(c) 1996,1997,1998 Carsten Heinz and/or any other author mentioned
+%% elsewhere in this file.
+%% 
+%% This file is distributed freely. You are not allowed to take money for
+%% the use or distribution of this file, except for a nominal charge for
+%% copying etc..
+%% 
+%% This file is distributed without any warranty, express or implied, as
+%% to merchantability or fitness for any particular purpose.
+%% 
+%% Permission is granted to change this file. You are not allowed to
+%% distribute any changed version this file, neither under the same name
+%% nor under a different one.
+%% 
+\lst@Aspect{keywordcomment}
+    {\lst@MakeKeywordArg{#1}\let\lst@KCkeywords\lst@arg %
+     \let\lst@DefKC\lstCC@KeywordComment}
+\lst@Aspect{doublekeywordcommentsemicolon}{\lstDKCS@#1}
+\gdef\lstDKCS@#1#2#3%
+    {\lst@MakeKeywordArg{#1}\let\lst@KCAkeywordsB\lst@arg %
+     \lst@MakeKeywordArg{#2}\let\lst@KCAkeywordsE\lst@arg %
+     \lst@MakeKeywordArg{#3}\let\lst@KCBkeywordsB\lst@arg %
+     \let\lst@DefKC\lstCC@DoubleKeywordCommentS}
+\lst@AddToHook{SelectCharTable}{\lst@DefKC}
+\lst@AddToHook{BeforeSelectCharTable}
+    {\lst@ifsensitive\else %
+         \lst@MakeMacroUppercase\lst@KCkeywords %
+         \lst@MakeMacroUppercase\lst@KCAkeywordsB %
+         \lst@MakeMacroUppercase\lst@KCAkeywordsE %
+         \lst@MakeMacroUppercase\lst@KCBkeywordsB %
+     \fi}
+\lst@AddToHook{SetLanguage}{%
+    \let\lst@DefKC\relax \let\lst@KCkeywords\@undefined %
+    \let\lst@KCAkeywordsB\@undefined \let\lst@KCAkeywordsE\@undefined %
+    \let\lst@KCBkeywordsB\@undefined}
+\gdef\lstCC@KeywordComment{%
+    \let\lst@Output@\lst@Output \let\lst@Output\lst@KCOutput}
+\gdef\lst@KCOutput{%
+    \ifnum\lst@length=\z@\else %
+        \let\lst@next\relax %
+        \expandafter\lst@IfOneOf \the\lst@token\relax \lst@KCkeywords %
+            {\lst@KCOutput@\lst@BeginKC}{}%
+        \lst@Output@ \lst@next %
+    \fi}
+\gdef\lst@KCOutput@#1{\let\lst@next#1%
+    \expandafter\def\expandafter\lst@save\expandafter{\the\lst@token}%
+    \lst@ifmode \ifnum\lst@mode=\lst@KCmode %
+        \xdef\@gtempa{%
+            \noexpand\lst@token{\the\lst@token}%
+            \noexpand\lst@length\the\lst@length\relax}%
+        \aftergroup\@gtempa \lst@LeaveMode \let\lst@next\relax %
+    \fi \fi}
+\gdef\lst@BeginKC{%
+    \lstCC@BeginComment\lst@KCmode \let\lst@KCkeywords\lst@save %
+    \lst@ifsensitive\else \lst@MakeMacroUppercase\lst@KCkeywords \fi}
+\gdef\lstCC@DoubleKeywordCommentS{%
+    \lstCC@EndKeywordComment{"003B}%
+    \let\lst@Output@\lst@Output \let\lst@Output\lst@DKCOutput}
+\gdef\lst@DKCOutput{%
+    \ifnum\lst@length=\z@\else %
+        \let\lst@next\relax %
+        \expandafter\lst@IfOneOf \the\lst@token\relax\lst@KCAkeywordsB %
+            {\lst@KCOutput@\lst@BeginDKCA}{%
+        \expandafter\lst@IfOneOf \the\lst@token\relax\lst@KCBkeywordsB %
+            {\lst@KCOutput@\lst@BeginDKCB}{}}%
+        \lst@Output@ \lst@next %
+    \fi}
+\gdef\lst@BeginDKCA{\lstCC@BeginComment\lst@KCmode %
+    \let\lst@KCAkeywordsB\lst@KCAkeywordsE \let\lst@KCBkeywordsB\@empty}
+\gdef\lst@BeginDKCB{\lstCC@BeginComment\lst@KCmode %
+    \let\lst@KCAkeywordsB\@empty \let\lst@KCBkeywordsB\@empty}
+\gdef\lstCC@EndKeywordComment#1{%
+    \lccode`\~=#1\lowercase{\lstCC@EndKeywordComment@~}{#1}}
+\gdef\lstCC@EndKeywordComment@#1#2{%
+    \expandafter\let\csname lstCC@EKC#2\endcsname#1%
+    \def#1{%
+        \ifnum\lst@mode=\lst@KCmode %
+            \let\lstCC@next\lstCC@EndComment %
+        \else %
+            \let\lstCC@next\relax %
+        \fi %
+        \csname lstCC@EKC#2\endcsname \lstCC@next}}
+\lstdefinedrvlanguage[68]{Algol}%
+  {keywords={abs,and,arg,begin,bin,bits,bool,by,bytes,case,channel,%
+      char,co,comment,compl,conj,divab,do,down,elem,elif,else,empty,%
+      end,entier,eq,esac,exit,false,fi,file,flex,for,format,from,ge,%
+      goto,gt,heap,if,im,in,int,is,isnt,le,leng,level,loc,long,lt,lwb,%
+      minusab,mod,modab,mode,ne,nil,not,od,odd,of,op,or,ouse,out,over,%
+      overab,par,plusab,plusto,pr,pragmat,prio,proc,re,real,ref,repr,%
+      round,sema,shl,short,shorten,shr,sign,skip,string,struct,then,%
+      timesab,to,true,union,up,upb,void,while},%
+   sensitive=false,% ???
+   singlecomment={\#}{\#},%
+   keywordcomment={co,comment}%
+  }%
+\lstdefinedrvlanguage[60]{Algol}%
+  {keywords={array,begin,Boolean,code,comment,div,do,else,end,false,%
+      for,goto,if,integer,label,own,power,procedure,real,step,string,%
+      switch,then,true,until,value,while},%
+   sensitive=false,% ???
+   doublekeywordcommentsemicolon={end}{else,end}{comment}%
+  }%
+\endinput
+%%
+%% End of file `lstalgol.sty'.

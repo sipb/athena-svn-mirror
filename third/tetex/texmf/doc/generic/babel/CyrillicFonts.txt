@@ -1,0 +1,36 @@
+
+  The Cyrillic fonts
+
+
+  The latest version of the "babel" package supports the Russian
+  language. In order to be able to use the "russian" option correctly
+  someone must have the correct fonts properly installed.
+  The "russian" option needs the LH fonts, created by Olga Lapko from
+  CYRTuG. These fonts can be found on CTAN in the directory 
+  /tex-archive/fonts/LH. The metafont sources are written in such a
+  way that it is possible to create foints with different encoding
+  vectors from them. The fonts that Babel needs should be in the LWN
+  encoding; their names start with wn; The easiest way of rpoducing
+  them is to use the following perl script to create a full set of
+  `driver' files.
+
+#!/usr/local/bin/perl
+
+$|=1;
+$command = "ls lh*.mf";
+
+open (LIST, "$command |");
+while (<LIST>) {
+  chop;
+  $lhname = $wnname=$_;
+  $wnname =~ s/lh/wn/;
+  print $wnname, "\n";
+  open (FILE, ">$wnname");
+  print FILE "wncoding:=1;\ninput $lhname;\n";
+  close (FILE);
+}
+
+  July 4, 1996
+
+  Johannes Braams
+  

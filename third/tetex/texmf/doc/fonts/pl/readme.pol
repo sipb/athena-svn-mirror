@@ -1,0 +1,282 @@
+%% Plik w notacji prefiksowej (/a/c/e/l/n/o/s/x/z /A/C/E/L/N/O/S/X/Z, //)
+%%  konwersja na dowolny ,,standard'' polskich liter patrz programy w:
+%%  ftp://ftp.gust.org.pl/pub/TeX/tools/PL-konwertery/
+
+11 pa/xdziernika 1997 r.
+
+Niniejszy plik stanowi fragment dokumentacji mexinfo.pol zawartej w pakiecie
+MeX (ftp://ftp.gust.org.pl/pub/TeX/language/polish/mex105.zip lub archiwa
+CTAN, np. ftp://ftp.dante.de/tex-archive/language/polish/mex105.zip).
+
+Autorzy
+=======
+Bogus/law Jackowski <jacko@ipipan.gda.pl>
+Marek Ry/cko <marek@camk.edu.pl>
+konsultacje: Roman Tomaszewski
+
+Fonty PL (polskie rozszerzenie font/ow CM)
+==========================================
+
+Fonty PL przeznaczone s/a do sk/ladania polskich lub polsko-angielskich
+tekst/ow przy u/zyciu format/ow MeX i LaMeX. Obecnie mog/a te/z by/c do
+sk/ladu przy u/zyciu pakietu PoPolsku polonizuj/acego LaTeX2e (autorstwa
+Mariusza Olko):
+       ftp://ftp.gust.org.pl/pub/TeX/language/polish/popolsku.zip
+  lub ftp://ftp.dante.de/tex-archive/language/polish/popolsku.zip
+
+Pliki /xr/od/lowe .MF zawarte w niniejszym pakiecie s/a _identyczne_ 
+z zawartymi w pakiecie MeX (mex105.zip). Jedyna r/o/znica to zmiana ko/nc/ow
+wierszy z CRLF na LF.
+
+Autorzy starali si/e zachowa/c ,,ducha CM-/ow'' przy projektowaniu polskich
+znak/ow diakrytycznych. Np. przekre/slenie ma/lej litery ,,/l'' zosta/lo
+nieco tylko powi/ekszone w stosunku do przekre/slenia font/ow rodziny CM
+(METAFONT-owy program ,,Cross for Polish l and L'' w pliku ACCENT.MF)
+umieszczanego w sk/ladzie komendami TeX-owymi \l oraz \L, chocia/z w
+niekt/orych fontach autorzy ch/etnie widzieliby przekre/slenie znacznie
+wyra/xniejsze. Podobnie podci/ecia wstawiane automatycznie pomi/edzy znakami
+(implicit kerns) by/ly dodawane raczej ostro/znie. Np. zdaniem autor/ow
+podci/ecie mi/edzy polskim otwieraj/acym cudzys/lowem (,,) a liter/a ,,W''
+b/ad/x ,,T'' mog/loby by/c znacznie wi/eksze, gdyby nie to, /ze w fontach CM
+nie ma /zadnego podci/ecia mi/edzy liter/a ,,A'' a cudzys/lowem zamykaj/acym
+('').
+
+Fonty PL, podobnie jak macierzyste fonty CM, projektowane by/ly
+pod k/atem zastosowa/n profesjonalnych, tzn. urz/adze/n o wi/ekszych
+rozdzielczo/sciach. Tym niemniej sporo wysi/lku w/lo/zono w prawid/low/a
+dyskretyzacj/e przy ma/lych rozdzielczo/sciach (dla potrzeb wydruk/ow
+testowych na drukarkach mozaikowych 9- i 24-ig/lowych). Gdyby mimo
+to u/zytkownik mia/l inne zdanie ni/z METAFONT na temat dyskretyzacji,
+w pakiecie emTeX autorstwa Eberharda Mattesa znajduje si/e program
+o nazwie PKEDIT pozwalaj/acy r/ecznie korygowa/c wygenerowane za pomoc/a
+METAFONT-a mapy bitowe.
+
+ 1. Fonty PL stanowi/a rozszerzenie standardowego zestawu rodziny
+    Computer Modern (CM) o polskie znaki diakrytyczne i bazuj/a na tych
+    samych plikach parametrycznych co fonty rodziny CM. Zmiany parametr/ow
+    odbiegaj/ace zbyt daleko od standardu zaproponowanego przez D. E. Knutha
+    mog/a spowodowa/c nieoczekiwane efekty (do b/l/edu w trakcie oblicze/n
+    w/l/acznie). Przyk/ladowo, za/lo/zone zosta/lo, /ze kursywa i grotesk
+    wykluczaj/a si/e.
+
+    Uk/lad font/ow PL charakteryzuje si/e tym, /ze znaki o kodach < 128
+    s/a identyczne ze znakami rodziny CM, natomiast polskim znakom
+    diakrytycznym przypisane zosta/ly kody > 127 (innych cech TeX-a 3.x
+    nie wykorzystuje si/e). Polskie znaki diakrytyczne maj/a kody zgodne
+    z uk/ladem ECM (Extended Computer Modern, Cork encoding), natomiast 
+    cudzys/lowy maj/a kody niestandardowe (w ECM cudzys/lowy maj/a 
+    kody < 127):
+
+              /A -- 129     /a -- 161
+              /C -- 130     /c -- 162
+              /E -- 134     /e -- 166
+              /L -- 138     /l -- 170
+              /N -- 139     /n -- 171
+              /O -- 211     /o -- 243
+              /S -- 145     /s -- 177
+              /X -- 153     /x -- 185
+              /Z -- 155     /z -- 187
+
+             << (francuski cudzys/l/ow otwieraj/acy) -- 174
+             >> (francuski cudzys/l/ow zamykaj/acy)  -- 175
+             ,, (polski cudzys/l/ow otwieraj/acy)    -- 255
+
+     Uwagi:
+       * Fonty matematyczne PLMI, PLMIB oraz PLEX nie zawieraj/a polskich
+         znak/ow diakrytycznych i nie r/o/zni/a si/e od odpowiednich font/ow 
+         CM; przedrostki CM zosta/ly zmienione na PL jedynie dla zachowania
+         jednorodno/sci.
+       * Podobnie font PLTEX10 to po prostu font CMTEX10 ze zmienion/a dla
+         jednolito/sci nazw/a; font CMTEX10 odzwierciedla uk/lad klawiatury
+         na komputerze u/zywanym przez profesora Knutha (D. E. Knuth,
+         ,,Computer Modern Typefaces'', str. 568), tym samym nie powinien
+         raczej zawiera/c polskich znak/ow diakrytycznych.
+       * Fonty PLSY zosta/ly poszerzone (w stosunku do CMSY) o znaki
+         ,,wi/eksze-r/owne'' i ,,mniejsze-r/owne'' odpowiadaj/ace
+         polskim zwyczajom drukarskim (dolna kreska sko/sna zamiast
+         poziomej); na konieczno/s/c takiego rozszerzenia zwr/oci/l
+         uwag/e p. W/lodzimierz J. Martin; majusku/ly kaligraficzne tych
+         font/ow (opisane w pliku CALU.MF) nie zosta/ly uzupe/lnione
+         o polskie znaki diakrytyczne.
+
+ 2. Jedynymi znakami ,,polskimi'' dost/epnymi poprzez ligatury s/a
+    cudzys/lowy (,, << >>). Polskie znaki diakrytyczne s/a dost/epne
+    albo bezpo/srednio, albo za pomoc/a komendy realizowanej przez
+    ,,aktywny ciach'' (//a //c //e //l //n //o //s //x //z //A //C //E 
+    //L //N //O //S //X //Z) zaprogramowanej w formatach MeX i LaMeX 
+    (p. opis u/zywania format/ow MeX i LaMeX). Istniej/a zasadnicze powody, 
+    dla kt/orych autorzy nie wykorzystali do tego celu ligatur.
+
+ 3. Ze wzgl/edu na ograniczenie liczby r/o/znych wysoko/sci znak/ow w foncie 
+    do 15 niezerowych, zrezygnowano z kusz/acego wype/lniania ,,g/ornej 
+    po/l/owki'' fontu. Ponadto w programach METAFONT-owych podj/ete zosta/ly 
+    zabiegi maj/ace na celu minimalizacj/e liczby r/o/znych wysoko/sci. 
+    Niestety, mimo to w niekt/orych przypadkach liczba r/o/znych niezerowych 
+    wysoko/sci przekracza 15. W takiej sytuacji METAFONT automatycznie 
+    zmienia niekt/ore spo/sr/od wysoko/sci. Oznacza to, /ze w pewnych 
+    (bardzo z/lo/sliwych i -- miejmy nadziej/e -- niezwykle rzadkich) 
+    przypadkach mo/ze si/e zdarzy/c, /ze tekst czysto angielski z/lo/zony 
+    fontami PL zostanie inaczej prze/lamany na strony ni/z tekst z/lo/zony 
+    fontami CM.
+
+ 4. Starano si/e unika/c wprowadzania dodatkowych parametr/ow, co jednak
+    nie zawsze by/lo mo/zliwe. Szczeg/o/ly dotycz/ace mo/zliwo/sci zmiany
+    zachowania domy/slnego opisane s/a w pliku PL_DOD.MF. Przyk/lady u/zycia
+    opcjonalnych parametr/ow zmieniaj/acych zachowanie domy/slne znale/x/c
+    mo/zna w plikach /xr/od/lowych font/ow PLB10, PLBX5, PLBX6, PLBX7, PLBX8,
+    PLCSC10, PLDUNH10, PLFI10, PLFF10, PLITT10, PLR5, PLR6, PLR7, PLR8,
+    PLR9, PLR12, PLR17, PLSL8, PLSL9, PLSL12, PLSSQ8, PLSSQI8, PLTCSC10,
+    PLTI7, PLTI8, PLTI12 oraz PLVTT10.
+
+ 5. Programy opisuj/ace polskie znaki diakrytyczne zosta/ly oparte na
+    odpowiednich programach rodziny CM. Opisy polskich znak/ow
+    diakrytycznych stanowi/a niezale/zne programy, co jest zgodne
+    z og/oln/a filozofi/a program/ow rodziny CM (mo/zna by np. zapami/etywa/c
+    mapy bitowe liter ,,A'', ,,C'', ,,a'', ,,c'', ..., itd., i te mapy
+    bitowe modyfikowa/c; z takiego podej/scia i mu podobnych zrezygnowano).
+
+    Nieco trickowe rozwi/azanie zastosowano w celu unikni/ecia duplikowania
+    plik/ow parametrycznych (PLB10, PLBX10, ..., itd.). Wykorzystano tu
+    METAFONT-ow/a zmienn/a ,,jobname'' do czytania odpowiednich plik/ow
+    parametrycznych rodziny CM. Pliki te powinny znajdowa/c si/e w kartotece
+    przeszukiwanej przez METAFONT-a w trakcie realizacji komendy ,,input''.
+
+ 6. Program dla polskiego cudzys/lowu otwieraj/acego zaczerpni/ety zosta/l
+    z program/ow rodziny CM. Natomiast kszta/lt cudzys/low/ow francuskich
+    zosta/l zaprojektowany i zaprogramowany ,,od zera''.
+
+ 7. Pierwsz/a i najwa/zniejsz/a faz/a pracy nad fontami PL by/lo 
+    zaprojektowanie i zaprogramowanie kszta/lt/ow polskich znak/ow 
+    diakrytycznych w sze/sciu podstawowych krojach: PLR, PLSS, PLBX, PLSSBX, 
+    PLTT oraz PLTI (stopnie pisma od 5 do 17 punkt/ow).
+
+    Tym etapem pracy opiekowa/l si/e troskliwie p. Roman Tomaszewski,
+    wybitny polski typograf, cz/lonek zarz/adu Mi/edzynarodowego
+    Stowarzyszenia Typograficznego ATypI i zarazem przewodnicz/acy Polskiego
+    Oddzia/lu ATypI. Autorzy s/a mu g/l/eboko wdzi/eczni za /zyczliwe 
+    wspieranie sw/a wiedz/a i do/swiadczeniem prac projektowych nad 
+    fontami PL.
+
+    Pan Roman Tomaszewski zmar/l w grudniu 1992 roku.
+
+ 8. Akcenty nad minusku/lami ,,/c'' ,,/n'' ,,/o'' ,,/s'' ,,/x''  s/a takie 
+    same jak wstawiany TeX-ow/a komend/a \' akcent ,,acute'', tyle /ze 
+    w niekt/orych przypadkach s/a nieco przesuni/ete w poziomie. Natomiast 
+    akcenty nad majusku/lami ,,/C'' ,,/N'' ,,/O'' ,,/S'' ,,/X'' s/a wprawdzie 
+    konstruowane w oparciu o akcent ,,acute'', ale s/a nieco ,,sp/laszczone'' 
+    (w przypadku odmian szeryfowych jest to zwyk/ly obr/ot, natomiast 
+    w przypadku odmian bezszeryfowych -- obr/ot po/l/aczony z pewn/a 
+    modyfikacj/a, ze wzgl/edu na konieczno/s/c zachowania poziomego 
+    po/lo/zenia g/ornej i dolnej kraw/edzi akcentu oraz optycznej grubo/sci 
+    kreski akcentowej). Wyj/atkowo w karykaturalnie smuk/lym foncie PLDUNH10 
+    akcent nad minusku/lami i majusku/lami jest pochylony tak samo.
+
+    Powy/zsze zabiegi s/a zgodne z regu/lami sztuki typograficznej, powoduj/a
+    natomiast, /ze akcenty k/ladzione za pomoc/a TeX-owej komendy \accent 
+    mog/a si/e istotnie r/o/zni/c od akcentowanych majusku/l w fontach PL.
+
+ 9. Akcent nad literami ,,/z'' oraz ,,/Z'' jest taki sam jak kropka nad
+    liter/a ,,i'', czyli inny ni/z akcent wstawiany przez TeX-a (za pomoc/a
+    komendy \.). W literze ,,/z'' jest tak/ze umieszczony na tej samej
+    wysoko/sci co kropka nad ,,i'' (oczywi/scie nie w foncie kapitalikowym).
+    Dzi/eki temu w s/lowach takich jak ,,gwi/zd/ze'' czy ,,ni/zej'' kropka
+    zachowuje t/e sam/a wysoko/s/c. Niestety, w niekt/orych fontach rodziny
+    CM kropka nad ,,i'' jest stanowczo za ma/la (np. CMTT), co powoduje,
+    /ze warto/s/c optyczna kropki nad ,,/z'' oraz ,,/Z'' jest te/z czasami 
+    zbyt ma/la. Z powi/ekszenia kropki zrezygnowano, uznaj/ac jej wielko/s/c
+    za cech/e font/ow CM.
+
+10. Przekre/slenie litery ,,/L'' jest znacznie wi/eksze od przekre/slenia
+    litery ,,/l'', a przekre/slenie litery ,,/l'' jest z kolei wi/eksze od
+    przekre/slenia w fontach rodziny CM (p. punkt 0 powy/zej).
+
+11. ,,Ogonki'' pod literami  ,,/A'' ,,/E'' ,,/a'' ,,/e''  budowane s/a za
+    pomoc/a stosunkowo skomplikowanego algorytmu, ale geometria
+    ogonka jest bardzo prosta: zewn/etrzna i wewn/etrzna kraw/ed/x to
+    pojedyncze segmenty krzywych B\`eziera. Ogonki takie -- jak
+    pokazuje do/swiadczenie -- s/a najzgrabniejsze.
+
+    Opcjonalne parametry dodatkowe wp/lywaj/ace na kszta/lt ogonk/ow
+    opisane s/a w pliku PL_DOD.MF.
+
+12. Polskie znaki diakrytyczne nie s/a przeznaczone do u/zywania jako
+    znaki matematyczne, dlatego w programach opisuj/acych te znaki
+    pomini/eta zosta/la komenda ,,math_adjust''.
+
+13. Podci/ecia wstawiane automatycznie mi/edzy znakami (implicit kerns)
+    s/a w zasadzie takie same dla polskich znak/ow diakrytycznych jak dla
+    odpowiednich liter alfabetu /laci/nskiego, z pewnymi wszak/ze wyj/atkami
+    (p. pliki POLAN.MF, POLKUR.MF oraz POLKAP.MF); podobnie rzecz si/e ma
+    z korekt/a italikow/a wstawian/a za polskimi znakami diakrytycznymi.
+
+14. Dla tych, kt/orzy chcieliby wydrukowa/c /xr/od/la METAFONT-owe w postaci
+    sformatowanej za pomoc/a programu MFT, do/l/aczony jest odpowiedni
+    format o nazwie PL.MFT. Format ten jest przygotowany do sk/ladania
+    z u/zyciem font/ow rodziny CM; je/sli u/zytkownik zamieni/l ju/z 
+    wszystkie CM-y na fonty PL, musi odpowiednio zmieni/c nazwy font/ow 
+    w plikach PL.MFT oraz MFTMAC.TEX (plik MFTMAC.TEX znale/x/c mo/zna np. 
+    w pakiecie emTeX E. Mattesa lub CTAN:/macros/generic/plain/base/).
+
+15. /Xr/od/la METAFONT-owe obejmuj/a nast/epuj/ace pliki (zak/lada si/e, /ze
+    u/zytkownik posiada komplet plik/ow /xr/od/lowych rodziny CM):
+
+    a) pliki zawieraj/ace opisy polskich znak/ow diakrytycznych:
+
+         PL_CUD.MF      PL_DOD.MF      PL_MLK.MF
+         PL_DL.MF       PL_ML.MF       PL_SYM.MF
+
+    b) pliki steruj/ace:
+
+         POLAN.MF   -- odpowiednik pliku ROMAN.MF
+         POLKAP.MF  -- odpowiednik pliku CSC.MF
+         POLKUR.MF  -- odpowiednik pliku TEXTIT.MF
+         POLMAT.MF  -- odpowiednik pliku MATHSY.MF
+         POLTYT.MF  -- odpowiednik pliku TITLE.MF
+
+    c) pliki parametryczne rodziny PL:
+
+         PLBSY10.MF     PLMI10.MF      PLSSBI36.MF    PLSY5.MF
+         PLBXSL10.MF    PLMI12.MF      PLSSBI48.MF    PLSY6.MF
+         PLBXTI10.MF    PLMI5.MF       PLSSBX10.MF    PLSY7.MF
+         PLBX10.MF      PLMI6.MF       PLSSBX36.MF    PLSY8.MF
+         PLBX12.MF      PLMI7.MF       PLSSBX48.MF    PLSY9.MF
+         PLBX5.MF       PLMI8.MF       PLSSDC10.MF    PLTCSC10.MF
+         PLBX6.MF       PLMI9.MF       PLSSDC40.MF    PLTEX10.MF
+         PLBX7.MF       PLR10.MF       PLSSI10.MF     PLTEX8.MF
+         PLBX8.MF       PLR12.MF       PLSSI12.MF     PLTEX9.MF
+         PLBX9.MF       PLR17.MF       PLSSI17.MF     PLTI10.MF
+         PLB10.MF       PLR5.MF        PLSSI8.MF      PLTI12.MF
+         PLCSC10.MF     PLR6.MF        PLSSI9.MF      PLTI7.MF
+         PLDUNH10.MF    PLR7.MF        PLSSQI8.MF     PLTI8.MF
+         PLEX10.MF      PLR8.MF        PLSSQ8.MF      PLTI9.MF
+         PLEX9.MF       PLR9.MF        PLSS10.MF      PLTT10.MF
+         PLFF10.MF      PLSLTT10.MF    PLSS12.MF      PLTT12.MF
+         PLFIB8.MF      PLSL10.MF      PLSS17.MF      PLTT8.MF
+         PLFI10.MF      PLSL12.MF      PLSS8.MF       PLTT9.MF
+         PLINCH.MF      PLSL8.MF       PLSS9.MF       PLU10.MF
+         PLITT10.MF     PLSL9.MF       PLSY10.MF      PLVTT10.MF
+         PLMIB10.MF     PLSSBI10.MF
+
+    d) dodatkowe pliki parametryczne:
+
+       * CMSSBI10.MF (odwo/luj/a si/e do/n pliki PLSSBI10, PLSSBI36 
+         i PLSSBI48)
+
+       * CMBX11.MF, CMR11.MF, CMSL11.MF, CMTI11.MF (te pliki s/lu/zy/ly
+         do generowania u/zywanych poprzednio 11-punktowych font/ow P1)
+
+       * DLR10 -- przyk/ladowy plik s/lu/z/acy do generowania fontu
+         PLR10 at 10dd (w jednostkach przyj/etych w polskim drukarstwie)
+
+    e) plik pomocniczy wczytywany podczas przetwarzania przez METAFONT-a
+       plik/ow parametrycznych PL:
+
+         FIK_MIK.MF
+
+    f) plik zawieraj/acy opis trybu generowania font/ow dla fotona/swietlarek
+       Linotronic 100 i Linotronic 300; tre/s/c tego pliku nale/zy wkopiowa/c
+       do pliku LOCAL.MF przed generowaniem format/ow bazowych (PLAIN.BAS
+       i CM.BAS) za pomoc/a inicjalizacyjnej wersji METAFONT-a (INIMF):
+
+         LINEMODE.MF
+

@@ -1,0 +1,195 @@
+%%
+%% This is file `hvtex.def',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% hyperref.dtx  (with options: `hvtex,outlines')
+%% 
+%% File: hyperref.dtx Copyright (C) 1995-1999 Sebastian Rahtz
+%%
+%% This package may be distributed under the terms of the LaTeX Project Public
+%% License, as described in lppl.txt in the base LaTeX distribution.
+%% Either version 1.0 or, at your option, any later version.
+%%
+\AtBeginDocument{%
+  \ifhy@colorlinks
+   \def\pdfBorderAttrs{/Border [0 0 0]}%
+  \fi
+}
+\providecommand\@pdfview{FitBH}
+\def\@pdfborder{0 0 1}%
+\def\pdfBorderAttrs{/Border [\@pdfborder]}%
+\def\CurrentBorderColor{\@linkbordercolor}
+\def\hyper@anchor#1{%
+   {\let\protect=\string\special{!aname #1;\@pdfview}}%
+   \hy@activeanchortrue
+   \hy@colorlink{\@anchorcolor}\anchor@spot\hy@endcolorlink
+   \hy@activeanchorfalse
+}
+\def\hyper@anchorstart#1{%
+ {\hyper@chars\special{!aname #1;\@pdfview}}%
+  \hy@activeanchortrue
+}
+\def\hyper@anchorend{%
+  \hy@activeanchorfalse
+}
+\def\@urltype{url}
+\def\hyper@linkstart#1#2{%
+  \hy@colorlink{\csname @#1color\endcsname}%
+  \edef\CurrentBorderColor{\csname @#1bordercolor\endcsname}%
+  \def\@tempa{#1}\ifx\@tempa\@urltype
+  \special{!aref <u=/Type /Action /S /URI /URI (#2)>;a=<\pdfBorderAttrs \space /C [\CurrentBorderColor]>}%
+  \else
+  \special{!aref #2;a=<\pdfBorderAttrs\space /C [\CurrentBorderColor]>}%
+  \fi
+}
+\def\hyper@linkend{%
+  \special{!endaref}%
+  \hy@endcolorlink
+}
+\def\hyper@linkfile#1#2#3{%
+ \leavevmode
+ \special{!aref <f=#2>#3;a=<\pdfBorderAttrs\space /C [\@filebordercolor]>}%
+ \hy@colorlink{\@filecolor}#1\hy@endcolorlink
+ \special{!endaref}%
+}
+\def\hyper@linkurl#1#2{%
+  \bgroup
+  \hyper@chars
+  \leavevmode
+  \special{!aref <u=/Type /Action /S /URI /URI (#2)>;a=<\pdfBorderAttrs\space /C [\@urlbordercolor]>}%
+  \hy@colorlink{\@urlcolor}#1\hy@endcolorlink
+  \special{!endaref}%
+  \egroup
+}
+\def\hyper@link#1#2#3{%
+   \edef\CurrentBorderColor{\csname @#1bordercolor\endcsname}%
+   \leavevmode
+   \special{!aref #2;a=<\pdfBorderAttrs\space /C [\CurrentBorderColor]>}%
+   \hy@colorlink{\csname @#1color\endcsname}#3\hy@endcolorlink
+   \special{!endaref}%
+}
+\def\hyper@image#1#2{%
+  \hyper@linkurl{#2}{#1}}
+
+\def\Acrobatmenu#1#2{%
+   \def\CurrentBorderColor{\@menubordercolor\endcsname}%
+   \leavevmode
+   \special{!aref <u=/S /Named /N /#1>;a=<\pdfBorderAttrs \space /C [\CurrentBorderColor]>}%
+   \hy@colorlink{\@menucolor}#2\hy@endcolorlink\special{!endaref}%
+}
+\def\@pdfproducer{VTeX}
+\def\PDF@SetupDoc{%
+\ifx\@pdfpagescrop\@empty\else
+\special{!pdfinfo b=<\@pdfpagescrop>}%
+\fi
+\special{!onopen Page\@pdfstartpage}%
+        \special{!pdfinfo p=<\@pdfpagemode>}%
+        \special{!pdfinfo u=<\@baseurl>}%
+}%
+\def\PDF@FinishDoc{%
+\special{!pdfinfo a=<\@pdfauthor>}%
+\special{!pdfinfo t=<\@pdftitle>}%
+\special{!pdfinfo s=<\@pdfsubject>}%
+\special{!pdfinfo c=<\@pdfcreator>}%
+\special{!pdfinfo r=<\@pdfproducer>}%
+\special{!pdfinfo k=<\@pdfkeywords>}%
+}
+\let\H@old@sect\@sect
+\def\@sect#1#2#3#4#5#6[#7]#8{%
+ \H@old@sect{#1}{#2}{#3}{#4}{#5}{#6}[{#7}]{#8}%
+ \ifx\\#1\\\else
+  \ifnum#2>\c@secnumdepth\else
+    \ifhy@naturalnames
+      {\let\textlatin\@firstofone
+      \xdef\@thishlabel{\csname the#1\endcsname}}%
+    \else
+     \edef\@thishlabel{\csname theH#1\endcsname}%
+    \fi
+\@writetorep{\csname the#1\endcsname}{#7}{#1.\@thishlabel}{#2}\fi
+ \fi
+}
+\let\H@old@part\@part
+\def\@part[#1]#2{%
+ \H@old@part[{#1}]{#2}%
+ \ifhy@naturalnames
+   {\let\textlatin\@firstofone
+    \@writetorep{\thepart}{#1}{part.\thepart}{-1}}%
+ \else
+   \@writetorep{\thepart}{#1}{part.\theHpart}{-1}%
+ \fi
+}
+\let\H@old@chapter\@chapter
+\def\@chapter[#1]#2{%
+ \H@old@chapter[{#1}]{#2}%
+ \ifhy@naturalnames
+  {\let\textlatin\@firstofone
+   \@writetorep{\thechapter}{#1}{chapter.\thechapter}{0}}%
+ \else
+   \@writetorep{\thechapter}{#1}{chapter.\theHchapter}{0}%
+ \fi
+  }
+\expandafter\def\csname Parent-4\endcsname{}
+\expandafter\def\csname Parent-3\endcsname{}
+\expandafter\def\csname Parent-2\endcsname{}
+\expandafter\def\csname Parent-1\endcsname{}
+\expandafter\def\csname Parent0\endcsname{}
+\expandafter\def\csname Parent1\endcsname{}
+\expandafter\def\csname Parent2\endcsname{}
+\expandafter\def\csname Parent3\endcsname{}
+\expandafter\def\csname Parent4\endcsname{}
+\newwrite\@outlinefile
+\def\@writetorep#1#2#3#4{\ifx\WriteBookmarks\relax{}%
+    \else\@@writetorep{#1}{#2}{#3}{#4}\fi}
+\def\Hy@currentbookmarklevel{0}
+\def\@@writetorep#1#2#3#4{%
+  \xdef\Hy@currentbookmarklevel{#4}%
+  \@tempcnta#4
+  \expandafter\xdef\csname Parent#4\endcsname{#3}%
+  \advance\@tempcnta by -1
+  \pdfstringdef\@tempa{%
+    \ifhy@bookmarksnumbered\ifx\\#1\\\else#1 \fi\fi
+    #2%
+  }%
+  \protected@write\@outlinefile{}{%
+    \protect\BOOKMARK[#4]{#3}%
+      {\@tempa}{\csname Parent\the\@tempcnta\endcsname}%
+  }%
+}
+\newcommand{\currentpdfbookmark}{%
+  \pdfbookmark[\Hy@currentbookmarklevel]%
+}
+\newcommand{\subpdfbookmark}{%
+  \@tempcnta\Hy@currentbookmarklevel
+  \advance\@tempcnta by 1
+  \expandafter\pdfbookmark\expandafter[\the\@tempcnta]%
+}
+\renewcommand\pdfbookmark[3][0]{%
+  \@writetorep{}{#2}{#3.#1}{#1}%
+  \hyper@anchorstart{#3.#1}\hyper@anchorend
+}
+
+\def\BOOKMARK{\@ifnextchar[{\@BOOKMARK}{\@BOOKMARK[1]}}
+\newcount\@serial@counter\@serial@counter=1\relax
+\def\@openstatus{c}% Closed - default
+\def\@BOOKMARK #1#2#3{%
+  \toks@={#2}%
+  \expandafter\edef\csname @count@#1\endcsname{\the\@serial@counter}%
+  \edef\@mycount{\the\@serial@counter}%
+  \advance\@serial@counter by 1\relax
+  \edef\@parcount{\expandafter\ifx\csname @count@#3\endcsname\relax 0\else\csname @count@#3\endcsname\fi}%
+  \special{!outline #1;p=\@parcount,i=\@mycount,s=\@openstatus,t=\the\toks@}%
+  }%
+\def\ReadBookmarks{%
+  \ifhy@bookmarksopen\def\@openstatus{o}\fi
+  \InputIfFileExists{\jobname.out}{}{}%
+  \ifx\WriteBookmarks\relax\else
+   \if@filesw
+    \immediate\openout\@outlinefile=\jobname.out
+   \fi
+  \fi
+}
+\endinput
+%%
+%% End of file `hvtex.def'.

@@ -1,0 +1,163 @@
+%%
+%% This is file `spanish.ldf',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% spanish.dtx  (with options: `code')
+%% Copyright 1998-1999 Johannes L. Braams and any individual authors
+%% listed elsewhere in this file.  All rights reserved.
+%% 
+%% For further copyright information see any other copyright notices in
+%% this file.
+%% 
+%% This file is part of the Babel system release 3.6.
+%% --------------------------------------------------
+%% 
+%% It may be distributed under the terms of the LaTeX Project Public
+%% License, as described in lppl.txt in the base LaTeX distribution.
+%% Either version 1.0 or, at your option, any later version.
+\ProvidesLanguage{spanish}
+        [1999/04/19 v3.4i Spanish support from the babel system]
+%% File `spanish.dtx'
+%% Babel package for LaTeX version 2e
+%% Copyright (C) 1989 - 1999
+%%           by Johannes Braams, TeXniek
+%% Spanish Language Definition File
+%% Copyright (C) 1991 - 1999
+%%           by Julio Sanchez
+%% Please report errors to: Julio Sanchez <jsanchez@gmv.es>
+%%                          (or J.L. Braams <JLBraams@cistron.nl)
+\LdfInit{spanish}\captionsspanish
+\ifx\l@spanish\@undefined
+  \@nopatterns{Spanish}
+  \adddialect\l@spanish0
+\fi
+\addto\captionsspanish{%
+  \def\prefacename{Prefacio}%
+  \def\refname{Referencias}%
+  \def\abstractname{Resumen}%
+  \def\bibname{Bibliograf\'{\i}a}%
+  \def\chaptername{Cap\'{\i}tulo}%
+  \def\appendixname{Ap\'endice}%
+  \def\contentsname{\'Indice General}%
+  \def\listfigurename{\'Indice de Figuras}%
+  \def\listtablename{\'Indice de Tablas}%
+  \def\indexname{\'Indice de Materias}%
+  \def\figurename{Figura}%
+  \def\tablename{Tabla}%
+  \def\partname{Parte}%
+  \def\enclname{Adjunto}%
+  \def\ccname{Copia a}%
+  \def\headtoname{A}%
+  \def\pagename{P\'agina}%
+  \def\seename{v\'ease}%
+  \def\alsoname{v\'ease tambi\'en}%
+  \def\proofname{Demostraci\'on}%
+  }%
+\def\datespanish{%
+  \def\today{\number\day~de\space\ifcase\month\or
+    enero\or febrero\or marzo\or abril\or mayo\or junio\or
+    julio\or agosto\or septiembre\or octubre\or noviembre\or
+    diciembre\fi
+    \space de~\number\year}}
+\addto\extrasspanish{\languageshorthands{spanish}}
+\initiate@active@char{"}
+\initiate@active@char{~}
+\addto\extrasspanish{%
+  \bbl@activate{"}%
+  \bbl@activate{~}}
+\@ifpackagewith{babel}{activeacute}{%
+  \initiate@active@char{'}}{}
+\@ifpackagewith{babel}{activeacute}{%
+  \addto\extrasspanish{\bbl@activate{'}}}{}
+\addto\extrasspanish{%
+  \babel@save\"%
+  \babel@save\~%
+  \def\"{\protect\@umlaut}%
+  \def\~{\protect\@tilde}}
+\@ifpackagewith{babel}{activeacute}{%
+  \babel@save\'
+  \addto\extrasspanish{\def\'{\protect\@acute}}
+  }{}
+\def\spanishhyphenmins{\tw@\tw@}
+\let\dieresis\"
+\let\texttilde\~
+\@ifpackagewith{babel}{activeacute}{\let\textacute\'}{}
+\ifx\DeclareFontShape\@undefined
+  \wlog{Warning: You are using an old LaTeX}
+  \wlog{Some word breaks will not be found.}
+  \def\@umlaut#1{\allowhyphens\dieresis{#1}\allowhyphens}
+  \def\@tilde#1{\allowhyphens\texttilde{#1}\allowhyphens}
+  \@ifpackagewith{babel}{activeacute}{%
+    \def\@acute#1{\allowhyphens\textacute{#1}\allowhyphens}}{}
+\else
+  \ifx\f@encoding\bbl@t@one
+    \let\@umlaut\dieresis
+    \let\@tilde\texttilde
+    \@ifpackagewith{babel}{activeacute}{%
+      \let\@acute\textacute}{}
+  \else
+    \wlog{Warning: You are using encoding \f@encoding\space
+      instead of T1.}
+    \wlog{Some word breaks will not be found.}
+    \def\@umlaut#1{\allowhyphens\dieresis{#1}\allowhyphens}
+    \def\@tilde#1{\allowhyphens\texttilde{#1}\allowhyphens}
+    \@ifpackagewith{babel}{activeacute}{%
+      \def\@acute#1{\allowhyphens\textacute{#1}\allowhyphens}}{}
+  \fi
+\fi
+\declare@shorthand{spanish}{"u}{\@umlaut u}
+\declare@shorthand{spanish}{"U}{\@umlaut U}
+\declare@shorthand{spanish}{"<}{%
+  \textormath{\guillemotleft}{\mbox{\guillemotleft}}}
+\declare@shorthand{spanish}{">}{%
+  \textormath{\guillemotright}{\mbox{\guillemotright}}}
+\declare@shorthand{spanish}{"o}{%
+  \leavevmode\raise1ex\hbox{\underbar{\scriptsize o}}}
+\declare@shorthand{spanish}{"a}{%
+  \leavevmode\raise1ex\hbox{\underbar{\scriptsize a}}}
+\@ifpackagewith{babel}{activeacute}{%
+  \declare@shorthand{spanish}{'a}{\textormath{\@acute a}{^{\prime} a}}
+  \declare@shorthand{spanish}{'e}{\textormath{\@acute e}{^{\prime} e}}
+  \declare@shorthand{spanish}{'i}{\textormath{\@acute\i{}}{^{\prime}i}}
+  \declare@shorthand{spanish}{'o}{\textormath{\@acute o}{^{\prime} o}}
+  \declare@shorthand{spanish}{'u}{\textormath{\@acute u}{^{\prime} u}}
+  \declare@shorthand{spanish}{'A}{\textormath{\@acute A}{^{\prime} A}}
+  \declare@shorthand{spanish}{'E}{\textormath{\@acute E}{^{\prime} E}}
+  \declare@shorthand{spanish}{'I}{\textormath{\@acute I}{^{\prime} I}}
+  \declare@shorthand{spanish}{'O}{\textormath{\@acute O}{^{\prime} O}}
+  \declare@shorthand{spanish}{'U}{\textormath{\@acute U}{^{\prime} U}}
+  \declare@shorthand{spanish}{''}{%
+    \textormath{\textquotedblright}{\sp\bgroup\prim@s'}}
+  \declare@shorthand{spanish}{'n}{\textormath{\~n}{^{\prime} n}}
+  \declare@shorthand{spanish}{'N}{\textormath{\~N}{^{\prime} N}}
+  }{}
+\declare@shorthand{spanish}{~n}{\textormath{\~n}{\@tilde n}}
+\declare@shorthand{spanish}{~N}{\textormath{\~N}{\@tilde N}}
+\declare@shorthand{spanish}{"-}{\nobreak\-\bbl@allowhyphens}
+\declare@shorthand{spanish}{"|}{%
+  \textormath{\nobreak\discretionary{-}{}{\kern.03em}%
+              \allowhyphens}{}}
+\declare@shorthand{spanish}{""}{\hskip\z@skip}
+\ldf@finish{spanish}
+%%
+%% \CharacterTable
+%%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%%   Digits        \0\1\2\3\4\5\6\7\8\9
+%%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%%   Dollar        \$     Percent       \%     Ampersand     \&
+%%   Acute accent  \'     Left paren    \(     Right paren   \)
+%%   Asterisk      \*     Plus          \+     Comma         \,
+%%   Minus         \-     Point         \.     Solidus       \/
+%%   Colon         \:     Semicolon     \;     Less than     \<
+%%   Equals        \=     Greater than  \>     Question mark \?
+%%   Commercial at \@     Left bracket  \[     Backslash     \\
+%%   Right bracket \]     Circumflex    \^     Underscore    \_
+%%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%%   Right brace   \}     Tilde         \~}
+%%
+\endinput
+%%
+%% End of file `spanish.ldf'.

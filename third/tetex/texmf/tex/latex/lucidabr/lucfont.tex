@@ -1,0 +1,76 @@
+%%
+%% This is file `lucfont.tex',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% lucidabr.dtx  (with options: `T1,lucfont')
+%% This is a generated file for Lucidabr.
+%% No permission is granted to distribute a
+%% modified version of this file under its original name.
+%%
+%% Copyright 1995 1996 Sebastian Rahtz
+%% Copyright 1997 1998 Sebastian Rahtz, David Carlisle
+%% This package may be distributed under the terms of the LaTeX Project Public
+%% License, as described in lppl.txt in the base LaTeX distribution.
+%% Either version 1.0 or, at your option, any later version.
+%%
+%%
+\ProvidesFile{lucfont.tex}
+ [1999/03/29 v4.2 %
+ Lucida Bright text font test
+ (SPQR/DPC)]
+\documentclass{article}
+\usepackage[T1]{fontenc}
+\begin{document}
+\title{All the Lucida text fonts}
+\author{prepared by Sebastian Rahtz}
+\date{February 19th 1995}
+\maketitle
+\def\test#1#2#3#4#5{%
+ \item[#1/#2/#3]#4 (#5):
+ {\fontfamily{#1}\fontseries{#2}\fontshape{#3}\selectfont
+ Animadversion for a giraffe costs \pounds123. Wa\ss\ ist
+ das f\"ur ein Klopf?
+ We are often na{\"\i}ve vis-\`{a}-vis
+the d{\ae}monic ph{\oe}nix's official r\^{o}le in fluffy souffl\'{e}s}
+}
+
+\begin{description}
+\test{hlx}{b}{it}{hlxdi8t}{LucidaFax-DemiItalic}
+\test{hlx}{b}{n}{hlxd8t}{LucidaFax-Demi}
+\test{hlx}{m}{it}{hlxrir8t}{LucidaFax-Italic}
+\test{hlx}{m}{n}{hlxr8t}{LucidaFax}
+
+\test{hlh}{b}{it}{hlcdib8t}{LucidaBright-DemiItalic}
+\test{hlh}{b}{n}{hlcdb8t}{LucidaBright-Demi}
+\test{hlh}{m}{it}{hlcrib8t}{LucidaBright-Italic}
+\test{hlh}{m}{n}{hlcrb8t}{LucidaBright}
+
+\test{hlce}{m}{it}{hlcrie8t}{LucidaCalligraphy-Italic}
+
+\test{hlcf}{m}{n}{hlcrf8t}{LucidaBlackletter}
+
+\test{hlcn}{m}{it}{hlcrin8t}{LucidaCasual-Italic}
+\test{hlcn}{m}{n}{hlcrn8t}{LucidaCasual}
+
+\test{hlst}{b}{n}{hlsbt8t}{LucidaSans-TypewriterBold}
+\test{hlst}{b}{sl}{hlsbot8t}{LucidaSans-TypewriterBoldOblique}
+
+\test{hls}{ub}{it}{hlsbi8t}{LucidaSans-BoldItalic}
+\test{hls}{ub}{n}{hlsb8t}{LucidaSans-Bold}
+\test{hls}{b}{it}{hlsdi8t}{LucidaSans-DemiItalic}
+\test{hls}{b}{n}{hlsd8t}{LucidaSans-Demi}
+\test{hls}{m}{it}{hlsri8t}{LucidaSans-Italic}
+\test{hls}{m}{n}{hlsr8t}{LucidaSans}
+
+\test{hlct}{b}{n}{hlcbt8t}{LucidaTypewriterBold}
+\test{hlct}{b}{sl}{hlcbot8t}{LucidaTypewriterOblique}
+\test{hlcw}{m}{it}{hlcriw8t}{LucidaHandwriting-Italic}
+
+\end{description}
+\end{document}
+
+\endinput
+%%
+%% End of file `lucfont.tex'.

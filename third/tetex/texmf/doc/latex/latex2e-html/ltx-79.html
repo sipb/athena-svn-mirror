@@ -1,0 +1,43 @@
+<html>
+<head><title>Help On LaTeX verbatim</title></head>
+<body bgcolor="#ffffff" text="#000000" link="#000099" vlink="#cc0000" alink="#cc0000">
+<h1><font size="-2">Hypertext Help with LaTeX</font><br><font color="#cc0000">verbatim</font></h1>
+<p>
+<p><pre>
+ \begin{verbatim}
+   text 
+ \end{verbatim}
+</pre>
+or 
+<pre>
+ \begin{verbatim*}
+   text
+ \end{verbatim*}
+</pre>
+ The <tt>verbatim</tt> environment is a paragraph-making  environment  
+ that gets
+ LaTeX  to print  exactly  what you type in.   It turns  LaTeX  into  a
+ typewriter  with carriage  returns  and blanks having  the same effect
+ that they would on a typewriter.  The output looks exactly as it
+ looks in the input file.
+<p>
+ The difference between <tt>verbatim</tt> and <tt>verbatim*</tt>
+ is that the latter prints spaces as "visual" spaces, i.e.,
+ a short, squat "u".
+<p>
+ The only text which cannot be placed in the <tt>verbatim</tt>
+ environment is the 14-character sequence "\end{verbatim}".
+<p>
+ The <tt>verbatim</tt> environment may <strong>not</strong> be used
+ in the argument of another command.  However, it <strong>can</strong> be
+ placed inside a <a href="ltx-267.html">minipage environment</a> which 
+ allows you to manipulate it's placement.
+<hr>
+Also see <A href="ltx-342.html">\verb</A><br>
+Back to the <a href="ltx-2.html">LaTeX Table of Contents</a>
+<hr>
+<address>
+Revised: Sheldon Green, 4 Dec 1995.
+</address>
+</body>
+</html>

@@ -1,0 +1,107 @@
+<html>
+<head><title>Help On LaTeX picture</title></head>
+<body bgcolor="#ffffff" text="#000000" link="#000099" vlink="#cc0000" alink="#cc0000">
+<h1><font size="-2">Hypertext Help with LaTeX</font><br><font color="#cc0000">Picture environment</font></h1>
+<p>
+<p><pre>
+ \begin{picture}(width,height)(x-offset,y-offset)
+ ...
+  picture commands
+ ...
+ \end{picture}
+</pre>
+<p>
+ The picture  environment  allows you to create  just about any kind of
+ picture you want containing text, lines, arrows and circles.  You tell
+ LaTeX  where  to  put  things  in  the  picture  by  specifying  their
+ coordinates.   A coordinate  is a number that may have a decimal point
+ and a minus sign  (<tt>-</tt>), for example,  5, 2.3, or -3.1416.   A coordinate
+ specifies a length in multiples of the unit length 
+ <a href="unitlength.html"><tt>\unitlength</tt></a>,  so if
+ <tt>\unitlength</tt>  has been set to 1cm, then the coordinate 2.54 specifies a
+ length of 2.54 centimeters.   You can change  the value of <tt>\unitlength</tt>
+ anywhere  you want, using the 
+ <a href="ltx-88.html"><tt>\setlength</tt></a>  command,  
+ but it should be set before the beginning of the picture environment since
+ strange things may happen if you try changing it inside the picture environment.
+<p>
+ A position is a pair of coordinates,  such as (2.4,-5), specifying the
+ point  with x-coordinate = 2.4 and y-coordinate = -5.   Coordinates  are
+ specified  in the  usual  way  with  respect  to an origin,  which  is
+ normally  at the lower-left  corner of the picture.   Note that when a
+ position  appears as an argument,  it is not enclosed  in braces;  the
+ parentheses serve to delimit the argument.
+<p>
+ The  picture  environment  has  one  mandatory  argument,  which 
+ specifies  the size  of the picture.   The  environment
+ produces  a rectangular  box with width and height determined  by this
+ argument's two values.
+<p>
+ The  picture  environment  also  has  an optional  position  argument,
+ following  the size argument,  that  can change  the origin.   (Unlike
+ ordinary optional arguments,  this argument is not contained in square
+ brackets.) The optional argument gives the coordinates of the point at
+ the lower-left corner of the picture (thereby determining the origin). 
+ For example, if 
+ <a href="unitlength.html"><tt>\unitlength</tt></a> has been set to 1mm, 
+ the command
+<p>
+<p><pre>
+ \begin{picture}(100,200)(10,20)
+</pre>
+ produces   a  picture   of  width  100  millimeters   and  height  200
+ millimeters,  whose lower-left  corner is the point (10,20)  and whose
+ upper-right  corner is therefore the point (110,220).   
+ Typically one initially omits the optional  argument,  leaving  the
+ origin  at the lower-left  corner.   If you then want  to modify  your
+ picture by shifting everything, you just add the appropriate  optional
+ argument.
+<p>
+ The environment's  mandatory  argument determines  the nominal size of
+ the picture.   This need  bear  no relation  to how large  the picture
+ really  is; LaTeX will happily  allow  you to put things  outside  the
+ picture, or even off the page.  The picture's  nominal size is used by
+ TeX in determining how much room to leave for it.
+<p>
+ Everything that appears in a picture is drawn by the 
+ <a href="ltx-296.html"><tt>\put</tt></a> command. The
+ command
+<pre>
+ \put (11.3,-.3){obj}
+</pre>
+ puts the object specified  by <tt>obj</tt> in the picture, with its reference
+ point at coordinates  (11.3,-.3).   The reference  points  for various
+ objects will be described below.
+<p>
+ The <a href="ltx-296.html"><tt>\put</tt></a> 
+ command creates an LR box.  You can put anything  in the text
+ argument  of the <tt>\put</tt> command  that you'd put into the argument  
+ of an <a href="ltx-265.html"><tt>\mbox</tt></a> 
+ (or related)  command.   When you do this,  the reference  point
+ will be the lower left corner of the box.
+<p>
+See also
+<ul>
+<li><A href="ltx-210.html"><tt>\circle</tt></A>
+<li><A href="ltx-216.html"><tt>\dashbox</tt></A>
+<li><A href="ltx-236.html"><tt>\frame</tt></A>
+<li><A href="ltx-237.html"><tt>\framebox</tt></A>
+<li><A href="ltx-257.html"><tt>\line</tt></A>
+<li><A href="ltx-259.html"><tt>\linethickness</tt></A>
+<li><A href="ltx-262.html"><tt>\makebox</tt></A>
+<li><A href="ltx-269.html"><tt>\multiput</tt></A>
+<li><A href="ltx-286.html"><tt>\oval</tt></A>
+<li><A href="ltx-296.html"><tt>\put</tt></A>
+<li><A href="ltx-314.html"><tt>\shortstack</tt></A>
+<li><a href="unitlength.html"><tt>\unitlength</tt></a>
+<li><A href="ltx-341.html"><tt>\vector</tt></A>
+<p>
+<li><a href="ltx-86.html">Lengths</a>
+</ul>
+Return to <a href="ltx-2.html">LaTeX Table of Contents</a>
+<hr>
+<address>
+Revised: Sheldon Green, 12 May 1995.
+</address>
+</body>
+</html>

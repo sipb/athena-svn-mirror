@@ -1,0 +1,150 @@
+%%
+%% This is file `dir.tex',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% scrlettr.dtx  (with options: `dir')
+%% 
+%% Copyright 1994-1997 Axel Kielhorn, Markus Kohm and Frank Neukam.
+%% All rights reserved. For further copyright information see the file
+%% readme.txt or liesmich.txt, and any other copyright indicated in this
+%% file.
+%% 
+%% This file is part of the LaTeX2e KOMA-Script bundle.
+%% ----------------------------------------------------
+%% 
+%% The KOMA-Script bundle bases on the Script-family created by
+%% Frank Neukam 1993 and the standard documents classes created
+%% by the LaTeX3-Team 1994-1996.
+%% -------------------------------------------------------------
+%% 
+%%  This system is distributed in the hope that it will be useful,
+%%  but WITHOUT ANY WARRANTY; without even the implied warranty of
+%%  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+%% 
+%% 
+%% IMPORTANT NOTICE:
+%% 
+%% For error reports in case of UNCHANGED versions see documentation.
+%% 
+%% Please do not request updates from us directly. Distribution is
+%% done through Mail-Servers, Mailboxes and TeX organizations.
+%% 
+%% You are not allowed to change this file.
+%% 
+%% You are allowed to distribute this file under the condition that
+%% it is distributed together with all files mentioned in readme.txt
+%% and liesmich.txt.
+%% 
+%% If you receive only some of these files from someone, complain!
+%% 
+%% You are NOT ALLOWED to distribute this file alone. You are NOT
+%% ALLOWED to take money for the distribution or use of either this
+%% file or a changed version, except for a nominal charge for copying
+%% etc.
+%% 
+\ProvidesFile{dir.tex}
+              [1997/05/28 v2.3f LaTeX2e KOMA
+              interactiv address-directory generation]
+\documentclass[headsepline,10pt,twoside]{scrartcl}
+\raggedbottom
+\newcommand*\jj {j}
+\newcommand*\ja {ja}
+\newcommand*\y  {y}
+\newcommand*\yes{yes}
+\newread\ttyin
+\newcommand*{\gobble}[1]{}
+\def\iden#1{#1}
+\def\strip#1#2 \gobble{\def #1{#2}}
+\def\defpar{\par}
+\def\Ask#1#2{%
+    \message{#2}\read\ttyin to #1\ifx#1\defpar\def#1{}\else
+    \iden{\expandafter\strip\expandafter#1#1\gobble\gobble} \gobble\fi}
+\newif\ifDecision
+\newcommand*\adrfile{}
+\newcommand*\adrtitle{}
+\typeout{^^J%
+   *** dir.tex v2.0 by Frank Neukam <01 Dec 1993>^^J%
+         *** LaTeX2e-changes by Markus Kohm 1994-1996^^J%
+         ^^J%
+   To create a address-directory just answer the questions:^^J%
+         ^^J}
+\Ask\answer{Use german? [y/n]^^J%
+            Mit deutscher Sprachanpassung? [j/n]}
+\ifx\jj \answer \Decisiontrue\else
+\ifx\ja \answer \Decisiontrue\else
+\ifx\y  \answer \Decisiontrue\else
+\ifx\yes\answer \Decisiontrue\else
+                \Decisionfalse\fi\fi\fi\fi
+\ifDecision
+     \usepackage{german}
+\fi
+\InputIfFileExists{dir.cfg}{%
+     \typeout{Load local configuration-file.}}{%
+     \typeout{No local configuration-file found.}}
+\Ask\adrfile{^^J%
+             Name of address-file (without .adr)?^^J%
+             Name der Adressdatei (ohne .adr)?}
+\Ask\adrtitle{^^J%
+              Title of directory/list?^^J%
+              Titel des Verzeichnisses?}
+\newdimen\paperwidth
+\newdimen\leftfield
+\newdimen\rightfield
+\newdimen\adrindent
+\paperwidth 210mm
+\leftfield 40mm
+\rightfield 25mm
+\adrindent 1em
+\advance\leftfield by -\adrindent
+\textwidth 70mm
+\oddsidemargin -1in
+\evensidemargin -1in
+\advance\oddsidemargin by 9mm
+\advance\evensidemargin by \paperwidth
+\advance\evensidemargin by -9mm
+\advance\evensidemargin by -\textwidth
+\textheight 120mm
+\headheight 1.25\baselineskip
+\headsep 0.25\baselineskip
+\footskip 1.5\baselineskip
+\topmargin -1in
+\advance\topmargin by 8mm
+\marginparwidth 0in
+\marginparsep 0in
+\marginparpush 0in
+\parskip 0.5\baselineskip
+\parindent 0in
+\begin{document}
+\def\headfont{\sffamily\bfseries}
+\def\adrchar#1{\clearpage\typeout{#1}\markboth{#1}{#1}}
+\def\adrentry#1#2#3#4#5#6#7#8{\hspace{\adrindent}%
+ \parbox[b]{\leftfield}{\raggedright \hspace{-\adrindent}{\sc #1}%
+ \def\tempa{#1}\ifx \tempa\empty \else , #2\fi%
+ \def\tempa{#3}\ifx \tempa\empty \else \par #3\fi%
+ \def\tempa{#7}\ifx \tempa\empty \else \par (#7)\fi}%
+ \hfill%
+ \parbox[b]{\rightfield}{\raggedright%
+ \def\tempa{#8}\ifx \tempa\empty \else {\scriptsize #8}\par \fi #4}\par}
+\ifx\adrfile\empty \else
+     \InputIfFileExists{\adrfile.adr}{%
+ \pagestyle{empty}
+ \null\vfil
+ \begin{center}
+ {\Large \sfb \adrtitle}
+ \end{center}
+ \vfil\vfil\null
+ \cleardoublepage
+ \pagestyle{myheadings}
+     }{%
+     \typeout{^^J%
+              *** File \adrfile.adr not found!^^J%
+              *** Datei \adrfile.adr nicht gefunden!^^J%
+              ^^J}
+     }
+\fi
+\end{document}
+\endinput
+%%
+%% End of file `dir.tex'.

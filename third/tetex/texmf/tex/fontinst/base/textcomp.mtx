@@ -1,0 +1,436 @@
+%%% ====================================================================
+%%%  @TeX-font-metrics-file{
+%%%     author          = "Sebastian Rahtz and Ulrik Vieth",
+%%%     version         = "1.801",
+%%%     date            = "29 June 1998",
+%%%     time            = "23:59:47 CEST",
+%%%     filename        = "textcomp.mtx",
+%%%     email           = "vieth@thphy.uni-duesseldorf.de",
+%%%     URL             = "http://www.thphy.uni-duesseldorf.de/~vieth/",
+%%%     checksum        = "52727 436 726 11558",
+%%%     codetable       = "ISO/ASCII",
+%%%     keywords        = "metrics, TeX, PostScript",
+%%%     supported       = "yes",
+%%%     abstract        = "This is a font metrics file, for use with the
+%%%                        fontinst utility. It provides the defaults
+%%%                        used to install the text companion glyphs.",
+%%%     package         = "fontinst",
+%%%     dependencies    = "fontinst.sty, fontdoc.sty",
+%%%  }
+%%% ====================================================================
+
+\relax
+
+\documentclass[twocolumn]{article}
+\usepackage{fontdoc}
+
+\title{The {\tt fontinst} text companion glyphs}
+\author{Sebastian Rahtz, Ulrik Vieth}
+\date{29 June 1998 \\
+Version 1.801}
+
+\begin{document}
+\maketitle
+
+\section{Introduction}
+
+This document describes the glyphs used by the {\tt fontinst}
+package when generating \TeX{} text companion fonts.
+
+\metrics
+
+\needsfontinstversion{1.800}
+
+% \unfakable is a glyph which can't be faked.
+
+\setcommand\unfakable#1{
+   \setglyph{#1}
+      \ifisglyph{#1-not}\then
+         \moveup{\neg{\depth{#1-not}}}
+         \glyphrule{
+            \width{#1-not}
+         }{
+            \add{\depth{#1-not}}{\height{#1-not}}
+         }
+         \resetitalic{\italic{#1-not}}
+         \moveup{\depth{#1-not}}
+      \else
+         \glyphrule{500}{500}
+      \fi
+      \glyphwarning{missing glyph `#1'}
+   \endsetglyph
+}
+
+% \fakeglyph replaces glyph #1 by #2, if it exists.
+
+\setcommand\fakeglyph#1#2{
+  \ifisglyph{#2}\then
+   \setglyph{#1}
+      \glyph{#2}{1000}
+   \endsetglyph
+  \fi
+}
+
+\comment{\section{Default values}}
+
+\setint{italicslant}{0}
+\setint{xheight}{\height{x}}
+\setint{capheight}{\height{A}}
+\setint{ascender}{\height{d}}
+\setint{descender}{\depth{g}}
+\setint{underlinethickness}{40}
+
+
+\comment{\section{Oldstyle numerals}}
+
+\unfakable{zerooldstyle}
+\unfakable{oneoldstyle}
+\unfakable{twooldstyle}
+\unfakable{threeoldstyle}
+\unfakable{fouroldstyle}
+\unfakable{fiveoldstyle}
+\unfakable{sixoldstyle}
+\unfakable{sevenoldstyle}
+\unfakable{eightoldstyle}
+\unfakable{nineoldstyle}
+
+
+\comment{\section{Capital accents}}
+
+\fakeglyph{capitalgrave}{grave}
+\fakeglyph{capitalacute}{acute}
+\fakeglyph{capitalcircumflex}{circumflex}
+\fakeglyph{capitaltilde}{tilde}
+\fakeglyph{capitaldieresis}{dieresis}
+\fakeglyph{capitalhungarumlaut}{hungarumlaut}
+\fakeglyph{capitalring}{ring}
+\fakeglyph{capitalcaron}{caron}
+\fakeglyph{capitalbreve}{breve}
+\fakeglyph{capitalmacron}{macron}
+\fakeglyph{capitaldotaccent}{dotaccent}
+\fakeglyph{capitalcedilla}{cedilla}
+\fakeglyph{capitalogonek}{ogonek}
+
+
+\comment{\section{ASCII-style accents}}
+
+\ifisglyph{asciitilde}\then
+\setglyph{tildelow}
+   \glyph{asciitilde}{1000}
+\endsetglyph
+\fi
+
+\ifisglyph{grave}\then
+\setglyph{asciigrave}
+   \glyph{grave}{1000}
+\endsetglyph
+\fi
+
+\ifisglyph{breve}\then
+\setglyph{asciibreve}
+   \glyph{breve}{1000}
+\endsetglyph
+\fi
+
+\ifisglyph{acute}\then
+\setglyph{asciiacutedbl}
+  \ifisint{monowidth}\then
+   \glyph{acute}{1000}
+   \glyph{acute}{1000}
+  \else
+   \glyph{acute}{1000}
+   \movert{\neg{\scale{\width{acute}}{333}}}
+   \glyph{acute}{1000}
+  \fi
+\endsetglyph
+\fi
+
+\ifisglyph{grave}\then
+\setglyph{asciigravedbl}
+  \ifisint{monowidth}\then
+   \glyph{grave}{1000}
+   \glyph{grave}{1000}
+  \else
+   \glyph{grave}{1000}
+   \movert{\neg{\scale{\width{grave}}{333}}}
+   \glyph{grave}{1000}
+  \fi
+\endsetglyph
+\fi
+
+\ifisglyph{caron}\then
+\setglyph{asciicaron}
+   \glyph{caron}{1000}
+\endsetglyph
+\fi
+
+\ifisglyph{dieresis}\then
+\setglyph{asciidieresis}
+   \glyph{dieresis}{1000}
+\endsetglyph
+\fi
+
+\ifisglyph{macron}\then
+\setglyph{asciimacron}
+   \glyph{macron}{1000}
+\endsetglyph
+\fi
+
+\ifisglyph{acute}\then
+\setglyph{asciiacute}
+   \glyph{acute}{1000}
+\endsetglyph
+\fi
+
+
+\comment{\section{Glyphs}}
+
+\setglyph{capitalcompwordmark}
+   \glyphrule{0}{\int{capheight}}
+\endsetglyph
+\setint{capitalcompwordmark-spacing}{0}
+
+\setglyph{ascendercompwordmark}
+   \glyphrule{0}{\int{ascender}}
+\endsetglyph
+\setint{ascendercompwordmark-spacing}{0}
+
+
+% assumes that \depth{asterisk} is negative (above baseline),
+% so that \moveup{\depth{asterisk}} effectively moves down
+\ifisglyph{asterisk}\then
+ \setglyph{asteriskcentered}
+    \moveup{\depth{asterisk}}
+    \glyph{asterisk}{1000}
+    \moveup{\neg{\depth{asterisk}}}
+    \resetdepth{0}
+ \endsetglyph
+\fi
+
+% assumes that 2/3em = 667 and \width{endash} = 500
+\ifisglyph{endash}\then
+ \setglyph{twelveudash}
+   \ifisint{monowidth}\then
+      \glyph{hyphen}{1000}
+      \glyph{hyphen}{1000}
+   \else
+      \glyph{endash}{1000}
+      \movert{-333}
+      \glyph{endash}{1000}
+   \fi
+ \endsetglyph
+\fi
+
+% assumes that 3/4em = 750 and \width{endash} = 500
+\ifisglyph{endash}\then
+ \setglyph{threequartersemdash}
+   \ifisint{monowidth}\then
+    \glyph{hyphen}{1000}
+    \glyph{hyphen}{1000}
+   \else
+    \glyph{endash}{1000}
+    \movert{-250}
+    \glyph{endash}{1000}
+   \fi
+ \endsetglyph
+\fi
+
+\ifisglyph{bracketleft}\then
+ \setglyph{openbracketleft}
+   \ifisint{monowidth}\then
+    \glyph{bracketleft}{1000}
+    \glyph{bracketleft}{1000}
+   \else
+    \glyph{bracketleft}{1000}
+    \movert{\neg{\scale{\width{bracketleft}}{666}}}
+    \glyph{bracketleft}{1000}
+   \fi
+ \endsetglyph
+\fi
+
+\ifisglyph{bracketright}\then
+ \setglyph{openbracketright}
+   \ifisint{monowidth}\then
+    \glyph{bracketright}{1000}
+    \glyph{bracketright}{1000}
+   \else
+    \glyph{bracketright}{1000}
+    \movert{\neg{\scale{\width{bracketright}}{666}}}
+    \glyph{bracketright}{1000}
+   \fi
+\endsetglyph
+\fi
+
+\ifisglyph{bar}\then
+ \setglyph{bardbl}
+   \ifisint{monowidth}\then
+    \glyph{bar}{1000}
+    \glyph{bar}{1000}
+   \else
+    \glyph{bar}{1000}
+    \movert{\neg{\scale{\width{bar}}{333}}}
+    \glyph{bar}{1000}
+   \fi
+\endsetglyph
+\fi
+
+\ifisglyph{degree}\then
+ \setglyph{centigrade}
+    \glyph{degree}{1000}
+    \glyph{C}{1000}
+ \endsetglyph
+\fi
+
+\ifisglyph{Euro}\then
+ \setglyph{euro}
+    \glyph{Euro}{1000}
+ \endsetglyph
+\fi
+
+
+\comment{\section{Unfakable glyphs}
+    In general, every glyph is unfakable unless we know how to fake it.}
+
+\unfakable{capitalgrave}                % 8r,8y
+\unfakable{capitalacute}                % 8r,8y
+\unfakable{capitalcircumflex}           % 8r,8y
+\unfakable{capitaltilde}                % 8r,8y
+\unfakable{capitaldieresis}             % 8r,8y
+\unfakable{capitalhungarumlaut}         % 8r,8y
+\unfakable{capitalring}                 % 8r,8y
+\unfakable{capitalcaron}                % 8r,8y
+\unfakable{capitalbreve}                % 8r,8y
+\unfakable{capitalmacron}               % 8r,8y
+\unfakable{capitaldotaccent}            % 8r,8y
+\unfakable{capitalcedilla}              % 8r,8y
+\unfakable{capitalogonek}               % 8r,8y
+\unfakable{quotesinglbase}              % 8r,8y
+\unfakable{quotedblbase}                % 8r,8y
+\unfakable{twelveudash}                 % faked 8r,8x
+\unfakable{threequartersemdash}         % 8x (Adobe)
+\unfakable{arrowleft}
+\unfakable{arrowright}
+\unfakable{tieaccentlowercase}
+\unfakable{tieaccentcapital}
+\unfakable{newtieaccentlowercase}
+\unfakable{newtieaccentcapital}
+\unfakable{blank}
+\unfakable{dollar}                      % 8r,8y
+\unfakable{quotesingle}                 % 8r,8y
+\unfakable{asteriskcentered}            % faked 8r,8y
+\unfakable{comma}                       % 8r,8y
+\unfakable{hyphendbl}
+\unfakable{period}                      % 8r,8y
+\unfakable{fraction}                    % 8r,8y
+\unfakable{angbracketleft}
+\unfakable{minus}                       % 8r,8y
+\unfakable{angbracketright}
+\unfakable{Omegainv}
+\unfakable{bigcircle}
+\unfakable{Omega}
+\unfakable{openbracketleft}             % faked 8r,8y
+\unfakable{openbracketright}            % faked 8r,8y
+\unfakable{arrowup}
+\unfakable{arrowdown}
+\unfakable{asciigrave}                  % 8r,8y
+\unfakable{born}
+\unfakable{divorced}
+\unfakable{died}
+\unfakable{leaf}
+\unfakable{married}
+\unfakable{musicalnote}
+\unfakable{tildelow}                    % 8r,8y
+\unfakable{hyphendblchar}
+\unfakable{asciibreve}                  % 8r,8y
+\unfakable{asciicaron}                  % 8r,8y
+\unfakable{asciiacutedbl}               % faked 8r,8y
+\unfakable{asciigravedbl}               % faked 8r,8y
+\unfakable{dagger}                      % 8r,8y
+\unfakable{daggerdbl}                   % 8r,8y
+\unfakable{bardbl}                      % faked 8r,8y
+\unfakable{perthousand}                 % 8r,8y
+\unfakable{bullet}                      % 8r,8y
+\unfakable{centigrade}                  % faked 8r,8y
+\unfakable{dollaroldstyle}              % 8x (Adobe)
+\unfakable{centoldstyle}                % 8x (Adobe)
+\unfakable{florin}                      % 8r,8y
+\unfakable{colonmonetary}               % 8x (Adobe)
+\unfakable{won}
+\unfakable{naira}
+\unfakable{guarani}
+\unfakable{peso}
+\unfakable{lira}                        % 8x (URW)
+\unfakable{recipe}
+\unfakable{interrobang}
+\unfakable{interrobangdown}
+\unfakable{dong}
+\unfakable{trademark}                   % 8r,8y
+\unfakable{pertenthousand}              % faked 8x
+\unfakable{pilcrow}
+\unfakable{baht}
+\unfakable{numero}
+\unfakable{discount}
+\unfakable{estimated}
+\unfakable{openbullet}
+\unfakable{servicemark}
+\unfakable{quillbracketleft}
+\unfakable{quillbracketright}
+\unfakable{cent}                        % 8r,8y
+\unfakable{sterling}                    % 8r,8y
+\unfakable{currency}                    % 8r,8y
+\unfakable{yen}                         % 8r,8y
+\unfakable{brokenbar}                   % 8r,8y
+\unfakable{section}                     % 8r,8y
+\unfakable{asciidieresis}               % 8r,8y
+\unfakable{copyright}                   % 8r,8y
+\unfakable{ordfeminine}                 % 8r,8y
+\unfakable{copyleft}
+\unfakable{logicalnot}                  % 8r,8y
+\unfakable{circledP}
+\unfakable{registered}                  % 8r,8y
+\unfakable{asciimacron}                 % 8r,8y
+\unfakable{degree}                      % 8r,8y
+\unfakable{plusminus}                   % 8r,8y
+\unfakable{twosuperior}                 % 8r,8y
+\unfakable{threesuperior}               % 8r,8y
+\unfakable{asciiacute}                  % 8r,8y
+\unfakable{mu}                          % 8r,8y
+\unfakable{paragraph}                   % 8r,8y
+\unfakable{periodcentered}              % 8r,8y
+\unfakable{referencemark}
+\unfakable{onesuperior}                 % 8r,8y
+\unfakable{ordmasculine}                % 8r,8y
+\unfakable{radical}
+\unfakable{onequarter}                  % 8r,8y
+\unfakable{onehalf}                     % 8r,8y
+\unfakable{threequarters}               % 8r,8y
+\unfakable{euro}
+\unfakable{multiply}                    % 8r,8y
+\unfakable{divide}                      % 8r,8y
+
+
+\comment{\section{Accents}
+   \TeX's math accent-positioning requires accents to have zero depth.}
+
+\setcommand\zerodepth#1{
+  \ifisglyph{#1}\then
+   \resetglyph{#1}
+      \glyph{#1}{1000}
+      \resetdepth{0}
+   \endresetglyph
+  \fi
+}
+\zerodepth{capitalgrave}
+\zerodepth{capitalacute}
+\zerodepth{capitalcircumflex}
+\zerodepth{capitaltilde}
+\zerodepth{capitaldieresis}
+\zerodepth{capitalhungarumlaut}
+\zerodepth{capitalring}
+\zerodepth{capitalcaron}
+\zerodepth{capitalbreve}
+\zerodepth{capitalmacron}
+\zerodepth{capitaldotaccent}
+
+\endmetrics
+\end{document}

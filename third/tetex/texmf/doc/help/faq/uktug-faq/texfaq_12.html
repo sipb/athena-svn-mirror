@@ -1,0 +1,468 @@
+<HTML>
+<HEAD>
+<TITLE>TeX Frequently Asked Questions - Section 12</TITLE>
+<!-- File version: 2.2n -->
+<!-- File date: 1999/06/05 -->
+
+<!-- Creator: faq2html.el, running on XEmacs 20.4 "Em -->
+<!-- CreationDate: Sat Jun  5 14:50:14 1999  te -->
+</HEAD>
+
+<BODY>
+Go to the <A HREF="texfaq_0.html">first</A>, <A HREF="texfaq_11.html">previous</A>, <A HREF="texfaq_13.html">next</A>, <A HREF="texfaq_17.html">last</A> section, <A HREF="texfaq_toc.html">table of contents</A>.
+<HR>
+
+<H1><A NAME="SEC12">Special sorts of typesetting</A></H1>
+
+
+<H2><A NAME="QU65">Drawing with TeX</A></H2>
+
+<P>
+There are many packages to do pictures in (La)TeX itself (rather than
+importing graphics created externally), ranging from simple use of
+LaTeX <CODE>picture</CODE> environment, through enhancements like <I>epic</I>, to
+sophisticated (but slow) drawing with PicTeX. Depending on your type
+of drawing, and setup, four systems should be at the top of your list
+to look at:
+<OL>
+<LI> <A HREF="ftp://ftp.dante.de/tex-archive/graphics/pstricks"><TT>graphics/pstricks</TT></A>; this gives you access to all the power of
+  PostScript from TeX itself, by sophisticated use of
+  <CODE>\special</CODE>s. You need a decent DVI to PostScript driver
+  (like <I>dvips</I>), but the results are worth it.  The
+  well-documented package gives you not only low-level drawing
+  commands (and full colour) like lines, circles, shapes at arbitrary
+  coordinates, but also high-level macros for framing text, drawing
+  trees and matrices, 3D effects, and more.
+<LI> MetaPost; you liked METAFONT, but never got to grips with font files?
+  Try <A HREF="texfaq_1.html#QU4">MetaPost</A> -
+  all the power of METAFONT, but it generates PostScript figures.  Knuth
+  uses it for all his work...
+<LI> <I>Mfpic</I>; you liked METAFONT, but can't understand the
+  language?  The package (<A HREF="ftp://ftp.dante.de/tex-archive/graphics/mfpic"><TT>graphics/mfpic</TT></A>) makes up METAFONT code for you
+  within using familiar-looking TeX macros.  Not <EM>quite</EM> the
+  full power of METAFONT, but a friendlier interface.
+<LI> You liked PicTeX but don't have enough memory or time?  Look
+  at Eitan Gurari's <A HREF="ftp://ftp.dante.de/tex-archive/macros/generic/dratex"><TT>macros/generic/dratex</TT></A>, which is as powerful as most
+  other TeX drawing packages, but is an entirely new
+  implementation, which is not as hard on memory, is much more
+  readable (and is fully documented).
+</OL>
+
+
+<H2><A NAME="QU66">Double-spaced documents in LaTeX</A></H2>
+
+<P>
+Are you producing a thesis, and trying to obey regulations that were
+drafted in the typewriter era?  Or are you producing copy for a
+journal that insists on double spacing for the submitted articles?
+
+<P>
+LaTeX is a typesetting system, so the appropriate design
+conventions are for ``real books''.  If your requirement is from
+thesis regulations, find whoever is responsible for the regulations,
+and try to get the wording changed to cater for typeset theses
+(<EM>e.g.</EM>, to say ``if using a typesetting system, aim to make your
+thesis look like a well-designed book'').  (If your requirement is
+from a journal, you're probably even less likely to be able to get the
+rules changed, of course.)
+
+<P>
+If you fail to convince your officials, or want some inter-line 
+space for copy-editing:
+<UL>
+<LI> Try changing <CODE>\baselinestretch</CODE>:
+  <CODE>\renewcommand{\baselinestretch}{1.2}</CODE> may be enough to give
+  officials the impression you've kept to their regulations. Don't try
+  changing <CODE>\baselineskip</CODE>: its value is reset at any size-changing
+  command.
+<LI> Alternatively, use a line-spacing package.  The best for current
+  is <A HREF="ftp://ftp.dante.de/tex-archive/macros/latex/contrib/supported/setspace/setspace.sty"><TT>macros/latex/contrib/supported/setspace/setspace.sty</TT></A>
+</UL>
+
+
+<H2><A NAME="QU67">Formatting a thesis in LaTeX</A></H2>
+
+<P>
+Thesis styles are usually very specific to your University, so it's
+usually not profitable to ask around for a package outside your own
+University.  Since many Universities (in their eccentric way) still
+require double-spacing, you may care to refer to
+the question on <A HREF="texfaq_12.html#QU66">double-spacing</A>.
+If you want to write
+your own, a good place to start is the University of California style
+(available as <A HREF="ftp://ftp.dante.de/tex-archive/macros/latex/contrib/supported/ucthesis"><TT>macros/latex/contrib/supported/ucthesis</TT></A>), but
+it's not worth going to a lot of trouble. (If officials won't allow
+standard typographic conventions, you won't be able to produce an
+  aesthetically pleasing document anyway!)
+
+
+<H2><A NAME="QU68">Flowing text around figures in LaTeX</A></H2>
+
+<P>
+There are several LaTeX packages that purport to do this, but they
+all have their limitations because the TeX machine isn't really
+designed to solve this sort of problem.  Piet van Oostrum has
+conducted a survey of the available packages; he recommends:
+
+
+<DL>
+<DT><CODE>picins</CODE>
+<DD><TT>picins.sty</TT> is part of a large package
+  (<A HREF="ftp://ftp.dante.de/tex-archive/systems/msdos/picins/picins.zip"><TT>systems/msdos/picins/picins.zip</TT></A>) that allows inclusion of pictures (e.g., with
+  shadow boxes, various MS-DOS formats, etc.).  The command is:
+
+<P>
+    <CODE>\parpic(width,height)(x-off,y-off)[Options][Position]{Picture}</CODE><BR>
+  <EM>Paragraph text</EM>
+
+<P>
+  All parameters except the <EM>Picture</EM> are optional.  The picture
+  can be positioned left or right, boxed with a rectangle, oval,
+  shadowbox, dashed box, and a caption can be given which will be
+  included in the list of figures.
+
+<P>
+  Unfortunately (for those of us whose understanding of German is not
+  good), the documentation is in German.  Piet van Oostrum has written
+  an English summary <A HREF="ftp://ftp.dante.de/tex-archive/macros/latex209/contrib/picins/picins.txt"><TT>macros/latex209/contrib/picins/picins.txt</TT></A>
+<DT><CODE>floatflt</CODE>
+<DD><A HREF="ftp://ftp.dante.de/tex-archive/macros/latex/contrib/other/floatflt"><TT>macros/latex/contrib/other/floatflt</TT></A> is an improved version
+  (for LaTeX2e) of <TT>floatfig.sty</TT>, and its syntax is:
+
+
+<PRE>
+\begin{floatingfigure}[options]{width of figure}
+   figure contents
+\end{floatingfigure}
+</PRE>
+
+<P>
+  There is a (more or less similar) <CODE>floatingtable</CODE> environment.
+
+<P>
+  The tables or figures can be set left or right, or alternating on
+  even/odd pages in a double-sided document.
+
+<P>
+  The package works with the <CODE>multicol</CODE> package, but doesn't work well
+  in the neighbourhood of list environments (unless you change your
+  LaTeX document).
+<DT><CODE>wrapfig</CODE>
+<DD><A HREF="ftp://ftp.dante.de/tex-archive/macros/latex/contrib/other/misc/wrapfig.sty"><TT>macros/latex/contrib/other/misc/wrapfig.sty</TT></A> has syntax:
+
+
+<PRE>
+\begin{wrapfigure}[height of figure in lines]{l|r}[overhang]{width}
+  figure, caption, etc.
+\end{wrapfigure}
+</PRE>
+
+<P>
+  The syntax of the <CODE>wraptable</CODE> environment is similar.
+
+<P>
+  Height can be omitted, in which case it will be calculated by the
+  package; the package will use the greater of the specified and the
+  actual width.  The <CODE>{l</CODE><EM>,</EM><CODE>r</CODE><EM>,etc</EM>.<CODE>}</CODE> parameter can also be
+  specified as <CODE>i</CODE><EM>(nside)</EM> or <CODE>o</CODE><EM>(utside)</EM> for two-sided
+  documents, and uppercase can be used to indicate that the picture
+  should float.  The overhang allows the figure to be moved into the
+  margin.  The figure or table will entered into the list of figures
+  or tables if you use the <CODE>\caption</CODE> command.
+
+<P>
+  The environments do not work within list environments that end
+  before the figure or table has finished, but can be used in a parbox
+  or minipage, and in twocolumn format.
+</DL>
+
+
+<H2><A NAME="QU69">Alternative head- and footlines in LaTeX</A></H2>
+
+<P>
+The standard LaTeX document classes define a small set of `page
+styles' which (in effect) specify head- and footlines for your
+document.  The set defined is very restricted, but LaTeX is capable
+of much more; people occasionally set about employing LaTeX
+facilities to do the job, but that's quite unnecessary - Piet van
+Oostrum has already done the work.
+
+<P>
+The package is found in directory <A HREF="ftp://ftp.dante.de/tex-archive/macros/latex/contrib/supported/fancyhdr"><TT>macros/latex/contrib/supported/fancyhdr</TT></A> and provides
+simple mechanisms for defining pretty much every head- or footline
+variation you could want; the directory also contains some (rather
+good) documentation and one or two smaller packages.  Fancyhdr
+also deals with the tedious behaviour of the standard styles with
+  <A HREF="texfaq_14.html#QU98">initial pages</A>,
+by enabling you to define
+different page styles for initial and for body pages.
+
+
+<H2><A NAME="QU70">Including a file in verbatim in LaTeX</A></H2>
+
+<P>
+A good way is to use Rainer Sch&ouml;pf's <TT>verbatim.sty</TT>,
+which provides a command <CODE>\verbatiminput</CODE> that takes a file name
+as argument. This package is available as part of <A HREF="ftp://ftp.dante.de/tex-archive/macros/latex/required/tools"><TT>macros/latex/required/tools</TT></A>
+
+<P>
+Another way is to use the <CODE>alltt</CODE> environment, which requires
+<TT>alltt.sty</TT> (which is now part of LaTeX).  <CODE>alltt</CODE> interprets
+its contents `mostly' verbatim, but executes any TeX commands it
+finds: so one can say:
+<PRE>
+  \begin{alltt}
+  \input{verb.txt}
+  \end{alltt}
+</PRE>
+<P>
+of course, this is little use for inputting (La)TeX source code...
+
+<P>
+The <TT>moreverb</TT> package (<A HREF="ftp://ftp.dante.de/tex-archive/macros/latex/contrib/supported/moreverb"><TT>macros/latex/contrib/supported/moreverb</TT></A>) extends the
+facilities of <TT>verbatim</TT> package), providing a <CODE>listing</CODE>
+environment and a <CODE>\listinginput</CODE> command, which line-number the text
+of the file.
+
+<P>
+The <TT>fancyvrb</TT> package (<A HREF="ftp://ftp.dante.de/tex-archive/macros/latex/contrib/supported/fancyvrb"><TT>macros/latex/contrib/supported/fancyvrb</TT></A>) offers configurable
+implementations of everything <TT>verbatim</TT> and <TT>moreverb</TT>
+have, and more besides.  It is nowadays the package of choice for the
+discerning typesetter of verbatim text, but its wealth of facilities
+makes it a complex beast and study of the documentation is strongly
+advised.
+
+
+<H2><A NAME="QU71">Including line numbers in typeset output</A></H2>
+
+<P>
+For general numbering of lines, there are two packages for use with
+LaTeX, <A HREF="ftp://ftp.dante.de/tex-archive/macros/latex/contrib/supported/lineno"><TT>macros/latex/contrib/supported/lineno</TT></A> (which permits labels attached to
+individual lines of typeset output) and <A HREF="ftp://ftp.dante.de/tex-archive/macros/latex/contrib/supported/numline/numline.sty"><TT>macros/latex/contrib/supported/numline/numline.sty</TT></A>
+
+<P>
+Both of these packages play fast and loose with the LaTeX output
+routine, which can cause problems: the user should beware\dots
+
+<P>
+If the requirement is for numbering verbatim text, the
+<A HREF="ftp://ftp.dante.de/tex-archive/macros/latex/contrib/supported/moreverb"><TT>macros/latex/contrib/supported/moreverb</TT></A> or <A HREF="ftp://ftp.dante.de/tex-archive/macros/latex/contrib/supported/fancyvrb"><TT>macros/latex/contrib/supported/fancyvrb</TT></A> packages (see
+<A HREF="texfaq_12.html#QU70">including files in verbatim</A>) may be used.
+
+<P>
+One common use of line numbers is in critical editions of texts, and
+for this the <I>edmac</I> package (<A HREF="ftp://ftp.dante.de/tex-archive/macros/plain/contrib/edmac"><TT>macros/plain/contrib/edmac</TT></A>) offers comprehensive
+support.
+
+
+<H2><A NAME="QU72">Generating an index in (La)TeX</A></H2>
+
+<P>
+Making an index is not trivial; what to index, and how to index it, is
+difficult to decide, and uniform implementation is difficult to
+achieve.  You will need to mark all items to be indexed in your text
+(typically with <CODE>\index</CODE> commands).
+
+<P>
+It is not practical to sort
+a large index within TeX, so a post-processing program is used to sort
+the output of one TeX run, to be included into the document at the
+next run.
+
+<P>
+The following programs are available:
+<DL>
+<DT>makeindex
+<DD>for LaTeX under Unix (but runs under other OSs
+  without changes).  Available in <A HREF="ftp://ftp.dante.de/tex-archive/indexing/makeindex"><TT>indexing/makeindex</TT></A>; a version for
+  the Macintosh is available as <A HREF="ftp://ftp.dante.de/tex-archive/systems/mac/macmakeindex.sit"><TT>systems/mac/macmakeindex.sit</TT></A>, and ones for
+  MS-DOS are part of the emTeX and gTeX distributions (the
+  emTeX version also runs under OS/2).
+
+<P>
+  The Makeindex documentation is a good source of information on how
+  to create your own index. Makeindex can be used with some TeX
+  macro packages other than LaTeX, such as 
+  <A HREF="texfaq_1.html#QU11">Eplain</A>, and \TeXsis{}, <A HREF="ftp://ftp.dante.de/tex-archive/nonfree/macros/texsis"><TT>nonfree/macros/texsis</TT></A>
+  (whose macros, <A HREF="ftp://ftp.dante.de/tex-archive/nonfree/macros/texsis/index/index.tex"><TT>nonfree/macros/texsis/index/index.tex</TT></A>, can be used independently
+  with plain).
+<DT>idxtex
+<DD>for LaTeX under VMS.  Available (together with a
+  glossary-maker called <CODE>glotex</CODE>) in <A HREF="ftp://ftp.dante.de/tex-archive/indexing/glo+idxtex"><TT>indexing/glo+idxtex</TT></A>
+<DT>texindex
+<DD>A witty little shell/<I>sed</I>-script-based
+  utility for LaTeX under Unix.  Available from <A HREF="ftp://ftp.dante.de/tex-archive/support/texindex"><TT>support/texindex</TT></A>
+
+<P>
+  There are other programs called <I>texindex</I>, notably
+  one that comes with the
+  <A HREF="texfaq_1.html#QU13">Texinfo</A> distribution.
+<DT>xindy
+<DD>a recent development, designed for wide-ranging
+  flexibility (including support for multilingual indexes), based on
+  Common Lisp.  The system is available on CTAN
+  (<A HREF="ftp://ftp.dante.de/tex-archive/support/xindy"><TT>support/xindy</TT></A>), but is more easily accessed from a web
+  browser via <A HREF="http://www.iti.informatik.th-darmstadt.de/xindy/"><TT>http://www.iti.informatik.th-darmstadt.de/xindy/</TT></A>
+  since the distribution contains several different implementations.
+</DL>
+
+
+<H2><A NAME="QU73">Typesetting URLs</A></H2>
+
+<P>
+URLs tend to be very long, and contain characters that would
+naturally prevent them being hyphenated even if they weren't typically
+set in <CODE>\ttfamily</CODE>, verbatim.  Therefore, without special treatment,
+they often produce wildly overfull <CODE>\hbox</CODE>es, and their typeset
+representation is awful.
+
+<P>
+There are two approaches to this problem:
+<UL>
+<LI> <A HREF="ftp://ftp.dante.de/tex-archive/macros/latex/contrib/other/misc/path.sty"><TT>macros/latex/contrib/other/misc/path.sty</TT></A>, which defines a <CODE>\path</CODE> command.  The command
+  defines each potential break character as a <CODE>\discretionary</CODE>, and
+  offers the user the opportunity of specifying a personal list of
+  potential break characters.  Its chief disadvantage is fragility in
+  the LaTeX context.
+<LI> <A HREF="ftp://ftp.dante.de/tex-archive/macros/latex/contrib/other/misc/url.sty"><TT>macros/latex/contrib/other/misc/url.sty</TT></A>, which defines an <CODE>\url</CODE> command (among others,
+  including its own <CODE>\path</CODE> command).  The command gives each
+  potential break character a maths-mode `personality', and then sets
+  the URL itself in the user's choice of font, in maths mode.
+  It can produce (LaTeX-style) `robust' commands
+  (\htmlonly{see }<A HREF="texfaq_15.html#QU110">use of <CODE>\protect</CODE></A>) for use
+  within moving arguments.  Note that, because the operation is
+  conducted in maths mode, spaces within the URL argument are
+  ignored unless special steps are taken.
+</UL>
+
+<P>
+The author of this answer prefers the (rather newer) <TT>url.sty</TT>;
+both packages work equally well with plain TeX (though of course,
+the fancy LaTeX facilities of <TT>url.sty</TT> don't have much place
+there).
+
+
+<H2><A NAME="QU74">Citing URLs with BibTeX</A></H2>
+
+<P>
+There is no citation type for URLs, <EM>per se</EM>, in the
+standard BibTeX styles, though Oren Patashnik (the author of
+BibTeX) is considering developing one such for use with the
+long-awaited BibTeX version 1.0.
+
+<P>
+The actual information that need be available in a citation of an
+URL is discussed at some length in the publicly available
+on-line extracts of ISO 690-2, available via
+<A HREF="http://www.nlc-bnc.ca/iso/tc46sc9/standard/690-2e.htm"><TT>http://www.nlc-bnc.ca/iso/tc46sc9/standard/690-2e.htm</TT></A>; the
+techniques below do <EM>not</EM> satisfy all the requirements of
+ISO 690-2, but they offer a solution that is at least
+available to users of today's tools.
+
+<P>
+Until the new version arrives, the simplest technique is to use the
+<CODE>howpublished</CODE> field of the standard styles' <CODE>@misc</CODE> function.  Of
+course, the strictures
+\htmlonly{about }<A HREF="texfaq_12.html#QU73">typesetting URLs</A>
+ still apply, so the entry will look like:
+<PRE>
+  @misc{...,
+    ...,
+    howpublished = &quot;\url{http://...}&quot;
+  }
+</PRE>
+
+<P>
+Another possibility is that some conventionally-published paper,
+technical report (or even book) is also available on the Web.  In such
+cases, a useful technique is something like:
+<PRE>
+  @techreport{...,
+    ...,
+    note = &quot;Also available as \url{http://...}&quot;
+  }
+</PRE>
+
+<P>
+There is good reason to use <A HREF="ftp://ftp.dante.de/tex-archive/macros/latex/contrib/other/misc/url.sty"><TT>macros/latex/contrib/other/misc/url.sty</TT></A> in this context, since (by
+default) it ignores spaces in its argument.  BibTeX has a habit of
+splitting lines it considers excessively long, and if there are no
+space characters for it to use as `natural' breakpoints, BibTeX
+will insert a comment (`<CODE>\textpercent</CODE>')
+character ...  which is an acceptable character in an URL,
+so that <CODE>\url</CODE> will typeset it.  The way around the problem is to
+insert odd spaces inside the URL itself in the <CODE>.bib</CODE> file, to
+enable BibTeX to make reasonable decisions about breaking the
+line.
+
+
+<H2><A NAME="QU75">Using BibTeX with <CODE>plain</CODE> TeX</A></H2>
+
+<P>
+The file <A HREF="ftp://ftp.dante.de/tex-archive/macros/eplain/btxmac.tex"><TT>macros/eplain/btxmac.tex</TT></A> contains macros and documentation
+for using BibTeX with <CODE>plain</CODE> TeX, either directly or with
+<A HREF="texfaq_1.html#QU11">Eplain</A>.
+See <A HREF="texfaq_2.html#QU22">the use of BibTeX</A> for more
+information about BibTeX itself.
+
+
+<H2><A NAME="QU76">Typesetting music in TeX</A></H2>
+
+<P>
+A powerful package which allows the typesetting of
+polyphonic and other multiple-stave music is MusicTeX, written by
+Daniel Taupin 
+(<SAMP>taupin@rsovax.lps.u-psud.fr</SAMP>). It is available 
+in <A HREF="ftp://ftp.dante.de/tex-archive/macros/musictex"><TT>macros/musictex</TT></A>
+
+<P>
+In the recent past, Daniel (as well as with various other people,
+notably Ross Mitchell and Andreas Egler) have been working on a development of
+MusicTeX, known as MusiXTeX.  MusiXTeX is a three-pass
+system (with a processor program that computes values for the element
+spacing in the music), and achieves finer control than is possible in
+the unmodified TeX-based mechanism that MusicTeX uses.  Daniel
+Taupin and Andreas Egler are pursuing distinct versions of
+MusiXTeX; they are available, respectively, from
+<A HREF="ftp://ftp.dante.de/tex-archive/macros/musixtex/taupin"><TT>macros/musixtex/taupin</TT></A> and <A HREF="ftp://ftp.dante.de/tex-archive/macros/musixtex/egler"><TT>macros/musixtex/egler</TT></A>
+
+<P>
+Digital music fans can typeset notation for their efforts by using
+<I>midi2tex</I>, which translates MIDI data files into MusicTeX
+source code.  It is available from <A HREF="ftp://ftp.dante.de/tex-archive/support/midi2tex"><TT>support/midi2tex</TT></A>
+
+<P>
+A rather simpler notation than MusicTeX is supported by <I>abc2mtex</I>;
+this is a package designed to notate tunes stored in an ASCII format
+(<CODE>abc</CODE> notation). It was designed primarily for folk and traditional
+tunes of Western European origin (such as Irish, English and Scottish)
+which can be written on one stave in standard classical notation.
+However, it should be extendable to many other types of music.  It is
+available from <A HREF="ftp://ftp.dante.de/tex-archive/support/abc2mtex"><TT>support/abc2mtex</TT></A>
+
+<P>
+There is a mailing list for discussion of typesetting music in TeX.
+To subscribe, send mail to <SAMP>mutex-request@stolaf.edu</SAMP> containing
+the word `<CODE>subscribe</CODE>' in the body.
+
+
+<H2><A NAME="QU77">Drawing Feynman diagrams in LaTeX</A></H2>
+
+<P>
+Michael Levine's macro package for drawing Feynman diagrams in LaTeX
+is available in <A HREF="ftp://ftp.dante.de/tex-archive/macros/latex209/contrib/feynman"><TT>macros/latex209/contrib/feynman</TT></A>
+
+<P>
+Another possibility is Thorsten Ohl's <A HREF="ftp://ftp.dante.de/tex-archive/macros/latex/contrib/supported/feynmf"><TT>macros/latex/contrib/supported/feynmf</TT></A>, that works in
+combination with METAFONT (or MetaPost).  The <I>feynmf</I> or
+<I>feynmp</I> package reads a description of the diagram written
+in TeX, and writes out code.  METAFONT (or MetaPost) can then produce a
+font (or PostScript file) for use in a subsequent LaTeX run.  For
+new users, who have access to MetaPost, the PostScript version is
+probably the better route, for document portability and other reasons.
+
+
+<HR>
+Go to the <A HREF="texfaq_0.html">first</A>, <A HREF="texfaq_11.html">previous</A>, <A HREF="texfaq_13.html">next</A>, <A HREF="texfaq_17.html">last</A> section, <A HREF="texfaq_toc.html">table of contents</A>.
+</BODY>
+</HTML>

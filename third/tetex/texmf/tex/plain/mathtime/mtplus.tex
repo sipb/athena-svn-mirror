@@ -1,0 +1,1236 @@
+% MTPLUS.TEX  VERSION 1.0.3  (1997 Nov 1)
+% COPYRIGHT (C) 1996, 1997 BY MICHAEL SPIVAK
+% ALL RIGHTS RESERVED
+
+% Creation: 1.0   Final beta test release 1996/July/14
+% Revision: 1.0   Official release 1996/Aug/26
+% Revision: 1.0.1 Minor correction in \Calligraphic 1996/Dec/8
+% Revision: 1.0.2 Correction in \ubmdefine@ and \uhmdefine@ 1996/Dec/20
+% Revision: 1.0.3 Changed TFM file names to lower case 1997/Nov/7
+
+\expandafter\ifx\csname subscript character \string_\endcsname\relax
+ \else\endinput\fi
+\expandafter\edef\csname qqcode\string @\endcsname{\the\catcode`\"}
+\expandafter\edef\csname atcode\string @\endcsname{\the\catcode`\@}
+\catcode`\@=11
+\catcode`\"=12   
+\expandafter\ifx\csname dag@HX\endcsname\relax\def\dag@HX{B2}\fi
+\expandafter\ifx\csname ddag@HX\endcsname\relax\def\ddag@HX{B3}\fi
+\expandafter\ifx\csname S@HX\endcsname\relax\def\S@HX{A7}\fi
+\expandafter\ifx\csname P@HX\endcsname\relax\def\P@HX{B6}\fi
+\expandafter\ifx\csname bar@HX\endcsname\relax\def\bar@HX{16}\fi
+\expandafter\ifx\csname grave@HX\endcsname\relax\def\grave@HX{12}\fi
+\expandafter\ifx\csname acute@HX\endcsname\relax\def\acute@HX{13}\fi
+\expandafter\ifx\csname check@HX\endcsname\relax\def\check@HX{14}\fi
+\expandafter\ifx\csname breve@HX\endcsname\relax\def\breve@HX{15}\fi
+\expandafter\ifx\csname hat@HX\endcsname\relax\def\hat@HX{5E}\fi
+\expandafter\ifx\csname dot@HX\endcsname\relax\def\dot@HX{C7}\fi
+\expandafter\ifx\csname tilde@HX\endcsname\relax\def\tilde@HX{7E}\fi
+\expandafter\ifx\csname ddot@HX\endcsname\relax\def\ddot@HX{7F}\fi
+\mathchardef\Gamma="0130
+\mathchardef\Delta="0131
+\mathchardef\Theta="0132
+\mathchardef\Lambda="0133
+\mathchardef\Xi="0134
+\mathchardef\Pi="0135
+\mathchardef\Sigma="0136
+\mathchardef\Upsilon="0137
+\mathchardef\Phi="0138
+\mathchardef\Psi="0139
+\mathchardef\Omega="017F
+\mathchardef\varGamma="0100
+\mathchardef\varDelta="0101
+\mathchardef\varTheta="0102
+\mathchardef\varLambda="0103
+\mathchardef\varXi="0104
+\mathchardef\varPi="0105
+\mathchardef\varSigma="0106
+\mathchardef\varUpsilon="0107
+\mathchardef\varPhi="0108
+\mathchardef\varPsi="0109
+\mathchardef\varOmega="010A
+\mathchardef\varkappa="017E
+\mathcode`\(="412E
+\mathcode`\)="512F
+\delcode`\(="12E300
+\delcode`\)="12F301
+\mathcode`\.="013A
+\mathcode`\,="613B
+\mathchardef\ldotp="613A
+\let\mit=\undefined
+\ifx\amstexloaded@\relax
+ \let\oldnos=\undefined
+\fi
+\mathchardef\triangleleft="2247
+\mathchardef\triangleright="2246
+\def\vec{\mathaccent"0245 }
+\ifx\amstexloaded@\relax
+ \def\t#1#2{{\edef\next@{\the\font}\textfontii\accent"41 \next@#1#2}}
+\else
+ \def\t#1{{\edef\next{\the\font}\the\textfont2\accent"41\next#1}}
+\fi
+\mathchardef\comp="2242
+\mathchardef\setdif="2258
+\mathchardef\cupprod="2259
+\mathchardef\capprod="225A
+\mathcode`\+="2243
+\mathcode`\=="3244
+\mathchardef\Relbar="3248
+\mathcode`\;="6249
+\ifx\amstexloaded@\relax
+ \def\unbracefonts@{\let\bm\bmunbrace@\let\hm\hmunbrace@\let\ubm\ubmunbrace@
+  \let\uhm\uhmunbrace@}%
+\else
+ \def\accentclass@{7}\let\noaccents@\relax
+\fi
+\def\grave{\ifnum\fam=\m@ne\mathaccent"024A \else
+  \mathaccent"\accentclass@0\grave@HX\relax\fi}
+\def\acute{\ifnum\fam=\m@ne\mathaccent"024B \else
+ \mathaccent"\accentclass@0\acute@HX\relax\fi}
+\def\check{\ifnum\fam=\m@ne\mathaccent"024C \else
+ \mathaccent"\accentclass@0\check@HX\relax\fi}
+\def\breve{\ifnum\fam=\m@ne\mathaccent"024D \else
+ \mathaccent"\accentclass@0\breve@HX\relax\fi}
+\def\bar{\ifnum\fam=\m@ne\mathaccent"024E \else
+ \mathaccent"\accentclass@0\bar@HX\relax\fi}
+\def\hat{\ifnum\fam=\m@ne\mathaccent"024F \else
+ \mathaccent"\accentclass@0\hat@HX\relax\fi}
+\def\dot{\ifnum\fam=\m@ne\mathaccent"0250 \else
+ \mathaccent"\accentclass@0\dot@HX\relax\fi}
+\def\tilde{\ifnum\fam=\m@ne\mathaccent"0251 \else
+ \mathaccent"\accentclass@0\tilde@HX\relax\fi}
+\def\ddot{\ifnum\fam=\m@ne\mathaccent"0252 \else
+ \mathaccent"\accentclass@0\ddot@HX\relax\fi}
+\def\widebar{\mathaccent"0253 }
+\mathchardef\dagger="20\dag@HX
+\mathchardef\ddagger="20\ddag@HX
+\ifx\amstexloaded@\relax             
+ \def\dag{\ifmmode\mathchar"00\dag@HX\relax\else
+   $\mathchar"00\dag@HX$\fi}
+ \def\ddag{\ifmmode\mathchar"00\ddag@HX\relax\else
+  $\mathchar"00\ddag@HX$\fi}
+ \def\S{\ifmmode\mathchar"00\S@HX\relax\else
+  $\mathchar"00\S@HX$\fi}
+ \def\P{\ifmmode\mathchar"00\P@HX\relax\else
+  $\mathchar"00\P@HX$\fi}
+\else            
+ \def\dag{\edef\next@{0\dag@HX}\expandafter\mathhexbox\next@}
+ \def\ddag{\edef\next@{0\ddag@HX}\expandafter\mathhexbox\next@}
+ \def\S{\edef\next@{0\S@HX}\expandafter\mathhexbox\next@}
+ \def\P{\edef\next@{0\P@HX}\expandafter\mathhexbox\next@}
+\fi
+\def\vdots{\vbox{\baselineskip4\p@\lineskiplimit\z@
+ \kern6\p@\hbox{$\m@th.$}\hbox{$\m@th.$}\hbox{$\m@th.$}}}
+\def\ddots{\mathinner{\mkern1mu\raise7\p@\vbox{\kern7\p@
+ \hbox{$\m@th.$}}\mkern2mu
+ \raise4\p@\hbox{$\m@th.$}\mkern2mu\raise\p@\hbox{$\m@th.$}\mkern1mu}}
+\def\hbar{{\mathchoice
+ {\hbox{\lower.07em\hbox{$\mathchar"\bar@HX$}}}
+ {\hbox{\lower.07em\hbox{$\mathchar"\bar@HX$}}}
+ {\hbox{\lower.049em\hbox{$\scriptstyle\mathchar"\bar@HX$}}}
+ {\hbox{\lower.035em\hbox{$\scriptscriptstyle\mathchar"\bar@HX$}}}%
+  \mkern-6.3muh}}
+\def\angle{{\vbox{\ialign{$\m@th\scriptstyle##$\crcr
+      \not\mathrel{\mkern14mu}\crcr
+      \noalign{\nointerlineskip}
+      \mkern2.5mu\leaders\hrule height.48\p@\hfill\mkern2.5mu\crcr}}}}
+\def\bmangle@{{\vbox{\ialign{$\m@th\scriptstyle##$\crcr
+      \not\mathrel{\mkern14mu}\crcr
+      \noalign{\nointerlineskip}
+      \mkern2.5mu\leaders\hrule height.6\p@\hfill\mkern2.5mu\crcr}}}}
+\def\hmangle@{{\vbox{\ialign{$\m@th\scriptstyle##$\crcr
+      \not\mathrel{\mkern14mu}\crcr
+      \noalign{\nointerlineskip}
+      \mkern2.5mu\leaders\hrule height.96\p@\hfill\mkern2.5mu\crcr}}}}
+\ifx\amstexloaded@\relax
+ \def\varinjlim{\mathop{\vtop{\ialign{##\crcr
+  \hfil\the\textfont\z@ lim\hfil\crcr
+  \noalign{\nointerlineskip}\rightarrowfill\crcr
+  \noalign{\nointerlineskip\kern-\ex@}\crcr}}}}
+ \def\varprojlim{\mathop{\vtop{\ialign{##\crcr
+  \hfil\the\textfont\z@ lim\hfil\crcr
+  \noalign{\nointerlineskip}\leftarrowfill\crcr
+  \noalign{\nointerlineskip\kern-\ex@}\crcr}}}}
+ \def\varliminf{\mathop{\underline{\vrule height\z@ depth.2ex width\z@
+  \hbox{\the\textfont\z@ lim}}}}
+ \def\varlimsup{\mathop{\overline{\hbox{\the\textfont\z@ lim}}}}
+ \def\spdot{^{\hbox{\raise\ex@\hbox{\the\textfont\z@.}}}}
+ \def\spddot{^{\hbox{\raise\ex@\hbox{\the\textfont\z@..}}}}
+ \def\spdddot{^{\hbox{\raise\ex@\hbox{\the\textfont\z@...}}}}
+ \def\spddddot{^{\hbox{\raise\ex@\hbox{\the\textfont\z@....}}}}
+\fi
+\ifx\amstexloaded@\relax
+ \def\dddot{\newdddot@0}%
+ \def\newdddot@#1{%
+  \ifcase#1%
+   \def\newsyfam@@{2}%
+  \or
+   \let\newsyfam@@\MTSYBfam@
+  \or
+   \let\newsyfam@@\MTSYHfam@
+  \fi
+  \mathchardef\dotacc="0250
+  \mathchardef\dotacc="0\newsyfam@@50
+  \mathpalette\dddot@}
+\def\dddot@#1#2{\setbox\z@\hbox{$#1#2$}\setbox\tw@\hbox{$#1\infty$}%
+  \dimen@\ht\tw@\ifdim\ht\z@<\dimen@\dimen@\ht\z@\fi
+  \setbox\tw@\hbox{$#1#2\mathchar"012D$}\dimen@ii\wd\tw@
+  \advance\dimen@ii-\wd\z@ 
+  \setbox\z@\hbox{$#1\rhook$}\advance\dimen@ii-\wd\z@
+  \vbox{\offinterlineskip\ialign{\hfil$#1##$\hfil\cr
+   \kern\dimen@ii\dotacc\mkern-2.5mu\dotacc\mkern-2.5mu\dotacc\cr
+   \noalign{\vskip-\dimen@}#2\cr}}}
+ \def\ddddot{\newddddot@0}%
+ \def\newddddot@#1{%
+  \ifcase#1%
+   \def\newsyfam@@{2}%
+  \or
+   \let\newsyfam@@\MTSYBfam@
+  \or
+   \let\newsyfam@@\MTSYHfam@
+  \fi
+  \mathchardef\dotacc="0\newsyfam@@50
+  \mathpalette\ddddot@}
+ \def\ddddot@#1#2{\setbox\z@\hbox{$#1#2$}\setbox\tw@\hbox{$#1\infty$}%
+  \dimen@\ht\tw@\ifdim\ht\z@<\dimen@\dimen@\ht\z@\fi
+  \setbox\tw@\hbox{$#1#2\mathchar"012D$}\dimen@ii\wd\tw@
+  \advance\dimen@ii-\wd\z@ 
+  \setbox\z@\hbox{$#1\rhook$}\advance\dimen@ii-\wd\z@
+  \vbox{\offinterlineskip\ialign{\hfil$#1##$\hfil\cr
+   \kern\dimen@ii\dotacc\mkern-2.5mu\dotacc\mkern-2.5mu\dotacc
+    \mkern-2.5mu\dotacc\cr
+   \noalign{\vskip-\dimen@}#2\cr}}}
+ \fi
+\ifx\amstexloaded@\relax\else
+ \alloc@0\count\countdef\insc@unt\uproot@
+ \alloc@0\count\countdef\insc@unt\leftroot@
+\fi
+\ifx\amstexloaded@\relax\else  
+ \def\nonmatherr@#1{\errmessage{\noexpand#1allowed only in math mode}}
+\fi
+\def\uproot#1{\relax\ifmmode\uproot@#1\relax\else\nonmatherr@\uproot\fi}
+\def\leftroot#1{\relax\ifmmode\leftroot@#1\relax\else\nonmatherr@\leftroot\fi}
+\def\root#1\of#2{\setbox\rootbox\hbox{$\m@th\scriptscriptstyle{#1}$}%
+ \mathpalette\r@@t{#2}}
+\def\bmroot#1\of#2{\setbox\rootbox\hbox{$\m@th\scriptscriptstyle{#1}$}%
+ \mathpalette\bmr@@t{#2}}
+\def\hmroot#1\of#2{\setbox\rootbox\hbox{$\m@th\scriptscriptstyle{#1}$}%
+ \mathpalette\hmr@@t{#2}}
+\def\r@@t{\r@@@t0}
+\def\bmr@@t{\r@@@t1}
+\def\hmr@@t{\r@@@t2}
+\def\r@@@t#1#2#3{\setbox\z@\hbox{$\uproot@\z@\leftroot\z@\m@th#2%
+  \ifcase#1\sqrt{#3}\or\bmsqrt{#3}\or\hmsqrt{#3}\fi$}%
+ \dimen@\ht\z@\advance\dimen@-\dp\z@
+ \dimen@ii\dimen@
+  \ifdim\dimen@>30\p@\advance\dimen@ii-\sixt@@n\p@\else
+  \ifdim\dimen@>24\p@\advance\dimen@ii-8\p@\else
+  \ifdim\dimen@>18\p@\advance\dimen@ii-6\p@\else
+  \ifdim\dimen@>12\p@\advance\dimen@ii-4\p@\else
+  \ifdim\dimen@>10\p@\advance\dimen@ii-\tw@\p@\fi\fi\fi\fi\fi
+ \setbox\tw@\hbox{$\m@th#2\mskip\uproot@ mu$}\advance\dimen@ii by1.667\wd\tw@
+ \mkern-\leftroot@ mu\mkern5mu\raise.6\dimen@ii\copy\rootbox
+ \mkern-8mu\mkern\leftroot@ mu\box\z@\leftroot\z@\uproot\z@}
+\def\space@.{\futurelet\space@\relax}
+\space@. %
+\expandafter\let\csname subscript character \string_\endcsname_
+\catcode`\_=\active
+\def_{\ifmmode\expandafter\sb@\else
+ \expandafter\csname subscript character \string_\endcsname\fi}
+\let\sb_
+\ifnum\catcode`\^^A=8 \catcode`\^^A\active\let^^A_\fi
+\def\sb@#1{\csname subscript character \string_\endcsname
+ {\futurelet\next\sb@@#1}}
+\def\sb@@{%
+ \ifx\next\space@\def\next@. {\futurelet\next\sb@@}\else
+  \def\next@.{%
+   \ifx\next j\mkern-\tw@ mu\else
+   \ifx\next f\mkern-\tw@ mu\else
+   \ifx\next p\mkern-\@ne mu
+   \fi\fi\fi}%
+ \fi
+ \next@.}
+\def\jadjust{\mkern-\tw@ mu}
+\ifx\laxread@\undefined\else\protect_\fi  
+\def\FONT@#1#2{\expandafter\ifx\csname#1#2\endcsname\relax
+ \expandafter\expandafter\expandafter\global
+  \expandafter\font\csname#1#2\endcsname=#1#2\fi
+ \def\next@{\let\next@}%
+ \expandafter\next@\csname#1#2\endcsname}
+\def\PSZ@{\edef\nextiii@{ at \the\dimen@}}
+\def\MTMI#1#2#3{%
+ \dimen@#1\relax\PSZ@
+ \FONT@{mtmi}\nextiii@\textfont\@ne\next@\skewchar\next@45
+ \ifx\amstexloaded@\relax
+  \setbox\z@\hbox{\next@\char46}%
+  \ht\Mathstrutbox@\ht\z@
+  \dp\Mathstrutbox@\dp\z@
+  \setbox\z@\hbox{\next@ x}%
+  \ex@.2326\ht\z@
+ \fi
+ \dimen@#2\relax\PSZ@
+ \FONT@{mtmi}\nextiii@\scriptfont\@ne\next@\skewchar\next@45
+ \dimen@#3\relax\PSZ@
+ \FONT@{mtmi}\nextiii@\scriptscriptfont\@ne\next@\skewchar\next@45\relax}
+\def\MTSY#1#2#3{%
+ \dimen@#1\relax\PSZ@
+ \FONT@{mtsyn}\nextiii@\textfont\tw@\next@\skewchar\next@48
+ \dimen@#2\relax\PSZ@
+ \FONT@{mtsyn}\nextiii@\scriptfont\tw@\next@\skewchar\next@48
+ \dimen@#3\relax\PSZ@
+ \FONT@{mtsyn}\nextiii@\scriptscriptfont\tw@\next@\skewchar\next@48\relax}
+\def\MTEX#1{%
+ \dimen@#1\relax\PSZ@
+ \FONT@{mtex}\nextiii@
+ \textfont\thr@@\next@
+ \scriptfont\thr@@\next@
+ \scriptscriptfont\thr@@\next@
+ \ifx\p@renwd\undefined\else\setbox\z@\hbox{\next@ B}\p@renwd\wd\z@\fi
+ \ifx\amstexloaded@\relax
+  \buffer@\fontdimen13 \next@
+  \buffer\buffer@
+  \def\intkern@{\mathchoice{\mkern-11mu}{\mkern-8mu}{\mkern-8mu}{\mkern-8mu}}
+  \def\intic@{\mathchoice{\hskip.75em}{\hskip.45em}{\hskip.45em}{\hskip.45em}}
+  \def\negintic@{\mathchoice
+   {\hskip-.75em}{\hskip-.45em}{\hskip-.45em}{\hskip-.45em}}
+ \fi}
+\def\hexnumber@#1{\ifcase#1 0\or 1\or 2\or 3\or 4\or 5\or 6\or 7\or 8\or
+ 9\or A\or B\or C\or D\or E\or F\fi}
+\def\alloc@@#1#2#3#4#5{\global\advance\count1#1by\@ne
+ \ch@ck#1#4#2\allocationnumber=\count1#1
+ \global#3#5=\allocationnumber}
+\def\MTMIB#1#2#3{%
+ \alloc@@8\fam\chardef\sixt@@n\MTMIBfam
+ \edef\MTMIBfam@{\hexnumber@\MTMIBfam}%
+ \dimen@#1\relax\PSZ@
+ \FONT@{mtmib}\nextiii@\textfont\MTMIBfam\next@\skewchar\next@45
+ \dimen@#2\relax\PSZ@
+ \FONT@{mtmib}\nextiii@\scriptfont\MTMIBfam\next@\skewchar\next@45
+ \dimen@#3\relax\PSZ@
+ \FONT@{mtmib}\nextiii@\scriptscriptfont\MTMIBfam\next@
+ \skewchar\next@45\relax
+ }
+\def\MTMUB#1#2#3{%
+ \alloc@@8\fam\chardef\sixt@@n\MTMUBfam
+ \edef\MTMUBfam@{\hexnumber@\MTMUBfam}%
+ \dimen@#1\relax\PSZ@
+ \FONT@{MTMUB}\nextiii@\textfont\MTMUBfam\next@\skewchar\next@45
+ \dimen@#2\relax\PSZ@
+ \FONT@{MTMUB}\nextiii@\scriptfont\MTMUBfam\next@\skewchar\next@45
+ \dimen@#3\relax\PSZ@
+ \FONT@{MTMUB}\nextiii@\scriptscriptfont\MTMUBfam\next@
+ \skewchar\next@45\relax
+ }
+\def\MTSYB#1#2#3{%
+ \alloc@@8\fam\chardef\sixt@@n\MTSYBfam
+ \edef\MTSYBfam@{\hexnumber@\MTSYBfam}%
+ \dimen@#1\relax\PSZ@
+ \FONT@{mtsyb}\nextiii@\textfont\MTSYBfam\next@\skewchar\next@48
+ \dimen@#2\relax\PSZ@
+ \FONT@{mtsyb}\nextiii@\scriptfont\MTSYBfam\next@\skewchar\next@48
+ \dimen@#3\relax\PSZ@
+ \FONT@{mtsyb}\nextiii@\scriptscriptfont\MTSYBfam\next@
+ \skewchar\next@48\relax
+ \mathchardef\openclubsuit="0\MTSYBfam@78
+ \mathchardef\shadedclubsuit="0\MTSYBfam@79
+ \mathchardef\openspadesuit="0\MTSYBfam@7A
+ \mathchardef\shadedspadesuit="0\MTSYBfam@7B
+ \def\bft##1##2{{\edef\next@{\the\font}\the\textfont\MTSYBfam
+ \accent"41 \next@##1##2}}
+ }
+\def\MTEXBfam{3}
+\def\MTEXBfam@{3}
+\def\MTEXB#1{%
+ \alloc@@8\fam\chardef\sixt@@n\MTEXBfam
+ \edef\MTEXBfam@{\hexnumber@\MTEXBfam}%
+ \dimen@#1\relax\PSZ@
+ \FONT@{mtexb}\nextiii@
+ \textfont\MTEXBfam\next@
+ \scriptfont\MTEXBfam\next@
+ \scriptscriptfont\MTEXBfam\next@
+ }
+\def\MTMIH#1#2#3{%
+ \alloc@@8\fam\chardef\sixt@@n\MTMIHfam
+ \edef\MTMIHfam@{\hexnumber@\MTMIHfam}%
+ \dimen@#1\relax\PSZ@
+ \FONT@{mtmih}\nextiii@\textfont\MTMIHfam\next@\skewchar\next@45
+ \dimen@#2\relax\PSZ@
+ \FONT@{mtmih}\nextiii@\scriptfont\MTMIHfam\next@\skewchar\next@45
+ \dimen@#3\relax\PSZ@
+ \FONT@{mtmih}\nextiii@\scriptscriptfont\MTMIHfam\next@
+ \skewchar\next@45\relax
+ }
+\def\MTMUH#1#2#3{%
+ \alloc@@8\fam\chardef\sixt@@n\MTMUHfam
+ \edef\MTMUHfam@{\hexnumber@\MTMUHfam}%
+ \dimen@#1\relax\PSZ@
+ \FONT@{MTMUH}\nextiii@\textfont\MTMUHfam\next@\skewchar\next@45
+ \dimen@#2\relax\PSZ@
+ \FONT@{MTMUH}\nextiii@\scriptfont\MTMUHfam\next@\skewchar\next@45
+ \dimen@#3\relax\PSZ@
+ \FONT@{MTMUH}\nextiii@\scriptscriptfont\MTMUHfam\next@
+ \skewchar\next@45\relax
+ }
+\def\MTSYH#1#2#3{%
+ \alloc@@8\fam\chardef\sixt@@n\MTSYHfam
+ \edef\MTSYHfam@{\hexnumber@\MTSYHfam}%
+ \dimen@#1\relax\PSZ@
+ \FONT@{mtsyh}\nextiii@\textfont\MTSYHfam\next@\skewchar\next@48
+ \dimen@#2\relax\PSZ@
+ \FONT@{mtsyh}\nextiii@\scriptfont\MTSYHfam\next@\skewchar\next@48
+ \dimen@#3\relax\PSZ@
+ \FONT@{mtsyh}\nextiii@\scriptscriptfont\MTSYHfam\next@
+ \skewchar\next@48\relax
+ \mathchardef\openclubsuit="0\MTSYHfam@78
+ \mathchardef\shadedclubsuit="0\MTSYHfam@79
+ \mathchardef\openspadesuit="0\MTSYHfam@7A
+ \mathchardef\shadedspadesuit="0\MTSYHfam@7B
+ \def\bft##1##2{{\edef\next@{\the\font}\the\textfont\MTSYHfam
+ \accent"41 \next@##1##2}}
+ }
+\def\MTEXHfam{3}
+\def\MTEXHfam@{3}
+\def\MTEXH#1{%
+ \alloc@@8\fam\chardef\sixt@@n\MTEXHfam
+ \edef\MTEXHfam@{\hexnumber@\MTEXHfam}%
+ \dimen@#1\relax\PSZ@
+ \FONT@{mtexh}\nextiii@
+ \textfont\MTEXHfam\next@
+ \scriptfont\MTEXHfam\next@
+ \scriptscriptfont\MTEXHfam\next@
+ }
+\newdimen\bmthick@
+\newdimen\hmthick@
+\bmthick@=.62\p@
+\hmthick@=.96\p@
+\def\bmunderline@#1#2{\vtop{\hbox{$\m@th#1#2$}%
+  \kern\thr@@\fontdimen8 \the\textfont\thr@@
+  \hrule height\bmthick@\kern\fontdimen8 \the\textfont\thr@@}}
+\def\hmunderline@#1#2{\vtop{\hbox{$\m@th#1#2$}%
+  \kern\thr@@\fontdimen8 \the\textfont\thr@@
+  \hrule height\hmthick@\kern\fontdimen8 \the\textfont\thr@@}}
+\def\bmoverline@#1#2{\vbox{\kern\fontdimen8 \the\textfont\thr@@
+  \hrule height\bmthick@
+  \kern\thr@@\fontdimen8 \the\textfont\thr@@
+  \hbox{$\m@th#1#2$}}}
+\def\hmoverline@#1#2{\vbox{\kern\fontdimen8 \the\textfont\thr@@
+  \hrule height\hmthick@
+  \kern\thr@@\fontdimen8 \the\textfont\thr@@
+  \hbox{$\m@th#1#2$}}}
+\def\bmunderline{\mathpalette\bmunderline@}
+\def\bmoverline{\mathpalette\bmoverline@}
+\def\hmunderline{\mathpalette\hmunderline@}
+\def\hmoverline{\mathpalette\hmoverline@}
+\def\frac#1#2{{#1\over#2}}
+\ifx\amstexloaded@\relax\else
+ \def\thickfrac{\def\next@{\ifx\next\thickness\let\next@\nextii@\else
+  \def\next@{\nextii@\thickness1}\fi\next@}%
+  \def\nextii@\thickness##1##2##3{{##2\above##1\p@int##3}}%
+  \FN@\next@}
+\fi
+\def\bmdefs@{\let\angle\bmangle@\def\frac##1##2{{##1\above\bmthick@##2}}%
+ \let\underline\bmunderline\let\overline\bmoverline
+ \ifx\amstexloaded@\relax
+  \def\intkern@{\mathchoice{\mkern-14mu}{\mkern-10mu}{\mkern-10mu}%
+   {\mkern-10mu}}%
+  \def\intic@{\mathchoice{\hskip.8em}{\hskip.5em}{\hskip.5em}{\hskip.5em}}%
+  \def\negintic@{\mathchoice
+   {\hskip-.8em}{\hskip-.5em}{\hskip-.5em}{\hskip-.5em}}%
+ \fi}
+\def\hmdefs@{\let\angle\hmangle@\def\frac##1##2{{##1\above\hmthick@##2}}%
+ \let\underline\hmunderline\let\overline\hmoverline
+ \ifx\amstexloaded@\relax
+ \def\intkern@{\mathchoice{\mkern-14mu}{\mkern-9mu}{\mkern-9mu}{\mkern-9mu}}%
+ \def\intic@{\mathchoice{\hskip.8em}{\hskip.5em}{\hskip.5em}{\hskip.5em}}%
+  \def\negintic@{\mathchoice
+   {\hskip-.8em}{\hskip-.5em}{\hskip-.5em}{\hskip-.5em}}%
+ \fi}
+\def\boldmath{\bmdefs@\newmath@0}
+\def\heavymath{\hmdefs@\newmath@1}
+\def\uboldmath{\bmdefs@\newmath@2}
+\def\uheavymath{\hmdefs@\newmath@3}
+\def\newmath@#1{%
+ \ifcase#1%
+  \let\bm\relax
+  \let\newmifam@\MTMIBfam
+  \let\newmifam@@\MTMIBfam@
+  \let\newsyfam@\MTSYBfam
+  \let\newsyfam@@\MTSYBfam@
+  \let\newexfam@\MTEXBfam
+  \let\newexfam@@\MTEXBfam@
+ \or
+  \let\hm\relax
+  \let\newmifam@\MTMIHfam
+  \let\newmifam@@\MTMIHfam@
+  \let\newsyfam@\MTSYHfam
+  \let\newsyfam@@\MTSYHfam@
+  \let\newexfam@\MTEXHfam
+  \let\newexfam@@\MTEXHfam@
+ \or
+  \let\ubm\relax
+  \let\newmifam@\MTMUBfam
+  \let\newmifam@@\MTMUBfam@
+  \let\newsyfam@\MTSYBfam
+  \let\newsyfam@@\MTSYBfam@
+  \let\newexfam@\MTEXBfam
+  \let\newexfam@@\MTEXBfam@
+ \or
+  \let\uhm\relax
+  \let\newmifam@\MTMUHfam
+  \let\newmifam@@\MTMUHfam@
+  \let\newsyfam@\MTSYHfam
+  \let\newsyfam@@\MTSYHfam@
+  \let\newexfam@\MTEXHfam
+  \let\newexfam@@\MTEXHfam@
+ \fi
+ \textfont\z@\the\textfont\bffam
+ \scriptfont\z@\the\scriptfont\bffam
+ \scriptscriptfont\z@\the\scriptscriptfont\bffam
+  \textfont\@ne\the\textfont\newmifam@
+  \scriptfont\@ne\the\scriptfont\newmifam@
+  \scriptscriptfont\@ne\the\scriptscriptfont\newmifam@
+  \ifx\amstexloaded@\relax
+   \setbox\z@\hbox{\the\textfont\@ne\char46}%
+   \ht\Mathstrutbox@\ht\z@
+   \dp\Mathstrutbox@\dp\z@
+   \setbox\z@\hbox{\the\textfont\@ne x}%
+   \ex@.2326\ht\z@
+  \fi
+  \mathcode`\(="4\newmifam@@2E
+  \mathcode`\)="5\newmifam@@2F
+  \delcode`\(="\newmifam@@2E\newexfam@@00
+  \delcode`\)="\newmifam@@2F\newexfam@@01
+  \textfont\tw@\the\textfont\newsyfam@
+  \scriptfont\tw@\the\scriptfont\newsyfam@
+  \scriptscriptfont\tw@\the\scriptscriptfont\newsyfam@
+  \def\rlh@##1{\vcenter{\m@th\hbox{\ooalign{\raise2.5pt
+   \hbox{$##1\rightharpoonup$}\crcr$##1\leftharpoondown$}}}}%
+  \mathcode`\?="5\bffam@3F
+  \mathcode`\:="3\bffam@3A
+  \mathcode`\!="5\bffam@21
+  \mathcode`\[="4\bffam@5B
+  \mathcode`\]="5\bffam@5D
+  \ifcase#1%
+  \or
+   \mathcode`\:="3\newsyfam@@56
+   \mathcode`\!="5\newsyfam@@57
+   \mathcode`\[="4\newsyfam@@54
+   \mathcode`\]="5\newsyfam@@55   
+  \or
+  \or
+   \mathcode`\:="3\newsyfam@@56
+   \mathcode`\!="5\newsyfam@@57
+   \mathcode`\[="4\newsyfam@@54
+   \mathcode`\]="5\newsyfam@@55   
+  \fi
+  \textfont\thr@@\the\textfont\newexfam@
+  \scriptfont\thr@@\the\scriptfont\newexfam@
+  \scriptscriptfont\thr@@\the\scriptscriptfont\newexfam@
+  \ifx\p@renwd\undefined\else
+   \setbox\z@\hbox{\the\textfont\thr@@ B}\p@renwd\wd\z@\fi
+  \ifx\amstexloaded@\relax
+   \buffer@\fontdimen13 \the\textfont\thr@@
+   \buffer\buffer@
+  \fi
+}
+\newcount\mtype@
+\newdimen\mdim@i
+\newdimen\mdim@ii
+\newdimen\mdim@iii
+\newdimen\@nemu
+\def\mtype@@#1{{\thinmuskip\@ne mu\medmuskip\tw@ mu\thickmuskip\thr@@ mu
+ \setbox\z@\hbox{$#1\m@th$}\setbox\tw@\hbox{$\mathclose{}#1\mathopen{}\m@th$}%
+ \mdim@i=\wd\tw@\advance\mdim@i-\wd\z@
+ \setbox\z@\hbox{$#1\m@th$}\setbox\tw@\hbox{$\mathop{}#1\m@th$}%
+ \mdim@ii=\wd\tw@\advance\mdim@ii-\wd\z@
+ \setbox\z@\hbox{$#1\m@th$}\setbox\tw@\hbox{$\mathrel{}#1\m@th$}%
+ \mdim@iii=\wd\tw@\advance\mdim@iii-\wd\z@
+ \setbox\z@\hbox{$\mkern1mu$}\@nemu=\wd\z@
+ \ifdim\mdim@i=\z@
+  \ifdim\mdim@ii=\z@
+   \ifdim\mdim@iii=\z@\global\mtype@5 \else\global\mtype@4 \fi
+  \else
+   \global\mtype@\z@
+  \fi
+ \else
+ \ifdim\mdim@i=\@nemu
+  \ifdim\mdim@iii=\z@\global\mtype@6 \else\global\mtype@\@ne\fi
+ \else
+ \ifdim\mdim@i=\tw@\@nemu
+  \global\mtype@7
+ \else
+ \ifdim\mdim@i=4\@nemu
+  \global\mtype@\tw@
+ \else
+ \ifdim\mdim@i=6\@nemu
+  \global\mtype@\thr@@
+ \fi\fi\fi\fi\fi}%
+ \ifnum\mtype@=\@ne
+  \setbox\z@\hbox{$\displaystyle#1_0$}%
+  \setbox\tw@\hbox{$\displaystyle#1\limits_0$}%
+  \ifdim\dp\tw@=\dp\z@\let\L@m@ts\limits\else\let\L@m@ts\nolimits\fi
+ \fi}
+\def\newchoice@#1#2{%
+ \ifcase#1%
+  \let\newm@@\boldmath
+ \or
+  \let\newm@@\heavymath
+ \or
+  \let\newm@@\uboldmath
+ \or
+  \let\newm@@\uheavymath
+ \fi
+ \mtype@@{#2}\edef\mtype@@@{\ifcase\mtype@\mathord\or\mathop
+ \or\mathbin\or\mathrel\or\mathopen\or\mathclose\or\mathpunct
+ \or\mathinner\fi}%
+ \ifnum\mtype@=\@ne\let\f@naltok\L@m@ts\else\let\f@naltok\relax\fi
+ \mtype@@@{\mathchoice{\hbox{$\newm@@\displaystyle#2$}}%
+  {\hbox{$\newm@@\textstyle#2$}}%
+  {\hbox{$\newm@@\scriptstyle#2$}}%
+  {\hbox{$\newm@@\scriptscriptstyle#2$}}}\f@naltok}
+
+\def\AMSl@ft@#1{\RIfM@#1\else
+ {\the\textfont\newsyfam@ f}\spacefactor\@m\fi}
+\def\AMSr@ght@#1{\RIfM@#1\else
+ {\the\textfont\newsyfam@ g}\spacefactor\@m\fi}
+\def\AMSleft@#1{\noexpand\RIfM@#1\noexpand\else
+ {\the\textfont\newsyfam@ f}\spacefactor\@m\noexpand\fi}
+\def\AMSright@#1{\noexpand\RIfM@#1\noexpand\else
+ {\the\textfont\newsyfam@ g}\spacefactor\@m\noexpand\fi}
+
+\newif\ifmath@
+\newif\ifmathch@
+\newif\ifdelim@
+{\uccode`7=`\\ \uccode`8=`m \uccode`9=`a \uccode`0=`t \uccode`!=`h
+ \uppercase{\gdef\math@#1#2#3#4#5#6\math@{\global\math@false\ifx 7#1\ifx 8#2%
+ \ifx 9#3\ifx 0#4\ifx !#5\xdef\meaning@{#6}\global\math@true\fi\fi\fi\fi\fi}}}
+{\uccode`7=`c \uccode`8=`h \uccode`9=`\"
+ \uppercase{\gdef\mathch@#1#2#3#4#5#6\mathch@{\global\mathch@false
+  \ifx 7#1\ifx 8#2\ifx 9#5\global\mathch@true\xdef\meaning@{9#6}\fi\fi\fi}}}
+\def\getdelim@#1"#2\getdelim@{\def\next@{#2}}
+{\uccode`7=`\\ \uccode`8=`d \uccode`9=`e \uccode`!=`l
+ \uppercase{\gdef\delim@#17#2#3#4#5\delim@{\global\delim@false
+  \ifx8#2\ifx9#3\ifx!#4\global\delim@true
+  \getdelim@#5\getdelim@\xdef\meaning@{\next@}\fi\fi\fi}}}
+\def\n@wmathch@#1"#2#3#4#5#6\n@wmathch@{%
+ \ifx#5.%
+  \ifcase#2%
+   \or
+   \ifodd#1\fam\newmifam@\fi
+   \mathchar"\newmifam@@#3#4 
+  \or
+   \ifodd#1\fam\newsyfam@\fi
+   \mathchar"\newsyfam@@#3#4
+  \or
+   \mathchar"\newexfam@@#3#4
+  \fi
+ \else
+   \ifcase#3%
+    \or
+    \ifodd#1\fam\newmifam@\fi
+    \mathchar"#2\newmifam@@#4#5
+   \or
+    \ifodd#1\fam\newsyfam@\fi
+    \mathchar"#2\newsyfam@@#4#5
+   \or
+    \mathchar"#2\newexfam@@#4#5
+  \fi 
+ \fi}
+\def\n@wdelim@#1#2.#3\n@wdelim@{\def\next@{#1#2}%
+ \ifx#10\else\count@="#1#2\relax
+ \ifnum\count@<"1000000 \edef\next@{0#1#2}\fi\fi
+ \expandafter\n@wdelim@@\next@\n@wdelim@}
+\def\n@wdelim@@#1#2#3#4#5#6#7\n@wdelim@{%
+ \ifnum#2=\@ne
+  \delimiter"#1\newmifam@@#3#4\newexfam@@#6#7 
+ \else
+  \delimiter"#1\newsyfam@@#3#4\newexfam@@#6#7 
+ \fi}
+\ifx\amstexloaded@\relax
+ \def\newintop@{\mathchar"1\newexfam@@52 }%
+ \def\newintdata@#1{%
+  \ifodd#1%
+  \def\newintkern@{\mathchoice{\mkern-14mu}{\mkern-9mu}{\mkern-9mu}%
+   {\mkern-9mu}}%
+  \else
+  \def\newintkern@{\mathchoice{\mkern-14mu}{\mkern-10mu}{\mkern-10mu}%
+   {\mkern-10mu}}%
+  \fi
+  \def\newintic@{\mathchoice{\hskip.8em}{\hskip.5em}{\hskip.5em}%
+   {\hskip.5em}}%
+  \def\newnegintic@{\mathchoice
+   {\hskip-.8em}{\hskip-.5em}{\hskip-.5em}{\hskip-.5em}}%
+ }
+ \def\newints@{\newmultint@\nolimits}
+ \def\newintsl@{\newnegintic@\mathop{\newintic@
+   \newmultintlimits@}\limits}
+ \def\newmultint@{\newintop@\ifnum\intno@=\z@\intdots@      
+  \else\newintkern@\fi                                
+  \ifnum\intno@>\tw@\newintop@\newintkern@\fi               
+  \ifnum\intno@>\thr@@\newintop@\newintkern@\fi             
+  \newintop@}                                            
+ \def\newmultintlimits@{\newintop@\ifnum\intno@=\z@\intdots@\else
+  \newintkern@\fi
+  \ifnum\intno@>\tw@\newintop@\newintkern@\fi
+  \ifnum\intno@>\thr@@\newintop@\newintkern@\fi\newintop@}
+  \Invalid@{\iintlimits}\Invalid@{\iiintlimits}\Invalid@{\iiiintlimits}%
+  \Invalid@{\idotsintlimits}%
+\fi 
+\def\bm{\newm@00}
+\def\hm{\newm@01}
+\def\ubm{\newm@02}
+\def\uhm{\newm@03}
+\def\bmunbrace@{\newm@10}
+\def\hmunbrace{\newm@11}
+\def\ubmunbrace@{\newm@12}
+\def\uhmunbrace@{\newm@13}
+\def\newm@#1#2#3{%
+ \ifx#3\undefined\errmessage{\string#3 undefined}\fi
+ \ifcase#2%
+  \let\newmifam@\MTMIBfam
+  \let\newmifam@@\MTMIBfam@
+  \let\newsyfam@\MTSYBfam
+  \let\newsyfam@@\MTSYBfam@
+  \let\newexfam@\MTEXBfam
+  \let\newexfam@@\MTEXBfam@
+ \or
+  \let\newmifam@\MTMIHfam
+  \let\newmifam@@\MTMIHfam@
+  \let\newsyfam@\MTSYHfam
+  \let\newsyfam@@\MTSYHfam@
+  \let\newexfam@\MTEXHfam
+  \let\newexfam@@\MTEXHfam@
+ \or
+  \let\newmifam@\MTMUBfam
+  \let\newmifam@@\MTMUBfam@
+  \let\newsyfam@\MTSYBfam
+  \let\newsyfam@@\MTSYBfam@
+  \let\newexfam@\MTEXBfam
+  \let\newexfam@@\MTEXBfam@ 
+ \or
+  \let\newmifam@\MTMUHfam
+  \let\newmifam@@\MTMUHfam@
+  \let\newsyfam@\MTSYHfam
+  \let\newsyfam@@\MTSYHfam@
+  \let\newexfam@\MTEXHfam
+  \let\newexfam@@\MTEXHfam@
+ \fi
+ \ifcat\noexpand#3A%
+  \ifodd#1\fam\the\newmifam@\relax#3\else{\fam\the\newmifam@\relax#3}\fi
+ \else\ifx#30\mathchar"0\bffam@30
+ \else\ifx#31\mathchar"0\bffam@31
+ \else\ifx#32\mathchar"0\bffam@32
+ \else\ifx#33\mathchar"0\bffam@33
+ \else\ifx#34\mathchar"0\bffam@34
+ \else\ifx#35\mathchar"0\bffam@35
+ \else\ifx#36\mathchar"0\bffam@36
+ \else\ifx#37\mathchar"0\bffam@37
+ \else\ifx#38\mathchar"0\bffam@38
+ \else\ifx#39\mathchar"0\bffam@39
+ \else\ifx#3*\mathchar"2\newsyfam@@03
+ \else\ifx#3+\mathchar"2\newsyfam@@43
+ \else\ifx#3-\mathchar"2\newsyfam@@00
+ \else\ifx#3=\mathchar"3\newsyfam@@44
+ \else\ifx#3<\mathchar"3\newmifam@@3C
+ \else\ifx#3>\mathchar"3\newmifam@@3E
+ \else\ifx#3/\delimiter"0\newmifam@@3D\newexfam@@0E 
+ \else\ifx#3.\mathchar"0\newmifam@@3A
+ \else\ifx#3,\mathchar"6\newmifam@@3B
+ \else\ifx#3;\mathchar"6\newsyfam@@49 
+ \else\ifx#3?\mathchar"5\bffam@3F
+ \else\ifx#3:\ifodd#2\relax\mathchar"3\newsyfam@@56 \else
+  \mathchar"3\bffam@3A \fi
+ \else\ifx#3!\ifodd#2\relax\mathchar"5\newsyfam@@57 \else
+  \mathchar"5\bffam@21 \fi
+ \else\ifx#3(\delimiter"4\newmifam@@2E\newexfam@@00 
+ \else\ifx#3)\delimiter"5\newmifam@@2F\newexfam@@01 
+ \else\ifx#3[\ifodd#2\relax\delimiter"4\newsyfam@@54\newexfam@@02 \else
+  \delimiter"4\bffam@5B\newexfam@@02 \fi
+ \else\ifx#3\lbrack\ifodd#2\relax\delimiter"4\newsyfam@@54\newexfam@@02 \else
+  \delimiter"4\bffam@5B\newexfam@@02 \fi
+ \else\ifx#3]\ifodd#2\relax\delimiter"5\newsyfam@@55\newexfam@@03 \else
+  \delimiter"5\bffam@5D\newexfam@@03 \fi
+ \else\ifx#3\rbrack\ifodd#2\relax\delimiter"5\newsyfam@@55\newexfam@@03 \else
+  \delimiter"5\bffam@5D\newexfam@@03 \fi
+ \else\ifx#3|\delimiter"\newsyfam@@6A\newexfam@@0C 
+ \else\ifx#3\{%
+  \ifx\amstexloaded@\relax
+   \AMSl@ft@{\delimiter"4\newsyfam@@66\newexfam@@08 }%
+  \else
+   \delimiter"4\newsyfam@@66\newexfam@@08 
+  \fi   
+ \else\ifx#3\lbrace
+  \ifx\amstexloaded@\relax
+   \AMSl@ft@{\delimiter"4\newsyfam@@66\newexfam@@08 }%
+  \else
+   \delimiter"4\newsyfam@@66\newexfam@@08 
+  \fi   
+ \else\ifx#3\}%
+  \ifx\amstexloaded@\relax
+   \AMSr@ght@{\delimiter"5\newsyfam@@67\newexfam@@09 }%
+  \else
+   \delimiter"5\newsyfam@@67\newexfam@@09 
+  \fi   
+ \else\ifx#3\rbrace
+  \ifx\amstexloaded@\relax
+   \AMSr@ght@{\delimiter"5\newsyfam@@67\newexfam@@09 }%
+  \else
+   \delimiter"5\newsyfam@@67\newexfam@@09 
+  \fi   
+ \else\ifx#3\cdot\mathchar"2\newsyfam@@01 
+ \else\ifx#3\prime\null\mathchar"\newsyfam@@30 \null
+ \else\ifx#3\surd{\mathchar"1\newsyfam@@70 }%
+ \else
+ \ifx#3\int
+   \ifx\amstexloaded@\relax
+    \DOTSI\newintop@\ilimits@
+   \else
+    \intop\nolimits
+   \fi
+ \else\ifx#3\iint
+   \newintdata@#2%
+   \DOTSI\intno@\tw@\newints@
+ \else\ifx#3\iintlimits
+   \newintdata@#2%
+   \DOTSI\intno@\tw@\newintsl@
+ \else\ifx#3\iiint
+   \newintdata@#2%
+   \DOTSI\intno@\thr@@\newints@
+ \else\ifx#3\iiintlimits
+   \newintdata@#2%
+   \DOTSI\intno@\thr@@\newintsl@
+ \else\ifx#3\iiiint
+   \newintdata@#2%
+   \DOTSI\intno@4 \newints@
+ \else\ifx#3\iiiintlimits	
+   \newintdata@#2%
+   \DOTSI\intno@4 \newintsl@
+ \else\ifx#3\idotsint
+   \newintdata@#2%
+   \DOTSI\intno@\z@\newints@
+ \else\ifx#3\idotsintlimits
+   \newintdata@#2%
+   \DOTSI\intno@\z@\newintsl@
+ \else
+  \xdef\meaning@{\meaning#3.........}%
+  \expandafter\delim@\meaning@\delim@
+  \ifdelim@
+   \expandafter\n@wdelim@\meaning@\n@wdelim@
+  \else 
+   \expandafter\math@\meaning@\math@
+   \ifmath@
+    \expandafter\mathch@\meaning@\mathch@
+    \ifmathch@
+     \edef\next@{#1\meaning@}%
+     \expandafter\n@wmathch@\next@\n@wmathch@
+    \else
+     \newchoice@#2{#3}%   
+    \fi
+   \else
+     \newchoice@#2{#3}%
+   \fi
+  \fi
+\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi  % 41 \fi's
+\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi}  
+\def\newmathch@#1"#2#3#4#5#6\newmathch@{%
+ \ifx#5.%
+  \ifnum#2=\@ne
+   \mathchardef#1"\newmifam@@#3#4 
+  \else 
+   \mathchardef#1"\newsyfam@@#3#4
+  \fi
+ \else
+   \ifnum#3=\@ne
+    \mathchardef#1"#2\newmifam@@#4#5
+  \else
+   \mathchardef#1"#2\newsyfam@@#4#5
+  \fi 
+ \fi}
+\def\newdelim@#1#2#3.#4\newdelim@{\def\next@{#2#3}%
+ \ifx#20\else\count@="#2#3\relax
+ \ifnum\count@<"1000000 \edef\next@{0#2#3}\fi\fi
+ \def\nextii@{\newdelim@@#1}\expandafter\nextii@\next@\newdelim@}
+\def\newdelim@@#1#2#3#4#5#6#7#8\newdelim@{%
+ \ifnum#3=\@ne
+  \edef#1{\delimiter"#2\newmifam@@#4#5\newexfam@@#7#8 }%
+ \else
+  \edef#1{\delimiter"#2\newsyfam@@#4#5\newexfam@@#7#8 }%
+ \fi}
+\def\bmvec{\mathaccent"0\MTSYBfam@45 }
+\def\bmgrave{\ifnum\fam=\m@ne\mathaccent"0\MTSYBfam@4A \else
+  \mathaccent"\accentclass@012 \fi}
+\def\bmacute{\ifnum\fam=\m@ne\mathaccent"0\MTSYBfam@4B \else
+ \mathaccent"\accentclass@013 \fi}
+\def\bmcheck{\ifnum\fam=\m@ne\mathaccent"0\MTSYBfam@4C \else
+ \mathaccent"\accentclass@014 \fi}
+\def\bmbreve{\ifnum\fam=\m@ne\mathaccent"0\MTSYBfam@4D \else
+ \mathaccent"\accentclass@015 \fi}
+\def\bmbar{\ifnum\fam=\m@ne\mathaccent"0\MTSYBfam@4E \else
+ \mathaccent"\accentclass@016 \fi}
+\def\bmhat{\ifnum\fam=\m@ne\mathaccent"0\MTSYBfam@4F \else
+ \mathaccent"\accentclass@05E \fi}
+\def\bmdot{\ifnum\fam=\m@ne\mathaccent"0\MTSYBfam@50 \else
+ \mathaccent"\accentclass@05F \fi}
+\def\bmtilde{\ifnum\fam=\m@ne\mathaccent"0\MTSYBfam@51 \else
+ \mathaccent"\accentclass@07E \fi}
+\def\bmddot{\ifnum\fam=\m@ne\mathaccent"0\MTSYBfam@52 \else
+ \mathaccent"\accentclass@07F \fi}
+\def\bmwidebar{\mathaccent"0\MTSYBfam@53 }
+\def\hmvec{\mathaccent"0\MTSYBfam@45 }
+\def\hmgrave{\ifnum\fam=\m@ne\mathaccent"0\MTSYHfam@4A \else
+  \mathaccent"\accentclass@012 \fi}
+\def\hmacute{\ifnum\fam=\m@ne\mathaccent"0\MTSYHfam@4B \else
+ \mathaccent"\accentclass@013 \fi}
+\def\hmcheck{\ifnum\fam=\m@ne\mathaccent"0\MTSYHfam@4C \else
+ \mathaccent"\accentclass@014 \fi}
+\def\hmbreve{\ifnum\fam=\m@ne\mathaccent"0\MTSYHfam@4D \else
+ \mathaccent"\accentclass@015 \fi}
+\def\hmbar{\ifnum\fam=\m@ne\mathaccent"0\MTSYHfam@4E \else
+ \mathaccent"\accentclass@016 \fi}
+\def\hmhat{\ifnum\fam=\m@ne\mathaccent"0\MTSYHfam@4F \else
+ \mathaccent"\accentclass@05E \fi}
+\def\hmdot{\ifnum\fam=\m@ne\mathaccent"0\MTSYHfam@50 \else
+ \mathaccent"\accentclass@05F \fi}
+\def\hmtilde{\ifnum\fam=\m@ne\mathaccent"0\MTSYHfam@51 \else
+ \mathaccent"\accentclass@07E \fi}
+\def\hmddot{\ifnum\fam=\m@ne\mathaccent"0\MTSYHfam@52 \else
+ \mathaccent"\accentclass@07F \fi}
+\def\hmwidebar{\mathaccent"0\MTSYHfam@53 }
+\ifx\amstexloaded@\relax
+ \def\plainwidetilde{\mathaccent"0365 }
+ \def\plainwidehat{\mathaccent"0362 }
+ \def\bmVec{\mathaccent@{"0\MTSYBfam@45 }} 
+ \def\hmVec{\mathaccent@{"0\MTSYHfam@45 }}
+ \Makeacc@\bmHat{\MTSYBfam@4F}
+ \Makeacc@\bmCheck{\MTSYBfam@4C}
+ \Makeacc@\bmTilde{\MTSYBfam@51}
+ \Makeacc@\bmAcute{\MTSYBfam@4B}
+ \Makeacc@\bmGrave{\MTSYBfam@4C}
+ \Makeacc@\bmDot{\MTSYBfam@50}
+ \Makeacc@\bmDdot{\MTSYBfam@52}
+ \Makeacc@\bmBreve{\MTSYBfam@4D}
+ \Makeacc@\bmBar{\MTSYBfam@4E}
+ \Makeacc@\hmHat{\MTSYHfam@4F}
+ \Makeacc@\hmCheck{\MTSYHfam@4C}
+ \Makeacc@\hmTilde{\MTSYHfam@51}
+ \Makeacc@\hmAcute{\MTSYHfam@4B}
+ \Makeacc@\hmGrave{\MTSYHfam@4C}
+ \Makeacc@\hmDot{\MTSYHfam@50}
+ \Makeacc@\hmDdot{\MTSYHfam@52}
+ \Makeacc@\hmBreve{\MTSYHfam@4D}
+ \Makeacc@\hmBar{\MTSYHfam@4E}
+\fi
+\def\bmsqrt{\radical"\MTSYBfam@70\MTEXBfam@70 }
+\def\hmsqrt{\radical"\MTSYHfam@70\MTEXHfam@70 }
+\def\bmdefine#1#2{\ifx\amstexloaded@\relax\define#1{}\fi\bmdefine@#1#2}
+\def\hmdefine#1#2{\ifx\amstexloaded@\relax\define#1{}\fi\hmdefine@#1#2}
+\def\ubmdefine#1#2{\ifx\amstexloaded@\relax\define#1{}\fi\ubmdefine@#1#2}
+\def\uhmdefine#1#2{\ifx\amstexloaded@\relax\define#1{}\fi\uhmdefine@#1#2}
+\def\bmdefine@#1\bm#2{\newmdefine@0#1#2}
+\def\hmdefine@#1\hm#2{\newmdefine@1#1#2}
+% \def\ubmdefine@\ubm#1#2{\newmdefine@2#1#2}
+\def\ubmdefine@#1\ubm#2{\newmdefine@2#1#2}
+% \def\uhmdefine@\uhm#1#2{\newmdefine@3#1#2}
+\def\uhmdefine@#1\uhm#2{\newmdefine@3#1#2}
+\def\newmdefine@#1#2#3{%
+ \ifx#3\undefined\errmessage{\string#3 undefined}\fi
+ \ifcase#1%
+  \let\newmifam@\MTMIBfam
+  \let\newmifam@@\MTMIBfam@
+  \let\newsyfam@\MTSYBfam
+  \let\newsyfam@@\MTSYBfam@
+  \let\newexfam@\MTEXBfam
+  \let\newexfam@@\MTEXBfam@
+ \or
+  \let\newmifam@\MTMIHfam
+  \let\newmifam@@\MTMIHfam@
+  \let\newsyfam@\MTSYHfam
+  \let\newsyfam@@\MTSYHfam@
+  \let\newexfam@\MTEXHfam
+  \let\newexfam@@\MTEXHfam@
+ \or
+  \let\newmifam@\MTMUBfam
+  \let\newmifam@@\MTMUBfam@
+  \let\newsyfam@\MTSYBfam
+  \let\newsyfam@@\MTSYBfam@
+  \let\newexfam@\MTEXBfam
+  \let\newexfam@@\MTEXBfam@ 
+ \or
+  \let\newmifam@\MTMUHfam
+  \let\newmifam@@\MTMUHfam@
+  \let\newsyfam@\MTSYHfam
+  \let\newsyfam@@\MTSYHfam@
+  \let\newexfam@\MTEXHfam
+  \let\newexfam@@\MTEXHfam@
+ \fi
+ \ifcat\noexpand#3A%
+  \edef#2{{\fam\the\newmifam@\space#3}}%
+ \else\ifx#30\mathchardef#2="0\bffam@30
+ \else\ifx#31\mathchardef#2="0\bffam@31
+ \else\ifx#32\mathchardef#2="0\bffam@32
+ \else\ifx#33\mathchardef#2="0\bffam@33
+ \else\ifx#34\mathchardef#2="0\bffam@34
+ \else\ifx#35\mathchardef#2="0\bffam@35
+ \else\ifx#36\mathchardef#2="0\bffam@36
+ \else\ifx#37\mathchardef#2="0\bffam@37
+ \else\ifx#38\mathchardef#2="0\bffam@38
+ \else\ifx#39\mathchardef#2="0\bffam@39
+ \else\ifx#3*\mathchardef#2="2\newsyfam@@03
+ \else\ifx#3+\mathchardef#2="2\newsyfam@@43
+ \else\ifx#3-\mathchardef#2="2\newsyfam@@00
+ \else\ifx#3=\mathchardef#2="3\newsyfam@@44
+ \else\ifx#3<\mathchardef#2="3\newmifam@@3C
+ \else\ifx#3>\mathchardef#2="3\newmifam@@3E
+ \else\ifx#3/\edef#2{\delimiter"0\newmifam@@3D\newexfam@@0E }%
+ \else\ifx#3.\mathchardef#2="0\newmifam@@3A
+ \else\ifx#3,\mathchardef#2="6\newmifam@@3B
+ \else\ifx#3;\mathchardef#2="6\newsyfam@@49 
+ \else\ifx#3?\mathchardef#2="5\bffam@3F
+ \else\ifx#3:\ifodd#1\relax\mathchardef#2="3\newsyfam@@56 \else
+  \mathchardef#2="3\bffam@3A \fi
+ \else\ifx#3!\ifodd#1\relax\mathchardef#2="5\newsyfam@@57 \else
+  \mathchardef#2="5\bffam@21 \fi
+ \else\ifx#3(\edef#2{\delimiter"4\newmifam@@2E\newexfam@@00 }%
+ \else\ifx#3)\edef#2{\delimiter"5\newmifam@@2F\newexfam@@01 }%
+ \else\ifx#3[\ifodd#1\relax
+  \edef#2{\delimiter"4\newsyfam@@54\newexfam@@02 }\else
+  \edef#2{\delimiter"4\bffam@5B\newexfam@@02 }\fi
+ \else\ifx#3\lbrack\ifodd#1\relax
+  \edef#2{\delimiter"4\newsyfam@@54\newexfam@@02 }\else
+  \edef#2{\delimiter"4\bffam@5B\newexfam@@02 }\fi
+ \else\ifx#3]\ifodd#1\relax
+  \edef#2{\delimiter"5\newsyfam@@55\newexfam@@03 }\else
+  \edef#2{\delimiter"5\bffam@5D\newexfam@@03 }\fi
+ \else\ifx#3\rbrack\ifodd#1\relax
+  \edef#2{\delimiter"5\newsyfam@@55\newexfam@@03 }\else
+  \edef#2{\delimiter"5\bffam@5D\newexfam@@03 }\fi
+ \else\ifx#3|\edef#2{\delimiter"\newsyfam@@6A\newexfam@@0C }%
+ \else\ifx#3\{%
+  \ifx\amstexloaded@\relax
+   \edef#2{\AMSleft@{\delimiter"4\newsyfam@@66\newexfam@@08 }}%
+  \else
+   \edef#2{\delimiter"4\newsyfam@@66\newexfam@@08 }%
+  \fi   
+ \else\ifx#3\lbrace
+  \ifx\amstexloaded@\relax
+   \edef#2{\AMSleft@{\delimiter"4\newsyfam@@66\newexfam@@08 }}%
+  \else
+   \edef#2{\delimiter"4\newsyfam@@66\newexfam@@08 }%
+  \fi   
+ \else\ifx#3\}%
+  \ifx\amstexloaded@\relax
+   \edef#2{\AMSright@{\delimiter"5\newsyfam@@67\newexfam@@09 }}%
+  \else
+   \edef#2{\delimiter"5\newsyfam@@67\newexfam@@09 }%
+  \fi   
+ \else\ifx#3\rbrace
+  \ifx\amstexloaded@\relax
+   \edef#2{\AMSright@{\delimiter"5\newsyfam@@67\newexfam@@09 }}%
+  \else
+   \edef#2{\delimiter"5\newsyfam@@67\newexfam@@09 }%
+  \fi   
+ \else\ifx#3\cdot\edef#2{\mathchar"2\newsyfam@@01 }%
+ \else\ifx#3\prime\edef#2{{\noexpand\null\mathchar"\newsyfam@@30 
+   \noexpand\null}}%
+ \else\ifx#3\surd\edef#2{{\mathchar"1\newsyfam@@70 }}%
+ \else\ifx#3\int\edef#2{\newintop@\nolimits}%
+ \else
+  \xdef\meaning@{\meaning#3.........}%
+  \expandafter\delim@\meaning@\delim@
+  \ifdelim@
+   \def\next@{\newdelim@#2}%
+   \expandafter\next@\meaning@\newdelim@
+  \else 
+   \expandafter\math@\meaning@\math@
+   \ifmath@
+    \expandafter\mathch@\meaning@\mathch@
+    \ifmathch@
+     \def\next@{\newmathch@#2}%
+     \expandafter\next@\meaning@\newmathch@
+    \else
+     \def#2{\newchoice@#1{#3}}%   
+    \fi
+   \else
+    \def#2{\newchoice@#1{#3}}%
+   \fi
+  \fi
+\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi
+\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi}  % 39 \fi's
+\def\MTMS#1#2#3{%
+ \alloc@@8\fam\chardef\sixt@@n\MTMSfam
+ \dimen@#1\relax\PSZ@
+ \FONT@{MTMS}\nextiii@\textfont\MTMSfam\next@\skewchar\next@'52
+ \dimen@#2\relax\PSZ@
+ \FONT@{MTMS}\nextiii@\scriptfont\MTMSfam\next@\skewchar\next@'52
+ \dimen@#3\relax\PSZ@
+ \FONT@{MTMS}\nextiii@\scriptscriptfont\MTMSfam\next@
+ \skewchar\next@'52\relax
+ \def\script{\futurelet\next\script@}%
+ \def\script@{\ifx\next*\expandafter\script@@\else\expandafter\script@@@\fi}%
+ \def\script@@*##1{\edef\next@{\ifx##1A48\else\ifx##1E49\else\ifx##1G50\else
+  \ifx##1g51\else\ifx##1I52\else\ifx##1L53\else\ifx##1Q54\else
+  \ifx##1S55\else\ifx##1r56\else\ifx##1z57\else\ifx##1i123\else
+  \ifx##1j124\else\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi}%
+  \ifx\next@\empty\script@@@{##1}\else
+  \count@=\MTMSfam 
+  \multiply\count@256 
+  \advance\count@\next@
+  \mathchar\count@\relax\fi}%
+ \def\script@@@##1{{\fam\MTMSfam\relax##1}}%
+}
+\def\MTMSB#1#2#3{%
+ \alloc@@8\fam\chardef\sixt@@n\MTMSBfam
+ \dimen@#1\relax\PSZ@
+ \FONT@{MTMSB}\nextiii@\textfont\MTMSBfam\next@\skewchar\next@'52
+ \dimen@#2\relax\PSZ@
+ \FONT@{MTMSB}\nextiii@\scriptfont\MTMSBfam\next@\skewchar\next@'52
+ \dimen@#3\relax\PSZ@
+ \FONT@{MTMSB}\nextiii@\scriptscriptfont\MTMSBfam\next@
+ \skewchar\next@'52\relax
+ \def\bscript{\futurelet\next\bscript@}%
+ \def\bscript@{\ifx\next*\expandafter\bscript@@
+  \else\expandafter\bscript@@@\fi}%
+ \def\bscript@@*##1{\edef\next@{\ifx##1A48\else\ifx##1E49\else\ifx##1G50\else
+  \ifx##1g51\else\ifx##1I52\else\ifx##1L53\else\ifx##1Q54\else
+  \ifx##1S55\else\ifx##1r56\else\ifx##1z57\else\ifx##1i123\else
+  \ifx##1j124\else1\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi}%
+  \ifx\next@\empty\bscript@@@{##1}\else
+  \count@=\MTMSBfam 
+  \multiply\count@256 
+  \advance\count@\next@
+  \mathchar\count@\relax\fi}%
+ \def\bscript@@@##1{{\fam\MTMSBfam\relax##1}}%
+}
+\def\SIFS@#1{\def\next@##1##2 ##3\next@{\def\nextiv@{##1##2}}%
+ \edef\nextii@{\noexpand\next@#1\space\noexpand\next@}\nextii@}
+\def\MathRoman#1#2#3#4{%
+ \SIFS@{#1}%
+ \dimen@#2\relax\PSZ@
+ \FONT@\nextiv@\nextiii@\textfont\z@\next@
+ \dimen@#3\relax\PSZ@
+ \FONT@\nextiv@\nextiii@\scriptfont\z@\next@
+ \dimen@#4\relax\PSZ@
+ \FONT@\nextiv@\nextiii@\scriptscriptfont\z@\next@}
+\def\MathBold#1#2#3#4{%
+ \edef\bffam@{\hexnumber@\bffam}%
+ \SIFS@{#1}%
+ \edef\MBF@{\nextiv@}\def\MBS@{\\#2\\#3\\#4\\}%
+ \dimen@#2\relax\PSZ@
+ \FONT@\nextiv@\nextiii@\textfont\bffam\next@
+ \dimen@#3\relax\PSZ@
+ \FONT@\nextiv@\nextiii@\scriptfont\bffam\next@
+ \dimen@#4\relax\PSZ@
+ \FONT@\nextiv@\nextiii@\scriptscriptfont\bffam\next@}
+\def\MathItalic#1#2#3#4{%
+ \SIFS@{#1}%
+ \dimen@#2\relax\PSZ@
+ \FONT@\nextiv@\nextiii@\textfont\itfam\next@
+ \dimen@#3\relax\PSZ@
+ \FONT@\nextiv@\nextiii@\scriptfont\itfam\next@
+ \dimen@#4\relax\PSZ@
+ \FONT@\nextiv@\nextiii@\scriptscriptfont\itfam\next@}
+%\def\MathOblique#1#2#3#4{%
+% \SIFS@{#1}%
+% \dimen@#2\relax\PSZ@
+% \FONT@\nextiv@\nextiii@\textfont\slfam\next@
+% \dimen@#3\relax\PSZ@
+% \FONT@\nextiv@\nextiii@\scriptfont\slfam\next@
+% \dimen@#4\relax\PSZ@
+% \FONT@\nextiv@\nextiii@\scriptscriptfont\slfam\next@}
+\def\MathBoldItalic#1#2#3#4{%
+ \ifx\bfitfam\undefined
+  \alloc@@8\fam\chardef\sixt@@n\bfitfam
+ \fi
+ \SIFS@{#1}%
+ \dimen@#2\relax\PSZ@
+ \FONT@\nextiv@\nextiii@\textfont\bfitfam\next@
+ \dimen@#3\relax\PSZ@
+ \FONT@\nextiv@\nextiii@\scriptfont\bfitfam\next@
+ \dimen@#4\relax\PSZ@
+ \FONT@\nextiv@\nextiii@\scriptscriptfont\bfitfam\next@\relax
+ \ifx\amstexloaded@\relax
+  \def\bolditalic{\relax\ifmmode\expandafter\bolditalic@\else
+   \expandafter\nonmatherr@\expandafter\bolditalic\fi}%
+  \def\bolditalic@##1{{\bolditalic@@{##1}}}%
+  \def\bolditalic@@##1{\fam\bfitfam\relax##1}%
+  \def\textdef@@##1{\textdef@##1\rm\textdef@##1\bf\textdef@##1\sl
+    \textdef@##1\it\textdef@##1\bfit}%
+ \else
+  \def\bfit{\fam\bfitfam}%
+ \fi}
+\def\Calligraphic#1#2#3{%
+ \ifx\Calfam\undefined
+ \alloc@@8\fam\chardef\sixt@@n\Calfam
+  \ifx\amstexloaded@\relax
+   \def\Cal@@##1{\noaccents@\fam\Calfam##1}%  
+  \else
+  \def\cal{\fam\Calfam}%                     
+  \fi
+ \fi
+% \SIFS@{#1}%
+% \FONT@\nextiv@\empty\textfont\Calfam\next@\skewchar\next@48
+ \FONT@{#1}\empty\textfont\Calfam\next@\skewchar\next@48
+% \SIFS@{#2}%
+% \FONT@\nextiv@\empty\scriptfont\Calfam\next@\skewchar\next@48
+ \FONT@{#2}\empty\scriptfont\Calfam\next@\skewchar\next@48
+% \SIFS@{#3}%
+% \FONT@\nextiv@\empty\scriptscriptfont\Calfam\next@\skewchar\next@48\relax}
+ \FONT@{#3}\empty\scriptscriptfont\Calfam\next@\skewchar\next@48\relax}
+\def\MathPiSix#1#2#3#4{%
+ \ifx\MathPiSixfam\undefined
+  \alloc@@8\fam\chardef\sixt@@n\MathPiSixfam
+  \ifx\amstexloaded@\relax\else
+   \def\Bbb{\relax\ifmmode\expandafter\Bbb@\else
+    \expandafter\nonmatherr@\expandafter\Bbb\fi}%
+   \def\Bbb@##1{{\Bbb@@{##1}}}%
+  \fi
+ \def\Bbb@@##1{\noaccents@\fam\MathPiSixfam##1}%
+ \fi
+ \SIFS@{#1}%
+ \dimen@#2\relax\dimen@.95\dimen@\PSZ@
+ \FONT@\nextiv@\nextiii@\textfont\MathPiSixfam\next@
+ \dimen@#3\relax\dimen@.95\dimen@\PSZ@
+ \FONT@\nextiv@\nextiii@\scriptfont\MathPiSixfam\next@
+ \dimen@#4\relax\dimen@.95\dimen@\PSZ@
+ \FONT@\nextiv@\nextiii@\scriptscriptfont\MathPiSixfam\next@}
+\def\MathPiTwofrak#1#2#3#4{%
+ \ifx\MathPiTwofrakfam\undefined
+  \alloc@@8\fam\chardef\sixt@@n\MathPiTwofrakfam
+  \ifx\amstexloaded@\relax\else
+   \def\frak{\relax\ifmmode\expandafter\frak@\else
+    \expandafter\nonmatherr@\expandafter\frak\fi}%
+   \def\frak@##1{{\frak@@{##1}}}%
+   \let\goth\frak
+  \fi
+ \fi
+ \def\frak@@##1{\fam\MathPiTwofrakfam\relax##1}%
+ \SIFS@{#1}%
+ \dimen@#2\relax\dimen@.88\dimen@\PSZ@
+ \FONT@\nextiv@\nextiii@\textfont\MathPiTwofrakfam\next@
+ \dimen@#3\relax\dimen@.88\dimen@\PSZ@
+ \FONT@\nextiv@\nextiii@\scriptfont\MathPiTwofrakfam\next@
+ \dimen@#4\relax\dimen@.88\dimen@\PSZ@
+ \FONT@\nextiv@\nextiii@\scriptscriptfont\MathPiTwofrakfam\next@}
+\def\MathPiTwoScript#1#2#3#4{%
+ \ifx\MathPiTwoScriptfam\undefined
+  \alloc@@8\fam\chardef\sixt@@n\MathPiTwoScriptfam
+  \edef\MathPiTwoScriptfam@{\hexnumber@\MathPiTwoScriptfam}%
+  \def\Script{\relax\ifmmode\expandafter\Script@\else
+   \expandafter\nonmatherr@\expandafter\Script\fi}%
+  \def\Script@##1{{\Script@@{##1}}}%
+  \def\Script@@##1{\noaccents@
+   \count@=`##1\advance\count@-65 
+   \edef\next@{\ifcase\count@21\or40\or23\or24\or25\or5E\or
+         26\or2A\or28\or29\or5F\or2B\or7D\or31\or32\or33\or34\or35\or
+         36\or37\or38\or39\or30\or2D\or3D\or5D\fi}%
+   \mathchar"0\MathPiTwoScriptfam@\next@\relax}%
+ \fi
+ \SIFS@{#1}%
+ \dimen@#2\relax\dimen@.95\dimen@\PSZ@
+ \FONT@\nextiv@\nextiii@\textfont\MathPiTwoScriptfam\next@
+ \dimen@#3\relax\dimen@.95\dimen@\PSZ@
+ \FONT@\nextiv@\nextiii@\scriptfont\MathPiTwoScriptfam\next@
+ \dimen@#4\relax\dimen@.95\dimen@\PSZ@
+ \FONT@\nextiv@\nextiii@\scriptscriptfont\MathPiTwoScriptfam\next@}
+\catcode`\"=\qqcode@
+\catcode`\@=\atcode@

@@ -1,0 +1,45 @@
+                        -----------------------------
+			| PSTricks 97 documentation |
+                        -----------------------------
+
+  These files are the up to date and "supported" documentation for the current
+PSTricks 97 distribution.
+
+  Up to now, there is only the original documentation for the `multido'
+package (still up to date), the documentation for the `pst-fill' package
+written by Denis Girou and the `pstricks.bug' file, which list the known
+bugs in current distribution, with workarounds when some are known.
+
+  The _reference_ documentation is not up to date and is still the one of the
+old 0.93a distribution. You still _must_ refer to it, but it is in the
+obsolete/doc directory to specify clearly that it is not up to date.
+
+  It also contain the "supported" test file test-pst.tex for the distribution,
+which allow to test all the various parts of the distribution (excluding the
+`pst-fill' package). It is the unification in a single file of most of the
+examples of the PSTricks chapter of "The LaTeX Graphics Companion".
+It require the `calc', `graphicx' and `ifthen' package from the LaTeX
+distribution, `subfigure' from CTAN/macros/latex/contrib/supported/subfigure,
+`multido' and all PSTricks packages, `pst-poly' from pstricks/contrib/pst-poly
+and `random' from CTAN/macros/generic. You may have some warning messages
+concerning fonts missing.
+  And, as it is a rather extensive file which test and demonstrate a lot of
+PSTricks functionnalities, it is rather huge. In our days, it is not a problem
+on the majority of platforms and TeX implementations, but it can be on some.
+Here are the TeX ressources required:
+
+  3890 strings
+ 40592 string characters
+178853 words of memory 
+  6073 multiletter control sequences
+ 17049 words of font info for 54 fonts
+    18 hyphenation exceptions
+30i,20n,53p,269b,798s stack positions
+
+  Take care also that on some non Unix systems, you may have to replace
+the / character by, for instance, the : one in the file test-pst.tex:
+\input{lgc:#2.inl}}
+
+--
+Denis Girou and Sebastian Rahtz (updated September 9, 1998)
+

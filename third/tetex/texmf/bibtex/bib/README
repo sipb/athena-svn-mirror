@@ -1,0 +1,48 @@
+All the bib files that are missing here are available at
+ftp://ftp.math.utah.edu/pub/tex/bib.
+
+We don't have them all here (to save space).
+
+Not included:
+        acm             collected algorithms of the ACM
+        all_brec        automatic differentiation
+        as              Applied Statistics
+        cgf             Computer Graphics Forum
+        compsys         Computing Systems (Journal of the USENIX Assoc.)
+        epstein		windowing systems and security
+        gnu             GNU manuals (extremely incomplete)
+        gut             Cahier GUTenberg (French TeX)
+        gvl             Golub/Van Loan Matrix Computations
+        intbib          interior point methods for mathematical programming
+        jclt            J. of C Language Translation
+        ovr             operations research
+        postscri        works about PostScript
+        red-a-f         Reduce (authors A-F)
+        red-g-l         Reduce (authors G-L)
+        red-m-z         Reduce (authors M-Z)
+        redbooks        Reduce
+        reduce          placeholder
+        texjourn        journals that accept and publish TeX source
+        toms            Trans. on Math. Software
+        trees           drawing trees in TeX
+        xres            The X Resource
+        ep              EP and RIDT conferences
+        epodd           EP-ODD journal
+        litprog         literate programming, i.e., web
+        master          Beebe's personal
+        mrabbrev        journal abbreviations for Math. Reviews
+        standard        ANSI & POSIX standards
+        texbook1        works about TeX and digital typography
+        texbook2        works prepared in TeX
+        texgraph        graphics in TeX
+        texnique        TUG's TeXniques series
+        tugboat         TUGboat, complete
+        unix		books about Unix
+        asi             NATO Advanced Study Institutes directed by Byrnes
+        byrnes          temporary references that should be in kbmath
+        institut        institution abbreviations
+        journal         journal abbreviations
+        kbmath          random math papers on wavelets, antenna theory, ...
+        publish         publisher abbreviations
+        reading         vision & reading research
+        type            general typography and letterform design

@@ -1,0 +1,16 @@
+#!/bin/sh
+# sort a file in Cyrillic koi8-r encoding alphabetically
+#
+# -f Fold lower case characters into the equivalent upper case
+#    characters when sorting so that, for example, `B' is greater
+#    than `a' (without `-f', uppercase characters precede lowercase).
+
+if [ "$1" = "-f" ]; then
+	FOLD="-f"
+	ALPH='áÁâÂ÷×çÇäÄåÅ³£öÖúÚéÉêÊëËìÌíÍîÎïÏğĞòÒóÓôÔõÕæÆèÈãÃşŞûÛıİÿßùÙøØüÜàÀñÑ'
+else
+	ALPH='áâ÷çäå³öúéêëìíîïğòóôõæèãşûıÿùøüàñÁÂ×ÇÄÅ£ÖÚÉÊËÌÍÎÏĞÒÓÔÕÆÈÃŞÛİßÙØÜÀÑ'
+fi
+TEMP='¾¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏĞÑÒÓÔÕÖ×ØÙÚÛÜİŞßàáâãäåæçèéêëìíîïğñòóôõö÷øùúûüışÿ'
+
+tr $ALPH $TEMP | sort $FOLD | tr $TEMP $ALPH

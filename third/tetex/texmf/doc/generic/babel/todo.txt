@@ -1,0 +1,28 @@
+Things that still need to be done (1999/03/10) :
+================================================
+
+- Integrate the work of Jun Takashima (<tjun@aa.tufs.ac.jp>) to
+  integrate his work on Sanskrit and Kannada into the babel
+  distribution. 
+
+- The introduction of \peek@token in the expansion of shorthands
+  made them inexpandable, which breaks things like \char"012,
+  \char'177 when " or ' are active.
+
+- The russian hyphenation file contains \uccode `\~=`\^...
+  This needs perhaps to be made a local change which is re-installed
+  when russian becomes the active language; needs investigation
+
+- Add slovakian quotatian characters,
+  as suggested by Jana Chlebikova:
+  we have another quotation characters as in English. The opening
+  quotation character is similar to Polish opening quotation (see
+  Proceedings from EUROTEX'92, pages 125) and closing quotation
+  characters is similar as German cl. quat. For ilustration I send you
+  macros (from another slovak.sty) with this things. In that sty you
+  can use both (english and slovak quotations marks) depending on the
+  value \csprimeon or \csprimeoff.  I think, it is a good idea and
+  macro looks quite nice. According me something similar is neccesery
+  to do in babel-slovak.sty.
+
+- Implement the suggestions for italian.sty from Claudio Beccari 

@@ -1,0 +1,27 @@
+<html>
+<head><title>Help On LaTeX \@</title></head>
+<body bgcolor="#ffffff" text="#000000" link="#000099" vlink="#cc0000" alink="#cc0000">
+<h1><font size="-2">Hypertext Help with LaTeX</font><br><font color="#cc0000">\@</font></h1>
+LaTeX normally leaves a little extra space after punctuation, such as the
+period which ends a sentence.  However, it
+uses a rather simple rule for determining whether a period ends a 
+sentence: it assumes that periods end sentences <em>unless</em> they
+follow an upper case letter. To tell LaTeX to insert extra space after
+punctuation which follows an upper case letter, precede the punctuation
+by   <tt>\@</tt>.
+<p>
+For example:
+<pre>
+  <tt>It is I\@.</tt>
+</pre>
+would not be considered to be a sentence by LaTeX except for the <tt>\@</tt>.
+<hr>
+See also <a href="ltx-431.html"><tt>\&lt;space&gt;</tt></a> for the opposite case<br>
+See also <A href="ltx-99.html">Line and Page Breaking</A><br> 
+Go to <a href="ltx-2.html">LaTeX Table of Contents</a>
+<hr>
+<address>
+Revised: Sheldon Green, 10 May 1995.
+</address>
+</body>
+</html>

@@ -1,0 +1,647 @@
+% pdftex.map: maintained by the script updmap in $TEXMFMAIN/dvips/config.
+%   The preferred way to add things to this file is to put the extra lines
+%   into a separate file and add that filename to the updmap script. Then,
+%   run the updmap script to recreate this file.
+bchb8r "TeXBase1Encoding ReEncodeFont" <8r.enc <bchb8a.pfb
+bchbi8r "TeXBase1Encoding ReEncodeFont" <8r.enc <bchbi8a.pfb
+bchbo8r ".167 SlantFont TeXBase1Encoding ReEncodeFont" <8r.enc <bchb8a.pfb
+bchr8r "TeXBase1Encoding ReEncodeFont" <8r.enc <bchr8a.pfb
+bchri8r "TeXBase1Encoding ReEncodeFont" <8r.enc <bchri8a.pfb
+bchro8r ".167 SlantFont TeXBase1Encoding ReEncodeFont" <8r.enc <bchr8a.pfb
+cmb10 <cmb10.pfb
+cmbsy10 <cmbsy10.pfb
+cmbsy5 <cmbsy5.pfb
+cmbsy6 <cmbsy7.pfb
+cmbsy7 <cmbsy7.pfb
+cmbsy8 <cmbsy7.pfb
+cmbsy9 <cmbsy10.pfb
+cmbx10 <cmbx10.pfb
+cmbx12 <cmbx12.pfb
+cmbx5 <cmbx5.pfb
+cmbx6 <cmbx6.pfb
+cmbx7 <cmbx7.pfb
+cmbx8 <cmbx8.pfb
+cmbx9 <cmbx9.pfb
+cmbxsl10 <cmbxsl10.pfb
+cmbxti10 <cmbxti10.pfb
+cmbxti7 <cmbxti10.pfb
+cmcb10 <cmcb10.pfb
+cmcbx10 <cmcbx10.pfb
+cmcbx12 <cmcbx12.pfb
+cmcbx5 <cmcbx5.pfb
+cmcbx6 <cmcbx6.pfb
+cmcbx7 <cmcbx7.pfb
+cmcbx8 <cmcbx8.pfb
+cmcbx9 <cmcbx9.pfb
+cmcbxsl10 <cmcbxsl1.pfb
+cmcbxti10 <cmcbxti1.pfb
+cmccsc10 <cmccsc10.pfb
+cmccsc8 <cmccsc8.pfb
+cmccsc9 <cmccsc9.pfb
+cmcinch <cmcinch7.pfb
+cmcitt10 <cmcitt10.pfb
+cmcsc10 <cmcsc10.pfb
+cmcsc8 <cmcsc10.pfb
+cmcsc9 <cmcsc10.pfb
+cmcsl10 <cmcsl10.pfb
+cmcsl12 <cmcsl12.pfb
+cmcsl8 <cmcsl8.pfb
+cmcsl9 <cmcsl9.pfb
+cmcsltt10 <cmcsltt1.pfb
+cmcss10 <cmcss10.pfb
+cmcss12 <cmcss12.pfb
+cmcss17 <cmcss17.pfb
+cmcss8 <cmcss8.pfb
+cmcss9 <cmcss9.pfb
+cmcssbx10 <cmcssbx1.pfb
+cmcssdc10 <cmcssdc1.pfb
+cmcssi10 <cmcssi10.pfb
+cmcssi12 <cmcssi12.pfb
+cmcssi17 <cmcssi17.pfb
+cmcssi8 <cmcssi8.pfb
+cmcssi9 <cmcssi9.pfb
+cmcssq8 <cmcssq8.pfb
+cmcssqi8 <cmcssqi8.pfb
+cmcti10 <cmcti10.pfb
+cmcti12 <cmcti12.pfb
+cmcti7 <cmcti7.pfb
+cmcti8 <cmcti8.pfb
+cmcti9 <cmcti9.pfb
+cmctt10 <cmctt10.pfb
+cmctt12 <cmctt12.pfb
+cmctt8 <cmctt8.pfb
+cmctt9 <cmctt9.pfb
+cmcu10 <cmcu10.pfb
+cmcyr10 <cmcyr10.pfb
+cmcyr12 <cmcyr12.pfb
+cmcyr17 <cmcyr17.pfb
+cmcyr5 <cmcyr5.pfb
+cmcyr6 <cmcyr6.pfb
+cmcyr7 <cmcyr7.pfb
+cmcyr8 <cmcyr8.pfb
+cmcyr9 <cmcyr9.pfb
+cmdunh10 <cmdunh10.pfb
+cmex10 <cmex10.pfb
+cmex7 <cmex10.pfb
+cmex8 <cmex10.pfb
+cmex9 <cmex10.pfb
+cmff10 <cmff10.pfb
+cmfi10 <cmfi10.pfb
+cmfib8 <cmfib8.pfb
+cminch <cminch.pfb
+cmitt10 <cmitt10.pfb
+cmitt9 <cmitt10.pfb
+cmmi10 <cmmi10.pfb
+cmmi12 <cmmi12.pfb
+cmmi5 <cmmi5.pfb
+cmmi6 <cmmi6.pfb
+cmmi7 <cmmi7.pfb
+cmmi8 <cmmi8.pfb
+cmmi9 <cmmi9.pfb
+cmmib10 <cmmib10.pfb
+cmmib5 <cmmib5.pfb
+cmmib6 <cmmib7.pfb
+cmmib7 <cmmib7.pfb
+cmmib8 <cmmib7.pfb
+cmmib9 <cmmib10.pfb
+cmr10 <cmr10.pfb
+cmr12 <cmr12.pfb
+cmr17 <cmr17.pfb
+cmr5 <cmr5.pfb
+cmr6 <cmr6.pfb
+cmr7 <cmr7.pfb
+cmr8 <cmr8.pfb
+cmr9 <cmr9.pfb
+cmsl10 <cmsl10.pfb
+cmsl12 <cmsl12.pfb
+cmsl6 <cmsl8.pfb
+cmsl8 <cmsl8.pfb
+cmsl9 <cmsl9.pfb
+cmsltt10 <cmsltt10.pfb
+cmsltt9 <cmsltt10.pfb
+cmss10 <cmss10.pfb
+cmss12 <cmss12.pfb
+cmss17 <cmss17.pfb
+cmss8 <cmss8.pfb
+cmss9 <cmss9.pfb
+cmssbx10 <cmssbx10.pfb
+cmssdc10 <cmssdc10.pfb
+cmssi10 <cmssi10.pfb
+cmssi12 <cmssi12.pfb
+cmssi17 <cmssi17.pfb
+cmssi8 <cmssi8.pfb
+cmssi9 <cmssi9.pfb
+cmssq8 <cmssq8.pfb
+cmssqi8 <cmssqi8.pfb
+cmsy10 <cmsy10.pfb
+cmsy5 <cmsy5.pfb
+cmsy6 <cmsy6.pfb
+cmsy7 <cmsy7.pfb
+cmsy8 <cmsy8.pfb
+cmsy9 <cmsy9.pfb
+cmtcsc10 <cmtcsc10.pfb
+cmtex10 <cmtex10.pfb
+cmtex8 <cmtex8.pfb
+cmtex9 <cmtex9.pfb
+cmti10 <cmti10.pfb
+cmti12 <cmti12.pfb
+cmti7 <cmti7.pfb
+cmti8 <cmti8.pfb
+cmti9 <cmti9.pfb
+cmtt10 <cmtt10.pfb
+cmtt12 <cmtt12.pfb
+cmtt8 <cmtt8.pfb
+cmtt9 <cmtt9.pfb
+cmu10 <cmu10.pfb
+cmvtt10 <cmvtt10.pfb
+cob Courier-Bold "TeXnANSIEncoding ReEncodeFont" <texnansi.enc
+cobo Courier-BoldOblique "TeXnANSIEncoding ReEncodeFont" <texnansi.enc
+com Courier "TeXnANSIEncoding ReEncodeFont" <texnansi.enc
+contnav ContextNavigation  <contnav.pfb
+coo Courier-Oblique "TeXnANSIEncoding ReEncodeFont" <texnansi.enc
+euex10 <euex10.pfb
+euex7 <euex10.pfb
+euex8 <euex10.pfb
+euex9 <euex10.pfb
+eufb10 <eufb10.pfb
+eufb5 <eufb5.pfb
+eufb6 <eufb7.pfb
+eufb7 <eufb7.pfb
+eufb8 <eufb7.pfb
+eufb9 <eufb10.pfb
+eufm10 <eufm10.pfb
+eufm5 <eufm5.pfb
+eufm6 <eufm7.pfb
+eufm7 <eufm7.pfb
+eufm8 <eufm7.pfb
+eufm9 <eufm10.pfb
+eurb10 <eurb10.pfb
+eurb5 <eurb5.pfb
+eurb6 <eurb7.pfb
+eurb7 <eurb7.pfb
+eurb8 <eurb7.pfb
+eurb9 <eurb10.pfb
+eurbo10 " .167 SlantFont " <eurb10.pfb
+eurm10 <eurm10.pfb
+eurm5 <eurm5.pfb
+eurm6 <eurm7.pfb
+eurm7 <eurm7.pfb
+eurm8 <eurm7.pfb
+eurm9 <eurm10.pfb
+eurmo10 " .167 SlantFont " <eurm10.pfb
+eusb10 <eusb10.pfb
+eusb5 <eusb5.pfb
+eusb6 <eusb7.pfb
+eusb7 <eusb7.pfb
+eusb8 <eusb7.pfb
+eusb9 <eusb10.pfb
+eusm10 <eusm10.pfb
+eusm5 <eusm5.pfb
+eusm6 <eusm7.pfb
+eusm7 <eusm7.pfb
+eusm8 <eusm7.pfb
+eusm9 <eusm10.pfb
+fmvr8x Martin_Vogels_Symbole                   <marvosym.pfb
+fmvri8x " .167 SlantFont" <marvosym.pfb
+hlcbot8r "TeXBase1Encoding ReEncodeFont" <8r.enc <lbtbo.pfb
+hlcbot8rn "850 ExtendFont TeXBase1Encoding ReEncodeFont" <8r.enc <lbtbo.pfb 
+hlcbt8r "TeXBase1Encoding ReEncodeFont" <8r.enc <lbtb.pfb
+hlcbt8rn "850 ExtendFont TeXBase1Encoding ReEncodeFont" <8r.enc <lbtb.pfb 
+hlcda <lbmad.pfb
+hlcdim <lbmdi.pfb
+hlcdima <lbmdo.pfb
+hlcdm <lbmd.pfb
+hlcdy <lbmsd.pfb
+hlcra <lbma.pfb
+hlcrf8r "TeXBase1Encoding ReEncodeFont" <8r.enc <lbl.pfb
+hlcrie8r "TeXBase1Encoding ReEncodeFont" <8r.enc <lbc.pfb
+hlcrim <lbmi.pfb
+hlcrima <lbmo.pfb
+hlcrin8r "TeXBase1Encoding ReEncodeFont" <8r.enc <lbki.pfb
+hlcriw8r "TeXBase1Encoding ReEncodeFont" <8r.enc <lbh.pfb
+hlcrm <lbmr.pfb
+hlcrn8r "TeXBase1Encoding ReEncodeFont" <8r.enc <lbkr.pfb
+hlcrof8r ".167 SlantFont TeXBase1Encoding ReEncodeFont" <8r.enc <lbl.pfb 
+hlcron8r ".167 SlantFont TeXBase1Encoding ReEncodeFont" <8r.enc <lbkr.pfb 
+hlcrot8r "TeXBase1Encoding ReEncodeFont" <8r.enc <lbto.pfb
+hlcrot8rn "850 ExtendFont TeXBase1Encoding ReEncodeFont" <8r.enc <lbto.pfb 
+hlcrt8r "TeXBase1Encoding ReEncodeFont" <8r.enc <lbtr.pfb
+hlcrt8rn "850 ExtendFont TeXBase1Encoding ReEncodeFont" <8r.enc <lbtr.pfb 
+hlcrv <lbme.pfb
+hlcry <lbms.pfb
+hlhb8r "TeXBase1Encoding ReEncodeFont" <8r.enc <lbd.pfb
+hlhbc8r "TeXBase1Encoding ReEncodeFont" <8r.enc <lbdsc.pfb
+hlhbi8r "TeXBase1Encoding ReEncodeFont" <8r.enc <lbdi.pfb
+hlhbo8r ".167 SlantFont TeXBase1Encoding ReEncodeFont" <8r.enc <lbd.pfb 
+hlhr8r "TeXBase1Encoding ReEncodeFont" <8r.enc <lbr.pfb
+hlhrc8r "TeXBase1Encoding ReEncodeFont" <8r.enc <lbrsc.pfb
+hlhri8r "TeXBase1Encoding ReEncodeFont" <8r.enc <lbi.pfb
+hlhro8r "TeXBase1Encoding ReEncodeFont" <8r.enc <lbsl.pfb 
+hlsb8r "TeXBase1Encoding ReEncodeFont" <8r.enc <lsd.pfb
+hlsbi8r "TeXBase1Encoding ReEncodeFont" <8r.enc <lsdi.pfb
+hlsbot8r "TeXBase1Encoding ReEncodeFont" <8r.enc <lstbo.pfb
+hlsbot8rn "850 ExtendFont TeXBase1Encoding ReEncodeFont" <8r.enc <lstbo.pfb 
+hlsbt8r "TeXBase1Encoding ReEncodeFont" <8r.enc <lstb.pfb
+hlsbt8rn "850 ExtendFont TeXBase1Encoding ReEncodeFont" <8r.enc <lstb.pfb 
+hlsr8r "TeXBase1Encoding ReEncodeFont" <8r.enc <lsr.pfb
+hlsri8r "TeXBase1Encoding ReEncodeFont" <8r.enc <lsi.pfb
+hlsro8r ".167 SlantFont TeXBase1Encoding ReEncodeFont" <8r.enc <lsr.pfb 
+hlsrot8r "TeXBase1Encoding ReEncodeFont" <8r.enc <lsto.pfb
+hlsrot8rn "850 ExtendFont TeXBase1Encoding ReEncodeFont" <8r.enc <lsto.pfb 
+hlsrt8r "TeXBase1Encoding ReEncodeFont" <8r.enc <lstr.pfb
+hlsrt8rn "850 ExtendFont TeXBase1Encoding ReEncodeFont" <8r.enc <lstr.pfb 
+hlsu8r "TeXBase1Encoding ReEncodeFont" <8r.enc <lsb.pfb
+hlsui8r "TeXBase1Encoding ReEncodeFont" <8r.enc <lsbi.pfb
+hlsuo8r ".167 SlantFont TeXBase1Encoding ReEncodeFont" <8r.enc <lsb.pfb 
+hlxb8r "TeXBase1Encoding ReEncodeFont" <8r.enc <lfd.pfb
+hlxbi8r "TeXBase1Encoding ReEncodeFont" <8r.enc <lfdi.pfb
+hlxbo8r ".167 SlantFont TeXBase1Encoding ReEncodeFont" <8r.enc <lfd.pfb 
+hlxr8r "TeXBase1Encoding ReEncodeFont" <8r.enc <lfr.pfb
+hlxri8r "TeXBase1Encoding ReEncodeFont" <8r.enc <lfi.pfb
+hlxro8r ".167 SlantFont TeXBase1Encoding ReEncodeFont" <8r.enc <lfr.pfb 
+hv Helvetica "TeXnANSIEncoding ReEncodeFont" <texnansi.enc
+hvb Helvetica-Bold "TeXnANSIEncoding ReEncodeFont" <texnansi.enc
+hvbo Helvetica-BoldOblique "TeXnANSIEncoding ReEncodeFont" <texnansi.enc
+hvo Helvetica-Oblique "TeXnANSIEncoding ReEncodeFont" <texnansi.enc
+lasy10 <lasy10.pfb
+lasy5 <lasy5.pfb
+lasy6 <lasy6.pfb
+lasy7 <lasy7.pfb
+lasy8 <lasy8.pfb
+lasy9 <lasy9.pfb
+lasyb10 <lasyb10.pfb
+lbc "TeXnANSIEncoding ReEncodeFont" <texnansi.enc <lbc.pfb
+lbd "TeXnANSIEncoding ReEncodeFont" <texnansi.enc <lbd.pfb
+lbdi "TeXnANSIEncoding ReEncodeFont" <texnansi.enc <lbdi.pfb
+lbdsc "TeXnANSIEncoding ReEncodeFont" <texnansi.enc <lbdsc.pfb
+lbh "TeXnANSIEncoding ReEncodeFont" <texnansi.enc <lbh.pfb
+lbi "TeXnANSIEncoding ReEncodeFont" <texnansi.enc <lbi.pfb
+lbki "TeXnANSIEncoding ReEncodeFont" <texnansi.enc <lbki.pfb
+lbkr "TeXnANSIEncoding ReEncodeFont" <texnansi.enc <lbkr.pfb
+lbl "TeXnANSIEncoding ReEncodeFont" <texnansi.enc <lbl.pfb
+lbma <lbma.pfb
+lbmad <lbmad.pfb
+lbmd <lbmd.pfb
+lbmdi <lbmdi.pfb
+lbmdo <lbmdo.pfb
+lbme <lbme.pfb
+lbmi <lbmi.pfb
+lbmo <lbmo.pfb
+lbmr <lbmr.pfb
+lbms <lbms.pfb
+lbmsd <lbmsd.pfb
+lbr "TeXnANSIEncoding ReEncodeFont" <texnansi.enc <lbr.pfb
+lbrsc "TeXnANSIEncoding ReEncodeFont" <texnansi.enc <lbrsc.pfb
+lbsl "TeXnANSIEncoding ReEncodeFont" <texnansi.enc <lbsl.pfb 
+lbtb "TeXnANSIEncoding ReEncodeFont" <texnansi.enc <lbtb.pfb
+lbtbo "TeXnANSIEncoding ReEncodeFont" <texnansi.enc <lbtbo.pfb
+lbto "TeXnANSIEncoding ReEncodeFont" <texnansi.enc <lbto.pfb
+lbtr "TeXnANSIEncoding ReEncodeFont" <texnansi.enc <lbtr.pfb
+lcircle10 <lcircle1.pfb
+lcirclew10 <lcirclew.pfb
+lcmss8 <lcmss8.pfb
+lcmssb8 <lcmssb8.pfb
+lcmssi8 <lcmssi8.pfb
+lfd "TeXnANSIEncoding ReEncodeFont" <texnansi.enc <lfd.pfb
+lfdi "TeXnANSIEncoding ReEncodeFont" <texnansi.enc <lfdi.pfb
+lfi "TeXnANSIEncoding ReEncodeFont" <texnansi.enc <lfi.pfb
+lfr "TeXnANSIEncoding ReEncodeFont" <texnansi.enc <lfr.pfb
+line10 <line10.pfb
+linew10 <linew10.pfb
+logo10 <logo10.pfb
+logo8 <logo8.pfb
+logo9 <logo9.pfb
+logobf10 <logobf10.pfb
+logod10 <logod10.pfb
+logosl10 <logosl10.pfb
+logosl8 <logosl8.pfb
+logosl9 <logosl9.pfb
+lsb "TeXnANSIEncoding ReEncodeFont" <texnansi.enc <lsb.pfb
+lsbi "TeXnANSIEncoding ReEncodeFont" <texnansi.enc <lsbi.pfb
+lsd "TeXnANSIEncoding ReEncodeFont" <texnansi.enc <lsd.pfb
+lsdi "TeXnANSIEncoding ReEncodeFont" <texnansi.enc <lsdi.pfb
+lsi "TeXnANSIEncoding ReEncodeFont" <texnansi.enc <lsi.pfb
+lsr "TeXnANSIEncoding ReEncodeFont" <texnansi.enc <lsr.pfb
+lstb "TeXnANSIEncoding ReEncodeFont" <texnansi.enc <lstb.pfb
+lstbo "TeXnANSIEncoding ReEncodeFont" <texnansi.enc <lstbo.pfb
+lsto "TeXnANSIEncoding ReEncodeFont" <texnansi.enc <lsto.pfb
+lstr "TeXnANSIEncoding ReEncodeFont" <texnansi.enc <lstr.pfb
+manfnt <manfnt.pfb
+mh2 <mh2.pfb
+mh6 <mh6.pfb
+msam10 <msam10.pfb
+msam5 <msam5.pfb
+msam6 <msam7.pfb
+msam7 <msam7.pfb
+msam8 <msam7.pfb
+msam9 <msam10.pfb
+msbm10 <msbm10.pfb
+msbm5 <msbm5.pfb
+msbm6 <msbm7.pfb
+msbm7 <msbm7.pfb
+msbm8 <msbm7.pfb
+msbm9 <msbm10.pfb
+mtex <mtex.pfb
+mtexb <mtexb.pfb
+mtexh <mtexh.pfb
+mtgu <mtgu.pfb
+mtgub <mtgub.pfb
+mtls <mtls.pfb
+mtlsb <mtlsb.pfb
+mtms <mtms.pfb
+mtmsb <mtmsb.pfb
+mtsy <mtsy.pfb
+mtsyb <mtsyb.pfb
+mtsyh <mtsyh.pfb
+mtsyn <mtsyn.pfb
+omsea1 <omsea1.pfb
+omsea1b <omsea1b.pfb
+omsea2 <omsea2.pfb
+omsea2b <omsea2b.pfb
+omsea3 <omsea3.pfb
+omsea3b <omsea3b.pfb
+omseco <omseco.pfb
+omsecob <omsecob.pfb
+omsecobi <omsecobi.pfb
+omsecoi <omsecoi.pfb
+omsecx <omsecx.pfb
+omsecy <omsecy.pfb
+omsegr <omsegr.pfb
+omsegrb <omsegrb.pfb
+omsegrbi <omsegrbi.pfb
+omsegri <omsegri.pfb
+omseha <omseha.pfb
+omsehe <omsehe.pfb
+omseip <omseip.pfb
+omsela <omsela.pfb
+omselab <omselab.pfb
+omselabi <omselabi.pfb
+omselai <omselai.pfb
+omseti <omseti.pfb
+pagd8r "TeXBase1Encoding ReEncodeFont" <8r.enc <uagd8a.pfb
+pagdo8r "TeXBase1Encoding ReEncodeFont" <8r.enc <uagdo8a.pfb
+pagk8r "TeXBase1Encoding ReEncodeFont" <8r.enc <uagk8a.pfb
+pagko8r "TeXBase1Encoding ReEncodeFont" <8r.enc <uagko8a.pfb
+pbkd8r "TeXBase1Encoding ReEncodeFont" <8r.enc <ubkd8a.pfb
+pbkdi8r "TeXBase1Encoding ReEncodeFont" <8r.enc <ubkdi8a.pfb
+pbkdo8r ".167 SlantFont TeXBase1Encoding ReEncodeFont" <8r.enc <ubkd8a.pfb
+pbkl8r "TeXBase1Encoding ReEncodeFont" <8r.enc <ubkl8a.pfb
+pbkli8r "TeXBase1Encoding ReEncodeFont" <8r.enc <ubkli8a.pfb
+pbklo8r ".167 SlantFont TeXBase1Encoding ReEncodeFont" <8r.enc <ubkl8a.pfb
+pcrb8r Courier-Bold "TeXBase1Encoding ReEncodeFont" <8r.enc
+pcrb8y Courier-Bold "TeXnANSIEncoding ReEncodeFont" <texnansi.enc
+pcrbo8r Courier-BoldOblique "TeXBase1Encoding ReEncodeFont" <8r.enc
+pcrbo8y Courier-BoldOblique "TeXnANSIEncoding ReEncodeFont" <texnansi.enc
+pcrr8r Courier "TeXBase1Encoding ReEncodeFont" <8r.enc
+pcrr8rn ".85 ExtendFont TeXBase1Encoding ReEncodeFont" <8r.enc <ucrr8a.pfb
+pcrr8y Courier "TeXnANSIEncoding ReEncodeFont" <texnansi.enc
+pcrro8r Courier-Oblique "TeXBase1Encoding ReEncodeFont" <8r.enc
+pcrro8y Courier-Oblique "TeXnANSIEncoding ReEncodeFont" <texnansi.enc
+phvb8r Helvetica-Bold "TeXBase1Encoding ReEncodeFont" <8r.enc
+phvb8rn "TeXBase1Encoding ReEncodeFont" <8r.enc <uhvb8ac.pfb
+phvb8y Helvetica-Bold "TeXnANSIEncoding ReEncodeFont" <texnansi.enc
+phvbo8r Helvetica-BoldOblique "TeXBase1Encoding ReEncodeFont" <8r.enc
+phvbo8rn "TeXBase1Encoding ReEncodeFont" <8r.enc <uhvbo8ac.pfb
+phvbo8y Helvetica-BoldOblique "TeXnANSIEncoding ReEncodeFont" <texnansi.enc
+phvr8r Helvetica "TeXBase1Encoding ReEncodeFont" <8r.enc
+phvr8rn "TeXBase1Encoding ReEncodeFont" <8r.enc <uhvr8ac.pfb
+phvr8y Helvetica "TeXnANSIEncoding ReEncodeFont" <texnansi.enc
+phvro8r Helvetica-Oblique "TeXBase1Encoding ReEncodeFont" <8r.enc
+phvro8rn "TeXBase1Encoding ReEncodeFont" <8r.enc <uhvro8ac.pfb
+phvro8y Helvetica-Oblique "TeXnANSIEncoding ReEncodeFont" <texnansi.enc
+plb10 <plb10.pfb
+plbsy10 <plbsy10.pfb
+plbx10 <plbx10.pfb
+plbx12 <plbx12.pfb
+plbx5 <plbx5.pfb
+plbx6 <plbx6.pfb
+plbx7 <plbx7.pfb
+plbx8 <plbx8.pfb
+plbx9 <plbx9.pfb
+plbxsl10 <plbxsl10.pfb
+plbxti10 <plbxti10.pfb
+plcsc10 <plcsc10.pfb
+pldunh10 <pldunh10.pfb
+plex10 <plex10.pfb
+plex9 <plex9.pfb
+plff10 <plff10.pfb
+plfi10 <plfi10.pfb
+plfib8 <plfib8.pfb
+plinch <plinch.pfb
+plitt10 <plitt10.pfb
+plmi10 <plmi10.pfb
+plmi12 <plmi12.pfb
+plmi5 <plmi5.pfb
+plmi6 <plmi6.pfb
+plmi7 <plmi7.pfb
+plmi8 <plmi8.pfb
+plmi9 <plmi9.pfb
+plmib10 <plmib10.pfb
+plr10 <plr10.pfb
+plr12 <plr12.pfb
+plr17 <plr17.pfb
+plr5 <plr5.pfb
+plr6 <plr6.pfb
+plr7 <plr7.pfb
+plr8 <plr8.pfb
+plr9 <plr9.pfb
+plsl10 <plsl10.pfb
+plsl12 <plsl12.pfb
+plsl8 <plsl8.pfb
+plsl9 <plsl9.pfb
+plsltt10 <plsltt10.pfb
+plss10 <plss10.pfb
+plss12 <plss12.pfb
+plss17 <plss17.pfb
+plss8 <plss8.pfb
+plss9 <plss9.pfb
+plssbi10 <plssbi10.pfb
+plssbx10 <plssbx10.pfb
+plssdc10 <plssdc10.pfb
+plssi10 <plssi10.pfb
+plssi12 <plssi12.pfb
+plssi17 <plssi17.pfb
+plssi8 <plssi8.pfb
+plssi9 <plssi9.pfb
+plssq8 <plssq8.pfb
+plssqi8 <plssqi8.pfb
+plsy10 <plsy10.pfb
+plsy5 <plsy5.pfb
+plsy6 <plsy6.pfb
+plsy7 <plsy7.pfb
+plsy8 <plsy8.pfb
+plsy9 <plsy9.pfb
+pltcsc10 <pltcsc10.pfb
+pltex10 <pltex10.pfb
+pltex8 <pltex8.pfb
+pltex9 <pltex9.pfb
+plti10 <plti10.pfb
+plti12 <plti12.pfb
+plti7 <plti7.pfb
+plti8 <plti8.pfb
+plti9 <plti9.pfb
+pltt10 <pltt10.pfb
+pltt12 <pltt12.pfb
+pltt8 <pltt8.pfb
+pltt9 <pltt9.pfb
+plu10 <plu10.pfb
+plvtt10 <plvtt10.pfb
+pncb8r "TeXBase1Encoding ReEncodeFont" <8r.enc <uncb8a.pfb
+pncbi8r "TeXBase1Encoding ReEncodeFont" <8r.enc <uncbi8a.pfb
+pncbo8r ".167 SlantFont TeXBase1Encoding ReEncodeFont" <8r.enc <uncb8a.pfb
+pncr8r "TeXBase1Encoding ReEncodeFont" <8r.enc <uncr8a.pfb
+pncri8r "TeXBase1Encoding ReEncodeFont" <8r.enc <uncri8a.pfb
+pncro8r ".167 SlantFont TeXBase1Encoding ReEncodeFont" <8r.enc <uncr8a.pfb
+ppi020 <mh2.pfb
+ppi025 <mh6.pfb
+pplb8r "TeXBase1Encoding ReEncodeFont" <8r.enc <uplb8a.pfb
+pplbi8r "TeXBase1Encoding ReEncodeFont" <8r.enc <uplbi8a.pfb
+pplbo8r ".167 SlantFont TeXBase1Encoding ReEncodeFont" <8r.enc <uplb8a.pfb
+pplbu8r "-.1763 SlantFont TeXBase1Encoding ReEncodeFont" <8r.enc <uplbi8a.pfb
+pplr8r "TeXBase1Encoding ReEncodeFont" <8r.enc <uplr8a.pfb
+pplr8rn ".82 ExtendFont TeXBase1Encoding ReEncodeFont" <8r.enc <uplr8a.pfb
+pplri8r "TeXBase1Encoding ReEncodeFont" <8r.enc <uplri8a.pfb
+pplro8r ".167 SlantFont TeXBase1Encoding ReEncodeFont" <8r.enc <uplr8a.pfb
+pplrr8re "1.2 ExtendFont TeXBase1Encoding ReEncodeFont" <8r.enc <uplr8a.pfb
+pplru8r "-.1763 SlantFont TeXBase1Encoding ReEncodeFont" <8r.enc <uplri8a.pfb
+psyr Symbol
+psyro ".167 SlantFont" <usyr.pfb
+ptmb8r Times-Bold "TeXBase1Encoding ReEncodeFont" <8r.enc
+ptmb8y Times-Bold "TeXnANSIEncoding ReEncodeFont" <texnansi.enc
+ptmbi8r Times-BoldItalic "TeXBase1Encoding ReEncodeFont" <8r.enc
+ptmbi8y Times-BoldItalic "TeXnANSIEncoding ReEncodeFont" <texnansi.enc
+ptmbo8r ".167 SlantFont TeXBase1Encoding ReEncodeFont" <8r.enc <utmb8a.pfb
+ptmbo8y ".167 SlantFont TeXnANSIEncoding ReEncodeFont" <texnansi.enc <utmb8a.pfb
+ptmr8r Times-Roman "TeXBase1Encoding ReEncodeFont" <8r.enc
+ptmr8rn ".82 ExtendFont TeXBase1Encoding ReEncodeFont" <8r.enc <utmr8a.pfb
+ptmr8y Times-Roman "TeXnANSIEncoding ReEncodeFont" <texnansi.enc
+ptmri8r Times-Italic "TeXBase1Encoding ReEncodeFont" <8r.enc
+ptmri8y Times-Italic "TeXnANSIEncoding ReEncodeFont" <texnansi.enc
+ptmro8r ".167 SlantFont TeXBase1Encoding ReEncodeFont" <8r.enc <utmr8a.pfb
+ptmro8y ".167 SlantFont TeXnANSIEncoding ReEncodeFont" <texnansi.enc <utmr8a.pfb
+ptmrr8re "1.2 ExtendFont TeXBase1Encoding ReEncodeFont" <8r.enc <utmr8a.pfb
+putb8r "TeXBase1Encoding ReEncodeFont" <8r.enc <putb8a.pfb
+putbi8r "TeXBase1Encoding ReEncodeFont" <8r.enc <putbi8a.pfb
+putbo8r ".167 SlantFont TeXBase1Encoding ReEncodeFont" <8r.enc <putb8a.pfb
+putr8r "TeXBase1Encoding ReEncodeFont" <8r.enc <putr8a.pfb
+putri8r "TeXBase1Encoding ReEncodeFont" <8r.enc <putri8a.pfb
+putro8r ".167 SlantFont TeXBase1Encoding ReEncodeFont" <8r.enc <putr8a.pfb
+pzcmi8r "TeXBase1Encoding ReEncodeFont" <8r.enc <uzcmi8a.pfb
+pzdr ZapfDingbats
+rmtmi <rmtmi.pfb
+rmtmib <rmtmib.pfb
+rmtmih <rmtmih.pfb
+rmtmub <rmtmub.pfb
+rmtmuh <rmtmuh.pfb
+rpagd "StandardEncoding ReEncodeFont" <8a.enc <uagd8a.pfb
+rpagdo "StandardEncoding ReEncodeFont" <8a.enc <uagdo8a.pfb
+rpagk "StandardEncoding ReEncodeFont" <8a.enc <uagk8a.pfb
+rpagko "StandardEncoding ReEncodeFont" <8a.enc <uagko8a.pfb
+rpbkd "StandardEncoding ReEncodeFont" <8a.enc <ubkd8a.pfb
+rpbkdi "StandardEncoding ReEncodeFont" <8a.enc <ubkdi8a.pfb
+rpbkl "StandardEncoding ReEncodeFont" <8a.enc <ubkl8a.pfb
+rpbkli "StandardEncoding ReEncodeFont" <8a.enc <ubkli8a.pfb
+rpcrb Courier-Bold
+rpcrbo Courier-BoldOblique
+rpcrr Courier
+rpcrro Courier-Oblique
+rphvb Helvetica-Bold
+rphvbo Helvetica-BoldOblique
+rphvbon ".82 ExtendFont StandardEncoding ReEncodeFont" <8a.enc <uhvbo8a.pfb
+rphvbrn ".82 ExtendFont StandardEncoding ReEncodeFont" <8a.enc <uhvb8a.pfb
+rphvr Helvetica
+rphvro Helvetica-Oblique
+rphvron ".82 ExtendFont StandardEncoding ReEncodeFont" <8a.enc <uhvro8a.pfb
+rphvrrn ".82 ExtendFont StandardEncoding ReEncodeFont" <8a.enc <uhvr8a.pfb
+rpncb "StandardEncoding ReEncodeFont" <8a.enc <uncb8a.pfb
+rpncbi "StandardEncoding ReEncodeFont" <8a.enc <uncbi8a.pfb
+rpncr "StandardEncoding ReEncodeFont" <8a.enc <uncr8a.pfb
+rpncri "StandardEncoding ReEncodeFont" <8a.enc <uncri8a.pfb
+rpplb "StandardEncoding ReEncodeFont" <8a.enc <uplb8a.pfb
+rpplbi "StandardEncoding ReEncodeFont" <8a.enc <uplbi8a.pfb
+rpplbu "-.1763 SlantFont StandardEncoding ReEncodeFont" <8a.enc <uplbi8a.pfb
+rpplr "StandardEncoding ReEncodeFont" <8a.enc <uplr8a.pfb
+rpplri "StandardEncoding ReEncodeFont" <8a.enc <uplri8a.pfb
+rpplro ".167 SlantFont StandardEncoding ReEncodeFont" <8a.enc <uplr8a.pfb
+rpplrre "1.2 ExtendFont StandardEncoding ReEncodeFont" <8a.enc <uplr8a.pfb
+rpplrrn ".82 ExtendFont StandardEncoding ReEncodeFont" <8a.enc <uplr8a.pfb
+rpplru "-.1763 SlantFont StandardEncoding ReEncodeFont" <8a.enc <uplri8a.pfb
+rpsyr Symbol
+rpsyro ".167 SlantFont" <usyr.pfb
+rptmb Times-Bold
+rptmbi Times-BoldItalic
+rptmbo ".167 SlantFont StandardEncoding ReEncodeFont" <8a.enc <utmb8a.pfb
+rptmr Times-Roman
+rptmri Times-Italic
+rptmro ".167 SlantFont StandardEncoding ReEncodeFont" <8a.enc <utmr8a.pfb
+rptmrre "1.2 ExtendFont StandardEncoding ReEncodeFont" <8a.enc <utmr8a.pfb
+rptmrrn ".82 ExtendFont StandardEncoding ReEncodeFont" <8a.enc <utmr8a.pfb
+rpzcmi "StandardEncoding ReEncodeFont" <8a.enc <uzcmi8a.pfb
+rpzdr ZapfDingbats
+rsfs10 <rsfs10.pfb
+rsfs5 <rsfs5.pfb
+rsfs7 <rsfs7.pfb
+stmary10 <stmary10.pfb
+stmary5 <stmary5.pfb
+stmary6 <stmary6.pfb
+stmary7 <stmary7.pfb
+stmary8 <stmary8.pfb
+stmary9 <stmary9.pfb
+sy Symbol
+tib Times-Bold "TeXnANSIEncoding ReEncodeFont" <texnansi.enc
+tibi Times-BoldItalic "TeXnANSIEncoding ReEncodeFont" <texnansi.enc
+tibo ".167 SlantFont TeXnANSIEncoding ReEncodeFont" <texnansi.enc <utmb8a.pfb
+tii Times-Italic "TeXnANSIEncoding ReEncodeFont" <texnansi.enc
+tio ".167 SlantFont TeXnANSIEncoding ReEncodeFont" <texnansi.enc <utmr8a.pfb
+tir Times-Roman "TeXnANSIEncoding ReEncodeFont" <texnansi.enc
+wasy10 <wasy10.pfb
+wasy5 <wasy5.pfb
+wasy6 <wasy6.pfb
+wasy7 <wasy7.pfb
+wasy8 <wasy8.pfb
+wasy9 <wasy9.pfb
+wasyb10 <wasyb10.pfb
+wncyb10 <wncyb10.pfb
+wncyb5 <wncyb10.pfb
+wncyb6 <wncyb10.pfb
+wncyb7 <wncyb10.pfb
+wncyb8 <wncyb10.pfb
+wncyb9 <wncyb10.pfb
+wncyi10 <wncyi10.pfb
+wncyi5 <wncyi10.pfb
+wncyi6 <wncyi10.pfb
+wncyi7 <wncyi10.pfb
+wncyi8 <wncyi10.pfb
+wncyi9 <wncyi10.pfb
+wncyr10 <wncyr10.pfb
+wncyr5 <wncyr10.pfb
+wncyr6 <wncyr10.pfb
+wncyr7 <wncyr10.pfb
+wncyr8 <wncyr10.pfb
+wncyr9 <wncyr10.pfb
+wncysc10 <wncysc10.pfb
+wncyss10 <wncyss10.pfb
+wncyss8 <wncyss10.pfb
+wncyss9 <wncyss10.pfb
+xyatip10 <xyatip10.pfb
+xyatip11 "1.1 ExtendFont" <xyatip10.pfb
+xyatip12 "1.2 ExtendFont" <xyatip10.pfb
+xybsql10 <xybsql10.pfb
+xybtip10 <xybtip10.pfb
+xybtip11 "1.1 ExtendFont" <xybtip10.pfb
+xybtip12 "1.2 ExtendFont" <xybtip10.pfb
+xycirc10 <xycirc10.pfb
+xycmat10 <xycmat10.pfb
+xycmat11 "1.1 ExtendFont" <xycmat10.pfb
+xycmat12 "1.2 ExtendFont" <xycmat10.pfb
+xycmbt10 <xycmbt10.pfb
+xycmbt11 "1.1 ExtendFont" <xycmbt10.pfb
+xycmbt12 "1.2 ExtendFont" <xycmbt10.pfb
+xydash10 <xydash10.pfb
+xyeuat10 <xyeuat10.pfb
+xyeuat11 "1.1 ExtendFont" <xyeuat10.pfb
+xyeuat12 "1.2 ExtendFont" <xyeuat10.pfb
+xyeubt10 <xyeubt10.pfb
+xyeubt11 "1.1 ExtendFont" <xyeubt10.pfb
+xyeubt12 "1.2 ExtendFont" <xyeubt10.pfb
+zd ZapfDingbats

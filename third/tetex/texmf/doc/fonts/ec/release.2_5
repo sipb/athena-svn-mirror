@@ -1,0 +1,44 @@
+Below are the release notes of release 2.5.
+ 
+%*%*%*%*%*%*%*%*%*%*%*%*%*%*%*%*%*%*%*%*%*%*%*%*%*%*%*%*%*%*%*%*%*%*%*%*%*%*%*%*
+
+The release 2.5 of the Sauter tools to generate true sized fonts contains 
+the following news:
+
+* Support for LaTeX2e up to at least 1998/06/01. fontmath.cfg
+  now reads fontmath.ltx, so it should be in sync with whatever
+  version of LaTeX is used. fonttext.cfg can handle both lower case and
+  mixed case names of the encoding definition files. Added `magstep 6
+  and 7' sizes (29.86 pt and 35.83 pt) to saut*.fd, to bring them in
+  line with latex/base/t1cmr.fd.
+
+* A new directory make-mf with tex files for generating metafont files,
+  replacing the msdos and unix batch files.
+
+* Use rounded \magstep sizes everywhere now, both in make-mf
+  and for the AMS symbol fonts, bbm fonts and rsfs fonts
+  contributed by Hubert Holin; recomputed holin/ready-mf/*
+  with the new sizes.
+
+* A new maintainer
+
+* No change in the fonts themselves.
+
+Unfortunately, changing all magstep sizes to rounded sizes
+(10.95, [..] 20.74, 24.88, 29.86) breaks compatibility.
+But the problem is, that the compatibility was broken already:
+the files under ready-mf used rounded magstep sizes already,
+the files under holin/ready-mf did not, the VMS batch file did
+produce rounded sizes, the unix and msdos batch files did not,
+teTeX's mktexmf will generate rounded sizes (apart from the 11 pt,
+at the moment), etc.
+    So the current changes might lead lead to checksum mismatches
+between old and new .tfm and .pk files, but at least the system
+is consistent now.
+    For who wants to change back to the old magstep sizes, they
+were 10.954451, 20.736, 24.8832, and 29.8685984 
+(which should have been 29.85984).
+
+Send any questions, comments and suggestions to
+
+Jeroen Nijhof         J.H.B.Nijhof@aston.ac.uk

@@ -1,0 +1,233 @@
+%D \module
+%D   [       file=core-obj,
+%D        version=1998.01.15,
+%D          title=\CONTEXT\ Core Macros,
+%D       subtitle=Object Handling, 
+%D         author=Hans Hagen,
+%D           date=\currentdate,
+%D      copyright={PRAGMA / Hans Hagen \& Ton Otten}]
+%C
+%C This module is part of the \CONTEXT\ macro||package and is
+%C therefore copyrighted by \PRAGMA. See licen-en.pdf for 
+%C details. 
+
+\writestatus{loading}{Context Core Macros / Object Handling}
+
+\unprotect
+
+\startmessages  dutch  library: references
+     30: onbekend object --
+     31: dubbel object --
+\stopmessages
+
+\startmessages  english  library: references
+     30: unknown object --
+     31: duplicate object --
+\stopmessages
+
+\startmessages  german  library: references
+     30: unbekanntes Object --
+     31: doppeltes Object --
+\stopmessages
+
+%D Boxes can be considered reuable objects. Unfortunaltely once
+%D passed to the \DVI\ file, such objects cannot be reused. In
+%D \PDF\ however, reusing is possible and sometimes even a
+%D necessity. Therefore, \CONTEXT\ supports reusable objects. 
+%D 
+%D During the \TEX\ processing run, boxes can serve the purpose
+%D of objects, and the \DVI\ driver module implements objects
+%D using boxes. Only when \ETEX\ is widespread, and therefore
+%D the limit on 256 boxes is removed, this becomes useful. 
+%D 
+%D The \PDF\ and \PDFTEX\ driver modules implement objects
+%D using \PDF\ forms. There is no (real) restriction on the
+%D number of objects there. 
+%D 
+%D The first application of objects in \CONTEXT\ concerned
+%D \METAPOST\ graphics and fill||in form fields. The first
+%D application can save lots of bytes, while the latter use is
+%D more a necessity than byte saving. 
+%D 
+%D \starttypen
+%D \setobject{class}{name}\somebox{}
+%D \getobject{class}{name}
+%D \stoptypen
+%D
+%D Here \type{\somebox} can be whatever box specification 
+%D suits \TEX. 
+
+\def\presetobject#1#2%
+  {\doifundefined{\r!object#1::#2}
+     {\setxvalue{\r!object#1::#2}{NOT YET FLUSHED}}}
+
+\def\setobject#1#2% evt \initializepaper naar \everyshipout
+  {\initializepaper
+   \ifundefined{\r!object#1::#2}%
+     \expandafter\dosetobject
+   \else
+     \expandafter\gobblefourarguments
+   \fi
+   {#1}{#2}}
+
+\def\dosetobject#1#2%   
+  {\dowithnextbox       
+     {\bgroup
+      \dontshowcomposition % rather fuzzy in \setxvalue ... \hbox
+      \setxvalue{\r!object#1::#2}% 
+        {\noexpand\dohandleobject{#1}{#2} 
+           {\ifhbox\nextbox\hbox\else\vbox\fi}
+           {\the\wd\nextbox}{\the\ht\nextbox}{\the\dp\nextbox}}%
+      \dostartobject{#1}{#2}
+        {\number\wd\nextbox}{\number\ht\nextbox}{\number\dp\nextbox}%
+      \box\nextbox
+      \dostopobject
+      \egroup}}
+
+\def\dogetobject#1#2#3#4#5#6%
+  {\initializepaper
+   \bgroup
+   \dontshowcomposition
+   \setbox0=\vbox to #5{\vfill\doinsertobject{#1}{#2}}% 
+   \setbox0=#3{\box0}%
+   \wd0=#4\ht0=#5\dp0=#6\relax
+   \box0
+   \egroup}
+
+\def\getobject#1#2%
+  {\let\dohandleobject\dogetobject
+   \getvalue{\r!object#1::#2}}
+
+%D If needed one can ask for the dimensions of an object with:
+%D
+%D \starttypen
+%D \getobjectdimensions{class}{name}
+%D \stoptypen
+%D
+%D The results are reproted in \type {\objectwidth}, \type 
+%D {\objectheight} and \type {\objectdepth}. 
+
+\def\dogetobjectdimensions#1#2#3#4#5#6% 
+  {\def\objectwidth {#4}%
+   \def\objectheight{#5}%
+   \def\objectdepth {#6}}
+
+\def\getobjectdimensions#1#2%
+  {\let\dohandleobject\dogetobjectdimensions
+   \let\objectwidth \!!zeropoint
+   \let\objectheight\!!zeropoint
+   \let\objectdepth \!!zeropoint
+   \getvalue{\r!object#1::#2}}
+
+%D We keep track of object references by means of the cross 
+%D reference mechanism. Normally, objects are defined before 
+%D they are used, but forward referencing sometimes occurs. 
+%D 
+%D \starttypen
+%D \dosetobjectreference {class} {identifier} {reference value}
+%D \dogetobjectreference {class} {identifier} \csname
+%D \stoptypen
+%D 
+%D These commands are to be called by the \type{\startobject},
+%D \type{\stopobject} and \type{\insertobject} specials.
+
+\newif\ifobjectreferencing \objectreferencingtrue
+
+\def\checkobjectreferences%
+  {\bgroup
+   \setbox0=\hbox
+     {\doutilities{objectreferences}{\jobname}{}{}{}}%
+   \global\let\checkobjectreferences=\relax
+   \egroup}
+
+\def\setobjectreferences%
+  {\def\objectreference##1##2##3%
+     {\doifundefinedelse{\r!driver##1::##2}
+        {\setxvalue{\r!driver##1::##2}{##3}}
+        {\showmessage{\m!references}{31}{[##1 ##2=>##3]}}}}
+
+\def\resetobjectreferences%
+  {\let\objectreference=\gobblethreearguments}
+
+\resetobjectreferences
+
+\def\dosetobjectreference#1#2#3%
+  {\checkobjectreferences
+   \ifobjectreferencing 
+     \bgroup
+     \edef\dowritereference%
+       {\writeutilitycommand{\objectreference{#1}{#2}{#3}}}%
+     \dowritereference
+     \egroup
+   \else
+     \global\objectreferencingtrue
+   \fi
+   \setxvalue{\r!driver#1::#2}{#3}}
+
+\def\defaultobjectreference#1#2{0}
+
+\def\dogetobjectreference#1#2#3%
+  {\checkobjectreferences
+   \doifdefinedelse{\r!driver#1::#2}
+     {\@EA\xdef\@EA#3\@EA{\csname\r!driver#1::#2\endcsname}}
+     {\showmessage{\m!references}{30}{[#1 #2=>\defaultobjectreference{#1}{#2}]}%
+      \xdef#3{\defaultobjectreference{#1}{#2}}}}
+
+\let\normalsetobject=\setobject
+
+\def\setobject%
+  {\global\objectreferencingfalse\normalsetobject}
+
+\def\setreferenceobject%
+  {\global\objectreferencingtrue\normalsetobject}
+
+%D \macro
+%D   {doifobjectfoundelse,doifobjectreferencefoundelse}
+%D
+%D To prevent redundant definition of objects, one can use 
+%D the next tests:
+%D
+%D \starttypen
+%D \doifobjectfoundelse{class}{object}{do then}{do else}
+%D \doifobjectreferencefoundelse{class}{object}{do then}{do else}
+%D \stoptypen
+
+\def\doifobjectfoundelse#1#2#3#4%
+  {\doifundefinedelse{\r!object#1::#2}{#4}{#3}}
+
+\def\doifobjectreferencefoundelse#1#2#3#4%
+  {\checkobjectreferences
+   \doifundefinedelse{\r!driver#1::#2}{#4}{#3}}
+
+%D \macro
+%D   {doifobjectssupportedelse}
+%D
+%D Starting with reuse of graphics, we will implement object 
+%D reuse when possible. To enable mechanisms to determine 
+%D what method to use, we provide:
+%D
+%D \starttypen
+%D \doifobjectssupportedelse{true action}{false action}
+%D \stoptypen
+%D
+%D As we can see, currently objects depend on the special 
+%D driver. 
+
+\newif\ifobjectssupported \objectssupportedtrue
+
+\def\doifobjectssupportedelse#1#2%
+  {\ifobjectssupported
+     \doifspecialavailableelse\doinsertobject{#1}{#2}%
+   \else
+     #2%
+   \fi}
+
+%D There is a conceptual problem here. Objects are not possible
+%D in \DVI, unless faked like in \type {spec-dvi}. This means
+%D that we must be careful in loading special drivers that do 
+%D support objects while we still want to be able to use the 
+%D \DVI\ output. 
+
+\protect
+
+\endinput 

@@ -1,0 +1,10 @@
+% Copyright (C) 1998, 1999 Claudio Beccari
+%% file glwi v.1.0
+%
+% creates the invisible slide font glxu by redefining extra_endchar
+%
+extra_endchar:=extra_endchar & "clearit";
+input glxu;
+endinput;
+
+

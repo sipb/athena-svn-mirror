@@ -1,0 +1,90 @@
+%%
+%% This is file `lcycmr.fd',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% lcycmlh.fdd  (with options: `fd,LCYcmr')
+%% This is a generated file.
+%% 
+%% Copyright 1999 Johannes L. Braams and any individual authors
+%% listed elsewhere in this file.  All rights reserved.
+%% 
+%% For further copyright information, and conditions for modification
+%% and distribution, see any other copyright notices in this file.
+%% 
+%% This file is part of the Babel system, release 3.6.
+%% ---------------------------------------------------
+%% 
+%% It may be distributed under the terms of the LaTeX Project Public
+%% License, as described in lppl.txt in the base LaTeX distribution.
+%% Either version 1.0 or, at your option, any later version.
+%% 
+%% In particular, permission is granted to customize the declarations in
+%% this file to serve the needs of your installation.
+%% 
+%% However, NO PERMISSION is granted to distribute a modified version
+%% of this file under its original name.
+%% File `lcycmlh.fdd'
+%% Copyright (C) 1995-1997 Olga Lapko, Johannes L. Braams,
+%% Copyright (C) 1998-1999 Werner Lemberg, Vladimir Volovich.
+\ProvidesFile{lcycmr.fd}
+        [1999/03/10 v3.1b Computer Modern Cyrillic font definitions]
+\DeclareFontFamily{LCY}{cmr}{\hyphenchar\font45 }
+\DeclareFontShape{LCY}{cmr}{m}{n}{%
+  <5><6><7><8><9><10><12>gen*lhr%
+  <10.95>lhr10%
+  <14.4>lhr12%
+  <17.28><20.74><24.88>lhr17}{}
+\DeclareFontShape{LCY}{cmr}{m}{sl}{%
+  <5><6><7>lhsl8%
+  <8><9>gen*lhsl%
+  <10><10.95>lhsl10%
+  <12><14.4><17.28><20.74><24.88>lhsl12}{}
+\DeclareFontShape{LCY}{cmr}{m}{it}{%
+  <5><6><7>lhti7%
+  <8>lhti8%
+  <9>lhti9%
+  <10><10.95>lhti10%
+  <12><14.4><17.28><20.74><24.88>lhti12}{}
+\DeclareFontShape{LCY}{cmr}{m}{sc}{%
+  <5><6><7><8><9><10><10.95><12>%
+  <14.4><17.28><20.74><24.88>lhcsc10}{}
+\DeclareFontShape{LCY}{cmr}{m}{ui}{%
+  <5><6><7><8><9><10><10.95><12>%
+  <14.4><17.28><20.74><24.88>lhu10}{}
+\DeclareFontShape{LCY}{cmr}{b}{n}{%
+  <5><6><7><8><9><10><10.95><12>%
+  <14.4><17.28><20.74><24.88>lhb10}{}
+\DeclareFontShape{LCY}{cmr}{bx}{n}{%
+  <5><6><7><8><9>gen*lhbx%
+  <10><10.95>lhbx10%
+  <12><14.4><17.28><20.74><24.88>lhbx12}{}
+\DeclareFontShape{LCY}{cmr}{bx}{sl}{%
+  <5><6><7><8><9>%
+  <10><10.95><12><14.4><17.28><20.74><24.88>lhbxsl10}{}
+\DeclareFontShape{LCY}{cmr}{bx}{it}{%
+  <5><6><7><8><9>%
+  <10><10.95><12><14.4><17.28><20.74><24.88>lhbxti10}{}
+\DeclareFontShape{LCY}{cmr}{bx}{ui}{%
+  <->ssub*cmr/m/ui}{}
+%%
+%% \CharacterTable
+%%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%%   Digits        \0\1\2\3\4\5\6\7\8\9
+%%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%%   Dollar        \$     Percent       \%     Ampersand     \&
+%%   Acute accent  \'     Left paren    \(     Right paren   \)
+%%   Asterisk      \*     Plus          \+     Comma         \,
+%%   Minus         \-     Point         \.     Solidus       \/
+%%   Colon         \:     Semicolon     \;     Less than     \<
+%%   Equals        \=     Greater than  \>     Question mark \?
+%%   Commercial at \@     Left bracket  \[     Backslash     \\
+%%   Right bracket \]     Circumflex    \^     Underscore    \_
+%%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%%   Right brace   \}     Tilde         \~}
+%%
+\endinput
+%%
+%% End of file `lcycmr.fd'.

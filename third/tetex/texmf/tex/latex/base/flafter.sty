@@ -1,0 +1,91 @@
+%%
+%% This is file `flafter.sty',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% ltoutput.dtx  (with options: `flafter')
+%% 
+%% This is a generated file.
+%% 
+%% Copyright 1993 1994 1995 1996 1997 1998 1999
+%% The LaTeX3 Project and any individual authors listed elsewhere
+%% in this file.
+%% 
+%% This file is part of the LaTeX2e system.
+%% ----------------------------------------
+%% 
+%% It may be distributed under the terms of the LaTeX Project Public
+%% License, as described in lppl.txt in the base LaTeX distribution.
+%% Either version 1.0 or, at your option, any later version.
+%%% From File: ltoutput.dtx
+\ProvidesPackage{flafter}
+       [1999/01/06 v1.2e
+                  Standard LaTeX floats after reference (FMi)]
+\def \@addtocurcol {%
+   \@insertfalse
+   \@setfloattypecounts
+   \ifnum \@fpstype=8
+   \else
+     \ifnum \@fpstype=24
+     \else
+       \@flsettextmin
+       \advance \@textmin \@textfloatsheight
+       \@reqcolroom \@pageht
+       \ifdim \@textmin>\@reqcolroom
+         \@reqcolroom \@textmin
+       \fi
+       \advance \@reqcolroom \ht\@currbox
+       \ifdim \@colroom>\@reqcolroom
+         \@flsetnum \@colnum
+         \ifnum \@colnum>\z@
+           \@bitor\@currtype\@deferlist
+           \if@test
+           \else
+             \@bitor\@currtype\@botlist
+             \if@test
+               \@addtobot
+             \else
+               \ifodd \count\@currbox
+                 \advance \@reqcolroom \intextsep
+                 \ifdim \@colroom>\@reqcolroom
+                   \global \advance \@colnum \m@ne
+                   \global \advance \@textfloatsheight \ht\@currbox
+                   \global \advance \@textfloatsheight 2\intextsep
+                   \@cons \@midlist \@currbox
+                   \if@nobreak
+                     \nobreak
+                     \@nobreakfalse
+                     \everypar{}%
+                   \else
+                     \addpenalty \interlinepenalty
+                   \fi
+                   \vskip \intextsep
+                   \box\@currbox
+                   \penalty\interlinepenalty
+                   \vskip\intextsep
+                   \ifnum\outputpenalty <-\@Mii \vskip -\parskip\fi
+                   \outputpenalty \z@
+                   \@inserttrue
+                 \fi
+               \fi
+               \if@insert
+               \else
+                 \@addtobot
+               \fi
+             \fi
+           \fi
+         \fi
+       \fi
+     \fi
+   \fi
+   \if@insert
+   \else
+     \@resethfps
+     \@cons\@deferlist\@currbox
+   \fi
+}
+\providecommand\tr@ce[1]{}
+\endinput
+%%
+%% End of file `flafter.sty'.

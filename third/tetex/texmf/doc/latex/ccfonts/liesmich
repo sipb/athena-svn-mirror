@@ -1,0 +1,243 @@
+************************************************************
+*   Unterstuetzung fuer die Concrete-Fonts in LaTeX 2e     *
+*                                                          *
+*  cc.fdd:      1997/10/24 v0.98                           *
+*  ccfonts.dtx: 1999/02/22 v0.992                          *
+*                                                          *
+************************************************************
+Copyright (c) Walter Schmidt 1997--1999
+
+This software product can redistributed and/or modified
+under the terms of the LaTeX Project Public License
+distributed from CTAN archives in directory
+macros/latex/base/lppl.txt; either version 1 of the License,
+or (at your option) any later version.
+
+
+
+Was ist neu?
+============
+Version 0.992: 
+Neue Option [slantedGreek] fuer das Paket ccfonts.sty
+
+
+
+Uebersicht
+==========
+
+Diese Verteilung enthaelt ein LaTeX-Makropaket und alle
+noetigen fd-Dateien, um die Concrete-Fonts mit LaTeX zu
+benutzen.  Folgende Dateien sind enthalten:
+
+ccfonts.ins     Installations-Skript
+oinst.ins       dito, fuer LaTeX < Dez. 1996
+cc.fdd          dokumentierte Quelle der fd-Dateien
+ccfonts.dtx     dokumentierte Quelle des Makropakets
+liesmich        die Datei, die Sie gerade lesen
+readme          die englische Version davon
+
+
+
+* WARNUNG *** WARNUNG *** WARNUNG *** WARNUNG *** WARNUNG **
+============================================================
+
+Zu LaTeX (< 6/1997) gehoerte ein Installations-Skript mit
+der Bezeichnung `cmextra.ins', das *veraltete* fd-Dateien
+fuer die Concrete-Fonts erzeugte.  Wenn Sie dieses Skript
+benutzt haben, und wenn Sie dabei die Unterstuetzung fuer
+die Concrete-Fonts installiert haben, dann MUESSEN Sie die
+folgenden Dateien entfernen:
+
+OT1ccr.fd  bzw.  ot1ccr.fd
+T1ccr.fd   bzw.  t1ccr.fd
+ 
+In einem TDS-Dateibaum sollten sich diese Dateien im
+Verzeichnis texmf\tex\latex\base befinden.  Auch als
+Bestandteil eines vorinstallierten LaTeX koennen diese
+Dateien in Ihrem TeX-Dateisystem vorhanden sein!
+
+
+
+Installation
+============
+
+Kopieren Sie die Dateien
+
+cc.fdd
+ccfonts.dtx
+ccfonts.ins
+
+in ein temporaeres Verzeichnis oder in eines, wo Sie
+dokumentierte LaTeX-Quelldateien (dtx-Dateien) aufheben.
+
+Falls Sie ein LaTeX vom Dez.  1996 oder neuer benutzen, dann 
+bearbeiten Sie nun das Installations-Skript ccfonts.ins mit
+LaTeX, um die fd-Dateien und das Makropaket zu erzeugen.
+Wenn Ihre LaTeX-Version aelter ist, ist stattdessen 
+das Skript oinst.ins zu verwenden.
+
+Folgende Dateien werden erzeugt:
+
+ccfonts.sty: Das LaTeX-Paket fuer die Benutzung der 
+Concrete-Fonts.
+
+omlccr.fd, omlxcm.fd, omsccr.fd, omsxcsy.fd, omxxcex.fd,
+ot1ccr.fd, t1ccr.fd, ts1ccr.fd: Die Font-Definitions-Dateien
+fuer die Concrete-Schriften.
+
+Versetzen Sie alle diese Dateien in ein Verzeichnis, wo
+LaTeX seine Stylefiles sucht!
+
+Letzterer Schritt ist nicht noetig, wenn "Docstrip" fuer die
+Benutzung der TeX-Verzeichnisse konfiguriert ist, und wenn
+vor dem Start des Installationsskripts ein Verzeichnis
+tex/latex/ccfonts im TDS existiert.
+
+Bearbeiten Sie schliesslich die Datei ccfonts.dtx mit LaTeX,
+um eine (englischaprachige) Beschreibung ccfonts.dvi des
+Makropakets zu erzeugen.  Es kann auch durch eine
+Beschreibung der Low-Level-Schnittstelle der Fonts erzeugt
+werden, indem man die Datei cc.fdd mit LaTeX bearbeitet.
+
+
+
+Welche Fonts werden benoetigt?
+==============================
+
+Um das Paket ccfonts zu benutzen, benoetigen Sie:
+
+1) die Concrete Fonts, aus              fonts/concrete
+2) die Concrete Math Fonts, aus         fonts/concmath
+3) die EC Concrete Fonts, aus           fonts/ecc
+
+Die zuletzt genannten sind nur noetig, wenn T1-Textfonts und
+/oder die Text-Companion-Fonts benutzt werden sollen.  (Die
+Voreinstellung fuer die Textfonts ist in LaTeX nach wie vor
+OT1.)
+
+Die o.g. Verzeichnisse gelten fuer das CTAN.
+
+
+
+Welche Schriftschnitte werden unterstuetzt?
+===========================================
+
+family  series  shape(s)        (s.u.)
+
+ccr     m       n, sl, it, sc 
+ccr     c       sl              (1)
+
+(1) momentan nur in OT1-Codierung verfuegbar
+
+Zu jeder o.g.  Schrift (ausser ccr/c/sl) ist ein
+entsprechender Text-Companion-Font verfuegbar und wird
+unterstuetzt.
+
+Die Concrete-Fonts kennen keinen fetten Schriftschnitt.  In
+den fd-Dateien sind zwei moegliche Ersetzungen vorgesehen:
+
+gewuenschte \fontseries   Ersatz              (s.u.)
+
+bx                        CM Roman bx          (1)
+sbc                       CM Sans Serif sbc    (2)
+
+(1) Dies ist die *Voreinstellung*.
+
+(2) Um diesen Ersatz mit den ueblichen Befehlen \textbf und 
+\bferies zu erhalten, muessen Sie den Befehl
+
+        \renewcommand{\bfdefault}{sbc}
+
+eingeben.  Die Schrift CM Sans sbc harmoniert gut mit
+Concrete, z.B.  bei der Verwendung in Ueberschriften!
+(Dies war die Voreinstellung in ccfonts.sty v0.9).
+
+
+
+Kompatibilitaet mit concmath.sty
+================================
+Falls Sie sowohl die vorliegende Software als auch Ulrik
+Vieth's Paket `Concmath' (v2.0 oder hoeher) installieren,
+dann haben Sie die Datei ot1ccr.fd danach *zweimal* im
+System.  Beide Dateien anthalten die gleiche Information, so
+dass dies keine Probleme verursachen sollte.
+
+
+
+Dank an ...
+===========
+
+...  Frank Jensen, aus dessen Paket beton.sty ich einige
+Ideen uebernehmen durfte.
+
+
+
+Versionsgeschichte
+==================
+
+*** 1998-02-22 ***
+ --  ccfonts.dtx v0.992: neue Option [slantedGreek]
+ 
+*** 1998-05-08 ***
+ --  ccfonts.dtx v0.991: Fehler beim Veraerbeiten der 
+     Optionen korrigiert
+     
+*** 1998-01-19 ***
+ --  ccfonts.ins:  nur noch fuer LaTeX > Juni 1996;
+     oinst.ins  :  Inst.-Skript fuer aeltere Versionen
+     (Dies sollte die Probleme mit Unix endgueltig beheben.)
+
+*** 1997-11-04 ***
+ -- ccfonts.sty v0.99: Fehler bei den AMS-Fonts beseitigt
+
+*** 1997-10-24 ***
+ -- ccfonts.sty und *.fdd v0.98: Die aktuellen Versionen 
+    (Okt 1997) der Concmath- und ECC-Fonts sind 
+    beruecksichtigt.
+ -- ccfonts.sty v0.98: Neue Option `exscale'
+
+*** 1997-09-11 ***
+ -- ccfonts.sty v0.97: \relax nach \ProcessOptions 
+    eingefuegt.
+ -- cc.fdd v0.97: Oktalzahlen entfernt wg. evtl. aktivem Quote
+ -- in allen `font definitions' Leerzeichen entfernt.
+ -- Fehler in der Dokumentation korrigiert.
+
+*** 1997-06-03 ***
+ -- neues Installationsskript v0.95a erzeugt fd-Dateien mit 
+    Namen in gemischter (gross/klein) Schreibweise, falls 
+    notwendig (nur mit veraltetem LaTeX unter Unix)
+
+*** 1997/04/01 v0.95 ***
+ -- bessere Dokumentation
+ -- Namen der fd-Dateien in Kleinbuchstaben
+ -- fehlende Unterstuetzung fuer Text Companion Fonts im
+    Installations-Skript ergaenzt
+ -- Ersetzungen fuer den fehlenden fetten Schriftschnitt 
+    geaendert
+ -- Definitionen fuer OMS- und OML-Codierung in den fd-Files
+    bereinigt
+
+*** 1997/03/20 v0.9 ***
+    erste oeffentliche Version
+
+
+
+Kommentare, Fehlermeldungen und Vorschlaege
+===========================================
+
+...  sind willkommen und sollten an den Autor geschickt
+werden:
+
+Walter Schmidt
+Schornbaumstrasse 2
+91052 Erlangen
+Deutschland
+
+E-Mail: wschmi@ibm.net
+
+Bitte entnehmen Sie meine (E-Mail) Adresse der jeweils 
+aktuellsten Version der vorliegenden Datei!
+
+%% end of file `liesmich'
+

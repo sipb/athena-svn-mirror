@@ -1,0 +1,181 @@
+<HTML>
+<HEAD>
+<TITLE>TeX Frequently Asked Questions - Section 16</TITLE>
+<!-- File version: 2.2n -->
+<!-- File date: 1999/06/05 -->
+
+<!-- Creator: faq2html.el, running on XEmacs 20.4 "Em -->
+<!-- CreationDate: Sat Jun  5 14:50:14 1999  te -->
+</HEAD>
+
+<BODY>
+Go to the <A HREF="texfaq_0.html">first</A>, <A HREF="texfaq_15.html">previous</A>, <A HREF="texfaq_17.html">next</A>, <A HREF="texfaq_17.html">last</A> section, <A HREF="texfaq_toc.html">table of contents</A>.
+<HR>
+
+<H1><A NAME="SEC16">Recent Developments</A></H1>
+
+
+<H2><A NAME="QU115">The New Font Selection Scheme (NFSS)</A></H2>
+
+<P>
+NFSS was an extension to LaTeX written by Frank Mittelbach and
+Rainer Sch&ouml;pf. It is described in <CITE>TUGboat</CITE> 10(2).  In
+traditional typesetting, fonts are described by four parameters: the
+<EM>family</EM> (<EM>e.g</EM>., computer modern), the <EM>series</EM>
+(<EM>i.e</EM>., the weight and width of the font, such as light or bold),
+the <EM>shape</EM> (<EM>e.g</EM>., italic), and the <EM>size</EM>. NFSS is a
+mechanism allowing the user to change any of these independently. NFSS
+makes it relatively easy to use nonstandard fonts such as the
+PostScript ones with LaTeX, and easy to change maths fonts.  It
+also allows dynamic loading of fonts at runtime (<EM>i.e</EM>., not when
+the format file is created).
+
+<P>
+With the demise of LaTeX 2.09 as supported software, the label
+`NFSS' has become somewhat misleading, as there's no `old' scheme with
+which to contrast it - LaTeX has incorporated the NFSS.
+
+
+<H2><A NAME="QU116">LaTeX2e (the `new' standard LaTeX)</A></H2>
+
+<P>
+LaTeX2e is the version of LaTeX prepared and supported by the
+<A HREF="texfaq_16.html#QU117">LaTeX3 project team</A>.
+With the advent of LaTeX2e, users gained a formal support structure,
+and the knowledge that bug fixes would be incorporated into the
+distribution on a fairly regular basis (new releases appear at
+approximately 6-month intervals).
+
+<P>
+LaTeX2e is so structured that significant enhancements may be added
+using macro add-ons, rather than by the different TeX formats that
+were the bane of the LaTeX 2.09 world.
+
+<P>
+LaTeX2e is upwardly compatible with LaTeX 2.09, but has new
+features.  In the latest (December 1998) release, these include:
+<UL>
+<LI> <A HREF="texfaq_16.html#QU115">NFSS</A>
+  is part of the distribution.
+<LI> SliTeX is now merely a different document class, so that
+  there is no longer a need for a separate format.
+<LI> Better control of floating environments, such as figures.
+<LI> There is a documented interface for package and class writers
+  (though not yet for designers).
+<LI> The box commands have been enhanced, with <EM>e.g.</EM>, options to
+  specify the height of a minipage.
+<LI> Several standard commands are no longer
+  <A HREF="texfaq_15.html#QU110">fragile</A>
+  they can therefore be included in the argument of commands such as
+  <CODE>\caption</CODE> without being protected.
+<LI> <CODE>\newcommand</CODE> can define commands with one optional argument;
+  such commands are automatically robust.
+<LI> There is now a standard package for colour and graphics
+  inclusion.
+<LI> There is standard support for typesetting in cyrillic.
+</UL>
+
+
+<H2><A NAME="QU117">The LaTeX3 project</A></H2>
+
+<P>
+The LaTeX3 project team (see <A HREF="http://www.latex-project.org/latex3.html"><TT>http://www.latex-project.org/latex3.html</TT></A>)
+is a small group of volunteers whose aim is
+to produce a major new document processing system based on the
+principles pioneered by Leslie Lamport in the current LaTeX.  It
+will remain freely available and it will be fully documented at
+all levels.
+
+<P>
+The LaTeX3 team's first product,
+<A HREF="texfaq_16.html#QU116">LaTeX2e</A>,
+was delivered in 1994, and the team undertakes its maintenance.
+
+
+
+<H2><A NAME="QU118">The Omega project</A></H2>
+
+<P>
+Omega
+is a program built as an extension of the TeX sources which works
+internally with 16-bit
+characters (Unicode); this allows it to work with most scripts in the
+world with much reduced coding scheme complications.  Omega also has a
+powerful concept of input and output filters to allow the user to work
+with existing transliteration schemes, <EM>etc</EM>.  Omega is an
+ongoing project by John Plaice (<SAMP>plaice@cse.unsw.edu.au</SAMP>) and
+Yannis Haralambous (<SAMP>Yannis.Haralambous@univ-lille1.fr</SAMP>).  An
+email discussion list is available: subscribe by sending a message
+`<CODE>subscribe omega &lt;</CODE><EM><CODE>your name</CODE></EM><CODE>&gt;</CODE>' to <A HREF="mailto://listserv@ens.fr"><TT>listserv@ens.fr</TT></A>
+
+<P>
+The base distribution of
+  Omega
+was released in November 1996; it is available via <A HREF="ftp://ftp.dante.de/tex-archive/systems/omega"><TT>systems/omega</TT></A>
+
+<P>
+Implementations of Omega are available as part of the teTeX,
+mikTeX, fpTeX and CMacTeX distributions
+(see the question on <A HREF="texfaq_5.html#QU38">TeX systems</A>).
+
+
+
+<H2><A NAME="QU119">The NTS project</A></H2>
+
+<P>
+The NTS project first saw the light of day at the Hamburg meeting
+of DANTE during 1992, as a response to an aspiration to
+produce something even better than TeX.  The project is not simply
+enhancing TeX, for two reasons: first, that TeX itself has been
+frozen by Knuth
+(see <A HREF="texfaq_1.html#QU15">the future of TeX</A>), and second,
+even if they <EM>were</EM> allowed to develop the program, some members
+of the NTS team feel that TeX in its present form is simply
+unsuited to further development.  While all those involved in the
+project are involved with, and committed to, TeX, they recognise
+that the end product may very well have little in common with TeX
+other than its philosophy.
+
+<P>
+Initially, and despite the reservations expressed at the inaugural meeting,
+the group is concentrating on extending TeX <EM>per se</EM>: members are
+implementing extensions and enhancements to TeX through the standard
+medium of a change-file.  These extensions and enhancements, together
+with TeX proper, form a system called e-TeX, which is 100%
+compatible with TeX; furthermore, it is possible during format
+creation to construct a format that <EM>is</EM> TeX: no extensions or
+enhancements are present.
+
+<P>
+The final aim of the project will be to produce an entirely new
+typesetting system, building on the experience gained in the earlier
+phases.  This system is intended to provide a stable basis
+for typesetting in the future, in the way that TeX has since it was
+first offered to the world.
+
+<P>
+A distribution of e-TeX was made available in November 1996.  It is
+available via <A HREF="ftp://ftp.dante.de/tex-archive/systems/e-tex"><TT>systems/e-tex</TT></A>; e-TeX is also distributed on the
+TeX Live CD-ROM
+(see <A HREF="texfaq_4.html#QU37">TeX CD-ROMs</A>).
+
+
+<H2><A NAME="QU120">The PDFTeX project</A></H2>
+
+<P>
+PDFTeX (formerly known as TeX2PDF) arose from Han
+The Thanh's post-graduate research at Masaryk University, Brno, Czech
+Republic.  The basic idea is very simple: to provide a version of
+TeX that can output PDF as an alternative format to
+DVI.  PDFTeX implements a small number of new
+primitives, to switch to PDF output, and to control various
+PDF features.  Han The Thanh is continuing work on the project;
+the latest version is available from <A HREF="ftp://ftp.dante.de/tex-archive/systems/pdftex"><TT>systems/pdftex</TT></A>, and a version
+was distributed on the TeX Live CD-ROM
+(see <A HREF="texfaq_4.html#QU37">TeX CD-ROMs</A>).
+
+
+<HR>
+Go to the <A HREF="texfaq_0.html">first</A>, <A HREF="texfaq_15.html">previous</A>, <A HREF="texfaq_17.html">next</A>, <A HREF="texfaq_17.html">last</A> section, <A HREF="texfaq_toc.html">table of contents</A>.
+</BODY>
+</HTML>

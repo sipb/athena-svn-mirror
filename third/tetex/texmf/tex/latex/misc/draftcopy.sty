@@ -1,0 +1,393 @@
+%%
+%% This is file `draftcopy.sty',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% draftcopy.doc  (with options: `package')
+%% 
+%% IMPORTANT NOTICE:
+%% 
+%% For the copyright see the source file.
+%% 
+%% Any modified versions of this file must be renamed
+%% with new filenames distinct from draftcopy.sty.
+%% 
+%% For distribution of the original source see the terms
+%% for copying and modification in the file draftcopy.doc.
+%% 
+%% This generated file may be distributed as long as the
+%% original source files, as listed above, are part of the
+%% same distribution. (The sources need not necessarily be
+%% in the same archive or directory.)
+\iffalse
+%% Package draftcopy to use with LaTeX2e
+%% This package is used to print on some pages the word `DRAFT'
+%% (or the language dependend analogon) ``behind'' the intended stuff.
+%%
+%% Copyright (C) 1996-1999, Dr. Juergen Vollmer
+%%                          Viktoriastrasse 15, D-76133 Karlsruhe, Germany
+%%                          Juergen.Vollmer@acm.org
+%%
+%% This program can be redistributed and/or modified under the terms
+%% of the LaTeX Project Public License Distributed from CTAN
+%% archives in directory macros/latex/base/lppl.txt; either
+%% version 1 of the License, or any later version.
+%%
+%% If you find this software useful, please send me a postcard:
+\fi
+
+
+
+
+
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{draftcopy}[1999/03/02 v2.12]
+
+\DeclareOption{dvips}{
+  \def\draftcopy@BOPhook{/bop-hook}
+  \def\draftcopy@UserDictCmd{! userdict }
+}
+\DeclareOption{dvipsone}{
+  % thanks to V. P. Stokes <virgil.stokes@neuro.ki.se>
+ \def\draftcopy@BOPhook{/bphook}
+ \def\draftcopy@UserDictCmd{! userdict }
+}
+\DeclareOption{textures}{
+  % thanks to Jerome LAURENS \texttt{laurens@u-bourgogne.fr>
+  \def\draftcopy@BOPhook{/bop-hook}
+  \def\draftcopy@UserDictCmd{prepostscript userdict }
+}
+
+\DeclareOption{xdvi}{\ExecuteOptions{dvips}}
+\DeclareOption{dvi2ps}{\ExecuteOptions{dvips}}
+\DeclareOption{dvialw}{\ExecuteOptions{dvips}}
+\DeclareOption{dvilaser}{\ExecuteOptions{dvips}}
+\DeclareOption{dviwindo}{\ExecuteOptions{dvipsone}}
+\DeclareOption{dvitops}{\ExecuteOptions{dvips}}
+\DeclareOption{emtex}{\ExecuteOptions{dvips}}
+\DeclareOption{dviwin}{\ExecuteOptions{dvips}}
+\DeclareOption{oztex}{\ExecuteOptions{dvips}}
+\DeclareOption{psprint}{\ExecuteOptions{dvips}}
+\DeclareOption{pubps}{\ExecuteOptions{dvips}}
+\DeclareOption{pctexps}{\ExecuteOptions{dvips}}
+\DeclareOption{pctexwin}{\ExecuteOptions{dvips}}
+\DeclareOption{pctexhp}{\ExecuteOptions{dvips}}
+\DeclareOption{ln}{\ExecuteOptions{dvips}}
+
+
+\def\draftcopy@Show{show }
+\DeclareOption{outline}{
+  \def\draftcopy@Show{ false charpath 2 setlinewidth stroke }
+}
+
+
+\DeclareOption{light}{
+    \def\draftcopy@GrayValue{0.90 }
+}
+
+\DeclareOption{dark}{
+    \def\draftcopy@GrayValue{0.85 }
+}
+
+\DeclareOption{none}{
+  \def\draftcopy@LastPage{0 }
+}
+\DeclareOption{first}{
+  \def\draftcopy@LastPage{1 }
+}
+\DeclareOption{firsttwo}{
+  \def\draftcopy@LastPage{2 }
+}
+\DeclareOption{all}{
+  \def\draftcopy@LastPage{99999 }
+}
+
+\newif\ifdraftcopy@bottom
+\DeclareOption{bottom}{
+  \draftcopy@bottomtrue
+}
+
+\newif\ifdraftcopy@bottomAfter
+\DeclareOption{bottomafter}{
+  \draftcopy@bottomAftertrue
+}
+
+\def\draftcopy@Name{DRAFT}\def\draftcopy@Scale{215 }
+\DeclareOption{american}{
+  \def\draftcopy@Name{DRAFT}\def\draftcopy@Scale{215 }
+}
+\DeclareOption{austrian}{
+  \def\draftcopy@Name{ENTWURF}\def\draftcopy@Scale{155 }
+}
+\DeclareOption{bahasa}{
+  % thanks to Glenn G. Chappell <gchappell@semovm.semo.edu>
+  \def\draftcopy@Name{DRAF}\def\draftcopy@Scale{217 }
+}
+\DeclareOption{brazil}{
+  \def\draftcopy@Name{DRAFT}\def\draftcopy@Scale{215 }
+}
+\DeclareOption{brazilian}{
+  \def\draftcopy@Name{DRAFT}\def\draftcopy@Scale{215 }
+}
+\DeclareOption{breton}{
+  \def\draftcopy@Name{DRAFT}\def\draftcopy@Scale{215 }
+}
+\DeclareOption{british}{
+  \def\draftcopy@Name{DRAFT}\def\draftcopy@Scale{215 }
+}
+\DeclareOption{catalan}{
+  % thanks to Dav <davpuig@mx3.redestb.es>
+  \def\draftcopy@Name{ESBORRANYT}\def\draftcopy@Scale{110 }
+}
+\DeclareOption{croatian}{
+  \def\draftcopy@Name{DRAFT}\def\draftcopy@Scale{215 }
+}
+\DeclareOption{czech}{
+  \def\draftcopy@Name{DRAFT}\def\draftcopy@Scale{215 }
+}
+\DeclareOption{danish}{
+  % thanks to Ejnar Zacho Rath <ezr@md-oss.dk>,
+  % thanks to Bjarne Vestergaard <bvbruder@dfi.aau.dk>
+  % thanks to Joergen Larsen <JL@mmf.ruc.dk>
+  \def\draftcopy@Name{UDKAST}\def\draftcopy@Scale{175 }
+}
+\DeclareOption{dutch}{
+  % thanks to Kees Leune <C.J.Leune@kub.nl>
+  % \def\draftcopy@Name{CONCEPT}\def\draftcopy@Scale{150 }
+  % thanks to Anton Stoorvogel <wscoas@as.win.tue.nl> porposed
+  \def\draftcopy@Name{ONTWERP}\def\draftcopy@Scale{150 }
+}
+\DeclareOption{english}{
+  \def\draftcopy@Name{DRAFT}\def\draftcopy@Scale{215 }
+}
+\DeclareOption{esperanto}{
+  % thanks to Stephan B. Webanck <webanck@mpiz-koeln.mpg.de>
+  \def\draftcopy@Name{MALNETO}\def\draftcopy@Scale{160 }
+}
+\DeclareOption{estonian}{
+  % thanks to DAVID FEEST <mirka!mausgoe.central.de!
+  % gOe.maus.de!David_Feest@uranus.central.de>
+  \def\draftcopy@Name{VISAND}\def\draftcopy@Scale{215 }
+}
+\DeclareOption{finnish}{
+  % thanks to Jaakko Ruohio <jjruohio@boojum.hut.fi>
+  \def\draftcopy@Name{LUONNOS}\def\draftcopy@Scale{200 }
+  % thanks to Mika Grundstroem <mikagr@spittari.cs.tut.fi>
+  \def\draftcopy@Name{VEDOS}\def\draftcopy@Scale{220 }
+}
+\DeclareOption{francais}{
+  % thanks to Christophe Couvreur <couvreur@Thor.fpms.ac.be>
+  \def\draftcopy@Name{BROUILLON}\def\draftcopy@Scale{120 }
+}
+\DeclareOption{french}{
+  % thanks to Christophe Couvreur <couvreur@Thor.fpms.ac.be>
+  \def\draftcopy@Name{BROUILLON}\def\draftcopy@Scale{120 }
+  % thanks to Marc Torzynski <marc@snoopy.u-strasbg.fr>
+  %\def\draftcopy@Name{EPREUVE }\def\draftcopy@Scale{120 }
+}
+\DeclareOption{galician}{
+  \def\draftcopy@Name{DRAFT}\def\draftcopy@Scale{215 }
+}
+\DeclareOption{german}{
+  \def\draftcopy@Name{ENTWURF}\def\draftcopy@Scale{155 }
+}
+\DeclareOption{germanb}{
+  \def\draftcopy@Name{ENTWURF}\def\draftcopy@Scale{155 }
+}
+\DeclareOption{hungarian}{
+  \def\draftcopy@Name{DRAFT}\def\draftcopy@Scale{215 }
+}
+\DeclareOption{irish}{
+  \def\draftcopy@Name{DRAFT}\def\draftcopy@Scale{215 }
+}
+\DeclareOption{italian}{
+  % thanks to Fabio Massacci <Fabio.Massacci@cl.cam.ac.uk>
+  % thanks to Paolo Dell'Aquila <dlle07k1@mo.nettuno.it>
+  \def\draftcopy@Name{BOZZA}\def\draftcopy@Scale{215 }
+  % thanks to Giuseppe De Arcangelis <gdearc@serifos.caspur.it>
+  % \def\draftcopy@Name{brutta copia}\def\draftcopy@Scale{80 }
+}
+\DeclareOption{lowersorbian}{
+  \def\draftcopy@Name{DRAFT}\def\draftcopy@Scale{215 }
+}
+\DeclareOption{magyar}{
+  \def\draftcopy@Name{DRAFT}\def\draftcopy@Scale{215 }
+}
+\DeclareOption{norsk}{
+  % thanks to: Dag Langmyhr <dag@ifi.uio.no>
+  \def\draftcopy@Name{UTKAST}\def\draftcopy@Scale{178 }
+}
+\DeclareOption{nynorsk}{
+  % thanks to: Dag Langmyhr <dag@ifi.uio.no>
+  \def\draftcopy@Name{FRAMLEGG}\def\draftcopy@Scale{129 }
+}
+\DeclareOption{polish}{
+  \def\draftcopy@Name{DRAFT}\def\draftcopy@Scale{215 }
+}
+\DeclareOption{portuges}{
+  \def\draftcopy@Name{DRAFT}\def\draftcopy@Scale{215 }
+}
+\DeclareOption{portuguese}{
+  \def\draftcopy@Name{DRAFT}\def\draftcopy@Scale{215 }
+}
+\DeclareOption{romanian}{
+  \def\draftcopy@Name{DRAFT}\def\draftcopy@Scale{215 }
+}
+\DeclareOption{scottish}{
+  \def\draftcopy@Name{DRAFT}\def\draftcopy@Scale{215 }
+}
+\DeclareOption{spanish}{
+  % thanks to: Tomas Bautista <bautista@cma.ulpgc.es>
+  \def\draftcopy@Name{BORRADOR}\def\draftcopy@Scale{120 }
+}
+\DeclareOption{slovak}{
+  \def\draftcopy@Name{DRAFT}\def\draftcopy@Scale{215 }
+}
+\DeclareOption{slovene}{
+  % thanks to brodnik@pegam.mat.uni-lj.si <Andrej Brodnik>
+  \def\draftcopy@Name{OSNUTEK}\def\draftcopy@Scale{120 }
+}
+\DeclareOption{swedish}{
+  % thanks to <matsd@physchem.kth.se>
+  \def\draftcopy@Name{UTKAST}\def\draftcopy@Scale{185 }
+}
+\DeclareOption{turkish}{
+  \def\draftcopy@Name{DRAFT}\def\draftcopy@Scale{215 }
+}
+\DeclareOption{uppersorbian}{
+  \def\draftcopy@Name{DRAFT}\def\draftcopy@Scale{215 }
+}
+
+\ExecuteOptions{dark,all,english}
+\input{draftcopy.cfg}
+\ProcessOptions
+\typeout{Prints \draftcopy@Name\space on pages;
+does not show in your DVI viewer}
+\newcommand{\draftcopySetGrey}[1]{
+  \def\draftcopy@GrayValue{#1 }
+}
+
+\newcommand{\draftcopySetScale}[1]{
+  \def\draftcopy@Scale{#1 }
+}
+
+\def\draftcopy@FirstPage{0 }
+\newcommand{\draftcopyFirstPage}[1]{
+  \def\draftcopy@FirstPage{#1 }
+}
+
+\newcommand{\draftcopyLastPage}[1]{
+  \def\draftcopy@LastPage{#1 }
+}
+
+\newcommand{\draftcopyName}[2]{
+  \def\draftcopy@Name{#1}
+  \def\draftcopy@Scale{#2 }
+}
+
+\ifdraftcopy@bottomAfter
+  \AtBeginDocument{
+    \special{
+      \draftcopy@UserDictCmd begin
+      /draftcopy-CurrentPage 0 def
+      /draftcopy-old-BOPhook { } def
+      userdict \draftcopy@BOPhook\ known{
+            /draftcopy-old-BOPhook \draftcopy@BOPhook load def
+      } if
+      \draftcopy@BOPhook{
+        draftcopy-old-BOPhook
+        /draftcopy-CurrentPage draftcopy-CurrentPage 1 add def
+        draftcopy-CurrentPage \draftcopy@FirstPage ge
+        draftcopy-CurrentPage \draftcopy@LastPage le
+        and
+        { gsave 200 70 translate 65 rotate
+          /Times-Roman findfont
+          \draftcopy@Scale scalefont setfont
+          0 0 moveto
+          \draftcopy@GrayValue setgray
+         (\draftcopy@Name) \draftcopy@Show
+          grestore
+        } if
+        draftcopy-CurrentPage \draftcopy@LastPage gt
+        { gsave 0 25 translate
+          /Times-Roman findfont
+          25 scalefont setfont
+          0 0 moveto
+          \draftcopy@GrayValue setgray
+           (\draftcopy@Name\ )
+           0 1 15 { pop dup show } for
+          grestore
+        } if
+      } def
+      end
+      }
+    }
+\else\ifdraftcopy@bottom
+  \AtBeginDocument{
+    \special{
+      \draftcopy@UserDictCmd begin
+      /draftcopy-CurrentPage 0 def
+      /draftcopy-old-BOPhook { } def
+      userdict \draftcopy@BOPhook\ known{
+            /draftcopy-old-BOPhook \draftcopy@BOPhook load def
+      } if
+      \draftcopy@BOPhook{
+        draftcopy-old-BOPhook
+        /draftcopy-CurrentPage draftcopy-CurrentPage 1 add def
+        draftcopy-CurrentPage \draftcopy@FirstPage ge
+        draftcopy-CurrentPage \draftcopy@LastPage  le
+        and
+        { gsave 200 70 translate 65 rotate
+          /Times-Roman findfont
+          \draftcopy@Scale scalefont setfont
+          0 0 moveto
+          \draftcopy@GrayValue setgray
+         (\draftcopy@Name) \draftcopy@Show
+          grestore
+        }if
+        gsave 0 25 translate
+        /Times-Roman findfont
+        25 scalefont setfont
+        0 0 moveto
+        \draftcopy@GrayValue setgray
+        (\draftcopy@Name\ )
+        0 1 15 { pop dup show } for
+        grestore
+      } def
+      end
+      }
+    }
+\else
+  \AtBeginDocument{
+    \special{
+      \draftcopy@UserDictCmd begin
+      /draftcopy-CurrentPage 0 def
+      /draftcopy-old-BOPhook { } def
+      userdict \draftcopy@BOPhook\ known{
+            /draftcopy-old-BOPhook \draftcopy@BOPhook load def
+      } if
+      \draftcopy@BOPhook{
+        draftcopy-old-BOPhook
+        /draftcopy-CurrentPage draftcopy-CurrentPage 1 add def
+        draftcopy-CurrentPage \draftcopy@FirstPage ge
+        draftcopy-CurrentPage \draftcopy@LastPage  le
+        and
+        { gsave 200 70 translate 65 rotate
+          /Times-Roman findfont
+          \draftcopy@Scale scalefont setfont
+          0 0 moveto
+          \draftcopy@GrayValue setgray
+         (\draftcopy@Name)  \draftcopy@Show
+          grestore
+        } if
+      } def
+      end
+      }
+    }
+\fi\fi
+
+\endinput
+%%
+%% End of file `draftcopy.sty'.

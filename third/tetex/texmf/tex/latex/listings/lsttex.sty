@@ -1,0 +1,258 @@
+%%
+%% This is file `lsttex.sty',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% listings.dtx  (with options: `tex')
+%% lstdrvrs.dtx  (with options: `tex')
+%% 
+%% (w)(c) 1996,1997,1998 Carsten Heinz and/or any other author mentioned
+%% elsewhere in this file.
+%% 
+%% This file is distributed freely. You are not allowed to take money for
+%% the use or distribution of this file, except for a nominal charge for
+%% copying etc..
+%% 
+%% This file is distributed without any warranty, express or implied, as
+%% to merchantability or fitness for any particular purpose.
+%% 
+%% Permission is granted to change this file. You are not allowed to
+%% distribute any changed version this file, neither under the same name
+%% nor under a different one.
+%% 
+\lst@Aspect{texcs}{\def\lst@texcs{#1}}
+\lst@AddToHook{SetLanguage}{\let\lst@texcs\@empty}
+\lst@AddToHook{Output}
+    {\lst@ifmode\else \ifx\lst@lastother\lst@backslash %
+         \expandafter\lst@IfOneOf\the\lst@token\relax \lst@texcs %
+             {\let\lst@thestyle\lst@keywordstyle}%
+             {\let\lst@thestyle\relax}%
+     \fi \fi}
+\lstdefinedrvlanguage[plain]{tex}%
+  {texcs={\lstkeys@tex@primitives,\lstkeys@tex@commoncs,%
+      advancepageno,beginsection,bf,bffam,bye,cal,cleartabs,columns,%
+      dosupereject,endinsert,eqalign,eqalignno,fiverm,fivebf,fivei,%
+      fivesy,folio,footline,hang,headline,it,itemitem,itfam,leqalignno,%
+      magnification,makefootline,makeheadline,midinsert,mit,mscount,%
+      nopagenumbers,normalbottom,of,oldstyle,pagebody,pagecontents,%
+      pageinsert,pageno,plainoutput,preloaded,proclaim,rm,settabs,%
+      sevenbf,seveni,sevensy,sevenrm,sl,slfam,supereject,tabalign,tabs,%
+      tabsdone,tabsyet,tenbf,tenex,teni,tenit,tenrm,tensl,tensy,tentt,%
+      textindent,topglue,topins,topinsert,tt,ttfam,ttraggedright,%
+      vfootnote},%
+   sensitive=true,%
+   alsoother={0123456789},%
+   commentline={\%}%
+  }%
+\lstdefinedrvlanguage[primitive]{tex}%
+  {texcs={\lstkeys@tex@primitives},%
+   sensitive=true,%
+   alsoother={0123456789},%
+   commentline={\%}%
+  }%
+\lstdefinedrvlanguage[latex]{tex}%
+  {texcs={\lstkeys@tex@primitives,\lstkeys@tex@latexcs},%
+   sensitive=true,%
+   alsoother={0123456789},%
+   commentline={\%}%
+  }%
+\lstdefinedrvlanguage[allatex]{tex}%
+  {texcs={\lstkeys@tex@primitives,\lstkeys@tex@latexcs,
+      AtBeginDocument,AtBeginDvi,AtEndDocument,AtEndOfClass,%
+      AtEndOfPackage,ClassError,ClassInfo,ClassWarning,%
+      ClassWarningNoLine,CurrentOption,DeclareErrorFont,%
+      DeclareFixedFont,DeclareFontEncoding,DeclareFontEncodingDefaults,%
+      DeclareFontFamily,DeclareFontShape,DeclareFontSubstitution,%
+      DeclareMathAccent,DeclareMathAlphabet,DeclareMathAlphabet,%
+      DeclareMathDelimiter,DeclareMathRadical,DeclareMathSizes,%
+      DeclareMathSymbol,DeclareMathVersion,DeclareOldFontCommand,%
+      DeclareOption,DeclarePreloadSizes,DeclareRobustCommand,%
+      DeclareSizeFunction,DeclareSymbolFont,DeclareSymbolFontAlphabet,%
+      DeclareTextAccent,DeclareTextAccentDefault,DeclareTextCommand,%
+      DeclareTextCommandDefault,DeclareTextComposite,%
+      DeclareTextCompositeCommand,DeclareTextFontCommand,%
+      DeclareTextSymbol,DeclareTextSymbolDefault,ExecuteOptions,%
+      GenericError,GenericInfo,GenericWarning,IfFileExists,%
+      InputIfFileExists,LoadClass,LoadClassWithOptions,MessageBreak,%
+      OptionNotUsed,PackageError,PackageInfo,PackageWarning,%
+      PackageWarningNoLine,PassOptionsToClass,PassOptionsToPackage,%
+      ProcessOptionsProvidesClass,ProvidesFile,ProvidesFile,%
+      ProvidesPackage,ProvideTextCommand,RequirePackage,%
+      RequirePackageWithOptions,SetMathAlphabet,SetSymbolFont,%
+      TextSymbolUnavailable,UseTextAccent,UseTextSymbol},%
+   keywords={array,center,displaymath,document,enumerate,eqnarray,%
+      equation,flushleft,flushright,itemize,list,lrbox,math,minipage,%
+      picture,sloppypar,tabbing,tabular,trivlist,verbatim},%
+   sensitive=true,%
+   alsoother={0123456789},%
+   commentline={\%}%
+  }%
+\lststorekeywords\lstkeys@tex@primitives{above,abovedisplayshortskip,%
+    abovedisplayskip,abovewithdelims,accent,adjdemerits,advance,%
+    afterassignment,aftergroup,atop,atopwithdelims,badness,%
+    baselineskip,batchmode,begingroup,belowdisplayshortskip,%
+    belowdisplayskip,binoppenalty,botmark,box,boxmaxdepth,%
+    brokenpenalty,catcode,char,chardef,cleaders,closein,closeout,%
+    clubpenalty,copy,count,countdef,cr,crcr,csname,day,deadcycles,def,%
+    defaulthyphenchar,defaultskewchar,delcode,delimiter,%
+    delimiterfactor,delimitershortfall,dimen,dimendef,discretionary,%
+    displayindent,displaylimits,displaystyle,displaywidowpenalty,%
+    displaywidth,divide,doublehyphendemerits,dp,else,emergencystretch,%
+    end,endcsname,endgroup,endinput,endlinechar,eqno,errhelp,%
+    errmessage,errorcontextlines,errorstopmode,escapechar,everycr,%
+    everydisplay,everyhbox,everyjob,everymath,everypar,everyvbox,%
+    exhyphenpenalty,expandafter,fam,fi,finalhypendemerits,firstmark,%
+    floatingpenalty,font,fontdimen,fontname,futurelet,gdef,global,%
+    globaldefs,halign,hangafter,hangindent,hbadness,hbox,hfil,hfill,%
+    hfilneg,hfuzz,hoffset,holdinginserts,hrule,hsize,hskip,hss,ht,%
+    hyphenation,hyphenchar,hyphenpenalty,if,ifcase,ifcat,ifdim,ifeof,%
+    iffalse,ifhbox,ifhmode,ifinner,ifmmode,ifnum,ifodd,iftrue,ifvbox,%
+    ifvmode,ifvoid,ifx,ignorespaces,immediate,indent,input,insert,%
+    insertpenalties,interlinepenalty,jobname,kern,language,lastbox,%
+    lastkern,lastpenalty,lastskip,lccode,leaders,left,lefthyphenmin,%
+    leftskip,leqno,let,limits,linepenalty,lineskip,lineskiplimits,long,%
+    looseness,lower,lowercase,mag,mark,,mathaccent,mathbin,mathchar,%
+    mathchardef,mathchoice,mathclose,mathcode,mathinner,mathop,%
+    mathopen,mathord,mathpunct,mathrel,mathsurround,maxdeadcycles,%
+    maxdepth,meaning,medmuskip,message,mkern,month,moveleft,moveright,%
+    mskip,multiply,muskip,muskipdef,newlinechar,noalign,noboundary,%
+    noexpand,noindent,nolimits,nonscript,nonstopmode,%
+    nulldelimiterspace,nullfont,number,omit,openin,openout,or,outer,%
+    output,outputpenalty,over,overfullrule,overline,overwithdelims,%
+    pagedepth,pagefilllstretch,pagefillstretch,pagefilstretch,pagegoal,%
+    pageshrink,pagestretch,pagetotal,par,parfillskip,parindent,%
+    parshape,parskip,patterns,pausing,penalty,postdisplaypenalty,%
+    predisplaypenalty,predisplaysize,pretolerance,prevdepth,prevgraf,%
+    radical,raise,read,relax,relpenalty,right,righthyphenmin,rightskip,%
+    romannumeral,scriptfont,scriptscriptfont,scriptscriptstyle,%
+    scriptspace,scriptstyle,scrollmode,setbox,setlanguage,sfcode,%
+    shipout,show,showbox,showboxbreadth,showboxdepth,showlists,showthe,%
+    skewchar,skip,skipdef,spacefactor,spaceskip,span,special,%
+    splitbotmark,splitfirstmark,splitmaxdepth,splittopskip,string,%
+    tabskip,textfont,textstyle,the,thickmuskip,thinmuskip,time,toks,%
+    toksdef,tolerance,topmark,topskip,tracingcommands,tracinglostchars,%
+    tracingmacros,tracingonline,tracingoutput,tracingpages,%
+    tracingparagraphs,tracingrestores,tracingstats,uccode,uchyph,%
+    underline,unhbox,unhcopy,unkern,unpenalty,unskip,unvbox,unvcopy,%
+    uppercase,vadjust,valign,vbadness,vbox,vcenter,vfil,vfill,vfilneg,%
+    vfuzz,voffset,vrule,vsize,vskip,vsplit,vss,vtop,wd,widowpenalty,%
+    write,xdef,xleaders,xspaceskip,year}%
+\lststorekeywords\lstkeys@tex@commoncs{active,acute,ae,AE,aleph,%
+    allocationnumber,allowbreak,alpha,amalg,angle,approx,arccos,arcsin,%
+    arctan,arg,arrowvert,Arrowvert,ast,asymp,b,backslash,bar,beta,%
+    bgroup,big,Big,bigbreak,bigcap,bigcirc,bigcup,bigg,Bigg,biggl,%
+    Biggl,biggm,Biggm,biggr,Biggr,bigl,Bigl,bigm,Bigm,bigodot,bigoplus,%
+    bigotimes,bigr,Bigr,bigskip,bigskipamount,bigsqcup,bigtriangledown,%
+    bigtriangleup,biguplus,bigvee,bigwedge,bmod,bordermatrix,bot,%
+    bowtie,brace,braceld,bracelu,bracerd,braceru,bracevert,brack,break,%
+    breve,buildrel,bullet,c,cap,cases,cdot,cdotp,cdots,centering,%
+    centerline,check,chi,choose,circ,clubsuit,colon,cong,coprod,%
+    copyright,cos,cosh,cot,coth,csc,cup,d,dag,dagger,dashv,ddag,%
+    ddagger,ddot,ddots,deg,delta,Delta,det,diamond,diamondsuit,dim,%
+    displaylines,div,do,dospecials,dot,doteq,dotfill,dots,downarrow,%
+    Downarrow,downbracefill,egroup,eject,ell,empty,emptyset,endgraf,%
+    endline,enskip,enspace,epsilon,equiv,eta,exists,exp,filbreak,flat,%
+    fmtname,fmtversion,footins,footnote,footnoterule,forall,%
+    frenchspacing,frown,gamma,Gamma,gcd,ge,geq,gets,gg,goodbreak,grave,%
+    H,hat,hbar,heartsuit,hglue,hideskip,hidewidth,hom,hookleftarrow,%
+    hookrightarrow,hphantom,hrulefill,i,ialign,iff,Im,imath,in,inf,%
+    infty,int,interdisplaylinepenalty,interfootnotelinepenalty,intop,%
+    iota,item,j,jmath,joinrel,jot,kappa,ker,l,L,lambda,Lambda,land,%
+    langle,lbrace,lbrack,lceil,ldotp,ldots,le,leavevmode,leftarrow,%
+    Leftarrow,leftarrowfill,leftharpoondown,leftharpoonup,leftline,%
+    leftrightarrow,Leftrightarrow,leq,lfloor,lg,lgroup,lhook,lim,%
+    liminf,limsup,line,ll,llap,lmoustache,ln,lnot,log,longleftarrow,%
+    Longleftarrow,longleftrightarrow,Longleftrightarrow,longmapsto,%
+    longrightarrow,Longrightarrow,loop,lor,lq,magstep,magstep,%
+    magstephalf,mapsto,mapstochar,mathhexbox,mathpalette,mathstrut,%
+    matrix,max,maxdimen,medbreak,medskip,medskipamount,mid,min,models,%
+    mp,mu,multispan,nabla,narrower,natural,ne,nearrow,neg,negthinspace,%
+    neq,newbox,newcount,newdimen,newfam,newif,newinsert,newlanguage,%
+    newmuskip,newread,newskip,newtoks,newwrite,next,ni,nobreak,%
+    nointerlineskip,nonfrenchspacing,normalbaselines,%
+    normalbaselineskip,normallineskip,normallineskiplimit,not,notin,nu,%
+    null,nwarrow,o,O,oalign,obeylines,obeyspaces,odot,oe,OE,%
+    offinterlineskip,oint,ointop,omega,Omega,ominus,ooalign,openup,%
+    oplus,oslash,otimes,overbrace,overleftarrow,overrightarrow,owns,P,%
+    parallel,partial,perp,phantom,phi,Phi,pi,Pi,pm,pmatrix,pmod,Pr,%
+    prec,preceq,prime,prod,propto,psi,Psi,qquad,quad,raggedbottom,%
+    raggedright,rangle,rbrace,rbrack,rceil,Re,relbar,Relbar,%
+    removelastskip,repeat,rfloor,rgroup,rho,rhook,rightarrow,%
+    Rightarrow,rightarrowfill,rightharpoondown,rightharpoonup,%
+    rightleftharpoons,rightline,rlap,rmoustache,root,rq,S,sb,searrow,%
+    sec,setminus,sharp,showhyphens,sigma,Sigma,sim,simeq,sin,sinh,skew,%
+    slash,smallbreak,smallint,smallskip,smallskipamount,smash,smile,sp,%
+    space,spadesuit,sqcap,sqcup,sqrt,sqsubseteq,sqsupseteq,ss,star,%
+    strut,strutbox,subset,subseteq,succ,succeq,sum,sup,supset,supseteq,%
+    surd,swarrow,t,tan,tanh,tau,TeX,theta,Theta,thinspace,tilde,times,%
+    to,top,tracingall,triangle,triangleleft,triangleright,u,underbar,%
+    underbrace,uparrow,Uparrow,upbracefill,updownarrow,Updownarrow,%
+    uplus,upsilon,Upsilon,v,varepsilon,varphi,varpi,varrho,varsigma,%
+    vartheta,vdash,vdots,vec,vee,vert,Vert,vglue,vphantom,wedge,%
+    widehat,widetilde,wlog,wp,wr,xi,Xi,zeta}%
+\lststorekeywords\lstkeys@tex@latexcs{a,AA,aa,addcontentsline,%
+    addpenalty,addtocontents,addtocounter,addtolength,addtoversion,%
+    addvspace,alph,Alph,and,arabic,array,arraycolsep,arrayrulewidth,%
+    arraystretch,author,baselinestretch,begin,bezier,bfseries,bibcite,%
+    bibdata,bibitem,bibliography,bibliographystyle,bibstyle,boldmath,%
+    botfigrule,bottomfraction,Box,caption,center,CheckCommand,circle,%
+    citation,cite,cleardoublepage,clearpage,cline,columnsep,%
+    columnseprule,columnwidth,contentsline,dashbox,date,dblfigrule,%
+    dblfloatpagefraction,dblfloatsep,dbltextfloatsep,dbltopfraction,%
+    defaultscriptratio,defaultscriptscriptratio,depth,Diamond,%
+    displaymath,document,documentclass,documentstyle,doublerulesep,em,%
+    emph,endarray,endcenter,enddisplaymath,enddocument,endenumerate,%
+    endeqnarray,endequation,endflushleft,endflushright,enditemize,%
+    endlist,endlrbox,endmath,endminipage,endpicture,endsloppypar,%
+    endtabbing,endtabular,endtrivlist,endverbatim,enlargethispage,%
+    ensuremath,enumerate,eqnarray,equation,evensidemargin,extracolsep,%
+    fbox,fboxrule,fboxsep,filecontents,fill,floatpagefraction,floatsep,%
+    flushbottom,flushleft,flushright,fnsymbol,fontencoding,fontfamily,%
+    fontseries,fontshape,fontsize,fontsubfuzz,footnotemark,footnotesep,%
+    footnotetext,footskip,frac,frame,framebox,fussy,glossary,%
+    headheight,headsep,height,hline,hspace,I,include,includeonly,index,%
+    inputlineno,intextsep,itemindent,itemize,itemsep,iterate,itshape,%
+    Join,kill,label,labelsep,labelwidth,LaTeX,LaTeXe,leadsto,lefteqn,%
+    leftmargin,leftmargini,leftmarginii,leftmarginiii,leftmarginiv,%
+    leftmarginv,leftmarginvi,leftmark,lhd,linebreak,linespread,%
+    linethickness,linewidth,list,listfiles,listfiles,listparindent,%
+    lrbox,makeatletter,makeatother,makebox,makeglossary,makeindex,%
+    makelabel,MakeLowercase,MakeUppercase,marginpar,marginparpush,%
+    marginparsep,marginparwidth,markboth,markright,math,mathbf,%
+    mathellipsis,mathgroup,mathit,mathsf,mathsterling,mathtt,%
+    mathunderscore,mathversion,mbox,mdseries,mho,minipage,multicolumn,%
+    multiput,NeedsTeXFormat,newcommand,newcounter,newenvironment,%
+    newfont,newhelp,newlabel,newlength,newline,newmathalphabet,newpage,%
+    newsavebox,newtheorem,nobreakspace,nobreakspace,nocite,nocorr,%
+    nocorrlist,nofiles,nolinebreak,nonumber,nopagebreak,normalcolor,%
+    normalfont,normalmarginpar,numberline,obeycr,oddsidemargin,%
+    oldstylenums,onecolumn,oval,pagebreak,pagenumbering,pageref,%
+    pagestyle,paperheight,paperwidth,paragraphmark,parbox,parsep,%
+    partopsep,picture,poptabs,pounds,protect,pushtabs,put,qbezier,%
+    qbeziermax,r,raggedleft,raisebox,ref,refstepcounter,renewcommand,%
+    renewenvironment,restorecr,reversemarginpar,rhd,rightmargin,%
+    rightmark,rmfamily,roman,Roman,rootbox,rule,samepage,sbox,scshape,%
+    secdef,sectionmark,selectfont,setcounter,settodepth,settoheight,%
+    settowidth,sffamily,shortstack,showoutput,showoverfull,sloppy,%
+    sloppypar,slshape,sqsubset,sqsupset,SS,stackrel,stepcounter,stop,%
+    stretch,subparagraphmark,subsectionmark,subsubsectionmark,%
+    suppressfloats,symbol,tabbing,tabbingsep,tabcolsep,tabular,%
+    tabularnewline,textasciicircum,textasciitilde,textbackslash,%
+    textbar,textbf,textbraceleft,textbraceright,textbullet,textcircled,%
+    textcompwordmark,textdagger,textdaggerdbl,textdollar,textellipsis,%
+    textemdash,textendash,textexclamdown,textfloatsep,textfraction,%
+    textgreater,textheight,textit,textless,textmd,textnormal,%
+    textparagraph,textperiodcentered,textquestiondown,textquotedblleft,%
+    textquotedblright,textquoteleft,textquoteright,textregistered,%
+    textrm,textsc,textsection,textsf,textsl,textsterling,%
+    textsuperscript,texttrademark,texttt,textunderscore,textup,%
+    textvisiblespace,textwidth,thanks,thefootnote,thempfn,thempfn,%
+    thempfootnote,thepage,thepage,thicklines,thinlines,thispagestyle,%
+    title,today,topfigrule,topfraction,topmargin,topsep,totalheight,%
+    tracingfonts,trivlist,ttfamily,twocolumn,typein,typeout,unboldmath,%
+    unitlength,unlhd,unrhd,upshape,usebox,usecounter,usefont,%
+    usepackage,value,vector,verb,verbatim,vline,vspace,width}%
+\endinput
+%%
+%% End of file `lsttex.sty'.

@@ -1,0 +1,52 @@
+%Filename: t1hlh.fd
+%Created by: tex Fam_13550
+%Created using fontinst v1.800
+
+%THIS FILE SHOULD BE PUT IN A TEX INPUTS DIRECTORY
+
+\ProvidesFile{t1hlh.fd}
+   [1998/07/06 Fontinst v1.800 font definitions for T1/hlh.]
+
+\@ifundefined{DeclareLucidaFontShape}{%
+\def\DeclareLucidaFontShape#1#2#3#4#5#6{%
+\DeclareFontShape{#1}{#2}{#3}{#4}{<->#5}{#6}}}{}
+\DeclareFontFamily{T1}{hlh}{}
+
+\DeclareLucidaFontShape{T1}{hlh}{m}{n}{
+hlhr8t
+}{}
+
+\DeclareLucidaFontShape{T1}{hlh}{m}{sc}{
+hlhrc8t
+}{}
+
+\DeclareLucidaFontShape{T1}{hlh}{m}{sl}{
+hlhro8t
+}{}
+
+\DeclareLucidaFontShape{T1}{hlh}{m}{it}{
+hlhri8t
+}{}
+
+\DeclareLucidaFontShape{T1}{hlh}{b}{n}{
+hlhb8t
+}{}
+
+\DeclareLucidaFontShape{T1}{hlh}{b}{sc}{
+hlhbc8t
+}{}
+
+\DeclareLucidaFontShape{T1}{hlh}{b}{sl}{
+hlhbo8t
+}{}
+
+\DeclareLucidaFontShape{T1}{hlh}{b}{it}{
+hlhbi8t
+}{}
+
+\DeclareFontShape{T1}{hlh}{bx}{n}{<->ssub * hlh/b/n}{}
+\DeclareFontShape{T1}{hlh}{bx}{sc}{<->ssub * hlh/b/sc}{}
+\DeclareFontShape{T1}{hlh}{bx}{sl}{<->ssub * hlh/b/sl}{}
+\DeclareFontShape{T1}{hlh}{bx}{it}{<->ssub * hlh/b/it}{}
+
+\endinput

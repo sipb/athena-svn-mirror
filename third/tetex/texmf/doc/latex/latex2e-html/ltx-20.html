@@ -1,0 +1,35 @@
+<html>
+<head><title>Help On LaTeX \newtheorem</title></head>
+<body bgcolor="#ffffff" text="#000000" link="#000099" vlink="#cc0000" alink="#cc0000">
+<h1><font size="-2">Hypertext Help with LaTeX</font><br><font color="#cc0000">\newtheorem</font></h1>
+<p>
+ <tt>\newtheorem{env_name}{caption}[within]</tt>
+ <tt>\newtheorem{env_name}[numbered_like]{caption}</tt>
+<p>
+ This command defines a theorem-like environment.
+<ul>
+<li><TT>env_name</TT> The name of the environment -- a  string  of  letters.
+     Must not be the name of an existing environment or counter.
+<p>
+<li><TT>caption</TT> The text printed at the beginning of  the  environment,
+     right before the number.
+<p>
+<li><TT>within</TT> The name of an already defined  counter,  usually  of  a
+     sectional  unit.   Provides  a means of resetting the new theorem
+     counter within the sectional unit.
+<p>
+<li><TT>numbered_like</TT> The  name  of  an  already  defined  theorem-like
+     environment.
+</ul>
+
+ The <tt>\newtheorem</tt> command may have at most one optional argument.
+
+<hr>
+Go back to <a href="ltx-17.html">Definitions</a><br>
+Go to <a href="ltx-2.html">LaTeX Table of Contents</a>
+<hr>
+<address>
+Revised: Sheldon Green, 2 May 1995.
+</address>
+</body>
+</html>

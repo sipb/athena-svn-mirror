@@ -1,0 +1,28 @@
+%Filename: ts1hlcn.fd
+%Created by: tex Fam_14833
+%Created using fontinst v1.800
+
+%THIS FILE SHOULD BE PUT IN A TEX INPUTS DIRECTORY
+
+\ProvidesFile{ts1hlcn.fd}
+   [1998/07/06 Fontinst v1.800 font definitions for TS1/hlcn.]
+
+\@ifundefined{DeclareLucidaFontShape}{%
+\def\DeclareLucidaFontShape#1#2#3#4#5#6{%
+\DeclareFontShape{#1}{#2}{#3}{#4}{<->#5}{#6}}}{}
+\DeclareFontFamily{TS1}{hlcn}{}
+
+\DeclareLucidaFontShape{TS1}{hlcn}{m}{n}{
+hlcrn8c
+}{}
+
+\DeclareLucidaFontShape{TS1}{hlcn}{m}{sl}{
+hlcron8c
+}{}
+
+\DeclareLucidaFontShape{TS1}{hlcn}{m}{it}{
+hlcrin8c
+}{}
+
+
+\endinput

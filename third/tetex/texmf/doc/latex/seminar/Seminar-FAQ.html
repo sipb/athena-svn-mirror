@@ -1,0 +1,1907 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<!--Converted with LaTeX2HTML 97.1 (release) (July 13th, 1997)
+ by Nikos Drakos (nikos@cbl.leeds.ac.uk), CBLU, University of Leeds
+* revised and updated by:  Marcus Hennecke, Ross Moore, Herb Swan
+* with significant contributions from:
+  Jens Lippman, Marek Rouchal, Martin Wilck and others -->
+<HTML>
+<HEAD>
+<TITLE>Seminar FAQ - Version 2.1</TITLE>
+<META NAME="description" CONTENT="Seminar FAQ - Version 2.1">
+<META NAME="keywords" CONTENT="Seminar-FAQ">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso_8859_1">
+<LINK REL="STYLESHEET" HREF="Seminar-FAQ.css">
+</HEAD>
+<BODY >
+<P><H1 ALIGN="CENTER">Seminar FAQ - Version 2.1</H1>
+<P ALIGN="CENTER"><STRONG><A NAME="tex2html1"
+ HREF="mailto:Denis.Girou@idris.fr">Denis G<SMALL>IROU</SMALL></A>
+- <TT>Denis.Girou@idris.fr</TT></STRONG></P>
+<P ALIGN="CENTER"><STRONG>August 7, 1997</STRONG></P>
+<P ALIGN="LEFT"></P>
+<P><B>Disclaimer</B>: <EM>This file is my own and doesn't engage 
+<A NAME="tex2html1"
+ HREF="http://www.princeton.edu/~tvz">Timothy <SMALL>VAN</SMALL> Z<SMALL>ANDT</SMALL></A>
+at all. Errors and misunderstandings are mine...</EM>
+<P>
+<BR>
+<H2><A NAME="SECTION00010000000000000000">
+Contents</A>
+</H2>
+<!--Table of Contents-->
+<UL>
+<LI><A NAME="tex2html53"
+ HREF="Seminar-FAQ.html#SECTION00010000000000000000">
+Contents</A>
+<LI><A NAME="tex2html54"
+ HREF="Seminar-FAQ.html#SECTION00020000000000000000">
+1 Documentation</A>
+<UL>
+<LI><A NAME="tex2html55"
+ HREF="Seminar-FAQ.html#SECTION00021000000000000000">
+1.1 Distribution</A>
+<LI><A NAME="tex2html56"
+ HREF="Seminar-FAQ.html#SECTION00022000000000000000">
+1.2 Web page</A>
+<LI><A NAME="tex2html57"
+ HREF="Seminar-FAQ.html#SECTION00023000000000000000">
+1.3 User's Guide</A>
+<LI><A NAME="tex2html58"
+ HREF="Seminar-FAQ.html#SECTION00024000000000000000">
+1.4 FAQ</A>
+<LI><A NAME="tex2html59"
+ HREF="Seminar-FAQ.html#SECTION00025000000000000000">
+1.5 Seminar chapter of the LaTeX Graphics Companion</A>
+<LI><A NAME="tex2html60"
+ HREF="Seminar-FAQ.html#SECTION00026000000000000000">
+1.6 Préparer des transparents avec Seminar</A>
+<LI><A NAME="tex2html61"
+ HREF="Seminar-FAQ.html#SECTION00027000000000000000">
+1.7 Réaliser des transparents en LaTeX avec la classe de
+documents Seminar</A>
+</UL>
+<LI><A NAME="tex2html62"
+ HREF="Seminar-FAQ.html#SECTION00030000000000000000">
+2 Status</A>
+<LI><A NAME="tex2html63"
+ HREF="Seminar-FAQ.html#SECTION00040000000000000000">
+3 How to choose the orientation of the slides?</A>
+<LI><A NAME="tex2html64"
+ HREF="Seminar-FAQ.html#SECTION00050000000000000000">
+4 How to change the dimensions of the slides?</A>
+<LI><A NAME="tex2html65"
+ HREF="Seminar-FAQ.html#SECTION00060000000000000000">
+5 How to change the frame style?</A>
+<UL>
+<LI><A NAME="tex2html66"
+ HREF="Seminar-FAQ.html#SECTION00061000000000000000">
+5.1 With the `fancybox' package</A>
+<LI><A NAME="tex2html67"
+ HREF="Seminar-FAQ.html#SECTION00062000000000000000">
+5.2 With the `semcolor' package</A>
+</UL>
+<LI><A NAME="tex2html68"
+ HREF="Seminar-FAQ.html#SECTION00070000000000000000">
+6 How to personalize the section and subsection formats?</A>
+<LI><A NAME="tex2html69"
+ HREF="Seminar-FAQ.html#SECTION00080000000000000000">
+7 How to put material in the background?</A>
+<UL>
+<LI><A NAME="tex2html70"
+ HREF="Seminar-FAQ.html#SECTION00081000000000000000">
+7.1 How to write a text in the background?</A>
+<LI><A NAME="tex2html71"
+ HREF="Seminar-FAQ.html#SECTION00082000000000000000">
+7.2 How to put a picture in the background?</A>
+</UL>
+<LI><A NAME="tex2html72"
+ HREF="Seminar-FAQ.html#SECTION00090000000000000000">
+8 How to use colors?</A>
+<UL>
+<LI><A NAME="tex2html73"
+ HREF="Seminar-FAQ.html#SECTION00091000000000000000">
+8.1 How to use the standard `color' package?</A>
+<LI><A NAME="tex2html74"
+ HREF="Seminar-FAQ.html#SECTION00092000000000000000">
+8.2 How to change the background color of the slides?</A>
+<LI><A NAME="tex2html75"
+ HREF="Seminar-FAQ.html#SECTION00093000000000000000">
+8.3 How to have a gradient color background instead of a uniform
+              one?</A>
+<LI><A NAME="tex2html76"
+ HREF="Seminar-FAQ.html#SECTION00094000000000000000">
+8.4 Improved color usage</A>
+</UL>
+<LI><A NAME="tex2html77"
+ HREF="Seminar-FAQ.html#SECTION000100000000000000000">
+9 How to personalize the headers and footers?</A>
+<UL>
+<LI><A NAME="tex2html78"
+ HREF="Seminar-FAQ.html#SECTION000101000000000000000">
+9.1 With the `fancyhdr' package</A>
+<LI><A NAME="tex2html79"
+ HREF="Seminar-FAQ.html#SECTION000102000000000000000">
+9.2 How to put automatically the section title in the header?</A>
+<LI><A NAME="tex2html80"
+ HREF="Seminar-FAQ.html#SECTION000103000000000000000">
+9.3 How to put the header and footer inside the frame?</A>
+</UL>
+<LI><A NAME="tex2html81"
+ HREF="Seminar-FAQ.html#SECTION000110000000000000000">
+10 How to manage notes with the slides?</A>
+<UL>
+<LI><A NAME="tex2html82"
+ HREF="Seminar-FAQ.html#SECTION000111000000000000000">
+10.1 How to define personal notes?</A>
+<LI><A NAME="tex2html83"
+ HREF="Seminar-FAQ.html#SECTION000112000000000000000">
+10.2 How to generate the slides only?</A>
+<LI><A NAME="tex2html84"
+ HREF="Seminar-FAQ.html#SECTION000113000000000000000">
+10.3 How to generate the notes only?</A>
+</UL>
+<LI><A NAME="tex2html85"
+ HREF="Seminar-FAQ.html#SECTION000120000000000000000">
+11 How to have a list of slides?</A>
+<UL>
+<LI><A NAME="tex2html86"
+ HREF="Seminar-FAQ.html#SECTION000121000000000000000">
+11.1 How to generate a list of slides (similar to a table of
+contents)?</A>
+<LI><A NAME="tex2html87"
+ HREF="Seminar-FAQ.html#SECTION000122000000000000000">
+11.2 How to personalize the format for the list of slides?</A>
+<LI><A NAME="tex2html88"
+ HREF="Seminar-FAQ.html#SECTION000123000000000000000">
+11.3 How to generate a list showing the position of the slides in the
+presentation?</A>
+</UL>
+<LI><A NAME="tex2html89"
+ HREF="Seminar-FAQ.html#SECTION000130000000000000000">
+12 How to generate overlays?</A>
+<UL>
+<LI><A NAME="tex2html90"
+ HREF="Seminar-FAQ.html#SECTION000131000000000000000">
+12.1 How to generate some special slides which must overlaid?</A>
+<LI><A NAME="tex2html91"
+ HREF="Seminar-FAQ.html#SECTION000132000000000000000">
+12.2 How to have cumulative overlays?</A>
+</UL>
+<LI><A NAME="tex2html92"
+ HREF="Seminar-FAQ.html#SECTION000140000000000000000">
+13 Miscelleanous</A>
+<UL>
+<LI><A NAME="tex2html93"
+ HREF="Seminar-FAQ.html#SECTION000141000000000000000">
+13.1 How to indent the paragraphs?</A>
+<LI><A NAME="tex2html94"
+ HREF="Seminar-FAQ.html#SECTION000142000000000000000">
+13.2 How to justify the lines on the right side?</A>
+<LI><A NAME="tex2html95"
+ HREF="Seminar-FAQ.html#SECTION000143000000000000000">
+13.3 How to not center vertically the text in the slides?</A>
+<LI><A NAME="tex2html96"
+ HREF="Seminar-FAQ.html#SECTION000144000000000000000">
+13.4 How to change the slide number to a specific value?</A>
+<LI><A NAME="tex2html97"
+ HREF="Seminar-FAQ.html#SECTION000145000000000000000">
+13.5 How to generate only some slides inside all the file?</A>
+<LI><A NAME="tex2html98"
+ HREF="Seminar-FAQ.html#SECTION000146000000000000000">
+13.6 How to split the LaTeX file in several ones?</A>
+<LI><A NAME="tex2html99"
+ HREF="Seminar-FAQ.html#SECTION000147000000000000000">
+13.7 How to avoid magnification of external files included and picture
+environments?</A>
+<LI><A NAME="tex2html100"
+ HREF="Seminar-FAQ.html#SECTION000148000000000000000">
+13.8 How to rotate the headers with the text itself?</A>
+<LI><A NAME="tex2html101"
+ HREF="Seminar-FAQ.html#SECTION000149000000000000000">
+13.9 How to change the inter row space?</A>
+<LI><A NAME="tex2html102"
+ HREF="Seminar-FAQ.html#SECTION0001410000000000000000">
+13.10 How to prepare handouts with several slides per page?</A>
+</UL>
+<LI><A NAME="tex2html103"
+ HREF="Seminar-FAQ.html#SECTION000150000000000000000">
+14 Known problems</A>
+<LI><A NAME="tex2html104"
+ HREF="Seminar-FAQ.html#SECTION000160000000000000000">
+15 Thanks</A>
+</UL>
+<!--End of Table of Contents-->
+<H1><A NAME="SECTION00020000000000000000">
+1 Documentation</A>
+</H1>
+<P><H2><A NAME="SECTION00021000000000000000">
+1.1 Distribution</A>
+</H2>
+<BR>
+<IMG WIDTH="104" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="change_begin"
+ SRC="../images/change_begin.gif">
+<BR>
+The source of Seminar is available on
+<TT>CTAN/macros/latex/contrib/other/seminar</TT>, including the
+<TT>seminar.bug</TT> file. The 
+<A NAME="tex2html1"
+ HREF="seminar.bg2"><TT>seminar.bg2</TT></A>
+file is available
+here on the Seminar Web page, with comments on
+<A NAME="tex2html1"
+ HREF="Seminar-Bugs.html"><EM>Seminar bugs list</EM> </A>
+<BR>
+<IMG WIDTH="104" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="change_end"
+ SRC="../images/change_end.gif">
+<BR><H2><A NAME="SECTION00022000000000000000">
+1.2 Web page</A>
+</H2>
+<P>
+Courtesy to TUG, there is a <A NAME="tex2html1"
+ HREF="http://www.tug.org/applications/Seminar">Web page</A>
+devoted to Seminar on
+<TT>http://www.tug.org/applications/Seminar</TT>. All documentations related to
+Seminar can be found there. Actual maintener of this page is Denis
+G<SMALL>IROU</SMALL>.
+<P><H2><A NAME="SECTION00023000000000000000">
+1.3 User's Guide</A>
+</H2>
+<P>
+By Timothy <SMALL>VAN</SMALL> Z<SMALL>ANDT</SMALL>. The source of this
+<A NAME="tex2html1"
+ HREF="http://www.loria.fr/tex/classes/sem-user.dvi">user's guide</A>
+is included in the distribution as <TT>sem-user.tex</TT>.
+<P><H2><A NAME="SECTION00024000000000000000">
+1.4 FAQ</A>
+</H2>
+<P>
+By Denis G<SMALL>IROU</SMALL>. This file. The <A NAME="tex2html1"
+ HREF="Seminar-FAQ.ps.gz">PostScript
+version</A>
+include result of examples, that are not shown in
+the <A NAME="tex2html1"
+ HREF="Seminar-FAQ.html">HTML version</A>
+.
+<H2><A NAME="SECTION00025000000000000000">
+1.5 Seminar chapter of the LaTeX Graphics Companion</A>
+</H2>
+<P>  <A NAME="tex2html1"
+ HREF="http://www.aw.com/cp/tlgc.html">LaTeX Graphics Companion</A>
+by Michel G<SMALL>OOSSENS</SMALL>, Sebastian
+R<SMALL>AHTZ</SMALL> and Frank M<SMALL>ITTELBACH</SMALL>, Addison Wesley, 1997, section
+9.4, pages 338-345.
+<P><H2><A NAME="SECTION00026000000000000000">
+1.6 Préparer des transparents avec Seminar</A>
+</H2>
+<P>  <A NAME="tex2html1"
+ HREF="http://www.univ-rennes1.fr/pub/GUTenberg/publicationsPS/16-rahtz.ps.gz">Préparer des transparents avec Seminar</A>
+by Michel G<SMALL>OOSSENS</SMALL> and Sebastian R<SMALL>AHTZ</SMALL>, Cahiers GUTenberg,
+number 16, April 1994, pages 71-82 (<EM>in french</EM> ).
+<P><H2><A NAME="SECTION00027000000000000000">
+1.7 Réaliser des transparents en LaTeX avec la classe de
+documents Seminar</A>
+</H2>
+<P><A NAME="tex2html1"
+ HREF="SemIDDoc.ps.gz">Réaliser des transparents en LaTeX avec la classe de
+documents Seminar</A>
+by Jalel C<SMALL>HERGUI</SMALL> and Denis
+G<SMALL>IROU</SMALL>, Internal note of CNRS/IDRIS, 24 pages, Version 3.4, December
+1996 (<EM>in french</EM> ).
+<P>
+Note that a lot of commands described are only local and not distributed.
+But this document show some examples of useful functionnalities and show some
+other interesting personalizations of slides.
+<P><H1><A NAME="SECTION00030000000000000000">
+2 Status</A>
+</H1>
+<P>
+Seminar is frozen since the end of 1993, as Timothy <SMALL>VAN</SMALL> Z<SMALL>ANDT</SMALL> was
+required by other kind of activities. Seminar was minimally adapted to LaTeX
+2e in 1994 by Sebastian R<SMALL>AHTZ</SMALL>, who transform the old
+style file in a document class. But the internal mechanisms of Seminar
+(mainly for <EM>shipout</EM>  of the pages) and it documentation were not
+upgraded.
+<P>
+There are some solutions or workarounds for specific problems with LaTeX
+2e and with some actual versions of other packages (`longtable'
+for the moment) in the <A NAME="tex2html1"
+ HREF="Seminar-Bugs.html"><EM>Seminar bugs list</EM> </A>
+and the related file
+<A NAME="tex2html1"
+ HREF="seminar.bg2"><TT>seminar.bg2</TT></A>
+Nevertheless, Seminar is heavily used in the LaTeX communauty and is
+actively supported. Report any problem either to the <TT>comp.text.tex</TT>
+newsgroup or personaly to <A NAME="tex2html1"
+ HREF="mailto:Denis.Girou@idris">myself</A>
+or to
+<A NAME="tex2html1"
+ HREF="mailto:srahtz@elsevier.co.uk">Sebastian R<SMALL>AHTZ</SMALL></A>
+.
+A version of Seminar better integrated with LaTeX 2e and with
+known bugs corrections included (from actual <TT>seminar.bug</TT> and
+<TT>seminar.bg2</TT> files) is planned for 1998.
+<P><H1><A NAME="SECTION00040000000000000000">
+3 How to choose the orientation of the slides?</A>
+</H1>
+<A NAME="sec:Orientation">&#160;</A>
+  We assume here that the `semcolor' package is loaded (it's different
+without).
+<P>
+By default (i.e. without the portrait option) the slide environment define a
+landscape orientation (US usage) with horizontal text and the <TT>slide*</TT>
+environment a landscape orientation with vertical text. Take care in this case
+to use a landscape option when formatting the resulting file (for instance
+<TT>-t landspace</TT> with <TT>dvips</TT>).
+<P>
+With the portrait option, the <TT>slide*</TT> environment define a portrait
+orientation (european usage) with horizontal text and the slide environment a
+portrait orientation with vertical text (for instance useful to show a table
+larger than the width of the slide).
+<P>
+Note that if you ask for vertical (rotated) text, only the material inside
+the frame is rotated but not the headers and footers (see section
+<A HREF="Seminar-FAQ.html#sec:RotateHeaders">13.8</A>).
+<P>
+Example <EM>without</EM>  the <TT>portrait</TT> option (landscape orientation
+by default):
+<P><PRE><HR>
+\documentclass{seminar}
+
+\usepackage{semcolor}
+\input{seminar.bug}
+
+\begin{document}
+
+\begin{slide}
+  The slide environment WITHOUT the portrait option.
+\end{slide}
+
+\begin{slide*}
+  The slide* environment WITHOUT the portrait option.
+\end{slide*}
+
+\end{document}
+<HR></PRE>
+<P>
+with the <TT>portrait</TT> option:
+<P><PRE><HR>
+\documentclass[portrait]{seminar}
+
+\usepackage{semcolor}
+\input{seminar.bug}
+
+\begin{document}
+
+\begin{slide}
+  The slide environment WITH the portrait option.
+\end{slide}
+
+\begin{slide*}
+  The slide* environment WITH the portrait option.
+\end{slide*}
+
+\end{document}
+<HR></PRE>
+<P><H1><A NAME="SECTION00050000000000000000">
+4 How to change the dimensions of the slides?</A>
+</H1>
+<P>
+To do a global change, we must inscrease or decrease the
+<code>\slidewidth</code> and/or <code>\slideheight</code> values.
+<P>
+To do a local change, we can define the dimensions of the chosen slide as
+parameter of the <TT>slide</TT> or <TT>slide*</TT> environment.
+<P>
+Example:
+<P><PRE><HR>
+\documentclass[a4,portrait]{seminar}
+
+\input{seminar.bug}
+
+\begin{document}
+
+% Default size of the frame
+\begin{slide*}
+  My text.
+\end{slide*}
+
+% Global change of the frame size
+\addtolength{\slidewidth}{2cm}
+\addtolength{\slideheight}{2cm}
+\begin{slide*}
+  My text.
+\end{slide*}
+
+% Local change of the frame size
+% [height,width] in portrait mode
+% [width,height] in landscape mode
+\begin{slide*}[15cm,10cm]
+  My text.
+\end{slide*}
+
+% We return to the preceding size
+\begin{slide*}
+  My text.
+\end{slide*}
+
+\end{document}
+<HR></PRE>
+<P><H1><A NAME="SECTION00060000000000000000">
+5 How to change the frame style?</A>
+</H1>
+<P><H2><A NAME="SECTION00061000000000000000">
+5.1 With the `fancybox' package</A>
+</H2>
+<P>
+Using the <code>\slideframe</code> macro, you can choose a <TT>single</TT>,
+<TT>oval</TT>, <TT>shadow</TT> or <TT>double</TT> frame.
+<P><PRE><HR>
+\documentclass[a4,portrait]{seminar}
+
+\input{seminar.bug}
+
+\usepackage{fancybox}
+
+\begin{document}
+
+% \slideframe{plain} is the default with fancybox.sty
+\begin{slide*}
+  My text.
+\end{slide*}
+
+\slideframe{oval}
+\begin{slide*}
+  My text.
+\end{slide*}
+
+\slideframe{shadow}
+\begin{slide*}
+  My text.
+\end{slide*}
+
+\slideframe{double}
+\begin{slide*}
+  My text.
+\end{slide*}
+
+\slideframe{none}
+\begin{slide*}
+  My text.
+\end{slide*}
+
+\end{document}
+<HR></PRE>
+<P><H2><A NAME="SECTION00062000000000000000">
+5.2 With the `semcolor' package</A>
+</H2>
+<P>
+This package use itself PSTricks and is the most powerful solution. Using
+the <code>\slideframe</code> macro, you can choose a <TT>scplain</TT> (default),
+<TT>scshadow</TT> or <TT>scdouble</TT> frame (but it offers also other
+possibilities, like to change the width and the color of the lines and to
+color also the background - see section <A HREF="Seminar-FAQ.html#sec:Color">8</A>).
+<P><PRE><HR>
+\documentclass[a4,portrait]{seminar}
+
+\usepackage[dvips]{pstcol} % To use the standard `color' package with Seminar
+\usepackage{semcolor}
+\input{seminar.bug}
+
+\begin{document}
+
+% \slideframe{scplain} is the default with semcolor.sty
+\begin{slide*}
+  My text.
+\end{slide*}
+
+\slideframe{scshadow}
+\begin{slide*}
+  My text.
+\end{slide*}
+
+\slideframe{scdouble}
+\begin{slide*}
+  My text.
+\end{slide*}
+
+\slideframe{none}
+\begin{slide*}
+  My text.
+\end{slide*}
+
+\end{document}
+<HR></PRE>
+<P><H1><A NAME="SECTION00070000000000000000">
+6 How to personalize the section and subsection formats?</A>
+</H1>
+<A NAME="sec:slideheading">&#160;</A>
+  Using the `slidesec' package (there are several bugs related to it - see
+the <A NAME="tex2html1"
+ HREF="Seminar-Bugs.html"><EM>Seminar bugs list</EM> </A>
+and the
+related file <A NAME="tex2html1"
+ HREF="seminar.bg2"><TT>seminar.bg2</TT></A>
+), you can
+use the <code>\slideheading</code> and <code>\slidesubheading</code> macros to
+define in slides something like sections and subsections for other documents.
+Redefine the <code>\makeslideheading</code> and <code>\makeslidesubheading</code>
+macros to change the way they are formatted. Here is an example:
+<P><PRE><HR>
+\documentclass[a4]{seminar}
+
+\usepackage[dvips]{pstcol} % To use the standard `color' package with Seminar
+\usepackage{semcolor}
+\usepackage{slidesec}
+\input{seminar.bug}
+\input{seminar.bg2} % See the Seminar bugs list
+
+\definecolor{LemonChiffon}{rgb}{1.,0.98,0.8}
+
+\begin{document}
+
+\begin{slide}
+  \slideheading{Section one}
+    \slidesubheading{Subsection one of one}
+    \slidesubheading{Subsection two of one}
+  \slideheading{Section two}
+\end{slide}
+
+\renewcommand{\makeslideheading}[1]{%
+\framebox{\textbf{\theslidesection{} -- #1}}}
+\renewcommand{\makeslidesubheading}[1]{%
+\begin{flushright}
+  \textit{#1 (\Roman{slidesection}.\roman{slidesubsection})}
+\end{flushright}}
+
+\begin{slide}
+  \slideheading{Section three}
+    \slidesubheading{Subsection one of three}
+    \slidesubheading{Subsection two of three}
+  \slideheading{Section four}
+\end{slide}
+
+\renewcommand{\makeslideheading}[1]{%
+\begin{center}
+\psshadowbox[framearc=0.4,fillstyle=solid,fillcolor=red]{%
+\large\textbf{\textcolor{white}{\theslidesection{} -- #1}}}
+\end{center}}
+\renewcommand{\makeslidesubheading}[1]{%
+\noindent\psframebox[framearc=0.4,fillstyle=solid,fillcolor=LemonChiffon]{%
+\large\textbf{\theslidesection{}.\theslidesubsection{} -- #1}}\par}
+
+\begin{slide}
+  \slideheading{Section five}
+    \slidesubheading{Subsection one of five}
+    \slidesubheading{Subsection two of five}
+  \slideheading{Section six}
+\end{slide}
+
+\end{document}
+<HR></PRE>
+<P><H1><A NAME="SECTION00080000000000000000">
+7 How to put material in the background?</A>
+</H1>
+<P><H2><A NAME="SECTION00081000000000000000">
+7.1 How to write a text in the background?</A>
+</H2>
+<P>
+With the `fancybox' package, we can easily put any text in the background of
+some or all slides. We can use all LaTeX commands to build it (tabular
+environment, color macros, insertion of graphics, etc.).
+<P>
+Example (here we use the `color' package to define the color of the text and
+the `graphics' one to scale and rotate it):
+<P><PRE><HR>
+\documentclass[a4,portrait]{seminar}
+
+\usepackage[dvips]{pstcol} % To use the standard `color' package with Seminar
+\usepackage{semcolor}
+\input{seminar.bug}
+
+\usepackage[dvips]{graphics}
+
+\usepackage{fancybox}
+
+\definecolor{LightGray}{gray}{0.85}
+
+\newslideframe{BackgroundText}{%
+  \boxput{\rotatebox{56}{\scalebox{4.5}{%
+    \textcolor{LightGray}{CONFIDENTIAL}}}}{#1}}
+\slideframe*{BackgroundText}
+
+\begin{document}
+
+\begin{slide*}
+  I have no secret for you.
+\end{slide*}
+
+\end{document}
+<HR></PRE>
+<P><H2><A NAME="SECTION00082000000000000000">
+7.2 How to put a picture in the background?</A>
+</H2>
+<P>
+Just using normally the `graphics'/`graphicx' package in conjunction with
+the `fancybox' one, with the <code>\slideframe*</code> macro. Nevertheless take
+care that the picture will be loaded for <EM>each</EM>  slide, so that the
+resulting file can be very huge (look at the discussion in section
+<A HREF="Seminar-FAQ.html#sec:Problems">14</A>).
+<P><PRE><HR>
+\documentclass[a4]{seminar}
+
+\usepackage{semcolor}
+\input{seminar.bug}
+
+\usepackage[dvips]{graphicx}
+\usepackage{fancybox}
+
+\newslideframe{IMAGE}{%
+  \boxput{\rput(1,0){\includegraphics[scale=0.4]{france}}}{#1}}
+\slideframe*{IMAGE}
+
+\begin{document}
+
+\begin{slide}
+  My first word.
+\end{slide}
+
+\begin{slide}
+  My last word.
+\end{slide}
+
+\end{document}
+<HR></PRE>
+<P><H1><A NAME="SECTION00090000000000000000">
+8 How to use colors?</A>
+</H1>
+<A NAME="sec:Color">&#160;</A>
+<H2><A NAME="SECTION00091000000000000000">
+8.1 How to use the standard `color' package?</A>
+</H2>
+<P>
+By default, Seminar used the PSTricks package to define and manage colors.
+However, today the standard `color' package is a better solution to support
+color with LaTeX. But if we want to use this package with PSTricks also or
+with the `semcolor' package (which load PSTricks), we must take care to
+some incompatibilities between `color' and PSTricks. To solve them, the
+`pstcol' package written by David C<SMALL>ARLISLE</SMALL> must be loaded in place of
+both `color' and PSTricks (load it before `semcolor' if you need this one too).
+<P>
+Example:
+<P><PRE><HR>
+\documentclass[a4,portrait]{seminar}
+
+\usepackage[dvips]{pstcol} % To use the standard `color' package with Seminar
+\usepackage{semcolor}
+\input{seminar.bug}
+
+\definecolor{Blue}{rgb}{0.,0.,1.}
+\definecolor{Pink}{rgb}{1.,0.75,0.8}
+
+\begin{document}
+
+\begin{slide*}
+  Written in \textcolor{Pink}{pink}
+  and now with my own \textcolor{Blue}{blue}.
+\end{slide*}
+
+\end{document}
+<HR></PRE>
+<P><H2><A NAME="SECTION00092000000000000000">
+8.2 How to change the background color of the slides?</A>
+</H2>
+<P>
+With the <code>\slideframe</code> macro.
+<P>
+See the following example (here we also define an optional parameter to
+change the frame color too, and another required one for the foreground color):
+<P><PRE><HR>
+\documentclass[a4]{seminar}
+
+\usepackage[dvips]{pstcol} % To use the standard `color' package with Seminar
+\usepackage{semcolor}
+\input{seminar.bug}
+
+\newcommand{\SlideColours}[3][black]{%
+% #1 = frame line color (optional, default=black),
+% #2 = foreground color, #3 = background color
+\slideframe[\psset{linecolor=#1,fillcolor=#3,fillstyle=solid}]{scplain}
+\color{#2}}
+
+\definecolor{Pink}{rgb}{1.,0.75,0.8}
+
+\begin{document}
+
+\SlideColours[red]{black}{Pink}
+\begin{slide}
+  My slide with a pink background and a red frame.
+\end{slide}
+
+\SlideColours{white}{red}
+\begin{slide}
+  My slide with a red background and a white text.
+\end{slide}
+
+\end{document}
+<HR></PRE>
+<P><H2><A NAME="SECTION00093000000000000000">
+8.3 How to have a gradient color background instead of a uniform
+              one?</A>
+</H2>
+<P>
+Easily with the `semcolor' and `gradient' (available in the PSTricks
+distribution) packages. Look at the following example:
+<P><PRE><HR>
+\documentclass[a4,portrait]{seminar}
+
+\usepackage[dvips]{pstcol} % To use the standard `color' package with Seminar
+\usepackage{semcolor}
+\input{seminar.bug}
+
+\usepackage{pst-grad}
+
+\definecolor{Gold}{rgb}{1.,0.84,0.}
+\slideframe[\psset{fillstyle=gradient,gradmidpoint=0.5,
+                   gradbegin=Gold,gradend=yellow}]{scplain}
+
+\begin{document}
+
+\begin{slide*}
+  My slide with a nice gradient background.
+\end{slide*}
+
+\end{document}
+<HR></PRE>
+<P>
+We can also define the beginning and ending colors according to the HSB
+(<EM>Hue, Saturation, Brightness</EM> ) mode, which is often easier to manage
+exactly the gradient:
+<P><PRE><HR>
+\documentclass[a4]{seminar}
+
+\usepackage[dvips]{pstcol} % To use the standard `color' package with Seminar
+\usepackage{semcolor}
+\input{seminar.bug}
+
+\usepackage{pst-ghsb}
+
+\definecolor{RedA}{hsb}{0.9,0.3,0.7}
+\definecolor{RedB}{hsb}{0.9,0.3,1}
+\slideframe[\psset{fillstyle=gradient,gradientHSB=true,gradmidpoint=0,
+                   gradbegin=RedA,gradend=RedB}]{scplain}
+
+\begin{document}
+
+\begin{slide}
+  My slide with a nice gradient background.
+\end{slide}
+
+\end{document}
+<HR></PRE>
+<P><H2><A NAME="SECTION00094000000000000000">
+8.4 Improved color usage</A>
+</H2>
+<A NAME="sec:IDRIS">&#160;</A>
+  Both usage of Seminar, PSTricks and the `color' package give full access to
+color effects (see usage of the `fancyhdr' package in section
+<A HREF="Seminar-FAQ.html#sec:fancyhdr">9.1</A>).
+<P><PRE><HR>
+\documentclass[a4,portrait]{seminar}
+
+\usepackage[dvips]{pstcol} % To use the standard `color' package with Seminar
+\usepackage{semcolor}
+\input{seminar.bug}
+\input{seminar.bg2} % See the Seminar bugs list
+
+\usepackage{pst-grad}
+
+% To define headers and footers
+\usepackage{fancyhdr}
+% Definitions of the logos of IDRIS and CNRS with PSTricks
+\usepackage{LogosID}
+
+% Headers and footers personalization using the `fancyhdr' package
+\fancyhf{} % Clear all fields
+\fancyhead[R]{\thepage}
+\newcommand{\Header}[1]{%
+  \fancyhead[C]{{\Large\textbf{\textcolor{red}{#1}}}}}
+\fancyfoot[L]{\raisebox{-2.8mm}{\scalebox{0.3}{\LogoIDRISName}}}
+\makeatletter
+\newcommand{\Footer}[2]{%
+  \fancyfoot[R]{{\scriptsize\textbf{#1} \@date}\\[-1.5mm]
+                {\tiny\textbf{#2}}}}
+
+% Redefinition of the head line separator to have a double one
+\def\headrule{%
+\if@fancyplain\headrulewidth\plainheadrulewidth\fi
+\vskip 0.6mm
+\hrule\@height\headrulewidth\@width\headwidth \vskip 0.25mm
+\hrule\@height\headrulewidth\@width\headwidth \vskip -1.5mm}
+\makeatother
+
+% We change the width of header and footer rules
+\renewcommand{\headrulewidth}{0.15mm}
+\renewcommand{\footrulewidth}{0.15mm}
+
+% To center horizontally the headers and footers (see seminar.bug)
+\renewcommand{\headwidth}{\textwidth}
+
+% To adjust the frame length to the header and footer ones
+\autoslidemarginstrue
+
+% Definition of new colors
+\definecolor{Beige}   {rgb}{0.96,0.96,0.86}
+\definecolor{Gold}    {rgb}{1.,0.84,0.}
+\definecolor{MyYellow}{rgb}{1.,0.84,0.8}
+
+\slideframe[\psset{fillstyle=gradient,gradbegin=MyYellow,gradend=Gold,
+                   gradmidpoint=1}]{scplain}
+
+\date{Juin 1997}
+\Footer{\textcolor{blue}{MPI} -- \textcolor{green}{Version 1.8} --}
+       {\textcolor{red}{J.Chergui,I.Dupays,D.Girou,S.Requena}}
+
+\begin{document}
+
+\slidepagestyle{fancy}
+
+\Header{MPI}
+\begin{slide*}
+  \centerline{\psframebox[fillstyle=solid,fillcolor=red,framearc=.3,
+                          framesep=2mm]{\Large\bfseries\color{yellow}%
+                Message Passing Interface}}
+  \vspace{2cm}
+  \centerline{\psframebox[fillstyle=solid,fillcolor=Beige,
+                          framearc=.3]{\bfseries%
+              \begin{tabular}{c}
+                Jalel \textsc{Chergui}\\
+                Isabelle \textsc{Dupays}\\
+                Denis \textsc{Girou}\\
+                Stéphane \textsc{Requena}\\[0.8mm]
+                {\small\texttt{&lt;Prénom.Nom@idris.fr&gt;}}
+              \end{tabular}}}
+\end{slide*}
+
+\end{document}
+<HR></PRE>
+<P><PRE><HR>
+\documentclass[a4,portrait]{seminar}
+
+\usepackage[dvips]{pstcol} % To use the standard `color' package with Seminar
+\usepackage{semcolor}
+\input{seminar.bug}
+\input{seminar.bg2} % See the Seminar bugs list
+
+\usepackage{pst-ghsb}
+
+% To define headers and footers
+\usepackage{fancyhdr}
+% Definitions of the logos of IDRIS and CNRS with PSTricks
+\usepackage{LogosID}
+
+% Headers and footers personalization using the `fancyhdr' package
+\fancyhf{} % Clear all fields
+\fancyhead[R]{\thepage}
+\newcommand{\Header}[1]{%
+  \fancyhead[C]{{\Large\textbf{\textcolor{red}{#1}}}}}
+\fancyfoot[L]{\raisebox{-2.8mm}{\scalebox{0.3}{\LogoIDRISName}}}
+\makeatletter
+\newcommand{\Footer}[2]{%
+  \fancyfoot[R]{{\scriptsize\textbf{#1} \@date}\\[-1.5mm]
+                {\tiny\textbf{#2}}}}
+
+% Redefinition of the head line separator to have a double one
+\def\headrule{%
+\if@fancyplain\headrulewidth\plainheadrulewidth\fi
+\vskip 0.6mm
+\hrule\@height\headrulewidth\@width\headwidth \vskip 0.25mm
+\hrule\@height\headrulewidth\@width\headwidth \vskip -1.5mm}
+\makeatother
+
+% We change the width of header and footer rules
+\renewcommand{\headrulewidth}{0.15mm}
+\renewcommand{\footrulewidth}{0.15mm}
+
+% To center horizontally the headers and footers (see seminar.bug)
+\renewcommand{\headwidth}{\textwidth}
+
+% To adjust the frame length to the header and footer ones
+\autoslidemarginstrue
+
+% Definition of new colors
+\definecolor{ColorA}   {hsb}{0.2,0.2,1}
+\definecolor{ColorB}   {hsb}{0.2,0.2,0.8}
+\definecolor{LightCyan}{rgb}{0.88,1.,1.}
+
+\slideframe[\psset{linecolor=red,fillstyle=gradient,gradientHSB=true,
+                   gradmidpoint=0,gradangle=45,
+                   gradbegin=ColorA,gradend=ColorB}]{scplain}
+
+\date{Juin 1997}
+\Footer{\textcolor{blue}{MPI} -- \textcolor{green}{Version 1.8} --}
+       {\textcolor{red}{J.Chergui,I.Dupays,D.Girou,S.Requena}}
+
+\begin{document}
+
+\slidepagestyle{fancy}
+
+\Header{MPI}
+\begin{slide*}
+  \centerline{\psdblframebox[fillstyle=solid,fillcolor=yellow,framearc=.3,
+                             framesep=2mm]{\Large\bfseries\color{red}%
+                \begin{tabular}{c}
+                  MPI\\
+                  \rule{6.5cm}{0.6mm}\\
+                  Message Passing Interface
+                \end{tabular}}}
+  \vspace{2cm}
+  \centerline{\psshadowbox[fillstyle=solid,fillcolor=LightCyan,
+                          framearc=.3]{\bfseries%
+              \begin{tabular}{c}
+                Jalel \textsc{Chergui}\\
+                Isabelle \textsc{Dupays}\\
+                Denis \textsc{Girou}\\
+                Stéphane \textsc{Requena}\\[0.8mm]
+                {\small\texttt{&lt;Prénom.Nom@idris.fr&gt;}}
+              \end{tabular}}}
+\end{slide*}
+
+\end{document}
+<HR></PRE>
+<P><H1><A NAME="SECTION000100000000000000000">
+9 How to personalize the headers and footers?</A>
+</H1>
+<P><H2><A NAME="SECTION000101000000000000000">
+9.1 With the `fancyhdr' package</A>
+</H2>
+<A NAME="sec:fancyhdr">&#160;</A>
+  You can define your own headers and footers for slides and notes (you can
+have different ones for these) using the <code>\newpagestyle</code> command (see
+the Seminar documentation, page 26).
+<P>
+For more sophisticate needs, you can use the
+<A NAME="tex2html1"
+ HREF="http://www.loria.fr/tex/packages/fancyhdr.dvi">`fancyhdr'</A>
+package from Piet <SMALL>VAN</SMALL> O<SMALL>OSTRUM</SMALL> (just take care to change the page
+style - using the <code>\pagestyle</code> or <code>\slidepagestyle</code> macro
+- <EM>after</EM>  the <code>\begin{document}</code>).
+<P>
+Here is an example with `fancyhdr' (see also the examples in section
+<A HREF="Seminar-FAQ.html#sec:IDRIS">8.4</A>):
+<P><PRE><HR>
+\documentclass[a4,portrait]{seminar}
+
+\input{seminar.bug}
+\usepackage{fancyhdr}
+
+% Headers and footers personalization using the `fancyhdr' package
+\fancyhf{} % Clear all fields
+\renewcommand{\headrulewidth}{0.2mm}
+\renewcommand{\footrulewidth}{0.2mm}
+\fancyhead[C]{\Large\textbf{Using Seminar and `fancyhdr'}}
+\fancyfoot[L]{\tiny\thedate}
+\fancyfoot[C]{\small My organization}
+\fancyfoot[R]{\tiny Page \theslide}
+
+% To avoid that the headers be too close of the top of the page
+\renewcommand{\slidetopmargin}{2cm}
+
+% To center horizontally the headers and footers (see seminar.bug)
+\renewcommand{\headwidth}{\textwidth}
+
+% To adjust the frame length to the header and footer ones
+\autoslidemarginstrue
+
+\begin{document}
+
+\pagestyle{fancy}
+
+\begin{slide*}
+  My first word.
+\end{slide*}
+
+\begin{slide*}
+  My last word.
+\end{slide*}
+
+\end{document}
+<HR></PRE>
+<P>
+To put a logo on each slide, somewhere on the header or the footer, and
+expecting that you have your logo as an Encapsulated PostScript file (or at
+least a PostScript one with the BoundingBox defined), with the standard
+`graphicx' package loaded, do something like:
+<code>\fancyfoot[L]{\includegraphics[scale=0.3]{MyLogo}}</code>
+<P>
+Nevertheless, take care that this can generate a huge file! (see the
+discussion in section <A HREF="Seminar-FAQ.html#sec:Problems">14</A>).
+<P><H2><A NAME="SECTION000102000000000000000">
+9.2 How to put automatically the section title in the header?</A>
+</H2>
+<P>
+Using the `slidesec' package (there are several bugs related to it - see
+the <A NAME="tex2html1"
+ HREF="Seminar-Bugs.html"><EM>Seminar bugs list</EM> </A>
+and the
+related file <A NAME="tex2html1"
+ HREF="seminar.bg2"><TT>seminar.bg2</TT></A>
+), you can
+use the <code>\slideheading</code> and <code>\slidesubheading</code> macros to
+define in slides something like sections and subsections for other documents
+(see section <A HREF="Seminar-FAQ.html#sec:slideheading">6</A>).
+To have the name of the current section in the slide header or footer, just
+use the <code>\theslideheading</code> macro (<code>\theslidesection</code>
+contain the section counter):
+<P><PRE><HR>
+\documentclass[a4,portrait]{seminar}
+
+\usepackage{slidesec}
+\input{seminar.bug}
+\input{seminar.bg2} % See the Seminar bugs list
+
+\usepackage{fancyhdr}
+
+% Headers and footers personalization using the `fancyhdr' package
+\fancyhf{} % Clear all fields
+\renewcommand{\headrulewidth}{0.2mm}
+\renewcommand{\footrulewidth}{0.2mm}
+\fancyhead[C]{\Large\textbf{\theslidesection{} -- \theslideheading}}
+\fancyfoot[L]{\tiny\thedate}
+\fancyfoot[C]{\small My organization}
+\fancyfoot[R]{\tiny Page \theslide}
+
+% To avoid that the headers be too close of the top of the page
+\renewcommand{\slidetopmargin}{2cm}
+
+% To center horizontally the headers and footers (see seminar.bug)
+\renewcommand{\headwidth}{\textwidth}
+
+% To adjust the frame length to the header and footer ones
+\autoslidemarginstrue
+
+\begin{document}
+
+\pagestyle{fancy}
+
+\begin{slide*}
+  \slideheading{Section one}
+    \slidesubheading{Subsection one of one}
+    \slidesubheading{Subsection two of one}
+\end{slide*}
+
+\begin{slide*}
+  \slideheading{Section two}
+    \slidesubheading{Subsection one of two}
+\end{slide*}
+
+\end{document}
+<HR></PRE>
+<P><H2><A NAME="SECTION000103000000000000000">
+9.3 How to put the header and footer inside the frame?</A>
+</H2>
+<P>
+Some people don't like to have the header and footer outside the frame
+or want to have with Seminar the same layout they had previously with other
+software.
+<P>
+It is not a direct functionality of Seminar, which expect the header and
+footer outside the frame, but we can have it with little work. Of course, it
+is possible with `fancyhdr', redefining the position of various fields. But it
+is also possible using the `fancybox' package. First, we can increase the
+global width of the slide, as the reserved size for header/footer will be
+unused (<code>\slideheight</code> for landscape mode and <code>\slidewidth</code>
+for portrait mode). Second, we must reduce the size of the text, because it
+will contain also the header and footer, using the
+<code>\extraslideheight</code> macro. Then we can define the fields of our
+header and footer with the <code>\newslideframe</code> macro, validating them
+with the <code>\slideframe*</code> macro.
+<P>
+Here is an example:
+<P><PRE><HR>
+\documentclass[a4,portrait]{seminar}
+
+\usepackage[dvips]{pstcol} % To use the standard `color' package with Seminar
+\usepackage{semcolor}
+
+\input{seminar.bug}
+
+\usepackage{fancybox}
+
+% Increase slide height (\slidewidth in portrait mode) but reduce text height
+\addtolength{\slidewidth}{2.5cm}
+\extraslideheight{-1.8cm}
+
+% Header and footer inside the frame
+\newslideframe{HeaderLeft}{%
+\boxput(-0.92,0.93){\makebox[0cm][l]{\Large\Title}}{#1}}
+\newslideframe{HeaderRight}{%
+\boxput(0.92,0.93){\makebox[0cm][r]{\footnotesize\thedate}}{#1}}
+\newslideframe{HeaderRule}{\boxput(0,0.88){\rule{8.1cm}{2pt}}{#1}}
+\newslideframe{FooterRule}{\boxput(0,-0.88){\rule{8.1cm}{2pt}}{#1}}
+\newslideframe{Footer}{\boxput(0,-0.94){\Large My organization}{#1}}
+
+\slideframe*{HeaderLeft}
+\slideframe*{HeaderRight}
+\slideframe*{HeaderRule}
+\slideframe*{FooterRule}
+\slideframe*{Footer}
+
+\slidepagestyle{empty}
+
+\begin{document}
+
+\providecommand{\Title}{My Title}
+\begin{slide*}
+  In fact, I have nothing to say...
+\end{slide*}
+
+\end{document}
+<HR></PRE>
+<P>
+It is more tricky if we want to fill these areas with colors. It cannot be
+done automatically, as these areas are not defined as <EM>objects</EM> . But we
+can do it by hand, using some PSTricks macros. Of course, values must be
+adjusted in each case (if we change the slide dimensions, if we use another
+framing mode, etc.) and it require a little patience to found the good ones.
+Nevertheless, it is a kind of job that is require few time and normally we use
+the same slide layout for all or main part of our slide documents. Do not
+forget too that it is typically the kind of definitions that you must 
+not put in the files themselves, as in our examples, but in the
+<TT>seminar.con</TT> configuration file.
+<P>
+Here is an example for the previous case (we must take care of the order of
+the <code>\slideframe*</code> calls):
+<P><PRE><HR>
+\documentclass[a4,portrait]{seminar}
+
+\usepackage[dvips]{pstcol} % To use the standard `color' package with Seminar
+\usepackage{semcolor}
+
+\input{seminar.bug}
+
+\usepackage{fancybox}
+
+% Increase slide height (\slidewidth in portrait mode) but reduce text height
+\addtolength{\slidewidth}{2.5cm}
+\extraslideheight{-1.8cm}
+
+% Header and footer inside the frame
+\newslideframe{HeaderLeft}{%
+\boxput(-0.92,0.93){%
+\pscustom*[linecolor=yellow]{%
+  \psarcn(0.445,-0.18){0.765}{180}{90}
+  \rlineto(6.28,0)
+  \psarcn(7.13,-0.18){0.765}{90}{0}}
+\makebox[0cm][l]{\Large\Title}}{#1}}
+\newslideframe{HeaderRight}{%
+\boxput(0.92,0.93){\makebox[0cm][r]{\footnotesize\thedate}}{#1}}
+\newslideframe{HeaderRule}{\boxput(0,0.88){\rule{8.1cm}{2pt}}{#1}}
+\newslideframe{FooterRule}{\boxput(0,-0.88){\rule{8.1cm}{2pt}}{#1}}
+\newslideframe{Footer}{%
+\boxput(0,-0.94){
+\pscustom*[linecolor=magenta]{%
+  \moveto(-1.67,0.5)
+  \rlineto(5.1,0)
+  \psarcn(5.1,0.5){0.735}{0}{270}
+  \rlineto(-5.1,0)
+  \psarcn(-1.67,0.5){0.735}{270}{180}}
+\Large My organization}{#1}}
+
+\slideframe*{HeaderRight}
+\slideframe*{HeaderRule}
+\slideframe*{HeaderLeft}
+\slideframe*{FooterRule}
+\slideframe*{Footer}
+
+\slidepagestyle{empty}
+
+\begin{document}
+
+\providecommand{\Title}{My Title}
+\begin{slide*}
+  In fact, I have nothing to say...
+\end{slide*}
+
+\end{document}
+<HR></PRE>
+<P><H1><A NAME="SECTION000110000000000000000">
+10 How to manage notes with the slides?</A>
+</H1>
+<P><H2><A NAME="SECTION000111000000000000000">
+10.1 How to define personal notes?</A>
+</H2>
+<P>
+Put the notes outside the <TT>slide</TT><TT>/slide*</TT> environments or use
+the note environment.
+<P>
+If you don't want the headers and footers for the notes, use
+<code>\slidepagestyle{fancy}</code> instead of <code>\pagestyle{fancy}</code>.
+<P>
+Example (there is a bug in the note environment that we must correct
+defining <code>\@savsf</code> - see the
+<A NAME="tex2html1"
+ HREF="Seminar-Bugs.html"><EM>Seminar bugs list</EM> </A>
+):
+<PRE><HR>
+\documentclass[a4,portrait]{seminar}
+
+\input{seminar.bug}
+\input{seminar.bg2} % See the Seminar bugs list
+
+\usepackage{fancyhdr}
+
+% Headers and footers personalization using the `fancyhdr' package
+\fancyhf{} % Clear all fields
+\renewcommand{\headrulewidth}{0.2mm}
+\renewcommand{\footrulewidth}{0.2mm}
+\fancyhead[C]{\Large\textbf{Notes and Slides}}
+\fancyfoot[L]{\tiny\thedate}
+\fancyfoot[C]{\small My organization}
+\fancyfoot[R]{\tiny Page \theslide}
+
+% To avoid that the headers be too close of the top of the page
+\renewcommand{\slidetopmargin}{2cm}
+
+% To center horizontally the headers and footers (see seminar.bug)
+\renewcommand{\headwidth}{\textwidth}
+
+% To adjust the frame length to the header and footer ones
+\autoslidemarginstrue
+
+\begin{document}
+
+\pagestyle{fancy}
+
+\begin{slide*}
+  My first word.
+\end{slide*}
+
+If I have time tell them my second word.
+
+\begin{slide*}
+  My second word.
+\end{slide*}
+
+\begin{note}
+  If really there is one still not sleeping, tell them my last word.
+\end{note}
+
+\begin{slide*}
+  My last word.
+\end{slide*}
+
+\end{document}
+<HR></PRE>
+<P><H2><A NAME="SECTION000112000000000000000">
+10.2 How to generate the slides only?</A>
+</H2>
+<P>
+Use the slidesonly option for the seminar class (for instance
+<code>\documentclass[a4,portrait,slidesonly]{seminar}</code>).
+<P>
+But if you want the headers and footers, replace <code>\pagestyle{fancy}</code> by:
+<P><PRE><HR>
+\begin{allversions*}
+  \pagestyle{fancy}
+\end{allversions*}
+<HR></PRE>
+<P><H2><A NAME="SECTION000113000000000000000">
+10.3 How to generate the notes only?</A>
+</H2>
+<P>
+Use the notesonly option for the Seminar class (for instance
+<code>\documentclass[a4,portrait,notesonly]{seminar}</code>).
+<P>
+But if you want the headers and footers, replace <code>\pagestyle{fancy}</code> by:
+<P><PRE><HR>
+\begin{allversions*}
+  \pagestyle{fancy}
+\end{allversions*}
+<HR></PRE>
+<P><H1><A NAME="SECTION000120000000000000000">
+11 How to have a list of slides?</A>
+</H1>
+<P><H2><A NAME="SECTION000121000000000000000">
+11.1 How to generate a list of slides (similar to a table of
+contents)?</A>
+</H2>
+<P>
+Use the `slidesec' package (there are several bugs related to it - see the
+<A NAME="tex2html1"
+ HREF="Seminar-Bugs.html"><EM>Seminar bugs list</EM> </A>
+and the
+related file <A NAME="tex2html1"
+ HREF="seminar.bg2"><TT>seminar.bg2</TT></A>
+)
+Example (it must be compiled twice to format the list of slides):
+<P><PRE><HR>
+\documentclass[a4,portrait]{seminar}
+
+\usepackage{slidesec}
+\input{seminar.bug}
+\input{seminar.bg2} % See the Seminar bugs list
+
+\begin{document}
+
+\begin{slide*}
+  \slideheading{Section one}
+    \slidesubheading{Subsection one of one}
+    \slidesubheading{Subsection two of one}
+  \slideheading{Section two}
+\end{slide*}
+
+\begin{slide*}
+  \slideheading{Section three}
+    \slidesubheading{Subsection one of three}
+\end{slide*}
+
+\begin{slide*}
+  \listofslides
+\end{slide*}
+
+\end{document}
+<HR></PRE>
+<P><H2><A NAME="SECTION000122000000000000000">
+11.2 How to personalize the format for the list of slides?</A>
+</H2>
+<P>
+Redefine the <code>\listofslides</code> macro (don't forget that the
+<TT>seminar.con</TT> file is the way to personalize the Seminar configuration 
+for yourself or for your laboratory or institution - don't insert this kind
+of definitions in each of your files!)
+<P>
+Example (here we print the entry number of the section or subsection, we put
+dots between labels and slide numbers and we indent the subsection entries -
+the file must be compiled twice):
+<P><PRE><HR>
+\documentclass[a4]{seminar}
+
+\usepackage{slidesec}
+\input{seminar.bug}
+\input{seminar.bg2} % See the Seminar bugs list
+
+% Personalization of the format of the list of slides
+\makeatletter
+\def\listofslides{%
+  \centerline{\LARGE\textbf{List of Slides}}%
+  \def\l@slide##1##2##3{%
+    \slide@dottedcline{##1 -- ##2}{\slidenumberline{##3}}}%
+  \def\l@subslide##1##2##3{%
+    \slide@dottedcline{\ \ ##1 -- ##2}{\slidenumberline{##3}}}%
+  \@startlos}
+
+% To change formatting of subslides in list of slides (whole numerotation)
+\def\slide@subheading[#1]#2{%
+  \stepcounter{slidesubsection}%
+  \addtocontents{los}{\protect\l@subslide
+    {\the\c@slidesection.\the\c@slidesubsection}{\ignorespaces#1}{\@SCTR}}%
+  \gdef\theslidesubheading{#1}%
+  \def\@tempa{#2}%
+  \ifx\@tempa\@empty\else
+    {\edef\@currentlabel{\csname p@slidesubsection\endcsname
+      \theslidesubsection}\makeslidesubheading{#2}}%
+  \fi}
+
+% To avoid Overfull messages on each line of the list...
+\def\slide@dottedcline{\@dottedtocline{1}{0.3em}{1.5em}}
+\makeatother
+
+\begin{document}
+
+\begin{slide}
+  \slideheading{Section one}
+    \slidesubheading{Subsection one of one}
+    \slidesubheading{Subsection two of one}
+  \slideheading{Section two}
+\end{slide}
+
+\begin{slide}
+  \slideheading{Section three}
+    \slidesubheading{Subsection one of three}
+\end{slide}
+
+\begin{slide}
+  \listofslides
+\end{slide}
+
+\end{document}
+<HR></PRE>
+<P><H2><A NAME="SECTION000123000000000000000">
+11.3 How to generate a list showing the position of the slides in the
+presentation?</A>
+</H2>
+<P>
+The macro <code>\Slidecontents</code> generate a list of the slides (using the
+entries defined with <code>\slideheading</code> and <code>\slidesubheading</code>) to show
+the preceding slides and the following ones. The <code>\slidesubheading</code>
+entries of the preceding ones are omitted. And, of course, you can generate
+several lists inside the file, to show respective positions in the talk.
+<P>
+Example (it must be compiled twice):
+<P><PRE><HR>
+\documentclass[a4,portrait]{seminar}
+
+\usepackage{slidesec}
+\input{seminar.bug}
+\input{seminar.bg2} % See the Seminar bugs list
+
+\begin{document}
+
+\begin{slide*}
+  \slideheading{Section one}
+    \slidesubheading{Subsection one of one}
+    \slidesubheading{Subsection two of one}
+  \slideheading{Section two}
+\end{slide*}
+
+\begin{slide*}
+  \Slidecontents
+\end{slide*}
+
+\begin{slide*}
+  \slideheading{Section three}
+    \slidesubheading{Subsection one of three}
+\end{slide*}
+
+\begin{slide*}
+  \Slidecontents
+\end{slide*}
+
+\end{document}
+<HR></PRE>
+<P><H1><A NAME="SECTION000130000000000000000">
+12 How to generate overlays?</A>
+</H1>
+<P><H2><A NAME="SECTION000131000000000000000">
+12.1 How to generate some special slides which must overlaid?</A>
+</H2>
+<P>
+With the overlay environment defined in the `semlayer' package.
+<P>
+Example (we will generate here four slides):
+<P><PRE><HR>
+\documentclass[a4,12pt]{seminar}
+
+\usepackage[dvips]{pstcol} % To use the standard `color' package with Seminar
+\usepackage{semcolor}
+\usepackage{semlayer}
+\input{seminar.bug}
+
+\begin{document}
+
+\begin{slide}
+  \centerline{\psshadowbox{\shortstack[l]{%
+    The winner is: \begin{overlay}{1}{\textcolor{red}{Caroline}}\end{overlay}\\[2cm]
+    The second is: \begin{overlay}{2}{Jane}\end{overlay}\\[2cm]
+    The third  is: \begin{overlay}{3}{Mary}\end{overlay}}}}
+\end{slide}
+
+\end{document}
+<HR></PRE>
+<P><H2><A NAME="SECTION000132000000000000000">
+12.2 How to have cumulative overlays?</A>
+</H2>
+<P>  <EM>Traditional</EM>  overlays are useful for projectors, but if you don't use
+physical slides and project them directly from a computer on a screen or a
+wall, you must be able to generate slides which add each time the material of
+all the preceding overlays (idea first suggested by <A NAME="tex2html1"
+ HREF="mailto:tkol@psl-palm.technion.ac.il">Tomer
+K<SMALL>OL</SMALL></A>
+).
+Solution is not difficult, modifying the way PSTricks (which manage the
+overlays for Seminar) work:
+<P><PRE><HR>
+\documentclass[a4,12pt]{seminar}
+
+\usepackage[dvips]{pstcol} % To use the standard `color' package with Seminar
+\usepackage{semcolor}
+\usepackage{semlayer}
+\input{seminar.bug}
+
+% For overlays, to force to print all preceding ones
+\makeatletter
+\def\pst@initoverlay#1{%
+\pst@Verb{%
+/BeginOL {dup (all) eq exch TheOL le or {IfVisible not {Visible
+/IfVisible true def} if} {IfVisible {Invisible /IfVisible false def} if}
+ifelse} def
+\tx@InitOL /TheOL (#1) def}}
+\makeatother
+
+\begin{document}
+
+\begin{slide}
+  \centerline{\psshadowbox{\shortstack[l]{%
+    The winner is: \begin{overlay}{1}{\textcolor{red}{Caroline}}\end{overlay}\\[2cm]
+    The second is: \begin{overlay}{2}{Jane}\end{overlay}\\[2cm]
+    The third  is: \begin{overlay}{3}{Mary}\end{overlay}}}}
+\end{slide}
+
+\end{document}
+<HR></PRE>
+<P><H1><A NAME="SECTION000140000000000000000">
+13 Miscelleanous</A>
+</H1>
+<P><H2><A NAME="SECTION000141000000000000000">
+13.1 How to indent the paragraphs?</A>
+</H2>
+<P>
+By default, they are not. Redefine <code>\slideparindent</code> for that,
+for instance <code>\renewcommand{\slideparindent}{5mm}</code>
+<P><H2><A NAME="SECTION000142000000000000000">
+13.2 How to justify the lines on the right side?</A>
+</H2>
+<P>
+By default, they are not. Use <code>\raggedslides[0mm]</code> for that.
+<P><H2><A NAME="SECTION000143000000000000000">
+13.3 How to not center vertically the text in the slides?</A>
+</H2>
+<P>
+By default, they are. Use <code>\centerslidesfalse</code> to change that.
+<P><H2><A NAME="SECTION000144000000000000000">
+13.4 How to change the slide number to a specific value?</A>
+</H2>
+<P>
+Define the value of the slide counter (to the specific value less 1).
+<P>
+Example:
+<P><PRE><HR>
+\documentclass[a4,portrait]{seminar}
+
+\input{seminar.bug}
+
+\renewcommand{\slideparindent}{5mm}
+
+\raggedslides[0mm]
+
+\centerslidesfalse
+
+\begin{document}
+
+\setcounter{slide}{34}
+% Must be slide number 35
+\begin{slide*}
+  My text with some non default formatting options.
+\end{slide*}
+
+\end{document}
+<HR></PRE>
+<P><H2><A NAME="SECTION000145000000000000000">
+13.5 How to generate only some slides inside all the file?</A>
+</H2>
+<P>
+With the <code>\onlyslides</code> macro. For instance
+<code>\onlyslides{11-16,25}</code>.
+<P><H2><A NAME="SECTION000146000000000000000">
+13.6 How to split the LaTeX file in several ones?</A>
+</H2>
+<P>
+Just using the standard LaTeX mechanism with the <code>\input</code> macro, 
+which allow too to input files selectively with the <code>\includeonly</code>
+macro. Nevertheless all files to include must imperatively finish with the
+<P><PRE><HR>
+\documentclass[a4,portrait]{seminar}
+
+\input{seminar.bug}
+
+\begin{document}
+
+\input{Slides-Part1.tex}
+
+\input{Slides-Part2.tex}
+
+\end{document}
+<HR></PRE>
+<P>
+With for contents of <TT>Slides-Part1.tex</TT> and <TT>Slides-Part2.tex</TT>:
+<P><PRE><HR>
+\begin{slide*}
+  My first word.
+\end{slide*}
+
+\endinput
+<HR></PRE>
+<P><PRE><HR>
+\begin{slide*}
+  My last word.
+\end{slide*}
+
+\endinput
+<HR></PRE>
+<P><H2><A NAME="SECTION000147000000000000000">
+13.7 How to avoid magnification of external files included and picture
+environments?</A>
+</H2>
+<P>
+Seminar perform automatically a magnification on all material put in the
+slide environments. This is greatly efficient because this allow to use
+exactly the same things that can be used elsewhere in article or report
+documents, but nevertheless it can be a problem in special cases, like
+inclusion of external files and picture environments.
+<P>
+For inclusion of external files, Seminar has the <code>\epsfslidesize</code>
+macro to keep <EM>normal</EM>  size of the files. Unfortunately, this doesn't
+work any more with LaTeX 2e. There is a workaround in the file
+<A NAME="tex2html1"
+ HREF="seminar.bg2"><TT>seminar.bg2</TT></A>
+for the macro
+<code>\includegraphics</code> of the `graphicx' package (it is not done for the
+`graphics' package). So, when <TT>seminar.bg2</TT> is loaded, the
+<code>\epsfslidesize</code> macro work as specified in the Seminar documentation, if
+the parameters <TT>width</TT>, <TT>height</TT> or <TT>totalheight</TT> are
+used.
+<P><PRE><HR>
+\documentclass[portrait]{seminar}
+
+\input{seminar.bug}
+\input{seminar.bg2}
+
+
+\begin{document}
+
+\begin{slide*}
+
+% Magnified size
+\centerline{\includegraphics[width=5cm]{france}}
+
+% Initial size
+\epsfslidesize
+\centerline{\includegraphics[width=5cm]{france}}
+
+\end{slide*}
+
+\end{document}
+<HR></PRE>
+<P>
+And for picture environments, as the LaTeX or the PSTricks ones, we have
+just to use the (undocumented...) <code>\inverseslidesmag</code> macro.
+<P><PRE><HR>
+\documentclass[portrait]{seminar}
+
+\input{seminar.bug}
+
+\usepackage{pstricks}
+
+\begin{document}
+
+\begin{slide*}
+
+%%%% LaTeX example
+
+% Magnified size
+\setlength{\unitlength}{1cm}
+\framebox(6,2){LaTeX example}
+
+% Initial size
+\setlength{\unitlength}{\inverseslidesmag\unitlength}
+\framebox(6,2){LaTeX example}
+
+%%%% PSTricks example
+
+% Magnified size
+\begin{pspicture}(3,3)
+  \psframe(3,3)\rput(1.5,1.5){PSTricks example}
+\end{pspicture}
+
+% Initial size
+\psset{unit=\inverseslidesmag\psunit}
+\begin{pspicture}(3,3)
+  \psframe(3,3)\rput(1.5,1.5){PSTricks example}
+\end{pspicture}
+
+\end{slide*}
+
+\end{document}
+<HR></PRE>
+<P><H2><A NAME="SECTION000148000000000000000">
+13.8 How to rotate the headers with the text itself?</A>
+</H2>
+<A NAME="sec:RotateHeaders">&#160;</A>
+  By instance, in portrait mode, you can rotate the text with the slide
+environment, using the `semcolor' package (see question <A HREF="Seminar-FAQ.html#sec:Orientation">3</A>).
+To rotate also the headers, use the <code>\rotateheaderstrue</code> command
+before.
+<P>
+Example:
+<P><PRE><HR>
+\documentclass[a4,portrait]{seminar}
+
+\usepackage{semcolor}
+\input{seminar.bug}
+
+\usepackage{fancyhdr}
+
+% Headers and footers personalization using the `fancyhdr' package
+\fancyhf{} % Clear all fields
+\renewcommand{\headrulewidth}{0.2mm}
+\renewcommand{\footrulewidth}{0.2mm}
+\fancyhead[C]{\Large\textbf{Rotation of slides}}
+\fancyfoot[L]{\tiny\thedate}
+\fancyfoot[C]{\small My organization}
+\fancyfoot[R]{\tiny Page \theslide}
+
+% To avoid that the headers be too close of the top of the page
+\renewcommand{\slidetopmargin}{2cm}
+
+% To center horizontally the headers and footers (see seminar.bug)
+\renewcommand{\headwidth}{\textwidth}
+
+% To adjust the frame length to the header and footer ones
+\autoslidemarginstrue
+
+\begin{document}
+
+\pagestyle{fancy}
+
+\begin{slide*}
+  My first word.
+\end{slide*}
+
+\begin{slide}
+  My second word.
+\end{slide}
+
+\rotateheaderstrue
+\addtolength{\slideheight}{-2cm} % To adjust vertical position
+\begin{slide}
+  My last word.
+\end{slide}
+
+\end{document}
+<HR></PRE>
+<P><H2><A NAME="SECTION000149000000000000000">
+13.9 How to change the inter row space?</A>
+</H2>
+<P>
+For that, just redefine the <code>\slidestretch</code> command before a
+<TT>slide</TT> or <TT>slide*</TT> environment. But if you want to change it
+inside a slide, you must call the macro <code>\slidebox@restore</code> too.
+<P>
+Example:
+<P><PRE><HR>
+\documentclass[a4,portrait]{seminar}
+
+\input{seminar.bug}
+
+\begin{document}
+
+\begin{slide*}
+  Here is what I have to say.
+  Here is what I have to say.
+  Here is what I have to say.
+\end{slide*}
+
+\renewcommand{\slidestretch}{0.5}
+\begin{slide*}
+  Here is what I have to say.
+  Here is what I have to say.
+  Here is what I have to say.
+\end{slide*}
+
+\renewcommand{\slidestretch}{1}
+\begin{slide*}
+  Here is what I have to say.
+  Here is what I have to say.
+  Here is what I have to say.
+  Here is what I have to say.
+  Here is what I have to say.
+  Here is what I have to say.
+
+\renewcommand{\slidestretch}{0.5}
+\makeatletter\slidebox@restore\makeatother
+  Here is what I have to say.
+  Here is what I have to say.
+  Here is what I have to say.
+  Here is what I have to say.
+  Here is what I have to say.
+  Here is what I have to say.
+
+\renewcommand{\slidestretch}{2}
+\makeatletter\slidebox@restore\makeatother
+  Here is what I have to say.
+  Here is what I have to say.
+  Here is what I have to say.
+  Here is what I have to say.
+  Here is what I have to say.
+  Here is what I have to say.
+\end{slide*}
+
+\end{document}
+<HR></PRE>
+<P><H2><A NAME="SECTION0001410000000000000000">
+13.10 How to prepare handouts with several slides per page?</A>
+</H2>
+<P>
+One frequent need is to be able to give a paper copy of the slides to
+people, or to put an electronic version on a Web server. And problem is, as
+the slides are by nature printed with big fonts, that there are few
+informations by page and numberous pages.
+<P>
+<BR>
+<IMG WIDTH="104" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="change_begin"
+ SRC="../images/change_begin.gif">
+<BR>
+There are several solutions, at various stages, to automatically reduce the
+size of the pages and to put 2 or 4 logical ones on each physical page. You
+can act at <TT>tex</TT> level (using the <code>article</code> style option or
+the <code>\twoup[n]</code> command of Seminar), at the dvi level (for instance
+with dvips) or at the PostScript level. In this case you can use the
+<code>pstops</code> utility (<TT>CTAN/support/psutils</TT>) or with an easier
+interface and other possibilities <code>psnup</code> (<TT>CTAN/support/psutils</TT>)
+or <code>mpage</code> (for instance
+<TT>ftp://sunsite.unc.edu/pub/Linux/system/printing/mpage24.tgz</TT>).
+<BR>
+<IMG WIDTH="104" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="change_end"
+ SRC="../images/change_end.gif">
+<BR><H1><A NAME="SECTION000150000000000000000">
+14 Known problems</A>
+</H1>
+<A NAME="sec:Problems">&#160;</A>
+<UL>
+<LI> See the <TT>seminar.bug</TT> file (and it comments) delivered in
+  Seminar distribution and the <A NAME="tex2html1"
+ HREF="Seminar-Bugs.html"><EM>Seminar bugs list</EM> </A>
+with the related file
+  <A NAME="tex2html1"
+ HREF="seminar.bg2"><TT>seminar.bg2</TT></A>
+<LI> One frequent need is to insert a company or university logo on each
+  slide. If you have for instance a PostScript file, it's easy to do using the
+  standard `graphics'/`graphicx' package. Nevertheless, take care that it can
+  generate very huge files. For instance, if your file logo has a size of 30
+  KB (which is reasonable), a file with 100 <EM>empty</EM>  slides will have 3
+  MB! It will be more difficult to print and difficult to transfer by email or
+  Web link, even in compressed mode.
+<P>
+For that, you can look at the section 9 (<EM>Including an EPS File
+  Multiple Times</EM> ) of the excellent document of Keith R<SMALL>ECKDAHL</SMALL>
+  <EM>Using EPS Graphics in LaTeX 2e Documents</EM> , available in
+  <TT>CTAN/info/epslatex.ps</TT>, or you can consider to draw your logo with a
+  TeX computational graphic package, like AlDraTeX, MetaPost, PSTricks,
+  XY-pic, etc. (see the <A NAME="tex2html1"
+ HREF="http://www.aw.com/cp/tlgc.html"><EM>LaTeX Graphics Companion</EM> </A>
+).
+</UL><H1><A NAME="SECTION000160000000000000000">
+15 Thanks</A>
+</H1>
+<BR>
+<IMG WIDTH="104" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="change_begin"
+ SRC="../images/change_begin.gif">
+<BR>
+For comments, suggestions and bug reports, I would like to thank (alphabetic 
+order):
+  <UL>
+<LI> Tomer K<SMALL>OL</SMALL>,
+    <A NAME="tex2html1"
+ HREF="mailto:tkol@psl-palm.technion.ac.il"><TT>tkol@psl-palm.technion.ac.il</TT></A>
+<LI> Bhaskar M<SMALL>ANDA</SMALL>,
+    <A NAME="tex2html1"
+ HREF="mailto:bhaskar@or4.me.uiuc.edu"><TT>bhaskar@or4.me.uiuc.edu</TT></A>
+<LI> Axel T<SMALL>HIMM</SMALL>,
+    <A NAME="tex2html1"
+ HREF="mailto:thimm@physik.fu-berlin.de"><TT>thimm@physik.fu-berlin.de</TT></A>
+<LI> Fabrice V<SMALL>EERSE</SMALL>,
+    <A NAME="tex2html1"
+ HREF="mailto:veerse@cnrm.meteo.fr"><TT>veerse@cnrm.meteo.fr</TT></A>
+</UL>
+<BR>
+<IMG WIDTH="104" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="change_end"
+ SRC="../images/change_end.gif">
+<BR>
+<P>
+<BR>
+<BR>
+<BR>
+<BR>
+<P>
+Comments to (put the word <EM>Seminar</EM>  in the subject, please):
+<A NAME="tex2html1"
+ HREF="mailto:Denis.Girou@idris.fr"><TT>Denis.Girou@idris.fr</TT></A>
+<BR> <HR>
+<ADDRESS>
+Denis Girou
+8/7/1997
+</ADDRESS>
+</BODY>
+</HTML>

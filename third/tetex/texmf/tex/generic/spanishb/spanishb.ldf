@@ -1,0 +1,439 @@
+%%
+%% This is file `spanishb.ldf',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% spanishb.dtx  (with options: `latex')
+%% 
+%% IMPORTANT NOTICE:
+%% 
+%% For the copyright see the source file.
+%% 
+%% Any modified versions of this file must be renamed
+%% with new filenames distinct from spanishb.ldf.
+%% 
+%% For distribution of the original source see the terms
+%% for copying and modification in the file spanishb.dtx.
+%% 
+%% This generated file may be distributed as long as the
+%% original source files, as listed above, are part of the
+%% same distribution. (The sources need not necessarily be
+%% in the same archive or directory.)
+
+\def\fileversion{1.1}
+\def\filedate{1 de octubre de 1998}
+\def\docdate{1 de octubre de 1998}
+
+
+\ProvidesFile{spanishb.ldf}
+ [1998/10/01 v1.1 A new Spanish support for the babel system]
+
+\ifx\undefined\captionsspanish
+\else
+  \selectlanguage{spanish}
+  \expandafter\endinput
+\fi
+
+\chardef\atcatcode=\catcode`\@
+\catcode`\@=11\relax
+\ifx\undefined\babel@core@loaded\input babel.def\relax\fi
+\ifx\undefined\originalTeX \let\originalTeX\empty  \else\originalTeX\fi
+\ifx\undefined\l@spanish
+  \@nopatterns{Spanish (alternate)}
+  \adddialect\l@spanish0
+\fi
+
+
+\addto\captionsspanish{%
+  \def\prefacename{Prefacio}%
+  \def\refname{Referencias}%
+  \def\abstractname{Resumen}%
+  \def\bibname{Bibliograf\'{\i}a}%
+  \def\chaptername{Cap\'{\i}tulo}%
+  \def\appendixname{Ap\'endice}%
+  \def\listfigurename{\'Indice de figuras}%
+  \def\listtablename{\'Indice de cuadros}%
+  \def\indexname{\'Indice alfab\'etico}%
+  \def\figurename{Figura}%
+  \def\tablename{Cuadro}%
+  \def\partname{Parte}%
+  \def\enclname{Adjunto}%
+  \def\ccname{Copia a}%
+  \def\headtoname{A}%
+  \def\pagename{P\'agina}%
+  \def\seename{v\'ease}%
+  \def\alsoname{v\'ease tambi\'en}%
+  \def\proofname{Demostraci\'on}}
+
+\expandafter\ifx\csname chapter\endcsname\relax
+  \addto\captionsspanish{\def\contentsname{\'Indice}}
+\else
+  \addto\captionsspanish{\def\contentsname{\'Indice general}}
+\fi
+
+
+\def\datespanish{%
+ \def\today{\the\day~de \ifcase\month\or enero\or febrero\or
+      marzo\or abril\or mayo\or junio\or julio\or agosto\or septiembre\or
+      octubre\or noviembre\or diciembre\fi\ de~\the\year}}
+
+\addto\extrasspanish{%
+  \babel@save\sptext
+  \def\sptext{\protect\es@sptext}}
+
+\newcommand\es@sptext[1]{%
+  {.\setbox\z@\hbox{8}\dimen@\ht\z@
+   \csname S@\f@size\endcsname
+   \edef\@tempa{\def\noexpand\@tempc{#1}%
+     \lowercase{\def\noexpand\@tempb{#1}}}\@tempa
+   \ifx\@tempb\@tempc
+     \fontsize\sf@size\z@\selectfont\advance\dimen@-1.1ex
+   \else
+     \fontsize\ssf@size\z@\selectfont\advance\dimen@-1.5ex
+   \fi
+   \math@fontsfalse\raise\dimen@\hbox{#1}}}
+
+
+\addto\extrasspanish{%
+  \babel@save\lsc
+  \def\lsc{\protect\es@lsc}}
+
+
+\def\es@lsc#1{%
+  \hbox{\scshape\selectfont % Parece redundante, pero no lo es
+     \expandafter\ifx\csname\f@encoding/\f@family/\f@series
+         /n/\f@size\expandafter\endcsname
+       \csname\curr@fontshape/\f@size\endcsname
+       \csname S@\f@size\endcsname
+       \fontsize\sf@size\z@\selectfont
+   \PackageInfo{spanishb}{Using faked small caps}%
+       \MakeUppercase{#1}%
+     \else
+       \MakeLowercase{#1}%
+     \fi}}
+
+
+\def\selectspanish{%
+  \def\selectspanish{%
+    \def\selectspanish{%
+      \PackageWarning{spanishb}{\string\selectspanish ignored}}%
+    \es@select
+    \let\es@select\@undefined}}
+
+\@onlypreamble\selectspanish
+
+\def\es@select{%
+  \selectlanguage{spanish}%
+  \catcode`\"\active\catcode`\~=\active
+  \catcode`\<\active\catcode`\>=\active
+  \es@quoting}
+
+\newif\ifes@listquot
+\newtoks\es@quottoks
+\newcount\es@quotdepth
+\newenvironment{quoting}
+  {\leavevmode
+   \advance\es@quotdepth1
+   \csname lquot\romannumeral\es@quotdepth\endcsname%
+   \ifnum\es@quotdepth=1
+     \es@listquotfalse
+     \let\es@quotpar\everypar
+     \let\everypar\es@quottoks
+     \everypar\expandafter{\the\es@quotpar}%
+     \es@quotpar{\the\everypar
+       \ifes@listquot\global\es@listquotfalse\else\es@quotcont\fi}%
+   \fi
+   \toks@\expandafter{\es@quotcont}%
+   \edef\es@quotcont{\the\toks@
+       \expandafter\noexpand
+       \csname rquot\romannumeral\es@quotdepth\endcsname}}
+  {\csname rquot\romannumeral\es@quotdepth\endcsname}
+
+\def\lquoti{\guillemotleft{}}
+\def\rquoti{\guillemotright{}}
+\def\lquotii{``}
+\def\rquotii{''}
+\def\lquotiii{`}
+\def\rquotiii{'}
+
+\let\es@quotcont\@empty
+
+\def\es@listquot{%
+  \csname rquot\romannumeral\es@quotdepth\endcsname
+  \global\es@listquottrue}
+
+\addto\extrasspanish{\bbl@frenchspacing}
+\addto\noextrasspanish{\bbl@nonfrenchspacing}
+
+\addto\extrasspanish{%
+  \let\es@save@dot\.%
+  \babel@save\.%
+  \def\.{\@ifnextchar.{\es@dots}{\es@save@dot}}}
+
+\def\es@dots..{\hbox{...}\spacefactor\@M}
+
+\addto\extrasspanish{%
+  \let\percentsign\%%
+  \babel@save\%%
+  \def\%{\unskip\,\percentsign{}}}
+
+
+\DeclareTextCompositeCommand{\'}{OT1}{i}{\@tabacckludge'{\i}}
+\expandafter\ifx\csname @tabacckludge\endcsname\relax
+  \let\@tabacckludge\a
+\fi
+\let\es@tak\@tabacckludge
+\def\@tabacckludge{\expandafter\es@tak\string}%
+\let\a\@tabacckludge
+
+\expandafter\ifx\csname add@accent\endcsname\relax
+  \def\add@accent#1#2{\accent#1 #2}
+\fi
+
+\def\es@accent#1#2#3{%
+  \expandafter\@text@composite
+  \csname OT1\string#1\endcsname#3\@empty\@text@composite
+  {\allowhyphens\add@accent{#2}{#3}\allowhyphens
+   \spacefactor\sfcode`#3 }}
+
+\addto\extrasspanish{\languageshorthands{spanish}}
+
+\catcode`"=12
+
+\def\decimalcomma{\def\es@decimal{{,}}}
+\def\decimalpoint{\def\es@decimal{{.}}}
+\decimalcomma
+
+\initiate@active@char{.}
+
+\declare@shorthand{system}{.}{\mathchar\es@period@code\relax}
+
+\addto\extrasspanish{%
+  \edef\es@period@code{\the\mathcode`\.}%
+  \mathcode`\.="8000 %
+  \bbl@activate{.}}
+
+\addto\noextrasspanish{%
+  \mathcode`\.=\es@period@code\relax}
+
+\AtBeginDocument{\catcode`\.=12}
+
+\declare@shorthand{spanish}{.1}{\es@decimal1}
+\declare@shorthand{spanish}{.2}{\es@decimal2}
+\declare@shorthand{spanish}{.3}{\es@decimal3}
+\declare@shorthand{spanish}{.4}{\es@decimal4}
+\declare@shorthand{spanish}{.5}{\es@decimal5}
+\declare@shorthand{spanish}{.6}{\es@decimal6}
+\declare@shorthand{spanish}{.7}{\es@decimal7}
+\declare@shorthand{spanish}{.8}{\es@decimal8}
+\declare@shorthand{spanish}{.9}{\es@decimal9}
+\declare@shorthand{spanish}{.0}{\es@decimal0}
+
+\catcode`\.=12
+
+
+\initiate@active@char{"}
+\initiate@active@char{~}
+
+\declare@shorthand{system}{~}{\nobreakspace}
+
+
+\def\es@umlaut#1{%
+  \allowhyphens\add@accent{127}{#1}\allowhyphens
+  \spacefactor\sfcode`#1 }
+
+\addto\extrasspanish{%
+  \bbl@activate{"}%
+  \bbl@activate{~}%
+  \babel@save\bbl@umlauta \let\bbl@umlauta\es@umlaut
+  \expandafter\babel@save\csname OT1\string\~\endcsname
+  \expandafter\def\csname OT1\string\~\endcsname{\es@accent\~{126}}%
+  \expandafter\babel@save\csname OT1\string\'\endcsname
+  \expandafter\def\csname OT1\string\'\endcsname{\es@accent\'{19}}}
+\declare@shorthand{spanish}{"a}{\sptext{a}}
+\declare@shorthand{spanish}{"A}{\sptext{A}}
+\declare@shorthand{spanish}{"o}{\sptext{o}}
+\declare@shorthand{spanish}{"O}{\sptext{O}}
+
+\declare@shorthand{spanish}{"u}{\"u}
+\declare@shorthand{spanish}{"U}{\"U}
+
+\declare@shorthand{spanish}{"c}{\c{c}}
+\declare@shorthand{spanish}{"C}{\c{C}}
+
+\declare@shorthand{spanish}{"<}{\guillemotleft{}}
+\declare@shorthand{spanish}{">}{\guillemotright{}}
+\declare@shorthand{spanish}{"-}{\allowhyphens\-\allowhyphens}
+\declare@shorthand{spanish}{"=}{\allowhyphens -\hskip\z@skip}
+\declare@shorthand{spanish}{"~}
+  {\allowhyphens\discretionary{-}{-}{-}\allowhyphens}
+\declare@shorthand{spanish}{"r}
+  {\allowhyphens\discretionary{-}{}{r}\allowhyphens}
+\declare@shorthand{spanish}{"R}
+  {\allowhyphens\discretionary{-}{}{R}\allowhyphens}
+\declare@shorthand{spanish}{""}{\hskip\z@skip}
+\declare@shorthand{spanish}{"/}
+  {\setbox\z@\hbox{/}%
+   \dimen@\ht\z@
+   \advance\dimen@-1ex \advance\dimen@\dp\z@
+   \dimen@.31\dimen@   \advance\dimen@-\dp\z@
+   \ifdim\dimen@>0pt
+     \kern.01em\lower\dimen@\box\z@\kern.03em
+   \else
+     \box\z@
+   \fi}
+
+\declare@shorthand{spanish}{~n}{\~n}
+\declare@shorthand{spanish}{~N}{\~N}
+
+
+
+\initiate@active@char{<}
+\initiate@active@char{>}
+
+\declare@shorthand{system}{<}{\csname normal@char\string<\endcsname}
+\declare@shorthand{system}{>}{\csname normal@char\string>\endcsname}
+
+\addto\extrasspanish{%
+  \bbl@activate{<}%
+  \bbl@activate{>}}
+\AtBeginDocument{\es@quoting}
+
+\def\activatequoting{%
+  \catcode`>=\active \catcode`<=\active
+  \let\es@quoting\activatequoting}
+\def\deactivatequoting{%
+  \catcode`>=12 \catcode`<=12
+  \let\es@quoting\deactivatequoting}
+
+\let\es@quoting\relax
+
+\declare@shorthand{spanish}{<<}
+  {\textormath{\begin{quoting}}{\ll}}
+\declare@shorthand{spanish}{>>}
+  {\textormath{\end{quoting}}{\gg}}
+
+
+\catcode`>=12 \catcode`<=12
+\begingroup
+\catcode`\'=\active
+\gdef\es@activeacute{%
+ \gdef\es@acute##1{\textormath{\@tabacckludge'##1}{\sp\prime ##1}}%
+ \expandafter\initiate@active@char\string'%
+ \addto\extrasspanish{\bbl@activate{'}}%
+ \declare@shorthand{spanish}{'a}{\es@acute a}%
+ \declare@shorthand{spanish}{'A}{\es@acute A}%
+ \declare@shorthand{spanish}{'e}{\es@acute e}%
+ \declare@shorthand{spanish}{'E}{\es@acute E}%
+ \declare@shorthand{spanish}{'i}{\es@acute i}%
+ \declare@shorthand{spanish}{'I}{\es@acute I}%
+ \declare@shorthand{spanish}{'o}{\es@acute o}%
+ \declare@shorthand{spanish}{'O}{\es@acute O}%
+ \declare@shorthand{spanish}{'u}{\es@acute u}%
+ \declare@shorthand{spanish}{'U}{\es@acute U}%
+ \declare@shorthand{spanish}{'n}%
+   {\textormath{\~n}{\sp\prime n}}%
+ \declare@shorthand{spanish}{'N}%
+   {\textormath{\~N}{\sp\prime N}}%
+ \declare@shorthand{spanish}{''}%
+   {\textormath{\textquotedblright}{\sp\bgroup\prim@s'}}%
+ \addto\es@select{\catcode`'=\active}}
+\endgroup
+\@ifpackagewith{babel}{activeacute}
+  {\es@activeacute\let\es@activeacute\relax}{}
+
+\addto\extrasspanish{%
+  \babel@save\dotlessi
+  \def\dotlessi{\protect\es@dotlessi}}
+\addto\@uclclist{\dotlessi\i}
+
+\def\es@dotlessi{%
+  \ifmmode
+    \begingroup
+      \ifnum\mathgroup=\m@ne\mathgroup\symoperators\fi
+      \count@\escapechar \escapechar=\m@ne
+      \expandafter\expandafter\expandafter
+         \split@name\expandafter\string\the\textfont\mathgroup\@nil
+      \escapechar=\count@
+      \@ifundefined{\f@encoding\string\i}%
+        {\edef\f@encoding{\string?}}{}%
+      \expandafter\count@\the\csname\f@encoding\string\i\endcsname
+      \advance\count@28672 % ="7000
+      \mathchar\count@
+    \endgroup
+  \else
+    \i
+  \fi}
+\def\accentedoperators{%
+  \def\es@op@i{\acute{\dotlessi}}\def\es@op@a{\acute{a}}}
+\def\unaccentedoperators{%
+  \def\es@op@i{i}\def\es@op@a{a}}
+\accentedoperators
+
+\def\spacedoperators{\let\es@op@sp\,}
+\def\unspacedoperators{\let\es@op@sp\@empty}
+\spacedoperators
+
+\addto\extrasspanish{\es@operators}%
+\def\es@operators{%
+  \babel@save\lim
+    \def\lim{\mathop{\operator@font l\protect\es@op@i m}}%
+  \babel@save\max    \def\max{\mathop{\operator@font m\es@op@a x}}%
+  \babel@save\min
+    \def\min{\mathop{\operator@font m\protect\es@op@i n}}%
+  \babel@save\rot    \def\rot{\mathop{\operator@font rot}}%
+  \babel@save\sen    \def\sen{\mathop{\operator@font sen}}%
+  \babel@save\senh   \def\senh{\mathop{\operator@font senh}}%
+  \babel@save\arcsen \def\arcsen{\mathop{\operator@font arc\es@op@sp sen}}%
+  \babel@save\tg     \def\tg{\mathop{\operator@font tg}}%
+  \babel@save\tgh    \def\tgh{\mathop{\operator@font tgh}}%
+  \babel@save\arctg  \def\arctg{\mathop{\operator@font arc\es@op@sp tg}}%
+  \babel@save\arccos \def\arccos{\mathop{\operator@font arc\es@op@sp cos}}%
+  \babel@save\cotg   \def\cotg{\mathop{\operator@font cotg}}}
+
+
+\def\es@enumerate#1#2#3#4{%
+  \def\es@enum{{#1}{#2}{#3}{#4}}}
+
+\def\es@itemize#1#2#3#4{%
+  \def\es@item{{#1}{#2}{#3}{#4}}}
+
+\es@enumerate{1.}{a)}{1)}{a$'$}
+
+\es@itemize{---}{---}{---}{---}
+
+\loadlocalcfg{spanishb}
+\let\es@activeacute\@undefined
+
+
+\def\spanishhyphenmins{\tw@\tw@}
+\main@language{spanish}
+\AtEndOfPackage{%
+  \def\bbl@tempa{spanish}%
+  \ifx\bbl@main@language\bbl@tempa
+    \InputIfFileExists{spanishb.llf}{}{}%
+  \fi
+  \selectspanish}
+\catcode`\@=\atcatcode \let\atcatcode\relax
+%%
+%% \CharacterTable
+%%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%%   Digits        \0\1\2\3\4\5\6\7\8\9
+%%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%%   Dollar        \$     Percent       \%     Ampersand     \&
+%%   Acute accent  \'     Left paren    \(     Right paren   \)
+%%   Asterisk      \*     Plus          \+     Comma         \,
+%%   Minus         \-     Point         \.     Solidus       \/
+%%   Colon         \:     Semicolon     \;     Less than     \<
+%%   Equals        \=     Greater than  \>     Question mark \?
+%%   Commercial at \@     Left bracket  \[     Backslash     \\
+%%   Right bracket \]     Circumflex    \^     Underscore    \_
+%%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%%   Right brace   \}     Tilde         \~}
+%%
+
+\endinput
+%%
+%% End of file `spanishb.ldf'.

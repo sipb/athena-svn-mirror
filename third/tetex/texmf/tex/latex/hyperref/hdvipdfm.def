@@ -1,0 +1,255 @@
+%%
+%% This is file `hdvipdfm.def',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% hyperref.dtx  (with options: `dvipdfm,outlines')
+%% 
+%% File: hyperref.dtx Copyright (C) 1995-1999 Sebastian Rahtz
+%%
+%% This package may be distributed under the terms of the LaTeX Project Public
+%% License, as described in lppl.txt in the base LaTeX distribution.
+%% Either version 1.0 or, at your option, any later version.
+%%
+\newsavebox{\pdfm@box}
+\def\@pdfm@mark#1{\special{pdf:#1}}
+\def\@pdfm@dest#1{\@pdfm@mark{ dest (#1) [ @thispage /\@pdfview\space @xpos @ypos ]}}
+\providecommand\@pdfview{XYZ}
+\providecommand\@pdfborder{0 0 1}
+\def\hyper@anchor#1{%
+  \@pdfm@dest{#1}%
+}
+\def\pdfm@rect{width \the\wd\pdfm@box\space
+   height \the\ht\pdfm@box\space
+   depth \the\dp\pdfm@box}%
+\def\hyper@anchorstart#1{%
+  \hy@activeanchortrue
+  \@pdfm@dest{#1}%
+}
+\def\hyper@anchorend{%
+  \hy@activeanchorfalse
+}
+\def\hyper@linkstart#1#2{%
+  \global\edef\hyper@currentanchor{#2}%
+  \gdef\hyper@currentlinktype{#1}%
+  \begin{lrbox}{\pdfm@box}%
+  \hy@colorlink{\csname @#1color\endcsname}%
+}
+\def\hyper@linkend{%
+  \hy@endcolorlink
+  \end{lrbox}%
+  \edef\@foo{\csname @\hyper@currentlinktype bordercolor\endcsname}%
+  \mbox{\@pdfm@mark{ ann \pdfm@rect
+  << /Type /Annot /Subtype
+     /Link
+     /Border [ \@pdfborder ]
+     /C [ \@foo ]
+     /A << /S /GoTo
+           /D (\hyper@currentanchor)
+>>
+  >>}\usebox{\pdfm@box}}%
+}
+\def\hyper@link#1#2#3{%
+ \sbox{\pdfm@box}{\hy@colorlink{\csname @#1color\endcsname}#3\hy@endcolorlink}%
+  \edef\@foo{\csname @#1bordercolor\endcsname}%
+  \mbox{\@pdfm@mark{ ann \pdfm@rect
+  << /Type /Annot /Subtype /Link
+     /Border [ \@pdfborder ]
+     /C [ \@foo ]
+     /A << /S /GoTo
+           /D (#2)
+>>
+  >>}\usebox{\pdfm@box}}%
+}
+\def\hyper@linkfile#1#2#3{%
+  \sbox{\pdfm@box}{\hy@colorlink{\@filecolor}#1\hy@endcolorlink}%
+  \edef\@foo{\csname @#1bordercolor\endcsname}%
+  \mbox{\@pdfm@mark{ ann \pdfm@rect
+  << /Type /Annot /Subtype /Link
+     /Border [ \@pdfborder ]
+     /C [ \@filebordercolor ]
+     /A << /S /GoToR
+           /F (#2)
+           /D \ifx\\#3\\[ 0 \@pdfstartview]\else(#3)\fi\space
+           \ifhy@newwindow /NewWindow true \fi
+>>
+  >>}\usebox{\pdfm@box}}%
+}
+\def\@hyper@launch run:#1\\#2#3{% filename, anchor text linkname
+  \sbox{\pdfm@box}{\hy@colorlink{\@filecolor}#2\hy@endcolorlink}%
+  \edef\@foo{\csname @#1bordercolor\endcsname}%
+  \mbox{\@pdfm@mark{ ann \pdfm@rect
+  << /Type /Annot /Subtype /Link
+     /Border [ \@pdfborder ]
+     /C [ \@filebordercolor ]
+     /A << /S /Launch
+          /F (#1)
+          \ifhy@newwindow /NewWindow true \fi
+          \ifx\\#3\\\else
+           /Win << /P (#3) /F (#1) >>
+          \fi
+>>
+  >>}\usebox{\pdfm@box}}%
+}
+\def\hyper@linkurl#1#2{%
+  \sbox{\pdfm@box}{\hy@colorlink{\@urlcolor}#1\hy@endcolorlink}%
+  \mbox{\@pdfm@mark{ ann \pdfm@rect
+  << /Type /Annot /Subtype /Link
+     /Border [ \@pdfborder ]
+     /C [ \@urlbordercolor ]
+     /A << /S /URI
+           /URI (#2)
+>>
+  >>}\usebox{\pdfm@box}}%
+}
+\def\Acrobatmenu#1#2{%
+  \sbox{\pdfm@box}{\hy@colorlink{\@menucolor}#2\hy@endcolorlink}%
+  \mbox{\@pdfm@mark{ ann \pdfm@rect
+  << /Type /Annot /Subtype /Link
+     /A << /S /Named /N /#1 >>
+     /Border [ \@pdfborder ]
+     /C [ \@menubordercolor ]
+  >>}\usebox{\pdfm@box}}%
+}
+\def\@pdfproducer{dvipdfm}
+\def\PDF@FinishDoc{
+\special{pdf: docinfo <<
+  /Title (\@pdftitle)
+  /Subject(\@pdfsubject)
+  /Creator (\@pdfcreator)
+  /Author (\@pdfauthor)
+  /Producer (\@pdfproducer)
+  /Keywords (\@pdfkeywords) >>}%
+}
+\def\PDF@SetupDoc{%
+\special{pdf: docview <<
+   /Page \@pdfstartpage\space
+   /View \@pdfstartview\space
+   /URI << /Base (\@baseurl) >>
+   /PageMode \@pdfpagemode
+   /ViewerPreferences <<
+  \ifhy@toolbar\else /HideToolbar true \fi
+  \ifhy@menubar\else /HideMenubar true \fi
+  \ifhy@windowui\else /HideWindowUI true \fi
+  \ifhy@fitwindow /FitWindow true \fi
+  \ifhy@centerwindow /CenterWindow true \fi
+   >>
+  \ifx\pdf@pagelayout\@empty\else/PageLayout /\pdf@pagelayout\space\fi
+  >>}%
+}
+\AtBeginDocument{%
+  \ifhy@colorlinks
+   \def\@pdfborder{0 0 0}%
+  \fi
+}
+\let\H@old@sect\@sect
+\def\@sect#1#2#3#4#5#6[#7]#8{%
+ \H@old@sect{#1}{#2}{#3}{#4}{#5}{#6}[{#7}]{#8}%
+ \ifx\\#1\\\else
+  \ifnum#2>\c@secnumdepth\else
+    \ifhy@naturalnames
+      {\let\textlatin\@firstofone
+      \xdef\@thishlabel{\csname the#1\endcsname}}%
+    \else
+     \edef\@thishlabel{\csname theH#1\endcsname}%
+    \fi
+\@writetorep{\csname the#1\endcsname}{#7}{#1.\@thishlabel}{#2}\fi
+ \fi
+}
+\let\H@old@part\@part
+\def\@part[#1]#2{%
+ \H@old@part[{#1}]{#2}%
+ \ifhy@naturalnames
+   {\let\textlatin\@firstofone
+    \@writetorep{\thepart}{#1}{part.\thepart}{-1}}%
+ \else
+   \@writetorep{\thepart}{#1}{part.\theHpart}{-1}%
+ \fi
+}
+\let\H@old@chapter\@chapter
+\def\@chapter[#1]#2{%
+ \H@old@chapter[{#1}]{#2}%
+ \ifhy@naturalnames
+  {\let\textlatin\@firstofone
+   \@writetorep{\thechapter}{#1}{chapter.\thechapter}{0}}%
+ \else
+   \@writetorep{\thechapter}{#1}{chapter.\theHchapter}{0}%
+ \fi
+  }
+\expandafter\def\csname Parent-4\endcsname{}
+\expandafter\def\csname Parent-3\endcsname{}
+\expandafter\def\csname Parent-2\endcsname{}
+\expandafter\def\csname Parent-1\endcsname{}
+\expandafter\def\csname Parent0\endcsname{}
+\expandafter\def\csname Parent1\endcsname{}
+\expandafter\def\csname Parent2\endcsname{}
+\expandafter\def\csname Parent3\endcsname{}
+\expandafter\def\csname Parent4\endcsname{}
+\newwrite\@outlinefile
+\def\@writetorep#1#2#3#4{\ifx\WriteBookmarks\relax{}%
+    \else\@@writetorep{#1}{#2}{#3}{#4}\fi}
+\def\Hy@currentbookmarklevel{0}
+\def\@@writetorep#1#2#3#4{%
+  \xdef\Hy@currentbookmarklevel{#4}%
+  \@tempcnta#4
+  \expandafter\xdef\csname Parent#4\endcsname{#3}%
+  \advance\@tempcnta by -1
+  \pdfstringdef\@tempa{%
+    \ifhy@bookmarksnumbered\ifx\\#1\\\else#1 \fi\fi
+    #2%
+  }%
+  \protected@write\@outlinefile{}{%
+    \protect\BOOKMARK[#4]{#3}%
+      {\@tempa}{\csname Parent\the\@tempcnta\endcsname}%
+  }%
+}
+\newcommand{\currentpdfbookmark}{%
+  \pdfbookmark[\Hy@currentbookmarklevel]%
+}
+\newcommand{\subpdfbookmark}{%
+  \@tempcnta\Hy@currentbookmarklevel
+  \advance\@tempcnta by 1
+  \expandafter\pdfbookmark\expandafter[\the\@tempcnta]%
+}
+\renewcommand\pdfbookmark[3][0]{%
+  \@writetorep{}{#2}{#3.#1}{#1}%
+  \hyper@anchorstart{#3.#1}\hyper@anchorend
+}
+
+\def\BOOKMARK{\@ifnextchar[{\@BOOKMARK}{\@BOOKMARK[1]}}
+\def\ReadBookmarks{%
+  \begingroup
+  \escapechar=`\\%
+  \let\escapechar\@gobble %
+  \def\@BOOKMARK [##1]##2##3##4{\calc@bm@number{##4}}%
+  \InputIfFileExists{\jobname.out}{}{}%
+  \ifx\WriteBookmarks\relax\global\let\WriteBookmarks\relax\fi
+  \def\@BOOKMARK[##1]##2##3##4{%
+   \def\@tempx{##3}%
+  \special{pdf: outline ##1
+       << /Title (\expandafter\strip@prefix\meaning\@tempx)
+          /A << /S /GoTo
+           /D (##2)
+     >>
+       >>
+      }%
+   }%
+   {%
+    \def\WriteBookmarks{0}%
+    \InputIfFileExists{\jobname.out}{}{}%
+   }%
+   %{\escapechar\m@ne\InputIfFileExists{\jobname.out}{}{}}%
+   \ifx\WriteBookmarks\relax\else
+     \if@filesw\immediate\openout\@outlinefile=\jobname.out\fi
+   \fi
+   \endgroup
+}
+\def\check@bm@number#1{\expandafter \ifx\csname#1\endcsname \relax 0%
+    \else \csname#1\endcsname \fi}
+\def\calc@bm@number#1{\@tempcnta=\check@bm@number{#1}\relax
+    \advance\@tempcnta by1
+    \expandafter\xdef\csname#1\endcsname{\the\@tempcnta}}
+\endinput
+%%
+%% End of file `hdvipdfm.def'.

@@ -1,0 +1,23 @@
+				!!!!!!!!!!!!!
+				!! WARNING !!
+				!!!!!!!!!!!!!
+
+  These files are the original documentation of the version 0.93a of PSTricks.
+They are provided "as it", because there are still the _reference_
+documentation for PSTricks.
+
+  But take care that:
+      - this documentation is not strictly up to date,
+      - the betadoc?.ps files show some changes made in macros described
+in the pst-usr?.ps ones,
+      - the file pst-doc.err list the known errors in the files of this
+directory,
+      - there is no documentation for the `pst-3d' package,
+      - the documentation for the `pst-fill' package is in the doc directory,
+      - you can take advantage to look at the PSTricks chapter of
+"The LaTeX Graphics Companion", by Michel Goossens, Sebastian Rahtz and
+Frank Mittelbach, Addison Wesley, 1997
+http://www.awl.com/cseng/titles/0-201-85469-4
+
+--
+Denis Girou and Sebastian Rahtz (updated February 25, 1998)

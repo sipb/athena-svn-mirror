@@ -1,0 +1,33 @@
+%%
+%% This is file `sfonts.def',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% slifonts.fdd  (with options: `main')
+%% 
+%% This is a generated file.
+%% 
+%% Copyright 1993 1994 1995 1996 1997 1998 1999
+%% The LaTeX3 Project and any individual authors listed elsewhere
+%% in this file.
+%% 
+%% This file is part of the LaTeX2e system.
+%% ----------------------------------------
+%% 
+%% It may be distributed under the terms of the LaTeX Project Public
+%% License, as described in lppl.txt in the base LaTeX distribution.
+%% Either version 1.0 or, at your option, any later version.
+%% 
+%% Details of how to use a configuration file to modify this part of
+%% the system are in the document cfgguide.tex.
+%% 
+%% 
+\ProvidesFile{sfonts.def}
+        [1998/06/12 v2.2e Standard LaTeX slide font definitions]
+\DeclareErrorFont{OT1}{lcmss}{m}{n}{19.907}
+\DeclareFontSubstitution{OT1}{lcmss}{m}{n}
+\input ot1lcmss.fd
+\endinput
+%%
+%% End of file `sfonts.def'.

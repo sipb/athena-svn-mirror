@@ -1,0 +1,23 @@
+% LH FONT FAMILY - Cyrillic font package, as used by Babel
+%
+% font v 2.2, sauterised v 1.0 27/04/1997
+%
+% Author :        Olga Lapko
+% sauterisation : Hubert HOLIN
+
+if unknown cmbase: input cmbase fi
+
+font_identifier:="LHVTT"; font_size design_size * pt#;
+wncoding:=1;
+
+% The parameters of this font are a modification of CMTT.
+
+input c-cmtt;
+
+ligs:=             % level of ligatures to be included
+    2;
+
+monospace:=        % should all characters have the same width?
+    false;
+
+generate ldrmfont      % switch to the driver file

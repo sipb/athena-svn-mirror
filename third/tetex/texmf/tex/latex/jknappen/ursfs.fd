@@ -1,0 +1,13 @@
+%% ursfs.fd
+%%
+%% (c) Copyleft 1995, 1996, 1998 J"org Knappen
+%% Licence: GNU licence version 2
+%%
+\ProvidesFile{Ursfs.fd}[1998/03/24 rsfs font definition file (jk)]
+\DeclareFontFamily{U}{rsfs}{\skewchar\font127 }
+\DeclareFontShape{U}{rsfs}{m}{n}{%
+   <5> <6> rsfs5
+   <7> rsfs7
+   <8> <9> <10> <10.95> <12> <14.4> <17.28> <20.74> <24.88> rsfs10
+}{}
+\endinput

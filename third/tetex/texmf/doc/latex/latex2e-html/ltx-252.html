@@ -1,0 +1,48 @@
+<html>
+<head><title>Help On LaTeX \label</title></head>
+<body bgcolor="#ffffff" text="#000000" link="#000099" vlink="#cc0000" alink="#cc0000">
+<h1><font size="-2">Hypertext Help with LaTeX</font><br><font color="#cc0000">\label</font></h1>
+<p>
+ <tt>\label{key}</tt>
+<p>
+
+ A <tt>\label</tt> command  appearing  in ordinary  text assigns  to the
+ <tt>key</tt> the
+ number of the current sectional unit; one appearing  inside a numbered
+ environment assigns that number to the <tt>key</tt>.
+<p>
+ A <tt>key</tt> can consist of any sequence  of letters,  digits, or punctuation
+ characters.  Upper- and lowercase letters are different.
+<p>
+ The number assigned to the key can be accessed by use of the 
+ <a href="ltx-303.html"><tt>\ref</tt></a> command. For example,
+<pre>
+ \begin{equation} ....
+   .... 
+ \label{eq:no1} 
+ \end{equation}
+ ...
+ One can see from Eq.~(\ref{eq:no1}) that ...
+</pre>
+<p>
+In a <a href="ltx-67.html">table</a> or <a href="ltx-225.html">figure</a> 
+environment, the <tt>\label</tt> command should follow the 
+<a href="caption.html"><tt>\caption</tt></a> command (or be part of its
+argument) since it is the <tt>\caption</tt> command which generates the
+number.
+<p>
+The <tt>\label</tt> command is <a href="fragile.html">fragile</a> but it
+can be used in the argument of a 
+<a href="ltx-141.html">sectioning command</a> or 
+<a href="caption.html"><tt>\caption</tt></a> command.
+<hr>
+See also <A href="ltx-13.html">Cross References</A><br>
+See also  <a href="ltx-303.html"><tt>\ref</tt></a>,
+  <a href="ltx-291.html"><tt>\pageref</tt></a> <br>
+Return to <a href="ltx-2.html">LaTeX Table of Contents</a>
+<hr>
+<address>
+Revised: Sheldon Green, 29 Jun 1995.
+</address>
+</body>
+</html>

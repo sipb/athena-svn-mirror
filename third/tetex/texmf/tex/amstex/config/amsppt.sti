@@ -1,0 +1,48 @@
+%%% ====================================================================
+%%% @AMSTeX-style-file{
+%%%   filename  = "amsppt.sty",
+\def\filename{amsppt.sty}
+%%%   version   = "2.1h",
+\def\fileversion{2.1h}
+%%%   date      = "1997/01/28",
+\def\filedate{1997/01/28}
+%%%   time      = "10:08:36 EST",
+%%%   checksum  = "26220 48 267 2163",
+%%%   author    = "American Mathematical Society",
+%%%   address   = "PO Box 6248, Providence, RI 02940-6248, USA",
+%%%   telephone = "401-455-4080 or (in the USA) 800-321-4AMS",
+%%%   email     = "tech-support@ams.org (Internet)",
+%%%   copyright = "Copyright (C) American Mathematical Society,
+%%%                all rights reserved.  Copying of this file is
+%%%                authorized only if either:
+%%%                (1) you make absolutely no changes to your copy
+%%%                    including name; OR
+%%%                (2) if you do make changes, you first rename it to
+%%%                    some other name.",
+%%%   supported = "yes",
+%%%   keywords  = "amstex, ams-tex, tex",
+%%%   abstract  = "This file is an add-on documentstyle for use with
+%%%                AMS-TeX 2.1 and amsppt.sty.  It contains commands
+%%%                suitable for initialization of an AMS-TeX session
+%%%                for most users.  Changes should be made to this file
+%%%                only as instructed in the AMS-TeX 2.1 User's Guide.",
+%%%   docstring = "The checksum field above contains: CRC-16 checksum,
+%%%                number of lines, number of words, and number of
+%%%                characters, as produced by Robert Solovay's checksum
+%%%                utility.",
+%%% }
+%%% ====================================================================
+
+%%   To use amsppt.sty without AMSFonts, comment out the following
+%%   two lines; to load extra math symbols only on demand (with
+%%   \newsymbol) comment out the second line.
+\loadeufm \loadmsam \loadmsbm
+\message{symbol names}\UseAMSsymbols\message{,}
+
+%%   The following definition can be used to provide a \square for
+%%   \qed in lieu of the normal \UseAMSsymbols route.
+%%\define\square{\vrule width.6em height.5em depth.1em\relax}
+
+\tenpoint
+
+\endinput

@@ -1,0 +1,45 @@
+%%
+%% This is file `omsenc.def',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% ltoutenc.dtx  (with options: `OMS')
+%% 
+%% This is a generated file.
+%% 
+%% Copyright 1993 1994 1995 1996 1997 1998 1999
+%% The LaTeX3 Project and any individual authors listed elsewhere
+%% in this file.
+%% 
+%% This file is part of the LaTeX2e system.
+%% ----------------------------------------
+%% 
+%% It may be distributed under the terms of the LaTeX Project Public
+%% License, as described in lppl.txt in the base LaTeX distribution.
+%% Either version 1.0 or, at your option, any later version.
+%%% From File: ltoutenc.dtx
+\ProvidesFile{omsenc.def}
+ [1999/02/24 v1.9t
+         Standard LaTeX file]
+\DeclareFontEncoding{OMS}{}{}
+\DeclareTextSymbol{\textasteriskcentered}{OMS}{3}   % "03
+\DeclareTextSymbol{\textbackslash}{OMS}{110}        % "6E
+\DeclareTextSymbol{\textbar}{OMS}{106}              % "6A
+\DeclareTextSymbol{\textbraceleft}{OMS}{102}        % "66
+\DeclareTextSymbol{\textbraceright}{OMS}{103}       % "67
+\DeclareTextSymbol{\textbullet}{OMS}{15}            % "0F
+\DeclareTextSymbol{\textdaggerdbl}{OMS}{122}        % "7A
+\DeclareTextSymbol{\textdagger}{OMS}{121}           % "79
+\DeclareTextSymbol{\textparagraph}{OMS}{123}        % "7B
+\DeclareTextSymbol{\textperiodcentered}{OMS}{1}     % "01
+\DeclareTextSymbol{\textsection}{OMS}{120}          % "78
+\DeclareTextCommand{\textcircled}{OMS}[1]{{%
+   \ooalign{%
+      \hfil \raise .07ex\hbox {\upshape#1}\hfil \crcr
+      \char 13 % "0D
+   }%
+}}
+\endinput
+%%
+%% End of file `omsenc.def'.
