@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# $Id: install-srvd.sh,v 1.5 2004-07-30 20:54:51 rbasch Exp $
+# $Id: install-srvd.sh,v 1.6 2005-03-06 21:18:22 rbasch Exp $
 
 # This script installs packages for a new release into the srvd,
 # running pkgadd with the srvd as the target root, and copying
@@ -135,14 +135,18 @@ elif [ ! -d "$pkgdest" ]; then
 fi
 $maybe mkdir -p "$pkgdest" || exit 1
 
-# Set up /bin and /usr/vice symlinks if necessary.
+# Set up the /bin symlink if necessary.
 if [ ! -h "$srvd/bin" ]; then
   $maybe ln -s ./usr/bin "$srvd/bin"
 fi
-if [ ! -h "$srvd/usr/vice" ]; then
-  $maybe mkdir -p "$srvd/usr"
-  $maybe chown root "$srvd/usr"
-  $maybe ln -s ../var/usr/vice "$srvd/usr/vice"
+
+# Create /usr/vice if necessary, and ensure it is owned by root.
+# (This directory has been excised from the openafs package, so as not
+# to blow away the symlink to /var/usr/vice on machines installed
+# before 9.3).
+if [ ! -d "$srvd/usr/vice" ]; then
+  $maybe mkdir -p "$srvd/usr/vice"
+  $maybe chown root "$srvd/usr" "$srvd/usr/vice"
 fi
 
 # For each package in the list, install it in the srvd root, and copy
