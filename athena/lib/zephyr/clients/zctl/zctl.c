@@ -14,14 +14,14 @@
 #include <zephyr/mit-copyright.h>
 
 #include <zephyr/zephyr.h>
-#include <ss.h>
+#include <ss/ss.h>
 #include <pwd.h>
 #include <netdb.h>
 #include <string.h>
 #include <sys/file.h>
 #include <sys/param.h>
 #ifndef lint
-static char rcsid_zctl_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zctl/zctl.c,v 1.12 1988-07-20 18:27:32 jtkohl Exp $";
+static char rcsid_zctl_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zctl/zctl.c,v 1.13 1989-03-23 17:03:56 jtkohl Exp $";
 #endif lint
 
 #define SUBSATONCE 7
@@ -119,7 +119,7 @@ main(argc,argv)
 		exit((code != 0));
 	} 
 
-	printf("ZCTL $Revision: 1.12 $ (Protocol %s%d.%d) - Type '?' for a list of commands.\n\n",
+	printf("ZCTL $Revision: 1.13 $ (Protocol %s%d.%d) - Type '?' for a list of commands.\n\n",
 	       ZVERSIONHDR,
 	       ZVERSIONMAJOR,ZVERSIONMINOR);
 	
