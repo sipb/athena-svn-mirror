@@ -23,7 +23,8 @@ static char sccsid[] = "@(#)makemap.c	8.71 (Berkeley) 11/29/1998";
 #include "pathnames.h"
 
 #ifdef NDBM
-# include <ndbm.h>
+# define DB_DBM_HSEARCH 1
+# include <db.h>
 #endif
 
 #ifdef NEWDB

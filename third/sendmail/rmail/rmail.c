@@ -66,6 +66,7 @@ static char sccsid[] = "@(#)rmail.c	8.18 (Berkeley) 10/23/1998";
 # undef EX_OK		/* unistd.h may have another use for this */
 #endif
 #include <sysexits.h>
+#include <errno.h>
 
 #ifndef MAX
 # define MAX(a, b)	((a) < (b) ? (b) : (a))

@@ -26,7 +26,8 @@ static char sccsid[] = "@(#)praliases.c	8.21 (Berkeley) 12/27/1998";
 #endif
 
 #ifdef NDBM
-# include <ndbm.h>
+# define DB_DBM_HSEARCH 1
+# include <db.h>
 #endif
 #ifndef NOT_SENDMAIL
 # define NOT_SENDMAIL

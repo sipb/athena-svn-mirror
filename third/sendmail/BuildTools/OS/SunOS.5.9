@@ -1,7 +1,7 @@
 #	@(#)SunOS.5.8	8.1	(Berkeley)	1/17/1999
 define(`confCC', `gcc')
 define(`confBEFORE', `sysexits.h')
-define(`confMAPDEF', `-DNDBM -DNIS -DNISPLUS -DMAP_REGEX')
+define(`confMAPDEF', `-UNEWDB -DNDBM -DNIS -DNISPLUS -DMAP_REGEX')
 define(`confENVDEF', `-DSOLARIS=20800 ')
 define(`confLIBS', `-lsocket -lnsl')
 define(`confMBINDIR', `/usr/lib')

@@ -17,7 +17,8 @@ static char sccsid[] = "@(#)map.c	8.261 (Berkeley) 2/2/1999";
 #include "sendmail.h"
 
 #ifdef NDBM
-# include <ndbm.h>
+# define DB_DBM_HSEARCH 1
+# include <db.h>
 # ifdef R_FIRST
   ERROR README:	You are running the Berkeley DB version of ndbm.h.  See
   ERROR README:	the README file about tweaking Berkeley DB so it can
