@@ -131,6 +131,12 @@ exceptword:   WORD
 		 add_list_elt( wordp, wordcnt, &e->patterns);
 	    else add_list_elt( wordp,		wordcnt, LIST( e->names));
 	}
+	| BANG opt_space WORD
+	{
+	    if ( file_pat( wordbuf))
+		 add_list_elt( wordbuf, NORMALCASE, &e->patterns);
+	    else add_list_elt( wordbuf, NORMALCASE, LIST( e->names));
+	}
 	| ARROW opt_space WORD
 	{
 	    /* set force_links bit, add to e->names.
