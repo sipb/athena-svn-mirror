@@ -1,0 +1,10 @@
+Name: athena-pkgconfig
+Summary: A tool for finding compilation flags for libraries, for Athena
+Copyright: GPL
+Group: Development/Tools
+
+%description 
+pkgconfig is a tool for determining compilation options.
+For each required library it reads a configuration file installed
+in a standard option and ouputs the necessary compiler and linker
+flags.
