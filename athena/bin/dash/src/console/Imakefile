@@ -49,7 +49,11 @@ Console:	Console.presed
 
 AllTarget(${CONSOLE})
 NormalProgramTarget($(CONSOLE),$(OBJS),$(XJLIB),,$(C_LIBS))
-InstallProgram($(CONSOLE),$(CONSOLE_BIN_DIR))
+InstallProgramWithFlags($(CONSOLE),$(CONSOLE_BIN_DIR),-s)
+
+install:: console
+	$(INSTALL) -c $(INSTPGMFLAGS) console \
+		$(DESTDIR)$(CONSOLE_BIN_DIR)/console.unstripped
 
 InstallNonExecFile(${CONSOLE}.8,${MAN_DIR}/man8)
 InstallNonExecFile(Console,${CONSOLE_APP_DIR})
