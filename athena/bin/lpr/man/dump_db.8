@@ -5,7 +5,7 @@ dump_db \- dump a print quota database to text
 .SH SYNOPSIS
 .B dump_db
 [
-.B database
+.B database dump_file
 ]
 .SH DESCRIPTION
 .I Dump_db
@@ -14,7 +14,7 @@ The database argument is the complete path of the database if it's
 not in the current directory. Only the root name of the database is
 needed. The suffixes are dealt with automatically.
 .PP
-The results of this operation are placed in a /tmp/database_dumpXXXXXX
+The results of this operation are placed in dump_file.
 file.
 .SH SEE ALSO
 lpquota(1)
