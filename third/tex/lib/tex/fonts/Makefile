@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.3 1996-10-27 15:04:15 ghudson Exp $
+# $Id: Makefile,v 1.4 1996-10-29 17:00:20 ghudson Exp $
 
 SHELL=/bin/sh
 ATHLIBDIR=/usr/athena/lib
@@ -82,10 +82,12 @@ CM1037GF=${CMTFMS:.tfm=.1037gf}
 CM1244GF=${CMTFMS:.tfm=.1244gf}
 CM1493GF=${CMTFMS:.tfm=.1493gf}
 
-TFMS=	${NORMALTFMS} ${CMTFMS}
-PKS=	${NORMAL600PK} ${NORMAL657PK} ${NORMAL720PK} ${NORMAL864PK} \
-	${NORMAL1037PK} ${NORMAL1244PK} ${NORMAL1493PK} ${CM600PK} \
-	${CM657PK} ${CM720PK} ${CM864PK} ${CM1037PK} ${CM1244PK} ${CM1493PK}
+TFMS=		${NORMALTFMS} ${CMTFMS}
+NORMALPKS=	${NORMAL600PK} ${NORMAL657PK} ${NORMAL720PK} ${NORMAL864PK} \
+		${NORMAL1037PK} ${NORMAL1244PK} ${NORMAL1493PK}
+CMPKS=		${CM600PK} ${CM657PK} ${CM720PK} ${CM864PK} ${CM1037PK} \
+		${CM1244PK} ${CM1493PK}
+PKS=		${NORMALPKS} ${CMPKS}
 
 all: mf cmmf ${PKS}
 
@@ -146,7 +148,8 @@ ${CM1493GF}:
 install:
 	-mkdir -p ${DESTDIR}${ATHLIBDIR}/tex/fonts/pk
 	-mkdir -p ${DESTDIR}${ATHLIBDIR}/tex/fonts/tfm
-	install -c -m 444 ${PKS} ${DESTDIR}${ATHLIBDIR}/tex/fonts/pk
+	install -c -m 444 ${NORMALPKS} ${DESTDIR}${ATHLIBDIR}/tex/fonts/pk
+	install -c -m 444 ${CMPKS} ${DESTDIR}${ATHLIBDIR}/tex/fonts/pk
 	install -c -m 444 ${TFMS} ${DESTDIR}${ATHLIBDIR}/tex/fonts/tfm
 
 clean:
