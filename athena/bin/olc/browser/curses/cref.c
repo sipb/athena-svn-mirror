@@ -3,6 +3,8 @@
  *      Student Consulting Staff
  *	MIT Project Athena
  *
+ *	Lucien Van Elsen
+ *	MIT Project Athena
  *	Copyright (c) 1985 by the Massachusetts Institute of Technology
  *
  *      Permission to use, copy, modify, and distribute this program
@@ -27,8 +29,10 @@
 
 
 #ifndef lint
-static char *rcsid_cref_c = "$Header: ";
-#endif	lint
+#ifndef SABER
+static char *rcsid_commands_c = "$Header: ";
+#endif
+#endif
 
 #include <mit-copyright.h>
 
