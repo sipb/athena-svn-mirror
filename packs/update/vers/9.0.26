@@ -1,0 +1,20 @@
+#!/bin/sh
+
+case $HOSTTYPE in
+sun4)
+  echo "108528-13"				>> "$PATCHES"
+  echo "108652-47"				>> "$PATCHES"
+  echo "108773-14"				>> "$PATCHES"
+  echo "108827-17"				>> "$PATCHES"
+  echo "108940-40"				>> "$PATCHES"
+  echo "108989-02"				>> "$PATCHES"
+  echo "110693-02"				>> "$PATCHES"
+  echo "111092-02"				>> "$PATCHES"
+  echo "112334-02"				>> "$PATCHES"
+  echo "OSCHANGES=true"				>> "$CONFVARS"
+  ;;
+
+sgi)
+  ;;
+
+esac
