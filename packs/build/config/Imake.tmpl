@@ -95,15 +95,6 @@
 #ifndef RanLibCmd
 #define RanLibCmd ranlib
 #endif
-
-#ifndef InstallCmd
-#ifdef UseInstalled
-#define InstallCmd install -c
-#else
-#define InstallCmd $(UTILDIR)install -c
-#endif
-#endif
-
 #ifndef InstPgmFlags
 #define InstPgmFlags -s
 #endif
@@ -138,10 +129,31 @@
 #define LintFlags $(DEFINES) -I/usr/athena/include
 #endif
 
+#ifdef UseInstalled
+# ifndef InstallCmd
+# define InstallCmd install -c
+# endif
+# ifndef EtCmd
+# define EtCmd compile_et
+# endif
+# ifndef SsCmd
+# define SsCmd mk_cmds
+# endif
+#else /* !UseInstalled */
+# ifndef InstallCmd
+# define InstallCmd $(UTILDIR)install -c
+# endif
+# ifndef EtCmd
+# define EtCmd $(TOP)/athena/athena.lib/et/compile_et
+# endif
+# ifndef SsCmd
+# define SsCmd $(TOP)/athena/athena.lib/ss/mk_cmds
+# endif
+#endif /* UseInstalled */
+
 
 SHELL=/bin/sh
 MAKESHELL=/bin/sh
-
 
 TOP = NEWTOP
 CWD = NEWCWD
@@ -151,18 +163,17 @@ DESTDIR=
 IRULESRC = $(CONFIGSRC)		
 
 #ifdef ProjectTop
-PTOP = ProjectTop
-PIFLAGS = -I$(PTOP)
+PTOP = $(TOP)/ProjectTop
 #endif
 
 #ifdef UseInstalled
 IMAKE= imake
-IFLAGS= -I$(IRULESRC) $(PIFLAGS) $(OTHER_IFLAGS) -DTOPDIR=TOPDIR
+IFLAGS= -I$(IRULESRC) $(OTHER_IFLAGS) -DTOPDIR=TOPDIR
 XIFLAGS= -I$(ATHXLIBDIR)/X11/config -DUseInstalled
 #else
 UTILDIR=$(TOP)/util/bin/
 IMAKE= $(UTILDIR)imake
-IFLAGS= -I$(IRULESRC) $(PIFLAGS) $(OTHER_IFLAGS)
+IFLAGS= -I$(IRULESRC) $(OTHER_IFLAGS)
 XTOP=$(TOP)/third/common/X11R4
 XIFLAGS= -I$(XTOP)/config -DTOPDIR=$(XTOP) -DCURDIR=$(CWD)
 #endif
@@ -205,6 +216,10 @@ CC=CcCmd
 LD=LdCmd
 AS=AsCmd
 RM=RmCmd
+
+ETCMD=EtCmd
+SSCMD=SsCmd
+
 CDEBUG=CDebugFlags
 
 CFLAGS=$(CDEBUG) CcFlags $(DEFINES) -I/usr/athena/include
@@ -226,25 +241,19 @@ depend::
 FRC::
 
 /**/###########################################################################
-/**/# Project inclusion
-/**/###########################################################################
-/*
- * This project support is UNSUPPORTED; it is inadequate, and only a
- * stop-gap measure.  It will CHANGE!!!
- */
-#ifndef ProjectDir
-#define ProjectDir .
-#endif
-
-#ifdef ProjectRuleFile
-#include ProjectRuleFile
-#endif
-
-/**/###########################################################################
 /**/# start of Imakefile
 /**/###########################################################################
 
+#ifdef Project
+#define InProject
+#undef Project
+#endif
+
 #include INCLUDE_IMAKEFILE
+
+#if defined(InProject) && !defined(Project)
+#define Project
+#endif
 
 /*
  * PROJECT DECLARATION
