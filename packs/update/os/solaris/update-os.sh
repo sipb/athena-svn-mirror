@@ -56,7 +56,6 @@ fi
 if [ "$NEWOS" = "true" ]; then
   echo "Making adjustments"
   cp /install/cdrom/INST_RELEASE "$UPDATE_ROOT/var/sadm/system/admin"
-  cp /install/cdrom/mach/sun4u/etc/driver_aliases "$UPDATE_ROOT/etc"
   rm $UPDATE_ROOT/etc/.UNC*
   rm "$UPDATE_ROOT/etc/.sysidconfig.apps"
   cp /install/cdrom/.sysIDtool.state "$UPDATE_ROOT/etc/default"
