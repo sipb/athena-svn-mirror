@@ -16,18 +16,19 @@
  *
  *      Tom Coppeto
  *	Chris VanHaren
+ *	Lucien Van Elsen
  *      MIT Project Athena
  *
  * Copyright (C) 1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v $
- *	$Id: olcd.c,v 1.27 1990-08-24 03:25:58 lwvanels Exp $
+ *	$Id: olcd.c,v 1.28 1990-08-26 16:06:21 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v 1.27 1990-08-24 03:25:58 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v 1.28 1990-08-26 16:06:21 lwvanels Exp $";
 #endif
 
 #include <mit-copyright.h>
@@ -170,6 +171,11 @@ main (argc, argv)
     char **hp;				/* return value of Hesiod resolver */
 #endif
 
+#ifdef PROFILE
+    /* Turn off profiling on startup; that way, we collect "steady state" */
+    /* statistics, not the initial flurry of startup activity */
+    moncontrol(0);
+#endif
 #ifdef KERBEROS
     strcpy(K_INSTANCEbuf,K_INSTANCE);
     strcpy(SERVER_REALM,DFLT_SERVER_REALM);
@@ -431,7 +437,7 @@ restart:
     {
 	fflush(stderr);
 	perror("listen");
-	log_error("aborting...");
+	log_error("aborting from listen...");
 	exit(1);
     }
 
@@ -469,20 +475,25 @@ restart:
 	    if (errno == EINTR)
 		continue;
 	    perror("accept");
+	    fflush(stderr);
 	    log_error("Error accepting connection.");
 	    n_errs++;
 	    if (n_errs < 3)
 		continue;
-	    else if (n_errs > 10)
-		abort();
+	    else if (n_errs > 10) { 
+	      log_error("Too many errors accepting connections; exit");
+	      abort();
+	    }
 	    else if (errno == ECONNABORTED)
 	    {
 		log_error("Restarting...(error reading request)");
 		close(fd);
 		goto restart;
 	    }
-	    else
-		abort();
+	    else {
+	      log_error("Unexpected error from accept; exiting");
+	      abort();
+	    }
 	}
 #if 0
 	{
