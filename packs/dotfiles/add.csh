@@ -141,57 +141,73 @@ foreach add_i ($add_dirs)
 #
 
   if ( $?add_bin || $?add_man ) then
-     switch ($?add_env$?add_front)
+    switch ($?add_env$?add_front)
 
-       case 00:
-         if ( $?add_bin && "$PATH" !~ *"$add_bin"* ) then
-           if ($?add_verbose) echo $add_bin added to end of \$PATH
-           set add_path = ${add_path}:$add_bin
-         endif
+      case 00:
+        if ( $?add_bin ) then
+          if ( "$PATH" !~ *"$add_bin"* ) then
+            if ($?add_verbose) echo $add_bin added to end of \$PATH
+            set add_path = ${add_path}:$add_bin
+          endif
+        endif
 
-         if ( $?add_man && "$MANPATH" !~ *"$add_man"* ) then
-           if ($?add_verbose) echo $add_man added to end of \$MANPATH
-           setenv MANPATH ${MANPATH}:$add_man
-         endif
-         breaksw
+        if ( $?add_man ) then
+          if ( "$MANPATH" !~ *"$add_man"* ) then
+            if ($?add_verbose) echo $add_man added to end of \$MANPATH
+            setenv MANPATH ${MANPATH}:$add_man
+          endif
+        endif
+        breaksw
 
-       case 01:
-         if ( $?add_bin && "$PATH" !~ *"$add_bin"* ) then
-           if ($?add_verbose) echo $add_bin added to front of \$PATH
-           set add_path = ${add_bin}:$add_path
-         endif
+      case 01:
+        if ( $?add_bin ) then
+          if ( "$PATH" !~ *"$add_bin"* ) then
+            if ($?add_verbose) echo $add_bin added to front of \$PATH
+            set add_path = ${add_bin}:$add_path
+          endif
+        endif
 
-         if ( $?add_man && "$MANPATH" !~ *"$add_man"* ) then
-           if ($?add_verbose) echo $add_man added to front of \$MANPATH
-           setenv MANPATH ${add_man}:$MANPATH
-         endif
-         breaksw
+        if ( $?add_man ) then
+          if ( "$MANPATH" !~ *"$add_man"* ) then
+            if ($?add_verbose) echo $add_man added to front of \$MANPATH
+            setenv MANPATH ${add_man}:$MANPATH
+          endif
+        endif
+        breaksw
 
-       case 10:
-         if ( $?add_bin && "$athena_path" !~ *"$add_bin"* ) then
-           if ($?add_verbose) echo $add_bin added to end of \$athena_path
-           set athena_path = ($athena_path $add_bin)
-         endif
+      case 10:
+        if ( $?add_bin ) then
+          if ( "$athena_path" !~ *"$add_bin"* ) then
+            if ($?add_verbose) echo $add_bin added to end of \$athena_path
+            set athena_path = ($athena_path $add_bin)
+          endif
+        endif
 
-         if ( $?add_man && "$athena_manpath" !~ *"$add_man"* ) then
-           if ($?add_verbose) echo $add_man added to end of \$athena_manpath
-           set athena_manpath = ${athena_manpath}:$add_man
-         endif
-         breaksw
+        if ( $?add_man ) then
+          if ( "$athena_manpath" !~ *"$add_man"* ) then
+            if ($?add_verbose) echo $add_man added to end of \$athena_manpath
+            set athena_manpath = ${athena_manpath}:$add_man
+          endif
+        endif
+        breaksw
 
-       case 11:
-         if ( $?add_bin && "$athena_path" !~ *"$add_bin"* ) then
-           if ($?add_verbose) echo $add_bin added to front of \$athena_path
-           set athena_path = ($add_bin $athena_path)
-         endif
+      case 11:
+        if ( $?add_bin ) then
+          if ( "$athena_path" !~ *"$add_bin"* ) then
+            if ($?add_verbose) echo $add_bin added to front of \$athena_path
+            set athena_path = ($add_bin $athena_path)
+          endif
+        endif
 
-         if ( $?add_man && "$athena_manpath" !~ *"$add_man"* ) then
-           if ($?add_verbose) echo $add_man added to front of \$athena_manpath
-           set athena_manpath = ${add_man}:$athena_manpath
-         endif
-         breaksw
-     endsw
-   endif
+        if ( $?add_man ) then
+          if ( "$athena_manpath" !~ *"$add_man"* ) then
+            if ($?add_verbose) echo $add_man added to front of \$athena_manpath
+            set athena_manpath = ${add_man}:$athena_manpath
+          endif
+        endif
+        breaksw
+    endsw
+  endif
 
   if ( ! $?add_bin && $?add_warn ) then
     echo add: warning: $add_i has no binary directory
