@@ -12,18 +12,21 @@
  *
  *      Tom Coppeto
  *	Chris VanHaren
+ *	Lucien Van Elsen
  *      MIT Project Athena
  *
  * Copyright (C) 1989,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_resolve.c,v $
- *	$Id: p_resolve.c,v 1.9 1990-07-16 08:21:38 lwvanels Exp $
+ *	$Id: p_resolve.c,v 1.10 1990-11-14 12:35:02 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_resolve.c,v 1.9 1990-07-16 08:21:38 lwvanels Exp $";
+#ifndef SABER
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_resolve.c,v 1.10 1990-11-14 12:35:02 lwvanels Exp $";
+#endif
 #endif
 
 #include <mit-copyright.h>
@@ -56,7 +59,6 @@ do_olc_done(arguments)
   char topic[TOPIC_SIZE];
   char title[LINE_SIZE];
   char *titleP = (char *) NULL;
-  int off = 0;
 
   topic[0] = '\0';
   title[0] = '\0';
@@ -68,7 +70,7 @@ do_olc_done(arguments)
     {
       if(string_equiv(*arguments,"-topic",max(strlen(*arguments),3)))
 	{
-	  *++arguments;
+	  arguments++;
 	  if(*arguments == (char *) NULL)
 	    status = t_input_topic(&Request,topic,FALSE);
 	  else
@@ -91,7 +93,7 @@ do_olc_done(arguments)
 
       if(string_equiv(*arguments,"-title",max(strlen(*arguments),3)))
 	{
-	  *++arguments;
+	  ++arguments;
 	  if(*arguments == (char *) NULL)
 	    (void) get_prompted_input("Title: ", title);
 	  else
@@ -128,7 +130,7 @@ do_olc_done(arguments)
   if(title[0] != '\0')
     titleP = &title[0];
   
-  status = t_done(&Request, titleP, off);
+  status = t_done(&Request, titleP);
   return(status);
 }
 
@@ -155,7 +157,7 @@ do_olc_cancel(arguments)
     {
       if(string_equiv(*arguments,"-title",max(strlen(*arguments),3)))
 	{
-	  *++arguments;
+	  ++arguments;
 	  if(*arguments == (char *) NULL)
 	    (void) get_prompted_input("Title: ", title);
 	  else
