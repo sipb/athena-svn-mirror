@@ -3,7 +3,11 @@
 #include "synctree.h"
 #include <strings.h>
 #include <stdio.h>
+#ifdef SOLARIS
+#include <sys/exechdr.h>
+#else
 #include <a.out.h>
+#endif
 #ifdef sparc
 #include <alloca.h>
 #endif
