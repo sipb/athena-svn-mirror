@@ -6,56 +6,52 @@
  * For copying and distribution information, see the file "mit-copyright.h."
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/common.h,v $
- *	$Id: common.h,v 1.3 1990-08-26 17:46:28 lwvanels Exp $
+ *	$Id: common.h,v 1.4 1990-11-15 09:05:53 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #include <mit-copyright.h>
 
-/*
- * This file must use the old-C compatible definitions, because it
- * will be included by C code as well as ANSI-C or C++.
- */
-
 #ifndef __olc_common_h
 #define __olc_common_h
 
 #include <olc/lang.h>
-
-#if is_cplusplus
-extern "C" {
+#ifdef __STDC__
+# define        P(s) s
+#else
+# define P(s) ()
 #endif
 
-    extern char * cap OPrototype ((char *));
-    extern int isnumber OPrototype ((char *));
-    extern void make_temp_name OPrototype ((char *));
-#if 0
-    /*
-     * this is in libcommon.a, but MAX_* are defined only for the
-     * parser!
-     */
-    extern ERRCODE parse_command_line OPrototype ((char *command_line,
-						   char arguments[MAX_ARGS]
-						   [MAX_ARG_LENGTH]));
-#endif
-    extern int read_dbinfo OPrototype ((int, DBINFO *));
-    extern ERRCODE read_int_from_fd OPrototype ((int, int *));
-    extern ERRCODE read_response OPrototype ((int, RESPONSE *));
-    extern char * read_text_from_fd OPrototype ((int));
-    extern ERRCODE read_text_into_file OPrototype ((int, char *));
-    extern int send_dbinfo OPrototype ((int, DBINFO *));
-    extern ERRCODE send_response OPrototype ((int, RESPONSE));
-    extern int sread OPrototype ((int, char *, int));
-    extern int swrite OPrototype ((int, char *, int));
-    extern void time_now OPrototype ((char *));
-    extern char * format_time OPrototype ((char *,struct tm *));
-    extern void uncase OPrototype ((char *));
-    extern ERRCODE write_file_to_fd OPrototype ((int, char *));
-    extern ERRCODE write_int_to_fd OPrototype ((int, int));
-    extern ERRCODE write_text_to_fd OPrototype ((int, char *));
 
-#if is_cplusplus
-};
-#endif
+/* io.c */
+int send_dbinfo P((int fd , DBINFO *dbinfo ));
+int read_dbinfo P((int fd , DBINFO *dbinfo ));
+ERRCODE send_response P((int fd , RESPONSE response ));
+ERRCODE read_response P((int fd , RESPONSE *response ));
+ERRCODE write_int_to_fd P((int fd , int response ));
+ERRCODE read_int_from_fd P((int fd , int *response ));
+ERRCODE read_text_into_file P((int fd , char *filename ));
+ERRCODE write_file_to_fd P((int fd , char *filename ));
+ERRCODE write_text_to_fd P((int fd , char *buf ));
+char *read_text_from_fd P((int fd ));
+int sread P((int fd , char *buf , int nbytes ));
+int swrite P((int fd , char *buf , int nbytes ));
+
+/* perror.c */
+char *format_time P((char *time_buf , struct tm *time_info ));
+void time_now P((char *time_buf ));
+void perror P((char *msg ));
+
+/* string_utils.c */
+void uncase P((char *string ));
+void upcase_string P((char *string ));
+char *cap P((char *string ));
+int isnumber P((char *string ));
+char *get_next_word P((char *line , char *buf , int (*func )(char c)));
+int IsAlpha P((char c ));
+int NotWhiteSpace P((char (c )));
+void make_temp_name P((char *name ));
+
+#undef P
 
 #endif /* __olc_common_h */
