@@ -87,7 +87,7 @@ MAILSTREAM mboxproto = {&mboxdriver};
 DRIVER *mbox_valid (char *name)
 {
 				/* only INBOX, mbox must exist */
-  if (((name[0] == 'I') || (name[1] == 'i')) &&
+  if (((name[0] == 'I') || (name[0] == 'i')) &&
       ((name[1] == 'N') || (name[1] == 'n')) &&
       ((name[2] == 'B') || (name[2] == 'b')) &&
       ((name[3] == 'O') || (name[3] == 'o')) &&
