@@ -1,7 +1,7 @@
 /*
  * internal include file for com_err package
  */
-#include "mit-sipb-copyright.h"
+#include "sipb-copying.h"
 #ifndef __STDC__
 #undef const
 #define const

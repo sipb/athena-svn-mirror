@@ -2,9 +2,9 @@
 # Makefile for error-table routines
 #
 # Copyright 1987, 1989, 1991 MIT Student Information Processing Board
-# For copyright info, see mit-sipb-copyright.h.
+# For copyright info, see sipb-copying.h.
 #
-#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/com_err/Makefile,v 1.10 1991-02-22 07:50:07 jik Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/com_err/Makefile,v 1.11 1991-02-28 18:45:34 jik Exp $
 #	$Locker:  $
 #
 
@@ -13,8 +13,8 @@ RANLIB= 	ranlib
 DEFINES= 
 CFLAGS=		-O $(DEFINES)
 LINTFLAGS= 	-uhvpb
-LINTFILES= 	error_message.c et_name.c init_et.c com_err.c
-LIBOBJS= 	error_message.o et_name.o init_et.o com_err.o
+LINTFILES= 	error_msg.c et_name.c init_et.c com_err.c
+LIBOBJS= 	error_msg.o et_name.o init_et.o com_err.o
 
 BINDIR=		/usr/bin
 INCDIR=		/usr/include
@@ -22,16 +22,16 @@ LIBDIR=		/usr/lib
 DOCDIR=		/usr/doc
 DESTDIR=
 
-CFILES=		com_err.c compile_et.c error_message.c et_name.c\
+CFILES=		com_err.c compile_et.c error_msg.c et_name.c\
 		init_et.c strcasecmp.c test.c
 HFILES=		com_err.h compiler.h error_table.h internal.h\
-		mit-sipb-copyright.h 
+		sipb-copying.h 
 MANS=		com_err.3 compile_et.1
 YACCS=		error_table.y
 LEXS=		et_lex.lex.l
 ETS=		test1.et test2.et
 FILES=		Makefile PATCHLEVEL README\
-		com_err.texinfo.Z.uu texinfo.tex.Z.uu\
+		c_e.texinfo.Zu texinfo.tex.Zu\
 		$(CFILES) $(HFILES) $(MANS) $(YACCS) $(LEXS) $(ETS)
 
 
@@ -76,24 +76,24 @@ compile_et:	compile_et.o error_table.o strcasecmp.o
 tags:	TAGS
 
 com_err.ps : com_err.dvi
-com_err.dvi: com_err.texinfo
+com_err.dvi: comerr.texinfo
 
 error_table.o: et_lex.lex.c
 
 install: all
 	install -c -s compile_et ${DESTDIR}${BINDIR}/compile_et
 	install -c -m 444 com_err.h ${DESTDIR}${INCDIR}/com_err.h
-	install -c -m 444 mit-sipb-copyright.h \
-				${DESTDIR}${INCDIR}/mit-sipb-copyright.h
+	install -c -m 444 sipb-copying.h \
+				${DESTDIR}${INCDIR}/sipb-copying.h
 	install -c libcom_err.a ${DESTDIR}${LIBDIR}/libcom_err.a
 	${RANLIB} ${DESTDIR}${LIBDIR}/libcom_err.a
-	install -c com_err.texinfo ${DESTDIR}${DOCDIR}/com_err.texinfo
+	install -c comerr.texinfo ${DESTDIR}${DOCDIR}/comerr.texinfo
 	install -c com_err.3 ${DESTDIR}/usr/man/man3/com_err.3
 	install -c compile_et.1 ${DESTDIR}/usr/man/man1/compile_et.1
 
-TAGS:	et_name.c error_message.c compile_et.c error_table.c \
+TAGS:	et_name.c error_msg.c compile_et.c error_table.c \
 		lex.yy.c perror.c init_et.c
-	etags et_name.c error_message.c compile_et.c \
+	etags et_name.c error_msg.c compile_et.c \
 		error_table.c perror.c init_et.c
 
 libcom_err.a:	$(LIBOBJS)
@@ -128,6 +128,18 @@ shar: $(FILES)
 
 tar: $(FILES)
 	tar cvf - $(FILES) | compress > com_err.tar.Z
+
+comerr.texinfo: c_e.texinfo.Z
+	uncompress < c_e.texinfo.Z > comerr.texinfo
+
+c_e.texinfo.Z: c_e.texinfo.Zu
+	uudecode c_e.texinfo.Zu
+
+texinfo.tex: texinfo.tex.Z
+	uncompress texinfo.tex.Z
+
+texinfo.tex.Z: texinfo.tex.Zu
+	uudecode texinfo.tex.Zu
 
 # for testing
 test:	test.o test1.o test2.o libcom_err.a

@@ -2,7 +2,7 @@
  * Copyright 1988 by the Student Information Processing Board of the
  * Massachusetts Institute of Technology.
  *
- * For copyright info, see mit-sipb-copyright.h.
+ * For copyright info, see sipb-copying.h.
  */
 
 #ifndef _ET_H

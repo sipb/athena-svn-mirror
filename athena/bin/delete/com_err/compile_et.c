@@ -3,7 +3,7 @@
  * Copyright 1986, 1987, 1988
  * by MIT Student Information Processing Board.
  *
- * For copyright info, see "mit-sipb-copyright.h".
+ * For copyright info, see "sipb-copying.h".
  *
  */
 
@@ -15,7 +15,7 @@
 #include <sys/file.h>
 #include <string.h>
 #include <sys/param.h>
-#include "mit-sipb-copyright.h"
+#include "sipb-copying.h"
 #include "compiler.h"
 
 #ifndef __STDC__
@@ -27,7 +27,7 @@ static const char copyright[] =
     "Copyright 1987,1988 by MIT Student Information Processing Board";
 
 static const char rcsid_compile_et_c[] =
-    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/com_err/compile_et.c,v 1.2 1990-06-07 21:48:57 jik Exp $";
+    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/com_err/compile_et.c,v 1.3 1991-02-28 18:45:57 jik Exp $";
 #endif
 
 extern char *gensym();

@@ -1,17 +1,17 @@
 /*
- * $Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/com_err/init_et.c,v 1.1 1989-11-07 19:05:34 jik Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/com_err/init_et.c,v 1.2 1991-02-28 18:46:13 jik Exp $
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/delete/com_err/init_et.c,v $
  * $Locker:  $
  *
  * Copyright 1986, 1987, 1988 by MIT Information Systems and
  *	the MIT Student Information Processing Board.
  *
- * For copyright info, see mit-sipb-copyright.h.
+ * For copyright info, see sipb-copying.h.
  */
 
 #include <stdio.h>
 #include "error_table.h"
-#include "mit-sipb-copyright.h"
+#include "sipb-copying.h"
 
 #ifndef __STDC__
 #define const
@@ -19,7 +19,7 @@
 
 #ifndef	lint
 static const char rcsid_init_et_c[] =
-    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/com_err/init_et.c,v 1.1 1989-11-07 19:05:34 jik Exp $";
+    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/com_err/init_et.c,v 1.2 1991-02-28 18:46:13 jik Exp $";
 #endif
 
 extern char *malloc(), *realloc();

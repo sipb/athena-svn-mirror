@@ -62,7 +62,7 @@ description	:	QUOTED_STRING
  *
  * Copyright 1986, 1987 by the MIT Student Information Processing Board
  *
- * For copyright info, see mit-sipb-copyright.h.
+ * For copyright info, see sipb-copying.h.
  */
 
 #include <string.h>
@@ -72,11 +72,11 @@ description	:	QUOTED_STRING
 #include <sys/time.h>
 #include "internal.h"
 #include "error_table.h"
-#include "mit-sipb-copyright.h"
+#include "sipb-copying.h"
 
 #ifndef	lint
 static char const rcsid_error_table_y[] =
-    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/com_err/error_table.y,v 1.2 1989-11-07 18:55:08 jik Exp $";
+    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/com_err/error_table.y,v 1.3 1991-02-28 18:46:06 jik Exp $";
 #endif
 
 extern FILE *hfile, *cfile;

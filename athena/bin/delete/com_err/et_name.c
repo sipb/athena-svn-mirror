@@ -1,18 +1,18 @@
 /*
  * Copyright 1987 by MIT Student Information Processing Board
  *
- * For copyright info, see mit-sipb-copyright.h.
+ * For copyright info, see sipb-copying.h.
  */
 
 #include "error_table.h"
-#include "mit-sipb-copyright.h"
+#include "sipb-copying.h"
 #include "internal.h"
 
 #ifndef	lint
 static const char copyright[] =
     "Copyright 1987,1988 by Student Information Processing Board, Massachusetts Institute of Technology";
 static const char rcsid_et_name_c[] =
-    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/com_err/et_name.c,v 1.1 1989-11-07 19:05:32 jik Exp $";
+    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/com_err/et_name.c,v 1.2 1991-02-28 18:46:10 jik Exp $";
 #endif
 
 static const char char_set[] =

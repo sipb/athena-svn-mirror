@@ -1,11 +1,11 @@
 /*
  * Copyright 1987, 1988 by MIT Student Information Processing Board.
  *
- * For copyright info, see mit-sipb-copyright.h.
+ * For copyright info, see sipb-copying.h.
  */
 
 #include <stdio.h>
-#include "mit-sipb-copyright.h"
+#include "sipb-copying.h"
 
 /*
  * Our environment only provides for ANSI's <stdarg.h> when using GNU
@@ -46,7 +46,7 @@
 
 #if ! lint
 static const char rcsid[] =
-    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/com_err/com_err.c,v 1.2 1989-11-07 18:57:42 jik Exp $";
+    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/com_err/com_err.c,v 1.3 1991-02-28 18:45:53 jik Exp $";
 #endif	/* ! lint */
 
 static void
