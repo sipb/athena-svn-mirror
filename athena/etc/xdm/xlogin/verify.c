@@ -1,10 +1,11 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.22 1992-05-07 16:06:38 lwvanels Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.23 1992-05-18 16:50:42 epeisach Exp $
  */
 
 #include <stdio.h>
 #include <pwd.h>
 #include <grp.h>
 #include <strings.h>
+#include <sys/types.h>
 #include <sys/file.h>
 #include <sys/param.h>
 #include <sys/dir.h>
@@ -13,10 +14,12 @@
 #include <utmp.h>
 #include <netdb.h>
 #include <ttyent.h>
-#include <krb.h>
-#include <hesiod.h>
 #include <errno.h>
 #include <syslog.h>
+
+#include <krb.h>
+#include <hesiod.h>
+
 #ifdef XDM
 #include "dm.h"
 #endif
@@ -25,6 +28,10 @@
 #include <userpw.h>
 #include <usersec.h>
 #include <sys/id.h>
+#endif
+
+#ifdef ultrix
+#include <sys/mount.h>
 #endif
 
 #define SETPAG
@@ -534,10 +541,10 @@ struct passwd *pwd;
 	case 0:
 	    if (setuid(pwd->pw_uid) != 0) {
 		fprintf(stderr,
-			"Could not execute dettach command as user %s,\n",
+			"Could not execute detach command as user %s,\n",
 			pwd->pw_name);
 	    }
-	    execlp("detach", "detach", "-quiet", pwd->pw_name, NULL);
+	    execlp("fsid", "fsid", "-unmap", "-filsys", pwd->pw_name, NULL);
 	    _exit(-1);
 	default:
 	    while (attach_state == -1)
@@ -879,48 +886,68 @@ struct passwd *pwd;
 
 
 /* Function Name: IsRemoteDir
- * Description: Stolen form athena's version of /bin/login
- *              returns true of this is an NFS directory.
- * Arguments: dname - name of the directory.
+ * Arguments: dir - name of the directory.
  * Returns: true or false to the question (is remote dir).
+ *    false may also indicate that no directory exists.
  *
- * The following lines rely on the behavior of Sun's NFS (present in
- * 3.0 and 3.2) which causes a read on an NFS directory (actually any
- * non-reg file) to return -1, and AFS which also returns a -1 on
- * read (although with a different errno).  This is a fast, cheap
- * way to discover whether a user's homedir is a remote filesystem.
- * Naturally, if the NFS and/or AFS semantics change, this must also change.
+ * If we cannot stat the directory, we will assume the directory is
+ * remote.  Getting information about a directory may not be possible
+ * if the pre-requisite authentication has not yet been performed.
+ *
+ * Under AIX, we use stat and check the FS_REMOTE flag.
+ * Under Ultrix, we use statfs to determine the filesystem type.
+ * Under BSD, we check the device [0,1=AFS; 255,0=NFS].
+ *
+ * NOTE: This routine must be CHANGED whenever a new architecture
+ * is introduced or if any filesystem semantics change.
  */
 
 IsRemoteDir(dir)
 char *dir;
 {
-#if !defined(_AIX)
+#ifdef _AIX
+#define REMOTEDONE
+    struct stat stbuf;
+
+    if (statx(dir, &stbuf, 0, STX_NORMAL))
+	return(TRUE);
+    return((stbuf.st_flag & FS_REMOTE) ? TRUE : FALSE);
+#endif
+
+#ifdef ultrix
+#define REMOTEDONE
+    struct fs_data sbuf;
+
+    if (statfs(dir, &sbuf) < 0)
+	return(TRUE);
+
+    switch(sbuf.fd_req.fstype) {
+    case GT_ULTRIX:
+    case GT_CDFS:
+	return(FALSE);
+    }
+    return(TRUE);
+#endif
+    
+#if (defined(vax) || defined(ibm032)) && !defined(REMOTEDONE)
+#define REMOTEDONE
     int f;
     char c;
     struct stat stbuf;
   
-    if (lstat(dir, &stbuf))
-	return(FALSE);
-    if (!(stbuf.st_mode & S_IFDIR))
+    if (stat(dir, &stbuf))
 	return(TRUE);
 
-    if ((f = open(dir, O_RDONLY, 0)) < 0)
-	return(FALSE);
-
-    if (read(f, &c, 1) < 0) {
-	close(f);
+    if ((unsigned short)stbuf.st_dev >= 0xff00)
 	return(TRUE);
-    }
+    if (stbuf.st_dev == 0x0001)			/* AFS */
+	return(TRUE);
 
-    close(f);
     return(FALSE);
-#else /* AIX */
-    struct stat stbuf;
+#endif
 
-    if (statx(dir, &stbuf, 0, STX_NORMAL))
-	return(FALSE);
-    return((stbuf.st_flag & FS_REMOTE) ? TRUE : FALSE);
+#ifndef REMOTEDONE
+    ERROR --- ROUTINE NOT IMPLEMENTED ON THIS PLATFORM;
 #endif
 }
 
