@@ -25,6 +25,10 @@ mkdir $RPM_BUILD_ROOT
 
 mkdir -p $RPM_BUILD_ROOT/var/athena/sessions
 
+# Extra files; see prep/athena-dm.
+mkdir -p $RPM_BUILD_ROOT/etc/athena/login
+cp config $RPM_BUILD_ROOT/etc/athena/login/config
+
 %post
 # Take over the dm service
 if [ ! -f /etc/X11/prefdm.orig ]; then
@@ -40,6 +44,7 @@ EOF
 chmod +x /etc/X11/prefdm
 
 %files
-/etc/athena
+/etc/athena/dm
 /usr/athena
+%config /etc/athena/login/config
 %dir /var/athena/sessions
