@@ -666,9 +666,9 @@ int esd_open_sound( const char *host )
 		char *cmd;
 
 		setsid();
-		cmd = malloc(sizeof("dustbuster esd  -spawnpid ") + esd_spawn_options?strlen(esd_spawn_options):0 + 128);
+		cmd = malloc(sizeof("dustbuster -s TERM esd  -spawnpid ") + esd_spawn_options?strlen(esd_spawn_options):0 + 128);
 
-		sprintf(cmd, "dustbuster esd %s -spawnpid %d", esd_spawn_options?esd_spawn_options:"", mypid);
+		sprintf(cmd, "dustbuster -s TERM esd %s -spawnpid %d", esd_spawn_options?esd_spawn_options:"", mypid);
 
 		execl("/bin/sh", "/bin/sh", "-c", cmd, NULL);
 		perror("execl");

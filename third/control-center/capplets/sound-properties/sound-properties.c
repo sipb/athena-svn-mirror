@@ -135,12 +135,12 @@ main(int argc, char *argv[])
             if(gnome_sound_connection < 0
                && gnome_config_get_bool("/sound/system/settings/start_esd=true")) {
                 int esdpid;
-                static const char *esd_cmdline[] = {"dustbuster", "esd", "-nobeeps", NULL};
+                static const char *esd_cmdline[] = {"dustbuster", "-s", "TERM", "esd", "-nobeeps", NULL};
                 char *tmpargv[3];
                 char argbuf[32];
                 time_t starttime;
 
-                esdpid = gnome_execute_async(NULL, 3, (char **)esd_cmdline);
+                esdpid = gnome_execute_async(NULL, 5, (char **)esd_cmdline);
                 g_snprintf(argbuf, sizeof(argbuf), "%d", esdpid);
                 tmpargv[0] = "kill"; tmpargv[1] = argbuf; tmpargv[2] = NULL;
                 gnome_client_set_shutdown_command(client, 2, tmpargv);
