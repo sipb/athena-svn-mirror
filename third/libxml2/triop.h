@@ -1,6 +1,6 @@
 /*************************************************************************
  *
- * $Id: triop.h,v 1.1.1.2 2002-12-26 06:43:06 ghudson Exp $
+ * $Id: triop.h,v 1.1.1.3 2004-09-22 23:17:17 ghudson Exp $
  *
  * Copyright (C) 2000 Bjorn Reese and Daniel Stenberg.
  *

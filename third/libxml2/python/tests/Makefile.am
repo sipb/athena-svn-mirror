@@ -23,9 +23,20 @@ PYTESTS=	\
     reader.py	\
     reader2.py	\
     reader3.py	\
+    reader4.py	\
+    reader5.py	\
+    reader6.py	\
+    reader7.py	\
+    reader8.py	\
+    walker.py	\
     ctxterror.py\
     readererr.py\
-    relaxng.py
+    relaxng.py	\
+    schema.py	\
+    thread2.py \
+    sync.py \
+    tstLastError.py \
+    indexes.py
 
 XMLS=		\
     tst.xml	\
@@ -36,8 +47,13 @@ EXTRA_DIST = $(PYTESTS) $(XMLS)
 
 if WITH_PYTHON
 tests: $(PYTESTS)
-	-@(PYTHONPATH="..:../.libs:$(srcdir)/.." ; export PYTHONPATH; \
-	   for test in $(PYTESTS) ; do echo "-- $$test" ; $(PYTHON) $(srcdir)/$$test ; done)
+	@echo "## running Python regression tests"
+	-@(PYTHONPATH="..:../.libs:$(srcdir)/..:$$PYTHONPATH" ; \
+	   export PYTHONPATH; \
+	   for test in $(PYTESTS) ; \
+	   do log=`$(PYTHON) $(srcdir)/$$test` ; \
+	   if [ "`echo $$log | grep OK`" = "" ] ; then \
+	   echo "-- $$test" ; echo "$$log" ; fi ; done)
 else
 tests:
 endif
@@ -48,5 +64,5 @@ clean:
 install-data-local:
 	$(mkinstalldirs) $(DESTDIR)$(EXAMPLE_DIR)
 	-(for test in $(PYTESTS) $(XMLS); \
-	  do @INSTALL@ -m 0644 $$test $(DESTDIR)$(EXAMPLE_DIR) ; done)
+	  do @INSTALL@ -m 0644 $(srcdir)/$$test $(DESTDIR)$(EXAMPLE_DIR) ; done)
 

@@ -1,6 +1,6 @@
 /*************************************************************************
  *
- * $Id: trio.h,v 1.1.1.2 2002-12-26 06:43:06 ghudson Exp $
+ * $Id: trio.h,v 1.1.1.3 2004-09-22 23:17:16 ghudson Exp $
  *
  * Copyright (C) 1998 Bjorn Reese and Daniel Stenberg.
  *
@@ -22,14 +22,6 @@
 #ifndef TRIO_TRIO_H
 #define TRIO_TRIO_H
 
-#include <stdio.h>
-#include <stdlib.h>
-#if defined(TRIO_COMPILER_ANCIENT)
-# include <varargs.h>
-#else
-# include <stdarg.h>
-#endif
-
 #if !defined(WITHOUT_TRIO)
 
 /*
@@ -41,6 +33,14 @@
 #endif
 
 #include "triodef.h"
+
+#include <stdio.h>
+#include <stdlib.h>
+#if defined(TRIO_COMPILER_ANCIENT)
+# include <varargs.h>
+#else
+# include <stdarg.h>
+#endif
 
 #ifdef __cplusplus
 extern "C" {

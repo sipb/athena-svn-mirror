@@ -29,6 +29,10 @@
 #include <libxml/xmlerror.h>
 #include <libxml/globals.h>
 #include <libxml/xpathInternals.h>
+#include <libxml/uri.h>
+#ifdef LIBXML_SCHEMAS_ENABLED
+#include <libxml/relaxng.h>
+#endif
 
 /**
  * xmlDebugDumpString:
@@ -51,7 +55,7 @@ xmlDebugDumpString(FILE * output, const xmlChar * str)
     for (i = 0; i < 40; i++)
         if (str[i] == 0)
             return;
-        else if (IS_BLANK(str[i]))
+        else if (IS_BLANK_CH(str[i]))
             fputc(' ', output);
         else if (str[i] >= 0x80)
             fprintf(output, "#%X", str[i]);
@@ -1200,11 +1204,11 @@ xmlLsOneNode(FILE *output, xmlNodePtr node) {
     switch (node->type) {
 	case XML_ELEMENT_NODE:
 	    if (node->name != NULL)
-		fprintf(output, "%s", node->name);
+		fprintf(output, "%s", (const char *) node->name);
 	    break;
 	case XML_ATTRIBUTE_NODE:
 	    if (node->name != NULL)
-		fprintf(output, "%s", node->name);
+		fprintf(output, "%s", (const char *) node->name);
 	    break;
 	case XML_TEXT_NODE:
 	    if (node->content != NULL) {
@@ -1215,15 +1219,15 @@ xmlLsOneNode(FILE *output, xmlNodePtr node) {
 	    break;
 	case XML_ENTITY_REF_NODE:
 	    if (node->name != NULL)
-		fprintf(output, "%s", node->name);
+		fprintf(output, "%s", (const char *) node->name);
 	    break;
 	case XML_ENTITY_NODE:
 	    if (node->name != NULL)
-		fprintf(output, "%s", node->name);
+		fprintf(output, "%s", (const char *) node->name);
 	    break;
 	case XML_PI_NODE:
 	    if (node->name != NULL)
-		fprintf(output, "%s", node->name);
+		fprintf(output, "%s", (const char *) node->name);
 	    break;
 	case XML_COMMENT_NODE:
 	    break;
@@ -1248,7 +1252,7 @@ xmlLsOneNode(FILE *output, xmlNodePtr node) {
 	}
 	default:
 	    if (node->name != NULL)
-		fprintf(output, "%s", node->name);
+		fprintf(output, "%s", (const char *) node->name);
     }
     fprintf(output, "\n");
 }
@@ -1345,6 +1349,7 @@ xmlShellPrintXPathError(int errorType, const char *arg)
 }
 
 
+#ifdef LIBXML_OUTPUT_ENABLED
 /**
  * xmlShellPrintNodeCtxt:
  * @ctxt : a non-null shell context
@@ -1385,6 +1390,7 @@ xmlShellPrintNode(xmlNodePtr node)
 {
     xmlShellPrintNodeCtxt(NULL, node);
 }
+#endif /* LIBXML_OUTPUT_ENABLED */
 
 /**
  * xmlShellPrintXPathResultCtxt:
@@ -1396,20 +1402,18 @@ xmlShellPrintNode(xmlNodePtr node)
 static void
 xmlShellPrintXPathResultCtxt(xmlShellCtxtPtr ctxt,xmlXPathObjectPtr list)
 {
-    int i = 0;
     if (!ctxt)
        return;
 
     if (list != NULL) {
         switch (list->type) {
             case XPATH_NODESET:{
+#ifdef LIBXML_OUTPUT_ENABLED
                     int indx;
 
                     if (list->nodesetval) {
                         for (indx = 0; indx < list->nodesetval->nodeNr;
                              indx++) {
-                            if (i > 0)
-                                fprintf(stderr, " -------\n");
                             xmlShellPrintNodeCtxt(ctxt,
 				    list->nodesetval->nodeTab[indx]);
                         }
@@ -1418,6 +1422,10 @@ xmlShellPrintXPathResultCtxt(xmlShellCtxtPtr ctxt,xmlXPathObjectPtr list)
                                         "Empty node set\n");
                     }
                     break;
+#else
+		    xmlGenericError(xmlGenericErrorContext,
+				    "Node set\n");
+#endif /* LIBXML_OUTPUT_ENABLED */
                 }
             case XPATH_BOOLEAN:
                 xmlGenericError(xmlGenericErrorContext,
@@ -1530,6 +1538,7 @@ xmlShellBase(xmlShellCtxtPtr ctxt,
     return (0);
 }
 
+#ifdef LIBXML_TREE_ENABLED
 /**
  * xmlShellSetBase:
  * @ctxt:  the shell context
@@ -1550,6 +1559,67 @@ xmlShellSetBase(xmlShellCtxtPtr ctxt ATTRIBUTE_UNUSED,
     xmlNodeSetBase(node, (xmlChar*) arg);
     return (0);
 }
+#endif
+
+#ifdef LIBXML_XPATH_ENABLED
+/**
+ * xmlShellRegisterNamespace:
+ * @ctxt:  the shell context
+ * @arg:  a string in prefix=nsuri format
+ * @node:  unused
+ * @node2:  unused
+ *
+ * Implements the XML shell function "setns"
+ * register/unregister a prefix=namespace pair
+ * on the XPath context
+ *
+ * Returns 0 on success and a negative value otherwise.
+ */
+static int
+xmlShellRegisterNamespace(xmlShellCtxtPtr ctxt, char *arg,
+      xmlNodePtr node ATTRIBUTE_UNUSED, xmlNodePtr node2 ATTRIBUTE_UNUSED)
+{
+    xmlChar* nsListDup;
+    xmlChar* prefix;
+    xmlChar* href;
+    xmlChar* next;
+
+    nsListDup = xmlStrdup((xmlChar *) arg);
+    next = nsListDup;
+    while(next != NULL) {
+	/* skip spaces */
+	/*while((*next) == ' ') next++;*/
+	if((*next) == '\0') break;
+
+	/* find prefix */
+	prefix = next;
+	next = (xmlChar*)xmlStrchr(next, '=');
+	if(next == NULL) {
+	    fprintf(ctxt->output, "setns: prefix=[nsuri] required\n");
+	    xmlFree(nsListDup);
+	    return(-1);
+	}
+	*(next++) = '\0';
+
+	/* find href */
+	href = next;
+	next = (xmlChar*)xmlStrchr(next, ' ');
+	if(next != NULL) {
+	    *(next++) = '\0';
+	}
+
+	/* do register namespace */
+	if(xmlXPathRegisterNs(ctxt->pctxt, prefix, href) != 0) {
+	    fprintf(ctxt->output,"Error: unable to register NS with prefix=\"%s\" and href=\"%s\"\n", prefix, href);
+	    xmlFree(nsListDup);
+	    return(-1);
+	}
+    }
+
+    xmlFree(nsListDup);
+    return(0);
+}
+#endif
 
 /**
  * xmlShellGrep:
@@ -1664,6 +1734,108 @@ xmlShellDir(xmlShellCtxtPtr ctxt ATTRIBUTE_UNUSED,
 }
 
 /**
+ * xmlShellSetContent:
+ * @ctxt:  the shell context
+ * @value:  the content as a string
+ * @node:  a node
+ * @node2:  unused
+ *
+ * Implements the XML shell function "dir"
+ * dumps informations about the node (namespace, attributes, content).
+ *
+ * Returns 0
+ */
+static int
+xmlShellSetContent(xmlShellCtxtPtr ctxt ATTRIBUTE_UNUSED,
+            char *value, xmlNodePtr node,
+            xmlNodePtr node2 ATTRIBUTE_UNUSED)
+{
+    xmlNodePtr results;
+    xmlParserErrors ret;
+
+    if (!ctxt)
+        return (0);
+    if (node == NULL) {
+	fprintf(ctxt->output, "NULL\n");
+	return (0);
+    }
+    if (value == NULL) {
+        fprintf(ctxt->output, "NULL\n");
+	return (0);
+    }
+
+    ret = xmlParseInNodeContext(node, value, strlen(value), 0, &results);
+    if (ret == XML_ERR_OK) {
+	if (node->children != NULL) {
+	    xmlFreeNodeList(node->children);
+	    node->children = NULL;
+	    node->last = NULL;
+	}
+	xmlAddChildList(node, results);
+    } else {
+        fprintf(ctxt->output, "failed to parse content\n");
+    }
+    return (0);
+}
+
+#ifdef LIBXML_SCHEMAS_ENABLED
+/**
+ * xmlShellRNGValidate:
+ * @ctxt:  the shell context
+ * @schemas:  the path to the Relax-NG schemas
+ * @node:  a node
+ * @node2:  unused
+ *
+ * Implements the XML shell function "relaxng"
+ * validating the instance against a Relax-NG schemas
+ *
+ * Returns 0
+ */
+static int
+xmlShellRNGValidate(xmlShellCtxtPtr sctxt, char *schemas,
+            xmlNodePtr node ATTRIBUTE_UNUSED,
+	    xmlNodePtr node2 ATTRIBUTE_UNUSED)
+{
+    xmlRelaxNGPtr relaxngschemas;
+    xmlRelaxNGParserCtxtPtr ctxt;
+    xmlRelaxNGValidCtxtPtr vctxt;
+    int ret;
+
+    ctxt = xmlRelaxNGNewParserCtxt(schemas);
+    xmlRelaxNGSetParserErrors(ctxt,
+	    (xmlRelaxNGValidityErrorFunc) fprintf,
+	    (xmlRelaxNGValidityWarningFunc) fprintf,
+	    stderr);
+    relaxngschemas = xmlRelaxNGParse(ctxt);
+    xmlRelaxNGFreeParserCtxt(ctxt);
+    if (relaxngschemas == NULL) {
+	xmlGenericError(xmlGenericErrorContext,
+		"Relax-NG schema %s failed to compile\n", schemas);
+	return(-1);
+    }
+    vctxt = xmlRelaxNGNewValidCtxt(relaxngschemas);
+    xmlRelaxNGSetValidErrors(vctxt,
+	    (xmlRelaxNGValidityErrorFunc) fprintf,
+	    (xmlRelaxNGValidityWarningFunc) fprintf,
+	    stderr);
+    ret = xmlRelaxNGValidateDoc(vctxt, sctxt->doc);
+    if (ret == 0) {
+	fprintf(stderr, "%s validates\n", sctxt->filename);
+    } else if (ret > 0) {
+	fprintf(stderr, "%s fails to validate\n", sctxt->filename);
+    } else {
+	fprintf(stderr, "%s validation generated an internal error\n",
+	       sctxt->filename);
+    }
+    xmlRelaxNGFreeValidCtxt(vctxt);
+    if (relaxngschemas != NULL)
+	xmlRelaxNGFree(relaxngschemas);
+    return(0);
+}
+#endif
+
+#ifdef LIBXML_OUTPUT_ENABLED
+/**
  * xmlShellCat:
  * @ctxt:  the shell context
  * @arg:  unused
@@ -1706,6 +1878,7 @@ xmlShellCat(xmlShellCtxtPtr ctxt, char *arg ATTRIBUTE_UNUSED,
     fprintf(ctxt->output, "\n");
     return (0);
 }
+#endif /* LIBXML_OUTPUT_ENABLED */
 
 /**
  * xmlShellLoad:
@@ -1738,7 +1911,7 @@ xmlShellLoad(xmlShellCtxtPtr ctxt, char *filename,
         doc = NULL;
 #endif /* LIBXML_HTML_ENABLED */
     } else {
-        doc = xmlParseFile(filename);
+        doc = xmlReadFile(filename,NULL,0);
     }
     if (doc != NULL) {
         if (ctxt->loaded == 1) {
@@ -1754,12 +1927,13 @@ xmlShellLoad(xmlShellCtxtPtr ctxt, char *filename,
 #ifdef LIBXML_XPATH_ENABLED
         ctxt->pctxt = xmlXPathNewContext(doc);
 #endif /* LIBXML_XPATH_ENABLED */
-        ctxt->filename = (char *) xmlStrdup((xmlChar *) filename);
+        ctxt->filename = (char *) xmlCanonicPath((xmlChar *) filename);
     } else
         return (-1);
     return (0);
 }
 
+#ifdef LIBXML_OUTPUT_ENABLED
 /**
  * xmlShellWrite:
  * @ctxt:  the shell context
@@ -1886,7 +2060,9 @@ xmlShellSave(xmlShellCtxtPtr ctxt, char *filename,
     }
     return (0);
 }
+#endif /* LIBXML_OUTPUT_ENABLED */
 
+#ifdef LIBXML_VALID_ENABLED
 /**
  * xmlShellValidate:
  * @ctxt:  the shell context
@@ -1926,6 +2102,7 @@ xmlShellValidate(xmlShellCtxtPtr ctxt, char *dtd,
     }
     return (res);
 }
+#endif /* LIBXML_VALID_ENABLED */
 
 /**
  * xmlShellDu:
@@ -2103,7 +2280,7 @@ xmlShell(xmlDocPtr doc, char *filename, xmlShellReadlineFunc input,
     while (1) {
         if (ctxt->node == (xmlNodePtr) ctxt->doc)
             snprintf(prompt, sizeof(prompt), "%s > ", "/");
-        else if (ctxt->node->name)
+        else if ((ctxt->node != NULL) && (ctxt->node->name))
             snprintf(prompt, sizeof(prompt), "%s > ", ctxt->node->name);
         else
             snprintf(prompt, sizeof(prompt), "? > ");
@@ -2172,23 +2349,41 @@ xmlShell(xmlDocPtr doc, char *filename, xmlShellReadlineFunc input,
 		  fprintf(ctxt->output, "\tfree         display memory usage\n");
 		  fprintf(ctxt->output, "\tload [name]  load a new document with name\n");
 		  fprintf(ctxt->output, "\tls [path]    list contents of path or the current directory\n");
+		  fprintf(ctxt->output, "\tset xml_fragment replace the current node content with the fragment parsed in context\n");
 #ifdef LIBXML_XPATH_ENABLED
 		  fprintf(ctxt->output, "\txpath expr   evaluate the XPath expression in that context and print the result\n");
+		  fprintf(ctxt->output, "\tsetns nsreg  register a namespace to a prefix in the XPath evaluation context\n");
+		  fprintf(ctxt->output, "\t             format for nsreg is: prefix=[nsuri] (i.e. prefix= unsets a prefix)\n");
 #endif /* LIBXML_XPATH_ENABLED */
 		  fprintf(ctxt->output, "\tpwd          display current working directory\n");
 		  fprintf(ctxt->output, "\tquit         leave shell\n");
+#ifdef LIBXML_OUTPUT_ENABLED
 		  fprintf(ctxt->output, "\tsave [name]  save this document to name or the original name\n");
-		  fprintf(ctxt->output, "\tvalidate     check the document for errors\n");
 		  fprintf(ctxt->output, "\twrite [name] write the current node to the filename\n");
+#endif /* LIBXML_OUTPUT_ENABLED */
+#ifdef LIBXML_VALID_ENABLED
+		  fprintf(ctxt->output, "\tvalidate     check the document for errors\n");
+#endif /* LIBXML_VALID_ENABLED */
+#ifdef LIBXML_SCHEMAS_ENABLED
+		  fprintf(ctxt->output, "\trelaxng rng  validate the document agaisnt the Relax-NG schemas\n");
+#endif
 		  fprintf(ctxt->output, "\tgrep string  search for a string in the subtree\n");
+#ifdef LIBXML_VALID_ENABLED
         } else if (!strcmp(command, "validate")) {
             xmlShellValidate(ctxt, arg, NULL, NULL);
+#endif /* LIBXML_VALID_ENABLED */
         } else if (!strcmp(command, "load")) {
             xmlShellLoad(ctxt, arg, NULL, NULL);
+#ifdef LIBXML_SCHEMAS_ENABLED
+        } else if (!strcmp(command, "relaxng")) {
+            xmlShellRNGValidate(ctxt, arg, NULL, NULL);
+#endif
+#ifdef LIBXML_OUTPUT_ENABLED
         } else if (!strcmp(command, "save")) {
             xmlShellSave(ctxt, arg, NULL, NULL);
         } else if (!strcmp(command, "write")) {
             xmlShellWrite(ctxt, arg, NULL, NULL);
+#endif /* LIBXML_OUTPUT_ENABLED */
         } else if (!strcmp(command, "grep")) {
             xmlShellGrep(ctxt, arg, ctxt->node, NULL);
         } else if (!strcmp(command, "free")) {
@@ -2209,7 +2404,16 @@ xmlShell(xmlDocPtr doc, char *filename, xmlShellReadlineFunc input,
             xmlShellDu(ctxt, NULL, ctxt->node, NULL);
         } else if (!strcmp(command, "base")) {
             xmlShellBase(ctxt, NULL, ctxt->node, NULL);
+        } else if (!strcmp(command, "set")) {
+	    xmlShellSetContent(ctxt, arg, ctxt->node, NULL);
 #ifdef LIBXML_XPATH_ENABLED
+        } else if (!strcmp(command, "setns")) {
+            if (arg[0] == 0) {
+		xmlGenericError(xmlGenericErrorContext,
+				"setns: prefix=[nsuri] required\n");
+            } else {
+                xmlShellRegisterNamespace(ctxt, arg, NULL, NULL);
+            }
         } else if (!strcmp(command, "xpath")) {
             if (arg[0] == 0) {
 		xmlGenericError(xmlGenericErrorContext,
@@ -2221,8 +2425,10 @@ xmlShell(xmlDocPtr doc, char *filename, xmlShellReadlineFunc input,
 		xmlXPathFreeObject(list);
 	    }
 #endif /* LIBXML_XPATH_ENABLED */
+#ifdef LIBXML_TREE_ENABLED
         } else if (!strcmp(command, "setbase")) {
             xmlShellSetBase(ctxt, arg, ctxt->node, NULL);
+#endif
         } else if ((!strcmp(command, "ls")) || (!strcmp(command, "dir"))) {
             int dir = (!strcmp(command, "dir"));
 
@@ -2328,6 +2534,13 @@ xmlShell(xmlDocPtr doc, char *filename, xmlShellReadlineFunc input,
                             if (list->nodesetval != NULL) {
 				if (list->nodesetval->nodeNr == 1) {
 				    ctxt->node = list->nodesetval->nodeTab[0];
+				    if ((ctxt->node != NULL) &&
+				        (ctxt->node->type ==
+					 XML_NAMESPACE_DECL)) {
+					xmlGenericError(xmlGenericErrorContext,
+						    "cannot cd to namespace\n");
+					ctxt->node = NULL;
+				    }
 				} else
 				    xmlGenericError(xmlGenericErrorContext,
 						    "%s is a %d Node Set\n",
@@ -2381,6 +2594,7 @@ xmlShell(xmlDocPtr doc, char *filename, xmlShellReadlineFunc input,
                 }
                 ctxt->pctxt->node = NULL;
             }
+#ifdef LIBXML_OUTPUT_ENABLED
         } else if (!strcmp(command, "cat")) {
             if (arg[0] == 0) {
                 xmlShellCat(ctxt, NULL, ctxt->node, NULL);
@@ -2458,6 +2672,7 @@ xmlShell(xmlDocPtr doc, char *filename, xmlShellReadlineFunc input,
                 }
                 ctxt->pctxt->node = NULL;
             }
+#endif /* LIBXML_OUTPUT_ENABLED */
         } else {
             xmlGenericError(xmlGenericErrorContext,
                             "Unknown command %s\n", command);

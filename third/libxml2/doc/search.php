@@ -89,7 +89,10 @@ A:link, A:visited, A:active { text-decoration: underline }
 </td></tr></table></td>
 <td valign="top" bgcolor="#8b7765"><table border="0" cellspacing="0" cellpadding="1" width="100%"><tr><td><table border="0" cellspacing="0" cellpadding="1" width="100%" bgcolor="#000000"><tr><td><table border="0" cellpadding="3" cellspacing="1" width="100%"><tr><td bgcolor="#fffacd">
 <?php
+    $query = $HTTP_GET_VARS[ "query" ];
+    $scope = $HTTP_GET_VARS[ "scope" ];
     // We handle only the first argument so far
+    $query = $_GET['query'];
     $query = ltrim ($query);
     if (! $query) {
         echo "<h1 align='center'>Search the documentation on XMLSoft.org</h1>";
@@ -257,9 +260,9 @@ A:link, A:visited, A:active { text-decoration: underline }
 				$results[$name] = array(($r + $relevance) * 2,
 							$t,$m,$d,$w,$u);
 			    } else {
-				$id = strtoupper($name);
+				$id = $name;
 				$m = strtolower($module);
-				$url = "html/libxml-$m.html#$id";
+				$url = "html/libxml-$module.html#$id";
 				$results[$name] = array($relevance,$type,
 						$module, $desc, $name, $url);
 			    }
@@ -282,9 +285,9 @@ A:link, A:visited, A:active { text-decoration: underline }
 				$results[$name] = array(($r + $relevance) * 2,
 							$t,$m,$d,$w,$u);
 			    } else {
-				$id = strtoupper($name);
+				$id = $name;
 				$m = strtolower($module);
-				$url = "XSLT/html/libxslt-$m.html#$id";
+				$url = "XSLT/html/libxslt-$module.html#$id";
 				$results[$name] = array($relevance,$type,
 						$module, $desc, $name, $url);
 			    }
@@ -349,7 +352,7 @@ A:link, A:visited, A:active { text-decoration: underline }
 				$results[$name] = array(($r + $relevance) * 2,
 							$t,$m,$d,$w,$u);
 			    } else {
-				$id = strtoupper($name);
+				$id = $name;
 				$m = strtolower($module);
 				$u = str_replace(
 			"http://mail.gnome.org/archives/xml/", "", $url);
@@ -375,7 +378,7 @@ A:link, A:visited, A:active { text-decoration: underline }
 				$results[$name] = array(($r + $relevance) * 2,
 							$t,$m,$d,$w,$u);
 			    } else {
-				$id = strtoupper($name);
+				$id = $name;
 				$m = strtolower($module);
 				$u = str_replace(
 			"http://mail.gnome.org/archives/xslt/", "", $url);
@@ -386,8 +389,58 @@ A:link, A:visited, A:active { text-decoration: underline }
 			mysql_free_result($result);
 		    }
 		}
-		if (($j <= 0) && ($k <= 0)) {
-		    echo "<p> No result found for $word\n";
+	    }
+	    if ((count($results) == 0) && (count($list) == 1)) {
+		$word = $list[0];
+		if (($scope == 'any') || ($scope == 'XML') ||
+		    ($scope == 'API') || ($scope == 'XMLAPI')) {
+		    list($result, $j) = queryWord("xml$word");
+		    if ($j > 0) {
+			for ($i = 0; $i < $j; $i++) {
+			    $relevance = mysql_result($result, $i, 0);
+			    $name = mysql_result($result, $i, 1);
+			    $type = mysql_result($result, $i, 2);
+			    $module = mysql_result($result, $i, 3);
+			    $desc = mysql_result($result, $i, 4);
+			    if (array_key_exists($name, $results)) {
+				list($r,$t,$m,$d,$w,$u) = $results[$name];
+				$results[$name] = array(($r + $relevance) * 2,
+							$t,$m,$d,$w,$u);
+			    } else {
+				$id = $name;
+				$m = strtolower($module);
+				$url = "html/libxml-$module.html#$id";
+				$results[$name] = array($relevance,$type,
+						$module, $desc, $name, $url);
+			    }
+			}
+			mysql_free_result($result);
+		    }
+		}
+		if (($scope == 'any') || ($scope == 'XSLT') ||
+		    ($scope == 'API') || ($scope == 'XSLTAPI')) {
+		    list($result, $j) = XSLTqueryWord("xslt$word");
+		    if ($j > 0) {
+			for ($i = 0; $i < $j; $i++) {
+			    $relevance = mysql_result($result, $i, 0);
+			    $name = mysql_result($result, $i, 1);
+			    $type = mysql_result($result, $i, 2);
+			    $module = mysql_result($result, $i, 3);
+			    $desc = mysql_result($result, $i, 4);
+			    if (array_key_exists($name, $results)) {
+				list($r,$t,$m,$d,$w,$u) = $results[$name];
+				$results[$name] = array(($r + $relevance) * 2,
+							$t,$m,$d,$w,$u);
+			    } else {
+				$id = $name;
+				$m = strtolower($module);
+				$url = "XSLT/html/libxslt-$module.html#$id";
+				$results[$name] = array($relevance,$type,
+						$module, $desc, $name, $url);
+			    }
+			}
+			mysql_free_result($result);
+		    }
 		}
 	    }
 	    mysql_close($link);

@@ -12,48 +12,11 @@
 #
 # March 2002, Igor Zlatkovic <igor@zlatkovic.com>
 
-AUTOCONF = .\config.msvc
-
-# If you cannot run the configuration script, which would take the burden of
-# editing this file from your back, then remove the following line...
-!include $(AUTOCONF)
-# ...and enable the following lines and adapt them to your environment.
-#XML_SRCDIR = ..
-#UTILS_SRCDIR = ..
-#BINDIR = binaries
-#LIBXML_MAJOR_VERSION = 0 # set this to the right value.
-#LIBXML_MINOR_VERSION = 0 # set this to the right value.
-#LIBXML_MICRO_VERSION = 0 # set this to the right value.
-#WITH_TRIO = 0
-#WITH_THREADS = 0
-#WITH_FTP = 1
-#WITH_HTTP = 1
-#WITH_HTML = 1
-#WITH_C14N = 1
-#WITH_CATALOG = 1
-#WITH_DOCB = 1
-#WITH_XPATH = 1
-#WITH_XPTR = 1
-#WITH_XINCLUDE = 1
-#WITH_ICONV = 1
-#WITH_ZLIB = 0
-#WITH_DEBUG = 1
-#WITH_MEM_DEBUG = 0
-#WITH_SCHEMAS = 1
-#DEBUG = 0
-#STATIC = 0
-#PREFIX = . # set this to the right value.
-#BINPREFIX = $(PREFIX)\bin
-#INCPREFIX = $(PREFIX)\include
-#LIBPREFIX = $(PREFIX)\lib
-#SOPREFIX = $(PREFIX)\lib
-#INCLUDE = $(INCLUDE);$(INCPREFIX)
-#LIB = $(LIB);$(LIBPREFIX) 
-
-
 # There should never be a need to modify anything below this line.
 # ----------------------------------------------------------------
 
+AUTOCONF = .\config.msvc
+!include $(AUTOCONF)
 
 # Names of various input and output components.
 XML_NAME = xml2
@@ -63,10 +26,11 @@ XML_IMP = $(XML_BASENAME).lib
 XML_DEF = $(XML_BASENAME).def
 XML_A = $(XML_BASENAME)_a.lib
 
-# Place where we let the compiler put its intermediate trash.
-XML_INTDIR = $(XML_BASENAME).int
-XML_INTDIR_A = $(XML_BASENAME)_a.int
-UTILS_INTDIR = utils.int
+# Place where we let the compiler put its output.
+BINDIR = bin.msvc
+XML_INTDIR = int.msvc
+XML_INTDIR_A = int.a.msvc
+UTILS_INTDIR = int.utils.msvc
 
 # The preprocessor and its options.
 CPP = cl.exe /EP
@@ -77,7 +41,7 @@ CPPFLAGS = $(CPPFLAGS) /D "_REENTRANT"
 
 # The compiler and its options.
 CC = cl.exe
-CFLAGS = /nologo /D "WIN32" /D "_WINDOWS" /D "_MBCS" /W3 /MD
+CFLAGS = /nologo /D "WIN32" /D "_WINDOWS" /D "_MBCS" /W1 $(CRUNTIME)
 CFLAGS = $(CFLAGS) /I$(XML_SRCDIR) /I$(XML_SRCDIR)\include /I$(INCPREFIX)
 !if "$(WITH_THREADS)" != "no"
 CFLAGS = $(CFLAGS) /D "_REENTRANT"
@@ -97,7 +61,7 @@ CFLAGS = $(CFLAGS) /D "HAVE_ZLIB_H"
 LD = link.exe
 LDFLAGS = /nologo /VERSION:$(LIBXML_MAJOR_VERSION).$(LIBXML_MINOR_VERSION)
 LDFLAGS = $(LDFLAGS) /LIBPATH:$(BINDIR) /LIBPATH:$(LIBPREFIX)
-LIBS = 
+LIBS =
 !if "$(WITH_FTP)" == "1" || "$(WITH_HTTP)" == "1"
 LIBS = $(LIBS) wsock32.lib
 !endif 
@@ -105,7 +69,7 @@ LIBS = $(LIBS) wsock32.lib
 LIBS = $(LIBS) iconv.lib
 !endif 
 !if "$(WITH_ZLIB)" == "1"
-LIBS = $(LIBS) zlib.lib
+LIBS = $(LIBS) zdll.lib
 !endif
 !if "$(WITH_THREADS)" == "posix"
 LIBS = $(LIBS) pthreadVC.lib
@@ -127,7 +91,9 @@ LDFLAGS = $(LDFLAGS) /OPT:NOWIN98
 # Libxml object files.
 XML_OBJS = $(XML_INTDIR)\c14n.obj\
 	$(XML_INTDIR)\catalog.obj\
+	$(XML_INTDIR)\chvalid.obj\
 	$(XML_INTDIR)\debugXML.obj\
+	$(XML_INTDIR)\dict.obj\
 	$(XML_INTDIR)\DOCBparser.obj\
 	$(XML_INTDIR)\encoding.obj\
 	$(XML_INTDIR)\entities.obj\
@@ -136,12 +102,15 @@ XML_OBJS = $(XML_INTDIR)\c14n.obj\
 	$(XML_INTDIR)\hash.obj\
 	$(XML_INTDIR)\HTMLparser.obj\
 	$(XML_INTDIR)\HTMLtree.obj\
+	$(XML_INTDIR)\legacy.obj\
 	$(XML_INTDIR)\list.obj\
 	$(XML_INTDIR)\nanoftp.obj\
 	$(XML_INTDIR)\nanohttp.obj\
 	$(XML_INTDIR)\parser.obj\
 	$(XML_INTDIR)\parserInternals.obj\
+	$(XML_INTDIR)\pattern.obj\
 	$(XML_INTDIR)\relaxng.obj\
+	$(XML_INTDIR)\SAX2.obj\
 	$(XML_INTDIR)\SAX.obj\
 	$(XML_INTDIR)\threads.obj\
 	$(XML_INTDIR)\tree.obj\
@@ -153,16 +122,21 @@ XML_OBJS = $(XML_INTDIR)\c14n.obj\
 	$(XML_INTDIR)\xmlmemory.obj\
 	$(XML_INTDIR)\xmlreader.obj\
 	$(XML_INTDIR)\xmlregexp.obj\
+	$(XML_INTDIR)\xmlsave.obj\
 	$(XML_INTDIR)\xmlschemas.obj\
 	$(XML_INTDIR)\xmlschemastypes.obj\
 	$(XML_INTDIR)\xmlunicode.obj\
+	$(XML_INTDIR)\xmlwriter.obj\
 	$(XML_INTDIR)\xpath.obj\
-	$(XML_INTDIR)\xpointer.obj
+	$(XML_INTDIR)\xpointer.obj\
+	$(XML_INTDIR)\xmlstring.obj
 
 # Static libxml object files.
 XML_OBJS_A = $(XML_INTDIR_A)\c14n.obj\
 	$(XML_INTDIR_A)\catalog.obj\
+	$(XML_INTDIR_A)\chvalid.obj\
 	$(XML_INTDIR_A)\debugXML.obj\
+	$(XML_INTDIR_A)\dict.obj\
 	$(XML_INTDIR_A)\DOCBparser.obj\
 	$(XML_INTDIR_A)\encoding.obj\
 	$(XML_INTDIR_A)\entities.obj\
@@ -171,12 +145,15 @@ XML_OBJS_A = $(XML_INTDIR_A)\c14n.obj\
 	$(XML_INTDIR_A)\hash.obj\
 	$(XML_INTDIR_A)\HTMLparser.obj\
 	$(XML_INTDIR_A)\HTMLtree.obj\
+	$(XML_INTDIR_A)\legacy.obj\
 	$(XML_INTDIR_A)\list.obj\
 	$(XML_INTDIR_A)\nanoftp.obj\
 	$(XML_INTDIR_A)\nanohttp.obj\
 	$(XML_INTDIR_A)\parser.obj\
 	$(XML_INTDIR_A)\parserInternals.obj\
+	$(XML_INTDIR_A)\pattern.obj\
 	$(XML_INTDIR_A)\relaxng.obj\
+	$(XML_INTDIR_A)\SAX2.obj\
 	$(XML_INTDIR_A)\SAX.obj\
 	$(XML_INTDIR_A)\threads.obj\
 	$(XML_INTDIR_A)\tree.obj\
@@ -188,11 +165,14 @@ XML_OBJS_A = $(XML_INTDIR_A)\c14n.obj\
 	$(XML_INTDIR_A)\xmlmemory.obj\
 	$(XML_INTDIR_A)\xmlreader.obj\
 	$(XML_INTDIR_A)\xmlregexp.obj\
+	$(XML_INTDIR_A)\xmlsave.obj\
 	$(XML_INTDIR_A)\xmlschemas.obj\
 	$(XML_INTDIR_A)\xmlschemastypes.obj\
 	$(XML_INTDIR_A)\xmlunicode.obj\
+	$(XML_INTDIR_A)\xmlwriter.obj\
 	$(XML_INTDIR_A)\xpath.obj\
-	$(XML_INTDIR_A)\xpointer.obj
+	$(XML_INTDIR_A)\xpointer.obj\
+	$(XML_INTDIR_A)\xmlstring.obj
 
 # Xmllint and friends executables.
 UTILS = $(BINDIR)\xmllint.exe\
@@ -238,6 +218,7 @@ install : all
 	if not exist $(INCPREFIX)\libxml mkdir $(INCPREFIX)\libxml
 	if not exist $(BINPREFIX) mkdir $(BINPREFIX)
 	if not exist $(LIBPREFIX) mkdir $(LIBPREFIX)
+	if not exist $(SOPREFIX) mkdir $(SOPREFIX)
 	copy $(XML_SRCDIR)\include\libxml\*.h $(INCPREFIX)\libxml
 	copy $(BINDIR)\$(XML_SO) $(SOPREFIX)
 	copy $(BINDIR)\$(XML_A) $(LIBPREFIX)
@@ -245,12 +226,23 @@ install : all
 	copy $(BINDIR)\*.exe $(BINPREFIX)
 	-copy $(BINDIR)\*.pdb $(BINPREFIX)
 
+install-bindist : all
+	if not exist $(INCPREFIX)\libxml mkdir $(INCPREFIX)\libxml
+	if not exist $(BINPREFIX) mkdir $(BINPREFIX)
+	if not exist $(LIBPREFIX) mkdir $(LIBPREFIX)
+	if not exist $(SOPREFIX) mkdir $(SOPREFIX)
+	copy $(XML_SRCDIR)\include\libxml\*.h $(INCPREFIX)\libxml
+	copy $(BINDIR)\$(XML_SO) $(SOPREFIX)
+	copy $(BINDIR)\$(XML_A) $(LIBPREFIX)
+	copy $(BINDIR)\$(XML_IMP) $(LIBPREFIX)
+	copy $(BINDIR)\xml*.exe $(BINPREFIX)
+
 # This is a target for me, to make a binary distribution. Not for the public use,
 # keep your hands off :-)
 BDVERSION = $(LIBXML_MAJOR_VERSION).$(LIBXML_MINOR_VERSION).$(LIBXML_MICRO_VERSION)
 BDPREFIX = $(XML_BASENAME)-$(BDVERSION).win32
 bindist : all
-	$(MAKE) /nologo PREFIX=$(BDPREFIX) BINPREFIX=$(BDPREFIX)\util install
+	$(MAKE) /nologo PREFIX=$(BDPREFIX) SOPREFIX=$(BDPREFIX)\bin install-bindist
 	cscript //NoLogo configure.js genreadme $(XML_BASENAME) $(BDVERSION) $(BDPREFIX)\readme.txt
 
 
@@ -287,8 +279,12 @@ $(XML_INTDIR)\$(XML_DEF) : $(XML_INTDIR) $(XML_DEF).src
 
 # Creates the libxml shared object.
 $(BINDIR)\$(XML_SO) : $(BINDIR) $(XML_OBJS) $(XML_INTDIR)\$(XML_DEF)
-	$(LD) $(LDFLAGS) /DLL /DEF:$(XML_INTDIR)\$(XML_DEF) \
+	$(LD) $(LDFLAGS) /DLL \
 		/IMPLIB:$(BINDIR)\$(XML_IMP) /OUT:$(BINDIR)\$(XML_SO) $(XML_OBJS) $(LIBS)
+
+#$(BINDIR)\$(XML_SO) : $(BINDIR) $(XML_OBJS) $(XML_INTDIR)\$(XML_DEF)
+#	$(LD) $(LDFLAGS) /DLL /DEF:$(XML_INTDIR)\$(XML_DEF) \
+#		/IMPLIB:$(BINDIR)\$(XML_IMP) /OUT:$(BINDIR)\$(XML_SO) $(XML_OBJS) $(LIBS)
 
 # Creates the libxml archive.
 $(BINDIR)\$(XML_A) : $(BINDIR) $(XML_OBJS_A)
@@ -313,7 +309,70 @@ $(UTILS_INTDIR) :
 # Builds xmllint and friends. Uses the implicit rule for commands.
 $(UTILS) : $(UTILS_INTDIR) $(BINDIR) libxml libxmla
 
-
 # Source dependences should be autogenerated somehow here, but how to
 # do it? I have no clue.
 
+# TESTS
+
+tests :  XPathtests
+
+XPathtests : $(BINDIR)\testXPath.exe
+	@echo. 2> .memdump
+	@echo ## XPath regression tests
+	@-$(BINDIR)\testXPath.exe | find /C "support not compiled in" 1>nul
+	@if %ERRORLEVEL% NEQ 0 @( \
+		echo Skipping debug not compiled in\
+		@exit 0 \
+	)
+	@for %%I in ($(XML_SRCDIR)\test\XPath\expr\*.*) do @( \
+		@IF NOT EXIST $(XML_SRCDIR)\result\XPath\expr\%%~nxI ( \
+			@echo New test %%~nxI &&\
+			@echo %%~nxI &&\
+			$(BINDIR)\testXPath.exe -f --expr %%I > $(XML_SRCDIR)/result/XPath/expr/%%~nxI &&\
+			findstr /C:"MEMORY ALLOCATED : 0" \
+		) ELSE ( \
+			$(BINDIR)\testXPath.exe -f --expr %%I 2>&1 > result.%%~nxI &&\
+			fc $(XML_SRCDIR)\result\XPath\expr\%%~nxI result.%%~nxI >nul &\
+			iF ERRORLEVEL 1 exit 1 & \
+			findstr "MEMORY ALLOCATED" .memdump | findstr /C:"MEMORY ALLOCATED : 0" >nul &&\
+			del result.%%~nxI \
+		) \
+	)
+	@for %%I in ($(XML_SRCDIR)\test\XPath\docs\*.*) do @( \
+		for %%J in ($(XML_SRCDIR)\test\XPath\tests\%%~nxI*.*) do @( \
+			if not exist $(XML_SRCDIR)\result\XPath\tests\%%~nxJ ( \
+				$(BINDIR)\testXPath.exe -f -i %%I %%J > $(XML_SRCDIR)\result\XPath\tests\%%~nxJ &&\
+				findstr /C:"MEMORY ALLOCATED" .memdump | findstr /C:"MEMORY ALLOCATED : 0" > nul \
+			) ELSE ( \
+				$(BINDIR)\testXPAth.exe -f -i %%I %%J 2>&1 > result.%%~nxJ &&\
+				findstr /C:"MEMORY ALLOCATED" .memdump | findstr /C:"MEMORY ALLOCATED : 0">null &&\
+				fc $(XML_SRCDIR)\result\XPath\tests\%%~nxJ result.%%~nxJ >null & \
+				IF ERRORLEVEL 1 (echo Error: %%I %%J & exit 1) & \
+				del result.%%~nxJ \
+			)\
+		)\
+	)
+
+XMLtests : $(BINDIR)\xmllint.exe
+	@echo. 2> .memdump
+	@echo ## XML regression tests
+	-@for %%I in ($(XML_SRCDIR)\test\*) do @( \
+		if not exist $(XML_SRCDIR)\result\%%~nxI ( \
+			echo New test file %%~nxI &\
+			$(BINDIR)\xmllint.exe  %%I > $(XML_SRCDIR)\result\%%~nxI && \
+			findstr /C:"MEMORY ALLOCATED" .memdump | findstr /C:"MEMORY ALLOCATED : 0" > null \
+		) ELSE ( \
+			$(BINDIR)\xmllint.exe %%I 2>&1 > result.%%~nxI && \
+			findstr /C:"MEMORY ALLOC" .memdump | findstr /C:"MEMORY ALLOCATED : 0" > null && \
+			fc $(XML_SRCDIR)\result\%%~nxI result.%%~nxI > null && \
+			$(BINDIR)\xmllint.exe result.%%~nxI 2>&1 > result2.%%~nxI | findstr /V /C:"failed to load external entity" && \
+			fc result.%%~nxI result2.%%~nxI & \
+			del result.%%~nxI result2.%%~nxI\
+		) \
+	)	
+
+				
+
+
+
+	
