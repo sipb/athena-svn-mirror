@@ -6,13 +6,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/list.c,v $
- *	$Id: list.c,v 1.21 1991-11-05 13:52:49 lwvanels Exp $
+ *	$Id: list.c,v 1.22 1991-11-06 15:44:07 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/list.c,v 1.21 1991-11-05 13:52:49 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/list.c,v 1.22 1991-11-06 15:44:07 lwvanels Exp $";
 #endif
 #endif
 
@@ -179,9 +179,9 @@ dump_list()
 {
   KNUCKLE **k_ptr;
   static D_LIST *active_q, *unseen_q, *pending_q, *pickup_q, *refer_q,
-                *on_q, *tmp;
+                *on_q;
   static int mx_active, mx_unseen, mx_pending, mx_pickup, mx_refer,mx_on;
-  int n_active, n_unseen, n_pending, n_pickup, n_refer, n_on,i;
+  int n_active, n_unseen, n_pending, n_pickup, n_refer, n_on;
   FILE *f;
 
   /* Allocate initial space for queues */
