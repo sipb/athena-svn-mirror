@@ -1,6 +1,6 @@
 # Global cshrc file
 #
-# $Id: cshrc,v 1.12 2001-06-20 17:40:20 ghudson Exp $
+# $Id: cshrc,v 1.12.2.1 2001-07-10 16:40:35 ghudson Exp $
 
 # This file is sourced by default user file ~/.cshrc
 
@@ -12,9 +12,9 @@ set initdir=/usr/athena/lib/init
 # Set standard path variables, for reference (actual paths set later in file).
 
 # Set standard Athena path variable (generic path for all users):
-set athena_path=( /srvd/patch /usr/athena/bin /bin/athena /usr/openwin/bin \
-		/usr/openwin/demo /usr/bin /usr/ccs/bin /usr/andrew/bin \
-		/usr/athena/etc /usr/sbin /sbin /usr/ucb )
+set athena_path=( /srvd/patch /usr/athena/bin /usr/athena/etc /bin/athena \
+		/usr/openwin/bin /usr/openwin/demo /usr/bin /usr/ccs/bin \
+		/usr/andrew/bin /usr/sbin /sbin /usr/ucb )
 
 # Set appropriate bin directory variable for this platform
 # (e.g., vaxbin for VAXstations, decmipsbin for pMAXen, etc.;  this will
@@ -50,7 +50,7 @@ if (! $?ENV_SET) then
 
 	umask 077				# Strictly protect files
 						#  (does not apply in AFS)
-	unlimit coredumpsize            	# Don't allow coredumps
+	limit coredumpsize 0            	# Don't allow coredumps
 	setenv GNOME_DISABLE_CRASH_DIALOG 1
 	setenv MORE -s		  		# Default "more" behavior
 						# we are now down to -s 
