@@ -57,7 +57,7 @@ uid_t getuid(), geteuid();
 void usage(arg0)
      char *arg0;
 {
-  fprintf(stderr,"Usage: %s [-v] [-n] [-nosrcrules] [-nodstrules] [-s srcdir] [-d dstdir] [-a rules]\n",arg0);
+  fprintf(stderr,"Usage: %s [-v] [-n] [-q] [-nosrcrules] [-nodstrules] [-s srcdir] [-d dstdir] [-a rules]\n",arg0);
   exit(1);
 }
 

@@ -7,15 +7,20 @@ synctree \- reconcile directory tree with original
 [
 .B \-v | \-q
 ] [
-.B \-b
+.B \-n
 ] [
 .B \-nosrcrules
+] [
+.B \-nodstrules
 ] [
 .B \-s 
 .I srcdir
 ] [
 .B \-d
 .I dstdir
+] [
+.B \-a
+.I rules
 ]
 .br
 .SH DESCRIPTION
@@ -54,14 +59,19 @@ useful for seeing what would occur, without causing any damage to the
 destination tree.
 .TP
 .B \-nosrcrules
-Rules files are only read from the destination directory tree.  Rules files
-on the source tree are ignored.
+Rules files from the source tree are ignored.
+.TP
+.B \-nodstrules
+Rules files from the destination tree are ignored.
 .TP
 .B \-s
 Specifies the source directory tree.  The default is /server.
 .TP
 .B \-d
 Specifies the destination directory tree.  The default is /.
+.TP
+.B \-a
+Specifies a file containing additional rules to use.
 
 .SH RULES
 Rules for reconciling the source and destination trees can be found both
