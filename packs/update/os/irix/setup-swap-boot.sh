@@ -134,6 +134,7 @@ if [ -r /install/miniroot/OSVERSION ]; then
 fi
 
 /srvd/install/netconf --swap --root $swapmount --hostname $HOST --ipaddr $ADDR
+cp /etc/TIMEZONE $swapmount/etc/TIMEZONE
 
 # Pass on information about where the proper root partition is.
 # Note this code assumes there is just one big root partition, and
