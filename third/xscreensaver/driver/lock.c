@@ -898,7 +898,11 @@ handle_passwd_key (saver_info *si, XKeyEvent *event)
         }
       break;
 
-    case '\014':                                         /* Control-L */
+    case '\016':					/* Control-N */
+      /* (If keyboard is mapped to Dvorak, the key physically marked
+       *  `L' will generate an `N'.)
+       */
+    case '\014':					/* Control-L */
       if (si->prefs.max_idle_time && pw->idle_time > si->prefs.max_idle_time)
       {
         update_passwd_window (si, "Logging out...", pw->ratio);
