@@ -13,7 +13,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char rcsid_xselect_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/xselect.c,v 1.2 1989-11-02 01:58:14 marc Exp $";
+static char rcsid_xselect_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/xselect.c,v 1.3 1989-11-03 02:20:09 marc Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>
@@ -74,7 +74,7 @@ static Atom RequestAtoms[] = {
 #define PROP(prop,targ) ((prop)!=None?(prop):(targ))
 #define ChangeProp(type,format,data,size) \
   XChangeProperty(dpy,w,PROP(property,target),(type),(format), \
-		  (unsigned char *) (data),(size))
+		  PropModeReplace, (unsigned char *) (data),(size))
 
 static void xselSetProperties(dpy,w,property,target,selreq)
      Display *dpy;
