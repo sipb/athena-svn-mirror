@@ -1,0 +1,59 @@
+#ifdef AFS
+AFSDEF=-DAFS
+AFSINC=-Iafsinc
+AFSFIL=ktc.c afs.c
+AFSOBJ=ktc.o afs.o
+#endif
+#ifdef ibm032
+CCFLG=-Hon=read_only_strings
+CC=/bin/hc
+#endif
+#ifdef vax
+CCFLG=
+CC=gcc
+#endif
+#if defined(AIX) && defined(i386)
+CCFLG=-q
+CC=cc
+XLIBS=-L/usr/athena/lib -lbsd
+#endif
+#ifdef _AUX_SOURCE
+XSRCS = emul_re.c
+XOBJS = emul_re.o
+#endif
+
+DEBUG=-O
+
+INCLUDES= $(AFSINC) $(XINCLUDES)
+LIBS = -lhesiod -lkrb -ldes -lrpcsvc -lzephyr -lcom_err $(XLIBS) $(AFSLIB)
+
+CFLAGS=$(CCFLG) $(DEFINES) $(INCLUDES) $(DEBUG)
+LDFLAGS= $(DEBUG) $(LDOPTS)
+
+SRCS = main.c util.c attachtab.c attach.c detach.c nfs.c rvd.c\
+	ufs.c rpc.c mount.c unmount.c zephyr.c getrealm.c\
+	rvdutil.c pathcan.c config.c strtok.c $(AFSFIL) $(XSRCS)
+OBJS = 	main.o util.o attachtab.o attach.o detach.o nfs.o rvd.o\
+	ufs.o rpc.o mount.o unmount.o zephyr.o getrealm.o\
+	rvdutil.o pathcan.o config.o strtok.o $(AFSOBJ) $(XOBJS)
+
+all: attach
+
+clean:
+	rm -f *.bak *~ *.o core \#* attach
+
+attach: $(OBJS)
+	$(CC) $(LDFLAGS) -o attach $(OBJS) $(LIBS) $(AFSDEF)
+
+depend:
+	@-rm -f Make.depend
+	@-touch Make.depend
+	makedepend $(SRCS) $(CFLAGS) -fMake.depend
+
+Makefile: Imakefile
+	-mv -f Makefile Makefile.bak
+	/lib/cpp -E Imakefile Makefile $(AFSDEF)
+
+install:: attach
+	@echo "Rel-eng should have put an install command here"
+	@false
