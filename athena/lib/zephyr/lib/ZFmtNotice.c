@@ -10,15 +10,15 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFmtNotice.c,v 1.7 1988-05-13 18:06:55 rfrench Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFmtNotice.c,v 1.8 1988-05-17 21:21:34 rfrench Exp $ */
 
 #ifndef lint
-static char rcsid_ZFormatNotice_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFmtNotice.c,v 1.7 1988-05-13 18:06:55 rfrench Exp $";
+static char rcsid_ZFormatNotice_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFmtNotice.c,v 1.8 1988-05-17 21:21:34 rfrench Exp $";
 #endif lint
 
 #include <zephyr/mit-copyright.h>
 
-#include <zephyr/zephyr.h>
+#include <zephyr/zephyr_internal.h>
 
 Code_t ZFormatNotice(notice, buffer, ret_len, cert_routine)
     ZNotice_t *notice;
@@ -27,7 +27,6 @@ Code_t ZFormatNotice(notice, buffer, ret_len, cert_routine)
     int (*cert_routine)();
 {
     char header[Z_MAXHEADERLEN];
-    char *ptr;
     int hdrlen;
     Code_t retval;
 
@@ -37,11 +36,10 @@ Code_t ZFormatNotice(notice, buffer, ret_len, cert_routine)
 
     *ret_len = hdrlen+notice->z_message_len;
 
-    if (!(*buffer = malloc(*ret_len)))
+    if (!(*buffer = (char *)malloc(*ret_len)))
 	return (ENOMEM);
 
-    notice->z_packet = *buffer;
-    
+    bcopy(header, *buffer, hdrlen);
     bcopy(notice->z_message, *buffer+hdrlen, notice->z_message_len);
 
     return (ZERR_NONE);

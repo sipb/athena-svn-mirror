@@ -10,10 +10,10 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZSendRaw.c,v 1.2 1987-07-29 15:18:35 rfrench Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZSendRaw.c,v 1.3 1988-05-17 21:23:51 rfrench Exp $ */
 
 #ifndef lint
-static char rcsid_ZSendRawNotice_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZSendRaw.c,v 1.2 1987-07-29 15:18:35 rfrench Exp $";
+static char rcsid_ZSendRawNotice_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZSendRaw.c,v 1.3 1988-05-17 21:23:51 rfrench Exp $";
 #endif lint
 
 #include <zephyr/mit-copyright.h>
@@ -21,24 +21,23 @@ static char rcsid_ZSendRawNotice_c[] = "$Header: /afs/dev.mit.edu/source/reposit
 #include <zephyr/zephyr_internal.h>
 
 Code_t ZSendRawNotice(notice)
-	ZNotice_t	*notice;
+    ZNotice_t *notice;
 {
-	Code_t retval;
-	char *buffer;
-	int len;
+    Code_t retval;
+    ZNotice_t newnotice;
+    char *buffer;
+    int len;
 
-	buffer = (char *)malloc(Z_MAXPKTLEN);
-	if (!buffer)
-		return (ENOMEM);
-
-	if ((retval = ZFormatRawNotice(notice,buffer,Z_MAXPKTLEN,&len)) !=
-	    ZERR_NONE) {
-		free(buffer);
-		return (retval);
-	}
-
-	retval = ZSendPacket(buffer,len);
-	free(buffer);
-
+    if ((retval = ZFormatRawNotice(notice, &buffer, &len)) !=
+	ZERR_NONE)
 	return (retval);
+
+    if ((retval = ZParseNotice(buffer, len, &newnotice)) != ZERR_NONE)
+	return (retval);
+    
+    retval = Z_SendFragmentedNotice(&newnotice);
+
+    free(buffer);
+
+    return (retval);
 }

@@ -10,53 +10,53 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZReadAscii.c,v 1.9 1987-07-29 15:17:52 rfrench Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZReadAscii.c,v 1.10 1988-05-17 21:23:17 rfrench Exp $ */
 
 #ifndef lint
-static char rcsid_ZReadAscii_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZReadAscii.c,v 1.9 1987-07-29 15:17:52 rfrench Exp $";
+static char rcsid_ZReadAscii_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZReadAscii.c,v 1.10 1988-05-17 21:23:17 rfrench Exp $";
 #endif lint
 
 #include <zephyr/mit-copyright.h>
 
 #include <zephyr/zephyr_internal.h>
 
-int ZReadAscii(ptr,len,field,num)
-	char *ptr;
-	int len;
-	unsigned char *field;
-	int num;
+int ZReadAscii(ptr, len, field, num)
+    char *ptr;
+    int len;
+    unsigned char *field;
+    int num;
 {
-	int i;
-	unsigned int hexbyte;
-	char bfr[3];
+    int i;
+    unsigned int hexbyte;
+    char bfr[3];
 
-	for (i=0;i<num;i++) {
-		if (*ptr == ' ') {
-			ptr++;
-			if (--len < 0)
-				return (ZERR_BADFIELD);
-		} 
-		if (ptr[0] == '0' && ptr[1] == 'x') {
-			ptr += 2;
-			len -= 2;
-			if (len < 0)
-				return (ZERR_BADFIELD);
-		} 
-		bfr[0] = ptr[0];
-		bfr[1] = ptr[1];
-		bfr[2] = '\0';
-		if (!bfr[0] || !bfr[1])
-			return (ZERR_BADFIELD);
-		(void) sscanf(bfr,"%x",&hexbyte);
-		field[i] = hexbyte;
-		ptr += 2;
-		len -= 2;
-		if (len < 0)
-			return (ZERR_BADFIELD);
-	}
-
-	if (*ptr)
+    for (i=0;i<num;i++) {
+	if (*ptr == ' ') {
+	    ptr++;
+	    if (--len < 0)
 		return (ZERR_BADFIELD);
+	} 
+	if (ptr[0] == '0' && ptr[1] == 'x') {
+	    ptr += 2;
+	    len -= 2;
+	    if (len < 0)
+		return (ZERR_BADFIELD);
+	} 
+	bfr[0] = ptr[0];
+	bfr[1] = ptr[1];
+	bfr[2] = '\0';
+	if (!bfr[0] || !bfr[1])
+	    return (ZERR_BADFIELD);
+	(void) sscanf(bfr, "%x", &hexbyte);
+	field[i] = hexbyte;
+	ptr += 2;
+	len -= 2;
+	if (len < 0)
+	    return (ZERR_BADFIELD);
+    }
 
-	return (ZERR_NONE);
+    if (*ptr)
+	return (ZERR_BADFIELD);
+
+    return (ZERR_NONE);
 }

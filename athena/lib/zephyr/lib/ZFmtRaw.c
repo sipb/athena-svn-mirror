@@ -10,29 +10,27 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFmtRaw.c,v 1.3 1988-05-13 18:16:15 rfrench Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFmtRaw.c,v 1.4 1988-05-17 21:21:44 rfrench Exp $ */
 
 #ifndef lint
-static char rcsid_ZFormatRawNotice_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFmtRaw.c,v 1.3 1988-05-13 18:16:15 rfrench Exp $";
+static char rcsid_ZFormatRawNotice_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFmtRaw.c,v 1.4 1988-05-17 21:21:44 rfrench Exp $";
 #endif lint
 
 #include <zephyr/mit-copyright.h>
 
-#include <zephyr/zephyr.h>
+#include <zephyr/zephyr_internal.h>
 
-Code_t ZFormatRawNotice(notice, buffer, ret_len, cert_routine)
+Code_t ZFormatRawNotice(notice, buffer, ret_len)
     ZNotice_t *notice;
     char **buffer;
     int *ret_len;
-    int (*cert_routine)();
 {
     char header[Z_MAXHEADERLEN];
-    char *ptr;
     int hdrlen;
     Code_t retval;
 
-    if ((retval = Z_FormatRawHeader(notice, header, sizeof(header), &hdrlen, 
-				    cert_routine)) != ZERR_NONE)
+    if ((retval = Z_FormatRawHeader(notice, header, sizeof(header), &hdrlen))
+	!= ZERR_NONE)
 	return (retval);
 
     *ret_len = hdrlen+notice->z_message_len;
@@ -40,6 +38,7 @@ Code_t ZFormatRawNotice(notice, buffer, ret_len, cert_routine)
     if (!(*buffer = malloc(*ret_len)))
 	return (ENOMEM);
 
+    bcopy(header, *buffer, hdrlen);
     bcopy(notice->z_message, *buffer+hdrlen, notice->z_message_len);
 
     return (ZERR_NONE);

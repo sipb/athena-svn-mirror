@@ -10,19 +10,19 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZCmpUIDP.c,v 1.2 1987-07-29 15:15:27 rfrench Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZCmpUIDP.c,v 1.3 1988-05-17 21:21:20 rfrench Exp $ */
 
 #ifndef lint
-static char rcsid_ZCompareUIDPred_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZCmpUIDP.c,v 1.2 1987-07-29 15:15:27 rfrench Exp $";
+static char rcsid_ZCompareUIDPred_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZCmpUIDP.c,v 1.3 1988-05-17 21:21:20 rfrench Exp $";
 #endif lint
 
 #include <zephyr/mit-copyright.h>
 
 #include <zephyr/zephyr_internal.h>
 
-int ZCompareUIDPred(notice,uid)
-	ZNotice_t	*notice;
-	ZUnique_Id_t	*uid;
+int ZCompareUIDPred(notice, uid)
+    ZNotice_t *notice;
+    ZUnique_Id_t *uid;
 {
-	return (ZCompareUID(&notice->z_uid,uid));
+    return (ZCompareUID(&notice->z_uid, uid));
 }

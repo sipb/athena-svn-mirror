@@ -10,10 +10,10 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZInit.c,v 1.10 1988-05-13 14:17:37 rfrench Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZInit.c,v 1.11 1988-05-17 21:22:21 rfrench Exp $ */
 
 #ifndef lint
-static char rcsid_ZInitialize_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZInit.c,v 1.10 1988-05-13 14:17:37 rfrench Exp $";
+static char rcsid_ZInitialize_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZInit.c,v 1.11 1988-05-17 21:22:21 rfrench Exp $";
 #endif lint
 
 #include <zephyr/mit-copyright.h>
@@ -27,8 +27,9 @@ Code_t ZInitialize()
 {
     struct servent *hmserv;
     char addr[4];
-    int retval;
-#ifndef KERBEROS
+#ifdef KERBEROS
+    int krbval;
+#else
     char hostname[MAXHOSTNAMELEN+1];
     struct hostent *hent;
 #endif
@@ -59,8 +60,8 @@ Code_t ZInitialize()
     __HM_set = 0;
 
 #ifdef KERBEROS    
-    if ((retval = get_krbrlm(__Zephyr_realm, 1)) != KSUCCESS)
-	return (retval);
+    if ((krbval = get_krbrlm(__Zephyr_realm, 1)) != KSUCCESS)
+	return (krbval);
 #else
     if (gethostname(hostname, MAXHOSTNAMELEN))
 	return (errno);

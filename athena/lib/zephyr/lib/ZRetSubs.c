@@ -10,10 +10,10 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZRetSubs.c,v 1.6 1987-11-08 00:22:50 rfrench Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZRetSubs.c,v 1.7 1988-05-17 21:23:31 rfrench Exp $ */
 
 #ifndef lint
-static char rcsid_ZRetrieveSubscriptions_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZRetSubs.c,v 1.6 1987-11-08 00:22:50 rfrench Exp $";
+static char rcsid_ZRetrieveSubscriptions_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZRetSubs.c,v 1.7 1988-05-17 21:23:31 rfrench Exp $";
 #endif lint
 
 #include <zephyr/mit-copyright.h>
@@ -23,6 +23,7 @@ static char rcsid_ZRetrieveSubscriptions_c[] = "$Header: /afs/dev.mit.edu/source
 #define MAXSUBPACKETS 200 /* If a person has more than 1000
 			   *  subscriptions, he loses! */
 
+#ifdef notdef
 Code_t ZRetrieveSubscriptions(port,nsubs)
 	u_short port;
 	int *nsubs;
@@ -153,3 +154,4 @@ Code_t ZRetrieveSubscriptions(port,nsubs)
 
 	return (returncode);
 }
+#endif

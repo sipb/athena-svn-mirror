@@ -10,10 +10,10 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZOpenPort.c,v 1.9 1988-05-13 14:41:57 rfrench Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZOpenPort.c,v 1.10 1988-05-17 21:22:48 rfrench Exp $ */
 
 #ifndef lint
-static char rcsid_ZOpenPort_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZOpenPort.c,v 1.9 1988-05-13 14:41:57 rfrench Exp $";
+static char rcsid_ZOpenPort_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZOpenPort.c,v 1.10 1988-05-17 21:22:48 rfrench Exp $";
 #endif lint
 
 #include <zephyr/mit-copyright.h>
@@ -24,9 +24,9 @@ static char rcsid_ZOpenPort_c[] = "$Header: /afs/dev.mit.edu/source/repository/a
 Code_t ZOpenPort(port)
     u_short *port;
 {
-    int retval;
     struct sockaddr_in bindin;
-
+    int len;
+    
     (void) ZClosePort();
 
     if ((__Zephyr_fd = socket(AF_INET, SOCK_DGRAM, 0)) < 0) {
@@ -43,16 +43,18 @@ Code_t ZOpenPort(port)
 
     bindin.sin_addr.s_addr = INADDR_ANY;
 
-    if ((retval = bind(__Zephyr_fd, &bindin, sizeof(bindin))) < 0) {
+    if (bind(__Zephyr_fd, &bindin, sizeof(bindin)) < 0) {
 	if (errno == EADDRINUSE && port && *port)
 	    return (ZERR_PORTINUSE);
 	else
 	    return (errno);
     }
 
-    if (!bindin.sin_port)
-	if (getsockname(__Zephyr_fd, &bindin, sizeof(bindin)))
+    if (!bindin.sin_port) {
+	len = sizeof(bindin);
+	if (getsockname(__Zephyr_fd, &bindin, &len))
 	    return (errno);
+    }
     
     __Zephyr_port = bindin.sin_port;
     __Zephyr_open = 1;

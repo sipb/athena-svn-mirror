@@ -10,10 +10,10 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFmtList.c,v 1.6 1988-05-13 18:11:01 rfrench Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFmtList.c,v 1.7 1988-05-17 21:21:39 rfrench Exp $ */
 
 #ifndef lint
-static char rcsid_ZFormatNoticeList_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFmtList.c,v 1.6 1988-05-13 18:11:01 rfrench Exp $";
+static char rcsid_ZFormatNoticeList_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFmtList.c,v 1.7 1988-05-17 21:21:39 rfrench Exp $";
 #endif lint
 
 #include <zephyr/mit-copyright.h>
@@ -31,7 +31,7 @@ Code_t ZFormatNoticeList(notice, list, nitems, buffer, ret_len,
 {
     char header[Z_MAXHEADERLEN];
     int hdrlen, i, size;
-    char *ptr, *end;
+    char *ptr;
     Code_t retval;
 
     if ((retval = Z_FormatHeader(notice, header, sizeof(header), &hdrlen,
@@ -46,6 +46,8 @@ Code_t ZFormatNoticeList(notice, list, nitems, buffer, ret_len,
     
     if (!(*buffer = malloc(*ret_len)))
 	return (ENOMEM);
+
+    bcopy(header, *buffer, hdrlen);
 
     ptr = *buffer+hdrlen;
 
