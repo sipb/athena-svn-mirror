@@ -5,6 +5,7 @@ console \- X console window
 .SH SYNOPSIS
 .nf
 console [-blink \fImilliseconds\fR] [-unmap \fIseconds\fR] [\(+-map]
+        [-global] [-nosession]
 .fi
 .SH DESCRIPTION
 The \fIconsole\fR program reads standard input and displays it
@@ -18,7 +19,7 @@ button to hide the window again until new input comes.
 For other available behaviors, see below.
 .SH SIGNALS
 \fIConsole\fR takes the following signals, which are usually sent to
-it by \fIconfig_console\fR or \fIdm\fR:
+it by \fIconfig_console\fR, \fIdm\fR, or \fInanny\fR:
 .TP 8
 .B SIGHUP
 On a hangup signal, \fIconsole\fR attempts to dump the contents
@@ -44,7 +45,7 @@ options, namely: -display, -geometry, -bg, -background, -bd,
 \(+-rv, \(+-reverse, \(+-iconic, -icongeometry, -xrm. See X(1) for
 details on these options.
 
-\fIConsole\fR accepts three additional options:
+\fIConsole\fR accepts five additional options:
 .TP 8
 .B \-blink \fImilliseconds\fR
 This option specifies the blink frequency in milliseconds of
@@ -66,8 +67,20 @@ This option specifies whether the console window should start up mapped
 (visible).  -map causes the window to start mapped, +map causes
 \fIconsole\fR to wait until there is input before mapping the window on 
 the screen.  Starting unmapped is the default.
-
-.SH X DEFAULTS
+.TP 8
+.B \-global
+When specified, this option causes \fIconsole\fR to place a
+_SGI_DESKS_HINTS property on its window, with the contents
+_SGI_DESKS_ALWAYS_GLOBAL. This is only useful when the console
+window is running with SGI's 4Dwm window manager, where it will
+cause the console to appear on all desks (if desks are in use).
+.TP 8
+.B \-nosession
+This option causes \fIconsole\fR not to place a WM_COMMAND property
+on its window. This is needed to prevent session managers
+(such as SGI's 4Dwm window manager) from attempting to start up \fIconsole\fR
+themselves when it is being used as the system console window.
+.SH X RESOURCES
 Since \fIconsole\fR is normally started up before the user's resources
 have been read into the server, it does not have the chance to read the
 user's preferences.  If the user wishes \fIconsole\fR to use her
@@ -111,6 +124,12 @@ This is the same as \(+-map. Specify True or False.
 .TP 8
 .B Console*window.iconic
 This is the same as \(+-iconic. Specify True or False.
+.TP 8
+.B Console*window.global
+This is the same as \-global. Specify True or False.
+.TP 8
+.B Console*window.showCommand
+This is the same as \-nosession (which sets this to False).
 .SH SELECTING TEXT
 Console provides the ability to select text from the window for "pasting"
 into other applications (xterm, emacs, etc.).  The method for "cutting"
@@ -162,7 +181,8 @@ depressed.
 .br
 /etc/athena/console.pid    pid of console, if started by \fIdm\fR
 .SH "SEE ALSO"
-X(1), config_console(1), show_console(1), hide_console(1), dm(8), xrdb(1)
+X(1), config_console(1), show_console(1), hide_console(1), dm(8), nanny(8),
+xrdb(1)
 .SH "BUGS"
 \fIConsole\fR may sometimes unmap its window (if -unmap is specified)
 while you are reading it.  Moving the scrollbar before the specified timeout
@@ -179,4 +199,4 @@ line leaves no blank lines, thus the entire text is one paragraph.
 .SH AUTHORS
 Craig Fields and Chris VanHaren, MIT Project Athena
 .br
-Copyright (c) 1990,1991 Massachusetts Institute of Technology
+Copyright (c) 1990-1995 Massachusetts Institute of Technology
