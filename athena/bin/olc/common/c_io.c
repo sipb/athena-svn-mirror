@@ -20,22 +20,29 @@
  * For copying and distribution information, see the file "mit-copyright.h."
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/c_io.c,v $
- *	$Id: c_io.c,v 1.14 1991-04-15 14:56:10 lwvanels Exp $
+ *	$Id: c_io.c,v 1.15 1991-09-10 11:02:33 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/c_io.c,v 1.14 1991-04-15 14:56:10 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/c_io.c,v 1.15 1991-09-10 11:02:33 lwvanels Exp $";
 #endif
 #endif
 
 #include <mit-copyright.h>
+#if defined(__STDC__) && !defined(ibm032)
+#include <stdlib.h>
+#endif
+
 #include <sys/types.h>		/* System type declarations. */
 #include <sys/socket.h>		/* Network socket defs. */
 #include <sys/file.h>		/* File handling defs. */
 #include <sys/stat.h>
 #include <sys/time.h>		/* System time definitions. */
+#if defined(_IBMR2) && defined(_AIX)
+#include <sys/select.h>
+#endif
 #include <netinet/in.h>
 #include <errno.h>		/* System error numbers. */
 #include <netdb.h>
