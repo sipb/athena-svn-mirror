@@ -3,7 +3,7 @@
  *
  * $Author: ghudson $
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/logger/log.c,v $
- * $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/logger/log.c,v 1.10 1996-09-20 02:27:28 ghudson Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/logger/log.c,v 1.11 1997-04-30 18:18:48 ghudson Exp $
  *
  *
  * Copyright (C) 1991 by the Massachusetts Institute of Technology.
@@ -12,7 +12,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/logger/log.c,v 1.10 1996-09-20 02:27:28 ghudson Exp $";
+static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/logger/log.c,v 1.11 1997-04-30 18:18:48 ghudson Exp $";
 #endif
 #endif
 
@@ -64,12 +64,14 @@ log_startup(type)
    should be of the form "loggerhost port_num"
 */
 
-  if ((hesinfo = hes_resolve(type,HESIOD_LOG_TYPE)) == NULL) {
+  hesinfo = hes_resolve(type,HESIOD_LOG_TYPE);
+  if (hesinfo == NULL) {
     punt = 1;
     return;
   }
 
-  if (p = strchr(*hesinfo,' ')) {
+  p = strchr(*hesinfo,' ');
+  if (p) {
     *p++ = '\0';
     (void) strcpy(log_host,*hesinfo);
     port = htons(atoi(p));
@@ -83,17 +85,19 @@ log_startup(type)
   strcpy(log_host,"whatever.foo.bar");
   port = htons(2051);
 #endif
-  if ((fd = socket(AF_INET,SOCK_DGRAM,0)) < 0) {
+  fd = socket(AF_INET,SOCK_DGRAM,0);
+  if (fd < 0) {
     punt = 1;
     return;
   }
 
-  if ((hp = gethostbyname(log_host)) == NULL) {
+  hp = gethostbyname(log_host);
+  if (hp == NULL) {
     punt = 1;
     return;
   }
   
-  memcpy(&name.sin_addr,hp->h_addr,hp->h_length);
+  memcpy(&name.sin_addr, hp->h_addr, hp->h_length);
   name.sin_family = AF_INET;
   name.sin_port = port;
   
