@@ -1,6 +1,6 @@
 /**/###########################################################################
 /**/# Imake rules for building libraries, programs, scripts, and data files
-/**/# rules:  $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/config/Imake.rules,v 1.9 1991-04-19 00:59:56 lwvanels Exp $
+/**/# rules:  $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/config/Imake.rules,v 1.10 1991-08-30 10:49:08 lwvanels Exp $
 
 /* Copyright (C) 1991 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h". */
@@ -24,7 +24,7 @@
  *     	ComplexProgramTarget_1                   (program,locallib,syslib)
  *     	ComplexProgramTarget_2                   (program,locallib,syslib)
  *     	ComplexProgramTarget_3                   (program,locallib,syslib)
- *     	ServerTarget                     (server,subdirs,objects,libs,syslibs)
+ *	CompileErrorTable			 (tblname)
  *     	InstallLibrary                           (libname,dest)
  *     	InstallSharedLibrary                     (libname,rev,dest)
  *     	InstallLibraryAlias                      (libname,alias,dest)
@@ -66,9 +66,6 @@
  *     	ProfiledLibraryTarget                    (libname,objlist)
  *     	DebuggedLibraryTarget                    (libname,objlist)
  *     	AliasedLibraryTarget                     (libname,alias)
- *     	NormalRelocatableTarget                  (objname,objlist)
- *     	ProfiledRelocatableTarget                (objname,objlist)
- *     	DebuggedRelocatableTarget                (objname,objlist)
  *     	LintLibraryTarget                        (libname,srclist)
  *      NormalLintTarget                         (srclist)
  *      LintTarget                               ()
@@ -94,11 +91,6 @@
  *      CppScriptTarget                          (dst,src,defs,deplist)
  *      MakeScriptFromCpp                        (name,defs)
  *      MakeDirectories                          (step,dirs)
- *      MakeFonts                                ()
- *      InstallFonts                             (dest)
- *      InstallFontAliases                       (dest)
- *      FontTarget                               (basename)
- *      CompressedFontTarget                     (basename)
  *      AllTarget                                (depends)
  * 
  * 
@@ -157,16 +149,6 @@ $(RM) program; if [ -f program ]; then $(MV) program program/**/~; fi
 #define RemoveTargetProgram(program) $(RM) program
 #endif
 #endif
-
-#ifndef BuildIncludes
-#define BuildIncludes(srclist,dstsubdir,dstupdir)			@@\
-includes::								@@\
-	$(MKDIRHIER) $(BUILDINCDIR)/dstsubdir				@@\
-	@(set -x; cd $(BUILDINCDIR)/dstsubdir; for i in srclist; do \	@@\
-		$(RM) $$i; \						@@\
-		$(LN) $(BUILDINCTOP)/dstupdir/$(CURRENT_DIR)/$$i .; \	@@\
-	done)
-#endif /* BuildIncludes */
 
 /*
  * NormalProgramTarget - generate rules to compile and link the indicated 
@@ -304,26 +286,19 @@ InstallProgram(program,$(DESTDIR))					@@\
 InstallManPage(program,$(MANDIR))
 #endif /* ComplexProgramTarget_3 */
 
-
-
 /*
- * ServerTarget - generate rules to compile, link, and relink an X server.
+ * CompileErrorTable - generate rules to compile the indicated error table.
  */
-#ifndef ServerTarget
-#define	ServerTarget(server,subdirs,objects,libs,syslibs)		@@\
-server: subdirs objects libs						@@\
-	-@if [ -f server ]; then echo "	$(MV) server server.bak"; \	@@\
-		$(MV) server server.bak; else exit 0; fi		@@\
-	$(CC) $(CDEBUGFLAGS) $(CCOPTIONS) -o server objects libs $(EXTRA_LIBRARIES) syslibs $(EXTRA_LOAD_FLAGS) @@\
-									@@\
-load/**/server:								@@\
-	-@if [ -f server ]; then echo "	$(MV) server server.bak"; \	@@\
-		$(MV) server server.bak; else exit 0; fi		@@\
-	$(CC) $(CDEBUGFLAGS) $(CCOPTIONS) -o server objects libs $(EXTRA_LIBRARIES) syslibs $(EXTRA_LOAD_FLAGS)
-#endif /* ServerTarget */
-
-
-
+#ifndef CompileErrorTable
+#define CompileErrorTable(tblname)					@@\
+depend:: tblname/**/.c tblname/**/.h					@@\
+tblname/**/.o: tblname/**/.c						@@\
+tblname/**/.c tblname/**/.h: tblname/**/.et				@@\
+	$(RM) tblname/**/.c tblname/**/.h				@@\
+	compile_et tblname/**/.et					@@\
+clean::									@@\
+	$(RM) tblname/**/.c tblname/**/.h
+#endif /* CompileErrorTable */
 
 /*
  * InstallLibrary - generate rules to install the indicated library.
@@ -561,7 +536,7 @@ $(DEPEND):								@@\
 #define	DependTarget()							@@\
 DependDependency()							@@\
 									@@\
-depend: Makefile							@@\
+depend:: Makefile							@@\
 	$(DEPEND) -s "# DO NOT DELETE" -- $(ALLDEFINES) -- $(SRCS)
 #endif /* DependTarget */
 
@@ -573,7 +548,7 @@ depend: Makefile							@@\
 #define	DependSrcs()							@@\
 DependDependency()							@@\
 									@@\
-depend: Makefile							@@\
+depend:: Makefile							@@\
 	$(DEPEND) -s "# DO NOT DELETE" -- $(ALLDEFINES) *.[ch]
 #endif /* DependSrcs */
 
@@ -1013,50 +988,6 @@ lib/**/alias.a: lib/**/libname.a					@@\
 
 
 /*
- * NormalRelocatableTarget - generate rules to produce a relocatable object
- * file instead of a library.  
- */
-#ifndef NormalRelocatableTarget
-#define	NormalRelocatableTarget(objname,objlist)			@@\
-AllTarget(objname.o)							@@\
-									@@\
-objname.o: objlist							@@\
-	$(RM) $@							@@\
-	$(LD) -X -r objlist -o $@
-#endif /* NormalRelocatableTarget */
-
-
-/*
- * ProfiledRelocatableTarget - generate rules to produce a profiled relocatable
- * object file instead of a library.
- */
-#ifndef ProfiledRelocatableTarget
-#define	ProfiledRelocatableTarget(objname,objlist)			@@\
-AllTarget(objname/**/_p.o)						@@\
-									@@\
-objname/**/_p.o: objlist						@@\
-	$(RM) $@							@@\
-	$(LD) -X -r objlist -o $@
-
-#endif /* ProfiledRelocatableTarget */
-
-
-/*
- * DebuggedRelocatableTarget - generate rules to produce a debuggable 
- * relocatable object file instead of a library.
- */
-#ifndef DebuggedRelocatableTarget
-#define	DebuggedRelocatableTarget(objname,objlist)			@@\
-AllTarget(objname/**/_d.o)						@@\
-									@@\
-objname/**/_d.o: objlist						@@\
-	$(RM) $@							@@\
-	$(LD) -X -r objlist -o $@
-
-#endif /* DebuggedRelocatableTarget */
-
-
-/*
  * LintLibraryTarget - generate rules to create a lint library.  Note that the
  * lint library is always forced to be newer than the library itself.
  */
@@ -1372,66 +1303,6 @@ CppScriptTarget(name,name.cpp,defs,)
 step::									@@\
 	$(MKDIRHIER) dirs
 #endif /* MakeDirectories */
-
-
-/*
- * MakeFonts - generate rules to build font databases.
- */
-#ifndef MakeFonts
-#define MakeFonts()							@@\
-all::  $(OBJS) fonts.dir						@@\
-									@@\
-fonts.dir:  $(OBJS)							@@\
-	$(MKFONTDIR) .							@@\
-									@@\
-clean::									@@\
-	$(RM) *.snf fonts.dir
-#endif /* MakeFonts */
-
-
-/*
- * InstallFonts - generate rules to install font files
- */
-#ifndef InstallFonts
-#define InstallFonts(dest)						@@\
-InstallMultiple($(OBJS),dest)						@@\
-									@@\
-install::  fonts.dir							@@\
-	$(INSTALL) -c $(INSTINCFLAGS) fonts.dir dest
-#endif /* InstallFonts */
-
-
-/*
- * InstallFontAliases - generate rules to install font aliases databases. 
- */
-#ifndef InstallFontAliases
-#define InstallFontAliases(dest)					@@\
-install::  fonts.alias							@@\
-	$(INSTALL) -c $(INSTINCFLAGS) fonts.alias dest
-#endif /* InstallFontAliases */
-
-
-/*
- * FontTarget - generate rules to convert a .bdf file into a .snf file.
- */
-#ifndef FontTarget
-#define FontTarget(basename)						@@\
-basename.snf:  basename.bdf						@@\
-	$(FONTC) $(FONTCFLAGS) $? >$@
-#endif /* FontTarget */
-
-
-/*
- * CompressedFontTarget - generate rules to convert a .bdf file into a 
- * compressed .snf file.
- */
-#ifndef CompressedFontTarget
-#define CompressedFontTarget(basename)					@@\
-basename.snf.Z:  basename.bdf						@@\
-	$(FONTC) $(FONTCFLAGS) $? >basename.snf				@@\
-	$(COMPRESS) basename.snf					@@\
-	rm -f basename.snf
-#endif /* CompressedFontTarget */
 
 
 /*
