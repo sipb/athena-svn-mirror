@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.26 1992-05-18 17:04:58 epeisach Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.27 1992-05-26 16:56:38 epeisach Exp $
  */
 
 #include <stdio.h>
@@ -996,6 +996,31 @@ char *s;
 }
 
 
+#ifndef _AIX
+/* replacement for library ttyslot routine which takes tty as argument
+ * rather than finding controlling tty (which is often undefined in xlogin).
+ */
+
+int ttyslot(tty)
+char *tty;
+{
+    int s = 0;
+    struct ttyent *ty;
+
+    setttyent();
+    while ((ty = getttyent()) != NULL) {
+	s++;
+	if (strcmp(ty->ty_name, tty) == 0) {
+	    endttyent();
+	    return(s);
+	}
+    }
+    endttyent();
+    return(0);
+}
+#endif /* _AIX */
+
+
 add_utmp(user, tty, display)
 char *user;
 char *tty;
@@ -1004,7 +1029,7 @@ char *display;
     struct utmp ut_entry;
     int f;
 #ifndef _AIX
-    int slot = ttyslot();
+    int slot = ttyslot(tty);
 #endif
 
     bzero(&ut_entry, sizeof(ut_entry));
