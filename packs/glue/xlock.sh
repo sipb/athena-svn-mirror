@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: xlock.sh,v 1.2 1998-07-31 19:21:43 ghudson Exp $
+# $Id: xlock.sh,v 1.3 1998-07-31 19:38:43 ghudson Exp $
 
 if [ -r /etc/athena/rc.conf ]; then
 	. /etc/athena/rc.conf
@@ -8,14 +8,13 @@ if [ -r /etc/athena/rc.conf ]; then
 	fi
 fi
 
-echo "xlock is not appropriate for cluster workstations, because:"
-echo ""
-echo "	* Anyone can unlock the machine using the well-known root"
-echo "	  password."
-echo "	* It does not display an elapsed time or put up a button"
-echo "	  to allow others to log you out after a set time."
+echo "xlock is not appropriate for cluster workstations, because"
+echo "it does not display an elapsed time or put up a button to"
+echo "allow others to log you out after a set time."
 echo ""
 echo "If you really wish to run xlock, run it as 'xlock.real' instead."
+echo "But if you do so, others may legitimately reboot the machine at"
+echo "any time to log you out."
 echo ""
 echo "Press return to read the On-Line Consulting stock answer about"
 echo "screensavers, or press Control-C to go back to the prompt."
