@@ -130,4 +130,10 @@ interface print_quota {
 					[last_is(numuser)]
 					Principal [out] user[G_USERMAXRETURN],
 					int [out] *flag);
+
+    quota_error_code QuotaServerStatus (
+					handle_t [in] h,
+					krb_ktext [in] *auth,
+					quota_message [out] message);
+
 }
