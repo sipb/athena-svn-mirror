@@ -1,12 +1,12 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/gettime/gettime.c,v $
- *	$Author: miki $
+ *	$Author: ghudson $
  *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/gettime/gettime.c,v 1.10 1994-03-31 09:40:14 miki Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/gettime/gettime.c,v 1.11 1997-12-13 18:39:37 ghudson Exp $
  */
 
 #ifndef lint
-static char *rcsid_gettime_c = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/gettime/gettime.c,v 1.10 1994-03-31 09:40:14 miki Exp $";
+static char *rcsid_gettime_c = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/gettime/gettime.c,v 1.11 1997-12-13 18:39:37 ghudson Exp $";
 #endif	lint
 
 #include <sys/types.h>
@@ -32,6 +32,9 @@ static char *rcsid_gettime_c = "$Header: /afs/dev.mit.edu/source/repository/athe
 #define TM_OFFSET 2208988800
 #endif rtpc
 
+extern int optind;
+extern char *optarg;
+
 char buffer[512];
 char *ctime();
 struct timeval tv;
@@ -46,12 +49,12 @@ main(argc, argv)
 	struct servent *sp;
 	struct hostent *host;
 	int setflg = 0;
-	register int i;
+	int granularity = 0;
 	register int s;
 	long hosttime;
 	register int *nettime;
 	char hostname[64];
-	int cc, host_retry;
+	int cc, host_retry, c;
 	extern int h_errno;
 #if defined(sun) || defined(vax) && !defined(ultrix)
 	int attempts = 0;
@@ -61,17 +64,27 @@ main(argc, argv)
 #ifdef POSIX
 	struct sigaction act;
 #endif	
+
 	strcpy (hostname, DEFAULT_TIME_SERVER);
-	for (i = 1;i < argc;i++) {
-		if (*argv[i] == '-') {
-			if (argv[i][1] == 's') setflg++;
-			else {
-				fprintf (stderr, "%s: Invalid argument %s\n",
-				 argv[0], argv[i]);
-				 exit (11);
-			}
+	while ((c = getopt(argc, argv, "sg:")) != -1) {
+		switch (c) {
+		case 's':
+			setflg++;
+			break;
+		case 'g':
+			granularity = atoi(optarg);
+			break;
+		case '?':
+			fprintf(stderr, "%s: Invalid argument %s\n", argv[0],
+				argv[optind]);
+			exit(11);
 		}
-		else strcpy (hostname, argv[i]);
+	}
+	if (argc == optind + 1)
+		strcpy(hostname, argv[optind]);
+	else if (argc != 0) {
+		fprintf(stderr, "%s: Too many arguments\n", argv[0]);
+		exit(11);
 	}
 	sp = getservbyname("time", "udp");
 	if (sp == 0) {
@@ -128,10 +141,6 @@ main(argc, argv)
 #endif
 	alarm(5);
 	send (s, buffer, 40, 0); /* Send an empty packet */
-	if (gettimeofday (&tv, &tz) < 0) {
-		perror ("gettime: gettimeofday");
-		exit (5);
-	}
 	cc = recv (s, buffer, 512, 0);
 	if (cc < 0) {
 		perror("recv");
@@ -150,11 +159,19 @@ main(argc, argv)
 	nettime = (int *)buffer;
 	hosttime = (long) ntohl (*nettime) - TM_OFFSET;
 	fprintf (stdout, "%s", ctime(&hosttime));
-	(&tv)->tv_sec = hosttime;
 	if (setflg) {
-		if (settimeofday (&tv, &tz) < 0) {
-			perror ("gettime: settimeofday");
-			exit (6);
+		if (gettimeofday (&tv, &tz) < 0) {
+			perror ("gettime: gettimeofday");
+			exit (5);
+		}
+		if (tv.tv_sec < hosttime - granularity
+		    || tv.tv_sec >= hosttime + granularity) {
+			tv.tv_sec = hosttime;
+			tv.tv_usec = 0;
+			if (settimeofday (&tv, &tz) < 0) {
+				perror ("gettime: settimeofday");
+				exit (6);
+			}
 		}
 	}
 	close (s);
