@@ -302,14 +302,6 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
-gmodule.lo gmodule.o : gmodule.c gmodule.h ../glib.h ../glibconfig.h \
-	gmoduleconf.h gmodule-dl.c
-libgplugin_a.lo libgplugin_a.o : libgplugin_a.c gmodule.h ../glib.h \
-	../glibconfig.h
-libgplugin_b.lo libgplugin_b.o : libgplugin_b.c gmodule.h ../glib.h \
-	../glibconfig.h
-testgmodule.o: testgmodule.c gmodule.h ../glib.h ../glibconfig.h \
-	gmoduleconf.h
 
 info-am:
 info: info-am

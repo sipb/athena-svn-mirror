@@ -340,17 +340,6 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
-array-test.o: array-test.c ../glib.h ../glibconfig.h
-dirname-test.o: dirname-test.c ../glib.h ../glibconfig.h
-hash-test.o: hash-test.c ../config.h ../glib.h ../glibconfig.h
-list-test.o: list-test.c ../glib.h ../glibconfig.h
-node-test.o: node-test.c ../config.h ../glib.h ../glibconfig.h
-relation-test.o: relation-test.c ../glib.h ../glibconfig.h
-slist-test.o: slist-test.c ../glib.h ../glibconfig.h
-strfunc-test.o: strfunc-test.c ../glib.h ../glibconfig.h
-string-test.o: string-test.c ../glib.h ../glibconfig.h
-tree-test.o: tree-test.c ../glib.h ../glibconfig.h
-type-test.o: type-test.c ../glib.h ../glibconfig.h
 
 check-TESTS: $(TESTS)
 	@failed=0; all=0; \

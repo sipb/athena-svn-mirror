@@ -495,34 +495,6 @@ distdir: $(DISTFILES)
 	  fi; \
 	done
 	$(MAKE) $(AM_MAKEFLAGS) top_distdir="$(top_distdir)" distdir="$(distdir)" dist-hook
-garray.lo garray.o : garray.c glib.h glibconfig.h
-gcache.lo gcache.o : gcache.c glib.h glibconfig.h
-gcompletion.lo gcompletion.o : gcompletion.c glib.h glibconfig.h
-gdataset.lo gdataset.o : gdataset.c glib.h glibconfig.h
-gdate.lo gdate.o : gdate.c config.h glib.h glibconfig.h
-gerror.lo gerror.o : gerror.c config.h glib.h glibconfig.h
-ghash.lo ghash.o : ghash.c glib.h glibconfig.h
-ghook.lo ghook.o : ghook.c glib.h glibconfig.h
-giochannel.lo giochannel.o : giochannel.c config.h glib.h glibconfig.h
-giounix.lo giounix.o : giounix.c glib.h glibconfig.h
-glist.lo glist.o : glist.c glib.h glibconfig.h
-gmain.lo gmain.o : gmain.c config.h glib.h glibconfig.h
-gmem.lo gmem.o : gmem.c config.h glib.h glibconfig.h
-gmessages.lo gmessages.o : gmessages.c config.h glib.h glibconfig.h
-gmutex.lo gmutex.o : gmutex.c glib.h glibconfig.h
-gnode.lo gnode.o : gnode.c glib.h glibconfig.h
-gprimes.lo gprimes.o : gprimes.c glib.h glibconfig.h
-grel.lo grel.o : grel.c glib.h glibconfig.h
-gscanner.lo gscanner.o : gscanner.c config.h glib.h glibconfig.h
-gslist.lo gslist.o : gslist.c glib.h glibconfig.h
-gstrfuncs.lo gstrfuncs.o : gstrfuncs.c config.h glib.h glibconfig.h
-gstring.lo gstring.o : gstring.c glib.h glibconfig.h
-gtimer.lo gtimer.o : gtimer.c config.h glib.h glibconfig.h
-gtree.lo gtree.o : gtree.c glib.h glibconfig.h
-gutils.lo gutils.o : gutils.c config.h glibconfig.h glib.h
-testgdate.o: testgdate.c glib.h glibconfig.h
-testgdateparser.o: testgdateparser.c glib.h glibconfig.h
-testglib.o: testglib.c glib.h glibconfig.h
 
 info-am:
 info: info-recursive

@@ -267,10 +267,6 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
-gthread.lo gthread.o : gthread.c ../config.h ../glib.h ../glibconfig.h \
-	gthread-none.c
-testgthread.o: testgthread.c ../config.h ../testglib.c ../glib.h \
-	../glibconfig.h
 
 info-am:
 info: info-am
