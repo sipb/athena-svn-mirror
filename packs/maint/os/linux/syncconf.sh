@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: syncconf.sh,v 1.1 2000-04-25 14:07:01 tb Exp $
+# $Id: syncconf.sh,v 1.2 2000-04-28 15:16:58 tb Exp $
 
 rcconf=/etc/athena/rc.conf
 rcsync=/var/athena/rc.conf.sync
@@ -109,6 +109,27 @@ handle()
       ;;
     esac
     ;;
+
+  AFS)
+    remove /etc/sysconfig/afs.new
+
+    append /etc/sysconfig/afs.new "#! /bin/sh"
+
+    if [ "true" = "$AFSSRV" ]; then
+      append /etc/sysconfig/afs.new "AFS_SERVER=on"
+    else
+      append /etc/sysconfig/afs.new "AFS_SERVER=off"
+    fi
+
+    if [ "true" = "$AFSCLIENT" ]; then
+      append /etc/sysconfig/afs.new "AFS_CLIENT=on"
+    else
+      append /etc/sysconfig/afs.new "AFS_CLIENT=off"
+    fi
+    
+    update /etc/sysconfig/afs
+    ;;
+
   esac
 }
 
@@ -144,7 +165,7 @@ $echo "Synchronizing configuration... \c"
 if [ -z "$all" -a -f "$rcsync" ]; then
   . "$rcsync"
 else
-  changes="HOSTADDR MAILRELAY"
+  changes="HOSTADDR MAILRELAY AFS"
 fi
 
 if [ -z "$changes" ]; then
@@ -175,6 +196,8 @@ cat > $rcsyncout << EOF
 if [ \$HOST != $HOST ]; then changes="\$changes HOSTADDR MAILRELAY"; fi
 if [ \$ADDR != $ADDR ]; then changes="\$changes HOSTADDR MAILRELAY"; fi
 if [ \$MAILRELAY != $MAILRELAY ]; then changes="\$changes MAILRELAY"; fi
+if [ \$AFSCLIENT != $AFSCLIENT ]; then changes="\$changes AFS"; fi
+if [ \$AFSSRV != $AFSSERVER ]; then changes="\$changes AFS"; fi
 EOF
 
 if [ -n "$mustreboot" ]; then
