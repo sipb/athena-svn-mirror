@@ -12,12 +12,13 @@
 *pane.toptext.scrollVertical:		whenNeeded
 *pane.toptext.cursor:			left_ptr
 *pane.toptext.translations: #override \
-<Btn1Down>(2):	Stub() \n\
-<Btn1Up>(2):	Update() \n\
-<Btn2Down>:	select-start() \n\
-<Btn2Up>:	Update() \n\
-<Btn3Down>:	select-start() \n\
-<Btn3Up>:	Update() \n\
+<Btn1Down>:     TriggerFocusMove(Here) DispatchClick() \n\
+<Btn1Motion>:   extend-adjust() \n\
+<Btn1Up>:       extend-end(PRIMARY, CUT_BUFFER0) \n\
+<Btn2Down>:	Stub() \n\
+<Btn3Down>:     extend-start() \n\
+<Btn3Motion>:   extend-adjust() \n\
+<Btn3Up>:       extend-end(PRIMARY, CUT_BUFFER0) \n\
 <Key>Return:	Update() \n\
 <Key>Right:	forward-character() \n\
 <Key>Left:	backward-character() \n\
@@ -52,13 +53,25 @@ Ctrl<Key>s:     search(forward) \n\
 *enterpopup*subjecttext.translations: \
 #override \n\
 Ctrl<Key>Return:	TriggerSend(Go) \n\
+<Key>Return:		TriggerFocusMove(Next) \n\
 <Key>Escape:		TriggerSend(Cancel) \n\
-<Key>Return:		TriggerFocusMove(Next)
+<Btn1Down>:		TriggerFocusMove(Here) \n\
+<MapNotify>:		TriggerFocusMove(Here) \n\
+<FocusIn>:		display-caret(on) \n\
+<FocusOut>:		display-caret(off) \n\
+<Enter>:		display-caret(on) \n\
+<Leave>:		display-caret(off)
+
 *enterpopup*bodytext.translations: \
 #override \n\
 Shift<Key>Return:	TriggerFocusMove(Prev) \n\
 Ctrl<Key>Return:	TriggerSend(Go) \n\
-<Key>Escape:		TriggerSend(Cancel)
+<Key>Escape:		TriggerSend(Cancel) \n\
+<Btn1Down>:		TriggerFocusMove(Here) \n\
+<FocusIn>:		display-caret(on) \n\
+<FocusOut>:		display-caret(off) \n\
+<Enter>:		display-caret(on) \n\
+<Leave>:		display-caret(off)
 
 *enterpopup.pane.botbox.send.label:             Send
 *enterpopup.pane.botbox.abort.label:            Abort
@@ -70,20 +83,24 @@ Ctrl<Key>Return:	TriggerSend(Go) \n\
 *writepopup.pane.box1.write.label:	Write
 *writepopup.pane.box1.abort.label:	Abort
 *writepopup.pane.text.showGrip:		False
-*writepopup*translations: \
+*writepopup*text.translations: \
 #override \n\
 <Key>Return:		TriggerWrite(Go) \n\
-<Key>Escape:		TriggerWrite(Cancel)
+<Key>Escape:		TriggerWrite(Cancel) \n\
+<MapNotify>:		TriggerFocusMove(Here) \n\
+<Btn1Down>:		TriggerFocusMove(Here)
 
 *numpopup.pane.label.label:		Go to transaction number:
 *numpopup.pane.label.showGrip:		False
 *numpopup.pane.box1.goto.label:		Go To
 *numpopup.pane.box1.abort.label:	Abort
 *numpopup.pane.text.showGrip:		False
-*numpopup*translations: \
+*numpopup*text.translations: \
 #override \n\
 <Key>Escape:		TriggerNum(Cancel) \n\
-<Key>Return:		TriggerNum(Go)
+<Key>Return:		TriggerNum(Go) \n\
+<MapNotify>:		TriggerFocusMove(Here) \n\
+<Btn1Down>:		TriggerFocusMove(Here)
 
 *helppopup.pane.box.okay.label:		dismiss
 *helppopup.pane.helptext.height:	500
@@ -101,11 +118,28 @@ Ctrl<Key>Return:	TriggerSend(Go) \n\
 *addpopup.pane.box3.add.label:		Add
 *addpopup.pane.box3.abort.label:	Abort
 *addpopup.pane.box3.allowResize:	False
-*addpopup*translations: \
+*addpopup*hosttext.translations: \
 #override \n\
 <Key>Escape:            TriggerAdd(Cancel) \n\
 Ctrl<Key>Return:        TriggerAdd(Go) \n\
-<Key>Return:		TriggerFocusMove(Next)
+<Key>Return:		TriggerFocusMove(Next) \n\
+<FocusIn>:		display-caret(on) \n\
+<FocusOut>:		display-caret(off) \n\
+<Enter>:		Stub() \n\
+<Leave>:		Stub() \n\
+<MapNotify>:		TriggerFocusMove(Here) \n\
+<Btn1Down>:		TriggerFocusMove(Here)
+
+*addpopup*pathtext.translations: \
+#override \n\
+<Key>Escape:            TriggerAdd(Cancel) \n\
+Ctrl<Key>Return:        TriggerAdd(Go) \n\
+<Key>Return:		TriggerFocusMove(Next) \n\
+<FocusIn>:		display-caret(on) \n\
+<FocusOut>:		display-caret(off) \n\
+<Enter>:		Stub() \n\
+<Leave>:		Stub() \n\
+<Btn1Down>:		TriggerFocusMove(Here)
 
 *deletepopup.pane.width:			600
 *deletepopup.pane.label.label:			Deleting a meeting
@@ -117,10 +151,12 @@ Ctrl<Key>Return:        TriggerAdd(Go) \n\
 *deletepopup.pane.box2.abort.label:		Abort
 *deletepopup.pane.box2.showGrip:		False
 *deletepopup.pane.box2.width:			300
-*deletepopup*translations: \
+*deletepopup*text.translations: \
 #override \n\
 <Key>Escape:		TriggerDelete(Cancel) \n\
-<Key>Return:		TriggerDelete(Go)
+<Key>Return:		TriggerDelete(Go) \n\
+<MapNotify>:		TriggerFocusMove(Here) \n\
+<Btn1Down>:		TriggerFocusMove(Here)
 
 *configurebutton.leftBitmap: /usr/lib/X11/bitmaps/menu12
 *modebutton.leftBitmap: /usr/lib/X11/bitmaps/menu12
@@ -193,4 +229,18 @@ Shift<Key>Q:    KeyCallback(quitbutton) \n\
 <Key>w: MenuCallback(writebutton, writebutton) \n\
 <Key>m: MenuCallback(writebutton, mailbutton) \n\
 <Key>: MenuCallback(abort) \n\
+
+*warningpopup*translations: \
+#override \n\
+<MapNotify>:	TriggerFocusMove(Here) \n\
+<Key>d:		TriggerPopdown(Go) \n\
+<Key>Return:	TriggerPopdown(Go) \n\
+
+*helppopup*translations: \
+#override \n\
+<MapNotify>:	TriggerFocusMove(Here) \n\
+<Key>d:		TriggerPopdown(Go) \n\
+<Key>Return:	TriggerPopdown(Go) \n\
+<Btn2Down>:	Stub() \n\
+<Key>:		Stub()
 
