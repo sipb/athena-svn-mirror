@@ -9,7 +9,7 @@
 # the appropriate -D option.
 
 # remove this line if dynamic libraries are working for you:
-bs2000_ignoredl='y'
+ bs2000_ignoredl='y'
 
 # To get ANSI C, we need to use c89
 # You can override this with Configure -Dcc=gcc
@@ -23,7 +23,7 @@ esac
 # -DUSE_PURE_BISON
 # -D_XOPEN_SOURCE_EXTENDED alters system headers.
 # Prepend your favorites with Configure -Dccflags=your_favorites
-ccflags="$ccflags -Kc_names_unlimited,enum_long,llm_case_lower,llm_keep,no_integer_overflow -DPOSIX_BC -DUSE_PURE_BISON -D_XOPEN_SOURCE_EXTENDED"
+ccflags="$ccflags -Kc_names_unlimited,enum_long,llm_case_lower,llm_keep,no_integer_overflow -DPOSIX_BC -DUSE_PURE_BISON -DYYMAXDEPTH=65000 -DYYINITDEPTH=1000 -D_XOPEN_SOURCE_EXTENDED"
 
 # Now, what kind of BS2000 system are we running on?
 echo
@@ -64,9 +64,9 @@ cat > $bs2000_ld <<EOF
 #
 # Perl's wrapper for genso by Thomas.Dorner@start.de
 
-GENSO=/usr/bin/genso
-options=""
-params=""
+ GENSO=/usr/bin/genso
+ options=""
+ params=""
 while [[ \$# -gt 0 ]]; do
     case \$1 in
 	-K)
@@ -169,4 +169,3 @@ esac
 #case "$ldlibpthname" in
 #'') ldlibpthname=LIBPATH ;;
 #esac
-

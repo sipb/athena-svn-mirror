@@ -14,6 +14,11 @@
  */
 #define HAS_UTIME		/**/
 
+/* BIG_TIME:
+ *	This symbol is defined if Time_t is an unsigned type on this system.
+ */
+#define BIG_TIME
+
 #define HAS_KILL
 #define HAS_WAIT
 #define HAS_DLERROR
@@ -43,6 +48,8 @@
  *	of bytes occurs on read or write operations.
  */
 #undef USEMYBINMODE
+
+#define SOCKET_OPEN_MODE	"b"
 
 /* Stat_t:
  *	This symbol holds the type used to declare buffers for information
@@ -99,7 +106,7 @@
 # undef I_SYS_UN
 #endif 
 
-#ifdef USE_5005THREADS
+#if defined(USE_5005THREADS) || defined(USE_ITHREADS)
 
 #define do_spawn(a)      os2_do_spawn(aTHX_ (a))
 #define do_aspawn(a,b,c) os2_do_aspawn(aTHX_ (a),(b),(c))
@@ -184,7 +191,7 @@ extern int rc;
 #  define pthread_getspecific(k)	(*(k))
 #  define pthread_setspecific(k,v)	(*(k)=(v),0)
 #  define pthread_key_create(keyp,flag)			\
-	( DosAllocThreadLocalMemory(1,(U32*)keyp)	\
+	( DosAllocThreadLocalMemory(1,(unsigned long**)keyp)	\
 	  ? Perl_croak_nocontext("LocalMemory"),1	\
 	  : 0						\
 	)
@@ -220,6 +227,7 @@ void Perl_OS2_term(void **excH, int exitstatus, int flags);
 
 #  define PERL_SYS_INIT3(argcp, argvp, envp)	\
   { void *xreg[2];				\
+    MALLOC_CHECK_TAINT(*argcp, *argvp, *envp)	\
     _response(argcp, argvp);			\
     _wildcard(argcp, argvp);			\
     Perl_OS2_init3(*envp, xreg, 0)
@@ -299,7 +307,7 @@ void *sys_alloc(int size);
 #endif
 
 #define TMPPATH1 "plXXXXXX"
-extern char *tmppath;
+extern const char *tmppath;
 PerlIO *my_syspopen(pTHX_ char *cmd, char *mode);
 /* Cannot prototype with I32 at this point. */
 int my_syspclose(PerlIO *f);
@@ -311,6 +319,33 @@ struct passwd *my_getpwent (void);
 void my_setpwent (void);
 void my_endpwent (void);
 char *gcvt_os2(double value, int digits, char *buffer);
+
+extern int async_mssleep(unsigned long ms, int switch_priority);
+extern unsigned long msCounter(void);
+extern unsigned long InfoTable(int local);
+extern unsigned long find_myself(void);
+
+#define MAX_SLEEP	(((1<30) / (1000/4))-1)	/* 1<32 msec */
+
+static __inline__ unsigned
+my_sleep(unsigned sec)
+{
+  int remain;
+  while (sec > MAX_SLEEP) {
+    sec -= MAX_SLEEP;
+    remain = sleep(MAX_SLEEP);
+    if (remain)
+      return remain + sec;
+  }
+  return sleep(sec);
+}
+
+#define sleep		my_sleep
+
+#ifndef INCL_DOS
+unsigned long DosSleep(unsigned long);
+unsigned long DosAllocThreadLocalMemory (unsigned long cb, unsigned long **p);
+#endif
 
 struct group *getgrent (void);
 void setgrent (void);
@@ -329,6 +364,9 @@ struct passwd *my_getpwnam (__const__ char *);
 #define srand	srandom
 #define strtoll	_strtoll
 #define strtoull	_strtoull
+
+#define usleep(usec)	((void)async_mssleep(((usec)+500)/1000, 500))
+
 
 /*
  * fwrite1() should be a routine with the same calling sequence as fwrite(),
@@ -401,14 +439,18 @@ char *ctermid(char *s);
 #if OS2_STAT_HACK
 
 #define Stat(fname,bufptr) os2_stat((fname),(bufptr))
-#define Fstat(fd,bufptr)   fstat((fd),(bufptr))
+#define Fstat(fd,bufptr)   os2_fstat((fd),(bufptr))
 #define Fflush(fp)         fflush(fp)
 #define Mkdir(path,mode)   mkdir((path),(mode))
+#define chmod(path,mode)   os2_chmod((path),(mode))
 
 #undef S_IFBLK
 #undef S_ISBLK
-#define S_IFBLK		0120000
+#define S_IFBLK		0120000		/* Hacks to make things compile... */
 #define S_ISBLK(mode)	(((mode) & S_IFMT) == S_IFBLK)
+
+int os2_chmod(const char *name, int pmode);
+int os2_fstat(int handle, struct stat *st);
 
 #else
 
@@ -436,6 +478,7 @@ typedef struct OS2_Perl_data {
   unsigned long	phmq_refcnt;
   unsigned long	phmq_servers;
   unsigned long	initial_mode;		/* VIO etc. mode we were started in */
+  unsigned long	morph_refcnt;
 } OS2_Perl_data_t;
 
 extern OS2_Perl_data_t OS2_Perl_data;
@@ -459,6 +502,7 @@ extern OS2_Perl_data_t OS2_Perl_data;
 #define Perl_hmq_refcnt	(OS2_Perl_data.phmq_refcnt)
 #define Perl_hmq_servers	(OS2_Perl_data.phmq_servers)
 #define Perl_os2_initial_mode	(OS2_Perl_data.initial_mode)
+#define Perl_morph_refcnt	(OS2_Perl_data.morph_refcnt)
 
 unsigned long Perl_hab_GET();
 unsigned long Perl_Register_MQ(int serve);
@@ -500,7 +544,7 @@ void init_PMWIN_entries(void);
 
 /* The expressions below return true on error. */
 /* INCL_DOSERRORS needed. rc should be declared outside. */
-#define CheckOSError(expr) (!(rc = (expr)) ? 0 : (FillOSError(rc), 1))
+#define CheckOSError(expr) ((rc = (expr)) ? (FillOSError(rc), rc) : 0)
 /* INCL_WINERRORS needed. */
 #define CheckWinError(expr) ((expr) ? 0: (FillWinError, 1))
 
@@ -611,6 +655,47 @@ enum entries_ordinals {
     ORD_WinQueryDesktopWindow,
     ORD_WinSetActiveWindow,
     ORD_DosQueryModFromEIP,
+    ORD_Dos32QueryHeaderInfo,
+    ORD_DosTmrQueryFreq,
+    ORD_DosTmrQueryTime,
+    ORD_WinQueryActiveDesktopPathname,
+    ORD_WinInvalidateRect,
+    ORD_WinCreateFrameControls,
+    ORD_WinQueryClipbrdFmtInfo,
+    ORD_WinQueryClipbrdOwner,
+    ORD_WinQueryClipbrdViewer,
+    ORD_WinQueryClipbrdData,
+    ORD_WinOpenClipbrd,
+    ORD_WinCloseClipbrd,
+    ORD_WinSetClipbrdData,
+    ORD_WinSetClipbrdOwner,
+    ORD_WinSetClipbrdViewer,
+    ORD_WinEnumClipbrdFmts, 
+    ORD_WinEmptyClipbrd,
+    ORD_WinAddAtom,
+    ORD_WinFindAtom,
+    ORD_WinDeleteAtom,
+    ORD_WinQueryAtomUsage,
+    ORD_WinQueryAtomName,
+    ORD_WinQueryAtomLength,
+    ORD_WinQuerySystemAtomTable,
+    ORD_WinCreateAtomTable,
+    ORD_WinDestroyAtomTable,
+    ORD_WinOpenWindowDC,
+    ORD_DevOpenDC,
+    ORD_DevQueryCaps,
+    ORD_DevCloseDC,
+    ORD_WinMessageBox,
+    ORD_WinMessageBox2,
+    ORD_WinQuerySysValue,
+    ORD_WinSetSysValue,
+    ORD_WinAlarm,
+    ORD_WinFlashWindow,
+    ORD_WinLoadPointer,
+    ORD_WinQuerySysPointer,
+    ORD_DosReplaceModule,
+    ORD_DosPerfSysCall,
+    ORD_RexxRegisterSubcomExe,
     ORD_NENTRIES
 };
 
@@ -621,7 +706,11 @@ enum entries_ordinals {
 #define DeclVoidFuncByORD(name,o,at,args)	\
   void name at { CallORD(void,o,at,args); }
 
-/* These functions return false on error, and save the error info in $^E */
+/* This function returns error code on error, and saves the error info in $^E and Perl_rc */
+#define DeclOSFuncByORD_native(ret,name,o,at,args)	\
+  ret name at { unsigned long rc; return CheckOSError(CallORD(ret,o,at,args)); }
+
+/* These functions return false on error, and save the error info in $^E and Perl_rc */
 #define DeclOSFuncByORD(ret,name,o,at,args)	\
   ret name at { unsigned long rc; return !CheckOSError(CallORD(ret,o,at,args)); }
 #define DeclWinFuncByORD(ret,name,o,at,args)	\
@@ -667,20 +756,69 @@ enum entries_ordinals {
 void ResetWinError(void);
 void CroakWinError(int die, char *name);
 
+enum Perlos2_handler { 
+  Perlos2_handler_mangle = 1,
+  Perlos2_handler_perl_sh,
+  Perlos2_handler_perllib_from,
+  Perlos2_handler_perllib_to,
+};
+enum dir_subst_e {
+    dir_subst_fatal = 1,
+    dir_subst_pathlike = 2
+};
+
+extern int Perl_OS2_handler_install(void *handler, enum Perlos2_handler how);
+extern char *dir_subst(char *s, unsigned int l, char *b, unsigned int bl, enum dir_subst_e flags, char *msg);
+extern unsigned long fill_extLibpath(int type, char *pre, char *post, int replace, char *msg);
+
 #define PERLLIB_MANGLE(s, n) perllib_mangle((s), (n))
 char *perllib_mangle(char *, unsigned int);
+
+#define fork	fork_with_resources
+
+#ifdef EINTR				/* x2p do not include perl.h!!! */
+static __inline__ int
+my_select(int nfds, fd_set *readfds, fd_set *writefds, fd_set *exceptfds, struct timeval *timeout)
+{
+  if (nfds == 0 && timeout && (_emx_env & 0x200)) {
+    if (async_mssleep(1000 * timeout->tv_sec + (timeout->tv_usec + 500)/1000, 500))
+      return 0;
+    errno = EINTR;
+    return -1;
+  }
+  return select(nfds, readfds, writefds, exceptfds, timeout);
+}
+
+#define select		my_select
+#endif
+
 
 typedef int (*Perl_PFN)();
 Perl_PFN loadByOrdinal(enum entries_ordinals ord, int fail);
 extern const Perl_PFN * const pExtFCN;
 char *os2error(int rc);
 int os2_stat(const char *name, struct stat *st);
+int fork_with_resources();
 int setpriority(int which, int pid, int val);
 int getpriority(int which /* ignored */, int pid);
 
+void croak_with_os2error(char *s) __attribute__((noreturn));
+
+/* void return value */
+#define os2cp_croak(rc,msg)	(CheckOSError(rc) && (croak_with_os2error(msg),0))
+
+/* propagates rc */
+#define os2win_croak(rc,msg)						\
+	SaveCroakWinError((expr), 1 /* die */, /* no prefix */, (msg))
+
+/* propagates rc; use with functions which may return 0 on success */
+#define os2win_croak_0OK(rc,msg)					\
+	SaveCroakWinError((ResetWinError, (expr)),			\
+			  1 /* die */, /* no prefix */, (msg))
+
 #ifdef PERL_CORE
 int os2_do_spawn(pTHX_ char *cmd);
-int os2_do_aspawn(pTHX_ SV *really, void **vmark, void **vsp);
+int os2_do_aspawn(pTHX_ SV *really, SV **vmark, SV **vsp);
 #endif
 
 #ifndef LOG_DAEMON
@@ -746,6 +884,192 @@ int os2_do_aspawn(pTHX_ SV *really, void **vmark, void **vsp);
 #  define	LOG_PERROR	0x20	/* log to stderr as well */
 
 #endif
+
+/* ************************************************* */
+#ifndef MAKEPLINFOSEG
+
+/* From $DDK\base32\rel\os2c\include\base\os2\16bit\infoseg.h + typedefs */
+
+/*
+ * The structure below defines the content and organization of the system
+ * information segment (InfoSeg).  The actual table is statically defined in
+ * SDATA.ASM.  Ring 0, read/write access is obtained by the clock device
+ * driver using the DevHlp GetDOSVar function.  (GetDOSVar returns a ring 0,
+ * read-only selector to all other requestors.)
+ *
+ * In order to prevent an errant process from destroying the infoseg, two
+ * identical global infosegs are maintained.  One is in the tiled shared
+ * arena and is accessible in user mode (and therefore can potentially be
+ * overwritten from ring 2), and the other is in the system arena and is
+ * accessible only in kernel mode.  All kernel code (except the clock driver)
+ * is responsible for updating BOTH copies of the infoseg.  The copy kept
+ * in the system arena is addressable as DOSGROUP:SISData, and the copy
+ * in the shared arena is addressable via a system arena alias.  16:16 and
+ * 0:32 pointers to the alias are stored in _Sis2.
+ */
+
+typedef struct InfoSegGDT {
+
+/* Time (offset 0x00) */
+
+unsigned long   SIS_BigTime;    /* Time from 1-1-1970 in seconds */
+unsigned long   SIS_MsCount;    /* Freerunning milliseconds counter */
+unsigned char   SIS_HrsTime;    /* Hours */
+unsigned char   SIS_MinTime;    /* Minutes */
+unsigned char   SIS_SecTime;    /* Seconds */
+unsigned char   SIS_HunTime;    /* Hundredths of seconds */
+unsigned short  SIS_TimeZone;   /* Timezone in min from GMT (Set to EST) */
+unsigned short  SIS_ClkIntrvl;  /* Timer interval (units=0.0001 secs) */
+
+/* Date (offset 0x10) */
+
+unsigned char   SIS_DayDate;    /* Day-of-month (1-31) */
+unsigned char   SIS_MonDate;    /* Month (1-12) */
+unsigned short  SIS_YrsDate;    /* Year (>= 1980) */
+unsigned char   SIS_DOWDate;    /* Day-of-week (1-1-80 = Tues = 3) */
+
+/* Version (offset 0x15) */
+
+unsigned char   SIS_VerMajor;   /* Major version number */
+unsigned char   SIS_VerMinor;   /* Minor version number */
+unsigned char   SIS_RevLettr;   /* Revision letter */
+
+/* System Status (offset 0x18) */
+
+unsigned char   SIS_CurScrnGrp; /* Fgnd screen group # */
+unsigned char   SIS_MaxScrnGrp; /* Maximum number of screen groups */
+unsigned char   SIS_HugeShfCnt; /* Shift count for huge segments */
+unsigned char   SIS_ProtMdOnly; /* Protect-mode-only indicator */
+unsigned short  SIS_FgndPID;    /* Foreground process ID */
+
+/* Scheduler Parms (offset 0x1E) */
+
+unsigned char   SIS_Dynamic;    /* Dynamic variation flag (1=enabled) */
+unsigned char   SIS_MaxWait;    /* Maxwait (seconds) */
+unsigned short  SIS_MinSlice;   /* Minimum timeslice (milliseconds) */
+unsigned short  SIS_MaxSlice;   /* Maximum timeslice (milliseconds) */
+
+/* Boot Drive (offset 0x24) */
+
+unsigned short  SIS_BootDrv;    /* Drive from which system was booted */
+
+/* RAS Major Event Code Table (offset 0x26) */
+
+unsigned char   SIS_mec_table[32]; /* Table of RAS Major Event Codes (MECs) */
+
+/* Additional Session Data (offset 0x46) */
+
+unsigned char   SIS_MaxVioWinSG;  /* Max. no. of VIO windowable SG's */
+unsigned char   SIS_MaxPresMgrSG; /* Max. no. of Presentation Manager SG's */
+
+/* Error logging Information (offset 0x48) */
+
+unsigned short  SIS_SysLog;     /* Error Logging Status */
+
+/* Additional RAS Information (offset 0x4A) */
+
+unsigned short  SIS_MMIOBase;   /* Memory mapped I/O selector */
+unsigned long   SIS_MMIOAddr;   /* Memory mapped I/O address  */
+
+/* Additional 2.0 Data (offset 0x50) */
+
+unsigned char   SIS_MaxVDMs;      /* Max. no. of Virtual DOS machines */
+unsigned char   SIS_Reserved;
+
+unsigned char   SIS_perf_mec_table[32]; /* varga 6/5/97 Table of Perfomance Major Event Codes (MECS) varga*/
+} GINFOSEG, *PGINFOSEG;
+
+#define SIS_LEN         sizeof(struct InfoSegGDT)
+
+/*
+ *      InfoSeg LDT Data Segment Structure
+ *
+ * The structure below defines the content and organization of the system
+ * information in a special per-process segment to be accessible by the
+ * process through the LDT (read-only).
+ *
+ * As in the global infoseg, two copies of the current processes local
+ * infoseg exist, one accessible in both user and kernel mode, the other
+ * only in kernel mode.  Kernel code is responsible for updating BOTH copies.
+ * Pointers to the local infoseg copy are stored in _Lis2.
+ *
+ * Note that only the currently running process has an extra copy of the
+ * local infoseg.  The copy is done at context switch time.
+ */
+
+typedef struct InfoSegLDT {
+unsigned short  LIS_CurProcID;  /* Current process ID */
+unsigned short  LIS_ParProcID;  /* Process ID of parent */
+unsigned short  LIS_CurThrdPri; /* Current thread priority */
+unsigned short  LIS_CurThrdID;  /* Current thread ID */
+unsigned short  LIS_CurScrnGrp; /* Screengroup */
+unsigned char   LIS_ProcStatus; /* Process status bits */
+unsigned char   LIS_fillbyte1;  /* filler byte */
+unsigned short  LIS_Fgnd;       /* Current process is in foreground */
+unsigned char   LIS_ProcType;   /* Current process type */
+unsigned char   LIS_fillbyte2;  /* filler byte */
+
+unsigned short  LIS_AX;         /* @@V1 Environment selector */
+unsigned short  LIS_BX;         /* @@V1 Offset of command line start */
+unsigned short  LIS_CX;         /* @@V1 Length of Data Segment */
+unsigned short  LIS_DX;         /* @@V1 STACKSIZE from the .EXE file */
+unsigned short  LIS_SI;         /* @@V1 HEAPSIZE  from the .EXE file */
+unsigned short  LIS_DI;         /* @@V1 Module handle of the application */
+unsigned short  LIS_DS;         /* @@V1 Data Segment Handle of application */
+
+unsigned short  LIS_PackSel;    /* First tiled selector in this EXE */
+unsigned short  LIS_PackShrSel; /* First selector above shared arena */
+unsigned short  LIS_PackPckSel; /* First selector above packed arena */
+/* #ifdef SMP */
+unsigned long   LIS_pTIB;       /* Pointer to TIB */
+unsigned long   LIS_pPIB;       /* Pointer to PIB */
+/* #endif */
+} LINFOSEG, *PLINFOSEG;
+
+#define LIS_LEN         sizeof(struct InfoSegLDT)
+
+
+/*
+ *      Process Type codes
+ *
+ *      These are the definitons for the codes stored
+ *      in the LIS_ProcType field in the local infoseg.
+ */
+
+#define         LIS_PT_FULLSCRN 0       /* Full screen app. */
+#define         LIS_PT_REALMODE 1       /* Real mode process */
+#define         LIS_PT_VIOWIN   2       /* VIO windowable app. */
+#define         LIS_PT_PRESMGR  3       /* Presentation Manager app. */
+#define         LIS_PT_DETACHED 4       /* Detached app. */
+
+
+/*
+ *
+ *      Process Status Bit Definitions
+ *
+ */
+
+#define         LIS_PS_EXITLIST 0x01    /* In exitlist handler */
+
+
+/*
+ *      Flags equates for the Global Info Segment
+ *      SIS_SysLog  WORD in Global Info Segment
+ *
+ *        xxxx xxxx xxxx xxx0         Error Logging Disabled
+ *        xxxx xxxx xxxx xxx1         Error Logging Enabled
+ *
+ *        xxxx xxxx xxxx xx0x         Error Logging not available
+ *        xxxx xxxx xxxx xx1x         Error Logging available
+ */
+
+#define LF_LOGENABLE    0x0001          /* Logging enabled */
+#define LF_LOGAVAILABLE 0x0002          /* Logging available */
+
+#define MAKEPGINFOSEG(sel)  ((PGINFOSEG)MAKEP(sel, 0))
+#define MAKEPLINFOSEG(sel)  ((PLINFOSEG)MAKEP(sel, 0))
+
+#endif	/* ndef(MAKEPLINFOSEG) */
 
 /* ************************************************************ */
 #define Dos32QuerySysState DosQuerySysState

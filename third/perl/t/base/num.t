@@ -1,6 +1,6 @@
 #!./perl
 
-print "1..45\n";
+print "1..50\n";
 
 # First test whether the number stringification works okay.
 # (Testing with == would exercize the IV/NV part, not the PV.)
@@ -69,7 +69,7 @@ $a = -1.; "$a";
 print $a + 1 == 0     ? "ok 19\n" : "not ok 19 #" . $a + 1 . "\n";
 
 sub ok { # Can't assume too much of floating point numbers.
-    my ($a, $b, $c);
+    my ($a, $b, $c) = @_;
     abs($a - $b) <= $c;
 }
 
@@ -163,4 +163,36 @@ $a = 123.456; "$a";
 print $a eq "123.456" ? "ok 44\n" : "not ok 44 # $a\n";
 
 $a = 1e34; "$a";
-print $a eq "1e+34" || $a eq "1e+034" ? "ok 45\n" : "not ok 45 $a\n";
+unless ($^O eq 'posix-bc')
+{ print $a eq "1e+34" || $a eq "1e+034" ? "ok 45\n" : "not ok 45 $a\n"; }
+else
+{ print "ok 45 # skipped on $^O\n"; }
+
+# see bug #15073
+
+$a = 0.00049999999999999999999999999999999999999;
+$b = 0.0005000000000000000104;
+print $a <= $b ? "ok 46\n" : "not ok 46\n";
+
+if ($^O eq 'ultrix' || $^O eq 'VMS') {
+  # Ultrix enters looong nirvana over this. VMS blows up when configured with
+  # D_FLOAT (but with G_FLOAT or IEEE works fine).  The test should probably
+  # make the number of 0's a function of NV_DIG, but that's not in Config and 
+  # we probably don't want to suck Config into a base test anyway.
+  print "ok 47\n";
+} else {
+  $a = 0.00000000000000000000000000000000000000000000000000000000000000000001;
+  print $a > 0 ? "ok 47\n" : "not ok 47\n";
+}
+
+$a = 80000.0000000000000000000000000;
+print $a == 80000.0 ? "ok 48\n" : "not ok 48\n";
+
+$a = 1.0000000000000000000000000000000000000000000000000000000000000000000e1;
+print $a == 10.0 ? "ok 49\n" : "not ok 49\n";
+
+# From Math/Trig - number has to be long enough to exceed at least DBL_DIG
+
+$a = 57.295779513082320876798154814169;
+print ok($a*10,572.95779513082320876798154814169,1e-10) ? "ok 50\n" :
+  "not ok 50 # $a\n";

@@ -1,4 +1,4 @@
-## $Id: A.pm,v 1.1.1.1 2003-01-10 13:40:23 zacheiss Exp $
+## $Id: A.pm,v 1.1.1.2 2004-02-09 18:59:21 zacheiss Exp $
 ## Package to read/write on ASCII data connections
 ##
 
@@ -10,7 +10,7 @@ use Carp;
 require Net::FTP::dataconn;
 
 @ISA = qw(Net::FTP::dataconn);
-$VERSION = "1.15";
+$VERSION = "1.16";
 
 sub read {
   my    $data 	 = shift;
@@ -71,7 +71,7 @@ sub write {
   my    $size 	= shift || croak 'write($buf,$size,[$timeout])';
   my    $timeout = @_ ? shift : $data->timeout;
 
-  (my $tmp = substr($buf,0,$size)) =~ s/\n/\015\012/sg;
+  (my $tmp = substr($buf,0,$size)) =~ s/\r?\n/\015\012/sg;
 
   # If the remote server has closed the connection we will be signal'd
   # when we write. This can happen if the disk on the remote server fills up

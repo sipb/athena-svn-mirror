@@ -1,24 +1,23 @@
 #!./perl -Tw
 # Testing Cwd under taint mode.
 
+use Cwd;
 BEGIN {
     chdir 't' if -d 't';
-    @INC = '../lib';
 }
 
-use Cwd;
-use Test::More tests => 6;
+use strict;
+use Test::More tests => 10;
 use Scalar::Util qw/tainted/;
 
-my $cwd;
-eval { $cwd = getcwd; };
-is( $@, '',		'getcwd() does not explode under taint mode' );
-ok( tainted($cwd),	"its return value is tainted" );
+my @Functions = qw(getcwd cwd fastcwd
+                   abs_path fast_abs_path
+                  );
 
-eval { $cwd = cwd; };
-is( $@, '',		'cwd() does not explode under taint mode' );
-ok( tainted($cwd),	"its return value is tainted" );
-
-eval { $cwd = fastcwd; };
-is( $@, '',		'fastcwd() does not explode under taint mode' );
-ok( tainted($cwd),	"its return value is tainted" );
+foreach my $func (@Functions) {
+    no strict 'refs';
+    my $cwd;
+    eval { $cwd = &{'Cwd::'.$func} };
+    is( $@, '',		"$func() should not explode under taint mode" );
+    ok( tainted($cwd),	"its return value should be tainted" );
+}

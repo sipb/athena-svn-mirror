@@ -5,7 +5,8 @@ BEGIN {
 	@INC = '../lib';
 }
 
-use Test::More tests => 11;
+use Config;
+use Test::More tests => 15;
 
 # these two should be kept in sync with the pragma itself
 # if hint bits are changed there, other things *will* break
@@ -49,3 +50,50 @@ like( $@, qr/^$error/, 'filetest dies with missing subpragma on use' );
 
 eval "no filetest";
 like( $@, qr/^$error/, 'filetest dies with missing subpragma on unuse' );
+
+SKIP: {
+    # A real test for filetest.
+    # This works for systems with /usr/bin/chflags (i.e. BSD4.4 systems).
+    my $chflags = "/usr/bin/chflags";
+    my $tstfile = "filetest.tst";
+    skip("No $chflags available", 4) if !-x $chflags;
+
+    my $skip_eff_user_tests = (!$Config{d_setreuid} && !$Config{d_setresuid})
+	                                            ||
+			      (!$Config{d_setregid} && !$Config{d_setresgid});
+
+    eval {
+	if (!-e $tstfile) {
+	    open(T, ">$tstfile") or die "Can't create $tstfile: $!";
+	    close T;
+	}
+	system($chflags, "uchg", $tstfile);
+	die "Can't exec $chflags uchg" if $? != 0;
+    };
+    skip("Errors in test using chflags: $@", 4) if $@;
+
+    {
+	use filetest 'access';
+    SKIP: {
+	    skip("No tests on effective user id", 1)
+		if $skip_eff_user_tests;
+	    is(-w $tstfile, undef, "$tstfile should not be recognized as writable");
+	}
+	is(-W $tstfile, undef, "$tstfile should not be recognized as writable");
+    }
+
+    {
+	no filetest 'access';
+    SKIP: {
+	    skip("No tests on effective user id", 1)
+		if $skip_eff_user_tests;
+	    is(-w $tstfile, 1, "$tstfile should be recognized as writable");
+	}
+	is(-W $tstfile, 1, "$tstfile should be recognized as writable");
+    }
+
+    # cleanup
+    system($chflags, "nouchg", $tstfile);
+    unlink $tstfile;
+    warn "Can't remove $tstfile: $!" if -e $tstfile;
+}

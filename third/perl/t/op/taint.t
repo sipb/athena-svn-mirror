@@ -44,7 +44,7 @@ BEGIN {
       eval { require IPC::SysV };
       unless ($@) {
 	  $ipcsysv++;
-	  IPC::SysV->import(qw(IPC_PRIVATE IPC_RMID IPC_CREAT S_IRWXU));
+	  IPC::SysV->import(qw(IPC_PRIVATE IPC_RMID IPC_CREAT S_IRWXU IPC_NOWAIT));
       }
   }
 }
@@ -124,7 +124,7 @@ my $echo = "$Invoke_Perl $ECHO";
 
 my $TEST = catfile(curdir(), 'TEST');
 
-print "1..205\n";
+print "1..220\n";
 
 # First, let's make sure that Perl is checking the dangerous
 # environment variables. Maybe they aren't set yet, so we'll
@@ -139,7 +139,17 @@ print "1..205\n";
     if ($Is_Cygwin && ! -f 'cygwin1.dll') {
 	system("/usr/bin/cp /usr/bin/cygwin1.dll .") &&
 	    die "$0: failed to cp cygwin1.dll: $!\n";
-	END { unlink "cygwin1.dll" } # yes, done for all platforms...
+	eval q{
+	    END { unlink "cygwin1.dll" }
+	};
+    }
+
+    if ($Is_Cygwin && ! -f 'cygcrypt-0.dll' && -f '/usr/bin/cygcrypt-0.dll') {
+	system("/usr/bin/cp /usr/bin/cygcrypt-0.dll .") &&
+	    die "$0: failed to cp cygcrypt-0.dll: $!\n";
+	eval q{
+	    END { unlink "cygcrypt-0.dll" }
+	};
     }
 
     test 1, eval { `$echo 1` } eq "1\n";
@@ -700,14 +710,14 @@ else {
 	my $type_rcvd;
 
 	if (defined $id) {
-	    if (msgsnd($id, pack("l! a*", $type_sent, $sent), 0)) {
-		if (msgrcv($id, $rcvd, 60, 0, 0)) {
+	    if (msgsnd($id, pack("l! a*", $type_sent, $sent), IPC_NOWAIT)) {
+		if (msgrcv($id, $rcvd, 60, 0, IPC_NOWAIT)) {
 		    ($type_rcvd, $rcvd) = unpack("l! a*", $rcvd);
 		} else {
-		    warn "# msgrcv failed\n";
+		    warn "# msgrcv failed: $!\n";
 		}
 	    } else {
-		warn "# msgsnd failed\n";
+		warn "# msgsnd failed: $!\n";
 	    }
 	    msgctl($id, IPC_RMID, 0) or warn "# msgctl failed: $!\n";
 	} else {
@@ -894,8 +904,8 @@ else {
     my @untainted;
     while (my ($k, $v) = each %ENV) {
 	if (!tainted($v) &&
-	    # These we have untainted explicitly earlier.
-	    $k !~ /^(BASH_ENV|CDPATH|ENV|IFS|PATH|TEMP|TERM|TMP)$/) {
+	    # These we have explicitly untainted or set earlier.
+	    $k !~ /^(BASH_ENV|CDPATH|ENV|IFS|PATH|PERL_CORE|TEMP|TERM|TMP)$/) {
 	    push @untainted, "# '$k' = '$v'\n";
 	}
     }
@@ -904,7 +914,7 @@ else {
 }
 
 
-ok( ${^TAINT},  '$^TAINT is on' );
+ok( ${^TAINT} == 1, '$^TAINT is on' );
 
 eval { ${^TAINT} = 0 };
 ok( ${^TAINT},  '$^TAINT is not assignable' );
@@ -941,9 +951,7 @@ else
 {
     # bug 20020208.005 plus some extras
     # single arg exec/system are tests 80-83
-    use if $] lt '5.009', warnings => FATAL => 'taint';
-    my $err = $] ge '5.009' ? qr/^Insecure dependency/ 
-                            : qr/^Use of tainted arguments/;
+    my $err = qr/^Insecure dependency/ ;
     test 184, eval { exec $TAINT, $TAINT } eq '', 'exec';
     test 185, $@ =~ $err, $@;
     test 186, eval { exec $TAINT $TAINT } eq '', 'exec';
@@ -968,8 +976,58 @@ else
 
     eval { system("lskdfj does not exist","with","args"); };
     test 204, $@ eq '';
-    eval { exec("lskdfj does not exist","with","args"); };
-    test 205, $@ eq '';
+    if ($Is_MacOS) {
+	print "ok 205 # no exec()\n";
+    } else {
+	eval { exec("lskdfj does not exist","with","args"); };
+	test 205, $@ eq '';
+    }
 
     # If you add tests here update also the above skip block for VMS.
+}
+
+{
+    # [ID 20020704.001] taint propagation failure
+    use re 'taint';
+    $TAINT =~ /(.*)/;
+    test 206, tainted(my $foo = $1);
+}
+
+{
+    # Remove this when changes 21542 and 21563 are integrated
+    test 207, 1;
+    test 208, 1;
+}
+
+{
+    # [perl #24248]
+    $TAINT =~ /(.*)/;
+    test 209, !tainted($1);
+    my $notaint = $1;
+    test 210, !tainted($notaint);
+
+    my $l;
+    $notaint =~ /($notaint)/;
+    $l = $1;
+    test 211, !tainted($1);
+    test 212, !tainted($l);
+    $notaint =~ /($TAINT)/;
+    $l = $1;
+    test 213, tainted($1);
+    test 214, tainted($l);
+
+    $TAINT =~ /($notaint)/;
+    $l = $1;
+    test 215, !tainted($1);
+    test 216, !tainted($l);
+    $TAINT =~ /($TAINT)/;
+    $l = $1;
+    test 217, tainted($1);
+    test 218, tainted($l);
+
+    my $r;
+    ($r = $TAINT) =~ /($notaint)/;
+    test 219, !tainted($1);
+    ($r = $TAINT) =~ /($TAINT)/;
+    test 220, tainted($1);
 }

@@ -1,6 +1,6 @@
 #!./perl
 
-# $RCSfile: do.t,v $$Revision: 1.1.1.4 $$Date: 2003-01-10 13:40:51 $
+# $RCSfile: do.t,v $$Revision: 1.1.1.5 $$Date: 2004-02-09 18:56:01 $
 
 sub foo1
 {
@@ -31,7 +31,7 @@ sub ok {
     return $ok;
 }
 
-print "1..21\n";
+print "1..22\n";
 
 # Test do &sub and proper @_ handling.
 $_[0] = 0;
@@ -89,6 +89,10 @@ ok( !$@, "do on a non-existing file, second try"  );
 
 # 6 must be interpreted as a file name here
 ok( (!defined do 6) && $!, "'do 6' : $!" );
+
+# [perl #19545]
+push @t, ($u = (do {} . "This should be pushed."));
+ok( $#t == 0, "empty do result value" );
 
 END {
     1 while unlink("$$.16", "$$.17", "$$.18");

@@ -1,6 +1,7 @@
-/* $RCSfile: hash.c,v $$Revision: 1.1.1.5 $$Date: 2003-01-10 13:40:59 $
+/* $RCSfile: hash.c,v $$Revision: 1.1.1.6 $$Date: 2004-02-09 18:58:00 $
  *
- *    Copyright (c) 1991-2002, Larry Wall
+ *    Copyright (C) 1991, 1992, 1993, 1994, 1995, 1999, 2000, 2001, 2002,
+ *    by Larry Wall and others
  *
  *    You may distribute under the terms of either the GNU General Public
  *    License or the Artistic License, as specified in the README file.
