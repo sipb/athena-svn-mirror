@@ -316,8 +316,8 @@ and the actions in this section are skipped.
 No <I>banner information line</I>
 is generated for the <CODE>of</CODE> filter,
 and no banner printing program is invoked.
-If the is an <CODE>of</CODE> filter and if it is expecting such a line
-and you have <CODE>ld</CODE> or <CODE>tr</CODE> information
+If there is an <CODE>of</CODE> filter and it is expecting such a line
+and you have <CODE>ld</CODE> or <CODE>tr</CODE> information then
 you may get unexpected results
 (actually, catastrophic failure is a better term, but I digress).</LI>
 <LI>If the <CODE>hl</CODE> (header last) flag is true the banner is printed at the end
@@ -547,12 +547,9 @@ the job is removed.</LI>
 the following sequence of events occurs:
 <OL>
 <LI>The job is marked as having an error during processing.</LI>
-<LI>The LPD server will attempt to kill all filters and other associated process
-by using a sequence of
-<CODE>kill -INT</CODE>,
-<CODE>kill -QUIT</CODE>,
-and finally
-<CODE>kill -KILL</CODE> operations.</LI>
+<LI>The LPD server will attempt to kill all filters and other associated processes
+by sending a SIGINT and SIGCONT (<CODE>kill -INT</CODE> and <CODE>kill -CONT</CODE>)
+to them.</LI>
 <LI>If there is a <CODE>mail_operator_on_error</CODE> value,
 the specified operator will be mailed an error indication.
 The <CODE>sendmail</CODE> option specifies the pathname of the

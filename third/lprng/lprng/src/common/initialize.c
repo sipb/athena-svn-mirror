@@ -1,14 +1,14 @@
 /***************************************************************************
  * LPRng - An Extended Print Spooler System
  *
- * Copyright 1988-1999, Patrick Powell, San Diego, CA
+ * Copyright 1988-2000, Patrick Powell, San Diego, CA
  *     papowell@astart.com
  * See LICENSE for conditions of use.
  *
  ***************************************************************************/
 
  static char *const _id =
-"$Id: initialize.c,v 1.1.1.4 1999-10-28 17:12:25 mwhitson Exp $";
+"$Id: initialize.c,v 1.1.1.5 2000-03-31 15:48:05 mwhitson Exp $";
 
 #include "lp.h"
 #include "initialize.h"
@@ -70,7 +70,7 @@ void Initialize(int argc,  char *argv[], char *envp[] )
 	}
 	/* set the umask so that you create safe files */
 	umask( 0077 );
-	signal( SIGPIPE, SIG_IGN );
+
 #ifdef IS_AUX
 	/********************************************
 	 * Apparently this needs to be done for AUX
@@ -138,6 +138,8 @@ void Setup_configuration()
     }
 
     DEBUG1("Setup_configuration: Configuration file '%s'", Config_file_DYN );
+    DEBUG1("Setup_configuration: Require_configfiles_DYN '%d'",
+		Require_configfiles_DYN );
 
 	Get_config( Is_server || Require_configfiles_DYN, Config_file_DYN );
 

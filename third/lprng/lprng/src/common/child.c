@@ -1,14 +1,14 @@
 /***************************************************************************
  * LPRng - An Extended Print Spooler System
  *
- * Copyright 1988-1999, Patrick Powell, San Diego, CA
+ * Copyright 1988-2000, Patrick Powell, San Diego, CA
  *     papowell@astart.com
  * See LICENSE for conditions of use.
  *
  ***************************************************************************/
 
  static char *const _id =
-"$Id: child.c,v 1.1.1.2 1999-10-27 20:10:02 mwhitson Exp $";
+"$Id: child.c,v 1.1.1.3 2000-03-31 15:48:00 mwhitson Exp $";
 
 
 #include "lp.h"
@@ -54,28 +54,6 @@ pid_t plp_waitpid (pid_t pid, plp_status_t *statusPtr, int options)
 	DEBUG2("plp_waitpid: report %d, status %s", report,
 		Decode_status( statusPtr ) );
 	return report;
-}
-
-pid_t plp_waitpid_timeout(int timeout,
-	pid_t pid, plp_status_t *status, int options)
-{
-	int report = -1;
-	int err;
-	DEBUG2("plp_waitpid_timeout: timeout %d, pid %d, options %d",
-		timeout, pid, options );
-	if( Set_timeout() ){
-		Set_timeout_alarm( timeout  );
-		report = plp_waitpid( pid, status, options );
-		err = errno;
-	} else {
-		report = -1;
-		err = EINTR;
-	}
-	Clear_timeout();
-	DEBUG2("plp_waitpid_timeout: report %d, status %s", pid,
-		Decode_status( status ) );
-	errno = err;
-	return( report );
 }
 
 /***************************************************************************
@@ -143,10 +121,16 @@ void Killchildren( int sig )
 
 	for( i = 0; i < Process_list.count; ++i ){
 		p = (void *)Process_list.list[i];
-		DEBUG2("Killchildren: kill(%d,%s)", p->pid, Sigstr(sig));
-		if( p->ppid == pid && p->pid > 0 && kill(p->pid, sig) == 0
-			&& kill(p->pid, SIGCONT) == 0 ){
-			DEBUG4("Killchildren: pid %d active", p->pid );
+		DEBUG2("Killchildren: pid %d, kill(%d,%s), ppid %d", pid,
+			p->pid, Sigstr(sig), p->ppid);
+		if( p->ppid == pid && p->pid > 0 ){
+			killpg(p->pid,sig);
+			killpg(p->pid,SIGCONT);
+			kill(p->pid,sig);
+			kill(p->pid,SIGCONT);
+			if( kill(p->pid, sig) == 0 ){
+				DEBUG4("Killchildren: pid %d still active", p->pid );
+			}
 		} else {
 			p->pid = 0;
 			p->ppid = 0;
@@ -168,9 +152,6 @@ int dofork( int new_process_group )
 
 	pid = fork();
 	if( pid == 0 ){
-		/* set subgroups to 0 */
-		Free_line_list(&Process_list);
-
 		/* you MUST put the process in another process group;
 		 * if you have a filter, and it does a 'killpg()' signal,
 		 * if you do not have it in a separate group the effects
@@ -223,9 +204,19 @@ int dofork( int new_process_group )
 		 */
 		}
 		/* we do not want to copy our parent's exit jobs or temp files */
+		Process_list.count = 0;
 		Clear_tempfile_list();
 		Clear_exit();
-		if( Name ) setproctitle( "lpd %s", Name );
+
+		/*
+		 * We need to make sure that LPD forked processes do not have blocked
+		 * signals.  The only two that I block are SIGCHLD and SIGUSR1.
+		 * These,  unfortunately,  are precisely the ones that cause problems.
+		 * Also,  SIGALRM is used,  but it is never blocked.
+		 */
+		if( Is_server ){
+			plp_block_mask oblock; plp_unblock_all_signals( &oblock );
+		}
 	} else if( pid != -1 ){
 		Check_max(&Process_list,1);
 		p = malloc_or_die(sizeof(p[0]),__FILE__,__LINE__);

@@ -1,10 +1,10 @@
 /***************************************************************************
  * LPRng - An Extended Print Spooler System
  *
- * Copyright 1988-1999, Patrick Powell, San Diego, CA
+ * Copyright 1988-2000, Patrick Powell, San Diego, CA
  *     papowell@astart.com
  * See LICENSE for conditions of use.
- * $Id: linelist.h,v 1.1.1.2 1999-10-27 20:10:14 mwhitson Exp $
+ * $Id: linelist.h,v 1.1.1.3 2000-03-31 15:48:08 mwhitson Exp $
  ***************************************************************************/
 
 
@@ -178,6 +178,7 @@ const char *Find_exists_value( struct line_list *l, const char *key, const char 
 char *Find_str_value( struct line_list *l, const char *key, const char *sep );
 char *Find_casekey_str_value( struct line_list *l, const char *key, const char *sep );
 void Set_str_value( struct line_list *l, const char *key, const char *value );
+void Set_expanded_str_value( struct line_list *l, const char *key, const char *orig );
 void Set_casekey_str_value( struct line_list *l, const char *key, const char *value );
 void Set_flag_value( struct line_list *l, const char *key, long value );
 void Set_double_value( struct line_list *l, const char *key, double value );
@@ -190,13 +191,18 @@ int Find_flag_value( struct line_list *l, const char *key, const char *sep );
 int Find_decimal_value( struct line_list *l, const char *key, const char *sep );
 double Find_double_value( struct line_list *l, const char *key, const char *sep );
 const char *Fix_val( const char *s );
+void Find_tags( struct line_list *dest, struct line_list *l, char *key );
+void Find_default_tags( struct line_list *dest,
+	struct keywords *var_list, char *tag );
 void Read_file_list( int required, struct line_list *model, char *str,
 	const char *linesep, int sort, const char *keysep, int uniq, int trim,
 	int marker, int doinclude, int nocomment );
 void Read_fd_and_split( struct line_list *list, int fd,
-	const char *linesep, int sort, const char *keysep, int uniq, int trim, int nocomment );
+	const char *linesep, int sort, const char *keysep, int uniq,
+	int trim, int nocomment );
 void Read_file_and_split( struct line_list *list, char *file,
-	const char *linesep, int sort, const char *keysep, int uniq, int trim, int nocomment );
+	const char *linesep, int sort, const char *keysep, int uniq,
+	int trim, int nocomment );
 int  Build_pc_names( struct line_list *names, struct line_list *order,
 	char *str, struct host_information *hostname  );
 void Build_printcap_info( 
@@ -241,7 +247,6 @@ int Is_meta( int c );
 char *Find_meta( char *s );
 void Clean_meta( char *t );
 void Dump_parms( char *title, struct keywords *k );
-struct sockaddr *Fix_auth( int sending, struct sockaddr *src_sin  );
 void Fix_dollars( struct line_list *l, struct job *job );
 char *Make_pathname( const char *dir,  const char *file );
 int Get_keyval( char *s, struct keywords *controlwords );
@@ -252,5 +257,14 @@ char *Find_str_in_str( char *str, const char *key, const char *sep );
 int Find_key_in_list( struct line_list *l, const char *key, const char *sep, int *m );
 char *Fix_str( char *str );
 int Shutdown_or_close( int fd );
+int Pgp_get_pgppassfd( struct line_list *info, char *error, int errlen );
+int Pgp_decode(struct line_list *info, char *tempfile, char *pgpfile,
+	struct line_list *pgp_info, char *buffer, int bufflen,
+	char *error, int errlen, char *esc_to_id, struct line_list *from_info,
+	int *pgp_exit_code, int *not_a_ciphertext );
+int Pgp_encode(struct line_list *info, char *tempfile, char *pgpfile,
+	struct line_list *pgp_info, char *buffer, int bufflen,
+	char *error, int errlen, char *esc_from_id, char *esc_to_id,
+	int *pgp_exit_code );
 
 #endif

@@ -1,14 +1,14 @@
 /***************************************************************************
  * LPRng - An Extended Print Spooler System
  *
- * Copyright 1988-1999, Patrick Powell, San Diego, CA
+ * Copyright 1988-2000, Patrick Powell, San Diego, CA
  *     papowell@astart.com
  * See LICENSE for conditions of use.
  *
  ***************************************************************************/
 
  static char *const _id =
-"$Id: lpraccnt.c,v 1.1.1.2 1999-10-27 20:10:03 mwhitson Exp $";
+"$Id: lpraccnt.c,v 1.1.1.3 2000-03-31 15:48:02 mwhitson Exp $";
 
 /*
  * Monitor for Accounting Information
@@ -53,6 +53,7 @@ int main( int argc, char *argv[] )
 	struct sockaddr addr;
 	int len;
 
+	signal( SIGCHLD, SIG_DFL );
 	if( argv[0] ) prog = argv[0];
 	while( (i = Getopt( argc, argv, "D:p:")) != EOF ){
 		switch( i ){

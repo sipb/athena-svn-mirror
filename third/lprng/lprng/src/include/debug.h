@@ -1,10 +1,10 @@
 /***************************************************************************
  * LPRng - An Extended Print Spooler System
  *
- * Copyright 1988-1999, Patrick Powell, San Diego, CA
+ * Copyright 1988-2000, Patrick Powell, San Diego, CA
  *     papowell@astart.com
  * See LICENSE for conditions of use.
- * $Id: debug.h,v 1.1.1.3 1999-10-27 20:10:08 mwhitson Exp $
+ * $Id: debug.h,v 1.1.1.4 2000-03-31 15:48:07 mwhitson Exp $
  ***************************************************************************/
 
 
@@ -16,6 +16,14 @@
  * note that a good optimizing compiler should not produce code
  *	for the logDebug call.  It may produce lots of warnings, but no code...
  */
+
+#if !defined(EXTERN)
+# define EXTERN extern
+#endif
+EXTERN int Debug;	/* debug flags */
+EXTERN int DbgFlag;	/* force job number */
+EXTERN int DbgTest;			/* Flags set to test various options */
+EXTERN int DbgJob;	/* force job number */
 
 #ifdef NODEBUG
 
@@ -44,8 +52,6 @@
 #define DEBUGFC(FLAG)        if( (FLAG & DbgFlag) )
 #define DEBUGFSET(FLAG)      ( (FLAG & DbgFlag) )
 
-EXTERN int Debug;	/* debug flags */
-EXTERN int DbgFlag;	/* force job number */
 
 /* Debug variable level */
 #define DEBUG1      DEBUGC(1,DRECV1|DCTRL1|DLPQ1|DLPRM1)
@@ -116,8 +122,6 @@ EXTERN int DbgFlag;	/* force job number */
 #define DLPQ3     ((0x4<<DLPQSHIFT))
 #define DLPQ4     ((0x8<<DLPQSHIFT))
 
-EXTERN int DbgTest;			/* Flags set to test various options */
-EXTERN int DbgJob;	/* force job number */
 
 #define IP_TEST 0x0001		/* test IP address */
 

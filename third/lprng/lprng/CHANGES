@@ -1,7 +1,7 @@
 ###########################################################################
 # LPRng - An Extended Print Spooler System
 #
-# Copyright 1988-1998 Patrick Powell, San Diego, CA
+# Copyright 1988-2000 Patrick Powell, San Diego, CA
 #     papowell@astart.com
 # See LICENSE for conditions of use.
 #
@@ -10,6 +10,276 @@
 # PURPOSE: Record Changes
 # CHANGES,v 3.47 1998/03/29 18:37:09 papowell Exp
 ###########################################################################
+
+Release LPRng 3.6.13 Fri Jan 28 08:03:07 PST 2000
+  MIT Kerberos support:  added code to detect when sending job to server
+   and the server name is 'localhost'.  This requires a special ticket
+   lookup to get the right ticket,  as there is no lpd.localhost ticket,
+   only lpd.servername.
+   (Supplied by: Mike Whitson <mwhitson@MIT.EDU>)
+  src/Makefile.in:  ln ${STRIP} -> ln -s
+   (Noticed by: Mike Whitson <mwhitson@MIT.EDU>)
+  The filter $- specification did not handle $-/xxx and $-root/xxx
+   correctly.
+   (Spotted by: Simon Wilkinson <sxw@dcs.ed.ac.uk>)
+  When using 'user' or 'custom' authentication,  lpr errors were
+   not printed out.  This was due to common/sendjob.c:Send_auth()
+   not setting non-zero return status when there were error conditions.
+   (Reported by: Patrick O'Brien" <pdo@cs.umd.edu>)
+  man/install-sh missing, and ifhp src/install-sh as well.
+   (Reported by: Bill Kemp <bkemp@srp.gov>
+  LPRng/Makefile.in referenced the wrong location for lpd.conf and lpd.perms
+   sample files.
+   (Spotted by:  Marty Leisner <leisner@sdsp.mc.xerox>)
+  LPD: now do accept in the main lpd process, and this time we brutally
+   send a message to the remote end if we cannot fork the child
+   process.
+  Some linksupport.c routines modified to NOT close sockets on
+   error condition.  This allows us to try to read additional error
+   information from the remote system.
+  Tested the kerberos5 authentication with kerberos-1.0.5.  Fixed
+   sserver.c and sclient.c.
+  LPRng-HOW corrected.  Filters only get SIGINT and SIGCONT sent
+   to them to kill them off.
+   (Spotted by: Robin Sommer <rsommer@uni-paderborn.de>)
+  Authentication support code rewritten to support error message and status
+   returns.  Also,  added error messages and status reports.
+  lpd started too many servers.  The Get_max_server() code returned
+   the maximum number of server processes that should be running,
+   and I would try to start this number.  This would lock up the system
+   until one had exited.  Now I start up max_servers - 4 at most
+   at startup time.  This is still high,  but seems to work.
+  lpq.c: missing argument to plp_snprintf()
+    (Patch by: Craig Small <csmall@scooter.eye-net.com.au>)
+  The environment variables passed to filters were not getting their
+    escaped characters expanded.  Thus, PATH=xx\072xx\072xx was
+    getting passed instead of PATH=xx:xx:xx
+  The default lpd.conf has been fixed so that it has escaped values for
+    : instead of : in the file.
+  Some filters require a killpg() AND a kill(SIGINT) AND a kill(SIGCONT)
+    to die.  Next it will have to be garlic and a stake... Sigh.
+    (Noted by:  Peter Scheurer <scheurer@sopra-gmbh.de> )
+  The translate_format and translate_incoming_format options can now have
+    '*f' entries - the * matches all formats.  This would translate all
+    file formats to f.
+  The LPRM forward in common/lprm.c did not pass the user's name correctly.
+    (Found by: John Perkins <john@cs.wisc.edu>)
+  Reformatted LICENSE so that the words GPL are in the first lines
+    so that people can tell right away.
+  Updated dates to match Jan, 2000
+  LPQ and LPRM commands were not being forwarded correctly.
+
+  RADICAL CHANGE IN CODE ORGANIZATION:
+    In the next major release I will be restricting authentication to
+  code modules only,  and users will have to write (gasp!) C code to do
+  this.  This is due to the problems with adding various types of
+  encryption, etc., which are not well supported by shell scripts,
+  etc.  (I won't discuss the legal issues, these are ugly.)
+
+    The following restructuring of the Authentication API has now been done.
+  a) Printcap, lpd.conf information
+     The auth=xxx and auth_forward=yyy set the type of authentication
+    to be used by the sender.  The auth=xxx is used by the clients
+    to communicate with the server and the auth_forward for server to
+    server communication.
+  b) for each authentication type there is an unlimited amount of configuration
+    stuff available now.  The configuration/printcap entries have the
+    format xxx_key.  The xxx_id entry is used by clients to identify the
+    id of the remote server that they are to use for authentication type
+    xxx.  When the server accepts a connection,  it will use the xxx_id
+    value as its 'key' or whatever for the connection.  Similarly,  when
+    doing server to server communication,  the xxx_forward_id is the
+    id of the remote server;  the remote server will still use xxx_id.
+    The reason for this has to do with printcap organization.  You want
+    to have both entries present in a printcap,  one for a client to send
+    to the server, and the other for the server to forward to another
+    server.
+      You should note that this will break down a little bit when you
+    have bounce queues.  Since there is only one xxx_forward_id available
+    for all of the destinations,  all of the destinations will need to
+    use the same xxx_forward_id value.  This problem will have to be solved
+    at the authentication module level,  probably by not using the xxx_id
+    and xxx_forward_id for anything but advisory information.
+      For backwards compatibility, kerberos can also use kerberos_server_principal
+    and kerberos_forward_principal instead of kerberos_id and kerberos_forward_id
+    respectively.
+  c) for server to server authentication,  use the 'auth_forward=type' to
+    set the authentication type for forwarding.
+  d) For example, to use kerberos authentication the client printcap
+    entry would have:
+        auth=kerberos
+        kerberos_id=lpr/lpr@server.host  OR
+		kerberos_server_principal=lpr/lpr@server.host
+		kerberos_service=lpr
+		kerberos_life=...   (this are usually not used)
+		kerberos_renew=...  (this are usually not used)
+
+    The server printcap entry would have:  (note no 'auth=' stuff used)
+        forward_auth=kerberos    (to use kerberos to forward)
+        kerberos_id=lpr/lpr@server.host  OR
+		kerberos_server_principal=lpr/lpr@server.host
+		kerberos_service=lpr
+		kerberos_life=...   (this are usually not used)
+		kerberos_renew=...  (this are usually not used)
+        kerberos_keytab=/etc/krb5.keytab
+        kerberos_forward_id=lpr/lpr@anotherserver.host
+
+    In addition,  you will find that PGP authentication has been more fully
+    supported.
+      CLIENTS:  use environment variables
+        PGPPASSFILE = location of a file with the PGP password
+        PGPPASSFD   = fd to read the password from (very very rarely used)
+      Client Configuration:
+        auth=pgp
+        pgp_id = pgp id of the server, used to get server key from key ring
+		pgp_path = /...  - path to PGP executable on user system
+
+      Server Configuration
+        pgp_id = pgp id of the server, used to get server key from key ring
+		pgp_path = /...  - path to PGP executable on server system
+        pgp_server_passphrasefile = file containing passphrase to be used by server
+           to unlock key file
+         Server keyring files are in the server user home directory,
+        i.e. - if server runs as 'daemon' it is ~daemon/.pgp/pubring.pgp and
+		~daemon/.pgp/secring.pgp.  Don't fight it.
+
+    Note that user level authentication using shell scripts is still there,
+    but I am making it hard to use.  Don't use it.  Evil.  Bad.  See the
+    notes below on how to add C code to do this.
+
+   And I have added some interesting code to use md5 authentication and
+    shared secrets:
+      CLIENTS:  use environment variables
+		MD5KEYFILE  - file containing md5 keys format is:  name=key.
+      keys are currently 16 chars long - the ASCII values are used
+      to set the 'key' value.  Yes, yes, I know there are only approx
+      76**16 = 5 * 10*29 possible keys using this.  Tough.  A key for the
+      user name (login name) and the md5_id need to be present
+     
+         Example:
+         User Keyfile
+           # from the configuration information: md5_id=key
+		   # we use 'key' to look up the host information
+	       # the entry has the format '[user_auth] salt'
+		   #  if user_auth is present then it will be used as the
+		   #  'from' or 'client' information.  The recipient will use
+		   # this value to look up the corresponding hash key value in
+		   # servers keyfile
+		   #key  = user_auth   salt
+           lpr@h4=papowell-h4  xx01223750adfj9098789sdfadf
+           lpr@h5=papowell-h5  asdfu189asdfasdfasdfasdfasd
+
+        Server Keyfile (host h4)
+		   #key  = user_auth   salt
+		   # user key
+           papowell-h4=xx01223750adfj9098789sdfadf
+           # key for forward transfer to host h5
+		   lpr@h5=lpr-h4 adfa9ipioasdfasdfjklsf
+           # key for forward transfer from host h5
+		   lpr-h5=adfa9ipioasdfasdfjklsf
+
+        Server Keyfile (host h5)
+		   #key  = user_auth   salt
+		   # user key
+           papowell-h5=asdfu189asdfasdfasdfasdfasd
+           # key for forward transfer to host h4
+		   lpr@h4=lpr-h5 adfa9ipioasdfasdfjklsf
+           # key for forward transfer from host h4
+		   lpr-h4=adfa9ipioasdfasdfjklsf
+
+        Configuration:
+          auth=md5
+
+
+    Just to make life interesting,  I have also added a demonstration
+      of how to do md5 signing and authentication.
+
+   e) Code reorganization
+       The LPRng/src/common/sendauth.c and LPRng/src/common/lpd_secure.c
+    files have the following stuff added at the end.
+
+  #define SENDING
+  #include "user_auth.stub"
+  
+   struct security SendSecuritySupported[] = {
+      /* name,       config_tag, connect,    send,   receive */
+      { "kerberos4", "kerberos", Send_krb4_auth, 0, 0 },
+      { "kerberos*", "kerberos", 0,           Krb5_send },
+      { "pgp",       "pgp",      0,           Pgp_send },
+      { "user",      "user",     0,           User_send },
+  #if defined(USER_SEND)
+  USER_SEND
+  #endif
+      {0}
+  };
+
+     This is an example of how you add user level stuff for encryption
+   and not go to jail for international arms smuggling.  The "user_auth.stub"
+   file contains the source code for the various modules, or you can put the
+   source code in another file and link it in.  This is recommended when you
+   want to use a dynmically loadable library and ship the library. (Note:
+   yes, I looked at loadable modules a la Apache,  but LPRng runs on systems
+   that do not support this, so I gave up.  This is the older method from
+   other real time software that seems to work.)
+
+     The data structure has the name of the authentication, used with the
+   auth=xxx tag.  The name field corresponds to the xxx value.
+
+     The config_tag is used to do lookups in the various configuration and
+   printcap files to get values.  Why not make them the same?  As you see
+   in the example, we have kerberos4 and Kerberos 5,  but we use different
+   support routine with the same key values.  Backwards compatibility is
+   thus assured.  Oh, yes. Note that you can use wildcards for the name value.
+   The connect, send, and receive fields are the support routines that are
+   used for handling encryption.
+
+   connect:  make a connection,  fumble around and do authentication,
+    and then return.  Kind of like a 'connect' call,  but does handshaking.
+    Note that the data link and other stuff is handled by LPRng.  Very
+    lightweight and fast.
+
+   send: this is an alternative to connect.  The routine is handed a file
+    that it packs up and then sends to the remote end.  In response
+    it gets data back that it will unpack and deliver to the user as
+    status or error messages.
+
+   receive:  this routine is called when the LPD server gets an authentication
+    request.
+      If the 'connect' routine is used,  'connect' sends a magic
+    string to the server that will cause it to call this routine.  The routine
+    will do the hand shaking,  and then return.  The normal LPD service
+    routine will take over.
+      If the 'send' routine is used,  this routine will get the stuff sent
+    by the remote end, unpack it, or what ever is appropriate,  and then
+    call the LPD service routine.  By convention, it passes the routine
+    a file to put its error messages, etc., into.  When the routine returns,
+    the file contents are packaged up and sent back to the server.
+
+     Note:  Kerberos4 :  uses connect / receive
+            Kerberos5 :  uses send / receive
+            PGP       :  uses send / receive
+            MD5 'send':  uses send / receive
+            MD5 'con' :  uses connect / receive
+
+   The source code for PGP authentication is in LPRng/common/linelist.c
+   (don't ask).  You can get an idea of how to add more authentication by
+   looking in LPRng/common/user_auth.stub for excruciatingly detailed
+   discussions and examples.
+
+   The #define SENDING controls what stuff in the user_auth.stub
+   gets included.  If you look in the sample file,  you will find:
+
+   #if defined(SENDING)
+   extern int md5_send();
+   #  define USER_SEND \
+      { "md5", "md5", md5_send, 0, md5_receive },
+   #endif
+
+   This little bit of code causes the prototype md5_send() to be put in place,
+   and then the USER_SEND to be defined.  Note that in the original file (send_auth.c)
+   that this is used in a table to insert the correct authentication stuff.
+
+   Enjoy.
 
 Release LPRng 3.6.12 Tue Oct 26 16:59:35 PDT 1999
   AIX does not like control files where Nxxx comes before data file lines.

@@ -1,10 +1,10 @@
 /***************************************************************************
  * LPRng - An Extended Print Spooler System
  *
- * Copyright 1988-1999, Patrick Powell, San Diego, CA
+ * Copyright 1988-2000, Patrick Powell, San Diego, CA
  *     papowell@astart.com
  * See LICENSE for conditions of use.
- * $Id: lpc.h,v 1.1.1.2 1999-10-27 20:10:12 mwhitson Exp $
+ * $Id: lpc.h,v 1.1.1.3 2000-03-31 15:48:08 mwhitson Exp $
  ***************************************************************************/
 
 
@@ -14,6 +14,7 @@
 
 extern char LPC_optstr[]; /* number of status lines */
 EXTERN char *Server;
+EXTERN int Mail_fd;
 
 /* PROTOTYPES */
 

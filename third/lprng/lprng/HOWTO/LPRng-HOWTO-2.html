@@ -56,7 +56,7 @@ or perform various accounting or administrative functions.
 LPRng print spooling system.
 A program (or user) will use the <CODE>lpr</CODE> program to send a file
 to the <CODE>lpd</CODE> server over a TCP/IP connection.
-The <CODE>lpd</CODE>server will store the file temporarily in a
+The <CODE>lpd</CODE> server will store the file temporarily in a
 spool queue directory.
 The information needed by the <CODE>lpr</CODE> and <CODE>lpd</CODE> programs to carry
 out this activity is stored in the
@@ -114,7 +114,7 @@ server to do the printing.
 psqueue:server
   :lp=/dev/lp0
   :sd=/var/spool/lpd/psqueue
-  :if=/usr/local/bin/ifhp
+  :if=/usr/local/libexec/filters/ifhp
 </PRE>
 </CODE></BLOCKQUOTE>
 <P>The <CODE>sd</CODE> (spool queue directory) entry specifies the directory where

@@ -136,11 +136,11 @@ xsp524|Sun SPARCprinter NeWSprint printer:
     :sd=/etc/lp/printers/xsp524:
     :lf=/etc/lp/printers/xsp524/log:
     :af=/var/spool/lpd/xsp524/acct:
-    :if=/usr/local/lib/newsprint/if:
+    :if=/usr/local/libexec/newsprint/if:
 </PRE>
 </CODE></BLOCKQUOTE>
 <P>The
-<CODE>/usr/local/lib/newsprint/if</CODE>
+<CODE>/usr/local/libexec/newsprint/if</CODE>
 was copied from
 <CODE>/usr/newsprint/lpd/if</CODE>
 in a SunOS4.x installation of the newsprint
@@ -366,7 +366,9 @@ The Netatalk distribution FAQ is at:
 has to do with printing to LPRng-served printers from Macs.
 The second issue has to do with printing from LPRng to
 network printers that speak AppleTalk.
+<P>And alternative version of AppleTalk support is available from
 <P>
+<A HREF="ftp://ftp.u.washington.edu/pub/user-supported/asun">ftp://ftp.u.washington.edu/pub/user-supported/asun</A><P>
 <H2><A NAME="ss5.6">5.6 Apple to LPRng Printing</A>
 </H2>
 
@@ -504,16 +506,16 @@ of a temporary directory to hold print jobs when they are submitted.
     lpresume command = lpc release %p %j
     queuepause command = lpc -P%p stop
     queueresume command = lpc -P%p start
-        #
+    #
     # alternative to allow userid to be specified as well
-        #
+    #
     # You will have to add the samba UID to the 'allow_user_setting'
     #   option in the /etc/lpd.conf file.
     # WARNING: the %U is the name the user requests.  If you have
-        # 'guest' printer use,  then you should be aware that this
-        # will allow anybody to impersonate a another user,  and they will
-        # be able to execute the various LPRng commands as that user.
-        #
+    # 'guest' printer use,  then you should be aware that this
+    # will allow anybody to impersonate a another user,  and they will
+    # be able to execute the various LPRng commands as that user.
+    #
 #   print command = /usr/local/bin/lpr -U%U -P%p -r %s
 #   lprm command  = /usr/local/bin/lprm -P%p -U%U %j
 #   lppause command = lpc -U%U hold %p %j
@@ -576,17 +578,17 @@ eval `/bin/cat $config_file`
    "$password" -U "$server" -N -P 1>&amp;2
 </PRE>
 </CODE></BLOCKQUOTE>
-<P>If the above script was in <CODE>/usr/local/lib/filters/smbprint</CODE>,
+<P>If the above script was in <CODE>/usr/local/libexec/filters/smbprint</CODE>,
 the printcap entry for this printer would be:
 <BLOCKQUOTE><CODE>
 <PRE>
 pauls_pc:
   :sd=/var/spool/lpd/%P
   # we filter the output
-  :lp=|/usr/local/lib/filters/smbprint
+  :lp=|/usr/local/libexec/filters/smbprint
   # you can add filters if you want to do specific actions
   :ifhp=model=hp4
-  if=/usr/local/lib/filters/ifhp
+  if=/usr/local/libexec/filters/ifhp
 </PRE>
 </CODE></BLOCKQUOTE>
 <H2><A NAME="printspec"></A> <A NAME="ss5.10">5.10 Printer Specific notes</A>
@@ -998,7 +1000,7 @@ phaser:
  # You need to specify the IP address of the printer's network interface
  #  In this example it is 10.0.0.1 - replace with the correct value
  # The filter will actually open the connection.
- :if=/usr/local/lib/filter/ifhp -Tdev=10.0.0.1%9100,model=tek
+ :if=/usr/local/libexec/filters/ifhp -Tdev=10.0.0.1%9100,model=tek
 </PRE>
 </CODE></BLOCKQUOTE>
 <H2><A NAME="ss5.16">5.16 Duplex Printing</A>

@@ -1,0 +1,6 @@
+#!/usr/local/bin/perl -spi.bak
+	if( /Copyr/ ){
+		s/1997/2000/;
+		s/1998/2000/;
+		s/1999/2000/;
+	}

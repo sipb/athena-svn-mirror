@@ -1,10 +1,10 @@
 /***************************************************************************
  * LPRng - An Extended Print Spooler System
  *
- * Copyright 1988-1999, Patrick Powell, San Diego, CA
+ * Copyright 1988-2000, Patrick Powell, San Diego, CA
  *     papowell@astart.com
  * See LICENSE for conditions of use.
- * $Id: lpstat.h,v 1.1.1.2 1999-10-27 20:10:15 mwhitson Exp $
+ * $Id: lpstat.h,v 1.1.1.3 2000-03-31 15:48:11 mwhitson Exp $
  ***************************************************************************/
 
 
@@ -18,6 +18,7 @@ EXTERN int All_printers;    /* show all printers */
 EXTERN int Status_line_count; /* number of status lines */
 EXTERN int Clear_scr;       /* clear screen */
 EXTERN int Interval;        /* display interval */
+EXTERN int Mail_fd;
 
 /* PROTOTYPES */
 int main(int argc, char *argv[], char *envp[]);

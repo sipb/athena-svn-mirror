@@ -82,7 +82,7 @@ and <CODE>lp2</CODE>, <CODE>lp3</CODE>, and <CODE>lp4</CODE> with no aliases.</L
 <LI>Aliases start with the <CODE>|</CODE> character and options with the <CODE>:</CODE> character;
 tabs and spaces before and after the <CODE>|</CODE> or <CODE>:</CODE> characters
 and at the start and end of lines are ignored.
-You can use backslash (tt/\/) at the end of a line to create a multi-line
+You can use backslash (<CODE>\</CODE>) at the end of a line to create a multi-line
 value for an option.
 The backslash will cause the next line to be appended to the
 current line;
@@ -348,7 +348,7 @@ and replacing them with a space.</LI>
 and the printcap name, aliases, and options are determined.
 Colons <CODE>:</CODE> act as option separators,
 and leading and trailing whitespaces are removed.</LI>
-<LI>Options are sorted and expect for the 
+<LI>Options are sorted and except for the 
 <CODE>tc=...</CODE> option only the last option setting is retained.</LI>
 <LI>Client programs will discard a printcap entry with a <CODE>server</CODE> option
 and
@@ -365,7 +365,7 @@ which are combined.</LI>
 <LI>When a printcap entry is actually used,
 the printcap entries listed by the <CODE>tc</CODE> include option
 are extracted and combined in order.
-(This allows include entries to appear after the referring printcap entry.)
+This allows include entries to appear after the referring printcap entry.
 Then printcap options will be combined with the included ones.
 This has the effect that the options specified in the printcap entry
 will override the ones from the <CODE>tc</CODE> included entries.</LI>
@@ -414,7 +414,7 @@ lp2:lp=/dev/lp:server
 The first printcap entry, <CODE>lp1</CODE>,
 the information is seen by both client and server.
 The next printcap entry,  with the same name <CODE>lp1</CODE>,
-will be combined with the second one.
+will be combined with the first one.
 The order of options is important - the entries are scanned in order
 and an option will have the last value set.
 Thus,
@@ -424,7 +424,7 @@ both client and server will have:
 <PRE>
 lp1:lp=lp@pr1
   :mx=0
-  :sd=/usr/local/spool/lp1P
+  :sd=/usr/local/spool/lp1
 </PRE>
 </CODE></BLOCKQUOTE>
 </LI>
@@ -437,7 +437,7 @@ Thus, the LPRng clients will see:
 lp1
   :lp=lp@pr1
   :mx=0
-  :sd=/usr/local/spool/lp1P
+  :sd=/usr/local/spool/lp1
 lp2
   :client
   :lp=lp@pr2
@@ -450,7 +450,7 @@ and the server will see:
 lp1
   :lp=lp@pr1
   :mx=0
-  :sd=/usr/local/spool/lp1P
+  :sd=/usr/local/spool/lp1
 lp2
   :lp=/dev/lp
   :server
@@ -484,7 +484,7 @@ hp1:tc=.hp,.filter
 hp2:tc=.hp,.filter
   :lp=lp@10.0.0.2
 .filter
-  :if=/usr/local/bin/ifhp
+  :if=/usr/local/libexec/filters/ifhp
   :lpd_bounce
 </PRE>
 </CODE></BLOCKQUOTE>
@@ -499,7 +499,7 @@ the printcap information would resemble:
 <PRE>
 hp1
   :lp=lp@10.0.0.1
-  :if=/usr/local/bin/ifhp
+  :if=/usr/local/libexec/filters/ifhp
   :lpd_bounce
   :mx=0
   :sd=/usr/local/spool/%P
@@ -507,7 +507,7 @@ hp1
   :sh
 hp2
   :lp=lp@10.0.0.2
-  :if=/usr/local/bin/ifhp
+  :if=/usr/local/libexec/filters/ifhp
   :lpd_bounce
   :mx=0
   :sd=/usr/local/spool/%P
@@ -523,12 +523,16 @@ so we would have:
 <PRE>
 hp1
   :lp=lp@10.0.0.1
+  :if=/usr/local/libexec/filters/ifhp
+  :lpd_bounce
   :mx=0
   :sd=/usr/local/spool/hp1
   :sf
   :sh
 hp2
   :lp=lp@10.0.0.2
+  :if=/usr/local/libexec/filters/ifhp
+  :lpd_bounce
   :mx=0
   :sd=/usr/local/spool/hp2
   :sf
@@ -593,7 +597,7 @@ For example:
 lp1
   :lp=lp@pr1
   :mx=0
-  :sd=/usr/local/spool/lp1P
+  :sd=/usr/local/spool/lp1
 lp2
   :client
   :lp=/dev/lp
@@ -669,8 +673,8 @@ The next printcap example is much more robust:
 # Simplest
 remote
    :lp=10.24.2.3%9100
-   :of=/usr/local/lib/ifhp
-   :if=/usr/local/lib/ifhp
+   :of=/usr/local/libexec/filters/ifhp
+   :if=/usr/local/libexec/filters/ifhp
    :sh:sf
 </PRE>
 </CODE></BLOCKQUOTE>
@@ -731,8 +735,8 @@ then you will need to use the more powerful
 lp:
    :lp=/dev/lpr
    :ifhp=model=hp4,status@
-   :of=/usr/local/bin/ifhp
-   :if=/usr/local/bin/ifhp
+   :of=/usr/local/libexec/filters/ifhp
+   :if=/usr/local/libexec/filters/ifhp
    :sh:sf
 </PRE>
 </CODE></BLOCKQUOTE>
@@ -771,7 +775,7 @@ and printers will report errors back to the host computer.
 The <CODE>rw</CODE> flag will cause the printer port to be opened 
 <CODE>read-write</CODE>,
 and the <CODE>lpd</CODE> server will report status information.</LI>
-<LI>The <CODE>sy</CODE> option specifies the <CODE>stty(1)</CODE>
+<LI>The <CODE>stty</CODE> option specifies the <CODE>stty(1)</CODE>
 flags and line speed needed to configure the serial line
 (See
 <A HREF="LPRng-HOWTO-3.html#secserial">Serial Printers</A>
@@ -907,7 +911,8 @@ The banner generation is done as discussed in
 
 <P>Options used:
 <UL>
-<LI> <CODE>translate_format=</CODE><EM>format of filtered job</EM></LI>
+<LI> <CODE>translate_format=</CODE><EM>change outgoing job file formats</EM></LI>
+<LI> <CODE>translate_incoming_format=</CODE><EM>change incoming job file formats</EM></LI>
 </UL>
 <P>A rarely encountered problem is when a job is printed with
 one format but for compatibility needs to be processed with another.
@@ -932,6 +937,8 @@ lp
   :lp=lp@printerserver
 </PRE>
 </CODE></BLOCKQUOTE>
+<P>The <CODE>translate_incoming_format</CODE> will do the same thing,
+but this time on incoming jobs.
 <H2><A NAME="lprbounce"></A> <A NAME="ss8.12">8.12 LPR Filters Files</A>
 </H2>
 
@@ -1090,8 +1097,8 @@ hpl5b|for PLP/LPRng software - network based HP JetDirect card:
         :sd=/var/spool/lpd/%P
         :rw:sh:ps=status
         :fx=flp
-        :if=/usr/local/lib/filters/ifhp -Tbanner=on
-        :of=/usr/local/lib/filters/ofhp -Tbanner=on
+        :if=/usr/local/libexec/filters/ifhp -Tbanner=on
+        :of=/usr/local/libexec/filters/ofhp -Tbanner=on
 </PRE>
 </CODE></BLOCKQUOTE>
 <P>The perl script <CODE>bouncer.pl</CODE> looks like this:
@@ -1402,11 +1409,11 @@ which report idle status.
 <BLOCKQUOTE><CODE>
 <PRE>
 laser1|pi1|Room 1359 LaserWriter #1
-    :server:check_idle=/usr/local/lib/filters/remote_check pr@laser1
+    :server:check_idle=/usr/local/libexec/filters/remote_check pr@laser1
     :lp=laser1%9100
     :tc=@commonlaser
 laser2|pi2|Room 1359 LaserWriter #2
-    :server:check_idle=/usr/local/lib/filters/remote_check pr@laser1
+    :server:check_idle=/usr/local/libexec/filters/remote_check pr@laser1
     :lp=laser2%9100
     :tc=@commonlaser
 </PRE>
@@ -1591,14 +1598,14 @@ printcap.time: $(PRINTCAP) Makefile
 use the following entry in your <CODE>/etc/lpd.conf</CODE> file:
 <BLOCKQUOTE><CODE>
 <PRE>
-printcap_path |/usr/local/lib/pcfilter
+printcap_path |/usr/local/libexec/pcfilter
 </PRE>
 </CODE></BLOCKQUOTE>
-<P>Put the following shell script in /usr/local/lib/pcfilter
+<P>Put the following shell script in /usr/local/libexec/pcfilter
 <BLOCKQUOTE><CODE>
 <PRE>
 #!/bin/sh
-#/usr/local/lib/pcfilter
+#/usr/local/libexec/filters/pcfilter
 read key
 ypmatch "$key" printcap.byname
 </PRE>

@@ -1,10 +1,10 @@
 /***************************************************************************
  * LPRng - An Extended Print Spooler System
  *
- * Copyright 1988-1999, Patrick Powell, San Diego, CA
+ * Copyright 1988-2000, Patrick Powell, San Diego, CA
  *     papowell@astart.com
  * See LICENSE for conditions of use.
- * $Id: lpd.h,v 1.1.1.2 1999-10-27 20:10:06 mwhitson Exp $
+ * $Id: lpd.h,v 1.1.1.3 2000-03-31 15:48:05 mwhitson Exp $
  ***************************************************************************/
 
 
@@ -50,7 +50,6 @@ EXTERN int Reread_config;
 EXTERN int Started_server;
 EXTERN int Logger_fd;
 EXTERN int Mail_fd;
-EXTERN int Lpd_ack_fd;
 
 /* PROTOTYPES */
 int main(int argc, char *argv[], char *envp[]);
@@ -58,13 +57,11 @@ void Setup_log(char *logfile );
 void Service_connection( struct line_list *args );
 void Dispatch_input(int *talk, char *input );
 void Reinit(void);
-void Service_printer( int talk );
 int Get_lpd_pid(void);
 void Set_lpd_pid(void);
 int Read_server_status( int fd );
 void usage(void);
 void Get_parms(int argc, char *argv[] );
-void Put_header( struct job *job, struct line_list *l );
 void Setup_lpd_call( struct line_list *passfd, struct line_list *args );
 int Make_lpd_call( struct line_list *passfd, struct line_list *args );
 void Do_work( struct line_list *args );
@@ -78,5 +75,6 @@ void Service_log( struct line_list *args );
 plp_signal_t sigchld_handler (int signo);
 void Setup_waitpid (void);
 void Setup_waitpid_break (void);
+void Fork_error( int fork_failed );
 
 #endif

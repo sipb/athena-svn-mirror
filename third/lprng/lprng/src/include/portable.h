@@ -1,17 +1,17 @@
 /***************************************************************************
  * LPRng - An Extended Print Spooler System
  *
- * Copyright 1988-1999, Patrick Powell, San Diego, CA
+ * Copyright 1988-2000, Patrick Powell, San Diego, CA
  *     papowell@astart.com
  * See LICENSE for conditions of use.
- * $Id: portable.h,v 1.1.1.3 1999-10-27 20:10:08 mwhitson Exp $
+ * $Id: portable.h,v 1.1.1.4 2000-03-31 15:48:06 mwhitson Exp $
  ***************************************************************************/
 
 
 /***************************************************************************
  * LPRng - An Extended Print Spooler System
  *
- * Copyright 1988-1997, Patrick Powell, San Diego, CA
+ * Copyright 1988-2000, Patrick Powell, San Diego, CA
  *     papowell@sdsu.edu
  * See LICENSE for conditions of use.
  *
@@ -657,6 +657,9 @@ XX ** NO VARARGS ** XX
 /**********************************************************************
  *  Select() problems
  **********************************************************************/
+#ifdef HAVE_SELECT_H
+#include <select.h>
+#endif
 #if !defined(FD_SET_FIX)
 # define FD_SET_FIX(X) X
 #endif

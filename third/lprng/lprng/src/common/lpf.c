@@ -1,14 +1,14 @@
 /***************************************************************************
  * LPRng - An Extended Print Spooler System
  *
- * Copyright 1988-1999, Patrick Powell, San Diego, CA
+ * Copyright 1988-2000, Patrick Powell, San Diego, CA
  *     papowell@astart.com
  * See LICENSE for conditions of use.
  *
  ***************************************************************************/
 
  static char *const _id =
-"$Id: lpf.c,v 1.1.1.2 1999-10-27 20:09:58 mwhitson Exp $";
+"$Id: lpf.c,v 1.1.1.3 2000-03-31 15:47:57 mwhitson Exp $";
 
 
 /***************************************************************************
@@ -82,8 +82,8 @@
  * npages    - number of pages for accounting
  *
  * -Tlevel - sets debug level. level must be integer
- * -Tcrlf  - turns LF to CRLF off
- * -TX     - puts character X at end of each line.
+ * -Tcrlf  - turn LF to CRLF translation off
+ * -TX     - append character X to end of line (CR, CR/LF, LF, LF/CR marks end)
  *
  *
  *	The functions fatal(), logerr(), and logerr_die() can be used to report
@@ -194,6 +194,7 @@ int of_filter;
 
 int main( int argc, char *argv[], char *envp[] )
 {
+
 	/* check to see if you have the accounting fd */
 	accounting_fd = dup(3);
 	/* if this works, then you have one */
@@ -220,6 +221,10 @@ int main( int argc, char *argv[], char *envp[] )
 	 * Turn off SIGPIPE
 	 */
 	(void)signal( SIGPIPE, SIG_IGN );
+	(void)signal( SIGPIPE, SIG_DFL );
+	(void)signal( SIGINT, SIG_DFL );
+	(void)signal( SIGHUP, SIG_DFL );
+	(void)signal( SIGQUIT, SIG_DFL );
 	if( of_filter || (format && format[0] == 'o') ){
 		filter_pgm( filter_stop );
 	} else {
