@@ -1,4 +1,4 @@
-/* $Id: dm.c,v 1.20 2001-06-05 19:30:45 rbasch Exp $
+/* $Id: dm.c,v 1.21 2001-07-18 14:22:23 ghudson Exp $
  *
  * Copyright (c) 1990, 1991 by the Massachusetts Institute of Technology
  * For copying and distribution information, please see the file
@@ -47,7 +47,7 @@
 #include <al.h>
 
 #ifndef lint
-static const char rcsid[] = "$Id: dm.c,v 1.20 2001-06-05 19:30:45 rbasch Exp $";
+static const char rcsid[] = "$Id: dm.c,v 1.21 2001-07-18 14:22:23 ghudson Exp $";
 #endif
 
 /* Process states */
@@ -520,6 +520,7 @@ int main(int argc, char **argv)
       if (login_running == RUNNING)
 	break;
     }
+  close(ttyfd);
   sigact.sa_handler = SIG_IGN;
   sigaction(SIGUSR1, &sigact, NULL);
   alarm(0);
@@ -714,10 +715,8 @@ static void start_console(int fd, char **argv, int redir)
 
 static void shutdown(int signo)
 {
-  int pgrp, i;
+  int pgrp;
   struct termios tc;
-  char buf[BUFSIZ];
-  int notused;
 
   syslog(LOG_DEBUG, "Received SIGFPE, performing shutdown");
   if (login_running == RUNNING)
@@ -737,19 +736,9 @@ static void shutdown(int signo)
 
   (void) sigprocmask(SIG_SETMASK, &sig_zero, (sigset_t *) 0);
 
-  /* Make sure the slave side is open before we read from the master;
-   *  some systems will return EIO if there are no current writers.
-   */
-  sprintf(buf, "/dev/%s", logintty);
-  notused = open(buf, O_RDWR, 0);
+  close(console_tty);
   while (1)
-    {
-      i = read(console_tty, buf, sizeof(buf));
-      if (i == -1 && errno != EINTR)
-	perror("console pty");
-      else if (i > 0)
-	write(1, buf, i);
-    }
+    pause();
 }
 
 
