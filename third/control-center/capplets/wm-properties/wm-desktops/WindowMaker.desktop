@@ -1,0 +1,17 @@
+[Desktop Entry]
+Name=Window Maker
+Name[pt_BR]=Window Maker
+Name[sl]=Window Maker
+Name[da]=Window Maker
+Name[cs]=Window Maker
+Name[el]=Window Maker
+Name[ko]=À©µµ¿ì ¸ÞÀÌÄ¿
+Name[fr]=Window Maker
+Name[pl]=Window Maker
+Comment[cs]=Pomìrnì dobrý správce oken s podporou Gnome.
+Exec=wmaker
+TryExec=wmaker
+
+[Window Manager]
+SessionManaged=false
+ConfigExec=/usr/X11R6/lib/GNUstep/Apps/WPrefs.app/WPrefs

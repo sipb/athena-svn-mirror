@@ -1,0 +1,17 @@
+[Desktop Entry]
+Name=Ice WM
+Name[pt_BR]=Ice WM
+Name[sl]=Ice WM
+Name[ca]=Gestor Ice
+Name[cs]=Ice WM
+Name[da]=Ice vindueshεndtering
+Name[el]=Διαχειριστής Παραθύρων ICE
+Name[ko]=Ice WM
+Name[fr]=Ice WM
+Name[no]=Ice vindushεndterer
+Name[pl]=MenedΏer okien Ice (IceWM)
+Exec=icewm
+TryExec=icewm
+
+[Window Manager]
+SessionManaged=true
