@@ -1,10 +1,10 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.2 1986-09-04 17:42:33 jtkohl Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.3 1987-08-04 05:17:32 kubitron Exp $
  */
 
 #ifndef lint
-static char *rcsid_login_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.2 1986-09-04 17:42:33 jtkohl Exp $";
+static char *rcsid_login_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.3 1987-08-04 05:17:32 kubitron Exp $";
 #endif lint
 
 /*
@@ -229,7 +229,8 @@ main(argc, argv)
 		/*
 		 * If user not super-user, check for logins disabled.
 		 */
-		if (pwd->pw_uid != 0 && (nlfd = fopen(nolog, "r")) > 0) {
+
+		if (pwd->pw_uid != 0 && (nlfd = fopen(nolog, "r")) != 0) {
 			while ((c = getc(nlfd)) != EOF)
 				putchar(c);
 			fflush(stdout);
