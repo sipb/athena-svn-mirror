@@ -21,7 +21,7 @@
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_utils.c,v 1.10 1990-01-17 02:40:50 vanharen Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_utils.c,v 1.11 1990-02-07 03:36:29 vanharen Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -61,7 +61,7 @@ display_file(filename,flag)
 	
   if ((file = fopen(filename, "r")) == (FILE *)NULL) 
     {
-      fprintf(stderr, "display_file: Unable to open file %s",
+      fprintf(stderr, "display_file: Unable to open file %s\n",
 	      filename);
       return(ERROR);
     }
