@@ -3,13 +3,14 @@
  * It contains definitions for the OLC daemon and the lumberjack program.
  *
  *      Chris VanHaren
+ *	Lucien Van Elsen
  *      MIT Project Athena
  *
  * Copyright (C) 1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/lumberjack.h,v $
- *	$Id: lumberjack.h,v 1.3 1990-12-09 16:50:20 lwvanels Exp $
+ *	$Id: lumberjack.h,v 1.4 1990-12-12 14:09:34 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
@@ -20,19 +21,11 @@
 
 #include <syslog.h>
 
-char *DONE_DIR		 = "/usr/spool/olc/donelogs";
+#define DONE_DIR	"/usr/spool/olc/donelogs"
 
 #define DSPIPE	"/usr/athena/dspipe" /* name of program to send off logs */
 
-#ifdef OLX
-#define PREFIX	"FIONAVAR.MIT.EDU:/usr/spool/discuss/ot" /* meeting prefix */
-#else
-#define PREFIX	"MATISSE.MIT.EDU:/usr/spool/discuss/o"
-#endif
-
-#ifdef LAVIN
-#define PREFIX  "NEMESIS.MIT.EDU:/usr/spool/discuss/o"
-#endif
+#define PREFIXFILE "/usr/lib/olc/ds_prefix" /* File with log prefix to use */
 
 #define LOCKFILE  "lockfile"	/* name of lockfile */
 #define SIZE	1024
