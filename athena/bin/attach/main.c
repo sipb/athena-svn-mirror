@@ -6,7 +6,7 @@
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  */
 
-static char *rcsid_main_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/main.c,v 1.23 1991-08-13 21:17:29 probe Exp $";
+static char *rcsid_main_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/main.c,v 1.24 1991-08-13 21:47:17 probe Exp $";
 
 #include "attach.h"
 #include <signal.h>
@@ -299,27 +299,28 @@ nfsidcmd(argc, argv)
 		unlock_attachtab();
 		atp = attachtab_first;
 		while (atp) {
-			if (! is_an_owner(atp,owner_uid)) {
+			if (!is_an_owner(atp,owner_uid) ||
+			    atp->fs->type == TYPE_MUL) {
 				/* Do nothing */
-			} else if (atp->fs->type == TYPE_NFS && 
-				   atp->mode != 'n') {
-				if ((nfsid(atp->host, atp->hostaddr[0], op, 1,
+			} else if (atp->fs->type == TYPE_NFS) {
+				if (atp->mode != 'n' &&
+				    (nfsid(atp->host, atp->hostaddr[0], op, 1,
 					   atp->hesiodname, 0, owner_uid)
 				     == SUCCESS) && verbose)
 					printf("%s: %s %s\n", progname,
 					       atp->hesiodname, ops);
 #ifdef AFS
-			} else if (atp->fs->type == TYPE_AFS &&
-				   op == MOUNTPROC_KUIDMAP && 
-				   atp->mode != 'n') {
-				if ((afs_auth(atp->hesiodname, atp->hostdir)
+			} else if (atp->fs->type == TYPE_AFS) {
+				if (atp->mode != 'n' &&
+				    op == MOUNTPROC_KUIDMAP && 
+				    (afs_auth(atp->hesiodname, atp->hostdir)
 				     == SUCCESS) && verbose)
 					printf("%s: %s %s\n", progname,
 					       atp->hesiodname, ops);
 #endif
 			} else
-				if (atp->fs->type != TYPE_MUL && verbose)
-				    printf("%s: %s ignored because it is %s\n",
+				if (verbose)
+				    printf("%s: %s ignored (%s)\n",
 					   progname, atp->hesiodname,
 					   atp->fs->name);
 			atp = atp->next;
