@@ -359,7 +359,7 @@ ProcessChooserSocket (fd)
 
     Debug ("Process chooser socket\n");
     len = sizeof (buf);
-    client_fd = accept (fd, buf, &len);
+    client_fd = accept (fd, (struct sockaddr *) buf, &len);
     if (client_fd == -1)
     {
 	LogError ("Cannot accept chooser connection\n");
