@@ -10,7 +10,7 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFmtList.c,v 1.1 1987-06-12 17:01:29 rfrench Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFmtList.c,v 1.2 1987-06-12 18:41:10 rfrench Exp $ */
 
 #include <zephyr/mit-copyright.h>
 
@@ -29,7 +29,8 @@ Code_t ZFormatNoticeList(notice,list,nitems,buffer,buffer_len,ret_len)
 
 	end = buffer+buffer_len;
 
-	if ((retval = Z_FormatHeader(notice,buffer,buffer_len,ret_len)) > 0)
+	if ((retval = Z_FormatHeader(notice,buffer,buffer_len,ret_len)) !=
+	    ZERR_NONE)
 		return (retval);
 
 	ptr = buffer+*ret_len;
