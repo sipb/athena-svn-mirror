@@ -53,6 +53,11 @@ Boston, MA 02111-1307, USA.  */
 #endif
 #include <pop.h>
 
+#ifdef STDC_HEADERS
+#include <string.h>
+#include <stdlib.h>
+#endif
+
 #ifdef sun
 #include <malloc.h>
 #endif /* sun */
@@ -373,7 +378,7 @@ pop_stat (server, count, size)
 
   *count = atoi (&fromserver[4]);
      
-  fromserver = index (&fromserver[4], ' ');
+  fromserver = strchr (&fromserver[4], ' ');
   if (! fromserver)
     {
       strcpy (pop_error,
@@ -470,7 +475,7 @@ pop_list (server, message, IDs, sizes)
 	  return (-1);
 	}
       (*IDs)[0] = atoi (&fromserver[4]);
-      fromserver = index (&fromserver[4], ' ');
+      fromserver = strchr (&fromserver[4], ' ');
       if (! fromserver)
 	{
 	  strcpy (pop_error,
@@ -501,7 +506,7 @@ pop_list (server, message, IDs, sizes)
 	      return (-1);
 	    }
 	  (*IDs)[i] = atoi (fromserver);
-	  fromserver = index (fromserver, ' ');
+	  fromserver = strchr (fromserver, ' ');
 	  if (! fromserver)
 	    {
 	      strcpy (pop_error,
@@ -1000,6 +1005,7 @@ socket_connection (host, flags)
   CREDENTIALS cred;
   Key_schedule schedule;
   int rem;
+  char hostname[BUFSIZ];
 #endif /* KRB5 */
 #endif /* KERBEROS */
 
@@ -1168,10 +1174,11 @@ socket_connection (host, flags)
 	  CLOSESOCKET (sock);
 	  return (-1);
 	}
-#else  /* ! KRB5 */	  
+#else  /* ! KRB5 */
+      strcpy(hostname, hostent->h_name);
       ticket = (KTEXT) malloc (sizeof (KTEXT_ST));
-      rem = krb_sendauth (0L, sock, ticket, "pop", hostent->h_name,
-			  (char *) krb_realmofhost (hostent->h_name),
+      rem = krb_sendauth (0L, sock, ticket, "pop", hostname,
+			  (char *) krb_realmofhost (hostname),
 			  (unsigned long) 0, &msg_data, &cred, schedule,
 			  (struct sockaddr_in *) 0,
 			  (struct sockaddr_in *) 0,
