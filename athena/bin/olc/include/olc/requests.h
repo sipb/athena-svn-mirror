@@ -16,8 +16,8 @@
  *      Copyright (c) 1985,1988 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/requests.h,v $
- *      $Author: tjcoppet $
- *      $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/requests.h,v 1.5 1989-11-17 14:53:43 tjcoppet Exp $
+ *      $Author: vanharen $
+ *      $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/requests.h,v 1.6 1990-02-06 02:51:22 vanharen Exp $
  */
 
 /* request structure */
@@ -79,7 +79,7 @@ typedef struct tIO_REQUEST
 #define OLC_MOTD             223      /* display motd */
 #define OLC_CHANGE_MOTD      224      /* Change motd */
 #define OLC_CHECK_USER       225      /* Check user status */
-#define OLC_CHANGE_ACL       225      /* add user to acl */
+#define OLC_CHANGE_ACL       226      /* add user to acl */
 #define OLC_USER_INFO        227      /* find out about user */
 #define OLC_RESTART          229      /* restart server */
 #define OLC_FLUSH_NM         230      /* flush new messages */
@@ -98,6 +98,10 @@ typedef struct tIO_REQUEST
 #define OLC_LIST_ACL         243
 #define OLC_GET_ACCESSES     244
 #define OLC_CHANGE_TOPICS    245
+#define OLC_DUMP_REQ_STATS   250      /* debug server */
+#define OLC_DUMP_QUES_STATS  251      /* debug server */
+
+#define OLC_NUM_REQUESTS     44      /* number of possible requests */
 
 /* Return values from daemon requests and functions. */
 
@@ -181,7 +185,3 @@ typedef struct tIO_REQUEST
 #define VERSION_4       4       /* 01 Oct 1989 */
 
 #define	CURRENT_VERSION	VERSION_4
-
-
-
-
