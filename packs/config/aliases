@@ -1,0 +1,16 @@
+#########################################################################
+#
+#  Aliases in this file will NOT be expanded in the header from
+#  Mail, but WILL be visible over networks or from /bin/mail.
+#
+#	>>>>>>>>>>	The program "newaliases" must be run after
+#	>> NOTE >>	this file is updated for any changes to
+#	>>>>>>>>>>	show through to sendmail.
+#
+#########################################################################
+
+# start of common aliases--do not remove this line
+
+# Add the following alias to enable NIS aliases.  If enabled, the
+#	NIS database defines anything not defined in this file.
+#+:+
