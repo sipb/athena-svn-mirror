@@ -1,4 +1,4 @@
-/* $Id: dm.c,v 1.13.2.3 2000-08-23 20:00:56 ghudson Exp $
+/* $Id: dm.c,v 1.13.2.4 2000-09-23 19:32:36 ghudson Exp $
  *
  * Copyright (c) 1990, 1991 by the Massachusetts Institute of Technology
  * For copying and distribution information, please see the file
@@ -47,7 +47,7 @@
 #include <al.h>
 
 #ifndef lint
-static const char rcsid[] = "$Id: dm.c,v 1.13.2.3 2000-08-23 20:00:56 ghudson Exp $";
+static const char rcsid[] = "$Id: dm.c,v 1.13.2.4 2000-09-23 19:32:36 ghudson Exp $";
 #endif
 
 /* Process states */
@@ -769,6 +769,7 @@ static void cleanup(char *tty)
     kill(xpid, SIGTERM);
 
   /* Find out what the login name was, so we can feed it to libal. */
+  login[0] = '\0';
   if ((file = open(utmpf, O_RDWR, 0)) >= 0)
     {
       while (read(file, (char *) &utmp, sizeof(utmp)) > 0)
@@ -786,12 +787,15 @@ static void cleanup(char *tty)
 
   logout(tty);
   
-  ret = al_acct_revert(login, loginpid);
-  if (ret != AL_SUCCESS)
+  if (login[0])
     {
-      syslog(LOG_ERR, "al_acct_revert(%s, %d): %s", login, loginpid,
-	     al_strerror(ret, &errr));
-      al_free_errmem(errr);
+      ret = al_acct_revert(login, loginpid);
+      if (ret != AL_SUCCESS)
+	{
+	  syslog(LOG_ERR, "al_acct_revert(%s, %d): %s", login, loginpid,
+		 al_strerror(ret, &errr));
+	  al_free_errmem(errr);
+	}
     }
 
   tcflush(0, TCIOFLUSH);
@@ -1039,6 +1043,7 @@ static void logout(const char *line)
 {
   struct utmp utmp;
   struct utmp *putmp;
+  pid_t pid;
 #ifdef HAVE_PUTUTXLINE
   struct utmpx utmpx;
 #endif
@@ -1054,12 +1059,14 @@ static void logout(const char *line)
       time(&utmp.ut_time);
       strncpy(utmp.ut_line, putmp->ut_line, sizeof(utmp.ut_line));
       strncpy(utmp.ut_user, putmp->ut_name, sizeof(utmp.ut_name));
-      utmp.ut_pid = getpid();
+      pid = getpid();
+      utmp.ut_pid = pid;
       strncpy(utmp.ut_id, putmp->ut_id, sizeof(utmp.ut_id));
       utmp.ut_type = DEAD_PROCESS;
       pututline(&utmp);
 #ifdef HAVE_PUTUTXLINE
       getutmpx(&utmp, &utmpx);
+      utmpx.ut_pid = pid;
       setutxent();
       pututxline(&utmpx);
       endutxent();
