@@ -125,11 +125,13 @@ if [ "${PUBLIC}" = "true" ]; then
 	rm -rf /.hushlogin /etc/X0.hosts /usr/local/
 	rm -f /etc/*.local /etc/athena/*.local /etc/athena/login/*.local
 	rm -f /var/spool/cron/crontabs/root
-	cp -p /srvd/etc/crontab.root.add /var/spool/cron/crontabs/root
-	cp -p /srvd/etc/athena/attach.conf /etc/athena/attach.conf
-	cp -p /srvd/etc/inet/inetd.conf /etc/inet/inetd.conf
-	cp -p /srvd/etc/athena/inetd.conf /etc/athena/inetd.conf
-	cp -p /srvd/etc/minor_perm /etc/minor_perm
+	for i in `cat /srvd/usr/athena/lib/update/configfiles`; do
+		if [ -f /srvd$i ]; then
+			cp -p /srvd$i $i
+		else
+			cp -p /os$i $i
+		fi
+	done
 	if [ -r /srvd/etc/passwd ]; then
 	  cp -p /srvd/etc/passwd /etc/passwd.local
 	  chmod 644 /etc/passwd.local
@@ -145,13 +147,6 @@ if [ "${PUBLIC}" = "true" ]; then
 	chmod 600 /etc/shadow
 	cp -p /srvd/etc/group /etc/group.local
 	cp -p /etc/group.local /etc/group
-	cp -p /srvd/etc/syslog.conf /etc/syslog.conf
-	cp -p /srvd/etc/shells /etc/shells
-	cp -p /srvd/etc/athena/newsyslog.conf /etc/athena/newsyslog.conf
-	cp -p /srvd/etc/ftpusers /etc/ftpusers
-	cp -p /srvd/etc/inet/netmasks /etc/inet/netmasks
-	cp -p /srvd/etc/inet/services /etc/inet/services
-	cp -p /srvd/etc/system /etc/system
 
 	cp /dev/null /etc/named.local
 	cp -p /srvd/etc/netspy /etc/netspy
@@ -179,20 +174,12 @@ if [ "${PUBLIC}" = "true" ]; then
         echo "done."						>/dev/console
 fi
 
-# Dealing with sendmail.cf
-if [ "${NEWMAILCF}" = "true" ];then
-	echo "Copying sendmail.cf... \c"			>/dev/console
-	cp -p /srvd/etc/mail/sendmail.cf /etc/mail/sendmail.cf
-	cp -p /os/etc/mail/aliases /etc/mail/aliases
-fi
-# no matter what freeze the configuration
-/usr/lib/sendmail -bz 
-echo "done."							>/dev/console
-
 echo "Removing sendmail temporary files."			>/dev/console
 if [ -d /var/spool/mqueue ]; then
   (cd /var/spool/mqueue; rm -f nf* lf*)
 fi
+# Sync frozen sendmail configuration file.
+/usr/lib/sendmail -bz 
 
 # Start standard daemons
 echo ""								>/dev/console
