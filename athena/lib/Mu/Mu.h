@@ -13,8 +13,11 @@
  * express or implied warranty.
  *
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/Mu/Mu.h,v $
- * $Author: djf $
+ * $Author: vanharen $
  * $Log: not supported by cvs2svn $
+ * Revision 1.1  89/12/09  15:15:00  djf
+ * Initial revision
+ * 
  */
 
 #ifndef Mu_h
@@ -60,8 +63,10 @@ void MuSyncDialog();
 
 #define MuError(msg)       MuModalDialog(msg,XmDIALOG_ERROR)
 #define MuWarning(msg)     MuModalDialog(msg,XmDIALOG_WARNING)
+#define MuInfo(msg)        MuModalDialog(msg,XmDIALOG_INFORMATION)
 #define MuErrorSync(msg)   MuSyncDialog(msg,XmDIALOG_ERROR)
 #define MuWarningSync(msg) MuSyncDialog(msg,XmDIALOG_WARNING)
+#define MuInfoSync(msg)    MuSyncDialog(msg,XmDIALOG_INFORMATION)
 
 /* Don't use these macros.  For backwards compatibility only. */
 #define MuSetSingleLineEmacsBindings(w) MuSetEmacsBindings(w)
