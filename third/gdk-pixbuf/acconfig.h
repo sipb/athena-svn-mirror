@@ -4,3 +4,4 @@
 #undef USE_GMODULE
 #undef USE_MMX
 #undef HAVE_PROGRESSIVE_JPEG
+#undef PATH_RGB_TXT

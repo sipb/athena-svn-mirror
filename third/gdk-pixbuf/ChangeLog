@@ -1,3 +1,162 @@
+2001-03-11  Federico Mena Quintero  <federico@ximian.com>
+
+	Released version 0.10.1.
+
+	* configure.in (GDK_PIXBUF_MICRO): Bumped version number to 0.10.1.
+
+2001-03-11  Timur Bakeyev  <timur@gnu.org>
+
+	* configure.in: Added a possibility to disable MMX optimization - 
+	some versions of binutils do know about MMX, but produce bogus
+	code.
+	
+2001-03-01  John Harper  <jsh@eazel.com>
+
+	* gdk-pixbuf/gdk-pixbuf-parse-color.c (read_hex_digits): fixed
+	stupid string terminating bug I'd introduced
+
+2001-03-01  Federico Mena Quintero  <federico@ximian.com>
+
+	Released version 0.10.0.
+
+	* configure.in (GDK_PIXBUF_VERSION): Bumped the version number to
+	0.10.0.
+
+2001-03-01  Federico Mena Quintero  <federico@ximian.com>
+
+	* gdk-pixbuf/pixops/pixops.c (pixops_process): Patch from
+	hoshem@mel.comcen.com.au to fix nonzero X offsets.  Fixes bug
+	#50371.
+
+	* gdk-pixbuf/io-pnm.c (gdk_pixbuf__pnm_image_load_increment):
+	Adapted patch from Frederic.Devernay@sophia.inria.fr to fix raw
+	files whose image data starts with whitespace bytes.  Fixes bug
+	#51477.
+	(gdk_pixbuf__pnm_image_load): Likewise.
+
+2001-03-01  Pavel Cisler  <pavel@eazel.com>
+
+	* gdk-pixbuf/io-pnm.c (gdk_pixbuf__pnm_image_load): Fixed reading
+	of files that end prematurely.
+
+2001-03-01  Ramiro Estrugo  <ramiro@eazel.com>
+
+	* gdk-pixbuf/gdk-pixbuf-drawable.c (gdk_pixbuf_get_from_drawable):
+	Dont assert that the value returned from gdk_image_get() is non
+	NULL.  I recently fixed a bug in gdk_image_get() that makes it
+	possible to return NULL.  This happens, for example, when there
+	are race conditions that make it impossible for the X server to
+	get the requested area.  For the details of this bug, see
+	http://bugzilla.gnome.org/show_bug.cgi?id=50203.
+
+	The only user visible consquence of the gdk-pixbuf-drawable.c fix
+	is that no criticals are displayed on the console.
+
+2001-03-01  John Harper  <jsh@eazel.com>
+
+	* configure.in: check for path to `rgb.txt' database, set in
+	PATH_RGB_TXT #define
+
+	* gdk-pixbuf/gdk-pixbuf-parse-color.c (gdk_pixbuf_parse_color):
+	new file, provides a basic standalone color parser. It
+	currently supports named colors (either loading rgb.txt or from
+	its own copy), and `#RGB' format (where each channel is 4, 8,
+	12 or 16 bits). This file does not need an X connection to work
+	(that's the whole point)
+
+	* gdk-pixbuf/gdk-pixbuf-private.h, gdk-pixbuf/Makefile.am:
+	added meta stuff for gdk-pixbuf-parse-color.c
+
+	* gdk-pixbuf/io-xpm.c (xpm_color_parse): call
+	gdk_pixbuf_parse_color instead of choosing one of
+	gdk_parse_color or XParseColor. This means that the loader no
+	longer needs a working X connection (important for nautilus'
+	thumbnailing code)
+
+	* gdk-pixbuf/io-xpm.c (gdk_pixbuf__xpm_image_begin_load,
+	gdk_pixbuf__xpm_image_stop_load,
+	gdk_pixbuf__xpm_image_load_increment): removed leftover
+	g_warning's that must have just been for debugging
+
+2001-02-22  Mathieu Lacage  <mathieu@gnu.org>
+
+	* gdk-pixbuf.m4: GDK_PIXBUF_PREFIX was always ignored because of
+	an inverted test: replaced != with =. Reported by Renaud Pacalet
+	<pacalet@enst.fr>.
+
+2001-01-20  Iain Holmes  <iain@ximian.com>
+
+	* gdk-pixbuf/io-png.c (gdk_pixbuf__png_image_stop_load): Destroy the
+	png_info_ptr.
+
+2001-01-10  John Harper  <jsh@eazel.com>
+
+	* gdk-pixbuf/io-xbm.c: new pixbuf loader, for X bitmap files.
+	Basically a collision between Xlib's RdBitF.c and io-tiff.c
+
+	* gdk-pixbuf/gdk-pixbuf-io.c, gdk-pixbuf/Makefile.am: added
+	io-xbm.c support
+
+2000-12-08  Federico Mena Quintero  <federico@helixcode.com>
+
+	* gdk-pixbuf/pixops/pixops.c (pixops_composite_nearest): Patch
+	from OKADA Mitsuru <m-okada@fjb.co.jp> to fix confusion of using
+	"src" instead of "p".
+	(pixops_composite_color_nearest): Use a more accurate (and
+	correct, to begin with) compositing method.  This cures checks
+	showing through on images with no alpha.
+
+2000-10-25  Federico Mena Quintero  <federico@helixcode.com>
+
+	* configure.in (GDK_PIXBUF_LIBS): Do not put $deps here, otherwise
+	we'll link with every image library on the planet.
+	(GDK_PIXBUF_XLIB_LIBS): Likewise.
+
+2000-09-28  Federico Mena Quintero  <federico@helixcode.com>
+
+	* gdk-pixbuf/gdk-pixbuf.c: Moved the gdk_pixbuf_dpy and
+	gdk_pixbuf_screen variables over to here; they were in
+	gdk-pixbuf-xlib.c before.  We need them to be accessible from all
+	the modules since the stupid XPM loader does require an X display
+	to run.  This is as ugly as it sounds.
+
+	* gdk-pixbuf/Makefile.am (libgdk_pixbuf_la_LDFLAGS): Add
+	-export-dynamic.
+	(libgdk_pixbuf_xlib_la_LDFLAGS): Likewise.
+
+2000-09-26  Federico Mena Quintero  <federico@helixcode.com>
+
+	* gdk-pixbuf/io-xpm.c (_XPMColor): Use an XColor structure instead
+	of GdkColor so that we can run in Xlib mode.
+	(xpm_color_parse): New function to use gdk_color_parse() or
+	XParseColor() depending on whether we are being called from
+	gdk-pixbuf or gdk-pixbuf-xlib.
+
+	* gdk-pixbuf/gdk-pixbuf-xlib-drawable.c
+	(gdk_pixbuf_xlib_get_from_drawable): Do not use
+	gdk_screen_{width,height}().  Thanks to John Harper for pointing
+	this out.
+
+2000-09-11  Jeffrey Stedfast  <fejj@helixcode.com>
+
+	* gdk-pixbuf/io-pnm.c: Pretty much totally rewrote again because
+	last nights code was still "broken". Should now properly handle
+	all error conditions gracefully.
+
+2000-09-10  Jeffrey Stedfast  <fejj@helixcode.com>
+
+	* gdk-pixbuf/io-pnm.c: Rewrote.
+
+2000-09-09  Federico Mena Quintero  <federico@helixcode.com>
+
+	* gdk-pixbuf/pixops/pixops.c (pixops_composite_nearest): Compute
+	the correct dest offset.
+
+2000-09-06  Dan Winship  <danw@helixcode.com>
+
+	* gdk-pixbuf/io-{png,tiff,xpm}.c: Fix comments to not claim that
+	all three of these files are the JPEG image loader.
+
 2000-08-27  Federico Mena Quintero  <federico@helixcode.com>
 
 	* demo/Makefile.am (EXTRA_DIST): Added background.jpg.

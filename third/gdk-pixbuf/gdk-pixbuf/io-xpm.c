@@ -1,4 +1,4 @@
-/* GdkPixbuf library - JPEG image loader
+/* GdkPixbuf library - XPM image loader
  *
  * Copyright (C) 1999 Mark Crichton
  * Copyright (C) 1999 The Free Software Foundation
@@ -29,8 +29,11 @@
 #include <unistd.h>
 #include <glib.h>
 #include <gdk/gdk.h>
+#include <gdk/gdkx.h>
 #include "gdk-pixbuf-private.h"
 #include "gdk-pixbuf-io.h"
+#include "gdk-pixbuf-xlib-private.h"
+
 
 
 /* I have must have done something to deserve this.
@@ -48,7 +51,7 @@ enum buf_op {
 
 typedef struct {
 	gchar *color_string;
-	GdkColor color;
+	XColor color;
 	gint transparent;
 } _XPMColor;
 
@@ -321,6 +324,12 @@ free_buffer (guchar *pixels, gpointer data)
 	free (pixels);
 }
 
+static gboolean
+xpm_color_parse (const char *spec, XColor *color)
+{
+	return gdk_pixbuf_parse_color (spec, &color->red, &color->green, &color->blue);
+}
+
 /* This function does all the work. */
 static GdkPixbuf *
 pixbuf_create_from_xpm (const gchar * (*get_buf) (enum buf_op op, gpointer handle), gpointer handle)
@@ -376,7 +385,7 @@ pixbuf_create_from_xpm (const gchar * (*get_buf) (enum buf_op op, gpointer handl
 		color_name = xpm_extract_color (buffer);
 
 		if ((color_name == NULL) || (g_strcasecmp (color_name, "None") == 0)
-		    || (gdk_color_parse (color_name, &color->color) == FALSE)) {
+		    || (xpm_color_parse (color_name, &color->color) == FALSE)) {
 			color->transparent = TRUE;
 			is_trans = TRUE;
 		}
@@ -498,7 +507,6 @@ gdk_pixbuf__xpm_image_begin_load (ModulePreparedNotifyFunc prepare_func,
 	XPMContext *context;
 	gint fd;
 
-	g_warning ("load start");
 	context = g_new (XPMContext, 1);
 	context->prepare_func = prepare_func;
 	context->update_func = update_func;
@@ -529,7 +537,6 @@ gdk_pixbuf__xpm_image_stop_load (gpointer data)
 	GdkPixbuf *pixbuf;
 
 	g_return_if_fail (data != NULL);
-	g_warning ("stopped loading");
 
 	fflush (context->file);
 	rewind (context->file);
@@ -553,7 +560,6 @@ gdk_pixbuf__xpm_image_load_increment (gpointer data, guchar *buf, guint size)
 	XPMContext *context = (XPMContext *) data;
 
 	g_return_val_if_fail (data != NULL, FALSE);
-	g_warning ("load increment");
 
 	if (fwrite (buf, sizeof (guchar), size, context->file) != size) {
 		context->all_okay = FALSE;

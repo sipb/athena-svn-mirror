@@ -102,4 +102,8 @@ struct _GdkPixbufAnimation {
 
 
 
+/* from gdk-pixbuf-parse-color.c */
+gboolean gdk_pixbuf_parse_color (const char *spec, gushort *red, gushort *green, gushort *blue);
+
+
 #endif
