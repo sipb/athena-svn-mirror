@@ -1,17 +1,18 @@
 /* 
- * $Id: aklog_param.c,v 1.7 1994-04-13 14:55:57 probe Exp $
+ * $Id: aklog_param.c,v 1.8 1994-04-14 18:46:34 probe Exp $
  * 
  * Copyright 1990,1991 by the Massachusetts Institute of Technology
  * For distribution and copying rights, see the file "mit-copyright.h"
  */
 
 #if !defined(lint) && !defined(SABER)
-static char *rcsid = "$Id: aklog_param.c,v 1.7 1994-04-13 14:55:57 probe Exp $";
+static char *rcsid = "$Id: aklog_param.c,v 1.8 1994-04-14 18:46:34 probe Exp $";
 #endif /* lint || SABER */
 
 #include "aklog.h"
-#include <sys/types.h>
 #include <sys/stat.h>
+
+extern int readlink ARGS((const char *, void *, int));
 
 #ifndef TRUE
 #define TRUE 1
@@ -120,10 +121,20 @@ void aklog_init_params(params)
 {
     params->readlink = readlink;
     params->isdir = isdir;
-    params->getwd = getwd;
+    params->getcwd = getcwd;
     params->get_cred = get_cred;
     params->get_user_realm = get_user_realm;
     params->pstderr = pstderr;
     params->pstdout = pstdout;
     params->exitprog = exitprog;
 }
+
+
+#if defined(vax)
+static char *getcwd(buf, size)
+    char *buf;
+    size_t size;
+{
+    return(getwd(buf));
+}
+#endif
