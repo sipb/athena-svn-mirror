@@ -3,7 +3,7 @@
 # Accepts one optional argument, either "nocalls" (use no user files)
 # or "dash" (use old dash-based interface).
 #
-# $Id: xsession,v 1.7 2003-04-22 15:34:34 ghudson Exp $
+# $Id: xsession,v 1.8 2003-04-23 17:46:04 ghudson Exp $
 
 # Note: This shell script deliberately uses the -f flag.
 
@@ -127,7 +127,7 @@ endif
 
 # Run standard system/user startup activities
 
-if ( -r ~/.athena_gnome_convert_failure )
+if ( -r ~/.athena_gnome_convert_failure ) then
   # A previous attempt at converting GNOME preferences failed.  Remove
   # any GNOME 2 preferences so that the user gets the defaults.
   gconftool-2 --recursive-unset /apps
