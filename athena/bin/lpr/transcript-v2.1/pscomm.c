@@ -3,7 +3,7 @@
 _NOTICE N1[] = "Copyright (c) 1985,1986,1987 Adobe Systems Incorporated";
 _NOTICE N2[] = "GOVERNMENT END USERS: See Notice file in TranScript library directory";
 _NOTICE N3[] = "-- probably /usr/lib/ps/Notice";
-_NOTICE RCSID[]="$Id: pscomm.c,v 1.22 1999-01-22 23:11:28 ghudson Exp $";
+_NOTICE RCSID[]="$Id: pscomm.c,v 1.23 1999-02-18 06:24:33 tb Exp $";
 #endif
 /* pscomm.c
  *
@@ -568,7 +568,8 @@ main(argc,argv)            /* MAIN ROUTINE */
 
 	for (i = 0; i < magiccnt; i++) {
 	    if (!isascii(magic[i]) ||
-		(!isprint(magic[i]) && !isspace(magic[i]))) {
+		(!isprint(magic[i]) && !isspace(magic[i]) && 
+		 magic[i] != '\b')) {
 		bad = 1;
 	    }
 	}

@@ -1,9 +1,9 @@
 /*
- *	$Id: lps40comm.c,v 1.7 1999-01-22 23:11:26 ghudson Exp $
+ *	$Id: lps40comm.c,v 1.8 1999-02-18 06:24:32 tb Exp $
  */
 
 #ifndef lint
-static char *rcsid_lps40_c = "$Id: lps40comm.c,v 1.7 1999-01-22 23:11:26 ghudson Exp $";
+static char *rcsid_lps40_c = "$Id: lps40comm.c,v 1.8 1999-02-18 06:24:32 tb Exp $";
 #endif lint
 
 /* lps40comm.c
@@ -277,7 +277,8 @@ main(argc,argv)
 
 	    for (i = 0; i < 11; i++) {
 		    if (!isascii(magic[i]) ||
-			(!isprint(magic[i]) && !isspace(magic[i]))){
+			(!isprint(magic[i]) && !isspace(magic[i]) &&
+			 magic[i] != '\b')){
 			    fprintf(stderr,
 				    "%s: spooled binary file rejected\n",prog);
 			    VOIDC fflush(stderr);
