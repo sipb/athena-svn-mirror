@@ -19,7 +19,7 @@
 #include <sys/param.h>			/* for MAXHOSTNAMELEN */
 
 #ifndef lint
-static char rcsid_zpopnotify_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zpopnotify/zpopnotify.c,v 1.5 1989-05-10 16:53:48 jtkohl Exp $";
+static char rcsid_zpopnotify_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zpopnotify/zpopnotify.c,v 1.6 1989-11-08 15:42:11 jtkohl Exp $";
 #endif lint
 
 #define MAIL_CLASS "MAIL"
@@ -78,8 +78,9 @@ main(argc,argv)
 	    notice.z_opcode = "";
 	    notice.z_sender = mysender;
 	    notice.z_default_format = "From Post Office $1:\n$2";
-	
-	    notice.z_recipient = (char *)rindex(argv[1],'/');
+
+	    /* in case it's a mailbox name (pathname), strip to username */
+	    notice.z_recipient = (char *)rindex(argv[i],'/');
 	    if (notice.z_recipient)
 		notice.z_recipient++;
 	    else
