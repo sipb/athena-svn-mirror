@@ -1,11 +1,10 @@
 #!/bin/sh -
 #
-# $Id: config_afs.sh,v 1.1 1991-07-20 09:00:46 lwvanels Exp $
+# $Id: config_afs.sh,v 1.2 1991-07-20 12:28:06 lwvanels Exp $
 #
 # This script configures the workstation's notion of AFS.
 # 1. It updates the cell location information from /usr/vice/etc/CellServDB
 # 2. It updates the cell setuid information from /usr/vice/etc/SuidCells
-
 PATH=/bin:/bin/athena
 
 VICEDIR=/usr/vice/etc
@@ -18,10 +17,11 @@ cp /afs/athena.mit.edu/service/CellServDB ${VICEDIR}/Ctmp && \
 	mv -f ${VICEDIR}/Ctmp ${CELLDB}.public && \
 	cat ${CELLDB}.public ${CELLDB}.local >${VICEDIR}/Ctmp 2>/dev/null
 mv -f ${VICEDIR}/Ctmp ${CELLDB}
+
 /bin/awk ' \
-	    /^>/ {printf("\n/bin/fs newcell %s", substr($1,2,length($1)-1))} \
-	    /^[0-9]/ {printf(" %s",$1)} \
-	    END {printf("\n")}' ${CELLDB} | \
+	  /^>/ {printf("\nfs newcell %s", substr($1,2,length($1)-1))}; \
+	  /^[0-9]/ {printf(" %s",$1)}; \
+	  END {printf("\n")}' ${CELLDB} | \
 	/bin/sh
 
 if [ ! -f ${SUIDFILE} ]; then
