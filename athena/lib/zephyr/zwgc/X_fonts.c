@@ -5,7 +5,7 @@
  *      Created by:     Marc Horowitz <marc@athena.mit.edu>
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/X_fonts.c,v $
- *      $Author: marc $
+ *      $Author: lwvanels $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -13,7 +13,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char rcsid_X_fonts_c[] = "$Id: X_fonts.c,v 1.3 1989-11-15 23:48:52 marc Exp $";
+static char rcsid_X_fonts_c[] = "$Id: X_fonts.c,v 1.4 1992-08-26 04:21:31 lwvanels Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>
@@ -131,7 +131,7 @@ static char *Font_to_hex(num)
    char *temp;
    int i;
 
-   temp=(char *) malloc((sizeof(Font)<<1)+1);
+   temp=(char *) malloc((sizeof(Font)<<1)+2);
 
    for (i=0;i<((sizeof(Font)<<1)+1);i++)
       temp[i] = hexdigits[(num>>(i*4))&0x0f];
