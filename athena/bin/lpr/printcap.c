@@ -15,6 +15,7 @@ static char sccsid[] = "@(#)printcap.c	5.1 (Berkeley) 6/6/85";
 #include <stdio.h>
 #ifdef HESIOD
 #include <hesiod.h>
+#include "lp.local.h"	/* for DEFLP */
 #endif
 /*
  * termcap - routines for dealing with the terminal capability data base
@@ -78,6 +79,15 @@ int pralias(buf, name)
 	char *getclus();
 	
 	strcpy(temp, name);
+	/* If printer name == "default" then lookup based on LPR cluster info*/
+	if(!strcmp(name, DEFLP)) {
+	    if ((e = getclus()) != NULL) {
+		strcpy(buf, e);
+		return(1);
+	    }
+	}
+
+#ifdef OLD_DEFAULT_ALIAS
 	/* if not in "printer.cluster" format, look up cluster and append */
 	if (index(name, '.') == NULL)
 		if ((e = getenv("LPR")) != NULL) {
@@ -92,6 +102,7 @@ int pralias(buf, name)
 		strcpy(buf, *hv);
 		return(1);
 	}
+#endif
 	return (0);
 }
 
