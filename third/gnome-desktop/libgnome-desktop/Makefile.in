@@ -436,15 +436,10 @@ gnome-desktop-item.lo gnome-desktop-item.o : gnome-desktop-item.c \
 gnome-ditem-edit.lo gnome-ditem-edit.o : gnome-ditem-edit.c ../config.h \
 	gnome-desktop-item.h gnome-ditem-edit.h
 gnome-hint.lo gnome-hint.o : gnome-hint.c ../config.h gnome-hint.h
-gnome-icon-loader.lo gnome-icon-loader.o : gnome-icon-loader.c \
-	gnome-icon-loader.h gnome-theme-parser.h
-gnome-theme-parser.lo gnome-theme-parser.o : gnome-theme-parser.c \
-	gnome-theme-parser.h
 test-ditem-edit.o: test-ditem-edit.c ../config.h gnome-ditem-edit.h \
 	gnome-desktop-item.h
 test-ditem.o: test-ditem.c ../config.h gnome-desktop-item.h
 test-hint.o: test-hint.c ../config.h gnome-hint.h
-test-icon-theme.o: test-icon-theme.c gnome-icon-loader.h
 
 info-am:
 info: info-am

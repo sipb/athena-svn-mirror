@@ -130,6 +130,7 @@ static gchar *contributors[] = {
 	"Peter Hawkins",
 	"Scott Heavner",
 	"James Henstridge",
+        "Fernando Herrera"
 	"Richard Hestilow",
 	"Iain Holmes",
 	"David Huggins-Daines",
@@ -206,6 +207,7 @@ static gchar *contributors[] = {
 	"Jaka Mocnik",
 	"Paolo Molaro",
 	"David Mosberger",
+	"Rodrigo Moya",
 	"Dan Mueth",
 	"Thomas Muldowney",
 	/* If your encodings allows it, use ntilde (U00F1) for the 'n'
