@@ -1,5 +1,5 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.38 1994-04-26 11:07:47 root Exp $ */
-
+ /* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.39 1994-05-03 11:38:27 miki Exp $ */
+ 
 #ifdef POSIX
 #include <unistd.h>
 #endif
@@ -862,7 +862,11 @@ Cardinal *n;
 #endif
  	alarm(resources.activate_timeout); 
 	while (activation_state != ACTIVATED)
+#ifdef POSIX
+	  sigsuspend((sigset_t *)0);
+#else
 	  sigpause(0);
+#endif
         alarm(0);
 #ifdef POSIX
  	sigaction(SIGALRM, &osigact, NULL);
@@ -1009,7 +1013,11 @@ Cardinal *n;
     if (activation_state != ACTIVATED)
       fprintf(stderr, "Waiting for workstation to finish activating...\n");
     while (activation_state != ACTIVATED)
+#ifdef POSIX
+      sigsuspend((sigset_t *)0);
+#else
       sigpause(0);
+#endif
     if (access(resources.srvdcheck, F_OK) != 0) {
 	fprintf(stderr, "Workstation failed to activate successfully.  Please notify Athena operations.");
 	return;
@@ -1085,7 +1093,11 @@ caddr_t unused;
 	break;
     default:
 	while (attach_state == -1)
+#ifdef POSIX
+	  sigsuspend((sigset_t *)0);
+#else
 	  sigpause(0);
+#endif
 	if (attach_state != 0) {
 	    fprintf(stderr, "Unable to attach locker %s, aborting...\n",
 		    locker);
