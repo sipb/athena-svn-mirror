@@ -1,8 +1,8 @@
 /*
  * Contains the local configuration information for attach/detach/nfsid
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/attach/config.h,v $
- *	$Author: epeisach $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/config.h,v 1.5 1990-08-30 13:17:10 epeisach Exp $
+ *	$Author: probe $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/config.h,v 1.6 1991-01-22 16:16:50 probe Exp $
  */
 
 /*
@@ -48,22 +48,24 @@
 
 #define ATTACHCONFFILE	"/etc/attach.conf"
 #define ATTACHTAB	"/usr/tmp/attachtab"
-#define MTAB		"/etc/mtab"
-#define FSCK_FULLNAME "/etc/fsck"
-#define FSCK_SHORTNAME "fsck"
-#define AKLOG_FULLNAME "/afs/athena.mit.edu/service/aklog"
-#define AKLOG_SHORTNAME "aklog"
+#define FSCK_FULLNAME	"/etc/fsck"
+#define FSCK_SHORTNAME	"fsck"
+#define AKLOG_FULLNAME	"/bin/athena/aklog"
+#define AKLOG_SHORTNAME	"aklog"
 #define RVDGETM_FULLNAME "/etc/athena/rvdgetm"
 #define RVDGETM_SHORTNAME "rvdgetm"
-#define NOSUID_FILENAME "/etc/nosuid"
+#define NOSUID_FILENAME	"/etc/nosuid"
+#if defined(_AIX) && defined(i386)
+#define MTAB		"/local/mtab"
+#else
+#define MTAB		"/etc/mtab"
+#endif
 
 /*
  * Kerberos instance
  */
-#ifdef KERBEROS
-#ifdef NFS
+#if defined(KERBEROS) && defined(NFS)
 #define KERB_NFSID_INST	"rvdsrv"
-#endif
 #endif
 
 /*
