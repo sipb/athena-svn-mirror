@@ -1,5 +1,5 @@
 ;;; nnmail.el --- mail support functions for the Gnus mail backends
-;; Copyright (C) 1995, 1996, 1997, 1998, 1999, 2000
+;; Copyright (C) 1995, 1996, 1997, 1998, 1999, 2000, 2002
 ;;        Free Software Foundation, Inc.
 
 ;; Author: Lars Magne Ingebrigtsen <larsi@gnus.org>
@@ -318,7 +318,7 @@ GROUP: Mail will be stored in GROUP (a string).
 \(FIELD VALUE [- RESTRICT [- RESTRICT [...]]] SPLIT): If the message
   field FIELD (a regexp) contains VALUE (a regexp), store the messages 
   as specified by SPLIT.  If RESTRICT (a regexp) matches some string
-  after FIELD and before the end of the matched VALUE, return NIL,
+  after FIELD and before the end of the matched VALUE, return nil,
   otherwise process SPLIT.  Multiple RESTRICTs add up, further
   restricting the possibility of processing SPLIT.
 
@@ -651,7 +651,7 @@ If SOURCE is a directory spec, try to return the group name component."
 
 (defsubst nnmail-search-unix-mail-delim ()
   "Put point at the beginning of the next Unix mbox message."
-  ;; Algorithm used to find the the next article in the
+  ;; Algorithm used to find the next article in the
   ;; brain-dead Unix mbox format:
   ;;
   ;; 1) Search for "^From ".
@@ -680,7 +680,7 @@ If SOURCE is a directory spec, try to return the group name component."
 
 (defun nnmail-search-unix-mail-delim-backward ()
   "Put point at the beginning of the current Unix mbox message."
-  ;; Algorithm used to find the the next article in the
+  ;; Algorithm used to find the next article in the
   ;; brain-dead Unix mbox format:
   ;;
   ;; 1) Search for "^From ".
@@ -1188,7 +1188,7 @@ See the documentation for the variable `nnmail-split-fancy' for documentation."
 	  (let ((split-rest (cddr split))
 		(end (match-end 0))
 		;; The searched regexp is \(\(FIELD\).*\)\(VALUE\).  So,
-		;; start-of-value is the the point just before the
+		;; start-of-value is the point just before the
 		;; beginning of the value, whereas after-header-name is
 		;; the point just after the field name.
 		(start-of-value (match-end 1))

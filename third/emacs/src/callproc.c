@@ -786,6 +786,12 @@ If you quit, the process is killed with SIGINT, or SIGKILL if you quit again.")
 		size = decoding_buffer_size (&process_coding, nread);
 		decoding_buf = (char *) xmalloc (size);
 		
+		if (process_coding.type == coding_type_undecided)
+		  {
+		    detect_coding (&process_coding, bufptr, nread);
+		    if (process_coding.composing != COMPOSITION_DISABLED)
+		      coding_allocate_composition_data (&process_coding, PT);
+		  }
 		if (process_coding.cmp_data)
 		  process_coding.cmp_data->char_offset = PT;
 		
@@ -896,8 +902,12 @@ If you quit, the process is killed with SIGINT, or SIGKILL if you quit again.")
 	   but not past 64k.  */
 	if (bufsize < 64 * 1024 && total_read > 32 * bufsize)
 	  {
+	    char *tempptr;
 	    bufsize *= 2;
-	    bufptr = (char *) alloca (bufsize);
+
+	    tempptr = (char *) alloca (bufsize);
+	    bcopy (bufptr, tempptr, bufsize / 2);
+	    bufptr = tempptr;
 	  }
 
 	if (!NILP (display) && INTERACTIVE)

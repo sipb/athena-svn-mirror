@@ -1,3 +1,23 @@
+2003-03-18  Francesco Potort,Al(B  <pot@gnu.org>
+
+	* Version 21.3 released.
+
+2002-03-16  Eli Zaretskii  <eliz@is.elta.co.il>
+
+	* Version 21.2 released.
+
+	* faq.texi, eshell.texi: Update for the 21.2 release.
+
+2001-12-21  Eli Zaretskii  <eliz@is.elta.co.il>
+
+	* Makefile.in (EMACSSOURCES): Update the list of Emacs manual
+	source files.
+
+2001-12-01  Eli Zaretskii  <eliz@is.elta.co.il>
+
+	* idlwave.texi: Update maintainer.
+	(Acknowledgement): Update contributors.
+
 2001-10-20  Gerd Moellmann  <gerd@gnu.org>
 
 	* Version 21.1 released.
@@ -8,11 +28,11 @@
 	to mac-file-name-to-posix and posix-file-name-to-mac, resp.
 
 2001-07-21  Michael Kifer  <kifer@cs.sunysb.edu>
-	
+
 	* viper.texi: Added credits, new commands, like :make.
-	
+
 	* ediff.texi: added credits.
-	
+
 2001-06-08  Carsten Dominik  <dominik@astro.uva.nl>
 
 	* reftex.texi: Updated to version 4.16
@@ -46,7 +66,7 @@
 	* cc-mode.texi: Updated to CC mode version 5.28.
 
 2001-03-17  Michael Kifer  <kifer@cs.sunysb.edu>
-	
+
 	* viper.texi: Added credits.
 
 2001-03-13  Thien-Thi Nguyen  <ttn@gnu.org>

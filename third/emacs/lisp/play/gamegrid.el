@@ -166,10 +166,10 @@ static char *noname[] = {
     face))
 
 (defun gamegrid-make-color-tty-face (color)
-  (let* ((hex (gamegrid-color color 1.0))
-	 (name (intern (format "gamegrid-color-tty-face-%s" hex)))
+  (let* ((color-str (if (symbolp color) (symbol-value color) color))
+	 (name (intern (format "gamegrid-color-tty-face-%s" color-str)))
 	 (face (make-face name)))
-    (gamegrid-setup-face face color)
+    (gamegrid-setup-face face color-str)
     face))
 
 (defun gamegrid-make-grid-x-face ()
@@ -190,7 +190,7 @@ static char *noname[] = {
   (let* ((hex (gamegrid-color color 1.0))
 	 (name (intern (format "gamegrid-color-x-face-%s" hex)))
 	 (face (make-face name)))
-    (gamegrid-setup-face face (gamegrid-color color 1.0))
+    (gamegrid-setup-face face hex)
     face))
 
 (defun gamegrid-make-face (data-spec-list color-spec-list)
@@ -258,22 +258,22 @@ static char *noname[] = {
 	 (or (and (fboundp 'console-on-window-system-p)
 		  (console-on-window-system-p))
 	     window-system)))
-  (cond ((and gamegrid-use-glyphs
+    (cond ((and gamegrid-use-glyphs
 		window-system-p
-	      (featurep 'xpm))
-	 'glyph)
-	((and gamegrid-use-color
+		(featurep 'xpm))
+	   'glyph)
+	  ((and gamegrid-use-color
 		window-system-p
-	      (gamegrid-color-display-p))
-	 'color-x)
+		(gamegrid-color-display-p))
+	   'color-x)
 	  (window-system-p
-	 'mono-x)
-	((and gamegrid-use-color
-	      (gamegrid-color-display-p))
-	 'color-tty)
-	((fboundp 'set-face-property)
-	 'mono-tty)
-	(t
+	   'mono-x)
+	  ((and gamegrid-use-color
+		(gamegrid-color-display-p))
+	   'color-tty)
+	  ((fboundp 'set-face-property)
+	   'mono-tty)
+	  (t
 	   'emacs-tty))))
 
 (defun gamegrid-set-display-table ()
@@ -286,8 +286,8 @@ static char *noname[] = {
     (setq buffer-display-table gamegrid-display-table)))
 
 (defun gamegrid-hide-cursor ()
-  (if (fboundp 'specifierp)
-      (set-specifier text-cursor-visible-p nil (current-buffer))))
+  (make-local-variable 'cursor-type)
+  (setq cursor-type nil))
 
 (defun gamegrid-setup-default-font ()
   (cond ((eq gamegrid-display-mode 'glyph)

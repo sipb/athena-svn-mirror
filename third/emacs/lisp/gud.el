@@ -239,7 +239,7 @@ t means that there is no stack, and we are in display-file mode.")
 (defvar gud-speedbar-menu-items
   ;; Note to self.  Add expand, and turn off items when not available.
   '(["Jump to stack frame" speedbar-edit-line t])
-  "Additional menu items to add the the speedbar frame.")
+  "Additional menu items to add to the speedbar frame.")
 
 ;; Make sure our special speedbar mode is loaded
 (if (featurep 'speedbar)
@@ -307,7 +307,8 @@ off the specialized speedbar mode."
 (defvar gud-gdb-history nil)
 
 (defun gud-gdb-massage-args (file args)
-  (cons "-fullname" args))
+  (cons "-cd" (cons (expand-file-name default-directory)
+		    (cons "-fullname" args))))
 
 (defvar gud-gdb-marker-regexp
   ;; This used to use path-separator instead of ":";
@@ -2335,9 +2336,9 @@ Obeying it means displaying in another window the specified file and line."
 (defun gud-refresh (&optional arg)
   "Fix up a possibly garbled display, and redraw the arrow."
   (interactive "P")
-  (recenter arg)
   (or gud-last-frame (setq gud-last-frame gud-last-last-frame))
-  (gud-display-frame))
+  (gud-display-frame)
+  (recenter arg))
 
 ;;; Code for parsing expressions out of C code.  The single entry point is
 ;;; find-c-expr, which tries to return an lvalue expression from around point.

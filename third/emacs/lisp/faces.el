@@ -66,7 +66,7 @@ a font height that isn't optimal."
   '(("courier" "fixed")
     ("helv" "helvetica" "arial" "fixed"))
   "*Alist of alternative font family names.
-Each element has the the form (FAMILY ALTERNATIVE1 ALTERNATIVE2 ...).
+Each element has the form (FAMILY ALTERNATIVE1 ALTERNATIVE2 ...).
 If fonts of family FAMILY can't be loaded, try ALTERNATIVE1, then
 ALTERNATIVE2 etc."
   :tag "Alternative font families to try."
@@ -80,7 +80,8 @@ ALTERNATIVE2 etc."
 ;; This is defined originally in xfaces.c.
 (defcustom face-font-registry-alternatives
   (if (eq system-type 'windows-nt)
-      '(("gb2312.1980" "gb2312")
+      '(("iso8859-1" "ms-oemlatin")
+	("gb2312.1980" "gb2312")
 	("jisx0208.1990" "jisx0208.1983" "jisx0208.1978")
 	("ksc5601.1989" "ksx1001.1992" "ksc5601.1987")
 	("muletibetan-2" "muletibetan-0"))
@@ -89,7 +90,7 @@ ALTERNATIVE2 etc."
       ("ksc5601.1989" "ksx1001.1992" "ksc5601.1987")
       ("muletibetan-2" "muletibetan-0")))
   "*Alist of alternative font registry names.
-Each element has the the form (REGISTRY ALTERNATIVE1 ALTERNATIVE2 ...).
+Each element has the form (REGISTRY ALTERNATIVE1 ALTERNATIVE2 ...).
 If fonts of registry REGISTRY can be loaded, font selection
 tries to find a best matching font among all fonts of registry
 REGISTRY, ALTERNATIVE1, ALTERNATIVE2, and etc."
@@ -148,7 +149,7 @@ If the face already exists, it is left unmodified.  Value is FACE."
 If NEW-FACE already exists as a face, it is modified to be like
 OLD-FACE.  If it doesn't already exist, it is created.
 
-If the optional argument FRAME is given as a frame,  NEW-FACE is
+If the optional argument FRAME is given as a frame, NEW-FACE is
 changed on FRAME only.
 If FRAME is t, the frame-independent default specification for OLD-FACE
 is copied to NEW-FACE.
@@ -227,7 +228,7 @@ Value is FACE."
 ;; support faces in display table entries.
 
 (defun face-id (face &optional frame)
-  "Return the interNal ID of face with name FACE.
+  "Return the internal ID of face with name FACE.
 If optional argument FRAME is nil or omitted, use the selected frame."
   (check-face face)
   (get face 'face))
@@ -302,7 +303,7 @@ If FRAME is omitted or nil, use the selected frame."
   "*List of X resources and classes for face attributes.
 Each element has the form (ATTRIBUTE ENTRY1 ENTRY2...) where ATTRIBUTE is
 the name of a face attribute, and each ENTRY is a cons of the form
-(RESOURCE . CLASS) with RESOURCE being the resource and CLASS being the
+\(RESOURCE . CLASS) with RESOURCE being the resource and CLASS being the
 X resource class for the attribute."
   :type '(repeat (cons symbol (repeat (cons string string))))
   :group 'faces)
@@ -633,7 +634,7 @@ Argument NOERROR is ignored and retained for compatibility."
 FRAME nil or not specified means change face on all frames.
 Argument NOERROR is ignored and retained for compatibility.
 Use `set-face-attribute' for finer control of font weight and slant."
-  (interactive (list (read-face-name "Make which face bold-italic: ")))
+  (interactive (list (read-face-name "Make which face bold-italic ")))
   (set-face-attribute face frame :weight 'bold :slant 'italic))
 
 
@@ -744,14 +745,14 @@ Use `set-face-attribute' or `modify-face' for finer control."
 
 (defun invert-face (face &optional frame)
   "Swap the foreground and background colors of FACE.
-FRAME nil or not specified means change face on all frames.
+If FRAME is omitted or nil, it means change face on all frames.
 If FACE specifies neither foreground nor background color,
 set its foreground and background to the background and foreground
 of the default face.  Value is FACE."
   (interactive (list (read-face-name "Invert face ")))
   (let ((fg (face-attribute face :foreground frame))
 	(bg (face-attribute face :background frame)))
-    (if (or fg bg)
+    (if (not (and (eq fg 'unspecified) (eq bg 'unspecified)))
 	(set-face-attribute face frame :foreground bg :background fg)
       (set-face-attribute face frame
 			  :foreground
@@ -1043,7 +1044,7 @@ The sample text is a string that comes from the variable
 	   "Use "
 	   (if (display-mouse-p) "\\[help-follow-mouse] or ")
 	   "\\[help-follow] on a face name to customize it\n"
-	   "or on its sample text for a decription of the face.\n\n")))
+	   "or on its sample text for a description of the face.\n\n")))
 	(setq help-xref-stack nil)
 	(while faces
 	  (setq face (car faces))
@@ -1382,7 +1383,7 @@ Display-dependent faces are those which have different definitions
 according to the `background-mode' and `display-type' frame parameters."
   (let* ((bg-resource
 	  (and window-system
-	       (x-get-resource ".backgroundMode" "BackgroundMode")))
+	       (x-get-resource "backgroundMode" "BackgroundMode")))
 	 (bg-color (frame-parameter frame 'background-color))
 	 (bg-mode
 	  (cond (frame-background-mode)
@@ -1517,17 +1518,17 @@ Value is the new frame created."
 	(delete-frame frame)))
     frame))
 
-
 (defun face-set-after-frame-default (frame)
   "Set frame-local faces of FRAME from face specs and resources.
 Initialize colors of certain faces from frame parameters."
   (dolist (face (face-list))
-    (face-spec-set face (face-user-default-spec face) frame)
-    (internal-merge-in-global-face face frame)
-    (when (and (memq window-system '(x w32 mac))
-	       (or (not (boundp 'inhibit-default-face-x-resources))
-		   (not (eq face 'default))))
-      (make-face-x-resource-internal face frame)))
+    (when (not (equal face 'default))
+      (face-spec-set face (face-user-default-spec face) frame)
+      (internal-merge-in-global-face face frame)
+      (when (and (memq window-system '(x w32 mac))
+		 (or (not (boundp 'inhibit-default-face-x-resources))
+		     (not (eq face 'default))))
+	(make-face-x-resource-internal face frame))))
 
   ;; Initialize attributes from frame parameters.
   (let ((params '((foreground-color default :foreground)
@@ -1546,7 +1547,6 @@ Initialize colors of certain faces from frame parameters."
 		   ;; specified for new frames.
 		   (eq (face-attribute face attr t) 'unspecified))
 	  (set-face-attribute face frame attr frame-param))))))
-
 
 (defun tty-handle-reverse-video (frame parameters)
   "Handle the reverse-video frame parameter for terminal frames."

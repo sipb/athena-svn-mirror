@@ -399,19 +399,19 @@ main (argc, argv)
       fail (argc, argv);
     }
 
-#ifdef BSD_SYSTEM
-  cwd = getwd (string);
-#else
+#ifdef HAVE_GETCWD
   cwd = getcwd (string, sizeof string);
+#else
+  cwd = getwd (string);
 #endif
   if (cwd == 0)
     {
       /* getwd puts message in STRING if it fails.  */
       fprintf (stderr, "%s: %s (%s)\n", argv[0],
-#ifdef BSD_SYSTEM
-	       string,
-#else
+#ifdef HAVE_GETCWD
 	       "Cannot get current working directory",
+#else
+	       string,
 #endif
 	       strerror (errno));
       fail (argc, argv);
@@ -425,7 +425,7 @@ main (argc, argv)
       if (*argv[i] == '+')
 	{
 	  char *p = argv[i] + 1;
-	  while (isdigit (*p) || *p == ':') p++;
+	  while (isdigit ((unsigned char) *p) || *p == ':') p++;
 	  if (*p != 0)
 	    fprintf (out, "%s/", quote_file_name (cwd));
 	}

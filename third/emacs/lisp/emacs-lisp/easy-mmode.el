@@ -107,7 +107,7 @@ BODY contains code that will be executed each time the mode is (dis)activated.
   (let* ((mode-name (symbol-name mode))
 	 (pretty-name (easy-mmode-pretty-mode-name mode lighter))
 	 (globalp nil)
-	 (togglep t)			;why would you ever want to toggle?
+	 (togglep t)			;why would you ever prevent toggling?
 	 (group nil)
 	 (extra-args nil)
 	 (keymap-sym (if (and keymap (symbolp keymap)) keymap
@@ -175,7 +175,9 @@ Interactively, with no prefix argument, toggle the mode.
 With universal prefix ARG " (unless togglep "(or if ARG is nil) ") "turn mode on.
 With zero or negative ARG turn mode off.
 \\{%s}") pretty-name keymap-sym))
-	 (interactive (list (or current-prefix-arg (if ,mode 0 1))))
+	 ;; Make no arg by default in an interactive call,
+	 ;; so that repeating the command toggles again.
+	 (interactive)
 	 (setq ,mode
 	       (if arg
 		   (> (prefix-numeric-value arg) 0)
@@ -213,10 +215,11 @@ With zero or negative ARG turn mode off.
 		       ,(if keymap keymap-sym
 			  `(if (boundp ',keymap-sym)
 			       (symbol-value ',keymap-sym))))
-       
+
        ;; If the mode is global, call the function according to the default.
        ,(if globalp
-	    `(if (and load-file-name ,mode)
+	    `(if (and load-file-name ,mode
+		      (not purify-flag))
 		 (eval-after-load load-file-name '(,mode 1)))))))
 
 ;;;

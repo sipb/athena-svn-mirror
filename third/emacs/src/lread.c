@@ -193,6 +193,7 @@ int load_dangerous_libraries;
 
 static Lisp_Object Vbytecomp_version_regexp;
 
+static void to_multibyte P_ ((char **, char **, int *));
 static void readevalloop P_ ((Lisp_Object, FILE*, Lisp_Object, 
 			      Lisp_Object (*) (), int,
 			      Lisp_Object, Lisp_Object));
@@ -488,10 +489,6 @@ read_filtered_event (no_switch_frame, ascii_required, error_nonascii,
   if (! NILP (delayed_switch_frame))
     unread_switch_frame = delayed_switch_frame;
 
-#ifdef HAVE_WINDOW_SYSTEM
-  if (display_hourglass_p)
-    start_hourglass ();
-#endif
   return val;
 }
 
@@ -1757,6 +1754,43 @@ read_integer (readcharfun, radix)
 }
 
 
+/* Convert unibyte text in read_buffer to multibyte.
+
+   Initially, *P is a pointer after the end of the unibyte text, and
+   the pointer *END points after the end of read_buffer.
+
+   If read_buffer doesn't have enough room to hold the result
+   of the conversion, reallocate it and adjust *P and *END.
+
+   At the end, make *P point after the result of the conversion, and
+   return in *NCHARS the number of characters in the converted
+   text.  */
+
+static void
+to_multibyte (p, end, nchars)
+     char **p, **end;
+     int *nchars;
+{
+  int nbytes;
+
+  parse_str_as_multibyte (read_buffer, *p - read_buffer, &nbytes, nchars);
+  if (read_buffer_size < 2 * nbytes)
+    {
+      int offset = *p - read_buffer;
+      read_buffer_size *= 2;
+      read_buffer = (char *) xrealloc (read_buffer, read_buffer_size);
+      *p = read_buffer + offset;
+      *end = read_buffer + read_buffer_size;
+    }
+
+  if (nbytes != *nchars)
+    nbytes = str_as_multibyte (read_buffer, read_buffer_size,
+			       *p - read_buffer, nchars);
+  
+  *p = read_buffer + nbytes;
+}
+
+
 /* If the next token is ')' or ']' or '.', we store that character
    in *PCH and the return value is not interesting.  Else, we store
    zero in *PCH and we read and return one lisp object.
@@ -2110,8 +2144,8 @@ read1 (readcharfun, pch, first_in_list)
 
     case '"':
       {
-	register char *p = read_buffer;
-	register char *end = read_buffer + read_buffer_size;
+	char *p = read_buffer;
+	char *end = read_buffer + read_buffer_size;
 	register int c;
 	/* Nonzero if we saw an escape sequence specifying
 	   a multibyte character.  */
@@ -2196,15 +2230,13 @@ read1 (readcharfun, pch, first_in_list)
 	  return make_number (0);
 
 	if (force_multibyte)
-	  p = read_buffer + str_as_multibyte (read_buffer, end - read_buffer,
-					      p - read_buffer, &nchars);
+	  to_multibyte (&p, &end, &nchars);
 	else if (force_singlebyte)
 	  nchars = p - read_buffer;
 	else if (load_convert_to_unibyte)
 	  {
 	    Lisp_Object string;
-	    p = read_buffer + str_as_multibyte (read_buffer, end - read_buffer,
-						p - read_buffer, &nchars);
+	    to_multibyte (&p, &end, &nchars);
 	    if (p - read_buffer != nchars)
 	      {
 		string = make_multibyte_string (read_buffer, nchars,
@@ -2214,13 +2246,14 @@ read1 (readcharfun, pch, first_in_list)
 	  }
 	else if (EQ (readcharfun, Qget_file_char)
 		 || EQ (readcharfun, Qlambda))
-	  /* Nowadays, reading directly from a file is used only for
-	     compiled Emacs Lisp files, and those always use the
-	     Emacs internal encoding.  Meanwhile, Qlambda is used
-	     for reading dynamic byte code (compiled with
-	     byte-compile-dynamic = t).  */
-	  p = read_buffer + str_as_multibyte (read_buffer, end - read_buffer,
-					      p - read_buffer, &nchars);
+	  {
+	    /* Nowadays, reading directly from a file is used only for
+	       compiled Emacs Lisp files, and those always use the
+	       Emacs internal encoding.  Meanwhile, Qlambda is used
+	       for reading dynamic byte code (compiled with
+	       byte-compile-dynamic = t).  */
+	    to_multibyte (&p, &end, &nchars);
+	  }
 	else
 	  /* In all other cases, if we read these bytes as
 	     separate characters, treat them as separate characters now.  */
@@ -3322,9 +3355,28 @@ init_lread ()
 	  Vload_path = decode_env_path (0, normal);
 	  if (!NILP (Vinstallation_directory))
 	    {
+	      Lisp_Object tem, tem1, sitelisp;
+
+	      /* Remove site-lisp dirs from path temporarily and store
+		 them in sitelisp, then conc them on at the end so
+		 they're always first in path.  */
+	      sitelisp = Qnil;
+	      while (1)
+		{
+		  tem = Fcar (Vload_path);
+		  tem1 = Fstring_match (build_string ("site-lisp"),
+					tem, Qnil);
+		  if (!NILP (tem1))
+		    {
+		      Vload_path = Fcdr (Vload_path);
+		      sitelisp = Fcons (tem, sitelisp);
+		    }
+		  else
+		    break;
+		}
+
 	      /* Add to the path the lisp subdir of the
 		 installation dir, if it exists.  */
-	      Lisp_Object tem, tem1;
 	      tem = Fexpand_file_name (build_string ("lisp"),
 				       Vinstallation_directory);
 	      tem1 = Ffile_exists_p (tem);
@@ -3333,7 +3385,7 @@ init_lread ()
 		  if (NILP (Fmember (tem, Vload_path)))
 		    {
 		      turn_off_warning = 1;
-		      Vload_path = nconc2 (Vload_path, Fcons (tem, Qnil));
+		      Vload_path = Fcons (tem, Vload_path);
 		    }
 		}
 	      else
@@ -3348,7 +3400,7 @@ init_lread ()
 	      if (!NILP (tem1))
 		{
 		  if (NILP (Fmember (tem, Vload_path)))
-		    Vload_path = nconc2 (Vload_path, Fcons (tem, Qnil));
+		    Vload_path = Fcons (tem, Vload_path);
 		}
 
 	      /* Add site-list under the installation dir, if it exists.  */
@@ -3358,7 +3410,7 @@ init_lread ()
 	      if (!NILP (tem1))
 		{
 		  if (NILP (Fmember (tem, Vload_path)))
-		    Vload_path = nconc2 (Vload_path, Fcons (tem, Qnil));
+		    Vload_path = Fcons (tem, Vload_path);
 		}
 
 	      /* If Emacs was not built in the source directory,
@@ -3386,21 +3438,23 @@ init_lread ()
 					       Vsource_directory);
 
 		      if (NILP (Fmember (tem, Vload_path)))
-			Vload_path = nconc2 (Vload_path, Fcons (tem, Qnil));
+			Vload_path = Fcons (tem, Vload_path);
 
 		      tem = Fexpand_file_name (build_string ("leim"),
 					       Vsource_directory);
 
 		      if (NILP (Fmember (tem, Vload_path)))
-			Vload_path = nconc2 (Vload_path, Fcons (tem, Qnil));
+			Vload_path = Fcons (tem, Vload_path);
 
 		      tem = Fexpand_file_name (build_string ("site-lisp"),
 					       Vsource_directory);
 
 		      if (NILP (Fmember (tem, Vload_path)))
-			Vload_path = nconc2 (Vload_path, Fcons (tem, Qnil));
+			Vload_path = Fcons (tem, Vload_path);
 		    }
 		}
+	      if (!NILP (sitelisp))
+		Vload_path = nconc2 (Fnreverse (sitelisp), Vload_path);
 	    }
 	}
     }
@@ -3618,7 +3672,7 @@ to load.  See also `load-dangerous-libraries'.");
     "Limit for depth of recursive loads.\n\
 Value should be either an integer > 0 specifying the limit, or nil for\n\
 no limit.");
-  Vrecursive_load_depth_limit = make_number (10);
+  Vrecursive_load_depth_limit = make_number (50);
 
   /* Vsource_directory was initialized in init_lread.  */
 

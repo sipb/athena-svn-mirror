@@ -1,6 +1,6 @@
 ;;; replace.el --- replace commands for Emacs
 
-;; Copyright (C) 1985, 86, 87, 92, 94, 96, 1997, 2000, 2001
+;; Copyright (C) 1985, 86, 87, 92, 94, 96, 1997, 2000, 2001, 2002
 ;;  Free Software Foundation, Inc.
 
 ;; This file is part of GNU Emacs.
@@ -95,7 +95,7 @@ Fourth and fifth arg START and END specify the region to operate on.
 
 To customize possible responses, change the \"bindings\" in `query-replace-map'."
   (interactive (query-replace-read-args "Query replace" nil))
-  (perform-replace from-string to-string start end t nil delimited))
+  (perform-replace from-string to-string t nil delimited nil nil start end))
 
 (define-key esc-map "%" 'query-replace)
 
@@ -122,7 +122,7 @@ In TO-STRING, `\\&' stands for whatever matched the whole of REGEXP,
 and `\\=\\N' (where N is a digit) stands for
  whatever what matched the Nth `\\(...\\)' in REGEXP."
   (interactive (query-replace-read-args "Query replace regexp" t))
-  (perform-replace regexp to-string start end t t delimited))
+  (perform-replace regexp to-string t t delimited nil nil start end))
 (define-key esc-map [?\C-%] 'query-replace-regexp)
 
 (defun query-replace-regexp-eval (regexp to-expr &optional delimited start end)
@@ -136,8 +136,8 @@ If the result of TO-EXPR is not a string, it is converted to one using
 `prin1-to-string' with the NOESCAPE argument (which see).
 
 For convenience, when entering TO-EXPR interactively, you can use `\\&' or
-`\0' to stand for whatever matched the whole of REGEXP, and `\N' (where
-N is a digit) to stand for whatever matched the Nth `\(...\)' in REGEXP.
+`\\0' to stand for whatever matched the whole of REGEXP, and `\\N' (where
+N is a digit) to stand for whatever matched the Nth `\\(...\\)' in REGEXP.
 Use `\\#&' or `\\#N' if you want a number instead of a string.
 
 In Transient Mark mode, if the mark is active, operate on the contents
@@ -172,7 +172,7 @@ Fourth and fifth arg START and END specify the region to operate on."
      (replace-match-string-symbols to)
      (list from (car to) current-prefix-arg start end)))
   (perform-replace regexp (cons 'replace-eval-replacement to-expr)
-		   start end t t delimited))
+		   t t delimited nil nil start end))
 
 (defun map-query-replace-regexp (regexp to-strings &optional n start end)
   "Replace some matches for REGEXP with various strings, in rotation.
@@ -223,7 +223,7 @@ Fourth and fifth arg START and END specify the region to operate on."
 				       (1+ (string-match " " to-strings))))
 	  (setq replacements (append replacements (list to-strings))
 		to-strings ""))))
-    (perform-replace regexp replacements start end t t nil n)))
+    (perform-replace regexp replacements t t nil n nil start end)))
 
 (defun replace-string (from-string to-string &optional delimited start end)
   "Replace occurrences of FROM-STRING with TO-STRING.
@@ -251,7 +251,7 @@ which will run faster and will not set the mark or print anything.
 \(You may need a more complex loop if FROM-STRING can match the null string
 and TO-STRING is also null.)"
   (interactive (query-replace-read-args "Replace string" nil))
-  (perform-replace from-string to-string start end nil nil delimited))
+  (perform-replace from-string to-string nil nil delimited nil nil start end))
 
 (defun replace-regexp (regexp to-string &optional delimited start end)
   "Replace things after point matching REGEXP with TO-STRING.
@@ -278,7 +278,7 @@ What you probably want is a loop like this:
     (replace-match TO-STRING nil nil))
 which will run faster and will not set the mark or print anything."
   (interactive (query-replace-read-args "Replace regexp" t))
-  (perform-replace regexp to-string start end nil t delimited))
+  (perform-replace regexp to-string nil t delimited nil nil start end))
 
 
 (defvar regexp-history nil
@@ -336,7 +336,7 @@ end of the buffer."
 	    ;; Now end is first char preserved by the new match.
 	    (if (< start end)
 		(delete-region start end))))
-	
+
 	(setq start (save-excursion (forward-line 1) (point)))
 	;; If the match was empty, avoid matching again at same place.
 	(and (< (point) rend)
@@ -511,15 +511,15 @@ Alternatively, click \\[occur-mode-mouse-goto] on an item to go to it.
   (if (not n) (setq n 1))
   (let ((r))
     (while (> n 0)
-    
+
       (setq r (get-text-property (point) 'occur-point))
       (if r (forward-char -1))
-      
+
       (setq r (previous-single-property-change (point) 'occur-point))
       (if r
 	  (goto-char (- r 1))
 	(error "No earlier matches"))
-      
+
       (setq n (1- n)))))
 
 (defcustom list-matching-lines-default-context-lines 0
@@ -699,7 +699,7 @@ the matching is case-sensitive."
 					 (bolp)))
 				     1 0)))
 		  (set-marker text-end (point))
-		  
+
 		  ;; Highlight text that was matched.
 		  (if list-matching-lines-face
 		      (put-text-property
@@ -713,7 +713,7 @@ the matching is case-sensitive."
 		   (+ (marker-position text-beg) match-beg match-len)
 		   (+ (marker-position text-beg) match-beg match-len 1)
 		   'occur-point t)
-		  
+
 		  ;; Now go back to the start of the matching text
 		  ;; adding the space and colon to the start of each line.
 		  (goto-char insertion-start)
@@ -746,14 +746,14 @@ the matching is case-sensitive."
 		    (insert empty ?:)
 		    (forward-line 1)
 		    (setq tem (1+ tem)))
-		  
+
 		  ;; Add text properties.  The `occur' prop is used to
 		  ;; store the marker of the matching text in the
 		  ;; source buffer.
 		  (add-text-properties
 		   (marker-position text-beg) (- (marker-position text-end) 1)
 		   '(mouse-face highlight
-		     help-echo "mouse-2: go to this occurence"))
+		     help-echo "mouse-2: go to this occurrence"))
 		  (put-text-property (marker-position text-beg)
 				     (marker-position text-end)
 				     'occur occur-marker)
@@ -870,9 +870,9 @@ type them."
           (aset data 2 (if (consp next) next (aref data 3))))))
   (car (aref data 2)))
 
-(defun perform-replace (from-string replacements start end
+(defun perform-replace (from-string replacements
 		        query-flag regexp-flag delimited-flag
-			&optional repeat-count map)
+			&optional repeat-count map start end)
   "Subroutine of `query-replace'.  Its complexity handles interactive queries.
 Don't use this in your own program unless you want to query and set the mark
 just as `query-replace' does.  Instead, write a simple loop like this:
@@ -1086,7 +1086,7 @@ see the documentation of `replace-match' to find out how to simulate
 		       (if (and regexp-flag nonempty-match)
 			   (setq match-again (and (looking-at search-string)
 						  (match-data)))))
-		      
+
 		      ;; Edit replacement.
 		      ((eq def 'edit-replacement)
 		       (setq next-replacement
@@ -1095,7 +1095,7 @@ see the documentation of `replace-match' to find out how to simulate
 		       (or replaced
 			   (replace-match next-replacement nocasify literal))
 		       (setq done t))
-		      
+
 		      ((eq def 'delete-and-edit)
 		       (delete-region (match-beginning 0) (match-end 0))
 		       (set-match-data
@@ -1125,7 +1125,7 @@ see the documentation of `replace-match' to find out how to simulate
       ;; beyond the last replacement.  Undo that.
       (when (and regexp-flag (not match-again) (> replace-count 0))
 	(backward-char 1))
-      
+
       (replace-dehighlight))
     (or unread-command-events
 	(message "Replaced %d occurrence%s"

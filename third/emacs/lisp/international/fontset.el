@@ -2,6 +2,7 @@
 
 ;; Copyright (C) 1995, 1997 Electrotechnical Laboratory, JAPAN.
 ;; Licensed to the Free Software Foundation.
+;; Copyright (C) 2001 Free Software Foundation, Inc.
 
 ;; Keywords: mule, multilingual, fontset
 
@@ -111,35 +112,61 @@
 (set-font-encoding "ISO8859-1" 'ascii 0)
 (set-font-encoding "JISX0201" 'latin-jisx0201 0)
 
+;; Allow display of arbitrary characters with an iso-10646-encoded
+;; (`Unicode') font.
+(define-translation-table 'ucs-mule-to-mule-unicode
+  ucs-mule-to-mule-unicode)
+
 (define-ccl-program ccl-encode-unicode-font
   `(0
-    (if (r0 == ,(charset-id 'ascii))
-	((r2 = r1)
-	 (r1 = 0))
-      (if (r0 == ,(charset-id 'latin-iso8859-1))
-	  ((r2 = (r1 + 128))
-	   (r1 = 0))
-	(if (r0 == ,(charset-id 'mule-unicode-0100-24ff))
-	    ((r1 *= 96)
-	     (r1 += r2)
-	     (r1 += ,(- #x100 (* 32 96) 32))
-	     (r1 >8= 0)
-	     (r2 = r7))
-	  (if (r0 == ,(charset-id 'mule-unicode-2500-33ff))
-	      ((r1 *= 96)
-	       (r1 += r2)
-	       (r1 += ,(- #x2500 (* 32 96) 32))
-	       (r1 >8= 0)
-	       (r2 = r7))
-	    (if (r0 == ,(charset-id 'mule-unicode-e000-ffff))
-		((r1 *= 96)
-		 (r1 += r2)
-		 (r1 += ,(- #xe000 (* 32 96) 32))
-		 (r1 >8= 0)
-		 (r2 = r7)))))))))
+    ;; r0: charset-id
+    ;; r1: 1st position code
+    ;; r2: 2nd position code (if r0 is 2D charset)
+    ((if (r0 == ,(charset-id 'ascii))
+	 ((r2 = r1)
+	  (r1 = 0))
+       ((if (r2 >= 0)
+	    ;; This is a 2D charset.
+	    (r1 = ((r1 << 7) | r2)))
+	;; Look for a translation for non-ASCII chars.
+	(translate-character ucs-mule-to-mule-unicode r0 r1)
+	(if (r0 == ,(charset-id 'latin-iso8859-1))
+	    ((r2 = (r1 + 128))
+	     (r1 = 0))
+	  ((r2 = (r1 & #x7F))
+	   (r1 >>= 7)
+	   (if (r0 == ,(charset-id 'mule-unicode-0100-24ff))
+	       ((r1 *= 96)
+		(r1 += r2)
+		(r1 += ,(- #x100 (* 32 96) 32))
+		(r1 >8= 0)
+		(r2 = r7))
+	     (if (r0 == ,(charset-id 'mule-unicode-2500-33ff))
+		 ((r1 *= 96)
+		  (r1 += r2)
+		  (r1 += ,(- #x2500 (* 32 96) 32))
+		  (r1 >8= 0)
+		  (r2 = r7))
+	       (if (r0 == ,(charset-id 'mule-unicode-e000-ffff))
+		   ((r1 *= 96)
+		    (r1 += r2)
+		    (r1 += ,(- #xe000 (* 32 96) 32))
+		    (r1 >8= 0)
+		    (r2 = r7))
+		 ;; No way, use the glyph for U+FFFD.
+		 ((r1 = #xFF)
+		  (r2 = #xFD)))))))))))
+  "Encode characters for display with iso10646 font.
+Translate through the translation-table named
+`ucs-mule-to-mule-unicode' initially.")
 
+;; Use the above CCL encoder for Unicode fonts.  Please note that the
+;; regexp is not simply "ISO10646-1" because there exists, for
+;; instance, the following Devanagari Unicode fonts:
+;;	-misc-fixed-medium-r-normal--24-240-72-72-c-120-iso10646.indian-1
+;;	-sibal-devanagari-medium-r-normal--24-240-75-75-P--iso10646-dev
 (setq font-ccl-encoder-alist
-      (cons '("ISO10646-1" . ccl-encode-unicode-font)
+      (cons '("ISO10646.*-*" . ccl-encode-unicode-font)
 	    font-ccl-encoder-alist))
 
 ;; Setting for suppressing XLoadQueryFont on big fonts.
@@ -303,6 +330,27 @@ Optional argument REDUCE is always ignored.  It exists just for
 backward compatibility."
   (concat "-" (mapconcat (lambda (x) (or x "*")) fields "-")))
 
+
+(defun x-must-resolve-font-name (xlfd-fields)
+  "Like `x-resolve-font-name', but always return a font name.
+XLFD-FIELDS is a vector of XLFD (X Logical Font Description) fields.
+If no font matching XLFD-FIELDS is available, successively replace
+parts of the font name pattern with \"*\" until some font is found.
+Value is name of that font."
+  (let ((ascii-font nil) (index 0))
+    (while (and (null ascii-font) (<= index xlfd-regexp-encoding-subnum))
+      (let ((pattern (x-compose-font-name xlfd-fields)))
+	(condition-case nil
+	    (setq ascii-font (x-resolve-font-name pattern))
+	  (error
+	   (message "Warning: no fonts matching `%s' available" pattern)
+	   (aset xlfd-fields index "*")
+	   (setq index (1+ index))))))
+    (unless ascii-font
+      (error "No fonts founds"))
+    ascii-font))
+
+
 (defun x-complement-fontset-spec (xlfd-fields fontlist)
   "Complement FONTLIST for charsets based on XLFD-FIELDS and return it.
 XLFD-FIELDS is a vector of XLFD (X Logical Font Description) fields.
@@ -324,7 +372,7 @@ variable `x-font-name-charset-alist'), add that information to FONTLIST."
       ;; If font for ASCII is not specified, add it.
       (aset xlfd-fields xlfd-regexp-registry-subnum "iso8859")
       (aset xlfd-fields xlfd-regexp-encoding-subnum "1")
-      (setq ascii-font (x-resolve-font-name (x-compose-font-name xlfd-fields)))
+      (setq ascii-font (x-must-resolve-font-name xlfd-fields))
       (setq fontlist (cons (cons 'ascii ascii-font) fontlist)))
 
     ;; If the font for ASCII also supports the other charsets, and

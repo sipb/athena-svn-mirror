@@ -776,11 +776,12 @@ Assumes the tags table is the current buffer."
 			       (save-excursion (end-of-line) (point))
 			       t))
 	(progn (goto-char (match-end 0))
-	       (buffer-substring (point)
-				 (progn (forward-sexp -1)
-					(while (looking-at "\\s'")
-					  (forward-char 1))
-					(point))))
+	       (buffer-substring-no-properties
+                (point)
+                (progn (forward-sexp -1)
+                       (while (looking-at "\\s'")
+                         (forward-char 1))
+                       (point))))
       nil)))
 
 ;; Read a tag name from the minibuffer with defaulting and completion.
@@ -832,7 +833,7 @@ or just \\[negative-argument]), pop back to the previous tag gone to.
 
 If third arg REGEXP-P is non-nil, treat TAGNAME as a regexp.
 
-A marker representing the point when this command is onvoked is pushed
+A marker representing the point when this command is invoked is pushed
 onto a ring and may be popped back to with \\[pop-tag-mark].
 Contrast this with the ring of marks gone to by the command.
 
@@ -904,7 +905,7 @@ or just \\[negative-argument]), pop back to the previous tag gone to.
 
 If third arg REGEXP-P is non-nil, treat TAGNAME as a regexp.
 
-A marker representing the point when this command is onvoked is pushed
+A marker representing the point when this command is invoked is pushed
 onto a ring and may be popped back to with \\[pop-tag-mark].
 Contrast this with the ring of marks gone to by the command.
 
@@ -931,7 +932,7 @@ just \\[negative-argument]), pop back to the previous tag gone to.
 
 If third arg REGEXP-P is non-nil, treat TAGNAME as a regexp.
 
-A marker representing the point when this command is onvoked is pushed
+A marker representing the point when this command is invoked is pushed
 onto a ring and may be popped back to with \\[pop-tag-mark].
 Contrast this with the ring of marks gone to by the command.
 
@@ -972,7 +973,7 @@ just \\[negative-argument]), pop back to the previous tag gone to.
 
 If third arg REGEXP-P is non-nil, treat TAGNAME as a regexp.
 
-A marker representing the point when this command is onvoked is pushed
+A marker representing the point when this command is invoked is pushed
 onto a ring and may be popped back to with \\[pop-tag-mark].
 Contrast this with the ring of marks gone to by the command.
 
@@ -995,7 +996,7 @@ just \\[negative-argument]), pop back to the previous tag gone to.
 
 If third arg OTHER-WINDOW is non-nil, select the buffer in another window.
 
-A marker representing the point when this command is onvoked is pushed
+A marker representing the point when this command is invoked is pushed
 onto a ring and may be popped back to with \\[pop-tag-mark].
 Contrast this with the ring of marks gone to by the command.
 
@@ -1743,7 +1744,7 @@ See documentation of variable `tags-file-name'."
 				   ;; will see it.
 				   '(goto-char (match-beginning 0))))
 	tags-loop-operate (list 'perform-replace
-				(list 'quote from) (list 'quote to) nil nil
+				(list 'quote from) (list 'quote to)
 				t t (list 'quote delimited)))
   (tags-loop-continue (or file-list-form t)))
 
