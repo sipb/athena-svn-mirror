@@ -1,0 +1,7 @@
+Name: athena-gok
+Summary: GNOME on-screen keyboard, for Athena
+License: LGPL
+Group: User Interface/Desktops
+
+%description
+A dynamic on-screen keyboard application.

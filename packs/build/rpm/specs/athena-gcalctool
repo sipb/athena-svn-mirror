@@ -1,0 +1,7 @@
+Name: athena-gcalctool
+Summary: GNOME calculator tool, for Athena
+License: GPL
+Group: User Interface/Desktops
+
+%description
+A GNOME calculator tool.

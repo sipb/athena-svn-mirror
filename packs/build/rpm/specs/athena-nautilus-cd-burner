@@ -1,0 +1,8 @@
+Name: athena-nautilus-cd-burner
+Summary: A Nautilus CD-writing extension, for Athena
+License: GPL
+Group: User Interface/Desktops
+
+%description
+An extension to Nautilus that makes it easy to write files to a CD
+burner.

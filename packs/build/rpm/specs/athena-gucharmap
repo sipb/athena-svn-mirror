@@ -1,0 +1,8 @@
+Name: athena-gucharmap
+Summary: A unicode character map program, for Athena
+License: GPL
+Group: User Interface/Desktops
+
+%description
+A program for displaying a unicode character map, allowing the user to
+enter international characters.

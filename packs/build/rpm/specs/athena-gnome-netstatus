@@ -1,0 +1,8 @@
+Name: athena-gnome-netstatus
+Summary: GNOME network status applet, for Athena
+License: GPL
+Group: User Interface/Desktops
+
+%description
+A GNOME panel applet which provides information about a network
+interface.

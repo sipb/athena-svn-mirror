@@ -1,0 +1,7 @@
+Name: athena-gpdf
+Summary: GNOME PDF viewer, for Athena
+License: GPL
+Group: User Interface/Desktops
+
+%description
+A GNOME viewer for Portable Document Format (PDF) files.

@@ -1,0 +1,8 @@
+Name: athena-gnome-nettool
+Summary: GNOME interface for various networking tools, for Athena
+License: GPL
+Group: User Interface/Desktops
+
+%description
+A set of front-ends to various networking command-line tools, like
+ping, netstat, ifconfig, whois, traceroute, finger.

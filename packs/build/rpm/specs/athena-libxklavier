@@ -1,0 +1,7 @@
+Name: athena-libxklavier
+Summary: X keyboard utility library, for Athena
+License: LGPL
+Group: Development/Libraries
+
+%description
+A utility library for the X Keyboard Extension (XKB).

@@ -1,0 +1,8 @@
+Name: athena-gnopernicus
+Summary: GNOME assistive tools for the blind and visually impaired, for Athena
+License: LGPL
+Group: User Interface/Desktops
+
+%description
+A collection of assistive technologies for the blind and visually
+impaired.

@@ -1,0 +1,9 @@
+Name: athena-gnome-mag
+Summary: GNOME magnifier component and utility, for Athena
+License: LGPL
+Group: User Interface/Desktops
+
+%description
+This package provides a GNOME component to display magnified regions
+of the desktop, as well as a command-line program "magnifier" which
+uses it.

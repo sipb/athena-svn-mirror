@@ -1,0 +1,8 @@
+Name: athena-gtksourceview
+Summary: A GNOME widget for viewing source code, for Athena
+License: LGPL
+Group: User Interface/Desktops
+
+%description
+An extended GNOME text widget providing syntax highlighting and other
+features typical of a source editor.
