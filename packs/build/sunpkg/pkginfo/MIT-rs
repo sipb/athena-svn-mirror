@@ -1,3 +1,0 @@
-PKG=MIT-rs
-NAME=Reshape a data array
-DESC=rs reshapes data arrys according to various transform possibilities.

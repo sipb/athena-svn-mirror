@@ -1,3 +1,0 @@
-PKG=MIT-Xrender
-NAME=Xrender extension client library, for Athena
-DESC=This package contains a library implementing the client side of the Xrender X11R6 extension.
