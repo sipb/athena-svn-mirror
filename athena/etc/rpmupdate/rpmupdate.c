@@ -18,7 +18,7 @@
  * workstation as indicated by the flags.
  */
 
-static const char rcsid[] = "$Id: rpmupdate.c,v 1.25 2003-05-07 05:11:49 ghudson Exp $";
+static const char rcsid[] = "$Id: rpmupdate.c,v 1.26 2003-05-12 22:50:04 ghudson Exp $";
 
 #define _GNU_SOURCE
 #include <sys/types.h>
@@ -44,7 +44,7 @@ static const char rcsid[] = "$Id: rpmupdate.c,v 1.25 2003-05-07 05:11:49 ghudson
 #define HASHSIZE 1009
 #define RPMCACHE "/var/athena/rpms"
 
-enum act { UPDATE, ERASE, NONE };
+enum act { UPDATE, ERASE, ELIMINATE_MULTIPLES, NONE };
 
 struct rev {
   int present;			/* If 0, rest of structure is invalid */
@@ -59,6 +59,7 @@ struct package {
   struct rev oldlistrev;
   struct rev newlistrev;
   struct rev instrev;		/* Most recent version installed */
+  int multiple_installed_revs;
   int notouch;
   int only_upgrade;
   enum act action;
@@ -93,13 +94,14 @@ static enum act decide_public(struct package *pkg);
 static enum act decide_private(struct package *pkg);
 static void schedule_update(struct package *pkg, rpmts ts, int copy);
 static void display_action(struct package *pkg, enum act action);
-static int kernel_was_updated(rpmdb db, struct package *pkg);
+static int kernel_was_updated(rpmts ts, struct package *pkg);
 static void update_lilo(struct package *pkg);
 static char *fudge_arch_in_filename(char *filename);
 static void prepare_copy_area(void);
 static void check_copy_size(struct package **pkgtab);
 static char *copy_local(const char *filename);
 static void clear_copy_area(void);
+static void read_rev_from_header(struct rev *rev, Header h);
 static void printrev(struct rev *rev);
 static int revcmp(struct rev *rev1, struct rev *rev2);
 static int revsame(struct rev *rev1, struct rev *rev2);
@@ -302,47 +304,41 @@ static void read_installed_versions(struct package **pkgtab)
 {
   rpmdbMatchIterator mi;
   Header h;
-  char *pkgname, *version, *release;
+  char *pkgname;
   struct package *pkg;
-  rpmdb db;
-  int_32 *epoch;
+  rpmts ts;
   struct rev rev;
 
-  if (rpmdbOpen(NULL, &db, O_RDONLY, 0644))
-    die("Can't open RPM database for reading");
-
-  mi = rpmdbInitIterator(db, RPMDBI_PACKAGES, NULL, 0);
+  ts = rpmtsCreate();
+  mi = rpmtsInitIterator(ts, RPMDBI_PACKAGES, NULL, 0);
   if (mi == NULL)
     die("Failed to initialize database iterator");
   while ((h = rpmdbNextIterator(mi)) != NULL)
     {
       headerGetEntry(h, RPMTAG_NAME, NULL, (void **) &pkgname, NULL);
-      if (!headerGetEntry(h, RPMTAG_EPOCH, NULL, (void **) &epoch, NULL))
-	epoch = NULL;
-      headerGetEntry(h, RPMTAG_VERSION, NULL, (void **) &version, NULL);
-      headerGetEntry(h, RPMTAG_RELEASE, NULL, (void **) &release, NULL);
+      read_rev_from_header(&rev, h);
 
       /* Two versions of the same package can be installed on a system
        * with some coercion.  If so, make sure that instrev gets set to
        * the highest one.
        */
-      rev.present = 1;
-      rev.epoch = (epoch == NULL) ? -1 : *epoch;
-      rev.version = estrdup(version);
-      rev.release = estrdup(release);
       pkg = get_package(pkgtab, pkgname);
       if (!pkg->instrev.present)
 	pkg->instrev = rev;
-      else if (revcmp(&rev, &pkg->instrev) > 0)
-	{
-	  freerev(&pkg->instrev);
-	  pkg->instrev = rev;
-	}
       else
-	freerev(&rev);
+	{
+	  pkg->multiple_installed_revs = 1;
+	  if (revcmp(&rev, &pkg->instrev) > 0)
+	    {
+	      freerev(&pkg->instrev);
+	      pkg->instrev = rev;
+	    }
+	  else
+	    freerev(&rev);
+	}
     }
-
-  rpmdbClose(db);
+  rpmdbFreeIterator(mi);
+  rpmtsFree(ts);
 }
 
 static void decide_actions(struct package **pkgtab, int public)
@@ -355,11 +351,17 @@ static void decide_actions(struct package **pkgtab, int public)
       for (pkg = pkgtab[i]; pkg; pkg = pkg->next)
 	{
 	  if (pkg->notouch)
-	    pkg->action = NONE;
-	  else if (public)
-	    pkg->action = decide_public(pkg);
-	  else
-	    pkg->action = decide_private(pkg);
+	    {
+	      pkg->action = NONE;
+	      continue;
+	    }
+	  pkg->action = (public) ? decide_public(pkg) : decide_private(pkg);
+
+	  /* Multiple revs of an rpm is usually a sign of a previous
+	   * failed update.  Clean up by eliminating the old revs.
+	   */
+	  if (pkg->action == NONE && pkg->multiple_installed_revs)
+	    pkg->action = ELIMINATE_MULTIPLES;
 	}
     }
 }
@@ -369,18 +371,16 @@ static void perform_updates(struct package **pkgtab, int depcheck, int dryrun,
 {
   int r, i, npackages;
   struct package *pkg;
-  rpmdb db;
   rpmts ts;
   rpmps ps;
   rpmdbMatchIterator mi;
   Header h;
   char *pkgname;
   struct notify_data ndata;
+  struct rev rev;
 
   if (!dryrun || depcheck)
     {
-      if (rpmdbOpen(NULL, &db, O_RDWR, 0644))
-	die("Can't open RPM database for writing");
       ts = rpmtsCreate();
       rpmtsSetRootDir(ts, "/");
 
@@ -421,7 +421,7 @@ static void perform_updates(struct package **pkgtab, int depcheck, int dryrun,
    * installed at two different versions on the system, we will remove
    * both packages.
    */
-  mi = rpmdbInitIterator(db, RPMDBI_PACKAGES, NULL, 0);
+  mi = rpmtsInitIterator(ts, RPMDBI_PACKAGES, NULL, 0);
   if (mi == NULL)
     die("Failed to initialize database iterator");
   while ((h = rpmdbNextIterator(mi)) != NULL)
@@ -431,7 +431,16 @@ static void perform_updates(struct package **pkgtab, int depcheck, int dryrun,
       pkg = get_package(pkgtab, pkgname);
       if (pkg->action == ERASE)
 	rpmtsAddEraseElement(ts, h, rpmdbGetIteratorOffset(mi));
+      if (pkg->action == ELIMINATE_MULTIPLES)
+	{
+	  /* Erase anything which doesn't match the most current rev. */
+	  read_rev_from_header(&rev, h);
+	  if (revcmp(&rev, &pkg->instrev) != 0)
+	    rpmtsAddEraseElement(ts, h, rpmdbGetIteratorOffset(mi));
+	  freerev(&rev);
+	}
     }
+  rpmdbFreeIterator(mi);
 
   /* The transaction set is complete.  Check for dependency problems. */
   if (rpmtsCheck(ts) != 0)
@@ -445,7 +454,7 @@ static void perform_updates(struct package **pkgtab, int depcheck, int dryrun,
     }
   if (depcheck)
     {
-      rpmdbClose(db);
+      rpmtsFree(ts);
       return;
     }
 
@@ -458,6 +467,7 @@ static void perform_updates(struct package **pkgtab, int depcheck, int dryrun,
   ndata.pkgtab = pkgtab;
   rpmtsSetNotifyCallback(ts, notify, &ndata);
 
+  rpmtsClean(ts);
   r = rpmtsRun(ts, NULL, RPMPROB_FILTER_OLDPACKAGE|RPMPROB_FILTER_REPLACEPKG);
   if (copy)
     clear_copy_area();
@@ -466,7 +476,7 @@ static void perform_updates(struct package **pkgtab, int depcheck, int dryrun,
       /* The kernel may have been upgraded; make sure to edit
        * lilo.conf if so.
        */
-      if (kernel_was_updated(db, get_package(pkgtab, "kernel")))
+      if (kernel_was_updated(ts, get_package(pkgtab, "kernel")))
 	update_lilo(get_package(pkgtab, "kernel"));
       die("Failed to run transactions\n");
     }
@@ -474,11 +484,11 @@ static void perform_updates(struct package **pkgtab, int depcheck, int dryrun,
     {
       fprintf(stderr, "Update failed due to the following problems:\n");
       rpmpsPrint(NULL, rpmtsProblems(ts));
+      rpmtsFree(ts);
       exit(1);
     }
 
-  rpmdbClose(db);
-
+  rpmtsFree(ts);
   update_lilo(get_package(pkgtab, "kernel"));
 }
 
@@ -521,7 +531,7 @@ static void *notify(const void *arg, rpmCallbackType what,
     case RPMCALLBACK_UNINST_STOP:
       pkg = get_package(ndata->pkgtab, headerSprintf(h, "%{NAME}", rpmTagTable,
 						     rpmHeaderFormats, NULL));
-      if (pkg && pkg->newlistrev.present)
+      if (pkg && pkg->action == UPDATE)
 	return NULL;
 
     default:
@@ -683,6 +693,9 @@ static void display_action(struct package *pkg, enum act action)
 	  printf("\n");
 	}
       break;
+    case ELIMINATE_MULTIPLES:
+      printf("Eliminate multiple versions of package %s\n", pkg->pkgname);
+      break;
     default:
       break;
     }
@@ -693,7 +706,7 @@ static void display_action(struct package *pkg, enum act action)
  * database to find out whether the kernel was updated so that we know
  * whether to update lilo.
  */
-static int kernel_was_updated(rpmdb db, struct package *pkg)
+static int kernel_was_updated(rpmts ts, struct package *pkg)
 {
   rpmdbMatchIterator mi;
   Header h;
@@ -706,7 +719,7 @@ static int kernel_was_updated(rpmdb db, struct package *pkg)
       || revsame(&pkg->instrev, &pkg->newlistrev))
     return 0;
 
-  mi = rpmdbInitIterator(db, RPMDBI_LABEL, "kernel", 0);
+  mi = rpmtsInitIterator(ts, RPMDBI_LABEL, "kernel", 0);
   if (mi == NULL)
     die("Failed to initialize database iterator while recovering.");
   while ((h = rpmdbNextIterator(mi)) != NULL)
@@ -720,6 +733,7 @@ static int kernel_was_updated(rpmdb db, struct package *pkg)
       rev.version = version;
       rev.release = release;
     }
+  rpmdbFreeIterator(mi);
   return (rev.present && revcmp(&rev, &pkg->newlistrev) == 0);
 }
 
@@ -1002,6 +1016,21 @@ static void clear_copy_area(void)
   closedir(dir);
 }
 
+static void read_rev_from_header(struct rev *rev, Header h)
+{
+  int32_t *epoch;
+  char *version, *release;
+
+  if (!headerGetEntry(h, RPMTAG_EPOCH, NULL, (void **) &epoch, NULL))
+    epoch = NULL;
+  headerGetEntry(h, RPMTAG_VERSION, NULL, (void **) &version, NULL);
+  headerGetEntry(h, RPMTAG_RELEASE, NULL, (void **) &release, NULL);
+  rev->present = 1;
+  rev->epoch = (epoch == NULL) ? -1 : *epoch;
+  rev->version = estrdup(version);
+  rev->release = estrdup(release);
+}
+
 static void printrev(struct rev *rev)
 {
   assert(rev->present);
@@ -1132,6 +1161,7 @@ struct package *get_package(struct package **table, const char *pkgname)
   pkg->oldlistrev.present = 0;
   pkg->newlistrev.present = 0;
   pkg->instrev.present = 0;
+  pkg->multiple_installed_revs = 0;
   pkg->notouch = 0;
   pkg->only_upgrade = 0;
   pkg->action = NONE;
