@@ -1,7 +1,8 @@
-; $Header: /afs/dev.mit.edu/source/repository/packs/config/named.boot,v 1.2 1996-09-20 05:23:51 ghudson Exp $
+; $Header: /afs/dev.mit.edu/source/repository/packs/config/named.boot,v 1.3 1996-09-25 17:49:05 ghudson Exp $
 
 directory /etc
 
-; type    domain                source host/file                backup file
-cache	  .			named.root
-primary	  127.in-addr-arpa	named.localhost.rev
+; Type		Domain			Source host/file	Backup file
+cache		.			named.root
+primary		localhost		named.localhost
+primary		1.0.0.127.in-addr.arpa	named.localhost.rev
