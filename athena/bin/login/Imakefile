@@ -1,0 +1,27 @@
+#	Makefile for login 
+#	MIT Project Athena
+#
+#	$Source: /afs/dev.mit.edu/source/repository/athena/bin/login/Imakefile,v $
+#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/Imakefile,v 1.1 1991-02-27 09:41:29 epeisach Exp $
+#
+#
+#
+
+DESTDIR=
+#ifdef ultrix
+CFLAGS=	-O -DRVD -DNAMESERVER -DVFS -DPOSIX -DSYSLOG42
+#else
+CFLAGS=	-O -DRVD -DNAMESERVER -DVFS
+#endif
+
+all:: login
+login:: login.c 
+	${CC} ${CFLAGS} -o login login.c -lknet -lkrb -ldes -lhesiod
+clean::
+	rm -f *.o login core *~
+install:: login 
+	install -c -s -o root -m 4555 login ${DESTDIR}/bin/login 
+depend::
+	touch Make.depend ; makedepend -fMake.depend -s "# DO NOT REMOVE THIS LINE -- make depend uses it" \
+		-o "" ${CFLAGS} login.c
+
