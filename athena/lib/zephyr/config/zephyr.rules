@@ -2,7 +2,7 @@
 /**/#	For copying and distribution information, see the file
 /**/#	"mit-copyright.h"
 /**/#
-/**/#	$Id: zephyr.rules,v 1.5 1994-04-08 11:22:36 probe Exp $
+/**/#	$Id: zephyr.rules,v 1.6 1994-06-10 12:54:53 probe Exp $
 
 /* General system configuration */
 #define KERBEROS	/* Has Kerberos installed */
@@ -69,7 +69,7 @@ AnsiCC()
  */
 #define make_err(name) \
 error_table(name)							@@\
-all:: concat3($(BINC)/zephyr/,name,.h)					@@\
+all depend:: concat3($(BINC)/zephyr/,name,.h)				@@\
 $(OBJS): concat3($(BINC)/zephyr/,name,.h)				@@\
 concat3($(BINC)/zephyr/,name,.h): concat2(name,.h)			@@\
 	$(RM) $@; $(CP) concat2(name,.h) $@				@@\
