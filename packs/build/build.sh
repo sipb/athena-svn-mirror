@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: build.sh,v 1.24 1999-03-29 22:14:51 ghudson Exp $
+# $Id: build.sh,v 1.25 1999-06-21 04:09:28 ghudson Exp $
 
 # This is the script for building the Athena source tree, or pieces of
 # it.  It is less flexible than the do.sh script in this directory.
@@ -9,10 +9,13 @@
 source="/mit/source"
 build="/build"
 srvd="/.srvd"
-usage="build [-s srcdir] [-b builddir] [-d destdir] [-k] [-n]"
+ignore=false
+nobuild=false
+log=false
+usage="build [-s srcdir] [-b builddir] [-d destdir] [-k] [-n] [-l]"
 usage="$usage [package [endpackage]]"
 
-while getopts s:b:d:kn opt; do
+while getopts s:b:d:knl opt; do
 	case "$opt" in
 	s)
 		source="$OPTARG"
@@ -28,6 +31,9 @@ while getopts s:b:d:kn opt; do
 		;;
 	n)
 		nobuild=true
+		;;
+	l)
+		log=true
 		;;
 	\?)
 		echo "$usage"
@@ -75,13 +81,15 @@ case $nobuild in
 		;;
 esac
 
-# Send all output friom this point on to the build log file.
-mkdir -p "$build/logs" 2>/dev/null
-now=`date '+%y.%m.%d.%H'`
-logfile=$build/logs/washlog.$now
-rm -f "$build/logs/current"
-ln -s "washlog.$now" "$build/logs/current"
-exec >> "$logfile" 2>&1
+# Send all output from this point on to the build log file.
+if [ true = "$log" ]; then
+	mkdir -p "$build/logs" 2>/dev/null
+	now=`date '+%y.%m.%d.%H'`
+	logfile=$build/logs/washlog.$now
+	rm -f "$build/logs/current"
+	ln -s "washlog.$now" "$build/logs/current"
+	exec >> "$logfile" 2>&1
+fi
 
 echo ========
 echo Starting at `date` on $os
@@ -95,7 +103,7 @@ for package in $packages; do
 		sh $source/packs/build/do.sh -c -s "$source" -d "$srvd" "$op"
 		if [ $? -ne 0 ]; then
 			echo "We bombed in $package"
-			if [ -z "$ignore" ]; then
+			if [ false = "$ignore" ]; then
 				exit 1
 			fi
 		fi
