@@ -45,6 +45,8 @@
 #include "nsCompatibility.h"
 #include "nsCOMPtr.h"
 #include "nsIPresShell.h"
+#include "nsRect.h"
+#include "nsIDeviceContext.h"
 #ifdef IBMBIDI
 class nsBidiPresUtils;
 #endif // IBMBIDI
@@ -59,7 +61,7 @@ class nsIDocument;
 class nsIDeviceContext;
 class nsIFontMetrics;
 class nsIFrame;
-class nsIFrameManager;
+class nsFrameManager;
 class nsIImage;
 class nsILinkHandler;
 class nsIPresShell;
@@ -70,7 +72,6 @@ class nsString;
 class nsIEventStateManager;
 class nsIURI;
 class nsILookAndFeel;
-class nsIIOService;
 class nsICSSPseudoComparator;
 class nsILanguageAtom;
 class nsITheme;
@@ -132,14 +133,22 @@ public:
   /**
    * Get the PresentationShell that this context is bound to.
    */
-  NS_IMETHOD GetShell(nsIPresShell** aResult) = 0;
-  nsIPresShell* GetPresShell() { return mShell; }
+  nsIPresShell* PresShell() const
+  {
+    NS_ASSERTION(mShell, "Null pres shell");
+    return mShell;
+  }
+
+  nsIPresShell* GetPresShell() const { return mShell; }
 
   nsIDocument* GetDocument() { return GetPresShell()->GetDocument(); } 
   nsIViewManager* GetViewManager() { return GetPresShell()->GetViewManager(); } 
-  nsIStyleSet* GetStyleSet() { return GetPresShell()->GetStyleSet(); } 
-  nsIFrameManager* GetFrameManager()
-    { return GetPresShell()->GetFrameManager(); } 
+#ifdef _IMPL_NS_LAYOUT
+  nsStyleSet* StyleSet() { return GetPresShell()->StyleSet(); }
+
+  nsFrameManager* FrameManager()
+    { return GetPresShell()->FrameManager(); } 
+#endif
 
   /**
    * Access compatibility mode for this context
@@ -147,119 +156,37 @@ public:
    * All users must explicitly set the compatibility mode rather than
    * relying on a default.
    */
-  NS_IMETHOD GetCompatibilityMode(nsCompatibility* aModeResult) = 0;
-  NS_IMETHOD SetCompatibilityMode(nsCompatibility aMode) = 0;
+  nsCompatibility CompatibilityMode() const { return mCompatibilityMode; }
+  virtual void    SetCompatibilityMode(nsCompatibility aMode) = 0;
 
   /**
    * Access the image animation mode for this context
    */
-  NS_IMETHOD GetImageAnimationMode(PRUint16* aModeResult) = 0;
-  NS_IMETHOD SetImageAnimationMode(PRUint16 aMode) = 0;
+  PRUint16     ImageAnimationMode() const { return mImageAnimationMode; }
+  virtual void SetImageAnimationMode(PRUint16 aMode) = 0;
 
   /**
-   * Get an special load flags for images for this context
+   * Get cached look and feel service.  This is faster than obtaining it
+   * through the service manager.
    */
-  NS_IMETHOD GetImageLoadFlags(nsLoadFlags& aLoadFlags) = 0;
-
-  /**
-   * Get cached look and feel service.
-   */
-  NS_IMETHOD GetLookAndFeel(nsILookAndFeel** aLookAndFeel) = 0;
-
-  /**
-   * Get cached IO service.
-   */
-  NS_IMETHOD GetIOService(nsIIOService** aIOService) = 0;
-
-  /** 
-   * Get base url for presentation
-   */
-  NS_IMETHOD GetBaseURL(nsIURI** aURLResult) = 0;
+  nsILookAndFeel* LookAndFeel() { return mLookAndFeel; }
 
   /** 
    * Get medium of presentation
    */
-  NS_IMETHOD GetMedium(nsIAtom** aMediumResult) = 0;
+  nsIAtom* Medium() { return mMedium; }
 
   /**
    * Clear style data from the root frame downwards, and reflow.
    */
-  NS_IMETHOD ClearStyleDataAndReflow(void) = 0;
+  virtual void ClearStyleDataAndReflow() = 0;
 
-  /**
-   * Resolve style for the given piece of content that will be a child
-   * of the aParentContext. Don't use this for pseudo frames.
-   */
-  virtual already_AddRefed<nsStyleContext>
-  ResolveStyleContextFor(nsIContent* aContent,
-                         nsStyleContext* aParentContext) = 0;
-
-  /**
-   * Resolve style for a non-element content node (i.e., one that is
-   * guaranteed not to match any rules).  Eventually such nodes
-   * shouldn't have style contexts at all, but this at least prevents
-   * the rule matching.
-   *
-   * XXX This is temporary.  It should go away when we stop creating
-   * style contexts for text nodes and placeholder frames.  (We also use
-   * it once to create a style context for the nsFirstLetterFrame that
-   * represents everything except the first letter.)
-   *
-   */
-  virtual already_AddRefed<nsStyleContext>
-  ResolveStyleContextForNonElement(nsStyleContext* aParentContext) = 0;
-
-  /**
-   * Resolve style for a pseudo frame within the given aParentContent & aParentContext.
-   * The tag should be lowercase and inclue the colon.
-   * ie: NS_NewAtom(":first-line");
-   */
-
-  virtual already_AddRefed<nsStyleContext>
-  ResolvePseudoStyleContextFor(nsIContent* aParentContent,
-                               nsIAtom* aPseudoTag,
-                               nsStyleContext* aParentContext) = 0;
-
-  /**
-   * Resolve style for a pseudo frame within the given aParentContent & aParentContext.
-   * The tag should be lowercase and inclue the colon.
-   * ie: NS_NewAtom(":first-line");
-   *
-   * Instead of matching solely on aPseudoTag, a comparator function can be
-   * passed in to test.
-   */
-  virtual already_AddRefed<nsStyleContext>
-  ResolvePseudoStyleWithComparator(nsIContent* aParentContent,
-                                   nsIAtom* aPseudoTag,
-                                   nsStyleContext* aParentContext,
-                                   nsICSSPseudoComparator* aComparator) = 0;
-
-  /**
-   * Probe style for a pseudo frame within the given aParentContent & aParentContext.
-   * This will return nsnull id there are no explicit rules for the pseudo element.
-   * The tag should be lowercase and inclue the colon.
-   * ie: NS_NewAtom(":first-line");
-   */
-  virtual already_AddRefed<nsStyleContext>
-  ProbePseudoStyleContextFor(nsIContent* aParentContent,
-                             nsIAtom* aPseudoTag,
-                             nsStyleContext* aParentContext) = 0;
- 
    /**
     * Resolve a new style context for a content node and return the URL
     * for its XBL binding, or null if it has no binding specified in CSS.
     */
-   NS_IMETHOD GetXBLBindingURL(nsIContent* aContent, nsIURI** aResult) = 0;
-
-  /** 
-   * For a given frame tree, get a new style context that is the equivalent
-   * but within a new parent.  The StyleContextParent of aFrame should be
-   * changed _before_ this method is called, so that style tree verification
-   * can take place correctly.
-   */
-  NS_IMETHOD ReParentStyleContext(nsIFrame* aFrame, 
-                                  nsStyleContext* aNewParentContext) = 0;
-
+  virtual nsresult GetXBLBindingURL(nsIContent* aContent,
+                                    nsIURI** aResult) = 0;
 
   NS_IMETHOD AllocateFromShell(size_t aSize, void** aResult) = 0;
   NS_IMETHOD FreeToShell(size_t aSize, void* aFreeChunk) = 0;
@@ -269,17 +196,34 @@ public:
    */
   NS_IMETHOD GetMetricsFor(const nsFont& aFont, nsIFontMetrics** aResult) = 0;
 
-  /** Get the default font correponding to the given ID */
-  NS_IMETHOD GetDefaultFont(PRUint8 aFontID, const nsFont** aResult) = 0;
-  /** Set the default font correponding to the given ID */
-  NS_IMETHOD SetDefaultFont(PRUint8 aFontID, const nsFont& aFont) = 0;
+  /**
+   * Get the default font correponding to the given ID.  This object is
+   * read-only, you must copy the font to modify it.
+   */
+  virtual const nsFont* GetDefaultFont(PRUint8 aFontID) const = 0;
 
   /** Get a cached boolean pref, by its type
        if the type is not supported, then NS_ERROR_INVALID_ARG is returned
        and the aValue argument is undefined, otherwise aValue is set
        to the value of the boolean pref */
   // *  - initially created for bugs 31816, 20760, 22963
-  NS_IMETHOD GetCachedBoolPref(PRUint32 aPrefType, PRBool& aValue) = 0;
+  PRBool GetCachedBoolPref(PRUint32 aPrefType) const
+  {
+    // If called with a constant parameter, the compiler should optimize
+    // this switch statement away.
+    switch (aPrefType) {
+    case kPresContext_UseDocumentFonts:
+      return mUseDocumentFonts;
+    case kPresContext_UseDocumentColors:
+      return mUseDocumentColors;
+    case kPresContext_UnderlineLinks:
+      return mUnderlineLinks;
+    default:
+      NS_ERROR("Invalid arg passed to GetCachedBoolPref");
+    }
+
+    return PR_FALSE;
+  }
 
   /** Get a cached integer pref, by its type
        if the type is not supported, then NS_ERROR_INVALID_ARG is returned
@@ -291,29 +235,23 @@ public:
   /**
    * Access Nav's magic font scaler value
    */
-  NS_IMETHOD GetFontScaler(PRInt32* aResult) = 0;
-  NS_IMETHOD SetFontScaler(PRInt32 aScaler) = 0;
+  PRInt32 FontScaler() const { return mFontScaler; }
 
   /** 
    * Get the default colors
    */
-  NS_IMETHOD GetDefaultColor(nscolor* aColor) = 0;
-  NS_IMETHOD GetDefaultBackgroundColor(nscolor* aColor) = 0;
-  NS_IMETHOD GetDefaultLinkColor(nscolor* aColor) = 0;
-  NS_IMETHOD GetDefaultActiveLinkColor(nscolor* aColor) = 0;
-  NS_IMETHOD GetDefaultVisitedLinkColor(nscolor* aColor) = 0;
-  NS_IMETHOD GetFocusBackgroundColor(nscolor* aColor) = 0;
-  NS_IMETHOD GetFocusTextColor(nscolor* aColor) = 0; 
-  NS_IMETHOD GetUseFocusColors(PRBool& useFocusColors) = 0;
-  NS_IMETHOD GetFocusRingWidth(PRUint8 *focusRingWidth) = 0;
-  NS_IMETHOD GetFocusRingOnAnything(PRBool& focusRingOnAnything) = 0;
- 
+  const nscolor DefaultColor() const { return mDefaultColor; }
+  const nscolor DefaultBackgroundColor() const { return mBackgroundColor; }
+  const nscolor DefaultLinkColor() const { return mLinkColor; }
+  const nscolor DefaultActiveLinkColor() const { return mActiveLinkColor; }
+  const nscolor DefaultVisitedLinkColor() const { return mVisitedLinkColor; }
+  const nscolor FocusBackgroundColor() const { return mFocusBackgroundColor; }
+  const nscolor FocusTextColor() const { return mFocusTextColor; }
 
-  NS_IMETHOD SetDefaultColor(nscolor aColor) = 0;
-  NS_IMETHOD SetDefaultBackgroundColor(nscolor aColor) = 0;
-  NS_IMETHOD SetDefaultLinkColor(nscolor aColor) = 0;
-  NS_IMETHOD SetDefaultActiveLinkColor(nscolor aColor) = 0;
-  NS_IMETHOD SetDefaultVisitedLinkColor(nscolor aColor) = 0;
+  PRBool GetUseFocusColors() const { return mUseFocusColors; }
+  PRUint8 FocusRingWidth() const { return mFocusRingWidth; }
+  PRBool GetFocusRingOnAnything() const { return mFocusRingOnAnything; }
+ 
 
   /**
    * Load an image for the target frame. This call can be made
@@ -322,23 +260,23 @@ public:
    * method will be invoked (via the ViewManager) so that the
    * appropriate damage repair is done.
    */
-  NS_IMETHOD LoadImage(nsIURI* aURL,
-                       nsIFrame* aTargetFrame,
-                       imgIRequest **aRequest) = 0;
+  virtual nsresult LoadImage(imgIRequest* aImage,
+                             nsIFrame* aTargetFrame,
+                             imgIRequest **aRequest) = 0;
 
   /**
    * This method is called when a frame is being destroyed to
    * ensure that the image load gets disassociated from the prescontext
    */
-  NS_IMETHOD StopImagesFor(nsIFrame* aTargetFrame) = 0;
+  virtual void StopImagesFor(nsIFrame* aTargetFrame) = 0;
 
-  NS_IMETHOD SetContainer(nsISupports* aContainer) = 0;
+  virtual void SetContainer(nsISupports* aContainer) = 0;
 
-  NS_IMETHOD GetContainer(nsISupports** aResult) = 0;
+  virtual already_AddRefed<nsISupports> GetContainer() = 0;
 
   // XXX this are going to be replaced with set/get container
-  NS_IMETHOD SetLinkHandler(nsILinkHandler* aHandler) = 0;
-  NS_IMETHOD GetLinkHandler(nsILinkHandler** aResult) = 0;
+  void SetLinkHandler(nsILinkHandler* aHandler) { mLinkHandler = aHandler; }
+  nsILinkHandler* GetLinkHandler() { return mLinkHandler; }
 
   /**
    * Get the visible area associated with this presentation context.
@@ -346,31 +284,31 @@ public:
    * presenting the document. The returned value is in the standard
    * nscoord units (as scaled by the device context).
    */
-  NS_IMETHOD GetVisibleArea(nsRect& aResult) = 0;
+  nsRect GetVisibleArea() { return mVisibleArea; }
 
   /**
    * Set the currently visible area. The units for r are standard
    * nscoord units (as scaled by the device context).
    */
-  NS_IMETHOD SetVisibleArea(const nsRect& r) = 0;
+  void SetVisibleArea(const nsRect& r) { mVisibleArea = r; }
 
   /**
    * Return true if this presentation context is a paginated
    * context.
    */
-  NS_IMETHOD IsPaginated(PRBool* aResult) = 0;
+  PRBool IsPaginated() const { return mPaginated; }
 
   /**
    * Sets whether the presentation context can scroll for a paginated
    * context.
    */
-  NS_IMETHOD SetPaginatedScrolling(PRBool aResult) = 0;
+  virtual void SetPaginatedScrolling(PRBool aResult) = 0;
 
   /**
    * Return true if this presentation context can scroll for paginated
    * context.
    */
-  NS_IMETHOD GetPaginatedScrolling(PRBool* aResult) = 0;
+  PRBool HasPaginatedScrolling() const { return mCanPaginatedScroll; }
 
   /**
    * Gets the rect for the page dimensions,
@@ -381,7 +319,7 @@ public:
    * @param aActualRect returns the size of the actual device/surface
    * @param aRect returns the adjusted size 
    */
-  NS_IMETHOD GetPageDim(nsRect* aActualRect, nsRect* aAdjRect) = 0;
+  virtual void GetPageDim(nsRect* aActualRect, nsRect* aAdjRect) = 0;
 
   /**
    * Sets the "adjusted" rect for the page Dimimensions, 
@@ -390,11 +328,11 @@ public:
    *
    * @param aRect returns the adjusted size 
    */
-  NS_IMETHOD SetPageDim(nsRect* aRect) = 0;
+  virtual void SetPageDim(nsRect* aRect) = 0;
 
-  NS_IMETHOD GetPixelsToTwips(float* aResult) const = 0;
+  float PixelsToTwips() const { return mDeviceContext->DevUnitsToAppUnits(); }
 
-  NS_IMETHOD GetTwipsToPixels(float* aResult) const = 0;
+  float TwipsToPixels() const { return mDeviceContext->AppUnitsToDevUnits(); }
 
   NS_IMETHOD GetTwipsToPixelsForFonts(float* aResult) const = 0;
 
@@ -405,13 +343,9 @@ public:
    */
   NS_IMETHOD GetScaledPixelsToTwips(float* aScale) const = 0;
 
-  NS_IMETHOD GetDeviceContext(nsIDeviceContext** aResult) const = 0;
-  nsIDeviceContext* GetDeviceContext() { return mDeviceContext; }
-
-  NS_IMETHOD GetEventStateManager(nsIEventStateManager** aManager) = 0;
-  nsIEventStateManager* GetEventStateManager();
-
-  NS_IMETHOD GetLanguage(nsILanguageAtom** aLanguage) = 0;
+  nsIDeviceContext* DeviceContext() { return mDeviceContext; }
+  nsIEventStateManager* EventStateManager() { return mEventManager; }
+  nsILanguageAtom* GetLanguage() { return mLanguage; }
 
   /**
    * Get the language-specific transform type for the current document.
@@ -424,13 +358,28 @@ public:
   NS_IMETHOD GetLanguageSpecificTransformType(
               nsLanguageSpecificTransformType* aType) = 0;
 
+  void SetViewportOverflowOverride(PRUint8 aStyle)
+  {
+    mViewportStyleOverflow = aStyle;
+  }
+  PRUint8 GetViewportOverflowOverride() { return mViewportStyleOverflow; }
+
   /**
    * Set and get methods for controling the background drawing
   */
-  NS_IMETHOD GetBackgroundImageDraw(PRBool &aCanDraw)=0;
-  NS_IMETHOD SetBackgroundImageDraw(PRBool aCanDraw)=0;
-  NS_IMETHOD GetBackgroundColorDraw(PRBool &aCanDraw)=0;
-  NS_IMETHOD SetBackgroundColorDraw(PRBool aCanDraw)=0;
+  PRBool GetBackgroundImageDraw() const { return mDrawImageBackground; }
+  void   SetBackgroundImageDraw(PRBool aCanDraw)
+  {
+    NS_ASSERTION(!(aCanDraw & ~1), "Value must be true or false");
+    mDrawImageBackground = aCanDraw;
+  }
+
+  PRBool GetBackgroundColorDraw() const { return mDrawColorBackground; }
+  void   SetBackgroundColorDraw(PRBool aCanDraw)
+  {
+    NS_ASSERTION(!(aCanDraw & ~1), "Value must be true or false");
+    mDrawColorBackground = aCanDraw;
+  }
 
 #ifdef IBMBIDI
   /**
@@ -463,14 +412,18 @@ public:
    *
    *  @lina 05/02/2000
    */
-  NS_IMETHOD SetVisualMode(PRBool aIsVisual) = 0;
+  void SetVisualMode(PRBool aIsVisual)
+  {
+    NS_ASSERTION(!(aIsVisual & ~1), "Value must be true or false");
+    mIsVisual = aIsVisual;
+  }
 
   /**
    *  Check whether the content should be treated as visual.
    *
    *  @lina 05/02/2000
    */
-  NS_IMETHOD IsVisualMode(PRBool& aIsVisual) const = 0;
+  PRBool IsVisualMode() const { return mIsVisual; }
 
 //Mohamed
 
@@ -488,45 +441,34 @@ public:
    * Get the Bidi options for the presentation context
    */  
   NS_IMETHOD GetBidi(PRUint32* aBidiOptions) const = 0;
-//ahmed
-
-  /**
-   * Check for Bidi text mode and direction
-   * @return aResult == TRUE if the text mode is visual and the direction is right-to-left
-   */
-  NS_IMETHOD IsVisRTL(PRBool &aResult) const = 0;
-
-  /**
-   * Check for Arabic encoding
-   * @return aResult == TRUE if the document encoding is an Arabic codepage
-   */
-  NS_IMETHOD IsArabicEncoding(PRBool &aResult) const = 0;
 
   /**
    * Set the Bidi capabilities of the system
    * @param aIsBidi == TRUE if the system has the capability of reordering Bidi text
    */
-  NS_IMETHOD SetIsBidiSystem(PRBool aIsBidi) = 0;
+  void SetIsBidiSystem(PRBool aIsBidi)
+  {
+    NS_ASSERTION(!(aIsBidi & ~1), "Value must be true or false");
+    mIsBidiSystem = aIsBidi;
+  }
 
   /**
    * Get the Bidi capabilities of the system
-   * @return aResult == TRUE if the system has the capability of reordering Bidi text
+   * @return TRUE if the system has the capability of reordering Bidi text
    */
-  NS_IMETHOD GetIsBidiSystem(PRBool &aResult) const = 0;
-
-  /**
-   * Get the document charset
-   */
-  NS_IMETHOD GetBidiCharset(nsACString &aCharSet) const = 0;
-
-
+  PRBool IsBidiSystem() const { return mIsBidiSystem; }
 #endif // IBMBIDI
 
   /**
    * Render only Selection
    */
-  NS_IMETHOD SetIsRenderingOnlySelection(PRBool aResult) = 0;
-  NS_IMETHOD IsRenderingOnlySelection(PRBool* aResult) = 0;
+  void SetIsRenderingOnlySelection(PRBool aResult)
+  {
+    NS_ASSERTION(!(aResult & ~1), "Value must be true or false");
+    mIsRenderingOnlySelection = aResult;
+  }
+
+  PRBool IsRenderingOnlySelection() const { return mIsRenderingOnlySelection; }
 
   /*
    * Obtain a native them for rendering our widgets (both form controls and html)
@@ -546,16 +488,6 @@ public:
    */
   NS_IMETHOD SysColorChanged() = 0;
 
-  /*
-   * Fill in an nsStyleBackground to be used to paint the background for an
-   * element.  This applies the rules for propagating backgrounds between
-   * BODY, the root element, and the canvas.
-   */
-  NS_IMETHOD FindFrameBackground(nsIFrame* aFrame,
-                                 const nsStyleBackground** aBackground,
-                                 PRBool* aIsCanavs,
-                                 PRBool* aFoundBackground) = 0;
-
 #ifdef MOZ_REFLOW_PERF
   NS_IMETHOD CountReflows(const char * aName, PRUint32 aType, nsIFrame * aFrame) = 0;
   NS_IMETHOD PaintCount(const char * aName, nsIRenderingContext* aRendingContext, nsIFrame * aFrame, PRUint32 aColor) = 0;
@@ -573,7 +505,49 @@ protected:
                                         // since there is no dependency
                                         // from gfx back to layout.
   nsIEventStateManager* mEventManager;  // [STRONG]
+  nsILookAndFeel*       mLookAndFeel;   // [STRONG]
+  nsIAtom*              mMedium;        // initialized by subclass ctors;
+                                        // weak pointer to static atom
 
+  nsILinkHandler*       mLinkHandler;   // [WEAK]
+  nsILanguageAtom*      mLanguage;      // [STRONG]
+
+  PRInt32               mFontScaler;
+
+  nsRect                mVisibleArea;
+
+  nscolor               mDefaultColor;
+  nscolor               mBackgroundColor;
+
+  nscolor               mLinkColor;
+  nscolor               mActiveLinkColor;
+  nscolor               mVisitedLinkColor;
+
+  nscolor               mFocusBackgroundColor;
+  nscolor               mFocusTextColor;
+
+  PRUint8               mFocusRingWidth;
+  PRUint8               mViewportStyleOverflow;
+
+  nsCompatibility       mCompatibilityMode;
+  PRUint16              mImageAnimationMode;
+
+  unsigned              mUseDocumentFonts : 1;
+  unsigned              mUseDocumentColors : 1;
+  unsigned              mUnderlineLinks : 1;
+  unsigned              mUseFocusColors : 1;
+  unsigned              mFocusRingOnAnything : 1;
+  unsigned              mDrawImageBackground : 1;
+  unsigned              mDrawColorBackground : 1;
+  unsigned              mNeverAnimate : 1;
+  unsigned              mIsRenderingOnlySelection : 1;
+  unsigned              mNoTheme : 1;
+  unsigned              mPaginated : 1;
+  unsigned              mCanPaginatedScroll : 1;
+#ifdef IBMBIDI
+  unsigned              mIsVisual : 1;
+  unsigned              mIsBidiSystem : 1;
+#endif
 };
 
 // Bit values for StartLoadImage's aImageStatus

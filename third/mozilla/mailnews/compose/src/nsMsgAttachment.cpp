@@ -54,14 +54,13 @@ nsMsgAttachment::~nsMsgAttachment()
 }
 
 /* attribute wstring name; */
-NS_IMETHODIMP nsMsgAttachment::GetName(PRUnichar * *aName)
+NS_IMETHODIMP nsMsgAttachment::GetName(nsAString & aName)
 {
-  NS_ENSURE_ARG_POINTER(aName);
-
-  *aName = ToNewUnicode(mName);
-  return (*aName ? NS_OK : NS_ERROR_OUT_OF_MEMORY);
+  aName = mName;
+  return NS_OK;
 }
-NS_IMETHODIMP nsMsgAttachment::SetName(const PRUnichar * aName)
+
+NS_IMETHODIMP nsMsgAttachment::SetName(const nsAString & aName)
 {
   mName = aName;
   return NS_OK;

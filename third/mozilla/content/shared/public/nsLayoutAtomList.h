@@ -83,11 +83,13 @@ LAYOUT_ATOM(editorDisplayList, "EditorDisplay-List")
 LAYOUT_ATOM(fixedList, "Fixed-list")
 LAYOUT_ATOM(floatList, "Float-list")
 LAYOUT_ATOM(overflowList, "Overflow-list")
+LAYOUT_ATOM(overflowOutOfFlowList, "OverflowOutOfFlow-list")
 LAYOUT_ATOM(popupList, "Popup-list")
 
 LAYOUT_ATOM(commentTagName, "__moz_comment")
 LAYOUT_ATOM(textTagName, "__moz_text")
 LAYOUT_ATOM(processingInstructionTagName, "__moz_pi")
+LAYOUT_ATOM(documentFragmentNodeName, "#document-fragment")
 
   // Alphabetical list of frame types
 LAYOUT_ATOM(areaFrame, "AreaFrame")
@@ -98,8 +100,7 @@ LAYOUT_ATOM(brFrame, "BRFrame")
 LAYOUT_ATOM(bulletFrame, "BulletFrame")
 LAYOUT_ATOM(fieldSetFrame, "FieldSetFrame")
 LAYOUT_ATOM(gfxButtonControlFrame, "gfxButtonControlFrame")
-LAYOUT_ATOM(htmlFrameInnerFrame, "htmlFrameInnerFrame")
-LAYOUT_ATOM(htmlFrameOuterFrame, "htmlFrameOuterFrame")
+LAYOUT_ATOM(subDocumentFrame, "subDocumentFrame")
 LAYOUT_ATOM(imageFrame, "ImageFrame")
 LAYOUT_ATOM(imageControlFrame, "ImageControlFrame")
 LAYOUT_ATOM(inlineFrame, "InlineFrame")
@@ -132,12 +133,15 @@ LAYOUT_ATOM(viewportFrame, "ViewportFrame")
   // Alphabetical list of frame property names
 LAYOUT_ATOM(changeListProperty, "ChangeListProperty") // void*
 LAYOUT_ATOM(collapseOffsetProperty, "CollapseOffsetProperty")  // nsPoint*
+LAYOUT_ATOM(computedOffsetProperty, "ComputedOffsetProperty")  // nsPoint*
 LAYOUT_ATOM(IBSplitSpecialPrevSibling, "IBSplitSpecialPrevSibling")// nsIFrame*
 LAYOUT_ATOM(IBSplitSpecialSibling, "IBSplitSpecialSibling")    // nsIFrame*
+LAYOUT_ATOM(lineCursorProperty, "LineCursorProperty") // nsLineBox*
 LAYOUT_ATOM(maxElementWidthProperty, "MaxElementWidthProperty")  // nscoord*
 LAYOUT_ATOM(overflowAreaProperty, "OverflowArea")              // nsRect*
 LAYOUT_ATOM(overflowProperty, "OverflowProperty")              // list of nsIFrame*
 LAYOUT_ATOM(overflowLinesProperty, "OverflowLinesProperty")    // list of nsLineBox*
+LAYOUT_ATOM(overflowOutOfFlowsProperty, "OverflowOutOfFlowsProperty")      // nsFrameList*
 LAYOUT_ATOM(overflowPlaceholdersProperty, "OverflowPlaceholdersProperty")  // nsPlaceholder*
 LAYOUT_ATOM(rowUnpaginatedHeightProperty, "RowUnpaginatedHeightProperty")  // nscoord*
 LAYOUT_ATOM(spaceManagerProperty, "SpaceManagerProperty")      // the space manager for a block
@@ -146,6 +150,7 @@ LAYOUT_ATOM(viewProperty, "ViewProperty")
 
   // Alphabetical list of event handler names
 LAYOUT_ATOM(onabort, "onabort")
+LAYOUT_ATOM(onbeforeunload, "onbeforeunload")
 LAYOUT_ATOM(onblur, "onblur")
 LAYOUT_ATOM(onbroadcast, "onbroadcast")
 LAYOUT_ATOM(onchange, "onchange")
@@ -209,6 +214,11 @@ LAYOUT_ATOM(stylesheet, "stylesheet")
 LAYOUT_ATOM(transform, "transform")
 LAYOUT_ATOM(show, "show")
 LAYOUT_ATOM(actuate, "actuate")
+
+LAYOUT_ATOM(autoAtom, "auto")
+LAYOUT_ATOM(none, "none")
+LAYOUT_ATOM(normal, "normal")
+LAYOUT_ATOM(transparent, "transparent")
 
 LAYOUT_ATOM(directionalFrame, "DirectionalFrame")
 LAYOUT_ATOM(baseLevel, "BaseLevel")                            // PRUint8

@@ -212,6 +212,9 @@ static TimelineThreadData *GetThisThreadData()
     if (data == nsnull) {
         // First request for this thread - allocate it.
         new_data = new TimelineThreadData();
+        if (!new_data)
+            goto done;
+
         // Fill it
         new_data->timers = PL_NewHashTable(100, PL_HashString, PL_CompareStrings,
                                  PL_CompareValues, NULL, NULL);
@@ -232,7 +235,12 @@ done:
     return data;
 }
 
-static void ThreadDestruct( void *data )
+extern "C" {
+  static void ThreadDestruct (void *data);
+  static PRStatus TimelineInit(void);
+};
+
+void ThreadDestruct( void *data )
 {
     if (data)
         delete (TimelineThreadData *)data;
@@ -243,7 +251,7 @@ static void ThreadDestruct( void *data )
 */
 static PRCallOnceType initonce;
 
-static PRStatus TimelineInit(void)
+PRStatus TimelineInit(void)
 {
     char *timeStr;
     char *fileName;
@@ -404,6 +412,9 @@ PR_IMPLEMENT(nsresult) NS_TimelineStartTimer(const char *timerName)
         = (nsTimelineServiceTimer *)PL_HashTableLookup(thread->timers, timerName);
     if (timer == NULL) {
         timer = new nsTimelineServiceTimer;
+        if (!timer)
+            return NS_ERROR_OUT_OF_MEMORY;
+
         PL_HashTableAdd(thread->timers, timerName, timer);
     }
     timer->start();
@@ -535,11 +546,6 @@ PR_IMPLEMENT(nsresult) NS_TimelineLeave(const char *text)
 nsTimelineService::nsTimelineService()
 {
   /* member initializers and constructor code */
-}
-
-nsTimelineService::~nsTimelineService()
-{
-  /* destructor code */
 }
 
 /* void mark (in string text); */

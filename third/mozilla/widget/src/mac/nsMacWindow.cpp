@@ -1232,7 +1232,6 @@ NS_METHOD nsMacWindow::PlaceBehind(nsTopLevelWidgetZPlacement aPlacement,
 NS_METHOD nsMacWindow::SetSizeMode(PRInt32 aMode)
 {
   nsresult rv;
-  PRInt32  currentMode;
 
   if (aMode == nsSizeMode_Minimized) // unlikely on the Mac
     return NS_ERROR_UNEXPECTED;
@@ -1241,12 +1240,10 @@ NS_METHOD nsMacWindow::SetSizeMode(PRInt32 aMode)
   if (mZooming)
     return NS_OK;
 
-  // already done? it's bad to rezoom a window, so do nothing
-  rv = nsBaseWidget::GetSizeMode(&currentMode);
-  if (currentMode == nsSizeMode_Normal && !mVisible && mZoomOnShow)
-    currentMode = nsSizeMode_Maximized;
-  if (NS_SUCCEEDED(rv) && currentMode == aMode)
-    return NS_OK;
+  // even if our current mode is the same as aMode, keep going
+  // because the window can be maximized and zoomed, but partially
+  // offscreen, and we want a click of the maximize button to move
+  // it back onscreen.
 
   if (!mVisible) {
     /* zooming on the Mac doesn't seem to work until the window is visible.
@@ -1615,7 +1612,7 @@ nsMacWindow::HandleUpdateActiveInputArea(const nsAString & text,
   NS_ENSURE_TRUE(mMacEventHandler.get(), NS_ERROR_FAILURE);
   const nsPromiseFlatString& buffer = PromiseFlatString(text);
   // ignore script and langauge information for now. 
-  nsresult res = mMacEventHandler->UnicodeHandleUpdateInputArea((PRUnichar*)buffer.get(), buffer.Length(), fixLen, (TextRangeArray*) hiliteRng);
+  nsresult res = mMacEventHandler->UnicodeHandleUpdateInputArea(buffer.get(), buffer.Length(), fixLen, (TextRangeArray*) hiliteRng);
   // we will lost the real OSStatus for now untill we change the nsMacEventHandler
   if (NS_SUCCEEDED(res))
     *_retval = noErr;
@@ -1633,7 +1630,7 @@ nsMacWindow::HandleUpdateActiveInputAreaForNonUnicode(const nsACString & text,
   NS_ENSURE_TRUE(mMacEventHandler.get(), NS_ERROR_FAILURE);
   const nsPromiseFlatCString& buffer = PromiseFlatCString(text);
   // ignore langauge information for now. 
-  nsresult res = mMacEventHandler->HandleUpdateInputArea((char*)buffer.get(), buffer.Length(), script, fixLen, (TextRangeArray*) hiliteRng);
+  nsresult res = mMacEventHandler->HandleUpdateInputArea(buffer.get(), buffer.Length(), script, fixLen, (TextRangeArray*) hiliteRng);
   // we will lost the real OSStatus for now untill we change the nsMacEventHandler
   if (NS_SUCCEEDED(res))
     *_retval = noErr;
@@ -1652,7 +1649,7 @@ nsMacWindow::HandleUnicodeForKeyEvent(const nsAString & text,
   // we will lost the real OSStatus for now untill we change the nsMacEventHandler
   EventRecord* eventPtr = (EventRecord*)keyboardEvent;
   const nsPromiseFlatString& buffer = PromiseFlatString(text);
-  nsresult res = mMacEventHandler->HandleUKeyEvent((PRUnichar*)buffer.get(), buffer.Length(), *eventPtr);
+  nsresult res = mMacEventHandler->HandleUKeyEvent(buffer.get(), buffer.Length(), *eventPtr);
   // we will lost the real OSStatus for now untill we change the nsMacEventHandler
   if(NS_SUCCEEDED(res))
     *_retval = noErr;
@@ -1799,20 +1796,13 @@ nsMacWindow::Idle()
 NS_IMETHODIMP
 nsMacWindow::ComeToFront()
 {
-  nsZLevelEvent  event;
+  nsZLevelEvent  event(NS_SETZLEVEL, this);
 
   event.point.x = mBounds.x;
   event.point.y = mBounds.y;
   event.time = PR_IntervalNow();
-  event.widget = this;
-  event.nativeMsg = nsnull;
-  event.eventStructType = NS_ZLEVEL_EVENT;
-  event.message = NS_SETZLEVEL;
 
-  event.mPlacement = nsWindowZTop;
-  event.mReqBelow = 0;
   event.mImmediate = PR_TRUE;
-  event.mAdjusted = PR_FALSE;
 
   DispatchWindowEvent(event);
   

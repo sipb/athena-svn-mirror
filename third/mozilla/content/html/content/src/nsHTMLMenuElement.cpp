@@ -42,7 +42,7 @@
 #include "nsHTMLAtoms.h"
 #include "nsStyleConsts.h"
 #include "nsIPresContext.h"
-#include "nsHTMLAttributes.h"
+#include "nsMappedAttributes.h"
 #include "nsRuleNode.h"
 
 // XXX nav4 has type= start= (same as OL/UL)
@@ -50,7 +50,7 @@
 extern nsHTMLValue::EnumTable kListTypeTable[];
 
 
-class nsHTMLMenuElement : public nsGenericHTMLContainerElement,
+class nsHTMLMenuElement : public nsGenericHTMLElement,
                           public nsIDOMHTMLMenuElement
 {
 public:
@@ -61,31 +61,31 @@ public:
   NS_DECL_ISUPPORTS_INHERITED
 
   // nsIDOMNode
-  NS_FORWARD_NSIDOMNODE_NO_CLONENODE(nsGenericHTMLContainerElement::)
+  NS_FORWARD_NSIDOMNODE_NO_CLONENODE(nsGenericHTMLElement::)
 
   // nsIDOMElement
-  NS_FORWARD_NSIDOMELEMENT(nsGenericHTMLContainerElement::)
+  NS_FORWARD_NSIDOMELEMENT(nsGenericHTMLElement::)
 
   // nsIDOMHTMLElement
-  NS_FORWARD_NSIDOMHTMLELEMENT(nsGenericHTMLContainerElement::)
+  NS_FORWARD_NSIDOMHTMLELEMENT(nsGenericHTMLElement::)
 
   // nsIDOMHTMLMenuElement
   NS_IMETHOD GetCompact(PRBool* aCompact);
   NS_IMETHOD SetCompact(PRBool aCompact);
 
-  NS_IMETHOD StringToAttribute(nsIAtom* aAttribute,
-                               const nsAString& aValue,
-                               nsHTMLValue& aResult);
+  virtual PRBool ParseAttribute(nsIAtom* aAttribute,
+                                const nsAString& aValue,
+                                nsAttrValue& aResult);
   NS_IMETHOD AttributeToString(nsIAtom* aAttribute,
                                const nsHTMLValue& aValue,
                                nsAString& aResult) const;
   NS_IMETHOD GetAttributeMappingFunction(nsMapRuleToAttributesFunc& aMapRuleFunc) const;
-  NS_IMETHOD_(PRBool) HasAttributeDependentStyle(const nsIAtom* aAttribute) const;
+  NS_IMETHOD_(PRBool) IsAttributeMapped(const nsIAtom* aAttribute) const;
 };
 
 nsresult
 NS_NewHTMLMenuElement(nsIHTMLContent** aInstancePtrResult,
-                      nsINodeInfo *aNodeInfo)
+                      nsINodeInfo *aNodeInfo, PRBool aFromParser)
 {
   NS_ENSURE_ARG_POINTER(aInstancePtrResult);
 
@@ -124,8 +124,7 @@ NS_IMPL_RELEASE_INHERITED(nsHTMLMenuElement, nsGenericElement)
 
 
 // QueryInterface implementation for nsHTMLMenuElement
-NS_HTML_CONTENT_INTERFACE_MAP_BEGIN(nsHTMLMenuElement,
-                                    nsGenericHTMLContainerElement)
+NS_HTML_CONTENT_INTERFACE_MAP_BEGIN(nsHTMLMenuElement, nsGenericHTMLElement)
   NS_INTERFACE_MAP_ENTRY(nsIDOMHTMLMenuElement)
   NS_INTERFACE_MAP_ENTRY_CONTENT_CLASSINFO(HTMLMenuElement)
 NS_HTML_CONTENT_INTERFACE_MAP_END
@@ -150,7 +149,7 @@ nsHTMLMenuElement::CloneNode(PRBool aDeep, nsIDOMNode** aReturn)
   if (NS_FAILED(rv))
     return rv;
 
-  CopyInnerTo(this, it, aDeep);
+  CopyInnerTo(it, aDeep);
 
   *aReturn = NS_STATIC_CAST(nsIDOMNode *, it);
 
@@ -163,23 +162,19 @@ nsHTMLMenuElement::CloneNode(PRBool aDeep, nsIDOMNode** aReturn)
 NS_IMPL_BOOL_ATTR(nsHTMLMenuElement, Compact, compact)
 
 
-NS_IMETHODIMP
-nsHTMLMenuElement::StringToAttribute(nsIAtom* aAttribute,
-                                     const nsAString& aValue,
-                                     nsHTMLValue& aResult)
+PRBool
+nsHTMLMenuElement::ParseAttribute(nsIAtom* aAttribute,
+                                  const nsAString& aValue,
+                                  nsAttrValue& aResult)
 {
   if (aAttribute == nsHTMLAtoms::type) {
-    if (aResult.ParseEnumValue(aValue, kListTypeTable)) {
-      return NS_CONTENT_ATTR_HAS_VALUE;
-    }
+    return aResult.ParseEnumValue(aValue, kListTypeTable);
   }
-  else if (aAttribute == nsHTMLAtoms::start) {
-    if (aResult.ParseIntWithBounds(aValue, eHTMLUnit_Integer, 1)) {
-      return NS_CONTENT_ATTR_HAS_VALUE;
-    }
+  if (aAttribute == nsHTMLAtoms::start) {
+    return aResult.ParseIntWithBounds(aValue, 1);
   }
 
-  return NS_CONTENT_ATTR_NOT_THERE;
+  return nsGenericHTMLElement::ParseAttribute(aAttribute, aValue, aResult);
 }
 
 NS_IMETHODIMP
@@ -192,22 +187,23 @@ nsHTMLMenuElement::AttributeToString(nsIAtom* aAttribute,
     return NS_CONTENT_ATTR_HAS_VALUE;
   }
 
-  return nsGenericHTMLContainerElement::AttributeToString(aAttribute, aValue,
-                                                          aResult);
+  return nsGenericHTMLElement::AttributeToString(aAttribute, aValue, aResult);
 }
 
 static void
-MapAttributesIntoRule(const nsIHTMLMappedAttributes* aAttributes, nsRuleData* aData)
+MapAttributesIntoRule(const nsMappedAttributes* aAttributes, nsRuleData* aData)
 {
   if (aData->mSID == eStyleStruct_List) {
     if (aData->mListData->mType.GetUnit() == eCSSUnit_Null) {
       nsHTMLValue value;
       // type: enum
-      aAttributes->GetAttribute(nsHTMLAtoms::type, value);
-      if (value.GetUnit() == eHTMLUnit_Enumerated)
-        aData->mListData->mType.SetIntValue(value.GetIntValue(), eCSSUnit_Enumerated);
-      else if (value.GetUnit() != eHTMLUnit_Null)
-        aData->mListData->mType.SetIntValue(NS_STYLE_LIST_STYLE_BASIC, eCSSUnit_Enumerated);
+      if (aAttributes->GetAttribute(nsHTMLAtoms::type, value) !=
+          NS_CONTENT_ATTR_NOT_THERE) {
+        if (value.GetUnit() == eHTMLUnit_Enumerated)
+          aData->mListData->mType.SetIntValue(value.GetIntValue(), eCSSUnit_Enumerated);
+        else
+          aData->mListData->mType.SetIntValue(NS_STYLE_LIST_STYLE_DISC, eCSSUnit_Enumerated);
+      }
     }
   }
 
@@ -215,14 +211,14 @@ MapAttributesIntoRule(const nsIHTMLMappedAttributes* aAttributes, nsRuleData* aD
 }
 
 NS_IMETHODIMP_(PRBool)
-nsHTMLMenuElement::HasAttributeDependentStyle(const nsIAtom* aAttribute) const
+nsHTMLMenuElement::IsAttributeMapped(const nsIAtom* aAttribute) const
 {
-  static const AttributeDependenceEntry attributes[] = {
+  static const MappedAttributeEntry attributes[] = {
     { &nsHTMLAtoms::type },
     { nsnull }
   };
 
-  static const AttributeDependenceEntry* const map[] = {
+  static const MappedAttributeEntry* const map[] = {
     attributes,
     sCommonAttributeMap,
   };

@@ -47,6 +47,7 @@ const PrefServiceContractID = "@mozilla.org/preferences-service;1";
 // set on a platform specific basis in platform.js
 platform = { value: "" };
 
+var gVersion;
 
 function getPrefBranch() {
     
@@ -150,6 +151,11 @@ function getPref(prefName) {
 }
 
 
+function setLDAPVersion(version) {
+    gVersion = version;
+}
+
+
 function getLDAPAttributes(host, base, filter, attribs) {
     
     try {
@@ -159,7 +165,11 @@ function getLDAPAttributes(host, base, filter, attribs) {
                    + "?sub?" +  filter;
         var ldapquery = Components.classes[LDAPSyncQueryContractID]
                                   .createInstance(nsILDAPSyncQuery);
-        processLDAPValues(ldapquery.getQueryResults(url));     // user supplied method
+        // default to LDAP v3
+        if (!gVersion)
+          gVersion = Components.interfaces.nsILDAPConnection.VERSION3
+	// user supplied method
+        processLDAPValues(ldapquery.getQueryResults(url, gVersion));
     }
     catch(e) {
         displayError("getLDAPAttibutes", e);
@@ -208,10 +218,10 @@ function displayError(funcname, message) {
 }
 
 function getenv(name) {
-	
     try {
-        var currentProcess=Components.classes["@mozilla.org/process/util;1"].createInstance(Components.interfaces.nsIProcess);
-        return currentProcess.getEnvironment(name);
+        var environment = Components.classes["@mozilla.org/process/environment;1"].
+            getService(Components.interfaces.nsIEnvironment);
+        return environment.get(name);
     }
     catch(e) {
         displayError("getEnvironment", e);

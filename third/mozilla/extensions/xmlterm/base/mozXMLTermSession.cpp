@@ -152,9 +152,9 @@ mozXMLTermSession::mozXMLTermSession() :
 
   mEntryOutputLines(0),
   mPreTextBufferLines(0),
-  mPreTextIncomplete(nsAutoString()),
-  mPreTextBuffered(nsAutoString()),
-  mPreTextDisplayed(nsAutoString()),
+  mPreTextIncomplete(),
+  mPreTextBuffered(),
+  mPreTextDisplayed(),
 
   mScreenNode(nsnull),
   mScreenRows(0),
@@ -165,11 +165,11 @@ mozXMLTermSession::mozXMLTermSession() :
   mRestoreInputEcho(PR_FALSE),
 
   mCountExportHTML(0),
-  mLastExportHTML(nsAutoString()),
+  mLastExportHTML(),
 
-  mShellPrompt(nsAutoString()),
-  mPromptHTML(nsAutoString()),
-  mFragmentBuffer(nsAutoString())
+  mShellPrompt(),
+  mPromptHTML(),
+  mFragmentBuffer()
 
 {
 }
@@ -265,8 +265,7 @@ NS_IMETHODIMP mozXMLTermSession::Init(mozIXMLTerminal* aXMLTerminal,
 
 #if 0
   nsAutoString prefaceText ("Preface");
-  nsAutoString nullStyle ("");
-  result = AppendOutput(prefaceText, nullStyle, PR_TRUE);
+  result = AppendOutput(prefaceText, EmptyString(), PR_TRUE);
 #endif
 
   XMLT_LOG(mozXMLTermSession::Init,31,("exiting\n"));
@@ -1330,7 +1329,7 @@ NS_IMETHODIMP mozXMLTermSession::DisplayInput(const nsString& aString,
 
   // If string terminates in whitespace, append NBSP for cursor positioning
   nsAutoString tempString( aString );
-  if (aString.Last() == PRUnichar(' '))
+  if (!aString.IsEmpty() && aString.Last() == PRUnichar(' '))
     tempString += kNBSP;
 
   // Display string
@@ -4398,7 +4397,7 @@ NS_IMETHODIMP mozXMLTermSession::ToHTMLString(nsIDOMNode* aNode,
         nsCOMPtr<nsIDOMNode> child;
         result = aNode->GetFirstChild(getter_AddRefs(child));
 
-        nsAutoString htmlInner(NS_LITERAL_STRING(""));
+        nsAutoString htmlInner;
         while (child) {
           nsAutoString innerString;
           ToHTMLString(child, newIndentString, innerString, deepContent,

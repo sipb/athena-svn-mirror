@@ -71,12 +71,10 @@ public:
 
 	NS_IMETHOD DrawToImage(nsIImage *aDstImage, nscoord aDX, nscoord aDY,
 		nscoord aDWidth, nscoord aDHeight);
- 
+ 	
 	NS_IMETHOD DrawTile(nsIRenderingContext &aContext, nsDrawingSurface aSurface, 
-		nsRect &aSrcRect, nsRect &aTileRect); 
-	
-	NS_IMETHOD DrawTile(nsIRenderingContext &aContext, nsDrawingSurface aSurface, 
-		PRInt32 aSXOffset, PRInt32 aSYOffset, const nsRect &aTileRect); 
+		PRInt32 aSXOffset, PRInt32 aSYOffset, PRInt32 aPadX, PRInt32 aPadY,
+		const nsRect &aTileRect); 
 	
 	virtual void ImageUpdated(nsIDeviceContext *aContext, PRUint8 aFlags,
 		nsRect *aUpdateRect);
@@ -97,8 +95,7 @@ public:
 
 private:
 	void ComputePaletteSize(PRIntn nBitCount);
-	void DrawNoLock(BView *aView, PRInt32 aX, PRInt32 aY, PRInt32 aWidth, PRInt32 aHeight);
-	
+
 protected:
 	void CreateImage(nsDrawingSurface aSurface);
 	nsresult BuildImage(nsDrawingSurface aDrawingSurface);

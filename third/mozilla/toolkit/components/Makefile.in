@@ -43,15 +43,20 @@ VPATH   = @srcdir@
 include $(DEPTH)/config/autoconf.mk
 
 ifdef MOZ_THUNDERBIRD
-DIRS = console filepicker printing
+DIRS = console filepicker printing viewsource
+else
+ifdef MOZ_STANDALONE_COMPOSER
+DIRS = console filepicker printing viewsource
 else
 DIRS = 		\
 	autocomplete \
 	console \
 	filepicker \
+	help \
 	history \
 	passwordmgr \
 	printing \
+	profile \
 	satchel \
 	viewconfig \
 	viewsource \
@@ -63,6 +68,7 @@ endif
 
 DIRS += downloads build
 
+endif
 endif
 
 

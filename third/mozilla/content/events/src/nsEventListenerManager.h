@@ -123,8 +123,7 @@ public:
                                        const nsAString& type,
                                        PRInt32 aFlags,
                                        nsIDOMEventGroup* aEvtGroup);
-  NS_IMETHOD AddScriptEventListener(nsIScriptContext *aContext,
-                                    nsISupports *aObject,
+  NS_IMETHOD AddScriptEventListener(nsISupports *aObject,
                                     nsIAtom *aName,
                                     const nsAString& aFunc,
                                     PRBool aDeferCompilation); 
@@ -293,11 +292,12 @@ protected:
 #define NS_EVENT_BITS_FORM_INPUT    0x10
 
 //nsIDOMLoadListener
-#define NS_EVENT_BITS_LOAD_NONE     0x00
-#define NS_EVENT_BITS_LOAD_LOAD     0x01
-#define NS_EVENT_BITS_LOAD_UNLOAD   0x02
-#define NS_EVENT_BITS_LOAD_ABORT    0x04
-#define NS_EVENT_BITS_LOAD_ERROR    0x08
+#define NS_EVENT_BITS_LOAD_NONE              0x00
+#define NS_EVENT_BITS_LOAD_LOAD              0x01
+#define NS_EVENT_BITS_LOAD_UNLOAD            0x02
+#define NS_EVENT_BITS_LOAD_ABORT             0x04
+#define NS_EVENT_BITS_LOAD_ERROR             0x08
+#define NS_EVENT_BITS_LOAD_BEFORE_UNLOAD     0x10
 
 //nsIDOMXULListener
 #define NS_EVENT_BITS_XUL_NONE               0x00

@@ -59,34 +59,40 @@ fp_except_t allmask = FP_X_INV|FP_X_OFL|FP_X_UFL|FP_X_DZ|FP_X_IMP|FP_X_DNML;
 fp_except_t oldmask = fpsetmask(~allmask);
 #endif
 
-/*
+/**
  * Macros to workaround math-bugs bugs in various platforms
  */
 
-#if __GNUC__ >= 2
-/* This version of the macros is safe for the alias optimizations
+/**
+ * Stefan Hanske <sh990154@mail.uni-greifswald.de> reports:
+ *  ARM is a little endian architecture but 64 bit double words are stored
+ * differently: the 32 bit words are in little endian byte order, the two words
+ * are stored in big endian`s way.
+ */
+
+#if defined(__arm) || defined(__arm32__) || defined(_arm26__) || defined(__arm__)
+#define CPU_IS_ARM
+#endif
+
+#if (__GNUC__ == 2 && __GNUC_MINOR__ > 95) || __GNUC__ > 2
+/**
+ * This version of the macros is safe for the alias optimizations
  * that gcc does, but uses gcc-specific extensions.
  */
 
-typedef union {
-    double value;
+typedef union txdpun {
+    PRFloat64 d;
     struct {
-#ifdef IS_BIG_ENDIAN
-        PRUint32 msw;
-        PRUint32 lsw;
+#if defined(IS_LITTLE_ENDIAN) && !defined(CPU_IS_ARM)
+        PRUint32 lo, hi;
 #else
-        PRUint32 lsw;
-        PRUint32 msw;
+        PRUint32 hi, lo;
 #endif
-    } parts;
-} tx_ieee_double_shape_type;
+    } s;
+} txdpun;
 
-#define TX_DOUBLE_HI32(x) (__extension__ ({ tx_ieee_double_shape_type sh_u; \
-                                            sh_u.value = (x); \
-                                            sh_u.parts.msw; }))
-#define TX_DOUBLE_LO32(x) (__extension__ ({ tx_ieee_double_shape_type sh_u; \
-                                            sh_u.value = (x); \
-                                            sh_u.parts.lsw; }))
+#define TX_DOUBLE_HI32(x) (__extension__ ({ txdpun u; u.d = (x); u.s.hi; }))
+#define TX_DOUBLE_LO32(x) (__extension__ ({ txdpun u; u.d = (x); u.s.lo; }))
 
 #else // __GNUC__
 
@@ -94,12 +100,12 @@ typedef union {
  * so this code should work.
  */
 
-#ifdef IS_BIG_ENDIAN
-#define TX_DOUBLE_HI32(x)        (((PRUint32 *)&(x))[0])
-#define TX_DOUBLE_LO32(x)        (((PRUint32 *)&(x))[1])
-#else
+#if defined(IS_LITTLE_ENDIAN) && !defined(CPU_IS_ARM)
 #define TX_DOUBLE_HI32(x)        (((PRUint32 *)&(x))[1])
 #define TX_DOUBLE_LO32(x)        (((PRUint32 *)&(x))[0])
+#else
+#define TX_DOUBLE_HI32(x)        (((PRUint32 *)&(x))[0])
+#define TX_DOUBLE_LO32(x)        (((PRUint32 *)&(x))[1])
 #endif
 
 #endif // __GNUC__

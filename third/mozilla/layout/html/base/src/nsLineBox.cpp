@@ -303,8 +303,7 @@ nsLineBox::DeleteLineList(nsIPresContext* aPresContext, nsLineList& aLines)
       child = nextChild;
     }
 
-    nsCOMPtr<nsIPresShell> shell;
-    aPresContext->GetShell(getter_AddRefs(shell));
+    nsIPresShell *shell = aPresContext->PresShell();
 
     do {
       nsLineBox* line = aLines.front();
@@ -479,23 +478,6 @@ nsLineBox::SetCombinedArea(const nsRect& aCombinedArea)
       mData->mCombinedArea = aCombinedArea;
     }
     MaybeFreeData();
-  }
-#ifdef VERY_NOISY_REFLOW
-  printf("nsLB::SetCombinedArea(1) %p (%d, %d, %d, %d)\n", 
-         this, aCombinedArea.x, aCombinedArea.y, aCombinedArea.width, aCombinedArea.height);
-#endif
-}
-
-void
-nsLineBox::GetCombinedArea(nsRect* aResult)
-{
-  NS_ASSERTION(aResult, "null arg");
-  if (aResult) {
-    *aResult = mData ? mData->mCombinedArea : mBounds;
-#ifdef VERY_NOISY_REFLOW
-    printf("nsLineBox::GetCombinedArea(1) %p (%d,%d,%d,%d)\n", 
-         this, aResult->x, aResult->y, aResult->width, aResult->height);
-#endif
   }
 }
 

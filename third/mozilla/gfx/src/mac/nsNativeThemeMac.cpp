@@ -98,7 +98,7 @@ nsNativeThemeMac::nsNativeThemeMac()
     sInitializedBorders = PR_TRUE;
     sTextfieldBorderSize.left = sTextfieldBorderSize.top = 2;
     sTextfieldBorderSize.right = sTextfieldBorderSize.bottom = 2;
-    sTextfieldBGTransparent = PR_TRUE;
+    sTextfieldBGTransparent = PR_FALSE;
   }
 }
 
@@ -334,7 +334,7 @@ nsNativeThemeMac::DrawWidgetBackground(nsIRenderingContext* aContext, nsIFrame* 
       ::SetThemeBackground(kThemeBrushWhite, 24, true);
       break;
       
-    case NS_THEME_MENU:
+    case NS_THEME_MENUPOPUP:
       ::SetThemeBackground(kThemeBrushDialogBackgroundActive, 24, true);
       ::EraseRect(&macRect);
       ::SetThemeBackground(kThemeBrushWhite, 24, true);
@@ -713,7 +713,7 @@ nsNativeThemeMac::WidgetStateChanged(nsIFrame* aFrame, PRUint8 aWidgetType,
     case NS_THEME_TAB_PANEL:
     case NS_THEME_TEXTFIELD:
     case NS_THEME_DIALOG:
-    case NS_THEME_MENU:
+    case NS_THEME_MENUPOPUP:
       *aShouldRepaint = PR_FALSE;
       return NS_OK;
   }
@@ -756,19 +756,15 @@ nsNativeThemeMac::ThemeSupportsWidget(nsIPresContext* aPresContext, nsIFrame* aF
     return PR_FALSE;
 #endif
 
-  if (aPresContext) {
-    nsCOMPtr<nsIPresShell> shell;
-    aPresContext->GetShell(getter_AddRefs(shell));
-    if (!shell->IsThemeSupportEnabled())
-      return PR_FALSE;
-  }
+  if (aPresContext && !aPresContext->PresShell()->IsThemeSupportEnabled())
+    return PR_FALSE;
 
   PRBool retVal = PR_FALSE;
   
   switch ( aWidgetType ) {
     case NS_THEME_DIALOG:
     case NS_THEME_WINDOW:
-      //    case NS_THEME_MENU:     // no support for painting menu backgrounds
+      //    case NS_THEME_MENUPOPUP:     // no support for painting menu backgrounds
     case NS_THEME_TOOLTIP:
     
     case NS_THEME_CHECKBOX:

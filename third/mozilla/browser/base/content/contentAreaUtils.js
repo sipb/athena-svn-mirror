@@ -63,22 +63,24 @@ function openNewWindowWith(href, linkNode, securityCheck)
 
 function markLinkVisited(href, linkNode)
 {
-   var globalHistory = Components.classes["@mozilla.org/browser/global-history;1"]
-                               .getService(Components.interfaces.nsIGlobalHistory);
-   if (!globalHistory.isVisited(href)) {
-     globalHistory.addPage(href);
-     var oldHref = linkNode.getAttribute("href");
-     if (typeof oldHref == "string") {
-       // Use setAttribute instead of direct assignment.
-       // (bug 217195, bug 187195)
-       linkNode.setAttribute("href", "");
-       linkNode.setAttribute("href", oldHref);
-     }
-     else {
-       // Converting to string implicitly would be a 
-       // minor security hole (similar to bug 202994).
-     }
-   }
+  var globalHistory = Components.classes["@mozilla.org/browser/global-history;2"]
+                                .getService(Components.interfaces.nsIGlobalHistory2);
+
+  var uri = makeURL(href);
+  if (!globalHistory.isVisited(uri)) {
+    globalHistory.addURI(uri, false, true);
+    var oldHref = linkNode.getAttribute("href");
+    if (typeof oldHref == "string") {
+      // Use setAttribute instead of direct assignment.
+      // (bug 217195, bug 187195)
+      linkNode.setAttribute("href", "");
+      linkNode.setAttribute("href", oldHref);
+    }
+    else {
+      // Converting to string implicitly would be a 
+      // minor security hole (similar to bug 202994).
+    }
+  }
 }
 
 function urlSecurityCheck(url, doc) 
@@ -231,7 +233,7 @@ function foundHeaderInfo(aSniffer, aData, aSkipPrompt)
   var persistArgs = {
     source      : source,
     contentType : (isDocument && saveAsType == kSaveAsType_Text) ? "text/plain" : contentType,
-    target      : file,
+    target      : makeFileURL(file),
     postData    : aData.document ? getPostData() : null,
     bypassCache : aData.bypassCache
   };
@@ -257,10 +259,7 @@ function foundHeaderInfo(aSniffer, aData, aSkipPrompt)
     var filesFolder = null;
     if (persistArgs.contentType != "text/plain") {
       // Create the local directory into which to save associated files. 
-      const nsILocalFile = Components.interfaces.nsILocalFile;
-      const lfContractID = "@mozilla.org/file/local;1";
-      filesFolder = Components.classes[lfContractID].createInstance(nsILocalFile);
-      filesFolder.initWithPath(persistArgs.target.path);
+      filesFolder = file.clone();
       
       var nameWithoutExtension = filesFolder.leafName;
       nameWithoutExtension = nameWithoutExtension.substring(0, nameWithoutExtension.lastIndexOf("."));
@@ -284,7 +283,7 @@ function foundHeaderInfo(aSniffer, aData, aSkipPrompt)
                          persistArgs.contentType, encodingFlags, kWrapColumn);
   } else {
     dl.init(source, persistArgs.target, null, null, null, persist);
-    persist.saveURI(source, null, null, persistArgs.postData, null, persistArgs.target);
+    persist.saveURI(source, null, getReferrer(document), persistArgs.postData, null, persistArgs.target);
   }
 }
 
@@ -342,6 +341,9 @@ function getTargetFile(aData, aSniffer, aContentType, aIsDocument, aSkipPrompt, 
 #ifdef XP_MACOSX
         return "UsrDsk";
 #endif
+#ifdef XP_OS2
+        return "Desk";
+#endif
         return "Home";
       }
       
@@ -355,7 +357,14 @@ function getTargetFile(aData, aSniffer, aContentType, aIsDocument, aSkipPrompt, 
     fp.init(window, bundle.GetStringFromName(titleKey), 
             Components.interfaces.nsIFilePicker.modeSave);
     
-    appendFiltersForContentType(fp, aContentType,
+    var urlExt = null;
+    try {
+      var url = aSniffer.uri.QueryInterface(Components.interfaces.nsIURL);
+      urlExt = url.fileExtension;
+    }
+    catch (e) {
+    }
+    appendFiltersForContentType(fp, aContentType, urlExt,
                                 aIsDocument ? MODE_COMPLETE : MODE_FILEONLY);  
   
     if (dir)
@@ -454,8 +463,7 @@ nsHeaderSniffer.prototype = {
   QueryInterface: function (iid) {
     if (!iid.equals(Components.interfaces.nsIRequestObserver) &&
         !iid.equals(Components.interfaces.nsISupports) &&
-        !iid.equals(Components.interfaces.nsIInterfaceRequestor) &&
-        !iid.equals(Components.interfaces.nsIAuthPrompt)) {
+        !iid.equals(Components.interfaces.nsIInterfaceRequestor)) {
       throw Components.results.NS_ERROR_NO_INTERFACE;
     }
     return this;
@@ -463,37 +471,14 @@ nsHeaderSniffer.prototype = {
 
   // ---------- nsIInterfaceRequestor methods ----------
   getInterface : function(iid) {
-    return this.QueryInterface(iid);
-  },
-
-  // ---------- nsIAuthPrompt methods ----------
-  prompt : function(dlgTitle, text, pwrealm, savePW, defaultText, result)
-  {
-    dump("authprompt prompt! pwrealm="+pwrealm+"\n");
-    var promptServ = this.promptService;
-    if (!promptServ)
-      return false;
-    var saveCheck = {value:savePW};
-    return promptServ.prompt(window, dlgTitle, text, defaultText, pwrealm, saveCheck);
-  },
-  promptUsernameAndPassword : function(dlgTitle, text, pwrealm, savePW, user, pw)
-  {
-    dump("authprompt promptUsernameAndPassword!  "+dlgTitle+" "+text+", pwrealm="+pwrealm+"\n");
-    var promptServ = this.promptService;
-    if (!promptServ)
-      return false;
-    var saveCheck = {value:savePW};
-    return promptServ.promptUsernameAndPassword(window, dlgTitle, text, user, pw, pwrealm, saveCheck);
-  },
-  promptPassword : function(dlgTitle, text, pwrealm, savePW, pw)
-  {
-    dump("auth promptPassword!  "+dlgTitle+" "+text+", pwrealm="+pwrealm+"\n");
-    var promptServ = this.promptService;
-    if (!promptServ)
-      return false;
-
-    var saveCheck = {value:savePW};
-    return promptServ.promptPassword(window, dlgTitle, text, pw, pwrealm, saveCheck);
+    if (iid.equals(Components.interfaces.nsIAuthPrompt)) {
+      // use the window watcher service to get a nsIAuthPrompt impl
+      var ww = Components.classes["@mozilla.org/embedcomp/window-watcher;1"]
+                         .getService(Components.interfaces.nsIWindowWatcher);
+      return ww.getNewAuthPrompter(window);
+    }
+    Components.returnCode = Components.results.NS_ERROR_NO_INTERFACE;
+    return null;
   },
 
   // ---------- nsIRequestObserver methods ----------
@@ -547,18 +532,9 @@ nsHeaderSniffer.prototype = {
       if (this.mData.document) {
         this.contentType = this.mData.document.contentType;
       } else {
-        try {
-          var url = this.uri.QueryInterface(Components.interfaces.nsIURL);
-          var ext = url.fileExtension;
-          if (ext) {
-            var mimeInfo = getMIMEInfoForExtension(ext);
-            if (mimeInfo)
-              this.contentType = mimeInfo.MIMEType;
-          }
-        }
-        catch (e) {
-          // Not much we can do here.  Give up.
-        }
+        var type = getMIMETypeForURI(this.uri);
+        if (type)
+          this.contentType = type;
       }
     }
     this.mCallback(this, this.mData, this.mSkipPrompt);
@@ -607,7 +583,7 @@ nsHeaderSniffer.prototype = {
 const MODE_COMPLETE = 0;
 const MODE_FILEONLY = 1;
 
-function appendFiltersForContentType(aFilePicker, aContentType, aSaveMode)
+function appendFiltersForContentType(aFilePicker, aContentType, aFileExtension, aSaveMode)
 {
   var bundle = getStringBundle();
     
@@ -620,7 +596,7 @@ function appendFiltersForContentType(aFilePicker, aContentType, aSaveMode)
       aFilePicker.appendFilters(Components.interfaces.nsIFilePicker.filterText);
     break;
   default:
-    var mimeInfo = getMIMEInfoForType(aContentType);
+    var mimeInfo = getMIMEInfoForType(aContentType, aFileExtension);
     if (mimeInfo) {
 
       var extEnumerator = mimeInfo.getFileExtensions();
@@ -687,7 +663,13 @@ function makeURL(aURL)
   var ioService = Components.classes["@mozilla.org/network/io-service;1"]
                 .getService(Components.interfaces.nsIIOService);
   return ioService.newURI(aURL, null, null);
-  
+}
+
+function makeFileURL(aFile)
+{
+  var ioService = Components.classes["@mozilla.org/network/io-service;1"]
+                .getService(Components.interfaces.nsIIOService);
+  return ioService.newFileURI(aFile);
 }
 
 function makeFilePicker()
@@ -705,20 +687,20 @@ function getMIMEService()
   return mimeSvc;
 }
 
-function getMIMEInfoForExtension(aExtension)
+function getMIMETypeForURI(aURI)
 {
   try {  
-    return getMIMEService().GetFromExtension(aExtension);
+    return getMIMEService().getTypeFromURI(aURI);
   }
   catch (e) {
   }
   return null;
 }
 
-function getMIMEInfoForType(aMIMEType)
+function getMIMEInfoForType(aMIMEType, aExtension)
 {
   try {  
-    return getMIMEService().GetFromMIMEType(aMIMEType);
+    return getMIMEService().getFromTypeAndExtension(aMIMEType, aExtension);
   }
   catch (e) {
   }
@@ -820,11 +802,6 @@ function getDefaultExtension(aFilename, aURI, aContentType)
   if (aContentType == "text/plain" || aContentType == "application/octet-stream" || aURI.scheme == "ftp")
     return "";   // temporary fix for bug 120327
 
-  // This mirrors some code in nsExternalHelperAppService::DoContent
-  // Use the filename first and then the URI if that fails
-  
-  var mimeInfo = getMIMEInfoForType(aContentType);
-
   // First try the extension from the filename
   const stdURLContractID = "@mozilla.org/network/standard-url;1";
   const stdURLIID = Components.interfaces.nsIURL;
@@ -832,6 +809,11 @@ function getDefaultExtension(aFilename, aURI, aContentType)
   url.filePath = aFilename;
 
   var ext = url.fileExtension;
+
+  // This mirrors some code in nsExternalHelperAppService::DoContent
+  // Use the filename first and then the URI if that fails
+  
+  var mimeInfo = getMIMEInfoForType(aContentType, ext);
 
   if (ext && mimeInfo && mimeInfo.ExtensionExists(ext)) {
     return ext;

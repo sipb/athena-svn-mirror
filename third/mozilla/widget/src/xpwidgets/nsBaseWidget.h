@@ -47,7 +47,7 @@
 #include "nsIAppShell.h"
 #include "nsString.h"
 #include "nsVoidArray.h"
-#include "nsISupportsArray.h"
+#include "nsCOMArray.h"
 #include "nsCOMPtr.h"
 #include "nsGUIEvent.h"
 
@@ -128,7 +128,7 @@ public:
   NS_IMETHOD              ScrollRect(nsRect &aRect, PRInt32 aDx, PRInt32 aDy);
   NS_IMETHOD              ScrollWidgets(PRInt32 aDx, PRInt32 aDy);
   NS_IMETHOD              EnableDragDrop(PRBool aEnable);
-  NS_IMETHOD              GetAttention();
+  NS_IMETHOD              GetAttention(PRInt32 aCycleCount);
   NS_IMETHOD              GetLastInputEventTime(PRUint32& aTime);
   NS_IMETHOD              SetIcon(const nsAString &anIconSpec);
   virtual void            ConvertToDeviceCoordinates(nscoord  &aX,nscoord &aY) {}
@@ -177,7 +177,7 @@ protected:
   nsSizeMode        mSizeMode;
 
     // keep the list of children
-  nsCOMPtr<nsISupportsArray> mChildren;
+  nsCOMArray<nsIWidget> mChildren;
     
   class Enumerator : public nsIBidirectionalEnumerator {
   public:
@@ -190,7 +190,7 @@ protected:
     NS_DECL_NSIBIDIRECTIONALENUMERATOR
 
   private:
-    PRUint32       mCurrentPosition;
+    PRInt32       mCurrentPosition;
     nsBaseWidget& mParent;
   };
   friend class Enumerator;

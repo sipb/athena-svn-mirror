@@ -699,11 +699,9 @@ nsPlaintextEditor::GetAbsoluteOffsetsForPoints(nsIDOMNode *aInStartNode,
   nsCOMPtr<nsIContent>blockParentContent = do_QueryInterface(aInCommonParentNode);
   iter->Init(blockParentContent);
   // loop through the content iterator for each content node
-  nsCOMPtr<nsIContent> content;
-  result = iter->CurrentNode(getter_AddRefs(content));
-  while (NS_ENUMERATOR_FALSE == iter->IsDone())
+  while (!iter->IsDone())
   {
-    textNode = do_QueryInterface(content);
+    textNode = do_QueryInterface(iter->GetCurrentNode());
     if (textNode)
     {
       nsCOMPtr<nsIDOMNode>currentNode = do_QueryInterface(textNode);
@@ -725,7 +723,6 @@ nsPlaintextEditor::GetAbsoluteOffsetsForPoints(nsIDOMNode *aInStartNode,
       }
     }
     iter->Next();
-    iter->CurrentNode(getter_AddRefs(content));
   }
   if (-1==aOutEndOffset) {
     aOutEndOffset = totalLength;
@@ -812,20 +809,34 @@ NS_IMETHODIMP nsPlaintextEditor::DeleteSelection(nsIEditor::EDirection aAction)
   if (aAction == eNextWord || aAction == ePreviousWord
       || aAction == eToBeginningOfLine || aAction == eToEndOfLine)
   {
+    if (!mPresShellWeak) return NS_ERROR_NOT_INITIALIZED;
+    nsCOMPtr<nsIPresShell> ps = do_QueryReferent(mPresShellWeak);
+    if (!ps) return NS_ERROR_NOT_INITIALIZED;
+
+    PRUint8 caretBidiLevel;
+    result = ps->GetCaretBidiLevel(&caretBidiLevel);
+    if (NS_FAILED(result)) return result;
+    
     nsCOMPtr<nsISelectionController> selCont (do_QueryReferent(mSelConWeak));
     if (!selCont)
       return NS_ERROR_NO_INTERFACE;
 
     switch (aAction)
     {
+        // if caret has odd Bidi level, i.e. text is right-to-left,
+        // reverse the effect of ePreviousWord and eNextWord
         case eNextWord:
-          result = selCont->WordMove(PR_TRUE, PR_TRUE);
+          result = (caretBidiLevel & 1) ?
+                   selCont->WordMove(PR_FALSE, PR_TRUE) :
+                   selCont->WordMove(PR_TRUE, PR_TRUE);
           // DeleteSelectionImpl doesn't handle these actions
           // because it's inside batching, so don't confuse it:
           aAction = eNone;
           break;
         case ePreviousWord:
-          result = selCont->WordMove(PR_FALSE, PR_TRUE);
+          result = (caretBidiLevel & 1) ?
+                   selCont->WordMove(PR_TRUE, PR_TRUE) :
+                   selCont->WordMove(PR_FALSE, PR_TRUE);
           aAction = eNone;
           break;
         case eToBeginningOfLine:

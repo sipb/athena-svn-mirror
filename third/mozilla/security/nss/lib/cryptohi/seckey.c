@@ -514,10 +514,12 @@ seckey_UpdateCertPQGChain(CERTCertificate * subjectCert, int count)
              (tag != SEC_OID_BOGUS_DSA_SIGNATURE_WITH_SHA1_DIGEST) &&
              (tag != SEC_OID_SDN702_DSA_SIGNATURE) &&
              (tag != SEC_OID_ANSIX962_EC_PUBLIC_KEY) ) {            
-            return SECFailure;
+            rv = SECFailure;
+            goto loser;
         }
     } else {
-        return SECFailure;  /* return failure if oid is NULL */  
+        rv = SECFailure;  /* return failure if oid is NULL */  
+        goto loser;
     }
 
 
@@ -526,7 +528,10 @@ seckey_UpdateCertPQGChain(CERTCertificate * subjectCert, int count)
      * pqg parameters with a recursive call to this same function. */
 
     rv = seckey_UpdateCertPQGChain(issuerCert, count);
-    if (rv != SECSuccess) return rv;
+    if (rv != SECSuccess) {
+        rv = SECFailure;
+        goto loser;
+    }
 
     /* ensure issuer has pqg parameters */
 
@@ -544,6 +549,10 @@ seckey_UpdateCertPQGChain(CERTCertificate * subjectCert, int count)
 	   		      &issuerSpki->algorithm.parameters);
     }
 
+loser:
+    if (issuerCert) {
+        CERT_DestroyCertificate(issuerCert);
+    }
     return rv;
 
 }
@@ -1113,7 +1122,7 @@ CERT_KMIDPublicKey(CERTCertificate *cert)
 }
 
 int
-SECKEY_ECParams2KeySize(SECItem *encodedParams)
+SECKEY_ECParamsToKeySize(const SECItem *encodedParams)
 {
     SECOidTag tag;
     SECItem oid = { siBuffer, NULL, 0};
@@ -1268,7 +1277,7 @@ SECKEY_PublicKeyStrength(SECKEYPublicKey *pubk)
 	/* Get the key size in bits and adjust */
 	if (pubk->u.ec.size == 0) {
 	    pubk->u.ec.size = 
-		SECKEY_ECParams2KeySize(&pubk->u.ec.DEREncodedParams);
+		SECKEY_ECParamsToKeySize(&pubk->u.ec.DEREncodedParams);
 	} 
 	return (pubk->u.ec.size + 7)/8;
 #endif /* NSS_ENABLE_ECC */
@@ -1292,7 +1301,7 @@ SECKEY_PublicKeyStrengthInBits(SECKEYPublicKey *pubk)
     case ecKey:
 	if (pubk->u.ec.size == 0) {
 	    pubk->u.ec.size = 
-		SECKEY_ECParams2KeySize(&pubk->u.ec.DEREncodedParams);
+		SECKEY_ECParamsToKeySize(&pubk->u.ec.DEREncodedParams);
 	} 
 	return pubk->u.ec.size;
 #endif /* NSS_ENABLE_ECC */

@@ -36,6 +36,10 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
+#ifdef MOZ_LOGGING
+// sorry, this has to be before the pre-compiled header
+#define FORCE_PR_LOG /* Allow logging in the release build */
+#endif
 #include "nsAutoConfig.h"
 #include "nsIURI.h"
 #include "nsIHttpChannel.h"
@@ -46,7 +50,13 @@
 #include "nsIObserverService.h"
 #include "nsIEventQueueService.h"
 #include "nsLiteralString.h"
+#include "nsIPromptService.h"
+#include "nsIServiceManager.h"
+#include "nsIStringBundle.h"
 #include "nsCRT.h"
+#include "nspr.h"
+
+PRLogModuleInfo *MCD;
 
 extern nsresult EvaluateAdminConfigScript(const char *js_buffer, size_t length,
                                           const char *filename, 
@@ -146,6 +156,7 @@ nsAutoConfig::OnStopRequest(nsIRequest *request, nsISupports *context,
 
     // If the request is failed, go read the failover.jsc file
     if (NS_FAILED(aStatus)) {
+        PR_LOG(MCD, PR_LOG_DEBUG, ("mcd request failed with status %x\n", aStatus));
         return readOfflineFile();
     }
 
@@ -155,7 +166,10 @@ nsAutoConfig::OnStopRequest(nsIRequest *request, nsISupports *context,
         PRUint32 httpStatus;
         pHTTPCon->GetResponseStatus(&httpStatus);
         if (httpStatus != 200) 
+        {
+            PR_LOG(MCD, PR_LOG_DEBUG, ("mcd http request failed with status %x\n", httpStatus));
             return readOfflineFile();
+        }
     }
     
     // Send the autoconfig.jsc to javascript engine.
@@ -207,7 +221,7 @@ NS_IMETHODIMP nsAutoConfig::Observe(nsISupports *aSubject,
             rv = profile->GetCurrentProfile(getter_Copies(profileName));
             if (NS_SUCCEEDED(rv)) {
                 // setting the member variable to the current profile name
-                mCurrProfile = NS_ConvertUCS2toUTF8(profileName); 
+                CopyUTF16toUTF8(profileName, mCurrProfile); 
             }
             else {
                 NS_WARNING("nsAutoConfig::GetCurrentProfile() failed");
@@ -234,6 +248,7 @@ nsresult nsAutoConfig::downloadAutoConfig()
     static PRBool firstTime = PR_TRUE;
     
     if (mConfigURL.IsEmpty()) {
+        PR_LOG(MCD, PR_LOG_DEBUG, ("global config url is empty - did you set autoadmin.global_config_url?\n"));
         NS_WARNING("AutoConfig called without global_config_url");
         return NS_OK;
     }
@@ -312,8 +327,12 @@ nsresult nsAutoConfig::downloadAutoConfig()
     
     rv = NS_NewURI(getter_AddRefs(url), mConfigURL.get(), nsnull, nsnull);
     if (NS_FAILED(rv))
+    {
+        PR_LOG(MCD, PR_LOG_DEBUG, ("failed to create URL - is autoadmin.global_config_url valid? - %s\n", mConfigURL.get()));
         return rv;
+    }
 
+    PR_LOG(MCD, PR_LOG_DEBUG, ("running MCD url %s\n", mConfigURL.get()));
     // open a channel for the url
     rv = NS_NewChannel(getter_AddRefs(channel),url, nsnull, nsnull, nsnull, nsIRequest::INHIBIT_PERSISTENT_CACHING | nsIRequest::LOAD_BYPASS_CACHE);
     if (NS_FAILED(rv)) 
@@ -536,11 +555,46 @@ nsresult nsAutoConfig::getEmailAddr(nsACString & emailAddr)
         emailAddr = nsDependentCString(prefValue, len);
     }
     else {
-        if (!mCurrProfile.IsEmpty()) {
+        // look for 4.x pref in case we just migrated.
+        rv = mPrefBranch->GetCharPref("mail.identity.useremail", 
+                                  getter_Copies(prefValue));
+        if (NS_SUCCEEDED(rv) && !prefValue.IsEmpty())
+          emailAddr = prefValue;
+        else if (NS_FAILED(PromptForEMailAddress(emailAddr))  && (!mCurrProfile.IsEmpty()))
             emailAddr = mCurrProfile;
-        }
     }
     
     return NS_OK;
 }
         
+nsresult nsAutoConfig::PromptForEMailAddress(nsACString &emailAddress)
+{
+    nsresult rv;
+    nsCOMPtr<nsIPromptService> promptService = do_GetService("@mozilla.org/embedcomp/prompt-service;1", &rv);
+    NS_ENSURE_SUCCESS(rv, rv);
+    nsCOMPtr<nsIStringBundleService> bundleService = do_GetService(NS_STRINGBUNDLE_CONTRACTID, &rv);
+    NS_ENSURE_SUCCESS(rv, rv);
+
+    nsCOMPtr<nsIStringBundle> bundle;
+    rv = bundleService->CreateBundle("chrome://autoconfig/locale/autoconfig.properties",
+                                getter_AddRefs(bundle));
+    NS_ENSURE_SUCCESS(rv, rv);
+
+    nsXPIDLString title;
+    rv = bundle->GetStringFromName(NS_LITERAL_STRING("emailPromptTitle").get(), getter_Copies(title));
+    NS_ENSURE_SUCCESS(rv, rv);
+
+    nsXPIDLString err;
+    rv = bundle->GetStringFromName(NS_LITERAL_STRING("emailPromptMsg").get(), getter_Copies(err));
+    NS_ENSURE_SUCCESS(rv, rv);
+    PRBool check = PR_FALSE;
+    nsXPIDLString emailResult;
+    PRBool success;
+    rv = promptService->Prompt(nsnull, title.get(), err.get(), getter_Copies(emailResult), nsnull, &check, &success);
+    if (!success)
+      return NS_ERROR_FAILURE;
+    NS_ENSURE_SUCCESS(rv, rv);
+    CopyUCS2toASCII(emailResult, emailAddress);
+    return NS_OK;
+}
+

@@ -28,6 +28,7 @@
 #include "nsXInstaller.h"
 #include "nsXIEngine.h"
 #include <signal.h>
+#include <sys/wait.h>
 #include <gtk/gtk.h>
 #include <errno.h>
 
@@ -51,6 +52,7 @@ DLProgress;
 
 static char             *sXPInstallEngine;
 static nsRunApp         *sRunAppList = NULL;
+static nsRunApp         *sPostInstallRun = NULL;
 static DLProgress       sDLProgress;
 
 static GtkWidget        *sDLTable = NULL;
@@ -66,8 +68,6 @@ static int              bDownload = FALSE;
 static struct timeval   sDLStartTime;
 static int              bDLPause = FALSE;
 static int              bDLCancel = FALSE;
-static int              bComplete = FALSE;
-static int              bInstallClicked = FALSE;
 
 nsInstallDlg::nsInstallDlg() :
     mMsg0(NULL)
@@ -180,17 +180,12 @@ nsInstallDlg::Next(GtkWidget *aWidget, gpointer aData)
         if (bDownload && sDLTable)
             gtk_widget_hide(sDLTable);
         XI_GTK_UPDATE_UI();
-
-        bInstallClicked = TRUE;
     }
 
     PerformInstall();
-    if (bDLCancel) // set only when download was cancelled
-    {
-        // mode auto has no call to gtk_main()
-        if (gCtx->opt->mMode == nsXIOptions::MODE_DEFAULT)
-            gtk_main_quit();
-    }
+    // mode auto has no call to gtk_main()
+    if (gCtx->opt->mMode == nsXIOptions::MODE_DEFAULT)
+         gtk_main_quit();
     
     gCtx->bMoving = TRUE;
     return;
@@ -237,64 +232,80 @@ nsInstallDlg::Parse(nsINIParser *aParser)
 
     for (i = 0; err == OK; i++)
     {
+        /* construct PostInstallRunX section name */
+        sprintf(secName, POSTINSTALLRUNd, i);
+        err = aParser->GetStringAlloc(secName, TARGET, &app, &bufsize);
+        if (err == OK && bufsize > 0)
+        {
+            /* "args" is optional: this may return E_NO_KEY which we ignore */
+            aParser->GetStringAlloc(secName, ARGS, &args, &bufsize);
+            newRunApp = new nsRunApp(app, args);
+            if (!newRunApp)
+                return E_MEM;
+            err = AppendRunApp(&sPostInstallRun, newRunApp);
+        }
+    }
+    err = OK; /* reset error since PostInstallRunX sections are optional
+                 and we could have gotten a parse error (E_NO_SEC) */
+
+    for (i = 0; err == OK; i++)
+    {
         /* construct RunAppX section name */
         sprintf(secName, RUNAPPd, i);
         err = aParser->GetStringAlloc(secName, TARGET, &app, &bufsize);
         if (err == OK && bufsize > 0)
         {
             /* "args" is optional: this may return E_NO_KEY which we ignore */
-            err = aParser->GetStringAlloc(secName, ARGS, &args, &bufsize);
+            aParser->GetStringAlloc(secName, ARGS, &args, &bufsize);
             newRunApp = new nsRunApp(app, args);
             if (!newRunApp)
                 return E_MEM;
-            err = AppendRunApp(newRunApp);
+            err = AppendRunApp(&sRunAppList, newRunApp);
         }
     }
     err = OK; /* reset error since RunAppX sections are optional
                  and we could have gotten a parse error (E_NO_SEC) */
-
-    return err;
 
 BAIL:
     return err;
 }
 
 int 
-nsInstallDlg::AppendRunApp(nsRunApp *aNewRunApp)
+nsInstallDlg::AppendRunApp(nsRunApp **aRunAppList, nsRunApp *aNewRunApp)
 {
     int err = OK;
-    nsRunApp *currRunApp = NULL;
+    nsRunApp *currRunApp = NULL, *nextRunApp = NULL;
 
     /* param check */
     if (!aNewRunApp)
         return E_PARAM;
 
     /* special case: list is empty */
-    if (!sRunAppList)
+    if (!*aRunAppList)
     {
-        sRunAppList = aNewRunApp;
+        *aRunAppList = aNewRunApp;
         return OK;
     }
 
     /* list has at least one element */
-    currRunApp = sRunAppList;
+    currRunApp = *aRunAppList;
     while (currRunApp)
     {
-        if (!currRunApp->GetNext())
+        if (!(nextRunApp = currRunApp->GetNext()))
         {
             currRunApp->SetNext(aNewRunApp);
             break;
         }
+        currRunApp = nextRunApp;
     }
     return err;
 }
 
 void
-nsInstallDlg::FreeRunAppList()
+nsInstallDlg::FreeRunAppList(nsRunApp *aRunAppList)
 {
-    nsRunApp *currRunApp = NULL, *nextRunApp = NULL;
+    nsRunApp *currRunApp = aRunAppList, *nextRunApp = NULL;
 
-    currRunApp = sRunAppList;
     while (currRunApp)
     {
         nextRunApp = currRunApp->GetNext();
@@ -304,13 +315,12 @@ nsInstallDlg::FreeRunAppList()
 }
 
 void
-nsInstallDlg::RunApps()
+nsInstallDlg::RunApps(nsRunApp *aRunAppList, int aSequential)
 {
-    nsRunApp *currRunApp = sRunAppList;
+    nsRunApp *currRunApp = aRunAppList;
     char *argv[3], *dest;
     char apppath[MAXPATHLEN];
     extern char **environ; /* globally available to all processes */
-    int pid;
 
     dest = gCtx->opt->mDestination;
     if (chdir(dest) < 0) 
@@ -319,27 +329,32 @@ nsInstallDlg::RunApps()
     while (currRunApp)
     {
         /* run application with supplied args */
-        if ((pid = fork()) == 0)
+        sprintf(apppath, "%s/%s", dest, currRunApp->GetApp());
+
+        argv[0] = apppath;
+        argv[1] = currRunApp->GetArgs();
+        argv[2] = NULL; /* null-terminate arg vector */
+
+        if (!fork())
         {
             /* child */
 
-            if (*(dest + strlen(dest)) == '/') /* trailing slash */
-                sprintf(apppath, "%s%s", dest, currRunApp->GetApp());
-            else                               /* no trailing slash */
-                sprintf(apppath, "%s/%s", dest, currRunApp->GetApp());
-
-            argv[0] = apppath;
-            argv[1] = currRunApp->GetArgs();
-            argv[2] = NULL; /* null-terminate arg vector */
             execve(apppath, argv, environ);
 
             /* shouldn't reach this but in case execve fails we will */
-            exit(0);
+            _exit(0);
         }
         /* parent continues running to finish installation */
 
+        if (aSequential)
+        {
+           wait(NULL);
+        }
+
         currRunApp = currRunApp->GetNext();
     }
+
+
 }
 
 int
@@ -562,9 +577,9 @@ nsInstallDlg::PerformInstall()
     err = engine->Download(bCus, comps);
     if (err == E_DL_DROP_CXN)
     {
+        ShowCxnDroppedDlg();
         if (gCtx->opt->mMode != nsXIOptions::MODE_SILENT)
             DLPause(NULL, NULL);
-        ShowCxnDroppedDlg();
         return err;
     }
     else if (err == E_CRC_FAILED)
@@ -603,18 +618,27 @@ nsInstallDlg::PerformInstall()
         engine->DeleteXPIs(bCus, comps);
     }
 
-    if (gCtx->opt->mMode != nsXIOptions::MODE_SILENT)
+    // destroy installer engine thread object
+    XI_IF_DELETE(engine);
+
+    // run post-install applications to complete installation
+    if (sPostInstallRun)
     {
-        ShowCompleteDlg();
+        if (gCtx->opt->mMode != nsXIOptions::MODE_SILENT)
+            MajorProgressCB("", 1, 1, ACT_COMPLETE);
+        RunApps(sPostInstallRun, 1);
+        FreeRunAppList(sPostInstallRun);
     }
 
     // run all specified applications after installation
     if (sRunAppList)
     {
         if (gCtx->opt->mShouldRunApps)
-            RunApps();
-        FreeRunAppList();
+            RunApps(sRunAppList, 0);
+        FreeRunAppList(sRunAppList);
     }
+
+    return OK;
 
 BAIL:
     // destroy installer engine thread object
@@ -716,6 +740,10 @@ nsInstallDlg::MajorProgressCB(char *aName, int aNum, int aTotal, int aActivity)
             sprintf(msg, gCtx->Res("INSTALLING_XPI"), aName);
             break;
 
+        case ACT_COMPLETE:
+            sprintf(msg, gCtx->Res("COMPLETING_INSTALL"));
+            break;
+
         default:
             break;
     }
@@ -742,6 +770,8 @@ nsInstallDlg::MajorProgressCB(char *aName, int aNum, int aTotal, int aActivity)
         gtk_widget_show(sMinorLabel);
         gtk_widget_show(sMinorProgBar);
     }
+    else if (aActivity == ACT_COMPLETE)
+        gtk_label_set_text(GTK_LABEL(sMinorLabel), "");
 
     XI_GTK_UPDATE_UI();
 }
@@ -867,50 +897,6 @@ nsInstallDlg::ClearRateLabel()
     gtk_label_set_text(GTK_LABEL(sRateLabel), "");
     gtk_progress_set_activity_mode(GTK_PROGRESS(sMajorProgBar), FALSE); 
     XI_GTK_UPDATE_UI();
-}
-
-void
-nsInstallDlg::ShowCompleteDlg()
-{
-    DUMP("ShowCompleteDlg");
-
-    GtkWidget *completeDlg, *label, *okButton, *packer;
-
-    // throw up completion notification
-    completeDlg = gtk_dialog_new();
-    label = gtk_label_new(gCtx->Res("COMPLETED"));
-    okButton = gtk_button_new_with_label(gCtx->Res("OK_LABEL"));
-    packer = gtk_packer_new();
-
-    gtk_packer_set_default_border_width(GTK_PACKER(packer), 20);
-    gtk_packer_add_defaults(GTK_PACKER(packer), label, GTK_SIDE_BOTTOM,
-                            GTK_ANCHOR_CENTER, GTK_FILL_X);
-    gtk_window_set_modal(GTK_WINDOW(completeDlg), TRUE);
-    gtk_window_set_title(GTK_WINDOW(completeDlg), gCtx->opt->mTitle);
-    gtk_window_set_position(GTK_WINDOW(completeDlg), GTK_WIN_POS_CENTER);
-    gtk_container_add(GTK_CONTAINER(GTK_DIALOG(completeDlg)->vbox), packer);
-    gtk_container_add(GTK_CONTAINER(GTK_DIALOG(completeDlg)->action_area),
-                      okButton);
-    gtk_signal_connect(GTK_OBJECT(okButton), "clicked",
-                       GTK_SIGNAL_FUNC(CompleteOK), completeDlg);
-    GTK_WIDGET_SET_FLAGS (okButton, GTK_CAN_DEFAULT);
-    gtk_widget_grab_default(okButton);
-    gtk_widget_show_all(completeDlg);
-
-    gtk_main();
-    gtk_main_quit();
-}
-
-void
-nsInstallDlg::CompleteOK(GtkWidget *aWidget, gpointer aData)
-{
-    GtkWidget *dlg = (GtkWidget *) aData;
-
-    if (dlg)
-        gtk_widget_destroy(dlg);
-
-    gtk_main_quit();
-    bComplete = TRUE;
 }
 
 void
@@ -1083,6 +1069,8 @@ nsInstallDlg::DLPause(GtkWidget *aWidget, gpointer aData)
 
     // enable resume button
     gtk_widget_set_sensitive(gCtx->next, TRUE);
+
+    gtk_main();
 }
 
 void
@@ -1096,13 +1084,6 @@ nsInstallDlg::DLResume(GtkWidget *aWidget, gpointer aData)
         return;
     }
 
-    if (bInstallClicked)
-    {
-        DUMP("Lingering signal from when Install clicked");
-        bInstallClicked = FALSE;
-        return;
-    }
-
     DUMP("Unsetting bDLPause");
     bDLPause = FALSE;
 
@@ -1111,6 +1092,8 @@ nsInstallDlg::DLResume(GtkWidget *aWidget, gpointer aData)
 
     // enable pause button
     gtk_widget_set_sensitive(gCtx->back, TRUE);
+
+    gtk_main_quit();
 
     PerformInstall();
  
@@ -1136,9 +1119,7 @@ nsInstallDlg::DLCancel(GtkWidget *aWidget, gpointer aData)
     // already paused then take explicit action to quit
     if (bDLPause)
     {
-        // mode auto has no call to gtk_main()
-        if (gCtx->opt->mMode != nsXIOptions::MODE_AUTO)
-            gtk_main_quit();
+         gtk_main_quit();
     }
 }
 

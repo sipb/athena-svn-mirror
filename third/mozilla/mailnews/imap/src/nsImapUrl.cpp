@@ -336,7 +336,7 @@ nsresult nsImapUrl::ParseUrl()
   NS_UnescapeURL(imapPartOfUrl);
   if (NS_SUCCEEDED(rv) && !imapPartOfUrl.IsEmpty())
   {
-    ParseImapPart((char*)imapPartOfUrl.get()+1);  // GetPath leaves leading '/' in the path!!!
+    ParseImapPart(imapPartOfUrl.BeginWriting()+1);  // GetPath leaves leading '/' in the path!!!
   }
   
   return NS_OK;
@@ -830,10 +830,11 @@ NS_IMETHODIMP nsImapUrl::AddOnlineDirectoryIfNecessary(const char *onlineMailbox
   rv = server->GetKey(getter_Copies(serverKey));
   if (NS_FAILED(rv)) return rv;
   rv = hostSessionList->GetOnlineDirForHost(serverKey, aString);
-  char *onlineDir = !aString.IsEmpty() ? ToNewCString(aString) : nsnull;
+  nsCAutoString onlineDir;
+  onlineDir.AssignWithConversion(aString);
   
   // If this host has an online server directory configured
-  if (onlineMailboxName && onlineDir)
+  if (onlineMailboxName && !onlineDir.IsEmpty())
   {
     nsIMAPNamespace *ns = nsnull;
     rv = hostSessionList->GetNamespaceForMailboxForHost(serverKey,
@@ -1347,41 +1348,6 @@ NS_IMETHODIMP nsImapUrl::SetMsgLoadingFromCache(PRBool loadingFromCache)
 {
   nsresult rv = NS_OK;
   m_msgLoadingFromCache = loadingFromCache;
-  if (loadingFromCache)
-  {
-    nsCOMPtr<nsIMsgFolder> folder;
-    nsMsgKey key;
-
-    nsCAutoString folderURI;
-    rv = nsParseImapMessageURI(mURI.get(), folderURI, &key, nsnull);
-    NS_ENSURE_SUCCESS(rv, rv);
-
-    if (m_imapAction != nsImapMsgFetch) // only do this on msg fetch, i.e., if user is reading msg.
-      return rv;
-    rv = GetMsgFolder(getter_AddRefs(folder));
-
-    nsCOMPtr <nsIMsgDatabase> database;
-    if (folder && NS_SUCCEEDED(folder->GetMsgDatabase(nsnull, getter_AddRefs(database))) && database)
-    {
-      PRBool msgRead = PR_TRUE;
-      database->IsRead(key, &msgRead);
-      if (!msgRead)
-      {
-        nsCOMPtr<nsISupportsArray> messages;
-        rv = NS_NewISupportsArray(getter_AddRefs(messages));
-        if (NS_FAILED(rv)) 
-          return rv;
-        nsCOMPtr<nsIMsgDBHdr> message;
-        GetMsgDBHdrFromURI(mURI.get(), getter_AddRefs(message));
-        nsCOMPtr<nsISupports> msgSupport(do_QueryInterface(message, &rv));
-        if (msgSupport)
-        {
-          messages->AppendElement(msgSupport);
-          folder->MarkMessagesRead(messages, PR_TRUE);
-        }
-      }
-    }
-  }
   return rv;
 }
 

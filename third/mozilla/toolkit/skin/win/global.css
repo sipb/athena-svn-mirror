@@ -53,6 +53,7 @@ window,
 page,
 dialog,
 wizard {
+  -moz-appearance: window;
   background-color: -moz-Dialog;
   color: -moz-DialogText;
   font: message-box;
@@ -146,9 +147,9 @@ resizer[dir="bottomright"] {
 /* XXXBlake yeah, shoot me -- these don't belong here.  I'll move them later. */
 
 sidebarheader {
+  -moz-appearance: toolbox;
   height: 25px;
   background-color: -moz-Dialog;
-  -moz-appearance: toolbox;
   border-bottom: 1px solid ThreeDShadow;
   border-top: 1px solid ThreeDHighlight;
 }

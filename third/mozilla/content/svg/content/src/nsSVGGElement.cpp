@@ -38,6 +38,7 @@
 
 #include "nsSVGGraphicElement.h"
 #include "nsIDOMSVGGElement.h"
+#include "nsSVGAtoms.h"
 
 typedef nsSVGGraphicElement nsSVGGElementBase;
 
@@ -49,7 +50,6 @@ protected:
                                     nsINodeInfo *aNodeInfo);
   nsSVGGElement();
   virtual ~nsSVGGElement();
-  virtual nsresult Init();
   
 public:
   // interfaces:
@@ -61,7 +61,9 @@ public:
   NS_FORWARD_NSIDOMNODE_NO_CLONENODE(nsSVGGElementBase::)
   NS_FORWARD_NSIDOMELEMENT(nsSVGGElementBase::)
   NS_FORWARD_NSIDOMSVGELEMENT(nsSVGGElementBase::)
-  
+
+  // nsIStyledContent
+  NS_IMETHOD_(PRBool) IsAttributeMapped(const nsIAtom* aAttribute) const;
 protected:
 };
 
@@ -76,21 +78,14 @@ nsresult NS_NewSVGGElement(nsIContent **aResult, nsINodeInfo *aNodeInfo)
   if (!it) return NS_ERROR_OUT_OF_MEMORY;
   NS_ADDREF(it);
 
-  nsresult rv = NS_STATIC_CAST(nsGenericElement*,it)->Init(aNodeInfo);
-
-  if (NS_FAILED(rv)) {
-    it->Release();
-    return rv;
-  }
-
-  rv = it->Init();
+  nsresult rv = it->Init(aNodeInfo);
 
   if (NS_FAILED(rv)) {
     it->Release();
     return rv;
   }
   
-  *aResult = NS_STATIC_CAST(nsIContent *, it);
+  *aResult = it;
 
   return NS_OK;
 }
@@ -102,6 +97,9 @@ NS_IMPL_ADDREF_INHERITED(nsSVGGElement,nsSVGGElementBase)
 NS_IMPL_RELEASE_INHERITED(nsSVGGElement,nsSVGGElementBase)
 
 NS_INTERFACE_MAP_BEGIN(nsSVGGElement)
+  NS_INTERFACE_MAP_ENTRY(nsIDOMNode)
+  NS_INTERFACE_MAP_ENTRY(nsIDOMElement)
+  NS_INTERFACE_MAP_ENTRY(nsIDOMSVGElement)
   NS_INTERFACE_MAP_ENTRY(nsIDOMSVGGElement)
   NS_INTERFACE_MAP_ENTRY_CONTENT_CLASSINFO(SVGGElement)
 NS_INTERFACE_MAP_END_INHERITING(nsSVGGElementBase)
@@ -119,17 +117,6 @@ nsSVGGElement::~nsSVGGElement()
 
 }
 
-  
-nsresult
-nsSVGGElement::Init()
-{
-  nsresult rv;
-  rv = nsSVGGElementBase::Init();
-  NS_ENSURE_SUCCESS(rv,rv);
-
-  return NS_OK;
-}
-
 //----------------------------------------------------------------------
 // nsIDOMNode methods
 
@@ -142,14 +129,7 @@ nsSVGGElement::CloneNode(PRBool aDeep, nsIDOMNode** aReturn)
   if (!it) return NS_ERROR_OUT_OF_MEMORY;
   NS_ADDREF(it);
 
-  nsresult rv = NS_STATIC_CAST(nsGenericElement*,it)->Init(mNodeInfo);
-
-  if (NS_FAILED(rv)) {
-    it->Release();
-    return rv;
-  }
-
-  rv = it->Init();
+  nsresult rv = it->Init(mNodeInfo);
 
   if (NS_FAILED(rv)) {
     it->Release();
@@ -163,7 +143,22 @@ nsSVGGElement::CloneNode(PRBool aDeep, nsIDOMNode** aReturn)
     return rv;
   }
  
-  *aReturn = NS_STATIC_CAST(nsSVGGElementBase*, it);
+  *aReturn = it;
 
   return NS_OK; 
+}
+
+//----------------------------------------------------------------------
+// nsIStyledContent methods
+
+NS_IMETHODIMP_(PRBool)
+nsSVGGElement::IsAttributeMapped(const nsIAtom* name) const
+{
+  static const MappedAttributeEntry* const map[] = {
+    sTextContentElementsMap,
+    sFontSpecificationMap
+  };
+  
+  return FindAttributeDependence(name, map, NS_ARRAY_LENGTH(map)) ||
+    nsSVGGElementBase::IsAttributeMapped(name);
 }

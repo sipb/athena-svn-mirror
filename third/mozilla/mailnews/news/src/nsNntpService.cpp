@@ -24,6 +24,7 @@
  *   Scott MacGregor <mscott@netscape.com>
  *   Pierre Phaneuf <pp@ludusdesign.com>
  *   Håkan Waara <hwaara@chello.se>
+ *   David Bienvenu < bienvenu@nventure.com>
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either the GNU General Public License Version 2 or later (the "GPL"), or 
@@ -82,6 +83,7 @@
 #include "nsNewsDownloader.h"
 #include "prprf.h"
 #include "nsICacheService.h"
+#include "nsMsgUtils.h"
 #include "nsEscape.h"
 #include "nsNetUtil.h"
 
@@ -89,7 +91,8 @@
 #undef SetPort  // XXX Windows!
 
 #define PREF_NETWORK_HOSTS_NNTP_SERVER	"network.hosts.nntp_server"
-#define PREF_MAIL_ROOT_NNTP 	"mail.root.nntp"
+#define PREF_MAIL_ROOT_NNTP 	"mail.root.nntp"        // old - for backward compatibility only
+#define PREF_MAIL_ROOT_NNTP_REL 	"mail.root.nntp-rel"
 
 static NS_DEFINE_CID(kMessengerMigratorCID, NS_MESSENGERMIGRATOR_CID);
 static NS_DEFINE_CID(kIOServiceCID, NS_IOSERVICE_CID);
@@ -555,7 +558,7 @@ nsNntpService::DecomposeNewsMessageURI(const char * aMessageURI, nsIMsgFolder **
         {
           PRInt32 messageIdLength = questionPos - slashPos - 1;
           messageUri.Mid(messageId, slashPos + 1, messageIdLength);
-          nsUnescape(NS_CONST_CAST(char*, messageId.get()));
+          nsUnescape(messageId.BeginWriting());
           nsCOMPtr<nsIMsgMailSession> mailSession = do_GetService(NS_MSGMAILSESSION_CONTRACTID, &rv);
           NS_ENSURE_SUCCESS(rv, rv);
           nsCOMPtr <nsISupportsArray> msgWindows;
@@ -772,31 +775,22 @@ nsresult nsNntpService::FindHostFromGroup(nsCString &host, nsCString &groupName)
 }
 
 nsresult 
-nsNntpService::SetUpNntpUrlForPosting(nsINntpUrl *nntpUrl, const char *newsgroupsNames, nsIMsgIdentity *aSenderIdentity, char **newsUrlSpec)
+nsNntpService::SetUpNntpUrlForPosting(const char *aAccountKey, char **newsUrlSpec)
 {
   nsresult rv = NS_OK;
-  NS_ENSURE_ARG_POINTER(nntpUrl);
-  NS_ENSURE_ARG_POINTER(newsgroupsNames);
-  if (*newsgroupsNames == '\0') return NS_ERROR_FAILURE;
 
-  nsCAutoString host;
-  nsXPIDLCString temphost;
+  nsXPIDLCString host;
   PRInt32 port;
 
   nsCOMPtr<nsIMsgIncomingServer> nntpServer;
-  rv = GetNntpServerByIdentity(aSenderIdentity, getter_AddRefs(nntpServer));
+  rv = GetNntpServerByAccount(aAccountKey, getter_AddRefs(nntpServer));
   if (NS_SUCCEEDED(rv) && nntpServer)
   {
-    nntpServer->GetRealHostName(getter_Copies(temphost));
-    host = temphost;
+    nntpServer->GetRealHostName(getter_Copies(host));
     nntpServer->GetPort(&port);
   }
 
-  // if we *still* don't have a hostname, use "news"
-  if (host.IsEmpty()) 
-    host = "news";
-
-  *newsUrlSpec = PR_smprintf("%s/%s:%d",kNewsRootURI, host.get(), port);
+  *newsUrlSpec = PR_smprintf("%s/%s:%d",kNewsRootURI, host.IsEmpty() ? "news" : host.get(), port);
   if (!*newsUrlSpec) return NS_ERROR_FAILURE;
 
   return NS_OK;
@@ -933,49 +927,30 @@ nsNntpService::GenerateNewsHeaderValsForPosting(const char *newsgroupsList, char
 }
 
 nsresult
-nsNntpService::GetNntpServerByIdentity(nsIMsgIdentity *aSenderIdentity, nsIMsgIncomingServer **aNntpServer)
+nsNntpService::GetNntpServerByAccount(const char *aAccountKey, nsIMsgIncomingServer **aNntpServer)
 {
   NS_ENSURE_ARG_POINTER(aNntpServer);
   nsresult rv = NS_ERROR_FAILURE;
 
-  if (aSenderIdentity)
+  nsCOMPtr <nsIMsgAccountManager> accountManager = do_GetService(NS_MSGACCOUNTMANAGER_CONTRACTID, &rv);
+  NS_ENSURE_SUCCESS(rv,rv);
+  if (aAccountKey)
   {
-    nsCOMPtr <nsIMsgAccountManager> accountManager = do_GetService(NS_MSGACCOUNTMANAGER_CONTRACTID, &rv);
-    NS_ENSURE_SUCCESS(rv,rv);
-
-    nsCOMPtr <nsISupportsArray> servers;
-    accountManager->GetServersForIdentity(aSenderIdentity, getter_AddRefs(servers));
-    if (!servers) return NS_ERROR_FAILURE;
-
-    PRUint32 cnt = 0, i;
-    servers->Count(&cnt);
-    for (i=0; i<cnt; i++)
-    {
-      nsCOMPtr<nsIMsgIncomingServer> inServer; 
-      inServer = do_QueryElementAt(servers, i, &rv);
-      if(NS_FAILED(rv) || (!inServer))
-        continue;
-
-      nsXPIDLCString serverType;
-      rv = inServer->GetType(getter_Copies(serverType));
-      if(serverType.Equals("nntp"))
-      {
-        *aNntpServer = inServer;
-        NS_IF_ADDREF(*aNntpServer);
-        break;
-      }
-    }
-
-    // if we don't have a news host, find the first news server and use it
-    if (!*aNntpServer)
-      rv = accountManager->FindServer("","","nntp", aNntpServer);
+    nsCOMPtr <nsIMsgAccount> account;
+    rv = accountManager->GetAccount(aAccountKey, getter_AddRefs(account));
+    if (NS_SUCCEEDED(rv) && account)
+      rv = account->GetIncomingServer(aNntpServer);
   }
+
+  // if we don't have a news host, find the first news server and use it
+  if (NS_FAILED(rv) || !*aNntpServer)
+    rv = accountManager->FindServer("","","nntp", aNntpServer);
 
   return rv;
 }
 
 NS_IMETHODIMP
-nsNntpService::PostMessage(nsIFileSpec *fileToPost, const char *newsgroupsNames, nsIMsgIdentity *aSenderIdentity, nsIUrlListener * aUrlListener, nsIMsgWindow *aMsgWindow, nsIURI **_retval)
+nsNntpService::PostMessage(nsIFileSpec *fileToPost, const char *newsgroupsNames, const char *aAccountKey, nsIUrlListener * aUrlListener, nsIMsgWindow *aMsgWindow, nsIURI **_retval)
 {
   // aMsgWindow might be null
   NS_ENSURE_ARG_POINTER(newsgroupsNames);
@@ -993,7 +968,7 @@ nsNntpService::PostMessage(nsIFileSpec *fileToPost, const char *newsgroupsNames,
   NS_ENSURE_SUCCESS(rv,rv);
 
   nsXPIDLCString newsUrlSpec;
-  rv = SetUpNntpUrlForPosting(nntpUrl, newsgroupsNames, aSenderIdentity, getter_Copies(newsUrlSpec));
+  rv = SetUpNntpUrlForPosting(aAccountKey, getter_Copies(newsUrlSpec));
   NS_ENSURE_SUCCESS(rv,rv);
 
   nsCOMPtr<nsIMsgMailNewsUrl> mailnewsurl = do_QueryInterface(nntpUrl, &rv);
@@ -1463,11 +1438,16 @@ NS_IMETHODIMP nsNntpService::NewChannel(nsIURI *aURI, nsIChannel **_retval)
 NS_IMETHODIMP
 nsNntpService::SetDefaultLocalPath(nsIFileSpec *aPath)
 {
-    nsresult rv;
-    nsCOMPtr<nsIPrefBranch> prefBranch(do_GetService(NS_PREFSERVICE_CONTRACTID, &rv));
-    if (NS_FAILED(rv)) return rv;
-
-    return prefBranch->SetComplexValue(PREF_MAIL_ROOT_NNTP, NS_GET_IID(nsIFileSpec), aPath);
+    NS_ENSURE_ARG(aPath);
+    
+    nsFileSpec spec;
+    nsresult rv = aPath->GetFileSpec(&spec);
+    NS_ENSURE_SUCCESS(rv, rv);
+    nsCOMPtr<nsILocalFile> localFile;
+    NS_FileSpecToIFile(&spec, getter_AddRefs(localFile));
+    if (!localFile) return NS_ERROR_FAILURE;
+    
+    return NS_SetPersistentFile(PREF_MAIL_ROOT_NNTP_REL, PREF_MAIL_ROOT_NNTP, localFile);
 }
 
 NS_IMETHODIMP
@@ -1480,44 +1460,34 @@ nsNntpService::GetDefaultLocalPath(nsIFileSpec ** aResult)
     nsCOMPtr<nsIPrefBranch> prefBranch(do_GetService(NS_PREFSERVICE_CONTRACTID, &rv));
     if (NS_FAILED(rv)) return rv;
     
-    PRBool havePref = PR_FALSE;
-    nsCOMPtr<nsIFile> localFile;
-    nsCOMPtr<nsILocalFile> prefLocal;
-    rv = prefBranch->GetComplexValue(PREF_MAIL_ROOT_NNTP, NS_GET_IID(nsILocalFile),
-                                     getter_AddRefs(prefLocal));
-    if (NS_SUCCEEDED(rv))
-    {
-        localFile = prefLocal;
-        havePref = PR_TRUE;
-    }
-    if (!localFile)
-    {
-        rv = NS_GetSpecialDirectory(NS_APP_NEWS_50_DIR, getter_AddRefs(localFile));
-        if (NS_FAILED(rv)) return rv;
-        havePref = PR_FALSE;
-    }
+    PRBool havePref;
+    nsCOMPtr<nsILocalFile> localFile;    
+    rv = NS_GetPersistentFile(PREF_MAIL_ROOT_NNTP_REL,
+                              PREF_MAIL_ROOT_NNTP,
+                              NS_APP_NEWS_50_DIR,
+                              havePref,
+                              getter_AddRefs(localFile));
+    if (NS_FAILED(rv)) return rv;
 
     PRBool exists;
     rv = localFile->Exists(&exists);
-    if (NS_FAILED(rv)) return rv;
-    if (!exists)
-    {
+    if (NS_SUCCEEDED(rv) && !exists)
         rv = localFile->Create(nsIFile::DIRECTORY_TYPE, 0775);
-        if (NS_FAILED(rv)) return rv;
-    }
-    
+    NS_ENSURE_SUCCESS(rv, rv);    
     // Make the resulting nsIFileSpec
     // TODO: Convert arg to nsILocalFile and avoid this
     nsCOMPtr<nsIFileSpec> outSpec;
     rv = NS_NewFileSpecFromIFile(localFile, getter_AddRefs(outSpec));
-    if (NS_FAILED(rv)) return rv;
+    NS_ENSURE_SUCCESS(rv, rv);    
     
     if (!havePref || !exists)
-        rv = SetDefaultLocalPath(outSpec);
+    {
+        rv = NS_SetPersistentFile(PREF_MAIL_ROOT_NNTP_REL, PREF_MAIL_ROOT_NNTP, localFile);
+        NS_ASSERTION(NS_SUCCEEDED(rv), "Failed to set root dir pref.");
+    }
         
-    *aResult = outSpec;
-    NS_IF_ADDREF(*aResult);
-    return rv;
+    NS_IF_ADDREF(*aResult = outSpec);
+    return NS_OK;
 }
     
 NS_IMETHODIMP

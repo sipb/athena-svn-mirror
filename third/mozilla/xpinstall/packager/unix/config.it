@@ -7,6 +7,13 @@ Title=Mozilla Installer
 
 
 ;-------------------------------------------------------------------------
+[Cleanup On Upgrade]
+;-------------------------------------------------------------------------
+ObjectToIgnore0=plugins
+ObjectToIgnore1=install.log
+
+
+;-------------------------------------------------------------------------
 [Dialog Welcome]
 ;-------------------------------------------------------------------------
 Show Dialog=TRUE
@@ -233,10 +240,17 @@ XPInstall Engine=xpcom.xpi
 
 
 ;-------------------------------------------------------------------------
-[RunApp0]
+[PostInstallRun0]
 ;-------------------------------------------------------------------------
-Target=mozilla
-Arguments=-installer
+Target=run-mozilla.sh
+Arguments=regxpcom
+
+
+;-------------------------------------------------------------------------
+[PostInstallRun1]
+;-------------------------------------------------------------------------
+Target=run-mozilla.sh
+Arguments=regchrome
 
 
 ;-------------------------------------------------------------------------
@@ -244,4 +258,4 @@ Arguments=-installer
 ;-------------------------------------------------------------------------
 Filename=mozilla-bin
 ; *** LOCALIZE ME BABY ***
-Message=An older installation of Mozilla was detected.  Please choose to delete the directory contents of your current Mozilla installation by pressing the 'Delete' button.  Alternatively, please press the 'Cancel' button and choose a different destination directory.  
+Message=The selected directory already contains a Mozilla installation. To delete %s completely, please press the 'Delete Directory' button. Information in your Mozilla profile(s) should not be affected. Or, please press the 'Cancel' button and choose a different destination directory.

@@ -60,7 +60,6 @@ REQUIRES	= xpcom \
 		  msgnews \
 		  addrbook \
 		  prefmigr \
-		  chrome \
 		  mime \
 		  mimetype \
 		  windowwatcher \
@@ -132,6 +131,11 @@ endif
 
 ifdef MOZ_THUNDERBIRD
 CPPSRCS		+= nsMsgContentPolicy.cpp 
+
+ifneq (,$(filter cocoa mac, $(MOZ_WIDGET_TOOLKIT)))
+CPPSRCS         += nsMessengerOSXIntegration.cpp
+endif
+
 endif
 
 EXPORTS		= \

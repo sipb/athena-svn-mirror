@@ -48,22 +48,22 @@
 #include "nsCOMPtr.h"
 #include "nsIDOMSVGElement.h"
 #include "nsGenericElement.h"
-#include "nsSVGAttributes.h"
 #include "nsISVGValue.h"
 #include "nsISVGValueObserver.h"
 #include "nsWeakReference.h"
 #include "nsISVGStyleValue.h"
+#include "nsISVGContent.h"
 
-class nsSVGElement : public nsGenericElement,    // :nsIHTMLContent:nsIStyledContent:nsIContent
-                     public nsIDOMSVGElement,    // :nsIDOMElement:nsIDOMNode
+class nsSVGElement : public nsGenericElement,    // :nsIHTMLContent:nsIXMLContent:nsIStyledContent:nsIContent
                      public nsISVGValueObserver, 
-                     public nsSupportsWeakReference // :nsISupportsWeakReference
+                     public nsSupportsWeakReference, // :nsISupportsWeakReference
+                     public nsISVGContent
 {
 protected:
   nsSVGElement();
   virtual ~nsSVGElement();
 
-  virtual nsresult Init();
+  nsresult Init(nsINodeInfo* aNodeInfo);
 
 public:
   // nsISupports
@@ -71,85 +71,40 @@ public:
 
   // nsIContent interface methods
 
-  NS_IMETHOD_(PRBool) CanContainChildren() const;
-  NS_IMETHOD_(PRUint32) GetChildCount() const;
-  NS_IMETHOD_(nsIContent *) GetChildAt(PRUint32 aIndex) const;
-  NS_IMETHOD_(PRInt32) IndexOf(nsIContent* aPossibleChild) const;
-  NS_IMETHOD_(nsIAtom *) GetIDAttributeName() const;
-  NS_IMETHOD_(already_AddRefed<nsINodeInfo>) GetExistingAttrNameFromQName(const nsAString& aStr);
-  NS_IMETHOD SetAttr(PRInt32 aNameSpaceID, nsIAtom* aName, 
-                     const nsAString& aValue,
-                          PRBool aNotify);
-  NS_IMETHOD SetAttr(nsINodeInfo* aNodeInfo,
-                     const nsAString& aValue,
-                     PRBool aNotify);
-  NS_IMETHOD GetAttr(PRInt32 aNameSpaceID, nsIAtom* aName, 
-                     nsAString& aResult) const;
-  NS_IMETHOD GetAttr(PRInt32 aNameSpaceID, nsIAtom* aName, 
-                     nsIAtom** aPrefix,
-                     nsAString& aResult) const;
-  NS_IMETHOD_(PRBool) HasAttr(PRInt32 aNameSpaceID, nsIAtom* aName) const;
-  NS_IMETHOD UnsetAttr(PRInt32 aNameSpaceID, nsIAtom* aAttribute, 
-                       PRBool aNotify);
-  NS_IMETHOD GetAttrNameAt(PRUint32 aIndex,
-                           PRInt32* aNameSpaceID,
-                           nsIAtom** aName,
-                           nsIAtom** aPrefix) const;
-  NS_IMETHOD_(PRUint32) GetAttrCount() const;
-#ifdef DEBUG
-  NS_IMETHOD List(FILE* out, PRInt32 aIndent) const;
-  NS_IMETHOD DumpContent(FILE* out, PRInt32 aIndent,PRBool aDumpAll) const;
-#endif // DEBUG
-  
-  // Child list modification hooks
-  virtual PRBool InternalInsertChildAt(nsIContent* aKid, PRUint32 aIndex) {
-    return mChildren.InsertElementAt(aKid, aIndex);
+  virtual void SetParent(nsIContent* aParent);
+  virtual nsIAtom *GetIDAttributeName() const;
+  nsresult SetAttr(PRInt32 aNameSpaceID, nsIAtom* aName,
+                   const nsAString& aValue, PRBool aNotify)
+  {
+    return SetAttr(aNameSpaceID, aName, nsnull, aValue, aNotify);
   }
-  virtual PRBool InternalReplaceChildAt(nsIContent* aKid, PRUint32 aIndex) {
-    return mChildren.ReplaceElementAt(aKid, aIndex);
-  }
-  virtual PRBool InternalAppendChildTo(nsIContent* aKid) {
-    return mChildren.AppendElement(aKid);
-  }
-  virtual PRBool InternalRemoveChildAt(PRUint32 aIndex) {
-    return mChildren.RemoveElementAt(aIndex);
-  }
+  virtual nsresult SetAttr(PRInt32 aNameSpaceID, nsIAtom* aName,
+                           nsIAtom* aPrefix, const nsAString& aValue,
+                           PRBool aNotify);
 
-  // NS_IMETHOD RangeAdd(nsIDOMRange& aRange);
-//   NS_IMETHOD RangeRemove(nsIDOMRange& aRange);
-//   NS_IMETHOD GetRangeList(nsVoidArray** aResult) const;
-//   NS_IMETHOD HandleDOMEvent(nsIPresContext* aPresContext,
-//                             nsEvent* aEvent,
-//                             nsIDOMEvent** aDOMEvent,
-//                             PRUint32 aFlags,
-//                             nsEventStatus* aEventStatus);
-//   NS_IMETHOD GetContentID(PRUint32* aID);
-//   NS_IMETHOD SetContentID(PRUint32 aID);
-//   NS_IMETHOD SetFocus(nsIPresContext* aContext);
-//   NS_IMETHOD RemoveFocus(nsIPresContext* aContext);
-//   NS_IMETHOD GetBindingParent(nsIContent** aContent);
-//   NS_IMETHOD SetBindingParent(nsIContent* aParent);
-
-  // nsIXMLContent
-//   NS_IMETHOD MaybeTriggerAutoLink(nsIDocShell *aShell);
+  virtual nsresult SetBindingParent(nsIContent* aParent);
 
   // nsIStyledContent
   NS_IMETHOD GetID(nsIAtom** aResult) const;
-//   NS_IMETHOD GetClasses(nsVoidArray& aArray) const;
+//   virtual const nsAttrValue* GetClasses() const;
 //   NS_IMETHOD HasClass(nsIAtom* aClass) const;
   
   NS_IMETHOD WalkContentStyleRules(nsRuleWalker* aRuleWalker);
   NS_IMETHOD GetInlineStyleRule(nsICSSStyleRule** aStyleRule);
+
+  static const MappedAttributeEntry sFillStrokeMap[];
+  static const MappedAttributeEntry sGraphicsMap[];
+  static const MappedAttributeEntry sTextContentElementsMap[];
+  static const MappedAttributeEntry sFontSpecificationMap[];
   
   // nsIDOMNode
-  NS_DECL_NSIDOMNODE
-  
-  // nsIDOMElement
-  // NS_DECL_IDOMELEMENT
-  NS_FORWARD_NSIDOMELEMENT(nsGenericElement::)
+  NS_IMETHOD IsSupported(const nsAString& aFeature, const nsAString& aVersion, PRBool* aReturn);
   
   // nsIDOMSVGElement
-  NS_DECL_NSIDOMSVGELEMENT
+  NS_IMETHOD GetId(nsAString & aId);
+  NS_IMETHOD SetId(const nsAString & aId);
+  NS_IMETHOD GetOwnerSVGElement(nsIDOMSVGSVGElement** aOwnerSVGElement);
+  NS_IMETHOD GetViewportElement(nsIDOMSVGElement** aViewportElement);
 
   // nsISVGValueObserver
   NS_IMETHOD WillModifySVGObservable(nsISVGValue* observable);
@@ -157,14 +112,44 @@ public:
 
   // nsISupportsWeakReference
   // implementation inherited from nsSupportsWeakReference
+
+  // nsISVGContent
+  virtual void ParentChainChanged(); 
   
 protected:
+  /**
+   * Set attribute and (if needed) notify documentobservers and fire off
+   * mutation events.
+   *
+   * @param aNamespaceID  namespace of attribute
+   * @param aAttribute    local-name of attribute
+   * @param aPrefix       aPrefix of attribute
+   * @param aOldValue     previous value of attribute. Only needed if
+   *                      aFireMutation is true.
+   * @param aParsedValue  parsed new value of attribute
+   * @param aModification is this a attribute-modification or addition. Only
+   *                      needed if aFireMutation or aNotify is true.
+   * @param aFireMutation should mutation-events be fired?
+   * @param aNotify       should we notify document-observers?
+   */
+  nsresult SetAttrAndNotify(PRInt32 aNamespaceID,
+                            nsIAtom* aAttribute,
+                            nsIAtom* aPrefix,
+                            const nsAString& aOldValue,
+                            nsAttrValue& aParsedValue,
+                            PRBool aModification,
+                            PRBool aFireMutation,
+                            PRBool aNotify);
 
   nsresult CopyNode(nsSVGElement* dest, PRBool deep);
+  void UpdateContentStyleRule();
+  nsISVGValue* GetMappedAttribute(PRInt32 aNamespaceID, nsIAtom* aName);
+  nsresult AddMappedSVGValue(nsIAtom* aName, nsISupports* aValue,
+                             PRInt32 aNamespaceID = kNameSpaceID_None);
   
-  nsVoidArray                  mChildren;   
-  nsSVGAttributes*             mAttributes;
-  nsCOMPtr<nsISVGStyleValue>   mStyle;
+  nsCOMPtr<nsICSSStyleRule> mContentStyleRule;
+  nsAttrAndChildArray mMappedAttributes;
+  nsCOMPtr<nsISVGStyleValue> mStyle;
 };
 
 #endif // __NS_SVGELEMENT_H__

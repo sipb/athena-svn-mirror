@@ -65,6 +65,7 @@
 #include "prprf.h"
 #include "prmem.h"
 #include "plbase64.h"
+#include "prnetdb.h"
 #include "nsEscape.h"
 #include "nsMsgUtils.h"
 #include "nsIPipe.h"
@@ -289,6 +290,8 @@ void nsSmtpProtocol::Initialize(nsIURI * aURL)
     m_totalAmountWritten = 0;
 #endif /* UNREADY_CODE */
 
+    m_sendDone = PR_FALSE;
+
     m_sizelimit = 0;
     m_totalMessageSize = 0;
     nsCOMPtr<nsIFileSpec> fileSpec;
@@ -345,28 +348,34 @@ void nsSmtpProtocol::Initialize(nsIURI * aURL)
         return;
 }
 
-const char * nsSmtpProtocol::GetUserDomainName()
+void nsSmtpProtocol::GetUserDomainName(nsACString& aResult)
 {
   nsresult rv;
-  NS_PRECONDITION(m_runningURL, "we must be running a url in order to get the user's domain...");
   
-  if (m_runningURL)
+  PRNetAddr iaddr; // IP address for this connection
+  // our transport is always a nsISocketTransport
+  nsCOMPtr<nsISocketTransport> socketTransport = do_QueryInterface(m_transport); 
+  // should return the interface ip of the SMTP connection
+  // minimum case - see bug 68877 and RFC 2821, chapter 4.1.1.1
+  rv = socketTransport->GetSelfAddr(&iaddr);
+
+  if (NS_SUCCEEDED(rv))
   {
-    nsCOMPtr <nsIMsgIdentity> senderIdentity;
-    rv = m_runningURL->GetSenderIdentity(getter_AddRefs(senderIdentity));
-    if (NS_FAILED(rv) || !senderIdentity) 
-      return nsnull;
-				
-    rv =  senderIdentity->GetEmail(getter_Copies(m_mailAddr));
-    if (NS_FAILED(rv) || !((const char *)m_mailAddr)) 	
-      return nsnull;
-    
-    const char *atSignMarker = nsnull;
-    atSignMarker = PL_strchr(m_mailAddr, '@');
-    return atSignMarker ? atSignMarker+1 :  (const char *) m_mailAddr;  // return const ptr into buffer in running url...
+    // turn it into a string
+    char ipAddressString[64];
+    if (PR_NetAddrToString(&iaddr, ipAddressString, sizeof(ipAddressString)) == PR_SUCCESS) 
+    {
+      NS_ASSERTION(PR_IsNetAddrType(&iaddr, PR_IpAddrV4Mapped) == PR_FALSE,
+        "unexpected IPv4-mapped IPv6 address");
+
+      if (iaddr.raw.family == PR_AF_INET6)   // IPv6 style address?
+        aResult.Assign(NS_LITERAL_CSTRING("[IPv6:"));
+      else
+        aResult.Assign(NS_LITERAL_CSTRING("["));
+
+      aResult.Append(nsDependentCString(ipAddressString) + NS_LITERAL_CSTRING("]"));
+    }
   }
-  
-  return nsnull;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////
@@ -378,7 +387,7 @@ const char * nsSmtpProtocol::GetUserDomainName()
 NS_IMETHODIMP nsSmtpProtocol::OnStopRequest(nsIRequest *request, nsISupports *ctxt,
 nsresult aStatus)
 {
-  if (aStatus == NS_OK && m_nextState != SMTP_FREE) {
+  if (aStatus == NS_OK && !m_sendDone) {
     // if we are getting OnStopRequest() with NS_OK, 
     // but we haven't finished clean, that's spells trouble.
     // it means that the server has dropped us before we could send the whole mail
@@ -495,7 +504,10 @@ PRInt32 nsSmtpProtocol::ExtensionLoginResponse(nsIInputStream * inputStream, PRU
     return(NS_ERROR_COULD_NOT_LOGIN_TO_SMTP_SERVER);
   }
   
-  buffer += GetUserDomainName();
+  nsCAutoString domainName;
+  GetUserDomainName(domainName);
+
+  buffer += domainName;
   buffer += CRLF;
   
   nsCOMPtr<nsIURI> url = do_QueryInterface(m_runningURL);
@@ -590,7 +602,7 @@ PRInt32 nsSmtpProtocol::SendHeloResponse(nsIInputStream * inputStream, PRUint32 
       buffer += fullAddress;
       buffer += ">";
       if(TestFlag(SMTP_EHLO_SIZE_ENABLED))
-        buffer += nsPrintfCString(" SIZE=%d", m_totalMessageSize);;
+        buffer += nsPrintfCString(" SIZE=%d", m_totalMessageSize);
       buffer += CRLF;
     }
     PR_Free (fullAddress);
@@ -630,7 +642,10 @@ PRInt32 nsSmtpProtocol::SendEhloResponse(nsIInputStream * inputStream, PRUint32 
             }
 
             buffer = "HELO ";
-            buffer += GetUserDomainName();
+            nsCAutoString domainName;
+            GetUserDomainName(domainName);
+
+            buffer += domainName;
             buffer += CRLF;
             status = SendData(url, buffer.get());
         }
@@ -675,24 +690,30 @@ PRInt32 nsSmtpProtocol::SendEhloResponse(nsIInputStream * inputStream, PRUint32 
         }
         else if (responseLine.Compare("AUTH", PR_TRUE, 4) == 0)
         {
-            if (m_responseText.Find("PLAIN", PR_TRUE, 5) >= 0)  
+            if (responseLine.Find("PLAIN", PR_TRUE, 5) >= 0)  
                 SetFlag(SMTP_AUTH_PLAIN_ENABLED);
 
-            if (m_responseText.Find("LOGIN", PR_TRUE, 5) >= 0)  
+            if (responseLine.Find("LOGIN", PR_TRUE, 5) >= 0)  
                 SetFlag(SMTP_AUTH_LOGIN_ENABLED);
 
-            if (m_responseText.Find("EXTERNAL", PR_TRUE, 5) >= 0)  
+            if (responseLine.Find("EXTERNAL", PR_TRUE, 5) >= 0)  
                 SetFlag(SMTP_AUTH_EXTERNAL_ENABLED);
 
             if(m_prefTrySecAuth)
             {
-                if (m_responseText.Find("CRAM-MD5", PR_TRUE, 5) >= 0)
+                nsresult rv;
+                nsCOMPtr<nsISignatureVerifier> verifier = do_GetService(SIGNATURE_VERIFIER_CONTRACTID, &rv);
+                // this checks if psm is installed...
+                if (NS_SUCCEEDED(rv))
                 {
-                    nsresult rv;
-                    nsCOMPtr<nsISignatureVerifier> verifier = do_GetService(SIGNATURE_VERIFIER_CONTRACTID, &rv);
-                    // this checks if psm is installed...
-                    if (NS_SUCCEEDED(rv))
+                    if (responseLine.Find("CRAM-MD5", PR_TRUE, 5) >= 0)
                       SetFlag(SMTP_AUTH_CRAM_MD5_ENABLED);
+
+                    if (responseLine.Find("NTLM", PR_TRUE, 5) >= 0)  
+                        SetFlag(SMTP_AUTH_NTLM_ENABLED);
+
+                    if (responseLine.Find("MSN", PR_TRUE, 5) >= 0)
+                        SetFlag(SMTP_AUTH_MSN_ENABLED);
                 }
             }
 
@@ -794,41 +815,42 @@ PRInt32 nsSmtpProtocol::ProcessAuth()
                 return status;
             }
         }
-        else
-        if (m_prefTrySSL == PREF_SECURE_ALWAYS_STARTTLS)
+        else if (m_prefTrySSL == PREF_SECURE_ALWAYS_STARTTLS)
         {
             m_nextState = SMTP_ERROR_DONE;
             m_urlErrorState = NS_ERROR_COULD_NOT_LOGIN_TO_SMTP_SERVER;
             return(NS_ERROR_COULD_NOT_LOGIN_TO_SMTP_SERVER);
         }
-        }
+    }
 
-        if (TestFlag(SMTP_AUTH_EXTERNAL_ENABLED))
-        {
-            buffer = "AUTH EXTERNAL =";
-            buffer += CRLF;
-            SendData(url, buffer.get());
-            m_nextState = SMTP_RESPONSE;
-            m_nextStateAfterResponse = SMTP_AUTH_EXTERNAL_RESPONSE;
-            SetFlag(SMTP_PAUSE_FOR_READ);
-            return NS_OK;
-        }
-    else
-    if (m_prefAuthMethod == PREF_AUTH_ANY)
-        {
-        if (TestFlag(SMTP_AUTH_CRAM_MD5_ENABLED) ||
-            TestFlag(SMTP_AUTH_PLAIN_ENABLED))
-            m_nextState = SMTP_SEND_AUTH_LOGIN_USERNAME;
-        else if (TestFlag(SMTP_AUTH_LOGIN_ENABLED))
-            m_nextState = SMTP_SEND_AUTH_LOGIN;
-        else
-            m_nextState = SMTP_SEND_HELO_RESPONSE;
-        }
-        else
-            m_nextState = SMTP_SEND_HELO_RESPONSE;
-
+    if (TestFlag(SMTP_AUTH_EXTERNAL_ENABLED))
+    {
+        buffer = "AUTH EXTERNAL =";
+        buffer += CRLF;
+        SendData(url, buffer.get());
+        m_nextState = SMTP_RESPONSE;
+        m_nextStateAfterResponse = SMTP_AUTH_EXTERNAL_RESPONSE;
+        SetFlag(SMTP_PAUSE_FOR_READ);
         return NS_OK;
     }
+    else
+    if (m_prefAuthMethod == PREF_AUTH_ANY)
+    {
+        if (TestFlag(SMTP_AUTH_CRAM_MD5_ENABLED) ||
+            TestFlag(SMTP_AUTH_NTLM_ENABLED) ||
+            TestFlag(SMTP_AUTH_PLAIN_ENABLED))
+            m_nextState = SMTP_SEND_AUTH_LOGIN_STEP1;
+        else if (TestFlag(SMTP_AUTH_LOGIN_ENABLED) ||
+            TestFlag(SMTP_AUTH_MSN_ENABLED))
+            m_nextState = SMTP_SEND_AUTH_LOGIN_STEP0;
+        else
+            m_nextState = SMTP_SEND_HELO_RESPONSE;
+    }
+    else
+        m_nextState = SMTP_SEND_HELO_RESPONSE;
+
+    return NS_OK;
+}
 
 
 void nsSmtpProtocol::BackupAuthFlags()
@@ -850,14 +872,14 @@ PRInt32 nsSmtpProtocol::AuthLoginResponse(nsIInputStream * stream, PRUint32 leng
 
   switch (m_responseCode/100) 
   {
-  case 2:
+    case 2:
       m_nextState = SMTP_SEND_HELO_RESPONSE;
       break;
-  case 3:
-      m_nextState = SMTP_SEND_AUTH_LOGIN_PASSWORD;
+    case 3:
+      m_nextState = SMTP_SEND_AUTH_LOGIN_STEP2;
       break;
-  case 5:
-  default:
+    case 5:
+    default:
       if (smtpServer)
       {
         // If one authentication failed, we're going to
@@ -865,16 +887,19 @@ PRInt32 nsSmtpProtocol::AuthLoginResponse(nsIInputStream * stream, PRUint32 leng
         if(TestFlag(SMTP_AUTH_DIGEST_MD5_ENABLED))
           // if DIGEST-MD5 enabled, clear it if we failed.
           ClearFlag(SMTP_AUTH_DIGEST_MD5_ENABLED);
-        else
-        if(TestFlag(SMTP_AUTH_CRAM_MD5_ENABLED))
+        else if(TestFlag(SMTP_AUTH_CRAM_MD5_ENABLED))
           // if CRAM-MD5 enabled, clear it if we failed. 
           ClearFlag(SMTP_AUTH_CRAM_MD5_ENABLED);
-        else
-        if(TestFlag(SMTP_AUTH_PLAIN_ENABLED))
+        else if(TestFlag(SMTP_AUTH_NTLM_ENABLED))
+          // if NTLM enabled, clear it if we failed. 
+          ClearFlag(SMTP_AUTH_NTLM_ENABLED);
+        else if(TestFlag(SMTP_AUTH_MSN_ENABLED))
+          // if MSN enabled, clear it if we failed. 
+          ClearFlag(SMTP_AUTH_MSN_ENABLED);
+        else if(TestFlag(SMTP_AUTH_PLAIN_ENABLED))
           // if PLAIN enabled, clear it if we failed. 
           ClearFlag(SMTP_AUTH_PLAIN_ENABLED);
-        else
-        if(TestFlag(SMTP_AUTH_LOGIN_ENABLED))
+        else if(TestFlag(SMTP_AUTH_LOGIN_ENABLED))
           // if LOGIN enabled, clear it if we failed. 
           ClearFlag(SMTP_AUTH_LOGIN_ENABLED);
 
@@ -901,31 +926,32 @@ PRInt32 nsSmtpProtocol::AuthLoginResponse(nsIInputStream * stream, PRUint32 leng
   return (status);
 }
 
-// LOGIN consists of three steps not two as PLAIN or CRAM-MD5,
-// so we've to start here and continue in AuthLoginUsername if the
-// server responds with with 200 or 300 code to "AUTH LOGIN"
-PRInt32 nsSmtpProtocol::SendAuthLogin()
+// LOGIN and MSN consist of three steps (MSN not through the mechanism
+// but by non-RFC2821 compliant implementation in M$ servers) not two as
+// PLAIN or CRAM-MD5, so we've to start here and continue with AuthStep1
+// if the server responds with with a 3xx code to "AUTH LOGIN" or "AUTH MSN"
+PRInt32 nsSmtpProtocol::AuthLoginStep0()
 {
-    nsCAutoString command("AUTH LOGIN" CRLF);
+    nsCAutoString command(TestFlag(SMTP_AUTH_MSN_ENABLED) ? "AUTH MSN" CRLF :
+                                                            "AUTH LOGIN" CRLF);
     m_nextState = SMTP_RESPONSE;
-    m_nextStateAfterResponse = SMTP_LOGIN_RESPONSE;
+    m_nextStateAfterResponse = SMTP_AUTH_LOGIN_STEP0_RESPONSE;
     SetFlag(SMTP_PAUSE_FOR_READ);
 
     return SendData(m_url, command.get());
 }
 
-PRInt32 nsSmtpProtocol::LoginResponse()
+PRInt32 nsSmtpProtocol::AuthLoginStep0Response()
 {
-    // need the test to be here instead in AuthResponse() to
-    // differentiate between command AUTH LOGIN failed and
-    // sending username using LOGIN mechanism failed.
+    // need the test to be here instead in AuthLoginResponse() to
+    // continue with step 1 instead of 2 in case of a code 3xx
     m_nextState = (m_responseCode/100 == 3) ?
-                  SMTP_SEND_AUTH_LOGIN_USERNAME : SMTP_AUTH_LOGIN_RESPONSE;
+                  SMTP_SEND_AUTH_LOGIN_STEP1 : SMTP_AUTH_LOGIN_RESPONSE;
 
     return 0;
 }
 
-PRInt32 nsSmtpProtocol::AuthLoginUsername()
+PRInt32 nsSmtpProtocol::AuthLoginStep1()
 {
   char buffer[512];
   nsresult rv;
@@ -957,6 +983,18 @@ PRInt32 nsSmtpProtocol::AuthLoginUsername()
   else
     password.Assign(mLogonCookie);
   
+  if (TestFlag(SMTP_AUTH_CRAM_MD5_ENABLED))
+    PR_snprintf(buffer, sizeof(buffer), "AUTH CRAM-MD5" CRLF);
+  else
+  if (TestFlag(SMTP_AUTH_NTLM_ENABLED) || TestFlag(SMTP_AUTH_MSN_ENABLED))
+  {
+    nsCAutoString response;
+    rv = DoNtlmStep1(username.get(), password.get(), response);
+    PR_snprintf(buffer, sizeof(buffer), TestFlag(SMTP_AUTH_NTLM_ENABLED) ?
+                                        "AUTH NTLM %.256s" CRLF :
+                                        "%.256s" CRLF, response.get());
+  }
+  else
   if (TestFlag(SMTP_AUTH_PLAIN_ENABLED))
   {
     char plain_string[512];
@@ -970,38 +1008,29 @@ PRInt32 nsSmtpProtocol::AuthLoginUsername()
     len += password.Length();
     
     base64Str = PL_Base64Encode(plain_string, len, nsnull);
+    PR_snprintf(buffer, sizeof(buffer), "AUTH PLAIN %.256s" CRLF, base64Str);
   }
   else
+  if (TestFlag(SMTP_AUTH_LOGIN_ENABLED))
   {
-    base64Str = 
-      PL_Base64Encode((const char *) username, 
-      strlen((const char*)username), nsnull);
+    base64Str = PL_Base64Encode((const char *)username, 
+        strlen((const char*)username), nsnull);
+    PR_snprintf(buffer, sizeof(buffer), "%.256s" CRLF, base64Str);
   } 
-
-  if (base64Str) {
-    // if cram md5 available, let's use it.
-    if (TestFlag(SMTP_AUTH_CRAM_MD5_ENABLED))
-      PR_snprintf(buffer, sizeof(buffer), "AUTH CRAM-MD5" CRLF);
-    else if (TestFlag(SMTP_AUTH_PLAIN_ENABLED))
-      PR_snprintf(buffer, sizeof(buffer), "AUTH PLAIN %.256s" CRLF, base64Str);
-    else if (TestFlag(SMTP_AUTH_LOGIN_ENABLED))
-      PR_snprintf(buffer, sizeof(buffer), "%.256s" CRLF, base64Str);
-    else
-      return (NS_ERROR_COMMUNICATIONS_ERROR);
+  else
+    return (NS_ERROR_COMMUNICATIONS_ERROR);
     
-    nsCOMPtr<nsIURI> url = do_QueryInterface(m_runningURL);
-    status = SendData(url, buffer, PR_TRUE);
-    m_nextState = SMTP_RESPONSE;
-    m_nextStateAfterResponse = SMTP_AUTH_LOGIN_RESPONSE;
-    SetFlag(SMTP_PAUSE_FOR_READ);
-    nsCRT::free(base64Str);
+  nsCOMPtr<nsIURI> url = do_QueryInterface(m_runningURL);
+  status = SendData(url, buffer, PR_TRUE);
+  m_nextState = SMTP_RESPONSE;
+  m_nextStateAfterResponse = SMTP_AUTH_LOGIN_RESPONSE;
+  SetFlag(SMTP_PAUSE_FOR_READ);
+  nsCRT::free(base64Str);
     
-    return (status);
-  }
-  return -1;
+  return (status);
 }
 
-PRInt32 nsSmtpProtocol::AuthLoginPassword()
+PRInt32 nsSmtpProtocol::AuthLoginStep2()
 {
   
   /* use cached smtp password first
@@ -1067,12 +1096,19 @@ PRInt32 nsSmtpProtocol::AuthLoginPassword()
         PR_snprintf(buffer, sizeof(buffer), "*" CRLF);
     }
     else
+    if (TestFlag(SMTP_AUTH_NTLM_ENABLED) || TestFlag(SMTP_AUTH_MSN_ENABLED))
+    {
+      nsCAutoString response;
+      rv = DoNtlmStep2(m_responseText, response);
+      PR_snprintf(buffer, sizeof(buffer), "%.256s" CRLF, response.get());
+    }
+    else
     {
       char *base64Str = PL_Base64Encode(password.get(), password.Length(), nsnull);
-      
       PR_snprintf(buffer, sizeof(buffer), "%.256s" CRLF, base64Str);
       nsCRT::free(base64Str);
     }
+
     nsCOMPtr<nsIURI> url = do_QueryInterface(m_runningURL);
     status = SendData(url, buffer, PR_TRUE);
     m_nextState = SMTP_RESPONSE;
@@ -1384,6 +1420,7 @@ PRInt32 nsSmtpProtocol::SendMessageResponse()
   UpdateStatus(SMTP_PROGRESS_MAILSENT);
 
     /* else */
+    m_sendDone = PR_TRUE;
 	nsCOMPtr<nsIURI> url = do_QueryInterface(m_runningURL);
        SendData(url, "QUIT"CRLF); // send a quit command to close the connection with the server.
 	m_nextState = SMTP_RESPONSE;
@@ -1552,12 +1589,12 @@ nsresult nsSmtpProtocol::LoadUrl(nsIURI * aURL, nsISupports * aConsumer )
        status = ProcessAuth();
        break;
        
-      case SMTP_SEND_AUTH_LOGIN:
-        status = SendAuthLogin();
+      case SMTP_SEND_AUTH_LOGIN_STEP0:
+        status = AuthLoginStep0();
         break;
       
-      case SMTP_LOGIN_RESPONSE:
-        status = LoginResponse();
+      case SMTP_AUTH_LOGIN_STEP0_RESPONSE:
+        status = AuthLoginStep0Response();
         break;
       
       case SMTP_AUTH_EXTERNAL_RESPONSE:
@@ -1568,12 +1605,12 @@ nsresult nsSmtpProtocol::LoadUrl(nsIURI * aURL, nsISupports * aConsumer )
           status = AuthLoginResponse(inputStream, length);
         break;
       
-      case SMTP_SEND_AUTH_LOGIN_USERNAME:
-        status = AuthLoginUsername();
+      case SMTP_SEND_AUTH_LOGIN_STEP1:
+        status = AuthLoginStep1();
         break;
       
-      case SMTP_SEND_AUTH_LOGIN_PASSWORD:
-        status = AuthLoginPassword(); 
+      case SMTP_SEND_AUTH_LOGIN_STEP2:
+        status = AuthLoginStep2(); 
         break;
       
       case SMTP_SEND_VRFY_RESPONSE:

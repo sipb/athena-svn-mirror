@@ -97,9 +97,11 @@ nsresult nsCollationOS2::CompareString(const nsCollationStrength strength,
   LocaleObject locObj = NULL;
   int ret = UniCreateLocaleObject(UNI_UCS_STRING_POINTER, (UniChar *)L"", &locObj);
   if (ret != ULS_SUCCESS)
-    UniCreateLocaleObject(UNI_UCS_STRING_POINTER, (UniChar *)L"en_US", &locObj);
+    UniCreateLocaleObject(UNI_UCS_STRING_POINTER, (UniChar *)L"C", &locObj);
 
   *result = UniStrcoll(locObj, (UniChar *)stringNormalized1.get(), (UniChar *)stringNormalized2.get());
+
+  UniFreeLocaleObject(locObj);
 
   return NS_OK;
 }
@@ -122,7 +124,7 @@ nsresult nsCollationOS2::AllocateRawSortKey(const nsCollationStrength strength,
   LocaleObject locObj = NULL;
   int ret = UniCreateLocaleObject(UNI_UCS_STRING_POINTER, (UniChar *)L"", &locObj);
   if (ret != ULS_SUCCESS)
-    UniCreateLocaleObject(UNI_UCS_STRING_POINTER, (UniChar *)L"en_US", &locObj);
+    UniCreateLocaleObject(UNI_UCS_STRING_POINTER, (UniChar *)L"C", &locObj);
 
   res = NS_ERROR_FAILURE;               // From here on out assume failure...
   int length = UniStrxfrm(locObj, NULL, NS_REINTERPRET_CAST(const UniChar *,stringNormalized.get()),0);

@@ -167,13 +167,8 @@ function loadHelpRDF() {
 
         // cache toc datasources for use by ID lookup.
         var tree = document.getElementById("help-" + panelID + "-panel");
+        loadDatabasesBlocking(datasources);
         tree.setAttribute("datasources", datasources);
-        //if (panelID == "toc") {
-          if (tree.database) {
-            loadDatabases(tree.database, datasources);
-            tree.builder.rebuild();
-          }
-        //}
       }  
     }
     catch (e) {
@@ -181,7 +176,8 @@ function loadHelpRDF() {
     }
   }
 }
-function loadDatabases(compositeDatabase, datasources) {
+
+function loadDatabasesBlocking(datasources) {
   var ds = datasources.split(/\s+/);
   for (var i=0; i < ds.length; ++i) {
     if (ds[i] == "rdf:null" || ds[i] == "")
@@ -189,8 +185,6 @@ function loadDatabases(compositeDatabase, datasources) {
     try {  
       // we need blocking here to ensure the database is loaded so getLink(topic) works.
       var datasource = RDF.GetDataSourceBlocking(ds[i]);
-      if (datasource)  
-        compositeDatabase.AddDataSource(datasource);
     }
     catch (e) {
       log("Datasource: " + ds[i] + " was not found.");
@@ -661,3 +655,27 @@ function displayIndex() {
       treeview.toggleOpenState(i);
 }
 
+// Shows the panel relative to the currently selected panel.
+// Takes a boolean parameter - if true it will show the next panel, 
+// otherwise it will show the previous panel.
+function showRelativePanel(goForward) {
+  var selectedIndex = -1;
+  var sidebarBox = document.getElementById("helpsidebar-box");
+  var sidebarButtons = new Array();
+  for (var i = 0; i < sidebarBox.childNodes.length; i++) {
+    var btn = sidebarBox.childNodes[i];
+    if (btn.nodeName == "button") {
+      if (btn.getAttribute("selected") == "true")
+        selectedIndex = sidebarButtons.length;
+      sidebarButtons.push(btn);
+    }
+  }
+  if (selectedIndex == -1)
+    return;
+  selectedIndex += goForward ? 1 : -1;
+  if (selectedIndex >= sidebarButtons.length)
+    selectedIndex = 0;
+  else if (selectedIndex < 0)
+    selectedIndex = sidebarButtons.length - 1;
+  sidebarButtons[selectedIndex].doCommand();
+}

@@ -95,6 +95,10 @@ protected:
       mCount(0),
       mSimpleCurItem(0),
       mStringCurItem(0) { }
+
+  // A virtual destructor is needed here because subclasses of
+  // BaseStringEnumerator do not implement their own Release() method.
+
   virtual ~BaseStringEnumerator()
   {
     if (mArray)
@@ -788,7 +792,7 @@ NS_CreateServicesFromCategory(const char *category,
             // try an observer, if it implements it.
             nsCOMPtr<nsIObserver> observer = do_QueryInterface(instance, &rv);
             if (NS_SUCCEEDED(rv) && observer)
-                observer->Observe(origin, observerTopic, NS_LITERAL_STRING("").get());
+                observer->Observe(origin, observerTopic, EmptyString().get());
         }
     }
     return (nFailed ? NS_ERROR_FAILURE : NS_OK);

@@ -1,4 +1,4 @@
-/* -*- Mode: C++; tab-width: 2; indent-tabs-mode: nil; c-basic-offset: 2 -*- */ 
+/* -*- Mode: C++; tab-width: 2; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
 /* ***** BEGIN LICENSE BLOCK *****
  * Version: NPL 1.1/GPL 2.0/LGPL 2.1
  *
@@ -57,7 +57,8 @@
 #include "nsIFontMetrics.h"
 #include "nsIFontEnumerator.h" 
 #include "nsIFontPackageService.h"
-#include "nsIPref.h"
+#include "nsIPrefBranch.h"
+#include "nsIPrefService.h"
 #include "nsFont.h"
 #include "nsGUIEvent.h"
 #include "nsIRenderingContext.h"
@@ -238,6 +239,8 @@ static LONG  gLastClickCount    = 0L;
 // compatible with PR_IntervalToMicroseconds(PR_IntervalNow()).
 static PRUint32 gLastInputEventTime = 0;
 
+static int gTrimOnMinimize = 2; // uninitialized, but still true
+
 #if 0
 static PRBool is_vk_down(int vk)
 {
@@ -245,11 +248,11 @@ static PRBool is_vk_down(int vk)
 #ifdef DEBUG
    printf("is_vk_down vk=%x st=%x\n",vk, st);
 #endif
-   return (st & 0x80) ? PR_TRUE : PR_FALSE;
+   return (st < 0);
 }
 #define IS_VK_DOWN is_vk_down
 #else
-#define IS_VK_DOWN(a) (PRBool)(((GetKeyState(a) & 0x80)) ? (PR_TRUE) : (PR_FALSE))
+#define IS_VK_DOWN(a) (GetKeyState(a) < 0)
 #endif
 
 
@@ -553,7 +556,7 @@ public:
       delete current;
     }
   }
-  void AddTimer(HWND timerWindow, HWND flashWindow, UINT timerID) {
+  void AddTimer(HWND timerWindow, HWND flashWindow, PRInt32 maxFlashCount, UINT timerID) {
     TimerInfo *info;
     PRBool    newInfo = PR_FALSE;
     info = FindInfo(timerWindow);
@@ -564,6 +567,8 @@ public:
     if (info) {
       info->timerWindow = timerWindow;
       info->flashWindow = flashWindow;
+      info->maxFlashCount = maxFlashCount;
+      info->flashCount = 0;
       info->timerID = timerID;
       info->hasFlashed = PR_FALSE;
       info->next = 0;
@@ -574,6 +579,18 @@ public:
   HWND GetFlashWindowFor(HWND timerWindow) {
     TimerInfo *info = FindInfo(timerWindow);
     return info ? info->flashWindow : 0;
+  }
+  PRInt32 GetMaxFlashCount(HWND timerWindow) {
+    TimerInfo *info = FindInfo(timerWindow);
+    return info ? info->maxFlashCount : -1;
+  }
+  PRInt32 GetFlashCount(HWND timerWindow) {
+    TimerInfo *info = FindInfo(timerWindow);
+    return info ? info->flashCount : -1;
+  }
+  void IncrementFlashCount(HWND timerWindow) {
+    TimerInfo *info = FindInfo(timerWindow);
+    ++(info->flashCount);
   }
   void KillTimer(HWND timerWindow) {
     TimerInfo *info = FindInfo(timerWindow);
@@ -597,6 +614,8 @@ private:
     HWND       timerWindow,
                flashWindow;
     UINT       timerID;
+    PRInt32    maxFlashCount;
+    PRInt32    flashCount;
     PRBool     hasFlashed;
     TimerInfo *next;
   };
@@ -960,9 +979,8 @@ PRBool nsWindow::ConvertStatus(nsEventStatus aStatus)
 // Initialize an event to dispatch
 //
 //-------------------------------------------------------------------------
-void nsWindow::InitEvent(nsGUIEvent& event, PRUint32 aEventType, nsPoint* aPoint)
+void nsWindow::InitEvent(nsGUIEvent& event, nsPoint* aPoint)
 {
-    event.widget = this;
     NS_ADDREF(event.widget);
 
     if (nsnull == aPoint) {     // use the point from the event
@@ -970,8 +988,8 @@ void nsWindow::InitEvent(nsGUIEvent& event, PRUint32 aEventType, nsPoint* aPoint
       DWORD pos = ::GetMessagePos();
       POINT cpos;
 
-      cpos.x = (short)LOWORD(pos);
-      cpos.y = (short)HIWORD(pos);
+      cpos.x = GET_X_LPARAM(pos);
+      cpos.y = GET_Y_LPARAM(pos);
 
       if (mWnd != NULL) {
         ::ScreenToClient(mWnd, &cpos);
@@ -988,7 +1006,6 @@ void nsWindow::InitEvent(nsGUIEvent& event, PRUint32 aEventType, nsPoint* aPoint
     }
 
     event.time = ::GetMessageTime();
-    event.message = aEventType;
 
     mLastPoint.x = event.point.x;
     mLastPoint.y = event.point.y;
@@ -1084,9 +1101,8 @@ PRBool nsWindow::DispatchWindowEvent(nsGUIEvent*event, nsEventStatus &aStatus) {
 
 PRBool nsWindow::DispatchStandardEvent(PRUint32 aMsg)
 {
-  nsGUIEvent event;
-  event.eventStructType = NS_GUI_EVENT;
-  InitEvent(event, aMsg);
+  nsGUIEvent event(aMsg, this);
+  InitEvent(event);
 
   PRBool result = DispatchWindowEvent(&event);
   NS_RELEASE(event.widget);
@@ -1100,9 +1116,9 @@ PRBool nsWindow::DispatchStandardEvent(PRUint32 aMsg)
 //-------------------------------------------------------------------------
 PRBool nsWindow::DispatchAppCommandEvent(PRUint32 aEventCommand)
 {
-  nsAppCommandEvent event;
+  nsAppCommandEvent event(NS_APPCOMMAND_START, this);
 
-  InitEvent(event, NS_APPCOMMAND_START);
+  InitEvent(event);
   event.appCommand = NS_APPCOMMAND_START + aEventCommand;
 
   DispatchWindowEvent(&event);
@@ -1157,8 +1173,8 @@ nsWindow::EventIsInsideWindow(UINT Msg, nsWindow* aWindow)
   ::GetWindowRect(aWindow->mWnd, &r);
   DWORD pos = ::GetMessagePos();
   POINT mp;
-  mp.x = (short)LOWORD(pos);
-  mp.y = (short)HIWORD(pos);
+  mp.x = GET_X_LPARAM(pos);
+  mp.y = GET_Y_LPARAM(pos);
 
   // was the event inside this window?
   return (PRBool) PtInRect(&r, mp);
@@ -1513,6 +1529,25 @@ nsresult nsWindow::StandardWindowCreate(nsIWidget *aParent,
     DispatchStandardEvent(NS_CREATE);
     SubclassWindow(TRUE);
 
+    if (gTrimOnMinimize == 2 && mWindowType == eWindowType_invisible) {
+      /* not yet initialized, and this is the hidden window
+         (conveniently created before any visible windows and after
+         the profile has been initialized) */
+      gTrimOnMinimize = 1;
+      nsCOMPtr<nsIPrefService> prefs = do_GetService(NS_PREFSERVICE_CONTRACTID);
+      if (prefs) {
+        nsCOMPtr<nsIPrefBranch> prefBranch;
+        prefs->GetBranch(0, getter_AddRefs(prefBranch));
+        if (prefBranch) {
+          PRBool trimOnMinimize;
+          if (NS_SUCCEEDED(prefBranch->GetBoolPref("config.trim_on_minimize",
+                                                   &trimOnMinimize))
+              && !trimOnMinimize)
+            gTrimOnMinimize = 0;
+        }
+      }
+    }
+
     return(NS_OK);
 }
 
@@ -1801,7 +1836,7 @@ NS_IMETHODIMP nsWindow::SetSizeMode(PRInt32 aMode) {
         mode = SW_MAXIMIZE;
         break;
       case nsSizeMode_Minimized :
-        mode = SW_MINIMIZE;
+        mode = gTrimOnMinimize ? SW_MINIMIZE : SW_SHOWMINIMIZED;
         break;
       default :
         mode = SW_RESTORE;
@@ -2269,7 +2304,23 @@ void nsWindow::GetNonClientBounds(nsRect &aRect)
   }
 }
 
-           
+// like GetBounds, but don't offset by the parent
+NS_METHOD nsWindow::GetScreenBounds(nsRect &aRect)
+{
+  if (mWnd) {
+    RECT r;
+    VERIFY(::GetWindowRect(mWnd, &r));
+
+    aRect.width  = r.right - r.left;
+    aRect.height = r.bottom - r.top;
+    aRect.x = r.left;
+    aRect.y = r.top;
+  } else
+    aRect = mBounds;
+
+  return NS_OK;
+}
+
 //-------------------------------------------------------------------------
 //
 // Set the background color
@@ -2872,13 +2923,10 @@ UINT nsWindow::MapFromNativeToDOM(UINT aNativeKeyCode)
 //-------------------------------------------------------------------------
 PRBool nsWindow::DispatchKeyEvent(PRUint32 aEventType, WORD aCharCode, UINT aVirtualCharCode, LPARAM aKeyData)
 {
-  nsKeyEvent event;
-  nsPoint point;
+  nsKeyEvent event(aEventType, this);
+  nsPoint point(0, 0);
 
-  point.x = 0;
-  point.y = 0;
-
-  InitEvent(event, aEventType, &point); // this add ref's event.widget
+  InitEvent(event, &point); // this add ref's event.widget
 
   event.charCode = aCharCode;
   event.keyCode  = aVirtualCharCode;
@@ -2907,7 +2955,6 @@ PRBool nsWindow::DispatchKeyEvent(PRUint32 aEventType, WORD aCharCode, UINT aVir
   event.isControl = mIsControlDown;
   event.isMeta   =  PR_FALSE;
   event.isAlt     = mIsAltDown;
-  event.eventStructType = NS_KEY_EVENT;
 
   nsPluginEvent pluginEvent;
 
@@ -3120,11 +3167,10 @@ BOOL nsWindow::OnChar( UINT mbcsCharCode, UINT virtualKeyCode, bool isMultiByte 
 
 void nsWindow::ConstrainZLevel(HWND *aAfter) {
 
-  nsZLevelEvent  event;
+  nsZLevelEvent  event(NS_SETZLEVEL, this);
   nsWindow      *aboveWindow = 0;
 
-  event.eventStructType = NS_ZLEVEL_EVENT;
-  InitEvent(event, NS_SETZLEVEL);
+  InitEvent(event);
 
   if (*aAfter == HWND_BOTTOM)
     event.mPlacement = nsWindowZBottom;
@@ -3663,17 +3709,15 @@ PRBool nsWindow::ProcessMessage(UINT msg, WPARAM wParam, LPARAM lParam, LRESULT 
         case WM_COMMAND: {
           WORD wNotifyCode = HIWORD(wParam); // notification code 
           if ((CBN_SELENDOK == wNotifyCode) || (CBN_SELENDCANCEL == wNotifyCode)) { // Combo box change
-            nsGUIEvent event;
-            event.eventStructType = NS_GUI_EVENT;
+            nsGUIEvent event(NS_CONTROL_CHANGE, this);
             nsPoint point(0,0);
-            InitEvent(event, NS_CONTROL_CHANGE, &point); // this add ref's event.widget
+            InitEvent(event, &point); // this add ref's event.widget
             result = DispatchWindowEvent(&event);
             NS_RELEASE(event.widget);
           } else if (wNotifyCode == 0) { // Menu selection
-            nsMenuEvent event;
+            nsMenuEvent event(NS_MENU_SELECTED, this);
             event.mCommand = LOWORD(wParam);
-            event.eventStructType = NS_MENU_EVENT;
-            InitEvent(event, NS_MENU_SELECTED);
+            InitEvent(event);
             result = DispatchWindowEvent(&event);
             NS_RELEASE(event.widget);
           }
@@ -3739,12 +3783,18 @@ PRBool nsWindow::ProcessMessage(UINT msg, WPARAM wParam, LPARAM lParam, LRESULT 
                   // Changing nsIPref entry which triggers callbacks
                   // and flows into calling mDeviceContext->FlushFontCache()
                   // to update the font cache in all the instance of Browsers
-                  nsCOMPtr<nsIPref> pPrefs = do_GetService(NS_PREF_CONTRACTID, &rv); 
-                  if (NS_SUCCEEDED(rv)) { 
-                    PRBool fontInternalChange = PR_FALSE;  
-                    pPrefs->GetBoolPref("font.internaluseonly.changed", &fontInternalChange);
-                    pPrefs->SetBoolPref("font.internaluseonly.changed", !fontInternalChange);
-                  }                
+                  nsCOMPtr<nsIPrefService> prefs =
+                                    do_GetService(NS_PREFSERVICE_CONTRACTID);
+                  if (prefs) {
+                    nsCOMPtr<nsIPrefBranch> fiPrefs;
+                    prefs->GetBranch("font.internaluseonly.",
+                                     getter_AddRefs(fiPrefs));
+                    if (fiPrefs) {
+                      PRBool fontInternalChange = PR_FALSE;  
+                      fiPrefs->GetBoolPref("changed", &fontInternalChange);
+                      fiPrefs->SetBoolPref("changed", !fontInternalChange);
+                    }
+                  }
                 }
               }
             } //if (NS_SUCCEEDED(rv))
@@ -3753,8 +3803,8 @@ PRBool nsWindow::ProcessMessage(UINT msg, WPARAM wParam, LPARAM lParam, LRESULT 
 
         case WM_MOVE: // Window moved 
           {
-            PRInt32 x = (PRInt32)LOWORD(lParam); // horizontal position in screen coordinates 
-            PRInt32 y = (PRInt32)HIWORD(lParam); // vertical position in screen coordinates 
+            PRInt32 x = GET_X_LPARAM(lParam); // horizontal position in screen coordinates 
+            PRInt32 y = GET_Y_LPARAM(lParam); // vertical position in screen coordinates 
             result = OnMove(x, y); 
           }
           break;
@@ -3964,8 +4014,8 @@ PRBool nsWindow::ProcessMessage(UINT msg, WPARAM wParam, LPARAM lParam, LRESULT 
             {
               POINT mp;
               DWORD pos = ::GetMessagePos();
-              mp.x      = (short)LOWORD(pos);
-              mp.y      = (short)HIWORD(pos);
+              mp.x      = GET_X_LPARAM(pos);
+              mp.y      = GET_Y_LPARAM(pos);
               PRBool userMovedMouse = PR_FALSE;
               if ((gLastMouseMovePoint.x != mp.x) ||
                   (gLastMouseMovePoint.y != mp.y)) {
@@ -4103,9 +4153,8 @@ PRBool nsWindow::ProcessMessage(UINT msg, WPARAM wParam, LPARAM lParam, LRESULT 
               gJustGotDeactivate = PR_TRUE;
             } else {
               gJustGotActivate = PR_TRUE;
-              nsMouseEvent event;
-              event.eventStructType = NS_GUI_EVENT;
-              InitEvent(event, NS_MOUSE_ACTIVATE);
+              nsMouseEvent event(NS_MOUSE_ACTIVATE, this);
+              InitEvent(event);
 
               event.acceptActivation = PR_TRUE;
 
@@ -4246,15 +4295,14 @@ PRBool nsWindow::ProcessMessage(UINT msg, WPARAM wParam, LPARAM lParam, LRESULT 
               pl.length = sizeof(pl);
               ::GetWindowPlacement(mWnd, &pl);
 
-              nsSizeModeEvent event;
-              event.eventStructType = NS_SIZEMODE_EVENT;
+              nsSizeModeEvent event(NS_SIZEMODE, this);
               if (pl.showCmd == SW_SHOWMAXIMIZED)
                 event.mSizeMode = nsSizeMode_Maximized;
               else if (pl.showCmd == SW_SHOWMINIMIZED)
                 event.mSizeMode = nsSizeMode_Minimized;
               else
                 event.mSizeMode = nsSizeMode_Normal;
-              InitEvent(event, NS_SIZEMODE);
+              InitEvent(event);
 
               result = DispatchWindowEvent(&event);
 
@@ -4371,11 +4419,11 @@ PRBool nsWindow::ProcessMessage(UINT msg, WPARAM wParam, LPARAM lParam, LRESULT 
 #endif
             nsAutoString fileStr(szFileName);
             nsEventStatus status;
-            nsDragDropEvent event;
-            InitEvent(event, NS_DRAGDROP_EVENT);
+            nsDragDropEvent event(NS_DRAGDROP_EVENT, this);
+            InitEvent(event);
             event.mType      = nsDragDropEventStatus_eDrop;
             event.mIsFileURL = PR_FALSE;
-            event.mURL       = (PRUnichar *)fileStr.get();
+            event.mURL       = fileStr.get();
             DispatchEvent(&event, status);
             NS_RELEASE(event.widget);
 	        }
@@ -4422,6 +4470,14 @@ PRBool nsWindow::ProcessMessage(UINT msg, WPARAM wParam, LPARAM lParam, LRESULT 
       } 
 #endif
       
+      case WM_SYSCOMMAND:
+        // prevent Windows from trimming the working set. bug 76831
+        if (!gTrimOnMinimize && wParam == SC_MINIMIZE) {
+          ::ShowWindow(mWnd, SW_SHOWMINIMIZED);
+          result = PR_TRUE;
+        }
+        break;
+
       default: {
         // Handle both flavors of mouse wheel events.
         if ((msg == WM_MOUSEWHEEL) || (msg == uMSH_MOUSEWHEEL)) {
@@ -4491,8 +4547,8 @@ PRBool nsWindow::ProcessMessage(UINT msg, WPARAM wParam, LPARAM lParam, LRESULT 
           // window.  We need to give it to the child window
           
           POINT point;
-          point.x = (short) LOWORD(lParam);
-          point.y = (short) HIWORD(lParam);
+          point.x = GET_X_LPARAM(lParam);
+          point.y = GET_Y_LPARAM(lParam);
           HWND destWnd = ::WindowFromPoint(point);
           
           // Since we receive mousewheel events for as long as
@@ -4567,7 +4623,7 @@ PRBool nsWindow::ProcessMessage(UINT msg, WPARAM wParam, LPARAM lParam, LRESULT 
 #endif
           }
           
-          nsMouseScrollEvent scrollEvent;
+          nsMouseScrollEvent scrollEvent(NS_MOUSE_SCROLL, this);
           scrollEvent.scrollFlags = nsMouseScrollEvent::kIsVertical;
           if (ulScrollLines == WHEEL_PAGESCROLL) {
             scrollEvent.scrollFlags |= nsMouseScrollEvent::kIsFullPage;
@@ -4582,12 +4638,11 @@ PRBool nsWindow::ProcessMessage(UINT msg, WPARAM wParam, LPARAM lParam, LRESULT 
               scrollEvent.delta = -((int) wParam / iDeltaPerLine);
           }
           
-          scrollEvent.eventStructType = NS_MOUSE_SCROLL_EVENT;
           scrollEvent.isShift   = IS_VK_DOWN(NS_VK_SHIFT);
           scrollEvent.isControl = IS_VK_DOWN(NS_VK_CONTROL);
           scrollEvent.isMeta    = PR_FALSE;
           scrollEvent.isAlt     = IS_VK_DOWN(NS_VK_ALT);
-          InitEvent(scrollEvent, NS_MOUSE_SCROLL);
+          InitEvent(scrollEvent);
           if (nsnull != mEventCallback) {
             result = DispatchWindowEvent(&scrollEvent);
           }
@@ -4908,11 +4963,10 @@ PRBool nsWindow::OnMove(PRInt32 aX, PRInt32 aY)
   mBounds.x = aX;
   mBounds.y = aY;
 
-  nsGUIEvent event;
-  InitEvent(event, NS_MOVE);
+  nsGUIEvent event(NS_MOVE, this);
+  InitEvent(event);
   event.point.x = aX;
   event.point.y = aY;
-  event.eventStructType = NS_GUI_EVENT;
 
   PRBool result = DispatchWindowEvent(&event);
   NS_RELEASE(event.widget);
@@ -4958,15 +5012,14 @@ PRBool nsWindow::OnPaint(HDC aDC)
         if (mEventCallback) 
         {
 
-            nsPaintEvent event;
+            nsPaintEvent event(NS_PAINT, this);
 
-            InitEvent(event, NS_PAINT);
+            InitEvent(event);
 
             nsRect rect(paintRect.left, 
                         paintRect.top, 
                         paintRect.right - paintRect.left, 
                         paintRect.bottom - paintRect.top);
-            event.eventStructType = NS_PAINT_EVENT;
             event.region = nsnull;
             event.rect = &rect;
             // Should probably pass in a real region here, using GetRandomRgn
@@ -5047,10 +5100,9 @@ PRBool nsWindow::OnResize(nsRect &aWindowRect)
 {
   // call the event callback 
   if (mEventCallback) {
-    nsSizeEvent event;
-    InitEvent(event, NS_SIZE);
+    nsSizeEvent event(NS_SIZE, this);
+    InitEvent(event);
     event.windowSize = &aWindowRect;
-    event.eventStructType = NS_SIZE_EVENT;
     RECT r;
     if (::GetWindowRect(mWnd, &r)) {
       event.mWinWidth  = PRInt32(r.right - r.left);
@@ -5080,26 +5132,25 @@ PRBool nsWindow::DispatchMouseEvent(PRUint32 aEventType, WPARAM wParam, nsPoint*
     return result;
   }
 
-  nsMouseEvent event;
+  nsMouseEvent event(aEventType, this);
   if (aEventType == NS_CONTEXTMENU_KEY) {
     nsPoint zero(0, 0);
-    InitEvent(event, aEventType, &zero);
+    InitEvent(event, &zero);
   } else {
-    InitEvent(event, aEventType, aPoint);
+    InitEvent(event, aPoint);
   }
 
   event.isShift   = IS_VK_DOWN(NS_VK_SHIFT);
   event.isControl = IS_VK_DOWN(NS_VK_CONTROL);
   event.isMeta    = PR_FALSE;
   event.isAlt     = IS_VK_DOWN(NS_VK_ALT);
-  event.eventStructType = NS_MOUSE_EVENT;
 
   //Dblclicks are used to set the click count, then changed to mousedowns
   LONG curMsgTime = ::GetMessageTime();
   POINT mp;
   DWORD pos = ::GetMessagePos();
-  mp.x      = (short)LOWORD(pos);
-  mp.y      = (short)HIWORD(pos);
+  mp.x      = GET_X_LPARAM(pos);
+  mp.y      = GET_Y_LPARAM(pos);
   PRBool insideMovementThreshold = (abs(gLastMousePoint.x - mp.x) < (short)::GetSystemMetrics(SM_CXDOUBLECLK)) &&
                                    (abs(gLastMousePoint.y - mp.y) < (short)::GetSystemMetrics(SM_CYDOUBLECLK));
 
@@ -5131,8 +5182,8 @@ PRBool nsWindow::DispatchMouseEvent(PRUint32 aEventType, WPARAM wParam, nsPoint*
   else if (aEventType == NS_MOUSE_LEFT_BUTTON_UP || aEventType == NS_MOUSE_MIDDLE_BUTTON_UP || aEventType == NS_MOUSE_RIGHT_BUTTON_UP) {
     // remember when this happened for the next mouse down
     DWORD pos = ::GetMessagePos();
-    gLastMousePoint.x = (short)LOWORD(pos);
-    gLastMousePoint.y = (short)HIWORD(pos);
+    gLastMousePoint.x = GET_X_LPARAM(pos);
+    gLastMousePoint.y = GET_Y_LPARAM(pos);
   }
   else if (aEventType == NS_MOUSE_LEFT_BUTTON_DOWN || aEventType == NS_MOUSE_MIDDLE_BUTTON_DOWN || aEventType == NS_MOUSE_RIGHT_BUTTON_DOWN) {
     // now look to see if we want to convert this to a double- or triple-click
@@ -5225,21 +5276,19 @@ PRBool nsWindow::DispatchMouseEvent(PRUint32 aEventType, WPARAM wParam, nsPoint*
       } else {
         POINT mp;
         DWORD pos = ::GetMessagePos();
-        mp.x      = (short)LOWORD(pos);
-        mp.y      = (short)HIWORD(pos);
+        mp.x      = GET_X_LPARAM(pos);
+        mp.y      = GET_Y_LPARAM(pos);
 
         // OK, now find out if we are still inside
         // the captured native window
-        POINT cpos;
-        cpos.x = (short)LOWORD(pos);
-        cpos.y = (short)HIWORD(pos);
 
-        nsWindow * someWindow = NULL;
+        nsWindow * someWindow = nsnull;
         HWND hWnd = ::WindowFromPoint(mp);
         if (hWnd != NULL) {
+          POINT cpos = mp;
           ::ScreenToClient(hWnd, &cpos);
           RECT r;
-          VERIFY(::GetWindowRect(hWnd, &r));
+          VERIFY(::GetClientRect(hWnd, &r));
           if (cpos.x >= r.left && cpos.x <= r.right &&
               cpos.y >= r.top && cpos.y <= r.bottom) {
             // yes we are so we should be able to get a valid window
@@ -5341,14 +5390,13 @@ PRBool nsWindow::DispatchAccessibleEvent(PRUint32 aEventType, nsIAccessible** aA
 
   *aAcc = nsnull;
 
-  nsAccessibleEvent event;
-  InitEvent(event, aEventType, aPoint);
+  nsAccessibleEvent event(aEventType, this);
+  InitEvent(event, aPoint);
 
   event.isShift   = IS_VK_DOWN(NS_VK_SHIFT);
   event.isControl = IS_VK_DOWN(NS_VK_CONTROL);
   event.isMeta    = PR_FALSE;
   event.isAlt     = IS_VK_DOWN(NS_VK_ALT);
-  event.eventStructType = NS_ACCESSIBLE_EVENT;
   event.accessible = nsnull;
 
   result = DispatchWindowEvent(&event);
@@ -5372,9 +5420,8 @@ PRBool nsWindow::DispatchFocus(PRUint32 aEventType, PRBool isMozWindowTakingFocu
 {
   // call the event callback 
   if (mEventCallback) {
-    nsFocusEvent event;
-    event.eventStructType = NS_FOCUS_EVENT;
-    InitEvent(event, aEventType);
+    nsFocusEvent event(aEventType, this);
+    InitEvent(event);
 
     //focus and blur event should go to their base widget loc, not current mouse pos
     event.point.x = 0;
@@ -5627,14 +5674,12 @@ nsWindow::HandleTextEvent(HIMC hIMEContext,PRBool aCheckAttr)
   if((nsnull == mIMECompString) || (nsnull == mIMECompUnicode))
 	return;
 
-  nsTextEvent		event;
-  nsPoint			point;
+  nsTextEvent		event(NS_TEXT_TEXT, this);
+  nsPoint			point(0, 0);
   size_t			unicharSize;
   CANDIDATEFORM		candForm;
-  point.x = 0;
-  point.y = 0;
 
-  InitEvent(event, NS_TEXT_EVENT, &point);
+  InitEvent(event, &point);
  
   //
   // convert the composition string text into unicode before it is sent to xp-land
@@ -5651,7 +5696,7 @@ nsWindow::HandleTextEvent(HIMC hIMEContext,PRBool aCheckAttr)
     unicharSize = ::MultiByteToWideChar(gCurrentKeyboardCP,MB_PRECOMPOSED,
       mIMECompString->get(),
       mIMECompString->Length(),
-      (PRUnichar*)mIMECompUnicode->get(),
+      mIMECompUnicode->BeginWriting(),
       unicharSize+1);
     mIMECompUnicode->SetLength(unicharSize);
   }
@@ -5668,12 +5713,11 @@ nsWindow::HandleTextEvent(HIMC hIMEContext,PRBool aCheckAttr)
      event.rangeArray = nsnull;
   }
 
-  event.theText = (PRUnichar*)mIMECompUnicode->get();
+  event.theText = mIMECompUnicode->get();
   event.isShift	= mIsShiftDown;
   event.isControl = mIsControlDown;
   event.isMeta	= PR_FALSE;
   event.isAlt = mIsAltDown;
-  event.eventStructType = NS_TEXT_EVENT;
 
   (void)DispatchWindowEvent(&event);
   NS_RELEASE(event.widget);
@@ -5741,16 +5785,11 @@ BOOL
 nsWindow::HandleStartComposition(HIMC hIMEContext)
 {
 	NS_ASSERTION( !mIMEIsComposing, "conflict state");
-	nsCompositionEvent	event;
-	nsPoint				point;
+	nsCompositionEvent	event(NS_COMPOSITION_START, this);
+	nsPoint				point(0, 0);
 	CANDIDATEFORM		candForm;
 
-	point.x	= 0;
-	point.y = 0;
-
-	InitEvent(event,NS_COMPOSITION_START,&point);
-	event.eventStructType = NS_COMPOSITION_START;
-	event.compositionMessage = NS_COMPOSITION_START;
+	InitEvent(event,&point);
 	(void)DispatchWindowEvent(&event);
 
 	//
@@ -5808,11 +5847,8 @@ void
 nsWindow::HandleEndComposition(void)
 {
 	NS_ASSERTION(mIMEIsComposing, "conflict state");
-	nsCompositionEvent	event;
-	nsPoint				point;
-
-	point.x	= 0;
-	point.y = 0;
+	nsCompositionEvent	event(NS_COMPOSITION_END, this);
+	nsPoint				point(0, 0);
 
 	if (gPinYinIMECaretCreated)  
 	{
@@ -5820,9 +5856,7 @@ nsWindow::HandleEndComposition(void)
 	  gPinYinIMECaretCreated = PR_FALSE;
 	}
 
-	InitEvent(event,NS_COMPOSITION_END,&point);
-	event.eventStructType = NS_COMPOSITION_END;
-	event.compositionMessage = NS_COMPOSITION_END;
+	InitEvent(event,&point);
 	(void)DispatchWindowEvent(&event);
 	NS_RELEASE(event.widget);
 	PR_FREEIF(mIMECompCharPos);
@@ -6234,7 +6268,7 @@ BOOL nsWindow::OnIMEComposition(LPARAM  aGCS)
       long buflen = compStrLen + 1;
       NS_IMM_GETCOMPOSITIONSTRING(hIMEContext,
         GCS_COMPSTR,
-        (char*)mIMECompString->get(),
+        mIMECompString->BeginWriting(),
         buflen, compStrLen);
       mIMECompString->SetLength(compStrLen);
     }
@@ -6420,12 +6454,10 @@ PRBool nsWindow::OnIMEReconvert(LPARAM aData, LRESULT *oResult, PRBool aUseUnico
     }
 
     // Get reconversion string
-    nsReconversionEvent event;
-    nsPoint point;
+    nsReconversionEvent event(NS_RECONVERSION_QUERY, this);
+    nsPoint point(0, 0);
 
-    point.x = 0;
-    point.y = 0;
-    InitEvent(event, NS_RECONVERSION_QUERY, &point);
+    InitEvent(event, &point);
     event.theReply.mReconversionString = NULL;
     DispatchWindowEvent(&event);
 
@@ -6697,8 +6729,8 @@ void nsWindow::GetCompositionWindowPos(HIMC hIMC, PRUint32 aEventType, COMPOSITI
   point.y = 0;
   DWORD pos = ::GetMessagePos();
 
-  point.x = (short)LOWORD(pos);
-  point.y = (short)HIWORD(pos);
+  point.x = GET_X_LPARAM(pos);
+  point.y = GET_Y_LPARAM(pos);
 
   if (mWnd != NULL) {
     ::ScreenToClient(mWnd, &point);
@@ -6730,7 +6762,22 @@ static VOID CALLBACK nsGetAttentionTimerFunc(HWND hwnd, UINT uMsg, UINT idEvent,
     // flash the outermost owner
     HWND flashwnd = gAttentionTimerMonitor->GetFlashWindowFor(hwnd);
     
-    ::FlashWindow(flashwnd, TRUE);
+    PRInt32 maxFlashCount = gAttentionTimerMonitor->GetMaxFlashCount(hwnd);
+    PRInt32 flashCount = gAttentionTimerMonitor->GetFlashCount(hwnd);
+    if (maxFlashCount > 0) {
+      // We have a max flash count, if we haven't met it yet, flash again.
+      if (flashCount < maxFlashCount) {
+        ::FlashWindow(flashwnd, TRUE);
+        gAttentionTimerMonitor->IncrementFlashCount(hwnd);
+      }
+      else
+        gAttentionTimerMonitor->KillTimer(hwnd);      
+    }
+    else {
+      // The caller didn't specify a flash count.
+      ::FlashWindow(flashwnd, TRUE);
+    }
+
     gAttentionTimerMonitor->SetFlashed(hwnd);
   }
   else
@@ -6739,11 +6786,15 @@ static VOID CALLBACK nsGetAttentionTimerFunc(HWND hwnd, UINT uMsg, UINT idEvent,
 
 // Draw user's attention to this window until it comes to foreground.
 NS_IMETHODIMP
-nsWindow::GetAttention() {
+nsWindow::GetAttention(PRInt32 aCycleCount) {
 
   // Got window?
   if (!mWnd)
     return NS_ERROR_NOT_INITIALIZED;
+
+  // Don't flash if the flash count is 0. 
+  if (aCycleCount == 0)
+    return NS_OK;
 
   // timer is on the parentmost window; window to flash is its ownermost
   HWND nextwnd,
@@ -6761,7 +6812,7 @@ nsWindow::GetAttention() {
     if (!gAttentionTimerMonitor)
       gAttentionTimerMonitor = new nsAttentionTimerMonitor;
     if (gAttentionTimerMonitor) {
-      gAttentionTimerMonitor->AddTimer(timerwnd, flashwnd, NS_FLASH_TIMER_ID);
+      gAttentionTimerMonitor->AddTimer(timerwnd, flashwnd, aCycleCount, NS_FLASH_TIMER_ID);
       ::SetTimer(timerwnd, NS_FLASH_TIMER_ID, GetCaretBlinkTime(), (TIMERPROC)nsGetAttentionTimerFunc);
     }
   }

@@ -95,7 +95,12 @@ public:
               nsStyleContext*  aContext,
               nsIFrame*        aPrevInFlow);
 
-  NS_IMETHOD  IsPercentageBase(PRBool& aBase) const;
+  NS_IMETHOD Reflow(nsIPresContext*          aPresContext,
+                    nsHTMLReflowMetrics&     aDesiredSize,
+                    const nsHTMLReflowState& aReflowState,
+                    nsReflowStatus&          aStatus);
+
+  virtual PRBool IsContainingBlock() const;
 
   // nsIScrollbarFrame
   NS_IMETHOD SetScrollbarMediator(nsIScrollbarMediator* aMediator) { mScrollbarMediator = aMediator; return NS_OK; };

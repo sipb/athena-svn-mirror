@@ -38,7 +38,7 @@
 
 #include <windows.h>
 #include <unknwn.h>
-#include <iostream.h>
+#include <stdio.h>
 #include "nsISupports.h"
 #include "nsIFactory.h"
 
@@ -67,13 +67,15 @@ class nsTestCom: public nsITestCom {
 public:
   nsTestCom() {
   }
-  virtual ~nsTestCom() {
-    cout << "nsTestCom instance successfully deleted\n";
-  }
 
   NS_IMETHOD Test() {
-    cout << "Accessed nsITestCom::Test() from COM\n";
+    printf("Accessed nsITestCom::Test() from COM\n");
     return NS_OK;
+  }
+
+private:
+  ~nsTestCom() {
+    printf("nsTestCom instance successfully deleted\n");
   }
 };
 
@@ -83,7 +85,7 @@ nsrefcnt nsTestCom::AddRef()
 {
   nsrefcnt res = ++mRefCnt;
   NS_LOG_ADDREF(this, mRefCnt, "nsTestCom", sizeof(*this));
-  cout << "nsTestCom: Adding ref = " << res << "\n";
+  printf("nsTestCom: Adding ref = %d\n", res);
   return res;
 }
 
@@ -91,7 +93,7 @@ nsrefcnt nsTestCom::Release()
 {
   nsrefcnt res = --mRefCnt;
   NS_LOG_RELEASE(this, mRefCnt, "nsTestCom");
-  cout << "nsTestCom: Releasing = " << res << "\n";
+  printf("nsTestCom: Releasing = %d\n", res);
   if (res == 0) {
     delete this;
   }
@@ -109,9 +111,9 @@ public:
                             void **aResult);
 
   NS_IMETHOD LockFactory(PRBool aLock) {
-    cout << "nsTestComFactory: ";
-    cout << (aLock == PR_TRUE ? "Locking server" : "Unlocking server");
-    cout << "\n";
+    printf("nsTestComFactory: ");
+    printf("%s", (aLock == PR_TRUE ? "Locking server" : "Unlocking server"));
+    printf("\n");
     return S_OK;
   }
 };
@@ -132,14 +134,13 @@ nsresult nsTestComFactory::CreateInstance(nsISupports *aOuter,
     return NS_ERROR_OUT_OF_MEMORY;
   }
   
+  NS_ADDREF(t);
   nsresult res = t->QueryInterface(aIID, aResult);
+  NS_RELEASE(t);
 
-  if (NS_FAILED(res)) {
-    *aResult = NULL;
-    delete t;
+  if (NS_SUCCEEDED(res)) {
+    printf("nsTestComFactory: successfully created nsTestCom instance\n");
   }
-
-  cout << "nsTestComFactory: successfully created nsTestCom instance\n";
 
   return res;
 }

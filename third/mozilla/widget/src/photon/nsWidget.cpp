@@ -54,11 +54,12 @@
 #include "nsIRollupListener.h"
 #include "nsIServiceManager.h"
 #include "nsWindow.h"
+#ifdef PHOTON_DND
 #include "nsDragService.h"
+#endif
 #include "nsReadableUtils.h"
 
 #include "nsIPref.h"
-#include "nsPhWidgetLog.h"
 
 #include <errno.h>
 #include <photon/PtServer.h>
@@ -82,17 +83,14 @@ static NS_DEFINE_CID(kLookAndFeelCID, NS_LOOKANDFEEL_CID);
 // Keep track of the last widget being "dragged"
 //
 nsILookAndFeel     *nsWidget::sLookAndFeel = nsnull;
+#ifdef PHOTON_DND
 nsIDragService     *nsWidget::sDragService = nsnull;
+#endif
 PRUint32            nsWidget::sWidgetCount = 0;
-PRBool              nsWidget::sJustGotActivated = PR_FALSE;
-PRBool              nsWidget::sJustGotDeactivated = PR_FALSE;
-
+nsWidget*						nsWidget::sFocusWidget = 0;
 
 nsWidget::nsWidget()
 {
-  // XXX Shouldn't this be done in nsBaseWidget?
-	// NS_INIT_ISUPPORTS();
-
   if (!sLookAndFeel) {
     if (NS_OK != nsComponentManager::CreateInstance(kLookAndFeelCID,
                                                     nsnull,
@@ -104,6 +102,7 @@ nsWidget::nsWidget()
   if( sLookAndFeel )
     sLookAndFeel->GetColor( nsILookAndFeel::eColor_WindowBackground, mBackground );
 
+#ifdef PHOTON_DND
 	if( !sDragService ) {
 		nsresult rv;
 		nsCOMPtr<nsIDragService> s;
@@ -111,6 +110,7 @@ nsWidget::nsWidget()
 		sDragService = ( nsIDragService * ) s;
 		if( NS_FAILED( rv ) ) sDragService = 0;
 		}
+#endif
 
   mWidget = nsnull;
   mParent = nsnull;
@@ -130,6 +130,9 @@ nsWidget::nsWidget()
 
 
 nsWidget::~nsWidget( ) {
+
+	if( sFocusWidget == this ) sFocusWidget = 0;
+
   // it's safe to always call Destroy() because it will only allow itself to be called once
   Destroy();
 
@@ -196,9 +199,9 @@ void nsWidget::DestroyNative( void ) {
   if( mWidget ) {
     // prevent the widget from causing additional events
     mEventCallback = nsnull;
-	  EnableDamage( mWidget, PR_FALSE );
+	  //EnableDamage( mWidget, PR_FALSE );
 	  PtDestroyWidget( mWidget );
-	  EnableDamage( mWidget, PR_TRUE );
+	  //EnableDamage( mWidget, PR_TRUE );
     mWidget = nsnull;
   	}
 	}
@@ -248,11 +251,11 @@ NS_METHOD nsWidget::Show( PRBool bState ) {
 			  return NS_OK;
 		  	}
 
-		  EnableDamage( mWidget, PR_FALSE );
+		  //EnableDamage( mWidget, PR_FALSE );
 		  PtRealizeWidget(mWidget);
 
 		  if( mWidget->rid == -1 ) {
-			  EnableDamage( mWidget, PR_TRUE );
+			  //EnableDamage( mWidget, PR_TRUE );
 			  NS_ASSERTION(0,"nsWidget::Show mWidget's rid == -1\n");
 			  mShown = PR_FALSE; 
 			  return NS_ERROR_FAILURE;
@@ -260,7 +263,7 @@ NS_METHOD nsWidget::Show( PRBool bState ) {
 
 		  PtSetArg(&arg, Pt_ARG_FLAGS, 0, Pt_DELAY_REALIZE);
 		  PtSetResources(mWidget, 1, &arg);
-		  EnableDamage( mWidget, PR_TRUE );
+		  //EnableDamage( mWidget, PR_TRUE );
 		  PtDamageWidget(mWidget);
 #ifdef Ph_REGION_NOTIFY			
 		  PhRegion_t region;
@@ -278,19 +281,19 @@ NS_METHOD nsWidget::Show( PRBool bState ) {
   	}
   else {
 		if( mWindowType != eWindowType_child ) {
-      EnableDamage( mWidget, PR_FALSE );
+      //EnableDamage( mWidget, PR_FALSE );
       PtUnrealizeWidget(mWidget);
 
-      EnableDamage( mWidget, PR_TRUE );
+      //EnableDamage( mWidget, PR_TRUE );
 
       PtSetArg(&arg, Pt_ARG_FLAGS, Pt_DELAY_REALIZE, Pt_DELAY_REALIZE);
       PtSetResources(mWidget, 1, &arg);
 			}
 		else {
-			EnableDamage( mWidget, PR_FALSE );
+			//EnableDamage( mWidget, PR_FALSE );
 			PtWidgetToBack( mWidget );
 			if( mShown ) PtUnrealizeWidget( mWidget );
-			EnableDamage( mWidget, PR_TRUE );
+			//EnableDamage( mWidget, PR_TRUE );
 			}
   	}
 
@@ -336,9 +339,9 @@ NS_METHOD nsWidget::Resize( PRInt32 aWidth, PRInt32 aHeight, PRBool aRepaint ) {
 
   if( mWidget ) {
 		PhDim_t dim = { aWidth, aHeight };
-		EnableDamage( mWidget, PR_FALSE );
+		//EnableDamage( mWidget, PR_FALSE );
 		PtSetResource( mWidget, Pt_ARG_DIM, &dim, 0 );
-		EnableDamage( mWidget, PR_TRUE );
+		//EnableDamage( mWidget, PR_TRUE );
 		}
 
 	return NS_OK;
@@ -359,7 +362,6 @@ PRBool nsWidget::OnResize( nsRect &aRect ) {
 		nsSizeEvent event;
 
 	  InitEvent(event, NS_SIZE);
-		event.eventStructType = NS_SIZE_EVENT;
 
 		nsRect *foo = new nsRect(0, 0, aRect.width, aRect.height);
 		event.windowSize = foo;
@@ -386,7 +388,6 @@ PRBool nsWidget::OnMove( PRInt32 aX, PRInt32 aY ) {
   InitEvent(event, NS_MOVE);
   event.point.x = aX;
   event.point.y = aY;
-  event.eventStructType = NS_GUI_EVENT;
   return DispatchWindowEvent(&event);
 	}
 
@@ -429,7 +430,7 @@ NS_METHOD nsWidget::SetCursor( nsCursor aCursor ) {
   // Only change cursor if it's changing
   if( aCursor != mCursor ) {
 
-  	unsigned short curs = 0;
+  	unsigned short curs = Ph_CURSOR_POINTER;
   	PgColor_t color = Ph_CURSOR_DEFAULT_COLOR;
 
     switch( aCursor ) {
@@ -534,7 +535,7 @@ NS_METHOD nsWidget::SetCursor( nsCursor aCursor ) {
   		  break;
   		}
 
-  	if( mWidget && curs ) {
+  	if( mWidget ) {
   	  PtArg_t args[2];
 
 			PtSetArg( &args[0], Pt_ARG_CURSOR_TYPE, curs, 0 );
@@ -616,6 +617,7 @@ nsresult nsWidget::CreateWidget(nsIWidget *aParent,
   	}
   else if( aParent ) {
     parentWidget = (PtWidget_t*) (aParent->GetNativeData(NS_NATIVE_WIDGET));
+		mListenForResizes = aInitData ? aInitData->mListenForResizes : PR_FALSE;
   	}
 
   mBounds = aRect;
@@ -629,7 +631,9 @@ nsresult nsWidget::CreateWidget(nsIWidget *aParent,
     PtAddCallback( mWidget, Pt_CB_GOT_FOCUS, GotFocusCallback, this );
     PtAddCallback( mWidget, Pt_CB_LOST_FOCUS, LostFocusCallback, this );
     PtAddCallback( mWidget, Pt_CB_IS_DESTROYED, DestroyedCallback, this );
-//    PtAddCallback( mWidget, Pt_CB_DND, DndCallback, this );
+#ifdef PHOTON_DND
+    PtAddCallback( mWidget, Pt_CB_DND, DndCallback, this );
+#endif
   	}
 
   DispatchStandardEvent(NS_CREATE);
@@ -676,7 +680,6 @@ void nsWidget::InitMouseEvent(PhPointerEvent_t *aPhButtonEvent,
 {
   anEvent.message = aEventType;
   anEvent.widget  = aWidget;
-  anEvent.eventStructType = NS_MOUSE_EVENT;
 
   if (aPhButtonEvent != nsnull) {
     anEvent.time =      PR_IntervalNow();
@@ -736,125 +739,66 @@ PRBool nsWidget::DispatchMouseEvent( nsMouseEvent& aEvent ) {
   return result;
 	}
 
-//-------------------------------------------------------------------------
-// Old icky code I am trying to replace!
-//-------------------------------------------------------------------------
-PRBool nsWidget::DispatchMouseEvent( PhPoint_t &aPos, PRUint32 aEvent ) {
-
-  PRBool result = PR_FALSE;
-
-  if( nsnull == mEventCallback && nsnull == mMouseListener ) return result;
-
-  nsMouseEvent event;
-
-  InitEvent( event, aEvent );
-  event.eventStructType = NS_MOUSE_EVENT;
-  event.point.x = aPos.x;
-  event.point.y = aPos.y;
-  event.isShift = PR_FALSE;
-  event.isControl = PR_FALSE;
-  event.isAlt = PR_FALSE;
-  event.isMeta = PR_FALSE;
-  event.clickCount = 0;       /* hack  makes the mouse not work */
-  
-  // call the event callback
-  if( nsnull != mEventCallback ) {
-    result = DispatchWindowEvent( &event );
-    NS_IF_RELEASE(event.widget);
-    return result;
-  	}
-
-  if( nsnull != mMouseListener ) { 
-    switch( aEvent ) {
-      case NS_MOUSE_MOVE:
-        result = ConvertStatus(mMouseListener->MouseMoved(event));
-        break;
-
-      case NS_MOUSE_LEFT_BUTTON_DOWN:
-      case NS_MOUSE_MIDDLE_BUTTON_DOWN:
-      case NS_MOUSE_RIGHT_BUTTON_DOWN:
-        result = ConvertStatus(mMouseListener->MousePressed(event));
-        break;
-
-      case NS_MOUSE_LEFT_BUTTON_UP:
-      case NS_MOUSE_MIDDLE_BUTTON_UP:
-      case NS_MOUSE_RIGHT_BUTTON_UP:
-        result = ConvertStatus(mMouseListener->MouseReleased(event));
-        result = ConvertStatus(mMouseListener->MouseClicked(event));
-        break;
-    	} // switch
-  	}
-  return result;
-	}
-
 struct nsKeyConverter {
   PRUint32       vkCode; // Platform independent key code
   unsigned long  keysym; // Photon key_sym key code
-  PRBool         isChar;
 };
 
 static struct nsKeyConverter nsKeycodes[] = {
-  { NS_VK_CANCEL,     Pk_Cancel, PR_FALSE },
-  { NS_VK_BACK,       Pk_BackSpace, PR_FALSE },
-  { NS_VK_TAB,        Pk_Tab, PR_FALSE },
-  { NS_VK_CLEAR,      Pk_Clear, PR_FALSE },
-  { NS_VK_RETURN,     Pk_Return, PR_FALSE },
-  { NS_VK_SHIFT,      Pk_Shift_L, PR_FALSE },
-  { NS_VK_SHIFT,      Pk_Shift_R, PR_FALSE },
-  { NS_VK_SHIFT,      Pk_Shift_L, PR_FALSE },
-  { NS_VK_SHIFT,      Pk_Shift_R, PR_FALSE },
-  { NS_VK_CONTROL,    Pk_Control_L, PR_FALSE },
-  { NS_VK_CONTROL,    Pk_Control_R, PR_FALSE },
-  { NS_VK_ALT,        Pk_Alt_L, PR_FALSE },
-  { NS_VK_ALT,        Pk_Alt_R, PR_FALSE },
-  { NS_VK_PAUSE,      Pk_Pause, PR_FALSE },
-  { NS_VK_CAPS_LOCK,  Pk_Caps_Lock, PR_FALSE },
-  { NS_VK_ESCAPE,     Pk_Escape, PR_FALSE },
-  { NS_VK_SPACE,      Pk_space, PR_TRUE },
-  { NS_VK_PAGE_UP,    Pk_Pg_Up, PR_FALSE },
-  { NS_VK_PAGE_DOWN,  Pk_Pg_Down, PR_FALSE },
-  { NS_VK_END,        Pk_End, PR_FALSE },
-  { NS_VK_HOME,       Pk_Home, PR_FALSE },
-  { NS_VK_LEFT,       Pk_Left, PR_FALSE },
-  { NS_VK_UP,         Pk_Up, PR_FALSE },
-  { NS_VK_RIGHT,      Pk_Right, PR_FALSE },
-  { NS_VK_DOWN,       Pk_Down, PR_FALSE },
-  { NS_VK_PRINTSCREEN, Pk_Print, PR_FALSE },
-  { NS_VK_INSERT,     Pk_Insert, PR_FALSE },
-  { NS_VK_DELETE,     Pk_Delete, PR_FALSE },
-  { NS_VK_COMMA,      Pk_comma, PR_TRUE },
-  { NS_VK_PERIOD,     Pk_period, PR_TRUE },
-  { NS_VK_SLASH,      Pk_slash, PR_TRUE },
-  { NS_VK_OPEN_BRACKET,  Pk_bracketleft, PR_TRUE },
-  { NS_VK_CLOSE_BRACKET, Pk_bracketright, PR_TRUE },
-  { NS_VK_QUOTE,         Pk_quotedbl, PR_TRUE },
-  { NS_VK_MULTIPLY,      Pk_KP_Multiply, PR_TRUE },
-  { NS_VK_ADD,           Pk_KP_Add, PR_TRUE },
-  { NS_VK_COMMA,         Pk_KP_Separator, PR_FALSE },
-  { NS_VK_SUBTRACT,      Pk_KP_Subtract, PR_TRUE },
-  { NS_VK_PERIOD,        Pk_KP_Decimal, PR_TRUE },
-  { NS_VK_DIVIDE,        Pk_KP_Divide, PR_TRUE },
-  { NS_VK_RETURN,        Pk_KP_Enter, PR_FALSE },
-  { NS_VK_INSERT,        Pk_KP_0, PR_FALSE },
-  { NS_VK_END,           Pk_KP_1, PR_FALSE },
-  { NS_VK_DOWN,          Pk_KP_2, PR_FALSE },
-  { NS_VK_PAGE_DOWN,     Pk_KP_3, PR_FALSE },
-  { NS_VK_LEFT,          Pk_KP_4, PR_FALSE },
-  { NS_VK_NUMPAD5,       Pk_KP_5, PR_FALSE },
-  { NS_VK_RIGHT,         Pk_KP_6, PR_FALSE },
-  { NS_VK_HOME,          Pk_KP_7, PR_FALSE },
-  { NS_VK_UP,            Pk_KP_8, PR_FALSE },
-  { NS_VK_PAGE_UP,       Pk_KP_9, PR_FALSE }
+  { NS_VK_PAGE_UP,    Pk_Pg_Up },
+  { NS_VK_PAGE_DOWN,  Pk_Pg_Down },
+  { NS_VK_UP,         Pk_Up },
+  { NS_VK_DOWN,       Pk_Down },
+  { NS_VK_TAB,        Pk_Tab },
+  { NS_VK_TAB,        Pk_KP_Tab },
+  { NS_VK_HOME,       Pk_Home },
+  { NS_VK_END,        Pk_End },
+  { NS_VK_LEFT,       Pk_Left },
+  { NS_VK_RIGHT,      Pk_Right },
+  { NS_VK_DELETE,     Pk_Delete },
+  { NS_VK_CANCEL,     Pk_Cancel },
+  { NS_VK_BACK,       Pk_BackSpace },
+  { NS_VK_CLEAR,      Pk_Clear },
+  { NS_VK_RETURN,     Pk_Return },
+  { NS_VK_SHIFT,      Pk_Shift_L },
+  { NS_VK_SHIFT,      Pk_Shift_R },
+  { NS_VK_CONTROL,    Pk_Control_L },
+  { NS_VK_CONTROL,    Pk_Control_R },
+  { NS_VK_ALT,        Pk_Alt_L },
+  { NS_VK_ALT,        Pk_Alt_R },
+  { NS_VK_INSERT,     Pk_Insert },
+  { NS_VK_PAUSE,      Pk_Pause },
+  { NS_VK_CAPS_LOCK,  Pk_Caps_Lock },
+  { NS_VK_ESCAPE,     Pk_Escape },
+  { NS_VK_PRINTSCREEN,Pk_Print },
+  { NS_VK_RETURN,     Pk_KP_Enter },
+  { NS_VK_INSERT,     Pk_KP_0 },
+  { NS_VK_END,        Pk_KP_1 },
+  { NS_VK_DOWN,       Pk_KP_2 },
+  { NS_VK_PAGE_DOWN,  Pk_KP_3 },
+  { NS_VK_LEFT,       Pk_KP_4 },
+  { NS_VK_NUMPAD5,    Pk_KP_5 },
+  { NS_VK_RIGHT,      Pk_KP_6 },
+  { NS_VK_HOME,       Pk_KP_7 },
+  { NS_VK_UP,         Pk_KP_8 },
+  { NS_VK_PAGE_UP,    Pk_KP_9 },
+  { NS_VK_COMMA,      Pk_KP_Separator }
   };
 
 
-// Input keysym is in gtk format; output is in NS_VK format
-PRUint32 nsWidget::nsConvertKey(unsigned long keysym, PRBool *aIsChar ) {
+// Input keysym is in photon format; output is in NS_VK format
+PRUint32 nsWidget::nsConvertKey( PhKeyEvent_t *aPhKeyEvent ) {
+
+	unsigned long keysym, keymods;
 
   const int length = sizeof(nsKeycodes) / sizeof(struct nsKeyConverter);
 
-	/* Default this to TRUE */
-	*aIsChar = PR_TRUE;
+	keymods = aPhKeyEvent->key_mods;
+	if( aPhKeyEvent->key_flags & Pk_KF_Sym_Valid )
+		keysym = aPhKeyEvent->key_sym;
+	else if( aPhKeyEvent->key_flags & Pk_KF_Cap_Valid )
+		keysym = aPhKeyEvent->key_cap;
+	else return 0;
 	
   // First, try to handle alphanumeric input, not listed in nsKeycodes:
   if (keysym >= Pk_a && keysym <= Pk_z)
@@ -867,13 +811,16 @@ PRUint32 nsWidget::nsConvertKey(unsigned long keysym, PRBool *aIsChar ) {
      return keysym - Pk_0 + NS_VK_0;
 		  
   if (keysym >= Pk_F1 && keysym <= Pk_F24) {
-     *aIsChar = PR_FALSE;
      return keysym - Pk_F1 + NS_VK_F1;
   	}
 
+	if( keymods & Pk_KM_Num_Lock ) {
+  	if( keysym >= Pk_KP_0 && keysym <= Pk_KP_9 )
+     	return keysym - Pk_0 + NS_VK_0;
+		}
+
   for (int i = 0; i < length; i++) {
     if( nsKeycodes[i].keysym == keysym ) {
-      *aIsChar = (nsKeycodes[i].isChar);
       return (nsKeycodes[i].vkCode);
     	}
   	}
@@ -881,62 +828,13 @@ PRUint32 nsWidget::nsConvertKey(unsigned long keysym, PRBool *aIsChar ) {
   return((int) 0);
 	}
 
-//==============================================================
-inline void nsWidget::InitKeyEvent(PhKeyEvent_t *aPhKeyEvent,
-                            nsWidget * aWidget,
-                            nsKeyEvent &anEvent,
-                            PRUint32   aEventType) {
-
-  if( aPhKeyEvent != nsnull ) {
-  
-    anEvent.message = aEventType;
-    anEvent.widget  = aWidget;
-    anEvent.eventStructType = NS_KEY_EVENT;
-    anEvent.nativeMsg = (void *)aPhKeyEvent;
-    anEvent.time =      PR_IntervalNow();
-    anEvent.point.x = 0; 
-    anEvent.point.y = 0;
-
-    PRBool IsChar;
-    unsigned long keysym;
-    if (Pk_KF_Cap_Valid & aPhKeyEvent->key_flags)
-        keysym = nsConvertKey(aPhKeyEvent->key_sym, &IsChar);
-		else
-				keysym = nsConvertKey(aPhKeyEvent->key_cap, &IsChar);
-
-    anEvent.isShift =   ( aPhKeyEvent->key_mods & Pk_KM_Shift ) ? PR_TRUE : PR_FALSE;
-    anEvent.isControl = ( aPhKeyEvent->key_mods & Pk_KM_Ctrl )  ? PR_TRUE : PR_FALSE;
-    anEvent.isAlt =     ( aPhKeyEvent->key_mods & Pk_KM_Alt )   ? PR_TRUE : PR_FALSE;
-    anEvent.isMeta =    PR_FALSE;
-
-    if ((aEventType == NS_KEY_PRESS) && (IsChar == PR_TRUE)) {
-      anEvent.charCode = aPhKeyEvent->key_sym;
-      anEvent.keyCode =  0;  /* I think the spec says this should be 0 */
-
-      if ((anEvent.isControl) || (anEvent.isAlt))
-        anEvent.charCode = aPhKeyEvent->key_cap;
-	  	else
-	  	  anEvent.isShift = anEvent.isControl = anEvent.isAlt = anEvent.isMeta = PR_FALSE;
-    	}
-		else {
- 	    anEvent.charCode = 0; 
- 	    anEvent.keyCode  =  (keysym  & 0x00FF);
-  	  }
-  	}
-
-	}
-
-
 PRBool  nsWidget::DispatchKeyEvent( PhKeyEvent_t *aPhKeyEvent ) {
   NS_ASSERTION(aPhKeyEvent, "nsWidget::DispatchKeyEvent a NULL PhKeyEvent was passed in");
 
-  nsKeyEvent keyEvent;
-  PRBool result = PR_FALSE;
-
-  if ( (aPhKeyEvent->key_flags & Pk_KF_Cap_Valid) == 0) {
+  if( !(aPhKeyEvent->key_flags & (Pk_KF_Cap_Valid|Pk_KF_Sym_Valid) ) ) {
 		//printf("nsWidget::DispatchKeyEvent throwing away invalid key: Modifiers Valid=<%d,%d,%d> this=<%p>\n",
 		//(aPhKeyEvent->key_flags & Pk_KF_Scan_Valid), (aPhKeyEvent->key_flags & Pk_KF_Sym_Valid), (aPhKeyEvent->key_flags & Pk_KF_Cap_Valid), this );
-		return PR_FALSE; //PR_TRUE;
+		return PR_FALSE;
 		}
 
   if ( PtIsFocused(mWidget) != 2) {
@@ -951,34 +849,91 @@ PRBool  nsWidget::DispatchKeyEvent( PhKeyEvent_t *aPhKeyEvent ) {
        || ( aPhKeyEvent->key_cap ==  Pk_Num_Lock )
        || ( aPhKeyEvent->key_cap ==  Pk_Scroll_Lock )
      )
-    return PR_FALSE; //PR_TRUE;
+    return PR_TRUE;
 
   nsWindow *w = (nsWindow *) this;
 
   w->AddRef();
  
   if (aPhKeyEvent->key_flags & Pk_KF_Key_Down) {
-//    InitKeyEvent(aPhKeyEvent, this, keyEvent, NS_KEY_DOWN);
-//    result = w->OnKey(keyEvent); 
+		nsKeyEvent keyDownEvent(NS_KEY_DOWN, w);
+		InitKeyEvent(aPhKeyEvent, keyDownEvent);
+		w->OnKey(keyDownEvent);
 
-    InitKeyEvent(aPhKeyEvent, this, keyEvent, NS_KEY_PRESS);
-    result = w->OnKey(keyEvent); 
+		nsKeyEvent keyPressEvent(NS_KEY_PRESS, w);
+		InitKeyPressEvent(aPhKeyEvent, keyPressEvent);
+		w->OnKey(keyPressEvent);
   	}
   else if (aPhKeyEvent->key_flags & Pk_KF_Key_Repeat) {
-    InitKeyEvent(aPhKeyEvent, this, keyEvent, NS_KEY_PRESS);
-    result = w->OnKey(keyEvent);   
+		nsKeyEvent keyPressEvent(NS_KEY_PRESS, w);
+		InitKeyPressEvent(aPhKeyEvent, keyPressEvent);
+		w->OnKey(keyPressEvent);
   	}
   else if (PkIsKeyDown(aPhKeyEvent->key_flags) == 0) {
-    InitKeyEvent(aPhKeyEvent, this, keyEvent, NS_KEY_UP);
-    result = w->OnKey(keyEvent); 
+		nsKeyEvent kevent(NS_KEY_UP, w);
+		InitKeyEvent(aPhKeyEvent, kevent);
+		w->OnKey(kevent);
   	}
 
   w->Release();
 
-  return result;
+  return PR_TRUE;
 	}
 
+inline void nsWidget::InitKeyEvent(PhKeyEvent_t *aPhKeyEvent, nsKeyEvent &anEvent )
+{
+	anEvent.keyCode = 	nsConvertKey( aPhKeyEvent );
+	anEvent.time = 			PR_IntervalNow();
+	anEvent.isShift =   ( aPhKeyEvent->key_mods & Pk_KM_Shift ) ? PR_TRUE : PR_FALSE;
+	anEvent.isControl = ( aPhKeyEvent->key_mods & Pk_KM_Ctrl )  ? PR_TRUE : PR_FALSE;
+	anEvent.isAlt =     ( aPhKeyEvent->key_mods & Pk_KM_Alt )   ? PR_TRUE : PR_FALSE;
+	anEvent.isMeta =    PR_FALSE;
+}
 
+/* similar to PhKeyToMb */
+inline int key_sym_displayable(const PhKeyEvent_t *kevent)
+{
+  if(kevent->key_flags & Pk_KF_Sym_Valid) {
+    unsigned long const sym = kevent->key_sym;
+    if  ( sym >= 0xF000
+      ? sym >= 0xF100 && ( sizeof(wchar_t) > 2 || sym < 0x10000 )
+      : ( sym & ~0x9F ) != 0 // exclude 0...0x1F and 0x80...0x9F
+        ) return 1;
+  }
+  return 0;
+}
+
+/* similar to PhKeyToMb */
+inline int key_cap_displayable(const PhKeyEvent_t *kevent)
+{
+  if(kevent->key_flags & Pk_KF_Cap_Valid) {
+    unsigned long const cap = kevent->key_cap;
+    if  ( cap >= 0xF000
+      ? cap >= 0xF100 && ( sizeof(wchar_t) > 2 || cap < 0x10000 )
+      : ( cap & ~0x9F ) != 0 // exclude 0...0x1F and 0x80...0x9F
+        ) return 1;
+  }
+  return 0;
+}
+
+inline void nsWidget::InitKeyPressEvent(PhKeyEvent_t *aPhKeyEvent, nsKeyEvent &anEvent )
+{
+	anEvent.isShift =   ( aPhKeyEvent->key_mods & Pk_KM_Shift ) ? PR_TRUE : PR_FALSE;
+	anEvent.isControl = ( aPhKeyEvent->key_mods & Pk_KM_Ctrl )  ? PR_TRUE : PR_FALSE;
+	anEvent.isAlt =     ( aPhKeyEvent->key_mods & Pk_KM_Alt )   ? PR_TRUE : PR_FALSE;
+	anEvent.isMeta =    PR_FALSE;
+
+	if( key_sym_displayable( aPhKeyEvent ) ) anEvent.charCode = aPhKeyEvent->key_sym;
+	else {
+		/* in photon Ctrl<something> or Alt<something> is not a displayable character, but
+			mozilla wants the keypress event as a charCode+isControl+isAlt, instead of a keyCode */
+		if( ( anEvent.isControl || anEvent.isAlt ) && key_cap_displayable( aPhKeyEvent ) )
+			anEvent.charCode = aPhKeyEvent->key_cap;
+		else anEvent.keyCode = nsConvertKey( aPhKeyEvent );
+		}
+
+	anEvent.time = 			PR_IntervalNow();
+}
 
 // used only once
 inline PRBool nsWidget::HandleEvent( PtWidget_t *widget, PtCallbackInfo_t* aCbInfo ) {
@@ -1018,12 +973,6 @@ inline PRBool nsWidget::HandleEvent( PtWidget_t *widget, PtCallbackInfo_t* aCbIn
 				PtWidget_t *disjoint = PtFindDisjoint( widget );
  				if( PtWidgetIsClassMember( disjoint, PtServer ) )
 					PtContainerGiveFocus( widget, aCbInfo->event );
-				else {
-					if( sJustGotActivated ) {
-						sJustGotActivated = PR_FALSE;
-						DispatchStandardEvent(NS_ACTIVATE);
-						}
-					}
 
         if( ptrev ) {
           ScreenToWidgetPos( ptrev->pos );
@@ -1083,12 +1032,14 @@ inline PRBool nsWidget::HandleEvent( PtWidget_t *widget, PtCallbackInfo_t* aCbIn
 
 					if( ptrev->flags & Ph_PTR_FLAG_Z_ONLY ) break; // sometimes z presses come out of nowhere */
 
+#ifdef PHOTON_DND
 					if( sDragService ) {
 						nsDragService *d;
 						nsIDragService *s = sDragService;
 						d = ( nsDragService * )s;
 						d->SetNativeDndData( widget, event );
 						}
+#endif
 
           ScreenToWidgetPos( ptrev->pos );
  	      	InitMouseEvent(ptrev, this, theMouseEvent, NS_MOUSE_MOVE );
@@ -1120,13 +1071,14 @@ inline PRBool nsWidget::HandleEvent( PtWidget_t *widget, PtCallbackInfo_t* aCbIn
       		    PhPointerEvent_t* ptrev2 = (PhPointerEvent_t*) PhGetData( event );
       		    ScreenToWidgetPos( ptrev2->pos );
 
+#ifdef PHOTON_DND
 							if( sDragService ) {
 								nsDragService *d;
 								nsIDragService *s = sDragService;
 								d = ( nsDragService * )s;
 								d->SetNativeDndData( widget, event );
 								}
-
+#endif
   	  		    InitMouseEvent(ptrev2, this, theMouseEvent, NS_MOUSE_MOVE );
       		    result = DispatchMouseEvent(theMouseEvent);
 							}
@@ -1136,17 +1088,29 @@ inline PRBool nsWidget::HandleEvent( PtWidget_t *widget, PtCallbackInfo_t* aCbIn
         break;
 
       case Ph_EV_BOUNDARY:
+				PRUint32 evtype;
+
         switch( event->subtype ) {
           case Ph_EV_PTR_ENTER:
-						result = DispatchStandardEvent( NS_MOUSE_ENTER );
+					case Ph_EV_PTR_ENTER_FROM_CHILD:
+						evtype = NS_MOUSE_ENTER;
             break;
 					case Ph_EV_PTR_LEAVE_TO_CHILD:
           case Ph_EV_PTR_LEAVE:
-						result = DispatchStandardEvent( NS_MOUSE_EXIT );
+						evtype = NS_MOUSE_EXIT;
             break;
           default:
+						evtype = 0;
             break;
         	}
+
+				if( evtype != 0 ) {
+					PhPointerEvent_t* ptrev = (PhPointerEvent_t*) PhGetData( event );
+					nsMouseEvent theMouseEvent;
+					ScreenToWidgetPos( ptrev->pos );
+					InitMouseEvent( ptrev, this, theMouseEvent, evtype );
+					result = DispatchMouseEvent( theMouseEvent );
+					}
         break;
     	}
 
@@ -1176,26 +1140,12 @@ int nsWidget::GotFocusCallback( PtWidget_t *widget, void *data, PtCallbackInfo_t
 {
   nsWidget *pWidget = (nsWidget *) data;
 
-	if( widget->class_rec->description && PtWidgetIsClass( widget, PtWindow ) ) {
+	if( PtWidgetIsClass( widget, PtWindow ) ) {
 		if( pWidget->mEventCallback ) {
-
 			/* the WM_ACTIVATE code */
-
-			sJustGotActivated = PR_TRUE;
-		
-			nsMouseEvent event;
-			event.eventStructType = NS_GUI_EVENT;
-			pWidget->InitEvent(event, NS_MOUSE_ACTIVATE);
-			event.acceptActivation = PR_TRUE;
-
-			pWidget->DispatchWindowEvent(&event);
-			}
-		}
-	else {
-  	if( sJustGotActivated ) {
-			sJustGotActivated = PR_FALSE;
 			pWidget->DispatchStandardEvent(NS_ACTIVATE);
-  		}
+			return Pt_CONTINUE;
+			}
 		}
 
 	pWidget->DispatchStandardEvent(NS_GOTFOCUS);
@@ -1206,10 +1156,6 @@ int nsWidget::GotFocusCallback( PtWidget_t *widget, void *data, PtCallbackInfo_t
 int nsWidget::LostFocusCallback( PtWidget_t *widget, void *data, PtCallbackInfo_t *cbinfo ) 
 {
   nsWidget *pWidget = (nsWidget *) data;
- 	if( sJustGotDeactivated ) {
-		sJustGotDeactivated = PR_FALSE;
-		pWidget->DispatchStandardEvent(NS_DEACTIVATE);
-		}
  	pWidget->DispatchStandardEvent(NS_LOSTFOCUS);
   return Pt_CONTINUE;
 }
@@ -1220,6 +1166,7 @@ int nsWidget::DestroyedCallback( PtWidget_t *widget, void *data, PtCallbackInfo_
   return Pt_CONTINUE;
 	}
 
+#ifdef PHOTON_DND
 void nsWidget::ProcessDrag( PhEvent_t *event, PRUint32 aEventType, PhPoint_t *pos ) {
 	nsCOMPtr<nsIDragSession> currSession;
 	sDragService->GetCurrentSession ( getter_AddRefs(currSession) );
@@ -1314,3 +1261,4 @@ int nsWidget::DndCallback( PtWidget_t *widget, void *data, PtCallbackInfo_t *cbi
 
 	return Pt_CONTINUE;
 	}
+#endif /* PHOTON_DND */

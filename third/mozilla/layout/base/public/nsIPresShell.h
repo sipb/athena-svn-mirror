@@ -42,6 +42,9 @@
 #include "nsEvent.h"
 #include "nsReflowType.h"
 #include "nsCompatibility.h"
+#include "nsCOMArray.h"
+#include "nsFrameManagerBase.h"
+#include <stdio.h> // for FILE definition
 
 class nsIAtom;
 class nsIContent;
@@ -50,7 +53,7 @@ class nsIDocument;
 class nsIDocumentObserver;
 class nsIFrame;
 class nsIPresContext;
-class nsIStyleSet;
+class nsStyleSet;
 class nsIViewManager;
 class nsIDeviceContext;
 class nsIRenderingContext;
@@ -61,12 +64,15 @@ class nsStringArray;
 class nsICaret;
 class nsStyleContext;
 class nsIFrameSelection;
-class nsIFrameManager;
+class nsFrameManager;
 class nsILayoutHistoryState;
 class nsIReflowCallback;
 class nsISupportsArray;
 class nsIDOMNode;
 class nsHTMLReflowCommand;
+class nsIStyleFrameConstruction;
+class nsIStyleSheet;
+class nsCSSFrameConstructor;
 
 #define NS_IPRESSHELL_IID     \
 { 0x76e79c60, 0x944e, 0x11d1, \
@@ -80,12 +86,6 @@ class nsHTMLReflowCommand;
 #define NS_PRESSHELL_SCROLL_CENTER   50
 #define NS_PRESSHELL_SCROLL_ANYWHERE -1
 #define NS_PRESSHELL_SCROLL_IF_NOT_VISIBLE -2
-
-// Observer related defines
-#define NS_PRESSHELL_REFLOW_TOPIC         "REFLOW"              // Observer Topic
-#define NS_PRESSHELL_INITIAL_REFLOW       "INITIAL REFLOW"      // Observer Data
-#define NS_PRESSHELL_RESIZE_REFLOW        "RESIZE REFLOW"       // Observer Data
-#define NS_PRESSHELL_STYLE_CHANGE_REFLOW  "STYLE CHANGE REFLOW" // Observer Data
 
 // debug VerifyReflow flags
 #define VERIFY_REFLOW_ON              0x01
@@ -125,7 +125,7 @@ public:
   NS_IMETHOD Init(nsIDocument* aDocument,
                   nsIPresContext* aPresContext,
                   nsIViewManager* aViewManager,
-                  nsIStyleSet* aStyleSet,
+                  nsStyleSet* aStyleSet,
                   nsCompatibility aCompatMode) = 0;
 
   /**
@@ -157,11 +157,20 @@ public:
   NS_IMETHOD GetViewManager(nsIViewManager** aResult) = 0;
   nsIViewManager* GetViewManager() { return mViewManager; }
 
-  NS_IMETHOD GetStyleSet(nsIStyleSet** aResult) = 0;
-  nsIStyleSet* GetStyleSet() { return mStyleSet; }
+#ifdef _IMPL_NS_LAYOUT
+  nsStyleSet*  StyleSet() { return mStyleSet; }
 
-  NS_IMETHOD GetFrameManager(nsIFrameManager** aFrameManager) const = 0;
-  nsIFrameManager* GetFrameManager() { return mFrameManager; }
+  nsCSSFrameConstructor* FrameConstructor()
+  {
+    return mFrameConstructor;
+  }
+
+  nsFrameManager* FrameManager() const {
+    return NS_REINTERPRET_CAST(nsFrameManager*,
+      &NS_CONST_CAST(nsIPresShell*, this)->mFrameManager);
+  }
+
+#endif
 
   NS_IMETHOD GetActiveAlternateStyleSheet(nsString& aSheetTitle) = 0;
 
@@ -558,6 +567,31 @@ public:
   virtual PRBool IsThemeSupportEnabled() = 0;
 
   /**
+   * Get the set of agent style sheets for this presentation
+   */
+  virtual nsresult GetAgentStyleSheets(nsCOMArray<nsIStyleSheet>& aSheets) = 0;
+
+  /**
+   * Replace the set of agent style sheets
+   */
+  virtual nsresult SetAgentStyleSheets(const nsCOMArray<nsIStyleSheet>& aSheets) = 0;
+
+  /**
+   * Add an override style sheet for this presentation
+   */
+  virtual nsresult AddOverrideStyleSheet(nsIStyleSheet *aSheet) = 0;
+
+  /**
+   * Remove an override style sheet
+   */
+  virtual nsresult RemoveOverrideStyleSheet(nsIStyleSheet *aSheet) = 0;
+
+  /**
+   * Reconstruct frames for all elements in the document
+   */
+  virtual nsresult ReconstructFrames() = 0;
+
+  /**
    * See if reflow verification is enabled. To enable reflow verification add
    * "verifyreflow:1" to your NSPR_LOG_MODULES environment variable
    * (any non-zero debug level will work). Or, call SetVerifyReflowEnable
@@ -574,7 +608,6 @@ public:
    * Get the flags associated with the VerifyReflow debug tool
    */
   static PRInt32 GetVerifyReflowFlags();
-
 
 #ifdef MOZ_REFLOW_PERF
   NS_IMETHOD DumpReflows() = 0;
@@ -609,6 +642,14 @@ public:
   NS_IMETHOD BidiStyleChangeReflow(void) = 0;
 #endif
 
+#ifdef DEBUG
+  // Debugging hooks
+  virtual void ListStyleContexts(nsIFrame *aRootFrame, FILE *out,
+                                 PRInt32 aIndent = 0) = 0;
+
+  virtual void ListStyleSheets(FILE *out, PRInt32 aIndent = 0) = 0;
+#endif
+
 protected:
   // IMPORTANT: The ownership implicit in the following member variables
   // has been explicitly checked.  If you add any members to this class,
@@ -618,9 +659,10 @@ protected:
   // we must share ownership.
   nsIDocument*              mDocument;      // [STRONG]
   nsIPresContext*           mPresContext;   // [STRONG]
-  nsIStyleSet*              mStyleSet;      // [STRONG]
+  nsStyleSet*               mStyleSet;      // [OWNS]
+  nsCSSFrameConstructor*    mFrameConstructor; // [OWNS]
   nsIViewManager*           mViewManager;   // [WEAK] docViewer owns it so I don't have to
-  nsIFrameManager*          mFrameManager;  // [STRONG]
+  nsFrameManagerBase        mFrameManager;  // [OWNS]
 };
 
 /**

@@ -47,10 +47,7 @@
 #include "nsICharsetConverterManager.h"
 #include "nsILanguageAtomService.h"
 #include "nsIURL.h"
-#include "nsIEventStateManager.h"
 #include "nsIObserver.h"
-#include "nsILookAndFeel.h"
-#include "nsIIOService.h"
 #ifdef IBMBIDI
 #include "nsBidiUtils.h"
 #endif
@@ -71,106 +68,30 @@ public:
   // nsIPresContext methods
   NS_IMETHOD Init(nsIDeviceContext* aDeviceContext);
   NS_IMETHOD SetShell(nsIPresShell* aShell);
-  NS_IMETHOD GetShell(nsIPresShell** aResult);
-  NS_IMETHOD GetCompatibilityMode(nsCompatibility* aModeResult);
-  NS_IMETHOD SetCompatibilityMode(nsCompatibility aMode);
-  NS_IMETHOD GetImageAnimationMode(PRUint16* aModeResult);
-  NS_IMETHOD SetImageAnimationMode(PRUint16 aMode);
-  NS_IMETHOD GetImageLoadFlags(nsLoadFlags& aLoadFlags);
-  NS_IMETHOD GetLookAndFeel(nsILookAndFeel** aLookAndFeel);
-  NS_IMETHOD GetIOService(nsIIOService** aIOService);
-  NS_IMETHOD GetBaseURL(nsIURI** aURLResult);
-  NS_IMETHOD GetMedium(nsIAtom** aMediumResult) = 0;
-  NS_IMETHOD ClearStyleDataAndReflow(void);
+  virtual void SetCompatibilityMode(nsCompatibility aMode);
+  virtual void SetImageAnimationMode(PRUint16 aMode);
+  virtual void ClearStyleDataAndReflow();
 
-  virtual already_AddRefed<nsStyleContext>
-  ResolveStyleContextFor(nsIContent* aContent, nsStyleContext* aParentContext);
-
-  virtual already_AddRefed<nsStyleContext>
-  ResolveStyleContextForNonElement(nsStyleContext* aParentContext);
-
-  virtual already_AddRefed<nsStyleContext>
-  ResolvePseudoStyleContextFor(nsIContent* aParentContent,
-                               nsIAtom* aPseudoTag,
-                               nsStyleContext* aParentContext);
-
-  virtual already_AddRefed<nsStyleContext>
-  ResolvePseudoStyleWithComparator(nsIContent* aParentContent,
-                                   nsIAtom* aPseudoTag,
-                                   nsStyleContext* aParentContext,
-                                   nsICSSPseudoComparator* aComparator);
-
-  virtual already_AddRefed<nsStyleContext>
-  ProbePseudoStyleContextFor(nsIContent* aParentContent,
-                             nsIAtom* aPseudoTag,
-                             nsStyleContext* aParentContext);
-
-  NS_IMETHOD GetXBLBindingURL(nsIContent* aContent, nsIURI** aResult);
-  NS_IMETHOD ReParentStyleContext(nsIFrame* aFrame, 
-                                  nsStyleContext* aNewParentContext);
+  virtual nsresult GetXBLBindingURL(nsIContent* aContent, nsIURI** aResult);
   NS_IMETHOD GetMetricsFor(const nsFont& aFont, nsIFontMetrics** aResult);
   NS_IMETHOD AllocateFromShell(size_t aSize, void** aResult);
   NS_IMETHOD FreeToShell(size_t aSize, void* aFreeChunk);
-  NS_IMETHOD GetDefaultFont(PRUint8 aFontID, const nsFont** aResult);
-  NS_IMETHOD SetDefaultFont(PRUint8 aFontID, const nsFont& aFont);
-  NS_IMETHOD GetCachedBoolPref(PRUint32 aPrefType, PRBool& aValue);
+  virtual const nsFont* GetDefaultFont(PRUint8 aFontID) const;
   NS_IMETHOD GetCachedIntPref(PRUint32 aPrefType, PRInt32& aValue);
 
-  NS_IMETHOD GetFontScaler(PRInt32* aResult);
-  NS_IMETHOD SetFontScaler(PRInt32 aScaler);
-  NS_IMETHOD GetDefaultColor(nscolor* aColor);
-  NS_IMETHOD GetDefaultBackgroundColor(nscolor* aColor);
-  NS_IMETHOD GetDefaultLinkColor(nscolor* aColor);
-  NS_IMETHOD GetDefaultActiveLinkColor(nscolor* aColor);
-  NS_IMETHOD GetDefaultVisitedLinkColor(nscolor* aColor);
+  virtual nsresult LoadImage(imgIRequest* aImage,
+                             nsIFrame* aTargetFrame,
+                             imgIRequest **aRequest);
 
-  NS_IMETHOD GetFocusBackgroundColor(nscolor* aColor);
-  NS_IMETHOD GetFocusTextColor(nscolor* aColor);
-  NS_IMETHOD GetUseFocusColors(PRBool& useFocusColors);
-  NS_IMETHOD GetFocusRingWidth(PRUint8 *focusRingWidth);
-  NS_IMETHOD GetFocusRingOnAnything(PRBool& focusRingOnAnything);
-  NS_IMETHOD SetDefaultColor(nscolor aColor);
-  NS_IMETHOD SetDefaultBackgroundColor(nscolor aColor);
-  NS_IMETHOD SetDefaultLinkColor(nscolor aColor);
-  NS_IMETHOD SetDefaultActiveLinkColor(nscolor aColor);
-  NS_IMETHOD SetDefaultVisitedLinkColor(nscolor aColor);
-
-  NS_IMETHOD LoadImage(nsIURI* aURL,
-                       nsIFrame* aTargetFrame,
-                       imgIRequest **aRequest);
-
-  NS_IMETHOD StopImagesFor(nsIFrame* aTargetFrame);
-  NS_IMETHOD SetContainer(nsISupports* aContainer);
-  NS_IMETHOD GetContainer(nsISupports** aResult);
-  NS_IMETHOD SetLinkHandler(nsILinkHandler* aHandler);
-  NS_IMETHOD GetLinkHandler(nsILinkHandler** aResult);
-  NS_IMETHOD GetVisibleArea(nsRect& aResult);
-  NS_IMETHOD SetVisibleArea(const nsRect& r);
-  NS_IMETHOD IsPaginated(PRBool* aResult) = 0;
-  NS_IMETHOD SetPaginatedScrolling(PRBool aResult) = 0;
-  NS_IMETHOD GetPaginatedScrolling(PRBool* aResult) = 0;
-  NS_IMETHOD GetPageDim(nsRect* aActualRect, nsRect* aAdjRect) = 0;
-  NS_IMETHOD SetPageDim(nsRect* aRect) = 0;
-  NS_IMETHOD GetPixelsToTwips(float* aResult) const;
-  NS_IMETHOD GetTwipsToPixels(float* aResult) const;
+  virtual void StopImagesFor(nsIFrame* aTargetFrame);
+  virtual void SetContainer(nsISupports* aContainer);
+  virtual already_AddRefed<nsISupports>  GetContainer();
+  virtual void GetPageDim(nsRect* aActualRect, nsRect* aAdjRect) = 0;
+  virtual void SetPageDim(nsRect* aRect) = 0;
   NS_IMETHOD GetTwipsToPixelsForFonts(float* aResult) const;
   NS_IMETHOD GetScaledPixelsToTwips(float* aScale) const;
-  NS_IMETHOD GetDeviceContext(nsIDeviceContext** aResult) const;
-  NS_IMETHOD GetEventStateManager(nsIEventStateManager** aManager);
-  nsIEventStateManager* GetEventStateManager() {
-    return nsIPresContext::GetEventStateManager();
-  }
-  NS_IMETHOD GetLanguage(nsILanguageAtom** aLanguage);
   NS_IMETHOD GetLanguageSpecificTransformType(
               nsLanguageSpecificTransformType* aType);
-
-  NS_IMETHOD SetIsRenderingOnlySelection(PRBool aVal) { mIsRenderingOnlySelection = aVal; return NS_OK; }
-  NS_IMETHOD IsRenderingOnlySelection(PRBool* aResult);
-
-  NS_IMETHOD GetBackgroundImageDraw(PRBool &aCanDraw) { aCanDraw = mDrawImageBackground; return NS_OK; }
-  NS_IMETHOD SetBackgroundImageDraw(PRBool aCanDraw) { mDrawImageBackground = aCanDraw; return NS_OK; }
-  NS_IMETHOD GetBackgroundColorDraw(PRBool &aCanDraw) { aCanDraw = mDrawColorBackground; return NS_OK; }
-  NS_IMETHOD SetBackgroundColorDraw(PRBool aCanDraw) { mDrawColorBackground = aCanDraw; return NS_OK; }
 
 #ifdef MOZ_REFLOW_PERF
   NS_IMETHOD CountReflows(const char * aName, PRUint32 aType, nsIFrame * aFrame);
@@ -185,43 +106,23 @@ public:
 #ifdef IBMBIDI
   NS_IMETHOD GetBidiEnabled(PRBool* aBidiEnabled) const;
   NS_IMETHOD SetBidiEnabled(PRBool aBidiEnabled) const;
-  NS_IMETHOD IsVisualMode(PRBool& aIsVisual) const;
-  NS_IMETHOD SetVisualMode(PRBool aIsVisual);
   NS_IMETHOD GetBidiUtils(nsBidiPresUtils** aBidiUtils);
   NS_IMETHOD SetBidi(PRUint32 aSource, PRBool aForceReflow = PR_FALSE);
   NS_IMETHOD GetBidi(PRUint32* aDest) const;
- //ahmed
-  NS_IMETHOD IsVisRTL(PRBool &aResult) const;
-  NS_IMETHOD IsArabicEncoding(PRBool &aResult) const;
-
-//Mohamed  17-1-01
-  NS_IMETHOD SetIsBidiSystem(PRBool aIsBidi);
-  NS_IMETHOD GetIsBidiSystem(PRBool &aResult) const;
-  NS_IMETHOD GetBidiCharset(nsACString &aCharSet) const;
-//Mohamed End
 #endif // IBMBIDI
 
   NS_IMETHOD GetTheme(nsITheme** aResult);
   NS_IMETHOD ThemeChanged();
   NS_IMETHOD SysColorChanged();
-  NS_IMETHOD FindFrameBackground(nsIFrame* aFrame,
-                                 const nsStyleBackground** aBackground,
-                                 PRBool* aIsCanvas,
-                                 PRBool* aFoundBackground);
 
 protected:
   nsPresContext();
   virtual ~nsPresContext();
 
   nsCOMPtr<nsIPref>     mPrefs;
-  nsRect                mVisibleArea;
   nsCOMPtr<nsILanguageAtomService> mLangService;
-  nsCOMPtr<nsILanguageAtom> mLanguage;
   nsLanguageSpecificTransformType mLanguageSpecificTransformType;
-  nsILinkHandler*       mLinkHandler;   // [WEAK]
   nsWeakPtr             mContainer;
-  nsCOMPtr<nsILookAndFeel> mLookAndFeel;
-  nsCOMPtr<nsIIOService> mIOService;
 
   nsFont                mDefaultVariableFont;
   nsFont                mDefaultFixedFont;
@@ -232,43 +133,7 @@ protected:
   nsFont                mDefaultFantasyFont;
   nscoord               mMinimumFontSize;
 
-  PRInt32               mFontScaler;
-
-  PRPackedBool          mUseDocumentFonts;        // set in GetUserPrefs
-  PRPackedBool          mUseDocumentColors;       // set in GetUserPrefs
-  PRPackedBool          mUnderlineLinks;          // set in GetUserPrefs
-  PRPackedBool          mUseFocusColors;          // set in GetUserPrefs
-
-  nscolor               mDefaultColor;            // set in GetUserPrefs
-  nscolor               mDefaultBackgroundColor;  // set in GetUserPrefs
-  nscolor               mLinkColor;               // set in GetUserPrefs
-  nscolor               mActiveLinkColor;         // set in GetUserPrefs
-  nscolor               mVisitedLinkColor;        // set in GetUserPrefs
-  nscolor               mFocusTextColor;          // set in GetUserPrefs
-  nscolor               mFocusBackgroundColor;    // set in GetUserPrefs
-
-  PRUint8               mFocusRingWidth;          // set in GetUserPrefs
-  PRPackedBool          mFocusRingOnAnything;     // set in GetUserPrefs
-
-  PRPackedBool          mDrawImageBackground;
-  PRPackedBool          mDrawColorBackground;
-
   nsSupportsHashtable   mImageLoaders;
-
-  nsCOMPtr<nsIURI>      mBaseURL;
-
-  nsCompatibility       mCompatibilityMode;
-  PRPackedBool          mImageAnimationStopped;   // image animation stopped
-
-  PRUint16              mImageAnimationMode;
-
-  PRPackedBool          mStopped;                 // loading stopped
-  PRPackedBool          mStopChrome;              // should we stop chrome?
-#ifdef IBMBIDI
-  PRPackedBool          mIsVisual;                // is the Bidi text mode visual
-  PRPackedBool          mIsBidiSystem;            // is the system capable of doing Bidi reordering
-#endif // IBMBIDI
-  PRPackedBool          mIsRenderingOnlySelection;
 
 #ifdef IBMBIDI
   nsBidiPresUtils*      mBidiUtils;
@@ -283,7 +148,6 @@ protected:
   PRUint16      mImageAnimationModePref;
 
   nsCOMPtr<nsITheme> mTheme;
-  PRBool mNoTheme;
 
 protected:
   void   GetUserPreferences();

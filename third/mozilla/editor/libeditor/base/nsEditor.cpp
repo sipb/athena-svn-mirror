@@ -129,8 +129,7 @@ nsIAtom *nsEditor::gIMETxnName;
 nsIAtom *nsEditor::gDeleteTxnName;
 
 nsEditor::nsEditor()
-:  mContentMIMEType(nsnull)
-,  mModCount(0)
+:  mModCount(0)
 ,  mPresShellWeak(nsnull)
 ,  mViewManager(nsnull)
 ,  mUpdateCount(0)
@@ -600,6 +599,11 @@ nsEditor::Undo(PRUint32 aCount)
   nsresult result = NS_OK;
   ForceCompositionEnd();
 
+  PRBool hasTxnMgr, hasTransaction = PR_FALSE;
+  CanUndo(&hasTxnMgr, &hasTransaction);
+  if (!hasTransaction)
+    return result;
+
   nsAutoRules beginRulesSniffing(this, kOpUndo, nsIEditor::eNone);
 
   if ((nsITransactionManager *)nsnull!=mTxnMgr.get())
@@ -648,6 +652,11 @@ nsEditor::Redo(PRUint32 aCount)
 #endif
 
   nsresult result = NS_OK;
+
+  PRBool hasTxnMgr, hasTransaction = PR_FALSE;
+  CanRedo(&hasTxnMgr, &hasTransaction);
+  if (!hasTransaction)
+    return result;
 
   nsAutoRules beginRulesSniffing(this, kOpRedo, nsIEditor::eNone);
 
@@ -1117,7 +1126,7 @@ nsEditor::MarkNodeDirty(nsIDOMNode* aNode)
   //  mark the node dirty.
   nsCOMPtr<nsIDOMElement> element (do_QueryInterface(aNode));
   if (element)
-    element->SetAttribute(NS_LITERAL_STRING("_moz_dirty"), NS_LITERAL_STRING(""));
+    element->SetAttribute(NS_LITERAL_STRING("_moz_dirty"), EmptyString());
   return NS_OK;
 }
 
@@ -2333,7 +2342,7 @@ NS_IMETHODIMP nsEditor::InsertTextImpl(const nsAString& aStringToInsert,
     if (!nodeAsText)
     {
       // create a text node
-      res = aDoc->CreateTextNode(nsAutoString(), getter_AddRefs(nodeAsText));
+      res = aDoc->CreateTextNode(EmptyString(), getter_AddRefs(nodeAsText));
       if (NS_FAILED(res)) return res;
       if (!nodeAsText) return NS_ERROR_NULL_POINTER;
       nsCOMPtr<nsIDOMNode> newNode = do_QueryInterface(nodeAsText);
@@ -2381,7 +2390,7 @@ NS_IMETHODIMP nsEditor::InsertTextIntoTextNodeImpl(const nsAString& aStringToIns
   nsresult result;
   // suppressIME s used when editor must insert text, yet this text is not
   // part of current ime operation.  example: adjusting whitespace around an ime insertion.
-  if (mInIMEMode && !suppressIME)
+  if (mIMETextRangeList && mInIMEMode && !suppressIME)
   {
     if (!mIMETextNode)
     {

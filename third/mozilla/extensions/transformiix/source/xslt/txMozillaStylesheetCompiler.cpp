@@ -361,7 +361,9 @@ txStylesheetSink::OnStopRequest(nsIRequest *aRequest, nsISupports *aContext,
         mCompiler->cancel(result, nsnull, spec.get());
     }
 
-    return mListener->OnStopRequest(aRequest, aContext, aStatusCode);
+    nsresult rv = mListener->OnStopRequest(aRequest, aContext, aStatusCode);
+    mListener = nsnull;
+    return rv;
 }
 
 NS_IMETHODIMP
@@ -754,7 +756,7 @@ TX_CompileStylesheet(nsIDOMNode* aNode, txStylesheet** aStylesheet)
     }
 
     nsCOMPtr<nsIDocument> doc = do_QueryInterface(document);
-    nsIURI *uri = doc->GetBaseURL();
+    nsIURI *uri = doc->GetBaseURI();
     nsCAutoString baseURI;
     uri->GetSpec(baseURI);
 

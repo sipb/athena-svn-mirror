@@ -51,8 +51,8 @@
  }                                 \
  PR_END_MACRO
 
-static NS_NAMED_LITERAL_CSTRING(kWellKnownLocation, "/w3c/p3p.xml");
-static NS_NAMED_LITERAL_CSTRING(kW3C, "/w3c/");
+static const char kWellKnownLocation[] = "/w3c/p3p.xml";
+static const char kW3C[] = "/w3c/";
 
 static nsresult
 RequestSucceeded(nsIXMLHttpRequest* aRequest, PRBool* aReturn)
@@ -78,7 +78,6 @@ nsPolicyReference::nsPolicyReference()
   : mFlags (0),
     mError (0)
 {
-  NS_INIT_ISUPPORTS();
 }
 
 nsPolicyReference::~nsPolicyReference()
@@ -187,7 +186,7 @@ nsPolicyReference::LoadPolicyReferenceFileFor(nsIURI* aURI,
     if (!mDocument) {
       nsXPIDLCString value;
       mMainURI->GetPrePath(value);
-      value += kWellKnownLocation;
+      value += NS_LITERAL_CSTRING(kWellKnownLocation);
       result = Load(value);
     }
     else {
@@ -201,7 +200,7 @@ nsPolicyReference::LoadPolicyReferenceFileFor(nsIURI* aURI,
     // well known location
     nsXPIDLCString value;
     mCurrentURI->GetPrePath(value);
-    value += kWellKnownLocation;
+    value += NS_LITERAL_CSTRING(kWellKnownLocation);
     result = Load(value);
   }
   else if (mFlags & IS_LINKED_URI) {
@@ -225,9 +224,9 @@ nsPolicyReference::SetupPolicyListener(nsIPolicyListener* aListener)
 }
 
 nsresult
-nsPolicyReference::Load(const char* aURI)
+nsPolicyReference::Load(const nsACString& aURI)
 {
-  NS_ASSERTION(aURI, "no uri to load");
+  NS_ASSERTION(aURI.Length(), "no uri to load");
 
   nsresult result = NS_OK;
 
@@ -241,10 +240,12 @@ nsPolicyReference::Load(const char* aURI)
     target->AddEventListener(NS_LITERAL_STRING("load"), this, PR_FALSE);
   }
 
-  result = mXMLHttpRequest->OpenRequest("GET", aURI, PR_TRUE, nsnull, nsnull);
+  const nsAString& empty = EmptyString();
+  result = mXMLHttpRequest->OpenRequest(NS_LITERAL_CSTRING("GET"),
+                                        aURI, PR_TRUE, empty, empty);
   NS_ENSURE_SUCCESS(result, result);
    
-  mXMLHttpRequest->OverrideMimeType("text/xml");
+  mXMLHttpRequest->OverrideMimeType(NS_LITERAL_CSTRING("text/xml"));
 
   return mXMLHttpRequest->Send(nsnull);
 
@@ -323,13 +324,13 @@ nsPolicyReference::ProcessPolicyReferenceFile(nsIDOMDocument* aDocument,
     }
     if (mFlags & IS_MAIN_URI) {
       nsCOMPtr<nsIURI> tmpURI= mMainURI;
-      tmpURI->SetPath(kW3C);
+      tmpURI->SetPath(NS_LITERAL_CSTRING(kW3C));
       result = NS_MakeAbsoluteURI(absURI, policyLocation,  tmpURI);
       NS_ENSURE_SUCCESS(result, result);
     }
     else {
       // it is ok to do this because we won't be needing current uri beyond this.
-      mCurrentURI->SetPath(kW3C); 
+      mCurrentURI->SetPath(NS_LITERAL_CSTRING(kW3C));
       result = NS_MakeAbsoluteURI(absURI, policyLocation,  mCurrentURI);
       NS_ENSURE_SUCCESS(result, result);
     }

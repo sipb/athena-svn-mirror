@@ -150,13 +150,8 @@ var folderListener = {
                if (gRerootOnFolderLoad)
                  RerootFolder(uri, msgFolder, gCurrentLoadingFolderViewType, gCurrentLoadingFolderViewFlags, gCurrentLoadingFolderSortType, gCurrentLoadingFolderSortOrder);
 
-               var db = msgFolder.getMsgDatabase(msgWindow);
-               if (db) 
-                 db.resetHdrCacheSize(100);
-                 
-               if (gDBView) {
+               if (gDBView) 
                  gDBView.suppressCommandUpdating = false;
-               }
 
                gIsEditableMsgFolder = IsSpecialFolder(msgFolder, MSG_FOLDER_FLAG_DRAFTS);
 
@@ -643,17 +638,14 @@ function OnLoadMessenger()
   // argument[0] --> folder uri
   // argument[1] --> optional message key
   // argument[2] --> optional email address; //will come from aim; needs to show msgs from buddy's email address  
-  if ("arguments" in window && window.arguments[0])
+  if ("arguments" in window)
   {
-    gStartFolderUri = window.arguments[0];
-    gStartMsgKey = window.arguments[1];
-    gSearchEmailAddress = window.arguments[2];
-  }
-  else
-  {
-    gStartFolderUri = null;
-    gStartMsgKey = nsMsgKey_None;
-    gSearchEmailAddress = null;
+    gStartFolderUri = (window.arguments.length > 0) ? window.arguments[0]
+                                                    : null;
+    gStartMsgKey = (window.arguments.length > 1) ? window.arguments[1]
+                                                 : nsMsgKey_None;
+    gSearchEmailAddress = (window.arguments.length > 2) ? window.arguments[2]
+                                                        : null;
   }
 
   setTimeout("loadStartFolder(gStartFolderUri);", 0);
@@ -672,7 +664,6 @@ function OnLoadMessenger()
   if (!messengerBox.getAttribute("width")) {
     messengerBox.setAttribute("width","500px");
   }
-
 
   //Set focus to the Thread Pane the first time the window is opened.
   SetFocusThreadPane();
@@ -778,16 +769,15 @@ function loadStartFolder(initialUri)
         }
 
         var startFolder = startFolderResource.QueryInterface(Components.interfaces.nsIMsgFolder);
-        SelectFolder(startFolder.URI);
 
         // only do this on startup, when we pass in null
         if (!initialUri && isLoginAtStartUpEnabled && gLoadStartFolder)
         {
-            // Perform biff on the server to check for new mail, except for imap
-            if (defaultServer.type != "imap")
+            // Perform biff on the server to check for new mail
               defaultServer.PerformBiff(msgWindow);        
         }
 
+        SelectFolder(startFolder.URI);
 
         // because the "open" state persists, we'll call
         // PerformExpand() for all servers that are open at startup.
@@ -804,6 +794,30 @@ function loadStartFolder(initialUri)
     }
 
     MsgGetMessagesForAllServers(defaultServer);
+
+    if (CheckForUnsentMessages())
+    {
+        var ioService = Components.classes["@mozilla.org/network/io-service;1"].getService(Components.interfaces.nsIIOService);
+        if (!ioService.offline) 
+        {
+            InitPrompts();
+            InitServices();
+
+            if (gPromptService) 
+            {
+                var buttonPressed = gPromptService.confirmEx(window, 
+                                    gOfflinePromptsBundle.getString('sendMessagesOfflineWindowTitle'), 
+                                    gOfflinePromptsBundle.getString('sendMessagesLabel'),
+                                    gPromptService.BUTTON_TITLE_IS_STRING * (gPromptService.BUTTON_POS_0 + 
+                                        gPromptService.BUTTON_POS_1),
+                                    gOfflinePromptsBundle.getString('sendMessagesSendButtonLabel'),
+                                    gOfflinePromptsBundle.getString('sendMessagesNoSendButtonLabel'),
+                                    null, null, {value:0});
+                if (buttonPressed == 0) 
+                    SendUnsentMessages();
+            }
+        }
+    }
 }
 
 function TriggerGetMessages(server)

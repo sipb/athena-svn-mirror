@@ -69,8 +69,17 @@ public:
     nsStringEnumerator(const nsCStringArray* aArray, nsISupports* aOwner) :
         mCArray(aArray), mIndex(0), mOwner(aOwner), mOwnsArray(PR_FALSE), mIsUnicode(PR_FALSE)
     {}
-    
-    virtual ~nsStringEnumerator() {
+
+    NS_DECL_ISUPPORTS
+    NS_DECL_NSIUTF8STRINGENUMERATOR
+
+    // have to declare nsIStringEnumerator manually, because of
+    // overlapping method names
+    NS_IMETHOD GetNext(nsAString& aResult);
+    NS_DECL_NSISIMPLEENUMERATOR
+
+private:
+    ~nsStringEnumerator() {
         if (mOwnsArray) {
             // const-casting is safe here, because the NS_New*
             // constructors make sure mOwnsArray is consistent with
@@ -82,15 +91,6 @@ public:
         }
     }
 
-    NS_DECL_ISUPPORTS
-    NS_DECL_NSIUTF8STRINGENUMERATOR
-
-    // have to declare nsIStringEnumerator manually, because of
-    // overlapping method names
-    NS_IMETHOD GetNext(nsAString& aResult);
-    NS_DECL_NSISIMPLEENUMERATOR
-
-private:
     union {
         const nsStringArray* mArray;
         const nsCStringArray* mCArray;
@@ -159,7 +159,7 @@ nsStringEnumerator::GetNext(nsAString& aResult)
     if (mIsUnicode)
         aResult = *mArray->StringAt(mIndex++);
     else
-        aResult = NS_ConvertUTF8toUCS2(*mCArray->CStringAt(mIndex++));
+        CopyUTF8toUTF16(*mCArray->CStringAt(mIndex++), aResult);
     
     return NS_OK;
 }

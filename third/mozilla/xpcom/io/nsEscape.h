@@ -110,7 +110,7 @@ enum EscapeMask {
                                     * ascii octets to be skipped when unescaping */
   esc_AlwaysCopy     = PR_BIT(13), /* copy input to result buf even if escaping is unnecessary */
   esc_Colon          = PR_BIT(14), /* forces escape of colon */
-  esc_SkipControl    = PR_BIT(15)  /* skips C0 and DEL when unescaping */
+  esc_SkipControl    = PR_BIT(15)  /* skips C0 and DEL from unescaping */
 };
 
 /**
@@ -172,7 +172,7 @@ NS_UnescapeURL(const nsASingleFragmentCString &str, PRInt16 flags, nsACString &r
 inline nsAFlatCString &
 NS_UnescapeURL(nsAFlatCString &str)
 {
-    str.SetLength(nsUnescapeCount((char*)str.get()));
+    str.SetLength(nsUnescapeCount(str.BeginWriting()));
     return str;
 }
 

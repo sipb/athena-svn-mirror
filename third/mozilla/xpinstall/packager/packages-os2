@@ -110,7 +110,6 @@ bin/components/composer.xpt
 bin/components/docshell.dll
 ;bin/components/docshell_base.xpt
 bin/components/docshell.xpt
-bin/components/jsdom.dll
 ;bin/components/jsd3250.dll
 bin/components/jsd.dll
 bin/components/jsdservice.xpt
@@ -193,7 +192,6 @@ bin/components/profile.xpt
 bin/components/proxyObjInst.xpt
 bin/components/rdf.dll
 bin/components/rdf.xpt
-bin/components/shistory.dll
 bin/components/shistory.xpt
 bin/components/sidebar.xpt
 bin/components/signonviewer.xpt
@@ -305,6 +303,7 @@ bin/chrome/icons/default/main-window.ico
 
 ; all the pref files must be part of base
 ; to prevent migration bugs
+bin/greprefs/*
 bin/defaults/pref/*
 bin/defaults/autoconfig/*
 bin/res/ua.css

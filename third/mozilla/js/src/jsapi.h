@@ -437,6 +437,10 @@ JS_StringToVersion(const char *string);
 #define JSOPTION_PRIVATE_IS_NSISUPPORTS \
                                 JS_BIT(3)       /* context private data points
                                                    to an nsISupports subclass */
+#define JSOPTION_COMPILE_N_GO   JS_BIT(4)       /* one-shot compile+execute,
+                                                   enables compile-time scope
+                                                   chain resolution of consts
+                                                   in many cases, e.g. */
 
 extern JS_PUBLIC_API(uint32)
 JS_GetOptions(JSContext *cx);
@@ -906,6 +910,14 @@ JS_SetParent(JSContext *cx, JSObject *obj, JSObject *parent);
 
 extern JS_PUBLIC_API(JSObject *)
 JS_GetConstructor(JSContext *cx, JSObject *proto);
+
+/*
+ * Get a unique identifier for obj, good for the lifetime of obj (even if it
+ * is moved by a copying GC).  Return false on failure (likely out of memory),
+ * and true with *idp containing the unique id on success.
+ */
+extern JS_PUBLIC_API(JSBool)
+JS_GetObjectId(JSContext *cx, JSObject *obj, jsid *idp);
 
 extern JS_PUBLIC_API(JSObject *)
 JS_NewObject(JSContext *cx, JSClass *clasp, JSObject *proto, JSObject *parent);

@@ -40,7 +40,7 @@
 #include "nsISupports.h"
 #include "nsCoord.h"
 #include "nsVoidArray.h"
-#include "nsIDocumentObserver.h"
+#include "nsStubDocumentObserver.h"
 #include "nsIDOMFocusListener.h"
 #include "nsIFrame.h"
 #include "nsIImageMap.h"
@@ -54,7 +54,7 @@ class nsIURI;
 class nsString;
 class nsIDOMEvent;
 
-class nsImageMap : public nsIDocumentObserver, public nsIDOMFocusListener,
+class nsImageMap : public nsStubDocumentObserver, public nsIDOMFocusListener,
                    public nsIImageMap
 {
 public:
@@ -64,21 +64,16 @@ public:
 
   /**
    * See if the given aX,aY <b>pixel</b> coordinates are in the image
-   * map. If they are then NS_OK is returned and aAbsURL, aTarget, and
-   * aAltText are filled in with the values from the underlying area
-   * element. If the coordinates are not in the map then NS_NOT_INSIDE
+   * map. If they are then PR_TRUE is returned and aContent points to the
+   * found area. If the coordinates are not in the map then PR_FALSE
    * is returned.
    */
   PRBool IsInside(nscoord aX, nscoord aY,
-                  nsIContent** aContent,
-                  nsAString& aAbsURL,
-                  nsAString& aTarget,
-                  nsAString& aAltText) const;
+                  nsIContent** aContent) const;
 
   /**
    * See if the given aX,aY <b>pixel</b> coordinates are in the image
-   * map. If they are then NS_OK is returned otherwise NS_NOT_INSIDE
-   * is returned.
+   * map.
    */
   PRBool IsInside(nscoord aX, nscoord aY) const;
 
@@ -94,7 +89,18 @@ public:
   NS_DECL_ISUPPORTS
 
   // nsIDocumentObserver
-  NS_DECL_NSIDOCUMENTOBSERVER
+  virtual void AttributeChanged(nsIDocument* aDocument, nsIContent* aContent,
+                                PRInt32 aNameSpaceID, nsIAtom* aAttribute,
+                                PRInt32 aModType);
+  virtual void ContentAppended(nsIDocument* aDocument, nsIContent* aContainer,
+                               PRInt32 aNewIndexInContainer);
+  virtual void ContentInserted(nsIDocument* aDocument, nsIContent* aContainer,
+                               nsIContent* aChild, PRInt32 aIndexInContainer);
+  virtual void ContentReplaced(nsIDocument* aDocument, nsIContent* aContainer,
+                               nsIContent* aOldChild, nsIContent* aNewChild,
+                               PRInt32 aIndexInContainer);
+  virtual void ContentRemoved(nsIDocument* aDocument, nsIContent* aContainer,
+                              nsIContent* aChild, PRInt32 aIndexInContainer);
 
   //nsIDOMFocusListener
   NS_IMETHOD Focus(nsIDOMEvent* aEvent);
@@ -120,7 +126,8 @@ protected:
   nsresult AddArea(nsIContent* aArea);
  
   nsresult ChangeFocus(nsIDOMEvent* aEvent, PRBool aFocus);
-  nsresult Invalidate(nsIPresContext* aPresContext, nsIFrame* aFrame, nsRect& aRect);
+
+  void MaybeUpdateAreas(nsIContent *aContent);
 
   nsIPresShell* mPresShell; // WEAK - owns the frame that owns us
   nsIFrame* mImageFrame;  // the frame that owns us

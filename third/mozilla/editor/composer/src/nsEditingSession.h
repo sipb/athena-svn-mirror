@@ -98,8 +98,7 @@ public:
 
 protected:
 
-  nsresult        GetDocShellFromWindow(nsIDOMWindow *aWindow, 
-                                        nsIDocShell** outDocShell);
+  nsIDocShell *   GetDocShellFromWindow(nsIDOMWindow *aWindow);
   nsresult        GetEditorDocShellFromWindow(nsIDOMWindow *aWindow, 
                                               nsIEditorDocShell** outDocShell);
   
@@ -107,8 +106,7 @@ protected:
                                                nsIDOMWindow *aWindow,
                                                nsISupports *aContext,
                                                PRUint32 *aControllerId);
-  nsresult        SetEditorOnControllers(nsIDOMWindow *aWindow, 
-                                         nsIEditor* aEditor);
+
   nsresult        SetContextOnControllerById(nsIControllers* aControllers, 
                                             nsISupports* aContext,
                                             PRUint32 aID);

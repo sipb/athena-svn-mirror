@@ -73,10 +73,17 @@ treechildren::-moz-tree-row {
   height: 1.3em;
 }
 
+/* ::::: alternating background ::::: */
+treechildren[alternatingbackground="true"]::-moz-tree-row(odd) {
+  background-color: #f3f3f3;
+}
+
+treechildren[alternatingbackground="true"]::-moz-tree-row(odd, selected),
 treechildren::-moz-tree-row(selected) {
   background-color: #C7D0D9;
 }
 
+treechildren[alternatingbackground="true"]::-moz-tree-row(odd, selected, focus),
 treechildren::-moz-tree-row(selected, focus) {
   background-color: #424F63;
 }

@@ -268,12 +268,12 @@ PRBool URIUtils::CanCallerAccess(nsIDOMNode *aNode)
         nsCOMPtr<nsIDOMDocument> domDoc;
         aNode->GetOwnerDocument(getter_AddRefs(domDoc));
         if (!domDoc) {
-            nsCOMPtr<nsINodeInfo> ni;
+            nsINodeInfo *ni;
             if (content) {
                 ni = content->GetNodeInfo();
             }
             else {
-                attr->GetNodeInfo(getter_AddRefs(ni));
+                ni = attr->NodeInfo();
             }
 
             if (!ni) {
@@ -343,11 +343,11 @@ URIUtils::ResetWithSource(nsIDocument *aNewDoc, nsIDOMNode *aSourceNode)
         // Create a temporary channel to get nsIDocument->Reset to
         // do the right thing. We want the output document to get
         // much of the input document's characteristics.
-        serv->NewChannelFromURI(sourceDoc->GetDocumentURL(),
+        serv->NewChannelFromURI(sourceDoc->GetDocumentURI(),
                                 getter_AddRefs(channel));
     }
     aNewDoc->Reset(channel, loadGroup);
-    aNewDoc->SetBaseURL(sourceDoc->GetBaseURL());
+    aNewDoc->SetBaseURI(sourceDoc->GetBaseURI());
 
     // Copy charset
     aNewDoc->SetDocumentCharacterSet(sourceDoc->GetDocumentCharacterSet());

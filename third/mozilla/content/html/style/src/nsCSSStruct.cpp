@@ -50,7 +50,6 @@
 #include "nsStyleConsts.h"
 
 #include "nsCOMPtr.h"
-#include "nsIStyleSet.h"
 
 #define CSS_IF_DELETE(ptr)  if (nsnull != ptr)  { delete ptr; ptr = nsnull; }
 
@@ -538,7 +537,19 @@ nsCSSMargin::nsCSSMargin(void)
 
 nsCSSMargin::nsCSSMargin(const nsCSSMargin& aCopy)
   : mMargin(aCopy.mMargin),
+    mMarginStart(aCopy.mMarginStart),
+    mMarginEnd(aCopy.mMarginEnd),
+    mMarginLeftLTRSource(aCopy.mMarginLeftLTRSource),
+    mMarginLeftRTLSource(aCopy.mMarginLeftRTLSource),
+    mMarginRightLTRSource(aCopy.mMarginRightLTRSource),
+    mMarginRightRTLSource(aCopy.mMarginRightRTLSource),
     mPadding(aCopy.mPadding), 
+    mPaddingStart(aCopy.mPaddingStart),
+    mPaddingEnd(aCopy.mPaddingEnd),
+    mPaddingLeftLTRSource(aCopy.mPaddingLeftLTRSource),
+    mPaddingLeftRTLSource(aCopy.mPaddingLeftRTLSource),
+    mPaddingRightLTRSource(aCopy.mPaddingRightLTRSource),
+    mPaddingRightRTLSource(aCopy.mPaddingRightRTLSource),
     mBorderWidth(aCopy.mBorderWidth),
     mBorderColor(aCopy.mBorderColor),
     mBorderColors(aCopy.mBorderColors),
@@ -1153,9 +1164,12 @@ nsCSSSVG::nsCSSSVG(void)
 }
 
 nsCSSSVG::nsCSSSVG(const nsCSSSVG& aCopy)
-    : mFill(aCopy.mFill),
+    : mDominantBaseline(aCopy.mDominantBaseline),
+      mFill(aCopy.mFill),
       mFillOpacity(aCopy.mFillOpacity),
       mFillRule(aCopy.mFillRule),
+      mPointerEvents(aCopy.mPointerEvents),
+      mShapeRendering(aCopy.mShapeRendering),
       mStroke(aCopy.mStroke),
       mStrokeDasharray(aCopy.mStrokeDasharray),
       mStrokeDashoffset(aCopy.mStrokeDashoffset),
@@ -1163,7 +1177,9 @@ nsCSSSVG::nsCSSSVG(const nsCSSSVG& aCopy)
       mStrokeLinejoin(aCopy.mStrokeLinejoin),
       mStrokeMiterlimit(aCopy.mStrokeMiterlimit),
       mStrokeOpacity(aCopy.mStrokeOpacity),
-      mStrokeWidth(aCopy.mStrokeWidth)
+      mStrokeWidth(aCopy.mStrokeWidth),
+      mTextAnchor(aCopy.mTextAnchor),
+      mTextRendering(aCopy.mTextRendering)
 {
   MOZ_COUNT_CTOR(nsCSSSVG);
 }
@@ -1180,9 +1196,12 @@ void nsCSSSVG::List(FILE* out, PRInt32 aIndent) const
 
   nsAutoString buffer;
 
+  mDominantBaseline.AppendToString(buffer, eCSSProperty_dominant_baseline);
   mFill.AppendToString(buffer, eCSSProperty_fill);
   mFillOpacity.AppendToString(buffer, eCSSProperty_fill_opacity);
   mFillRule.AppendToString(buffer, eCSSProperty_fill_rule);
+  mPointerEvents.AppendToString(buffer, eCSSProperty_pointer_events);
+  mShapeRendering.AppendToString(buffer, eCSSProperty_shape_rendering);
   mStroke.AppendToString(buffer, eCSSProperty_stroke);
   mStrokeDasharray.AppendToString(buffer, eCSSProperty_stroke_dasharray);
   mStrokeDashoffset.AppendToString(buffer, eCSSProperty_stroke_dashoffset);
@@ -1191,6 +1210,8 @@ void nsCSSSVG::List(FILE* out, PRInt32 aIndent) const
   mStrokeMiterlimit.AppendToString(buffer, eCSSProperty_stroke_miterlimit);
   mStrokeOpacity.AppendToString(buffer, eCSSProperty_stroke_opacity);
   mStrokeWidth.AppendToString(buffer, eCSSProperty_stroke_width);
+  mTextAnchor.AppendToString(buffer, eCSSProperty_text_anchor);
+  mTextRendering.AppendToString(buffer, eCSSProperty_text_rendering);
   fputs(NS_LossyConvertUCS2toASCII(buffer).get(), out);
 }
 #endif

@@ -62,7 +62,10 @@
 #include "nsIUnicodeDecodeHelper.h"
 #include "nsIUnicodeEncodeHelper.h"
 #include "nsCharsetConverterManager.h"
+
+#ifdef MOZ_USE_NATIVE_UCONV
 #include "nsNativeUConvService.h"
+#endif
 
 static NS_DEFINE_CID(kStringBundleServiceCID, NS_STRINGBUNDLESERVICE_CID);
 static NS_DEFINE_CID(kCharsetAliasCID, NS_CHARSETALIAS_CID);
@@ -342,14 +345,14 @@ NS_IMETHODIMP
 nsCharsetConverterManager::GetDecoderList(nsIUTF8StringEnumerator ** aResult)
 {
   return GetList(NS_LITERAL_CSTRING(NS_UNICODEDECODER_NAME),
-                 NS_LITERAL_CSTRING(""), aResult);
+                 EmptyCString(), aResult);
 }
 
 NS_IMETHODIMP
 nsCharsetConverterManager::GetEncoderList(nsIUTF8StringEnumerator ** aResult)
 {
   return GetList(NS_LITERAL_CSTRING(NS_UNICODEENCODER_NAME),
-                 NS_LITERAL_CSTRING(""), aResult);
+                 EmptyCString(), aResult);
 }
 
 NS_IMETHODIMP

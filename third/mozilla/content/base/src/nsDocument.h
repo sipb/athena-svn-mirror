@@ -53,7 +53,7 @@
 #include "nsIDOMDocumentStyle.h"
 #include "nsIDOMDocumentRange.h"
 #include "nsIDOMDocumentTraversal.h"
-#include "nsIDocumentObserver.h"
+#include "nsStubDocumentObserver.h"
 #include "nsIDOMEventReceiver.h"
 #include "nsIDOM3EventTarget.h"
 #include "nsIDOMStyleSheetList.h"
@@ -80,6 +80,10 @@
 #include "nsIRadioGroupContainer.h"
 #include "nsIScriptEventManager.h"
 
+// Put these here so all document impls get them automatically
+#include "nsIHTMLStyleSheet.h"
+#include "nsIHTMLCSSStyleSheet.h"
+
 #include "pldhash.h"
 
 
@@ -97,6 +101,7 @@ class nsIDTD;
 class nsXPathDocumentTearoff;
 class nsIRadioVisitor;
 class nsIFormControl;
+class nsStyleSet;
 struct nsRadioGroupStruct;
 
 
@@ -139,7 +144,7 @@ protected:
 
 
 class nsDOMStyleSheetList : public nsIDOMStyleSheetList,
-                            public nsIDocumentObserver
+                            public nsStubDocumentObserver
 {
 public:
   nsDOMStyleSheetList(nsIDocument *aDocument);
@@ -149,65 +154,12 @@ public:
 
   NS_DECL_NSIDOMSTYLESHEETLIST
 
-  NS_IMETHOD BeginUpdate(nsIDocument *aDocument, nsUpdateType aUpdateType) {
-    return NS_OK;
-  }
-  NS_IMETHOD EndUpdate(nsIDocument *aDocument, nsUpdateType aUpdateType) {
-    return NS_OK;
-  }
-  NS_IMETHOD BeginLoad(nsIDocument *aDocument) { return NS_OK; }
-  NS_IMETHOD EndLoad(nsIDocument *aDocument) { return NS_OK; }
-  NS_IMETHOD BeginReflow(nsIDocument *aDocument,
-                         nsIPresShell* aShell) { return NS_OK; }
-  NS_IMETHOD EndReflow(nsIDocument *aDocument,
-                       nsIPresShell* aShell) { return NS_OK; }
-  NS_IMETHOD ContentChanged(nsIDocument *aDocument,
-                            nsIContent* aContent,
-                            nsISupports* aSubContent) { return NS_OK; }
-  NS_IMETHOD ContentStatesChanged(nsIDocument* aDocument,
-                                  nsIContent* aContent1,
-                                  nsIContent* aContent2,
-                                  PRInt32 aStateMask) { return NS_OK; }
-  NS_IMETHOD AttributeChanged(nsIDocument *aDocument,
-                              nsIContent*  aContent,
-                              PRInt32      aNameSpaceID,
-                              nsIAtom*     aAttribute,
-                              PRInt32      aModType) { return NS_OK; }
-  NS_IMETHOD ContentAppended(nsIDocument *aDocument,
-                             nsIContent* aContainer,
-                             PRInt32     aNewIndexInContainer)
-                             { return NS_OK; }
-  NS_IMETHOD ContentInserted(nsIDocument *aDocument,
-                             nsIContent* aContainer,
-                             nsIContent* aChild,
-                             PRInt32 aIndexInContainer) { return NS_OK; }
-  NS_IMETHOD ContentReplaced(nsIDocument *aDocument,
-                             nsIContent* aContainer,
-                             nsIContent* aOldChild,
-                             nsIContent* aNewChild,
-                             PRInt32 aIndexInContainer) { return NS_OK; }
-  NS_IMETHOD ContentRemoved(nsIDocument *aDocument,
-                            nsIContent* aContainer,
-                            nsIContent* aChild,
-                            PRInt32 aIndexInContainer) { return NS_OK; }
-  NS_IMETHOD StyleSheetAdded(nsIDocument *aDocument,
-                             nsIStyleSheet* aStyleSheet);
-  NS_IMETHOD StyleSheetRemoved(nsIDocument *aDocument,
+  // nsIDocumentObserver
+  virtual void DocumentWillBeDestroyed(nsIDocument *aDocument);
+  virtual void StyleSheetAdded(nsIDocument *aDocument,
                                nsIStyleSheet* aStyleSheet);
-  NS_IMETHOD StyleSheetApplicableStateChanged(nsIDocument *aDocument,
-                                              nsIStyleSheet* aStyleSheet,
-                                              PRBool aApplicable) { return NS_OK; }
-  NS_IMETHOD StyleRuleChanged(nsIDocument *aDocument,
-                              nsIStyleSheet* aStyleSheet,
-                              nsIStyleRule* aOldStyleRule,
-                              nsIStyleRule* aNewStyleRule) { return NS_OK; }
-  NS_IMETHOD StyleRuleAdded(nsIDocument *aDocument,
-                            nsIStyleSheet* aStyleSheet,
-                            nsIStyleRule* aStyleRule) { return NS_OK; }
-  NS_IMETHOD StyleRuleRemoved(nsIDocument *aDocument,
-                              nsIStyleSheet* aStyleSheet,
-                              nsIStyleRule* aStyleRule) { return NS_OK; }
-  NS_IMETHOD DocumentWillBeDestroyed(nsIDocument *aDocument);
+  virtual void StyleSheetRemoved(nsIDocument *aDocument,
+                                 nsIStyleSheet* aStyleSheet);
 
 protected:
   PRInt32       mLength;
@@ -248,15 +200,15 @@ public:
   virtual void Reset(nsIChannel *aChannel, nsILoadGroup *aLoadGroup);
   virtual void ResetToURI(nsIURI *aURI, nsILoadGroup *aLoadGroup);
 
-  NS_IMETHOD StartDocumentLoad(const char* aCommand,
-                               nsIChannel* aChannel,
-                               nsILoadGroup* aLoadGroup,
-                               nsISupports* aContainer,
-                               nsIStreamListener **aDocListener,
-                               PRBool aReset = PR_TRUE,
-                               nsIContentSink* aContentSink = nsnull);
+  virtual nsresult StartDocumentLoad(const char* aCommand,
+                                     nsIChannel* aChannel,
+                                     nsILoadGroup* aLoadGroup,
+                                     nsISupports* aContainer,
+                                     nsIStreamListener **aDocListener,
+                                     PRBool aReset = PR_TRUE,
+                                     nsIContentSink* aContentSink = nsnull);
 
-  NS_IMETHOD StopDocumentLoad();
+  virtual void StopDocumentLoad();
 
   /**
    * Return the principal responsible for this document.
@@ -266,7 +218,7 @@ public:
   /**
    * Set the principal responsible for this document.
    */
-  NS_IMETHOD SetPrincipal(nsIPrincipal *aPrincipal);
+  virtual void SetPrincipal(nsIPrincipal *aPrincipal);
 
   /**
    * Get the Content-Type of this document.
@@ -279,10 +231,7 @@ public:
    */
   virtual void SetContentType(const nsAString& aContentType);
 
-  /**
-   * Return the base URL for relative URLs in the document. May return null (or the document URL).
-   */
-  NS_IMETHOD SetBaseURL(nsIURI* aURL);
+  virtual nsresult SetBaseURI(nsIURI* aURI);
 
   /**
    * Get/Set the base target of a link in a document.
@@ -299,12 +248,12 @@ public:
   /**
    * Add an observer that gets notified whenever the charset changes.
    */
-  NS_IMETHOD AddCharSetObserver(nsIObserver* aObserver);
+  virtual nsresult AddCharSetObserver(nsIObserver* aObserver);
 
   /**
    * Remove a charset observer.
    */
-  NS_IMETHOD RemoveCharSetObserver(nsIObserver* aObserver);
+  virtual void RemoveCharSetObserver(nsIObserver* aObserver);
 
   /**
    * Return the Line Breaker for the document
@@ -327,15 +276,16 @@ public:
    * it's presentation context (presentation context's <b>must not</b> be
    * shared among multiple presentation shell's).
    */
-  NS_IMETHOD CreateShell(nsIPresContext* aContext,
-                         nsIViewManager* aViewManager,
-                         nsIStyleSet* aStyleSet,
-                         nsIPresShell** aInstancePtrResult);
-  NS_IMETHOD_(PRBool) DeleteShell(nsIPresShell* aShell);
-  NS_IMETHOD_(PRUint32) GetNumberOfShells() const;
-  NS_IMETHOD_(nsIPresShell *) GetShellAt(PRUint32 aIndex) const;
+  virtual nsresult CreateShell(nsIPresContext* aContext,
+                               nsIViewManager* aViewManager,
+                               nsStyleSet* aStyleSet,
+                               nsIPresShell** aInstancePtrResult);
+  virtual PRBool DeleteShell(nsIPresShell* aShell);
+  virtual PRUint32 GetNumberOfShells() const;
+  virtual nsIPresShell *GetShellAt(PRUint32 aIndex) const;
 
-  NS_IMETHOD SetSubDocumentFor(nsIContent *aContent, nsIDocument* aSubDoc);
+  virtual nsresult SetSubDocumentFor(nsIContent *aContent,
+                                     nsIDocument* aSubDoc);
   virtual nsIDocument* GetSubDocumentFor(nsIContent *aContent) const;
   virtual nsIContent* FindContentForSubDocument(nsIDocument *aDocument) const;
 
@@ -345,9 +295,9 @@ public:
    * Get the direct children of the document - content in
    * the prolog, the root content and content in the epilog.
    */
-  NS_IMETHOD_(nsIContent *) GetChildAt(PRUint32 aIndex) const;
-  NS_IMETHOD_(PRInt32) IndexOf(nsIContent* aPossibleChild) const;
-  NS_IMETHOD_(PRUint32) GetChildCount() const;
+  virtual nsIContent *GetChildAt(PRUint32 aIndex) const;
+  virtual PRInt32 IndexOf(nsIContent* aPossibleChild) const;
+  virtual PRUint32 GetChildCount() const;
 
   /**
    * Get the style sheets owned by this document.
@@ -365,10 +315,26 @@ public:
   virtual void AddStyleSheetToStyleSets(nsIStyleSheet* aSheet);
   virtual void RemoveStyleSheetFromStyleSets(nsIStyleSheet* aSheet);
 
-  NS_IMETHOD InsertStyleSheetAt(nsIStyleSheet* aSheet, PRInt32 aIndex);
+  virtual void InsertStyleSheetAt(nsIStyleSheet* aSheet, PRInt32 aIndex);
   virtual void SetStyleSheetApplicableState(nsIStyleSheet* aSheet,
                                             PRBool aApplicable);
 
+  /**
+   * Get this document's attribute stylesheet.  May return null if
+   * there isn't one.
+   */
+  nsIHTMLStyleSheet* GetAttributeStyleSheet() const {
+    return mAttrStyleSheet;
+  }
+
+  /**
+   * Get this document's inline style sheet.  May return null if there
+   * isn't one
+   */
+  nsIHTMLCSSStyleSheet* GetInlineStyleSheet() const {
+    return mStyleAttrStyleSheet;
+  }
+  
   /**
    * Set the object from which a document can get a script context.
    * This is the context within which all scripts (during document
@@ -401,8 +367,8 @@ public:
   virtual void EndUpdate(nsUpdateType aUpdateType);
   virtual void BeginLoad();
   virtual void EndLoad();
-  virtual void ContentChanged(nsIContent* aContent,
-                              nsISupports* aSubContent);
+  virtual void CharacterDataChanged(nsIContent* aContent,
+                                    PRBool aAppend);
   virtual void ContentStatesChanged(nsIContent* aContent1,
                                     nsIContent* aContent2,
                                     PRInt32 aStateMask);
@@ -446,8 +412,12 @@ public:
   virtual void GetXMLDeclaration(nsAString& aVersion,
                                  nsAString& aEncoding,
                                  nsAString& Standalone);
-  NS_IMETHOD_(PRBool) IsCaseSensitive();
-  NS_IMETHOD_(PRBool) IsScriptEnabled();
+  virtual PRBool IsScriptEnabled();
+
+  virtual nsresult HandleDOMEvent(nsIPresContext* aPresContext,
+                                  nsEvent* aEvent, nsIDOMEvent** aDOMEvent,
+                                  PRUint32 aFlags,
+                                  nsEventStatus* aEventStatus);
 
   // nsIRadioGroupContainer
   NS_IMETHOD WalkRadioGroup(const nsAString& aName,
@@ -522,10 +492,6 @@ public:
   // nsIScriptObjectPrincipal
   NS_IMETHOD GetPrincipal(nsIPrincipal **aPrincipal);
 
-  NS_IMETHOD HandleDOMEvent(nsIPresContext* aPresContext, nsEvent* aEvent,
-                            nsIDOMEvent** aDOMEvent, PRUint32 aFlags,
-                            nsEventStatus* aEventStatus);
-
   virtual nsresult Init();
 
 protected:
@@ -537,16 +503,30 @@ protected:
   virtual nsIStyleSheet* InternalGetStyleSheetAt(PRInt32 aIndex) const;
   virtual PRInt32 InternalGetNumberOfStyleSheets() const;
 
-  virtual void RetrieveRelevantHeaders(nsIChannel *aChannel);
+  void RetrieveRelevantHeaders(nsIChannel *aChannel);
 
+  static PRBool TryChannelCharset(nsIChannel *aChannel,
+                                  PRInt32& aCharsetSource,
+                                  nsACString& aCharset);
+  
   nsresult doCreateShell(nsIPresContext* aContext,
-                         nsIViewManager* aViewManager, nsIStyleSet* aStyleSet,
+                         nsIViewManager* aViewManager, nsStyleSet* aStyleSet,
                          nsCompatibility aCompatMode,
                          nsIPresShell** aInstancePtrResult);
+
+  nsresult ResetStylesheetsToURI(nsIURI* aURI);
+
+  nsresult CreateElement(nsINodeInfo *aNodeInfo, nsIDOMElement** aResult);
+
+  virtual PRInt32 GetDefaultNamespaceID() const
+  {
+    return kNameSpaceID_None;
+  };
 
   nsDocument();
   virtual ~nsDocument();
 
+  nsCString mReferrer;
   nsCString mLastModified;
   nsCOMPtr<nsIPrincipal> mPrincipal;
 
@@ -588,8 +568,12 @@ protected:
   nsSupportsHashtable mContentWrapperHash;
 
   nsCOMPtr<nsICSSLoader> mCSSLoader;
+  nsCOMPtr<nsIHTMLStyleSheet> mAttrStyleSheet;
+  nsCOMPtr<nsIHTMLCSSStyleSheet> mStyleAttrStyleSheet;
 
   nsCOMPtr<nsIScriptEventManager> mScriptEventManager;
+
+  nsString mBaseTarget;
 
 private:
   nsresult IsAllowedAsChild(PRUint16 aNodeType, nsIContent* aRefContent);

@@ -29,12 +29,14 @@ IS_COMPONENT	  = 1
 
 include $(DEPTH)/config/autoconf.mk
 
+PACKAGE_FILE = embedlite.pkg
+
 REQUIRES	= xpcom \
 		  string \
-		  chrome \
+		  content \
 		  necko \
 		  pref \
-		  history \
+		  docshell \
 		  $(NULL)
 
 CPPSRCS         = \

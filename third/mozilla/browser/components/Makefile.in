@@ -42,6 +42,8 @@ VPATH		= @srcdir@
 
 include $(DEPTH)/config/autoconf.mk
 
-DIRS = bookmarks history prefwindow security sidebar cookieviewer build
+DIRS = bookmarks help migration history prefwindow security shell sidebar cookieviewer
+
+DIRS += build
 
 include $(topsrcdir)/config/rules.mk

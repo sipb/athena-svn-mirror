@@ -38,7 +38,6 @@
 
 #include "nsSVGElement.h"
 #include "nsSVGAtoms.h"
-#include "nsIDOMSVGSVGElement.h"
 #include "nsIDOMSVGFitToViewBox.h"
 #include "nsIDOMSVGLocatable.h"
 #include "nsSVGAnimatedLength.h"
@@ -47,7 +46,7 @@
 #include "nsIPresShell.h"
 #include "nsIDocument.h"
 #include "nsIPresContext.h"
-#include "nsSVGRect.h"
+#include "nsISVGViewportRect.h"
 #include "nsSVGAnimatedRect.h"
 #include "nsSVGMatrix.h"
 #include "nsSVGPoint.h"
@@ -58,10 +57,15 @@
 #include "nsIWidget.h"
 #include "nsIFrame.h"
 #include "nsIScrollableView.h"
-#include "nsISVGFrame.h" //XXX
+#include "nsISVGSVGElement.h"
+#include "nsISVGViewportAxis.h"
+#include "nsISVGOuterSVGFrame.h" //XXX
+#include "nsSVGNumber.h"
+#include "nsSVGRect.h"
+#include "nsISVGValueUtils.h"
 
 class nsSVGSVGElement : public nsSVGElement,
-                        public nsIDOMSVGSVGElement,
+                        public nsISVGSVGElement, // : nsIDOMSVGSVGElement
                         public nsIDOMSVGFitToViewBox,
                         public nsIDOMSVGLocatable
 {
@@ -70,7 +74,7 @@ protected:
                                       nsINodeInfo *aNodeInfo);
   nsSVGSVGElement();
   virtual ~nsSVGSVGElement();
-  virtual nsresult Init();
+  nsresult Init(nsINodeInfo* aNodeInfo);
   
 public:
   // interfaces:
@@ -85,14 +89,27 @@ public:
   NS_FORWARD_NSIDOMELEMENT(nsSVGElement::)
   NS_FORWARD_NSIDOMSVGELEMENT(nsSVGElement::)
 
+  // nsISVGSVGElement interface:
+  NS_IMETHOD GetParentViewportRect(nsISVGViewportRect **parentViewport);
+
+  // nsIStyledContent interface
+  NS_IMETHOD_(PRBool) IsAttributeMapped(const nsIAtom* aAttribute) const;
+
+  // nsISVGValueObserver
+  NS_IMETHOD WillModifySVGObservable(nsISVGValue* observable);
+  NS_IMETHOD DidModifySVGObservable (nsISVGValue* observable);
+  
 protected:
+  
   // implementation helpers:
   void GetScreenPosition(PRInt32 &x, PRInt32 &y);
   
   nsCOMPtr<nsIDOMSVGAnimatedLength> mWidth;
   nsCOMPtr<nsIDOMSVGAnimatedLength> mHeight;
-  nsCOMPtr<nsIDOMSVGRect>           mViewport;
+  nsCOMPtr<nsISVGViewportRect>      mParentViewport;
+  nsCOMPtr<nsISVGViewportRect>      mViewport;
   nsCOMPtr<nsIDOMSVGAnimatedRect>   mViewBox;
+  nsCOMPtr<nsIDOMSVGMatrix>         mViewBoxToViewportTransform;
   nsCOMPtr<nsIDOMSVGAnimatedLength> mX;
   nsCOMPtr<nsIDOMSVGAnimatedLength> mY;
   
@@ -108,21 +125,14 @@ nsresult NS_NewSVGSVGElement(nsIContent **aResult, nsINodeInfo *aNodeInfo)
   if (!it) return NS_ERROR_OUT_OF_MEMORY;
   NS_ADDREF(it);
 
-  nsresult rv = NS_STATIC_CAST(nsGenericElement*,it)->Init(aNodeInfo);
-
-  if (NS_FAILED(rv)) {
-    it->Release();
-    return rv;
-  }
-
-  rv = it->Init();
+  nsresult rv = it->Init(aNodeInfo);
 
   if (NS_FAILED(rv)) {
     it->Release();
     return rv;
   }
   
-  *aResult = NS_STATIC_CAST(nsIContent *, it);
+  *aResult = it;
 
   return NS_OK;
 }
@@ -134,9 +144,13 @@ NS_IMPL_ADDREF_INHERITED(nsSVGSVGElement,nsSVGElement)
 NS_IMPL_RELEASE_INHERITED(nsSVGSVGElement,nsSVGElement)
 
 NS_INTERFACE_MAP_BEGIN(nsSVGSVGElement)
+  NS_INTERFACE_MAP_ENTRY(nsIDOMNode)
+  NS_INTERFACE_MAP_ENTRY(nsIDOMElement)
+  NS_INTERFACE_MAP_ENTRY(nsIDOMSVGElement)
   NS_INTERFACE_MAP_ENTRY(nsIDOMSVGSVGElement)
   NS_INTERFACE_MAP_ENTRY(nsIDOMSVGFitToViewBox)
   NS_INTERFACE_MAP_ENTRY(nsIDOMSVGLocatable)
+  NS_INTERFACE_MAP_ENTRY(nsISVGSVGElement)
   NS_INTERFACE_MAP_ENTRY_CONTENT_CLASSINFO(SVGSVGElement)
 NS_INTERFACE_MAP_END_INHERITING(nsSVGElement)
 
@@ -150,71 +164,129 @@ nsSVGSVGElement::nsSVGSVGElement()
 
 nsSVGSVGElement::~nsSVGSVGElement()
 {
+  if (mViewBox) {
+    NS_REMOVE_SVGVALUE_OBSERVER(mViewBox);
+  }
+  if (mViewport) {
+    NS_REMOVE_SVGVALUE_OBSERVER(mViewport);
+  }
 }
 
   
 nsresult
-nsSVGSVGElement::Init()
+nsSVGSVGElement::Init(nsINodeInfo* aNodeInfo)
 {
-  nsresult rv;
-  rv = nsSVGElement::Init();
+  nsresult rv = nsSVGElement::Init(aNodeInfo);
   NS_ENSURE_SUCCESS(rv,rv);
 
+  // parent viewport. this will be initialized properly by our frame.
+  {
+    nsCOMPtr<nsIDOMSVGNumber> scalex;
+    nsCOMPtr<nsIDOMSVGNumber> scaley;
+    nsCOMPtr<nsIDOMSVGNumber> lengthx;
+    nsCOMPtr<nsIDOMSVGNumber> lengthy;
+    rv = NS_NewSVGNumber(getter_AddRefs(scalex));
+    NS_ENSURE_SUCCESS(rv,rv);
+    rv = NS_NewSVGNumber(getter_AddRefs(scaley));
+    NS_ENSURE_SUCCESS(rv,rv);
+    rv = NS_NewSVGNumber(getter_AddRefs(lengthx));
+    NS_ENSURE_SUCCESS(rv,rv);
+    rv = NS_NewSVGNumber(getter_AddRefs(lengthy));
+    NS_ENSURE_SUCCESS(rv,rv);
+    
+    rv = NS_NewSVGViewportRect(getter_AddRefs(mParentViewport),
+                               scalex, scaley, lengthx, lengthy);
+    NS_ENSURE_SUCCESS(rv,rv);
+  }
+
+  
   // nsIDOMSVGSVGElement attributes ------:
   
   // DOM property: width ,  #IMPLIED attrib: width
   {
-    nsCOMPtr<nsIDOMSVGLength> length;
+    nsCOMPtr<nsISVGLength> length;
     rv = NS_NewSVGLength(getter_AddRefs(length),
-                         (nsSVGElement*)this, eXDirection,
                          100.0, nsIDOMSVGLength::SVG_LENGTHTYPE_PERCENTAGE);
     NS_ENSURE_SUCCESS(rv,rv);
+
+    nsCOMPtr<nsISVGViewportAxis> ctx;
+    mParentViewport->GetXAxis(getter_AddRefs(ctx));    
+    length->SetContext(ctx);
+    
     rv = NS_NewSVGAnimatedLength(getter_AddRefs(mWidth), length);
     NS_ENSURE_SUCCESS(rv,rv);
-    rv = mAttributes->AddMappedSVGValue(nsSVGAtoms::width, mWidth);
+    rv = AddMappedSVGValue(nsSVGAtoms::width, mWidth);
     NS_ENSURE_SUCCESS(rv,rv);
   }
   // DOM property: height , #IMPLIED attrib: height
   {
-    nsCOMPtr<nsIDOMSVGLength> length;
+    nsCOMPtr<nsISVGLength> length;
     rv = NS_NewSVGLength(getter_AddRefs(length),
-                         (nsSVGElement*)this, eYDirection,
                          100.0, nsIDOMSVGLength::SVG_LENGTHTYPE_PERCENTAGE);
     NS_ENSURE_SUCCESS(rv,rv);
+
+    nsCOMPtr<nsISVGViewportAxis> ctx;
+    mParentViewport->GetYAxis(getter_AddRefs(ctx));    
+    length->SetContext(ctx);
+
     rv = NS_NewSVGAnimatedLength(getter_AddRefs(mHeight), length);
     NS_ENSURE_SUCCESS(rv,rv);
-    rv = mAttributes->AddMappedSVGValue(nsSVGAtoms::height, mHeight);
+    rv = AddMappedSVGValue(nsSVGAtoms::height, mHeight);
     NS_ENSURE_SUCCESS(rv,rv);
   }
-  // readonly (XXX) DOM property: viewport
+  // readonly DOM property: viewport
   {
-    rv = NS_NewSVGRect(getter_AddRefs(mViewport));
+    nsCOMPtr<nsIDOMSVGNumber> scalex;
+    nsCOMPtr<nsIDOMSVGNumber> scaley;
+    nsCOMPtr<nsIDOMSVGNumber> lengthx;
+    nsCOMPtr<nsIDOMSVGNumber> lengthy;
+    rv = NS_NewSVGNumber(getter_AddRefs(scalex));
+    NS_ENSURE_SUCCESS(rv,rv);
+    rv = NS_NewSVGNumber(getter_AddRefs(scaley));
+    NS_ENSURE_SUCCESS(rv,rv);
+    rv = NS_NewSVGNumber(getter_AddRefs(lengthx));
+    NS_ENSURE_SUCCESS(rv,rv);
+    rv = NS_NewSVGNumber(getter_AddRefs(lengthy));
+    NS_ENSURE_SUCCESS(rv,rv);
+    
+    rv = NS_NewSVGViewportRect(getter_AddRefs(mViewport),
+                               scalex, scaley, lengthx, lengthy);
     NS_ENSURE_SUCCESS(rv,rv);
   }
 
   // DOM property: x ,  #IMPLIED attrib: x
   {
-    nsCOMPtr<nsIDOMSVGLength> length;
+    nsCOMPtr<nsISVGLength> length;
     rv = NS_NewSVGLength(getter_AddRefs(length),
-                         (nsSVGElement*)this, eXDirection,
                          0.0f);
     NS_ENSURE_SUCCESS(rv,rv);
+
+    // XXXXXXX
+//     nsCOMPtr<nsISVGLengthContext> ctx;
+//     GetLengthContextX(getter_AddRefs(ctx));    
+//     length->SetContext(ctx);
+
     rv = NS_NewSVGAnimatedLength(getter_AddRefs(mX), length);
     NS_ENSURE_SUCCESS(rv,rv);
-    rv = mAttributes->AddMappedSVGValue(nsSVGAtoms::x, mX);
+    rv = AddMappedSVGValue(nsSVGAtoms::x, mX);
     NS_ENSURE_SUCCESS(rv,rv);
   }
 
   // DOM property: y ,  #IMPLIED attrib: y
   {
-    nsCOMPtr<nsIDOMSVGLength> length;
+    nsCOMPtr<nsISVGLength> length;
     rv = NS_NewSVGLength(getter_AddRefs(length),
-                         (nsSVGElement*)this, eYDirection,
                          0.0f);
     NS_ENSURE_SUCCESS(rv,rv);
+
+    // XXXXXXX
+//     nsCOMPtr<nsISVGLengthContext> ctx;
+//     GetLengthContextY(getter_AddRefs(ctx));    
+//     length->SetContext(ctx);
+
     rv = NS_NewSVGAnimatedLength(getter_AddRefs(mY), length);
     NS_ENSURE_SUCCESS(rv,rv);
-    rv = mAttributes->AddMappedSVGValue(nsSVGAtoms::y, mY);
+    rv = AddMappedSVGValue(nsSVGAtoms::y, mY);
     NS_ENSURE_SUCCESS(rv,rv);
   }
   
@@ -242,9 +314,15 @@ nsSVGSVGElement::Init()
     NS_ENSURE_SUCCESS(rv,rv);
     rv = NS_NewSVGAnimatedRect(getter_AddRefs(mViewBox), wrapperRect);
     NS_ENSURE_SUCCESS(rv,rv);
-    rv = mAttributes->AddMappedSVGValue(nsSVGAtoms::viewBox, mViewBox);
+    rv = AddMappedSVGValue(nsSVGAtoms::viewBox, mViewBox);
     NS_ENSURE_SUCCESS(rv,rv);
   }
+
+
+  // add observers -------------------------- :
+  NS_ADD_SVGVALUE_OBSERVER(mViewport);
+  NS_ADD_SVGVALUE_OBSERVER(mViewBox);
+  
   return NS_OK;
 }
 
@@ -260,14 +338,7 @@ nsSVGSVGElement::CloneNode(PRBool aDeep, nsIDOMNode** aReturn)
   if (!it) return NS_ERROR_OUT_OF_MEMORY;
   NS_ADDREF(it);
 
-  nsresult rv = NS_STATIC_CAST(nsGenericElement*,it)->Init(mNodeInfo);
-
-  if (NS_FAILED(rv)) {
-    it->Release();
-    return rv;
-  }
-
-  rv = it->Init();
+  nsresult rv = it->Init(mNodeInfo);
 
   if (NS_FAILED(rv)) {
     it->Release();
@@ -281,7 +352,7 @@ nsSVGSVGElement::CloneNode(PRBool aDeep, nsIDOMNode** aReturn)
     return rv;
   }
  
-  *aReturn = NS_STATIC_CAST(nsSVGElement*, it);
+  *aReturn = it;
 
   return NS_OK; 
 }
@@ -415,7 +486,7 @@ nsSVGSVGElement::GetScreenPixelToMillimeterX(float *aScreenPixelToMillimeterX)
   if (!context) return NS_OK;
 
   float TwipsPerPx;
-  context->GetPixelsToTwips(&TwipsPerPx);
+  TwipsPerPx = context->PixelsToTwips();
   *aScreenPixelToMillimeterX = TwipsPerPx / TWIPS_PER_POINT_FLOAT / (72.0f * 0.03937f);
   return NS_OK;
 }
@@ -493,15 +564,14 @@ nsSVGSVGElement::SuspendRedraw(PRUint32 max_wait_milliseconds, PRUint32 *_retval
   // above function call fails although the svg:svg's frame has been
   // build. Strange...
   
-//  NS_ASSERTION(frame, "suspending redraw w/o frame");
-  printf("suspending redraw w/o frame\n");
+  NS_ASSERTION(frame, "suspending redraw w/o frame");
 #endif
   if (frame) {
-    nsISVGFrame* svgframe;
+    nsISVGOuterSVGFrame* svgframe;
     CallQueryInterface(frame, &svgframe);
     NS_ASSERTION(svgframe, "wrong frame type");
     if (svgframe) {
-      svgframe->NotifyRedrawSuspended();
+      svgframe->SuspendRedraw();
     }
   }
   
@@ -539,15 +609,14 @@ nsSVGSVGElement::UnsuspendRedrawAll()
   nsIFrame* frame;
   presShell->GetPrimaryFrameFor(NS_STATIC_CAST(nsIStyledContent*, this), &frame);
 #ifdef DEBUG
-//  NS_ASSERTION(frame, "unsuspending redraw w/o frame");
-  printf("unsuspending redraw w/o frame\n");
+  NS_ASSERTION(frame, "unsuspending redraw w/o frame");
 #endif
   if (frame) {
-    nsISVGFrame* svgframe;
+    nsISVGOuterSVGFrame* svgframe;
     CallQueryInterface(frame, &svgframe);
     NS_ASSERTION(svgframe, "wrong frame type");
     if (svgframe) {
-      svgframe->NotifyRedrawUnsuspended();
+      svgframe->UnsuspendRedraw();
     }
   }  
   return NS_OK;
@@ -730,8 +799,50 @@ nsSVGSVGElement::GetElementById(const nsAString & elementId, nsIDOMElement **_re
 NS_IMETHODIMP
 nsSVGSVGElement::GetViewboxToViewportTransform(nsIDOMSVGMatrix **_retval)
 {
-  // XXX
-  return CreateSVGMatrix(_retval);
+  if (!mViewBoxToViewportTransform) {
+    float viewportWidth, viewportHeight;
+    mViewport->GetWidth(&viewportWidth);
+    mViewport->GetHeight(&viewportHeight);
+    
+    float viewboxWidth, viewboxHeight, viewboxX, viewboxY;
+    {
+      nsCOMPtr<nsIDOMSVGRect> vb;
+      mViewBox->GetAnimVal(getter_AddRefs(vb));
+      NS_ASSERTION(vb, "could not get viewbox");
+      vb->GetWidth(&viewboxWidth);
+      vb->GetHeight(&viewboxHeight);
+      vb->GetX(&viewboxX);
+      vb->GetY(&viewboxY);
+    }
+    if (viewboxWidth==0.0f || viewboxHeight==0.0f) {
+      NS_ERROR("XXX. We shouldn't get here. Viewbox width/height is set to 0. Need to disable display of element as per specs.");
+      viewboxWidth = 1.0f;
+      viewboxHeight = 1.0f;
+    }
+    
+    // case with preserveAspectRatio=none:
+    float a, e, d, f;
+    
+    a = viewportWidth/viewboxWidth;
+    e = -a*viewboxX;
+    
+    d = viewportHeight/viewboxHeight;
+    f = -d*viewboxY;
+    
+#ifdef DEBUG
+    printf("SVG Viewport=(0?,0?,%f,%f)\n", viewportWidth, viewportHeight);
+    printf("SVG Viewbox=(%f,%f,%f,%f)\n", viewboxX, viewboxY, viewboxWidth, viewboxHeight);
+    printf("SVG Viewbox->Viewport xform [a c e] = [%f,   0, %f]\n", a, e);
+    printf("                            [b d f] = [   0,  %f, %f]\n", d, f);
+#endif
+    
+    nsSVGMatrix::Create(getter_AddRefs(mViewBoxToViewportTransform),
+                                       a, 0, 0, d, e, f);
+  }
+
+  *_retval = mViewBoxToViewportTransform;
+  NS_IF_ADDREF(*_retval);
+  return NS_OK;
 }
 
 //----------------------------------------------------------------------
@@ -741,8 +852,9 @@ nsSVGSVGElement::GetViewboxToViewportTransform(nsIDOMSVGMatrix **_retval)
 NS_IMETHODIMP
 nsSVGSVGElement::GetViewBox(nsIDOMSVGAnimatedRect * *aViewBox)
 {
-  NS_NOTYETIMPLEMENTED("write me!");
-  return NS_ERROR_NOT_IMPLEMENTED;
+  *aViewBox = mViewBox;
+  NS_ADDREF(*aViewBox);
+  return NS_OK;
 }
 
 /* readonly attribute nsIDOMSVGAnimatedPreserveAspectRatio preserveAspectRatio; */
@@ -947,7 +1059,79 @@ nsSVGSVGElement::GetTransformToElement(nsIDOMSVGElement *element, nsIDOMSVGMatri
 }
 
 
-// ----------------------------------------------------------------------
+//----------------------------------------------------------------------
+// nsISVGSVGElement methods:
+
+NS_IMETHODIMP
+nsSVGSVGElement::GetParentViewportRect(nsISVGViewportRect **parentViewport)
+{
+  *parentViewport = mParentViewport;
+  NS_IF_ADDREF(*parentViewport);
+  return NS_OK;
+}
+
+//----------------------------------------------------------------------
+// nsIStyledContent methods
+
+NS_IMETHODIMP_(PRBool)
+nsSVGSVGElement::IsAttributeMapped(const nsIAtom* name) const
+{
+  static const MappedAttributeEntry* const map[] = {
+    sFillStrokeMap,
+    sGraphicsMap,
+    sTextContentElementsMap,
+    sFontSpecificationMap
+  };
+
+  return FindAttributeDependence(name, map, NS_ARRAY_LENGTH(map)) ||
+    nsSVGElement::IsAttributeMapped(name);
+}
+
+//----------------------------------------------------------------------
+// nsISVGValueObserver methods:
+
+NS_IMETHODIMP
+nsSVGSVGElement::WillModifySVGObservable(nsISVGValue* observable)
+{
+#ifdef DEBUG
+  printf("viewport/viewbox will be changed\n");
+#endif
+  return NS_OK;
+}
+
+
+NS_IMETHODIMP
+nsSVGSVGElement::DidModifySVGObservable (nsISVGValue* observable)
+{
+  // either viewport or viewbox have changed
+  // invalidate viewbox -> viewport xform & inform frames
+  
+  mViewBoxToViewportTransform = nsnull;
+  
+  if (!mDocument) return NS_ERROR_FAILURE;
+  nsIPresShell* presShell = mDocument->GetShellAt(0);
+  NS_ASSERTION(presShell, "no presShell");
+  if (!presShell) return NS_ERROR_FAILURE;
+
+  nsIFrame* frame;
+  presShell->GetPrimaryFrameFor(NS_STATIC_CAST(nsIStyledContent*, this), &frame);
+  if (frame) {
+    nsISVGOuterSVGFrame* svgframe;
+    CallQueryInterface(frame, &svgframe);
+    NS_ASSERTION(svgframe, "wrong frame type");
+    if (svgframe) {
+      svgframe->NotifyViewportChange();
+    }
+  }
+  
+  
+#ifdef DEBUG
+  printf("viewport/viewbox have been changed\n");
+#endif
+  return NS_OK;
+}
+
+//----------------------------------------------------------------------
 // implementation helpers
 void nsSVGSVGElement::GetScreenPosition(PRInt32 &x, PRInt32 &y)
 {
@@ -976,7 +1160,7 @@ void nsSVGSVGElement::GetScreenPosition(PRInt32 &x, PRInt32 &y)
   presShell->GetPrimaryFrameFor(this, &frame);
 
   float t2p;
-  context->GetTwipsToPixels(&t2p);
+  t2p = context->TwipsToPixels();
 
   
   nsIWidget* widget = nsnull;

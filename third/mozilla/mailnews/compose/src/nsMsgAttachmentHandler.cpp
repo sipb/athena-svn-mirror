@@ -38,10 +38,10 @@
 #include "nsMsgAttachmentHandler.h"
 
 #include "nsMsgCopy.h"
-#include "nsIPref.h"
+#include "nsIPrefService.h"
+#include "nsIPrefBranch.h"
 #include "nsMsgSend.h"
 #include "nsMsgCompUtils.h"
-#include "nsIPref.h"
 #include "nsMsgEncoders.h"
 #include "nsMsgI18N.h"
 #include "nsURLFetcher.h"
@@ -66,8 +66,6 @@
 #include "nsMsgMimeCID.h"
 #include "nsNetUtil.h"
 
-
-static  NS_DEFINE_CID(kPrefCID, NS_PREF_CID);
 
 ///////////////////////////////////////////////////////////////////////////
 // Mac Specific Attachment Handling for AppleDouble Encoded Files
@@ -250,8 +248,7 @@ nsMsgAttachmentHandler::AnalyzeSnarfedFile(void)
 int
 nsMsgAttachmentHandler::PickEncoding(const char *charset, nsIMsgSend *mime_delivery_state)
 {
-  nsresult rv;
-  nsCOMPtr<nsIPref> prefs(do_GetService(kPrefCID, &rv)); 
+  nsCOMPtr<nsIPrefBranch> pPrefBranch(do_GetService(NS_PREFSERVICE_CONTRACTID));
   
   // use the boolean so we only have to test for uuencode vs base64 once
   PRBool needsB64 = PR_FALSE;
@@ -264,8 +261,8 @@ nsMsgAttachmentHandler::PickEncoding(const char *charset, nsIMsgSend *mime_deliv
 
   /* Allow users to override our percentage-wise guess on whether
   the file is text or binary */
-  if (NS_SUCCEEDED(rv) && prefs) 
-    prefs->GetBoolPref ("mail.file_attach_binary", &forceB64);
+  if (pPrefBranch) 
+    pPrefBranch->GetBoolPref ("mail.file_attach_binary", &forceB64);
   
   if (!mMainBody && (forceB64 || mime_type_requires_b64_p (m_type)))
   {
@@ -683,7 +680,7 @@ nsMsgAttachmentHandler::SnarfAttachment(nsMsgCompFields *compFields)
 
     // Unescape the name before making FSSpec
     nsCAutoString escapedFilename(src_filename);
-    nsUnescape(NS_CONST_CAST(char*, escapedFilename.get()));
+    nsUnescape(escapedFilename.BeginWriting());
 
     //We need to retrieve the file type and creator...
     nsFileSpec scr_fileSpec(escapedFilename.get());
@@ -713,7 +710,8 @@ nsMsgAttachmentHandler::SnarfAttachment(nsMsgCompFields *compFields)
     if (icService)
     {
       PRInt32 icFlags;
-      nsresult rv = icService->GetFileMappingFlags(&fsSpec, PR_FALSE, &icFlags);
+      // be sure to look up by extension first (so pass in PR_TRUE). See Bug #229855
+      nsresult rv = icService->GetFileMappingFlags(&fsSpec, PR_TRUE, &icFlags);
       if (NS_SUCCEEDED(rv) && icFlags != -1 && !(icFlags & nsIInternetConfigService::eIICMapFlag_NotOutgoingMask))
       {
         sendResourceFork = (icFlags & nsIInternetConfigService::eIICMapFlag_ResourceForkMask);
@@ -947,11 +945,7 @@ nsMsgAttachmentHandler::SnarfAttachment(nsMsgCompFields *compFields)
       return rv;
   }
 
-  status = fetcher->FireURLRequest(mURL, localFile, mOutFile, FetcherURLDoneCallback, this);
-  if (NS_FAILED(status)) 
-    return NS_ERROR_UNEXPECTED;
-
-  return status;
+  return fetcher->FireURLRequest(mURL, localFile, mOutFile, FetcherURLDoneCallback, this);
 }
 
 nsresult
@@ -1070,7 +1064,7 @@ nsMsgAttachmentHandler::UrlExit(nsresult status, const PRUnichar* aMsg)
     if (NS_SUCCEEDED(mURL->GetSpec(turl)) && (turl))
       {
         nsCAutoString unescapeUrl(turl);
-        nsUnescape (NS_CONST_CAST(char*, unescapeUrl.get()));
+        nsUnescape(unescapeUrl.BeginWriting());
         if (unescapeUrl.IsEmpty())
           printfString = nsTextFormatter::smprintf(msg, turl.get());
         else
@@ -1117,10 +1111,9 @@ nsMsgAttachmentHandler::UrlExit(nsresult status, const PRUnichar* aMsg)
       // Conversion to plain text desired.
       //
       PRInt32       width = 72;
-      nsresult      rv;
-      nsCOMPtr<nsIPref> prefs(do_GetService(kPrefCID, &rv)); 
-      if (NS_SUCCEEDED(rv) && prefs) 
-        prefs->GetIntPref("mailnews.wraplength", &width);
+      nsCOMPtr<nsIPrefBranch> pPrefBranch(do_GetService(NS_PREFSERVICE_CONTRACTID));
+      if (pPrefBranch)
+        pPrefBranch->GetIntPref("mailnews.wraplength", &width);
       // Let sanity reign!
       if (width == 0) 
         width = 72;

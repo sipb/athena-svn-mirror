@@ -484,7 +484,7 @@ PRBool nsAccessible::IsPartiallyVisible(PRBool *aIsOffscreen)
   }
 
   float p2t;
-  presContext->GetPixelsToTwips(&p2t);
+  p2t = presContext->PixelsToTwips();
   nsRectVisibility rectVisibility;
   viewManager->GetRectVisibility(containingView, relFrameRect, 
                                  NS_STATIC_CAST(PRUint16, (kMinPixels * p2t)), 
@@ -682,7 +682,7 @@ void nsAccessible::GetScreenOrigin(nsIPresContext *aPresContext, nsIFrame *aFram
     if (widget) {
       // Get the scale from that Presentation Context
       float t2p;
-      aPresContext->GetTwipsToPixels(&t2p);
+      t2p = aPresContext->TwipsToPixels();
     
       // Convert to pixels using that scale
       offsetX = NSTwipsToIntPixels(offsetX, t2p);
@@ -783,8 +783,7 @@ void nsAccessible::GetBoundsRect(nsRect& aTotalBounds, nsIFrame** aBoundingFrame
     if (IsCorrectFrameType(iterFrame, nsAccessibilityAtoms::inlineFrame)) {
       // Only do deeper bounds search if we're on an inline frame
       // Inline frames can contain larger frames inside of them
-      iterFrame->FirstChild(nsCOMPtr<nsIPresContext>(GetPresContext()), 
-                            nsnull, &iterNextFrame);
+      iterNextFrame = iterFrame->GetFirstChild(nsnull);
     }
 
     if (iterNextFrame) 
@@ -830,7 +829,7 @@ NS_IMETHODIMP nsAccessible::GetBounds(PRInt32 *x, PRInt32 *y, PRInt32 *width, PR
   }
 
   float t2p;
-  presContext->GetTwipsToPixels(&t2p);   // Get pixels to twips conversion factor
+  t2p = presContext->TwipsToPixels();   // Get pixels to twips conversion factor
 
   nsRect unionRectTwips;
   nsIFrame* aBoundingFrame = nsnull;
@@ -959,7 +958,9 @@ NS_IMETHODIMP nsAccessible::TakeFocus()
   if (!content) {
     return NS_ERROR_FAILURE;
   }
-  return content->SetFocus(nsCOMPtr<nsIPresContext>(GetPresContext()));
+  content->SetFocus(nsCOMPtr<nsIPresContext>(GetPresContext()));
+
+  return NS_OK;
 }
 
 NS_IMETHODIMP nsAccessible::AppendStringWithSpaces(nsAString *aFlatString, const nsAString& textEquivalent)
@@ -1459,19 +1460,17 @@ nsresult nsAccessible::GetParentBlockNode(nsIPresShell *aPresShell, nsIDOMNode *
 
   nsCOMPtr<nsIPresContext> presContext;
   aPresShell->GetPresContext(getter_AddRefs(presContext));
-  nsIFrame* childFrame = nsnull;
-  nsCOMPtr<nsIAtom> frameType;
-  while (frame && frame->GetType() != nsAccessibilityAtoms::textFrame) {
-    frame->FirstChild(presContext, nsnull, &childFrame);
-    frame = childFrame;
+  nsIAtom* frameType = nsnull;
+  while (frame && (frameType = frame->GetType()) != nsAccessibilityAtoms::textFrame) {
+    frame = frame->GetFirstChild(nsnull);
   }
   if (! frame || frameType != nsAccessibilityAtoms::textFrame)
     return NS_ERROR_FAILURE;
 
-  parentFrame->FirstChild(presContext, nsnull, &childFrame);
   PRInt32 index = 0;
   nsIFrame *firstTextFrame = nsnull;
-  FindTextFrame(index, presContext, childFrame, &firstTextFrame, frame);
+  FindTextFrame(index, presContext, parentFrame->GetFirstChild(nsnull),
+                &firstTextFrame, frame);
   if (firstTextFrame) {
     nsIContent *content = firstTextFrame->GetContent();
 
@@ -1540,9 +1539,8 @@ PRBool nsAccessible::FindTextFrame(PRInt32 &index, nsIPresContext *aPresContext,
     }
 
     // we won't expand the tree under a block frame.
-    nsIFrame* childFrame = nsnull;
-    aCurFrame->FirstChild(aPresContext, nsnull, &childFrame);
-    if (FindTextFrame(index, aPresContext, childFrame, aFirstTextFrame, aTextFrame))
+    if (FindTextFrame(index, aPresContext, aCurFrame->GetFirstChild(nsnull),
+                      aFirstTextFrame, aTextFrame))
       return PR_TRUE;
   }
 

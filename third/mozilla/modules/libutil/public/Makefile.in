@@ -29,11 +29,10 @@ include $(DEPTH)/config/autoconf.mk
 MODULE		= util
 XPIDL_MODULE	= util
 
-EXPORTS		= $(srcdir)/xp_obs.h \
-              $(srcdir)/stopwatch.h \
-			  $(srcdir)/nsTimer.h
+PACKAGE_FILE = libutil.pkg
 
-XPIDLSRCS	= nsITimeRecorder.idl
+EXPORTS		= $(srcdir)/stopwatch.h \
+			  $(srcdir)/nsTimer.h
 
 include $(topsrcdir)/config/rules.mk
 

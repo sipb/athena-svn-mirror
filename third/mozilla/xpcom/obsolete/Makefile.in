@@ -33,6 +33,7 @@ SHORT_LIBNAME	= xpcomct
 endif
 
 GRE_MODULE	= 1
+PACKAGE_FILE = xpcomobsolete.pkg
 
 DIRS            = component
 
@@ -59,6 +60,7 @@ CPPSRCS		+= dlldeps.cpp
 endif
 
 EXPORTS		= \
+		xpcomobsolete.h    \
 		nsFileSpec.h    \
 		nsFileStream.h  \
 		nsIFileStream.h \
@@ -86,7 +88,7 @@ FORCE_SHARED_LIB = 1
 
 include $(topsrcdir)/config/rules.mk
 
-DEFINES		+= -D_IMPL_NS_COM
+DEFINES		+= -D_IMPL_NS_COM_OBSOLETE
 
 
 EXTRA_DSO_LDOPTS += $(MOZ_COMPONENT_LIBS)
@@ -104,6 +106,9 @@ ifeq ($(OS_ARCH),WINNT)
 EXTRA_DSO_LDOPTS += $(call EXPAND_LIBNAME, shell32 ole32)
 ifneq (,$(MOZ_DEBUG)$(NS_TRACE_MALLOC))
 EXTRA_DSO_LDOPTS += $(call EXPAND_LIBNAME, imagehlp)
+endif
+ifdef GNU_CXX
+DSO_LDOPTS += -Wl,--export-all-symbols
 endif
 endif # WINNT
 

@@ -56,7 +56,6 @@ REQUIRES	= xpcom \
 		  $(NULL)
 
 CPPSRCS		= \
-		nsAttributeContent.cpp \
 		nsGenericHTMLElement.cpp \
 		nsGenericDOMHTMLCollection.cpp \
 		GenericElementCollection.cpp \
@@ -117,7 +116,6 @@ CPPSRCS		= \
 		$(NULL)
 
 EXPORTS       = \
-nsIAttributeContent.h \
 nsIHTMLTableCellElement.h \
 nsIHTMLTableColElement.h \
 $(NULL)
@@ -133,3 +131,4 @@ INCLUDES	+= \
 		-I$(srcdir)/../../base/src \
 		$(NULL)
 
+DEFINES += -D_IMPL_NS_LAYOUT

@@ -44,13 +44,13 @@ var BookmarksMenu = {
   showOpenInTabsMenuItem: function (aTarget)
   {
     if (!this.validOpenInTabsMenuItem(aTarget) ||
-        aTarget.lastChild.id == "openintabs-menuitem")
+        aTarget.lastChild.getAttribute("class") == "openintabs-menuitem")
       return;
     var element = document.createElementNS(XUL_NS, "menuseparator");
-    element.setAttribute("id", "openintabs-menuseparator");
+    element.setAttribute("class", "openintabs-menuseparator");
     aTarget.appendChild(element);
     element = document.createElementNS(XUL_NS, "menuitem");
-    element.setAttribute("id", "openintabs-menuitem");
+    element.setAttribute("class", "openintabs-menuitem");
     element.setAttribute("label", BookmarksUtils.getLocaleString("cmd_bm_openfolder"));
     element.setAttribute("accesskey", BookmarksUtils.getLocaleString("cmd_bm_openfolder_accesskey"));
     aTarget.appendChild(element);
@@ -65,7 +65,7 @@ var BookmarksMenu = {
   {
     if (!gOpenInTabsParent.hasChildNodes())
       return;
-    if (gOpenInTabsParent.lastChild.id == "openintabs-menuitem") {
+    if (gOpenInTabsParent.lastChild.getAttribute("class") == "openintabs-menuitem") {
       gOpenInTabsParent.removeChild(gOpenInTabsParent.lastChild);
       gOpenInTabsParent.removeChild(gOpenInTabsParent.lastChild);
     }
@@ -83,9 +83,8 @@ var BookmarksMenu = {
   // hides the 'Open in Tabs' on popuphidden so that we won't duplicate it -->
   hideOpenInTabsMenuItem: function (aTarget)
   {
-    if (!aTarget.hasChildNodes())
-      return;
-    if (aTarget.lastChild.id == "openintabs-menuitem") {
+    if (aTarget.hasChildNodes() &&
+        aTarget.lastChild.getAttribute("class") == "openintabs-menuitem") {
       aTarget.removeChild(aTarget.lastChild);
       aTarget.removeChild(aTarget.lastChild);
     }
@@ -139,13 +138,19 @@ var BookmarksMenu = {
   // Clean up after closing the context menu popup
   destroyContextMenu: function (aEvent)
   {
-    if (content) 
-      content.focus()
-    BookmarksMenuDNDObserver.onDragRemoveFeedBack(document.popupNode); // needed on cancel
-    aEvent.target.removeEventListener("mousemove", BookmarksMenuController.onMouseMove, false)
+#   note that this method is called after doCommand.
+#   let''s focus the content and dismiss the popup chain (needed when the user
+#   type escape or if he/she clicks outside the context menu)
+    if (content)
+      content.focus();
     // XXXpch: see bug 210910, it should be done properly in the backend
     BookmarksMenuDNDObserver.mCurrentDragOverTarget = null;
     BookmarksMenuDNDObserver.onDragCloseTarget();
+
+#   if the user types escape, we need to remove the feedback
+    BookmarksMenuDNDObserver.onDragRemoveFeedBack(document.popupNode);
+
+    aEvent.target.removeEventListener("mousemove", BookmarksMenuController.onMouseMove, false)
   },
 
   /////////////////////////////////////////////////////////////////////////////
@@ -353,7 +358,7 @@ var BookmarksMenu = {
   // aTarget may not the aEvent target (see Open in tabs command)
   loadBookmark: function (aEvent, aTarget, aDS)
   {
-    if (aTarget.id == "openintabs-menuitem")
+    if (aTarget.getAttribute("class") == "openintabs-menuitem")
       aTarget = aTarget.parentNode.parentNode;
       
     // Check for invalid bookmarks (most likely a static menu item like "Manage Bookmarks")
@@ -394,7 +399,20 @@ var BookmarksMenuController = {
 
   doCommand: function (aCommand)
   {
+#   we needed to focus the element that has the bm command controller
+#   to get here. Now, let''s focus the content before performing the command:
+#   if a modal dialog is called from now, the content will be focused again
+#   automatically after dismissing the dialog
+    if (content)
+      content.focus();
     BookmarksMenuDNDObserver.onDragRemoveFeedBack(document.popupNode);
+
+#   if a dialog opens, the "open" attribute of a menuitem-container
+#   rclicked on won''t be removed. We do it manually.
+    var element = document.popupNode.firstChild;
+    if (element && element.localName == "menupopup")
+      element.hidePopup();
+
     var selection = BookmarksMenu._selection;
     var target    = BookmarksMenu._target;
     switch (aCommand) {
@@ -517,13 +535,15 @@ var BookmarksMenuDNDObserver = {
     // hide the 'open in tab' menuseparator because bookmarks
     // can be inserted after it if they are dropped after the last bookmark
     // a more comprehensive fix would be in the menupopup template builder
+    var menuSeparator = null;
     var menuTarget = (target.localName == "toolbarbutton" ||
                       target.localName == "menu")         && 
                      orientation == BookmarksUtils.DROP_ON?
                      target.lastChild:target.parentNode;
     if (menuTarget.hasChildNodes() &&
-        menuTarget.lastChild.id == "openintabs-menuitem") {
-      menuTarget.removeChild(menuTarget.lastChild.previousSibling);
+        menuTarget.lastChild.getAttribute("class") == "openintabs-menuitem") {
+      menuSeparator = menuTarget.lastChild.previousSibling;
+      menuTarget.removeChild(menuSeparator);
     }
 
     if (aDragSession.dragAction & kCopyAction)
@@ -532,11 +552,8 @@ var BookmarksMenuDNDObserver = {
       BookmarksUtils.moveAndCheckSelection("drag", selection, selTarget);
 
     // show again the menuseparator
-    if (menuTarget.hasChildNodes() &&
-        menuTarget.lastChild.id == "openintabs-menuitem") {
-      var element = document.createElementNS(XUL_NS, "menuseparator");
-      menuTarget.insertBefore(element, menuTarget.lastChild);
-    }
+    if (menuSeparator)
+      menuTarget.insertBefore(menuSeparator, menuTarget.lastChild);
 
   },
 
@@ -585,7 +602,8 @@ var BookmarksMenuDNDObserver = {
     if (!this._observers) {
       this._observers = [
         document.getElementById("bookmarks-ptf"),
-        document.getElementById("bookmarks-menu").parentNode,
+#       menubar menus haven''t an "open" attribute: we can take the child
+        document.getElementById("bookmarks-menu").firstChild,
         document.getElementById("bookmarks-chevron").parentNode
       ]
     }
@@ -598,14 +616,14 @@ var BookmarksMenuDNDObserver = {
       return null;
     var node = aNode;
     var observer;
-    do {
+    while (node) {
       for (var i=0; i < this.mObservers.length; i++) {
         observer = this.mObservers[i];
         if (observer == node)
           return observer;
       }
       node = node.parentNode;
-    } while (node != document)
+    }
     return null;
   },
 
@@ -627,9 +645,11 @@ var BookmarksMenuDNDObserver = {
     var currentObserver = this.getObserverForNode(this.mCurrentDragOverTarget);
     // close all the menus not hovered by the mouse
     for (var i=0; i < this.mObservers.length; i++) {
-      if (currentObserver != this.mObservers[i])
+      if (currentObserver != this.mObservers[i]) {
         this.onDragCloseMenu(this.mObservers[i]);
-      else
+        if (this.mObservers[i].parentNode.id == "bookmarks-menu")
+          this.mObservers[i].hidePopup();
+      } else
         this.onDragCloseMenu(this.mCurrentDragOverTarget.parentNode);
     }
   },

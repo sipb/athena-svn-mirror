@@ -856,15 +856,15 @@ nsSchemaLoader::Load(const nsAString& schemaURI,
     return rv;
   }
 
-  rv = request->OpenRequest("GET",
-                            spec.get(),
-                            PR_FALSE, nsnull, nsnull);
+  const nsAString& empty = EmptyString();
+  rv = request->OpenRequest(NS_LITERAL_CSTRING("GET"), spec, PR_FALSE, empty,
+                            empty);
   if (NS_FAILED(rv)) {
     return rv;
   }
 
   // Force the mimetype of the returned stream to be xml.
-  rv = request->OverrideMimeType("text/xml");
+  rv = request->OverrideMimeType(NS_LITERAL_CSTRING("text/xml"));
   if (NS_FAILED(rv)) {
     return rv;
   }
@@ -912,15 +912,15 @@ nsSchemaLoader::LoadAsync(const nsAString& schemaURI,
     return rv;
   }
 
-  rv = request->OpenRequest("GET",
-                            spec.get(),
-                            PR_TRUE, nsnull, nsnull);
+  const nsAString& empty = EmptyString();
+  rv = request->OpenRequest(NS_LITERAL_CSTRING("GET"), spec, PR_TRUE, empty,
+                            empty);
   if (NS_FAILED(rv)) {
     return rv;
   }
 
   // Force the mimetype of the returned stream to be xml.
-  rv = request->OverrideMimeType("text/xml");
+  rv = request->OverrideMimeType(NS_LITERAL_CSTRING("text/xml"));
   if (NS_FAILED(rv)) {
     return rv;
   }
@@ -1161,10 +1161,9 @@ nsSchemaLoader::ProcessElement(nsSchema* aSchema,
   else {
     nsAutoString value;
     nsSchemaElement* elementInst;
+    const nsAString& empty = EmptyString();
 
-    rv = aElement->GetAttributeNS(NS_LITERAL_STRING(""), 
-                                  NS_LITERAL_STRING("name"), 
-                                  value);
+    rv = aElement->GetAttributeNS(empty, NS_LITERAL_STRING("name"), value);
     
     if (NS_FAILED(rv))
       return rv;
@@ -1180,22 +1179,19 @@ nsSchemaLoader::ProcessElement(nsSchema* aSchema,
     elementInst->SetMaxOccurs(maxOccurs);
 
     nsAutoString defaultValue, fixedValue;
-    rv = aElement->GetAttributeNS(NS_LITERAL_STRING(""), 
-                                  NS_LITERAL_STRING("default"),
+    rv = aElement->GetAttributeNS(empty, NS_LITERAL_STRING("default"),
                                   defaultValue);
     if (NS_FAILED(rv))
       return rv;
     
-    rv = aElement->GetAttributeNS(NS_LITERAL_STRING(""), 
-                                  NS_LITERAL_STRING("fixed"), 
+    rv = aElement->GetAttributeNS(empty, NS_LITERAL_STRING("fixed"), 
                                   fixedValue);
     if (NS_FAILED(rv))
       return rv;
-    
+
     elementInst->SetConstraints(defaultValue, fixedValue);
 
-    rv = aElement->GetAttributeNS(NS_LITERAL_STRING(""),
-                                  NS_LITERAL_STRING("nillable"), value);
+    rv = aElement->GetAttributeNS(empty, NS_LITERAL_STRING("nillable"), value);
     if (NS_FAILED(rv))
       return rv;
     value.Trim(" \r\n\t");
@@ -1204,8 +1200,7 @@ nsSchemaLoader::ProcessElement(nsSchema* aSchema,
     if (value.Equals(NS_LITERAL_STRING("true")))
       flags |= nsSchemaElement::NILLABLE;
 
-    rv = aElement->GetAttributeNS(NS_LITERAL_STRING(""), 
-                                  NS_LITERAL_STRING("abstract"), value);
+    rv = aElement->GetAttributeNS(empty, NS_LITERAL_STRING("abstract"), value);
     if (NS_FAILED(rv))
       return rv;
     value.Trim(" \r\n\t");
@@ -1233,8 +1228,7 @@ nsSchemaLoader::ProcessElement(nsSchema* aSchema,
       flags |= nsSchemaElement::FORM_QUALIFIED;
     }
     else {
-      rv = aElement->GetAttributeNS(NS_LITERAL_STRING(""), 
-                                    NS_LITERAL_STRING("form"), 
+      rv = aElement->GetAttributeNS(empty, NS_LITERAL_STRING("form"), 
                                     value);
       if (NS_FAILED(rv))
         return rv;
@@ -1758,8 +1752,7 @@ nsSchemaLoader::ProcessSimpleContentRestriction(nsSchema* aSchema,
   nsSchemaRestrictionType* restrictionInst;
   nsCOMPtr<nsISchemaSimpleType> simpleBase;
  
-  restrictionInst = new nsSchemaRestrictionType(aSchema, 
-                                                NS_LITERAL_STRING(""));
+  restrictionInst = new nsSchemaRestrictionType(aSchema, EmptyString());
   if (!restrictionInst) {
     return NS_ERROR_OUT_OF_MEMORY;
   }
@@ -1961,8 +1954,7 @@ nsSchemaLoader::ProcessComplexContent(nsSchema* aSchema,
           if (baseGroup) {
             // Create a new model group that's going to be the a sequence
             // of the base model group and the content below
-            sequenceInst = new nsSchemaModelGroup(aSchema,
-                                                  NS_LITERAL_STRING(""));
+            sequenceInst = new nsSchemaModelGroup(aSchema, EmptyString());
             if (!sequenceInst) {
               return NS_ERROR_OUT_OF_MEMORY;
             }

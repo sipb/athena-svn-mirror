@@ -57,7 +57,6 @@
 
 #include "nsIPresShell.h"
 #include "nsIViewManager.h"
-#include "nsIStyleSet.h"
 #include "nsIFrame.h"
 #include "nsIFrameDebug.h"
 
@@ -112,6 +111,7 @@ view_manager(nsIDocShell *aDocShell)
     return shell->GetViewManager();
 }
 
+#ifdef DEBUG
 static already_AddRefed<nsIDocument>
 document(nsIDocShell *aDocShell)
 {
@@ -126,18 +126,7 @@ document(nsIDocShell *aDocShell)
     CallQueryInterface(domDoc, &result);
     return result;
 }
-
-static already_AddRefed<nsIStyleSet>
-style_set(nsIDocShell *aDocShell)
-{
-    nsCOMPtr<nsIPresShell> shell(pres_shell(aDocShell));
-    if (!shell)
-        return nsnull;
-    nsIStyleSet *result = nsnull;
-    shell->GetStyleSet(&result);
-    return result;
-}
-
+#endif
 
 nsLayoutDebuggingTools::nsLayoutDebuggingTools()
   : mPaintFlashing(PR_FALSE),
@@ -148,8 +137,6 @@ nsLayoutDebuggingTools::nsLayoutDebuggingTools()
     mCrossingEventDumping(PR_FALSE),
     mReflowCounts(PR_FALSE)
 {
-    NS_INIT_ISUPPORTS();
-
     NewURILoaded();
 }
 
@@ -166,7 +153,7 @@ nsLayoutDebuggingTools::Init(nsIDOMWindow *aWin)
         nsCOMPtr<nsIScriptGlobalObject> global = do_QueryInterface(aWin);
         if (!global)
             return NS_ERROR_UNEXPECTED;
-        global->GetDocShell(getter_AddRefs(mDocShell));
+        mDocShell = global->GetDocShell();
     }
 
     mPrefs = do_GetService(NS_PREF_CONTRACTID);
@@ -481,6 +468,7 @@ static
 void
 DumpViewsRecur(nsIDocShell* aDocShell, FILE* out)
 {
+#ifdef DEBUG
     if (aDocShell) {
         fprintf(out, "docshell=%p \n", NS_STATIC_CAST(void*, aDocShell));
         nsCOMPtr<nsIViewManager> vm(view_manager(aDocShell));
@@ -508,6 +496,7 @@ DumpViewsRecur(nsIDocShell* aDocShell, FILE* out)
             }
         }
     }
+#endif // DEBUG
 }
 
 NS_IMETHODIMP
@@ -522,11 +511,11 @@ nsLayoutDebuggingTools::DumpStyleSheets()
 {
 #ifdef DEBUG
     FILE *out = stdout;
-    nsCOMPtr<nsIStyleSet> styleSet(style_set(mDocShell));
-    if (styleSet)
-        styleSet->List(out);
+    nsCOMPtr<nsIPresShell> shell(pres_shell(mDocShell)); 
+    if (shell)
+        shell->ListStyleSheets(out);
     else
-        fputs("null style set\n", out);
+        fputs("null pres shell\n", out);
 #endif
     return NS_OK;
 }
@@ -538,18 +527,12 @@ nsLayoutDebuggingTools::DumpStyleContexts()
     FILE *out = stdout;
     nsCOMPtr<nsIPresShell> shell(pres_shell(mDocShell)); 
     if (shell) {
-        nsCOMPtr<nsIStyleSet> styleSet;
-        shell->GetStyleSet(getter_AddRefs(styleSet));
-        if (!styleSet) {
-            fputs("null style set\n", out);
+        nsIFrame* root;
+        shell->GetRootFrame(&root);
+        if (!root) {
+            fputs("null root frame\n", out);
         } else {
-            nsIFrame* root;
-            shell->GetRootFrame(&root);
-            if (!root) {
-                fputs("null root frame\n", out);
-            } else {
-                styleSet->ListContexts(root, out);
-            }
+            shell->ListStyleContexts(root, out);
         }
     } else {
         fputs("null pres shell\n", out);

@@ -36,8 +36,9 @@
  *
  * ***** END LICENSE BLOCK ***** */
 #include "nsJSEventListener.h"
+#include "nsJSUtils.h"
 #include "nsString.h"
-#include "nsIScriptEventListener.h"
+#include "nsReadableUtils.h"
 #include "nsIServiceManager.h"
 #include "nsIJSContextStack.h"
 #include "nsIScriptSecurityManager.h"
@@ -51,16 +52,10 @@
  * nsJSEventListener implementation
  */
 nsJSEventListener::nsJSEventListener(nsIScriptContext *aContext, 
-                                     nsISupports *aObject) 
+                                     nsISupports *aObject)
+  : nsIJSEventListener(aContext, aObject),
+    mReturnResult(nsReturnResult_eNotSet)
 {
-
-  // mObject is a weak reference. We are guaranteed
-  // because of the ownership model that this object will be
-  // freed (and the references dropped) before either the context
-  // or the owner goes away.
-  mContext = aContext;
-  mObject = aObject;
-  mReturnResult = nsReturnResult_eNotSet;
 }
 
 nsJSEventListener::~nsJSEventListener() 
@@ -79,13 +74,14 @@ NS_IMPL_RELEASE(nsJSEventListener)
 
 //static nsString onPrefix = "on";
 
-nsresult nsJSEventListener::SetEventName(nsIAtom* aName)
+void
+nsJSEventListener::SetEventName(nsIAtom* aName)
 {
   mEventName = aName;
-  return NS_OK;
 }
 
-nsresult nsJSEventListener::HandleEvent(nsIDOMEvent* aEvent)
+nsresult
+nsJSEventListener::HandleEvent(nsIDOMEvent* aEvent)
 {
   jsval funval;
   jsval arg;
@@ -104,7 +100,8 @@ nsresult nsJSEventListener::HandleEvent(nsIDOMEvent* aEvent)
       return NS_OK;
     }
     //if (mReturnResult == nsReturnResult_eNotSet) {
-      if (eventString.Equals(NS_LITERAL_STRING("error")) || eventString.Equals(NS_LITERAL_STRING("mouseover"))) {
+      if (eventString.Equals(NS_LITERAL_STRING("error")) ||
+          eventString.Equals(NS_LITERAL_STRING("mouseover"))) {
         mReturnResult = nsReturnResult_eReverseReturnResult;
       }
       else {
@@ -118,11 +115,11 @@ nsresult nsJSEventListener::HandleEvent(nsIDOMEvent* aEvent)
   }
 
   nsresult rv;
-  nsCOMPtr<nsIXPConnect> xpc(do_GetService(nsIXPConnect::GetCID(), &rv));
+  nsCOMPtr<nsIXPConnect> xpc(do_GetService(nsIXPConnect::GetCID()));
 
   // root
   nsCOMPtr<nsIXPConnectJSObjectHolder> wrapper;
-  rv = xpc->WrapNative(cx, ::JS_GetGlobalObject(cx), mObject,
+  rv = xpc->WrapNative(cx, ::JS_GetGlobalObject(cx), mTarget,
                        NS_GET_IID(nsISupports), getter_AddRefs(wrapper));
   NS_ENSURE_SUCCESS(rv, rv);
 
@@ -173,40 +170,47 @@ nsresult nsJSEventListener::HandleEvent(nsIDOMEvent* aEvent)
     argc = 1;
   }
 
-  PRBool jsBoolResult;
-  PRBool returnResult = (mReturnResult == nsReturnResult_eReverseReturnResult);
-
+  jsval rval;
   rv = mContext->CallEventHandler(obj, JSVAL_TO_OBJECT(funval), argc, argv,
-                                  &jsBoolResult, returnResult);
+                                  &rval);
 
   if (argv != &arg) {
     ::JS_PopArguments(cx, stackPtr);
   }
 
-  if (NS_FAILED(rv)) {
-    return rv;
+  if (NS_SUCCEEDED(rv)) {
+    if (eventString.Equals(NS_LITERAL_STRING("onbeforeunload"))) {
+      nsCOMPtr<nsIPrivateDOMEvent> priv(do_QueryInterface(aEvent));
+      NS_ENSURE_TRUE(priv, NS_ERROR_UNEXPECTED);
+
+      nsEvent* event;
+      priv->GetInternalNSEvent(&event);
+      NS_ENSURE_TRUE(event && event->message == NS_BEFORE_PAGE_UNLOAD,
+                     NS_ERROR_UNEXPECTED);
+
+      nsBeforePageUnloadEvent *beforeUnload =
+        NS_STATIC_CAST(nsBeforePageUnloadEvent *, event);
+
+      if (!JSVAL_IS_VOID(rval)) {
+        aEvent->PreventDefault();
+
+        if (JSVAL_IS_STRING(rval)) {
+          beforeUnload->text = nsDependentJSString(JSVAL_TO_STRING(rval));
+        }
+      }
+    } else if (JSVAL_IS_BOOLEAN(rval)) {
+      // if the handler returned false and its sense is not reversed,
+      // or the handler returned true and its sense is reversed from
+      // the usual (false means cancel), then prevent default.
+
+      if (JSVAL_TO_BOOLEAN(rval) ==
+          (mReturnResult == nsReturnResult_eReverseReturnResult)) {
+        aEvent->PreventDefault();
+      }
+    }
   }
 
-  if (!jsBoolResult) 
-    aEvent->PreventDefault();
-
   return rv;
-}
-
-NS_IMETHODIMP 
-nsJSEventListener::GetEventTarget(nsIScriptContext**aContext, 
-                                  nsISupports** aTarget)
-{
-  NS_ENSURE_ARG_POINTER(aContext);
-  NS_ENSURE_ARG_POINTER(aTarget);
-
-  *aContext = mContext;
-  NS_ADDREF(*aContext);
-
-  *aTarget = mObject;
-  NS_ADDREF(*aTarget);
-
-  return NS_OK;
 }
 
 /*

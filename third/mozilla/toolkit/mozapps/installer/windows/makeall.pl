@@ -208,10 +208,10 @@ copy("$gDirDistInstall/setuprsc.dll", "$gDirDistInstall/setup") ||
   die "copy $gDirDistInstall/setuprsc.dll $gDirDistInstall/setup: $!\n";
 
 # copy license file for the installer
-copy("$topsrcdir/LICENSE", "$gDirDistInstall/license.txt") ||
-  die "copy $topsrcdir/LICENSE $gDirDistInstall/license.txt: $!\n";
-copy("$topsrcdir/LICENSE", "$gDirDistInstall/setup/license.txt") ||
-  die "copy $topsrcdir/LICENSE $gDirDistInstall/setup/license.txt: $!\n";
+copy("$topsrcdir/$ENV{WIZ_licenseFile}", "$gDirDistInstall/license.txt") ||
+  die "copy $topsrcdir/$ENV{WIZ_licenseFile} $gDirDistInstall/license.txt: $!\n";
+copy("$topsrcdir/$ENV{WIZ_licenseFile}", "$gDirDistInstall/setup/license.txt") ||
+  die "copy $topsrcdir/$ENV{WIZ_licenseFile} $gDirDistInstall/setup/license.txt: $!\n";
 
 
 # copy the lean installer to stub\ dir
@@ -574,7 +574,7 @@ sub VerifyComponents()
     if($mComponent =~ /talkback/i)
     {
       print " place holder: $gDirStageProduct/$mComponent\n";
-      mkdir("$gDirStageProduct/$mComponent", 775);
+      mkdir("$gDirStageProduct/$mComponent", 0775);
     }
     elsif(-d "$gDirStageProduct/$mComponent")
     {

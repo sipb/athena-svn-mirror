@@ -27,6 +27,7 @@ VPATH		= @srcdir@
 include $(DEPTH)/config/autoconf.mk
 
 MODULE		= importOE
+PACKAGE_FILE = importoe.pkg
 
 ifndef MOZ_STATIC_MAIL_BUILD
 
@@ -59,7 +60,6 @@ REQUIRES	= xpcom \
 
 CPPSRCS		= \
 		nsOEImport.cpp			\
-		nsOEFactory.cpp  		\
 		nsOEScanBoxes.cpp		\
 		nsOEMailbox.cpp			\
 		nsOEAddressIterator.cpp		\

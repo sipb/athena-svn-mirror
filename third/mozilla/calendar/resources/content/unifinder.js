@@ -253,11 +253,9 @@ function unifinderDoubleClickEvent( event )
    var calendarEvent = getCalendarEventFromEvent( event );
    
    if( calendarEvent != null )
-   {
-      // go to day view, of the day of the event, select the event
-      
       editEvent( calendarEvent );
-   }
+   else
+      newEvent();
 }
 
 
@@ -270,11 +268,10 @@ function getCalendarEventFromEvent( event )
 
    if( row.value != -1 && row.value < tree.view.rowCount )
    { 
-      var event = tree.eventView.getCalendarEventAtRow( row.value );
-      return event;
+      return ( tree.eventView.getCalendarEventAtRow( row.value ) );
+   } else {
+      return ( null );
    }
-
-   return( false );
 }
 
 /**
@@ -550,7 +547,7 @@ var treeView =
             var eventEndDate = getNextOrPreviousRecurrence( calendarEvent );
             var eventLength = calendarEvent.end.getTime() - calendarEvent.start.getTime();
             var actualEndDate = eventEndDate.getTime() + eventLength;
-            var eventEndDate = new Date( actualEndDate );
+            eventEndDate = new Date( actualEndDate );
             var endTime = formatUnifinderEventTime( eventEndDate );
             var endDate = formatUnifinderEventDate( eventEndDate );
             if( calendarEvent.allDay )
@@ -777,14 +774,15 @@ function getPreviewText( calendarEvent )
    var diff = DateUtils.getDifferenceInDays(startDate, endDate) ;
 
    var DateHtml = document.createElement( "description" );
+   var DateText;
    if (calendarEvent.allDay) {
      if ( diff > 1 )  {
        textString = gCalendarBundle.getFormattedString("tooltipEventStart", 
 						   [gCalendarWindow.dateFormater.getFormatedDate( startDate ),
 						    ""]);
-       var DateText = document.createTextNode( textString );
-   DateHtml.appendChild( DateText );
-   HolderBox.appendChild( DateHtml );
+       DateText = document.createTextNode( textString );
+       DateHtml.appendChild( DateText );
+       HolderBox.appendChild( DateHtml );
        DateHtml = document.createElement( "description" );
 
        textString = gCalendarBundle.getFormattedString("tooltipEventEnd", 
@@ -801,10 +799,10 @@ function getPreviewText( calendarEvent )
      textString = gCalendarBundle.getFormattedString("tooltipEventStart", 
 						  [gCalendarWindow.dateFormater.getFormatedDate( startDate ),
 					           gCalendarWindow.dateFormater.getFormatedTime( startDate )]);
-     var DateText = document.createTextNode( textString );
+     DateText = document.createTextNode( textString );
      DateHtml.appendChild( DateText );
      HolderBox.appendChild( DateHtml );
-   DateHtml = document.createElement( "description" );
+     DateHtml = document.createElement( "description" );
 
      textString = gCalendarBundle.getFormattedString("tooltipEventEnd", 
 						  [gCalendarWindow.dateFormater.getFormatedDate( endDate ),
@@ -830,7 +828,7 @@ function getPreviewText( calendarEvent )
       var nbmaxlines = 5 ;
       var nblines = lines.length ;
       if( nblines > nbmaxlines ) {
-	  var nblines = nbmaxlines ;
+	  nblines = nbmaxlines ;
 	  lines[ nblines - 1 ] = "..." ;
       }
 	

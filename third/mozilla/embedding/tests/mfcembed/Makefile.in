@@ -38,6 +38,7 @@ PROGRAM		= mfcembed$(BIN_SUFFIX)
 RESFILE		= MfcEmbed.res
 
 MODULE = mfcEmbed
+PACKAGE_FILE = mfcembed.pkg
 
 # comment this out if for some reason you want to link against xpcom
 # directly instead of using the standalone glue
@@ -121,10 +122,8 @@ LIBS		= \
 
 ifdef GRE_BUILD
 LIBS += \
-		 $(DIST)/lib/$(LIB_PREFIX)string_s.$(LIB_SUFFIX) \
-		 $(DIST)/lib/$(LIB_PREFIX)string_obsolete_s.$(LIB_SUFFIX) \
 		 $(DIST)/lib/$(LIB_PREFIX)xpcomglue.$(LIB_SUFFIX) \
-		 $(DIST)/lib/$(LIB_PREFIX)embedstring_s.$(LIB_SUFFIX) \
+		 $(DIST)/lib/$(LIB_PREFIX)string_s.$(LIB_SUFFIX) \
 		 $(NULL)
 else
 LIBS += $(XPCOM_LIBS)

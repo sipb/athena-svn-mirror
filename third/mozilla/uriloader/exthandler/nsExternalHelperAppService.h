@@ -31,11 +31,11 @@
 
 #include "nsIExternalHelperAppService.h"
 #include "nsIExternalProtocolService.h"
-#include "nsIURIContentListener.h"
 #include "nsIWebProgressListener.h"
 #include "nsIHelperAppLauncherDialog.h"
 
 #include "nsIMIMEInfo.h"
+#include "nsMIMEInfoImpl.h"
 #include "nsIMIMEService.h"
 #include "nsIStreamListener.h"
 #include "nsIFile.h"
@@ -147,12 +147,15 @@ public:
    */
   virtual already_AddRefed<nsIMIMEInfo> GetMIMEInfoFromOS(const char * aMIMEType,
                                                           const char * aFileExt,
-                                                          PRBool     * aFound);
+                                                          PRBool     * aFound) = 0;
 
   /**
    * Given a string identifying an application, create an nsIFile representing
    * it. This function should look in $PATH for the application.
-   * GetFileTokenForPath must be implemented by each platform. 
+   * The base class implementation will first try to interpret platformAppPath
+   * as an absolute path, and if that fails it will look for a file next to the
+   * mozilla executable. Subclasses can override this method if they want a
+   * different behaviour.
    * @param platformAppPath A platform specific path to an application that we
    *                        got out of the rdf data source. This can be a mac
    *                        file spec, a unix path or a windows path depending
@@ -161,7 +164,7 @@ public:
    *                        application path.
    */
   virtual nsresult GetFileTokenForPath(const PRUnichar * platformAppPath,
-                                       nsIFile ** aFile) = 0;
+                                       nsIFile ** aFile);
 
   /**
    * Helper routine used to test whether a given mime type is in our
@@ -234,7 +237,13 @@ protected:
   nsresult GetMIMEInfoForExtensionFromExtras(const char * aExtension,
                                              nsIMIMEInfo * aMIMEInfo);
 
-protected:
+  /**
+   * Fixes the file permissions to be correct. Base class has a no-op
+   * implementation, subclasses can use this to correctly inherit ACLs from the
+   * parent directory, to make the permissions obey the umask, etc.
+   */
+  virtual void FixFilePermissions(nsILocalFile* aFile);
+
 #ifdef PR_LOGGING
   /**
    * NSPR Logging Module. Usage: set NSPR_LOG_MODULES=HelperAppService:level,
@@ -243,9 +252,10 @@ protected:
    */
   static PRLogModuleInfo* mLog;
 
-  // friend, so that it can access the nspr log module
-  friend class nsExternalAppHandler;
 #endif
+  // friend, so that it can access the nspr log module and FixFilePermissions
+  friend class nsExternalAppHandler;
+
   /**
    * Functions related to the tempory file cleanup service provided by
    * nsExternalHelperAppService
@@ -274,8 +284,6 @@ protected:
  */
 class nsExternalAppHandler : public nsIStreamListener,
                              public nsIHelperAppLauncher,
-                             public nsIURIContentListener,
-                             public nsIInterfaceRequestor,
                              public nsIObserver
 {
 public:
@@ -283,18 +291,15 @@ public:
   NS_DECL_NSISTREAMLISTENER
   NS_DECL_NSIREQUESTOBSERVER
   NS_DECL_NSIHELPERAPPLAUNCHER
-  NS_DECL_NSIURICONTENTLISTENER
-  NS_DECL_NSIINTERFACEREQUESTOR
   NS_DECL_NSIOBSERVER
 
   nsExternalAppHandler();
-  virtual ~nsExternalAppHandler();
+  ~nsExternalAppHandler();
 
-  virtual nsresult Init(nsIMIMEInfo * aMIMEInfo, const char * aFileExtension,
-                        nsISupports * aWindowContext,
-                        const nsAString& aFilename,
-                        PRBool aIsAttachment,
-                        nsExternalHelperAppService *aHelperAppService);
+  nsresult Init(nsIMIMEInfo * aMIMEInfo, const char * aFileExtension,
+                nsISupports * aWindowContext,
+                const nsAString& aFilename,
+                PRBool aIsAttachment);
 
 protected:
   nsCOMPtr<nsIFile> mTempFile;
@@ -336,7 +341,7 @@ protected:
    */
   nsCOMPtr<nsIFile> mFinalFileDestination;
 
-  char * mDataBuffer;
+  char mDataBuffer[DATA_BUFFER_SIZE];
 
   nsresult SetUpTempFile(nsIChannel * aChannel);
   /**
@@ -345,7 +350,7 @@ protected:
    * using the window which initiated the load....RetargetLoadNotifications
    * contains that information...
    */
-  nsresult RetargetLoadNotifications(nsIRequest *request); 
+  void RetargetLoadNotifications(nsIRequest *request); 
   /**
    * If the user tells us how they want to dispose of the content and
    * we still haven't finished downloading while they were deciding,
@@ -374,8 +379,9 @@ protected:
   /**
    * An internal method used to actually launch a helper app given the temp file
    * once we are done receiving data AND have showed the progress dialog.
+   * Uses the application specified in the mime info.
    */
-  nsresult OpenWithApplication(nsIFile * aApplication);
+  nsresult OpenWithApplication();
   
   /**
    * Helper routine which peaks at the mime action specified by mMimeInfo
@@ -394,10 +400,10 @@ protected:
   
   /**
    * Helper routine to ensure mSuggestedFileName is "correct";
-   * the base class implementation ensures that mSuggestedFileName has
-   * mTempFileExtension as extension;
+   * this ensures that mTempFileExtension only contains an extension when it
+   * is different from mSuggestedFileName's extension.
    */
-  virtual void EnsureSuggestedFileName();
+  void EnsureSuggestedFileName();
 
   typedef enum { kReadError, kWriteError, kLaunchError } ErrorType;
   /**
@@ -405,11 +411,15 @@ protected:
    */
   void SendStatusChange(ErrorType type, nsresult aStatus, nsIRequest *aRequest, const nsAFlatString &path);
   
-  nsCOMPtr<nsISupports>           mLoadCookie;    /**< load cookie used by the uri loader when we fetch the url */
   nsCOMPtr<nsIWebProgressListener> mWebProgressListener;
   nsCOMPtr<nsIChannel> mOriginalChannel; /**< in the case of a redirect, this will be the pre-redirect channel. */
   nsCOMPtr<nsIHelperAppLauncherDialog> mDialog;
-  nsExternalHelperAppService *mHelperAppService;
+
+  /**
+   * The request that's being loaded. Not used after OnStopRequest, so a weak
+   * reference suffices. Initialized in OnStartRequest.
+   */
+  nsIRequest*  mRequest;
 };
 
 #endif // nsExternalHelperAppService_h__

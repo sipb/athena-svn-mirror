@@ -36,8 +36,9 @@
  * ***** END LICENSE BLOCK ***** */
 
 #include "nsIURI.h"
-#include "nsIMIMEInfo.h"
 #include "nsCOMPtr.h"
+
+class nsMIMEInfoBase;
 
 class nsGNOMERegistry
 {
@@ -48,7 +49,7 @@ class nsGNOMERegistry
 
   static nsresult LoadURL(nsIURI *aURL);
 
-  static already_AddRefed<nsIMIMEInfo> GetFromExtension(const char *aFileExt);
+  static already_AddRefed<nsMIMEInfoBase> GetFromExtension(const char *aFileExt);
 
-  static already_AddRefed<nsIMIMEInfo> GetFromType(const char *aMIMEType);
+  static already_AddRefed<nsMIMEInfoBase> GetFromType(const char *aMIMEType);
 };

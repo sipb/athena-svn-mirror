@@ -206,8 +206,7 @@ nsSelectionCommandsBase::GetPresShellFromWindow(nsIDOMWindow *aWindow, nsIPresSh
   nsCOMPtr<nsIScriptGlobalObject> sgo(do_QueryInterface(aWindow));
   NS_ENSURE_TRUE(sgo, NS_ERROR_FAILURE);
 
-  nsCOMPtr<nsIDocShell> docShell;
-  sgo->GetDocShell(getter_AddRefs(docShell));
+  nsIDocShell *docShell = sgo->GetDocShell();
   NS_ENSURE_TRUE(docShell, NS_ERROR_FAILURE);
 
   return docShell->GetPresShell(aPresShell);
@@ -238,8 +237,10 @@ nsSelectionCommandsBase::GetEventStateManagerForWindow(nsIDOMWindow *aWindow,
   {
     nsCOMPtr<nsIPresContext> presContext;
     presShell->GetPresContext(getter_AddRefs(presContext));
-    if (presContext)
-      return presContext->GetEventStateManager(aEventStateManager);
+    if (presContext) {
+      NS_ADDREF(*aEventStateManager = presContext->EventStateManager());
+      return NS_OK;
+    }
   }
   return NS_ERROR_FAILURE;
 }
@@ -478,8 +479,7 @@ nsClipboardBaseCommand::GetContentViewerEditFromContext(nsISupports *aContext,
   nsCOMPtr<nsIScriptGlobalObject> sgo(do_QueryInterface(window));
   NS_ENSURE_TRUE(sgo, NS_ERROR_FAILURE);
 
-  nsCOMPtr<nsIDocShell> docShell;
-  sgo->GetDocShell(getter_AddRefs(docShell));
+  nsIDocShell *docShell = sgo->GetDocShell();
   NS_ENSURE_TRUE(docShell, NS_ERROR_FAILURE);
 
   nsCOMPtr<nsIContentViewer> viewer;
@@ -834,9 +834,7 @@ nsClipboardDragDropHookCommand::DoCommandParams(const char *aCommandName,
   nsCOMPtr<nsIScriptGlobalObject> sgo = do_QueryInterface(window);
   NS_ENSURE_TRUE(sgo, NS_ERROR_FAILURE);
 
-  nsCOMPtr<nsIDocShell> docShell;
-  sgo->GetDocShell(getter_AddRefs(docShell));
-  NS_ENSURE_TRUE(docShell, NS_ERROR_FAILURE);
+  nsIDocShell *docShell = sgo->GetDocShell();
 
   nsCOMPtr<nsIClipboardDragDropHookList> obj = do_GetInterface(docShell);
   if (!obj) return NS_ERROR_INVALID_ARG;

@@ -60,6 +60,7 @@ nsIIDNService *nsStandardURL::gIDNService = nsnull;
 nsICharsetConverterManager *nsStandardURL::gCharsetMgr = nsnull;
 PRBool nsStandardURL::gInitialized = PR_FALSE;
 PRBool nsStandardURL::gEscapeUTF8 = PR_TRUE;
+PRBool nsStandardURL::gAlwaysEncodeInUTF8 = PR_FALSE;
 
 #if defined(PR_LOGGING)
 //
@@ -129,8 +130,9 @@ end:
 // nsStandardURL::nsPrefObserver
 //----------------------------------------------------------------------------
 
-#define NS_NET_PREF_ESCAPEUTF8 "network.standard-url.escape-utf8"
-#define NS_NET_PREF_ENABLEIDN  "network.enableIDN"
+#define NS_NET_PREF_ESCAPEUTF8         "network.standard-url.escape-utf8"
+#define NS_NET_PREF_ENABLEIDN          "network.enableIDN"
+#define NS_NET_PREF_ALWAYSENCODEINUTF8 "network.standard-url.encode-utf8"
 
 NS_IMPL_ISUPPORTS1(nsStandardURL::nsPrefObserver, nsIObserver)
 
@@ -157,6 +159,12 @@ nsPrefObserver::Observe(nsISupports *subject,
                         NS_ADDREF(gIDNService = serv.get());
                 }
                 LOG(("IDN support %s\n", gIDNService ? "enabled" : "disabled"));
+            }
+            else if (!nsCRT::strcmp(data, NS_LITERAL_STRING(NS_NET_PREF_ALWAYSENCODEINUTF8).get())) {
+                PRBool val;
+                if (NS_SUCCEEDED(prefBranch->GetBoolPref(NS_NET_PREF_ALWAYSENCODEINUTF8, &val)))
+                    gAlwaysEncodeInUTF8 = val;
+                LOG(("encode in UTF-8 %s\n", gAlwaysEncodeInUTF8 ? "enabled" : "disabled"));
             }
         } 
     }
@@ -271,7 +279,7 @@ nsStandardURL::nsStandardURL(PRBool aSupportsFileURL)
     , mPort(-1)
     , mURLType(URLTYPE_STANDARD)
     , mHostA(nsnull)
-    , mHostEncoding(eEncoding_Unknown)
+    , mHostEncoding(eEncoding_ASCII)
     , mSpecEncoding(eEncoding_Unknown)
     , mMutable(PR_TRUE)
     , mSupportsFileURL(aSupportsFileURL)
@@ -302,22 +310,16 @@ nsStandardURL::~nsStandardURL()
 void
 nsStandardURL::InitGlobalObjects()
 {
-    nsCOMPtr<nsIPrefService> prefService( do_GetService(NS_PREFSERVICE_CONTRACTID) );
-    if (prefService) {
-        nsCOMPtr<nsIPrefBranch> prefBranch;
-        prefService->GetBranch(nsnull, getter_AddRefs(prefBranch));
-        if (prefBranch) {
-            nsCOMPtr<nsIPrefBranchInternal> pbi( do_QueryInterface(prefBranch) );
-            if (pbi) {
-                nsCOMPtr<nsIObserver> obs( new nsPrefObserver() );
-                pbi->AddObserver(NS_NET_PREF_ESCAPEUTF8, obs.get(), PR_FALSE); 
-                pbi->AddObserver(NS_NET_PREF_ENABLEIDN, obs.get(), PR_FALSE); 
-                // initialize IDN
-                nsCOMPtr<nsIIDNService> serv(do_GetService(NS_IDNSERVICE_CONTRACTID));
-                if (serv)
-                    NS_ADDREF(gIDNService = serv.get());
-            }
-        }
+    nsCOMPtr<nsIPrefBranchInternal> prefBranch( do_GetService(NS_PREFSERVICE_CONTRACTID) );
+    if (prefBranch) {
+        nsCOMPtr<nsIObserver> obs( new nsPrefObserver() );
+        prefBranch->AddObserver(NS_NET_PREF_ESCAPEUTF8, obs.get(), PR_FALSE); 
+        prefBranch->AddObserver(NS_NET_PREF_ALWAYSENCODEINUTF8, obs.get(), PR_FALSE);
+        prefBranch->AddObserver(NS_NET_PREF_ENABLEIDN, obs.get(), PR_FALSE); 
+        // initialize IDN
+        nsCOMPtr<nsIIDNService> serv(do_GetService(NS_IDNSERVICE_CONTRACTID));
+        if (serv)
+            NS_ADDREF(gIDNService = serv.get());
     }
 }
 
@@ -343,6 +345,7 @@ nsStandardURL::Clear()
     mUsername.Reset();
     mPassword.Reset();
     mHost.Reset();
+    mHostEncoding = eEncoding_ASCII;
 
     mPath.Reset();
     mFilepath.Reset();
@@ -364,7 +367,6 @@ nsStandardURL::InvalidateCache(PRBool invalidateCachedFile)
         mFile = 0;
     CRTFREEIF(mHostA);
     mSpecEncoding = eEncoding_Unknown;
-    mHostEncoding = eEncoding_Unknown;
 }
 
 PRBool
@@ -432,6 +434,7 @@ nsStandardURL::BuildNormalizedSpec(const char *spec)
     // escaping is required).
     nsCAutoString encUsername;
     nsCAutoString encPassword;
+    nsCAutoString encHost;
     nsCAutoString encDirectory;
     nsCAutoString encBasename;
     nsCAutoString encExtension;
@@ -466,15 +469,31 @@ nsStandardURL::BuildNormalizedSpec(const char *spec)
 
     // do not escape the hostname, if IPv6 address literal, mHost will
     // already point to a [ ] delimited IPv6 address literal.
-    if (mHost.mLen > 0)
-        approxLen += mHost.mLen;
+    // However, perform Unicode normalization on it, as IDN does.
+    mHostEncoding = eEncoding_ASCII;
+    if (mHost.mLen > 0) {
+        const nsCSubstring& tempHost =
+            Substring(spec + mHost.mPos, spec + mHost.mPos + mHost.mLen);
+        if (IsASCII(tempHost))
+            approxLen += mHost.mLen;
+        else {
+            mHostEncoding = eEncoding_UTF8;
+            if (gIDNService &&
+                NS_SUCCEEDED(gIDNService->Normalize(tempHost, encHost)))
+                approxLen += encHost.Length();
+            else {
+                encHost.Truncate();
+                approxLen += mHost.mLen;
+            }
+        }
+    }
 
     //
     // generate the normalized URL string
     //
-    char *buf = (char *) nsMemory::Alloc(approxLen + 32);
-    if (!buf)
-        return NS_ERROR_OUT_OF_MEMORY;
+    mSpec.SetLength(approxLen + 32);
+    char *buf;
+    mSpec.BeginWriting(buf);
     PRUint32 i = 0;
 
     if (mScheme.mLen > 0) {
@@ -496,7 +515,7 @@ nsStandardURL::BuildNormalizedSpec(const char *spec)
         buf[i++] = '@';
     }
     if (mHost.mLen > 0) {
-        i = AppendSegmentToBuf(buf, i, spec, mHost);
+        i = AppendSegmentToBuf(buf, i, spec, mHost, &encHost);
         net_ToLowerCase(buf + mHost.mPos, mHost.mLen);
         if (mPort != -1 && mPort != mDefaultPort) {
             nsCAutoString portbuf;
@@ -583,7 +602,7 @@ nsStandardURL::BuildNormalizedSpec(const char *spec)
         }
         CoalescePath(coalesceFlag, buf + mDirectory.mPos);
     }
-    mSpec.Adopt(buf);
+    mSpec.SetLength(strlen(buf));
     return NS_OK;
 }
 
@@ -927,13 +946,6 @@ nsStandardURL::GetAsciiSpec(nsACString &result)
 NS_IMETHODIMP
 nsStandardURL::GetAsciiHost(nsACString &result)
 {
-    if (mHostEncoding == eEncoding_Unknown) {
-        if (IsASCII(Host()))
-            mHostEncoding = eEncoding_ASCII;
-        else
-            mHostEncoding = eEncoding_UTF8;
-    }
-
     if (mHostEncoding == eEncoding_ASCII) {
         result = Host();
         return NS_OK;
@@ -1281,6 +1293,7 @@ nsStandardURL::SetHost(const nsACString &input)
     }
 
     InvalidateCache();
+    mHostEncoding = eEncoding_ASCII;
 
     if (!(host && *host)) {
         // remove existing hostname
@@ -1304,8 +1317,17 @@ nsStandardURL::SetHost(const nsACString &input)
         host = escapedHost.get();
         len = escapedHost.Length();
     }
-    else
-        len = strlen(host);
+    else {
+        len = flat.Length();
+        if (!IsASCII(flat)) {
+            mHostEncoding = eEncoding_UTF8;
+            if (gIDNService &&
+                NS_SUCCEEDED(gIDNService->Normalize(flat, escapedHost))) {
+                host = escapedHost.get();
+                len = escapedHost.Length();
+            }
+        }
+    }
 
     if (mHost.mLen < 0) {
         mHost.mPos = mAuthority.mPos;
@@ -2278,7 +2300,9 @@ nsStandardURL::Init(PRUint32 urlType,
     mDefaultPort = defaultPort;
     mURLType = urlType;
 
-    if (charset == nsnull || *charset == '\0') {
+    if (gAlwaysEncodeInUTF8)
+        mOriginCharset.Truncate();
+    else if (charset == nsnull || *charset == '\0') {
         mOriginCharset.Truncate();
         // check if baseURI provides an origin charset and use that.
         if (baseURI)

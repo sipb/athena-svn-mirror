@@ -185,9 +185,8 @@ nsHTTPIndex::OnFTPControlLog(PRBool server, const char *msg)
     nsCOMPtr<nsIScriptGlobalObject> scriptGlobal(do_GetInterface(mRequestor));
     NS_ENSURE_TRUE(scriptGlobal, NS_OK);
 
-    nsCOMPtr<nsIScriptContext> context;
-    nsresult rv = scriptGlobal->GetContext(getter_AddRefs(context));
-    NS_ENSURE_SUCCESS(rv, NS_OK);
+    nsIScriptContext *context = scriptGlobal->GetContext();
+    NS_ENSURE_TRUE(context, NS_OK);
 
     JSContext* jscontext = NS_REINTERPRET_CAST(JSContext*,
                                                context->GetNativeContext());
@@ -263,8 +262,7 @@ nsHTTPIndex::OnStartRequest(nsIRequest *request, nsISupports* aContext)
     nsCOMPtr<nsIScriptGlobalObject> scriptGlobal(do_GetInterface(mRequestor));
     NS_ENSURE_TRUE(scriptGlobal, NS_ERROR_FAILURE);
 
-    nsCOMPtr<nsIScriptContext> context;
-    rv = scriptGlobal->GetContext(getter_AddRefs(context));
+    nsIScriptContext *context = scriptGlobal->GetContext();
     NS_ENSURE_TRUE(context, NS_ERROR_FAILURE);
 
     JSContext* jscontext = NS_REINTERPRET_CAST(JSContext*,
@@ -479,12 +477,15 @@ nsHTTPIndex::OnIndexAvailable(nsIRequest* aRequest, nsISupports *aContext,
       if (NS_FAILED(rv)) return rv;
       
       // contentlength
-      PRUint32 size;
+      PRInt64 size;
       rv = aIndex->GetSize(&size);
       if (NS_FAILED(rv)) return rv;
-      if (size != PRUint32(-1)) {
+      if (LL_NE(size, LL_INIT(0, -1))) {
+        PRInt32 intSize;
+        LL_L2I(intSize, size);
+        // XXX RDF should support 64 bit integers (bug 240160)
         nsCOMPtr<nsIRDFInt> val;
-        rv = mDirRDF->GetIntLiteral(size, getter_AddRefs(val));
+        rv = mDirRDF->GetIntLiteral(intSize, getter_AddRefs(val));
         if (NS_FAILED(rv)) return rv;
         rv = Assert(entry, kNC_ContentLength, val, PR_TRUE);
         if (NS_FAILED(rv)) return rv;

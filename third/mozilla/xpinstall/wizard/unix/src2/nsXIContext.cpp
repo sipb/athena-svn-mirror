@@ -119,7 +119,7 @@ nsXIContext::itoa(int n)
 
 #define MAX_KEY_SIZE 64
 #define FIRST_ERR -601
-#define LAST_ERR  -625
+#define LAST_ERR  -630
 int
 nsXIContext::LoadResources()
 {
@@ -167,8 +167,8 @@ nsXIContext::LoadResources()
         "PREPARING",
         "EXTRACTING",
         "INSTALLING_XPI",
+        "COMPLETING_INSTALL",
         "PROCESSING_FILE",
-        "COMPLETED",
         "NO_PERMS",
         "DL_SETTINGS",
         "SAVE_MODULES",

@@ -34,7 +34,7 @@
 /*
  * CMS array functions.
  *
- * $Id: cmsarray.c,v 1.1.1.1 2003-02-14 21:08:44 rbasch Exp $
+ * $Id: cmsarray.c,v 1.1.1.2 2004-06-30 16:59:52 rbasch Exp $
  */
 
 #include "cmslocal.h"
@@ -91,6 +91,10 @@ NSS_CMSArray_Add(PRArenaPool *poolp, void ***array, void *obj)
 			      (n + 1) * sizeof(void *),
 			      (n + 2) * sizeof(void *));
     }
+
+    if (dest == NULL)
+	return SECFailure;
+
     dest[n] = obj;
     dest[n+1] = NULL;
     *array = dest;

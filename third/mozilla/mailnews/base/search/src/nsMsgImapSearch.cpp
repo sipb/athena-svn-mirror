@@ -144,7 +144,7 @@ nsresult nsMsgSearchOnlineMail::Encode (nsCString& pEncoding,
         rv = searchValue->GetStr(getter_Copies(pchar));
       	if (NS_FAILED(rv) || !pchar)
       		continue;
-        asciiOnly = nsCRT::IsAscii(NS_CONST_CAST(PRUnichar*, pchar.get()));
+        asciiOnly = nsCRT::IsAscii(pchar.get());
 			}
 		}
 	}
@@ -615,8 +615,12 @@ nsMsgSearchValidityManager::InitOfflineMailFilterTable()
   
   m_offlineMailFilterTable->SetAvailable (nsMsgSearchAttrib::OtherHeader, nsMsgSearchOp::Contains, 1);
   m_offlineMailFilterTable->SetEnabled   (nsMsgSearchAttrib::OtherHeader, nsMsgSearchOp::Contains, 1);
+  m_offlineMailFilterTable->SetAvailable (nsMsgSearchAttrib::OtherHeader, nsMsgSearchOp::DoesntContain, 1);
+  m_offlineMailFilterTable->SetEnabled   (nsMsgSearchAttrib::OtherHeader, nsMsgSearchOp::DoesntContain, 1);
   m_offlineMailFilterTable->SetAvailable (nsMsgSearchAttrib::OtherHeader, nsMsgSearchOp::Is, 1);
   m_offlineMailFilterTable->SetEnabled   (nsMsgSearchAttrib::OtherHeader, nsMsgSearchOp::Is, 1);
+  m_offlineMailFilterTable->SetAvailable (nsMsgSearchAttrib::OtherHeader, nsMsgSearchOp::Isnt, 1);
+  m_offlineMailFilterTable->SetEnabled   (nsMsgSearchAttrib::OtherHeader, nsMsgSearchOp::Isnt, 1);
   m_offlineMailFilterTable->SetAvailable (nsMsgSearchAttrib::OtherHeader, nsMsgSearchOp::BeginsWith, 1);
   m_offlineMailFilterTable->SetEnabled   (nsMsgSearchAttrib::OtherHeader, nsMsgSearchOp::BeginsWith, 1);
   m_offlineMailFilterTable->SetAvailable (nsMsgSearchAttrib::OtherHeader, nsMsgSearchOp::EndsWith, 1);

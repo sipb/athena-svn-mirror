@@ -88,11 +88,8 @@ var abDirTreeObserver = {
       // check if we can write to the target directory 
       // LDAP is readonly
       var targetDirectory = GetDirectoryFromURI(targetURI);
-      if (!targetDirectory.isMailList && 
-          (!(targetDirectory.operations & targetDirectory.opWrite)))
-        return false;      
-      
-      return true;
+      return (targetDirectory.isMailList ||
+              (targetDirectory.operations & targetDirectory.opWrite));
     },
 
     canDropBeforeAfter: function(index, before)
@@ -103,7 +100,7 @@ var abDirTreeObserver = {
     {
       var dragSession = dragService.getCurrentSession();
       if (!dragSession)
-        return false;
+        return;
       
       var trans = Components.classes["@mozilla.org/widget/transferable;1"].createInstance(Components.interfaces.nsITransferable);
       trans.addDataFlavor("moz/abcard");
@@ -164,11 +161,13 @@ var abDirTreeObserver = {
         var card = abView.getCardFromRow(rows[j]);
         directory.dropCard(card, needToCopyCard);
       }
-      var statusText = document.getElementById("statusText");
-        var cardsCopiedText = gAddressBookBundle.getFormattedString("cardsCopied", [i]);
+
+        var cardsCopiedText = numrows == 1 ? gAddressBookBundle.getString("cardCopied")
+                                           : gAddressBookBundle.getFormattedString("cardsCopied", [numrows]);
+
+        var statusText = document.getElementById("statusText");
         statusText.setAttribute("label", cardsCopiedText);        
       }
-
     },
 
     onToggleOpenState: function()

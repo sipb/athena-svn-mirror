@@ -46,7 +46,7 @@ class nsPrintObject;
 class nsISelection;
 class nsIPresShell;
 class nsIDocument;
-class nsIStyleSet;
+class nsStyleSet;
 class nsIContent;
 class nsIWebShell;
 
@@ -72,7 +72,7 @@ public:
 
   virtual PRBool GetIsCreatingPrintPreview() = 0;
 
-  virtual nsresult CreateStyleSet(nsIDocument* aDocument, nsIStyleSet** aStyleSet) = 0;
+  virtual nsresult CreateStyleSet(nsIDocument* aDocument, nsStyleSet** aStyleSet) = 0;
 
   virtual nsresult GetDocumentSelection(nsISelection **aSelection,
                                         nsIPresShell * aPresShell = nsnull) = 0;
@@ -85,9 +85,6 @@ public:
 
   virtual void OnDonePrinting() = 0;
 
-  virtual nsresult FindFrameSetWithIID(nsIContent * aParentContent, const nsIID& aIID) = 0;
-
-  virtual void GetPresShellAndRootContent(nsIWebShell * aWebShell, nsIPresShell** aPresShell, nsIContent** aContent) = 0;
 };
 
 /* Use this macro when declaring classes that implement this interface. */
@@ -97,13 +94,11 @@ public:
   virtual void     SetIsPrintPreview(PRBool aIsPrintPreview); \
   virtual PRBool   GetIsPrintPreview(); \
   virtual PRBool   GetIsCreatingPrintPreview(); \
-  virtual nsresult CreateStyleSet(nsIDocument* aDocument, nsIStyleSet** aStyleSet); \
+  virtual nsresult CreateStyleSet(nsIDocument* aDocument, nsStyleSet** aStyleSet); \
   virtual nsresult GetDocumentSelection(nsISelection **aSelection, nsIPresShell * aPresShell = nsnull); \
   virtual void     IncrementDestroyRefCount(); \
   virtual void     ReturnToGalleyPresentation(); \
   virtual void     InstallNewPresentation(); \
-  virtual void     OnDonePrinting(); \
-  virtual nsresult FindFrameSetWithIID(nsIContent * aParentContent, const nsIID& aIID); \
-  virtual void     GetPresShellAndRootContent(nsIWebShell * aWebShell, nsIPresShell** aPresShell, nsIContent** aContent);
+  virtual void     OnDonePrinting();
 
 #endif /* nsIDocumentViewerPrint_h___ */

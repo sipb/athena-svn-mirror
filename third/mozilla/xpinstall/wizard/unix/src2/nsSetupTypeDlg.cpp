@@ -26,6 +26,8 @@
 #include "nsSetupTypeDlg.h"
 #include "nsXInstaller.h"
 
+#include <sys/types.h>
+#include <dirent.h>
 
 // need these for statfs 
 
@@ -54,6 +56,7 @@ static int              sFilePickerUp = FALSE;
 static int              sConfirmCreateUp = FALSE;
 static int              sDelInstUp = FALSE;
 static nsLegacyCheck    *sLegacyChecks = NULL;
+static nsObjectIgnore   *sObjectsToIgnore = NULL;
 
 nsSetupTypeDlg::nsSetupTypeDlg() :
     mMsg0(NULL),
@@ -116,6 +119,10 @@ nsSetupTypeDlg::Next(GtkWidget *aWidget, gpointer aData)
     if (OK != nsSetupTypeDlg::DeleteOldInst())
         return;
 
+    // make sure destination directory is empty
+    if (OK != nsSetupTypeDlg::CheckDestEmpty())
+        return;
+
     // if not custom setup type verify disk space
     if (gCtx->opt->mSetupType != (gCtx->sdlg->GetNumSetupTypes() - 1))
     {
@@ -146,14 +153,17 @@ nsSetupTypeDlg::Parse(nsINIParser *aParser)
     int bufsize = 0;
     char *showDlg = NULL;
     int i, j;
-    char *currSec = (char *) malloc(strlen(SETUP_TYPE) + 3); // e.g. SetupType12
+    char *currSec = (char *) malloc(strlen(SETUP_TYPEd) + 1); // e.g. SetupType12
     if (!currSec) return E_MEM;
     char *currKey = (char *) malloc(1 + 3); // e.g. C0, C1, C12
     if (!currKey) return E_MEM;
-    char *currLCSec = (char *) malloc(strlen(LEGACY_CHECKd) + 3);
+    char *currOIKey = (char *) malloc(strlen(OBJECT_IGNOREd) + 1);
+    if (!currOIKey) return E_MEM;
+    char *currLCSec = (char *) malloc(strlen(LEGACY_CHECKd) + 1);
     if (!currLCSec) return E_MEM;
     char *currVal = NULL;
     nsLegacyCheck *currLC = NULL, *lastLC = NULL, *nextLC = NULL;
+    nsObjectIgnore *currOI = NULL, *lastOI = NULL, *nextOI = NULL;
     nsComponent *currComp = NULL;
     nsComponent *currCompDup = NULL;
     int currIndex;
@@ -191,13 +201,48 @@ nsSetupTypeDlg::Parse(nsINIParser *aParser)
     if (bufsize == 0)
             XI_IF_FREE(mTitle); 
 
+    /* Objects to Ignore */
+    sObjectsToIgnore = new nsObjectIgnore();
+    currOI = sObjectsToIgnore;
+    for (i = 0; i < MAX_LEGACY_CHECKS; i++)
+    {
+        // construct key name based on index
+        memset(currOIKey, 0, (strlen(OBJECT_IGNOREd) + 1));
+        sprintf(currOIKey, OBJECT_IGNOREd, i);
+
+        // get ObjectToIgnore key
+        bufsize = 0;
+        err = aParser->GetStringAlloc(CLEAN_UPGRADE, currOIKey, &currVal, &bufsize);
+        if (err != OK) 
+        { 
+            if (err != nsINIParser::E_NO_SEC &&
+                err != nsINIParser::E_NO_KEY) goto BAIL; 
+            else 
+            {
+                err = OK; 
+                XI_IF_DELETE(currOI);
+                if (lastOI)
+                    lastOI->InitNext();
+                break; 
+            } 
+        }
+        currOI->SetFilename(currVal);
+
+        nextOI = new nsObjectIgnore();
+        currOI->SetNext(nextOI);
+        lastOI = currOI;
+        currOI = nextOI;
+    }
+    if (i == 0) // none found
+        sObjectsToIgnore = NULL;
+
     /* legacy check */
     sLegacyChecks = new nsLegacyCheck();
     currLC = sLegacyChecks;
     for (i = 0; i < MAX_LEGACY_CHECKS; i++)
     {
         // construct section name based on index
-        memset(currLCSec, 0, (strlen(LEGACY_CHECKd) + 3));
+        memset(currLCSec, 0, (strlen(LEGACY_CHECKd) + 1));
         sprintf(currLCSec, LEGACY_CHECKd, i);
 
         // get "Filename" and "Message" keys
@@ -241,7 +286,7 @@ nsSetupTypeDlg::Parse(nsINIParser *aParser)
         currLC = nextLC;
     }
     if (i == 0) // none found
-        XI_IF_DELETE(sLegacyChecks);
+        sLegacyChecks = NULL;
 
     /* setup types */
     for (i=0; i<MAX_SETUP_TYPES; i++)
@@ -310,6 +355,7 @@ fin_iter:
 BAIL:
     XI_IF_FREE(currSec);
     XI_IF_FREE(currKey);
+    XI_IF_FREE(currOIKey);
     XI_IF_FREE(currLCSec);
 
     return err;
@@ -850,15 +896,17 @@ nsSetupTypeDlg::DeleteOldInst()
 {
     DUMP("DeleteOldInst");
 
+    const int MAXCHARS = 64; // Maximum chars per line in Delete Dialog
+    const int MAXLINES = 20; // Maximum lines in Delete Dialog
     int err = OK;
     struct stat dummy;
     char path[MAXPATHLEN];
     GtkWidget *label = NULL;
     GtkWidget *deleteBtn = NULL; /* delete button */
     GtkWidget *cancelBtn = NULL; /* cancel button */
-    int numLines = 0, i;
-    char *msg = NULL, *msgPtr = NULL, *msgChunkPtr = NULL;
-    char msgChunk[65];
+    char *msgPtr = NULL, *msgChunkPtr = NULL, *msgEndPtr = NULL;
+    char msgChunk[MAXCHARS+1];
+    char msg[MAXPATHLEN+512];
     nsLegacyCheck *currLC = NULL;
 
     currLC = sLegacyChecks;
@@ -888,25 +936,27 @@ nsSetupTypeDlg::DeleteOldInst()
           gtk_signal_connect(GTK_OBJECT(cancelBtn), "clicked",
                          GTK_SIGNAL_FUNC(DeleteInstCancel), sDelInstDlg);
 
-          // wrap message at 64 columns, and truncate at 20 rows
-          msg = currLC->GetMessage();
+          snprintf(msg, sizeof(msg), currLC->GetMessage(), gCtx->opt->mDestination);
           msgPtr = msg;
-          numLines = strlen(msg)/64;
-          for (i = 0; i <= numLines && i < 20; i++)
+          msgEndPtr = msg + strlen(msg);
+          // wrap message at MAXCHARS colums (or last space inside MAXCHARS)
+          // stop at MAXLINES rows or stop after last char is reached
+          for (int i = 0; i < MAXLINES && msgPtr < msgEndPtr; i++)
           {
-              memset(msgChunk, 0, 65);
-              strncpy(msgChunk, msgPtr, 64);
-
-              // pad by a line but don't allow overflow
-              if (msgPtr > msg + strlen(msg))
-                  break;
+              // get the next MAXCHARS chars
+              memset(msgChunk, 0, MAXCHARS+1);
+              strncpy(msgChunk, msgPtr, MAXCHARS);
 
               // find last space
               msgChunkPtr = strrchr(msgChunk, ' ');
-              if (64 != msgChunkPtr - msgChunk + 1)
+              if (msgChunkPtr)
               {
-                  msgChunk[msgChunkPtr - msgChunk] = 0;
-                  msgPtr = msgPtr + (msgChunkPtr - msgChunk + 1);
+                  *msgChunkPtr = '\0';
+                  msgPtr += (msgChunkPtr - msgChunk + 1);
+              }
+              else
+              {
+                  msgPtr += MAXCHARS;
               }
               label = gtk_label_new(msgChunk);
               gtk_box_pack_start(GTK_BOX(GTK_DIALOG(sDelInstDlg)->vbox), label,
@@ -920,7 +970,7 @@ nsSetupTypeDlg::DeleteOldInst()
       }
       currLC = currLC->GetNext();    
     }
-    
+
     return err;
 }
 
@@ -986,6 +1036,43 @@ nsSetupTypeDlg::ConstructPath(char *aDest, char *aTrunk, char *aLeaf)
     strcat(aDest, aLeaf);
 
     return err;
+}
+
+int
+nsSetupTypeDlg::CheckDestEmpty()
+{
+    DUMP("DeleteOldInst");
+
+    DIR *destDirD;
+    struct dirent *de;
+    nsObjectIgnore *currOI = NULL;
+
+    /* check if the destination directory is empty */
+    destDirD = opendir(gCtx->opt->mDestination);
+    while (de = readdir(destDirD))
+    {
+        if (strcmp(de->d_name, ".") && strcmp(de->d_name, ".."))
+        {
+            currOI = sObjectsToIgnore;
+            while (currOI)
+            {
+                // check if this is an Object To Ignore
+                if (!strcmp(currOI->GetFilename(),de->d_name))
+                    break;
+
+                currOI = currOI->GetNext();    
+            }
+            if (!currOI)
+            {
+                closedir(destDirD);
+                ErrorHandler(E_DIR_NOT_EMPTY);
+                return E_DIR_NOT_EMPTY;
+            }
+        }
+    }
+    
+    closedir(destDirD);
+    return OK;
 }
 
 int

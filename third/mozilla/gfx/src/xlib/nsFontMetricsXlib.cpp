@@ -27,6 +27,8 @@
  *   Tim Copperfield <timecop@network.email.ne.jp>
  *   Roland Mainz <roland.mainz@informatik.med.uni-giessen.de>
  *   Brian Stell <bstell@ix.netcom.com>
+ *   Jungshik Shin <jshin@mailaps.org>
+ *   IBM Corporation
  *
  *
  * Alternatively, the contents of this file may be used under the terms of
@@ -283,9 +285,6 @@ static int ISO10646Convert(nsFontCharSetInfoXlib* aSelf, XFontStruct* aFont,
 static nsFontCharSetInfoXlib Unknown = { nsnull };
 static nsFontCharSetInfoXlib Special = { nsnull };
 
-static nsFontCharSetInfoXlib CP1251 =
-  { "windows-1251", SingleByteConvert, 0,
-    TT_OS2_CPR1_CYRILLIC, TT_OS2_CPR2_RUSSIAN };
 static nsFontCharSetInfoXlib USASCII =
   { "us-ascii", SingleByteConvert, 0,
     TT_OS2_CPR1_LATIN1 | TT_OS2_CPR1_MAC_ROMAN,
@@ -316,6 +315,9 @@ static nsFontCharSetInfoXlib ISO885968x =
       TT_OS2_CPR1_ARABIC, TT_OS2_CPR2_ARABIC | TT_OS2_CPR2_ARABIC_708 };
 static nsFontCharSetInfoXlib ISO8859616 =
   { "x-iso-8859-6-16", SingleByteConvert, 0,
+      TT_OS2_CPR1_ARABIC, TT_OS2_CPR2_ARABIC | TT_OS2_CPR2_ARABIC_708 };
+static nsFontCharSetInfoXlib IBM1046 =
+  { "x-IBM1046", SingleByteConvert, 0,
       TT_OS2_CPR1_ARABIC, TT_OS2_CPR2_ARABIC | TT_OS2_CPR2_ARABIC_708 };
 static nsFontCharSetInfoXlib ISO88597 =
   { "ISO-8859-7", SingleByteConvert, 0,
@@ -433,6 +435,23 @@ static nsFontCharSetInfoXlib JamoTTF =
 static nsFontCharSetInfoXlib TamilTTF =
   { "x-tamilttf-0", DoubleByteConvert, 1,
     0, 0 };
+static nsFontCharSetInfoXlib CP1250 =
+  { "windows-1250", SingleByteConvert, 0,
+    TT_OS2_CPR1_LATIN2, TT_OS2_CPR2_LATIN2 };
+static nsFontCharSetInfoXlib CP1251 =
+  { "windows-1251", SingleByteConvert, 0,
+    TT_OS2_CPR1_CYRILLIC, TT_OS2_CPR2_RUSSIAN };
+static nsFontCharSetInfoXlib CP1252 =
+  { "windows-1252", SingleByteConvert, 0,
+    TT_OS2_CPR1_LATIN1 | TT_OS2_CPR1_MAC_ROMAN,
+    TT_OS2_CPR2_CA_FRENCH |  TT_OS2_CPR2_PORTUGESE
+    | TT_OS2_CPR2_WE_LATIN1 |  TT_OS2_CPR2_US };
+static nsFontCharSetInfoXlib CP1253 =
+  { "windows-1253", SingleByteConvert, 0,
+    TT_OS2_CPR1_GREEK, TT_OS2_CPR2_GREEK | TT_OS2_CPR2_GREEK_437G };
+static nsFontCharSetInfoXlib CP1257 =
+  { "windows-1257", SingleByteConvert, 0,
+    TT_OS2_CPR1_BALTIC, TT_OS2_CPR2_BALTIC };
 
 #ifdef SUNCTL
 /* Hindi range currently unsupported in FT2 range. Change TT* once we 
@@ -474,6 +493,8 @@ static nsFontCharSetInfoXlib Mathematica5 =
 #endif /* MOZ_MATHML */
 
 static nsFontLangGroupXlib FLG_WESTERN = { "x-western",     nsnull };
+static nsFontLangGroupXlib FLG_BALTIC  = { "x-baltic",      nsnull };
+static nsFontLangGroupXlib FLG_CE      = { "x-central-euro",nsnull };
 static nsFontLangGroupXlib FLG_RUSSIAN = { "x-cyrillic",    nsnull };
 static nsFontLangGroupXlib FLG_GREEK   = { "el",            nsnull };
 static nsFontLangGroupXlib FLG_TURKISH = { "tr",            nsnull };
@@ -587,6 +608,7 @@ static const nsFontCharSetMapXlib gConstCharSetMap[] =
   { "hpbig5-",            &FLG_ZHTW,    &Big5          },
   { "hphkbig5-",          &FLG_ZHHK,    &HKSCS         },
   { "hproc16-",           &FLG_NONE,    &Unknown       },
+  { "ibm-1046",           &FLG_ARABIC,  &IBM1046       },
   { "ibm-1252",           &FLG_NONE,    &Unknown       },
   { "ibm-850",            &FLG_NONE,    &Unknown       },
   { "ibm-fontspecific",   &FLG_NONE,    &Unknown       },
@@ -598,15 +620,15 @@ static const nsFontCharSetMapXlib gConstCharSetMap[] =
   { "ibm-udctw",          &FLG_NONE,    &Unknown       },
   { "iso646.1991-irv",    &FLG_NONE,    &Unknown       },
   { "iso8859-1",          &FLG_WESTERN, &ISO88591      },
-  { "iso8859-13",         &FLG_WESTERN, &ISO885913     },
+  { "iso8859-13",         &FLG_BALTIC,  &ISO885913     },
   { "iso8859-15",         &FLG_WESTERN, &ISO885915     },
   { "iso8859-1@cn",       &FLG_NONE,    &Unknown       },
   { "iso8859-1@kr",       &FLG_NONE,    &Unknown       },
   { "iso8859-1@tw",       &FLG_NONE,    &Unknown       },
   { "iso8859-1@zh",       &FLG_NONE,    &Unknown       },
-  { "iso8859-2",          &FLG_WESTERN, &ISO88592      },
+  { "iso8859-2",          &FLG_CE,      &ISO88592      },
   { "iso8859-3",          &FLG_WESTERN, &ISO88593      },
-  { "iso8859-4",          &FLG_WESTERN, &ISO88594      },
+  { "iso8859-4",          &FLG_BALTIC,  &ISO88594      },
   { "iso8859-5",          &FLG_RUSSIAN, &ISO88595      },
   { "iso8859-6",          &FLG_ARABIC,  &ISO88596      },
   { "iso8859-6.8x",       &FLG_ARABIC,  &ISO885968x    },
@@ -631,7 +653,11 @@ static const nsFontCharSetMapXlib gConstCharSetMap[] =
   { "ksc5601.1987-1",     &FLG_KO,      &KSC5601       },
   { "ksc5601.1992-3",     &FLG_KO,      &JohabNoAscii  },
   { "koreanjamo-0",       &FLG_KO,      &JamoTTF       },
+  { "microsoft-cp1250",   &FLG_CE,      &CP1250        },
   { "microsoft-cp1251",   &FLG_RUSSIAN, &CP1251        },
+  { "microsoft-cp1252",   &FLG_WESTERN, &CP1252        },
+  { "microsoft-cp1253",   &FLG_GREEK,   &CP1253        },
+  { "microsoft-cp1257",   &FLG_BALTIC,  &CP1257        },
   { "misc-fontspecific",  &FLG_NONE,    &Unknown       },
   { "sgi-fontspecific",   &FLG_NONE,    &Unknown       },
   { "sun-fontspecific",   &FLG_NONE,    &Unknown       },
@@ -1227,7 +1253,8 @@ nsFontMetricsXlibContext::Init(nsIDeviceContext *aDevice, PRBool aPrintermode)
   if (NS_SUCCEEDED(rv))
     mAllowDoubleByteSpecialChars = val;
 
-  PRUint32 dbmapSize = sizeof(gDoubleByteSpecialCharsCCMap);
+  /* Make sure we allocate/copy enough (see bug 235913, comment 12)*/
+  PRUint32 dbmapSize = sizeof(gDoubleByteSpecialCharsCCMapUnion);
   mDoubleByteSpecialCharsCCMap = (PRUint16*)PR_Malloc(dbmapSize);
   if (!mDoubleByteSpecialCharsCCMap)
     return NS_ERROR_OUT_OF_MEMORY;
@@ -1788,7 +1815,7 @@ NS_IMETHODIMP nsFontMetricsXlib::Init(const nsFont& aFont, nsIAtom* aLangGroup,
   mLangGroup = aLangGroup;
 
   float app2dev;
-  mDeviceContext->GetAppUnitsToDevUnits(app2dev);
+  app2dev = mDeviceContext->AppUnitsToDevUnits();
 
   mPixelSize = NSToIntRound(app2dev * mFont->size);
   // Make sure to clamp the pixel size to something reasonable so we
@@ -1887,7 +1914,7 @@ NS_IMETHODIMP  nsFontMetricsXlib::Destroy()
 void nsFontMetricsXlib::RealizeFont()
 {
   float f;
-  mDeviceContext->GetDevUnitsToAppUnits(f);
+  f = mDeviceContext->DevUnitsToAppUnits();
 
 #ifdef USE_FREETYPE
   if (mWesternFont->IsFreeTypeFont()) {
@@ -1975,7 +2002,7 @@ void nsFontMetricsXlib::RealizeFont()
 #endif /* USE_FREETYPE */
   nsXFont *xFont = mWesternFont->GetXFont();
   XFontStruct *fontInfo = xFont->GetXFontStruct();
-  mDeviceContext->GetDevUnitsToAppUnits(f);
+  f = mDeviceContext->DevUnitsToAppUnits();
 
   nscoord lineSpacing = nscoord((fontInfo->ascent + fontInfo->descent) * f);
   mEmHeight = PR_MAX(1, nscoord(mWesternFont->mSize * f));
@@ -5009,11 +5036,11 @@ FFRESubstituteEncoding(nsACString &aFFREName,
 nsFontXlib*
 nsFontMetricsXlib::TryNodes(nsACString &aFFREName, PRUnichar aChar)
 {
-  FIND_FONT_PRINTF(("        TryNodes aFFREName = %s", 
-                        PromiseFlatCString(aFFREName).get()));
-  const char *FFREName = PromiseFlatCString(aFFREName).get();
+  const nsPromiseFlatCString& FFREName = PromiseFlatCString(aFFREName);
+
+  FIND_FONT_PRINTF(("        TryNodes aFFREName = %s", FFREName.get()));
   nsCStringKey key(FFREName);
-  PRBool anyFoundry = (FFREName[0] == '*');
+  PRBool anyFoundry = (FFREName.First() == '*');
   nsFontNodeArrayXlib* nodes = (nsFontNodeArrayXlib*) mFontMetricsContext->mCachedFFRESearches.Get(&key);
   if (!nodes) {
     nsCAutoString pattern;

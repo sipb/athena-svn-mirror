@@ -159,7 +159,7 @@ nsNativeScrollbarFrame::FindScrollbar(nsIFrame* start, nsIFrame** outFrame,
       if (currContent && currContent->Tag() == nsXULAtoms::scrollbar) {
         *outContent = currContent;
         *outFrame = start;
-        NS_IF_ADDREF(*outContent);
+        NS_ADDREF(*outContent);
         return NS_OK;
       }
     }
@@ -168,6 +168,26 @@ nsNativeScrollbarFrame::FindScrollbar(nsIFrame* start, nsIFrame** outFrame,
   return NS_OK;
 }
 
+NS_IMETHODIMP
+nsNativeScrollbarFrame::Reflow(nsIPresContext*          aPresContext,
+                               nsHTMLReflowMetrics&     aDesiredSize,
+                               const nsHTMLReflowState& aReflowState,
+                               nsReflowStatus&          aStatus)
+{
+  nsresult rv = nsBoxFrame::Reflow(aPresContext, aDesiredSize, aReflowState, aStatus);
+  NS_ENSURE_SUCCESS(rv, rv);
+
+  // nsGfxScrollFrame may have told us to shrink to nothing. If so, make sure our
+  // desired size agrees.
+  if (aReflowState.availableWidth == 0) {
+    aDesiredSize.width = 0;
+  }
+  if (aReflowState.availableHeight == 0) {
+    aDesiredSize.height = 0;
+  }
+
+  return NS_OK;
+}
 
 //
 // AttributeChanged
@@ -254,7 +274,7 @@ NS_IMETHODIMP
 nsNativeScrollbarFrame::GetPrefSize(nsBoxLayoutState& aState, nsSize& aSize)
 {
   float p2t = 0.0;
-  aState.GetPresContext()->GetPixelsToTwips(&p2t);
+  p2t = aState.GetPresContext()->PixelsToTwips();
   
   PRInt32 narrowDimension = 0;
   nsCOMPtr<nsINativeScrollbar> native ( do_QueryInterface(mScrollbar) );
@@ -262,9 +282,9 @@ nsNativeScrollbarFrame::GetPrefSize(nsBoxLayoutState& aState, nsSize& aSize)
   native->GetNarrowSize(&narrowDimension);
   
   if ( IsVertical() )
-    aSize.width = narrowDimension * p2t;
+    aSize.width = nscoord(narrowDimension * p2t);
   else
-    aSize.height = narrowDimension * p2t;
+    aSize.height = nscoord(narrowDimension * p2t);
   
   // By now, we have both the content node for the scrollbar and the associated
   // scrollbar mediator (for outliner, if applicable). Hook up the scrollbar to

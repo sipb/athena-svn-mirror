@@ -49,12 +49,15 @@ EXPORT_LIBRARY	= 1
 META_COMPONENT	= crypto
 GRE_MODULE	= 1
 
+PACKAGE_FILE = pippki.pkg
+
 CPPSRCS = \
 	nsNSSDialogs.cpp \
 	nsPKIModule.cpp \
 	nsPKIParamBlock.cpp \
         nsASN1Tree.cpp \
         nsNSSDialogHelper.cpp \
+	nsFormSigningDialog.cpp \
 	$(NULL)
 
 REQUIRES	= nspr \

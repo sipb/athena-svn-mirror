@@ -38,11 +38,6 @@
 #include "nsToolkit.h"
 #include "nscore.h"
 
-#include "nsPhWidgetLog.h"
-
-// Set our static member to NULL
-PhDrawContext_t   *nsToolkit::mDefaultPhotonDrawContext = nsnull;
-PRBool             nsToolkit::mPtInited = PR_FALSE;
 //
 // Static thread local storage index of the Toolkit 
 // object associated with a given thread...
@@ -58,7 +53,6 @@ NS_IMPL_ISUPPORTS1(nsToolkit,nsIToolkit)
 //-------------------------------------------------------------------------
 nsToolkit::nsToolkit()  
 {
-	NS_INIT_ISUPPORTS();
 }
 
 
@@ -80,31 +74,7 @@ nsToolkit::~nsToolkit()
 //-------------------------------------------------------------------------
 NS_METHOD nsToolkit::Init(PRThread *aThread)
 {
-  /* Run this only once per application startup */
-  if( !mPtInited )
-  {
-    PtInit( NULL );
-    PtChannelCreate(); // Force use of pulses
-    mPtInited = PR_TRUE;
-  }
-  
-  if (mDefaultPhotonDrawContext == nsnull)
-  {
-    mDefaultPhotonDrawContext = PhDCGetCurrent();  
-  }
-  
   return NS_OK;
-}
-
-PhDrawContext_t *nsToolkit::GetDefaultPhotonDrawContext()
-{
-  if (mDefaultPhotonDrawContext == NULL)
-  {
-    NS_ASSERTION(mDefaultPhotonDrawContext, "nsToolkit::GetDefaultPhotonDrawContext mDefaultPhotonDrawContext is NULL");
-    abort();  
-  }
-
-  return nsToolkit::mDefaultPhotonDrawContext;
 }
 
 //-------------------------------------------------------------------------

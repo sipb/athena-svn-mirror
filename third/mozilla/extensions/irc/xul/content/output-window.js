@@ -145,26 +145,31 @@ function onTopicKeypress(e)
     switch (e.keyCode)
     {
         case 13: /* enter */
-            view.setTopic(header["topicinput"].value);
+            var topic = header["topicinput"].value;
+            topic = mainWindow.replaceColorCodes(topic);
+            view.setTopic(topic);
             view.dispatch("focus-input");
             break;
             
         case 27: /* esc */
             view.dispatch("focus-input");
             break;
+            
+        default:
+            client.mainWindow.onInputKeypress(header["topicinput"]);
     }
 }
 
 function startTopicEdit()
 {
     var me = view.getUser(view.parent.me.nick);
-    if (!me || (!view.mode.publicTopic && !me.isOp) ||
+    if (!me || (!view.mode.publicTopic && !me.isOp && !me.isHalfOp) ||
         !header["topicinput"].hasAttribute("hidden"))
     {
         return;
     }
     
-    header["topicinput"].value = view.topic;
+    header["topicinput"].value = mainWindow.decodeColorCodes(view.topic);
 
     header["topicnodes"].setAttribute("hidden", "true")
     header["topicinput"].removeAttribute("hidden");
@@ -202,7 +207,7 @@ function changeCSS(url, id)
     if (!node)
     {
         node = document.createElement("link");
-        node.setAttribute("id", "main-css");
+        node.setAttribute("id", id);
         node.setAttribute("rel", "stylesheet");
         node.setAttribute("type", "text/css");
         var head = document.getElementsByTagName("head")[0];
@@ -357,7 +362,7 @@ function updateChannel()
 
         setText("usercount", getMsg(MSG_FMT_USERCOUNT,
                                     [view.getUsersLength(), view.opCount,
-                                     view.voiceCount]));
+                                     view.halfopCount, view.voiceCount]));
         setAttribute("usercount", "condition", "green");
 
         if (view.topic)

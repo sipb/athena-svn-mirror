@@ -89,9 +89,12 @@ nsresult nsMailboxService::ParseMailbox(nsIMsgWindow *aMsgWindow, nsFileSpec& aM
     nsCOMPtr<nsIMsgMailNewsUrl> url = do_QueryInterface(mailboxurl);
     // okay now generate the url string
     nsFilePath filePath(aMailboxPath); // convert to file url representation...
+    nsCAutoString buf;
+    NS_EscapeURL((const char *)filePath,-1,
+                     esc_Minimal|esc_Forced|esc_AlwaysCopy,buf);
     url->SetUpdatingFolder(PR_TRUE);
     url->SetMsgWindow(aMsgWindow);
-    char *temp = PR_smprintf("mailbox://%s", (const char *) filePath);
+    char *temp = PR_smprintf("mailbox://%s", buf.get());
     url->SetSpec(nsDependentCString(temp));
     PR_Free(temp);
     mailboxurl->SetMailboxParser(aMailboxParser);
@@ -393,20 +396,17 @@ nsresult nsMailboxService::PrepareMessageUrl(const char * aSrcMsgMailboxURI, nsI
     {
       // set up the url spec and initialize the url with it.
       nsFilePath filePath(folderPath); // convert to file url representation...
-      nsXPIDLCString escapedFilePath;
-      *((char**)getter_Copies(escapedFilePath)) =
-        nsEscape(filePath, url_Path);
-      // we're not using the escapedFilePath at this point because it doesn't work.
+      nsCAutoString buf;
+      NS_EscapeURL((const char *)filePath,-1,
+                   esc_Minimal|esc_Forced|esc_AlwaysCopy,buf);
       if (mPrintingOperation)
-        urlSpec = PR_smprintf("mailbox://%s?number=%d&header=print", (const char *) filePath, msgKey);
+        urlSpec = PR_smprintf("mailbox://%s?number=%d&header=print", buf.get(), msgKey);
       else if (part)
-        urlSpec = PR_smprintf("mailbox://%s?number=%d&%s", (const char *)
-        filePath, msgKey, part);
+        urlSpec = PR_smprintf("mailbox://%s?number=%d&%s", buf.get(), msgKey, part);
       else if (header)
-        urlSpec = PR_smprintf("mailbox://%s?number=%d&%s", (const char *)
-          filePath, msgKey, header);
+        urlSpec = PR_smprintf("mailbox://%s?number=%d&%s", buf.get(), msgKey, header);
       else
-        urlSpec = PR_smprintf("mailbox://%s?number=%d", (const char *) filePath, msgKey);
+        urlSpec = PR_smprintf("mailbox://%s?number=%d", buf.get(), msgKey);
       
       nsCOMPtr <nsIMsgMailNewsUrl> url = do_QueryInterface(*aMailboxUrl);
       url->SetSpec(nsDependentCString(urlSpec));
@@ -471,11 +471,8 @@ NS_IMETHODIMP nsMailboxService::NewURI(const nsACString &aSpec,
     if (FindInReadable(NS_LITERAL_CSTRING("?uidl="), aSpec.BeginReading(b), aSpec.EndReading(e)) ||
         FindInReadable(NS_LITERAL_CSTRING("&uidl="), aSpec.BeginReading(b), aSpec.EndReading(e)))
   {
-    nsCOMPtr<nsIPop3Service> pop3Service = 
+    nsCOMPtr<nsIProtocolHandler> handler = 
              do_GetService(kCPop3ServiceCID, &rv);
-    if (NS_FAILED(rv)) return rv;
-    nsCOMPtr<nsIProtocolHandler> handler = do_QueryInterface(pop3Service,
-                                                             &rv);
     if (NS_SUCCEEDED(rv))
         rv = handler->NewURI(aSpec, aOriginCharset, aBaseURI, _retval);
   }
@@ -488,7 +485,9 @@ NS_IMETHODIMP nsMailboxService::NewURI(const nsACString &aSpec,
       if (aBaseURI) 
       {
         nsCAutoString newSpec;
-        aBaseURI->Resolve(aSpec, newSpec);
+        rv = aBaseURI->Resolve(aSpec, newSpec);
+        if (NS_FAILED(rv))
+          return rv;
         aMsgUri->SetSpec(newSpec);
       } 
       else 

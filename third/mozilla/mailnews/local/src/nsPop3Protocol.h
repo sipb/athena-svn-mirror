@@ -50,6 +50,7 @@
 #include "nsLocalStringBundle.h"
 #include "nsIMsgStatusFeedback.h"
 #include "nsIMsgFolder.h" // TO include biffState enum. Change to bool later...
+#include "nsIAuthModule.h"
 
 #include "prerror.h"
 #include "plhash.h"
@@ -89,28 +90,29 @@ and change the POP3_QUIT_RESPONSE state to flush the newly committed deletes. */
 
 enum Pop3CapabilityEnum {
     POP3_CAPABILITY_UNDEFINED   = 0x00000000,
-    POP3_AUTH_MECH_UNDEFINED    = 0x00000001,
-    POP3_HAS_AUTH_LOGIN         = 0x00000002,
-    POP3_XSENDER_UNDEFINED      = 0x00000004,
-    POP3_HAS_XSENDER            = 0x00000008,
-    POP3_GURL_UNDEFINED         = 0x00000010,
-    POP3_HAS_GURL               = 0x00000020,
-    POP3_UIDL_UNDEFINED         = 0x00000040,
-    POP3_HAS_UIDL               = 0x00000080,
-    POP3_XTND_XLST_UNDEFINED    = 0x00000100,
-    POP3_HAS_XTND_XLST          = 0x00000200,
-    POP3_TOP_UNDEFINED          = 0x00000400,
-    POP3_HAS_TOP                = 0x00000800,
-    POP3_HAS_AUTH_USER          = 0x00001000,
+    POP3_HAS_XSENDER            = 0x00000001,
+    POP3_GURL_UNDEFINED         = 0x00000002,
+    POP3_HAS_GURL               = 0x00000004,
+    POP3_UIDL_UNDEFINED         = 0x00000008,
+    POP3_HAS_UIDL               = 0x00000010,
+    POP3_XTND_XLST_UNDEFINED    = 0x00000020,
+    POP3_HAS_XTND_XLST          = 0x00000040,
+    POP3_TOP_UNDEFINED          = 0x00000080,
+    POP3_HAS_TOP                = 0x00000100,
+    POP3_AUTH_MECH_UNDEFINED    = 0x00000200,
+    POP3_HAS_AUTH_USER          = 0x00000400,
+    POP3_HAS_AUTH_LOGIN         = 0x00000800,
+    POP3_HAS_AUTH_PLAIN         = 0x00001000,
     POP3_HAS_AUTH_CRAM_MD5      = 0x00002000,
     POP3_HAS_AUTH_APOP          = 0x00004000,
-    POP3_HAS_AUTH_PLAIN         = 0x00008000,
-    POP3_HAS_RESP_CODES         = 0x00010000,
-    POP3_HAS_AUTH_RESP_CODE     = 0x00020000
+    POP3_HAS_AUTH_NTLM          = 0x00008000,
+    POP3_HAS_AUTH_MSN           = 0x00010000,
+    POP3_HAS_RESP_CODES         = 0x00020000,
+    POP3_HAS_AUTH_RESP_CODE     = 0x00040000
 };
 
-#define POP3_HAS_AUTH_ANY         0x00009002
-#define POP3_HAS_AUTH_ANY_SEC     0x00006000
+#define POP3_HAS_AUTH_ANY         0x00001C00
+#define POP3_HAS_AUTH_ANY_SEC     0x0001E000
 
 enum Pop3StatesEnum {
     POP3_READ_PASSWORD,                         // 0
@@ -158,13 +160,15 @@ enum Pop3StatesEnum {
 
     POP3_AUTH_LOGIN,                            // 35
     POP3_AUTH_LOGIN_RESPONSE,                   // 36
-    POP3_SEND_XSENDER,                          // 37
-    POP3_XSENDER_RESPONSE,                      // 38
-    POP3_SEND_GURL,                             // 39
+    POP3_AUTH_NTLM,                             // 37
+    POP3_AUTH_NTLM_RESPONSE,                    // 38
+    POP3_SEND_XSENDER,                          // 39
+    POP3_XSENDER_RESPONSE,                      // 40
+    POP3_SEND_GURL,                             // 41
 
-    POP3_GURL_RESPONSE,                         // 40
-    POP3_QUIT_RESPONSE,                         // 41
-    POP3_INTERRUPTED                            // 42
+    POP3_GURL_RESPONSE,                         // 42
+    POP3_QUIT_RESPONSE,                         // 43
+    POP3_INTERRUPTED                            // 44
 };
 
 
@@ -363,6 +367,8 @@ private:
   PRInt32 AuthFallback();
   PRInt32 AuthLogin();
   PRInt32 AuthLoginResponse();
+  PRInt32 AuthNtlm();
+  PRInt32 AuthNtlmResponse();
   PRInt32 SendUsername();
   PRInt32 SendPassword();
   PRInt32 SendStatOrGurl(PRBool sendStat);

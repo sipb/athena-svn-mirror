@@ -62,9 +62,14 @@
 #define CONDUIT_LOG3(fd, format, arg1, arg2, arg3) \
   if (fd) \
     {fprintf(fd, format, arg1, arg2, arg3); fflush(fd);}
+#define CONDUIT_LOG4(fd, format, arg1, arg2, arg3, arg4) \
+  if (fd) \
+    {fprintf(fd, format, arg1, arg2, arg3, arg4); fflush(fd);}
 #define CONDUIT_LOG5(fd, format, arg1, arg2, arg3, arg4, arg5) \
   if (fd) \
     {fprintf(fd, format, arg1, arg2, arg3, arg4, arg5); fflush(fd);}
+
+extern FILE *gFD; // logging.
 
 class CMozABConduitSync
 {
@@ -91,6 +96,9 @@ protected:
     long PerformSlowSync();
     long CopyHHtoPC();
     long CopyPCtoHH();
+    // utility methods
+    BOOL CategoryExists(CPString &mozABName, BOOL isPAB);
+    BOOL CategoryNameMatches(CPString &catName, CPString &cutOffMozABName, BOOL isPAB);
 
 private:
     CSyncProperties m_rSyncProperties;

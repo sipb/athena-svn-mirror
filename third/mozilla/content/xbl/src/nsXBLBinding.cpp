@@ -59,9 +59,7 @@
 #include "plstr.h"
 #include "nsIContent.h"
 #include "nsIDocument.h"
-#include "nsIXMLContent.h"
 #ifdef MOZ_XUL
-#include "nsIXULContent.h"
 #include "nsIXULDocument.h"
 #endif
 #include "nsIXMLContentSink.h"
@@ -104,6 +102,8 @@
 
 #include "nsXBLPrototypeBinding.h"
 #include "nsXBLBinding.h"
+
+#include "prprf.h"
 
 // Helper classes
 
@@ -166,12 +166,17 @@ nsXBLBinding::nsXBLBinding(nsXBLPrototypeBinding* aBinding)
   mIsStyleBinding(PR_TRUE),
   mMarkedForDeath(PR_FALSE)
 {
+  NS_ASSERTION(mPrototypeBinding, "Must have a prototype binding!");
+  // Grab a ref to the document info so the prototype binding won't die
+  NS_ADDREF(mPrototypeBinding->XBLDocumentInfo());
 }
 
 
 nsXBLBinding::~nsXBLBinding(void)
 {
   delete mInsertionPointTable;
+  nsIXBLDocumentInfo* info = mPrototypeBinding->XBLDocumentInfo();
+  NS_RELEASE(info);
 }
 
 // nsIXBLBinding Interface ////////////////////////////////////////////////////////////////
@@ -337,7 +342,8 @@ struct ContentListData : public EnumData {
 
 
 
-PRBool PR_CALLBACK BuildContentLists(nsHashKey* aKey, void* aData, void* aClosure)
+PR_STATIC_CALLBACK(PRBool)
+BuildContentLists(nsHashKey* aKey, void* aData, void* aClosure)
 {
   ContentListData* data = (ContentListData*)aClosure;
   nsIBindingManager* bm = data->mBindingManager;
@@ -421,7 +427,8 @@ PRBool PR_CALLBACK BuildContentLists(nsHashKey* aKey, void* aData, void* aClosur
   return PR_TRUE;
 }
 
-PRBool PR_CALLBACK RealizeDefaultContent(nsHashKey* aKey, void* aData, void* aClosure)
+PR_STATIC_CALLBACK(PRBool)
+RealizeDefaultContent(nsHashKey* aKey, void* aData, void* aClosure)
 {
   ContentListData* data = (ContentListData*)aClosure;
   nsIBindingManager* bm = data->mBindingManager;
@@ -473,7 +480,8 @@ PRBool PR_CALLBACK RealizeDefaultContent(nsHashKey* aKey, void* aData, void* aCl
   return PR_TRUE;
 }
 
-PRBool PR_CALLBACK ChangeDocumentForDefaultContent(nsHashKey* aKey, void* aData, void* aClosure)
+PR_STATIC_CALLBACK(PRBool)
+ChangeDocumentForDefaultContent(nsHashKey* aKey, void* aData, void* aClosure)
 {
   nsVoidArray* arr = NS_STATIC_CAST(nsVoidArray*, aData);
   PRInt32 count = arr->Count();
@@ -715,11 +723,6 @@ nsXBLBinding::InstallEventHandlers()
   // Don't install handlers if scripts aren't allowed.
   if (AllowScripts()) {
     // Fetch the handlers prototypes for this binding.
-    nsCOMPtr<nsIXBLDocumentInfo> info;
-    info = mPrototypeBinding->GetXBLDocumentInfo(mBoundElement);
-    if (!info)
-      return NS_ERROR_FAILURE;
-
     nsXBLPrototypeHandler* handlerChain = mPrototypeBinding->GetPrototypeHandlers();
 
     if (handlerChain) {
@@ -955,8 +958,7 @@ nsXBLBinding::ChangeDocument(nsIDocument* aOldDocument, nsIDocument* aNewDocumen
       if (interfaceElement) { 
         nsIScriptGlobalObject *global = aOldDocument->GetScriptGlobalObject();
         if (global) {
-          nsCOMPtr<nsIScriptContext> context;
-          global->GetContext(getter_AddRefs(context));
+          nsIScriptContext *context = global->GetContext();
           if (context) {
             JSContext *jscontext = (JSContext *)context->GetNativeContext();
  
@@ -1061,7 +1063,7 @@ nsXBLBinding::InheritsStyle(PRBool* aResult)
 }
 
 NS_IMETHODIMP
-nsXBLBinding::WalkRules(nsISupportsArrayEnumFunc aFunc, void* aData)
+nsXBLBinding::WalkRules(nsIStyleRuleProcessor::EnumFunc aFunc, void* aData)
 {
   nsresult rv = NS_OK;
   if (mNextBinding) {
@@ -1070,7 +1072,7 @@ nsXBLBinding::WalkRules(nsISupportsArrayEnumFunc aFunc, void* aData)
       return rv;
   }
 
-  nsCOMPtr<nsISupportsArray> rules = mPrototypeBinding->GetRuleProcessors();
+  nsCOMArray<nsIStyleRuleProcessor> *rules = mPrototypeBinding->GetRuleProcessors();
   if (rules)
     rules->EnumerateForwards(aFunc, aData);
   
@@ -1089,13 +1091,36 @@ nsXBLBinding::DoInitJSClass(JSContext *cx, JSObject *global, JSObject *obj,
   jsval val;
   JSObject* proto;
 
-  if ((!::JS_LookupProperty(cx, global, aClassName.get(), &val)) ||
-      JSVAL_IS_PRIMITIVE(val)) {
+  nsCAutoString className(aClassName);
+  // Retrieve the current prototype of obj.
+  JSObject* parent_proto = ::JS_GetPrototype(cx, obj);
+  if (parent_proto) {
+    // We need to create a unique classname based on aClassName and
+    // parent_proto.  Append a space (an invalid URI character) to ensure that
+    // we don't have accidental collisions with the case when parent_proto is
+    // null and aClassName ends in some bizarre numbers (yeah, it's unlikely).
+    jsid parent_proto_id;
+    if (!::JS_GetObjectId(cx, parent_proto, &parent_proto_id)) {
+      // Probably OOM
+      return NS_ERROR_OUT_OF_MEMORY;
+    }
+
+    // One space, maybe "0x", at most 16 chars (on a 64-bit system) of long,
+    // and a null-terminator (which PR_snprintf ensures is there even if the
+    // string representation of what we're printing does not fit in the buffer
+    // provided).
+    char buf[20];
+    PR_snprintf(buf, sizeof(buf), " %lx", parent_proto_id);
+    className.Append(buf);
+  }
+
+  if ((!::JS_LookupProperty(cx, global, className.get(), &val)) ||
+      JSVAL_IS_PRIMITIVE(val)) {  
     // We need to initialize the class.
 
     nsXBLJSClass* c;
     void* classObject;
-    nsCStringKey key(aClassName);
+    nsCStringKey key(className);
     classObject = (nsXBLService::gClassTable)->Get(&key);
 
     if (classObject) {
@@ -1110,7 +1135,7 @@ nsXBLBinding::DoInitJSClass(JSContext *cx, JSObject *global, JSObject *obj,
     } else {
       if (JS_CLIST_IS_EMPTY(&nsXBLService::gClassLRUList)) {
         // We need to create a struct for this class.
-        c = new nsXBLJSClass(aClassName);
+        c = new nsXBLJSClass(className);
 
         if (!c)
           return NS_ERROR_OUT_OF_MEMORY;
@@ -1127,15 +1152,12 @@ nsXBLBinding::DoInitJSClass(JSContext *cx, JSObject *global, JSObject *obj,
 
         // Change the class name and we're done.
         nsMemory::Free((void*) c->name);
-        c->name = ToNewCString(aClassName);
+        c->name = ToNewCString(className);
       }
 
       // Add c to our table.
       (nsXBLService::gClassTable)->Put(&key, (void*)c);
     }
-
-    // Retrieve the current prototype of obj.
-    JSObject* parent_proto = ::JS_GetPrototype(cx, obj);
 
     // The prototype holds a strong reference to its class struct.
     c->Hold();
@@ -1290,32 +1312,16 @@ nsXBLBinding::AddScriptEventListener(nsIContent* aElement, nsIAtom* aName,
   nsCOMPtr<nsIAtom> eventName = do_GetAtom(eventStr);
 
   nsresult rv;
-  nsCOMPtr<nsIDocument> document = aElement->GetDocument();
-  if (!document)
-    return NS_OK;
 
   nsCOMPtr<nsIDOMEventReceiver> receiver(do_QueryInterface(aElement));
   if (!receiver)
     return NS_OK;
 
-  nsIScriptGlobalObject *global = document->GetScriptGlobalObject();
-
-  // This can happen normally as part of teardown code.
-  if (!global)
-    return NS_OK;
-
-  nsCOMPtr<nsIScriptContext> context;
-  rv = global->GetContext(getter_AddRefs(context));
-  if (NS_FAILED(rv)) return rv;
-
-  if (!context) return NS_OK;
-
   nsCOMPtr<nsIEventListenerManager> manager;
   rv = receiver->GetListenerManager(getter_AddRefs(manager));
   if (NS_FAILED(rv)) return rv;
 
-  rv = manager->AddScriptEventListener(context, receiver, eventName,
-                                       aValue, PR_FALSE);
+  rv = manager->AddScriptEventListener(receiver, eventName, aValue, PR_FALSE);
 
   return rv;
 }
@@ -1347,7 +1353,7 @@ nsXBLBinding::AllowScripts()
   return result;
 }
 
-static PRBool PR_CALLBACK
+PR_STATIC_CALLBACK(PRBool)
 DeleteVoidArray(nsHashKey* aKey, void* aData, void* aClosure)
 {
   delete NS_STATIC_CAST(nsVoidArray*, aData);

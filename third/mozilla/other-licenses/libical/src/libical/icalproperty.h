@@ -4,7 +4,7 @@
   CREATOR: eric 20 March 1999
 
 
-  $Id: icalproperty.h,v 1.1.1.1 2003-02-14 18:03:37 rbasch Exp $
+  $Id: icalproperty.h,v 1.1.1.2 2004-06-30 17:28:46 rbasch Exp $
   $Locker:  $
 
   
@@ -94,7 +94,7 @@ icalvalue_kind icalparameter_value_to_value_kind(icalparameter_value value);
 /* Convert kinds to string and get default value type */
 
 icalvalue_kind icalproperty_kind_to_value_kind(icalproperty_kind kind);
-icalvalue_kind icalproperty_value_kind_to_kind(icalvalue_kind kind);
+icalproperty_kind icalproperty_value_kind_to_kind(icalvalue_kind kind);
 const char* icalproperty_kind_to_string(icalproperty_kind kind);
 icalproperty_kind icalproperty_string_to_kind(const char* string);
 

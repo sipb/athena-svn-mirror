@@ -26,7 +26,13 @@ VPATH		= @srcdir@
 
 include $(DEPTH)/config/autoconf.mk
 
+# Solaris' sh blows
+ifeq ($(OS_ARCH),SunOS)
+SHELL := ksh
+endif
+
 BUILD_DATE = gbdate.h
+BUILD_DATE_TS = gbdate.tstamp
 
 MODULE		= layout
 LIBRARY_NAME	= gklayout
@@ -34,6 +40,9 @@ EXPORT_LIBRARY = 1
 IS_COMPONENT	= 1
 MODULE_NAME	= nsLayoutModule
 GRE_MODULE	= 1
+
+PACKAGE_FILE = layout.pkg
+PACKAGE_VARS += MOZ_XUL
 
 EXTRA_DSO_LIBS	= gkgfx
 ifdef MOZ_PERF_METRICS
@@ -67,6 +76,9 @@ REQUIRES	= xpcom \
 		  xultmpl \
 		  lwbrk \
 		  plugin \
+		  commandhandler \
+		  webbrwsr \
+		  uconv \
 		  $(NULL)
 
 CPPSRCS		= \
@@ -96,6 +108,9 @@ SHARED_LIBRARY_LIBS = \
 		$(DIST)/lib/$(LIB_PREFIX)gkconxuldoc_s.$(LIB_SUFFIX) \
 		$(DIST)/lib/$(LIB_PREFIX)gkconshared_s.$(LIB_SUFFIX) \
 		$(DIST)/lib/$(LIB_PREFIX)gkview_s.$(LIB_SUFFIX) \
+		$(DIST)/lib/$(LIB_PREFIX)jsdombase_s.$(LIB_SUFFIX) \
+		$(DIST)/lib/$(LIB_PREFIX)jsdomevents_s.$(LIB_SUFFIX) \
+		$(DIST)/lib/$(LIB_PREFIX)jsurl_s.$(LIB_SUFFIX) \
 		$(NULL)
 
 ifdef MOZ_XUL
@@ -111,7 +126,7 @@ ifdef MOZ_MATHML
 SHARED_LIBRARY_LIBS += \
                 $(DIST)/lib/$(LIB_PREFIX)gkmathmlcon_s.$(LIB_SUFFIX) \
                 $(DIST)/lib/$(LIB_PREFIX)gkmathmlbase_s.$(LIB_SUFFIX) \
-                $(NSNULL)
+                $(NULL)
 endif
 
 ifdef MOZ_SVG
@@ -119,7 +134,27 @@ SHARED_LIBRARY_LIBS += \
                 $(DIST)/lib/$(LIB_PREFIX)gksvgbase_s.$(LIB_SUFFIX) \
 		$(DIST)/lib/$(LIB_PREFIX)gkconsvgdoc_s.$(LIB_SUFFIX) \
 		$(DIST)/lib/$(LIB_PREFIX)gkcontentsvg_s.$(LIB_SUFFIX) \
-                $(NSNULL)
+                $(NULL)
+
+ifdef MOZ_SVG_RENDERER_GDIPLUS
+SHARED_LIBRARY_LIBS += \
+                $(DIST)/lib/$(LIB_PREFIX)gksvgrenderergdiplus_s.$(LIB_SUFFIX) \
+                $(NULL)
+
+OS_LIBS += \
+	Gdiplus.lib \
+	$(NULL)
+endif
+ifdef MOZ_SVG_RENDERER_LIBART
+SHARED_LIBRARY_LIBS += \
+                $(DIST)/lib/$(LIB_PREFIX)gksvgrendererlibart_s.$(LIB_SUFFIX) \
+                $(NULL)
+endif
+ifdef MOZ_SVG_RENDERER_CAIRO
+SHARED_LIBRARY_LIBS += \
+                $(DIST)/lib/$(LIB_PREFIX)gksvgrenderercairo_s.$(LIB_SUFFIX) \
+                $(NULL)
+endif
 endif
 
 EXTRA_DSO_LDOPTS = \
@@ -130,8 +165,23 @@ EXTRA_DSO_LDOPTS = \
 		$(MOZ_JS_LIBS) \
 		$(NULL)
 
-ifdef MOZ_SVG
-EXTRA_DSO_LDOPTS += $(MOZ_LIBART_LIBS)
+ifdef NS_TRACE_MALLOC
+EXTRA_DSO_LIBS	+= tracemalloc
+endif
+
+ifdef MOZ_SVG_RENDERER_LIBART
+EXTRA_DSO_LDOPTS += $(MOZ_LIBART_LIBS) \
+		    $(NULL)
+endif
+
+ifdef MOZ_SVG_RENDERER_CAIRO
+EXTRA_DSO_LDOPTS += $(MOZ_CAIRO_LIBS) \
+		    $(NULL)
+endif
+
+ifdef MOZ_ENABLE_GTK2
+EXTRA_DSO_LDOPTS += $(MOZ_GTK2_LIBS) \
+		    $(NULL)
 endif
 
 ifneq (,$(filter mac cocoa,$(MOZ_WIDGET_TOOLKIT)))
@@ -156,6 +206,8 @@ INCLUDES	+= -I$(srcdir)/../base/src \
 		   -I$(srcdir)/../../content/xul/templates/src \
 		   -I$(srcdir)/../../content/events/src \
 		   -I$(topsrcdir)/view/src \
+		   -I$(topsrcdir)/dom/src/base \
+		   -I$(topsrcdir)/dom/src/jsurl \
 		   -I. \
 		   $(NULL)
 
@@ -163,9 +215,13 @@ ifdef MOZ_MATHML
 INCLUDES += -I$(srcdir)/../mathml/content/src
 endif
 
+ifdef MOZ_SVG
+INCLUDES += -I$(srcdir)/../../content/svg/content/src
+endif
+
 DEFINES += -D_IMPL_NS_LAYOUT
 
-GARBAGE += $(BUILD_DATE)
+GARBAGE += $(BUILD_DATE) $(BUILD_DATE_TS)
 
 ifeq ($(OS_ARCH),IRIX)
 ifeq ($(GNU_CXX),1)
@@ -176,6 +232,13 @@ endif
 
 export:: $(BUILD_DATE)
 
-$(BUILD_DATE): gbdate.pl
+$(BUILD_DATE_TS): FORCE
+	@for f in $(SHARED_LIBRARY_LIBS); do \
+		if [ $$f -nt $@ ]; then \
+			touch $@; \
+		fi; \
+	done
+
+$(BUILD_DATE):: gbdate.pl $(BUILD_DATE_TS)
 	$(RM) $@
 	$(PERL) $(srcdir)/gbdate.pl > $@

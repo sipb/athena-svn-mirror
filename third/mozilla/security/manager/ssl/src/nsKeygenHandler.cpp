@@ -56,7 +56,6 @@ extern "C" {
 static SECKeySizeChoiceInfo SECKeySizeChoiceList[] = {
     { nsnull, 2048 },
     { nsnull, 1024 },
-    { nsnull, 512  },
     { nsnull, 0 }, 
 };
 
@@ -207,20 +206,11 @@ nsKeygenFormProcessor::Init()
   if (NS_FAILED(rv))
     return rv;
 
-  nssComponent->GetPIPNSSBundleString(
-                            NS_LITERAL_STRING("HighGrade").get(),
-                            str);
+  nssComponent->GetPIPNSSBundleString("HighGrade", str);
   SECKeySizeChoiceList[0].name = ToNewUnicode(str);
 
-  nssComponent->GetPIPNSSBundleString(
-                            NS_LITERAL_STRING("MediumGrade").get(),
-                            str);
+  nssComponent->GetPIPNSSBundleString("MediumGrade", str);
   SECKeySizeChoiceList[1].name = ToNewUnicode(str);
-
-  nssComponent->GetPIPNSSBundleString(
-                            NS_LITERAL_STRING("LowGrade").get(),
-                            str);
-  SECKeySizeChoiceList[2].name = ToNewUnicode(str);
 
   return NS_OK;
 }
@@ -362,16 +352,14 @@ loser:
 }
 
 nsresult
-nsKeygenFormProcessor::GetPublicKey(nsString& aValue, nsString& aChallenge, 
-				    nsString& aKeyType,
-				    nsString& aOutPublicKey, nsString& aPqg)
+nsKeygenFormProcessor::GetPublicKey(nsAString& aValue, nsAString& aChallenge, 
+				    nsAFlatString& aKeyType,
+				    nsAString& aOutPublicKey, nsAString& aPqg)
 {
     nsNSSShutDownPreventionLock locker;
     nsresult rv = NS_ERROR_FAILURE;
     char *keystring = nsnull;
     char *pqgString = nsnull, *str = nsnull;
-    nsAutoString rsaStr;
-    nsAutoString dsaStr;
     KeyType type;
     PRUint32 keyGenMechanism;
     PRInt32 primeBits;
@@ -413,12 +401,10 @@ nsKeygenFormProcessor::GetPublicKey(nsString& aValue, nsString& aChallenge,
     }
 
     // Set the keygen mechanism
-    rsaStr.Assign(NS_LITERAL_STRING("rsa"));
-    dsaStr.Assign(NS_LITERAL_STRING("dsa"));
-    if (aKeyType.IsEmpty() || aKeyType.Equals(rsaStr)) {
+    if (aKeyType.IsEmpty() || aKeyType.EqualsIgnoreCase("rsa")) {
         type = rsaKey;
         keyGenMechanism = CKM_RSA_PKCS_KEY_PAIR_GEN;
-    } else  if (aKeyType.Equals(dsaStr)) {
+    } else if (aKeyType.EqualsIgnoreCase("dsa")) {
         char * end;
         pqgString = ToNewCString(aPqg);
         type = dsaKey;
@@ -560,7 +546,7 @@ found_match:
      */
     keystring = BTOA_DataToAscii(signedItem.data, signedItem.len);
 
-    aOutPublicKey.AssignWithConversion(keystring);
+    CopyASCIItoUTF16(keystring, aOutPublicKey);
     nsCRT::free(keystring);
 
     rv = NS_OK;
@@ -608,7 +594,6 @@ nsKeygenFormProcessor::ProcessValue(nsIDOMHTMLElement *aElement,
     nsAutoString challengeValue;
     nsAutoString keyTypeValue;
     nsAutoString pqgValue;
-    nsString publicKey;
 
     res = selectElement->GetAttribute(NS_LITERAL_STRING("_moz-type"), keygenvalue);
     if (NS_CONTENT_ATTR_HAS_VALUE == res && keygenvalue.Equals(NS_LITERAL_STRING("-mozilla-keygen"))) {
@@ -621,8 +606,7 @@ nsKeygenFormProcessor::ProcessValue(nsIDOMHTMLElement *aElement,
       }
       res = selectElement->GetAttribute(NS_LITERAL_STRING("challenge"), challengeValue);
       rv = GetPublicKey(aValue, challengeValue, keyTypeValue, 
-			publicKey, pqgValue);
-      aValue = publicKey;
+			aValue, pqgValue);
     }
   }
 

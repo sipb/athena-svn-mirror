@@ -47,6 +47,8 @@
 <dialog id="cookieAcceptDialog"
     acceptLabel="&button.allow.label;"
     acceptKey="&button.allow.accesskey;"
+    extra1Label="&button.session.label;"
+    extra1Key="&button.session.accesskey;"
     cancelLabel="&button.deny.label;"
     cancelKey="&button.deny.accesskey;"
     onload="onload();"
@@ -73,7 +75,8 @@
 
         <hbox id="checkboxContainer">
           <checkbox id="persistDomainAcceptance"
-                    label="&dialog.remember.label;" accesskey="&dialog.remember.accesskey;"
+                    label="&dialog.remember.label;" 
+                    accesskey="&dialog.remember.accesskey;"
                     persist="checked"/>
         </hbox>
       </vbox>
@@ -150,3 +153,4 @@
     </vbox>
   </vbox>
 </dialog>
+

@@ -53,28 +53,22 @@
 #include "nsIXBLService.h"
 #include "nsSVGAtoms.h"
 #include "nsICSSStyleRule.h"
-#include "nsIDOMSVGSVGElement.h"
+#include "nsISVGSVGElement.h"
 #include "nsRuleWalker.h"
 #include "nsSVGStyleValue.h"
+#include "nsCSSDeclaration.h"
+#include "nsICSSParser.h"
 
 nsSVGElement::nsSVGElement()
-    : mAttributes(nsnull)
 {
 }
 
 nsSVGElement::~nsSVGElement()
 {
-
-  PRInt32 count = mChildren.Count();
-  PRInt32 index;
-  for (index = 0; index < count; index++) {
-    nsIContent* kid = (nsIContent *)mChildren.ElementAt(index);
-    kid->SetParent(nsnull);
-    NS_RELEASE(kid);
+  PRUint32 i, count = mMappedAttributes.AttrCount();
+  for (i = 0; i < count; ++i) {
+    mMappedAttributes.AttrAt(i)->GetSVGValue()->RemoveObserver(this);
   }
-
-  if (mAttributes)
-    NS_RELEASE(mAttributes);  
 }
 
 //----------------------------------------------------------------------
@@ -85,12 +79,10 @@ NS_IMPL_RELEASE_INHERITED(nsSVGElement,nsGenericElement)
 
 NS_INTERFACE_MAP_BEGIN(nsSVGElement)
   NS_INTERFACE_MAP_ENTRY(nsIXMLContent)
-  NS_INTERFACE_MAP_ENTRY(nsIDOMSVGElement)
-  NS_INTERFACE_MAP_ENTRY(nsIDOMElement)
-  NS_INTERFACE_MAP_ENTRY(nsIDOMNode)
-  NS_INTERFACE_MAP_ENTRY_TEAROFF(nsIDOM3Node, nsNode3Tearoff(this))
+  NS_INTERFACE_MAP_ENTRY_TEAROFF(nsIDOM3Node, new nsNode3Tearoff(this))
   NS_INTERFACE_MAP_ENTRY(nsISupportsWeakReference)
   NS_INTERFACE_MAP_ENTRY(nsISVGValueObserver)
+  NS_INTERFACE_MAP_ENTRY(nsISVGContent)
 // provided by nsGenericElement:
 //  NS_INTERFACE_MAP_ENTRY(nsIStyledContent)
 //  NS_INTERFACE_MAP_ENTRY(nsIContent)
@@ -100,21 +92,17 @@ NS_INTERFACE_MAP_END_INHERITING(nsGenericElement)
 // Implementation
   
 nsresult
-nsSVGElement::Init()
+nsSVGElement::Init(nsINodeInfo* aNodeInfo)
 {
-  nsresult rv;
+  nsresult rv = nsGenericElement::Init(aNodeInfo);
+  NS_ENSURE_SUCCESS(rv, rv);
   
-  rv = nsSVGAttributes::Create(this,&mAttributes);
-  NS_ENSURE_SUCCESS(rv,rv);
-
-  nsCOMPtr<nsINodeInfo> ni;
-
   // Create mapped properties:
   
   // style #IMPLIED
   rv = NS_NewSVGStyleValue(getter_AddRefs(mStyle));
   NS_ENSURE_SUCCESS(rv,rv);
-  rv = mAttributes->AddMappedSVGValue(nsSVGAtoms::style, mStyle);
+  rv = AddMappedSVGValue(nsSVGAtoms::style, mStyle);
   NS_ENSURE_SUCCESS(rv,rv);
   
   return NS_OK;
@@ -123,128 +111,118 @@ nsSVGElement::Init()
 //----------------------------------------------------------------------
 // nsIContent methods
 
-NS_IMETHODIMP_(PRBool)
-nsSVGElement::CanContainChildren() const
+void
+nsSVGElement::SetParent(nsIContent* aParent)
 {
-  return PR_TRUE;
+  nsGenericElement::SetParent(aParent);
+
+  ParentChainChanged();
 }
 
-NS_IMETHODIMP_(PRUint32)
-nsSVGElement::GetChildCount() const
-{
-  return mChildren.Count();
-}
-
-NS_IMETHODIMP_(nsIContent *)
-nsSVGElement::GetChildAt(PRUint32 aIndex) const
-{
-  return (nsIContent *)mChildren.SafeElementAt(aIndex);
-}
-
-NS_IMETHODIMP_(PRInt32)
-nsSVGElement::IndexOf(nsIContent* aPossibleChild) const
-{
-  return mChildren.IndexOf(aPossibleChild);
-}
-
-NS_IMETHODIMP_(nsIAtom*)
+nsIAtom *
 nsSVGElement::GetIDAttributeName() const
 {
   return nsSVGAtoms::id;
 }
 
-NS_IMETHODIMP_(already_AddRefed<nsINodeInfo>)
-nsSVGElement::GetExistingAttrNameFromQName(const nsAString& aStr)
-{
-  return mAttributes->GetExistingAttrNameFromQName(aStr);
-}
-
-NS_IMETHODIMP
-nsSVGElement::SetAttr(PRInt32 aNameSpaceID, nsIAtom* aName, 
+nsresult
+nsSVGElement::SetAttr(PRInt32 aNamespaceID, nsIAtom* aName, nsIAtom* aPrefix,
                       const nsAString& aValue,
                       PRBool aNotify)
 {
-    nsCOMPtr<nsINodeInfo> ni;
-    mNodeInfo->NodeInfoManager()->GetNodeInfo(aName, nsnull, aNameSpaceID,
-                                              getter_AddRefs(ni));
+  NS_ENSURE_ARG_POINTER(aName);
+  NS_ASSERTION(aNamespaceID != kNameSpaceID_Unknown,
+               "Don't call SetAttr with unknown namespace");
+  
+  nsresult rv;
+  nsAutoString oldValue;
+  PRBool hasListeners = PR_FALSE;
+  PRBool modification = PR_FALSE;
+  
+  PRInt32 index = mAttrsAndChildren.IndexOfAttr(aName, aNamespaceID);
+  
+  if (mDocument) {
+    hasListeners = nsGenericElement::HasMutationListeners(this,
+      NS_EVENT_BITS_MUTATION_ATTRMODIFIED);
+    
+    // If we have no listeners and aNotify is false, we are almost certainly
+    // coming from the content sink and will almost certainly have no previous
+    // value.  Even if we do, setting the value is cheap when we have no
+    // listeners and don't plan to notify.  The check for aNotify here is an
+    // optimization, the check for haveListeners is a correctness issue.
+    if (index >= 0 && (hasListeners || aNotify)) {
+      modification = PR_TRUE;
+      // don't do any update if old == new.
+      mAttrsAndChildren.AttrAt(index)->ToString(oldValue);
+      if (aValue.Equals(oldValue) &&
+          aPrefix == mAttrsAndChildren.GetSafeAttrNameAt(index)->GetPrefix()) {
+        return NS_OK;
+      }
+    }
+  }
+  
+  // If this is an svg presentation attribute we need to map it into
+  // the content stylerule.
+  // XXX For some reason incremental mapping doesn't work, so for now
+  // just delete the style rule and lazily reconstruct it in
+  // GetContentStyleRule()
+  if(aNamespaceID == kNameSpaceID_None && IsAttributeMapped(aName)) 
+    mContentStyleRule = nsnull;
+  
+  // Parse value
+  nsAttrValue attrValue;
+  nsCOMPtr<nsISVGValue> svg_value;
+  if (index >= 0) {
+    // Found the attr in the list.
+    const nsAttrValue* currVal = mAttrsAndChildren.AttrAt(index);
+    if (currVal->Type() == nsAttrValue::eSVGValue) {
+      svg_value = currVal->GetSVGValue();
+    }
+  }
+  else {
+    // Could be a mapped attribute.
+    svg_value = GetMappedAttribute(aNamespaceID, aName);
+  }
+  
+  if (svg_value) {
+    if (NS_FAILED(svg_value->SetValueString(aValue))) {
+      // The value was rejected. This happens e.g. in a XUL template
+      // when trying to set a value like "?x" on a value object that
+      // expects a length.
+      // To accomodate this "erronous" value, we'll insert a proxy
+      // object between ourselves and the actual value object:
+      nsCOMPtr<nsISVGValue> proxy;
+      rv = NS_CreateSVGStringProxyValue(svg_value, getter_AddRefs(proxy));
+      NS_ENSURE_SUCCESS(rv, rv);
 
-    return SetAttr(ni, aValue, aNotify);
+      svg_value->RemoveObserver(this);
+      proxy->SetValueString(aValue);
+      proxy->AddObserver(this);
+      attrValue.SetTo(proxy);
+    }
+    else {
+      attrValue.SetTo(svg_value);
+    }
+  }
+  else {
+    // We don't have an nsISVGValue attribute.
+    attrValue.SetTo(aValue);
+  }
+  
+  return SetAttrAndNotify(aNamespaceID, aName, aPrefix, oldValue, attrValue,
+                          modification, hasListeners, aNotify);
 }
 
-NS_IMETHODIMP
-nsSVGElement::SetAttr(nsINodeInfo* aNodeInfo,
-                      const nsAString& aValue,
-                      PRBool aNotify)
+nsresult
+nsSVGElement::SetBindingParent(nsIContent* aParent)
 {
-  return mAttributes->SetAttr(aNodeInfo, aValue, aNotify);  
-}
+  nsresult rv = nsGenericElement::SetBindingParent(aParent);
 
-NS_IMETHODIMP
-nsSVGElement::GetAttr(PRInt32 aNameSpaceID, nsIAtom* aName, 
-                           nsAString& aResult) const
-{
-  nsCOMPtr<nsIAtom> prefix;
-  return GetAttr(aNameSpaceID, aName, getter_AddRefs(prefix), aResult);
+  // XXX Are parent and bindingparent always in sync? (in which case
+  // we don't have to call ParentChainChanged() here)
+  ParentChainChanged();
+  return rv;
 }
-
-NS_IMETHODIMP
-nsSVGElement::GetAttr(PRInt32 aNameSpaceID, nsIAtom* aName, 
-                      nsIAtom** aPrefix,
-                      nsAString& aResult) const
-{
-  NS_ASSERTION(aNameSpaceID != kNameSpaceID_Unknown,
-               "must have a real namespace ID!");
-
-  return mAttributes->GetAttr(aNameSpaceID, aName, aPrefix, aResult);
-}
-
-NS_IMETHODIMP
-nsSVGElement::UnsetAttr(PRInt32 aNameSpaceID, nsIAtom* aName, 
-                        PRBool aNotify)
-{
-  return mAttributes->UnsetAttr(aNameSpaceID, aName, aNotify);
-}
-
-NS_IMETHODIMP_(PRBool)
-nsSVGElement::HasAttr(PRInt32 aNameSpaceID, nsIAtom* aName) const
-{
-  NS_ASSERTION(aNameSpaceID != kNameSpaceID_Unknown,
-               "must have a real namespace ID!");
-  return mAttributes->HasAttr(aNameSpaceID, aName);
-}
-
-NS_IMETHODIMP
-nsSVGElement::GetAttrNameAt(PRUint32 aIndex,
-                            PRInt32* aNameSpaceID,
-                            nsIAtom** aName,
-                            nsIAtom** aPrefix) const
-{
-  return mAttributes->GetAttrNameAt(aIndex, aNameSpaceID, aName, aPrefix);
-}
-
-NS_IMETHODIMP_(PRUint32)
-nsSVGElement::GetAttrCount() const
-{
-  return mAttributes->Count();
-}
-
-#ifdef DEBUG
-NS_IMETHODIMP
-nsSVGElement::List(FILE* out, PRInt32 aIndent) const
-{
-  // XXX
-  fprintf(out, "some SVG element\n");
-  return NS_OK; 
-}
-
-NS_IMETHODIMP
-nsSVGElement::DumpContent(FILE* out, PRInt32 aIndent,PRBool aDumpAll) const
-{
-  // XXX
-  fprintf(out, "some SVG element\n");
-  return NS_OK; 
-}
-#endif // DEBUG
 
 //----------------------------------------------------------------------
 // nsIStyledContent methods
@@ -267,6 +245,15 @@ nsSVGElement::GetID(nsIAtom** aId)const
 NS_IMETHODIMP
 nsSVGElement::WalkContentStyleRules(nsRuleWalker* aRuleWalker)
 {
+#ifdef DEBUG
+//  printf("nsSVGElement(%p)::WalkContentStyleRules()\n", this);
+#endif
+  if (!mContentStyleRule)
+    UpdateContentStyleRule();
+
+  if (mContentStyleRule)  
+    aRuleWalker->Forward(mContentStyleRule);
+
   return NS_OK;
 }
 
@@ -276,213 +263,80 @@ nsSVGElement::GetInlineStyleRule(nsICSSStyleRule** aStyleRule)
   return mStyle->GetStyleRule(this, aStyleRule);
 }
 
+// PresentationAttributes-FillStroke
+/* static */ const nsGenericElement::MappedAttributeEntry
+nsSVGElement::sFillStrokeMap[] = {
+  { &nsSVGAtoms::fill },
+  { &nsSVGAtoms::fill_opacity },
+  { &nsSVGAtoms::fill_rule },
+  { &nsSVGAtoms::stroke },
+  { &nsSVGAtoms::stroke_dasharray },
+  { &nsSVGAtoms::stroke_dashoffset },
+  { &nsSVGAtoms::stroke_linecap },
+  { &nsSVGAtoms::stroke_linejoin },
+  { &nsSVGAtoms::stroke_miterlimit },
+  { &nsSVGAtoms::stroke_opacity },
+  { &nsSVGAtoms::stroke_width },
+  { nsnull }
+};
+
+// PresentationAttributes-Graphics
+/* static */ const nsGenericElement::MappedAttributeEntry
+nsSVGElement::sGraphicsMap[] = {
+  { &nsSVGAtoms::clip_path },
+  { &nsSVGAtoms::clip_rule },
+  { &nsSVGAtoms::cursor },
+  { &nsSVGAtoms::display },
+  { &nsSVGAtoms::filter },
+  { &nsSVGAtoms::image_rendering },
+  { &nsSVGAtoms::mask },
+  { &nsSVGAtoms::opacity },
+  { &nsSVGAtoms::pointer_events },
+  { &nsSVGAtoms::shape_rendering },
+  { &nsSVGAtoms::text_rendering },
+  { &nsSVGAtoms::visibility },
+  { nsnull }
+};
+
+// PresentationAttributes-TextContentElements
+/* static */ const nsGenericElement::MappedAttributeEntry
+nsSVGElement::sTextContentElementsMap[] = {
+  { &nsSVGAtoms::alignment_baseline },
+  { &nsSVGAtoms::baseline_shift },
+  { &nsSVGAtoms::direction },
+  { &nsSVGAtoms::dominant_baseline },
+  { &nsSVGAtoms::glyph_orientation_horizontal },
+  { &nsSVGAtoms::glyph_orientation_vertical },
+  { &nsSVGAtoms::kerning },
+  { &nsSVGAtoms::letter_spacing },
+  { &nsSVGAtoms::text_anchor },
+  { &nsSVGAtoms::text_decoration },
+  { &nsSVGAtoms::unicode_bidi },
+  { &nsSVGAtoms::word_spacing },
+  { nsnull }
+};
+
+// PresentationAttributes-FontSpecification
+/* static */ const nsGenericElement::MappedAttributeEntry
+nsSVGElement::sFontSpecificationMap[] = {
+  { &nsSVGAtoms::font_family },
+  { &nsSVGAtoms::font_size },
+  { &nsSVGAtoms::font_size_adjust },
+  { &nsSVGAtoms::font_stretch },
+  { &nsSVGAtoms::font_style },
+  { &nsSVGAtoms::font_variant },
+  { &nsSVGAtoms::font_weight },  
+  { nsnull }
+};
+
 //----------------------------------------------------------------------
 // nsIDOMNode methods
-
-NS_IMETHODIMP
-nsSVGElement::GetNodeName(nsAString& aNodeName)
-{
-  mNodeInfo->GetQualifiedName(aNodeName);
-  return NS_OK;
-}
-
-NS_IMETHODIMP
-nsSVGElement::GetNodeValue(nsAString& aNodeValue)
-{
-  SetDOMStringToNull(aNodeValue);
-
-  return NS_OK;
-}
-
-NS_IMETHODIMP
-nsSVGElement::SetNodeValue(const nsAString& aNodeValue)
-{
-  // The DOM spec says that when nodeValue is defined to be null "setting it
-  // has no effect", so we don't throw an exception.
-  return NS_OK;
-}
-
-NS_IMETHODIMP
-nsSVGElement::GetNodeType(PRUint16* aNodeType)
-{
-  *aNodeType = (PRUint16)nsIDOMNode::ELEMENT_NODE;
-  return NS_OK;
-}
-
-NS_IMETHODIMP
-nsSVGElement::GetParentNode(nsIDOMNode** aParentNode)
-{
-  if (GetParent()) {
-    return CallQueryInterface(GetParent(), aParentNode);
-  }
-  if (mDocument) {
-    // we're the root content
-    return CallQueryInterface(mDocument, aParentNode);
-  }
-
-  // A standalone element (i.e. one without a parent or a document)
-  *aParentNode = nsnull;
-  return NS_OK;
-}
-
-NS_IMETHODIMP
-nsSVGElement::GetChildNodes(nsIDOMNodeList** aChildNodes)
-{
-  nsDOMSlots *slots = GetDOMSlots();
-
-  if (!slots->mChildNodes) {
-    slots->mChildNodes = new nsChildContentList(this);
-    if (!slots->mChildNodes) {
-      return NS_ERROR_OUT_OF_MEMORY;
-    }
-  }
-
-  NS_ADDREF(*aChildNodes = slots->mChildNodes);
-
-  return NS_OK;
-}
-
-NS_IMETHODIMP
-nsSVGElement::GetFirstChild(nsIDOMNode** aNode)
-{
-  nsIContent *child = (nsIContent *)mChildren.ElementAt(0);
-  if (child) {
-    nsresult res = CallQueryInterface(child, aNode);
-    NS_ASSERTION(NS_SUCCEEDED(res), "Must be a DOM Node"); // must be a DOM Node
-    return res;
-  }
-  *aNode = nsnull;
-  return NS_OK;
-}
-
-NS_IMETHODIMP
-nsSVGElement::GetLastChild(nsIDOMNode** aNode)
-{
-  nsIContent *child = (nsIContent *)mChildren.ElementAt(mChildren.Count()-1);
-  if (child) {
-    nsresult res = CallQueryInterface(child, aNode);
-    NS_ASSERTION(NS_SUCCEEDED(res), "Must be a DOM Node"); // must be a DOM Node
-    return res;
-  }
-  *aNode = nsnull;
-  return NS_OK;
-
-}
-
-NS_IMETHODIMP
-nsSVGElement::GetPreviousSibling(nsIDOMNode** aPreviousSibling)
-{
-  return nsGenericElement::GetPreviousSibling(aPreviousSibling);
-}
-
-NS_IMETHODIMP
-nsSVGElement::GetNextSibling(nsIDOMNode** aNextSibling)
-{
-  return nsGenericElement::GetNextSibling(aNextSibling);
-}
-
-NS_IMETHODIMP
-nsSVGElement::GetAttributes(nsIDOMNamedNodeMap** aAttributes)
-{
-  *aAttributes = mAttributes;
-  NS_ADDREF(*aAttributes);
-  return NS_OK; 
-}
-
-NS_IMETHODIMP
-nsSVGElement::GetOwnerDocument(nsIDOMDocument** aOwnerDocument)
-{
-  return nsGenericElement::GetOwnerDocument(aOwnerDocument);
-}
-
-NS_IMETHODIMP
-nsSVGElement::GetNamespaceURI(nsAString& aNamespaceURI)
-{
-  return mNodeInfo->GetNamespaceURI(aNamespaceURI);
-}
-
-NS_IMETHODIMP
-nsSVGElement::GetPrefix(nsAString& aPrefix)
-{
-  return nsGenericElement::GetPrefix(aPrefix);
-}
-
-NS_IMETHODIMP
-nsSVGElement::SetPrefix(const nsAString& aPrefix)
-{
-  return nsGenericElement::SetPrefix(aPrefix);
-}
-
-NS_IMETHODIMP
-nsSVGElement::GetLocalName(nsAString& aLocalName)
-{
-  return nsGenericElement::GetLocalName(aLocalName);
-}
-
-NS_IMETHODIMP
-nsSVGElement::InsertBefore(nsIDOMNode* aNewChild, nsIDOMNode* aRefChild, nsIDOMNode** aReturn)
-{
-  return nsGenericElement::doInsertBefore(aNewChild, aRefChild, aReturn);
-}
-
-NS_IMETHODIMP
-nsSVGElement::ReplaceChild(nsIDOMNode* aNewChild, nsIDOMNode* aOldChild, nsIDOMNode** aReturn)
-{
-  return nsGenericElement::doReplaceChild(aNewChild, aOldChild, aReturn);
-}
-
-NS_IMETHODIMP
-nsSVGElement::RemoveChild(nsIDOMNode* aOldChild, nsIDOMNode** aReturn)
-{
-  return nsGenericElement::doRemoveChild(aOldChild, aReturn);
-}
-
-NS_IMETHODIMP
-nsSVGElement::AppendChild(nsIDOMNode* aNewChild, nsIDOMNode** aReturn)
-{
-  return nsGenericElement::doInsertBefore(aNewChild, nsnull, aReturn);
-}
-
-NS_IMETHODIMP
-nsSVGElement::HasChildNodes(PRBool* aReturn)
-{
-  if (0 != mChildren.Count()) {
-    *aReturn = PR_TRUE;
-  }
-  else {
-    *aReturn = PR_FALSE;
-  }
-  return NS_OK;
-}
-
-NS_IMETHODIMP
-nsSVGElement::CloneNode(PRBool aDeep, nsIDOMNode** aReturn)
-{
-  NS_ASSERTION(1==0,"CloneNode must be implemented by subclass!");
-  return NS_ERROR_FAILURE;
-}
-
-NS_IMETHODIMP
-nsSVGElement::Normalize()
-{
-  return nsGenericElement::Normalize();
-}
 
 NS_IMETHODIMP
 nsSVGElement::IsSupported(const nsAString& aFeature, const nsAString& aVersion, PRBool* aReturn)
 {
   NS_NOTYETIMPLEMENTED("write me!");
   return NS_ERROR_NOT_IMPLEMENTED;
-}
-
-NS_IMETHODIMP
-nsSVGElement::HasAttributes(PRBool* aReturn)
-{
-  NS_ENSURE_ARG_POINTER(aReturn);
-  
-  *aReturn = GetAttrCount() > 0;
-
-  return NS_OK;
 }
 
 //----------------------------------------------------------------------
@@ -497,12 +351,12 @@ nsSVGElement::HasAttributes(PRBool* aReturn)
 /* attribute DOMString id; */
 NS_IMETHODIMP nsSVGElement::GetId(nsAString & aId)
 {
-  return GetAttribute(NS_LITERAL_STRING("id"), aId);
+  return GetAttr(kNameSpaceID_None, nsSVGAtoms::id, aId);
 }
 
 NS_IMETHODIMP nsSVGElement::SetId(const nsAString & aId)
 {
-  return SetAttribute(NS_LITERAL_STRING("id"), aId);
+  return SetAttr(kNameSpaceID_None, nsSVGAtoms::id, aId, PR_TRUE);
 }
 
 /* readonly attribute nsIDOMSVGSVGElement ownerSVGElement; */
@@ -554,8 +408,11 @@ nsSVGElement::GetOwnerSVGElement(nsIDOMSVGSVGElement * *aOwnerSVGElement)
 
   // are _we_ the outermost SVG element? If yes, return nsnull, but don't fail
   nsCOMPtr<nsIDOMSVGSVGElement> SVGSVGElement = do_QueryInterface((nsIDOMSVGElement*)this);
-  NS_ENSURE_TRUE(SVGSVGElement, NS_ERROR_FAILURE);
-  return NS_OK; 
+  if (SVGSVGElement) return NS_OK;
+  
+  // no owner found and we aren't the outermost SVG element either.
+  // this situation can e.g. occur during content tree teardown. 
+  return NS_ERROR_FAILURE;
 }
 
 /* readonly attribute nsIDOMSVGElement viewportElement; */
@@ -580,41 +437,175 @@ nsSVGElement::GetViewportElement(nsIDOMSVGElement * *aViewportElement)
 NS_IMETHODIMP
 nsSVGElement::WillModifySVGObservable(nsISVGValue* observable)
 {
-  NS_NOTYETIMPLEMENTED("write me!");
-  return NS_ERROR_NOT_IMPLEMENTED;
+  return NS_OK;
 }
 
 
 NS_IMETHODIMP
-nsSVGElement::DidModifySVGObservable (nsISVGValue* observable)
+nsSVGElement::DidModifySVGObservable(nsISVGValue* aObservable)
 {
-  NS_NOTYETIMPLEMENTED("write me!");
-  return NS_ERROR_NOT_IMPLEMENTED;
+  PRUint32 i, count = mMappedAttributes.AttrCount();
+  const nsAttrValue* attrValue = nsnull;
+  for (i = 0; i < count; ++i) {
+    attrValue = mMappedAttributes.AttrAt(i);
+    if (attrValue->GetSVGValue() == aObservable) {
+      break;
+    }
+  }
+
+  if (i == count) {
+    NS_NOTREACHED("unknown nsISVGValue");
+
+    return NS_ERROR_UNEXPECTED;
+  }
+
+  const nsAttrName* attrName = mMappedAttributes.GetSafeAttrNameAt(i);
+  PRBool modification = PR_FALSE;
+  PRBool hasListeners = PR_FALSE;
+  if (mDocument) {
+    modification = !!mAttrsAndChildren.GetAttr(attrName->LocalName(),
+                                               attrName->NamespaceID());
+    hasListeners = nsGenericElement::HasMutationListeners(this,
+      NS_EVENT_BITS_MUTATION_ATTRMODIFIED);
+  }
+
+  nsAttrValue newValue(aObservable);
+
+  return SetAttrAndNotify(attrName->NamespaceID(), attrName->LocalName(),
+                          attrName->GetPrefix(), EmptyString(), newValue,
+                          modification, hasListeners, PR_TRUE);
 }
+
+//----------------------------------------------------------------------
+// nsISVGContent methods:
+
+// recursive helper to call ParentChainChanged across non-SVG elements
+static void CallParentChainChanged(nsIContent*elem)
+{
+  NS_ASSERTION(elem, "null element");
+  
+  PRUint32 count = elem->GetChildCount();
+  for (PRUint32 i=0; i<count; ++i) {
+    nsIContent* child = elem->GetChildAt(i);
+
+    nsCOMPtr<nsISVGContent> svgChild = do_QueryInterface(child);
+    if (svgChild) {
+      svgChild->ParentChainChanged();
+    }
+    else {
+      // non-svg element might have an svg child, so recurse
+      CallParentChainChanged(child);
+    }
+  }
+}
+
+void
+nsSVGElement::ParentChainChanged()
+{
+  CallParentChainChanged(this);
+}
+
 
 //----------------------------------------------------------------------
 // Implementation Helpers:
 
 nsresult
-nsSVGElement::CopyNode(nsSVGElement* dest, PRBool deep)
+nsSVGElement::SetAttrAndNotify(PRInt32 aNamespaceID, nsIAtom* aAttribute,
+                               nsIAtom* aPrefix, const nsAString& aOldValue,
+                               nsAttrValue& aParsedValue, PRBool aModification,
+                               PRBool aFireMutation, PRBool aNotify)
 {
   nsresult rv;
-  
-  // copy attributes:
-  NS_ASSERTION(mAttributes, "null pointer");
-  NS_ASSERTION(dest->mAttributes, "null pointer");
-  rv = mAttributes->CopyAttributes(dest->mAttributes);
-  NS_ENSURE_SUCCESS(rv,rv);
+  PRUint8 modType = aModification ?
+    NS_STATIC_CAST(PRUint8, nsIDOMMutationEvent::MODIFICATION) :
+    NS_STATIC_CAST(PRUint8, nsIDOMMutationEvent::ADDITION);
 
-  if (deep) {
+  mozAutoDocUpdate updateBatch(mDocument, UPDATE_CONTENT_MODEL, aNotify);
+  if (aNotify && mDocument) {
+    mDocument->AttributeWillChange(this, aNamespaceID, aAttribute);
+  }
+
+  if (aNamespaceID == kNameSpaceID_None) {
+    // XXX doesn't check IsAttributeMapped here.
+    rv = mAttrsAndChildren.SetAndTakeAttr(aAttribute, aParsedValue);
+    NS_ENSURE_SUCCESS(rv, rv);
+  }
+  else {
+    nsCOMPtr<nsINodeInfo> ni;
+    rv = mNodeInfo->NodeInfoManager()->GetNodeInfo(aAttribute, aPrefix,
+                                                   aNamespaceID,
+                                                   getter_AddRefs(ni));
+    NS_ENSURE_SUCCESS(rv, rv);
+
+    rv = mAttrsAndChildren.SetAndTakeAttr(ni, aParsedValue);
+    NS_ENSURE_SUCCESS(rv, rv);
+  }
+
+  if (mDocument) {
+    nsCOMPtr<nsIXBLBinding> binding;
+    mDocument->GetBindingManager()->GetBinding(this, getter_AddRefs(binding));
+    if (binding) {
+      binding->AttributeChanged(aAttribute, aNamespaceID, PR_FALSE, aNotify);
+    }
+
+    if (aFireMutation) {
+      nsCOMPtr<nsIDOMEventTarget> node = do_QueryInterface(NS_STATIC_CAST(nsIContent *, this));
+      nsMutationEvent mutation(NS_MUTATION_ATTRMODIFIED, node);
+
+      nsAutoString attrName;
+      aAttribute->ToString(attrName);
+      nsCOMPtr<nsIDOMAttr> attrNode;
+      GetAttributeNode(attrName, getter_AddRefs(attrNode));
+      mutation.mRelatedNode = attrNode;
+
+      mutation.mAttrName = aAttribute;
+      nsAutoString newValue;
+      // We don't really need to call GetAttr here, but lets try to keep this
+      // code as similar to nsGenericHTMLElement::SetAttrAndNotify as possible
+      // so that they can merge sometime in the future.
+      GetAttr(aNamespaceID, aAttribute, newValue);
+      if (!newValue.IsEmpty()) {
+        mutation.mNewAttrValue = do_GetAtom(newValue);
+      }
+      if (!aOldValue.IsEmpty()) {
+        mutation.mPrevAttrValue = do_GetAtom(aOldValue);
+      }
+      mutation.mAttrChange = modType;
+      nsEventStatus status = nsEventStatus_eIgnore;
+      HandleDOMEvent(nsnull, &mutation, nsnull,
+                     NS_EVENT_FLAG_INIT, &status);
+    }
+
+    if (aNotify) {
+      mDocument->AttributeChanged(this, aNamespaceID, aAttribute, modType);
+    }
+  }
+  
+  return NS_OK;
+}
+
+nsresult
+nsSVGElement::CopyNode(nsSVGElement* aDest, PRBool aDeep)
+{
+  nsresult rv;
+
+  // copy attributes:
+  PRUint32 i, count = mAttrsAndChildren.AttrCount();
+  for (i = 0; i < count; ++i) {
+    const nsAttrName* name = mAttrsAndChildren.GetSafeAttrNameAt(i);
+    const nsAttrValue* value = mAttrsAndChildren.AttrAt(i);
+    nsAutoString valStr;
+    value->ToString(valStr);
+    rv = aDest->SetAttr(name->NamespaceID(), name->LocalName(),
+                        name->GetPrefix(), valStr, PR_FALSE);
+    NS_ENSURE_SUCCESS(rv, rv);
+  }
+
+  if (aDeep) {
     // copy children:
-    PRInt32 count = mChildren.Count();
+    PRInt32 count = mAttrsAndChildren.ChildCount();
     for (PRInt32 i = 0; i < count; ++i) {
-      nsIContent* child = NS_STATIC_CAST(nsIContent*, mChildren[i]);
-      
-      NS_ASSERTION(child != nsnull, "null ptr");
-      if (!child)
-        return NS_ERROR_UNEXPECTED;
+      nsIContent* child = mAttrsAndChildren.ChildAt(i);
       
       nsCOMPtr<nsIDOMNode> domchild = do_QueryInterface(child);
       NS_ASSERTION(domchild != nsnull, "child is not a DOM node");
@@ -630,7 +621,7 @@ nsSVGElement::CopyNode(nsSVGElement* dest, PRBool deep)
       if (!newchild)
         return NS_ERROR_UNEXPECTED;
       
-      rv = dest->AppendChildTo(newchild, PR_FALSE, PR_FALSE);
+      rv = aDest->AppendChildTo(newchild, PR_FALSE, PR_FALSE);
       if (NS_FAILED(rv)) return rv;
     }
   }
@@ -638,3 +629,76 @@ nsSVGElement::CopyNode(nsSVGElement* dest, PRBool deep)
   return rv;
 }
 
+void
+nsSVGElement::UpdateContentStyleRule()
+{
+  NS_ASSERTION(!mContentStyleRule, "we already have a content style rule");
+
+  nsCSSDeclaration* declaration = new nsCSSDeclaration();
+  if (!declaration || !declaration->InitializeEmpty()) {
+    NS_ERROR("could not initialize nsCSSDeclaration");
+    return;
+  }
+  
+  nsCOMPtr<nsIURI> baseURI = GetBaseURI();
+  nsCOMPtr<nsICSSParser> parser;
+  NS_NewCSSParser(getter_AddRefs(parser));
+  if (!parser)
+    return;
+
+  PRUint32 attrCount = mAttrsAndChildren.AttrCount();
+  for (int i = 0; i< attrCount; ++i) {
+    const nsAttrName* attrName = mAttrsAndChildren.GetSafeAttrNameAt(i);
+    if (!attrName->IsAtom() || !IsAttributeMapped(attrName->Atom()))
+      continue;
+
+    nsAutoString name;
+    attrName->Atom()->ToString(name);
+
+    nsAutoString value;
+    mAttrsAndChildren.AttrAt(i)->ToString(value);
+
+    PRBool changed;
+    parser->ParseProperty(name, value, baseURI, declaration, &changed);
+  }
+  
+  NS_NewCSSStyleRule(getter_AddRefs(mContentStyleRule), nsnull, declaration);
+  NS_ASSERTION(mContentStyleRule, "could not create contentstylerule");
+}
+
+nsISVGValue*
+nsSVGElement::GetMappedAttribute(PRInt32 aNamespaceID, nsIAtom* aName)
+{
+  const nsAttrValue* attrVal = mMappedAttributes.GetAttr(aName, aNamespaceID);
+  if (!attrVal)
+    return nsnull;
+
+  return attrVal->GetSVGValue();
+}
+
+nsresult
+nsSVGElement::AddMappedSVGValue(nsIAtom* aName, nsISupports* aValue,
+                                PRInt32 aNamespaceID)
+{
+  nsresult rv;
+  nsCOMPtr<nsISVGValue> svg_value = do_QueryInterface(aValue);
+  svg_value->AddObserver(this);
+  nsAttrValue attrVal(svg_value);
+
+  if (aNamespaceID == kNameSpaceID_None) {
+    rv = mMappedAttributes.SetAndTakeAttr(aName, attrVal);
+    NS_ENSURE_SUCCESS(rv, rv);
+  }
+  else {
+    nsCOMPtr<nsINodeInfo> ni;
+    rv = mNodeInfo->NodeInfoManager()->GetNodeInfo(aName, nsnull,
+                                                   aNamespaceID,
+                                                   getter_AddRefs(ni));
+    NS_ENSURE_SUCCESS(rv, rv);
+
+    rv = mMappedAttributes.SetAndTakeAttr(ni, attrVal);
+    NS_ENSURE_SUCCESS(rv, rv);
+  }
+
+  return NS_OK;
+}

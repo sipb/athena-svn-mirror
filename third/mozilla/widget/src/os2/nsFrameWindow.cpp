@@ -44,8 +44,6 @@ extern nsIRollupListener * gRollupListener;
 extern nsIWidget         * gRollupWidget;
 extern PRBool              gRollupConsumeRollupEvent;
 
-BOOL nsFrameWindow::fHiddenWindowCreated = FALSE;
-
 nsFrameWindow::nsFrameWindow() : nsWindow()
 {
    fnwpDefFrame = 0;
@@ -106,14 +104,6 @@ void nsFrameWindow::RealDoCreate( HWND hwndP, nsWindow *aParent,
 #endif
 
    ULONG fcfFlags = GetFCFlags();
-
-   // Set flags only if not first hidden window created by nsAppShellService
-   if (!fHiddenWindowCreated) {
-      if ((aRect.x == 0) && (aRect.y == 0) && (aRect.height == 100) && (aRect.width == 100)) {
-         fcfFlags &= ~FCF_TASKLIST;
-         fHiddenWindowCreated = TRUE;
-      }
-   }
 
    ULONG style = WindowStyle();
    if( aInitData)
@@ -243,9 +233,6 @@ void nsFrameWindow::RealDoCreate( HWND hwndP, nsWindow *aParent,
 
 
    WinSetWindowPos(mFrameWnd, 0, frameRect.x, frameRect.y, frameRect.width, frameRect.height, SWP_SIZE | SWP_MOVE);
-
-   // Record frame hwnd somewhere that the window object can see during dtor
-   mHackDestroyWnd = mFrameWnd;
 }
 
 
@@ -372,15 +359,14 @@ MRESULT nsFrameWindow::FrameMessage( ULONG msg, MPARAM mp1, MPARAM mp2)
          }
  
          if ( pSwp->fl & (SWP_MAXIMIZE | SWP_MINIMIZE | SWP_RESTORE)) {
-            nsSizeModeEvent event;
-            event.eventStructType = NS_SIZEMODE_EVENT;
+	    nsSizeModeEvent event(NS_SIZEMODE, this);
             if ( pSwp->fl & SWP_MAXIMIZE)
               event.mSizeMode = nsSizeMode_Maximized;
             else if ( pSwp->fl & SWP_MINIMIZE)
               event.mSizeMode = nsSizeMode_Minimized;
             else
               event.mSizeMode = nsSizeMode_Normal;
-            InitEvent(event, NS_SIZEMODE);
+            InitEvent(event);
             DispatchWindowEvent(&event);
             NS_RELEASE(event.widget);
          }
@@ -444,15 +430,14 @@ MRESULT nsFrameWindow::FrameMessage( ULONG msg, MPARAM mp1, MPARAM mp2)
       /* To simulate Windows better, we need to send a focus message to the */
       /* client when the frame is activated if there is a non mozilla window focused */
       case WM_ACTIVATE:
-         if (SHORT1FROMMP(mp1)) {
-            char className[19];
-            ::WinQueryClassName(WinQueryFocus(HWND_DESKTOP), 19, className);
-            if (strcmp(className, WindowClass()) != 0) {
 #ifdef DEBUG_FOCUS
-              printf("Extra WM_FOCUSCHANGED because className was %s on WM_ACTIVATE\n", className);
+         printf("[%x] WM_ACTIVATE (%d)\n", this, mWindowIdentifier);
 #endif
-              WinSendMsg(mWnd, WM_FOCUSCHANGED, 0, MPFROM2SHORT(1,0));
-            }
+         if (SHORT1FROMMP(mp1)) {
+#ifdef DEBUG_FOCUS
+            printf("[%x] NS_GOTFOCUS (%d)\n", this, mWindowIdentifier);
+#endif
+            mRC = DispatchFocus(NS_GOTFOCUS, PR_TRUE);
          }
          break;
    }

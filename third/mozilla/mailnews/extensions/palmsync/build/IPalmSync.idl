@@ -46,6 +46,9 @@ typedef struct
   LPTSTR lpszABUrl;
 }nsMozABDesc, *lpnsMozABDesc;
 
+const int kFirstTimeSyncDirFlag = 0x1;
+const int kIsPabDirFlag = 0x2;
+
 // This structure defines the data fields for MozAB based on "nsIAbCard.idl"
 // This structure is used for interaction with the other AddressBook Apps
 // nsIAbCard changes should be reflected here to take care of those changes
@@ -135,8 +138,8 @@ interface IPalmSync : IUnknown
                         [in] int aModRemoteRecCount, [in, size_is(aModRemoteRecCount)] lpnsABCOMCardStruct aModRemoteRecList,
                         [out] int * aModMozRecCount, [out, size_is(, *aModMozRecCount)] lpnsABCOMCardStruct * aModMozRecList);
 
-    // All records from a AB represented by aCategoryIndex and aABName into a new Mozilla AB
-    HRESULT nsAddAllABRecords([in] BOOL aIsUnicode, [in] long aCategoryIndex, [in] LPTSTR aABName,
+    // All records from a AB represented by aCategoryIndex and aABName into a new or existing Mozilla AB
+    HRESULT nsAddAllABRecords([in] BOOL aIsUnicode, [in] BOOL aReplaceExisting, [in] long aCategoryIndex, [in] LPTSTR aABName,
 							[in] int aRemoteRecCount, [in, size_is(aRemoteRecCount)] lpnsABCOMCardStruct aRemoteRecList);
 
     // Get All records from a Mozilla AB
@@ -152,7 +155,14 @@ interface IPalmSync : IUnknown
     // Delete an addressbook
     HRESULT nsDeleteAB([in] BOOL aIsUnicode, [in] long aCategoryIndex, [in] LPTSTR aABName, [in] LPTSTR aABUrl);
 
+    // was this address book deleted in Mozilla?
+    HRESULT nsGetABDeleted([in] LPTSTR aABName, [out] BOOL *abDeleted);
+
     // Rename an addressbook
     HRESULT nsRenameAB([in] BOOL aIsUnicode, [in] long aCategoryIndex, [in] LPTSTR aABName, [in] LPTSTR aABUrl);
+
+    HRESULT nsUseABHomeAddressForPalmAddress ([out] BOOL *useHomeAddress);
+
+    HRESULT nsPreferABHomePhoneForPalmPhone ([out] BOOL * preferHomePhone);
 };
 

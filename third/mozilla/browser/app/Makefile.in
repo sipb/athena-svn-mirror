@@ -46,12 +46,12 @@ include $(DEPTH)/config/autoconf.mk
 
 DIRS		= profile
 
-PREF_FILES = $(srcdir)/profile/all.js
+PREF_JS_EXPORTS = $(srcdir)/profile/firefox.js
 
 ifeq ($(USE_SHORT_LIBNAME), 1)
-PROGRAM = MozillaFirebird$(BIN_SUFFIX)
+PROGRAM = firefox$(BIN_SUFFIX)
 else
-PROGRAM = MozillaFirebird-bin$(BIN_SUFFIX)
+PROGRAM = firefox-bin$(BIN_SUFFIX)
 endif
 
 REQUIRES = \
@@ -67,6 +67,10 @@ ifdef BUILD_STATIC_LIBS
 STATIC_COMPONENTS_LINKER_PATH = -L$(DIST)/lib/components
 endif
 
+ifeq ($(MOZ_WIDGET_TOOLKIT),cocoa)
+TK_LIBS := -framework Cocoa $(TK_LIBS)
+endif
+
 LIBS = \
 	$(STATIC_COMPONENTS_LINKER_PATH) \
 	$(EXTRA_DSO_LIBS) \
@@ -76,6 +80,11 @@ LIBS = \
 	$(NSPR_LIBS) \
 	$(TK_LIBS) \
 	$(NULL)
+
+# Add explicit X11 dependency when building against X11 toolkits
+ifneq (,$(filter gtk gtk2 xlib,$(MOZ_WIDGET_TOOLKIT)))
+LIBS += $(XLDFLAGS) $(XLIBS)
+endif
 
 ifdef MOZ_JPROF
 LIBS += -ljprof
@@ -120,30 +129,44 @@ endif
 ifdef BUILD_STATIC_LIBS
 RCFLAGS += -DMOZ_STATIC_BUILD
 endif
+ifdef DEBUG
+RCFLAGS += -DDEBUG
+endif
 endif
 
 ifeq ($(OS_ARCH),OS2)
 RESFILE=splashos2.res
+RCFLAGS += -DMOZ_PHOENIX
 ifdef BUILD_STATIC_LIBS
+OS_LIBS += -lpmwinx
 EXE_DEF_FILE = browser.def
-ifeq ($(MOZ_OS2_TOOLS),VACPP)
-OS_LIBS += libuls.lib libconv.lib
-else
-OS_LIBS += -llibuni -luconv
+RCFLAGS += -DMOZ_STATIC_BUILD -i $(DIST)/include/widget
 endif
+ifdef DEBUG
+RCFLAGS += -DDEBUG
 endif
+RCFLAGS += -DFIREFOX_ICO=\"$(DIST)/branding/firefox.ico\" -DDOCUMENT_ICO=\"$(DIST)/branding/document.ico\"
 endif
 
 include $(topsrcdir)/config/rules.mk
+
+DEFINES += -DFIREFOX_ICO=\"$(DIST)/branding/firefox.ico\" -DDOCUMENT_ICO=\"$(DIST)/branding/document.ico\"
 
 ifdef BUILD_STATIC_LIBS
 include $(topsrcdir)/config/static-rules.mk
 endif
 
+APP_VERSION = $(shell cat $(srcdir)/../config/version.txt)
+DEFINES += -DAPP_VERSION=\"$(APP_VERSION)\"
+
 ifneq (,$(filter mac cocoa,$(MOZ_WIDGET_TOOLKIT)))
 ifdef BUILD_STATIC_LIBS
 LIBS	+= -framework QuickTime -framework IOKit
 endif
+endif
+
+ifeq ($(MOZ_WIDGET_TOOLKIT),photon)
+LIBS += -lphexlib
 endif
 
 ifeq ($(OS_ARCH),WINNT)
@@ -178,36 +201,39 @@ $(EXE_DEF_FILE):
 	@echo 	WinRemoveProperty		= PMMERGE.5451 >>$(EXE_DEF_FILE)
 	@echo 	WinSetProperty			= PMMERGE.5452 >>$(EXE_DEF_FILE)
 
-LDFLAGS += /NOE
+LDFLAGS += -Zlinker /NOE
 endif
 endif
 
 ifneq (,$(filter-out OS2 WINNT,$(OS_ARCH)))
-MozillaFirebird:: mozilla.in Makefile.in Makefile $(DEPTH)/config/autoconf.mk
+
+firefox:: mozilla.in Makefile.in Makefile $(DEPTH)/config/autoconf.mk
 	cat $< | sed -e "s|%MOZAPPDIR%|$(mozappdir)|" \
+                -e "s|%MOZ_USER_DIR%|.firefox|" \
 		-e "s|%MREDIR%|$(mredir)|" \
-		-e "s|mozilla-bin|$(PROGRAM)|g" > $@
+		-e "s|%MOZILLA-BIN%|$(PROGRAM)|g" > $@
 	chmod +x $@
 
-libs:: MozillaFirebird
+libs:: firefox
 	$(INSTALL) $< $(DIST)/bin
 
-install:: MozillaFirebird
+install:: firefox
 	$(SYSINSTALL) $< $(DESTDIR)$(bindir)
 
-GARBAGE += MozillaFirebird
-GARBAGE += $(addprefix $(DIST)/bin/defaults/pref/, all.js)
+GARBAGE += firefox
+GARBAGE += $(addprefix $(DIST)/bin/defaults/pref/, firefox.js)
 
 endif
 
 ifneq (,$(filter gtk gtk2,$(MOZ_WIDGET_TOOLKIT)))
+
 ICON_FILES	= \
-		$(srcdir)/mozicon50.xpm \
-		$(srcdir)/mozicon16.xpm \
+		$(DIST)/branding/mozicon50.xpm \
+		$(DIST)/branding/mozicon16.xpm \
 		$(NULL)
 
-libs::
-	$(INSTALL) $(ICON_FILES) $(DIST)/bin/icons
+libs:: $(ICON_FILES)
+	$(INSTALL) $^ $(DIST)/bin/icons
 
 install::
 	$(SYSINSTALL) $(IFLAGS1) $(ICON_FILES) $(DESTDIR)$(mozappdir)/icons
@@ -215,32 +241,55 @@ endif
 
 ifeq ($(MOZ_WIDGET_TOOLKIT),gtk2)
 libs::
-	$(INSTALL) $(srcdir)/default.xpm $(DIST)/bin/chrome/icons
+	$(INSTALL) $(DIST)/branding/default.xpm $(DIST)/bin/chrome/icons/default
 
 install::
-	$(SYSINSTALL) $(IFLAGS1) $(srcdir)/default.xpm $(DESTDIR)$(mozappdir)/icons
+	$(SYSINSTALL) $(IFLAGS1) $(DIST)/branding/default.xpm $(DESTDIR)$(mozappdir)/icons
 endif
 
-export:: $(PREF_FILES)
-	@for i in $(PREF_FILES); do rm -f $(DIST)/bin/defaults/pref/`basename $$i`; $(PERL) $(topsrcdir)/config/preprocessor.pl $(DEFINES) $(ACDEFINES) $$i > $(DIST)/bin/defaults/pref/`basename $$i`; done
+export:: brand.dtd.in
+	$(PERL) $(topsrcdir)/config/preprocessor.pl $(DEFINES) $(ACDEFINES) $^ > brand.dtd
 
-install:: $(PREF_FILES)
-	@for i in $(PREF_FILES); do rm -f $(DESTDIR)$(mozappdir)/defaults/pref/`basename $$i`; $(PERL) $(topsrcdir)/config/preprocessor.pl $(DEFINES) $(ACDEFINES) $$i > $(DESTDIR)$(mozappdir)/defaults/pref/`basename $$i`; done
+export::
+ifndef MOZ_USE_OFFICIAL_BRANDING
+	$(NSINSTALL) -D $(DIST)/branding
+ifeq ($(OS_ARCH),WINNT)
+	cp $(srcdir)/firefox.ico   $(DIST)/branding/firefox.ico
+	cp $(srcdir)/firefox.ico   $(DIST)/branding/app.ico
+	cp $(srcdir)/document.ico  $(DIST)/branding/document.ico
+endif
+ifneq (,$(filter mac cocoa,$(MOZ_WIDGET_TOOLKIT)))
+	cp $(srcdir)/macbuild/firefox.icns  $(DIST)/branding/firefox.icns
+endif
+ifneq (,$(filter gtk gtk2,$(MOZ_WIDGET_TOOLKIT)))
+	cp $(srcdir)/mozicon16.xpm $(DIST)/branding/mozicon16.xpm
+	cp $(srcdir)/mozicon50.xpm $(DIST)/branding/mozicon50.xpm
+endif
+ifeq ($(MOZ_WIDGET_TOOLKIT),gtk2)
+	cp $(srcdir)/default.xpm   $(DIST)/branding/default.xpm	
+endif
+ifeq ($(OS_ARCH),OS2)
+	cp $(srcdir)/firefox-os2.ico   $(DIST)/branding/firefox.ico
+	cp $(srcdir)/firefox-os2.ico   $(DIST)/branding/app.ico
+	cp $(srcdir)/document-os2.ico  $(DIST)/branding/document.ico
+endif
+endif
 
 libs::
 	touch $(DIST)/bin/.autoreg
 
 ifneq (,$(filter mac cocoa,$(MOZ_WIDGET_TOOLKIT)))
 
-APP_NAME = Mozilla\ Firebird
+APP_NAME = Firefox
 
 libs:: $(PROGRAM)
 	mkdir -p $(DIST)/$(APP_NAME).app/Contents/MacOS
-	rsync -a $(srcdir)/macbuild/Contents $(DIST)/$(APP_NAME).app
+	rsync -a --exclude CVS --exclude "*.in" $(srcdir)/macbuild/Contents $(DIST)/$(APP_NAME).app
+	sed -e "s/APP_VERSION/$(APP_VERSION)/" $(srcdir)/macbuild/Contents/Info.plist.in > $(DIST)/$(APP_NAME).app/Contents/Info.plist
 	rsync -a $(DIST)/bin/ $(DIST)/$(APP_NAME).app/Contents/MacOS
 	rm -f $(DIST)/$(APP_NAME).app/Contents/MacOS/$(PROGRAM)
 	rsync -aL $(PROGRAM) $(DIST)/$(APP_NAME).app/Contents/MacOS
-	cp -RL $(srcdir)/macbuild/mach.icns $(DIST)/$(APP_NAME).app/Contents/Resources/mach.icns
+	cp -RL $(DIST)/branding/firefox.icns $(DIST)/$(APP_NAME).app/Contents/Resources/firefox.icns
 	echo -n APPLMOZB > $(DIST)/$(APP_NAME).app/Contents/PkgInfo
 #       remove CVS dirs from packaged app
 	find $(DIST)/$(APP_NAME).app -type d -name "CVS" -prune -exec rm -rf {} \;
@@ -248,3 +297,9 @@ libs:: $(PROGRAM)
 clean clobber::
 	rm -rf $(DIST)/$(APP_NAME).app
 endif
+
+README_FILE = $(topsrcdir)/README.txt
+
+libs::
+	$(INSTALL) $(README_FILE) $(DIST)/bin
+	$(INSTALL) $(topsrcdir)/LICENSE	$(DIST)/bin

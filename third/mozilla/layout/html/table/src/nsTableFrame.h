@@ -62,10 +62,6 @@ struct nsStylePosition;
 
 enum nsPixelRound {eAlwaysRoundUp=0, eAlwaysRoundDown, eRoundUpIfHalfOrMore};
 
-// flags for Paint, PaintChild, PaintChildren are currently only used by tables.
-// use low order bit of flags to distinguish between pass1(0) and pass2(1) border collapse backgrounds
-#define BORDER_COLLAPSE_BACKGROUNDS 0x00000001
-
 #ifdef DEBUG_TABLE_REFLOW_TIMING
 #ifdef WIN32
 #include <windows.h>
@@ -234,11 +230,10 @@ public:
                                                PRBool                   aNeedSpecialHeightReflow,
                                                nsHTMLReflowMetrics&     aMetrics);
 
-  NS_IMETHOD IsPercentageBase(PRBool& aBase) const;
+  virtual PRBool IsContainingBlock() const;
 
   static nsresult AppendDirtyReflowCommand(nsIPresShell* aPresShell,
                                            nsIFrame*     aFrame);
-  static nsIPresShell* GetPresShellNoAddref(nsIPresContext* aPresContext);
 
   static void RePositionViews(nsIPresContext* aPresContext,
                               nsIFrame*       aFrame);
@@ -273,12 +268,10 @@ public:
                          nsIFrame*       aOldFrame);
 
   // Get the offset from the border box to the area where the row groups fit
-  nsMargin GetChildAreaOffset(nsIPresContext*          aPresContext,
-                              const nsHTMLReflowState* aReflowState) const;
+  nsMargin GetChildAreaOffset(const nsHTMLReflowState* aReflowState) const;
 
   // Get the offset from the border box to the area where the content fits
-  nsMargin GetContentAreaOffset(nsIPresContext*          aPresContext,
-                                const nsHTMLReflowState* aReflowState) const;
+  nsMargin GetContentAreaOffset(const nsHTMLReflowState* aReflowState) const;
 
   /** helper method to find the table parent of any table frame object */
   // TODO: today, this depends on display types.  This should be changed to rely
@@ -288,8 +281,7 @@ public:
 
   // Return the closest sibling of aPriorChildFrame (including aPriroChildFrame)
   // of type aChildType.
-  static nsIFrame* GetFrameAtOrBefore(nsIPresContext* aPresContext,
-                                      nsIFrame*       aParentFrame,
+  static nsIFrame* GetFrameAtOrBefore(nsIFrame*       aParentFrame,
                                       nsIFrame*       aPriorChildFrame,
                                       nsIAtom*        aChildType);
   PRBool IsAutoWidth(PRBool* aIsPctWidth = nsnull);
@@ -309,15 +301,12 @@ public:
                                  nsIFrame*       aChildList);
 
   /** return the first child belonging to the list aListName. 
-    * @see nsIFrame::FirstChild
+    * @see nsIFrame::GetFirstChild
     */
-  NS_IMETHOD FirstChild(nsIPresContext* aPresContext,
-                        nsIAtom*        aListName,
-                        nsIFrame**      aFirstChild) const;
+  virtual nsIFrame* GetFirstChild(nsIAtom* aListName) const;
 
   /** @see nsIFrame::GetAdditionalChildListName */
-  NS_IMETHOD  GetAdditionalChildListName(PRInt32   aIndex,
-                                         nsIAtom** aListName) const;
+  virtual nsIAtom* GetAdditionalChildListName(PRInt32 aIndex) const;
 
   /** @see nsIFrame::Paint */
   NS_IMETHOD Paint(nsIPresContext*      aPresContext,
@@ -332,11 +321,19 @@ public:
                              nsFramePaintLayer    aWhichLayer,
                              PRUint32             aFlags = 0);
 
-  nsMargin GetBCBorder(nsIPresContext* aPresContext) const;
+  nsMargin GetBCBorder() const;
 
   // get the area that the border leak out from the inner table frame into
   // the surrounding margin space
   nsMargin GetBCMargin(nsIPresContext* aPresContext) const;
+
+  /** Get width of table + colgroup + col collapse: elements that
+   *  continue along the length of the whole left side.
+   *  see nsTablePainter about continuous borders
+   *  @param aPixelsToTwips - conversion factor
+   *  @param aGetInner - get only inner half of border width
+   */
+  nscoord GetContinuousLeftBCBorderWidth(float aPixelsToTwips) const;
 
   void SetBCDamageArea(nsIPresContext& aPresContext,
                        const nsRect&   aValue);
@@ -650,7 +647,7 @@ protected:
                            nsTableReflowState&  aReflowState,
                            nsReflowStatus&      aStatus);
 
-  /** process a style chnaged notification.
+  /** process a style changed notification.
     * @see nsIFrameReflow::Reflow
     * TODO: needs to be optimized for which attribute was actually changed.
     */
@@ -663,8 +660,7 @@ protected:
                                        nsIFrame*           aKidFrame,
                                        nscoord             aDeltaY);
   
-  nsresult RecoverState(nsIPresContext&     aPresContext,
-                        nsTableReflowState& aReflowState,
+  nsresult RecoverState(nsTableReflowState& aReflowState,
                         nsIFrame*           aKidFrame);
 
   NS_METHOD CollapseRowGroupIfNecessary(nsIPresContext* aPresContext,
@@ -686,35 +682,29 @@ public:
 
   // calculate the computed width of aFrame including its border and padding given 
   // its reflow state.
-  nscoord CalcBorderBoxWidth(nsIPresContext*          aPresContex,
-                             const nsHTMLReflowState& aReflowState);
+  nscoord CalcBorderBoxWidth(const nsHTMLReflowState& aReflowState);
 
   // calculate the computed height of aFrame including its border and padding given 
   // its reflow state.
-  nscoord CalcBorderBoxHeight(nsIPresContext*          aPresContext,
-                              const nsHTMLReflowState& aReflowState);
+  nscoord CalcBorderBoxHeight(const nsHTMLReflowState& aReflowState);
   // calculate the minimum width to layout aFrame and its desired width 
   // including border and padding given its reflow state and column width information 
-  void CalcMinAndPreferredWidths(nsIPresContext*          aPresContext,
-                                 const nsHTMLReflowState& aReflowState,
+  void CalcMinAndPreferredWidths(const nsHTMLReflowState& aReflowState,
                                  PRBool                   aCalcPrefWidthIfAutoWithPctCol,
                                  nscoord&                 aMinWidth,
                                  nscoord&                 aPreferredWidth);
 protected:
 
   // calcs the width of the table according to the computed widths of each column.
-  virtual PRInt32 CalcDesiredWidth(nsIPresContext&          aPresContext,
-                                   const nsHTMLReflowState& aReflowState);
+  virtual PRInt32 CalcDesiredWidth(const nsHTMLReflowState& aReflowState);
 
   // return the desired height of this table accounting for the current
   // reflow state, and for the table attributes and parent 
-  nscoord CalcDesiredHeight(nsIPresContext*          aPresContext,
-                            const nsHTMLReflowState& aReflowState);
+  nscoord CalcDesiredHeight(const nsHTMLReflowState& aReflowState);
 
   // The following is a helper for CalcDesiredHeight 
  
-  void DistributeHeightToRows(nsIPresContext*          aPresContext,
-                              const nsHTMLReflowState& aReflowState,
+  void DistributeHeightToRows(const nsHTMLReflowState& aReflowState,
                               nscoord                  aAmount);
 
   void PlaceChild(nsIPresContext*      aPresContext,
@@ -782,10 +772,6 @@ protected:
   PRBool DidResizeReflow() const;
   void   SetResizeReflow(PRBool aValue);
 
-  PRBool    ConvertToPixelValue(nsHTMLValue& aValue, 
-                                PRInt32      aDefault, 
-                                PRInt32&     aResult);
-
 public:
   PRBool NeedStrategyInit() const;
   void SetNeedStrategyInit(PRBool aValue);
@@ -803,25 +789,22 @@ public:
     */
   virtual nsTableCellMap* GetCellMap() const;
     
-  void AdjustRowIndices(nsIPresContext* aPresContext,
-                        PRInt32         aRowIndex,
-                        PRInt32         aAdjustment);
+  void AdjustRowIndices(PRInt32 aRowIndex,
+                        PRInt32 aAdjustment);
 
-  NS_IMETHOD AdjustRowIndices(nsIPresContext* aPresContext,
-                              nsIFrame*       aRowGroup, 
-                              PRInt32         aRowIndex,
-                              PRInt32         anAdjustment);
+  NS_IMETHOD AdjustRowIndices(nsIFrame* aRowGroup,
+                              PRInt32   aRowIndex,
+                              PRInt32   anAdjustment);
 
   // Remove cell borders which aren't bordering row and/or col groups 
   void ProcessGroupRules(nsIPresContext* aPresContext);
 
   nsVoidArray& GetColCache();
 
-	/** 
-	  * Return aFrame's child if aFrame is an nsScrollFrame, otherwise return aFrame
-	  */
-  nsTableRowGroupFrame* GetRowGroupFrame(nsIFrame* aFrame,
-                                         nsIAtom*  aFrameTypeIn = nsnull) const;
+  /** Return aFrame's child if aFrame is an nsScrollFrame, otherwise return aFrame
+    */
+  static nsTableRowGroupFrame* GetRowGroupFrame(nsIFrame* aFrame,
+                                                nsIAtom*  aFrameTypeIn = nsnull);
 
 protected:
 
@@ -834,8 +817,7 @@ protected:
   PRBool HadInitialReflow() const;
   void SetHadInitialReflow(PRBool aValue);
 
-  void SetColumnDimensions(nsIPresContext* aPresContext, 
-                           nscoord         aHeight,
+  void SetColumnDimensions(nscoord         aHeight,
                            const nsMargin& aReflowState);
 
   /** return the number of columns as specified by the input. 
@@ -845,8 +827,7 @@ protected:
     */
   virtual PRInt32 GetSpecifiedColumnCount ();
 
-  PRInt32 CollectRows(nsIPresContext* aPresContext,
-                      nsIFrame*       aFrame,
+  PRInt32 CollectRows(nsIFrame*       aFrame,
                       nsVoidArray&    aCollection);
 
 public: /* ----- Cell Map public methods ----- */
@@ -913,39 +894,38 @@ public: /* ----- Cell Map public methods ----- */
 public:
   static nsIAtom* gColGroupAtom;
 #ifdef DEBUG
-  void Dump(nsIPresContext* aPresContext,
-            PRBool          aDumpRows,
+  void Dump(PRBool          aDumpRows,
             PRBool          aDumpCols, 
             PRBool          aDumpCellMap);
 #endif
   nsAutoVoidArray mColFrames; // XXX temporarily public 
 
 #ifdef DEBUG
-  static void DumpTableFrames(nsIPresContext* aPresContext,
-                              nsIFrame*       aFrame);
+  static void DumpTableFrames(nsIFrame*       aFrame);
 #endif
 
 protected:
 #ifdef DEBUG
-  void DumpRowGroup(nsIPresContext* aPresContext, nsIFrame* aChildFrame);
+  void DumpRowGroup(nsIFrame* aChildFrame);
 #endif
   // DATA MEMBERS
 
   struct TableBits {
-    unsigned mHadInitialReflow:1;      // has intial reflow happened
-    unsigned mHaveReflowedColGroups:1; // have the col groups gotten their initial reflow
-    unsigned mNeedStrategyBalance:1;   // does the strategy needs to balance the table
-    unsigned mNeedStrategyInit:1;      // does the strategy needs to be initialized and then balance the table
-    unsigned mHasPctCol:1;             // does any cell or col have a pct width
-    unsigned mCellSpansPctCol:1;       // does any cell span a col with a pct width (or containing a cell with a pct width)
-    unsigned mDidResizeReflow:1;       // did a resize reflow happen (indicating pass 2)
-    unsigned mIsBorderCollapse:1;      // border collapsing model vs. separate model
-    unsigned mRowInserted:1;
-    unsigned mNeedSpecialReflow:1;
-    unsigned mNeedToInitiateSpecialReflow:1;
-    unsigned mInitiatedSpecialReflow:1;
-    unsigned mNeedToCalcBCBorders:1;
-    unsigned : 19;                     // unused
+    PRUint32 mHadInitialReflow:1;      // has intial reflow happened
+    PRUint32 mHaveReflowedColGroups:1; // have the col groups gotten their initial reflow
+    PRUint32 mNeedStrategyBalance:1;   // does the strategy needs to balance the table
+    PRUint32 mNeedStrategyInit:1;      // does the strategy needs to be initialized and then balance the table
+    PRUint32 mHasPctCol:1;             // does any cell or col have a pct width
+    PRUint32 mCellSpansPctCol:1;       // does any cell span a col with a pct width (or containing a cell with a pct width)
+    PRUint32 mDidResizeReflow:1;       // did a resize reflow happen (indicating pass 2)
+    PRUint32 mIsBorderCollapse:1;      // border collapsing model vs. separate model
+    PRUint32 mRowInserted:1;
+    PRUint32 mNeedSpecialReflow:1;
+    PRUint32 mNeedToInitiateSpecialReflow:1;
+    PRUint32 mInitiatedSpecialReflow:1;
+    PRUint32 mNeedToCalcBCBorders:1;
+    PRUint32 mLeftContBCBorder:8;
+    PRUint32 : 11;                     // unused
   } mBits;
 
   nsTableCellMap*         mCellMap;            // maintains the relationships between rows, cols, and cells
@@ -1065,7 +1045,7 @@ inline void nsTableFrame::SetRowInserted(PRBool aValue)
 
 inline nsFrameList& nsTableFrame::GetColGroups()
 {
-  return mColGroups;
+  return NS_STATIC_CAST(nsTableFrame*, GetFirstInFlow())->mColGroups;
 }
 
 inline nsVoidArray& nsTableFrame::GetColCache()
@@ -1108,6 +1088,12 @@ inline void nsTableFrame::SetNeedToCalcBCBorders(PRBool aValue)
   mBits.mNeedToCalcBCBorders = (unsigned)aValue;
 }
 
+inline nscoord
+nsTableFrame::GetContinuousLeftBCBorderWidth(float aPixelsToTwips) const
+{
+  return BC_BORDER_RIGHT_HALF_COORD(aPixelsToTwips, mBits.mLeftContBCBorder);
+}
+
 enum nsTableIteration {
   eTableLTR = 0,
   eTableRTL = 1,
@@ -1117,10 +1103,9 @@ enum nsTableIteration {
 class nsTableIterator
 {
 public:
-  nsTableIterator(nsIPresContext*  aPresContext,
-                  nsIFrame&        aSource, 
+  nsTableIterator(nsIFrame&        aSource,
                   nsTableIteration aType);
-  nsTableIterator(nsFrameList&     aSource, 
+  nsTableIterator(nsFrameList&     aSource,
                   nsTableIteration aType);
   nsIFrame* First();
   nsIFrame* Next();

@@ -648,10 +648,8 @@ nsBox::GetBorder(nsMargin& aMargin)
         nsCOMPtr<nsIPresContext> context;
         shell->GetPresContext(getter_AddRefs(context));
         if (gTheme->ThemeSupportsWidget(context, frame, disp->mAppearance)) {
-          nsCOMPtr<nsIDeviceContext> dc;
-          context->GetDeviceContext(getter_AddRefs(dc));
           nsMargin margin(0,0,0,0);
-          gTheme->GetWidgetBorder(dc, frame, 
+          gTheme->GetWidgetBorder(context->DeviceContext(), frame, 
                                   disp->mAppearance, &margin);
           float p2t;
           context->GetScaledPixelsToTwips(&p2t);
@@ -828,8 +826,7 @@ nsBox::CollapseChild(nsBoxLayoutState& aState, nsIFrame* aFrame, PRBool aHide)
       }
 
       // collapse the child
-      nsIFrame* child = nsnull;
-      aFrame->FirstChild(presContext, nsnull,&child);
+      nsIFrame* child = aFrame->GetFirstChild(nsnull);
        
       while (nsnull != child) 
       {
@@ -1096,13 +1093,6 @@ nsBox::Redraw(nsBoxLayoutState& aState,
       return NS_OK;
   }
 
-  nsCOMPtr<nsIPresShell> shell;
-  presContext->GetShell(getter_AddRefs(shell));
-  PRBool suppressed = PR_FALSE;
-  shell->IsPaintingSuppressed(&suppressed);
-  if (suppressed)
-    return NS_OK; // Don't redraw. Painting is still suppressed.
-
   nsIFrame* frame = nsnull;
   GetFrame(&frame);
 
@@ -1114,24 +1104,15 @@ nsBox::Redraw(nsBoxLayoutState& aState,
 
   // Checks to see if the damaged rect should be infalted 
   // to include the outline
+  // XXX This makes NO SENSE. if the damage rect is just a small part of
+  // this frame's rect then adding the outline width doesn't make any sense.
   nscoord width;
   frame->GetStyleOutline()->GetOutlineWidth(width);
   if (width > 0) {
     damageRect.Inflate(width, width);
   }
 
-  PRUint32 flags = aImmediate ? NS_VMREFRESH_IMMEDIATE : NS_VMREFRESH_NO_SYNC;
-
-  nsIView *view;
-  if (frame->HasView()) {
-    view = frame->GetView();
-  } else {
-    nsPoint   offset;
-    frame->GetOffsetFromView(presContext, offset, &view);
-    NS_BOX_ASSERTION(this, nsnull != view, "no view");
-    damageRect += offset;
-  }
-  view->GetViewManager()->UpdateView(view, damageRect, flags);
+  frame->Invalidate(damageRect, aImmediate);
 
   return NS_OK;
 }

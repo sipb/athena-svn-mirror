@@ -56,7 +56,6 @@
 #include "nsEscape.h"
 #include "nsITextToSubURI.h"
 #include "nsCRT.h"
-#include "nsIHTMLContent.h"
 #include "nsIParserService.h"
 #include "nsContentUtils.h"
 #include "nsILineBreakerFactory.h"
@@ -623,8 +622,7 @@ nsHTMLContentSerializer::SerializeAttributes(nsIContent* aContent,
         // but that gets more complicated since we have to
         // search the tag list for CODEBASE as well.
         // For now, just leave them relative.
-        nsCOMPtr<nsIURI> uri;
-        aContent->GetBaseURL(getter_AddRefs(uri));
+        nsCOMPtr<nsIURI> uri = aContent->GetBaseURI();
         if (uri) {
           nsAutoString absURI;
           rv = NS_MakeAbsoluteURI(absURI, valueStr, uri);

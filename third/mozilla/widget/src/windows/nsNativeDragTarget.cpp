@@ -172,7 +172,7 @@ PRBool IsKeyDown ( char key ) ;
 inline
 PRBool IsKeyDown ( char key )
 {
-  return GetKeyState(key) & 0x80 ? PR_TRUE : PR_FALSE;
+  return GetKeyState(key) < 0;
 }
 
 
@@ -181,11 +181,10 @@ void nsNativeDragTarget::DispatchDragDropEvent(PRUint32 aEventType,
                                                POINTL   aPT)
 {
   nsEventStatus status;
-  nsMouseEvent event;
-  event.eventStructType = NS_DRAGDROP_EVENT;
+  nsMouseEvent event(aEventType, mWindow);
 
   nsWindow * win = NS_STATIC_CAST(nsWindow *, mWindow);
-  win->InitEvent(event, aEventType);
+  win->InitEvent(event);
   POINT cpos;
 
   cpos.x = aPT.x;

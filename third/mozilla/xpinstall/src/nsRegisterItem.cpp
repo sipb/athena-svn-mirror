@@ -80,7 +80,8 @@ hack_nsIFile2URL(nsIFile* file, char * *aURL)
     if (NS_FAILED(rv)) return rv;
 #if defined(XP_WIN) || defined(XP_OS2)
     // Replace \ with / to convert to an url
-    char* s = (char *) ePath.get();
+    char* s;
+    ePath.BeginWriting(s);
     while (*s) {
 #ifndef XP_OS2
         // We need to call IsDBCSLeadByte because
@@ -98,7 +99,7 @@ hack_nsIFile2URL(nsIFile* file, char * *aURL)
 #endif
 #if defined( XP_MAC )
     // Swap the / and colons to convert to an url
-    SwapSlashColon((char*)ePath.get());
+    SwapSlashColon(ePath.BeginWriting());
 #endif
     // Escape the path with the directory mask
     nsCAutoString tmp(ePath);

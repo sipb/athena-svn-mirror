@@ -99,13 +99,10 @@ JSValIDToString(JSContext *cx, const jsval idval)
     return NS_REINTERPRET_CAST(PRUnichar*, JS_GetStringChars(str));
 }
 
-already_AddRefed<nsIScriptContext>
+static nsIScriptContext *
 GetScriptContext(JSContext *cx)
 {
-    nsIScriptContext *scriptContext;
-    GetScriptContextFromJSContext(cx, &scriptContext);
-
-    return scriptContext;
+    return GetScriptContextFromJSContext(cx);
 }
 
 // Helper class to get stuff from the ClassInfo and not waste extra time with
@@ -1428,16 +1425,18 @@ nsScriptSecurityManager::GetRootDocShell(JSContext *cx, nsIDocShell **result)
 {
     nsresult rv;
     *result = nsnull;
-    nsCOMPtr<nsIDocShell> docshell;
-    nsCOMPtr<nsIScriptContext> scriptContext = GetScriptContext(cx);
-    if (!scriptContext) return NS_ERROR_FAILURE;
-    nsCOMPtr<nsIScriptGlobalObject> globalObject;
-    scriptContext->GetGlobalObject(getter_AddRefs(globalObject));
-    if (!globalObject)  return NS_ERROR_FAILURE;
-    rv = globalObject->GetDocShell(getter_AddRefs(docshell));
+    nsIScriptContext *scriptContext = GetScriptContext(cx);
+    if (!scriptContext)
+        return NS_ERROR_FAILURE;
+
+    nsIScriptGlobalObject *globalObject = scriptContext->GetGlobalObject();
+    if (!globalObject)
+        return NS_ERROR_FAILURE;
+
+    nsCOMPtr<nsIDocShellTreeItem> docshellTreeItem =
+        do_QueryInterface(globalObject->GetDocShell(), &rv);
     if (NS_FAILED(rv)) return rv;
-    nsCOMPtr<nsIDocShellTreeItem> docshellTreeItem(do_QueryInterface(docshell, &rv));
-    if (NS_FAILED(rv)) return rv;
+
     nsCOMPtr<nsIDocShellTreeItem> rootItem;
     rv = docshellTreeItem->GetRootTreeItem(getter_AddRefs(rootItem));
     if (NS_FAILED(rv)) return rv;
@@ -1479,15 +1478,13 @@ nsScriptSecurityManager::CanExecuteScripts(JSContext* cx,
     }
 
     //-- See if the current window allows JS execution
-    nsCOMPtr<nsIScriptContext> scriptContext = GetScriptContext(cx);
+    nsIScriptContext *scriptContext = GetScriptContext(cx);
     if (!scriptContext) return NS_ERROR_FAILURE;
-    nsCOMPtr<nsIScriptGlobalObject> globalObject;
-    scriptContext->GetGlobalObject(getter_AddRefs(globalObject));
+    nsIScriptGlobalObject *globalObject = scriptContext->GetGlobalObject();
     if (!globalObject) return NS_ERROR_FAILURE;
-    
+
     nsresult rv;
-    nsCOMPtr<nsIDocShell> docshell;
-    globalObject->GetDocShell(getter_AddRefs(docshell));
+    nsCOMPtr<nsIDocShell> docshell = globalObject->GetDocShell();
     nsCOMPtr<nsIDocShellTreeItem> globalObjTreeItem = do_QueryInterface(docshell);
     if (globalObjTreeItem) 
     {
@@ -1731,16 +1728,15 @@ nsScriptSecurityManager::GetPrincipalFromContext(JSContext *cx,
 {
     *result = nsnull;
 
-    nsCOMPtr<nsIScriptContext> scriptContext = GetScriptContext(cx);
+    nsIScriptContext *scriptContext = GetScriptContext(cx);
 
     if (!scriptContext)
     {
         return NS_ERROR_FAILURE;
     }
 
-    nsCOMPtr<nsIScriptGlobalObject> global;
-    scriptContext->GetGlobalObject(getter_AddRefs(global));
-    nsCOMPtr<nsIScriptObjectPrincipal> globalData(do_QueryInterface(global));
+    nsCOMPtr<nsIScriptObjectPrincipal> globalData =
+        do_QueryInterface(scriptContext->GetGlobalObject());
     if (globalData)
         globalData->GetPrincipal(result);
 
@@ -1852,14 +1848,13 @@ nsScriptSecurityManager::GetPrincipalAndFrame(JSContext *cx,
     //   and return the innermost frame for annotations.
     if (cx)
     {
-        nsCOMPtr<nsIScriptContext> scriptContext = GetScriptContext(cx);
+        nsIScriptContext *scriptContext = GetScriptContext(cx);
         if (scriptContext)
         {
-            nsCOMPtr<nsIScriptGlobalObject> global;
-            scriptContext->GetGlobalObject(getter_AddRefs(global));
-            NS_ENSURE_TRUE(global, NS_ERROR_FAILURE);
-            nsCOMPtr<nsIScriptObjectPrincipal> globalData(do_QueryInterface(global));
+            nsCOMPtr<nsIScriptObjectPrincipal> globalData =
+                do_QueryInterface(scriptContext->GetGlobalObject());
             NS_ENSURE_TRUE(globalData, NS_ERROR_FAILURE);
+
             globalData->GetPrincipal(result);
             if (*result)
             {
@@ -2060,13 +2055,11 @@ nsScriptSecurityManager::CheckConfirmDialog(JSContext* cx, nsIPrincipal* aPrinci
     nsCOMPtr<nsIPrompt> prompter;
     if (cx)
     {
-        nsCOMPtr<nsIScriptContext> scriptContext = GetScriptContext(cx);
+        nsIScriptContext *scriptContext = GetScriptContext(cx);
         if (scriptContext)
         {
-            nsCOMPtr<nsIScriptGlobalObject> globalObject;
-            scriptContext->GetGlobalObject(getter_AddRefs(globalObject));
-            NS_ASSERTION(globalObject, "script context has no global object");
-            nsCOMPtr<nsIDOMWindowInternal> domWin(do_QueryInterface(globalObject));
+            nsCOMPtr<nsIDOMWindowInternal> domWin =
+                do_QueryInterface(scriptContext->GetGlobalObject());
             if (domWin)
                 domWin->GetPrompter(getter_AddRefs(prompter));
         }
@@ -2120,6 +2113,8 @@ nsScriptSecurityManager::CheckConfirmDialog(JSContext* cx, nsIPrincipal* aPrinci
 
     PRInt32 buttonPressed = 1; // If the user exits by clicking the close box, assume No (button 1)
     rv = prompter->ConfirmEx(title.get(), message.get(),
+                             (nsIPrompt::BUTTON_DELAY_ENABLE) +
+                             (nsIPrompt::BUTTON_POS_1_DEFAULT) +
                              (nsIPrompt::BUTTON_TITLE_YES * nsIPrompt::BUTTON_POS_0) +
                              (nsIPrompt::BUTTON_TITLE_NO * nsIPrompt::BUTTON_POS_1),
                              nsnull, nsnull, nsnull, check.get(), checkValue, &buttonPressed);
@@ -2581,7 +2576,7 @@ nsScriptSecurityManager::CheckXPCPermissions(nsISupports* aObj,
 // Method implementing nsIObserver //
 /////////////////////////////////////
 static const char sPrincipalPrefix[] = "capability.principal";
-static NS_NAMED_LITERAL_CSTRING(sPolicyPrefix, "capability.policy.");
+static const char sPolicyPrefix[] = "capability.policy.";
 
 NS_IMETHODIMP
 nsScriptSecurityManager::Observe(nsISupports* aObject, const char* aTopic,
@@ -2598,7 +2593,7 @@ nsScriptSecurityManager::Observe(nsISupports* aObject, const char* aTopic,
 #endif
         )
         JSEnabledPrefChanged(mSecurityPref);
-    if(PL_strncmp(message, sPolicyPrefix.get(), sPolicyPrefix.Length()) == 0)
+    if(PL_strncmp(message, sPolicyPrefix, sizeof(sPolicyPrefix)-1) == 0)
         mPolicyPrefsChanged = PR_TRUE; // This will force re-initialization of the pref table
     else if((PL_strncmp(message, sPrincipalPrefix, sizeof(sPrincipalPrefix)-1) == 0) &&
             !mIsWritingPrefs)
@@ -2801,7 +2796,7 @@ nsScriptSecurityManager::InitPolicies()
     policyNames += NS_LITERAL_CSTRING(" ") + defaultPolicyNames;
 
     //-- Initialize domain policies
-    char* policyCurrent = (char*)policyNames.get();
+    char* policyCurrent = policyNames.BeginWriting();
     PRBool morePolicies = PR_TRUE;
     while (morePolicies)
     {
@@ -2818,7 +2813,8 @@ nsScriptSecurityManager::InitPolicies()
         *policyCurrent = '\0';
         policyCurrent++;
 
-        nsCAutoString sitesPrefName(sPolicyPrefix +
+        nsCAutoString sitesPrefName(
+            NS_LITERAL_CSTRING(sPolicyPrefix) +
 				    nsDependentCString(nameBegin) +
 				    NS_LITERAL_CSTRING(".sites"));
         nsXPIDLCString domainList;
@@ -2838,7 +2834,7 @@ nsScriptSecurityManager::InitPolicies()
         }
 
         //-- Parse list of sites and create an entry in mOriginToPolicyMap for each
-        char* domainStart = (char*)domainList.get();
+        char* domainStart = domainList.BeginWriting();
         char* domainCurrent = domainStart;
         char* lastDot = nsnull;
         char* nextToLastDot = nsnull;
@@ -2915,7 +2911,7 @@ nsScriptSecurityManager::InitDomainPolicy(JSContext* cx,
                                           DomainPolicy* aDomainPolicy)
 {
     nsresult rv;
-    nsCAutoString policyPrefix(sPolicyPrefix +
+    nsCAutoString policyPrefix(NS_LITERAL_CSTRING(sPolicyPrefix) +
                                nsDependentCString(aPolicyName) +
                                NS_LITERAL_CSTRING("."));
     PRUint32 prefixLength = policyPrefix.Length() - 1; // subtract the '.'
@@ -3203,7 +3199,7 @@ nsScriptSecurityManager::InitPrefs()
     char** prefNames;
 
     // Set a callback for policy pref changes
-    prefBranchInternal->AddObserver(sPolicyPrefix.get(), this, PR_FALSE);
+    prefBranchInternal->AddObserver(sPolicyPrefix, this, PR_FALSE);
 
     //-- Initialize the principals database from prefs
     rv = mPrefBranch->GetChildList(sPrincipalPrefix, &prefCount, &prefNames);
@@ -3238,13 +3234,13 @@ PrintPropertyPolicy(PLDHashTable *table, PLDHashEntryHdr *entry,
     prop.AppendWithConversion((PRUnichar*)JSValIDToString(cx, pp->key));
     prop += ": Get=";
     if (SECURITY_ACCESS_LEVEL_FLAG(pp->mGet))
-        prop.AppendInt(pp->mGet.level);
+        prop.AppendInt((PRInt32)pp->mGet.level);
     else
         prop += pp->mGet.capability;
 
     prop += " Set=";
     if (SECURITY_ACCESS_LEVEL_FLAG(pp->mSet))
-        prop.AppendInt(pp->mSet.level);
+        prop.AppendInt((PRInt32)pp->mSet.level);
     else
         prop += pp->mSet.capability;
         

@@ -34,7 +34,7 @@
 /*
  * Support for various policy related extensions
  *
- * $Id: polcyxtn.c,v 1.1.1.1 2003-02-14 19:26:53 rbasch Exp $
+ * $Id: polcyxtn.c,v 1.1.1.2 2004-06-30 17:10:49 rbasch Exp $
  */
 
 #include "seccomon.h"
@@ -84,7 +84,7 @@ const SEC_ASN1Template CERT_PolicyInfoTemplate[] = {
 	  0, NULL, sizeof(CERTPolicyInfo) },
     { SEC_ASN1_OBJECT_ID,
 	  offsetof(CERTPolicyInfo, policyID) },
-    { SEC_ASN1_SEQUENCE_OF,
+    { SEC_ASN1_SEQUENCE_OF | SEC_ASN1_OPTIONAL,
 	  offsetof(CERTPolicyInfo, policyQualifiers),
 	  CERT_PolicyQualifierTemplate },
     { 0 }
@@ -178,7 +178,7 @@ CERT_DecodeCertificatePoliciesExtension(SECItem *extnValue)
 	policyInfo = *policyInfos;
 	policyInfo->oid = SECOID_FindOIDTag(&policyInfo->policyID);
 	policyQualifiers = policyInfo->policyQualifiers;
-	while ( *policyQualifiers != NULL ) {
+	while ( policyQualifiers != NULL && *policyQualifiers != NULL ) {
 	    policyQualifier = *policyQualifiers;
 	    policyQualifier->oid =
 		SECOID_FindOIDTag(&policyQualifier->qualifierID);
@@ -416,7 +416,7 @@ CERT_GetCertCommentString(CERTCertificate *cert)
 	if ( (*policyInfos)->oid == SEC_OID_VERISIGN_USER_NOTICES ) {
 	    policyQualifiers = (*policyInfos)->policyQualifiers;
 	    /* search through the policy qualifiers looking for user notice */
-	    while ( *policyQualifiers != NULL ) {
+	    while ( policyQualifiers != NULL && *policyQualifiers != NULL ) {
 		qualifier = *policyQualifiers;
 		if ( qualifier->oid == SEC_OID_PKIX_USER_NOTICE_QUALIFIER ) {
 		    retstring =

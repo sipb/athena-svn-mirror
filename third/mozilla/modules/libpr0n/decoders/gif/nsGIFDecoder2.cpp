@@ -214,7 +214,14 @@ nsresult nsGIFDecoder2::ProcessData(unsigned char *data, PRUint32 count, PRUint3
 /* unsigned long writeFrom (in nsIInputStream inStr, in unsigned long count); */
 NS_IMETHODIMP nsGIFDecoder2::WriteFrom(nsIInputStream *inStr, PRUint32 count, PRUint32 *_retval)
 {
-  return inStr->ReadSegments(ReadDataOut, this,  count, _retval);
+  nsresult rv = inStr->ReadSegments(ReadDataOut, this,  count, _retval);
+
+  /* necko doesn't propagate the errors from ReadDataOut - take matters
+     into our own hands */
+  if (NS_SUCCEEDED(rv) && mGIFStruct && mGIFStruct->state == gif_error)
+    return NS_ERROR_FAILURE;
+
+  return rv;
 }
 
 
@@ -325,8 +332,12 @@ int nsGIFDecoder2::EndImageFrame(
     decoder->mImageFrame->SetTimeout(aDelayTimeout);
   }
   decoder->mImageContainer->EndFrameDecode(aFrameNumber, aDelayTimeout);
-    
-  if (decoder->mObserver && decoder->mImageFrame) {
+
+  // if the gif is corrupt don't mark the frame as complete, as nsCSSRendering
+  // will happily try using it to draw a background
+  if (decoder->mObserver && 
+      decoder->mImageFrame && 
+      decoder->mGIFStruct->state != gif_error) {
     decoder->FlushImageData();
 
     if (aFrameNumber == 1) {
@@ -460,19 +471,25 @@ int nsGIFDecoder2::HaveDecodedRow(
         case gfxIFormats::BGR:
         {
           while (rowBufIndex != decoder->mGIFStruct->rowend) {
-            PRUint32 colorIndex = (*rowBufIndex < cmapsize) ? (*rowBufIndex * 3) : 0;
-#if defined(XP_WIN) || defined(XP_OS2) || defined(XP_BEOS) || defined(MOZ_WIDGET_PHOTON)
-            *rgbRowIndex++ = cmap[colorIndex + 2]; // blue
-            *rgbRowIndex++ = cmap[colorIndex + 1]; // green
-            *rgbRowIndex++ = cmap[colorIndex];     // red
-#else
 #if defined(XP_MAC) || defined(XP_MACOSX)
             *rgbRowIndex++ = 0; // Mac is always 32bits per pixel, this is pad
 #endif
-            *rgbRowIndex++ = cmap[colorIndex];     // red
-            *rgbRowIndex++ = cmap[colorIndex + 1]; // green
-            *rgbRowIndex++ = cmap[colorIndex + 2]; // blue
+            if (*rowBufIndex < cmapsize) {
+              PRUint32 colorIndex = *rowBufIndex * 3;
+#if defined(XP_WIN) || defined(XP_OS2) || defined(XP_BEOS) || defined(MOZ_WIDGET_PHOTON)
+              *rgbRowIndex++ = cmap[colorIndex + 2]; // blue
+              *rgbRowIndex++ = cmap[colorIndex + 1]; // green
+              *rgbRowIndex++ = cmap[colorIndex];     // red
+#else
+              *rgbRowIndex++ = cmap[colorIndex];     // red
+              *rgbRowIndex++ = cmap[colorIndex + 1]; // green
+              *rgbRowIndex++ = cmap[colorIndex + 2]; // blue
 #endif
+            } else {
+              *rgbRowIndex++ = 0;                    // red
+              *rgbRowIndex++ = 0;                    // green
+              *rgbRowIndex++ = 0;                    // blue
+            }
             ++rowBufIndex;
           }  
           for (int i=0; i<aDuplicateCount; i++) {
@@ -488,19 +505,25 @@ int nsGIFDecoder2::HaveDecodedRow(
           memset(decoder->mAlphaLine, 0, abpr);
           for (PRUint32 x = 0; x < (PRUint32)width; ++x) {
             if (*rowBufIndex != decoder->mGIFStruct->tpixel) {
-              PRUint32 colorIndex = (*rowBufIndex < cmapsize) ? (*rowBufIndex * 3) : 0;
-#if defined(XP_WIN) || defined(XP_OS2) || defined(XP_BEOS) || defined(MOZ_WIDGET_PHOTON)
-              *rgbRowIndex++ = cmap[colorIndex + 2]; // blue
-              *rgbRowIndex++ = cmap[colorIndex + 1]; // green
-              *rgbRowIndex++ = cmap[colorIndex];     // red
-#else
 #if defined(XP_MAC) || defined(XP_MACOSX)
               *rgbRowIndex++ = 0; // Mac is always 32bits per pixel, this is pad
 #endif
-              *rgbRowIndex++ = cmap[colorIndex];     // red
-              *rgbRowIndex++ = cmap[colorIndex + 1]; // green
-              *rgbRowIndex++ = cmap[colorIndex + 2]; // blue
+              if (*rowBufIndex < cmapsize) {
+                PRUint32 colorIndex = *rowBufIndex * 3;
+#if defined(XP_WIN) || defined(XP_OS2) || defined(XP_BEOS) || defined(MOZ_WIDGET_PHOTON)
+                *rgbRowIndex++ = cmap[colorIndex + 2]; // blue
+                *rgbRowIndex++ = cmap[colorIndex + 1]; // green
+                *rgbRowIndex++ = cmap[colorIndex];     // red
+#else
+                *rgbRowIndex++ = cmap[colorIndex];     // red
+                *rgbRowIndex++ = cmap[colorIndex + 1]; // green
+                *rgbRowIndex++ = cmap[colorIndex + 2]; // blue
 #endif
+              } else {
+                *rgbRowIndex++ = 0;                    // red
+                *rgbRowIndex++ = 0;                    // green
+                *rgbRowIndex++ = 0;                    // blue
+              }
               decoder->mAlphaLine[x>>3] |= 1<<(7-x&0x7);
             } else {
 #if defined(XP_MAC) || defined(XP_MACOSX)

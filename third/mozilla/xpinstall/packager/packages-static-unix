@@ -60,6 +60,9 @@ bin/regxpcom
 bin/regchrome
 bin/mozilla-xremote-client
 bin/xpicleanup
+bin/init.d/README
+bin/init.d/S02solaris_patchchecker.sh
+bin/moz_patch_checker.dtksh
 bin/res/cmessage.txt
 
 bin/libldap50.so
@@ -205,6 +208,7 @@ bin/components/websrvcs.xpt
 
 ; all the pref files must be part of base
 ; to prevent migration bugs
+bin/greprefs/*
 bin/defaults/pref/*
 bin/defaults/autoconfig/*
 ; this is only here if you have plugins -blizzard

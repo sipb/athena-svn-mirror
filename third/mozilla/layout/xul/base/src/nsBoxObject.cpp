@@ -250,7 +250,7 @@ nsBoxObject::GetOffsetRect(nsRect& aRect)
         if(context) {
           // Get the scale from that Presentation Context
           float scale;
-          context->GetTwipsToPixels(&scale);
+          scale = context->TwipsToPixels();
               
           // Convert to pixels using that scale
           aRect.x = NSTwipsToIntPixels(origin.x, scale);
@@ -314,7 +314,7 @@ nsBoxObject::GetScreenRect(nsRect& aRect)
         if (widget) {
           // Get the scale from that Presentation Context
           float scale;
-          presContext->GetTwipsToPixels(&scale);
+          scale = presContext->TwipsToPixels();
           
           // Convert to pixels using that scale
           offsetX = NSTwipsToIntPixels(offsetX, scale);
@@ -559,11 +559,7 @@ nsBoxObject::GetPreviousSibling(nsIDOMElement **aPreviousOrdinalSibling)
   nsIFrame* parentFrame = frame->GetParent();
   if (!parentFrame) return NS_OK;
   
-  nsCOMPtr<nsIPresContext> presContext;
-  mPresShell->GetPresContext(getter_AddRefs(presContext));
-
-  nsIFrame* nextFrame;
-  parentFrame->FirstChild(presContext, nsnull, &nextFrame);
+  nsIFrame* nextFrame = parentFrame->GetFirstChild(nsnull);
   nsIFrame* prevFrame = nsnull;
   while (nextFrame) {
     if (nextFrame == frame)
@@ -588,12 +584,8 @@ nsBoxObject::GetChildByOrdinalAt(PRUint32 aIndex)
   nsIFrame* frame = GetFrame();
   if (!frame) return nsnull;
   
-  nsCOMPtr<nsIPresContext> presContext;
-  mPresShell->GetPresContext(getter_AddRefs(presContext));
-
   // get the first child box
-  nsIFrame* childFrame;
-  frame->FirstChild(presContext, nsnull, &childFrame);
+  nsIFrame* childFrame = frame->GetFirstChild(nsnull);
   
   PRUint32 i = 0;
   while (childFrame && i < aIndex) {

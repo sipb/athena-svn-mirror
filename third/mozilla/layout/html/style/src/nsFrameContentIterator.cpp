@@ -34,17 +34,17 @@ public:
   NS_DECL_ISUPPORTS
 
   // nsIContentIterator
-  NS_IMETHOD Init(nsIContent* aRoot);
-  NS_IMETHOD Init(nsIDOMRange* aRange);
-  
-  NS_IMETHOD First();
-  NS_IMETHOD Last();
-  NS_IMETHOD Next();
-  NS_IMETHOD Prev();
+  virtual nsresult Init(nsIContent* aRoot);
+  virtual nsresult Init(nsIDOMRange* aRange);
 
-  NS_IMETHOD CurrentNode(nsIContent **aNode);
-  NS_IMETHOD IsDone();
-  NS_IMETHOD PositionAt(nsIContent* aCurNode);
+  virtual void First();
+  virtual void Last();
+  virtual void Next();
+  virtual void Prev();
+
+  virtual nsIContent *GetCurrentNode();
+  virtual PRBool IsDone();
+  virtual nsresult PositionAt(nsIContent* aCurNode);
 
 private:
   nsCOMPtr<nsIPresContext>  mPresContext;
@@ -54,7 +54,7 @@ private:
 };
 
 nsFrameContentIterator::nsFrameContentIterator(nsIPresContext* aPresContext,
-                                                   nsIFrame*       aFrame)
+                                               nsIFrame*       aFrame)
   : mPresContext(aPresContext), mParentFrame(aFrame), mIsDone(PR_FALSE)
 {
   First();
@@ -66,28 +66,25 @@ nsFrameContentIterator::~nsFrameContentIterator()
 {
 }
 
-NS_IMETHODIMP
+nsresult
 nsFrameContentIterator::Init(nsIContent* aRoot)
 {
   return NS_ERROR_ALREADY_INITIALIZED;
 }
 
-NS_IMETHODIMP
+nsresult
 nsFrameContentIterator::Init(nsIDOMRange* aRange)
 {
   return NS_ERROR_ALREADY_INITIALIZED;
 }
 
-NS_IMETHODIMP
+void
 nsFrameContentIterator::First()
 {
   // Get the first child frame and make it the current node
-  mParentFrame->FirstChild(mPresContext, nsnull, &mCurrentChild);
-  if (!mCurrentChild) {
-    return NS_ERROR_FAILURE;
-  }
-  mIsDone = PR_FALSE;
-  return NS_OK;
+  mCurrentChild = mParentFrame->GetFirstChild(nsnull);
+
+  mIsDone = !mCurrentChild;
 }
 
 
@@ -109,34 +106,28 @@ GetNextChildFrame(nsIPresContext* aPresContext, nsIFrame* aFrame)
     aFrame->GetParent()->GetNextInFlow(&parent);
 
     if (parent) {
-      parent->FirstChild(aPresContext, nsnull, &nextSibling);
+      nextSibling = parent->GetFirstChild(nsnull);
     }
   }
 
   return nextSibling;
 }
 
-NS_IMETHODIMP
+void
 nsFrameContentIterator::Last()
 {
-  nsIFrame* nextChild;
-
   // Starting with the first child walk and find the last child
   mCurrentChild = nsnull;
-  mParentFrame->FirstChild(mPresContext, nsnull, &nextChild);
+  nsIFrame* nextChild = mParentFrame->GetFirstChild(nsnull);
   while (nextChild) {
     mCurrentChild = nextChild;
     nextChild = ::GetNextChildFrame(mPresContext, nextChild);
   }
 
-  if (!mCurrentChild) {
-    return NS_ERROR_FAILURE;
-  }
-  mIsDone = PR_FALSE;
-  return NS_OK;
+  mIsDone = !mCurrentChild;
 }
 
-NS_IMETHODIMP
+void
 nsFrameContentIterator::Next()
 {
   nsIFrame* nextChild = ::GetNextChildFrame(mPresContext, mCurrentChild);
@@ -147,10 +138,12 @@ nsFrameContentIterator::Next()
 
     // If we're at the end then the collection is at the end
     mIsDone = (nsnull == ::GetNextChildFrame(mPresContext, mCurrentChild));
-    return NS_OK;
+
+    return;
   }
 
-  return NS_ERROR_FAILURE;
+  // No next frame, we're done.
+  mIsDone = PR_TRUE;
 }
 
 static nsIFrame*
@@ -161,10 +154,8 @@ GetPrevChildFrame(nsIPresContext* aPresContext, nsIFrame* aFrame)
   // Get its previous sibling. Because we have a singly linked list we
   // need to search from the first child
   nsIFrame* parent = aFrame->GetParent();
-  nsIFrame* firstChild;
   nsIFrame* prevSibling;
-
-  parent->FirstChild(aPresContext, nsnull, &firstChild);
+  nsIFrame* firstChild = parent->GetFirstChild(nsnull);
 
   NS_ASSERTION(firstChild, "parent has no first child");
   nsFrameList frameList(firstChild);
@@ -176,7 +167,7 @@ GetPrevChildFrame(nsIPresContext* aPresContext, nsIFrame* aFrame)
     parent->GetPrevInFlow(&parent);
 
     if (parent) {
-      parent->FirstChild(aPresContext, nsnull, &firstChild);
+      firstChild = parent->GetFirstChild(nsnull);
       frameList.SetFrames(firstChild);
       prevSibling = frameList.LastChild();
     }
@@ -196,7 +187,7 @@ GetPrevChildFrame(nsIPresContext* aPresContext, nsIFrame* aFrame)
   return prevSibling;
 }
 
-NS_IMETHODIMP
+void
 nsFrameContentIterator::Prev()
 {
   nsIFrame* prevChild = ::GetPrevChildFrame(mPresContext, mCurrentChild);
@@ -207,39 +198,36 @@ nsFrameContentIterator::Prev()
     
     // If we're at the beginning then the collection is at the end
     mIsDone = (nsnull == ::GetPrevChildFrame(mPresContext, mCurrentChild));
-    return NS_OK;
+
+    return;
   }
 
-  return NS_ERROR_FAILURE;
+  // No previous frame, we're done.
+  mIsDone = PR_TRUE;
 }
 
-NS_IMETHODIMP
-nsFrameContentIterator::CurrentNode(nsIContent **aNode)
+nsIContent *
+nsFrameContentIterator::GetCurrentNode()
 {
-  if (mCurrentChild) {
-    *aNode = mCurrentChild->GetContent();
-    NS_IF_ADDREF(*aNode);
-    return NS_OK;
-  } else {
-    *aNode = nsnull;
-    return NS_ERROR_FAILURE;
+  if (mCurrentChild && !mIsDone) {
+    return mCurrentChild->GetContent();
   }
+
+  return nsnull;
 }
 
-NS_IMETHODIMP
+PRBool
 nsFrameContentIterator::IsDone()
 {
-  return mIsDone ? NS_OK : NS_ENUMERATOR_FALSE;
+  return mIsDone;
 }
 
-NS_IMETHODIMP
+nsresult
 nsFrameContentIterator::PositionAt(nsIContent* aCurNode)
 {
-  nsIFrame* child;
-
   // Starting with the first child frame search for the child frame
   // with the matching content object
-  mParentFrame->FirstChild(mPresContext, nsnull, &child);
+  nsIFrame* child = mParentFrame->GetFirstChild(nsnull);
   while (child) {
     if (child->GetContent() == aCurNode) {
       break;
@@ -251,10 +239,9 @@ nsFrameContentIterator::PositionAt(nsIContent* aCurNode)
     // Make it the current child
     mCurrentChild = child;
     mIsDone = PR_FALSE;
-    return NS_OK;
   }
 
-  return NS_ERROR_FAILURE;
+  return NS_OK;
 }
 
 nsresult

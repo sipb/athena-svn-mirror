@@ -61,7 +61,6 @@ static NS_DEFINE_CID(kPrefCID, NS_PREF_CID);
 
 nsFontMetricsPh::nsFontMetricsPh()
 {
-	NS_INIT_ISUPPORTS();
 	mDeviceContext = nsnull;
 	mFont = nsnull;
 
@@ -185,9 +184,12 @@ printf( "\n\n\t\t\tIn nsFontMetricsPh::Init str=%s\n", str );
 		}
 
 	float app2dev;
-	mDeviceContext->GetAppUnitsToDevUnits(app2dev);
+	app2dev = mDeviceContext->AppUnitsToDevUnits();
 
-	PRInt32 sizePoints = NSToIntRound( app2dev * mFont->size * 0.74 );
+	PRInt32 sizePoints;
+	if( mFont->systemFont == PR_TRUE )
+		sizePoints = NSToIntRound( app2dev * mFont->size * 0.68 );
+	else sizePoints = NSToIntRound( app2dev * mFont->size * 0.74 );
 	
 	char NSFullFontName[MAX_FONT_TAG];
 
@@ -233,7 +235,6 @@ printf( "\tCall PfLoadMetrics for NSFullFontName=%s\n", NSFullFontName );
 
 		gFontMetricsCache->Put(&key, node);
 
-		PfLoadFont( NSFullFontName, PHFONT_LOAD_METRICS, nsnull );
 		PfLoadMetrics( NSFullFontName );
 	  }
 
@@ -241,10 +242,10 @@ printf( "\tCall PfLoadMetrics for NSFullFontName=%s\n", NSFullFontName );
 	double height;
 	nscoord onePixel;
 
-	mDeviceContext->GetDevUnitsToAppUnits(dev2app);
+	dev2app = mDeviceContext->DevUnitsToAppUnits();
 	onePixel = NSToCoordRound(1 * dev2app);
-	height = node->descender - node->ascender + 1.0;
-	PfExtentText(&extent, NULL, NSFullFontName, " ", 1);
+	height = node->descender - node->ascender;
+	PfExtent( &extent, NULL, NSFullFontName, 0L, 0L, " ", 1, PF_SIMPLE_METRICS, NULL );
 	mSpaceWidth = NSToCoordRound((extent.lr.x - extent.ul.x + 1) * dev2app);
 
 	mLeading = NSToCoordRound(0);
@@ -301,7 +302,6 @@ struct nsFontFamily
 // The Font Enumerator
 nsFontEnumeratorPh::nsFontEnumeratorPh()
 {
-	NS_INIT_ISUPPORTS();
 }
 
 NS_IMPL_ISUPPORTS1(nsFontEnumeratorPh, nsIFontEnumerator)

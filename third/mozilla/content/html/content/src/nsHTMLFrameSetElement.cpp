@@ -46,7 +46,7 @@
 #include "nsIHTMLDocument.h"
 #include "nsIDocument.h"
 
-class nsHTMLFrameSetElement : public nsGenericHTMLContainerElement,
+class nsHTMLFrameSetElement : public nsGenericHTMLElement,
                               public nsIDOMHTMLFrameSetElement,
                               public nsIFrameSetElement
 {
@@ -58,32 +58,35 @@ public:
   NS_DECL_ISUPPORTS_INHERITED
 
   // nsIDOMNode
-  NS_FORWARD_NSIDOMNODE_NO_CLONENODE(nsGenericHTMLContainerElement::)
+  NS_FORWARD_NSIDOMNODE_NO_CLONENODE(nsGenericHTMLElement::)
 
   // nsIDOMElement
-  NS_FORWARD_NSIDOMELEMENT(nsGenericHTMLContainerElement::)
+  NS_FORWARD_NSIDOMELEMENT(nsGenericHTMLElement::)
 
   // nsIDOMHTMLElement
-  NS_FORWARD_NSIDOMHTMLELEMENT(nsGenericHTMLContainerElement::)
+  NS_FORWARD_NSIDOMHTMLELEMENT(nsGenericHTMLElement::)
 
   // nsIDOMHTMLFrameSetElement
   NS_DECL_NSIDOMHTMLFRAMESETELEMENT
 
   // These override the SetAttr methods in nsGenericHTMLElement (need
   // both here to silence compiler warnings).
-  NS_IMETHOD SetAttr(PRInt32 aNameSpaceID, nsIAtom* aAttribute,
-                     const nsAString& aValue, PRBool aNotify);
-  NS_IMETHOD SetAttr(nsINodeInfo* aNodeInfo,
-                     const nsAString& aValue,
-                     PRBool aNotify);
+  nsresult SetAttr(PRInt32 aNameSpaceID, nsIAtom* aName,
+                   const nsAString& aValue, PRBool aNotify)
+  {
+    return SetAttr(aNameSpaceID, aName, nsnull, aValue, aNotify);
+  }
+  virtual nsresult SetAttr(PRInt32 aNameSpaceID, nsIAtom* aName,
+                           nsIAtom* aPrefix, const nsAString& aValue,
+                           PRBool aNotify);
 
   // nsIFramesetElement
   NS_IMETHOD GetRowSpec(PRInt32 *aNumValues, const nsFramesetSpec** aSpecs);
   NS_IMETHOD GetColSpec(PRInt32 *aNumValues, const nsFramesetSpec** aSpecs);
 
-  NS_IMETHOD StringToAttribute(nsIAtom* aAttribute,
-                               const nsAString& aValue,
-                               nsHTMLValue& aResult);
+  virtual PRBool ParseAttribute(nsIAtom* aAttribute,
+                                const nsAString& aValue,
+                                nsAttrValue& aResult);
   NS_IMETHOD AttributeToString(nsIAtom* aAttribute,
                                const nsHTMLValue& aValue,
                                nsAString& aResult) const;
@@ -127,7 +130,7 @@ PRInt32 nsHTMLFrameSetElement::gMaxNumRowColSpecs = 25;
 
 nsresult
 NS_NewHTMLFrameSetElement(nsIHTMLContent** aInstancePtrResult,
-                          nsINodeInfo *aNodeInfo)
+                          nsINodeInfo *aNodeInfo, PRBool aFromParser)
 {
   NS_ENSURE_ARG_POINTER(aInstancePtrResult);
 
@@ -172,7 +175,7 @@ NS_IMPL_RELEASE_INHERITED(nsHTMLFrameSetElement, nsGenericElement)
 
 // QueryInterface implementation for nsHTMLFrameSetElement
 NS_HTML_CONTENT_INTERFACE_MAP_BEGIN(nsHTMLFrameSetElement,
-                                    nsGenericHTMLContainerElement)
+                                    nsGenericHTMLElement)
   NS_INTERFACE_MAP_ENTRY(nsIDOMHTMLFrameSetElement)
   NS_INTERFACE_MAP_ENTRY(nsIFrameSetElement)
   NS_INTERFACE_MAP_ENTRY_CONTENT_CLASSINFO(HTMLFrameSetElement)
@@ -198,7 +201,7 @@ nsHTMLFrameSetElement::CloneNode(PRBool aDeep, nsIDOMNode** aReturn)
   if (NS_FAILED(rv))
     return rv;
 
-  CopyInnerTo(this, it, aDeep);
+  CopyInnerTo(it, aDeep);
 
   *aReturn = NS_STATIC_CAST(nsIDOMNode *, it);
 
@@ -210,9 +213,10 @@ nsHTMLFrameSetElement::CloneNode(PRBool aDeep, nsIDOMNode** aReturn)
 NS_IMPL_STRING_ATTR(nsHTMLFrameSetElement, Cols, cols)
 NS_IMPL_STRING_ATTR(nsHTMLFrameSetElement, Rows, rows)
 
-NS_IMETHODIMP
+nsresult
 nsHTMLFrameSetElement::SetAttr(PRInt32 aNameSpaceID,
                                nsIAtom* aAttribute,
+                               nsIAtom* aPrefix,
                                const nsAString& aValue,
                                PRBool aNotify)
 {
@@ -220,11 +224,10 @@ nsHTMLFrameSetElement::SetAttr(PRInt32 aNameSpaceID,
   /* The main goal here is to see whether the _number_ of rows or
    *  columns has changed.  If it has, we need to reframe; otherwise
    *  we want to reflow.  So we set mCurrentRowColHint here, then call
-   *  nsGenericHTMLContainerElement::SetAttr, which will end up
-   *  calling GetAttributeChangeHint and notifying layout with that
-   *  hint.  Once nsGenericHTMLContainerElement::SetAttr returns, we
-   *  want to go back to our normal hint, which is
-   *  NS_STYLE_HINT_REFLOW.
+   *  nsGenericHTMLElement::SetAttr, which will end up calling
+   *  GetAttributeChangeHint and notifying layout with that hint.
+   *  Once nsGenericHTMLElement::SetAttr returns, we want to go back to our
+   *  normal hint, which is NS_STYLE_HINT_REFLOW.
    */
   if (aAttribute == nsHTMLAtoms::rows && aNameSpaceID == kNameSpaceID_None) {
     PRInt32 oldRows = mNumRows;
@@ -251,25 +254,12 @@ nsHTMLFrameSetElement::SetAttr(PRInt32 aNameSpaceID,
     }
   }
   
-  rv = nsGenericHTMLContainerElement::SetAttr(aNameSpaceID,
-                                              aAttribute,
-                                              aValue,
-                                              aNotify);
+  rv = nsGenericHTMLElement::SetAttr(aNameSpaceID, aAttribute, aPrefix,
+                                     aValue, aNotify);
   mCurrentRowColHint = NS_STYLE_HINT_REFLOW;
   
   return rv;
 }
-
-NS_IMETHODIMP
-nsHTMLFrameSetElement::SetAttr(nsINodeInfo* aNodeInfo,
-                               const nsAString& aValue,
-                               PRBool aNotify)
-{
-  return nsGenericHTMLContainerElement::SetAttr(aNodeInfo,
-                                                aValue,
-                                                aNotify);
-}
-
 
 NS_IMETHODIMP
 nsHTMLFrameSetElement::GetRowSpec(PRInt32 *aNumValues,
@@ -344,28 +334,22 @@ nsHTMLFrameSetElement::GetColSpec(PRInt32 *aNumValues,
 }
 
 
-NS_IMETHODIMP
-nsHTMLFrameSetElement::StringToAttribute(nsIAtom* aAttribute,
-                                         const nsAString& aValue,
-                                         nsHTMLValue& aResult)
+PRBool
+nsHTMLFrameSetElement::ParseAttribute(nsIAtom* aAttribute,
+                                      const nsAString& aValue,
+                                      nsAttrValue& aResult)
 {
   if (aAttribute == nsHTMLAtoms::bordercolor) {
-    if (aResult.ParseColor(aValue,
-                           nsGenericHTMLContainerElement::GetOwnerDocument())) {
-      return NS_CONTENT_ATTR_HAS_VALUE;
-    }
+    return aResult.ParseColor(aValue, nsGenericHTMLElement::GetOwnerDocument());
   } 
-  else if (aAttribute == nsHTMLAtoms::frameborder) {
-    if (nsGenericHTMLElement::ParseFrameborderValue(aValue, aResult)) {
-      return NS_CONTENT_ATTR_HAS_VALUE;
-    }
+  if (aAttribute == nsHTMLAtoms::frameborder) {
+    return nsGenericHTMLElement::ParseFrameborderValue(aValue, aResult);
   } 
-  else if (aAttribute == nsHTMLAtoms::border) {
-    if (aResult.ParseIntWithBounds(aValue, eHTMLUnit_Pixel, 0, 100)) {
-      return NS_CONTENT_ATTR_HAS_VALUE;
-    }
+  if (aAttribute == nsHTMLAtoms::border) {
+    return aResult.ParseIntWithBounds(aValue, 0, 100);
   }
-  return NS_CONTENT_ATTR_NOT_THERE;
+
+  return nsGenericHTMLElement::ParseAttribute(aAttribute, aValue, aResult);
 }
 
 NS_IMETHODIMP
@@ -377,8 +361,7 @@ nsHTMLFrameSetElement::AttributeToString(nsIAtom* aAttribute,
     nsGenericHTMLElement::FrameborderValueToString(aValue, aResult);
     return NS_CONTENT_ATTR_HAS_VALUE;
   } 
-  return nsGenericHTMLContainerElement::AttributeToString(aAttribute, aValue,
-                                                          aResult);
+  return nsGenericHTMLElement::AttributeToString(aAttribute, aValue, aResult);
 }
 
 NS_IMETHODIMP
@@ -387,8 +370,7 @@ nsHTMLFrameSetElement::GetAttributeChangeHint(const nsIAtom* aAttribute,
                                               nsChangeHint& aHint) const
 {
   nsresult rv =
-    nsGenericHTMLContainerElement::GetAttributeChangeHint(aAttribute,
-                                                          aModType, aHint);
+    nsGenericHTMLElement::GetAttributeChangeHint(aAttribute, aModType, aHint);
   if (aAttribute == nsHTMLAtoms::rows ||
       aAttribute == nsHTMLAtoms::cols) {
     NS_UpdateHint(aHint, mCurrentRowColHint);
@@ -510,9 +492,9 @@ nsHTMLFrameSetElement::ParseRowColSpec(nsString&       aSpec,
       // Treat 0* as 1* in quirks mode (bug 40383)
       nsCompatibility mode = eCompatibility_FullStandards;
       nsCOMPtr<nsIHTMLDocument> htmlDocument =
-        do_QueryInterface(nsGenericHTMLContainerElement::GetOwnerDocument());
+        do_QueryInterface(nsGenericHTMLElement::GetOwnerDocument());
       if (htmlDocument) {
-        htmlDocument->GetCompatibilityMode(mode);
+        mode = htmlDocument->GetCompatibilityMode();
       }
       
       if (eCompatibility_NavQuirks == mode) {

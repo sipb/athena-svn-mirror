@@ -40,13 +40,17 @@ ifeq (,$(filter-out OS2 WINNT, $(OS_ARCH)))
 MOZ_PKG_FORMAT  = ZIP
 INSTALLER_DIR   = windows
 else
+ifeq (,$(filter-out SunOS, $(OS_ARCH)))
+MOZ_PKG_FORMAT	= BZ2
+else
 MOZ_PKG_FORMAT	= TGZ
+endif
 INSTALLER_DIR   = unix
 endif
 endif
 endif # MOZ_PKG_FORMAT
 ifndef MOZ_PKG_APPNAME
-MOZ_PKG_APPNAME = mozilla
+MOZ_PKG_APPNAME = $(MOZ_APP_NAME)
 endif
 ifndef SDK_PKG_APPNAME
 SDK_PKG_APPNAME = gecko
@@ -110,6 +114,7 @@ endif
 
 # dummy macro if we don't have PSM built
 SIGN_NSS		=
+ifndef CROSS_COMPILE
 ifdef MOZ_PSM
 SIGN_NSS		= @echo signing nss libraries;
 
@@ -132,6 +137,7 @@ SIGN_NSS	+= $(SIGN_CMD) $(SOFTOKN); \
         if test -f $(FREEBL_PURE); then $(SIGN_CMD) $(FREEBL_PURE); fi;
 
 endif # MOZ_PSM
+endif # !CROSS_COMPILE
 
 TARGETS		= $(PACKAGE) $(SDK)
 
@@ -157,9 +163,9 @@ GARBAGE		+= $(DIST)/$(PACKAGE) $(PACKAGE) $(SDK)
 
 OSPACKAGE	= unix
 ifdef USE_SHORT_LIBNAME
-MOZILLA_BIN	= $(DIST)/bin/mozilla$(BIN_SUFFIX)
+MOZILLA_BIN	= $(DIST)/bin/$(MOZ_PKG_APPNAME)$(BIN_SUFFIX)
 else
-MOZILLA_BIN	= $(DIST)/bin/mozilla-bin
+MOZILLA_BIN	= $(DIST)/bin/$(MOZ_PKG_APPNAME)-bin
 endif
 
 ifeq ($(OS_ARCH),IRIX)
@@ -167,7 +173,7 @@ STRIP_FLAGS	= -f
 endif
 ifeq ($(OS_ARCH),BeOS)
 STRIP_FLAGS	= -g
-PLATFORM_EXCLUDE_LIST = ! -name "*.stub" ! -name "mozilla-bin"
+PLATFORM_EXCLUDE_LIST = ! -name "*.stub" ! -name "$(MOZ_PKG_APPNAME)-bin"
 endif
 ifeq ($(OS_ARCH),OS2)
 STRIP		= $(srcdir)/os2/strip.cmd
@@ -178,11 +184,13 @@ PLATFORM_EXCLUDE_LIST = ! -name "*.ico"
 endif
 
 $(SDK):
+ifndef NO_GECKO_SDK
 ifdef MAKE_SDK
 	@rm -rf $(DIST)/$(SDK_PKG_APPNAME)-$(SDK_DIR) $@
 	@mkdir $(DIST)/$(SDK_PKG_APPNAME)-$(SDK_DIR)
 	@cd $(DIST)/$(SDK_DIR) && tar $(TAR_CREATE_FLAGS) - * | (cd ../$(SDK_PKG_APPNAME)-$(SDK_DIR); tar -xf -)
 	cd $(DIST) && $(MAKE_SDK)
+endif
 endif
 
 $(PACKAGE): $(MOZILLA_BIN)
@@ -228,9 +236,13 @@ endif # DMG
 			$(PLATFORM_EXCLUDE_LIST) \
 			-exec $(STRIP) $(STRIP_FLAGS) {} >/dev/null 2>&1 \;
 	$(SIGN_NSS)
-ifeq (,$(filter mozilla MozillaFirebird,$(MOZ_PKG_APPNAME)))
+ifeq (,$(filter mozilla firefox,$(MOZ_PKG_APPNAME)))
 	@echo "Creating start script $(MOZ_PKG_APPNAME)..."
 	cd $(DIST)/$(MOZ_PKG_APPNAME); if [ -f mozilla ]; then cp mozilla $(MOZ_PKG_APPNAME); fi
+endif
+ifdef NO_PKG_FILES
+	@echo "Removing unpackaged files..."
+	cd $(DIST)/$(MOZ_PKG_APPNAME); rm -rf $(NO_PKG_FILES)
 endif
 	@echo "Compressing..."
 	cd $(DIST); $(MAKE_PACKAGE)

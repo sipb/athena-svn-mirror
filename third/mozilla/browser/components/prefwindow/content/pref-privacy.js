@@ -40,14 +40,14 @@
 #define DL_RETAIN_WINDOW 0
 
 var _elementIDs = ["histDay", "browserCacheDiskCache", "cookieBehavior", "enableCookies",
-                   "enableCookiesForOriginatingSiteOnly", "enableCookiesForCurrentSessionOnly",
-                   "enableCookiesButAskFirst", "enableFormFill", "enablePasswords", 
+                   "enableCookiesForOriginatingSiteOnly", "networkCookieLifetime",
+                   "enableFormFill", "enablePasswords", 
                    "downloadsRetentionPolicy"];
 
 function Startup() {
 
   // Initially disable the clear buttons when needed
-  var globalHistory = Components.classes["@mozilla.org/browser/global-history;1"].getService(Components.interfaces.nsIBrowserHistory);
+  var globalHistory = Components.classes["@mozilla.org/browser/global-history;2"].getService(Components.interfaces.nsIBrowserHistory);
   document.getElementById("history").setAttribute("cleardisabled", globalHistory.count == 0);
   
   var cookieMgr = Components.classes["@mozilla.org/cookiemanager;1"].getService();
@@ -183,9 +183,12 @@ var PrivacyPanel = {
     // to them. 
     history: function ()
     {
-      var globalHistory = Components.classes["@mozilla.org/browser/global-history;1"]
+      var globalHistory = Components.classes["@mozilla.org/browser/global-history;2"]
                                     .getService(Components.interfaces.nsIBrowserHistory);
       globalHistory.removeAllPages();
+      
+      var os = Components.classes["@mozilla.org/observer-service;1"].getService(Components.interfaces.nsIObserverService);
+      os.notifyObservers(null, "browser:purge-session-history", "");
       
       return true;
     },
@@ -321,14 +324,16 @@ function updateCookieBroadcaster()
 {
   var broadcaster = document.getElementById("cookieBroadcaster");
   var checkbox    = document.getElementById("enableCookies");
+  var radiogroup  = document.getElementById("networkCookieLifetime");
   if (!checkbox.checked) {
     broadcaster.setAttribute("disabled", "true");
     document.getElementById("enableCookiesForOriginatingSiteOnly").checked = false;
-    document.getElementById("enableCookiesForCurrentSessionOnly").checked = false;
-    document.getElementById("enableCookiesButAskFirst").checked = false;
+    radiogroup.setAttribute("disabled", "true");
   }
-  else
+  else {
     broadcaster.removeAttribute("disabled");
+    radiogroup.removeAttribute("disabled");
+  }
 }
 
 function onPrefsOK()

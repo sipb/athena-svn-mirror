@@ -62,10 +62,7 @@ nsXBLProtoImpl::InstallImplementation(nsXBLPrototypeBinding* aBinding, nsIConten
   nsIScriptGlobalObject *global = document->GetScriptGlobalObject();
   if (!global) return NS_OK;
 
-  nsCOMPtr<nsIScriptContext> context;
-  nsresult rv = global->GetContext(getter_AddRefs(context));
-  NS_ENSURE_SUCCESS(rv, rv);
-
+  nsIScriptContext *context = global->GetContext();
   if (!context) return NS_OK;
 
   // InitTarget objects gives us back the JS object that represents the bound element and the
@@ -74,7 +71,8 @@ nsXBLProtoImpl::InstallImplementation(nsXBLPrototypeBinding* aBinding, nsIConten
   // not been built already.
   void * targetScriptObject = nsnull;
   void * targetClassObject = nsnull;
-  rv = InitTargetObjects(aBinding, context, aBoundElement, &targetScriptObject, &targetClassObject);
+  nsresult rv = InitTargetObjects(aBinding, context, aBoundElement,
+                                  &targetScriptObject, &targetClassObject);
   NS_ENSURE_SUCCESS(rv, rv); // kick out if we were unable to properly intialize our target objects
 
   // Walk our member list and install each one in turn.
@@ -145,17 +143,13 @@ nsXBLProtoImpl::CompilePrototypeMembers(nsXBLPrototypeBinding* aBinding)
   // We want to pre-compile our implementation's members against a "prototype context". Then when we actually 
   // bind the prototype to a real xbl instance, we'll clone the pre-compiled JS into the real instance's 
   // context.
-  nsCOMPtr<nsIXBLDocumentInfo> docInfo = aBinding->GetXBLDocumentInfo(nsnull);
-  if (!docInfo)
-    return NS_ERROR_FAILURE;
-
-  nsCOMPtr<nsIScriptGlobalObjectOwner> globalOwner(do_QueryInterface(docInfo));
+  nsCOMPtr<nsIScriptGlobalObjectOwner> globalOwner(
+      do_QueryInterface(aBinding->XBLDocumentInfo()));
   nsCOMPtr<nsIScriptGlobalObject> globalObject;
   globalOwner->GetScriptGlobalObject(getter_AddRefs(globalObject));
 
-  nsCOMPtr<nsIScriptContext> context;
-  globalObject->GetContext(getter_AddRefs(context));
- 
+  nsIScriptContext *context = globalObject->GetContext();
+
   void* classObject;
   JSObject* scopeObject = globalObject->GetGlobalJSObject();
   nsresult rv = aBinding->InitClass(mClassName, context, scopeObject, &classObject);
@@ -172,12 +166,26 @@ nsXBLProtoImpl::CompilePrototypeMembers(nsXBLPrototypeBinding* aBinding)
        curr;
        curr = curr->GetNext()) {
     nsresult rv = curr->CompileMember(context, mClassName, mClassObject);
-    if (NS_FAILED(rv))
+    if (NS_FAILED(rv)) {
+      DestroyMembers(curr);
       return rv;
+    }
   }
   return NS_OK;
 }
 
+void
+nsXBLProtoImpl::DestroyMembers(nsXBLProtoImplMember* aBrokenMember)
+{
+  NS_ASSERTION(mClassObject, "This should never be called when there is no class object");
+  PRBool compiled = PR_TRUE;
+  for (nsXBLProtoImplMember* curr = mMembers; curr; curr = curr->GetNext()) {
+    if (curr == aBrokenMember) {
+      compiled = PR_FALSE;
+    }
+    curr->Destroy(compiled);
+  }
+}
 
 nsresult
 NS_NewXBLProtoImpl(nsXBLPrototypeBinding* aBinding, 

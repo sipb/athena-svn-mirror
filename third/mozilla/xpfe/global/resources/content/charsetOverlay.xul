@@ -99,10 +99,22 @@
                     <menupopup>
                     </menupopup>
                 </menu>
+                <menu label="&charsetMenuUnicode.label;" accesskey="&charsetMenuUnicode.accesskey;" datasources="rdf:charset-menu" ref="NC:BrowserUnicodeCharsetMenuRoot">
+                    <template>
+                        <rule>
+                            <menupopup>
+                            <menuitem uri="..." label="rdf:http://home.netscape.com/NC-rdf#Name"/>
+                            </menupopup>
+                        </rule>
+                    </template>
+                    <menupopup>
+                    </menupopup>
+                </menu>
                 <menuseparator />
             </menupopup>
         </menu>
-        <menuitem name="charsetCustomize" accesskey="&charsetCustomize.accesskey;" label="&charsetCustomize.label;" oncommand="window.openDialog('chrome://communicator/content/pref/pref-charset.xul','PrefWindow', 'chrome,modal=yes,resizable=yes', 'browser')"/>
+        <menuitem name="charsetCustomize" label="&charsetCustomize.label;"
+                  accesskey="&charsetCustomize.accesskey;"/>
         </menupopup>
     </menu>
 
@@ -133,7 +145,7 @@
             <menupopup>
             </menupopup>
         </menu>
-        <menu label="&charsetMenuMore.label;"  datasources="rdf:charset-menu" ref="NC:BrowserMoreCharsetMenuRoot">
+        <menu label="&charsetMenuMore.label;" accesskey="&charsetMenuMore.accesskey;" datasources="rdf:charset-menu" ref="NC:BrowserMoreCharsetMenuRoot">
             <template>
                 <rule>
                     <menupopup>
@@ -200,12 +212,13 @@
                 <menuseparator />
             </menupopup>
         </menu>
-        <menuitem name="charsetCustomize" accesskey="&charsetCustomize.accesskey;" label="&charsetCustomize.label;" oncommand="window.openDialog('chrome://communicator/content/pref/pref-charset.xul','PrefWindow', 'chrome,modal=yes,resizable=yes', 'browser')"/>
+        <menuitem name="charsetCustomize" label="&charsetCustomize.label;"
+                  accesskey="&charsetCustomize.accesskey;"/>
         </menupopup>
     </menu>
 
     <!-- Mail Edit Charset Menu -->
-    <menu id="maileditCharsetMenu" label="&charsetMenu.label;" accesskey="&charsetMenu.accesskey;" datasources="rdf:charset-menu" ref="NC:MaileditCharsetMenuRoot" oncommand="SetDocumentCharacterSet(event.target.getAttribute('id'));" onpopupshowing="CreateMenu('mailedit');InitCharsetMenuCheckMark();" onpopupshown="CreateMenu('more-menu');">
+    <menu id="maileditCharsetMenu" label="&charsetMenu.label;" accesskey="&charsetMenu.accesskey;" datasources="rdf:charset-menu" ref="NC:MaileditCharsetMenuRoot" oncommand="MaileditMultiplexHandler(event);" onpopupshowing="CreateMenu('mailedit');InitCharsetMenuCheckMark();" onpopupshown="CreateMenu('more-menu');">
         <template>
             <rule>
                 <menupopup>
@@ -215,7 +228,8 @@
         </template>
 
         <menupopup>
-        <menuitem name="charsetCustomize" accesskey="&charsetCustomize.accesskey;" label="&charsetCustomize.label;" oncommand="window.openDialog('chrome://communicator/content/pref/pref-charset.xul','PrefWindow', 'chrome,modal=yes,resizable=yes', 'mailedit')"/>
+        <menuitem name="charsetCustomize" label="&charsetCustomize.label;"
+                  accesskey="&charsetCustomize.accesskey;"/>
         <menuseparator />
         </menupopup>
     </menu>
@@ -311,10 +325,22 @@
                     <menupopup>
                     </menupopup>
                 </menu>
+                <menu label="&charsetMenuUnicode.label;" accesskey="&charsetMenuUnicode.accesskey;" datasources="rdf:charset-menu" ref="NC:BrowserUnicodeCharsetMenuRoot">
+                    <template>
+                        <rule>
+                            <menupopup>
+                            <menuitem uri="..." label="rdf:http://home.netscape.com/NC-rdf#Name"/>
+                            </menupopup>
+                        </rule>
+                    </template>
+                    <menupopup>
+                    </menupopup>
+                </menu>
                 <menuseparator />
             </menupopup>
         </menu>
-        <menuitem name="charsetCustomize" accesskey="&charsetCustomize.accesskey;" label="&charsetCustomize.label;" oncommand="window.openDialog('chrome://communicator/content/pref/pref-charset.xul','PrefWindow', 'chrome,modal=yes,resizable=yes', 'browser')"/>
+        <menuitem name="charsetCustomize" label="&charsetCustomize.label;"
+                  accesskey="&charsetCustomize.accesskey;"/>
         </menupopup>
     </menu>
 

@@ -17,6 +17,7 @@
  * Rights Reserved.
  * 
  * Contributor(s):
+ *  John Gardiner Myers <jgmyers@speakeasy.net>
  * 
  * Alternatively, the contents of this file may be used under the
  * terms of the GNU General Public License Version 2 or later (the
@@ -32,7 +33,7 @@
  */
 
 #ifdef DEBUG
-static const char CVS_ID[] = "@(#) $RCSfile: utf8.c,v $ $Revision: 1.1.1.4 $ $Date: 2004-02-27 17:28:14 $ $Name: not supported by cvs2svn $";
+static const char CVS_ID[] = "@(#) $RCSfile: utf8.c,v $ $Revision: 1.1.1.5 $ $Date: 2004-06-30 17:09:44 $ $Name: not supported by cvs2svn $";
 #endif /* DEBUG */
 
 #include "seccomon.h"
@@ -236,6 +237,11 @@ sec_port_ucs4_utf8_conversion_function
     return PR_TRUE;
   } else {
     unsigned int i, len = 0;
+    PORT_Assert((inBufLen % 4) == 0);
+    if ((inBufLen % 4) != 0) {
+      *outBufLen = 0;
+      return PR_FALSE;
+    }
 
     for( i = 0; i < inBufLen; i += 4 ) {
       if( inBuf[i+L_0] >= 0x04 ) len += 6;
@@ -457,6 +463,11 @@ sec_port_ucs2_utf8_conversion_function
     return PR_TRUE;
   } else {
     unsigned int i, len = 0;
+    PORT_Assert((inBufLen % 2) == 0);
+    if ((inBufLen % 2) != 0) {
+      *outBufLen = 0;
+      return PR_FALSE;
+    }
 
     for( i = 0; i < inBufLen; i += 2 ) {
       if( (inBuf[i+H_0] == 0x00) && ((inBuf[i+H_0] & 0x80) == 0x00) ) len += 1;
@@ -541,6 +552,56 @@ sec_port_ucs2_utf8_conversion_function
     *outBufLen = len;
     return PR_TRUE;
   }
+}
+
+PRBool
+sec_port_iso88591_utf8_conversion_function
+(
+  const unsigned char *inBuf,
+  unsigned int inBufLen,
+  unsigned char *outBuf,
+  unsigned int maxOutBufLen,
+  unsigned int *outBufLen
+)
+{
+  unsigned int i, len = 0;
+
+#ifndef TEST_UTF8
+  PORT_Assert((unsigned int *)NULL != outBufLen);
+#endif /* TEST_UTF8 */
+
+  for( i = 0; i < inBufLen; i++) {
+    if( (inBuf[i] & 0x80) == 0x00 ) len += 1;
+    else len += 2;
+  }
+
+  if( len > maxOutBufLen ) {
+    *outBufLen = len;
+    return PR_FALSE;
+  }
+
+  len = 0;
+
+  for( i = 0; i < inBufLen; i++) {
+    if( (inBuf[i] & 0x80) == 0x00 ) {
+      /* 00-7F -> 0xxxxxxx */
+      /* 0abcdefg -> 0abcdefg */
+
+      outBuf[len] = inBuf[i];
+      len += 1;
+    } else {
+      /* 80-FF <- 110xxxxx 10xxxxxx */
+      /* 00000000 abcdefgh -> 110000ab 10cdefgh */
+
+      outBuf[len+0] = 0xC0 | ((inBuf[i] & 0xC0) >> 6);
+      outBuf[len+1] = 0x80 | ((inBuf[i] & 0x3F) >> 0);
+
+      len += 2;
+    }
+  }
+
+  *outBufLen = len;
+  return PR_TRUE;
 }
 
 #ifdef TEST_UTF8
@@ -1733,6 +1794,51 @@ test_utf16_chars
 #endif /* UTF16 */
 
 static PRBool
+test_iso88591_chars
+(
+  void
+)
+{
+  PRBool rv = PR_TRUE;
+  int i;
+
+  for( i = 0; i < sizeof(ucs2)/sizeof(ucs2[0]); i++ ) {
+    struct ucs2 *e = &ucs2[i];
+    PRBool result;
+    unsigned char iso88591;
+    unsigned char utf8[3];
+    unsigned int len = 0;
+
+    if (e->c > 0xFF) continue;
+
+    (void)memset(utf8, 0, sizeof(utf8));
+    iso88591 = e->c;
+    
+    result = sec_port_iso88591_utf8_conversion_function(&iso88591,
+      1, utf8, sizeof(utf8), &len);
+
+    if( !result ) {
+      fprintf(stdout, "Failed to convert ISO-8859-1 0x%02.2x to UTF-8\n", iso88591);
+      rv = PR_FALSE;
+      continue;
+    }
+
+    if( (len >= sizeof(utf8)) ||
+        (strlen(e->utf8) != len) ||
+        (utf8[len] = '\0', 0 != strcmp(e->utf8, utf8)) ) {
+      fprintf(stdout, "Wrong conversion of ISO-8859-1 0x%02.2x to UTF-8: ", iso88591);
+      dump_utf8("expected", e->utf8, ", ");
+      dump_utf8("received", utf8, "\n");
+      rv = PR_FALSE;
+      continue;
+    }
+
+  }
+
+  return rv;
+}
+
+static PRBool
 test_zeroes
 (
   void
@@ -2047,6 +2153,7 @@ main
 #ifdef UTF16
       test_utf16_chars() &&
 #endif /* UTF16 */
+      test_iso88591_chars() &&
       test_zeroes() &&
       test_multichars() &&
       PR_TRUE ) {

@@ -31,7 +31,7 @@
  * may use your version of this file under either the MPL or the
  * GPL.
  *
- * $Id: prng_fips1861.c,v 1.1.1.3 2004-02-27 15:58:20 rbasch Exp $
+ * $Id: prng_fips1861.c,v 1.1.1.4 2004-06-30 17:09:48 rbasch Exp $
  */
 
 #include "prerr.h"
@@ -438,7 +438,9 @@ RNG_UpdateAndEnd_FIPS186_1(SHA1Context *ctx,
                            unsigned char *hashout, unsigned int *pDigestLen, 
                            unsigned int maxDigestLen)
 {
+#if defined(IS_LITTLE_ENDIAN)
     register PRUint32 A;
+#endif
     static const unsigned char bulk_pad0[64] = { 0,0,0,0,0,0,0,0,0,0,
                0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
                0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0  };

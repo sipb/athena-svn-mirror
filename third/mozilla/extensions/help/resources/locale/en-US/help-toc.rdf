@@ -17,7 +17,7 @@
         <rdf:li> <rdf:Description ID="privacy-doc" nc:name="Privacy on the Internet" nc:link="chrome://help/locale/privacy_help.html#sec_maintain"/> </rdf:li>
         <rdf:li> <rdf:Description ID="using-help-certs" nc:name="Using Certificates" nc:link="chrome://help/locale/using_certs_help.html"/> </rdf:li>
         <rdf:li> <rdf:Description ID="profile-help" nc:name="Managing Profiles" nc:link="chrome://help/locale/profiles_help.html#managing_profiles"/> </rdf:li>
-        <rdf:li><rdf:Description ID="shortcuts" nc:name="Mozilla Keyboard Shortcuts" nc:link="chrome://help/locale/shortcuts.html"/> </rdf:li>
+        <rdf:li><rdf:Description ID="shortcuts" nc:name="Mozilla Keyboard Shortcuts" nc:link="chrome://help/locale/shortcuts.xhtml"/> </rdf:li>
       </rdf:Seq>
     </nc:subheadings>
   </rdf:Description>
@@ -102,7 +102,7 @@
   <rdf:Description about="#nav-doc-language">
     <nc:subheadings>
       <rdf:Seq>
-        <rdf:li> <rdf:Description ID="nav-doc-charcode" nc:name="Selecting Character Codings and Fonts" nc:link="chrome://help/locale/nav_help.html#nav_charcode"/> </rdf:li>
+        <rdf:li> <rdf:Description ID="nav-doc-charencode" nc:name="Selecting Character Encodings and Fonts" nc:link="chrome://help/locale/nav_help.html#nav_charencode"/> </rdf:li>
         <rdf:li> <rdf:Description ID="nav-doc-languagepref" nc:name="Setting Language Preferences" nc:link="chrome://help/locale/nav_help.html#nav_languagepref"/> </rdf:li>
         <rdf:li> <rdf:Description ID="nav-doc-webcontent" nc:name="Finding International Web Content" nc:link="chrome://help/locale/nav_help.html#nav_webcontent"/> </rdf:li>
       </rdf:Seq>
@@ -156,6 +156,7 @@
         <rdf:li> <rdf:Description ID="mail-doc-attach"  nc:name="Using Attachments" nc:link="chrome://help/locale/mail_help.xhtml#using_attachments" /> </rdf:li>
         <rdf:li> <rdf:Description ID="mail-doc-delete" nc:name="Deleting Messages" nc:link="chrome://help/locale/mail_help.xhtml#deleting_messages" /> </rdf:li>
         <rdf:li> <rdf:Description ID="mail-doc-address" nc:name="Using Address Books" nc:link="chrome://help/locale/mail_help.xhtml#using_address_books" /> </rdf:li>
+        <rdf:li> <rdf:Description ID="mail-doc-folders" nc:name="Organizing Your Messages" nc:link="chrome://help/locale/mail_help.xhtml#organizing_your_messages" /> </rdf:li>
         <rdf:li> <rdf:Description ID="mail-junk" nc:name="Controlling Junk Mail" nc:link="chrome://help/locale/mail_help.xhtml#controlling_junk_mail" /> </rdf:li>
         <rdf:li> <rdf:Description ID="mail-importing-other" nc:name="Importing Mail from Other Programs" nc:link="chrome://help/locale/mail_help.xhtml#importing_mail_from_other_programs" /> </rdf:li>
         <rdf:li> <rdf:Description ID="mail-doc-news" nc:name="Getting Started With Newsgroups" nc:link="chrome://help/locale/mail_help.xhtml#getting_started_with_newsgroups" /> </rdf:li>
@@ -256,7 +257,6 @@
         <rdf:li> <rdf:Description ID="mail-doc-add-listedit" nc:name="Editing a Mailing List" nc:link="chrome://help/locale/mail_help.xhtml#editing_a_mailing_list" /> </rdf:li>
         <rdf:li> <rdf:Description ID="mail-doc-add-export" nc:name="Exporting Address Books" nc:link="chrome://help/locale/mail_help.xhtml#exporting_address_books" /> </rdf:li>
         <rdf:li> <rdf:Description ID="mail-doc-add-sync-LDAP-add" nc:name="Adding and Removing LDAP Directories" nc:link="chrome://help/locale/mail_help.xhtml#adding_and_removing_ldap_directories" /> </rdf:li>
-        <rdf:li> <rdf:Description ID="mail-doc-folders" nc:name="Organizing Your Messages" nc:link="chrome://help/locale/mail_help.xhtml#organizing_your_messages" /> </rdf:li>
       </rdf:Seq>
     </nc:subheadings>
   </rdf:Description>
@@ -423,7 +423,7 @@
         <rdf:li> <rdf:Description ID="mail_account_identity" nc:name="Account Settings"  nc:link="chrome://help/locale/mail_help.xhtml#account_settings"/> </rdf:li>
         <rdf:li> <rdf:Description ID="mail-doc-choose" nc:name="Server Settings"  nc:link="chrome://help/locale/mail_help.xhtml#server_settings"/> </rdf:li>
         <rdf:li> <rdf:Description ID="mail_copies" nc:name="Copies &amp; Folders"  nc:link="chrome://help/locale/mail_help.xhtml#copies_and_folders"/> </rdf:li>
-        <rdf:li> <rdf:Description ID="mail_addressing_settings" nc:name="Addressing"  nc:link="chrome://help/locale/mail_help.xhtml#addressing"/> </rdf:li>
+        <rdf:li> <rdf:Description ID="mail_addressing_settings" nc:name="Composition &amp; Addressing"  nc:link="chrome://help/locale/mail_help.xhtml#addressing"/> </rdf:li>
         <rdf:li> <rdf:Description ID="mail-doc-offline-space" nc:name="Offline and Disk Space"  nc:link="chrome://help/locale/mail_help.xhtml#offline_and_disk_space"/> </rdf:li>
         <rdf:li> <rdf:Description ID="mail_security_settings" nc:name="Security"  nc:link="chrome://help/locale/mail_help.xhtml#security"/> </rdf:li>
         <rdf:li> <rdf:Description ID="mail_local_folders_settings" nc:name="Local Folders"  nc:link="chrome://help/locale/mail_help.xhtml#local_folders"/> </rdf:li>
@@ -650,6 +650,7 @@
     <nc:subheadings>
       <rdf:Seq>
         <rdf:li> <rdf:Description ID="cust-doc" nc:name="Sidebar"  nc:link="chrome://help/locale/customize_help.html#cust_sidebar"/> </rdf:li>
+        <rdf:li> <rdf:Description ID="cust-tabbed" nc:name="Tabbed Browsing"  nc:link="chrome://help/locale/customize_help.html#cust_tabbed"/> </rdf:li>
         <rdf:li> <rdf:Description ID="cust-font" nc:name="Changing Fonts, Colors, and Themes"  nc:link="chrome://help/locale/customize_help.html#cust_font"/> </rdf:li>
         <rdf:li> <rdf:Description ID="cust-toolbar" nc:name="Toolbars"  nc:link="chrome://help/locale/customize_help.html#cust_toolbar"/> </rdf:li>
         <rdf:li> <rdf:Description ID="cust-bkmk" nc:name="Bookmarks"  nc:link="chrome://help/locale/customize_help.html#cust_bkmk"/> </rdf:li>
@@ -669,7 +670,6 @@
         <rdf:li> <rdf:Description ID="cust-sidebar-reorg" nc:name="Reorganizing Sidebar Tabs"  nc:link="chrome://help/locale/customize_help.html#cust_sidebar_reorg"/> </rdf:li>
         <rdf:li> <rdf:Description ID="cust-sidebar-removing" nc:name="Removing Sidebar Tabs"  nc:link="chrome://help/locale/customize_help.html#cust_sidebar_removing"/> </rdf:li>
         <rdf:li> <rdf:Description ID="cust-sidebar-openclose" nc:name="Opening, Closing, and Resizing"  nc:link="chrome://help/locale/customize_help.html#cust_sidebar_openclose"/> </rdf:li>
-        <rdf:li> <rdf:Description ID="cust-tabbed" nc:name="Tabbed Browsing"  nc:link="chrome://help/locale/customize_help.html#cust_tabbed"/> </rdf:li>
       </rdf:Seq>
     </nc:subheadings>
   </rdf:Description>
@@ -764,6 +764,14 @@
         <rdf:li><rdf:Description ID="navigator_pref_internet_searching" nc:name="Internet Search" nc:link="chrome://help/locale/cs_nav_prefs_navigator.html#Internet"/> </rdf:li>
         <rdf:li><rdf:Description ID="navigator_pref_tabbed_browsing" nc:name="Tabbed Browsing" nc:link="chrome://help/locale/cs_nav_prefs_navigator.html#Tabbed"/> </rdf:li>
         <rdf:li><rdf:Description ID="navigator_pref_downloads" nc:name="Downloads" nc:link="chrome://help/locale/cs_nav_prefs_navigator.html#downloads"/> </rdf:li>
+      </rdf:Seq>
+    </nc:subheadings>
+  </rdf:Description>
+
+<rdf:Description about="#navigator_pref_smart_browsing">
+    <nc:subheadings>
+      <rdf:Seq>
+        <rdf:li><rdf:Description ID="navigator_pref_autocomplete-adv" nc:name="Auto-complete" nc:link="chrome://help/locale/cs_nav_prefs_navigator.html#autocomplete-adv"/> </rdf:li>
       </rdf:Seq>
     </nc:subheadings>
   </rdf:Description>
@@ -1138,17 +1146,37 @@
     </nc:subheadings>
   </rdf:Description>
 
+<!-- MOZILLA TOOLS AND DEVELOPMENT CONTENT STARTS-->
+ 
+<rdf:Description about="urn:root">
+    <nc:subheadings>
+      <rdf:Seq>
+        <rdf:li> <rdf:Description ID="tools" nc:name="Tools and Development"
+                   nc:link="chrome://help/locale/developer_tools.xhtml"/> </rdf:li>
+      </rdf:Seq>
+    </nc:subheadings>
+</rdf:Description>
+
+<rdf:Description about="#tools">
+    <nc:subheadings>
+      <rdf:Seq>
+        <rdf:li><rdf:Description ID="tools-js_console" nc:name="JavaScript Console" nc:link="chrome://help/locale/developer_tools.xhtml#js_console"/> </rdf:li>
+        <rdf:li><rdf:Description ID="tools-inspector" nc:name="DOM Inspector" nc:link="chrome://help/locale/developer_tools.xhtml#inspector"/> </rdf:li>
+        <rdf:li><rdf:Description ID="tools-venkman" nc:name="JavaScript Debugger" nc:link="chrome://help/locale/developer_tools.xhtml#venkman"/> </rdf:li>
+      </rdf:Seq>
+    </nc:subheadings>
+</rdf:Description>
 
 <!-- MOZILLA KEYBOARD SHORTCUTS CONTENT STARTS-->
 <rdf:Description about="#shortcuts">
     <nc:subheadings>
       <rdf:Seq>
-        <rdf:li><rdf:Description ID="shortcuts_using" nc:name="Using Shortcuts" nc:link="chrome://help/locale/shortcuts.html#using"/> </rdf:li>
-        <rdf:li><rdf:Description ID="shortcuts_general" nc:name="General Mozilla Shortcuts" nc:link="chrome://help/locale/shortcuts.html#general"/> </rdf:li>
-        <rdf:li><rdf:Description ID="shortcuts_navigator" nc:name="Navigator Shortcuts" nc:link="chrome://help/locale/shortcuts.html#navigator"/> </rdf:li>
-        <rdf:li><rdf:Description ID="shortcuts_mail" nc:name="Mail &amp; Newsgroups Shortcuts" nc:link="chrome://help/locale/shortcuts.html#mail"/> </rdf:li>
-        <rdf:li><rdf:Description ID="shortcuts_composer" nc:name="Composer Shortcuts" nc:link="chrome://help/locale/shortcuts.html#composer"/> </rdf:li>
-        <rdf:li><rdf:Description ID="shortcuts_help" nc:name="Help Window Shortcuts" nc:link="chrome://help/locale/shortcuts.html#help"/> </rdf:li>
+        <rdf:li><rdf:Description ID="shortcuts_using" nc:name="Using Shortcuts" nc:link="chrome://help/locale/shortcuts.xhtml#using_shortcuts"/> </rdf:li>
+        <rdf:li><rdf:Description ID="shortcuts_general" nc:name="General Mozilla Shortcuts" nc:link="chrome://help/locale/shortcuts.xhtml#general_mozilla_shortcuts"/> </rdf:li>
+        <rdf:li><rdf:Description ID="shortcuts_navigator" nc:name="Navigator Shortcuts" nc:link="chrome://help/locale/shortcuts-navigator.xhtml"/> </rdf:li>
+        <rdf:li><rdf:Description ID="shortcuts_mail" nc:name="Mail &amp; Newsgroups Shortcuts" nc:link="chrome://help/locale/shortcuts-mailnews.xhtml"/> </rdf:li>
+        <rdf:li><rdf:Description ID="shortcuts_composer" nc:name="Composer Shortcuts" nc:link="chrome://help/locale/shortcuts-composer.xhtml"/> </rdf:li>
+        <rdf:li><rdf:Description ID="shortcuts_help" nc:name="Help Window Shortcuts" nc:link="chrome://help/locale/shortcuts.xhtml#help_window_shortcuts"/> </rdf:li>
       </rdf:Seq>
     </nc:subheadings>
   </rdf:Description>
@@ -1156,11 +1184,11 @@
 <rdf:Description about="#shortcuts_navigator">
     <nc:subheadings>
       <rdf:Seq>
-        <rdf:li><rdf:Description ID="shortcuts_navigator_bookmarks" nc:name="Bookmark Shortcuts" nc:link="chrome://help/locale/shortcuts.html#nav_bookmark"/> </rdf:li>
-        <rdf:li><rdf:Description ID="shortcuts_navigator_page_viewing" nc:name="Page Viewing Shortcuts" nc:link="chrome://help/locale/shortcuts.html#page_viewing"/> </rdf:li>
-        <rdf:li><rdf:Description ID="shortcuts_navigator_tabbed_browsing" nc:name="Tabbed Browsing Shortcuts" nc:link="chrome://help/locale/shortcuts.html#tabbed_browsing"/> </rdf:li>
-        <rdf:li><rdf:Description ID="shortcuts_navigator_sidebar" nc:name="Sidebar Shortcuts" nc:link="chrome://help/locale/shortcuts.html#sidebar"/> </rdf:li>
-        <rdf:li><rdf:Description ID="shortcuts_navigator_forms" nc:name="Forms Shortcuts" nc:link="chrome://help/locale/shortcuts.html#forms"/> </rdf:li>
+        <rdf:li><rdf:Description ID="shortcuts_navigator_bookmarks" nc:name="Bookmark Shortcuts" nc:link="chrome://help/locale/shortcuts-navigator.xhtml#bookmarks_shortcuts"/> </rdf:li>
+        <rdf:li><rdf:Description ID="shortcuts_navigator_page_viewing" nc:name="Page Viewing Shortcuts" nc:link="chrome://help/locale/shortcuts-navigator.xhtml#page_viewing_shortcuts"/> </rdf:li>
+        <rdf:li><rdf:Description ID="shortcuts_navigator_tabbed_browsing" nc:name="Tabbed Browsing Shortcuts" nc:link="chrome://help/locale/shortcuts-navigator.xhtml#tabbed_browsing_shortcuts"/> </rdf:li>
+        <rdf:li><rdf:Description ID="shortcuts_navigator_sidebar" nc:name="Sidebar Shortcuts" nc:link="chrome://help/locale/shortcuts-navigator.xhtml#sidebar_shortcuts"/> </rdf:li>
+        <rdf:li><rdf:Description ID="shortcuts_navigator_forms" nc:name="Forms Shortcuts" nc:link="chrome://help/locale/shortcuts-navigator.xhtml#forms_shortcuts"/> </rdf:li>
       </rdf:Seq>
     </nc:subheadings>
   </rdf:Description>
@@ -1168,9 +1196,9 @@
 <rdf:Description about="#shortcuts_mail">
     <nc:subheadings>
       <rdf:Seq>
-        <rdf:li><rdf:Description ID="shortcuts_mail_general" nc:name="General Mail Shortcuts" nc:link="chrome://help/locale/shortcuts.html#mail_general"/> </rdf:li>
-        <rdf:li><rdf:Description ID="shortcuts_mail_message_list" nc:name="Message List Shortcuts" nc:link="chrome://help/locale/shortcuts.html#mail_message_list"/> </rdf:li>
-        <rdf:li><rdf:Description ID="shortcuts_mail_message_compose" nc:name="Message Compose Shortcuts" nc:link="chrome://help/locale/shortcuts.html#mail_message_compose"/> </rdf:li>
+        <rdf:li><rdf:Description ID="shortcuts_mail_general" nc:name="General Mail Shortcuts" nc:link="chrome://help/locale/shortcuts-mailnews.xhtml#general_shortcuts"/> </rdf:li>
+        <rdf:li><rdf:Description ID="shortcuts_mail_message_list" nc:name="Message List Shortcuts" nc:link="chrome://help/locale/shortcuts-mailnews.xhtml#message_list_shortcuts"/> </rdf:li>
+        <rdf:li><rdf:Description ID="shortcuts_mail_message_compose" nc:name="Message Compose Shortcuts" nc:link="chrome://help/locale/shortcuts-mailnews.xhtml#message_compose_shortcuts"/> </rdf:li>
       </rdf:Seq>
     </nc:subheadings>
   </rdf:Description>

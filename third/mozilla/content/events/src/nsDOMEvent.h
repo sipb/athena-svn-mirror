@@ -86,6 +86,7 @@ public:
     eDOMEvents_focus,
     eDOMEvents_blur,
     eDOMEvents_load,
+    eDOMEvents_beforeunload,
     eDOMEvents_unload,
     eDOMEvents_abort,
     eDOMEvents_error,
@@ -234,6 +235,7 @@ protected:
   nsresult SetEventType(const nsAString& aEventTypeArg);
   const char* GetEventName(PRUint32 aEventType);
   already_AddRefed<nsIDOMEventTarget> GetTargetFromFrame();
+  void AllocateEvent(const nsAString& aEventType);
 
   nsEvent* mEvent;
   nsCOMPtr<nsIPresContext> mPresContext;

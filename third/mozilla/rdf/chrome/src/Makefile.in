@@ -31,20 +31,19 @@ LIBRARY_NAME	= chrome_s
 REQUIRES	= xpcom \
 		  string \
 		  rdf \
+		  content \
 		  xuldoc \
 		  gfx \
 		  layout \
 		  content \
 		  necko \
 		  dom \
-		  intl \
 		  widget \
 		  js \
 		  appshell \
 		  caps \
 		  pref \
 		  docshell \
-		  imglib2 \
 		  xpconnect \
 		  jar \
 		  $(NULL)

@@ -863,6 +863,7 @@ struct MessageWindow {
             nsCOMPtr<nsIDOMWindowInternal> win;
             GetMostRecentWindow( 0, getter_AddRefs( win ) );
             return win ? (long)hwndForDOMWindow( win ) : 0;
+#ifndef MOZ_PHOENIX
  } else if ( msg == WM_USER ) {
      if ( lp == WM_RBUTTONUP ) {
          // Show menu with Exit disabled/enabled appropriately.
@@ -956,6 +957,7 @@ struct MessageWindow {
          (void)nsNativeAppSupportWin::HandleRequest( (LPBYTE)"mozilla" );
      }
      return TRUE;
+#endif
   } else if ( msg == WM_QUERYENDSESSION ) {
     // Invoke "-killAll" cmd line handler.  That will close all open windows,
     // and display dialog asking whether to save/don't save/cancel.  If the
@@ -1082,7 +1084,7 @@ nsNativeAppSupportWin::FindTopic( HSZ topic ) {
 // Utility function that determines if we're handling http Internet shortcuts.
 static PRBool handlingHTTP() {
     PRBool result = PR_FALSE; // Answer no if an error occurs.
-    // See if we're the "default browser" (i.e., handling http Internet shortcuts)        
+    // See if we're the "default browser" (i.e., handling http Internet shortcuts)
     nsCOMPtr<nsIWindowsHooks> winhooks( do_GetService( NS_IWINDOWSHOOKS_CONTRACTID ) );
     if ( winhooks ) {
         nsCOMPtr<nsIWindowsHooksSettings> settings;
@@ -1102,12 +1104,15 @@ static PRBool handlingHTTP() {
 
                 // First, turn off all the other protocols.
                 settings->SetIsHandlingHTTPS( PR_FALSE );
+#ifndef MOZ_PHOENIX
                 settings->SetIsHandlingFTP( PR_FALSE );
                 settings->SetIsHandlingCHROME( PR_FALSE );
                 settings->SetIsHandlingGOPHER( PR_FALSE );
-
+#endif
                 // Next, all the file types.
                 settings->SetIsHandlingHTML( PR_FALSE );
+                settings->SetIsHandlingXHTML( PR_FALSE );
+#ifndef MOZ_PHOENIX
                 settings->SetIsHandlingJPEG( PR_FALSE );
                 settings->SetIsHandlingGIF( PR_FALSE );
                 settings->SetIsHandlingPNG( PR_FALSE );
@@ -1115,9 +1120,8 @@ static PRBool handlingHTTP() {
                 settings->SetIsHandlingBMP( PR_FALSE );
                 settings->SetIsHandlingICO( PR_FALSE );
                 settings->SetIsHandlingXML( PR_FALSE );
-                settings->SetIsHandlingXHTML( PR_FALSE );
                 settings->SetIsHandlingXUL( PR_FALSE );
-
+#endif
                 // Now test the HTTP setting in the registry.
                 settings->GetRegistryMatches( &result );
             }
@@ -1251,7 +1255,7 @@ nsNativeAppSupportWin::Quit() {
     //  created by the same thread.
     MessageWindow mw;
     mw.Destroy();
-    
+
     if ( mInstance ) {
         // Undo registry setting if we need to.
         if ( mSupportingDDEExec && handlingHTTP() ) {
@@ -1471,19 +1475,14 @@ nsNativeAppSupportWin::HandleDDENotification( UINT uType,       // transaction t
                         // Escape any double-quotes.
                         escapeQuotes( url );
 
-                        // Now for the title; first, get the "window" JS object.
+                        // Now for the title; first, get the "window" script global object.
                         nsCOMPtr<nsIScriptGlobalObject> scrGlobalObj( do_QueryInterface( internalContent ) );
                         if ( !scrGlobalObj ) {
                             break;
                         }
-                        // Then the doc shell...
-                        nsCOMPtr<nsIDocShell> docShell;
-                        scrGlobalObj->GetDocShell( getter_AddRefs( docShell ) );
-                        if ( !docShell ) {
-                            break;
-                        }
-                        // And from that the base window...
-                        nsCOMPtr<nsIBaseWindow> baseWindow( do_QueryInterface( docShell ) );
+                        // Then from its doc shell get the base window...
+                        nsCOMPtr<nsIBaseWindow> baseWindow =
+                            do_QueryInterface( scrGlobalObj->GetDocShell() );
                         if ( !baseWindow ) {
                             break;
                         }
@@ -1683,7 +1682,7 @@ void nsNativeAppSupportWin::ParseDDEArg( HSZ args, int index, nsCString& aString
     // Ensure result's buffer is sufficiently big.
     temp.SetLength( argLen );
     // Now get the string contents.
-    DdeQueryString( mInstance, args, (char*)temp.get(), temp.Length(), CP_WINANSI );
+    DdeQueryString( mInstance, args, temp.BeginWriting(), temp.Length(), CP_WINANSI );
     // Parse out the given arg.
     ParseDDEArg(temp.get(), index, aString);
     return;
@@ -2109,8 +2108,10 @@ printf( "Setting ddexec subkey entries\n" );
   // See if profile manager is being suppressed via -silent flag.
   PRBool canInteract = PR_TRUE;
   nsXPIDLCString arg;
-  if (NS_SUCCEEDED(args->GetCmdLineValue("-silent", getter_Copies(arg))) && (const char*)arg) {
-    canInteract = PR_FALSE;
+  if (NS_SUCCEEDED(args->GetCmdLineValue("-silent", getter_Copies(arg)))) {
+    if ((const char*)arg) {
+      canInteract = PR_FALSE;
+    }
   }
   rv = appShell->DoProfileStartup(args, canInteract);
 
@@ -2165,12 +2166,9 @@ HWND hwndForDOMWindow( nsISupports *window ) {
     if ( !ppScriptGlobalObj ) {
         return 0;
     }
-    nsCOMPtr<nsIDocShell> ppDocShell;
-    ppScriptGlobalObj->GetDocShell( getter_AddRefs( ppDocShell ) );
-    if ( !ppDocShell ) {
-        return 0;
-    }
-    nsCOMPtr<nsIBaseWindow> ppBaseWindow( do_QueryInterface( ppDocShell ) );
+
+    nsCOMPtr<nsIBaseWindow> ppBaseWindow =
+        do_QueryInterface( ppScriptGlobalObj->GetDocShell() );
     if ( !ppBaseWindow ) {
         return 0;
     }
@@ -2644,7 +2642,7 @@ nsNativeAppSupportWin::OnLastWindowClosing() {
         // Turn off MessageWindow so the other process can't see us.
         MessageWindow mw;
         mw.Destroy();
-    
+
         // Launch another instance.
         char buffer[ _MAX_PATH ];
         // Same application as this one.
@@ -2654,7 +2652,7 @@ nsNativeAppSupportWin::OnLastWindowClosing() {
         nsCAutoString cmdLine( buffer );
         // The new process must run in turbo mode (no splash screen, no window, etc.).
         cmdLine.Append( " -turbo" );
-    
+
         // Now do the Win32 stuff...
         STARTUPINFO startupInfo;
         ::GetStartupInfo( &startupInfo );
@@ -2669,7 +2667,7 @@ nsNativeAppSupportWin::OnLastWindowClosing() {
                               0,
                               &startupInfo,
                               &processInfo );
-    
+
         // Turn off turbo mode and quit the application.
         SetIsServerMode( PR_FALSE );
         appShell->Quit(nsIAppShellService::eAttemptQuit);

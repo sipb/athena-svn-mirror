@@ -36,7 +36,7 @@
  *
  * NOTE - These are not public interfaces
  *
- * $Id: nsslocks.c,v 1.1.1.1 2003-02-14 21:22:00 rbasch Exp $
+ * $Id: nsslocks.c,v 1.1.1.2 2004-06-30 17:31:24 rbasch Exp $
  */
 
 #include "seccomon.h"
@@ -60,7 +60,9 @@ __nss_InitLock(   PZLock    **ppLock, nssILockType ltype )
     while (!*ppLock) {
         PRInt32 myAttempt = PR_AtomicIncrement(&initializers);
         if (myAttempt == 1) {
-	    *ppLock = PZ_NewLock(ltype);
+            if (!*ppLock) {
+                *ppLock = PZ_NewLock(ltype);
+            }
             (void) PR_AtomicDecrement(&initializers);
             break;
         }
@@ -93,7 +95,9 @@ nss_InitMonitor(PZMonitor **ppMonitor, nssILockType ltype )
     while (!*ppMonitor) {
         PRInt32 myAttempt = PR_AtomicIncrement(&initializers);
         if (myAttempt == 1) {
-	    *ppMonitor = PZ_NewMonitor(ltype);
+            if (!*ppMonitor) {
+                *ppMonitor = PZ_NewMonitor(ltype);
+            }
             (void) PR_AtomicDecrement(&initializers);
             break;
         }

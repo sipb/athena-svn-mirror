@@ -285,31 +285,40 @@ LogSuccess(PRBool aSetCookie, nsIURI *aHostURI, const nsAFlatCString &aCookieStr
 /******************************************************************************
  * nsCookieService impl:
  * private list sorting callbacks
+ *
+ * these functions return:
+ *   < 0 if the first element should come before the second element,
+ *     0 if the first element may come before or after the second element,
+ *   > 0 if the first element should come after the second element.
  ******************************************************************************/
 
-// comparison function for sorting cookies by path length:
-// returns < 0 if the first element has a greater path length than the second element,
-//           0 if they both have the same path length,
-//         > 0 if the second element has a greater path length than the first element.
+// comparison function for sorting cookies before sending to a server.
 PR_STATIC_CALLBACK(int)
-compareCookiesByPath(const void *aElement1,
-                     const void *aElement2,
-                     void       *aData)
+compareCookiesForSending(const void *aElement1,
+                         const void *aElement2,
+                         void       *aData)
 {
   const nsCookie *cookie1 = NS_STATIC_CAST(const nsCookie*, aElement1);
   const nsCookie *cookie2 = NS_STATIC_CAST(const nsCookie*, aElement2);
 
-  return cookie2->Path().Length() - cookie1->Path().Length();
+  // compare by cookie length in accordance with RFC2109
+  int rv = cookie2->Path().Length() - cookie1->Path().Length();
+  if (rv == 0) {
+    // when path lengths match, older cookies should be listed first.  this is
+    // required for backwards compatibility since some websites erroneously
+    // depend on receiving cookies in the order in which they were sent to the
+    // browser!  see bug 236772.
+    rv = cookie1->CreationTime() - cookie2->CreationTime();
+  }
+  return rv;
 }
 
-// comparison function for sorting cookies by lastAccessed time:
-// returns < 0 if the first element was used more recently than the second element,
-//           0 if they both have the same last-use time,
-//         > 0 if the second element was used more recently than the first element.
+// comparison function for sorting cookies by lastAccessed time, with most-
+// recently-used cookies listed first.
 PR_STATIC_CALLBACK(int)
-compareCookiesByLRU(const void *aElement1,
-                    const void *aElement2,
-                    void       *aData)
+compareCookiesForWriting(const void *aElement1,
+                         const void *aElement2,
+                         void       *aData)
 {
   const nsCookie *cookie1 = NS_STATIC_CAST(const nsCookie*, aElement1);
   const nsCookie *cookie2 = NS_STATIC_CAST(const nsCookie*, aElement2);
@@ -334,7 +343,7 @@ nsCookieService::GetSingleton()
     return gCookieService;
   }
 
-  // Create a new singleton nsCookieService (note: the ctor AddRefs for us).
+  // Create a new singleton nsCookieService.
   // We AddRef only once since XPCOM has rules about the ordering of module
   // teardowns - by the time our module destructor is called, it's too late to
   // Release our members (e.g. nsIObserverService and nsIPrefBranch), since GC
@@ -379,13 +388,9 @@ nsCookieService::Init()
   }
 
   // init our pref and observer
-  nsCOMPtr<nsIPrefBranch> prefBranch = do_GetService(NS_PREFSERVICE_CONTRACTID);
+  nsCOMPtr<nsIPrefBranchInternal> prefBranch = do_GetService(NS_PREFSERVICE_CONTRACTID);
   if (prefBranch) {
-    // add observers
-    nsCOMPtr<nsIPrefBranchInternal> prefInternal = do_QueryInterface(prefBranch);
-    if (prefInternal)
-      prefInternal->AddObserver(kCookiesPermissions, this, PR_TRUE);
-
+    prefBranch->AddObserver(kCookiesPermissions, this, PR_TRUE);
     PrefChanged(prefBranch);
   }
 
@@ -593,8 +598,9 @@ nsCookieService::GetCookieStringFromHttp(nsIURI     *aHostURI,
   } while (currentDot);
 
   // return cookies in order of path length; longest to shortest.
-  // this is required per RFC2109.
-  foundCookieList.Sort(compareCookiesByPath, nsnull);
+  // this is required per RFC2109.  if cookies match in length,
+  // then sort by creation time (see bug 236772).
+  foundCookieList.Sort(compareCookiesForSending, nsnull);
 
   nsCAutoString cookieData;
   PRInt32 count = foundCookieList.Count();
@@ -1051,7 +1057,7 @@ nsCookieService::Write()
   // such that least-recently-used cookies come last
   nsVoidArray sortedCookieList(mCookieCount);
   mHostTable.EnumerateEntries(cookieListCallback, &sortedCookieList);
-  sortedCookieList.Sort(compareCookiesByLRU, nsnull);
+  sortedCookieList.Sort(compareCookiesForWriting, nsnull);
 
   bufferedOutputStream->Write(kHeader, sizeof(kHeader) - 1, &rv);
 
@@ -1224,6 +1230,11 @@ nsCookieService::AddInternal(nsCookie   *aCookie,
       return;
     }
 
+    // preserve creation time of cookie
+    if (oldCookie) {
+      aCookie->SetCreationTime(oldCookie->CreationTime());
+    }
+
   } else {
     // check if cookie has already expired
     if (!aCookie->IsSession() && aCookie->Expiry() <= aCurrentTime) {
@@ -1351,8 +1362,8 @@ static inline PRBool istokenseparator (char c) { return isvalueseparator(c) || c
 PRBool
 nsCookieService::GetTokenValue(nsASingleFragmentCString::const_char_iterator &aIter,
                                nsASingleFragmentCString::const_char_iterator &aEndIter,
-                               nsDependentSingleFragmentCSubstring           &aTokenString,
-                               nsDependentSingleFragmentCSubstring           &aTokenValue,
+                               nsDependentCSubstring                         &aTokenString,
+                               nsDependentCSubstring                         &aTokenValue,
                                PRBool                                        &aEqualsFound)
 {
   nsASingleFragmentCString::const_char_iterator start, lastSpace;
@@ -1450,8 +1461,8 @@ nsCookieService::ParseAttributes(nsDependentCString &aCookieHeader,
 
   aCookieAttributes.isSecure = PR_FALSE;
 
-  nsDependentSingleFragmentCSubstring tokenString(cookieStart, cookieStart);
-  nsDependentSingleFragmentCSubstring tokenValue (cookieStart, cookieStart);
+  nsDependentCSubstring tokenString(cookieStart, cookieStart);
+  nsDependentCSubstring tokenValue (cookieStart, cookieStart);
   PRBool newCookie, equalsFound;
 
   // extract cookie <NAME> & <VALUE> (first attribute), and copy the strings.
@@ -1702,19 +1713,18 @@ nsCookieService::CheckPrefs(nsIURI         *aHostURI,
     // check to see if P3P conditions are satisfied. see nsICookie.idl for
     // P3P-related constants.
 
-    nsCookieStatus p3pStatus = nsICookie::STATUS_REJECTED;
+    nsCookieStatus p3pStatus = nsICookie::STATUS_UNKNOWN;
 
     nsCOMPtr<nsIHttpChannel> httpChannel = do_QueryInterface(aChannel);
-    if (httpChannel) {
-      // lazily init the P3P service
-      if (!mP3PService)
-        mP3PService = do_GetService(NS_COOKIECONSENT_CONTRACTID);
 
-      if (mP3PService) {
-        // get the site policy and a status decision for the cookie
-        PRBool isForeign = IsForeign(aHostURI, aFirstURI);
-        mP3PService->GetConsent(aHostURI, httpChannel, isForeign, &aPolicy, &p3pStatus);
-      }
+    // lazily init the P3P service
+    if (!mP3PService)
+      mP3PService = do_GetService(NS_COOKIECONSENT_CONTRACTID);
+
+    if (mP3PService) {
+      // get the site policy and a status decision for the cookie
+      PRBool isForeign = IsForeign(aHostURI, aFirstURI);
+      mP3PService->GetConsent(aHostURI, httpChannel, isForeign, &aPolicy, &p3pStatus);
     }
 
     if (p3pStatus == nsICookie::STATUS_REJECTED) {

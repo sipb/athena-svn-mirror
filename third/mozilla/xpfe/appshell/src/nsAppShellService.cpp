@@ -85,6 +85,9 @@ static PRBool OnMacOSX();
 
 #include "nsAppShellService.h"
 #include "nsIProfileInternal.h"
+#ifdef MOZ_PHOENIX
+#include "nsIProfileMigrator.h"
+#endif
 #include "nsIProfileChangeStatus.h"
 #include "nsICloseAllWindows.h"
 #include "nsISupportsPrimitives.h"
@@ -267,18 +270,53 @@ nsAppShellService::DoProfileStartup(nsICmdLineService *aCmdLineService, PRBool c
 
     EnterLastWindowClosingSurvivalArea();
 
+#ifdef MOZ_PHOENIX
+    // This will eventually change to MOZ_XULAPP
+
+    // Profile Manager has a number of command line arguments... most of which relate to
+    // management UI or options for starting a specific profile. The migration code we're
+    // about to execute occurs ONLY in the situation when there are NO profiles. 
+    // 
+    // In this case there are only TWO profile manager flags that are of concern to us - 
+    // -CreateProfile (used by various automation processes) and -ProfileWizard - these
+    // are the only two commands valid in the no-profile case - users of these commands
+    // do NOT want the automigration UI to appear, so we explicitly check for these flags
+    // before invoking anything.
+    nsXPIDLCString isCreateProfile, isCreateProfileWizard;
+    aCmdLineService->GetCmdLineValue("-CreateProfile", getter_Copies(isCreateProfile));
+    aCmdLineService->GetCmdLineValue("-ProfileWizard", getter_Copies(isCreateProfileWizard));
+
+    if (isCreateProfile.IsEmpty() && isCreateProfileWizard.IsEmpty()) {
+      PRInt32 numProfiles = 0;
+      profileMgr->GetProfileCount(&numProfiles);
+
+      if (numProfiles == 0) {
+        nsCOMPtr<nsIProfileMigrator> pm(do_CreateInstance("@mozilla.org/profile/migrator;1", &rv));
+        if (NS_SUCCEEDED(rv))
+          rv = pm->Migrate();
+        if (NS_FAILED(rv)) {
+          // Migration failed for some reason, or there was no profile migrator. 
+          // Create a generic default profile. 
+          rv = profileMgr->CreateDefaultProfile();
+        }
+      }
+    }
+#endif
+
     // If we are being launched in turbo mode, profile mgr cannot show UI
     rv = profileMgr->StartupWithArgs(aCmdLineService, canInteract);
     if (!canInteract && rv == NS_ERROR_PROFILE_REQUIRES_INTERACTION) {
         NS_WARNING("nsIProfileInternal::StartupWithArgs returned NS_ERROR_PROFILE_REQUIRES_INTERACTION");       
         rv = NS_OK;
     }
-    
+
+#ifndef MOZ_PHOENIX
     if (NS_SUCCEEDED(rv)) {
         rv = CheckAndRemigrateDefunctProfile();
         NS_ASSERTION(NS_SUCCEEDED(rv), "failed to check and remigrate profile");
         rv = NS_OK;
     }
+#endif
 
     ExitLastWindowClosingSurvivalArea();
 
@@ -288,6 +326,7 @@ nsAppShellService::DoProfileStartup(nsICmdLineService *aCmdLineService, PRBool c
     return rv;
 }
 
+#ifndef MOZ_PHOENIX
 nsresult
 nsAppShellService::CheckAndRemigrateDefunctProfile()
 {
@@ -419,6 +458,7 @@ nsAppShellService::CheckAndRemigrateDefunctProfile()
   }
   return NS_OK;
 }   
+#endif
 
 NS_IMETHODIMP
 nsAppShellService::CreateHiddenWindow()
@@ -499,8 +539,10 @@ nsAppShellService::Quit(PRUint32 aFerocity)
   /* eForceQuit doesn't actually work; it can cause a subtle crash if
      there are windows open which have unload handlers which open
      new windows. Use eAttemptQuit for now. */
-  if (aFerocity == eForceQuit)
-    return NS_ERROR_FAILURE;
+  if (aFerocity == eForceQuit) {
+    NS_WARNING("attempted to force quit");
+    // it will be treated the same as eAttemptQuit, below
+  }
 
   mShuttingDown = PR_TRUE;
 
@@ -583,9 +625,21 @@ nsAppShellService::Quit(PRUint32 aFerocity)
         mWindowMediator->GetEnumerator(nsnull, getter_AddRefs(windowEnumerator));
         if (windowEnumerator) {
           PRBool more;
-          if (NS_SUCCEEDED(windowEnumerator->HasMoreElements(&more)) && more) {
+          while (windowEnumerator->HasMoreElements(&more), more) {
+            /* we can't quit immediately. we'll try again as the last window
+               finally closes. */
             aFerocity = eAttemptQuit;
-            rv = NS_ERROR_FAILURE;
+            nsCOMPtr<nsISupports> window;
+            windowEnumerator->GetNext(getter_AddRefs(window));
+            nsCOMPtr<nsIDOMWindowInternal> domWindow(do_QueryInterface(window));
+            if (domWindow) {
+              PRBool closed = PR_FALSE;
+              domWindow->GetClosed(&closed);
+              if (!closed) {
+                rv = NS_ERROR_FAILURE;
+                break;
+              }
+            }
           }
         }
       }
@@ -911,8 +965,7 @@ nsAppShellService::GetHiddenWindowAndJSContext(nsIDOMWindowInternal **aWindow,
                 if (!sgo) { rv = NS_ERROR_FAILURE; break; }
 
                 // 4. Get script context from that.
-                nsCOMPtr<nsIScriptContext> scriptContext;
-                sgo->GetContext( getter_AddRefs( scriptContext ) );
+                nsIScriptContext *scriptContext = sgo->GetContext();
                 if (!scriptContext) { rv = NS_ERROR_FAILURE; break; }
 
                 // 5. Get JSContext from the script context.

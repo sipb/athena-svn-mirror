@@ -24,6 +24,7 @@
  *   L. David Baron  <dbaron@dbaron.org>
  *   Pierre Phaneuf  <pp@ludusdesign.com>
  *   Pete Collins    <petejc@collab.net>
+ *   James Ross      <silver@warwickcompsocc.o.uk>
  *
  *
  * Alternatively, the contents of this file may be used under the terms of
@@ -63,6 +64,9 @@
 #include "nsIDOMDocumentXBL.h"
 #include "nsGenericElement.h"
 #include "nsIDOMEventGroup.h"
+#include "nsIDOMCDATASection.h"
+#include "nsIDOMProcessingInstruction.h"
+#include "nsDOMString.h"
 
 #include "nsRange.h"
 #include "nsIDOMText.h"
@@ -77,7 +81,7 @@
 #include "nsIScrollableView.h"
 #include "nsIPresShell.h"
 #include "nsIPresContext.h"
-#include "nsIStyleSet.h"
+#include "nsStyleSet.h"
 #include "nsContentUtils.h"
 #include "nsNodeInfoManager.h"
 #include "nsIXBLService.h"
@@ -118,11 +122,11 @@ static NS_DEFINE_CID(kDOMEventGroupCID, NS_DOMEVENTGROUP_CID);
 
 #include "nsScriptEventManager.h"
 #include "nsIXPathEvaluatorInternal.h"
+#include "nsIElementFactory.h"
+#include "nsIParserService.h"
 
-#ifdef DEBUG
 #include "nsICharsetAlias.h"
 static NS_DEFINE_CID(kCharsetAliasCID, NS_CHARSETALIAS_CID);
-#endif
 
 // Helper structs for the content->subdoc map
 
@@ -234,7 +238,16 @@ nsDOMStyleSheetList::Item(PRUint32 aIndex, nsIDOMStyleSheet** aReturn)
   return NS_OK;
 }
 
-NS_IMETHODIMP
+void
+nsDOMStyleSheetList::DocumentWillBeDestroyed(nsIDocument *aDocument)
+{
+  if (nsnull != mDocument) {
+    aDocument->RemoveObserver(this);
+    mDocument = nsnull;
+  }
+}
+
+void
 nsDOMStyleSheetList::StyleSheetAdded(nsIDocument *aDocument,
                                      nsIStyleSheet* aStyleSheet)
 {
@@ -244,11 +257,9 @@ nsDOMStyleSheetList::StyleSheetAdded(nsIDocument *aDocument,
       mLength++;
     }
   }
-
-  return NS_OK;
 }
 
-NS_IMETHODIMP
+void
 nsDOMStyleSheetList::StyleSheetRemoved(nsIDocument *aDocument,
                                        nsIStyleSheet* aStyleSheet)
 {
@@ -258,19 +269,8 @@ nsDOMStyleSheetList::StyleSheetRemoved(nsIDocument *aDocument,
       mLength--;
     }
   }
-  return NS_OK;
 }
 
-NS_IMETHODIMP
-nsDOMStyleSheetList::DocumentWillBeDestroyed(nsIDocument *aDocument)
-{
-  if (nsnull != mDocument) {
-    aDocument->RemoveObserver(this);
-    mDocument = nsnull;
-  }
-
-  return NS_OK;
-}
 
 class nsDOMImplementation : public nsIDOMDOMImplementation,
                             public nsIPrivateDOMImplementation
@@ -341,7 +341,10 @@ nsDOMImplementation::CreateDocumentType(const nsAString& aQualifiedName,
                                         const nsAString& aSystemId,
                                         nsIDOMDocumentType** aReturn)
 {
-  NS_ENSURE_ARG_POINTER(aReturn);
+  *aReturn = nsnull;
+
+  nsresult rv = nsContentUtils::CheckQName(aQualifiedName);
+  NS_ENSURE_SUCCESS(rv, rv);
 
   nsCOMPtr<nsIAtom> name = do_GetAtom(aQualifiedName);
   NS_ENSURE_TRUE(name, NS_ERROR_OUT_OF_MEMORY);
@@ -356,9 +359,30 @@ nsDOMImplementation::CreateDocument(const nsAString& aNamespaceURI,
                                     nsIDOMDocumentType* aDoctype,
                                     nsIDOMDocument** aReturn)
 {
-  NS_ENSURE_ARG_POINTER(aReturn);
-
   *aReturn = nsnull;
+
+  nsresult rv;
+  if (!aQualifiedName.IsEmpty()) {
+    nsIParserService *parserService =
+      nsContentUtils::GetParserServiceWeakRef();
+    NS_ENSURE_TRUE(parserService, NS_ERROR_FAILURE);
+
+    const nsAFlatString& qName = PromiseFlatString(aQualifiedName);
+    const PRUnichar *colon;
+    rv = parserService->CheckQName(qName, PR_TRUE, &colon);
+    NS_ENSURE_SUCCESS(rv, rv);
+
+    if (colon &&
+        (DOMStringIsNull(aNamespaceURI) ||
+         (Substring(qName.get(), colon).Equals(NS_LITERAL_STRING("xml")) &&
+          !aNamespaceURI.Equals(NS_LITERAL_STRING("http://www.w3.org/XML/1998/namespace"))))) {
+      return NS_ERROR_DOM_NAMESPACE_ERR;
+    }
+  }
+  else if (DOMStringIsNull(aQualifiedName) &&
+           !DOMStringIsNull(aNamespaceURI)) {
+    return NS_ERROR_DOM_NAMESPACE_ERR;
+  }
 
   if (aDoctype) {
     nsCOMPtr<nsIDOMDocument> owner;
@@ -368,17 +392,15 @@ nsDOMImplementation::CreateDocument(const nsAString& aNamespaceURI,
     }
   }
 
-  nsresult rv = NS_NewDOMDocument(aReturn, aNamespaceURI, aQualifiedName,
-                                  aDoctype, mBaseURI);
+  rv = NS_NewDOMDocument(aReturn, aNamespaceURI, aQualifiedName, aDoctype,
+                         mBaseURI);
 
-  nsCOMPtr<nsIDocShell> docShell;
-  nsContentUtils::GetDocShellFromCaller(getter_AddRefs(docShell));
+  nsIDocShell *docShell = nsContentUtils::GetDocShellFromCaller();
   if (docShell) {
     nsCOMPtr<nsIPresContext> presContext;
     docShell->GetPresContext(getter_AddRefs(presContext));
     if (presContext) {
-      nsCOMPtr<nsISupports> container;
-      presContext->GetContainer(getter_AddRefs(container));
+      nsCOMPtr<nsISupports> container = presContext->GetContainer();
       nsCOMPtr<nsIDocument> document = do_QueryInterface(*aReturn);
       if (document) {
         document->SetContainer(container);
@@ -573,6 +595,14 @@ nsDocument::~nsDocument()
     mNodeInfoManager->DropDocumentReference();
   }
 
+  if (mAttrStyleSheet) {
+    mAttrStyleSheet->SetOwningDocument(nsnull);
+  }
+  
+  if (mStyleAttrStyleSheet) {
+    mStyleAttrStyleSheet->SetOwningDocument(nsnull);
+  }
+
   delete mHeaderData;
   delete mBoxObjectTable;
   delete mXPathDocument;
@@ -674,6 +704,7 @@ nsDocument::Reset(nsIChannel* aChannel, nsILoadGroup* aLoadGroup)
 void
 nsDocument::ResetToURI(nsIURI *aURI, nsILoadGroup *aLoadGroup)
 {
+  NS_PRECONDITION(aURI, "Null URI passed to ResetToURI");
   mDocumentTitle.Truncate();
 
   mPrincipal = nsnull;
@@ -698,6 +729,39 @@ nsDocument::ResetToURI(nsIURI *aURI, nsILoadGroup *aLoadGroup)
   }
   mChildren.Clear();
 
+  // Reset our stylesheets
+  ResetStylesheetsToURI(aURI);
+  
+  // Release the listener manager
+  mListenerManager = nsnull;
+
+  // Release the stylesheets list.
+  mDOMStyleSheets = nsnull;
+
+  mDocumentURI = aURI;
+  mDocumentBaseURI = mDocumentURI;
+
+  if (aLoadGroup) {
+    mDocumentLoadGroup = do_GetWeakReference(aLoadGroup);
+    // there was an assertion here that aLoadGroup was not null.  This
+    // is no longer valid nsWebShell::SetDocument does not create a
+    // load group, and it works just fine.
+  }
+
+  mLastModified.Truncate();
+  mContentType.Truncate();
+  mContentLanguage.Truncate();
+  mBaseTarget.Truncate();
+  mReferrer.Truncate();
+
+  mXMLDeclarationBits = 0;
+}
+
+nsresult
+nsDocument::ResetStylesheetsToURI(nsIURI* aURI)
+{
+  NS_PRECONDITION(aURI, "Null URI passed to ResetStylesheetsToURI");
+  
   // The stylesheets should forget us
   PRInt32 indx = mStyleSheets.Count();
   while (--indx >= 0) {
@@ -716,30 +780,33 @@ nsDocument::ResetToURI(nsIURI *aURI, nsILoadGroup *aLoadGroup)
   // Release all the sheets
   mStyleSheets.Clear();
 
-  // Release the listener manager
-  mListenerManager = nsnull;
-
-  // Release the stylesheets list.
-  mDOMStyleSheets = nsnull;
-
-  mDocumentURL = aURI;
-  mDocumentBaseURL = mDocumentURL;
-
-  if (aLoadGroup) {
-    mDocumentLoadGroup = do_GetWeakReference(aLoadGroup);
-    // there was an assertion here that aLoadGroup was not null.  This
-    // is no longer valid nsWebShell::SetDocument does not create a
-    // load group, and it works just fine.
+  // Now reset our inline style and attribute sheets.  Note that we
+  // already set their owning document to null in the loop above, but
+  // we'll reset it when we call AddStyleSheet on them.
+  nsresult rv;
+  if (mAttrStyleSheet) {
+    rv = mAttrStyleSheet->Reset(aURI);
+  } else {
+    rv = NS_NewHTMLStyleSheet(getter_AddRefs(mAttrStyleSheet), aURI, this);
   }
+  NS_ENSURE_SUCCESS(rv, rv);
+  
+  AddStyleSheet(mAttrStyleSheet, 0);
 
-  mLastModified.Truncate();
-  mContentType.Truncate();
-  mContentLanguage.Truncate();
+  if (mStyleAttrStyleSheet) {
+    rv = mStyleAttrStyleSheet->Reset(aURI);
+  } else {
+    rv = NS_NewHTMLCSSStyleSheet(getter_AddRefs(mStyleAttrStyleSheet), aURI,
+                                                this);
+  }
+  NS_ENSURE_SUCCESS(rv, rv);
 
-  mXMLDeclarationBits = 0;
+  AddStyleSheet(mStyleAttrStyleSheet, 0);
+
+  return rv;
 }
 
-NS_IMETHODIMP
+nsresult
 nsDocument::StartDocumentLoad(const char* aCommand, nsIChannel* aChannel,
                               nsILoadGroup* aLoadGroup,
                               nsISupports* aContainer,
@@ -766,10 +833,9 @@ nsDocument::StartDocumentLoad(const char* aCommand, nsIChannel* aChannel,
   return NS_OK;
 }
 
-NS_IMETHODIMP
+void
 nsDocument::StopDocumentLoad()
 {
-  return NS_OK;
 }
 
 NS_IMETHODIMP
@@ -795,8 +861,8 @@ nsDocument::GetPrincipal()
              do_GetService(NS_SCRIPTSECURITYMANAGER_CONTRACTID, &rv);
     if (NS_FAILED(rv))
       return nsnull;
-    NS_WARN_IF_FALSE(mDocumentURL, "no URL!");
-    rv = securityManager->GetCodebasePrincipal(mDocumentURL,
+    NS_WARN_IF_FALSE(mDocumentURI, "no URI!");
+    rv = securityManager->GetCodebasePrincipal(mDocumentURI,
                                                getter_AddRefs(mPrincipal));
 
     if (NS_FAILED(rv)) {
@@ -815,12 +881,10 @@ nsDocument::GetPrincipal(nsIPrincipal **aPrincipal)
   return *aPrincipal ? NS_OK : NS_ERROR_FAILURE;
 }
 
-NS_IMETHODIMP
+void
 nsDocument::SetPrincipal(nsIPrincipal *aNewPrincipal)
 {
   mPrincipal = aNewPrincipal;
-
-  return NS_OK;
 }
 
 NS_IMETHODIMP
@@ -842,20 +906,27 @@ nsDocument::SetContentType(const nsAString& aContentType)
 }
 
 NS_IMETHODIMP
-nsDocument::SetBaseURL(nsIURI* aURL)
+nsDocument::GetReferrer(nsAString& aReferrer)
+{
+  CopyUTF8toUTF16(mReferrer, aReferrer);
+  return NS_OK;
+}
+
+nsresult
+nsDocument::SetBaseURI(nsIURI* aURI)
 {
   nsresult rv = NS_OK;
 
-  if (aURL) {
+  if (aURI) {
     nsIScriptSecurityManager* securityManager =
       nsContentUtils::GetSecurityManager();
-    rv = securityManager->CheckLoadURI(mDocumentURL, aURL,
+    rv = securityManager->CheckLoadURI(mDocumentURI, aURI,
                                        nsIScriptSecurityManager::STANDARD);
     if (NS_SUCCEEDED(rv)) {
-      mDocumentBaseURL = aURL;
+      mDocumentBaseURI = aURI;
     }
   } else {
-    mDocumentBaseURL = nsnull;
+    mDocumentBaseURI = nsnull;
   }
 
   return rv;
@@ -864,12 +935,13 @@ nsDocument::SetBaseURL(nsIURI* aURL)
 void
 nsDocument::GetBaseTarget(nsAString &aBaseTarget) const
 {
-  aBaseTarget.Truncate();
+  aBaseTarget.Assign(mBaseTarget);
 }
 
 void
 nsDocument::SetBaseTarget(const nsAString &aBaseTarget)
 {
+  mBaseTarget.Assign(aBaseTarget);
 }
 
 void
@@ -900,7 +972,7 @@ nsDocument::SetDocumentCharacterSet(const nsACString& aCharSetID)
   }
 }
 
-NS_IMETHODIMP
+nsresult
 nsDocument::AddCharSetObserver(nsIObserver* aObserver)
 {
   NS_ENSURE_ARG_POINTER(aObserver);
@@ -910,14 +982,10 @@ nsDocument::AddCharSetObserver(nsIObserver* aObserver)
   return NS_OK;
 }
 
-NS_IMETHODIMP
+void
 nsDocument::RemoveCharSetObserver(nsIObserver* aObserver)
 {
-  NS_ENSURE_ARG_POINTER(aObserver);
-
-  NS_ENSURE_TRUE(mCharSetObservers.RemoveElement(aObserver), NS_ERROR_FAILURE);
-
-  return NS_OK;
+  mCharSetObservers.RemoveElement(aObserver);
 }
 
 nsILineBreaker*
@@ -1048,9 +1116,38 @@ nsDocument::SetHeaderData(nsIAtom* aHeaderField, const nsAString& aData)
   }
 }
 
-NS_IMETHODIMP
+PRBool
+nsDocument::TryChannelCharset(nsIChannel *aChannel,
+                              PRInt32& aCharsetSource,
+                              nsACString& aCharset)
+{
+  if(kCharsetFromChannel <= aCharsetSource) {
+    return PR_TRUE;
+  }
+
+  if (aChannel) {
+    nsCAutoString charsetVal;
+    nsresult rv = aChannel->GetContentCharset(charsetVal);
+    if (NS_SUCCEEDED(rv)) {
+      nsCOMPtr<nsICharsetAlias> calias(do_GetService(kCharsetAliasCID));
+      if (calias) {
+        nsCAutoString preferred;
+        rv = calias->GetPreferred(charsetVal,
+                                  preferred);
+        if(NS_SUCCEEDED(rv)) {
+          aCharset = preferred;
+          aCharsetSource = kCharsetFromChannel;
+          return PR_TRUE;
+        }
+      }
+    }
+  }
+  return PR_FALSE;
+}
+
+nsresult
 nsDocument::CreateShell(nsIPresContext* aContext, nsIViewManager* aViewManager,
-                        nsIStyleSet* aStyleSet,
+                        nsStyleSet* aStyleSet,
                         nsIPresShell** aInstancePtrResult)
 {
   // Don't add anything here.  Add it to |doCreateShell| instead.
@@ -1062,7 +1159,7 @@ nsDocument::CreateShell(nsIPresContext* aContext, nsIViewManager* aViewManager,
 
 nsresult
 nsDocument::doCreateShell(nsIPresContext* aContext,
-                          nsIViewManager* aViewManager, nsIStyleSet* aStyleSet,
+                          nsIViewManager* aViewManager, nsStyleSet* aStyleSet,
                           nsCompatibility aCompatMode,
                           nsIPresShell** aInstancePtrResult)
 {
@@ -1089,13 +1186,13 @@ nsDocument::DeleteShell(nsIPresShell* aShell)
   return mPresShells.RemoveElement(aShell);
 }
 
-NS_IMETHODIMP_(PRUint32)
+PRUint32
 nsDocument::GetNumberOfShells() const
 {
   return mPresShells.Count();
 }
 
-NS_IMETHODIMP_(nsIPresShell *)
+nsIPresShell *
 nsDocument::GetShellAt(PRUint32 aIndex) const
 {
   return (nsIPresShell*)mPresShells.SafeElementAt(aIndex);
@@ -1125,7 +1222,7 @@ SubDocInitEntry(PLDHashTable *table, PLDHashEntryHdr *entry, const void *key)
   return PR_TRUE;
 }
 
-NS_IMETHODIMP
+nsresult
 nsDocument::SetSubDocumentFor(nsIContent *aContent, nsIDocument* aSubDoc)
 {
   NS_ENSURE_TRUE(aContent, NS_ERROR_UNEXPECTED);
@@ -1260,7 +1357,7 @@ nsDocument::SetRootContent(nsIContent* aRoot)
   mRootContent = aRoot;
 }
 
-NS_IMETHODIMP_(nsIContent *)
+nsIContent *
 nsDocument::GetChildAt(PRUint32 aIndex) const
 {
   if (aIndex >= (PRUint32)mChildren.Count()) {
@@ -1270,13 +1367,13 @@ nsDocument::GetChildAt(PRUint32 aIndex) const
   return mChildren[aIndex];
 }
 
-NS_IMETHODIMP_(PRInt32)
+PRInt32
 nsDocument::IndexOf(nsIContent* aPossibleChild) const
 {
   return mChildren.IndexOf(aPossibleChild);
 }
 
-NS_IMETHODIMP_(PRUint32)
+PRUint32
 nsDocument::GetChildCount() const
 {
   return mChildren.Count();
@@ -1339,13 +1436,8 @@ nsDocument::AddStyleSheetToStyleSets(nsIStyleSheet* aSheet)
   PRInt32 count = mPresShells.Count();
   PRInt32 indx;
   for (indx = 0; indx < count; ++indx) {
-    nsCOMPtr<nsIPresShell> shell = (nsIPresShell *)mPresShells.ElementAt(indx);
-    nsCOMPtr<nsIStyleSet> set;
-    if (NS_SUCCEEDED(shell->GetStyleSet(getter_AddRefs(set)))) {
-      if (set) {
-        set->AddDocStyleSheet(aSheet, this);
-      }
-    }
+    NS_STATIC_CAST(nsIPresShell*, mPresShells.ElementAt(indx))->StyleSet()->
+      AddDocStyleSheet(aSheet, this);
   }
 }
 
@@ -1379,13 +1471,8 @@ nsDocument::RemoveStyleSheetFromStyleSets(nsIStyleSheet* aSheet)
   PRInt32 count = mPresShells.Count();
   PRInt32 indx;
   for (indx = 0; indx < count; ++indx) {
-    nsCOMPtr<nsIPresShell> shell = (nsIPresShell *)mPresShells.ElementAt(indx);
-    nsCOMPtr<nsIStyleSet> set;
-    shell->GetStyleSet(getter_AddRefs(set));
-
-    if (set) {
-      set->RemoveDocStyleSheet(aSheet);
-    }
+    NS_STATIC_CAST(nsIPresShell*, mPresShells.ElementAt(indx))->StyleSet()->
+      RemoveStyleSheet(nsStyleSet::eDocSheet, aSheet);
   }
 }
 
@@ -1486,7 +1573,7 @@ nsDocument::InternalInsertStyleSheetAt(nsIStyleSheet* aSheet, PRInt32 aIndex)
   mStyleSheets.InsertObjectAt(aSheet, aIndex);
 }
 
-NS_IMETHODIMP
+void
 nsDocument::InsertStyleSheetAt(nsIStyleSheet* aSheet, PRInt32 aIndex)
 {
   NS_PRECONDITION(aSheet, "null ptr");
@@ -1510,7 +1597,6 @@ nsDocument::InsertStyleSheetAt(nsIStyleSheet* aSheet, PRInt32 aIndex)
 
     observer->StyleSheetAdded(this, aSheet);
   }
-  return NS_OK;
 }
 
 
@@ -1726,11 +1812,8 @@ nsDocument::EndLoad()
   nsCOMPtr<nsIDOMEventTarget> target_frame;
 
   if (mScriptGlobalObject) {
-    nsCOMPtr<nsIDocShell> docShell;
-    mScriptGlobalObject->GetDocShell(getter_AddRefs(docShell));
-
     nsCOMPtr<nsIDocShellTreeItem> docShellAsItem =
-      do_QueryInterface(docShell);
+      do_QueryInterface(mScriptGlobalObject->GetDocShell());
 
     if (docShellAsItem) {
       docShellAsItem->GetSameTypeParent(getter_AddRefs(docShellParent));
@@ -1814,7 +1897,7 @@ nsDocument::EndLoad()
 }
 
 void
-nsDocument::ContentChanged(nsIContent* aContent, nsISupports* aSubContent)
+nsDocument::CharacterDataChanged(nsIContent* aContent, PRBool aAppend)
 {
   NS_ABORT_IF_FALSE(aContent, "Null content!");
 
@@ -1823,7 +1906,7 @@ nsDocument::ContentChanged(nsIContent* aContent, nsISupports* aSubContent)
     nsIDocumentObserver *observer =
       NS_STATIC_CAST(nsIDocumentObserver *, mObservers.ElementAt(i));
 
-    observer->ContentChanged(this, aContent, aSubContent);
+    observer->CharacterDataChanged(this, aContent, aAppend);
   }
 }
 
@@ -2039,7 +2122,7 @@ nsDocument::GetImplementation(nsIDOMDOMImplementation** aImplementation)
 {
   // For now, create a new implementation every time. This shouldn't
   // be a high bandwidth operation
-  *aImplementation = new nsDOMImplementation(mDocumentURL);
+  *aImplementation = new nsDOMImplementation(mDocumentURI);
   if (!*aImplementation) {
     return NS_ERROR_OUT_OF_MEMORY;
   }
@@ -2070,17 +2153,41 @@ NS_IMETHODIMP
 nsDocument::CreateElement(const nsAString& aTagName,
                           nsIDOMElement** aReturn)
 {
-  // Should be implemented by subclass
-  return NS_ERROR_NOT_IMPLEMENTED;
+  *aReturn = nsnull;
+
+  nsresult rv = nsContentUtils::CheckQName(aTagName, PR_FALSE);
+  NS_ENSURE_SUCCESS(rv, rv);
+
+  NS_ASSERTION(IsCaseSensitive(),
+               "nsDocument::CreateElement() called on document that is not "
+               "case sensitive. Fix caller, or fix "
+               "nsDocument::CreateElement()!");
+
+  nsCOMPtr<nsIAtom> name = do_GetAtom(aTagName);
+
+  nsCOMPtr<nsINodeInfo> nodeInfo;
+  rv = mNodeInfoManager->GetNodeInfo(name, nsnull, GetDefaultNamespaceID(),
+                                     getter_AddRefs(nodeInfo));
+  NS_ENSURE_SUCCESS(rv, rv);
+
+  return CreateElement(nodeInfo, aReturn);
 }
 
 NS_IMETHODIMP
-nsDocument::CreateElementNS(const nsAString & namespaceURI,
-                            const nsAString & qualifiedName,
-                            nsIDOMElement **_retval)
+nsDocument::CreateElementNS(const nsAString& aNamespaceURI,
+                            const nsAString& aQualifiedName,
+                            nsIDOMElement** aReturn)
 {
-  // Should be implemented by subclass
-  return NS_ERROR_NOT_IMPLEMENTED;
+  *aReturn = nsnull;
+
+  nsCOMPtr<nsINodeInfo> nodeInfo;
+  nsresult rv = nsContentUtils::GetNodeInfoFromQName(aNamespaceURI,
+                                                     aQualifiedName,
+                                                     mNodeInfoManager,
+                                                     getter_AddRefs(nodeInfo));
+  NS_ENSURE_SUCCESS(rv, rv);
+
+  return CreateElement(nodeInfo, aReturn);
 }
 
 NS_IMETHODIMP
@@ -2125,8 +2232,25 @@ NS_IMETHODIMP
 nsDocument::CreateCDATASection(const nsAString& aData,
                                nsIDOMCDATASection** aReturn)
 {
-  // Should be implemented by subclass
-  return NS_ERROR_NOT_IMPLEMENTED;
+  NS_ENSURE_ARG_POINTER(aReturn);
+  *aReturn = nsnull;
+
+  nsReadingIterator<PRUnichar> begin;
+  nsReadingIterator<PRUnichar> end;
+  aData.BeginReading(begin);
+  aData.EndReading(end);
+  if (FindInReadable(NS_LITERAL_STRING("]]>"),begin,end))
+    return NS_ERROR_DOM_INVALID_CHARACTER_ERR;
+
+  nsCOMPtr<nsIContent> content;
+  nsresult rv = NS_NewXMLCDATASection(getter_AddRefs(content));
+
+  if (NS_SUCCEEDED(rv)) {
+    rv = CallQueryInterface(content, aReturn);
+    (*aReturn)->AppendData(aData);
+  }
+
+  return rv;
 }
 
 NS_IMETHODIMP
@@ -2134,23 +2258,36 @@ nsDocument::CreateProcessingInstruction(const nsAString& aTarget,
                                         const nsAString& aData,
                                         nsIDOMProcessingInstruction** aReturn)
 {
-  // Should be implemented by subclass
-  return NS_ERROR_NOT_IMPLEMENTED;
+  *aReturn = nsnull;
+
+  nsresult rv = nsContentUtils::CheckQName(aTarget, PR_FALSE);
+  NS_ENSURE_SUCCESS(rv, rv);
+
+  nsCOMPtr<nsIContent> content;
+  rv = NS_NewXMLProcessingInstruction(getter_AddRefs(content), aTarget, aData);
+  if (NS_FAILED(rv)) {
+    return rv;
+  }
+
+  return CallQueryInterface(content, aReturn);
 }
 
 NS_IMETHODIMP
 nsDocument::CreateAttribute(const nsAString& aName,
                             nsIDOMAttr** aReturn)
 {
-  NS_ENSURE_ARG_POINTER(aReturn);
+  *aReturn = nsnull;
   NS_ENSURE_TRUE(mNodeInfoManager, NS_ERROR_NOT_INITIALIZED);
+
+  nsresult rv = nsContentUtils::CheckQName(aName, PR_FALSE);
+  NS_ENSURE_SUCCESS(rv, rv);
 
   nsAutoString value;
   nsDOMAttribute* attribute;
 
   nsCOMPtr<nsINodeInfo> nodeInfo;
-  nsresult rv = mNodeInfoManager->GetNodeInfo(aName, nsnull, kNameSpaceID_None,
-                                              getter_AddRefs(nodeInfo));
+  rv = mNodeInfoManager->GetNodeInfo(aName, nsnull, kNameSpaceID_None,
+                                     getter_AddRefs(nodeInfo));
   NS_ENSURE_SUCCESS(rv, rv);
 
   attribute = new nsDOMAttribute(nsnull, nodeInfo, value);
@@ -2168,8 +2305,10 @@ nsDocument::CreateAttributeNS(const nsAString & aNamespaceURI,
   *aResult = nsnull;
 
   nsCOMPtr<nsINodeInfo> nodeInfo;
-  nsresult rv = mNodeInfoManager->GetNodeInfo(aQualifiedName, aNamespaceURI,
-                                              getter_AddRefs(nodeInfo));
+  nsresult rv = nsContentUtils::GetNodeInfoFromQName(aNamespaceURI,
+                                                     aQualifiedName,
+                                                     mNodeInfoManager,
+                                                     getter_AddRefs(nodeInfo));
   NS_ENSURE_SUCCESS(rv, rv);
 
   nsAutoString value;
@@ -2183,8 +2322,10 @@ NS_IMETHODIMP
 nsDocument::CreateEntityReference(const nsAString& aName,
                                   nsIDOMEntityReference** aReturn)
 {
-  // Should be implemented by subclass
-  return NS_ERROR_NOT_IMPLEMENTED;
+  NS_ENSURE_ARG_POINTER(aReturn);
+
+  *aReturn = nsnull;
+  return NS_OK;
 }
 
 NS_IMETHODIMP
@@ -2313,7 +2454,7 @@ nsDocument::ImportNode(nsIDOMNode* aImportedNode,
                        nsIDOMNode** aReturn)
 {
   NS_ENSURE_ARG(aImportedNode);
-  NS_ENSURE_ARG_POINTER(aReturn);
+  NS_PRECONDITION(aReturn, "Null out param!");
 
   nsresult rv = nsContentUtils::CheckSameOrigin(this, aImportedNode);
   if (NS_FAILED(rv)) {
@@ -2324,8 +2465,10 @@ nsDocument::ImportNode(nsIDOMNode* aImportedNode,
 }
 
 NS_IMETHODIMP
-nsDocument::AddBinding(nsIDOMElement* aContent, const nsAString& aURL)
+nsDocument::AddBinding(nsIDOMElement* aContent, const nsAString& aURI)
 {
+  NS_ENSURE_ARG(aContent);
+  
   nsresult rv = nsContentUtils::CheckSameOrigin(this, aContent);
   if (NS_FAILED(rv)) {
     return rv;
@@ -2334,13 +2477,15 @@ nsDocument::AddBinding(nsIDOMElement* aContent, const nsAString& aURL)
   nsCOMPtr<nsIContent> content(do_QueryInterface(aContent));
 
   nsCOMPtr<nsIURI> uri;
-  NS_NewURI(getter_AddRefs(uri), aURL);
+  NS_NewURI(getter_AddRefs(uri), aURI);
   return mBindingManager->AddLayeredBinding(content, uri);
 }
 
 NS_IMETHODIMP
-nsDocument::RemoveBinding(nsIDOMElement* aContent, const nsAString& aURL)
+nsDocument::RemoveBinding(nsIDOMElement* aContent, const nsAString& aURI)
 {
+  NS_ENSURE_ARG(aContent);
+
   nsresult rv = nsContentUtils::CheckSameOrigin(this, aContent);
   if (NS_FAILED(rv)) {
     return rv;
@@ -2349,7 +2494,10 @@ nsDocument::RemoveBinding(nsIDOMElement* aContent, const nsAString& aURL)
   if (mBindingManager) {
     nsCOMPtr<nsIContent> content(do_QueryInterface(aContent));
     nsCOMPtr<nsIURI> uri;
-    NS_NewURI(getter_AddRefs(uri), aURL);
+    rv = NS_NewURI(getter_AddRefs(uri), aURI);
+    if (NS_FAILED(rv)) {
+      return rv;
+    }
     return mBindingManager->RemoveLayeredBinding(content, uri);
   }
 
@@ -2357,7 +2505,7 @@ nsDocument::RemoveBinding(nsIDOMElement* aContent, const nsAString& aURL)
 }
 
 NS_IMETHODIMP
-nsDocument::LoadBindingDocument(const nsAString& aURL,
+nsDocument::LoadBindingDocument(const nsAString& aURI,
                                 nsIDOMDocument** aResult)
 {
   if (!mBindingManager) {
@@ -2365,8 +2513,9 @@ nsDocument::LoadBindingDocument(const nsAString& aURL,
   }
 
   nsCOMPtr<nsIURI> uri;
-  nsresult rv = NS_NewURI(getter_AddRefs(uri), aURL,
-                          mCharacterSet.get(), GetBaseURL());
+  nsresult rv = NS_NewURI(getter_AddRefs(uri), aURI,
+                          mCharacterSet.get(),
+                          NS_STATIC_CAST(nsIDocument *, this)->GetBaseURI());
 
   NS_ENSURE_SUCCESS(rv, rv);
   
@@ -2524,9 +2673,8 @@ nsDocument::GetDefaultView(nsIDOMAbstractView** aDefaultView)
   nsresult rv = shell->GetPresContext(getter_AddRefs(ctx));
   NS_ENSURE_TRUE(NS_SUCCEEDED(rv) && ctx, rv);
 
-  nsCOMPtr<nsISupports> container;
-  rv = ctx->GetContainer(getter_AddRefs(container));
-  NS_ENSURE_TRUE(NS_SUCCEEDED(rv) && container, rv);
+  nsCOMPtr<nsISupports> container = ctx->GetContainer();
+  NS_ENSURE_TRUE(container, NS_OK);
 
   nsCOMPtr<nsIDOMWindowInternal> window = do_GetInterface(container);
   NS_ENSURE_TRUE(window, NS_OK);
@@ -2570,10 +2718,7 @@ nsDocument::SetTitle(const nsAString& aTitle)
     nsresult rv = shell->GetPresContext(getter_AddRefs(context));
     NS_ENSURE_SUCCESS(rv, rv);
 
-    nsCOMPtr<nsISupports> container;
-    rv = context->GetContainer(getter_AddRefs(container));
-    NS_ENSURE_SUCCESS(rv, rv);
-
+    nsCOMPtr<nsISupports> container = context->GetContainer();
     if (!container)
       continue;
 
@@ -2602,6 +2747,8 @@ nsDocument::SetTitle(const nsAString& aTitle)
 NS_IMETHODIMP
 nsDocument::GetBoxObjectFor(nsIDOMElement* aElement, nsIBoxObject** aResult)
 {
+  NS_ENSURE_ARG(aElement);
+  
   nsresult rv;
 
   *aResult = nsnull;
@@ -2727,7 +2874,7 @@ nsDocument::GetDir(nsAString& aDirection)
       context->GetBidi(&options);
       for (const DirTable* elt = dirAttributes; elt->mName; elt++) {
         if (GET_BIDI_OPTION_DIRECTION(options) == elt->mValue) {
-          aDirection.Assign(NS_ConvertASCIItoUCS2(elt->mName));
+          CopyASCIItoUTF16(elt->mName, aDirection);
           break;
         }
       }
@@ -3164,8 +3311,8 @@ NS_IMETHODIMP
 nsDocument::GetBaseURI(nsAString &aURI)
 {
   nsCAutoString spec;
-  if (mDocumentBaseURL) {
-    mDocumentBaseURL->GetSpec(spec);
+  if (mDocumentBaseURI) {
+    mDocumentBaseURI->GetSpec(spec);
   }
 
   CopyUTF8toUTF16(spec, aURI);
@@ -3411,9 +3558,9 @@ nsDocument::SetStrictErrorChecking(PRBool aStrictErrorChecking)
 NS_IMETHODIMP
 nsDocument::GetDocumentURI(nsAString& aDocumentURI)
 {
-  if (mDocumentURL) {
+  if (mDocumentURI) {
     nsCAutoString uri;
-    mDocumentURL->GetSpec(uri);
+    mDocumentURI->GetSpec(uri);
     CopyUTF8toUTF16(uri, aDocumentURI);
   } else {
     SetDOMStringToNull(aDocumentURI);
@@ -3426,7 +3573,7 @@ NS_IMETHODIMP
 nsDocument::SetDocumentURI(const nsAString& aDocumentURI)
 {
   // Not allowing this yet, need to think about security ramifications first.
-  // We use mDocumentURL to get principals for this document.
+  // We use mDocumentURI to get principals for this document.
   return NS_ERROR_NOT_IMPLEMENTED;
 }
 
@@ -3458,6 +3605,11 @@ nsDocument::RenameNode(nsIDOMNode *aNode,
                        const nsAString& qualifiedName,
                        nsIDOMNode **aReturn)
 {
+  if (!aNode) {
+    // not an element or attribute
+    return NS_ERROR_DOM_NOT_SUPPORTED_ERR;
+  }
+  
   PRUint16 nodeType;
   aNode->GetNodeType(&nodeType);
   if (nodeType == nsIDOMNode::ELEMENT_NODE ||
@@ -3654,12 +3806,8 @@ nsDocument::DispatchEvent(nsIDOMEvent* aEvent, PRBool *_retval)
   nsCOMPtr<nsIPresContext> presContext;
   shell->GetPresContext(getter_AddRefs(presContext));
 
-  nsCOMPtr<nsIEventStateManager> esm;
-  nsresult rv = presContext->GetEventStateManager(getter_AddRefs(esm));
-  NS_ENSURE_SUCCESS(rv, rv);
-
-  return esm->DispatchNewEvent(NS_STATIC_CAST(nsIDOMDocument *, this), aEvent,
-                               _retval);
+  return presContext->EventStateManager()->
+    DispatchNewEvent(NS_STATIC_CAST(nsIDOMDocument*, this), aEvent, _retval);
 }
 
 NS_IMETHODIMP
@@ -3760,10 +3908,8 @@ nsDocument::FlushPendingNotifications(PRBool aFlushReflows,
   // that uses mParentDocument, but mParentDocument is never set in
   // the current code!
 
-  nsCOMPtr<nsIDocShell> docShell;
-  mScriptGlobalObject->GetDocShell(getter_AddRefs(docShell));
-
-  nsCOMPtr<nsIDocShellTreeItem> docShellAsItem(do_QueryInterface(docShell));
+  nsCOMPtr<nsIDocShellTreeItem> docShellAsItem =
+    do_QueryInterface(mScriptGlobalObject->GetDocShell());
 
   if (docShellAsItem) {
     nsCOMPtr<nsIDocShellTreeItem> docShellParent;
@@ -3883,13 +4029,7 @@ nsDocument::GetXMLDeclaration(nsAString& aVersion, nsAString& aEncoding,
   }
 }
 
-NS_IMETHODIMP_(PRBool)
-nsDocument::IsCaseSensitive()
-{
-  return PR_TRUE;
-}
-
-NS_IMETHODIMP_(PRBool)
+PRBool
 nsDocument::IsScriptEnabled()
 {
   nsCOMPtr<nsIScriptSecurityManager> sm(do_GetService(NS_SCRIPTSECURITYMANAGER_CONTRACTID));
@@ -3901,8 +4041,7 @@ nsDocument::IsScriptEnabled()
   nsIScriptGlobalObject* globalObject = GetScriptGlobalObject();
   NS_ENSURE_TRUE(globalObject, PR_TRUE);
 
-  nsCOMPtr<nsIScriptContext> scriptContext;
-  globalObject->GetContext(getter_AddRefs(scriptContext));
+  nsIScriptContext *scriptContext = globalObject->GetContext();
   NS_ENSURE_TRUE(scriptContext, PR_TRUE);
 
   JSContext* cx = (JSContext *) scriptContext->GetNativeContext();
@@ -4028,6 +4167,13 @@ nsDocument::RetrieveRelevantHeaders(nsIChannel *aChannel)
       mLastModified.Truncate();
     }
 
+    // The misspelled key 'referer' is as per the HTTP spec
+    rv = httpChannel->GetRequestHeader(NS_LITERAL_CSTRING("referer"),
+                                       mReferrer);
+    if (NS_FAILED(rv)) {
+      mReferrer.Truncate();
+    }
+    
     rv = httpChannel->GetResponseHeader(NS_LITERAL_CSTRING("Content-Language"),
                                         mContentLanguage);
 
@@ -4087,4 +4233,30 @@ nsDocument::RetrieveRelevantHeaders(nsIChannel *aChannel)
                               getter_Copies(mContentLanguage));
     }
   }
+}
+
+nsresult
+nsDocument::CreateElement(nsINodeInfo *aNodeInfo, nsIDOMElement** aResult)
+{
+  *aResult = nsnull;
+  
+  PRInt32 namespaceID = aNodeInfo->NamespaceID();
+
+  nsCOMPtr<nsIElementFactory> elementFactory;
+  nsContentUtils::GetNSManagerWeakRef()->GetElementFactory(namespaceID,
+                                                           getter_AddRefs(elementFactory));
+
+  nsresult rv;
+  nsCOMPtr<nsIContent> content;
+  if (elementFactory) {
+    rv = elementFactory->CreateInstanceByTag(aNodeInfo,
+                                             getter_AddRefs(content));
+  } else {
+    rv = NS_NewXMLElement(getter_AddRefs(content), aNodeInfo);
+  }
+  NS_ENSURE_SUCCESS(rv, rv);
+
+  content->SetContentID(mNextContentID++);
+
+  return CallQueryInterface(content, aResult);
 }

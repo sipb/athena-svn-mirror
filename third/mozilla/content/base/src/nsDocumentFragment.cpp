@@ -47,9 +47,10 @@
 #include "nsIDOMDocument.h"
 #include "nsDOMError.h"
 #include "nsIDOM3Node.h"
+#include "nsLayoutAtoms.h"
+#include "nsDOMString.h"
 
-
-class nsDocumentFragment : public nsGenericContainerElement,
+class nsDocumentFragment : public nsGenericElement,
                            public nsIDocumentFragment,
                            public nsIDOM3Node
 {
@@ -67,24 +68,24 @@ public:
 
   // interface nsIDOMDocumentFragment
   NS_IMETHOD    GetNodeName(nsAString& aNodeName)
-  { return nsGenericContainerElement::GetNodeName(aNodeName); }
+  { return nsGenericElement::GetNodeName(aNodeName); }
   NS_IMETHOD    GetNodeValue(nsAString& aNodeValue)
-  { return nsGenericContainerElement::GetNodeValue(aNodeValue); }
+  { return nsGenericElement::GetNodeValue(aNodeValue); }
   NS_IMETHOD    SetNodeValue(const nsAString& aNodeValue)
-  { return nsGenericContainerElement::SetNodeValue(aNodeValue); }
+  { return nsGenericElement::SetNodeValue(aNodeValue); }
   NS_IMETHOD    GetNodeType(PRUint16* aNodeType);
   NS_IMETHOD    GetParentNode(nsIDOMNode** aParentNode)
-  { return nsGenericContainerElement::GetParentNode(aParentNode); }
+  { return nsGenericElement::GetParentNode(aParentNode); }
   NS_IMETHOD    GetChildNodes(nsIDOMNodeList** aChildNodes)
-  { return nsGenericContainerElement::GetChildNodes(aChildNodes); }
+  { return nsGenericElement::GetChildNodes(aChildNodes); }
   NS_IMETHOD    GetFirstChild(nsIDOMNode** aFirstChild)
-  { return nsGenericContainerElement::GetFirstChild(aFirstChild); }
+  { return nsGenericElement::GetFirstChild(aFirstChild); }
   NS_IMETHOD    GetLastChild(nsIDOMNode** aLastChild)
-  { return nsGenericContainerElement::GetLastChild(aLastChild); }
+  { return nsGenericElement::GetLastChild(aLastChild); }
   NS_IMETHOD    GetPreviousSibling(nsIDOMNode** aPreviousSibling)
-  { return nsGenericContainerElement::GetPreviousSibling(aPreviousSibling); }
+  { return nsGenericElement::GetPreviousSibling(aPreviousSibling); }
   NS_IMETHOD    GetNextSibling(nsIDOMNode** aNextSibling)
-  { return nsGenericContainerElement::GetNextSibling(aNextSibling); }
+  { return nsGenericElement::GetNextSibling(aNextSibling); }
   NS_IMETHOD    GetAttributes(nsIDOMNamedNodeMap** aAttributes)
     {
       *aAttributes = nsnull;
@@ -93,78 +94,75 @@ public:
   NS_IMETHOD    GetOwnerDocument(nsIDOMDocument** aOwnerDocument);
   NS_IMETHOD    InsertBefore(nsIDOMNode* aNewChild, nsIDOMNode* aRefChild, 
                              nsIDOMNode** aReturn)
-  { return nsGenericContainerElement::InsertBefore(aNewChild, aRefChild,
-                                                   aReturn); }
+  { return nsGenericElement::InsertBefore(aNewChild, aRefChild, aReturn); }
   NS_IMETHOD    ReplaceChild(nsIDOMNode* aNewChild, nsIDOMNode* aOldChild, 
                              nsIDOMNode** aReturn)
-  { return nsGenericContainerElement::ReplaceChild(aNewChild, aOldChild,
-                                                   aReturn); }
+  { return nsGenericElement::ReplaceChild(aNewChild, aOldChild, aReturn); }
   NS_IMETHOD    RemoveChild(nsIDOMNode* aOldChild, nsIDOMNode** aReturn)
-  { return nsGenericContainerElement::RemoveChild(aOldChild, aReturn); }
+  { return nsGenericElement::RemoveChild(aOldChild, aReturn); }
   NS_IMETHOD    AppendChild(nsIDOMNode* aNewChild, nsIDOMNode** aReturn)
-  { return nsGenericContainerElement::AppendChild(aNewChild, aReturn); }
+  { return nsGenericElement::AppendChild(aNewChild, aReturn); }
   NS_IMETHOD    HasChildNodes(PRBool* aReturn)
-  { return nsGenericContainerElement::HasChildNodes(aReturn); }
+  { return nsGenericElement::HasChildNodes(aReturn); }
   NS_IMETHOD    HasAttributes(PRBool* aReturn)
-  { return nsGenericContainerElement::HasAttributes(aReturn); }
+  { return nsGenericElement::HasAttributes(aReturn); }
   NS_IMETHOD    CloneNode(PRBool aDeep, nsIDOMNode** aReturn);
   NS_IMETHOD    GetPrefix(nsAString& aPrefix)
-  { return nsGenericContainerElement::GetPrefix(aPrefix); }
+  { return nsGenericElement::GetPrefix(aPrefix); }
   NS_IMETHOD    SetPrefix(const nsAString& aPrefix);
   NS_IMETHOD    GetNamespaceURI(nsAString& aNamespaceURI)
-  { return nsGenericContainerElement::GetNamespaceURI(aNamespaceURI); }
+  { return nsGenericElement::GetNamespaceURI(aNamespaceURI); }
   NS_IMETHOD    GetLocalName(nsAString& aLocalName)
-  { return nsGenericContainerElement::GetLocalName(aLocalName); }
+  { return nsGenericElement::GetLocalName(aLocalName); }
   NS_IMETHOD    Normalize()
-  { return nsGenericContainerElement::Normalize(); }
+  { return nsGenericElement::Normalize(); }
   NS_IMETHOD    IsSupported(const nsAString& aFeature,
                             const nsAString& aVersion,
                             PRBool* aReturn)
-  { return nsGenericContainerElement::IsSupported(aFeature, aVersion,
-                                                  aReturn); }
+  { return nsGenericElement::IsSupported(aFeature, aVersion, aReturn); }
 
   // nsIDOM3Node
   NS_DECL_NSIDOM3NODE
 
   // nsIContent
-  NS_IMETHOD_(void) SetParent(nsIContent* aParent) { }
-  NS_IMETHOD SetAttr(PRInt32 aNameSpaceID, nsIAtom* aName,
-                     const nsAString& aValue,
-                     PRBool aNotify)
-    { return NS_OK; }
-  NS_IMETHOD SetAttr(nsINodeInfo* aNodeInfo,
-                     const nsAString& aValue,
-                     PRBool aNotify)
-    { return NS_OK; }
-  NS_IMETHOD GetAttr(PRInt32 aNameSpaceID, nsIAtom* aName, 
-                     nsAString& aResult) const
-    { return NS_CONTENT_ATTR_NOT_THERE; }
-  NS_IMETHOD GetAttr(PRInt32 aNameSpaceID, nsIAtom* aName, 
-                     nsIAtom** aPrefix, nsAString& aResult) const
-    { return NS_CONTENT_ATTR_NOT_THERE; }
-  NS_IMETHOD UnsetAttr(PRInt32 aNameSpaceID, nsIAtom* aAttribute, 
-                       PRBool aNotify)
-    { return NS_OK; }
-  NS_IMETHOD GetAttrNameAt(PRUint32 aIndex,
-                           PRInt32* aNameSpaceID,
-                           nsIAtom** aName,
-                           nsIAtom** aPrefix) const
-    {
-      *aNameSpaceID = kNameSpaceID_None;
-      *aName = nsnull;
-      *aPrefix = nsnull;
-      return NS_ERROR_ILLEGAL_VALUE;
-    }
-  NS_IMETHOD HandleDOMEvent(nsIPresContext* aPresContext,
-                            nsEvent* aEvent,
-                            nsIDOMEvent** aDOMEvent,
-                            PRUint32 aFlags,
-                            nsEventStatus* aEventStatus)
-    {
-      NS_ENSURE_ARG_POINTER(aEventStatus);
-      *aEventStatus = nsEventStatus_eIgnore;
-      return NS_OK;
-    }
+  virtual void SetParent(nsIContent* aParent) { }
+  nsresult SetAttr(PRInt32 aNameSpaceID, nsIAtom* aName,
+                   const nsAString& aValue, PRBool aNotify)
+  {
+    return SetAttr(aNameSpaceID, aName, nsnull, aValue, aNotify);
+  }
+  virtual nsresult SetAttr(PRInt32 aNameSpaceID, nsIAtom* aName,
+                           nsIAtom* aPrefix, const nsAString& aValue,
+                           PRBool aNotify)
+  {
+    return NS_OK;
+  }
+  virtual nsresult GetAttr(PRInt32 aNameSpaceID, nsIAtom* aName, 
+                           nsAString& aResult) const
+  {
+    return NS_CONTENT_ATTR_NOT_THERE;
+  }
+  virtual nsresult UnsetAttr(PRInt32 aNameSpaceID, nsIAtom* aAttribute, 
+                             PRBool aNotify)
+  {
+    return NS_OK;
+  }
+  virtual nsresult GetAttrNameAt(PRUint32 aIndex, PRInt32* aNameSpaceID,
+                                 nsIAtom** aName, nsIAtom** aPrefix) const
+  {
+    *aNameSpaceID = kNameSpaceID_None;
+    *aName = nsnull;
+    *aPrefix = nsnull;
+    return NS_ERROR_ILLEGAL_VALUE;
+  }
+  virtual nsresult HandleDOMEvent(nsIPresContext* aPresContext,
+                                  nsEvent* aEvent, nsIDOMEvent** aDOMEvent,
+                                  PRUint32 aFlags, nsEventStatus* aEventStatus)
+  {
+    NS_ENSURE_ARG_POINTER(aEventStatus);
+    *aEventStatus = nsEventStatus_eIgnore;
+    return NS_OK;
+  }
 
 protected:
   nsCOMPtr<nsIDocument> mOwnerDocument;
@@ -174,23 +172,14 @@ nsresult
 NS_NewDocumentFragment(nsIDOMDocumentFragment** aInstancePtrResult,
                        nsIDocument* aOwnerDocument)
 {
-  NS_ENSURE_ARG_POINTER(aInstancePtrResult);
+  NS_ENSURE_ARG(aOwnerDocument);
 
-  nsCOMPtr<nsINodeInfoManager> nimgr;
+  nsINodeInfoManager *nimgr = aOwnerDocument->GetNodeInfoManager();
+
   nsCOMPtr<nsINodeInfo> nodeInfo;
-
-  nsresult rv;
-
-  if (aOwnerDocument) {
-    nimgr = aOwnerDocument->GetNodeInfoManager();
-  } else {
-    rv = nsNodeInfoManager::GetAnonymousManager(getter_AddRefs(nimgr));
-    NS_ENSURE_SUCCESS(rv, rv);
-  }
-
-  rv = nimgr->GetNodeInfo(NS_LITERAL_CSTRING("#document-fragment"),
-                          nsnull, kNameSpaceID_None,
-                          getter_AddRefs(nodeInfo));
+  nsresult rv = nimgr->GetNodeInfo(nsLayoutAtoms::documentFragmentNodeName,
+                                   nsnull, kNameSpaceID_None,
+                                   getter_AddRefs(nodeInfo));
   NS_ENSURE_SUCCESS(rv, rv);
 
   nsDocumentFragment* it = new nsDocumentFragment(aOwnerDocument);
@@ -280,14 +269,10 @@ nsDocumentFragment::ReconnectChildren()
 NS_IMETHODIMP
 nsDocumentFragment::DropChildReferences()
 {
-  PRUint32 count = GetChildCount();
-
-  for (PRUint32 index = 0; index < count; ++index) {
-    nsIContent* kid = NS_STATIC_CAST(nsIContent*, mChildren.ElementAt(index));
-    NS_RELEASE(kid);
+  PRUint32 count = mAttrsAndChildren.ChildCount();
+  while (count > 0) {
+    mAttrsAndChildren.RemoveChildAt(--count);
   }
-
-  mChildren.Clear();
 
   return NS_OK;
 }

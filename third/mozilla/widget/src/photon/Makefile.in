@@ -32,8 +32,8 @@ EXPORT_LIBRARY = 1
 IS_COMPONENT	= 1
 MODULE_NAME	= nsWidgetPhModule
 REQUIRES    = xpcom \
-		string \
-		      appshell \
+				string \
+		    appshell \
 			  gfx \
 			  pref \
 			  dom \
@@ -43,12 +43,12 @@ REQUIRES    = xpcom \
 			  util \
 			  docshell\
 			  layout\
+				content\
 			  webshell\
 				intl\
 			  $(NULL)	
 			  
 CPPSRCS		= \
-		nsDragService.cpp \
 		PtRawDrawContainer.cpp \
 		nsAppShell.cpp \
 		nsClipboard.cpp \
@@ -62,6 +62,17 @@ CPPSRCS		= \
 		nsSound.cpp \
 		$(NULL)
 
+ifdef MOZ_ENABLE_XREMOTE
+REQUIRES += xremoteservice
+CPPSRCS += nsPhMozRemoteHelper.cpp
+endif
+
+# always include the PHOTON_DND in the build - the bookmarks in firefox require it
+PHOTON_DND=1
+ifdef PHOTON_DND
+CPPSRCS += nsDragService.cpp
+endif
+
 SHARED_LIBRARY_LIBS = $(DIST)/lib/libxpwidgets_s.a
 
 EXTRA_DSO_LDOPTS = $(MOZ_COMPONENT_LIBS) \
@@ -74,3 +85,6 @@ include $(topsrcdir)/config/rules.mk
 DEFINES		+=  -D_IMPL_NS_WIDGET -I$(srcdir)/../xpwidgets -I$(srcdir) 
 CXXFLAGS	+= $(TK_CFLAGS)
 
+ifdef PHOTON_DND
+CXXFLAGS += -DPHOTON_DND
+endif

@@ -24,6 +24,7 @@
 /* The long avoided variant support for xpcom. */
 
 #include "nsIVariant.h"
+#include "nsStringFwd.h"
 #include "xpt_struct.h"
 
 /** 
@@ -102,7 +103,6 @@ public:
     NS_DECL_NSIWRITABLEVARIANT
 
     nsVariant();
-    virtual ~nsVariant();
 
     static nsresult Initialize(nsDiscriminatedUnion* data);
     static nsresult Cleanup(nsDiscriminatedUnion* data);
@@ -162,6 +162,9 @@ public:
     static nsresult SetToVoid(nsDiscriminatedUnion* data);
     static nsresult SetToEmpty(nsDiscriminatedUnion* data);
     static nsresult SetToEmptyArray(nsDiscriminatedUnion* data);
+
+private:
+    ~nsVariant();
 
 protected:
     nsDiscriminatedUnion mData;

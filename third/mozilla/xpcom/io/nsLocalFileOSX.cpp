@@ -21,6 +21,7 @@
  *
  * Contributor(s):
  *  Conrad Carlen <ccarlen@netscape.com>
+ *  Jungshik Shin <jshin@mailaps.org>
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either the GNU General Public License Version 2 or later (the "GPL"), or
@@ -50,6 +51,7 @@
 
 #include "MoreFilesX.h"
 #include "FSCopyObject.h"
+#include "nsAutoBuffer.h"
 
 // Mac Includes
 #include <Aliases.h>
@@ -68,6 +70,7 @@
 
 static nsresult MacErrorMapper(OSErr inErr);
 static OSErr FindRunningAppBySignature(OSType aAppSig, ProcessSerialNumber& outPsn);
+static void CopyUTF8toUTF16NFC(const nsACString& aSrc, nsAString& aResult);
 
 //*****************************************************************************
 //  Local Helper Classes
@@ -202,7 +205,8 @@ class nsDirEnumerator : public nsISimpleEnumerator
             return NS_OK;
         }
 
-        virtual ~nsDirEnumerator() 
+    private:
+        ~nsDirEnumerator() 
         {
           if (mIterator)
             ::FSCloseIterator(mIterator);
@@ -244,65 +248,7 @@ public:
     }
 };
 
-#pragma mark -
-#pragma mark [StBuffer]
-
-template <class T>
-class StBuffer
-{
-public:
-  
-  StBuffer() :
-    mBufferPtr(mBuffer),
-    mCurElemCapacity(kStackBufferNumElems)
-  {
-  }
-
-  ~StBuffer()
-  {
-    DeleteBuffer();
-  }
-
-  PRBool EnsureElemCapacity(PRInt32 inElemCapacity)
-  {
-    if (inElemCapacity <= mCurElemCapacity)
-      return PR_TRUE;
-    
-    if (inElemCapacity > kStackBufferNumElems)
-    {
-      DeleteBuffer();
-      mBufferPtr = (T*)malloc(inElemCapacity * sizeof(T));
-      mCurElemCapacity = inElemCapacity;
-      return (mBufferPtr != NULL);
-    }
-    
-    mCurElemCapacity = kStackBufferNumElems;
-    return PR_TRUE;
-  }
-                
-  T*          get()     { return mBufferPtr;    }
-  
-  PRInt32     GetElemCapacity()   { return mCurElemCapacity;  }
-
-protected:
-
-  void DeleteBuffer()
-  {
-    if (mBufferPtr != mBuffer)
-    {
-      free(mBufferPtr);
-      mBufferPtr = mBuffer;
-    }                
-  }
-  
-protected:
-  enum { kStackBufferNumElems		= 512 };
-
-  T             *mBufferPtr;
-  T             mBuffer[kStackBufferNumElems];
-  PRInt32       mCurElemCapacity;
-};
-
+#define FILENAME_BUFFER_SIZE 512
 
 //*****************************************************************************
 //  nsLocalFile
@@ -440,7 +386,7 @@ NS_IMETHODIMP nsLocalFile::Create(PRUint32 type, PRUint32 permissions)
   CFURLRef pathURLRef = mBaseRef;
   FSRef pathFSRef;
   CFStringRef leafStrRef = nsnull;
-  StBuffer<UniChar> buffer;
+  nsAutoBuffer<UniChar, FILENAME_BUFFER_SIZE> buffer;
   Boolean success;
   
   // Work backwards through the path to find the last node which
@@ -515,7 +461,7 @@ NS_IMETHODIMP nsLocalFile::GetLeafName(nsAString& aLeafName)
   nsresult rv = GetNativeLeafName(nativeString);
   if (NS_FAILED(rv))
     return rv;
-  aLeafName.Assign(NS_ConvertUTF8toUCS2(nativeString));
+  CopyUTF8toUTF16NFC(nativeString, aLeafName);
   return NS_OK;
 }
 
@@ -814,7 +760,7 @@ NS_IMETHODIMP nsLocalFile::GetPath(nsAString& aPath)
   nsresult rv = GetNativePath(nativeString);
   if (NS_FAILED(rv))
     return rv;
-  aPath.Assign(NS_ConvertUTF8toUCS2(nativeString));
+  CopyUTF8toUTF16NFC(nativeString, aPath);
   return NS_OK;
 }
 
@@ -2037,7 +1983,7 @@ nsresult nsLocalFile::CFStringReftoUTF8(CFStringRef aInStrRef, nsACString& aOutS
   CFIndex charsConverted = ::CFStringGetBytes(aInStrRef, CFRangeMake(0, inStrLen),
                               kCFStringEncodingUTF8, 0, PR_FALSE, nsnull, 0, &usedBufLen);
   if (charsConverted == inStrLen) {
-    StBuffer<UInt8> buffer;
+    nsAutoBuffer<UInt8, FILENAME_BUFFER_SIZE> buffer;
     if (buffer.EnsureElemCapacity(usedBufLen + 1)) {
       ::CFStringGetBytes(aInStrRef, CFRangeMake(0, inStrLen),
           kCFStringEncodingUTF8, 0, false, buffer.get(), usedBufLen, &usedBufLen);
@@ -2174,4 +2120,64 @@ static OSErr FindRunningAppBySignature(OSType aAppSig, ProcessSerialNumber& outP
       return noErr;
   }
   return procNotFound;
+}
+
+// Convert a UTF-8 string to a UTF-16 string while normalizing to
+// Normalization Form C (composed Unicode). We need this because
+// Mac OS X file system uses NFD (Normalization Form D : decomposed Unicode)
+// while most other OS', server-side programs usually expect NFC.
+
+typedef void (*UnicodeNormalizer) (CFMutableStringRef, CFStringNormalizationForm);
+static void CopyUTF8toUTF16NFC(const nsACString& aSrc, nsAString& aResult)
+{
+    static PRBool sChecked = PR_FALSE;
+    static UnicodeNormalizer sUnicodeNormalizer = NULL;
+
+    // CFStringNormalize was not introduced until Mac OS 10.2
+    if (!sChecked) {
+        CFBundleRef carbonBundle =
+            CFBundleGetBundleWithIdentifier(CFSTR("com.apple.Carbon"));
+        if (carbonBundle)
+            sUnicodeNormalizer = (UnicodeNormalizer)
+                ::CFBundleGetFunctionPointerForName(carbonBundle,
+                                                    CFSTR("CFStringNormalize"));
+        sChecked = PR_TRUE;
+    }
+
+    if (!sUnicodeNormalizer) {  // OS X 10.2 or earlier
+        CopyUTF8toUTF16(aSrc, aResult);
+        return;  
+    }
+
+    const nsAFlatCString &inFlatSrc = PromiseFlatCString(aSrc);
+
+    // The number of 16bit code units in a UTF-16 string will never be
+    // larger than the number of bytes in the corresponding UTF-8 string.
+    CFMutableStringRef inStr =
+        ::CFStringCreateMutable(NULL, inFlatSrc.Length());
+
+    if (!inStr) {
+        CopyUTF8toUTF16(aSrc, aResult);
+        return;  
+    }
+     
+    ::CFStringAppendCString(inStr, inFlatSrc.get(), kCFStringEncodingUTF8); 
+
+    sUnicodeNormalizer(inStr, kCFStringNormalizationFormC);
+
+    CFIndex length = CFStringGetLength(inStr);
+    const UniChar* chars = CFStringGetCharactersPtr(inStr);
+
+    if (chars) 
+        aResult.Assign(chars, length);
+    else {
+        nsAutoBuffer<UniChar, FILENAME_BUFFER_SIZE> buffer;
+        if (!buffer.EnsureElemCapacity(length))
+            CopyUTF8toUTF16(aSrc, aResult);
+        else {
+            CFStringGetCharacters(inStr, CFRangeMake(0, length), buffer.get());
+            aResult.Assign(buffer.get(), length);
+        }
+    }
+    CFRelease(inStr);
 }

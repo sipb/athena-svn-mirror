@@ -46,6 +46,10 @@
 #include "nsIGenericFactory.h"
 #include "nsIComponentRegistrar.h"
 
+#ifdef XP_OS2
+#include "private/pprthred.h"
+#endif
+
 #include "nsIURI.h"
 #include "nsNetUtil.h"
 #include "nsIPref.h"
@@ -53,6 +57,7 @@
 #include "plevent.h"
 #include "prmem.h"
 #include "prnetdb.h"
+#include "prenv.h"
 
 #include "nsCOMPtr.h"
 #include "nsIAppShell.h"
@@ -350,7 +355,7 @@ static NS_DEFINE_CID(kCmdLineServiceCID,    NS_COMMANDLINE_SERVICE_CID);
 /*********************************************/
 // Default implemenations for nativeAppSupport
 // If your platform implements these functions if def out this code.
-#if !defined(MOZ_WIDGET_COCOA) && !defined(MOZ_WIDGET_PHOTON) && !defined( XP_PC ) && !defined( XP_BEOS ) && !defined(MOZ_WIDGET_GTK) && !defined(MOZ_WIDGET_GTK2)
+#if !defined(MOZ_WIDGET_COCOA) && !defined(MOZ_WIDGET_PHOTON) && !defined(XP_WIN) && !defined(XP_OS2) && !defined( XP_BEOS ) && !defined(MOZ_WIDGET_GTK) && !defined(MOZ_WIDGET_GTK2)
 
 nsresult NS_CreateSplashScreen(nsISplashScreen **aResult)
 {
@@ -385,7 +390,7 @@ PRBool NS_CanRun()
 //       nsISplashScreen will be removed.
 //
 
-#if !defined( XP_PC ) && !defined(MOZ_WIDGET_GTK) && !defined(MOZ_WIDGET_GTK2) && !defined(XP_MAC) && (!defined(XP_MACOSX) || defined(MOZ_WIDGET_COCOA))
+#if !defined(XP_WIN) && !defined(XP_OS2) && !defined(MOZ_WIDGET_GTK) && !defined(MOZ_WIDGET_GTK2) && !defined(XP_MAC) && (!defined(XP_MACOSX) || defined(MOZ_WIDGET_COCOA))
 
 nsresult NS_CreateNativeAppSupport(nsINativeAppSupport **aResult)
 {
@@ -680,9 +685,9 @@ static PRBool IsStartupCommand(const char *arg)
 
   // windows allows /mail or -mail
   if ((arg[0] == '-')
-#ifdef XP_PC
+#if defined(XP_WIN) || defined(XP_OS2)
       || (arg[0] == '/')
-#endif /* XP_PC */
+#endif /* XP_WIN || XP_OS2 */
       ) {
     return PR_TRUE;
   }
@@ -1006,7 +1011,7 @@ static nsresult VerifyInstallation(int argc, char **argv)
 }
 
 #ifdef DEBUG_warren
-#ifdef XP_PC
+#ifdef XP_WIN
 #define _CRTDBG_MAP_ALLOC
 #include <crtdbg.h>
 #endif
@@ -1259,7 +1264,7 @@ static nsresult main1(int argc, char* argv[], nsISupports *nativeApp)
   nsCOMPtr<nsIXRemoteService> remoteService;
   remoteService = do_GetService(NS_IXREMOTESERVICE_CONTRACTID);
   if (remoteService)
-    remoteService->Startup();
+    remoteService->Startup(MOZ_APP_NAME);
 #endif /* MOZ_ENABLE_XREMOTE */
 
   // remove the nativeApp as an XPCOM autoreg observer
@@ -1372,7 +1377,7 @@ static void DumpHelp(char *appname)
   printf("%s-splash%sEnable splash screen.\n",HELP_SPACER_1,HELP_SPACER_2);
 #else
   printf("%s-nosplash%sDisable splash screen.\n",HELP_SPACER_1,HELP_SPACER_2);
-#ifdef XP_PC
+#if defined(XP_WIN) || defined(XP_OS2)
   printf("%s-quiet%sDisable splash screen.\n",HELP_SPACER_1,HELP_SPACER_2);
 #endif
 #endif
@@ -1401,14 +1406,14 @@ static nsresult DumpVersion(char *appname)
 }
 
 /* Temporary hack until quicklaunch is removed for real.
- * This prevents firebird from getting into a broken
+ * This prevents firefox and thunderbird from getting into a broken
  * state from which you can't quit.
  */
 static nsresult DumpTurbo(char *appname)
 {
   nsresult rv = NS_OK;
 
-  printf("Quick Launch is not supported in Mozilla Firebird.");
+  printf("Quick Launch is not supported.");
 
   return rv;
 }
@@ -1419,43 +1424,107 @@ static nsresult DumpTurbo(char *appname)
 static int HandleRemoteArguments(int argc, char* argv[], PRBool *aArgUsed)
 {
   int i = 0;
+
+  const char *remote = 0;
+  const char *profile = 0;
+  const char *program = 0;
+  const char *username = 0;
+
   for (i=1; i < argc; i++) {
     if (PL_strcasecmp(argv[i], "-remote") == 0) {
       // someone used a -remote flag
       *aArgUsed = PR_TRUE;
       // check to make sure there's another arg
       if (argc-1 == i) {
-        PR_fprintf(PR_STDERR, "-remote requires an argument\n");
+        PR_fprintf(PR_STDERR, "Error: -remote requires an argument\n");
         return 1;
       }
-      // try to get the X remote client
-      nsCOMPtr<nsIXRemoteClient> client (do_CreateInstance(NS_XREMOTECLIENT_CONTRACTID));
-      if (!client)
-        return 1;
-      nsresult rv;
-      // try to init - connects to the X server and stuff
-      rv = client->Init();
-      if (NS_FAILED(rv)) {
-        PR_fprintf(PR_STDERR, "Failed to connect to X server.\n");
-        return 1;
+
+      // Get the remote argument and advance past it.
+      remote = argv[++i];
+    }
+    else if (PL_strcasecmp(argv[i], "-p") == 0) {
+      // someone used the -p <profile> flag - save the contents
+      if (argc-1 == i) {
+        continue;
       }
-      PRBool success = PR_FALSE;
-      rv = client->SendCommand(argv[i+1], &success);
-      // did the command fail?
-      if (NS_FAILED(rv)) {
-        PR_fprintf(PR_STDERR, "Failed to send command.\n");
-        return 1;
+
+      // Get the argument
+      profile = argv[++i];
+    }
+    else if (PL_strcasecmp(argv[i], "-a") == 0) {
+      // someone used the -a application flag - save the contents
+      if (argc-1 == i) {
+        continue;
       }
-      // was there a window not running?
-      if (!success) {
-        PR_fprintf(PR_STDERR, "No running window found.\n");
-        return 2;
+
+      // Get the argument
+      program = argv[++i];
+    }
+    else if (PL_strcasecmp(argv[i], "-u") == 0) {
+      // someone used the -u <username> flag - save the contents
+      if (argc-1 == i) {
+        continue;
       }
-      client->Shutdown();
-      // success
-      return 0;
+
+      // Get the argument
+      username = argv[++i];
     }
   }
+
+  if (!remote)
+    return 0; // No remote argument == success
+
+  // try to get the X remote client
+  nsCOMPtr<nsIXRemoteClient> client (do_CreateInstance(NS_XREMOTECLIENT_CONTRACTID));
+  if (!client)
+    return 1;
+
+  nsresult rv;
+  // try to init - connects to the X server and stuff
+  rv = client->Init();
+  if (NS_FAILED(rv)) {
+    PR_fprintf(PR_STDERR, "Error: Failed to connect to X server.\n");
+    return 1;
+  }
+
+  // Make sure to set a username if possible
+  if (!username) {
+    username = PR_GetEnv("LOGNAME");
+  }
+
+  // Same with the program name
+  if (!program) {
+    program = MOZ_APP_NAME;
+  }
+
+  char *response = NULL;
+  PRBool success = PR_FALSE;
+  rv = client->SendCommand(program, username, profile, remote,
+                           &response, &success);
+
+  // did the command fail?
+  if (NS_FAILED(rv)) {
+    PR_fprintf(PR_STDERR, "Error: Failed to send command: ");
+    if (response) {
+      PR_fprintf(PR_STDERR, "%s\n", response);
+      free(response);
+    }
+    else {
+      PR_fprintf(PR_STDERR, "No response included.\n");
+    }
+
+    return 1;
+  }
+
+  // was there no window running?
+  if (!success) {
+    PR_fprintf(PR_STDERR, "Error: No running window found.\n");
+    return 2;
+  }
+
+  client->Shutdown();
+  // success
   return 0;
 }
 #endif /* XP_UNIX */
@@ -1468,11 +1537,11 @@ static PRBool HandleDumpArguments(int argc, char* argv[])
 #if defined(XP_UNIX) || defined(XP_BEOS)
         || (PL_strcasecmp(argv[i], "--help") == 0)
 #endif /* XP_UNIX || XP_BEOS*/
-#ifdef XP_PC
+#if defined(XP_WIN) || defined(XP_OS2)
         || (PL_strcasecmp(argv[i], "/h") == 0)
         || (PL_strcasecmp(argv[i], "/help") == 0)
         || (PL_strcasecmp(argv[i], "/?") == 0)
-#endif /* XP_PC */
+#endif /* XP_WIN || XP_OS2 */
       ) {
       DumpHelp(argv[0]);
       return PR_TRUE;
@@ -1482,15 +1551,15 @@ static PRBool HandleDumpArguments(int argc, char* argv[])
 #if defined(XP_UNIX) || defined(XP_BEOS)
         || (PL_strcasecmp(argv[i], "--version") == 0)
 #endif /* XP_UNIX || XP_BEOS */
-#ifdef XP_PC
+#if defined(XP_WIN) || defined(XP_OS2)
         || (PL_strcasecmp(argv[i], "/v") == 0)
         || (PL_strcasecmp(argv[i], "/version") == 0)
-#endif /* XP_PC */
+#endif /* XP_WIN || XP_OS2 */
       ) {
       DumpVersion(argv[0]);
       return PR_TRUE;
     }
-#ifdef MOZ_PHOENIX
+#ifdef MOZ_XUL_APP
 	if ((PL_strcasecmp(argv[i], "/turbo") == 0)
 		|| (PL_strcasecmp(argv[i], "-turbo") == 0)
 		|| (PL_strcasecmp(argv[i], "/server") == 0)
@@ -1511,7 +1580,7 @@ static PRBool GetWantSplashScreen(int argc, char* argv[], PRBool aDefault)
   int i;
   PRBool dosplash = aDefault;
   // We can't use the command line service here because it isn't running yet
-#if defined(XP_UNIX) && !defined(MOZ_WIDGET_PHOTON) 
+#if defined(XP_UNIX)
   for (i=1; i<argc; i++)
     if ((PL_strcasecmp(argv[i], "-splash") == 0)
         || (PL_strcasecmp(argv[i], "--splash") == 0))
@@ -1522,9 +1591,9 @@ static PRBool GetWantSplashScreen(int argc, char* argv[], PRBool aDefault)
 #ifdef XP_BEOS
 		|| (PL_strcasecmp(argv[i], "--nosplash") == 0)
 #endif /* XP_BEOS */
-#ifdef XP_PC
+#if defined(XP_WIN) || defined(XP_OS2)
         || (PL_strcasecmp(argv[i], "/nosplash") == 0)
-#endif /* XP_PC */
+#endif /* XP_WIN || XP_OS2 */
 	) {
       dosplash = PR_FALSE;
 	}
@@ -1559,7 +1628,6 @@ int main(int argc, char* argv[])
 
   ULONG    ulMaxFH = 0;
   LONG     ulReqCount = 0;
-  APIRET   rc = NO_ERROR;
 
   DosSetRelMaxFH(&ulReqCount,
                  &ulMaxFH);
@@ -1567,6 +1635,9 @@ int main(int argc, char* argv[])
   if (ulMaxFH < 256) {
     DosSetMaxFH(256);
   }
+
+  EXCEPTIONREGISTRATIONRECORD excpreg;
+  PR_OS2_SetFloatExcpHandler(&excpreg);
 #endif /* XP_OS2 */
 
 #if defined(XP_BEOS)
@@ -1620,11 +1691,25 @@ int main(int argc, char* argv[])
   }
 
 #if defined(MOZ_WIDGET_GTK) || defined(MOZ_WIDGET_GTK2)
+  // setup for private colormap.  Ideally we'd like to do this
+  // in nsAppShell::Create, but we need to get in before gtk
+  // has been initialized to make sure everything is running
+  // consistently.
+  for (int i=1; i<argc; i++)
+    if ((PL_strcasecmp(argv[i], "-install") == 0)
+        || (PL_strcasecmp(argv[i], "--install") == 0)) {
+      gdk_rgb_set_install(TRUE);
+      break;
+    }
+
   // Initialize GTK+1/2 here for splash
 #if defined(MOZ_WIDGET_GTK)
   gtk_set_locale();
 #endif
   gtk_init(&argc, &argv);
+
+  gtk_widget_set_default_visual(gdk_rgb_get_visual());
+  gtk_widget_set_default_colormap(gdk_rgb_get_cmap());
 #endif /* MOZ_WIDGET_GTK || MOZ_WIDGET_GTK2 */
     
   // Call the code to install our handler
@@ -1682,11 +1767,11 @@ int main(int argc, char* argv[])
 #ifdef MOZ_XUL_APP
   defaultSplash = aAppData.GetSplashEnabled();
 #else
-#ifdef XP_UNIX && !defined(MOZ_WIDGET_PHOTON)
+#ifdef XP_UNIX
   defaultSplash = PR_FALSE;
 #else
   defaultSplash = PR_TRUE;
-#endif /* XP_UNIX && !defined(MOZ_WIDGET_PHOTON) */
+#endif /* XP_UNIX */
 #endif /* MOZ_XUL_APP */
 
   PRBool dosplash = GetWantSplashScreen(argc, argv, defaultSplash);
@@ -1739,10 +1824,14 @@ int main(int argc, char* argv[])
 #endif
   NS_ASSERTION(NS_SUCCEEDED(rv), "GRE_Shutdown failed");
 
+#ifdef XP_OS2
+  PR_OS2_UnsetFloatExcpHandler(&excpreg);
+#endif
+
   return TranslateReturnValue(mainResult);
 }
 
-#if defined( XP_PC ) && defined( WIN32 ) && !defined(MOZ_XUL_APP)
+#if defined( XP_WIN ) && defined( WIN32 ) && !defined(MOZ_XUL_APP)
 // We need WinMain in order to not be a console app.  This function is
 // unused if we are a console application.
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR args, int)
@@ -1750,4 +1839,4 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR args, int)
     // Do the real work.
     return main(__argc, __argv);
 }
-#endif // XP_PC && WIN32
+#endif // XP_WIN && WIN32

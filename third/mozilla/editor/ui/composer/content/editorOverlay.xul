@@ -65,6 +65,9 @@
     <key id="findprevkb"        key="&editfindprev.keybinding;"        observes="cmd_findPrev"  modifiers="accel,shift"/>
     <key keycode="&editfindnext.keybinding2;" observes="cmd_findNext"/>
     <key keycode="&editfindprev.keybinding2;" observes="cmd_findPrev" modifiers="shift"/>
+#ifdef MOZ_X11
+    <key keycode="&editfind.keybinding2;" observes="cmd_find"/>
+#endif
     <key id="checkspellingkb"
          key="&editcheckspelling.keybinding;"
          observes="cmd_spelling"
@@ -159,7 +162,7 @@
     <command id="cmd_save"           label="&saveCmd.label;"           oncommand="goDoCommand('cmd_save')"/>
     <command id="cmd_saveAs"         label="&saveAsCmd.label;"         oncommand="goDoCommand('cmd_saveAs')"/>
     <command id="cmd_exportToText"   label="&exportToTextCmd.label;"   oncommand="goDoCommand('cmd_exportToText')"/>
-    <command id="cmd_saveAsCharset"  label="&saveAsCharsetCmd.label;"  oncommand="goDoCommand('cmd_saveAsCharset')"/>
+    <command id="cmd_saveAndChangeEncoding"  label="&saveAsChangeEncodingCmd.label;"  oncommand="goDoCommand('cmd_saveAndChangeEncoding')"/>
     <command id="cmd_publish"        label="&publishCmd.label;"        oncommand="goDoCommand('cmd_publish')"/>
     <command id="cmd_publishAs"      label="&publishAsCmd.label;"      oncommand="goDoCommand('cmd_publishAs')"/>
     <command id="cmd_revert"         label="&fileRevert.label;"        oncommand="goDoCommand('cmd_revert')"/>
@@ -340,7 +343,7 @@
       <menuseparator/>
       <menuitem id="saveMenuitem" accesskey="&filesave.accesskey;" key="savekb" observes="cmd_save"/>
       <menuitem accesskey="&filesaveas.accesskey;" observes="cmd_saveAs"/>
-      <menuitem accesskey="&filesaveascharset.accesskey;" observes="cmd_saveAsCharset"/>
+      <menuitem accesskey="&filesaveandchangeencoding.accesskey;" observes="cmd_saveAndChangeEncoding"/>
       <menuseparator/>
       <menuitem id="publishMenuitem" accesskey="&publishcmd.accesskey;" key="publishkb" observes="cmd_publish"/>
       <menuitem accesskey="&publishas.accesskey;" observes="cmd_publishAs"/>
@@ -422,7 +425,7 @@
       <menuitem id="insertLink" accesskey="&insertlink.accesskey;"       observes="cmd_link"        label="&insertLinkCmd.label;"   key="insertlinkkb"/>
       <menuitem id="insertAnchor" accesskey="&insertanchor.accesskey;"     observes="cmd_anchor"      label="&insertAnchorCmd.label;"/>
       <menuitem id="insertHline" accesskey="&inserthline.accesskey;"      observes="cmd_hline"       label="&insertHLineCmd.label;"/>
-      <menuitem id="insertHTMLSource" accesskey="&HTMLSourceMode.accesskey;"   observes="cmd_insertHTMLWithDialog"  key="inserthtmlkb"/>
+      <menuitem id="insertHTMLSource" accesskey="&insertHTMLCmd.accesskey;"   observes="cmd_insertHTMLWithDialog"  key="inserthtmlkb"/>
       <menuitem accesskey="&insertchars.accesskey;"      observes="cmd_insertChars" id="insertChars"/>
       <menu id="insertTOC" label="&tocMenu.label;" accesskey="&tocMenu.accesskey;">
         <menupopup onpopupshowing="InitTOCMenu()">
@@ -893,7 +896,7 @@
   <!-- Paste as quotation is used by mail compose,
        but in composer it has to go in the debug menu
    -->
-  <menuitem id="menu_pasteQuote" accesskey="&editpastequotation.accesskey;" observes="cmd_pasteQuote"/>
+  <menuitem id="menu_pasteQuote" accesskey="&editpastequotation.accesskey;" command="cmd_pasteQuote" key="pastequotationkb"/>
 
   <!-- DEBUG only -->
   <!--

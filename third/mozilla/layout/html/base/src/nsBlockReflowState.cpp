@@ -46,7 +46,7 @@
 #include "nsIPresContext.h"
 #include "nsLayoutAtoms.h"
 #include "nsIFrame.h"
-#include "nsIFrameManager.h"
+#include "nsFrameManager.h"
 
 #include "nsINameSpaceManager.h"
 #include "nsHTMLAtoms.h"
@@ -182,20 +182,14 @@ nsBlockReflowState::NewLineBox(nsIFrame* aFrame,
                                PRInt32 aCount,
                                PRBool aIsBlock)
 {
-  nsCOMPtr<nsIPresShell> shell;
-  mPresContext->GetShell(getter_AddRefs(shell));
-
-  return NS_NewLineBox(shell, aFrame, aCount, aIsBlock);
+  return NS_NewLineBox(mPresContext->PresShell(), aFrame, aCount, aIsBlock);
 }
 
 void
 nsBlockReflowState::FreeLineBox(nsLineBox* aLine)
 {
   if (aLine) {
-    nsCOMPtr<nsIPresShell> presShell;
-    mPresContext->GetShell(getter_AddRefs(presShell));
-    
-    aLine->Destroy(presShell);
+    aLine->Destroy(mPresContext->PresShell());
   }
 }
 
@@ -490,9 +484,27 @@ nsBlockReflowState::RecoverFloats(nsLineList::iterator aLine,
   } else if (aLine->IsBlock()) {
     nsBlockFrame *kid = nsnull;
     aLine->mFirstChild->QueryInterface(kBlockFrameCID, (void**)&kid);
-    if (kid) {
-      nscoord kidx = kid->mRect.x, kidy = kid->mRect.y;
-      mSpaceManager->Translate(kidx, kidy);
+    // don't recover any state inside a block that has its own space
+    // manager (we don't currently have any blocks like this, though,
+    // thanks to our use of extra frames for 'overflow')
+    if (kid && !(kid->GetStateBits() & NS_BLOCK_SPACE_MGR)) {
+      nscoord tx = kid->mRect.x, ty = kid->mRect.y;
+
+      // If the element is relatively positioned, then adjust x and y
+      // accordingly so that we consider relatively positioned frames
+      // at their original position.
+      if (NS_STYLE_POSITION_RELATIVE == kid->GetStyleDisplay()->mPosition) {
+        nsPoint *offsets = NS_STATIC_CAST(nsPoint*,
+          mPresContext->FrameManager()->GetFrameProperty(kid,
+                                    nsLayoutAtoms::computedOffsetProperty, 0));
+
+        if (offsets) {
+          tx -= offsets->x;
+          ty -= offsets->y;
+        }
+      }
+ 
+      mSpaceManager->Translate(tx, ty);
       for (nsBlockFrame::line_iterator line = kid->begin_lines(),
                                    line_end = kid->end_lines();
            line != line_end;
@@ -501,7 +513,7 @@ nsBlockReflowState::RecoverFloats(nsLineList::iterator aLine,
         // moving relative to their parent block, only relative to
         // the space manager.
         RecoverFloats(line, 0);
-      mSpaceManager->Translate(-kidx, -kidy);
+      mSpaceManager->Translate(-tx, -ty);
     }
   }
 }
@@ -876,13 +888,11 @@ nsBlockReflowState::FlowAndPlaceFloat(nsFloatCache* aFloatCache,
 
   // Can the float fit here?
   PRBool keepFloatOnSameLine = PR_FALSE;
-  nsCompatibility mode;
-  mPresContext->GetCompatibilityMode(&mode);
 
   while (! CanPlaceFloat(region, floatDisplay->mFloats)) {
     // Nope. try to advance to the next band.
     if (NS_STYLE_DISPLAY_TABLE != floatDisplay->mDisplay ||
-          eCompatibility_NavQuirks != mode ) {
+          eCompatibility_NavQuirks != mPresContext->CompatibilityMode() ) {
 
       mY += mAvailSpaceRect.height;
       GetAvailableSpace();
@@ -945,17 +955,14 @@ nsBlockReflowState::FlowAndPlaceFloat(nsFloatCache* aFloatCache,
   if (prevInFlow) {
     prevRect = prevInFlow->GetRect();
 
-    nsCOMPtr<nsIPresShell> presShell;
-    mPresContext->GetShell(getter_AddRefs(presShell));
-    nsCOMPtr<nsIFrameManager> frameManager;
-    presShell->GetFrameManager(getter_AddRefs(frameManager));
-
     nsIFrame *placeParentPrev, *prevPlace;
     // If prevInFlow's placeholder is in a block that wasn't continued, we need to adjust 
     // prevRect.x to account for the missing frame offsets.
     nsIFrame* placeParent = placeholder->GetParent();
     placeParent->GetPrevInFlow(&placeParentPrev);
-    frameManager->GetPlaceholderFrameFor(prevInFlow, &prevPlace);
+    prevPlace =
+      mPresContext->FrameManager()->GetPlaceholderFrameFor(prevInFlow);
+
     nsIFrame* prevPlaceParent = prevPlace->GetParent();
 
     for (nsIFrame* ancestor = prevPlaceParent; 
@@ -976,8 +983,6 @@ nsBlockReflowState::FlowAndPlaceFloat(nsFloatCache* aFloatCache,
   else {
     isLeftFloat = PR_FALSE;
     if (NS_UNCONSTRAINEDSIZE != mAvailSpaceRect.width) {
-      nsIFrame* prevInFlow;
-      floatFrame->GetPrevInFlow(&prevInFlow);
       if (prevInFlow) {
         region.x = prevRect.x;
       }

@@ -41,6 +41,7 @@
 #include "nsSpaceManager.h"
 #include "nsIFontMetrics.h"
 #include "nsIPresContext.h"
+#include "nsFrameManager.h"
 #include "nsIContent.h"
 #include "nsStyleContext.h"
 #include "nsHTMLReflowCommand.h"
@@ -160,7 +161,8 @@ nsBlockReflowContext::AlignBlockHorizontally(nscoord                 aWidth,
   // Apply post-reflow horizontal alignment. When a block element
   // doesn't use it all of the available width then we need to
   // align it using the text-align property.
-  if (NS_UNCONSTRAINEDSIZE != mSpace.width) {
+  if (NS_UNCONSTRAINEDSIZE != mSpace.width &&
+      NS_UNCONSTRAINEDSIZE != mOuterReflowState.mComputedWidth) {
     // It is possible that the object reflowed was given a
     // constrained width and ended up picking a different width
     // (e.g. a table width a set width that ended up larger
@@ -235,41 +237,39 @@ nsBlockReflowContext::AlignBlockHorizontally(nscoord                 aWidth,
 }
 
 static void
-ComputeShrinkwrapMargins(const nsStyleMargin* aStyleMargin, nscoord aWidth, nsMargin& aMargin, nscoord& aXToUpdate) {
+ComputeShrinkwrapMargins(const nsStyleMargin* aStyleMargin, nscoord aWidth,
+                         nsMargin& aMargin, nscoord& aXToUpdate)
+{
   nscoord boxWidth = aWidth;
-  float   leftPct = 0.0;
-  float   rightPct = 0.0;
+  float leftPct = 0.0, rightPct = 0.0;
+  const nsStyleSides& margin = aStyleMargin->mMargin;
   
-  if (eStyleUnit_Percent == aStyleMargin->mMargin.GetLeftUnit()) {
-    nsStyleCoord  leftCoord;
-    
-    aStyleMargin->mMargin.GetLeft(leftCoord);
-    leftPct = leftCoord.GetPercentValue();
-    
+  if (eStyleUnit_Percent == margin.GetLeftUnit()) {
+    nsStyleCoord coord;
+    leftPct = margin.GetLeft(coord).GetPercentValue();
   } else {
     boxWidth += aMargin.left;
   }
   
-  if (eStyleUnit_Percent == aStyleMargin->mMargin.GetRightUnit()) {
-    nsStyleCoord  rightCoord;
-    
-    aStyleMargin->mMargin.GetRight(rightCoord);
-    rightPct = rightCoord.GetPercentValue();
-    
+  if (eStyleUnit_Percent == margin.GetRightUnit()) {
+    nsStyleCoord coord;
+    rightPct = margin.GetRight(coord).GetPercentValue();
   } else {
     boxWidth += aMargin.right;
   }
   
-  // The total shrink wrap width "sww" is calculated by the expression:
+  // The total shrink wrap width "sww" (i.e., the width that the
+  // containing block needs to be to shrink-wrap this block) is
+  // calculated by the expression:
   //   sww = bw + (mp * sww)
-  // where "bw" is the box width (frame width plus margins that aren't percentage
-  // based) and "mp" are the total margin percentages (i.e., the left percentage
-  // value plus the right percentage value)
-  // Solving for "sww" gives us:
+  // where "bw" is the box width (frame width plus margins that aren't
+  // percentage based) and "mp" are the total margin percentages (i.e.,
+  // the left percentage value plus the right percentage value).
+  // Solving for "sww" gives:
   //  sww = bw / (1 - mp)
-  // Note that this is only well defined for "mp" less than 100%
+  // Note that this is only well defined for "mp" less than 100% and 
+  // greater than -100% (XXXldb but we only accept 0 to 100%).
 
-  // XXXldb  Um... percentage margins are based on the containing block width.
   float marginPct = leftPct + rightPct;
   if (marginPct >= 1.0) {
     // Ignore the right percentage and just use the left percentage
@@ -281,14 +281,22 @@ ComputeShrinkwrapMargins(const nsStyleMargin* aStyleMargin, nscoord aWidth, nsMa
   if ((marginPct > 0.0) && (marginPct < 1.0)) {
     double shrinkWrapWidth = float(boxWidth) / (1.0 - marginPct);
     
-    if (eStyleUnit_Percent == aStyleMargin->mMargin.GetLeftUnit()) {
+    if (eStyleUnit_Percent == margin.GetLeftUnit()) {
       aMargin.left = NSToCoordFloor((float)(shrinkWrapWidth * leftPct));
       aXToUpdate += aMargin.left;
     }
-    if (eStyleUnit_Percent == aStyleMargin->mMargin.GetRightUnit()) {
+    if (eStyleUnit_Percent == margin.GetRightUnit()) {
       aMargin.right = NSToCoordFloor((float)(shrinkWrapWidth * rightPct));
     }
   }
+}
+
+static void
+nsPointDtor(nsIPresContext *aPresContext, nsIFrame *aFrame,
+             nsIAtom *aPropertyName, void *aPropertyValue)
+{
+  nsPoint *point = NS_STATIC_CAST(nsPoint*, aPropertyValue);
+  delete point;
 }
 
 nsresult
@@ -373,6 +381,25 @@ nsBlockReflowContext::ReflowBlock(const nsRect&       aSpace,
   }
 
   aComputedOffsets = aFrameRS.mComputedOffsets;
+  if (NS_STYLE_POSITION_RELATIVE == display->mPosition) {
+    nsFrameManager *frameManager = mPresContext->FrameManager();
+
+    nsPoint *offsets = NS_STATIC_CAST(nsPoint*,
+      frameManager->GetFrameProperty(mFrame,
+                                     nsLayoutAtoms::computedOffsetProperty,
+                                     0));
+
+    if (offsets)
+      offsets->MoveTo(aComputedOffsets.left, aComputedOffsets.top);
+    else {
+      offsets = new nsPoint(aComputedOffsets.left, aComputedOffsets.top);
+      if (offsets)
+        frameManager->SetFrameProperty(mFrame,
+                                       nsLayoutAtoms::computedOffsetProperty,
+                                       offsets, nsPointDtor);
+    }
+  }
+
   aFrameRS.mLineLayout = nsnull;
   if (!aIsAdjacentWithTop) {
     aFrameRS.mFlags.mIsTopOfPage = PR_FALSE;  // make sure this is cleared
@@ -452,6 +479,16 @@ nsBlockReflowContext::ReflowBlock(const nsRect&       aSpace,
     }
   }
 
+   // Compute the translation to be used for adjusting the spacemanagager
+   // coordinate system for the frame.  The spacemanager coordinates are
+   // <b>inside</b> the callers border+padding, but the x/y coordinates
+   // are not (recall that frame coordinates are relative to the parents
+   // origin and that the parents border/padding is <b>inside</b> the
+   // parent frame. Therefore we have to subtract out the parents
+   // border+padding before translating.
+   nscoord tx = x - mOuterReflowState.mComputedBorderPadding.left;
+   nscoord ty = y - mOuterReflowState.mComputedBorderPadding.top;
+ 
   // If the element is relatively positioned, then adjust x and y accordingly
   if (NS_STYLE_POSITION_RELATIVE == aFrameRS.mStyleDisplay->mPosition) {
     x += aFrameRS.mComputedOffsets.left;
@@ -477,15 +514,6 @@ nsBlockReflowContext::ReflowBlock(const nsRect&       aSpace,
   }
 #endif
 
-  // Adjust spacemanager coordinate system for the frame. The
-  // spacemanager coordinates are <b>inside</b> the callers
-  // border+padding, but the x/y coordinates are not (recall that
-  // frame coordinates are relative to the parents origin and that the
-  // parents border/padding is <b>inside</b> the parent
-  // frame. Therefore we have to subtract out the parents
-  // border+padding before translating.
-  nscoord tx = x - mOuterReflowState.mComputedBorderPadding.left;
-  nscoord ty = y - mOuterReflowState.mComputedBorderPadding.top;
   mOuterReflowState.mSpaceManager->Translate(tx, ty);
 
   // See if this is the child's initial reflow and we are supposed to
@@ -712,28 +740,50 @@ nsBlockReflowContext::PlaceBlock(const nsHTMLReflowState& aReflowState,
       nsContainerFrame::FinishReflowChild(mFrame, mPresContext, &aReflowState, mMetrics, x, y, 0);
 
       // Adjust the max-element-size in the metrics to take into
-      // account the margins around the block element. Note that we
-      // use the collapsed top and bottom margin values.
+      // account the margins around the block element.
+      // Do not allow auto margins to impact the max-element size
+      // since they are springy and don't really count!
       if (mMetrics.mComputeMEW) {
-        nsMargin maxElemMargin = mMargin;
+        nsMargin maxElemMargin;
+        const nsStyleSides &styleMargin = mStyleMargin->mMargin;
+        nsStyleCoord coord;
+        if (styleMargin.GetLeftUnit() == eStyleUnit_Coord)
+          maxElemMargin.left = styleMargin.GetLeft(coord).GetCoordValue();
+        else
+          maxElemMargin.left = 0;
+        if (styleMargin.GetRightUnit() == eStyleUnit_Coord)
+          maxElemMargin.right = styleMargin.GetRight(coord).GetCoordValue();
+        else
+          maxElemMargin.right = 0;
 
-        if (NS_SHRINKWRAPWIDTH == mComputedWidth) {
-          nscoord dummyXOffset;
-          // Base the margins on the max-element size
-          ComputeShrinkwrapMargins(mStyleMargin, mMetrics.mMaxElementWidth,
-                                   maxElemMargin, dummyXOffset);
-        }
+        nscoord dummyXOffset;
+        // Base the margins on the max-element size
+        ComputeShrinkwrapMargins(mStyleMargin, mMetrics.mMaxElementWidth,
+                                 maxElemMargin, dummyXOffset);
 
-        // Do not allow auto margins to impact the max-element size
-        // since they are springy and don't really count!
-        if ((eStyleUnit_Auto != mStyleMargin->mMargin.GetLeftUnit()) && 
-            (eStyleUnit_Null != mStyleMargin->mMargin.GetLeftUnit())) {
-          mMetrics.mMaxElementWidth += maxElemMargin.left;
-        }
-        if ((eStyleUnit_Auto != mStyleMargin->mMargin.GetRightUnit()) &&
-            (eStyleUnit_Null != mStyleMargin->mMargin.GetRightUnit())) {
-          mMetrics.mMaxElementWidth += maxElemMargin.right;
-        }
+        mMetrics.mMaxElementWidth += maxElemMargin.left + maxElemMargin.right;
+      }
+
+      // do the same for the maximum width
+      if (mComputeMaximumWidth) {
+        nsMargin maxWidthMargin;
+        const nsStyleSides &styleMargin = mStyleMargin->mMargin;
+        nsStyleCoord coord;
+        if (styleMargin.GetLeftUnit() == eStyleUnit_Coord)
+          maxWidthMargin.left = styleMargin.GetLeft(coord).GetCoordValue();
+        else
+          maxWidthMargin.left = 0;
+        if (styleMargin.GetRightUnit() == eStyleUnit_Coord)
+          maxWidthMargin.right = styleMargin.GetRight(coord).GetCoordValue();
+        else
+          maxWidthMargin.right = 0;
+
+        nscoord dummyXOffset;
+        // Base the margins on the maximum width
+        ComputeShrinkwrapMargins(mStyleMargin, mMetrics.mMaximumWidth,
+                                 maxWidthMargin, dummyXOffset);
+
+        mMetrics.mMaximumWidth += maxWidthMargin.left + maxWidthMargin.right;
       }
     }
     else {

@@ -56,6 +56,10 @@
 #include <sys/types.h>
 #include <unistd.h>
 
+#ifdef POLL_WITH_XCONNECTIONNUMBER
+#include <poll.h>
+#endif
+
 // Callback when someone asks us for the selection
 void
 invisible_selection_get_cb (GtkWidget          *aWidget,
@@ -283,7 +287,7 @@ nsClipboard::GetData(nsITransferable *aTransferable, PRInt32 aWhichClipboard)
             GtkSelectionData *selectionData;
             selectionData = wait_for_contents(clipboard, atom);
             if (selectionData) {
-                length = selectionData->length * selectionData->format / 8;
+                length = selectionData->length;
                 // Special case text/html since we can convert into UCS2
                 if (!strcmp(flavorStr, kHTMLMime)) {
                     PRUnichar* htmlBody= nsnull;
@@ -811,18 +815,20 @@ wait_for_retrieval(GtkClipboard *clipboard, retrieval_context *r_context)
     // to the clipboard widget.  Wait until either the operation completes, or
     // we hit our timeout.  All other X events remain queued.
 
-    int cnumber;
-#ifdef VMS
-    cnumber = XConnectionNumber(xDisplay);
+    int select_result;
+
+#ifdef POLL_WITH_XCONNECTIONNUMBER
+    struct pollfd fds[1];
+    fds[0].fd = XConnectionNumber(xDisplay);
+    fds[0].events = POLLIN;
 #else
-    cnumber = ConnectionNumber(xDisplay);
-#endif
-
-    fd_set rfds;
+    int cnumber = ConnectionNumber(xDisplay);
+    fd_set select_set;
+    FD_ZERO(&select_set);
+    FD_SET(cnumber, &select_set);
+    ++cnumber;
     struct timeval tv;
-
-    FD_ZERO(&rfds);
-    FD_SET(cnumber++, &rfds);
+#endif
 
     do {
         XEvent xevent;
@@ -839,10 +845,14 @@ wait_for_retrieval(GtkClipboard *clipboard, retrieval_context *r_context)
                 return;
         }
 
+#ifdef POLL_WITH_XCONNECTIONNUMBER
+        select_result = poll(fds, 1, kClipboardTimeout / 1000);
+#else
         tv.tv_sec = 0;
         tv.tv_usec = kClipboardTimeout;
-
-    } while (select(cnumber, &rfds, NULL, NULL, &tv) == 1);
+        select_result = select(cnumber, &select_set, NULL, NULL, &tv);
+#endif
+    } while (select_result == 1);
 
 #ifdef DEBUG_CLIPBOARD
     printf("exceeded clipboard timeout\n");

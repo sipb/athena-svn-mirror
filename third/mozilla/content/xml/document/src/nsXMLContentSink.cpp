@@ -48,8 +48,7 @@
 #include "nsIDOMNSDocument.h"
 #include "nsIXMLContent.h"
 #include "nsIScriptGlobalObject.h"
-#include "nsIURL.h"
-#include "nsIRefreshURI.h"
+#include "nsIURI.h"
 #include "nsNetUtil.h"
 #include "nsIDocShell.h"
 #include "nsIDocShellTreeItem.h"
@@ -59,7 +58,6 @@
 #include "nsIPresContext.h"
 #include "nsIPresShell.h"
 #include "nsIViewManager.h"
-#include "nsIScrollableView.h"
 #include "nsIDOMComment.h"
 #include "nsIDOMCDATASection.h"
 #include "nsDOMDocumentType.h"
@@ -70,7 +68,6 @@
 #include "nsCRT.h"
 #include "nsICSSLoader.h"
 #include "nsICSSStyleSheet.h"
-#include "nsIHTMLContentContainer.h"
 #include "nsHTMLAtoms.h"
 #include "nsContentUtils.h"
 #include "nsLayoutAtoms.h"
@@ -122,7 +119,7 @@ static const char kLoadAsData[] = "loadAsData";
 nsresult
 NS_NewXMLContentSink(nsIXMLContentSink** aResult,
                      nsIDocument* aDoc,
-                     nsIURI* aURL,
+                     nsIURI* aURI,
                      nsISupports* aContainer,
                      nsIChannel* aChannel)
 {
@@ -137,53 +134,42 @@ NS_NewXMLContentSink(nsIXMLContentSink** aResult,
   }
   
   nsCOMPtr<nsIXMLContentSink> kungFuDeathGrip = it;
-  nsresult rv = it->Init(aDoc, aURL, aContainer, aChannel);
+  nsresult rv = it->Init(aDoc, aURI, aContainer, aChannel);
   NS_ENSURE_SUCCESS(rv, rv);
   
   return CallQueryInterface(it, aResult);
 }
 
 nsXMLContentSink::nsXMLContentSink()
+  : mDocElement(nsnull),
+    mText(nsnull),
+    mTextLength(0),
+    mTextSize(0),
+    mConstrainSize(PR_TRUE),
+    mInTitle(PR_FALSE),
+    mPrettyPrintXML(PR_TRUE),
+    mPrettyPrintHasSpecialRoot(PR_FALSE),
+    mPrettyPrintHasFactoredElements(PR_FALSE),
+    mHasProcessedBase(PR_FALSE)
 {
-
-  mDocument = nsnull;
-  mDocumentURL = nsnull;
-  mDocumentBaseURL = nsnull;
-  mParser = nsnull;
-  mDocElement = nsnull;
-  mText = nsnull;
-  mTextLength = 0;
-  mTextSize = 0;
-  mConstrainSize = PR_TRUE;
-  mInTitle = PR_FALSE;
-  mCSSLoader       = nsnull;
-  mNeedToBlockParser = PR_FALSE;
-  mPrettyPrintXML = PR_TRUE;
-  mPrettyPrintHasSpecialRoot = PR_FALSE;
-  mPrettyPrintHasFactoredElements = PR_FALSE;
-  mHasProcessedBase = PR_FALSE;
 }
 
 nsXMLContentSink::~nsXMLContentSink()
 {
+  NS_ASSERTION(mNameSpaceStack.Count() == 0, "Namespaces left on the stack!");
   NS_IF_RELEASE(mDocElement);
-  // XXXbz we'd like to assert that mNameSpaceStack.Count() == 0... but the XBL
-  // content sink never calls our HandleEndElement() for some of the magical
-  // XBL tags, while it _always_ calls HandleStartElement().  Hence
-  // mNameSpaceStack will in fact _NOT_ be empty here, until we fix the XBL
-  // sink.
-  if (nsnull != mText) {
-    PR_FREEIF(mText);
+  if (mText) {
+    PR_Free(mText);  //  Doesn't null out, unlike PR_FREEIF
   }
 }
 
 nsresult
 nsXMLContentSink::Init(nsIDocument* aDoc,
-                       nsIURI* aURL,
+                       nsIURI* aURI,
                        nsISupports* aContainer,
                        nsIChannel* aChannel)
 {
-  nsresult rv = nsContentSink::Init(aDoc, aURL, aContainer, aChannel);
+  nsresult rv = nsContentSink::Init(aDoc, aURI, aContainer, aChannel);
   NS_ENSURE_SUCCESS(rv, rv);
 
   if (!mDocShell) {
@@ -243,7 +229,7 @@ nsXMLContentSink::DidBuildModel()
   if (mTitleText.IsEmpty()) {
     nsCOMPtr<nsIDOMNSDocument> dom_doc(do_QueryInterface(mDocument));
     if (dom_doc) {
-      dom_doc->SetTitle(NS_LITERAL_STRING(""));
+      dom_doc->SetTitle(EmptyString());
     }
   }
 
@@ -268,12 +254,12 @@ nsXMLContentSink::DidBuildModel()
       // documentElement?
       NS_ASSERTION(mDocument->IndexOf(mDocElement) != -1,
                    "mDocElement not in doc?");
-      mDocument->BeginUpdate(UPDATE_CONTENT_MODEL);
+
+      mozAutoDocUpdate docUpdate(mDocument, UPDATE_CONTENT_MODEL, PR_TRUE);
       mDocument->ContentInserted(nsnull, mDocElement,
                                  // XXXbz is this last arg relevant if
                                  // the container is null?
                                  mDocument->IndexOf(mDocElement));
-      mDocument->EndUpdate(UPDATE_CONTENT_MODEL);
     }
 
     // Check if we want to prettyprint
@@ -294,13 +280,6 @@ nsXMLContentSink::DidBuildModel()
 
     mDocument->EndLoad();
   }
-
-  // Ref. Bug 49115
-  // Do this hack to make sure that the parser
-  // doesn't get destroyed, accidently, before 
-  // the circularity, between sink & parser, is
-  // actually broken. 
-  nsCOMPtr<nsIParser> kungFuDeathGrip(mParser);
 
   // Drop our reference to the parser to get rid of a circular
   // reference.
@@ -604,7 +583,7 @@ nsXMLContentSink::AddContentAsLeaf(nsIContent *aContent)
 }
 
 // Create an XML parser and an XSL content sink and start parsing
-// the XSL stylesheet located at the given URL.
+// the XSL stylesheet located at the given URI.
 nsresult
 nsXMLContentSink::LoadXSLStyleSheet(nsIURI* aUrl)
 {
@@ -623,7 +602,7 @@ nsXMLContentSink::LoadXSLStyleSheet(nsIURI* aUrl)
     return NS_ERROR_FAILURE;
   }
 
-  return mXSLTProcessor->LoadStyleSheet(aUrl, loadGroup, mDocumentURL);
+  return mXSLTProcessor->LoadStyleSheet(aUrl, loadGroup, mDocumentURI);
 }
 
 nsresult
@@ -655,15 +634,15 @@ nsXMLContentSink::ProcessStyleLink(nsIContent* aElement,
       return NS_OK;
 
     nsCOMPtr<nsIURI> url;
-    rv = NS_NewURI(getter_AddRefs(url), aHref, nsnull, mDocumentBaseURL);
+    rv = NS_NewURI(getter_AddRefs(url), aHref, nsnull, mDocumentBaseURI);
     NS_ENSURE_SUCCESS(rv, rv);
 
     nsIScriptSecurityManager *secMan = nsContentUtils::GetSecurityManager();
-    rv = secMan->CheckLoadURI(mDocumentURL, url,
+    rv = secMan->CheckLoadURI(mDocumentURI, url,
                               nsIScriptSecurityManager::ALLOW_CHROME);
     NS_ENSURE_SUCCESS(rv, NS_OK);
 
-    rv = secMan->CheckSameOriginURI(mDocumentURL, url);
+    rv = secMan->CheckSameOriginURI(mDocumentURI, url);
     NS_ENSURE_SUCCESS(rv, NS_OK);
 
     return LoadXSLStyleSheet(url);
@@ -703,9 +682,9 @@ nsXMLContentSink::ProcessBASETag(nsIContent* aContent)
       nsCOMPtr<nsIURI> baseURI;
       rv = NS_NewURI(getter_AddRefs(baseURI), value);
       if (NS_SUCCEEDED(rv)) {
-        rv = mDocument->SetBaseURL(baseURI); // The document checks if it is legal to set this base
+        rv = mDocument->SetBaseURI(baseURI); // The document checks if it is legal to set this base
         if (NS_SUCCEEDED(rv)) {
-          mDocumentBaseURL = mDocument->GetBaseURL();
+          mDocumentBaseURI = mDocument->GetBaseURI();
         }
       }
     }
@@ -714,28 +693,6 @@ nsXMLContentSink::ProcessBASETag(nsIContent* aContent)
   return rv;
 }
 
-nsresult
-nsXMLContentSink::ProcessMETATag(nsIContent* aContent)
-{
-  NS_ASSERTION(aContent, "missing base-element");
-
-  nsresult rv = NS_OK;
-
-  // set any HTTP-EQUIV data into document's header data as well as url
-  nsAutoString header;
-  aContent->GetAttr(kNameSpaceID_None, nsHTMLAtoms::httpEquiv, header);
-  if (!header.IsEmpty()) {
-    nsAutoString result;
-    aContent->GetAttr(kNameSpaceID_None, nsHTMLAtoms::content, result);
-    if (!result.IsEmpty()) {
-      ToLowerCase(header);
-      nsCOMPtr<nsIAtom> fieldAtom(do_GetAtom(header));
-      rv = ProcessHeaderData(fieldAtom, result, aContent); 
-    }//if (!result.IsEmpty()) 
-  }//if (!header.IsEmpty()) 
-
-  return rv;
-}
 
 NS_IMETHODIMP 
 nsXMLContentSink::SetDocumentCharset(nsACString& aCharset)
@@ -797,11 +754,10 @@ nsXMLContentSink::PopNameSpaces()
 {
   PRInt32 count = mNameSpaceStack.Count();
 
+  NS_ASSERTION(count > 0, "Bogus Count() or bogus PopNameSpaces call");
   if (count == 0) {
     return nsnull;
   }
-
-  NS_ASSERTION(count > 0, "Bogus Count()");
   
   nsINameSpace* nameSpace = mNameSpaceStack[count - 1];
   NS_ADDREF(nameSpace);
@@ -859,82 +815,18 @@ nsXMLContentSink::StartLayout()
   if (scrollableContainer) {
     scrollableContainer->ResetScrollbarPreferences();
   }
-
-  PRUint32 i, ns = mDocument->GetNumberOfShells();
-  for (i = 0; i < ns; i++) {
-    nsIPresShell *shell = mDocument->GetShellAt(i);
-
-    // Make shell an observer for next time
-    shell->BeginObservingDocument();
-
-    // Resize-reflow this time
-    nsCOMPtr<nsIPresContext> cx;
-    shell->GetPresContext(getter_AddRefs(cx));
-    nsRect r;
-    cx->GetVisibleArea(r);
-    shell->InitialReflow(r.width, r.height);
-
-    // Now trigger a refresh
-    RefreshIfEnabled(shell->GetViewManager());
-  }
-
-  if (mDocumentURL) {
-    nsCAutoString ref;
-
-    // Since all URI's that pass through here aren't URL's we can't
-    // rely on the nsIURI implementation for providing a way for
-    // finding the 'ref' part of the URI, we'll haveto revert to
-    // string routines for finding the data past '#'
-
-    mDocumentURL->GetSpec(ref);
-
-    nsReadingIterator<char> start, end;
-
-    ref.BeginReading(start);
-    ref.EndReading(end);
-
-    if (FindCharInReadable('#', start, end)) {
-      ++start; // Skip over the '#'
-
-      mRef = Substring(start, end);
-    }
-  }
-
-  // If the document we are loading has a reference or it is a top level
-  // frameset document, disable the scroll bars on the views.
   PRBool topLevelFrameset = PR_FALSE;
   nsCOMPtr<nsIDocShellTreeItem> docShellAsItem(do_QueryInterface(mDocShell));
   if (docShellAsItem) {
     nsCOMPtr<nsIDocShellTreeItem> root;
     docShellAsItem->GetSameTypeRootTreeItem(getter_AddRefs(root));
-    if(docShellAsItem.get() == root.get()) {
+    if(docShellAsItem == root) {
       topLevelFrameset = PR_TRUE;
     }
   }
+  
+  nsContentSink::StartLayout(topLevelFrameset);
 
-  if (!mRef.IsEmpty() || topLevelFrameset) {
-    // XXX support more than one presentation-shell here
-
-    // Get initial scroll preference and save it away; disable the
-    // scroll bars.
-    ns = mDocument->GetNumberOfShells();
-    for (i = 0; i < ns; i++) {
-      nsIPresShell *shell = mDocument->GetShellAt(i);
-
-      nsIViewManager* vm = shell->GetViewManager();
-      if (vm) {
-        nsIView* rootView = nsnull;
-        vm->GetRootView(rootView);
-        if (rootView) {
-          nsIScrollableView* sview = nsnull;
-          CallQueryInterface(rootView, &sview);
-          if (sview) {
-            sview->SetScrollPreference(nsScrollPreference_kNeverScroll);
-          }
-        }
-      }
-    }
-  }
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -1057,45 +949,41 @@ MathMLElementFactoryImpl::CreateInstanceByTag(nsINodeInfo* aNodeInfo,
   // this bit of code is to load mathml.css on demand
   nsIDocument* doc = aNodeInfo->GetDocument();
   if (doc) {
-    nsCOMPtr<nsIHTMLContentContainer> htmlContainer(do_QueryInterface(doc));
-    if (htmlContainer) {
-      PRBool enabled;
-      nsCOMPtr<nsICSSLoader> cssLoader;
-      htmlContainer->GetCSSLoader(*getter_AddRefs(cssLoader));
-      if (cssLoader && NS_SUCCEEDED(cssLoader->GetEnabled(&enabled)) && enabled) {
-        PRBool alreadyLoaded = PR_FALSE;
-        PRInt32 sheetCount = doc->GetNumberOfStyleSheets(PR_TRUE);
-        for (PRInt32 i = 0; i < sheetCount; i++) {
-          nsIStyleSheet* sheet = doc->GetStyleSheetAt(i, PR_TRUE);
-          NS_ASSERTION(sheet, "unexpected null stylesheet in the document");
-          if (sheet) {
-            nsCOMPtr<nsIURI> uri;
-            sheet->GetURL(*getter_AddRefs(uri));
-            nsCAutoString uriStr;
-            uri->GetSpec(uriStr);
-            if (uriStr.Equals(kMathMLStyleSheetURI)) {
-              alreadyLoaded = PR_TRUE;
-              break;
-            }
+    nsICSSLoader* cssLoader = doc->GetCSSLoader();
+    PRBool enabled;
+    if (cssLoader && NS_SUCCEEDED(cssLoader->GetEnabled(&enabled)) && enabled) {
+      PRBool alreadyLoaded = PR_FALSE;
+      PRInt32 sheetCount = doc->GetNumberOfStyleSheets(PR_TRUE);
+      for (PRInt32 i = 0; i < sheetCount; i++) {
+        nsIStyleSheet* sheet = doc->GetStyleSheetAt(i, PR_TRUE);
+        NS_ASSERTION(sheet, "unexpected null stylesheet in the document");
+        if (sheet) {
+          nsCOMPtr<nsIURI> uri;
+          sheet->GetURL(*getter_AddRefs(uri));
+          nsCAutoString uriStr;
+          uri->GetSpec(uriStr);
+          if (uriStr.Equals(kMathMLStyleSheetURI)) {
+            alreadyLoaded = PR_TRUE;
+            break;
           }
         }
-        if (!alreadyLoaded) {
-          nsCOMPtr<nsIURI> uri;
-          NS_NewURI(getter_AddRefs(uri), kMathMLStyleSheetURI);
-          if (uri) {
-            nsCOMPtr<nsICSSStyleSheet> sheet;
-            cssLoader->LoadAgentSheet(uri, getter_AddRefs(sheet));
+      }
+      if (!alreadyLoaded) {
+        nsCOMPtr<nsIURI> uri;
+        NS_NewURI(getter_AddRefs(uri), kMathMLStyleSheetURI);
+        if (uri) {
+          nsCOMPtr<nsICSSStyleSheet> sheet;
+          cssLoader->LoadAgentSheet(uri, getter_AddRefs(sheet));
 #ifdef NS_DEBUG
-            nsCAutoString uriStr;
-            uri->GetSpec(uriStr);
-            printf("MathML Factory: loading catalog stylesheet: %s ... %s\n", uriStr.get(), sheet.get() ? "Done" : "Failed");
-            NS_ASSERTION(uriStr.Equals(kMathMLStyleSheetURI), "resolved URI unexpected");
+          nsCAutoString uriStr;
+          uri->GetSpec(uriStr);
+          printf("MathML Factory: loading catalog stylesheet: %s ... %s\n", uriStr.get(), sheet.get() ? "Done" : "Failed");
+          NS_ASSERTION(uriStr.Equals(kMathMLStyleSheetURI), "resolved URI unexpected");
 #endif
-            if (sheet) {
-              doc->BeginUpdate(UPDATE_STYLE);
-              doc->AddStyleSheet(sheet, NS_STYLESHEET_FROM_CATALOG);
-              doc->EndUpdate(UPDATE_STYLE);
-            }
+          if (sheet) {
+            doc->BeginUpdate(UPDATE_STYLE);
+            doc->AddStyleSheet(sheet, NS_STYLESHEET_FROM_CATALOG);
+            doc->EndUpdate(UPDATE_STYLE);
           }
         }
       }
@@ -1148,8 +1036,13 @@ nsXMLContentSink::HandleStartElement(const PRUnichar *aName,
 
   PRInt32 nameSpaceID = GetNameSpaceId(nameSpacePrefix);
 
-  if (!OnOpenContainer(aAtts, aAttsCount, nameSpaceID, tagAtom, aLineNumber))
+  if (!OnOpenContainer(aAtts, aAttsCount, nameSpaceID, tagAtom, aLineNumber)) {
+    // Pop the namespaces we pushed for this element, since HandleEndElement
+    // won't get called for it.
+    nsINameSpace* nameSpace = PopNameSpaces().get();
+    NS_IF_RELEASE(nameSpace);
     return NS_OK;
+  }
   
   nsCOMPtr<nsINodeInfo> nodeInfo;
 
@@ -1224,6 +1117,12 @@ nsXMLContentSink::HandleEndElement(const PRUnichar *aName)
   NS_ASSERTION(content, "failed to pop content");
 
   result = CloseElement(content, &appendContent);
+
+  // Make sure to pop the namespaces no matter whether CloseElement
+  // succeeded.
+  nsINameSpace* nameSpace = PopNameSpaces().get();
+  NS_IF_RELEASE(nameSpace);
+
   NS_ENSURE_SUCCESS(result, result);
 
   if (mDocElement == content) {
@@ -1235,9 +1134,6 @@ nsXMLContentSink::HandleEndElement(const PRUnichar *aName)
 
     parent->AppendChildTo(content, PR_FALSE, PR_FALSE);
   }
-
-  nsINameSpace* nameSpace = PopNameSpaces().get();
-  NS_IF_RELEASE(nameSpace);
 
   if (mNeedToBlockParser || (mParser && !mParser->IsParserEnabled())) {
     if (mParser) mParser->BlockParser();
@@ -1596,13 +1492,9 @@ nsXMLContentSink::AddAttributes(const PRUnichar** aAtts,
       nameSpacePrefix = nsnull;
     }
 
-    nsCOMPtr<nsINodeInfo> ni;
-    mNodeInfoManager->GetNodeInfo(nameAtom, nameSpacePrefix, nameSpaceID,
-                                  getter_AddRefs(ni));
-    NS_ENSURE_TRUE(ni, NS_ERROR_FAILURE);
-
     // Add attribute to content
-    aContent->SetAttr(ni, nsDependentString(aAtts[1]), PR_FALSE);
+    aContent->SetAttr(nameSpaceID, nameAtom, nameSpacePrefix,
+                      nsDependentString(aAtts[1]), PR_FALSE);
     aAtts += 2;
   }
 

@@ -63,6 +63,7 @@
 #include "prprf.h"
 #include "nsTime.h"
 #include "nsIFileSpec.h"
+#include "nsLocalFolderSummarySpec.h"
 
 #include "nsILocale.h"
 #include "nsLocaleCID.h"
@@ -82,13 +83,13 @@ static NS_DEFINE_CID(kCMorkFactory, NS_MORK_CID);
 #include "nsICollation.h"
 
 #include "nsCollationCID.h"
-#include "nsIPref.h"
+#include "nsIPrefService.h"
+#include "nsIPrefBranch.h"
 
 #if defined(DEBUG_sspitzer_) || defined(DEBUG_seth_)
 #define DEBUG_MSGKEYSET 1
 #endif
 
-static NS_DEFINE_CID(kPrefCID, NS_PREF_CID);
 static NS_DEFINE_CID(kCollationFactoryCID, NS_COLLATIONFACTORY_CID);
 
 #define MSG_HASH_SIZE 512
@@ -787,10 +788,10 @@ nsMsgDatabase::~nsMsgDatabase()
   
   if (m_mdbAllThreadsTable)
     m_mdbAllThreadsTable->Release();
+
   if (m_mdbStore)
-  {
     m_mdbStore->Release();
-  }
+
   if (m_mdbEnv)
   {
     m_mdbEnv->Release(); //??? is this right?
@@ -940,7 +941,24 @@ NS_IMETHODIMP nsMsgDatabase::OpenFolderDB(nsIMsgFolder *folder, PRBool create, P
   nsCOMPtr <nsIFileSpec> folderPath;
   nsresult rv = folder->GetPath(getter_AddRefs(folderPath));
   NS_ENSURE_SUCCESS(rv, rv);
-  return Open(folderPath, create, upgrading, pMessageDB);
+  rv = Open(folderPath, create, upgrading, pMessageDB);
+
+  if (NS_SUCCEEDED(rv))
+  {
+    mdb_count numHdrsInTable = 0;
+    PRInt32 numUnread = 0;
+    PRInt32 numHdrs = 0;
+
+    if (m_mdbAllMsgHeadersTable)
+    {
+      PRInt32 numMessages;
+      m_mdbAllMsgHeadersTable->GetCount(GetEnv(), &numHdrsInTable);
+      m_dbFolderInfo->GetNumMessages(&numMessages);
+      if (numMessages != numHdrsInTable)
+        SyncCounts();
+    }
+  }
+  return rv;
 }
 
 NS_IMETHODIMP nsMsgDatabase::Open(nsIFileSpec *folderName, PRBool create, PRBool upgrading, nsIMsgDatabase** pMessageDB)
@@ -1061,8 +1079,8 @@ nsresult nsMsgDatabase::OpenMDB(const char *dbName, PRBool create)
       NS_IF_RELEASE(thumb);
       nsCRT::free(nativeFileName);
     }
-        }
-        return ret;
+  }
+  return ret;
 }
 
 nsresult nsMsgDatabase::CloseMDB(PRBool commit)
@@ -1071,6 +1089,31 @@ nsresult nsMsgDatabase::CloseMDB(PRBool commit)
     Commit(nsMsgDBCommitType::kSessionCommit);
   return(NS_OK);
 }
+
+NS_IMETHODIMP nsMsgDatabase::ForceFolderDBClosed(nsIMsgFolder *aFolder)
+{
+  NS_ENSURE_ARG(aFolder);
+  nsCOMPtr <nsIFileSpec> folderPath;
+  nsFileSpec		folderName;
+
+  nsresult rv = aFolder->GetPath(getter_AddRefs(folderPath));
+  NS_ENSURE_SUCCESS(rv, rv);
+  folderPath->GetFileSpec(&folderName);
+  nsLocalFolderSummarySpec	summarySpec(folderName);
+  
+  
+  nsFileSpec dbPath(summarySpec);
+  
+  nsIMsgDatabase *mailDB = (nsMsgDatabase *) FindInCache(dbPath);
+  if (mailDB)
+  {
+    mailDB->ForceClosed();
+   //FindInCache AddRef's
+    mailDB->Release();
+  }
+  return(NS_OK);
+ }
+
 
 // force the database to close - this'll flush out anybody holding onto
 // a database without having a listener!
@@ -1205,7 +1248,7 @@ NS_IMETHODIMP nsMsgDatabase::Commit(nsMsgDBCommit commitType)
         PRInt32 totalMessages, unreadMessages, pendingMessages, pendingUnreadMessages;
         
         m_dbFolderInfo->GetNumMessages(&totalMessages);
-        m_dbFolderInfo->GetNumNewMessages(&unreadMessages);
+        m_dbFolderInfo->GetNumUnreadMessages(&unreadMessages);
         m_dbFolderInfo->GetImapUnreadPendingMessages(&pendingUnreadMessages);
         m_dbFolderInfo->GetImapTotalPendingMessages(&pendingMessages);
         cacheElement->SetInt32Property("totalMsgs", totalMessages);
@@ -1583,7 +1626,7 @@ NS_IMETHODIMP nsMsgDatabase::DeleteHeader(nsIMsgDBHdr *msg, nsIDBChangeListener 
     m_dbFolderInfo->ChangeNumMessages(-1);
     IsRead(key, &isRead);
     if (!isRead)
-      m_dbFolderInfo->ChangeNumNewMessages(-1);
+      m_dbFolderInfo->ChangeNumUnreadMessages(-1);
     AdjustExpungedBytesOnDelete(msg);
   }	
   
@@ -1776,9 +1819,9 @@ nsresult nsMsgDatabase::MarkHdrReadInDB(nsIMsgDBHdr *msgHdr, PRBool bRead,
   if (hdrInDB && m_dbFolderInfo)
   {
     if (bRead)
-      m_dbFolderInfo->ChangeNumNewMessages(-1);
+      m_dbFolderInfo->ChangeNumUnreadMessages(-1);
     else
-      m_dbFolderInfo->ChangeNumNewMessages(1);
+      m_dbFolderInfo->ChangeNumUnreadMessages(1);
   }
   
   SetHdrReadFlag(msgHdr, bRead); // this will cause a commit, at least for local mail, so do it after we change
@@ -1966,44 +2009,6 @@ NS_IMETHODIMP nsMsgDatabase::SetLabel(nsMsgKey key, nsMsgLabelValue label)
     rv = SetKeyFlag(key, PR_TRUE, label << 25, nsnull);
   }
   return rv;
-}
-
-NS_IMETHODIMP
-nsMsgDatabase::AllMsgKeysImapDeleted(nsMsgKeyArray *keys, PRBool *allKeysDeleted)
-{
-  if (!keys || ! allKeysDeleted)
-    return NS_ERROR_NULL_POINTER;
-  
-  for (PRUint32 kindex = 0; kindex < keys->GetSize(); kindex++)
-  {
-    nsMsgKey key = keys->ElementAt(kindex);
-    nsIMsgDBHdr *msgHdr = NULL;
-    
-    PRBool hasKey;
-    
-    if (NS_SUCCEEDED(ContainsKey(key, &hasKey)) && hasKey)
-    {
-      nsresult err = GetMsgHdrForKey(key, &msgHdr);
-      if (NS_FAILED(err)) 
-      {
-        // ### we drop this error -probably OK.
-        err = NS_MSG_MESSAGE_NOT_FOUND;
-        break;
-      }
-      if (msgHdr)
-      {
-        PRUint32 flags;
-        (void)msgHdr->GetFlags(&flags);
-        if (! (flags & MSG_FLAG_IMAP_DELETED))
-        {
-          *allKeysDeleted = PR_FALSE;
-          return NS_OK;
-        }
-      }
-    }
-  }
-  *allKeysDeleted = PR_TRUE;
-  return NS_OK;
 }
 
 NS_IMETHODIMP nsMsgDatabase::MarkImapDeleted(nsMsgKey key, PRBool deleted,
@@ -2202,11 +2207,11 @@ NS_IMETHODIMP nsMsgDatabase::MarkAllRead(nsMsgKeyArray *thoseMarked)
   }
   
   // force num new to 0.
-  PRInt32 numNewMessages;
+  PRInt32 numUnreadMessages;
   
-  rv = m_dbFolderInfo->GetNumNewMessages(&numNewMessages);
+  rv = m_dbFolderInfo->GetNumUnreadMessages(&numUnreadMessages);
   if (rv == NS_OK)
-    m_dbFolderInfo->ChangeNumNewMessages(-numNewMessages);
+    m_dbFolderInfo->ChangeNumUnreadMessages(-numUnreadMessages);
   // caller will Commit the db, so no need to do it here.
   return rv;
 }
@@ -2489,6 +2494,49 @@ nsMsgDatabase::EnumerateMessages(nsISimpleEnumerator* *result)
     return NS_OK;
 }
 
+NS_IMETHODIMP 
+nsMsgDatabase::SyncCounts()
+{
+  nsCOMPtr <nsIMsgDBHdr> pHeader;
+  nsCOMPtr <nsISimpleEnumerator> hdrs;
+  nsresult rv = EnumerateMessages(getter_AddRefs(hdrs));
+  if (NS_FAILED(rv))
+    return rv;
+  PRBool hasMore = PR_FALSE;
+  
+  mdb_count numHdrsInTable = 0;
+  PRInt32 numUnread = 0;
+  PRInt32 numHdrs = 0;
+
+  if (m_mdbAllMsgHeadersTable)
+    m_mdbAllMsgHeadersTable->GetCount(GetEnv(), &numHdrsInTable);
+  else
+    return NS_ERROR_NULL_POINTER;
+  
+  while (NS_SUCCEEDED(rv = hdrs->HasMoreElements(&hasMore)) && (hasMore == PR_TRUE)) 
+  {
+    rv = hdrs->GetNext(getter_AddRefs(pHeader));
+    NS_ASSERTION(NS_SUCCEEDED(rv), "nsMsgDBEnumerator broken");
+    if (NS_FAILED(rv)) 
+      break;
+    
+    PRBool isRead;
+    IsHeaderRead(pHeader, &isRead);
+    if (!isRead)
+      numUnread++;
+    numHdrs++;  
+  }
+
+  PRInt32 oldTotal, oldUnread;
+  (void) m_dbFolderInfo->GetNumUnreadMessages(&oldUnread);
+  (void) m_dbFolderInfo->GetNumMessages(&oldTotal);
+  if (oldUnread != numUnread)
+    m_dbFolderInfo->ChangeNumUnreadMessages(numUnread - oldUnread);
+  if (oldTotal != numHdrs)
+    m_dbFolderInfo->ChangeNumMessages(numHdrs - oldTotal);
+  return NS_OK;
+}
+
 
 // resulting output array is sorted by key.
 NS_IMETHODIMP nsMsgDatabase::ListAllKeys(nsMsgKeyArray &outputKeys)
@@ -2755,7 +2803,7 @@ NS_IMETHODIMP nsMsgDatabase::AddNewHdrToDB(nsIMsgDBHdr *newHdr, PRBool notify)
       PRBool isRead = PR_TRUE;
       IsHeaderRead(newHdr, &isRead);
       if (!isRead) 
-        m_dbFolderInfo->ChangeNumNewMessages(1);
+        m_dbFolderInfo->ChangeNumUnreadMessages(1);
       m_dbFolderInfo->SetHighWater(key, PR_FALSE);
     }
     
@@ -3704,10 +3752,10 @@ nsresult nsMsgDatabase::GetBoolPref(const char *prefName, PRBool *result)
 {
   PRBool prefValue = PR_FALSE;
   nsresult rv;
-  nsCOMPtr<nsIPref> prefs(do_GetService(kPrefCID, &rv)); 
-  if (NS_SUCCEEDED(rv) && prefs)
+  nsCOMPtr<nsIPrefBranch> pPrefBranch(do_GetService(NS_PREFSERVICE_CONTRACTID, &rv));
+  if (pPrefBranch)
   {
-    rv = prefs->GetBoolPref(prefName, &prefValue);
+    rv = pPrefBranch->GetBoolPref(prefName, &prefValue);
     *result = prefValue;
   }
   return rv;
@@ -3717,10 +3765,10 @@ nsresult nsMsgDatabase::GetIntPref(const char *prefName, PRInt32 *result)
 {
   PRInt32 prefValue = 0;
   nsresult rv;
-  nsCOMPtr<nsIPref> prefs(do_GetService(kPrefCID, &rv)); 
-  if (NS_SUCCEEDED(rv) && prefs)
+  nsCOMPtr<nsIPrefBranch> pPrefBranch(do_GetService(NS_PREFSERVICE_CONTRACTID, &rv));
+  if (pPrefBranch)
   {
-    rv = prefs->GetIntPref(prefName, &prefValue);
+    rv = pPrefBranch->GetIntPref(prefName, &prefValue);
     *result = prefValue;
   }
   return rv;
@@ -3871,20 +3919,6 @@ NS_IMETHODIMP nsMsgDatabase::GetNextFakeOfflineMsgKey(nsMsgKey *nextFakeOfflineM
 
   *nextFakeOfflineMsgKey = fakeMsgKey;
   return NS_OK;
-}
-
-
-NS_IMETHODIMP nsMsgDatabase::HasThreads(PRBool *hasThreads)
-{
-    nsresult rv;
-
-    nsCOMPtr <nsISimpleEnumerator> threads;
-    rv = EnumerateThreads(getter_AddRefs(threads));
-    NS_ENSURE_SUCCESS(rv,rv);
-
-    rv = threads->HasMoreElements(hasThreads);
-    NS_ENSURE_SUCCESS(rv,rv);
-    return NS_OK;
 }
 
 #ifdef DEBUG

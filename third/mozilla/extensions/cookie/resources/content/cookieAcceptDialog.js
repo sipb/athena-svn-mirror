@@ -37,6 +37,7 @@
 const nsICookieAcceptDialog = Components.interfaces.nsICookieAcceptDialog;
 const nsIDialogParamBlock = Components.interfaces.nsIDialogParamBlock;
 const nsICookie = Components.interfaces.nsICookie;
+const nsICookiePromptService = Components.interfaces.nsICookiePromptService;
 
 var params; 
 var cookieBundle;
@@ -48,12 +49,16 @@ var detailsAccessKey = "";
 
 function onload()
 {
-  doSetOKCancel(cookieAccept, cookieDeny);
+  doSetOKCancel(cookieAcceptNormal, cookieDeny, cookieAcceptSession);
 
   var dialog = document.documentElement;
 
+  document.getElementById("Button2").collapsed = false;
+  
   document.getElementById("ok").label = dialog.getAttribute("acceptLabel");
   document.getElementById("ok").accessKey = dialog.getAttribute("acceptKey");
+  document.getElementById("Button2").label = dialog.getAttribute("extra1Label");
+  document.getElementById("Button2").accessKey = dialog.getAttribute("extra1Key");
   document.getElementById("cancel").label = dialog.getAttribute("cancelLabel");
   document.getElementById("cancel").accessKey = dialog.getAttribute("cancelKey");
 
@@ -132,7 +137,7 @@ function onload()
         document.getElementById('ifl_path').setAttribute("value",cookie.path);
         document.getElementById('ifl_isSecure').setAttribute("value",
                                                                  cookie.isSecure ?
-                                                                    cookieBundle.getString("yes") : cookieBundle.getString("no")
+                                                                    cookieBundle.getString("forSecureOnly") : cookieBundle.getString("forAnyConnection")
                                                           );
         document.getElementById('ifl_expires').setAttribute("value",GetExpiresString(cookie.expires));
         document.getElementById('ifl_isDomain').setAttribute("value",
@@ -163,10 +168,19 @@ function showhideinfo()
   sizeToContent();
 }
 
-function cookieAccept()
+function cookieAcceptNormal()
 {
-  // say that the cookie was accepted
-  params.SetInt(nsICookieAcceptDialog.ACCEPT_COOKIE, 1); 
+  // accept the cookie normally
+  params.SetInt(nsICookieAcceptDialog.ACCEPT_COOKIE, nsICookiePromptService.ACCEPT_COOKIE); 
+  // And remember that when needed
+  params.SetInt(nsICookieAcceptDialog.REMEMBER_DECISION, document.getElementById('persistDomainAcceptance').checked);
+  window.close();
+}
+
+function cookieAcceptSession()
+{
+  // accept for the session only
+  params.SetInt(nsICookieAcceptDialog.ACCEPT_COOKIE, nsICookiePromptService.ACCEPT_SESSION_COOKIE);
   // And remember that when needed
   params.SetInt(nsICookieAcceptDialog.REMEMBER_DECISION, document.getElementById('persistDomainAcceptance').checked);
   window.close();
@@ -175,7 +189,7 @@ function cookieAccept()
 function cookieDeny()
 {
   // say that the cookie was rejected
-  params.SetInt(nsICookieAcceptDialog.ACCEPT_COOKIE, 0); 
+  params.SetInt(nsICookieAcceptDialog.ACCEPT_COOKIE, nsICookiePromptService.DENY_COOKIE); 
   // And remember that when needed
   params.SetInt(nsICookieAcceptDialog.REMEMBER_DECISION, document.getElementById('persistDomainAcceptance').checked);
   window.close();
@@ -183,16 +197,22 @@ function cookieDeny()
 
 function GetExpiresString(secondsUntilExpires) {
   if (secondsUntilExpires) {
-    var expireDate = new Date(1000*secondsUntilExpires);
-    return gDateService.FormatDateTime("", gDateService.dateFormatLong,
-                                       gDateService.timeFormatSeconds, 
-                                       expireDate.getFullYear(),
-                                       expireDate.getMonth()+1, 
-                                       expireDate.getDate(), 
-                                       expireDate.getHours(),
-                                       expireDate.getMinutes(), 
-                                       expireDate.getSeconds());
+    var date = new Date(1000*secondsUntilExpires);
+
+    // if a server manages to set a really long-lived cookie, the dateservice
+    // can't cope with it properly, so we'll just return a blank string
+    // see bug 238045 for details
+    var expiry = "";
+    try {
+      expiry = gDateService.FormatDateTime("", gDateService.dateFormatLong,
+                                           gDateService.timeFormatSeconds, 
+                                           date.getFullYear(), date.getMonth()+1, 
+                                           date.getDate(), date.getHours(),
+                                           date.getMinutes(), date.getSeconds());
+    } catch(ex) {
+      // do nothing
+    }
+    return expiry;
   }
   return cookieBundle.getString("atEndOfSession");
 }
-

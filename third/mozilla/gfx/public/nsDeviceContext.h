@@ -59,10 +59,10 @@ public:
   nsFontCache();
   virtual ~nsFontCache();
 
-  NS_IMETHOD Init(nsIDeviceContext* aContext);
-  NS_IMETHOD GetDeviceContext(nsIDeviceContext *&aContext) const;
-  NS_IMETHOD GetMetricsFor(const nsFont& aFont, nsIAtom* aLangGroup,
-                           nsIFontMetrics *&aMetrics);
+  virtual nsresult Init(nsIDeviceContext* aContext);
+  virtual nsresult GetDeviceContext(nsIDeviceContext *&aContext) const;
+  virtual nsresult GetMetricsFor(const nsFont& aFont, nsIAtom* aLangGroup,
+                                 nsIFontMetrics *&aMetrics);
 
   nsresult   FontMetricsDeleted(const nsIFontMetrics* aFontMetrics);
   nsresult   Compact();
@@ -70,14 +70,17 @@ public:
   /* printer device context classes may create their own
    * subclasses of nsFontCache (and override this method) and override 
    * DeviceContextImpl::CreateFontCache (see bug 81311).
-   */           
-  NS_IMETHOD CreateFontMetricsInstance(nsIFontMetrics** fm);
+   */
+  virtual nsresult CreateFontMetricsInstance(nsIFontMetrics** fm);
   
 protected:
   nsVoidArray      mFontMetrics;
   nsIDeviceContext *mContext; // we do not addref this since
                               // ownership is implied. MMP.
 };
+
+#undef  IMETHOD_VISIBILITY
+#define IMETHOD_VISIBILITY NS_VISIBILITY_DEFAULT
 
 class NS_GFX DeviceContextImpl : public nsIDeviceContext,
                                  public nsIObserver,
@@ -96,15 +99,6 @@ public:
   NS_IMETHOD  CreateRenderingContext(nsIRenderingContext *&aContext){return NS_ERROR_NOT_IMPLEMENTED;}
   NS_IMETHOD  CreateRenderingContext(nsDrawingSurface aSurface, nsIRenderingContext *&aContext);
   NS_IMETHOD  CreateRenderingContextInstance(nsIRenderingContext *&aContext);
-
-  NS_IMETHOD  GetDevUnitsToTwips(float &aDevUnitsToTwips) const;
-  NS_IMETHOD  GetTwipsToDevUnits(float &aTwipsToDevUnits) const;
-
-  NS_IMETHOD  SetAppUnitsToDevUnits(float aAppUnits);
-  NS_IMETHOD  SetDevUnitsToAppUnits(float aDevUnits);
-
-  NS_IMETHOD  GetAppUnitsToDevUnits(float &aAppUnits) const;
-  NS_IMETHOD  GetDevUnitsToAppUnits(float &aDevUnits) const;
 
   NS_IMETHOD  GetCanonicalPixelScale(float &aScale) const;
   NS_IMETHOD  SetCanonicalPixelScale(float aScale);
@@ -140,8 +134,6 @@ public:
   NS_IMETHOD SetAltDevice(nsIDeviceContext* aAltDC);
   NS_IMETHOD GetAltDevice(nsIDeviceContext** aAltDC) { *aAltDC = mAltDC.get(); NS_IF_ADDREF(*aAltDC); return NS_OK;}
   NS_IMETHOD SetUseAltDC(PRUint8 aValue, PRBool aOn);
-#else 
-
 #endif
 
 private:
@@ -160,10 +152,6 @@ protected:
                      PRBool aForceAlias);
   void GetLocaleLangGroup(void);
 
-  float             mTwipsToPixels;
-  float             mPixelsToTwips;
-  float             mAppUnitsToDevUnits;
-  float             mDevUnitsToAppUnits;
   nsFontCache       *mFontCache;
   nsCOMPtr<nsIAtom> mLocaleLangGroup; // XXX temp fix for performance bug - erik
   float             mZoom;
@@ -182,5 +170,8 @@ public:
   PRBool            mInitialized;
 #endif
 };
+
+#undef  IMETHOD_VISIBILITY
+#define IMETHOD_VISIBILITY NS_VISIBILITY_HIDDEN
 
 #endif /* nsDeviceContext_h___ */

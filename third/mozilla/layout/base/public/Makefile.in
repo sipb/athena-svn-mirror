@@ -44,7 +44,6 @@ nsICaret.h \
 nsIFocusTracker.h \
 nsIFrame.h \
 nsIFrameDebug.h \
-nsIFrameManager.h \
 nsIFrameSelection.h \
 nsIFrameTraversal.h \
 nsIFrameUtil.h \
@@ -65,8 +64,6 @@ nsIReflowCallback.h \
 nsIScrollableFrame.h \
 nsIScrollableViewProvider.h \
 nsIStatefulFrame.h \
-nsIStyleFrameConstruction.h \
-nsIStyleSet.h \
 nsLayoutErrors.h \
 nsLayoutUtils.h \
 nsReflowType.h \

@@ -42,6 +42,7 @@
 #include "nsFileStream.h"
 
 #include "nsILocalFile.h"
+#include "nsNativeCharsetUtils.h"
 
 #include "prmem.h"
 
@@ -208,6 +209,27 @@ NS_IMETHODIMP nsFileSpecImpl::SetNativePath(const char * aNativePath)
 //----------------------------------------------------------------------------------------
 {
 	mFileSpec = aNativePath;
+	return NS_OK;
+}
+
+//----------------------------------------------------------------------------------------
+NS_IMETHODIMP nsFileSpecImpl::GetUnicodePath(nsAString & aUnicodePath)
+//----------------------------------------------------------------------------------------
+{
+	nsCAutoString native;
+	native = mFileSpec.GetNativePathCString();
+	NS_CopyNativeToUnicode(native, aUnicodePath);
+	return NS_OK;
+}
+
+//----------------------------------------------------------------------------------------
+NS_IMETHODIMP nsFileSpecImpl::SetUnicodePath(const nsAString & aUnicodePath)
+//----------------------------------------------------------------------------------------
+{
+	nsCAutoString native;
+
+	NS_CopyUnicodeToNative(aUnicodePath, native);
+	mFileSpec = native.get();
 	return NS_OK;
 }
 

@@ -43,6 +43,9 @@ function DeleteAllFromTree
 function DeleteSelectedItemFromTree
     (tree, view, table, deletedTable, removeButton, removeAllButton) {
 
+  // Turn off tree selection notifications during the deletion
+  tree.treeBoxObject.view.selection.selectEventsSuppressed = true;
+
   // remove selected items from list (by setting them to null) and place in deleted list
   var selections = GetTreeSelections(tree);
   for (var s=selections.length-1; s>= 0; s--) {
@@ -79,6 +82,8 @@ function DeleteSelectedItemFromTree
     document.getElementById(removeAllButton).setAttribute("disabled","true");
 
   }
+
+  tree.treeBoxObject.view.selection.selectEventsSuppressed = false;
 }
 
 function GetTreeSelections(tree) {
@@ -110,8 +115,22 @@ function SortTree(tree, view, table, column, lastSortColumn, lastSortAscending, 
   var ascending = (column == lastSortColumn) ? !lastSortAscending : true;
 
   // do the sort or re-sort
-  var compareFunc = function compare(first, second) {
-    return first[column].toLowerCase().localeCompare(second[column].toLowerCase());
+  // this is a temporary hack for 1.7, we should implement
+  // display and sort variables here for trees in general
+  var compareFunc;
+  if (column == "expires") {
+    compareFunc = function compare(first, second) {
+      if (first.expiresSortValue > second.expiresSortValue)
+        return 1;
+      else if (first.expiresSortValue < second.expiresSortValue)
+        return -1;
+      else
+        return 0;
+    }
+  } else {
+    compareFunc = function compare(first, second) {
+      return first[column].toLowerCase().localeCompare(second[column].toLowerCase());
+    }
   }
   table.sort(compareFunc);
   if (!ascending)

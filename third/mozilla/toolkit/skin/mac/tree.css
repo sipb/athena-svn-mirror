@@ -160,6 +160,7 @@ treecol[hideheader="true"] {
   -moz-appearance: none;
   border: none;
   padding: 0;
+  max-height: 0px;
 }
 
 /* ..... internal box ..... */
@@ -269,4 +270,42 @@ treechildren::-moz-tree-image(Name) {
 treechildren::-moz-tree-image(Name, container) {
  list-style-image: url("chrome://global/skin/tree/folder.png");
 
+}
+
+treechildren::-moz-tree-image(Name, separator) {
+  list-style-image: none;
+  width: 0px !important;
+  height: 0px !important;
+  margin: 0px 0px;
+}
+
+treechildren::-moz-tree-cell-text(Name, separator) {
+  color: ThreeDShadow;
+  margin: 0px 5px 0px 5px;
+}
+
+treechildren::-moz-tree-cell-text(Name, separator, selected, focus) {
+  color: HighlightText;
+}
+
+/* ::::: alternating background ::::: */
+
+treechildren[alternatingbackground="true"]::-moz-tree-row(odd) {
+  background-color: #f3f3f3;
+}
+
+treechildren[alternatingbackground="true"]::-moz-tree-row(odd, selected) {
+  background-color: -moz-Dialog;
+}
+
+treechildren[alternatingbackground="true"]::-moz-tree-cell-text(odd, selected) {
+  color: -moz-DialogText;
+}
+
+treechildren[alternatingbackground="true"]::-moz-tree-row(odd, selected, focus) {
+  background-color: Highlight;
+}
+
+treechildren[alternatingbackground="true"]::-moz-tree-cell-text(odd, selected, focus) {
+  color: HighlightText;
 }

@@ -146,7 +146,7 @@ nsAboutCache::NewChannel(nsIURI *aURI, nsIChannel **result)
     nsIChannel* channel;
     rv = NS_NewInputStreamChannel(&channel, aURI, inStr,
                                   NS_LITERAL_CSTRING("text/html"),
-                                  NS_LITERAL_CSTRING(""));
+                                  EmptyCString());
     if (NS_FAILED(rv)) return rv;
 
     *result = channel;
@@ -177,26 +177,26 @@ nsAboutCache::VisitDevice(const char *deviceID,
 
         mBuffer.Append("<table>\n");
 
-        mBuffer.Append("\n<tr>\n<td><b>Number of entries: </b></td>\n");
+        mBuffer.Append("\n<tr>\n<td><b>Number of entries:</b></td>\n");
         value = 0;
         deviceInfo->GetEntryCount(&value);
         mBuffer.Append("<td><tt>");
         mBuffer.AppendInt(value);
         mBuffer.Append("</tt></td>\n</tr>\n");
 
-        mBuffer.Append("\n<tr>\n<td><b>Maximum storage size: </b></td>\n");
+        mBuffer.Append("\n<tr>\n<td><b>Maximum storage size:</b></td>\n");
         value = 0;
         deviceInfo->GetMaximumSize(&value);
         mBuffer.Append("<td><tt>");
         mBuffer.AppendInt(value/1024);
-        mBuffer.Append(" k</tt></td>\n</tr>\n");
+        mBuffer.Append(" KiB</tt></td>\n</tr>\n");
 
-        mBuffer.Append("\n<tr>\n<td><b>Storage in use: </b></td>\n");
+        mBuffer.Append("\n<tr>\n<td><b>Storage in use:</b></td>\n");
         mBuffer.Append("<td><tt>");
         value = 0;
         deviceInfo->GetTotalSize(&value);
         mBuffer.AppendInt(value/1024);
-        mBuffer.Append(" k</tt></td>\n</tr>\n");
+        mBuffer.Append(" KiB</tt></td>\n</tr>\n");
 
         deviceInfo->GetUsageReport(getter_Copies(str));
         mBuffer.Append(str);
@@ -251,7 +251,7 @@ nsAboutCache::VisitEntry(const char *deviceID,
     // Entry start...
 
     // URI
-    mBuffer.Assign("<b>           Key: </b><a href=\"");
+    mBuffer.Assign("<b>           Key:</b> <a href=\"");
     mBuffer.Append(url);
     mBuffer.Append("\">");
     mBuffer.Append(escapedKey);
@@ -262,15 +262,15 @@ nsAboutCache::VisitEntry(const char *deviceID,
     PRUint32 length = 0;
     entryInfo->GetDataSize(&length);
 
-    mBuffer.Append("\n<b>     Data size: </b>");
+    mBuffer.Append("\n<b>     Data size:</b> ");
     mBuffer.AppendInt(length);
-    mBuffer.Append(" Bytes");
+    mBuffer.Append(" bytes");
 
     // Number of accesses
     PRInt32 fetchCount = 0;
     entryInfo->GetFetchCount(&fetchCount);
 
-    mBuffer.Append("\n<b>   Fetch count: </b>");
+    mBuffer.Append("\n<b>   Fetch count:</b> ");
     mBuffer.AppendInt(fetchCount);
 
     // vars for reporting time
@@ -278,7 +278,7 @@ nsAboutCache::VisitEntry(const char *deviceID,
     PRUint32 t;
 
     // Last modified time
-    mBuffer.Append("\n<b> Last Modified: </b>");
+    mBuffer.Append("\n<b> Last modified:</b> ");
     entryInfo->GetLastModified(&t);
     if (t) {
         PrintTimeString(buf, sizeof(buf), t);
@@ -287,7 +287,7 @@ nsAboutCache::VisitEntry(const char *deviceID,
         mBuffer.Append("No last modified time");
 
     // Expires time
-    mBuffer.Append("\n<b>       Expires: </b>");
+    mBuffer.Append("\n<b>       Expires:</b> ");
     entryInfo->GetExpirationTime(&t);
     if (t < 0xFFFFFFFF) {
         PrintTimeString(buf, sizeof(buf), t);

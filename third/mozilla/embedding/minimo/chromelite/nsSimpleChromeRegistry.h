@@ -49,13 +49,6 @@ public:
 
   nsSimpleChromeRegistry();
   virtual ~nsSimpleChromeRegistry();
-
-private:
-  nsCOMPtr<nsICSSStyleSheet> mScrollbarSheet;
-  nsCOMPtr<nsICSSStyleSheet> mFormSheet;
-  nsCOMPtr<nsICSSLoader> mCSSLoader;
-
-  nsresult LoadStyleSheet( nsICSSStyleSheet** aSheet, const nsACString& aURL);
 };
 
 #endif

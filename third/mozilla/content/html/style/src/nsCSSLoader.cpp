@@ -42,6 +42,7 @@
 #include "nsContentUtils.h"
 #include "nsCRT.h"
 #include "nsCOMArray.h"
+#include "nsISupportsArray.h"
 #include "nsCOMPtr.h"
 #include "nsIScriptSecurityManager.h"
 #include "nsContentPolicyUtils.h"
@@ -552,6 +553,7 @@ SheetLoadData::OnDetermineCharset(nsIUnicharStreamLoader* aLoader,
                                   PRUint32 aDataLength,
                                   nsACString& aCharset)
 {
+  LOG_URI("SheetLoadData::OnDetermineCharset for '%s'", mURI);
   nsCOMPtr<nsIChannel> channel;
   nsresult result = aLoader->GetChannel(getter_AddRefs(channel));
   if (NS_FAILED(result))
@@ -565,9 +567,8 @@ SheetLoadData::OnDetermineCharset(nsIUnicharStreamLoader* aLoader,
    * 2)  Check @charset rules in the data
    * 3)  Check "charset" attribute of the <LINK> or <?xml-stylesheet?>
    *
-   * If all these fail to give us a charset, fall back on our
-   * default (document charset or ISO-8859-1 if we have no document
-   * charset)
+   * If all these fail to give us a charset, fall back on our default
+   * (parent sheet charset, document charset or ISO-8859-1 in that order)
    */
   if (channel) {
     channel->GetContentCharset(aCharset);
@@ -575,10 +576,9 @@ SheetLoadData::OnDetermineCharset(nsIUnicharStreamLoader* aLoader,
 
   result = NS_ERROR_NOT_AVAILABLE;
 
-#ifdef DEBUG_bzbarsky
+#ifdef PR_LOGGING
   if (! aCharset.IsEmpty()) {
-    fprintf(stderr, "Setting from HTTP to: %s\n",
-            PromiseFlatCString(aCharset).get());
+    LOG(("  Setting from HTTP to: %s", PromiseFlatCString(aCharset).get()));
   }
 #endif
 
@@ -587,10 +587,10 @@ SheetLoadData::OnDetermineCharset(nsIUnicharStreamLoader* aLoader,
     //  Try @charset rule and BOM
     result = GetCharsetFromData((const unsigned char*)aData,
                                 aDataLength, aCharset);
-#ifdef DEBUG_bzbarsky
+#ifdef PR_LOGGING
     if (NS_SUCCEEDED(result)) {
-      fprintf(stderr, "Setting from @charset rule or BOM: %s\n",
-              PromiseFlatCString(aCharset).get());
+      LOG(("  Setting from @charset rule or BOM: %s",
+           PromiseFlatCString(aCharset).get()));
     }
 #endif
   }
@@ -602,30 +602,42 @@ SheetLoadData::OnDetermineCharset(nsIUnicharStreamLoader* aLoader,
       nsAutoString elementCharset;
       mOwningElement->GetCharset(elementCharset);
       CopyUCS2toASCII(elementCharset, aCharset);
-#ifdef DEBUG_bzbarsky
+#ifdef PR_LOGGING
       if (! aCharset.IsEmpty()) {
-        fprintf(stderr, "Setting from property on element: %s\n",
-                PromiseFlatCString(aCharset).get());
+        LOG(("  Setting from property on element: %s",
+             PromiseFlatCString(aCharset).get()));
       }
 #endif
     }
   }
 
+  if (aCharset.IsEmpty() && mParentData) {
+    aCharset = mParentData->mCharset;
+#ifdef PR_LOGGING
+    if (! aCharset.IsEmpty()) {
+      LOG(("  Setting from parent sheet: %s",
+           PromiseFlatCString(aCharset).get()));
+    }
+#endif
+  }
+  
   if (aCharset.IsEmpty() && mLoader->mDocument) {
     // no useful data on charset.  Try the document charset.
-    // That needs no resolution, since it's already fully resolved
     aCharset = mLoader->mDocument->GetDocumentCharacterSet();
-#ifdef DEBUG_bzbarsky
-    fprintf(stderr, "Set from document: %s\n",
-            PromiseFlatCString(aCharset).get());
+#ifdef PR_LOGGING
+    LOG(("  Set from document: %s", PromiseFlatCString(aCharset).get()));
 #endif
   }      
 
   if (aCharset.IsEmpty()) {
     NS_WARNING("Unable to determine charset for sheet, using ISO-8859-1!");
+#ifdef PR_LOGGING
+    LOG_WARN(("  Falling back to ISO-8859-1"));
+#endif
     aCharset = NS_LITERAL_CSTRING("ISO-8859-1");
   }
-  
+
+  mCharset = aCharset;
   return NS_OK;
 }
 
@@ -666,8 +678,8 @@ ReportToConsole(const PRUnichar* aMessageName, const PRUnichar **aParams,
                                     getter_Copies(errorText));
   NS_ENSURE_SUCCESS(rv, rv);
   rv = errorObject->Init(errorText.get(),
-                         NS_LITERAL_STRING("").get(), /* file name */
-                         NS_LITERAL_STRING("").get(), /* source line */
+                         EmptyString().get(), /* file name */
+                         EmptyString().get(), /* source line */
                          0, /* line number */
                          0, /* column number */
                          aErrorFlags,
@@ -814,7 +826,7 @@ static nsresult EnumerateMediaString(const nsAString& aStringList, nsStringEnumF
 
   stringList.Append(kNullCh);  // put an extra null at the end
 
-  PRUnichar* start = (PRUnichar*)(const PRUnichar*)stringList.get();
+  PRUnichar* start = stringList.BeginWriting();
   PRUnichar* end   = start;
 
   while (NS_SUCCEEDED(status) && (kNullCh != *start)) {
@@ -1040,7 +1052,7 @@ CSSLoaderImpl::CreateSheet(nsIURI* aURI,
       // Inline style.  Use the document's base URL so that @import in
       // the inline sheet picks up the right base.
       NS_ASSERTION(aLinkingContent, "Inline stylesheet without linking content?");
-      aLinkingContent->GetBaseURL(getter_AddRefs(sheetURI));
+      sheetURI = aLinkingContent->GetBaseURI();
     }
 
     rv = NS_NewCSSStyleSheet(aSheet, sheetURI);
@@ -1061,14 +1073,25 @@ CSSLoaderImpl::CreateSheet(nsIURI* aURI,
 nsresult
 CSSLoaderImpl::PrepareSheet(nsICSSStyleSheet* aSheet,
                             const nsAString& aTitle,
-                            const nsAString& aMedia)
+                            const nsAString& aMedia,
+                            nsISupportsArray* aMediaArr)
 {
   NS_PRECONDITION(aSheet, "Must have a sheet!");
+  NS_PRECONDITION(aMedia.IsEmpty() || !aMediaArr,
+                  "Can't have media array _and_ media string!");
 
   nsresult rv = NS_OK;
   aSheet->ClearMedia();
   if (!aMedia.IsEmpty()) {
     rv = EnumerateMediaString(aMedia, MediumEnumFunc, aSheet);
+  } else if (aMediaArr) {
+    PRUint32 count;
+    aMediaArr->Count(&count);
+    for (PRUint32 i = 0; i < count; ++i) {
+      nsCOMPtr<nsIAtom> medium = do_QueryElementAt(aMediaArr, i);
+      NS_ASSERTION(medium, "Null medium in media array!");
+      aSheet->AppendMedium(medium);
+    }
   }
   NS_ENSURE_SUCCESS(rv, rv);
 
@@ -1352,7 +1375,7 @@ CSSLoaderImpl::LoadSheet(SheetLoadData* aLoadData, StyleSheetState aSheetState)
                                   NS_LITERAL_CSTRING("text/css,*/*;q=0.1"),
                                   PR_FALSE);
     if (mDocument) {
-      nsIURI *documentURI = mDocument->GetDocumentURL();
+      nsIURI *documentURI = mDocument->GetDocumentURI();
       NS_ASSERTION(documentURI, "Null document uri is bad!");
       if (documentURI) {
         httpChannel->SetReferrer(documentURI);
@@ -1593,7 +1616,7 @@ CSSLoaderImpl::LoadInlineStyle(nsIContent* aElement,
   NS_ASSERTION(state == eSheetNeedsParser,
                "Inline sheets should not be cached");
 
-  rv = PrepareSheet(sheet, aTitle, aMedia);
+  rv = PrepareSheet(sheet, aTitle, aMedia, nsnull);
   NS_ENSURE_SUCCESS(rv, rv);
   
   rv = InsertSheetInDoc(sheet, aElement, mDocument);
@@ -1638,7 +1661,7 @@ CSSLoaderImpl::LoadStyleLink(nsIContent* aElement,
   NS_ENSURE_TRUE(mDocument, NS_ERROR_NOT_INITIALIZED);
 
   // Check whether we should even load
-  nsIURI *docURI = mDocument->GetDocumentURL();
+  nsIURI *docURI = mDocument->GetDocumentURI();
   if (!docURI) return NS_ERROR_FAILURE;
   nsresult rv = CheckLoadAllowed(docURI, aURL, aElement);
   if (NS_FAILED(rv)) return rv;
@@ -1651,7 +1674,7 @@ CSSLoaderImpl::LoadStyleLink(nsIContent* aElement,
                    getter_AddRefs(sheet));
   NS_ENSURE_SUCCESS(rv, rv);
 
-  rv = PrepareSheet(sheet, aTitle, aMedia);
+  rv = PrepareSheet(sheet, aTitle, aMedia, nsnull);
   NS_ENSURE_SUCCESS(rv, rv);
   
   rv = InsertSheetInDoc(sheet, aElement, mDocument);
@@ -1699,7 +1722,7 @@ CSSLoaderImpl::LoadStyleLink(nsIContent* aElement,
 NS_IMETHODIMP
 CSSLoaderImpl::LoadChildSheet(nsICSSStyleSheet* aParentSheet,
                               nsIURI* aURL, 
-                              const nsAString& aMedia,
+                              nsISupportsArray* aMedia,
                               nsICSSImportRule* aParentRule)
 {
   LOG(("CSSLoaderImpl::LoadChildSheet"));
@@ -1760,7 +1783,8 @@ CSSLoaderImpl::LoadChildSheet(nsICSSStyleSheet* aParentSheet,
                    state, getter_AddRefs(sheet));
   NS_ENSURE_SUCCESS(rv, rv);
 
-  rv = PrepareSheet(sheet, NS_LITERAL_STRING(""), aMedia);
+  const nsAString& empty = EmptyString();
+  rv = PrepareSheet(sheet, empty, empty, aMedia);
   NS_ENSURE_SUCCESS(rv, rv);
   
   rv = InsertChildSheet(sheet, aParentSheet, aParentRule);
@@ -1831,8 +1855,8 @@ CSSLoaderImpl::InternalLoadAgentSheet(nsIURI* aURL,
                             getter_AddRefs(sheet));
   NS_ENSURE_SUCCESS(rv, rv);
 
-  NS_NAMED_LITERAL_STRING(empty, "");
-  rv = PrepareSheet(sheet, empty, empty);
+  const nsAString& empty = EmptyString();
+  rv = PrepareSheet(sheet, empty, empty, nsnull);
   NS_ENSURE_SUCCESS(rv, rv);
   
   if (aSheet) {

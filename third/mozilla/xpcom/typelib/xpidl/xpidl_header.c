@@ -507,8 +507,12 @@ interface(TreeState *state)
     fputs("\n", state->file);
     write_indent(state->file);
     fprintf(state->file, "%s();\n", classNameImpl);
+    fputs("\n"
+          "private:\n", state->file);
     write_indent(state->file);
-    fprintf(state->file, "virtual ~%s();\n", classNameImpl);
+    fprintf(state->file, "~%s();\n", classNameImpl);
+    fputs("\n"
+          "protected:\n", state->file);
     write_indent(state->file);
     fputs("/* additional members */\n", state->file);
     fputs("};\n\n", state->file);
@@ -973,13 +977,9 @@ forward_dcl(TreeState *state)
 {
     IDL_tree iface = state->tree;
     const char *className = IDL_IDENT(IDL_FORWARD_DCL(iface).ident).str;
-    GSList *doc_comments = IDL_IDENT(IDL_INTERFACE(iface).ident).comments;
 
     if (!className)
         return FALSE;
-
-    if (doc_comments != NULL)
-        printlist(state->file, doc_comments);
 
     fprintf(state->file, "class %s; /* forward declaration */\n\n", className);
     return TRUE;

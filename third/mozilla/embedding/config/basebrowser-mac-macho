@@ -25,12 +25,6 @@ libmozjs.dylib
 
 
 ; 
-; DOM:
-; 
-components/libjsdom.dylib 
-
-
-; 
 ; XPCOM:
 ; 
 libxpcom.dylib 
@@ -144,7 +138,7 @@ components/mozreg.xpt
 ; profile sharing - optional
 ipc/modules/liblockmodule.dylib
 ipc/modules/libtransmgr.dylib
-mozipcd
+mozilla-ipcd
 components/libipcdc.dylib
 
 ; wallet
@@ -202,10 +196,9 @@ res/charsetalias.properties
 res/maccharset.properties
 ; res/strres.properties 
 
-
 ; required prefs files
-defaults/pref/all.js
-defaults/pref/macprefs.js
+greprefs/*
+
 
 ; uriloader
 components/uriloader.xpt

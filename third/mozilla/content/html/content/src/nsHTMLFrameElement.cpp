@@ -52,7 +52,7 @@
 #include "nsDOMError.h"
 
 
-class nsHTMLFrameElement : public nsGenericHTMLLeafElement,
+class nsHTMLFrameElement : public nsGenericHTMLElement,
                            public nsIDOMHTMLFrameElement,
                            public nsIDOMNSHTMLFrameElement,
                            public nsIChromeEventHandler
@@ -65,13 +65,13 @@ public:
   NS_DECL_ISUPPORTS_INHERITED
 
   // nsIDOMNode
-  NS_FORWARD_NSIDOMNODE_NO_CLONENODE(nsGenericHTMLLeafElement::)
+  NS_FORWARD_NSIDOMNODE_NO_CLONENODE(nsGenericHTMLElement::)
 
   // nsIDOMElement
-  NS_FORWARD_NSIDOMELEMENT(nsGenericHTMLLeafElement::)
+  NS_FORWARD_NSIDOMELEMENT(nsGenericHTMLElement::)
 
   // nsIDOMHTMLElement
-  NS_FORWARD_NSIDOMHTMLELEMENT(nsGenericHTMLLeafElement::)
+  NS_FORWARD_NSIDOMHTMLELEMENT(nsGenericHTMLElement::)
 
   // nsIDOMHTMLFrameElement
   NS_DECL_NSIDOMHTMLFRAMEELEMENT
@@ -82,19 +82,19 @@ public:
   // nsIChromeEventHandler
   NS_DECL_NSICHROMEEVENTHANDLER
 
-  NS_IMETHOD StringToAttribute(nsIAtom* aAttribute,
-                               const nsAString& aValue,
-                               nsHTMLValue& aResult);
+  virtual PRBool ParseAttribute(nsIAtom* aAttribute,
+                                const nsAString& aValue,
+                                nsAttrValue& aResult);
   NS_IMETHOD AttributeToString(nsIAtom* aAttribute,
                                const nsHTMLValue& aValue,
                                nsAString& aResult) const;
-  NS_IMETHOD_(PRBool) HasAttributeDependentStyle(const nsIAtom* aAttribute) const;
+  NS_IMETHOD_(PRBool) IsAttributeMapped(const nsIAtom* aAttribute) const;
   NS_IMETHOD GetAttributeMappingFunction(nsMapRuleToAttributesFunc& aMapRuleFunc) const;
 };
 
 nsresult
 NS_NewHTMLFrameElement(nsIHTMLContent** aInstancePtrResult,
-                       nsINodeInfo *aNodeInfo)
+                       nsINodeInfo *aNodeInfo, PRBool aFromParser)
 {
   NS_ENSURE_ARG_POINTER(aInstancePtrResult);
 
@@ -133,8 +133,7 @@ NS_IMPL_RELEASE_INHERITED(nsHTMLFrameElement, nsGenericElement)
 
 
 // QueryInterface implementation for nsHTMLFrameElement
-NS_HTML_CONTENT_INTERFACE_MAP_BEGIN(nsHTMLFrameElement,
-                                    nsGenericHTMLLeafElement)
+NS_HTML_CONTENT_INTERFACE_MAP_BEGIN(nsHTMLFrameElement, nsGenericHTMLElement)
   NS_INTERFACE_MAP_ENTRY(nsIDOMHTMLFrameElement)
   NS_INTERFACE_MAP_ENTRY(nsIDOMNSHTMLFrameElement)
   NS_INTERFACE_MAP_ENTRY(nsIChromeEventHandler)
@@ -161,7 +160,7 @@ nsHTMLFrameElement::CloneNode(PRBool aDeep, nsIDOMNode** aReturn)
   if (NS_FAILED(rv))
     return rv;
 
-  CopyInnerTo(this, it, aDeep);
+  CopyInnerTo(it, aDeep);
 
   *aReturn = NS_STATIC_CAST(nsIDOMNode *, it);
 
@@ -225,43 +224,28 @@ nsHTMLFrameElement::GetContentWindow(nsIDOMWindow** aContentWindow)
   return NS_OK;
 }
 
-NS_IMETHODIMP
-nsHTMLFrameElement::StringToAttribute(nsIAtom* aAttribute,
-                                      const nsAString& aValue,
-                                      nsHTMLValue& aResult)
+PRBool
+nsHTMLFrameElement::ParseAttribute(nsIAtom* aAttribute,
+                                   const nsAString& aValue,
+                                   nsAttrValue& aResult)
 {
   if (aAttribute == nsHTMLAtoms::bordercolor) {
-    if (aResult.ParseColor(aValue,
-                           nsGenericHTMLLeafElement::GetOwnerDocument())) {
-      return NS_CONTENT_ATTR_HAS_VALUE;
-    }
+    return aResult.ParseColor(aValue, nsGenericHTMLElement::GetOwnerDocument());
   }
-  else if (aAttribute == nsHTMLAtoms::frameborder) {
-    if (ParseFrameborderValue(aValue, aResult)) {
-      return NS_CONTENT_ATTR_HAS_VALUE;
-    }
+  if (aAttribute == nsHTMLAtoms::frameborder) {
+    return ParseFrameborderValue(aValue, aResult);
   }
-  else if (aAttribute == nsHTMLAtoms::marginwidth) {
-    if (aResult.ParseSpecialIntValue(aValue, eHTMLUnit_Pixel, PR_TRUE, PR_FALSE)) {
-      return NS_CONTENT_ATTR_HAS_VALUE;
-    }
+  if (aAttribute == nsHTMLAtoms::marginwidth) {
+    return aResult.ParseSpecialIntValue(aValue, PR_TRUE, PR_FALSE);
   }
-  else if (aAttribute == nsHTMLAtoms::marginheight) {
-    if (aResult.ParseSpecialIntValue(aValue, eHTMLUnit_Pixel, PR_TRUE, PR_FALSE)) {
-      return NS_CONTENT_ATTR_HAS_VALUE;
-    }
+  if (aAttribute == nsHTMLAtoms::marginheight) {
+    return aResult.ParseSpecialIntValue(aValue, PR_TRUE, PR_FALSE);
   }
-  else if (aAttribute == nsHTMLAtoms::noresize) {
-    aResult.SetEmptyValue();
-    return NS_CONTENT_ATTR_HAS_VALUE;
-  }
-  else if (aAttribute == nsHTMLAtoms::scrolling) {
-    if (ParseScrollingValue(aValue, aResult)) {
-      return NS_CONTENT_ATTR_HAS_VALUE;
-    }
+  if (aAttribute == nsHTMLAtoms::scrolling) {
+    return ParseScrollingValue(aValue, aResult);
   }
 
-  return NS_CONTENT_ATTR_NOT_THERE;
+  return nsGenericHTMLElement::ParseAttribute(aAttribute, aValue, aResult);
 }
 
 NS_IMETHODIMP
@@ -278,12 +262,11 @@ nsHTMLFrameElement::AttributeToString(nsIAtom* aAttribute,
     return NS_CONTENT_ATTR_HAS_VALUE;
   }
 
-  return nsGenericHTMLLeafElement::AttributeToString(aAttribute, aValue,
-                                                     aResult);
+  return nsGenericHTMLElement::AttributeToString(aAttribute, aValue, aResult);
 }
 
 static void
-MapAttributesIntoRule(const nsIHTMLMappedAttributes* aAttributes,
+MapAttributesIntoRule(const nsMappedAttributes* aAttributes,
                       nsRuleData* aData)
 {
   nsGenericHTMLElement::MapScrollingAttributeInto(aAttributes, aData);
@@ -291,9 +274,9 @@ MapAttributesIntoRule(const nsIHTMLMappedAttributes* aAttributes,
 }
 
 NS_IMETHODIMP_(PRBool)
-nsHTMLFrameElement::HasAttributeDependentStyle(const nsIAtom* aAttribute) const
+nsHTMLFrameElement::IsAttributeMapped(const nsIAtom* aAttribute) const
 {
-  static const AttributeDependenceEntry* const map[] = {
+  static const MappedAttributeEntry* const map[] = {
     sScrollingAttributeMap,
     sCommonAttributeMap,
   };

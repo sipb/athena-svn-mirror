@@ -32,7 +32,6 @@ GRE_MODULE	= 1
 
 EXPORTS		= \
 nsIContent.h \
-nsIAnonymousContent.h \
 nsIAttribute.h \
 nsIContentIterator.h \
 nsContentErrors.h \
@@ -61,6 +60,7 @@ nsIXPathEvaluatorInternal.h \
 mozISanitizingSerializer.h \
 nsIContentList.h \
 nsIFrameLoader.h \
+nsLayoutStylesheetCache.h \
 nsContentCID.h \
 $(NULL)
 
@@ -69,6 +69,7 @@ SDK_XPIDLSRCS   = \
 		$(NULL)
 
 XPIDLSRCS	= \
+		nsIChromeRegistry.idl       \
 		nsIContentPolicy.idl        \
 		nsISelectionController.idl  \
 		nsISelectionDisplay.idl  \

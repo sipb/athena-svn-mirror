@@ -62,13 +62,13 @@
 <!ENTITY repeat.units.years.singular    "Jaar" >
 
 <!ENTITY priority.level.none              "Geen">
-<!ENTITY priority.level.none.accesskey    "@">
+<!ENTITY priority.level.none.accesskey    "G">
 <!ENTITY priority.level.low               "Laag">
-<!ENTITY priority.level.low.accesskey     "@">
+<!ENTITY priority.level.low.accesskey     "L">
 <!ENTITY priority.level.medium            "Gemiddeld">
-<!ENTITY priority.level.medium.accesskey  "@">
+<!ENTITY priority.level.medium.accesskey  "E">
 <!ENTITY priority.level.high              "Hoog">
-<!ENTITY priority.level.high.accesskey    "@">
+<!ENTITY priority.level.high.accesskey    "H">
 
 <!ENTITY newevent.title.label        "Titel" >
 <!ENTITY newevent.location.label     "Lokatie" >
@@ -255,14 +255,14 @@
 <!ENTITY calendar.monthview.button.label        "Maandoverzicht" >
 <!ENTITY calendar.multiweekview.button.label        "Meerder wekenoverzicht" >
 <!ENTITY calendar.onlyworkday.checkbox.label    "Alleen maandag-vrijdag" >
-<!ENTITY calendar.onlyworkday.checkbox.accesskey  "@" >
+<!ENTITY calendar.onlyworkday.checkbox.accesskey  "A" >
 <!ENTITY calendar.displaytodos.checkbox.label   "Taken in overzicht" >
-<!ENTITY calendar.displaytodos.checkbox.accesskey "@" >
+<!ENTITY calendar.displaytodos.checkbox.accesskey "T" >
 
 <!ENTITY calendar.menu.options.modify           "Bewerken" >
 <!ENTITY calendar.menu.options.remove           "Verwijderen" >
-<!ENTITY calendar.menu.options.close            "Sluit venster" >
-<!ENTITY calendar.menu.options.close.accesskey  "@" >
+<!ENTITY calendar.menu.options.close            "Sluiten" >
+<!ENTITY calendar.menu.options.close.accesskey  "S" >
 
 <!ENTITY calendar.main.tab.label        "Gebeurtenissen" >
 <!ENTITY calendar.search.tab.label      "Zoeken">
@@ -352,15 +352,15 @@
                                                                  
 <!-- Server Context Menu -->
 <!ENTITY calendar.context.newserver.label              "Nieuwe kalender">
-<!ENTITY calendar.context.newserver.accesskey          "@">
+<!ENTITY calendar.context.newserver.accesskey          "N">
 <!ENTITY calendar.context.editserver.label             "Bewerk kalender">
-<!ENTITY calendar.context.editserver.accesskey         "@">
+<!ENTITY calendar.context.editserver.accesskey         "B">
 <!ENTITY calendar.context.deleteserver.label           "Verwijder kalender">
-<!ENTITY calendar.context.deleteserver.accesskey       "@">
+<!ENTITY calendar.context.deleteserver.accesskey       "V">
 <!ENTITY calendar.context.refreshserver.label          "Ververs kalenders op andere computer(s)">
-<!ENTITY calendar.context.refreshserver.accesskey      "@">
+<!ENTITY calendar.context.refreshserver.accesskey      "C">
 <!ENTITY calendar.context.publish.label                "Publiceer volledige kalender">
-<!ENTITY calendar.context.publish.accesskey            "@">
+<!ENTITY calendar.context.publish.accesskey            "P">
 
 <!-- About Dialog -->
 <!ENTITY calendar.about.title "Over Mozilla kalender">
@@ -417,12 +417,27 @@
 <!ENTITY calendar.wizard.subscribe.label           "Aanmelden: Aanmelden bij een kalenderbestand op een andere machine (bijv. op het Internet)">
 <!ENTITY calendar.wizard.publish.label             "Publiceren: Publiceer gebeurtenissen naar een andere machine (bijv. op het Internet) waar andere personen zich kunnen aanmelden.">
 
-<!-- Calendar Import Duplicates Dialog -->
-<!ENTITY calendar.importdupes.dialog.title "Duplicatenbeheer" >
-<!ENTITY calendar.importdupes.caption.label "Wat te doen met duplikaten:">
-<!ENTITY calendar.importdupes.autodiscard.label "Duplikaten automatisch afdanken">
-<!ENTITY calendar.importdupes.adddupes.label "Duplikaten toevoegen">
-<!ENTITY calendar.importdupes.prompt.label "Voor elke vragen">
+<!-- Calendar Import Outlook CSV Dialog -->
+<!-- TRANSLATORS: all outlook*.label -fields should be translated word to word (or if possible
+                  copied from outlook csv file headers -->
+<!ENTITY calendar.importoutlook.dialog.title "Outlook CSV importeren" >
+<!ENTITY calendar.importoutlook.mapconcepts.label "Vertaal alstublieft de volgende calendar concepten naar hun Outlook CSV equivalenten:" >
+<!ENTITY calendar.importoutlook.outlooksubject.label "Onderwerp" >
+<!ENTITY calendar.importoutlook.outlookstartdate.label "Startdatum" >
+<!ENTITY calendar.importoutlook.outlookstarttime.label "Starttijd" >
+<!ENTITY calendar.importoutlook.outlookenddate.label "Einddatum" >
+<!ENTITY calendar.importoutlook.outlookendtime.label "Eindtijd" >
+<!ENTITY calendar.importoutlook.outlooklocation.label "Lokatie" >
+<!ENTITY calendar.importoutlook.outlookdescription.label "Beschrijving" >
+<!ENTITY calendar.importoutlook.outlookallday.label "Gehele dag gebeurtenis" >
+<!ENTITY calendar.importoutlook.outlookprivate.label "Priv&#xE9;" >
+<!ENTITY calendar.importoutlook.outlookalarm.label "Waarschuwen aan/uit" >
+<!ENTITY calendar.importoutlook.outlookalarmdate.label "Waarschuwingsdatum" >
+<!ENTITY calendar.importoutlook.outlookalarmtime.label "Waarschuwingstijd" >
+<!ENTITY calendar.importoutlook.outlookcategories.label "Categori&#xEB;n" >
+<!ENTITY calendar.importoutlook.selectmeaning.label "De betekenis van het volgende woord selecteren: " >
+<!ENTITY calendar.importoutlook.true.label "Waar" >
+<!ENTITY calendar.importoutlook.false.label "Niet waar" >
 
 <!-- Calendar Printing -->
 <!ENTITY calendar.print.window.title "Een kalender afdrukken">
@@ -431,3 +446,4 @@
 <!ENTITY calendar.print.listselected.label "Geselecteerde gebeurtenissen opsommen">
 <!ENTITY calendar.print.onlyitemsstatus.label "Enkel items met deze status afdrukken:">
 <!ENTITY calendar.print.onlyitemscategory.label "Enkel items met deze categorie afdrukken:">
+

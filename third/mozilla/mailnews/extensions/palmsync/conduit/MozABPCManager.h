@@ -50,9 +50,9 @@ public:
     MozABPCManager() { }
     ~MozABPCManager() { }
 
-	// this will return the list of ABs in Mozilla and if they were synced before
+	// this will return the list of ABs in Mozilla and some flags, including if they were synced before
     long GetPCABList(DWORD * pCategoryCount, LONG ** pCategoryIndexList, 
-                        CPString *** pCategoryNameList, CPString *** pCategoryURLList, BOOL ** pIsFirstTimeSyncList);
+                        CPString *** pCategoryNameList, CPString *** pCategoryURLList, BOOL ** pDirFlags);
 	// this will update a Mozilla AB with updated Palm records and 
 	// return updated records in a Mozilla AB after the last sync
     // this will take care of first time sync also in which case 
@@ -61,8 +61,8 @@ public:
 	long SynchronizePCAB(LONG categoryIndex, LONG categoryId, CPString & categoryName,
 						DWORD updatedPalmRecCount, CPalmRecord ** updatedPalmRecList,
 						DWORD * pUpdatedPCRecList, CPalmRecord *** updatedPCRecList);
-	// this will add all records in a Palm category into a new Mozilla AB 
-	long AddRecords(LONG categoryIndex, CPString & categoryName,
+	// this will add all records in a Palm category into a new or existing Mozilla AB 
+	long AddRecords(BOOL replaceExisting, LONG categoryIndex, CPString & categoryName,
 						DWORD updatedPalmRecCount, CPalmRecord ** updatedPalmRecList);
     // this load all records in an Moz AB
 	long LoadAllRecords(CPString & ABName, DWORD * pPCRecListCount, CPalmRecord *** pPCRecList);
@@ -76,10 +76,14 @@ public:
   // Rename an Moz AB
   long RenamePCAB(LONG categoryIndex, CPString & categoryName, CPString & categoryUrl);
 
+  bool PCABDeleted(CPString &abName);
+  static BOOL gUseHomeAddress;
+  static BOOL gPreferHomePhone;
+
 private:
   	// this will initiate the communication with Mozilla
 	BOOL InitMozPalmSyncInstance(IPalmSync **aRetValue);
-									
+
 };
 
 #endif

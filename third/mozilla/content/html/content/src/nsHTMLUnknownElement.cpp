@@ -47,11 +47,9 @@
 #include "nsIDOMEventReceiver.h"
 #include "nsIDocument.h"
 #include "nsIHTMLStyleSheet.h"
-#include "nsIHTMLContentContainer.h"
-#include "nsHTMLAttributes.h"
 #include "nsIDOMMutationEvent.h"
 
-class nsHTMLUnknownElement : public nsGenericHTMLContainerElement,
+class nsHTMLUnknownElement : public nsGenericHTMLElement,
                              public nsIDOMHTMLElement
 {
 public:
@@ -62,21 +60,18 @@ public:
   NS_DECL_ISUPPORTS_INHERITED
 
   // nsIDOMNode
-  NS_FORWARD_NSIDOMNODE_NO_CLONENODE(nsGenericHTMLContainerElement::)
+  NS_FORWARD_NSIDOMNODE_NO_CLONENODE(nsGenericHTMLElement::)
 
   // nsIDOMElement
-  NS_FORWARD_NSIDOMELEMENT(nsGenericHTMLContainerElement::)
+  NS_FORWARD_NSIDOMELEMENT(nsGenericHTMLElement::)
 
   // nsIDOMHTMLElement
-  NS_FORWARD_NSIDOMHTMLELEMENT(nsGenericHTMLContainerElement::)
-
-  NS_IMETHOD SetAttribute(PRInt32 aNameSpaceID, nsIAtom* aName,
-                          const nsAString& aValue, PRBool aNotify);
+  NS_FORWARD_NSIDOMHTMLELEMENT(nsGenericHTMLElement::)
 };
 
 nsresult
 NS_NewHTMLUnknownElement(nsIHTMLContent** aInstancePtrResult,
-                         nsINodeInfo *aNodeInfo)
+                         nsINodeInfo *aNodeInfo, PRBool aFromParser)
 {
   NS_ENSURE_ARG_POINTER(aInstancePtrResult);
 
@@ -116,7 +111,7 @@ NS_IMPL_RELEASE_INHERITED(nsHTMLUnknownElement, nsGenericElement)
 
 // QueryInterface implementation for nsHTMLUnknownElement
 NS_HTML_CONTENT_INTERFACE_MAP_BEGIN(nsHTMLUnknownElement,
-                                    nsGenericHTMLContainerElement)
+                                    nsGenericHTMLElement)
   NS_INTERFACE_MAP_ENTRY_CONTENT_CLASSINFO(HTMLUnknownElement)
 NS_HTML_CONTENT_INTERFACE_MAP_END
 
@@ -140,85 +135,11 @@ nsHTMLUnknownElement::CloneNode(PRBool aDeep, nsIDOMNode** aReturn)
   if (NS_FAILED(rv))
     return rv;
 
-  CopyInnerTo(this, it, aDeep);
+  CopyInnerTo(it, aDeep);
 
   *aReturn = NS_STATIC_CAST(nsIDOMNode *, it);
 
   NS_ADDREF(*aReturn);
 
   return NS_OK;
-}
-
-static nsIHTMLStyleSheet* GetAttrStyleSheet(nsIDocument* aDocument)
-{
-  nsIHTMLStyleSheet *sheet=nsnull;
-
-  if (aDocument) {
-    nsCOMPtr<nsIHTMLContentContainer> container(do_QueryInterface(aDocument));
-
-    container->GetAttributeStyleSheet(&sheet);
-  }
-
-  return sheet;
-}
-
-
-NS_IMETHODIMP
-nsHTMLUnknownElement::SetAttribute(PRInt32 aNameSpaceID,
-                                   nsIAtom* aAttribute,
-                                   const nsAString& aValue,
-                                   PRBool aNotify)
-{
-  nsresult  result = NS_OK;
-
-  // Check for event handlers
-  if (aNameSpaceID == kNameSpaceID_None && IsEventName(aAttribute)) {
-    AddScriptEventListener(aAttribute, aValue);
-  }
-  
-  nsHTMLValue val;
-  
-  if (NS_CONTENT_ATTR_NOT_THERE !=
-      StringToAttribute(aAttribute, aValue, val)) {
-    // string value was mapped to nsHTMLValue, set it that way
-    result = SetHTMLAttribute(aAttribute, val, aNotify);
-
-    return result;
-  } else {
-    if (ParseCommonAttribute(aAttribute, aValue, val)) {
-      // string value was mapped to nsHTMLValue, set it that way
-      result = SetHTMLAttribute(aAttribute, val, aNotify);
-      return result;
-    }
-
-    if (aValue.IsEmpty()) { // if empty string
-      val.SetEmptyValue();
-      result = SetHTMLAttribute(aAttribute, val, aNotify);
-      return result;
-    }
-
-    mozAutoDocUpdate updateBatch(mDocument, UPDATE_CONTENT_MODEL, aNotify);
-    
-    if (aNotify && mDocument) {
-      mDocument->AttributeWillChange(this, aNameSpaceID, aAttribute);
-    }
-
-    // set as string value to avoid another string copy
-    PRBool mapped = HasAttributeDependentStyle(aAttribute);
-
-    nsCOMPtr<nsIHTMLStyleSheet> sheet(dont_AddRef(GetAttrStyleSheet(mDocument)));
-    if (!mAttributes) {
-      result = NS_NewHTMLAttributes(&mAttributes);
-      NS_ENSURE_SUCCESS(result, result);
-    }
-    result = mAttributes->SetAttributeFor(aAttribute, aValue, mapped,
-                                          this, sheet);
-  }
-
-  if (aNotify && mDocument) {
-    mDocument->AttributeChanged(this, aNameSpaceID, aAttribute,
-                                nsIDOMMutationEvent::MODIFICATION);
-  }
-
-  return result;
 }

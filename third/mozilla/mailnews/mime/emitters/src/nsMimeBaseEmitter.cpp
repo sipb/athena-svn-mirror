@@ -44,7 +44,8 @@
 #include "nsMimeBaseEmitter.h"
 #include "nsMailHeaders.h"
 #include "nscore.h"
-#include "nsIPref.h"
+#include "nsIPrefService.h"
+#include "nsIPrefBranch.h"
 #include "nsIServiceManager.h"
 #include "nsEscape.h"
 #include "prmem.h"
@@ -125,9 +126,9 @@ nsMimeBaseEmitter::nsMimeBaseEmitter()
     gMimeEmitterLogModule = PR_NewLogModule("MIME");
 
   // Do prefs last since we can live without this if it fails...
-  mPrefs = do_GetService(NS_PREF_CONTRACTID);
-  if (mPrefs)
-    mPrefs->GetIntPref("mail.show_headers", &mHeaderDisplayType);
+  nsCOMPtr<nsIPrefBranch> pPrefBranch(do_GetService(NS_PREFSERVICE_CONTRACTID));
+  if (pPrefBranch)
+    pPrefBranch->GetIntPref("mail.show_headers", &mHeaderDisplayType);
 }
 
 nsMimeBaseEmitter::~nsMimeBaseEmitter(void)
@@ -608,11 +609,13 @@ nsMimeBaseEmitter::UpdateCharacterSet(const char *aCharset)
     
     if (NS_SUCCEEDED(mChannel->GetContentType(contentType)) && !contentType.IsEmpty())
     {
-      char *cPtr = (char *) PL_strcasestr(contentType.get(), "charset=");
+      char *cBegin = contentType.BeginWriting();
+
+      const char *cPtr = PL_strcasestr(cBegin, "charset=");
 
       if (cPtr)
       {
-        char  *ptr = (char *) contentType.get();
+        char  *ptr = cBegin;
         while (*ptr)
         {
           if ( (*ptr == ' ') || (*ptr == ';') ) 
@@ -628,8 +631,8 @@ nsMimeBaseEmitter::UpdateCharacterSet(const char *aCharset)
         }
       }
 
-      // have to recompute strlen since contentType could have an embedded null byte
-      mChannel->SetContentType(nsDependentCString(contentType.get()));
+      // have to set content-type since it could have an embedded null byte
+      mChannel->SetContentType(nsDependentCString(cBegin));
       mChannel->SetContentCharset(nsDependentCString(aCharset));
     }
   }

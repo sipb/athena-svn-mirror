@@ -52,7 +52,7 @@ extern const char* const kCSSRawProperties[];
 
 // define an array of all CSS properties
 const char* const kCSSRawProperties[] = {
-#define CSS_PROP(name_, id_, method_, datastruct_, member_, type_, iscoord_) #name_,
+#define CSS_PROP(name_, id_, method_, datastruct_, member_, type_, iscoord_, kwtable_) #name_,
 #include "nsCSSPropList.h"
 #undef CSS_PROP
 #define CSS_PROP_SHORTHAND(name_, id_, method_) #name_,
@@ -99,14 +99,32 @@ nsCSSProps::ReleaseTable(void)
   }
 }
 
+struct CSSPropertyAlias {
+  char name[13];
+  nsCSSProperty id;
+};
+
+static const CSSPropertyAlias gAliases[] = {
+  { "-moz-opacity", eCSSProperty_opacity }
+};
+
 nsCSSProperty 
 nsCSSProps::LookupProperty(const nsACString& aProperty)
 {
   NS_ASSERTION(gPropertyTable, "no lookup table, needs addref");
-  if (gPropertyTable) {
-    return nsCSSProperty(gPropertyTable->Lookup(aProperty));
-  }  
-  return eCSSProperty_UNKNOWN;
+
+  nsCSSProperty res = nsCSSProperty(gPropertyTable->Lookup(aProperty));
+  if (res == eCSSProperty_UNKNOWN) {
+    const nsCString& prop = PromiseFlatCString(aProperty);
+    for (const CSSPropertyAlias *alias = gAliases,
+                            *alias_end = gAliases + NS_ARRAY_LENGTH(gAliases);
+         alias < alias_end; ++alias)
+      if (nsCRT::strcasecmp(prop.get(), alias->name) == 0) {
+        res = alias->id;
+        break;
+      }
+  }
+  return res;
 }
 
 nsCSSProperty 
@@ -115,10 +133,18 @@ nsCSSProps::LookupProperty(const nsAString& aProperty) {
   // LookupProperty(nsACString&).  The table will do its own
   // converting and avoid a PromiseFlatCString() call.
   NS_ASSERTION(gPropertyTable, "no lookup table, needs addref");
-  if (gPropertyTable) {
-    return nsCSSProperty(gPropertyTable->Lookup(aProperty));
-  }  
-  return eCSSProperty_UNKNOWN;
+  nsCSSProperty res = nsCSSProperty(gPropertyTable->Lookup(aProperty));
+  if (res == eCSSProperty_UNKNOWN) {
+    NS_ConvertUTF16toUTF8 prop(aProperty);
+    for (const CSSPropertyAlias *alias = gAliases,
+                            *alias_end = gAliases + NS_ARRAY_LENGTH(gAliases);
+         alias < alias_end; ++alias)
+      if (nsCRT::strcasecmp(prop.get(), alias->name) == 0) {
+        res = alias->id;
+        break;
+      }
+  }
+  return res;
 }
 
 const nsAFlatCString& 
@@ -205,8 +231,9 @@ const PRInt32 nsCSSProps::kAppearanceKTable[] = {
   eCSSKeyword_radiocontainer,         NS_THEME_RADIO_CONTAINER,
   eCSSKeyword_window,                 NS_THEME_WINDOW,
   eCSSKeyword_dialog,                 NS_THEME_DIALOG,
-  eCSSKeyword_menu,                   NS_THEME_MENU,
   eCSSKeyword_menubar,                NS_THEME_MENUBAR,
+  eCSSKeyword_menupopup,              NS_THEME_MENUPOPUP,
+  eCSSKeyword_menuitem,               NS_THEME_MENUITEM,
   -1,-1
 };
 
@@ -266,6 +293,20 @@ const PRInt32 nsCSSProps::kBackgroundRepeatKTable[] = {
   -1,-1
 };
 
+const PRInt32 nsCSSProps::kBackgroundXPositionKTable[] = {
+  eCSSKeyword_left,   0,
+  eCSSKeyword_center, 50,
+  eCSSKeyword_right,  100,
+  -1,-1
+};
+
+const PRInt32 nsCSSProps::kBackgroundYPositionKTable[] = {
+  eCSSKeyword_top,    0,
+  eCSSKeyword_center, 50,
+  eCSSKeyword_bottom, 100,
+  -1,-1
+};
+
 const PRInt32 nsCSSProps::kBorderCollapseKTable[] = {
   eCSSKeyword_collapse,  NS_STYLE_BORDER_COLLAPSE,
   eCSSKeyword_separate,  NS_STYLE_BORDER_SEPARATE,
@@ -298,6 +339,12 @@ const PRInt32 nsCSSProps::kBorderWidthKTable[] = {
   eCSSKeyword_thin, NS_STYLE_BORDER_WIDTH_THIN,
   eCSSKeyword_medium, NS_STYLE_BORDER_WIDTH_MEDIUM,
   eCSSKeyword_thick, NS_STYLE_BORDER_WIDTH_THICK,
+  -1,-1
+};
+
+const PRInt32 nsCSSProps::kBoxPropSourceKTable[] = {
+  eCSSKeyword_physical,     NS_BOXPROP_SOURCE_PHYSICAL,
+  eCSSKeyword_logical,      NS_BOXPROP_SOURCE_LOGICAL,
   -1,-1
 };
 
@@ -399,6 +446,8 @@ const PRInt32 nsCSSProps::kCursorKTable[] = {
   eCSSKeyword_text, NS_STYLE_CURSOR_TEXT,
   eCSSKeyword_wait, NS_STYLE_CURSOR_WAIT,
   eCSSKeyword_help, NS_STYLE_CURSOR_HELP,
+  // CSS 2.1
+  eCSSKeyword_progress, NS_STYLE_CURSOR_SPINNING,
   // CSS3 proposed
   eCSSKeyword__moz_copy, NS_STYLE_CURSOR_COPY,
   eCSSKeyword__moz_alias, NS_STYLE_CURSOR_ALIAS,
@@ -865,9 +914,45 @@ const PRInt32 nsCSSProps::kBoxPackKTable[] = {
 
 #ifdef MOZ_SVG
 // keyword tables for SVG properties
+
+const PRInt32 nsCSSProps::kDominantBaselineKTable[] = {
+  eCSSKeyword_use_script, NS_STYLE_DOMINANT_BASELINE_USE_SCRIPT,
+  eCSSKeyword_no_change, NS_STYLE_DOMINANT_BASELINE_NO_CHANGE,
+  eCSSKeyword_reset_size, NS_STYLE_DOMINANT_BASELINE_RESET_SIZE,
+  eCSSKeyword_alphabetic, NS_STYLE_DOMINANT_BASELINE_ALPHABETIC,
+  eCSSKeyword_hanging, NS_STYLE_DOMINANT_BASELINE_HANGING,
+  eCSSKeyword_ideographic, NS_STYLE_DOMINANT_BASELINE_IDEOGRAPHIC,
+  eCSSKeyword_mathematical, NS_STYLE_DOMINANT_BASELINE_MATHEMATICAL,
+  eCSSKeyword_central, NS_STYLE_DOMINANT_BASELINE_CENTRAL,
+  eCSSKeyword_middle, NS_STYLE_DOMINANT_BASELINE_MIDDLE,
+  eCSSKeyword_text_after_edge, NS_STYLE_DOMINANT_BASELINE_TEXT_AFTER_EDGE,
+  eCSSKeyword_text_before_edge, NS_STYLE_DOMINANT_BASELINE_TEXT_BEFORE_EDGE,
+  -1, -1
+};
+
 const PRInt32 nsCSSProps::kFillRuleKTable[] = {
   eCSSKeyword_nonzero, NS_STYLE_FILL_RULE_NONZERO,
   eCSSKeyword_evenodd, NS_STYLE_FILL_RULE_EVENODD,
+  -1, -1
+};
+
+const PRInt32 nsCSSProps::kPointerEventsKTable[] = {
+  eCSSKeyword_visiblepainted, NS_STYLE_POINTER_EVENTS_VISIBLEPAINTED,
+  eCSSKeyword_visiblefill, NS_STYLE_POINTER_EVENTS_VISIBLEFILL,
+  eCSSKeyword_visiblestroke, NS_STYLE_POINTER_EVENTS_VISIBLESTROKE,
+  eCSSKeyword_visible, NS_STYLE_POINTER_EVENTS_VISIBLE,
+  eCSSKeyword_painted, NS_STYLE_POINTER_EVENTS_PAINTED,
+  eCSSKeyword_fill, NS_STYLE_POINTER_EVENTS_FILL,
+  eCSSKeyword_stroke, NS_STYLE_POINTER_EVENTS_STROKE,
+  eCSSKeyword_all, NS_STYLE_POINTER_EVENTS_ALL,
+  eCSSKeyword_none, NS_STYLE_POINTER_EVENTS_NONE,
+  -1, -1
+};
+
+const PRInt32 nsCSSProps::kShapeRenderingKTable[] = {
+  eCSSKeyword_optimizespeed, NS_STYLE_SHAPE_RENDERING_OPTIMIZESPEED,
+  eCSSKeyword_crispedges, NS_STYLE_SHAPE_RENDERING_CRISPEDGES,
+  eCSSKeyword_geometricprecision, NS_STYLE_SHAPE_RENDERING_GEOMETRICPRECISION,
   -1, -1
 };
 
@@ -879,11 +964,26 @@ const PRInt32 nsCSSProps::kStrokeLinecapKTable[] = {
 };
 
 const PRInt32 nsCSSProps::kStrokeLinejoinKTable[] = {
-  eCSSKeyword_butt, NS_STYLE_STROKE_LINEJOIN_MITER,
+  eCSSKeyword_miter, NS_STYLE_STROKE_LINEJOIN_MITER,
   eCSSKeyword_round, NS_STYLE_STROKE_LINEJOIN_ROUND,
   eCSSKeyword_bevel, NS_STYLE_STROKE_LINEJOIN_BEVEL,
   -1, -1
 };
+
+const PRInt32 nsCSSProps::kTextAnchorKTable[] = {
+  eCSSKeyword_start, NS_STYLE_TEXT_ANCHOR_START,
+  eCSSKeyword_middle, NS_STYLE_TEXT_ANCHOR_MIDDLE,
+  eCSSKeyword_end, NS_STYLE_TEXT_ANCHOR_END,
+  -1, -1
+};
+
+const PRInt32 nsCSSProps::kTextRenderingKTable[] = {
+  eCSSKeyword_optimizespeed, NS_STYLE_TEXT_RENDERING_OPTIMIZESPEED,
+  eCSSKeyword_optimizelegibility, NS_STYLE_TEXT_RENDERING_OPTIMIZELEGIBILITY,
+  eCSSKeyword_geometricprecision, NS_STYLE_TEXT_RENDERING_GEOMETRICPRECISION,
+  -1, -1
+};
+
 #endif
 
 PRInt32 
@@ -914,409 +1014,25 @@ nsCSSProps::SearchKeywordTable(PRInt32 aValue, const PRInt32 aTable[])
   }
 }
 
-// XXX TODO These table names should be additional parameters of the
-// properties below in nsCSSPropList.h (and the two below should be like
-// the rest).
+/* static */ const PRInt32* const
+nsCSSProps::kKeywordTableTable[eCSSProperty_COUNT_no_shorthands] = {
+  #define CSS_PROP(name_, id_, method_, datastruct_, member_, type_, iscoord_, kwtable_) kwtable_,
+  #include "nsCSSPropList.h"
+  #undef CSS_PROP
+};
+
 const nsAFlatCString& 
 nsCSSProps::LookupPropertyValue(nsCSSProperty aProp, PRInt32 aValue)
 {
-static const PRInt32 kBackgroundXPositionKTable[] = {
-  eCSSKeyword_left,   0,
-  eCSSKeyword_center, 50,
-  eCSSKeyword_right,  100,
-  -1,-1
-};
+  NS_ASSERTION(aProp >= 0 && aProp < eCSSProperty_COUNT, "property out of range");
 
-static const PRInt32 kBackgroundYPositionKTable[] = {
-  eCSSKeyword_top,    0,
-  eCSSKeyword_center, 50,
-  eCSSKeyword_bottom, 100,
-  -1,-1
-};
+  const PRInt32* kwtable = nsnull;
+  if (aProp < eCSSProperty_COUNT_no_shorthands)
+    kwtable = kKeywordTableTable[aProp];
 
-  switch (aProp)  {
+  if (kwtable)
+    return SearchKeywordTable(aValue, kwtable);
 
-  case eCSSProperty__moz_border_radius:
-  case eCSSProperty__moz_border_radius_topLeft:
-  case eCSSProperty__moz_border_radius_topRight:
-  case eCSSProperty__moz_border_radius_bottomLeft:
-  case eCSSProperty__moz_border_radius_bottomRight:
-  case eCSSProperty__moz_outline_radius:
-  case eCSSProperty__moz_outline_radius_topLeft:
-  case eCSSProperty__moz_outline_radius_topRight:
-  case eCSSProperty__moz_outline_radius_bottomLeft:
-  case eCSSProperty__moz_outline_radius_bottomRight:
-    break;
-
-  case eCSSProperty_appearance:
-    return SearchKeywordTable(aValue, kAppearanceKTable);
-
-  case eCSSProperty_azimuth:
-    return SearchKeywordTable(aValue, kAzimuthKTable);
-
-  case eCSSProperty_background:
-    break;
-  
-  case eCSSProperty_background_attachment:
-    return SearchKeywordTable(aValue, kBackgroundAttachmentKTable);
-
-  case eCSSProperty_background_color:
-    return SearchKeywordTable(aValue, kBackgroundColorKTable);
-  
-  case eCSSProperty_background_image:
-    break;
-
-  case eCSSProperty_background_position:
-    break;
-
-  case eCSSProperty_background_repeat:
-    return SearchKeywordTable(aValue, kBackgroundRepeatKTable);
-
-  case eCSSProperty__moz_background_clip:
-    return SearchKeywordTable(aValue, kBackgroundClipKTable);
-
-  case eCSSProperty__moz_background_inline_policy:
-    return SearchKeywordTable(aValue, kBackgroundInlinePolicyKTable);
-
-  case eCSSProperty__moz_background_origin:
-    return SearchKeywordTable(aValue, kBackgroundOriginKTable);
-
-  case eCSSProperty_background_x_position:
-    return SearchKeywordTable(aValue, kBackgroundXPositionKTable);
-
-  case eCSSProperty_background_y_position:
-    return SearchKeywordTable(aValue, kBackgroundYPositionKTable);
-
-  case eCSSProperty_binding:
-    break;
-
-  case eCSSProperty_border:
-    break;
-
-  case eCSSProperty_border_collapse:
-    return SearchKeywordTable(aValue, kBorderCollapseKTable);
-
-  case eCSSProperty_box_align:
-    return SearchKeywordTable(aValue, kBoxAlignKTable);
-  case eCSSProperty_box_direction:
-    return SearchKeywordTable(aValue, kBoxDirectionKTable);
-  case eCSSProperty_box_orient:
-    return SearchKeywordTable(aValue, kBoxOrientKTable);
-  case eCSSProperty_box_pack:
-    return SearchKeywordTable(aValue, kBoxPackKTable);
-  case eCSSProperty_box_flex:
-  case eCSSProperty_box_ordinal_group:
-    break;
-
-#ifdef MOZ_SVG
-  case eCSSProperty_fill:
-  case eCSSProperty_fill_opacity:
-  case eCSSProperty_stroke:
-  case eCSSProperty_stroke_dasharray:
-  case eCSSProperty_stroke_dashoffset:
-  case eCSSProperty_stroke_miterlimit:
-  case eCSSProperty_stroke_opacity:
-  case eCSSProperty_stroke_width:
-    break;
-
-  case eCSSProperty_fill_rule:
-    return SearchKeywordTable(aValue, kFillRuleKTable);
-  case eCSSProperty_stroke_linecap:
-    return SearchKeywordTable(aValue, kStrokeLinecapKTable);
-  case eCSSProperty_stroke_linejoin:
-    return SearchKeywordTable(aValue, kStrokeLinejoinKTable);
-#endif
-    
-  case eCSSProperty_box_sizing:
-    return SearchKeywordTable(aValue, kBoxSizingKTable);
-
-  case eCSSProperty_border_color:
-  case eCSSProperty_border_spacing:
-  case eCSSProperty_border_style:
-  case eCSSProperty_border_bottom:
-  case eCSSProperty_border_left:
-  case eCSSProperty_border_right:
-  case eCSSProperty_border_top:
-  case eCSSProperty_border_bottom_colors:
-  case eCSSProperty_border_left_colors:
-  case eCSSProperty_border_right_colors:
-  case eCSSProperty_border_top_colors:
-    break;
-
-  case eCSSProperty_border_bottom_color:
-  case eCSSProperty_border_left_color:
-  case eCSSProperty_border_right_color:
-  case eCSSProperty_border_top_color:
-    return SearchKeywordTable(aValue, kBorderColorKTable);
-
-  case eCSSProperty_border_bottom_style:
-  case eCSSProperty_border_left_style:
-  case eCSSProperty_border_right_style:
-  case eCSSProperty_border_top_style:
-    return SearchKeywordTable(aValue, kBorderStyleKTable);
-
-  case eCSSProperty_border_bottom_width:
-  case eCSSProperty_border_left_width:
-  case eCSSProperty_border_right_width:
-  case eCSSProperty_border_top_width:
-    return SearchKeywordTable(aValue, kBorderWidthKTable);
-  
-  case eCSSProperty_border_width:
-  case eCSSProperty_border_x_spacing:
-  case eCSSProperty_border_y_spacing:
-  case eCSSProperty_bottom:
-    break;
-
-  case eCSSProperty_caption_side:
-    return SearchKeywordTable(aValue, kCaptionSideKTable);  
-
-  case eCSSProperty_clear:
-    return SearchKeywordTable(aValue, kClearKTable);  
-    
-  case eCSSProperty_clip:
-  case eCSSProperty_color:
-    break;
-
-  case eCSSProperty_content:
-    return SearchKeywordTable(aValue, kContentKTable);  
-
-  case eCSSProperty__moz_counter_increment:
-  case eCSSProperty__moz_counter_reset:
-  case eCSSProperty_cue:
-  case eCSSProperty_cue_after:
-  case eCSSProperty_cue_before:
-    break;
-
-  case eCSSProperty_cursor:
-    return SearchKeywordTable(aValue, kCursorKTable);  
-
-  case eCSSProperty_direction:
-    return SearchKeywordTable(aValue, kDirectionKTable);  
-  
-  case eCSSProperty_display:
-    return SearchKeywordTable(aValue, kDisplayKTable);  
-
-  case eCSSProperty_elevation:
-    return SearchKeywordTable(aValue, kElevationKTable);  
-
-  case eCSSProperty_empty_cells:
-    return SearchKeywordTable(aValue, kEmptyCellsKTable);  
-
-  case eCSSProperty_float:
-    return SearchKeywordTable(aValue, kFloatKTable);  
-
-  case eCSSProperty_float_edge:
-    return SearchKeywordTable(aValue, kFloatEdgeKTable);  
-
-  case eCSSProperty_font:
-    break;
-
-  case eCSSProperty_font_family:
-    return SearchKeywordTable(aValue, kFontKTable);  
-    
-  case eCSSProperty_font_size:
-    return SearchKeywordTable(aValue, kFontSizeKTable);  
-
-  case eCSSProperty_font_size_adjust:
-    break;
-
-  case eCSSProperty_font_stretch:
-    return SearchKeywordTable(aValue, kFontStretchKTable);  
-
-  case eCSSProperty_font_style:
-    return SearchKeywordTable(aValue, kFontStyleKTable);  
-
-  case eCSSProperty_font_variant:
-    return SearchKeywordTable(aValue, kFontVariantKTable);  
-  
-  case eCSSProperty_font_weight:
-    return SearchKeywordTable(aValue, kFontWeightKTable);  
-
-  case eCSSProperty_force_broken_image_icon:
-  case eCSSProperty_height:
-  case eCSSProperty_image_region:
-    break;
-
-  case eCSSProperty_key_equivalent:
-    return SearchKeywordTable(aValue, kKeyEquivalentKTable);
-
-  case eCSSProperty_left:
-  case eCSSProperty_letter_spacing:
-  case eCSSProperty_line_height:
-  case eCSSProperty_list_style:
-  case eCSSProperty_list_style_image:
-    break;
-
-  case eCSSProperty_list_style_position:
-    return SearchKeywordTable(aValue, kListStylePositionKTable);  
-  
-  case eCSSProperty_list_style_type:
-    return SearchKeywordTable(aValue, kListStyleKTable);
-
-  case eCSSProperty_margin:
-  case eCSSProperty_margin_bottom:
-  case eCSSProperty_margin_left:
-  case eCSSProperty_margin_right:
-  case eCSSProperty_margin_top:
-  case eCSSProperty_marker_offset:
-    break;
-
-  case eCSSProperty_marks:
-    return SearchKeywordTable(aValue, kPageMarksKTable);
-
-  case eCSSProperty_max_height:
-  case eCSSProperty_max_width:
-  case eCSSProperty_min_height:
-  case eCSSProperty_min_width:
-    break;
-
-  case eCSSProperty_opacity:
-  case eCSSProperty_orphans:
-  case eCSSProperty__moz_outline:
-    break;
-
-  case eCSSProperty__moz_outline_color:
-    return SearchKeywordTable(aValue, kOutlineColorKTable);
-
-  case eCSSProperty__moz_outline_style:
-    return SearchKeywordTable(aValue, kBorderStyleKTable);
-
-  case eCSSProperty__moz_outline_width:
-    return SearchKeywordTable(aValue, kBorderWidthKTable);
-
-  case eCSSProperty_overflow:
-    return SearchKeywordTable(aValue, kOverflowKTable);
-  
-  case eCSSProperty_padding:
-  case eCSSProperty_padding_bottom:
-  case eCSSProperty_padding_left:
-  case eCSSProperty_padding_right:
-  case eCSSProperty_padding_top:
-  case eCSSProperty_page:
-    break;
-
-  case eCSSProperty_page_break_before:
-  case eCSSProperty_page_break_after:
-    return SearchKeywordTable(aValue, kPageBreakKTable);
-
-  case eCSSProperty_page_break_inside:
-    return SearchKeywordTable(aValue, kPageBreakInsideKTable);
-  
-  case eCSSProperty_pause:
-  case eCSSProperty_pause_after:
-  case eCSSProperty_pause_before:
-    break;
-
-  case eCSSProperty_pitch:
-    return SearchKeywordTable(aValue, kPitchKTable);
-
-  case eCSSProperty_pitch_range:
-  case eCSSProperty_play_during:
-  case eCSSProperty_play_during_uri:
-    break;
-
-  case eCSSProperty_play_during_flags:
-    return SearchKeywordTable(aValue, kPlayDuringKTable);
-
-  case eCSSProperty_position:
-    return SearchKeywordTable(aValue, kPositionKTable);
-  
-  case eCSSProperty_quotes:
-    break;
-
-  case eCSSProperty_resizer:
-    return SearchKeywordTable(aValue, kResizerKTable);
-
-  case eCSSProperty_richness:
-  case eCSSProperty_right:
-    break;
-
-  case eCSSProperty_size:
-    break;
-
-  case eCSSProperty_size_height:
-  case eCSSProperty_size_width:
-    return SearchKeywordTable(aValue, kPageSizeKTable);
-
-  case eCSSProperty_speak:
-    return SearchKeywordTable(aValue, kSpeakKTable);
-
-  case eCSSProperty_speak_header:
-    return SearchKeywordTable(aValue, kSpeakHeaderKTable);
-
-  case eCSSProperty_speak_numeral:
-    return SearchKeywordTable(aValue, kSpeakNumeralKTable);
-
-  case eCSSProperty_speak_punctuation:
-    return SearchKeywordTable(aValue, kSpeakPunctuationKTable);
-
-  case eCSSProperty_speech_rate:
-    return SearchKeywordTable(aValue, kSpeechRateKTable);
-
-  case eCSSProperty_stress:
-    break;
-
-  case eCSSProperty_table_layout:
-    return SearchKeywordTable(aValue, kTableLayoutKTable);
-
-  case eCSSProperty_text_align:
-    return SearchKeywordTable(aValue, kTextAlignKTable);
-  
-  case eCSSProperty_text_decoration:
-    return SearchKeywordTable(aValue, kTextDecorationKTable);
-
-  case eCSSProperty_text_indent:
-  case eCSSProperty_text_shadow:
-    break;
-  
-  case eCSSProperty_text_transform:
-    return SearchKeywordTable(aValue, kTextTransformKTable);
-  
-  case eCSSProperty_top:
-    break;
-
-  case eCSSProperty_unicode_bidi:
-    return SearchKeywordTable(aValue, kUnicodeBidiKTable);
-
-  case eCSSProperty_user_focus:
-    return SearchKeywordTable(aValue, kUserFocusKTable);
-
-  case eCSSProperty_user_input:
-    return SearchKeywordTable(aValue, kUserInputKTable);
-
-  case eCSSProperty_user_modify:
-    return SearchKeywordTable(aValue, kUserModifyKTable);
-
-  case eCSSProperty_user_select:
-    return SearchKeywordTable(aValue, kUserSelectKTable);
-
-  case eCSSProperty_vertical_align:
-    return SearchKeywordTable(aValue, kVerticalAlignKTable);
-  
-  case eCSSProperty_visibility:
-    return SearchKeywordTable(aValue, kVisibilityKTable);
-
-  case eCSSProperty_voice_family:
-    break;
-
-  case eCSSProperty_volume:
-    return SearchKeywordTable(aValue, kVolumeKTable);
-    
-  case eCSSProperty_white_space:
-    return SearchKeywordTable(aValue, kWhitespaceKTable);
-
-  case eCSSProperty_widows:
-  case eCSSProperty_width:
-  case eCSSProperty_word_spacing:
-  case eCSSProperty_z_index:
-    break;
-
-// no default case, let the compiler help find missing values
-  case eCSSProperty_UNKNOWN:
-  case eCSSProperty_COUNT:
-    NS_ERROR("invalid property");
-    break;
-  }
   static nsDependentCString sNullStr("");
   return sNullStr;
 }
@@ -1341,37 +1057,38 @@ PRBool nsCSSProps::GetColorName(PRInt32 aPropValue, nsCString &aStr)
 
 // define array of all CSS property types
 const nsCSSType nsCSSProps::kTypeTable[eCSSProperty_COUNT_no_shorthands] = {
-    #define CSS_PROP(name_, id_, method_, datastruct_, member_, type_, iscoord_) type_,
+    #define CSS_PROP(name_, id_, method_, datastruct_, member_, type_, iscoord_, kwtable_) type_,
     #include "nsCSSPropList.h"
     #undef CSS_PROP
 };
 
 const nsStyleStructID nsCSSProps::kSIDTable[eCSSProperty_COUNT_no_shorthands] = {
-    #define CSS_PROP_FONT(name_, id_, method_, datastruct_, member_, type_, iscoord_) eStyleStruct_Font,
-    #define CSS_PROP_COLOR(name_, id_, method_, datastruct_, member_, type_, iscoord_) eStyleStruct_Color,
-    #define CSS_PROP_BACKGROUND(name_, id_, method_, datastruct_, member_, type_, iscoord_) eStyleStruct_Background,
-    #define CSS_PROP_LIST(name_, id_, method_, datastruct_, member_, type_, iscoord_) eStyleStruct_List,
-    #define CSS_PROP_POSITION(name_, id_, method_, datastruct_, member_, type_, iscoord_) eStyleStruct_Position,
-    #define CSS_PROP_TEXT(name_, id_, method_, datastruct_, member_, type_, iscoord_) eStyleStruct_Text,
-    #define CSS_PROP_TEXTRESET(name_, id_, method_, datastruct_, member_, type_, iscoord_) eStyleStruct_TextReset,
-    #define CSS_PROP_DISPLAY(name_, id_, method_, datastruct_, member_, type_, iscoord_) eStyleStruct_Display,
-    #define CSS_PROP_VISIBILITY(name_, id_, method_, datastruct_, member_, type_, iscoord_) eStyleStruct_Visibility,
-    #define CSS_PROP_CONTENT(name_, id_, method_, datastruct_, member_, type_, iscoord_) eStyleStruct_Content,
-    #define CSS_PROP_QUOTES(name_, id_, method_, datastruct_, member_, type_, iscoord_) eStyleStruct_Quotes,
-    #define CSS_PROP_USERINTERFACE(name_, id_, method_, datastruct_, member_, type_, iscoord_) eStyleStruct_UserInterface,
-    #define CSS_PROP_UIRESET(name_, id_, method_, datastruct_, member_, type_, iscoord_) eStyleStruct_UIReset,
-    #define CSS_PROP_TABLE(name_, id_, method_, datastruct_, member_, type_, iscoord_) eStyleStruct_Table,
-    #define CSS_PROP_TABLEBORDER(name_, id_, method_, datastruct_, member_, type_, iscoord_) eStyleStruct_TableBorder,
-    #define CSS_PROP_MARGIN(name_, id_, method_, datastruct_, member_, type_, iscoord_) eStyleStruct_Margin,
-    #define CSS_PROP_PADDING(name_, id_, method_, datastruct_, member_, type_, iscoord_) eStyleStruct_Padding,
-    #define CSS_PROP_BORDER(name_, id_, method_, datastruct_, member_, type_, iscoord_) eStyleStruct_Border,
-    #define CSS_PROP_OUTLINE(name_, id_, method_, datastruct_, member_, type_, iscoord_) eStyleStruct_Outline,
-    #define CSS_PROP_XUL(name_, id_, method_, datastruct_, member_, type_, iscoord_) eStyleStruct_XUL,
+    #define CSS_PROP_FONT(name_, id_, method_, datastruct_, member_, type_, iscoord_, kwtable_) eStyleStruct_Font,
+    #define CSS_PROP_COLOR(name_, id_, method_, datastruct_, member_, type_, iscoord_, kwtable_) eStyleStruct_Color,
+    #define CSS_PROP_BACKGROUND(name_, id_, method_, datastruct_, member_, type_, iscoord_, kwtable_) eStyleStruct_Background,
+    #define CSS_PROP_LIST(name_, id_, method_, datastruct_, member_, type_, iscoord_, kwtable_) eStyleStruct_List,
+    #define CSS_PROP_POSITION(name_, id_, method_, datastruct_, member_, type_, iscoord_, kwtable_) eStyleStruct_Position,
+    #define CSS_PROP_TEXT(name_, id_, method_, datastruct_, member_, type_, iscoord_, kwtable_) eStyleStruct_Text,
+    #define CSS_PROP_TEXTRESET(name_, id_, method_, datastruct_, member_, type_, iscoord_, kwtable_) eStyleStruct_TextReset,
+    #define CSS_PROP_DISPLAY(name_, id_, method_, datastruct_, member_, type_, iscoord_, kwtable_) eStyleStruct_Display,
+    #define CSS_PROP_VISIBILITY(name_, id_, method_, datastruct_, member_, type_, iscoord_, kwtable_) eStyleStruct_Visibility,
+    #define CSS_PROP_CONTENT(name_, id_, method_, datastruct_, member_, type_, iscoord_, kwtable_) eStyleStruct_Content,
+    #define CSS_PROP_QUOTES(name_, id_, method_, datastruct_, member_, type_, iscoord_, kwtable_) eStyleStruct_Quotes,
+    #define CSS_PROP_USERINTERFACE(name_, id_, method_, datastruct_, member_, type_, iscoord_, kwtable_) eStyleStruct_UserInterface,
+    #define CSS_PROP_UIRESET(name_, id_, method_, datastruct_, member_, type_, iscoord_, kwtable_) eStyleStruct_UIReset,
+    #define CSS_PROP_TABLE(name_, id_, method_, datastruct_, member_, type_, iscoord_, kwtable_) eStyleStruct_Table,
+    #define CSS_PROP_TABLEBORDER(name_, id_, method_, datastruct_, member_, type_, iscoord_, kwtable_) eStyleStruct_TableBorder,
+    #define CSS_PROP_MARGIN(name_, id_, method_, datastruct_, member_, type_, iscoord_, kwtable_) eStyleStruct_Margin,
+    #define CSS_PROP_PADDING(name_, id_, method_, datastruct_, member_, type_, iscoord_, kwtable_) eStyleStruct_Padding,
+    #define CSS_PROP_BORDER(name_, id_, method_, datastruct_, member_, type_, iscoord_, kwtable_) eStyleStruct_Border,
+    #define CSS_PROP_OUTLINE(name_, id_, method_, datastruct_, member_, type_, iscoord_, kwtable_) eStyleStruct_Outline,
+    #define CSS_PROP_XUL(name_, id_, method_, datastruct_, member_, type_, iscoord_, kwtable_) eStyleStruct_XUL,
     #ifdef MOZ_SVG
-    #define CSS_PROP_SVG(name_, id_, method_, datastruct_, member_, type_, iscoord_) eStyleStruct_SVG,
+    #define CSS_PROP_SVG(name_, id_, method_, datastruct_, member_, type_, iscoord_, kwtable_) eStyleStruct_SVG,
+    #define CSS_PROP_SVGRESET(name_, id_, method_, datastruct_, member_, type_, iscoord_, kwtable_) eStyleStruct_SVGReset,
     #endif /* defined(MOZ_SVG) */
     // This shouldn't matter, but we need something to go here.
-    #define CSS_PROP_BACKENDONLY(name_, id_, method_, datastruct_, member_, type_, iscoord_) nsStyleStructID(-1),
+    #define CSS_PROP_BACKENDONLY(name_, id_, method_, datastruct_, member_, type_, iscoord_, kwtable_) nsStyleStructID(-1),
 
     #include "nsCSSPropList.h"
 
@@ -1397,6 +1114,7 @@ const nsStyleStructID nsCSSProps::kSIDTable[eCSSProperty_COUNT_no_shorthands] = 
     #undef CSS_PROP_XUL
     #ifdef MOZ_SVG
     #undef CSS_PROP_SVG
+    #undef CSS_PROP_SVGRESET
     #endif /* undefd(MOZ_SVG) */
     #undef CSS_PROP_BACKENDONLY
 };
@@ -1549,11 +1267,49 @@ static const nsCSSProperty gListStyleSubpropTable[] = {
 static const nsCSSProperty gMarginSubpropTable[] = {
   // Code relies on these being in top-right-bottom-left order.
   eCSSProperty_margin_top,
-  eCSSProperty_margin_right,
+  eCSSProperty_margin_right_value,
   eCSSProperty_margin_bottom,
-  eCSSProperty_margin_left,
+  eCSSProperty_margin_left_value,
+  // extras:
+  eCSSProperty_margin_left_ltr_source,
+  eCSSProperty_margin_left_rtl_source,
+  eCSSProperty_margin_right_ltr_source,
+  eCSSProperty_margin_right_rtl_source,
   eCSSProperty_UNKNOWN
 };
+
+static const nsCSSProperty gMarginLeftSubpropTable[] = {
+  // nsCSSParser::ParseDirectionalBoxProperty depends on this order
+  eCSSProperty_margin_left_value,
+  eCSSProperty_margin_left_ltr_source,
+  eCSSProperty_margin_left_rtl_source,
+  eCSSProperty_UNKNOWN
+};
+
+static const nsCSSProperty gMarginRightSubpropTable[] = {
+  // nsCSSParser::ParseDirectionalBoxProperty depends on this order
+  eCSSProperty_margin_right_value,
+  eCSSProperty_margin_right_ltr_source,
+  eCSSProperty_margin_right_rtl_source,
+  eCSSProperty_UNKNOWN
+};
+
+static const nsCSSProperty gMozMarginStartSubpropTable[] = {
+  // nsCSSParser::ParseDirectionalBoxProperty depends on this order
+  eCSSProperty_margin_start_value,
+  eCSSProperty_margin_left_ltr_source,
+  eCSSProperty_margin_right_rtl_source,
+  eCSSProperty_UNKNOWN
+};
+
+static const nsCSSProperty gMozMarginEndSubpropTable[] = {
+  // nsCSSParser::ParseDirectionalBoxProperty depends on this order
+  eCSSProperty_margin_end_value,
+  eCSSProperty_margin_right_ltr_source,
+  eCSSProperty_margin_left_rtl_source,
+  eCSSProperty_UNKNOWN
+};
+
 
 static const nsCSSProperty gMozOutlineSubpropTable[] = {
   // nsCSSDeclaration.cpp outputs the subproperties in this order.
@@ -1566,9 +1322,46 @@ static const nsCSSProperty gMozOutlineSubpropTable[] = {
 static const nsCSSProperty gPaddingSubpropTable[] = {
   // Code relies on these being in top-right-bottom-left order.
   eCSSProperty_padding_top,
-  eCSSProperty_padding_right,
+  eCSSProperty_padding_right_value,
   eCSSProperty_padding_bottom,
-  eCSSProperty_padding_left,
+  eCSSProperty_padding_left_value,
+  // extras:
+  eCSSProperty_padding_left_ltr_source,
+  eCSSProperty_padding_left_rtl_source,
+  eCSSProperty_padding_right_ltr_source,
+  eCSSProperty_padding_right_rtl_source,
+  eCSSProperty_UNKNOWN
+};
+
+static const nsCSSProperty gPaddingLeftSubpropTable[] = {
+  // nsCSSParser::ParseDirectionalBoxProperty depends on this order
+  eCSSProperty_padding_left_value,
+  eCSSProperty_padding_left_ltr_source,
+  eCSSProperty_padding_left_rtl_source,
+  eCSSProperty_UNKNOWN
+};
+
+static const nsCSSProperty gPaddingRightSubpropTable[] = {
+  // nsCSSParser::ParseDirectionalBoxProperty depends on this order
+  eCSSProperty_padding_right_value,
+  eCSSProperty_padding_right_ltr_source,
+  eCSSProperty_padding_right_rtl_source,
+  eCSSProperty_UNKNOWN
+};
+
+static const nsCSSProperty gMozPaddingStartSubpropTable[] = {
+  // nsCSSParser::ParseDirectionalBoxProperty depends on this order
+  eCSSProperty_padding_start_value,
+  eCSSProperty_padding_left_ltr_source,
+  eCSSProperty_padding_right_rtl_source,
+  eCSSProperty_UNKNOWN
+};
+
+static const nsCSSProperty gMozPaddingEndSubpropTable[] = {
+  // nsCSSParser::ParseDirectionalBoxProperty depends on this order
+  eCSSProperty_padding_end_value,
+  eCSSProperty_padding_right_ltr_source,
+  eCSSProperty_padding_left_rtl_source,
   eCSSProperty_UNKNOWN
 };
 

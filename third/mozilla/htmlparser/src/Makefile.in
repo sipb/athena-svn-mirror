@@ -33,6 +33,8 @@ MODULE_NAME	   = nsParserModule
 SHORT_LIBNAME  = gkparser
 GRE_MODULE	= 1
 
+PACKAGE_FILE = parser.pkg
+
 REQUIRES	= xpcom \
 		  string \
 		  necko \
@@ -57,6 +59,7 @@ EXTRA_DSO_LIBS	+= mozutil_s
 endif
 
 CPPSRCS = \
+		nsScannerString.cpp \
 		nsDTDUtils.cpp      \
 		nsHTMLTokenizer.cpp \
 		nsElementTable.cpp  \

@@ -1,3 +1,4 @@
+/* -*- Mode: C++; tab-width: 2; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
 /*
  * The contents of this file are subject to the Mozilla Public
  * License Version 1.1 (the "License"); you may not use this file
@@ -31,7 +32,7 @@
 #include "nsIFontMetrics.h"
 
 #include "nsVoidArray.h"
-#include "nsIFrameManager.h"
+#include "nsFrameManager.h"
 #include "nsStyleChangeList.h"
 #include "nsTableOuterFrame.h"
 #include "nsTableFrame.h"
@@ -55,7 +56,7 @@ SplitString(nsString&    aString, // [IN/OUT]
 
   aString.Append(kNullCh);  // put an extra null at the end
 
-  PRUnichar* start = (PRUnichar*)(const PRUnichar*)aString.get();
+  PRUnichar* start = aString.BeginWriting();
   PRUnichar* end   = start;
 
   while (kNullCh != *start) {
@@ -114,27 +115,21 @@ GetValueAt(nsIPresContext* aPresContext,
            PRInt32         aRowOrColIndex)
 {
   PRUnichar* result = nsnull;
-  nsValueList* valueList = nsnull;
+  nsValueList* valueList;
 
-  nsCOMPtr<nsIPresShell> presShell;
-  aPresContext->GetShell(getter_AddRefs(presShell));
-  if (presShell) {
-    nsCOMPtr<nsIFrameManager> frameManager;
-    presShell->GetFrameManager(getter_AddRefs(frameManager));
-    if (frameManager) {
-      frameManager->GetFrameProperty(aTableOrRowFrame, aAttributeAtom,
-                                     0, (void**)&valueList);
-      if (!valueList) {
-        // The property isn't there yet, so set it
-        nsAutoString values;
-        if (NS_CONTENT_ATTR_HAS_VALUE ==
-	    aTableOrRowFrame->GetContent()->GetAttr(kNameSpaceID_None, aAttributeAtom, values)) {
-          valueList = new nsValueList(values);
-          if (valueList) {
-            frameManager->SetFrameProperty(aTableOrRowFrame, aAttributeAtom,
-                                           valueList, DestroyValueListFunc);
-          }
-        }
+  nsFrameManager *frameManager = aPresContext->FrameManager();
+  valueList = NS_STATIC_CAST(nsValueList*,
+          frameManager->GetFrameProperty(aTableOrRowFrame, aAttributeAtom, 0));
+
+  if (!valueList) {
+    // The property isn't there yet, so set it
+    nsAutoString values;
+    if (NS_CONTENT_ATTR_HAS_VALUE ==
+        aTableOrRowFrame->GetContent()->GetAttr(kNameSpaceID_None, aAttributeAtom, values)) {
+      valueList = new nsValueList(values);
+      if (valueList) {
+        frameManager->SetFrameProperty(aTableOrRowFrame, aAttributeAtom,
+                                       valueList, DestroyValueListFunc);
       }
     }
   }
@@ -280,23 +275,15 @@ MapAttributesInto(nsIPresContext* aPresContext,
 
   // now, re-resolve the style contexts in our subtree to pick up any changes
   if (hasChanged) {
-    nsCOMPtr<nsIPresShell> presShell;
-    aPresContext->GetShell(getter_AddRefs(presShell));
-    if (presShell) {
-      nsCOMPtr<nsIFrameManager> fm;
-      presShell->GetFrameManager(getter_AddRefs(fm));
-      if (fm) {
-        nsChangeHint maxChange = NS_STYLE_HINT_NONE, minChange = NS_STYLE_HINT_NONE;
-        nsStyleChangeList changeList;
-        fm->ComputeStyleChangeFor(aCellFrame, kNameSpaceID_None, nsnull,
-                                  changeList, minChange, maxChange);
+    nsFrameManager *fm = aPresContext->FrameManager();
+    nsStyleChangeList changeList;
+    nsChangeHint maxChange = fm->ComputeStyleChangeFor(aCellFrame, &changeList,
+                                                       NS_STYLE_HINT_NONE);
 #ifdef DEBUG
-        // Use the parent frame to make sure we catch in-flows and such
-        nsIFrame* parentFrame = aCellFrame->GetParent();
-        fm->DebugVerifyStyleTree(parentFrame ? parentFrame : aCellFrame);
+    // Use the parent frame to make sure we catch in-flows and such
+    nsIFrame* parentFrame = aCellFrame->GetParent();
+    fm->DebugVerifyStyleTree(parentFrame ? parentFrame : aCellFrame);
 #endif
-      }
-    }
   }
 }
 
@@ -433,10 +420,10 @@ nsMathMLmtableOuterFrame::GetRowFrameAt(nsIPresContext* aPresContext,
   GetTableSize(rowCount, colCount);
   if (aRowIndex <= rowCount) {
     nsIFrame* innerTableFrame = mFrames.FirstChild();
-    nsTableIterator rowgroupIter(aPresContext, *innerTableFrame, dir);
+    nsTableIterator rowgroupIter(*innerTableFrame, dir);
     nsIFrame* rowgroupFrame = rowgroupIter.First();
     while (rowgroupFrame) {
-      nsTableIterator rowIter(aPresContext, *rowgroupFrame, dir);
+      nsTableIterator rowIter(*rowgroupFrame, dir);
       nsIFrame* rowFrame = rowIter.First();
       while (rowFrame) {
         if (--aRowIndex == 0) {

@@ -37,6 +37,7 @@ REQUIRES	= xpcom \
 		  dom \
 		  necko \
 		  unicharutil \
+		  imglib2 \
 		  $(NULL)
 
 CPPSRCS		= \
@@ -66,3 +67,9 @@ endif
 FORCE_STATIC_LIB = 1
 
 include $(topsrcdir)/config/rules.mk
+
+INCLUDES	+= \
+		-I$(srcdir)/../../html/style/src \
+		$(NULL)
+
+DEFINES += -D_IMPL_NS_LAYOUT

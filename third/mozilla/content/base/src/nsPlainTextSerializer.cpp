@@ -46,9 +46,9 @@
 #include "nsIServiceManager.h"
 #include "nsHTMLAtoms.h"
 #include "nsIDOMText.h"
+#include "nsIDOMCDATASection.h"
 #include "nsIDOMElement.h"
 #include "nsINameSpaceManager.h"
-#include "nsIHTMLContent.h"
 #include "nsITextContent.h"
 #include "nsTextFragment.h"
 #include "nsContentUtils.h"
@@ -364,7 +364,7 @@ nsPlainTextSerializer::AppendText(nsIDOMText* aText,
   }
 
   // Consume the last bit of the string if there's any left
-  if (NS_SUCCEEDED(rv) & (start < length)) {
+  if (NS_SUCCEEDED(rv) && start < length) {
     if (start) {
       rv = DoAddLeaf(nsnull,
                      eHTMLTag_text,
@@ -380,7 +380,16 @@ nsPlainTextSerializer::AppendText(nsIDOMText* aText,
   return rv;
 }
 
-NS_IMETHODIMP 
+NS_IMETHODIMP
+nsPlainTextSerializer::AppendCDATASection(nsIDOMCDATASection* aCDATASection,
+                                          PRInt32 aStartOffset,
+                                          PRInt32 aEndOffset,
+                                          nsAString& aStr)
+{
+  return AppendText(aCDATASection, aStartOffset, aEndOffset, aStr);
+}
+
+NS_IMETHODIMP
 nsPlainTextSerializer::AppendElementStart(nsIDOMElement *aElement,
                                           PRBool aHasChildren,
                                           nsAString& aStr)
@@ -839,7 +848,6 @@ nsPlainTextSerializer::DoOpenContainer(const nsIParserNode* aNode, PRInt32 aTag)
     if (mHeaderStrategy == 2) {  // numbered
       mIndent += kIndentSizeHeaders;
       // Caching
-      nsCAutoString leadup;
       PRInt32 level = HeaderLevel(type);
       // Increase counter for current level
       mHeaderCounter[level]++;
@@ -851,12 +859,13 @@ nsPlainTextSerializer::DoOpenContainer(const nsIParserNode* aNode, PRInt32 aTag)
       }
 
       // Construct numbers
+      nsAutoString leadup;
       for (i = 1; i <= level; i++) {
         leadup.AppendInt(mHeaderCounter[i]);
-        leadup += ".";
+        leadup.Append(PRUnichar('.'));
       }
-      leadup += " ";
-      Write(NS_ConvertASCIItoUCS2(leadup.get()));
+      leadup.Append(PRUnichar(' '));
+      Write(leadup);
     }
     else if (mHeaderStrategy == 1) { // indent increasingly
       mIndent += kIndentSizeHeaders;
@@ -895,29 +904,6 @@ nsPlainTextSerializer::DoOpenContainer(const nsIParserNode* aNode, PRInt32 aTag)
   }
   else if (type == eHTMLTag_u && mStructs && !currentNodeIsConverted) {
     Write(NS_LITERAL_STRING("_"));
-  }
-  else if (type == eHTMLTag_img) {
-    /* Output (in decreasing order of preference)
-       alt, title or nothing */
-    // See <http://www.w3.org/TR/REC-html40/struct/objects.html#edef-IMG>
-    nsAutoString imageDescription;
-    if (NS_SUCCEEDED(GetAttributeValue(aNode,
-                                       nsHTMLAtoms::alt,
-                                       imageDescription))) {
-      // If the alt attribute has an empty value (|alt=""|), output nothing
-    }
-    else if (NS_SUCCEEDED(GetAttributeValue(aNode,
-                                            nsHTMLAtoms::title,
-                                            imageDescription))
-             && !imageDescription.IsEmpty()) {
-      imageDescription = NS_LITERAL_STRING(" [") +
-                         imageDescription +
-                         NS_LITERAL_STRING("] ");
-    }
-    
-    if (!imageDescription.IsEmpty()) {
-      Write(imageDescription);
-    }
   }
 
   return NS_OK;
@@ -1224,6 +1210,28 @@ nsPlainTextSerializer::DoAddLeaf(const nsIParserNode *aNode, PRInt32 aTag,
 
     EnsureVerticalSpace(0);
   }
+  else if (type == eHTMLTag_img) {
+    /* Output (in decreasing order of preference)
+       alt, title or nothing */
+    // See <http://www.w3.org/TR/REC-html40/struct/objects.html#edef-IMG>
+    nsAutoString imageDescription;
+    if (NS_SUCCEEDED(GetAttributeValue(aNode,
+                                       nsHTMLAtoms::alt,
+                                       imageDescription))) {
+      // If the alt attribute has an empty value (|alt=""|), output nothing
+    }
+    else if (NS_SUCCEEDED(GetAttributeValue(aNode,
+                                            nsHTMLAtoms::title,
+                                            imageDescription))
+             && !imageDescription.IsEmpty()) {
+      imageDescription = NS_LITERAL_STRING(" [") +
+                         imageDescription +
+                         NS_LITERAL_STRING("] ");
+    }
+   
+    Write(imageDescription);
+  }
+
 
   return NS_OK;
 }

@@ -23,6 +23,7 @@ Rights Reserved.
 <?xml-stylesheet href="chrome://messenger/skin/folderMenus.css" type="text/css"?>
 
 <?xul-overlay href="chrome://global/content/charsetOverlay.xul"?>
+<?xul-overlay href="chrome://communicator/content/contentAreaContextOverlay.xul"?>
 <?xul-overlay href="chrome://communicator/content/viewZoomOverlay.xul"?>
 <?xul-overlay href="chrome://messenger/content/mailWindowExtrasOverlay.xul"?>
 
@@ -125,7 +126,6 @@ Rights Reserved.
    <command id="cmd_viewThreadsWithUnread" oncommand="goDoCommand('cmd_viewThreadsWithUnread')" disabled="true"/>
    <command id="cmd_viewWatchedThreadsWithUnread" oncommand="goDoCommand('cmd_viewWatchedThreadsWithUnread')" disabled="true"/>
    <command id="cmd_viewIgnoredThreads" oncommand="goDoCommand('cmd_viewIgnoredThreads')" disabled="true"/>
-   <command id="cmd_sortByThread" oncommand="goDoCommand('cmd_sortByThread')" disabled="true"/>
    <commandset id="viewZoomCommands"/>
 </commandset>
 
@@ -258,6 +258,7 @@ Rights Reserved.
     <command id="cmd_markAsFlagged" oncommand="goDoCommand('cmd_markAsFlagged'); event.preventBubble()" disabled="true"/>
     <command id="cmd_markAsJunk" oncommand="goDoCommand('cmd_markAsJunk'); event.preventBubble()" disabled="true"/>
     <command id="cmd_markAsNotJunk" oncommand="goDoCommand('cmd_markAsNotJunk'); event.preventBubble()" disabled="true"/>
+    <command id="cmd_recalculateJunkScore" oncommand="goDoCommand('cmd_recalculateJunkScore');" disabled="true"/>
 </commandset>
 
 <commandset id="mailLabelMenuItems"
@@ -335,6 +336,9 @@ Rights Reserved.
   <key id="key_findPrev"  key="&findPrevCmd.key;"    oncommand="goDoCommand('cmd_findPrev')"  modifiers="accel, shift"/>
   <key keycode="&findAgainCmd.key2;"   oncommand="goDoCommand('cmd_findAgain')"/>
   <key keycode="&findPrevCmd.key2;"    oncommand="goDoCommand('cmd_findPrev')"  modifiers="shift"/>
+#ifdef MOZ_X11
+  <key keycode="&findCmd.key2;"    oncommand="goDoCommand('cmd_find')"/>
+#endif
   <key id="key_findTypeText"/>
   <key id="key_findTypeLinks"/>
   <key id="key_stop" keycode="VK_ESCAPE" command="cmd_stop"/>
@@ -347,6 +351,10 @@ Rights Reserved.
   <key keycode="VK_F6" oncommand="SwitchPaneFocus(event);" modifiers="control"/>
   <key keycode="VK_F6" oncommand="SwitchPaneFocus(event);" modifiers="shift"/>
   <key keycode="VK_F6" oncommand="SwitchPaneFocus(event);"/>
+
+  <!-- View Toggle Keys (F8/F9) -->
+  <key id="key_toggleMessagePane" keycode="VK_F8" oncommand="MsgToggleMessagePane();"/>
+  <key id="key_toggleThreadPane" keycode="VK_F9" oncommand="MsgToggleSplitter('gray_vertical_splitter');"/>
 
   <!-- Label Keys -->
   <key id="key_label0" charcode="&labelCmd0.key;"  oncommand="goDoCommand('cmd_label0')"/>
@@ -603,6 +611,9 @@ Rights Reserved.
         <menuitem label="&markAsNotJunkCmd.label;"
                   accesskey="&markAsNotJunkCmd.accesskey;"
                   observes="cmd_markAsNotJunk"/>
+        <menuitem label="&recalculateJunkScoreCmd.label;"
+                  accesskey="&recalculateJunkScoreCmd.accesskey;"
+                  command="cmd_recalculateJunkScore"/>
       </menupopup>
     </menu>
     <menuseparator/>
@@ -688,8 +699,8 @@ Rights Reserved.
   </popup> 
 
   <popup id="messagePaneContext"   
-     onpopupshowing="gContextMenu = new nsContextMenu(this); return fillMessagePaneContextMenu();"
-     onpopuphiding="gContextMenu.onDestroy(); gContextMenu = null;">
+     onpopupshowing="if (event.target != this) return true; gContextMenu = new nsContextMenu(this); return fillMessagePaneContextMenu();"
+     onpopuphiding="if (event.target == this) gContextMenu = null;">
         <menuitem id="context-openlink"
                   label="&openLinkCmd.label;"
                   accesskey="&openLinkCmd.accesskey;"
@@ -941,6 +952,9 @@ Rights Reserved.
         <menuitem label="&markAsNotJunkCmd.label;" 
                   accesskey="&markAsNotJunkCmd.accesskey;" 
                   observes="cmd_markAsNotJunk"/>
+        <menuitem label="&recalculateJunkScoreCmd.label;"
+                  accesskey="&recalculateJunkScoreCmd.accesskey;"
+                  command="cmd_recalculateJunkScore"/>
       </menupopup>
     </menu>
     <menuseparator id="messagePaneContext-sep-labels-2"/>
@@ -1102,7 +1116,7 @@ Rights Reserved.
   </menu>
 
   <menu id="menu_Edit" oncommand="CommandUpdate_UndoRedo();">
-    <menupopup onpopupshowing="InitEditMessagesMenu()">
+    <menupopup id="menu_Edit_Popup" onpopupshowing="InitEditMessagesMenu()">
       <menuitem id="menu_undo" label="&undoDefaultCmd.label;" accesskey="&undoDefaultCmd.accesskey;" key="key_undo" observes="cmd_undo" oncommand="Undo()"/>
       <menuitem id="menu_redo" label="&redoDefaultCmd.label;" accesskey="&redoDefaultCmd.accesskey;" key="key_redo" observes="cmd_redo" oncommand="Redo()"/>
       <menuseparator/>
@@ -1160,6 +1174,7 @@ Rights Reserved.
            type="checkbox"
            label="&showMessageCmd.label;"
            accesskey="&showMessageCmd.accesskey;"
+           key="key_toggleMessagePane"
            oncommand="MsgToggleMessagePane();"/>
         </menupopup>
       </menu>
@@ -1175,19 +1190,19 @@ Rights Reserved.
           <menuitem id="sortBySizeMenuitem" type="radio" name="sortby" label="&sortBySizeCmd.label;" accesskey="&sortBySizeCmd.accesskey;" oncommand="MsgSortBySize()"/>
           <menuitem id="sortByStatusMenuitem" type="radio" name="sortby" label="&sortByStatusCmd.label;" accesskey="&sortByStatusCmd.accesskey;" oncommand="MsgSortByStatus()"/>
           <menuitem id="sortBySubjectMenuitem" type="radio" name="sortby" label="&sortBySubjectCmd.label;" accesskey="&sortBySubjectCmd.accesskey;" oncommand="MsgSortBySubject()"/>
-          <menuitem id="sortByThreadMenuitem" type="radio" name="sortby" label="&sortByThreadCmd.label;"  accesskey="&sortByThreadCmd.accesskey;" oncommand="MsgSortByThread()"/>
           <menuitem id="sortByUnreadMenuitem" type="radio" name="sortby" label="&sortByUnreadCmd.label;"  accesskey="&sortByUnreadCmd.accesskey;" oncommand="MsgSortByUnread()"/>
           <menuitem id="sortByLabelMenuitem" type="radio" name="sortby" label="&sortByLabelCmd.label;" accesskey="&sortByLabelCmd.accesskey;" oncommand="MsgSortByLabel()"/>
           <menuitem id="sortByJunkStatusMenuitem" type="radio" name="sortby" label="&sortByJunkStatusCmd.label;" accesskey="&sortByJunkStatusCmd.accesskey;" oncommand="MsgSortByJunkStatus()"/>
           <menuseparator/>
           <menuitem id="sortAscending" type="radio" name="sortdirection" label="&sortAscending.label;" accesskey="&sortAscending.accesskey;" oncommand="MsgSortAscending()"/>
           <menuitem id="sortDescending" type="radio" name="sortdirection" label="&sortDescending.label;" accesskey="&sortDescending.accesskey;" oncommand="MsgSortDescending()"/>
+          <menuseparator/>
+          <menuitem id="sortThreaded" type="radio" name="threaded" label="&sortThreaded.label;" accesskey="&sortThreaded.accesskey;" oncommand="MsgSortThreaded();"/>
+          <menuitem id="sortUnthreaded" type="radio" name="threaded" label="&sortUnthreaded.label;" accesskey="&sortUnthreaded.accesskey;" oncommand="MsgSortUnthreaded();"/>
         </menupopup>
       </menu>
       <menu label="&msgsMenu.label;" id="viewMessageViewMenu" accesskey="&msgsMenu.accesskey;">
         <menupopup id="viewMessageViewPopup" onpopupshowing="InitViewMessageViewMenu()">
-					<menuitem id="viewThreaded" type="checkbox" label="&viewThreaded.label;" accesskey="&viewThreaded.accesskey;" oncommand="MsgToggleThreaded();"/>
-          <menuseparator/>
           <menuitem id="viewAll" type="radio" name="viewmessages" label="&viewAll.label;" accesskey="&viewAll.accesskey;" oncommand="ViewMessagesBy('viewPickerAll');"/>
           <menuitem id="viewUnread" type="radio" name="viewmessages" label="&viewUnread.label;" accesskey="&viewUnread.accesskey;" oncommand="ViewMessagesBy('viewPickerUnread');"/>
           <menuseparator/>
@@ -1535,6 +1550,9 @@ Rights Reserved.
                   key="key_markNotJunk"
                   accesskey="&markAsNotJunkCmd.accesskey;" 
                   observes="cmd_markAsNotJunk"/>
+        <menuitem label="&recalculateJunkScoreCmd.label;"
+                  accesskey="&recalculateJunkScoreCmd.accesskey;"
+                  command="cmd_recalculateJunkScore"/>
       </menupopup>
     </menu>
     <menuseparator/>

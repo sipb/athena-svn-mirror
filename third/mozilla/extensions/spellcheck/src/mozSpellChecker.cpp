@@ -39,14 +39,12 @@
 #include "mozSpellChecker.h"
 #include "nsIServiceManager.h"
 #include "mozISpellI18NManager.h"
+#include "nsIStringEnumerator.h"
 
 NS_IMPL_ISUPPORTS1(mozSpellChecker, nsISpellChecker)
 
 mozSpellChecker::mozSpellChecker()
 {
-  NS_INIT_ISUPPORTS();
-  mDictionaryName.SetLength(0);
-  
   nsresult rv;
 
   mPersonalDictionary = do_GetService("@mozilla.org/spellchecker/personaldictionary;1",&rv);
@@ -57,7 +55,6 @@ mozSpellChecker::mozSpellChecker()
   if (NS_FAILED(rv)) {
     NS_ERROR("Could not get spell checker");
   }
-  mPersonalDictionary->Init();
   mSpellCheckingEngine->SetPersonalDictionary(mPersonalDictionary);
 }
 
@@ -81,7 +78,7 @@ mozSpellChecker::SetDocument(nsITextServicesDocument *aDoc, PRBool aFromStartofD
 
 
 NS_IMETHODIMP 
-mozSpellChecker::NextMisspelledWord(nsString *aWord, nsStringArray *aSuggestions)
+mozSpellChecker::NextMisspelledWord(nsAString &aWord, nsStringArray *aSuggestions)
 {
   if(!aSuggestions||!mConverter)
     return NS_ERROR_NULL_POINTER;
@@ -104,14 +101,13 @@ mozSpellChecker::NextMisspelledWord(nsString *aWord, nsStringArray *aSuggestions
       do{
         result = mConverter->FindNextWord(str.get(),str.Length(),selOffset,&begin,&end);
         if(NS_SUCCEEDED(result)&&(begin != -1)){
-          nsString currWord;
-          currWord=Substring(str,begin,end-begin);
-          result = CheckWord(&currWord,&isMisspelled,aSuggestions);
+          const nsAString &currWord = Substring(str, begin, end - begin);
+          result = CheckWord(currWord, &isMisspelled, aSuggestions);
           if(isMisspelled){
-              *aWord = currWord;
-              mTsDoc->SetSelection(begin, end-begin);
-              mTsDoc->ScrollSelectionIntoView();
-              return NS_OK;
+            aWord = currWord;
+            mTsDoc->SetSelection(begin, end-begin);
+            mTsDoc->ScrollSelectionIntoView();
+            return NS_OK;
           }
         }
         selOffset = end;
@@ -123,26 +119,24 @@ mozSpellChecker::NextMisspelledWord(nsString *aWord, nsStringArray *aSuggestions
 }
 
 NS_IMETHODIMP 
-mozSpellChecker::CheckWord(const nsString *aWord, PRBool *aIsMisspelled, nsStringArray *aSuggestions)
+mozSpellChecker::CheckWord(const nsAString &aWord, PRBool *aIsMisspelled, nsStringArray *aSuggestions)
 {
   nsresult result;
   PRBool correct;
   if(!mSpellCheckingEngine)
     return NS_ERROR_NULL_POINTER;
   *aIsMisspelled = PR_FALSE;
-  result = mSpellCheckingEngine->Check(aWord->get(),&correct);
+  result = mSpellCheckingEngine->Check(PromiseFlatString(aWord).get(), &correct);
   if(NS_FAILED(result))
     return result;
   if(!correct){
     if(aSuggestions){
       PRUint32 count,i;
       PRUnichar **words;
-      nsAutoString temp;
       
-      mSpellCheckingEngine->Suggest(aWord->get(),&words,&count);
+      mSpellCheckingEngine->Suggest(PromiseFlatString(aWord).get(), &words, &count);
       for(i=0;i<count;i++){
-        temp.Assign(words[i]);
-        aSuggestions->AppendString(temp);
+        aSuggestions->AppendString(nsDependentString(words[i]));
       }
       NS_FREE_XPCOM_ALLOCATED_POINTER_ARRAY(count, words);
     }
@@ -154,10 +148,12 @@ mozSpellChecker::CheckWord(const nsString *aWord, PRBool *aIsMisspelled, nsStrin
 }
 
 NS_IMETHODIMP 
-mozSpellChecker::Replace(const nsString *aOldWord, const nsString *aNewWord, PRBool aAllOccurrences)
+mozSpellChecker::Replace(const nsAString &aOldWord, const nsAString &aNewWord, PRBool aAllOccurrences)
 {
   if(!mConverter)
     return NS_ERROR_NULL_POINTER;
+
+  nsAutoString newWord(aNewWord); // sigh
 
   if(aAllOccurrences){
     PRUint32 selOffset;
@@ -185,17 +181,17 @@ mozSpellChecker::Replace(const nsString *aOldWord, const nsString *aNewWord, PRB
         do{
           result = mConverter->FindNextWord(str.get(),str.Length(),currOffset,&begin,&end);
           if(NS_SUCCEEDED(result)&&(begin != -1)){
-            if(aOldWord->Equals(Substring(str,begin,end-begin))){
+            if (aOldWord.Equals(Substring(str, begin, end-begin))) {
               // if we are before the current selection point but in the same block
               // move the selection point forwards
               if((currentBlock == startBlock)&&(begin < (PRInt32) selOffset)){
-                selOffset += (aNewWord->Length()-aOldWord->Length());
+                selOffset += (aNewWord.Length() - aOldWord.Length());
                 if(selOffset < 0) selOffset=0;
               }
               mTsDoc->SetSelection(begin, end-begin);
-              mTsDoc->InsertText(aNewWord);
+              mTsDoc->InsertText(&newWord);
               mTsDoc->GetCurrentTextBlock(&str);
-              end += (aNewWord->Length()-aOldWord->Length());  // recursion was cute in GEB, not here.
+              end += (aNewWord.Length() - aOldWord.Length());  // recursion was cute in GEB, not here.
             }
           }
           currOffset = end;
@@ -218,58 +214,57 @@ mozSpellChecker::Replace(const nsString *aOldWord, const nsString *aNewWord, PRB
     }
   }
   else{
-    mTsDoc->InsertText(aNewWord);
+    mTsDoc->InsertText(&newWord);
   }
   return NS_OK;
 }
 
 NS_IMETHODIMP 
-mozSpellChecker::IgnoreAll(const nsString *aWord)
+mozSpellChecker::IgnoreAll(const nsAString &aWord)
 {
   if(mPersonalDictionary){
-    mPersonalDictionary->IgnoreWord(aWord->get());
+    mPersonalDictionary->IgnoreWord(PromiseFlatString(aWord).get());
   }
   return NS_OK;
 }
 
 NS_IMETHODIMP 
-mozSpellChecker::AddWordToPersonalDictionary(const nsString *aWord)
+mozSpellChecker::AddWordToPersonalDictionary(const nsAString &aWord)
 {
   nsresult res;
   PRUnichar empty=0;
-  if(!aWord||!mPersonalDictionary)
+  if (!mPersonalDictionary)
     return NS_ERROR_NULL_POINTER;
-  res = mPersonalDictionary->AddWord(aWord->get(),&empty);
+  res = mPersonalDictionary->AddWord(PromiseFlatString(aWord).get(),&empty);
   return res;
 }
 
 NS_IMETHODIMP 
-mozSpellChecker::RemoveWordFromPersonalDictionary(const nsString *aWord)
+mozSpellChecker::RemoveWordFromPersonalDictionary(const nsAString &aWord)
 {
   nsresult res;
   PRUnichar empty=0;
-  if(!aWord||!mPersonalDictionary)
+  if (!mPersonalDictionary)
     return NS_ERROR_NULL_POINTER;
-  res = mPersonalDictionary->RemoveWord(aWord->get(),&empty);
+  res = mPersonalDictionary->RemoveWord(PromiseFlatString(aWord).get(),&empty);
   return res;
 }
 
 NS_IMETHODIMP 
 mozSpellChecker::GetPersonalDictionary(nsStringArray *aWordList)
 {
-  nsAutoString temp;
-  PRUint32 count,i;
-  PRUnichar **words;
-  
   if(!aWordList || !mPersonalDictionary)
     return NS_ERROR_NULL_POINTER;
-  mPersonalDictionary->GetWordList(&words,&count);
-  for(i=0;i<count;i++){
-    temp.Assign(words[i]);
-    aWordList->AppendString(temp);
-  }
-  NS_FREE_XPCOM_ALLOCATED_POINTER_ARRAY(count, words);
 
+  nsCOMPtr<nsIStringEnumerator> words;
+  mPersonalDictionary->GetWordList(getter_AddRefs(words));
+  
+  PRBool hasMore;
+  nsAutoString word;
+  while (NS_SUCCEEDED(words->HasMore(&hasMore)) && hasMore) {
+    words->GetNext(word);
+    aWordList->AppendString(word);
+  }
   return NS_OK;
 }
 
@@ -293,27 +288,22 @@ mozSpellChecker::GetDictionaryList(nsStringArray *aDictionaryList)
 }
 
 NS_IMETHODIMP 
-mozSpellChecker::GetCurrentDictionary(nsString *aDictionary)
+mozSpellChecker::GetCurrentDictionary(nsAString &aDictionary)
 {
-  NS_ENSURE_ARG_POINTER(aDictionary);
   nsXPIDLString dictname;
-  nsresult res;
-  res=mSpellCheckingEngine->GetDictionary(getter_Copies(dictname));
-  if(NS_SUCCEEDED(res))
-    *aDictionary = dictname;
+  mSpellCheckingEngine->GetDictionary(getter_Copies(dictname));
+  aDictionary = dictname;
   return NS_OK;
 }
 
 NS_IMETHODIMP 
-mozSpellChecker::SetCurrentDictionary(const nsString *aDictionary)
+mozSpellChecker::SetCurrentDictionary(const nsAString &aDictionary)
 {
-  NS_ENSURE_ARG_POINTER(aDictionary);
-
   if(!mSpellCheckingEngine)
     return NS_ERROR_NULL_POINTER;
  
   nsresult res;
-  res = mSpellCheckingEngine->SetDictionary(aDictionary->get());
+  res = mSpellCheckingEngine->SetDictionary(PromiseFlatString(aDictionary).get());
   if(NS_FAILED(res)){
     NS_WARNING("Dictionary load failed");
     return res;

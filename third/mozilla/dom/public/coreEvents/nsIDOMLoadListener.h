@@ -44,13 +44,13 @@
 #include "nsIDOMEventListener.h"
 
 /*
- * Mouse up/down/move event listener
+ * Document load related event listener
  *
  */
 #define NS_IDOMLOADLISTENER_IID \
-{ /* f2b05200-ded5-11d1-bd85-00805f8ae3f4 */ \
-0xf2b05200, 0xded5, 0x11d1, \
-{0xbd, 0x85, 0x00, 0x80, 0x5f, 0x8a, 0xe3, 0xf4} }
+{ /* d1810238-14f8-4cab-9b96-96bedb9de7be */ \
+0xd1810238, 0x14f8, 0x4cab, \
+{0x9b, 0x96, 0x96, 0xbe, 0xdb, 0x9d, 0xe7, 0xbe} }
 
 class nsIDOMLoadListener : public nsIDOMEventListener {
 
@@ -62,6 +62,13 @@ public:
   * @returns whether the event was consumed or ignored. @see nsresult
   */
   NS_IMETHOD Load(nsIDOMEvent* aEvent) = 0;
+
+  /**
+   * Processes a page beforeUnload event
+   * @param aMouseEvent @see nsIDOMEvent.h
+   * @returns whether the event was consumed or ignored. @see nsresult
+   */
+  NS_IMETHOD BeforeUnload(nsIDOMEvent* aEvent) = 0;
 
   /**
    * Processes a page unload event

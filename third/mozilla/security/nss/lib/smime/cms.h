@@ -34,7 +34,7 @@
 /*
  * Interfaces of the CMS implementation.
  *
- * $Id: cms.h,v 1.1.1.2 2003-07-08 17:30:16 rbasch Exp $
+ * $Id: cms.h,v 1.1.1.3 2004-06-30 16:59:08 rbasch Exp $
  */
 
 #ifndef _CMS_H_
@@ -563,9 +563,6 @@ extern SECStatus
 NSS_CMSSignedData_AddSignerInfo(NSSCMSSignedData *sigd,
 				NSSCMSSignerInfo *signerinfo);
 
-extern SECItem *
-NSS_CMSSignedData_GetDigestByAlgTag(NSSCMSSignedData *sigd, SECOidTag algtag);
-
 extern SECStatus
 NSS_CMSSignedData_SetDigests(NSSCMSSignedData *sigd,
 				SECAlgorithmID **digestalgs,
@@ -673,7 +670,7 @@ NSS_CMSSignerInfo_GetSigningCertificate(NSSCMSSignerInfo *signerinfo, CERTCertDB
  *
  * sinfo - signerInfo data for this signer
  *
- * Returns a pointer to allocated memory, which must be freed.
+ * Returns a pointer to allocated memory, which must be freed with PORT_Free.
  * A return value of NULL is an error.
  */
 extern char *

@@ -107,9 +107,9 @@ if(-d "$DEPTH\\stage")
 # The destination cannot be a sub directory of the source
 # pkgcp.pl will get very unhappy
 
-mkdir("$DEPTH\\stage", 775);
+mkdir("$DEPTH\\stage", 0775);
 
-system("perl $cwdPackager\\pkgcp.pl -s $cwdDistWin -d $DEPTH\\stage -f $inConfigFiles\\packages-static -o dos -v");
+system("perl $cwdPackager\\pkgcp.pl -s $cwdDistWin -d $DEPTH\\stage -f $inConfigFiles\\$ENV{WIZ_packagesFile} -o dos -v");
 
 # Consolidate the xpt files
 system("perl $cwdPackager\\xptlink.pl --source \"$cwdDistWin\" --destination \"$DEPTH\\stage\" -o dos --verbose");
@@ -129,7 +129,7 @@ chdir($cwdBuilder);
 # Mozilla-win32-install.exe (a self extracting file) will use the .xpi
 # files from its current directory as well, but it is not a requirement
 # that they exist because it already contains the .xpi files within itself.
-if(system("copy $cwdDistWin\\install\\xpi\\*.* $cwdDistWin\\install"))
+if (system("copy $cwdDistWin\\install\\xpi\\*.* $cwdDistWin\\install"))
 {
   print "Error: copy $cwdDistWin\\install\\xpi\\*.* $cwdDistWin\\install\n";
   exit(1);
@@ -278,7 +278,7 @@ sub GetVersion
 
   $distWinPathName = "dist";
 
-  $fileMozilla = "$depthPath\\$distWinPathName\\bin\\$ENV{WIZ_fileMainExe}";
+  $fileMozilla = "$depthPath\\$distWinPathName\\$ENV{WIZ_distSubdir}\\$ENV{WIZ_fileMainExe}";
   # verify the existance of file
   if(!(-e "$fileMozilla"))
   {
@@ -315,6 +315,9 @@ sub GetVersion
 # installer exe file names. 
 sub ParseInstallerCfg
 {
+  $ENV{WIZ_distSubdir} = "bin";
+  $ENV{WIZ_packagesFile} = "packages-static"; 
+
   open(fpInstallCfg, "$inConfigFiles/installer.cfg") || die "\ncould not open $inConfigFiles/installer.cfg: $!\n";
 
   while($line = <fpInstallCfg>)
@@ -348,11 +351,20 @@ sub ParseInstallerCfg
     elsif ($prop eq "FileMainEXE") {
       $ENV{WIZ_fileMainExe} = $value;
     }
+    elsif ($prop eq "DistSubdir") {
+      $ENV{WIZ_distSubdir} = $value;
+    }
+    elsif ($prop eq "packagesFile") {
+      $ENV{WIZ_packagesFile} = $value;
+    }
     elsif ($prop eq "FileInstallerNETRoot") {
       $ENV{WIZ_fileNetStubRootName} = $value; 
     }
     elsif ($prop eq "ComponentList") {
       $ENV{WIZ_componentList} = $value; 
+    }
+    elsif ($prop eq "LicenseFile") {
+      $ENV{WIZ_licenseFile} = $value;
     }
   }
   

@@ -63,11 +63,10 @@
 #include "nsITextContent.h"
 #include "nsIScrollableViewProvider.h"
 #include "nsIStatefulFrame.h"
+#include "nsIDOMMouseListener.h"
 
-class nsIDOMMouseListener;
 class nsIView;
 class nsStyleContext;
-class nsIHTMLContent;
 class nsIListControlFrame;
 class nsIScrollableView;
 
@@ -131,14 +130,11 @@ public:
   NS_IMETHOD GetFrameName(nsAString& aResult) const;
 #endif
   NS_IMETHOD Destroy(nsIPresContext* aPresContext);
-  NS_IMETHOD FirstChild(nsIPresContext* aPresContext,
-                        nsIAtom*        aListName,
-                        nsIFrame**      aFirstChild) const;
+  virtual nsIFrame* GetFirstChild(nsIAtom* aListName) const;
   NS_IMETHOD SetInitialChildList(nsIPresContext* aPresContext,
                                nsIAtom*        aListName,
                                nsIFrame*       aChildList);
-  NS_IMETHOD GetAdditionalChildListName(PRInt32   aIndex,
-                                        nsIAtom** aListName) const;
+  virtual nsIAtom* GetAdditionalChildListName(PRInt32 aIndex) const;
 
   NS_IMETHOD GetFrameForPoint(nsIPresContext* aPresContext, const nsPoint& aPoint, nsFramePaintLayer aWhichLayer, nsIFrame** aFrame);
 

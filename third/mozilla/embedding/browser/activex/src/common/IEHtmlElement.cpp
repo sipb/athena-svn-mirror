@@ -47,6 +47,12 @@
 #include "IEHtmlElementCollection.h"
 #include "nsIDOMNSHTMLElement.h"
 
+#include "nsIDOMDocumentRange.h"
+#include "nsIDOMRange.h"
+#include "nsIDOMNSRange.h"
+#include "nsIDOMDocumentFragment.h"
+#include "nsIDocumentEncoder.h"
+
 CIEHtmlElement::CIEHtmlElement()
 {
 }
@@ -265,7 +271,33 @@ HRESULT STDMETHODCALLTYPE CIEHtmlElement::get_parentElement(IHTMLElement __RPC_F
         IDispatch *pDisp = reinterpret_cast<IDispatch *>(mParent);
         pDisp->QueryInterface(IID_IHTMLElement, (void **) p);
     }
-
+    else
+    {
+        nsCOMPtr<nsIDOMNode> parentNode;
+        mDOMNode->GetParentNode(getter_AddRefs(parentNode));
+        nsCOMPtr<nsIDOMElement> domElement = do_QueryInterface(parentNode);
+        if (domElement)
+        {
+            CIEHtmlNode *pHtmlNode = NULL;
+            CIEHtmlElementInstance *pHtmlElement = NULL;
+            CIEHtmlElementInstance::FindFromDOMNode(parentNode, &pHtmlNode);
+            if (!pHtmlNode)
+            {
+                CIEHtmlElementInstance::CreateInstance(&pHtmlElement);
+                if (!pHtmlElement)
+                {
+                    NS_ASSERTION(0, "Could not create element");
+                    return E_OUTOFMEMORY;
+                }
+                pHtmlElement->SetDOMNode(parentNode);
+            }
+            else
+            {
+                pHtmlElement = (CIEHtmlElementInstance *) pHtmlNode;
+            }
+            pHtmlElement->QueryInterface(IID_IHTMLElement, (void **) p);
+        }
+    }
     return S_OK;
 }
 
@@ -562,12 +594,73 @@ HRESULT STDMETHODCALLTYPE CIEHtmlElement::get_innerText(BSTR __RPC_FAR *p)
 
 HRESULT STDMETHODCALLTYPE CIEHtmlElement::put_outerHTML(BSTR v)
 {
-    return E_NOTIMPL;
+    nsresult rv;
+    nsCOMPtr<nsIDOMDocument> domDoc;
+    nsCOMPtr<nsIDOMRange> domRange;
+    nsCOMPtr<nsIDOMDocumentFragment> domDocFragment;
+
+    mDOMNode->GetOwnerDocument(getter_AddRefs(domDoc));
+    nsCOMPtr<nsIDOMDocumentRange> domDocRange = do_QueryInterface(domDoc);
+    if (!domDocRange)
+        return E_FAIL;
+    domDocRange->CreateRange(getter_AddRefs(domRange));
+    if (!domRange)
+        return E_FAIL;
+    if (domRange->SetStartBefore(mDOMNode))
+        return E_FAIL;
+    if (domRange->DeleteContents())
+        return E_FAIL;
+    nsAutoString outerHTML(OLE2W(v));
+    nsCOMPtr<nsIDOMNSRange> domNSRange = do_QueryInterface(domRange);
+    rv = domNSRange->CreateContextualFragment(outerHTML, getter_AddRefs(domDocFragment));
+    if (!domDocFragment)
+        return E_FAIL;
+    nsCOMPtr<nsIDOMNode> parentNode;
+    mDOMNode->GetParentNode(getter_AddRefs(parentNode));
+    nsCOMPtr<nsIDOMNode> domNode;
+    parentNode->ReplaceChild(domDocFragment, mDOMNode, getter_AddRefs(domNode));
+
+    return S_OK;
 }
 
 HRESULT STDMETHODCALLTYPE CIEHtmlElement::get_outerHTML(BSTR __RPC_FAR *p)
 {
-    return E_NOTIMPL;
+    if (p == NULL)
+    {
+        return E_INVALIDARG;
+    }
+
+    *p = NULL;
+
+    nsresult rv;
+    nsAutoString outerHTML;
+    nsCOMPtr<nsIDOMDocument> domDoc;
+    nsCOMPtr<nsIDocumentEncoder> docEncoder;
+    nsCOMPtr<nsIDOMRange> domRange;
+
+    mDOMNode->GetOwnerDocument(getter_AddRefs(domDoc));
+    nsCOMPtr<nsIDocument> doc = do_QueryInterface(domDoc);
+    if (!doc)
+        return E_FAIL;
+    docEncoder = do_CreateInstance(NS_DOC_ENCODER_CONTRACTID_BASE "text/html");
+    NS_ENSURE_TRUE(docEncoder, NS_ERROR_FAILURE);
+    docEncoder->Init(doc, NS_LITERAL_STRING("text/html"),
+        nsIDocumentEncoder::OutputEncodeBasicEntities);
+    nsCOMPtr<nsIDOMDocumentRange> domDocRange = do_QueryInterface(domDoc);
+    if (!domDocRange)
+        return E_FAIL;
+    domDocRange->CreateRange(getter_AddRefs(domRange));
+    if (!domRange)
+        return E_FAIL;
+    rv = domRange->SelectNode(mDOMNode);
+    NS_ENSURE_SUCCESS(rv, rv);
+    docEncoder->SetRange(domRange);
+    docEncoder->EncodeToString(outerHTML);
+
+    USES_CONVERSION;
+    *p = SysAllocString(W2COLE(outerHTML.get()));
+
+    return S_OK;
 }
 
 HRESULT STDMETHODCALLTYPE CIEHtmlElement::put_outerText(BSTR v)

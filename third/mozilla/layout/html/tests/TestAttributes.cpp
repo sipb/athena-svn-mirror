@@ -50,31 +50,22 @@
 #include "nsINameSpaceManager.h"
 
 void testAttributes(nsIHTMLContent* content) {
-  nsHTMLValue nullValue;
-
   nsIAtom* sBORDER = NS_NewAtom("border");
-  nsIAtom* sWIDTH = NS_NewAtom("width");
   nsIAtom* sHEIGHT = NS_NewAtom("height");
   nsIAtom* sSRC = NS_NewAtom("src");
   nsIAtom* sBAD = NS_NewAtom("badattribute");
   nsString sempty;
   nsString sfoo_gif(NS_LITERAL_STRING("foo.gif"));
 
-  content->SetHTMLAttribute(sBORDER, nullValue, PR_FALSE);
-  content->SetHTMLAttribute(sWIDTH, nsHTMLValue(5, eHTMLUnit_Pixel), PR_FALSE);
+  content->SetAttr(kNameSpaceID_None, sBORDER, EmptyString(), PR_FALSE);
   content->SetAttribute(kNameSpaceID_None, sHEIGHT, sempty, PR_FALSE);
   content->SetAttribute(kNameSpaceID_None, sSRC, sfoo_gif, PR_FALSE);
 
   nsHTMLValue ret;
   nsresult rv;
   rv = content->GetHTMLAttribute(sBORDER, ret);
-  if ((rv != NS_CONTENT_ATTR_NO_VALUE) || (ret.GetUnit() != eHTMLUnit_Null)) {
+  if (rv == NS_CONTENT_ATTR_NOT_THERE || ret.GetUnit() != eHTMLUnit_String) {
     printf("test 0 failed\n");
-  }
-
-  rv = content->GetHTMLAttribute(sWIDTH, ret);
-  if ((rv != NS_CONTENT_ATTR_HAS_VALUE) || (! (ret == nsHTMLValue(5, eHTMLUnit_Pixel)))) {
-    printf("test 1 failed\n");
   }
 
   rv = content->GetHTMLAttribute(sBAD, ret);
@@ -273,9 +264,6 @@ int main(int argc, char** argv)
   txt->AppendData(tmp);
   NS_RELEASE(txt);
 
-  PRBool canHaveKids;
-  text->CanContainChildren(canHaveKids);
-  NS_ASSERTION(!canHaveKids,"");
   text->SetDocument(myDoc, PR_FALSE, PR_TRUE);
 
 #if 0
@@ -309,8 +297,6 @@ int main(int argc, char** argv)
     printf("Could not create container.\n");
     return -1;
   }
-  container->CanContainChildren(canHaveKids);
-  NS_ASSERTION(canHaveKids,"");
   container->SetDocument(myDoc, PR_FALSE, PR_TRUE);
 
   container->AppendChildTo(text, PR_FALSE, PR_FALSE);

@@ -117,11 +117,6 @@ var FolderPaneController =
 	
 	onEvent: function(event)
 	{
-		// on blur events set the menu item texts back to the normal values
-		if ( event == 'blur' )
-        {
-			goSetMenuValue('cmd_delete', 'valueDefault');
-        }
 	}
 };
 
@@ -197,6 +192,7 @@ var DefaultController =
 			case "cmd_markAsFlagged":
 			case "cmd_markAsJunk":
 			case "cmd_markAsNotJunk":
+      case "cmd_recalculateJunkScore":
       case "cmd_applyFilters":
       case "cmd_runJunkControls":
       case "cmd_deleteJunk":
@@ -210,7 +206,6 @@ var DefaultController =
 			case "cmd_file":
 			case "cmd_emptyTrash":
 			case "cmd_compactFolder":
-			case "cmd_sortByThread":
   	  case "cmd_settingsOffline":
       case "cmd_close":
       case "cmd_selectAll":
@@ -264,17 +259,14 @@ var DefaultController =
           gDBView.getCommandStatus(nsMsgViewCommandType.toggleThreadWatched, enabled, checkStatus);
         return enabled.value;
       case "cmd_createFilterFromPopup":
+      case "cmd_createFilterFromMenu":
         var loadedFolder = GetLoadedMsgFolder();
         if (!(loadedFolder && loadedFolder.server.canHaveFilters))
-          return false;
-      case "cmd_createFilterFromMenu":
-        loadedFolder = GetLoadedMsgFolder();
-        if (!(loadedFolder && loadedFolder.server.canHaveFilters) || !(IsMessageDisplayedInMessagePane()))
-          return false;
+          return false;   // else fall thru
       case "cmd_saveAsFile":
       case "cmd_saveAsTemplate":
 	      if ( GetNumSelectedMessages() > 1)
-          return false;
+          return false;   // else fall thru
       case "cmd_reply":
       case "button_reply":
       case "cmd_replySender":
@@ -291,12 +283,12 @@ var DefaultController =
       case "cmd_print":
       case "cmd_viewPageSource":
       case "cmd_reload":
-	      if ( GetNumSelectedMessages() > 0)
+        if (GetNumSelectedMessages() > 0)
         {
           if (gDBView)
           {
-             gDBView.getCommandStatus(nsMsgViewCommandType.cmdRequiringMsgBody, enabled, checkStatus);
-              return enabled.value;
+            gDBView.getCommandStatus(nsMsgViewCommandType.cmdRequiringMsgBody, enabled, checkStatus);
+            return enabled.value;
           }
         }
         return false;
@@ -315,6 +307,7 @@ var DefaultController =
         return (GetNumSelectedMessages() > 0 );
       case "cmd_markAsJunk":
       case "cmd_markAsNotJunk":
+      case "cmd_recalculateJunkScore":
         // can't do news on junk yet.
         return (GetNumSelectedMessages() > 0 && !isNewsURI(GetFirstSelectedMessage()));
       case "cmd_applyFilters":
@@ -372,7 +365,6 @@ var DefaultController =
       case "cmd_previousFlaggedMsg":
         return IsViewNavigationItemEnabled();
       case "cmd_viewAllMsgs":
-      case "cmd_sortByThread":
       case "cmd_viewUnreadMsgs":
       case "cmd_viewThreadsWithUnread":
       case "cmd_viewWatchedThreadsWithUnread":
@@ -469,10 +461,22 @@ var DefaultController =
         break;// This does nothing because the createfilter is invoked from the popupnode oncommand.
 			case "button_delete":
 			case "cmd_delete":
+        // if the user deletes a message before its mark as read timer goes off, we should mark it as read
+        // this ensures that we clear the biff indicator from the system tray when the user deletes the new message
+        if (gMarkViewedMessageAsReadTimer) 
+        {
+          MarkCurrentMessageAsRead();
+          ClearPendingReadTimer();
+        }
         SetNextMessageAfterDelete();
         gDBView.doCommand(nsMsgViewCommandType.deleteMsg);
 				break;
 			case "cmd_shiftDelete":
+        if (gMarkViewedMessageAsReadTimer) 
+        {
+          MarkCurrentMessageAsRead();
+          ClearPendingReadTimer();
+        }
         SetNextMessageAfterDelete();
         gDBView.doCommand(nsMsgViewCommandType.deleteNoTrash);
 				break;
@@ -504,9 +508,6 @@ var DefaultController =
 				break;
 			case "cmd_previousFlaggedMsg":
 				MsgPreviousFlaggedMessage();
-				break;
-			case "cmd_sortByThread":
-				MsgSortByThread();
 				break;
 			case "cmd_viewAllMsgs":
       case "cmd_viewThreadsWithUnread":
@@ -603,6 +604,9 @@ var DefaultController =
 			case "cmd_markAsNotJunk":
         JunkSelectedMessages(false);
 				return;
+      case "cmd_recalculateJunkScore":
+        analyzeMessagesForJunk();
+        return;
       case "cmd_applyFilters":
         MsgApplyFilters(null);
         return;
@@ -669,7 +673,6 @@ var DefaultController =
 		// on blur events set the menu item texts back to the normal values
 		if ( event == 'blur' )
         {
-			goSetMenuValue('cmd_delete', 'valueDefault');
             goSetMenuValue('cmd_undo', 'valueDefault');
             goSetMenuValue('cmd_redo', 'valueDefault');
         }

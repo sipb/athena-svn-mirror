@@ -23,6 +23,7 @@
 #ifndef nsPrintSettingsImpl_h__
 #define nsPrintSettingsImpl_h__
 
+#include "nsComObsolete.h"
 #include "nsIPrintSettings.h"  
 #include "nsMargin.h"  
 #include "nsString.h"
@@ -33,6 +34,10 @@
 //*****************************************************************************
 //***    nsPrintSettings
 //*****************************************************************************
+
+#undef  IMETHOD_VISIBILITY
+#define IMETHOD_VISIBILITY NS_VISIBILITY_DEFAULT
+
 class NS_GFX nsPrintSettings : public nsIPrintSettings
 {
 public:
@@ -111,6 +116,7 @@ protected:
 
 };
 
-
+#undef  IMETHOD_VISIBILITY
+#define IMETHOD_VISIBILITY NS_VISIBILITY_HIDDEN
 
 #endif /* nsPrintSettings_h__ */

@@ -104,9 +104,8 @@ public:
   PRPackedBool mLoading;             // Are we still waiting for a load to complete?
   PRPackedBool mWasPending;          // Processed immediately or pending
   PRPackedBool mIsInline;            // Is the script inline or loaded?
-  //  nsSharableString mScriptText;  // Holds script for loaded scripts
-  nsString mScriptText;
-  const char* mJSVersion;      // We don't own this string
+  nsString mScriptText;              // Holds script for loaded scripts
+  const char* mJSVersion;            // We don't own this string
   nsCOMPtr<nsIURI> mURI;
   PRInt32 mLineNo;
 };
@@ -167,7 +166,7 @@ nsScriptLoader::~nsScriptLoader()
   for (PRInt32 i = 0; i < count; i++) {
     nsScriptLoadRequest* req = mPendingRequests[i];
     if (req) {
-      req->FireScriptAvailable(NS_ERROR_ABORT, NS_LITERAL_STRING(""));
+      req->FireScriptAvailable(NS_ERROR_ABORT, EmptyString());
     }
   }
 
@@ -363,16 +362,13 @@ nsScriptLoader::ProcessScriptElement(nsIDOMHTMLScriptElement *aElement,
   nsIScriptGlobalObject *globalObject = mDocument->GetScriptGlobalObject();
   if (globalObject)
   {
-    nsCOMPtr<nsIScriptContext> context;
-    if (NS_SUCCEEDED(globalObject->GetContext(getter_AddRefs(context)))
-        && context) {
-      PRBool scriptsEnabled = PR_TRUE;
-      context->GetScriptsEnabled(&scriptsEnabled);
-      // If scripts aren't enabled in the current context, there's no
-      // point in going on.
-      if (!scriptsEnabled) {
-        return FireErrorNotification(NS_ERROR_NOT_AVAILABLE, aElement, aObserver);
-      }
+    nsIScriptContext *context = globalObject->GetContext();
+
+    // If scripts aren't enabled in the current context, there's no
+    // point in going on.
+    if (context && !context->GetScriptsEnabled()) {
+      return FireErrorNotification(NS_ERROR_NOT_AVAILABLE, aElement,
+                                   aObserver);
     }
   }
 
@@ -429,12 +425,12 @@ nsScriptLoader::ProcessScriptElement(nsIDOMHTMLScriptElement *aElement,
   // Check to see if we have a src attribute.
   aElement->GetSrc(src);
   if (!src.IsEmpty()) {
-    nsCOMPtr<nsIURI> baseURI, scriptURI;
+    nsCOMPtr<nsIURI> scriptURI;
 
     // Use the SRC attribute value to load the URL
     nsCOMPtr<nsIContent> content(do_QueryInterface(aElement));
     NS_ASSERTION(content, "nsIDOMHTMLScriptElement not implementing nsIContent");
-    content->GetBaseURL(getter_AddRefs(baseURI));
+    nsCOMPtr<nsIURI> baseURI = content->GetBaseURI();
     rv = NS_NewURI(getter_AddRefs(scriptURI), src, nsnull, baseURI);
 
     if (NS_FAILED(rv)) {
@@ -442,7 +438,7 @@ nsScriptLoader::ProcessScriptElement(nsIDOMHTMLScriptElement *aElement,
     }
 
     // Check that the containing page is allowed to load this URI.
-    nsIURI *docURI = mDocument->GetDocumentURL();
+    nsIURI *docURI = mDocument->GetDocumentURI();
     if (!docURI) {
       return FireErrorNotification(NS_ERROR_UNEXPECTED, aElement, aObserver);
     }
@@ -476,12 +472,7 @@ nsScriptLoader::ProcessScriptElement(nsIDOMHTMLScriptElement *aElement,
       nsCOMPtr<nsILoadGroup> loadGroup = mDocument->GetDocumentLoadGroup();
       nsCOMPtr<nsIStreamLoader> loader;
 
-      nsCOMPtr<nsIDocShell> docshell;
-      rv = globalObject->GetDocShell(getter_AddRefs(docshell));
-      if (NS_FAILED(rv)) {
-        mPendingRequests.RemoveObject(request);
-        return FireErrorNotification(rv, aElement, aObserver);
-      }
+      nsIDocShell *docshell = globalObject->GetDocShell();
 
       nsCOMPtr<nsIInterfaceRequestor> prompter(do_QueryInterface(docshell));
 
@@ -496,7 +487,7 @@ nsScriptLoader::ProcessScriptElement(nsIDOMHTMLScriptElement *aElement,
           httpChannel->SetRequestHeader(NS_LITERAL_CSTRING("Accept"),
                                         NS_LITERAL_CSTRING("*/*"),
                                         PR_FALSE);
-          httpChannel->SetReferrer(mDocument->GetDocumentURL());
+          httpChannel->SetReferrer(mDocument->GetDocumentURI());
         }
         rv = NS_NewStreamLoader(getter_AddRefs(loader), channel, this, request);
       }
@@ -508,7 +499,7 @@ nsScriptLoader::ProcessScriptElement(nsIDOMHTMLScriptElement *aElement,
   } else {
     request->mLoading = PR_FALSE;
     request->mIsInline = PR_TRUE;
-    request->mURI = mDocument->GetDocumentURL();
+    request->mURI = mDocument->GetDocumentURI();
 
     nsCOMPtr<nsIScriptElement> scriptElement(do_QueryInterface(aElement));
     if (scriptElement) {
@@ -545,7 +536,7 @@ nsScriptLoader::FireErrorNotification(nsresult aResult,
       observer->ScriptAvailable(aResult, aElement, 
                                 PR_TRUE, PR_FALSE,
                                 nsnull, 0,
-                                NS_LITERAL_STRING(""));
+                                EmptyString());
     }
   }
 
@@ -553,7 +544,7 @@ nsScriptLoader::FireErrorNotification(nsresult aResult,
     aObserver->ScriptAvailable(aResult, aElement, 
                                PR_TRUE, PR_FALSE,
                                nsnull, 0,
-                               NS_LITERAL_STRING(""));
+                               EmptyString());
   }
 
   return aResult;
@@ -636,9 +627,11 @@ nsScriptLoader::EvaluateScript(nsScriptLoadRequest* aRequest,
   nsIScriptGlobalObject *globalObject = mDocument->GetScriptGlobalObject();
   NS_ENSURE_TRUE(globalObject, NS_ERROR_FAILURE);
 
-  nsCOMPtr<nsIScriptContext> context;
-  rv = globalObject->GetContext(getter_AddRefs(context));
-  if (NS_FAILED(rv) || !context) {
+  // Make sure context is a strong reference since we access it after
+  // we've executed a script, which may cause all other references to
+  // the context to go away.
+  nsCOMPtr<nsIScriptContext> context = globalObject->GetContext();
+  if (!context) {
     return NS_ERROR_FAILURE;
   }
 
@@ -656,7 +649,7 @@ nsScriptLoader::EvaluateScript(nsScriptLoadRequest* aRequest,
       return rv;
     }
   }
-  
+
   context->SetProcessingScriptTag(PR_TRUE);
 
   PRBool isUndefined;
@@ -738,7 +731,7 @@ nsScriptLoader::OnStreamComplete(nsIStreamLoader* aLoader,
 
   if (NS_FAILED(aStatus)) {
     mPendingRequests.RemoveObject(request);
-    FireScriptAvailable(aStatus, request, NS_LITERAL_STRING(""));
+    FireScriptAvailable(aStatus, request, EmptyString());
     ProcessPendingReqests();
     return NS_OK;
   }
@@ -748,7 +741,7 @@ nsScriptLoader::OnStreamComplete(nsIStreamLoader* aLoader,
   if (!mDocument) {
     mPendingRequests.RemoveObject(request);
     FireScriptAvailable(NS_ERROR_NOT_AVAILABLE, request, 
-                        NS_LITERAL_STRING(""));
+                        EmptyString());
     ProcessPendingReqests();
     return NS_OK;
   }
@@ -765,7 +758,7 @@ nsScriptLoader::OnStreamComplete(nsIStreamLoader* aLoader,
     if (NS_SUCCEEDED(rv) && !requestSucceeded) {
       mPendingRequests.RemoveObject(request);
       FireScriptAvailable(NS_ERROR_NOT_AVAILABLE, request, 
-                          NS_LITERAL_STRING(""));
+                          EmptyString());
       ProcessPendingReqests();
       return NS_OK;
     }
@@ -812,6 +805,11 @@ nsScriptLoader::OnStreamComplete(nsIStreamLoader* aLoader,
     if (NS_SUCCEEDED(rv) && charsetConv) {
       rv = charsetConv->GetUnicodeDecoder(characterSet.get(),
                                           getter_AddRefs(unicodeDecoder));
+      if (NS_FAILED(rv)) {
+        // fall back to ISO-8859-1 if charset is not supported. (bug 230104)
+        rv = charsetConv->GetUnicodeDecoderRaw("ISO-8859-1",
+                                               getter_AddRefs(unicodeDecoder));
+      }
     }
 
     // converts from the charset to unicode
@@ -820,10 +818,10 @@ nsScriptLoader::OnStreamComplete(nsIStreamLoader* aLoader,
 
       rv = unicodeDecoder->GetMaxLength(string, stringLen, &unicodeLength);
       if (NS_SUCCEEDED(rv)) {
-        typedef nsSharedBufferHandle<PRUnichar>* HandlePtr;
-        typedef nsAString* StrPtr;
-        HandlePtr handle = NS_AllocateContiguousHandleWithData(HandlePtr(0), NS_STATIC_CAST(PRUint32, unicodeLength+1), StrPtr(0));
-        PRUnichar *ustr = (PRUnichar *)handle->DataStart();
+        nsString tempStr;
+        tempStr.SetLength(unicodeLength);
+        PRUnichar *ustr;
+        tempStr.BeginWriting(ustr);
         
         PRInt32 consumedLength = 0;
         PRInt32 originalLength = stringLen;
@@ -846,8 +844,7 @@ nsScriptLoader::OnStreamComplete(nsIStreamLoader* aLoader,
           convertedLength += unicodeLength;
           unicodeLength = bufferLength - convertedLength;
         } while (NS_FAILED(rv) && (originalLength > consumedLength) && (bufferLength > convertedLength));
-        handle->DataEnd(handle->DataStart() + convertedLength);
-        nsSharableString tempStr(handle);
+        tempStr.SetLength(convertedLength);
         request->mScriptText = tempStr;
       }
     }
@@ -856,7 +853,7 @@ nsScriptLoader::OnStreamComplete(nsIStreamLoader* aLoader,
                  "Could not convert external JavaScript to Unicode!");
     if (NS_FAILED(rv)) {
       mPendingRequests.RemoveObject(request);
-      FireScriptAvailable(rv, request, NS_LITERAL_STRING(""));
+      FireScriptAvailable(rv, request, EmptyString());
       ProcessPendingReqests();
       return NS_OK;
     }
@@ -876,7 +873,7 @@ nsScriptLoader::OnStreamComplete(nsIStreamLoader* aLoader,
           mDocument->SetPrincipal(newPrincipal);
         } else {
           mPendingRequests.RemoveObject(request);
-          FireScriptAvailable(rv, request, NS_LITERAL_STRING(""));
+          FireScriptAvailable(rv, request, EmptyString());
           ProcessPendingReqests();
           return NS_OK;
         }

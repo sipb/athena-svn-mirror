@@ -59,6 +59,9 @@ public:
 
   NS_IMETHOD  Init(nsNativeWidget aNativeWidget);  
 
+  /* The following line tells the compiler that we are using the parent class'
+     functions, unless explicitly overridden.  Avoids an ugly warning */
+  using DeviceContextImpl::CreateRenderingContext;
   NS_IMETHOD  CreateRenderingContext(nsIRenderingContext *&aContext);
   NS_IMETHOD  SupportsNativeWidgets(PRBool &aSupportsWidgets);
 
@@ -69,7 +72,6 @@ public:
 
   NS_IMETHOD 	CheckFontExistence(const nsString& aFontName);
   NS_IMETHOD 	GetDepth(PRUint32& aDepth);
-  NS_IMETHOD 	ConvertPixel(nscolor aColor, PRUint32 & aPixel);
 
   NS_IMETHOD 	GetDeviceSurfaceDimensions(PRInt32 &aWidth, PRInt32 &aHeight);
   NS_IMETHOD  GetRect(nsRect &aRect);

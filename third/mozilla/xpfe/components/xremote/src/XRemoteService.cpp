@@ -1,3 +1,6 @@
+/* -*- Mode: C++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
+/* vim:expandtab:shiftwidth=4:tabstop=4:
+ */
 /*
  * The contents of this file are subject to the Mozilla Public
  * License Version 1.1 (the "License"); you may not use this file
@@ -44,11 +47,14 @@
 #include <nsIDocShellTreeOwner.h>
 #include <nsIURILoader.h>
 #include <nsCURILoader.h>
+#include <nsIURIFixup.h>
+#include <nsCDefaultURIFixup.h>
 #include <nsIURI.h>
 #include <nsNetUtil.h>
 #include <nsIWindowMediator.h>
 #include <nsCExternalHandlerService.h>
 #include <nsIExternalProtocolService.h>
+#include <nsIProfile.h>
 
 NS_DEFINE_CID(kWindowCID, NS_WINDOW_CID);
 
@@ -74,12 +80,15 @@ XRemoteService::~XRemoteService()
 NS_IMPL_ISUPPORTS2(XRemoteService, nsIXRemoteService, nsIObserver)
 
 NS_IMETHODIMP
-XRemoteService::Startup(void)
+XRemoteService::Startup(const char *aProgram)
 {
   // We have to destroy the proxy window before the event loop stops running.
   nsCOMPtr<nsIObserverService> obsServ =
     do_GetService("@mozilla.org/observer-service;1");
   obsServ->AddObserver(this, "quit-application", PR_FALSE);
+  obsServ->AddObserver(this, "profile-after-change", PR_FALSE);
+
+  mProgram.Assign(aProgram);
 
   mRunning = PR_TRUE;
   if (mNumWindows == 0)
@@ -99,7 +108,7 @@ NS_IMETHODIMP
 XRemoteService::Observe(nsISupports *aSubject, const char *aTopic,
                         const PRUnichar *aData)
 {
-  if (!nsCRT::strcmp(aTopic, "quit-application")) {
+  if (!strcmp(aTopic, "quit-application")) {
     Shutdown();
   } else {
     NS_NOTREACHED("unexpected topic");
@@ -349,15 +358,8 @@ XRemoteService::AddBrowserInstance(nsIDOMWindowInternal *aBrowser)
     return NS_ERROR_FAILURE;
   }
 
-  nsCOMPtr<nsIDocShell> docShell;
-  scriptObject->GetDocShell(getter_AddRefs(docShell));
-  if (!docShell) {
-    NS_WARNING("Failed to get docshell object for browser instance");
-    return NS_ERROR_FAILURE;
-  }
-
   nsCOMPtr<nsIBaseWindow> baseWindow;
-  baseWindow = do_QueryInterface(docShell);
+  baseWindow = do_QueryInterface(scriptObject->GetDocShell());
   if (!baseWindow) {
     NS_WARNING("Failed to get base window for browser instance");
     return NS_ERROR_FAILURE;
@@ -391,8 +393,13 @@ XRemoteService::AddBrowserInstance(nsIDOMWindowInternal *aBrowser)
     return NS_ERROR_FAILURE;
   }
 
+
+  nsCAutoString profile;
+  GetProfileName(profile);
+
   nsresult rv;
-  rv = widgetHelper->EnableXRemoteCommands(mainWidget);
+  rv = widgetHelper->EnableXRemoteCommands(mainWidget, profile.get(),
+                                           mProgram.get());
   if (NS_FAILED(rv)) {
     NS_WARNING("failed to enable x remote commands for widget");
     return rv;
@@ -482,7 +489,11 @@ XRemoteService::CreateProxyWindow(void)
     return;
   }
 
-  rv = widgetHelper->EnableXRemoteCommands(mProxyWindow);
+  nsCAutoString profile;
+  GetProfileName(profile);
+
+  rv = widgetHelper->EnableXRemoteCommands(mProxyWindow, profile.get(),
+                                           mProgram.get());
   if (NS_FAILED(rv)) {
     NS_WARNING("failed to enable x remote commands for proxy window");
     return;
@@ -667,15 +678,14 @@ XRemoteService::MayOpenURL(const nsCString &aURL)
       scheme = NS_LITERAL_CSTRING("about");
     }
     else {
-      nsCOMPtr<nsIIOService> ios = do_GetIOService();
-      if (ios) {
-        ios->ExtractScheme(aURL, scheme);
-        if (scheme.IsEmpty()) {
-          // could not parse out a scheme.  perhaps this is a file path.
-          nsCOMPtr<nsILocalFile> file;
-          NS_NewNativeLocalFile(aURL, PR_FALSE, getter_AddRefs(file));
-          if (file)
-            scheme = NS_LITERAL_CSTRING("file");
+      nsCOMPtr<nsIURIFixup> fixup = do_GetService(NS_URIFIXUP_CONTRACTID);
+      if (fixup) {
+        nsCOMPtr<nsIURI> uri;
+        nsresult rv =
+          fixup->CreateFixupURI(aURL, nsIURIFixup::FIXUP_FLAGS_MAKE_ALTERNATE_URI,
+                                getter_AddRefs(uri));
+        if (NS_SUCCEEDED(rv) && uri) {
+          uri->GetScheme(scheme);
         }
       }
     }
@@ -830,15 +840,13 @@ XRemoteService::OpenURL(nsCString &aArgument,
       return NS_ERROR_FAILURE;
     }
 
-    nsCOMPtr<nsIDocShell> docShell;
-    scriptObject->GetDocShell(getter_AddRefs(docShell));
+    nsCOMPtr<nsIDocShell> docShell = scriptObject->GetDocShell();
     if (!docShell) {
       NS_WARNING("Failed to get docshell object for browser instance");
       return NS_ERROR_FAILURE;
     }
 
-    nsCOMPtr<nsIDocShellTreeItem> item;
-    item = do_QueryInterface(docShell);
+    nsCOMPtr<nsIDocShellTreeItem> item(do_QueryInterface(docShell));
     if (!item) {
       NS_WARNING("failed to get doc shell tree item for browser instance");
       return NS_ERROR_FAILURE;
@@ -1008,6 +1016,24 @@ XRemoteService::FindWindow(const PRUnichar *aType,
     return NS_ERROR_FAILURE;
 
   return mediator->GetMostRecentWindow(aType, _retval);
+}
+
+void
+XRemoteService::GetProfileName(nsACString &aProfile)
+{
+  // Get the current profile name and save it.
+  nsresult rv;
+  nsCOMPtr<nsIProfile> profileMgr;
+  profileMgr = do_GetService(NS_PROFILE_CONTRACTID, &rv);
+  if (!profileMgr)
+    return;
+
+  PRUnichar *name;
+  rv = profileMgr->GetCurrentProfile(&name);
+  if (!name)
+    return;
+
+  LossyCopyUTF16toASCII(name, aProfile);
 }
 
 NS_GENERIC_FACTORY_CONSTRUCTOR(XRemoteService)

@@ -43,7 +43,6 @@
 #include "nsIDOMMouseListener.h"
 #include "nsIAnonymousContentCreator.h"
 #include "nsCOMPtr.h"
-#include "nsIHTMLContent.h"
 
 #include "nsTextControlFrame.h"
 #include "nsFormControlHelper.h"
@@ -89,6 +88,9 @@ public:
                     nsHTMLReflowMetrics&     aDesiredSize,
                     const nsHTMLReflowState& aReflowState,
                     nsReflowStatus&          aStatus);
+
+  virtual void RemovedAsPrimaryFrame(nsIPresContext* aPresContext);
+
   NS_IMETHOD Destroy(nsIPresContext *aPresContext);
 
 #ifdef NS_DEBUG
@@ -230,8 +232,16 @@ private:
   void SyncAttr(PRInt32 aNameSpaceID, nsIAtom* aAttribute,
                 PRBool aWhichControls);
 
+  /**
+   * We call this when we are being destroyed or removed from the PFM.
+   * @param aPresContext the current pres context
+   */
+  void PreDestroy(nsIPresContext* aPresContext);
+
   NS_IMETHOD_(nsrefcnt) AddRef() { return NS_OK; }
   NS_IMETHOD_(nsrefcnt) Release() { return NS_OK; }
+
+  PRBool mDidPreDestroy; // has PreDestroy been called
 };
 
 #endif

@@ -48,8 +48,13 @@ which is an event with display information added to it is included here as well.
 #include "nsCOMPtr.h"
 #include "plbase64.h"
 #include "nsComponentManagerUtils.h"
+#ifdef MOZ_MAIL_NEWS
 #include "nsIAbCard.h"
 #include "nsIMsgAttachment.h"
+#endif
+#include "nsIPrefBranch.h"
+#include "nsIPrefService.h"
+#include "nsIServiceManager.h"
 
 #define strcasecmp strcmp
 
@@ -291,6 +296,7 @@ oeICalEventImpl::oeICalEventImpl()
     m_recurweekdays = 0;
     m_recurweeknumber = 0;
     m_lastalarmack = icaltime_null_time();
+    m_lastmodified = icaltime_null_time();
     m_duration = icaldurationtype_null_duration();
     SetAlarmUnits( DEFAULT_ALARM_UNITS );
     SetRecurUnits( DEFAULT_RECUR_UNITS );
@@ -298,6 +304,26 @@ oeICalEventImpl::oeICalEventImpl()
     NS_NewISupportsArray(getter_AddRefs(m_attachments));
     NS_NewISupportsArray(getter_AddRefs(m_contacts));
     m_calendar=nsnull;
+
+    //Some defaults may have been changed in the prefs
+    nsCOMPtr<nsIPrefBranch> prefBranch = do_GetService(NS_PREFSERVICE_CONTRACTID, &rv);
+    if ( NS_SUCCEEDED(rv) && prefBranch ) {
+        nsXPIDLCString tmpstr;
+        PRInt32 tmpint;
+        rv = prefBranch->GetIntPref("calendar.alarms.onforevents", &tmpint);
+        if (NS_SUCCEEDED(rv))
+            m_hasalarm = tmpint;
+        rv = prefBranch->GetIntPref("calendar.alarms.eventalarmlen", &tmpint);
+        if (NS_SUCCEEDED(rv))
+            m_alarmlength = tmpint;
+        rv = prefBranch->GetCharPref("calendar.alarms.eventalarmunit", getter_Copies(tmpstr));
+        if (NS_SUCCEEDED(rv))
+            SetAlarmUnits( PromiseFlatCString( tmpstr ).get() );
+        rv = prefBranch->GetCharPref("calendar.alarms.emailaddress", getter_Copies(tmpstr));
+        if (NS_SUCCEEDED(rv)) {
+            SetAlarmEmailAddress( PromiseFlatCString( tmpstr ).get() );
+        }
+    }
 }
 
 oeICalEventImpl::~oeICalEventImpl()
@@ -906,6 +932,38 @@ NS_IMETHODIMP oeICalEventImpl::SetRecurForever(PRBool aNewVal)
     return NS_OK;
 }
 
+NS_IMETHODIMP oeICalEventImpl::GetLastModified(PRTime *aRetVal)
+{
+#ifdef ICAL_DEBUG_ALL
+    printf( "GetLastModified()\n" );
+#endif
+    if( icaltime_is_null_time( m_lastmodified ) )
+        return NS_ERROR_NOT_INITIALIZED;
+
+    *aRetVal = ConvertToPrtime( m_lastmodified );
+    return NS_OK;
+}
+NS_IMETHODIMP oeICalEventImpl::UpdateLastModified()
+{
+#ifdef ICAL_DEBUG_ALL
+    printf( "UpdateLastModified()\n" );
+#endif
+
+    PRInt64 nowinusec = PR_Now();
+    PRExplodedTime ext;
+    PR_ExplodeTime( nowinusec, PR_GMTParameters, &ext);
+    m_lastmodified = icaltime_null_time();
+    m_lastmodified.year = ext.tm_year;
+    m_lastmodified.month = ext.tm_month + 1;
+    m_lastmodified.day = ext.tm_mday;
+    m_lastmodified.hour = ext.tm_hour;
+    m_lastmodified.minute = ext.tm_min;
+    m_lastmodified.second = ext.tm_sec;
+    m_lastmodified.is_utc = true;
+
+    return NS_OK;
+}
+
 NS_IMETHODIMP oeICalEventImpl::GetLastAlarmAck(PRTime *aRetVal)
 {
 #ifdef ICAL_DEBUG_ALL
@@ -989,7 +1047,7 @@ NS_IMETHODIMP oeICalEventImpl::GetPreviousOccurrence( PRTime beforethis, PRTime 
 //#endif
 //                continue;
                 next.day = 0;
-                icaltime_normalize( next );
+                next = icaltime_normalize( next );
             }
             PRTime nextinms = ConvertToPrtime( next );
             if( LL_CMP(nextinms, < ,beforethis) && !IsExcepted( nextinms ) ) {
@@ -1081,7 +1139,7 @@ icaltimetype oeICalEventImpl::GetNextRecurrence( icaltimetype begin, bool *isbeg
                 //#endif
                 //continue;
                 next.day = 0;
-                icaltime_normalize( next );
+                next = icaltime_normalize( next );
             }
 
             if( icaltime_compare( next, begin ) > 0 ) {
@@ -1493,6 +1551,7 @@ NS_IMETHODIMP oeICalEventImpl::AddAttachment(nsIMsgAttachment *attachment)
 #ifdef ICAL_DEBUG
     printf( "oeICalEventImpl::AddAttachment()\n" );
 #endif
+#ifdef MOZ_MAIL_NEWS
     PRUint32 i;
     PRUint32 attachmentCount = 0;
     m_attachments->Count(&attachmentCount);
@@ -1512,6 +1571,9 @@ NS_IMETHODIMP oeICalEventImpl::AddAttachment(nsIMsgAttachment *attachment)
     }
 
     return m_attachments->InsertElementAt(attachment, attachmentCount);
+#else
+    return NS_ERROR_NOT_IMPLEMENTED;
+#endif
 }
 
 NS_IMETHODIMP oeICalEventImpl::RemoveAttachment(nsIMsgAttachment *attachment)
@@ -1519,6 +1581,7 @@ NS_IMETHODIMP oeICalEventImpl::RemoveAttachment(nsIMsgAttachment *attachment)
 #ifdef ICAL_DEBUG
     printf( "oeICalEventImpl::RemoveAttachment()\n" );
 #endif
+#ifdef MOZ_MAIL_NEWS
     PRUint32 i;
     PRUint32 attachmentCount = 0;
     m_attachments->Count(&attachmentCount);
@@ -1540,6 +1603,9 @@ NS_IMETHODIMP oeICalEventImpl::RemoveAttachment(nsIMsgAttachment *attachment)
     }
 
     return NS_OK;
+#else
+    return NS_ERROR_NOT_IMPLEMENTED;
+#endif
 }
 
 NS_IMETHODIMP oeICalEventImpl::RemoveAttachments()
@@ -1570,6 +1636,7 @@ NS_IMETHODIMP oeICalEventImpl::AddContact(nsIAbCard *contact)
 #ifdef ICAL_DEBUG
     printf( "oeICalEventImpl::AddContact()\n" );
 #endif
+#ifdef MOZ_MAIL_NEWS
     PRUint32 i;
     PRUint32 contactCount = 0;
     m_contacts->Count(&contactCount);
@@ -1589,6 +1656,9 @@ NS_IMETHODIMP oeICalEventImpl::AddContact(nsIAbCard *contact)
     }
 
     return m_contacts->InsertElementAt(contact, contactCount);
+#else
+    return NS_ERROR_NOT_IMPLEMENTED;
+#endif
 }
 
 NS_IMETHODIMP oeICalEventImpl::RemoveContact(nsIAbCard *contact)
@@ -1596,6 +1666,7 @@ NS_IMETHODIMP oeICalEventImpl::RemoveContact(nsIAbCard *contact)
 #ifdef ICAL_DEBUG
     printf( "oeICalEventImpl::RemoveContact()\n" );
 #endif
+#ifdef MOZ_MAIL_NEWS
     PRUint32 i;
     PRUint32 contactCount = 0;
     m_contacts->Count(&contactCount);
@@ -1617,6 +1688,9 @@ NS_IMETHODIMP oeICalEventImpl::RemoveContact(nsIAbCard *contact)
     }
 
     return NS_OK;
+#else
+    return NS_ERROR_NOT_IMPLEMENTED;
+#endif
 }
 
 NS_IMETHODIMP oeICalEventImpl::RemoveContacts()
@@ -1624,6 +1698,7 @@ NS_IMETHODIMP oeICalEventImpl::RemoveContacts()
 #ifdef ICAL_DEBUG
     printf( "oeICalEventImpl::RemoveContacts()\n" );
 #endif
+#ifdef MOZ_MAIL_NEWS
     PRUint32 i;
     PRUint32 contactCount = 0;
     m_contacts->Count(&contactCount);
@@ -1632,6 +1707,9 @@ NS_IMETHODIMP oeICalEventImpl::RemoveContacts()
         m_contacts->DeleteElementAt(0);
 
     return NS_OK;
+#else
+    return NS_ERROR_NOT_IMPLEMENTED;
+#endif
 }
 
 NS_IMETHODIMP oeICalEventImpl::SetDuration(PRBool is_negative, PRUint16 weeks, PRUint16 days, PRUint16 hours, PRUint16 minutes, PRUint16 seconds)
@@ -2091,8 +2169,6 @@ bool oeICalEventImpl::ParseIcalComponent( icalcomponent *comp )
             } else {
                 if( m_type == ICAL_VEVENT_COMPONENT && !icaltime_is_null_time( m_start->m_datetime ) ) {
                     m_end->m_datetime = m_start->m_datetime;
-                    m_end->SetHour( 23 );
-                    m_end->SetMinute( 59 );
                 } else {
                     m_end->m_datetime = icaltime_null_time();
                 }
@@ -2110,10 +2186,15 @@ bool oeICalEventImpl::ParseIcalComponent( icalcomponent *comp )
     prop = icalcomponent_get_first_property( vevent, ICAL_DTSTAMP_PROPERTY );
     if ( prop != 0) {
         m_stamp->m_datetime = icalproperty_get_dtstamp( prop );
-    } else {
-        m_stamp->m_datetime = icaltime_null_time();
     }
 
+    //lastmodifed
+    prop = icalcomponent_get_first_property( vevent, ICAL_LASTMODIFIED_PROPERTY );
+    if ( prop != 0) {
+        m_lastmodified = icalproperty_get_dtstamp( prop );
+    } else {
+        m_lastmodified = icaltime_null_time();
+    }
 
     // scan for X- properties
 
@@ -2228,6 +2309,7 @@ bool oeICalEventImpl::ParseIcalComponent( icalcomponent *comp )
         }
     }
 
+#ifdef MOZ_MAIL_NEWS
     //attachments
     for( prop = icalcomponent_get_first_property( vevent, ICAL_X_PROPERTY );
         prop != 0 ;
@@ -2246,7 +2328,9 @@ bool oeICalEventImpl::ParseIcalComponent( icalcomponent *comp )
             }
         }
     }
+#endif
 
+#ifdef MOZ_MAIL_NEWS
     //contacts
     for(prop = icalcomponent_get_first_property( vevent, ICAL_CONTACT_PROPERTY );
         prop != 0 ;
@@ -2261,6 +2345,7 @@ bool oeICalEventImpl::ParseIcalComponent( icalcomponent *comp )
             AddContact( contact );
         }
     }
+#endif
 
     return true;
 }
@@ -2426,9 +2511,8 @@ icalcomponent* oeICalEventImpl::AsIcalComponent()
 
     //Create enddate if does not exist
     if( icaltime_is_null_time( m_end->m_datetime ) && !icaltime_is_null_time( m_start->m_datetime ) ) {
-        //Set to the same as start date 23:59
+        //Set to the same as start date
         m_end->m_datetime = m_start->m_datetime;
-        m_end->SetHour( 23 ); m_end->SetMinute( 59 );
     }
 
     //recurunits
@@ -2644,9 +2728,15 @@ icalcomponent* oeICalEventImpl::AsIcalComponent()
     if( starttzid )
         nsMemory::Free( starttzid );
 
+    //stampdate
     if( m_stamp && !icaltime_is_null_time( m_stamp->m_datetime ) ) {
-        //stampdate
         prop = icalproperty_new_dtstamp( m_stamp->m_datetime );
+        icalcomponent_add_property( vevent, prop );
+    }
+
+    //lastmodified
+    if( !icaltime_is_null_time( m_lastmodified ) ) {
+        prop = icalproperty_new_lastmodified( m_lastmodified );
         icalcomponent_add_property( vevent, prop );
     }
 
@@ -2663,6 +2753,7 @@ icalcomponent* oeICalEventImpl::AsIcalComponent()
     if( tmpcomp )
         icalcomponent_add_component( vevent, tmpcomp );
 
+#ifdef MOZ_MAIL_NEWS
     PRUint32 attachmentCount = 0;
     m_attachments->Count(&attachmentCount);
     nsCOMPtr<nsIMsgAttachment> element;
@@ -2712,6 +2803,7 @@ icalcomponent* oeICalEventImpl::AsIcalComponent()
             icalcomponent_add_property( vevent, prop );
         }
     }
+#endif
 
     //add event to newcalendar
     icalcomponent_add_component( newcalendar, vevent );

@@ -56,6 +56,7 @@
 #include "nsCSSPseudoElements.h"
 #include "nsCSSAnonBoxes.h"
 #include "nsAutoPtr.h"
+#include "nsStyleSet.h"
 
 // masks for mEdgeVisibility
 #define LEFT_VIS   0x0001
@@ -349,8 +350,7 @@ nsHTMLFramesetFrame::Init(nsIPresContext*  aPresContext,
   viewMan->InsertChild(parView, view, nsnull, PR_TRUE);
   SetView(view);
 
-  nsCOMPtr<nsIPresShell> shell;
-  aPresContext->GetShell(getter_AddRefs(shell));
+  nsIPresShell *shell = aPresContext->PresShell();
   
   nsFrameborder  frameborder = GetFrameBorder();
   PRInt32 borderWidth = GetBorderWidth(aPresContext, PR_FALSE);
@@ -404,7 +404,7 @@ nsHTMLFramesetFrame::Init(nsIPresContext*  aPresContext,
       nsRefPtr<nsStyleContext> kidSC;
       nsresult result;
 
-      kidSC = aPresContext->ResolveStyleContextFor(child, mStyleContext);
+      kidSC = shell->StyleSet()->ResolveStyleFor(child, mStyleContext);
       if (tag == nsHTMLAtoms::frameset) {
         result = NS_NewHTMLFramesetFrame(shell, &frame);
 
@@ -417,7 +417,7 @@ nsHTMLFramesetFrame::Init(nsIPresContext*  aPresContext,
         
         mChildBorderColors[mChildCount].Set(childFrame->GetBorderColor());
       } else { // frame
-        result = NS_NewHTMLFrameOuterFrame(shell, &frame);
+        result = NS_NewSubDocumentFrame(shell, &frame);
         frame->Init(aPresContext, child, this, kidSC, nsnull);
 
         mChildTypes[mChildCount] = FRAME;
@@ -444,11 +444,11 @@ nsHTMLFramesetFrame::Init(nsIPresContext*  aPresContext,
   for (int blankX = mChildCount; blankX < numCells; blankX++) {
     // XXX the blank frame is using the content of its parent - at some point it 
     // should just have null content, if we support that
-    nsHTMLFramesetBlankFrame* blankFrame = new (shell.get()) nsHTMLFramesetBlankFrame;
+    nsHTMLFramesetBlankFrame* blankFrame = new (shell) nsHTMLFramesetBlankFrame;
     nsRefPtr<nsStyleContext> pseudoStyleContext;
-    pseudoStyleContext = aPresContext->ResolvePseudoStyleContextFor(nsnull,
-                                                                    nsCSSAnonBoxes::framesetBlank,
-                                                                    mStyleContext);
+    pseudoStyleContext = shell->StyleSet()->ResolvePseudoStyleFor(nsnull,
+                                                                  nsCSSAnonBoxes::framesetBlank,
+                                                                  mStyleContext);
     if(blankFrame)
       blankFrame->Init(aPresContext, mContent, this, pseudoStyleContext, nsnull);
    
@@ -615,7 +615,7 @@ void nsHTMLFramesetFrame::GenerateRowCol(nsIPresContext*       aPresContext,
                                          nsString&             aNewAttr)
 {
   float t2p;
-  aPresContext->GetTwipsToPixels(&t2p);
+  t2p = aPresContext->TwipsToPixels();
   PRInt32 i;
  
   for (i = 0; i < aNumSpecs; i++) {
@@ -656,11 +656,9 @@ PRInt32 nsHTMLFramesetFrame::GetBorderWidth(nsIPresContext* aPresContext,
     if (NS_CONTENT_ATTR_HAS_VALUE == (content->GetHTMLAttribute(nsHTMLAtoms::border, htmlVal))) {
       nsHTMLUnit unit = htmlVal.GetUnit();
       PRInt32 intVal = 0;
-      if (eHTMLUnit_Pixel == unit) {
-        intVal = htmlVal.GetPixelValue();
-      } else if (eHTMLUnit_Integer == unit) {
+      if (eHTMLUnit_Integer == unit) {
         intVal = htmlVal.GetIntValue();
-      } 
+      }
       if (intVal < 0) {
         intVal = 0;
       }
@@ -694,8 +692,7 @@ nsHTMLFramesetFrame::GetDesiredSize(nsIPresContext*          aPresContext,
 {
   nsHTMLFramesetFrame* framesetParent = GetFramesetParent(this);
   if (nsnull == framesetParent) {
-    nsRect area;
-    aPresContext->GetVisibleArea(area);
+    nsRect area = aPresContext->GetVisibleArea();
 
     aDesiredSize.width = area.width;
     aDesiredSize.height= area.height;
@@ -931,44 +928,35 @@ nsFrameborder nsHTMLFramesetFrame::GetFrameBorder(nsIContent* aContent)
 
 nscolor nsHTMLFramesetFrame::GetBorderColor() 
 {
-  nscolor result = NO_COLOR;
-
   nsCOMPtr<nsIHTMLContent> content(do_QueryInterface(mContent));
 
   if (content) {
     nsHTMLValue value;
     if (NS_CONTENT_ATTR_HAS_VALUE == (content->GetHTMLAttribute(nsHTMLAtoms::bordercolor, value))) {
-      if ((eHTMLUnit_Color == value.GetUnit()) ||
-          (eHTMLUnit_ColorName == value.GetUnit())) {
-        result = value.GetColorValue();
+      nscolor color;
+      if (value.GetColorValue(color)) {
+        return color;
       }
     }
   }
-  if (NO_COLOR == result) {
-    return mParentBorderColor;
-  } 
-  return result;
+
+  return mParentBorderColor;
 }
 
 nscolor nsHTMLFramesetFrame::GetBorderColor(nsIContent* aContent) 
 {
-  nscolor result = NO_COLOR;
-
   nsCOMPtr<nsIHTMLContent> content(do_QueryInterface(aContent));
 
   if (content) {
     nsHTMLValue value;
     if (NS_CONTENT_ATTR_HAS_VALUE == (content->GetHTMLAttribute(nsHTMLAtoms::bordercolor, value))) {
-      if ((eHTMLUnit_Color == value.GetUnit()) ||
-          (eHTMLUnit_ColorName == value.GetUnit())) {
-        result = value.GetColorValue();
+      nscolor color;
+      if (value.GetColorValue(color)) {
+        return color;
       }
     }
   }
-  if (NO_COLOR == result) {
-    return GetBorderColor();
-  }
-  return result;
+  return GetBorderColor();
 }
 
 NS_IMETHODIMP
@@ -979,9 +967,9 @@ nsHTMLFramesetFrame::Reflow(nsIPresContext*          aPresContext,
 {
   DO_GLOBAL_REFLOW_COUNT("nsHTMLFramesetFrame", aReflowState.reason);
   DISPLAY_REFLOW(aPresContext, this, aReflowState, aDesiredSize, aStatus);
-  nsCOMPtr<nsIPresShell> shell;
-  aPresContext->GetShell(getter_AddRefs(shell));
-            
+  nsIPresShell *shell = aPresContext->PresShell();
+  nsStyleSet *styleSet = shell->StyleSet();
+
   //printf("FramesetFrame2::Reflow %X (%d,%d) \n", this, aReflowState.availableWidth, aReflowState.availableHeight); 
   // Always get the size so that the caller knows how big we are
   GetDesiredSize(aPresContext, aReflowState, aDesiredSize);
@@ -993,18 +981,11 @@ nsHTMLFramesetFrame::Reflow(nsIPresContext*          aPresContext,
 
   PRBool firstTime = (eReflowReason_Initial == aReflowState.reason);
   if (firstTime) {
-    nsCOMPtr<nsIPrefService> prefService(do_GetService(NS_PREFSERVICE_CONTRACTID));
-    if (prefService) {
-      nsCOMPtr<nsIPrefBranch> prefBranch;
-      prefService->GetBranch(nsnull, getter_AddRefs(prefBranch));
-      if (prefBranch) {
-        nsCOMPtr<nsIPrefBranchInternal> prefBranchInternal(do_QueryInterface(prefBranch));
-        if (prefBranchInternal) {
-          mPrefBranchWeakRef = do_GetWeakReference(prefBranchInternal);
-          prefBranchInternal->AddObserver(kFrameResizePref, this, PR_FALSE);
-        }
-        prefBranch->GetBoolPref(kFrameResizePref, &mForceFrameResizability);
-      }
+    nsCOMPtr<nsIPrefBranchInternal> prefBranch(do_GetService(NS_PREFSERVICE_CONTRACTID));
+    if (prefBranch) {
+      mPrefBranchWeakRef = do_GetWeakReference(prefBranch);
+      prefBranch->AddObserver(kFrameResizePref, this, PR_FALSE);
+      prefBranch->GetBoolPref(kFrameResizePref, &mForceFrameResizability);
     }
   }
   
@@ -1071,11 +1052,13 @@ nsHTMLFramesetFrame::Reflow(nsIPresContext*          aPresContext,
       offset.x = 0;
       offset.y += lastSize.height;
       if (firstTime) { // create horizontal border
-        borderFrame = new (shell.get()) nsHTMLFramesetBorderFrame(borderWidth, PR_FALSE, PR_FALSE);
+        borderFrame = new (shell) nsHTMLFramesetBorderFrame(borderWidth,
+                                                            PR_FALSE,
+                                                            PR_FALSE);
         nsRefPtr<nsStyleContext> pseudoStyleContext;
-        pseudoStyleContext = aPresContext->ResolvePseudoStyleContextFor(mContent,
-                                                                        nsCSSPseudoElements::horizontalFramesetBorder,
-                                                                        mStyleContext);
+        pseudoStyleContext = styleSet->ResolvePseudoStyleFor(mContent,
+                                                             nsCSSPseudoElements::horizontalFramesetBorder,
+                                                             mStyleContext);
         borderFrame->Init(aPresContext, mContent, this, pseudoStyleContext, nsnull);
 
         mChildCount++;
@@ -1098,11 +1081,13 @@ nsHTMLFramesetFrame::Reflow(nsIPresContext*          aPresContext,
       if (cellIndex.x > 0) {  // moved to next col in same row
         if (0 == cellIndex.y) { // in 1st row
           if (firstTime) { // create vertical border
-            borderFrame = new (shell.get()) nsHTMLFramesetBorderFrame(borderWidth, PR_TRUE, PR_FALSE);
+            borderFrame = new (shell) nsHTMLFramesetBorderFrame(borderWidth,
+                                                                PR_TRUE,
+                                                                PR_FALSE);
             nsRefPtr<nsStyleContext> pseudoStyleContext;
-            pseudoStyleContext = aPresContext->ResolvePseudoStyleContextFor(mContent,
-                                                                            nsCSSPseudoElements::verticalFramesetBorder,
-                                                                            mStyleContext);
+            pseudoStyleContext = styleSet->ResolvePseudoStyleFor(mContent,
+                                                                 nsCSSPseudoElements::verticalFramesetBorder,
+                                                                 mStyleContext);
             borderFrame->Init(aPresContext, mContent, this, pseudoStyleContext, nsnull);
 
             mChildCount++;
@@ -1437,7 +1422,7 @@ nsHTMLFramesetFrame::StartMouseDrag(nsIPresContext*            aPresContext,
 {
   if (mMinDrag == 0) {
     float p2t;
-    aPresContext->GetPixelsToTwips(&p2t);
+    p2t = aPresContext->PixelsToTwips();
     mMinDrag = NSIntPixelsToTwips(2, p2t);  // set min drag and min frame size to 2 pixels
   }
 
@@ -1660,10 +1645,10 @@ nsHTMLFramesetBorderFrame::Paint(nsIPresContext*      aPresContext,
   }
 
   float t2p;
-  aPresContext->GetTwipsToPixels(&t2p);
+  t2p = aPresContext->TwipsToPixels();
   nscoord widthInPixels = NSTwipsToIntPixels(mWidth, t2p);
   float p2t;
-  aPresContext->GetPixelsToTwips(&p2t);
+  p2t = aPresContext->PixelsToTwips();
   nscoord pixelWidth    = NSIntPixelsToTwips(1, p2t);
 
   if (widthInPixels <= 0) {
@@ -1835,7 +1820,7 @@ nsHTMLFramesetBlankFrame::Paint(nsIPresContext*      aPresContext,
   //aRenderingContext.FillRect (mRect);
 
   float p2t;
-  aPresContext->GetPixelsToTwips(&p2t);
+  p2t = aPresContext->PixelsToTwips();
   nscoord x0 = 0;
   nscoord y0 = 0;
   nscoord x1 = x0;

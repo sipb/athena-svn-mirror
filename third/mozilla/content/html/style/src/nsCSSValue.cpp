@@ -39,6 +39,12 @@
 #include "nsString.h"
 #include "nsCSSProps.h"
 #include "nsReadableUtils.h"
+#include "imgIRequest.h"
+#include "nsIDocument.h"
+#include "nsContentUtils.h"
+
+// Paint forcing
+#include "prenv.h"
 
 //#include "nsStyleConsts.h"
 
@@ -97,6 +103,13 @@ nsCSSValue::nsCSSValue(nsCSSValue::URL* aValue)
   mValue.mURL->AddRef();
 }
 
+nsCSSValue::nsCSSValue(nsCSSValue::Image* aValue)
+  : mUnit(eCSSUnit_Image)
+{
+  mValue.mImage = aValue;
+  mValue.mImage->AddRef();
+}
+
 nsCSSValue::nsCSSValue(const nsCSSValue& aCopy)
   : mUnit(aCopy.mUnit)
 {
@@ -118,9 +131,18 @@ nsCSSValue::nsCSSValue(const nsCSSValue& aCopy)
     mValue.mURL = aCopy.mValue.mURL;
     mValue.mURL->AddRef();
   }
+  else if (eCSSUnit_Image == mUnit){
+    mValue.mImage = aCopy.mValue.mImage;
+    mValue.mImage->AddRef();
+  }
   else {
     mValue.mFloat = aCopy.mValue.mFloat;
   }
+}
+
+nsCSSValue::~nsCSSValue()
+{
+  Reset();
 }
 
 nsCSSValue& nsCSSValue::operator=(const nsCSSValue& aCopy)
@@ -141,6 +163,10 @@ nsCSSValue& nsCSSValue::operator=(const nsCSSValue& aCopy)
   else if (eCSSUnit_URL == mUnit){
     mValue.mURL = aCopy.mValue.mURL;
     mValue.mURL->AddRef();
+  }
+  else if (eCSSUnit_Image == mUnit){
+    mValue.mImage = aCopy.mValue.mImage;
+    mValue.mImage->AddRef();
   }
   else {
     mValue.mFloat = aCopy.mValue.mFloat;
@@ -170,11 +196,58 @@ PRBool nsCSSValue::operator==(const nsCSSValue& aOther) const
     else if (eCSSUnit_URL == mUnit) {
       return *mValue.mURL == *aOther.mValue.mURL;
     }
+    else if (eCSSUnit_Image == mUnit) {
+      return *mValue.mImage == *aOther.mValue.mImage;
+    }
     else {
       return mValue.mFloat == aOther.mValue.mFloat;
     }
   }
   return PR_FALSE;
+}
+
+imgIRequest* nsCSSValue::GetImageValue() const
+{
+  NS_ASSERTION(mUnit == eCSSUnit_Image, "not an Image value");
+  return mValue.mImage->mRequest;
+}
+
+nscoord nsCSSValue::GetLengthTwips() const
+{
+  NS_ASSERTION(IsFixedLengthUnit(), "not a fixed length unit");
+
+  if (IsFixedLengthUnit()) {
+    switch (mUnit) {
+    case eCSSUnit_Inch:        
+      return NS_INCHES_TO_TWIPS(mValue.mFloat);
+    case eCSSUnit_Foot:        
+      return NS_FEET_TO_TWIPS(mValue.mFloat);
+    case eCSSUnit_Mile:        
+      return NS_MILES_TO_TWIPS(mValue.mFloat);
+
+    case eCSSUnit_Millimeter:
+      return NS_MILLIMETERS_TO_TWIPS(mValue.mFloat);
+    case eCSSUnit_Centimeter:
+      return NS_CENTIMETERS_TO_TWIPS(mValue.mFloat);
+    case eCSSUnit_Meter:
+      return NS_METERS_TO_TWIPS(mValue.mFloat);
+    case eCSSUnit_Kilometer:
+      return NS_KILOMETERS_TO_TWIPS(mValue.mFloat);
+
+    case eCSSUnit_Point:
+      return NSFloatPointsToTwips(mValue.mFloat);
+    case eCSSUnit_Pica:
+      return NS_PICAS_TO_TWIPS(mValue.mFloat);
+    case eCSSUnit_Didot:
+      return NS_DIDOTS_TO_TWIPS(mValue.mFloat);
+    case eCSSUnit_Cicero:
+      return NS_CICEROS_TO_TWIPS(mValue.mFloat);
+    default:
+      NS_ERROR("should never get here");
+      break;
+    }
+  }
+  return 0;
 }
 
 void nsCSSValue::SetIntValue(PRInt32 aValue, nsCSSUnit aUnit)
@@ -186,6 +259,23 @@ void nsCSSValue::SetIntValue(PRInt32 aValue, nsCSSUnit aUnit)
       (eCSSUnit_Enumerated == aUnit)) {
     mUnit = aUnit;
     mValue.mInt = aValue;
+  }
+}
+
+void nsCSSValue::SetPercentValue(float aValue)
+{
+  Reset();
+  mUnit = eCSSUnit_Percent;
+  mValue.mFloat = aValue;
+}
+
+void nsCSSValue::SetFloatValue(float aValue, nsCSSUnit aUnit)
+{
+  NS_ASSERTION(eCSSUnit_Number <= aUnit, "not a float value");
+  Reset();
+  if (eCSSUnit_Number <= aUnit) {
+    mUnit = aUnit;
+    mValue.mFloat = aValue;
   }
 }
 
@@ -215,35 +305,91 @@ void nsCSSValue::SetURLValue(nsCSSValue::URL* aValue)
   mValue.mURL->AddRef();
 }
 
-void nsCSSValue::SetAutoValue(void)
+void nsCSSValue::SetImageValue(nsCSSValue::Image* aValue)
+{
+  Reset();
+  mUnit = eCSSUnit_Image;
+  mValue.mImage = aValue;
+  mValue.mImage->AddRef();
+}
+
+void nsCSSValue::SetAutoValue()
 {
   Reset();
   mUnit = eCSSUnit_Auto;
 }
 
-void nsCSSValue::SetInheritValue(void)
+void nsCSSValue::SetInheritValue()
 {
   Reset();
   mUnit = eCSSUnit_Inherit;
 }
 
-void nsCSSValue::SetInitialValue(void)
+void nsCSSValue::SetInitialValue()
 {
   Reset();
   mUnit = eCSSUnit_Initial;
 }
 
-void nsCSSValue::SetNoneValue(void)
+void nsCSSValue::SetNoneValue()
 {
   Reset();
   mUnit = eCSSUnit_None;
 }
 
-void nsCSSValue::SetNormalValue(void)
+void nsCSSValue::SetNormalValue()
 {
   Reset();
   mUnit = eCSSUnit_Normal;
 }
+
+void nsCSSValue::StartImageLoad(nsIDocument* aDocument) const
+{
+  NS_PRECONDITION(eCSSUnit_URL == mUnit, "Not a URL value!");
+  nsCSSValue::Image* image =
+    new nsCSSValue::Image(mValue.mURL->mURI,
+                          mValue.mURL->mString,
+                          aDocument);
+  if (image) {
+    if (image->mString) {
+      nsCSSValue* writable = NS_CONST_CAST(nsCSSValue*, this);
+      writable->SetImageValue(image);
+    } else {
+      delete image;
+    }
+  }
+}
+
+nsCSSValue::Image::Image(nsIURI* aURI, const PRUnichar* aString,
+                         nsIDocument* aDocument)
+  : URL(aURI, aString)
+{
+  MOZ_COUNT_CTOR(nsCSSValue::Image);
+
+  // Check for failed mString allocation first
+  if (!mString)
+    return;
+
+  // If Paint Forcing is enabled, then force all background image loads to
+  // complete before firing onload for the document
+  static PRInt32 loadFlag = PR_GetEnv("MOZ_FORCE_PAINT_AFTER_ONLOAD")
+    ? (PRInt32)nsIRequest::LOAD_NORMAL
+    : (PRInt32)nsIRequest::LOAD_BACKGROUND;
+
+  if (mURI &&
+      NS_SUCCEEDED(nsContentUtils::CanLoadImage(mURI, nsnull, aDocument))) {
+    nsContentUtils::LoadImage(mURI, aDocument, nsnull,
+                              loadFlag,
+                              getter_AddRefs(mRequest));
+  }
+}
+
+nsCSSValue::Image::~Image()
+{
+  MOZ_COUNT_DTOR(nsCSSValue::Image);
+}
+
+#ifdef DEBUG
 
 void nsCSSValue::AppendToString(nsAString& aBuffer,
                                 nsCSSProperty aPropID) const
@@ -257,14 +403,15 @@ void nsCSSValue::AppendToString(nsAString& aBuffer,
     aBuffer.Append(NS_LITERAL_STRING(": "));
   }
 
+  switch (mUnit) {
+    case eCSSUnit_Image:
+    case eCSSUnit_URL:      aBuffer.Append(NS_LITERAL_STRING("url("));       break;
+    case eCSSUnit_Attr:     aBuffer.Append(NS_LITERAL_STRING("attr("));      break;
+    case eCSSUnit_Counter:  aBuffer.Append(NS_LITERAL_STRING("counter("));   break;
+    case eCSSUnit_Counters: aBuffer.Append(NS_LITERAL_STRING("counters("));  break;
+    default:  break;
+  }
   if ((eCSSUnit_String <= mUnit) && (mUnit <= eCSSUnit_Counters)) {
-    switch (mUnit) {
-      case eCSSUnit_URL:      aBuffer.Append(NS_LITERAL_STRING("url("));       break;
-      case eCSSUnit_Attr:     aBuffer.Append(NS_LITERAL_STRING("attr("));      break;
-      case eCSSUnit_Counter:  aBuffer.Append(NS_LITERAL_STRING("counter("));   break;
-      case eCSSUnit_Counters: aBuffer.Append(NS_LITERAL_STRING("counters("));  break;
-      default:  break;
-    }
     if (nsnull != mValue.mString) {
       aBuffer.Append(PRUnichar('"'));
       aBuffer.Append(mValue.mString);
@@ -317,6 +464,9 @@ void nsCSSValue::AppendToString(nsAString& aBuffer,
   else if (eCSSUnit_URL == mUnit) {
     aBuffer.Append(mValue.mURL->mString);
   }
+  else if (eCSSUnit_Image == mUnit) {
+    aBuffer.Append(mValue.mImage->mString);
+  }
   else if (eCSSUnit_Percent == mUnit) {
     nsAutoString floatString;
     floatString.AppendFloat(mValue.mFloat * 100.0f);
@@ -337,6 +487,7 @@ void nsCSSValue::AppendToString(nsAString& aBuffer,
     case eCSSUnit_Normal:       aBuffer.Append(NS_LITERAL_STRING("normal"));   break;
     case eCSSUnit_String:       break;
     case eCSSUnit_URL:
+    case eCSSUnit_Image:
     case eCSSUnit_Attr:
     case eCSSUnit_Counter:
     case eCSSUnit_Counters:     aBuffer.Append(NS_LITERAL_STRING(")"));    break;
@@ -380,3 +531,5 @@ void nsCSSValue::ToString(nsAString& aBuffer,
   aBuffer.Truncate();
   AppendToString(aBuffer, aPropID);
 }
+
+#endif /* defined(DEBUG) */

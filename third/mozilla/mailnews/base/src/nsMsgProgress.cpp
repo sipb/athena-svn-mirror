@@ -43,6 +43,7 @@
 #include "nsXPCOM.h"
 #include "nsISupportsPrimitives.h"
 #include "nsIComponentManager.h"
+#include "nsNetError.h"
 
 NS_IMPL_THREADSAFE_ADDREF(nsMsgProgress)
 NS_IMPL_THREADSAFE_RELEASE(nsMsgProgress)
@@ -52,6 +53,7 @@ NS_INTERFACE_MAP_BEGIN(nsMsgProgress)
    NS_INTERFACE_MAP_ENTRY(nsIMsgProgress)
    NS_INTERFACE_MAP_ENTRY(nsIMsgStatusFeedback)
    NS_INTERFACE_MAP_ENTRY(nsIWebProgressListener)
+   NS_INTERFACE_MAP_ENTRY(nsIProgressEventSink)
 NS_INTERFACE_MAP_END_THREADSAFE
 
 
@@ -78,6 +80,8 @@ NS_IMETHODIMP nsMsgProgress::OpenProgressDialog(nsIDOMWindowInternal *parent, ns
   nsresult rv = NS_ERROR_FAILURE;
   
   m_msgWindow = aMsgWindow;
+  if (m_msgWindow)
+    m_msgWindow->SetStatusFeedback(this);
   if (m_dialog)
     return NS_ERROR_ALREADY_INITIALIZED;
   
@@ -117,7 +121,7 @@ NS_IMETHODIMP nsMsgProgress::OpenProgressDialog(nsIDOMWindowInternal *parent, ns
 NS_IMETHODIMP nsMsgProgress::CloseProgressDialog(PRBool forceClose)
 {
   m_closeProgress = PR_TRUE;
-  return OnStateChange(nsnull, nsnull, nsIWebProgressListener::STATE_STOP, forceClose);
+  return OnStateChange(nsnull, nsnull, nsIWebProgressListener::STATE_STOP, forceClose ? NS_ERROR_FAILURE : NS_OK);
 }
 
 /* nsIPrompt GetPrompter (); */
@@ -142,7 +146,7 @@ NS_IMETHODIMP nsMsgProgress::GetProcessCanceledByUser(PRBool *aProcessCanceledBy
 NS_IMETHODIMP nsMsgProgress::SetProcessCanceledByUser(PRBool aProcessCanceledByUser)
 {
   m_processCanceled = aProcessCanceledByUser;
-  OnStateChange(nsnull, nsnull, nsIWebProgressListener::STATE_STOP, PR_FALSE);
+  OnStateChange(nsnull, nsnull, nsIWebProgressListener::STATE_STOP, NS_BINDING_ABORTED);
   return NS_OK;
 }
 
@@ -209,7 +213,7 @@ NS_IMETHODIMP nsMsgProgress::OnStateChange(nsIWebProgress *aWebProgress, nsIRequ
     }
   }
   
-  if (aStateFlags == nsIWebProgressListener::STATE_STOP && m_msgWindow)
+  if (aStateFlags == nsIWebProgressListener::STATE_STOP && m_msgWindow && NS_FAILED(aStatus))
     m_msgWindow->StopUrls();
 
   return NS_OK;
@@ -348,4 +352,26 @@ NS_IMETHODIMP nsMsgProgress::GetMsgWindow(nsIMsgWindow **aMsgWindow)
   NS_ENSURE_ARG_POINTER(aMsgWindow);
   NS_IF_ADDREF(*aMsgWindow = m_msgWindow);
   return NS_OK;
+}
+
+
+NS_IMETHODIMP nsMsgProgress::OnProgress(nsIRequest *request, nsISupports* ctxt, 
+                                          PRUint32 aProgress, PRUint32 aProgressMax)
+{
+  // XXX: What should the nsIWebProgress be?
+  return OnProgressChange(nsnull, request, aProgress, aProgressMax, 
+                          aProgress /* current total progress */, aProgressMax /* max total progress */);
+}
+
+NS_IMETHODIMP nsMsgProgress::OnStatus(nsIRequest *request, nsISupports* ctxt, 
+                                            nsresult aStatus, const PRUnichar* aStatusArg)
+{
+  nsresult rv;
+  nsCOMPtr<nsIStringBundleService> sbs = do_GetService(NS_STRINGBUNDLE_CONTRACTID, &rv);
+  if (NS_FAILED(rv)) return rv;
+  nsXPIDLString str;
+  rv = sbs->FormatStatusMessage(aStatus, aStatusArg, getter_Copies(str));
+  if (NS_FAILED(rv)) return rv;
+  nsAutoString msg(NS_STATIC_CAST(const PRUnichar*, str));
+  return ShowStatusString(msg.get());
 }

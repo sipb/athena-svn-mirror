@@ -39,7 +39,7 @@
           xmlns:xul="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
   <binding id="browser" extends="xul:browser">
-    <implementation type="application/x-javascript" implements="nsIAccessibleProvider">
+    <implementation type="application/x-javascript" implements="nsIAccessibleProvider, nsIObserver">
       <property name="accessible">
         <getter>
           <![CDATA[
@@ -219,9 +219,18 @@
                 onget="return this.docShell.QueryInterface(Components.interfaces.nsIWebNavigation);"
                 readonly="true"/>
 
+      <field name="_webBrowserFind">null</field>
+
       <property name="webBrowserFind"
-                readonly="true"
-                onget="return this.docShell.QueryInterface(Components.interfaces.nsIInterfaceRequestor).getInterface(Components.interfaces.nsIWebBrowserFind);"/>
+                readonly="true">
+        <getter>
+        <![CDATA[
+          if (!this._webBrowserFind)
+            this._webBrowserFind = this.docShell.QueryInterface(Components.interfaces.nsIInterfaceRequestor).getInterface(Components.interfaces.nsIWebBrowserFind);
+          return this._webBrowserFind;
+        ]]>
+        </getter>
+      </property>
 
       <property name="webProgress"
                 readonly="true"
@@ -427,11 +436,10 @@
             if (!this.hasAttribute("disablehistory")) {
               // wire up session history
               this.webNavigation.sessionHistory = Components.classes["@mozilla.org/browser/shistory;1"].createInstance(Components.interfaces.nsISHistory);
-
-              // wire up global history
-              var globalHistory = Components.classes["@mozilla.org/browser/global-history;1"].getService(Components.interfaces.nsIGlobalHistory);
-
-              this.docShell.QueryInterface(Components.interfaces.nsIDocShellHistory).globalHistory = globalHistory;      
+              var os = Components.classes["@mozilla.org/observer-service;1"].getService(Components.interfaces.nsIObserverService);
+              os.addObserver(this, "browser:purge-session-history", false);
+              // enable global history
+              this.docShell.QueryInterface(Components.interfaces.nsIDocShellHistory).useGlobalHistory = true;
             }
           }
           catch (e) {
@@ -471,19 +479,43 @@
       <method name="destroy">
         <body>
           <![CDATA[
+          if (!this.hasAttribute("disablehistory")) {
+            var os = Components.classes["@mozilla.org/observer-service;1"].getService(Components.interfaces.nsIObserverService);
+            os.removeObserver(this, "browser:purge-session-history", false);
+          }
+
           if (this.mDragDropHandler)
             this.mDragDropHandler.detach();
+          this.mDragDropHandler = null;
 
           this.detachFormFill();
           
           this.securityUI = null;
-          this.mDragDropHandler = null;
 
           this.removeEventListener("unload", this.onUnload, true);
+          this.removeEventListener("DOMPopupBlocked", this.onPopupBlocked, true);
           ]]>
         </body>
       </method>
-
+      
+      <method name="observe">
+        <parameter name="aSubject"/>
+        <parameter name="aTopic"/>
+        <parameter name="aState"/>
+        <body>
+          <![CDATA[
+            if (aTopic != "browser:purge-session-history")
+              return;
+              
+            var purge = this.sessionHistory.count;
+            if (this.currentURI != "about:blank")
+              --purge; // Don't remove the page the user's staring at from shistory
+              
+            this.sessionHistory.PurgeHistory(purge);
+          ]]>
+        </body>
+      </method>
+          
       <field name="_AUTOSCROLL_SPEED">3</field>
       <field name="_AUTOSCROLL_SNAP">10</field>
       <field name="_clientFrameDoc">null</field>
@@ -531,18 +563,37 @@
          ]]>
        </body>
      </method>
-     <method name="isLink">
+     <method name="isAutoscrollBlocker">
        <parameter name="node"/>
        <body>
          <![CDATA[
            if (!node) return false;
-           var tagName = node.nodeName.toUpperCase();
-           if (tagName == "A" || tagName == "INPUT" || tagName == "TEXTAREA" ||
-               tagName == "AREA") {
-             return true;
+
+           var middleMousePaste;
+
+           try {
+             middleMousePaste = this.mPrefs.getBoolPref("middlemouse.paste");
            }
-           
-           return this.isLink(node.parentNode);
+           catch (ex) {
+             middleMousePaste = false;
+           }
+
+           if (node instanceof HTMLElement) {
+             const xhtml1NS = "http://www.w3.org/1999/xhtml";
+             var tagName = node.nodeName;
+
+             if (node.namespaceURI != xhtml1NS)
+               tagName = tagName.toLowerCase();
+
+             if ((tagName == "a" || tagName == "area") && node.hasAttribute("href"))
+               return true;
+
+             if (middleMousePaste && (tagName == "input" || tagName == "textarea"))
+               return true;
+
+           }
+
+           return this.isAutoscrollBlocker(node.parentNode);
          ]]>
        </body>
      </method>
@@ -583,7 +634,11 @@
            el.style.width = imageWidth + "px";
            el.style.height = imageHeight + "px";
            el.style.cursor = scrollCursor[scrollType];
-           
+           el.style.zIndex = 2147483647; //Max Int
+           el.style.borderStyle = "none";
+           el.style.padding = "0";
+           el.style.margin = "0";
+
            this._clientFrameBody.appendChild(el);
            
            this._autoScrollMarkerImage = el;
@@ -688,7 +743,7 @@
       </handler>
       <handler event="mousedown">
         <![CDATA[
-          if (!this.autoscrollEnabled || this.isLink(event.originalTarget))
+          if (!this.autoscrollEnabled || this.isAutoscrollBlocker(event.originalTarget))
             return;
 
           if (!this._isScrolling) {

@@ -58,19 +58,19 @@
 #define BUFFER_SIZE 256
 
 static const PRUnichar CSS_ESCAPE = PRUnichar('\\');
-
-static const PRUint8 IS_LATIN1 = 0x01;
-static const PRUint8 IS_DIGIT = 0x02;
-static const PRUint8 IS_HEX_DIGIT = 0x04;
-static const PRUint8 IS_ALPHA = 0x08;
-static const PRUint8 START_IDENT = 0x10;
-static const PRUint8 IS_IDENT = 0x20;
-static const PRUint8 IS_WHITESPACE = 0x40;
+const PRUint8 nsCSSScanner::IS_DIGIT = 0x01;
+const PRUint8 nsCSSScanner::IS_HEX_DIGIT = 0x02;
+const PRUint8 nsCSSScanner::IS_ALPHA = 0x04;
+const PRUint8 nsCSSScanner::START_IDENT = 0x08;
+const PRUint8 nsCSSScanner::IS_IDENT = 0x10;
+const PRUint8 nsCSSScanner::IS_WHITESPACE = 0x20;
 
 static PRBool gLexTableSetup = PR_FALSE;
-static PRUint8 gLexTable[256];
+PRUint8 nsCSSScanner::gLexTable[256];
 
-static void BuildLexTable()
+/* static */
+void
+nsCSSScanner::BuildLexTable()
 {
   gLexTableSetup = PR_TRUE;
 
@@ -87,7 +87,7 @@ static void BuildLexTable()
   lt['\n'] |= IS_WHITESPACE;  // line feed
   lt['\f'] |= IS_WHITESPACE;  // form feed
   for (i = 161; i <= 255; i++) {
-    lt[i] |= IS_LATIN1 | IS_IDENT | START_IDENT;
+    lt[i] |= IS_IDENT | START_IDENT;
   }
   for (i = '0'; i <= '9'; i++) {
     lt[i] |= IS_DIGIT | IS_HEX_DIGIT | IS_IDENT;
@@ -419,145 +419,138 @@ PRBool nsCSSScanner::EatNewline(nsresult& aErrorCode)
   return eaten;
 }
 
+/* static */
+PRBool
+nsCSSScanner::CheckLexTable(PRInt32 aChar, PRUint8 aBit, PRUint8* aLexTable)
+{
+  NS_ASSERTION(!(aBit & (START_IDENT | IS_IDENT)),
+               "can't use CheckLexTable with identifiers");
+  return aChar >= 0 && aChar < 256 && (aLexTable[aChar] & aBit) != 0;
+}
+
 PRBool nsCSSScanner::Next(nsresult& aErrorCode, nsCSSToken& aToken)
 {
   PRInt32 ch = Read(aErrorCode);
   if (ch < 0) {
     return PR_FALSE;
   }
-  if (ch < 256) {
-    PRUint8* lexTable = gLexTable;
+  PRUint8* lexTable = gLexTable;
 
-    // IDENT
-    if ((lexTable[ch] & START_IDENT) != 0) {
-      return ParseIdent(aErrorCode, ch, aToken);
-    }
-    if (ch == '-') {  // possible ident
-      PRInt32 nextChar = Peek(aErrorCode);
-      if ((0 <= nextChar) && (0 != (lexTable[nextChar] & START_IDENT))) {
-        return ParseIdent(aErrorCode, ch, aToken);
-      }
-    }
+  // IDENT
+  if (StartsIdent(ch, Peek(aErrorCode), lexTable))
+    return ParseIdent(aErrorCode, ch, aToken);
 
-    // AT_KEYWORD
-    if (ch == '@') {
-      PRInt32 nextChar = Peek(aErrorCode);
-      if ((nextChar >= 0) && (nextChar <= 255)) {
-        if ((lexTable[nextChar] & START_IDENT) != 0) {
-          return ParseAtKeyword(aErrorCode, ch, aToken);
-        }
-      }
-    }
+  // From this point on, 0 <= ch < 256.
+     
+  // AT_KEYWORD
+  if (ch == '@') {
+    PRInt32 nextChar = Read(aErrorCode);
+    PRInt32 followingChar = Peek(aErrorCode);
+    Pushback(nextChar);
+    if (StartsIdent(nextChar, followingChar, lexTable))
+      return ParseAtKeyword(aErrorCode, ch, aToken);
+  }
 
-    // NUMBER or DIM
-    if ((ch == '.') || (ch == '+') || (ch == '-')) {
-      PRInt32 nextChar = Peek(aErrorCode);
-      if ((nextChar >= 0) && (nextChar <= 255)) {
-        if ((lexTable[nextChar] & IS_DIGIT) != 0) {
-          return ParseNumber(aErrorCode, ch, aToken);
-        }
-        else if (('.' == nextChar) && ('.' != ch)) {
-          PRInt32 holdNext = Read(aErrorCode);
-          nextChar = Peek(aErrorCode);
-          if ((0 <= nextChar) && (nextChar <= 255)) {
-            if ((lexTable[nextChar] & IS_DIGIT) != 0) {
-              Pushback(holdNext);
-              return ParseNumber(aErrorCode, ch, aToken);
-            }
-          }
-          Pushback(holdNext);
-        }
-      }
-    }
-    if ((lexTable[ch] & IS_DIGIT) != 0) {
+  // NUMBER or DIM
+  if ((ch == '.') || (ch == '+') || (ch == '-')) {
+    PRInt32 nextChar = Peek(aErrorCode);
+    if (CheckLexTable(nextChar, IS_DIGIT, lexTable)) {
       return ParseNumber(aErrorCode, ch, aToken);
     }
-
-    // ID
-    if (ch == '#') {
-      return ParseID(aErrorCode, ch, aToken);
+    else if (('.' == nextChar) && ('.' != ch)) {
+      nextChar = Read(aErrorCode);
+      PRInt32 followingChar = Peek(aErrorCode);
+      Pushback(nextChar);
+      if (CheckLexTable(followingChar, IS_DIGIT, lexTable))
+        return ParseNumber(aErrorCode, ch, aToken);
     }
+  }
+  if ((lexTable[ch] & IS_DIGIT) != 0) {
+    return ParseNumber(aErrorCode, ch, aToken);
+  }
 
-    // STRING
-    if ((ch == '"') || (ch == '\'')) {
-      return ParseString(aErrorCode, ch, aToken);
-    }
+  // ID
+  if (ch == '#') {
+    return ParseID(aErrorCode, ch, aToken);
+  }
 
-    // WS
-    if ((lexTable[ch] & IS_WHITESPACE) != 0) {
-      aToken.mType = eCSSToken_WhiteSpace;
-      aToken.mIdent.Assign(PRUnichar(ch));
-      (void) EatWhiteSpace(aErrorCode);
-      return PR_TRUE;
-    }
-    if (ch == '/') {
-      PRInt32 nextChar = Peek(aErrorCode);
-      if (nextChar == '*') {
-        (void) Read(aErrorCode);
+  // STRING
+  if ((ch == '"') || (ch == '\'')) {
+    return ParseString(aErrorCode, ch, aToken);
+  }
+
+  // WS
+  if ((lexTable[ch] & IS_WHITESPACE) != 0) {
+    aToken.mType = eCSSToken_WhiteSpace;
+    aToken.mIdent.Assign(PRUnichar(ch));
+    (void) EatWhiteSpace(aErrorCode);
+    return PR_TRUE;
+  }
+  if (ch == '/') {
+    PRInt32 nextChar = Peek(aErrorCode);
+    if (nextChar == '*') {
+      (void) Read(aErrorCode);
 #if 0
-        // If we change our storage data structures such that comments are
-        // stored (for Editor), we should reenable this code, condition it
-        // on being in editor mode, and apply glazou's patch from bug
-        // 60290.
-        aToken.mIdent.SetCapacity(2);
-        aToken.mIdent.Assign(PRUnichar(ch));
-        aToken.mIdent.Append(PRUnichar(nextChar));
-        return ParseCComment(aErrorCode, aToken);
+      // If we change our storage data structures such that comments are
+      // stored (for Editor), we should reenable this code, condition it
+      // on being in editor mode, and apply glazou's patch from bug
+      // 60290.
+      aToken.mIdent.SetCapacity(2);
+      aToken.mIdent.Assign(PRUnichar(ch));
+      aToken.mIdent.Append(PRUnichar(nextChar));
+      return ParseCComment(aErrorCode, aToken);
 #endif
-        return SkipCComment(aErrorCode) && Next(aErrorCode, aToken);
-      }
+      return SkipCComment(aErrorCode) && Next(aErrorCode, aToken);
     }
-    if (ch == '<') {  // consume HTML comment tags
-      if (LookAhead(aErrorCode, '!')) {
-        if (LookAhead(aErrorCode, '-')) {
-          if (LookAhead(aErrorCode, '-')) {
-            aToken.mType = eCSSToken_HTMLComment;
-            aToken.mIdent.Assign(NS_LITERAL_STRING("<!--"));
-            return PR_TRUE;
-          }
-          Pushback('-');
-        }
-        Pushback('!');
-      }
-    }
-    if (ch == '-') {  // check for HTML comment end
+  }
+  if (ch == '<') {  // consume HTML comment tags
+    if (LookAhead(aErrorCode, '!')) {
       if (LookAhead(aErrorCode, '-')) {
-        if (LookAhead(aErrorCode, '>')) {
+        if (LookAhead(aErrorCode, '-')) {
           aToken.mType = eCSSToken_HTMLComment;
-          aToken.mIdent.Assign(NS_LITERAL_STRING("-->"));
+          aToken.mIdent.Assign(NS_LITERAL_STRING("<!--"));
           return PR_TRUE;
         }
         Pushback('-');
       }
+      Pushback('!');
     }
-
-    // INCLUDES ("~=") and DASHMATCH ("|=")
-    if (( ch == '|' ) || ( ch == '~' ) || ( ch == '^' ) ||
-        ( ch == '$' ) || ( ch == '*' )) {
-      PRInt32 nextChar = Read(aErrorCode);
-      if ( nextChar == '=' ) {
-        if (ch == '~') {
-          aToken.mType = eCSSToken_Includes;
-        }
-        else if (ch == '|') {
-          aToken.mType = eCSSToken_Dashmatch;
-        }
-        else if (ch == '^') {
-          aToken.mType = eCSSToken_Beginsmatch;
-        }
-        else if (ch == '$') {
-          aToken.mType = eCSSToken_Endsmatch;
-        }
-        else if (ch == '*') {
-          aToken.mType = eCSSToken_Containsmatch;
-        }
+  }
+  if (ch == '-') {  // check for HTML comment end
+    if (LookAhead(aErrorCode, '-')) {
+      if (LookAhead(aErrorCode, '>')) {
+        aToken.mType = eCSSToken_HTMLComment;
+        aToken.mIdent.Assign(NS_LITERAL_STRING("-->"));
         return PR_TRUE;
-      } else {
-        Pushback(nextChar);
       }
+      Pushback('-');
     }
-  } else {
-    return ParseIdent(aErrorCode, ch, aToken);
+  }
+
+  // INCLUDES ("~=") and DASHMATCH ("|=")
+  if (( ch == '|' ) || ( ch == '~' ) || ( ch == '^' ) ||
+      ( ch == '$' ) || ( ch == '*' )) {
+    PRInt32 nextChar = Read(aErrorCode);
+    if ( nextChar == '=' ) {
+      if (ch == '~') {
+        aToken.mType = eCSSToken_Includes;
+      }
+      else if (ch == '|') {
+        aToken.mType = eCSSToken_Dashmatch;
+      }
+      else if (ch == '^') {
+        aToken.mType = eCSSToken_Beginsmatch;
+      }
+      else if (ch == '$') {
+        aToken.mType = eCSSToken_Endsmatch;
+      }
+      else if (ch == '*') {
+        aToken.mType = eCSSToken_Containsmatch;
+      }
+      return PR_TRUE;
+    } else {
+      Pushback(nextChar);
+    }
   }
   aToken.mType = eCSSToken_Symbol;
   aToken.mSymbol = ch;
@@ -635,7 +628,7 @@ PRBool nsCSSScanner::NextURL(nsresult& aErrorCode, nsCSSToken& aToken)
         } else if ((ch == '"') || (ch == '\'') || (ch == '(')) {
           // This is an invalid URL spec
           ok = PR_FALSE;
-        } else if ((256 >= ch) && ((gLexTable[ch] & IS_WHITESPACE) != 0)) {
+        } else if ((256 > ch) && ((gLexTable[ch] & IS_WHITESPACE) != 0)) {
           // Whitespace is allowed at the end of the URL
           (void) EatWhiteSpace(aErrorCode);
           if (LookAhead(aErrorCode, ')')) {
@@ -683,7 +676,10 @@ PRInt32 nsCSSScanner::ParseEscape(nsresult& aErrorCode)
         // Whoops: error or premature eof
         break;
       }
-      if ((lexTable[ch] & IS_HEX_DIGIT) != 0) {
+      if (ch >= 256 || (lexTable[ch] & (IS_HEX_DIGIT | IS_WHITESPACE)) == 0) {
+        Unread();
+        break;
+      } else if ((lexTable[ch] & IS_HEX_DIGIT) != 0) {
         if ((lexTable[ch] & IS_DIGIT) != 0) {
           rv = rv * 16 + (ch - '0');
         } else {
@@ -692,18 +688,13 @@ PRInt32 nsCSSScanner::ParseEscape(nsresult& aErrorCode)
           // "relative to 10" value for computing the hex value.
           rv = rv * 16 + ((ch & 0x7) + 9);
         }
-      }
-      else if ((lexTable[ch] & IS_WHITESPACE) != 0) {  // single space ends escape
-        if (ch == '\r') { // if CR/LF, eat LF too
-          ch = Peek(aErrorCode);
-          if (ch == '\n') {
-            ch = Read(aErrorCode);
-          }
+      } else {
+        NS_ASSERTION((lexTable[ch] & IS_WHITESPACE) != 0, "bad control flow");
+        // single space ends escape
+        if (ch == '\r' && Peek(aErrorCode) == '\n') {
+          // if CR/LF, eat LF too
+          Read(aErrorCode);
         }
-        break;
-      }
-      else {
-        Unread();
         break;
       }
     }

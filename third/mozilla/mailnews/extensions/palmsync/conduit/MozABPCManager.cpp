@@ -54,6 +54,10 @@ const CLSID CLSID_CPalmSyncImp = { 0xb20b4521, 0xccf8, 0x11d6, { 0xb8, 0xa5, 0x0
 
 extern DWORD tId;
 
+/* static */BOOL MozABPCManager::gUseHomeAddress;
+/* static */ BOOL MozABPCManager::gPreferHomePhone;
+
+
 BOOL MozABPCManager::InitMozPalmSyncInstance(IPalmSync **aRetValue)
 {
     // Check wehther this thread has a valid Interface
@@ -74,7 +78,11 @@ BOOL MozABPCManager::InitMozPalmSyncInstance(IPalmSync **aRetValue)
 
     if (hRes == S_OK)
         if (TlsSetValue(tId, (LPVOID)(*aRetValue)))
+        {
+            (*aRetValue)->nsUseABHomeAddressForPalmAddress(&gUseHomeAddress);
+            (*aRetValue)->nsPreferABHomePhoneForPalmPhone(&gPreferHomePhone);
             return TRUE;
+        }
 
     // Either CoCreate or TlsSetValue failed; so return FALSE
 
@@ -86,7 +94,7 @@ BOOL MozABPCManager::InitMozPalmSyncInstance(IPalmSync **aRetValue)
 }
 
 // this function allocates the list as well as the strings, caller should free list and delete strings
-long MozABPCManager::GetPCABList(DWORD * pCategoryCount, LONG ** pCategoryIndexList, CPString *** pCategoryNameList, CPString *** pCategoryUrlList, BOOL ** pIsFirstTimeSyncList)
+long MozABPCManager::GetPCABList(DWORD * pCategoryCount, LONG ** pCategoryIndexList, CPString *** pCategoryNameList, CPString *** pCategoryUrlList, BOOL ** pDirFlags)
 {
     lpnsMozABDesc mozABNameList=NULL;
 
@@ -100,7 +108,7 @@ long MozABPCManager::GetPCABList(DWORD * pCategoryCount, LONG ** pCategoryIndexL
 
     // get the ABList
     HRESULT hres = pNsPalmSync->nsGetABList(FALSE, &dwMozABCount, 
-                                        &mozABNameList, pCategoryIndexList, pIsFirstTimeSyncList);
+                                        &mozABNameList, pCategoryIndexList, pDirFlags);
     if (hres != S_OK) {
         retval = (long) hres;
         return retval;
@@ -163,9 +171,12 @@ long MozABPCManager::SynchronizePCAB(LONG categoryIndex, LONG categoryId, CPStri
 
     CMozABConduitRecord ** tempMozABConduitRecList = new CMozABConduitRecord*[updatedPalmRecCount];
     nsABCOMCardStruct * palmCardList = new nsABCOMCardStruct[updatedPalmRecCount];
-    if(palmCardList) {
-        for(DWORD i=0; i<updatedPalmRecCount; i++) {
-            if(*updatedPalmRecList) {
+    if(palmCardList)
+    {
+        for(DWORD i=0; i<updatedPalmRecCount; i++) 
+        {
+            if(*updatedPalmRecList)
+            {
                 CMozABConduitRecord * pConduitRecord = new CMozABConduitRecord(**updatedPalmRecList);
                 memcpy(&palmCardList[i], &pConduitRecord->m_nsCard, sizeof(nsABCOMCardStruct));
                 tempMozABConduitRecList[i]=pConduitRecord;
@@ -176,14 +187,17 @@ long MozABPCManager::SynchronizePCAB(LONG categoryIndex, LONG categoryId, CPStri
         HRESULT hres = pNsPalmSync->nsSynchronizeAB(FALSE, categoryIndex, categoryId, categoryName.GetBuffer(0),
                                                 updatedPalmRecCount, palmCardList,
                                                 &dwMozCardCount, &mozCardList);
-        if(hres == S_OK && mozCardList) {
+        if(hres == S_OK && mozCardList) 
+        {
             *pUpdatedPCRecListCount = dwMozCardCount;
             CPalmRecord ** mozRecordList = (CPalmRecord **) malloc(sizeof(CPalmRecord *) * dwMozCardCount);
             *updatedPCRecList = mozRecordList;
-            if (mozRecordList) {
+            if (mozRecordList) 
+            {
                 memset(mozRecordList, 0, sizeof(CPalmRecord *) * dwMozCardCount);
                 int i=0;
-                for (i=0; i < dwMozCardCount; i++) {
+                for (i=0; i < dwMozCardCount; i++) 
+                {
                     CMozABConduitRecord * pConduitRecord = new CMozABConduitRecord(mozCardList[i]);
                     CPalmRecord * pMozRecord = new CPalmRecord;
                     pConduitRecord->ConvertToGeneric(*pMozRecord);
@@ -204,9 +218,9 @@ long MozABPCManager::SynchronizePCAB(LONG categoryIndex, LONG categoryId, CPStri
         retval = GEN_ERR_LOW_MEMORY;
 
 
-    if(palmCardList)
         delete palmCardList;
-    if(tempMozABConduitRecList) {
+    if(tempMozABConduitRecList) 
+    {
         for(DWORD j=0; j<updatedPalmRecCount; j++)
             delete tempMozABConduitRecList[j];
         delete tempMozABConduitRecList;
@@ -215,8 +229,8 @@ long MozABPCManager::SynchronizePCAB(LONG categoryIndex, LONG categoryId, CPStri
     return retval;
 }
 
-// this will add all records in a Palm category into a new Mozilla AB 
-long MozABPCManager::AddRecords(LONG categoryIndex, CPString & categoryName,
+// this will add all records in a Palm category into a new or existing Mozilla AB 
+long MozABPCManager::AddRecords(BOOL replaceExisting, LONG categoryIndex, CPString & categoryName,
 					DWORD updatedPalmRecCount, CPalmRecord ** updatedPalmRecList)
 {
     long        retval = 0;
@@ -228,9 +242,12 @@ long MozABPCManager::AddRecords(LONG categoryIndex, CPString & categoryName,
 
     CMozABConduitRecord ** tempMozABConduitRecList = new CMozABConduitRecord*[updatedPalmRecCount];
     nsABCOMCardStruct * palmCardList = new nsABCOMCardStruct[updatedPalmRecCount];
-    if(palmCardList) {
-        for(DWORD i=0; i<updatedPalmRecCount; i++) {
-            if(*updatedPalmRecList) {
+    if(palmCardList) 
+    {
+        for(DWORD i=0; i<updatedPalmRecCount; i++) 
+        {
+            if(*updatedPalmRecList) 
+            {
                 CMozABConduitRecord * pConduitRecord = new CMozABConduitRecord(**updatedPalmRecList);
                 memcpy(&palmCardList[i], &pConduitRecord->m_nsCard, sizeof(nsABCOMCardStruct));
                 tempMozABConduitRecList[i]=pConduitRecord;
@@ -238,7 +255,7 @@ long MozABPCManager::AddRecords(LONG categoryIndex, CPString & categoryName,
             updatedPalmRecList++;
         }
         // get the ABList
-        HRESULT hres = pNsPalmSync->nsAddAllABRecords(FALSE, categoryIndex, categoryName.GetBuffer(0),
+        HRESULT hres = pNsPalmSync->nsAddAllABRecords(FALSE, replaceExisting, categoryIndex, categoryName.GetBuffer(0),
                                                 updatedPalmRecCount, palmCardList);
         if (hres != S_OK)
             retval = (long) hres;
@@ -246,9 +263,10 @@ long MozABPCManager::AddRecords(LONG categoryIndex, CPString & categoryName,
     else
         retval = GEN_ERR_LOW_MEMORY;
 
-    if(palmCardList)
         delete palmCardList;
-    if(tempMozABConduitRecList) {
+    if(tempMozABConduitRecList) 
+    {
+
         for(DWORD i=0; i<updatedPalmRecCount; i++)
             delete tempMozABConduitRecList[i];
         delete tempMozABConduitRecList;
@@ -256,6 +274,17 @@ long MozABPCManager::AddRecords(LONG categoryIndex, CPString & categoryName,
     return retval;
 }
 
+bool MozABPCManager::PCABDeleted(CPString &ABName)
+{
+    IPalmSync     *pNsPalmSync = NULL;
+    // get the interface 
+    if (!InitMozPalmSyncInstance(&pNsPalmSync))
+        return false;
+    BOOL abDeleted;
+    HRESULT hres = pNsPalmSync->nsGetABDeleted(ABName.GetBuffer(0), &abDeleted);
+    return (hres == S_OK) ? abDeleted : false; // assume false;
+
+}
 // this load all records in an Moz AB
 // this function allocates the mozlist as well as the mozRecs, caller should free list and delete recs
 long MozABPCManager::LoadAllRecords(CPString & ABName, DWORD * pPCRecListCount, CPalmRecord *** pPCRecList)

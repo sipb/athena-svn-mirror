@@ -152,11 +152,10 @@ NS_IMETHODIMP nsTableOuterFrame::GetAccessible(nsIAccessible** aAccessible)
 }
 #endif
 
-NS_IMETHODIMP
-nsTableOuterFrame::IsPercentageBase(PRBool& aBase) const
+/* virtual */ PRBool
+nsTableOuterFrame::IsContainingBlock() const
 {
-  aBase = PR_FALSE;
-  return NS_OK;
+  return PR_FALSE;
 }
 
 NS_IMETHODIMP
@@ -176,33 +175,25 @@ nsTableOuterFrame::Init(nsIPresContext*  aPresContext,
   return rv;
 }
 
-NS_IMETHODIMP
-nsTableOuterFrame::FirstChild(nsIPresContext* aPresContext,
-                              nsIAtom*        aListName,
-                              nsIFrame**      aFirstChild) const
+nsIFrame*
+nsTableOuterFrame::GetFirstChild(nsIAtom* aListName) const
 {
-  NS_PRECONDITION(nsnull != aFirstChild, "null OUT parameter pointer");
-  *aFirstChild = (nsLayoutAtoms::captionList == aListName)
-                 ? mCaptionFrame : mFrames.FirstChild(); 
-  return NS_OK;
+  if (nsLayoutAtoms::captionList == aListName) {
+    return mCaptionFrame;
+  }
+  if (!aListName) {
+    return mFrames.FirstChild();
+  }
+  return nsnull;
 }
 
-NS_IMETHODIMP
-nsTableOuterFrame::GetAdditionalChildListName(PRInt32   aIndex,
-                                              nsIAtom** aListName) const
+nsIAtom*
+nsTableOuterFrame::GetAdditionalChildListName(PRInt32 aIndex) const
 {
-  NS_PRECONDITION(nsnull != aListName, "null OUT parameter pointer");
-  if (aIndex < 0) {
-    return NS_ERROR_INVALID_ARG;
+  if (aIndex == NS_TABLE_FRAME_CAPTION_LIST_INDEX) {
+    return nsLayoutAtoms::captionList;
   }
-  *aListName = nsnull;
-  switch (aIndex) {
-  case NS_TABLE_FRAME_CAPTION_LIST_INDEX:
-    *aListName = nsLayoutAtoms::captionList;
-    NS_ADDREF(*aListName);
-    break;
-  }
-  return NS_OK;
+  return nsnull;
 }
 
 NS_IMETHODIMP 
@@ -466,7 +457,7 @@ nsTableOuterFrame::InitChildReflowState(nsIPresContext&    aPresContext,
     if (mInnerTableFrame->NeedToCalcBCBorders()) {
       mInnerTableFrame->CalcBCBorders(aPresContext);
     }
-    collapseBorder  = mInnerTableFrame->GetBCBorder(&aPresContext);
+    collapseBorder  = mInnerTableFrame->GetBCBorder();
     pCollapseBorder = &collapseBorder;
     pCollapsePadding = &collapsePadding;
   }
@@ -636,7 +627,7 @@ nsTableOuterFrame::InvalidateDamage(nsIPresContext* aPresContext,
       damage.UnionRect(damage, *aOldOverflowArea);
     }
   }
-  Invalidate(aPresContext, damage);
+  Invalidate(damage);
 }
 
 nscoord
@@ -1222,6 +1213,11 @@ nsTableOuterFrame::IsAutoWidth(nsIFrame& aTableOrCaption,
 
   const nsStylePosition* position = aTableOrCaption.GetStylePosition();
 
+#ifdef __SUNPRO_CC
+  // Bug 239962, this is a workaround to avoid incorrect code generation by Sun Forte compiler.
+  float percent = position->mWidth.GetPercentValue();
+#endif
+
   switch (position->mWidth.GetUnit()) {
     case eStyleUnit_Auto:         // specified auto width
     case eStyleUnit_Proportional: // illegal for table, so ignored
@@ -1230,7 +1226,11 @@ nsTableOuterFrame::IsAutoWidth(nsIFrame& aTableOrCaption,
       isAuto = PR_FALSE;
       break;
     case eStyleUnit_Percent:
+#ifdef __SUNPRO_CC
+      if (percent > 0.0f) {
+#else
       if (position->mWidth.GetPercentValue() > 0.0f) {
+#endif
         isAuto = PR_FALSE;
         if (aIsPctWidth) {
           *aIsPctWidth = PR_TRUE;
@@ -1933,13 +1933,11 @@ NS_METHOD nsTableOuterFrame::Reflow(nsIPresContext*          aPresContext,
   }
   aStatus = NS_FRAME_COMPLETE;
 
-  PRBool isPaginated;
-  aPresContext->IsPaginated(&isPaginated);
   PRBool needUpdateMetrics = PR_TRUE;
 
   if ((eReflowReason_Resize    == aOuterRS.reason)  &&
       (aOuterRS.availableWidth == mPriorAvailWidth) &&
-      !isPaginated                                  &&
+      !aPresContext->IsPaginated()                  &&
       !::IsPctHeight(mInnerTableFrame)) {
     // don't do much if we are resize reflowed exactly like last time
     aDesiredSize.width  = mRect.width;

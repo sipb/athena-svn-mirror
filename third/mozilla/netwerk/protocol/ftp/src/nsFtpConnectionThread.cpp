@@ -1141,7 +1141,7 @@ nsFtpState::R_pass() {
                 nsresult rv = mURL->GetPrePath(prePath);
                 NS_ASSERTION(NS_SUCCEEDED(rv), "Failed to get prepath");
                 if (NS_SUCCEEDED(rv)) {
-                    pm->RemoveUser(prePath, NS_LITERAL_STRING(""));
+                    pm->RemoveUser(prePath, EmptyString());
                 }
             }
         }
@@ -1192,7 +1192,9 @@ nsFtpState::R_syst() {
         if (( mResponseMsg.Find("L8") > -1) || 
             ( mResponseMsg.Find("UNIX") > -1) || 
             ( mResponseMsg.Find("BSD") > -1) ||
-            ( mResponseMsg.Find("MACOS Peter's Server") > -1))
+            ( mResponseMsg.Find("MACOS Peter's Server") > -1) ||
+            ( mResponseMsg.Find("MVS") > -1) ||
+            ( mResponseMsg.Find("OS/390") > -1))
         {
             mServerType = FTP_UNIX_TYPE;
         }
@@ -1286,7 +1288,9 @@ nsFtpState::R_type() {
 
 nsresult
 nsFtpState::S_cwd() {
-    nsCAutoString cwdStr(mPath);
+    nsCAutoString cwdStr;
+    if (mAction != PUT)
+        cwdStr = mPath;
     if (cwdStr.IsEmpty() || cwdStr.First() != '/')
         cwdStr.Insert(mPwd,0);
     if (mServerType == FTP_VMS_TYPE)
@@ -1651,7 +1655,7 @@ nsFtpState::S_pasv() {
         
         if (sTrans) {
             PRNetAddr addr;
-            rv = sTrans->GetAddress(&addr);
+            rv = sTrans->GetPeerAddr(&addr);
             if (NS_SUCCEEDED(rv)) {
                 if (addr.raw.family == PR_AF_INET6 && !PR_IsNetAddrType(&addr, PR_IpAddrV4Mapped)) {
                     mIPv6ServerAddress = (char *) nsMemory::Alloc(100);
@@ -1860,7 +1864,10 @@ nsFtpState::R_pasv() {
             // hold a reference to the copier so we can cancel it if necessary.
             mDPipeRequest = copier;
 
-            return FTP_S_STOR;
+            // update the current working directory before sending the STOR
+            // command.  this is needed since we might be reusing a control
+            // connection.
+            return FTP_S_CWD;
         }
 
         //
@@ -2221,7 +2228,7 @@ nsFtpState::Init(nsIFTPChannel* aChannel,
     if (NS_FAILED(rv)) return rv;
 
     // Skip leading slash
-    char* fwdPtr = (char *)path.get();
+    char* fwdPtr = path.BeginWriting();
     if (fwdPtr && (*fwdPtr == '/'))
         fwdPtr++;
     if (*fwdPtr != '\0') {
@@ -2242,7 +2249,7 @@ nsFtpState::Init(nsIFTPChannel* aChannel,
 
     if (!uname.IsEmpty() && !uname.Equals(NS_LITERAL_CSTRING("anonymous"))) {
         mAnonymous = PR_FALSE;
-        mUsername = NS_ConvertUTF8toUCS2(NS_UnescapeURL(uname));
+        CopyUTF8toUTF16(NS_UnescapeURL(uname), mUsername);
         
         // return an error if we find a CR or LF in the username
         if (uname.FindCharInSet(CRLF) >= 0)
@@ -2254,7 +2261,7 @@ nsFtpState::Init(nsIFTPChannel* aChannel,
     if (NS_FAILED(rv))
         return rv;
 
-    mPassword = NS_ConvertUTF8toUCS2(NS_UnescapeURL(password));
+    CopyUTF8toUTF16(NS_UnescapeURL(password), mPassword);
 
     // return an error if we find a CR or LF in the password
     if (mPassword.FindCharInSet(CRLF) >= 0)
@@ -2538,7 +2545,7 @@ nsFtpState::ConvertFilespecToVMS(nsCString& fileString)
 
     // Get a writeable copy we can strtok with.
     fileStringCopy = fileString;
-    t = nsCRT::strtok((char *)fileStringCopy.get(), "/", &nextToken);
+    t = nsCRT::strtok(fileStringCopy.BeginWriting(), "/", &nextToken);
     if (t) while (nsCRT::strtok(nextToken, "/", &nextToken)) ntok++; // count number of terms (tokens)
     PR_LOG(gFTPLog, PR_LOG_DEBUG, ("(%x) ConvertFilespecToVMS ntok: %d\n", this, ntok));
     PR_LOG(gFTPLog, PR_LOG_DEBUG, ("(%x) ConvertFilespecToVMS from: \"%s\"\n", this, fileString.get()));
@@ -2567,7 +2574,7 @@ nsFtpState::ConvertFilespecToVMS(nsCString& fileString)
             // Get another copy since the last one was written to.
             fileStringCopy = fileString;
             fileString.Truncate();
-            fileString.Append(nsCRT::strtok((char *)fileStringCopy.get(), 
+            fileString.Append(nsCRT::strtok(fileStringCopy.BeginWriting(), 
                               "/", &nextToken));
             fileString.Append(":[");
             if (ntok > 2) {
@@ -2596,7 +2603,7 @@ nsFtpState::ConvertFilespecToVMS(nsCString& fileString)
             fileStringCopy = fileString;
             fileString.Truncate();
             fileString.Append("[.");
-            fileString.Append(nsCRT::strtok((char*)fileStringCopy.get(),
+            fileString.Append(nsCRT::strtok(fileStringCopy.BeginWriting(),
                               "/", &nextToken));
             if (ntok > 2) {
                 for (int i=2; i<ntok; i++) {

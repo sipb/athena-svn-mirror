@@ -40,8 +40,6 @@
 #define nsDOMSerializer_h__
 
 #include "nsIDOMSerializer.h"
-#include "nsISecurityCheckedComponent.h"
-#include "nsISupportsUtils.h"
 
 class nsDOMSerializer : public nsIDOMSerializer
 {
@@ -52,10 +50,7 @@ public:
   NS_DECL_ISUPPORTS
 
   // nsIDOMSerializer
-  NS_IMETHOD SerializeToString(nsIDOMNode *root, PRUnichar **_retval);
-  NS_IMETHOD SerializeToStream(nsIDOMNode *root, 
-                               nsIOutputStream *stream, 
-                               const char *charset);
+  NS_DECL_NSIDOMSERIALIZER
 };
 
 

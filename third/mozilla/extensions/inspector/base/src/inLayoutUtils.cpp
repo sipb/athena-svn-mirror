@@ -83,11 +83,9 @@ nsIPresShell*
 inLayoutUtils::GetPresShellFor(nsISupports* aThing)
 {
   nsCOMPtr<nsIScriptGlobalObject> so = do_QueryInterface(aThing);
-  nsCOMPtr<nsIDocShell> docShell;
-  so->GetDocShell(getter_AddRefs(docShell));
-  
+
   nsCOMPtr<nsIPresShell> presShell;
-  docShell->GetPresShell(getter_AddRefs(presShell));
+  so->GetDocShell()->GetPresShell(getter_AddRefs(presShell));
 
   return presShell;
 }
@@ -132,10 +130,7 @@ inLayoutUtils::GetEventStateManagerFor(nsIDOMElement *aElement)
   shell->GetPresContext(getter_AddRefs(presContext));
   NS_ASSERTION(presContext, "No pres context");
 
-  nsCOMPtr<nsIEventStateManager> esm;
-  presContext->GetEventStateManager(getter_AddRefs(esm));
-
-  return esm;
+  return presContext->EventStateManager();
 }
 
 nsPoint
@@ -212,7 +207,7 @@ inLayoutUtils::GetScreenOrigin(nsIDOMElement* aElement)
 
           // Get the scale from that Presentation Context
           float p2t;
-          presContext->GetPixelsToTwips(&p2t);
+          p2t = presContext->PixelsToTwips();
 
           // Convert screen rect to twips
           rect->x = NSIntPixelsToTwips(rect->x, p2t);

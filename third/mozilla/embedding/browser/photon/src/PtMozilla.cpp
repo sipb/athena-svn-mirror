@@ -30,6 +30,9 @@
 #include "nsWidgetsCID.h"
 #include "nsIAppShell.h"
 
+#include "nsIContentViewer.h"
+#include "nsIMarkupDocumentViewer.h"
+
 // for profiles
 #include <nsProfileDirServiceProvider.h>
 
@@ -66,6 +69,8 @@
 
 #include "EmbedPrivate.h"
 #include "EmbedWindow.h"
+#include "EmbedDownload.h"
+#include "HeaderSniffer.h"
 #include "PromptService.h"
 #include "PtMozilla.h"
 
@@ -100,6 +105,9 @@ PtWidgetClass_t *PtCreateMozillaClass( void );
 	PtWidgetClassRef_t *PtMozilla = &__PtMozilla; 
 #endif
 
+/* globals */
+char *g_Print_Left_Header_String, *g_Print_Right_Header_String, *g_Print_Left_Footer_String, *g_Print_Right_Footer_String;
+
 void 
 MozSetPreference(PtWidget_t *widget, int type, char *pref, void *data)
 {
@@ -124,19 +132,6 @@ MozSetPreference(PtWidget_t *widget, int type, char *pref, void *data)
 	}
 }
 
-int MozSavePageAs(PtWidget_t *widget, char *fname, int type)
-{
-	PtMozillaWidget_t *moz = (PtMozillaWidget_t *) widget;
-	char dirname[1024];
-
-	if (!fname || !widget) return -1;
-
-	sprintf( dirname, "%s.dir", fname );
-	moz->EmbedRef->SaveAs( fname, dirname );
-
-	return (0);
-}
-
 static void 
 MozLoadURL(PtMozillaWidget_t *moz, char *url)
 {
@@ -146,6 +141,43 @@ MozLoadURL(PtMozillaWidget_t *moz, char *url)
 
 	moz->EmbedRef->SetURI(url);
 	moz->EmbedRef->LoadCurrentURI();
+}
+
+/* watch for an Ph_EV_INFO event in order to detect an Ph_OFFSCREEN_INVALID */
+static int EvInfo( PtWidget_t *widget, void *data, PtCallbackInfo_t *cbinfo )
+{
+	if( cbinfo->event && cbinfo->event->type == Ph_EV_INFO && cbinfo->event->subtype == Ph_OFFSCREEN_INVALID ) {
+		PtMozillaWidget_t *moz = ( PtMozillaWidget_t * ) widget;
+		nsIPref *pref = moz->EmbedRef->GetPrefs();
+		PRBool displayInternalChange = PR_FALSE;
+		pref->GetBoolPref("browser.display.internaluse.graphics_changed", &displayInternalChange);
+		pref->SetBoolPref("browser.display.internaluse.graphics_changed", !displayInternalChange);
+		}
+	return Pt_CONTINUE;
+}
+
+const char* const kPersistContractID = "@mozilla.org/embedding/browser/nsWebBrowserPersist;1";
+
+void MozSaveTarget( char *url, PtMozillaWidget_t *moz )
+{
+	nsresult rv;
+	nsCOMPtr<nsIWebBrowserPersist> webPersist(do_CreateInstance(kPersistContractID, &rv));
+	if( !webPersist ) return;
+
+	nsCOMPtr<nsIURI> uri;
+	NS_NewURI( getter_AddRefs(uri), url );
+
+	/* create a temporary file */
+	char tmp_path[1024];
+	tmpnam( tmp_path );
+	nsCOMPtr<nsILocalFile> tmpFile;
+	NS_NewNativeLocalFile(nsDependentCString( tmp_path ), PR_TRUE, getter_AddRefs(tmpFile));
+
+	/* create a download object, use to sniff the headers for a location indication */
+	HeaderSniffer *sniffer = new HeaderSniffer( webPersist, moz, uri, tmpFile );
+
+	webPersist->SetProgressListener( sniffer );
+	webPersist->SaveURI( uri, nsnull, nsnull, nsnull, nsnull, tmpFile );
 }
 
 // defaults function, called on creation of a widget
@@ -159,9 +191,12 @@ mozilla_defaults( PtWidget_t *widget )
 	moz->EmbedRef = new EmbedPrivate();
 	moz->EmbedRef->Init(widget);
 	moz->EmbedRef->Setup();
-//JPB
+
 	moz->disable_new_windows = 0;
 	moz->disable_exception_dlg = 0;
+	moz->text_zoom = 100;
+	moz->actual_text_zoom = 100;
+	moz->toActivate = 0;
 
 	// widget related
 	basic->flags = Pt_ALL_OUTLINES | Pt_ALL_BEVELS | Pt_FLAT_FILL;
@@ -170,6 +205,8 @@ mozilla_defaults( PtWidget_t *widget )
 			Pt_BOTTOM_ANCHORED_TOP | Pt_RIGHT_ANCHORED_LEFT | Pt_ANCHORS_INVALID;
 
 	cntr->flags |= Pt_CHILD_GETTING_FOCUS;
+
+	PtAddEventHandler( widget, Ph_EV_INFO, EvInfo, NULL );
 }
 
 // widget destroy function
@@ -180,9 +217,6 @@ mozilla_destroy( PtWidget_t *widget )
 
 	if (moz->EmbedRef)
 	{
-		if (moz->download_dest)
-			moz->EmbedRef->CancelSaveURI();
-
 		moz->EmbedRef->Destroy();
 		delete moz->EmbedRef;
 	}
@@ -191,85 +225,41 @@ mozilla_destroy( PtWidget_t *widget )
 static int child_getting_focus( PtWidget_t *widget, PtWidget_t *child, PhEvent_t *ev ) {
 	PtMozillaWidget_t *moz = (PtMozillaWidget_t *) widget;
 	nsCOMPtr<nsPIDOMWindow> piWin;
+
 	moz->EmbedRef->GetPIDOMWindow( getter_AddRefs( piWin ) );
 	if( !piWin ) return Pt_CONTINUE;
 
 	nsCOMPtr<nsIFocusController> focusController;
 	piWin->GetRootFocusController(getter_AddRefs(focusController));
-	if( focusController ) focusController->SetActive( PR_TRUE );
+	if( focusController )
+		focusController->SetActive( PR_TRUE );
+
+	if( moz->toActivate ) {
+		moz->toActivate = 0;
+		piWin->Activate();
+		}
+
 	return Pt_CONTINUE;
 	}
 
-// realized
-static void 
-mozilla_realized( PtWidget_t *widget )
-{
+static int child_losing_focus( PtWidget_t *widget, PtWidget_t *child, PhEvent_t *ev ) {
 	PtMozillaWidget_t *moz = (PtMozillaWidget_t *) widget;
+	nsCOMPtr<nsPIDOMWindow> piWin;
 
-	PtSuperClassRealized(PtContainer, widget);
+	moz->EmbedRef->GetPIDOMWindow( getter_AddRefs( piWin ) );
+	if( !piWin ) return Pt_CONTINUE;
 
-	moz->EmbedRef->Show();
+	nsCOMPtr<nsIFocusController> focusController;
+	piWin->GetRootFocusController(getter_AddRefs(focusController));
+	if( focusController )
+		focusController->SetActive( PR_FALSE );
 
-	// If an initial url was stored, load it
-  	if (moz->url[0])
-		MozLoadURL(moz, moz->url);
-}
+	piWin->Deactivate();
+	moz->toActivate = 1;
 
-
-// unrealized function
-static void 
-mozilla_unrealized( PtWidget_t *widget )
-{
-	PtMozillaWidget_t *moz = (PtMozillaWidget_t *)widget;
-
-	moz->EmbedRef->Hide();
-}
-
-static PpPrintContext_t *moz_construct_print_context( WWWRequest *pPageInfo ) {
-	PpPrintContext_t *pc = NULL;
-	int i;
-	char *tmp;
-	pc = PpPrintCreatePC();
-
-	i = 0;
-	while( pPageInfo->Print.data[i] == '\0' ) i++;
-	tmp = &pPageInfo->Print.data[i];
-
-
-	PpPrintSetPC( pc, INITIAL_PC, 0, Pp_PC_NAME, ( pPageInfo->Print.name != -1 ) ? &tmp[pPageInfo->Print.name]: NULL);
-
-	PpPrintSetPC( pc, INITIAL_PC, 0, Pp_PC_LOCATION, ( pPageInfo->Print.location != -1 ) ? &tmp[pPageInfo->Print.location]: NULL);
-	PpPrintSetPC( pc, INITIAL_PC, 0, Pp_PC_DEVICE, ( pPageInfo->Print.device != -1 ) ? &tmp[pPageInfo->Print.device]: NULL );
-	PpPrintSetPC( pc, INITIAL_PC, 0, Pp_PC_FILTER, ( pPageInfo->Print.filter != -1 ) ? &tmp[pPageInfo->Print.filter]: NULL );
-	PpPrintSetPC( pc, INITIAL_PC, 0, Pp_PC_PREVIEW_APP, ( pPageInfo->Print.preview_app != -1 ) ? &tmp[pPageInfo->Print.preview_app]: NULL );
-
-	PpPrintSetPC( pc, INITIAL_PC, 0, Pp_PC_FILENAME, ( pPageInfo->Print.filename != -1 ) ? &tmp[pPageInfo->Print.filename]: NULL );
-	PpPrintSetPC( pc, INITIAL_PC, 0, Pp_PC_COMMENT, ( pPageInfo->Print.comment != -1 ) ? &tmp[pPageInfo->Print.comment]: NULL );
-	PpPrintSetPC( pc, INITIAL_PC, 0, Pp_PC_DATE, ( pPageInfo->Print.date != -1 ) ? &tmp[pPageInfo->Print.date]: NULL );
-	PpPrintSetPC( pc, INITIAL_PC, 0, Pp_PC_USER_ID, ( pPageInfo->Print.user_id != -1 ) ? &tmp[pPageInfo->Print.user_id]: NULL );
-	PpPrintSetPC( pc, INITIAL_PC, 0, Pp_PC_PAGE_RANGE, &pPageInfo->Print.page_range );
-	PpPrintSetPC( pc, INITIAL_PC, 0, Pp_PC_DO_PREVIEW, &pPageInfo->Print.do_preview );
-
-	PpPrintSetPC( pc, INITIAL_PC, 0, Pp_PC_NONPRINT_MARGINS, &pPageInfo->Print.non_printable_area );
-	PpPrintSetPC( pc, INITIAL_PC, 0, Pp_PC_INTENSITY, &pPageInfo->Print.intensity );
-	PpPrintSetPC( pc, INITIAL_PC, 0, Pp_PC_PRINTER_RESOLUTION, &pPageInfo->Print.printer_resolution );
-	PpPrintSetPC( pc, INITIAL_PC, 0, Pp_PC_PAPER_SIZE, &pPageInfo->Print.paper_size );
-	PpPrintSetPC( pc, INITIAL_PC, 0, Pp_PC_COLLATING_MODE, &pPageInfo->Print.collating_mode );
-	PpPrintSetPC( pc, INITIAL_PC, 0, Pp_PC_DITHERING, &pPageInfo->Print.dithering );
-	PpPrintSetPC( pc, INITIAL_PC, 0, Pp_PC_COPIES, &pPageInfo->Print.copies );
-	PpPrintSetPC( pc, INITIAL_PC, 0, Pp_PC_ORIENTATION, &pPageInfo->Print.orientation );
-	PpPrintSetPC( pc, INITIAL_PC, 0, Pp_PC_DUPLEX, &pPageInfo->Print.duplex );
-	PpPrintSetPC( pc, INITIAL_PC, 0, Pp_PC_PAPER_TYPE, &pPageInfo->Print.paper_type );
-	PpPrintSetPC( pc, INITIAL_PC, 0, Pp_PC_PAPER_SOURCE, &pPageInfo->Print.paper_source );
-	PpPrintSetPC( pc, INITIAL_PC, 0, Pp_PC_INKTYPE, &pPageInfo->Print.inktype );
-	PpPrintSetPC( pc, INITIAL_PC, 0, Pp_PC_COLOR_MODE, &pPageInfo->Print.color_mode );
-	PpPrintSetPC( pc, INITIAL_PC, 0, Pp_PC_MARGINS, &pPageInfo->Print.margins );
-	PpPrintSetPC( pc, INITIAL_PC, 0, Pp_PC_MAX_DEST_SIZE, &pPageInfo->Print.max_dest_size );
-	tmp = pc->control.tmp_target;
-	pc->control = pPageInfo->Print.control;
-	pc->control.tmp_target = tmp;
-	return pc;
+	return Pt_CONTINUE;
 	}
+
 
 static void 
 mozilla_extent(PtWidget_t *widget)
@@ -284,7 +274,7 @@ mozilla_extent(PtWidget_t *widget)
 
 // set resources function
 static void 
-mozilla_modify( PtWidget_t *widget, PtArg_t const *argt ) 
+mozilla_modify( PtWidget_t *widget, PtArg_t const *argt, PtResourceRec_t const *mod )
 {
 	PtMozillaWidget_t *moz = (PtMozillaWidget_t *)widget;
 	nsIPref *pref = moz->EmbedRef->GetPrefs();
@@ -298,9 +288,9 @@ mozilla_modify( PtWidget_t *widget, PtArg_t const *argt )
 		case Pt_ARG_MOZ_NAVIGATE_PAGE:
 			if (moz->EmbedRef)
 			{
-				if (argt->value == WWW_DIRECTION_FWD)
+				if (argt->value == Pt_WEB_DIRECTION_FWD)
 					moz->EmbedRef->Forward();
-				else if (argt->value == WWW_DIRECTION_BACK)
+				else if (argt->value == Pt_WEB_DIRECTION_BACK)
 					moz->EmbedRef->Back();
 				else 
 				{
@@ -310,13 +300,13 @@ mozilla_modify( PtWidget_t *widget, PtArg_t const *argt )
 					dim.w = (argt->value * dim.w)/100;
 					dim.h = (argt->value * dim.h)/100;
 
-					if (argt->value == WWW_DIRECTION_UP)
+					if (argt->value == Pt_WEB_DIRECTION_UP)
 						moz->EmbedRef->ScrollUp(dim.h);
-					else if (argt->value ==	WWW_DIRECTION_DOWN)
+					else if (argt->value ==	Pt_WEB_DIRECTION_DOWN)
 						moz->EmbedRef->ScrollDown(dim.h);
-					else if (argt->value ==	WWW_DIRECTION_LEFT)
+					else if (argt->value ==	Pt_WEB_DIRECTION_LEFT)
 						moz->EmbedRef->ScrollLeft(dim.w);
-					else if (argt->value == WWW_DIRECTION_RIGHT)
+					else if (argt->value == Pt_WEB_DIRECTION_RIGHT)
 						moz->EmbedRef->ScrollRight(dim.w);
 				}
 			}
@@ -334,11 +324,10 @@ mozilla_modify( PtWidget_t *widget, PtArg_t const *argt )
 
 		case Pt_ARG_MOZ_PRINT: 
 			{
-			WWWRequest *pPageInfo = ( WWWRequest * ) argt->value;
-			PpPrintContext_t *pc = moz_construct_print_context( pPageInfo );
+			PpPrintContext_t *pc = ( PpPrintContext_t * ) argt->value;
 			moz->EmbedRef->Print(pc);
 			}
-		    break;
+		  break;
 
 		case Pt_ARG_MOZ_OPTION:
 			mozilla_set_pref(widget, (char*)argt->len, (char*)argt->value);
@@ -378,16 +367,27 @@ mozilla_modify( PtWidget_t *widget, PtArg_t const *argt )
 					break;
 
 				case Pt_MOZ_COMMAND_FIND: {
-					PtWebCommand_t *wdata = ( PtWebCommand_t * ) argt->len;
+					PtWebClient2Command_t *wdata = ( PtWebClient2Command_t * ) argt->len;
 					nsCOMPtr<nsIWebBrowserFind> finder( do_GetInterface( moz->EmbedRef->mWindow->mWebBrowser ) );
-					finder->SetSearchString( NS_ConvertASCIItoUCS2(wdata->FindInfo.szString).get() );
-					finder->SetMatchCase( wdata->FindInfo.flags & FINDFLAG_MATCH_CASE );
-					finder->SetFindBackwards( wdata->FindInfo.flags & FINDFLAG_GO_BACKWARDS );
-					finder->SetWrapFind( wdata->FindInfo.flags & FINDFLAG_START_AT_TOP );
-//				finder->SetEntireWord( entireWord ); /* not defined in voyager */
+					finder->SetSearchString( NS_ConvertASCIItoUCS2(wdata->FindInfo.string).get() );
+					finder->SetMatchCase( wdata->FindInfo.flags & Pt_WEB_FIND_MATCH_CASE );
+					finder->SetFindBackwards( wdata->FindInfo.flags & Pt_WEB_FIND_GO_BACKWARDS );
+					finder->SetWrapFind( wdata->FindInfo.flags & Pt_WEB_FIND_START_AT_TOP );
+					finder->SetEntireWord( wdata->FindInfo.flags & Pt_WEB_FIND_MATCH_WHOLE_WORDS );
 
 					PRBool didFind;
 					finder->FindNext( &didFind );
+					break;
+					}
+
+				case Pt_MOZ_COMMAND_SAVEAS: {
+					PtWebClient2Command_t *wdata = ( PtWebClient2Command_t * ) argt->len;
+					char *dirname = ( char * ) calloc( 1, strlen( wdata->SaveasInfo.filename + 7 ) );
+					if( dirname ) {
+						sprintf( dirname, "%s_files", wdata->SaveasInfo.filename );
+						moz->EmbedRef->SaveAs( wdata->SaveasInfo.filename, dirname );
+						free( dirname );
+						}
 					break;
 					}
 			}
@@ -400,36 +400,22 @@ mozilla_modify( PtWidget_t *widget, PtArg_t const *argt )
 #endif
 				break;
 
-		case Pt_ARG_MOZ_UNKNOWN_RESP: 
-#if 1
-			{
-				PtMozUnknownResp_t *data = ( PtMozUnknownResp_t * ) argt->value;
-				switch( data->response ) 
-				{
-					case WWW_RESPONSE_OK:
-						if( moz->EmbedRef->app_launcher ) {
-							if( moz->download_dest ) free( moz->download_dest );
-							moz->download_dest = strdup( data->filename );
-							moz->EmbedRef->app_launcher->SaveToDisk( NULL, PR_TRUE );
-							}
-						break;
-					case WWW_RESPONSE_CANCEL: {
-							moz->EmbedRef->app_launcher->Cancel( );
-							moz->EmbedRef->app_launcher->CloseProgressWindow( );
-							moz->EmbedRef->app_launcher = NULL;
-							}
-						break;
+		case Pt_ARG_MOZ_UNKNOWN_RESP: {
+			PtWebClient2UnknownData_t *unknown = ( PtWebClient2UnknownData_t * ) argt->value;
+			if( unknown->response == Pt_WEB_RESPONSE_CANCEL ) {
+				EmbedDownload *d = FindDownload( moz, unknown->download_ticket );
+				if( d ) {
+					if( d->mLauncher ) d->mLauncher->Cancel(); /* this will also call the EmbedDownload destructor */
+					else if( d->mPersist ) d->mPersist->CancelSave(); /* this will also call the EmbedDownload destructor */
+					else delete d; /* just in case neither d->mLauncher or d->mPersist was set */
+					}
 				}
 			}
-#endif
 			break;
 
 		case Pt_ARG_MOZ_DOWNLOAD: 
 			{
-				if( moz->download_dest ) 
-					free( moz->download_dest );
-				moz->download_dest = strdup( (char*)argt->len );
-				moz->EmbedRef->SaveURI((char*)argt->value, (char*) argt->len);
+				MozSaveTarget( (char*)argt->value, moz );
 			}
 			break;
 
@@ -445,7 +431,7 @@ mozilla_modify( PtWidget_t *widget, PtArg_t const *argt )
 				len = req->DataHdr.length;
 
 				switch( req->DataHdr.type ) {
-					case WWW_DATA_HEADER:
+					case Pt_WEB_DATA_HEADER:
 						if( !moz->MyBrowser->WebBrowserContainer->IsStreaming( ) ) break;
 
 						/* request the document body */
@@ -456,13 +442,13 @@ mozilla_modify( PtWidget_t *widget, PtArg_t const *argt )
 							memset( &cbinfo, 0, sizeof( cbinfo ) );
 							cbinfo.reason = Pt_CB_MOZ_WEB_DATA_REQ;
 							cbinfo.cbdata = &cb;
-							cb.type = WWW_DATA_BODY;
+							cb.type = Pt_WEB_DATA_BODY;
 							cb.length = 32768;
 							cb.url = moz->url;
 							PtInvokeCallbackList( moz->web_data_req_cb, (PtWidget_t *)moz, &cbinfo);
 							}
 						break;
-					case WWW_DATA_BODY: {
+					case Pt_WEB_DATA_BODY: {
 						if( !moz->MyBrowser->WebBrowserContainer->IsStreaming( ) ) break;
 						if( len )
 							moz->MyBrowser->WebBrowserContainer->AppendToStream( hdata, len );
@@ -475,13 +461,13 @@ mozilla_modify( PtWidget_t *widget, PtArg_t const *argt )
 						memset( &cbinfo, 0, sizeof( cbinfo ) );
 						cbinfo.reason = Pt_CB_MOZ_WEB_DATA_REQ;
 						cbinfo.cbdata = &cb;
-						cb.type = len ? WWW_DATA_BODY : WWW_DATA_CLOSE;
+						cb.type = len ? Pt_WEB_DATA_BODY : Pt_WEB_DATA_CLOSE;
 						cb.length = 32768;
 						cb.url = moz->url;
 						PtInvokeCallbackList( moz->web_data_req_cb, (PtWidget_t *)moz, &cbinfo);
 						}
 						break;
-					case WWW_DATA_CLOSE:
+					case Pt_WEB_DATA_CLOSE:
 						if( !moz->MyBrowser->WebBrowserContainer->IsStreaming( ) ) break;
 						moz->MyBrowser->WebBrowserContainer->CloseStream( );
 						break;
@@ -497,7 +483,7 @@ mozilla_modify( PtWidget_t *widget, PtArg_t const *argt )
 
 // get resources function
 static int 
-mozilla_get_info(PtWidget_t *widget, PtArg_t *argt)
+mozilla_get_info( PtWidget_t *widget, PtArg_t const *argt, PtResourceRec_t const *mod )
 {
 	PtMozillaWidget_t *moz = (PtMozillaWidget_t *) widget;
 	nsIPref *pref = moz->EmbedRef->GetPrefs();
@@ -507,9 +493,9 @@ mozilla_get_info(PtWidget_t *widget, PtArg_t *argt)
 		case Pt_ARG_MOZ_NAVIGATE_PAGE:
 			moz->navigate_flags = 0;
 			if (moz->EmbedRef->CanGoBack())
-				moz->navigate_flags |= ( 1 << WWW_DIRECTION_BACK );
+				moz->navigate_flags |= ( 1 << Pt_WEB_DIRECTION_BACK );
 			if (moz->EmbedRef->CanGoForward())
-				moz->navigate_flags |= ( 1 << WWW_DIRECTION_FWD );
+				moz->navigate_flags |= ( 1 << Pt_WEB_DIRECTION_FWD );
 			*((int **)argt->value) = &moz->navigate_flags;
 			break;
 
@@ -517,31 +503,34 @@ mozilla_get_info(PtWidget_t *widget, PtArg_t *argt)
 			mozilla_get_pref( widget, (char*)argt->len, (char*) argt->value );
 			break;
 
-		case Pt_ARG_MOZ_GET_CONTEXT:
-			if ( moz->rightClickUrl ) 
-				strcpy( (char*) argt->value, moz->rightClickUrl );
-			else 
-				*(char*) argt->value = 0;
+		case Pt_ARG_MOZ_GET_CONTEXT: {
+			if( argt->len & Pt_MOZ_CONTEXT_LINK )
+				*(char**) argt->value = moz->rightClickUrl_link;
+			else if( argt->len & Pt_MOZ_CONTEXT_IMAGE )
+				*(char**) argt->value = moz->rightClickUrl_image;
+			else *(char**) argt->value = moz->rightClickUrl_link;
+			}
 			break;
 
 		case Pt_ARG_MOZ_ENCODING: 
 			{
 			PRUnichar *charset = nsnull;
+			static char encoding[256];
 			pref->GetLocalizedUnicharPref( "intl.charset.default", &charset );
-
-			strcpy( (char*)argt->value, NS_ConvertUCS2toUTF8(charset).get() );
+			strcpy( encoding, NS_ConvertUCS2toUTF8(charset).get() );
+			*(char**)argt->value = encoding;
 			}
 			break;
 
 		case Pt_ARG_MOZ_GET_HISTORY: 
 			{
-				WWWRequest *req = ( WWWRequest * ) argt->len;
+				PtWebClientHistory_t *hist_info = (PtWebClientHistory_t *)argt->len;
 				PtWebClientHistoryData_t *HistoryReplyBuf = (PtWebClientHistoryData_t *) argt->value;
 				int i, j;
 				PRInt32 total;
 				moz->EmbedRef->mSessionHistory->GetCount( &total );
 
-				for( i=total-2, j=0; i>=0 && j<req->History.num; i--, j++) 
+				for( i=total-2, j=0; i>=0 && j<hist_info->num; i--, j++) 
 				{
 					nsIHistoryEntry *entry;
 					moz->EmbedRef->mSessionHistory->GetEntryAtIndex( i, PR_FALSE, &entry );
@@ -552,12 +541,11 @@ mozilla_get_info(PtWidget_t *widget, PtArg_t *argt)
 					entry->GetURI( &url );
 
 					nsString stitle( title );
-					strncpy( HistoryReplyBuf[j].title, ToNewCString(stitle), 127 );
-					HistoryReplyBuf[j].title[127] = '\0';
+					HistoryReplyBuf[j].title = strdup( ToNewCString(stitle) );
 
 					nsCAutoString specString;
 					url->GetSpec(specString);
-					REMOVE_WHEN_NEW_PT_WEB_strcpy( HistoryReplyBuf[j].url, (char *) specString.get() );
+					HistoryReplyBuf[j].url = strdup( (char *) specString.get() );
 				}
 			}
 			break;
@@ -574,9 +562,8 @@ mozilla_set_pref( PtWidget_t *widget, char *option, char *value )
 	nsIPref *pref = moz->EmbedRef->GetPrefs();
 	char buffer[1024];
 
-
 	mozilla_get_pref( widget, option, buffer );
-	if( buffer[0] && !strcmp( value, buffer ) ) 
+	if( buffer[0] && !strcmp( value, buffer ) )
 		return; /* the option is already set */
 
 /* HTML Options */
@@ -604,18 +591,15 @@ mozilla_set_pref( PtWidget_t *widget, char *option, char *value )
 		pref->SetBoolPref( "browser.underline_anchors", !stricmp( value, "TRUE" ) ? PR_TRUE : PR_FALSE );
 		}
 	else if( !strcmp( option, "iUserTextSize" ) ) {
-		int n = atoi( value );
-		/* map our n= 0...4 value into a mozilla font value */
-		/* see xpfe/components/prefwindow/resources/content/pref-fonts.xul, they are also hard-coded there */
-		switch( n ) {
-			case 0: n = VOYAGER_TEXTSIZE0; break;
-			case 1: n = VOYAGER_TEXTSIZE1; break;
-			case 2: n = VOYAGER_TEXTSIZE2; break;
-			case 3: n = VOYAGER_TEXTSIZE3; break;
-			case 4: n = VOYAGER_TEXTSIZE4; break;
+		moz->text_zoom = atoi( value );
+		nsCOMPtr<nsIDOMWindow> domWindow;
+		moz->EmbedRef->mWindow->mWebBrowser->GetContentDOMWindow(getter_AddRefs(domWindow));
+		if(domWindow) {
+			domWindow->SetTextZoom( moz->text_zoom/100. );
+			float vv;
+			domWindow->GetTextZoom( &vv );
+			moz->actual_text_zoom = (int) ( vv * 100 );
 			}
-//		moz->MyBrowser->mPrefs->SetIntPref( "font.size.fixed.x-western", n );
-		pref->SetIntPref( "font.size.variable.x-western", n );
 		}
 	else if( !strcmp( option, "BODY font-family" ) ) {
 		/* set the current font */
@@ -628,38 +612,55 @@ mozilla_set_pref( PtWidget_t *widget, char *option, char *value )
 		sprintf( preference, "font.name.%s.x-western", font_default );
 		pref->SetCharPref( preference, value );
 		}
-	else if( !strcmp( option, "PRE font-family" ) || !strcmp( option, "H* font-family" ) ) {
+  else if( !strcmp( option, "PRE font-family" ) ) {
+    pref->SetCharPref( "font.name.monospace.x-western", value );
+    }
+	else if( !strcmp( option, "H* font-family" ) ) {
 		/* do not set these - use the BODY font-family instead */
 		}
 
 /* SOCKS options */
-	else if( !strcmp( option, "socks_server" ) )
-		pref->SetCharPref( "network.hosts.socks_server", value );
-	else if( !strcmp( option, "socks_port" ) )
-		pref->SetCharPref( "network.hosts.socks_serverport", value );
+	else if( !strcmp( option, "socks_server" ) )	; /* not used */
+	else if( !strcmp( option, "socks_port" ) )		; /* not used */
 	else if( !strcmp( option, "socks_user" ) ) 		; /* not used */
 	else if( !strcmp( option, "socks_app" ) ) 		; /* not used */
 
 /* HTTP options */
-	else if( !strcmp( option, "http_proxy_host" ) )
+
+	else if( !strcmp( option, "enable_proxy" ) ) {
+		if( value && !stricmp( value, "yes" ) )
+			pref->SetIntPref( "network.proxy.type", 1 );
+			else pref->SetIntPref( "network.proxy.type", 0 );
+		}
+	else if( !strcmp( option, "http_proxy_host" ) ) {
 		pref->SetCharPref( "network.proxy.http", value );
-	else if( !strcmp( option, "http_proxy_port" ) )
-		pref->SetCharPref( "network.proxy.http_port", value );
-	else if( !strcmp( option, "proxy_overrides" ) )
+		}
+	else if( !strcmp( option, "http_proxy_port" ) ) {
+		pref->SetIntPref( "network.proxy.http_port", atoi(value) );
+		}
+	else if( !strcmp( option, "proxy_overrides" ) ) {
 		pref->SetCharPref( "network.proxy.no_proxies_on", value );
+		}
+	else if( !strcmp( option, "https_proxy_host" ) ) {
+		pref->SetCharPref( "network.proxy.ssl", value );
+		}
+	else if( !strcmp( option, "https_proxy_port" ) ) {
+		pref->SetIntPref( "network.proxy.ssl_port", atoi(value) );
+		}
+
 
 /* FTP options */
 	else if( !strcmp( option, "ftp_proxy_host" ) )
 		pref->SetCharPref( "network.proxy.ftp", value );
 	else if( !strcmp( option, "ftp_proxy_port" ) )
-		pref->SetCharPref( "network.proxy.ftp_port", value );
+		pref->SetIntPref( "network.proxy.ftp_port", atoi(value) );
 	else if( !strcmp( option, "email_address" ) )		; /* not used */
 
 /* Gopher options */
 	else if( !strcmp( option, "gopher_proxy_host" ) )
 		pref->SetCharPref( "network.proxy.gopher", value );
 	else if( !strcmp( option, "gopher_proxy_port" ) )
-		pref->SetCharPref( "network.proxy.gopher_port", value );
+		pref->SetIntPref( "network.proxy.gopher_port", atoi(value) );
 
 /* TCP/IP options */
 	else if( !strcmp( option, "socket_timeout" ) )
@@ -685,6 +686,13 @@ mozilla_set_pref( PtWidget_t *widget, char *option, char *value )
 	else if( !strcmp( option, "main_index_file" ) ) 		; /* not used */
 	else if( !strcmp( option, "clear_main_cache_on_exit" ) ) 		; /* not used */
 	else if( !strcmp( option, "keep_index_file_updated" ) ) 		; /* not used */
+
+/* memory cache options */
+  else if( !strcmp( option, "memory_cache_kb_size" ) || !strcmp( option, "image_cache_size_KB" ) ) {
+    int kb = atoi( value );
+    if( kb <= 0 ) kb = 100; /* have a minimum threshold */
+    pref->SetIntPref( "browser.cache.memory.capacity", kb );
+    }
 
 /* Miscellaneous options */
 	else if( !strcmp( option, "History_Expire" ) )
@@ -747,10 +755,22 @@ mozilla_set_pref( PtWidget_t *widget, char *option, char *value )
 /* Print options */
 	else if( !strcmp( option, "Print_Header_Font" ) ) 		; /* not used */
 	else if( !strcmp( option, "Print_Header_Font_Size" ) ) 		; /* not used */
-	else if( !strcmp( option, "Print_Left_Header_String" ) ) 		; /* not used */
-	else if( !strcmp( option, "Print_Right_Header_String" ) ) 		; /* not used */
-	else if( !strcmp( option, "Print_Left_Footer_String" ) ) 		; /* not used */
-	else if( !strcmp( option, "Print_Right_Footer_String" ) ) 		; /* not used */
+  else if( !strcmp( option, "Print_Left_Header_String" ) ) {
+    if( g_Print_Left_Header_String ) free( g_Print_Left_Header_String );
+    g_Print_Left_Header_String = strdup( value );
+    }
+  else if( !strcmp( option, "Print_Right_Header_String" ) ) {
+    if( g_Print_Right_Header_String ) free( g_Print_Right_Header_String );
+    g_Print_Right_Header_String = strdup( value );
+    }
+  else if( !strcmp( option, "Print_Left_Footer_String" ) ) {
+    if( g_Print_Left_Footer_String ) free( g_Print_Left_Footer_String );
+    g_Print_Left_Footer_String = strdup( value );
+    }
+  else if( !strcmp( option, "Print_Right_Footer_String" ) ) {
+    if( g_Print_Right_Footer_String ) free( g_Print_Right_Footer_String );
+    g_Print_Right_Footer_String = strdup( value );
+    }
 
 
 /* Miscellaneous options */
@@ -770,6 +790,13 @@ mozilla_set_pref( PtWidget_t *widget, char *option, char *value )
 	else if( !strcmp( option, "Use_Anti_Alias" ) ) 		; /* not used */
 	else if( !strcmp( option, "Use_Explicit_Accept_Headers" ) ) 		; /* not used */
 	else if( !strcmp( option, "Visitation_Horizon" ) ) 		; /* not used */
+
+  else if( !strcmp( option, "Print_Frame" ) )
+    pref->SetCharPref( "user.print.print_frame", value );
+  else if( !strcmp( option, "SetPrintBGColors" ) )
+    pref->SetCharPref( "user.print.SetPrintBGColors", value );
+  else if( !strcmp( option, "SetPrintBGImages" ) )
+    pref->SetCharPref( "user.print.SetPrintBGImages", value );
 
 	pref->SavePrefFile( nsnull );
 	}
@@ -804,35 +831,21 @@ static void mozilla_get_pref( PtWidget_t *widget, char *option, char *value ) {
 		pref->GetBoolPref( "browser.display.use_document_colors", &val );
 		sprintf( value, "%s", val == PR_TRUE ? "FALSE" : "TRUE" );
 		}
-//JPB
 	else if( !strcmp( option, "disable_new_windows" ) ) {
 		sprintf( value, "%s", (moz->disable_new_windows == 1) ? "TRUE" : "FALSE" );
 		}
 	else if( !strcmp( option, "disable_exception_dlg" ) ) {
 		sprintf( value, "%s", (moz->disable_exception_dlg == 1) ? "TRUE" : "FALSE" );
 		}
-//JPB
 	else if( !strcmp( option, "bUnderlineLinks" ) ) {
 		PRBool val;
 		pref->GetBoolPref( "browser.underline_anchors", &val );
 		sprintf( value, "%s", val == PR_TRUE ? "TRUE" : "FALSE" );
 		}
 	else if( !strcmp( option, "iUserTextSize" ) ) {
-		int n;
-//		moz->MyBrowser->mPrefs->GetIntPref( "font.size.fixed.x-western", &n );
-		pref->GetIntPref( "font.size.variable.x-western", &n );
-		/* map our n= 0...4 value into a mozilla font value */
-		/* see xpfe/components/prefwindow/resources/content/pref-fonts.xul, they are also hard-coded there */
-		switch( n ) {
-			case VOYAGER_TEXTSIZE0: n = 0; break;
-			case VOYAGER_TEXTSIZE1: n = 1; break;
-			case VOYAGER_TEXTSIZE2: n = 2; break;
-			case VOYAGER_TEXTSIZE3: n = 3; break;
-			case VOYAGER_TEXTSIZE4: n = 4; break;
-			}
-		sprintf( value, "%d", n );
+		sprintf( value, "%d", moz->text_zoom );
 		}
-	else if( !strcmp( option, "BODY font-family" ) || !strcmp( option, "PRE font-family" ) || !strcmp( option, "H* font-family" ) ) {
+	else if( !strcmp( option, "BODY font-family" ) || !strcmp( option, "H* font-family" ) ) {
 		/* set the current font */
 		char *font_default = NULL, *font = NULL;
 		char preference[256];
@@ -844,17 +857,11 @@ static void mozilla_get_pref( PtWidget_t *widget, char *option, char *value ) {
 		pref->CopyCharPref( preference, &font );
 		strcpy( value, font );
 		}
-
-/* SOCKS options */
-  else if( !strcmp( option, "socks_server" ) ) {
-		char *s = NULL;
-		pref->CopyCharPref( "network.hosts.socks_server", &s );
-		if( s ) strcpy( value, s );
-		}
-  else if( !strcmp( option, "socks_port" ) ) {
-		char *s = NULL;
-		pref->CopyCharPref( "network.hosts.socks_serverport", &s );
-		if( s ) strcpy( value, s );
+	else if( !strcmp( option, "PRE font-family" ) ) {
+		/* set the current font */
+		char *font = NULL;
+		pref->CopyCharPref( "font.name.monospace.x-western", &font );
+		strcpy( value, font );
 		}
 
 /* HTTP options */
@@ -864,15 +871,26 @@ static void mozilla_get_pref( PtWidget_t *widget, char *option, char *value ) {
 		if( s ) strcpy( value, s );
 		}
   else if( !strcmp( option, "http_proxy_port" ) ) {
-		char *s = NULL;
-		pref->CopyCharPref( "network.proxy.http_port", &s );
-		if( s ) strcpy( value, s );
+		int n;
+		pref->GetIntPref( "network.proxy.http_port", &n );
+		sprintf( value, "%d", n );
 		}
   else if( !strcmp( option, "proxy_overrides" ) ) {
 		char *s = NULL;
 		pref->CopyCharPref( "network.proxy.no_proxies_on", &s );
 		if( s ) strcpy( value, s );
 		}
+  else if( !strcmp( option, "https_proxy_host" ) ) {
+		char *s = NULL;
+		pref->CopyCharPref( "network.proxy.ssl", &s );
+		if( s ) strcpy( value, s );
+    }
+  else if( !strcmp( option, "https_proxy_port" ) ) {
+		int n;
+		pref->GetIntPref( "network.proxy.ssl_port", &n );
+		sprintf( value, "%d", n );
+    }
+
 
 /* FTP options */
   else if( !strcmp( option, "ftp_proxy_host" ) ) {
@@ -881,9 +899,9 @@ static void mozilla_get_pref( PtWidget_t *widget, char *option, char *value ) {
 		if( s ) strcpy( value, s );
 		}
   else if( !strcmp( option, "ftp_proxy_port" ) ) {
-		char *s = NULL;
-		pref->CopyCharPref( "network.proxy.ftp_port", &s );
-		if( s ) strcpy( value, s );
+		int n;
+		pref->GetIntPref( "network.proxy.ftp_port", &n );
+		sprintf( value, "%d", n );
 		}
 
 /* Gopher options */
@@ -893,9 +911,9 @@ static void mozilla_get_pref( PtWidget_t *widget, char *option, char *value ) {
 		if( s ) strcpy( value, s );
 		}
   else if( !strcmp( option, "gopher_proxy_port" ) ) {
-		char *s = NULL;
-		pref->CopyCharPref( "gopher_proxy_port", &s );
-		if( s ) strcpy( value, s );
+		int n;
+		pref->GetIntPref( "gopher_proxy_port", &n );
+		sprintf( value, "%d", n );
 		}
 
 /* TCP/IP options */
@@ -950,16 +968,18 @@ static void mozilla_get_pref( PtWidget_t *widget, char *option, char *value ) {
 	else if( !strcmp( option, "quantize_jpegs" ) ) {
 		strcpy( value, "FALSE" ); /* even if not used, match this with the default value */
 		}
+	else if( !strcmp( option, "ServerId" ) ) {
+		strcpy( value, "mozserver" );
+		}
 	else *value = 0;
 
 	}
 
-/* static */
-static int
-StartupProfile(char *sProfileDir, char *sProfileName)
+int sProfileDirCreated;
+static int StartupProfile( char *sProfileDir )
 {
-  	// initialize profiles
-  	if (sProfileDir && sProfileName) 
+	// initialize profiles
+	if(sProfileDir) 
 	{
 		nsresult rv;
 		nsCOMPtr<nsILocalFile> profileDir;
@@ -974,12 +994,13 @@ StartupProfile(char *sProfileDir, char *sProfileName)
 		// if it exists and it isn't a directory then give up now.
 		if (!exists) 
 		{
-		  	rv = profileDir->Create(nsIFile::DIRECTORY_TYPE, 0700);
-		  	if NS_FAILED(rv)
+		 	rv = profileDir->Create(nsIFile::DIRECTORY_TYPE, 0700);
+		 	if( NS_FAILED(rv) )
 				return NS_ERROR_FAILURE;
+			sProfileDirCreated = 1;
 		}
 		else if (exists && !isDir)
-		  	return NS_ERROR_FAILURE;
+		 	return NS_ERROR_FAILURE;
 
 		nsCOMPtr<nsProfileDirServiceProvider> locProvider;
 		NS_NewProfileDirServiceProvider(PR_TRUE, getter_AddRefs(locProvider));
@@ -995,47 +1016,42 @@ StartupProfile(char *sProfileDir, char *sProfileName)
 		rv = locProvider->SetProfileDir(profileDir);
 		if (NS_FAILED(rv))
 		  return rv;
-
   	}
   
 	return NS_OK;
 }
 
 // startup the mozilla embedding engine
-static int
-StartupEmbedding()
+static int StartupEmbedding()
 {
-    nsresult rv;
-	char *profile_dir;
+  nsresult rv;
 
 #ifdef _BUILD_STATIC_BIN
   // Initialize XPCOM's module info table
   NSGetStaticModuleInfo = ph_getModuleInfo;
 #endif
-    
-    rv = NS_InitEmbedding(nsnull, nsnull);
-    if (NS_FAILED(rv))
-      return (-1);
 
-	profile_dir = (char *)alloca(strlen(getenv("HOME")) + strlen("/.ph") + 1);
-	sprintf(profile_dir, "%s/.ph", getenv("HOME"));
-    rv = StartupProfile(profile_dir, "mozilla");
-    if (NS_FAILED(rv))
-      	NS_WARNING("Warning: Failed to start up profiles.\n");
+  rv = NS_InitEmbedding(nsnull, nsnull);
+  if( NS_FAILED( rv ) ) return -1;
+
+	char *profile_dir;
+	profile_dir = (char *)alloca(strlen(getenv("HOME")) + strlen("/.ph/mozilla") + 1);
+	sprintf(profile_dir, "%s/.ph/mozilla", getenv("HOME"));
+  rv = StartupProfile( profile_dir );
+  if( NS_FAILED( rv ) )
+		NS_WARNING("Warning: Failed to start up profiles.\n");
     
-    nsCOMPtr<nsIAppShell> appShell;
-    appShell = do_CreateInstance(kAppShellCID);
-    if (!appShell) 
-	{
+  nsCOMPtr<nsIAppShell> appShell;
+  appShell = do_CreateInstance(kAppShellCID);
+  if( !appShell ) {
 	    NS_WARNING("Failed to create appshell in EmbedPrivate::PushStartup!\n");
     	return (-1);
-    }
-    nsIAppShell * sAppShell = appShell.get();
-    NS_ADDREF(sAppShell);
-    sAppShell->Create(0, nsnull);
-    sAppShell->Spinup();
-
-	return (0);
+    	}
+  nsIAppShell * sAppShell = appShell.get();
+  NS_ADDREF(sAppShell);
+  sAppShell->Create(0, nsnull);
+  sAppShell->Spinup();
+	return 0;
 }
 
 /* the translation string that is passed by voyager ( Pt_ARG_WEB_ENCODING ) ( taken from /usr/photon/translations/charsets ->mime field ) */
@@ -1063,8 +1079,9 @@ PtWidgetClass_t *PtCreateMozillaClass( void )
 		{ Pt_ARG_MOZ_WEB_DATA_URL,     	mozilla_modify, Pt_QUERY_PREVENT },
 		{ Pt_ARG_MOZ_WEB_DATA,         	mozilla_modify, Pt_QUERY_PREVENT },
 		{ Pt_ARG_MOZ_UNKNOWN_RESP,      mozilla_modify,	Pt_QUERY_PREVENT },
-		{ Pt_ARG_MOZ_DOWNLOAD,					mozilla_modify,	Pt_QUERY_PREVENT },
+		{ Pt_ARG_MOZ_DOWNLOAD,          mozilla_modify,	Pt_QUERY_PREVENT },
 		{ Pt_ARG_MOZ_AUTH_CTRL,					NULL, NULL, Pt_ARG_IS_POINTER( PtMozillaWidget_t, moz_auth_ctrl ) },
+		{ Pt_ARG_MOZ_UNKNOWN_CTRL,			NULL, NULL, Pt_ARG_IS_POINTER( PtMozillaWidget_t, moz_unknown_ctrl ) },
 		{ Pt_CB_MOZ_INFO,				NULL, NULL, Pt_ARG_IS_CALLBACK_LIST(PtMozillaWidget_t, info_cb) },
 		{ Pt_CB_MOZ_START,				NULL, NULL, Pt_ARG_IS_CALLBACK_LIST(PtMozillaWidget_t, start_cb) },
 		{ Pt_CB_MOZ_COMPLETE,			NULL, NULL, Pt_ARG_IS_CALLBACK_LIST(PtMozillaWidget_t, complete_cb) },
@@ -1085,6 +1102,7 @@ PtWidgetClass_t *PtCreateMozillaClass( void )
 		{ Pt_CB_MOZ_WEB_DATA_REQ,		NULL, NULL, Pt_ARG_IS_CALLBACK_LIST(PtMozillaWidget_t, web_data_req_cb) },
 		{ Pt_CB_MOZ_UNKNOWN,				NULL, NULL, Pt_ARG_IS_CALLBACK_LIST(PtMozillaWidget_t, web_unknown_cb) },
 		{ Pt_CB_MOZ_ERROR,					NULL, NULL, Pt_ARG_IS_CALLBACK_LIST(PtMozillaWidget_t, web_error_cb) },
+		{ Pt_CB_MOZ_DOWNLOAD,				NULL, NULL, Pt_ARG_IS_CALLBACK_LIST(PtMozillaWidget_t, web_download_cb) }
 	};
 
 	static const PtArg_t args[] = 
@@ -1092,12 +1110,11 @@ PtWidgetClass_t *PtCreateMozillaClass( void )
 		{ Pt_SET_VERSION, 200},
 		{ Pt_SET_STATE_LEN, sizeof( PtMozillaWidget_t ) },
 		{ Pt_SET_DFLTS_F, (long)mozilla_defaults },
-		{ Pt_SET_REALIZED_F, (long)mozilla_realized },
-		{ Pt_SET_UNREALIZE_F, (long)mozilla_unrealized },
 		{ Pt_SET_EXTENT_F, (long)mozilla_extent },
 		{ Pt_SET_FLAGS, Pt_RECTANGULAR, Pt_RECTANGULAR },
 		{ Pt_SET_DESTROY_F, (long) mozilla_destroy },
 		{ Pt_SET_CHILD_GETTING_FOCUS_F, ( long ) child_getting_focus },
+		{ Pt_SET_CHILD_LOSING_FOCUS_F, ( long ) child_losing_focus },
 		{ Pt_SET_RESOURCES, (long) resources },
 		{ Pt_SET_NUM_RESOURCES, sizeof( resources )/sizeof( resources[0] ) },
 		{ Pt_SET_DESCRIPTION, (long) "PtMozilla" },

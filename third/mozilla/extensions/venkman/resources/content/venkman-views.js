@@ -520,12 +520,18 @@ function lv_init ()
     
     console.prefManager.addPrefs(prefs);
 
+    this.cmdary =
+        [
+         ["copy-qual-name", cmdCopyQualName, 0]
+        ];
+
     console.menuSpecs["context:locals"] = {
         getContext: this.getContext,
         items:
         [
          ["change-value", {enabledif: "cx.parentValue"}],
          ["watch-expr"],
+         ["copy-qual-name", {enabledif: "has('expression')"}],
          ["-"],
          ["set-eval-obj", {type: "checkbox",
                            checkedif: "has('jsdValue') && " +
@@ -557,6 +563,17 @@ function lv_init ()
     this.jsdFrame = null;
     this.savedStates = new Object();
     this.stateTags = new Array();
+}
+
+function cmdCopyQualName (e)
+{
+    const CLIPBOARD_CTRID = "@mozilla.org/widget/clipboardhelper;1";
+    const nsIClipboardHelper = Components.interfaces.nsIClipboardHelper;
+
+    var clipboardHelper =
+        Components.classes[CLIPBOARD_CTRID].getService(nsIClipboardHelper);
+
+    clipboardHelper.copyString(e.expression);
 }
 
 console.views.locals.clear =
@@ -2961,10 +2978,11 @@ function s2v_createframe (sourceTab, index, raiseFlag)
     sourceTab.tab = tab;
 
     var tabPanel = document.createElement("tabpanel");
-    tabPanel.setAttribute ("flex", "1");
     var iframe = document.createElement("browser");
     iframe.setAttribute ("flex", "1");
     iframe.setAttribute ("context", "context:source2");
+    iframe.setAttribute ("disablehistory", "true");
+    iframe.setAttribute ("disablesecurity", "true");
     iframe.setAttribute ("type", "content");
     iframe.setAttribute ("onclick",
                          "console.views.source2.onSourceClick(event);");

@@ -53,6 +53,8 @@
 #include "nsILookAndFeel.h"
 #include "nsIDeviceContext.h"
 #include "nsTransform2D.h"
+#include "nsIMenuFrame.h"
+#include "nsIMenuParent.h"
 #include "prlink.h"
 
 #include <gdk/gdkprivate.h>
@@ -84,8 +86,10 @@ nsNativeThemeGTK::nsNativeThemeGTK()
   mFirstTabAtom = do_GetAtom("first-tab");
   mCurPosAtom = do_GetAtom("curpos");
   mMaxPosAtom = do_GetAtom("maxpos");
+  mMenuActiveAtom = do_GetAtom("_moz-menuactive");
 
   memset(mDisabledWidgetTypes, 0, sizeof(mDisabledWidgetTypes));
+  memset(mSafeWidgetStates, 0, sizeof(mSafeWidgetStates));
 
   // Look up the symbol for gtk_style_get_prop_experimental
   PRLibrary* gtkLibrary;
@@ -153,10 +157,8 @@ static PRInt32 GetContentState(nsIFrame* aFrame)
 
   nsCOMPtr<nsIPresContext> context;
   shell->GetPresContext(getter_AddRefs(context));
-  nsCOMPtr<nsIEventStateManager> esm;
-  shell->GetPresContext()->GetEventStateManager(getter_AddRefs(esm));
   PRInt32 flags = 0;
-  esm->GetContentState(aFrame->GetContent(), flags);
+  context->EventStateManager()->GetContentState(aFrame->GetContent(), flags);
   return flags;
 }
 
@@ -164,12 +166,14 @@ static PRBool CheckBooleanAttr(nsIFrame* aFrame, nsIAtom* aAtom)
 {
   if (!aFrame)
     return PR_FALSE;
+
+  nsIContent* content = aFrame->GetContent();
+  if (content->IsContentOfType(nsIContent::eHTML))
+    return content->HasAttr(kNameSpaceID_None, aAtom);
+
   nsAutoString attr;
-  nsresult res = aFrame->GetContent()->GetAttr(kNameSpaceID_None, aAtom, attr);
-  if (res == NS_CONTENT_ATTR_NO_VALUE ||
-      (res != NS_CONTENT_ATTR_NOT_THERE && attr.IsEmpty()))
-    return PR_TRUE; // This handles the HTML case (an attr with no value is like a true val)
-  return attr.EqualsIgnoreCase("true"); // This handles the XUL case.
+  content->GetAttr(kNameSpaceID_None, aAtom, attr);
+  return attr.Equals(NS_LITERAL_STRING("true")); // This handles the XUL case.
 }
 
 static PRInt32 CheckIntegerAttr(nsIFrame *aFrame, nsIAtom *aAtom)
@@ -205,6 +209,33 @@ static void SetWidgetTypeDisabled(PRUint8* aDisabledVector, PRUint8 aWidgetType)
   aDisabledVector[aWidgetType >> 3] |= (1 << (aWidgetType & 7));
 }
 
+static inline PRUint16
+GetWidgetStateKey(PRUint8 aWidgetType, GtkWidgetState *aWidgetState)
+{
+  return (aWidgetState->active |
+          aWidgetState->focused << 1 |
+          aWidgetState->inHover << 2 |
+          aWidgetState->disabled << 3 |
+          aWidgetState->isDefault << 4 |
+          aWidgetType << 5);
+}
+
+static PRBool IsWidgetStateSafe(PRUint8* aSafeVector,
+                                PRUint8 aWidgetType,
+                                GtkWidgetState *aWidgetState)
+{
+  PRUint8 key = GetWidgetStateKey(aWidgetType, aWidgetState);
+  return aSafeVector[key >> 3] & (1 << (key & 7));
+}
+
+static void SetWidgetStateSafe(PRUint8 *aSafeVector,
+                               PRUint8 aWidgetType,
+                               GtkWidgetState *aWidgetState)
+{
+  PRUint8 key = GetWidgetStateKey(aWidgetType, aWidgetState);
+  aSafeVector[key >> 3] |= (1 << (key & 7));
+}
+
 PRBool
 nsNativeThemeGTK::GetGtkWidgetAndState(PRUint8 aWidgetType, nsIFrame* aFrame,
                                        GtkThemeWidgetType& aGtkWidgetType,
@@ -216,20 +247,25 @@ nsNativeThemeGTK::GetGtkWidgetAndState(PRUint8 aWidgetType, nsIFrame* aFrame,
       // reset the entire struct to zero
       memset(aState, 0, sizeof(GtkWidgetState));
     } else {
+
       // for dropdown textfields, look at the parent frame (the textbox)
       if (aWidgetType == NS_THEME_DROPDOWN_TEXTFIELD)
         aFrame = aFrame->GetParent();
 
       PRInt32 eventState = GetContentState(aFrame);
 
-      aState->active = (eventState & NS_EVENT_STATE_ACTIVE);
+      aState->disabled = IsDisabled(aFrame);
+      aState->active  = (eventState & NS_EVENT_STATE_ACTIVE) == NS_EVENT_STATE_ACTIVE;
+      aState->focused = (eventState & NS_EVENT_STATE_FOCUS) == NS_EVENT_STATE_FOCUS;
+      aState->inHover = (eventState & NS_EVENT_STATE_HOVER) == NS_EVENT_STATE_HOVER;
+      aState->isDefault = FALSE; // XXX fix me
+      aState->canDefault = FALSE; // XXX fix me
 
       if (aWidgetType == NS_THEME_TEXTFIELD ||
           aWidgetType == NS_THEME_DROPDOWN_TEXTFIELD ||
-          aWidgetType == NS_THEME_RADIO_CONTAINER)
+          aWidgetType == NS_THEME_RADIO_CONTAINER) {
         aState->focused = CheckBooleanAttr(aFrame, mFocusedAtom);
-      else
-        aState->focused = (eventState & NS_EVENT_STATE_FOCUS);
+      }
 
       if (aWidgetType == NS_THEME_SCROLLBAR_THUMB_VERTICAL ||
           aWidgetType == NS_THEME_SCROLLBAR_THUMB_HORIZONTAL) {
@@ -241,10 +277,33 @@ nsNativeThemeGTK::GetGtkWidgetAndState(PRUint8 aWidgetType, nsIFrame* aFrame,
         aState->maxpos = CheckIntegerAttr(tmpFrame, mMaxPosAtom);
       }
 
-      aState->inHover = (eventState & NS_EVENT_STATE_HOVER);
-      aState->disabled = IsDisabled(aFrame);
-      aState->isDefault = FALSE; // XXX fix me
-      aState->canDefault = FALSE; // XXX fix me
+      // menu item state is determined by the attribute "_moz-menuactive",
+      // and not by the mouse hovering (accessibility).  as a special case,
+      // menus which are children of a menu bar are only marked as prelight
+      // if they are open, not on normal hover.
+
+      if (aWidgetType == NS_THEME_MENUITEM) {
+        PRBool isTopLevel = PR_FALSE;
+        nsIMenuFrame *menuFrame;
+        CallQueryInterface(aFrame, &menuFrame);
+
+        if (menuFrame) {
+          nsIMenuParent *menuParent;
+          menuFrame->GetMenuParent(&menuParent);
+          if (menuParent)
+            menuParent->IsMenuBar(isTopLevel);
+        }
+
+        if (isTopLevel) {
+          PRBool isOpen;
+          menuFrame->MenuIsOpen(isOpen);
+          aState->inHover = isOpen;
+        } else {
+          aState->inHover = CheckBooleanAttr(aFrame, mMenuActiveAtom);
+        }
+
+        aState->active = FALSE;
+      }
     }
   }
 
@@ -313,7 +372,7 @@ nsNativeThemeGTK::GetGtkWidgetAndState(PRUint8 aWidgetType, nsIFrame* aFrame,
   case NS_THEME_RADIO_CONTAINER:
     aGtkWidgetType = MOZ_GTK_RADIOBUTTON_CONTAINER;
     break;
-  case NS_THEME_TOOLBOX:
+  case NS_THEME_TOOLBAR:
     aGtkWidgetType = MOZ_GTK_TOOLBAR;
     break;
   case NS_THEME_TOOLTIP:
@@ -352,6 +411,19 @@ nsNativeThemeGTK::GetGtkWidgetAndState(PRUint8 aWidgetType, nsIFrame* aFrame,
 
       aGtkWidgetType = MOZ_GTK_TAB;
     }
+    break;
+  case NS_THEME_MENUBAR:
+    aGtkWidgetType = MOZ_GTK_MENUBAR;
+    break;
+  case NS_THEME_MENUPOPUP:
+    aGtkWidgetType = MOZ_GTK_MENUPOPUP;
+    break;
+  case NS_THEME_MENUITEM:
+    aGtkWidgetType = MOZ_GTK_MENUITEM;
+    break;
+  case NS_THEME_WINDOW:
+  case NS_THEME_DIALOG:
+    aGtkWidgetType = MOZ_GTK_WINDOW;
     break;
   default:
     return PR_FALSE;
@@ -398,27 +470,35 @@ nsNativeThemeGTK::DrawWidgetBackground(nsIRenderingContext* aContext,
   NS_ASSERTION(!IsWidgetTypeDisabled(mDisabledWidgetTypes, aWidgetType),
                "Trying to render an unsafe widget!");
 
-  gLastXError = 0;
-  XErrorHandler oldHandler = XSetErrorHandler(NativeThemeErrorHandler);
+  PRBool safeState = IsWidgetStateSafe(mSafeWidgetStates, aWidgetType, &state);
+  XErrorHandler oldHandler = nsnull;
+  if (!safeState) {
+    gLastXError = 0;
+    oldHandler = XSetErrorHandler(NativeThemeErrorHandler);
+  }
 
   moz_gtk_widget_paint(gtkWidgetType, window, &gdk_rect, &gdk_clip, &state,
                        flags);
 
-  gdk_flush();
-  XSetErrorHandler(oldHandler);
+  if (!safeState) {
+    gdk_flush();
+    XSetErrorHandler(oldHandler);
 
-  if (gLastXError) {
+    if (gLastXError) {
 #ifdef DEBUG
-    printf("GTK theme failed for widget type %d, error was %d, state was "
-           "[active=%d,focused=%d,inHover=%d,disabled=%d]\n",
-           aWidgetType, gLastXError, state.active, state.focused,
-           state.inHover, state.disabled);
+      printf("GTK theme failed for widget type %d, error was %d, state was "
+             "[active=%d,focused=%d,inHover=%d,disabled=%d]\n",
+             aWidgetType, gLastXError, state.active, state.focused,
+             state.inHover, state.disabled);
 #endif
-    NS_WARNING("GTK theme failed; disabling unsafe widget");
-    SetWidgetTypeDisabled(mDisabledWidgetTypes, aWidgetType);
-    // force refresh of the window, because the widget was not
-    // successfully drawn it must be redrawn using the default look
-    RefreshWidgetWindow(aFrame);
+      NS_WARNING("GTK theme failed; disabling unsafe widget");
+      SetWidgetTypeDisabled(mDisabledWidgetTypes, aWidgetType);
+      // force refresh of the window, because the widget was not
+      // successfully drawn it must be redrawn using the default look
+      RefreshWidgetWindow(aFrame);
+    } else {
+      SetWidgetStateSafe(mSafeWidgetStates, aWidgetType, &state);
+    }
   }
 
   return NS_OK;
@@ -546,7 +626,11 @@ nsNativeThemeGTK::WidgetStateChanged(nsIFrame* aFrame, PRUint8 aWidgetType,
       aWidgetType == NS_THEME_PROGRESSBAR_CHUNK_VERTICAL ||
       aWidgetType == NS_THEME_PROGRESSBAR ||
       aWidgetType == NS_THEME_PROGRESSBAR_VERTICAL ||
-      aWidgetType == NS_THEME_TOOLTIP) {
+      aWidgetType == NS_THEME_MENUBAR ||
+      aWidgetType == NS_THEME_MENUPOPUP ||
+      aWidgetType == NS_THEME_TOOLTIP ||
+      aWidgetType == NS_THEME_WINDOW ||
+      aWidgetType == NS_THEME_DIALOG) {
     *aShouldRepaint = PR_FALSE;
     return NS_OK;
   }
@@ -563,7 +647,8 @@ nsNativeThemeGTK::WidgetStateChanged(nsIFrame* aFrame, PRUint8 aWidgetType,
     // disabled, checked, dlgtype, default, etc.
     *aShouldRepaint = PR_FALSE;
     if (aAttribute == mDisabledAtom || aAttribute == mCheckedAtom ||
-        aAttribute == mSelectedAtom)
+        aAttribute == mSelectedAtom || aAttribute == mFocusedAtom ||
+        aAttribute == mMenuActiveAtom)
       *aShouldRepaint = PR_TRUE;
   }
 
@@ -596,8 +681,8 @@ nsNativeThemeGTK::ThemeSupportsWidget(nsIPresContext* aPresContext,
   case NS_THEME_BUTTON:
   case NS_THEME_RADIO:
   case NS_THEME_CHECKBOX:
-  case NS_THEME_TOOLBOX:
-    // case NS_THEME_TOOLBAR:  (not in skin)
+  case NS_THEME_TOOLBOX: // N/A
+  case NS_THEME_TOOLBAR:
   case NS_THEME_TOOLBAR_BUTTON:
   case NS_THEME_TOOLBAR_DUAL_BUTTON: // so we can override the border with 0
     // case NS_THEME_TOOLBAR_DUAL_BUTTON_DROPDOWN:
@@ -653,10 +738,13 @@ nsNativeThemeGTK::ThemeSupportsWidget(nsIPresContext* aPresContext,
     // case NS_THEME_SLIDER_TICK:
   case NS_THEME_CHECKBOX_CONTAINER:
   case NS_THEME_RADIO_CONTAINER:
-    // case NS_THEME_WINDOW:
-    // case NS_THEME_DIALOG:
-    // case NS_THEME_MENU:
-    // case NS_THEME_MENUBAR:
+#ifdef MOZ_WIDGET_GTK2
+  case NS_THEME_MENUBAR:
+  case NS_THEME_MENUPOPUP:
+  case NS_THEME_MENUITEM:
+  case NS_THEME_WINDOW:
+  case NS_THEME_DIALOG:
+#endif
     return PR_TRUE;
   }
 

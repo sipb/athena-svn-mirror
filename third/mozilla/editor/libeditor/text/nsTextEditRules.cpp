@@ -543,10 +543,12 @@ nsTextEditRules::WillInsertText(PRInt32          aAction,
   // 1. paste up to the first newline
   // 2. replace newlines with spaces
   // 3. strip newlines
+  // 4. replace with commas
   // So find out what we're expected to do:
   enum {
     ePasteIntact = 0, ePasteFirstLine = 1,
-    eReplaceWithSpaces = 2, eStripNewlines = 3
+    eReplaceWithSpaces = 2, eStripNewlines = 3, 
+    eReplaceWithCommas = 4
   };
   PRInt32 singleLineNewlineBehavior = 1;
   nsCOMPtr<nsIPrefBranch> prefBranch =
@@ -573,6 +575,11 @@ nsTextEditRules::WillInsertText(PRInt32          aAction,
       PRInt32 firstCRLF = tString.FindCharInSet(CRLF);
       if (firstCRLF > 0)
         tString.Truncate(firstCRLF);
+    }
+    else if (singleLineNewlineBehavior == eReplaceWithCommas)
+    {
+      tString.Trim(CRLF, PR_TRUE, PR_TRUE);
+      tString.ReplaceChar(CRLF, ',');
     }
     else // even if we're pasting newlines, don't paste leading/trailing ones
       tString.Trim(CRLF, PR_TRUE, PR_TRUE);
@@ -1120,14 +1127,12 @@ nsTextEditRules::ReplaceNewlines(nsIDOMRange *aRange)
   nsCOMArray<nsIDOMCharacterData> arrayOfNodes;
   
   // gather up a list of editable preformatted text nodes
-  while (NS_ENUMERATOR_FALSE == iter->IsDone())
+  while (!iter->IsDone())
   {
-    nsCOMPtr<nsIContent> content;
-    res = iter->CurrentNode(getter_AddRefs(content));
-    if (NS_FAILED(res)) return res;
-    nsCOMPtr<nsIDOMNode> node = do_QueryInterface(content);
-    if (!node) return NS_ERROR_FAILURE;
-    
+    nsCOMPtr<nsIDOMNode> node = do_QueryInterface(iter->GetCurrentNode());
+    if (!node)
+      return NS_ERROR_FAILURE;
+
     if (mEditor->IsTextNode(node) && mEditor->IsEditable(node))
     {
       PRBool isPRE;
@@ -1139,8 +1144,7 @@ nsTextEditRules::ReplaceNewlines(nsIDOMRange *aRange)
         arrayOfNodes.AppendObject(data);
       }
     }
-    res = iter->Next();
-    if (NS_FAILED(res)) return res;
+    iter->Next();
   }
   
   // replace newlines with breaks.  have to do this left to right,

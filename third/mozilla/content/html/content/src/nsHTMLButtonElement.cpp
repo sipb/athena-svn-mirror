@@ -60,7 +60,7 @@
 #include "nsUnicharUtils.h"
 
 
-class nsHTMLButtonElement : public nsGenericHTMLContainerFormElement,
+class nsHTMLButtonElement : public nsGenericHTMLFormElement,
                             public nsIDOMHTMLButtonElement,
                             public nsIDOMNSHTMLButtonElement
 {
@@ -72,19 +72,24 @@ public:
   NS_DECL_ISUPPORTS_INHERITED
 
   // nsIDOMNode
-  NS_FORWARD_NSIDOMNODE_NO_CLONENODE(nsGenericHTMLContainerFormElement::)
+  NS_FORWARD_NSIDOMNODE_NO_CLONENODE(nsGenericHTMLFormElement::)
 
   // nsIDOMElement
-  NS_FORWARD_NSIDOMELEMENT(nsGenericHTMLContainerFormElement::)
+  NS_FORWARD_NSIDOMELEMENT(nsGenericHTMLFormElement::)
 
   // nsIDOMHTMLElement
-  NS_FORWARD_NSIDOMHTMLELEMENT(nsGenericHTMLContainerElement::)
+  NS_FORWARD_NSIDOMHTMLELEMENT(nsGenericHTMLFormElement::)
 
   // nsIDOMHTMLButtonElement
   NS_DECL_NSIDOMHTMLBUTTONELEMENT
 
   // nsIDOMNSHTMLButtonElement
-  NS_DECL_NSIDOMNSHTMLBUTTONELEMENT
+  // Can't just use the macro, since it shares GetType with
+  // nsIDOMHTMLButtonElement
+  NS_IMETHOD Blur();
+  NS_IMETHOD Focus();
+  NS_IMETHOD Click();
+  NS_IMETHOD SetType(const nsAString& aType);
 
   // overrided nsIFormControl method
   NS_IMETHOD_(PRInt32) GetType() { return mType; }
@@ -93,23 +98,18 @@ public:
                                nsIContent* aSubmitElement);
 
   // nsIContent overrides...
-  NS_IMETHOD GetAttribute(PRInt32 aNameSpaceID, nsIAtom* aName,
-                          nsAString& aResult) const;
-  NS_IMETHOD SetAttribute(PRInt32 aNameSpaceID, nsIAtom* aName,
-                          const nsAString& aValue, PRBool aNotify);
-  NS_IMETHOD SetFocus(nsIPresContext* aPresContext);
-  NS_IMETHOD RemoveFocus(nsIPresContext* aPresContext);
-  NS_IMETHOD StringToAttribute(nsIAtom* aAttribute,
-                               const nsAString& aValue,
-                               nsHTMLValue& aResult);
+  virtual void SetFocus(nsIPresContext* aPresContext);
+  virtual void RemoveFocus(nsIPresContext* aPresContext);
+  virtual PRBool ParseAttribute(nsIAtom* aAttribute,
+                                const nsAString& aValue,
+                                nsAttrValue& aResult);
   NS_IMETHOD AttributeToString(nsIAtom* aAttribute,
                                const nsHTMLValue& aValue,
                                nsAString& aResult) const;
-  NS_IMETHOD HandleDOMEvent(nsIPresContext* aPresContext,
-                            nsEvent* aEvent,
-                            nsIDOMEvent** aDOMEvent,
-                            PRUint32 aFlags,
-                            nsEventStatus* aEventStatus);
+  virtual nsresult HandleDOMEvent(nsIPresContext* aPresContext,
+                                  nsEvent* aEvent, nsIDOMEvent** aDOMEvent,
+                                  PRUint32 aFlags,
+                                  nsEventStatus* aEventStatus);
 
 protected:
   PRInt8 mType;
@@ -126,7 +126,7 @@ private:
 
 nsresult
 NS_NewHTMLButtonElement(nsIHTMLContent** aInstancePtrResult,
-                        nsINodeInfo *aNodeInfo)
+                        nsINodeInfo *aNodeInfo, PRBool aFromParser)
 {
   NS_ENSURE_ARG_POINTER(aInstancePtrResult);
 
@@ -169,48 +169,11 @@ NS_IMPL_RELEASE_INHERITED(nsHTMLButtonElement, nsGenericElement)
 
 // QueryInterface implementation for nsHTMLButtonElement
 NS_HTML_CONTENT_INTERFACE_MAP_BEGIN(nsHTMLButtonElement,
-                                    nsGenericHTMLContainerFormElement)
+                                    nsGenericHTMLFormElement)
   NS_INTERFACE_MAP_ENTRY(nsIDOMHTMLButtonElement)
   NS_INTERFACE_MAP_ENTRY(nsIDOMNSHTMLButtonElement)
   NS_INTERFACE_MAP_ENTRY_CONTENT_CLASSINFO(HTMLButtonElement)
 NS_HTML_CONTENT_INTERFACE_MAP_END
-
-
-NS_IMETHODIMP
-nsHTMLButtonElement::GetAttribute(PRInt32 aNameSpaceID, nsIAtom* aName,
-                                  nsAString& aResult) const
-{
-  if (aName == nsHTMLAtoms::disabled) {
-    nsresult rv = nsGenericHTMLContainerFormElement::GetAttr(kNameSpaceID_None, nsHTMLAtoms::disabled, aResult);
-    if (rv == NS_CONTENT_ATTR_NOT_THERE) {
-      aResult.Assign(NS_LITERAL_STRING("false"));
-    } else {
-      aResult.Assign(NS_LITERAL_STRING("true"));
-    }
-
-    return rv;
-  }
-
-  return nsGenericHTMLContainerFormElement::GetAttr(aNameSpaceID, aName,
-                                                    aResult);
-}
-
-NS_IMETHODIMP
-nsHTMLButtonElement::SetAttribute(PRInt32 aNameSpaceID, nsIAtom* aName,
-                                  const nsAString& aValue,
-                                  PRBool aNotify)
-{
-  nsAutoString value(aValue);
-
-  if (aName == nsHTMLAtoms::disabled &&
-      value.Equals(NS_LITERAL_STRING("false"), nsCaseInsensitiveStringComparator())) {
-    return UnsetAttr(aNameSpaceID, aName, aNotify);
-  }
-
-  return nsGenericHTMLContainerFormElement::SetAttr(aNameSpaceID, aName,
-                                                    aValue, aNotify);
-}
-
 
 // nsIDOMHTMLButtonElement
 
@@ -233,7 +196,7 @@ nsHTMLButtonElement::CloneNode(PRBool aDeep, nsIDOMNode** aReturn)
   if (NS_FAILED(rv))
     return rv;
 
-  CopyInnerTo(this, it, aDeep);
+  CopyInnerTo(it, aDeep);
 
   *aReturn = NS_STATIC_CAST(nsIDOMNode *, it);
 
@@ -248,15 +211,7 @@ nsHTMLButtonElement::CloneNode(PRBool aDeep, nsIDOMNode** aReturn)
 NS_IMETHODIMP
 nsHTMLButtonElement::GetForm(nsIDOMHTMLFormElement** aForm)
 {
-  return nsGenericHTMLContainerFormElement::GetForm(aForm);
-}
-
-NS_IMETHODIMP
-nsHTMLButtonElement::GetType(nsAString& aType)
-{
-  return AttributeToString(nsHTMLAtoms::type,
-                           nsHTMLValue(mType, eHTMLUnit_Enumerated),
-                           aType);
+  return nsGenericHTMLFormElement::GetForm(aForm);
 }
 
 NS_IMPL_STRING_ATTR(nsHTMLButtonElement, AccessKey, accesskey)
@@ -264,17 +219,22 @@ NS_IMPL_BOOL_ATTR(nsHTMLButtonElement, Disabled, disabled)
 NS_IMPL_STRING_ATTR(nsHTMLButtonElement, Name, name)
 NS_IMPL_INT_ATTR(nsHTMLButtonElement, TabIndex, tabindex)
 NS_IMPL_STRING_ATTR(nsHTMLButtonElement, Value, value)
+NS_IMPL_STRING_ATTR_DEFAULT_VALUE(nsHTMLButtonElement, Type, type, "submit")
 
 NS_IMETHODIMP
 nsHTMLButtonElement::Blur()
 {
-  return SetElementFocus(PR_FALSE);
+  SetElementFocus(PR_FALSE);
+
+  return NS_OK;
 }
 
 NS_IMETHODIMP
 nsHTMLButtonElement::Focus()
 {
-  return SetElementFocus(PR_TRUE);
+  SetElementFocus(PR_TRUE);
+
+  return NS_OK;
 }
 
 NS_IMETHODIMP
@@ -295,15 +255,7 @@ nsHTMLButtonElement::Click()
       shell->GetPresContext(getter_AddRefs(context));
       if (context) {
         nsEventStatus status = nsEventStatus_eIgnore;
-        nsMouseEvent event;
-        event.eventStructType = NS_MOUSE_EVENT;
-        event.message = NS_MOUSE_LEFT_CLICK;
-        event.isShift = PR_FALSE;
-        event.isControl = PR_FALSE;
-        event.isAlt = PR_FALSE;
-        event.isMeta = PR_FALSE;
-        event.clickCount = 0;
-        event.widget = nsnull;
+        nsMouseEvent event(NS_MOUSE_LEFT_CLICK);
         HandleDOMEvent(context, &event, nsnull,
                        NS_EVENT_FLAG_INIT, &status);
       }
@@ -315,22 +267,19 @@ nsHTMLButtonElement::Click()
   return NS_OK;
 }
 
-NS_IMETHODIMP
+void
 nsHTMLButtonElement::SetFocus(nsIPresContext* aPresContext)
 {
-  NS_ENSURE_ARG_POINTER(aPresContext);
+  if (!aPresContext)
+    return;
+
   // first see if we are disabled or not. If disabled then do nothing.
-  nsAutoString disabled;
-  if (NS_CONTENT_ATTR_HAS_VALUE == GetAttribute(kNameSpaceID_None,
-                                                nsHTMLAtoms::disabled,
-                                                disabled)) {
-    return NS_OK;
+  if (HasAttr(kNameSpaceID_None, nsHTMLAtoms::disabled)) {
+    return;
   }
 
-  nsCOMPtr<nsIEventStateManager> esm;
-  if (NS_OK == aPresContext->GetEventStateManager(getter_AddRefs(esm))) {
-    esm->SetContentState(this, NS_EVENT_STATE_FOCUS);
-  }
+  aPresContext->EventStateManager()->SetContentState(this,
+                                                     NS_EVENT_STATE_FOCUS);
 
   nsIFormControlFrame* formControlFrame = GetFormControlFrame(PR_FALSE);
 
@@ -338,34 +287,26 @@ nsHTMLButtonElement::SetFocus(nsIPresContext* aPresContext)
     formControlFrame->SetFocus(PR_TRUE, PR_TRUE);
     formControlFrame->ScrollIntoView(aPresContext);
   }
-
-  return NS_OK;
 }
 
-NS_IMETHODIMP
+void
 nsHTMLButtonElement::RemoveFocus(nsIPresContext* aPresContext)
 {
-  NS_ENSURE_ARG_POINTER(aPresContext);
+  if (!aPresContext)
+    return;
+
   // If we are disabled, we probably shouldn't have focus in the
   // first place, so allow it to be removed.
-  nsresult rv = NS_OK;
-
   nsIFormControlFrame* formControlFrame = GetFormControlFrame(PR_FALSE);
 
   if (formControlFrame) {
     formControlFrame->SetFocus(PR_FALSE, PR_FALSE);
   }
 
-  nsCOMPtr<nsIEventStateManager> esm;
-  if (NS_OK == aPresContext->GetEventStateManager(getter_AddRefs(esm))) {
-
-    if (!mDocument)
-      return NS_ERROR_NULL_POINTER;
-
-    rv = esm->SetContentState(nsnull, NS_EVENT_STATE_FOCUS);
+  if (mDocument) {
+    aPresContext->EventStateManager()->SetContentState(nsnull,
+                                                       NS_EVENT_STATE_FOCUS);
   }
-
-  return rv;
 }
 
 static const nsHTMLValue::EnumTable kButtonTypeTable[] = {
@@ -375,34 +316,25 @@ static const nsHTMLValue::EnumTable kButtonTypeTable[] = {
   { 0 }
 };
 
-NS_IMETHODIMP
-nsHTMLButtonElement::StringToAttribute(nsIAtom* aAttribute,
-                                       const nsAString& aValue,
-                                       nsHTMLValue& aResult)
+PRBool
+nsHTMLButtonElement::ParseAttribute(nsIAtom* aAttribute,
+                                    const nsAString& aValue,
+                                    nsAttrValue& aResult)
 {
   if (aAttribute == nsHTMLAtoms::tabindex) {
-    if (aResult.ParseIntWithBounds(aValue, eHTMLUnit_Integer, 0, 32767)) {
-      return NS_CONTENT_ATTR_HAS_VALUE;
-    }
+    return aResult.ParseIntWithBounds(aValue, 0, 32767);
   }
-  else if (aAttribute == nsHTMLAtoms::type) {
-    const nsHTMLValue::EnumTable *table = kButtonTypeTable;
-    nsAutoString val(aValue);
-    while (nsnull != table->tag) { 
-      if (val.EqualsIgnoreCase(table->tag)) {
-        aResult.SetIntValue(table->value, eHTMLUnit_Enumerated);
-        mType = table->value;  
-        return NS_CONTENT_ATTR_HAS_VALUE;
-      }
-      table++;
+  if (aAttribute == nsHTMLAtoms::type) {
+    // XXX ARG!! This is major evilness. ParseAttribute
+    // shouldn't set members. Override SetAttr instead
+    PRBool res = aResult.ParseEnumValue(aValue, kButtonTypeTable);
+    if (res) {
+      mType = aResult.GetEnumValue();
     }
-  }
-  else if (aAttribute == nsHTMLAtoms::disabled) {
-    aResult.SetEmptyValue();
-    return NS_CONTENT_ATTR_HAS_VALUE;
+    return res;
   }
 
-  return NS_CONTENT_ATTR_NOT_THERE;
+  return nsGenericHTMLElement::ParseAttribute(aAttribute, aValue, aResult);
 }
 
 NS_IMETHODIMP
@@ -417,11 +349,11 @@ nsHTMLButtonElement::AttributeToString(nsIAtom* aAttribute,
     }
   }
 
-  return nsGenericHTMLContainerFormElement::AttributeToString(aAttribute,
-                                                              aValue, aResult);
+  return nsGenericHTMLFormElement::AttributeToString(aAttribute, aValue,
+                                                     aResult);
 }
 
-NS_IMETHODIMP
+nsresult
 nsHTMLButtonElement::HandleDOMEvent(nsIPresContext* aPresContext,
                                     nsEvent* aEvent,
                                     nsIDOMEvent** aDOMEvent,
@@ -468,10 +400,9 @@ nsHTMLButtonElement::HandleDOMEvent(nsIPresContext* aPresContext,
 
   // Try script event handlers first
   nsresult ret;
-  ret = nsGenericHTMLContainerFormElement::HandleDOMEvent(aPresContext,
-                                                          aEvent, aDOMEvent,
-                                                          aFlags,
-                                                          aEventStatus);
+  ret = nsGenericHTMLFormElement::HandleDOMEvent(aPresContext, aEvent,
+                                                 aDOMEvent, aFlags,
+                                                 aEventStatus);
 
   // mForm is null if the event handler removed us from the document (bug 194582).
   if (bInSubmitClick && mForm) {
@@ -496,15 +427,7 @@ nsHTMLButtonElement::HandleDOMEvent(nsIPresContext* aPresContext,
           if ((keyEvent->keyCode == NS_VK_RETURN && NS_KEY_PRESS == aEvent->message) ||
               keyEvent->keyCode == NS_VK_SPACE  && NS_KEY_UP == aEvent->message) {
             nsEventStatus status = nsEventStatus_eIgnore;
-            nsMouseEvent event;
-            event.eventStructType = NS_MOUSE_EVENT;
-            event.message = NS_MOUSE_LEFT_CLICK;
-            event.isShift = PR_FALSE;
-            event.isControl = PR_FALSE;
-            event.isAlt = PR_FALSE;
-            event.isMeta = PR_FALSE;
-            event.clickCount = 0;
-            event.widget = nsnull;
+            nsMouseEvent event(NS_MOUSE_LEFT_CLICK);
             rv = HandleDOMEvent(aPresContext, &event, nsnull,
                                 NS_EVENT_FLAG_INIT, &status);
           }
@@ -515,15 +438,12 @@ nsHTMLButtonElement::HandleDOMEvent(nsIPresContext* aPresContext,
         {
           if (mForm) {
             if (mType == NS_FORM_BUTTON_SUBMIT || mType == NS_FORM_BUTTON_RESET) {
-              nsFormEvent event;
-              event.eventStructType = NS_FORM_EVENT;
-              event.message         = (mType == NS_FORM_BUTTON_RESET)
-                                       ? NS_FORM_RESET : NS_FORM_SUBMIT;
+              nsFormEvent event((mType == NS_FORM_BUTTON_RESET)
+                                ? NS_FORM_RESET : NS_FORM_SUBMIT);
               event.originator      = this;
               nsEventStatus status  = nsEventStatus_eIgnore;
 
-              nsCOMPtr<nsIPresShell> presShell;
-              aPresContext->GetShell(getter_AddRefs(presShell));
+              nsIPresShell *presShell = aPresContext->GetPresShell();
               // If |nsIPresShell::Destroy| has been called due to
               // handling the event (base class HandleDOMEvent, above),
               // the pres context will return a null pres shell.  See
@@ -539,12 +459,10 @@ nsHTMLButtonElement::HandleDOMEvent(nsIPresContext* aPresContext,
 
       case NS_MOUSE_LEFT_BUTTON_DOWN:
         {
-          nsIEventStateManager *stateManager;
-          if (NS_OK == aPresContext->GetEventStateManager(&stateManager)) {
-            stateManager->SetContentState(this, NS_EVENT_STATE_ACTIVE |
-                                          NS_EVENT_STATE_FOCUS);
-            NS_RELEASE(stateManager);
-          }
+          aPresContext->EventStateManager()->
+            SetContentState(this,
+                            NS_EVENT_STATE_ACTIVE | NS_EVENT_STATE_FOCUS);
+
           *aEventStatus = nsEventStatus_eConsumeNoDefault; 
         }
         break;
@@ -574,11 +492,9 @@ nsHTMLButtonElement::HandleDOMEvent(nsIPresContext* aPresContext,
 
       case NS_MOUSE_ENTER_SYNTH:
         {
-          nsIEventStateManager *stateManager;
-          if (NS_OK == aPresContext->GetEventStateManager(&stateManager)) {
-            stateManager->SetContentState(this, NS_EVENT_STATE_HOVER);
-            NS_RELEASE(stateManager);
-          }
+          aPresContext->EventStateManager()->
+            SetContentState(this, NS_EVENT_STATE_HOVER);
+
           *aEventStatus = nsEventStatus_eConsumeNoDefault; 
         }
         break;
@@ -586,11 +502,9 @@ nsHTMLButtonElement::HandleDOMEvent(nsIPresContext* aPresContext,
         // XXX this doesn't seem to do anything yet
       case NS_MOUSE_EXIT_SYNTH:
         {
-          nsIEventStateManager *stateManager;
-          if (NS_OK == aPresContext->GetEventStateManager(&stateManager)) {
-            stateManager->SetContentState(nsnull, NS_EVENT_STATE_HOVER);
-            NS_RELEASE(stateManager);
-          }
+          aPresContext->EventStateManager()->
+            SetContentState(nsnull, NS_EVENT_STATE_HOVER);
+
           *aEventStatus = nsEventStatus_eConsumeNoDefault; 
         }
         break;

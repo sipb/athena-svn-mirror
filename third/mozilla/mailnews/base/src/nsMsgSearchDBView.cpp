@@ -69,19 +69,19 @@ NS_IMETHODIMP nsMsgSearchDBView::Open(nsIMsgFolder *folder, nsMsgViewSortTypeVal
     rv = nsMsgDBView::Open(folder, sortType, sortOrder, viewFlags, pCount);
     NS_ENSURE_SUCCESS(rv, rv);
 
-	if (pCount)
-		*pCount = 0;
-	return rv;
+    if (pCount)
+      *pCount = 0;
+    return rv;
 }
 
 NS_IMETHODIMP nsMsgSearchDBView::Close()
 {
-	PRInt32 count = m_dbToUseList.Count();
+  PRInt32 count = m_dbToUseList.Count();
+  
+  for(PRInt32 i = 0; i < count; i++)
+    m_dbToUseList[i]->RemoveListener(this);
 
-	for(PRInt32 i = 0; i < count; i++)
-		m_dbToUseList[i]->RemoveListener(this);
-
-	return NS_OK;
+  return NS_OK;
 }
 
 NS_IMETHODIMP nsMsgSearchDBView::GetCellText(PRInt32 aRow, const PRUnichar * aColID, nsAString& aValue)

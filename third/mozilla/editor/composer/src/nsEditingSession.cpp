@@ -93,7 +93,6 @@
 nsEditingSession::nsEditingSession()
 : mDoneSetup(PR_FALSE)
 , mCanCreateEditor(PR_FALSE)
-, mEditorType(nsnull)
 , mEditorFlags(0)
 , mEditorStatus(eEditorOK)
 , mBaseCommandControllerId(0)
@@ -126,9 +125,8 @@ NS_IMPL_ISUPPORTS4(nsEditingSession, nsIEditingSession, nsIWebProgressListener,
 NS_IMETHODIMP 
 nsEditingSession::Init(nsIDOMWindow *aWindow)
 {
-  nsCOMPtr<nsIDocShell> docShell;
-  nsresult rv = GetDocShellFromWindow(aWindow, getter_AddRefs(docShell));
-  if (NS_FAILED(rv)) return rv;
+  nsIDocShell *docShell = GetDocShellFromWindow(aWindow);
+  if (!docShell) return NS_ERROR_FAILURE;
 
   mEditingShell = do_GetWeakReference(docShell);
   if (!mEditingShell) return NS_ERROR_NO_INTERFACE;
@@ -157,11 +155,10 @@ nsEditingSession::MakeWindowEditable(nsIDOMWindow *aWindow,
   mWindowToBeEdited = do_GetWeakReference(aWindow);
 
   // disable plugins
-  nsCOMPtr<nsIDocShell> docShell;
-  nsresult rv = GetDocShellFromWindow(aWindow, getter_AddRefs(docShell));
-  if (NS_FAILED(rv)) return rv;
+  nsIDocShell *docShell = GetDocShellFromWindow(aWindow);
+  if (!docShell) return NS_ERROR_FAILURE;
 
-  rv = docShell->SetAllowPlugins(PR_FALSE);
+  nsresult rv = docShell->SetAllowPlugins(PR_FALSE);
   if (NS_FAILED(rv)) return rv;
 
   // register as a content listener, so that we can fend off URL
@@ -173,12 +170,10 @@ nsEditingSession::MakeWindowEditable(nsIDOMWindow *aWindow,
   nsCOMPtr<nsIScriptGlobalObject> sgo (do_QueryInterface(aWindow));
   if (sgo)
   {
-    nsCOMPtr<nsIScriptContext> scriptContext;
-    sgo->GetContext(getter_AddRefs(scriptContext));
+    nsIScriptContext *scriptContext = sgo->GetContext();
     if (scriptContext)
     {
-      rv = scriptContext->SetScriptsEnabled(PR_FALSE, PR_TRUE);
-      if (NS_FAILED(rv)) return rv;
+      scriptContext->SetScriptsEnabled(PR_FALSE, PR_TRUE);
     }
   }
 
@@ -318,7 +313,7 @@ nsEditingSession::SetupEditorOnWindow(nsIDOMWindow *aWindow)
     {
       nsAutoString mimeType;
       if (NS_SUCCEEDED(nsdoc->GetContentType(mimeType)))
-        mimeCType = NS_ConvertUCS2toUTF8(mimeType);
+        CopyUTF16toUTF8(mimeType, mimeCType);
 
       if (IsSupportedTextType(mimeCType.get()))
       {
@@ -392,9 +387,8 @@ nsEditingSession::SetupEditorOnWindow(nsIDOMWindow *aWindow)
 
   // Create editor and do other things 
   //  only if we haven't found some error above,
-  nsCOMPtr<nsIDocShell> docShell;
-  rv = GetDocShellFromWindow(aWindow, getter_AddRefs(docShell));
-  if (NS_FAILED(rv)) return rv;  
+  nsIDocShell *docShell = GetDocShellFromWindow(aWindow);
+  if (!docShell) return NS_ERROR_FAILURE;  
 
   nsCOMPtr<nsIPresShell> presShell;
   rv = docShell->GetPresShell(getter_AddRefs(presShell));
@@ -407,8 +401,7 @@ nsEditingSession::SetupEditorOnWindow(nsIDOMWindow *aWindow)
   if (NS_FAILED(rv)) return rv;
   if (!presContext) return NS_ERROR_FAILURE;
 
-  rv = presContext->SetImageAnimationMode(imgIContainer::kDontAnimMode);
-  if (NS_FAILED(rv)) return rv;
+  presContext->SetImageAnimationMode(imgIContainer::kDontAnimMode);
 
   // create and set editor
   nsCOMPtr<nsIEditorDocShell> editorDocShell = do_QueryInterface(docShell, &rv);
@@ -508,6 +501,15 @@ nsEditingSession::TearDownEditorOnWindow(nsIDOMWindow *aWindow)
   rv = editorDocShell->GetEditor(getter_AddRefs(editor));
   if (NS_FAILED(rv)) return rv;
 
+  // null out the editor on the controllers first to prevent their weak 
+  // references from pointing to a destroyed editor
+  if (mStateMaintainer && editor)
+  {
+      // null out the editor on the controllers
+      rv = SetEditorOnControllers(aWindow, nsnull);
+      if (NS_FAILED(rv)) return rv;  
+  }
+
   // null out the editor on the docShell to trigger PreDestroy which
   // needs to happen before document state listeners are removed below
   rv = editorDocShell->SetEditor(nsnull);
@@ -544,10 +546,6 @@ nsEditingSession::TearDownEditorOnWindow(nsIDOMWindow *aWindow)
               do_QueryInterface(mStateMaintainer);
         txnMgr->RemoveListener(transactionListener);
       }
-
-      // null out the editor on the controllers
-      rv = SetEditorOnControllers(aWindow, nsnull);
-      if (NS_FAILED(rv)) return rv;  
     }
     else
     {
@@ -760,13 +758,12 @@ nsEditingSession::OnLocationChange(nsIWebProgress *aWebProgress,
   nsCOMPtr<nsIDocument> doc = do_QueryInterface(domDoc);
   if (!doc) return NS_ERROR_FAILURE;
 
-  doc->SetDocumentURL(aURI);
+  doc->SetDocumentURI(aURI);
 
   // Notify the location-changed observer that
   //  the document URL has changed
-  nsCOMPtr<nsIDocShell> docShell;
-  rv = GetDocShellFromWindow(domWindow, getter_AddRefs(docShell));
-  if (NS_FAILED(rv)) return rv;
+  nsIDocShell *docShell = GetDocShellFromWindow(domWindow);
+  if (!docShell) return NS_ERROR_FAILURE;
 
   nsCOMPtr<nsICommandManager> commandManager = do_GetInterface(docShell);
   nsCOMPtr<nsPICommandUpdater> commandUpdater =
@@ -979,9 +976,8 @@ nsEditingSession::EndDocumentLoad(nsIWebProgress *aWebProgress,
       mEditorStatus = eEditorErrorFileNotFound;
   }
 
-  nsCOMPtr<nsIDocShell> docShell;
-  nsresult rv = GetDocShellFromWindow(domWindow, getter_AddRefs(docShell));
-  if (NS_FAILED(rv)) return rv;       // better error handling?
+  nsIDocShell *docShell = GetDocShellFromWindow(domWindow);
+  if (!docShell) return NS_ERROR_FAILURE;       // better error handling?
 
   // cancel refresh from meta tags
   // we need to make sure that all pages in editor (whether editable or not)
@@ -991,6 +987,8 @@ nsEditingSession::EndDocumentLoad(nsIWebProgress *aWebProgress,
     refreshURI->CancelRefreshURITimers();
 
   nsCOMPtr<nsIEditorDocShell> editorDocShell = do_QueryInterface(docShell);
+
+  nsresult rv = NS_OK;
 
   // did someone set the flag to make this shell editable?
   if (aIsToBeMadeEditable && mCanCreateEditor && editorDocShell)
@@ -1090,9 +1088,8 @@ nsEditingSession::EndPageLoad(nsIWebProgress *aWebProgress,
   nsCOMPtr<nsIDOMWindow> domWindow;
   nsresult rv = aWebProgress->GetDOMWindow(getter_AddRefs(domWindow));
   
-  nsCOMPtr<nsIDocShell> docShell;
-  rv = GetDocShellFromWindow(domWindow, getter_AddRefs(docShell));
-  if (NS_FAILED(rv)) return rv;
+  nsIDocShell *docShell = GetDocShellFromWindow(domWindow);
+  if (!docShell) return NS_ERROR_FAILURE;
 
   // cancel refresh from meta tags
   // we need to make sure that all pages in editor (whether editable or not)
@@ -1118,20 +1115,16 @@ nsEditingSession::EndPageLoad(nsIWebProgress *aWebProgress,
 
   GetDocShellFromWindow
 
-  Utility method. This will always return an error if no docShell
-  is returned.
+  Utility method. This will always return nsnull if no docShell is found.
 ----------------------------------------------------------------------------*/
-nsresult
-nsEditingSession::GetDocShellFromWindow(nsIDOMWindow *aWindow,
-                                        nsIDocShell** outDocShell)
+nsIDocShell *
+nsEditingSession::GetDocShellFromWindow(nsIDOMWindow *aWindow)
 {
   nsCOMPtr<nsIScriptGlobalObject> scriptGO = do_QueryInterface(aWindow);
-  if (!scriptGO) return NS_ERROR_FAILURE;
+  if (!scriptGO)
+    return nsnull;
 
-  nsresult rv = scriptGO->GetDocShell(outDocShell);
-  if (NS_FAILED(rv)) return rv;
-  if (!*outDocShell) return NS_ERROR_FAILURE;
-  return NS_OK;
+  return scriptGO->GetDocShell();
 }
 
 /*---------------------------------------------------------------------------
@@ -1145,9 +1138,8 @@ nsresult
 nsEditingSession::GetEditorDocShellFromWindow(nsIDOMWindow *aWindow,
                                               nsIEditorDocShell** outDocShell)
 {
-  nsCOMPtr<nsIDocShell> docShell;
-  nsresult rv = GetDocShellFromWindow(aWindow, getter_AddRefs(docShell));
-  if (NS_FAILED(rv)) return rv;
+  nsIDocShell *docShell = GetDocShellFromWindow(aWindow);
+  if (!docShell) return NS_ERROR_FAILURE;
   
   return docShell->QueryInterface(NS_GET_IID(nsIEditorDocShell), 
                                   (void **)outDocShell);
@@ -1241,7 +1233,7 @@ nsEditingSession::SetupEditorCommandController(
 
   Set the editor on the controller(s) for this window
 ----------------------------------------------------------------------------*/
-nsresult
+NS_IMETHODIMP
 nsEditingSession::SetEditorOnControllers(nsIDOMWindow *aWindow,
                                          nsIEditor* aEditor)
 {

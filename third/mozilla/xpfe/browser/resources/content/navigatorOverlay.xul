@@ -122,6 +122,7 @@
     <command id="Browser:OpenFile"  oncommand="BrowserOpenFileWindow();"/>
     <command id="Browser:SavePage" oncommand="saveDocument(window._content.document);"/>
     <command id="Browser:EditPage" oncommand="editPageOrFrame();" observes="isImage"/>
+    <command id="Browser:UploadFile" oncommand="BrowserUploadFile();"/>
     <command id="Browser:Open" oncommand="BrowserOpenWindow();"/>
     <command id="cmd_printSetup" oncommand="NSPrintSetup();"/>
     <command id="Browser:Print" oncommand="NSPrint();"/>
@@ -308,7 +309,7 @@
   <!-- Menu -->
   <menubar id="main-menubar" class="chromeclass-menubar">
     <menu id="menu_File">
-      <menupopup id="menu_FilePopup" onpopupshowing="updateCloseItems();getContentAreaFrameCount();">
+      <menupopup id="menu_FilePopup" onpopupshowing="updateCloseItems();getContentAreaFrameCount();updateFileUploadItem();">
         <menu id="menu_New">
           <menupopup id="menu_NewPopup">
             <!-- From utilityOverlay.xul -->
@@ -329,6 +330,8 @@
         <menuitem id="savepage" label="&saveFrameCmd.label;" accesskey="&saveFrameCmd.accesskey;" oncommand="saveFrameDocument();" hidden="true"/>
         <menuseparator id="saveMenuBlockEnd"/>
         <menuitem label="&editPageCmd.label;" accesskey="&editPageCmd.accesskey;" key="key_editPage" command="Browser:EditPage" />
+        <menuseparator/>
+        <menuitem command="Browser:UploadFile" label="&uploadFile.label;" accesskey="&uploadFile.accesskey;"/>
         <menuseparator/>
         <menuitem id="printSetupMenuItem" label="&printSetupCmd.label;" accesskey="&printSetupCmd.accesskey;" command="cmd_printSetup"/>
         <menuitem id="printPreviewMenuItem" label="&printPreviewCmd.label;" accesskey="&printPreviewCmd.accesskey;" command="Browser:PrintPreview"/>
@@ -536,6 +539,7 @@
       <menuitem label="chofmann's Browser Buster" oncommand="loadURI('http://webtools.mozilla.org/buster/');"/>
       <menuitem label="Composer (with test page)" oncommand="window.openDialog('chrome://editor/content','_blank','chrome,all,dialog=no','chrome://editor/content/EditorInitPage.html')"/>
       <menuitem label="Flush Memory" oncommand="Components.classes['@mozilla.org/xpcom/memory-service;1'].getService(Components.interfaces.nsIMemory).heapMinimize(true);" />
+      <menuitem label="Show Build Configuration" oncommand="loadURI('about:buildconfig');"/>
 
       <menuseparator />
 
@@ -570,7 +574,7 @@
 
       <menuseparator />
 
-      <menuitem label="Bugs Filed Today" oncommand="loadURI('http://bugzilla.mozilla.org/buglist.cgi?changedin=1&amp;chfield=%5BBug+creation%5D&amp;amp;chfieldto=Now&amp;product=Browser&amp;product=MailNews');"/>
+      <menuitem label="Bugs Filed Today" oncommand="loadURI('http://bugzilla.mozilla.org/buglist.cgi?chfield=%5BBug+creation%5D&amp;chfieldfrom=0d&amp;chfieldto=Now&amp;product=Browser&amp;product=MailNews');"/>
       <menuitem label="CVS Checkins Today" oncommand="loadURI('http://bonsai.mozilla.org/cvsquery.cgi?treeid=default&amp;module=SeaMonkeyAll&amp;branch=HEAD&amp;branchtype=match&amp;sortby=Date&amp;date=day&amp;cvsroot=%2Fcvsroot');"/>
       <menuitem label="Tree Status" oncommand="loadURI('http://tinderbox.mozilla.org/showbuilds.cgi?tree=SeaMonkey');"/>
 

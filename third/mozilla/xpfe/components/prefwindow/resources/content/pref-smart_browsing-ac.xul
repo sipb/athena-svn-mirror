@@ -28,9 +28,12 @@
 <?xml-stylesheet href="chrome://communicator/skin/prefpanels.css" type="text/css"?>
 
 <dialog id="pref-smart_browsing-ac" title="&autoCompleteAdvanced.title;"
+        buttons="accept,cancel,help"
         ondialogaccept="return onAccept();" 
+        ondialoghelp="doHelpButton();"
         xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
+  <script type="application/x-javascript" src="chrome://help/content/contextHelp.js"/>
   <script type="application/x-javascript"><![CDATA[
     
     window.onload = function()
@@ -75,7 +78,7 @@
      var img = document.getElementById("img"+aImg);
      var checked = document.getElementById("cbx"+aImg).checked;
       if (aImg == "AutoFill") {
-        img.setAttribute("src", "chrome://communicator/content/pref/autocomplete-autofill-"+(checked?"on":"off")+".gif");
+        img.setAttribute("src", "chrome://communicator/locale/pref/autocomplete-autofill-"+(checked?"on":"off")+".gif");
       } else if (aImg == "ShowPopup") {
         img.setAttribute("hidden", !checked);
         updateImage("ShowSearch");
@@ -90,6 +93,10 @@
       var spChecked = document.getElementById("cbxShowPopup").checked;
       var showSearch = document.getElementById("cbxShowSearch");
       showSearch.disabled = !spChecked;
+    }
+    
+    function doHelpButton() {
+      openHelp('navigator_pref_autocomplete-adv');
     }
     
   ]]></script>
@@ -111,8 +118,8 @@
   <dialogheader>
     <vbox height="159">
       <image id="imgAutoFill" style="min-width: 401px;"/>
-      <image id="imgShowPopup" src="chrome://communicator/content/pref/autocomplete-showpopup.gif"/>
-      <image id="imgShowSearch" src="chrome://communicator/content/pref/autocomplete-showsearch.gif"/>
+      <image id="imgShowPopup" src="chrome://communicator/locale/pref/autocomplete-showpopup.gif"/>
+      <image id="imgShowSearch" src="chrome://communicator/locale/pref/autocomplete-showsearch.gif"/>
     </vbox>
   </dialogheader>
 </dialog>

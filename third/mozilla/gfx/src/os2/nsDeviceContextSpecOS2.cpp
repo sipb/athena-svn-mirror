@@ -26,7 +26,6 @@
 #include "nsReadableUtils.h"
 #include "nsISupportsArray.h"
 
-#include "nsIPref.h"
 #include "prenv.h" /* for PR_GetEnv */
 
 #include "nsIServiceManager.h"
@@ -510,14 +509,16 @@ nsresult GlobalPrinters::InitializeGlobalPrinters ()
   for (int i = 0; i < mGlobalNumPrinters; i++) {
     nsXPIDLCString printer;
     nsDeviceContextSpecOS2::PrnDlg.GetPrinter(i, getter_Copies(printer));
-    PRUnichar* printerName = new PRUnichar[strlen(printer)+1];
-    MultiByteToWideChar(0, printer, strlen(printer)+1, printerName, strlen(printer)+1);
-    nsAutoString nativePrinterName(printerName);
-    delete [] printerName;
-    if ( defaultPrinter == i ) 
-       mGlobalPrinterList->InsertStringAt(nativePrinterName, 0);
-    else 
-       mGlobalPrinterList->AppendString(nativePrinterName);
+
+    nsAutoChar16Buffer printerName;
+    PRInt32 printerNameLength;
+    nsresult rv = MultiByteToWideChar(0, printer, strlen(printer),
+                                      printerName, printerNameLength);
+    if (defaultPrinter == i) {
+       mGlobalPrinterList->InsertStringAt(nsDependentString(printerName.get()), 0);
+    } else {
+       mGlobalPrinterList->AppendString(nsDependentString(printerName.get()));
+    }
   } 
   return NS_OK;
 }
@@ -536,12 +537,12 @@ void GlobalPrinters::GetDefaultPrinterName(PRUnichar*& aDefaultPrinterName)
   int defaultPrinter = nsDeviceContextSpecOS2::PrnDlg.GetDefaultPrinter();
   nsXPIDLCString printer;
   nsDeviceContextSpecOS2::PrnDlg.GetPrinter(defaultPrinter, getter_Copies(printer));
-  PRUnichar* printerName = new PRUnichar[strlen(printer)+1];
-  MultiByteToWideChar(0, printer, strlen(printer)+1, printerName, strlen(printer)+1);
-  nsAutoString nativePrinterName(printerName);
-  delete [] printerName; 
 
-  aDefaultPrinterName = ToNewUnicode(nativePrinterName);
+  nsAutoChar16Buffer printerName;
+  PRInt32 printerNameLength;
+  MultiByteToWideChar(0, printer, strlen(printer), printerName,
+                      printerNameLength);
+  aDefaultPrinterName = ToNewUnicode(nsDependentString(printerName.get()));
 
   GlobalPrinters::GetInstance()->FreeGlobalPrinters();
 }
@@ -682,7 +683,7 @@ PRINTDLG::~PRINTDLG ()
     delete mPQBuf [cnt];
 }
 
-PRINTDLG::RefreshPrintQueue ()
+void PRINTDLG::RefreshPrintQueue()
 {
   ULONG newQueueCount = 0;
   ULONG TotalQueues = 0;

@@ -338,7 +338,9 @@ public:
   // used for painting-related things, but should never be used for
   // layout (except for handling of 'overflow').
   void SetCombinedArea(const nsRect& aCombinedArea);
-  void GetCombinedArea(nsRect* aResult);
+  nsRect GetCombinedArea() {
+    return mData ? mData->mCombinedArea : mBounds;
+  }
   PRBool CombinedAreaIntersects(const nsRect& aDamageRect) {
     nsRect* ca = (mData ? &mData->mCombinedArea : &mBounds);
     return !((ca->YMost() <= aDamageRect.y) ||
@@ -1055,6 +1057,16 @@ class nsLineList {
     {
       iterator rv;
       rv.mCurrent = mLink._mNext;
+#ifdef NS_LINELIST_DEBUG_PASS_END
+      rv.mListLink = &mLink;
+#endif
+      return rv;
+    }
+
+    iterator begin(nsLineBox* aLine)
+    {
+      iterator rv;
+      rv.mCurrent = aLine;
 #ifdef NS_LINELIST_DEBUG_PASS_END
       rv.mListLink = &mLink;
 #endif

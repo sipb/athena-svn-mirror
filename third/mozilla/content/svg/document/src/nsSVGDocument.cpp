@@ -61,35 +61,6 @@ nsSVGDocument::~nsSVGDocument() {
 
 }
 
-NS_IMETHODIMP
-nsSVGDocument::StartDocumentLoad(const char* aCommand,
-                                 nsIChannel* aChannel,
-                                 nsILoadGroup* aLoadGroup,
-                                 nsISupports* aContainer,
-                                 nsIStreamListener **aDocListener,
-                                 PRBool aReset,
-                                 nsIContentSink* aSink) {
-  nsresult rv = nsXMLDocument::StartDocumentLoad(aCommand,
-                                                 aChannel,
-                                                 aLoadGroup,
-                                                 aContainer,
-                                                 aDocListener,
-                                                 aReset,
-                                                 aSink);
-  if (NS_FAILED(rv)) return rv;
-
-  nsCOMPtr<nsIHttpChannel> httpChannel = do_QueryInterface(aChannel);
-  if (httpChannel) {
-    nsCAutoString referrer;
-    rv = httpChannel->GetResponseHeader(NS_LITERAL_CSTRING("referrer"), referrer);
-    if (NS_SUCCEEDED(rv)) {
-      CopyUTF8toUTF16(referrer, mReferrer);
-    }
-  }
-
-  return NS_OK;
-}
-
 // nsIDOMSVGDocument
 
 NS_IMETHODIMP
@@ -99,16 +70,15 @@ nsSVGDocument::GetTitle(nsAString& aTitle) {
 
 NS_IMETHODIMP
 nsSVGDocument::GetReferrer(nsAString& aReferrer) {
-  aReferrer.Assign(mReferrer);
-  return NS_OK;
+  return nsDocument::GetReferrer(aReferrer);
 }
 
 NS_IMETHODIMP
 nsSVGDocument::GetDomain(nsAString& aDomain) {
   nsCAutoString domain;
 
-  if (mDocumentURL) {
-    nsresult rv = mDocumentURL->GetHost(domain);
+  if (mDocumentURI) {
+    nsresult rv = mDocumentURI->GetHost(domain);
     if (NS_FAILED(rv)) return rv;
   }
 
@@ -121,8 +91,8 @@ NS_IMETHODIMP
 nsSVGDocument::GetURL(nsAString& aURL) {
   nsCAutoString url;
 
-  if (mDocumentURL) {
-    nsresult rv = mDocumentURL->GetSpec(url);
+  if (mDocumentURI) {
+    nsresult rv = mDocumentURI->GetSpec(url);
     if (NS_FAILED(rv)) return rv;    
   }
 
@@ -142,7 +112,17 @@ nsresult
 NS_NewSVGDocument(nsIDocument** aInstancePtrResult)
 {
   nsSVGDocument* doc = new nsSVGDocument();
+
   NS_ENSURE_TRUE(doc, NS_ERROR_OUT_OF_MEMORY);
 
-  return CallQueryInterface(doc, aInstancePtrResult);
+  NS_ADDREF(doc);
+  nsresult rv = doc->Init();
+
+  if (NS_FAILED(rv)) {
+    NS_RELEASE(doc);
+    return rv;
+  }
+
+  *aInstancePtrResult = doc;
+  return rv;
 }

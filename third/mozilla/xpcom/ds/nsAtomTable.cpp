@@ -73,7 +73,7 @@ public:
   {
     MOZ_COUNT_CTOR(nsStaticAtomWrapper);
   }
-  virtual ~nsStaticAtomWrapper() {
+  ~nsStaticAtomWrapper() {   // no subclasses -> not virtual
     // this is arena allocated and won't be called except in debug
     // builds. If this function ever does anything non-debug, be sure
     // to get rid of the ifdefs in AtomTableClearEntry!
@@ -200,7 +200,7 @@ AtomTableClearEntry(PLDHashTable *table, PLDHashEntryHdr *entry)
     // deleted when they are removed from the table at table destruction.
     // In other words, they are owned by the atom table.
     if (atom->IsPermanent())
-      delete atom;
+      delete NS_STATIC_CAST(PermanentAtomImpl*, atom);
   }
   else {
     he->GetStaticAtomWrapper()->~nsStaticAtomWrapper();
@@ -388,7 +388,7 @@ AtomImpl::EqualsUTF8(const nsACString& aString, PRBool* aResult)
 NS_IMETHODIMP
 AtomImpl::Equals(const nsAString& aString, PRBool* aResult)
 {
-  *aResult = NS_ConvertUCS2toUTF8(aString).Equals(mString);
+  *aResult = NS_ConvertUTF16toUTF8(aString).Equals(mString);
   return NS_OK;
 }
 

@@ -64,6 +64,7 @@
 #include "nsIMsgCopyService.h"
 #include "nsMsgBaseCID.h"
 #include "nsISpamSettings.h"
+#include "nsIMsgAccountManager.h"
 
 static NS_DEFINE_CID(kDateTimeFormatCID,    NS_DATETIMEFORMAT_CID);
 
@@ -1722,10 +1723,21 @@ NS_IMETHODIMP nsMsgDBView::Open(nsIMsgFolder *folder, nsMsgViewSortTypeValue sor
   m_sortOrder = sortOrder;
   m_sortType = sortType;
 
+  nsresult rv;
+  nsCOMPtr<nsIMsgAccountManager> accountManager = 
+           do_GetService(NS_MSGACCOUNTMANAGER_CONTRACTID, &rv);
+  NS_ENSURE_SUCCESS(rv, rv);
+  PRBool userNeedsToAuthenticate = PR_FALSE;
+  // if we're PasswordProtectLocalCache, then we need to find out if the server is authenticated.
+  (void) accountManager->GetUserNeedsToAuthenticate(&userNeedsToAuthenticate);
+  if (userNeedsToAuthenticate)
+    return NS_MSG_USER_NOT_AUTHENTICATED;
+
   if (folder) // search view will have a null folder
   {
+
     nsCOMPtr <nsIDBFolderInfo> folderInfo;
-    nsresult rv = folder->GetDBFolderInfoAndDB(getter_AddRefs(folderInfo), getter_AddRefs(m_db));
+    rv = folder->GetDBFolderInfoAndDB(getter_AddRefs(folderInfo), getter_AddRefs(m_db));
     NS_ENSURE_SUCCESS(rv,rv);
     m_db->AddListener(this);
     m_folder = folder;
@@ -2159,8 +2171,13 @@ nsMsgDBView::CopyMessages(nsIMsgWindow *window, nsMsgViewIndex *indices, PRInt32
   NS_ENSURE_ARG_POINTER(destFolder);
   nsCOMPtr<nsISupportsArray> messageArray;
   NS_NewISupportsArray(getter_AddRefs(messageArray));
-  for (nsMsgViewIndex index = 0; index < (nsMsgViewIndex) numIndices; index++) {
-    nsMsgKey key = m_keys.GetAt(indices[index]);
+  for (nsMsgViewIndex index = 0; index < (nsMsgViewIndex) numIndices; index++) 
+  {
+    nsMsgKey key;
+    nsMsgViewIndex viewIndex = indices[index];
+    if (viewIndex == nsMsgViewIndex_None)
+      continue;
+    key = m_keys.GetAt(viewIndex);
     nsCOMPtr <nsIMsgDBHdr> msgHdr;
     rv = m_db->GetMsgHdrForKey(key, getter_AddRefs(msgHdr));
     if (NS_SUCCEEDED(rv) && msgHdr)
@@ -2169,7 +2186,7 @@ nsMsgDBView::CopyMessages(nsIMsgWindow *window, nsMsgViewIndex *indices, PRInt32
       // if we are deleting rows, save off the keys
       if (m_deletingRows)
         mIndicesToNoteChange.Add(indices[index]);
-  }
+    }
   }
   
   nsCOMPtr<nsIMsgCopyService> copyService = do_GetService(NS_MSGCOPYSERVICE_CONTRACTID, &rv);
@@ -2994,27 +3011,23 @@ nsresult nsMsgDBView::ReverseSort()
     return NS_OK;
 }
 
-typedef struct entryInfo 
+struct IdDWord
 {
     nsMsgKey    id;
     PRUint32    bits;
-    PRUint32    len;
-    //PRUint32    pad;
-    nsIMsgFolder* folder;
-} EntryInfo;
+    PRUint32    dword;
+    nsISupports* folder;
+};
 
-typedef struct tagIdKey 
+struct IdKey : public IdDWord
 {
-    EntryInfo   info;
     PRUint8     key[1];
-} IdKey;
+};
 
-
-typedef struct tagIdPtrKey 
+struct IdKeyPtr : public IdDWord
 {
-    EntryInfo   info;
     PRUint8     *key;
-} IdKeyPtr;
+};
 
 int PR_CALLBACK
 FnSortIdKey(const void *pItem1, const void *pItem2, void *privateData)
@@ -3027,12 +3040,12 @@ FnSortIdKey(const void *pItem1, const void *pItem2, void *privateData)
 
     nsIMsgDatabase *db = (nsIMsgDatabase *)privateData;
 
-    rv = db->CompareCollationKeys((*p1)->key,(*p1)->info.len,(*p2)->key,(*p2)->info.len,&retVal);
+    rv = db->CompareCollationKeys((*p1)->key, (*p1)->dword, (*p2)->key, (*p2)->dword, &retVal);
     NS_ASSERTION(NS_SUCCEEDED(rv),"compare failed");
 
     if (retVal != 0)
         return(retVal);
-    if ((*p1)->info.id >= (*p2)->info.id)
+    if ((*p1)->id >= (*p2)->id)
         return(1);
     else
         return(-1);
@@ -3049,38 +3062,28 @@ FnSortIdKeyPtr(const void *pItem1, const void *pItem2, void *privateData)
 
     nsIMsgDatabase *db = (nsIMsgDatabase *)privateData;
 
-    // if either collation key is null, make empty key < non-empty key.
-    if (! (*p1)->key || ! (*p2)->key)
-      retVal = (*p1)->key ? 1 : ((*p2)->key ? -1 : 0);
-    else
-      rv = db->CompareCollationKeys((*p1)->key,(*p1)->info.len,(*p2)->key,(*p2)->info.len,&retVal);
+    rv = db->CompareCollationKeys((*p1)->key, (*p1)->dword, (*p2)->key, (*p2)->dword, &retVal);
     NS_ASSERTION(NS_SUCCEEDED(rv),"compare failed");
 
     if (retVal != 0)
         return(retVal);
-    if ((*p1)->info.id >= (*p2)->info.id)
+    if ((*p1)->id >= (*p2)->id)
         return(1);
     else
         return(-1);
 }
-
-
-typedef struct tagIdDWord 
-{
-    EntryInfo   info;
-    PRUint32    dword;
-} IdDWord;
 
 int PR_CALLBACK
 FnSortIdDWord(const void *pItem1, const void *pItem2, void *privateData)
 {
     IdDWord** p1 = (IdDWord**)pItem1;
     IdDWord** p2 = (IdDWord**)pItem2;
+
     if ((*p1)->dword > (*p2)->dword)
         return(1);
     else if ((*p1)->dword < (*p2)->dword)
         return(-1);
-    else if ((*p1)->info.id >= (*p2)->info.id)
+    else if ((*p1)->id >= (*p2)->id)
         return(1);
     else
         return(-1);
@@ -3130,7 +3133,7 @@ nsresult nsMsgDBView::GetFieldTypeAndLenForSort(nsMsgViewSortTypeValue sortType,
         case nsMsgViewSortType::byJunkStatus:
         case nsMsgViewSortType::byAttachments:
             *pFieldType = kU32;
-            *pMaxLen = sizeof(PRUint32);
+            *pMaxLen = 0;
             break;
         default:
             return NS_ERROR_UNEXPECTED;
@@ -3393,18 +3396,18 @@ NS_IMETHODIMP nsMsgDBView::Sort(nsMsgViewSortTypeValue sortType, nsMsgViewSortOr
   nsCOMPtr <nsISupportsArray> folders;
   GetFolders(getter_AddRefs(folders));
   
-  // use tagIdDWord, it is the biggest
-  tagIdDWord** pPtrBase = (tagIdDWord**)PR_Malloc(arraySize * sizeof(tagIdDWord*));
+  IdKey** pPtrBase = (IdKey**)PR_Malloc(arraySize * sizeof(IdKey*));
   NS_ASSERTION(pPtrBase, "out of memory, can't sort");
   if (!pPtrBase) return NS_ERROR_OUT_OF_MEMORY;
   ptrs.AppendElement((void *)pPtrBase); // remember this pointer so we can free it later
   
   // build up the beast, so we can sort it.
   PRUint32 numSoFar = 0;
+  const PRUint32 keyOffset = offsetof(IdKey, key);
   // calc max possible size needed for all the rest
-  PRUint32 maxSize = (PRUint32)(maxLen + sizeof(EntryInfo) + 1) * (PRUint32)(arraySize - numSoFar);
+  PRUint32 maxSize = (keyOffset + maxLen) * (arraySize - numSoFar);
   
-  PRUint32 maxBlockSize = (PRUint32) 0xf000L;
+  const PRUint32 maxBlockSize = (PRUint32) 0xf000L;
   PRUint32 allocSize = PR_MIN(maxBlockSize, maxSize);
   char *pTemp = (char *) PR_Malloc(allocSize);
   NS_ASSERTION(pTemp, "out of memory, can't sort");
@@ -3441,14 +3444,13 @@ NS_IMETHODIMP nsMsgDBView::Sort(nsMsgViewSortTypeValue sortType, nsMsgViewSortOr
     }
     
     // could be a problem here if the ones that appear here are different than the ones already in the array
-    void *pField = nsnull;
     PRUint32 actualFieldLen = 0;
     if (fieldType == kCollationKey) 
     {
       rv = GetCollationKey(msgHdr, sortType, &keyValue, &actualFieldLen);
       NS_ENSURE_SUCCESS(rv,rv);
-      
-      pField = (void *) keyValue;
+
+      longValue = actualFieldLen;
     }
     else 
     {
@@ -3461,18 +3463,18 @@ NS_IMETHODIMP nsMsgDBView::Sort(nsMsgViewSortTypeValue sortType, nsMsgViewSortOr
         rv = GetLongField(msgHdr, sortType, &longValue);
         NS_ENSURE_SUCCESS(rv,rv);
       }
-      pField = (void *)&longValue;
-      actualFieldLen = maxLen;
     }
     
     // check to see if this entry fits into the block we have allocated so far
     // pTemp - pBase = the space we have used so far
     // sizeof(EntryInfo) + fieldLen = space we need for this entry
     // allocSize = size of the current block
-    if ((PRUint32)(pTemp - pBase) + (PRUint32)sizeof(EntryInfo) + (PRUint32)actualFieldLen >= allocSize) {
-      maxSize = (PRUint32)(maxLen + sizeof(EntryInfo) + 1) * (PRUint32)(arraySize - numSoFar);
-      maxBlockSize = (PRUint32) 0xf000L;
+    if ((PRUint32)(pTemp - pBase) + (keyOffset + actualFieldLen) >= allocSize)
+    {
+      maxSize = (keyOffset + maxLen) * (arraySize - numSoFar);
       allocSize = PR_MIN(maxBlockSize, maxSize);
+      // make sure allocSize is big enough for the current value
+      allocSize = PR_MAX(allocSize, keyOffset + actualFieldLen);
       pTemp = (char *) PR_Malloc(allocSize);
       NS_ASSERTION(pTemp, "out of memory, can't sort");
       if (!pTemp) 
@@ -3484,57 +3486,28 @@ NS_IMETHODIMP nsMsgDBView::Sort(nsMsgViewSortTypeValue sortType, nsMsgViewSortOr
       ptrs.AppendElement(pTemp); // remember this pointer so we can free it later
     }
     
-    // make sure there aren't more IDs than we allocated space for
-    NS_ASSERTION(numSoFar < arraySize, "out of memory");
-    if (numSoFar >= arraySize)
-    {
-      FreeAll(&ptrs);
-      return NS_ERROR_OUT_OF_MEMORY;
-    }
-    
     // now store this entry away in the allocated memory
-    pPtrBase[numSoFar] = (tagIdDWord*)pTemp;
-    EntryInfo *info = (EntryInfo*)pTemp;
+    IdKey *info = (IdKey*)pTemp;
+    pPtrBase[numSoFar] = info;
     info->id = thisKey;
     info->bits = m_flags.GetAt(numSoFar);
-    info->len = actualFieldLen;
+    info->dword = longValue;
     //info->pad = 0;
     
     if (folders)
     {
-      nsCOMPtr<nsIMsgFolder> curFolder = do_QueryElementAt(folders, numSoFar);;
-      if(curFolder) 
-        info->folder = curFolder;
+      nsCOMPtr<nsISupports> curFolder;
+      folders->GetElementAt(numSoFar, getter_AddRefs(curFolder));
+      info->folder = curFolder;
     }
     
-    pTemp += sizeof(EntryInfo);
-    
-    PRInt32 bytesLeft = allocSize - (PRInt32)(pTemp - pBase);
-    PRInt32 bytesToCopy = PR_MIN(bytesLeft, (PRInt32)actualFieldLen);
-    if (pField && bytesToCopy > 0) 
-    {
-      memcpy((void *)pTemp, pField, bytesToCopy);
-      if (bytesToCopy < (PRInt32)actualFieldLen) 
-      {
-        NS_ASSERTION(0, "wow, big block");
-        info->len = bytesToCopy;
-      }
-    }
-    else
-    {
-      *pTemp = 0;
-    }
+    memcpy(info->key, keyValue, actualFieldLen);
     //In order to align memory for systems that require it, such as HP-UX
-    //calculate the correct value to pad the bytesToCopy value
-    PRInt32 bytesToPad = sizeof(PRInt32) - (bytesToCopy & 0x00000003);
+    //calculate the correct value to pad the actualFieldLen value
+    const PRUint32 align = sizeof(IdKey) - sizeof(IdDWord) - 1;
+    actualFieldLen = (actualFieldLen + align) & ~align;
     
-    //if bytesToPad is not 4 then alignment is needed so add the padding
-    //otherwise memory is already aligned - no need to add padding
-    //Add the necessary padding to bytesToCopy
-    if (bytesToPad != sizeof(PRInt32)) 
-      bytesToCopy += bytesToPad; 
-    
-    pTemp += bytesToCopy;
+    pTemp += keyOffset + actualFieldLen;
     ++numSoFar;
     PR_Free(keyValue);
   }
@@ -3554,7 +3527,7 @@ NS_IMETHODIMP nsMsgDBView::Sort(nsMsgViewSortTypeValue sortType, nsMsgViewSortOr
     }
       break;
     case kU32:
-      NS_QuickSort(pPtrBase, numSoFar, sizeof(IdDWord*), FnSortIdDWord, nsnull);
+      NS_QuickSort(pPtrBase, numSoFar, sizeof(IdKey*), FnSortIdDWord, nsnull);
       break;
     default:
       NS_ASSERTION(0, "not supposed to get here");
@@ -3564,15 +3537,11 @@ NS_IMETHODIMP nsMsgDBView::Sort(nsMsgViewSortTypeValue sortType, nsMsgViewSortOr
   // now put the IDs into the array in proper order
   for (PRUint32 i = 0; i < numSoFar; i++) 
   {
-    m_keys.SetAt(i, pPtrBase[i]->info.id);
-    m_flags.SetAt(i, pPtrBase[i]->info.bits);
+    m_keys.SetAt(i, pPtrBase[i]->id);
+    m_flags.SetAt(i, pPtrBase[i]->bits);
     
     if (folders)
-    {
-      nsCOMPtr <nsISupports> tmpSupports 
-        = do_QueryInterface(pPtrBase[i]->info.folder);
-      folders->SetElementAt(i, tmpSupports);
-    }
+      folders->SetElementAt(i, pPtrBase[i]->folder);
   }
   
   m_sortType = sortType;
@@ -4034,19 +4003,19 @@ nsresult nsMsgDBView::CollapseByIndex(nsMsgViewIndex index, PRUint32 *pNumCollap
 
 nsresult nsMsgDBView::OnNewHeader(nsMsgKey newKey, nsMsgKey aParentKey, PRBool /*ensureListed*/)
 {
-	nsresult rv = NS_MSG_MESSAGE_NOT_FOUND;
-	// views can override this behaviour, which is to append to view.
-	// This is the mail behaviour, but threaded views will want
-	// to insert in order...
-	nsCOMPtr <nsIMsgDBHdr> msgHdr;
+    nsresult rv = NS_MSG_MESSAGE_NOT_FOUND;
+    // views can override this behaviour, which is to append to view.
+    // This is the mail behaviour, but threaded views will want
+    // to insert in order...
+    nsCOMPtr <nsIMsgDBHdr> msgHdr;
     NS_ASSERTION(m_db, "m_db is null");
     if (m_db)
       rv = m_db->GetMsgHdrForKey(newKey, getter_AddRefs(msgHdr));
-	if (NS_SUCCEEDED(rv) && msgHdr != nsnull)
-	{
-		rv = AddHdr(msgHdr);
-	}
-	return rv;
+    if (NS_SUCCEEDED(rv) && msgHdr != nsnull)
+    {
+	rv = AddHdr(msgHdr);
+    }
+    return rv;
 }
 
 nsresult nsMsgDBView::GetThreadContainingIndex(nsMsgViewIndex index, nsIMsgThread **resultThread)
@@ -4120,134 +4089,95 @@ nsMsgViewIndex nsMsgDBView::GetIndexForThread(nsIMsgDBHdr *hdr)
 
 nsMsgViewIndex nsMsgDBView::GetInsertIndex(nsIMsgDBHdr *msgHdr)
 {
-  PRBool done = PR_FALSE;
-  PRBool withinOne = PR_FALSE;
-  nsMsgViewIndex retIndex = nsMsgViewIndex_None;
-  nsMsgViewIndex tryIndex = GetSize() / 2;
-  nsMsgViewIndex newTryIndex;
+  nsMsgViewIndex highIndex = GetSize();
+  if (highIndex == 0)
+    return highIndex;
+
+  if ((m_viewFlags & nsMsgViewFlagsType::kThreadedDisplay) != 0)
+  {
+    return GetIndexForThread(msgHdr);
+  }
+
   nsMsgViewIndex lowIndex = 0;
-  nsMsgViewIndex highIndex = GetSize() - 1;
-  IdDWord	dWordEntryInfo1, dWordEntryInfo2;
-  IdKeyPtr	keyInfo1, keyInfo2;
-  keyInfo1.key=nsnull;
-  keyInfo2.key=nsnull;
+  IdKeyPtr EntryInfo1, EntryInfo2;
+  EntryInfo1.key = nsnull;
+  EntryInfo2.key = nsnull;
   void *comparisonContext = nsnull;
   
   nsresult rv;
-  
-  if (GetSize() == 0)
-    return 0;
-  
   PRUint16	maxLen;
   eFieldType fieldType;
   rv = GetFieldTypeAndLenForSort(m_sortType, &maxLen, &fieldType);
-  const void *pValue1, *pValue2;
-  
-  if ((m_viewFlags & nsMsgViewFlagsType::kThreadedDisplay) != 0)
-  {
-    retIndex = GetIndexForThread(msgHdr);
-    return retIndex;
-  }
+  const void *pValue1 = &EntryInfo1, *pValue2 = &EntryInfo2;
   
   int (* PR_CALLBACK comparisonFun) (const void *pItem1, const void *pItem2, void *privateData)=nsnull;
   int retStatus = 0;
+  msgHdr->GetMessageKey(&EntryInfo1.id);
   switch (fieldType)
   {
     case kCollationKey:
-      rv = GetCollationKey(msgHdr, m_sortType, &(keyInfo1.key), &(keyInfo1.info.len));
+      rv = GetCollationKey(msgHdr, m_sortType, &EntryInfo1.key, &EntryInfo1.dword);
       NS_ASSERTION(NS_SUCCEEDED(rv),"failed to create collation key");
-      msgHdr->GetMessageKey(&keyInfo1.info.id);
       comparisonFun = FnSortIdKeyPtr;
       comparisonContext = m_db.get();
-      pValue1 = (void *) &keyInfo1;
       break;
     case kU32:
       if (m_sortType == nsMsgViewSortType::byId) {
-        msgHdr->GetMessageKey(&dWordEntryInfo1.dword);
+        EntryInfo1.dword = EntryInfo1.id;
       }
       else {
-        GetLongField(msgHdr, m_sortType, &dWordEntryInfo1.dword);
+        GetLongField(msgHdr, m_sortType, &EntryInfo1.dword);
       }
-      msgHdr->GetMessageKey(&dWordEntryInfo1.info.id);
-      pValue1 = (void *) &dWordEntryInfo1;
       comparisonFun = FnSortIdDWord;
       break;
     default:
-      done = PR_TRUE;
+      return highIndex;
   }
-  while (!done)
+  while (highIndex > lowIndex)
   {
-    if (highIndex == lowIndex)
-      break;
-    nsMsgKey	messageKey = GetAt(tryIndex);
+    nsMsgViewIndex tryIndex = (lowIndex + highIndex - 1) / 2;
+    EntryInfo2.id = GetAt(tryIndex);
     nsCOMPtr <nsIMsgDBHdr> tryHdr;
-    rv = m_db->GetMsgHdrForKey(messageKey, getter_AddRefs(tryHdr));
+    rv = m_db->GetMsgHdrForKey(EntryInfo2.id, getter_AddRefs(tryHdr));
     if (!tryHdr)
       break;
     if (fieldType == kCollationKey)
     {
-      PR_FREEIF(keyInfo2.key);
-      rv = GetCollationKey(tryHdr, m_sortType, &(keyInfo2.key), &(keyInfo2.info.len));
+      PR_FREEIF(EntryInfo2.key);
+      rv = GetCollationKey(tryHdr, m_sortType, &EntryInfo2.key, &EntryInfo2.dword);
       NS_ASSERTION(NS_SUCCEEDED(rv),"failed to create collation key");
-      keyInfo2.info.id = messageKey;
-      pValue2 = &keyInfo2;
     }
     else if (fieldType == kU32)
     {
       if (m_sortType == nsMsgViewSortType::byId) {
-        dWordEntryInfo2.dword = messageKey;
+        EntryInfo2.dword = EntryInfo2.id;
       }
       else {
-        GetLongField(tryHdr, m_sortType, &dWordEntryInfo2.dword);
+        GetLongField(tryHdr, m_sortType, &EntryInfo2.dword);
       }
-      dWordEntryInfo2.info.id = messageKey;
-      pValue2 = &dWordEntryInfo2;
     }
     retStatus = (*comparisonFun)(&pValue1, &pValue2, comparisonContext);
     if (retStatus == 0)
+    {
+      highIndex = tryIndex;
       break;
+    }
     if (m_sortOrder == nsMsgViewSortOrder::descending)	//switch retStatus based on sort order
-      retStatus = (retStatus > 0) ? -1 : 1;
+      retStatus = ~retStatus;
     
     if (retStatus < 0)
     {
-      newTryIndex = tryIndex  - (tryIndex - lowIndex) / 2;
-      if (newTryIndex == tryIndex)
-      {
-        if (!withinOne && newTryIndex > lowIndex)
-        {
-          newTryIndex--;
-          withinOne = PR_TRUE;
-        }
-      }
       highIndex = tryIndex;
     }
     else
     {
-      newTryIndex = tryIndex + (highIndex - tryIndex) / 2;
-      if (newTryIndex == tryIndex)
-      {
-        if (!withinOne && newTryIndex < highIndex)
-        {
-          withinOne = PR_TRUE;
-          newTryIndex++;
-        }
-        lowIndex = tryIndex;
-      }
+      lowIndex = tryIndex + 1;
     }
-    if (tryIndex == newTryIndex)
-      break;
-    else
-      tryIndex = newTryIndex;
   }
-  if (retStatus >= 0)
-    retIndex = tryIndex + 1;
-  else if (retStatus < 0)
-    retIndex = tryIndex;
   
-  PR_Free(keyInfo1.key);
-  PR_Free(keyInfo2.key);
-  return retIndex;
+  PR_Free(EntryInfo1.key);
+  PR_Free(EntryInfo2.key);
+  return highIndex;
 }
 
 nsresult	nsMsgDBView::AddHdr(nsIMsgDBHdr *msgHdr)

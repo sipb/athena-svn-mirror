@@ -210,11 +210,10 @@ void txMozillaXMLOutput::endDocument()
         nsCOMPtr<nsIDocument> doc = do_QueryInterface(mDocument);
         nsIScriptGlobalObject *sgo = doc->GetScriptGlobalObject();
         if (sgo) {
-            nsCOMPtr<nsIDocShell> docShell;
-            sgo->GetDocShell(getter_AddRefs(docShell));
-            nsCOMPtr<nsIRefreshURI> refURI = do_QueryInterface(docShell);
+            nsCOMPtr<nsIRefreshURI> refURI =
+                do_QueryInterface(sgo->GetDocShell());
             if (refURI) {
-                refURI->SetupRefreshURIFromHeader(doc->GetBaseURL(),
+                refURI->SetupRefreshURIFromHeader(doc->GetBaseURI(),
                                                   mRefreshString);
             }
         }
@@ -639,7 +638,7 @@ void txMozillaXMLOutput::endHTMLElement(nsIDOMElement* aElement)
         rv = NS_NewURI(getter_AddRefs(baseURI), value, nsnull);
         if (NS_FAILED(rv))
             return;
-        doc->SetBaseURL(baseURI); // The document checks if it is legal to set this base
+        doc->SetBaseURI(baseURI); // The document checks if it is legal to set this base
     }
     else if (mCreatingNewDocument && atom == txHTMLAtoms::meta) {
         // handle HTTP-EQUIV data

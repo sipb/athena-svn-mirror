@@ -35,7 +35,7 @@
 #define NSSCKMDT_H
 
 #ifdef DEBUG
-static const char NSSCKMDT_CVS_ID[] = "@(#) $RCSfile: nssckmdt.h,v $ $Revision: 1.1.1.4 $ $Date: 2004-02-27 14:43:24 $ $Name: not supported by cvs2svn $";
+static const char NSSCKMDT_CVS_ID[] = "@(#) $RCSfile: nssckmdt.h,v $ $Revision: 1.1.1.5 $ $Date: 2004-06-30 15:12:01 $ $Name: not supported by cvs2svn $";
 #endif /* DEBUG */
 
 /*

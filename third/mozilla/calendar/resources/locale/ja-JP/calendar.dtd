@@ -420,12 +420,27 @@
 <!ENTITY calendar.wizard.subscribe.label           "購読: サーバ(Internet 上) 上のカレンダーを購読します。">
 <!ENTITY calendar.wizard.publish.label             "公開: サーバ(Internet 上) 上の購読している人たちにイベントを公開します。">
 
-<!-- Calendar Import Duplicates Dialog -->
-<!ENTITY calendar.importdupes.dialog.title "重複処理" >
-<!ENTITY calendar.importdupes.caption.label "重複データの処理方法:">
-<!ENTITY calendar.importdupes.autodiscard.label "自動的に重複データを破棄する">
-<!ENTITY calendar.importdupes.adddupes.label "重複データを追加する">
-<!ENTITY calendar.importdupes.prompt.label "個別に尋ねる">
+<!-- Calendar Import Outlook CSV Dialog -->
+<!-- TRANSLATORS: all outlook*.label -fields should be translated word to word (or if possible
+                  copied from outlook csv file headers -->
+<!ENTITY calendar.importoutlook.dialog.title "Outlook CSV のインポート" >
+<!ENTITY calendar.importoutlook.mapconcepts.label "Outlook CSV を以下のカレンダー項目に対応させてください:" >
+<!ENTITY calendar.importoutlook.outlooksubject.label "件名" >
+<!ENTITY calendar.importoutlook.outlookstartdate.label "開始日" >
+<!ENTITY calendar.importoutlook.outlookstarttime.label "開始時刻" >
+<!ENTITY calendar.importoutlook.outlookenddate.label "終了日" >
+<!ENTITY calendar.importoutlook.outlookendtime.label "終了時刻" >
+<!ENTITY calendar.importoutlook.outlooklocation.label "場所" >
+<!ENTITY calendar.importoutlook.outlookdescription.label "内容" >
+<!ENTITY calendar.importoutlook.outlookallday.label "終日イベント" >
+<!ENTITY calendar.importoutlook.outlookprivate.label "プライベート" >
+<!ENTITY calendar.importoutlook.outlookalarm.label "アラーム オン/オフ" >
+<!ENTITY calendar.importoutlook.outlookalarmdate.label "アラーム日付" >
+<!ENTITY calendar.importoutlook.outlookalarmtime.label "アラーム時刻" >
+<!ENTITY calendar.importoutlook.outlookcategories.label "分類" >
+<!ENTITY calendar.importoutlook.selectmeaning.label "方法を選択してください: " >
+<!ENTITY calendar.importoutlook.true.label "有効" >
+<!ENTITY calendar.importoutlook.false.label "無効" >
 
 <!-- Calendar Printing -->
 <!ENTITY calendar.print.window.title "カレンダー印刷">
@@ -434,3 +449,4 @@
 <!ENTITY calendar.print.listselected.label "選択したイベントをリスト">
 <!ENTITY calendar.print.onlyitemsstatus.label "このステータスの項目のみ印刷:">
 <!ENTITY calendar.print.onlyitemscategory.label "このカテゴリの項目のみ印刷:">
+

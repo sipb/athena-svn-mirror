@@ -246,7 +246,6 @@ protected:
    HPOINTER  mFrameIcon;      // current frame icon
    VDKEY     mDeadKey;        // dead key from previous keyevent
    BOOL      mHaveDeadKey;    // is mDeadKey valid [0 may be a valid dead key, for all I know]
-   HWND      mHackDestroyWnd; // access GetMainWindow() window from destructor
    QMSG      mQmsg;
    PRBool    mIsTopWidgetWindow;
    BOOL      mIsScrollBar;
@@ -288,10 +287,10 @@ protected:
    virtual void SubclassWindow(BOOL bState);
 
    PRBool  ConvertStatus( nsEventStatus aStatus);
-   void    InitEvent( nsGUIEvent &event, PRUint32 aEventType, nsPoint *pt = 0);
+   void    InitEvent( nsGUIEvent &event, nsPoint *pt = 0);
    virtual PRBool DispatchWindowEvent(nsGUIEvent* event);
    virtual PRBool DispatchWindowEvent(nsGUIEvent*event, nsEventStatus &aStatus);
-   PRBool  DispatchStandardEvent( PRUint32 aMsg, PRUint8 aStructType = NS_GUI_EVENT);
+   PRBool  DispatchStandardEvent( PRUint32 aMsg);
    virtual PRBool DispatchMouseEvent( PRUint32 aEventType, MPARAM mp1, MPARAM mp2);
    virtual PRBool DispatchResizeEvent( PRInt32 aClientX, PRInt32 aClientY);
    void GetNonClientBounds(nsRect &aRect);

@@ -56,7 +56,7 @@ nsINIParser::nsINIParser(char *aFilename)
         goto bail;
 
     /* malloc an internal buf the size of the file */
-    mFileBuf = (char *) malloc(eofpos * sizeof(char));
+    mFileBuf = (char *) malloc((eofpos+1) * sizeof(char));
     if (!mFileBuf)
     {
         mError = E_MEM;
@@ -70,6 +70,7 @@ nsINIParser::nsINIParser(char *aFilename)
     rd = fread((void *)mFileBuf, 1, eofpos, fd);
     if (!rd)
         goto bail;
+    mFileBuf[mFileBufSize] = '\0';
 
     /* close file */
     fclose(fd);
@@ -179,6 +180,7 @@ nsINIParser::FindSection(char *aSection, char **aOutSecPtr)
     char *nextSec = NULL;
     char *secClose = NULL;
     char *nextNL = NULL;
+    int aSectionLen = strlen(aSection);
     mError = E_NO_SEC;
     DUMP("FindSection");
 
@@ -210,7 +212,8 @@ nsINIParser::FindSection(char *aSection, char **aOutSecPtr)
         }
 
         // if section name matches we succeeded
-        if (strncmp(aSection, currChar, strlen(aSection)) == 0)
+        if (strncmp(aSection, currChar, aSectionLen) == 0
+              && secClose-currChar == aSectionLen)
         {
             *aOutSecPtr = secClose + 1;
             mError = OK;
@@ -228,6 +231,7 @@ nsINIParser::FindKey(char *aSecPtr, char *aKey, char *aVal, int *aIOValSize)
     char *secEnd = NULL;
     char *currLine = aSecPtr;
     char *nextEq = NULL;
+    int  aKeyLen = strlen(aKey); 
     mError = E_NO_KEY;
     DUMP("FindKey");
 
@@ -284,7 +288,8 @@ find_end:
         }
 
         // if key matches we succeeded
-        if (strncmp(currLine, aKey, strlen(aKey)) == 0)
+        if (strncmp(currLine, aKey, aKeyLen) == 0
+              && nextEq-currLine == aKeyLen)
         {
             // extract the value and return
             if (*aIOValSize < nextNL - nextEq)

@@ -208,6 +208,12 @@ static void output_row(gif_struct *gs)
       drow_end = gs->height - 1;
   }
 
+  /* Protect against too much image data */
+  if ((PRUintn)drow_start >= gs->height) {
+    NS_WARNING("GIF2.cpp::output_row - too much image data");
+    return;
+  }
+
   /* Check for scanline below edge of logical screen */
   if ((gs->y_offset + gs->irow) < gs->screen_height) {
     /* Clip if right edge of image exceeds limits */
@@ -338,8 +344,12 @@ static int do_lzw(gif_struct *gs, const PRUint8 *q)
       }
 
       /* Check for explicit end-of-stream code */
-      if (code == (clear_code + 1))
+      if (code == (clear_code + 1)) {
+        /* end-of-stream should only appear after all image data */
+        if (rows_remaining != 0)
+          return -1;
         return 0;
+      }
 
       if (oldcode == -1) {
         *rowp++ = suffix[code];

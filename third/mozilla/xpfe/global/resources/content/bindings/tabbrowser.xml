@@ -84,7 +84,6 @@
                     tooltiptextnew="&newTabButton.tooltip;"
                     setfocus="false"
                     onclick="this.parentNode.parentNode.parentNode.onTabClick(event);"
-                    onmousedown="this.parentNode.parentNode.parentNode.updateContextTab(event);"
                     ondragover="nsDragAndDrop.dragOver(event, this.parentNode.parentNode.parentNode);
                                 event.stopPropagation();"
                     ondragdrop="nsDragAndDrop.drop(event, this.parentNode.parentNode.parentNode);
@@ -94,14 +93,14 @@
                                 while (node.localName != 'tabbrowser')
                                   node = node.parentNode;
                                 node.removeCurrentTab();">
-            <xul:tab validate="never"
+            <xul:tab selected="true" validate="never"
                      onerror="this.parentNode.parentNode.parentNode.parentNode.addToMissedIconCache(this.getAttribute('image'));
                               this.removeAttribute('image');"
                      maxwidth="250" width="0" minwidth="30" flex="100"
                      class="tabbrowser-tab" label="&untitledTab;" crop="end"/>
           </xul:tabs>
         </xul:hbox>
-        <xul:tabpanels flex="1" class="plain">
+        <xul:tabpanels flex="1" class="plain" selectedIndex="0">
           <xul:browser type="content-primary" xbl:inherits="tooltip=contenttooltip,contextmenu=contentcontextmenu"/>
         </xul:tabpanels>
       </xul:tabbox>
@@ -207,7 +206,7 @@
                 // onLocationChange, this flag also gets set to false
                 // (so we keep it while switching tabs after failed load
                 if (aWebProgress.DOMWindow == this.mBrowser.contentWindow)
-                  this.mBrowser.userTypedClear = true;
+                  this.mBrowser.userTypedClear++;
 
                 if (!this.mBlank) {
                   this.mTab.setAttribute("busy", "true");
@@ -224,7 +223,8 @@
                 // The document is done loading, it's okay to clear
                 // the value again.
                 if (aWebProgress.DOMWindow == this.mBrowser.contentWindow)
-                  this.mBrowser.userTypedClear = false;
+                  if (this.mBrowser.userTypedClear > 0)
+                    this.mBrowser.userTypedClear--;
 
                 if (this.mBlank)
                   this.mBlank = false;
@@ -234,7 +234,7 @@
                 var location = aRequest.QueryInterface(nsIChannel).URI;
                 if (this.mIcon) {
                   this.mTab.setAttribute("image", this.mIcon);
-                  mIcon = "";
+                  this.mIcon = "";
                 }
                 else if (this.mTabBrowser.shouldLoadFavIcon(location))
                   this.mTabBrowser.loadFavIcon(location, "image", this.mTab);
@@ -271,7 +271,7 @@
               }
 
               // The document loaded correctly, clear the value if we should
-              if (this.mBrowser.userTypedClear)
+              if (this.mBrowser.userTypedClear > 0)
                 this.mBrowser.userTypedValue = null;
 
               if (!this.mBlank && this.mTabBrowser.mCurrentTab == this.mTab) {
@@ -473,22 +473,11 @@
         </body>
       </method>
 
-      <method name="updateContextTab">
-        <parameter name="aEvent"/>
-        <body>
-          <![CDATA[
-            if (aEvent.originalTarget.localName == "tab")
-              this.mContextTab = aEvent.originalTarget;
-            else
-              this.mContextTab = document.popupNode;
-          ]]>
-        </body>
-      </method>
-
       <method name="updatePopupMenu">
         <parameter name="aPopupMenu"/>
         <body>
           <![CDATA[
+            this.mContextTab = document.popupNode;
             var disabled = this.mPanelContainer.childNodes.length == 1;
             var menuItems = aPopupMenu.getElementsByAttribute("tbattr", "tabbrowser-multiple");
             for (var i = 0; i < menuItems.length; i++)
@@ -519,7 +508,7 @@
             // so we don't clear the userTypedValue when just switching
             // tabs. Set it back to its old state after we're done.
             var userTypedClear = this.mCurrentBrowser.userTypedClear;
-            this.mCurrentBrowser.userTypedClear = false;
+            this.mCurrentBrowser.userTypedClear = 0;
             var i, p;
             for (i = 0; i < this.mProgressListeners.length; i++) {
               p = this.mProgressListeners[i];
@@ -602,15 +591,14 @@
         <parameter name="event"/>
         <body>
           <![CDATA[
-            var tabBrowser = this.parentNode.parentNode;
-            if (!tabBrowser.mPrefs.getBoolPref("browser.chrome.site_icons"))
+            if (!this.mPrefs.getBoolPref("browser.chrome.site_icons"))
               return;
 
-            if (!event.target.rel.match((/(?:^|\s)icon(?:\s|$)/i)))
+            if (!event.originalTarget.rel.match((/(?:^|\s)icon(?:\s|$)/i)))
               return;
 
             // We have an icon.
-            var href = event.target.href;
+            var href = event.originalTarget.href;
             if (!href)
               return;
 
@@ -627,29 +615,28 @@
             var notifyListeners = true;
             var i;
 
-            if (tabBrowser.mTabbedMode) {
+            if (this.mTabbedMode) {
               // We need to update a tab.
-              for (i = 0; i < this.childNodes.length; i++) {
-                if (this.childNodes[i].contentDocument == event.target.ownerDocument) {
+              for (i = 0; i < this.browsers.length; i++) {
+                if (this.browsers[i].contentDocument == event.originalTarget.ownerDocument) {
                   if (!contentPolicy.shouldLoad(Components.interfaces.nsIContentPolicy.IMAGE,
-                                                uri, event.target, this.childNodes[i].contentWindow))
+                                                uri, event.originalTarget, this.browsers[i].contentWindow))
                     return;
 
-                  var listener = tabBrowser.mTabListeners[i];
-                  listener.mIcon = href;
+                  this.mTabListeners[i].mIcon = href;
+                  notifyListeners = (this.browsers[i] == this.mCurrentBrowser);
                   break;
                 }
               }
-
-              notifyListeners = (this.childNodes[i] == tabBrowser.mCurrentBrowser);
             }
-            else if (!contentPolicy.shouldLoad(Components.interfaces.nsIContentPolicy.IMAGE,
-                                               uri, event.target, tabBrowser.mCurrentBrowser.contentWindow))
+            else if (this.contentDocument != event.originalTarget.ownerDocument ||
+                     !contentPolicy.shouldLoad(Components.interfaces.nsIContentPolicy.IMAGE,
+                                               uri, event.originalTarget, this.mCurrentBrowser.contentWindow))
               return;
 
-            if (notifyListeners && tabBrowser.mProgressListeners) {
-              for (i = 0; i < tabBrowser.mProgressListeners.length; i++) {
-                var p = tabBrowser.mProgressListeners[i];
+            if (notifyListeners && this.mProgressListeners) {
+              for (i = 0; i < this.mProgressListeners.length; i++) {
+                var p = this.mProgressListeners[i];
                 if (p)
                   p.onLinkIconAvailable(href);
               }
@@ -866,11 +853,11 @@
             else
               this.mTabContainer.selectedItem = aTab;
 
-            while (this.mTabContainer.lastChild != aTab)
-              this.removeTab(this.mTabContainer.lastChild);
-
-            while (aTab.previousSibling)
-              this.removeTab(aTab.previousSibling);
+            var childNodes = this.mTabContainer.childNodes;
+            for (var i = childNodes.length - 1; i >= 0; --i) {
+              if (childNodes[i] != aTab)
+                this.removeTab(childNodes[i]);
+            }
           ]]>
         </body>
       </method>
@@ -897,6 +884,11 @@
               this.setStripVisibilityTo(false);
               return;
             }
+
+            var ds = this.getBrowserForTab(aTab).docShell;
+
+            if (ds.contentViewer && !ds.contentViewer.permitUnload())
+              return;
 
             if (l == 2) {
               var autohide = this.mPrefs.getBoolPref("browser.tabs.autoHide");
@@ -998,19 +990,28 @@
               const forceHide = this.mPrefs.getBoolPref("browser.tabs.forceHide");
               if (!autoHide && !forceHide)
                 this.setStripVisibilityTo(true);
+            }
 
-              // Hook up a listener for <link>s.
-              this.mPanelContainer.addEventListener("DOMLinkAdded", this.onLinkAdded, false);
+            if (!this.mTabbedMode && this.mProgressListeners.length == 1) {
+              // If we are adding a 2nd progress listener, we need to enter tabbed mode
+              // because the browser status filter can only handle one progress listener.
+              // In tabbed mode, mTabProgressListener is used which will iterate over all listeners.
+              this.enterTabbedMode();
             }
 
             this.mProgressListeners.push(aListener);
 
             if (!this.mTabbedMode) {
-              // hook a filter up to our first browser
-              const filter = Components.classes["@mozilla.org/appshell/component/browser-status-filter;1"]
-                                       .createInstance(Components.interfaces.nsIWebProgress);
-              this.mTabFilters[0] = filter;
-              this.mCurrentBrowser.webProgress.addProgressListener(filter, Components.interfaces.nsIWebProgress.NOTIFY_ALL);
+              // If someone does this:
+              // addProgressListener, removeProgressListener, addProgressListener
+              // don't create a new filter; reuse the existing filter.
+              if (this.mTabFilters.length == 0) {
+                // hook a filter up to our first browser
+                const filter = Components.classes["@mozilla.org/appshell/component/browser-status-filter;1"]
+                                         .createInstance(Components.interfaces.nsIWebProgress);
+                this.mTabFilters[0] = filter;
+                this.mCurrentBrowser.webProgress.addProgressListener(filter, Components.interfaces.nsIWebProgress.NOTIFY_ALL);
+              }
 
               // Directly hook the listener up to the filter for better performance
               this.mTabFilters[0].addProgressListener(aListener, aMask);
@@ -1055,6 +1056,12 @@
         ]]>
         </body>
       </method>
+
+      <property name="tabContainer">
+        <getter>
+          return this.mTabContainer;
+        </getter>
+      </property>
 
       <property name="selectedTab">
         <getter>
@@ -1431,13 +1438,14 @@
             this.mTabListeners[i] = null;
             this.mPanelContainer.childNodes[i].removeEventListener("DOMTitleChanged", this.onTitleChanged, false);
           }
-          this.mPanelContainer.removeEventListener("DOMLinkAdded", this.onLinkAdded, false);
         ]]>
       </destructor>
     </implementation>
 
     <handlers>
       <handler event="select" action="if (event.originalTarget == this.mPanelContainer) this.updateCurrentBrowser();"/>
+
+      <handler event="DOMLinkAdded" action="this.onLinkAdded(event);"/>
 
       <handler event="keypress" modifiers="control" keycode="VK_F4">
         <![CDATA[

@@ -132,8 +132,6 @@ Rights Reserved.
 <!ENTITY editDraftCmd.accesskey "f">
 
 <!-- View Menu -->
-<!-- LOCALIZATION NOTE (showSidebarMenu) : Do not translate line. -->
-<!ENTITY showSidebarMenu.label ".SideBar">
 <!ENTITY showMessengerToolbarCmd.label		"Mail Toolbar">
 <!ENTITY showMessengerToolbarCmd.accesskey	"o">
 
@@ -172,18 +170,18 @@ Rights Reserved.
 <!ENTITY sortByRecipientCmd.accesskey "c">
 <!ENTITY sortByUnreadCmd.label "Read">
 <!ENTITY sortByUnreadCmd.accesskey "R">
-<!ENTITY sortByThreadCmd.label "Thread">
-<!ENTITY sortByThreadCmd.accesskey "T">
 <!ENTITY sortByOrderReceivedCmd.label "Order Received">
 <!ENTITY sortByOrderReceivedCmd.accesskey "O">
 <!ENTITY sortAscending.label "Ascending">
 <!ENTITY sortAscending.accesskey "A">
 <!ENTITY sortDescending.label "Descending">
 <!ENTITY sortDescending.accesskey "D">
+<!ENTITY sortThreaded.label "Threaded">
+<!ENTITY sortThreaded.accesskey "T">
+<!ENTITY sortUnthreaded.label "Unthreaded">
+<!ENTITY sortUnthreaded.accesskey "h">
 <!ENTITY msgsMenu.label "Messages">
 <!ENTITY msgsMenu.accesskey "M">
-<!ENTITY viewThreaded.label "Threaded">
-<!ENTITY viewThreaded.accesskey "T">
 <!ENTITY viewAll.label "All">
 <!ENTITY viewUnread.label "Unread">
 <!ENTITY viewAll.accesskey "A">
@@ -245,6 +243,7 @@ Rights Reserved.
 <!ENTITY findCmd.label "Find in This Message...">
 <!ENTITY findCmd.accesskey "F">
 <!ENTITY findCmd.key "f">
+<!ENTITY findCmd.key2 "VK_F19">
 <!ENTITY findAgainCmd.label "Find Again">
 <!ENTITY findAgainCmd.accesskey "g">
 <!ENTITY findAgainCmd.key "g">
@@ -400,6 +399,8 @@ Rights Reserved.
 <!ENTITY markAsNotJunkCmd.label "As Not Junk">
 <!ENTITY markAsNotJunkCmd.accesskey "N">
 <!ENTITY markAsNotJunkCmd.key "j">
+<!ENTITY recalculateJunkScoreCmd.label "Run Junk Mail Controls">
+<!ENTITY recalculateJunkScoreCmd.accesskey "C">
 <!ENTITY openMessageWindowCmd.label "Open Message">
 <!ENTITY openMessageWindowCmd.accesskey "O">
 <!ENTITY openMessageWindowCmd.key "o">

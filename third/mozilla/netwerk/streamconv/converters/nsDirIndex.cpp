@@ -44,7 +44,7 @@ NS_IMPL_THREADSAFE_ISUPPORTS1(nsDirIndex,
                               nsIDirIndex)
 
 nsDirIndex::nsDirIndex() : mType(TYPE_UNKNOWN),
-                           mSize((PRUint32)(-1)),
+                           mSize(LL_INIT(0, -1)),
                            mLastModified(-1) {
 }
 
@@ -99,6 +99,6 @@ nsDirIndex::SetDescription(const PRUnichar* aDescription) {
   return NS_OK;
 }
 
-NS_IMPL_GETSET(nsDirIndex, Size, PRUint32, mSize)
+NS_IMPL_GETSET(nsDirIndex, Size, PRInt64, mSize)
 NS_IMPL_GETSET(nsDirIndex, LastModified, PRInt64, mLastModified)
 

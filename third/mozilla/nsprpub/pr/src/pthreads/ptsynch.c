@@ -471,7 +471,8 @@ PR_IMPLEMENT(PRMonitor*) PR_NewMonitor(void)
 PR_IMPLEMENT(PRMonitor*) PR_NewNamedMonitor(const char* name)
 {
     PRMonitor* mon = PR_NewMonitor();
-    mon->name = name;
+    if (mon)
+        mon->name = name;
     return mon;
 }
 
@@ -713,7 +714,12 @@ PR_IMPLEMENT(PRSem *) PR_OpenSemaphore(
     }
     else
     {
+#ifdef HPUX
+        /* Pass 0 as the mode and value arguments to work around a bug. */
+        sem->sem = sem_open(osname, 0, 0, 0);
+#else
         sem->sem = sem_open(osname, 0);
+#endif
     }
     if ((sem_t *) -1 == sem->sem)
     {

@@ -35,7 +35,7 @@
 #define DEVTM_H
 
 #ifdef DEBUG
-static const char DEVTM_CVS_ID[] = "@(#) $RCSfile: devtm.h,v $ $Revision: 1.1.1.4 $ $Date: 2004-02-27 14:46:44 $ $Name: not supported by cvs2svn $";
+static const char DEVTM_CVS_ID[] = "@(#) $RCSfile: devtm.h,v $ $Revision: 1.1.1.5 $ $Date: 2004-06-30 15:15:03 $ $Name: not supported by cvs2svn $";
 #endif /* DEBUG */
 
 /*

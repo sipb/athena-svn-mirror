@@ -18,6 +18,7 @@
 #include "nsStaticComponent.h"
 #include "nsIComponentLoader.h"
 #include "pldhash.h"
+#include NEW_H
 
 struct StaticModuleInfo : public PLDHashEntryHdr {
     nsStaticModuleInfo  info;
@@ -34,7 +35,8 @@ public:
         mAutoRegistered(PR_FALSE), mLoadedInfo(PR_FALSE) {
 	}
 
-    virtual ~nsStaticComponentLoader() {
+private:
+    ~nsStaticComponentLoader() {
         if (mInfoHash.ops)
             PL_DHashTableFinish(&mInfoHash);
     }

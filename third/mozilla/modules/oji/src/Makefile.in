@@ -31,6 +31,8 @@ IS_COMPONENT	= 1
 MODULE_NAME	= nsCJVMManagerModule
 GRE_MODULE	= 1
 
+PACKAGE_FILE = oji.pkg
+
 REQUIRES	= xpcom \
 		  string \
 		  liveconnect \
@@ -46,6 +48,7 @@ REQUIRES	= xpcom \
 		  xpconnect \
 		  windowwatcher \
 		  gfx \
+		  content \
 		  layout \
 		  docshell \
 		  webbrwsr \

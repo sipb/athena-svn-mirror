@@ -44,6 +44,7 @@
 #include "nsIServiceManager.h"
 #include "nsIScriptGlobalObject.h"
 #include "nsIDOMWindow.h"
+#include "nsIDOMDocument.h"
 #include "nsIDocShellTreeItem.h"
 #include "nsIPrefService.h"
 #include "nsIPrefBranch.h"
@@ -58,11 +59,9 @@
 
 static const char kImageBehaviorPrefName[] = "network.image.imageBehavior";
 static const char kImageWarningPrefName[] = "network.image.warnAboutImages";
-static const char kImageBlockerPrefName[] = "imageblocker.enabled";
 static const char kImageBlockImageInMailNewsPrefName[] = "mailnews.message_display.disable_remote_image";
 
 static const PRUint8      kImageBehaviorPrefDefault = IMAGE_ACCEPT;
-static const PRPackedBool kImageBlockerPrefDefault = PR_FALSE;
 static const PRPackedBool kImageWarningPrefDefault = PR_FALSE;
 static const PRPackedBool kImageBlockImageInMailNewsPrefDefault = PR_FALSE;
 
@@ -73,10 +72,9 @@ GetRootDocShell(nsIDOMWindow *aWindow)
 
   nsCOMPtr<nsIScriptGlobalObject> globalObj(do_QueryInterface(aWindow));
   if (globalObj) {
-    nsCOMPtr<nsIDocShell> docShell;
-    globalObj->GetDocShell(getter_AddRefs(docShell));
+    nsCOMPtr<nsIDocShellTreeItem> docShellTreeItem =
+      do_QueryInterface(globalObj->GetDocShell());
 
-    nsCOMPtr<nsIDocShellTreeItem> docShellTreeItem(do_QueryInterface(docShell));
     if (docShellTreeItem) {
       nsCOMPtr<nsIDocShellTreeItem> rootItem;
       docShellTreeItem->GetRootTreeItem(getter_AddRefs(rootItem));
@@ -100,7 +98,6 @@ NS_IMPL_ISUPPORTS4(nsImgManager,
 
 nsImgManager::nsImgManager()
   : mBehaviorPref(kImageBehaviorPrefDefault)
-  , mBlockerPref(kImageBlockerPrefDefault)
   , mWarningPref(kImageWarningPrefDefault)
   , mBlockInMailNewsPref(kImageBlockImageInMailNewsPrefDefault)
 {
@@ -116,19 +113,15 @@ nsresult nsImgManager::Init()
   // other things, like mailnews blocking
   mPermissionManager = do_GetService(NS_PERMISSIONMANAGER_CONTRACTID);
 
-  nsCOMPtr<nsIPrefBranch> prefBranch = do_GetService(NS_PREFSERVICE_CONTRACTID);
+  nsCOMPtr<nsIPrefBranchInternal> prefBranch = do_GetService(NS_PREFSERVICE_CONTRACTID);
   if (prefBranch) {
-    nsCOMPtr<nsIPrefBranchInternal> prefInternal = do_QueryInterface(prefBranch);
-    if (prefInternal) {
-      prefInternal->AddObserver(kImageBehaviorPrefName, this, PR_TRUE);
+    prefBranch->AddObserver(kImageBehaviorPrefName, this, PR_TRUE);
 
-      // We don't do anything with it yet, but let it be. (bug 110112, 146513)
-      prefInternal->AddObserver(kImageWarningPrefName, this, PR_TRUE);
+    // We don't do anything with it yet, but let it be. (bug 110112, 146513)
+    prefBranch->AddObserver(kImageWarningPrefName, this, PR_TRUE);
 
-      // What is this pref, and how do you set it?
-      prefInternal->AddObserver(kImageBlockerPrefName, this, PR_TRUE);
-      prefInternal->AddObserver(kImageBlockImageInMailNewsPrefName, this, PR_TRUE);
-    }
+    prefBranch->AddObserver(kImageBlockImageInMailNewsPrefName, this, PR_TRUE);
+
     PrefChanged(prefBranch, nsnull);
   }
 
@@ -147,10 +140,6 @@ nsImgManager::PrefChanged(nsIPrefBranch *aPrefBranch,
       NS_SUCCEEDED(aPrefBranch->GetIntPref(kImageBehaviorPrefName, &val)) &&
       val >= 0 && val <= 2)
     mBehaviorPref = val;
-
-  if (PREF_CHANGED(kImageBlockerPrefName) &&
-      NS_SUCCEEDED(aPrefBranch->GetBoolPref(kImageBlockerPrefName, &val)))
-    mBlockerPref = val;
 
   if (PREF_CHANGED(kImageWarningPrefName) &&
       NS_SUCCEEDED(aPrefBranch->GetBoolPref(kImageWarningPrefName, &val)))
@@ -171,8 +160,8 @@ NS_IMETHODIMP nsImgManager::ShouldLoad(PRInt32 aContentType,
   *aShouldLoad = PR_TRUE;
   nsresult rv = NS_OK;
 
-  // we can't do anything w/ out these.
-  if (!aContentLoc || !aContext)
+  // we can't do anything w/ out this
+  if (!aContentLoc)
     return rv;
 
   if (aContentType == nsIContentPolicy::IMAGE) {
@@ -198,44 +187,50 @@ NS_IMETHODIMP nsImgManager::ShouldLoad(PRInt32 aContentType,
 
     nsCOMPtr<nsIDocument> doc;
     nsCOMPtr<nsIContent> content = do_QueryInterface(aContext);
-    NS_ASSERTION(content, "no content available");
     if (content) {
       // XXXbz GetOwnerDocument
       doc = content->GetDocument();
       if (!doc) {
         nsINodeInfo *nodeinfo = content->GetNodeInfo();
-        if (!nodeinfo)
-          return NS_OK;
-
-        doc = nodeinfo->GetDocument();
-        // XXX what should this code do if there is really no document?
-        if (!doc)
-          return NS_OK;
-      }
-
-      nsIURI *baseURI = doc->GetBaseURL();
-      if (!baseURI)
-        return rv;
-
-      nsCOMPtr<nsIDocShell> docshell = GetRootDocShell(aWindow);
-      if (docshell) {
-        PRUint32 appType;
-        rv = docshell->GetAppType(&appType);
-        if (NS_SUCCEEDED(rv) && appType == nsIDocShell::APP_TYPE_MAIL) {
-          // never allow ftp for mail messages, 
-          // because we don't want to send the users email address
-          // as the anonymous password
-          if (mBlockInMailNewsPref || isFtp) {
-            *aShouldLoad = PR_FALSE;
-            return NS_OK;
-          }
+        if (nodeinfo) {
+          doc = nodeinfo->GetDocument();
         }
       }
-      
-      rv =  TestPermission(aContentLoc, baseURI, aShouldLoad);
-      if (NS_FAILED(rv))
-        return rv;
     }
+
+    if (!doc && aWindow) {
+      nsCOMPtr<nsIDOMDocument> domDoc;
+      aWindow->GetDocument(getter_AddRefs(domDoc));
+      doc = do_QueryInterface(domDoc);
+    }
+    
+    if (!doc) {
+      // XXX what to do if there is really no document?
+      return NS_OK;
+    }
+    
+    nsIURI *baseURI = doc->GetBaseURI();
+    if (!baseURI)
+      return rv;
+
+    nsCOMPtr<nsIDocShell> docshell = GetRootDocShell(aWindow);
+    if (docshell) {
+      PRUint32 appType;
+      rv = docshell->GetAppType(&appType);
+      if (NS_SUCCEEDED(rv) && appType == nsIDocShell::APP_TYPE_MAIL) {
+        // never allow ftp for mail messages, 
+        // because we don't want to send the users email address
+        // as the anonymous password
+        if (mBlockInMailNewsPref || isFtp) {
+          *aShouldLoad = PR_FALSE;
+          return NS_OK;
+        }
+      }
+    }
+      
+    rv =  TestPermission(aContentLoc, baseURI, aShouldLoad);
+    if (NS_FAILED(rv))
+      return rv;
   }
   return NS_OK;
 }
@@ -256,13 +251,6 @@ nsImgManager::TestPermission(nsIURI *aCurrentURI,
 {
   nsresult rv;
   *aPermission = PR_TRUE;
-
-  // return if imageblocker is not enabled
-  // TODO: Why? Where is the pref set?
-  if (!mBlockerPref) {
-    *aPermission = (mBehaviorPref != IMAGE_DENY);
-    return NS_OK;
-  }
 
   // check the permission list first; if we find an entry, it overrides
   // default prefs. this is new behavior, see bug 184059.

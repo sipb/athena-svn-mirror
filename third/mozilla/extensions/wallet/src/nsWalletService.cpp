@@ -52,7 +52,6 @@
 #include "nsIDocumentLoader.h"
 #include "nsCURILoader.h"
 #include "nsIWebShell.h"
-#include "nsIDocumentViewer.h"
 #include "nsIDOMHTMLInputElement.h"
 #include "nsIFormControl.h"
 #include "nsIDocShell.h"
@@ -125,8 +124,7 @@ nsWalletlibService::WALLET_RequestToCapture(nsIDOMWindowInternal* aWin,
 
   nsCOMPtr<nsIScriptGlobalObject> scriptGlobalObject;
   scriptGlobalObject = do_QueryInterface(aWin);
-  nsCOMPtr<nsIDocShell> docShell;
-  scriptGlobalObject->GetDocShell(getter_AddRefs(docShell));
+  nsIDocShell *docShell = scriptGlobalObject->GetDocShell();
 
   nsCOMPtr<nsIPresShell> presShell;
   if(docShell)
@@ -153,8 +151,7 @@ nsWalletlibService::WALLET_Prefill(PRBool quick,
 {
   nsCOMPtr<nsIScriptGlobalObject> scriptGlobalObject;
   scriptGlobalObject = do_QueryInterface(aWin);
-  nsCOMPtr<nsIDocShell> docShell;
-  scriptGlobalObject->GetDocShell(getter_AddRefs(docShell));
+  nsIDocShell *docShell = scriptGlobalObject->GetDocShell();
 
   nsCOMPtr<nsIPresShell> presShell;
   if(docShell)
@@ -387,7 +384,7 @@ nsWalletlibService::OnStateChange(nsIWebProgress* aWebProgress,
             return NS_OK;
           }
 
-          nsIURI *uri = doc->GetDocumentURL();
+          nsIURI *uri = doc->GetDocumentURI();
           if (!uri) {
             NS_ASSERTION(0, "no URI available");
             return NS_OK;

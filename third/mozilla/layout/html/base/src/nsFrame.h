@@ -186,10 +186,8 @@ public:
   virtual nsStyleContext* GetAdditionalStyleContext(PRInt32 aIndex) const;
   virtual void SetAdditionalStyleContext(PRInt32 aIndex,
                                          nsStyleContext* aStyleContext);
-  NS_IMETHOD  GetAdditionalChildListName(PRInt32 aIndex, nsIAtom** aListName) const;
-  NS_IMETHOD  FirstChild(nsIPresContext* aPresContext,
-                         nsIAtom*        aListName,
-                         nsIFrame**      aFirstChild) const;
+  virtual nsIAtom* GetAdditionalChildListName(PRInt32 aIndex) const;
+  virtual nsIFrame* GetFirstChild(nsIAtom* aListName) const;
   NS_IMETHOD  Paint(nsIPresContext*      aPresContext,
                     nsIRenderingContext& aRenderingContext,
                     const nsRect&        aDirtyRect,
@@ -225,9 +223,9 @@ public:
                                         PRInt32 aLineStart, 
                                         PRInt8 aOutSideLimit
                                         );
-  NS_IMETHOD  ContentChanged(nsIPresContext* aPresContext,
-                             nsIContent*     aChild,
-                             nsISupports*    aSubContent);
+  NS_IMETHOD  CharacterDataChanged(nsIPresContext* aPresContext,
+                                   nsIContent*     aChild,
+                                   PRBool          aAppend);
   NS_IMETHOD  AttributeChanged(nsIPresContext* aPresContext,
                                nsIContent*     aChild,
                                PRInt32         aNameSpaceID,
@@ -241,10 +239,11 @@ public:
   NS_IMETHOD  GetOffsetFromView(nsIPresContext* aPresContext, nsPoint& aOffset, nsIView** aView) const;
   NS_IMETHOD  GetOriginToViewOffset(nsIPresContext *aPresContext, nsPoint& aOffset, nsIView **aView) const;
   virtual nsIAtom* GetType() const;
-  NS_IMETHOD  IsPercentageBase(PRBool& aBase) const;
+  virtual PRBool IsContainingBlock() const;
 #ifdef NS_DEBUG
   NS_IMETHOD  List(nsIPresContext* aPresContext, FILE* out, PRInt32 aIndent) const;
   NS_IMETHOD  GetFrameName(nsAString& aResult) const;
+  NS_IMETHOD_(nsFrameState) GetDebugStateBits() const;
   NS_IMETHOD  DumpRegressionData(nsIPresContext* aPresContext, FILE* out, PRInt32 aIndent, PRBool aIncludeStyleData);
   NS_IMETHOD  VerifyTree() const;
 #endif
@@ -329,11 +328,19 @@ public:
   //--------------------------------------------------
   // Additional methods
 
-  // Invalidate part of the frame by asking the view manager to repaint.
-  // aDamageRect is in the frame's local coordinate space
-  void        Invalidate(nsIPresContext* aPresContext,
-                         const nsRect& aDamageRect,
-                         PRBool aImmediate = PR_FALSE) const;
+  /**
+   * Helper method to invalidate portions of a standard container frame if the
+   * reflow state indicates that the size has changed (specifically border,
+   * background and outline).
+   * We assume that the difference between the old frame area and the new
+   * frame area is invalidated by some other means.
+   * @param aPresContext the presentation context
+   * @param aDesiredSize the new size of the frame
+   * @param aReflowState the reflow that was just done on this frame
+   */
+  void CheckInvalidateSizeChange(nsIPresContext*          aPresContext,
+                                 nsHTMLReflowMetrics&     aDesiredSize,
+                                 const nsHTMLReflowState& aReflowState);
 
   // Helper function that tests if the frame tree is too deep; if it
   // is it marks the frame as "unflowable" and zeros out the metrics

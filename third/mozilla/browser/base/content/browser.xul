@@ -40,13 +40,12 @@
 <window id="main-window"
         xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
         xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
-        onload="Startup()" onunload="Shutdown()" onclose="return closeWindow(false);"
+        onload="Startup()" onunload="Shutdown()" onclose="return WindowIsClosing();"
         contenttitlesetting="true"
         title="&mainWindow.title;"
         titlemodifier="&mainWindow.title;"
         titlemenuseparator="&mainWindow.titlemodifiermenuseparator;"
         windowtype="navigator:browser"
-        width="610" height="450"
         screenX="4" screenY="4"
         persist="screenX screenY width height sizemode"> 
 
@@ -174,7 +173,7 @@
       <toolbaritem id="urlbar-container" align="center" flex="1000"
                    title="&locationItem.title;" class="chromeclass-location">
         <textbox id="urlbar" flex="1"
-                 type="autocomplete" accesskey="&urlbar.accesskey;"
+                 type="autocomplete"
                  autocompletesearch="history" 
                  autocompletepopup="PopupAutoComplete"
                  tabscrolling="true"
@@ -290,7 +289,31 @@
         <toolbarbutton id="history-button" class="toolbarbutton-1"
                        observes="viewHistorySidebar"
                        tooltiptext="&historyButton.tooltip;"/>
-                       
+
+#ifdef XP_WIN
+        <toolbarbutton id="mail-button" type="menu" class="toolbarbutton-1"
+                       label="&mailButton.label;" orient="vertical"
+                       onmouseover="MailIntegration.updateUnreadCount();"
+                       tooltiptext="&mailButton.tooltip;">
+          <menupopup tooltiptext="">
+            <menuitem label="&mailButton.readMail.label;" 
+                      id="readMailItem"
+                      accesskey="&mailButton.readMail.accesskey;"
+                      command="Browser:ReadMail"/>
+            <menuitem label="&mailButton.newMessage.label;" 
+                      accesskey="&mailButton.newMessage.accesskey;"
+                      command="Browser:NewMessage"/>
+            <menuitem label="&mailButton.sendLink.label;" 
+                      accesskey="&mailButton.sendLink.accesskey;"
+                      command="Browser:SendLink"/>
+            <menuseparator/>
+            <menuitem label="&mailButton.readNews.label;" 
+                      accesskey="&mailButton.readNews.accesskey;"
+                      command="Browser:ReadNews"/>
+          </menupopup>
+        </toolbarbutton>                       
+#endif
+
         <toolbarbutton id="bookmarks-button" class="toolbarbutton-1"
                        observes="viewBookmarksSidebar"
                        tooltiptext="&bookmarksButton.tooltip;"/>
@@ -354,18 +377,19 @@
       <sidebarheader align="center">
         <label id="sidebar-title" persist="value" flex="1" crop="end"/>
         <image id="sidebar-throbber"/>
-        <toolbarbutton class="tabs-closebutton" oncommand="toggleSidebar();"/>      
+        <toolbarbutton class="tabs-closebutton" tooltiptext="&sidebarCloseButton.tooltip;" oncommand="toggleSidebar();"/>
       </sidebarheader>        
       <browser id="sidebar" flex="1" autoscroll="false"
                style="min-width: 150px; width: 200px; max-width: 400px;"/>
     </vbox>    
     
-    <splitter id="sidebar-splitter" hidden="true"/>
+    <splitter id="sidebar-splitter" class="chromeclass-extrachrome" hidden="true"/>
     <vbox id="appcontent" flex="1">
       <tabbrowser id="content" disablehistory="true"
                   flex="1" contenttooltip="aHTMLTooltip"
                   contentcontextmenu="contentAreaContextMenu"
                   onnewtab="BrowserOpenTab();"
+                  autocompleteenabled="true"
                   autocompletepopup="PopupAutoComplete"
                   ondragdrop="nsDragAndDrop.drop(event, contentAreaDNDObserver);"
                   onclick="return contentAreaClick(event, false);"/>

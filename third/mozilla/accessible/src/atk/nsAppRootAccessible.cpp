@@ -148,8 +148,13 @@ struct _MaiUtilListenerInfo
 };
 
 static GnomeAccessibilityModule sAtkBridge = {
+#ifdef AIX
+    "libatk-bridge.a(libatk-bridge.so.0)", NULL,
+#else
     "libatk-bridge.so", NULL,
+#endif
     "gnome_accessibility_module_init", NULL,
+
     "gnome_accessibility_module_shutdown", NULL,
 };
 
@@ -225,6 +230,7 @@ mai_util_add_global_event_listener(GSignalEmissionHook listener,
                 rc = add_listener (listener, "MaiWindow",
                 split_string[1], event_type);
             */
+            rc = add_listener (listener, "MaiAtkObject", split_string[1], event_type);
         }
         else {
             rc = add_listener (listener, split_string[1], split_string[2],

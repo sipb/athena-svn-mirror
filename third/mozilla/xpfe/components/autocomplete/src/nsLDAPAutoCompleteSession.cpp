@@ -67,7 +67,7 @@ nsLDAPAutoCompleteSession::nsLDAPAutoCompleteSession() :
     mState(UNBOUND), 
     mFilterTemplate("(|(cn=%v1*%v2-*)(mail=%v1*%v2-*)(sn=%v1*%v2-*))"),
     mMaxHits(100), mMinStringLength(2), mCjkMinStringLength(0), 
-    mSearchAttrs(0), mSearchAttrsSize(0)
+    mSearchAttrs(0), mSearchAttrsSize(0), mVersion(nsILDAPConnection::VERSION3)
 {
 }
 
@@ -115,6 +115,8 @@ nsLDAPAutoCompleteSession::OnStartLookup(const PRUnichar *searchString,
     //
     if (searchString[0] == 0 ||
         nsDependentString(searchString).FindChar(PRUnichar('@'), 0) != 
+        kNotFound || 
+        nsDependentString(searchString).FindChar(PRUnichar(','), 0) != 
         kNotFound || 
         ( !IS_CJK_CHAR_FOR_LDAP(searchString[0]) ?
           mMinStringLength && nsCRT::strlen(searchString) < mMinStringLength :
@@ -858,7 +860,7 @@ nsLDAPAutoCompleteSession::StartLDAPSearch()
     //
     rv = NS_GetProxyForObject(NS_UI_THREAD_EVENTQ, 
                               NS_GET_IID(nsILDAPMessageListener), 
-			      NS_STATIC_CAST(nsILDAPMessageListener *, this), 
+                              NS_STATIC_CAST(nsILDAPMessageListener *, this), 
                               PROXY_ASYNC | PROXY_ALWAYS, 
                               getter_AddRefs(selfProxy));
     if (NS_FAILED(rv)) {
@@ -907,7 +909,7 @@ nsLDAPAutoCompleteSession::StartLDAPSearch()
     // no need to AND in an empty search term, so leave prefix and suffix empty
     //
     nsCAutoString prefix, suffix;
-    if (!urlFilter.Equals(NS_LITERAL_CSTRING("(objectclass=*)"))) {
+    if (urlFilter.Length() && !urlFilter.Equals(NS_LITERAL_CSTRING("(objectclass=*)"))) {
 
         // if urlFilter isn't parenthesized, we need to add in parens so that
         // the filter works as a term to &
@@ -929,7 +931,7 @@ nsLDAPAutoCompleteSession::StartLDAPSearch()
     nsCAutoString searchFilter;
     rv = ldapSvc->CreateFilter(MAX_AUTOCOMPLETE_FILTER_SIZE,
                                mFilterTemplate,
-                               prefix, suffix, NS_LITERAL_CSTRING(""), 
+                               prefix, suffix, EmptyCString(), 
                                NS_ConvertUCS2toUTF8(mSearchString),
                                searchFilter);
     if (NS_FAILED(rv)) {
@@ -1139,7 +1141,7 @@ nsLDAPAutoCompleteSession::InitConnection()
     //
     rv = mConnection->Init(host.get(), port,
                            (options & nsILDAPURL::OPT_SECURE) ? PR_TRUE 
-                           : PR_FALSE, mLogin, selfProxy, nsnull);
+                           : PR_FALSE, mLogin, selfProxy, nsnull, mVersion);
     if NS_FAILED(rv) {
         switch (rv) {
 
@@ -1544,4 +1546,28 @@ nsLDAPAutoCompleteSession::SetAuthPrompter(nsIAuthPrompt *aAuthPrompter)
     mAuthPrompter = aAuthPrompter;
     return NS_OK;
 }
+
+// attribute unsigned long version;
+NS_IMETHODIMP 
+nsLDAPAutoCompleteSession::GetVersion(PRUint32 *aVersion)
+{
+    if (!aVersion) {
+        return NS_ERROR_NULL_POINTER;
+    }
+
+    *aVersion = mVersion;
+    return NS_OK;
+}
+NS_IMETHODIMP 
+nsLDAPAutoCompleteSession::SetVersion(PRUint32 aVersion)
+{
+    if ( mVersion != nsILDAPConnection::VERSION2 && 
+         mVersion != nsILDAPConnection::VERSION3) {
+        return NS_ERROR_ILLEGAL_VALUE;
+    }
+
+    mVersion = aVersion;
+    return NS_OK;
+}
+
 #endif

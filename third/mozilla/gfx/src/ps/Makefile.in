@@ -54,13 +54,15 @@ CPPSRCS		= \
 		nsPostScriptObj.cpp \
 		nsAFMObject.cpp \
 		nsGfxFactoryPS.cpp \
+		nsTempfilePS.cpp \
 		$(NULL)
 
 EXPORTS		= \
 		nsIDeviceContextPS.h \
 		nsGfxPSCID.h \
 		nsIDeviceContextSpecPS.h \
-		nsPostScriptObj.h \
+		nsTempfilePS.h \
+		nsPaperPS.h \
 		$(NULL)
 
 EXPORT_RESOURCE	= \

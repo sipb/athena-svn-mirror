@@ -46,10 +46,14 @@
 #define NS_FREETYPE2_CONTRACTID "@mozilla.org/freetype2;1"
 #define NS_FREETYPE2_CID NS_IFREETYPE2_IID
 // macros to handle FreeType2 26.6 numbers (26 bit number with 6 bit fraction)
-#define FT_16_16_TO_REG(x) ((x)>>16)
 #define FT_REG_TO_16_16(x) ((x)<<16)
-#define FT_CEIL(x) (((x) + 63) & -64)
+#ifndef FT_MulFix
+#define FT_MulFix(v, s) (((v)*(s))>>16)
+#endif
+#define FT_ROUND(x) (((x) + 32) & ~63) // 63 = 2^6 - 1
 #define FT_TRUNC(x) ((x) >> 6)
+#define FT_DESIGN_UNITS_TO_PIXELS(v, s) FT_TRUNC(FT_ROUND(FT_MulFix((v) , (s))))
+
 %}
 
 
@@ -78,10 +82,18 @@ native FTC_Font(FTC_Font);
 native FTC_Image_Cache(FTC_Image_Cache);
 native FTC_Manager(FTC_Manager);
 
+// #ifdef MOZ_SVG
+[ptr] native FT_Matrix_p(FT_Matrix);
+native FT_Vector(FT_Vector);
+[ptr] native FT_Vector_p(FT_Vector);
+native FT_Render_Mode(FT_Render_Mode);
+native FT_Bool(FT_Bool);
+// #endif
+
 /*
  * A XPCOM interface to the run-time loaded functions
  */
-[uuid(606eac78-16d4-486a-9f0e-f180aebd449b)]
+[uuid(c6e09354-1bb1-4ec2-aaa3-a26d0aafe36d)]
 interface nsIFreeType2 : nsISupports
 {
 
@@ -113,6 +125,15 @@ interface nsIFreeType2 : nsISupports
                        in FTC_Face_Requester requester, in FT_Pointer req_data,
                        out FTC_Manager manager);
     void    imageCacheNew(in FTC_Manager manager, out FTC_Image_Cache cache);
+/* #ifdef MOZ_SVG */
+    void glyphTransform(in FT_Glyph glyph, in FT_Matrix_p matrix,
+                        in FT_Vector_p delta);
+    void getKerning(in FT_Face face, in FT_UInt left_glyph, in FT_UInt right_glyph,
+                    in FT_UInt kern_mode, out FT_Vector akerning);
+    void glyphCopy(in FT_Glyph source, out FT_Glyph target);
+    void glyphToBitmap(inout FT_Glyph the_glyph, in FT_Render_Mode render_mode,
+                       in FT_Vector_p origin, in FT_Bool destroy);
+/* #endif */
 
     FT_ULong getFirstChar(in FT_Face face, out FT_UInt gindex);
     FT_ULong getNextChar(in FT_Face face, in FT_ULong charcode, out FT_UInt gindex);

@@ -118,7 +118,7 @@ protected:
                                   const PRUnichar* aDontCancelButton);
 
   static void     OpenTimerCallback(nsITimer* aTimer, void* aClosure);
-  static nsresult OpenDownloadManager(PRBool aShouldFocus, nsIDownload* aDownload, nsIDOMWindow* aParent);
+  static nsresult OpenDownloadManager(PRBool aShouldFocus, PRInt32 aFlashCount, nsIDownload* aDownload, nsIDOMWindow* aParent);
 
   PRBool   NeedsUIUpdate() { return mListener != nsnull; }
   PRInt32  GetRetentionBehavior();
@@ -205,6 +205,7 @@ class nsDownload : public nsIDownload,
 {
 public:
   NS_DECL_NSIWEBPROGRESSLISTENER
+  NS_DECL_NSITRANSFER
   NS_DECL_NSIDOWNLOAD
   NS_DECL_ISUPPORTS
 
@@ -224,7 +225,7 @@ protected:
   nsresult SetDialog(nsIProgressDialog* aDialog);
   nsresult GetDialog(nsIProgressDialog** aDialog);
   nsresult SetPersist(nsIWebBrowserPersist* aPersist);
-  nsresult SetTarget(nsILocalFile* aTarget);
+  nsresult SetTarget(nsIURI* aTarget);
   nsresult SetSource(nsIURI* aSource);
   nsresult GetTransferInformation(PRInt32* aCurr, PRInt32* aMax);
   nsresult SetMIMEInfo(nsIMIMEInfo* aMIMEInfo);
@@ -234,7 +235,7 @@ protected:
   PRBool IsPaused();
 
   nsDownloadManager* mDownloadManager;
-  nsCOMPtr<nsILocalFile> mTarget;
+  nsCOMPtr<nsIURI> mTarget;
 
 private:
   nsString mDisplayName;

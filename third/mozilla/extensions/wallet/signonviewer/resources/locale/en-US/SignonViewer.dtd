@@ -1,5 +1,5 @@
 <!ENTITY      windowtitle.label               "Password Manager">
-<!ENTITY      windowalttitle.label            "Form Manager">
+<!ENTITY      windowalttitle.label            "Form Manager: Sites">
 <!ENTITY      tab.signonsstored.label         "Passwords Saved">
 <!ENTITY      tab.signonsnotstored.label      "Passwords Never Saved">
 <!ENTITY      tab.nopreview.label             "Forms Never Previewed">
@@ -12,5 +12,6 @@
 
 <!ENTITY      treehead.site.label             "Site">
 <!ENTITY      treehead.username.label         "Username">
+<!ENTITY      treehead.password.label         "Password">
 <!ENTITY      remove.label                    "Remove">
 <!ENTITY      removeall.label                 "Remove All">

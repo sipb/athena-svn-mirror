@@ -81,8 +81,6 @@ class EmbedPrivate {
   void        SelectAll  (void);
   void        Clear  (void);
   int    	  SaveAs(char *fname,char *dirname);
-  int 		  SaveURI(char *uri, char *fname);
-  void 		  CancelSaveURI();
   void 		  Print(PpPrintContext_t *pc);
   PRBool 	  CanGoBack();
   PRBool 	  CanGoForward();
@@ -91,9 +89,6 @@ class EmbedPrivate {
   nsresult OpenStream         (const char *aBaseURI, const char *aContentType);
   nsresult AppendToStream     (const char *aData, PRInt32 aLen);
   nsresult CloseStream        (void);
-
-	nsCOMPtr<nsIHelperAppLauncher> app_launcher;
-nsCOMPtr<nsISupports> context;
 
   // This function will find the specific EmbedPrivate object for a
   // given nsIWebBrowserChrome.
@@ -110,6 +105,15 @@ nsCOMPtr<nsISupports> context;
   // visibility is set.
   void        ContentFinishedLoading(void);
 
+
+
+#if 0
+/*
+  not used - we handle focus in/out activate/deactivate in
+  child_getting_focus/child_losing_focus methods
+  of the PtMozilla widget class
+*/
+
   // these let the widget code know when the toplevel window gets and
   // looses focus.
   void        TopLevelFocusIn (void);
@@ -119,6 +123,9 @@ nsCOMPtr<nsISupports> context;
   // events
   void        ChildFocusIn (void);
   void        ChildFocusOut(void);
+#endif
+
+
 
   PtWidget_t                   *mOwningWidget;
 
@@ -137,7 +144,6 @@ nsCOMPtr<nsISupports> context;
   nsCOMPtr<nsISupports>          mPrintGuard;
 
   nsCOMPtr<nsIWebNavigation>     mNavigation;
-  nsCOMPtr<nsIURIFixup>     mFixup;
   nsCOMPtr<nsISHistory>          mSessionHistory;
 
   // our event receiver
@@ -177,6 +183,7 @@ nsCOMPtr<nsISupports> context;
   void GetListener    (void);
   void AttachListeners(void);
   void DetachListeners(void);
+	void PrintHeaderFooter_FormatSpecialCodes(const char *original, nsString& aNewStr);
 
 };
 

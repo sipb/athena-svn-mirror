@@ -51,7 +51,6 @@
 
 // pref. includes
 #include "nsIPrefService.h"
-#include "nsIPrefBranchInternal.h"
 
 #define SCHEMA_2001_NAMESPACE "http://www.w3.org/2001/XMLSchema"
 #define SCHEMA_1999_NAMESPACE "http://www.w3.org/1999/XMLSchema"
@@ -343,14 +342,16 @@ nsWSDLLoadRequest::LoadDefinition(const nsAString& aURI)
     return rv;
   }
 
-  rv = mRequest->OpenRequest("GET", NS_ConvertUCS2toUTF8(aURI).get(), !mIsSync,
-                             nsnull, nsnull);
+  const nsAString& empty = EmptyString();
+  rv = mRequest->OpenRequest(NS_LITERAL_CSTRING("GET"),
+                             NS_ConvertUTF16toUTF8(aURI), !mIsSync, empty,
+                             empty);
   if (NS_FAILED(rv)) {
     return rv;
   }
 
   // Force the mimetype of the returned stream to be xml.
-  rv = mRequest->OverrideMimeType("text/xml");
+  rv = mRequest->OverrideMimeType(NS_LITERAL_CSTRING("text/xml"));
   if (NS_FAILED(rv)) {
     return rv;
   }
@@ -899,8 +900,6 @@ nsWSDLLoadRequest::ProcessTypesElement(nsIDOMElement* aElement)
 
       nsStringKey key(targetNamespace);
       mTypes.Put(&key, schema);
-
-      break;
     }
   }
 

@@ -467,16 +467,56 @@ RRT_HEADER:
   }
 
 
-  nsCOMPtr<nsIHttpProtocolHandler> pHTTPHandler = 
-           do_GetService(kHTTPHandlerCID, &rv); 
+  nsCOMPtr<nsIHttpProtocolHandler> pHTTPHandler = do_GetService(kHTTPHandlerCID, &rv); 
   if (NS_SUCCEEDED(rv) && pHTTPHandler)
   {
         nsCAutoString userAgentString;
+#ifdef MOZ_THUNDERBIRD
+
+    nsXPIDLCString userAgentOverride;
+    prefs->GetCharPref("general.useragent.override", getter_Copies(userAgentOverride));
+
+    // allow a user to override the default UA
+    if (!userAgentOverride)
+    {
+    nsCOMPtr<nsIStringBundleService> stringService = do_GetService(NS_STRINGBUNDLE_CONTRACTID, &rv);
+    if (NS_SUCCEEDED(rv)) 
+	{
+      nsCOMPtr<nsIStringBundle> brandSringBundle;
+      rv = stringService->CreateBundle("chrome://global/locale/brand.properties", getter_AddRefs(brandSringBundle));
+      if (NS_SUCCEEDED(rv)) 
+	  {
+        nsXPIDLString brandName;
+        rv = brandSringBundle->GetStringFromName(NS_LITERAL_STRING("brandShortName").get(), getter_Copies(brandName));
+
+		nsCAutoString vendorSub;
+		pHTTPHandler->GetVendorSub(vendorSub);
+
+		nsCAutoString productSub;
+		pHTTPHandler->GetProductSub(productSub);
+
+		nsCAutoString platform;
+		pHTTPHandler->GetPlatform(platform);
+
+		userAgentString.AssignWithConversion(brandName.get());
+		userAgentString += ' ';
+		userAgentString += vendorSub;
+		userAgentString += " (";
+		userAgentString += platform;
+		userAgentString += "/";
+		userAgentString += productSub;
+		userAgentString += ")";
+	  }
+	}
+    } 
+    else
+      userAgentString = userAgentOverride;
+#else
         pHTTPHandler->GetUserAgent(userAgentString);
+#endif
 
     if (!userAgentString.IsEmpty())
     {
-      // PUSH_STRING ("X-Mailer: ");  // To be more standards compliant
       PUSH_STRING ("User-Agent: ");  
       PUSH_STRING(userAgentString.get());
       PUSH_NEWLINE ();

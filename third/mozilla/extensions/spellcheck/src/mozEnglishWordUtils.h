@@ -45,6 +45,8 @@
 #include "nsString.h"
 #include "nsICaseConversion.h"
 
+#include "mozITXTToHTMLConv.h" 
+
 class mozEnglishWordUtils : public mozISpellI18NUtil
 {
 public:
@@ -63,9 +65,8 @@ protected:
 
   nsString mLanguage;
   nsString mCharset;
-  nsCOMPtr<nsIUnicodeEncoder> mEncoder; 
-  nsCOMPtr<nsIUnicodeDecoder> mDecoder; 
   nsCOMPtr<nsICaseConversion> mCaseConv;
+  nsCOMPtr<mozITXTToHTMLConv> mURLDetector; // used to detect urls so the spell checker can skip them.
 };
 
 #endif

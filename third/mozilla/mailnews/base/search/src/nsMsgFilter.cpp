@@ -132,6 +132,24 @@ nsMsgRuleAction::GetTargetFolderUri(char** aResult)
   return NS_OK;
 }
 
+NS_IMETHODIMP 
+nsMsgRuleAction::SetJunkScore(PRInt32 aJunkScore)
+{
+  NS_ENSURE_TRUE(m_type == nsMsgFilterAction::JunkScore && aJunkScore >= 0 && aJunkScore <= 100,
+                 NS_ERROR_ILLEGAL_VALUE);
+  m_junkScore = aJunkScore;
+  return NS_OK;
+}
+
+NS_IMETHODIMP
+nsMsgRuleAction::GetJunkScore(PRInt32 *aResult)
+{
+  NS_ENSURE_ARG_POINTER(aResult);
+  NS_ENSURE_TRUE(m_type == nsMsgFilterAction::JunkScore, NS_ERROR_ILLEGAL_VALUE);
+  *aResult = m_junkScore;
+  return NS_OK;
+}
+
 nsMsgFilter::nsMsgFilter():
     m_temporary(PR_FALSE),
     m_unparseable(PR_FALSE),
@@ -366,7 +384,8 @@ NS_IMETHODIMP nsMsgFilter::LogRuleHit(nsIMsgRuleAction *aFilterAction, nsIMsgDBH
     rv = aMsgHdr->GetDate(&date);
     PRExplodedTime exploded;
     PR_ExplodeTime(date, PR_LocalTimeParameters, &exploded);
-    PR_FormatTimeUSEnglish(dateStr, 100, "%m/%d/%Y %I:%M %p", &exploded);
+    // XXX Temporary until logging is fully localized
+    PR_FormatTimeUSEnglish(dateStr, sizeof(dateStr), "%Y-%m-%d %H:%M:%S", &exploded);
 
     aMsgHdr->GetAuthor(getter_Copies(author));
     aMsgHdr->GetSubject(getter_Copies(subject));
@@ -449,7 +468,7 @@ NS_IMETHODIMP nsMsgFilter::MatchHdr(nsIMsgDBHdr	*msgHdr, nsIMsgFolder *folder, n
 void
 nsMsgFilter::SetFilterList(nsIMsgFilterList *filterList)
 {
-  // hold weak ref
+  // doesn't hold a ref.
   m_filterList = filterList;
 }
 
@@ -542,7 +561,7 @@ nsresult nsMsgFilter::ConvertMoveToFolderValue(nsIMsgRuleAction *filterAction, n
         nsCOMPtr <nsIMsgFolder> localMailRootMsgFolder = do_QueryInterface(localMailRoot);
         localMailRoot->GetURI(getter_Copies(localRootURI));
         nsCString destFolderUri;
-	      destFolderUri.Assign( localRootURI);
+        destFolderUri.Assign( localRootURI);
         // need to remove ".sbd" from moveValue, and perhaps escape it.
         moveValue.ReplaceSubstring(".sbd/", "/");
 
@@ -577,7 +596,7 @@ nsresult nsMsgFilter::ConvertMoveToFolderValue(nsIMsgRuleAction *filterAction, n
   else
     filterAction->SetTargetFolderUri(moveValue.get());
     
-	return NS_OK;
+  return NS_OK;
 	// set m_action.m_value.m_folderUri
 }
 
@@ -654,6 +673,12 @@ nsresult nsMsgFilter::SaveRule(nsIOFileStream *aStream)
         err = filterList->WriteIntAttr(nsIMsgFilterList::attribActionValue, label, aStream);
       }
       break;
+      case nsMsgFilterAction::JunkScore:
+      {
+        PRInt32 junkScore;
+        action->GetJunkScore(&junkScore);
+        err = filterList->WriteIntAttr(nsIMsgFilterList::attribActionValue, junkScore, aStream);
+      }
       default:
         break;
     }
@@ -723,6 +748,7 @@ static struct RuleActionsTableEntry ruleActionsTable[] =
   { nsMsgFilterAction::StopExecution,   nsMsgFilterType::All,   0,  "Stop execution"},
   { nsMsgFilterAction::DeleteFromPop3Server, nsMsgFilterType::All,   0, "Delete from Pop3 server"},
   { nsMsgFilterAction::LeaveOnPop3Server, nsMsgFilterType::All,   0, "Leave on Pop3 server"},
+  { nsMsgFilterAction::JunkScore, nsMsgFilterType::All,   0, "JunkScore"},
 };
 
 const char *nsMsgFilter::GetActionStr(nsMsgRuleActionType action)

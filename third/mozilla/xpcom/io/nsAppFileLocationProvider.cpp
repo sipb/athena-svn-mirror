@@ -112,10 +112,6 @@ nsAppFileLocationProvider::nsAppFileLocationProvider()
 {
 }
 
-nsAppFileLocationProvider::~nsAppFileLocationProvider()
-{
-}
-
 //*****************************************************************************
 // nsAppFileLocationProvider::nsISupports
 //*****************************************************************************
@@ -486,6 +482,9 @@ class nsAppDirectoryEnumerator : public nsISimpleEnumerator
         
         return *result ? NS_OK : NS_ERROR_FAILURE;
     }
+
+    // Virtual destructor since subclass nsPathsDirectoryEnumerator
+    // does not re-implement Release()
 
     virtual ~nsAppDirectoryEnumerator()
     {

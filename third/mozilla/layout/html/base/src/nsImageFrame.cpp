@@ -46,7 +46,6 @@
 #include "nsIImage.h"
 #include "nsIWidget.h"
 #include "nsHTMLAtoms.h"
-#include "nsIHTMLContent.h"
 #include "nsIDocument.h"
 #include "nsINodeInfo.h"
 #include "nsStyleContext.h"
@@ -65,16 +64,15 @@
 #include "prprf.h"
 #include "nsIFontMetrics.h"
 #include "nsCSSRendering.h"
+#include "nsILink.h"
 #include "nsIDOMHTMLAnchorElement.h"
 #include "nsIDOMHTMLImageElement.h"
 #include "nsIDeviceContext.h"
 #include "nsINameSpaceManager.h"
 #include "nsTextFragment.h"
 #include "nsIDOMHTMLMapElement.h"
-#include "nsIStyleSet.h"
 #include "nsLayoutAtoms.h"
 #include "nsImageMapUtils.h"
-#include "nsIFrameManager.h"
 #include "nsIScriptSecurityManager.h"
 #ifdef ACCESSIBILITY
 #include "nsIAccessibilityService.h"
@@ -95,6 +93,7 @@
 #include "nsIDOMDocument.h"
 #include "nsCSSFrameConstructor.h"
 #include "nsIPrefBranch.h"
+#include "nsIPrefBranchInternal.h"
 #include "nsIPrefService.h"
 #include "gfxIImageFrame.h"
 #include "nsIDOMRange.h"
@@ -121,9 +120,11 @@
 // Default alignment value (so we can tell an unset value from a set value)
 #define ALIGN_UNSET PRUint8(-1)
 
-// static icon information: initialized in Init and de-initialized in Destroy
-// - created if null, deleted if refcount goes to 0
-nsImageFrame::IconLoad* nsImageFrame::mIconLoad = nsnull;
+// static icon information
+nsImageFrame::IconLoad* nsImageFrame::gIconLoad = nsnull;
+
+// cached IO service for loading icons
+nsIIOService* nsImageFrame::sIOService;
 
 // test if the width and height are fixed, looking at the style data
 static PRBool HaveFixedSize(const nsStylePosition* aStylePosition)
@@ -179,8 +180,7 @@ NS_NewImageFrame(nsIPresShell* aPresShell, nsIFrame** aNewFrame)
 
 nsImageFrame::nsImageFrame() :
   mComputedSize(0, 0),
-  mIntrinsicSize(0, 0),
-  mPresContext(nsnull)
+  mIntrinsicSize(0, 0)
 {
   // We assume our size is not constrained and we haven't gotten an
   // initial reflow yet, so don't touch those flags.
@@ -188,7 +188,6 @@ nsImageFrame::nsImageFrame() :
 
 nsImageFrame::~nsImageFrame()
 {
-  NS_PRECONDITION(!mPresContext, "Never got destroyed properly!");
 }
 
 NS_IMETHODIMP
@@ -266,22 +265,6 @@ nsImageFrame::Destroy(nsIPresContext* aPresContext)
   
   mListener = nsnull;
 
-  // check / cleanup the IconLoads singleton
-  if (mIconLoad) {
-#ifdef NOISY_ICON_LOADING
-    printf( "Releasing IconLoad (%p)\n", this);
-#endif
-    if (mIconLoad->Release()) {
-#ifdef NOISY_ICON_LOADING
-      printf( "Deleting IconLoad (%p)\n", this);
-#endif
-      delete mIconLoad;
-      mIconLoad = nsnull;
-    }
-  }
-  
-  mPresContext = nsnull;
-
   return nsSplittableFrame::Destroy(aPresContext);
 }
 
@@ -294,13 +277,9 @@ nsImageFrame::Init(nsIPresContext*  aPresContext,
                    nsStyleContext*  aContext,
                    nsIFrame*        aPrevInFlow)
 {
-  mPresContext = aPresContext;
-  
   nsresult  rv = nsSplittableFrame::Init(aPresContext, aContent, aParent,
                                          aContext, aPrevInFlow);
   NS_ENSURE_SUCCESS(rv, rv);
-  
-  mPresContext = aPresContext;
 
   mListener = new nsImageListener(this);
   if (!mListener) return NS_ERROR_OUT_OF_MEMORY;
@@ -312,7 +291,8 @@ nsImageFrame::Init(nsIPresContext*  aPresContext,
   // cares.
   imageLoader->AddObserver(mListener);
 
-  LoadIcons(aPresContext);
+  if (!gIconLoad)
+    LoadIcons(aPresContext);
 
   nsCOMPtr<imgIRequest> currentRequest;
   imageLoader->GetRequest(nsIImageLoadingContent::CURRENT_REQUEST,
@@ -323,27 +303,23 @@ nsImageFrame::Init(nsIPresContext*  aPresContext,
   }
 
   if (currentLoadStatus & imgIRequest::STATUS_ERROR) {
-    nsCOMPtr<nsIPresShell> presShell;
-    mPresContext->GetShell(getter_AddRefs(presShell));
-    NS_ASSERTION(presShell, "Must have a pres shell!");
-
     PRBool loadBlocked = PR_FALSE;
     imageLoader->GetImageBlocked(&loadBlocked);
     rv = HandleLoadError(loadBlocked ? NS_ERROR_IMAGE_BLOCKED : NS_ERROR_FAILURE,
-                         presShell);
+                         aPresContext->PresShell());
   }
   // If we already have an image container, OnStartContainer won't be called
   // Set the animation mode here
-  nsCOMPtr<imgIContainer> image;
-  if (currentRequest)
+  if (currentRequest) {
+    nsCOMPtr<imgIContainer> image;
     currentRequest->GetImage(getter_AddRefs(image));
-  if (image) {
-    PRUint16 animateMode = imgIContainer::kNormalAnimMode; //default value
-    nsresult rv = mPresContext->GetImageAnimationMode(&animateMode);
-    if (NS_SUCCEEDED(rv))
-      image->SetAnimationMode(animateMode);
+    if (image) {
+      image->SetAnimationMode(aPresContext->ImageAnimationMode());
+      // Ensure the animation (if any) is started.
+      image->StartAnimation();
+    }
   }
-  
+
   return rv;
 }
 
@@ -354,7 +330,7 @@ nsImageFrame::RecalculateTransform(imgIContainer* aImage)
   
   if (aImage) {
     float p2t;
-    mPresContext->GetPixelsToTwips(&p2t);
+    p2t = GetPresContext()->PixelsToTwips();
 
     nsSize imageSizeInPx;
     aImage->GetWidth(&imageSizeInPx.width);
@@ -438,7 +414,7 @@ nsRect
 nsImageFrame::ConvertPxRectToTwips(const nsRect& aRect) const
 {
   float p2t;
-  mPresContext->GetPixelsToTwips(&p2t);
+  p2t = GetPresContext()->PixelsToTwips();
   return nsRect(NSIntPixelsToTwips(aRect.x, p2t), // x
                 NSIntPixelsToTwips(aRect.y, p2t), // y
                 NSIntPixelsToTwips(aRect.width, p2t), // width
@@ -449,7 +425,7 @@ nsresult
 nsImageFrame::HandleLoadError(nsresult aStatus, nsIPresShell* aPresShell)
 {
   if (aStatus == NS_ERROR_IMAGE_BLOCKED &&
-      !(mIconLoad && mIconLoad->mPrefAllImagesBlocked)) {
+      !(gIconLoad && gIconLoad->mPrefAllImagesBlocked)) {
     // don't display any alt feedback in this case; we're blocking images
     // from that site and don't care to see anything from them
     return NS_OK;
@@ -484,13 +460,11 @@ nsImageFrame::HandleLoadError(nsresult aStatus, nsIPresShell* aPresShell)
   if (uiResetData->mForceBrokenImageIcon) {
     useSizedBox = PR_TRUE;
   }
-  else if (mIconLoad && mIconLoad->mPrefForceInlineAltText) {
+  else if (gIconLoad && gIconLoad->mPrefForceInlineAltText) {
     useSizedBox = PR_FALSE;
   }
   else {
-    nsCompatibility mode;
-    mPresContext->GetCompatibilityMode(&mode);
-    if (mode != eCompatibility_NavQuirks) {
+    if (GetPresContext()->CompatibilityMode() != eCompatibility_NavQuirks) {
       useSizedBox = PR_FALSE;
     }
     else {
@@ -516,18 +490,27 @@ nsImageFrame::HandleLoadError(nsresult aStatus, nsIPresShell* aPresShell)
   if (!useSizedBox) {
     // let the presShell handle converting this into the inline alt
     // text frame
-    // We have to try to get the primary frame for mContent, since for
-    // <object> the frame CantRenderReplacedElement wants is the
-    // ObjectFrame, not us (we're an anonymous frame then)....
     nsIFrame* primaryFrame = nsnull;
-    aPresShell->GetPrimaryFrameFor(mContent, &primaryFrame);
-    aPresShell->CantRenderReplacedElement(primaryFrame ? primaryFrame : this);
+    if (mContent->IsContentOfType(nsIContent::eHTML) &&
+        (mContent->Tag() == nsHTMLAtoms::object ||
+         mContent->Tag() == nsHTMLAtoms::embed)) {
+      // We have to try to get the primary frame for mContent, since for
+      // <object> the frame CantRenderReplacedElement wants is the
+      // ObjectFrame, not us (we're an anonymous frame then)....
+      aPresShell->GetPrimaryFrameFor(mContent, &primaryFrame);
+    }
+
+    if (!primaryFrame) {
+      primaryFrame = this;
+    }     
+    
+    aPresShell->CantRenderReplacedElement(primaryFrame);
     return NS_ERROR_FRAME_REPLACED;
   }
 
   // we are handling it
   // invalidate the icon area (it may change states)   
-  InvalidateIcon(mPresContext);
+  InvalidateIcon();
   return NS_OK;
 }
 
@@ -535,25 +518,21 @@ nsresult
 nsImageFrame::OnStartContainer(imgIRequest *aRequest, imgIContainer *aImage)
 {
   if (!aImage) return NS_ERROR_INVALID_ARG;
-  NS_ENSURE_TRUE(mPresContext, NS_ERROR_UNEXPECTED);  // why are we bothering?
 
   // handle iconLoads first...
   if (HandleIconLoads(aRequest, PR_FALSE)) {
     return NS_OK;
   }
 
-  if (aImage)
-  {
-    /* Get requested animation policy from the pres context:
-     *   normal = 0
-     *   one frame = 1
-     *   one loop = 2
-     */
-    PRUint16 animateMode = imgIContainer::kNormalAnimMode; //default value
-    nsresult rv = mPresContext->GetImageAnimationMode(&animateMode);
-    if (NS_SUCCEEDED(rv))
-      aImage->SetAnimationMode(animateMode);
-  }
+  /* Get requested animation policy from the pres context:
+   *   normal = 0
+   *   one frame = 1
+   *   one loop = 2
+   */
+  nsIPresContext *presContext = GetPresContext();
+  aImage->SetAnimationMode(presContext->ImageAnimationMode());
+  // Ensure the animation (if any) is started.
+  aImage->StartAnimation();
 
   if (IsPendingLoad(aRequest)) {
     // We don't care
@@ -565,8 +544,7 @@ nsImageFrame::OnStartContainer(imgIRequest *aRequest, imgIContainer *aImage)
   // Now we need to reflow if we have an unconstrained size and have
   // already gotten the initial reflow
   if (!(mState & IMAGE_SIZECONSTRAINED) && (mState & IMAGE_GOTINITIALREFLOW)) { 
-    nsCOMPtr<nsIPresShell> presShell;
-    mPresContext->GetShell(getter_AddRefs(presShell));
+    nsIPresShell *presShell = presContext->GetPresShell();
     NS_ASSERTION(mParent, "No parent to pass the reflow request up to.");
     NS_ASSERTION(presShell, "No PresShell.");
     if (mParent && presShell) { 
@@ -588,8 +566,6 @@ nsImageFrame::OnDataAvailable(imgIRequest *aRequest,
   // invalidate?
 
   NS_ENSURE_ARG_POINTER(aRect);
-  NS_ENSURE_TRUE(mPresContext, NS_ERROR_UNEXPECTED);  // why are we bothering?
-
 
   if (!(mState & IMAGE_GOTINITIALREFLOW)) {
     // Don't bother to do anything; we have a reflow coming up!
@@ -598,9 +574,8 @@ nsImageFrame::OnDataAvailable(imgIRequest *aRequest,
   
   // handle iconLoads first...
   if (HandleIconLoads(aRequest, PR_FALSE)) {
-    if (!aRect->IsEmpty()) {
-      Invalidate(mPresContext, *aRect, PR_FALSE);
-    }
+    // Image changed, invalidate
+    Invalidate(*aRect, PR_FALSE);
     return NS_OK;
   }
 
@@ -624,10 +599,8 @@ nsImageFrame::OnDataAvailable(imgIRequest *aRequest,
 
   nsRect r = ConvertPxRectToTwips(*aRect);
   mTransform.TransformCoord(&r.x, &r.y, &r.width, &r.height);
-
-  if (!r.IsEmpty()) {
-    Invalidate(mPresContext, r, PR_FALSE);
-  }
+  // Invalidate updated image
+  Invalidate(r, PR_FALSE);
   
   return NS_OK;
 }
@@ -637,10 +610,8 @@ nsImageFrame::OnStopDecode(imgIRequest *aRequest,
                            nsresult aStatus,
                            const PRUnichar *aStatusArg)
 {
-  NS_ENSURE_TRUE(mPresContext, NS_ERROR_UNEXPECTED);  // why are we bothering?
-
-  nsCOMPtr<nsIPresShell> presShell;
-  mPresContext->GetShell(getter_AddRefs(presShell));
+  nsIPresContext *presContext = GetPresContext();
+  nsIPresShell *presShell = presContext->GetPresShell();
   NS_ASSERTION(presShell, "No PresShell.");
 
   // handle iconLoads first...
@@ -682,9 +653,8 @@ nsImageFrame::OnStopDecode(imgIRequest *aRequest,
       } else {
         nsSize s = GetSize();
         nsRect r(0, 0, s.width, s.height);
-        if (!r.IsEmpty()) {
-          Invalidate(mPresContext, r, PR_FALSE);
-        }
+        // Update border+content to account for image change
+        Invalidate(r, PR_FALSE);
       }
     }
   }
@@ -717,9 +687,8 @@ nsImageFrame::FrameChanged(imgIContainer *aContainer,
   nsRect r = ConvertPxRectToTwips(*aDirtyRect);
   mTransform.TransformCoord(&r.x, &r.y, &r.width, &r.height);
 
-  if (!r.IsEmpty()) {
-    Invalidate(mPresContext, r, PR_FALSE);
-  }
+  // Update border+content to account for image change
+  Invalidate(r, PR_FALSE);
   return NS_OK;
 }
 
@@ -751,7 +720,7 @@ nsImageFrame::GetDesiredSize(nsIPresContext* aPresContext,
     }
       
     float p2t;
-    aPresContext->GetPixelsToTwips(&p2t);
+    p2t = aPresContext->PixelsToTwips();
 
     if (currentContainer) {
       RecalculateTransform(currentContainer);
@@ -762,9 +731,7 @@ nsImageFrame::GetDesiredSize(nsIPresContext* aPresContext,
       // used if inline alt expansion is used instead)
       // XXX: we need this in composer, but it is also good for
       // XXX: general quirks mode to always have room for the icon
-      nsCompatibility mode;
-      aPresContext->GetCompatibilityMode(&mode);
-      if (mode == eCompatibility_NavQuirks) {
+      if (aPresContext->CompatibilityMode() == eCompatibility_NavQuirks) {
         mIntrinsicSize.SizeTo(NSIntPixelsToTwips(ICON_SIZE+(2*(ICON_PADDING+ALT_BORDER_WIDTH)), p2t),
                               NSIntPixelsToTwips(ICON_SIZE+(2*(ICON_PADDING+ALT_BORDER_WIDTH)), p2t));
       }
@@ -773,7 +740,7 @@ nsImageFrame::GetDesiredSize(nsIPresContext* aPresContext,
   }
 
   float t2p, sp2t;
-  aPresContext->GetTwipsToPixels(&t2p);
+  t2p = aPresContext->TwipsToPixels();
   aPresContext->GetScaledPixelsToTwips(&sp2t);
 
   // convert from normal twips to scaled twips (printing...)
@@ -812,6 +779,10 @@ nsImageFrame::GetDesiredSize(nsIPresContext* aPresContext,
     isAutoHeight = PR_FALSE;
   }
 
+  // XXXldb This isn't quite right -- if an image has both 'max-width'
+  // and 'max-height', both smaller than the intrinsic dimensions but with
+  // different ratios to the intrinsic dimensions, then the image should
+  // stay in proportion, but this leaves the image misproportioned.
   if (isAutoWidth) {
     if (!isAutoHeight && intrinsicHeight != 0) {
        newWidth = (intrinsicWidth * newHeight) / intrinsicHeight;
@@ -841,17 +812,6 @@ nsImageFrame::GetInnerArea(nsIPresContext* aPresContext,
   aInnerArea.height = mRect.height -
     (mPrevInFlow ? 0 : mBorderPadding.top) -
     (mNextInFlow ? 0 : mBorderPadding.bottom);
-}
-
-NS_IMETHODIMP
-nsImageFrame::ContentChanged(nsIPresContext* aPresContext,
-                             nsIContent*     aChild,
-                             nsISupports*    aSubContent)
-{
-  nsCOMPtr<nsIPresShell> shell;
-  aPresContext->GetShell(getter_AddRefs(shell));
-  mState |= NS_FRAME_IS_DIRTY;
-  return mParent->ReflowDirtyChild(shell, this);
 }
 
 // get the offset into the content area of the image where aImg starts if it is a continuation.
@@ -924,8 +884,6 @@ nsImageFrame::Reflow(nsIPresContext*          aPresContext,
 
   // we have to split images if we are:
   //  in Paginated mode, we need to have a constrained height, and have a height larger than our available height
-  PRBool isPaginated;
-  aPresContext->IsPaginated(&isPaginated);
   PRUint32 loadStatus = imgIRequest::STATUS_NONE;
   nsCOMPtr<nsIImageLoadingContent> imageLoader = do_QueryInterface(mContent);
   NS_ASSERTION(imageLoader, "No content node??");
@@ -937,7 +895,7 @@ nsImageFrame::Reflow(nsIPresContext*          aPresContext,
       currentRequest->GetImageStatus(&loadStatus);
     }
   }
-  if (isPaginated &&
+  if (aPresContext->IsPaginated() &&
       ((loadStatus & imgIRequest::STATUS_SIZE_AVAILABLE) || (mState & IMAGE_SIZECONSTRAINED)) &&
       NS_UNCONSTRAINEDSIZE != aReflowState.availableHeight && 
       aMetrics.height > aReflowState.availableHeight) { 
@@ -1109,7 +1067,7 @@ struct nsRecessedBorder : public nsStyleBorder {
 void
 nsImageFrame::DisplayAltFeedback(nsIPresContext*      aPresContext,
                                  nsIRenderingContext& aRenderingContext,
-                                 PRInt32              aIconId)
+                                 imgIRequest*         aRequest)
 {
   // Calculate the inner area
   nsRect  inner;
@@ -1162,7 +1120,7 @@ nsImageFrame::DisplayAltFeedback(nsIPresContext*      aPresContext,
   aRenderingContext.PushState();
   aRenderingContext.SetClipRect(inner, nsClipCombine_kIntersect, clipState);
 
-  PRBool dispIcon = mIconLoad ? mIconLoad->mPrefShowPlaceholders : PR_TRUE;
+  PRBool dispIcon = gIconLoad ? gIconLoad->mPrefShowPlaceholders : PR_TRUE;
 
   // Check if we should display image placeholders
   if (dispIcon) {
@@ -1171,14 +1129,11 @@ nsImageFrame::DisplayAltFeedback(nsIPresContext*      aPresContext,
     PRBool iconUsed = PR_FALSE;
 
     // see if the icon images are present...
-    if (mIconLoad && mIconLoad->mIconsLoaded) {
+    if (gIconLoad && gIconLoad->mIconsLoaded) {
       // pick the correct image
-      NS_ASSERTION( aIconId == NS_ICON_LOADING_IMAGE ||
-                    aIconId == NS_ICON_BROKEN_IMAGE, "Invalid Icon ID in DisplayAltFeedback");
-
       nsCOMPtr<imgIContainer> imgCon;
-      if (mIconLoad->mIconLoads[aIconId].mRequest) {
-        mIconLoad->mIconLoads[aIconId].mRequest->GetImage(getter_AddRefs(imgCon));
+      if (aRequest) {
+        aRequest->GetImage(getter_AddRefs(imgCon));
       }
       if (imgCon) {
         // draw it
@@ -1194,7 +1149,7 @@ nsImageFrame::DisplayAltFeedback(nsIPresContext*      aPresContext,
       nscolor oldColor;
       aRenderingContext.DrawRect(0,0,size,size);
       aRenderingContext.GetColor(oldColor);
-      aRenderingContext.SetColor( aIconId == NS_ICON_BROKEN_IMAGE ? NS_RGB(0xFF,0,0) : NS_RGB(0,0xFF,0));
+      aRenderingContext.SetColor(NS_RGB(0xFF,0,0));
       aRenderingContext.FillEllipse(NS_STATIC_CAST(int,size/2),NS_STATIC_CAST(int,size/2),
                                     NS_STATIC_CAST(int,(size/2)-(2*p2t)),NS_STATIC_CAST(int,(size/2)-(2*p2t)));
       aRenderingContext.SetColor(oldColor);
@@ -1234,9 +1189,7 @@ nsImageFrame::Paint(nsIPresContext*      aPresContext,
     // If painting is suppressed, we need to stop image painting.  We
     // have to cover <img> here because of input image controls.
     PRBool paintingSuppressed = PR_FALSE;
-    nsCOMPtr<nsIPresShell> shell;
-    aPresContext->GetShell(getter_AddRefs(shell));
-    shell->IsPaintingSuppressed(&paintingSuppressed);
+    aPresContext->PresShell()->IsPaintingSuppressed(&paintingSuppressed);
     if (paintingSuppressed) {
       return NS_OK;
     }
@@ -1282,11 +1235,11 @@ nsImageFrame::Paint(nsIPresContext*      aPresContext,
         }
       
         if (NS_FRAME_PAINT_LAYER_FOREGROUND == aWhichLayer &&
-            (!imageBlocked || mIconLoad->mPrefAllImagesBlocked)) {
+            (!imageBlocked || gIconLoad->mPrefAllImagesBlocked)) {
           DisplayAltFeedback(aPresContext, aRenderingContext, 
                              (loadStatus & imgIRequest::STATUS_ERROR)
-                             ? NS_ICON_BROKEN_IMAGE
-                             : NS_ICON_LOADING_IMAGE);
+                             ? gIconLoad->mBrokenImage
+                             : gIconLoad->mLoadingImage);
         }
       }
       else {
@@ -1399,11 +1352,7 @@ nsImageFrame::Paint(nsIPresContext*      aPresContext,
   PRInt16 displaySelection = 0;
 
   nsresult result; 
-  nsCOMPtr<nsIPresShell> shell;
-  result = aPresContext->GetShell(getter_AddRefs(shell));
-  if (NS_FAILED(result))
-    return result;
-  result = shell->GetSelectionFlags(&displaySelection);
+  result = aPresContext->PresShell()->GetSelectionFlags(&displaySelection);
   if (NS_FAILED(result))
     return result;
   if (!(displaySelection & nsISelectionDisplay::DISPLAY_IMAGES))
@@ -1477,15 +1426,12 @@ nsImageFrame::GetImageMap(nsIPresContext* aPresContext)
     nsAutoString usemap;
     mContent->GetAttr(kNameSpaceID_None, nsHTMLAtoms::usemap, usemap);
 
-    nsCOMPtr<nsIDOMHTMLMapElement> map;
-    if (NS_SUCCEEDED(nsImageMapUtils::FindImageMap(doc,usemap,getter_AddRefs(map))) && map) {
-      nsCOMPtr<nsIPresShell> presShell;
-      aPresContext->GetShell(getter_AddRefs(presShell));
-
+    nsCOMPtr<nsIDOMHTMLMapElement> map = nsImageMapUtils::FindImageMap(doc,usemap);
+    if (map) {
       mImageMap = new nsImageMap();
       if (mImageMap) {
         NS_ADDREF(mImageMap);
-        mImageMap->Init(presShell, this, map);
+        mImageMap->Init(aPresContext->PresShell(), this, map);
       }
     }
   }
@@ -1500,9 +1446,8 @@ nsImageFrame::TriggerLink(nsIPresContext* aPresContext,
                           PRBool aClick)
 {
   // We get here with server side image map
-  nsCOMPtr<nsILinkHandler> handler;
-  aPresContext->GetLinkHandler(getter_AddRefs(handler));
-  if (nsnull != handler) {
+  nsILinkHandler *handler = aPresContext->GetLinkHandler();
+  if (handler) {
     if (aClick) {
       // Check that this page is allowed to load this URI.
       // Almost a copy of the similarly named method in nsGenericElement
@@ -1510,15 +1455,18 @@ nsImageFrame::TriggerLink(nsIPresContext* aPresContext,
       nsCOMPtr<nsIScriptSecurityManager> securityManager = 
                do_GetService(NS_SCRIPTSECURITYMANAGER_CONTRACTID, &rv);
 
-      nsCOMPtr<nsIPresShell> ps;
-      if (NS_SUCCEEDED(rv)) 
-        rv = aPresContext->GetShell(getter_AddRefs(ps));
+      if (NS_FAILED(rv))
+        return;
+
+      nsIPresShell *ps = aPresContext->GetPresShell();
+      if (!ps)
+        return;
+
       nsCOMPtr<nsIDocument> doc;
-      if (NS_SUCCEEDED(rv) && ps) 
-        rv = ps->GetDocument(getter_AddRefs(doc));
+      rv = ps->GetDocument(getter_AddRefs(doc));
       
       if (NS_SUCCEEDED(rv)) {
-        nsIURI *baseURI = doc ? doc->GetDocumentURL() : nsnull;
+        nsIURI *baseURI = doc ? doc->GetDocumentURI() : nsnull;
 
         rv = securityManager->CheckLoadURI(baseURI, aURI,
                                            nsIScriptSecurityManager::STANDARD);
@@ -1580,28 +1528,29 @@ nsImageFrame::TranslateEventCoords(nsIPresContext* aPresContext,
 
   // Translate the coordinates from twips to pixels
   float t2p;
-  aPresContext->GetTwipsToPixels(&t2p);
+  t2p = aPresContext->TwipsToPixels();
   aResult.x = NSTwipsToIntPixels(x, t2p);
   aResult.y = NSTwipsToIntPixels(y, t2p);
 }
 
 PRBool
-nsImageFrame::GetAnchorHREFAndTarget(nsString& aHref, nsString& aTarget)
+nsImageFrame::GetAnchorHREFAndTarget(nsIURI** aHref, nsString& aTarget)
 {
   PRBool status = PR_FALSE;
-  aHref.Truncate();
   aTarget.Truncate();
 
   // Walk up the content tree, looking for an nsIDOMAnchorElement
   for (nsIContent* content = mContent->GetParent();
        content; content = content->GetParent()) {
-    nsCOMPtr<nsIDOMHTMLAnchorElement> anchor(do_QueryInterface(content));
-    if (anchor) {
-      anchor->GetHref(aHref);
-      if (!aHref.IsEmpty()) {
-        status = PR_TRUE;
+    nsCOMPtr<nsILink> link(do_QueryInterface(content));
+    if (link) {
+      link->GetHrefURI(aHref);
+      status = (*aHref != nsnull);
+
+      nsCOMPtr<nsIDOMHTMLAnchorElement> anchor(do_QueryInterface(content));
+      if (anchor) {
+        anchor->GetTarget(aTarget);
       }
-      anchor->GetTarget(aTarget);
       break;
     }
   }
@@ -1634,11 +1583,9 @@ nsImageFrame::GetContentForEvent(nsIPresContext* aPresContext,
   if (nsnull != map) {
     nsPoint p;
     TranslateEventCoords(aPresContext, aEvent->point, p);
-    nsAutoString absURL, target, altText;
     PRBool inside = PR_FALSE;
     nsCOMPtr<nsIContent> area;
-    inside = map->IsInside(p.x, p.y, getter_AddRefs(area),
-                           absURL, target, altText);
+    inside = map->IsInside(p.x, p.y, getter_AddRefs(area));
     if (inside && area) {
       *aContent = area;
       NS_ADDREF(*aContent);
@@ -1669,7 +1616,6 @@ nsImageFrame::HandleEvent(nsIPresContext* aPresContext,
       if ((nsnull != map) || isServerMap) {
         nsPoint p;
         TranslateEventCoords(aPresContext, aEvent->point, p);
-        nsAutoString absURL, target, altText;
         PRBool inside = PR_FALSE;
         // Even though client-side image map triggering happens
         // through content, we need to make sure we're not inside
@@ -1677,54 +1623,34 @@ nsImageFrame::HandleEvent(nsIPresContext* aPresContext,
         // sever-side on the same image - it happens!)
         if (nsnull != map) {
           nsCOMPtr<nsIContent> area;
-          inside = map->IsInside(p.x, p.y, getter_AddRefs(area),
-                                 absURL, target, altText);
+          inside = map->IsInside(p.x, p.y, getter_AddRefs(area));
         }
 
         if (!inside && isServerMap) {
-          nsCOMPtr<nsIURI> baseURL;
-          mContent->GetBaseURL(getter_AddRefs(baseURL));
-          
-          if (baseURL) {
-            // Server side image maps use the href in a containing anchor
-            // element to provide the basis for the destination url.
-            nsAutoString src;
-            if (GetAnchorHREFAndTarget(src, target)) {
-              nsINodeInfo *nodeInfo = mContent->GetNodeInfo();
-              NS_ASSERTION(nodeInfo, "Image content without a nodeinfo?");
-              nsIDocument* doc = nodeInfo->GetDocument();
-              nsCAutoString charset;
-              if (doc) {
-                charset = doc->GetDocumentCharacterSet();
-              } 
-              nsCOMPtr<nsIURI> uri;
-              nsresult rv = NS_NewURI(getter_AddRefs(uri), src, charset.get(),
-                                      baseURL);
-              NS_ENSURE_SUCCESS(rv, rv);
+
+          // Server side image maps use the href in a containing anchor
+          // element to provide the basis for the destination url.
+          nsCOMPtr<nsIURI> uri;
+          nsAutoString target;
+          if (GetAnchorHREFAndTarget(getter_AddRefs(uri), target)) {
+            // XXX if the mouse is over/clicked in the border/padding area
+            // we should probably just pretend nothing happened. Nav4
+            // keeps the x,y coordinates positive as we do; IE doesn't
+            // bother. Both of them send the click through even when the
+            // mouse is over the border.
+            if (p.x < 0) p.x = 0;
+            if (p.y < 0) p.y = 0;
+            nsCAutoString spec;
+            uri->GetSpec(spec);
+            spec += nsPrintfCString("?%d,%d", p.x, p.y);
+            uri->SetSpec(spec);                
             
-              // XXX if the mouse is over/clicked in the border/padding area
-              // we should probably just pretend nothing happened. Nav4
-              // keeps the x,y coordinates positive as we do; IE doesn't
-              // bother. Both of them send the click through even when the
-              // mouse is over the border.
-              if (p.x < 0) p.x = 0;
-              if (p.y < 0) p.y = 0;
-              nsCAutoString spec;
-              uri->GetSpec(spec);
-              spec += nsPrintfCString("?%d,%d", p.x, p.y);
-              uri->SetSpec(spec);                
-              
-              PRBool clicked = PR_FALSE;
-              if (aEvent->message == NS_MOUSE_LEFT_BUTTON_UP) {
-                *aEventStatus = nsEventStatus_eConsumeDoDefault; 
-                clicked = PR_TRUE;
-              }
-              TriggerLink(aPresContext, uri, target, clicked);
+            PRBool clicked = PR_FALSE;
+            if (aEvent->message == NS_MOUSE_LEFT_BUTTON_UP) {
+              *aEventStatus = nsEventStatus_eConsumeDoDefault; 
+              clicked = PR_TRUE;
             }
-          } 
-          else 
-          {
-            NS_WARNING("baseURL is null for imageFrame - ignoring mouse event");
+            TriggerLink(aPresContext, uri, target, clicked);
           }
         }
       }
@@ -1778,10 +1704,8 @@ nsImageFrame::AttributeChanged(nsIPresContext* aPresContext,
   // XXXldb Shouldn't width and height be handled by attribute mapping?
   if (nsHTMLAtoms::width == aAttribute || nsHTMLAtoms::height == aAttribute  || nsHTMLAtoms::alt == aAttribute)
   { // XXX: could check for new width == old width, and make that a no-op
-    nsCOMPtr<nsIPresShell> presShell;
-    aPresContext->GetShell(getter_AddRefs(presShell));
     mState |= NS_FRAME_IS_DIRTY;
-    mParent->ReflowDirtyChild(presShell, (nsIFrame*) this);
+    mParent->ReflowDirtyChild(aPresContext->PresShell(), (nsIFrame*) this);
   }
 
   return NS_OK;
@@ -1846,10 +1770,14 @@ nsImageFrame::LoadIcon(const nsAString& aSpec,
   nsresult rv = NS_OK;
   NS_PRECONDITION(!aSpec.IsEmpty(), "What happened??");
 
+  if (!sIOService) {
+    static NS_DEFINE_CID(kIOServiceCID, NS_IOSERVICE_CID);
+    rv = CallGetService(kIOServiceCID, &sIOService);
+    NS_ENSURE_SUCCESS(rv, rv);
+  }
+
   nsCOMPtr<nsIURI> realURI;
-  nsCOMPtr<nsIIOService> ioService;
-  aPresContext->GetIOService(getter_AddRefs(ioService));
-  SpecToURI(aSpec, ioService, getter_AddRefs(realURI));
+  SpecToURI(aSpec, sIOService, getter_AddRefs(realURI));
  
   nsCOMPtr<imgILoader> il(do_GetService("@mozilla.org/image/loader;1", &rv));
   if (NS_FAILED(rv)) return rv;
@@ -1890,7 +1818,7 @@ nsImageFrame::SpecToURI(const nsAString& aSpec, nsIIOService *aIOService,
 {
   nsCOMPtr<nsIURI> baseURI;
   if (mContent) {
-    mContent->GetBaseURL(getter_AddRefs(baseURI));
+    baseURI = mContent->GetBaseURI();
   }
   nsCAutoString charset;
   GetDocumentCharacterSet(charset);
@@ -1907,8 +1835,7 @@ nsImageFrame::GetLoadGroup(nsIPresContext *aPresContext, nsILoadGroup **aLoadGro
 
   NS_PRECONDITION(nsnull != aLoadGroup, "null OUT parameter pointer");
 
-  nsCOMPtr<nsIPresShell> shell;
-  aPresContext->GetShell(getter_AddRefs(shell));
+  nsIPresShell *shell = aPresContext->GetPresShell();
 
   if (!shell)
     return;
@@ -1923,42 +1850,24 @@ nsImageFrame::GetLoadGroup(nsIPresContext *aPresContext, nsILoadGroup **aLoadGro
 
 nsresult nsImageFrame::LoadIcons(nsIPresContext *aPresContext)
 {
+  NS_ASSERTION(!gIconLoad, "called LoadIcons twice");
+
   NS_NAMED_LITERAL_STRING(loadingSrc,"resource://gre/res/loading-image.gif"); 
   NS_NAMED_LITERAL_STRING(brokenSrc,"resource://gre/res/broken-image.gif");
 
-  PRBool doLoad = PR_FALSE;  // only load icons once...
-
-  // see if the first instance and we need to create the icon loader
-  if (!mIconLoad) {
-#ifdef NOISY_ICON_LOADING
-      printf( "Allocating IconLoad (%p)\n", this);
-#endif
-    mIconLoad = new IconLoad(aPresContext, mListener);
-    if (!mIconLoad) 
-      return NS_ERROR_OUT_OF_MEMORY;
-    doLoad = PR_TRUE;
-  }
-  // always addref
-  mIconLoad->AddRef();
-
-#ifdef NOISY_ICON_LOADING
-  printf( "IconLoad AddRef'd(%p)\n", this);
-#endif
-
-  if (!doLoad) {
-    // icons already in the pipe
-    return NS_OK;
-  }
+  gIconLoad = new IconLoad(mListener);
+  if (!gIconLoad) 
+    return NS_ERROR_OUT_OF_MEMORY;
+  NS_ADDREF(gIconLoad);
 
   nsresult rv;
-  
   // create a loader and load the images
   rv = LoadIcon(loadingSrc,
                 aPresContext,
-                getter_AddRefs(mIconLoad->mIconLoads[NS_ICON_LOADING_IMAGE].mRequest));
+                getter_AddRefs(gIconLoad->mLoadingImage));
 #ifdef NOISY_ICON_LOADING
   printf("Loading request %p, rv=%u\n",
-         mIconLoad->mIconLoads[NS_ICON_LOADING_IMAGE].mRequest.get(), rv);
+         gIconLoad->mLoadingImage.get(), rv);
 #endif
 
   if (NS_FAILED(rv)) {
@@ -1967,10 +1876,10 @@ nsresult nsImageFrame::LoadIcons(nsIPresContext *aPresContext)
 
   rv = LoadIcon(brokenSrc,
                 aPresContext,
-                getter_AddRefs(mIconLoad->mIconLoads[NS_ICON_BROKEN_IMAGE].mRequest));
+                getter_AddRefs(gIconLoad->mBrokenImage));
 #ifdef NOISY_ICON_LOADING
   printf("Loading request %p, rv=%u\n",
-         mIconLoad->mIconLoads[NS_ICON_BROKEN_IMAGE].mRequest.get(), rv);
+         gIconLoad->mBrokenImage.get(), rv);
 #endif
 
   // ImageLoader will callback into OnStartContainer, which will
@@ -1983,19 +1892,20 @@ PRBool nsImageFrame::HandleIconLoads(imgIRequest* aRequest, PRBool aLoaded)
 {
   PRBool result = PR_FALSE;
 
-  if (mIconLoad) {
+  if (gIconLoad) {
     // check which image it is
-    if (aRequest == mIconLoad->mIconLoads[NS_ICON_LOADING_IMAGE].mRequest ||
-        aRequest == mIconLoad->mIconLoads[NS_ICON_BROKEN_IMAGE].mRequest) {
+    if (aRequest == gIconLoad->mLoadingImage ||
+        aRequest == gIconLoad->mBrokenImage) {
       result = PR_TRUE;
-      mIconLoad->mIconsLoaded = aLoaded;
+      if (aLoaded && (++gIconLoad->mIconsLoaded == 2))
+        gIconLoad->mLoadObserver = nsnull;
     }
 
 #ifdef NOISY_ICON_LOADING
-    if (mIconLoad->mIconsLoaded && result) {
+    if (gIconLoad->mIconsLoaded && result) {
       printf( "Icons Loaded: request for %s\n",
-              aRequest == mIconLoad->mIconLoads[NS_ICON_LOADING_IMAGE].mRequest
-              ? "NS_ICON_LOADING_IMAGE" : "NS_ICON_BROKEN_IMAGE" );
+              aRequest == gIconLoad->mLoadingImage
+                ? "mLoadingImage" : "mBrokenImage" );
     }
 #endif
   }
@@ -2007,44 +1917,84 @@ PRBool nsImageFrame::HandleIconLoads(imgIRequest* aRequest, PRBool aLoaded)
   return result;
 }
 
-void nsImageFrame::InvalidateIcon(nsIPresContext *aPresContext)
+void nsImageFrame::InvalidateIcon()
 {
   // invalidate the inner area, where the icon lives
 
-  NS_ASSERTION(aPresContext, "null presContext in InvalidateIcon");
+  nsIPresContext *presContext = GetPresContext();
   float   p2t;
-  aPresContext->GetScaledPixelsToTwips(&p2t);
+  presContext->GetScaledPixelsToTwips(&p2t);
   nsRect inner;
-  GetInnerArea(aPresContext, inner);
+  GetInnerArea(presContext, inner);
 
   nsRect rect(inner.x,
               inner.y,
               NSIntPixelsToTwips(ICON_SIZE+ICON_PADDING, p2t),
               NSIntPixelsToTwips(ICON_SIZE+ICON_PADDING, p2t));
   NS_ASSERTION(!rect.IsEmpty(), "icon rect cannot be empty!");
-  Invalidate(aPresContext, rect, PR_FALSE);
+  // update image area
+  Invalidate(rect, PR_FALSE);
 }
 
-void nsImageFrame::IconLoad::GetPrefs(nsIPresContext *aPresContext)
-{
-  NS_ASSERTION(aPresContext, "null presContext is not allowed in GetAltModePref");
-  // NOTE: the presContext could be used to fetch a cached pref if needed, but is not for now
+NS_IMPL_ISUPPORTS1(nsImageFrame::IconLoad, nsIObserver)
 
-  nsCOMPtr<nsIPrefBranch> prefBranch = do_GetService(NS_PREFSERVICE_CONTRACTID);
-  if (prefBranch) {
+static const char kIconLoadPrefs[][40] = {
+  "browser.display.force_inline_alttext",
+  "network.image.imageBehavior",
+  "browser.display.show_image_placeholders"
+};
+
+nsImageFrame::IconLoad::IconLoad(imgIDecoderObserver *aObserver)
+  : mLoadObserver(aObserver),
+    mIconsLoaded(0)
+{
+  nsCOMPtr<nsIPrefBranch> prefService =
+    do_GetService(NS_PREFSERVICE_CONTRACTID);
+
+  // register observers
+  nsCOMPtr<nsIPrefBranchInternal> pbi = do_QueryInterface(prefService);
+  for (PRUint32 i = 0; i < NS_ARRAY_LENGTH(kIconLoadPrefs); ++i)
+    pbi->AddObserver(kIconLoadPrefs[i], this, PR_FALSE);
+
+  GetPrefs(prefService);
+}
+
+
+NS_IMETHODIMP
+nsImageFrame::IconLoad::Observe(nsISupports *aSubject, const char* aTopic,
+                                const PRUnichar* aData)
+{
+  NS_ASSERTION(!nsCRT::strcmp(aTopic, NS_PREFBRANCH_PREFCHANGE_TOPIC_ID),
+               "wrong topic");
+#ifdef DEBUG
+  // assert |aData| is one of our prefs.
+  for (PRUint32 i = 0; i < NS_ARRAY_LENGTH(kIconLoadPrefs) ||
+                       (NS_NOTREACHED("wrong pref"), PR_FALSE); ++i)
+    if (NS_ConvertASCIItoUTF16(kIconLoadPrefs[i]) == nsDependentString(aData))
+      break;
+#endif
+
+  nsCOMPtr<nsIPrefBranch> prefService = do_QueryInterface(aSubject);
+  GetPrefs(prefService);
+  return NS_OK;
+}
+
+void nsImageFrame::IconLoad::GetPrefs(nsIPrefBranch *aPrefService)
+{
+  if (aPrefService) {
     PRBool boolPref;
     PRInt32 intPref;
-    if (NS_SUCCEEDED(prefBranch->GetBoolPref("browser.display.force_inline_alttext", &boolPref))) {
+    if (NS_SUCCEEDED(aPrefService->GetBoolPref("browser.display.force_inline_alttext", &boolPref))) {
       mPrefForceInlineAltText = boolPref;
     } else {
       mPrefForceInlineAltText = PR_FALSE;
     }
-    if (NS_SUCCEEDED(prefBranch->GetIntPref("network.image.imageBehavior", &intPref)) && intPref == 2) {
+    if (NS_SUCCEEDED(aPrefService->GetIntPref("network.image.imageBehavior", &intPref)) && intPref == 2) {
       mPrefAllImagesBlocked = PR_TRUE;
     } else {
       mPrefAllImagesBlocked = PR_FALSE;
     }
-    if (NS_SUCCEEDED(prefBranch->GetBoolPref("browser.display.show_image_placeholders", &boolPref))) {
+    if (NS_SUCCEEDED(aPrefService->GetBoolPref("browser.display.show_image_placeholders", &boolPref))) {
       mPrefShowPlaceholders = boolPref;
     } else {
       mPrefShowPlaceholders = PR_TRUE;

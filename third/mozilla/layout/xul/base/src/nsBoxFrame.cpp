@@ -217,13 +217,10 @@ nsBoxFrame::SetInitialChildList(nsIPresContext* aPresContext,
 {
   SanityCheck(mFrames);
 
-  nsCOMPtr<nsIPresShell> shell;
-  aPresContext->GetShell(getter_AddRefs(shell));
-
   nsresult r = nsContainerFrame::SetInitialChildList(aPresContext, aListName, aChildList);
   if (r == NS_OK) {
     // initialize our list of infos.
-    nsBoxLayoutState state(shell);
+    nsBoxLayoutState state(aPresContext->PresShell());
     InitChildren(state, aChildList);
     CheckFrameOrder();
   } else {
@@ -751,14 +748,13 @@ nsBoxFrame::IsInitialReflowForPrintPreview(nsBoxLayoutState& aState,
     // See if we are doing Print Preview
     nsCOMPtr<nsIPrintPreviewContext> ppContent(do_QueryInterface(aState.GetPresContext()));
     if (ppContent) {
-      // Now, get the current URI to see of we doing chrome
-      nsCOMPtr<nsIPresShell> presShell;
-      aState.GetPresContext()->GetShell(getter_AddRefs(presShell));
+      // Now, get the current URI to see if we doing chrome
+      nsIPresShell *presShell = aState.GetPresContext()->GetPresShell();
       if (!presShell) return PR_FALSE;
       nsCOMPtr<nsIDocument> doc;
       presShell->GetDocument(getter_AddRefs(doc));
       if (!doc) return PR_FALSE;
-      nsIURI *uri = doc->GetDocumentURL();
+      nsIURI *uri = doc->GetDocumentURI();
       if (!uri) return PR_FALSE;
       uri->SchemeIs("chrome", &aIsChrome);
       return PR_TRUE;
@@ -1296,9 +1292,7 @@ nsBoxFrame::AttributeChanged(nsIPresContext* aPresContext,
     }
   }
   else if (aAttribute == nsXULAtoms::ordinal) {
-    nsCOMPtr<nsIPresShell> shell;
-    aPresContext->GetShell(getter_AddRefs(shell));
-    nsBoxLayoutState state(shell);
+    nsBoxLayoutState state(aPresContext->PresShell());
     
     nsIBox* parent;
     GetParentBox(&parent);
@@ -1316,8 +1310,6 @@ nsBoxFrame::AttributeChanged(nsIPresContext* aPresContext,
     RegUnregAccessKey(aPresContext, PR_TRUE);
   }
 
-  nsCOMPtr<nsIPresShell> shell;
-  aPresContext->GetShell(getter_AddRefs(shell));
   nsBoxLayoutState state(aPresContext);
   // XXX This causes us to reflow for any attribute change (e.g.,
   // flipping through menus).
@@ -1442,9 +1434,7 @@ nsBoxFrame::Paint(nsIPresContext*      aPresContext,
     // and frame construction.  If painting is locked down, then we
     // do not paint our children.  
     PRBool paintingSuppressed = PR_FALSE;
-    nsCOMPtr<nsIPresShell> shell;
-    aPresContext->GetShell(getter_AddRefs(shell));
-    shell->IsPaintingSuppressed(&paintingSuppressed);
+    aPresContext->PresShell()->IsPaintingSuppressed(&paintingSuppressed);
     if (paintingSuppressed)
       return NS_OK;
   }
@@ -1822,42 +1812,25 @@ nsBoxFrame::GetFrameForPoint(nsIPresContext*   aPresContext,
     }
   }
 
-  nsIFrame *kid, *hit = nsnull;
+  nsIFrame *hit = nsnull;
   nsPoint tmp;
 
-  FirstChild(aPresContext, nsnull, &kid);
   *aFrame = nsnull;
   tmp.MoveTo(aPoint.x - mRect.x, aPoint.y - mRect.y);
 
   if (view)
     tmp += originOffset;
 
+  nsIBox* kid = nsnull;
+  GetChildBox(&kid);
   while (nsnull != kid) {
-    // have we hit a child before
-    PRBool haveKid = (hit != nsnull);
-    nsresult rv = kid->GetFrameForPoint(aPresContext, tmp, aWhichLayer, &hit);
-
-    if (NS_SUCCEEDED(rv) && hit) {
-      if (!haveKid)
-         *aFrame = hit;
-      else
-      {
-        // if the kid had a child before see if this child has mouse
-        // though. 
-        PRBool isAdaptor = PR_FALSE;
-        nsIBox *box = GetBoxForFrame(hit, isAdaptor);
-        if (box) {
-          PRBool mouseThrough = PR_FALSE;
-          box->GetMouseThrough(mouseThrough);
-          // if the child says it can never mouse though ignore it.
-          if (!mouseThrough)
-              *aFrame = hit;
-        }
-      }
-    }
-
-    kid = kid->GetNextSibling();
+    nsIFrame* frame = nsnull;
+    kid->GetFrame(&frame);
+    GetFrameForPointChild(aPresContext, tmp, aWhichLayer, frame, hit != nsnull, &hit);
+    kid->GetNextBox(&kid);
   }
+  if (hit)
+    *aFrame = hit;
 
   if (*aFrame) {
     return NS_OK;
@@ -1870,6 +1843,44 @@ nsBoxFrame::GetFrameForPoint(nsIPresContext*   aPresContext,
   }
 
   return NS_ERROR_FAILURE;
+}
+
+/* virtual */ nsresult
+nsBoxFrame::GetFrameForPointChild(nsIPresContext*   aPresContext,
+                                  const nsPoint&    aPoint,
+                                  nsFramePaintLayer aWhichLayer,    
+                                  nsIFrame*         aChild,
+                                  PRBool            aCheckMouseThrough,
+                                  nsIFrame**        aFrame)
+{
+  nsIFrame *hit = nsnull;
+  nsresult rv =
+    aChild->GetFrameForPoint(aPresContext, aPoint, aWhichLayer, &hit);
+
+  if (NS_SUCCEEDED(rv) && hit) {
+    rv = NS_ERROR_FAILURE;
+    if (!aCheckMouseThrough) {
+      *aFrame = hit;
+      rv = NS_OK;
+    }
+    else
+    {
+      // If we had a lower frame for this point, check whether hit's box has
+      // mouse through.  If so, stick with the lower frame that we found.
+      PRBool isAdaptor = PR_FALSE;
+      nsIBox *box = GetBoxForFrame(hit, isAdaptor);
+      if (box) {
+        PRBool mouseThrough = PR_FALSE;
+        box->GetMouseThrough(mouseThrough);
+        // if the child says it can never mouse though ignore it. 
+        if (!mouseThrough) {
+          *aFrame = hit;
+          rv = NS_OK;
+        }
+      }
+    }
+  }
+  return rv;
 }
 
 nsIBox*
@@ -2532,7 +2543,7 @@ nsBoxFrame::CreateViewForFrame(nsIPresContext*  aPresContext,
             // at whether the frame has any child frames
             nsIContent* content = aFrame->GetContent();
 
-            if (content && content->CanContainChildren()) {
+            if (content && content->IsContentOfType(nsIContent::eELEMENT)) {
               // The view needs to be visible, but marked as having transparent
               // content
               viewHasTransparentContent = PR_TRUE;
@@ -2597,18 +2608,15 @@ nsBoxFrame::RegUnregAccessKey(nsIPresContext* aPresContext, PRBool aDoReg)
 
   // With a valid PresContext we can get the ESM 
   // and register the access key
-  nsCOMPtr<nsIEventStateManager> esm;
-  aPresContext->GetEventStateManager(getter_AddRefs(esm));
+  nsIEventStateManager *esm = aPresContext->EventStateManager();
 
-  nsresult rv = NS_OK;
+  nsresult rv;
 
-  if (esm) {
-    PRUint32 key = accessKey.First();
-    if (aDoReg)
-      rv = esm->RegisterAccessKey(mContent, key);
-    else
-      rv = esm->UnregisterAccessKey(mContent, key);
-  }
+  PRUint32 key = accessKey.First();
+  if (aDoReg)
+    rv = esm->RegisterAccessKey(mContent, key);
+  else
+    rv = esm->UnregisterAccessKey(mContent, key);
 
   return rv;
 }
@@ -2626,10 +2634,8 @@ nsBoxFrame::FireDOMEvent(nsIPresContext *aPresContext, const nsAString& aDOMEven
         NS_SUCCEEDED(manager->CreateEvent(aPresContext, nsnull, NS_LITERAL_STRING("Events"), getter_AddRefs(event)))) {
       event->InitEvent(aDOMEventName, PR_TRUE, PR_TRUE);
       PRBool noDefault;
-      nsCOMPtr<nsIEventStateManager> esm;
-      aPresContext->GetEventStateManager(getter_AddRefs(esm));
-      if (esm)
-        esm->DispatchNewEvent(mContent, event, &noDefault);
+      aPresContext->EventStateManager()->DispatchNewEvent(mContent, event,
+                                                          &noDefault);
     }
   }
 }

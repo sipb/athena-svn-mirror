@@ -1,4 +1,4 @@
-<!ENTITY charsetMenu.label        "Character Coding">
+<!ENTITY charsetMenu.label        "Character Encoding">
 <!ENTITY charsetMenu.accesskey        "C">
 <!ENTITY charsetMenuAutodet.label     "Auto-Detect">
 <!ENTITY charsetMenuAutodet.accesskey     "a">
@@ -13,6 +13,8 @@
 <!ENTITY charsetMenuMore4.label       "SE &amp; SW Asian">
 <!ENTITY charsetMenuMore4.accesskey       "S">
 <!ENTITY charsetMenuMore5.label       "Middle Eastern">
-<!ENTITY charsetMenuMore5.accesskey       "m">
+<!ENTITY charsetMenuMore5.accesskey       "M">
+<!ENTITY charsetMenuUnicode.label       "Unicode">
+<!ENTITY charsetMenuUnicode.accesskey       "U">
 <!ENTITY charsetCustomize.label       "Customize...">
 <!ENTITY charsetCustomize.accesskey       "c">

@@ -43,13 +43,11 @@
 #include "nsGlobalWindow.h"
 #include "nsStyleConsts.h"
 #include "nsIDocShell.h"
+#include "nsIScriptSecurityManager.h"
 #include "nsIScrollable.h"
 #include "nsIWebBrowserChrome.h"
 #include "nsIDOMWindowInternal.h"
 #include "nsDOMClassInfo.h"
-
-#include "nsIPrefBranch.h"
-#include "nsIPrefService.h"
 
 //
 //  Basic (virtual) BarProp class implementation
@@ -102,6 +100,15 @@ NS_IMETHODIMP
 BarPropImpl::SetVisibleByFlag(PRBool aVisible, PRUint32 aChromeFlag)
 {
   NS_ENSURE_TRUE(mBrowserChrome, NS_ERROR_FAILURE);
+
+  PRBool   enabled = PR_FALSE;
+
+  nsCOMPtr<nsIScriptSecurityManager>
+           securityManager(do_GetService(NS_SCRIPTSECURITYMANAGER_CONTRACTID));
+  if (securityManager)
+    securityManager->IsCapabilityEnabled("UniversalBrowserWrite", &enabled);
+  if (!enabled)
+    return NS_OK;
 
   PRUint32 chromeFlags;
 
@@ -239,23 +246,6 @@ StatusbarPropImpl::GetVisible(PRBool *aVisible)
 NS_IMETHODIMP
 StatusbarPropImpl::SetVisible(PRBool aVisible)
 {
-  if (!aVisible) {
-    // See if the user is forbidding sites from hiding the statusbar.
-    nsresult rv;
-    nsCOMPtr<nsIPrefService> prefs = do_GetService(NS_PREFSERVICE_CONTRACTID, &rv);
-    if (NS_SUCCEEDED(rv)) {
-      nsCOMPtr<nsIPrefBranch> prefBranch;
-      rv = prefs->GetBranch("dom.disable_window_open_feature.", getter_AddRefs(prefBranch));
-      if (NS_SUCCEEDED(rv)) {
-        PRBool forceEnable = PR_FALSE;
-        rv = prefBranch->GetBoolPref("status", &forceEnable);
-        if (NS_SUCCEEDED(rv) && forceEnable && !GlobalWindowImpl::IsCallerChrome()) {
-          return NS_OK;
-        }
-      }
-    }
-  }
-
   return BarPropImpl::SetVisibleByFlag(aVisible,
                                        nsIWebBrowserChrome::CHROME_STATUSBAR);
 }
@@ -278,14 +268,13 @@ ScrollbarsPropImpl::~ScrollbarsPropImpl()
 NS_IMETHODIMP
 ScrollbarsPropImpl::GetVisible(PRBool *aVisible)
 {
-  NS_ENSURE_ARG_POINTER(aVisible);
   *aVisible = PR_TRUE; // one assumes
 
   nsCOMPtr<nsIDOMWindow> domwin(do_QueryReferent(mDOMWindowWeakref));
   if (domwin) { // dom window not deleted
-    nsCOMPtr<nsIDocShell> docshell;
-    mDOMWindow->GetDocShell(getter_AddRefs(docshell));
-    nsCOMPtr<nsIScrollable> scroller(do_QueryInterface(docshell));
+    nsCOMPtr<nsIScrollable> scroller =
+      do_QueryInterface(mDOMWindow->GetDocShell());
+
     if (scroller) {
       PRInt32 prefValue = aVisible ? NS_STYLE_OVERFLOW_AUTO :
                                      NS_STYLE_OVERFLOW_HIDDEN;
@@ -315,9 +304,9 @@ ScrollbarsPropImpl::SetVisible(PRBool aVisible)
 
   nsCOMPtr<nsIDOMWindow> domwin(do_QueryReferent(mDOMWindowWeakref));
   if (domwin) { // dom window must still exist. use away.
-    nsCOMPtr<nsIDocShell> docshell;
-    mDOMWindow->GetDocShell(getter_AddRefs(docshell));
-    nsCOMPtr<nsIScrollable> scroller(do_QueryInterface(docshell));
+    nsCOMPtr<nsIScrollable> scroller =
+      do_QueryInterface(mDOMWindow->GetDocShell());
+
     if (scroller) {
       PRInt32 prefValue = aVisible ? NS_STYLE_OVERFLOW_AUTO :
                                      NS_STYLE_OVERFLOW_HIDDEN;

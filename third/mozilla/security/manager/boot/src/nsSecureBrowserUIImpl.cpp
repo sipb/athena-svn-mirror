@@ -193,11 +193,7 @@ nsSecureBrowserUIImpl::Init(nsIDOMWindow *window)
   nsCOMPtr<nsIScriptGlobalObject> sgo(do_QueryInterface(mWindow));
   if (!sgo) return NS_ERROR_FAILURE;
   
-  nsCOMPtr<nsIDocShell> docShell;
-  sgo->GetDocShell(getter_AddRefs(docShell));
-  if (!docShell) return NS_ERROR_FAILURE;
-  
-  nsCOMPtr<nsIWebProgress> wp(do_GetInterface(docShell));
+  nsCOMPtr<nsIWebProgress> wp(do_GetInterface(sgo->GetDocShell()));
   if (!wp) return NS_ERROR_FAILURE;
   /* end GetWebProgress */
   
@@ -329,7 +325,7 @@ nsSecureBrowserUIImpl::Notify(nsIContent* formNode,
   nsCOMPtr<nsIDocument> document = formNode->GetDocument();
   if (!document) return NS_OK;
 
-  nsIURI *formURL = document->GetBaseURL();
+  nsIURI *formURL = document->GetBaseURI();
 
   nsCOMPtr<nsIDOMWindow> postingWindow(do_QueryInterface(document->GetScriptGlobalObject()));
   

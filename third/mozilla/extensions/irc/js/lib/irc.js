@@ -101,6 +101,8 @@ function CIRCNetwork (name, serverList, eventPump)
     this.name = name;
     this.servers = new Object();
     this.serverList = new Array();
+    this.ignoreList = new Object();
+    this.ignoreMaskCache = new Object();
     this.connecting = false;
     
     for (var i = 0; i < serverList.length; ++i)
@@ -239,6 +241,32 @@ function net_connected (e)
     return ("primServ" in this && this.primServ.isConnected);   
 }
 
+CIRCNetwork.prototype.ignore =
+function net_ignore (hostmask)
+{
+    var input = getHostmaskParts(hostmask);
+    
+    if (input.mask in this.ignoreList)
+        return false;
+    
+    this.ignoreList[input.mask] = input;
+    this.ignoreMaskCache = new Object();
+    return true;
+}
+
+CIRCNetwork.prototype.unignore =
+function net_ignore (hostmask)
+{
+    var input = getHostmaskParts(hostmask);
+    
+    if (!(input.mask in this.ignoreList))
+        return false;
+    
+    delete this.ignoreList[input.mask];
+    this.ignoreMaskCache = new Object();
+    return true;
+}
+
 /*
  * irc server
  */ 
@@ -294,6 +322,49 @@ CIRCServer.prototype.DEFAULT_REASON = "no reason";
 
 CIRCServer.prototype.TYPE = "IRCServer";
 
+CIRCServer.prototype.toLowerCase =
+function serv_tolowercase(str)
+{
+    /* This is an implementation that lower-cases strings according to the 
+     * prevailing CASEMAPPING setting for the server. Values for this are:
+     *   
+     *   o  "ascii": The ASCII characters 97 to 122 (decimal) are defined as
+     *      the lower-case characters of ASCII 65 to 90 (decimal).  No other
+     *      character equivalency is defined.
+     *   o  "strict-rfc1459": The ASCII characters 97 to 125 (decimal) are
+     *      defined as the lower-case characters of ASCII 65 to 93 (decimal).
+     *      No other character equivalency is defined.
+     *   o  "rfc1459": The ASCII characters 97 to 126 (decimal) are defined as
+     *      the lower-case characters of ASCII 65 to 94 (decimal).  No other
+     *      character equivalency is defined.
+     * 
+     */
+     
+     function replaceFunction(chr)
+     {
+         return String.fromCharCode(chr.charCodeAt(0) + 32);
+     }
+     
+     var mapping = "rfc1459";
+     if (this.supports)
+         mapping = this.supports.casemapping;
+     
+     /* NOTE: There are NO breaks in this switch. This is CORRECT.
+      * Each mapping listed is a super-set of those below, thus we only
+      * transform the extra characters, and then fall through.
+      */
+     switch (mapping)
+     {
+         case "rfc1459":
+             str = str.replace(/\^/g, replaceFunction);
+         case "strict-rfc1459":
+             str = str.replace(/[\[\\\]]/g, replaceFunction);
+         case "ascii":
+             str = str.replace(/[A-Z]/g, replaceFunction);
+     }
+     return str;
+}
+
 CIRCServer.prototype.getURL =
 function serv_geturl(target)
 {
@@ -315,7 +386,7 @@ function serv_geturl(target)
 CIRCServer.prototype.getUser =
 function chan_getuser (nick) 
 {
-    nick = nick.toLowerCase();
+    nick = this.toLowerCase(nick);
 
     if (nick in this.users)
         return this.users[nick];
@@ -572,11 +643,8 @@ function serv_actto (target, msg)
 CIRCServer.prototype.ctcpTo = 
 function serv_ctcpto (target, code, msg, method)
 {
-    if (typeof msg == "undefined")
-        msg = "";
-
-    if (typeof method == "undefined")
-        method = "PRIVMSG";
+    msg = msg || "";
+    method = method || "PRIVMSG";
     
     code = code.toUpperCase();
     if (code == "PING" && !msg)
@@ -765,6 +833,51 @@ function serv_ppline(e)
 CIRCServer.prototype.onRawData = 
 function serv_onRawData(e)
 {
+    function makeMaskRegExp(text)
+    {
+        function escapeChars(c)
+        {
+            if (c == "*")
+                return ".*";
+            if (c == "?")
+                return ".";
+            return "\\" + c;
+        }
+        // Anything that's not alpha-numeric gets escaped.
+        // "*" and "?" are 'escaped' to ".*" and ".".
+        // Optimisation; * translates as 'match all'.
+        return new RegExp("^" + text.replace(/[^\w\d]/g, escapeChars) + "$", "i");
+    };
+    function hostmaskMatches(user, mask)
+    {
+        // Need to match .nick, .user, and .host.
+        if (!("nickRE" in mask))
+        {
+            // We cache all the regexp objects, but use null if the term is 
+            // just "*", so we can skip having the object *and* the .match
+            // later on.
+            if (mask.nick == "*")
+                mask.nickRE = null;
+            else
+                mask.nickRE = makeMaskRegExp(mask.nick);
+            
+            if (mask.user == "*")
+                mask.userRE = null;
+            else
+                mask.userRE = makeMaskRegExp(mask.user);
+            
+            if (mask.host == "*")
+                mask.hostRE = null;
+            else
+                mask.hostRE = makeMaskRegExp(mask.host);
+        }
+        if ((!mask.nickRE || user.nick.match(mask.nickRE)) && 
+            (!mask.userRE || user.name.match(mask.userRE)) && 
+            (!mask.hostRE || user.host.match(mask.hostRE)))
+            return true;
+        return false;
+    };
+    
     var ary;
     var l = e.data;
 
@@ -793,6 +906,33 @@ function serv_onRawData(e)
             }
         }
     }
+    
+    e.ignored = false;
+    if (("user" in e) && e.user && ("ignoreList" in this.parent))
+    {
+        // Assumption: if "ignoreList" is in this.parent, we assume that:
+        //   a) it's an array.
+        //   b) ignoreMaskCache also exists, and
+        //   c) it's an array too.
+        
+        if (!(e.source in this.parent.ignoreMaskCache))
+        {
+            for (var m in this.parent.ignoreList)
+            {
+                if (hostmaskMatches(e.user, this.parent.ignoreList[m]))
+                {
+                    e.ignored = true;
+                    break;
+                }
+            }
+            /* Save this exact source in the cache, with results of tests. */
+            this.parent.ignoreMaskCache[e.source] = e.ignored;
+        }
+        else
+        {
+            e.ignored = this.parent.ignoreMaskCache[e.source];
+        }
+    }
 
     e.server = this;
 
@@ -811,6 +951,10 @@ function serv_onRawData(e)
 
     e.decodeParam = decodeParam;
     e.code = e.params[0].toUpperCase();
+    
+    // Ignore all Privmsg and Notice messages here.
+    if (e.ignored && ((e.code == "PRIVMSG") || (e.code == "NOTICE")))
+        return true;
 
     e.type = "parseddata";
     e.destObject = this;
@@ -825,7 +969,7 @@ function serv_onRawData(e)
 CIRCServer.prototype.onParsedData = 
 function serv_onParsedData(e)
 {
-    e.type = e.code.toLowerCase();
+    e.type = this.toLowerCase(e.code);
     if (!e.code[0])
     {
         dd (dumpObjectTree (e));
@@ -883,7 +1027,7 @@ function serv_001 (e)
     if (e.params[1] != e.server.me.properNick)
     {
         renameProperty (e.server.users, e.server.me.nick,
-                        e.params[1].toLowerCase());
+                        this.toLowerCase(e.params[1]));
         e.server.me.changeNick(e.params[1]);
     }
     
@@ -978,10 +1122,11 @@ function serv_005 (e)
     //   PREFIX (--> userModes[{mode,symbol}]), 
     //   CHANMODES (--> channelModes{a:[], b:[], c:[], d:[]}).
     
+    var m;
     if ("chantypes" in this.supports)
     {
         this.channelTypes = [];
-        for (var m = 0; m < this.supports.chantypes.length; m++)
+        for (m = 0; m < this.supports.chantypes.length; m++)
             this.channelTypes[this.supports.chantypes[m]] = true;
     }
     
@@ -995,7 +1140,7 @@ function serv_005 (e)
         else
         {
             this.userModes = [];
-            for (var m = 0; m < mlist[1].length; m++)
+            for (m = 0; m < mlist[1].length; m++)
                 this.userModes.push( { mode: mlist[1][m], 
                                                    symbol: mlist[2][m] } );
         }
@@ -1395,7 +1540,7 @@ CIRCServer.prototype.onNick =
 function serv_nick (e)
 {
     var newNick = e.params[1]; 
-    var newKey = newNick.toLowerCase();
+    var newKey = this.toLowerCase(newNick);
     var oldKey = e.user.nick;
     var ev;
     
@@ -1472,10 +1617,13 @@ CIRCServer.prototype.onPart =
 function serv_part (e)
 {
     e.channel = new CIRCChannel (this, e.params[1]);
-    e.reason = (e.params.length > 1) ? e.decodeParam(2, e.channel) : "";
+    e.reason = (e.params.length > 2) ? e.decodeParam(2, e.channel) : "";
     e.user = new CIRCChanUser (e.channel, e.user.nick);
     if (userIsMe(e.user))
+    {
         e.channel.active = false;
+        e.channel.joined = false;
+    }
     e.channel.removeUser(e.user.nick);
     e.destObject = e.channel;
     e.set = "channel";
@@ -1490,7 +1638,10 @@ function serv_kick (e)
     e.lamer = new CIRCChanUser (e.channel, e.params[2]);
     delete e.channel.users[e.lamer.nick];
     if (userIsMe(e.lamer))
+    {
         e.channel.active = false;
+        e.channel.joined = false;
+    }
     e.reason = e.decodeParam(3, e.channel);
     e.destObject = e.channel;
     e.set = "channel"; 
@@ -1507,7 +1658,10 @@ function serv_join (e)
                            "BANS " + e.channel.encodedName + "\n" */);
     e.user = new CIRCChanUser (e.channel, e.user.nick);
     if (userIsMe(e.user))
+    {
         e.channel.active = true;
+        e.channel.joined = true;
+    }
 
     e.destObject = e.channel;
     e.set = "channel";
@@ -1536,7 +1690,7 @@ function serv_pong (e)
     if (this.lastPingSent)
         this.lag = roundTo ((new Date() - this.lastPingSent) / 1000, 2);
 
-    delete this.lastPingSent;
+    this.lastPingSent = null;
     
     e.destObject = this.parent;
     e.set = "network";
@@ -1813,7 +1967,7 @@ function serv_dccsend (e)
 
 function CIRCChannel (parent, encodedName, unicodeName)
 {
-    this.normalizedName = encodedName.toLowerCase();
+    this.normalizedName = parent.toLowerCase(encodedName);
     this.name = this.normalizedName;
 
     if (this.normalizedName in parent.channels)
@@ -1830,7 +1984,15 @@ function CIRCChannel (parent, encodedName, unicodeName)
     this.bans = new Object();
     this.mode = new CIRCChanMode (this);
     this.usersStable = true;
+    /* These next two flags represent a subtle difference in state:
+     *   active - in the channel, from the server's point of view.
+     *   joined - in the channel, from the user's point of view.
+     * e.g. parting the channel clears both, but being disconnected only 
+     * clears |active| - the user still wants to be in the channel, even 
+     * though they aren't physically able to until we've reconnected.
+     */
     this.active = false;
+    this.joined = false;
     
     this.parent.channels[this.normalizedName] = this;
     if ("onInit" in this)
@@ -1846,7 +2008,7 @@ CIRCChannel.prototype.getURL =
 function chan_geturl ()
 {
     var target;
-    if (this.normalizedName[0] == "#")
+    if (this.normalizedName.match(/^#[^!+&]/))
         target = ecmaEscape(this.normalizedName.substr(1));
     else
         target = ecmaEscape(this.normalizedName);
@@ -1863,7 +2025,7 @@ function chan_adduser (nick, modes)
 CIRCChannel.prototype.getUser =
 function chan_getuser (nick) 
 {
-    nick = nick.toLowerCase();
+    nick = this.parent.toLowerCase(nick);
 
     if (nick in this.users)
         return this.users[nick];
@@ -1874,7 +2036,7 @@ function chan_getuser (nick)
 CIRCChannel.prototype.removeUser =
 function chan_removeuser (nick)
 {
-    delete this.users[nick.toLowerCase()]; // see ya
+    delete this.users[this.parent.toLowerCase(nick)]; // see ya
 }
 
 CIRCChannel.prototype.getUsersLength = 
@@ -1915,8 +2077,14 @@ function chan_amop()
     return this.users[this.parent.me.nick].isOp;
 }
 
+CIRCChannel.prototype.iAmHalfOp =
+function chan_amhalfop()
+{
+    return this.users[this.parent.me.nick].isHalfOp;
+}
+
 CIRCChannel.prototype.iAmVoice =
-function chan_amop()
+function chan_amvoice()
 {
     return this.parent.users[this.parent.parent.me.nick].isVoice;
 }
@@ -1949,13 +2117,9 @@ function chan_notice (msg)
 CIRCChannel.prototype.ctcp = 
 function chan_ctcpto (code, msg, type)
 {
-    if (typeof msg == "undefined")
-        msg = "";
-
-    if (typeof type == "undefined")
-        type = "PRIVMSG";
+    msg = msg || "";
+    type = type || "PRIVMSG";
     
-     
     this.parent.messageTo(type, this.encodedName, fromUnicode(msg, this), code);
 }
 
@@ -2038,9 +2202,6 @@ function chan_modestr (f)
 CIRCChanMode.prototype.setMode = 
 function chanm_mode (modestr)
 {
-    if (!this.parent.users[this.parent.parent.me.nick].isOp)
-        return false;
-
     this.parent.parent.sendData ("MODE " + this.parent.encodedName + " " +
                                  modestr + "\n");
 
@@ -2050,9 +2211,6 @@ function chanm_mode (modestr)
 CIRCChanMode.prototype.setLimit = 
 function chanm_limit (n)
 {
-    if (!this.parent.users[this.parent.parent.me.nick].isOp)
-        return false;
-
     if ((typeof n == "undefined") || (n <= 0))
     {
         this.parent.parent.sendData("MODE " + this.parent.encodedName +
@@ -2070,9 +2228,6 @@ function chanm_limit (n)
 CIRCChanMode.prototype.lock = 
 function chanm_lock (k)
 {
-    if (!this.parent.users[this.parent.parent.me.nick].isOp)
-        return false;
-    
     this.parent.parent.sendData("MODE " + this.parent.encodedName + " +k " +
                                 k + "\n");
     return true;
@@ -2081,9 +2236,6 @@ function chanm_lock (k)
 CIRCChanMode.prototype.unlock = 
 function chan_unlock (k)
 {
-    if (!this.parent.users[this.parent.parent.me.nick].isOp)
-        return false;
-    
     this.parent.parent.sendData("MODE " + this.parent.encodedName + " -k " +
                                 k + "\n");
     return true;
@@ -2092,9 +2244,6 @@ function chan_unlock (k)
 CIRCChanMode.prototype.setModerated = 
 function chan_moderate (f)
 {
-    if (!this.parent.users[this.parent.parent.me.nick].isOp)
-        return false;
-
     var modifier = (f) ? "+" : "-";
     
     this.parent.parent.sendData("MODE " + this.parent.encodedName + " " +
@@ -2105,9 +2254,6 @@ function chan_moderate (f)
 CIRCChanMode.prototype.setPublicMessages = 
 function chan_pmessages (f)
 {
-    if (!this.parent.users[this.parent.parent.me.nick].isOp)
-        return false;
-
     var modifier = (f) ? "-" : "+";
     
     this.parent.parent.sendData("MODE " + this.parent.encodedName + " " +
@@ -2118,9 +2264,6 @@ function chan_pmessages (f)
 CIRCChanMode.prototype.setPublicTopic = 
 function chan_ptopic (f)
 {
-    if (!this.parent.users[this.parent.parent.me.nick].isOp)
-        return false;
-    
     var modifier = (f) ? "-" : "+";
     
     this.parent.parent.sendData("MODE " + this.parent.encodedName + " " +
@@ -2131,9 +2274,6 @@ function chan_ptopic (f)
 CIRCChanMode.prototype.setInvite = 
 function chan_invite (f)
 {
-    if (!this.parent.users[this.parent.parent.me.nick].isOp)
-        return false;
-
     var modifier = (f) ? "+" : "-";
     
     this.parent.parent.sendData("MODE " + this.parent.encodedName + " " +
@@ -2144,9 +2284,6 @@ function chan_invite (f)
 CIRCChanMode.prototype.setPvt = 
 function chan_pvt (f)
 {
-    if (!this.parent.users[this.parent.parent.me.nick].isOp)
-        return false;
-
     var modifier = (f) ? "+" : "-";
     
     this.parent.parent.sendData("MODE " + this.parent.encodedName + " " +
@@ -2157,9 +2294,6 @@ function chan_pvt (f)
 CIRCChanMode.prototype.setSecret = 
 function chan_secret (f)
 {
-    if (!this.parent.users[this.parent.parent.me.nick].isOp)
-        return false;
-
     var modifier = (f) ? "+" : "-";
     
     this.parent.parent.sendData("MODE " + this.parent.encodedName + " " +
@@ -2174,7 +2308,7 @@ function chan_secret (f)
 function CIRCUser (parent, nick, name, host)
 {
     var properNick = nick;
-    nick = nick.toLowerCase();
+    nick = parent.toLowerCase(nick);
     if (nick in parent.users)
     {
         var existingUser = parent.users[nick];
@@ -2212,7 +2346,7 @@ CIRCUser.prototype.changeNick =
 function usr_changenick (nick)
 {
     this.properNick = nick;
-    this.nick = nick.toLowerCase();
+    this.nick = this.parent.toLowerCase(nick);
 }
 
 CIRCUser.prototype.getHostMask = 
@@ -2247,13 +2381,9 @@ function usr_act (msg)
 CIRCUser.prototype.ctcp = 
 function usr_ctcp (code, msg, type)
 {
-    if (typeof msg == "undefined")
-        msg = "";
-
-    if (typeof type == "undefined")
-        type = "PRIVMSG";
+    msg = msg || "";
+    type = type || "PRIVMSG";
     
-     
     this.parent.messageTo(type, this.name, fromUnicode(msg, this), code);
 }
 
@@ -2269,7 +2399,7 @@ function usr_whois ()
 function CIRCChanUser (parent, nick, modes)
 {
     var properNick = nick;
-    nick = nick.toLowerCase();    
+    nick = parent.parent.toLowerCase(nick);
 
     if (nick in parent.users)
     {
@@ -2356,9 +2486,6 @@ function cusr_setop (f)
     var server = this.parent.parent;
     var me = server.me;
 
-    if (!this.parent.users[me.nick].isOp)
-        return false;
-
     var modifier = (f) ? " +o " : " -o ";
     server.sendData("MODE " + this.parent.name + modifier + this.nick + "\n");
 
@@ -2369,9 +2496,6 @@ function cusr_sethalfop (f)
 {
     var server = this.parent.parent;
     var me = server.me;
-
-    if (!this.parent.users[me.nick].isOp)
-        return false;
 
     var modifier = (f) ? " +h " : " -h ";
     server.sendData("MODE " + this.parent.name + modifier + this.nick + "\n");
@@ -2384,9 +2508,6 @@ function cusr_setvoice (f)
     var server = this.parent.parent;
     var me = server.me;
 
-    if (!this.parent.users[me.nick].isOp)
-        return false;
-    
     var modifier = (f) ? " +v " : " -v ";
     server.sendData("MODE " + this.parent.name + modifier + this.nick + "\n");
 
@@ -2399,8 +2520,6 @@ function cusr_kick (reason)
     var me = server.me;
 
     reason = typeof reason == "string" ? reason : "";
-    if (!this.parent.users[me.nick].isOp)
-        return false;
     
     server.sendData("KICK " + this.parent.encodedName + " " + this.nick + " :" +
                     fromUnicode(reason, this) + "\n");
@@ -2412,9 +2531,6 @@ function cusr_setban (f)
 {
     var server = this.parent.parent;
     var me = server.me;
-
-    if (!this.parent.users[me.nick].isOp)
-        return false;
 
     if (!this.host)
         return false;
@@ -2431,9 +2547,6 @@ function cusr_kban (reason)
 {
     var server = this.parent.parent;
     var me = server.me;
-
-    if (!this.parent.users[me.nick].isOp)
-        return false;
 
     if (!this.host)
         return false;

@@ -31,8 +31,12 @@ LIBRARY_NAME	= composer
 EXPORT_LIBRARY = 1
 IS_COMPONENT	= 1
 MODULE_NAME	= nsComposerModule
+
+PACKAGE_FILE = composer.pkg
+
 REQUIRES	= xpcom \
 		  string \
+		  unicharutil \
 		  dom \
 		  js \
 		  layout \
@@ -47,7 +51,6 @@ REQUIRES	= xpcom \
 		  widget \
 		  xuldoc \
 		  txtsvc \
-		  chrome \
 		  imglib2 \
 		  commandhandler \
 		  composer \
@@ -66,13 +69,13 @@ CPPSRCS  = \
            nsEditorSpellCheck.cpp         \
            $(NULL)
 
-include $(topsrcdir)/config/rules.mk
-
-INCLUDES        += -I../../libeditor/base/src
-
 EXTRA_DSO_LDOPTS += \
 		$(MOZ_UNICHARUTIL_LIBS) \
 		$(MOZ_COMPONENT_LIBS)
+
+include $(topsrcdir)/config/rules.mk
+
+INCLUDES        += -I../../libeditor/base/src
 
 _FILES = \
 	$(srcdir)/res/EditorOverride.css \

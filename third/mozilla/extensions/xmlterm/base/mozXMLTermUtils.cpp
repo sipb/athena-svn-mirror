@@ -91,10 +91,11 @@ mozXMLTermUtils::ConvertDOMWindowToDocShell(nsIDOMWindowInternal* aDOMWindow,
   if (!globalObject)
     return NS_ERROR_FAILURE;
 
-  globalObject->GetDocShell(aDocShell);
-
+  *aDocShell = globalObject->GetDocShell();
   if (!*aDocShell)
     return NS_ERROR_FAILURE;
+
+  NS_ADDREF(*aDocShell);
 
   return NS_OK;
 }
@@ -142,8 +143,6 @@ NS_EXPORT nsresult
 mozXMLTermUtils::GetPresContextScrollableView(nsIPresContext* aPresContext,
                                          nsIScrollableView** aScrollableView)
 {
-  nsresult result;
-
   XMLT_LOG(mozXMLTermUtils::GetPresContextScrollableView,30,("\n"));
 
   if (!aScrollableView)
@@ -151,9 +150,8 @@ mozXMLTermUtils::GetPresContextScrollableView(nsIPresContext* aPresContext,
 
   *aScrollableView = nsnull;
 
-  nsCOMPtr<nsIPresShell> presShell;
-  result = aPresContext->GetShell(getter_AddRefs(presShell));
-  if (NS_FAILED(result) || !presShell)
+  nsIPresShell *presShell = aPresContext->GetPresShell();
+  if (!presShell)
     return NS_ERROR_FAILURE;
 
   nsIViewManager* viewManager = presShell->GetViewManager();
@@ -218,7 +216,10 @@ mozXMLTermUtils::GetScriptContext(nsIDOMDocument* aDOMDocument,
   if (!scriptGlobalObject)
     return NS_ERROR_FAILURE;
 
-  return scriptGlobalObject->GetContext(aScriptContext);
+  *aScriptContext = scriptGlobalObject->GetContext();
+  NS_IF_ADDREF(*aScriptContext);
+
+  return NS_OK;
 }
 
 

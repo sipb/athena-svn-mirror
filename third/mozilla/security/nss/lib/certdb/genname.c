@@ -75,9 +75,11 @@ const SEC_ASN1Template CERT_NameConstraintSubtreeExcludedTemplate[] = {
 static const SEC_ASN1Template CERTNameConstraintsTemplate[] = {
     { SEC_ASN1_SEQUENCE, 0, NULL, sizeof(CERTNameConstraints) },
     { SEC_ASN1_OPTIONAL | SEC_ASN1_CONTEXT_SPECIFIC | 0, 
-          offsetof(CERTNameConstraints, DERPermited), CERT_NameConstraintSubtreeSubTemplate},
+          offsetof(CERTNameConstraints, DERPermited), 
+	  CERT_NameConstraintSubtreeSubTemplate},
     { SEC_ASN1_OPTIONAL | SEC_ASN1_CONTEXT_SPECIFIC | 1, 
-          offsetof(CERTNameConstraints, DERExcluded), CERT_NameConstraintSubtreeSubTemplate},
+          offsetof(CERTNameConstraints, DERExcluded), 
+	  CERT_NameConstraintSubtreeSubTemplate},
     { 0, }
 };
 
@@ -92,7 +94,7 @@ static const SEC_ASN1Template CERTOthNameTemplate[] = {
 };
 
 static const SEC_ASN1Template CERTOtherNameTemplate[] = {
-    { SEC_ASN1_CONTEXT_SPECIFIC | 0 ,
+    { SEC_ASN1_CONTEXT_SPECIFIC | SEC_ASN1_CONSTRUCTED | 0 ,
       offsetof(CERTGeneralName, name.OthName), CERTOthNameTemplate, 
       sizeof(CERTGeneralName) }
 };
@@ -120,7 +122,7 @@ static const SEC_ASN1Template CERT_DNSNameTemplate[] = {
 };
 
 static const SEC_ASN1Template CERT_X400AddressTemplate[] = {
-    { SEC_ASN1_ANY | SEC_ASN1_CONTEXT_SPECIFIC | 3,
+    { SEC_ASN1_CONTEXT_SPECIFIC | SEC_ASN1_CONSTRUCTED | 3,
           offsetof(CERTGeneralName, name.other), SEC_AnyTemplate,
           sizeof (CERTGeneralName)}
 };
@@ -133,7 +135,7 @@ static const SEC_ASN1Template CERT_DirectoryNameTemplate[] = {
 
 
 static const SEC_ASN1Template CERT_EDIPartyNameTemplate[] = {
-    { SEC_ASN1_ANY | SEC_ASN1_CONTEXT_SPECIFIC | 5,
+    { SEC_ASN1_CONTEXT_SPECIFIC | SEC_ASN1_CONSTRUCTED | 5,
           offsetof(CERTGeneralName, name.other), SEC_AnyTemplate,
           sizeof (CERTGeneralName)}
 };
@@ -438,7 +440,7 @@ CERT_DecodeGeneralName(PRArenaPool      *arena,
     case certX400Address: 	template = CERT_X400AddressTemplate;   break;
     case certDirectoryName: 	template = CERT_DirectoryNameTemplate; break;
     default: 
-        PORT_Assert(0); goto loser;
+        goto loser;
     }
     rv = SEC_ASN1DecodeItem(arena, genName, template, encodedName);
     if (rv != SECSuccess) 
@@ -1135,17 +1137,29 @@ compareURIN2C(const SECItem *name, const SECItem *constraint)
     return SECFailure;
 }
 
-/* for DNSnames, the constraint matches any string to which it matches the 
-** rightmost characters in that string.
-**  Constraint            Name             Result
-** ------------      ---------------      --------
-**  foo.bar.com          foo.bar.com      matches
-**  foo.bar.com          FoO.bAr.CoM      matches
-**  foo.bar.com      www.foo.bar.com      matches
-**  foo.bar.com        nofoo.bar.com      MATCHES
-** .foo.bar.com      www.foo.bar.com      matches
-** .foo.bar.com          foo.bar.com      no match
-** .foo.bar.com     www..foo.bar.com      matches
+/* for DNSname constraints, RFC 3280 says, (section 4.2.1.11, page 38)
+**
+** DNS name restrictions are expressed as foo.bar.com.  Any DNS name
+** that can be constructed by simply adding to the left hand side of the
+** name satisfies the name constraint.  For example, www.foo.bar.com
+** would satisfy the constraint but foo1.bar.com would not.
+**
+** But NIST's PKITS test suite requires that the constraint be treated
+** as a domain name, and requires that any name added to the left hand
+** side end in a dot ".".  Sensible, but not strictly following the RFC.
+**
+**  Constraint            Name            RFC 3280  NIST PKITS
+** ------------      ---------------      --------  ----------
+**  foo.bar.com          foo.bar.com      matches    matches
+**  foo.bar.com          FoO.bAr.CoM      matches    matches
+**  foo.bar.com      www.foo.bar.com      matches    matches
+**  foo.bar.com        nofoo.bar.com      MATCHES    NO MATCH
+** .foo.bar.com      www.foo.bar.com      matches    matches? disallowed?
+** .foo.bar.com          foo.bar.com      no match   no match
+** .foo.bar.com     www..foo.bar.com      matches    probably not 
+**
+** We will try to conform to NIST's PKITS tests, and the unstated 
+** rules they imply.
 */
 static SECStatus
 compareDNSN2C(const SECItem *name, const SECItem *constraint)
@@ -1161,7 +1175,10 @@ compareDNSN2C(const SECItem *name, const SECItem *constraint)
     offset = name->len - constraint->len;
     if (PL_strncasecmp(name->data + offset, constraint->data, constraint->len))
         return SECFailure;
-    return SECSuccess;
+    if (!offset || 
+        (name->data[offset - 1] == '.') + (constraint->data[0] == '.') == 1)
+	return SECSuccess;
+    return SECFailure;
 }
 
 /* Returns SECSuccess if name matches constraint per RFC 3280 rules for

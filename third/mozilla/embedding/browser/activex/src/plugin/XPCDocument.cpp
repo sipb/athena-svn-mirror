@@ -819,9 +819,8 @@ END_COM_MAP()
         if (!globalObject)
             return E_UNEXPECTED;
 
-        nsCOMPtr<nsIScriptContext> scriptContext;
-        if (NS_FAILED(globalObject->GetContext(getter_AddRefs(scriptContext))) ||
-                !scriptContext)
+        nsIScriptContext *scriptContext = globalObject->GetContext();
+        if (!scriptContext)
             return E_UNEXPECTED;
 
         nsCOMPtr<nsIDocument> doc(do_QueryInterface(domDocument));
@@ -1899,7 +1898,7 @@ END_COM_MAP()
         nsCOMPtr<nsIDocument> doc(do_QueryInterface(mDOMDocument));
         if (doc)
         {
-            nsIURI *baseURI = doc->GetBaseURL();
+            nsIURI *baseURI = doc->GetBaseURI();
             nsCAutoString spec;
             if (baseURI &&
                 NS_SUCCEEDED(baseURI->GetSpec(spec)))

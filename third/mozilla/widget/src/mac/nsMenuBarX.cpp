@@ -731,25 +731,23 @@ NS_IMPL_NSIDOCUMENTOBSERVER_REFLOW_STUB(nsMenuBarX)
 NS_IMPL_NSIDOCUMENTOBSERVER_STATE_STUB(nsMenuBarX)
 NS_IMPL_NSIDOCUMENTOBSERVER_STYLE_STUB(nsMenuBarX)
 
-NS_IMETHODIMP
+void
 nsMenuBarX::BeginUpdate( nsIDocument * aDocument, nsUpdateType aUpdateType )
 {
-  return NS_OK;
 }
 
-NS_IMETHODIMP
+void
 nsMenuBarX::EndUpdate( nsIDocument * aDocument, nsUpdateType aUpdateType )
 {
-  return NS_OK;
 }
 
-NS_IMETHODIMP
-nsMenuBarX::ContentChanged( nsIDocument * aDocument, nsIContent * aContent, nsISupports * aSubContent)
+void
+nsMenuBarX::CharacterDataChanged( nsIDocument * aDocument,
+                                  nsIContent * aContent, PRBool aAppend)
 {
-  return NS_OK;
 }
 
-NS_IMETHODIMP
+void
 nsMenuBarX::ContentAppended( nsIDocument * aDocument, nsIContent  * aContainer,
                               PRInt32 aNewIndexInContainer)
 {
@@ -771,38 +769,35 @@ nsMenuBarX::ContentAppended( nsIDocument * aDocument, nsIContent  * aContainer,
       }
     }
   }
-  return NS_OK;
 }
 
-NS_IMETHODIMP
-nsMenuBarX::ContentReplaced( nsIDocument * aDocument, nsIContent * aContainer, nsIContent * aOldChild,
-                          nsIContent * aNewChild, PRInt32 aIndexInContainer)
+void
+nsMenuBarX::ContentReplaced( nsIDocument * aDocument, nsIContent * aContainer,
+                             nsIContent * aOldChild, nsIContent * aNewChild,
+                             PRInt32 aIndexInContainer)
 {
-  return NS_OK;
 }
 
-NS_IMETHODIMP
+void
 nsMenuBarX::DocumentWillBeDestroyed( nsIDocument * aDocument )
 {
   mDocument = nsnull;
-  return NS_OK;
 }
 
 
-NS_IMETHODIMP
-nsMenuBarX::AttributeChanged( nsIDocument * aDocument, nsIContent * aContent, PRInt32 aNameSpaceID,
-                              nsIAtom * aAttribute, PRInt32 aModType )
+void
+nsMenuBarX::AttributeChanged( nsIDocument * aDocument, nsIContent * aContent,
+                              PRInt32 aNameSpaceID, nsIAtom * aAttribute,
+                              PRInt32 aModType )
 {
   // lookup and dispatch to registered thang.
   nsCOMPtr<nsIChangeObserver> obs;
   Lookup ( aContent, getter_AddRefs(obs) );
   if ( obs )
     obs->AttributeChanged ( aDocument, aNameSpaceID, aAttribute );
-
-  return NS_OK;
 }
 
-NS_IMETHODIMP
+void
 nsMenuBarX::ContentRemoved( nsIDocument * aDocument, nsIContent * aContainer,
                             nsIContent * aChild, PRInt32 aIndexInContainer )
 {  
@@ -824,12 +819,11 @@ nsMenuBarX::ContentRemoved( nsIDocument * aDocument, nsIContent * aContainer,
       }
     }
   }
-  return NS_OK;
 }
 
-NS_IMETHODIMP
+void
 nsMenuBarX::ContentInserted( nsIDocument * aDocument, nsIContent * aContainer,
-                            nsIContent * aChild, PRInt32 aIndexInContainer )
+                             nsIContent * aChild, PRInt32 aIndexInContainer )
 {  
   if ( aContainer == mMenuBarContent ) {
     //Register(aChild, );
@@ -849,7 +843,6 @@ nsMenuBarX::ContentInserted( nsIDocument * aDocument, nsIContent * aContainer,
       }
     }
   }
-  return NS_OK;
 }
 
 #pragma mark - 
@@ -995,15 +988,10 @@ MenuHelpersX::DispatchCommandTo(nsIWeakReference* aWebShellWeakRef,
   MenuHelpersX::WebShellToPresContext(webShell, getter_AddRefs(presContext));
 
   nsEventStatus status = nsEventStatus_eConsumeNoDefault;
-  nsMouseEvent event;
-  event.eventStructType = NS_MOUSE_EVENT;
-  event.message = NS_XUL_COMMAND;
+  nsMouseEvent event(NS_XUL_COMMAND);
 
   // FIXME: Should probably figure out how to init this with the actual
   // pressed keys, but this is a big old edge case anyway. -dwh
-  event.isShift = event.isControl = event.isAlt = event.isMeta = PR_FALSE;
-  event.clickCount = 0;
-  event.widget = nsnull;
 
   // See if we have a command element.  If so, we execute on the
   // command instead of on our content element.
