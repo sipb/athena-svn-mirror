@@ -16965,7 +16965,7 @@ if test "${with_afs+set}" = set; then
 echo "$as_me: WARNING: AFS requires Kerberos IV support, build may fail" >&2;}
 			fi
 
-			LIBS="-lprot -lauth -lrxkad -lubik ${withval}/lib/afs/util.a -laudit -lsys -lrx -llwp -lsys $LIBS"
+			LIBS="-lprot -lauth -lrxkad -lubik ${withval}/lib/afs/util.a -laudit -lsys -lrx -llwp -lsys -lafsutil $LIBS"
 			if test ! -z "$AFS_LIBS" ; then
 				LIBS="$LIBS $AFS_LIBS"
 			fi

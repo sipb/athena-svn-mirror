@@ -1,4 +1,4 @@
-# $Id: configure.ac,v 1.7 2004-02-29 06:38:24 zacheiss Exp $
+# $Id: configure.ac,v 1.8 2005-03-13 06:31:50 zacheiss Exp $
 
 AC_INIT
 AC_CONFIG_SRCDIR([ssh.c])
@@ -1933,7 +1933,7 @@ AC_ARG_WITH(afs,
 				AC_MSG_WARN([AFS requires Kerberos IV support, build may fail])
 			fi
 
-			LIBS="-lprot -lauth -lrxkad -lubik ${withval}/lib/afs/util.a -laudit -lsys -lrx -llwp -lsys $LIBS"
+			LIBS="-lprot -lauth -lrxkad -lubik ${withval}/lib/afs/util.a -laudit -lsys -lrx -llwp -lsys -lafsutil $LIBS"
 			if test ! -z "$AFS_LIBS" ; then
 				LIBS="$LIBS $AFS_LIBS"
 			fi
