@@ -7,7 +7,7 @@
 \def_{\underscore\penalty75\relax}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\rcs$Id: api-funcspec.tex,v 1.1.1.1 1996-09-12 04:41:54 ghudson Exp $
+\rcs$Id: api-funcspec.tex,v 1.1.1.2 1999-02-09 20:56:14 danw Exp $
 
 \setlength{\parskip}{.7\baselineskip}
 \setlength{\parindent}{0pt}
@@ -267,22 +267,29 @@ typedef struct _krb5_tl_data {
     krb5_octet          * tl_data_contents;     
 } krb5_tl_data;
 \end{verbatim}
+%
+The KADM5 API only allows elements whose tl_data_type is greater than
+or equal to 256.  Values less than 256 are reserved for internal use
+by the KADM5 or kdb system.  They are filtered out of the list
+returned by kadm5_get_principal, and generate an error if given to
+kadm5_modify_principal.
+
 The libkdb library defines the tagged data types
-KRB5_TL_LAST_PWD_CHANGE, KRB5_TL_MOD_PRINC, and KRB5_TL_KADM_DATA,
-which store the last password modification time, time and modifier of
-last principal modification, and administration system data.  All of
-these entries are expected by the administration system and parsed out
-into fields of the kadm5_principal_ent_rec structure; they are also
-left in the tl_data list.
+KRB5_TL_LAST_PWD_CHANGE, KRB5_TL_MOD_PRINC, and KRB5_TL_KADM_DATA, all
+with values less than 256, which store the last password modification
+time, time and modifier of last principal modification, and
+administration system data.  All of these entries are expected by the
+administration system and parsed out into fields of the
+kadm5_principal_ent_rec structure; as described above, they are not
+included in the tl_data list.
 
-The KADM5 API defines its own tagged data type, KRB5_TL_KADM5_E_DATA,
-which stores the contents of the e_data field of a krb5_db_entry.  The
-tagged data is only present if the database entry has extended data,
-and will only ever exist while KADM5 is implemented on top of the
-DB/DBM database mechansim.
-
-Any additional tagged data fields found in the database will also be
-provided, without interpretation.
+Tagged data elements with types greater than 256 are handled without
+interpretation by KADM5.  Note that an application that calls
+kadm5_modify_principal with the KADM5_TL_DATA mask bit set is
+responsible for providing the {\it complete} tl_data list, which it
+necessarily must obtain from kadm5_get_principal.  It is {\it never}
+possible for an application to construct a complete tl_data list from
+scratch.
 
 \item[key_data] An array of the principal's keys.  The keys contained
 in this array are encrypted in the Kerberos master key.  See section
@@ -391,7 +398,8 @@ typedef struct _kadm5_config_params {
 %
 The following list describes each of the fields of the structure,
 along with the profile relation it overrides, its mask value, its
-default value, and whether it is valid on the client, server, or both.
+default value, and whether it is valid on the client, server, or both,
+or neither.
 \begin{description}
 \item[mask] No variable.  No mask value.  A bitfield specifying which
 fields of the structure contain valid information.  A caller sets this
@@ -429,31 +437,13 @@ kadmind_port field, overriding any value of the kadmind_port variable.
 database name to use; the Kerberos database stores principal
 information.  The default is DEFAULT_KDB_FILE.
 
-\item[admin_dbname] Variable: admin_database_name.  ADBNAME.  Server.
-The administration database name to use; the administration database
-stores policy information.  If DBNAME is specified in the input
-parameters and ADBNAME is not, the admin_database_name variable is
-overridden and the field is set to the value of dbname followed by
-``.kadm5''.  The default, if DBNAME is not set and the variable is not
-defined, is also the value of dbname followed by ``.kadm5'', if dbname
-is set.  NOTE: The ADBNAME mask value is allowed to be set by callers
-{\it only} for testing purposes; it should {\it never} be set by
-normal clients, which instead should allow it to be derived from the
-database name.
+\item[admin_dbname] Variable: admin_database_name.  ADBNAME.
+Neither.  If the dbname field is set, this field is set to the value
+of dbname followed by ``.kadm5''.
 
 \item[admin_lockfile] Variable: admin_database_lockfile.
-ADB_LOCKFILE.  Server.  The administration database lock file name,
-used to lock the administration database.  If ADBNAME or DBNAME is
-specified in the input parameters and ADB_LOCKFILE is not, the
-admin_database_lockfile variable is overridden and the field is set to
-the value of admin_dbname followed by ``.lock'' (this depends on
-admin_dbname already being set based on DBNAME as described above).
-The default, if neither DBNAME nor ADBNAME is set in the input
-parameters and the variable is not defined, is admin_dbname followed
-by ``.lock'', if admin_dbname is set.  NOTE: The ADBNAME mask value is
-allowed to be set by callers {\it only} for testing purposes; it
-should {\it never} be set by normal clients, which instead should
-allow it to be derived from the database name.
+ADB_LOCKFILE.  Neither.  If the admin_dbname field is set, this field
+is set to the value of admin_dbname followed by ``.lock''.
 
 \item[acl_file] Variable: acl_file.  ACL_FILE.  Server.  The admin
 server's ACL file.  The default is DEFAULT_KADM5_ACL_FILE.
@@ -484,10 +474,14 @@ work with a NULL value.
 encryption type of the master principal.  The default is
 DEFAULT_KDC_ENCTYPE.
 
-\item[max_life, max_rlife, expiration, flags] Variables: max_life,
-max_renewable_life, default_principal_expiration,
-default_principal_flags.  MAX_LIFE, MAX_RLIFE, EXPIRATION, FLAGS.
-Server.  Default values for new principals.  All default to 0.
+\item[max_life] Variable: max_life.  MAX_LIFE.  Maximum lifetime for
+all tickets issued to the principal.  The default is 28800, which is 8
+hours.
+
+\item[max_rlife, expiration, flags] Variables: max_renewable_life,
+default_principal_expiration, default_principal_flags.  MAX_LIFE,
+MAX_RLIFE, EXPIRATION, FLAGS.  Server.  Default values for new
+principals.  All default to 0.
 
 \item[keysalts, num_keysalts] Variable: supported_enctypes.  ENCTYPES.
 Server.  The list of supported encryption type/salt type tuples; both
@@ -767,6 +761,10 @@ remote KADM5 client
 local KADM5 client.
 \item[KADM5_AUTH_LIST] Operation requires ``list'' privilege
 \item[KADM5_AUTH_CHANGEPW] Operation requires ``change-password'' privilege
+\item[KADM5_BAD_TL_TYPE] Programmer error!  Illegal tagged data list
+element type
+\item[KADM5_MISSING_CONF_PARAMS] Required parameters in kdc.conf missing
+\item[KADM5_BAD_SERVER_NAME] Bad krb5 admin server hostname
 \end{description}
 
 \section{Authentication and Authorization}
@@ -785,8 +783,15 @@ service principal, but the sets of operations that can be performed by
 a request authenticated to each service are different.  In particular,
 only the functions chpass_principal, randkey_principal, get_principal,
 and get_policy can be performed by a request authenticated to the
-kadmin/changepw service.  The function semantics descriptions below
-give the precise details.
+kadmin/changepw service, and they can only be performed when the
+target principal of the operation is the same as the authenticated
+client principal; the function semantics descriptions below give the
+precise details.  This means that administrative operations can only
+be performed when authenticated to the kadmin/admin service.  The
+reason for this distinction is that tickets for kadmin/changepw can be
+acquired with an expired password, and the KADM system does not want
+to allow an administrator with an expired password to perform
+administrative operations on arbitrary principals.
 
 Each Admin API operation authenticated to the kadmin/admin service
 requires a specific authorization to run.  This version uses a simple
@@ -1167,16 +1172,18 @@ count by one.
 
 \item Set the pw_expiration field.
 \begin{enumerate}
-\item If the POLICY bit is not set, then
-\begin{enumerate}
-\item if the PW_EXPIRATION bit is set, set pw_expiration to the given
-value, else
-\item set pw_expiration to never.
+\item If the POLICY bit is set in mask, then if pw_max_life is non-zero,
+set pw_expiration to now + pw_maxlife, otherwise set pw_max_life to
+never.
+\item If the PW_EXPIRATION bit is set in mask, set pw_expiration to
+the requested value, overriding the value set above.
 \end{enumerate}
-\item Otherwise, if the PW_EXPIRATION bit is set, set pw_expiration to
-the sooner of the given value and now + pw_max_life.
-\item Otherwise, set pw_expiration to now + pw_max_life.
-\end{enumerate}
+NOTE: This is a change from the original semantics, in which policy
+expiration was enforced even on administrators.  The old semantics are
+not preserved, even for version 1 callers, because this is a
+server-specific policy decision; besides, the new semantics are less
+restrictive, so all previous callers should continue to function
+properly.
 
 \item Set mod_date to now and set mod_name to caller.
 \item Set last_pwd_change to now.
@@ -1253,20 +1260,41 @@ policy.
 aux_attributes is set, decrement policy count on old policy.
 \end{enumerate}
 
-\item Set pw_expiration according to the new policy.
+\item Set pw_expiration appropriately.  pw_expiration can change if:
+the POLICY bit is set in mask, so the principal is changing to a
+policy (either from another policy or no policy); the POLICY_CLR bit
+is set in mask, so the principal is changing to no policy; or
+PW_EXPIRATION is set.
 \begin{enumerate}
-\item If the POLICY bit is not set in aux_attributes, then
-\begin{enumerate}
-\item if the PW_EXPIRATION bit is set, set pw_expiration to the given
-value, else
-\item set pw_expiration to never.
-\end{enumerate}
-\item Otherwise, if the PW_EXPIRATION bit is set, set pw_expiration to
-the sooner of the given value and last_pwd_change + pw_max_life.
-\item Otherwise, set pw_expiration to last_pwd_change + pw_max_life.
+\item If the POLICY bit is set in mask, set pw_expiration to
+last_pwd_change + pw_max_life if pw_max_life is non-zero, otherwise
+set pw_expiration to never.
+\item If the POLICY_CLR biti s set in mask, set pw_expiration to
+never.
+\item If PW_EXPIRATION is set, set pw_expiration to the requested
+value, overriding the value from the previous two cases.  NOTE: This
+is a change from the original semantics, in which policy expiration
+was enforced even on administrators.  The old semantics are not
+preserved, even for version 1 callers, because this is a
+server-specific policy decision; besides, the new semantics are less
+restrictive, so all previous callers should continue to function
+properly.
 \end{enumerate}
 
-\item Update the fields specified in the mask.
+% Here is the previous, and confusing, text of pw_expiration semantics:
+%\begin{enumerate}
+%\item If the POLICY bit is not set in aux_attributes, then
+%\begin{enumerate}
+%\item if the PW_EXPIRATION bit is set, set pw_expiration to the given
+%value, else
+%\item set pw_expiration to never.
+%\end{enumerate}
+%\item Otherwise, if the PW_EXPIRATION bit is set, set pw_expiration to
+%the sooner of the given value and last_pwd_change + pw_max_life.
+%\item Otherwise, set pw_expiration to last_pwd_change + pw_max_life.
+%\end{enumerate}
+
+\item Update the remaining fields specified in the mask.
 \item Update mod_name field to caller and mod_date to now.
 \end{enumerate}
 
@@ -1278,6 +1306,8 @@ RETURN CODES:
 operation.
 \item[KADM5_UNK_POLICY] The POLICY bit is set but the new
 policy does not exist.
+\item[KADM5_BAD_TL_TYPE] The KADM5_TL_DATA bit is set in mask, and the
+given tl_data list contains an element whose type is less than 256.
 \end{description}
 
 \subsection{kadm5_rename_principal}
@@ -1606,10 +1636,11 @@ specified in the mask; memory for the structure is not allocated.
 Typically, a caller will specify the mask KADM5_PRINCIPAL_NORMAL_MASK,
 which includes all the fields {\it except} key_data and tl_data to
 improve time and memory efficiency.  A caller that wants key_data and
-tl_data can bitwise-OR those masks onto NORMAL_MASK.
+tl_data can bitwise-OR those masks onto NORMAL_MASK.  Note that even
+if KADM5_TL_DATA is specified, this function will not return internal
+tl_data elements whose type is less than 256.
 
 The caller must free the returned entry with kadm5_free_principal_ent.
-
 
 The function behaves differently for local and remote clients.  For
 remote clients, the KEY_DATA mask is illegal and results in a

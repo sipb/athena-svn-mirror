@@ -1,7 +1,7 @@
 /*
  * Copyright 1993 OpenVision Technologies, Inc., All Rights Reserved.
  *
- * $Id: client.c,v 1.1.1.2 1997-01-21 09:28:26 ghudson Exp $
+ * $Id: client.c,v 1.1.1.3 1999-02-09 20:57:01 danw Exp $
  * $Source: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/rpc/unit-test/client.c,v $
  * 
  * $Log: not supported by cvs2svn $
@@ -79,7 +79,7 @@
  */
 
 #if !defined(lint) && !defined(__CODECENTER__)
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/rpc/unit-test/client.c,v 1.1.1.2 1997-01-21 09:28:26 ghudson Exp $";
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/rpc/unit-test/client.c,v 1.1.1.3 1999-02-09 20:57:01 danw Exp $";
 #endif
 
 #include <stdio.h>

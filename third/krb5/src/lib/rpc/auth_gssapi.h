@@ -3,7 +3,7 @@
  * 
  * Copyright 1993 OpenVision Technologies, Inc., All Rights Reserved.
  *
- * $Id: auth_gssapi.h,v 1.1.1.2 1997-01-21 09:27:55 ghudson Exp $
+ * $Id: auth_gssapi.h,v 1.1.1.3 1999-02-09 20:56:45 danw Exp $
  * $Source: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/rpc/auth_gssapi.h,v $
  * 
  * $Log: not supported by cvs2svn $

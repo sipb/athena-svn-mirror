@@ -1,7 +1,7 @@
 /*
  * Copyright 1993 OpenVision Technologies, Inc., All Rights Reserved
  *
- * $Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/srv/adb_free.c,v 1.1.1.2 1997-01-21 09:26:04 ghudson Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/srv/adb_free.c,v 1.1.1.3 1999-02-09 21:00:19 danw Exp $
  * 
  * $Log: not supported by cvs2svn $
  * Revision 1.2  1996/10/18 19:45:49  bjaspan
@@ -48,7 +48,7 @@
  */
 
 #if !defined(lint) && !defined(__CODECENTER__)
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/srv/adb_free.c,v 1.1.1.2 1997-01-21 09:26:04 ghudson Exp $";
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/srv/adb_free.c,v 1.1.1.3 1999-02-09 21:00:19 danw Exp $";
 #endif
 
 #include	"adb.h"

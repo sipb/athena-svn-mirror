@@ -1,7 +1,7 @@
 /*
  * Copyright 1993 OpenVision Technologies, Inc., All Rights Reserved.
  *
- * $Id: kadm_rpc_svc.c,v 1.1.1.2 1997-01-21 09:22:57 ghudson Exp $
+ * $Id: kadm_rpc_svc.c,v 1.1.1.3 1999-02-09 21:04:40 danw Exp $
  * $Source: /afs/dev.mit.edu/source/repository/third/krb5/src/kadmin/server/kadm_rpc_svc.c,v $
  * 
  * $Log: not supported by cvs2svn $
@@ -68,7 +68,7 @@
  */
 
 #if !defined(lint) && !defined(__CODECENTER__)
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/third/krb5/src/kadmin/server/kadm_rpc_svc.c,v 1.1.1.2 1997-01-21 09:22:57 ghudson Exp $";
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/third/krb5/src/kadmin/server/kadm_rpc_svc.c,v 1.1.1.3 1999-02-09 21:04:40 danw Exp $";
 #endif
 
 #include <stdio.h>

@@ -1244,7 +1244,7 @@ Using them is optional.
 
      For example, this line in `configure.in':
 
-          AC_REVISION($Revision: 1.1.1.1 $)dnl
+          AC_REVISION($Revision: 1.1.1.2 $)dnl
 
      produces this in `configure':
 
@@ -4991,11 +4991,11 @@ how this is done.
 * build_cpu:                            System Type Variables.
 * build_os:                             System Type Variables.
 * build_vendor:                         System Type Variables.
+* CC:                                   Particular Programs.
+* CC:                                   Particular Programs.
 * CC:                                   UNIX Variants.
-* CC:                                   Particular Programs.
-* CC:                                   Particular Programs.
-* CFLAGS:                               Preset Output Variables.
 * CFLAGS:                               Particular Programs.
+* CFLAGS:                               Preset Output Variables.
 * configure_input:                      Preset Output Variables.
 * CPP:                                  Particular Programs.
 * CPPFLAGS:                             Preset Output Variables.
@@ -5024,8 +5024,8 @@ how this is done.
 * libdir:                               Preset Output Variables.
 * libexecdir:                           Preset Output Variables.
 * LIBOBJS:                              Particular Functions.
-* LIBOBJS:                              Particular Functions.
 * LIBOBJS:                              Generic Functions.
+* LIBOBJS:                              Particular Functions.
 * LIBOBJS:                              Structures.
 * LIBS:                                 Preset Output Variables.
 * LIBS:                                 UNIX Variants.

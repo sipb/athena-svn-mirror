@@ -23,7 +23,7 @@
 #include "gssapiP_krb5.h"
 
 /*
- * $Id: wrap_size_limit.c,v 1.1.1.1 1996-09-12 04:44:13 ghudson Exp $
+ * $Id: wrap_size_limit.c,v 1.1.1.2 1999-02-09 20:59:33 danw Exp $
  */
 
 /* V2 interface */
@@ -68,8 +68,14 @@ krb5_gss_wrap_size_limit(minor_status, context_handle, conf_req_flag,
     ohlen = g_token_size((gss_OID) ctx->mech_used,
 			 (unsigned int) cfsize + ctx->cksum_size + 14);
 
-    /* Cannot have trailer length that will cause us to pad over our length */
-    *max_input_size = (req_output_size - ohlen) & (~7);
+    if (ohlen < req_output_size)
+	    /*
+	     * Cannot have trailer length that will cause us to pad over
+	     * our length
+	     */
+	    *max_input_size = (req_output_size - ohlen) & (~7);
+    else
+	    *max_input_size = 0;
     *minor_status = 0;
     return(GSS_S_COMPLETE);
 }

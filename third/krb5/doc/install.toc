@@ -1,0 +1,73 @@
+\chapentry {Introduction}{1}{1}
+\secentry {What is Kerberos and How Does it Work?}{1}{1}{1}
+\secentry {Why Should I use Kerberos?}{1}{2}{1}
+\secentry {Please Read the Documentation}{1}{3}{2}
+\secentry {Overview of This Guide}{1}{4}{2}
+\chapentry {Realm Configuration Decisions}{2}{3}
+\secentry {Kerberos Realms}{2}{1}{3}
+\secentry {Mapping Hostnames onto Kerberos Realms}{2}{2}{3}
+\secentry {Ports for the KDC and Admin Services}{2}{3}{4}
+\secentry {Slave KDCs}{2}{4}{4}
+\secentry {Hostnames for the Master and Slave KDCs}{2}{5}{4}
+\secentry {Database Propagation}{2}{6}{5}
+\chapentry {Building Kerberos V5}{3}{7}
+\secentry {Build Requirements}{3}{1}{7}
+\secentry {Unpacking the Sources}{3}{2}{7}
+\secentry {Doing the Build}{3}{3}{7}
+\subsecentry {Building Within a Single Tree}{3}{3}{1}{8}
+\subsecentry {Building with Separate Build Directories}{3}{3}{2}{8}
+\subsecentry {Building Using \samp {lndir}}{3}{3}{3}{8}
+\secentry {Testing the Build}{3}{4}{9}
+\subsecentry {The DejaGnu Tests}{3}{4}{1}{9}
+\subsecentry {The KADM5 Tests}{3}{4}{2}{9}
+\secentry {Options to Configure}{3}{5}{10}
+\secentry {\file {osconf.h}}{3}{6}{12}
+\secentry {Shared Library Support}{3}{7}{13}
+\secentry {Operating System Incompatibilities}{3}{8}{13}
+\subsecentry {AIX}{3}{8}{1}{13}
+\subsecentry {Alpha OSF/1 V1.3}{3}{8}{2}{13}
+\subsecentry {Alpha OSF/1 V2.0{\tt\char43}{\tt\char43}}{3}{8}{3}{13}
+\subsecentry {BSDI}{3}{8}{4}{14}
+\subsecentry {HPUX}{3}{8}{5}{14}
+\subsecentry {Solaris versions 2.0 through 2.3}{3}{8}{6}{14}
+\subsecentry {Solaris 2.X}{3}{8}{7}{14}
+\subsecentry {SGI Irix 5.X}{3}{8}{8}{15}
+\subsecentry {Ultrix 4.2/3}{3}{8}{9}{15}
+\secentry {Using \samp {Autoconf}}{3}{9}{15}
+\chapentry {Installing Kerberos V5}{4}{17}
+\secentry {Installing KDCs}{4}{1}{17}
+\subsecentry {Install the Master KDC}{4}{1}{1}{17}
+\subsubsecentry {Edit the Configuration Files} {4}{1}{1}{1} {17}
+\subsubsecentry {Create the Database} {4}{1}{1}{2} {18}
+\subsubsecentry {Add Administrators to the Acl File} {4}{1}{1}{3} {19}
+\subsubsecentry {Add Administrators to the Kerberos Database} {4}{1}{1}{4} {20}
+\subsubsecentry {Create a kadmind Keytab} {4}{1}{1}{5} {20}
+\subsubsecentry {Start the Kerberos Daemons on the Master KDC} {4}{1}{1}{6} {21}
+\subsecentry {Install the Slave KDCs}{4}{1}{2}{21}
+\subsubsecentry {Create Host Keys for the Slave KDCs} {4}{1}{2}{1} {21}
+\subsubsecentry {Extract Host Keytabs for the KDCs} {4}{1}{2}{2} {22}
+\subsubsecentry {Set Up the Slave KDCs for Database Propagation} {4}{1}{2}{3} {22}
+\subsecentry {Back on the Master KDC}{4}{1}{3}{23}
+\subsubsecentry {Propagate the Database to Each Slave KDC} {4}{1}{3}{1} {23}
+\subsecentry {Finish Installing the Slave KDCs}{4}{1}{4}{24}
+\subsubsecentry {Create Stash Files on the Slave KDCs} {4}{1}{4}{1} {24}
+\subsubsecentry {Start the krb5kdc Daemon on Each KDC} {4}{1}{4}{2} {24}
+\subsecentry {Add Kerberos Principals to the Database}{4}{1}{5}{25}
+\subsecentry {Limit Access to the KDCs}{4}{1}{6}{25}
+\subsecentry {Switching Master and Slave KDCs}{4}{1}{7}{26}
+\secentry {Installing and Configuring UNIX Client Machines}{4}{2}{26}
+\subsecentry {Client Programs}{4}{2}{1}{26}
+\subsecentry {Client Machine Configuration Files}{4}{2}{2}{27}
+\secentry {UNIX Application Servers}{4}{3}{27}
+\subsecentry {Server Programs}{4}{3}{1}{28}
+\subsecentry {Server Configuration Files}{4}{3}{2}{28}
+\subsecentry {The Keytab File}{4}{3}{3}{29}
+\subsecentry {Some Advice about Secure Hosts}{4}{3}{4}{29}
+\chapentry {Upgrading Existing Kerberos V5 Installations}{5}{31}
+\secentry {Upgrading existing Master and Slave KDCs to the current release}{5}{1}{31}
+\secentry {Upgrading the application servers}{5}{2}{32}
+\chapentry {Bug Reports for Kerberos V5}{6}{33}
+\chapentry {Files}{Appendix{} \char65}{37}
+\secentry {krb5.conf}{\char65}{1}{37}
+\secentry {kdc.conf}{\char65}{2}{38}
+\subsecentry {Encryption Types and Salt Types}{\char65}{2}{1}{38}

@@ -1,10 +1,43 @@
 /*
  * Copyright 1993 OpenVision Technologies, Inc., All Rights Reserved.
  *
- * $Id: svc_auth_gssapi.c,v 1.1.1.2 1997-01-21 09:28:16 ghudson Exp $
+ * $Id: svc_auth_gssapi.c,v 1.1.1.3 1999-02-09 20:56:55 danw Exp $
  * $Source: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/rpc/svc_auth_gssapi.c,v $
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.41.2.1  1997/10/31 01:03:47  tlyu
+ * 	* svc_auth_gssapi.c (destroy_client): Fix to not lose entries in
+ *         the chain linked list.
+ * [pullup from trunk]
+ *
+ * Revision 1.43  1997/10/21 18:33:55  epeisach
+ * Fix to not lose entries in the chain linked client list.
+ *
+ * A pointer was not being updated resulting in the situation where
+ * random clients would sudenly fail with a misc. rpc. error as the client
+ * handle could not be found. The scenario required three active clients
+ * to trigger the problem.
+ *
+ * Revision 1.42  1996/12/04 17:47:18  bjaspan
+ * 	* Various changes to allow channel bindings to work with both UDP
+ *  	and TCP cleanly [krb5-libs/180]:
+ *
+ * 	* auth_gssapi.c: remove the special-case exception to channel
+ *  	bindings failure added in the previous revision, since we now
+ *  	solve the problem by making channel bindings not fail
+ *
+ * 	* clnt_udp.c: use a connected socket so that the client can
+ *  	determine its own source address with getsockname
+ *
+ * 	* svc.h: add xp_laddr and xp_laddrlen fields to SVCXPRT structure
+ *
+ * 	* svc_tcp.c: set xp_laddr and xp_laddrlen when a connection is
+ *  	established
+ *
+ * 	* svc_udp.c (svcudp_recv): use recvmsg with MSG_PEEK followed by
+ *  	recvfrom in order to determine both source and dest address on
+ *  	unconnected UDP socket, set xp_laddr and xp_laddrlen
+ *
  * Revision 1.41  1996/10/16 20:16:10  bjaspan
  * * svc_auth_gssapi.c (_svcauth_gssapi): accept add call_arg version 4
  *
@@ -183,7 +216,7 @@
  */
 
 #if !defined(lint) && !defined(__CODECENTER__)
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/rpc/svc_auth_gssapi.c,v 1.1.1.2 1997-01-21 09:28:16 ghudson Exp $";
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/rpc/svc_auth_gssapi.c,v 1.1.1.3 1999-02-09 20:56:55 danw Exp $";
 #endif
 
 /*
@@ -998,8 +1031,10 @@ static void destroy_client(client_data)
 		    c2->next = c->next;
 		    free(c);
 		    goto done;
-	       } else
+	       } else {
+		    c2 = c;
 		    c = c->next;
+	       }
 	  }
 	  PRINTF(("destroy_client: client_handle delete failed\n"));
 	  abort();
