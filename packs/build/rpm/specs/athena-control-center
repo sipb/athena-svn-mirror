@@ -3,7 +3,7 @@ Summary: The GNOME Control Center, for Athena
 Copyright: GPL
 Group: User Interface/Desktops
 
-Requires: athena-gnome-libs athena-libglade athena-gdk-pixbuf libxml esound
+Requires: athena-gnome-libs athena-libglade athena-gdk-pixbuf athena-dustbuster athena-esound libxml
 
 %description
 GNOME (the GNU Network Object Model Environment) is an attractive and
