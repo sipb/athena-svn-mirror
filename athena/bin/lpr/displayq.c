@@ -219,10 +219,16 @@ displayq(format)
 			printf("Warning: %s is down: ", printer);
 			fd = open(ST, O_RDONLY);
 			if (fd >= 0) {
+			        char tmp[1024];
 				(void) flock(fd, LOCK_SH);
-				while ((i = read(fd, line, sizeof(line))) > 0)
+				while ((i = read(fd, line, sizeof(line))) > 0){
+				     strcpy(tmp, printer);
+                                     if (strncmp(line, strcat(tmp," is ready and printing"), 24) != 0)
 					(void) fwrite(line, 1, i, stdout);
-				(void) close(fd);	/* unlocks as well */
+				     else
+					putchar('\n');
+				 }
+			       	(void) close(fd);	/* unlocks as well */
 			} else
 				putchar('\n');
 		}
