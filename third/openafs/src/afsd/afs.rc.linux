@@ -280,6 +280,7 @@ case "$1" in
 		else
 			/bin/athena/fs setcrypt off
 		fi
+		/bin/athena/fs sysname `/bin/athena/machtype -S`
 	fi
     fi
 	;;
