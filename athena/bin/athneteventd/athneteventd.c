@@ -13,7 +13,7 @@
  * without express or implied warranty.
  */
 
-static const char rcsid[] = "$Id: athneteventd.c,v 1.2 2002-11-06 20:01:28 ghudson Exp $";
+static const char rcsid[] = "$Id: athneteventd.c,v 1.2.2.1 2002-12-09 23:31:13 ghudson Exp $";
 
 #include <sys/types.h>
 #include <sys/stat.h>
