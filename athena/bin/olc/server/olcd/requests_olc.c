@@ -17,11 +17,11 @@
  *      Copyright (c) 1988 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v $
- *      $Author: vanharen $
+ *      $Author: raeburn $
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v 1.4 1989-12-22 16:27:47 vanharen Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v 1.5 1990-01-03 23:45:21 raeburn Exp $";
 #endif
 
 
@@ -183,6 +183,7 @@ olc_on(fd, request, auth)
  *               id.   
  */
 
+ERRCODE
 olc_create_instance(fd,request,auth)
      int fd;
      REQUEST *request;
@@ -283,6 +284,7 @@ olc_get_connected_info(fd,request,auth)
   return(SUCCESS);
 }
 
+ERRCODE
 olc_verify_instance(fd,request,auth)
      int fd;
      REQUEST *request;
@@ -343,7 +345,7 @@ olc_verify_instance(fd,request,auth)
 }
 
 
-
+ERRCODE
 olc_default_instance(fd,request,auth)
      int fd;
      REQUEST *request;
@@ -369,7 +371,7 @@ olc_default_instance(fd,request,auth)
 }
 
 
-
+ERRCODE
 olc_who(fd,request,auth)
      int fd;
      REQUEST *request;
@@ -525,7 +527,7 @@ olc_done(fd, request, auth)
 	  sprintf(msgbuf,"%s %s is done with question.", cap(target->title),
 		  target->user->username);
 	  log_daemon(target,msgbuf);
-	  write_message_to_user(target->connected,msgbuf);
+	  write_message_to_user(target->connected,msgbuf, /*???*/0);
           needs_backup = TRUE;
 	  return(send_response(fd, OK));
 	}
@@ -670,7 +672,7 @@ olc_cancel(fd, request, auth)
 	  log_daemon(target,msgbuf);
 	  sprintf(msgbuf,"%s %s has cancelled her OLC question.\n",
 		  cap(target->title),target->user->username);
-	  write_message_to_user(target->connected,msgbuf);
+	  write_message_to_user(target->connected,msgbuf, /*???*/0);
           needs_backup = TRUE;
 	  return(send_response(fd, SUCCESS));
 	}
@@ -957,7 +959,7 @@ olc_forward(fd, request,auth)
       sprintf(target->question->title,"%s:%s",target->user->username,
 	      target->question->topic);
       sprintf(target->question->topic, "oga");
-      terminate_log_unanswered(target->question);
+      terminate_log_unanswered(target/*->question*/);
       free((char *) target->question);
       target->question = (QUESTION *) NULL;
       deactivate(target);
@@ -1427,7 +1429,7 @@ olc_describe(fd, request, auth)
 
 ERRCODE
 olc_replay(fd, request, auth)
-     int fd;
+     int fd, auth;
      REQUEST *request;
 {
   KNUCKLE *requester;	       /* Current user  making request */
@@ -2052,7 +2054,7 @@ olc_mail(fd, request,auth)
  * Notes:
  */
 
-RESPONSE
+/*RESPONSE*/ ERRCODE
 olc_startup(fd, request, auth)
      int fd;			/* File descriptor for socket. */
      REQUEST *request;	        /* Request structure from olc. */

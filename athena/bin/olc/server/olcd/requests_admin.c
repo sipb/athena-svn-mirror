@@ -17,11 +17,11 @@
  *      Copyright (c) 1988 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_admin.c,v $
- *      $Author: tjcoppet $
+ *      $Author: raeburn $
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_admin.c,v 1.1 1989-11-17 13:59:02 tjcoppet Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_admin.c,v 1.2 1990-01-03 23:46:59 raeburn Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -226,6 +226,7 @@ olc_list_acl(fd, request, auth)
    return(send_response(fd,UNKNOWN_ACL));
 }
 
+ERRCODE
 olc_get_accesses(fd,request,auth)  
      int fd;
      REQUEST *request;
@@ -281,6 +282,7 @@ olc_get_accesses(fd,request,auth)
 }
 
 
+ERRCODE
 olc_get_dbinfo(fd,request,auth)  
      int fd;
      REQUEST *request;
@@ -325,6 +327,7 @@ olc_get_dbinfo(fd,request,auth)
 }
 
 
+ERRCODE
 olc_change_dbinfo(fd,request,auth)
      int fd;
      REQUEST *request;
