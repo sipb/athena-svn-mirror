@@ -35,7 +35,7 @@ Type    Layout  Filename
 #
 # Type 4 Keyboards
 #
-4	0	US4.kt			# Sun US Type 4 keyboard
+4	0	Athena4.kt		# Sun US Type 4 keyboard
 4	1	US4.kt			# Also Sun US Type 4 keyboard
 4	2	FranceBelg4.kt
 4	3	Canada4.kt
@@ -64,7 +64,7 @@ Type    Layout  Filename
 # Type 5 keyboards identify themselves as type 4 for backward compatibility
 #
 4	33	US5.kt
-4	34	US_UNIX5.kt
+4	34	Athena5.kt
 4	35	France5.kt
 4	36	Denmark5.kt
 4	37	Germany5.kt
