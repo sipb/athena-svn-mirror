@@ -18,7 +18,7 @@
  * workstation as indicated by the flags.
  */
 
-static const char rcsid[] = "$Id: rpmupdate.c,v 1.28 2004-03-23 21:19:54 amb Exp $";
+static const char rcsid[] = "$Id: rpmupdate.c,v 1.29 2005-03-31 22:15:12 ghudson Exp $";
 
 #define _GNU_SOURCE
 #include <sys/types.h>
@@ -124,7 +124,7 @@ int main(int argc, char **argv)
 {
   struct package *pkgtab[HASHSIZE];
   int i, c, depcheck = 0, public = 0, dryrun = 0, hashmarks = 0, copy = 0;
-  const char *oldlistname, *newlistname, *upgradelistname;
+  const char *oldlistname, *newlistname, *upgradelistname = NULL;
   rpmts ts;
 
   /* Initialize rpmlib. */
