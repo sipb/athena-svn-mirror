@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: update_ws.sh,v 1.1.2.6 2000-03-01 19:22:14 ghudson Exp $
+# $Id: update_ws.sh,v 1.1.2.7 2000-04-14 19:24:17 ghudson Exp $
 
 # Copyright 2000 by the Massachusetts Institute of Technology.
 #
@@ -143,7 +143,7 @@ fi
 
 # Define sed expressions to strip the path+extension and the version
 # part of an RPM name.
-strippath='s,^.*/\([^/]*\)\.[^\.]*\.rpm$,\1,'
+strippath='s,^.*/\([^/]*\)\.[^\.]*\.rpm.*$,\1,'
 stripvers='s/^\(.*\)-[^-]*-[^-]*$/\1/'
 
 # Figure out what we need to delete.  On private machines, delete
