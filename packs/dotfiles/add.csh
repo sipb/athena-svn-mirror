@@ -1,10 +1,13 @@
 #!/dev/null
 #
-# $Id: add.csh,v 1.15 1994-11-30 23:40:37 cfields Exp $
+# $Id: add.csh,v 1.16 1994-12-01 23:24:19 cfields Exp $
 #
 # add <addargs> <-a attachargs> <lockername> <lockername> ...
 #
 #	-v	verbose
+#       -v0     verbose w/o debugging
+#       -d      debugging
+#       -n      specify new attach behavior
 #	-f	add lockers to the front of the path
 #	-p	print path environment filtered
 #	-w	give warning for adds with no bindirs
@@ -20,16 +23,21 @@
 # MANPATH search too
 
 set add_vars=(add_vars add_usage add_verbose add_front add_warn add_env \
-              add_opts add_attach add_dirs add_bin add_bindir \
-              add_man add_mandir add_print add_path add_olddebug add_arg add_i)
+              add_opts add_attach add_dirs add_bin add_bindir add_flags\
+              add_man add_mandir add_print add_path add_new add_oldverbose \
+              add_debug add_arg add_i)
 
-set add_usage = "Usage: add [-v] [-v0] [-f] [-p] [-w] [-e] [-d] [-a attachflags] [lockername] ..."
+set add_usage = "Usage: add [-v] [-v0] [-d] [-n] [-f] [-p] [-w] [-e] [-a attachflags] [lockername] ..."
 
 #
 # Parse options
 #
 
 if ( $#add_opts == 0 ) set add_print
+
+if ( $?add_flags) then
+  set add_opts = ( $add_flags $add_opts )
+endif
 
 while ( $#add_opts > 0 )
   set add_arg = $add_opts[1]
@@ -38,7 +46,7 @@ while ( $#add_opts > 0 )
 
     case -v:
       set add_verbose
-      set add_olddebug
+      set add_oldverbose
       breaksw
 
     case -v0:
@@ -46,7 +54,11 @@ while ( $#add_opts > 0 )
       breaksw
 
     case -d:
-      set add_olddebug
+      set add_debug
+      breaksw
+
+    case -n:
+      set add_new
       breaksw
 
     case -f:
@@ -92,6 +104,8 @@ while ( $#add_opts > 0 )
   shift add_opts
 
 end
+
+if ( $?add_oldverbose && ! $?add_new ) set add_debug
 
 #
 # Try to make our environment sane.
@@ -195,14 +209,14 @@ foreach add_i ($add_dirs)
       case 00:
         if ( $?add_bin ) then
           if ( "$PATH" !~ *"$add_bin"* ) then
-            if ($?add_olddebug) echo $add_bin added to end of \$PATH
+            if ($?add_debug) echo $add_bin added to end of \$PATH
             set add_path = ${add_path}:$add_bin
           endif
         endif
 
         if ( $?add_man ) then
           if ( "$MANPATH" !~ *"$add_man"* ) then
-            if ($?add_olddebug) echo $add_man added to end of \$MANPATH
+            if ($?add_debug) echo $add_man added to end of \$MANPATH
             setenv MANPATH ${MANPATH}:$add_man
           endif
         endif
@@ -211,14 +225,14 @@ foreach add_i ($add_dirs)
       case 01:
         if ( $?add_bin ) then
           if ( "$PATH" !~ *"$add_bin"* ) then
-            if ($?add_olddebug) echo $add_bin added to front of \$PATH
+            if ($?add_debug) echo $add_bin added to front of \$PATH
             set add_path = ${add_bin}:$add_path
           endif
         endif
 
         if ( $?add_man ) then
           if ( "$MANPATH" !~ *"$add_man"* ) then
-            if ($?add_olddebug) echo $add_man added to front of \$MANPATH
+            if ($?add_debug) echo $add_man added to front of \$MANPATH
             setenv MANPATH ${add_man}:$MANPATH
           endif
         endif
@@ -227,14 +241,14 @@ foreach add_i ($add_dirs)
       case 10:
         if ( $?add_bin ) then
           if ( "$athena_path" !~ *"$add_bin"* ) then
-            if ($?add_olddebug) echo $add_bin added to end of \$athena_path
+            if ($?add_debug) echo $add_bin added to end of \$athena_path
             set athena_path = ($athena_path $add_bin)
           endif
         endif
 
         if ( $?add_man ) then
           if ( "$athena_manpath" !~ *"$add_man"* ) then
-            if ($?add_olddebug) echo $add_man added to end of \$athena_manpath
+            if ($?add_debug) echo $add_man added to end of \$athena_manpath
             set athena_manpath = ${athena_manpath}:$add_man
           endif
         endif
@@ -243,14 +257,14 @@ foreach add_i ($add_dirs)
       case 11:
         if ( $?add_bin ) then
           if ( "$athena_path" !~ *"$add_bin"* ) then
-            if ($?add_olddebug) echo $add_bin added to front of \$athena_path
+            if ($?add_debug) echo $add_bin added to front of \$athena_path
             set athena_path = ($add_bin $athena_path)
           endif
         endif
 
         if ( $?add_man ) then
           if ( "$athena_manpath" !~ *"$add_man"* ) then
-            if ($?add_olddebug) echo $add_man added to front of \$athena_manpath
+            if ($?add_debug) echo $add_man added to front of \$athena_manpath
             set athena_manpath = ${add_man}:$athena_manpath
           endif
         endif
