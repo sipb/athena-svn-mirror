@@ -5,7 +5,7 @@
 /**/#
 /**/#	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/Imakefile,v $
 /**/#	$Author: jtkohl $
-/**/#	$Id: Imakefile,v 1.5 1989-11-16 10:22:01 jtkohl Exp $
+/**/#	$Id: Imakefile,v 1.6 1989-11-30 09:53:35 jtkohl Exp $
 /**/#
 
 SUBDIRS= Memory String Dictionary
@@ -76,6 +76,7 @@ depend:: ${DEPENDSRCS}
 install::
 	$(RM) $(DESTDIR)$(ACLDIR)/zwgc.desc
 	$(CP) zwgc.desc $(DESTDIR)$(ACLDIR)/zwgc.desc
+	$(CHMOD) 644 $(DESTDIR)$(ACLDIR)/zwgc.desc
 	$(RM) $(DESTDIR)$(ETCATHDIR)/zephyr.vars
 	$(CP) zephyr.vars $(DESTDIR)$(ETCATHDIR)/zephyr.vars
 	$(RM) $(DESTDIR)$(ACLDIR)/zwgc_resources
