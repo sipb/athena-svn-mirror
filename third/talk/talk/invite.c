@@ -63,15 +63,16 @@ static char rcsid[] = "$NetBSD: invite.c,v 1.3 1994/12/09 02:14:18 jtc Exp $";
  * These are used to delete the 
  * invitations.
  */
-int	local_id, remote_id;
-void	re_invite();
-jmp_buf invitebuf;
+int		local_id, remote_id;
+void		re_invite();
+sigjmp_buf	invitebuf;
 
 invite_remote()
 {
 	int nfd, read_mask, template, new_sockt;
 	struct itimerval itimer;
 	CTL_RESPONSE response;
+	struct sigaction action;
 
 	itimer.it_value.tv_sec = RING_WAIT;
 	itimer.it_value.tv_usec = 0;
@@ -91,8 +92,11 @@ invite_remote()
 	end_msgs();
 	setitimer(ITIMER_REAL, &itimer, (struct itimerval *)0);
 	message("Waiting for your party to respond");
-	signal(SIGALRM, re_invite);
-	(void) setjmp(invitebuf);
+	sigemptyset(&action.sa_mask);
+	action.sa_handler = re_invite;
+	action.sa_flags = 0;
+	sigaction(SIGALRM, &action, NULL);
+	(void) sigsetjmp(invitebuf, 1);
 	while ((new_sockt = accept(sockt, 0, 0)) < 0) {
 		if (errno == EINTR)
 			continue;
@@ -127,7 +131,7 @@ re_invite()
 	/* force a re-announce */
 	msg.id_num = htonl(remote_id + 1);
 	announce_invite();
-	longjmp(invitebuf, 1);
+	siglongjmp(invitebuf, 1);
 }
 
 static	char *answers[] = {
