@@ -18,6 +18,7 @@ char *c2s();
 char *append();
 char *scopy();
 void sfree();
+void yysetin();
 %}
 %union{
   char *s;
@@ -273,7 +274,7 @@ int readrules(rfile,src,dst)
 #ifdef YYDEBUG
   extern int yydebug;
   yydebug = (verbosef>3)? 1: 0;
-#endif YYDEBUG  
+#endif
 
   srcpath = src; dstpath = dst;
 
@@ -287,10 +288,11 @@ int readrules(rfile,src,dst)
   return status;
 }
 
-yyerror(s)
+int yyerror(s)
         char *s;
 {
         printf("%s: %s near line %d\n", yyinfilename, s, lineno);
+	return 0;
 }
 
 #include "lex.yy.c"

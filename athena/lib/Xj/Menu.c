@@ -1,5 +1,5 @@
 /*
- * $Id: Menu.c,v 1.2 1999-01-22 23:16:56 ghudson Exp $
+ * $Id: Menu.c,v 1.3 1999-08-13 00:20:59 danw Exp $
  *
  * Copyright 1990, 1991 by the Massachusetts Institute of Technology. 
  *
@@ -10,7 +10,7 @@
 
 #if  (!defined(lint))  &&  (!defined(SABER))
 static char *rcsid =
-"$Id: Menu.c,v 1.2 1999-01-22 23:16:56 ghudson Exp $";
+"$Id: Menu.c,v 1.3 1999-08-13 00:20:59 danw Exp $";
 #endif
 
 #include "mit-copyright.h"
@@ -629,7 +629,7 @@ static Boolean parseMenuEntry(me, string, info)
   if (0 == (end = strchr(ptr, ':')))
     {
       sprintf(errtext,
-	      "menu line -\n %.70s\n- %s%s",
+	      "menu line -\n %.70s\n- %s",
 	      beginning,
 	      "does not contain ':' terminated label; ignoring");
       XjWarning(errtext);

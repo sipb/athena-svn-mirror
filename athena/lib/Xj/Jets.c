@@ -1,5 +1,5 @@
 /*
- * $Id: Jets.c,v 1.3 1999-02-22 18:16:29 danw Exp $
+ * $Id: Jets.c,v 1.4 1999-08-13 00:20:58 danw Exp $
  *
  * Copyright 1990, 1991 by the Massachusetts Institute of Technology. 
  *
@@ -10,7 +10,7 @@
 
 #if  (!defined(lint))  &&  (!defined(SABER))
 static char *rcsid =
-"$Id: Jets.c,v 1.3 1999-02-22 18:16:29 danw Exp $";
+"$Id: Jets.c,v 1.4 1999-08-13 00:20:58 danw Exp $";
 #endif
 
 #include "mit-copyright.h"
@@ -238,6 +238,7 @@ char *XjRealloc(ptr, size)
   return(ptr);
 }
 
+void
 XjFree(ptr)
      char *ptr;
 {

@@ -52,11 +52,11 @@ static int parenlevel;
 <WhenTypes>{AO}+	    { getstring(); BEGIN 0; rtn(FILETYPES); }
 <WhenTypes>.		    { rtn(yytext[0]); /* error */ }
 <SetVar>{A}+	    	    { getstring(); BEGIN Rule; rtn(BOOLVAR); }
-<IfExp>{A}+	  	    { getstring(); BEGIN Rule; rtn(BOOLVAR); }
 <IfExp>"("		    { BEGIN IfPExp; parenlevel = 1; rtn('('); /*)*/ }
-<IfPExp>{A}+                { getstring(); rtn(BOOLVAR); }
+<IfExp>{A}+	  	    { getstring(); BEGIN Rule; rtn(BOOLVAR); }
 <IfPExp>"("		    { parenlevel++; rtn('('); /*)*/ }
 <IfPExp>")"		    { if(--parenlevel==0) BEGIN Rule; /*(*/ rtn(')'); }
+<IfPExp>{A}+                { getstring(); rtn(BOOLVAR); }
 {W}			    ;
 <Rule>map{W}		    { BEGIN MapGE;    rtn(MAP);	   }
 <Rule>copy{W}	    	    { BEGIN ActGE;    rtn(COPY);   }
@@ -92,7 +92,7 @@ static int parenlevel;
 .			    { yylval.c = yytext[0]; return yytext[0]; }
 \n			    { countlines(); BEGIN 0; }
 %%
-yysetin(i)
+void yysetin(i)
      FILE *i;
 { yyin = i; }
 

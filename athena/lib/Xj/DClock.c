@@ -1,5 +1,5 @@
 /*
- * $Id: DClock.c,v 1.2 1999-01-22 23:16:49 ghudson Exp $
+ * $Id: DClock.c,v 1.3 1999-08-13 00:20:58 danw Exp $
  *
  * Copyright 1990, 1991 by the Massachusetts Institute of Technology. 
  *
@@ -10,7 +10,7 @@
 
 #if  (!defined(lint))  &&  (!defined(SABER))
 static char *rcsid =
-"$Id: DClock.c,v 1.2 1999-01-22 23:16:49 ghudson Exp $";
+"$Id: DClock.c,v 1.3 1999-08-13 00:20:58 danw Exp $";
 #endif
 
 #include "mit-copyright.h"
@@ -442,50 +442,42 @@ static Boolean event_handler(me, event)
      DClockJet me;
      XEvent *event;
 {
-  switch(event->type)
+  if (event->type == ButtonPress)
     {
-    case ButtonPress:
-      {
-	int x, y, w, h, len;
-	char *label;
+      int x, y, w, h, len;
+      char *label;
 
-	label = get_label(me);
-	len = strlen(label);
-	w = XTextWidth(me->dClock.font, label, len);
-	h = me->dClock.pmap_ht;
-	switch(me->dClock.justify)
-	  {
-	  case Left:
-	    x = me->core.x + me->dClock.padding;
-	    break;
-	  case Right:
-	    x = me->core.x + (me->core.width - w - me->dClock.padding);
-	    break;
-	  default:			/* Center, default */
-	    x = me->core.x + (me->core.width - w) / 2;
-	    break;
-	  }
-	y = me->core.y;
-	if (me->dClock.centerY)
-	  y += (me->core.height -
-		(me->dClock.font->ascent + me->dClock.font->descent)) / 2;
+      label = get_label(me);
+      len = strlen(label);
+      w = XTextWidth(me->dClock.font, label, len);
+      h = me->dClock.pmap_ht;
+      switch(me->dClock.justify)
+	{
+	case Left:
+	  x = me->core.x + me->dClock.padding;
+	  break;
+	case Right:
+	  x = me->core.x + (me->core.width - w - me->dClock.padding);
+	  break;
+	default:			/* Center, default */
+	  x = me->core.x + (me->core.width - w) / 2;
+	  break;
+	}
+      y = me->core.y;
+      if (me->dClock.centerY)
+	y += (me->core.height -
+	      (me->dClock.font->ascent + me->dClock.font->descent)) / 2;
 
-	if (event->xbutton.x > x
-	    && event->xbutton.x < x+w
-	    && event->xbutton.y > y
-	    && event->xbutton.y < y+h)
-	  {
-	    me->dClock.current_fmt = !me->dClock.current_fmt;
-	    (void) draw(me);
-	    return True;
-	  }
-	else
-	  return False;
-	break;
-      }
-
-
-    default:
-      return False;
+      if (event->xbutton.x > x
+	  && event->xbutton.x < x+w
+	  && event->xbutton.y > y
+	  && event->xbutton.y < y+h)
+	{
+	  me->dClock.current_fmt = !me->dClock.current_fmt;
+	  (void) draw(me);
+	  return True;
+	}
     }
+
+  return False;
 }

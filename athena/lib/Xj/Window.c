@@ -1,5 +1,5 @@
 /*
- * $Id: Window.c,v 1.2 1999-01-22 23:17:06 ghudson Exp $
+ * $Id: Window.c,v 1.3 1999-08-13 00:20:59 danw Exp $
  *
  * Copyright 1990, 1991 by the Massachusetts Institute of Technology. 
  *
@@ -10,7 +10,7 @@
 
 #if  (!defined(lint))  &&  (!defined(SABER))
 static char *rcsid =
-"$Id: Window.c,v 1.2 1999-01-22 23:17:06 ghudson Exp $";
+"$Id: Window.c,v 1.3 1999-08-13 00:20:59 danw Exp $";
 #endif
 
 #include "mit-copyright.h"
@@ -445,7 +445,7 @@ static void realize(me)
   if (me->window.global)
     (void)XChangeProperty(me->core.display, me->core.window,
 			  desks_hints, XA_ATOM, 32, PropModeAppend,
-			  (char *)&desks_always_global, 1);
+			  (const unsigned char *)&desks_always_global, 1);
 
   XjRegisterWindow(me->core.window, (Jet) me);
   XjSelectInput(me->core.display, me->core.window,

@@ -275,15 +275,13 @@ int findrule(pathname,rtype,ftype,srcpath)
     }
   
     /* we did not find a rule */
-    switch(rtype) {
-    case R_CHASE:
-    case R_WHEN:
-	/* the code that looks for these types of rules can deal with
-	 * 	    this error return value */
-	return -1;
-    default:
+
+    if (rtype != R_CHASE && rtype != R_WHEN)
 	panic("findrule: did not find rule");
-    }
+
+    /* the code that looks for R_CHASE and R_WHEN can deal with
+     * 	    this error return value */
+    return -1;
 }
 
 
@@ -292,7 +290,7 @@ void getrules(src,dst)
      char *dst;
 {
   char *srcrules,*dstrules;
-  static firstread = 0;
+  static int firstread = 0;
   extern int aflag;
   extern char *afile;
 
@@ -372,7 +370,7 @@ void poprules()
   /* findrule after calling this without first calling getrules. If */
   /* this ever changes, this will have to be turned on again. */
   compute_ifs();  /* defined below */
-#endif notdef
+#endif
 }
 
 static void compute_ifs()
