@@ -1,4 +1,4 @@
-;; $Id: site-init.jl,v 1.10 2001-06-20 17:38:44 ghudson Exp $
+;; $Id: site-init.jl,v 1.10.2.1 2001-07-10 16:40:28 ghudson Exp $
 ;; Site initialization for Athena
 
 ;; Pick a nice readable default font.
@@ -18,6 +18,9 @@
 (setq raise-windows-on-focus t)
 (setq raise-window-timeout 0)
 
+;; Tooltips seem to be more confusing than helpful at the moment.
+(setq tooltips-enabled f)
+
 ;; Key bindings
 (unbind-keys border-keymap "Button3-Off")
 (bind-keys border-keymap "Button3-Click" 'popup-window-menu)
@@ -36,9 +39,9 @@
 				    '(frame-type . border-only))
 (add-window-matcher 'WM_NAME "Console" '(never-focus . t))
 
-;; Workaround for Maple 6.0, which otherwise comes up with no border
+;; Workaround for Maple, which otherwise comes up with no border
 ;; for some reason.
-(add-window-matcher 'WM_CLASS "xmaple.*" '(frame-type . normal))
+(add-window-matcher 'WM_CLASS "maple" '(frame-type . normal))
 
 ;; Menu customizations
 (require 'sawfish.wm.menus)
