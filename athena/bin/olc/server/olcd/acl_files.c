@@ -6,13 +6,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/acl_files.c,v $
- *	$Id: acl_files.c,v 1.13 1991-09-22 11:52:09 lwvanels Exp $
- *	$Author: lwvanels $
+ *	$Id: acl_files.c,v 1.14 1995-05-14 01:03:54 cfields Exp $
+ *	$Author: cfields $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/acl_files.c,v 1.13 1991-09-22 11:52:09 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/acl_files.c,v 1.14 1995-05-14 01:03:54 cfields Exp $";
 #endif
 #endif
 
@@ -265,10 +265,10 @@ char *acl_file;
 FILE *f;     
 {
   char new[LINESIZE];
+  char buf[LINESIZE];
   int ret;
   struct stat s;
   
-  sprintf(new, NEW_FILE, acl_file);
   if(fflush(f) < 0
      || fstat(fileno(f), &s) < 0
      || s.st_nlink == 0) {
@@ -277,7 +277,48 @@ FILE *f;
     return(-1);
   }
   
-  ret = rename(new, acl_file);
+  /*
+   * FOLLOW THE SYMLINK
+   */
+  if (lstat(acl_file, &s) < 0)
+    {
+      perror("strange");
+      acl_abort(acl_file, f);
+      return(-1);
+    }
+  if ((s.st_mode & S_IFMT) == S_IFLNK)
+    {
+      int cc;
+      char *ptr;
+
+      /* strip off everything after the last slash */
+      strcpy(buf, acl_file);
+      if ((ptr = rindex(buf, '/')) != NULL)
+	*(ptr+1) = '\0';
+
+      /* read in the link name */
+      cc = readlink(acl_file, new, LINESIZE);
+      if (cc >= 0) {
+	new[cc] = 0;
+      }
+
+      if (new[0] == '/')
+	/* if leading char is slash, use it */
+	strcpy(buf, new);
+      else
+	/* else tack it onto the path from above */
+	strcat(buf, new);
+    }
+  else
+    {
+      strcpy(buf, acl_file);
+    }
+  /*
+   * END... FOLLOW THE SYMLINK
+   */
+
+  sprintf(new, NEW_FILE, acl_file);
+  ret = rename(new, buf  /* was: acl_file */);
   fclose(f);
   return(ret);
 }
