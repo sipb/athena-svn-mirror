@@ -1,4 +1,4 @@
-# $Id: Makefile.athena,v 1.2 2002-02-11 16:57:28 ghudson Exp $
+# $Id: Makefile.athena,v 1.3 2002-02-14 15:48:29 ghudson Exp $
 
 .PHONY: dist
 
@@ -6,9 +6,9 @@ dist:
 	cp ${CONFIG_SITE} ./config.site.athena
 
 prepare:
-	cd build_unix && \
-		CONFIG_SITE=`pwd`/../config.site.athena \
-		../dist/configure --enable-compat185 
+	rm -f build_unix/config.cache
+	cd build_unix && CONFIG_SITE=`pwd`/../config.site.athena \
+	  ../dist/configure --enable-compat185 --enable-shared
 
 check:
 	# Do nothing for check.
@@ -17,4 +17,5 @@ clean all:
 	cd build_unix && ${MAKE} $@
 
 install:
-	cd build_unix && ${MAKE} prefix="$$SRVD/usr/athena" install
+	cd build_unix && \
+	  ${MAKE} prefix="$$SRVD/usr/athena" install install_static
