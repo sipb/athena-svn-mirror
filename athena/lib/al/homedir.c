@@ -17,7 +17,7 @@
  * functions to set up and revert user home directories.
  */
 
-static const char rcsid[] = "$Id: homedir.c,v 1.3 1997-10-30 23:58:55 ghudson Exp $";
+static const char rcsid[] = "$Id: homedir.c,v 1.4 1997-11-13 21:59:05 ghudson Exp $";
 
 #include <hesiod.h>
 #include <stdio.h>
@@ -29,19 +29,20 @@ static const char rcsid[] = "$Id: homedir.c,v 1.3 1997-10-30 23:58:55 ghudson Ex
 #include <unistd.h>
 #include <errno.h>
 #include <pwd.h>
+#include <dirent.h>
 #include "al.h"
 #include "al_private.h"
-
-static int nuketmpdir(const char *tmpdir, struct passwd *pw);
 
 int al__setup_homedir(const char *username, struct al_record *record,
 		      int havecred, int tmphomedir)
 {
   struct passwd *local_pwd, *hes_pwd;
-  pid_t pid;
+  pid_t pid, rpid;
   int status;
-  char *tmpdir, *saved_homedir;
+  char *tmpdir, *tmpfile, *saved_homedir;
   void *hescontext;
+  DIR *dir;
+  struct dirent *entry;
 
   /* If there's an existing session using a tmp homedir, we'll use that. */
   if (record->old_homedir)
@@ -51,27 +52,35 @@ int al__setup_homedir(const char *username, struct al_record *record,
    * passwd database, so if this fails, we've already lost, so punt. */
   local_pwd = al__getpwnam(username);
   if (!local_pwd)
-    return AL_WNOTMPDIR;
+    return AL_WNOHOMEDIR;
 
   /* Get hesiod password entry. If the user has no hesiod passwd
    * entry or the listed homedir differs from the local passwd entry,
    * return AL_SUCCESS (and use the local homedir). */
   if (hesiod_init(&hescontext) != 0)
-    return AL_WNOTMPDIR;
+    {
+      al__free_passwd(local_pwd);
+      return AL_WNOHOMEDIR;
+    }
   hes_pwd = hesiod_getpwnam(hescontext, username);
   if (!hes_pwd || strcmp(local_pwd->pw_dir, hes_pwd->pw_dir))
     {
-      hesiod_free_passwd(hescontext, hes_pwd);
+      if (hes_pwd)
+	hesiod_free_passwd(hescontext, hes_pwd);
       hesiod_end(hescontext);
       al__free_passwd(local_pwd);
       return AL_SUCCESS;
     }
-  hesiod_free_passwd(hescontext, hes_pwd);
+  if (hes_pwd)
+    hesiod_free_passwd(hescontext, hes_pwd);
   hesiod_end(hescontext);
 
   /* We want to attach a remote home directory. Make sure this is OK. */
   if (access(PATH_NOATTACH, F_OK) == 0)
-    return AL_WNOATTACH;
+    {
+      al__free_passwd(local_pwd);
+      return AL_WNOATTACH;
+    }
 
   pid = fork();
   switch (pid)
@@ -79,38 +88,31 @@ int al__setup_homedir(const char *username, struct al_record *record,
     case -1:
       /* If we can't fork, we just lose. */
       al__free_passwd(local_pwd);
-      return AL_WNOTMPDIR;
+      return AL_WNOHOMEDIR;
 
     case 0:
       if (havecred)
 	{
 	  execl(PATH_ATTACH, "attach", "-user", username, "-quiet",
-		"-nozephyr", username, NULL);
+		"-nozephyr", username, (char *) 0);
 	}
       else
 	{
 	  execl(PATH_ATTACH, "attach", "-user", username, "-quiet",
-		"-nozephyr", "-nomap", username, NULL);
+		"-nozephyr", "-nomap", username, (char *) 0);
 	}
       _exit(1);
 
     default:
-      while (waitpid(pid, &status, 0) < 0 && errno == EINTR)
+      while ((rpid = waitpid(pid, &status, 0)) < 0 && errno == EINTR)
 	;
 
-      if (WIFEXITED(status))
+      if (rpid == 0 && WIFEXITED(status) && WEXITSTATUS(status) == 0 &&
+	  access(local_pwd->pw_dir, F_OK) == 0)
 	{
-	  /* If we succeeded, or if the remote homedir doesn't exist
-	   * and we don't already have credentials (XXX consider this
-	   * more), then return success. */
-	  if ((WEXITSTATUS(status) == 0 &&
-	       access(local_pwd->pw_dir, F_OK) == 0) ||
-	      (WEXITSTATUS(status) == 26 && !havecred))
-	    {
-	      record->attached = 1;
-	      al__free_passwd(local_pwd);
-	      return AL_SUCCESS;
-	    }
+	  record->attached = 1;
+	  al__free_passwd(local_pwd);
+	  return AL_SUCCESS;
 	}
       break;
     }
@@ -120,61 +122,93 @@ int al__setup_homedir(const char *username, struct al_record *record,
   if (!tmphomedir)
     {
       al__free_passwd(local_pwd);
-      return AL_WNOTMPDIR;
+      return AL_WNOHOMEDIR;
     }
 
-  tmpdir = malloc(strlen(username) + 24);
+  /* Allocate space to hold directory names. */
+  tmpdir = malloc(strlen(PATH_TMPDIRS) * 2 + strlen(username) * 2 + 8);
   if (!tmpdir)
     {
       al__free_passwd(local_pwd);
       return AL_ENOMEM;
     }
-  sprintf(tmpdir, "%s/%s", PATH_TMPDIRS, username);
 
+  /* If the user's temporary directory does not exist, we need to create
+   * it.  PATH_TMPDIRS is not world-writable, so we don't have to be
+   * paranoid about the creation of the user home directory, but we do
+   * have to be careful about doing anything as root in a diretory which
+   * we've already chowned to the user. */
+  sprintf(tmpdir, "%s/%s", PATH_TMPDIRS, username);
   if (access(tmpdir, F_OK) == -1)
     {
+      /* First make sure PATH_TMPDIRS exists. */
       if (access(PATH_TMPDIRS, F_OK) == -1)
 	mkdir(PATH_TMPDIRS, S_IRWXU|S_IRGRP|S_IXGRP|S_IROTH|S_IXOTH);
-      if (mkdir(tmpdir, S_IRWXU) == -1)
-	{
-	  free(tmpdir);
-	  al__free_passwd(local_pwd);
-	  return AL_WNOTMPDIR;
-	}
-      if (chown(tmpdir, local_pwd->pw_uid, local_pwd->pw_gid) == -1)
+
+      /* Create and chown tmpdir. */
+      if (mkdir(tmpdir, S_IRWXU) == -1
+	  || chown(tmpdir, local_pwd->pw_uid, local_pwd->pw_gid) == -1)
+ 	{
+	  rmdir(tmpdir);
+ 	  free(tmpdir);
+ 	  al__free_passwd(local_pwd);
+	  return AL_WNOHOMEDIR;
+ 	}
+
+      /* Copy files from PATH_TMPPROTO to the ephemeral directory. */
+      dir = opendir(PATH_TMPPROTO);
+      if (!dir)
 	{
 	  rmdir(tmpdir);
 	  free(tmpdir);
 	  al__free_passwd(local_pwd);
-	  return AL_WNOTMPDIR;
+	  return AL_WNOHOMEDIR;
 	}
 
-      pid = fork();
-      switch (pid)
+      while ((entry = readdir(dir)) != NULL)
 	{
-	case -1:
-	  free(tmpdir);
-	  al__free_passwd(local_pwd);
-	  return AL_WNOTMPDIR;
+	  if (strcmp(entry->d_name, ".") == 0
+	      || strcmp(entry->d_name, "..") == 0)
+	    continue;
 
-	case 0:
-	  if (setgid(local_pwd->pw_gid) == -1
-	      || setuid(local_pwd->pw_uid) == -1)
-	    _exit(1);
-	  execlp("cp", "cp", "-r", PATH_TMPPROTO, tmpdir, NULL);
-	  _exit(1);
-
-	default:
-	  while (waitpid(pid, &status, 0) < 0 && errno == EINTR)
-	    ;
-	  if (!WIFEXITED(status) || WEXITSTATUS(status) != 0)
+	  /* fork to copy the file into the tmpdir. */
+	  pid = fork();
+	  switch (pid)
 	    {
+	    case -1:
+	      closedir(dir);
+	      rmdir(tmpdir);
 	      free(tmpdir);
 	      al__free_passwd(local_pwd);
-	      return AL_WNOTMPDIR;
+	      return AL_WNOHOMEDIR;
+
+	    case 0:
+	      if (setgid(local_pwd->pw_gid) == -1
+		  || setuid(local_pwd->pw_uid) == -1)
+		_exit(1);
+	      tmpfile = malloc(strlen(PATH_TMPPROTO) + strlen(entry->d_name)
+			       + 2);
+	      if (!tmpfile)
+		_exit(1);
+	      sprintf(tmpfile, "%s/%s", PATH_TMPPROTO, entry->d_name);
+	      execlp("cp", "cp", tmpfile, tmpdir, (char *) 0);
+	      _exit(1);
+
+	    default:
+	      while ((rpid = waitpid(pid, &status, 0) < 0) && errno == EINTR)
+		;
+	      if (rpid == -1 || !WIFEXITED(status) || WEXITSTATUS(status) != 0)
+		{
+		  closedir(dir);
+		  rmdir(tmpdir);
+		  free(tmpdir);
+		  al__free_passwd(local_pwd);
+		  return AL_WNOHOMEDIR;
+		}
+	      break;
 	    }
-	  break;
 	}
+      closedir(dir);
     }
 
   /* Update session records.  (malloc first so we will never have
@@ -192,10 +226,9 @@ int al__setup_homedir(const char *username, struct al_record *record,
     }
   if (al__change_passwd_homedir(username, tmpdir) != AL_SUCCESS)
     {
-      nuketmpdir(tmpdir, local_pwd);
       free(tmpdir);
       al__free_passwd(local_pwd);
-      return AL_WNOTMPDIR;
+      return AL_WNOHOMEDIR;
     }
   if (!record->passwd_added)
     record->old_homedir = saved_homedir;
@@ -210,39 +243,19 @@ int al__revert_homedir(const char *username, struct al_record *record)
   struct passwd *local_pwd;
   pid_t pid;
   int status;
-  char *tmpdir;
 
   local_pwd = al__getpwnam(username);
   if (!local_pwd)
     return AL_EPERM;
 
-  if (record->old_homedir)
+  if (record->old_homedir && !record->passwd_added)
     {
-      if (!record->passwd_added)
+      if (al__change_passwd_homedir(username,
+				    record->old_homedir) != AL_SUCCESS)
 	{
-	  if (al__change_passwd_homedir(username, record->old_homedir)
-	      != AL_SUCCESS)
-	    {
-	      al__free_passwd(local_pwd);
-	      return AL_EPERM;
-	    }
-	}
-
-      tmpdir = malloc(strlen(username) + 24);
-      if (!tmpdir)
-	{
-	  al__free_passwd(local_pwd);
-	  return AL_ENOMEM;
-	}
-      sprintf(tmpdir, "%s/%s", PATH_TMPDIRS, username);
-
-      if (nuketmpdir(tmpdir, local_pwd) != AL_SUCCESS)
-	{
-	  free(tmpdir);
 	  al__free_passwd(local_pwd);
 	  return AL_EPERM;
 	}
-      free(tmpdir);
     }
 
   if (record->attached)
@@ -259,7 +272,7 @@ int al__revert_homedir(const char *username, struct al_record *record)
 	      || setuid(local_pwd->pw_uid) == -1)
 	    _exit(1);
 	  execl(PATH_DETACH, "detach", "-quiet", "-nozephyr",
-		username, NULL);
+		username, (char *) 0);
 	  _exit(1);
 
 	default:
@@ -270,36 +283,5 @@ int al__revert_homedir(const char *username, struct al_record *record)
     }
 
   al__free_passwd(local_pwd);
-  return AL_SUCCESS;
-}
-
-static int nuketmpdir(const char *tmpdir, struct passwd *pw)
-{
-  pid_t pid;
-  int status;
-
-  pid = fork();
-  switch (pid)
-    {
-    case -1:
-      return AL_ENOMEM;
-
-    case 0:
-      if (setgid(pw->pw_gid) == -1 || setuid(pw->pw_uid) == -1)
-	_exit(1);
-      execlp("rm", "rm", "-rf", tmpdir, NULL);
-      _exit(1);
-
-    default:
-      while (waitpid(pid, &status, 0) < 0 && errno == EINTR)
-	;
-      if (!WIFEXITED(status) || WEXITSTATUS(status) != 0)
-	return AL_EPERM;
-      break;
-    }
-
-  if (rmdir(tmpdir) == -1)
-    return AL_EPERM;
-
   return AL_SUCCESS;
 }
