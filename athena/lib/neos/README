@@ -1,0 +1,27 @@
+
+CONTENTS:
+
+Makefile	Instructions for building entire system
+
+include/	header files
+
+rpc3.9/		Sun RPC version needed for EOS protocol
+
+ets/		error tables
+			requires com_err, kerberos, rpc3.9
+
+protocol/	shared between server and clients
+			requires rpc3.9, kerberos
+
+lib/		file exchange client libarary
+			requires protocol
+			requires com_err, kerberos, hesiod
+
+clients/	source code for standard client programs
+			requires lib
+
+server/		source code for file exchange server
+			requires protocol
+			requires ndbm, kerberos
+
+fxtest/		program for testing server without using library
