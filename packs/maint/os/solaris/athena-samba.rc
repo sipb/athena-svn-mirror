@@ -1,0 +1,35 @@
+#!/sbin/sh
+# $Id: athena-samba.rc,v 1.1 2004-05-14 02:39:59 zacheiss Exp $
+#
+# athena-samba: Stop/Start the Athena SMB daemons
+#
+. /etc/athena/rc.conf
+
+HOME=/; export HOME
+PATH=/etc/athena:/bin/athena:/bin:/usr/ucb:/usr/sbin:/etc:/sbin:/usr/athena/etc
+export PATH
+
+umask 022
+
+if [ "$SMBSRV" != true ]; then
+  exit 0
+fi
+
+case "$1" in
+start)
+  echo "Starting Athena SMB daemons."
+  smbd &
+  nmbd &
+  ;;
+stop)
+  pkill smbd
+  pkill nmbd
+  ;;
+restart)
+  $0 stop
+  $0 start
+  ;;
+*)
+  echo "Usage: $0 {start|stop|restart}"
+  ;;
+esac
