@@ -211,7 +211,7 @@ preferences_load (Preferences *prefs)
 		gnome_config_get_int ("/Background/Default/wallpaperAlign=0");
 
 	prefs->wallpaper_filename = 
-		gnome_config_get_string ("/Background/Default/wallpaper=none");
+		gnome_config_get_string ("/Background/Default/wallpaper=/usr/athena/share/nautilus/patterns/brushed_metal.png");
 	prefs->wallpaper_sel_path = 
 		gnome_config_get_string 
 		("/Background/Default/wallpapers_dir=./");
