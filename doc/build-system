@@ -118,6 +118,11 @@ for the first time, you have to do a little work beforehand:
 		make # or "make AFSDIR=/wherever" if AFS libs not in /usr/afsws
 		cp aklog /var/tmp/bin
 
+	* For a few packages (third/perl and some things under packs),
+	  /os must point to an image of the operating system.  A
+	  symlink from /os to / will usually service if a pristine
+	  operating system image is unavailable.
+
 With these tools, you should be able to set up the build environment
 as documented above.
 
