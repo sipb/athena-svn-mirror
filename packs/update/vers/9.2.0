@@ -30,3 +30,5 @@ echo "/etc/sshd_config"					>> "$CONFCHG"
 echo "/etc/athena/named.conf"				>> "$CONFCHG"
 
 echo "/etc/afsd"					>> "$DEADFILES"
+echo "/etc/init.d/athena"				>> "$DEADFILES"
+echo "/etc/rc2.d/S90athena"				>> "$DEADFILES"
