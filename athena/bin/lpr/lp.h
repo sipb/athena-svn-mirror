@@ -1,8 +1,8 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lp.h,v $
- *	$Author: miki $
+ *	$Author: cfields $
  *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lp.h,v 1.13 1995-07-11 20:55:00 miki Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lp.h,v 1.14 1995-11-28 23:05:55 cfields Exp $
  */
 
 /*
@@ -26,11 +26,7 @@
 #include <sys/file.h>
 #include <fcntl.h>
 #ifdef POSIX
-#ifdef SOLARIS
-#include "dirent.h"
-#else
-#include "/usr/include/dirent.h"
-#endif
+#include <dirent.h>
 #else
 #include <sys/dir.h>
 #endif
@@ -65,7 +61,7 @@
 #ifdef KERBEROS
 #include <krb.h>
 #define KLPR_SERVICE "rcmd"
-#endif KERBEROS
+#endif /* KERBEROS */
 
 extern int	DU;		/* daeomon user-id */
 extern int	MX;		/* maximum number of blocks to copy */
@@ -136,7 +132,7 @@ extern int      kerberos_cf;
 extern char     kprincipal[];
 extern char     kinstance[];
 extern char     krealm[];
-#endif KERBEROS
+#endif /* KERBEROS */
 
 /*
  * Structure used for building a sorted list of control files.
