@@ -4,7 +4,7 @@
 ### installation program.  It is called by the first script,
 ### athenainstall.
 
-### $Id: phase2.sh,v 1.9 1999-11-07 14:34:24 jweiss Exp $
+### $Id: phase2.sh,v 1.10 2000-02-15 21:47:38 zacheiss Exp $
 
 echo "Set some variables"
 PATH=/sbin:/usr/bin:/usr/sbin
@@ -246,6 +246,11 @@ Y)
     SEAGATE*5660N)
        echo "formatting SEAGATE-ST5660N"
        cat /util/format.input.seagate.5660 | \
+		format ${drive} >/dev/null 2>&1
+       ;;
+    SEAGATE-ST39173WC-6244)
+       echo "formatting SEAGATE-ST39173WC-6244"
+       cat /util/format.input.SEAGATE-ST39173WC-6244 | \
 		format ${drive} >/dev/null 2>&1
        ;;
     *)
