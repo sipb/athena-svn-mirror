@@ -2,11 +2,11 @@
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/printjob.c,v $
  *	$Author: epeisach $
  *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/printjob.c,v 1.17 1991-03-01 11:52:51 epeisach Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/printjob.c,v 1.18 1991-06-28 13:17:31 epeisach Exp $
  */
 
 #ifndef lint
-static char *rcsid_printjob_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/printjob.c,v 1.17 1991-03-01 11:52:51 epeisach Exp $";
+static char *rcsid_printjob_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/printjob.c,v 1.18 1991-06-28 13:17:31 epeisach Exp $";
 #endif lint
 
 /*
@@ -738,7 +738,12 @@ start:
 		}
 	}
 	tof = 0;
+#ifdef _AUX_SOURCE
+	/* WIFEXITED on the MAC with POSIX_SOURCE uses wrong macro */
+	if (!(((status).w_stopval != WSTOPPED && (status).w_termsig == 0))) {
+#else
 	if (!WIFEXITED(status)) {
+#endif
 #ifndef _IBMR2
 		syslog(LOG_WARNING, "%s: Daemon filter '%c' terminated (%d)",
 			printer, format, status.w_termsig);
