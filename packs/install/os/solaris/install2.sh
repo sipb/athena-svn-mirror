@@ -67,6 +67,8 @@ esac
 
 echo "correction to pkg installation"
 cp /cdrom/I* /root/var/sadm/system/admin/
+# /var/etc needed by SUNWski, whose postinstall script doesn't use BASEDIR
+mkdir /root/var/etc
 
 echo "make it appear as  configured"
 rm /root/etc/.UNC*
