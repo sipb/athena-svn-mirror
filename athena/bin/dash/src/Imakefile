@@ -3,7 +3,7 @@
  *  Copyright (c) 1991, Massachusetts Institute of Technology
  *		
  *   $Source: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/Imakefile,v $
- *   $Author: vanharen $ 
+ *   $Author: cfields $ 
  *
  * Copyright 1990, 1991 by the Massachusetts Institute of Technology. 
  *
@@ -19,7 +19,7 @@
 #define IHaveSubdirs
 #define PassCDebugFlags
 
-SUBDIRS = lib console dash
+SUBDIRS = lib console dash xcluster
 
 MakeSubdirs($(SUBDIRS))
 DependSubdirs($(SUBDIRS))
@@ -28,7 +28,7 @@ world: World
 
 World::
 	@echo ""
-	@echo "Building Xj, Console, and Dash."
+	@echo "Building Xj, Console, Dash, and XCluster."
 	@echo ""
 	$(MAKE) Makefile
 	$(MAKE) Makefiles
@@ -36,4 +36,4 @@ World::
 	$(MAKE) includes
 	$(MAKE) depend
 	$(MAKE) $(WORLDOPTS)
-	@echo "Full build of Xj, Console and Dash complete."
+	@echo "Full build of Xj, Console, Dash, and XCluster complete."
