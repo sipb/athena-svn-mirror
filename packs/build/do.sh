@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: do.sh,v 1.68 2001-09-16 17:26:56 ghudson Exp $
+# $Id: do.sh,v 1.69 2002-02-03 03:39:48 ghudson Exp $
 
 source=/mit/source
 srvd=/afs/dev.mit.edu/system/$ATHENA_SYS/srvd-current
@@ -125,29 +125,21 @@ SunOS)
   LD_LIBRARY_PATH=/usr/openwin/lib export LD_LIBRARY_PATH
   LD_RUN_PATH=/usr/athena/lib:/usr/openwin/lib export LD_RUN_PATH
   PATH=/usr/ccs/bin:/usr/bin:/usr/ucb:/usr/openwin/bin:/usr/gcc/bin
-  CC=gcc
-  CXX=g++
-  WARN_CFLAGS="-Wall -Wstrict-prototypes -Wmissing-prototypes"
-  ERROR_CFLAGS=-Werror
   ;;
 IRIX)
   OS=irix
-  PATH=/usr/bsd:/usr/bin:/usr/bin/X11
-  CC=cc
-  CXX=CC
-  WARN_CFLAGS=-fullwarn
-  ERROR_CFLAGS=-w2
+  PATH=/usr/bsd:/usr/bin:/usr/bin/X11:/usr/gcc/bin
   ;;
 Linux)
   OS=linux
   LD_RUN_PATH=/usr/athena/lib export LD_RUN_PATH
   PATH=/usr/bin:/bin:/usr/X11R6/bin
-  CC=cc
-  CXX=g++
-  WARN_CFLAGS="-Wall -Wstrict-prototypes -Wmissing-prototypes"
-  ERROR_CFLAGS=-Werror
   ;;
 esac
+CC=gcc
+CXX=g++
+WARN_CFLAGS="-Wall -Wstrict-prototypes -Wmissing-prototypes"
+ERROR_CFLAGS=-Werror
 PATH=/usr/athena/bin:$PATH
 
 if [ false = "$mungepath" ]; then
@@ -203,6 +195,8 @@ elif [ -f configure.in ]; then
       $maybe cp "$source/packs/build/autoconf/config.guess" .
       $maybe cp "$source/packs/build/autoconf/config.sub" .
       $maybe cp "$source/packs/build/aclocal.m4" .
+      $maybe cat "$source/packs/build/libtool/libtool.m4" >> aclocal.m4
+      $maybe cp "$source/packs/build/libtool/ltmain.sh" .
       $maybe autoconf || exit 1
     fi
     $maybe cp "$source/packs/build/config.site" config.site.athena
