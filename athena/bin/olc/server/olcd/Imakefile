@@ -1,6 +1,6 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/Imakefile,v $
- * $Id: Imakefile,v 1.9 1990-08-26 15:48:58 lwvanels Exp $
+ * $Id: Imakefile,v 1.10 1990-12-09 17:25:40 lwvanels Exp $
  */
 
 /*#define Profiling*/
@@ -33,11 +33,11 @@ CC=/bin/cc
 
 SRCS=	backup.c data_utils.c db.c io.c log.c olcd.c \
 	data.c notify.c utils.c list.c acl_files.c \
-	requests_olc.c requests_admin.c syslog.c statistics.c
+	requests_olc.c requests_admin.c syslog.c statistics.c motd.c
 
 OBJS=	backup.o data_utils.o db.o io.o log.o olcd.o \
 	data.o notify.o utils.o list.o acl_files.o \
-	requests_olc.o requests_admin.o syslog.o statistics.o
+	requests_olc.o requests_admin.o syslog.o statistics.o motd.o
 
 L_SRCS=	lumberjack.c
 
