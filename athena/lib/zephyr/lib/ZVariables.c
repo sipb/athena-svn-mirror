@@ -5,16 +5,16 @@
  *	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZVariables.c,v $
- *	$Author: jtkohl $
+ *	$Author: rfrench $
  *
  *	Copyright (c) 1987 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZVariables.c,v 1.3 1988-01-20 13:56:27 jtkohl Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZVariables.c,v 1.4 1988-01-20 14:33:11 rfrench Exp $ */
 
 #ifndef lint
-static char rcsid_ZVariables_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZVariables.c,v 1.3 1988-01-20 13:56:27 jtkohl Exp $";
+static char rcsid_ZVariables_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZVariables.c,v 1.4 1988-01-20 14:33:11 rfrench Exp $";
 #endif lint
 
 #include <zephyr/mit-copyright.h>
@@ -91,10 +91,8 @@ Code_t ZUnsetVariable(var)
 	strcpy(varfilebackup,varfile);
 	strcat(varfilebackup,".backup");
 	
-	if (!(fpout = fopen(varfilebackup,"w"))) {
-		fclose(fpin);
+	if (!(fpout = fopen(varfilebackup,"w")))
 		return (errno);
-	}
 	if (fpin = fopen(varfile,"r")) {
 		while (fgets(varbfr,sizeof varbfr,fpin) != (char *) 0) {
 			if (varbfr[strlen(varbfr)-1] < ' ')
