@@ -91,6 +91,7 @@ struct saver_info {
      ======================================================================= */
 
   Bool locked_p;		/* Whether the screen is currently locked. */
+  Bool locked_due_to_idle_p;	/* Whether the locking was due to idle time. */
   Bool dbox_up_p;		/* Whether the demo-mode or passwd dialogs
 				   are currently visible */
 
