@@ -1,9 +1,24 @@
+=== intltool 0.25 ===
+
+2002-01-06  Kenneth Rohde Christiansen  <kenneth@gnu.org>
+
+	* configure.in: Update VERSION
+	* NEWS: Update news.
+
+2003-01-06  Frederic Crozat  <fcrozat@mandrakesoft.com>
+
+	* Makefile.am:
+	* intltool-po-Makefile.in.in-patch-6:
+	* intltoolize.in:
+	support latest version of Makefile.in.in from glib-gettextize 
+	from glib >= 2.1.5
+
 === intltool 0.24 ===
 
 2002-12-18  Kenneth Rohde Christiansen  <kenneth@gnu.org>
+ 
+        * configure.in: Update VERSION
 
-	* configure.in: Update VERSION
-	
 2002-11-28  Yanko Kaneti  <yaneti@declera.com>
 
 	* intltool-update.in.in: strip the hints from POTFILES.in in -M mode.

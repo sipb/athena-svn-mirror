@@ -34,7 +34,7 @@
 ## Release information
 my $PROGRAM = "intltool-merge";
 my $PACKAGE = "intltool";
-my $VERSION = "0.24";
+my $VERSION = "0.25";
 
 ## Loaded modules
 use strict; 
