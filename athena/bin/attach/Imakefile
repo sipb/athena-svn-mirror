@@ -27,6 +27,7 @@ install_program(attach,-m 4755 -o root,$(ATHRBINDIR))
 
 install_man(add.1,add.1)
 install_man(attach.1,attach.1)
+install_man(attachandrun.1,attachandrun.1)
 install_man(detach.1,detach.1)
 install_man(fsid.1,fsid.1)
 install_man(attach.conf.5,attach.conf.5)
@@ -36,11 +37,13 @@ install_man(zinit.8,zinit.8)
 install_man_links(fsid.1,nfsid.1)
 
 install::
+	$(RM) $(DESTDIR)$(ATHRBINDIR)/attachandrun
 	$(RM) $(DESTDIR)$(ATHRBINDIR)/detach
 	$(RM) $(DESTDIR)$(ATHRBINDIR)/fsid
 	$(RM) $(DESTDIR)$(ATHRBINDIR)/nfsid
 	$(RM) $(DESTDIR)$(ATHRBINDIR)/zinit
 	$(RM) $(DESTDIR)$(ATHRETCDIR)/zinit
+	ln -s attach $(DESTDIR)$(ATHRBINDIR)/attachandrun
 	ln -s attach $(DESTDIR)$(ATHRBINDIR)/detach
 	ln -s attach $(DESTDIR)$(ATHRBINDIR)/fsid
 	ln -s attach $(DESTDIR)$(ATHRBINDIR)/nfsid
