@@ -5,7 +5,7 @@
 #
 #     $Source: /afs/dev.mit.edu/source/repository/athena/bin/delete/Makefile,v $
 #     $Author: jik $
-#     $Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/Makefile,v 1.16 1989-11-07 18:51:28 jik Exp $
+#     $Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/Makefile,v 1.17 1989-12-20 15:14:34 jik Exp $
 #
 
 DESTDIR=
@@ -18,7 +18,7 @@ COMPILE_ET= 	compile_et
 LINT= 		lint
 DEFINES=	-DAFS_MOUNTPOINTS
 INCLUDES=	-I/usr/include\
-		-I/afs/athena.mit.edu/astaff/project/afsdev/$(MACHINE)
+		-I/afs/athena.mit.edu/astaff/project/afsdev/build/$(MACHINE)/include
 CFLAGS= 	-O $(INCLUDES) $(DEFINES) $(CDEBUGFLAGS)
 LDFLAGS=	-L/usr/athena/lib\
 		-L/afs/athena.mit.edu/astaff/project/afsdev/build/$(MACHINE)/lib/afs
