@@ -4,7 +4,7 @@
 ### installation program.  It is called by the first script,
 ### athenainstall.
 
-### $Header: /afs/dev.mit.edu/source/repository/packs/install/platform/sun4/phase2.sh,v 1.6 1994-07-25 14:32:39 root Exp $
+### $Header: /afs/dev.mit.edu/source/repository/packs/install/platform/sun4/phase2.sh,v 1.7 1994-07-26 15:10:09 miki Exp $
 ### $Locker:  $
 
 
@@ -163,6 +163,7 @@ cp /dev/null ups_data
 cp -p /srvd/etc/ftpusers etc/
 cp -p /srvd/etc/inetd.conf etc/
 cp -p /srvd/etc/athena/inetd.conf etc/athena/
+cp -p /srvd/etc/minor_perm etc/minor_perm
 #cp -p /srvd/etc/motd etc/
 cp -p /srvd/etc/services etc/
 
