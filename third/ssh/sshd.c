@@ -18,8 +18,11 @@ agent connections.
 */
 
 /*
- * $Id: sshd.c,v 1.14 1998-06-30 21:10:02 danw Exp $
+ * $Id: sshd.c,v 1.15 1999-02-27 17:08:21 ghudson Exp $
  * $Log: not supported by cvs2svn $
+ * Revision 1.14  1998/06/30 21:10:02  danw
+ * put xauthority data in /tmp, not afs
+ *
  * Revision 1.13  1998/05/13 20:18:55  danw
  * merge in changes from 1.2.23
  *
@@ -561,6 +564,10 @@ char **saved_argv;
    the SIGHUP signal handler. */
 int listen_sock;
 
+/* Whether the server should accept connections. */
+static int switched = 0;
+static int enabled = 1;
+
 /* This is not really needed, and could be eliminated if server-specific
    and client-specific code were removed from newchannels.c */
 uid_t original_real_uid = 0;
@@ -726,6 +733,19 @@ RETSIGTYPE key_regeneration_alarm(int sig)
   alarm(options.key_regeneration_time);
 }
 
+RETSIGTYPE sigusr1_handler(int sig)
+{
+  enabled = 1;
+  signal(SIGUSR1, sigusr1_handler);
+}
+
+RETSIGTYPE sigusr2_handler(int sig)
+{
+  if (switched)
+    enabled = 0;
+  signal(SIGUSR2, sigusr2_handler);
+}
+
 /* Main program for the daemon. */
 
 int main(int ac, char **av)
@@ -765,7 +785,7 @@ int main(int ac, char **av)
   initialize_server_options(&options);
 
   /* Parse command-line arguments. */
-  while ((opt = getopt(ac, av, "f:p:b:k:h:g:diqV:")) != EOF)
+  while ((opt = getopt(ac, av, "f:p:b:k:h:g:diqV:sS")) != EOF)
     {
       switch (opt)
 	{
@@ -795,6 +815,13 @@ int main(int ac, char **av)
 	  break;
 	case 'h':
 	  options.host_key_file = optarg;
+	  break;
+	case 's':
+	  switched = 1;
+	  break;
+	case 'S':
+	  switched = 1;
+	  enabled = 0;
 	  break;
 	case 'V':
 	  ssh_remote_version_string = optarg;
@@ -1081,6 +1108,10 @@ int main(int ac, char **av)
       signal(SIGHUP, sighup_handler);
       signal(SIGTERM, sigterm_handler);
       signal(SIGQUIT, sigterm_handler);
+
+      /* Switch on and off on SIGUSR1 and SIGUSR2 (conditional on switched). */
+      signal(SIGUSR1, sigusr1_handler);
+      signal(SIGUSR2, sigusr2_handler);
       
       /* AIX sends SIGDANGER when memory runs low.  The default action is
 	 to terminate the process.  This sometimes makes it difficult to
@@ -1156,7 +1187,7 @@ int main(int ac, char **av)
 		
 		request_init(&req, RQ_DAEMON, av0, RQ_FILE, newsock, NULL);
 		fromhost(&req);
-		if (!hosts_access(&req))
+		if (!hosts_access(&req) || !enabled)
 		  refuse(&req);
 	      }
 #endif /* LIBWRAP */
@@ -1183,7 +1214,7 @@ int main(int ac, char **av)
 		    
 		    request_init(&req, RQ_DAEMON, av0, RQ_FILE, newsock, NULL);
 		    fromhost(&req);
-		    if (!hosts_access(&req))
+		    if (!hosts_access(&req) || !enabled)
 		      refuse(&req);
 		  }
 #endif /* LIBWRAP */
