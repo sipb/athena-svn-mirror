@@ -1,12 +1,10 @@
-/*	Created by:	Robert French
+/*
+ * $Id: main.c,v 1.30 1992-07-31 19:16:54 probe Exp $
  *
- *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/attach/main.c,v $
- *	$Author: probe $
- *
- *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
+ * Copyright (c) 1988,1992 by the Massachusetts Institute of Technology.
  */
 
-static char *rcsid_main_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/main.c,v 1.29 1992-01-06 15:54:40 probe Exp $";
+static char *rcsid_main_c = "$Id: main.c,v 1.30 1992-07-31 19:16:54 probe Exp $";
 
 #include "attach.h"
 #include <signal.h>
@@ -52,7 +50,7 @@ char	**rvd_explicit();
 #ifdef AFS
 int	afs_attach(), afs_detach();
 char	**afs_explicit();
-#endif AFS
+#endif
 #ifdef UFS
 int ufs_attach(), ufs_detach();
 #endif
@@ -98,14 +96,26 @@ main(argc, argv)
 {
     char	*ptr;
     extern sig_catch	sig_trap();
+#ifdef POSIX
+    struct sigaction sig;
+#endif
 
     /* Stop overriding my explicit file modes! */
     umask(022);
 
     /* Install signal handlers */
+#ifdef POSIX
+    sig.sa_handler = sig_trap;
+    sigemptyset(&sig.sa_mask);
+    sig.sa_flags = 0;
+    sigaction(SIGTERM, &sig, NULL);
+    sigaction(SIGINT, &sig, NULL);
+    sigaction(SIGHUP, &sig, NULL);
+#else
     (void) signal (SIGTERM, sig_trap);
     (void) signal (SIGINT, sig_trap);
     (void) signal (SIGHUP, sig_trap);
+#endif
 
     real_uid = owner_uid = getuid();
     effective_uid = geteuid();
@@ -149,16 +159,16 @@ main(argc, argv)
 	exit(attachcmd(argc, argv));
     if (!strcmp(progname, DETACH_CMD))
 	exit(detachcmd(argc, argv));
-#ifdef NFS
 #ifdef KERBEROS
+#ifdef NFS
     if (!strcmp(progname, NFSID_CMD))
-      {
+    {
 	filsys_type = "NFS";
-	exit(nfsidcmd(argc, argv));
-      } else if(!strcmp(progname, FSID_CMD)) {
-	exit(nfsidcmd(argc, argv));
-      }
+	exit(fsidcmd(argc, argv));
+    }
 #endif
+    if (!strcmp(progname, FSID_CMD))
+	exit(fsidcmd(argc, argv));
 #endif
 #ifdef ZEPHYR
     if (!strcmp(progname, ZINIT_CMD))
@@ -169,17 +179,16 @@ main(argc, argv)
     exit(ERR_BADARGS);
 }
 
-#ifdef NFS
 #ifdef KERBEROS
 /*
  * Command handler for nfsid.
  */
-nfsidcmd(argc, argv)
+fsidcmd(argc, argv)
     int argc;
     char *argv[];
 {
     extern struct _attachtab	*attachtab_first;
-    int gotname, i, op, filsysp;
+    int gotname, i, op, filsysp, hostp;
 #ifdef AFS
     int	cell_sw;
 #endif
@@ -196,20 +205,22 @@ nfsidcmd(argc, argv)
 	{ "-unmap", "-u" },
 	{ "-purge", "-p" },
 	{ "-purgeuser", "-r" },
-	{ "-all", "-a" },
-	{ "-filsys", "-f" },
 	{ "-spoofhost", "-s" },
-	{ "-user", "-U" },
+	{ "-filsys", "-f" },
+	{ "-host", "-h" },
 #ifdef AFS
 	{ "-cell", "-c" },
 #endif
+	{ "-user", "-U" },
+	{ "-all", "-a" },
 	{ 0, 0 }};
 	
     check_root_privs(progname);
     read_config_file(ATTACHCONFFILE);
     
     gotname = 0;
-    filsysp = 0;
+    filsysp = 1;
+    hostp = 0;
     verbose = 1;
 #ifdef AFS
     cell_sw = 0;
@@ -218,6 +229,15 @@ nfsidcmd(argc, argv)
     
     op = MOUNTPROC_KUIDMAP;
     ops = "mapped";
+
+#ifdef ATHENA_COMPAT73
+    if (!strcmp(filsys_type, "NFS")) {
+	hostp = 1;
+	filsysp = 0;
+    } else {
+	hostp = filsysp = 1;
+    }
+#endif
 
     for (i=1;i<argc;i++) {
 	if (*argv[i] == '-') {
@@ -231,11 +251,6 @@ nfsidcmd(argc, argv)
 	    case 'd':
 		debug_flag = 1;
 		break;
-#ifdef AFS
-	    case 'c':
-		cell_sw = 1;
-		break;
-#endif
 	    case 'm':
 		op = MOUNTPROC_KUIDMAP;
 		ops = "mapped";
@@ -243,6 +258,10 @@ nfsidcmd(argc, argv)
 	    case 'u':
 		op = MOUNTPROC_KUIDUMAP;
 		ops = "unmapped";
+		break;
+	    case 'r':
+		op = MOUNTPROC_KUIDUPURGE;
+		ops = "mappings user-purged";
 		break;
 	    case 'p':
 		if (!trusted_user(real_uid)) {
@@ -254,22 +273,19 @@ nfsidcmd(argc, argv)
 		op = MOUNTPROC_KUIDPURGE;
 		ops = "mappings purged";
 		break;
-	    case 's':
-		if (i == argc-1) {
-		    fprintf(stderr, "%s: No spoof host specified\n", progname);
-		    return (ERR_BADARGS);
-		}
-		spoofhost = argv[++i];
+#ifdef AFS
+	    case 'c':
+		filsysp = 0;
+		cell_sw = 1;
 		break;
-	    case 'r':
-		op = MOUNTPROC_KUIDUPURGE;
-		ops = "mappings user-purged";
-		break;
+#endif
 	    case 'f':
 		filsysp = 1;
-		lock_attachtab();
-		get_attachtab();
-		unlock_attachtab();
+		hostp = 0;
+		break;
+	    case 'h':
+		filsysp = 0;
+		hostp = 1;
 		break;
 	    case 'U':
 		++i;
@@ -284,6 +300,13 @@ nfsidcmd(argc, argv)
 			fprintf(stderr,
 		"%s: You are not authorized to use the -user option\n", progname);
 		}
+		break;
+	    case 's':
+		if (i == argc-1) {
+		    fprintf(stderr, "%s: No spoof host specified\n", progname);
+		    return (ERR_BADARGS);
+		}
+		spoofhost = argv[++i];
 		break;
 	    case 'a':
 		/*
@@ -351,31 +374,40 @@ nfsidcmd(argc, argv)
 	    continue;
 	}
 	gotname++;
+
 #ifdef AFS
 	if (cell_sw) {
-		afs_auth_to_cell(argv[i]);
-	} else
+	    afs_auth_to_cell(argv[i]);
+	    continue;
+	}
 #endif
+
 	if (filsysp) {
+	    lock_attachtab();
+	    get_attachtab();
+	    unlock_attachtab();
 	    /*
 	     * Lookup the specified filsys name and perform an nfsid
 	     * on the host associated with it.
 	     */
 	    if (atp = attachtab_lookup(argv[i])) {
-		    if (atp->fs->type == TYPE_MUL)
-			    gotname = 2;
-		    nfsid_filsys(atp, op, ops, argv[i], owner_uid);
-	    } else {
+		if (atp->fs->type == TYPE_MUL)
+		    gotname = 2;
+		fsid_filsys(atp, op, ops, argv[i], owner_uid);
+		continue;
+	    } else if (!hostp) {
 		error_status = ERR_NFSIDNOTATTACHED;
 		fprintf(stderr, "%s: %s not attached\n", progname, argv[i]);
 	    }
-	} else {
+	}
+
+	if (hostp) {
 	    /*
 	     * Perform an nfsid on the specified host.
 	     */
 	    hent = gethostbyname(argv[i]);
 	    if (!hent) {
-		fprintf(stderr, "%s: Can't resolve host %s\n", progname, argv[i]);
+		fprintf(stderr, "%s: Can't resolve %s\n", progname, argv[i]);
 		error_status = ERR_NFSIDBADHOST;
 	    }
 	    else {
@@ -397,9 +429,8 @@ nfsidcmd(argc, argv)
     return (ERR_BADARGS);
 }
 #endif
-#endif
 
-nfsid_filsys(atp, op, ops, filsys, uid)
+fsid_filsys(atp, op, ops, filsys, uid)
 struct _attachtab *atp;
 int op;
 char *ops;
@@ -414,14 +445,16 @@ int uid;
 		while (cp) {
 			atp = attachtab_lookup(cp);
 			if (atp)
-				nfsid_filsys(atp,op,ops,atp->hesiodname,uid);
+				fsid_filsys(atp,op,ops,atp->hesiodname,uid);
 			cp = strtok(NULL, ",");
 		}
+#ifdef NFS
 	} else if (atp->fs->type == TYPE_NFS) {
 		if ((nfsid(atp->host, atp->hostaddr[0], op, 1,
 			   filsys, 0, owner_uid) == SUCCESS) &&
 		    verbose)
 			printf("%s: %s %s\n", progname, filsys, ops);
+#endif
 #ifdef AFS
 	} else if (atp->fs->type == TYPE_AFS) {
 		if (op == MOUNTPROC_KUIDMAP &&
