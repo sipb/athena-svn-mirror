@@ -1,6 +1,6 @@
 AC_INIT(gcalc)
 AM_CONFIG_HEADER(config.h)
-AM_INIT_AUTOMAKE(gnome-utils, 2.0.6)
+AM_INIT_AUTOMAKE(gnome-utils, 2.2.0.3)
 
 AM_MAINTAINER_MODE
 
@@ -25,7 +25,7 @@ dnl pkg-config check time
 dnl *****************************************
 
 LIBGNOME_REQUIRED=2.0.0
-LIBGNOMEUI_REQUIRED=2.0.0
+LIBGNOMEUI_REQUIRED=2.1.0
 LIBGLADE_REQUIRED=2.0.0
 LIBBONOBOUI_REQUIRED=2.0.0
 GNOMEVFS_REQUIRED=1.9.16
@@ -99,8 +99,8 @@ dnl Check to see if the user wants gdialog. Turn it off by default
 dnl due to lack of maintainance and somewhat bad documentation
 
 AC_ARG_ENABLE(gdialog, 
-  [  --enable-gdialog=[no/yes]		Build gdialog [ default=no ]],
-   enable_gdialog="$enableval", enable_gdialog=no)
+  [  --enable-gdialog=[no/yes]		Build gdialog [ default=yes ]],
+   enable_gdialog="$enableval", enable_gdialog=yes)
 
 AM_CONDITIONAL(BUILD_GDIALOG, test "$enable_gdialog" = yes)
 
@@ -261,7 +261,7 @@ dnl *******************************
 dnl Internationalization
 dnl ******************************* 
 
-ALL_LINGUAS="am ar az be bg ca cs da de el en_GB es et eu fi fr ga gl hu it ja ko lt lv ms nl nn no pl pt pt_BR ro ru sk sl sv ta tr uk vi wa zh_CN zh_TW"
+ALL_LINGUAS="am ar az be bg ca cs da de el en_GB es et eu fi fr ga gl hi hu it ja ko lt lv mk mn ms nl nn no pl pt pt_BR ro ru sk sl sv ta tr uk vi wa zh_CN zh_TW"
 GETTEXT_PACKAGE=gnome-utils-2.0
 AC_SUBST(GETTEXT_PACKAGE)
 AM_GLIB_GNU_GETTEXT
@@ -309,9 +309,6 @@ gfloppy/Makefile
 gfloppy/doc/Makefile
 gfloppy/doc/C/Makefile
 gfloppy/src/Makefile
-meat-grinder/Makefile
-meat-grinder/help/Makefile
-meat-grinder/help/C/Makefile
 ])
 
 dnl <= Configuration summary =>
