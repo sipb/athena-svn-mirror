@@ -23,7 +23,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char *rcsid_zshutdown_notify_c = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zshutdown_notify/zshutdown_notify.c,v 1.4 1988-06-23 13:49:48 jtkohl Exp $";
+static char *rcsid_zshutdown_notify_c = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zshutdown_notify/zshutdown_notify.c,v 1.5 1988-06-28 16:19:34 jtkohl Exp $";
 #endif SABER
 #endif lint
 
@@ -81,7 +81,7 @@ main(argc,argv)
 	ptr += strlen(ptr);
     }
 
-    bzero((char *)&notice, sizeof(ZNotice_t));
+    bzero((char *)&notice, sizeof(notice));
 
     notice.z_kind = N_KIND;
     notice.z_port = 0;

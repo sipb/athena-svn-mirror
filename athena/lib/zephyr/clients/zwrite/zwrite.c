@@ -17,7 +17,7 @@
 #include <string.h>
 
 #ifndef lint
-static char rcsid_zwrite_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zwrite/zwrite.c,v 1.15 1988-06-27 11:26:41 jtkohl Exp $";
+static char rcsid_zwrite_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zwrite/zwrite.c,v 1.16 1988-06-28 16:19:58 jtkohl Exp $";
 #endif lint
 
 #define DEFAULT_CLASS "MESSAGE"
@@ -51,7 +51,7 @@ main(argc, argv)
     if (argc < 2)
 	usage(whoami);
 
-    bzero((char *) &notice, sizeof(ZNotice_t));
+    bzero((char *) &notice, sizeof(notice));
 
     auth = ZAUTH;
     verbose = quiet = msgarg = nrecips = nocheck = 0;
