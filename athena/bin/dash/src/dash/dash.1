@@ -1,0 +1,594 @@
+.\" This file uses -man macros.
+.TH DASH 1 "August 8, 1991"
+.SH NAME
+dash \- Athena Dashboard
+.SH SYNOPSIS
+.TP 5
+.BR dash
+[-toolkitoption ...] [-menus \fIfile\fR] [-appdefs \fIfile\fR]
+.br
+[-userdefs \fIfile\fR] [\(+-rude] [\(+-verify] [-kill] [-restart]
+.br
+[-run] [-nofork] [-send] [-show \fIoption\fR ... ]
+.br
+[-hide \fIoption\fR ... ] [\(+-options\fR ...]
+
+.SH DESCRIPTION
+By default, \fIdash\fR places a menu bar at the top of the screen which
+contains much useful information on using Athena. Some of the items in
+the menu are merely informational - clicking on the items themselves
+will do nothing, while clicking on the `?' next to them will offer
+information. These items are followed by ellipsis (...) in their name.
+Other items will do things when you click on them, such as "New xterm window"
+under the special menu. These items also offer information if you click
+on their `?'s. Still other items are submenus. They have an arrow next
+to them where other items have `?'s, and clicking on the arrow will
+show more items. New Athena users should find this program massively
+useful for finding things, while more experienced Athena users may still
+like the program because of its customizability.
+.PP
+More generally, \fIdash\fR puts up user-defined widgets on the display
+screen which place much less of a load on the system than their X
+Toolkit or Motif counterparts.
+.I Dash
+can create menus, analog and digital clocks, buttons, icons, and other
+widgets which will be added in the future. Replacing other screen
+accessory programs with \fIdash\fR widgets can significantly increase
+system performance, especially on older systems with less real memory.
+.PP
+For example,
+.I dash
+can emulate the
+.I xlogout
+program on a vax in 220K of memory space as opposed to 440K for the X
+Toolkit version of
+.I xlogout.
+Much more significantly, \fIdash\fR can replace several screen
+accessories at a fraction of the cost of running each separately, as
+each added widget adds only a few kilobytes of memory to
+.I dash's
+running size.
+.I Dash
+configured to put a clock and logout button on the screen will use 222K
+on a vax, compared to the 760K required to run \fIxclock\fR and
+\fIxlogout\fR together.  On older workstations which often have only
+four megabytes of memory, the difference in system response time is
+immediately noticeable.
+.PP
+.I Dash's
+menu widget is of special note.  It allows the user to specify a list of
+desired menu items and their general desired locations, and will
+assemble a menu hierarchy from this description, rather than requiring
+the user to specify a complex hierarchy.  See the MENU FORMAT section
+below for details and an example on specifying menu widgets.
+
+.SH TOOLKIT OPTIONS
+.I Dash
+accepts many of the standard X Toolkit command line options:
+.TP
+.B \(+-reverse
+.br
+.ns
+.HP 9
+.B \(+-rv
+.br
+This option causes
+.I dash
+to come up in reverse video if you specify -rv, normal video if you
+specify +rv (the default).
+.TP
+.B \-background \fIcolor
+.br
+.ns
+.HP 9
+.B \-bg \fIcolor
+.br
+This option specifies the default background color for all
+.I dash
+widgets.
+.TP
+.B \-bordercolor \fIcolor
+.br
+.ns
+.HP 9
+.B \-bd \fIcolor
+.br
+This option specifies the default border color for all
+.I dash
+widgets.
+.TP
+.B \-borderwidth \fInumber
+.br
+.ns
+.HP 9
+.B \-bw \fInumber
+.br
+This option specifies the border width for all
+.I dash
+widgets in pixels.
+.HP 9
+.B \-display \fIdisplay
+.br
+This option specifies which display 
+.I dash
+is to run on.  The default is to use the DISPLAY environment variable.
+.TP 9
+.B \-foreground \fIcolor
+.br
+.ns
+.HP 9
+.B \-fg \fIcolor
+.br
+This option specifies the default foreground color for all
+.I dash
+widgets.
+.TP
+.B \-font \fIfontname
+.br
+.ns
+.HP 9
+.B \-fn \fIfontname
+.br
+This option specifies the default font for labels on
+.I dash
+menus and buttons.
+.HP 9
+.B  \-name \fIstring
+.br
+This option specifies the application name under which resources are to
+be obtained, rather than the default executable file name.
+.I  String 
+should not contain ``.'' or ``*'' characters.
+.HP 9
+.B \-xrm \fIresourcestring
+.br
+This option specifies a resource string to be used.  This is especially
+useful for setting resources that do not have separate command line
+options.  See \fIX\fR(1).
+.SH DASH OPTIONS
+\fIDash\fR accepts the following additional options:
+.TP 9
+.B \-appdefs \fIfile
+This option specifies a file to use for the application default
+resources instead of the default /usr/athena/lib/X11/app-defaults/Dash.
+.TP 9
+.B \-userdefs \fIfile
+This option specifies a file to use for the user default resources
+instead of the default ~/.dashrc.
+.TP 9
+.B \-menus \fImenufile
+This option causes
+.I dash
+to read menu entries from 
+.I menufile
+instead of the default menus file listed in the "*Menu.file" resource.
+If more specific menu file resources are specifed, they will not be
+overriden by this option.
+.TP 9
+.B \(+-rude
+Specifies whether or not \fIdash\fR grabs the mouse pointer whenever one
+of its menus is opened.  \fI-rude\fR causes the pointer to be grabbed
+and is the default.  \fI+rude\fR leaves the pointer free while menus are
+open; this allows to you work in other windows without closing
+\fIdash\fR menus first.
+.TP 9
+.B \(+-verify
+Specifies whether or not \fIdash\fR attempts to verify all menu-selected
+actions (i.e. callbacks) by popping up a dialog box which asks the user
+to confirm or cancel the action.  \fI+verify\fR will cause \fIdash\fR to
+turn off verification for all menu item callbacks.  \fI-verify\fR will
+cause dash to verify any menu item callback. Menu items configured with
+the \fI-verify\fR field (see MENU FORMAT) are never verified regardless
+of this resource.  Note that \fI-verify\fR as a command line option
+turns verification on for all items, while \fI-verify\fR in a menu
+configuration will turn verification off for a specific item and
+override the command line option.  Yes, this is confusing, but Unix and
+toolkit conventions dictate the meaning of the + and - command line
+options.
+.PP
+.ne 2.5i
+By default, typing "dash" causes \fIdash\fR to start up showing a menu
+bar.  However, if there is already a \fIdash\fR running, it will tell
+that one to display a menu bar instead. The following options can be
+used to specify whether such messages are sent, or what messages should
+be sent.
+.TP 9
+.B \-nofork
+By default, dash will fork itself and detach from the terminal it was
+started it, so that it does not need to be backgrounded.  Using -nofork
+will cause dash to not fork and remain in the foreground.
+.TP 9
+.B \-kill
+This sends a signal to the currently running \fIdash\fR telling it to exit.
+.TP 9
+.B \-restart
+This is the same as -kill, except that after sending the kill it continues
+to run, and becomes the currently running \fIdash\fR. This is useful if
+you want \fIdash\fR to be running with resources you have just changed.
+.TP 9
+.B \-send
+\fIDash\fR usually checks to see of there is already a \fIdash\fR running.
+If so, it sends a signal. If not, it starts on its own. The -send option
+specifies that \fIdash\fR should only send signals. If there is no
+\fIdash\fR running, one should not be started.
+.TP 9
+.B \-run
+This option tells \fIdash\fR to ignore any other \fIdash\fR's that may
+already be running, and start up no matter what.
+.TP
+.B \-hide \fIoption\fR ...
+.br
+.ns
+.TP
+.B \-show \fIoption\fR ...
+.br
+.ns
+.HP 9
+.B \(+-\fIoption\fR ...
+.br
+These options are the reason that \fIdash\fR's signal sending ability
+exists. With them, you may tell an already running \fIdash\fR to hide
+or show objects that it is or isn't showing. This is good, because if
+\fIdash\fR were started as a logout button, and you wanted it also to
+be a menu bar, you might just start up a second invocation of
+\fIdash\fR, consuming more workstation memory. Instead, you can tell
+the \fIdash\fR that is already running to do display the menu bar, and
+save resources. For example, "dash -show clock" will send a signal to
+an already running \fIdash\fR to create a clock. If no dash is already
+running, it will start a new dash running the clock instead.
+Similarly, "dash -hide clock" will cause an already running dash to
+hide its clock, if one was showing.
+
+"dash -clock" is equivalent to "dash -show clock," while "dash +clock"
+is the same as "dash -hide clock." \fIOption\fR may be any of:
+default, user, athena, menubar, logout, clock. "default" is equivalent
+to "athena user," and "athena" is equivalent to "menubar." Invoking
+\fIdash\fR without any of these options is equivalent to invoking it
+with "-default" or "-show default".  Thus, if there is \fIdash\fR
+running as only a logout button, simply typing "dash" will cause it to
+display a menu bar as well.
+
+.SH "RESOURCES"
+.PP
+.I Dash
+understands many, although not all, of the core X Toolkit resources (see
+\fIX\fR(1)) and many additions which will be documented in the near
+future.  For now these resources which significantly affect \fIdash's\fR
+behavior are listed for reference:
+
+.TP 9
+.B overrideRedirect
+Specifies whether windows created by \fIdash\fR are created with
+override redirect set. Most window managers will not decorate or allow
+the user to drag around windows with this set. Override redirect is set
+by default on \fIdash\fR's menu bar, but not on any of the rest if its
+windows. If you wish to try it without this set, try specifying
+"*menuTree.window.overrideRedirect: False" in resources.
+
+.TP 9
+.B rude
+Specifies whether \fIÿdash\fR keeps the mouse grabbed when one of its
+menus is opened.  The default is "True".  Specfiying "dash*rude:False"
+will allow you for example to click away zephyrgrams while leaving a
+menu open.
+
+.TP 9
+.B verify
+Specifies whether menu item callbacks are executed with or without a
+popup verification window first.  Default is "True".  Menu items
+configured with the \fI-verify\fR field (see MENU FORMAT) are never
+verified regardless of this resource.
+
+.TP 9
+.B autoRaise
+Specifies whether a \fIdash\fR menu widget will automatically be brought
+to the front of the screen whenever the mouse enters it.  When "False",
+the user must click in the menubar in order to get it to raise itself.
+Default is "False".
+
+
+.SH DASH WIDGETS
+.PP
+The widgets which \fIdash\fR can create are still growing, and could use
+extensive documentation of their own in the future.  Especially
+important are the \fITree\fR widget and \fIForm\fR widget, which are
+used to create other widgets in and organized manner.  Until extensive
+documentation is available, an example of correct use of trees and forms
+can be found in /usr/athena/lib/X11/app-defaults/Dash, which creates a small
+tree of widgets and includes several which are commented out for
+reference.
+.PP
+The list of currently available widgets is: Tree, Form, Window,
+DigitalClock, AnalogClock, Menu, Icon, Button, Label, NULL.
+
+.SH "MENU FORMAT"
+.PP
+.I Dash
+has a unique menu format which allows one to create lists of menus and
+menu items and allow
+.I dash
+to assemble them in the appropriate hierarchy.  The same item can appear
+in more than one menu.  Items can have both help panels which provide
+information upon selection, and callbacks which perform actions upon
+selection.
+.PP
+The format of a menu file consists of entries each terminated with a ';'
+character, and each containing one or more of the following fields.
+Multiple entries and fields may exist for the same object -- subsequent
+definitions of individual fields will override previous ones.
+
+.TP 9
+.B menu \fIname: 
+\fIName\fR will be created as a menu or submenu, and may have menus or
+items under it in the final menu hierarchy.  A \fImenu\fR entry should
+also have a \fIlabel\fR, a \fIparent\fR, and a \fIchild\fR defined (see
+below).
+.TP 9
+.B item \fIname:
+\fIName\fR will be created as an item which goes onto one or more menus,
+and may have help associated with it. An \fIitem\fR entry should also
+have a \fIlabel\fR and a \fIparent\fR defined.
+
+.TP 9
+.B help \fIname:
+If \fIitem name\fR exists, a help entry for it will be created which
+will appear next to \fIname\fR on any menus on the screen.  If the help
+entry rather than the item is selected, the helptext (see below) will
+appear in a window next to the menu on the screen.
+
+.TP 9
+.B "\fIlabel\fR"
+Used with a \fImenu\fR or \fIitem\fR (see above) entry, specifies what
+label the menu or item will be given on the screen.
+
+.TP 9
+.B  "\fIhelptext\fR"
+Used with a \fIhelp\fR entry, specifies what help text will appear when
+the help entry is selected.
+
+.TP 9
+.B [\fIparent, parent ...\fR ][\fIparent ...\fR]
+Used with a \fImenu\fR or \fIitem\fR entry, specifies what menus are
+allowed to be parents of the entry in the hierarchy.  The entry will
+become a child of the first available parent specified in each set of
+brackets (see example below).  A [NULL] parent specifes that the entry
+should be at the top level of the menu hierarchy.  If no parents are
+specifed for the entry, it will not appear on the screen. A maximum of
+five to ten types of parents may be specified.
+
+.TP 9
+.B {\fIchildren, ...\fR}
+Used with a \fImenu\fR or \fIitem\fR entry, specifies what menus or
+items are  allowed to be children of the entry in the hierarchy.  If no
+entries have \fIparent\fR fields which match, the entry will not appear
+on the screen. A maximum of five types of children may be specified.
+
+.TP 9
+.B \fIcallback\fR(),...
+Used with an \fIitem\fR entry, specifies a callback or callbacks to be
+called when the entry is selected.  If no callbacks are specified,
+nothing will happen when the entry is selected.  See CALLBACKS below.
+
+.TP 9
+.B \-h 
+Used with a \fImenu\fR entry, specifies that this menu is to be
+displayed horizontally on the screen.
+
+.TP 9
+.B \-v
+Used with a \fImenu\fR entry, specifies that this menu is to be
+displayed vertically on the screen.  This is the default.
+
+.TP 9
+.B \(+-verify
+Used with an \fIitem\fR entry, specifies whether this item should or
+should not try to verify its selection by popping up a dialog box on the
+screen, which is the default.
+
+.TP
+.B\(+-decmips
+.br
+.ns
+.TP
+.B\(+-rt
+.br
+.ns
+.TP
+.B\(+-vax
+.br
+.ns
+.HP 9
+.B\(+-rsaix
+.br
+Used with an \fIitem\fR entry, specifies that this item is or is not
+available specifically on decmips, rt, vax, or rsaix workstation platforms.
+Default is + for all platforms.  If an \fIitem\fR is specified as
+not available for the platform on which \fIdash\fR is running, it will
+appear dimmed on the screen.
+
+.SH CALLBACKS
+.PP
+The following callbacks are available for binding to \fIitems\fR (see above).
+Arguments should be strings enclosed in double quotes.
+
+.TP 9
+.B createTree(\fItreename\fR) 
+Creates a tree of widgets named \fItreename\fR.
+
+.TP 9
+.B createMapTree(\fItreename\fR)
+Creates a tree of widgets named \fItreename\fR if one does not already exist,
+or maps it if it does.
+
+.TP 9
+.B destroyTree(\fItreename\fR)
+Destroys the first tree with name \fItreename\fR created by
+\fIcreate(Map)Tree\fR that it finds.
+
+.TP 9
+.B quit()
+Causes \fIdash\fR to exit.
+
+.TP 9
+.B toggleHelp(\fIlabel\fR) 
+Causes \fIdash\fR to toggle whether or not help entries are displayed,
+and to replace the label of the calling item with \fIlabel\fR.  Entries
+which use this callback must also specify \fI-verify\fR (see above).
+
+.TP 9
+.B toggleVerify(\fIlabel\fR)
+Causes \fIdash\fR to toggle whether or not callbacks for all items are
+verified with a popup dialog box, and to replace the label of the
+calling item with \fIlabel\fR.  Entries which use this callback must
+also specify \fI-verify\fR (see above).
+
+.TP 9
+.B logout()
+Causes \fIdash\fR to log the user out.
+
+.TP 9
+.B mapTree(\fItreename\fR)
+Causes the widget tree named \fItreename\fR created by \fIcreateTree\fR
+to be visible on the screen.
+
+.TP 9
+.B unmapTree(\fItreename\fR)
+Causes the widget tree named \fItreename\fR created by \fIcreateTree\fR
+to disappear from the screen.
+
+.TP 9
+.B printMenu() 
+Causes \fIdash\fR to print out the current assembled menu hierarchy for
+the menu tree of which the calling entry is a member.  Entries which use
+this callback must also specify \fI-verify\fR (see above).
+
+.TP 9
+.B sh(\fIcommand\fR)
+Causes \fIdash\fR to fork and execute a Bourne shell with the command
+line \fIcommand\fR.  See \fIsh\fR(1).
+
+.TP 9
+.B exec(\fIcommand\fR)
+Causes \fIdash\fR to fork and execute \fIcommand\fR. In the string
+passed to exec, ~ will be interpreted from the HOME environment
+variable, and %M will be expanded to one of vax, rt, or decmips, as
+appropriate.
+
+.TP 9
+.B cd(\fIdirectory\fR)
+Causes \fIdash\fR to make the working directory for the next \fIexec\fR
+callback \fIdirectory\fR. \fIDirectory\fR may contain %M.
+
+.TP 9
+.B attach(\fIfilesystem\fR)
+Causes \fIdash\fR to attach \fIfilesystem\fR.  See \fIattach\fR(1).
+
+.TP 9
+.B add(\fIfilesystem\fR)
+Causes \fIdash\fR to "add" \fIfilesystem\fR, which means that
+\fIfilesystem\fR is attached, and \fIfilesystem\fR/%Mbin is added to the
+directory search path for the next \fIexec\fR callback.
+
+.TP 9
+.B setup(\fIfilesystem\fR)
+Causes \fIdash\fR to attach \fIfilesystem\fR and set the environment
+variable SUBJECT to \fIfilesystem\fR for the next \fIexec\fR call. To
+implement the equivalent of the \fIsetup\fR command with this, try using something like:
+
+setup("16.00"),exec("xterm -n Todor")
+
+.TP 9
+.B addMenus(\fIfilename\fR)
+Causes \fIdash\fR to open \fIfilename\fR and add its contents to the
+menu hierarchy of the calling item.  Entries which use this callback
+must also specify \fI-verify\fR (see above). \fIFilename\fR should have
+an entry specifying that the menu item responsible for loading it become
+-vax -rt -decmips, to prevent the user from trying to add it again.
+
+.TP 9
+.B restart(\fIcommand\fR)
+With no arguments, causes \fIdash\fR to reread its configuration and
+restart.  With an argument, causes \fIdash\fR to exit and exec
+\fIcommand\fR instead. \fIRestart\fR may contain %M.
+
+
+.SH EXAMPLES
+.PP
+The file /usr/athena/lib/X11/app-defaults/Dash provides perhaps the best known
+working examples of working \fIdash\fR configuration resources.  In
+particular, the basic structure of trees and forms, not documented here,
+can be gleaned by examining the beginning of the file.
+.PP
+The file /usr/athena/lib/Dash.menus contains an extensive listing good
+working menu format sample.  The following sample menu file demonstrates
+most of the features of the menu syntax as a user might wish to use to
+add to the Athena default:
+
+.br
+.br
+menu top: "top" {topthings} [NULL]   +h;
+.br
+menu toys: "toys"  [topthings/10] {toythings} ;
+.br
+menu work: "work" [topthings/10] {workthings} ;
+.br
+menu gnu: "GNU" [topthings/10] {gnuthings} ;
+.br
+item quit: "Quit" [topthings/15] quit() -verify ;
+.br
+item tetris: "tetris" [toythings] add("games"),exec("Tetris") ;
+.br
+item xchess: "chess" [toythings][gnuthings] add("gnu"),exec("xchess") ;
+.br
+item gdb: "debugger" [workthings][gnuthings] add("gnu"),exec("xterm -e gdb");
+.br
+item emacs: "emacs" [workthings,gnuthings] exec("emacs") -verify;
+.br
+help tetris:
+.br
+"You'd better not have any work to do 
+.br
+if you're going to play this thing.";
+.br
+help tetris:
+"Ignore previous warning -- PLAY!";
+.br
+item xchess: -decmips;
+.br
+help quit:
+.br
+"Bye!";
+
+.SH "FILES"
+.PP
+/usr/athena/bin/dash                     dash
+.br
+/usr/athena/lib/X11/app-defaults/Dash    application defaults
+.br
+~/.dashrc                                user defaults
+.br
+/usr/athena/lib/Dash.menus               Athena default menus
+
+.SH SEE ALSO
+X(1)
+
+.SH "BUGS"
+.PP
+Some things don't interpret "~" and "%M" that probably should.
+
+Quotes may not be passed in callback strings.
+
+Attempting to place menu bars other than at +0+0 causes the program to
+get confused when submenus try to go off the side of the screen.
+
+.SH "CUSTOMIZATION AND DOCUMENTATION"
+A detailed document on using and customizing the Athena Dashboard is
+pending from Athena. It will explain the detailed subject of
+setting up complicated widget hierarchies. It may also include
+documentation of features that there was no time to include in this
+manual page.
+
+.SH AUTHORS
+Craig Fields, Paul Boutin, and Chris VanHaren,  MIT Project Athena
+.br
+Copyright (c) 1990,1991 Massachusetts Institute of Technology
