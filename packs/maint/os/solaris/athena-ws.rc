@@ -1,4 +1,4 @@
-# $Id: athena-ws.rc,v 1.7 2003-04-06 20:42:06 ghudson Exp $
+# $Id: athena-ws.rc,v 1.8 2003-04-06 21:09:16 ghudson Exp $
 # /etc/init.d/athena-ws - Start/Stop the athena daemons
 
 # First, set up some useful variables.  Note /usr/athena/etc at the
@@ -255,51 +255,6 @@ start)
   echo "Updating panel menus... \c"
   local-menus
   echo "done."
-
-  echo "Recreating gconf schemas... \c"
-  if [ -x /usr/athena/bin/gconftool-2 ]; then
-    rm -rf /etc/athena/gconf/gconf.xml.defaults
-    mkdir /etc/athena/gconf/gconf.xml.defaults
-    GCONF_CONFIG_SOURCE=`gconftool-2 --get-default-source`
-    export GCONF_CONFIG_SOURCE
-    for f in /etc/athena/gconf/schemas/*.schemas; do
-      gconftool-2 --makefile-install-rule 2>&1 > /dev/null
-    done
-    # athena-panel-config.schemas one has to be installed last, since it
-    # overlaps with panel-per-panel-config.schemas right now.
-    gconftool-2 --makefile-install-rule \
-      /etc/athena/gconf/schemas/athena-panel-config.schemas 2>&1 > /dev/null
-    echo "done."
-  else
-    echo "failed."
-  fi
-
-  echo "Setting up pango configuration... \c"
-  if [ -x /usr/athena/bin/pango-querymodules ]; then
-    mkdir -p /etc/athena/pango
-    pango-querymodules > /etc/athena/pango/pango.modules
-    echo "done."
-  else
-    echo "failed."
-  fi
-
-  echo "Setting up gtk2 image configuration... \c"
-  if [ -x /usr/athena/bin/gtk-query-immodules-2.0 ]; then
-    mkdir -p /etc/athena/gtk-2.0
-    gtk-query-immodules-2.0 > /etc/athena/gtk-2.0/gtk.immodules
-    gdk-pixbuf-query-loaders > /etc/athena/gtk-2.0/gdk-pixbuf.loader
-    echo "done."
-  else
-    echo "failed."
-  fi
-
-  echo "Setting up fontconfig cache... \c"
-  if [ -x /usr/athena/bin/fc-cache ]; then
-    fc-cache -f 2>/dev/null
-    echo "done."
-  else
-    echo "failed."
-  fi
 
   echo "Ending Athena startup tasks"
   ;;

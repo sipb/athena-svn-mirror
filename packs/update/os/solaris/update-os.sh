@@ -99,3 +99,6 @@ if [ "$NEWDEVS" = "true" ]; then
   chmod 755 "$UPDATE_ROOT/devices"
   cp /dev/null "$UPDATE_ROOT/reconfigure"
 fi
+
+echo "Create config files for Athena software"
+chroot ${UPDATE_ROOT:-/} /srvd/install/athchanges
