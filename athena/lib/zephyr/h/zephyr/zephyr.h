@@ -4,13 +4,13 @@
  *	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/h/zephyr/zephyr.h,v $
- *	$Author: jtkohl $
+ *	$Author: opus $
  *
  *	Copyright (c) 1987 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/h/zephyr/zephyr.h,v 1.14 1987-09-24 10:54:18 jtkohl Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/h/zephyr/zephyr.h,v 1.15 1987-09-28 01:04:02 opus Exp $ */
 
 #ifndef __ZEPHYR_H__
 #define __ZEPHYR_H__
@@ -182,6 +182,10 @@ extern int ZMakeAuthentication();
 #define HM_CTL_SERVER		"SERVER"	/* Inst: From server */
 #define SERVER_SHUTDOWN		"SHUTDOWN"	/* Opcode: Server shutdown */
 #define SERVER_PING		"PING"		/* Opcode: PING */
+
+#define HM_CTL_CLIENT           "CLIENT"        /* Inst: From client */
+#define CLIENT_FLUSH            "FLUSH"         /* Opcode: Send flush to srv */
+#define CLIENT_NEW_SERVER       "NEWSERV"       /* Opcode: Find new server */
 
 	/* HM Statistics */
 #define HM_STAT_CLASS		"HM_STAT"	/* Class */
