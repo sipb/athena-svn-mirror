@@ -18,8 +18,12 @@ agent connections.
 */
 
 /*
- * $Id: sshd.c,v 1.7 1998-02-02 23:20:15 danw Exp $
+ * $Id: sshd.c,v 1.8 1998-02-28 17:58:31 danw Exp $
  * $Log: not supported by cvs2svn $
+ * Revision 1.7  1998/02/02 23:20:15  danw
+ * use our DEFAULT_PATH, not the OS's unless the builder overrides it on
+ * the command line.
+ *
  * Revision 1.6  1998/01/24 01:47:26  danw
  * merge in changes for 1.2.22
  *
@@ -1836,12 +1840,30 @@ void do_authentication(char *user, int privileged_port, int cipher_type)
   status = al_login_allowed(user, 1, &filetext);
   if (status != AL_SUCCESS)
     {
+      /* We don't want to use `packet_disconnect', because it will syslog
+	 at LOG_ERR. Ssh doesn't provide a primitive way to give an
+	 informative message and disconnect without any bad feelings... */
+
+      char *buf, *err;
+
+      err = al_strerror(status, &errmem);
       if (filetext && *filetext)
-	packet_disconnect("You are not allowed to log in here: %s\n%s",
-			  al_strerror(status, &errmem), filetext);
+	{
+	  buf = malloc(40 + strlen(err) + strlen(filetext));
+	  sprintf(buf, "You are not allowed to log in here: %s\n%s",
+		  err, filetext);
+	}
       else
-	packet_disconnect("You are not allowed to log in here: %s\n",
-			  al_strerror(status, &errmem));
+	{
+	  buf = malloc(40 + strlen(err));
+	  sprintf(buf, "You are not allowed to log in here: %s\n", err);
+	}
+      packet_start(SSH_MSG_DISCONNECT);
+      packet_put_string(buf, strlen(buf));
+      packet_send();
+      packet_write_wait();
+
+      fatal_severity(SYSLOG_SEVERITY_INFO, "Login denied: %s", err);
       /* not reached */
     }
   al_acct_create(user, NULL, getpid(), 0, 0, &al_warnings);
