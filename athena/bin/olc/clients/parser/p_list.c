@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_list.c,v $
- *	$Id: p_list.c,v 1.8 1992-01-10 20:00:23 lwvanels Exp $
+ *	$Id: p_list.c,v 1.9 1992-02-14 18:32:21 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_list.c,v 1.8 1992-01-10 20:00:23 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_list.c,v 1.9 1992-02-14 18:32:21 lwvanels Exp $";
 #endif
 #endif
 
@@ -207,55 +207,10 @@ do_olc_list(arguments)
 	  continue;
 	}
 	
-#if 0
-       
-       if(string_equiv(*arguments,"-sort",max(strlen(*arguments),3)))
-	{
-	  ++arguments;
-	  if(*arguments == (char *) NULL)
-	    {
-	      return(ERROR);
-	    }
-	  for(i=0; *arguments != (char *) NULL; arguments++)
-	    {
-	      if(i >= NAME_SIZE-1)
-		{
-		  fprintf(stderr,"Too many rules...\n");
-		  break;
-		}
-	      if(strlen(*arguments) >= (NAME_SIZE))
-		fprintf(stderr,
-			"Name too long. Continuing...\n");
-	      else
-		{
-		  strncpy(sort[i], *arguments, NAME_SIZE-1);
-		  *sort[i+1] = '\0';
-		  sortP[i] = &sort[i][0];
-		}
-	      if((*(arguments+1)) && (*(arguments+1)[0] == '-'))
-		break;
-		
-	      if(arguments[1] == (char *) NULL)
-		break;
-	    }
-	  sortP[i] = &sort[i][0];
-	  continue;
-	}
-
-/* #else
-   Sorry, Ken, we gotta rip sorting out of the CLI for now...
-*/
-       if (!strcmp (*arguments, "-sort")) {
-	   ++arguments;
-	   if (*arguments == (char *) NULL)
-	       return ERROR;
-	   if (*arguments[0] == '-')
-	       return ERROR;
-	   *sortPP++ = *arguments++;
-	   *sortPP = NULL;
+       if(**arguments != '-') {
+	 strncpy(users,*arguments,NAME_SIZE-1);
+	 continue;
        }
-#endif
-
 
       arguments = handle_argument(arguments, &Request, &status);
       if(status)
@@ -266,9 +221,6 @@ do_olc_list(arguments)
 	  printf("Usage is: \tlist [-display] [-queue <queues>] ");
 	  printf("[-topic <topic>]\n\t\t[-status <statuses>] ");
 	  printf("[-comments] [<username pattern>]\n\t\t");
-#if 0
-	  printf("[-sort <something>] ");
-#endif
 	  printf("[-file <filename>]\n");
 	  return(ERROR);
 	}
