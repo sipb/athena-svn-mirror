@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: update_ws.sh,v 1.35 1998-04-24 19:10:52 rbasch Exp $
+# $Id: update_ws.sh,v 1.36 1998-05-07 17:59:23 ghudson Exp $
 
 # Copyright 1996 by the Massachusetts Institute of Technology.
 #
@@ -111,24 +111,13 @@ if [ ! -d /var/athena ]; then
 	mkdir -m 755 /var/athena
 fi
 
-# Get clusterinfo for the version in /srvd/.rvdinfo to determine what
-# to attach for /install on SGIs.  This also sets NEW_TESTING_RELEASE
-# and NEW_PRODUCTION_RELEASE if there are new releases available.  If
-# SGIs are ever brought back to the normal /srvd vs. /os distinction,
-# we can just run /etc/athena/save_cluster_info like we used to before
-# version 1.9 of this file.
-AUTOUPDATE=false /bin/athena/getcluster -b `hostname` "$newvers" > \
-	/var/athena/clusterinfo.bsh.update
-if [ $? -ne 0 -o ! -s /var/athena/clusterinfo.bsh.update ]; then
-	# No updates for machines without cluster info.
-	if [ "$method" != Auto ]; then
-		echo "Cannot find Hesiod information for this machine;"
-		echo "aborting update."
-	fi
-	exit 1
+# Get and read cluster information, to set one or both of
+# NEW_TESTING_RELEASE and NEW_PRODUCTION_RELEASE if there are new
+# releases available.
+/etc/athena/save_cluster_info
+if [ -f /var/athena/clusterinfo.bsh ]; then
+	. /var/athena/clusterinfo.bsh
 fi
-. /var/athena/clusterinfo.bsh.update
-rm -f /var/athena/clusterinfo.bsh.update
 
 # Check if we're already in the middle of an update.
 case "$version" in
@@ -236,7 +225,7 @@ if [ "$method" = Auto -a "$packsnewer" = patch ]; then
 fi
 
 # The 8.1 -> 8.2 update consumes about 3.2MB on the /usr partition and
-# about 2.1MB on the root partition.  Since the smallest-sized Solaris
+# about 2.9MB on the root partition.  Since the smallest-sized Solaris
 # partitions only have 7.3MB free on /usr and 8MB free on the root
 # filesystem under 8.1, it's important to make sure that neither
 # filesystem fills up.  Some day the version scripts should take care
@@ -250,7 +239,7 @@ sun4,8.[01].*|sun4,7.*)
 		echo "files off /usr partition."
 		exit 1
 	fi
-	if [ "`df -k / | awk '/\/$/ { print $4; }'`" -lt 3072 ]; then
+	if [ "`df -k / | awk '/\/$/ { print $4; }'`" -lt 4096 ]; then
 		echo "Root partition low on space (less than 3MB); not"
 		echo "performing update.  Please reinstall or clean local"
 		echo "files off root partition."
@@ -284,24 +273,6 @@ if [ -d /var/server ] ; then
 		exit 1
 	fi
 fi
-
-# On SGIs, make sure /install exists.
-case "$HOSTTYPE" in
-sgi)
-	if [ ! -n "$INSTLIB" ]; then
-		echo "No installation library set in Hesiod information,"
-		echo "aborting update."
-		exit 1
-	fi
-
-	/bin/athena/attach -q -h -n -o hard $INSTLIB
-	if [ $? -ne 0 -o ! -d /install/install \
-		-a ! -d /install/selections ]; then
-		echo "Installation directory can't be found, aborting update."
-		exit 1
-	fi
-	;;
-esac
 
 # Tell dm to shut down everything and sleep forever during the update.
 if [ "$method" = Auto -a "$why" = reactivate ]; then
