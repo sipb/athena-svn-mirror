@@ -1,0 +1,68 @@
+# Disk geometry: <SUN2.1G cyl 2733 alt 2 hd 19 sec 80>
+#
+# Part      Tag    Flag     Cylinders        Size       Blocks
+#   0       root    wm       0 -   64       48.24MB    (65/0/0)
+#   1       swap    wu     281 -  469      140.27MB    (189/0/0)
+#   2     backup    wu       0 - 2732        1.98GB    (2733/0/0)
+#   3 unassigned    wm     470 -  604      100.20MB    (135/0/0)
+#   4 unassigned    wm       0               0         (0/0/0)
+#   5        usr    wm      65 -  280      160.31MB    (216/0/0)
+#   6        var    wm     605 - 2732        1.54GB    (2128/0/0)
+#   7 unassigned    wm       0               0         (0/0/0)
+0
+partition
+
+0
+root
+wm
+0
+65c
+
+1
+swap
+wu
+281
+189c
+
+2
+backup
+wu
+0
+2733c
+
+3
+unassigned
+wm
+470
+135c
+
+4
+unassigned
+wm
+0
+0c
+
+5
+usr
+wm
+65
+216c
+
+6
+var
+wm
+605
+2128c
+
+7
+unassigned
+wm
+0
+0c
+
+label
+y
+print
+q
+q
+
