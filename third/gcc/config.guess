@@ -1,6 +1,6 @@
 #! /bin/sh
 # Attempt to guess a canonical system name.
-#   Copyright (C) 1992, 93, 94, 95, 96, 97, 1998 Free Software Foundation, Inc.
+#   Copyright (C) 1992, 93, 94, 95, 96, 97, 1998, 1999 Free Software Foundation, Inc.
 #
 # This file is free software; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -98,8 +98,14 @@ EOF
 		esac
 	fi
 	rm -f dummy.s dummy
-	echo ${UNAME_MACHINE}-dec-osf`echo ${UNAME_RELEASE} | sed -e 's/^[VTX]//' | tr [[A-Z]] [[a-z]]`
+	echo ${UNAME_MACHINE}-dec-osf`echo ${UNAME_RELEASE} | sed -e 's/^[VTX]//' | tr 'ABCDEFGHIJKLMNOPQRSTUVWXYZ' 'abcdefghijklmnopqrstuvwxyz'`
 	exit 0 ;;
+    Alpha\ *:Windows_NT*:*)
+        # How do we know it's Interix rather than generic posix subsystem?
+	# Should we change UNAME_MACHINE based on the output of uname 
+	# instead of the specific alpha model.
+	echo alpha-pc-interix
+	exit 0;;
     21064:Windows_NT:50:3)
 	echo alpha-dec-winnt3.5
 	exit 0 ;;
@@ -111,6 +117,9 @@ EOF
       exit 0 ;;
     amiga:OpenBSD:*:*)
 	echo m68k-unknown-openbsd${UNAME_RELEASE}
+	exit 0 ;;
+    *:[Aa]miga[Oo][Ss]:*:*)
+	echo ${UNAME_MACHINE}-unknown-amigaos
 	exit 0 ;;
     arc64:OpenBSD:*:*)
 	echo mips64el-unknown-openbsd${UNAME_RELEASE}
@@ -149,6 +158,9 @@ EOF
 	exit 0 ;;
     NILE:*:*:dcosx)
 	echo pyramid-pyramid-svr4
+	exit 0 ;;
+    sun4H:SunOS:5.*:*)
+	echo sparc-hal-solaris2`echo ${UNAME_RELEASE}|sed -e 's/[^.]*//'`
 	exit 0 ;;
     sun4*:SunOS:5.*:* | tadpole*:SunOS:5.*:*)
 	echo sparc-sun-solaris2`echo ${UNAME_RELEASE}|sed -e 's/[^.]*//'`
@@ -354,12 +366,48 @@ EOF
     hp300:4.4BSD:*:* | 9000/[34]??:4.3bsd:2.*:*)
 	echo m68k-hp-bsd4.4
 	exit 0 ;;
-    9000/[3478]??:HP-UX:*:*)
+    *9??*:MPE/iX:*:*)
+	echo hppa1.0-hp-mpeix
+	exit 0 ;;
+    9000/[34678]??:HP-UX:*:*)
 	case "${UNAME_MACHINE}" in
 	    9000/31? )            HP_ARCH=m68000 ;;
 	    9000/[34]?? )         HP_ARCH=m68k ;;
-	    9000/7?? | 9000/8?[1679] ) HP_ARCH=hppa1.1 ;;
-	    9000/8?? )            HP_ARCH=hppa1.0 ;;
+	    9000/[678][0-9][0-9] )
+
+              sed 's/^              //' << EOF >dummy.c
+              #include <stdlib.h>
+              #include <unistd.h>
+              
+              int main ()
+              {
+              #if defined(_SC_KERNEL_BITS)
+                  long bits = sysconf(_SC_KERNEL_BITS);
+              #endif 
+                  long cpu  = sysconf (_SC_CPU_VERSION);
+              
+                  switch (cpu) 
+              	{
+              	case CPU_PA_RISC1_0: puts ("hppa1.0"); break;
+              	case CPU_PA_RISC1_1: puts ("hppa1.1"); break;
+              	case CPU_PA_RISC2_0: 
+              #if defined(_SC_KERNEL_BITS)
+              	    switch (bits) 
+              		{
+              		case 64: puts ("hppa2.0w"); break;
+              		case 32: puts ("hppa2.0n"); break;
+              		default: puts ("hppa2.0"); break;
+              		} break;
+              #else  /* !defined(_SC_KERNEL_BITS) */
+              	    puts ("hppa2.0"); break;
+              #endif 
+              	default: puts ("hppa1.0"); break;
+              	}
+                  exit (0);
+              }
+EOF
+	(${CC-cc} dummy.c -o dummy 2>/dev/null ) && HP_ARCH=`./dummy`
+	rm -f dummy.c dummy
 	esac
 	HPUX_REV=`echo ${UNAME_RELEASE}|sed -e 's/[^.]*.[0B]*//'`
 	echo ${HP_ARCH}-hp-hpux${HPUX_REV}
@@ -416,6 +464,9 @@ EOF
     parisc*:Lites*:*:*)
 	echo hppa1.1-hp-lites
 	exit 0 ;;
+    hppa*:OpenBSD:*:*)
+	echo hppa-unknown-openbsd
+	exit 0 ;;
     C1*:ConvexOS:*:* | convex:ConvexOS:C1*:*)
 	echo c1-convex-bsd
         exit 0 ;;
@@ -452,7 +503,7 @@ EOF
 	echo cray2-cray-unicos
         exit 0 ;;
     F300:UNIX_System_V:*:*)
-        FUJITSU_SYS=`uname -p | tr [A-Z] [a-z] | sed -e 's/\///'`
+        FUJITSU_SYS=`uname -p | tr 'ABCDEFGHIJKLMNOPQRSTUVWXYZ' 'abcdefghijklmnopqrstuvwxyz' | sed -e 's/\///'`
         FUJITSU_REL=`echo ${UNAME_RELEASE} | sed -e 's/ /_/'`
         echo "f300-fujitsu-${FUJITSU_SYS}${FUJITSU_REL}"
         exit 0 ;;
@@ -469,7 +520,11 @@ EOF
 	echo ${UNAME_MACHINE}-pc-bsdi${UNAME_RELEASE}
 	exit 0 ;;
     *:FreeBSD:*:*)
-	echo ${UNAME_MACHINE}-unknown-freebsd`echo ${UNAME_RELEASE}|sed -e 's/[-(].*//'`
+        if test -x /usr/bin/objformat -a "elf" = "`/usr/bin/objformat`"; then
+          echo ${UNAME_MACHINE}-unknown-freebsdelf
+        else
+	  echo ${UNAME_MACHINE}-unknown-freebsd`echo ${UNAME_RELEASE}|sed -e 's/[-_].*//'`
+      fi
 	exit 0 ;;
     *:NetBSD:*:*)
 	echo ${UNAME_MACHINE}-unknown-netbsd`echo ${UNAME_RELEASE}|sed -e 's/[-_].*/\./'`
@@ -482,6 +537,16 @@ EOF
 	exit 0 ;;
     i*:MINGW*:*)
 	echo ${UNAME_MACHINE}-pc-mingw32
+	exit 0 ;;
+    i*:Windows_NT*:* | Pentium*:Windows_NT*:*)
+        # How do we know it's Interix rather than generic posix subsystem?
+	# It also conflicts with pre-2.0 versions of AT&T UWIN. Should we
+	# change UNAME_MACHINE based on the output of uname instead of
+	# i386?
+	echo i386-pc-interix
+	exit 0 ;;
+    i*:UWIN*:*)
+	echo ${UNAME_MACHINE}-pc-uwin
 	exit 0 ;;
     p*:CYGWIN*:*)
 	echo powerpcle-unknown-cygwin32
@@ -496,6 +561,7 @@ EOF
 	# uname on the ARM produces all sorts of strangeness, and we need to
 	# filter it out.
 	case "$UNAME_MACHINE" in
+	  armv*)		      UNAME_MACHINE=$UNAME_MACHINE ;;
 	  arm* | sa110*)	      UNAME_MACHINE="arm" ;;
 	esac
 
@@ -514,7 +580,36 @@ EOF
 	  sparclinux) echo "${UNAME_MACHINE}-unknown-linux-gnuaout" ; exit 0 ;;
 	  armlinux)   echo "${UNAME_MACHINE}-unknown-linux-gnuaout" ; exit 0 ;;
 	  m68klinux)  echo "${UNAME_MACHINE}-unknown-linux-gnuaout" ; exit 0 ;;
-	  elf32ppc)   echo "powerpc-unknown-linux-gnu"              ; exit 0 ;;
+	  elf32ppc | elf32ppclinux)
+		# Determine Lib Version
+		cat >dummy.c <<EOF
+#include <features.h>
+#if defined(__GLIBC__)
+extern char __libc_version[];
+extern char __libc_release[];
+#endif
+main(argc, argv)
+     int argc;
+     char *argv[];
+{
+#if defined(__GLIBC__)
+  printf("%s %s\n", __libc_version, __libc_release);
+#else
+  printf("unkown\n");
+#endif
+  return 0;
+}
+EOF
+		LIBC=""
+		${CC-cc} dummy.c -o dummy 2>/dev/null
+		if test "$?" = 0 ; then
+			./dummy | grep 1\.99 > /dev/null
+			if test "$?" = 0 ; then
+				LIBC="libc1"
+			fi
+		fi	
+		rm -f dummy.c dummy
+		echo powerpc-unknown-linux-gnu${LIBC} ; exit 0 ;;
 	esac
 
 	if test "${UNAME_MACHINE}" = "alpha" ; then
@@ -645,6 +740,18 @@ EOF
 		echo ${UNAME_MACHINE}-pc-sysv${UNAME_RELEASE}
 	fi
 	exit 0 ;;
+    i?86:*:5:7*)
+       UNAME_REL=`(/bin/uname -X|egrep Release|sed -e 's/.*= //')`
+       (/bin/uname -X|egrep i80486 >/dev/null) && UNAME_MACHINE=i486
+       (/bin/uname -X|egrep '^Machine.*Pentium' >/dev/null) \
+               && UNAME_MACHINE=i586
+# 5.0.4c returns "Pent II".  5.0.5 returns PentII
+       (/bin/uname -X|egrep '^Machine.*Pent.*II' >/dev/null) \
+               && UNAME_MACHINE=i686
+       (/bin/uname -X|egrep '^Machine.*Pentium Pro' >/dev/null) \
+               && UNAME_MACHINE=i686
+       echo ${UNAME_MACHINE}-${UNAME_SYSTEM}${UNAME_VERSION}-sysv${UNAME_RELEASE}
+       exit 0 ;;
     i?86:*:3.2:*)
 	if test -f /usr/options/cb.name; then
 		UNAME_REL=`sed -n 's/.*Version //p' </usr/options/cb.name`
@@ -654,6 +761,12 @@ EOF
 		(/bin/uname -X|egrep i80486 >/dev/null) && UNAME_MACHINE=i486
 		(/bin/uname -X|egrep '^Machine.*Pentium' >/dev/null) \
 			&& UNAME_MACHINE=i586
+		(/bin/uname -X|egrep '^Machine.*PentII' >/dev/null) \
+			&& UNAME_MACHINE=i686
+		(/bin/uname -X|egrep '^Machine.*Pent II' >/dev/null) \
+			&& UNAME_MACHINE=i686
+                (/bin/uname -X|egrep '^Machine.*Pentium Pro' >/dev/null) \
+                        && UNAME_MACHINE=i686
 		echo ${UNAME_MACHINE}-pc-sco$UNAME_REL
 	else
 		echo ${UNAME_MACHINE}-pc-sysv32
@@ -742,13 +855,22 @@ EOF
     news*:NEWS-OS:*:6*)
 	echo mips-sony-newsos6
 	exit 0 ;;
-    R3000:*System_V*:*:* | R4000:UNIX_SYSV:*:*)
+    R3000:*System_V*:*:* | R4000:UNIX_SYSV:*:* | R4000:UNIX_SV:*:*)
 	if [ -d /usr/nec ]; then
 	        echo mips-nec-sysv${UNAME_RELEASE}
 	else
 	        echo mips-unknown-sysv${UNAME_RELEASE}
 	fi
         exit 0 ;;
+    BeBox:BeOS:*:*)	# BeOS running on hardware made by Be, PPC only.
+	echo powerpc-be-beos
+	exit 0 ;;
+    BeMac:BeOS:*:*)	# BeOS running on Mac or Mac clone, PPC only.
+	echo powerpc-apple-beos
+	exit 0 ;;
+    BePC:BeOS:*:*)	# BeOS running on Intel PC compatible.
+	echo i586-pc-beos
+	exit 0 ;;
 esac
 
 #echo '(No uname command or uname output not recognized.)' 1>&2
