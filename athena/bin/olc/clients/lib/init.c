@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/init.c,v 1.4 1990-01-17 03:19:38 vanharen Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/init.c,v 1.5 1990-04-25 16:13:36 vanharen Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -123,11 +123,10 @@ OInitialize()
   pwent = getpwuid(uid);
   if(pwent == (struct passwd *) NULL)
     {
-       fprintf(stderr,"warning: unable to get passwd information\n");
-       if(OLC)
-          printf("Try logging out and in again.\n");
-       strcpy(User.username,"nobody");
-       strcpy(User.realname,"No passwd info"); 
+       fprintf(stderr, "Warning: unable to get passwd information.\n");
+       fprintf(stderr, "Try logging out and in again.\n");
+       strcpy(User.username, "nobody");
+       strcpy(User.realname, "No passwd info"); 
      }
   else
      {
