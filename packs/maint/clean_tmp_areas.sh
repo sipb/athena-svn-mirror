@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: clean_tmp_areas.sh,v 1.12 1998-09-22 01:55:09 ghudson Exp $
+# $Id: clean_tmp_areas.sh,v 1.13 1998-10-21 19:59:51 danw Exp $
 # Script to clean up some temporary areas in a vaguely general manner.
 
 PATH=/bin/athena:/bin:/usr/bin
@@ -25,7 +25,7 @@ set -- $dirs
 IFS="$oldifs"
 while [ $# -gt 1 ]; do
 	if cd $1; then
-		find $args . $xdev $2 $exceptions -exec saferm {} \; -print
+		find $args . $xdev $2 $exceptions ! -type d -exec saferm {} \; -print
 		find $args . $xdev -depth ! -name . -type d -mtime +1 -exec saferm -d -q {} \; -print
 	fi
 	shift 2
