@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data.c,v $
- *	$Id: data.c,v 1.17 1991-01-01 13:53:13 lwvanels Exp $
+ *	$Id: data.c,v 1.18 1991-01-03 15:53:03 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data.c,v 1.17 1991-01-01 13:53:13 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data.c,v 1.18 1991-01-03 15:53:03 lwvanels Exp $";
 #endif
 #endif
 
@@ -33,36 +33,6 @@ static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 #include <olcd.h>
 
 #include "lumberjack.h"
-
-char *DATABASE_FILE      = "/usr/lib/olc/database";
-char *SPECIALTY_DIR      = "/usr/lib/olc/specialties";
-char *ACL_DIR            = "/usr/lib/olc/acls";
-char *LOG_DIR            = "/usr/spool/olc";
-char *BACKUP_FILE        = "/usr/spool/olc/backup.dat";
-char *BACKUP_TEMP        = "/usr/spool/olc/backup.temp";
-char *ERROR_LOG          = "/usr/adm/olc/errors";
-char *REQ_STATS_LOG      = "/usr/adm/olc/requests.stats";
-char *QUES_STATS_LOG     = "/usr/adm/olc/question.stats";
-char *STATUS_LOG         = "/usr/adm/olc/status";
-char *ADMIN_LOG          = "/usr/adm/olc/admin";
-char *STDERR_LOG         = "/usr/adm/olc/errors";
-char *TOPIC_FILE         = "/usr/lib/olc/topics";
-char *MOTD_FILE          = "/usr/lib/olc/motd";
-char *MOTD_TIMEOUT_FILE  = "/usr/lib/olc/motd_timeout";
-char *MOTD_HOLD_FILE	 = "/usr/lib/olc/motd_hold";
-char *MACH_TRANS_FILE    = "/usr/lib/olc/translations";
-
-char *LIST_FILE_NAME     = "/usr/spool/olc/qlist_-1.log";
-char *LIST_TMP_NAME      = "/usr/spool/olc/queue.tmp";
-
-#ifdef KERBEROS
-char *TICKET_FILE        = "/usr/spool/olc/tkt.olc";
-char *DFLT_SERVER_REALM  = "ATHENA.MIT.EDU";
-char *SRVTAB_FILE        = "/usr/lib/olc/srvtab";
-char SERVER_REALM[REALM_SZ];
-char K_INSTANCEbuf[INST_SZ];
-#endif /* KERBEROS */
-
 
 /* declaraction of procedure table */
 
@@ -101,6 +71,9 @@ PROC Proc_List[] =
   OLC_GET_DBINFO,      olc_get_dbinfo,       "olc db info",
 /*  OLC_SET_DBINFO,      olc_change_dbinfo,    "olc db info"*/
   OLC_GET_ACCESSES,    olc_get_accesses,     "olc get access",
+  OLC_SET_USER_STATUS, olc_set_user_status,  "olc set login/out status",
+  OLC_GET_HOURS,       olc_get_hours,	     "olc get hours",
+  OLC_CHANGE_HOURS,    olc_change_hours,     "olc change hours",
 #ifdef __STDC__
   UNKNOWN_REQUEST,     (FUNCTION) NULL,  (char *) NULL,
 #else
