@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/log.c,v 1.7 1989-12-20 22:21:48 vanharen Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/log.c,v 1.8 1989-12-22 16:25:57 vanharen Exp $";
 #endif
 
 
@@ -179,9 +179,9 @@ log_mail(owner,sender,message)
   char header[DB_LINE];
   
   time_now(time);
-  (void) sprintf(header, "*** Mail from %s %s@%s\n    [%s]\n",
+  (void) sprintf(header, "*** Mail from %s %s@%s (%d)\n    [%s]\n",
 	  sender->title, sender->user->username, 
-	  sender->user->machine, time);
+	  sender->user->machine, sender->instance, time);
   (void) log_log(owner,message,header);
 }
 
@@ -194,10 +194,26 @@ log_comment(owner,sender,message)
   char header[DB_LINE];
 
   time_now(time);
-  (void) sprintf(header, "--- Comment by %s %s@%s\n    [%s]\n",
-		 sender->title, 
-		 sender->user->username,
-		 sender->user->machine,time);
+  (void) sprintf(header, "--- Comment by %s %s@%s (%d)\n    [%s]\n",
+		 sender->title, sender->user->username,
+		 sender->user->machine, sender->instance, time);
+
+  (void) log_log(owner,message,header);
+}
+
+
+log_description(owner,sender,message)
+     KNUCKLE *owner, *sender;
+     char *message;
+{
+  char time[TIME_SIZE];
+  char header[DB_LINE];
+
+  time_now(time);
+  (void) sprintf(header,
+		 "--- Description changed by %s %s@%s (%d)\n    [%s]\n",
+		 sender->title, sender->user->username,
+		 sender->user->machine, sender->instance, time);
 
   (void) log_log(owner,message,header);
 }
