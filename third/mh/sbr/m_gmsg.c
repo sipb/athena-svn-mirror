@@ -1,6 +1,6 @@
 /* m_gmsg.c - read a folder */
 #ifndef	lint
-static char ident[] = "@(#)$Id: m_gmsg.c,v 1.1.1.1 1996-10-07 07:13:51 ghudson Exp $";
+static char ident[] = "@(#)$Id: m_gmsg.c,v 1.2 1999-01-29 18:23:19 ghudson Exp $";
 #endif /* lint */
 
 #include "../h/mh.h"
@@ -50,7 +50,11 @@ register char   *name;
 	free (name);
 	return NULL;
     }
-    (void) fstat (dd -> dd_fd, &st);
+#ifndef __linux__
+    fstat (dd -> dd_fd, &st);
+#else
+    fstat (dirfd (dd), &st);
+#endif
 
     mp = (struct msgs  *) malloc (MHSIZE (mp, 0, 0));
     if (mp == NULL)
