@@ -32,7 +32,7 @@ if [ "$runinst" -ne 0 ]; then
 
 	opts="-a -Vinstmode:normal -Vstartup_script:ignore -N"
 	opts="$opts -Vdelay_idb_read:on -Voverlay_mode:silent"
-	opts="$opts -r $UPDATE_ROOT/"
+	opts="$opts -r $UPDATE_ROOT/ -Vskip_rqs:true"
 
 	# Install local packages.
 	for dist in $dists ; do
@@ -62,8 +62,7 @@ if [ "$runinst" -ne 0 ]; then
 			cat $seldir/header.$dist $LINKPACKAGES.$dist > \
 				/tmp/selections.link
 
-			inst $opts -T/os -F /tmp/selections.link \
-				-Vskip_rqs:true
+			inst $opts -T/os -F /tmp/selections.link
 		fi
 	done
 
