@@ -15,7 +15,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_subscr_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/subscr.c,v 1.34 1988-10-20 10:32:32 jtkohl Exp $";
+static char rcsid_subscr_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/subscr.c,v 1.35 1989-10-02 15:31:08 jtkohl Exp $";
 #endif SABER
 #endif lint
 
@@ -91,8 +91,8 @@ static ZSubscr_t matchall_sub = {
 	(ZSubscr_t *) 0,
 	(ZSubscr_t *) 0,
 	MATCHALL_CLASS,
-	NULL,
-	NULL };
+	"",
+	"" };
 
 /* WARNING: make sure this is the same as the number of strings you */
 /* plan to hand back to the user in response to a subscription check, */
