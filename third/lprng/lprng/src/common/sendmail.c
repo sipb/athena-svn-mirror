@@ -8,10 +8,11 @@
  ***************************************************************************/
 
  static char *const _id =
-"$Id: sendmail.c,v 1.9 2000-03-31 16:21:14 mwhitson Exp $";
+"$Id: sendmail.c,v 1.9.2.1 2000-11-08 22:01:02 ghudson Exp $";
 
 #include "lp.h"
 #include "errorcodes.h"
+#include "permission.h"
 #include "fileopen.h"
 #include "getqueue.h"
 #include "sendmail.h"
@@ -154,7 +155,12 @@ void Sendmail_to_user( int retval, struct job *job )
 		plp_snprintf(buffer+len,sizeof(buffer)-len,
 		_(" failed and could not be retried.\n") );
 		break;
-
+	
+	case P_REJECT:
+	        plp_snprintf(buffer+len,sizeof(buffer)-len,
+		_(" failed.  You are not allowed to print here.\n") );
+		break;
+		
 	default:
 		plp_snprintf(buffer+len,sizeof(buffer)-len,
 		_(" failed. Make sure that\nthe printer is turned on and has a working network connection.\n"));
