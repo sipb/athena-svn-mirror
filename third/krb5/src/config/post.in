@@ -44,12 +44,6 @@ Makefile: $(srcdir)/Makefile.in $(thisconfigdir)/config.status \
 	cd $(thisconfigdir) && $(SHELL) config.status
 $(thisconfigdir)/config.status: $(srcdir)/$(thisconfigdir)/configure
 	cd $(thisconfigdir) && $(SHELL) config.status --recheck
-$(srcdir)/$(thisconfigdir)/configure: $(srcdir)/$(thisconfigdir)/configure.in \
-		$(SRCTOP)/aclocal.m4
-	cd $(srcdir)/$(thisconfigdir) && \
-		$(SHELL) $(SRCTOP)/util/autoconf/autoconf \
-			--localdir=$(BUILDTOP) \
-			--macrodir=$(BUILDTOP)/util/autoconf
 
 all-recurse clean-recurse install-recurse check-recurse Makefiles-recurse:
 	@case "`echo '$(MFLAGS)'|sed -e 's/ --.*$$//'`" in \
