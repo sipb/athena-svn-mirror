@@ -20,19 +20,21 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v $
- *	$Id: requests_olc.c,v 1.52 1993-04-28 14:36:42 vanharen Exp $
+ *	$Id: requests_olc.c,v 1.53 1993-05-14 14:22:35 vanharen Exp $
  *	$Author: vanharen $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v 1.52 1993-04-28 14:36:42 vanharen Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v 1.53 1993-05-14 14:22:35 vanharen Exp $";
 #endif
 #endif
 
 #include <mit-copyright.h>
 
 #include <olcd.h>
+
+extern int maint_mode;
 
 /*
  * Function:	olc_on() signs a user on to the OLC system.  If
@@ -2193,6 +2195,9 @@ olc_startup(fd, request)
   char msgbuf[BUF_SIZE];	
   int status,i,entries=0;
     
+  if (maint_mode)
+    return(send_response(fd,USER_NOT_FOUND));
+
   status = find_knuckle(&(request->requester), &requester);
 
 #ifdef LOG
