@@ -15,7 +15,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_main_c[] = "$Id: main.c,v 1.38 1989-09-18 14:23:31 jtkohl Exp $";
+static char rcsid_main_c[] = "$Id: main.c,v 1.39 1989-10-23 08:14:19 jtkohl Exp $";
 #endif SABER
 #endif lint
 
@@ -339,7 +339,7 @@ do_net_setup()
 	sock_sin.sin_port = sp->s_port;
 	
 	if (!(sp = getservbyname(HM_SVCNAME, "udp"))) {
-		syslog(LOG_ERR, "%s/udp unknown", SERVER_SVCNAME);
+		syslog(LOG_ERR, "%s/udp unknown", HM_SVCNAME);
 		return(1);
 	}
 	hm_port = sp->s_port;
