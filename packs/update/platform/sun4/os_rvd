@@ -1,5 +1,5 @@
 GLOBAL : *.CKP *.local *.pid :
-## $Id: os_rvd,v 1.9.2.3 1997-05-24 21:45:03 ghudson Exp $
+## $Id: os_rvd,v 1.9.2.4 1997-07-29 18:23:33 ghudson Exp $
 ## Major subscription list for workstations
 ##
 ##	MIT Project Athena
@@ -44,6 +44,7 @@ GLOBAL : *.CKP *.local *.pid :
 		motd
 		mnttab
 		name_to_major
+		nscd.conf
 		-> opt
 		path_to_inst
 		passwd
