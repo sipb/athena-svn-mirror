@@ -9,13 +9,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/motd.c,v $
- *	$Id: motd.c,v 1.1 1990-12-09 17:42:22 lwvanels Exp $
+ *	$Id: motd.c,v 1.2 1990-12-12 15:18:56 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/motd.c,v 1.1 1990-12-09 17:42:22 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/motd.c,v 1.2 1990-12-12 15:18:56 lwvanels Exp $";
 #endif
 #endif
 
@@ -77,6 +77,14 @@ void
     close(fd);
     log_status("MOTD expired");
     expire_time = 0;
+    fd = open(MOTD_TIMEOUT_FILE,O_WRONLY|O_CREAT|O_TRUNC,0644);
+    if (fd < 0) {
+      log_error("check_motd_timeout: Couldn't open motd timeout file");
+      expire_time = 0;
+      return;
+    }
+    write(fd,"0\n",2);
+    close(fd);
   }
 }
 
@@ -143,8 +151,11 @@ KNUCKLE *requester;
   }
 
  done:
-  strcpy(msgbuf,"Motd set to time out at: ");
-  strcat(msgbuf,ctime(&expire_time));
+  strcpy(msgbuf,"MOTD set to time out at: ");
+  if (expire_time == 0)
+    strcat(msgbuf,"Never");
+  else
+    strcat(msgbuf,ctime(&expire_time));
   write_message_to_user(requester,msgbuf,0);
 
   /* strip out the timeout line and write it to a new file */
