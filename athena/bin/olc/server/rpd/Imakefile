@@ -1,6 +1,6 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/rpd/Imakefile,v $
- * $Id: Imakefile,v 1.9 1991-02-26 10:27:52 lwvanels Exp $
+ * $Id: Imakefile,v 1.10 1991-03-11 13:47:32 lwvanels Exp $
  */
 
 /* #define Profiling */
@@ -10,15 +10,11 @@ LIBSUFFIX=_p
 EXTRA_LOAD_FLAGS=-pg
 #endif
 
-S_SRCS=	rpd.c fdcache.c handle_request.c io.c acl_files.c kopt.c get_nm.c \
+SRCS=	rpd.c fdcache.c handle_request.c io.c acl_files.c kopt.c get_nm.c \
 	strcasecmp.c
 
-S_OBJS=	rpd.o fdcache.o handle_request.o io.o acl_files.o kopt.o get_nm.o \
+OBJS=	rpd.o fdcache.o handle_request.o io.o acl_files.o kopt.o get_nm.o \
 	strcasecmp.o
-
-C_SRCS=	oreplay.c io.c strcasecmp.c
-
-C_OBJS= oreplay.o io.o strcasecmp.o
 
 #ifdef Profiling
 DEFINES= -DPROFILE
@@ -29,16 +25,13 @@ DEFINES=
 #endif /* Profiling */
 
 
-CLIENT_LIBRARIES=	$(HesiodLib) $(KerberosLib)
-SERVER_LIBRARIES=	$(KerberosLib)
+SYSTEM_LIBRARIES=	$(KerberosLib)
 
 INCLUDES= -I.
 
-NormalProgramTarget(oreplay,$(C_OBJS),,$(CLIENT_LIBRARIES),)
-NormalProgramTarget(rpd,$(S_OBJS),,$(SERVER_LIBRARIES),)
+NormalProgramTarget(rpd,$(OBJS),,$(SYSTEM_LIBRARIES),)
 
-SaberProgramTarget(oreplay,$(C_SRCS),$(C_OBJS),$(CLIENT_LIBRARIES),)
-SaberProgramTarget(rpd,$(S_SRCS),$(S_OBJS),$(SERVER_LIBRARIES),)
+SaberProgramTarget(rpd,$(SRCS),$(OBJS),$(SYSTEM_LIBRARIES),)
 
 depend: Makefile
 	$(DEPEND) -s "# DO NOT DELETE" -- $(ALLDEFINES) *.[c] *.[h]
@@ -46,29 +39,9 @@ depend: Makefile
 LintTarget()
 
 #ifdef TestInstall
-InstallProgram(oreplay,/mit/olcdev/@sys)
 InstallProgram(rpd,/mit/olcdev/@sys)
-install::
-	(cd /mit/olcdev/@sys; $(RM) oshow; $(LN) oreplay oshow; $(RM) olist; $(LN) oreplay olist)
 #else
-InstallProgram(oreplay,$(DESTDIR)/usr/etc)
 InstallProgram(rpd,$(DESTDIR)/usr/etc)
-install::
-	(cd $(DESTDIR)/usr/etc; $(RM) oshow; $(LN) oreplay oshow; $(RM) olist; $(LN) oreplay olist)
 #endif
 
-olist:
-	$(RM) olist
-	$(LN) oreplay olist
-
-clean::
-	$(RM) olist
-
-oshow:
-	$(RM) oshow
-	$(LN) oreplay oshow
-
-clean::
-	$(RM) oshow
-
-AllTarget(oreplay rpd olist oshow)
+AllTarget(rpd)
