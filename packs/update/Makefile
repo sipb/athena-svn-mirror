@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.1 1996-09-20 05:02:47 ghudson Exp $
+# $Id: Makefile,v 1.2 1996-10-10 18:31:32 ghudson Exp $
 
 SHELL=/bin/sh
 UPDATE=/usr/athena/lib/update
@@ -9,7 +9,7 @@ all: upvers
 	cd platform/${HOSTTYPE} && ${MAKE} $@
 
 upvers: upvers.o
-	$(CC) ${LDFLAGS} -o upvers upvers.o ${LIBS}
+	${CC} ${LDFLAGS} -o upvers upvers.o ${LIBS}
 
 check:
 	cd platform/${HOSTTYPE} && ${MAKE} $@
