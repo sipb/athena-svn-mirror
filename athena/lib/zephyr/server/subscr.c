@@ -15,7 +15,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_subscr_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/subscr.c,v 1.35 1989-10-02 15:31:08 jtkohl Exp $";
+static char rcsid_subscr_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/subscr.c,v 1.36 1989-10-26 14:18:28 jtkohl Exp $";
 #endif SABER
 #endif lint
 
@@ -69,10 +69,12 @@ static char rcsid_subscr_c[] = "$Header: /afs/dev.mit.edu/source/repository/athe
 #define	OLD_ZEPHYR_VERSION	"ZEPH0.0"
 #define	OLD_CLIENT_INCOMPSUBS	"INCOMP"
 static void old_compat_subscr_sendlist();
+extern int old_compat_count_subscr;	/* counter of old use */
 #endif /* OLD_COMPAT */
 #ifdef NEW_COMPAT
 #define NEW_OLD_ZEPHYR_VERSION	"ZEPH0.1"
 static void new_old_compat_subscr_sendlist();
+extern int new_compat_count_subscr;	/* counter of old use */
 #endif /* NEW_COMPAT */
 
 extern char *re_comp(), *re_conv(), *rindex(), *index();
@@ -796,7 +798,9 @@ struct sockaddr_in *who;
 	struct sockaddr_in send_to_who;
 	register int i;
 
-	zdbug((LOG_DEBUG, "new_old_compat_subscr_sendlist"));
+	new_compat_count_subscr++;
+
+	syslog(LOG_INFO, "new old subscr, %s", inet_ntoa(who->sin_addr));
 	reply = *notice;
 	reply.z_kind = SERVACK;
 	reply.z_authent_len = 0; /* save some space */
@@ -873,7 +877,9 @@ struct sockaddr_in *who;
 	int packlen, i, found = 0;
 	char **answer = (char **) NULL;
 
-	zdbug((LOG_DEBUG, "old_compat_subscr_sendlist"));
+	old_compat_count_subscr++;
+
+	syslog(LOG_INFO, "old old subscr, %s", inet_ntoa(who->sin_addr));
 	if (client && client->zct_subs) {
 
 		/* check authenticity here.  The user must be authentic to get
