@@ -149,8 +149,8 @@ gpa_settings_selector_construct (GPAWidget *widget)
 	ss->printer  = gpa_node_get_child_from_path (node, "Printer");
 	ss->settings = gpa_node_get_child_from_path (node, "Settings");
 
-	g_assert (ss->printer);
-	g_assert (ss->settings);
+	g_return_val_if_fail (ss->printer != NULL, FALSE);
+	g_return_val_if_fail (ss->settings != NULL, FALSE);
 	
 	ss->handler = g_signal_connect (G_OBJECT (ss->printer), "modified",
 					(GCallback) gpa_settings_selector_printer_changed_cb, ss);

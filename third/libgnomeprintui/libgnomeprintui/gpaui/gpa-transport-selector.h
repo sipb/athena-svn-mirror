@@ -37,6 +37,9 @@ G_BEGIN_DECLS
 #define GPA_TYPE_TRANSPORT_SELECTOR (gpa_transport_selector_get_type ())
 #define GPA_TRANSPORT_SELECTOR(o)          (G_TYPE_CHECK_INSTANCE_CAST ((o), GPA_TYPE_TRANSPORT_SELECTOR, GPATransportSelector))
 #define GPA_IS_TRANSPORT_SELECTOR(o)       (G_TYPE_CHECK_INSTANCE_TYPE ((o), GPA_TYPE_TRANSPORT_SELECTOR))
+#define GPA_TRANSPORT_SELECTOR_CLASS(k)	(G_TYPE_CHECK_CLASS_CAST ((k), GPA_TYPE_TRANSPORT_SELECTOR, GPATransportSelectorClass))
+#define IS_GPA_TRANSPORT_SELECTOR_CLASS(k)	(G_TYPE_CHECK_CLASS_TYPE ((k), GPA_TYPE_TRANSPORT_SELECTOR))
+#define GPA_TRANSPORT_SELECTOR_GET_CLASS(o)	(G_TYPE_INSTANCE_GET_CLASS ((o), GPA_TYPE_TRANSPORT_SELECTOR, GPATransportSelectorClass))
 
 typedef struct _GPATransportSelector      GPATransportSelector;
 typedef struct _GPATransportSelectorClass GPATransportSelectorClass;
@@ -47,7 +50,7 @@ typedef struct _GPATransportSelectorClass GPATransportSelectorClass;
 struct _GPATransportSelector {
 	GPAWidget widget;
 	
-	GtkWidget *menu;         /* The widget */
+	GtkWidget *combo;         /* The widget */
 
 	GPANode *node;         /* node we are listening to the Settings.Transport.Backend key */
 	GPANode *config;       /* the GPAConfig node */
@@ -55,7 +58,11 @@ struct _GPATransportSelector {
 	gulong handler;        /* signal handler of ->node "modified" signal */
 	gulong handler_config; /* signal handler of ->config "modified" signal */
 
-	GtkWidget *file_entry;   /* Print to file entry, "output.ps" */
+	GtkWidget *file_button;   /* button to open file selector */
+	gchar     *file_name;     /* Print to file name, "output.ps" */
+	gboolean  file_name_force; /* whether to overwrite existing file */
+	GtkWidget *file_name_label; /* Print to file label, "output.ps" */
+	GtkFileChooser *file_selector;
 	GtkWidget *custom_entry; /* The custom printer command, "lpr -pFOO -#10" */
 
 	gboolean updating;     /* A flag used to ignore emmissions create by us */
@@ -63,9 +70,13 @@ struct _GPATransportSelector {
 
 struct _GPATransportSelectorClass {
 	GPAWidgetClass widget_class;
+
+	/* Virtuals */
+	gboolean (* check_consistency) (GPATransportSelector *sel);
 };
 
-GtkType gpa_transport_selector_get_type (void);
+GType gpa_transport_selector_get_type (void);
+gboolean gpa_transport_selector_check_consistency (GPATransportSelector *ts);
 
 G_END_DECLS
 

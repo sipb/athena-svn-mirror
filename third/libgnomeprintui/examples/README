@@ -41,7 +41,7 @@ Basic usage of a GnomePrintDialog
 
 example_07.c (not yet implmented)
 ------------
-GnomePrintDialog with a job page, using ranges.
+GnomePrintDialog range usage
 
 example_08.c
 ------------
@@ -58,11 +58,15 @@ example_10.c
 ------------
 Example with an app, dialog, setup and print preview
 
-example_11.c (not yet implemented)
+example_11.c
 ------------
-Directly printing without going thru a GnomePrintDilaog. Prints a PDF file from the File->Export
-menu and print previews it form File->Print Preview.
+Printing with gnome_print_job_set_file. In this mode, applications generate the postscript output
+themselves and use gnome-print as a print system abstraction layer and as a print gui library.
+
+example_12.c
+------------
+Shows how to add app specific GnomePrintConfig nodes and how to attach widgets to configure them
 
 TODO:
 ----
-- Add an example printable area example, with N-up printing
+- Add an example printable area example, with N-up printing. With marks on the margins

@@ -55,9 +55,10 @@ struct _GnomePrintPreviewPrivate {
 };
 
 static GnomePrintContextClass *parent_class;
+static gboolean use_theme;
 
 static void
-outline_set_style_cb (GtkWidget *canvas, GtkStyle *ps, GnomeCanvasItem *item)
+outline_set_style_cb (GtkWidget *canvas, GnomeCanvasItem *item)
 {
 	gint32 color;
 	GtkStyle *style;
@@ -102,22 +103,19 @@ gpp_stroke (GnomePrintContext *pc, const ArtBpath *bpath)
 
 	gnome_canvas_path_def_unref (path);
 
-	if (pp->priv->theme_compliance) {
-		g_signal_connect (G_OBJECT (item->canvas), "style_set",
-				  G_CALLBACK (outline_set_style_cb), item);
-	}
-	
+	if (use_theme)
+		outline_set_style_cb (GTK_WIDGET (item->canvas), item);	
 	return 1;
 }
 
 static void
-fill_set_style_cb (GtkWidget *canvas, GtkStyle *ps, GnomeCanvasItem *item)
+fill_set_style_cb (GtkWidget *canvas, GnomeCanvasItem *item)
 {
 	gint32 color;
 	GtkStyle *style;
 
 	style = gtk_widget_get_style (GTK_WIDGET (canvas));
-	color = GPP_COLOR_RGBA (style->text [GTK_STATE_NORMAL], 0xff);
+	color = GPP_COLOR_RGBA (style->bg [GTK_STATE_NORMAL], 0xff);
 	
 	gnome_canvas_item_set (item, "fill_color_rgba", color, NULL);
 }
@@ -149,11 +147,8 @@ gpp_fill (GnomePrintContext *pc, const ArtBpath *bpath, ArtWindRule rule)
 		NULL);
 	gnome_canvas_path_def_unref (path);
 
-	if (pp->priv->theme_compliance) {
-		g_signal_connect (G_OBJECT (item->canvas), "style_set",
-				  G_CALLBACK (fill_set_style_cb), item);
-	}
-
+	if (use_theme)
+		fill_set_style_cb (GTK_WIDGET (item->canvas), item);
 	return 1;
 }
 
@@ -293,7 +288,7 @@ gpp_beginpage (GnomePrintContext *pc, const guchar *name)
 }
 
 static void
-glyphlist_set_style_cb (GtkWidget *canvas, GtkStyle *ps, GnomeCanvasItem *item)
+glyphlist_set_style_cb (GtkWidget *canvas, GnomeCanvasItem *item)
 {
 	GnomeGlyphList *gl, *new;
 	gint32 color;
@@ -340,11 +335,8 @@ gpp_glyphlist (GnomePrintContext *pc, const gdouble *affine, GnomeGlyphList * gl
 
 	gnome_canvas_item_affine_absolute (item, transform);
 
-	if (pp->priv->theme_compliance) {
-		g_signal_connect (G_OBJECT (item->canvas), "style_set",
-				  G_CALLBACK (glyphlist_set_style_cb), item);
-	}
-	
+	if (use_theme)
+		glyphlist_set_style_cb (GTK_WIDGET (item->canvas), item);	
 	return 0;
 }
 
@@ -434,6 +426,12 @@ static void
 clear_val (GtkObject *object, void **val)
 {
 	*val = NULL;
+}
+
+void
+gnome_print_preview_use_theme (gboolean theme)
+{
+	use_theme = theme;
 }
 
 /**

@@ -1,19 +1,57 @@
+# translation of libgnomeprintui.ar.po to 
+# translation of libgnomeprintui.po to
 # translation of libgnomeprintui.po to Arabic
 # This file is distributed under the same license as the PACKAGE package.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# Sayed Jaffer Al-Mosawi <mosawi@arabeyes.org>, 2002
-#
+# Copyright (C) 2003 THE PACKAGE'S COPYRIGHT HOLDER
+# Arafat medini <lumina@silverpen.de>, 2002.
+# Arafat Medini <lumina@silverpen.de>, 2003.
+# 
+# 
 msgid ""
 msgstr ""
-"Project-Id-Version: libgnomeprintui\n"
-"POT-Creation-Date: 2003-02-02 20:53-0500\n"
-"PO-Revision-Date: 2002-05-31 19:17-0300\n"
-"Last-Translator: Isam Bayazidi <bayazidi@arabeyes.org>\n"
-"Language-Team: Arabic <support@arabeyes.org>\n"
+"Project-Id-Version: libgnomeprintui.ar\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-09-10 23:32-0400\n"
+"PO-Revision-Date: 2004-02-04 16:46+0100\n"
+"Last-Translator:  <lumina@silverpen.de>\n"
+"Language-Team:  <de@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 0.9.6\n"
+
+#: libgnomeprintui/gnome-canvas-hacktext.c:128
+msgid "Text"
+msgstr "نص"
+
+#: libgnomeprintui/gnome-canvas-hacktext.c:129
+msgid "Text to render"
+msgstr "النص للترجمة"
+
+#: libgnomeprintui/gnome-canvas-hacktext.c:148
+#: libgnomeprintui/gnome-canvas-hacktext.c:149
+msgid "Glyphlist"
+msgstr "قائمة الرموز"
+
+#: libgnomeprintui/gnome-canvas-hacktext.c:155
+#: libgnomeprintui/gnome-canvas-hacktext.c:163
+msgid "Color"
+msgstr "اللون"
+
+#: libgnomeprintui/gnome-canvas-hacktext.c:156
+msgid "Text color, as string"
+msgstr "لون النص، كسلسلة"
+
+#: libgnomeprintui/gnome-canvas-hacktext.c:164
+msgid "Text color, as an R/G/B/A combined integer"
+msgstr "لون النص،كعدد صحيح مجمع لـ R/G/B/A"
+
+#: libgnomeprintui/gnome-canvas-hacktext.c:171
+msgid "Font"
+msgstr "الخط"
+
+#: libgnomeprintui/gnome-canvas-hacktext.c:172
+msgid "Font as a GnomeFont struct"
+msgstr "الخط كبنية GnomeFont"
 
 #. Family frame
 #: libgnomeprintui/gnome-font-dialog.c:164
@@ -23,366 +61,366 @@ msgstr "عائلة الخطوط"
 
 #: libgnomeprintui/gnome-font-dialog.c:200
 msgid "The list of font families available"
-msgstr "قائمة بعوائل الخطوط المتوفرة"
+msgstr "قائمة عائلات الخطوط المتوفرة"
 
 #. Style frame
 #: libgnomeprintui/gnome-font-dialog.c:209
 msgid "Style"
-msgstr "نمط"
+msgstr "الأسلوب"
 
 #: libgnomeprintui/gnome-font-dialog.c:250
 msgid "Font style"
-msgstr "نمط الخط"
+msgstr "أسلوب الخط"
 
 #: libgnomeprintui/gnome-font-dialog.c:251
 msgid "The list of styles available for the selected font family"
-msgstr "قائمة الأنماط الموجودة لعائلة الخطوط المنتقاة"
+msgstr "قائمة الأساليب المتوفرة لعائلة الخطوط المنتقاة"
 
-#: libgnomeprintui/gnome-font-dialog.c:284
+#: libgnomeprintui/gnome-font-dialog.c:281
 msgid "Font _size:"
-msgstr "حجم الخط:"
+msgstr "_حجم الخط:"
 
-#: libgnomeprintui/gnome-font-dialog.c:775
+#: libgnomeprintui/gnome-font-dialog.c:773
 msgid "This font does not have sample"
-msgstr "ليس لهذ الخط مثال"
+msgstr "ليس لهذ الخط نموذج"
 
-#: libgnomeprintui/gnome-font-dialog.c:882
+#: libgnomeprintui/gnome-font-dialog.c:880
 msgid "Font Preview"
-msgstr "معاينة الخط"
+msgstr "لمحة الخط"
 
-#: libgnomeprintui/gnome-font-dialog.c:883
+#: libgnomeprintui/gnome-font-dialog.c:881
 msgid "Displays some example text in the selected font"
-msgstr "يعرض بعض اﻷمثلة النصية للخط المنتقى"
+msgstr "يعرض بعض اﻻمثلة النصية للخط المنتقى"
 
-#: libgnomeprintui/gnome-font-dialog.c:898
+#: libgnomeprintui/gnome-font-dialog.c:896
 msgid "Font Selection"
-msgstr "اختيار الخط"
+msgstr "الخط المنتقى"
 
-#: libgnomeprintui/gnome-print-copies.c:245
+#: libgnomeprintui/gnome-print-config-dialog.c:241
+msgid "Default Settings"
+msgstr "التعيينات الإفتراضية"
+
+#: libgnomeprintui/gnome-print-config-dialog.c:267
+msgid "Image showing pages being printed in duplex."
+msgstr "صورة عارضة للصفحات عند طبعها إزدواجا"
+
+#: libgnomeprintui/gnome-print-config-dialog.c:271
+msgid "_Duplex"
+msgstr "إ_زدواجا"
+
+#: libgnomeprintui/gnome-print-config-dialog.c:277
+msgid "Pages are printed in duplex."
+msgstr "ستطبع الصفحلت إزدواجا."
+
+#: libgnomeprintui/gnome-print-config-dialog.c:285
+msgid ""
+"Image showing the second page of a duplex printed sequence to be printed "
+"upside down."
+msgstr ""
+"صورة عارضة للصورة الثانية لمتوالية مطبوعة على نحو إزدواجي عند طبعها منكسة."
+
+#: libgnomeprintui/gnome-print-config-dialog.c:290
+msgid "_Tumble"
+msgstr "_قلب"
+
+#: libgnomeprintui/gnome-print-config-dialog.c:296
+msgid ""
+"If copies of the document are printed in duplex, the second page is flipped "
+"upside down,"
+msgstr ""
+"إذا كان سيقع طبع المستند إزدواجا، فستنقف الصفحة الثانية من الأسفل إلى الأعلى،"
+
+#: libgnomeprintui/gnome-print-config-dialog.c:316
+msgid "_Printing Time:"
+msgstr "وقت ال_طباعة:"
+
+#: libgnomeprintui/gnome-print-config-dialog.c:342
+#: libgnomeprintui/gnome-print-dialog.c:389
+msgid "Error while loading printer configuration"
+msgstr "خطأ عند تحميل إعدادات الطابعة"
+
+#: libgnomeprintui/gnome-print-copies.c:261
 msgid "Copies"
-msgstr "النسخ"
+msgstr "نُسخ"
 
-#: libgnomeprintui/gnome-print-copies.c:254
+#: libgnomeprintui/gnome-print-copies.c:274
 msgid "N_umber of copies:"
-msgstr "عدد النسخ:"
+msgstr "_عدد النُّسخ:"
 
-#: libgnomeprintui/gnome-print-copies.c:281
+#: libgnomeprintui/gnome-print-copies.c:292
 msgid ""
 "Image showing the collation sequence when multiple copies of the document "
 "are printed"
-msgstr "الصورة التي تظهر تتابع التجميع حينما يتم طبع عدة نسخ من المستند"
+msgstr "صورة تظهر تتابع الترتيب عند طبع نسخ عديدة من المستند"
 
-#: libgnomeprintui/gnome-print-copies.c:283
+#: libgnomeprintui/gnome-print-copies.c:294
 msgid "_Collate"
-msgstr "ترتيب"
+msgstr "_تتابع الترتيب"
 
-#: libgnomeprintui/gnome-print-copies.c:288
+#: libgnomeprintui/gnome-print-copies.c:299
 msgid ""
 "If copies of the document are printed separately, one after another, rather "
 "than being interleaved"
 msgstr ""
-"إذا كان سيتم طباعة نسخ من المستند منفصلة، واحدة بعد اﻷخرى بدلا من تداخلهم"
+"إذا كان سيتم طباعة نسخ من المستند منفصلة ،فسيتم طبعها الواحدة تلوى اﻻخرى "
+"بدلا من تداخلها"
 
-#: libgnomeprintui/gnome-print-dialog.c:163
-msgid "Print range"
-msgstr "مدى الطباعة"
+#: libgnomeprintui/gnome-print-dialog.c:199
+msgid "Print Range"
+msgstr "نطاق الطباعة"
 
-#: libgnomeprintui/gnome-print-dialog.c:201
+#: libgnomeprintui/gnome-print-dialog.c:246
 msgid "_All"
-msgstr "الكل"
+msgstr "ال_كل"
 
-#: libgnomeprintui/gnome-print-dialog.c:223
+#: libgnomeprintui/gnome-print-dialog.c:268
 msgid "_Selection"
-msgstr "التحديد"
+msgstr "ال_منتقى"
 
-#: libgnomeprintui/gnome-print-dialog.c:300
-#, fuzzy
+#: libgnomeprintui/gnome-print-dialog.c:345
 msgid "Job"
 msgstr "المهمة"
 
-#: libgnomeprintui/gnome-print-dialog.c:314
-#: libgnomeprintui/gnome-printer-selector.c:108
+#: libgnomeprintui/gnome-print-dialog.c:372
+#: libgnomeprintui/gpaui/gpa-printer-selector.c:161
 msgid "Printer"
 msgstr "الطابعة"
 
-#: libgnomeprintui/gnome-print-dialog.c:324
-#, fuzzy
+#: libgnomeprintui/gnome-print-dialog.c:382
 msgid "Paper"
 msgstr "الورق"
 
-#: libgnomeprintui/gnome-print-dialog.c:331
-#, fuzzy
-msgid "Error while loading printer configuration"
-msgstr "حدث خطأ في تحميل إعدادات الطابعة"
-
-#: libgnomeprintui/gnome-print-dialog.c:336
+#: libgnomeprintui/gnome-print-dialog.c:396
 msgid "Gnome Print Dialog"
-msgstr "مربع حوار طباعة جينوم"
+msgstr "حوار جنوم للطباعة"
 
-#: libgnomeprintui/gnome-print-dialog.c:482
+#: libgnomeprintui/gnome-print-dialog.c:546
 msgid "_From:"
-msgstr "من:"
+msgstr "_من:"
 
-#: libgnomeprintui/gnome-print-dialog.c:496
+#: libgnomeprintui/gnome-print-dialog.c:559
 msgid "Sets the start of the range of pages to be printed"
-msgstr "يعيّن بداية نطاق الصفحات لطباعتها"
+msgstr "يضبط بداية نطاق الصفحات لطباعتها"
 
-#: libgnomeprintui/gnome-print-dialog.c:506
+#: libgnomeprintui/gnome-print-dialog.c:561
 msgid "_To:"
-msgstr "إلى:"
+msgstr "إ_لى:"
 
-#: libgnomeprintui/gnome-print-dialog.c:520
+#: libgnomeprintui/gnome-print-dialog.c:574
 msgid "Sets the end of the range of pages to be printed"
-msgstr "يعيّن نهاية نطاق الصفحات لطباعتها"
+msgstr "يضبط نهاية نطاق الصفحات التي سيتم طبعها"
 
-#: libgnomeprintui/gnome-print-job-preview.c:614
+#: libgnomeprintui/gnome-print-job-preview.c:618
 msgid "Page Preview"
-msgstr "معاينة الصفحة"
+msgstr "لمحة الصفحة"
 
-#: libgnomeprintui/gnome-print-job-preview.c:615
+#: libgnomeprintui/gnome-print-job-preview.c:619
 msgid "The preview of a page in the document to be printed"
-msgstr "معاينة صفحة في مستند ستتم طباعته"
+msgstr "لمحة الصفحة في المستند الذي ستتم طباعته"
 
-#: libgnomeprintui/gnome-print-job-preview.c:666
+#: libgnomeprintui/gnome-print-job-preview.c:636
 msgid "P_age: "
-msgstr "الصفحة :"
+msgstr "ال_صفحة: "
 
 #. We are displaying 'Page: XXX of XXX'.
-#: libgnomeprintui/gnome-print-job-preview.c:682
+#: libgnomeprintui/gnome-print-job-preview.c:652
 msgid "of"
 msgstr "من"
 
-#: libgnomeprintui/gnome-print-job-preview.c:688
+#: libgnomeprintui/gnome-print-job-preview.c:658
 msgid "Page total"
-msgstr "العدد الكلي للصفحات"
+msgstr "كل الصفحات"
 
-#: libgnomeprintui/gnome-print-job-preview.c:689
+#: libgnomeprintui/gnome-print-job-preview.c:659
 msgid "The total number of pages in the document"
 msgstr "عدد الصفحات الكلي في المستند"
 
-#: libgnomeprintui/gnome-print-job-preview.c:741
-msgid "Prints the current file"
-msgstr "تطبع الملف الحالي"
-
-#: libgnomeprintui/gnome-print-job-preview.c:745
-msgid "Closes print preview window"
-msgstr "تغلق نافذة معاينة الطباعة"
-
-#: libgnomeprintui/gnome-print-job-preview.c:750
-msgid "Shows the first page"
-msgstr "يظهر الصفحة اﻷولى"
+#: libgnomeprintui/gnome-print-job-preview.c:661
+msgid "Use _theme colors for content"
+msgstr "استخدم ألوان التيمة للمحتوى"
 
 #: libgnomeprintui/gnome-print-job-preview.c:752
+msgid "Other"
+msgstr "مغاير"
+
+#: libgnomeprintui/gnome-print-job-preview.c:781
+msgid "Prints the current file"
+msgstr "يطبع الملف الحالي"
+
+#: libgnomeprintui/gnome-print-job-preview.c:789
+msgid "Closes print preview window"
+msgstr "يغلق نافذة لمحة المطبوعة"
+
+#: libgnomeprintui/gnome-print-job-preview.c:802
+msgid "Shows the first page"
+msgstr "يعرض الصفحة اﻻولى"
+
+#: libgnomeprintui/gnome-print-job-preview.c:810
 msgid "Shows the previous page"
-msgstr "يظهر الصفحة السابقة"
+msgstr "يعرض الصفحة السابقة"
 
-#: libgnomeprintui/gnome-print-job-preview.c:754
+#: libgnomeprintui/gnome-print-job-preview.c:818
 msgid "Shows the next page"
-msgstr "يظهر الصفحة التالية"
+msgstr "يعرض الصفحة التالية"
 
-#: libgnomeprintui/gnome-print-job-preview.c:756
+#: libgnomeprintui/gnome-print-job-preview.c:826
 msgid "Shows the last page"
-msgstr "يظهر الصفحة اﻷخيرة"
+msgstr "يعرض الصفحة اﻻخيرة"
 
-#: libgnomeprintui/gnome-print-job-preview.c:761
+#: libgnomeprintui/gnome-print-job-preview.c:839
 msgid "Zooms 1:1"
-msgstr "تحجيم 1:1"
+msgstr "الحجم الأصلي"
 
-#: libgnomeprintui/gnome-print-job-preview.c:763
+#: libgnomeprintui/gnome-print-job-preview.c:847
 msgid "Zooms to fit the whole page"
-msgstr "يحجم حتى تلائم الصفحة كلها"
+msgstr "تكبير لملائمة كامل الصفحة"
 
-#: libgnomeprintui/gnome-print-job-preview.c:765
+#: libgnomeprintui/gnome-print-job-preview.c:855
 msgid "Zooms the page in"
-msgstr "يكبر الصفحة"
+msgstr "تكبير الصفحة"
 
-#: libgnomeprintui/gnome-print-job-preview.c:767
+#: libgnomeprintui/gnome-print-job-preview.c:863
 msgid "Zooms the page out"
-msgstr "يصغر الصفحة"
+msgstr "تصغير الصفحة"
 
-#: libgnomeprintui/gnome-print-job-preview.c:882
+#: libgnomeprintui/gnome-print-job-preview.c:875
+msgid "View multiple pages"
+msgstr "عرض صفحات متعددة"
+
+#: libgnomeprintui/gnome-print-job-preview.c:1168
+#: libgnomeprintui/gnome-print-job-preview.c:1169
+msgid "Number of pages horizontally"
+msgstr "عدد الصفحات أفقيا"
+
+#: libgnomeprintui/gnome-print-job-preview.c:1172
+#: libgnomeprintui/gnome-print-job-preview.c:1173
+msgid "Number of pages vertically"
+msgstr "عدد الصفحات عموديا"
+
+#: libgnomeprintui/gnome-print-job-preview.c:1213
 msgid "Gnome Print Preview"
-msgstr "معاينة الطباعة في جينوم"
+msgstr "لمحة جنوم للمطبوعة"
 
-#: libgnomeprintui/gnome-print-job-preview.c:907
-msgid ""
-"<markup>1   <span foreground=\"red\" weight=\"ultrabold\" background=\"white"
-"\">No visible output was created.</span></markup>"
-msgstr ""
-"<markup>1   <span foreground=\"red\" weight=\"ultrabold\" background=\"white"
-"\">لم يتم إنشاء مخرجات مرئية.</span></markup>"
+#: libgnomeprintui/gnome-print-job-preview.c:1245
+msgid "No visible output was created."
+msgstr "لم ينشئ إخراج مرئي."
 
-#: libgnomeprintui/gnome-print-paper-selector.c:381
-msgid "Pt"
-msgstr "نقطة"
-
-#: libgnomeprintui/gnome-print-paper-selector.c:382
-msgid "mm"
-msgstr "مم"
-
-#: libgnomeprintui/gnome-print-paper-selector.c:383
-msgid "cm"
-msgstr "سم"
-
-#: libgnomeprintui/gnome-print-paper-selector.c:384
-msgid "m"
-msgstr "م"
-
-#: libgnomeprintui/gnome-print-paper-selector.c:385
-msgid "in"
-msgstr "بوصة"
-
-#. Create frame for selection menus
-#: libgnomeprintui/gnome-print-paper-selector.c:550
-msgid "Paper and layout"
-msgstr "الورق والهيئة"
+#: libgnomeprintui/gnome-print-paper-selector.c:440
+msgid "Paper and Layout"
+msgstr "الورق والتصميم"
 
 #. Paper size selector
-#: libgnomeprintui/gnome-print-paper-selector.c:563
+#: libgnomeprintui/gnome-print-paper-selector.c:457
 msgid "Paper _size:"
-msgstr "حجم الورق:"
+msgstr "_حجم الورق:"
 
 #. Custom paper Width
-#: libgnomeprintui/gnome-print-paper-selector.c:575
+#: libgnomeprintui/gnome-print-paper-selector.c:468
 msgid "_Width:"
-msgstr "العرض:"
+msgstr "ال_عرض:"
 
 #. Custom paper Height
-#: libgnomeprintui/gnome-print-paper-selector.c:592
+#: libgnomeprintui/gnome-print-paper-selector.c:482
 msgid "_Height:"
-msgstr "الارتفاع:"
+msgstr "الا_رتفاع:"
 
-#: libgnomeprintui/gnome-print-paper-selector.c:616
+#: libgnomeprintui/gnome-print-paper-selector.c:500
 msgid "Metric selector"
 msgstr "المنتقي المتري"
 
-#: libgnomeprintui/gnome-print-paper-selector.c:617
+#: libgnomeprintui/gnome-print-paper-selector.c:501
 msgid ""
 "Specifies the metric to use when setting the width and height of the paper"
-msgstr "تحدد القياس المستخدم أثناء تعيين عرض وطول الورقة"
+msgstr "يحدد القياس الذي سيستخدم أثناء ضبط عرض وارتفاع الورق"
 
 #. Feed orientation
-#: libgnomeprintui/gnome-print-paper-selector.c:620
+#: libgnomeprintui/gnome-print-paper-selector.c:504
 msgid "_Feed orientation:"
-msgstr "اتجاه التغذية:"
+msgstr "ا_تجاه الإدخال:"
 
 #. Page orientation
-#: libgnomeprintui/gnome-print-paper-selector.c:635
+#: libgnomeprintui/gnome-print-paper-selector.c:518
 msgid "Page _orientation:"
-msgstr "اتجاه الصفحة:"
+msgstr "ات_جاه الصفحة:"
 
 #. Layout
-#: libgnomeprintui/gnome-print-paper-selector.c:647
+#: libgnomeprintui/gnome-print-paper-selector.c:529
 msgid "_Layout:"
-msgstr "الهيئة:"
+msgstr "ال_هيئة:"
 
-#. Preview frame
-#: libgnomeprintui/gnome-print-paper-selector.c:659
-#: libgnomeprintui/gnome-print-paper-selector.c:669
+#. Paper source
+#: libgnomeprintui/gnome-print-paper-selector.c:540
+msgid "Paper _tray:"
+msgstr "_صينية الورق:"
+
+#: libgnomeprintui/gnome-print-paper-selector.c:554
+#: libgnomeprintui/gnome-print-paper-selector.c:568
 msgid "Preview"
-msgstr "معاينة"
+msgstr "لمحة"
 
-#: libgnomeprintui/gnome-print-paper-selector.c:670
+#: libgnomeprintui/gnome-print-paper-selector.c:569
 msgid "Preview of the page size, orientation and layout"
-msgstr "معاينة حجم الصفحة واتجاهها وكذلك هيئتها"
+msgstr "لمحة عن حجم الصفحة واتجاهها و هيئتها"
 
-#: libgnomeprintui/gnome-print-paper-selector.c:688
+#: libgnomeprintui/gnome-print-paper-selector.c:575
 msgid "Margins"
 msgstr "الحواشي"
 
-#: libgnomeprintui/gnome-print-paper-selector.c:722
+#: libgnomeprintui/gnome-print-paper-selector.c:609
 msgid "Top"
 msgstr "فوق"
 
-#: libgnomeprintui/gnome-print-paper-selector.c:725
+#: libgnomeprintui/gnome-print-paper-selector.c:612
 msgid "Bottom"
 msgstr "تحت"
 
-#: libgnomeprintui/gnome-print-paper-selector.c:728
+#: libgnomeprintui/gnome-print-paper-selector.c:615
 msgid "Left"
 msgstr "يسار"
 
-#: libgnomeprintui/gnome-print-paper-selector.c:731
+#: libgnomeprintui/gnome-print-paper-selector.c:618
 msgid "Right"
 msgstr "يمين"
 
-#: libgnomeprintui/gnome-printer-selector.c:123
-msgid "State:"
-msgstr "الحالة:"
-
-#: libgnomeprintui/gnome-printer-selector.c:126
-msgid "Type:"
-msgstr "النوع:"
-
-#: libgnomeprintui/gnome-printer-selector.c:129
-msgid "Comment:"
-msgstr "التعليق:"
-
-#: libgnomeprintui/gnome-printer-selector.c:131
-msgid "Co_nfigure"
-msgstr "إعداد"
-
-#: libgnomeprintui/gnome-printer-selector.c:139
-msgid "Adjust the settings of the selected printer"
-msgstr "عدّل تعيينات الطابعة المنتقاة"
-
-#: libgnomeprintui/gnome-printer-selector.c:150
-msgid "Pr_inter:"
-msgstr "الطابعة:"
-
-#: libgnomeprintui/gnome-printer-selector.c:159
-msgid "_Settings:"
-msgstr "الإعدادات:"
-
 #: libgnomeprintui/gnome-printer-selector.c:168
+msgid "Co_nfigure"
+msgstr "إ_عداد"
+
+#: libgnomeprintui/gnome-printer-selector.c:177
+msgid "Adjust the settings of the selected printer"
+msgstr "تعديل تعيينات الطابعة المنتقاة"
+
+#: libgnomeprintui/gnome-printer-selector.c:185
+msgid "_Settings:"
+msgstr "التعيي_نات:"
+
+#: libgnomeprintui/gnome-printer-selector.c:194
 msgid "_Location:"
-msgstr "المكان:"
-
-#: libgnomeprintui/gnome-canvas-hacktext.c:128
-msgid "Text"
-msgstr ""
-
-#: libgnomeprintui/gnome-canvas-hacktext.c:129
-msgid "Text to render"
-msgstr ""
-
-#: libgnomeprintui/gnome-canvas-hacktext.c:148
-#: libgnomeprintui/gnome-canvas-hacktext.c:149
-msgid "Glyphlist"
-msgstr ""
-
-#: libgnomeprintui/gnome-canvas-hacktext.c:155
-#: libgnomeprintui/gnome-canvas-hacktext.c:163
-msgid "Color"
-msgstr ""
-
-#: libgnomeprintui/gnome-canvas-hacktext.c:156
-msgid "Text color, as string"
-msgstr ""
-
-#: libgnomeprintui/gnome-canvas-hacktext.c:164
-msgid "Text color, as an R/G/B/A combined integer"
-msgstr ""
-
-#: libgnomeprintui/gnome-canvas-hacktext.c:171
-msgid "Font"
-msgstr ""
-
-#: libgnomeprintui/gnome-canvas-hacktext.c:172
-msgid "Font as a GnomeFont struct"
-msgstr ""
+msgstr "ال_موقع:"
 
 #: libgnomeprintui/gpaui/gpa-option-menu.c:179
 #: libgnomeprintui/gpaui/gpa-option-menu.c:229
-#: libgnomeprintui/gpaui/gpa-transport-selector.c:247
-#, fuzzy
 msgid "No options are defined"
-msgstr "لم يتم تعريف أي اتجاهات"
+msgstr "لا خيارات معرفة"
 
-#: libgnomeprintui/gpaui/gpa-printer-selector.c:156
+#: libgnomeprintui/gpaui/gpa-print-to-file.c:258
+msgid "Print to _file"
+msgstr "طبع ل_ملف"
+
+#: libgnomeprintui/gpaui/gpa-printer-selector.c:168
 #, fuzzy
-msgid "No printers could be loaded"
-msgstr "لم يتم انتقاء طابعة"
+msgid "State"
+msgstr "الحالة:"
+
+#: libgnomeprintui/gpaui/gpa-printer-selector.c:175
+#, fuzzy
+msgid "Jobs"
+msgstr "المهمة"
+
+#: libgnomeprintui/gpaui/gpa-printer-selector.c:182
+#, fuzzy
+msgid "Location"
+msgstr "ال_موقع:"
 
 #: libgnomeprintui/gpaui/gpa-settings-selector.c:180
 msgid "No printer selected"
@@ -390,14 +428,86 @@ msgstr "لم يتم انتقاء طابعة"
 
 #: libgnomeprintui/gpaui/gpa-settings-selector.c:191
 msgid "No settings available"
-msgstr "لا توجد إعدادات"
+msgstr "لا تعيينات متاحة"
 
 #: libgnomeprintui/gpaui/gpa-settings-selector.c:234
 msgid "Add new settings"
-msgstr "أضف تعيينات جديدة"
+msgstr "اضافة تعيينات جديدة"
+
+#: libgnomeprintui/gpaui/gpa-spinbutton.c:311
+msgid "%"
+msgstr "%"
+
+#. Percent must be first
+#: libgnomeprintui/gpaui/gpa-spinbutton.c:312
+msgid "Pt"
+msgstr "نقطة"
+
+#: libgnomeprintui/gpaui/gpa-spinbutton.c:313
+msgid "mm"
+msgstr "مم"
+
+#: libgnomeprintui/gpaui/gpa-spinbutton.c:314
+msgid "cm"
+msgstr "صم"
+
+#: libgnomeprintui/gpaui/gpa-spinbutton.c:315
+msgid "m"
+msgstr "م"
+
+#: libgnomeprintui/gpaui/gpa-spinbutton.c:316
+msgid "in"
+msgstr "بوصة"
+
+#: libgnomeprintui/gpaui/gpa-transport-selector.c:183
+#: libgnomeprintui/gpaui/gpa-transport-selector.c:523
+#, c-format
+msgid "The specified filename \"%s\" is an existing directory."
+msgstr "إسم الملف المحدد \"%s\" دليل."
+
+#: libgnomeprintui/gpaui/gpa-transport-selector.c:202
+#: libgnomeprintui/gpaui/gpa-transport-selector.c:545
+#, c-format
+msgid "Should the file %s be overwritten?"
+msgstr "هل تريد تنميق الملف %s؟"
+
+#: libgnomeprintui/gpaui/gpa-transport-selector.c:247
+msgid "Please specify the location and filename of the output file:"
+msgstr "الرجاء تحديد موقع و أسم ملف لملف الإخراج:"
+
+#: libgnomeprintui/gpaui/gpa-transport-selector.c:271
+msgid "All Files"
+msgstr "كل الملفات"
+
+#~ msgid "Type:"
+#~ msgstr "النوع:"
+
+#~ msgid "Comment:"
+#~ msgstr "التعليق:"
+
+#~ msgid "Pr_inter:"
+#~ msgstr "ال_طابعة:"
+
+#~ msgid "No printers could be loaded"
+#~ msgstr "لم يمكن تحميل أي طابعة"
+
+#~ msgid ""
+#~ "<markup>1   <span foreground=\"red\" weight=\"ultrabold\" background="
+#~ "\"white\">No visible output was created.</span></markup>"
+#~ msgstr ""
+#~ "<markup>1   <span foreground=\"red\" weight=\"ultrabold\" background="
+#~ "\"white\">لم يتم إنشاء مخرج مرئي.</span></markup>"
+
+#, fuzzy
+#~ msgid "<b>Preview</b>"
+#~ msgstr "لمحة"
+
+#, fuzzy
+#~ msgid "<b>Printer</b>"
+#~ msgstr "الطابعة"
 
 #~ msgid "P_rinter"
-#~ msgstr "الطابعة"
+#~ msgstr "ال_طابعة"
 
 #~ msgid "from:"
 #~ msgstr "من:"
@@ -433,16 +543,16 @@ msgstr "أضف تعيينات جديدة"
 #~ msgstr "الاسفل:"
 
 #~ msgid "Left:"
-#~ msgstr "الأيسر:"
+#~ msgstr "اليسار:"
 
 #~ msgid "Right:"
-#~ msgstr "الأيمن:"
+#~ msgstr "اليمين:"
 
 #~ msgid "Scaling"
 #~ msgstr "القياس"
 
 #~ msgid "Fit to Page"
-#~ msgstr "ملائمة للصفحة"
+#~ msgstr "ملائمة لالصفحة"
 
 #~ msgid "%0.3g%s x %0.3g%s"
 #~ msgstr "%0.3g%s x %0.3g%s"
@@ -484,7 +594,7 @@ msgstr "أضف تعيينات جديدة"
 #~ msgstr "معاينة طباعة تطبيقي"
 
 #~ msgid "extracts the first font from output.pdf and places it in font.dump."
-#~ msgstr "تفك الخط اﻷول من output.pdf وتضعه في font.dump."
+#~ msgstr "تفك الخط اﻻول من output.pdf وتضعه في font.dump."
 
 #~ msgid "extracts the font header from font.dump"
 #~ msgstr "فك ترويسة الخط من font.dump"
@@ -496,7 +606,7 @@ msgstr "أضف تعيينات جديدة"
 #~ msgstr "تفك تشفير جسم الخط"
 
 #~ msgid "Render from metafile"
-#~ msgstr "نرجمة من ملف عن ملفات"
+#~ msgstr "ترجمة من ملف النقوش"
 
 #~ msgid "PATH"
 #~ msgstr "المسار"
@@ -511,18 +621,60 @@ msgstr "أضف تعيينات جديدة"
 #~ msgstr "تحضر مربع حوار الطباعة"
 
 #~ msgid "Use GnomePrintMasterPreview"
-#~ msgstr "استخدم 'GnomePrintMasterPreview'"
+#~ msgstr "استخدم GnomePrintMasterPreview"
 
 #~ msgid "Show paper dialog"
 #~ msgstr "أظهر مربع حوار الورق"
 
-#~ msgid "Print text file"
-#~ msgstr "اطبع ملف نص"
-
-#, fuzzy
 #~ msgid "Line printer: %s"
-#~ msgstr "سطر"
+#~ msgstr "طابعة السطر: %s"
+
+#~ msgid "Default line printer"
+#~ msgstr "الطابعة الإفتراضية في المجموعة"
 
 #, fuzzy
-#~ msgid "Default line printer"
-#~ msgstr "إفتراضي"
+#~ msgid "/_Preview"
+#~ msgstr "معاينة/_"
+
+#, fuzzy
+#~ msgid "/Preview/_Print"
+#~ msgstr "طبع_/معاينة/"
+
+#, fuzzy
+#~ msgid "/Preview/_Close"
+#~ msgstr "غلق_/معاينة/"
+
+#~ msgid "/_View"
+#~ msgstr "عرض"
+
+#, fuzzy
+#~ msgid "/View/Zoom _1:1"
+#~ msgstr "تحجيم 1:1/عرض/"
+
+#, fuzzy
+#~ msgid "/View/Zoom to _Fit"
+#~ msgstr "/عرض/تحجيم ل_يلائم"
+
+#, fuzzy
+#~ msgid "/View/Zoom _In"
+#~ msgstr "/عرض/تكبي_ر"
+
+#, fuzzy
+#~ msgid "/View/Zoom _Out"
+#~ msgstr "/عرض/تصغ_ير"
+
+#, fuzzy
+#~ msgid "/_Go"
+#~ msgstr "/ان_طلق"
+
+#, fuzzy
+#~ msgid "/Go/_Previous Page"
+#~ msgstr "/اذهب/الصفحة الس_ابقة"
+
+#, fuzzy
+#~ msgid "/Go/_Next Page"
+#~ msgstr "/اذهب/الصفحة الت_الية"
+
+#, fuzzy
+#~ msgid "/Go/_Last Page"
+#~ msgstr "/اذهب/الصفحة اﻻخ_يرة"

@@ -1,32 +1,66 @@
-# translation of tr.po to Turkish
 # Turkish translation of libgnomeprintui.
-# Copyright (C) 2000 Free Software Foundation, Inc.
+# Copyright (C) 2000, 2004 Free Software Foundation, Inc.
 # Fatih Demir <kabalak@gmx.net>, 2000.
-# Görkem Cetin <gorkem@gelecek.com.tr>, 2001.
-# Ömer Fadıl USTA <omer_fad@hotmail.com>, 2001.
-# Görkem Çetin <gorkem@gelecek.com.tr>, 2002
+# GÃ¶rkem Cetin <gorkem@gelecek.com.tr>, 2001.
+# Ã–mer FadÄ±l USTA <omer_fad@hotmail.com>, 2001.
+# GÃ¶rkem Ã‡etin <gorkem@gelecek.com.tr>, 2002.
+# Baris Cicek <baris@teamforce.name.tr>, 2004.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: tr\n"
-"POT-Creation-Date: 2003-02-02 20:53-0500\n"
-"PO-Revision-Date: 2002-07-28 20:17+0000\n"
-"Last-Translator: Görkem Çetin <gorkem@gelecek.com.tr>\n"
+"Project-Id-Version: libgnomeprintui\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-09-10 23:32-0400\n"
+"PO-Revision-Date: 2004-02-21 04:11+0200\n"
+"Last-Translator: Baris Cicek <baris@teamforce.name.tr>\n"
 "Language-Team: Turkish <gnome-turk@gnome.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=ISO-8859-9\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 1.0beta2\n"
+
+#: libgnomeprintui/gnome-canvas-hacktext.c:128
+msgid "Text"
+msgstr "Metin"
+
+#: libgnomeprintui/gnome-canvas-hacktext.c:129
+msgid "Text to render"
+msgstr "Taranacak metin"
+
+#: libgnomeprintui/gnome-canvas-hacktext.c:148
+#: libgnomeprintui/gnome-canvas-hacktext.c:149
+msgid "Glyphlist"
+msgstr "Glyphliste"
+
+#: libgnomeprintui/gnome-canvas-hacktext.c:155
+#: libgnomeprintui/gnome-canvas-hacktext.c:163
+msgid "Color"
+msgstr "Renk"
+
+#: libgnomeprintui/gnome-canvas-hacktext.c:156
+msgid "Text color, as string"
+msgstr "Metin rengi, dizi olarak"
+
+#: libgnomeprintui/gnome-canvas-hacktext.c:164
+msgid "Text color, as an R/G/B/A combined integer"
+msgstr "Metin rengi, R/G/B/A birleÅŸtirilmiÅŸ tamsayÄ± olarak"
+
+#: libgnomeprintui/gnome-canvas-hacktext.c:171
+msgid "Font"
+msgstr "YazÄ±tipi"
+
+#: libgnomeprintui/gnome-canvas-hacktext.c:172
+msgid "Font as a GnomeFont struct"
+msgstr "GnomeFont yapÄ±sÄ±nda yazÄ±tipi"
 
 #. Family frame
 #: libgnomeprintui/gnome-font-dialog.c:164
 #: libgnomeprintui/gnome-font-dialog.c:199
 msgid "Font family"
-msgstr "Yazıtipi ailesi"
+msgstr "YazÄ±tipi ailesi"
 
 #: libgnomeprintui/gnome-font-dialog.c:200
 msgid "The list of font families available"
-msgstr "Kullanılabilir yazıtipi aileleri"
+msgstr "KullanÄ±labilir yazÄ±tipi aileleri listesi"
 
 #. Style frame
 #: libgnomeprintui/gnome-font-dialog.c:209
@@ -35,465 +69,424 @@ msgstr "Stil"
 
 #: libgnomeprintui/gnome-font-dialog.c:250
 msgid "Font style"
-msgstr "Yazıtipi stili"
+msgstr "YazÄ±tipi stili"
 
 #: libgnomeprintui/gnome-font-dialog.c:251
 msgid "The list of styles available for the selected font family"
-msgstr "Seçilen yazıtipi ailesi için kullanılabilen stiller"
+msgstr "SeÃ§ilen yazÄ±tipi ailesi iÃ§in kullanÄ±labilen stillerin listesi"
 
-#: libgnomeprintui/gnome-font-dialog.c:284
+#: libgnomeprintui/gnome-font-dialog.c:281
 msgid "Font _size:"
-msgstr "Yazıtipi _boyutu:"
+msgstr "YazÄ±tipi _boyutu:"
 
-#: libgnomeprintui/gnome-font-dialog.c:775
+#: libgnomeprintui/gnome-font-dialog.c:773
 msgid "This font does not have sample"
-msgstr "Bu yazıtipi örnek içermiyor"
+msgstr "Bu yazÄ±tipi Ã¶rnek iÃ§ermiyor"
 
-#: libgnomeprintui/gnome-font-dialog.c:882
+#: libgnomeprintui/gnome-font-dialog.c:880
 msgid "Font Preview"
-msgstr "Yazıtipi Önizle"
+msgstr "YazÄ±tipi Ã–nizle"
 
-#: libgnomeprintui/gnome-font-dialog.c:883
+#: libgnomeprintui/gnome-font-dialog.c:881
 msgid "Displays some example text in the selected font"
-msgstr "Seçilen yazıtipi için örnek bir metin gösterir"
+msgstr "SeÃ§ilen yazÄ±tipi iÃ§inden Ã¶rnek bir metin gÃ¶sterir"
 
-#: libgnomeprintui/gnome-font-dialog.c:898
+#: libgnomeprintui/gnome-font-dialog.c:896
 msgid "Font Selection"
-msgstr "Yazıtipi Seçimi"
+msgstr "YazÄ±tipi SeÃ§imi"
 
-#: libgnomeprintui/gnome-print-copies.c:245
+#: libgnomeprintui/gnome-print-config-dialog.c:241
+msgid "Default Settings"
+msgstr "Ã–ntanÄ±mlÄ± Ayarlar"
+
+#: libgnomeprintui/gnome-print-config-dialog.c:267
+msgid "Image showing pages being printed in duplex."
+msgstr "SayfalarÄ±n arkalÄ± Ã¶nlÃ¼ olarak bastÄ±rÄ±lacaÄŸÄ±nÄ± gÃ¶steren resim."
+
+#: libgnomeprintui/gnome-print-config-dialog.c:271
+msgid "_Duplex"
+msgstr "_ArkalÄ± Ã¶nlÃ¼"
+
+#: libgnomeprintui/gnome-print-config-dialog.c:277
+msgid "Pages are printed in duplex."
+msgstr "Sayfalar arkalÄ± Ã¶nlÃ¼ bastÄ±rÄ±ldÄ±."
+
+#: libgnomeprintui/gnome-print-config-dialog.c:285
+msgid ""
+"Image showing the second page of a duplex printed sequence to be printed "
+"upside down."
+msgstr ""
+"ArkalÄ± Ã¶nlÃ¼ sayfa serisinin arka yÃ¼zÃ¼nÃ¼n baÅŸ aÅŸaÄŸÄ± basÄ±lacaÄŸÄ±nÄ± gÃ¶steren "
+"resim."
+
+#: libgnomeprintui/gnome-print-config-dialog.c:290
+msgid "_Tumble"
+msgstr "_Takla"
+
+#: libgnomeprintui/gnome-print-config-dialog.c:296
+msgid ""
+"If copies of the document are printed in duplex, the second page is flipped "
+"upside down,"
+msgstr ""
+"EÄŸer metnin nÃ¼shalarÄ± arkalÄ± Ã¶nlÃ¼ basÄ±lacaksa, ikinci sayfa baÅŸ aÅŸaÄŸÄ± "
+"Ã§evirilir,"
+
+#: libgnomeprintui/gnome-print-config-dialog.c:316
+msgid "_Printing Time:"
+msgstr "_YazdÄ±rma ZamanÄ±:"
+
+#: libgnomeprintui/gnome-print-config-dialog.c:342
+#: libgnomeprintui/gnome-print-dialog.c:389
+msgid "Error while loading printer configuration"
+msgstr "YazÄ±cÄ± yapÄ±landÄ±rmasÄ± yÃ¼klerken hata oluÅŸtu"
+
+#: libgnomeprintui/gnome-print-copies.c:261
 msgid "Copies"
-msgstr "Kopya"
+msgstr "NÃ¼sha"
 
-#: libgnomeprintui/gnome-print-copies.c:254
+#: libgnomeprintui/gnome-print-copies.c:274
 msgid "N_umber of copies:"
-msgstr "Kopya _sayısı:"
+msgstr "NÃ¼sha _sayÄ±sÄ±:"
 
-#: libgnomeprintui/gnome-print-copies.c:281
+#: libgnomeprintui/gnome-print-copies.c:292
 msgid ""
 "Image showing the collation sequence when multiple copies of the document "
 "are printed"
 msgstr ""
+"Belgenin birden fazla nÃ¼shasÄ± bastÄ±rÄ±ldÄ±ÄŸÄ±nda harmanlanacaÄŸÄ±nÄ± gÃ¶steren resim"
 
-#: libgnomeprintui/gnome-print-copies.c:283
+#: libgnomeprintui/gnome-print-copies.c:294
 msgid "_Collate"
-msgstr "_Topla"
+msgstr "_Harmanla"
 
-#: libgnomeprintui/gnome-print-copies.c:288
+#: libgnomeprintui/gnome-print-copies.c:299
 msgid ""
 "If copies of the document are printed separately, one after another, rather "
 "than being interleaved"
 msgstr ""
+"EÄŸer belgenin birden fazla nÃ¼shasÄ± ayrÄ± ayrÄ± basÄ±lacaksa, sayfa sayfa yerine "
+"bir kopya ardÄ±na diÄŸer kopyayÄ± bas"
 
-#: libgnomeprintui/gnome-print-dialog.c:163
-#, fuzzy
-msgid "Print range"
-msgstr "Yazıcı sınırları"
+#: libgnomeprintui/gnome-print-dialog.c:199
+msgid "Print Range"
+msgstr "YazÄ±cÄ± AralÄ±ÄŸÄ±"
 
-#: libgnomeprintui/gnome-print-dialog.c:201
+#: libgnomeprintui/gnome-print-dialog.c:246
 msgid "_All"
 msgstr "_Hepsi"
 
-#: libgnomeprintui/gnome-print-dialog.c:223
+#: libgnomeprintui/gnome-print-dialog.c:268
 msgid "_Selection"
-msgstr "_Seçim"
+msgstr "_SeÃ§im"
 
-#: libgnomeprintui/gnome-print-dialog.c:300
+#: libgnomeprintui/gnome-print-dialog.c:345
 msgid "Job"
-msgstr "Görev"
+msgstr "GÃ¶rev"
 
-#: libgnomeprintui/gnome-print-dialog.c:314
-#: libgnomeprintui/gnome-printer-selector.c:108
+#: libgnomeprintui/gnome-print-dialog.c:372
+#: libgnomeprintui/gpaui/gpa-printer-selector.c:161
 msgid "Printer"
-msgstr "Yazıcı"
+msgstr "YazÄ±cÄ±"
 
-#: libgnomeprintui/gnome-print-dialog.c:324
+#: libgnomeprintui/gnome-print-dialog.c:382
 msgid "Paper"
 msgstr "Sayfa"
 
-#: libgnomeprintui/gnome-print-dialog.c:331
-#, fuzzy
-msgid "Error while loading printer configuration"
-msgstr "Yazıtipi yapılandırmasını yüklerken bir hata oluştu"
-
-#: libgnomeprintui/gnome-print-dialog.c:336
+#: libgnomeprintui/gnome-print-dialog.c:396
 msgid "Gnome Print Dialog"
-msgstr "Gnome Yazdırma Penceresi"
+msgstr "Gnome YazdÄ±rma Penceresi"
 
-#: libgnomeprintui/gnome-print-dialog.c:482
+#: libgnomeprintui/gnome-print-dialog.c:546
 msgid "_From:"
 msgstr "_Kaynak:"
 
-#: libgnomeprintui/gnome-print-dialog.c:496
+#: libgnomeprintui/gnome-print-dialog.c:559
 msgid "Sets the start of the range of pages to be printed"
-msgstr "Yazdırılacak sayfanın başlangıç numarasını verir"
+msgstr "YazdÄ±rÄ±lacak sayfa aralÄ±ÄŸÄ±nÄ±n baÅŸlangÄ±cÄ±nÄ± ayarlar"
 
-#: libgnomeprintui/gnome-print-dialog.c:506
+#: libgnomeprintui/gnome-print-dialog.c:561
 msgid "_To:"
 msgstr "_Hedef:"
 
-#: libgnomeprintui/gnome-print-dialog.c:520
+#: libgnomeprintui/gnome-print-dialog.c:574
 msgid "Sets the end of the range of pages to be printed"
-msgstr "Yazdırılacak sayfanın bitiş numarasını verir"
+msgstr "YazdÄ±rÄ±lacak sayfa aralÄ±ÄŸÄ±nÄ±n sonunu ayarlar"
 
-#: libgnomeprintui/gnome-print-job-preview.c:614
+#: libgnomeprintui/gnome-print-job-preview.c:618
 msgid "Page Preview"
-msgstr "Sayfa Önizleme"
+msgstr "Sayfa Ã–nizleme"
 
-#: libgnomeprintui/gnome-print-job-preview.c:615
+#: libgnomeprintui/gnome-print-job-preview.c:619
 msgid "The preview of a page in the document to be printed"
-msgstr "Yazdırılacak belgenin önizlemesini yapar"
+msgstr "Belgedeki yazdÄ±rÄ±lacak sayfanÄ±n Ã¶nizlemesini yapar"
 
-#: libgnomeprintui/gnome-print-job-preview.c:666
+#: libgnomeprintui/gnome-print-job-preview.c:636
 msgid "P_age: "
 msgstr "_Sayfa: "
 
 #. We are displaying 'Page: XXX of XXX'.
-#: libgnomeprintui/gnome-print-job-preview.c:682
+#: libgnomeprintui/gnome-print-job-preview.c:652
 msgid "of"
 msgstr "/"
 
-#: libgnomeprintui/gnome-print-job-preview.c:688
+#: libgnomeprintui/gnome-print-job-preview.c:658
 msgid "Page total"
 msgstr "Toplam sayfa"
 
-#: libgnomeprintui/gnome-print-job-preview.c:689
+#: libgnomeprintui/gnome-print-job-preview.c:659
 msgid "The total number of pages in the document"
-msgstr "Belgedeki toplam sayfa sayısı"
+msgstr "Belgedeki toplam sayfa sayÄ±sÄ±"
 
-#: libgnomeprintui/gnome-print-job-preview.c:741
-msgid "Prints the current file"
-msgstr "Şu anki dosyayı yazdırır"
-
-#: libgnomeprintui/gnome-print-job-preview.c:745
-msgid "Closes print preview window"
-msgstr "Yazdırma önizleme penceresini kapatır"
-
-#: libgnomeprintui/gnome-print-job-preview.c:750
-msgid "Shows the first page"
-msgstr "İlk sayfayı gösterir"
+#: libgnomeprintui/gnome-print-job-preview.c:661
+msgid "Use _theme colors for content"
+msgstr "Ä°Ã§erik iÃ§in _tema renklerini kullan"
 
 #: libgnomeprintui/gnome-print-job-preview.c:752
+msgid "Other"
+msgstr "DiÄŸer"
+
+#: libgnomeprintui/gnome-print-job-preview.c:781
+msgid "Prints the current file"
+msgstr "Åu anki dosyayÄ± yazdÄ±rÄ±r"
+
+#: libgnomeprintui/gnome-print-job-preview.c:789
+msgid "Closes print preview window"
+msgstr "YazdÄ±rma Ã¶nizleme penceresini kapatÄ±r"
+
+#: libgnomeprintui/gnome-print-job-preview.c:802
+msgid "Shows the first page"
+msgstr "Ä°lk sayfayÄ± gÃ¶sterir"
+
+#: libgnomeprintui/gnome-print-job-preview.c:810
 msgid "Shows the previous page"
-msgstr "Önceki sayfayı gösterir"
+msgstr "Ã–nceki sayfayÄ± gÃ¶sterir"
 
-#: libgnomeprintui/gnome-print-job-preview.c:754
+#: libgnomeprintui/gnome-print-job-preview.c:818
 msgid "Shows the next page"
-msgstr "Önümüzdeki sayfayı gösterir"
+msgstr "Sonraki sayfayÄ± gÃ¶sterir"
 
-#: libgnomeprintui/gnome-print-job-preview.c:756
+#: libgnomeprintui/gnome-print-job-preview.c:826
 msgid "Shows the last page"
-msgstr "Son sayfayı gösterir"
+msgstr "Son sayfayÄ± gÃ¶sterir"
 
-#: libgnomeprintui/gnome-print-job-preview.c:761
+#: libgnomeprintui/gnome-print-job-preview.c:839
 msgid "Zooms 1:1"
-msgstr "1:1 odaklar"
+msgstr "YaklaÅŸtÄ±rma 1:1"
 
-#: libgnomeprintui/gnome-print-job-preview.c:763
+#: libgnomeprintui/gnome-print-job-preview.c:847
 msgid "Zooms to fit the whole page"
-msgstr "Tam sayfayı göstermek için ayarlar"
+msgstr "Tam sayfayÄ± oturtacak kadar yaklaÅŸtÄ±rÄ±r"
 
-#: libgnomeprintui/gnome-print-job-preview.c:765
+#: libgnomeprintui/gnome-print-job-preview.c:855
 msgid "Zooms the page in"
-msgstr "Sayfayı büyültülmüş gösterir"
+msgstr "SayfayÄ± yaklaÅŸtÄ±rÄ±r"
 
-#: libgnomeprintui/gnome-print-job-preview.c:767
+#: libgnomeprintui/gnome-print-job-preview.c:863
 msgid "Zooms the page out"
-msgstr "Sayfayı ufaltılmış gösterir"
+msgstr "SayfayÄ± uzaklaÅŸtÄ±rÄ±r"
 
-#: libgnomeprintui/gnome-print-job-preview.c:882
+#: libgnomeprintui/gnome-print-job-preview.c:875
+msgid "View multiple pages"
+msgstr "Ã‡oklu sayfa gÃ¶ster"
+
+#: libgnomeprintui/gnome-print-job-preview.c:1168
+#: libgnomeprintui/gnome-print-job-preview.c:1169
+msgid "Number of pages horizontally"
+msgstr "Yatay olarak sayfa sayÄ±sÄ±"
+
+#: libgnomeprintui/gnome-print-job-preview.c:1172
+#: libgnomeprintui/gnome-print-job-preview.c:1173
+msgid "Number of pages vertically"
+msgstr "Dikey olarak sayfa sayÄ±sÄ±"
+
+#: libgnomeprintui/gnome-print-job-preview.c:1213
 msgid "Gnome Print Preview"
-msgstr "Gnome Yazdırma Önizlemesi"
+msgstr "Gnome YazdÄ±rma Ã–nizlemesi"
 
-#: libgnomeprintui/gnome-print-job-preview.c:907
-msgid ""
-"<markup>1   <span foreground=\"red\" weight=\"ultrabold\" background=\"white"
-"\">No visible output was created.</span></markup>"
-msgstr ""
+#: libgnomeprintui/gnome-print-job-preview.c:1245
+msgid "No visible output was created."
+msgstr "GÃ¶rÃ¼lebilir bir Ã§Ä±ktÄ± oluÅŸturulamadÄ±."
 
-#: libgnomeprintui/gnome-print-paper-selector.c:381
-msgid "Pt"
-msgstr ""
-
-#: libgnomeprintui/gnome-print-paper-selector.c:382
-msgid "mm"
-msgstr ""
-
-#: libgnomeprintui/gnome-print-paper-selector.c:383
-msgid "cm"
-msgstr ""
-
-#: libgnomeprintui/gnome-print-paper-selector.c:384
-msgid "m"
-msgstr ""
-
-#: libgnomeprintui/gnome-print-paper-selector.c:385
-msgid "in"
-msgstr ""
-
-#. Create frame for selection menus
-#: libgnomeprintui/gnome-print-paper-selector.c:550
-msgid "Paper and layout"
-msgstr "Sayfa konumu"
+#: libgnomeprintui/gnome-print-paper-selector.c:440
+msgid "Paper and Layout"
+msgstr "Sayfa ve DÃ¼zen"
 
 #. Paper size selector
-#: libgnomeprintui/gnome-print-paper-selector.c:563
+#: libgnomeprintui/gnome-print-paper-selector.c:457
 msgid "Paper _size:"
 msgstr "Sayfa _boyutu:"
 
 #. Custom paper Width
-#: libgnomeprintui/gnome-print-paper-selector.c:575
+#: libgnomeprintui/gnome-print-paper-selector.c:468
 msgid "_Width:"
-msgstr "_Genişlik:"
+msgstr "_GeniÅŸlik:"
 
 #. Custom paper Height
-#: libgnomeprintui/gnome-print-paper-selector.c:592
+#: libgnomeprintui/gnome-print-paper-selector.c:482
 msgid "_Height:"
-msgstr "_Yükseklik:"
+msgstr "_YÃ¼kseklik:"
 
-#: libgnomeprintui/gnome-print-paper-selector.c:616
+#: libgnomeprintui/gnome-print-paper-selector.c:500
 msgid "Metric selector"
-msgstr "Metrik seçici"
+msgstr "Metrik seÃ§ici"
 
-#: libgnomeprintui/gnome-print-paper-selector.c:617
+#: libgnomeprintui/gnome-print-paper-selector.c:501
 msgid ""
 "Specifies the metric to use when setting the width and height of the paper"
 msgstr ""
-"Sayfanın en ve boyunun ayarlanması sırasında kullanılacak metriği belirtir"
+"SayfanÄ±n en ve boyunun ayarlanmasÄ± sÄ±rasÄ±nda kullanÄ±lacak metriÄŸi belirtir"
 
 #. Feed orientation
-#: libgnomeprintui/gnome-print-paper-selector.c:620
+#: libgnomeprintui/gnome-print-paper-selector.c:504
 msgid "_Feed orientation:"
-msgstr "_Besleme yönü:"
+msgstr "_Besleme yÃ¶nÃ¼:"
 
 #. Page orientation
-#: libgnomeprintui/gnome-print-paper-selector.c:635
+#: libgnomeprintui/gnome-print-paper-selector.c:518
 msgid "Page _orientation:"
-msgstr "Sayfa _konumlandırması:"
+msgstr "Sayfa _konumlandÄ±rmasÄ±:"
 
 #. Layout
-#: libgnomeprintui/gnome-print-paper-selector.c:647
+#: libgnomeprintui/gnome-print-paper-selector.c:529
 msgid "_Layout:"
-msgstr "_Yerleşim:"
+msgstr "_DÃ¼zen:"
 
-#. Preview frame
-#: libgnomeprintui/gnome-print-paper-selector.c:659
-#: libgnomeprintui/gnome-print-paper-selector.c:669
+#. Paper source
+#: libgnomeprintui/gnome-print-paper-selector.c:540
+msgid "Paper _tray:"
+msgstr "Sayfa _tepsisi:"
+
+#: libgnomeprintui/gnome-print-paper-selector.c:554
+#: libgnomeprintui/gnome-print-paper-selector.c:568
 msgid "Preview"
-msgstr "Önizle"
+msgstr "Ã–nizle"
 
-#: libgnomeprintui/gnome-print-paper-selector.c:670
+#: libgnomeprintui/gnome-print-paper-selector.c:569
 msgid "Preview of the page size, orientation and layout"
-msgstr "Sayfayı önizle"
+msgstr "Sayfa boyu, konumu ve dÃ¼zeninin Ã¶nizlemesi"
 
-#: libgnomeprintui/gnome-print-paper-selector.c:688
+#: libgnomeprintui/gnome-print-paper-selector.c:575
 msgid "Margins"
-msgstr "Aralıklar"
+msgstr "Kenar boÅŸluklarÄ±"
 
-#: libgnomeprintui/gnome-print-paper-selector.c:722
-#, fuzzy
+#: libgnomeprintui/gnome-print-paper-selector.c:609
 msgid "Top"
-msgstr "Üst:"
+msgstr "Ãœst"
 
-#: libgnomeprintui/gnome-print-paper-selector.c:725
-#, fuzzy
+#: libgnomeprintui/gnome-print-paper-selector.c:612
 msgid "Bottom"
-msgstr "Alt:"
+msgstr "Alt"
 
-#: libgnomeprintui/gnome-print-paper-selector.c:728
-#, fuzzy
+#: libgnomeprintui/gnome-print-paper-selector.c:615
 msgid "Left"
-msgstr "Sol:"
+msgstr "Sol"
 
-#: libgnomeprintui/gnome-print-paper-selector.c:731
-#, fuzzy
+#: libgnomeprintui/gnome-print-paper-selector.c:618
 msgid "Right"
-msgstr "Sağ:"
+msgstr "SaÄŸ"
 
-#: libgnomeprintui/gnome-printer-selector.c:123
-msgid "State:"
-msgstr "Durum:"
-
-#: libgnomeprintui/gnome-printer-selector.c:126
-msgid "Type:"
-msgstr "Tür:"
-
-#: libgnomeprintui/gnome-printer-selector.c:129
-msgid "Comment:"
-msgstr "Not:"
-
-#: libgnomeprintui/gnome-printer-selector.c:131
+#: libgnomeprintui/gnome-printer-selector.c:168
 msgid "Co_nfigure"
-msgstr "_Yapılandır"
+msgstr "_YapÄ±landÄ±r"
 
-#: libgnomeprintui/gnome-printer-selector.c:139
+#: libgnomeprintui/gnome-printer-selector.c:177
 msgid "Adjust the settings of the selected printer"
-msgstr "Seçilen yazıcının ayarlarını yap"
+msgstr "SeÃ§ilen yazÄ±cÄ±nÄ±n ayarlarÄ±nÄ± yapar"
 
-#: libgnomeprintui/gnome-printer-selector.c:150
-#, fuzzy
-msgid "Pr_inter:"
-msgstr "_Yazıcı:"
-
-#: libgnomeprintui/gnome-printer-selector.c:159
+#: libgnomeprintui/gnome-printer-selector.c:185
 msgid "_Settings:"
 msgstr "_Ayarlar:"
 
-#: libgnomeprintui/gnome-printer-selector.c:168
+#: libgnomeprintui/gnome-printer-selector.c:194
 msgid "_Location:"
 msgstr "_Konum:"
 
-#: libgnomeprintui/gnome-canvas-hacktext.c:128
-msgid "Text"
-msgstr ""
-
-#: libgnomeprintui/gnome-canvas-hacktext.c:129
-msgid "Text to render"
-msgstr ""
-
-#: libgnomeprintui/gnome-canvas-hacktext.c:148
-#: libgnomeprintui/gnome-canvas-hacktext.c:149
-msgid "Glyphlist"
-msgstr ""
-
-#: libgnomeprintui/gnome-canvas-hacktext.c:155
-#: libgnomeprintui/gnome-canvas-hacktext.c:163
-msgid "Color"
-msgstr ""
-
-#: libgnomeprintui/gnome-canvas-hacktext.c:156
-msgid "Text color, as string"
-msgstr ""
-
-#: libgnomeprintui/gnome-canvas-hacktext.c:164
-msgid "Text color, as an R/G/B/A combined integer"
-msgstr ""
-
-#: libgnomeprintui/gnome-canvas-hacktext.c:171
-msgid "Font"
-msgstr ""
-
-#: libgnomeprintui/gnome-canvas-hacktext.c:172
-msgid "Font as a GnomeFont struct"
-msgstr ""
-
 #: libgnomeprintui/gpaui/gpa-option-menu.c:179
 #: libgnomeprintui/gpaui/gpa-option-menu.c:229
-#: libgnomeprintui/gpaui/gpa-transport-selector.c:247
-#, fuzzy
 msgid "No options are defined"
-msgstr "Hiç yönlenme tanımlanmamış"
+msgstr "HiÃ§bir seÃ§enek tanÄ±mlanmamÄ±ÅŸ"
 
-#: libgnomeprintui/gpaui/gpa-printer-selector.c:156
-#, fuzzy
-msgid "No printers could be loaded"
-msgstr "Yazıcı seçilmedi"
+#: libgnomeprintui/gpaui/gpa-print-to-file.c:258
+msgid "Print to _file"
+msgstr "_Sayfaya yazdÄ±r"
+
+#: libgnomeprintui/gpaui/gpa-printer-selector.c:168
+msgid "State"
+msgstr "Durum"
+
+#: libgnomeprintui/gpaui/gpa-printer-selector.c:175
+msgid "Jobs"
+msgstr "GÃ¶revler"
+
+#: libgnomeprintui/gpaui/gpa-printer-selector.c:182
+msgid "Location"
+msgstr "Konum"
 
 #: libgnomeprintui/gpaui/gpa-settings-selector.c:180
 msgid "No printer selected"
-msgstr "Yazıcı seçilmedi"
+msgstr "YazÄ±cÄ± seÃ§ilmedi"
 
 #: libgnomeprintui/gpaui/gpa-settings-selector.c:191
 msgid "No settings available"
-msgstr "Kullanılabilir bir ayar bulunamadı"
+msgstr "KullanÄ±labilir bir ayar bulunamadÄ±"
 
 #: libgnomeprintui/gpaui/gpa-settings-selector.c:234
 msgid "Add new settings"
 msgstr "Yeni ayar ekle"
 
-#~ msgid "from:"
-#~ msgstr "kaynak:"
+#: libgnomeprintui/gpaui/gpa-spinbutton.c:311
+msgid "%"
+msgstr "%"
 
-#~ msgid "to:"
-#~ msgstr "hedef:"
+#. Percent must be first
+#: libgnomeprintui/gpaui/gpa-spinbutton.c:312
+msgid "Pt"
+msgstr "Nk"
 
-#~ msgid "Toggle preview"
-#~ msgstr "Önizleme aç/kapat"
+#: libgnomeprintui/gpaui/gpa-spinbutton.c:313
+msgid "mm"
+msgstr "mm"
 
-#~ msgid "No papers defined"
-#~ msgstr "Kağıt tanımlı değil"
+#: libgnomeprintui/gpaui/gpa-spinbutton.c:314
+msgid "cm"
+msgstr "cm"
 
-#~ msgid "No layouts defined"
-#~ msgstr "Hiç yerleşim tanımlanmamış"
+#: libgnomeprintui/gpaui/gpa-spinbutton.c:315
+msgid "m"
+msgstr "m"
 
-#~ msgid "Paper Size"
-#~ msgstr "Sayfa Boyutu"
+#: libgnomeprintui/gpaui/gpa-spinbutton.c:316
+msgid "in"
+msgstr "iÃ§inde"
 
-#~ msgid "Orientation"
-#~ msgstr "Yerleşim"
+#: libgnomeprintui/gpaui/gpa-transport-selector.c:183
+#: libgnomeprintui/gpaui/gpa-transport-selector.c:523
+#, c-format
+msgid "The specified filename \"%s\" is an existing directory."
+msgstr "Belirtilen dosya adÄ± \"%s\" zaten bulunan bir dizin."
 
-#~ msgid "Portrait"
-#~ msgstr "Dikey"
+#: libgnomeprintui/gpaui/gpa-transport-selector.c:202
+#: libgnomeprintui/gpaui/gpa-transport-selector.c:545
+#, c-format
+msgid "Should the file %s be overwritten?"
+msgstr "%s dosyasÄ±nÄ±n Ã¼zerine yazÄ±lsÄ±n mÄ±?"
 
-#~ msgid "Landscape"
-#~ msgstr "Yatay"
+#: libgnomeprintui/gpaui/gpa-transport-selector.c:247
+msgid "Please specify the location and filename of the output file:"
+msgstr "LÃ¼tfen Ã§Ä±ktÄ± dosyasÄ±nÄ±n konumunu ve dosya adÄ±nÄ± belirleyin:"
 
-#~ msgid "Scaling"
-#~ msgstr "Ölçeklendirme"
+#: libgnomeprintui/gpaui/gpa-transport-selector.c:271
+msgid "All Files"
+msgstr "BÃ¼tÃ¼n Dosyalar"
 
-#~ msgid "Fit to Page"
-#~ msgstr "Sayfaya Uydur"
+#~ msgid "Type:"
+#~ msgstr "Tip:"
 
-#~ msgid "%0.3g%s x %0.3g%s"
-#~ msgstr "%0.3g%s x %0.3g%s"
+#~ msgid "Comment:"
+#~ msgstr "Not:"
 
-#~ msgid "Select Printer"
-#~ msgstr "Yazıcıyı Seç"
+#~ msgid "Pr_inter:"
+#~ msgstr "_YazÄ±cÄ±:"
 
-#~ msgid "Select printer model"
-#~ msgstr "Yazıcı modelini seç"
-
-#~ msgid "Manufacturer"
-#~ msgstr "Üretici"
-
-#~ msgid "Model"
-#~ msgstr "Model"
-
-#~ msgid "Name"
-#~ msgstr "İsim"
-
-#~ msgid "Add printer"
-#~ msgstr "Yazıcı ekle"
-
-#~ msgid "From PPD..."
-#~ msgstr "PPD'den..."
-
-#~ msgid "Rotate 180"
-#~ msgstr "180 derece döndür"
-
-#~ msgid "Manage printers"
-#~ msgstr "Yazıcıları yönet"
-
-#~ msgid "Add new printer"
-#~ msgstr "Yeni yazıcı ekle"
-
-#~ msgid "Printer default location"
-#~ msgstr "Yazıcının öntanımlı konumu"
-
-#~ msgid "Line printer: %s"
-#~ msgstr "Satır yazıcı: %s"
-
-#~ msgid "Default line printer"
-#~ msgstr "Öntanımlı satır yazıcı"
-
-#~ msgid "My App Print Preview"
-#~ msgstr "Uygulama Yazdırma Önizlemesi"
-
-#~ msgid "PATH"
-#~ msgstr "YOL"
-
-#~ msgid "Bring up printer dialog"
-#~ msgstr "Yazıcı penceresini göster"
-
-#~ msgid "Bring up print dialog"
-#~ msgstr "Yazdırma penceresini göster"
-
-#, fuzzy
-#~ msgid "Use GnomePrintMasterPreview"
-#~ msgstr "Gnome Yazdırma Önizlemesi"
-
-#~ msgid "Show paper dialog"
-#~ msgstr "Sayfa penceresini göster"
-
-#~ msgid "Print text file"
-#~ msgstr "Metin dosyayı yazdır"
+#~ msgid "No printers could be loaded"
+#~ msgstr "HiÃ§bir yazÄ±cÄ± yÃ¼klenemedi"

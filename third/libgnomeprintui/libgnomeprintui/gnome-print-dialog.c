@@ -20,10 +20,14 @@
  *    Michael Zucchi <notzed@helixcode.com>
  *    Chema Celorio <chema@celorio.com>
  *    Lauris Kaplinski <lauris@ximian.com>
+ *    Andreas J. Guelzow <aguelzow@taliesin.ca>
  *
  *  Copyright (C) 2000-2002 Ximian Inc.
+ *  Copyright (C) 2004 Andreas J. Guelzow
  *
  */
+
+#define GNOME_PRINT_UNSTABLE_API
 
 #include <config.h>
 
@@ -139,19 +143,48 @@ gnome_print_dialog_init (GnomePrintDialog *gpd)
 	/* Empty */
 }
 
-static void
-gpd_copies_set (GnomePrintCopiesSelector *gpc, gint copies, gboolean collate, GnomePrintDialog *gpd)
+static void 
+gnome_print_dialog_response_cb (GtkDialog *dialog,
+				gint response_id,
+				GnomePrintDialog *gpd)
 {
-	if (gpd->config) {
-		gnome_print_config_set_int (gpd->config, GNOME_PRINT_KEY_NUM_COPIES, copies);
-		gnome_print_config_set_boolean (gpd->config, GNOME_PRINT_KEY_COLLATE, collate);
-	}
+	if (response_id != GNOME_PRINT_DIALOG_RESPONSE_PRINT)
+		return;
+
+	if (!gnome_printer_selector_check_consistency  
+	    (GNOME_PRINTER_SELECTOR (gpd->printer)))
+		g_signal_stop_emission_by_name (dialog, "response");
+}
+
+
+
+static void
+gpd_copies_set (GnomePrintCopiesSelector *gpc, 
+		gint copies,
+		GnomePrintDialog *gpd)
+{
+	if (gpd->config)
+		gnome_print_config_set_int (gpd->config, 
+					    GNOME_PRINT_KEY_NUM_COPIES, 
+					    copies);
+}
+
+static void
+gpd_collate_set (GnomePrintCopiesSelector *gpc, 
+		 gboolean collate, 
+		 GnomePrintDialog *gpd)
+{
+	if (gpd->config)
+		gnome_print_config_set_boolean (gpd->config, 
+						GNOME_PRINT_KEY_COLLATE, 
+						collate);
 }
 
 static GtkWidget *
 gpd_create_job_page (GnomePrintDialog *gpd)
 {
-	GtkWidget *hb, *vb, *f, *c;
+	GtkWidget *hb, *vb, *f, *c, *l;
+	gchar *text;
 
 	hb = gtk_hbox_new (FALSE, 0);
 
@@ -160,14 +193,25 @@ gpd_create_job_page (GnomePrintDialog *gpd)
 
 	gtk_box_pack_start (GTK_BOX (hb), vb, FALSE, FALSE, 0);
 
-	f = gtk_frame_new (_("Print range"));
+	f = gtk_frame_new ("");
+	gtk_frame_set_shadow_type (GTK_FRAME (f), GTK_SHADOW_NONE);
+	l = gtk_label_new ("");
+	text = g_strdup_printf ("<b>%s</b>", _("Print Range"));
+	gtk_label_set_markup (GTK_LABEL (l), text);
+	g_free (text);
+	gtk_frame_set_label_widget (GTK_FRAME (f), l);
+	gtk_widget_show (l);
 	gtk_widget_hide (f);
 	gtk_box_pack_start (GTK_BOX (vb), f, FALSE, FALSE, 0);
 	g_object_set_data (G_OBJECT (hb), "range", f);
 
 	c = gnome_print_copies_selector_new ();
-	if (gpd)
-		g_signal_connect (G_OBJECT (c), "copies_set", (GCallback) gpd_copies_set, gpd);
+	if (gpd) {
+		g_signal_connect (G_OBJECT (c), "copies_set", 
+				  (GCallback) gpd_copies_set, gpd);
+		g_signal_connect (G_OBJECT (c), "collate_set", 
+				  (GCallback) gpd_collate_set, gpd);
+	}
 	gtk_widget_hide (c);
 	gtk_box_pack_start (GTK_BOX (vb), c, FALSE, FALSE, 0);
 	g_object_set_data (G_OBJECT (hb), "copies", c);
@@ -183,6 +227,7 @@ gpd_create_range (gint flags, GtkWidget *range, const guchar *clabel, const guch
 	gint row;
 
 	t = gtk_table_new (4, 2, FALSE);
+	gtk_container_set_border_width (GTK_CONTAINER (t), 6);
 
 	group = NULL;
 	row = 0;
@@ -300,6 +345,19 @@ gnome_print_dialog_construct (GnomePrintDialog *gpd, const guchar *title, gint f
 		l = gtk_label_new_with_mnemonic (_("Job"));
 		gtk_widget_show (l);
 		gtk_notebook_append_page (GTK_NOTEBOOK (gpd->notebook), gpd->job, l);
+
+		{
+			int copies;
+			gboolean collate;
+
+			if (!gnome_print_config_get_int (gpd->config, 
+			        GNOME_PRINT_KEY_NUM_COPIES, &copies))
+				copies = 1;
+			if (!gnome_print_config_get_boolean (gpd->config, 
+				GNOME_PRINT_KEY_COLLATE, &collate))
+				collate = FALSE;
+			gnome_print_dialog_set_copies (gpd, copies, collate);
+		}
 		
 		/* Add the printers page */
 		hb = gtk_hbox_new (FALSE, 0);
@@ -333,7 +391,11 @@ gnome_print_dialog_construct (GnomePrintDialog *gpd, const guchar *title, gint f
 		gtk_box_pack_start (GTK_BOX (GTK_DIALOG (gpd)->vbox), label, TRUE, TRUE, 0);
 	}
 
-	gtk_window_set_title (GTK_WINDOW (gpd), (title) ? title : (const guchar *) _("Gnome Print Dialog"));
+	gtk_window_set_title (GTK_WINDOW (gpd), 
+			      (title) ? title : 
+			      (const guchar *) _("Gnome Print Dialog"));
+
+	gtk_dialog_set_has_separator (GTK_DIALOG (gpd), FALSE);
 
 	gtk_dialog_add_buttons (GTK_DIALOG (gpd),
 				GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
@@ -350,6 +412,11 @@ gnome_print_dialog_construct (GnomePrintDialog *gpd, const guchar *title, gint f
 
 	gtk_dialog_set_default_response (GTK_DIALOG (gpd),
 					 GNOME_PRINT_DIALOG_RESPONSE_PRINT);
+
+	g_signal_connect (gpd, "response",
+			  G_CALLBACK (gnome_print_dialog_response_cb),
+			  (gpointer) gpd);
+
 
 	/* Construct job options, if needed */
 	if (flags & GNOME_PRINT_DIALOG_RANGE) {
@@ -471,9 +538,6 @@ gnome_print_dialog_construct_range_page (GnomePrintDialog *gpd, gint flags, gint
 	if (flags & GNOME_PRINT_RANGE_RANGE) {
 		GtkWidget *l, *sb;
 		GtkObject *a;
-		AtkRelationSet *relation_set;
-		AtkRelation *relation;
-		AtkObject *relation_targets[1];
 		AtkObject *atko;
 
 		hbox = gtk_hbox_new (FALSE, 3);
@@ -486,22 +550,13 @@ gnome_print_dialog_construct_range_page (GnomePrintDialog *gpd, gint flags, gint
 		a = gtk_adjustment_new (start, start, end, 1, 10, 10);
 		g_object_set_data (G_OBJECT (hbox), "from", a);
 		sb = gtk_spin_button_new (GTK_ADJUSTMENT (a), 1, 0.0);
+		gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (sb), TRUE);
 		gtk_widget_show (sb);
 		gtk_box_pack_start (GTK_BOX (hbox), sb, FALSE, FALSE, 0);
 		gtk_label_set_mnemonic_widget ((GtkLabel *) l, sb);
 
-		/* Add a LABELLED_BY relation from the spinbutton to the label.
-		 */
 		atko = gtk_widget_get_accessible (sb);
 		atk_object_set_description (atko, _("Sets the start of the range of pages to be printed"));
-
-		relation_set = atk_object_ref_relation_set (atko);
-		relation_targets[0] = gtk_widget_get_accessible (l);
-		relation = atk_relation_new (relation_targets, 1,
-					     ATK_RELATION_LABELLED_BY);
-		atk_relation_set_add (relation_set, relation);
-		g_object_unref (G_OBJECT (relation));
-		g_object_unref (G_OBJECT (relation_set));
 
 		l = gtk_label_new_with_mnemonic (_("_To:"));
 		gtk_widget_show (l);
@@ -510,22 +565,13 @@ gnome_print_dialog_construct_range_page (GnomePrintDialog *gpd, gint flags, gint
 		a = gtk_adjustment_new (end, start, end, 1, 10, 10);
 		g_object_set_data (G_OBJECT (hbox), "to", a);
 		sb = gtk_spin_button_new (GTK_ADJUSTMENT (a), 1, 0.0);
+		gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (sb), TRUE);
 		gtk_widget_show (sb);
 		gtk_box_pack_start (GTK_BOX (hbox), sb, FALSE, FALSE, 0);
 		gtk_label_set_mnemonic_widget ((GtkLabel *) l, sb);
 
-		/* Add a LABELLED_BY relation from the spinbutton to the label.
-		 */
 		atko = gtk_widget_get_accessible (sb);
 		atk_object_set_description (atko, _("Sets the end of the range of pages to be printed"));
-
-		relation_set = atk_object_ref_relation_set (atko);
-		relation_targets[0] = gtk_widget_get_accessible (l);
-		relation = atk_relation_new (relation_targets, 1,
-					     ATK_RELATION_LABELLED_BY);
-		atk_relation_set_add (relation_set, relation);
-		g_object_unref (G_OBJECT (relation));
-		g_object_unref (G_OBJECT (relation_set));
 	}
 
 	gnome_print_dialog_construct_range_any (gpd, flags, hbox, currentlabel, rangelabel);
@@ -631,7 +677,7 @@ gnome_print_dialog_get_range_page (GnomePrintDialog *gpd, gint *start, gint *end
  * copies indicator, then a default of 1 copy is returned.
  **/
 void
-gnome_print_dialog_get_copies (GnomePrintDialog *gpd, gint *copies, gint *collate)
+gnome_print_dialog_get_copies (GnomePrintDialog *gpd, gint *copies, gboolean *collate)
 {
 	g_return_if_fail (gpd != NULL);
 	g_return_if_fail (GNOME_IS_PRINT_DIALOG (gpd));
@@ -661,7 +707,7 @@ gnome_print_dialog_get_copies (GnomePrintDialog *gpd, gint *copies, gint *collat
  * Sets the print copies and collation status in the print dialogue.
  **/
 void
-gnome_print_dialog_set_copies (GnomePrintDialog *gpd, gint copies, gint collate)
+gnome_print_dialog_set_copies (GnomePrintDialog *gpd, gint copies, gboolean collate)
 {
 	GnomePrintCopiesSelector *c;
 
@@ -693,4 +739,25 @@ gnome_print_dialog_get_config (GnomePrintDialog *gpd)
 }
 
 
+/**
+ * gnome_print_dialog_run:
+ * @gpd: 
+ * 
+ * Runs a gnome-print dialog. Use it instead of gtk_dialog_run
+ * in the future this function will handle more stuff like opening
+ * a file selector when printing to a file.
+ *
+ * Note: this routine does not destroy the dialog!
+ * 
+ * Return Value: the user response
+ **/
+gint
+gnome_print_dialog_run (GnomePrintDialog const *gpd)
+{
+	gint response;
+
+	response = gtk_dialog_run (GTK_DIALOG (gpd));
+
+	return response;
+}
 

@@ -114,6 +114,14 @@ gnome-font-dialog
 </para>
 
 
+<!-- ##### SIGNAL GnomeFontSelection::font-set ##### -->
+<para>
+
+</para>
+
+@fontselection: the object which received the signal.
+@arg1: 
+
 <!-- ##### STRUCT GnomeFontSelectionClass ##### -->
 <para>
 

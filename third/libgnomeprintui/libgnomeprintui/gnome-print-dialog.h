@@ -1,8 +1,4 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
-
-#ifndef __GNOME_PRINT_DIALOG_H__
-#define __GNOME_PRINT_DIALOG_H__
-
 /*
  *  gnome-print-dialog.h: A system print dialog
  *
@@ -24,10 +20,15 @@
  *    Michael Zucchi <notzed@helixcode.com>
  *    Chema Celorio <chema@celorio.com>
  *    Lauris Kaplinski <lauris@ximian.com>
+ *    Andreas J. Guelzow <aguelzow@taliesin.ca>
  *
  *  Copyright (C) 2000-2002 Ximian Inc.
+ *  Copyright (C) 2004 Andreas J. Guelzow
  *
  */
+
+#ifndef __GNOME_PRINT_DIALOG_H__
+#define __GNOME_PRINT_DIALOG_H__
 
 #include <glib.h>
 
@@ -37,7 +38,7 @@ G_BEGIN_DECLS
 #define GNOME_PRINT_DIALOG(o)           (G_TYPE_CHECK_INSTANCE_CAST ((o), GNOME_TYPE_PRINT_DIALOG, GnomePrintDialog))
 #define GNOME_PRINT_DIALOG_CLASS(k)     (G_TYPE_CHECK_CLASS_CAST    ((k), GNOME_TYPE_PRINT_DIALOG, GnomePrintDialogClass))
 #define GNOME_IS_PRINT_DIALOG(o)        (G_TYPE_CHECK_INSTANCE_TYPE ((o), GNOME_TYPE_PRINT_DIALOG))
-#define GNOME_IS_PRINT_DIALOG_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE    ((o), GNOME_TYPE_PRINT_DIALOG))
+#define GNOME_IS_PRINT_DIALOG_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE    ((k), GNOME_TYPE_PRINT_DIALOG))
 #define GNOME_PRINT_DIALOG_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS  ((o), GNOME_TYPE_PRINT_DIALOG), GnomePrintDialogClass)
 
 typedef struct _GnomePrintDialog      GnomePrintDialog;
@@ -65,7 +66,7 @@ enum GnomePrintDialogRangeFlags {
 	GNOME_PRINT_RANGE_ALL = (1 << 1),
 	GNOME_PRINT_RANGE_RANGE = (1 << 2),
 	GNOME_PRINT_RANGE_SELECTION = (1 << 3),
-	GNOME_PRINT_RANGE_SELECTION_UNSENSITIVE  = (1 << 4),
+	GNOME_PRINT_RANGE_SELECTION_UNSENSITIVE  = (1 << 4)
 };
 
 /*
@@ -78,12 +79,12 @@ enum GnomePrintDialogFlags {
 
 /*
  * The button numbers corresponding to the standard buttons
- * Used with the GnomeDialog "clicked" signal.
+ * Used with the GtkDialog "clicked" signal.
  */
 enum GnomePrintButtons {
 	GNOME_PRINT_DIALOG_RESPONSE_PRINT = 1,
 	GNOME_PRINT_DIALOG_RESPONSE_PREVIEW,
-	GNOME_PRINT_DIALOG_RESPONSE_CANCEL = GTK_RESPONSE_CANCEL,
+	GNOME_PRINT_DIALOG_RESPONSE_CANCEL = GTK_RESPONSE_CANCEL
 };
 
 GType gnome_print_dialog_get_type (void);
@@ -100,12 +101,15 @@ void gnome_print_dialog_construct_range_page (GnomePrintDialog *gpd, gint flags,
 					      gint start, gint end,
 					      const guchar *currentlabel, const guchar *rangelabel);
 
-void                gnome_print_dialog_get_copies (GnomePrintDialog *gpd, gint *copies, gint *collate);
+void                gnome_print_dialog_get_copies (GnomePrintDialog *gpd, gint *copies, gboolean *collate);
 void                gnome_print_dialog_set_copies (GnomePrintDialog *gpd, gint copies, gint collate);
 GnomePrintConfig *  gnome_print_dialog_get_config (GnomePrintDialog *gpd);
 GnomePrintRangeType gnome_print_dialog_get_range  (GnomePrintDialog *gpd);
 int                 gnome_print_dialog_get_range_page (GnomePrintDialog *gpd, gint *start, gint *end);
 
+/* gnome_print_dialog_run is intended as a dropin replacement for */
+/* gtk_dialog_run                                                 */
+gint  gnome_print_dialog_run (GnomePrintDialog const *gpd);
 
 G_END_DECLS
 

@@ -2,343 +2,19 @@
 # Copyright (C) 2000 Free Software Foundation, Inc.
 # Huib Kleinhout <huib@stack.nl>, 2002.
 # Tino Meinen <a.t.meinen@chello.nl> 2002.
-# Reinout van Schouwen <reinout@cs.vu.nl>, 2002
+# Reinout van Schouwen <reinout@cs.vu.nl>, 2002-2004
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-print cvs\n"
-"POT-Creation-Date: 2003-02-02 20:53-0500\n"
-"PO-Revision-Date: 2003-01-13 13:30+0100\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-09-10 23:32-0400\n"
+"PO-Revision-Date: 2004-09-03 15:00+0200\n"
 "Last-Translator: Reinout van Schouwen <reinout@cs.vu.nl>\n"
 "Language-Team: Dutch <vertaling@nl.linux.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-
-#. Family frame
-#: libgnomeprintui/gnome-font-dialog.c:164
-#: libgnomeprintui/gnome-font-dialog.c:199
-msgid "Font family"
-msgstr "Lettertypefamilie"
-
-#: libgnomeprintui/gnome-font-dialog.c:200
-msgid "The list of font families available"
-msgstr "De lijst van lettertypes die beschikbaar zijn"
-
-#. Style frame
-#: libgnomeprintui/gnome-font-dialog.c:209
-msgid "Style"
-msgstr "Stijl"
-
-#: libgnomeprintui/gnome-font-dialog.c:250
-msgid "Font style"
-msgstr "Lettertypestijl"
-
-#: libgnomeprintui/gnome-font-dialog.c:251
-msgid "The list of styles available for the selected font family"
-msgstr "De lijst van beschikbare stijlen voor het geselecteerde lettertype"
-
-#: libgnomeprintui/gnome-font-dialog.c:284
-msgid "Font _size:"
-msgstr "Lettertype_grootte:"
-
-#: libgnomeprintui/gnome-font-dialog.c:775
-msgid "This font does not have sample"
-msgstr "Dit lettertype heeft geen voorbeeld"
-
-#: libgnomeprintui/gnome-font-dialog.c:882
-msgid "Font Preview"
-msgstr "Lettertypevoorbeeld"
-
-#: libgnomeprintui/gnome-font-dialog.c:883
-msgid "Displays some example text in the selected font"
-msgstr "Toont een voorbeeldtekst in het geselecteerde lettertype"
-
-#: libgnomeprintui/gnome-font-dialog.c:898
-msgid "Font Selection"
-msgstr "Lettertypeselectie"
-
-#: libgnomeprintui/gnome-print-copies.c:245
-msgid "Copies"
-msgstr "Exemplaren"
-
-#: libgnomeprintui/gnome-print-copies.c:254
-msgid "N_umber of copies:"
-msgstr "Aanta_l exemplaren:"
-
-#: libgnomeprintui/gnome-print-copies.c:281
-msgid ""
-"Image showing the collation sequence when multiple copies of the document "
-"are printed"
-msgstr ""
-"Afbeelding welke de afdrukvolgorde weergeeft bij het afdrukken van meerdere "
-"exemplaren van het document"
-
-#: libgnomeprintui/gnome-print-copies.c:283
-msgid "_Collate"
-msgstr "S_orteren"
-
-#: libgnomeprintui/gnome-print-copies.c:288
-msgid ""
-"If copies of the document are printed separately, one after another, rather "
-"than being interleaved"
-msgstr ""
-"Of exemplaren van het document in plaats van tussengevoegd, afzonderlijk "
-"(één voor één) worden afgedrukt"
-
-#: libgnomeprintui/gnome-print-dialog.c:163
-msgid "Print range"
-msgstr "Afdrukbereik"
-
-#: libgnomeprintui/gnome-print-dialog.c:201
-msgid "_All"
-msgstr "_Alles"
-
-#: libgnomeprintui/gnome-print-dialog.c:223
-msgid "_Selection"
-msgstr "_Selectie"
-
-#: libgnomeprintui/gnome-print-dialog.c:300
-msgid "Job"
-msgstr "Taak"
-
-#: libgnomeprintui/gnome-print-dialog.c:314
-#: libgnomeprintui/gnome-printer-selector.c:108
-msgid "Printer"
-msgstr "Printer"
-
-#: libgnomeprintui/gnome-print-dialog.c:324
-msgid "Paper"
-msgstr "Papier"
-
-#: libgnomeprintui/gnome-print-dialog.c:331
-msgid "Error while loading printer configuration"
-msgstr "Er is een fout opgetreden bij het laden van de printerconfiguratie"
-
-#: libgnomeprintui/gnome-print-dialog.c:336
-msgid "Gnome Print Dialog"
-msgstr "Gnome 'Afdrukken'-dialoogvenster"
-
-#: libgnomeprintui/gnome-print-dialog.c:482
-msgid "_From:"
-msgstr "_Van:"
-
-#: libgnomeprintui/gnome-print-dialog.c:496
-msgid "Sets the start of the range of pages to be printed"
-msgstr "Het begin van de reeks af te drukken pagina's"
-
-#: libgnomeprintui/gnome-print-dialog.c:506
-msgid "_To:"
-msgstr "_Tot:"
-
-#: libgnomeprintui/gnome-print-dialog.c:520
-msgid "Sets the end of the range of pages to be printed"
-msgstr "Het einde van de reeks af te drukken pagina's"
-
-#: libgnomeprintui/gnome-print-job-preview.c:614
-msgid "Page Preview"
-msgstr "Afdrukvoorbeeld"
-
-#: libgnomeprintui/gnome-print-job-preview.c:615
-msgid "The preview of a page in the document to be printed"
-msgstr "Het afdrukvoorbeeld van de pagina in het document"
-
-#: libgnomeprintui/gnome-print-job-preview.c:666
-msgid "P_age: "
-msgstr "P_agina:"
-
-#. We are displaying 'Page: XXX of XXX'.
-#: libgnomeprintui/gnome-print-job-preview.c:682
-msgid "of"
-msgstr "van"
-
-#: libgnomeprintui/gnome-print-job-preview.c:688
-msgid "Page total"
-msgstr "Totaal aantal pagina's"
-
-#: libgnomeprintui/gnome-print-job-preview.c:689
-msgid "The total number of pages in the document"
-msgstr "Het totaal aantal pagina's in het document"
-
-#: libgnomeprintui/gnome-print-job-preview.c:741
-msgid "Prints the current file"
-msgstr "Drukt het huidige bestand af"
-
-#: libgnomeprintui/gnome-print-job-preview.c:745
-msgid "Closes print preview window"
-msgstr "Sluit het afdrukvoorbeeldvenster"
-
-#: libgnomeprintui/gnome-print-job-preview.c:750
-msgid "Shows the first page"
-msgstr "Toont de eerste pagina"
-
-#: libgnomeprintui/gnome-print-job-preview.c:752
-msgid "Shows the previous page"
-msgstr "Toont de vorige pagina"
-
-#: libgnomeprintui/gnome-print-job-preview.c:754
-msgid "Shows the next page"
-msgstr "Toont de volgende pagina"
-
-#: libgnomeprintui/gnome-print-job-preview.c:756
-msgid "Shows the last page"
-msgstr "Toont de laatste pagina"
-
-#: libgnomeprintui/gnome-print-job-preview.c:761
-msgid "Zooms 1:1"
-msgstr "Schaalt naar 1:1"
-
-#: libgnomeprintui/gnome-print-job-preview.c:763
-msgid "Zooms to fit the whole page"
-msgstr "Schalen zodat de hele pagina erop past"
-
-#: libgnomeprintui/gnome-print-job-preview.c:765
-msgid "Zooms the page in"
-msgstr "Pagina inzoomen"
-
-#: libgnomeprintui/gnome-print-job-preview.c:767
-msgid "Zooms the page out"
-msgstr "Pagina uitzoomen"
-
-#: libgnomeprintui/gnome-print-job-preview.c:882
-msgid "Gnome Print Preview"
-msgstr "Gnome afdrukvoorbeeld"
-
-#: libgnomeprintui/gnome-print-job-preview.c:907
-msgid ""
-"<markup>1   <span foreground=\"red\" weight=\"ultrabold\" background=\"white"
-"\">No visible output was created.</span></markup>"
-msgstr ""
-"<markup>1   <span foregroun=\"red\" weight=\"utlrabold\" background=\"white"
-"\">Geen zichtbare uitvoer aangemaakt.</span></markup>"
-
-#: libgnomeprintui/gnome-print-paper-selector.c:381
-msgid "Pt"
-msgstr "Pt"
-
-#: libgnomeprintui/gnome-print-paper-selector.c:382
-msgid "mm"
-msgstr "mm"
-
-#: libgnomeprintui/gnome-print-paper-selector.c:383
-msgid "cm"
-msgstr "cm"
-
-#: libgnomeprintui/gnome-print-paper-selector.c:384
-msgid "m"
-msgstr "m"
-
-#: libgnomeprintui/gnome-print-paper-selector.c:385
-msgid "in"
-msgstr "in"
-
-#. Create frame for selection menus
-#: libgnomeprintui/gnome-print-paper-selector.c:550
-msgid "Paper and layout"
-msgstr "Papier en lay-out"
-
-#. Paper size selector
-#: libgnomeprintui/gnome-print-paper-selector.c:563
-msgid "Paper _size:"
-msgstr "Papier_formaat:"
-
-#. Custom paper Width
-#: libgnomeprintui/gnome-print-paper-selector.c:575
-msgid "_Width:"
-msgstr "_Breedte:"
-
-#. Custom paper Height
-#: libgnomeprintui/gnome-print-paper-selector.c:592
-msgid "_Height:"
-msgstr "_Hoogte:"
-
-#: libgnomeprintui/gnome-print-paper-selector.c:616
-msgid "Metric selector"
-msgstr "Metriekkiezer"
-
-#: libgnomeprintui/gnome-print-paper-selector.c:617
-msgid ""
-"Specifies the metric to use when setting the width and height of the paper"
-msgstr ""
-"Geeft aan welke metriek gebruikt wordt om de breedte en hoogte van het "
-"papier in te stellen"
-
-#. Feed orientation
-#: libgnomeprintui/gnome-print-paper-selector.c:620
-msgid "_Feed orientation:"
-msgstr "_Invoer-oriëntatie:"
-
-#. Page orientation
-#: libgnomeprintui/gnome-print-paper-selector.c:635
-msgid "Page _orientation:"
-msgstr "Pagina-_oriëntatie:"
-
-#. Layout
-#: libgnomeprintui/gnome-print-paper-selector.c:647
-msgid "_Layout:"
-msgstr "_Lay-out:"
-
-#. Preview frame
-#: libgnomeprintui/gnome-print-paper-selector.c:659
-#: libgnomeprintui/gnome-print-paper-selector.c:669
-msgid "Preview"
-msgstr "Afdrukvoorbeeld"
-
-#: libgnomeprintui/gnome-print-paper-selector.c:670
-msgid "Preview of the page size, orientation and layout"
-msgstr "Voorbeeld van de paginagrootte, -oriëntatie en lay-out"
-
-#: libgnomeprintui/gnome-print-paper-selector.c:688
-msgid "Margins"
-msgstr "Marges"
-
-#: libgnomeprintui/gnome-print-paper-selector.c:722
-msgid "Top"
-msgstr "Boven"
-
-#: libgnomeprintui/gnome-print-paper-selector.c:725
-msgid "Bottom"
-msgstr "Onder"
-
-#: libgnomeprintui/gnome-print-paper-selector.c:728
-msgid "Left"
-msgstr "Links"
-
-#: libgnomeprintui/gnome-print-paper-selector.c:731
-msgid "Right"
-msgstr "Rechts"
-
-#: libgnomeprintui/gnome-printer-selector.c:123
-msgid "State:"
-msgstr "Status:"
-
-#: libgnomeprintui/gnome-printer-selector.c:126
-msgid "Type:"
-msgstr "Type:"
-
-#: libgnomeprintui/gnome-printer-selector.c:129
-msgid "Comment:"
-msgstr "Opmerking:"
-
-#: libgnomeprintui/gnome-printer-selector.c:131
-msgid "Co_nfigure"
-msgstr "Co_nfigureren"
-
-#: libgnomeprintui/gnome-printer-selector.c:139
-msgid "Adjust the settings of the selected printer"
-msgstr "Instellingen van de geselecteerde printer aanpassen"
-
-#: libgnomeprintui/gnome-printer-selector.c:150
-msgid "Pr_inter:"
-msgstr "_Printer:"
-
-#: libgnomeprintui/gnome-printer-selector.c:159
-msgid "_Settings:"
-msgstr "_Instellingen:"
-
-#: libgnomeprintui/gnome-printer-selector.c:168
-msgid "_Location:"
-msgstr "_Locatie:"
 
 #: libgnomeprintui/gnome-canvas-hacktext.c:128
 msgid "Text"
@@ -374,15 +50,379 @@ msgstr "Lettertype"
 msgid "Font as a GnomeFont struct"
 msgstr "Lettertype als een GnomeFont-struct"
 
+#. Family frame
+#: libgnomeprintui/gnome-font-dialog.c:164
+#: libgnomeprintui/gnome-font-dialog.c:199
+msgid "Font family"
+msgstr "Lettertypefamilie"
+
+#: libgnomeprintui/gnome-font-dialog.c:200
+msgid "The list of font families available"
+msgstr "De lijst van lettertypes die beschikbaar zijn"
+
+#. Style frame
+#: libgnomeprintui/gnome-font-dialog.c:209
+msgid "Style"
+msgstr "Stijl"
+
+#: libgnomeprintui/gnome-font-dialog.c:250
+msgid "Font style"
+msgstr "Lettertypestijl"
+
+#: libgnomeprintui/gnome-font-dialog.c:251
+msgid "The list of styles available for the selected font family"
+msgstr "De lijst van beschikbare stijlen voor het geselecteerde lettertype"
+
+#: libgnomeprintui/gnome-font-dialog.c:281
+msgid "Font _size:"
+msgstr "Lettertype_grootte:"
+
+#: libgnomeprintui/gnome-font-dialog.c:773
+msgid "This font does not have sample"
+msgstr "Dit lettertype heeft geen voorbeeld"
+
+#: libgnomeprintui/gnome-font-dialog.c:880
+msgid "Font Preview"
+msgstr "Lettertypevoorbeeld"
+
+#: libgnomeprintui/gnome-font-dialog.c:881
+msgid "Displays some example text in the selected font"
+msgstr "Toont een voorbeeldtekst in het geselecteerde lettertype"
+
+#: libgnomeprintui/gnome-font-dialog.c:896
+msgid "Font Selection"
+msgstr "Lettertype-selectie"
+
+#: libgnomeprintui/gnome-print-config-dialog.c:241
+msgid "Default Settings"
+msgstr "Standaardinstellingen"
+
+# Of gaat het over pagina's met afbeeldingen erop?
+#: libgnomeprintui/gnome-print-config-dialog.c:267
+msgid "Image showing pages being printed in duplex."
+msgstr "Afbeelding tonend dat pagina's dubbelzijdig worden afgedrukt"
+
+#: libgnomeprintui/gnome-print-config-dialog.c:271
+msgid "_Duplex"
+msgstr "_Dubbelzijdig"
+
+#: libgnomeprintui/gnome-print-config-dialog.c:277
+msgid "Pages are printed in duplex."
+msgstr "Pagina's worden dubbelzijdig afgedrukt."
+
+#: libgnomeprintui/gnome-print-config-dialog.c:285
+msgid ""
+"Image showing the second page of a duplex printed sequence to be printed "
+"upside down."
+msgstr ""
+"Afbeelding tonend dat de tweede pagina van een dubbelzijdig afgedrukte serie "
+"ondersteboven wordt afgedrukt"
+
+#: libgnomeprintui/gnome-print-config-dialog.c:290
+msgid "_Tumble"
+msgstr "_Tuimelen"
+
+#: libgnomeprintui/gnome-print-config-dialog.c:296
+msgid ""
+"If copies of the document are printed in duplex, the second page is flipped "
+"upside down,"
+msgstr ""
+"Als exemplaren van het document dubbelzijdig worden afgedrukt, wordt de "
+"tweede pagina ondersteboven gedraaid,"
+
+#: libgnomeprintui/gnome-print-config-dialog.c:316
+msgid "_Printing Time:"
+msgstr "Afdruk_tijd:"
+
+#: libgnomeprintui/gnome-print-config-dialog.c:342
+#: libgnomeprintui/gnome-print-dialog.c:389
+msgid "Error while loading printer configuration"
+msgstr "Er is een fout opgetreden bij het laden van de printerconfiguratie"
+
+#: libgnomeprintui/gnome-print-copies.c:261
+msgid "Copies"
+msgstr "Exemplaren"
+
+#: libgnomeprintui/gnome-print-copies.c:274
+msgid "N_umber of copies:"
+msgstr "Aanta_l exemplaren:"
+
+#: libgnomeprintui/gnome-print-copies.c:292
+msgid ""
+"Image showing the collation sequence when multiple copies of the document "
+"are printed"
+msgstr ""
+"Afbeelding welke de afdrukvolgorde weergeeft bij het afdrukken van meerdere "
+"exemplaren van het document"
+
+#: libgnomeprintui/gnome-print-copies.c:294
+msgid "_Collate"
+msgstr "S_orteren"
+
+#: libgnomeprintui/gnome-print-copies.c:299
+msgid ""
+"If copies of the document are printed separately, one after another, rather "
+"than being interleaved"
+msgstr ""
+"Of exemplaren van het document in plaats van tussengevoegd, afzonderlijk "
+"(één voor één) worden afgedrukt"
+
+#: libgnomeprintui/gnome-print-dialog.c:199
+msgid "Print Range"
+msgstr "Afdrukbereik"
+
+#: libgnomeprintui/gnome-print-dialog.c:246
+msgid "_All"
+msgstr "_Alles"
+
+#: libgnomeprintui/gnome-print-dialog.c:268
+msgid "_Selection"
+msgstr "_Selectie"
+
+#: libgnomeprintui/gnome-print-dialog.c:345
+msgid "Job"
+msgstr "Taak"
+
+#: libgnomeprintui/gnome-print-dialog.c:372
+#: libgnomeprintui/gpaui/gpa-printer-selector.c:161
+msgid "Printer"
+msgstr "Printer"
+
+#: libgnomeprintui/gnome-print-dialog.c:382
+msgid "Paper"
+msgstr "Papier"
+
+#: libgnomeprintui/gnome-print-dialog.c:396
+msgid "Gnome Print Dialog"
+msgstr "Gnome 'Afdrukken'-dialoogvenster"
+
+#: libgnomeprintui/gnome-print-dialog.c:546
+msgid "_From:"
+msgstr "_Van:"
+
+#: libgnomeprintui/gnome-print-dialog.c:559
+msgid "Sets the start of the range of pages to be printed"
+msgstr "Het begin van de reeks af te drukken pagina's"
+
+#: libgnomeprintui/gnome-print-dialog.c:561
+msgid "_To:"
+msgstr "_Tot:"
+
+#: libgnomeprintui/gnome-print-dialog.c:574
+msgid "Sets the end of the range of pages to be printed"
+msgstr "Het einde van de reeks af te drukken pagina's"
+
+#: libgnomeprintui/gnome-print-job-preview.c:618
+msgid "Page Preview"
+msgstr "Afdrukvoorbeeld"
+
+#: libgnomeprintui/gnome-print-job-preview.c:619
+msgid "The preview of a page in the document to be printed"
+msgstr "Het afdrukvoorbeeld van de pagina in het document"
+
+#: libgnomeprintui/gnome-print-job-preview.c:636
+msgid "P_age: "
+msgstr "P_agina:"
+
+#. We are displaying 'Page: XXX of XXX'.
+#: libgnomeprintui/gnome-print-job-preview.c:652
+msgid "of"
+msgstr "van"
+
+#: libgnomeprintui/gnome-print-job-preview.c:658
+msgid "Page total"
+msgstr "Totaal aantal pagina's"
+
+#: libgnomeprintui/gnome-print-job-preview.c:659
+msgid "The total number of pages in the document"
+msgstr "Het totaal aantal pagina's in het document"
+
+#: libgnomeprintui/gnome-print-job-preview.c:661
+msgid "Use _theme colors for content"
+msgstr "_Themakleuren voor inhoud gebruiken"
+
+# Context onduidelijk!
+#: libgnomeprintui/gnome-print-job-preview.c:752
+msgid "Other"
+msgstr "Overige"
+
+#: libgnomeprintui/gnome-print-job-preview.c:781
+msgid "Prints the current file"
+msgstr "Drukt het huidige bestand af"
+
+#: libgnomeprintui/gnome-print-job-preview.c:789
+msgid "Closes print preview window"
+msgstr "Sluit het afdrukvoorbeeldvenster"
+
+#: libgnomeprintui/gnome-print-job-preview.c:802
+msgid "Shows the first page"
+msgstr "Toont de eerste pagina"
+
+#: libgnomeprintui/gnome-print-job-preview.c:810
+msgid "Shows the previous page"
+msgstr "Toont de vorige pagina"
+
+#: libgnomeprintui/gnome-print-job-preview.c:818
+msgid "Shows the next page"
+msgstr "Toont de volgende pagina"
+
+#: libgnomeprintui/gnome-print-job-preview.c:826
+msgid "Shows the last page"
+msgstr "Toont de laatste pagina"
+
+#: libgnomeprintui/gnome-print-job-preview.c:839
+msgid "Zooms 1:1"
+msgstr "Schaalt naar 1:1"
+
+#: libgnomeprintui/gnome-print-job-preview.c:847
+msgid "Zooms to fit the whole page"
+msgstr "Schalen zodat de hele pagina erop past"
+
+#: libgnomeprintui/gnome-print-job-preview.c:855
+msgid "Zooms the page in"
+msgstr "Pagina inzoomen"
+
+#: libgnomeprintui/gnome-print-job-preview.c:863
+msgid "Zooms the page out"
+msgstr "Pagina uitzoomen"
+
+#: libgnomeprintui/gnome-print-job-preview.c:875
+msgid "View multiple pages"
+msgstr "Meerdere pagina's weergeven"
+
+#: libgnomeprintui/gnome-print-job-preview.c:1168
+#: libgnomeprintui/gnome-print-job-preview.c:1169
+msgid "Number of pages horizontally"
+msgstr "Aantal pagina's horizontaal"
+
+#: libgnomeprintui/gnome-print-job-preview.c:1172
+#: libgnomeprintui/gnome-print-job-preview.c:1173
+msgid "Number of pages vertically"
+msgstr "Aantal pagina's verticaal"
+
+#: libgnomeprintui/gnome-print-job-preview.c:1213
+msgid "Gnome Print Preview"
+msgstr "Gnome afdrukvoorbeeld"
+
+#: libgnomeprintui/gnome-print-job-preview.c:1245
+msgid "No visible output was created."
+msgstr "Er is geen zichtbare uitvoer aangemaakt."
+
+#: libgnomeprintui/gnome-print-paper-selector.c:440
+msgid "Paper and Layout"
+msgstr "Papier en lay-out"
+
+#. Paper size selector
+#: libgnomeprintui/gnome-print-paper-selector.c:457
+msgid "Paper _size:"
+msgstr "Papier_formaat:"
+
+#. Custom paper Width
+#: libgnomeprintui/gnome-print-paper-selector.c:468
+msgid "_Width:"
+msgstr "_Breedte:"
+
+#. Custom paper Height
+#: libgnomeprintui/gnome-print-paper-selector.c:482
+msgid "_Height:"
+msgstr "_Hoogte:"
+
+#: libgnomeprintui/gnome-print-paper-selector.c:500
+msgid "Metric selector"
+msgstr "Metriekkiezer"
+
+#: libgnomeprintui/gnome-print-paper-selector.c:501
+msgid ""
+"Specifies the metric to use when setting the width and height of the paper"
+msgstr ""
+"Geeft aan welke metriek gebruikt wordt om de breedte en hoogte van het "
+"papier in te stellen"
+
+#. Feed orientation
+#: libgnomeprintui/gnome-print-paper-selector.c:504
+msgid "_Feed orientation:"
+msgstr "_Invoer-oriëntatie:"
+
+#. Page orientation
+#: libgnomeprintui/gnome-print-paper-selector.c:518
+msgid "Page _orientation:"
+msgstr "Pagina-_oriëntatie:"
+
+#. Layout
+#: libgnomeprintui/gnome-print-paper-selector.c:529
+msgid "_Layout:"
+msgstr "_Lay-out:"
+
+#. Paper source
+#: libgnomeprintui/gnome-print-paper-selector.c:540
+msgid "Paper _tray:"
+msgstr "_Papierlade:"
+
+#: libgnomeprintui/gnome-print-paper-selector.c:554
+#: libgnomeprintui/gnome-print-paper-selector.c:568
+msgid "Preview"
+msgstr "Voorbeeld"
+
+#: libgnomeprintui/gnome-print-paper-selector.c:569
+msgid "Preview of the page size, orientation and layout"
+msgstr "Voorbeeld van de paginagrootte, -oriëntatie en layout"
+
+#: libgnomeprintui/gnome-print-paper-selector.c:575
+msgid "Margins"
+msgstr "Marges"
+
+#: libgnomeprintui/gnome-print-paper-selector.c:609
+msgid "Top"
+msgstr "Boven"
+
+#: libgnomeprintui/gnome-print-paper-selector.c:612
+msgid "Bottom"
+msgstr "Onder"
+
+#: libgnomeprintui/gnome-print-paper-selector.c:615
+msgid "Left"
+msgstr "Links"
+
+#: libgnomeprintui/gnome-print-paper-selector.c:618
+msgid "Right"
+msgstr "Rechts"
+
+#: libgnomeprintui/gnome-printer-selector.c:168
+msgid "Co_nfigure"
+msgstr "Con_figureren"
+
+#: libgnomeprintui/gnome-printer-selector.c:177
+msgid "Adjust the settings of the selected printer"
+msgstr "Instellingen van de geselecteerde printer aanpassen"
+
+#: libgnomeprintui/gnome-printer-selector.c:185
+msgid "_Settings:"
+msgstr "_Instellingen:"
+
+#: libgnomeprintui/gnome-printer-selector.c:194
+msgid "_Location:"
+msgstr "_Lokatie:"
+
 #: libgnomeprintui/gpaui/gpa-option-menu.c:179
 #: libgnomeprintui/gpaui/gpa-option-menu.c:229
-#: libgnomeprintui/gpaui/gpa-transport-selector.c:247
 msgid "No options are defined"
 msgstr "Geen opties gedefiniëerd"
 
-#: libgnomeprintui/gpaui/gpa-printer-selector.c:156
-msgid "No printers could be loaded"
-msgstr "Er konden geen printers geladen worden"
+#: libgnomeprintui/gpaui/gpa-print-to-file.c:258
+msgid "Print to _file"
+msgstr "Afdrukken naar _bestand"
+
+#: libgnomeprintui/gpaui/gpa-printer-selector.c:168
+msgid "State"
+msgstr "Status"
+
+#: libgnomeprintui/gpaui/gpa-printer-selector.c:175
+msgid "Jobs"
+msgstr "Taken"
+
+#: libgnomeprintui/gpaui/gpa-printer-selector.c:182
+msgid "Location"
+msgstr "Lokatie"
 
 #: libgnomeprintui/gpaui/gpa-settings-selector.c:180
 msgid "No printer selected"
@@ -396,93 +436,73 @@ msgstr "Geen instellingen beschikbaar"
 msgid "Add new settings"
 msgstr "Nieuwe instelling toevoegen"
 
-#~ msgid "Portrait"
-#~ msgstr "Staand"
+#: libgnomeprintui/gpaui/gpa-spinbutton.c:311
+msgid "%"
+msgstr "%"
 
-#~ msgid "Landscape"
-#~ msgstr "Liggend"
+#. Percent must be first
+#: libgnomeprintui/gpaui/gpa-spinbutton.c:312
+msgid "Pt"
+msgstr "Pt"
 
-#~ msgid "Rotate 180"
-#~ msgstr "180 draaien"
+#: libgnomeprintui/gpaui/gpa-spinbutton.c:313
+msgid "mm"
+msgstr "mm"
 
-#~ msgid "Manage printers"
-#~ msgstr "Printers beheren"
+#: libgnomeprintui/gpaui/gpa-spinbutton.c:314
+msgid "cm"
+msgstr "cm"
 
-#~ msgid "Add new printer"
-#~ msgstr "Nieuwe printer toevoegen"
+#: libgnomeprintui/gpaui/gpa-spinbutton.c:315
+msgid "m"
+msgstr "m"
 
-#~ msgid "P_rinter"
-#~ msgstr "P_rinter"
+#: libgnomeprintui/gpaui/gpa-spinbutton.c:316
+msgid "in"
+msgstr "in"
 
-#~ msgid "No papers defined"
-#~ msgstr "Geen papier gedefinieerd"
+# Woord 'directory' hoort niet gebruikt te worden
+#: libgnomeprintui/gpaui/gpa-transport-selector.c:183
+#: libgnomeprintui/gpaui/gpa-transport-selector.c:523
+#, c-format
+msgid "The specified filename \"%s\" is an existing directory."
+msgstr "De aangegeven bestandsnaam \"%s\" is een bestaande map."
 
-#~ msgid "No layouts defined"
-#~ msgstr "Geen layout gedefinieerd"
+#: libgnomeprintui/gpaui/gpa-transport-selector.c:202
+#: libgnomeprintui/gpaui/gpa-transport-selector.c:545
+#, c-format
+msgid "Should the file %s be overwritten?"
+msgstr "Moet het bestand %s overschreven worden?"
 
-#~ msgid "Select Printer"
-#~ msgstr "Selecteer Printer"
+#: libgnomeprintui/gpaui/gpa-transport-selector.c:247
+msgid "Please specify the location and filename of the output file:"
+msgstr "Geef alstublieft de locatie en bestandsnaam van het uitvoerbestand:"
 
-#~ msgid "Select printer model"
-#~ msgstr "Selecteer printer model"
+#: libgnomeprintui/gpaui/gpa-transport-selector.c:271
+msgid "All Files"
+msgstr "Alle bestanden"
 
-#~ msgid "Manufacturer"
-#~ msgstr "Bouwer"
+#~ msgid "Type:"
+#~ msgstr "Type:"
 
-#~ msgid "Model"
-#~ msgstr "Model"
+#~ msgid "Comment:"
+#~ msgstr "Opmerking:"
 
-#~ msgid "Name"
-#~ msgstr "Naam"
+#~ msgid "Pr_inter:"
+#~ msgstr "_Printer:"
 
-#~ msgid "Add printer"
-#~ msgstr "Printer toevoegen"
+#~ msgid "No printers could be loaded"
+#~ msgstr "Er konden geen printers geladen worden"
 
-#~ msgid "From PPD..."
-#~ msgstr "Van PPD..."
-
-#~ msgid "Default printer"
-#~ msgstr "Standaardprinter"
-
-#~ msgid "My App Print Preview"
-#~ msgstr "Mijn Applicatie Afdrukvoorbeeld"
-
-#~ msgid "extracts the first font from output.pdf and places it in font.dump."
+#~ msgid ""
+#~ "<markup>1   <span foreground=\"red\" weight=\"ultrabold\" background="
+#~ "\"white\">No visible output was created.</span></markup>"
 #~ msgstr ""
-#~ "Pakt het eerste lettertype uit output.pdf en plaatst het in font.dump."
+#~ "<markup>1   <span foregroun=\"red\" weight=\"utlrabold\" background="
+#~ "\"white\">Geen zichtbare uitvoer aangemaakt.</span></markup>"
 
-#~ msgid "extracts the font header from font.dump"
-#~ msgstr "Pakt de lettertypekop uit font.dump"
+#~ msgid "<b>Preview</b>"
+#~ msgstr "<b>Voorbeeld</b>"
 
-#~ msgid "extracts the font body "
-#~ msgstr "Pakt de lettertypekern uit"
-
-#~ msgid "decrypts the font body "
-#~ msgstr "Decodeert de lettertypekern"
-
-#~ msgid "Render from metafile"
-#~ msgstr "Genereren vanuit metabestand"
-
-#~ msgid "PATH"
-#~ msgstr "PATH"
-
-#~ msgid "Bring up font dialog"
-#~ msgstr "Toon lettertype-dialoogvenster"
-
-#~ msgid "Bring up printer dialog"
-#~ msgstr "Toon printer-dialoogvenster"
-
-#~ msgid "Bring up print dialog"
-#~ msgstr "Toon afdrukken-dialoogvenster"
-
-#~ msgid "Use GnomePrintMasterPreview"
-#~ msgstr "Gebruik GnomePrintMasterAfdrukvoorbeeld"
-
-#~ msgid "Show paper dialog"
-#~ msgstr "Toon papier-dialoogvenster"
-
-#~ msgid "Print text file"
-#~ msgstr "Afdrukken tekstbestand"
-
-#~ msgid "Printer default location"
-#~ msgstr "Standaard printer locatie"
+#~ msgid "<b>Printer</b>"
+#~ msgstr "<b>Printer</b>"

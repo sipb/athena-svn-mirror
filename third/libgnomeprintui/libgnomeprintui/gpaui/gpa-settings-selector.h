@@ -1,8 +1,4 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
-
-#ifndef __GPA_SETTINGS_SELECTOR_H__
-#define __GPA_SETTINGS_SELECTOR_H__
-
 /*
  * gpa-settings-selector.h: Simple OptionMenu for selecting settings
  *
@@ -28,11 +24,14 @@
  *
  */
 
+#ifndef __GPA_SETTINGS_SELECTOR_H__
+#define __GPA_SETTINGS_SELECTOR_H__
+
 #include <glib.h>
 
 G_BEGIN_DECLS
 
-#define GPA_TYPE_SETTINGS_SELECTOR (gpa_settings_selector_get_type ())
+#define GPA_TYPE_SETTINGS_SELECTOR        (gpa_settings_selector_get_type ())
 #define GPA_SETTINGS_SELECTOR(o)          (G_TYPE_CHECK_INSTANCE_CAST ((o), GPA_TYPE_SETTINGS_SELECTOR, GPASettingsSelector))
 #define GPA_SETTINGS_SELECTOR_CLASS(k)    (G_TYPE_CHECK_CLASS_CAST ((k),    GPA_TYPE_SETTINGS_SELECTOR, GPASettingsSelectorClass))
 #define GPA_IS_SETTINGS_SELECTOR(o)       (G_TYPE_CHECK_INSTANCE_TYPE ((o), GPA_TYPE_SETTINGS_SELECTOR))
@@ -60,7 +59,7 @@ struct _GPASettingsSelectorClass {
 	GPAWidgetClass widget_class;
 };
 
-GtkType gpa_settings_selector_get_type (void);
+GType gpa_settings_selector_get_type (void);
 
 G_END_DECLS
 

@@ -28,15 +28,14 @@
 #include <string.h>
 #include <gtk/gtk.h>
 #include <libgnomeprint/private/gpa-node.h>
-#include <libgnomeprint/gnome-print-config.h>
+#include <libgnomeprint/private/gpa-node-private.h>
 
 #include "gpa-tree-viewer.h"
-#include <libgnomeprint/private/gnome-print-config-private.h>
 
 enum
 {
-  NODE_COLUMN = 0,
-  NUM_COLUMNS
+	NODE_COLUMN = 0,
+	NUM_COLUMNS
 };
 
 typedef struct _GpaTreeViewer GpaTreeViewer;
@@ -55,9 +54,9 @@ struct _GpaTreeViewer {
 
 static void
 gpa_tree_viewer_populate_real (GtkTreeStore *model,
-						 GPANode *node,
-						 GtkTreeIter *parent_iter,
-						 guint level)
+			       GPANode *node,
+			       GtkTreeIter *parent_iter,
+			       guint level)
 {
 	GtkTreeIter iter;
 	GtkTreeIter * copy;
@@ -88,13 +87,9 @@ gpa_tree_viewer_populate_real (GtkTreeStore *model,
 }
 
 static void
-gpa_tree_viewer_populate (GtkTreeStore *model, GnomePrintConfig *config)
+gpa_tree_viewer_populate (GtkTreeStore *model, GPANode *node)
 {
-	GPANode *root;
-
-	root = GNOME_PRINT_CONFIG_NODE (config);
-
-	gpa_tree_viewer_populate_real (model, root, NULL, 0);
+	gpa_tree_viewer_populate_real (model, node, NULL, 0);
 }
 
 static void
@@ -120,7 +115,7 @@ static void
 gpa_tree_viewer_info_refresh (GPANode *node, guint flags, GpaTreeViewer *gtv)
 {
 	gchar *location;
-	gchar *value;
+	gchar *value = NULL;
 	gchar *ref_count;
 	
 	gtk_entry_set_text (GTK_ENTRY (gtv->id),   gpa_node_id (node));
@@ -129,11 +124,15 @@ gpa_tree_viewer_info_refresh (GPANode *node, guint flags, GpaTreeViewer *gtv)
 	location = g_strdup_printf ("0x%x", GPOINTER_TO_UINT (node));
 	gtk_entry_set_text (GTK_ENTRY (gtv->location), location);
 	g_free (location);
-	
-	value    = gpa_node_get_value (node);
+
+	if (GPA_NODE_GET_CLASS (node)->get_value)
+		value    = gpa_node_get_value (node);
+
 	if (value) {
 		gtk_entry_set_text (GTK_ENTRY (gtv->value),    value);
 		g_free (value);
+	} else {
+		gtk_entry_set_text (GTK_ENTRY (gtv->value),    "N/A");
 	}
 
 	ref_count = g_strdup_printf ("%d", G_OBJECT (node)->ref_count);
@@ -205,7 +204,7 @@ gpa_tree_viewer_info (GpaTreeViewer *gtv)
 }
 
 GtkWidget *
-gpa_tree_viewer_new (GnomePrintConfig *config)
+gpa_tree_viewer_new (GPANode *node)
 {
 	GtkTreeSelection *selection;
 	GtkTreeViewColumn *column;
@@ -221,7 +220,7 @@ gpa_tree_viewer_new (GnomePrintConfig *config)
 	
 	model = gtk_tree_store_new (1, G_TYPE_POINTER);
 
-	gpa_tree_viewer_populate (model, config);
+	gpa_tree_viewer_populate (model, node);
 
 	view = gtk_tree_view_new_with_model (GTK_TREE_MODEL (model));
 

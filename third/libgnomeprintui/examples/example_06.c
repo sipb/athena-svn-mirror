@@ -27,6 +27,8 @@
  * See README
  */
 
+#define GNOME_PRINT_UNSTABLE_API
+
 #include <libgnomeprint/gnome-print.h>
 #include <libgnomeprint/gnome-print-job.h>
 #include <libgnomeprintui/gnome-print-dialog.h>
@@ -60,8 +62,7 @@ my_print (void)
 	gpc    = gnome_print_job_get_context (job);
 
 	/* Run the dialog */
-	gtk_widget_show (dialog);
-	response = gtk_dialog_run (GTK_DIALOG (dialog));
+	response = gnome_print_dialog_run (GNOME_PRINT_DIALOG (dialog));
 	if (response == GNOME_PRINT_DIALOG_RESPONSE_CANCEL) {
 		g_print ("Printing was canceled\n");
 		return;

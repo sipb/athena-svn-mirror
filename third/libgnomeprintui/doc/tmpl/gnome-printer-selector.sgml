@@ -25,6 +25,7 @@ gnome-printer-selector
 
 </para>
 
+@gpa_widget_class: 
 
 <!-- ##### FUNCTION gnome_printer_selector_new_default ##### -->
 <para>

@@ -1,27 +1,64 @@
-# Lithuanian translation of gnome-print
-# Copyright (C) 2000 Free Software Foundation, Inc.
+# Lithuanian translation of libgnomeprintui
+# Copyright (C) 2000-2004 Free Software Foundation, Inc.
 # Gediminas Paulauskas <menesis@delfi.lt>, 2000.
-#
+# Tomas Kuliavas <tokul@users.sourceforge.net>, 2003-2004.
+# Å½ygimantas BeruÄka <uid0@akl.lt>, 2004.
+# 
 msgid ""
 msgstr ""
-"Project-Id-Version: gnome-print 0.24\n"
-"POT-Creation-Date: 2003-02-02 20:53-0500\n"
-"PO-Revision-Date: 2000-11-07 22:30+0200\n"
-"Last-Translator: Gediminas Paulauskas <menesis@delfi.lt>\n"
+"Project-Id-Version: libgnomeprintui HEAD\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-09-10 23:32-0400\n"
+"PO-Revision-Date: 2004-08-19 13:57+0300\n"
+"Last-Translator: Å½ygimantas BeruÄka <uid0@tuxfamily.org>\n"
 "Language-Team: Lithuanian <komp_lt@konferencijos.lt>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=iso-8859-13\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+
+#: libgnomeprintui/gnome-canvas-hacktext.c:128
+msgid "Text"
+msgstr "Tekstas"
+
+#: libgnomeprintui/gnome-canvas-hacktext.c:129
+msgid "Text to render"
+msgstr "Apdorojamas tekstas"
+
+#: libgnomeprintui/gnome-canvas-hacktext.c:148
+#: libgnomeprintui/gnome-canvas-hacktext.c:149
+msgid "Glyphlist"
+msgstr "AtvaizdÅ¾iÅ³ sÄ…raÅ¡as"
+
+#: libgnomeprintui/gnome-canvas-hacktext.c:155
+#: libgnomeprintui/gnome-canvas-hacktext.c:163
+msgid "Color"
+msgstr "Spalva"
+
+#: libgnomeprintui/gnome-canvas-hacktext.c:156
+msgid "Text color, as string"
+msgstr "Teksto spalva simboliniais kodais"
+
+#: libgnomeprintui/gnome-canvas-hacktext.c:164
+msgid "Text color, as an R/G/B/A combined integer"
+msgstr "Teksto spalva, R/G/B/A skaitmeniniais kodais"
+
+#: libgnomeprintui/gnome-canvas-hacktext.c:171
+msgid "Font"
+msgstr "Å riftas"
+
+#: libgnomeprintui/gnome-canvas-hacktext.c:172
+msgid "Font as a GnomeFont struct"
+msgstr "Å riftas apraÅ¡ytas GnomeFont poÅ¾ymiais"
 
 #. Family frame
 #: libgnomeprintui/gnome-font-dialog.c:164
 #: libgnomeprintui/gnome-font-dialog.c:199
 msgid "Font family"
-msgstr "Ğriftø ğeima"
+msgstr "Å riftÅ³ Å¡eima"
 
 #: libgnomeprintui/gnome-font-dialog.c:200
 msgid "The list of font families available"
-msgstr ""
+msgstr "GalimÅ³ Å¡riftÅ³ Å¡eimÅ³ sÄ…raÅ¡as"
 
 #. Style frame
 #: libgnomeprintui/gnome-font-dialog.c:209
@@ -29,515 +66,437 @@ msgid "Style"
 msgstr "Stilius"
 
 #: libgnomeprintui/gnome-font-dialog.c:250
-#, fuzzy
 msgid "Font style"
-msgstr "Ğrifto dydis:"
+msgstr "Å rifto stilius"
 
 #: libgnomeprintui/gnome-font-dialog.c:251
 msgid "The list of styles available for the selected font family"
-msgstr ""
+msgstr "GalimÅ³ pasirinktos Å¡rifto Å¡eimos stiliÅ³ sÄ…raÅ¡as"
 
-#: libgnomeprintui/gnome-font-dialog.c:284
-#, fuzzy
+#: libgnomeprintui/gnome-font-dialog.c:281
 msgid "Font _size:"
-msgstr "Ğrifto dydis:"
+msgstr "Å rifto _dydis"
 
-#: libgnomeprintui/gnome-font-dialog.c:775
+#: libgnomeprintui/gnome-font-dialog.c:773
 msgid "This font does not have sample"
-msgstr ""
+msgstr "Å is Å¡riftas neturi pavyzdÅ¾io"
 
-#: libgnomeprintui/gnome-font-dialog.c:882
-#, fuzzy
+#: libgnomeprintui/gnome-font-dialog.c:880
 msgid "Font Preview"
-msgstr "Perşiûra"
+msgstr "Å riftÅ³ PerÅ¾iÅ«ra"
 
-#: libgnomeprintui/gnome-font-dialog.c:883
+#: libgnomeprintui/gnome-font-dialog.c:881
 msgid "Displays some example text in the selected font"
-msgstr ""
+msgstr "Rodo tam tikrÄ… pavyzdinÄ¯ tekstÄ… naudojant pasirintÄ… Å¡riftÄ…"
 
-#: libgnomeprintui/gnome-font-dialog.c:898
+#: libgnomeprintui/gnome-font-dialog.c:896
 msgid "Font Selection"
-msgstr "Ğrifto pasirinkimas"
+msgstr "Å rifto pasirinkimas"
 
-#: libgnomeprintui/gnome-print-copies.c:245
+#: libgnomeprintui/gnome-print-config-dialog.c:241
+msgid "Default Settings"
+msgstr "Ä®prasti nustatymai"
+
+#: libgnomeprintui/gnome-print-config-dialog.c:267
+msgid "Image showing pages being printed in duplex."
+msgstr "Atvaizdas, rodantis puslapius spausdinamus duplekso reÅ¾imu."
+
+#: libgnomeprintui/gnome-print-config-dialog.c:271
+msgid "_Duplex"
+msgstr "_Dupleksas"
+
+#: libgnomeprintui/gnome-print-config-dialog.c:277
+msgid "Pages are printed in duplex."
+msgstr "Puslapiai yra spausdinami duplekso reÅ¾imu."
+
+#: libgnomeprintui/gnome-print-config-dialog.c:285
+msgid ""
+"Image showing the second page of a duplex printed sequence to be printed "
+"upside down."
+msgstr ""
+"Atvaizdas, rodantis antrÄ… puslapÄ¯ duplekso reÅ¾imu spausdinamoje uÅ¾duotyje. "
+"kuris yra apverstas aukÅ¡tyn kojom."
+
+#: libgnomeprintui/gnome-print-config-dialog.c:290
+msgid "_Tumble"
+msgstr "_Apversti"
+
+#: libgnomeprintui/gnome-print-config-dialog.c:296
+msgid ""
+"If copies of the document are printed in duplex, the second page is flipped "
+"upside down,"
+msgstr ""
+"Jei dokumentas spausdinamas duplekso reÅ¾imu, lyginiai puslapiai yra "
+"apverÄiami aukÅ¡tyn kojom,"
+
+#: libgnomeprintui/gnome-print-config-dialog.c:316
+msgid "_Printing Time:"
+msgstr "S_pausdinimo Laikas:"
+
+#: libgnomeprintui/gnome-print-config-dialog.c:342
+#: libgnomeprintui/gnome-print-dialog.c:389
+msgid "Error while loading printer configuration"
+msgstr "Ä®vyko klaida apdorojant spausdintuvo nustatymus"
+
+#: libgnomeprintui/gnome-print-copies.c:261
 msgid "Copies"
 msgstr "Kopijos"
 
-#: libgnomeprintui/gnome-print-copies.c:254
+#: libgnomeprintui/gnome-print-copies.c:274
 msgid "N_umber of copies:"
-msgstr "Kopijø _skaièius:"
+msgstr "KopijÅ³ _skaiÄius:"
 
-#: libgnomeprintui/gnome-print-copies.c:281
+#: libgnomeprintui/gnome-print-copies.c:292
 msgid ""
 "Image showing the collation sequence when multiple copies of the document "
 "are printed"
 msgstr ""
+"PaveikslÄ—lis rodantis lapÅ³ spausdinimo eiliÅ¡kumÄ…, kai spaudÅ¾iamos kelios "
+"dokumento kopijos."
 
-#: libgnomeprintui/gnome-print-copies.c:283
+#: libgnomeprintui/gnome-print-copies.c:294
 msgid "_Collate"
-msgstr "_Rûğiuoti"
+msgstr "_RÅ«Å¡iuoti"
 
-#: libgnomeprintui/gnome-print-copies.c:288
+#: libgnomeprintui/gnome-print-copies.c:299
 msgid ""
 "If copies of the document are printed separately, one after another, rather "
 "than being interleaved"
 msgstr ""
+"Ar dokumento kopijos turi bÅ«ti spausdinamos viena po kitos nemaiÅ¡ant lapÅ³"
 
-#: libgnomeprintui/gnome-print-dialog.c:163
-#, fuzzy
-msgid "Print range"
-msgstr "Spausdinimo ribos"
+#: libgnomeprintui/gnome-print-dialog.c:199
+msgid "Print Range"
+msgstr "Spausdinimo sritis"
 
-#: libgnomeprintui/gnome-print-dialog.c:201
+#: libgnomeprintui/gnome-print-dialog.c:246
 msgid "_All"
 msgstr "_Visus"
 
-#: libgnomeprintui/gnome-print-dialog.c:223
+#: libgnomeprintui/gnome-print-dialog.c:268
 msgid "_Selection"
 msgstr "_Pasirinkimas"
 
-#: libgnomeprintui/gnome-print-dialog.c:300
+#: libgnomeprintui/gnome-print-dialog.c:345
 msgid "Job"
-msgstr ""
+msgstr "UÅ¾duotis"
 
-#: libgnomeprintui/gnome-print-dialog.c:314
-#: libgnomeprintui/gnome-printer-selector.c:108
-#, fuzzy
+#: libgnomeprintui/gnome-print-dialog.c:372
+#: libgnomeprintui/gpaui/gpa-printer-selector.c:161
 msgid "Printer"
-msgstr "_Spausdintuvas"
+msgstr "Spausdintuvas"
 
-#: libgnomeprintui/gnome-print-dialog.c:324
+#: libgnomeprintui/gnome-print-dialog.c:382
 msgid "Paper"
-msgstr ""
+msgstr "Popierius"
 
-#: libgnomeprintui/gnome-print-dialog.c:331
-msgid "Error while loading printer configuration"
-msgstr ""
-
-#: libgnomeprintui/gnome-print-dialog.c:336
+#: libgnomeprintui/gnome-print-dialog.c:396
 msgid "Gnome Print Dialog"
-msgstr ""
+msgstr "Gnome Spausdinimo Langas"
 
-#: libgnomeprintui/gnome-print-dialog.c:482
-#, fuzzy
+#: libgnomeprintui/gnome-print-dialog.c:546
 msgid "_From:"
-msgstr "_nuo:"
+msgstr "_Nuo:"
 
-#: libgnomeprintui/gnome-print-dialog.c:496
+#: libgnomeprintui/gnome-print-dialog.c:559
 msgid "Sets the start of the range of pages to be printed"
-msgstr ""
+msgstr "Nustato pirmÄ… iÅ¡ spausdinamÅ³ puslapiÅ³"
 
-#: libgnomeprintui/gnome-print-dialog.c:506
-#, fuzzy
+#: libgnomeprintui/gnome-print-dialog.c:561
 msgid "_To:"
-msgstr "_iki:"
+msgstr "_Iki:"
 
-#: libgnomeprintui/gnome-print-dialog.c:520
+#: libgnomeprintui/gnome-print-dialog.c:574
 msgid "Sets the end of the range of pages to be printed"
-msgstr ""
+msgstr "Nustato paskutinÄ¯ iÅ¡ spausdinamÅ³ puslapiÅ³"
 
-#: libgnomeprintui/gnome-print-job-preview.c:614
-#, fuzzy
+#: libgnomeprintui/gnome-print-job-preview.c:618
 msgid "Page Preview"
-msgstr "Perşiûra"
+msgstr "Puslapio perÅ¾iÅ«ra"
 
-#: libgnomeprintui/gnome-print-job-preview.c:615
+#: libgnomeprintui/gnome-print-job-preview.c:619
 msgid "The preview of a page in the document to be printed"
-msgstr ""
+msgstr "Spausdinamo dokumento puslapio perÅ¾iÅ«ra"
 
-#: libgnomeprintui/gnome-print-job-preview.c:666
-#, fuzzy
+#: libgnomeprintui/gnome-print-job-preview.c:636
 msgid "P_age: "
-msgstr "Puslapis: "
+msgstr "Pusl_apis: "
 
 #. We are displaying 'Page: XXX of XXX'.
-#: libgnomeprintui/gnome-print-job-preview.c:682
+#: libgnomeprintui/gnome-print-job-preview.c:652
 msgid "of"
-msgstr ""
+msgstr "iÅ¡"
 
-#: libgnomeprintui/gnome-print-job-preview.c:688
-#, fuzzy
+#: libgnomeprintui/gnome-print-job-preview.c:658
 msgid "Page total"
-msgstr "Puslapis: "
+msgstr "Viso puslapiÅ³"
 
-#: libgnomeprintui/gnome-print-job-preview.c:689
+#: libgnomeprintui/gnome-print-job-preview.c:659
 msgid "The total number of pages in the document"
-msgstr ""
+msgstr "Bendras dokumente esanÄiÅ³ lapÅ³ skaiÄius"
 
-#: libgnomeprintui/gnome-print-job-preview.c:741
-msgid "Prints the current file"
-msgstr "Atspausdina esamà bylà"
-
-#: libgnomeprintui/gnome-print-job-preview.c:745
-msgid "Closes print preview window"
-msgstr ""
-
-#: libgnomeprintui/gnome-print-job-preview.c:750
-msgid "Shows the first page"
-msgstr "Parodo pirmà puslapá"
+#: libgnomeprintui/gnome-print-job-preview.c:661
+msgid "Use _theme colors for content"
+msgstr "Turiniui naudoti _temos spalvas"
 
 #: libgnomeprintui/gnome-print-job-preview.c:752
+msgid "Other"
+msgstr "Kita"
+
+#: libgnomeprintui/gnome-print-job-preview.c:781
+msgid "Prints the current file"
+msgstr "Atspausdina esamÄ… bylÄ…"
+
+#: libgnomeprintui/gnome-print-job-preview.c:789
+msgid "Closes print preview window"
+msgstr "UÅ¾daro spausdinimo perÅ¾iÅ«ros langÄ…"
+
+#: libgnomeprintui/gnome-print-job-preview.c:802
+msgid "Shows the first page"
+msgstr "Parodo pirmÄ… puslapÄ¯"
+
+#: libgnomeprintui/gnome-print-job-preview.c:810
 msgid "Shows the previous page"
-msgstr "Parodo ankstesná puslapá"
+msgstr "Parodo ankstesnÄ¯ puslapÄ¯"
 
-#: libgnomeprintui/gnome-print-job-preview.c:754
+#: libgnomeprintui/gnome-print-job-preview.c:818
 msgid "Shows the next page"
-msgstr "Parodo tolesná puslapá"
+msgstr "Parodo tolesnÄ¯ puslapÄ¯"
 
-#: libgnomeprintui/gnome-print-job-preview.c:756
+#: libgnomeprintui/gnome-print-job-preview.c:826
 msgid "Shows the last page"
-msgstr "Parodo paskutiná puslapá"
+msgstr "Parodo paskutinÄ¯ puslapÄ¯"
 
-#: libgnomeprintui/gnome-print-job-preview.c:761
-#, fuzzy
+#: libgnomeprintui/gnome-print-job-preview.c:839
 msgid "Zooms 1:1"
-msgstr "Pritraukia vaizdà"
+msgstr "Mastelis 1:1"
 
-#: libgnomeprintui/gnome-print-job-preview.c:763
+#: libgnomeprintui/gnome-print-job-preview.c:847
 msgid "Zooms to fit the whole page"
-msgstr "Sutalpina á langà visà puslapá"
+msgstr "Sutalpina Ä¯ langÄ… visÄ… puslapÄ¯"
 
-#: libgnomeprintui/gnome-print-job-preview.c:765
+#: libgnomeprintui/gnome-print-job-preview.c:855
 msgid "Zooms the page in"
-msgstr "Pritraukia puslapá artyn"
+msgstr "Pritraukia puslapÄ¯ artyn"
 
-#: libgnomeprintui/gnome-print-job-preview.c:767
+#: libgnomeprintui/gnome-print-job-preview.c:863
 msgid "Zooms the page out"
-msgstr "Atitraukia puslapá tolyn"
+msgstr "Atitraukia puslapÄ¯ tolyn"
 
-#: libgnomeprintui/gnome-print-job-preview.c:882
+#: libgnomeprintui/gnome-print-job-preview.c:875
+msgid "View multiple pages"
+msgstr "PerÅ¾iÅ«rÄ—ti kelis puslapius"
+
+#: libgnomeprintui/gnome-print-job-preview.c:1168
+#: libgnomeprintui/gnome-print-job-preview.c:1169
+msgid "Number of pages horizontally"
+msgstr "PuslapiÅ³ kiekis horizontaliai"
+
+#: libgnomeprintui/gnome-print-job-preview.c:1172
+#: libgnomeprintui/gnome-print-job-preview.c:1173
+msgid "Number of pages vertically"
+msgstr "PuslapiÅ³ kiekis vertikaliai"
+
+#: libgnomeprintui/gnome-print-job-preview.c:1213
 msgid "Gnome Print Preview"
-msgstr ""
+msgstr "Gnome Spausdinimo PerÅ¾iÅ«ra"
 
-#: libgnomeprintui/gnome-print-job-preview.c:907
-msgid ""
-"<markup>1   <span foreground=\"red\" weight=\"ultrabold\" background=\"white"
-"\">No visible output was created.</span></markup>"
-msgstr ""
+#: libgnomeprintui/gnome-print-job-preview.c:1245
+msgid "No visible output was created."
+msgstr "Nebuvo sukurta matomos iÅ¡vesties."
 
-#: libgnomeprintui/gnome-print-paper-selector.c:381
-msgid "Pt"
-msgstr ""
-
-#: libgnomeprintui/gnome-print-paper-selector.c:382
-msgid "mm"
-msgstr ""
-
-#: libgnomeprintui/gnome-print-paper-selector.c:383
-msgid "cm"
-msgstr ""
-
-#: libgnomeprintui/gnome-print-paper-selector.c:384
-msgid "m"
-msgstr ""
-
-#: libgnomeprintui/gnome-print-paper-selector.c:385
-msgid "in"
-msgstr ""
-
-#. Create frame for selection menus
-#: libgnomeprintui/gnome-print-paper-selector.c:550
-msgid "Paper and layout"
-msgstr ""
+#: libgnomeprintui/gnome-print-paper-selector.c:440
+msgid "Paper and Layout"
+msgstr "Popierius ir iÅ¡dÄ—stymas"
 
 #. Paper size selector
-#: libgnomeprintui/gnome-print-paper-selector.c:563
+#: libgnomeprintui/gnome-print-paper-selector.c:457
 msgid "Paper _size:"
-msgstr ""
+msgstr "Lapo _dydis:"
 
 #. Custom paper Width
-#: libgnomeprintui/gnome-print-paper-selector.c:575
+#: libgnomeprintui/gnome-print-paper-selector.c:468
 msgid "_Width:"
-msgstr ""
+msgstr "_Plotis:"
 
 #. Custom paper Height
-#: libgnomeprintui/gnome-print-paper-selector.c:592
+#: libgnomeprintui/gnome-print-paper-selector.c:482
 msgid "_Height:"
-msgstr ""
+msgstr "_AukÅ¡tis:"
 
-#: libgnomeprintui/gnome-print-paper-selector.c:616
+#: libgnomeprintui/gnome-print-paper-selector.c:500
 msgid "Metric selector"
-msgstr ""
+msgstr "Mato vienetas"
 
-#: libgnomeprintui/gnome-print-paper-selector.c:617
+#: libgnomeprintui/gnome-print-paper-selector.c:501
 msgid ""
 "Specifies the metric to use when setting the width and height of the paper"
-msgstr ""
+msgstr "Nurodo nustatant lapo iÅ¡matavimus naudojamÄ… matavimo vienetÄ…"
 
 #. Feed orientation
-#: libgnomeprintui/gnome-print-paper-selector.c:620
+#: libgnomeprintui/gnome-print-paper-selector.c:504
 msgid "_Feed orientation:"
-msgstr ""
+msgstr "_Padavimo orientacija:"
 
 #. Page orientation
-#: libgnomeprintui/gnome-print-paper-selector.c:635
+#: libgnomeprintui/gnome-print-paper-selector.c:518
 msgid "Page _orientation:"
-msgstr ""
+msgstr "Lapo _orientacija:"
 
 #. Layout
-#: libgnomeprintui/gnome-print-paper-selector.c:647
+#: libgnomeprintui/gnome-print-paper-selector.c:529
 msgid "_Layout:"
-msgstr ""
+msgstr "_IÅ¡dÄ—stymas:"
 
-#. Preview frame
-#: libgnomeprintui/gnome-print-paper-selector.c:659
-#: libgnomeprintui/gnome-print-paper-selector.c:669
+#. Paper source
+#: libgnomeprintui/gnome-print-paper-selector.c:540
+msgid "Paper _tray:"
+msgstr "Popieriaus kon_teineris:"
+
+#: libgnomeprintui/gnome-print-paper-selector.c:554
+#: libgnomeprintui/gnome-print-paper-selector.c:568
 msgid "Preview"
-msgstr "Perşiûra"
+msgstr "PerÅ¾iÅ«ra"
 
-#: libgnomeprintui/gnome-print-paper-selector.c:670
+#: libgnomeprintui/gnome-print-paper-selector.c:569
 msgid "Preview of the page size, orientation and layout"
-msgstr ""
+msgstr "Lapo dydÅ¾io, orientacijos ir iÅ¡dÄ—stymo perÅ¾iÅ«ra"
 
-#: libgnomeprintui/gnome-print-paper-selector.c:688
+#: libgnomeprintui/gnome-print-paper-selector.c:575
 msgid "Margins"
-msgstr ""
+msgstr "ParaÅ¡tÄ—s"
 
-#: libgnomeprintui/gnome-print-paper-selector.c:722
+#: libgnomeprintui/gnome-print-paper-selector.c:609
 msgid "Top"
-msgstr ""
+msgstr "VirÅ¡us"
 
-#: libgnomeprintui/gnome-print-paper-selector.c:725
+#: libgnomeprintui/gnome-print-paper-selector.c:612
 msgid "Bottom"
-msgstr ""
+msgstr "ApaÄia"
 
-#: libgnomeprintui/gnome-print-paper-selector.c:728
+#: libgnomeprintui/gnome-print-paper-selector.c:615
 msgid "Left"
-msgstr ""
+msgstr "KairÄ—"
 
-#: libgnomeprintui/gnome-print-paper-selector.c:731
+#: libgnomeprintui/gnome-print-paper-selector.c:618
 msgid "Right"
-msgstr ""
-
-#: libgnomeprintui/gnome-printer-selector.c:123
-msgid "State:"
-msgstr "Bûsena:"
-
-#: libgnomeprintui/gnome-printer-selector.c:126
-msgid "Type:"
-msgstr "Tipas:"
-
-#: libgnomeprintui/gnome-printer-selector.c:129
-msgid "Comment:"
-msgstr "Komentaras:"
-
-#: libgnomeprintui/gnome-printer-selector.c:131
-msgid "Co_nfigure"
-msgstr ""
-
-#: libgnomeprintui/gnome-printer-selector.c:139
-msgid "Adjust the settings of the selected printer"
-msgstr ""
-
-#: libgnomeprintui/gnome-printer-selector.c:150
-#, fuzzy
-msgid "Pr_inter:"
-msgstr "_Spausdintuvas"
-
-#: libgnomeprintui/gnome-printer-selector.c:159
-msgid "_Settings:"
-msgstr ""
+msgstr "DeÅ¡inÄ—"
 
 #: libgnomeprintui/gnome-printer-selector.c:168
-#, fuzzy
+msgid "Co_nfigure"
+msgstr "_SavybÄ—s"
+
+#: libgnomeprintui/gnome-printer-selector.c:177
+msgid "Adjust the settings of the selected printer"
+msgstr "Keisti pasirinkto spausdintuvo nustatymus"
+
+#: libgnomeprintui/gnome-printer-selector.c:185
+msgid "_Settings:"
+msgstr "_Nustatymai:"
+
+#: libgnomeprintui/gnome-printer-selector.c:194
 msgid "_Location:"
-msgstr "Vieta:"
-
-#: libgnomeprintui/gnome-canvas-hacktext.c:128
-#, fuzzy
-msgid "Text"
-msgstr "Pirmyn"
-
-#: libgnomeprintui/gnome-canvas-hacktext.c:129
-msgid "Text to render"
-msgstr ""
-
-#: libgnomeprintui/gnome-canvas-hacktext.c:148
-#: libgnomeprintui/gnome-canvas-hacktext.c:149
-msgid "Glyphlist"
-msgstr ""
-
-#: libgnomeprintui/gnome-canvas-hacktext.c:155
-#: libgnomeprintui/gnome-canvas-hacktext.c:163
-msgid "Color"
-msgstr ""
-
-#: libgnomeprintui/gnome-canvas-hacktext.c:156
-msgid "Text color, as string"
-msgstr ""
-
-#: libgnomeprintui/gnome-canvas-hacktext.c:164
-msgid "Text color, as an R/G/B/A combined integer"
-msgstr ""
-
-#: libgnomeprintui/gnome-canvas-hacktext.c:171
-msgid "Font"
-msgstr ""
-
-#: libgnomeprintui/gnome-canvas-hacktext.c:172
-msgid "Font as a GnomeFont struct"
-msgstr ""
+msgstr "_Vieta:"
 
 #: libgnomeprintui/gpaui/gpa-option-menu.c:179
 #: libgnomeprintui/gpaui/gpa-option-menu.c:229
-#: libgnomeprintui/gpaui/gpa-transport-selector.c:247
 msgid "No options are defined"
-msgstr ""
+msgstr "Nenurodyta jokiÅ³ nustatymÅ³"
 
-#: libgnomeprintui/gpaui/gpa-printer-selector.c:156
-msgid "No printers could be loaded"
-msgstr ""
+#: libgnomeprintui/gpaui/gpa-print-to-file.c:258
+msgid "Print to _file"
+msgstr "Spausdinti Ä¯ _bylÄ…"
+
+#: libgnomeprintui/gpaui/gpa-printer-selector.c:168
+msgid "State"
+msgstr "BÅ«sena"
+
+#: libgnomeprintui/gpaui/gpa-printer-selector.c:175
+msgid "Jobs"
+msgstr "UÅ¾duotys"
+
+#: libgnomeprintui/gpaui/gpa-printer-selector.c:182
+msgid "Location"
+msgstr "Vieta"
 
 #: libgnomeprintui/gpaui/gpa-settings-selector.c:180
-#, fuzzy
 msgid "No printer selected"
-msgstr "Spausdintuvas aktyvus"
+msgstr "Nepasirinktas joks spausdintuvas"
 
 #: libgnomeprintui/gpaui/gpa-settings-selector.c:191
 msgid "No settings available"
-msgstr ""
+msgstr "NÄ—ra jokiÅ³ galimÅ³ nustatymÅ³"
 
 #: libgnomeprintui/gpaui/gpa-settings-selector.c:234
 msgid "Add new settings"
-msgstr ""
+msgstr "PridÄ—ti naujus nustatymus"
 
-#~ msgid "Print out debugging information"
-#~ msgstr "Spausdinti derinimo informacijà"
+#: libgnomeprintui/gpaui/gpa-spinbutton.c:311
+msgid "%"
+msgstr "%"
 
-#~ msgid "Does nothing yet."
-#~ msgstr "Kol kas nieko nedaro."
+#. Percent must be first
+#: libgnomeprintui/gpaui/gpa-spinbutton.c:312
+msgid "Pt"
+msgstr "Pt"
 
-#~ msgid "Use this path to write the fontmap file."
-#~ msgstr "Naudoti ğá kelià rağyti fontmap bylai."
+#: libgnomeprintui/gpaui/gpa-spinbutton.c:313
+msgid "mm"
+msgstr "mm"
 
-#~ msgid "PATH"
-#~ msgstr "KELIAS"
+#: libgnomeprintui/gpaui/gpa-spinbutton.c:314
+msgid "cm"
+msgstr "cm"
 
-#~ msgid "Use this path to search for relative afm files."
-#~ msgstr "Naudoti ğá kelià susijusiø afm bylø paieğkai"
+#: libgnomeprintui/gpaui/gpa-spinbutton.c:315
+msgid "m"
+msgstr "m"
 
-#~ msgid "Use this path to search for relative pfb files."
-#~ msgstr "Naudoti ğá kelià susijusiø pfb bylø paieğkai"
+#: libgnomeprintui/gpaui/gpa-spinbutton.c:316
+msgid "in"
+msgstr "in"
 
-#~ msgid "Use this to set up a key/value pair for afm files."
-#~ msgstr "Naudoti tai nustatant rakto/reikğmës porà afm byloms."
+#: libgnomeprintui/gpaui/gpa-transport-selector.c:183
+#: libgnomeprintui/gpaui/gpa-transport-selector.c:523
+#, c-format
+msgid "The specified filename \"%s\" is an existing directory."
+msgstr "Byla, pavadinta â€%sâ€œ, jau yra pasirinktame kataloge."
 
-#~ msgid "Use this to set up a key/value pair for pfb files."
-#~ msgstr "Naudoti tai nustatant rakto/reikğmës porà pfb byloms."
+#: libgnomeprintui/gpaui/gpa-transport-selector.c:202
+#: libgnomeprintui/gpaui/gpa-transport-selector.c:545
+#, c-format
+msgid "Should the file %s be overwritten?"
+msgstr "Ar byla %s turi bÅ«ti perraÅ¡yta?"
 
-#~ msgid "The quick brown fox jumps over the lazy dog."
-#~ msgstr "Greita ruda laputë ğoka per tingø ğuná."
+#: libgnomeprintui/gpaui/gpa-transport-selector.c:247
+msgid "Please specify the location and filename of the output file:"
+msgstr "Nurodykite iÅ¡saugomos spausdinimo bylos vietÄ… ir vardÄ…:"
 
-#~ msgid "Couldn't open font file %s\n"
-#~ msgstr "Negaliu atidaryti ğrifto bylos %s\n"
+#: libgnomeprintui/gpaui/gpa-transport-selector.c:271
+msgid "All Files"
+msgstr "Visos bylos"
 
-#~ msgid "status loading %s = %d\n"
-#~ msgstr "bûsenos ákëlimas %s = %d\n"
+#~ msgid "Type:"
+#~ msgstr "Tipas:"
 
-#~ msgid "Print"
-#~ msgstr "Spausdinti"
+#~ msgid "Comment:"
+#~ msgstr "Komentaras:"
 
-#~ msgid "from:"
-#~ msgstr "nuo:"
+#~ msgid "Pr_inter:"
+#~ msgstr "Spausd_intuvas:"
 
-#~ msgid "to:"
-#~ msgstr "iki:"
+#~ msgid "No printers could be loaded"
+#~ msgstr "Neaptiktas joks tinkamas spausdintuvas"
 
-#~ msgid "_First page"
-#~ msgstr "P_irmas puslapis"
+#~ msgid ""
+#~ "<markup>1   <span foreground=\"red\" weight=\"ultrabold\" background="
+#~ "\"white\">No visible output was created.</span></markup>"
+#~ msgstr ""
+#~ "<markup>1   <span foreground=\"red\" weight=\"ultrabold\" background="
+#~ "\"white\">Nesukurta jokio regimo atvaizdo.</span></markup>"
 
-#~ msgid "_Previous page"
-#~ msgstr "_Praeitas puslapis"
+#~ msgid "<b>Preview</b>"
+#~ msgstr "<b>PerÅ¾iÅ«ra</b>"
 
-#~ msgid "_Next page"
-#~ msgstr "_Kitas puslapis"
-
-#~ msgid "_Last page"
-#~ msgstr "P_askutinis puslapis"
-
-#~ msgid "Zoom _in"
-#~ msgstr "Pri_traukti"
-
-#~ msgid "Zoom _out"
-#~ msgstr "A_titraukti"
-
-#~ msgid "Zooms out"
-#~ msgstr "Atitraukia vaizdà"
-
-#~ msgid "_View"
-#~ msgstr "_Şiûrëti"
-
-#~ msgid "First"
-#~ msgstr "Pradşia"
-
-#~ msgid "Back"
-#~ msgstr "Atgal"
-
-#~ msgid "Last"
-#~ msgstr "Galas"
-
-#~ msgid "Zoom in"
-#~ msgstr "Pritraukti"
-
-#~ msgid "Zoom out"
-#~ msgstr "Atitraukti"
-
-#~ msgid "Fit"
-#~ msgstr "Tilpti"
-
-#~ msgid "Fit Wide"
-#~ msgstr "Platyn"
-
-#~ msgid "Zooms to fit the width of the page"
-#~ msgstr "Sutalpina puslapá, kad bûtø matomas visas jo plotis"
-
-#~ msgid "Fit Tall"
-#~ msgstr "Ilgyn"
-
-#~ msgid "Zooms to fit the height of the page"
-#~ msgstr "Sutalpina puslapá, kad bûtø matomas jo visas ilgis"
-
-#~ msgid "Select printer"
-#~ msgstr "Pasirink spausdintuvà"
-
-#~ msgid "_Name:"
-#~ msgstr "_Vardas:"
-
-#~ msgid "_File"
-#~ msgstr "_Byla"
-
-#~ msgid "Select Printer"
-#~ msgstr "Pasirink spausdintuvà"
-
-#~ msgid "Printer is ready to print"
-#~ msgstr "Spausdintuvas pasiruoğæs spausdinti"
-
-#~ msgid "Printer is off-line"
-#~ msgstr "Spausdintuvas iğjungtas"
-
-#~ msgid "Can not communicate with printer"
-#~ msgstr "Negaliu susisiekti su spausdintuvu"
-
-#~ msgid "Unknown status"
-#~ msgstr "Neşinoma bûsena"
-
-#~ msgid "extracts the first font from output.pdf and places it in font.dump."
-#~ msgstr "iğtraukia pirmà ğriftà iğ output.pdf ir padeda já á font.dump."
-
-#~ msgid "extracts the font header from font.dump"
-#~ msgstr "iğtraukia ğrifto antrağtæ iğ font.dump."
-
-#~ msgid "extracts the font body "
-#~ msgstr "iğtraukia ğrifto kûnà"
-
-#~ msgid "decrypts the font body "
-#~ msgstr "iğğifruoja ğrifto kûnà"
-
-#~ msgid "Gnome-print test page, rotated"
-#~ msgstr "Gnome-print testinis lapas, pasuktas"
-
-#~ msgid "Gnome-print test page, slanted"
-#~ msgstr "Gnome-print testinis lapas, pasviræs"
-
-#~ msgid "Gnome-print test page, slanted. Small"
-#~ msgstr "gnome-print testinis lapas, pasviræs. Maşas"
+#~ msgid "<b>Printer</b>"
+#~ msgstr "<b>Spausdintuvas</b>"

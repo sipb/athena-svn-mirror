@@ -820,10 +820,12 @@ static void
 test_dialog_tree ()
 {
 	GnomePrintConfig *config;
+	GPANode *node;
 	GtkWidget *tree;
 
 	config = gnome_print_config_default ();
-	tree = gpa_tree_viewer_new (config);
+	node = gnome_print_config_get_node (config);
+	tree = gpa_tree_viewer_new (node);
 
 	g_signal_connect (G_OBJECT (tree), "delete_event",
 			  (GCallback) gtk_main_quit, NULL);

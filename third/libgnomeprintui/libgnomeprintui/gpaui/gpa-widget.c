@@ -87,8 +87,6 @@ gpa_widget_finalize (GObject *object)
 {
 	GPAWidget *gpw;
 
-	return;
-	
 	gpw = (GPAWidget *) object;
 
 	if (gpw->config)
@@ -143,7 +141,7 @@ gpa_widget_construct (GPAWidget *gpw, GnomePrintConfig *config)
 }
 
 GtkWidget *
-gpa_widget_new (GtkType type, GnomePrintConfig *config)
+gpa_widget_new (GType type, GnomePrintConfig *config)
 {
 	GPAWidget *gpw;
 

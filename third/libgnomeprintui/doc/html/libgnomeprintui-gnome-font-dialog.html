@@ -1,2314 +1,311 @@
-<HTML
-><HEAD
-><TITLE
->gnome-font-dialog</TITLE
-><META
-NAME="GENERATOR"
-CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
-"><LINK
-REL="HOME"
-TITLE="GNOME Print UI Reference Manual"
-HREF="index.html"><LINK
-REL="UP"
-TITLE="API Reference"
-HREF="c7.html"><LINK
-REL="PREVIOUS"
-TITLE="API Reference"
-HREF="c7.html"><LINK
-REL="NEXT"
-TITLE="gnome-print-copies"
-HREF="libgnomeprintui-gnome-print-copies.html"></HEAD
-><BODY
-CLASS="REFENTRY"
-BGCOLOR="#FFFFFF"
-TEXT="#000000"
-LINK="#0000FF"
-VLINK="#840084"
-ALINK="#0000FF"
-><DIV
-CLASS="NAVHEADER"
-><TABLE
-WIDTH="100%"
-BORDER="0"
-BGCOLOR="#000000"
-CELLPADDING="1"
-CELLSPACING="0"
-><TR
-><TH
-COLSPAN="4"
-ALIGN="center"
-><FONT
-COLOR="#FFFFFF"
-SIZE="5"
->GNOME Print UI Reference Manual</FONT
-></TH
-></TR
-><TR
-><TD
-WIDTH="25%"
-BGCOLOR="#C00000"
-ALIGN="left"
-><A
-HREF="c7.html"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
->&#60;&#60;&#60; Previous Page</B
-></FONT
-></A
-></TD
-><TD
-WIDTH="25%"
-BGCOLOR="#0000C0"
-ALIGN="center"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
-><A
-HREF="index.html"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
->Home</B
-></FONT
-></A
-></B
-></FONT
-></TD
-><TD
-WIDTH="25%"
-BGCOLOR="#00C000"
-ALIGN="center"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
-><A
-HREF="c7.html"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
->Up</B
-></FONT
-></A
-></B
-></FONT
-></TD
-><TD
-WIDTH="25%"
-BGCOLOR="#C00000"
-ALIGN="right"
-><A
-HREF="libgnomeprintui-gnome-print-copies.html"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
->Next Page &#62;&#62;&#62;</B
-></FONT
-></A
-></TD
-></TR
-></TABLE
-></DIV
-><H1
-><A
-NAME="LIBGNOMEPRINTUI-GNOME-FONT-DIALOG"
-></A
->gnome-font-dialog</H1
-><DIV
-CLASS="REFNAMEDIV"
-><A
-NAME="AEN14"
-></A
-><H2
->Name</H2
->gnome-font-dialog&nbsp;--&nbsp;</DIV
-><DIV
-CLASS="REFSYNOPSISDIV"
-><A
-NAME="AEN17"
-></A
-><H2
->Synopsis</H2
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
-><PRE
-CLASS="SYNOPSIS"
->&#13;
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>gnome-font-dialog</title><meta name="generator" content="DocBook XSL Stylesheets V1.64.1"><link rel="home" href="index.html" title="GNOME Print UI Reference Manual"><link rel="up" href="ch02.html" title="API Reference"><link rel="previous" href="ch02.html" title="API Reference"><link rel="next" href="libgnomeprintui-gnome-print-copies.html" title="gnome-print-copies"><link rel="chapter" href="libgnomeprintui.html" title="GNOME Print UI Overview"><link rel="chapter" href="ch02.html" title="API Reference"><link rel="refentry" href="libgnomeprintui-gnome-font-dialog.html" title="gnome-font-dialog"><link rel="refentry" href="libgnomeprintui-gnome-print-copies.html" title="gnome-print-copies"><link rel="refentry" href="libgnomeprintui-gnome-print-dialog.html" title="gnome-print-dialog"><link rel="refentry" href="libgnomeprintui-gnome-printer-selector.html" title="gnome-printer-selector"><link rel="refentry" href="libgnomeprintui-gnome-print-job-preview.html" title="gnome-print-job-preview"><link rel="refentry" href="libgnomeprintui-gnome-print-paper-selector.html" title="gnome-print-paper-selector"><link rel="refentry" href="libgnomeprintui-gnome-print-preview.html" title="gnome-print-preview"><link rel="section" href="libgnomeprintui-gnome-font-dialog.html#id2506031" title="Object Hierarchy"><link rel="section" href="libgnomeprintui-gnome-font-dialog.html#id2506196" title="Implemented Interfaces"><link rel="section" href="libgnomeprintui-gnome-font-dialog.html#id2506236" title="Signal Prototypes"><link rel="section" href="libgnomeprintui-gnome-font-dialog.html#id2506289" title="Description"><link rel="section" href="libgnomeprintui-gnome-font-dialog.html#id2506299" title="Details"><link rel="section" href="libgnomeprintui-gnome-font-dialog.html#id2507892" title="Signals"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><link rel="stylesheet" href="style.css" type="text/css"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="ch02.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="ch02.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GNOME Print UI Reference Manual</th><td><a accesskey="n" href="libgnomeprintui-gnome-print-copies.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="libgnomeprintui-gnome-font-dialog"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">gnome-font-dialog</span></h2><p>gnome-font-dialog &#8212; </p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><a name="GnomeFontSelection"></a><a name="GnomeFontPreview"></a><a name="GnomeFontDialog"></a><pre class="synopsis">
 
-#define     <A
-HREF="libgnomeprintui-gnome-font-dialog.html#GNOME-TYPE-FONT-SELECTION-CAPS"
->GNOME_TYPE_FONT_SELECTION</A
->
-#define     <A
-HREF="libgnomeprintui-gnome-font-dialog.html#GNOME-FONT-SELECTION-CAPS"
->GNOME_FONT_SELECTION</A
->            (o)
-#define     <A
-HREF="libgnomeprintui-gnome-font-dialog.html#GNOME-FONT-SELECTION-CLASS-CAPS"
->GNOME_FONT_SELECTION_CLASS</A
->      (k)
-#define     <A
-HREF="libgnomeprintui-gnome-font-dialog.html#GNOME-IS-FONT-SELECTION-CAPS"
->GNOME_IS_FONT_SELECTION</A
->         (o)
-#define     <A
-HREF="libgnomeprintui-gnome-font-dialog.html#GNOME-IS-FONT-SELECTION-CLASS-CAPS"
->GNOME_IS_FONT_SELECTION_CLASS</A
->   (k)
-#define     <A
-HREF="libgnomeprintui-gnome-font-dialog.html#GNOME-FONT-SELECTION-GET-CLASS-CAPS"
->GNOME_FONT_SELECTION_GET_CLASS</A
->  (o)
-#define     <A
-HREF="libgnomeprintui-gnome-font-dialog.html#GNOME-TYPE-FONT-DIALOG-CAPS"
->GNOME_TYPE_FONT_DIALOG</A
->
-#define     <A
-HREF="libgnomeprintui-gnome-font-dialog.html#GNOME-FONT-DIALOG-CAPS"
->GNOME_FONT_DIALOG</A
->               (o)
-#define     <A
-HREF="libgnomeprintui-gnome-font-dialog.html#GNOME-FONT-DIALOG-CLASS-CAPS"
->GNOME_FONT_DIALOG_CLASS</A
->         (k)
-#define     <A
-HREF="libgnomeprintui-gnome-font-dialog.html#GNOME-IS-FONT-DIALOG-CAPS"
->GNOME_IS_FONT_DIALOG</A
->            (o)
-#define     <A
-HREF="libgnomeprintui-gnome-font-dialog.html#GNOME-IS-FONT-DIALOG-CLASS-CAPS"
->GNOME_IS_FONT_DIALOG_CLASS</A
->      (k)
-#define     <A
-HREF="libgnomeprintui-gnome-font-dialog.html#GNOME-FONT-DIALOG-GET-CLASS-CAPS"
->GNOME_FONT_DIALOG_GET_CLASS</A
->     (o)
-struct      <A
-HREF="libgnomeprintui-gnome-font-dialog.html#GNOMEFONTSELECTION-STRUCT"
->GnomeFontSelection</A
->;
-struct      <A
-HREF="libgnomeprintui-gnome-font-dialog.html#GNOMEFONTSELECTIONCLASS"
->GnomeFontSelectionClass</A
->;
-struct      <A
-HREF="libgnomeprintui-gnome-font-dialog.html#GNOMEFONTPREVIEW-STRUCT"
->GnomeFontPreview</A
->;
-struct      <A
-HREF="libgnomeprintui-gnome-font-dialog.html#GNOMEFONTPREVIEWCLASS"
->GnomeFontPreviewClass</A
->;
-struct      <A
-HREF="libgnomeprintui-gnome-font-dialog.html#GNOMEFONTDIALOG-STRUCT"
->GnomeFontDialog</A
->;
-struct      <A
-HREF="libgnomeprintui-gnome-font-dialog.html#GNOMEFONTDIALOGCLASS"
->GnomeFontDialogClass</A
->;
-GtkWidget*  <A
-HREF="libgnomeprintui-gnome-font-dialog.html#GNOME-FONT-SELECTION-NEW"
->gnome_font_selection_new</A
->        (void);
-GnomeFontFace* <A
-HREF="libgnomeprintui-gnome-font-dialog.html#GNOME-FONT-SELECTION-GET-FACE"
->gnome_font_selection_get_face</A
->
-                                            (GnomeFontSelection *fontsel);
-gdouble     <A
-HREF="libgnomeprintui-gnome-font-dialog.html#GNOME-FONT-SELECTION-GET-SIZE"
->gnome_font_selection_get_size</A
->   (GnomeFontSelection *fontsel);
-GnomeFont*  <A
-HREF="libgnomeprintui-gnome-font-dialog.html#GNOME-FONT-SELECTION-GET-FONT"
->gnome_font_selection_get_font</A
->   (GnomeFontSelection *fontsel);
-void        <A
-HREF="libgnomeprintui-gnome-font-dialog.html#GNOME-FONT-SELECTION-SET-FONT"
->gnome_font_selection_set_font</A
->   (GnomeFontSelection *fontsel,
+
+
+#define     <a href="libgnomeprintui-gnome-font-dialog.html#GNOME-TYPE-FONT-SELECTION-CAPS">GNOME_TYPE_FONT_SELECTION</a>
+#define     <a href="libgnomeprintui-gnome-font-dialog.html#GNOME-FONT-SELECTION-CAPS">GNOME_FONT_SELECTION</a>            (o)
+#define     <a href="libgnomeprintui-gnome-font-dialog.html#GNOME-FONT-SELECTION-CLASS-CAPS">GNOME_FONT_SELECTION_CLASS</a>      (k)
+#define     <a href="libgnomeprintui-gnome-font-dialog.html#GNOME-IS-FONT-SELECTION-CAPS">GNOME_IS_FONT_SELECTION</a>         (o)
+#define     <a href="libgnomeprintui-gnome-font-dialog.html#GNOME-IS-FONT-SELECTION-CLASS-CAPS">GNOME_IS_FONT_SELECTION_CLASS</a>   (k)
+#define     <a href="libgnomeprintui-gnome-font-dialog.html#GNOME-FONT-SELECTION-GET-CLASS-CAPS">GNOME_FONT_SELECTION_GET_CLASS</a>  (o)
+#define     <a href="libgnomeprintui-gnome-font-dialog.html#GNOME-TYPE-FONT-DIALOG-CAPS">GNOME_TYPE_FONT_DIALOG</a>
+#define     <a href="libgnomeprintui-gnome-font-dialog.html#GNOME-FONT-DIALOG-CAPS">GNOME_FONT_DIALOG</a>               (o)
+#define     <a href="libgnomeprintui-gnome-font-dialog.html#GNOME-FONT-DIALOG-CLASS-CAPS">GNOME_FONT_DIALOG_CLASS</a>         (k)
+#define     <a href="libgnomeprintui-gnome-font-dialog.html#GNOME-IS-FONT-DIALOG-CAPS">GNOME_IS_FONT_DIALOG</a>            (o)
+#define     <a href="libgnomeprintui-gnome-font-dialog.html#GNOME-IS-FONT-DIALOG-CLASS-CAPS">GNOME_IS_FONT_DIALOG_CLASS</a>      (k)
+#define     <a href="libgnomeprintui-gnome-font-dialog.html#GNOME-FONT-DIALOG-GET-CLASS-CAPS">GNOME_FONT_DIALOG_GET_CLASS</a>     (o)
+struct      <a href="libgnomeprintui-gnome-font-dialog.html#GnomeFontSelection-struct">GnomeFontSelection</a>;
+struct      <a href="libgnomeprintui-gnome-font-dialog.html#GnomeFontSelectionClass">GnomeFontSelectionClass</a>;
+struct      <a href="libgnomeprintui-gnome-font-dialog.html#GnomeFontPreview-struct">GnomeFontPreview</a>;
+struct      <a href="libgnomeprintui-gnome-font-dialog.html#GnomeFontPreviewClass">GnomeFontPreviewClass</a>;
+struct      <a href="libgnomeprintui-gnome-font-dialog.html#GnomeFontDialog-struct">GnomeFontDialog</a>;
+struct      <a href="libgnomeprintui-gnome-font-dialog.html#GnomeFontDialogClass">GnomeFontDialogClass</a>;
+<a
+href="../gtk/GtkWidget.html"
+>GtkWidget</a>*  <a href="libgnomeprintui-gnome-font-dialog.html#gnome-font-selection-new">gnome_font_selection_new</a>        (void);
+GnomeFontFace* <a href="libgnomeprintui-gnome-font-dialog.html#gnome-font-selection-get-face">gnome_font_selection_get_face</a>
+                                            (<a href="libgnomeprintui-gnome-font-dialog.html#GnomeFontSelection">GnomeFontSelection</a> *fontsel);
+gdouble     <a href="libgnomeprintui-gnome-font-dialog.html#gnome-font-selection-get-size">gnome_font_selection_get_size</a>   (<a href="libgnomeprintui-gnome-font-dialog.html#GnomeFontSelection">GnomeFontSelection</a> *fontsel);
+GnomeFont*  <a href="libgnomeprintui-gnome-font-dialog.html#gnome-font-selection-get-font">gnome_font_selection_get_font</a>   (<a href="libgnomeprintui-gnome-font-dialog.html#GnomeFontSelection">GnomeFontSelection</a> *fontsel);
+void        <a href="libgnomeprintui-gnome-font-dialog.html#gnome-font-selection-set-font">gnome_font_selection_set_font</a>   (<a href="libgnomeprintui-gnome-font-dialog.html#GnomeFontSelection">GnomeFontSelection</a> *fontsel,
                                              GnomeFont *font);
-GtkType     <A
-HREF="libgnomeprintui-gnome-font-dialog.html#GNOME-FONT-PREVIEW-GET-TYPE"
->gnome_font_preview_get_type</A
->     (void);
-GtkWidget*  <A
-HREF="libgnomeprintui-gnome-font-dialog.html#GNOME-FONT-PREVIEW-NEW"
->gnome_font_preview_new</A
->          (void);
-void        <A
-HREF="libgnomeprintui-gnome-font-dialog.html#GNOME-FONT-PREVIEW-SET-PHRASE"
->gnome_font_preview_set_phrase</A
->   (GnomeFontPreview *preview,
+<a
+href="../gtk/gtk-Types.html#GtkType"
+>GtkType</a>     <a href="libgnomeprintui-gnome-font-dialog.html#gnome-font-preview-get-type">gnome_font_preview_get_type</a>     (void);
+<a
+href="../gtk/GtkWidget.html"
+>GtkWidget</a>*  <a href="libgnomeprintui-gnome-font-dialog.html#gnome-font-preview-new">gnome_font_preview_new</a>          (void);
+void        <a href="libgnomeprintui-gnome-font-dialog.html#gnome-font-preview-set-phrase">gnome_font_preview_set_phrase</a>   (<a href="libgnomeprintui-gnome-font-dialog.html#GnomeFontPreview">GnomeFontPreview</a> *preview,
                                              const guchar *phrase);
-void        <A
-HREF="libgnomeprintui-gnome-font-dialog.html#GNOME-FONT-PREVIEW-SET-FONT"
->gnome_font_preview_set_font</A
->     (GnomeFontPreview *preview,
+void        <a href="libgnomeprintui-gnome-font-dialog.html#gnome-font-preview-set-font">gnome_font_preview_set_font</a>     (<a href="libgnomeprintui-gnome-font-dialog.html#GnomeFontPreview">GnomeFontPreview</a> *preview,
                                              GnomeFont *font);
-void        <A
-HREF="libgnomeprintui-gnome-font-dialog.html#GNOME-FONT-PREVIEW-SET-COLOR"
->gnome_font_preview_set_color</A
->    (GnomeFontPreview *preview,
+void        <a href="libgnomeprintui-gnome-font-dialog.html#gnome-font-preview-set-color">gnome_font_preview_set_color</a>    (<a href="libgnomeprintui-gnome-font-dialog.html#GnomeFontPreview">GnomeFontPreview</a> *preview,
                                              guint32 color);
-GtkType     <A
-HREF="libgnomeprintui-gnome-font-dialog.html#GNOME-FONT-DIALOG-GET-TYPE"
->gnome_font_dialog_get_type</A
->      (void);
-GtkWidget*  <A
-HREF="libgnomeprintui-gnome-font-dialog.html#GNOME-FONT-DIALOG-NEW"
->gnome_font_dialog_new</A
->           (const gchar *title);
-GtkWidget*  <A
-HREF="libgnomeprintui-gnome-font-dialog.html#GNOME-FONT-DIALOG-GET-FONTSEL"
->gnome_font_dialog_get_fontsel</A
->   (GnomeFontDialog *gfsd);
-GtkWidget*  <A
-HREF="libgnomeprintui-gnome-font-dialog.html#GNOME-FONT-DIALOG-GET-PREVIEW"
->gnome_font_dialog_get_preview</A
->   (GnomeFontDialog *gfsd);&#13;</PRE
-></TD
-></TR
-></TABLE
-></DIV
-><DIV
-CLASS="REFSECT1"
-><A
-NAME="AEN76"
-></A
-><H2
->Description</H2
-><P
-></P
-></DIV
-><DIV
-CLASS="REFSECT1"
-><A
-NAME="AEN79"
-></A
-><H2
->Details</H2
-><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN81"
-></A
-><H3
-><A
-NAME="GNOME-TYPE-FONT-SELECTION-CAPS"
-></A
->GNOME_TYPE_FONT_SELECTION</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
-><PRE
-CLASS="PROGRAMLISTING"
->#define GNOME_TYPE_FONT_SELECTION         (gnome_font_selection_get_type ())</PRE
-></TD
-></TR
-></TABLE
-><P
-></P
-></DIV
-><HR><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN86"
-></A
-><H3
-><A
-NAME="GNOME-FONT-SELECTION-CAPS"
-></A
->GNOME_FONT_SELECTION()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
-><PRE
-CLASS="PROGRAMLISTING"
->#define GNOME_FONT_SELECTION(o)           (G_TYPE_CHECK_INSTANCE_CAST ((o), GNOME_TYPE_FONT_SELECTION, GnomeFontSelection))</PRE
-></TD
-></TR
-></TABLE
-><P
-></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN91"
-></A
-><P
-></P
-><TABLE
-BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
-CELLSPACING="0"
-CELLPADDING="4"
-CLASS="CALSTABLE"
-><TBODY
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->o</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->&nbsp;</TD
-></TR
-></TBODY
-></TABLE
-><P
-></P
-></DIV
-></DIV
-><HR><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN100"
-></A
-><H3
-><A
-NAME="GNOME-FONT-SELECTION-CLASS-CAPS"
-></A
->GNOME_FONT_SELECTION_CLASS()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
-><PRE
-CLASS="PROGRAMLISTING"
->#define GNOME_FONT_SELECTION_CLASS(k)     (G_TYPE_CHECK_CLASS_CAST    ((k), GNOME_TYPE_FONT_SELECTION, GnomeFontSelectionClass))</PRE
-></TD
-></TR
-></TABLE
-><P
-></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN105"
-></A
-><P
-></P
-><TABLE
-BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
-CELLSPACING="0"
-CELLPADDING="4"
-CLASS="CALSTABLE"
-><TBODY
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->k</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->&nbsp;</TD
-></TR
-></TBODY
-></TABLE
-><P
-></P
-></DIV
-></DIV
-><HR><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN114"
-></A
-><H3
-><A
-NAME="GNOME-IS-FONT-SELECTION-CAPS"
-></A
->GNOME_IS_FONT_SELECTION()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
-><PRE
-CLASS="PROGRAMLISTING"
->#define GNOME_IS_FONT_SELECTION(o)        (G_TYPE_CHECK_INSTANCE_TYPE ((o), GNOME_TYPE_FONT_SELECTION))</PRE
-></TD
-></TR
-></TABLE
-><P
-></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN119"
-></A
-><P
-></P
-><TABLE
-BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
-CELLSPACING="0"
-CELLPADDING="4"
-CLASS="CALSTABLE"
-><TBODY
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->o</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->&nbsp;</TD
-></TR
-></TBODY
-></TABLE
-><P
-></P
-></DIV
-></DIV
-><HR><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN128"
-></A
-><H3
-><A
-NAME="GNOME-IS-FONT-SELECTION-CLASS-CAPS"
-></A
->GNOME_IS_FONT_SELECTION_CLASS()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
-><PRE
-CLASS="PROGRAMLISTING"
->#define GNOME_IS_FONT_SELECTION_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE    ((k), GNOME_TYPE_FONT_SELECTION))</PRE
-></TD
-></TR
-></TABLE
-><P
-></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN133"
-></A
-><P
-></P
-><TABLE
-BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
-CELLSPACING="0"
-CELLPADDING="4"
-CLASS="CALSTABLE"
-><TBODY
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->k</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->&nbsp;</TD
-></TR
-></TBODY
-></TABLE
-><P
-></P
-></DIV
-></DIV
-><HR><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN142"
-></A
-><H3
-><A
-NAME="GNOME-FONT-SELECTION-GET-CLASS-CAPS"
-></A
->GNOME_FONT_SELECTION_GET_CLASS()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
-><PRE
-CLASS="PROGRAMLISTING"
->#define GNOME_FONT_SELECTION_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS  ((o), GNOME_TYPE_FONT_SELECTION, GnomeFontSelectionClass))</PRE
-></TD
-></TR
-></TABLE
-><P
-></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN147"
-></A
-><P
-></P
-><TABLE
-BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
-CELLSPACING="0"
-CELLPADDING="4"
-CLASS="CALSTABLE"
-><TBODY
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->o</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->&nbsp;</TD
-></TR
-></TBODY
-></TABLE
-><P
-></P
-></DIV
-></DIV
-><HR><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN156"
-></A
-><H3
-><A
-NAME="GNOME-TYPE-FONT-DIALOG-CAPS"
-></A
->GNOME_TYPE_FONT_DIALOG</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
-><PRE
-CLASS="PROGRAMLISTING"
->#define GNOME_TYPE_FONT_DIALOG         (gnome_font_dialog_get_type ())</PRE
-></TD
-></TR
-></TABLE
-><P
-></P
-></DIV
-><HR><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN161"
-></A
-><H3
-><A
-NAME="GNOME-FONT-DIALOG-CAPS"
-></A
->GNOME_FONT_DIALOG()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
-><PRE
-CLASS="PROGRAMLISTING"
->#define GNOME_FONT_DIALOG(o)           (G_TYPE_CHECK_INSTANCE_CAST ((o), GNOME_TYPE_FONT_DIALOG, GnomeFontDialog))</PRE
-></TD
-></TR
-></TABLE
-><P
-></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN166"
-></A
-><P
-></P
-><TABLE
-BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
-CELLSPACING="0"
-CELLPADDING="4"
-CLASS="CALSTABLE"
-><TBODY
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->o</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->&nbsp;</TD
-></TR
-></TBODY
-></TABLE
-><P
-></P
-></DIV
-></DIV
-><HR><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN175"
-></A
-><H3
-><A
-NAME="GNOME-FONT-DIALOG-CLASS-CAPS"
-></A
->GNOME_FONT_DIALOG_CLASS()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
-><PRE
-CLASS="PROGRAMLISTING"
->#define GNOME_FONT_DIALOG_CLASS(k)     (G_TYPE_CHECK_CLASS_CAST    ((k), GNOME_TYPE_FONT_DIALOG, GnomeFontDialogClass))</PRE
-></TD
-></TR
-></TABLE
-><P
-></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN180"
-></A
-><P
-></P
-><TABLE
-BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
-CELLSPACING="0"
-CELLPADDING="4"
-CLASS="CALSTABLE"
-><TBODY
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->k</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->&nbsp;</TD
-></TR
-></TBODY
-></TABLE
-><P
-></P
-></DIV
-></DIV
-><HR><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN189"
-></A
-><H3
-><A
-NAME="GNOME-IS-FONT-DIALOG-CAPS"
-></A
->GNOME_IS_FONT_DIALOG()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
-><PRE
-CLASS="PROGRAMLISTING"
->#define GNOME_IS_FONT_DIALOG(o)        (G_TYPE_CHECK_INSTANCE_TYPE ((o), GNOME_TYPE_FONT_DIALOG))</PRE
-></TD
-></TR
-></TABLE
-><P
-></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN194"
-></A
-><P
-></P
-><TABLE
-BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
-CELLSPACING="0"
-CELLPADDING="4"
-CLASS="CALSTABLE"
-><TBODY
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->o</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->&nbsp;</TD
-></TR
-></TBODY
-></TABLE
-><P
-></P
-></DIV
-></DIV
-><HR><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN203"
-></A
-><H3
-><A
-NAME="GNOME-IS-FONT-DIALOG-CLASS-CAPS"
-></A
->GNOME_IS_FONT_DIALOG_CLASS()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
-><PRE
-CLASS="PROGRAMLISTING"
->#define GNOME_IS_FONT_DIALOG_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE    ((k), GNOME_TYPE_FONT_DIALOG))</PRE
-></TD
-></TR
-></TABLE
-><P
-></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN208"
-></A
-><P
-></P
-><TABLE
-BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
-CELLSPACING="0"
-CELLPADDING="4"
-CLASS="CALSTABLE"
-><TBODY
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->k</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->&nbsp;</TD
-></TR
-></TBODY
-></TABLE
-><P
-></P
-></DIV
-></DIV
-><HR><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN217"
-></A
-><H3
-><A
-NAME="GNOME-FONT-DIALOG-GET-CLASS-CAPS"
-></A
->GNOME_FONT_DIALOG_GET_CLASS()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
-><PRE
-CLASS="PROGRAMLISTING"
->#define GNOME_FONT_DIALOG_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS  ((o), GNOME_TYPE_FONT_DIALOG, GnomeFontDialogClass))</PRE
-></TD
-></TR
-></TABLE
-><P
-></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN222"
-></A
-><P
-></P
-><TABLE
-BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
-CELLSPACING="0"
-CELLPADDING="4"
-CLASS="CALSTABLE"
-><TBODY
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->o</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->&nbsp;</TD
-></TR
-></TBODY
-></TABLE
-><P
-></P
-></DIV
-></DIV
-><HR><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN231"
-></A
-><H3
-><A
-NAME="GNOMEFONTSELECTION-STRUCT"
-></A
->struct GnomeFontSelection</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
-><PRE
-CLASS="PROGRAMLISTING"
->struct GnomeFontSelection;</PRE
-></TD
-></TR
-></TABLE
-><P
-></P
-></DIV
-><HR><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN236"
-></A
-><H3
-><A
-NAME="GNOMEFONTSELECTIONCLASS"
-></A
->struct GnomeFontSelectionClass</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
-><PRE
-CLASS="PROGRAMLISTING"
->struct GnomeFontSelectionClass;</PRE
-></TD
-></TR
-></TABLE
-><P
-></P
-></DIV
-><HR><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN241"
-></A
-><H3
-><A
-NAME="GNOMEFONTPREVIEW-STRUCT"
-></A
->struct GnomeFontPreview</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
-><PRE
-CLASS="PROGRAMLISTING"
->struct GnomeFontPreview;</PRE
-></TD
-></TR
-></TABLE
-><P
-></P
-></DIV
-><HR><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN246"
-></A
-><H3
-><A
-NAME="GNOMEFONTPREVIEWCLASS"
-></A
->struct GnomeFontPreviewClass</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
-><PRE
-CLASS="PROGRAMLISTING"
->struct GnomeFontPreviewClass;</PRE
-></TD
-></TR
-></TABLE
-><P
-></P
-></DIV
-><HR><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN251"
-></A
-><H3
-><A
-NAME="GNOMEFONTDIALOG-STRUCT"
-></A
->struct GnomeFontDialog</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
-><PRE
-CLASS="PROGRAMLISTING"
->struct GnomeFontDialog;</PRE
-></TD
-></TR
-></TABLE
-><P
-></P
-></DIV
-><HR><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN256"
-></A
-><H3
-><A
-NAME="GNOMEFONTDIALOGCLASS"
-></A
->struct GnomeFontDialogClass</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
-><PRE
-CLASS="PROGRAMLISTING"
->struct GnomeFontDialogClass;</PRE
-></TD
-></TR
-></TABLE
-><P
-></P
-></DIV
-><HR><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN261"
-></A
-><H3
-><A
-NAME="GNOME-FONT-SELECTION-NEW"
-></A
->gnome_font_selection_new ()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
-><PRE
-CLASS="PROGRAMLISTING"
->GtkWidget*  gnome_font_selection_new        (void);</PRE
-></TD
-></TR
-></TABLE
-><P
-></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN267"
-></A
-><P
-></P
-><TABLE
-BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
-CELLSPACING="0"
-CELLPADDING="4"
-CLASS="CALSTABLE"
-><TBODY
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><SPAN
-CLASS="emphasis"
-><I
-CLASS="EMPHASIS"
->Returns</I
-></SPAN
-> :</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->&nbsp;</TD
-></TR
-></TBODY
-></TABLE
-><P
-></P
-></DIV
-></DIV
-><HR><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN276"
-></A
-><H3
-><A
-NAME="GNOME-FONT-SELECTION-GET-FACE"
-></A
->gnome_font_selection_get_face ()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
-><PRE
-CLASS="PROGRAMLISTING"
->GnomeFontFace* gnome_font_selection_get_face
-                                            (GnomeFontSelection *fontsel);</PRE
-></TD
-></TR
-></TABLE
-><P
-></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN283"
-></A
-><P
-></P
-><TABLE
-BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
-CELLSPACING="0"
-CELLPADDING="4"
-CLASS="CALSTABLE"
-><TBODY
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->fontsel</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->&nbsp;</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><SPAN
-CLASS="emphasis"
-><I
-CLASS="EMPHASIS"
->Returns</I
-></SPAN
-> :</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->&nbsp;</TD
-></TR
-></TBODY
-></TABLE
-><P
-></P
-></DIV
-></DIV
-><HR><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN296"
-></A
-><H3
-><A
-NAME="GNOME-FONT-SELECTION-GET-SIZE"
-></A
->gnome_font_selection_get_size ()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
-><PRE
-CLASS="PROGRAMLISTING"
->gdouble     gnome_font_selection_get_size   (GnomeFontSelection *fontsel);</PRE
-></TD
-></TR
-></TABLE
-><P
-></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN303"
-></A
-><P
-></P
-><TABLE
-BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
-CELLSPACING="0"
-CELLPADDING="4"
-CLASS="CALSTABLE"
-><TBODY
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->fontsel</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->&nbsp;</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><SPAN
-CLASS="emphasis"
-><I
-CLASS="EMPHASIS"
->Returns</I
-></SPAN
-> :</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->&nbsp;</TD
-></TR
-></TBODY
-></TABLE
-><P
-></P
-></DIV
-></DIV
-><HR><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN316"
-></A
-><H3
-><A
-NAME="GNOME-FONT-SELECTION-GET-FONT"
-></A
->gnome_font_selection_get_font ()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
-><PRE
-CLASS="PROGRAMLISTING"
->GnomeFont*  gnome_font_selection_get_font   (GnomeFontSelection *fontsel);</PRE
-></TD
-></TR
-></TABLE
-><P
-></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN323"
-></A
-><P
-></P
-><TABLE
-BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
-CELLSPACING="0"
-CELLPADDING="4"
-CLASS="CALSTABLE"
-><TBODY
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->fontsel</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->&nbsp;</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><SPAN
-CLASS="emphasis"
-><I
-CLASS="EMPHASIS"
->Returns</I
-></SPAN
-> :</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->&nbsp;</TD
-></TR
-></TBODY
-></TABLE
-><P
-></P
-></DIV
-></DIV
-><HR><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN336"
-></A
-><H3
-><A
-NAME="GNOME-FONT-SELECTION-SET-FONT"
-></A
->gnome_font_selection_set_font ()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
-><PRE
-CLASS="PROGRAMLISTING"
->void        gnome_font_selection_set_font   (GnomeFontSelection *fontsel,
-                                             GnomeFont *font);</PRE
-></TD
-></TR
-></TABLE
-><P
-></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN343"
-></A
-><P
-></P
-><TABLE
-BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
-CELLSPACING="0"
-CELLPADDING="4"
-CLASS="CALSTABLE"
-><TBODY
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->fontsel</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->&nbsp;</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->font</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->&nbsp;</TD
-></TR
-></TBODY
-></TABLE
-><P
-></P
-></DIV
-></DIV
-><HR><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN356"
-></A
-><H3
-><A
-NAME="GNOME-FONT-PREVIEW-GET-TYPE"
-></A
->gnome_font_preview_get_type ()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
-><PRE
-CLASS="PROGRAMLISTING"
->GtkType     gnome_font_preview_get_type     (void);</PRE
-></TD
-></TR
-></TABLE
-><P
-></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN362"
-></A
-><P
-></P
-><TABLE
-BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
-CELLSPACING="0"
-CELLPADDING="4"
-CLASS="CALSTABLE"
-><TBODY
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><SPAN
-CLASS="emphasis"
-><I
-CLASS="EMPHASIS"
->Returns</I
-></SPAN
-> :</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->&nbsp;</TD
-></TR
-></TBODY
-></TABLE
-><P
-></P
-></DIV
-></DIV
-><HR><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN371"
-></A
-><H3
-><A
-NAME="GNOME-FONT-PREVIEW-NEW"
-></A
->gnome_font_preview_new ()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
-><PRE
-CLASS="PROGRAMLISTING"
->GtkWidget*  gnome_font_preview_new          (void);</PRE
-></TD
-></TR
-></TABLE
-><P
-></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN377"
-></A
-><P
-></P
-><TABLE
-BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
-CELLSPACING="0"
-CELLPADDING="4"
-CLASS="CALSTABLE"
-><TBODY
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><SPAN
-CLASS="emphasis"
-><I
-CLASS="EMPHASIS"
->Returns</I
-></SPAN
-> :</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->&nbsp;</TD
-></TR
-></TBODY
-></TABLE
-><P
-></P
-></DIV
-></DIV
-><HR><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN386"
-></A
-><H3
-><A
-NAME="GNOME-FONT-PREVIEW-SET-PHRASE"
-></A
->gnome_font_preview_set_phrase ()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
-><PRE
-CLASS="PROGRAMLISTING"
->void        gnome_font_preview_set_phrase   (GnomeFontPreview *preview,
-                                             const guchar *phrase);</PRE
-></TD
-></TR
-></TABLE
-><P
-></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN393"
-></A
-><P
-></P
-><TABLE
-BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
-CELLSPACING="0"
-CELLPADDING="4"
-CLASS="CALSTABLE"
-><TBODY
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->preview</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->&nbsp;</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->phrase</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->&nbsp;</TD
-></TR
-></TBODY
-></TABLE
-><P
-></P
-></DIV
-></DIV
-><HR><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN406"
-></A
-><H3
-><A
-NAME="GNOME-FONT-PREVIEW-SET-FONT"
-></A
->gnome_font_preview_set_font ()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
-><PRE
-CLASS="PROGRAMLISTING"
->void        gnome_font_preview_set_font     (GnomeFontPreview *preview,
-                                             GnomeFont *font);</PRE
-></TD
-></TR
-></TABLE
-><P
-></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN413"
-></A
-><P
-></P
-><TABLE
-BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
-CELLSPACING="0"
-CELLPADDING="4"
-CLASS="CALSTABLE"
-><TBODY
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->preview</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->&nbsp;</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->font</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->&nbsp;</TD
-></TR
-></TBODY
-></TABLE
-><P
-></P
-></DIV
-></DIV
-><HR><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN426"
-></A
-><H3
-><A
-NAME="GNOME-FONT-PREVIEW-SET-COLOR"
-></A
->gnome_font_preview_set_color ()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
-><PRE
-CLASS="PROGRAMLISTING"
->void        gnome_font_preview_set_color    (GnomeFontPreview *preview,
-                                             guint32 color);</PRE
-></TD
-></TR
-></TABLE
-><P
-></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN433"
-></A
-><P
-></P
-><TABLE
-BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
-CELLSPACING="0"
-CELLPADDING="4"
-CLASS="CALSTABLE"
-><TBODY
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->preview</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->&nbsp;</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->color</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->&nbsp;</TD
-></TR
-></TBODY
-></TABLE
-><P
-></P
-></DIV
-></DIV
-><HR><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN446"
-></A
-><H3
-><A
-NAME="GNOME-FONT-DIALOG-GET-TYPE"
-></A
->gnome_font_dialog_get_type ()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
-><PRE
-CLASS="PROGRAMLISTING"
->GtkType     gnome_font_dialog_get_type      (void);</PRE
-></TD
-></TR
-></TABLE
-><P
-></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN452"
-></A
-><P
-></P
-><TABLE
-BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
-CELLSPACING="0"
-CELLPADDING="4"
-CLASS="CALSTABLE"
-><TBODY
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><SPAN
-CLASS="emphasis"
-><I
-CLASS="EMPHASIS"
->Returns</I
-></SPAN
-> :</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->&nbsp;</TD
-></TR
-></TBODY
-></TABLE
-><P
-></P
-></DIV
-></DIV
-><HR><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN461"
-></A
-><H3
-><A
-NAME="GNOME-FONT-DIALOG-NEW"
-></A
->gnome_font_dialog_new ()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
-><PRE
-CLASS="PROGRAMLISTING"
->GtkWidget*  gnome_font_dialog_new           (const gchar *title);</PRE
-></TD
-></TR
-></TABLE
-><P
-></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN468"
-></A
-><P
-></P
-><TABLE
-BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
-CELLSPACING="0"
-CELLPADDING="4"
-CLASS="CALSTABLE"
-><TBODY
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->title</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->&nbsp;</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><SPAN
-CLASS="emphasis"
-><I
-CLASS="EMPHASIS"
->Returns</I
-></SPAN
-> :</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->&nbsp;</TD
-></TR
-></TBODY
-></TABLE
-><P
-></P
-></DIV
-></DIV
-><HR><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN481"
-></A
-><H3
-><A
-NAME="GNOME-FONT-DIALOG-GET-FONTSEL"
-></A
->gnome_font_dialog_get_fontsel ()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
-><PRE
-CLASS="PROGRAMLISTING"
->GtkWidget*  gnome_font_dialog_get_fontsel   (GnomeFontDialog *gfsd);</PRE
-></TD
-></TR
-></TABLE
-><P
-></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN488"
-></A
-><P
-></P
-><TABLE
-BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
-CELLSPACING="0"
-CELLPADDING="4"
-CLASS="CALSTABLE"
-><TBODY
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->gfsd</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->&nbsp;</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><SPAN
-CLASS="emphasis"
-><I
-CLASS="EMPHASIS"
->Returns</I
-></SPAN
-> :</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->&nbsp;</TD
-></TR
-></TBODY
-></TABLE
-><P
-></P
-></DIV
-></DIV
-><HR><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN501"
-></A
-><H3
-><A
-NAME="GNOME-FONT-DIALOG-GET-PREVIEW"
-></A
->gnome_font_dialog_get_preview ()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
-><PRE
-CLASS="PROGRAMLISTING"
->GtkWidget*  gnome_font_dialog_get_preview   (GnomeFontDialog *gfsd);</PRE
-></TD
-></TR
-></TABLE
-><P
-></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN508"
-></A
-><P
-></P
-><TABLE
-BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
-CELLSPACING="0"
-CELLPADDING="4"
-CLASS="CALSTABLE"
-><TBODY
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->gfsd</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->&nbsp;</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><SPAN
-CLASS="emphasis"
-><I
-CLASS="EMPHASIS"
->Returns</I
-></SPAN
-> :</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->&nbsp;</TD
-></TR
-></TBODY
-></TABLE
-><P
-></P
-></DIV
-></DIV
-></DIV
-><DIV
-CLASS="NAVFOOTER"
-><BR
-CLEAR="all"><BR><TABLE
-WIDTH="100%"
-BORDER="0"
-BGCOLOR="#000000"
-CELLPADDING="1"
-CELLSPACING="0"
-><TR
-><TD
-WIDTH="25%"
-BGCOLOR="#C00000"
-ALIGN="left"
-><A
-HREF="c7.html"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
->&#60;&#60;&#60; Previous Page</B
-></FONT
-></A
-></TD
-><TD
-WIDTH="25%"
-BGCOLOR="#0000C0"
-ALIGN="center"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
-><A
-HREF="index.html"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
->Home</B
-></FONT
-></A
-></B
-></FONT
-></TD
-><TD
-WIDTH="25%"
-BGCOLOR="#00C000"
-ALIGN="center"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
-><A
-HREF="c7.html"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
->Up</B
-></FONT
-></A
-></B
-></FONT
-></TD
-><TD
-WIDTH="25%"
-BGCOLOR="#C00000"
-ALIGN="right"
-><A
-HREF="libgnomeprintui-gnome-print-copies.html"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
->Next Page &#62;&#62;&#62;</B
-></FONT
-></A
-></TD
-></TR
-><TR
-><TD
-COLSPAN="2"
-ALIGN="left"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
->API Reference</B
-></FONT
-></TD
-><TD
-COLSPAN="2"
-ALIGN="right"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
->gnome-print-copies</B
-></FONT
-></TD
-></TR
-></TABLE
-></DIV
-></BODY
-></HTML
->
+<a
+href="../gtk/gtk-Types.html#GtkType"
+>GtkType</a>     <a href="libgnomeprintui-gnome-font-dialog.html#gnome-font-dialog-get-type">gnome_font_dialog_get_type</a>      (void);
+<a
+href="../gtk/GtkWidget.html"
+>GtkWidget</a>*  <a href="libgnomeprintui-gnome-font-dialog.html#gnome-font-dialog-new">gnome_font_dialog_new</a>           (const gchar *title);
+<a
+href="../gtk/GtkWidget.html"
+>GtkWidget</a>*  <a href="libgnomeprintui-gnome-font-dialog.html#gnome-font-dialog-get-fontsel">gnome_font_dialog_get_fontsel</a>   (<a href="libgnomeprintui-gnome-font-dialog.html#GnomeFontDialog">GnomeFontDialog</a> *gfsd);
+<a
+href="../gtk/GtkWidget.html"
+>GtkWidget</a>*  <a href="libgnomeprintui-gnome-font-dialog.html#gnome-font-dialog-get-preview">gnome_font_dialog_get_preview</a>   (<a href="libgnomeprintui-gnome-font-dialog.html#GnomeFontDialog">GnomeFontDialog</a> *gfsd);
+
+</pre></div><div class="refsect1" lang="en"><a name="id2506031"></a><h2>Object Hierarchy</h2><pre class="synopsis">
+
+  GObject
+   +----<a
+href="../gtk/GtkObject.html"
+>GtkObject</a>
+         +----<a
+href="../gtk/GtkWidget.html"
+>GtkWidget</a>
+               +----<a
+href="../gtk/GtkContainer.html"
+>GtkContainer</a>
+                     +----<a
+href="../gtk/GtkBox.html"
+>GtkBox</a>
+                           +----<a
+href="../gtk/GtkHBox.html"
+>GtkHBox</a>
+                                 +----GnomeFontSelection
+</pre><pre class="synopsis">
+
+  GObject
+   +----<a
+href="../gtk/GtkObject.html"
+>GtkObject</a>
+         +----<a
+href="../gtk/GtkWidget.html"
+>GtkWidget</a>
+               +----<a
+href="../gtk/GtkMisc.html"
+>GtkMisc</a>
+                     +----<a
+href="../gtk/GtkImage.html"
+>GtkImage</a>
+                           +----GnomeFontPreview
+</pre><pre class="synopsis">
+
+  GObject
+   +----<a
+href="../gtk/GtkObject.html"
+>GtkObject</a>
+         +----<a
+href="../gtk/GtkWidget.html"
+>GtkWidget</a>
+               +----<a
+href="../gtk/GtkContainer.html"
+>GtkContainer</a>
+                     +----<a
+href="../gtk/GtkBin.html"
+>GtkBin</a>
+                           +----<a
+href="../gtk/GtkWindow.html"
+>GtkWindow</a>
+                                 +----<a
+href="../gtk/GtkDialog.html"
+>GtkDialog</a>
+                                       +----GnomeFontDialog
+</pre></div><div class="refsect1" lang="en"><a name="id2506196"></a><h2>Implemented Interfaces</h2><p>
+GnomeFontSelection implements
+ AtkImplementorIface.</p><p>
+GnomeFontPreview implements
+ AtkImplementorIface.</p><p>
+GnomeFontDialog implements
+ AtkImplementorIface.</p></div><div class="refsect1" lang="en"><a name="id2506236"></a><h2>Signal Prototypes</h2><pre class="synopsis">
+
+"<a href="libgnomeprintui-gnome-font-dialog.html#GnomeFontSelection-font-set">font-set</a>"  void        user_function      (<a href="libgnomeprintui-gnome-font-dialog.html#GnomeFontSelection">GnomeFontSelection</a> *fontselection,
+                                            gpointer arg1,
+                                            gpointer user_data);
+</pre></div><div class="refsect1" lang="en"><a name="id2506289"></a><h2>Description</h2><p>
+
+</p></div><div class="refsect1" lang="en"><a name="id2506299"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2506304"></a><h3><a name="GNOME-TYPE-FONT-SELECTION-CAPS"></a>GNOME_TYPE_FONT_SELECTION</h3><a class="indexterm" name="id2506316"></a><pre class="programlisting">#define GNOME_TYPE_FONT_SELECTION         (gnome_font_selection_get_type ())
+</pre><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2506332"></a><h3><a name="GNOME-FONT-SELECTION-CAPS"></a>GNOME_FONT_SELECTION()</h3><a class="indexterm" name="id2506343"></a><pre class="programlisting">#define GNOME_FONT_SELECTION(o)           (G_TYPE_CHECK_INSTANCE_CAST ((o), GNOME_TYPE_FONT_SELECTION, GnomeFontSelection))
+</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>o</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2506376"></a><h3><a name="GNOME-FONT-SELECTION-CLASS-CAPS"></a>GNOME_FONT_SELECTION_CLASS()</h3><a class="indexterm" name="id2506389"></a><pre class="programlisting">#define GNOME_FONT_SELECTION_CLASS(k)     (G_TYPE_CHECK_CLASS_CAST    ((k), GNOME_TYPE_FONT_SELECTION, GnomeFontSelectionClass))
+</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>k</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2506427"></a><h3><a name="GNOME-IS-FONT-SELECTION-CAPS"></a>GNOME_IS_FONT_SELECTION()</h3><a class="indexterm" name="id2506439"></a><pre class="programlisting">#define GNOME_IS_FONT_SELECTION(o)        (G_TYPE_CHECK_INSTANCE_TYPE ((o), GNOME_TYPE_FONT_SELECTION))
+</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>o</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2506473"></a><h3><a name="GNOME-IS-FONT-SELECTION-CLASS-CAPS"></a>GNOME_IS_FONT_SELECTION_CLASS()</h3><a class="indexterm" name="id2506484"></a><pre class="programlisting">#define GNOME_IS_FONT_SELECTION_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE    ((k), GNOME_TYPE_FONT_SELECTION))
+</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>k</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2506518"></a><h3><a name="GNOME-FONT-SELECTION-GET-CLASS-CAPS"></a>GNOME_FONT_SELECTION_GET_CLASS()</h3><a class="indexterm" name="id2506530"></a><pre class="programlisting">#define GNOME_FONT_SELECTION_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS  ((o), GNOME_TYPE_FONT_SELECTION, GnomeFontSelectionClass))
+</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>o</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2506566"></a><h3><a name="GNOME-TYPE-FONT-DIALOG-CAPS"></a>GNOME_TYPE_FONT_DIALOG</h3><a class="indexterm" name="id2506577"></a><pre class="programlisting">#define GNOME_TYPE_FONT_DIALOG         (gnome_font_dialog_get_type ())
+</pre><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2506593"></a><h3><a name="GNOME-FONT-DIALOG-CAPS"></a>GNOME_FONT_DIALOG()</h3><a class="indexterm" name="id2506604"></a><pre class="programlisting">#define GNOME_FONT_DIALOG(o)           (G_TYPE_CHECK_INSTANCE_CAST ((o), GNOME_TYPE_FONT_DIALOG, GnomeFontDialog))
+</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>o</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2506639"></a><h3><a name="GNOME-FONT-DIALOG-CLASS-CAPS"></a>GNOME_FONT_DIALOG_CLASS()</h3><a class="indexterm" name="id2506650"></a><pre class="programlisting">#define GNOME_FONT_DIALOG_CLASS(k)     (G_TYPE_CHECK_CLASS_CAST    ((k), GNOME_TYPE_FONT_DIALOG, GnomeFontDialogClass))
+</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>k</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2506685"></a><h3><a name="GNOME-IS-FONT-DIALOG-CAPS"></a>GNOME_IS_FONT_DIALOG()</h3><a class="indexterm" name="id2506696"></a><pre class="programlisting">#define GNOME_IS_FONT_DIALOG(o)        (G_TYPE_CHECK_INSTANCE_TYPE ((o), GNOME_TYPE_FONT_DIALOG))
+</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>o</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2506730"></a><h3><a name="GNOME-IS-FONT-DIALOG-CLASS-CAPS"></a>GNOME_IS_FONT_DIALOG_CLASS()</h3><a class="indexterm" name="id2506741"></a><pre class="programlisting">#define GNOME_IS_FONT_DIALOG_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE    ((k), GNOME_TYPE_FONT_DIALOG))
+</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>k</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2506775"></a><h3><a name="GNOME-FONT-DIALOG-GET-CLASS-CAPS"></a>GNOME_FONT_DIALOG_GET_CLASS()</h3><a class="indexterm" name="id2506787"></a><pre class="programlisting">#define GNOME_FONT_DIALOG_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS  ((o), GNOME_TYPE_FONT_DIALOG, GnomeFontDialogClass))
+</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>o</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2506821"></a><h3><a name="GnomeFontSelection-struct"></a>struct GnomeFontSelection</h3><a class="indexterm" name="id2506832"></a><pre class="programlisting">struct GnomeFontSelection;</pre><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2506847"></a><h3><a name="GnomeFontSelectionClass"></a>struct GnomeFontSelectionClass</h3><a class="indexterm" name="id2506859"></a><pre class="programlisting">struct GnomeFontSelectionClass;</pre><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2506874"></a><h3><a name="GnomeFontPreview-struct"></a>struct GnomeFontPreview</h3><a class="indexterm" name="id2506885"></a><pre class="programlisting">struct GnomeFontPreview;</pre><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2506900"></a><h3><a name="GnomeFontPreviewClass"></a>struct GnomeFontPreviewClass</h3><a class="indexterm" name="id2506912"></a><pre class="programlisting">struct GnomeFontPreviewClass;</pre><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2506927"></a><h3><a name="GnomeFontDialog-struct"></a>struct GnomeFontDialog</h3><a class="indexterm" name="id2506939"></a><pre class="programlisting">struct GnomeFontDialog;</pre><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2506954"></a><h3><a name="GnomeFontDialogClass"></a>struct GnomeFontDialogClass</h3><a class="indexterm" name="id2506965"></a><pre class="programlisting">struct GnomeFontDialogClass;</pre><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2506980"></a><h3><a name="gnome-font-selection-new"></a>gnome_font_selection_new ()</h3><a class="indexterm" name="id2506991"></a><pre class="programlisting"><a
+href="../gtk/GtkWidget.html"
+>GtkWidget</a>*  gnome_font_selection_new        (void);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2507026"></a><h3><a name="gnome-font-selection-get-face"></a>gnome_font_selection_get_face ()</h3><a class="indexterm" name="id2507038"></a><pre class="programlisting">GnomeFontFace* gnome_font_selection_get_face
+                                            (<a href="libgnomeprintui-gnome-font-dialog.html#GnomeFontSelection">GnomeFontSelection</a> *fontsel);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>fontsel</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2507095"></a><h3><a name="gnome-font-selection-get-size"></a>gnome_font_selection_get_size ()</h3><a class="indexterm" name="id2507107"></a><pre class="programlisting">gdouble     gnome_font_selection_get_size   (<a href="libgnomeprintui-gnome-font-dialog.html#GnomeFontSelection">GnomeFontSelection</a> *fontsel);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>fontsel</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2507163"></a><h3><a name="gnome-font-selection-get-font"></a>gnome_font_selection_get_font ()</h3><a class="indexterm" name="id2507174"></a><pre class="programlisting">GnomeFont*  gnome_font_selection_get_font   (<a href="libgnomeprintui-gnome-font-dialog.html#GnomeFontSelection">GnomeFontSelection</a> *fontsel);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>fontsel</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2507230"></a><h3><a name="gnome-font-selection-set-font"></a>gnome_font_selection_set_font ()</h3><a class="indexterm" name="id2507242"></a><pre class="programlisting">void        gnome_font_selection_set_font   (<a href="libgnomeprintui-gnome-font-dialog.html#GnomeFontSelection">GnomeFontSelection</a> *fontsel,
+                                             GnomeFont *font);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>fontsel</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>font</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2507309"></a><h3><a name="gnome-font-preview-get-type"></a>gnome_font_preview_get_type ()</h3><a class="indexterm" name="id2507321"></a><pre class="programlisting"><a
+href="../gtk/gtk-Types.html#GtkType"
+>GtkType</a>     gnome_font_preview_get_type     (void);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2507356"></a><h3><a name="gnome-font-preview-new"></a>gnome_font_preview_new ()</h3><a class="indexterm" name="id2507367"></a><pre class="programlisting"><a
+href="../gtk/GtkWidget.html"
+>GtkWidget</a>*  gnome_font_preview_new          (void);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2507403"></a><h3><a name="gnome-font-preview-set-phrase"></a>gnome_font_preview_set_phrase ()</h3><a class="indexterm" name="id2507414"></a><pre class="programlisting">void        gnome_font_preview_set_phrase   (<a href="libgnomeprintui-gnome-font-dialog.html#GnomeFontPreview">GnomeFontPreview</a> *preview,
+                                             const guchar *phrase);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>preview</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>phrase</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2507482"></a><h3><a name="gnome-font-preview-set-font"></a>gnome_font_preview_set_font ()</h3><a class="indexterm" name="id2507494"></a><pre class="programlisting">void        gnome_font_preview_set_font     (<a href="libgnomeprintui-gnome-font-dialog.html#GnomeFontPreview">GnomeFontPreview</a> *preview,
+                                             GnomeFont *font);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>preview</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>font</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2507561"></a><h3><a name="gnome-font-preview-set-color"></a>gnome_font_preview_set_color ()</h3><a class="indexterm" name="id2507573"></a><pre class="programlisting">void        gnome_font_preview_set_color    (<a href="libgnomeprintui-gnome-font-dialog.html#GnomeFontPreview">GnomeFontPreview</a> *preview,
+                                             guint32 color);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>preview</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>color</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2507640"></a><h3><a name="gnome-font-dialog-get-type"></a>gnome_font_dialog_get_type ()</h3><a class="indexterm" name="id2507652"></a><pre class="programlisting"><a
+href="../gtk/gtk-Types.html#GtkType"
+>GtkType</a>     gnome_font_dialog_get_type      (void);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2507687"></a><h3><a name="gnome-font-dialog-new"></a>gnome_font_dialog_new ()</h3><a class="indexterm" name="id2507699"></a><pre class="programlisting"><a
+href="../gtk/GtkWidget.html"
+>GtkWidget</a>*  gnome_font_dialog_new           (const gchar *title);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>title</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2507755"></a><h3><a name="gnome-font-dialog-get-fontsel"></a>gnome_font_dialog_get_fontsel ()</h3><a class="indexterm" name="id2507766"></a><pre class="programlisting"><a
+href="../gtk/GtkWidget.html"
+>GtkWidget</a>*  gnome_font_dialog_get_fontsel   (<a href="libgnomeprintui-gnome-font-dialog.html#GnomeFontDialog">GnomeFontDialog</a> *gfsd);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>gfsd</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2507823"></a><h3><a name="gnome-font-dialog-get-preview"></a>gnome_font_dialog_get_preview ()</h3><a class="indexterm" name="id2507834"></a><pre class="programlisting"><a
+href="../gtk/GtkWidget.html"
+>GtkWidget</a>*  gnome_font_dialog_get_preview   (<a href="libgnomeprintui-gnome-font-dialog.html#GnomeFontDialog">GnomeFontDialog</a> *gfsd);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>gfsd</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div></div><div class="refsect1" lang="en"><a name="id2507892"></a><h2>Signals</h2><div class="refsect2" lang="en"><a name="id2507897"></a><h3><a name="GnomeFontSelection-font-set"></a>The "font-set" signal</h3><pre class="programlisting">void        user_function                  (<a href="libgnomeprintui-gnome-font-dialog.html#GnomeFontSelection">GnomeFontSelection</a> *fontselection,
+                                            gpointer arg1,
+                                            gpointer user_data);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>fontselection</tt></i> :</span></td><td>the object which received the signal.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>arg1</tt></i> :</span></td><td>
+
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>user_data</tt></i> :</span></td><td>user data set when the signal handler was connected.</td></tr></tbody></table></div></div></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="ch02.html"><b>&lt;&lt; API Reference</b></a></td><td align="right"><a accesskey="n" href="libgnomeprintui-gnome-print-copies.html"><b>gnome-print-copies &gt;&gt;</b></a></td></tr></table></body></html>

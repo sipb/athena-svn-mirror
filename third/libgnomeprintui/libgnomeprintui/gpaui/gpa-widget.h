@@ -47,7 +47,7 @@ typedef struct _GPAWidgetClass GPAWidgetClass;
 
 struct _GPAWidget {
 	GtkBin bin;
-	/* FIXME: Should be a GPANode * of type GPARoot (Chema) */
+	/* FIXME: Should be a GPANode * of type GPAConfig (Chema) */
 	GnomePrintConfig *config;
 };
 
@@ -56,9 +56,9 @@ struct _GPAWidgetClass {
 	gint (* construct) (GPAWidget *widget);
 };
 
-GtkType     gpa_widget_get_type (void);
+GType       gpa_widget_get_type (void);
 
-GtkWidget * gpa_widget_new       (GtkType type, GnomePrintConfig *config);
+GtkWidget * gpa_widget_new       (GType type, GnomePrintConfig *config);
 gboolean    gpa_widget_construct (GPAWidget *widget, GnomePrintConfig *config);
 
 G_END_DECLS

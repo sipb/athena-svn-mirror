@@ -219,6 +219,8 @@ gpa_paper_preview_item_finalize (GObject *object)
 	pp->handler_config = 0;
 	pp->gpa_config = NULL;
 
+	pp->config = gnome_print_config_unref (pp->config);
+
 	G_OBJECT_CLASS (item_parent_class)->finalize (object);
 }
 

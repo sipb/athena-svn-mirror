@@ -1,6 +1,845 @@
-2003-02-02  Chema Celorio  <chema@celorio.com>
+2004-09-13  Jody Goldberg <jody@gnome.org>
 
-	* configure.in: Version 2.2.1.1
+	* Release 2.8.0
+
+2004-09-10  Jody Goldberg <jody@gnome.org>
+
+	* configure.in :  post release bump
+
+2004-09-10  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.7.90
+
+2004-09-01  Colin Walters  <walters@redhat.com>
+
+	* libgnomeprintui/gpaui/gpa-printer-selector.c (gpa_printer_selector_printer_added_cb)
+	(gpa_printer_selector_printer_removed_cb): Add
+	GDK_THREADS_ENTER/GDK_THREADS_LEAVE pairs.
+
+2004-08-28  Akagic Amila  <bono@linux.org.ba>
+
+        * configure.in: Added 'bs' to ALL_LINGUAS.
+
+2004-08-24  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* configure.in: Add «nb» to ALL_LINGUAS.
+
+2004-07-23  Jody Goldberg <jody@gnome.org>
+
+	* libgnomeprintui/gpaui/gpa-printer-selector.c
+	(gpa_printer_selector_construct) : handle case of no default_printer
+
+2004-07-31  Tomasz KÅ‚oczko <kloczek@pld.org.pl>
+
+	* doc/libgnomeprintui-docs.sgml: acording http://gnome.org/start/2.6/notes/rninstallation.html
+	  switch generated documentation from sgml docbook 3.0 to xml docbook 4.1.2.
+	* doc/Makefile.am: use default MKDB_OPTIONS (from gtk-doc.make).
+
+2004-07-30  Jody Goldberg <jody@gnome.org>
+
+	* configure.in :  post release bump
+
+2004-07-30  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.7.1
+
+2004-07-30  Jody Goldberg <jody@gnome.org>
+
+	* configure.in :  bump the libgnomeprint req
+
+2004-07-20  Colin Walters  <walters@redhat.com>
+
+	* libgnomeprintui/gpaui/gpa-printer-selector.h: Remove updating
+	field.  Switch to using treeview instead of combo.
+	(gpa_printer_selector_printer_state_changed): New method used
+	to notify on state changes.
+
+	* libgnomeprintui/gpaui/gpa-printer-selector.c
+	(gpa_printer_selector_init): Rewrite more or less from scratch to
+	use a treeview widget instead of a combo box, and to use the new
+	printer state nodes to get dynamic updates of printer status.
+	(node_to_iter): Convert a printer into a GtkTreeIter.
+	(printer_has_queue): Discover whether or not a printer has a
+	queue.
+	(printer_sort_func): Sort printers based on queue ownership and
+	name.
+	(gpa_printer_selector_printer_state_changed): Handle printer state
+	changes.
+	(selection_changed_cb): Synchronize selection into GPANode
+	structure.
+	(get_printer_icon): Reduce the size of loaded icons to 18 pixels.
+	Comment out warning.
+	(gpa_printer_selector_item_activate_cb): Delete.
+	(set_printer_icon): New function to set the pixbuf property.
+	(set_printer_name): New function to set printer name.
+	(set_printer_state): New function to set printer state.
+	(set_printer_jobs): New function to set printer job count.
+	(set_printer_location): New function to set printer location.
+	(gpa_printer_selector_config_modified_cb): Delete.
+	(gpa_printer_selector_printer_added_cb): Handle printer addition.
+	(gpa_printer_selector_printer_removed_cb): Handle printer removal.
+	(gpa_printer_selector_construct): Connect to new child-added and
+	child-removed signals for printer addition/removal.  Set up new
+	treeview.
+
+	* libgnomeprintui/gnome-printer-selector.c: Inclue more bits from
+	libgnomeprint.
+	(start_polling): New function to start polling for each printer.
+	(stop_polling): The reverse.
+	(gnome_printer_selector_construct): Connect to hide/show
+	callbacks so that we start polling when the dialog is shown,
+	and stop as soon as it's hidden.
+	(gnome_printer_selector_construct): Remove location field and
+	callbacks for printer config modification - we handle that
+	in the GPAPrinterSelector.
+
+2004-07-20  Colin Walters  <walters@redhat.com>
+
+	* libgnomeprintui/gnome-print-job-preview.c
+	(create_preview_canvas): Remove some unused variables.
+
+2004-07-01  Jody Goldberg <jody@gnome.org>
+
+	* libgnomeprintui/gnome-printer-selector.c : some minor ui cleanup.
+	* libgnomeprintui/gpaui/gpa-printer-selector.c : Use a combo for the
+	  printers and drop unused fields.
+
+2004-06-29  Jody Goldberg <jody@gnome.org>
+
+	* configure.in : post release bump
+
+2004-06-29  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.7.0
+
+2004-06-03  Pawan Chitrakar  <pawan@nplinux.org>
+	
+	* configure.in: Added "ne" Nepali to ALL_LINGUAS
+
+2004-05-13  Andreas J. Guelzow <aguelzow@taliesin.ca>
+
+	http://bugzilla.gnome.org/show_bug.cgi?id=142441
+	* libgnomeprintui/gnome-print-unit-selector.c: fix AIX compiler
+	  issue
+	
+2004-04-21  Jody Goldberg <jody@gnome.org>
+
+	* configure.in : post BRANCH bump
+
+2004-04-21  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.6.1
+
+2004-04-10  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* configure.in: Added "gu" (Gujarati) to ALL_LINGUAS.
+
+2004-03-31  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "af" to ALL_LINGUAS.
+
+2004-03-22  Padraig O'Briain <padraig.obriain@sun.com>
+
+	* libgnomeprintui/gnome-print-job-preview.c (create_preview_canvas):
+	Omit creation of unnecessary relation. Fixes bug #136627.
+
+2004-03-22  Jody Goldberg <jody@gnome.org>
+
+	* configure.in : post release bump
+
+2004-03-22  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.6.0
+
+2004-03-19  Jody Goldberg <jody@gnome.org>
+
+	* libgnomeprintui/gnome-print-config-dialog.c (duplex_toggled) : Use
+	  the duplex and tumble icons in the icon theme.  Be smart enough not
+	  to set gconf on startup.
+	(tumble_toggled) : ditto.
+	(gnome_print_config_dialog_construct) : no need to preset the images.
+	  The handlers will take care of it.
+
+2004-03-21  Gareth Owen  <gowen72@yahoo.com>
+
+	* configure.in: Added en_GB to ALL_LINGUAS
+
+2004-03-11  Jody Goldberg <jody@gnome.org>
+
+	* configure.in : post release bump
+
+2004-03-11  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.5.4
+
+2004-03-04  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* configure.in: Added "pa" (Punjabi) to ALL_LINGUAS.
+
+2004-03-03  Jody Goldberg <jody@gnome.org>
+
+	Based on patch for libgnomeprint from Sun
+	http://bugzilla.gnome.org/show_bug.cgi?id=136106
+	* libgnomeprintui/libgnomeprintui-uninstalled-2.2.pc.in : new
+	* libgnomeprintui/Makefile.am : dist it
+	* configure.in : handle it
+
+	* libgnomeprintui/gnome-print-job-preview.c (create_toplevel) : add an icon
+	(gpmp_multi_cmd) : Disable unimplemented feature in the ui for now
+
+2004-02-24  Paisa Seeluangsawat  <paisa@users.sf.net>
+
+	* configure.in: Added Thai (th) to ALL_LINGUAS.
+
+2004-02-24  Jody Goldberg <jody@gnome.org>
+
+	* configure.in : post release bump
+
+2004-02-24  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.5.3
+
+2004-02-22  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "en_CA" to ALL_LINGUAS.
+
+2004-02-10  Padraig O'Briain <padraig.obriain@sun.com>
+
+	* libgnomeprintui/gnome-print-copies.c (gnome_print_selector_init):
+	Omit setting of labelled-by relation on copies.
+
+	* libgnomeprintui/gnome-print-dialog.c 
+	(gnome_print_dialog_construct_range_page): Omit setting of labelled-by
+	relations.
+
+	* libgnomeprintui/gnome-print-paper-selector.c 
+	(gps_set_labelled_by_relation): Remove this function as it is no
+	longer required.
+	(gnome_paper_selector_construct): Call gtk_widget_set_mnemonic_widget
+	for GtkOptionMenu instead of GpaOptionMenu.
+	Omit calls to gps_set_labelled_by_relation.
+
+	* libgnomeprintui/gnome-printer-selector.c 
+	(gpw_create_label_with_mnemonic): Omit add_relation argument.
+	(gnome_printer_selector_construct): Omit setting label-for and 
+	labelled-by relations.
+
+	This fixes bug #133623.
+
+2004-02-08  Andreas J. Guelzow <aguelzow@taliesin.ca>
+
+	* libgnomeprintui/gpaui/gpa-printer-selector.c 
+	(gpa_printer_selector_rebuild_menu): avoid crash
+	* libgnomeprintui/gpaui/gpa-settings-selector.c
+	(gpa_settings_selector_construct): avoid crash
+	* libgnomeprintui/gpaui/gpa-transport-selector.c
+	(gpa_transport_selector_file_button_clicked_cb): enable code
+	  that was previously disabled due to a gtk bug
+
+2004-02-04  Andreas J. Guelzow <aguelzow@taliesin.ca>
+
+	* libgnomeprintui/gpaui/gpa-transport-selector.c 
+	(gpa_transport_selector_file_button_clicked_cb): set folder and 
+	  pre-enter basename only
+
+2004-02-04  Andreas J. Guelzow <aguelzow@taliesin.ca>
+	for Muktha <muktha.narayan@wipro.com>
+
+	http://bugzilla.gnome.org/show_bug.cgi?id=133195
+	* libgnomeprintui/gnome-printer-selector.c
+	(gnome_printer_selector_construct): set the atk relation for the
+	correct widget.
+
+2004-02-03  Jody Goldberg <jody@gnome.org>
+
+	* configure.in : post release bump
+
+2004-02-03  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.5.2
+
+2004-02-02 Tomasz K³oczko <kloczek@pld.org.pl>
+
+	* Makefile.am: gtk-doc.make is included in doc/Makefile.am so move
+	  this file from CLEANFILES to EXTRA_DIST for generate correct dist
+	  tar ball on "make dist".
+	* Makefile.am: Added "DISTCHECK_CONFIGURE_FLAGS = --enable-gtk-doc"
+	  for force correct pass build documentation during "make distcheck"
+	  (like in many other GNOME projects).
+	* configure.in: Removed old on place defined gtk-doc suport and added use
+	  GTK_DOC_CHECK([1.0]).
+
+2004-01-31  Andreas J. Guelzow <aguelzow@taliesin.ca>
+
+	* libgnomeprintui/gnome-print-dialog.c 
+	(gnome_print_dialog_response_cb): new
+	(gnome_print_dialog_construct): hook up gnome_print_dialog_response_cb)
+	(gnome_print_dialog_run): move consistency check into 
+	  gnome_print_dialog_response_cb
+	* libgnomeprintui/gnome-print-dialog.h: some changes in comments.
+	* libgnomeprintui/gpaui/gpa-transport-selector.c
+	(gpa_transport_selector_file_selector_destroyed_cb): deleted
+	(gpa_transport_selector_file_selected_cb): check for 
+	  GTK_RESPONSE_DELETE_EVENT
+	(gpa_transport_selector_file_button_clicked_cb): no need to hook up 
+	  gpa_transport_selector_file_selector_destroyed_cb
+
+2004-01-31  Andreas J. Guelzow <aguelzow@taliesin.ca>
+
+	* libgnomeprintui/gpaui/gpa-transport-selector.h: make file_selector
+	  a GtkFileChooser
+	* libgnomeprintui/gpaui/gpa-transport-selector.c
+	(gpa_transport_selector_finalize): ts->file_selector is now a 
+	  GtkFileChooser
+	(gpa_transport_selector_file_selected_cb): change into a dialog
+	  response callback
+	(gpa_transport_selector_file_button_clicked_cb): use a 
+	  GtkFileChooser rather than a GtkFileSelection
+	(gpa_transport_selector_check_consistency_real): remove a warning,
+	  dialog is a GtkWidget not a GtkDialog
+
+Wed Jan 28 01:20:12 2004  Matthias Clasen  <maclas@gmx.de>
+
+	* doc/Makefile (sgml-build.stamp): Use --output-format=sgml,
+	not xml.
+
+2004-01-26  Andreas J. Guelzow <aguelzow@taliesin.ca>
+
+	* libgnomeprintui/gnome-print-dialog.c (gnome_print_dialog_run):
+	  Don't destroy the dialog, virtually any caller will need to access
+	  the cutom and range widgets added to it. Also make sure that the 
+	  transport file name is acceptable.
+	* libgnomeprintui/gnome-print-dialog.h (gnome_print_dialog_run): since
+	  people should be using this, move it into stable API.
+	* libgnomeprintui/gnome-printer-selector.c 
+	(gnome_printer_selector_check_consistency): new
+	* libgnomeprintui/gnome-printer-selector.h
+	(gnome_printer_selector_check_consistency): new
+	* libgnomeprintui/gpaui/gpa-transport-selector.c
+	(gpa_transport_selector_check_consistency_real): new
+	(gpa_transport_selector_class_init): initialize new virtual
+	(gpa_transport_selector_init): initalize new field
+	(gpa_transport_selector_file_selected_cb): remember that the user 
+	  indicated to overwrite the existing file.
+	(gpa_transport_selector_check_consistency): new
+	* libgnomeprintui/gpaui/gpa-transport-selector.h
+	(gpa_transport_selector_check_consistency): new
+	(_GPATransportSelectorClass): new virtual check_consistency
+	(_GPATransportSelector): new file_name_force field
+	
+2004-01-24  Andreas J. Guelzow <aguelzow@taliesin.ca>
+	for Albert Chin-A-Young
+
+	* libgnomeprintui/gpaui/Makefile.am:
+	  Don't override CPPFLAGS. Use AM_CPPFLAGS instead.
+        
+	* libgnomeprintui/Makefile.am: Don't override LDFLAGS. 
+	  Moved to libgnomeprintui_2_2_la_LDFLAGS.
+        
+	* configure.in: CFLAGS/CPPFLAGS/LDFLAGS automatically substituted.
+
+2004-01-23   Andreas J. Guelzow <aguelzow@taliesin.ca>
+	for Muktha <muktha.narayan@wipro.com>
+
+	http://bugzilla.gnome.org/show_bug.cgi?id=96802
+	* libgnomeprintui/gnome-print-preview-private.h
+	(gnome_print_preview_use_theme)
+	* libgnomeprintui/gnome-print-preview.c 
+	(gpp_stroke): theme the preview contents only when the 
+	  theme checkbox is checked.
+	(gpp_fill): ditto.
+	(gpp_glyphlist): ditto.
+	(gnome_print_preview_use_theme): new.
+	* libgnomeprintui/gnome-print-job-preview.c:
+	(canvas_style_changed_cb): theme the preview contents only when the
+	  theme check box is checked.
+	(check_button_toggled_cb): new.
+	(create_preview_canvas): add check button in the preview page.
+
+2004-01-20  Andreas J. Guelzow <aguelzow@taliesin.ca>
+
+	* libgnomeprintui/gnome-print-dialog.c (gpd_create_job_page): fix 
+	  capitalization
+	* libgnomeprintui/gnome-print-paper-selector.c 
+	(gnome_paper_selector_construct): fix capitalization
+
+2004-01-17  Andreas J. Guelzow <aguelzow@taliesin.ca>
+	for Albert Chin-A-Young
+
+	* libgnomeprintui/gnome-print-widget.h: IBM C compiler does not like a 
+	  comma after the last enum constant.
+
+2004-01-13  Andreas J. Guelzow <aguelzow@taliesin.ca>
+
+	http://bugzilla.gnome.org/show_bug.cgi?id=131311
+	* libgnomeprintui/gnome-print-copies.c: remove surrounding 
+	  markup from inside translatable text
+	* libgnomeprintui/gnome-print-dialog.c: ditto
+	* libgnomeprintui/gnome-print-paper-selector.c: ditto
+	* libgnomeprintui/gnome-print-job-preview.c: ditto
+	* libgnomeprintui/gnome-printer-selector.c: ditto
+
+2004-01-12  Jody Goldberg <jody@gnome.org>
+
+	* configure.in : post release version bump
+
+2004-01-12  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.5.1
+
+2004-01-09  Lutz Mueller <lutz@users.sourceforge.net>
+
+	* libgnomeprintui/gpaui/gpa-spinbutton.[c,h]: New
+	* libgnomeprintui/gnome-print-paper-selector.c: Remove lots of
+	  unused variables and type definitions
+	(gnome_paper_selector_update_spin_limits),
+	(gnome_paper_selector_update_spin_units): New
+	(gps_psize_value_changed), 
+	(gps_m_size_value_changed),
+	(gnome_paper_selector_unit_changed_cb),
+	(gnome_paper_unit_selector_request_update_cb),
+	(gnome_paper_selector_paper_size_modified_cb): Use new functions
+	(gnome_paper_selector_construct): Use the new GPASpinbutton.
+	  
+2004-01-04  Andreas J. Guelzow <aguelzow@taliesin.ca>
+	for Paolo Borelli <pborelli@katamail.com>
+
+	http://bugzilla.gnome.org/show_bug.cgi?id=130521
+	* libgnomeprintui/gnome-print-dialog.c (gnome_print_dialog_construct):
+	  remove separator
+
+2003-12-17  Andreas J. Guelzow <aguelzow@taliesin.ca>
+
+	http://bugzilla.gnome.org/show_bug.cgi?id=129340
+	* gnome-print-job-preview.c (goto_page): don't print
+	  CRITICAL just because we have no pages.
+
+2003-12-09  Andreas J. Guelzow <aguelzow@taliesin.ca>
+
+	http://bugzilla.gnome.org/show_bug.cgi?id=128894
+	* configure.in: bump gtk requirement to 2.3.1
+
+2003-12-09  Andreas J. Guelzow <aguelzow@taliesin.ca>
+
+	http://bugzilla.gnome.org/show_bug.cgi?id=128903
+	* libgnomeprintui/gnome-print-dialog.h (GNOME_IS_PRINT_DIALOG_CLASS):
+	  fix typo
+
+2003-12-09  Andreas J. Guelzow <aguelzow@taliesin.ca>
+
+	* libgnomeprintui/gnome-print-config-dialog.c
+	(gnome_print_config_dialog_construct): add "Printing Time" menu
+	
+2003-12-09  Thomas Vander Stichele  <thomas at apestaart dot org>
+
+	* doc/Makefile.am:
+
+2003-12-08  Andreas J. Guelzow <aguelzow@taliesin.ca>
+
+	http://bugzilla.gnome.org/show_bug.cgi?id=128614
+	* libgnomeprintui/gnome-print-config-dialog.c 
+	(gnome_print_config_dialog_construct): add column spacing
+	* libgnomeprintui/gnome-print-copies.c 
+	(gnome_print_copies_selector_init): make headers bold and skip visible
+	  frame
+	* libgnomeprintui/gnome-print-dialog.c (gpd_create_job_page): ditto
+	* libgnomeprintui/gnome-print-paper-selector.c
+	(gnome_paper_selector_construct): ditto
+
+2003-12-07  Andreas J. Guelzow <aguelzow@taliesin.ca>
+
+	* libgnomeprintui/gnome-print-config-dialog-private.h: new
+	* libgnomeprintui/gnome-print-config-dialog.c: new
+	* libgnomeprintui/gnome-print-config-dialog.h: new
+	* libgnomeprintui/Makefile.am: add above new files
+	* po/POTFILES.in: ditto
+	* libgnomeprintui/gnome-print-copies.c: move the recently added
+	  duplex and tumble checkboxes into gnome-print-config-dialog
+	* libgnomeprintui/gnome-print-copies.h: ditto
+	* libgnomeprintui/gnome-print-dialog.c (gpd_duplex_set): deleted
+	(gpd_tumble_set): deleted
+	(gnome_print_dialog_set_copies): drop duplex and tumble
+	(gnome_print_dialog_get_copies): ditto
+	* libgnomeprintui/gnome-print-dialog.h 
+	(gnome_print_dialog_set_copies): drop duplex and tumble
+	(gnome_print_dialog_get_copies): ditto
+	* libgnomeprintui/gnome-printer-selector.c (gpw_configure_clicked):
+	  implement
+	(gnome_printer_selector_construct): make frame HIG compatible
+	* libgnomeprintui/gpaui/gpa-transport-selector.c 
+	(gpa_transport_selector_rebuild_menu): initialize def
+	
+2003-12-05  Andreas J. Guelzow <aguelzow@taliesin.ca>
+	for Peter Colijn <pcolijn@nit.ca>
+
+	* libgnomeprintui/gnome-print-paper-selector.c (_GnomePaperSelector):
+	  add fields
+	(gnome_paper_selector_construct): create source selector
+
+2003-12-04  Andreas J. Guelzow <aguelzow@taliesin.ca>
+
+	* libgnomeprintui/gnome-print-dialog.c (gnome_print_dialog_set_copies):
+	  fix typo
+
+2003-11-30  Andreas J. Guelzow <aguelzow@taliesin.ca>
+
+	* libgnomeprintui/gnome-print-copies.c: new signals COLLATE_SET,
+	  DUPLEX_SET, TUMBLE_SET
+	(GnomePrintCopiesSelector): new fields
+	(copies_set): drop collate argument
+	(collate_toggled): ignore copies
+	(duplex_toggled): new
+	(tumble_toggled): new
+	(copies_changed): ignore collate
+	(gnome_print_copies_selector_init): create duplex and tumble 
+	  checkboxes 
+	(gnome_print_copies_selector_get_duplex): new
+	(gnome_print_copies_selector_get_tumble): new
+	(gnome_print_copies_selector_set_copies): handle duplex and tumble
+	* libgnomeprintui/gnome-print-copies.h 
+	(gnome_print_copies_selector_get_duplex): new
+	(gnome_print_copies_selector_get_tumble): new
+	(gnome_print_copies_selector_set_copies): add arguments
+	* libgnomeprintui/gnome-print-dialog.c (gnome_print_dialog_get_copies):
+	  handle duplex and tumble
+	(gnome_print_dialog_set_copies): ditto
+	(gpd_copies_set): do copies only, do not handle collate
+	(gpd_collate_set): new
+	(gpd_duplex_set): new
+	(gpd_tumble_set): new
+	(gpd_create_job_page): connect new signal handlers
+	(gnome_print_dialog_construct): handle duplex and tumble
+	(gnome_print_dialog_get_copies): ditto
+	* libgnomeprintui/gnome-print-dialog.h (gnome_print_dialog_get_copies):
+	  add arguments
+	(gnome_print_dialog_set_copies): ditto
+	
+2003-11-30  Andreas J. Guelzow <aguelzow@taliesin.ca>
+            for Lutz Mueller <lutz@users.sourceforge.net>
+
+	* libgnomeprintui/gnome-print-job-preview.c (_GnomePrintJobPreview):
+	  add new fields
+	(render_page): delete (replaced by gnome_print_job_preview_update)
+	(goto_page): handle multiple pages shown simultaneously
+	(gpmp_zoom): adjust for multiple displayed pages
+	(preview_next_page_cmd): jump to the next page of pages
+	(preview_prev_page_cmd): jump to the previous page of pages
+	(preview_zoom_fit_cmd): handle display of multiple pages
+	(canvas_style_changed_cb): handle display of multiple pages
+	(create_preview_canvas): we can't create the background yet 
+	  (we may need more than 1 page)
+	(on_1x1_clicked): new
+	(on_2x1_clicked): new
+	(on_1x2_clicked): new
+	(on_2x2_clicked): new
+	(on_other_clicked): new
+	(gpmp_multi_cmd): new
+	(create_toplevel): add new toolbar button (and some format changes)
+	(gnome_print_job_preview_destroy): free page_array rather than preview
+	(update_func): new
+	(gnome_print_job_preview_set_nx_and_ny): new
+	(gnome_print_job_preview_update): new
+	(gnome_print_job_preview_get_property): new
+	(gnome_print_job_preview_set_property): new
+	(gnome_print_job_preview_class_init): install new properties
+	(gnome_print_job_preview_init): initialize nx/ny
+	* libgnomeprintui/gnome-printui-marshal.list: add VOID:UINT,UINT
+	* tests/test-preview.c (my_draw): add page number
+	(my_print): print 6 pages
+
+2003-11-26  Jody Goldberg <jody@gnome.org>
+
+	* configure.in : post release version bump
+
+2003-11-26  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.5.0.1
+
+2003-11-23  Andreas J. Guelzow <aguelzow@taliesin.ca>
+
+	* libgnomeprintui/gnome-printer-selector.c
+	(gnome_printer_selector_config_modified_cb): new
+	(gnome_printer_selector_construct): hook up callback and align
+	  type, state and comment fields
+	(gnome_printer_selector_finalize): unhook callback
+	* libgnomeprintui/gnome-printer-selector.h (handler_config): new field
+
+2003-11-22  Andreas J. Guelzow <aguelzow@taliesin.ca>
+
+	* libgnomeprintui/gpaui/gpa-transport-selector.c 
+	(gpa_transport_selector_file_selected_cb): store the filename also
+	  in Settings.Output.Job.FileName. (We should not need to store it in 
+	  3 places.)
+
+2003-11-22  Andreas J. Guelzow <aguelzow@taliesin.ca>
+
+	http://bugzilla.gnome.org/show_bug.cgi?id=124307
+	* libgnomeprintui/gnome-print-job-preview.c (preview_canvas_key):
+	  ctl-q and ctl-w should close the window too.
+
+2003-11-22  Andreas J. Guelzow <aguelzow@taliesin.ca>
+
+	* libgnomeprintui/gnome-print-job-preview.c (create_toplevel):
+	  adjust minimum window size.
+
+2003-11-19  Andreas J. Guelzow <aguelzow@taliesin.ca>
+
+	* libgnomeprintui/gnome-printer-selector.c: replace entry_atko
+	by button_atko throughout
+	* libgnomeprintui/gpaui/gpa-transport-selector.c 
+	(gpa_transport_selector_file_entry_changed_cb): deleted
+	(gpa_transport_selector_file_button_clicked_cb): new
+	(gpa_transport_selector_init): initialize new fields
+	(gpa_transport_selector_finalize): clear new fields
+	(gpa_transport_selector_file_selected_cb): new
+	(gpa_transport_selector_update_widgets): handle new widgets
+	* libgnomeprintui/gpaui/gpa-transport-selector.h: new fields for
+	  tansport selector
+
+2003-11-18  Andreas J. Guelzow <aguelzow@taliesin.ca>
+
+	* gnome_print_dialog_construct: load # of copies and collation from
+	  config
+
+2003-11-17  Jody Goldberg <jody@gnome.org>
+
+	* libgnomeprintui/gnome-font-dialog.c (gnome_font_selection_init) :
+	  fix to work with gtk HEAD.
+	* libgnomeprintui/gnome-print-unit-selector.c
+	(gnome_print_unit_selector_init) : ditto.
+
+2003-11-16  Andreas J. Guelzow <aguelzow@taliesin.ca>
+
+	* libgnomeprintui/gnome-print-paper-selector.c 
+	(gps_m_size_value_changed): use correct type
+	* libgnomeprintui/gpaui/gpa-paper-preview-item.h
+	(gpa_paper_preview_item_set_logical_margins): declare
+	* libgnomeprintui/gpaui/gpa-transport-selector.c 
+	(gpa_transport_selector_rebuild_menu): handle NULL node
+
+2003-11-12  Jody Goldberg <jody@gnome.org>
+
+	* configure.in : post release bump
+
+2003-11-12  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.5.0
+
+2003-11-03  Morten Welinder  <terra@gnome.org>
+
+	* libgnomeprintui/gpaui/gpa-paper-preview-item.c
+	(gpa_paper_preview_item_finalize): Leak fix.
+
+	* libgnomeprintui/gpaui/gpa-widget.c (gpa_widget_finalize):
+	Resurrect.
+
+2003-10-31  Morten Welinder  <terra@gnome.org>
+
+	* libgnomeprintui/gnome-printer-selector.c
+	(gnome_printer_selector_construct): undo 2003-05-25 change.  The
+	atk people say this isn't right and are hunting the true leak
+	causes.
+
+2003-10-29  Andreas J. Guelzow <aguelzow@taliesin.ca>
+
+	http://bugzilla.gnome.org/show_bug.cgi?id=115756
+	* libgnomeprintui/gnome-print-paper-selector.c 
+	(gps_m_size_value_changed): change the paper preview
+	  to show the new margin.
+
+2003-10-28  Andreas J. Guelzow <aguelzow@taliesin.ca>
+
+	http://bugzilla.gnome.org/show_bug.cgi?id=122740
+	* libgnomeprintui/gpaui/gpa-transport-selector.c 
+	(gpa_transport_selector_file_entry_changed_cb): store the file name
+	  where the backend expects it.
+
+2003-10-16  Jody Goldberg <jody@gnome.org>
+
+	* configure.in : explicitly require gtk+ HEAD, and libgnomeprint HEAD
+
+2003-10-07  Pasupathi Duraisamy <pasupathi.duraisam@wipro.com>
+
+	* libgnomeprintui/gnome-print-paper-selector.c:
+	* libgnomeprintui/gnome-print-copies.c:
+	Get only numeric values for spin button.
+	Fixes bug #117193.
+
+2003-09-26  Jody Goldberg <jody@gnome.org>
+
+	* configure.in : 2.5.0 'its a whole new world' is ready for some
+	  development action.
+
+2003-09-26  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.4.0
+
+2003-09-26  Jody Goldberg <jody@gnome.org>
+
+	* configure.in : bump to 2.4.0 to sync with desktop, and prepare to
+	  branch.
+
+2003-09-11  Jeremy Katz  <katzj@redhat.com>
+
+	* libgnomeprintui/gnome-print-dialog.h: remove extra comma to make
+	gcc 3.3 with -pedantic happy.
+
+2003-09-04  Laurent Dhima  <laurenti@alblinux.net>
+
+	* configure.in: Added "sq" to ALL_LINGUAS.
+
+2003-08-12  Jody Goldberg <jody@gnome.org>
+
+	* configure.in : post release version bump.
+
+2003-08-11  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.3.1
+
+2003-08-06  Thomas Vander Stichele  <thomas at apestaart dot org>
+
+	* configure.in:
+          use ACLOCAL_AMFLAGS to make maintainer builds work
+
+2003-07-08  Dafydd Harries  <daf@parnassus.ath.cx>
+
+	* configure.in: Added "cy" to ALL_LINGUAS.
+
+2003-06-22  SamÃºel JÃ³n Gunnarsson  <sammi@techattack.nu>
+
+	* configure.in: Added "is" to ALL_LINGUAS
+
+2003-06-15  Taneem Ahmed  <taneem@eyetap.org>
+
+	* configure.in: Added "bn" to ALL_LINGUAS.
+
+2003-06-11  Kenneth Rohde Christiansen  <kenneth@gnu.org>
+
+	* configure.in: Add "li" to ALL_LINGUAS.
+
+2003-05-25  Morten Welinder  <terra@gnome.org>
+
+	* libgnomeprintui/gnome-printer-selector.c (gpw_create_label):
+	Leak fixes.
+	(gpw_create_label_with_mnemonic): Leak fix.
+
+	* libgnomeprintui/gnome-print-job-preview.c
+	(preview_canvas_button_release): Make this multihead safe.
+
+2003-05-11  Abel Cheung  <maddog@linux.org.hk>
+
+	* configure.in: Added "ga" to ALL_LINGUAS.
+
+2003-05-06  Danilo Å egan  <dsegan@gmx.net>
+
+	* configure.in: Added "sr" and "sr@Latn" to ALL_LINGUAS.
+
+2003-04-25  Masahiro Sakai  <sakai@tom.sfc.keio.ac.jp>
+
+	* configure.in: call AC_LIBTOOL_WIN32_DLL.
+
+	* libgnomeprintui/Makefile.am (libgnomeprintui_2_2_la_LDFLAGS): add
+	-no-undefined.
+
+2003-03-14  Chema Celorio  <chema@celorio.com>
+
+	* autogen.sh (REQUIRED_AUTOMAKE_VERSION): require automake 1.6
+	(filed as bug #109366)
+      
+	* examples/example_10.c (my_tree_cb): gpa_tree_viewer_new takes a GPANode* as
+	an argument, fix.
+
+	* libgnomeprintui/gpaui/gpa-*.ch: s/GtkType/GType/g. Fixes compilation issue on
+	Solaris, spotted by philip.zhao@sun.com. Takes care of #bug 107959.
+
+2003-03-13  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "ml" to ALL_LINGUAS.
+
+2003-03-12  Chema Celorio  <chema@celorio.com>
+
+	* libgnomeprintui/gpaui/gpa-tree-viewer.[ch]: do not include any libgnomeprint
+	headers. Replace the use of GnomePrintConfig with a GPANode *
+
+	* libgnomeprintui/gpaui/gpa-radiobutton.c (gpa_radiobutton_construct): cast
+	option.id to avoid a compile time warning
+
+	* tests/test-dialog.c (test_dialog_tree): update for the new use of gpa-tree-view
+
+	* examples/example_10.c (my_tree_cb): use gpa_root for the tree viewer
+
+2003-03-12  Chema Celorio  <chema@celorio.com>
+	
+	* configure.in: post-release version bump to 2.3.1
+	* depend on libgnomeprint 2.3.1
+
+2003-03-12  Chema Celorio  <chema@celorio.com>
+	
+	* 2.3.0
+
+2003-03-11  Chema Celorio  <chema@celorio.com>
+  
+	* examples/example_10.c (my_draw): print 4 pages rather than just 1
+
+2003-02-28  Chema Celorio  <chema@celorio.com>
+
+	* examples/example_10.c (my_font_dialog_cb): add sample code to test
+	bug #103921 and confirm that it is NOTABUG at least with gtk 2.0
+
+2003-02-27  Chema Celorio  <chema@celorio.com>
+
+	* libgnomeprintui/gpaui/gpa-option-menu.c (gpa_option_menu_rebuild_menu):
+	use the translated user visible option name. Fixes bug #106162
+	* libgnomeprintui/gnome-print-unit-selector.c (gpus_rebuild_menu):
+	use the translated user visible unit names. Fixes bug #106162
+
+2003-02-25  Roozbeh Pournader  <roozbeh@sharif.edu>
+
+	* configure.in: Added "fa" to ALL_LINGUAS.
+
+2003-02-11  Chema Celorio  <chema@celorio.com>
+
+	* libgnomeprintui/gnome-print-widget.c (gnome_print_radiobutton_new):
+	implment.
+
+	* libgnomeprintui/gpaui/gpa-radiobutton.c: implement
+
+2003-02-11  Chema Celorio  <chema@celorio.com>
+	
+	* libgnomeprintui/gpaui/gpa-print-to-file.c: fix variable
+	name so that it compiles again.
+
+	* libgnomeprintui/gnome-print-dialog.c: need to define
+	GNOME_PRINT_UNSTABLE_API to avoid missing prototype warnings
+
+	* libgnomeprintui/gpaui/gpa-print-to-file.[ch]: implement
+
+	* libgnomeprintui/gnome-print-dialog.c (gnome_print_dialog_run):
+	Implement. Right now is just a wrapper.
+
+2003-02-11  Chema Celorio  <chema@celorio.com>
+	
+	* configure.in (GNOMEPRINT_AGE): add libtool versioning
+
+	* libgnomeprintui/Makefile.am: add libtool -version-info
+
+2003-02-10  Chema Celorio  <chema@celorio.com>
+
+	* libgnomeprintui/gpaui/gpa-checkbutton.c: implement
+
+	* libgnomeprintui/gnome-print-widget.[ch]: new file. Configuration
+	widgets that apps can attach to GnomePrintConfig nodes.
+
+	* libgnomeprintui/Makefile.am (libgnomeprintui_2_2_la_SOURCES):
+	add gnome-print-widget.[ch]
+
+2003-02-09  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "kn" to ALL_LINGUAS.
+
+2003-02-06  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "id" to ALL_LINGUAS.
 
 2003-02-02  Chema Celorio  <chema@celorio.com>
 
@@ -23,31 +862,31 @@
 	* libgnomeprintui/gnome-print-copies.c (gnome_print_copies_selector_class_init):
 	use the marshaler that matches the function prototype
 
-2003-01-29  Abel Cheung  <maddog@linux.org.hk>
-
-	* configure.in: Added am ar el fi fr ga gl hr hu it lt nl nn no pt_BR
-	  sk tr uk to ALL_LINGUAS
-
 2003-01-27  Chema Celorio  <chema@celorio.com>
 
-	* libgnomeprintui/gpaui/gpa-transport-selector.c (gpa_transport_selector_construct):
-	fix #104319
+	* libgnomeprintui/gpaui/gpa-transport-selector.c: fix #104319
 
 2003-01-27  Chema Celorio  <chema@celorio.com>
 	
-	* configure.in: post release version bump to 2.2.2
+	* configure.in: bump version to 2.3.0
 
 2003-01-22  Christian Rose  <menthos@menthos.com>
 
 	* configure.in: Added "mn" to ALL_LINGUAS.
 
-2003-01-21  Chema Celorio  <chema@celorio.com>
+2003-01-20  Pablo Saratxaga  <pablo@mandrakesoft.com>
 
-	* configure.in: release 2.2.1 to match libgnomeprint
+	* configure.in: Added Amharic (am), Arabic (ar), Greek (el),
+	Finnish (fi), French (fr), Galician (gl), Croatian (hr),
+	Hungarian (hu), Italian (it), Lithuanian (lt), Dutch (nl)
+	Norwegian (nn and no), Brazilian (pt_BR), Slovak (sk),
+	Turkish (tr) and Ukrainian (uk) to ALL_LINGUAS
 
 2003-01-19  Chema Celorio  <chema@celorio.com>
 
-	* This is the gnome-2-2 branch
+	* configure.in: post release version bump to 2.2.1
+
+	* This is TRUNK, for GNOME 2.2.x releases get the gnome-2-2 branch 
 
 2003-01-19  Chema Celorio  <chema@celorio.com>
 	
@@ -472,7 +1311,7 @@
 
 	* configure.in: (ALL_LINGUAS) Added Bulgarian (bg).
 
-2002-06-15  Carlos Perelló Marín <carlos@gnome-db.org>
+2002-06-15  Carlos PerellÃ³ MarÃ­n <carlos@gnome-db.org>
 
 	* Added gtk-doc support as it's at libgnomeprint.
 	* Makefile.am: Activated the doc build.
@@ -526,11 +1365,11 @@
 
 	* release 1.115.0
 
-2002-06-03  Carlos Perelló Marín <carlos@gnome-db.org>
+2002-06-03  Carlos PerellÃ³ MarÃ­n <carlos@gnome-db.org>
 
 	* examples/README: Fixed a typo.
 
-2002-06-01  Carlos Perelló Marín <carlos@gnome-db.org>
+2002-06-01  Carlos PerellÃ³ MarÃ­n <carlos@gnome-db.org>
 
 	* libgnomeprintui/gpaui/transport-selector.c:
 	/s/Printer default location/Default printer/. It fixes the dialog
@@ -962,7 +1801,7 @@
 
 	* configure.in: Added 'de' to ALL_LINGUAS.
 
-2002-03-02  Tõivo Leedjärv  <leedjarv@interest.ee>
+2002-03-02  TÃµivo LeedjÃ¤rv  <leedjarv@interest.ee>
 
 	* configure.in: Added et to ALL_LINGUAS.
 

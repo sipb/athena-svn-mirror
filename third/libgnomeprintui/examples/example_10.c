@@ -28,10 +28,12 @@
  */
 
 #define WE_ARE_LIBGNOMEPRINT_INTERNALS /* Needed for gpa-tree-viewer which is not public */
+#define GNOME_PRINT_UNSTABLE_API
 
 #include <libgnomeprint/gnome-print.h>
 #include <libgnomeprint/gnome-print-job.h>
 #include <libgnomeprint/gnome-print-config.h>
+#include <libgnomeprint/private/gpa-root.h>
 #include <libgnomeprintui/gnome-print-job-preview.h>
 #include <libgnomeprintui/gnome-print-dialog.h>
 #include <libgnomeprintui/gnome-print-paper-selector.h>
@@ -117,13 +119,28 @@ my_print_image_from_disk (GnomePrintContext *gpc)
 }
 
 static void
-my_draw (GnomePrintContext *gpc)
+my_draw (GnomePrintContext *gpc, gint page)
 {
-	gnome_print_beginpage (gpc, "1");
+	GnomeFont *font;
+	gchar *t;
+	gchar *page_name;
+
+	font = gnome_font_find_closest ("Sans Regular", 18);
+	g_assert (font);
+
+	page_name = g_strdup_printf ("%d", page);
+	gnome_print_beginpage (gpc, page_name);
+	g_free (page_name);
 
 	gnome_print_moveto (gpc, 1, 1);
 	gnome_print_lineto (gpc, 200, 200);
 	gnome_print_stroke (gpc);
+
+	gnome_print_setfont (gpc, font);
+	gnome_print_moveto  (gpc, 200, 72);
+	t = g_strdup_printf ("Page: %d\n", page + 1);
+	gnome_print_show    (gpc, t);
+	g_free (t);
 
 	my_print_image_from_disk (gpc);
 	gnome_print_showpage (gpc);
@@ -134,9 +151,11 @@ static void
 my_print (GnomePrintJob *job, gboolean preview)
 {
 	GnomePrintContext *gpc;
+	gint i;
 
 	gpc = gnome_print_job_get_context (job);
-	my_draw (gpc);
+	for (i = 0; i < 4; i++)
+		my_draw (gpc, i);
 	g_object_unref (G_OBJECT (gpc));
 	
 	gnome_print_job_close (job);
@@ -160,11 +179,13 @@ my_print_cb (void)
 	/* Create the objects */
 	g_assert (app->active_doc);
 	job    = gnome_print_job_new (app->active_doc->config);
-	dialog = gnome_print_dialog_new (job, "Sample print dialog", 0);
+	dialog = gnome_print_dialog_new (job, "Sample print dialog",
+					 GNOME_PRINT_DIALOG_RANGE | GNOME_PRINT_DIALOG_COPIES);
+	gnome_print_dialog_construct_range_page (GNOME_PRINT_DIALOG (dialog),
+						 GNOME_PRINT_RANGE_ALL | GNOME_PRINT_RANGE_SELECTION,
+						 1, 2, "A", "Lines");
 
-	/* Run the dialog */
-	response = gtk_dialog_run (GTK_DIALOG (dialog));
-	gtk_widget_destroy (dialog);
+	response = gnome_print_dialog_run (GNOME_PRINT_DIALOG (dialog));
 	switch (response) {
 	case GNOME_PRINT_DIALOG_RESPONSE_PRINT:
 		my_print (job, FALSE);
@@ -229,12 +250,22 @@ my_print_setup_cb (void)
 static void
 my_font_dialog_cb (void)
 {
+	static GnomeFont *font = NULL;
+	GnomeFontSelection *fontsel;
 	GtkWidget *dialog;
 
 	dialog = gnome_font_dialog_new ("Sample Font dialog");
+	fontsel = (GnomeFontSelection *) gnome_font_dialog_get_fontsel (GNOME_FONT_DIALOG (dialog));
+	if (font)
+		gnome_font_selection_set_font (fontsel, font);
 
 	gtk_widget_show_all (dialog);
 	gtk_dialog_run (GTK_DIALOG (dialog));
+
+	if (font)
+		g_object_unref (G_OBJECT (font));
+	font = gnome_font_selection_get_font (fontsel);
+
 	gtk_widget_destroy (dialog);
 }
 
@@ -244,7 +275,7 @@ my_tree_cb (void)
 {
 	GtkWidget *dialog;
 
-	dialog = gpa_tree_viewer_new (app->doc1->config);
+	dialog = gpa_tree_viewer_new (GPA_NODE (gpa_root));
 }
 
 
@@ -339,8 +370,10 @@ my_app_load (void)
 
 	app->status_bar = glade_xml_get_widget (gui, "statusbar");
 	app->doc1 = my_new_doc ("doc1", gui);
+#if 0	
 	app->doc2 = my_new_doc ("doc2", gui);
 	app->doc3 = my_new_doc ("doc3", gui);
+#endif
 	app->active_doc = NULL;
 	gtk_widget_grab_focus (app->doc1->view);
 	

@@ -44,23 +44,26 @@ typedef struct _GPAPrinterSelectorClass GPAPrinterSelectorClass;
 struct _GPAPrinterSelector {
 	GPAWidget widget;
 
-	GtkWidget *menu;       /* The widget */
+ 	GtkTreeModel *model;
+ 	GtkTreeModel *sortmodel;
+ 	GtkWidget *treeview;   /* The widget */
 
 	GPANode *node;         /* node we are listening to */
 	GPANode *config;       /* GPAConfig */
 
 	gulong handler_config; /* signal handler of ->config "modified" signal */
-
-	gboolean updating;     /* A flag used to ignore emmissions create by us */
 };
 
 struct _GPAPrinterSelectorClass {
 	GPAWidgetClass widget_class;
 };
 
-GtkType     gpa_printer_selector_get_type (void);
+GType       gpa_printer_selector_get_type (void);
 
 GtkWidget * gpa_printer_selector_new (GnomePrintConfig *gpc);
+
+void        gpa_printer_selector_printer_state_changed (GPAPrinterSelector *selector,
+							GPANode *printer);
 
 G_END_DECLS
 

@@ -29,14 +29,21 @@
 #include <math.h>
 #include <gtk/gtk.h>
 
+#define GNOME_PRINT_UNSTABLE_API
 #include "gnome-print-unit-selector.h"
 
 #define noGPP_VERBOSE
 
+enum
+{
+	COL_NAME,
+	COL_UNIT,
+	N_COLUMNS
+};
 struct _GnomePrintUnitSelector {
 	GtkHBox box;
 
-	GtkWidget *menu;
+	GtkWidget *combo;
 
 	guint bases;
 	GList *units;
@@ -57,6 +64,9 @@ struct _GnomePrintUnitSelectorClass {
 static void gnome_print_unit_selector_class_init (GnomePrintUnitSelectorClass *klass);
 static void gnome_print_unit_selector_init (GnomePrintUnitSelector *selector);
 static void gnome_print_unit_selector_finalize (GObject *object);
+
+static void gnome_print_unit_selector_recalculate_adjustments (GnomePrintUnitSelector *us,
+							       const GnomePrintUnit *unit);
 
 static GtkHBoxClass *unit_selector_parent_class;
 
@@ -111,8 +121,33 @@ gnome_print_unit_selector_class_init (GnomePrintUnitSelectorClass *klass)
 }
 
 static void
-cb_gpus_opt_menu_changed (GtkOptionMenu *menu, GnomePrintUnitSelector *us)
+cb_gpus_combo_changed (GtkWidget *combo, GnomePrintUnitSelector *us)
 {
+	const GnomePrintUnit *unit;
+	GtkTreeModel *model;
+	GtkTreePath *path;
+	GtkTreeIter iter;
+
+	model = gtk_combo_box_get_model (GTK_COMBO_BOX (combo));
+	path = gtk_tree_path_new_from_indices (gtk_combo_box_get_active (GTK_COMBO_BOX (combo)),
+					       -1);
+	gtk_tree_model_get_iter (model, &iter, path);
+	gtk_tree_path_free (path);
+
+	gtk_tree_model_get (model, &iter,
+			    COL_UNIT, &unit,
+			    -1);
+
+	g_return_if_fail (unit != NULL);
+
+#ifdef GPP_VERBOSE
+	g_print ("Old unit %s new unit %s\n", us->unit->name, unit->name);
+#endif
+	if (us->unit == unit)
+		return;
+
+	gnome_print_unit_selector_recalculate_adjustments (us, unit);
+
 	g_signal_emit (G_OBJECT (us),
 		       gnome_print_unit_selector_signals[GNOME_PRINT_UNIT_SELECTOR_MODIFIED],
 		       0);
@@ -121,16 +156,24 @@ cb_gpus_opt_menu_changed (GtkOptionMenu *menu, GnomePrintUnitSelector *us)
 static void
 gnome_print_unit_selector_init (GnomePrintUnitSelector *us)
 {
+	GtkCellRenderer *cell;
+
 	us->ctmscale = 1.0;
 	us->devicescale = 1.0;
 	us->abbr = FALSE;
 	us->plural = TRUE;
 
-	us->menu = gtk_option_menu_new ();
-	g_signal_connect (G_OBJECT (us->menu),
-			  "changed", G_CALLBACK (cb_gpus_opt_menu_changed), us);
-	gtk_widget_show (us->menu);
-	gtk_box_pack_start (GTK_BOX (us), us->menu, TRUE, TRUE, 0);
+	us->combo = gtk_combo_box_new_with_model (
+	    (GtkTreeModel *)gtk_list_store_new (N_COLUMNS, G_TYPE_STRING, G_TYPE_POINTER));
+	cell = gtk_cell_renderer_text_new ();
+	gtk_cell_layout_pack_start (GTK_CELL_LAYOUT (us->combo), cell, TRUE);
+	gtk_cell_layout_set_attributes (GTK_CELL_LAYOUT (us->combo), cell,
+					"text", 0,
+					NULL);
+	g_signal_connect (G_OBJECT (us->combo),
+			  "changed", G_CALLBACK (cb_gpus_combo_changed), us);
+	gtk_widget_show (us->combo);
+	gtk_box_pack_start (GTK_BOX (us), us->combo, TRUE, TRUE, 0);
 }
 
 static void
@@ -140,8 +183,8 @@ gnome_print_unit_selector_finalize (GObject *object)
 	
 	selector = GNOME_PRINT_UNIT_SELECTOR (object);
 
-	if (selector->menu) {
-		selector->menu = NULL;
+	if (selector->combo) {
+		selector->combo = NULL;
 	}
 
 	while (selector->adjustments) {
@@ -211,48 +254,37 @@ gnome_print_unit_selector_get_unit (GnomePrintUnitSelector *us)
 }
 
 static void
-gpus_unit_activate (GtkWidget *widget, GnomePrintUnitSelector *us)
-{
-	const GnomePrintUnit *unit;
-
-	unit = g_object_get_data (G_OBJECT (widget), "unit");
-	g_return_if_fail (unit != NULL);
-
-#ifdef GPP_VERBOSE
-	g_print ("Old unit %s new unit %s\n", us->unit->name, unit->name);
-#endif
-	if (us->unit == unit)
-		return;
-
-	gnome_print_unit_selector_recalculate_adjustments (us, unit);
-}
-
-static void
 gpus_rebuild_menu (GnomePrintUnitSelector *us)
 {
-	GtkWidget *m, *i;
 	GList *l;
 	gint pos, p;
+	GtkTreeModel *model;
 
-	m = gtk_menu_new ();
-	gtk_widget_show (m);
-
+	model = gtk_combo_box_get_model (GTK_COMBO_BOX (us->combo));
+	gtk_list_store_clear (GTK_LIST_STORE (model));
+	
 	pos = p = 0;
 	for (l = us->units; l != NULL; l = l->next) {
 		const GnomePrintUnit *u;
+		GtkTreeIter iter;
+		gchar *name;
+		
 		u = l->data;
-		i = gtk_menu_item_new_with_label ((us->abbr) ? (us->plural) ? u->abbr_plural : u->abbr : (us->plural) ? u->plural : u->name);
-		g_object_set_data (G_OBJECT (i), "unit", (gpointer) u);
-		g_signal_connect (G_OBJECT (i), "activate", (GCallback) gpus_unit_activate, us);
-		gtk_widget_show (i);
-		gtk_menu_shell_append (GTK_MENU_SHELL (m), i);
+
+		name = gnome_print_unit_get_name (u, us->plural, us->abbr, 0);
+		gtk_list_store_append (GTK_LIST_STORE (model), &iter);
+		gtk_list_store_set (GTK_LIST_STORE (model), &iter,
+				    COL_NAME, name,
+				    COL_UNIT, u,
+				    -1);
+		g_free (name);
+
 		if (u == us->unit)
 			pos = p;
 		p += 1;
 	}
 
-	gtk_option_menu_set_menu (GTK_OPTION_MENU (us->menu), m);
-	gtk_option_menu_set_history (GTK_OPTION_MENU (us->menu), pos);
+	gtk_combo_box_set_active (GTK_COMBO_BOX (us->combo), pos);
 }
 
 void
@@ -291,7 +323,7 @@ gnome_print_unit_selector_set_unit (GnomePrintUnitSelector *us, const GnomePrint
 	g_return_if_fail (pos >= 0);
 
 	gnome_print_unit_selector_recalculate_adjustments (us,  unit);
-	gtk_option_menu_set_history (GTK_OPTION_MENU (us->menu), pos);
+	gtk_combo_box_set_active (GTK_COMBO_BOX (us->combo), pos);
 }
 
 void
