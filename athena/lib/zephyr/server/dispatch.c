@@ -18,7 +18,7 @@
 #ifndef lint
 #ifndef SABER
 static const char rcsid_dispatch_c[] =
-"$Id: dispatch.c,v 1.51 1997-09-14 21:54:12 ghudson Exp $";
+"$Id: dispatch.c,v 1.52 1997-09-23 19:27:33 ghudson Exp $";
 #endif
 #endif
 
@@ -426,7 +426,7 @@ sendit(notice, auth, who, external)
 	dest.recip = make_string("", 0);
     } else {
 	strncpy(recipbuf, notice->z_recipient, sizeof(recipbuf));
-	recipp = strrchr(&recipbuf, '@');
+	recipp = strrchr(recipbuf, '@');
 	if (recipp)
 	    sprintf(recipp + 1, "%s", realm_expand_realm(recipp + 1));
 	dest.recip = make_string(recipbuf, 0);
