@@ -1,6 +1,6 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/strings.c,v 1.6 1991-01-23 15:17:54 epeisach Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/strings.c,v 1.7 1993-10-14 12:10:41 probe Exp $ */
 /* $Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/strings.c,v $ */
-/* $Author: epeisach $ */
+/* $Author: probe $ */
 
 /*
  * Copyright (c) 1990 by the Massachusetts Institute of Technology.
@@ -22,6 +22,7 @@
 #include <errno.h>
 #include <sys/types.h>
 #include <sys/file.h>
+#include <fcntl.h>
 #include <sys/stat.h>
 /* This is the Strings Database section of the code. */
 
@@ -263,7 +264,11 @@ char *str;
     
     /* First add the entry to the end of the file. If we can't do that, we 
        are screwed */
+#ifdef POSIX
+    if ( lseek(dbfd, (off_t) 0, SEEK_END) < 0) {
+#else
     if ( lseek(dbfd, (off_t) 0, L_XTND) < 0) {
+#endif
 	(void) close_database();
 	return(0); /* Error seeking to the end */
     }
