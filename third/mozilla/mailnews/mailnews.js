@@ -72,7 +72,7 @@ pref("mailnews.headers.showUserAgent",       false);
 pref("mailnews.headers.showOrganization",    false);
 
 // Mail server preferences, pop by default
-pref("mail.server_type",	0); 	// 0 pop, 1 imap,
+pref("mail.server_type",	1); 	// 0 pop, 1 imap,
 					// (Unix only:)
 					// 2 movemail, 3 inbox          
 pref("mail.auth_login", true);
@@ -302,7 +302,7 @@ pref("mailnews.thread_pane_column_unthreads", true);
 pref("mailnews.account_central_page.url", "chrome://messenger/locale/messenger.properties");
 
 /* default prefs for Mozilla 5.0 */
-pref("mail.identity.default.compose_html", true);
+pref("mail.identity.default.compose_html", false);
 pref("mail.identity.default.valid", true);
 pref("mail.identity.default.fcc",true);
 pref("mail.identity.default.fcc_folder","mailbox://nobody@Local%20Folders/Sent");
@@ -337,7 +337,7 @@ pref("mail.server.default.port", -1);
 pref("mail.server.default.offline_support_level", -1);
 pref("mail.server.default.leave_on_server", false);
 pref("mail.server.default.download_on_biff", false);
-pref("mail.server.default.check_time", 10);
+pref("mail.server.default.check_time", 15);
 pref("mail.server.default.delete_by_age_from_server", false);
 pref("mail.server.default.num_days_to_leave_on_server", 7);
 // "mail.server.default.check_new_mail" now lives in the protocol info
@@ -348,7 +348,7 @@ pref("mail.server.default.auth_login", true);
 pref("mail.server.default.delete_mail_left_on_server", false);
 pref("mail.server.default.valid", true);
 pref("mail.server.default.abbreviate",true);
-pref("mail.server.default.isSecure", false);
+pref("mail.server.default.isSecure", true);
 pref("mail.server.default.useSecAuth", false);
 pref("mail.server.default.override_namespaces", true);
 
@@ -361,7 +361,7 @@ pref("mail.server.default.singleSignon", true);
 pref("mail.server.default.max_articles", 500);
 pref("mail.server.default.notify.on", true);
 pref("mail.server.default.mark_old_read", false);
-pref("mail.server.default.empty_trash_on_exit", false);
+pref("mail.server.default.empty_trash_on_exit", true);
 
 pref("mail.server.default.using_subscription", true);
 pref("mail.server.default.dual_use_folders", true);
@@ -389,6 +389,9 @@ pref("mail.server.default.spamLoggingEnabled",false);
 pref("mail.server.default.manualMark",false);
 pref("mail.server.default.manualMarkMode",0); // 0 == "move to junk folder", 1 == "delete"
 
+// Athena addition
+pref("mail.smtp.defaultserver", "outgoing_mit_edu");
+
 // if true, we'll use the password from an incoming server with
 // matching username and domain
 pref("mail.smtp.useMatchingDomainServer", false);
@@ -400,6 +403,12 @@ pref("mail.smtp.useMatchingHostNameServer", false);
 pref("mail.smtpserver.default.auth_method", 1); // auth any
 pref("mail.smtpserver.default.trySecAuth", true);
 pref("mail.smtpserver.default.try_ssl", 0);
+
+// Athena additions
+pref("mail.smtpserver.outgoing_mit_edu.hostname", "outgoing.mit.edu");
+pref("mail.smtpserver.outgoing_mit_edu.auth_method", 1);
+pref("mail.smtpserver.outgoing_mit_edu.port", 587);
+pref("mail.smtpserver.outgoing_mit_edu.try_ssl", 2);
 
 // For the next 3 prefs, see <http://www.bucksch.org/1/projects/mozilla/16507>
 pref("mail.display_glyph", true);   // TXT->HTML :-) etc. in viewer
