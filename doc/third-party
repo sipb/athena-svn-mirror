@@ -96,26 +96,31 @@ Distribution sites for software under third
 	audiofile	ftp.gnome.org:pub/GNOME/stable/sources/audiofile
 	bind		ftp.isc.org:isc/bind/src
 	binutils	ftp.gnu.org:pub/gnu/binutils
-	bonobo		ftp.gnome.org:pub/GNOME/unstable/sources/bonobo
+	bonobo		ftp.gnome.org:pub/GNOME/stable/sources/bonobo
+	bonobo-conf	ftp.gnome.org:pub/GNOME/unstable/sources/bonobo
 	bzip2		sourceware.cygnus.com:pub/bzip2/v100
 	control-center	ftp.gnome.org:pub/GNOME/unstable/sources/control-center
 	db		http://www.sleepycat.com/download.html
 	diffutils	ftp.gnu.org:pub/gnu/diffutils
 	emacs		ftp.gnu.org:pub/gnu/emacs; see also "leim"
 	esound		ftp.gnome.org:pub/GNOME/stable/sources/esound
+	evolution	ftp.gnome.org:pub/GNOME/unstable/sources/evolution
 	flex		ftp.gnu.org:pub/gnu/non-gnu/flex
 	freetype	ftp.freetype.org:pub/freetype2
 	gcc		ftp.gnu.org:pub/gnu/gcc
 	GConf		ftp.gnome.org:pub/GNOME/unstable/sources/GConf
+	gal		ftp.gnome.org:pub/GNOME/unstable/sources/gal
 	gdbm		ftp.gnu.org:pub/gnu/gdbm
 	gdk-pixbuf	ftp.gnome.org:pub/GNOME/unstable/sources/gdk-pixbuf
 	gettext		ftp.gnu.org:pub/gnu/gettext
 	glib		ftp.gtk.org:pub/gtk
 	gtk		ftp.gtk.org:pub/gtk
+	gtkhtml		ftp.gnome.org:pub/GNOME/unstable/sources/gtkhtml
 	gmake		ftp.gnu.org:pub/gnu/make
 	gmp		ftp.gnu.org:pub/gnu/gmp
 	gnome-core	ftp.gnome.org:pub/GNOME/unstable/sources/gnome-core
 	gnome-libs	ftp.gnome.org:pub/GNOME/stable/sources/gnome-libs
+	gnome-print	ftp.gnome.org:pub/GNOME/stable/sources/gnome-print
 	gnome-vfs	ftp.gnome.org:pub/GNOME/unstable/sources/gnome-vfs
 	imlib		(Formerly www.rasterman.com; imlib 1 is dead now)
 	inetd		From NetBSD (ftp.netbsd.org), usr.sbin/inetd
@@ -140,7 +145,8 @@ Distribution sites for software under third
 	nautilus	ftp.gnome.org:pub/GNOME/unstable/sources/nautilus
 	nmh		ftp.math.gatech.edu:pub/nmh
 	nvi		http://www.bostic.com/vi/
-	oaf		ftp.gnome.org:pub/GNOME/unstable/sources/oaf
+	oaf		ftp.gnome.org:pub/GNOME/stable/sources/oaf
+	openssh		ftp.openbsd.org:pub/OpenBSD/OpenSSH
 	openssl		ftp.openssl.org:source
 	ORBit		ftp.gnome.org:pub/GNOME/stable/sources/ORBit
 	patch		ftp.gnu.org:pub/gnu/patch
