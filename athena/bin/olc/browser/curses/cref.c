@@ -38,6 +38,9 @@ static char *rcsid_cref_c = "$Header: ";
 #include "cref.h"			/* CREF finder defs. */
 #include "globals.h"			/* Global variable defs. */
 
+char *Prog_Name;			/* Name this program was invoked as */
+int CREF;				/*  Are we running as CREF or not? */
+
 /* Function:	main() is the starting point for the CREF finder.
  * Arguments:	argc:	Number of command line arguments.
  *		argv:	Array of command line arguments.
@@ -49,12 +52,24 @@ main(argc, argv)
      int argc;
      char *argv[];
 {
+  Prog_Name = rindex(*argv,'/');
+  if(Prog_Name == (char *) NULL)
+     Prog_Name = *argv;
+  if(*Prog_Name == '/')
+     ++Prog_Name;
+
+  if(!strcmp(Prog_Name,"cref"))
+    CREF = 1;
+  else
+    CREF = 0;
+
   init_display();
   init_globals();
+  init_signals();
   parse_args(argc, argv);
   set_current_dir(Current_Dir);
   make_abbrev_table();
-  make_display(Current_Index);
+  make_display();
   command_loop();
 }
 
@@ -75,13 +90,13 @@ command_loop()
   while (1)
     {
       move(LINES - 3, 3);
-      addstr(CREF_PROMPT);
+      addstr((CREF) ? CREF_PROMPT : STOCK_PROMPT);
       clrtoeol();
       refresh();
       command = getch();
       if (isdigit(command))
 	{
-	  move(LINES - 3, strlen(CREF_PROMPT) + 3);
+	  move(LINES - 3, strlen((CREF) ? CREF_PROMPT : STOCK_PROMPT) + 3);
 	  clrtoeol();
 	  message(1, "Read section:");
 	  refresh();
@@ -146,48 +161,48 @@ parse_args(argc, argv)
       case 'r':
 	strcpy(filename, optarg);
 	if (filename[0] != '/')
-	    err_exit("Root directory must be full pathname:", filename);
+	    err_abort("Root directory must be full pathname:", filename);
 	strcpy(Root_Dir, filename);
 	strcpy(Current_Dir, Root_Dir);
 	if (check_cref_dir(Current_Dir) != TRUE)
-	  err_exit("No CREF index file in this directory:\n", Current_Dir);
+	  err_abort("No CREF index file in this directory:\n", Current_Dir);
 	break;
       case 's':
 	strcpy(filename, optarg);
 	if (filename[0] == '-')
-	  err_exit("Invalid default storage file:", filename);
+	  err_abort("Invalid default storage file:", filename);
 	strcpy(Save_File, filename);
 	break;
       case 'f':
 	strcpy(filename, optarg);
 	if (filename[0] == '-' || filename[0] == '/')
-	  err_exit("Pathname should be relative to root dir:\n", filename);
+	  err_abort("Pathname should be relative to root dir:\n", filename);
 	strcpy(Current_Dir, Root_Dir);
 	strcat(Current_Dir, "/");
 	strcat(Current_Dir, filename);
 	if (check_cref_dir(Current_Dir) != TRUE)
-	  err_exit("No CREF index file in this directory:\n", Current_Dir);
+	  err_abort("No CREF index file in this directory:\n", Current_Dir);
 	break;
       case 'a':
 	strcpy(filename, optarg);
 	if (filename[0] == '-')
-	  err_exit("Invalid abbreviation filename:", filename);
+	  err_abort("Invalid abbreviation filename:", filename);
 	strcpy(Abbrev_File, filename);
 	break;
       case 'c':
 	strcpy(filename, optarg);
 	if (filename[0] != '/')
-	    err_exit("New root directory must be full pathname:\n", filename);
+	    err_abort("New root directory must be full pathname:\n", filename);
 	strcpy(Root_Dir, filename);
 	strcpy(Current_Dir, Root_Dir);
 	if (create_cref_dir(Current_Dir) != SUCCESS)
-	  err_abort("cref: Cannot create new root.\n");
+	  err_abort("Cannot create new root.", "");
 	break;
       case '?':
       default:
-	fprintf(stderr, "cref: unknown option\n");
 	usage();
-	exit();
+	err_abort("", "");
+	break;
       }
 }
 
@@ -199,6 +214,7 @@ parse_args(argc, argv)
 
 usage()
 {
-  fprintf(stderr, "Usage: cref [-c new_rootdir[-r existing_rootdir]\n");
+  fprintf(stderr, "Usage: %s [-c new_rootdir] [-r existing_rootdir]\n",
+	  Prog_Name);
   fprintf(stderr, "       [-s savefile] [-f file_offset] [-a abbrev_file]\n");
 }
