@@ -10,17 +10,23 @@
 #ifndef _BONOBO_ACTIVATION_CONTEXT_H_
 #define _BONOBO_ACTIVATION_CONTEXT_H_
 
-#include <bonobo/bonobo-object.h>
+#include <bonobo/bonobo-xobject.h>
 
 BEGIN_GNOME_DECLS
 
 typedef struct _BonoboActivationContextPrivate BonoboActivationContextPrivate;
 
 typedef struct {
-	BonoboObject parent;
+	BonoboXObject parent;
 
 	BonoboActivationContextPrivate *priv;
 } BonoboActivationContext;
+
+typedef struct {
+	BonoboXObjectClass parent;
+
+	POA_Bonobo_ActivationContext__epv epv;
+} BonoboActivationContextClass;
 
 BonoboObject *bonobo_activation_context_new (void);
 

@@ -10,7 +10,7 @@
 #ifndef _BONOBO_STORAGE_H_
 #define _BONOBO_STORAGE_H_
 
-#include <bonobo/bonobo-object.h>
+#include <bonobo/bonobo-xobject.h>
 #include <bonobo/bonobo-stream.h>
 
 BEGIN_GNOME_DECLS
@@ -24,17 +24,17 @@ BEGIN_GNOME_DECLS
 typedef struct _BonoboStoragePrivate BonoboStoragePrivate;
 
 typedef struct {
-        BonoboObject object;
+        BonoboXObject object;
 
 	BonoboStoragePrivate *priv;
 } BonoboStorage;
 
 typedef struct {
-	BonoboObjectClass parent_class;
+	BonoboXObjectClass parent_class;
 
-	/*
-	 * virtual methods
-	 */
+	POA_Bonobo_Storage__epv epv;
+
+	/* virtual methods */
 	Bonobo_StorageInfo *(*get_info) (BonoboStorage *storage,
 					 const CORBA_char *path,
 					 const Bonobo_StorageInfoFields mask,
@@ -74,8 +74,6 @@ typedef struct {
 } BonoboStorageClass;
 
 GtkType          bonobo_storage_get_type     (void);
-BonoboStorage   *bonobo_storage_construct    (BonoboStorage *storage,
-					      Bonobo_Storage corba_storage);
 
 BonoboStorage   *bonobo_storage_open         (const char *driver,
 					      const char *path,
@@ -92,16 +90,11 @@ void             bonobo_storage_copy_to      (Bonobo_Storage src,
 					      Bonobo_Storage dest,
 					      CORBA_Environment *ev);
   
-Bonobo_Storage   bonobo_storage_corba_object_create (BonoboObject *object);
-
 void             bonobo_storage_write_class_id (BonoboStorage *storage,
 						char *class_id);
 
 void             bonobo_stream_write_class_id  (BonoboStream *stream,
 						char *class_id);
-
-POA_Bonobo_Storage__epv *bonobo_storage_get_epv (void);
-
 
 END_GNOME_DECLS
 

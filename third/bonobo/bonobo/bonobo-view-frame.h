@@ -37,16 +37,15 @@ struct _BonoboViewFrame {
 struct _BonoboViewFrameClass {
 	BonoboControlFrameClass parent_class;
 
-	/*
-	 * Signals.
-	 */
+	POA_Bonobo_ViewFrame__epv epv;
+
+	/* Signals. */
 	void (*user_activate)       (BonoboViewFrame *view_frame);
 	void (*user_context)        (BonoboViewFrame *view_frame);
 };
 
 GtkType                    bonobo_view_frame_get_type         (void);
 BonoboViewFrame           *bonobo_view_frame_construct        (BonoboViewFrame   *view_frame,
-							       Bonobo_ViewFrame   corba_view_frame,
 							       BonoboClientSite  *client_site,
 							       Bonobo_UIContainer uih);
 BonoboViewFrame           *bonobo_view_frame_new              (BonoboClientSite *client_site,
@@ -71,7 +70,6 @@ void                       bonobo_view_frame_view_activate    (BonoboViewFrame  
 void                       bonobo_view_frame_view_deactivate  (BonoboViewFrame  *view_frame);
 void                       bonobo_view_frame_set_zoom_factor  (BonoboViewFrame  *view_frame,
 							       double            zoom);
-POA_Bonobo_ViewFrame__epv *bonobo_view_frame_get_epv          (void);
 
 END_GNOME_DECLS
 

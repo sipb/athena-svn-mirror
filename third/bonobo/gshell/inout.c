@@ -28,7 +28,7 @@ buffer_save_pf (Buffer *buffer, gchar *filename)
 	CORBA_exception_init (&ev);
 
 	persist = Bonobo_Unknown_queryInterface (
-	        bonobo_object_corba_objref (BONOBO_OBJECT (buffer->server)),
+	        BONOBO_OBJREF (buffer->server),
 		"IDL:Bonobo/PersistFile:1.0",
 		&ev);
 	
@@ -75,7 +75,7 @@ buffer_load_pf (Buffer *buffer, gchar *filename)
 	CORBA_exception_init (&ev);
 
 	persist = Bonobo_Unknown_queryInterface (
-	        bonobo_object_corba_objref (BONOBO_OBJECT (buffer->server)),
+	        BONOBO_OBJREF (buffer->server),
 		"IDL:Bonobo/PersistFile:1.0",
 		&ev);
 
@@ -122,7 +122,7 @@ buffer_save_ps (Buffer *buffer, gchar *filename)
 	CORBA_exception_init (&ev);
 
 	persist = Bonobo_Unknown_queryInterface (
-	        bonobo_object_corba_objref (BONOBO_OBJECT (buffer->server)),
+	        BONOBO_OBJREF (buffer->server),
 		"IDL:Bonobo/PersistStream:1.0",
 		&ev);
 	
@@ -144,8 +144,8 @@ buffer_save_ps (Buffer *buffer, gchar *filename)
 	*/
 
 	Bonobo_PersistStream_save (persist,
-	     (Bonobo_Stream) bonobo_object_corba_objref (BONOBO_OBJECT (stream)),
-				  "", &ev);
+				   (Bonobo_Stream) BONOBO_OBJREF (stream),
+				   "", &ev);
 
 	if (ev._major != CORBA_NO_EXCEPTION) {
 		gnome_warning_dialog (_("An exception occured while trying "
@@ -183,7 +183,7 @@ buffer_load_ps (Buffer *buffer, gchar *filename)
 	CORBA_exception_init (&ev);
 
 	persist = Bonobo_Unknown_queryInterface (
-	        bonobo_object_corba_objref (BONOBO_OBJECT (buffer->server)),
+	        BONOBO_OBJREF (buffer->server),
 		"IDL:Bonobo/PersistStream:1.0",
 		&ev);
 
@@ -194,8 +194,8 @@ buffer_load_ps (Buffer *buffer, gchar *filename)
 	}
 
 	Bonobo_PersistStream_load (persist,
-	   (Bonobo_Stream) bonobo_object_corba_objref (BONOBO_OBJECT (stream)),
-				  "", &ev);
+				   (Bonobo_Stream) BONOBO_OBJREF (stream),
+				   "", &ev);
 
 	if (ev._major != CORBA_NO_EXCEPTION) {
 		gnome_warning_dialog (_("An exception occured while trying "

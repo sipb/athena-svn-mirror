@@ -20,15 +20,18 @@ BEGIN_GNOME_DECLS
 typedef enum {
 	BONOBO_ASYNC_IN  = 0x1,
 	BONOBO_ASYNC_OUT = 0x2
-} BonoboAsyncFlags;
+} BonoboAsyncArgFlag;
+
+typedef struct {
+	const CORBA_TypeCode  type;
+	BonoboAsyncArgFlag    flag;
+} BonoboAsyncArg;
 
 typedef struct {
 	const char           *name;
 	const CORBA_TypeCode  ret_type;
-	const CORBA_TypeCode *arg_types;
-	int                   num_args;
-	const CORBA_TypeCode *exceptions;
-	BonoboAsyncFlags     *flags;
+	const BonoboAsyncArg *arguments;  /* NULL-terminated */
+	const CORBA_TypeCode *exceptions; /* NULL-terminated */
 } BonoboAsyncMethod;
 
 typedef struct _BonoboAsyncReply BonoboAsyncReply;

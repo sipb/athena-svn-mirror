@@ -14,7 +14,7 @@
 
 #include <libgnome/gnome-defs.h>
 #include <gtk/gtkobject.h>
-#include <bonobo/bonobo-object.h>
+#include <bonobo/bonobo-xobject.h>
 
 BEGIN_GNOME_DECLS
  
@@ -27,7 +27,7 @@ BEGIN_GNOME_DECLS
 typedef struct _BonoboItemHandlerPrivate BonoboItemHandlerPrivate;
 typedef struct _BonoboItemHandler        BonoboItemHandler;
 
-typedef Bonobo_ItemContainer_ObjectList *(*BonoboItemHandlerEnumObjectsFn)
+typedef Bonobo_ItemContainer_ObjectNames *(*BonoboItemHandlerEnumObjectsFn)
 	(BonoboItemHandler *h, gpointer data, CORBA_Environment *);
 
 typedef Bonobo_Unknown (*BonoboItemHandlerGetObjectFn)
@@ -35,30 +35,41 @@ typedef Bonobo_Unknown (*BonoboItemHandlerGetObjectFn)
 	 gpointer data, CORBA_Environment *ev);
 
 struct _BonoboItemHandler {
-	BonoboObject base;
+	BonoboXObject base;
+
+	POA_Bonobo_ItemContainer__epv epv;
 
 	BonoboItemHandlerEnumObjectsFn enum_objects;
 	BonoboItemHandlerGetObjectFn   get_object;
-	BonoboItemHandlerPrivate *priv;
-	gpointer user_data;
+	gpointer                       user_data;
+
+	BonoboItemHandlerPrivate      *priv;
 };
 
 typedef struct {
-	BonoboObjectClass parent_class;
+	BonoboXObjectClass parent_class;
+
+	POA_Bonobo_ItemContainer__epv epv;
 } BonoboItemHandlerClass;
 
 GtkType              bonobo_item_handler_get_type    (void);
 BonoboItemHandler   *bonobo_item_handler_new         (BonoboItemHandlerEnumObjectsFn enum_objects,
-						      BonoboItemHandlerGetObjectFn get_object,
-						      gpointer user_data);
+						      BonoboItemHandlerGetObjectFn   get_object,
+						      gpointer                       user_data);
 
-BonoboItemHandler   *bonobo_item_handler_construct   (BonoboItemHandler *handler,
-						      Bonobo_ItemContainer corba_handler,
+BonoboItemHandler   *bonobo_item_handler_construct   (BonoboItemHandler             *handler,
 						      BonoboItemHandlerEnumObjectsFn enum_objects,
-						      BonoboItemHandlerGetObjectFn get_object,
-						      gpointer user_data);
+						      BonoboItemHandlerGetObjectFn   get_object,
+						      gpointer                       user_data);
 
-POA_Bonobo_ItemContainer__epv *bonobo_item_handler_get_epv (void);
+/* Utility functions that can be used by getObject routines */
+typedef struct {
+	char *key;
+	char *value;
+} BonoboItemOption;
+
+GSList *bonobo_item_option_parse (const char *option_string);
+void    bonobo_item_options_free (GSList *options);
 
 END_GNOME_DECLS
 

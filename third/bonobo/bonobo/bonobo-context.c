@@ -69,7 +69,7 @@ context_add (BonoboObject *object, const char *name)
 {
 	CORBA_Object ref;
 
-	ref = bonobo_object_corba_objref (object);
+	ref = BONOBO_OBJREF (object);
 
 	bonobo_context_add (name, ref);
 

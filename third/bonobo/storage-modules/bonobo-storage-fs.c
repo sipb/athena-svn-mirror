@@ -333,48 +333,16 @@ bonobo_storage_fs_class_init (BonoboStorageFSClass *class)
 	object_class->destroy = bonobo_storage_fs_destroy;
 }
 
-static void
-bonobo_storage_init (BonoboObject *object)
+
+static void 
+bonobo_storage_fs_init (GtkObject *object)
 {
+	/* nothing to do */
 }
 
-GtkType
-bonobo_storage_fs_get_type (void)
-{
-	static GtkType type = 0;
-
-	if (!type){
-		GtkTypeInfo info = {
-			"IDL:GNOME/StorageFS:1.0",
-			sizeof (BonoboStorageFS),
-			sizeof (BonoboStorageFSClass),
-			(GtkClassInitFunc) bonobo_storage_fs_class_init,
-			(GtkObjectInitFunc) bonobo_storage_init,
-			NULL, /* reserved 1 */
-			NULL, /* reserved 2 */
-			(GtkClassInitFunc) NULL
-		};
-
-		type = gtk_type_unique (bonobo_storage_get_type (), &info);
-	}
-
-	return type;
-}
-
-BonoboStorage *
-bonobo_storage_fs_construct (BonoboStorageFS *storage,
-			    Bonobo_Storage corba_storage,
-			    const char *path, const char *open_mode)
-{
-	g_return_val_if_fail (storage != NULL, NULL);
-	g_return_val_if_fail (BONOBO_IS_STORAGE (storage), NULL);
-	g_return_val_if_fail (corba_storage != CORBA_OBJECT_NIL, NULL);
-
-	bonobo_storage_construct (
-		BONOBO_STORAGE (storage), corba_storage);
-
-	return BONOBO_STORAGE (storage);
-}
+BONOBO_X_TYPE_FUNC (BonoboStorageFS, 
+		      bonobo_storage_get_type (),
+		      bonobo_storage_fs);
 
 /*
  * Creates the Gtk object and the corba server bound to it
@@ -383,20 +351,11 @@ static BonoboStorage *
 do_bonobo_storage_fs_create (const char *path)
 {
 	BonoboStorageFS *storage_fs;
-	Bonobo_Storage corba_storage;
 
 	storage_fs = gtk_type_new (bonobo_storage_fs_get_type ());
 	storage_fs->path = g_strdup (path);
-	
-	corba_storage = bonobo_storage_corba_object_create (
-		BONOBO_OBJECT (storage_fs));
-	if (corba_storage == CORBA_OBJECT_NIL){
-		bonobo_object_unref (BONOBO_OBJECT (storage_fs));
-		return NULL;
-	}
 
-	return bonobo_storage_construct
-		(BONOBO_STORAGE (storage_fs), corba_storage);
+	return BONOBO_STORAGE (storage_fs);
 }
 
 /** 

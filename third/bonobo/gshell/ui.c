@@ -18,7 +18,7 @@ frame_create_ui (Frame *frame)
 
 	g_return_if_fail (frame != NULL);
 
-	remote_uic = bonobo_object_corba_objref (BONOBO_OBJECT (frame->container));
+	remote_uic = BONOBO_OBJREF (frame->container);
 
 	frame->component = bonobo_ui_component_new ("GShell");
 	bonobo_ui_component_set_container (frame->component, remote_uic);

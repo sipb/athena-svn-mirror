@@ -40,22 +40,21 @@ struct _BonoboView {
 };
 
 typedef struct {
-	BonoboControlClass parent_class;
+	BonoboControlClass       parent_class;
 
-	/*
-	 * Signals
-	 */
-	void (*do_verb)                  (BonoboView *view,
-					  const CORBA_char *verb_name);
-	void (*set_zoom_factor)          (BonoboView *view, double zoom);
+	POA_Bonobo_View__epv     epv;
+
+	/* Signals */
+	void (*do_verb)         (BonoboView *view,
+				 const CORBA_char *verb_name);
+	void (*set_zoom_factor) (BonoboView *view, double zoom);
+
 } BonoboViewClass;
 
 GtkType               bonobo_view_get_type               (void);
 BonoboView           *bonobo_view_construct              (BonoboView         *view,
-							  Bonobo_View         corba_view,
 							  GtkWidget          *widget);
 BonoboView           *bonobo_view_new                    (GtkWidget          *widget);
-Bonobo_View           bonobo_view_corba_object_create    (BonoboObject       *object);
 void                  bonobo_view_set_embeddable         (BonoboView         *view,
 							  BonoboEmbeddable   *embeddable);
 BonoboEmbeddable     *bonobo_view_get_embeddable         (BonoboView         *view);
@@ -66,8 +65,6 @@ Bonobo_UIContainer    bonobo_view_get_remote_ui_container(BonoboView         *vi
 BonoboUIComponent    *bonobo_view_get_ui_component       (BonoboView         *view);
 void                  bonobo_view_activate_notify        (BonoboView         *view,
 							  gboolean            activated);
-						  
-POA_Bonobo_View__epv *bonobo_view_get_epv                (void);
 
 END_GNOME_DECLS
 

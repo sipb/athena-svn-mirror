@@ -12,7 +12,7 @@
 #define _BONOBO_LISTENER_H_
 
 #include <bonobo/bonobo-arg.h>
-#include <bonobo/bonobo-object.h>
+#include <bonobo/bonobo-xobject.h>
 
 BEGIN_GNOME_DECLS
 
@@ -25,13 +25,15 @@ BEGIN_GNOME_DECLS
 typedef struct _BonoboListenerPrivate BonoboListenerPrivate;
 
 typedef struct {
-        BonoboObject	       parent;
+        BonoboXObject          parent;
 
 	BonoboListenerPrivate *priv;
 } BonoboListener;
 
 typedef struct {
-	BonoboObjectClass parent_class;
+	BonoboXObjectClass     parent_class;
+
+	POA_Bonobo_Listener__epv epv;
 
 	/* Signals */
 	void (* event_notify) (BonoboListener    *listener, 
@@ -52,9 +54,6 @@ GtkType         bonobo_listener_get_type  (void);
 BonoboListener *bonobo_listener_new       (BonoboListenerCallbackFn event_callback, 
 					   gpointer                 user_data);
 
-BonoboListener *bonobo_listener_construct (BonoboListener          *listener, 
-					   Bonobo_Listener          corba_listener);
-
 char           *bonobo_event_make_name    (const char *idl_path, 
 					   const char *kind,
 					   const char *subtype);
@@ -63,10 +62,6 @@ char           *bonobo_event_type         (const char *event_name);
 char           *bonobo_event_subtype      (const char *event_name);
 char           *bonobo_event_kind         (const char *event_name);
 char           *bonobo_event_idl_path     (const char *event_name);
-
-POA_Bonobo_Listener__epv *bonobo_listener_get_epv   (void);
-Bonobo_Listener bonobo_listener_corba_object_create (BonoboObject *object);
-
 
 END_GNOME_DECLS
 

@@ -16,32 +16,7 @@
 #include <gdk/gdkprivate.h>
 #include <gdk/gdkx.h>
 
-/* Parent object class in GTK hierarchy */
-static BonoboObjectClass *bonobo_desktop_window_parent_class;
-
-/* The entry point vectors for the server we provide */
-POA_Bonobo_Desktop_Window__vepv bonobo_desktop_window_vepv;
-
-Bonobo_Desktop_Window
-bonobo_desktop_window_corba_object_create (BonoboObject *object)
-{
-	POA_Bonobo_Desktop_Window *servant;
-	CORBA_Environment ev;
-	
-	servant = (POA_Bonobo_Desktop_Window *) g_new0 (BonoboObjectServant, 1);
-	servant->vepv = &bonobo_desktop_window_vepv;
-
-	CORBA_exception_init (&ev);
-	POA_Bonobo_Desktop_Window__init ((PortableServer_Servant) servant, &ev);
-	if (BONOBO_EX (&ev)){
-		g_free (servant);
-		CORBA_exception_free (&ev);
-		return CORBA_OBJECT_NIL;
-	}
-
-	CORBA_exception_free (&ev);
-	return (Bonobo_Desktop_Window) bonobo_object_activate_servant (object, servant);
-}
+#define PARENT_TYPE BONOBO_X_OBJECT_TYPE
 
 /**
  * bonobo_desktop_window_construct:
@@ -53,18 +28,13 @@ bonobo_desktop_window_corba_object_create (BonoboObject *object)
  */
 BonoboDesktopWindow *
 bonobo_desktop_window_construct (BonoboDesktopWindow *desk_win,
-				Bonobo_Desktop_Window corba_desktop_window,
-				GtkWindow *toplevel)
+				 GtkWindow           *toplevel)
 {
-	g_return_val_if_fail (desk_win != NULL, NULL);
-	g_return_val_if_fail (BONOBO_IS_DESKTOP_WINDOW (desk_win), NULL);
-	g_return_val_if_fail (corba_desktop_window != CORBA_OBJECT_NIL, NULL);
-	g_return_val_if_fail (toplevel != NULL, NULL);
 	g_return_val_if_fail (GTK_IS_WINDOW (toplevel), NULL);
+	g_return_val_if_fail (BONOBO_IS_DESKTOP_WINDOW (desk_win), NULL);
 	
-	bonobo_object_construct (BONOBO_OBJECT (desk_win), corba_desktop_window);
-
 	desk_win->window = toplevel;
+
 	return desk_win;
 }
 
@@ -72,26 +42,17 @@ bonobo_desktop_window_construct (BonoboDesktopWindow *desk_win,
  * bonobo_desktop_window_new:
  * @toplevel: The toplevel Gtk window to control
  * container process.
- *
  */
 BonoboDesktopWindow *
 bonobo_desktop_window_new (GtkWindow *toplevel)
 {
 	BonoboDesktopWindow *desktop_window;
-	Bonobo_Desktop_Window corba_desktop_window;
 	
-	g_return_val_if_fail (toplevel != NULL, NULL);
 	g_return_val_if_fail (GTK_IS_WINDOW (toplevel), NULL);
 
 	desktop_window = gtk_type_new (bonobo_desktop_window_get_type ());
-
-	corba_desktop_window = bonobo_desktop_window_corba_object_create (BONOBO_OBJECT (desktop_window));
-	if (corba_desktop_window == CORBA_OBJECT_NIL){
-		bonobo_object_unref (BONOBO_OBJECT (desktop_window));
-		return NULL;
-	}
 	
-	return bonobo_desktop_window_construct (desktop_window, corba_desktop_window, toplevel);
+	return bonobo_desktop_window_construct (desktop_window, toplevel);
 }
 
 static CORBA_char *
@@ -148,74 +109,28 @@ impl_Desktop_Window_getWindowId (PortableServer_Servant servant, CORBA_Environme
 	return GDK_WINDOW_XWINDOW (GTK_WIDGET (desk_win->window)->window);
 }
 
-/**
- * bonobo_desktop_window_get_epv:
- *
- * Returns: The EPV for the default DekstopWindow implementation. 
- */
-POA_Bonobo_Desktop_Window__epv *
-bonobo_desktop_window_get_epv (void)
+static void
+bonobo_desktop_window_class_init (BonoboDesktopWindowClass *klass)
 {
-	POA_Bonobo_Desktop_Window__epv *epv;
-
-	epv = g_new0 (POA_Bonobo_Desktop_Window__epv, 1);
+	POA_Bonobo_Desktop_Window__epv *epv = &klass->epv;
 
 	epv->_get_title = impl_Desktop_Window_get_title;
 	epv->_set_title = impl_Desktop_Window_set_title;
 	epv->getGeometry = impl_Desktop_Window_getGeometry;
 	epv->setGeometry = impl_Desktop_Window_setGeometry;
 	epv->getWindowId = impl_Desktop_Window_getWindowId;
-
-	return epv;
 }
 
 static void
-init_desktop_window_corba_class (void)
+bonobo_desktop_window_init (GtkObject *object)
 {
-	/* Setup the vector of epvs */
-	bonobo_desktop_window_vepv.Bonobo_Unknown_epv = bonobo_object_get_epv ();
-	bonobo_desktop_window_vepv.Bonobo_Desktop_Window_epv = bonobo_desktop_window_get_epv ();
+	/* nothing to do */
 }
 
-static void
-bonobo_desktop_window_class_init (BonoboDesktopWindowClass *klass)
-{
-	bonobo_desktop_window_parent_class = gtk_type_class (bonobo_object_get_type ());
-	init_desktop_window_corba_class ();
-}
-
-static void
-bonobo_desktop_window_init (BonoboDesktopWindow *desktop_window)
-{
-}
-
-/**
- * bonobo_desktop_window_get_type:
- *
- * Returns: The GtkType corresponding to the BonoboDesktopWindow class.
- */
-GtkType
-bonobo_desktop_window_get_type (void)
-{
-	static GtkType type = 0;
-
-	if (!type){
-		GtkTypeInfo info = {
-			"BonoboDesktopWindow",
-			sizeof (BonoboDesktopWindow),
-			sizeof (BonoboDesktopWindowClass),
-			(GtkClassInitFunc) bonobo_desktop_window_class_init,
-			(GtkObjectInitFunc) bonobo_desktop_window_init,
-			NULL, /* reserved 1 */
-			NULL, /* reserved 2 */
-			(GtkClassInitFunc) NULL
-		};
-
-		type = gtk_type_unique (bonobo_object_get_type (), &info);
-	}
-
-	return type;
-}
+BONOBO_X_TYPE_FUNC_FULL (BonoboDesktopWindow, 
+			   Bonobo_Desktop_Window,
+			   PARENT_TYPE,
+			   bonobo_desktop_window);
 
 /**
  * bonobo_desktop_window_control:

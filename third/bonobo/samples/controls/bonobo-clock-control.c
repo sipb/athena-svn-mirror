@@ -26,6 +26,7 @@ static void
 get_prop (BonoboPropertyBag *bag,
 	  BonoboArg         *arg,
 	  guint              arg_id,
+	  CORBA_Environment *ev,
 	  gpointer           user_data)
 {
 	GtkObject *clock = user_data;
@@ -40,7 +41,7 @@ get_prop (BonoboPropertyBag *bag,
 	}
 
 	default:
-		g_warning ("Unhandled arg %d", arg_id);
+		bonobo_exception_set (ev, ex_Bonobo_PropertyBag_NotFound);
 		break;
 	}
 }
@@ -49,6 +50,7 @@ static void
 set_prop (BonoboPropertyBag *bag,
 	  const BonoboArg   *arg,
 	  guint              arg_id,
+	  CORBA_Environment *ev,
 	  gpointer           user_data)
 {
 	GtkClock *clock = user_data;
@@ -72,7 +74,7 @@ set_prop (BonoboPropertyBag *bag,
 	}
 
 	default:
-		g_warning ("Unhandled arg %d", arg_id);
+		bonobo_exception_set (ev, ex_Bonobo_PropertyBag_NotFound);
 		break;
 	}
 }
@@ -83,6 +85,7 @@ bonobo_clock_control_new (void)
 	BonoboPropertyBag  *pb;
 	BonoboControl      *control;
 	GtkWidget	   *clock;
+	BonoboArg          *def;
 
 	/* Create the control. */
 	clock = gtk_clock_new (GTK_CLOCK_INCREASING);
@@ -93,13 +96,16 @@ bonobo_clock_control_new (void)
 
 	control = bonobo_control_new (clock);
 
+	def = bonobo_arg_new (BONOBO_ARG_BOOLEAN);
+	BONOBO_ARG_SET_BOOLEAN (def, TRUE);
+
 	/* Create the properties. */
 	pb = bonobo_property_bag_new (get_prop, set_prop, clock);
 	bonobo_control_set_properties (control, pb);
 	bonobo_object_unref (BONOBO_OBJECT (pb));
 
 	bonobo_property_bag_add (pb, "running", PROP_RUNNING,
-				 BONOBO_ARG_BOOLEAN, NULL,
+				 BONOBO_ARG_BOOLEAN, def,
 				 "Whether or not the clock is running", 0);
 
 	return BONOBO_OBJECT (control);

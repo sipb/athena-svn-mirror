@@ -1,11 +1,5 @@
 #include <gnome.h>
 
-#if USING_OAF
-#include <liboaf/liboaf.h>
-#else
-#include <libgnorba/gnorba.h>
-#endif
-
 #include <bonobo.h>
 
 #ifndef __BONOBO_AUDIO_ULAW_H__

@@ -314,9 +314,8 @@ bonobo_zoomable_frame_bind_to_zoomable (BonoboZoomableFrame *zoomable_frame, Bon
 	 * Introduce ourselves to the Zoomable.
 	 */
 	CORBA_exception_init (&ev);
-	Bonobo_Zoomable_setFrame (zoomable,
-				   bonobo_object_corba_objref (BONOBO_OBJECT (zoomable_frame)),
-				   &ev);
+	Bonobo_Zoomable_setFrame (zoomable, BONOBO_OBJREF (zoomable_frame),
+				  &ev);
 	if (BONOBO_EX (&ev))
 		bonobo_object_check_env (BONOBO_OBJECT (zoomable_frame), zoomable, &ev);
 	CORBA_exception_free (&ev);

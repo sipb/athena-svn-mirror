@@ -66,6 +66,8 @@ BONOBOX_TEST_CFLAGS = @BONOBOX_TEST_CFLAGS@
 BONOBOX_TEST_LIBS = @BONOBOX_TEST_LIBS@
 BONOBO_AGE = @BONOBO_AGE@
 BONOBO_CURRENT = @BONOBO_CURRENT@
+BONOBO_IDL_CFLAGS = @BONOBO_IDL_CFLAGS@
+BONOBO_IDL_LIBS = @BONOBO_IDL_LIBS@
 BONOBO_INCLUDEDIR = @BONOBO_INCLUDEDIR@
 BONOBO_LIBDIR = @BONOBO_LIBDIR@
 BONOBO_LIBS = @BONOBO_LIBS@
@@ -126,6 +128,8 @@ ORBIT_LIBS = @ORBIT_LIBS@
 PACKAGE = @PACKAGE@
 POFILES = @POFILES@
 POSUB = @POSUB@
+PROF_CFLAGS = @PROF_CFLAGS@
+PROF_LDFLAGS = @PROF_LDFLAGS@
 PTHREAD_LIB = @PTHREAD_LIB@
 RANLIB = @RANLIB@
 USE_INCLUDED_LIBINTL = @USE_INCLUDED_LIBINTL@
@@ -133,6 +137,10 @@ USE_NLS = @USE_NLS@
 VERSION = @VERSION@
 VFS_CFLAGS = @VFS_CFLAGS@
 VFS_LIBS = @VFS_LIBS@
+XML_I18N_EXTRACT = @XML_I18N_EXTRACT@
+XML_I18N_MERGE = @XML_I18N_MERGE@
+XML_I18N_TOOLS_PERL = @XML_I18N_TOOLS_PERL@
+XML_I18N_UPDATE = @XML_I18N_UPDATE@
 XML_LIBS = @XML_LIBS@
 XPM_LIBS = @XPM_LIBS@
 YACC = @YACC@
@@ -144,11 +152,13 @@ l = @l@
 INCLUDES =          -DGNOMELOCALEDIR=\""$(datadir)/locale"\"        	-I. 							-I$(srcdir) -I$(top_srcdir) 				-I$(top_builddir)					-I$(top_srcdir)/bonobo                                  -I$(includedir)                                 	$(BONOBO_TEST_CFLAGS)
 
 
-OAF_FILES =  	Bonobo_Moniker_std.oafinfo			Bonobo_Moniker_gzip.oafinfo			Bonobo_Moniker_http.oafinfo		
+OAF_FILES =  	Bonobo_Moniker_gzip.oaf.in			Bonobo_Moniker_http.oaf.in
 
+
+CLEANFILES =  Bonobo_Moniker_std.oaf Bonobo_Moniker_std.oaf.in
 
 oafdir = $(datadir)/oaf
-oaf_DATA = $(OAF_FILES)
+oaf_DATA = $(OAF_FILES:.oaf.in=.oaf) Bonobo_Moniker_std.oaf
 
 monikerdir = $(libdir)/bonobo/monikers
 moniker_LTLIBRARIES = libmoniker_std.la
@@ -156,7 +166,7 @@ moniker_LTLIBRARIES = libmoniker_std.la
 bin_PROGRAMS =  	bonobo-moniker-gunzip 			bonobo-moniker-http			moniker-test
 
 
-# bonobo-moniker-untar.oafinfo
+# bonobo-moniker-untar.oaf.in
 
 # bonobo-moniker-untar
 
@@ -165,7 +175,7 @@ bin_PROGRAMS =  	bonobo-moniker-gunzip 			bonobo-moniker-http			moniker-test
 moniker_ldadd =  	$(top_builddir)/bonobo/libbonobo.la		$(top_builddir)/bonobo/libbonobox.la		$(BONOBOX_TEST_LIBS)
 
 
-libmoniker_std_la_SOURCES =  	bonobo-moniker-extender-file.c  		bonobo-moniker-extender-stream.c  		bonobo-moniker-file.c				bonobo-moniker-item.c				bonobo-moniker-new.c				bonobo-moniker-oaf.c				bonobo-moniker-cache.c				bonobo-moniker-query.c				bonobo-moniker-query.h				bonobo-moniker-std.h            		bonobo-moniker-std.c			
+libmoniker_std_la_SOURCES =  	bonobo-moniker-extender-file.c  		bonobo-moniker-extender-stream.c  		bonobo-moniker-file.c				bonobo-moniker-item.c				bonobo-moniker-new.c				bonobo-moniker-oaf.c				bonobo-moniker-cache.c				bonobo-stream-cache.h				bonobo-stream-cache.c				bonobo-moniker-query.c				bonobo-moniker-query.h				bonobo-moniker-std.h            		bonobo-moniker-std.c			
 
 
 bonobo_moniker_gunzip_SOURCES =  	bonobo-moniker-gunzip.c			bonobo-moniker-gunzip.h
@@ -192,7 +202,7 @@ moniker_test_SOURCES =  	moniker-test.c
 moniker_test_LDADD =  	$(moniker_ldadd)
 
 
-EXTRA_DIST = $(OAF_FILES)                             		     Bonobo_Moniker_std.oafinfo.in     		
+EXTRA_DIST = $(OAF_FILES)			Bonobo_Moniker_std.oaf.in.in
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
@@ -207,7 +217,8 @@ libmoniker_std_la_LIBADD =
 libmoniker_std_la_OBJECTS =  bonobo-moniker-extender-file.lo \
 bonobo-moniker-extender-stream.lo bonobo-moniker-file.lo \
 bonobo-moniker-item.lo bonobo-moniker-new.lo bonobo-moniker-oaf.lo \
-bonobo-moniker-cache.lo bonobo-moniker-query.lo bonobo-moniker-std.lo
+bonobo-moniker-cache.lo bonobo-stream-cache.lo bonobo-moniker-query.lo \
+bonobo-moniker-std.lo
 PROGRAMS =  $(bin_PROGRAMS)
 
 bonobo_moniker_gunzip_OBJECTS =  bonobo-moniker-gunzip.o
@@ -417,51 +428,42 @@ distdir: $(DISTFILES)
 	  fi; \
 	done
 bonobo-moniker-cache.lo bonobo-moniker-cache.o : bonobo-moniker-cache.c \
-	../config.h ../bonobo/bonobo-storage.h \
-	../bonobo/bonobo-object.h ../bonobo/Bonobo.h \
-	../bonobo/bonobo-stream.h ../bonobo/bonobo-exception.h \
-	../bonobo/bonobo-moniker.h ../bonobo/bonobo-moniker-extender.h \
-	../bonobo/bonobo-moniker-util.h ../bonobo/bonobo-async.h \
-	../bonobo/bonobo-object-client.h bonobo-moniker-std.h \
-	../bonobo/bonobo-moniker-simple.h
-bonobo-moniker-config.o: bonobo-moniker-config.c ../config.h \
-	../bonobo/bonobo-moniker.h ../bonobo/bonobo-object.h \
-	../bonobo/Bonobo.h ../bonobo/bonobo-moniker-util.h \
-	../bonobo/bonobo-async.h ../bonobo/bonobo-object-client.h \
-	../bonobo/bonobo-property-bag.h ../bonobo/bonobo-arg.h \
-	../bonobo/bonobo-property.h ../bonobo/bonobo-generic-factory.h \
-	../bonobo/bonobo-main.h bonobo-moniker-config.h
+	../config.h ../bonobo/bonobo-exception.h ../bonobo/Bonobo.h \
+	bonobo-moniker-std.h ../bonobo/bonobo-moniker-simple.h \
+	../bonobo/bonobo-moniker.h ../bonobo/bonobo-xobject.h \
+	../bonobo/bonobo-object.h ../bonobo/bonobo-moniker-extender.h \
+	bonobo-stream-cache.h ../bonobo/bonobo-stream.h
 bonobo-moniker-extender-file.lo bonobo-moniker-extender-file.o : \
 	bonobo-moniker-extender-file.c ../config.h \
-	../bonobo/bonobo-storage.h ../bonobo/bonobo-object.h \
-	../bonobo/Bonobo.h ../bonobo/bonobo-stream.h \
-	../bonobo/bonobo-exception.h ../bonobo/bonobo-moniker.h \
-	../bonobo/bonobo-moniker-extender.h \
+	../bonobo/bonobo-storage.h ../bonobo/bonobo-xobject.h \
+	../bonobo/Bonobo.h ../bonobo/bonobo-object.h \
+	../bonobo/bonobo-stream.h ../bonobo/bonobo-exception.h \
+	../bonobo/bonobo-moniker.h ../bonobo/bonobo-moniker-extender.h \
 	../bonobo/bonobo-moniker-util.h ../bonobo/bonobo-async.h \
 	../bonobo/bonobo-object-client.h bonobo-moniker-std.h \
 	../bonobo/bonobo-moniker-simple.h
 bonobo-moniker-extender-stream.lo bonobo-moniker-extender-stream.o : \
 	bonobo-moniker-extender-stream.c ../config.h \
-	../bonobo/bonobo-storage.h ../bonobo/bonobo-object.h \
-	../bonobo/Bonobo.h ../bonobo/bonobo-stream.h \
-	../bonobo/bonobo-exception.h ../bonobo/bonobo-moniker.h \
-	../bonobo/bonobo-moniker-extender.h \
-	../bonobo/bonobo-moniker-util.h ../bonobo/bonobo-async.h \
-	../bonobo/bonobo-object-client.h bonobo-moniker-std.h \
-	../bonobo/bonobo-moniker-simple.h
-bonobo-moniker-file.lo bonobo-moniker-file.o : bonobo-moniker-file.c \
-	../config.h ../bonobo/bonobo-storage.h \
-	../bonobo/bonobo-object.h ../bonobo/Bonobo.h \
+	../bonobo/bonobo-storage.h ../bonobo/bonobo-xobject.h \
+	../bonobo/Bonobo.h ../bonobo/bonobo-object.h \
 	../bonobo/bonobo-stream.h ../bonobo/bonobo-exception.h \
 	../bonobo/bonobo-moniker.h ../bonobo/bonobo-moniker-extender.h \
 	../bonobo/bonobo-moniker-util.h ../bonobo/bonobo-async.h \
 	../bonobo/bonobo-object-client.h bonobo-moniker-std.h \
 	../bonobo/bonobo-moniker-simple.h
+bonobo-moniker-file.lo bonobo-moniker-file.o : bonobo-moniker-file.c \
+	../config.h ../bonobo/bonobo-exception.h ../bonobo/Bonobo.h \
+	../bonobo/bonobo-storage.h ../bonobo/bonobo-xobject.h \
+	../bonobo/bonobo-object.h ../bonobo/bonobo-stream.h \
+	../bonobo/bonobo-moniker-util.h ../bonobo/bonobo-async.h \
+	../bonobo/bonobo-object-client.h bonobo-moniker-std.h \
+	../bonobo/bonobo-moniker-simple.h ../bonobo/bonobo-moniker.h \
+	../bonobo/bonobo-moniker-extender.h
 bonobo-moniker-gunzip.o: bonobo-moniker-gunzip.c ../config.h \
 	../bonobo/bonobo.h ../bonobo/bonobo-object.h ../bonobo/Bonobo.h \
-	../bonobo/bonobo-moniker.h ../bonobo/bonobo-moniker-simple.h \
-	../bonobo/bonobo-context.h ../bonobo/bonobo-exception.h \
-	../bonobo/bonobo-item-container.h \
+	../bonobo/bonobo-moniker.h ../bonobo/bonobo-xobject.h \
+	../bonobo/bonobo-moniker-simple.h ../bonobo/bonobo-context.h \
+	../bonobo/bonobo-exception.h ../bonobo/bonobo-item-container.h \
 	../bonobo/bonobo-object-client.h \
 	../bonobo/bonobo-moniker-util.h ../bonobo/bonobo-async.h \
 	../bonobo/bonobo-client-site.h ../bonobo/bonobo-view-frame.h \
@@ -470,8 +472,9 @@ bonobo-moniker-gunzip.o: bonobo-moniker-gunzip.c ../config.h \
 	../bonobo/bonobo-stream.h ../bonobo/bonobo-property-bag.h \
 	../bonobo/bonobo-arg.h ../bonobo/bonobo-property.h \
 	../bonobo/bonobo-transient.h ../bonobo/bonobo-event-source.h \
-	../bonobo/bonobo-ui-container.h ../bonobo/bonobo-win.h \
-	../bonobo/bonobo-ui-xml.h ../bonobo/bonobo-ui-node.h \
+	../bonobo/bonobo-listener.h ../bonobo/bonobo-ui-container.h \
+	../bonobo/bonobo-win.h ../bonobo/bonobo-ui-engine.h \
+	../bonobo/bonobo-ui-sync.h ../bonobo/bonobo-ui-node.h \
 	../bonobo/bonobo-property-bag-xml.h \
 	../bonobo/bonobo-property-control.h ../bonobo/bonobo-control.h \
 	../bonobo/bonobo-ui-component.h ../bonobo/bonobo-zoomable.h \
@@ -490,9 +493,9 @@ bonobo-moniker-gunzip.o: bonobo-moniker-gunzip.c ../config.h \
 	../bonobo/bonobo-moniker-extender.h bonobo-moniker-gunzip.h
 bonobo-moniker-http.o: bonobo-moniker-http.c ../config.h \
 	../bonobo/bonobo.h ../bonobo/bonobo-object.h ../bonobo/Bonobo.h \
-	../bonobo/bonobo-moniker.h ../bonobo/bonobo-moniker-simple.h \
-	../bonobo/bonobo-context.h ../bonobo/bonobo-exception.h \
-	../bonobo/bonobo-item-container.h \
+	../bonobo/bonobo-moniker.h ../bonobo/bonobo-xobject.h \
+	../bonobo/bonobo-moniker-simple.h ../bonobo/bonobo-context.h \
+	../bonobo/bonobo-exception.h ../bonobo/bonobo-item-container.h \
 	../bonobo/bonobo-object-client.h \
 	../bonobo/bonobo-moniker-util.h ../bonobo/bonobo-async.h \
 	../bonobo/bonobo-client-site.h ../bonobo/bonobo-view-frame.h \
@@ -501,8 +504,9 @@ bonobo-moniker-http.o: bonobo-moniker-http.c ../config.h \
 	../bonobo/bonobo-stream.h ../bonobo/bonobo-property-bag.h \
 	../bonobo/bonobo-arg.h ../bonobo/bonobo-property.h \
 	../bonobo/bonobo-transient.h ../bonobo/bonobo-event-source.h \
-	../bonobo/bonobo-ui-container.h ../bonobo/bonobo-win.h \
-	../bonobo/bonobo-ui-xml.h ../bonobo/bonobo-ui-node.h \
+	../bonobo/bonobo-listener.h ../bonobo/bonobo-ui-container.h \
+	../bonobo/bonobo-win.h ../bonobo/bonobo-ui-engine.h \
+	../bonobo/bonobo-ui-sync.h ../bonobo/bonobo-ui-node.h \
 	../bonobo/bonobo-property-bag-xml.h \
 	../bonobo/bonobo-property-control.h ../bonobo/bonobo-control.h \
 	../bonobo/bonobo-ui-component.h ../bonobo/bonobo-zoomable.h \
@@ -519,43 +523,47 @@ bonobo-moniker-http.o: bonobo-moniker-http.c ../config.h \
 	../bonobo/bonobo-print.h ../bonobo/bonobo-print-client.h \
 	bonobo-moniker-http.h
 bonobo-moniker-item.lo bonobo-moniker-item.o : bonobo-moniker-item.c \
-	../config.h ../bonobo/bonobo-moniker.h \
-	../bonobo/bonobo-object.h ../bonobo/Bonobo.h \
-	../bonobo/bonobo-moniker-util.h ../bonobo/bonobo-async.h \
-	../bonobo/bonobo-object-client.h bonobo-moniker-std.h \
-	../bonobo/bonobo-moniker-simple.h \
+	../config.h ../bonobo/bonobo-moniker-util.h \
+	../bonobo/bonobo-async.h ../bonobo/bonobo-object-client.h \
+	../bonobo/Bonobo.h ../bonobo/bonobo-object.h \
+	bonobo-moniker-std.h ../bonobo/bonobo-moniker-simple.h \
+	../bonobo/bonobo-moniker.h ../bonobo/bonobo-xobject.h \
 	../bonobo/bonobo-moniker-extender.h
 bonobo-moniker-new.lo bonobo-moniker-new.o : bonobo-moniker-new.c \
-	../config.h ../bonobo/bonobo-moniker.h \
-	../bonobo/bonobo-object.h ../bonobo/Bonobo.h \
-	../bonobo/bonobo-moniker-util.h ../bonobo/bonobo-async.h \
-	../bonobo/bonobo-object-client.h bonobo-moniker-std.h \
-	../bonobo/bonobo-moniker-simple.h \
+	../config.h ../bonobo/bonobo-moniker-util.h \
+	../bonobo/bonobo-async.h ../bonobo/bonobo-object-client.h \
+	../bonobo/Bonobo.h ../bonobo/bonobo-object.h \
+	bonobo-moniker-std.h ../bonobo/bonobo-moniker-simple.h \
+	../bonobo/bonobo-moniker.h ../bonobo/bonobo-xobject.h \
 	../bonobo/bonobo-moniker-extender.h
 bonobo-moniker-oaf.lo bonobo-moniker-oaf.o : bonobo-moniker-oaf.c \
-	../config.h ../bonobo/bonobo-moniker.h \
-	../bonobo/bonobo-object.h ../bonobo/Bonobo.h \
-	../bonobo/bonobo-moniker-util.h ../bonobo/bonobo-async.h \
-	../bonobo/bonobo-object-client.h bonobo-moniker-std.h \
-	../bonobo/bonobo-moniker-simple.h \
+	../config.h ../bonobo/bonobo-moniker-util.h \
+	../bonobo/bonobo-async.h ../bonobo/bonobo-object-client.h \
+	../bonobo/Bonobo.h ../bonobo/bonobo-object.h \
+	bonobo-moniker-std.h ../bonobo/bonobo-moniker-simple.h \
+	../bonobo/bonobo-moniker.h ../bonobo/bonobo-xobject.h \
 	../bonobo/bonobo-moniker-extender.h
 bonobo-moniker-query.lo bonobo-moniker-query.o : bonobo-moniker-query.c \
 	../config.h ../bonobo/bonobo-moniker.h \
-	../bonobo/bonobo-object.h ../bonobo/Bonobo.h \
-	../bonobo/bonobo-moniker-util.h ../bonobo/bonobo-async.h \
-	../bonobo/bonobo-object-client.h bonobo-moniker-query.h
+	../bonobo/bonobo-xobject.h ../bonobo/Bonobo.h \
+	../bonobo/bonobo-object.h ../bonobo/bonobo-moniker-util.h \
+	../bonobo/bonobo-async.h ../bonobo/bonobo-object-client.h \
+	bonobo-moniker-query.h
 bonobo-moniker-std.lo bonobo-moniker-std.o : bonobo-moniker-std.c \
-	../config.h ../bonobo/bonobo-object.h ../bonobo/Bonobo.h \
-	../bonobo/bonobo-context.h ../bonobo/bonobo-moniker.h \
-	../bonobo/bonobo-shlib-factory.h \
-	../bonobo/bonobo-generic-factory.h ../bonobo/bonobo-main.h \
-	bonobo-moniker-std.h ../bonobo/bonobo-moniker-simple.h \
-	../bonobo/bonobo-moniker-extender.h
+	../config.h ../bonobo/bonobo-shlib-factory.h ../bonobo/Bonobo.h \
+	../bonobo/bonobo-object.h ../bonobo/bonobo-generic-factory.h \
+	../bonobo/bonobo-exception.h bonobo-moniker-std.h \
+	../bonobo/bonobo-moniker-simple.h ../bonobo/bonobo-moniker.h \
+	../bonobo/bonobo-xobject.h ../bonobo/bonobo-moniker-extender.h
+bonobo-stream-cache.lo bonobo-stream-cache.o : bonobo-stream-cache.c \
+	../config.h ../bonobo/bonobo-exception.h ../bonobo/Bonobo.h \
+	../bonobo/bonobo-stream-client.h bonobo-stream-cache.h \
+	../bonobo/bonobo-stream.h ../bonobo/bonobo-object.h
 moniker-test.o: moniker-test.c ../config.h ../bonobo/bonobo.h \
 	../bonobo/bonobo-object.h ../bonobo/Bonobo.h \
-	../bonobo/bonobo-moniker.h ../bonobo/bonobo-moniker-simple.h \
-	../bonobo/bonobo-context.h ../bonobo/bonobo-exception.h \
-	../bonobo/bonobo-item-container.h \
+	../bonobo/bonobo-moniker.h ../bonobo/bonobo-xobject.h \
+	../bonobo/bonobo-moniker-simple.h ../bonobo/bonobo-context.h \
+	../bonobo/bonobo-exception.h ../bonobo/bonobo-item-container.h \
 	../bonobo/bonobo-object-client.h \
 	../bonobo/bonobo-moniker-util.h ../bonobo/bonobo-async.h \
 	../bonobo/bonobo-client-site.h ../bonobo/bonobo-view-frame.h \
@@ -564,8 +572,9 @@ moniker-test.o: moniker-test.c ../config.h ../bonobo/bonobo.h \
 	../bonobo/bonobo-stream.h ../bonobo/bonobo-property-bag.h \
 	../bonobo/bonobo-arg.h ../bonobo/bonobo-property.h \
 	../bonobo/bonobo-transient.h ../bonobo/bonobo-event-source.h \
-	../bonobo/bonobo-ui-container.h ../bonobo/bonobo-win.h \
-	../bonobo/bonobo-ui-xml.h ../bonobo/bonobo-ui-node.h \
+	../bonobo/bonobo-listener.h ../bonobo/bonobo-ui-container.h \
+	../bonobo/bonobo-win.h ../bonobo/bonobo-ui-engine.h \
+	../bonobo/bonobo-ui-sync.h ../bonobo/bonobo-ui-node.h \
 	../bonobo/bonobo-property-bag-xml.h \
 	../bonobo/bonobo-property-control.h ../bonobo/bonobo-control.h \
 	../bonobo/bonobo-ui-component.h ../bonobo/bonobo-zoomable.h \
@@ -580,11 +589,6 @@ moniker-test.o: moniker-test.c ../config.h ../bonobo/bonobo.h \
 	../bonobo/bonobo-storage.h ../bonobo/bonobo-selector.h \
 	../bonobo/bonobo-selector-widget.h ../bonobo/bonobo-widget.h \
 	../bonobo/bonobo-print.h ../bonobo/bonobo-print-client.h
-std-moniker.o: std-moniker.c ../config.h ../bonobo/bonobo-object.h \
-	../bonobo/Bonobo.h ../bonobo/bonobo-context.h \
-	../bonobo/bonobo-moniker.h ../bonobo/bonobo-generic-factory.h \
-	../bonobo/bonobo-main.h bonobo-moniker-std.h \
-	../bonobo/bonobo-moniker-simple.h
 
 info-am:
 info: info-am
@@ -618,6 +622,7 @@ installdirs:
 mostlyclean-generic:
 
 clean-generic:
+	-test -z "$(CLEANFILES)" || rm -f $(CLEANFILES)
 
 distclean-generic:
 	-rm -f Makefile $(CONFIG_CLEAN_FILES)
@@ -632,7 +637,7 @@ mostlyclean: mostlyclean-am
 
 clean-am:  clean-monikerLTLIBRARIES clean-compile clean-libtool \
 		clean-binPROGRAMS clean-tags clean-generic \
-		mostlyclean-am clean-local
+		mostlyclean-am
 
 clean: clean-am
 
@@ -669,12 +674,11 @@ distclean-generic clean-generic maintainer-clean-generic clean \
 mostlyclean distclean maintainer-clean
 
 
-Bonobo_Moniker_std.oafinfo : $(srcdir)/Bonobo_Moniker_std.oafinfo.in 
+Bonobo_Moniker_std.oaf.in : $(srcdir)/Bonobo_Moniker_std.oaf.in.in
 	sed -e "s|\@MONIKER_LIBDIR\@|$(monikerdir)|" \
-	 $(srcdir)/Bonobo_Moniker_std.oafinfo.in > Bonobo_Moniker_std.oafinfo 
+	 $(srcdir)/Bonobo_Moniker_std.oaf.in.in > Bonobo_Moniker_std.oaf.in
 
-clean-local:
-	-rm -f Bonobo_Moniker_std.oafinfo
+@XML_I18N_MERGE_OAF_RULE@
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

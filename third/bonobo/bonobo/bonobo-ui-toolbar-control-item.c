@@ -246,8 +246,7 @@ bonobo_ui_toolbar_control_item_construct (
 	gtk_widget_show (GTK_WIDGET (priv->control));
 	gtk_widget_show (priv->box);
 	gtk_widget_show   (priv->eventbox);
-        gtk_container_add (GTK_CONTAINER (control_item),
-			   priv->eventbox);
+        gtk_container_add (GTK_CONTAINER (control_item), priv->eventbox);
 
         return GTK_WIDGET (control_item);
 }

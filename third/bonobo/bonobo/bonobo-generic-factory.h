@@ -14,7 +14,9 @@
 #include <gtk/gtkobject.h>
 #include <bonobo/Bonobo.h>
 #include <bonobo/bonobo-object.h>
+#include <gnome.h>
 #include <liboaf/oaf.h>
+#include <liboaf/liboaf.h>
 
 BEGIN_GNOME_DECLS
  
@@ -23,6 +25,46 @@ BEGIN_GNOME_DECLS
 #define BONOBO_GENERIC_FACTORY_CLASS(k)    (GTK_CHECK_CLASS_CAST((k), BONOBO_GENERIC_FACTORY_TYPE, BonoboGenericFactoryClass))
 #define BONOBO_IS_GENERIC_FACTORY(o)       (GTK_CHECK_TYPE ((o), BONOBO_GENERIC_FACTORY_TYPE))
 #define BONOBO_IS_GENERIC_FACTORY_CLASS(k) (GTK_CHECK_CLASS_TYPE ((k), BONOBO_GENERIC_FACTORY_TYPE))
+
+#define BONOBO_OAF_FACTORY(oafiid, descr, version, fn, data)                  \
+int main (int argc, char *argv [])                                            \
+{                                                                             \
+	BonoboGenericFactory *factory;                                        \
+	CORBA_Environment ev;                                                 \
+	CORBA_ORB orb;                                                        \
+                                                                              \
+	CORBA_exception_init (&ev);                                           \
+	gnome_init_with_popt_table (descr, version, argc, argv,               \
+				    oaf_popt_options, 0, NULL);               \
+        orb = oaf_init (argc, argv);                                          \
+	if (!bonobo_init (orb, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL))           \
+		g_error (_("Could not initialize Bonobo"));                   \
+	factory = bonobo_generic_factory_new (oafiid, fn, data);              \
+	bonobo_running_context_auto_exit_unref (BONOBO_OBJECT (factory));     \
+	bonobo_main ();                                                       \
+	CORBA_exception_free (&ev);                                           \
+	return 0;                                                             \
+}                                                                             
+
+#define BONOBO_OAF_FACTORY_MULTI(oafiid, descr, version, fn, data)            \
+int main (int argc, char *argv [])                                            \
+{                                                                             \
+	BonoboGenericFactory *factory;                                        \
+	CORBA_Environment ev;                                                 \
+	CORBA_ORB orb;                                                        \
+                                                                              \
+	CORBA_exception_init (&ev);                                           \
+	gnome_init_with_popt_table (descr, version, argc, argv,               \
+				    oaf_popt_options, 0, NULL);               \
+        orb = oaf_init (argc, argv);                                          \
+	if (!bonobo_init (orb, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL))           \
+		g_error (_("Could not initialize Bonobo"));                   \
+	factory = bonobo_generic_factory_new_multi (oafiid, fn, data);        \
+	bonobo_running_context_auto_exit_unref (BONOBO_OBJECT (factory));     \
+	bonobo_main ();                                                       \
+	CORBA_exception_free (&ev);                                           \
+	return 0;                                                             \
+}                                                                             
 
 typedef struct _BonoboGenericFactoryPrivate BonoboGenericFactoryPrivate;
 typedef struct _BonoboGenericFactory        BonoboGenericFactory;
@@ -53,7 +95,8 @@ typedef struct {
 GtkType               bonobo_generic_factory_get_type  (void);
 
 CORBA_Object          bonobo_generic_factory_corba_object_create (
-	BonoboObject *object);
+	BonoboObject *object,
+	gpointer      shlib_id);
 
 BonoboGenericFactory *bonobo_generic_factory_new (
 	const char            *component_id,

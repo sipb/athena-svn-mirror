@@ -17,7 +17,10 @@ bonobo_selector_LDADD = 			\
 	$(INTLLIBS)
 
 oafdir = $(datadir)/oaf
-oaf_DATA = Bonobo_Selector.oafinfo
+oaf_in_files = Bonobo_Selector.oaf.in
+oaf_DATA = $(oaf_in_files:.oaf.in=.oaf)
 
-EXTRA_DIST = $(oaf_DATA)
+@XML_I18N_MERGE_OAF_RULE@
+
+EXTRA_DIST = $(oaf_in_files) $(oaf_DATA)
 

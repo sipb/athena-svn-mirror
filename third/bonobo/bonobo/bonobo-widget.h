@@ -43,7 +43,8 @@ typedef struct {
 } BonoboWidgetClass;
 
 GtkType             bonobo_widget_get_type                 (void);
-BonoboObjectClient *bonobo_widget_get_server               (BonoboWidget     *bw);
+BonoboObjectClient *bonobo_widget_get_server               (BonoboWidget      *bw);
+Bonobo_Unknown      bonobo_widget_get_objref               (BonoboWidget      *bw);
 
 /*
  * BonoboWidget for Controls.

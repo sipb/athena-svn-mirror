@@ -13,7 +13,7 @@
 
 #include <libgnome/gnome-defs.h>
 #include <gtk/gtkobject.h>
-#include <bonobo/bonobo-object.h>
+#include <bonobo/bonobo-xobject.h>
 #include <bonobo/bonobo-moniker.h>
 
 BEGIN_GNOME_DECLS
@@ -29,17 +29,15 @@ typedef GList BonoboClientSiteList;
 typedef struct _BonoboItemContainerPrivate BonoboItemContainerPrivate;
 
 typedef struct {
-	BonoboObject base;
-
-	BonoboClientSiteList *client_sites;
-	
-	BonoboMoniker *moniker;
+	BonoboXObject base;
 
 	BonoboItemContainerPrivate *priv;
 } BonoboItemContainer;
 
 typedef struct {
-	BonoboObjectClass parent_class;
+	BonoboXObjectClass parent_class;
+
+	POA_Bonobo_ItemContainer__epv epv;
 
 	Bonobo_Unknown (*get_object) (BonoboItemContainer *item_container,
 				      CORBA_char          *item_name,
@@ -47,18 +45,15 @@ typedef struct {
 				      CORBA_Environment   *ev);
 } BonoboItemContainerClass;
 
-GtkType              bonobo_item_container_get_type    (void);
-BonoboItemContainer *bonobo_item_container_new         (void);
-BonoboItemContainer *bonobo_item_container_construct   (BonoboItemContainer *container,
-							Bonobo_ItemContainer container_corba);
-BonoboMoniker       *bonobo_item_container_get_moniker (BonoboItemContainer *container);
+GtkType              bonobo_item_container_get_type       (void);
+BonoboItemContainer *bonobo_item_container_new            (void);
 
-void                 bonobo_item_container_add         (BonoboItemContainer *container,
-							BonoboObject    *object);
-void                 bonobo_item_container_remove      (BonoboItemContainer *container,
-							BonoboObject    *object);
+void                 bonobo_item_container_add            (BonoboItemContainer *container,
+							   const char          *name, 
+							   BonoboObject        *object);
 
-POA_Bonobo_ItemContainer__epv *bonobo_item_container_get_epv (void);
+void                 bonobo_item_container_remove_by_name (BonoboItemContainer *container,
+							   const char          *name);
 
 END_GNOME_DECLS
 

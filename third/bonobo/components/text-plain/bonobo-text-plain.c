@@ -6,9 +6,6 @@
  *
  */
 #include <config.h>
-#include <gnome.h>
-
-#include <liboaf/liboaf.h>
 
 #include <bonobo.h>
 
@@ -41,16 +38,6 @@ static char * bolt_xpm[] = {
 ".+@.      ",
 "...       "};
 #endif
-
-/*
- * Number of running objects
- */ 
-static int running_objects = 0;
-
-/*
- * Our generic factory
- */
-static BonoboGenericFactory *factory;
 
 /*
  * BonoboControl data
@@ -248,17 +235,6 @@ bonobo_object_destroy_cb (BonoboControl *bonobo_object,
 	free_text (bonobo_object_data);
 	destroy_control (bonobo_object_data);
 	g_free (bonobo_object_data);
-
-	running_objects--;
-	
-	if (running_objects > 0)
-		return;
-
-	if (factory) {
-		bonobo_object_unref (BONOBO_OBJECT (factory));
-		factory = NULL;
-		gtk_main_quit ();
-	}
 }
 
 
@@ -686,8 +662,6 @@ generic_factory (BonoboGenericFactory *this, void *data)
 	gtk_signal_connect (GTK_OBJECT (bonobo_object), "activate",
 			    GTK_SIGNAL_FUNC (control_activate_cb), bonobo_object_data);
 
-	running_objects++;
-
 	gtk_signal_connect (GTK_OBJECT (bonobo_object), "destroy",
 			    GTK_SIGNAL_FUNC (bonobo_object_destroy_cb),
 			    bonobo_object_data);
@@ -735,40 +709,8 @@ generic_factory (BonoboGenericFactory *this, void *data)
 	return BONOBO_OBJECT (bonobo_object);
 } /* generic_factory */
 
-static void
-init_bonobo_text_plain_factory (void)
-{
-	factory = bonobo_generic_factory_new (
-                "OAFIID:bonobo_text-plain_factory:ac6af073-f87c-4f69-b6a2-2ae4aea0bb85",
-		generic_factory, NULL);
-} /* init_bonobo_text_plain_factory */
 
-static void
-init_server_factory (int argc, char **argv)
-{
-	CORBA_ORB orb;
-	CORBA_Environment ev;
-
-	CORBA_exception_init (&ev);
-	
-        gnome_init_with_popt_table("bonobo-text-plain", VERSION,
-				   argc, argv,
-				   oaf_popt_options, 0, NULL); 
-	orb = oaf_init (argc, argv);
-
-	if (bonobo_init (orb, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL) == FALSE)
-		g_error (_("I could not initialize Bonobo"));
-
-	CORBA_exception_free (&ev);
-} /* init_server_factory */
-
-int
-main (int argc, char **argv)
-{
-	init_server_factory (argc, argv);
-	init_bonobo_text_plain_factory ();
-
-	bonobo_main ();
-
-	return 0;
-} /* main */
+BONOBO_OAF_FACTORY ("OAFIID:Bonobo_Sample_Text_Factory",
+		    "bonobo-text-plain", VERSION,
+		    generic_factory,
+		    NULL)

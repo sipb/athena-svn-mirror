@@ -66,6 +66,8 @@ BONOBOX_TEST_CFLAGS = @BONOBOX_TEST_CFLAGS@
 BONOBOX_TEST_LIBS = @BONOBOX_TEST_LIBS@
 BONOBO_AGE = @BONOBO_AGE@
 BONOBO_CURRENT = @BONOBO_CURRENT@
+BONOBO_IDL_CFLAGS = @BONOBO_IDL_CFLAGS@
+BONOBO_IDL_LIBS = @BONOBO_IDL_LIBS@
 BONOBO_INCLUDEDIR = @BONOBO_INCLUDEDIR@
 BONOBO_LIBDIR = @BONOBO_LIBDIR@
 BONOBO_LIBS = @BONOBO_LIBS@
@@ -126,6 +128,8 @@ ORBIT_LIBS = @ORBIT_LIBS@
 PACKAGE = @PACKAGE@
 POFILES = @POFILES@
 POSUB = @POSUB@
+PROF_CFLAGS = @PROF_CFLAGS@
+PROF_LDFLAGS = @PROF_LDFLAGS@
 PTHREAD_LIB = @PTHREAD_LIB@
 RANLIB = @RANLIB@
 USE_INCLUDED_LIBINTL = @USE_INCLUDED_LIBINTL@
@@ -133,6 +137,10 @@ USE_NLS = @USE_NLS@
 VERSION = @VERSION@
 VFS_CFLAGS = @VFS_CFLAGS@
 VFS_LIBS = @VFS_LIBS@
+XML_I18N_EXTRACT = @XML_I18N_EXTRACT@
+XML_I18N_MERGE = @XML_I18N_MERGE@
+XML_I18N_TOOLS_PERL = @XML_I18N_TOOLS_PERL@
+XML_I18N_UPDATE = @XML_I18N_UPDATE@
 XML_LIBS = @XML_LIBS@
 XPM_LIBS = @XPM_LIBS@
 YACC = @YACC@
@@ -153,10 +161,10 @@ bonobo_text_plain_LDADD =  	$(top_builddir)/bonobo/libbonobo.la		$(top_builddir)
 
 
 oafdir = $(datadir)/oaf
+oaf_in_files = Bonobo_Sample_Text.oaf.in
+oaf_DATA = $(oaf_in_files:.oaf.in=.oaf)
 
-oaf_DATA = Bonobo_Sample_Text.oafinfo
-
-EXTRA_DIST = $(oaf_DATA)
+EXTRA_DIST = $(oaf_in_files) $(oaf_DATA)
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../../config.h
 CONFIG_CLEAN_FILES = 
@@ -329,6 +337,7 @@ distdir: $(DISTFILES)
 bonobo-text-plain.o: bonobo-text-plain.c ../../config.h \
 	../../bonobo/bonobo.h ../../bonobo/bonobo-object.h \
 	../../bonobo/Bonobo.h ../../bonobo/bonobo-moniker.h \
+	../../bonobo/bonobo-xobject.h \
 	../../bonobo/bonobo-moniker-simple.h \
 	../../bonobo/bonobo-context.h ../../bonobo/bonobo-exception.h \
 	../../bonobo/bonobo-item-container.h \
@@ -343,8 +352,10 @@ bonobo-text-plain.o: bonobo-text-plain.c ../../config.h \
 	../../bonobo/bonobo-arg.h ../../bonobo/bonobo-property.h \
 	../../bonobo/bonobo-transient.h \
 	../../bonobo/bonobo-event-source.h \
+	../../bonobo/bonobo-listener.h \
 	../../bonobo/bonobo-ui-container.h ../../bonobo/bonobo-win.h \
-	../../bonobo/bonobo-ui-xml.h ../../bonobo/bonobo-ui-node.h \
+	../../bonobo/bonobo-ui-engine.h ../../bonobo/bonobo-ui-sync.h \
+	../../bonobo/bonobo-ui-node.h \
 	../../bonobo/bonobo-property-bag-xml.h \
 	../../bonobo/bonobo-property-control.h \
 	../../bonobo/bonobo-control.h \
@@ -440,6 +451,8 @@ all-redirect all-am all installdirs mostlyclean-generic \
 distclean-generic clean-generic maintainer-clean-generic clean \
 mostlyclean distclean maintainer-clean
 
+
+@XML_I18N_MERGE_OAF_RULE@
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

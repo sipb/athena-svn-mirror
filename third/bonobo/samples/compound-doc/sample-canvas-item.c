@@ -1,7 +1,5 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 #include <config.h>
-#include <gnome.h>
-#include <liboaf/liboaf.h>
 
 #include <bonobo/Bonobo.h>
 #include <bonobo/bonobo.h>
@@ -120,47 +118,7 @@ bonobo_item_factory (BonoboGenericFactory *factory, void *closure)
 	return (BonoboObject*) server;
 }
 
-static BonoboGenericFactory *factory = NULL;
-
-static void
-last_unref_cb (BonoboObject *bonobo_object,
-	       gpointer      dummy)
-{
-	bonobo_object_unref (BONOBO_OBJECT (factory));
-	gtk_main_quit ();
-}
-
-int
-main (int argc, char *argv [])
-{
-	CORBA_Environment ev;
-	CORBA_ORB orb;
- 
-	CORBA_exception_init (&ev);
-
-        gnome_init_with_popt_table ("bonobo-sample-canvas-item", "1.0",
-				    argc, argv, oaf_popt_options, 0, NULL); 
-
-	orb = oaf_init (argc, argv);
-	
-	if (bonobo_init (orb, NULL, NULL) == FALSE)
-		g_error ("Can not bonobo_init");
-
-	gtk_widget_push_visual (gdk_rgb_get_visual ());
-	gtk_widget_push_colormap (gdk_rgb_get_cmap ());
-
-	factory = bonobo_generic_factory_new (
-		"OAFIID:Bonobo_Sample_CanvasItemFactory",
-		bonobo_item_factory, NULL);
-
-	gtk_signal_connect (GTK_OBJECT (bonobo_context_running_get ()),
-			    "last_unref",
-			    GTK_SIGNAL_FUNC (last_unref_cb),
-			    NULL);
-
-	bonobo_main ();
-
-	CORBA_exception_free (&ev);
-
-	return 0;
-}
+BONOBO_OAF_FACTORY ("OAFIID:Bonobo_Sample_CanvasItem_Factory",
+		    "bonobo-sample-canvas-item", VERSION, 
+		    bonobo_item_factory,
+		    NULL)

@@ -22,6 +22,8 @@
 #include <gtk/gtkbox.h>
 #include <gtk/gtkmain.h>
 
+#define PARENT_TYPE BONOBO_X_OBJECT_TYPE
+
 enum {
 	SET_FRAME,
 	ACTIVATE,
@@ -112,7 +114,7 @@ bonobo_control_windowid_from_x11 (guint32 x11_id)
  * if the BonoboControl is destroyed normally, i.e. the user unrefs
  * the BonoboControl away.
  */
-static void
+static gboolean
 bonobo_control_plug_destroy_event_cb (GtkWidget   *plug,
 				      GdkEventAny *event,
 				      gpointer     closure)
@@ -120,7 +122,7 @@ bonobo_control_plug_destroy_event_cb (GtkWidget   *plug,
 	BonoboControl *control = BONOBO_CONTROL (closure);
 
 	if (control->priv->plug == NULL)
-		return;
+		return FALSE;
 
 	if (control->priv->plug != plug)
 		g_warning ("Destroying incorrect plug!");
@@ -136,6 +138,8 @@ bonobo_control_plug_destroy_event_cb (GtkWidget   *plug,
 	 * Destroy this plug's BonoboControl.
 	 */
 	bonobo_object_unref (BONOBO_OBJECT (control));
+
+	return FALSE;
 }
 
 /*
@@ -430,8 +434,7 @@ impl_Bonobo_Control_getProperties (PortableServer_Servant  servant,
 	if (control->priv->propbag == NULL)
 		return CORBA_OBJECT_NIL;
 
-	corba_propbag = bonobo_object_corba_objref (
-		BONOBO_OBJECT (control->priv->propbag));
+	corba_propbag = BONOBO_OBJREF (control->priv->propbag);
 
 	return bonobo_object_dup_ref (corba_propbag, ev);
 }
@@ -466,45 +469,62 @@ impl_Bonobo_Control_unrealize (PortableServer_Servant servant,
 	process_events (servant);
 }
 
-/**
- * bonobo_control_corba_object_create:
- * @object: the GtkObject that will wrap the CORBA object
- *
- * Creates and activates the CORBA object that is wrapped by the
- * @object BonoboObject.
- *
- * Returns: An activated object reference to the created object
- * or %CORBA_OBJECT_NIL in case of failure.
- */
-Bonobo_Control
-bonobo_control_corba_object_create (BonoboObject *object)
+static CORBA_boolean
+impl_Bonobo_Control_focus (PortableServer_Servant servant,
+			   Bonobo_Control_FocusDirection corba_direction,
+			   CORBA_Environment *ev)
 {
-	POA_Bonobo_Control *servant;
-	CORBA_Environment ev;
-	
-	servant = (POA_Bonobo_Control *) g_new0 (BonoboObjectServant, 1);
-	servant->vepv = &bonobo_control_vepv;
+	BonoboControl *control;
+	BonoboControlPrivate *priv;
+	GtkDirectionType direction;
 
-	CORBA_exception_init (&ev);
-	POA_Bonobo_Control__init ((PortableServer_Servant) servant, &ev);
-	if (BONOBO_EX (&ev)){
-		g_free (servant);
-		CORBA_exception_free (&ev);
-		return CORBA_OBJECT_NIL;
+	control = BONOBO_CONTROL (bonobo_object_from_servant (servant));
+	priv = control->priv;
+
+	/* FIXME: this will not work for local controls. */
+
+	if (!priv->plug)
+		return FALSE;
+
+	switch (corba_direction) {
+	case Bonobo_Control_TAB_FORWARD:
+		direction = GTK_DIR_TAB_FORWARD;
+		break;
+
+	case Bonobo_Control_TAB_BACKWARD:
+		direction = GTK_DIR_TAB_BACKWARD;
+		break;
+
+	case Bonobo_Control_UP:
+		direction = GTK_DIR_UP;
+		break;
+
+	case Bonobo_Control_DOWN:
+		direction = GTK_DIR_DOWN;
+		break;
+
+	case Bonobo_Control_LEFT:
+		direction = GTK_DIR_LEFT;
+		break;
+
+	case Bonobo_Control_RIGHT:
+		direction = GTK_DIR_RIGHT;
+		break;
+
+	default:
+		/* Hmmm, we should throw an exception. */
+		return FALSE;
 	}
 
-	CORBA_exception_free (&ev);
-	return (Bonobo_Control) bonobo_object_activate_servant (object, servant);
+	return gtk_container_focus (GTK_CONTAINER (priv->plug), direction);
 }
 
 BonoboControl *
 bonobo_control_construct (BonoboControl  *control,
-			  Bonobo_Control  corba_control,
 			  GtkWidget      *widget)
 {
-	g_return_val_if_fail (BONOBO_IS_CONTROL (control), NULL);
-	g_return_val_if_fail (corba_control != CORBA_OBJECT_NIL, NULL);
 	g_return_val_if_fail (GTK_IS_WIDGET (widget), NULL);
+	g_return_val_if_fail (BONOBO_IS_CONTROL (control), NULL);
 
 	/*
 	 * This sets up the X handler for Bonobo objects.  We basically will
@@ -512,8 +532,6 @@ bonobo_control_construct (BonoboControl  *control,
 	 * windows of the container and our container without telling us).
 	 */
 	bonobo_setup_x_error_handler ();
-
-	bonobo_object_construct (BONOBO_OBJECT (control), corba_control);
 
 	control->priv->widget = GTK_WIDGET (widget);
 	gtk_object_ref (GTK_OBJECT (widget));
@@ -539,19 +557,12 @@ BonoboControl *
 bonobo_control_new (GtkWidget *widget)
 {
 	BonoboControl *control;
-	Bonobo_Control corba_control;
 	
 	g_return_val_if_fail (GTK_IS_WIDGET (widget), NULL);
 
 	control = gtk_type_new (bonobo_control_get_type ());
-
-	corba_control = bonobo_control_corba_object_create (BONOBO_OBJECT (control));
-	if (corba_control == CORBA_OBJECT_NIL) {
-		bonobo_object_unref (BONOBO_OBJECT (control));
-		return NULL;
-	}
 	
-	return bonobo_control_construct (control, corba_control, widget);
+	return bonobo_control_construct (control, widget);
 }
 
 /**
@@ -639,6 +650,8 @@ bonobo_control_destroy (GtkObject *object)
 		bonobo_ui_component_unset_container (control->priv->ui_component);
 		bonobo_object_unref (BONOBO_OBJECT (control->priv->ui_component));
 	}
+
+	GTK_OBJECT_CLASS (bonobo_control_parent_class)->destroy (object);
 }
 
 static void
@@ -670,39 +683,6 @@ bonobo_control_finalize (GtkObject *object)
 	g_free (control->priv);
 
 	GTK_OBJECT_CLASS (bonobo_control_parent_class)->finalize (object);
-}
-
-/**
- * bonobo_control_get_epv:
- *
- * Returns: The EPV for the default BonoboControl implementation.  
- */
-POA_Bonobo_Control__epv *
-bonobo_control_get_epv (void)
-{
-	POA_Bonobo_Control__epv *epv;
-
-	epv = g_new0 (POA_Bonobo_Control__epv, 1);
-
-	epv->activate       = impl_Bonobo_Control_activate;
-	epv->setSize        = impl_Bonobo_Control_setSize;
-	epv->setWindowId    = impl_Bonobo_Control_setWindowId;
-	epv->setState       = impl_Bonobo_Control_setState;
-	epv->setFrame       = impl_Bonobo_Control_setFrame;
-	epv->getDesiredSize = impl_Bonobo_Control_getDesiredSize;
-	epv->getProperties  = impl_Bonobo_Control_getProperties;
-	epv->realize        = impl_Bonobo_Control_realize;
-	epv->unrealize      = impl_Bonobo_Control_unrealize;
-
-	return epv;
-}
-
-static void
-init_control_corba_class (void)
-{
-	/* Setup the vector of epvs */
-	bonobo_control_vepv.Bonobo_Unknown_epv = bonobo_object_get_epv ();
-	bonobo_control_vepv.Bonobo_Control_epv = bonobo_control_get_epv ();
 }
 
 /**
@@ -925,8 +905,9 @@ static void
 bonobo_control_class_init (BonoboControlClass *klass)
 {
 	GtkObjectClass *object_class = (GtkObjectClass *)klass;
+	POA_Bonobo_Control__epv *epv;
 
-	bonobo_control_parent_class = gtk_type_class (bonobo_object_get_type ());
+	bonobo_control_parent_class = gtk_type_class (PARENT_TYPE);
 
 	control_signals [SET_FRAME] =
                 gtk_signal_new ("set_frame",
@@ -947,10 +928,21 @@ bonobo_control_class_init (BonoboControlClass *klass)
 
 	gtk_object_class_add_signals (object_class, control_signals, LAST_SIGNAL);
 
-	object_class->destroy = bonobo_control_destroy;
+	object_class->destroy  = bonobo_control_destroy;
 	object_class->finalize = bonobo_control_finalize;
 
-	init_control_corba_class ();
+	epv = &klass->epv;
+
+	epv->activate       = impl_Bonobo_Control_activate;
+	epv->setSize        = impl_Bonobo_Control_setSize;
+	epv->setWindowId    = impl_Bonobo_Control_setWindowId;
+	epv->setState       = impl_Bonobo_Control_setState;
+	epv->setFrame       = impl_Bonobo_Control_setFrame;
+	epv->getDesiredSize = impl_Bonobo_Control_getDesiredSize;
+	epv->getProperties  = impl_Bonobo_Control_getProperties;
+	epv->realize        = impl_Bonobo_Control_realize;
+	epv->unrealize      = impl_Bonobo_Control_unrealize;
+	epv->focus          = impl_Bonobo_Control_focus;
 }
 
 static void
@@ -961,33 +953,10 @@ bonobo_control_init (BonoboControl *control)
 	control->priv->control_frame = CORBA_OBJECT_NIL;
 }
 
-/**
- * bonobo_control_get_type:
- *
- * Returns: The GtkType corresponding to the BonoboControl class.
- */
-GtkType
-bonobo_control_get_type (void)
-{
-	static GtkType type = 0;
-
-	if (!type){
-		GtkTypeInfo info = {
-			"BonoboControl",
-			sizeof (BonoboControl),
-			sizeof (BonoboControlClass),
-			(GtkClassInitFunc) bonobo_control_class_init,
-			(GtkObjectInitFunc) bonobo_control_init,
-			NULL, /* reserved 1 */
-			NULL, /* reserved 2 */
-			(GtkClassInitFunc) NULL
-		};
-
-		type = gtk_type_unique (bonobo_object_get_type (), &info);
-	}
-
-	return type;
-}
+BONOBO_X_TYPE_FUNC_FULL (BonoboControl, 
+			   Bonobo_Control,
+			   PARENT_TYPE,
+			   bonobo_control);
 
 void
 bonobo_control_set_property (BonoboControl       *control,
@@ -1006,7 +975,7 @@ bonobo_control_set_property (BonoboControl       *control,
 
 	CORBA_exception_init (&ev);
 
-	bag = bonobo_object_corba_objref (BONOBO_OBJECT (control->priv->propbag));
+	bag = BONOBO_OBJREF (control->priv->propbag);
 
 	if ((err = bonobo_property_bag_client_setv (bag, &ev, first_prop, args)))
 		g_warning ("Error '%s'", err);
@@ -1033,7 +1002,7 @@ bonobo_control_get_property (BonoboControl       *control,
 
 	CORBA_exception_init (&ev);
 
-	bag = bonobo_object_corba_objref (BONOBO_OBJECT (control->priv->propbag));
+	bag = BONOBO_OBJREF (control->priv->propbag);
 
 	if ((err = bonobo_property_bag_client_getv (bag, &ev, first_prop, args)))
 		g_warning ("Error '%s'", err);

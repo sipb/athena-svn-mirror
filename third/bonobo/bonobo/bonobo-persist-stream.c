@@ -14,11 +14,10 @@
 #include <bonobo/bonobo-exception.h>
 #include <bonobo/bonobo-persist-stream.h>
 
+#define PARENT_TYPE BONOBO_PERSIST_TYPE
+
 /* Parent GTK object class */
 static BonoboPersistClass *bonobo_persist_stream_parent_class;
-
-/* The CORBA entry point vectors */
-POA_Bonobo_PersistStream__vepv bonobo_persist_stream_vepv;
 
 static CORBA_boolean
 impl_is_dirty (PortableServer_Servant servant, CORBA_Environment * ev)
@@ -94,34 +93,6 @@ impl_get_size_max (PortableServer_Servant servant, CORBA_Environment * ev)
 	return (*class->get_size_max)(BONOBO_PERSIST_STREAM (object), ev);
 }
 
-/**
- * bonobo_persist_stream_get_epv:
- *
- * Returns: The EPV for the default BonoboPersistStream implementation.  
- */
-POA_Bonobo_PersistStream__epv *
-bonobo_persist_stream_get_epv (void)
-{
-	POA_Bonobo_PersistStream__epv *epv;
-
-	epv = g_new0 (POA_Bonobo_PersistStream__epv, 1);
-
-	epv->load       = impl_load;
-	epv->save       = impl_save;
-	epv->getMaxSize = impl_get_size_max;
-	epv->isDirty    = impl_is_dirty;
-
-	return epv;
-}
-
-static void
-init_persist_stream_corba_class (void)
-{
-	bonobo_persist_stream_vepv.Bonobo_Unknown_epv = bonobo_object_get_epv ();
-	bonobo_persist_stream_vepv.Bonobo_Persist_epv = bonobo_persist_get_epv ();
-	bonobo_persist_stream_vepv.Bonobo_PersistStream_epv = bonobo_persist_stream_get_epv ();
-}
-
 static CORBA_long
 bonobo_persist_stream_size_unknown (BonoboPersistStream *ps,
 				    CORBA_Environment *ev)
@@ -144,54 +115,33 @@ static void
 bonobo_persist_stream_class_init (BonoboPersistStreamClass *klass)
 {
 	BonoboPersistClass *persist_class = BONOBO_PERSIST_CLASS (klass);
+	POA_Bonobo_PersistStream__epv *epv = &klass->epv;
 
-	bonobo_persist_stream_parent_class = gtk_type_class (bonobo_persist_get_type ());
+	bonobo_persist_stream_parent_class = gtk_type_class (PARENT_TYPE);
 
-	/*
-	 * Override and initialize methods
-	 */
-
+	/* Override and initialize methods */
 	klass->save = NULL;
 	klass->load = NULL;
 	klass->get_size_max = bonobo_persist_stream_size_unknown;
 
 	persist_class->get_content_types = get_content_types;
 
-	init_persist_stream_corba_class ();
+	epv->load       = impl_load;
+	epv->save       = impl_save;
+	epv->getMaxSize = impl_get_size_max;
+	epv->isDirty    = impl_is_dirty;
 }
 
 static void
 bonobo_persist_stream_init (BonoboPersistStream *ps)
 {
+	/* nothing to do */
 }
 
-/**
- * bonobo_persist_stream_get_type:
- *
- * Returns: The GtkType for the BonoboPersistStream class.
- */
-GtkType
-bonobo_persist_stream_get_type (void)
-{
-	static GtkType type = 0;
-
-	if (!type){
-		GtkTypeInfo info = {
-			"BonoboPersistStream",
-			sizeof (BonoboPersistStream),
-			sizeof (BonoboPersistStreamClass),
-			(GtkClassInitFunc) bonobo_persist_stream_class_init,
-			(GtkObjectInitFunc) bonobo_persist_stream_init,
-			NULL, /* reserved 1 */
-			NULL, /* reserved 2 */
-			(GtkClassInitFunc) NULL
-		};
-
-		type = gtk_type_unique (bonobo_persist_get_type (), &info);
-	}
-
-	return type;
-}
+BONOBO_X_TYPE_FUNC_FULL (BonoboPersistStream,
+			   Bonobo_PersistStream,
+			   PARENT_TYPE,
+			   bonobo_persist_stream);
 
 /**
  * bonobo_persist_stream_construct:
@@ -210,20 +160,16 @@ bonobo_persist_stream_get_type (void)
  * Returns: The initialized BonoboPersistStream object.
  */
 BonoboPersistStream *
-bonobo_persist_stream_construct (BonoboPersistStream *ps,
-				 Bonobo_PersistStream corba_ps,
-				 BonoboPersistStreamIOFn load_fn,
-				 BonoboPersistStreamIOFn save_fn,
-				 BonoboPersistStreamMaxFn max_fn,
+bonobo_persist_stream_construct (BonoboPersistStream       *ps,
+				 BonoboPersistStreamIOFn    load_fn,
+				 BonoboPersistStreamIOFn    save_fn,
+				 BonoboPersistStreamMaxFn   max_fn,
 				 BonoboPersistStreamTypesFn types_fn,
-				 void *closure)
+				 void                      *closure)
 {
 	g_return_val_if_fail (ps != NULL, NULL);
 	g_return_val_if_fail (BONOBO_IS_PERSIST_STREAM (ps), NULL);
-	g_return_val_if_fail (corba_ps != CORBA_OBJECT_NIL, NULL);
 
-	bonobo_persist_construct (BONOBO_PERSIST (ps), corba_ps);
-	
 	ps->load_fn = load_fn;
 	ps->save_fn = save_fn;
 	ps->max_fn = max_fn;
@@ -232,29 +178,6 @@ bonobo_persist_stream_construct (BonoboPersistStream *ps,
 	
 	return ps;
 }
-
-static Bonobo_PersistStream
-create_bonobo_persist_stream (BonoboObject *object)
-{
-	POA_Bonobo_PersistStream *servant;
-	CORBA_Environment ev;
-
-	servant = (POA_Bonobo_PersistStream *) g_new0 (BonoboObjectServant, 1);
-	servant->vepv = &bonobo_persist_stream_vepv;
-
-	CORBA_exception_init (&ev);
-
-	POA_Bonobo_PersistStream__init ((PortableServer_Servant) servant, &ev);
-	if (BONOBO_EX (&ev)){
-		g_free (servant);
-		CORBA_exception_free (&ev);
-		return CORBA_OBJECT_NIL;
-	}
-
-	CORBA_exception_free (&ev);
-	return (Bonobo_PersistStream) bonobo_object_activate_servant (object, servant);
-}
-
 
 /**
  * bonobo_persist_stream_new:
@@ -273,24 +196,17 @@ create_bonobo_persist_stream (BonoboObject *object)
  * Returns: the newly-created BonoboPersistStream object.
  */
 BonoboPersistStream *
-bonobo_persist_stream_new (BonoboPersistStreamIOFn load_fn,
-			   BonoboPersistStreamIOFn save_fn,
-			   BonoboPersistStreamMaxFn max_fn,
+bonobo_persist_stream_new (BonoboPersistStreamIOFn    load_fn,
+			   BonoboPersistStreamIOFn    save_fn,
+			   BonoboPersistStreamMaxFn   max_fn,
 			   BonoboPersistStreamTypesFn types_fn,
-			   void *closure)
+			   void                      *closure)
 {
 	BonoboPersistStream *ps;
-	Bonobo_PersistStream corba_ps;
 
 	ps = gtk_type_new (bonobo_persist_stream_get_type ());
-	corba_ps = create_bonobo_persist_stream (
-		BONOBO_OBJECT (ps));
-	if (corba_ps == CORBA_OBJECT_NIL) {
-		bonobo_object_unref (BONOBO_OBJECT (ps));
-		return NULL;
-	}
 
-	bonobo_persist_stream_construct (ps, corba_ps, load_fn, save_fn,
+	bonobo_persist_stream_construct (ps, load_fn, save_fn,
 					 max_fn, types_fn, closure);
 
 	return ps;

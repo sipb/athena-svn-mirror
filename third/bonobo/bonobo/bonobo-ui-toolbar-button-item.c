@@ -91,6 +91,8 @@ set_label (BonoboUIToolbarButtonItem *button_item,
 
 	priv = button_item->priv;
 
+	/* FIXME: we should really do a string compare
+	   on the label's contents perhaps before this: */
 	if (priv->label != NULL)
 		gtk_widget_destroy (priv->label);
 
@@ -104,52 +106,89 @@ set_label (BonoboUIToolbarButtonItem *button_item,
 /* Layout.  */
 
 static void
-layout_pixmap_and_label (BonoboUIToolbarButtonItem *button_item,
-			 BonoboUIToolbarItemStyle style)
+unparent_items (BonoboUIToolbarButtonItem *button_item)
 {
 	BonoboUIToolbarButtonItemPrivate *priv;
-	GtkWidget *button;
 
 	priv = button_item->priv;
 
 	if (priv->icon != NULL) {
-		gtk_widget_ref (priv->icon);
-		if (priv->icon->parent != NULL)
+		if (priv->icon->parent != NULL) {
+			gtk_widget_ref (priv->icon);
 			gtk_container_remove (GTK_CONTAINER (priv->icon->parent),
 					      priv->icon);
+		}
 	}
+
 	if (priv->label != NULL) {
-		gtk_widget_ref (priv->label);
-		if (priv->label->parent != NULL)
+		if (priv->label->parent != NULL) {
+			gtk_widget_ref (priv->label);
 			gtk_container_remove (GTK_CONTAINER (priv->label->parent),
 					      priv->label);
+		}
+	}
+}
+
+static void
+layout_pixmap_and_label (BonoboUIToolbarButtonItem *button_item,
+			 BonoboUIToolbarItemStyle   style)
+{
+	BonoboUIToolbarButtonItemPrivate *priv;
+	GtkWidget *button;
+	gboolean   rebuild;
+
+	priv = button_item->priv;
+	button = GTK_BIN (button_item)->child;
+
+	/* Ensure we have the right type of box */
+	rebuild = FALSE;
+	if (style == BONOBO_UI_TOOLBAR_ITEM_STYLE_ICON_AND_TEXT_VERTICAL) {
+		if (!priv->box || !gtk_type_is_a (
+			GTK_OBJECT (priv->box)->klass->type,
+			GTK_TYPE_VBOX)) {
+			
+			unparent_items (button_item);
+
+			if (priv->box)
+				gtk_widget_destroy (priv->box);
+			priv->box = gtk_vbox_new (FALSE, SPACING);
+			rebuild = TRUE;
+		}
+	} else {
+		if (!priv->box || !gtk_type_is_a (
+			GTK_OBJECT (priv->box)->klass->type,
+			GTK_TYPE_HBOX)) {
+			
+			unparent_items (button_item);
+
+			if (priv->box)
+				gtk_widget_destroy (priv->box);
+			priv->box = gtk_hbox_new (FALSE, SPACING);
+			rebuild = TRUE;
+		}
 	}
 
-	if (priv->box != NULL)
-		gtk_widget_destroy (priv->box);
+	if (rebuild) {
+		gtk_container_add (GTK_CONTAINER (button), priv->box);
+		gtk_widget_show (priv->box);
+	}
 
-	if (style == BONOBO_UI_TOOLBAR_ITEM_STYLE_ICON_AND_TEXT_VERTICAL)
-		priv->box = gtk_vbox_new (FALSE, SPACING);
-	else
-		priv->box = gtk_hbox_new (FALSE, SPACING);
+	if (priv->icon && !priv->icon->parent)
+		gtk_box_pack_start (
+			GTK_BOX (priv->box), priv->icon, TRUE, TRUE, 0);
 
-	button = GTK_BIN (button_item)->child;
-	gtk_container_add (GTK_CONTAINER (button), priv->box);
+	if (priv->label && !priv->label->parent)
+		gtk_box_pack_end (
+			GTK_BOX (priv->box), priv->label, FALSE, TRUE, 0);
 
-	gtk_widget_show (priv->box);
-
-	if (priv->icon != NULL) {
-		gtk_box_pack_start (GTK_BOX (priv->box), priv->icon, TRUE, TRUE, 0);
-		gtk_widget_unref (priv->icon);
+	if (priv->icon) {
 		if (style == BONOBO_UI_TOOLBAR_ITEM_STYLE_TEXT_ONLY)
 			gtk_widget_hide (priv->icon);
 		else
 			gtk_widget_show (priv->icon);
 	}
 
-	if (priv->label != NULL) {
-		gtk_box_pack_start (GTK_BOX (priv->box), priv->label, FALSE, TRUE, 0);
-		gtk_widget_unref (priv->label);
+	if (priv->label) {
 		if (style == BONOBO_UI_TOOLBAR_ITEM_STYLE_ICON_ONLY)
 			gtk_widget_hide (priv->label);
 		else
@@ -230,6 +269,7 @@ impl_set_icon  (BonoboUIToolbarButtonItem *button_item,
 		GdkPixbuf                 *icon)
 {
 	set_icon (button_item, icon);
+
 	layout_pixmap_and_label (
 		button_item,
 		bonobo_ui_toolbar_item_get_style (
@@ -241,11 +281,11 @@ impl_set_label (BonoboUIToolbarButtonItem *button_item,
 		const char                *label)
 {
 	set_label (button_item, label);
+
 	layout_pixmap_and_label (
 		button_item,
 		bonobo_ui_toolbar_item_get_style (
 			BONOBO_UI_TOOLBAR_ITEM (button_item)));
-	
 }
 
 
@@ -351,7 +391,9 @@ bonobo_ui_toolbar_button_item_construct (BonoboUIToolbarButtonItem *button_item,
 	set_icon  (button_item, pixbuf);
 	set_label (button_item, label);
 
-	layout_pixmap_and_label (button_item, bonobo_ui_toolbar_item_get_style (BONOBO_UI_TOOLBAR_ITEM (button_item)));
+	layout_pixmap_and_label (
+		button_item, bonobo_ui_toolbar_item_get_style (
+			BONOBO_UI_TOOLBAR_ITEM (button_item)));
 }
 
 /**

@@ -70,6 +70,8 @@ BONOBOX_TEST_CFLAGS = @BONOBOX_TEST_CFLAGS@
 BONOBOX_TEST_LIBS = @BONOBOX_TEST_LIBS@
 BONOBO_AGE = @BONOBO_AGE@
 BONOBO_CURRENT = @BONOBO_CURRENT@
+BONOBO_IDL_CFLAGS = @BONOBO_IDL_CFLAGS@
+BONOBO_IDL_LIBS = @BONOBO_IDL_LIBS@
 BONOBO_INCLUDEDIR = @BONOBO_INCLUDEDIR@
 BONOBO_LIBDIR = @BONOBO_LIBDIR@
 BONOBO_LIBS = @BONOBO_LIBS@
@@ -130,6 +132,8 @@ ORBIT_LIBS = @ORBIT_LIBS@
 PACKAGE = @PACKAGE@
 POFILES = @POFILES@
 POSUB = @POSUB@
+PROF_CFLAGS = @PROF_CFLAGS@
+PROF_LDFLAGS = @PROF_LDFLAGS@
 PTHREAD_LIB = @PTHREAD_LIB@
 RANLIB = @RANLIB@
 USE_INCLUDED_LIBINTL = @USE_INCLUDED_LIBINTL@
@@ -137,6 +141,10 @@ USE_NLS = @USE_NLS@
 VERSION = @VERSION@
 VFS_CFLAGS = @VFS_CFLAGS@
 VFS_LIBS = @VFS_LIBS@
+XML_I18N_EXTRACT = @XML_I18N_EXTRACT@
+XML_I18N_MERGE = @XML_I18N_MERGE@
+XML_I18N_TOOLS_PERL = @XML_I18N_TOOLS_PERL@
+XML_I18N_UPDATE = @XML_I18N_UPDATE@
 XML_LIBS = @XML_LIBS@
 XPM_LIBS = @XPM_LIBS@
 YACC = @YACC@
@@ -157,18 +165,19 @@ bonobo_echo_LDADD =  	$(top_builddir)/bonobo/libbonobo.la		$(top_builddir)/bonob
 echo_client_LDADD =  	$(top_builddir)/bonobo/libbonobo.la		$(BONOBOX_TEST_LIBS)				libEcho.a					$(INTLLIBS)
 
 
-ECHO_CORBA_GENERATED =  	Echo-common.c			Echo-skels.c			Echo-stubs.c			Echo.h
+ECHO_CORBA_GENERATED =  	Bonobo_Sample_Echo-common.c			Bonobo_Sample_Echo-skels.c			Bonobo_Sample_Echo-stubs.c			Bonobo_Sample_Echo.h
 
 
 libEcho_a_SOURCES = $(ECHO_CORBA_GENERATED)
 
 oafdir = $(datadir)/oaf
-oaf_DATA = Bonobo_Sample_Echo.oafinfo
+oaf_in_files = Bonobo_Sample_Echo.oaf.in
+oaf_DATA = $(oaf_in_files:.oaf.in=.oaf)
 
 idldir = $(datadir)/idl
-idl_DATA = Echo.idl
+idl_DATA = Bonobo_Sample_Echo.idl
 
-EXTRA_DIST = $(oaf_DATA) $(idl_DATA)
+EXTRA_DIST = $(oaf_in_files) $(oaf_DATA) $(idl_DATA)
 
 INCLUDES =          -DGNOMELOCALEDIR=\""$(datadir)/locale"\"        	-DG_LOG_DOMAIN=\"Echo\"					-I. -I$(top_srcdir)/bonobo				-I$(srcdir) -I$(top_srcdir) 				-I$(top_builddir)				        -I$(includedir)                                 	$(BONOBOX_TEST_CFLAGS)
 
@@ -183,7 +192,8 @@ LIBRARIES =  $(noinst_LIBRARIES)
 DEFS = @DEFS@ -I. -I$(srcdir) -I../..
 LIBS = @LIBS@
 libEcho_a_LIBADD = 
-libEcho_a_OBJECTS =  Echo-common.o Echo-skels.o Echo-stubs.o
+libEcho_a_OBJECTS =  Bonobo_Sample_Echo-common.o \
+Bonobo_Sample_Echo-skels.o Bonobo_Sample_Echo-stubs.o
 AR = ar
 PROGRAMS =  $(bin_PROGRAMS)
 
@@ -390,12 +400,15 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
-Echo-common.o: Echo-common.c Echo.h ../../bonobo/Bonobo.h
-Echo-skels.o: Echo-skels.c Echo.h ../../bonobo/Bonobo.h
-Echo-stubs.o: Echo-stubs.c Echo.h ../../bonobo/Bonobo.h
+Bonobo_Sample_Echo-common.o: Bonobo_Sample_Echo-common.c \
+	Bonobo_Sample_Echo.h ../../bonobo/Bonobo.h
+Bonobo_Sample_Echo-skels.o: Bonobo_Sample_Echo-skels.c \
+	Bonobo_Sample_Echo.h ../../bonobo/Bonobo.h
+Bonobo_Sample_Echo-stubs.o: Bonobo_Sample_Echo-stubs.c \
+	Bonobo_Sample_Echo.h ../../bonobo/Bonobo.h
 echo-client.o: echo-client.c ../../config.h ../../bonobo/bonobo.h \
 	../../bonobo/bonobo-object.h ../../bonobo/Bonobo.h \
-	../../bonobo/bonobo-moniker.h \
+	../../bonobo/bonobo-moniker.h ../../bonobo/bonobo-xobject.h \
 	../../bonobo/bonobo-moniker-simple.h \
 	../../bonobo/bonobo-context.h ../../bonobo/bonobo-exception.h \
 	../../bonobo/bonobo-item-container.h \
@@ -410,8 +423,10 @@ echo-client.o: echo-client.c ../../config.h ../../bonobo/bonobo.h \
 	../../bonobo/bonobo-arg.h ../../bonobo/bonobo-property.h \
 	../../bonobo/bonobo-transient.h \
 	../../bonobo/bonobo-event-source.h \
+	../../bonobo/bonobo-listener.h \
 	../../bonobo/bonobo-ui-container.h ../../bonobo/bonobo-win.h \
-	../../bonobo/bonobo-ui-xml.h ../../bonobo/bonobo-ui-node.h \
+	../../bonobo/bonobo-ui-engine.h ../../bonobo/bonobo-ui-sync.h \
+	../../bonobo/bonobo-ui-node.h \
 	../../bonobo/bonobo-property-bag-xml.h \
 	../../bonobo/bonobo-property-control.h \
 	../../bonobo/bonobo-control.h \
@@ -430,10 +445,10 @@ echo-client.o: echo-client.c ../../config.h ../../bonobo/bonobo.h \
 	../../bonobo/bonobo-selector.h \
 	../../bonobo/bonobo-selector-widget.h \
 	../../bonobo/bonobo-widget.h ../../bonobo/bonobo-print.h \
-	../../bonobo/bonobo-print-client.h Echo.h
+	../../bonobo/bonobo-print-client.h Bonobo_Sample_Echo.h
 echo.o: echo.c ../../config.h ../../bonobo/bonobo.h \
 	../../bonobo/bonobo-object.h ../../bonobo/Bonobo.h \
-	../../bonobo/bonobo-moniker.h \
+	../../bonobo/bonobo-moniker.h ../../bonobo/bonobo-xobject.h \
 	../../bonobo/bonobo-moniker-simple.h \
 	../../bonobo/bonobo-context.h ../../bonobo/bonobo-exception.h \
 	../../bonobo/bonobo-item-container.h \
@@ -448,8 +463,10 @@ echo.o: echo.c ../../config.h ../../bonobo/bonobo.h \
 	../../bonobo/bonobo-arg.h ../../bonobo/bonobo-property.h \
 	../../bonobo/bonobo-transient.h \
 	../../bonobo/bonobo-event-source.h \
+	../../bonobo/bonobo-listener.h \
 	../../bonobo/bonobo-ui-container.h ../../bonobo/bonobo-win.h \
-	../../bonobo/bonobo-ui-xml.h ../../bonobo/bonobo-ui-node.h \
+	../../bonobo/bonobo-ui-engine.h ../../bonobo/bonobo-ui-sync.h \
+	../../bonobo/bonobo-ui-node.h \
 	../../bonobo/bonobo-property-bag-xml.h \
 	../../bonobo/bonobo-property-control.h \
 	../../bonobo/bonobo-control.h \
@@ -468,10 +485,10 @@ echo.o: echo.c ../../config.h ../../bonobo/bonobo.h \
 	../../bonobo/bonobo-selector.h \
 	../../bonobo/bonobo-selector-widget.h \
 	../../bonobo/bonobo-widget.h ../../bonobo/bonobo-print.h \
-	../../bonobo/bonobo-print-client.h Echo.h echo.h
+	../../bonobo/bonobo-print-client.h Bonobo_Sample_Echo.h echo.h
 main.o: main.c ../../config.h ../../bonobo/bonobo.h \
 	../../bonobo/bonobo-object.h ../../bonobo/Bonobo.h \
-	../../bonobo/bonobo-moniker.h \
+	../../bonobo/bonobo-moniker.h ../../bonobo/bonobo-xobject.h \
 	../../bonobo/bonobo-moniker-simple.h \
 	../../bonobo/bonobo-context.h ../../bonobo/bonobo-exception.h \
 	../../bonobo/bonobo-item-container.h \
@@ -486,8 +503,10 @@ main.o: main.c ../../config.h ../../bonobo/bonobo.h \
 	../../bonobo/bonobo-arg.h ../../bonobo/bonobo-property.h \
 	../../bonobo/bonobo-transient.h \
 	../../bonobo/bonobo-event-source.h \
+	../../bonobo/bonobo-listener.h \
 	../../bonobo/bonobo-ui-container.h ../../bonobo/bonobo-win.h \
-	../../bonobo/bonobo-ui-xml.h ../../bonobo/bonobo-ui-node.h \
+	../../bonobo/bonobo-ui-engine.h ../../bonobo/bonobo-ui-sync.h \
+	../../bonobo/bonobo-ui-node.h \
 	../../bonobo/bonobo-property-bag-xml.h \
 	../../bonobo/bonobo-property-control.h \
 	../../bonobo/bonobo-control.h \
@@ -506,7 +525,7 @@ main.o: main.c ../../config.h ../../bonobo/bonobo.h \
 	../../bonobo/bonobo-selector.h \
 	../../bonobo/bonobo-selector-widget.h \
 	../../bonobo/bonobo-widget.h ../../bonobo/bonobo-print.h \
-	../../bonobo/bonobo-print-client.h Echo.h echo.h
+	../../bonobo/bonobo-print-client.h Bonobo_Sample_Echo.h echo.h
 
 info-am:
 info: info-am
@@ -589,9 +608,11 @@ mostlyclean-generic distclean-generic clean-generic \
 maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 
 
-$(ECHO_CORBA_GENERATED): Echo.idl 
-	orbit-idl -I$(top_srcdir)/idl -I`$(GNOME_CONFIG) --datadir`/idl $(srcdir)/Echo.idl
+$(ECHO_CORBA_GENERATED): Bonobo_Sample_Echo.idl 
+	orbit-idl -I$(top_srcdir)/idl -I`$(GNOME_CONFIG) --datadir`/idl $(srcdir)/Bonobo_Sample_Echo.idl
 	touch my_echo_idl
+
+@XML_I18N_MERGE_OAF_RULE@
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

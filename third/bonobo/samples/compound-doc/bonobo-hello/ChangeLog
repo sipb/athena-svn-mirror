@@ -1,3 +1,20 @@
+2001-02-07  Michael Meeks  <michael@ximian.com>
+
+	* hello-embeddable.c (hello_bonobo_embeddable_construct): upd.
+
+2001-02-06  Michael Meeks  <michael@ximian.com>
+
+	* hello-view.c (hello_bonobo_view_get_type): upd.
+	(hello_bonobo_view_factory): upd.
+
+2001-01-18  Dietmar Maurer  <dietmar@ximian.com>
+
+	* bonobo-hello.c: use the new factory macros
+
+2001-01-16  Dietmar Maurer  <dietmar@ximian.com>
+
+	* bonobo-hello.c (hello_bonobo_init): use the new unref code.
+
 2000-12-28  Arturo Tena <arturo@directmail.org>
 
 	* Bonobo_Sample_Hello.oafinfo: fix naming.

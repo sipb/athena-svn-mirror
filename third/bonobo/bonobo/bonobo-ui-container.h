@@ -11,6 +11,7 @@
 #define _BONOBO_UI_CONTAINER_H_
 
 #include <bonobo/bonobo-win.h>
+#include <bonobo/bonobo-xobject.h>
 
 #define BONOBO_UI_CONTAINER_TYPE        (bonobo_ui_container_get_type ())
 #define BONOBO_UI_CONTAINER(o)          (GTK_CHECK_CAST ((o), BONOBO_UI_CONTAINER_TYPE, BonoboUIContainer))
@@ -18,27 +19,36 @@
 #define BONOBO_IS_UI_CONTAINER(o)       (GTK_CHECK_TYPE ((o), BONOBO_UI_CONTAINER_TYPE))
 #define BONOBO_IS_UI_CONTAINER_CLASS(k) (GTK_CHECK_CLASS_TYPE ((k), BONOBO_UI_CONTAINER_TYPE))
 
-typedef struct {
-	BonoboObject base;
+typedef struct _BonoboUIContainerPrivate BonoboUIContainerPrivate;
 
-	int          flags;
-	BonoboWindow   *win;
+typedef struct {
+	BonoboXObject base;
+
+	BonoboUIContainerPrivate *priv;
+
+	/* For backwards compatibility, strongly deprecated */
+	BonoboWindow *win;
 } BonoboUIContainer;
 
 typedef struct {
-	BonoboObjectClass parent;
+	BonoboXObjectClass parent;
+
+	POA_Bonobo_UIContainer__epv epv;
 } BonoboUIContainerClass;
 
 GtkType                      bonobo_ui_container_get_type            (void);
-POA_Bonobo_UIContainer__epv *bonobo_ui_container_get_epv             (void);
-Bonobo_UIContainer           bonobo_ui_container_corba_object_create (BonoboObject       *object);
 BonoboUIContainer           *bonobo_ui_container_construct           (BonoboUIContainer  *container,
 								      Bonobo_UIContainer  corba_container);
 
 BonoboUIContainer           *bonobo_ui_container_new                 (void);
 
+void                         bonobo_ui_container_set_engine          (BonoboUIContainer  *container,
+								      BonoboUIEngine     *engine);
+BonoboUIEngine              *bonobo_ui_container_get_engine          (BonoboUIContainer  *container);
+
 void                         bonobo_ui_container_set_win             (BonoboUIContainer  *container,
 								      BonoboWindow       *win);
+/* Deprecated */
 BonoboWindow                *bonobo_ui_container_get_win             (BonoboUIContainer  *container);
 
 #endif /* _BONOBO_UI_CONTAINER_H_ */

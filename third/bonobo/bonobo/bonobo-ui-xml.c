@@ -26,7 +26,12 @@
 #	define DUMP_XML(a,b,c)
 #endif
 
-/* Change these to not have a cast in order to find all
+static void watch_update  (BonoboUIXml  *tree,
+			   BonoboUINode *node);
+static void watch_destroy (gpointer      data);
+
+/*
+ * Change these to not have a cast in order to find all
  * bad hack casts
  */
 #define XML_NODE(x) ((xmlNode*)(x))
@@ -188,8 +193,9 @@ set_children_dirty (BonoboUIXml *tree, BonoboUINode *node)
 }
 
 /*
- * FIXME: the placeholder functionality is broken and should live in
- * bonobo-win.c for cleanliness and never in this more generic code.
+ * FIXME: the placeholder functionality is broken and should
+ * live in bonobo-win.c for cleanliness and never in this
+ * more generic code.
  */
 void
 bonobo_ui_xml_set_dirty (BonoboUIXml *tree, BonoboUINode *node)
@@ -450,7 +456,8 @@ override_node_with (BonoboUIXml *tree, BonoboUINode *old, BonoboUINode *new)
 
 	if (override) {
 
-		gtk_signal_emit (GTK_OBJECT (tree), signals [OVERRIDE], old);
+		gtk_signal_emit (GTK_OBJECT (tree),
+				 signals [OVERRIDE], new, old);
 
 		data->overridden = g_slist_prepend (old_data->overridden, old);
 		prune_overrides_by_id (tree, data, data->id);
@@ -459,7 +466,8 @@ override_node_with (BonoboUIXml *tree, BonoboUINode *old, BonoboUINode *new)
 			data->id = old_data->id;
 
 		data->overridden = old_data->overridden;
-		gtk_signal_emit (GTK_OBJECT (tree), signals [REPLACE_OVERRIDE], new, old);
+		gtk_signal_emit (GTK_OBJECT (tree),
+				 signals [REPLACE_OVERRIDE], new, old);
 
 /*		fprintf (stderr, "Replace override of '%s' '%s' with '%s' '%s'",
 			 old->name, bonobo_ui_node_get_attr (old, "name"),
@@ -485,6 +493,8 @@ override_node_with (BonoboUIXml *tree, BonoboUINode *old, BonoboUINode *new)
 
 	if (!override)
 		node_free (tree, old);
+
+	watch_update (tree, new);
 }
 
 static void
@@ -512,10 +522,13 @@ reinstate_old_node (BonoboUIXml *tree, BonoboUINode *node)
 		old_data->overridden = g_slist_next (data->overridden);
 		g_slist_free_1 (data->overridden);
 		data->overridden = NULL;
+
+		/* Fire remove while still in tree */
+		gtk_signal_emit (GTK_OBJECT (tree), signals [REMOVE], node);
 		
 		/* Move children across */
 		move_children (node, old);
-		
+
 		/* Switch node back into tree */
 		bonobo_ui_node_replace (old, node);
 
@@ -523,6 +536,9 @@ reinstate_old_node (BonoboUIXml *tree, BonoboUINode *node)
 		bonobo_ui_xml_set_dirty (tree, old);
 
 		gtk_signal_emit (GTK_OBJECT (tree), signals [REINSTATE], old);
+
+		watch_update (tree, old);
+
 	} else if (bonobo_ui_node_children (node)) { /* We need to leave the node here */
 		/* Re-tag the node */
 		BonoboUIXmlData *child_data = 
@@ -534,14 +550,12 @@ reinstate_old_node (BonoboUIXml *tree, BonoboUINode *node)
 		
 		gtk_signal_emit (GTK_OBJECT (tree), signals [RENAME], node);
 		return;
-	}
+	} else
+		gtk_signal_emit (GTK_OBJECT (tree), signals [REMOVE], node);
+
 /*		fprintf (stderr, "destroying node '%s' '%s'\n",
 		node->name, bonobo_ui_node_get_attr (node, "name"));*/
-		
-	/* Mark dirty */
-	bonobo_ui_xml_set_dirty (tree, node);
-	
-	gtk_signal_emit (GTK_OBJECT (tree), signals [REMOVE], node);
+			
 	bonobo_ui_node_unlink (node);
 	
 	if (node == tree->root) /* Ugly special case */
@@ -766,7 +780,7 @@ bonobo_ui_xml_make_path  (BonoboUINode *node)
 	g_return_val_if_fail (node != NULL, NULL);
 
 	path = g_string_new ("");
-	while (node) {
+	while (node && bonobo_ui_node_parent (node)) {
 
 		if ((tmp = bonobo_ui_node_get_attr (node, "name"))) {
 			g_string_prepend (path, tmp);
@@ -810,6 +824,33 @@ reinstate_node (BonoboUIXml *tree, BonoboUINode *node,
 	}
 }
 
+static void
+do_insert (BonoboUINode *parent,
+	   BonoboUINode *child,
+	   BonoboUINode *insert)
+{
+	char    *pos;
+	gboolean added = FALSE;
+
+	if ((pos = bonobo_ui_node_get_attr (child, "pos"))) {
+		if (pos [0] == 't') {
+			bonobo_ui_node_insert_before (
+				bonobo_ui_node_children (parent),
+				child);
+			added = TRUE;
+		}
+		bonobo_ui_node_free_string (pos);
+	}
+
+	if (!added) {
+		if (insert)
+			bonobo_ui_node_insert_before (
+				insert, child);
+		else
+			bonobo_ui_node_add_child (parent, child);
+	}
+}
+
 /**
  * merge:
  * @current: the parent node
@@ -821,20 +862,21 @@ reinstate_node (BonoboUIXml *tree, BonoboUINode *node,
 static void
 merge (BonoboUIXml *tree, BonoboUINode *current, BonoboUINode **new)
 {
-	BonoboUINode *a, *b, *nexta, *nextb;
+	BonoboUINode *a, *b, *nexta, *nextb, *insert = NULL;
 
 	for (a = bonobo_ui_node_children (current); a; a = nexta) {
-		xmlChar *a_name = NULL;
+		BonoboUINode *result;
+		xmlChar *a_name;
 		xmlChar *b_name = NULL;
 			
 		nexta = bonobo_ui_node_next (a);
 		nextb = NULL;
 
+		a_name = bonobo_ui_node_get_attr (a, "name");
+
 		for (b = *new; b; b = nextb) {
 			nextb = bonobo_ui_node_next (b);
 
-			bonobo_ui_node_free_string (a_name);
-			a_name = NULL;
 			bonobo_ui_node_free_string (b_name);
 			b_name = NULL;
 
@@ -842,7 +884,6 @@ merge (BonoboUIXml *tree, BonoboUINode *current, BonoboUINode **new)
 				a->name, bonobo_ui_node_get_attr (a, "name"),
 				b->name, bonobo_ui_node_get_attr (b, "name"));*/
 			
-			a_name = bonobo_ui_node_get_attr (a, "name");
 			b_name = bonobo_ui_node_get_attr (b, "name");
 
 			if (!a_name && !b_name &&
@@ -856,7 +897,6 @@ merge (BonoboUIXml *tree, BonoboUINode *current, BonoboUINode **new)
 			if (!strcmp (a_name, b_name))
 				break;
 		}
-		bonobo_ui_node_free_string (a_name);
 		bonobo_ui_node_free_string (b_name);
 
 		if (b == *new)
@@ -864,6 +904,14 @@ merge (BonoboUIXml *tree, BonoboUINode *current, BonoboUINode **new)
 
 		if (b) /* Merger candidate */
 			override_node_with (tree, a, b);
+
+		result = b ? b : a;
+
+		if (!insert && !a_name &&
+		    bonobo_ui_node_has_name (result, "placeholder"))
+			insert = result;
+
+		bonobo_ui_node_free_string (a_name);
 	}
 
 	for (b = *new; b; b = nextb) {
@@ -877,15 +925,18 @@ merge (BonoboUIXml *tree, BonoboUINode *current, BonoboUINode **new)
 
 		bonobo_ui_node_unlink (b);
 
+		do_insert (current, b, insert);
+
 		if (tree->add_node)
-			tree->add_node (current, b);
-		else
-			bonobo_ui_node_add_child (current, b);
+			tree->add_node (current, b, tree->user_data);
 		
 		bonobo_ui_xml_set_dirty (tree, b);
 
+		/* FIXME: this looks redundant */
 		data = bonobo_ui_xml_get_data (tree, current);
 		data->dirty = TRUE;
+
+		watch_update (tree, b);
 
 /*		DUMP_XML (tree, current, "After transfer");*/
 	}
@@ -894,7 +945,7 @@ merge (BonoboUIXml *tree, BonoboUINode *current, BonoboUINode **new)
 /*	DUMP_XML (tree, current, "After all"); */
 }
 
-BonoboUIXmlError
+BonoboUIError
 bonobo_ui_xml_merge (BonoboUIXml  *tree,
 		     const char   *path,
 		     BonoboUINode *nodes,
@@ -902,10 +953,10 @@ bonobo_ui_xml_merge (BonoboUIXml  *tree,
 {
 	BonoboUINode *current;
 
-	g_return_val_if_fail (BONOBO_IS_UI_XML (tree), BONOBO_UI_XML_BAD_PARAM);
+	g_return_val_if_fail (BONOBO_IS_UI_XML (tree), BONOBO_UI_ERROR_BAD_PARAM);
 
 	if (nodes == NULL)
-		return BONOBO_UI_XML_OK;
+		return BONOBO_UI_ERROR_OK;
 
 	bonobo_ui_xml_strip (&nodes);
 	set_id (tree, nodes, id);
@@ -919,7 +970,7 @@ bonobo_ui_xml_merge (BonoboUIXml  *tree,
 			node_free (tree, BNODE (l));
 		}
 
-		return BONOBO_UI_XML_INVALID_PATH;
+		return BONOBO_UI_ERROR_INVALID_PATH;
 	}
 
 #ifdef UI_XML_DEBUG
@@ -940,10 +991,10 @@ bonobo_ui_xml_merge (BonoboUIXml  *tree,
 	bonobo_ui_xml_dump (tree, tree->root, "Merged to");
 #endif
 
-	return BONOBO_UI_XML_OK;
+	return BONOBO_UI_ERROR_OK;
 }
 
-BonoboUIXmlError
+BonoboUIError
 bonobo_ui_xml_rm (BonoboUIXml *tree,
 		  const char  *path,
 		  gpointer     id)
@@ -960,11 +1011,11 @@ bonobo_ui_xml_rm (BonoboUIXml *tree,
 	if (current)
 		reinstate_node (tree, current, id, !wildcard);
 	else
-		return BONOBO_UI_XML_INVALID_PATH;
+		return BONOBO_UI_ERROR_INVALID_PATH;
 
 	DUMP_XML (tree, tree->root, "After remove");
 
-	return BONOBO_UI_XML_OK;
+	return BONOBO_UI_ERROR_OK;
 }
 
 static void
@@ -973,11 +1024,18 @@ bonobo_ui_xml_destroy (GtkObject *object)
 	BonoboUIXml *tree = BONOBO_UI_XML (object);
 
 	if (tree) {
+		GSList *l;
+
 		if (tree->root) {
 			free_nodedata_tree (tree, tree->root, TRUE);
 			bonobo_ui_node_free (tree->root);
 			tree->root = NULL;
 		}
+
+		for (l = tree->watches; l; l = l->next)
+			watch_destroy (l->data);
+		g_slist_free (tree->watches);
+		tree->watches = NULL;
 	}
 }
 
@@ -995,8 +1053,8 @@ bonobo_ui_xml_class_init (BonoboUIXmlClass *klass)
 		"override", GTK_RUN_FIRST,
 		object_class->type,
 		GTK_SIGNAL_OFFSET (BonoboUIXmlClass, override),
-		gtk_marshal_NONE__POINTER,
-		GTK_TYPE_NONE, 1, GTK_TYPE_POINTER);
+		gtk_marshal_NONE__POINTER_POINTER,
+		GTK_TYPE_NONE, 2, GTK_TYPE_POINTER, GTK_TYPE_POINTER);
 
 	signals [REPLACE_OVERRIDE] = gtk_signal_new (
 		"replace_override", GTK_RUN_FIRST,
@@ -1062,7 +1120,8 @@ bonobo_ui_xml_new (BonoboUIXmlCompareFn   compare,
 		   BonoboUIXmlDataNewFn   data_new,
 		   BonoboUIXmlDataFreeFn  data_free,
 		   BonoboUIXmlDumpFn      dump,
-		   BonoboUIXmlAddNode     add_node)
+		   BonoboUIXmlAddNode     add_node,
+		   gpointer               user_data)
 {
 	BonoboUIXml *tree;
 
@@ -1073,8 +1132,101 @@ bonobo_ui_xml_new (BonoboUIXmlCompareFn   compare,
 	tree->data_free = data_free;
 	tree->dump = dump;
 	tree->add_node = add_node;
+	tree->user_data = user_data;
 
 	tree->root = bonobo_ui_node_new ("Root");
 
+	tree->watches = NULL;
+
 	return tree;
+}
+
+typedef struct {
+	char    *path;
+	gpointer user_data;
+} Watch;
+
+static void
+watch_update (BonoboUIXml *tree, BonoboUINode *node)
+{
+	GSList *l;
+	char   *path;
+
+	if (!tree->watch)
+		return;
+
+	/* FIXME: for speed we only check root nodes for now */
+	if (bonobo_ui_node_parent (node) !=
+	    tree->root)
+		return;
+
+	path = bonobo_ui_xml_make_path (node);
+
+	for (l = tree->watches; l; l = l->next) {
+		Watch *w = l->data;
+
+		if (!strcmp (w->path, path)) {
+/*			fprintf (stderr, "Found watch on '%s'", path);*/
+			tree->watch (tree, path, node, w->user_data);
+		}
+	}
+	g_free (path);
+}
+
+void
+bonobo_ui_xml_add_watch (BonoboUIXml  *tree,
+			 const char   *path,
+			 gpointer      user_data)
+{
+	Watch *w = g_new0 (Watch, 1);
+
+	g_return_if_fail (BONOBO_IS_UI_XML (tree));
+
+	w->path = g_strdup (path);
+	w->user_data = user_data;
+
+	tree->watches = g_slist_append (
+		tree->watches, w);
+}
+
+void
+bonobo_ui_xml_remove_watch_by_data (BonoboUIXml *tree,
+				    gpointer     user_data)
+{
+	GSList *l;
+	GSList *next;
+
+	g_return_if_fail (BONOBO_IS_UI_XML (tree));
+
+	for (l = tree->watches; l; l = next) {
+		Watch *w = l->data;
+
+		next = l->next;
+
+		if (w->user_data == user_data) {
+			tree->watches = g_slist_remove (
+				tree->watches, w);
+			watch_destroy (w);
+		}
+	}
+}
+
+static void
+watch_destroy (gpointer data)
+{
+	Watch *w = data;
+	
+	if (w) {
+		g_free (w->path);
+		g_free (w);
+	}
+}
+
+void
+bonobo_ui_xml_set_watch_fn (BonoboUIXml       *tree,
+			    BonoboUIXmlWatchFn watch)
+{
+	g_return_if_fail (BONOBO_IS_UI_XML (tree));
+
+	tree->watch = watch;
 }

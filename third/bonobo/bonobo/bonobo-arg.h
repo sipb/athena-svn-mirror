@@ -57,18 +57,27 @@ typedef CORBA_TypeCode BonoboArgType;
 #define BONOBO_ARG_SET_STRING(a,v)  (g_assert ((a)->_type->kind == CORBA_tk_string),	\
 				     *((CORBA_char **)(a->_value)) = CORBA_string_dup ((v)?(v):""))
 
-BonoboArg    *bonobo_arg_new           (BonoboArgType t);
-void          bonobo_arg_init_default  (BonoboArg    *arg);
-void          bonobo_arg_release       (BonoboArg    *arg);
-BonoboArg    *bonobo_arg_copy          (BonoboArg    *arg);
+BonoboArg    *bonobo_arg_new           (BonoboArgType  t);
 
-void          bonobo_arg_from_gtk      (BonoboArg    *a, const GtkArg       *arg);
-BonoboArgType bonobo_arg_type_from_gtk (GtkType       t);
-void          bonobo_arg_to_gtk        (GtkArg       *a, const BonoboArg    *arg);
+void          bonobo_arg_release       (BonoboArg     *arg);
+
+BonoboArg    *bonobo_arg_copy          (BonoboArg     *arg);
+
+void          bonobo_arg_from_gtk      (BonoboArg    *a, 
+					const GtkArg *arg);
+BonoboArgType bonobo_arg_type_from_gtk (GtkType t);
+
+void          bonobo_arg_to_gtk        (GtkArg          *a, 
+					const BonoboArg *arg);
+
 GtkType       bonobo_arg_type_to_gtk   (BonoboArgType id);
 
+gboolean      bonobo_arg_is_equal      (BonoboArg         *a, 
+					BonoboArg         *b, 
+					CORBA_Environment *opt_ev);
 
-gboolean      bonobo_arg_type_is_equal (BonoboArgType a, BonoboArgType b,
+gboolean      bonobo_arg_type_is_equal (BonoboArgType      a, 
+					BonoboArgType      b,
 					CORBA_Environment *opt_ev);
 
 END_GNOME_DECLS

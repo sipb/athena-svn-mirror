@@ -14,9 +14,14 @@
 #include <bonobo/Bonobo.h>
 
 void       bonobo_stream_client_write        (const Bonobo_Stream stream,
-					      const void        *buffer,
-					      const size_t       size,
-					      CORBA_Environment *ev);
+					      const void         *buffer,
+					      const size_t        size,
+					      CORBA_Environment  *ev);
+
+guint8    *bonobo_stream_client_read         (const Bonobo_Stream stream,
+					      const size_t        size,
+					      CORBA_long         *length_read,
+					      CORBA_Environment  *ev);
 
 void       bonobo_stream_client_write_string (const Bonobo_Stream stream,
 					      const char         *str,
@@ -30,6 +35,9 @@ void       bonobo_stream_client_printf       (const Bonobo_Stream stream,
 
 CORBA_long bonobo_stream_client_read_string  (const Bonobo_Stream stream,
 					      char              **str,
+					      CORBA_Environment  *ev);
+
+CORBA_long bonobo_stream_client_get_length   (const Bonobo_Stream stream,
 					      CORBA_Environment  *ev);
 
 #endif /* _BONOBO_STREAM_CLIENT_H_ */

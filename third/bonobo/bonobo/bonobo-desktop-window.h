@@ -7,13 +7,13 @@
  *
  * Copyright 1999 Helix Code, Inc.
  */
-#ifndef _BONOBO_VIEW_H_
-#define _BONOBO_VIEW_H_
+#ifndef _BONOBO_DESKTOP_WINDOW_H_
+#define _BONOBO_DESKTOP_WINDOW_H_
 
 #include <libgnome/gnome-defs.h>
 #include <gtk/gtkobject.h>
 #include <gtk/gtkwindow.h>
-#include <bonobo/bonobo-object.h>
+#include <bonobo/bonobo-xobject.h>
 
 BEGIN_GNOME_DECLS
  
@@ -26,25 +26,23 @@ BEGIN_GNOME_DECLS
 typedef struct _BonoboDesktopWindowPrivate BonoboDesktopWindowPrivate;
 
 typedef struct {
-	BonoboObject base;
+	BonoboXObject base;
 	GtkWindow   *window;
 	BonoboDesktopWindowPrivate *priv;
 } BonoboDesktopWindow;
 
 typedef struct {
-	BonoboObjectClass parent_class;
+	BonoboXObjectClass parent_class;
+
+	POA_Bonobo_Desktop_Window__epv epv;
 } BonoboDesktopWindowClass;
 
-GtkType             bonobo_desktop_window_get_type  (void);
+GtkType              bonobo_desktop_window_get_type  (void);
 BonoboDesktopWindow *bonobo_desktop_window_construct (BonoboDesktopWindow *desktop_window,
-						    Bonobo_Desktop_Window corba_desktop_window,
-						    GtkWindow *toplevel);
-BonoboDesktopWindow *bonobo_desktop_window_new       (GtkWindow *toplevel);
-void                bonobo_desktop_window_control   (BonoboObject *object,
-						    GtkWindow *win);
-Bonobo_Desktop_Window bonobo_desktop_window_corba_object_create (BonoboObject *object);
-
-POA_Bonobo_Desktop_Window__epv *bonobo_desktop_window_get_epv   (void);
+						      GtkWindow           *toplevel);
+BonoboDesktopWindow *bonobo_desktop_window_new       (GtkWindow           *toplevel);
+void                 bonobo_desktop_window_control   (BonoboObject        *object,
+						      GtkWindow           *win);
 
 END_GNOME_DECLS
 

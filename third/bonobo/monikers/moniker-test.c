@@ -134,6 +134,8 @@ display_as_stream (const char *moniker, CORBA_Environment *ev)
 
         fwrite (stream_iobuf->_buffer, stream_iobuf->_length, 1,
                 stdout);
+
+	CORBA_free (stream_iobuf);
     } while (1);
 }
 
@@ -185,8 +187,9 @@ display_as_html (const char *moniker, CORBA_Environment *ev)
 static void
 display_as_control (const char *moniker, CORBA_Environment *ev)
 {
-	Bonobo_Control the_control;
-	GtkWidget *widget;
+	Bonobo_Control  the_control;
+	GtkWidget      *widget;
+	BonoboUIContainer *ui_container;
 
 	GtkWidget *window;
 
@@ -194,13 +197,25 @@ display_as_control (const char *moniker, CORBA_Environment *ev)
 	if (ev->_major != CORBA_NO_EXCEPTION || !the_control)
 		g_error ("Couldn't get Bonobo/Control interface");
 
-	widget = bonobo_widget_new_control_from_objref (the_control, CORBA_OBJECT_NIL);
+	window = bonobo_window_new ("moniker-test", moniker);
+	ui_container = bonobo_ui_container_new ();
+	bonobo_ui_container_set_win (ui_container, BONOBO_WINDOW (window));
+
+	gtk_window_set_default_size (GTK_WINDOW (window), 400, 350);
+
+	widget = bonobo_widget_new_control_from_objref (the_control,
+		BONOBO_OBJREF (ui_container));
+	
+	bonobo_object_unref (BONOBO_OBJECT (ui_container));
+
 	if (ev->_major != CORBA_NO_EXCEPTION || !widget)
 		g_error ("Couldn't get a widget from the_control");
 
-	window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
-	gtk_window_set_default_size (GTK_WINDOW (window), 400, 350);
-	gtk_container_add (GTK_CONTAINER (window), widget);
+	bonobo_control_frame_control_activate (
+		bonobo_widget_get_control_frame (BONOBO_WIDGET (widget)));
+
+	bonobo_window_set_contents (BONOBO_WINDOW (window), widget);
+
 	gtk_signal_connect (GTK_OBJECT (window), "destroy",
 			    GTK_SIGNAL_FUNC (gtk_main_quit), NULL);
 
@@ -216,6 +231,8 @@ main (int argc, char **argv)
 
 	bindtextdomain (PACKAGE, GNOMELOCALEDIR);
 	textdomain (PACKAGE);
+
+	free (malloc (8)); /* -lefence */
 
 	gnomelib_register_popt_table (oaf_popt_options, _("Oaf options"));
 

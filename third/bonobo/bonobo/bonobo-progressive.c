@@ -14,14 +14,11 @@
 #include <bonobo/bonobo-exception.h>
 #include <bonobo/bonobo-progressive.h>
 
-/* Parent GTK object class */
-static BonoboObjectClass *bonobo_progressive_data_sink_parent_class;
-
-POA_Bonobo_ProgressiveDataSink__vepv bonobo_progressive_data_sink_vepv;
+#define PARENT_TYPE BONOBO_X_OBJECT_TYPE
 
 static void
 impl_Bonobo_ProgressiveDataSink_start (PortableServer_Servant servant,
-	    CORBA_Environment *ev)
+				       CORBA_Environment     *ev)
 {
 	BonoboObject *object = bonobo_object_from_servant (servant);
 	BonoboProgressiveDataSink *psink = BONOBO_PROGRESSIVE_DATA_SINK (object);
@@ -29,8 +26,7 @@ impl_Bonobo_ProgressiveDataSink_start (PortableServer_Servant servant,
 
 	if (psink->start_fn != NULL)
 		result = (*psink->start_fn) (psink, psink->closure);
-	else
-	{
+	else {
 		GtkObjectClass *oc = GTK_OBJECT (psink)->klass;
 		BonoboProgressiveDataSinkClass *class = BONOBO_PROGRESSIVE_DATA_SINK_CLASS (oc);
 
@@ -38,15 +34,12 @@ impl_Bonobo_ProgressiveDataSink_start (PortableServer_Servant servant,
 	}
 
 	if (result != 0)
-	{
 		g_warning ("FIXME: should report an exception");
-	}
-	
-} /* impl_Bonobo_ProgressiveDataSink_start */
+}
 
 static void
 impl_Bonobo_ProgressiveDataSink_end (PortableServer_Servant servant,
-	  CORBA_Environment *ev)
+				     CORBA_Environment     *ev)
 {
 	BonoboObject *object = bonobo_object_from_servant (servant);
 	BonoboProgressiveDataSink *psink = BONOBO_PROGRESSIVE_DATA_SINK (object);
@@ -54,8 +47,7 @@ impl_Bonobo_ProgressiveDataSink_end (PortableServer_Servant servant,
 
 	if (psink->end_fn != NULL)
 		result = (*psink->end_fn) (psink, psink->closure);
-	else
-	{
+	else {
 		GtkObjectClass *oc = GTK_OBJECT (psink)->klass;
 		BonoboProgressiveDataSinkClass *class = BONOBO_PROGRESSIVE_DATA_SINK_CLASS (oc);
 
@@ -63,11 +55,8 @@ impl_Bonobo_ProgressiveDataSink_end (PortableServer_Servant servant,
 	}
 
 	if (result != 0)
-	{
 		g_warning ("FIXME: should report an exception");
-	}
-	
-} /* impl_Bonobo_ProgressiveDataSink_end */
+}
 
 static void
 impl_Bonobo_ProgressiveDataSink_addData (PortableServer_Servant                 servant,
@@ -92,8 +81,7 @@ impl_Bonobo_ProgressiveDataSink_addData (PortableServer_Servant                 
 
 	if (result != 0)
 		g_warning ("FIXME: should report an exception");
-	
-} /* impl_Bonobo_ProgressiveDataSink_add_data */
+}
 
 static void
 impl_Bonobo_ProgressiveDataSink_setSize (PortableServer_Servant servant,
@@ -118,37 +106,6 @@ impl_Bonobo_ProgressiveDataSink_setSize (PortableServer_Servant servant,
 
 	if (result != 0)
 		g_warning ("FIXME: should report an exception");
-} /* impl_Bonobo_ProgressiveDataSink_set_size */
-
-/**
- * bonobo_progressive_get_epv:
- *
- * Returns: The EPV for the BonoboProgressive implementation.  
- */
-POA_Bonobo_ProgressiveDataSink__epv *
-bonobo_progressive_get_epv (void)
-{
-	POA_Bonobo_ProgressiveDataSink__epv *epv;
-
-	epv = g_new0 (POA_Bonobo_ProgressiveDataSink__epv, 1);
-
-	epv->start   = impl_Bonobo_ProgressiveDataSink_start;
-	epv->end     = impl_Bonobo_ProgressiveDataSink_end;
-	epv->addData = impl_Bonobo_ProgressiveDataSink_addData;
-	epv->setSize = impl_Bonobo_ProgressiveDataSink_setSize;
-
-	return epv;
-}
-
-static void
-init_progressive_data_sink_corba_class (void)
-{
-	/*
-	 * Initialize the entry point vector for Bonobo::ProgressiveDataSink.
-	 */
-	bonobo_progressive_data_sink_vepv.Bonobo_Unknown_epv = bonobo_object_get_epv ();
-	bonobo_progressive_data_sink_vepv.Bonobo_ProgressiveDataSink_epv =
-		bonobo_progressive_get_epv ();
 }
 
 static void
@@ -180,13 +137,9 @@ static void
 bonobo_progressive_data_sink_class_init (BonoboProgressiveDataSinkClass *klass)
 {
 	GtkObjectClass *object_class = (GtkObjectClass *) klass;
+	POA_Bonobo_ProgressiveDataSink__epv *epv = &klass->epv;
 
-	bonobo_progressive_data_sink_parent_class =
-		gtk_type_class (bonobo_object_get_type ());
-
-	/*
-	 * Override and initialize methods
-	 */
+	/* Override and initialize methods */
 	object_class->destroy = bonobo_progressive_data_sink_destroy;
 
 	klass->start_fn    = bonobo_progressive_data_sink_start_end_nop;
@@ -194,41 +147,22 @@ bonobo_progressive_data_sink_class_init (BonoboProgressiveDataSinkClass *klass)
 	klass->add_data_fn = bonobo_progressive_data_sink_add_data_nop;
 	klass->set_size_fn = bonobo_progressive_data_sink_set_size_nop;
 
-	init_progressive_data_sink_corba_class ();
+	epv->start   = impl_Bonobo_ProgressiveDataSink_start;
+	epv->end     = impl_Bonobo_ProgressiveDataSink_end;
+	epv->addData = impl_Bonobo_ProgressiveDataSink_addData;
+	epv->setSize = impl_Bonobo_ProgressiveDataSink_setSize;
 }
 
 static void
-bonobo_progressive_data_sink_init (BonoboProgressiveDataSink *psink)
+bonobo_progressive_data_sink_init (GtkObject *object)
 {
+	/* nothing to do */
 }
 
-/**
- * bonobo_progressive_data_sink_get_type:
- *
- * Returns: The GtkType for the BonoboProgressiveDataSink class type.
- */
-GtkType
-bonobo_progressive_data_sink_get_type (void)
-{
-	static GtkType type = 0;
-
-	if (!type){
-		GtkTypeInfo info = {
-			"BonoboProgressiveDataSink",
-			sizeof (BonoboProgressiveDataSink),
-			sizeof (BonoboProgressiveDataSinkClass),
-			(GtkClassInitFunc) bonobo_progressive_data_sink_class_init,
-			(GtkObjectInitFunc) bonobo_progressive_data_sink_init,
-			NULL, /* reserved 1 */
-			NULL, /* reserved 2 */
-			(GtkClassInitFunc) NULL
-		};
-
-		type = gtk_type_unique (bonobo_object_get_type (), &info);
-	}
-
-	return type;
-} 
+BONOBO_X_TYPE_FUNC_FULL (BonoboProgressiveDataSink, 
+			   Bonobo_ProgressiveDataSink,
+			   PARENT_TYPE,
+			   bonobo_progressive_data_sink);
 
 /**
  * bonobo_progressive_data_sink_construct:
@@ -257,19 +191,15 @@ bonobo_progressive_data_sink_get_type (void)
  * Returns: the initialized BonoboProgressiveDataSink object.
  */
 BonoboProgressiveDataSink *
-bonobo_progressive_data_sink_construct (BonoboProgressiveDataSink *psink,
-				       Bonobo_ProgressiveDataSink corba_psink,
-				       BonoboProgressiveDataSinkStartFn start_fn,
-				       BonoboProgressiveDataSinkEndFn end_fn,
-				       BonoboProgressiveDataSinkAddDataFn add_data_fn,
-				       BonoboProgressiveDataSinkSetSizeFn set_size_fn,
-				       void *closure)
+bonobo_progressive_data_sink_construct (BonoboProgressiveDataSink         *psink,
+					BonoboProgressiveDataSinkStartFn   start_fn,
+					BonoboProgressiveDataSinkEndFn     end_fn,
+					BonoboProgressiveDataSinkAddDataFn add_data_fn,
+					BonoboProgressiveDataSinkSetSizeFn set_size_fn,
+					void                              *closure)
 {
 	g_return_val_if_fail (psink != NULL, NULL);
 	g_return_val_if_fail (BONOBO_IS_PROGRESSIVE_DATA_SINK (psink), NULL);
-	g_return_val_if_fail (corba_psink != CORBA_OBJECT_NIL, NULL);
-
-	bonobo_object_construct (BONOBO_OBJECT (psink), corba_psink);
 
 	psink->start_fn = start_fn;
 	psink->end_fn = end_fn;
@@ -279,28 +209,6 @@ bonobo_progressive_data_sink_construct (BonoboProgressiveDataSink *psink,
 	psink->closure = closure;
 
 	return psink;
-} 
-
-static Bonobo_ProgressiveDataSink
-create_bonobo_progressive_data_sink (BonoboObject *object)
-{
-	POA_Bonobo_ProgressiveDataSink *servant;
-	CORBA_Environment ev;
-
-	servant = (POA_Bonobo_ProgressiveDataSink *)g_new0 (BonoboObjectServant, 1);
-	servant->vepv = &bonobo_progressive_data_sink_vepv;
-
-	CORBA_exception_init (&ev);
-
-	POA_Bonobo_ProgressiveDataSink__init ((PortableServer_Servant) servant, &ev);
-	if (BONOBO_EX (&ev)){
-		g_free (servant);
-		CORBA_exception_free (&ev);
-		return CORBA_OBJECT_NIL;
-	}
-
-	CORBA_exception_free (&ev);
-	return (Bonobo_ProgressiveDataSink) bonobo_object_activate_servant (object, servant);
 } 
 
 /**
@@ -329,25 +237,19 @@ create_bonobo_progressive_data_sink (BonoboObject *object)
  * Returns: the newly-constructed BonoboProgressiveDataSink object.
  */
 BonoboProgressiveDataSink *
-bonobo_progressive_data_sink_new (BonoboProgressiveDataSinkStartFn start_fn,
-				 BonoboProgressiveDataSinkEndFn end_fn,
-				 BonoboProgressiveDataSinkAddDataFn add_data_fn,
-				 BonoboProgressiveDataSinkSetSizeFn set_size_fn,
-				 void *closure)
+bonobo_progressive_data_sink_new (BonoboProgressiveDataSinkStartFn   start_fn,
+				  BonoboProgressiveDataSinkEndFn     end_fn,
+				  BonoboProgressiveDataSinkAddDataFn add_data_fn,
+				  BonoboProgressiveDataSinkSetSizeFn set_size_fn,
+				  void                              *closure)
 {
 	BonoboProgressiveDataSink *psink;
-	Bonobo_ProgressiveDataSink corba_psink;
 
 	psink = gtk_type_new (bonobo_progressive_data_sink_get_type ());
-	corba_psink = create_bonobo_progressive_data_sink (BONOBO_OBJECT (psink));
-	if (corba_psink == CORBA_OBJECT_NIL) {
-		bonobo_object_unref (BONOBO_OBJECT (psink));
-		return NULL;
-	}
 
-	bonobo_progressive_data_sink_construct (psink, corba_psink, start_fn,
-					       end_fn, add_data_fn,
-					       set_size_fn, closure);
+	bonobo_progressive_data_sink_construct (psink, start_fn,
+						end_fn, add_data_fn,
+						set_size_fn, closure);
 
 	return psink;
 } 

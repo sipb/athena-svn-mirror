@@ -15,9 +15,7 @@
 #include <bonobo/bonobo-exception.h>
 #include <bonobo/bonobo-storage-plugin.h>
 
-static BonoboObjectClass *bonobo_storage_parent_class;
-
-static POA_Bonobo_Storage__vepv bonobo_storage_vepv;
+#define PARENT_TYPE BONOBO_X_OBJECT_TYPE
 
 #define CLASS(o) BONOBO_STORAGE_CLASS (GTK_OBJECT(o)->klass)
 
@@ -61,7 +59,7 @@ impl_Bonobo_Storage_openStream (PortableServer_Servant servant,
 	
 	if ((stream = CLASS (storage)->open_stream (storage, path, mode, ev)))
 		return (Bonobo_Stream) CORBA_Object_duplicate (
-			bonobo_object_corba_objref (BONOBO_OBJECT (stream)), ev);
+			BONOBO_OBJREF (stream), ev);
 	else
 		return CORBA_OBJECT_NIL;
 }
@@ -75,10 +73,11 @@ impl_Bonobo_Storage_openStorage (PortableServer_Servant  servant,
 	BonoboStorage *storage = bonobo_storage_from_servant (servant);
 	BonoboStorage *open_storage;
 	
-	if ((open_storage = CLASS (storage)->open_storage (storage, path, 
-							   mode, ev)))
+	if ((open_storage = CLASS (storage)->open_storage (
+		storage, path, mode, ev)))
+
 		return (Bonobo_Storage) CORBA_Object_duplicate (
-			bonobo_object_corba_objref (BONOBO_OBJECT (open_storage)), ev);
+			BONOBO_OBJREF (open_storage), ev);
 	else
 		return CORBA_OBJECT_NIL;
 }
@@ -89,7 +88,7 @@ impl_Bonobo_Storage_copyTo (PortableServer_Servant servant,
 			    CORBA_Environment     *ev)
 {
 	BonoboStorage *storage = bonobo_storage_from_servant (servant);
-	Bonobo_Storage src = BONOBO_OBJECT (storage)->corba_objref;	
+	Bonobo_Storage src = BONOBO_OBJREF (storage);	
 
 	if (CLASS (storage)->copy_to)
 		CLASS (storage)->copy_to (storage, target, ev);
@@ -147,17 +146,10 @@ impl_Bonobo_Storage_erase (PortableServer_Servant servant,
 	CLASS (storage)->erase (storage, path, ev);
 }
 
-/**
- * bonobo_storage_get_epv:
- *
- * Returns: The EPV for the default BonoboStorage implementation.  
- */
-POA_Bonobo_Storage__epv *
-bonobo_storage_get_epv (void)
+static void
+bonobo_storage_class_init (BonoboStorageClass *klass)
 {
-	POA_Bonobo_Storage__epv *epv;
-
-	epv = g_new0 (POA_Bonobo_Storage__epv, 1);
+	POA_Bonobo_Storage__epv *epv = &klass->epv;
 
 	epv->getInfo      = impl_Bonobo_Storage_getInfo;
 	epv->setInfo      = impl_Bonobo_Storage_setInfo;
@@ -169,83 +161,18 @@ bonobo_storage_get_epv (void)
 	epv->revert       = impl_Bonobo_Storage_revert;
 	epv->listContents = impl_Bonobo_Storage_listContents;
 	epv->erase        = impl_Bonobo_Storage_erase;
-
-	return epv;
 }
 
-static void
-init_storage_corba_class (void)
+static void 
+bonobo_storage_init (GtkObject *object)
 {
-	/* The VEPV */
-	bonobo_storage_vepv.Bonobo_Unknown_epv = bonobo_object_get_epv ();
-	bonobo_storage_vepv.Bonobo_Storage_epv = bonobo_storage_get_epv ();
+	/* nothing to do */
 }
 
-static void
-bonobo_storage_class_init (BonoboStorageClass *klass)
-{
-	bonobo_storage_parent_class = gtk_type_class (bonobo_object_get_type ());
-
-	init_storage_corba_class ();
-}
-
-static void
-bonobo_storage_init (BonoboObject *object)
-{
-}
-
-/**
- * bonobo_storage_get_type:
- *
- * Returns: The GtkType for the BonoboStorage class.
- */
-GtkType
-bonobo_storage_get_type (void)
-{
-	static GtkType type = 0;
-
-	if (!type){
-		GtkTypeInfo info = {
-			"BonoboStorage",
-			sizeof (BonoboStorage),
-			sizeof (BonoboStorageClass),
-			(GtkClassInitFunc) bonobo_storage_class_init,
-			(GtkObjectInitFunc) bonobo_storage_init,
-			NULL, /* reserved 1 */
-			NULL, /* reserved 2 */
-			(GtkClassInitFunc) NULL
-		};
-
-		type = gtk_type_unique (bonobo_object_get_type (), &info);
-	}
-
-	return type;
-}
-
-/**
- * bonobo_storage_construct:
- * @storage: The BonoboStorage object to be initialized
- * @corba_storage: The CORBA object for the Bonobo_Storage interface.
- *
- * Initializes @storage using the CORBA interface object specified
- * by @corba_storage.
- *
- * Returns: the initialized BonoboStorage object @storage.
- */
-BonoboStorage *
-bonobo_storage_construct (BonoboStorage *storage, Bonobo_Storage corba_storage)
-{
-	g_return_val_if_fail (storage != NULL, NULL);
-	g_return_val_if_fail (BONOBO_IS_STORAGE (storage), NULL);
-	g_return_val_if_fail (corba_storage != CORBA_OBJECT_NIL, NULL);
-
-	bonobo_object_construct (
-		BONOBO_OBJECT (storage),
-		(CORBA_Object) corba_storage);
-
-	
-	return storage;
-}
+BONOBO_X_TYPE_FUNC_FULL (BonoboStorage, 
+			   Bonobo_Storage,
+			   PARENT_TYPE,
+			   bonobo_storage);
 
 /**
  * bonobo_storage_open:
@@ -303,39 +230,6 @@ bonobo_storage_open (const char *driver, const char *path, gint flags,
 	return bonobo_storage_open_full (driver, path, flags, mode, NULL);
 }
 
-/**
- * bonobo_storage_corba_object_create:
- * @object: the GtkObject that will wrap the CORBA object
- *
- * Creates and activates the CORBA object that is wrapped by the
- * @object BonoboObject.
- *
- * Returns: An activated object reference to the created object
- * or %CORBA_OBJECT_NIL in case of failure.
- */
-Bonobo_Storage
-bonobo_storage_corba_object_create (BonoboObject *object)
-{
-        POA_Bonobo_Storage *servant;
-        CORBA_Environment ev;
-
-        servant = (POA_Bonobo_Storage *) g_new0 (BonoboObjectServant, 1);
-        servant->vepv = &bonobo_storage_vepv;
-
-        CORBA_exception_init (&ev);
-
-        POA_Bonobo_Storage__init ((PortableServer_Servant) servant, &ev);
-        if (BONOBO_EX (&ev)){
-                g_free (servant);
-                CORBA_exception_free (&ev);
-                return CORBA_OBJECT_NIL;
-        }
-
-        CORBA_exception_free (&ev);
-        return (Bonobo_Storage) bonobo_object_activate_servant (object,
-								servant);
-}
-
 static void
 copy_stream (Bonobo_Stream src, Bonobo_Stream dest, CORBA_Environment *ev) 
 {
@@ -361,7 +255,6 @@ copy_stream (Bonobo_Stream src, Bonobo_Stream dest, CORBA_Environment *ev)
 	if (BONOBO_EX (ev)) /* we must return a Bonobo_Storage exception */
 		CORBA_exception_set (ev, CORBA_USER_EXCEPTION, 
 				     ex_Bonobo_Storage_IOError, NULL);
-
 }
 
 void

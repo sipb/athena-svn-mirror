@@ -194,3 +194,115 @@ bonobo_stream_client_read_string (const Bonobo_Stream stream, char **str,
 		return l;
 	}
 }
+
+/**
+ * bonobo_stream_client_get_length:
+ * @stream: The stream.
+ * @ev: Exception environment
+ * 
+ *   Does the grunt work to get the length of a stream,
+ * returns -1 if the length is not available. Returns -1
+ * on exception.
+ * 
+ * Return value: Length or -1
+ **/
+CORBA_long
+bonobo_stream_client_get_length (const Bonobo_Stream stream,
+				 CORBA_Environment  *ev)
+{
+	CORBA_long len;
+	Bonobo_StorageInfo *info;
+
+	g_return_val_if_fail (ev != NULL, -1);
+
+	info = Bonobo_Stream_getInfo (stream, Bonobo_FIELD_SIZE, ev);
+
+	if (BONOBO_EX (ev) || !info)
+		return -1;
+
+	len = info->size;
+
+	CORBA_free (info);
+	
+	return len;
+}
+
+/**
+ * bonobo_stream_client_read:
+ * @stream: A CORBA Object reference to a Bonobo_Stream
+ * @size: number of bytes to read or -1 for whole stream.
+ * @length_read: if non NULL will be set to the length read
+ * @ev: a CORBA environment to return status information.
+ *
+ * This is a helper routine to read @size bytes from the @stream into
+ * a freshly g_ allocated buffer which is returned. Whilst this
+ * routine may seem pointless; it reads the stream in small chunks
+ * avoiding possibly massive alloca's inside ORBit's stub/skel code.
+ *
+ * Returns NULL on any sort of failure & 0 size read.
+ */
+guint8 *
+bonobo_stream_client_read (const Bonobo_Stream stream,
+			   const size_t        size,
+			   CORBA_long         *length_read,
+			   CORBA_Environment  *ev)
+{
+	size_t  pos;
+	guint8 *mem;
+	size_t  length;
+
+	g_return_val_if_fail (ev != NULL, NULL);
+
+	if (length_read)
+		*length_read = size;
+
+	length = size;
+
+	if (length == -1) {
+		length = bonobo_stream_client_get_length (stream, ev);
+		if (BONOBO_EX (ev) || length == -1) {
+			g_warning ("Exception getting length / FIXME: print "
+				   "stream doesn't support length determination");
+			return NULL;
+		}
+	} 
+
+	*length_read = length;
+
+	if (length == 0)
+		return NULL;
+
+	mem = g_malloc (length);
+	if (!mem) {
+		CORBA_exception_set_system (ev, ex_CORBA_NO_MEMORY,
+					    CORBA_COMPLETED_NO);
+		return NULL;
+	}
+	
+	for (pos = 0; pos < length;) {
+		Bonobo_Stream_iobuf *buf;
+		CORBA_long           len;
+
+		len = (pos + CORBA_BLOCK_SIZE < length) ?
+			CORBA_BLOCK_SIZE : length - pos;
+
+		Bonobo_Stream_read (stream, len, &buf, ev);
+
+		if (BONOBO_EX (ev) || !buf)
+			goto io_error;
+
+		if (buf->_length > 0) {
+			memcpy (mem + pos, buf->_buffer, buf->_length);
+			pos += buf->_length;
+		} else {
+			g_warning ("Buffer length %d", buf->_length);
+			goto io_error;
+		}
+		CORBA_free (buf);
+	}
+
+	return mem;
+
+ io_error:
+	return NULL;
+}

@@ -14,6 +14,89 @@ extern "C"
 #endif				/* __cplusplus */
 
 /** typedefs **/
+#define ex_Bonobo_NotSupported "IDL:Bonobo/NotSupported:1.0"
+   void _ORBIT_Bonobo_NotSupported_demarshal(GIOPRecvBuffer *
+					     _ORBIT_recv_buffer,
+					     CORBA_Environment * ev);
+   void _ORBIT_Bonobo_NotSupported_marshal(GIOPSendBuffer *
+					   _ORBIT_send_buffer,
+					   CORBA_Environment * ev);
+#if !defined(_Bonobo_NotSupported_defined)
+#define _Bonobo_NotSupported_defined 1
+   typedef struct
+   {
+      int dummy;
+   }
+   Bonobo_NotSupported;
+
+#if !defined(TC_IMPL_TC_Bonobo_NotSupported_0)
+#define TC_IMPL_TC_Bonobo_NotSupported_0 'B'
+#define TC_IMPL_TC_Bonobo_NotSupported_1 'o'
+#define TC_IMPL_TC_Bonobo_NotSupported_2 'n'
+#define TC_IMPL_TC_Bonobo_NotSupported_3 'o'
+#define TC_IMPL_TC_Bonobo_NotSupported_4 'b'
+#define TC_IMPL_TC_Bonobo_NotSupported_5 'o'
+   extern const struct CORBA_TypeCode_struct TC_Bonobo_NotSupported_struct;
+#define TC_Bonobo_NotSupported ((CORBA_TypeCode)&TC_Bonobo_NotSupported_struct)
+#endif
+#define Bonobo_NotSupported__alloc() NULL
+   extern gpointer Bonobo_NotSupported__free(gpointer mem, gpointer dat,
+					     CORBA_boolean free_strings);	/* ORBit internal use */
+#endif
+#define ex_Bonobo_IOError "IDL:Bonobo/IOError:1.0"
+   void _ORBIT_Bonobo_IOError_demarshal(GIOPRecvBuffer * _ORBIT_recv_buffer,
+					CORBA_Environment * ev);
+   void _ORBIT_Bonobo_IOError_marshal(GIOPSendBuffer * _ORBIT_send_buffer,
+				      CORBA_Environment * ev);
+#if !defined(_Bonobo_IOError_defined)
+#define _Bonobo_IOError_defined 1
+   typedef struct
+   {
+      int dummy;
+   }
+   Bonobo_IOError;
+
+#if !defined(TC_IMPL_TC_Bonobo_IOError_0)
+#define TC_IMPL_TC_Bonobo_IOError_0 'B'
+#define TC_IMPL_TC_Bonobo_IOError_1 'o'
+#define TC_IMPL_TC_Bonobo_IOError_2 'n'
+#define TC_IMPL_TC_Bonobo_IOError_3 'o'
+#define TC_IMPL_TC_Bonobo_IOError_4 'b'
+#define TC_IMPL_TC_Bonobo_IOError_5 'o'
+   extern const struct CORBA_TypeCode_struct TC_Bonobo_IOError_struct;
+#define TC_Bonobo_IOError ((CORBA_TypeCode)&TC_Bonobo_IOError_struct)
+#endif
+#define Bonobo_IOError__alloc() NULL
+   extern gpointer Bonobo_IOError__free(gpointer mem, gpointer dat,
+					CORBA_boolean free_strings);	/* ORBit internal use */
+#endif
+#define ex_Bonobo_BadArg "IDL:Bonobo/BadArg:1.0"
+   void _ORBIT_Bonobo_BadArg_demarshal(GIOPRecvBuffer * _ORBIT_recv_buffer,
+				       CORBA_Environment * ev);
+   void _ORBIT_Bonobo_BadArg_marshal(GIOPSendBuffer * _ORBIT_send_buffer,
+				     CORBA_Environment * ev);
+#if !defined(_Bonobo_BadArg_defined)
+#define _Bonobo_BadArg_defined 1
+   typedef struct
+   {
+      int dummy;
+   }
+   Bonobo_BadArg;
+
+#if !defined(TC_IMPL_TC_Bonobo_BadArg_0)
+#define TC_IMPL_TC_Bonobo_BadArg_0 'B'
+#define TC_IMPL_TC_Bonobo_BadArg_1 'o'
+#define TC_IMPL_TC_Bonobo_BadArg_2 'n'
+#define TC_IMPL_TC_Bonobo_BadArg_3 'o'
+#define TC_IMPL_TC_Bonobo_BadArg_4 'b'
+#define TC_IMPL_TC_Bonobo_BadArg_5 'o'
+   extern const struct CORBA_TypeCode_struct TC_Bonobo_BadArg_struct;
+#define TC_Bonobo_BadArg ((CORBA_TypeCode)&TC_Bonobo_BadArg_struct)
+#endif
+#define Bonobo_BadArg__alloc() NULL
+   extern gpointer Bonobo_BadArg__free(gpointer mem, gpointer dat,
+				       CORBA_boolean free_strings);	/* ORBit internal use */
+#endif
 #if !defined(ORBIT_DECL_Bonobo_Unknown) && !defined(_Bonobo_Unknown_defined)
 #define ORBIT_DECL_Bonobo_Unknown 1
 #define _Bonobo_Unknown_defined 1
@@ -228,41 +311,6 @@ extern "C"
 #define TC_IMPL_TC_Bonobo_MonikerExtender_5 'o'
    extern const struct CORBA_TypeCode_struct TC_Bonobo_MonikerExtender_struct;
 #define TC_Bonobo_MonikerExtender ((CORBA_TypeCode)&TC_Bonobo_MonikerExtender_struct)
-#endif
-#endif
-#if !defined(ORBIT_DECL_Bonobo_ActivationContext) && !defined(_Bonobo_ActivationContext_defined)
-#define ORBIT_DECL_Bonobo_ActivationContext 1
-#define _Bonobo_ActivationContext_defined 1
-#define Bonobo_ActivationContext__free CORBA_Object__free
-   typedef CORBA_Object Bonobo_ActivationContext;
-   extern CORBA_unsigned_long Bonobo_ActivationContext__classid;
-#if !defined(TC_IMPL_TC_Bonobo_ActivationContext_0)
-#define TC_IMPL_TC_Bonobo_ActivationContext_0 'B'
-#define TC_IMPL_TC_Bonobo_ActivationContext_1 'o'
-#define TC_IMPL_TC_Bonobo_ActivationContext_2 'n'
-#define TC_IMPL_TC_Bonobo_ActivationContext_3 'o'
-#define TC_IMPL_TC_Bonobo_ActivationContext_4 'b'
-#define TC_IMPL_TC_Bonobo_ActivationContext_5 'o'
-   extern const struct CORBA_TypeCode_struct
-      TC_Bonobo_ActivationContext_struct;
-#define TC_Bonobo_ActivationContext ((CORBA_TypeCode)&TC_Bonobo_ActivationContext_struct)
-#endif
-#endif
-#if !defined(ORBIT_DECL_Bonobo_RunningContext) && !defined(_Bonobo_RunningContext_defined)
-#define ORBIT_DECL_Bonobo_RunningContext 1
-#define _Bonobo_RunningContext_defined 1
-#define Bonobo_RunningContext__free CORBA_Object__free
-   typedef CORBA_Object Bonobo_RunningContext;
-   extern CORBA_unsigned_long Bonobo_RunningContext__classid;
-#if !defined(TC_IMPL_TC_Bonobo_RunningContext_0)
-#define TC_IMPL_TC_Bonobo_RunningContext_0 'B'
-#define TC_IMPL_TC_Bonobo_RunningContext_1 'o'
-#define TC_IMPL_TC_Bonobo_RunningContext_2 'n'
-#define TC_IMPL_TC_Bonobo_RunningContext_3 'o'
-#define TC_IMPL_TC_Bonobo_RunningContext_4 'b'
-#define TC_IMPL_TC_Bonobo_RunningContext_5 'o'
-   extern const struct CORBA_TypeCode_struct TC_Bonobo_RunningContext_struct;
-#define TC_Bonobo_RunningContext ((CORBA_TypeCode)&TC_Bonobo_RunningContext_struct)
 #endif
 #endif
 #if !defined(_Bonobo_StorageInfoFields_defined)
@@ -883,61 +931,40 @@ extern "C"
    extern gpointer Bonobo_Storage_NotEmpty__free(gpointer mem, gpointer dat,
 						 CORBA_boolean free_strings);	/* ORBit internal use */
 #endif
-#define ex_Bonobo_NotSupported "IDL:Bonobo/NotSupported:1.0"
-   void _ORBIT_Bonobo_NotSupported_demarshal(GIOPRecvBuffer *
-					     _ORBIT_recv_buffer,
-					     CORBA_Environment * ev);
-   void _ORBIT_Bonobo_NotSupported_marshal(GIOPSendBuffer *
-					   _ORBIT_send_buffer,
-					   CORBA_Environment * ev);
-#if !defined(_Bonobo_NotSupported_defined)
-#define _Bonobo_NotSupported_defined 1
-   typedef struct
-   {
-      int dummy;
-   }
-   Bonobo_NotSupported;
-
-#if !defined(TC_IMPL_TC_Bonobo_NotSupported_0)
-#define TC_IMPL_TC_Bonobo_NotSupported_0 'B'
-#define TC_IMPL_TC_Bonobo_NotSupported_1 'o'
-#define TC_IMPL_TC_Bonobo_NotSupported_2 'n'
-#define TC_IMPL_TC_Bonobo_NotSupported_3 'o'
-#define TC_IMPL_TC_Bonobo_NotSupported_4 'b'
-#define TC_IMPL_TC_Bonobo_NotSupported_5 'o'
-   extern const struct CORBA_TypeCode_struct TC_Bonobo_NotSupported_struct;
-#define TC_Bonobo_NotSupported ((CORBA_TypeCode)&TC_Bonobo_NotSupported_struct)
+#if !defined(ORBIT_DECL_Bonobo_ActivationContext) && !defined(_Bonobo_ActivationContext_defined)
+#define ORBIT_DECL_Bonobo_ActivationContext 1
+#define _Bonobo_ActivationContext_defined 1
+#define Bonobo_ActivationContext__free CORBA_Object__free
+   typedef CORBA_Object Bonobo_ActivationContext;
+   extern CORBA_unsigned_long Bonobo_ActivationContext__classid;
+#if !defined(TC_IMPL_TC_Bonobo_ActivationContext_0)
+#define TC_IMPL_TC_Bonobo_ActivationContext_0 'B'
+#define TC_IMPL_TC_Bonobo_ActivationContext_1 'o'
+#define TC_IMPL_TC_Bonobo_ActivationContext_2 'n'
+#define TC_IMPL_TC_Bonobo_ActivationContext_3 'o'
+#define TC_IMPL_TC_Bonobo_ActivationContext_4 'b'
+#define TC_IMPL_TC_Bonobo_ActivationContext_5 'o'
+   extern const struct CORBA_TypeCode_struct
+      TC_Bonobo_ActivationContext_struct;
+#define TC_Bonobo_ActivationContext ((CORBA_TypeCode)&TC_Bonobo_ActivationContext_struct)
 #endif
-#define Bonobo_NotSupported__alloc() NULL
-   extern gpointer Bonobo_NotSupported__free(gpointer mem, gpointer dat,
-					     CORBA_boolean free_strings);	/* ORBit internal use */
 #endif
-#define ex_Bonobo_IOError "IDL:Bonobo/IOError:1.0"
-   void _ORBIT_Bonobo_IOError_demarshal(GIOPRecvBuffer * _ORBIT_recv_buffer,
-					CORBA_Environment * ev);
-   void _ORBIT_Bonobo_IOError_marshal(GIOPSendBuffer * _ORBIT_send_buffer,
-				      CORBA_Environment * ev);
-#if !defined(_Bonobo_IOError_defined)
-#define _Bonobo_IOError_defined 1
-   typedef struct
-   {
-      int dummy;
-   }
-   Bonobo_IOError;
-
-#if !defined(TC_IMPL_TC_Bonobo_IOError_0)
-#define TC_IMPL_TC_Bonobo_IOError_0 'B'
-#define TC_IMPL_TC_Bonobo_IOError_1 'o'
-#define TC_IMPL_TC_Bonobo_IOError_2 'n'
-#define TC_IMPL_TC_Bonobo_IOError_3 'o'
-#define TC_IMPL_TC_Bonobo_IOError_4 'b'
-#define TC_IMPL_TC_Bonobo_IOError_5 'o'
-   extern const struct CORBA_TypeCode_struct TC_Bonobo_IOError_struct;
-#define TC_Bonobo_IOError ((CORBA_TypeCode)&TC_Bonobo_IOError_struct)
+#if !defined(ORBIT_DECL_Bonobo_RunningContext) && !defined(_Bonobo_RunningContext_defined)
+#define ORBIT_DECL_Bonobo_RunningContext 1
+#define _Bonobo_RunningContext_defined 1
+#define Bonobo_RunningContext__free CORBA_Object__free
+   typedef CORBA_Object Bonobo_RunningContext;
+   extern CORBA_unsigned_long Bonobo_RunningContext__classid;
+#if !defined(TC_IMPL_TC_Bonobo_RunningContext_0)
+#define TC_IMPL_TC_Bonobo_RunningContext_0 'B'
+#define TC_IMPL_TC_Bonobo_RunningContext_1 'o'
+#define TC_IMPL_TC_Bonobo_RunningContext_2 'n'
+#define TC_IMPL_TC_Bonobo_RunningContext_3 'o'
+#define TC_IMPL_TC_Bonobo_RunningContext_4 'b'
+#define TC_IMPL_TC_Bonobo_RunningContext_5 'o'
+   extern const struct CORBA_TypeCode_struct TC_Bonobo_RunningContext_struct;
+#define TC_Bonobo_RunningContext ((CORBA_TypeCode)&TC_Bonobo_RunningContext_struct)
 #endif
-#define Bonobo_IOError__alloc() NULL
-   extern gpointer Bonobo_IOError__free(gpointer mem, gpointer dat,
-					CORBA_boolean free_strings);	/* ORBit internal use */
 #endif
 #if !defined(ORBIT_DECL_Bonobo_Persist) && !defined(_Bonobo_Persist_defined)
 #define ORBIT_DECL_Bonobo_Persist 1
@@ -1885,6 +1912,30 @@ extern "C"
 #define TC_Bonobo_Control_State ((CORBA_TypeCode)&TC_Bonobo_Control_State_struct)
 #endif
 #endif
+#if !defined(_Bonobo_Control_FocusDirection_defined)
+#define _Bonobo_Control_FocusDirection_defined 1
+   typedef enum
+   {
+      Bonobo_Control_TAB_FORWARD,
+      Bonobo_Control_TAB_BACKWARD,
+      Bonobo_Control_UP,
+      Bonobo_Control_DOWN,
+      Bonobo_Control_LEFT,
+      Bonobo_Control_RIGHT
+   }
+   Bonobo_Control_FocusDirection;
+#if !defined(TC_IMPL_TC_Bonobo_Control_FocusDirection_0)
+#define TC_IMPL_TC_Bonobo_Control_FocusDirection_0 'B'
+#define TC_IMPL_TC_Bonobo_Control_FocusDirection_1 'o'
+#define TC_IMPL_TC_Bonobo_Control_FocusDirection_2 'n'
+#define TC_IMPL_TC_Bonobo_Control_FocusDirection_3 'o'
+#define TC_IMPL_TC_Bonobo_Control_FocusDirection_4 'b'
+#define TC_IMPL_TC_Bonobo_Control_FocusDirection_5 'o'
+   extern const struct CORBA_TypeCode_struct
+      TC_Bonobo_Control_FocusDirection_struct;
+#define TC_Bonobo_Control_FocusDirection ((CORBA_TypeCode)&TC_Bonobo_Control_FocusDirection_struct)
+#endif
+#endif
 #if !defined(ORBIT_DECL_Bonobo_PropertyControl) && !defined(_Bonobo_PropertyControl_defined)
 #define ORBIT_DECL_Bonobo_PropertyControl 1
 #define _Bonobo_PropertyControl_defined 1
@@ -2141,61 +2192,60 @@ extern "C"
 #define TC_Bonobo_ItemContainer ((CORBA_TypeCode)&TC_Bonobo_ItemContainer_struct)
 #endif
 #endif
-#if !defined(ORBIT_DECL_CORBA_sequence_Bonobo_Unknown) && !defined(_CORBA_sequence_Bonobo_Unknown_defined)
-#define ORBIT_DECL_CORBA_sequence_Bonobo_Unknown 1
-#define _CORBA_sequence_Bonobo_Unknown_defined 1
-#define ORBIT_IMPL_CORBA_sequence_Bonobo_Unknown_0 'B'
-#define ORBIT_IMPL_CORBA_sequence_Bonobo_Unknown_1 'o'
-#define ORBIT_IMPL_CORBA_sequence_Bonobo_Unknown_2 'n'
-#define ORBIT_IMPL_CORBA_sequence_Bonobo_Unknown_3 'o'
-#define ORBIT_IMPL_CORBA_sequence_Bonobo_Unknown_4 'b'
-#define ORBIT_IMPL_CORBA_sequence_Bonobo_Unknown_5 'o'
+#if !defined(ORBIT_DECL_CORBA_sequence_CORBA_string) && !defined(_CORBA_sequence_CORBA_string_defined)
+#define ORBIT_DECL_CORBA_sequence_CORBA_string 1
+#define _CORBA_sequence_CORBA_string_defined 1
+#define ORBIT_IMPL_CORBA_sequence_CORBA_string_0 'B'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_string_1 'o'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_string_2 'n'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_string_3 'o'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_string_4 'b'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_string_5 'o'
    typedef struct
    {
       CORBA_unsigned_long _maximum,
        _length;
-      Bonobo_Unknown *_buffer;
+      CORBA_char **_buffer;
       CORBA_boolean _release;
    }
-   CORBA_sequence_Bonobo_Unknown;
-#if !defined(TC_IMPL_TC_CORBA_sequence_Bonobo_Unknown_0)
-#define TC_IMPL_TC_CORBA_sequence_Bonobo_Unknown_0 'B'
-#define TC_IMPL_TC_CORBA_sequence_Bonobo_Unknown_1 'o'
-#define TC_IMPL_TC_CORBA_sequence_Bonobo_Unknown_2 'n'
-#define TC_IMPL_TC_CORBA_sequence_Bonobo_Unknown_3 'o'
-#define TC_IMPL_TC_CORBA_sequence_Bonobo_Unknown_4 'b'
-#define TC_IMPL_TC_CORBA_sequence_Bonobo_Unknown_5 'o'
+   CORBA_sequence_CORBA_string;
+#if !defined(TC_IMPL_TC_CORBA_sequence_CORBA_string_0)
+#define TC_IMPL_TC_CORBA_sequence_CORBA_string_0 'B'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_string_1 'o'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_string_2 'n'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_string_3 'o'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_string_4 'b'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_string_5 'o'
    extern const struct CORBA_TypeCode_struct
-      TC_CORBA_sequence_Bonobo_Unknown_struct;
-#define TC_CORBA_sequence_Bonobo_Unknown ((CORBA_TypeCode)&TC_CORBA_sequence_Bonobo_Unknown_struct)
+      TC_CORBA_sequence_CORBA_string_struct;
+#define TC_CORBA_sequence_CORBA_string ((CORBA_TypeCode)&TC_CORBA_sequence_CORBA_string_struct)
 #endif
-   extern CORBA_sequence_Bonobo_Unknown
-      *CORBA_sequence_Bonobo_Unknown__alloc(void);
-   extern gpointer CORBA_sequence_Bonobo_Unknown__free(gpointer mem,
-						       gpointer dat,
-						       CORBA_boolean free_strings);	/* ORBit internal use */
-   Bonobo_Unknown *CORBA_sequence_Bonobo_Unknown_allocbuf(CORBA_unsigned_long
-							  len);
+   extern CORBA_sequence_CORBA_string
+      *CORBA_sequence_CORBA_string__alloc(void);
+   extern gpointer CORBA_sequence_CORBA_string__free(gpointer mem,
+						     gpointer dat,
+						     CORBA_boolean free_strings);	/* ORBit internal use */
+   CORBA_char **CORBA_sequence_CORBA_string_allocbuf(CORBA_unsigned_long len);
 #endif
-#if !defined(_Bonobo_ItemContainer_ObjectList_defined)
-#define _Bonobo_ItemContainer_ObjectList_defined 1
-   typedef CORBA_sequence_Bonobo_Unknown Bonobo_ItemContainer_ObjectList;
-#if !defined(TC_IMPL_TC_Bonobo_ItemContainer_ObjectList_0)
-#define TC_IMPL_TC_Bonobo_ItemContainer_ObjectList_0 'B'
-#define TC_IMPL_TC_Bonobo_ItemContainer_ObjectList_1 'o'
-#define TC_IMPL_TC_Bonobo_ItemContainer_ObjectList_2 'n'
-#define TC_IMPL_TC_Bonobo_ItemContainer_ObjectList_3 'o'
-#define TC_IMPL_TC_Bonobo_ItemContainer_ObjectList_4 'b'
-#define TC_IMPL_TC_Bonobo_ItemContainer_ObjectList_5 'o'
+#if !defined(_Bonobo_ItemContainer_ObjectNames_defined)
+#define _Bonobo_ItemContainer_ObjectNames_defined 1
+   typedef CORBA_sequence_CORBA_string Bonobo_ItemContainer_ObjectNames;
+#if !defined(TC_IMPL_TC_Bonobo_ItemContainer_ObjectNames_0)
+#define TC_IMPL_TC_Bonobo_ItemContainer_ObjectNames_0 'B'
+#define TC_IMPL_TC_Bonobo_ItemContainer_ObjectNames_1 'o'
+#define TC_IMPL_TC_Bonobo_ItemContainer_ObjectNames_2 'n'
+#define TC_IMPL_TC_Bonobo_ItemContainer_ObjectNames_3 'o'
+#define TC_IMPL_TC_Bonobo_ItemContainer_ObjectNames_4 'b'
+#define TC_IMPL_TC_Bonobo_ItemContainer_ObjectNames_5 'o'
    extern const struct CORBA_TypeCode_struct
-      TC_Bonobo_ItemContainer_ObjectList_struct;
-#define TC_Bonobo_ItemContainer_ObjectList ((CORBA_TypeCode)&TC_Bonobo_ItemContainer_ObjectList_struct)
+      TC_Bonobo_ItemContainer_ObjectNames_struct;
+#define TC_Bonobo_ItemContainer_ObjectNames ((CORBA_TypeCode)&TC_Bonobo_ItemContainer_ObjectNames_struct)
 #endif
-   extern Bonobo_ItemContainer_ObjectList
-      *Bonobo_ItemContainer_ObjectList__alloc(void);
-   extern gpointer Bonobo_ItemContainer_ObjectList__free(gpointer mem,
-							 gpointer dat,
-							 CORBA_boolean free_strings);	/* ORBit internal use */
+   extern Bonobo_ItemContainer_ObjectNames
+      *Bonobo_ItemContainer_ObjectNames__alloc(void);
+   extern gpointer Bonobo_ItemContainer_ObjectNames__free(gpointer mem,
+							  gpointer dat,
+							  CORBA_boolean free_strings);	/* ORBit internal use */
 #endif
 #define ex_Bonobo_ItemContainer_NotFound "IDL:Bonobo/ItemContainer/NotFound:1.0"
    void _ORBIT_Bonobo_ItemContainer_NotFound_demarshal(GIOPRecvBuffer *
@@ -3132,56 +3182,6 @@ extern "C"
 #define TC_Bonobo_Embeddable_CloseMode ((CORBA_TypeCode)&TC_Bonobo_Embeddable_CloseMode_struct)
 #endif
 #endif
-#if !defined(ORBIT_DECL_CORBA_sequence_CORBA_char) && !defined(_CORBA_sequence_CORBA_char_defined)
-#define ORBIT_DECL_CORBA_sequence_CORBA_char 1
-#define _CORBA_sequence_CORBA_char_defined 1
-#define ORBIT_IMPL_CORBA_sequence_CORBA_char_0 'B'
-#define ORBIT_IMPL_CORBA_sequence_CORBA_char_1 'o'
-#define ORBIT_IMPL_CORBA_sequence_CORBA_char_2 'n'
-#define ORBIT_IMPL_CORBA_sequence_CORBA_char_3 'o'
-#define ORBIT_IMPL_CORBA_sequence_CORBA_char_4 'b'
-#define ORBIT_IMPL_CORBA_sequence_CORBA_char_5 'o'
-   typedef struct
-   {
-      CORBA_unsigned_long _maximum,
-       _length;
-      CORBA_char *_buffer;
-      CORBA_boolean _release;
-   }
-   CORBA_sequence_CORBA_char;
-#if !defined(TC_IMPL_TC_CORBA_sequence_CORBA_char_0)
-#define TC_IMPL_TC_CORBA_sequence_CORBA_char_0 'B'
-#define TC_IMPL_TC_CORBA_sequence_CORBA_char_1 'o'
-#define TC_IMPL_TC_CORBA_sequence_CORBA_char_2 'n'
-#define TC_IMPL_TC_CORBA_sequence_CORBA_char_3 'o'
-#define TC_IMPL_TC_CORBA_sequence_CORBA_char_4 'b'
-#define TC_IMPL_TC_CORBA_sequence_CORBA_char_5 'o'
-   extern const struct CORBA_TypeCode_struct
-      TC_CORBA_sequence_CORBA_char_struct;
-#define TC_CORBA_sequence_CORBA_char ((CORBA_TypeCode)&TC_CORBA_sequence_CORBA_char_struct)
-#endif
-   extern CORBA_sequence_CORBA_char *CORBA_sequence_CORBA_char__alloc(void);
-   extern gpointer CORBA_sequence_CORBA_char__free(gpointer mem, gpointer dat,
-						   CORBA_boolean free_strings);	/* ORBit internal use */
-   CORBA_char *CORBA_sequence_CORBA_char_allocbuf(CORBA_unsigned_long len);
-#endif
-#if !defined(_Bonobo_PrintData_defined)
-#define _Bonobo_PrintData_defined 1
-   typedef CORBA_sequence_CORBA_char Bonobo_PrintData;
-#if !defined(TC_IMPL_TC_Bonobo_PrintData_0)
-#define TC_IMPL_TC_Bonobo_PrintData_0 'B'
-#define TC_IMPL_TC_Bonobo_PrintData_1 'o'
-#define TC_IMPL_TC_Bonobo_PrintData_2 'n'
-#define TC_IMPL_TC_Bonobo_PrintData_3 'o'
-#define TC_IMPL_TC_Bonobo_PrintData_4 'b'
-#define TC_IMPL_TC_Bonobo_PrintData_5 'o'
-   extern const struct CORBA_TypeCode_struct TC_Bonobo_PrintData_struct;
-#define TC_Bonobo_PrintData ((CORBA_TypeCode)&TC_Bonobo_PrintData_struct)
-#endif
-   extern Bonobo_PrintData *Bonobo_PrintData__alloc(void);
-   extern gpointer Bonobo_PrintData__free(gpointer mem, gpointer dat,
-					  CORBA_boolean free_strings);	/* ORBit internal use */
-#endif
 #if !defined(_Bonobo_PrintScissor_defined)
 #define _Bonobo_PrintScissor_defined 1
    typedef struct
@@ -3340,6 +3340,9 @@ extern "C"
 				 const Bonobo_ResolveOptions * options,
 				 const CORBA_char * requestedInterface,
 				 CORBA_Environment * ev);
+       CORBA_long(*equal) (PortableServer_Servant _servant,
+			   const CORBA_char * displayName,
+			   CORBA_Environment * ev);
    }
    POA_Bonobo_Moniker__epv;
    typedef struct
@@ -3390,77 +3393,6 @@ extern "C"
    extern void POA_Bonobo_MonikerExtender__fini(PortableServer_Servant
 						servant,
 						CORBA_Environment * ev);
-   typedef struct
-   {
-      void *_private;
-      
-	 Bonobo_Unknown(*getObject) (PortableServer_Servant _servant,
-				     const CORBA_char * name,
-				     const CORBA_char * repoId,
-				     CORBA_Environment * ev);
-       Bonobo_Moniker(*createFromName) (PortableServer_Servant _servant,
-					const CORBA_char * name,
-					CORBA_Environment * ev);
-       Bonobo_Moniker(*createWithParent) (PortableServer_Servant _servant,
-					  const Bonobo_Moniker optParent,
-					  const CORBA_char * name,
-					  CORBA_Environment * ev);
-       Bonobo_MonikerExtender(*getExtender) (PortableServer_Servant _servant,
-					     const CORBA_char * monikerPrefix,
-					     const CORBA_char * interfaceId,
-					     CORBA_Environment * ev);
-   }
-   POA_Bonobo_ActivationContext__epv;
-   typedef struct
-   {
-      PortableServer_ServantBase__epv *_base_epv;
-      POA_Bonobo_Unknown__epv *Bonobo_Unknown_epv;
-      POA_Bonobo_ActivationContext__epv *Bonobo_ActivationContext_epv;
-   }
-   POA_Bonobo_ActivationContext__vepv;
-   typedef struct
-   {
-      void *_private;
-      POA_Bonobo_ActivationContext__vepv *vepv;
-   }
-   POA_Bonobo_ActivationContext;
-   extern void POA_Bonobo_ActivationContext__init(PortableServer_Servant
-						  servant,
-						  CORBA_Environment * ev);
-   extern void POA_Bonobo_ActivationContext__fini(PortableServer_Servant
-						  servant,
-						  CORBA_Environment * ev);
-   typedef struct
-   {
-      void *_private;
-      void (*addObject) (PortableServer_Servant _servant,
-			 const CORBA_Object object, CORBA_Environment * ev);
-      void (*removeObject) (PortableServer_Servant _servant,
-			    const CORBA_Object object,
-			    CORBA_Environment * ev);
-      void (*addKey) (PortableServer_Servant _servant, const CORBA_char * key,
-		      CORBA_Environment * ev);
-      void (*removeKey) (PortableServer_Servant _servant,
-			 const CORBA_char * key, CORBA_Environment * ev);
-   }
-   POA_Bonobo_RunningContext__epv;
-   typedef struct
-   {
-      PortableServer_ServantBase__epv *_base_epv;
-      POA_Bonobo_Unknown__epv *Bonobo_Unknown_epv;
-      POA_Bonobo_RunningContext__epv *Bonobo_RunningContext_epv;
-   }
-   POA_Bonobo_RunningContext__vepv;
-   typedef struct
-   {
-      void *_private;
-      POA_Bonobo_RunningContext__vepv *vepv;
-   }
-   POA_Bonobo_RunningContext;
-   extern void POA_Bonobo_RunningContext__init(PortableServer_Servant servant,
-					       CORBA_Environment * ev);
-   extern void POA_Bonobo_RunningContext__fini(PortableServer_Servant servant,
-					       CORBA_Environment * ev);
    typedef struct
    {
       void *_private;
@@ -3567,6 +3499,79 @@ extern "C"
 					CORBA_Environment * ev);
    extern void POA_Bonobo_Storage__fini(PortableServer_Servant servant,
 					CORBA_Environment * ev);
+   typedef struct
+   {
+      void *_private;
+      
+	 Bonobo_Unknown(*getObject) (PortableServer_Servant _servant,
+				     const CORBA_char * name,
+				     const CORBA_char * repoId,
+				     CORBA_Environment * ev);
+       Bonobo_Moniker(*createFromName) (PortableServer_Servant _servant,
+					const CORBA_char * name,
+					CORBA_Environment * ev);
+       Bonobo_Moniker(*createWithParent) (PortableServer_Servant _servant,
+					  const Bonobo_Moniker optParent,
+					  const CORBA_char * name,
+					  CORBA_Environment * ev);
+       Bonobo_MonikerExtender(*getExtender) (PortableServer_Servant _servant,
+					     const CORBA_char * monikerPrefix,
+					     const CORBA_char * interfaceId,
+					     CORBA_Environment * ev);
+   }
+   POA_Bonobo_ActivationContext__epv;
+   typedef struct
+   {
+      PortableServer_ServantBase__epv *_base_epv;
+      POA_Bonobo_Unknown__epv *Bonobo_Unknown_epv;
+      POA_Bonobo_ActivationContext__epv *Bonobo_ActivationContext_epv;
+   }
+   POA_Bonobo_ActivationContext__vepv;
+   typedef struct
+   {
+      void *_private;
+      POA_Bonobo_ActivationContext__vepv *vepv;
+   }
+   POA_Bonobo_ActivationContext;
+   extern void POA_Bonobo_ActivationContext__init(PortableServer_Servant
+						  servant,
+						  CORBA_Environment * ev);
+   extern void POA_Bonobo_ActivationContext__fini(PortableServer_Servant
+						  servant,
+						  CORBA_Environment * ev);
+   typedef struct
+   {
+      void *_private;
+      void (*addObject) (PortableServer_Servant _servant,
+			 const CORBA_Object object, CORBA_Environment * ev);
+      void (*removeObject) (PortableServer_Servant _servant,
+			    const CORBA_Object object,
+			    CORBA_Environment * ev);
+      void (*addKey) (PortableServer_Servant _servant, const CORBA_char * key,
+		      CORBA_Environment * ev);
+      void (*removeKey) (PortableServer_Servant _servant,
+			 const CORBA_char * key, CORBA_Environment * ev);
+      void (*atExitUnref) (PortableServer_Servant _servant,
+			   const CORBA_Object object, CORBA_Environment * ev);
+   }
+   POA_Bonobo_RunningContext__epv;
+   typedef struct
+   {
+      PortableServer_ServantBase__epv *_base_epv;
+      POA_Bonobo_Unknown__epv *Bonobo_Unknown_epv;
+      POA_Bonobo_RunningContext__epv *Bonobo_RunningContext_epv;
+   }
+   POA_Bonobo_RunningContext__vepv;
+   typedef struct
+   {
+      void *_private;
+      POA_Bonobo_RunningContext__vepv *vepv;
+   }
+   POA_Bonobo_RunningContext;
+   extern void POA_Bonobo_RunningContext__init(PortableServer_Servant servant,
+					       CORBA_Environment * ev);
+   extern void POA_Bonobo_RunningContext__fini(PortableServer_Servant servant,
+					       CORBA_Environment * ev);
    typedef struct
    {
       void *_private;
@@ -3917,11 +3922,19 @@ extern "C"
 				   CORBA_Environment * ev);
        CORBA_long(*getFlags) (PortableServer_Servant _servant,
 			      CORBA_Environment * ev);
+       Bonobo_EventSource_ListenerId(*addListener) (PortableServer_Servant
+						    _servant,
+						    const Bonobo_Listener l,
+						    CORBA_Environment * ev);
+      void (*removeListener) (PortableServer_Servant _servant,
+			      const Bonobo_EventSource_ListenerId id,
+			      CORBA_Environment * ev);
    }
    POA_Bonobo_Property__epv;
    typedef struct
    {
       PortableServer_ServantBase__epv *_base_epv;
+      POA_Bonobo_Unknown__epv *Bonobo_Unknown_epv;
       POA_Bonobo_Property__epv *Bonobo_Property_epv;
    }
    POA_Bonobo_Property__vepv;
@@ -3951,6 +3964,8 @@ extern "C"
 			 CORBA_Environment * ev);
       Bonobo_PropertySet *(*getValues) (PortableServer_Servant _servant,
 					CORBA_Environment * ev);
+       Bonobo_EventSource(*getEventSource) (PortableServer_Servant _servant,
+					    CORBA_Environment * ev);
    }
    POA_Bonobo_PropertyBag__epv;
    typedef struct
@@ -3986,6 +4001,8 @@ extern "C"
 			   CORBA_Environment * ev);
        Bonobo_Unknown(*getUIHandler) (PortableServer_Servant _servant,
 				      CORBA_Environment * ev);
+      void (*unImplemented) (PortableServer_Servant _servant,
+			     CORBA_Environment * ev);
    }
    POA_Bonobo_ControlFrame__epv;
    typedef struct
@@ -4032,6 +4049,9 @@ extern "C"
 		       CORBA_Environment * ev);
       void (*unrealize) (PortableServer_Servant _servant,
 			 CORBA_Environment * ev);
+       CORBA_boolean(*focus) (PortableServer_Servant _servant,
+			      const Bonobo_Control_FocusDirection direction,
+			      CORBA_Environment * ev);
    }
    POA_Bonobo_Control__epv;
    typedef struct
@@ -4169,10 +4189,10 @@ extern "C"
    typedef struct
    {
       void *_private;
-      Bonobo_ItemContainer_ObjectList *(*enumObjects) (PortableServer_Servant
-						       _servant,
-						       CORBA_Environment *
-						       ev);
+      Bonobo_ItemContainer_ObjectNames *(*enumObjects) (PortableServer_Servant
+							_servant,
+							CORBA_Environment *
+							ev);
        Bonobo_Unknown(*getObjectByName) (PortableServer_Servant _servant,
 					 const CORBA_char * item_name,
 					 const CORBA_boolean only_if_exists,
@@ -4270,8 +4290,6 @@ extern "C"
       void (*setBounds) (PortableServer_Servant _servant,
 			 const Bonobo_Canvas_DRect * bbox,
 			 CORBA_Environment * ev);
-       Bonobo_UIComponent(*getUIComponent) (PortableServer_Servant _servant,
-					    CORBA_Environment * ev);
    }
    POA_Bonobo_Canvas_Component__epv;
    typedef struct
@@ -4296,9 +4314,18 @@ extern "C"
    typedef struct
    {
       void *_private;
-      void (*updateArea) (PortableServer_Servant _servant,
-			  const Bonobo_Canvas_ArtUTA * uta,
-			  CORBA_Environment * ev);
+      void (*requestUpdate) (PortableServer_Servant _servant,
+			     CORBA_Environment * ev);
+      void (*grabFocus) (PortableServer_Servant _servant,
+			 const CORBA_unsigned_long mask,
+			 const CORBA_long cursor,
+			 const CORBA_unsigned_long time,
+			 CORBA_Environment * ev);
+      void (*ungrabFocus) (PortableServer_Servant _servant,
+			   const CORBA_unsigned_long time,
+			   CORBA_Environment * ev);
+       Bonobo_UIContainer(*getUIContainer) (PortableServer_Servant _servant,
+					    CORBA_Environment * ev);
    }
    POA_Bonobo_Canvas_ComponentProxy__epv;
    typedef struct
@@ -4426,10 +4453,11 @@ extern "C"
    typedef struct
    {
       void *_private;
-      Bonobo_PrintData *(*render) (PortableServer_Servant _servant,
-				   const Bonobo_PrintDimensions * pd,
-				   const Bonobo_PrintScissor * scissor,
-				   CORBA_Environment * ev);
+      
+	 Bonobo_Stream(*render) (PortableServer_Servant _servant,
+				 const Bonobo_PrintDimensions * pd,
+				 const Bonobo_PrintScissor * scissor,
+				 CORBA_Environment * ev);
    }
    POA_Bonobo_Print__epv;
    typedef struct
@@ -4510,6 +4538,9 @@ extern "C"
 					 const CORBA_char *
 					 requestedInterface,
 					 CORBA_Environment * ev);
+   CORBA_long Bonobo_Moniker_equal(Bonobo_Moniker _obj,
+				   const CORBA_char * displayName,
+				   CORBA_Environment * ev);
 #define Bonobo_MonikerExtender_ref Bonobo_Unknown_ref
 #define Bonobo_MonikerExtender_unref Bonobo_Unknown_unref
 #define Bonobo_MonikerExtender_queryInterface Bonobo_Unknown_queryInterface
@@ -4522,45 +4553,6 @@ extern "C"
 						 const CORBA_char *
 						 requestedInterface,
 						 CORBA_Environment * ev);
-#define Bonobo_ActivationContext_ref Bonobo_Unknown_ref
-#define Bonobo_ActivationContext_unref Bonobo_Unknown_unref
-#define Bonobo_ActivationContext_queryInterface Bonobo_Unknown_queryInterface
-   Bonobo_Unknown Bonobo_ActivationContext_getObject(Bonobo_ActivationContext
-						     _obj,
-						     const CORBA_char * name,
-						     const CORBA_char *
-						     repoId,
-						     CORBA_Environment * ev);
-   Bonobo_Moniker
-      Bonobo_ActivationContext_createFromName(Bonobo_ActivationContext _obj,
-					      const CORBA_char * name,
-					      CORBA_Environment * ev);
-   Bonobo_Moniker
-      Bonobo_ActivationContext_createWithParent(Bonobo_ActivationContext _obj,
-						const Bonobo_Moniker
-						optParent,
-						const CORBA_char * name,
-						CORBA_Environment * ev);
-   Bonobo_MonikerExtender
-      Bonobo_ActivationContext_getExtender(Bonobo_ActivationContext _obj,
-					   const CORBA_char * monikerPrefix,
-					   const CORBA_char * interfaceId,
-					   CORBA_Environment * ev);
-#define Bonobo_RunningContext_ref Bonobo_Unknown_ref
-#define Bonobo_RunningContext_unref Bonobo_Unknown_unref
-#define Bonobo_RunningContext_queryInterface Bonobo_Unknown_queryInterface
-   void Bonobo_RunningContext_addObject(Bonobo_RunningContext _obj,
-					const CORBA_Object object,
-					CORBA_Environment * ev);
-   void Bonobo_RunningContext_removeObject(Bonobo_RunningContext _obj,
-					   const CORBA_Object object,
-					   CORBA_Environment * ev);
-   void Bonobo_RunningContext_addKey(Bonobo_RunningContext _obj,
-				     const CORBA_char * key,
-				     CORBA_Environment * ev);
-   void Bonobo_RunningContext_removeKey(Bonobo_RunningContext _obj,
-					const CORBA_char * key,
-					CORBA_Environment * ev);
 #define Bonobo_Stream_ref Bonobo_Unknown_ref
 #define Bonobo_Stream_unref Bonobo_Unknown_unref
 #define Bonobo_Stream_queryInterface Bonobo_Unknown_queryInterface
@@ -4626,6 +4618,48 @@ extern "C"
 			      CORBA_Environment * ev);
    void Bonobo_Storage_commit(Bonobo_Storage _obj, CORBA_Environment * ev);
    void Bonobo_Storage_revert(Bonobo_Storage _obj, CORBA_Environment * ev);
+#define Bonobo_ActivationContext_ref Bonobo_Unknown_ref
+#define Bonobo_ActivationContext_unref Bonobo_Unknown_unref
+#define Bonobo_ActivationContext_queryInterface Bonobo_Unknown_queryInterface
+   Bonobo_Unknown Bonobo_ActivationContext_getObject(Bonobo_ActivationContext
+						     _obj,
+						     const CORBA_char * name,
+						     const CORBA_char *
+						     repoId,
+						     CORBA_Environment * ev);
+   Bonobo_Moniker
+      Bonobo_ActivationContext_createFromName(Bonobo_ActivationContext _obj,
+					      const CORBA_char * name,
+					      CORBA_Environment * ev);
+   Bonobo_Moniker
+      Bonobo_ActivationContext_createWithParent(Bonobo_ActivationContext _obj,
+						const Bonobo_Moniker
+						optParent,
+						const CORBA_char * name,
+						CORBA_Environment * ev);
+   Bonobo_MonikerExtender
+      Bonobo_ActivationContext_getExtender(Bonobo_ActivationContext _obj,
+					   const CORBA_char * monikerPrefix,
+					   const CORBA_char * interfaceId,
+					   CORBA_Environment * ev);
+#define Bonobo_RunningContext_ref Bonobo_Unknown_ref
+#define Bonobo_RunningContext_unref Bonobo_Unknown_unref
+#define Bonobo_RunningContext_queryInterface Bonobo_Unknown_queryInterface
+   void Bonobo_RunningContext_addObject(Bonobo_RunningContext _obj,
+					const CORBA_Object object,
+					CORBA_Environment * ev);
+   void Bonobo_RunningContext_removeObject(Bonobo_RunningContext _obj,
+					   const CORBA_Object object,
+					   CORBA_Environment * ev);
+   void Bonobo_RunningContext_addKey(Bonobo_RunningContext _obj,
+				     const CORBA_char * key,
+				     CORBA_Environment * ev);
+   void Bonobo_RunningContext_removeKey(Bonobo_RunningContext _obj,
+					const CORBA_char * key,
+					CORBA_Environment * ev);
+   void Bonobo_RunningContext_atExitUnref(Bonobo_RunningContext _obj,
+					  const CORBA_Object object,
+					  CORBA_Environment * ev);
 #define Bonobo_Persist_ref Bonobo_Unknown_ref
 #define Bonobo_Persist_unref Bonobo_Unknown_unref
 #define Bonobo_Persist_queryInterface Bonobo_Unknown_queryInterface
@@ -4782,6 +4816,9 @@ extern "C"
    Bonobo_Unknown Bonobo_UIContainer_getObject(Bonobo_UIContainer _obj,
 					       const CORBA_char * path,
 					       CORBA_Environment * ev);
+#define Bonobo_Property_ref Bonobo_Unknown_ref
+#define Bonobo_Property_unref Bonobo_Unknown_unref
+#define Bonobo_Property_queryInterface Bonobo_Unknown_queryInterface
    CORBA_char *Bonobo_Property_getName(Bonobo_Property _obj,
 				       CORBA_Environment * ev);
    CORBA_TypeCode Bonobo_Property_getType(Bonobo_Property _obj,
@@ -4796,6 +4833,16 @@ extern "C"
    CORBA_char *Bonobo_Property_getDocString(Bonobo_Property _obj,
 					    CORBA_Environment * ev);
    CORBA_long Bonobo_Property_getFlags(Bonobo_Property _obj,
+				       CORBA_Environment * ev);
+   Bonobo_EventSource_ListenerId Bonobo_Property_addListener(Bonobo_Property
+							     _obj,
+							     const
+							     Bonobo_Listener
+							     l,
+							     CORBA_Environment
+							     * ev);
+   void Bonobo_Property_removeListener(Bonobo_Property _obj,
+				       const Bonobo_EventSource_ListenerId id,
 				       CORBA_Environment * ev);
 #define Bonobo_PropertyBag_ref Bonobo_Unknown_ref
 #define Bonobo_PropertyBag_unref Bonobo_Unknown_unref
@@ -4818,6 +4865,10 @@ extern "C"
 				     CORBA_Environment * ev);
    Bonobo_PropertySet *Bonobo_PropertyBag_getValues(Bonobo_PropertyBag _obj,
 						    CORBA_Environment * ev);
+   Bonobo_EventSource Bonobo_PropertyBag_getEventSource(Bonobo_PropertyBag
+							_obj,
+							CORBA_Environment *
+							ev);
 #define Bonobo_ControlFrame_ref Bonobo_Unknown_ref
 #define Bonobo_ControlFrame_unref Bonobo_Unknown_unref
 #define Bonobo_ControlFrame_queryInterface Bonobo_Unknown_queryInterface
@@ -4835,6 +4886,8 @@ extern "C"
 					CORBA_Environment * ev);
    Bonobo_Unknown Bonobo_ControlFrame_getUIHandler(Bonobo_ControlFrame _obj,
 						   CORBA_Environment * ev);
+   void Bonobo_ControlFrame_unImplemented(Bonobo_ControlFrame _obj,
+					  CORBA_Environment * ev);
 #define Bonobo_Control_ref Bonobo_Unknown_ref
 #define Bonobo_Control_unref Bonobo_Unknown_unref
 #define Bonobo_Control_queryInterface Bonobo_Unknown_queryInterface
@@ -4861,6 +4914,9 @@ extern "C"
 				CORBA_Environment * ev);
    void Bonobo_Control_realize(Bonobo_Control _obj, CORBA_Environment * ev);
    void Bonobo_Control_unrealize(Bonobo_Control _obj, CORBA_Environment * ev);
+   CORBA_boolean Bonobo_Control_focus(Bonobo_Control _obj,
+				      const Bonobo_Control_FocusDirection
+				      direction, CORBA_Environment * ev);
 #define Bonobo_PropertyControl_ref Bonobo_Unknown_ref
 #define Bonobo_PropertyControl_unref Bonobo_Unknown_unref
 #define Bonobo_PropertyControl_queryInterface Bonobo_Unknown_queryInterface
@@ -4921,7 +4977,7 @@ extern "C"
 #define Bonobo_ItemContainer_ref Bonobo_Unknown_ref
 #define Bonobo_ItemContainer_unref Bonobo_Unknown_unref
 #define Bonobo_ItemContainer_queryInterface Bonobo_Unknown_queryInterface
-   Bonobo_ItemContainer_ObjectList
+   Bonobo_ItemContainer_ObjectNames
       *Bonobo_ItemContainer_enumObjects(Bonobo_ItemContainer _obj,
 					CORBA_Environment * ev);
    Bonobo_Unknown Bonobo_ItemContainer_getObjectByName(Bonobo_ItemContainer
@@ -4997,13 +5053,25 @@ extern "C"
    void Bonobo_Canvas_Component_setBounds(Bonobo_Canvas_Component _obj,
 					  const Bonobo_Canvas_DRect * bbox,
 					  CORBA_Environment * ev);
-   Bonobo_UIComponent
-      Bonobo_Canvas_Component_getUIComponent(Bonobo_Canvas_Component _obj,
-					     CORBA_Environment * ev);
-   void Bonobo_Canvas_ComponentProxy_updateArea(Bonobo_Canvas_ComponentProxy
-						_obj,
-						const Bonobo_Canvas_ArtUTA *
-						uta, CORBA_Environment * ev);
+   void
+      Bonobo_Canvas_ComponentProxy_requestUpdate(Bonobo_Canvas_ComponentProxy
+						 _obj,
+						 CORBA_Environment * ev);
+   void Bonobo_Canvas_ComponentProxy_grabFocus(Bonobo_Canvas_ComponentProxy
+					       _obj,
+					       const CORBA_unsigned_long mask,
+					       const CORBA_long cursor,
+					       const CORBA_unsigned_long time,
+					       CORBA_Environment * ev);
+   void Bonobo_Canvas_ComponentProxy_ungrabFocus(Bonobo_Canvas_ComponentProxy
+						 _obj,
+						 const CORBA_unsigned_long
+						 time,
+						 CORBA_Environment * ev);
+   Bonobo_UIContainer
+      Bonobo_Canvas_ComponentProxy_getUIContainer(Bonobo_Canvas_ComponentProxy
+						  _obj,
+						  CORBA_Environment * ev);
 #define Bonobo_View_ref Bonobo_Unknown_ref
 #define Bonobo_View_unref Bonobo_Unknown_unref
 #define Bonobo_View_queryInterface Bonobo_Unknown_queryInterface
@@ -5016,6 +5084,7 @@ extern "C"
 #define Bonobo_View_setState Bonobo_Control_setState
 #define Bonobo_View_realize Bonobo_Control_realize
 #define Bonobo_View_unrealize Bonobo_Control_unrealize
+#define Bonobo_View_focus Bonobo_Control_focus
    void Bonobo_View_setZoomFactor(Bonobo_View _obj, const CORBA_double zoom,
 				  CORBA_Environment * ev);
 #define Bonobo_ViewFrame_ref Bonobo_Unknown_ref
@@ -5026,6 +5095,7 @@ extern "C"
 #define Bonobo_ViewFrame_queueResize Bonobo_ControlFrame_queueResize
 #define Bonobo_ViewFrame_activateURI Bonobo_ControlFrame_activateURI
 #define Bonobo_ViewFrame_getUIHandler Bonobo_ControlFrame_getUIHandler
+#define Bonobo_ViewFrame_unImplemented Bonobo_ControlFrame_unImplemented
    Bonobo_ClientSite Bonobo_ViewFrame_getClientSite(Bonobo_ViewFrame _obj,
 						    CORBA_Environment * ev);
 #define Bonobo_Embeddable_ref Bonobo_Unknown_ref
@@ -5065,10 +5135,10 @@ extern "C"
 #define Bonobo_Print_ref Bonobo_Unknown_ref
 #define Bonobo_Print_unref Bonobo_Unknown_unref
 #define Bonobo_Print_queryInterface Bonobo_Unknown_queryInterface
-   Bonobo_PrintData *Bonobo_Print_render(Bonobo_Print _obj,
-					 const Bonobo_PrintDimensions * pd,
-					 const Bonobo_PrintScissor * scissor,
-					 CORBA_Environment * ev);
+   Bonobo_Stream Bonobo_Print_render(Bonobo_Print _obj,
+				     const Bonobo_PrintDimensions * pd,
+				     const Bonobo_PrintScissor * scissor,
+				     CORBA_Environment * ev);
 #define Bonobo_Desktop_Window_ref Bonobo_Unknown_ref
 #define Bonobo_Desktop_Window_unref Bonobo_Unknown_unref
 #define Bonobo_Desktop_Window_queryInterface Bonobo_Unknown_queryInterface
@@ -5166,6 +5236,13 @@ extern "C"
 					    const CORBA_char *
 					    requestedInterface,
 					    CORBA_Environment * ev));
+   void _ORBIT_skel_Bonobo_Moniker_equal(POA_Bonobo_Moniker * _ORBIT_servant,
+					 GIOPRecvBuffer * _ORBIT_recv_buffer,
+					 CORBA_Environment * ev,
+					 CORBA_long(*_impl_equal)
+					 (PortableServer_Servant _servant,
+					  const CORBA_char * displayName,
+					  CORBA_Environment * ev));
    void _ORBIT_skel_Bonobo_MonikerExtender_resolve(POA_Bonobo_MonikerExtender
 						   * _ORBIT_servant,
 						   GIOPRecvBuffer *
@@ -5184,87 +5261,6 @@ extern "C"
 						    const CORBA_char *
 						    requestedInterface,
 						    CORBA_Environment * ev));
-   void
-      _ORBIT_skel_Bonobo_ActivationContext_getObject
-      (POA_Bonobo_ActivationContext * _ORBIT_servant,
-       GIOPRecvBuffer * _ORBIT_recv_buffer, CORBA_Environment * ev,
-       Bonobo_Unknown(*_impl_getObject) (PortableServer_Servant _servant,
-					 const CORBA_char * name,
-					 const CORBA_char * repoId,
-					 CORBA_Environment * ev));
-   void
-      _ORBIT_skel_Bonobo_ActivationContext_createFromName
-      (POA_Bonobo_ActivationContext * _ORBIT_servant,
-       GIOPRecvBuffer * _ORBIT_recv_buffer, CORBA_Environment * ev,
-       Bonobo_Moniker(*_impl_createFromName) (PortableServer_Servant _servant,
-					      const CORBA_char * name,
-					      CORBA_Environment * ev));
-   void
-      _ORBIT_skel_Bonobo_ActivationContext_createWithParent
-      (POA_Bonobo_ActivationContext * _ORBIT_servant,
-       GIOPRecvBuffer * _ORBIT_recv_buffer, CORBA_Environment * ev,
-       Bonobo_Moniker(*_impl_createWithParent) (PortableServer_Servant
-						_servant,
-						const Bonobo_Moniker
-						optParent,
-						const CORBA_char * name,
-						CORBA_Environment * ev));
-   void
-      _ORBIT_skel_Bonobo_ActivationContext_getExtender
-      (POA_Bonobo_ActivationContext * _ORBIT_servant,
-       GIOPRecvBuffer * _ORBIT_recv_buffer, CORBA_Environment * ev,
-       Bonobo_MonikerExtender(*_impl_getExtender) (PortableServer_Servant
-						   _servant,
-						   const CORBA_char *
-						   monikerPrefix,
-						   const CORBA_char *
-						   interfaceId,
-						   CORBA_Environment * ev));
-   void _ORBIT_skel_Bonobo_RunningContext_addObject(POA_Bonobo_RunningContext
-						    * _ORBIT_servant,
-						    GIOPRecvBuffer *
-						    _ORBIT_recv_buffer,
-						    CORBA_Environment * ev,
-						    void (*_impl_addObject)
-						    (PortableServer_Servant
-						     _servant,
-						     const CORBA_Object
-						     object,
-						     CORBA_Environment * ev));
-   void
-      _ORBIT_skel_Bonobo_RunningContext_removeObject(POA_Bonobo_RunningContext
-						     * _ORBIT_servant,
-						     GIOPRecvBuffer *
-						     _ORBIT_recv_buffer,
-						     CORBA_Environment * ev,
-						     void
-						     (*_impl_removeObject)
-						     (PortableServer_Servant
-						      _servant,
-						      const CORBA_Object
-						      object,
-						      CORBA_Environment *
-						      ev));
-   void _ORBIT_skel_Bonobo_RunningContext_addKey(POA_Bonobo_RunningContext *
-						 _ORBIT_servant,
-						 GIOPRecvBuffer *
-						 _ORBIT_recv_buffer,
-						 CORBA_Environment * ev,
-						 void (*_impl_addKey)
-						 (PortableServer_Servant
-						  _servant,
-						  const CORBA_char * key,
-						  CORBA_Environment * ev));
-   void _ORBIT_skel_Bonobo_RunningContext_removeKey(POA_Bonobo_RunningContext
-						    * _ORBIT_servant,
-						    GIOPRecvBuffer *
-						    _ORBIT_recv_buffer,
-						    CORBA_Environment * ev,
-						    void (*_impl_removeKey)
-						    (PortableServer_Servant
-						     _servant,
-						     const CORBA_char * key,
-						     CORBA_Environment * ev));
    void _ORBIT_skel_Bonobo_Stream_getInfo(POA_Bonobo_Stream * _ORBIT_servant,
 					  GIOPRecvBuffer * _ORBIT_recv_buffer,
 					  CORBA_Environment * ev,
@@ -5428,6 +5424,99 @@ extern "C"
 					  void (*_impl_revert)
 					  (PortableServer_Servant _servant,
 					   CORBA_Environment * ev));
+   void
+      _ORBIT_skel_Bonobo_ActivationContext_getObject
+      (POA_Bonobo_ActivationContext * _ORBIT_servant,
+       GIOPRecvBuffer * _ORBIT_recv_buffer, CORBA_Environment * ev,
+       Bonobo_Unknown(*_impl_getObject) (PortableServer_Servant _servant,
+					 const CORBA_char * name,
+					 const CORBA_char * repoId,
+					 CORBA_Environment * ev));
+   void
+      _ORBIT_skel_Bonobo_ActivationContext_createFromName
+      (POA_Bonobo_ActivationContext * _ORBIT_servant,
+       GIOPRecvBuffer * _ORBIT_recv_buffer, CORBA_Environment * ev,
+       Bonobo_Moniker(*_impl_createFromName) (PortableServer_Servant _servant,
+					      const CORBA_char * name,
+					      CORBA_Environment * ev));
+   void
+      _ORBIT_skel_Bonobo_ActivationContext_createWithParent
+      (POA_Bonobo_ActivationContext * _ORBIT_servant,
+       GIOPRecvBuffer * _ORBIT_recv_buffer, CORBA_Environment * ev,
+       Bonobo_Moniker(*_impl_createWithParent) (PortableServer_Servant
+						_servant,
+						const Bonobo_Moniker
+						optParent,
+						const CORBA_char * name,
+						CORBA_Environment * ev));
+   void
+      _ORBIT_skel_Bonobo_ActivationContext_getExtender
+      (POA_Bonobo_ActivationContext * _ORBIT_servant,
+       GIOPRecvBuffer * _ORBIT_recv_buffer, CORBA_Environment * ev,
+       Bonobo_MonikerExtender(*_impl_getExtender) (PortableServer_Servant
+						   _servant,
+						   const CORBA_char *
+						   monikerPrefix,
+						   const CORBA_char *
+						   interfaceId,
+						   CORBA_Environment * ev));
+   void _ORBIT_skel_Bonobo_RunningContext_addObject(POA_Bonobo_RunningContext
+						    * _ORBIT_servant,
+						    GIOPRecvBuffer *
+						    _ORBIT_recv_buffer,
+						    CORBA_Environment * ev,
+						    void (*_impl_addObject)
+						    (PortableServer_Servant
+						     _servant,
+						     const CORBA_Object
+						     object,
+						     CORBA_Environment * ev));
+   void
+      _ORBIT_skel_Bonobo_RunningContext_removeObject(POA_Bonobo_RunningContext
+						     * _ORBIT_servant,
+						     GIOPRecvBuffer *
+						     _ORBIT_recv_buffer,
+						     CORBA_Environment * ev,
+						     void
+						     (*_impl_removeObject)
+						     (PortableServer_Servant
+						      _servant,
+						      const CORBA_Object
+						      object,
+						      CORBA_Environment *
+						      ev));
+   void _ORBIT_skel_Bonobo_RunningContext_addKey(POA_Bonobo_RunningContext *
+						 _ORBIT_servant,
+						 GIOPRecvBuffer *
+						 _ORBIT_recv_buffer,
+						 CORBA_Environment * ev,
+						 void (*_impl_addKey)
+						 (PortableServer_Servant
+						  _servant,
+						  const CORBA_char * key,
+						  CORBA_Environment * ev));
+   void _ORBIT_skel_Bonobo_RunningContext_removeKey(POA_Bonobo_RunningContext
+						    * _ORBIT_servant,
+						    GIOPRecvBuffer *
+						    _ORBIT_recv_buffer,
+						    CORBA_Environment * ev,
+						    void (*_impl_removeKey)
+						    (PortableServer_Servant
+						     _servant,
+						     const CORBA_char * key,
+						     CORBA_Environment * ev));
+   void
+      _ORBIT_skel_Bonobo_RunningContext_atExitUnref(POA_Bonobo_RunningContext
+						    * _ORBIT_servant,
+						    GIOPRecvBuffer *
+						    _ORBIT_recv_buffer,
+						    CORBA_Environment * ev,
+						    void (*_impl_atExitUnref)
+						    (PortableServer_Servant
+						     _servant,
+						     const CORBA_Object
+						     object,
+						     CORBA_Environment * ev));
    void _ORBIT_skel_Bonobo_Persist_getContentTypes(POA_Bonobo_Persist *
 						   _ORBIT_servant,
 						   GIOPRecvBuffer *
@@ -5891,6 +5980,30 @@ extern "C"
 					     CORBA_long(*_impl_getFlags)
 					     (PortableServer_Servant _servant,
 					      CORBA_Environment * ev));
+   void _ORBIT_skel_Bonobo_Property_addListener(POA_Bonobo_Property *
+						_ORBIT_servant,
+						GIOPRecvBuffer *
+						_ORBIT_recv_buffer,
+						CORBA_Environment * ev,
+						Bonobo_EventSource_ListenerId
+						(*_impl_addListener)
+						(PortableServer_Servant
+						 _servant,
+						 const Bonobo_Listener l,
+						 CORBA_Environment * ev));
+   void _ORBIT_skel_Bonobo_Property_removeListener(POA_Bonobo_Property *
+						   _ORBIT_servant,
+						   GIOPRecvBuffer *
+						   _ORBIT_recv_buffer,
+						   CORBA_Environment * ev,
+						   void
+						   (*_impl_removeListener)
+						   (PortableServer_Servant
+						    _servant,
+						    const
+						    Bonobo_EventSource_ListenerId
+						    id,
+						    CORBA_Environment * ev));
    void _ORBIT_skel_Bonobo_PropertyBag_getProperties(POA_Bonobo_PropertyBag *
 						     _ORBIT_servant,
 						     GIOPRecvBuffer *
@@ -5949,6 +6062,17 @@ extern "C"
 						 (PortableServer_Servant
 						  _servant,
 						  CORBA_Environment * ev));
+   void _ORBIT_skel_Bonobo_PropertyBag_getEventSource(POA_Bonobo_PropertyBag *
+						      _ORBIT_servant,
+						      GIOPRecvBuffer *
+						      _ORBIT_recv_buffer,
+						      CORBA_Environment * ev,
+						      Bonobo_EventSource
+						      (*_impl_getEventSource)
+						      (PortableServer_Servant
+						       _servant,
+						       CORBA_Environment *
+						       ev));
    void _ORBIT_skel_Bonobo_ControlFrame_activated(POA_Bonobo_ControlFrame *
 						  _ORBIT_servant,
 						  GIOPRecvBuffer *
@@ -5999,6 +6123,17 @@ extern "C"
 						      _servant,
 						      CORBA_Environment *
 						      ev));
+   void _ORBIT_skel_Bonobo_ControlFrame_unImplemented(POA_Bonobo_ControlFrame
+						      * _ORBIT_servant,
+						      GIOPRecvBuffer *
+						      _ORBIT_recv_buffer,
+						      CORBA_Environment * ev,
+						      void
+						      (*_impl_unImplemented)
+						      (PortableServer_Servant
+						       _servant,
+						       CORBA_Environment *
+						       ev));
    void _ORBIT_skel_Bonobo_Control_activate(POA_Bonobo_Control *
 					    _ORBIT_servant,
 					    GIOPRecvBuffer *
@@ -6085,6 +6220,13 @@ extern "C"
 					     void (*_impl_unrealize)
 					     (PortableServer_Servant _servant,
 					      CORBA_Environment * ev));
+   void _ORBIT_skel_Bonobo_Control_focus(POA_Bonobo_Control * _ORBIT_servant,
+					 GIOPRecvBuffer * _ORBIT_recv_buffer,
+					 CORBA_Environment * ev,
+					 CORBA_boolean(*_impl_focus)
+					 (PortableServer_Servant _servant,
+					  const Bonobo_Control_FocusDirection
+					  direction, CORBA_Environment * ev));
    void
       _ORBIT_skel_Bonobo_PropertyControl__get_pageCount
       (POA_Bonobo_PropertyControl * _ORBIT_servant,
@@ -6278,7 +6420,7 @@ extern "C"
 						     GIOPRecvBuffer *
 						     _ORBIT_recv_buffer,
 						     CORBA_Environment * ev,
-						     Bonobo_ItemContainer_ObjectList
+						     Bonobo_ItemContainer_ObjectNames
 						     *
 						     (*_impl_enumObjects)
 						     (PortableServer_Servant
@@ -6469,19 +6611,34 @@ extern "C"
 				const Bonobo_Canvas_DRect * bbox,
 				CORBA_Environment * ev));
    void
-      _ORBIT_skel_Bonobo_Canvas_Component_getUIComponent
-      (POA_Bonobo_Canvas_Component * _ORBIT_servant,
-       GIOPRecvBuffer * _ORBIT_recv_buffer, CORBA_Environment * ev,
-       Bonobo_UIComponent(*_impl_getUIComponent) (PortableServer_Servant
-						  _servant,
-						  CORBA_Environment * ev));
-   void
-      _ORBIT_skel_Bonobo_Canvas_ComponentProxy_updateArea
+      _ORBIT_skel_Bonobo_Canvas_ComponentProxy_requestUpdate
       (POA_Bonobo_Canvas_ComponentProxy * _ORBIT_servant,
        GIOPRecvBuffer * _ORBIT_recv_buffer, CORBA_Environment * ev,
-       void (*_impl_updateArea) (PortableServer_Servant _servant,
-				 const Bonobo_Canvas_ArtUTA * uta,
-				 CORBA_Environment * ev));
+       void (*_impl_requestUpdate) (PortableServer_Servant _servant,
+				    CORBA_Environment * ev));
+   void
+      _ORBIT_skel_Bonobo_Canvas_ComponentProxy_grabFocus
+      (POA_Bonobo_Canvas_ComponentProxy * _ORBIT_servant,
+       GIOPRecvBuffer * _ORBIT_recv_buffer, CORBA_Environment * ev,
+       void (*_impl_grabFocus) (PortableServer_Servant _servant,
+				const CORBA_unsigned_long mask,
+				const CORBA_long cursor,
+				const CORBA_unsigned_long time,
+				CORBA_Environment * ev));
+   void
+      _ORBIT_skel_Bonobo_Canvas_ComponentProxy_ungrabFocus
+      (POA_Bonobo_Canvas_ComponentProxy * _ORBIT_servant,
+       GIOPRecvBuffer * _ORBIT_recv_buffer, CORBA_Environment * ev,
+       void (*_impl_ungrabFocus) (PortableServer_Servant _servant,
+				  const CORBA_unsigned_long time,
+				  CORBA_Environment * ev));
+   void
+      _ORBIT_skel_Bonobo_Canvas_ComponentProxy_getUIContainer
+      (POA_Bonobo_Canvas_ComponentProxy * _ORBIT_servant,
+       GIOPRecvBuffer * _ORBIT_recv_buffer, CORBA_Environment * ev,
+       Bonobo_UIContainer(*_impl_getUIContainer) (PortableServer_Servant
+						  _servant,
+						  CORBA_Environment * ev));
    void _ORBIT_skel_Bonobo_View_setZoomFactor(POA_Bonobo_View *
 					      _ORBIT_servant,
 					      GIOPRecvBuffer *
@@ -6613,8 +6770,7 @@ extern "C"
    void _ORBIT_skel_Bonobo_Print_render(POA_Bonobo_Print * _ORBIT_servant,
 					GIOPRecvBuffer * _ORBIT_recv_buffer,
 					CORBA_Environment * ev,
-					Bonobo_PrintData *
-					(*_impl_render)
+					Bonobo_Stream(*_impl_render)
 					(PortableServer_Servant _servant,
 					 const Bonobo_PrintDimensions * pd,
 					 const Bonobo_PrintScissor * scissor,

@@ -6,6 +6,22 @@
 #include "Bonobo.h"
 
 void
+_ORBIT_Bonobo_NotSupported_marshal(GIOPSendBuffer * _ORBIT_send_buffer,
+				   CORBA_Environment * ev)
+{
+}
+
+void
+_ORBIT_Bonobo_IOError_marshal(GIOPSendBuffer * _ORBIT_send_buffer,
+			      CORBA_Environment * ev)
+{
+}
+void
+_ORBIT_Bonobo_BadArg_marshal(GIOPSendBuffer * _ORBIT_send_buffer,
+			     CORBA_Environment * ev)
+{
+}
+void
 _ORBIT_skel_Bonobo_Unknown_ref(POA_Bonobo_Unknown * _ORBIT_servant,
 			       GIOPRecvBuffer * _ORBIT_recv_buffer,
 			       CORBA_Environment * ev,
@@ -450,6 +466,72 @@ _ORBIT_skel_Bonobo_Moniker_resolve(POA_Bonobo_Moniker * _ORBIT_servant,
    }
 }
 void
+_ORBIT_skel_Bonobo_Moniker_equal(POA_Bonobo_Moniker * _ORBIT_servant,
+				 GIOPRecvBuffer * _ORBIT_recv_buffer,
+				 CORBA_Environment * ev,
+				 CORBA_long(*_impl_equal)
+				 (PortableServer_Servant _servant,
+				  const CORBA_char * displayName,
+				  CORBA_Environment * ev))
+{
+   CORBA_long _ORBIT_retval;
+   CORBA_char *displayName;
+
+   {				/* demarshalling */
+      guchar *_ORBIT_curptr;
+      register CORBA_unsigned_long _ORBIT_tmpvar_2;
+      CORBA_unsigned_long _ORBIT_tmpvar_3;
+
+      _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
+      if (giop_msg_conversion_needed(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer))) {
+	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	 
+	    (*((guint32 *) & (_ORBIT_tmpvar_3))) =
+	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
+	 _ORBIT_curptr += 4;
+	 displayName = (void *) _ORBIT_curptr;
+	 _ORBIT_curptr +=
+	    sizeof(displayName[_ORBIT_tmpvar_2]) * _ORBIT_tmpvar_3;
+      } else {
+	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	 _ORBIT_tmpvar_3 = *((CORBA_unsigned_long *) _ORBIT_curptr);
+	 _ORBIT_curptr += 4;
+	 displayName = (void *) _ORBIT_curptr;
+	 _ORBIT_curptr +=
+	    sizeof(displayName[_ORBIT_tmpvar_2]) * _ORBIT_tmpvar_3;
+      }
+   }
+   _ORBIT_retval = _impl_equal(_ORBIT_servant, displayName, ev);
+   {				/* marshalling */
+      register GIOPSendBuffer *_ORBIT_send_buffer;
+
+      _ORBIT_send_buffer =
+	 giop_send_reply_buffer_use(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer)->
+				    connection, NULL,
+				    _ORBIT_recv_buffer->message.u.request.
+				    request_id, ev->_major);
+      if (_ORBIT_send_buffer) {
+	 if (ev->_major == CORBA_NO_EXCEPTION) {
+	    giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					     (_ORBIT_send_buffer), 4);
+	    {
+	       guchar *_ORBIT_t;
+
+	       _ORBIT_t = alloca(sizeof(_ORBIT_retval));
+	       memcpy(_ORBIT_t, &(_ORBIT_retval), sizeof(_ORBIT_retval));
+	       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					      (_ORBIT_send_buffer),
+					      (_ORBIT_t),
+					      sizeof(_ORBIT_retval));
+	    }
+	 } else
+	    ORBit_send_system_exception(_ORBIT_send_buffer, ev);
+	 giop_send_buffer_write(_ORBIT_send_buffer);
+	 giop_send_buffer_unuse(_ORBIT_send_buffer);
+      }
+   }
+}
+void
 _ORBIT_skel_Bonobo_MonikerExtender_resolve(POA_Bonobo_MonikerExtender *
 					   _ORBIT_servant,
 					   GIOPRecvBuffer *
@@ -568,503 +650,6 @@ _ORBIT_skel_Bonobo_MonikerExtender_resolve(POA_Bonobo_MonikerExtender *
       if (ev->_major == CORBA_NO_EXCEPTION)
 	 CORBA_Object_release(_ORBIT_retval, ev);
       CORBA_Object_release(m, ev);
-   }
-}
-void
-_ORBIT_skel_Bonobo_ActivationContext_getObject(POA_Bonobo_ActivationContext *
-					       _ORBIT_servant,
-					       GIOPRecvBuffer *
-					       _ORBIT_recv_buffer,
-					       CORBA_Environment * ev,
-					       Bonobo_Unknown
-					       (*_impl_getObject)
-					       (PortableServer_Servant
-						_servant,
-						const CORBA_char * name,
-						const CORBA_char * repoId,
-						CORBA_Environment * ev))
-{
-   Bonobo_Unknown _ORBIT_retval;
-   CORBA_char *name;
-   CORBA_char *repoId;
-
-   {				/* demarshalling */
-      guchar *_ORBIT_curptr;
-      register CORBA_unsigned_long _ORBIT_tmpvar_4;
-      CORBA_unsigned_long _ORBIT_tmpvar_5;
-      register CORBA_unsigned_long _ORBIT_tmpvar_6;
-      CORBA_unsigned_long _ORBIT_tmpvar_7;
-
-      _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
-      if (giop_msg_conversion_needed(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer))) {
-	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	 
-	    (*((guint32 *) & (_ORBIT_tmpvar_5))) =
-	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
-	 _ORBIT_curptr += 4;
-	 name = (void *) _ORBIT_curptr;
-	 _ORBIT_curptr += sizeof(name[_ORBIT_tmpvar_4]) * _ORBIT_tmpvar_5;
-	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	 
-	    (*((guint32 *) & (_ORBIT_tmpvar_7))) =
-	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
-	 _ORBIT_curptr += 4;
-	 repoId = (void *) _ORBIT_curptr;
-	 _ORBIT_curptr += sizeof(repoId[_ORBIT_tmpvar_6]) * _ORBIT_tmpvar_7;
-      } else {
-	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	 _ORBIT_tmpvar_5 = *((CORBA_unsigned_long *) _ORBIT_curptr);
-	 _ORBIT_curptr += 4;
-	 name = (void *) _ORBIT_curptr;
-	 _ORBIT_curptr += sizeof(name[_ORBIT_tmpvar_4]) * _ORBIT_tmpvar_5;
-	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	 _ORBIT_tmpvar_7 = *((CORBA_unsigned_long *) _ORBIT_curptr);
-	 _ORBIT_curptr += 4;
-	 repoId = (void *) _ORBIT_curptr;
-	 _ORBIT_curptr += sizeof(repoId[_ORBIT_tmpvar_6]) * _ORBIT_tmpvar_7;
-      }
-   }
-   _ORBIT_retval = _impl_getObject(_ORBIT_servant, name, repoId, ev);
-   {				/* marshalling */
-      register GIOPSendBuffer *_ORBIT_send_buffer;
-
-      _ORBIT_send_buffer =
-	 giop_send_reply_buffer_use(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer)->
-				    connection, NULL,
-				    _ORBIT_recv_buffer->message.u.request.
-				    request_id, ev->_major);
-      if (_ORBIT_send_buffer) {
-	 if (ev->_major == CORBA_NO_EXCEPTION) {
-	    ORBit_marshal_object(_ORBIT_send_buffer, _ORBIT_retval);
-	 } else
-	    ORBit_send_system_exception(_ORBIT_send_buffer, ev);
-	 giop_send_buffer_write(_ORBIT_send_buffer);
-	 giop_send_buffer_unuse(_ORBIT_send_buffer);
-      }
-      if (ev->_major == CORBA_NO_EXCEPTION)
-	 CORBA_Object_release(_ORBIT_retval, ev);
-   }
-}
-void
-_ORBIT_skel_Bonobo_ActivationContext_createFromName
-   (POA_Bonobo_ActivationContext * _ORBIT_servant,
-    GIOPRecvBuffer * _ORBIT_recv_buffer, CORBA_Environment * ev,
-    Bonobo_Moniker(*_impl_createFromName) (PortableServer_Servant _servant,
-					   const CORBA_char * name,
-					   CORBA_Environment * ev))
-{
-   Bonobo_Moniker _ORBIT_retval;
-   CORBA_char *name;
-
-   {				/* demarshalling */
-      guchar *_ORBIT_curptr;
-      register CORBA_unsigned_long _ORBIT_tmpvar_2;
-      CORBA_unsigned_long _ORBIT_tmpvar_3;
-
-      _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
-      if (giop_msg_conversion_needed(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer))) {
-	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	 
-	    (*((guint32 *) & (_ORBIT_tmpvar_3))) =
-	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
-	 _ORBIT_curptr += 4;
-	 name = (void *) _ORBIT_curptr;
-	 _ORBIT_curptr += sizeof(name[_ORBIT_tmpvar_2]) * _ORBIT_tmpvar_3;
-      } else {
-	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	 _ORBIT_tmpvar_3 = *((CORBA_unsigned_long *) _ORBIT_curptr);
-	 _ORBIT_curptr += 4;
-	 name = (void *) _ORBIT_curptr;
-	 _ORBIT_curptr += sizeof(name[_ORBIT_tmpvar_2]) * _ORBIT_tmpvar_3;
-      }
-   }
-   _ORBIT_retval = _impl_createFromName(_ORBIT_servant, name, ev);
-   {				/* marshalling */
-      register GIOPSendBuffer *_ORBIT_send_buffer;
-
-      _ORBIT_send_buffer =
-	 giop_send_reply_buffer_use(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer)->
-				    connection, NULL,
-				    _ORBIT_recv_buffer->message.u.request.
-				    request_id, ev->_major);
-      if (_ORBIT_send_buffer) {
-	 if (ev->_major == CORBA_NO_EXCEPTION) {
-	    ORBit_marshal_object(_ORBIT_send_buffer, _ORBIT_retval);
-	 } else
-	    ORBit_send_system_exception(_ORBIT_send_buffer, ev);
-	 giop_send_buffer_write(_ORBIT_send_buffer);
-	 giop_send_buffer_unuse(_ORBIT_send_buffer);
-      }
-      if (ev->_major == CORBA_NO_EXCEPTION)
-	 CORBA_Object_release(_ORBIT_retval, ev);
-   }
-}
-void
-_ORBIT_skel_Bonobo_ActivationContext_createWithParent
-   (POA_Bonobo_ActivationContext * _ORBIT_servant,
-    GIOPRecvBuffer * _ORBIT_recv_buffer, CORBA_Environment * ev,
-    Bonobo_Moniker(*_impl_createWithParent) (PortableServer_Servant _servant,
-					     const Bonobo_Moniker optParent,
-					     const CORBA_char * name,
-					     CORBA_Environment * ev))
-{
-   Bonobo_Moniker _ORBIT_retval;
-   Bonobo_Moniker optParent;
-   CORBA_char *name;
-
-   {				/* demarshalling */
-      guchar *_ORBIT_curptr;
-      register CORBA_unsigned_long _ORBIT_tmpvar_2;
-      CORBA_unsigned_long _ORBIT_tmpvar_3;
-
-      _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
-      if (giop_msg_conversion_needed(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer))) {
-	 GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur = _ORBIT_curptr;
-	 optParent =
-	    ORBit_demarshal_object(_ORBIT_recv_buffer,
-				   (((ORBit_ObjectKey
-				      *) _ORBIT_servant->_private)->object->
-				    orb));
-	 _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
-	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	 
-	    (*((guint32 *) & (_ORBIT_tmpvar_3))) =
-	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
-	 _ORBIT_curptr += 4;
-	 name = (void *) _ORBIT_curptr;
-	 _ORBIT_curptr += sizeof(name[_ORBIT_tmpvar_2]) * _ORBIT_tmpvar_3;
-      } else {
-	 GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur = _ORBIT_curptr;
-	 optParent =
-	    ORBit_demarshal_object(_ORBIT_recv_buffer,
-				   (((ORBit_ObjectKey
-				      *) _ORBIT_servant->_private)->object->
-				    orb));
-	 _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
-	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	 _ORBIT_tmpvar_3 = *((CORBA_unsigned_long *) _ORBIT_curptr);
-	 _ORBIT_curptr += 4;
-	 name = (void *) _ORBIT_curptr;
-	 _ORBIT_curptr += sizeof(name[_ORBIT_tmpvar_2]) * _ORBIT_tmpvar_3;
-      }
-   }
-   _ORBIT_retval =
-      _impl_createWithParent(_ORBIT_servant, optParent, name, ev);
-   {				/* marshalling */
-      register GIOPSendBuffer *_ORBIT_send_buffer;
-
-      _ORBIT_send_buffer =
-	 giop_send_reply_buffer_use(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer)->
-				    connection, NULL,
-				    _ORBIT_recv_buffer->message.u.request.
-				    request_id, ev->_major);
-      if (_ORBIT_send_buffer) {
-	 if (ev->_major == CORBA_NO_EXCEPTION) {
-	    ORBit_marshal_object(_ORBIT_send_buffer, _ORBIT_retval);
-	 } else
-	    ORBit_send_system_exception(_ORBIT_send_buffer, ev);
-	 giop_send_buffer_write(_ORBIT_send_buffer);
-	 giop_send_buffer_unuse(_ORBIT_send_buffer);
-      }
-      if (ev->_major == CORBA_NO_EXCEPTION)
-	 CORBA_Object_release(_ORBIT_retval, ev);
-      CORBA_Object_release(optParent, ev);
-   }
-}
-void
-_ORBIT_skel_Bonobo_ActivationContext_getExtender(POA_Bonobo_ActivationContext
-						 * _ORBIT_servant,
-						 GIOPRecvBuffer *
-						 _ORBIT_recv_buffer,
-						 CORBA_Environment * ev,
-						 Bonobo_MonikerExtender
-						 (*_impl_getExtender)
-						 (PortableServer_Servant
-						  _servant,
-						  const CORBA_char *
-						  monikerPrefix,
-						  const CORBA_char *
-						  interfaceId,
-						  CORBA_Environment * ev))
-{
-   Bonobo_MonikerExtender _ORBIT_retval;
-   CORBA_char *monikerPrefix;
-   CORBA_char *interfaceId;
-
-   {				/* demarshalling */
-      guchar *_ORBIT_curptr;
-      register CORBA_unsigned_long _ORBIT_tmpvar_4;
-      CORBA_unsigned_long _ORBIT_tmpvar_5;
-      register CORBA_unsigned_long _ORBIT_tmpvar_6;
-      CORBA_unsigned_long _ORBIT_tmpvar_7;
-
-      _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
-      if (giop_msg_conversion_needed(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer))) {
-	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	 
-	    (*((guint32 *) & (_ORBIT_tmpvar_5))) =
-	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
-	 _ORBIT_curptr += 4;
-	 monikerPrefix = (void *) _ORBIT_curptr;
-	 _ORBIT_curptr +=
-	    sizeof(monikerPrefix[_ORBIT_tmpvar_4]) * _ORBIT_tmpvar_5;
-	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	 
-	    (*((guint32 *) & (_ORBIT_tmpvar_7))) =
-	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
-	 _ORBIT_curptr += 4;
-	 interfaceId = (void *) _ORBIT_curptr;
-	 _ORBIT_curptr +=
-	    sizeof(interfaceId[_ORBIT_tmpvar_6]) * _ORBIT_tmpvar_7;
-      } else {
-	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	 _ORBIT_tmpvar_5 = *((CORBA_unsigned_long *) _ORBIT_curptr);
-	 _ORBIT_curptr += 4;
-	 monikerPrefix = (void *) _ORBIT_curptr;
-	 _ORBIT_curptr +=
-	    sizeof(monikerPrefix[_ORBIT_tmpvar_4]) * _ORBIT_tmpvar_5;
-	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	 _ORBIT_tmpvar_7 = *((CORBA_unsigned_long *) _ORBIT_curptr);
-	 _ORBIT_curptr += 4;
-	 interfaceId = (void *) _ORBIT_curptr;
-	 _ORBIT_curptr +=
-	    sizeof(interfaceId[_ORBIT_tmpvar_6]) * _ORBIT_tmpvar_7;
-      }
-   }
-   _ORBIT_retval =
-      _impl_getExtender(_ORBIT_servant, monikerPrefix, interfaceId, ev);
-   {				/* marshalling */
-      register GIOPSendBuffer *_ORBIT_send_buffer;
-
-      _ORBIT_send_buffer =
-	 giop_send_reply_buffer_use(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer)->
-				    connection, NULL,
-				    _ORBIT_recv_buffer->message.u.request.
-				    request_id, ev->_major);
-      if (_ORBIT_send_buffer) {
-	 if (ev->_major == CORBA_NO_EXCEPTION) {
-	    ORBit_marshal_object(_ORBIT_send_buffer, _ORBIT_retval);
-	 } else
-	    ORBit_send_system_exception(_ORBIT_send_buffer, ev);
-	 giop_send_buffer_write(_ORBIT_send_buffer);
-	 giop_send_buffer_unuse(_ORBIT_send_buffer);
-      }
-      if (ev->_major == CORBA_NO_EXCEPTION)
-	 CORBA_Object_release(_ORBIT_retval, ev);
-   }
-}
-void
-_ORBIT_skel_Bonobo_RunningContext_addObject(POA_Bonobo_RunningContext *
-					    _ORBIT_servant,
-					    GIOPRecvBuffer *
-					    _ORBIT_recv_buffer,
-					    CORBA_Environment * ev,
-					    void (*_impl_addObject)
-					    (PortableServer_Servant _servant,
-					     const CORBA_Object object,
-					     CORBA_Environment * ev))
-{
-   CORBA_Object object;
-
-   {				/* demarshalling */
-      guchar *_ORBIT_curptr;
-
-      _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
-      if (giop_msg_conversion_needed(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer))) {
-	 GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur = _ORBIT_curptr;
-	 object =
-	    ORBit_demarshal_object(_ORBIT_recv_buffer,
-				   (((ORBit_ObjectKey
-				      *) _ORBIT_servant->_private)->object->
-				    orb));
-	 _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
-      } else {
-	 GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur = _ORBIT_curptr;
-	 object =
-	    ORBit_demarshal_object(_ORBIT_recv_buffer,
-				   (((ORBit_ObjectKey
-				      *) _ORBIT_servant->_private)->object->
-				    orb));
-	 _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
-      }
-   }
-   _impl_addObject(_ORBIT_servant, object, ev);
-   {				/* marshalling */
-      register GIOPSendBuffer *_ORBIT_send_buffer;
-
-      _ORBIT_send_buffer =
-	 giop_send_reply_buffer_use(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer)->
-				    connection, NULL,
-				    _ORBIT_recv_buffer->message.u.request.
-				    request_id, ev->_major);
-      if (_ORBIT_send_buffer) {
-	 if (ev->_major == CORBA_NO_EXCEPTION) {
-	 } else
-	    ORBit_send_system_exception(_ORBIT_send_buffer, ev);
-	 giop_send_buffer_write(_ORBIT_send_buffer);
-	 giop_send_buffer_unuse(_ORBIT_send_buffer);
-      }
-      CORBA_Object_release(object, ev);
-   }
-}
-void
-_ORBIT_skel_Bonobo_RunningContext_removeObject(POA_Bonobo_RunningContext *
-					       _ORBIT_servant,
-					       GIOPRecvBuffer *
-					       _ORBIT_recv_buffer,
-					       CORBA_Environment * ev,
-					       void (*_impl_removeObject)
-					       (PortableServer_Servant
-						_servant,
-						const CORBA_Object object,
-						CORBA_Environment * ev))
-{
-   CORBA_Object object;
-
-   {				/* demarshalling */
-      guchar *_ORBIT_curptr;
-
-      _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
-      if (giop_msg_conversion_needed(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer))) {
-	 GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur = _ORBIT_curptr;
-	 object =
-	    ORBit_demarshal_object(_ORBIT_recv_buffer,
-				   (((ORBit_ObjectKey
-				      *) _ORBIT_servant->_private)->object->
-				    orb));
-	 _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
-      } else {
-	 GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur = _ORBIT_curptr;
-	 object =
-	    ORBit_demarshal_object(_ORBIT_recv_buffer,
-				   (((ORBit_ObjectKey
-				      *) _ORBIT_servant->_private)->object->
-				    orb));
-	 _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
-      }
-   }
-   _impl_removeObject(_ORBIT_servant, object, ev);
-   {				/* marshalling */
-      register GIOPSendBuffer *_ORBIT_send_buffer;
-
-      _ORBIT_send_buffer =
-	 giop_send_reply_buffer_use(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer)->
-				    connection, NULL,
-				    _ORBIT_recv_buffer->message.u.request.
-				    request_id, ev->_major);
-      if (_ORBIT_send_buffer) {
-	 if (ev->_major == CORBA_NO_EXCEPTION) {
-	 } else
-	    ORBit_send_system_exception(_ORBIT_send_buffer, ev);
-	 giop_send_buffer_write(_ORBIT_send_buffer);
-	 giop_send_buffer_unuse(_ORBIT_send_buffer);
-      }
-      CORBA_Object_release(object, ev);
-   }
-}
-void
-_ORBIT_skel_Bonobo_RunningContext_addKey(POA_Bonobo_RunningContext *
-					 _ORBIT_servant,
-					 GIOPRecvBuffer * _ORBIT_recv_buffer,
-					 CORBA_Environment * ev,
-					 void (*_impl_addKey)
-					 (PortableServer_Servant _servant,
-					  const CORBA_char * key,
-					  CORBA_Environment * ev))
-{
-   CORBA_char *key;
-
-   {				/* demarshalling */
-      guchar *_ORBIT_curptr;
-      register CORBA_unsigned_long _ORBIT_tmpvar_2;
-      CORBA_unsigned_long _ORBIT_tmpvar_3;
-
-      _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
-      if (giop_msg_conversion_needed(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer))) {
-	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	 
-	    (*((guint32 *) & (_ORBIT_tmpvar_3))) =
-	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
-	 _ORBIT_curptr += 4;
-	 key = (void *) _ORBIT_curptr;
-	 _ORBIT_curptr += sizeof(key[_ORBIT_tmpvar_2]) * _ORBIT_tmpvar_3;
-      } else {
-	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	 _ORBIT_tmpvar_3 = *((CORBA_unsigned_long *) _ORBIT_curptr);
-	 _ORBIT_curptr += 4;
-	 key = (void *) _ORBIT_curptr;
-	 _ORBIT_curptr += sizeof(key[_ORBIT_tmpvar_2]) * _ORBIT_tmpvar_3;
-      }
-   }
-   _impl_addKey(_ORBIT_servant, key, ev);
-   {				/* marshalling */
-      register GIOPSendBuffer *_ORBIT_send_buffer;
-
-      _ORBIT_send_buffer =
-	 giop_send_reply_buffer_use(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer)->
-				    connection, NULL,
-				    _ORBIT_recv_buffer->message.u.request.
-				    request_id, ev->_major);
-      if (_ORBIT_send_buffer) {
-	 if (ev->_major == CORBA_NO_EXCEPTION) {
-	 } else
-	    ORBit_send_system_exception(_ORBIT_send_buffer, ev);
-	 giop_send_buffer_write(_ORBIT_send_buffer);
-	 giop_send_buffer_unuse(_ORBIT_send_buffer);
-      }
-   }
-}
-void
-_ORBIT_skel_Bonobo_RunningContext_removeKey(POA_Bonobo_RunningContext *
-					    _ORBIT_servant,
-					    GIOPRecvBuffer *
-					    _ORBIT_recv_buffer,
-					    CORBA_Environment * ev,
-					    void (*_impl_removeKey)
-					    (PortableServer_Servant _servant,
-					     const CORBA_char * key,
-					     CORBA_Environment * ev))
-{
-   CORBA_char *key;
-
-   {				/* demarshalling */
-      guchar *_ORBIT_curptr;
-      register CORBA_unsigned_long _ORBIT_tmpvar_2;
-      CORBA_unsigned_long _ORBIT_tmpvar_3;
-
-      _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
-      if (giop_msg_conversion_needed(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer))) {
-	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	 
-	    (*((guint32 *) & (_ORBIT_tmpvar_3))) =
-	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
-	 _ORBIT_curptr += 4;
-	 key = (void *) _ORBIT_curptr;
-	 _ORBIT_curptr += sizeof(key[_ORBIT_tmpvar_2]) * _ORBIT_tmpvar_3;
-      } else {
-	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	 _ORBIT_tmpvar_3 = *((CORBA_unsigned_long *) _ORBIT_curptr);
-	 _ORBIT_curptr += 4;
-	 key = (void *) _ORBIT_curptr;
-	 _ORBIT_curptr += sizeof(key[_ORBIT_tmpvar_2]) * _ORBIT_tmpvar_3;
-      }
-   }
-   _impl_removeKey(_ORBIT_servant, key, ev);
-   {				/* marshalling */
-      register GIOPSendBuffer *_ORBIT_send_buffer;
-
-      _ORBIT_send_buffer =
-	 giop_send_reply_buffer_use(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer)->
-				    connection, NULL,
-				    _ORBIT_recv_buffer->message.u.request.
-				    request_id, ev->_major);
-      if (_ORBIT_send_buffer) {
-	 if (ev->_major == CORBA_NO_EXCEPTION) {
-	 } else
-	    ORBit_send_system_exception(_ORBIT_send_buffer, ev);
-	 giop_send_buffer_write(_ORBIT_send_buffer);
-	 giop_send_buffer_unuse(_ORBIT_send_buffer);
-      }
    }
 }
 void
@@ -2693,14 +2278,556 @@ _ORBIT_skel_Bonobo_Storage_revert(POA_Bonobo_Storage * _ORBIT_servant,
    }
 }
 void
-_ORBIT_Bonobo_NotSupported_marshal(GIOPSendBuffer * _ORBIT_send_buffer,
-				   CORBA_Environment * ev)
+_ORBIT_skel_Bonobo_ActivationContext_getObject(POA_Bonobo_ActivationContext *
+					       _ORBIT_servant,
+					       GIOPRecvBuffer *
+					       _ORBIT_recv_buffer,
+					       CORBA_Environment * ev,
+					       Bonobo_Unknown
+					       (*_impl_getObject)
+					       (PortableServer_Servant
+						_servant,
+						const CORBA_char * name,
+						const CORBA_char * repoId,
+						CORBA_Environment * ev))
 {
+   Bonobo_Unknown _ORBIT_retval;
+   CORBA_char *name;
+   CORBA_char *repoId;
+
+   {				/* demarshalling */
+      guchar *_ORBIT_curptr;
+      register CORBA_unsigned_long _ORBIT_tmpvar_4;
+      CORBA_unsigned_long _ORBIT_tmpvar_5;
+      register CORBA_unsigned_long _ORBIT_tmpvar_6;
+      CORBA_unsigned_long _ORBIT_tmpvar_7;
+
+      _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
+      if (giop_msg_conversion_needed(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer))) {
+	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	 
+	    (*((guint32 *) & (_ORBIT_tmpvar_5))) =
+	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
+	 _ORBIT_curptr += 4;
+	 name = (void *) _ORBIT_curptr;
+	 _ORBIT_curptr += sizeof(name[_ORBIT_tmpvar_4]) * _ORBIT_tmpvar_5;
+	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	 
+	    (*((guint32 *) & (_ORBIT_tmpvar_7))) =
+	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
+	 _ORBIT_curptr += 4;
+	 repoId = (void *) _ORBIT_curptr;
+	 _ORBIT_curptr += sizeof(repoId[_ORBIT_tmpvar_6]) * _ORBIT_tmpvar_7;
+      } else {
+	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	 _ORBIT_tmpvar_5 = *((CORBA_unsigned_long *) _ORBIT_curptr);
+	 _ORBIT_curptr += 4;
+	 name = (void *) _ORBIT_curptr;
+	 _ORBIT_curptr += sizeof(name[_ORBIT_tmpvar_4]) * _ORBIT_tmpvar_5;
+	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	 _ORBIT_tmpvar_7 = *((CORBA_unsigned_long *) _ORBIT_curptr);
+	 _ORBIT_curptr += 4;
+	 repoId = (void *) _ORBIT_curptr;
+	 _ORBIT_curptr += sizeof(repoId[_ORBIT_tmpvar_6]) * _ORBIT_tmpvar_7;
+      }
+   }
+   _ORBIT_retval = _impl_getObject(_ORBIT_servant, name, repoId, ev);
+   {				/* marshalling */
+      register GIOPSendBuffer *_ORBIT_send_buffer;
+
+      _ORBIT_send_buffer =
+	 giop_send_reply_buffer_use(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer)->
+				    connection, NULL,
+				    _ORBIT_recv_buffer->message.u.request.
+				    request_id, ev->_major);
+      if (_ORBIT_send_buffer) {
+	 if (ev->_major == CORBA_NO_EXCEPTION) {
+	    ORBit_marshal_object(_ORBIT_send_buffer, _ORBIT_retval);
+	 } else
+	    ORBit_send_system_exception(_ORBIT_send_buffer, ev);
+	 giop_send_buffer_write(_ORBIT_send_buffer);
+	 giop_send_buffer_unuse(_ORBIT_send_buffer);
+      }
+      if (ev->_major == CORBA_NO_EXCEPTION)
+	 CORBA_Object_release(_ORBIT_retval, ev);
+   }
 }
 void
-_ORBIT_Bonobo_IOError_marshal(GIOPSendBuffer * _ORBIT_send_buffer,
-			      CORBA_Environment * ev)
+_ORBIT_skel_Bonobo_ActivationContext_createFromName
+   (POA_Bonobo_ActivationContext * _ORBIT_servant,
+    GIOPRecvBuffer * _ORBIT_recv_buffer, CORBA_Environment * ev,
+    Bonobo_Moniker(*_impl_createFromName) (PortableServer_Servant _servant,
+					   const CORBA_char * name,
+					   CORBA_Environment * ev))
 {
+   Bonobo_Moniker _ORBIT_retval;
+   CORBA_char *name;
+
+   {				/* demarshalling */
+      guchar *_ORBIT_curptr;
+      register CORBA_unsigned_long _ORBIT_tmpvar_2;
+      CORBA_unsigned_long _ORBIT_tmpvar_3;
+
+      _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
+      if (giop_msg_conversion_needed(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer))) {
+	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	 
+	    (*((guint32 *) & (_ORBIT_tmpvar_3))) =
+	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
+	 _ORBIT_curptr += 4;
+	 name = (void *) _ORBIT_curptr;
+	 _ORBIT_curptr += sizeof(name[_ORBIT_tmpvar_2]) * _ORBIT_tmpvar_3;
+      } else {
+	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	 _ORBIT_tmpvar_3 = *((CORBA_unsigned_long *) _ORBIT_curptr);
+	 _ORBIT_curptr += 4;
+	 name = (void *) _ORBIT_curptr;
+	 _ORBIT_curptr += sizeof(name[_ORBIT_tmpvar_2]) * _ORBIT_tmpvar_3;
+      }
+   }
+   _ORBIT_retval = _impl_createFromName(_ORBIT_servant, name, ev);
+   {				/* marshalling */
+      register GIOPSendBuffer *_ORBIT_send_buffer;
+
+      _ORBIT_send_buffer =
+	 giop_send_reply_buffer_use(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer)->
+				    connection, NULL,
+				    _ORBIT_recv_buffer->message.u.request.
+				    request_id, ev->_major);
+      if (_ORBIT_send_buffer) {
+	 if (ev->_major == CORBA_NO_EXCEPTION) {
+	    ORBit_marshal_object(_ORBIT_send_buffer, _ORBIT_retval);
+	 } else
+	    ORBit_send_system_exception(_ORBIT_send_buffer, ev);
+	 giop_send_buffer_write(_ORBIT_send_buffer);
+	 giop_send_buffer_unuse(_ORBIT_send_buffer);
+      }
+      if (ev->_major == CORBA_NO_EXCEPTION)
+	 CORBA_Object_release(_ORBIT_retval, ev);
+   }
+}
+void
+_ORBIT_skel_Bonobo_ActivationContext_createWithParent
+   (POA_Bonobo_ActivationContext * _ORBIT_servant,
+    GIOPRecvBuffer * _ORBIT_recv_buffer, CORBA_Environment * ev,
+    Bonobo_Moniker(*_impl_createWithParent) (PortableServer_Servant _servant,
+					     const Bonobo_Moniker optParent,
+					     const CORBA_char * name,
+					     CORBA_Environment * ev))
+{
+   Bonobo_Moniker _ORBIT_retval;
+   Bonobo_Moniker optParent;
+   CORBA_char *name;
+
+   {				/* demarshalling */
+      guchar *_ORBIT_curptr;
+      register CORBA_unsigned_long _ORBIT_tmpvar_2;
+      CORBA_unsigned_long _ORBIT_tmpvar_3;
+
+      _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
+      if (giop_msg_conversion_needed(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer))) {
+	 GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur = _ORBIT_curptr;
+	 optParent =
+	    ORBit_demarshal_object(_ORBIT_recv_buffer,
+				   (((ORBit_ObjectKey
+				      *) _ORBIT_servant->_private)->object->
+				    orb));
+	 _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
+	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	 
+	    (*((guint32 *) & (_ORBIT_tmpvar_3))) =
+	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
+	 _ORBIT_curptr += 4;
+	 name = (void *) _ORBIT_curptr;
+	 _ORBIT_curptr += sizeof(name[_ORBIT_tmpvar_2]) * _ORBIT_tmpvar_3;
+      } else {
+	 GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur = _ORBIT_curptr;
+	 optParent =
+	    ORBit_demarshal_object(_ORBIT_recv_buffer,
+				   (((ORBit_ObjectKey
+				      *) _ORBIT_servant->_private)->object->
+				    orb));
+	 _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
+	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	 _ORBIT_tmpvar_3 = *((CORBA_unsigned_long *) _ORBIT_curptr);
+	 _ORBIT_curptr += 4;
+	 name = (void *) _ORBIT_curptr;
+	 _ORBIT_curptr += sizeof(name[_ORBIT_tmpvar_2]) * _ORBIT_tmpvar_3;
+      }
+   }
+   _ORBIT_retval =
+      _impl_createWithParent(_ORBIT_servant, optParent, name, ev);
+   {				/* marshalling */
+      register GIOPSendBuffer *_ORBIT_send_buffer;
+
+      _ORBIT_send_buffer =
+	 giop_send_reply_buffer_use(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer)->
+				    connection, NULL,
+				    _ORBIT_recv_buffer->message.u.request.
+				    request_id, ev->_major);
+      if (_ORBIT_send_buffer) {
+	 if (ev->_major == CORBA_NO_EXCEPTION) {
+	    ORBit_marshal_object(_ORBIT_send_buffer, _ORBIT_retval);
+	 } else
+	    ORBit_send_system_exception(_ORBIT_send_buffer, ev);
+	 giop_send_buffer_write(_ORBIT_send_buffer);
+	 giop_send_buffer_unuse(_ORBIT_send_buffer);
+      }
+      if (ev->_major == CORBA_NO_EXCEPTION)
+	 CORBA_Object_release(_ORBIT_retval, ev);
+      CORBA_Object_release(optParent, ev);
+   }
+}
+void
+_ORBIT_skel_Bonobo_ActivationContext_getExtender(POA_Bonobo_ActivationContext
+						 * _ORBIT_servant,
+						 GIOPRecvBuffer *
+						 _ORBIT_recv_buffer,
+						 CORBA_Environment * ev,
+						 Bonobo_MonikerExtender
+						 (*_impl_getExtender)
+						 (PortableServer_Servant
+						  _servant,
+						  const CORBA_char *
+						  monikerPrefix,
+						  const CORBA_char *
+						  interfaceId,
+						  CORBA_Environment * ev))
+{
+   Bonobo_MonikerExtender _ORBIT_retval;
+   CORBA_char *monikerPrefix;
+   CORBA_char *interfaceId;
+
+   {				/* demarshalling */
+      guchar *_ORBIT_curptr;
+      register CORBA_unsigned_long _ORBIT_tmpvar_4;
+      CORBA_unsigned_long _ORBIT_tmpvar_5;
+      register CORBA_unsigned_long _ORBIT_tmpvar_6;
+      CORBA_unsigned_long _ORBIT_tmpvar_7;
+
+      _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
+      if (giop_msg_conversion_needed(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer))) {
+	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	 
+	    (*((guint32 *) & (_ORBIT_tmpvar_5))) =
+	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
+	 _ORBIT_curptr += 4;
+	 monikerPrefix = (void *) _ORBIT_curptr;
+	 _ORBIT_curptr +=
+	    sizeof(monikerPrefix[_ORBIT_tmpvar_4]) * _ORBIT_tmpvar_5;
+	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	 
+	    (*((guint32 *) & (_ORBIT_tmpvar_7))) =
+	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
+	 _ORBIT_curptr += 4;
+	 interfaceId = (void *) _ORBIT_curptr;
+	 _ORBIT_curptr +=
+	    sizeof(interfaceId[_ORBIT_tmpvar_6]) * _ORBIT_tmpvar_7;
+      } else {
+	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	 _ORBIT_tmpvar_5 = *((CORBA_unsigned_long *) _ORBIT_curptr);
+	 _ORBIT_curptr += 4;
+	 monikerPrefix = (void *) _ORBIT_curptr;
+	 _ORBIT_curptr +=
+	    sizeof(monikerPrefix[_ORBIT_tmpvar_4]) * _ORBIT_tmpvar_5;
+	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	 _ORBIT_tmpvar_7 = *((CORBA_unsigned_long *) _ORBIT_curptr);
+	 _ORBIT_curptr += 4;
+	 interfaceId = (void *) _ORBIT_curptr;
+	 _ORBIT_curptr +=
+	    sizeof(interfaceId[_ORBIT_tmpvar_6]) * _ORBIT_tmpvar_7;
+      }
+   }
+   _ORBIT_retval =
+      _impl_getExtender(_ORBIT_servant, monikerPrefix, interfaceId, ev);
+   {				/* marshalling */
+      register GIOPSendBuffer *_ORBIT_send_buffer;
+
+      _ORBIT_send_buffer =
+	 giop_send_reply_buffer_use(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer)->
+				    connection, NULL,
+				    _ORBIT_recv_buffer->message.u.request.
+				    request_id, ev->_major);
+      if (_ORBIT_send_buffer) {
+	 if (ev->_major == CORBA_NO_EXCEPTION) {
+	    ORBit_marshal_object(_ORBIT_send_buffer, _ORBIT_retval);
+	 } else
+	    ORBit_send_system_exception(_ORBIT_send_buffer, ev);
+	 giop_send_buffer_write(_ORBIT_send_buffer);
+	 giop_send_buffer_unuse(_ORBIT_send_buffer);
+      }
+      if (ev->_major == CORBA_NO_EXCEPTION)
+	 CORBA_Object_release(_ORBIT_retval, ev);
+   }
+}
+void
+_ORBIT_skel_Bonobo_RunningContext_addObject(POA_Bonobo_RunningContext *
+					    _ORBIT_servant,
+					    GIOPRecvBuffer *
+					    _ORBIT_recv_buffer,
+					    CORBA_Environment * ev,
+					    void (*_impl_addObject)
+					    (PortableServer_Servant _servant,
+					     const CORBA_Object object,
+					     CORBA_Environment * ev))
+{
+   CORBA_Object object;
+
+   {				/* demarshalling */
+      guchar *_ORBIT_curptr;
+
+      _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
+      if (giop_msg_conversion_needed(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer))) {
+	 GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur = _ORBIT_curptr;
+	 object =
+	    ORBit_demarshal_object(_ORBIT_recv_buffer,
+				   (((ORBit_ObjectKey
+				      *) _ORBIT_servant->_private)->object->
+				    orb));
+	 _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
+      } else {
+	 GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur = _ORBIT_curptr;
+	 object =
+	    ORBit_demarshal_object(_ORBIT_recv_buffer,
+				   (((ORBit_ObjectKey
+				      *) _ORBIT_servant->_private)->object->
+				    orb));
+	 _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
+      }
+   }
+   _impl_addObject(_ORBIT_servant, object, ev);
+   {				/* marshalling */
+      register GIOPSendBuffer *_ORBIT_send_buffer;
+
+      _ORBIT_send_buffer =
+	 giop_send_reply_buffer_use(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer)->
+				    connection, NULL,
+				    _ORBIT_recv_buffer->message.u.request.
+				    request_id, ev->_major);
+      if (_ORBIT_send_buffer) {
+	 if (ev->_major == CORBA_NO_EXCEPTION) {
+	 } else
+	    ORBit_send_system_exception(_ORBIT_send_buffer, ev);
+	 giop_send_buffer_write(_ORBIT_send_buffer);
+	 giop_send_buffer_unuse(_ORBIT_send_buffer);
+      }
+      CORBA_Object_release(object, ev);
+   }
+}
+void
+_ORBIT_skel_Bonobo_RunningContext_removeObject(POA_Bonobo_RunningContext *
+					       _ORBIT_servant,
+					       GIOPRecvBuffer *
+					       _ORBIT_recv_buffer,
+					       CORBA_Environment * ev,
+					       void (*_impl_removeObject)
+					       (PortableServer_Servant
+						_servant,
+						const CORBA_Object object,
+						CORBA_Environment * ev))
+{
+   CORBA_Object object;
+
+   {				/* demarshalling */
+      guchar *_ORBIT_curptr;
+
+      _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
+      if (giop_msg_conversion_needed(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer))) {
+	 GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur = _ORBIT_curptr;
+	 object =
+	    ORBit_demarshal_object(_ORBIT_recv_buffer,
+				   (((ORBit_ObjectKey
+				      *) _ORBIT_servant->_private)->object->
+				    orb));
+	 _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
+      } else {
+	 GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur = _ORBIT_curptr;
+	 object =
+	    ORBit_demarshal_object(_ORBIT_recv_buffer,
+				   (((ORBit_ObjectKey
+				      *) _ORBIT_servant->_private)->object->
+				    orb));
+	 _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
+      }
+   }
+   _impl_removeObject(_ORBIT_servant, object, ev);
+   {				/* marshalling */
+      register GIOPSendBuffer *_ORBIT_send_buffer;
+
+      _ORBIT_send_buffer =
+	 giop_send_reply_buffer_use(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer)->
+				    connection, NULL,
+				    _ORBIT_recv_buffer->message.u.request.
+				    request_id, ev->_major);
+      if (_ORBIT_send_buffer) {
+	 if (ev->_major == CORBA_NO_EXCEPTION) {
+	 } else
+	    ORBit_send_system_exception(_ORBIT_send_buffer, ev);
+	 giop_send_buffer_write(_ORBIT_send_buffer);
+	 giop_send_buffer_unuse(_ORBIT_send_buffer);
+      }
+      CORBA_Object_release(object, ev);
+   }
+}
+void
+_ORBIT_skel_Bonobo_RunningContext_addKey(POA_Bonobo_RunningContext *
+					 _ORBIT_servant,
+					 GIOPRecvBuffer * _ORBIT_recv_buffer,
+					 CORBA_Environment * ev,
+					 void (*_impl_addKey)
+					 (PortableServer_Servant _servant,
+					  const CORBA_char * key,
+					  CORBA_Environment * ev))
+{
+   CORBA_char *key;
+
+   {				/* demarshalling */
+      guchar *_ORBIT_curptr;
+      register CORBA_unsigned_long _ORBIT_tmpvar_2;
+      CORBA_unsigned_long _ORBIT_tmpvar_3;
+
+      _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
+      if (giop_msg_conversion_needed(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer))) {
+	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	 
+	    (*((guint32 *) & (_ORBIT_tmpvar_3))) =
+	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
+	 _ORBIT_curptr += 4;
+	 key = (void *) _ORBIT_curptr;
+	 _ORBIT_curptr += sizeof(key[_ORBIT_tmpvar_2]) * _ORBIT_tmpvar_3;
+      } else {
+	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	 _ORBIT_tmpvar_3 = *((CORBA_unsigned_long *) _ORBIT_curptr);
+	 _ORBIT_curptr += 4;
+	 key = (void *) _ORBIT_curptr;
+	 _ORBIT_curptr += sizeof(key[_ORBIT_tmpvar_2]) * _ORBIT_tmpvar_3;
+      }
+   }
+   _impl_addKey(_ORBIT_servant, key, ev);
+   {				/* marshalling */
+      register GIOPSendBuffer *_ORBIT_send_buffer;
+
+      _ORBIT_send_buffer =
+	 giop_send_reply_buffer_use(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer)->
+				    connection, NULL,
+				    _ORBIT_recv_buffer->message.u.request.
+				    request_id, ev->_major);
+      if (_ORBIT_send_buffer) {
+	 if (ev->_major == CORBA_NO_EXCEPTION) {
+	 } else
+	    ORBit_send_system_exception(_ORBIT_send_buffer, ev);
+	 giop_send_buffer_write(_ORBIT_send_buffer);
+	 giop_send_buffer_unuse(_ORBIT_send_buffer);
+      }
+   }
+}
+void
+_ORBIT_skel_Bonobo_RunningContext_removeKey(POA_Bonobo_RunningContext *
+					    _ORBIT_servant,
+					    GIOPRecvBuffer *
+					    _ORBIT_recv_buffer,
+					    CORBA_Environment * ev,
+					    void (*_impl_removeKey)
+					    (PortableServer_Servant _servant,
+					     const CORBA_char * key,
+					     CORBA_Environment * ev))
+{
+   CORBA_char *key;
+
+   {				/* demarshalling */
+      guchar *_ORBIT_curptr;
+      register CORBA_unsigned_long _ORBIT_tmpvar_2;
+      CORBA_unsigned_long _ORBIT_tmpvar_3;
+
+      _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
+      if (giop_msg_conversion_needed(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer))) {
+	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	 
+	    (*((guint32 *) & (_ORBIT_tmpvar_3))) =
+	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
+	 _ORBIT_curptr += 4;
+	 key = (void *) _ORBIT_curptr;
+	 _ORBIT_curptr += sizeof(key[_ORBIT_tmpvar_2]) * _ORBIT_tmpvar_3;
+      } else {
+	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	 _ORBIT_tmpvar_3 = *((CORBA_unsigned_long *) _ORBIT_curptr);
+	 _ORBIT_curptr += 4;
+	 key = (void *) _ORBIT_curptr;
+	 _ORBIT_curptr += sizeof(key[_ORBIT_tmpvar_2]) * _ORBIT_tmpvar_3;
+      }
+   }
+   _impl_removeKey(_ORBIT_servant, key, ev);
+   {				/* marshalling */
+      register GIOPSendBuffer *_ORBIT_send_buffer;
+
+      _ORBIT_send_buffer =
+	 giop_send_reply_buffer_use(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer)->
+				    connection, NULL,
+				    _ORBIT_recv_buffer->message.u.request.
+				    request_id, ev->_major);
+      if (_ORBIT_send_buffer) {
+	 if (ev->_major == CORBA_NO_EXCEPTION) {
+	 } else
+	    ORBit_send_system_exception(_ORBIT_send_buffer, ev);
+	 giop_send_buffer_write(_ORBIT_send_buffer);
+	 giop_send_buffer_unuse(_ORBIT_send_buffer);
+      }
+   }
+}
+void
+_ORBIT_skel_Bonobo_RunningContext_atExitUnref(POA_Bonobo_RunningContext *
+					      _ORBIT_servant,
+					      GIOPRecvBuffer *
+					      _ORBIT_recv_buffer,
+					      CORBA_Environment * ev,
+					      void (*_impl_atExitUnref)
+					      (PortableServer_Servant
+					       _servant,
+					       const CORBA_Object object,
+					       CORBA_Environment * ev))
+{
+   CORBA_Object object;
+
+   {				/* demarshalling */
+      guchar *_ORBIT_curptr;
+
+      _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
+      if (giop_msg_conversion_needed(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer))) {
+	 GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur = _ORBIT_curptr;
+	 object =
+	    ORBit_demarshal_object(_ORBIT_recv_buffer,
+				   (((ORBit_ObjectKey
+				      *) _ORBIT_servant->_private)->object->
+				    orb));
+	 _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
+      } else {
+	 GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur = _ORBIT_curptr;
+	 object =
+	    ORBit_demarshal_object(_ORBIT_recv_buffer,
+				   (((ORBit_ObjectKey
+				      *) _ORBIT_servant->_private)->object->
+				    orb));
+	 _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
+      }
+   }
+   _impl_atExitUnref(_ORBIT_servant, object, ev);
+   {				/* marshalling */
+      register GIOPSendBuffer *_ORBIT_send_buffer;
+
+      _ORBIT_send_buffer =
+	 giop_send_reply_buffer_use(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer)->
+				    connection, NULL,
+				    _ORBIT_recv_buffer->message.u.request.
+				    request_id, ev->_major);
+      if (_ORBIT_send_buffer) {
+	 if (ev->_major == CORBA_NO_EXCEPTION) {
+	 } else
+	    ORBit_send_system_exception(_ORBIT_send_buffer, ev);
+	 giop_send_buffer_write(_ORBIT_send_buffer);
+	 giop_send_buffer_unuse(_ORBIT_send_buffer);
+      }
+      CORBA_Object_release(object, ev);
+   }
 }
 void
 _ORBIT_Bonobo_Persist_WrongDataType_marshal(GIOPSendBuffer *
@@ -5309,6 +5436,127 @@ _ORBIT_skel_Bonobo_Property_getFlags(POA_Bonobo_Property * _ORBIT_servant,
    }
 }
 void
+_ORBIT_skel_Bonobo_Property_addListener(POA_Bonobo_Property * _ORBIT_servant,
+					GIOPRecvBuffer * _ORBIT_recv_buffer,
+					CORBA_Environment * ev,
+					Bonobo_EventSource_ListenerId
+					(*_impl_addListener)
+					(PortableServer_Servant _servant,
+					 const Bonobo_Listener l,
+					 CORBA_Environment * ev))
+{
+   Bonobo_EventSource_ListenerId _ORBIT_retval;
+   Bonobo_Listener l;
+
+   {				/* demarshalling */
+      guchar *_ORBIT_curptr;
+
+      _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
+      if (giop_msg_conversion_needed(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer))) {
+	 GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur = _ORBIT_curptr;
+	 l =
+	    ORBit_demarshal_object(_ORBIT_recv_buffer,
+				   (((ORBit_ObjectKey
+				      *) _ORBIT_servant->_private)->object->
+				    orb));
+	 _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
+      } else {
+	 GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur = _ORBIT_curptr;
+	 l =
+	    ORBit_demarshal_object(_ORBIT_recv_buffer,
+				   (((ORBit_ObjectKey
+				      *) _ORBIT_servant->_private)->object->
+				    orb));
+	 _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
+      }
+   }
+   _ORBIT_retval = _impl_addListener(_ORBIT_servant, l, ev);
+   {				/* marshalling */
+      register GIOPSendBuffer *_ORBIT_send_buffer;
+
+      _ORBIT_send_buffer =
+	 giop_send_reply_buffer_use(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer)->
+				    connection, NULL,
+				    _ORBIT_recv_buffer->message.u.request.
+				    request_id, ev->_major);
+      if (_ORBIT_send_buffer) {
+	 if (ev->_major == CORBA_NO_EXCEPTION) {
+	    giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					     (_ORBIT_send_buffer), 4);
+	    {
+	       guchar *_ORBIT_t;
+
+	       _ORBIT_t = alloca(sizeof(_ORBIT_retval));
+	       memcpy(_ORBIT_t, &(_ORBIT_retval), sizeof(_ORBIT_retval));
+	       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					      (_ORBIT_send_buffer),
+					      (_ORBIT_t),
+					      sizeof(_ORBIT_retval));
+	    }
+	 } else
+	    ORBit_send_system_exception(_ORBIT_send_buffer, ev);
+	 giop_send_buffer_write(_ORBIT_send_buffer);
+	 giop_send_buffer_unuse(_ORBIT_send_buffer);
+      }
+      CORBA_Object_release(l, ev);
+   }
+}
+void
+_ORBIT_skel_Bonobo_Property_removeListener(POA_Bonobo_Property *
+					   _ORBIT_servant,
+					   GIOPRecvBuffer *
+					   _ORBIT_recv_buffer,
+					   CORBA_Environment * ev,
+					   void (*_impl_removeListener)
+					   (PortableServer_Servant _servant,
+					    const
+					    Bonobo_EventSource_ListenerId id,
+					    CORBA_Environment * ev))
+{
+   Bonobo_EventSource_ListenerId id;
+
+   {				/* demarshalling */
+      guchar *_ORBIT_curptr;
+
+      _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
+      if (giop_msg_conversion_needed(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer))) {
+	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	 
+	    (*((guint32 *) & (id))) =
+	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));} else {
+	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	 id = *((Bonobo_EventSource_ListenerId *) _ORBIT_curptr);
+      }
+   }
+   _impl_removeListener(_ORBIT_servant, id, ev);
+   {				/* marshalling */
+      register GIOPSendBuffer *_ORBIT_send_buffer;
+
+      _ORBIT_send_buffer =
+	 giop_send_reply_buffer_use(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer)->
+				    connection, NULL,
+				    _ORBIT_recv_buffer->message.u.request.
+				    request_id, ev->_major);
+      if (_ORBIT_send_buffer) {
+	 if (ev->_major == CORBA_NO_EXCEPTION) {
+	 } else if (ev->_major == CORBA_USER_EXCEPTION) {
+	    static const ORBit_exception_marshal_info _ORBIT_user_exceptions[]
+	       = { {(const CORBA_TypeCode)
+		    &TC_Bonobo_EventSource_UnknownListener_struct,
+		    (gpointer)
+		    _ORBIT_Bonobo_EventSource_UnknownListener_marshal},
+	       {CORBA_OBJECT_NIL, NULL} };
+
+	    ORBit_send_user_exception(_ORBIT_send_buffer, ev,
+				      _ORBIT_user_exceptions);
+	 } else
+	    ORBit_send_system_exception(_ORBIT_send_buffer, ev);
+	 giop_send_buffer_write(_ORBIT_send_buffer);
+	 giop_send_buffer_unuse(_ORBIT_send_buffer);
+      }
+   }
+}
+void
 _ORBIT_skel_Bonobo_PropertyBag_getProperties(POA_Bonobo_PropertyBag *
 					     _ORBIT_servant,
 					     GIOPRecvBuffer *
@@ -5558,6 +5806,7 @@ _ORBIT_skel_Bonobo_PropertyBag_setValues(POA_Bonobo_PropertyBag *
 	    (*((guint32 *) & (set._length))) =
 	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
 	    _ORBIT_curptr += 4;
+	 set._maximum = set._length;
 	 set._buffer = CORBA_sequence_Bonobo_Pair_allocbuf(set._length);
 	 set._release = CORBA_TRUE;
 	 for (_ORBIT_tmpvar_3 = 0; _ORBIT_tmpvar_3 < set._length;
@@ -5585,6 +5834,7 @@ _ORBIT_skel_Bonobo_PropertyBag_setValues(POA_Bonobo_PropertyBag *
 	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
 	 set._length = *((CORBA_unsigned_long *) _ORBIT_curptr);
 	 _ORBIT_curptr += 4;
+	 set._maximum = set._length;
 	 set._buffer = CORBA_sequence_Bonobo_Pair_allocbuf(set._length);
 	 set._release = CORBA_TRUE;
 	 for (_ORBIT_tmpvar_3 = 0; _ORBIT_tmpvar_3 < set._length;
@@ -5730,6 +5980,41 @@ _ORBIT_skel_Bonobo_PropertyBag_getValues(POA_Bonobo_PropertyBag *
       }
       if (ev->_major == CORBA_NO_EXCEPTION)
 	 CORBA_free(_ORBIT_retval);
+   }
+}
+void
+_ORBIT_skel_Bonobo_PropertyBag_getEventSource(POA_Bonobo_PropertyBag *
+					      _ORBIT_servant,
+					      GIOPRecvBuffer *
+					      _ORBIT_recv_buffer,
+					      CORBA_Environment * ev,
+					      Bonobo_EventSource
+					      (*_impl_getEventSource)
+					      (PortableServer_Servant
+					       _servant,
+					       CORBA_Environment * ev))
+{
+   Bonobo_EventSource _ORBIT_retval;
+
+   _ORBIT_retval = _impl_getEventSource(_ORBIT_servant, ev);
+   {				/* marshalling */
+      register GIOPSendBuffer *_ORBIT_send_buffer;
+
+      _ORBIT_send_buffer =
+	 giop_send_reply_buffer_use(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer)->
+				    connection, NULL,
+				    _ORBIT_recv_buffer->message.u.request.
+				    request_id, ev->_major);
+      if (_ORBIT_send_buffer) {
+	 if (ev->_major == CORBA_NO_EXCEPTION) {
+	    ORBit_marshal_object(_ORBIT_send_buffer, _ORBIT_retval);
+	 } else
+	    ORBit_send_system_exception(_ORBIT_send_buffer, ev);
+	 giop_send_buffer_write(_ORBIT_send_buffer);
+	 giop_send_buffer_unuse(_ORBIT_send_buffer);
+      }
+      if (ev->_major == CORBA_NO_EXCEPTION)
+	 CORBA_Object_release(_ORBIT_retval, ev);
    }
 }
 void
@@ -5924,6 +6209,35 @@ _ORBIT_skel_Bonobo_ControlFrame_getUIHandler(POA_Bonobo_ControlFrame *
       }
       if (ev->_major == CORBA_NO_EXCEPTION)
 	 CORBA_Object_release(_ORBIT_retval, ev);
+   }
+}
+void
+_ORBIT_skel_Bonobo_ControlFrame_unImplemented(POA_Bonobo_ControlFrame *
+					      _ORBIT_servant,
+					      GIOPRecvBuffer *
+					      _ORBIT_recv_buffer,
+					      CORBA_Environment * ev,
+					      void (*_impl_unImplemented)
+					      (PortableServer_Servant
+					       _servant,
+					       CORBA_Environment * ev))
+{
+   _impl_unImplemented(_ORBIT_servant, ev);
+   {				/* marshalling */
+      register GIOPSendBuffer *_ORBIT_send_buffer;
+
+      _ORBIT_send_buffer =
+	 giop_send_reply_buffer_use(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer)->
+				    connection, NULL,
+				    _ORBIT_recv_buffer->message.u.request.
+				    request_id, ev->_major);
+      if (_ORBIT_send_buffer) {
+	 if (ev->_major == CORBA_NO_EXCEPTION) {
+	 } else
+	    ORBit_send_system_exception(_ORBIT_send_buffer, ev);
+	 giop_send_buffer_write(_ORBIT_send_buffer);
+	 giop_send_buffer_unuse(_ORBIT_send_buffer);
+      }
    }
 }
 void
@@ -6286,6 +6600,59 @@ _ORBIT_skel_Bonobo_Control_unrealize(POA_Bonobo_Control * _ORBIT_servant,
 				    request_id, ev->_major);
       if (_ORBIT_send_buffer) {
 	 if (ev->_major == CORBA_NO_EXCEPTION) {
+	 } else
+	    ORBit_send_system_exception(_ORBIT_send_buffer, ev);
+	 giop_send_buffer_write(_ORBIT_send_buffer);
+	 giop_send_buffer_unuse(_ORBIT_send_buffer);
+      }
+   }
+}
+void
+_ORBIT_skel_Bonobo_Control_focus(POA_Bonobo_Control * _ORBIT_servant,
+				 GIOPRecvBuffer * _ORBIT_recv_buffer,
+				 CORBA_Environment * ev,
+				 CORBA_boolean(*_impl_focus)
+				 (PortableServer_Servant _servant,
+				  const Bonobo_Control_FocusDirection
+				  direction, CORBA_Environment * ev))
+{
+   CORBA_boolean _ORBIT_retval;
+   Bonobo_Control_FocusDirection direction;
+
+   {				/* demarshalling */
+      guchar *_ORBIT_curptr;
+
+      _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
+      if (giop_msg_conversion_needed(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer))) {
+	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	 
+	    (*((guint32 *) & (direction))) =
+	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));} else {
+	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	 direction = *((Bonobo_Control_FocusDirection *) _ORBIT_curptr);
+      }
+   }
+   _ORBIT_retval = _impl_focus(_ORBIT_servant, direction, ev);
+   {				/* marshalling */
+      register GIOPSendBuffer *_ORBIT_send_buffer;
+
+      _ORBIT_send_buffer =
+	 giop_send_reply_buffer_use(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer)->
+				    connection, NULL,
+				    _ORBIT_recv_buffer->message.u.request.
+				    request_id, ev->_major);
+      if (_ORBIT_send_buffer) {
+	 if (ev->_major == CORBA_NO_EXCEPTION) {
+	    {
+	       guchar *_ORBIT_t;
+
+	       _ORBIT_t = alloca(sizeof(_ORBIT_retval));
+	       memcpy(_ORBIT_t, &(_ORBIT_retval), sizeof(_ORBIT_retval));
+	       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					      (_ORBIT_send_buffer),
+					      (_ORBIT_t),
+					      sizeof(_ORBIT_retval));
+	    }
 	 } else
 	    ORBit_send_system_exception(_ORBIT_send_buffer, ev);
 	 giop_send_buffer_write(_ORBIT_send_buffer);
@@ -7061,12 +7428,13 @@ _ORBIT_skel_Bonobo_ItemContainer_enumObjects(POA_Bonobo_ItemContainer *
 					     GIOPRecvBuffer *
 					     _ORBIT_recv_buffer,
 					     CORBA_Environment * ev,
-					     Bonobo_ItemContainer_ObjectList *
+					     Bonobo_ItemContainer_ObjectNames
+					     *
 					     (*_impl_enumObjects)
 					     (PortableServer_Servant _servant,
 					      CORBA_Environment * ev))
 {
-   Bonobo_ItemContainer_ObjectList *_ORBIT_retval;
+   Bonobo_ItemContainer_ObjectNames *_ORBIT_retval;
 
    _ORBIT_retval = _impl_enumObjects(_ORBIT_servant, ev);
    {				/* marshalling */
@@ -7080,6 +7448,8 @@ _ORBIT_skel_Bonobo_ItemContainer_enumObjects(POA_Bonobo_ItemContainer *
       if (_ORBIT_send_buffer) {
 	 if (ev->_major == CORBA_NO_EXCEPTION) {
 	    register CORBA_unsigned_long _ORBIT_tmpvar_0;
+	    register CORBA_unsigned_long _ORBIT_tmpvar_1;
+	    CORBA_unsigned_long _ORBIT_tmpvar_2;
 
 	    giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
 					     (_ORBIT_send_buffer), 4);
@@ -7098,9 +7468,43 @@ _ORBIT_skel_Bonobo_ItemContainer_enumObjects(POA_Bonobo_ItemContainer *
 	    for (_ORBIT_tmpvar_0 = 0;
 		 _ORBIT_tmpvar_0 < (*_ORBIT_retval)._length;
 		 _ORBIT_tmpvar_0++) {
-	       ORBit_marshal_object(_ORBIT_send_buffer,
-				    (*_ORBIT_retval).
-				    _buffer[_ORBIT_tmpvar_0]);
+	       _ORBIT_tmpvar_2 =
+		  strlen((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_0]) + 1;
+	       giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+						(_ORBIT_send_buffer), 4);
+	       {
+		  guchar *_ORBIT_t;
+
+		  _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_2));
+		  memcpy(_ORBIT_t, &(_ORBIT_tmpvar_2),
+			 sizeof(_ORBIT_tmpvar_2));
+		  giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+						 (_ORBIT_send_buffer),
+						 (_ORBIT_t),
+						 sizeof(_ORBIT_tmpvar_2));
+	       }
+	       {
+		  guchar *_ORBIT_t;
+
+		  _ORBIT_t =
+		     alloca(sizeof
+			    ((*_ORBIT_retval).
+			     _buffer[_ORBIT_tmpvar_0][_ORBIT_tmpvar_1]) *
+			    _ORBIT_tmpvar_2);
+		     memcpy(_ORBIT_t,
+			    ((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_0]),
+			    sizeof((*_ORBIT_retval).
+				   _buffer[_ORBIT_tmpvar_0][_ORBIT_tmpvar_1])
+			    * _ORBIT_tmpvar_2);
+		  giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+						 (_ORBIT_send_buffer),
+						 (_ORBIT_t),
+						 sizeof((*_ORBIT_retval).
+							_buffer
+							[_ORBIT_tmpvar_0]
+							[_ORBIT_tmpvar_1]) *
+						 _ORBIT_tmpvar_2);
+	       }
 	    }
 
 	 } else
@@ -7874,6 +8278,7 @@ _ORBIT_skel_Bonobo_Canvas_Component_render(POA_Bonobo_Canvas_Component *
 	    (*((guint32 *) & (buf.rgb_buf._length))) =
 	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
 	 _ORBIT_curptr += 4;
+	 buf.rgb_buf._maximum = buf.rgb_buf._length;
 	 buf.rgb_buf._buffer =
 	    CORBA_sequence_CORBA_octet_allocbuf(buf.rgb_buf._length);
 	 buf.rgb_buf._release = CORBA_TRUE;
@@ -7908,6 +8313,7 @@ _ORBIT_skel_Bonobo_Canvas_Component_render(POA_Bonobo_Canvas_Component *
 	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
 	 buf.rgb_buf._length = *((CORBA_unsigned_long *) _ORBIT_curptr);
 	 _ORBIT_curptr += 4;
+	 buf.rgb_buf._maximum = buf.rgb_buf._length;
 	 buf.rgb_buf._buffer =
 	    CORBA_sequence_CORBA_octet_allocbuf(buf.rgb_buf._length);
 	 buf.rgb_buf._release = CORBA_TRUE;
@@ -8604,20 +9010,137 @@ _ORBIT_skel_Bonobo_Canvas_Component_setBounds(POA_Bonobo_Canvas_Component *
    }
 }
 void
-_ORBIT_skel_Bonobo_Canvas_Component_getUIComponent(POA_Bonobo_Canvas_Component
-						   * _ORBIT_servant,
-						   GIOPRecvBuffer *
-						   _ORBIT_recv_buffer,
-						   CORBA_Environment * ev,
-						   Bonobo_UIComponent
-						   (*_impl_getUIComponent)
-						   (PortableServer_Servant
-						    _servant,
-						    CORBA_Environment * ev))
+_ORBIT_skel_Bonobo_Canvas_ComponentProxy_requestUpdate
+   (POA_Bonobo_Canvas_ComponentProxy * _ORBIT_servant,
+    GIOPRecvBuffer * _ORBIT_recv_buffer, CORBA_Environment * ev,
+    void (*_impl_requestUpdate) (PortableServer_Servant _servant,
+				 CORBA_Environment * ev))
 {
-   Bonobo_UIComponent _ORBIT_retval;
+   _impl_requestUpdate(_ORBIT_servant, ev);
+   {				/* marshalling */
+      register GIOPSendBuffer *_ORBIT_send_buffer;
 
-   _ORBIT_retval = _impl_getUIComponent(_ORBIT_servant, ev);
+      _ORBIT_send_buffer =
+	 giop_send_reply_buffer_use(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer)->
+				    connection, NULL,
+				    _ORBIT_recv_buffer->message.u.request.
+				    request_id, ev->_major);
+      if (_ORBIT_send_buffer) {
+	 if (ev->_major == CORBA_NO_EXCEPTION) {
+	 } else
+	    ORBit_send_system_exception(_ORBIT_send_buffer, ev);
+	 giop_send_buffer_write(_ORBIT_send_buffer);
+	 giop_send_buffer_unuse(_ORBIT_send_buffer);
+      }
+   }
+}
+void
+_ORBIT_skel_Bonobo_Canvas_ComponentProxy_grabFocus
+   (POA_Bonobo_Canvas_ComponentProxy * _ORBIT_servant,
+    GIOPRecvBuffer * _ORBIT_recv_buffer, CORBA_Environment * ev,
+    void (*_impl_grabFocus) (PortableServer_Servant _servant,
+			     const CORBA_unsigned_long mask,
+			     const CORBA_long cursor,
+			     const CORBA_unsigned_long time,
+			     CORBA_Environment * ev))
+{
+   CORBA_unsigned_long mask;
+   CORBA_long cursor;
+   CORBA_unsigned_long time;
+
+   {				/* demarshalling */
+      guchar *_ORBIT_curptr;
+
+      _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
+      if (giop_msg_conversion_needed(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer))) {
+	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	 
+	    (*((guint32 *) & (mask))) =
+	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
+	    _ORBIT_curptr += 4;
+	 (*((guint32 *) & (cursor))) =
+	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
+	    _ORBIT_curptr += 4;
+	 (*((guint32 *) & (time))) =
+	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));} else {
+	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	 mask = *((CORBA_unsigned_long *) _ORBIT_curptr);
+	 _ORBIT_curptr += 4;
+	 cursor = *((CORBA_long *) _ORBIT_curptr);
+	 _ORBIT_curptr += 4;
+	 time = *((CORBA_unsigned_long *) _ORBIT_curptr);
+      }
+   }
+   _impl_grabFocus(_ORBIT_servant, mask, cursor, time, ev);
+   {				/* marshalling */
+      register GIOPSendBuffer *_ORBIT_send_buffer;
+
+      _ORBIT_send_buffer =
+	 giop_send_reply_buffer_use(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer)->
+				    connection, NULL,
+				    _ORBIT_recv_buffer->message.u.request.
+				    request_id, ev->_major);
+      if (_ORBIT_send_buffer) {
+	 if (ev->_major == CORBA_NO_EXCEPTION) {
+	 } else
+	    ORBit_send_system_exception(_ORBIT_send_buffer, ev);
+	 giop_send_buffer_write(_ORBIT_send_buffer);
+	 giop_send_buffer_unuse(_ORBIT_send_buffer);
+      }
+   }
+}
+void
+_ORBIT_skel_Bonobo_Canvas_ComponentProxy_ungrabFocus
+   (POA_Bonobo_Canvas_ComponentProxy * _ORBIT_servant,
+    GIOPRecvBuffer * _ORBIT_recv_buffer, CORBA_Environment * ev,
+    void (*_impl_ungrabFocus) (PortableServer_Servant _servant,
+			       const CORBA_unsigned_long time,
+			       CORBA_Environment * ev))
+{
+   CORBA_unsigned_long time;
+
+   {				/* demarshalling */
+      guchar *_ORBIT_curptr;
+
+      _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
+      if (giop_msg_conversion_needed(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer))) {
+	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	 
+	    (*((guint32 *) & (time))) =
+	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));} else {
+	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	 time = *((CORBA_unsigned_long *) _ORBIT_curptr);
+      }
+   }
+   _impl_ungrabFocus(_ORBIT_servant, time, ev);
+   {				/* marshalling */
+      register GIOPSendBuffer *_ORBIT_send_buffer;
+
+      _ORBIT_send_buffer =
+	 giop_send_reply_buffer_use(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer)->
+				    connection, NULL,
+				    _ORBIT_recv_buffer->message.u.request.
+				    request_id, ev->_major);
+      if (_ORBIT_send_buffer) {
+	 if (ev->_major == CORBA_NO_EXCEPTION) {
+	 } else
+	    ORBit_send_system_exception(_ORBIT_send_buffer, ev);
+	 giop_send_buffer_write(_ORBIT_send_buffer);
+	 giop_send_buffer_unuse(_ORBIT_send_buffer);
+      }
+   }
+}
+void
+_ORBIT_skel_Bonobo_Canvas_ComponentProxy_getUIContainer
+   (POA_Bonobo_Canvas_ComponentProxy * _ORBIT_servant,
+    GIOPRecvBuffer * _ORBIT_recv_buffer, CORBA_Environment * ev,
+    Bonobo_UIContainer(*_impl_getUIContainer) (PortableServer_Servant
+					       _servant,
+					       CORBA_Environment * ev))
+{
+   Bonobo_UIContainer _ORBIT_retval;
+
+   _ORBIT_retval = _impl_getUIContainer(_ORBIT_servant, ev);
    {				/* marshalling */
       register GIOPSendBuffer *_ORBIT_send_buffer;
 
@@ -8636,88 +9159,6 @@ _ORBIT_skel_Bonobo_Canvas_Component_getUIComponent(POA_Bonobo_Canvas_Component
       }
       if (ev->_major == CORBA_NO_EXCEPTION)
 	 CORBA_Object_release(_ORBIT_retval, ev);
-   }
-}
-void
-_ORBIT_skel_Bonobo_Canvas_ComponentProxy_updateArea
-   (POA_Bonobo_Canvas_ComponentProxy * _ORBIT_servant,
-    GIOPRecvBuffer * _ORBIT_recv_buffer, CORBA_Environment * ev,
-    void (*_impl_updateArea) (PortableServer_Servant _servant,
-			      const Bonobo_Canvas_ArtUTA * uta,
-			      CORBA_Environment * ev))
-{
-   Bonobo_Canvas_ArtUTA uta;
-
-   {				/* demarshalling */
-      guchar *_ORBIT_curptr;
-      register CORBA_unsigned_long _ORBIT_tmpvar_1;
-
-      _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
-      if (giop_msg_conversion_needed(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer))) {
-	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 2);
-	 
-	    (*((guint16 *) & (uta.x0))) =
-	    GUINT16_SWAP_LE_BE(*((guint16 *) _ORBIT_curptr));
-	    _ORBIT_curptr += 2;
-	 (*((guint16 *) & (uta.y0))) =
-	    GUINT16_SWAP_LE_BE(*((guint16 *) _ORBIT_curptr));
-	    _ORBIT_curptr += 2;
-	 (*((guint16 *) & (uta.width))) =
-	    GUINT16_SWAP_LE_BE(*((guint16 *) _ORBIT_curptr));
-	    _ORBIT_curptr += 2;
-	 (*((guint16 *) & (uta.height))) =
-	    GUINT16_SWAP_LE_BE(*((guint16 *) _ORBIT_curptr));
-	    _ORBIT_curptr += 2;
-	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	 
-	    (*((guint32 *) & (uta.utiles._length))) =
-	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
-	 _ORBIT_curptr += 4;
-	 uta.utiles._buffer =
-	    alloca(sizeof(uta.utiles._buffer[_ORBIT_tmpvar_1]) *
-		   uta.utiles._length);
-	 uta.utiles._release = CORBA_FALSE;
-	 for (_ORBIT_tmpvar_1 = 0; _ORBIT_tmpvar_1 < uta.utiles._length;
-	      _ORBIT_tmpvar_1++) {
-	    (*((guint32 *) & (uta.utiles._buffer[_ORBIT_tmpvar_1]))) =
-	       GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
-	    _ORBIT_curptr += 4;
-	 }
-
-      } else {
-	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 2);
-	 uta.x0 = *((CORBA_short *) _ORBIT_curptr);
-	 _ORBIT_curptr += 2;
-	 uta.y0 = *((CORBA_short *) _ORBIT_curptr);
-	 _ORBIT_curptr += 2;
-	 uta.width = *((CORBA_short *) _ORBIT_curptr);
-	 _ORBIT_curptr += 2;
-	 uta.height = *((CORBA_short *) _ORBIT_curptr);
-	 _ORBIT_curptr += 2;
-	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	 uta.utiles._length = *((CORBA_unsigned_long *) _ORBIT_curptr);
-	 _ORBIT_curptr += 4;
-	 uta.utiles._buffer = (Bonobo_Canvas_int32 *) _ORBIT_curptr;
-	 _ORBIT_curptr +=
-	    sizeof(uta.utiles._buffer[_ORBIT_tmpvar_1]) * uta.utiles._length;
-      }
-   }
-   _impl_updateArea(_ORBIT_servant, &(uta), ev);
-   {				/* marshalling */
-      register GIOPSendBuffer *_ORBIT_send_buffer;
-
-      _ORBIT_send_buffer =
-	 giop_send_reply_buffer_use(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer)->
-				    connection, NULL,
-				    _ORBIT_recv_buffer->message.u.request.
-				    request_id, ev->_major);
-      if (_ORBIT_send_buffer) {
-	 if (ev->_major == CORBA_NO_EXCEPTION) {
-	 } else
-	    ORBit_send_system_exception(_ORBIT_send_buffer, ev);
-	 giop_send_buffer_write(_ORBIT_send_buffer);
-	 giop_send_buffer_unuse(_ORBIT_send_buffer);
-      }
    }
 }
 void
@@ -9325,16 +9766,13 @@ void
 _ORBIT_skel_Bonobo_Print_render(POA_Bonobo_Print * _ORBIT_servant,
 				GIOPRecvBuffer * _ORBIT_recv_buffer,
 				CORBA_Environment * ev,
-				Bonobo_PrintData *
-				(*_impl_render) (PortableServer_Servant
-						 _servant,
-						 const Bonobo_PrintDimensions
-						 * pd,
-						 const Bonobo_PrintScissor *
-						 scissor,
-						 CORBA_Environment * ev))
+				Bonobo_Stream(*_impl_render)
+				(PortableServer_Servant _servant,
+				 const Bonobo_PrintDimensions * pd,
+				 const Bonobo_PrintScissor * scissor,
+				 CORBA_Environment * ev))
 {
-   Bonobo_PrintData *_ORBIT_retval;
+   Bonobo_Stream _ORBIT_retval;
    Bonobo_PrintDimensions pd;
    Bonobo_PrintScissor scissor;
 
@@ -9377,45 +9815,14 @@ _ORBIT_skel_Bonobo_Print_render(POA_Bonobo_Print * _ORBIT_servant,
 				    request_id, ev->_major);
       if (_ORBIT_send_buffer) {
 	 if (ev->_major == CORBA_NO_EXCEPTION) {
-	    register CORBA_unsigned_long _ORBIT_tmpvar_0;
-
-	    giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
-					     (_ORBIT_send_buffer), 4);
-	    {
-	       guchar *_ORBIT_t;
-
-	       _ORBIT_t = alloca(sizeof((*_ORBIT_retval)._length));
-	       memcpy(_ORBIT_t, &((*_ORBIT_retval)._length),
-		      sizeof((*_ORBIT_retval)._length));
-	       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
-					      (_ORBIT_send_buffer),
-					      (_ORBIT_t),
-					      sizeof((*_ORBIT_retval).
-						     _length));
-	    }
-	    {
-	       guchar *_ORBIT_t;
-
-	       _ORBIT_t =
-		  alloca(sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_0]) *
-			 (*_ORBIT_retval)._length);
-	       memcpy(_ORBIT_t, ((*_ORBIT_retval)._buffer),
-		      sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_0]) *
-		      (*_ORBIT_retval)._length);
-	       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
-					      (_ORBIT_send_buffer),
-					      (_ORBIT_t),
-					      sizeof((*_ORBIT_retval).
-						     _buffer[_ORBIT_tmpvar_0])
-					      * (*_ORBIT_retval)._length);
-	    }
+	    ORBit_marshal_object(_ORBIT_send_buffer, _ORBIT_retval);
 	 } else
 	    ORBit_send_system_exception(_ORBIT_send_buffer, ev);
 	 giop_send_buffer_write(_ORBIT_send_buffer);
 	 giop_send_buffer_unuse(_ORBIT_send_buffer);
       }
       if (ev->_major == CORBA_NO_EXCEPTION)
-	 CORBA_free(_ORBIT_retval);
+	 CORBA_Object_release(_ORBIT_retval, ev);
    }
 }
 void
@@ -9758,6 +10165,12 @@ get_skel_Bonobo_Moniker(POA_Bonobo_Moniker * servant,
 	     break;
 	}
 	break;
+     case 'e':
+	if (strcmp((opname + 1), "qual"))
+	   break;
+	*impl = (gpointer) servant->vepv->Bonobo_Moniker_epv->equal;
+	return (ORBitSkeleton) _ORBIT_skel_Bonobo_Moniker_equal;
+	break;
      case 'g':
 	if (strcmp((opname + 1), "etDisplayName"))
 	   break;
@@ -9932,326 +10345,6 @@ POA_Bonobo_MonikerExtender__init(PortableServer_Servant servant,
 void
 POA_Bonobo_MonikerExtender__fini(PortableServer_Servant servant,
 				 CORBA_Environment * env)
-{
-   POA_Bonobo_Unknown__fini(servant, env);
-   PortableServer_ServantBase__fini(servant, env);
-}
-
-static ORBitSkeleton
-get_skel_Bonobo_ActivationContext(POA_Bonobo_ActivationContext * servant,
-				  GIOPRecvBuffer * _ORBIT_recv_buffer,
-				  gpointer * impl)
-{
-   gchar *opname = _ORBIT_recv_buffer->message.u.request.operation;
-
-   switch (opname[0]) {
-     case 'c':
-	switch (opname[1]) {
-	  case 'r':
-	     switch (opname[2]) {
-	       case 'e':
-		  switch (opname[3]) {
-		    case 'a':
-		       switch (opname[4]) {
-			 case 't':
-			    switch (opname[5]) {
-			      case 'e':
-				 switch (opname[6]) {
-				   case 'F':
-				      if (strcmp((opname + 7), "romName"))
-					 break;
-				      *impl =
-					 (gpointer) servant->vepv->
-					 Bonobo_ActivationContext_epv->
-					 createFromName;
-				      return (ORBitSkeleton)
-					 _ORBIT_skel_Bonobo_ActivationContext_createFromName;
-				      break;
-				   case 'W':
-				      if (strcmp((opname + 7), "ithParent"))
-					 break;
-				      *impl =
-					 (gpointer) servant->vepv->
-					 Bonobo_ActivationContext_epv->
-					 createWithParent;
-				      return (ORBitSkeleton)
-					 _ORBIT_skel_Bonobo_ActivationContext_createWithParent;
-				      break;
-				   default:
-				      break;
-				 }
-				 break;
-			      default:
-				 break;
-			    }
-			    break;
-			 default:
-			    break;
-		       }
-		       break;
-		    default:
-		       break;
-		  }
-		  break;
-	       default:
-		  break;
-	     }
-	     break;
-	  default:
-	     break;
-	}
-	break;
-     case 'g':
-	switch (opname[1]) {
-	  case 'e':
-	     switch (opname[2]) {
-	       case 't':
-		  switch (opname[3]) {
-		    case 'E':
-		       if (strcmp((opname + 4), "xtender"))
-			  break;
-		       *impl =
-			  (gpointer) servant->vepv->
-			  Bonobo_ActivationContext_epv->getExtender;
-		       return (ORBitSkeleton)
-			  _ORBIT_skel_Bonobo_ActivationContext_getExtender;
-		       break;
-		    case 'O':
-		       if (strcmp((opname + 4), "bject"))
-			  break;
-		       *impl =
-			  (gpointer) servant->vepv->
-			  Bonobo_ActivationContext_epv->getObject;
-		       return (ORBitSkeleton)
-			  _ORBIT_skel_Bonobo_ActivationContext_getObject;
-		       break;
-		    default:
-		       break;
-		  }
-		  break;
-	       default:
-		  break;
-	     }
-	     break;
-	  default:
-	     break;
-	}
-	break;
-     case 'q':
-	if (strcmp((opname + 1), "ueryInterface"))
-	   break;
-	*impl = (gpointer) servant->vepv->Bonobo_Unknown_epv->queryInterface;
-	return (ORBitSkeleton) _ORBIT_skel_Bonobo_Unknown_queryInterface;
-	break;
-     case 'r':
-	if (strcmp((opname + 1), "ef"))
-	   break;
-	*impl = (gpointer) servant->vepv->Bonobo_Unknown_epv->ref;
-	return (ORBitSkeleton) _ORBIT_skel_Bonobo_Unknown_ref;
-	break;
-     case 'u':
-	if (strcmp((opname + 1), "nref"))
-	   break;
-	*impl = (gpointer) servant->vepv->Bonobo_Unknown_epv->unref;
-	return (ORBitSkeleton) _ORBIT_skel_Bonobo_Unknown_unref;
-	break;
-     default:
-	break;
-   }
-   return NULL;
-}
-
-static void
-init_local_objref_Bonobo_ActivationContext(CORBA_Object obj,
-					   POA_Bonobo_ActivationContext *
-					   servant)
-{
-   obj->vepv[Bonobo_Unknown__classid] = servant->vepv->Bonobo_Unknown_epv;
-   obj->vepv[Bonobo_ActivationContext__classid] =
-      servant->vepv->Bonobo_ActivationContext_epv;
-}
-
-void
-POA_Bonobo_ActivationContext__init(PortableServer_Servant servant,
-				   CORBA_Environment * env)
-{
-   static const PortableServer_ClassInfo class_info =
-      { (ORBit_impl_finder) & get_skel_Bonobo_ActivationContext,
-	 "IDL:Bonobo/ActivationContext:1.0",
-	 (ORBit_local_objref_init) &
-
-	 init_local_objref_Bonobo_ActivationContext };
-   PortableServer_ServantBase__init(((PortableServer_ServantBase *) servant),
-				    env);
-   POA_Bonobo_Unknown__init(servant, env);
-   ORBIT_OBJECT_KEY(((PortableServer_ServantBase *) servant)->_private)->
-      class_info = (PortableServer_ClassInfo *) & class_info;
-   if (!Bonobo_ActivationContext__classid)
-      Bonobo_ActivationContext__classid = ORBit_register_class(&class_info);
-}
-
-void
-POA_Bonobo_ActivationContext__fini(PortableServer_Servant servant,
-				   CORBA_Environment * env)
-{
-   POA_Bonobo_Unknown__fini(servant, env);
-   PortableServer_ServantBase__fini(servant, env);
-}
-
-static ORBitSkeleton
-get_skel_Bonobo_RunningContext(POA_Bonobo_RunningContext * servant,
-			       GIOPRecvBuffer * _ORBIT_recv_buffer,
-			       gpointer * impl)
-{
-   gchar *opname = _ORBIT_recv_buffer->message.u.request.operation;
-
-   switch (opname[0]) {
-     case 'a':
-	switch (opname[1]) {
-	  case 'd':
-	     switch (opname[2]) {
-	       case 'd':
-		  switch (opname[3]) {
-		    case 'K':
-		       if (strcmp((opname + 4), "ey"))
-			  break;
-		       *impl =
-			  (gpointer) servant->vepv->
-			  Bonobo_RunningContext_epv->addKey;
-		       return (ORBitSkeleton)
-			  _ORBIT_skel_Bonobo_RunningContext_addKey;
-		       break;
-		    case 'O':
-		       if (strcmp((opname + 4), "bject"))
-			  break;
-		       *impl =
-			  (gpointer) servant->vepv->
-			  Bonobo_RunningContext_epv->addObject;
-		       return (ORBitSkeleton)
-			  _ORBIT_skel_Bonobo_RunningContext_addObject;
-		       break;
-		    default:
-		       break;
-		  }
-		  break;
-	       default:
-		  break;
-	     }
-	     break;
-	  default:
-	     break;
-	}
-	break;
-     case 'q':
-	if (strcmp((opname + 1), "ueryInterface"))
-	   break;
-	*impl = (gpointer) servant->vepv->Bonobo_Unknown_epv->queryInterface;
-	return (ORBitSkeleton) _ORBIT_skel_Bonobo_Unknown_queryInterface;
-	break;
-     case 'r':
-	switch (opname[1]) {
-	  case 'e':
-	     switch (opname[2]) {
-	       case 'f':
-		  if (strcmp((opname + 3), ""))
-		     break;
-		  *impl = (gpointer) servant->vepv->Bonobo_Unknown_epv->ref;
-		  return (ORBitSkeleton) _ORBIT_skel_Bonobo_Unknown_ref;
-		  break;
-	       case 'm':
-		  switch (opname[3]) {
-		    case 'o':
-		       switch (opname[4]) {
-			 case 'v':
-			    switch (opname[5]) {
-			      case 'e':
-				 switch (opname[6]) {
-				   case 'K':
-				      if (strcmp((opname + 7), "ey"))
-					 break;
-				      *impl =
-					 (gpointer) servant->vepv->
-					 Bonobo_RunningContext_epv->removeKey;
-				      return (ORBitSkeleton)
-					 _ORBIT_skel_Bonobo_RunningContext_removeKey;
-				      break;
-				   case 'O':
-				      if (strcmp((opname + 7), "bject"))
-					 break;
-				      *impl =
-					 (gpointer) servant->vepv->
-					 Bonobo_RunningContext_epv->
-					 removeObject;
-				      return (ORBitSkeleton)
-					 _ORBIT_skel_Bonobo_RunningContext_removeObject;
-				      break;
-				   default:
-				      break;
-				 }
-				 break;
-			      default:
-				 break;
-			    }
-			    break;
-			 default:
-			    break;
-		       }
-		       break;
-		    default:
-		       break;
-		  }
-		  break;
-	       default:
-		  break;
-	     }
-	     break;
-	  default:
-	     break;
-	}
-	break;
-     case 'u':
-	if (strcmp((opname + 1), "nref"))
-	   break;
-	*impl = (gpointer) servant->vepv->Bonobo_Unknown_epv->unref;
-	return (ORBitSkeleton) _ORBIT_skel_Bonobo_Unknown_unref;
-	break;
-     default:
-	break;
-   }
-   return NULL;
-}
-
-static void
-init_local_objref_Bonobo_RunningContext(CORBA_Object obj,
-					POA_Bonobo_RunningContext * servant)
-{
-   obj->vepv[Bonobo_Unknown__classid] = servant->vepv->Bonobo_Unknown_epv;
-   obj->vepv[Bonobo_RunningContext__classid] =
-      servant->vepv->Bonobo_RunningContext_epv;
-}
-
-void
-POA_Bonobo_RunningContext__init(PortableServer_Servant servant,
-				CORBA_Environment * env)
-{
-   static const PortableServer_ClassInfo class_info =
-      { (ORBit_impl_finder) & get_skel_Bonobo_RunningContext,
-	 "IDL:Bonobo/RunningContext:1.0",
-	 (ORBit_local_objref_init) & init_local_objref_Bonobo_RunningContext
-
-      };
-   PortableServer_ServantBase__init(((PortableServer_ServantBase *) servant),
-				    env);
-   POA_Bonobo_Unknown__init(servant, env);
-   ORBIT_OBJECT_KEY(((PortableServer_ServantBase *) servant)->_private)->
-      class_info = (PortableServer_ClassInfo *) & class_info;
-   if (!Bonobo_RunningContext__classid)
-      Bonobo_RunningContext__classid = ORBit_register_class(&class_info);
-}
-
-void
-POA_Bonobo_RunningContext__fini(PortableServer_Servant servant,
-				CORBA_Environment * env)
 {
    POA_Bonobo_Unknown__fini(servant, env);
    PortableServer_ServantBase__fini(servant, env);
@@ -10601,6 +10694,335 @@ POA_Bonobo_Storage__init(PortableServer_Servant servant,
 void
 POA_Bonobo_Storage__fini(PortableServer_Servant servant,
 			 CORBA_Environment * env)
+{
+   POA_Bonobo_Unknown__fini(servant, env);
+   PortableServer_ServantBase__fini(servant, env);
+}
+
+static ORBitSkeleton
+get_skel_Bonobo_ActivationContext(POA_Bonobo_ActivationContext * servant,
+				  GIOPRecvBuffer * _ORBIT_recv_buffer,
+				  gpointer * impl)
+{
+   gchar *opname = _ORBIT_recv_buffer->message.u.request.operation;
+
+   switch (opname[0]) {
+     case 'c':
+	switch (opname[1]) {
+	  case 'r':
+	     switch (opname[2]) {
+	       case 'e':
+		  switch (opname[3]) {
+		    case 'a':
+		       switch (opname[4]) {
+			 case 't':
+			    switch (opname[5]) {
+			      case 'e':
+				 switch (opname[6]) {
+				   case 'F':
+				      if (strcmp((opname + 7), "romName"))
+					 break;
+				      *impl =
+					 (gpointer) servant->vepv->
+					 Bonobo_ActivationContext_epv->
+					 createFromName;
+				      return (ORBitSkeleton)
+					 _ORBIT_skel_Bonobo_ActivationContext_createFromName;
+				      break;
+				   case 'W':
+				      if (strcmp((opname + 7), "ithParent"))
+					 break;
+				      *impl =
+					 (gpointer) servant->vepv->
+					 Bonobo_ActivationContext_epv->
+					 createWithParent;
+				      return (ORBitSkeleton)
+					 _ORBIT_skel_Bonobo_ActivationContext_createWithParent;
+				      break;
+				   default:
+				      break;
+				 }
+				 break;
+			      default:
+				 break;
+			    }
+			    break;
+			 default:
+			    break;
+		       }
+		       break;
+		    default:
+		       break;
+		  }
+		  break;
+	       default:
+		  break;
+	     }
+	     break;
+	  default:
+	     break;
+	}
+	break;
+     case 'g':
+	switch (opname[1]) {
+	  case 'e':
+	     switch (opname[2]) {
+	       case 't':
+		  switch (opname[3]) {
+		    case 'E':
+		       if (strcmp((opname + 4), "xtender"))
+			  break;
+		       *impl =
+			  (gpointer) servant->vepv->
+			  Bonobo_ActivationContext_epv->getExtender;
+		       return (ORBitSkeleton)
+			  _ORBIT_skel_Bonobo_ActivationContext_getExtender;
+		       break;
+		    case 'O':
+		       if (strcmp((opname + 4), "bject"))
+			  break;
+		       *impl =
+			  (gpointer) servant->vepv->
+			  Bonobo_ActivationContext_epv->getObject;
+		       return (ORBitSkeleton)
+			  _ORBIT_skel_Bonobo_ActivationContext_getObject;
+		       break;
+		    default:
+		       break;
+		  }
+		  break;
+	       default:
+		  break;
+	     }
+	     break;
+	  default:
+	     break;
+	}
+	break;
+     case 'q':
+	if (strcmp((opname + 1), "ueryInterface"))
+	   break;
+	*impl = (gpointer) servant->vepv->Bonobo_Unknown_epv->queryInterface;
+	return (ORBitSkeleton) _ORBIT_skel_Bonobo_Unknown_queryInterface;
+	break;
+     case 'r':
+	if (strcmp((opname + 1), "ef"))
+	   break;
+	*impl = (gpointer) servant->vepv->Bonobo_Unknown_epv->ref;
+	return (ORBitSkeleton) _ORBIT_skel_Bonobo_Unknown_ref;
+	break;
+     case 'u':
+	if (strcmp((opname + 1), "nref"))
+	   break;
+	*impl = (gpointer) servant->vepv->Bonobo_Unknown_epv->unref;
+	return (ORBitSkeleton) _ORBIT_skel_Bonobo_Unknown_unref;
+	break;
+     default:
+	break;
+   }
+   return NULL;
+}
+
+static void
+init_local_objref_Bonobo_ActivationContext(CORBA_Object obj,
+					   POA_Bonobo_ActivationContext *
+					   servant)
+{
+   obj->vepv[Bonobo_Unknown__classid] = servant->vepv->Bonobo_Unknown_epv;
+   obj->vepv[Bonobo_ActivationContext__classid] =
+      servant->vepv->Bonobo_ActivationContext_epv;
+}
+
+void
+POA_Bonobo_ActivationContext__init(PortableServer_Servant servant,
+				   CORBA_Environment * env)
+{
+   static const PortableServer_ClassInfo class_info =
+      { (ORBit_impl_finder) & get_skel_Bonobo_ActivationContext,
+	 "IDL:Bonobo/ActivationContext:1.0",
+	 (ORBit_local_objref_init) &
+
+	 init_local_objref_Bonobo_ActivationContext };
+   PortableServer_ServantBase__init(((PortableServer_ServantBase *) servant),
+				    env);
+   POA_Bonobo_Unknown__init(servant, env);
+   ORBIT_OBJECT_KEY(((PortableServer_ServantBase *) servant)->_private)->
+      class_info = (PortableServer_ClassInfo *) & class_info;
+   if (!Bonobo_ActivationContext__classid)
+      Bonobo_ActivationContext__classid = ORBit_register_class(&class_info);
+}
+
+void
+POA_Bonobo_ActivationContext__fini(PortableServer_Servant servant,
+				   CORBA_Environment * env)
+{
+   POA_Bonobo_Unknown__fini(servant, env);
+   PortableServer_ServantBase__fini(servant, env);
+}
+
+static ORBitSkeleton
+get_skel_Bonobo_RunningContext(POA_Bonobo_RunningContext * servant,
+			       GIOPRecvBuffer * _ORBIT_recv_buffer,
+			       gpointer * impl)
+{
+   gchar *opname = _ORBIT_recv_buffer->message.u.request.operation;
+
+   switch (opname[0]) {
+     case 'a':
+	switch (opname[1]) {
+	  case 'd':
+	     switch (opname[2]) {
+	       case 'd':
+		  switch (opname[3]) {
+		    case 'K':
+		       if (strcmp((opname + 4), "ey"))
+			  break;
+		       *impl =
+			  (gpointer) servant->vepv->
+			  Bonobo_RunningContext_epv->addKey;
+		       return (ORBitSkeleton)
+			  _ORBIT_skel_Bonobo_RunningContext_addKey;
+		       break;
+		    case 'O':
+		       if (strcmp((opname + 4), "bject"))
+			  break;
+		       *impl =
+			  (gpointer) servant->vepv->
+			  Bonobo_RunningContext_epv->addObject;
+		       return (ORBitSkeleton)
+			  _ORBIT_skel_Bonobo_RunningContext_addObject;
+		       break;
+		    default:
+		       break;
+		  }
+		  break;
+	       default:
+		  break;
+	     }
+	     break;
+	  case 't':
+	     if (strcmp((opname + 2), "ExitUnref"))
+		break;
+	     *impl =
+		(gpointer) servant->vepv->Bonobo_RunningContext_epv->
+		atExitUnref;
+	     return (ORBitSkeleton)
+		_ORBIT_skel_Bonobo_RunningContext_atExitUnref;
+	     break;
+	  default:
+	     break;
+	}
+	break;
+     case 'q':
+	if (strcmp((opname + 1), "ueryInterface"))
+	   break;
+	*impl = (gpointer) servant->vepv->Bonobo_Unknown_epv->queryInterface;
+	return (ORBitSkeleton) _ORBIT_skel_Bonobo_Unknown_queryInterface;
+	break;
+     case 'r':
+	switch (opname[1]) {
+	  case 'e':
+	     switch (opname[2]) {
+	       case 'f':
+		  if (strcmp((opname + 3), ""))
+		     break;
+		  *impl = (gpointer) servant->vepv->Bonobo_Unknown_epv->ref;
+		  return (ORBitSkeleton) _ORBIT_skel_Bonobo_Unknown_ref;
+		  break;
+	       case 'm':
+		  switch (opname[3]) {
+		    case 'o':
+		       switch (opname[4]) {
+			 case 'v':
+			    switch (opname[5]) {
+			      case 'e':
+				 switch (opname[6]) {
+				   case 'K':
+				      if (strcmp((opname + 7), "ey"))
+					 break;
+				      *impl =
+					 (gpointer) servant->vepv->
+					 Bonobo_RunningContext_epv->removeKey;
+				      return (ORBitSkeleton)
+					 _ORBIT_skel_Bonobo_RunningContext_removeKey;
+				      break;
+				   case 'O':
+				      if (strcmp((opname + 7), "bject"))
+					 break;
+				      *impl =
+					 (gpointer) servant->vepv->
+					 Bonobo_RunningContext_epv->
+					 removeObject;
+				      return (ORBitSkeleton)
+					 _ORBIT_skel_Bonobo_RunningContext_removeObject;
+				      break;
+				   default:
+				      break;
+				 }
+				 break;
+			      default:
+				 break;
+			    }
+			    break;
+			 default:
+			    break;
+		       }
+		       break;
+		    default:
+		       break;
+		  }
+		  break;
+	       default:
+		  break;
+	     }
+	     break;
+	  default:
+	     break;
+	}
+	break;
+     case 'u':
+	if (strcmp((opname + 1), "nref"))
+	   break;
+	*impl = (gpointer) servant->vepv->Bonobo_Unknown_epv->unref;
+	return (ORBitSkeleton) _ORBIT_skel_Bonobo_Unknown_unref;
+	break;
+     default:
+	break;
+   }
+   return NULL;
+}
+
+static void
+init_local_objref_Bonobo_RunningContext(CORBA_Object obj,
+					POA_Bonobo_RunningContext * servant)
+{
+   obj->vepv[Bonobo_Unknown__classid] = servant->vepv->Bonobo_Unknown_epv;
+   obj->vepv[Bonobo_RunningContext__classid] =
+      servant->vepv->Bonobo_RunningContext_epv;
+}
+
+void
+POA_Bonobo_RunningContext__init(PortableServer_Servant servant,
+				CORBA_Environment * env)
+{
+   static const PortableServer_ClassInfo class_info =
+      { (ORBit_impl_finder) & get_skel_Bonobo_RunningContext,
+	 "IDL:Bonobo/RunningContext:1.0",
+	 (ORBit_local_objref_init) & init_local_objref_Bonobo_RunningContext
+
+      };
+   PortableServer_ServantBase__init(((PortableServer_ServantBase *) servant),
+				    env);
+   POA_Bonobo_Unknown__init(servant, env);
+   ORBIT_OBJECT_KEY(((PortableServer_ServantBase *) servant)->_private)->
+      class_info = (PortableServer_ClassInfo *) & class_info;
+   if (!Bonobo_RunningContext__classid)
+      Bonobo_RunningContext__classid = ORBit_register_class(&class_info);
+}
+
+void
+POA_Bonobo_RunningContext__fini(PortableServer_Servant servant,
+				CORBA_Environment * env)
 {
    POA_Bonobo_Unknown__fini(servant, env);
    PortableServer_ServantBase__fini(servant, env);
@@ -11835,6 +12257,12 @@ get_skel_Bonobo_Property(POA_Bonobo_Property * servant,
    gchar *opname = _ORBIT_recv_buffer->message.u.request.operation;
 
    switch (opname[0]) {
+     case 'a':
+	if (strcmp((opname + 1), "ddListener"))
+	   break;
+	*impl = (gpointer) servant->vepv->Bonobo_Property_epv->addListener;
+	return (ORBitSkeleton) _ORBIT_skel_Bonobo_Property_addListener;
+	break;
      case 'g':
 	switch (opname[1]) {
 	  case 'e':
@@ -11913,11 +12341,50 @@ get_skel_Bonobo_Property(POA_Bonobo_Property * servant,
 	     break;
 	}
 	break;
+     case 'q':
+	if (strcmp((opname + 1), "ueryInterface"))
+	   break;
+	*impl = (gpointer) servant->vepv->Bonobo_Unknown_epv->queryInterface;
+	return (ORBitSkeleton) _ORBIT_skel_Bonobo_Unknown_queryInterface;
+	break;
+     case 'r':
+	switch (opname[1]) {
+	  case 'e':
+	     switch (opname[2]) {
+	       case 'f':
+		  if (strcmp((opname + 3), ""))
+		     break;
+		  *impl = (gpointer) servant->vepv->Bonobo_Unknown_epv->ref;
+		  return (ORBitSkeleton) _ORBIT_skel_Bonobo_Unknown_ref;
+		  break;
+	       case 'm':
+		  if (strcmp((opname + 3), "oveListener"))
+		     break;
+		  *impl =
+		     (gpointer) servant->vepv->Bonobo_Property_epv->
+		     removeListener;
+		  return (ORBitSkeleton)
+		     _ORBIT_skel_Bonobo_Property_removeListener;
+		  break;
+	       default:
+		  break;
+	     }
+	     break;
+	  default:
+	     break;
+	}
+	break;
      case 's':
 	if (strcmp((opname + 1), "etValue"))
 	   break;
 	*impl = (gpointer) servant->vepv->Bonobo_Property_epv->setValue;
 	return (ORBitSkeleton) _ORBIT_skel_Bonobo_Property_setValue;
+	break;
+     case 'u':
+	if (strcmp((opname + 1), "nref"))
+	   break;
+	*impl = (gpointer) servant->vepv->Bonobo_Unknown_epv->unref;
+	return (ORBitSkeleton) _ORBIT_skel_Bonobo_Unknown_unref;
 	break;
      default:
 	break;
@@ -11929,6 +12396,7 @@ static void
 init_local_objref_Bonobo_Property(CORBA_Object obj,
 				  POA_Bonobo_Property * servant)
 {
+   obj->vepv[Bonobo_Unknown__classid] = servant->vepv->Bonobo_Unknown_epv;
    obj->vepv[Bonobo_Property__classid] = servant->vepv->Bonobo_Property_epv;
 }
 
@@ -11943,6 +12411,7 @@ POA_Bonobo_Property__init(PortableServer_Servant servant,
 
    PortableServer_ServantBase__init(((PortableServer_ServantBase *) servant),
 				    env);
+   POA_Bonobo_Unknown__init(servant, env);
    ORBIT_OBJECT_KEY(((PortableServer_ServantBase *) servant)->_private)->
       class_info = (PortableServer_ClassInfo *) & class_info;
    if (!Bonobo_Property__classid)
@@ -11953,6 +12422,7 @@ void
 POA_Bonobo_Property__fini(PortableServer_Servant servant,
 			  CORBA_Environment * env)
 {
+   POA_Bonobo_Unknown__fini(servant, env);
    PortableServer_ServantBase__fini(servant, env);
 }
 
@@ -11970,6 +12440,15 @@ get_skel_Bonobo_PropertyBag(POA_Bonobo_PropertyBag * servant,
 	     switch (opname[2]) {
 	       case 't':
 		  switch (opname[3]) {
+		    case 'E':
+		       if (strcmp((opname + 4), "ventSource"))
+			  break;
+		       *impl =
+			  (gpointer) servant->vepv->Bonobo_PropertyBag_epv->
+			  getEventSource;
+		       return (ORBitSkeleton)
+			  _ORBIT_skel_Bonobo_PropertyBag_getEventSource;
+		       break;
 		    case 'P':
 		       switch (opname[4]) {
 			 case 'r':
@@ -12306,10 +12785,31 @@ get_skel_Bonobo_ControlFrame(POA_Bonobo_ControlFrame * servant,
 	return (ORBitSkeleton) _ORBIT_skel_Bonobo_Unknown_ref;
 	break;
      case 'u':
-	if (strcmp((opname + 1), "nref"))
-	   break;
-	*impl = (gpointer) servant->vepv->Bonobo_Unknown_epv->unref;
-	return (ORBitSkeleton) _ORBIT_skel_Bonobo_Unknown_unref;
+	switch (opname[1]) {
+	  case 'n':
+	     switch (opname[2]) {
+	       case 'I':
+		  if (strcmp((opname + 3), "mplemented"))
+		     break;
+		  *impl =
+		     (gpointer) servant->vepv->Bonobo_ControlFrame_epv->
+		     unImplemented;
+		  return (ORBitSkeleton)
+		     _ORBIT_skel_Bonobo_ControlFrame_unImplemented;
+		  break;
+	       case 'r':
+		  if (strcmp((opname + 3), "ef"))
+		     break;
+		  *impl = (gpointer) servant->vepv->Bonobo_Unknown_epv->unref;
+		  return (ORBitSkeleton) _ORBIT_skel_Bonobo_Unknown_unref;
+		  break;
+	       default:
+		  break;
+	     }
+	     break;
+	  default:
+	     break;
+	}
 	break;
      default:
 	break;
@@ -12364,6 +12864,12 @@ get_skel_Bonobo_Control(POA_Bonobo_Control * servant,
 	   break;
 	*impl = (gpointer) servant->vepv->Bonobo_Control_epv->activate;
 	return (ORBitSkeleton) _ORBIT_skel_Bonobo_Control_activate;
+	break;
+     case 'f':
+	if (strcmp((opname + 1), "ocus"))
+	   break;
+	*impl = (gpointer) servant->vepv->Bonobo_Control_epv->focus;
+	return (ORBitSkeleton) _ORBIT_skel_Bonobo_Control_focus;
 	break;
      case 'g':
 	switch (opname[1]) {
@@ -13407,15 +13913,6 @@ get_skel_Bonobo_Canvas_Component(POA_Bonobo_Canvas_Component * servant,
 	*impl = (gpointer) servant->vepv->Bonobo_Canvas_Component_epv->event;
 	return (ORBitSkeleton) _ORBIT_skel_Bonobo_Canvas_Component_event;
 	break;
-     case 'g':
-	if (strcmp((opname + 1), "etUIComponent"))
-	   break;
-	*impl =
-	   (gpointer) servant->vepv->Bonobo_Canvas_Component_epv->
-	   getUIComponent;
-	return (ORBitSkeleton)
-	   _ORBIT_skel_Bonobo_Canvas_Component_getUIComponent;
-	break;
      case 'm':
 	if (strcmp((opname + 1), "ap"))
 	   break;
@@ -13611,14 +14108,47 @@ get_skel_Bonobo_Canvas_ComponentProxy(POA_Bonobo_Canvas_ComponentProxy *
    gchar *opname = _ORBIT_recv_buffer->message.u.request.operation;
 
    switch (opname[0]) {
-     case 'u':
-	if (strcmp((opname + 1), "pdateArea"))
+     case 'g':
+	switch (opname[1]) {
+	  case 'e':
+	     if (strcmp((opname + 2), "tUIContainer"))
+		break;
+	     *impl =
+		(gpointer) servant->vepv->Bonobo_Canvas_ComponentProxy_epv->
+		getUIContainer;
+	     return (ORBitSkeleton)
+		_ORBIT_skel_Bonobo_Canvas_ComponentProxy_getUIContainer;
+	     break;
+	  case 'r':
+	     if (strcmp((opname + 2), "abFocus"))
+		break;
+	     *impl =
+		(gpointer) servant->vepv->Bonobo_Canvas_ComponentProxy_epv->
+		grabFocus;
+	     return (ORBitSkeleton)
+		_ORBIT_skel_Bonobo_Canvas_ComponentProxy_grabFocus;
+	     break;
+	  default:
+	     break;
+	}
+	break;
+     case 'r':
+	if (strcmp((opname + 1), "equestUpdate"))
 	   break;
 	*impl =
 	   (gpointer) servant->vepv->Bonobo_Canvas_ComponentProxy_epv->
-	   updateArea;
+	   requestUpdate;
 	return (ORBitSkeleton)
-	   _ORBIT_skel_Bonobo_Canvas_ComponentProxy_updateArea;
+	   _ORBIT_skel_Bonobo_Canvas_ComponentProxy_requestUpdate;
+	break;
+     case 'u':
+	if (strcmp((opname + 1), "ngrabFocus"))
+	   break;
+	*impl =
+	   (gpointer) servant->vepv->Bonobo_Canvas_ComponentProxy_epv->
+	   ungrabFocus;
+	return (ORBitSkeleton)
+	   _ORBIT_skel_Bonobo_Canvas_ComponentProxy_ungrabFocus;
 	break;
      default:
 	break;
@@ -13673,6 +14203,12 @@ get_skel_Bonobo_View(POA_Bonobo_View * servant,
 	   break;
 	*impl = (gpointer) servant->vepv->Bonobo_Control_epv->activate;
 	return (ORBitSkeleton) _ORBIT_skel_Bonobo_Control_activate;
+	break;
+     case 'f':
+	if (strcmp((opname + 1), "ocus"))
+	   break;
+	*impl = (gpointer) servant->vepv->Bonobo_Control_epv->focus;
+	return (ORBitSkeleton) _ORBIT_skel_Bonobo_Control_focus;
 	break;
      case 'g':
 	switch (opname[1]) {
@@ -14054,10 +14590,31 @@ get_skel_Bonobo_ViewFrame(POA_Bonobo_ViewFrame * servant,
 	return (ORBitSkeleton) _ORBIT_skel_Bonobo_Unknown_ref;
 	break;
      case 'u':
-	if (strcmp((opname + 1), "nref"))
-	   break;
-	*impl = (gpointer) servant->vepv->Bonobo_Unknown_epv->unref;
-	return (ORBitSkeleton) _ORBIT_skel_Bonobo_Unknown_unref;
+	switch (opname[1]) {
+	  case 'n':
+	     switch (opname[2]) {
+	       case 'I':
+		  if (strcmp((opname + 3), "mplemented"))
+		     break;
+		  *impl =
+		     (gpointer) servant->vepv->Bonobo_ControlFrame_epv->
+		     unImplemented;
+		  return (ORBitSkeleton)
+		     _ORBIT_skel_Bonobo_ControlFrame_unImplemented;
+		  break;
+	       case 'r':
+		  if (strcmp((opname + 3), "ef"))
+		     break;
+		  *impl = (gpointer) servant->vepv->Bonobo_Unknown_epv->unref;
+		  return (ORBitSkeleton) _ORBIT_skel_Bonobo_Unknown_unref;
+		  break;
+	       default:
+		  break;
+	     }
+	     break;
+	  default:
+	     break;
+	}
 	break;
      default:
 	break;

@@ -55,9 +55,6 @@ typedef struct {
 				  BonoboUIToolbarItemStyle style);
 	void (* set_want_label)  (BonoboUIToolbarItem     *item,
 				  gboolean                 want_label);
-	/* Notifies that the state changed, and what it changed to */
-	void (* state_altered)   (BonoboUIToolbarItem     *item,
-				  const char              *new_state);
 	void (* activate)        (BonoboUIToolbarItem     *item);
 } BonoboUIToolbarItemClass;
 
@@ -108,8 +105,6 @@ gboolean                  bonobo_ui_toolbar_item_get_pack_end     (BonoboUIToolb
 
 void                      bonobo_ui_toolbar_item_activate         (BonoboUIToolbarItem     *item);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+END_GNOME_DECLS
 
 #endif /* __BONOBO_UI_TOOLBAR_ITEM_H__ */

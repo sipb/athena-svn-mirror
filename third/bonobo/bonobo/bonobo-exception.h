@@ -14,6 +14,68 @@
 #include <glib.h>
 #include <bonobo/Bonobo.h>
 
+#define bonobo_exception_set(opt_ev,repo_id) G_STMT_START{                  \
+     if (opt_ev) {                                                          \
+         CORBA_exception_set (opt_ev, CORBA_USER_EXCEPTION, repo_id, NULL); \
+     } else {                                                               \
+	 g_log (G_LOG_DOMAIN,						    \
+		G_LOG_LEVEL_CRITICAL,					    \
+		"file %s: line %d: bonobo exception: `%s'",                 \
+		__FILE__,						    \
+		__LINE__,						    \
+		bonobo_exception_repoid_to_text (repo_id));                 \
+     } }G_STMT_END
+
+#ifdef G_DISABLE_CHECKS
+
+#define bonobo_return_if_fail(expr,opt_ev) G_STMT_START{		\
+     if (!(expr)) {							\
+         if (opt_ev)                                                    \
+	     CORBA_exception_set (opt_ev, CORBA_USER_EXCEPTION,         \
+				  ex_Bonobo_BadArg, NULL);              \
+         return;                                                        \
+     };	}G_STMT_END
+
+#define bonobo_return_val_if_fail(expr,val,opt_ev) G_STMT_START{	\
+     if (!(expr)) {							\
+         if (opt_ev)                                                    \
+	     CORBA_exception_set (opt_ev, CORBA_USER_EXCEPTION,         \
+				  ex_Bonobo_BadArg, NULL);              \
+         return val;                                                    \
+     };	}G_STMT_END
+
+#else /* !G_DISABLE_CHECKS */
+#define bonobo_return_if_fail(expr,opt_ev) G_STMT_START{		\
+     if (!(expr)) {							\
+         if (opt_ev)                                                    \
+	     CORBA_exception_set (opt_ev, CORBA_USER_EXCEPTION,         \
+				  ex_Bonobo_BadArg, NULL);              \
+	 g_log (G_LOG_DOMAIN,						\
+		G_LOG_LEVEL_CRITICAL,					\
+		"file %s: line %d (%s): assertion `%s' failed.",	\
+		__FILE__,						\
+		__LINE__,						\
+		__PRETTY_FUNCTION__,					\
+		#expr);							\
+         return;                                                        \
+     };	}G_STMT_END
+         
+#define bonobo_return_val_if_fail(expr,val,opt_ev) G_STMT_START{	\
+     if (!(expr)) {							\
+         if (opt_ev)                                                    \
+	     CORBA_exception_set (opt_ev, CORBA_USER_EXCEPTION,         \
+				  ex_Bonobo_BadArg, NULL);              \
+	 g_log (G_LOG_DOMAIN,						\
+		G_LOG_LEVEL_CRITICAL,					\
+		"file %s: line %d (%s): assertion `%s' failed.",	\
+		__FILE__,						\
+		__LINE__,						\
+		__PRETTY_FUNCTION__,					\
+		#expr);							\
+         return val;                                                    \
+     };	}G_STMT_END
+#endif
+
 #define BONOBO_EX(ev)         ((ev) && (ev)->_major != CORBA_NO_EXCEPTION)
 
 #define BONOBO_USER_EX(ev,id) ((ev) && (ev)->major == CORBA_USER_EXCEPTION &&	\
@@ -34,6 +96,8 @@
 typedef char *(*BonoboExceptionFn)     (CORBA_Environment *ev, gpointer user_data);
 
 char *bonobo_exception_get_text        (CORBA_Environment *ev);
+char *bonobo_exception_repoid_to_text  (const char *repo_id);
+
 
 void  bonobo_exception_add_handler_str (const char *repo_id,
 					const char *str);

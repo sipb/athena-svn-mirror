@@ -25,6 +25,8 @@ BEGIN_GNOME_DECLS
 #define BONOBO_IS_OBJECT(o)       (GTK_CHECK_TYPE ((o), BONOBO_OBJECT_TYPE))
 #define BONOBO_IS_OBJECT_CLASS(k) (GTK_CHECK_CLASS_TYPE ((k), BONOBO_OBJECT_TYPE))
 
+#define BONOBO_OBJREF(o)          (bonobo_object_corba_objref(BONOBO_OBJECT(o)))
+
 /*
  * If you're using a custom servant for your CORBA objects, just make
  * sure that the second element is a 'gpointer' to hold the BonoboObject
@@ -53,7 +55,7 @@ typedef struct {
 	 */
 	void  (*query_interface) (BonoboObject *object, const char *repo_id,  CORBA_Object      *retval);
 	void  (*system_exception)(BonoboObject *object, CORBA_Object cobject, CORBA_Environment *ev);
-	void  (*object_gone)     (BonoboObject *object, CORBA_Object cobject, CORBA_Environment *ev);
+	gpointer expansion;
 } BonoboObjectClass;
 
 GtkType                  bonobo_object_get_type               (void);
@@ -64,6 +66,9 @@ BonoboObject            *bonobo_object_from_servant           (PortableServer_Se
 void                     bonobo_object_bind_to_servant        (BonoboObject           *object,
 							       void                   *servant);
 PortableServer_Servant   bonobo_object_get_servant            (BonoboObject           *object);
+Bonobo_Unknown           bonobo_object_activate_servant_full  (BonoboObject           *object,
+							       void                   *servant,
+							       gpointer shlib_id);
 Bonobo_Unknown           bonobo_object_activate_servant       (BonoboObject           *object,
 							       void                   *servant);
 void                     bonobo_object_add_interface          (BonoboObject           *object,
@@ -103,7 +108,7 @@ void                     bonobo_object_check_env              (BonoboObject     
 							       CORBA_Object            corba_object,
 							       CORBA_Environment      *ev);
 
-#define BONOBO_OBJECT_CHECK(o,c,e)	\
+#define BONOBO_OBJECT_CHECK(o,c,e)				\
 			G_STMT_START {				\
 			if ((e)->_major != CORBA_NO_EXCEPTION)	\
 				bonobo_object_check_env(o,c,e);	\
@@ -112,9 +117,10 @@ void                     bonobo_object_check_env              (BonoboObject     
 /*
  * Others
  */
-gboolean  gnome_unknown_ping (Bonobo_Unknown object);
+gboolean  bonobo_unknown_ping           (Bonobo_Unknown object);
+void      bonobo_object_list_unref_all  (GList        **list);
+void      bonobo_object_slist_unref_all (GSList       **list);
 
 END_GNOME_DECLS
 
 #endif
-

@@ -5,6 +5,69 @@
 #include <string.h>
 #include "Bonobo.h"
 
+#if ( (TC_IMPL_TC_Bonobo_NotSupported_0 == 'B') \
+&& (TC_IMPL_TC_Bonobo_NotSupported_1 == 'o') \
+&& (TC_IMPL_TC_Bonobo_NotSupported_2 == 'n') \
+&& (TC_IMPL_TC_Bonobo_NotSupported_3 == 'o') \
+&& (TC_IMPL_TC_Bonobo_NotSupported_4 == 'b') \
+&& (TC_IMPL_TC_Bonobo_NotSupported_5 == 'o') \
+) && !defined(TC_DEF_TC_Bonobo_NotSupported)
+#define TC_DEF_TC_Bonobo_NotSupported 1
+const struct CORBA_TypeCode_struct TC_Bonobo_NotSupported_struct = {
+   
+      {{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
+    ORBIT_PSEUDO_TYPECODE},
+
+   CORBA_tk_except, "NotSupported", "IDL:Bonobo/NotSupported:1.0",
+   0, 0,
+   NULL,
+   NULL,
+   NULL,
+   CORBA_OBJECT_NIL, 0, -1, 0, 0
+};
+#endif
+#if ( (TC_IMPL_TC_Bonobo_IOError_0 == 'B') \
+&& (TC_IMPL_TC_Bonobo_IOError_1 == 'o') \
+&& (TC_IMPL_TC_Bonobo_IOError_2 == 'n') \
+&& (TC_IMPL_TC_Bonobo_IOError_3 == 'o') \
+&& (TC_IMPL_TC_Bonobo_IOError_4 == 'b') \
+&& (TC_IMPL_TC_Bonobo_IOError_5 == 'o') \
+) && !defined(TC_DEF_TC_Bonobo_IOError)
+#define TC_DEF_TC_Bonobo_IOError 1
+const struct CORBA_TypeCode_struct TC_Bonobo_IOError_struct = {
+   
+      {{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
+    ORBIT_PSEUDO_TYPECODE},
+
+   CORBA_tk_except, "IOError", "IDL:Bonobo/IOError:1.0",
+   0, 0,
+   NULL,
+   NULL,
+   NULL,
+   CORBA_OBJECT_NIL, 0, -1, 0, 0
+};
+#endif
+#if ( (TC_IMPL_TC_Bonobo_BadArg_0 == 'B') \
+&& (TC_IMPL_TC_Bonobo_BadArg_1 == 'o') \
+&& (TC_IMPL_TC_Bonobo_BadArg_2 == 'n') \
+&& (TC_IMPL_TC_Bonobo_BadArg_3 == 'o') \
+&& (TC_IMPL_TC_Bonobo_BadArg_4 == 'b') \
+&& (TC_IMPL_TC_Bonobo_BadArg_5 == 'o') \
+) && !defined(TC_DEF_TC_Bonobo_BadArg)
+#define TC_DEF_TC_Bonobo_BadArg 1
+const struct CORBA_TypeCode_struct TC_Bonobo_BadArg_struct = {
+   
+      {{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
+    ORBIT_PSEUDO_TYPECODE},
+
+   CORBA_tk_except, "BadArg", "IDL:Bonobo/BadArg:1.0",
+   0, 0,
+   NULL,
+   NULL,
+   NULL,
+   CORBA_OBJECT_NIL, 0, -1, 0, 0
+};
+#endif
 #if ( (TC_IMPL_TC_Bonobo_Unknown_0 == 'B') \
 && (TC_IMPL_TC_Bonobo_Unknown_1 == 'o') \
 && (TC_IMPL_TC_Bonobo_Unknown_2 == 'n') \
@@ -34,7 +97,7 @@ const struct CORBA_TypeCode_struct TC_Bonobo_Unknown_struct = {
 && (TC_IMPL_TC_Bonobo_ResolveFlag_5 == 'o') \
 ) && !defined(TC_DEF_TC_Bonobo_ResolveFlag)
 #define TC_DEF_TC_Bonobo_ResolveFlag 1
-static const CORBA_TypeCode anon_subtypes_array11[] =
+static const CORBA_TypeCode anon_subtypes_array23[] =
    { (CORBA_TypeCode) & TC_CORBA_long_struct };
 const struct CORBA_TypeCode_struct TC_Bonobo_ResolveFlag_struct = {
    
@@ -44,7 +107,7 @@ const struct CORBA_TypeCode_struct TC_Bonobo_ResolveFlag_struct = {
    CORBA_tk_alias, "ResolveFlag", "IDL:Bonobo/ResolveFlag:1.0",
    0, 1,
    NULL,
-   (CORBA_TypeCode *) anon_subtypes_array11,
+   (CORBA_TypeCode *) anon_subtypes_array23,
    NULL,
    CORBA_OBJECT_NIL, 0, -1, 0, 0
 };
@@ -57,8 +120,8 @@ const struct CORBA_TypeCode_struct TC_Bonobo_ResolveFlag_struct = {
 && (TC_IMPL_TC_Bonobo_ResolveOptions_5 == 'o') \
 ) && !defined(TC_DEF_TC_Bonobo_ResolveOptions)
 #define TC_DEF_TC_Bonobo_ResolveOptions 1
-static const char *anon_subnames_array14[] = { "flags", "timeout" };
-static const CORBA_TypeCode anon_subtypes_array15[] =
+static const char *anon_subnames_array26[] = { "flags", "timeout" };
+static const CORBA_TypeCode anon_subtypes_array27[] =
    { (CORBA_TypeCode) & TC_Bonobo_ResolveFlag_struct,
       (CORBA_TypeCode) & TC_CORBA_long_struct };
 const struct CORBA_TypeCode_struct TC_Bonobo_ResolveOptions_struct = {
@@ -68,8 +131,8 @@ const struct CORBA_TypeCode_struct TC_Bonobo_ResolveOptions_struct = {
 
    CORBA_tk_struct, "ResolveOptions", "IDL:Bonobo/ResolveOptions:1.0",
    0, 2,
-   (const char **) anon_subnames_array14,
-   (CORBA_TypeCode *) anon_subtypes_array15,
+   (const char **) anon_subnames_array26,
+   (CORBA_TypeCode *) anon_subtypes_array27,
    NULL,
    CORBA_OBJECT_NIL, 0, -1, 0, 0
 };
@@ -200,48 +263,6 @@ const struct CORBA_TypeCode_struct TC_Bonobo_MonikerExtender_struct = {
    CORBA_OBJECT_NIL, 0, -1, 0, 0
 };
 #endif
-#if ( (TC_IMPL_TC_Bonobo_ActivationContext_0 == 'B') \
-&& (TC_IMPL_TC_Bonobo_ActivationContext_1 == 'o') \
-&& (TC_IMPL_TC_Bonobo_ActivationContext_2 == 'n') \
-&& (TC_IMPL_TC_Bonobo_ActivationContext_3 == 'o') \
-&& (TC_IMPL_TC_Bonobo_ActivationContext_4 == 'b') \
-&& (TC_IMPL_TC_Bonobo_ActivationContext_5 == 'o') \
-) && !defined(TC_DEF_TC_Bonobo_ActivationContext)
-#define TC_DEF_TC_Bonobo_ActivationContext 1
-const struct CORBA_TypeCode_struct TC_Bonobo_ActivationContext_struct = {
-   
-      {{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
-    ORBIT_PSEUDO_TYPECODE},
-
-   CORBA_tk_objref, "ActivationContext", "IDL:Bonobo/ActivationContext:1.0",
-   0, 0,
-   NULL,
-   NULL,
-   NULL,
-   CORBA_OBJECT_NIL, 0, -1, 0, 0
-};
-#endif
-#if ( (TC_IMPL_TC_Bonobo_RunningContext_0 == 'B') \
-&& (TC_IMPL_TC_Bonobo_RunningContext_1 == 'o') \
-&& (TC_IMPL_TC_Bonobo_RunningContext_2 == 'n') \
-&& (TC_IMPL_TC_Bonobo_RunningContext_3 == 'o') \
-&& (TC_IMPL_TC_Bonobo_RunningContext_4 == 'b') \
-&& (TC_IMPL_TC_Bonobo_RunningContext_5 == 'o') \
-) && !defined(TC_DEF_TC_Bonobo_RunningContext)
-#define TC_DEF_TC_Bonobo_RunningContext 1
-const struct CORBA_TypeCode_struct TC_Bonobo_RunningContext_struct = {
-   
-      {{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
-    ORBIT_PSEUDO_TYPECODE},
-
-   CORBA_tk_objref, "RunningContext", "IDL:Bonobo/RunningContext:1.0",
-   0, 0,
-   NULL,
-   NULL,
-   NULL,
-   CORBA_OBJECT_NIL, 0, -1, 0, 0
-};
-#endif
 #if ( (TC_IMPL_TC_Bonobo_StorageInfoFields_0 == 'B') \
 && (TC_IMPL_TC_Bonobo_StorageInfoFields_1 == 'o') \
 && (TC_IMPL_TC_Bonobo_StorageInfoFields_2 == 'n') \
@@ -250,7 +271,7 @@ const struct CORBA_TypeCode_struct TC_Bonobo_RunningContext_struct = {
 && (TC_IMPL_TC_Bonobo_StorageInfoFields_5 == 'o') \
 ) && !defined(TC_DEF_TC_Bonobo_StorageInfoFields)
 #define TC_DEF_TC_Bonobo_StorageInfoFields 1
-static const CORBA_TypeCode anon_subtypes_array56[] =
+static const CORBA_TypeCode anon_subtypes_array60[] =
    { (CORBA_TypeCode) & TC_CORBA_long_struct };
 const struct CORBA_TypeCode_struct TC_Bonobo_StorageInfoFields_struct = {
    
@@ -260,7 +281,7 @@ const struct CORBA_TypeCode_struct TC_Bonobo_StorageInfoFields_struct = {
    CORBA_tk_alias, "StorageInfoFields", "IDL:Bonobo/StorageInfoFields:1.0",
    0, 1,
    NULL,
-   (CORBA_TypeCode *) anon_subtypes_array56,
+   (CORBA_TypeCode *) anon_subtypes_array60,
    NULL,
    CORBA_OBJECT_NIL, 0, -1, 0, 0
 };
@@ -273,7 +294,7 @@ const struct CORBA_TypeCode_struct TC_Bonobo_StorageInfoFields_struct = {
 && (TC_IMPL_TC_Bonobo_ContentType_5 == 'o') \
 ) && !defined(TC_DEF_TC_Bonobo_ContentType)
 #define TC_DEF_TC_Bonobo_ContentType 1
-static const CORBA_TypeCode anon_subtypes_array65[] =
+static const CORBA_TypeCode anon_subtypes_array69[] =
    { (CORBA_TypeCode) & TC_CORBA_string_struct };
 const struct CORBA_TypeCode_struct TC_Bonobo_ContentType_struct = {
    
@@ -283,7 +304,7 @@ const struct CORBA_TypeCode_struct TC_Bonobo_ContentType_struct = {
    CORBA_tk_alias, "ContentType", "IDL:Bonobo/ContentType:1.0",
    0, 1,
    NULL,
-   (CORBA_TypeCode *) anon_subtypes_array65,
+   (CORBA_TypeCode *) anon_subtypes_array69,
    NULL,
    CORBA_OBJECT_NIL, 0, -1, 0, 0
 };
@@ -296,7 +317,7 @@ const struct CORBA_TypeCode_struct TC_Bonobo_ContentType_struct = {
 && (TC_IMPL_TC_Bonobo_StorageType_5 == 'o') \
 ) && !defined(TC_DEF_TC_Bonobo_StorageType)
 #define TC_DEF_TC_Bonobo_StorageType 1
-static const char *anon_subnames_array68[] =
+static const char *anon_subnames_array72[] =
    { "STORAGE_TYPE_REGULAR", "STORAGE_TYPE_DIRECTORY" };
 const struct CORBA_TypeCode_struct TC_Bonobo_StorageType_struct = {
    
@@ -305,7 +326,7 @@ const struct CORBA_TypeCode_struct TC_Bonobo_StorageType_struct = {
 
    CORBA_tk_enum, "StorageType", "IDL:Bonobo/StorageType:1.0",
    0, 2,
-   (const char **) anon_subnames_array68,
+   (const char **) anon_subnames_array72,
    NULL,
    NULL,
    CORBA_OBJECT_NIL, 0, -1, 0, 0
@@ -319,9 +340,9 @@ const struct CORBA_TypeCode_struct TC_Bonobo_StorageType_struct = {
 && (TC_IMPL_TC_Bonobo_StorageInfo_5 == 'o') \
 ) && !defined(TC_DEF_TC_Bonobo_StorageInfo)
 #define TC_DEF_TC_Bonobo_StorageInfo 1
-static const char *anon_subnames_array72[] =
+static const char *anon_subnames_array76[] =
    { "name", "type", "content_type", "size" };
-static const CORBA_TypeCode anon_subtypes_array73[] =
+static const CORBA_TypeCode anon_subtypes_array77[] =
    { (CORBA_TypeCode) & TC_CORBA_string_struct,
       (CORBA_TypeCode) & TC_Bonobo_StorageType_struct,
       (CORBA_TypeCode) & TC_Bonobo_ContentType_struct,
@@ -333,8 +354,8 @@ const struct CORBA_TypeCode_struct TC_Bonobo_StorageInfo_struct = {
 
    CORBA_tk_struct, "StorageInfo", "IDL:Bonobo/StorageInfo:1.0",
    0, 4,
-   (const char **) anon_subnames_array72,
-   (CORBA_TypeCode *) anon_subtypes_array73,
+   (const char **) anon_subnames_array76,
+   (CORBA_TypeCode *) anon_subtypes_array77,
    NULL,
    CORBA_OBJECT_NIL, 0, -1, 0, 0
 };
@@ -368,7 +389,7 @@ const struct CORBA_TypeCode_struct TC_Bonobo_Stream_struct = {
 && (TC_IMPL_TC_CORBA_sequence_CORBA_octet_5 == 'o') \
 ) && !defined(TC_DEF_TC_CORBA_sequence_CORBA_octet)
 #define TC_DEF_TC_CORBA_sequence_CORBA_octet 1
-static const CORBA_TypeCode anon_subtypes_array81[] =
+static const CORBA_TypeCode anon_subtypes_array85[] =
    { (CORBA_TypeCode) & TC_CORBA_octet_struct };
 const struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_octet_struct = {
    
@@ -378,7 +399,7 @@ const struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_octet_struct = {
    CORBA_tk_sequence, NULL, NULL,
    0, 1,
    NULL,
-   (CORBA_TypeCode *) anon_subtypes_array81,
+   (CORBA_TypeCode *) anon_subtypes_array85,
    NULL,
    CORBA_OBJECT_NIL, 0, -1, 0, 0
 };
@@ -391,7 +412,7 @@ const struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_octet_struct = {
 && (TC_IMPL_TC_CORBA_sequence_CORBA_octet_5 == 'o') \
 ) && !defined(TC_DEF_TC_CORBA_sequence_CORBA_octet)
 #define TC_DEF_TC_CORBA_sequence_CORBA_octet 1
-static const CORBA_TypeCode anon_subtypes_array90[] =
+static const CORBA_TypeCode anon_subtypes_array94[] =
    { (CORBA_TypeCode) & TC_CORBA_octet_struct };
 const struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_octet_struct = {
    
@@ -401,7 +422,7 @@ const struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_octet_struct = {
    CORBA_tk_sequence, NULL, NULL,
    0, 1,
    NULL,
-   (CORBA_TypeCode *) anon_subtypes_array90,
+   (CORBA_TypeCode *) anon_subtypes_array94,
    NULL,
    CORBA_OBJECT_NIL, 0, -1, 0, 0
 };
@@ -414,7 +435,7 @@ const struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_octet_struct = {
 && (TC_IMPL_TC_Bonobo_Stream_iobuf_5 == 'o') \
 ) && !defined(TC_DEF_TC_Bonobo_Stream_iobuf)
 #define TC_DEF_TC_Bonobo_Stream_iobuf 1
-static const CORBA_TypeCode anon_subtypes_array94[] =
+static const CORBA_TypeCode anon_subtypes_array98[] =
    { (CORBA_TypeCode) & TC_CORBA_sequence_CORBA_octet_struct };
 const struct CORBA_TypeCode_struct TC_Bonobo_Stream_iobuf_struct = {
    
@@ -424,7 +445,7 @@ const struct CORBA_TypeCode_struct TC_Bonobo_Stream_iobuf_struct = {
    CORBA_tk_alias, "iobuf", "IDL:Bonobo/Stream/iobuf:1.0",
    0, 1,
    NULL,
-   (CORBA_TypeCode *) anon_subtypes_array94,
+   (CORBA_TypeCode *) anon_subtypes_array98,
    NULL,
    CORBA_OBJECT_NIL, 0, -1, 0, 0
 };
@@ -500,7 +521,7 @@ const struct CORBA_TypeCode_struct TC_Bonobo_Stream_IOError_struct = {
 && (TC_IMPL_TC_Bonobo_Stream_SeekType_5 == 'o') \
 ) && !defined(TC_DEF_TC_Bonobo_Stream_SeekType)
 #define TC_DEF_TC_Bonobo_Stream_SeekType 1
-static const char *anon_subnames_array109[] =
+static const char *anon_subnames_array113[] =
    { "SEEK_SET", "SEEK_CUR", "SEEK_END" };
 const struct CORBA_TypeCode_struct TC_Bonobo_Stream_SeekType_struct = {
    
@@ -509,7 +530,7 @@ const struct CORBA_TypeCode_struct TC_Bonobo_Stream_SeekType_struct = {
 
    CORBA_tk_enum, "SeekType", "IDL:Bonobo/Stream/SeekType:1.0",
    0, 3,
-   (const char **) anon_subnames_array109,
+   (const char **) anon_subnames_array113,
    NULL,
    NULL,
    CORBA_OBJECT_NIL, 0, -1, 0, 0
@@ -544,7 +565,7 @@ const struct CORBA_TypeCode_struct TC_Bonobo_Storage_struct = {
 && (TC_IMPL_TC_CORBA_sequence_Bonobo_StorageInfo_5 == 'o') \
 ) && !defined(TC_DEF_TC_CORBA_sequence_Bonobo_StorageInfo)
 #define TC_DEF_TC_CORBA_sequence_Bonobo_StorageInfo 1
-static const CORBA_TypeCode anon_subtypes_array118[] =
+static const CORBA_TypeCode anon_subtypes_array122[] =
    { (CORBA_TypeCode) & TC_Bonobo_StorageInfo_struct };
 const struct CORBA_TypeCode_struct TC_CORBA_sequence_Bonobo_StorageInfo_struct
    = {
@@ -553,7 +574,7 @@ const struct CORBA_TypeCode_struct TC_CORBA_sequence_Bonobo_StorageInfo_struct
    CORBA_tk_sequence, NULL, NULL,
    0, 1,
    NULL,
-   (CORBA_TypeCode *) anon_subtypes_array118,
+   (CORBA_TypeCode *) anon_subtypes_array122,
    NULL,
    CORBA_OBJECT_NIL, 0, -1, 0, 0
 };
@@ -566,7 +587,7 @@ const struct CORBA_TypeCode_struct TC_CORBA_sequence_Bonobo_StorageInfo_struct
 && (TC_IMPL_TC_CORBA_sequence_Bonobo_StorageInfo_5 == 'o') \
 ) && !defined(TC_DEF_TC_CORBA_sequence_Bonobo_StorageInfo)
 #define TC_DEF_TC_CORBA_sequence_Bonobo_StorageInfo 1
-static const CORBA_TypeCode anon_subtypes_array127[] =
+static const CORBA_TypeCode anon_subtypes_array131[] =
    { (CORBA_TypeCode) & TC_Bonobo_StorageInfo_struct };
 const struct CORBA_TypeCode_struct TC_CORBA_sequence_Bonobo_StorageInfo_struct
    = {
@@ -575,7 +596,7 @@ const struct CORBA_TypeCode_struct TC_CORBA_sequence_Bonobo_StorageInfo_struct
    CORBA_tk_sequence, NULL, NULL,
    0, 1,
    NULL,
-   (CORBA_TypeCode *) anon_subtypes_array127,
+   (CORBA_TypeCode *) anon_subtypes_array131,
    NULL,
    CORBA_OBJECT_NIL, 0, -1, 0, 0
 };
@@ -588,7 +609,7 @@ const struct CORBA_TypeCode_struct TC_CORBA_sequence_Bonobo_StorageInfo_struct
 && (TC_IMPL_TC_Bonobo_Storage_DirectoryList_5 == 'o') \
 ) && !defined(TC_DEF_TC_Bonobo_Storage_DirectoryList)
 #define TC_DEF_TC_Bonobo_Storage_DirectoryList 1
-static const CORBA_TypeCode anon_subtypes_array131[] =
+static const CORBA_TypeCode anon_subtypes_array135[] =
    { (CORBA_TypeCode) & TC_CORBA_sequence_Bonobo_StorageInfo_struct };
 const struct CORBA_TypeCode_struct TC_Bonobo_Storage_DirectoryList_struct = {
    
@@ -598,7 +619,7 @@ const struct CORBA_TypeCode_struct TC_Bonobo_Storage_DirectoryList_struct = {
    CORBA_tk_alias, "DirectoryList", "IDL:Bonobo/Storage/DirectoryList:1.0",
    0, 1,
    NULL,
-   (CORBA_TypeCode *) anon_subtypes_array131,
+   (CORBA_TypeCode *) anon_subtypes_array135,
    NULL,
    CORBA_OBJECT_NIL, 0, -1, 0, 0
 };
@@ -611,7 +632,7 @@ const struct CORBA_TypeCode_struct TC_Bonobo_Storage_DirectoryList_struct = {
 && (TC_IMPL_TC_Bonobo_Storage_OpenMode_5 == 'o') \
 ) && !defined(TC_DEF_TC_Bonobo_Storage_OpenMode)
 #define TC_DEF_TC_Bonobo_Storage_OpenMode 1
-static const CORBA_TypeCode anon_subtypes_array140[] =
+static const CORBA_TypeCode anon_subtypes_array144[] =
    { (CORBA_TypeCode) & TC_CORBA_long_struct };
 const struct CORBA_TypeCode_struct TC_Bonobo_Storage_OpenMode_struct = {
    
@@ -621,7 +642,7 @@ const struct CORBA_TypeCode_struct TC_Bonobo_Storage_OpenMode_struct = {
    CORBA_tk_alias, "OpenMode", "IDL:Bonobo/Storage/OpenMode:1.0",
    0, 1,
    NULL,
-   (CORBA_TypeCode *) anon_subtypes_array140,
+   (CORBA_TypeCode *) anon_subtypes_array144,
    NULL,
    CORBA_OBJECT_NIL, 0, -1, 0, 0
 };
@@ -794,20 +815,20 @@ const struct CORBA_TypeCode_struct TC_Bonobo_Storage_NotEmpty_struct = {
    CORBA_OBJECT_NIL, 0, -1, 0, 0
 };
 #endif
-#if ( (TC_IMPL_TC_Bonobo_NotSupported_0 == 'B') \
-&& (TC_IMPL_TC_Bonobo_NotSupported_1 == 'o') \
-&& (TC_IMPL_TC_Bonobo_NotSupported_2 == 'n') \
-&& (TC_IMPL_TC_Bonobo_NotSupported_3 == 'o') \
-&& (TC_IMPL_TC_Bonobo_NotSupported_4 == 'b') \
-&& (TC_IMPL_TC_Bonobo_NotSupported_5 == 'o') \
-) && !defined(TC_DEF_TC_Bonobo_NotSupported)
-#define TC_DEF_TC_Bonobo_NotSupported 1
-const struct CORBA_TypeCode_struct TC_Bonobo_NotSupported_struct = {
+#if ( (TC_IMPL_TC_Bonobo_ActivationContext_0 == 'B') \
+&& (TC_IMPL_TC_Bonobo_ActivationContext_1 == 'o') \
+&& (TC_IMPL_TC_Bonobo_ActivationContext_2 == 'n') \
+&& (TC_IMPL_TC_Bonobo_ActivationContext_3 == 'o') \
+&& (TC_IMPL_TC_Bonobo_ActivationContext_4 == 'b') \
+&& (TC_IMPL_TC_Bonobo_ActivationContext_5 == 'o') \
+) && !defined(TC_DEF_TC_Bonobo_ActivationContext)
+#define TC_DEF_TC_Bonobo_ActivationContext 1
+const struct CORBA_TypeCode_struct TC_Bonobo_ActivationContext_struct = {
    
       {{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
     ORBIT_PSEUDO_TYPECODE},
 
-   CORBA_tk_except, "NotSupported", "IDL:Bonobo/NotSupported:1.0",
+   CORBA_tk_objref, "ActivationContext", "IDL:Bonobo/ActivationContext:1.0",
    0, 0,
    NULL,
    NULL,
@@ -815,20 +836,20 @@ const struct CORBA_TypeCode_struct TC_Bonobo_NotSupported_struct = {
    CORBA_OBJECT_NIL, 0, -1, 0, 0
 };
 #endif
-#if ( (TC_IMPL_TC_Bonobo_IOError_0 == 'B') \
-&& (TC_IMPL_TC_Bonobo_IOError_1 == 'o') \
-&& (TC_IMPL_TC_Bonobo_IOError_2 == 'n') \
-&& (TC_IMPL_TC_Bonobo_IOError_3 == 'o') \
-&& (TC_IMPL_TC_Bonobo_IOError_4 == 'b') \
-&& (TC_IMPL_TC_Bonobo_IOError_5 == 'o') \
-) && !defined(TC_DEF_TC_Bonobo_IOError)
-#define TC_DEF_TC_Bonobo_IOError 1
-const struct CORBA_TypeCode_struct TC_Bonobo_IOError_struct = {
+#if ( (TC_IMPL_TC_Bonobo_RunningContext_0 == 'B') \
+&& (TC_IMPL_TC_Bonobo_RunningContext_1 == 'o') \
+&& (TC_IMPL_TC_Bonobo_RunningContext_2 == 'n') \
+&& (TC_IMPL_TC_Bonobo_RunningContext_3 == 'o') \
+&& (TC_IMPL_TC_Bonobo_RunningContext_4 == 'b') \
+&& (TC_IMPL_TC_Bonobo_RunningContext_5 == 'o') \
+) && !defined(TC_DEF_TC_Bonobo_RunningContext)
+#define TC_DEF_TC_Bonobo_RunningContext 1
+const struct CORBA_TypeCode_struct TC_Bonobo_RunningContext_struct = {
    
       {{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
     ORBIT_PSEUDO_TYPECODE},
 
-   CORBA_tk_except, "IOError", "IDL:Bonobo/IOError:1.0",
+   CORBA_tk_objref, "RunningContext", "IDL:Bonobo/RunningContext:1.0",
    0, 0,
    NULL,
    NULL,
@@ -865,7 +886,7 @@ const struct CORBA_TypeCode_struct TC_Bonobo_Persist_struct = {
 && (TC_IMPL_TC_Bonobo_Persist_Status_5 == 'o') \
 ) && !defined(TC_DEF_TC_Bonobo_Persist_Status)
 #define TC_DEF_TC_Bonobo_Persist_Status 1
-static const char *anon_subnames_array187[] =
+static const char *anon_subnames_array191[] =
    { "SAVE_OK", "SAVE_CANCEL", "SAVE_FAILED" };
 const struct CORBA_TypeCode_struct TC_Bonobo_Persist_Status_struct = {
    
@@ -874,7 +895,7 @@ const struct CORBA_TypeCode_struct TC_Bonobo_Persist_Status_struct = {
 
    CORBA_tk_enum, "Status", "IDL:Bonobo/Persist/Status:1.0",
    0, 3,
-   (const char **) anon_subnames_array187,
+   (const char **) anon_subnames_array191,
    NULL,
    NULL,
    CORBA_OBJECT_NIL, 0, -1, 0, 0
@@ -930,7 +951,7 @@ const struct CORBA_TypeCode_struct TC_Bonobo_Persist_FileNotFound_struct = {
 && (TC_IMPL_TC_Bonobo_Persist_ContentType_5 == 'o') \
 ) && !defined(TC_DEF_TC_Bonobo_Persist_ContentType)
 #define TC_DEF_TC_Bonobo_Persist_ContentType 1
-static const CORBA_TypeCode anon_subtypes_array205[] =
+static const CORBA_TypeCode anon_subtypes_array209[] =
    { (CORBA_TypeCode) & TC_CORBA_string_struct };
 const struct CORBA_TypeCode_struct TC_Bonobo_Persist_ContentType_struct = {
    
@@ -938,28 +959,6 @@ const struct CORBA_TypeCode_struct TC_Bonobo_Persist_ContentType_struct = {
     ORBIT_PSEUDO_TYPECODE},
 
    CORBA_tk_alias, "ContentType", "IDL:Bonobo/Persist/ContentType:1.0",
-   0, 1,
-   NULL,
-   (CORBA_TypeCode *) anon_subtypes_array205,
-   NULL,
-   CORBA_OBJECT_NIL, 0, -1, 0, 0
-};
-#endif
-#if ( (TC_IMPL_TC_CORBA_sequence_Bonobo_Persist_ContentType_0 == 'B') \
-&& (TC_IMPL_TC_CORBA_sequence_Bonobo_Persist_ContentType_1 == 'o') \
-&& (TC_IMPL_TC_CORBA_sequence_Bonobo_Persist_ContentType_2 == 'n') \
-&& (TC_IMPL_TC_CORBA_sequence_Bonobo_Persist_ContentType_3 == 'o') \
-&& (TC_IMPL_TC_CORBA_sequence_Bonobo_Persist_ContentType_4 == 'b') \
-&& (TC_IMPL_TC_CORBA_sequence_Bonobo_Persist_ContentType_5 == 'o') \
-) && !defined(TC_DEF_TC_CORBA_sequence_Bonobo_Persist_ContentType)
-#define TC_DEF_TC_CORBA_sequence_Bonobo_Persist_ContentType 1
-static const CORBA_TypeCode anon_subtypes_array209[] =
-   { (CORBA_TypeCode) & TC_Bonobo_Persist_ContentType_struct };
-const struct CORBA_TypeCode_struct
-   TC_CORBA_sequence_Bonobo_Persist_ContentType_struct = {
-   {{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
-    ORBIT_PSEUDO_TYPECODE},
-   CORBA_tk_sequence, NULL, NULL,
    0, 1,
    NULL,
    (CORBA_TypeCode *) anon_subtypes_array209,
@@ -975,7 +974,7 @@ const struct CORBA_TypeCode_struct
 && (TC_IMPL_TC_CORBA_sequence_Bonobo_Persist_ContentType_5 == 'o') \
 ) && !defined(TC_DEF_TC_CORBA_sequence_Bonobo_Persist_ContentType)
 #define TC_DEF_TC_CORBA_sequence_Bonobo_Persist_ContentType 1
-static const CORBA_TypeCode anon_subtypes_array218[] =
+static const CORBA_TypeCode anon_subtypes_array213[] =
    { (CORBA_TypeCode) & TC_Bonobo_Persist_ContentType_struct };
 const struct CORBA_TypeCode_struct
    TC_CORBA_sequence_Bonobo_Persist_ContentType_struct = {
@@ -984,7 +983,29 @@ const struct CORBA_TypeCode_struct
    CORBA_tk_sequence, NULL, NULL,
    0, 1,
    NULL,
-   (CORBA_TypeCode *) anon_subtypes_array218,
+   (CORBA_TypeCode *) anon_subtypes_array213,
+   NULL,
+   CORBA_OBJECT_NIL, 0, -1, 0, 0
+};
+#endif
+#if ( (TC_IMPL_TC_CORBA_sequence_Bonobo_Persist_ContentType_0 == 'B') \
+&& (TC_IMPL_TC_CORBA_sequence_Bonobo_Persist_ContentType_1 == 'o') \
+&& (TC_IMPL_TC_CORBA_sequence_Bonobo_Persist_ContentType_2 == 'n') \
+&& (TC_IMPL_TC_CORBA_sequence_Bonobo_Persist_ContentType_3 == 'o') \
+&& (TC_IMPL_TC_CORBA_sequence_Bonobo_Persist_ContentType_4 == 'b') \
+&& (TC_IMPL_TC_CORBA_sequence_Bonobo_Persist_ContentType_5 == 'o') \
+) && !defined(TC_DEF_TC_CORBA_sequence_Bonobo_Persist_ContentType)
+#define TC_DEF_TC_CORBA_sequence_Bonobo_Persist_ContentType 1
+static const CORBA_TypeCode anon_subtypes_array222[] =
+   { (CORBA_TypeCode) & TC_Bonobo_Persist_ContentType_struct };
+const struct CORBA_TypeCode_struct
+   TC_CORBA_sequence_Bonobo_Persist_ContentType_struct = {
+   {{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
+    ORBIT_PSEUDO_TYPECODE},
+   CORBA_tk_sequence, NULL, NULL,
+   0, 1,
+   NULL,
+   (CORBA_TypeCode *) anon_subtypes_array222,
    NULL,
    CORBA_OBJECT_NIL, 0, -1, 0, 0
 };
@@ -997,7 +1018,7 @@ const struct CORBA_TypeCode_struct
 && (TC_IMPL_TC_Bonobo_Persist_ContentTypeList_5 == 'o') \
 ) && !defined(TC_DEF_TC_Bonobo_Persist_ContentTypeList)
 #define TC_DEF_TC_Bonobo_Persist_ContentTypeList 1
-static const CORBA_TypeCode anon_subtypes_array222[] =
+static const CORBA_TypeCode anon_subtypes_array226[] =
    { (CORBA_TypeCode) & TC_CORBA_sequence_Bonobo_Persist_ContentType_struct };
 const struct CORBA_TypeCode_struct TC_Bonobo_Persist_ContentTypeList_struct = {
    
@@ -1009,7 +1030,7 @@ const struct CORBA_TypeCode_struct TC_Bonobo_Persist_ContentTypeList_struct = {
 
    0, 1,
    NULL,
-   (CORBA_TypeCode *) anon_subtypes_array222,
+   (CORBA_TypeCode *) anon_subtypes_array226,
    NULL,
    CORBA_OBJECT_NIL, 0, -1, 0, 0
 };
@@ -1043,8 +1064,8 @@ const struct CORBA_TypeCode_struct TC_Bonobo_PersistFile_struct = {
 && (TC_IMPL_TC_Bonobo_PersistFile_NoCurrentName_5 == 'o') \
 ) && !defined(TC_DEF_TC_Bonobo_PersistFile_NoCurrentName)
 #define TC_DEF_TC_Bonobo_PersistFile_NoCurrentName 1
-static const char *anon_subnames_array229[] = { "extension" };
-static const CORBA_TypeCode anon_subtypes_array230[] =
+static const char *anon_subnames_array233[] = { "extension" };
+static const CORBA_TypeCode anon_subtypes_array234[] =
    { (CORBA_TypeCode) & TC_CORBA_string_struct };
 const struct CORBA_TypeCode_struct TC_Bonobo_PersistFile_NoCurrentName_struct
    = {
@@ -1053,8 +1074,8 @@ const struct CORBA_TypeCode_struct TC_Bonobo_PersistFile_NoCurrentName_struct
    CORBA_tk_except, "NoCurrentName",
       "IDL:Bonobo/PersistFile/NoCurrentName:1.0",
    0, 1,
-   (const char **) anon_subnames_array229,
-   (CORBA_TypeCode *) anon_subtypes_array230,
+   (const char **) anon_subnames_array233,
+   (CORBA_TypeCode *) anon_subtypes_array234,
    NULL,
    CORBA_OBJECT_NIL, 0, -1, 0, 0
 };
@@ -1131,7 +1152,7 @@ const struct CORBA_TypeCode_struct TC_Bonobo_ProgressiveDataSink_struct = {
 && (TC_IMPL_TC_CORBA_sequence_CORBA_octet_5 == 'o') \
 ) && !defined(TC_DEF_TC_CORBA_sequence_CORBA_octet)
 #define TC_DEF_TC_CORBA_sequence_CORBA_octet 1
-static const CORBA_TypeCode anon_subtypes_array246[] =
+static const CORBA_TypeCode anon_subtypes_array250[] =
    { (CORBA_TypeCode) & TC_CORBA_octet_struct };
 const struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_octet_struct = {
    
@@ -1141,7 +1162,7 @@ const struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_octet_struct = {
    CORBA_tk_sequence, NULL, NULL,
    0, 1,
    NULL,
-   (CORBA_TypeCode *) anon_subtypes_array246,
+   (CORBA_TypeCode *) anon_subtypes_array250,
    NULL,
    CORBA_OBJECT_NIL, 0, -1, 0, 0
 };
@@ -1154,7 +1175,7 @@ const struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_octet_struct = {
 && (TC_IMPL_TC_CORBA_sequence_CORBA_octet_5 == 'o') \
 ) && !defined(TC_DEF_TC_CORBA_sequence_CORBA_octet)
 #define TC_DEF_TC_CORBA_sequence_CORBA_octet 1
-static const CORBA_TypeCode anon_subtypes_array255[] =
+static const CORBA_TypeCode anon_subtypes_array259[] =
    { (CORBA_TypeCode) & TC_CORBA_octet_struct };
 const struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_octet_struct = {
    
@@ -1164,7 +1185,7 @@ const struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_octet_struct = {
    CORBA_tk_sequence, NULL, NULL,
    0, 1,
    NULL,
-   (CORBA_TypeCode *) anon_subtypes_array255,
+   (CORBA_TypeCode *) anon_subtypes_array259,
    NULL,
    CORBA_OBJECT_NIL, 0, -1, 0, 0
 };
@@ -1177,7 +1198,7 @@ const struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_octet_struct = {
 && (TC_IMPL_TC_Bonobo_ProgressiveDataSink_iobuf_5 == 'o') \
 ) && !defined(TC_DEF_TC_Bonobo_ProgressiveDataSink_iobuf)
 #define TC_DEF_TC_Bonobo_ProgressiveDataSink_iobuf 1
-static const CORBA_TypeCode anon_subtypes_array259[] =
+static const CORBA_TypeCode anon_subtypes_array263[] =
    { (CORBA_TypeCode) & TC_CORBA_sequence_CORBA_octet_struct };
 const struct CORBA_TypeCode_struct TC_Bonobo_ProgressiveDataSink_iobuf_struct
    = {
@@ -1186,7 +1207,7 @@ const struct CORBA_TypeCode_struct TC_Bonobo_ProgressiveDataSink_iobuf_struct
    CORBA_tk_alias, "iobuf", "IDL:Bonobo/ProgressiveDataSink/iobuf:1.0",
    0, 1,
    NULL,
-   (CORBA_TypeCode *) anon_subtypes_array259,
+   (CORBA_TypeCode *) anon_subtypes_array263,
    NULL,
    CORBA_OBJECT_NIL, 0, -1, 0, 0
 };
@@ -1262,7 +1283,7 @@ const struct CORBA_TypeCode_struct TC_Bonobo_EventSource_struct = {
 && (TC_IMPL_TC_Bonobo_EventSource_ListenerId_5 == 'o') \
 ) && !defined(TC_DEF_TC_Bonobo_EventSource_ListenerId)
 #define TC_DEF_TC_Bonobo_EventSource_ListenerId 1
-static const CORBA_TypeCode anon_subtypes_array280[] =
+static const CORBA_TypeCode anon_subtypes_array284[] =
    { (CORBA_TypeCode) & TC_CORBA_unsigned_long_struct };
 const struct CORBA_TypeCode_struct TC_Bonobo_EventSource_ListenerId_struct = {
    
@@ -1272,7 +1293,7 @@ const struct CORBA_TypeCode_struct TC_Bonobo_EventSource_ListenerId_struct = {
    CORBA_tk_alias, "ListenerId", "IDL:Bonobo/EventSource/ListenerId:1.0",
    0, 1,
    NULL,
-   (CORBA_TypeCode *) anon_subtypes_array280,
+   (CORBA_TypeCode *) anon_subtypes_array284,
    NULL,
    CORBA_OBJECT_NIL, 0, -1, 0, 0
 };
@@ -1327,7 +1348,7 @@ const struct CORBA_TypeCode_struct TC_Bonobo_UIComponent_struct = {
 && (TC_IMPL_TC_Bonobo_UIComponent_EventType_5 == 'o') \
 ) && !defined(TC_DEF_TC_Bonobo_UIComponent_EventType)
 #define TC_DEF_TC_Bonobo_UIComponent_EventType 1
-static const char *anon_subnames_array291[] = { "STATE_CHANGED", "OTHER" };
+static const char *anon_subnames_array295[] = { "STATE_CHANGED", "OTHER" };
 const struct CORBA_TypeCode_struct TC_Bonobo_UIComponent_EventType_struct = {
    
       {{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
@@ -1335,7 +1356,7 @@ const struct CORBA_TypeCode_struct TC_Bonobo_UIComponent_EventType_struct = {
 
    CORBA_tk_enum, "EventType", "IDL:Bonobo/UIComponent/EventType:1.0",
    0, 2,
-   (const char **) anon_subnames_array291,
+   (const char **) anon_subnames_array295,
    NULL,
    NULL,
    CORBA_OBJECT_NIL, 0, -1, 0, 0
@@ -1475,7 +1496,7 @@ const struct CORBA_TypeCode_struct TC_Bonobo_Property_ReadOnlyProperty_struct
 && (TC_IMPL_TC_CORBA_sequence_CORBA_string_5 == 'o') \
 ) && !defined(TC_DEF_TC_CORBA_sequence_CORBA_string)
 #define TC_DEF_TC_CORBA_sequence_CORBA_string 1
-static const CORBA_TypeCode anon_subtypes_array320[] =
+static const CORBA_TypeCode anon_subtypes_array324[] =
    { (CORBA_TypeCode) & TC_CORBA_string_struct };
 const struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_string_struct = {
    
@@ -1485,7 +1506,7 @@ const struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_string_struct = {
    CORBA_tk_sequence, NULL, NULL,
    0, 1,
    NULL,
-   (CORBA_TypeCode *) anon_subtypes_array320,
+   (CORBA_TypeCode *) anon_subtypes_array324,
    NULL,
    CORBA_OBJECT_NIL, 0, -1, 0, 0
 };
@@ -1498,7 +1519,7 @@ const struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_string_struct = {
 && (TC_IMPL_TC_CORBA_sequence_CORBA_string_5 == 'o') \
 ) && !defined(TC_DEF_TC_CORBA_sequence_CORBA_string)
 #define TC_DEF_TC_CORBA_sequence_CORBA_string 1
-static const CORBA_TypeCode anon_subtypes_array329[] =
+static const CORBA_TypeCode anon_subtypes_array333[] =
    { (CORBA_TypeCode) & TC_CORBA_string_struct };
 const struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_string_struct = {
    
@@ -1508,7 +1529,7 @@ const struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_string_struct = {
    CORBA_tk_sequence, NULL, NULL,
    0, 1,
    NULL,
-   (CORBA_TypeCode *) anon_subtypes_array329,
+   (CORBA_TypeCode *) anon_subtypes_array333,
    NULL,
    CORBA_OBJECT_NIL, 0, -1, 0, 0
 };
@@ -1521,7 +1542,7 @@ const struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_string_struct = {
 && (TC_IMPL_TC_Bonobo_PropertyNames_5 == 'o') \
 ) && !defined(TC_DEF_TC_Bonobo_PropertyNames)
 #define TC_DEF_TC_Bonobo_PropertyNames 1
-static const CORBA_TypeCode anon_subtypes_array333[] =
+static const CORBA_TypeCode anon_subtypes_array337[] =
    { (CORBA_TypeCode) & TC_CORBA_sequence_CORBA_string_struct };
 const struct CORBA_TypeCode_struct TC_Bonobo_PropertyNames_struct = {
    
@@ -1529,29 +1550,6 @@ const struct CORBA_TypeCode_struct TC_Bonobo_PropertyNames_struct = {
     ORBIT_PSEUDO_TYPECODE},
 
    CORBA_tk_alias, "PropertyNames", "IDL:Bonobo/PropertyNames:1.0",
-   0, 1,
-   NULL,
-   (CORBA_TypeCode *) anon_subtypes_array333,
-   NULL,
-   CORBA_OBJECT_NIL, 0, -1, 0, 0
-};
-#endif
-#if ( (TC_IMPL_TC_CORBA_sequence_Bonobo_Property_0 == 'B') \
-&& (TC_IMPL_TC_CORBA_sequence_Bonobo_Property_1 == 'o') \
-&& (TC_IMPL_TC_CORBA_sequence_Bonobo_Property_2 == 'n') \
-&& (TC_IMPL_TC_CORBA_sequence_Bonobo_Property_3 == 'o') \
-&& (TC_IMPL_TC_CORBA_sequence_Bonobo_Property_4 == 'b') \
-&& (TC_IMPL_TC_CORBA_sequence_Bonobo_Property_5 == 'o') \
-) && !defined(TC_DEF_TC_CORBA_sequence_Bonobo_Property)
-#define TC_DEF_TC_CORBA_sequence_Bonobo_Property 1
-static const CORBA_TypeCode anon_subtypes_array337[] =
-   { (CORBA_TypeCode) & TC_Object_struct };
-const struct CORBA_TypeCode_struct TC_CORBA_sequence_Bonobo_Property_struct = {
-   
-      {{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
-    ORBIT_PSEUDO_TYPECODE},
-
-   CORBA_tk_sequence, NULL, NULL,
    0, 1,
    NULL,
    (CORBA_TypeCode *) anon_subtypes_array337,
@@ -1567,7 +1565,7 @@ const struct CORBA_TypeCode_struct TC_CORBA_sequence_Bonobo_Property_struct = {
 && (TC_IMPL_TC_CORBA_sequence_Bonobo_Property_5 == 'o') \
 ) && !defined(TC_DEF_TC_CORBA_sequence_Bonobo_Property)
 #define TC_DEF_TC_CORBA_sequence_Bonobo_Property 1
-static const CORBA_TypeCode anon_subtypes_array346[] =
+static const CORBA_TypeCode anon_subtypes_array341[] =
    { (CORBA_TypeCode) & TC_Object_struct };
 const struct CORBA_TypeCode_struct TC_CORBA_sequence_Bonobo_Property_struct = {
    
@@ -1577,7 +1575,30 @@ const struct CORBA_TypeCode_struct TC_CORBA_sequence_Bonobo_Property_struct = {
    CORBA_tk_sequence, NULL, NULL,
    0, 1,
    NULL,
-   (CORBA_TypeCode *) anon_subtypes_array346,
+   (CORBA_TypeCode *) anon_subtypes_array341,
+   NULL,
+   CORBA_OBJECT_NIL, 0, -1, 0, 0
+};
+#endif
+#if ( (TC_IMPL_TC_CORBA_sequence_Bonobo_Property_0 == 'B') \
+&& (TC_IMPL_TC_CORBA_sequence_Bonobo_Property_1 == 'o') \
+&& (TC_IMPL_TC_CORBA_sequence_Bonobo_Property_2 == 'n') \
+&& (TC_IMPL_TC_CORBA_sequence_Bonobo_Property_3 == 'o') \
+&& (TC_IMPL_TC_CORBA_sequence_Bonobo_Property_4 == 'b') \
+&& (TC_IMPL_TC_CORBA_sequence_Bonobo_Property_5 == 'o') \
+) && !defined(TC_DEF_TC_CORBA_sequence_Bonobo_Property)
+#define TC_DEF_TC_CORBA_sequence_Bonobo_Property 1
+static const CORBA_TypeCode anon_subtypes_array350[] =
+   { (CORBA_TypeCode) & TC_Object_struct };
+const struct CORBA_TypeCode_struct TC_CORBA_sequence_Bonobo_Property_struct = {
+   
+      {{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
+    ORBIT_PSEUDO_TYPECODE},
+
+   CORBA_tk_sequence, NULL, NULL,
+   0, 1,
+   NULL,
+   (CORBA_TypeCode *) anon_subtypes_array350,
    NULL,
    CORBA_OBJECT_NIL, 0, -1, 0, 0
 };
@@ -1590,7 +1611,7 @@ const struct CORBA_TypeCode_struct TC_CORBA_sequence_Bonobo_Property_struct = {
 && (TC_IMPL_TC_Bonobo_PropertyList_5 == 'o') \
 ) && !defined(TC_DEF_TC_Bonobo_PropertyList)
 #define TC_DEF_TC_Bonobo_PropertyList 1
-static const CORBA_TypeCode anon_subtypes_array350[] =
+static const CORBA_TypeCode anon_subtypes_array354[] =
    { (CORBA_TypeCode) & TC_CORBA_sequence_Bonobo_Property_struct };
 const struct CORBA_TypeCode_struct TC_Bonobo_PropertyList_struct = {
    
@@ -1600,7 +1621,7 @@ const struct CORBA_TypeCode_struct TC_Bonobo_PropertyList_struct = {
    CORBA_tk_alias, "PropertyList", "IDL:Bonobo/PropertyList:1.0",
    0, 1,
    NULL,
-   (CORBA_TypeCode *) anon_subtypes_array350,
+   (CORBA_TypeCode *) anon_subtypes_array354,
    NULL,
    CORBA_OBJECT_NIL, 0, -1, 0, 0
 };
@@ -1613,8 +1634,8 @@ const struct CORBA_TypeCode_struct TC_Bonobo_PropertyList_struct = {
 && (TC_IMPL_TC_Bonobo_Pair_5 == 'o') \
 ) && !defined(TC_DEF_TC_Bonobo_Pair)
 #define TC_DEF_TC_Bonobo_Pair 1
-static const char *anon_subnames_array353[] = { "name", "value" };
-static const CORBA_TypeCode anon_subtypes_array354[] =
+static const char *anon_subnames_array357[] = { "name", "value" };
+static const CORBA_TypeCode anon_subtypes_array358[] =
    { (CORBA_TypeCode) & TC_CORBA_string_struct,
       (CORBA_TypeCode) & TC_CORBA_any_struct };
 const struct CORBA_TypeCode_struct TC_Bonobo_Pair_struct = {
@@ -1624,30 +1645,7 @@ const struct CORBA_TypeCode_struct TC_Bonobo_Pair_struct = {
 
    CORBA_tk_struct, "Pair", "IDL:Bonobo/Pair:1.0",
    0, 2,
-   (const char **) anon_subnames_array353,
-   (CORBA_TypeCode *) anon_subtypes_array354,
-   NULL,
-   CORBA_OBJECT_NIL, 0, -1, 0, 0
-};
-#endif
-#if ( (TC_IMPL_TC_CORBA_sequence_Bonobo_Pair_0 == 'B') \
-&& (TC_IMPL_TC_CORBA_sequence_Bonobo_Pair_1 == 'o') \
-&& (TC_IMPL_TC_CORBA_sequence_Bonobo_Pair_2 == 'n') \
-&& (TC_IMPL_TC_CORBA_sequence_Bonobo_Pair_3 == 'o') \
-&& (TC_IMPL_TC_CORBA_sequence_Bonobo_Pair_4 == 'b') \
-&& (TC_IMPL_TC_CORBA_sequence_Bonobo_Pair_5 == 'o') \
-) && !defined(TC_DEF_TC_CORBA_sequence_Bonobo_Pair)
-#define TC_DEF_TC_CORBA_sequence_Bonobo_Pair 1
-static const CORBA_TypeCode anon_subtypes_array358[] =
-   { (CORBA_TypeCode) & TC_Bonobo_Pair_struct };
-const struct CORBA_TypeCode_struct TC_CORBA_sequence_Bonobo_Pair_struct = {
-   
-      {{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
-    ORBIT_PSEUDO_TYPECODE},
-
-   CORBA_tk_sequence, NULL, NULL,
-   0, 1,
-   NULL,
+   (const char **) anon_subnames_array357,
    (CORBA_TypeCode *) anon_subtypes_array358,
    NULL,
    CORBA_OBJECT_NIL, 0, -1, 0, 0
@@ -1661,7 +1659,7 @@ const struct CORBA_TypeCode_struct TC_CORBA_sequence_Bonobo_Pair_struct = {
 && (TC_IMPL_TC_CORBA_sequence_Bonobo_Pair_5 == 'o') \
 ) && !defined(TC_DEF_TC_CORBA_sequence_Bonobo_Pair)
 #define TC_DEF_TC_CORBA_sequence_Bonobo_Pair 1
-static const CORBA_TypeCode anon_subtypes_array367[] =
+static const CORBA_TypeCode anon_subtypes_array362[] =
    { (CORBA_TypeCode) & TC_Bonobo_Pair_struct };
 const struct CORBA_TypeCode_struct TC_CORBA_sequence_Bonobo_Pair_struct = {
    
@@ -1671,7 +1669,30 @@ const struct CORBA_TypeCode_struct TC_CORBA_sequence_Bonobo_Pair_struct = {
    CORBA_tk_sequence, NULL, NULL,
    0, 1,
    NULL,
-   (CORBA_TypeCode *) anon_subtypes_array367,
+   (CORBA_TypeCode *) anon_subtypes_array362,
+   NULL,
+   CORBA_OBJECT_NIL, 0, -1, 0, 0
+};
+#endif
+#if ( (TC_IMPL_TC_CORBA_sequence_Bonobo_Pair_0 == 'B') \
+&& (TC_IMPL_TC_CORBA_sequence_Bonobo_Pair_1 == 'o') \
+&& (TC_IMPL_TC_CORBA_sequence_Bonobo_Pair_2 == 'n') \
+&& (TC_IMPL_TC_CORBA_sequence_Bonobo_Pair_3 == 'o') \
+&& (TC_IMPL_TC_CORBA_sequence_Bonobo_Pair_4 == 'b') \
+&& (TC_IMPL_TC_CORBA_sequence_Bonobo_Pair_5 == 'o') \
+) && !defined(TC_DEF_TC_CORBA_sequence_Bonobo_Pair)
+#define TC_DEF_TC_CORBA_sequence_Bonobo_Pair 1
+static const CORBA_TypeCode anon_subtypes_array371[] =
+   { (CORBA_TypeCode) & TC_Bonobo_Pair_struct };
+const struct CORBA_TypeCode_struct TC_CORBA_sequence_Bonobo_Pair_struct = {
+   
+      {{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
+    ORBIT_PSEUDO_TYPECODE},
+
+   CORBA_tk_sequence, NULL, NULL,
+   0, 1,
+   NULL,
+   (CORBA_TypeCode *) anon_subtypes_array371,
    NULL,
    CORBA_OBJECT_NIL, 0, -1, 0, 0
 };
@@ -1684,7 +1705,7 @@ const struct CORBA_TypeCode_struct TC_CORBA_sequence_Bonobo_Pair_struct = {
 && (TC_IMPL_TC_Bonobo_PropertySet_5 == 'o') \
 ) && !defined(TC_DEF_TC_Bonobo_PropertySet)
 #define TC_DEF_TC_Bonobo_PropertySet 1
-static const CORBA_TypeCode anon_subtypes_array371[] =
+static const CORBA_TypeCode anon_subtypes_array375[] =
    { (CORBA_TypeCode) & TC_CORBA_sequence_Bonobo_Pair_struct };
 const struct CORBA_TypeCode_struct TC_Bonobo_PropertySet_struct = {
    
@@ -1694,7 +1715,7 @@ const struct CORBA_TypeCode_struct TC_Bonobo_PropertySet_struct = {
    CORBA_tk_alias, "PropertySet", "IDL:Bonobo/PropertySet:1.0",
    0, 1,
    NULL,
-   (CORBA_TypeCode *) anon_subtypes_array371,
+   (CORBA_TypeCode *) anon_subtypes_array375,
    NULL,
    CORBA_OBJECT_NIL, 0, -1, 0, 0
 };
@@ -1791,7 +1812,7 @@ const struct CORBA_TypeCode_struct TC_Bonobo_Control_struct = {
 && (TC_IMPL_TC_Bonobo_Control_windowId_5 == 'o') \
 ) && !defined(TC_DEF_TC_Bonobo_Control_windowId)
 #define TC_DEF_TC_Bonobo_Control_windowId 1
-static const CORBA_TypeCode anon_subtypes_array396[] =
+static const CORBA_TypeCode anon_subtypes_array400[] =
    { (CORBA_TypeCode) & TC_CORBA_string_struct };
 const struct CORBA_TypeCode_struct TC_Bonobo_Control_windowId_struct = {
    
@@ -1801,7 +1822,7 @@ const struct CORBA_TypeCode_struct TC_Bonobo_Control_windowId_struct = {
    CORBA_tk_alias, "windowId", "IDL:Bonobo/Control/windowId:1.0",
    0, 1,
    NULL,
-   (CORBA_TypeCode *) anon_subtypes_array396,
+   (CORBA_TypeCode *) anon_subtypes_array400,
    NULL,
    CORBA_OBJECT_NIL, 0, -1, 0, 0
 };
@@ -1814,7 +1835,7 @@ const struct CORBA_TypeCode_struct TC_Bonobo_Control_windowId_struct = {
 && (TC_IMPL_TC_Bonobo_Control_State_5 == 'o') \
 ) && !defined(TC_DEF_TC_Bonobo_Control_State)
 #define TC_DEF_TC_Bonobo_Control_State 1
-static const char *anon_subnames_array399[] =
+static const char *anon_subnames_array403[] =
    { "StateNormal", "StateActive", "StatePrelight", "StateSelected",
       "StateInsensitive" };
 const struct CORBA_TypeCode_struct TC_Bonobo_Control_State_struct = {
@@ -1824,7 +1845,30 @@ const struct CORBA_TypeCode_struct TC_Bonobo_Control_State_struct = {
 
    CORBA_tk_enum, "State", "IDL:Bonobo/Control/State:1.0",
    0, 5,
-   (const char **) anon_subnames_array399,
+   (const char **) anon_subnames_array403,
+   NULL,
+   NULL,
+   CORBA_OBJECT_NIL, 0, -1, 0, 0
+};
+#endif
+#if ( (TC_IMPL_TC_Bonobo_Control_FocusDirection_0 == 'B') \
+&& (TC_IMPL_TC_Bonobo_Control_FocusDirection_1 == 'o') \
+&& (TC_IMPL_TC_Bonobo_Control_FocusDirection_2 == 'n') \
+&& (TC_IMPL_TC_Bonobo_Control_FocusDirection_3 == 'o') \
+&& (TC_IMPL_TC_Bonobo_Control_FocusDirection_4 == 'b') \
+&& (TC_IMPL_TC_Bonobo_Control_FocusDirection_5 == 'o') \
+) && !defined(TC_DEF_TC_Bonobo_Control_FocusDirection)
+#define TC_DEF_TC_Bonobo_Control_FocusDirection 1
+static const char *anon_subnames_array407[] =
+   { "TAB_FORWARD", "TAB_BACKWARD", "UP", "DOWN", "LEFT", "RIGHT" };
+const struct CORBA_TypeCode_struct TC_Bonobo_Control_FocusDirection_struct = {
+   
+      {{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
+    ORBIT_PSEUDO_TYPECODE},
+
+   CORBA_tk_enum, "FocusDirection", "IDL:Bonobo/Control/FocusDirection:1.0",
+   0, 6,
+   (const char **) anon_subnames_array407,
    NULL,
    NULL,
    CORBA_OBJECT_NIL, 0, -1, 0, 0
@@ -1859,7 +1903,7 @@ const struct CORBA_TypeCode_struct TC_Bonobo_PropertyControl_struct = {
 && (TC_IMPL_TC_Bonobo_PropertyControl_Action_5 == 'o') \
 ) && !defined(TC_DEF_TC_Bonobo_PropertyControl_Action)
 #define TC_DEF_TC_Bonobo_PropertyControl_Action 1
-static const char *anon_subnames_array407[] = { "APPLY", "HELP" };
+static const char *anon_subnames_array415[] = { "APPLY", "HELP" };
 const struct CORBA_TypeCode_struct TC_Bonobo_PropertyControl_Action_struct = {
    
       {{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
@@ -1867,7 +1911,7 @@ const struct CORBA_TypeCode_struct TC_Bonobo_PropertyControl_Action_struct = {
 
    CORBA_tk_enum, "Action", "IDL:Bonobo/PropertyControl/Action:1.0",
    0, 2,
-   (const char **) anon_subnames_array407,
+   (const char **) anon_subnames_array415,
    NULL,
    NULL,
    CORBA_OBJECT_NIL, 0, -1, 0, 0
@@ -1902,7 +1946,7 @@ const struct CORBA_TypeCode_struct TC_Bonobo_PropertyControl_NoPage_struct = {
 && (TC_IMPL_TC_Bonobo_ZoomLevel_5 == 'o') \
 ) && !defined(TC_DEF_TC_Bonobo_ZoomLevel)
 #define TC_DEF_TC_Bonobo_ZoomLevel 1
-static const CORBA_TypeCode anon_subtypes_array421[] =
+static const CORBA_TypeCode anon_subtypes_array429[] =
    { (CORBA_TypeCode) & TC_CORBA_float_struct };
 const struct CORBA_TypeCode_struct TC_Bonobo_ZoomLevel_struct = {
    
@@ -1912,7 +1956,7 @@ const struct CORBA_TypeCode_struct TC_Bonobo_ZoomLevel_struct = {
    CORBA_tk_alias, "ZoomLevel", "IDL:Bonobo/ZoomLevel:1.0",
    0, 1,
    NULL,
-   (CORBA_TypeCode *) anon_subtypes_array421,
+   (CORBA_TypeCode *) anon_subtypes_array429,
    NULL,
    CORBA_OBJECT_NIL, 0, -1, 0, 0
 };
@@ -1925,7 +1969,7 @@ const struct CORBA_TypeCode_struct TC_Bonobo_ZoomLevel_struct = {
 && (TC_IMPL_TC_Bonobo_ZoomLevelName_5 == 'o') \
 ) && !defined(TC_DEF_TC_Bonobo_ZoomLevelName)
 #define TC_DEF_TC_Bonobo_ZoomLevelName 1
-static const CORBA_TypeCode anon_subtypes_array430[] =
+static const CORBA_TypeCode anon_subtypes_array438[] =
    { (CORBA_TypeCode) & TC_CORBA_string_struct };
 const struct CORBA_TypeCode_struct TC_Bonobo_ZoomLevelName_struct = {
    
@@ -1935,7 +1979,7 @@ const struct CORBA_TypeCode_struct TC_Bonobo_ZoomLevelName_struct = {
    CORBA_tk_alias, "ZoomLevelName", "IDL:Bonobo/ZoomLevelName:1.0",
    0, 1,
    NULL,
-   (CORBA_TypeCode *) anon_subtypes_array430,
+   (CORBA_TypeCode *) anon_subtypes_array438,
    NULL,
    CORBA_OBJECT_NIL, 0, -1, 0, 0
 };
@@ -1948,7 +1992,7 @@ const struct CORBA_TypeCode_struct TC_Bonobo_ZoomLevelName_struct = {
 && (TC_IMPL_TC_CORBA_sequence_Bonobo_ZoomLevel_5 == 'o') \
 ) && !defined(TC_DEF_TC_CORBA_sequence_Bonobo_ZoomLevel)
 #define TC_DEF_TC_CORBA_sequence_Bonobo_ZoomLevel 1
-static const CORBA_TypeCode anon_subtypes_array434[] =
+static const CORBA_TypeCode anon_subtypes_array442[] =
    { (CORBA_TypeCode) & TC_Bonobo_ZoomLevel_struct };
 const struct CORBA_TypeCode_struct TC_CORBA_sequence_Bonobo_ZoomLevel_struct = {
    
@@ -1958,7 +2002,7 @@ const struct CORBA_TypeCode_struct TC_CORBA_sequence_Bonobo_ZoomLevel_struct = {
    CORBA_tk_sequence, NULL, NULL,
    0, 1,
    NULL,
-   (CORBA_TypeCode *) anon_subtypes_array434,
+   (CORBA_TypeCode *) anon_subtypes_array442,
    NULL,
    CORBA_OBJECT_NIL, 0, -1, 0, 0
 };
@@ -1971,7 +2015,7 @@ const struct CORBA_TypeCode_struct TC_CORBA_sequence_Bonobo_ZoomLevel_struct = {
 && (TC_IMPL_TC_CORBA_sequence_Bonobo_ZoomLevel_5 == 'o') \
 ) && !defined(TC_DEF_TC_CORBA_sequence_Bonobo_ZoomLevel)
 #define TC_DEF_TC_CORBA_sequence_Bonobo_ZoomLevel 1
-static const CORBA_TypeCode anon_subtypes_array443[] =
+static const CORBA_TypeCode anon_subtypes_array451[] =
    { (CORBA_TypeCode) & TC_Bonobo_ZoomLevel_struct };
 const struct CORBA_TypeCode_struct TC_CORBA_sequence_Bonobo_ZoomLevel_struct = {
    
@@ -1981,7 +2025,7 @@ const struct CORBA_TypeCode_struct TC_CORBA_sequence_Bonobo_ZoomLevel_struct = {
    CORBA_tk_sequence, NULL, NULL,
    0, 1,
    NULL,
-   (CORBA_TypeCode *) anon_subtypes_array443,
+   (CORBA_TypeCode *) anon_subtypes_array451,
    NULL,
    CORBA_OBJECT_NIL, 0, -1, 0, 0
 };
@@ -1994,7 +2038,7 @@ const struct CORBA_TypeCode_struct TC_CORBA_sequence_Bonobo_ZoomLevel_struct = {
 && (TC_IMPL_TC_Bonobo_ZoomLevelList_5 == 'o') \
 ) && !defined(TC_DEF_TC_Bonobo_ZoomLevelList)
 #define TC_DEF_TC_Bonobo_ZoomLevelList 1
-static const CORBA_TypeCode anon_subtypes_array447[] =
+static const CORBA_TypeCode anon_subtypes_array455[] =
    { (CORBA_TypeCode) & TC_CORBA_sequence_Bonobo_ZoomLevel_struct };
 const struct CORBA_TypeCode_struct TC_Bonobo_ZoomLevelList_struct = {
    
@@ -2004,7 +2048,7 @@ const struct CORBA_TypeCode_struct TC_Bonobo_ZoomLevelList_struct = {
    CORBA_tk_alias, "ZoomLevelList", "IDL:Bonobo/ZoomLevelList:1.0",
    0, 1,
    NULL,
-   (CORBA_TypeCode *) anon_subtypes_array447,
+   (CORBA_TypeCode *) anon_subtypes_array455,
    NULL,
    CORBA_OBJECT_NIL, 0, -1, 0, 0
 };
@@ -2017,7 +2061,7 @@ const struct CORBA_TypeCode_struct TC_Bonobo_ZoomLevelList_struct = {
 && (TC_IMPL_TC_CORBA_sequence_Bonobo_ZoomLevelName_5 == 'o') \
 ) && !defined(TC_DEF_TC_CORBA_sequence_Bonobo_ZoomLevelName)
 #define TC_DEF_TC_CORBA_sequence_Bonobo_ZoomLevelName 1
-static const CORBA_TypeCode anon_subtypes_array451[] =
+static const CORBA_TypeCode anon_subtypes_array459[] =
    { (CORBA_TypeCode) & TC_Bonobo_ZoomLevelName_struct };
 const struct CORBA_TypeCode_struct
    TC_CORBA_sequence_Bonobo_ZoomLevelName_struct = {
@@ -2026,7 +2070,7 @@ const struct CORBA_TypeCode_struct
    CORBA_tk_sequence, NULL, NULL,
    0, 1,
    NULL,
-   (CORBA_TypeCode *) anon_subtypes_array451,
+   (CORBA_TypeCode *) anon_subtypes_array459,
    NULL,
    CORBA_OBJECT_NIL, 0, -1, 0, 0
 };
@@ -2039,7 +2083,7 @@ const struct CORBA_TypeCode_struct
 && (TC_IMPL_TC_CORBA_sequence_Bonobo_ZoomLevelName_5 == 'o') \
 ) && !defined(TC_DEF_TC_CORBA_sequence_Bonobo_ZoomLevelName)
 #define TC_DEF_TC_CORBA_sequence_Bonobo_ZoomLevelName 1
-static const CORBA_TypeCode anon_subtypes_array460[] =
+static const CORBA_TypeCode anon_subtypes_array468[] =
    { (CORBA_TypeCode) & TC_Bonobo_ZoomLevelName_struct };
 const struct CORBA_TypeCode_struct
    TC_CORBA_sequence_Bonobo_ZoomLevelName_struct = {
@@ -2048,7 +2092,7 @@ const struct CORBA_TypeCode_struct
    CORBA_tk_sequence, NULL, NULL,
    0, 1,
    NULL,
-   (CORBA_TypeCode *) anon_subtypes_array460,
+   (CORBA_TypeCode *) anon_subtypes_array468,
    NULL,
    CORBA_OBJECT_NIL, 0, -1, 0, 0
 };
@@ -2061,7 +2105,7 @@ const struct CORBA_TypeCode_struct
 && (TC_IMPL_TC_Bonobo_ZoomLevelNameList_5 == 'o') \
 ) && !defined(TC_DEF_TC_Bonobo_ZoomLevelNameList)
 #define TC_DEF_TC_Bonobo_ZoomLevelNameList 1
-static const CORBA_TypeCode anon_subtypes_array464[] =
+static const CORBA_TypeCode anon_subtypes_array472[] =
    { (CORBA_TypeCode) & TC_CORBA_sequence_Bonobo_ZoomLevelName_struct };
 const struct CORBA_TypeCode_struct TC_Bonobo_ZoomLevelNameList_struct = {
    
@@ -2071,7 +2115,7 @@ const struct CORBA_TypeCode_struct TC_Bonobo_ZoomLevelNameList_struct = {
    CORBA_tk_alias, "ZoomLevelNameList", "IDL:Bonobo/ZoomLevelNameList:1.0",
    0, 1,
    NULL,
-   (CORBA_TypeCode *) anon_subtypes_array464,
+   (CORBA_TypeCode *) anon_subtypes_array472,
    NULL,
    CORBA_OBJECT_NIL, 0, -1, 0, 0
 };
@@ -2139,17 +2183,17 @@ const struct CORBA_TypeCode_struct TC_Bonobo_ItemContainer_struct = {
    CORBA_OBJECT_NIL, 0, -1, 0, 0
 };
 #endif
-#if ( (TC_IMPL_TC_CORBA_sequence_Bonobo_Unknown_0 == 'B') \
-&& (TC_IMPL_TC_CORBA_sequence_Bonobo_Unknown_1 == 'o') \
-&& (TC_IMPL_TC_CORBA_sequence_Bonobo_Unknown_2 == 'n') \
-&& (TC_IMPL_TC_CORBA_sequence_Bonobo_Unknown_3 == 'o') \
-&& (TC_IMPL_TC_CORBA_sequence_Bonobo_Unknown_4 == 'b') \
-&& (TC_IMPL_TC_CORBA_sequence_Bonobo_Unknown_5 == 'o') \
-) && !defined(TC_DEF_TC_CORBA_sequence_Bonobo_Unknown)
-#define TC_DEF_TC_CORBA_sequence_Bonobo_Unknown 1
-static const CORBA_TypeCode anon_subtypes_array480[] =
-   { (CORBA_TypeCode) & TC_Object_struct };
-const struct CORBA_TypeCode_struct TC_CORBA_sequence_Bonobo_Unknown_struct = {
+#if ( (TC_IMPL_TC_CORBA_sequence_CORBA_string_0 == 'B') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_1 == 'o') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_2 == 'n') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_3 == 'o') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_4 == 'b') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_5 == 'o') \
+) && !defined(TC_DEF_TC_CORBA_sequence_CORBA_string)
+#define TC_DEF_TC_CORBA_sequence_CORBA_string 1
+static const CORBA_TypeCode anon_subtypes_array488[] =
+   { (CORBA_TypeCode) & TC_CORBA_string_struct };
+const struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_string_struct = {
    
       {{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
     ORBIT_PSEUDO_TYPECODE},
@@ -2157,22 +2201,22 @@ const struct CORBA_TypeCode_struct TC_CORBA_sequence_Bonobo_Unknown_struct = {
    CORBA_tk_sequence, NULL, NULL,
    0, 1,
    NULL,
-   (CORBA_TypeCode *) anon_subtypes_array480,
+   (CORBA_TypeCode *) anon_subtypes_array488,
    NULL,
    CORBA_OBJECT_NIL, 0, -1, 0, 0
 };
 #endif
-#if ( (TC_IMPL_TC_CORBA_sequence_Bonobo_Unknown_0 == 'B') \
-&& (TC_IMPL_TC_CORBA_sequence_Bonobo_Unknown_1 == 'o') \
-&& (TC_IMPL_TC_CORBA_sequence_Bonobo_Unknown_2 == 'n') \
-&& (TC_IMPL_TC_CORBA_sequence_Bonobo_Unknown_3 == 'o') \
-&& (TC_IMPL_TC_CORBA_sequence_Bonobo_Unknown_4 == 'b') \
-&& (TC_IMPL_TC_CORBA_sequence_Bonobo_Unknown_5 == 'o') \
-) && !defined(TC_DEF_TC_CORBA_sequence_Bonobo_Unknown)
-#define TC_DEF_TC_CORBA_sequence_Bonobo_Unknown 1
-static const CORBA_TypeCode anon_subtypes_array489[] =
-   { (CORBA_TypeCode) & TC_Object_struct };
-const struct CORBA_TypeCode_struct TC_CORBA_sequence_Bonobo_Unknown_struct = {
+#if ( (TC_IMPL_TC_CORBA_sequence_CORBA_string_0 == 'B') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_1 == 'o') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_2 == 'n') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_3 == 'o') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_4 == 'b') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_5 == 'o') \
+) && !defined(TC_DEF_TC_CORBA_sequence_CORBA_string)
+#define TC_DEF_TC_CORBA_sequence_CORBA_string 1
+static const CORBA_TypeCode anon_subtypes_array497[] =
+   { (CORBA_TypeCode) & TC_CORBA_string_struct };
+const struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_string_struct = {
    
       {{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
     ORBIT_PSEUDO_TYPECODE},
@@ -2180,30 +2224,29 @@ const struct CORBA_TypeCode_struct TC_CORBA_sequence_Bonobo_Unknown_struct = {
    CORBA_tk_sequence, NULL, NULL,
    0, 1,
    NULL,
-   (CORBA_TypeCode *) anon_subtypes_array489,
+   (CORBA_TypeCode *) anon_subtypes_array497,
    NULL,
    CORBA_OBJECT_NIL, 0, -1, 0, 0
 };
 #endif
-#if ( (TC_IMPL_TC_Bonobo_ItemContainer_ObjectList_0 == 'B') \
-&& (TC_IMPL_TC_Bonobo_ItemContainer_ObjectList_1 == 'o') \
-&& (TC_IMPL_TC_Bonobo_ItemContainer_ObjectList_2 == 'n') \
-&& (TC_IMPL_TC_Bonobo_ItemContainer_ObjectList_3 == 'o') \
-&& (TC_IMPL_TC_Bonobo_ItemContainer_ObjectList_4 == 'b') \
-&& (TC_IMPL_TC_Bonobo_ItemContainer_ObjectList_5 == 'o') \
-) && !defined(TC_DEF_TC_Bonobo_ItemContainer_ObjectList)
-#define TC_DEF_TC_Bonobo_ItemContainer_ObjectList 1
-static const CORBA_TypeCode anon_subtypes_array493[] =
-   { (CORBA_TypeCode) & TC_CORBA_sequence_Bonobo_Unknown_struct };
-const struct CORBA_TypeCode_struct TC_Bonobo_ItemContainer_ObjectList_struct = {
-   
-      {{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
+#if ( (TC_IMPL_TC_Bonobo_ItemContainer_ObjectNames_0 == 'B') \
+&& (TC_IMPL_TC_Bonobo_ItemContainer_ObjectNames_1 == 'o') \
+&& (TC_IMPL_TC_Bonobo_ItemContainer_ObjectNames_2 == 'n') \
+&& (TC_IMPL_TC_Bonobo_ItemContainer_ObjectNames_3 == 'o') \
+&& (TC_IMPL_TC_Bonobo_ItemContainer_ObjectNames_4 == 'b') \
+&& (TC_IMPL_TC_Bonobo_ItemContainer_ObjectNames_5 == 'o') \
+) && !defined(TC_DEF_TC_Bonobo_ItemContainer_ObjectNames)
+#define TC_DEF_TC_Bonobo_ItemContainer_ObjectNames 1
+static const CORBA_TypeCode anon_subtypes_array501[] =
+   { (CORBA_TypeCode) & TC_CORBA_sequence_CORBA_string_struct };
+const struct CORBA_TypeCode_struct TC_Bonobo_ItemContainer_ObjectNames_struct
+   = {
+   {{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
     ORBIT_PSEUDO_TYPECODE},
-
-   CORBA_tk_alias, "ObjectList", "IDL:Bonobo/ItemContainer/ObjectList:1.0",
+   CORBA_tk_alias, "ObjectNames", "IDL:Bonobo/ItemContainer/ObjectNames:1.0",
    0, 1,
    NULL,
-   (CORBA_TypeCode *) anon_subtypes_array493,
+   (CORBA_TypeCode *) anon_subtypes_array501,
    NULL,
    CORBA_OBJECT_NIL, 0, -1, 0, 0
 };
@@ -2278,7 +2321,7 @@ const struct CORBA_TypeCode_struct TC_Bonobo_ClientSite_struct = {
 && (TC_IMPL_TC_Bonobo_Gdk_EventType_5 == 'o') \
 ) && !defined(TC_DEF_TC_Bonobo_Gdk_EventType)
 #define TC_DEF_TC_Bonobo_Gdk_EventType 1
-static const char *anon_subnames_array508[] =
+static const char *anon_subnames_array516[] =
    { "FOCUS", "KEY", "MOTION", "BUTTON", "CROSSING" };
 const struct CORBA_TypeCode_struct TC_Bonobo_Gdk_EventType_struct = {
    
@@ -2287,7 +2330,7 @@ const struct CORBA_TypeCode_struct TC_Bonobo_Gdk_EventType_struct = {
 
    CORBA_tk_enum, "EventType", "IDL:Bonobo/Gdk/EventType:1.0",
    0, 5,
-   (const char **) anon_subnames_array508,
+   (const char **) anon_subnames_array516,
    NULL,
    NULL,
    CORBA_OBJECT_NIL, 0, -1, 0, 0
@@ -2301,7 +2344,7 @@ const struct CORBA_TypeCode_struct TC_Bonobo_Gdk_EventType_struct = {
 && (TC_IMPL_TC_Bonobo_Gdk_ButtonType_5 == 'o') \
 ) && !defined(TC_DEF_TC_Bonobo_Gdk_ButtonType)
 #define TC_DEF_TC_Bonobo_Gdk_ButtonType 1
-static const char *anon_subnames_array512[] =
+static const char *anon_subnames_array520[] =
    { "BUTTON_PRESS", "BUTTON_2_PRESS", "BUTTON_3_PRESS", "BUTTON_RELEASE" };
 const struct CORBA_TypeCode_struct TC_Bonobo_Gdk_ButtonType_struct = {
    
@@ -2310,7 +2353,7 @@ const struct CORBA_TypeCode_struct TC_Bonobo_Gdk_ButtonType_struct = {
 
    CORBA_tk_enum, "ButtonType", "IDL:Bonobo/Gdk/ButtonType:1.0",
    0, 4,
-   (const char **) anon_subnames_array512,
+   (const char **) anon_subnames_array520,
    NULL,
    NULL,
    CORBA_OBJECT_NIL, 0, -1, 0, 0
@@ -2324,7 +2367,7 @@ const struct CORBA_TypeCode_struct TC_Bonobo_Gdk_ButtonType_struct = {
 && (TC_IMPL_TC_Bonobo_Gdk_KeyType_5 == 'o') \
 ) && !defined(TC_DEF_TC_Bonobo_Gdk_KeyType)
 #define TC_DEF_TC_Bonobo_Gdk_KeyType 1
-static const char *anon_subnames_array516[] = { "KEY_PRESS", "KEY_RELEASE" };
+static const char *anon_subnames_array524[] = { "KEY_PRESS", "KEY_RELEASE" };
 const struct CORBA_TypeCode_struct TC_Bonobo_Gdk_KeyType_struct = {
    
       {{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
@@ -2332,7 +2375,7 @@ const struct CORBA_TypeCode_struct TC_Bonobo_Gdk_KeyType_struct = {
 
    CORBA_tk_enum, "KeyType", "IDL:Bonobo/Gdk/KeyType:1.0",
    0, 2,
-   (const char **) anon_subnames_array516,
+   (const char **) anon_subnames_array524,
    NULL,
    NULL,
    CORBA_OBJECT_NIL, 0, -1, 0, 0
@@ -2346,7 +2389,7 @@ const struct CORBA_TypeCode_struct TC_Bonobo_Gdk_KeyType_struct = {
 && (TC_IMPL_TC_Bonobo_Gdk_CrossType_5 == 'o') \
 ) && !defined(TC_DEF_TC_Bonobo_Gdk_CrossType)
 #define TC_DEF_TC_Bonobo_Gdk_CrossType 1
-static const char *anon_subnames_array520[] = { "ENTER", "LEAVE" };
+static const char *anon_subnames_array528[] = { "ENTER", "LEAVE" };
 const struct CORBA_TypeCode_struct TC_Bonobo_Gdk_CrossType_struct = {
    
       {{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
@@ -2354,7 +2397,7 @@ const struct CORBA_TypeCode_struct TC_Bonobo_Gdk_CrossType_struct = {
 
    CORBA_tk_enum, "CrossType", "IDL:Bonobo/Gdk/CrossType:1.0",
    0, 2,
-   (const char **) anon_subnames_array520,
+   (const char **) anon_subnames_array528,
    NULL,
    NULL,
    CORBA_OBJECT_NIL, 0, -1, 0, 0
@@ -2368,7 +2411,7 @@ const struct CORBA_TypeCode_struct TC_Bonobo_Gdk_CrossType_struct = {
 && (TC_IMPL_TC_Bonobo_Gdk_CrossMode_5 == 'o') \
 ) && !defined(TC_DEF_TC_Bonobo_Gdk_CrossMode)
 #define TC_DEF_TC_Bonobo_Gdk_CrossMode 1
-static const char *anon_subnames_array524[] = { "NORMAL", "GRAB", "UNGRAB" };
+static const char *anon_subnames_array532[] = { "NORMAL", "GRAB", "UNGRAB" };
 const struct CORBA_TypeCode_struct TC_Bonobo_Gdk_CrossMode_struct = {
    
       {{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
@@ -2376,7 +2419,7 @@ const struct CORBA_TypeCode_struct TC_Bonobo_Gdk_CrossMode_struct = {
 
    CORBA_tk_enum, "CrossMode", "IDL:Bonobo/Gdk/CrossMode:1.0",
    0, 3,
-   (const char **) anon_subnames_array524,
+   (const char **) anon_subnames_array532,
    NULL,
    NULL,
    CORBA_OBJECT_NIL, 0, -1, 0, 0
@@ -2390,7 +2433,7 @@ const struct CORBA_TypeCode_struct TC_Bonobo_Gdk_CrossMode_struct = {
 && (TC_IMPL_TC_Bonobo_Gdk_Time_5 == 'o') \
 ) && !defined(TC_DEF_TC_Bonobo_Gdk_Time)
 #define TC_DEF_TC_Bonobo_Gdk_Time 1
-static const CORBA_TypeCode anon_subtypes_array534[] =
+static const CORBA_TypeCode anon_subtypes_array542[] =
    { (CORBA_TypeCode) & TC_CORBA_long_struct };
 const struct CORBA_TypeCode_struct TC_Bonobo_Gdk_Time_struct = {
    
@@ -2400,7 +2443,7 @@ const struct CORBA_TypeCode_struct TC_Bonobo_Gdk_Time_struct = {
    CORBA_tk_alias, "Time", "IDL:Bonobo/Gdk/Time:1.0",
    0, 1,
    NULL,
-   (CORBA_TypeCode *) anon_subtypes_array534,
+   (CORBA_TypeCode *) anon_subtypes_array542,
    NULL,
    CORBA_OBJECT_NIL, 0, -1, 0, 0
 };
@@ -2413,10 +2456,10 @@ const struct CORBA_TypeCode_struct TC_Bonobo_Gdk_Time_struct = {
 && (TC_IMPL_TC_Bonobo_Gdk_MotionEvent_5 == 'o') \
 ) && !defined(TC_DEF_TC_Bonobo_Gdk_MotionEvent)
 #define TC_DEF_TC_Bonobo_Gdk_MotionEvent 1
-static const char *anon_subnames_array537[] =
+static const char *anon_subnames_array545[] =
    { "time", "x", "y", "x_root", "y_root", "pressure", "xtilt", "ytilt",
       "state", "is_hint" };
-static const CORBA_TypeCode anon_subtypes_array538[] =
+static const CORBA_TypeCode anon_subtypes_array546[] =
    { (CORBA_TypeCode) & TC_Bonobo_Gdk_Time_struct,
       (CORBA_TypeCode) & TC_CORBA_double_struct,
       (CORBA_TypeCode) & TC_CORBA_double_struct,
@@ -2434,8 +2477,8 @@ const struct CORBA_TypeCode_struct TC_Bonobo_Gdk_MotionEvent_struct = {
 
    CORBA_tk_struct, "MotionEvent", "IDL:Bonobo/Gdk/MotionEvent:1.0",
    0, 10,
-   (const char **) anon_subnames_array537,
-   (CORBA_TypeCode *) anon_subtypes_array538,
+   (const char **) anon_subnames_array545,
+   (CORBA_TypeCode *) anon_subtypes_array546,
    NULL,
    CORBA_OBJECT_NIL, 0, -1, 0, 0
 };
@@ -2448,9 +2491,9 @@ const struct CORBA_TypeCode_struct TC_Bonobo_Gdk_MotionEvent_struct = {
 && (TC_IMPL_TC_Bonobo_Gdk_ButtonEvent_5 == 'o') \
 ) && !defined(TC_DEF_TC_Bonobo_Gdk_ButtonEvent)
 #define TC_DEF_TC_Bonobo_Gdk_ButtonEvent 1
-static const char *anon_subnames_array541[] =
+static const char *anon_subnames_array549[] =
    { "type", "time", "x", "y", "x_root", "y_root", "button" };
-static const CORBA_TypeCode anon_subtypes_array542[] =
+static const CORBA_TypeCode anon_subtypes_array550[] =
    { (CORBA_TypeCode) & TC_Bonobo_Gdk_ButtonType_struct,
       (CORBA_TypeCode) & TC_Bonobo_Gdk_Time_struct,
       (CORBA_TypeCode) & TC_CORBA_double_struct,
@@ -2465,8 +2508,8 @@ const struct CORBA_TypeCode_struct TC_Bonobo_Gdk_ButtonEvent_struct = {
 
    CORBA_tk_struct, "ButtonEvent", "IDL:Bonobo/Gdk/ButtonEvent:1.0",
    0, 7,
-   (const char **) anon_subnames_array541,
-   (CORBA_TypeCode *) anon_subtypes_array542,
+   (const char **) anon_subnames_array549,
+   (CORBA_TypeCode *) anon_subtypes_array550,
    NULL,
    CORBA_OBJECT_NIL, 0, -1, 0, 0
 };
@@ -2479,9 +2522,9 @@ const struct CORBA_TypeCode_struct TC_Bonobo_Gdk_ButtonEvent_struct = {
 && (TC_IMPL_TC_Bonobo_Gdk_KeyEvent_5 == 'o') \
 ) && !defined(TC_DEF_TC_Bonobo_Gdk_KeyEvent)
 #define TC_DEF_TC_Bonobo_Gdk_KeyEvent 1
-static const char *anon_subnames_array545[] =
+static const char *anon_subnames_array553[] =
    { "type", "time", "state", "keyval", "length", "str" };
-static const CORBA_TypeCode anon_subtypes_array546[] =
+static const CORBA_TypeCode anon_subtypes_array554[] =
    { (CORBA_TypeCode) & TC_Bonobo_Gdk_KeyType_struct,
       (CORBA_TypeCode) & TC_Bonobo_Gdk_Time_struct,
       (CORBA_TypeCode) & TC_CORBA_short_struct,
@@ -2495,8 +2538,8 @@ const struct CORBA_TypeCode_struct TC_Bonobo_Gdk_KeyEvent_struct = {
 
    CORBA_tk_struct, "KeyEvent", "IDL:Bonobo/Gdk/KeyEvent:1.0",
    0, 6,
-   (const char **) anon_subnames_array545,
-   (CORBA_TypeCode *) anon_subtypes_array546,
+   (const char **) anon_subnames_array553,
+   (CORBA_TypeCode *) anon_subtypes_array554,
    NULL,
    CORBA_OBJECT_NIL, 0, -1, 0, 0
 };
@@ -2509,9 +2552,9 @@ const struct CORBA_TypeCode_struct TC_Bonobo_Gdk_KeyEvent_struct = {
 && (TC_IMPL_TC_Bonobo_Gdk_CrossingEvent_5 == 'o') \
 ) && !defined(TC_DEF_TC_Bonobo_Gdk_CrossingEvent)
 #define TC_DEF_TC_Bonobo_Gdk_CrossingEvent 1
-static const char *anon_subnames_array549[] =
+static const char *anon_subnames_array557[] =
    { "type", "time", "x", "y", "x_root", "y_root", "mode", "focus", "state" };
-static const CORBA_TypeCode anon_subtypes_array550[] =
+static const CORBA_TypeCode anon_subtypes_array558[] =
    { (CORBA_TypeCode) & TC_Bonobo_Gdk_CrossType_struct,
       (CORBA_TypeCode) & TC_Bonobo_Gdk_Time_struct,
       (CORBA_TypeCode) & TC_CORBA_double_struct,
@@ -2528,8 +2571,8 @@ const struct CORBA_TypeCode_struct TC_Bonobo_Gdk_CrossingEvent_struct = {
 
    CORBA_tk_struct, "CrossingEvent", "IDL:Bonobo/Gdk/CrossingEvent:1.0",
    0, 9,
-   (const char **) anon_subnames_array549,
-   (CORBA_TypeCode *) anon_subtypes_array550,
+   (const char **) anon_subnames_array557,
+   (CORBA_TypeCode *) anon_subtypes_array558,
    NULL,
    CORBA_OBJECT_NIL, 0, -1, 0, 0
 };
@@ -2542,8 +2585,8 @@ const struct CORBA_TypeCode_struct TC_Bonobo_Gdk_CrossingEvent_struct = {
 && (TC_IMPL_TC_Bonobo_Gdk_FocusEvent_5 == 'o') \
 ) && !defined(TC_DEF_TC_Bonobo_Gdk_FocusEvent)
 #define TC_DEF_TC_Bonobo_Gdk_FocusEvent 1
-static const char *anon_subnames_array553[] = { "inside" };
-static const CORBA_TypeCode anon_subtypes_array554[] =
+static const char *anon_subnames_array561[] = { "inside" };
+static const CORBA_TypeCode anon_subtypes_array562[] =
    { (CORBA_TypeCode) & TC_CORBA_boolean_struct };
 const struct CORBA_TypeCode_struct TC_Bonobo_Gdk_FocusEvent_struct = {
    
@@ -2552,8 +2595,8 @@ const struct CORBA_TypeCode_struct TC_Bonobo_Gdk_FocusEvent_struct = {
 
    CORBA_tk_struct, "FocusEvent", "IDL:Bonobo/Gdk/FocusEvent:1.0",
    0, 1,
-   (const char **) anon_subnames_array553,
-   (CORBA_TypeCode *) anon_subtypes_array554,
+   (const char **) anon_subnames_array561,
+   (CORBA_TypeCode *) anon_subtypes_array562,
    NULL,
    CORBA_OBJECT_NIL, 0, -1, 0, 0
 };
@@ -2566,28 +2609,28 @@ const struct CORBA_TypeCode_struct TC_Bonobo_Gdk_FocusEvent_struct = {
 && (TC_IMPL_TC_Bonobo_Gdk_Event_5 == 'o') \
 ) && !defined(TC_DEF_TC_Bonobo_Gdk_Event)
 #define TC_DEF_TC_Bonobo_Gdk_Event 1
-static const Bonobo_Gdk_EventType anon_sublabel_values_array560[] =
+static const Bonobo_Gdk_EventType anon_sublabel_values_array568[] =
    { Bonobo_Gdk_FOCUS, Bonobo_Gdk_KEY, Bonobo_Gdk_MOTION, Bonobo_Gdk_BUTTON,
       Bonobo_Gdk_CROSSING };
-static const char *anon_subnames_array557[] =
+static const char *anon_subnames_array565[] =
    { "focus", "key", "motion", "button", "crossing" };
-static const CORBA_TypeCode anon_subtypes_array558[] =
+static const CORBA_TypeCode anon_subtypes_array566[] =
    { (CORBA_TypeCode) & TC_Bonobo_Gdk_FocusEvent_struct,
       (CORBA_TypeCode) & TC_Bonobo_Gdk_KeyEvent_struct,
       (CORBA_TypeCode) & TC_Bonobo_Gdk_MotionEvent_struct,
       (CORBA_TypeCode) & TC_Bonobo_Gdk_ButtonEvent_struct,
       (CORBA_TypeCode) & TC_Bonobo_Gdk_CrossingEvent_struct };
-static const CORBA_any anon_sublabels_array559[] =
+static const CORBA_any anon_sublabels_array567[] =
    { {(CORBA_TypeCode) & TC_Bonobo_Gdk_EventType_struct,
-      (gpointer) & anon_sublabel_values_array560[0], CORBA_FALSE},
+      (gpointer) & anon_sublabel_values_array568[0], CORBA_FALSE},
    {(CORBA_TypeCode) & TC_Bonobo_Gdk_EventType_struct,
-    (gpointer) & anon_sublabel_values_array560[1], CORBA_FALSE},
+    (gpointer) & anon_sublabel_values_array568[1], CORBA_FALSE},
    {(CORBA_TypeCode) & TC_Bonobo_Gdk_EventType_struct,
-    (gpointer) & anon_sublabel_values_array560[2], CORBA_FALSE},
+    (gpointer) & anon_sublabel_values_array568[2], CORBA_FALSE},
    {(CORBA_TypeCode) & TC_Bonobo_Gdk_EventType_struct,
-    (gpointer) & anon_sublabel_values_array560[3], CORBA_FALSE},
+    (gpointer) & anon_sublabel_values_array568[3], CORBA_FALSE},
    {(CORBA_TypeCode) & TC_Bonobo_Gdk_EventType_struct,
-    (gpointer) & anon_sublabel_values_array560[4], CORBA_FALSE} };
+    (gpointer) & anon_sublabel_values_array568[4], CORBA_FALSE} };
 const struct CORBA_TypeCode_struct TC_Bonobo_Gdk_Event_struct = {
    
       {{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
@@ -2595,9 +2638,9 @@ const struct CORBA_TypeCode_struct TC_Bonobo_Gdk_Event_struct = {
 
    CORBA_tk_union, "Event", "IDL:Bonobo/Gdk/Event:1.0",
    0, 5,
-   (const char **) anon_subnames_array557,
-   (CORBA_TypeCode *) anon_subtypes_array558,
-   (CORBA_any *) anon_sublabels_array559,
+   (const char **) anon_subnames_array565,
+   (CORBA_TypeCode *) anon_subtypes_array566,
+   (CORBA_any *) anon_sublabels_array567,
    (CORBA_TypeCode) & TC_Bonobo_Gdk_EventType_struct, 0, -1, 0, 0
 };
 #endif
@@ -2609,7 +2652,7 @@ const struct CORBA_TypeCode_struct TC_Bonobo_Gdk_Event_struct = {
 && (TC_IMPL_TC_CORBA_sequence_CORBA_octet_5 == 'o') \
 ) && !defined(TC_DEF_TC_CORBA_sequence_CORBA_octet)
 #define TC_DEF_TC_CORBA_sequence_CORBA_octet 1
-static const CORBA_TypeCode anon_subtypes_array563[] =
+static const CORBA_TypeCode anon_subtypes_array571[] =
    { (CORBA_TypeCode) & TC_CORBA_octet_struct };
 const struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_octet_struct = {
    
@@ -2619,7 +2662,7 @@ const struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_octet_struct = {
    CORBA_tk_sequence, NULL, NULL,
    0, 1,
    NULL,
-   (CORBA_TypeCode *) anon_subtypes_array563,
+   (CORBA_TypeCode *) anon_subtypes_array571,
    NULL,
    CORBA_OBJECT_NIL, 0, -1, 0, 0
 };
@@ -2632,7 +2675,7 @@ const struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_octet_struct = {
 && (TC_IMPL_TC_CORBA_sequence_CORBA_octet_5 == 'o') \
 ) && !defined(TC_DEF_TC_CORBA_sequence_CORBA_octet)
 #define TC_DEF_TC_CORBA_sequence_CORBA_octet 1
-static const CORBA_TypeCode anon_subtypes_array572[] =
+static const CORBA_TypeCode anon_subtypes_array580[] =
    { (CORBA_TypeCode) & TC_CORBA_octet_struct };
 const struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_octet_struct = {
    
@@ -2642,7 +2685,7 @@ const struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_octet_struct = {
    CORBA_tk_sequence, NULL, NULL,
    0, 1,
    NULL,
-   (CORBA_TypeCode *) anon_subtypes_array572,
+   (CORBA_TypeCode *) anon_subtypes_array580,
    NULL,
    CORBA_OBJECT_NIL, 0, -1, 0, 0
 };
@@ -2655,7 +2698,7 @@ const struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_octet_struct = {
 && (TC_IMPL_TC_Bonobo_Canvas_pixbuf_5 == 'o') \
 ) && !defined(TC_DEF_TC_Bonobo_Canvas_pixbuf)
 #define TC_DEF_TC_Bonobo_Canvas_pixbuf 1
-static const CORBA_TypeCode anon_subtypes_array576[] =
+static const CORBA_TypeCode anon_subtypes_array584[] =
    { (CORBA_TypeCode) & TC_CORBA_sequence_CORBA_octet_struct };
 const struct CORBA_TypeCode_struct TC_Bonobo_Canvas_pixbuf_struct = {
    
@@ -2665,7 +2708,7 @@ const struct CORBA_TypeCode_struct TC_Bonobo_Canvas_pixbuf_struct = {
    CORBA_tk_alias, "pixbuf", "IDL:Bonobo/Canvas/pixbuf:1.0",
    0, 1,
    NULL,
-   (CORBA_TypeCode *) anon_subtypes_array576,
+   (CORBA_TypeCode *) anon_subtypes_array584,
    NULL,
    CORBA_OBJECT_NIL, 0, -1, 0, 0
 };
@@ -2678,7 +2721,7 @@ const struct CORBA_TypeCode_struct TC_Bonobo_Canvas_pixbuf_struct = {
 && (TC_IMPL_TC_Bonobo_Canvas_window_id_5 == 'o') \
 ) && !defined(TC_DEF_TC_Bonobo_Canvas_window_id)
 #define TC_DEF_TC_Bonobo_Canvas_window_id 1
-static const CORBA_TypeCode anon_subtypes_array585[] =
+static const CORBA_TypeCode anon_subtypes_array593[] =
    { (CORBA_TypeCode) & TC_CORBA_unsigned_long_struct };
 const struct CORBA_TypeCode_struct TC_Bonobo_Canvas_window_id_struct = {
    
@@ -2688,7 +2731,7 @@ const struct CORBA_TypeCode_struct TC_Bonobo_Canvas_window_id_struct = {
    CORBA_tk_alias, "window_id", "IDL:Bonobo/Canvas/window_id:1.0",
    0, 1,
    NULL,
-   (CORBA_TypeCode *) anon_subtypes_array585,
+   (CORBA_TypeCode *) anon_subtypes_array593,
    NULL,
    CORBA_OBJECT_NIL, 0, -1, 0, 0
 };
@@ -2701,7 +2744,7 @@ const struct CORBA_TypeCode_struct TC_Bonobo_Canvas_window_id_struct = {
 && (TC_IMPL_TC_Bonobo_Canvas_int32_5 == 'o') \
 ) && !defined(TC_DEF_TC_Bonobo_Canvas_int32)
 #define TC_DEF_TC_Bonobo_Canvas_int32 1
-static const CORBA_TypeCode anon_subtypes_array594[] =
+static const CORBA_TypeCode anon_subtypes_array602[] =
    { (CORBA_TypeCode) & TC_CORBA_long_struct };
 const struct CORBA_TypeCode_struct TC_Bonobo_Canvas_int32_struct = {
    
@@ -2711,7 +2754,7 @@ const struct CORBA_TypeCode_struct TC_Bonobo_Canvas_int32_struct = {
    CORBA_tk_alias, "int32", "IDL:Bonobo/Canvas/int32:1.0",
    0, 1,
    NULL,
-   (CORBA_TypeCode *) anon_subtypes_array594,
+   (CORBA_TypeCode *) anon_subtypes_array602,
    NULL,
    CORBA_OBJECT_NIL, 0, -1, 0, 0
 };
@@ -2724,8 +2767,8 @@ const struct CORBA_TypeCode_struct TC_Bonobo_Canvas_int32_struct = {
 && (TC_IMPL_TC_Bonobo_Canvas_IRect_5 == 'o') \
 ) && !defined(TC_DEF_TC_Bonobo_Canvas_IRect)
 #define TC_DEF_TC_Bonobo_Canvas_IRect 1
-static const char *anon_subnames_array597[] = { "x0", "y0", "x1", "y1" };
-static const CORBA_TypeCode anon_subtypes_array598[] =
+static const char *anon_subnames_array605[] = { "x0", "y0", "x1", "y1" };
+static const CORBA_TypeCode anon_subtypes_array606[] =
    { (CORBA_TypeCode) & TC_CORBA_long_struct,
       (CORBA_TypeCode) & TC_CORBA_long_struct,
       (CORBA_TypeCode) & TC_CORBA_long_struct,
@@ -2737,8 +2780,8 @@ const struct CORBA_TypeCode_struct TC_Bonobo_Canvas_IRect_struct = {
 
    CORBA_tk_struct, "IRect", "IDL:Bonobo/Canvas/IRect:1.0",
    0, 4,
-   (const char **) anon_subnames_array597,
-   (CORBA_TypeCode *) anon_subtypes_array598,
+   (const char **) anon_subnames_array605,
+   (CORBA_TypeCode *) anon_subtypes_array606,
    NULL,
    CORBA_OBJECT_NIL, 0, -1, 0, 0
 };
@@ -2751,8 +2794,8 @@ const struct CORBA_TypeCode_struct TC_Bonobo_Canvas_IRect_struct = {
 && (TC_IMPL_TC_Bonobo_Canvas_DRect_5 == 'o') \
 ) && !defined(TC_DEF_TC_Bonobo_Canvas_DRect)
 #define TC_DEF_TC_Bonobo_Canvas_DRect 1
-static const char *anon_subnames_array601[] = { "x0", "y0", "x1", "y1" };
-static const CORBA_TypeCode anon_subtypes_array602[] =
+static const char *anon_subnames_array609[] = { "x0", "y0", "x1", "y1" };
+static const CORBA_TypeCode anon_subtypes_array610[] =
    { (CORBA_TypeCode) & TC_CORBA_double_struct,
       (CORBA_TypeCode) & TC_CORBA_double_struct,
       (CORBA_TypeCode) & TC_CORBA_double_struct,
@@ -2764,8 +2807,8 @@ const struct CORBA_TypeCode_struct TC_Bonobo_Canvas_DRect_struct = {
 
    CORBA_tk_struct, "DRect", "IDL:Bonobo/Canvas/DRect:1.0",
    0, 4,
-   (const char **) anon_subnames_array601,
-   (CORBA_TypeCode *) anon_subtypes_array602,
+   (const char **) anon_subnames_array609,
+   (CORBA_TypeCode *) anon_subtypes_array610,
    NULL,
    CORBA_OBJECT_NIL, 0, -1, 0, 0
 };
@@ -2778,9 +2821,9 @@ const struct CORBA_TypeCode_struct TC_Bonobo_Canvas_DRect_struct = {
 && (TC_IMPL_TC_Bonobo_Canvas_affine_5 == 'o') \
 ) && !defined(TC_DEF_TC_Bonobo_Canvas_affine)
 #define TC_DEF_TC_Bonobo_Canvas_affine 1
-static const CORBA_TypeCode anon_subtypes_array616[] =
+static const CORBA_TypeCode anon_subtypes_array624[] =
    { (CORBA_TypeCode) & TC_CORBA_double_struct };
-static const struct CORBA_TypeCode_struct anonTC_613_struct = {
+static const struct CORBA_TypeCode_struct anonTC_621_struct = {
    
       {{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
     ORBIT_PSEUDO_TYPECODE},
@@ -2788,12 +2831,12 @@ static const struct CORBA_TypeCode_struct anonTC_613_struct = {
    CORBA_tk_array, NULL, NULL,
    6, 1,
    NULL,
-   (CORBA_TypeCode *) anon_subtypes_array616,
+   (CORBA_TypeCode *) anon_subtypes_array624,
    NULL,
    CORBA_OBJECT_NIL, 0, -1, 0, 0
 };
-static const CORBA_TypeCode anon_subtypes_array611[] =
-   { (CORBA_TypeCode) & anonTC_613_struct };
+static const CORBA_TypeCode anon_subtypes_array619[] =
+   { (CORBA_TypeCode) & anonTC_621_struct };
 const struct CORBA_TypeCode_struct TC_Bonobo_Canvas_affine_struct = {
    
       {{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
@@ -2802,7 +2845,7 @@ const struct CORBA_TypeCode_struct TC_Bonobo_Canvas_affine_struct = {
    CORBA_tk_alias, "affine", "IDL:Bonobo/Canvas/affine:1.0",
    0, 1,
    NULL,
-   (CORBA_TypeCode *) anon_subtypes_array611,
+   (CORBA_TypeCode *) anon_subtypes_array619,
    NULL,
    CORBA_OBJECT_NIL, 0, -1, 0, 0
 };
@@ -2815,9 +2858,9 @@ const struct CORBA_TypeCode_struct TC_Bonobo_Canvas_affine_struct = {
 && (TC_IMPL_TC_Bonobo_Canvas_Buf_5 == 'o') \
 ) && !defined(TC_DEF_TC_Bonobo_Canvas_Buf)
 #define TC_DEF_TC_Bonobo_Canvas_Buf 1
-static const char *anon_subnames_array619[] =
+static const char *anon_subnames_array627[] =
    { "rgb_buf", "row_stride", "rect", "bg_color", "flags" };
-static const CORBA_TypeCode anon_subtypes_array620[] =
+static const CORBA_TypeCode anon_subtypes_array628[] =
    { (CORBA_TypeCode) & TC_Bonobo_Canvas_pixbuf_struct,
       (CORBA_TypeCode) & TC_CORBA_long_struct,
       (CORBA_TypeCode) & TC_Bonobo_Canvas_IRect_struct,
@@ -2830,8 +2873,8 @@ const struct CORBA_TypeCode_struct TC_Bonobo_Canvas_Buf_struct = {
 
    CORBA_tk_struct, "Buf", "IDL:Bonobo/Canvas/Buf:1.0",
    0, 5,
-   (const char **) anon_subnames_array619,
-   (CORBA_TypeCode *) anon_subtypes_array620,
+   (const char **) anon_subnames_array627,
+   (CORBA_TypeCode *) anon_subtypes_array628,
    NULL,
    CORBA_OBJECT_NIL, 0, -1, 0, 0
 };
@@ -2844,8 +2887,8 @@ const struct CORBA_TypeCode_struct TC_Bonobo_Canvas_Buf_struct = {
 && (TC_IMPL_TC_Bonobo_Canvas_Point_5 == 'o') \
 ) && !defined(TC_DEF_TC_Bonobo_Canvas_Point)
 #define TC_DEF_TC_Bonobo_Canvas_Point 1
-static const char *anon_subnames_array623[] = { "x", "y" };
-static const CORBA_TypeCode anon_subtypes_array624[] =
+static const char *anon_subnames_array631[] = { "x", "y" };
+static const CORBA_TypeCode anon_subtypes_array632[] =
    { (CORBA_TypeCode) & TC_CORBA_double_struct,
       (CORBA_TypeCode) & TC_CORBA_double_struct };
 const struct CORBA_TypeCode_struct TC_Bonobo_Canvas_Point_struct = {
@@ -2855,8 +2898,8 @@ const struct CORBA_TypeCode_struct TC_Bonobo_Canvas_Point_struct = {
 
    CORBA_tk_struct, "Point", "IDL:Bonobo/Canvas/Point:1.0",
    0, 2,
-   (const char **) anon_subnames_array623,
-   (CORBA_TypeCode *) anon_subtypes_array624,
+   (const char **) anon_subnames_array631,
+   (CORBA_TypeCode *) anon_subtypes_array632,
    NULL,
    CORBA_OBJECT_NIL, 0, -1, 0, 0
 };
@@ -2869,7 +2912,7 @@ const struct CORBA_TypeCode_struct TC_Bonobo_Canvas_Point_struct = {
 && (TC_IMPL_TC_CORBA_sequence_Bonobo_Canvas_Point_5 == 'o') \
 ) && !defined(TC_DEF_TC_CORBA_sequence_Bonobo_Canvas_Point)
 #define TC_DEF_TC_CORBA_sequence_Bonobo_Canvas_Point 1
-static const CORBA_TypeCode anon_subtypes_array628[] =
+static const CORBA_TypeCode anon_subtypes_array636[] =
    { (CORBA_TypeCode) & TC_Bonobo_Canvas_Point_struct };
 const struct CORBA_TypeCode_struct
    TC_CORBA_sequence_Bonobo_Canvas_Point_struct = {
@@ -2878,7 +2921,7 @@ const struct CORBA_TypeCode_struct
    CORBA_tk_sequence, NULL, NULL,
    0, 1,
    NULL,
-   (CORBA_TypeCode *) anon_subtypes_array628,
+   (CORBA_TypeCode *) anon_subtypes_array636,
    NULL,
    CORBA_OBJECT_NIL, 0, -1, 0, 0
 };
@@ -2891,7 +2934,7 @@ const struct CORBA_TypeCode_struct
 && (TC_IMPL_TC_CORBA_sequence_Bonobo_Canvas_Point_5 == 'o') \
 ) && !defined(TC_DEF_TC_CORBA_sequence_Bonobo_Canvas_Point)
 #define TC_DEF_TC_CORBA_sequence_Bonobo_Canvas_Point 1
-static const CORBA_TypeCode anon_subtypes_array637[] =
+static const CORBA_TypeCode anon_subtypes_array645[] =
    { (CORBA_TypeCode) & TC_Bonobo_Canvas_Point_struct };
 const struct CORBA_TypeCode_struct
    TC_CORBA_sequence_Bonobo_Canvas_Point_struct = {
@@ -2900,7 +2943,7 @@ const struct CORBA_TypeCode_struct
    CORBA_tk_sequence, NULL, NULL,
    0, 1,
    NULL,
-   (CORBA_TypeCode *) anon_subtypes_array637,
+   (CORBA_TypeCode *) anon_subtypes_array645,
    NULL,
    CORBA_OBJECT_NIL, 0, -1, 0, 0
 };
@@ -2913,7 +2956,7 @@ const struct CORBA_TypeCode_struct
 && (TC_IMPL_TC_Bonobo_Canvas_Points_5 == 'o') \
 ) && !defined(TC_DEF_TC_Bonobo_Canvas_Points)
 #define TC_DEF_TC_Bonobo_Canvas_Points 1
-static const CORBA_TypeCode anon_subtypes_array641[] =
+static const CORBA_TypeCode anon_subtypes_array649[] =
    { (CORBA_TypeCode) & TC_CORBA_sequence_Bonobo_Canvas_Point_struct };
 const struct CORBA_TypeCode_struct TC_Bonobo_Canvas_Points_struct = {
    
@@ -2923,7 +2966,7 @@ const struct CORBA_TypeCode_struct TC_Bonobo_Canvas_Points_struct = {
    CORBA_tk_alias, "Points", "IDL:Bonobo/Canvas/Points:1.0",
    0, 1,
    NULL,
-   (CORBA_TypeCode *) anon_subtypes_array641,
+   (CORBA_TypeCode *) anon_subtypes_array649,
    NULL,
    CORBA_OBJECT_NIL, 0, -1, 0, 0
 };
@@ -2936,8 +2979,8 @@ const struct CORBA_TypeCode_struct TC_Bonobo_Canvas_Points_struct = {
 && (TC_IMPL_TC_Bonobo_Canvas_SVPSegment_5 == 'o') \
 ) && !defined(TC_DEF_TC_Bonobo_Canvas_SVPSegment)
 #define TC_DEF_TC_Bonobo_Canvas_SVPSegment 1
-static const char *anon_subnames_array644[] = { "up", "bbox", "points" };
-static const CORBA_TypeCode anon_subtypes_array645[] =
+static const char *anon_subnames_array652[] = { "up", "bbox", "points" };
+static const CORBA_TypeCode anon_subtypes_array653[] =
    { (CORBA_TypeCode) & TC_CORBA_boolean_struct,
       (CORBA_TypeCode) & TC_Bonobo_Canvas_DRect_struct,
       (CORBA_TypeCode) & TC_Bonobo_Canvas_Points_struct };
@@ -2948,8 +2991,8 @@ const struct CORBA_TypeCode_struct TC_Bonobo_Canvas_SVPSegment_struct = {
 
    CORBA_tk_struct, "SVPSegment", "IDL:Bonobo/Canvas/SVPSegment:1.0",
    0, 3,
-   (const char **) anon_subnames_array644,
-   (CORBA_TypeCode *) anon_subtypes_array645,
+   (const char **) anon_subnames_array652,
+   (CORBA_TypeCode *) anon_subtypes_array653,
    NULL,
    CORBA_OBJECT_NIL, 0, -1, 0, 0
 };
@@ -2962,7 +3005,7 @@ const struct CORBA_TypeCode_struct TC_Bonobo_Canvas_SVPSegment_struct = {
 && (TC_IMPL_TC_CORBA_sequence_Bonobo_Canvas_SVPSegment_5 == 'o') \
 ) && !defined(TC_DEF_TC_CORBA_sequence_Bonobo_Canvas_SVPSegment)
 #define TC_DEF_TC_CORBA_sequence_Bonobo_Canvas_SVPSegment 1
-static const CORBA_TypeCode anon_subtypes_array649[] =
+static const CORBA_TypeCode anon_subtypes_array657[] =
    { (CORBA_TypeCode) & TC_Bonobo_Canvas_SVPSegment_struct };
 const struct CORBA_TypeCode_struct
    TC_CORBA_sequence_Bonobo_Canvas_SVPSegment_struct = {
@@ -2971,7 +3014,7 @@ const struct CORBA_TypeCode_struct
    CORBA_tk_sequence, NULL, NULL,
    0, 1,
    NULL,
-   (CORBA_TypeCode *) anon_subtypes_array649,
+   (CORBA_TypeCode *) anon_subtypes_array657,
    NULL,
    CORBA_OBJECT_NIL, 0, -1, 0, 0
 };
@@ -2984,7 +3027,7 @@ const struct CORBA_TypeCode_struct
 && (TC_IMPL_TC_CORBA_sequence_Bonobo_Canvas_SVPSegment_5 == 'o') \
 ) && !defined(TC_DEF_TC_CORBA_sequence_Bonobo_Canvas_SVPSegment)
 #define TC_DEF_TC_CORBA_sequence_Bonobo_Canvas_SVPSegment 1
-static const CORBA_TypeCode anon_subtypes_array658[] =
+static const CORBA_TypeCode anon_subtypes_array666[] =
    { (CORBA_TypeCode) & TC_Bonobo_Canvas_SVPSegment_struct };
 const struct CORBA_TypeCode_struct
    TC_CORBA_sequence_Bonobo_Canvas_SVPSegment_struct = {
@@ -2993,7 +3036,7 @@ const struct CORBA_TypeCode_struct
    CORBA_tk_sequence, NULL, NULL,
    0, 1,
    NULL,
-   (CORBA_TypeCode *) anon_subtypes_array658,
+   (CORBA_TypeCode *) anon_subtypes_array666,
    NULL,
    CORBA_OBJECT_NIL, 0, -1, 0, 0
 };
@@ -3006,7 +3049,7 @@ const struct CORBA_TypeCode_struct
 && (TC_IMPL_TC_Bonobo_Canvas_SVP_5 == 'o') \
 ) && !defined(TC_DEF_TC_Bonobo_Canvas_SVP)
 #define TC_DEF_TC_Bonobo_Canvas_SVP 1
-static const CORBA_TypeCode anon_subtypes_array662[] =
+static const CORBA_TypeCode anon_subtypes_array670[] =
    { (CORBA_TypeCode) & TC_CORBA_sequence_Bonobo_Canvas_SVPSegment_struct };
 const struct CORBA_TypeCode_struct TC_Bonobo_Canvas_SVP_struct = {
    
@@ -3016,7 +3059,7 @@ const struct CORBA_TypeCode_struct TC_Bonobo_Canvas_SVP_struct = {
    CORBA_tk_alias, "SVP", "IDL:Bonobo/Canvas/SVP:1.0",
    0, 1,
    NULL,
-   (CORBA_TypeCode *) anon_subtypes_array662,
+   (CORBA_TypeCode *) anon_subtypes_array670,
    NULL,
    CORBA_OBJECT_NIL, 0, -1, 0, 0
 };
@@ -3029,7 +3072,7 @@ const struct CORBA_TypeCode_struct TC_Bonobo_Canvas_SVP_struct = {
 && (TC_IMPL_TC_CORBA_sequence_Bonobo_Canvas_int32_5 == 'o') \
 ) && !defined(TC_DEF_TC_CORBA_sequence_Bonobo_Canvas_int32)
 #define TC_DEF_TC_CORBA_sequence_Bonobo_Canvas_int32 1
-static const CORBA_TypeCode anon_subtypes_array666[] =
+static const CORBA_TypeCode anon_subtypes_array674[] =
    { (CORBA_TypeCode) & TC_Bonobo_Canvas_int32_struct };
 const struct CORBA_TypeCode_struct
    TC_CORBA_sequence_Bonobo_Canvas_int32_struct = {
@@ -3038,7 +3081,7 @@ const struct CORBA_TypeCode_struct
    CORBA_tk_sequence, NULL, NULL,
    0, 1,
    NULL,
-   (CORBA_TypeCode *) anon_subtypes_array666,
+   (CORBA_TypeCode *) anon_subtypes_array674,
    NULL,
    CORBA_OBJECT_NIL, 0, -1, 0, 0
 };
@@ -3051,9 +3094,9 @@ const struct CORBA_TypeCode_struct
 && (TC_IMPL_TC_Bonobo_Canvas_ArtUTA_5 == 'o') \
 ) && !defined(TC_DEF_TC_Bonobo_Canvas_ArtUTA)
 #define TC_DEF_TC_Bonobo_Canvas_ArtUTA 1
-static const char *anon_subnames_array669[] =
+static const char *anon_subnames_array677[] =
    { "x0", "y0", "width", "height", "utiles" };
-static const CORBA_TypeCode anon_subtypes_array670[] =
+static const CORBA_TypeCode anon_subtypes_array678[] =
    { (CORBA_TypeCode) & TC_CORBA_short_struct,
       (CORBA_TypeCode) & TC_CORBA_short_struct,
       (CORBA_TypeCode) & TC_CORBA_short_struct,
@@ -3066,8 +3109,8 @@ const struct CORBA_TypeCode_struct TC_Bonobo_Canvas_ArtUTA_struct = {
 
    CORBA_tk_struct, "ArtUTA", "IDL:Bonobo/Canvas/ArtUTA:1.0",
    0, 5,
-   (const char **) anon_subnames_array669,
-   (CORBA_TypeCode *) anon_subtypes_array670,
+   (const char **) anon_subnames_array677,
+   (CORBA_TypeCode *) anon_subtypes_array678,
    NULL,
    CORBA_OBJECT_NIL, 0, -1, 0, 0
 };
@@ -3080,10 +3123,10 @@ const struct CORBA_TypeCode_struct TC_Bonobo_Canvas_ArtUTA_struct = {
 && (TC_IMPL_TC_Bonobo_Canvas_State_5 == 'o') \
 ) && !defined(TC_DEF_TC_Bonobo_Canvas_State)
 #define TC_DEF_TC_Bonobo_Canvas_State 1
-static const char *anon_subnames_array673[] =
+static const char *anon_subnames_array681[] =
    { "item_aff", "pixels_per_unit", "canvas_scroll_x1", "canvas_scroll_y1",
       "zoom_xofs", "zoom_yofs", "xoffset", "yoffset" };
-static const CORBA_TypeCode anon_subtypes_array674[] =
+static const CORBA_TypeCode anon_subtypes_array682[] =
    { (CORBA_TypeCode) & TC_Bonobo_Canvas_affine_struct,
       (CORBA_TypeCode) & TC_CORBA_double_struct,
       (CORBA_TypeCode) & TC_CORBA_double_struct,
@@ -3099,8 +3142,8 @@ const struct CORBA_TypeCode_struct TC_Bonobo_Canvas_State_struct = {
 
    CORBA_tk_struct, "State", "IDL:Bonobo/Canvas/State:1.0",
    0, 8,
-   (const char **) anon_subnames_array673,
-   (CORBA_TypeCode *) anon_subtypes_array674,
+   (const char **) anon_subnames_array681,
+   (CORBA_TypeCode *) anon_subtypes_array682,
    NULL,
    CORBA_OBJECT_NIL, 0, -1, 0, 0
 };
@@ -3239,7 +3282,7 @@ const struct CORBA_TypeCode_struct
 && (TC_IMPL_TC_Bonobo_Embeddable_CloseMode_5 == 'o') \
 ) && !defined(TC_DEF_TC_Bonobo_Embeddable_CloseMode)
 #define TC_DEF_TC_Bonobo_Embeddable_CloseMode 1
-static const char *anon_subnames_array701[] =
+static const char *anon_subnames_array709[] =
    { "SAVE_IF_DIRTY", "NO_SAVE", "PROMPT_SAVE" };
 const struct CORBA_TypeCode_struct TC_Bonobo_Embeddable_CloseMode_struct = {
    
@@ -3248,77 +3291,8 @@ const struct CORBA_TypeCode_struct TC_Bonobo_Embeddable_CloseMode_struct = {
 
    CORBA_tk_enum, "CloseMode", "IDL:Bonobo/Embeddable/CloseMode:1.0",
    0, 3,
-   (const char **) anon_subnames_array701,
+   (const char **) anon_subnames_array709,
    NULL,
-   NULL,
-   CORBA_OBJECT_NIL, 0, -1, 0, 0
-};
-#endif
-#if ( (TC_IMPL_TC_CORBA_sequence_CORBA_char_0 == 'B') \
-&& (TC_IMPL_TC_CORBA_sequence_CORBA_char_1 == 'o') \
-&& (TC_IMPL_TC_CORBA_sequence_CORBA_char_2 == 'n') \
-&& (TC_IMPL_TC_CORBA_sequence_CORBA_char_3 == 'o') \
-&& (TC_IMPL_TC_CORBA_sequence_CORBA_char_4 == 'b') \
-&& (TC_IMPL_TC_CORBA_sequence_CORBA_char_5 == 'o') \
-) && !defined(TC_DEF_TC_CORBA_sequence_CORBA_char)
-#define TC_DEF_TC_CORBA_sequence_CORBA_char 1
-static const CORBA_TypeCode anon_subtypes_array706[] =
-   { (CORBA_TypeCode) & TC_CORBA_char_struct };
-const struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_char_struct = {
-   
-      {{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
-    ORBIT_PSEUDO_TYPECODE},
-
-   CORBA_tk_sequence, NULL, NULL,
-   0, 1,
-   NULL,
-   (CORBA_TypeCode *) anon_subtypes_array706,
-   NULL,
-   CORBA_OBJECT_NIL, 0, -1, 0, 0
-};
-#endif
-#if ( (TC_IMPL_TC_CORBA_sequence_CORBA_char_0 == 'B') \
-&& (TC_IMPL_TC_CORBA_sequence_CORBA_char_1 == 'o') \
-&& (TC_IMPL_TC_CORBA_sequence_CORBA_char_2 == 'n') \
-&& (TC_IMPL_TC_CORBA_sequence_CORBA_char_3 == 'o') \
-&& (TC_IMPL_TC_CORBA_sequence_CORBA_char_4 == 'b') \
-&& (TC_IMPL_TC_CORBA_sequence_CORBA_char_5 == 'o') \
-) && !defined(TC_DEF_TC_CORBA_sequence_CORBA_char)
-#define TC_DEF_TC_CORBA_sequence_CORBA_char 1
-static const CORBA_TypeCode anon_subtypes_array715[] =
-   { (CORBA_TypeCode) & TC_CORBA_char_struct };
-const struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_char_struct = {
-   
-      {{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
-    ORBIT_PSEUDO_TYPECODE},
-
-   CORBA_tk_sequence, NULL, NULL,
-   0, 1,
-   NULL,
-   (CORBA_TypeCode *) anon_subtypes_array715,
-   NULL,
-   CORBA_OBJECT_NIL, 0, -1, 0, 0
-};
-#endif
-#if ( (TC_IMPL_TC_Bonobo_PrintData_0 == 'B') \
-&& (TC_IMPL_TC_Bonobo_PrintData_1 == 'o') \
-&& (TC_IMPL_TC_Bonobo_PrintData_2 == 'n') \
-&& (TC_IMPL_TC_Bonobo_PrintData_3 == 'o') \
-&& (TC_IMPL_TC_Bonobo_PrintData_4 == 'b') \
-&& (TC_IMPL_TC_Bonobo_PrintData_5 == 'o') \
-) && !defined(TC_DEF_TC_Bonobo_PrintData)
-#define TC_DEF_TC_Bonobo_PrintData 1
-static const CORBA_TypeCode anon_subtypes_array719[] =
-   { (CORBA_TypeCode) & TC_CORBA_sequence_CORBA_char_struct };
-const struct CORBA_TypeCode_struct TC_Bonobo_PrintData_struct = {
-   
-      {{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
-    ORBIT_PSEUDO_TYPECODE},
-
-   CORBA_tk_alias, "PrintData", "IDL:Bonobo/PrintData:1.0",
-   0, 1,
-   NULL,
-   (CORBA_TypeCode *) anon_subtypes_array719,
    NULL,
    CORBA_OBJECT_NIL, 0, -1, 0, 0
 };
@@ -3331,10 +3305,10 @@ const struct CORBA_TypeCode_struct TC_Bonobo_PrintData_struct = {
 && (TC_IMPL_TC_Bonobo_PrintScissor_5 == 'o') \
 ) && !defined(TC_DEF_TC_Bonobo_PrintScissor)
 #define TC_DEF_TC_Bonobo_PrintScissor 1
-static const char *anon_subnames_array722[] =
+static const char *anon_subnames_array713[] =
    { "width_first_page", "width_per_page", "height_first_page",
       "height_per_page" };
-static const CORBA_TypeCode anon_subtypes_array723[] =
+static const CORBA_TypeCode anon_subtypes_array714[] =
    { (CORBA_TypeCode) & TC_CORBA_double_struct,
       (CORBA_TypeCode) & TC_CORBA_double_struct,
       (CORBA_TypeCode) & TC_CORBA_double_struct,
@@ -3346,8 +3320,8 @@ const struct CORBA_TypeCode_struct TC_Bonobo_PrintScissor_struct = {
 
    CORBA_tk_struct, "PrintScissor", "IDL:Bonobo/PrintScissor:1.0",
    0, 4,
-   (const char **) anon_subnames_array722,
-   (CORBA_TypeCode *) anon_subtypes_array723,
+   (const char **) anon_subnames_array713,
+   (CORBA_TypeCode *) anon_subtypes_array714,
    NULL,
    CORBA_OBJECT_NIL, 0, -1, 0, 0
 };
@@ -3360,8 +3334,8 @@ const struct CORBA_TypeCode_struct TC_Bonobo_PrintScissor_struct = {
 && (TC_IMPL_TC_Bonobo_PrintDimensions_5 == 'o') \
 ) && !defined(TC_DEF_TC_Bonobo_PrintDimensions)
 #define TC_DEF_TC_Bonobo_PrintDimensions 1
-static const char *anon_subnames_array726[] = { "width", "height" };
-static const CORBA_TypeCode anon_subtypes_array727[] =
+static const char *anon_subnames_array717[] = { "width", "height" };
+static const CORBA_TypeCode anon_subtypes_array718[] =
    { (CORBA_TypeCode) & TC_CORBA_double_struct,
       (CORBA_TypeCode) & TC_CORBA_double_struct };
 const struct CORBA_TypeCode_struct TC_Bonobo_PrintDimensions_struct = {
@@ -3371,8 +3345,8 @@ const struct CORBA_TypeCode_struct TC_Bonobo_PrintDimensions_struct = {
 
    CORBA_tk_struct, "PrintDimensions", "IDL:Bonobo/PrintDimensions:1.0",
    0, 2,
-   (const char **) anon_subnames_array726,
-   (CORBA_TypeCode *) anon_subtypes_array727,
+   (const char **) anon_subnames_array717,
+   (CORBA_TypeCode *) anon_subtypes_array718,
    NULL,
    CORBA_OBJECT_NIL, 0, -1, 0, 0
 };
@@ -3427,8 +3401,8 @@ const struct CORBA_TypeCode_struct TC_Bonobo_Desktop_Window_struct = {
 && (TC_IMPL_TC_Bonobo_Desktop_Window_Geometry_5 == 'o') \
 ) && !defined(TC_DEF_TC_Bonobo_Desktop_Window_Geometry)
 #define TC_DEF_TC_Bonobo_Desktop_Window_Geometry 1
-static const char *anon_subnames_array738[] = { "x", "y", "width", "height" };
-static const CORBA_TypeCode anon_subtypes_array739[] =
+static const char *anon_subnames_array729[] = { "x", "y", "width", "height" };
+static const CORBA_TypeCode anon_subtypes_array730[] =
    { (CORBA_TypeCode) & TC_CORBA_short_struct,
       (CORBA_TypeCode) & TC_CORBA_short_struct,
       (CORBA_TypeCode) & TC_CORBA_short_struct,
@@ -3440,12 +3414,37 @@ const struct CORBA_TypeCode_struct TC_Bonobo_Desktop_Window_Geometry_struct = {
 
    CORBA_tk_struct, "Geometry", "IDL:Bonobo/Desktop/Window/Geometry:1.0",
    0, 4,
-   (const char **) anon_subnames_array738,
-   (CORBA_TypeCode *) anon_subtypes_array739,
+   (const char **) anon_subnames_array729,
+   (CORBA_TypeCode *) anon_subtypes_array730,
    NULL,
    CORBA_OBJECT_NIL, 0, -1, 0, 0
 };
 #endif
+gpointer
+Bonobo_NotSupported__free(gpointer mem, gpointer dat,
+			  CORBA_boolean free_strings)
+{
+   Bonobo_NotSupported *var = mem;
+
+   return (gpointer) (var + 1);
+}
+
+gpointer
+Bonobo_IOError__free(gpointer mem, gpointer dat, CORBA_boolean free_strings)
+{
+   Bonobo_IOError *var = mem;
+
+   return (gpointer) (var + 1);
+}
+
+gpointer
+Bonobo_BadArg__free(gpointer mem, gpointer dat, CORBA_boolean free_strings)
+{
+   Bonobo_BadArg *var = mem;
+
+   return (gpointer) (var + 1);
+}
+
 CORBA_unsigned_long Bonobo_Unknown__classid = 0;
 gpointer
 Bonobo_ResolveOptions__free(gpointer mem, gpointer dat,
@@ -3506,8 +3505,6 @@ Bonobo_Moniker_UnknownPrefix__free(gpointer mem, gpointer dat,
 
 CORBA_unsigned_long Bonobo_Moniker__classid = 0;
 CORBA_unsigned_long Bonobo_MonikerExtender__classid = 0;
-CORBA_unsigned_long Bonobo_ActivationContext__classid = 0;
-CORBA_unsigned_long Bonobo_RunningContext__classid = 0;
 gpointer
 Bonobo_StorageInfo__free(gpointer mem, gpointer dat,
 			 CORBA_boolean free_strings)
@@ -3762,23 +3759,8 @@ Bonobo_Storage_NotEmpty__free(gpointer mem, gpointer dat,
 }
 
 CORBA_unsigned_long Bonobo_Storage__classid = 0;
-gpointer
-Bonobo_NotSupported__free(gpointer mem, gpointer dat,
-			  CORBA_boolean free_strings)
-{
-   Bonobo_NotSupported *var = mem;
-
-   return (gpointer) (var + 1);
-}
-
-gpointer
-Bonobo_IOError__free(gpointer mem, gpointer dat, CORBA_boolean free_strings)
-{
-   Bonobo_IOError *var = mem;
-
-   return (gpointer) (var + 1);
-}
-
+CORBA_unsigned_long Bonobo_ActivationContext__classid = 0;
+CORBA_unsigned_long Bonobo_RunningContext__classid = 0;
 gpointer
 Bonobo_Persist_WrongDataType__free(gpointer mem, gpointer dat,
 				   CORBA_boolean free_strings)
@@ -4368,34 +4350,34 @@ Bonobo_ZoomLevelNameList__alloc(void)
 CORBA_unsigned_long Bonobo_ZoomableFrame__classid = 0;
 CORBA_unsigned_long Bonobo_Zoomable__classid = 0;
 
-#if ( (ORBIT_IMPL_CORBA_sequence_Bonobo_Unknown_0 == 'B') \
-&& (ORBIT_IMPL_CORBA_sequence_Bonobo_Unknown_1 == 'o') \
-&& (ORBIT_IMPL_CORBA_sequence_Bonobo_Unknown_2 == 'n') \
-&& (ORBIT_IMPL_CORBA_sequence_Bonobo_Unknown_3 == 'o') \
-&& (ORBIT_IMPL_CORBA_sequence_Bonobo_Unknown_4 == 'b') \
-&& (ORBIT_IMPL_CORBA_sequence_Bonobo_Unknown_5 == 'o') \
-) && !defined(ORBIT_DEF_CORBA_sequence_Bonobo_Unknown)
-#define ORBIT_DEF_CORBA_sequence_Bonobo_Unknown 1
+#if ( (ORBIT_IMPL_CORBA_sequence_CORBA_string_0 == 'B') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_1 == 'o') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_2 == 'n') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_3 == 'o') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_4 == 'b') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_5 == 'o') \
+) && !defined(ORBIT_DEF_CORBA_sequence_CORBA_string)
+#define ORBIT_DEF_CORBA_sequence_CORBA_string 1
 
 gpointer
-CORBA_sequence_Bonobo_Unknown__free(gpointer mem, gpointer dat,
-				    CORBA_boolean free_strings)
+CORBA_sequence_CORBA_string__free(gpointer mem, gpointer dat,
+				  CORBA_boolean free_strings)
 {
-   CORBA_sequence_Bonobo_Unknown *val = mem;
+   CORBA_sequence_CORBA_string *val = mem;
 
    if (val->_release)
       ORBit_free(val->_buffer, free_strings);
    return (gpointer) (val + 1);
 }
 
-CORBA_sequence_Bonobo_Unknown *
-CORBA_sequence_Bonobo_Unknown__alloc(void)
+CORBA_sequence_CORBA_string *
+CORBA_sequence_CORBA_string__alloc(void)
 {
-   CORBA_sequence_Bonobo_Unknown *retval;
+   CORBA_sequence_CORBA_string *retval;
 
    retval =
-      ORBit_alloc(sizeof(CORBA_sequence_Bonobo_Unknown),
-		  (ORBit_free_childvals) CORBA_sequence_Bonobo_Unknown__free,
+      ORBit_alloc(sizeof(CORBA_sequence_CORBA_string),
+		  (ORBit_free_childvals) CORBA_sequence_CORBA_string__free,
 		  GUINT_TO_POINTER(1));
    retval->_maximum = 0;
    retval->_length = 0;
@@ -4404,30 +4386,30 @@ CORBA_sequence_Bonobo_Unknown__alloc(void)
    return retval;
 }
 
-Bonobo_Unknown *
-CORBA_sequence_Bonobo_Unknown_allocbuf(CORBA_unsigned_long len)
+CORBA_char **
+CORBA_sequence_CORBA_string_allocbuf(CORBA_unsigned_long len)
 {
-   Bonobo_Unknown *retval =
-      ORBit_alloc(sizeof(Bonobo_Unknown) * len,
-		  (ORBit_free_childvals) Bonobo_Unknown__free,
-		  GUINT_TO_POINTER(len));
+   CORBA_char **retval =
+      ORBit_alloc(sizeof(CORBA_char *) * len,
+		  (ORBit_free_childvals) CORBA_string__free,
 
-   memset(retval, '\0', sizeof(Bonobo_Unknown) * len);
+		  GUINT_TO_POINTER(len));
+   memset(retval, '\0', sizeof(CORBA_char *) * len);
    return retval;
 }
 #endif
 
 gpointer
-Bonobo_ItemContainer_ObjectList__free(gpointer mem, gpointer dat,
-				      CORBA_boolean free_strings)
+Bonobo_ItemContainer_ObjectNames__free(gpointer mem, gpointer dat,
+				       CORBA_boolean free_strings)
 {
-   return CORBA_sequence_Bonobo_Unknown__free(mem, dat, free_strings);
+   return CORBA_sequence_CORBA_string__free(mem, dat, free_strings);
 }
 
-Bonobo_ItemContainer_ObjectList *
-Bonobo_ItemContainer_ObjectList__alloc(void)
+Bonobo_ItemContainer_ObjectNames *
+Bonobo_ItemContainer_ObjectNames__alloc(void)
 {
-   return CORBA_sequence_Bonobo_Unknown__alloc();
+   return CORBA_sequence_CORBA_string__alloc();
 }
 
 gpointer
@@ -5117,66 +5099,6 @@ Bonobo_Embeddable_UserCancelledSave__free(gpointer mem, gpointer dat,
 }
 
 CORBA_unsigned_long Bonobo_Embeddable__classid = 0;
-
-#if ( (ORBIT_IMPL_CORBA_sequence_CORBA_char_0 == 'B') \
-&& (ORBIT_IMPL_CORBA_sequence_CORBA_char_1 == 'o') \
-&& (ORBIT_IMPL_CORBA_sequence_CORBA_char_2 == 'n') \
-&& (ORBIT_IMPL_CORBA_sequence_CORBA_char_3 == 'o') \
-&& (ORBIT_IMPL_CORBA_sequence_CORBA_char_4 == 'b') \
-&& (ORBIT_IMPL_CORBA_sequence_CORBA_char_5 == 'o') \
-) && !defined(ORBIT_DEF_CORBA_sequence_CORBA_char)
-#define ORBIT_DEF_CORBA_sequence_CORBA_char 1
-
-gpointer
-CORBA_sequence_CORBA_char__free(gpointer mem, gpointer dat,
-				CORBA_boolean free_strings)
-{
-   CORBA_sequence_CORBA_char *val = mem;
-
-   if (val->_release)
-      ORBit_free(val->_buffer, free_strings);
-   return (gpointer) (val + 1);
-}
-
-CORBA_sequence_CORBA_char *
-CORBA_sequence_CORBA_char__alloc(void)
-{
-   CORBA_sequence_CORBA_char *retval;
-
-   retval =
-      ORBit_alloc(sizeof(CORBA_sequence_CORBA_char),
-		  (ORBit_free_childvals) CORBA_sequence_CORBA_char__free,
-		  GUINT_TO_POINTER(1));
-   retval->_maximum = 0;
-   retval->_length = 0;
-   retval->_buffer = NULL;
-   retval->_release = CORBA_FALSE;
-   return retval;
-}
-
-CORBA_char *
-CORBA_sequence_CORBA_char_allocbuf(CORBA_unsigned_long len)
-{
-   CORBA_char *retval =
-      ORBit_alloc(sizeof(CORBA_char) * len, (ORBit_free_childvals) NULL,
-		  GUINT_TO_POINTER(len));
-
-   return retval;
-}
-#endif
-
-gpointer
-Bonobo_PrintData__free(gpointer mem, gpointer dat, CORBA_boolean free_strings)
-{
-   return CORBA_sequence_CORBA_char__free(mem, dat, free_strings);
-}
-
-Bonobo_PrintData *
-Bonobo_PrintData__alloc(void)
-{
-   return CORBA_sequence_CORBA_char__alloc();
-}
-
 gpointer
 Bonobo_PrintScissor__free(gpointer mem, gpointer dat,
 			  CORBA_boolean free_strings)

@@ -661,7 +661,7 @@ main (int argc, char **argv)
 
 	open_files (frame, argc, argv);
 
-	gtk_main ();
+	bonobo_main ();
 
 	return 0;
 }

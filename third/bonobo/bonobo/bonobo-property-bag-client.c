@@ -536,7 +536,7 @@ bonobo_property_bag_client_set_value_any (Bonobo_PropertyBag       pb,
 
 	Bonobo_Property_setValue (prop, value, real_ev);
 
-	if (BONOBO_EX (real_ev))
+	if (!ev && BONOBO_EX (real_ev))
 		g_warning ("bonobo_property_bag_client_set_value_any: Exception setting property!");
 
 	CORBA_Object_release (prop, real_ev);

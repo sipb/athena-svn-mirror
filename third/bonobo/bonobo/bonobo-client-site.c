@@ -26,7 +26,7 @@
 #include <gdk/gdkx.h>
 #include <gdk/gdktypes.h>
 
-POA_Bonobo_ClientSite__vepv bonobo_client_site_vepv;
+#define PARENT_TYPE BONOBO_X_OBJECT_TYPE
 
 enum {
 	SHOW_WINDOW,
@@ -34,7 +34,7 @@ enum {
 	LAST_SIGNAL
 };
 
-static BonoboObjectClass *bonobo_client_site_parent_class;
+static GtkObjectClass *bonobo_client_site_parent_class;
 static guint bonobo_client_site_signals [LAST_SIGNAL];
 
 static Bonobo_ItemContainer
@@ -44,8 +44,7 @@ impl_Bonobo_ClientSite_getContainer (PortableServer_Servant servant, CORBA_Envir
 	Bonobo_ItemContainer  corba_object;
 	BonoboClientSite     *client_site = BONOBO_CLIENT_SITE (object);
 
-	corba_object = bonobo_object_corba_objref (
-		BONOBO_OBJECT (client_site->container));
+	corba_object = BONOBO_OBJREF (client_site->container);
 
 	return bonobo_object_dup_ref (corba_object, ev);
 }
@@ -79,37 +78,23 @@ impl_Bonobo_ClientSite_saveObject (PortableServer_Servant servant, CORBA_Environ
 static void
 bonobo_client_site_destroy (GtkObject *object)
 {
-	GtkObjectClass *object_class;
 	BonoboClientSite *client_site = BONOBO_CLIENT_SITE (object);
 	
-	object_class = (GtkObjectClass *)bonobo_client_site_parent_class;
+	bonobo_object_list_unref_all (&client_site->view_frames);
 
-	/*
-	 * Destroy all the view frames.
-	 */
-	while (client_site->view_frames) {
-		BonoboViewFrame *view_frame = BONOBO_VIEW_FRAME (client_site->view_frames->data);
-
-		bonobo_object_unref (BONOBO_OBJECT (view_frame));
-	}
-
-	/*
-	 * Destroy all canvas items
-	 */
+	/* Destroy all canvas items */
+	/* FIXME: this looks dodgy to me */
 	while (client_site->canvas_items) {
 		BonoboCanvasItem *item = BONOBO_CANVAS_ITEM (client_site->canvas_items->data);
-
-		bonobo_object_unref (BONOBO_OBJECT (item));
+		gtk_object_unref (GTK_OBJECT (item));
 	}
-
-	bonobo_item_container_remove (client_site->container, BONOBO_OBJECT (object));
 
 	if (client_site->bound_embeddable) {
 		bonobo_object_unref (BONOBO_OBJECT (client_site->bound_embeddable));
 		client_site->bound_embeddable = NULL;
 	}
 
-	object_class->destroy (object);
+	bonobo_client_site_parent_class->destroy (object);
 }
 
 static void
@@ -123,39 +108,14 @@ default_save_object (BonoboClientSite *cs, Bonobo_Persist_Status *status)
 {
 }
 
-/**
- * bonobo_client_site_get_epv:
- *
- * Returns: The EPV for the default BonoboClientSite implementation.
- */
-POA_Bonobo_ClientSite__epv *
-bonobo_client_site_get_epv (void)
-{
-	POA_Bonobo_ClientSite__epv *epv;
-
-	epv = g_new0 (POA_Bonobo_ClientSite__epv, 1);
-
-	epv->getContainer = impl_Bonobo_ClientSite_getContainer;
-	epv->showWindow   = impl_Bonobo_ClientSite_showWindow;
-	epv->saveObject   = impl_Bonobo_ClientSite_saveObject;
-
-	return epv;
-}
-
-static void
-init_client_site_corba_class ()
-{
-	bonobo_client_site_vepv.Bonobo_Unknown_epv = bonobo_object_get_epv ();
-	bonobo_client_site_vepv.Bonobo_ClientSite_epv = bonobo_client_site_get_epv ();
-}
-
 static void
 bonobo_client_site_class_init (BonoboClientSiteClass *klass)
 {
 	BonoboObjectClass *gobject_class = (BonoboObjectClass *) klass;
-	GtkObjectClass *object_class = (GtkObjectClass *) gobject_class;
-	
-	bonobo_client_site_parent_class = gtk_type_class (bonobo_object_get_type ());
+	GtkObjectClass    *object_class  = (GtkObjectClass *) gobject_class;
+	POA_Bonobo_ClientSite__epv  *epv = &klass->epv;
+
+	bonobo_client_site_parent_class = gtk_type_class (PARENT_TYPE);
 
 	bonobo_client_site_signals [SHOW_WINDOW] =
 		gtk_signal_new ("show_window",
@@ -173,6 +133,7 @@ bonobo_client_site_class_init (BonoboClientSiteClass *klass)
 				gtk_marshal_NONE__POINTER,
 				GTK_TYPE_NONE, 1,
 				GTK_TYPE_POINTER); 
+
 	gtk_object_class_add_signals (object_class,
 				      bonobo_client_site_signals,
 				      LAST_SIGNAL);
@@ -181,7 +142,9 @@ bonobo_client_site_class_init (BonoboClientSiteClass *klass)
 	klass->show_window = default_show_window;
 	klass->save_object = default_save_object;
 
-	init_client_site_corba_class ();
+	epv->getContainer = impl_Bonobo_ClientSite_getContainer;
+	epv->showWindow   = impl_Bonobo_ClientSite_showWindow;
+	epv->saveObject   = impl_Bonobo_ClientSite_saveObject;
 }
 
 static void
@@ -190,29 +153,6 @@ bonobo_client_site_init (BonoboClientSite *client_site)
 	client_site->bound_embeddable = NULL;
 }
 
-CORBA_Object
-bonobo_client_site_corba_object_create (BonoboObject *object)
-{
-	POA_Bonobo_ClientSite *servant;
-	CORBA_Environment ev;
-
-	servant = (POA_Bonobo_ClientSite *)g_new0 (BonoboObjectServant, 1);
-	servant->vepv = &bonobo_client_site_vepv;
-
-	CORBA_exception_init (&ev);
-
-	POA_Bonobo_ClientSite__init ( (PortableServer_Servant) servant, &ev);
-	if (BONOBO_EX (&ev)){
-		CORBA_exception_free (&ev);
-		g_free (servant);
-		return CORBA_OBJECT_NIL;
-	}
-
-	CORBA_exception_free (&ev);
-
-	return bonobo_object_activate_servant (object, servant);
-
-}
 /**
  * bonobo_client_site_construct:
  * @client_site: The BonoboClientSite object to initialize
@@ -226,19 +166,14 @@ bonobo_client_site_corba_object_create (BonoboObject *object)
  */
 BonoboClientSite *
 bonobo_client_site_construct (BonoboClientSite    *client_site,
-			      Bonobo_ClientSite    corba_client_site,
 			      BonoboItemContainer *container)
 {
 	g_return_val_if_fail (client_site != NULL, NULL);
 	g_return_val_if_fail (BONOBO_IS_CLIENT_SITE (client_site), NULL);
 	g_return_val_if_fail (container != NULL, NULL);
 	g_return_val_if_fail (BONOBO_IS_ITEM_CONTAINER (container), NULL);
-	g_return_val_if_fail (corba_client_site != CORBA_OBJECT_NIL, NULL);
-	
-	bonobo_object_construct (BONOBO_OBJECT (client_site), corba_client_site);
 	
 	BONOBO_CLIENT_SITE (client_site)->container = container;
-	bonobo_item_container_add (container, BONOBO_OBJECT (client_site));
 
 	return client_site;
 }
@@ -260,51 +195,20 @@ bonobo_client_site_construct (BonoboClientSite    *client_site,
 BonoboClientSite *
 bonobo_client_site_new (BonoboItemContainer *container)
 {
-	Bonobo_ClientSite corba_client_site;
 	BonoboClientSite *client_site;
 
 	g_return_val_if_fail (container != NULL, NULL);
 	g_return_val_if_fail (BONOBO_IS_ITEM_CONTAINER (container), NULL);
 	
 	client_site = gtk_type_new (bonobo_client_site_get_type ());
-	corba_client_site = bonobo_client_site_corba_object_create (BONOBO_OBJECT (client_site));
-	if (corba_client_site == CORBA_OBJECT_NIL){
-		bonobo_object_unref (BONOBO_OBJECT (client_site));
-		return NULL;
-	}
 
-	client_site = bonobo_client_site_construct (client_site, corba_client_site, container);
-	
-	return client_site;
+	return bonobo_client_site_construct (client_site, container);
 }
 
-/**
- * bonobo_client_site_get_type:
- *
- * Returns: The GtkType for the GnomeClient class.
- */
-GtkType
-bonobo_client_site_get_type (void)
-{
-	static GtkType type = 0;
-
-	if (!type){
-		GtkTypeInfo info = {
-			"BonoboClientSite",
-			sizeof (BonoboClientSite),
-			sizeof (BonoboClientSiteClass),
-			 (GtkClassInitFunc) bonobo_client_site_class_init,
-			 (GtkObjectInitFunc) bonobo_client_site_init,
-			NULL, /* reserved 1 */
-			NULL, /* reserved 2 */
-			 (GtkClassInitFunc) NULL
-		};
-
-		type = gtk_type_unique (bonobo_object_get_type (), &info);
-	}
-
-	return type;
-}
+BONOBO_X_TYPE_FUNC_FULL (BonoboClientSite, 
+			   Bonobo_ClientSite,
+			   PARENT_TYPE,
+			   bonobo_client_site);
 
 /** 
  * bonobo_client_site_bind_embeddable:
@@ -341,13 +245,10 @@ bonobo_client_site_bind_embeddable (BonoboClientSite   *client_site,
 	CORBA_exception_init (&ev);
 
 	/* The QI adds a ref */
-	Bonobo_Unknown_unref (bonobo_object_corba_objref (
-		BONOBO_OBJECT (object)), &ev);
+	Bonobo_Unknown_unref (BONOBO_OBJREF (object), &ev);
 
-	Bonobo_Embeddable_setClientSite (
-		embeddable_object, 
-		bonobo_object_corba_objref (BONOBO_OBJECT (client_site)),
-		&ev);
+	Bonobo_Embeddable_setClientSite (embeddable_object, 
+					 BONOBO_OBJREF (client_site), &ev);
 		
 	if (BONOBO_EX (&ev)) {
 		bonobo_object_check_env (BONOBO_OBJECT (object),
@@ -454,12 +355,10 @@ bonobo_client_site_new_view_full (BonoboClientSite  *client_site,
 	/*
 	 * 2. Now, create the view.
 	 */
-	server_object = bonobo_object_corba_objref (BONOBO_OBJECT (client_site->bound_embeddable));
+	server_object = BONOBO_OBJREF (client_site->bound_embeddable);
 	CORBA_exception_init (&ev);
- 	view = Bonobo_Embeddable_createView (
-		server_object,
-		bonobo_object_corba_objref (BONOBO_OBJECT (view_frame)),
-		&ev);
+ 	view = Bonobo_Embeddable_createView (server_object, 
+					     BONOBO_OBJREF (view_frame), &ev);
 
 	if (BONOBO_EX (&ev)) {
 		bonobo_object_check_env (
@@ -517,15 +416,17 @@ canvas_item_destroyed (GnomeCanvasItem *item, BonoboClientSite *client_site)
 /**
  * bonobo_client_site_new_item:
  * @client_site: The client site that contains a remote Embeddable object
+ * @uic: The UI container for the item.
  * @group: The Canvas group that will be the parent for the new item.
  *
  * Returns: A GnomeCanvasItem that wraps the remote Canvas Item.
  */
 GnomeCanvasItem *
-bonobo_client_site_new_item (BonoboClientSite *client_site, GnomeCanvasGroup *group)
+bonobo_client_site_new_item (BonoboClientSite *client_site, Bonobo_UIContainer uic,
+			     GnomeCanvasGroup *group)
 {
-	BonoboObjectClient *server_object;
 	GnomeCanvasItem *item;
+	Bonobo_Embeddable corba_emb;
 		
 	g_return_val_if_fail (client_site != NULL, NULL);
 	g_return_val_if_fail (BONOBO_IS_CLIENT_SITE (client_site), NULL);
@@ -533,12 +434,14 @@ bonobo_client_site_new_item (BonoboClientSite *client_site, GnomeCanvasGroup *gr
 	g_return_val_if_fail (group != NULL, NULL);
 	g_return_val_if_fail (GNOME_IS_CANVAS_GROUP (group), NULL);
 
-	server_object = client_site->bound_embeddable;
+	corba_emb = BONOBO_OBJREF (client_site->bound_embeddable);
 
-	item = bonobo_canvas_item_new (group, server_object);
+	item = gnome_canvas_item_new (group, bonobo_canvas_item_get_type (),
+				      "corba_ui_container", uic, 
+				      "corba_embeddable", corba_emb, NULL); 
 
 	/*
-	 * 5. Add this new view frame to the list of ViewFrames for
+	 * 5. Add this new item to the list of CanvasItems for
 	 * this embedded component.
 	 */
 	client_site->canvas_items = g_list_prepend (client_site->canvas_items, item);

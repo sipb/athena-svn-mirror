@@ -11,14 +11,15 @@
  */
 #include <config.h>
 #include <gtk/gtksignal.h>
+#include <bonobo/bonobo-listener.h>
 #include <bonobo/bonobo-exception.h>
 #include <bonobo/bonobo-event-source.h>
 #include <bonobo/bonobo-running-context.h>
 #include <time.h>
 
-static BonoboObjectClass    *bonobo_event_source_parent_class;
-POA_Bonobo_EventSource__vepv bonobo_event_source_vepv;
+#define PARENT_TYPE BONOBO_X_OBJECT_TYPE
 
+static GtkObjectClass *bonobo_event_source_parent_class;
 
 struct _BonoboEventSourcePrivate {
 	GSList  *listeners;  /* CONTAINS: ListenerDesc* */
@@ -192,34 +193,6 @@ bonobo_event_source_notify_listeners_full (BonoboEventSource *event_source,
 	g_free (event_name);
 }
 
-
-/**
- * bonobo_event_source_get_epv:
- *
- * Returns: The EPV for the default BonoboEventSource implementation.  
- */
-POA_Bonobo_EventSource__epv *
-bonobo_event_source_get_epv (void)
-{
-	POA_Bonobo_EventSource__epv *epv;
-
-	epv = g_new0 (POA_Bonobo_EventSource__epv, 1);
-
-	epv->addListener         = impl_Bonobo_EventSource_addListener;
-	epv->addListenerWithMask = impl_Bonobo_EventSource_addListenerWithMask;
-	epv->removeListener      = impl_Bonobo_EventSource_removeListener;
-
-	return epv;
-}
-
-static void
-init_event_source_corba_class (void)
-{
-	/* The VEPV */
-	bonobo_event_source_vepv.Bonobo_Unknown_epv = bonobo_object_get_epv ();
-	bonobo_event_source_vepv.Bonobo_EventSource_epv = bonobo_event_source_get_epv ();
-}
-
 static void
 bonobo_event_source_destroy (GtkObject *object)
 {
@@ -239,7 +212,22 @@ bonobo_event_source_destroy (GtkObject *object)
 	g_slist_free (event_source->priv->listeners);
 	g_free (event_source->priv);
 
-	GTK_OBJECT_CLASS (bonobo_event_source_parent_class)->destroy (object);
+	bonobo_event_source_parent_class->destroy (object);
+}
+
+static void
+bonobo_event_source_class_init (BonoboEventSourceClass *klass)
+{
+	GtkObjectClass *oclass = (GtkObjectClass *) klass;
+	POA_Bonobo_EventSource__epv *epv = &klass->epv;
+
+	bonobo_event_source_parent_class = gtk_type_class (PARENT_TYPE);
+
+	oclass->destroy = bonobo_event_source_destroy;
+
+	epv->addListener         = impl_Bonobo_EventSource_addListener;
+	epv->addListenerWithMask = impl_Bonobo_EventSource_addListenerWithMask;
+	epv->removeListener      = impl_Bonobo_EventSource_removeListener;
 }
 
 static void
@@ -252,102 +240,10 @@ bonobo_event_source_init (GtkObject *object)
 	event_source->priv->listeners = NULL;
 }
 
-static void
-bonobo_event_source_class_init (BonoboEventSourceClass *klass)
-{
-	GtkObjectClass *oclass = (GtkObjectClass *) klass;
-
-	bonobo_event_source_parent_class = 
-		gtk_type_class (bonobo_object_get_type ());
-
-	oclass->destroy = bonobo_event_source_destroy;
-
-	init_event_source_corba_class ();
-}
-
-/**
- * bonobo_event_source_get_type:
- * 
- * Registers the GtkType for this BonoboObject.
- * 
- * Return value: the type.
- **/
-GtkType
-bonobo_event_source_get_type (void)
-{
-        static GtkType type = 0;
-
-        if (!type) {
-                GtkTypeInfo info = {
-                        "BonoboEventSource",
-                        sizeof (BonoboEventSource),
-                        sizeof (BonoboEventSourceClass),
-                        (GtkClassInitFunc) bonobo_event_source_class_init,
-                        (GtkObjectInitFunc) bonobo_event_source_init,
-                        NULL, /* reserved 1 */
-                        NULL, /* reserved 2 */
-                        (GtkClassInitFunc) NULL
-                };
-
-                type = gtk_type_unique (bonobo_object_get_type (), &info);
-        }
-
-        return type;
-}
-
-/**
- * bonobo_event_source_corba_object_create:
- * @object: the object to tie the CORBA object to
- * 
- * creates the CORBA object associated with an event source
- * 
- * Return value: the CORBA handle to this object.
- **/
-Bonobo_EventSource
-bonobo_event_source_corba_object_create (BonoboObject *object)
-{
-        POA_Bonobo_EventSource *servant;
-        CORBA_Environment ev;
-
-        servant = (POA_Bonobo_EventSource *) g_new0 (BonoboObjectServant, 1);
-        servant->vepv = &bonobo_event_source_vepv;
-
-        CORBA_exception_init (&ev);
-
-        POA_Bonobo_EventSource__init ((PortableServer_Servant) servant, &ev);
-        if (BONOBO_EX (&ev)) {
-                g_free (servant);
-                CORBA_exception_free (&ev);
-                return CORBA_OBJECT_NIL;
-        }
-
-        CORBA_exception_free (&ev);
-
-        return bonobo_object_activate_servant (object, servant);
-}
-
-/**
- * bonobo_event_source_construct:
- * @event_source: 
- * @corba_event_source: 
- * 
- * constructs an event source.
- * 
- * Return value: the constructed event source or NULL on error.
- **/
-BonoboEventSource *
-bonobo_event_source_construct (BonoboEventSource  *event_source, 
-			       Bonobo_EventSource corba_event_source) 
-{
-        g_return_val_if_fail (event_source != NULL, NULL);
-        g_return_val_if_fail (BONOBO_IS_EVENT_SOURCE (event_source), NULL);
-        g_return_val_if_fail (corba_event_source != NULL, NULL);
-
-        bonobo_object_construct (BONOBO_OBJECT (event_source), 
-				 corba_event_source);
-
-        return event_source;
-}
+BONOBO_X_TYPE_FUNC_FULL (BonoboEventSource, 
+			   Bonobo_EventSource,
+			   PARENT_TYPE,
+			   bonobo_event_source);
 
 /**
  * bonobo_event_source_new:
@@ -365,20 +261,7 @@ bonobo_event_source_construct (BonoboEventSource  *event_source,
 BonoboEventSource *
 bonobo_event_source_new (void)
 {
-	BonoboEventSource *event_source;
-	Bonobo_EventSource corba_event_source;
-	
-	event_source = gtk_type_new (BONOBO_EVENT_SOURCE_TYPE);
-	corba_event_source = bonobo_event_source_corba_object_create (
-		BONOBO_OBJECT (event_source));
-	
-	if (corba_event_source == CORBA_OBJECT_NIL) {
-		bonobo_object_unref (BONOBO_OBJECT (event_source));
-		return NULL;
-	}
-	
-	return bonobo_event_source_construct (
-		event_source, corba_event_source);
+	return gtk_type_new (BONOBO_EVENT_SOURCE_TYPE);
 }
 
 /**
@@ -395,3 +278,118 @@ bonobo_event_source_ignore_listeners (BonoboEventSource *event_source)
 
 	event_source->priv->ignore = TRUE;
 }
+
+void
+bonobo_event_source_client_remove_listener (Bonobo_Unknown  object,
+					    Bonobo_EventSource_ListenerId id,
+					    CORBA_Environment *opt_ev)
+{
+	CORBA_Environment ev, *my_ev;
+	Bonobo_Unknown es;
+
+	g_return_if_fail (object != CORBA_OBJECT_NIL);
+	g_return_if_fail (id != 0);
+
+	if (!opt_ev) {
+		CORBA_exception_init (&ev);
+		my_ev = &ev;
+	} else
+		my_ev = opt_ev;
+
+	if (CORBA_Object_is_a (object, "IDL:Bonobo/Property:1.0", my_ev)) {
+
+		Bonobo_Property_removeListener (object, id, my_ev);
+
+	} else { 
+
+		es = Bonobo_Unknown_queryInterface (object, 
+		       "IDL:Bonobo/EventSource:1.0", my_ev);
+
+		if (BONOBO_EX(my_ev) || !es)
+			goto remove_listener_end;
+
+		Bonobo_EventSource_removeListener (es, id, my_ev);
+
+		Bonobo_Unknown_unref (es, my_ev);
+	}
+
+ remove_listener_end:
+
+	if (!opt_ev) {
+		if (BONOBO_EX (my_ev))
+			g_warning ("remove_listener failed '%s'",
+				   bonobo_exception_get_text (my_ev));
+		CORBA_exception_free (&ev);
+	}
+}
+
+Bonobo_EventSource_ListenerId
+bonobo_event_source_client_add_listener (Bonobo_Unknown object,
+					 BonoboListenerCallbackFn event_callback,
+					 const char *opt_mask,
+					 CORBA_Environment *opt_ev,
+					 gpointer user_data)
+{
+	CORBA_Environment ev, *my_ev;
+	BonoboListener *listener = NULL;
+	Bonobo_Listener corba_listener;
+	Bonobo_EventSource_ListenerId id = 0;
+	Bonobo_Unknown es;
+
+	g_return_val_if_fail (object != CORBA_OBJECT_NIL, 0);
+	g_return_val_if_fail (event_callback != NULL, 0);
+	
+	if (!opt_ev) {
+		CORBA_exception_init (&ev);
+		my_ev = &ev;
+	} else
+		my_ev = opt_ev;
+
+	if (CORBA_Object_is_a (object, "IDL:Bonobo/Property:1.0", my_ev)) {
+		if (!(listener = bonobo_listener_new (event_callback, 
+						      user_data)))
+			goto add_listener_end;
+	      
+		corba_listener = BONOBO_OBJREF (listener);
+
+		id = Bonobo_Property_addListener (object, corba_listener, 
+						  my_ev);
+
+		bonobo_object_unref (BONOBO_OBJECT (listener));
+
+	} else {
+		es = Bonobo_Unknown_queryInterface (object, 
+		        "IDL:Bonobo/EventSource:1.0", my_ev);
+
+		if (BONOBO_EX(my_ev) || !es)
+			goto add_listener_end;
+
+		if (!(listener = bonobo_listener_new (event_callback, 
+						      user_data)))
+			goto add_listener_end;
+
+		corba_listener = BONOBO_OBJREF (listener);
+	
+		if (opt_mask)
+			id = Bonobo_EventSource_addListenerWithMask (es, 
+			        corba_listener, opt_mask, my_ev);
+		else 
+			id = Bonobo_EventSource_addListener (es, 
+				corba_listener, my_ev);
+
+		bonobo_object_unref (BONOBO_OBJECT (listener));
+		Bonobo_Unknown_unref (es, my_ev);
+	}
+
+ add_listener_end:
+
+	if (!opt_ev) {
+		if (BONOBO_EX (my_ev))
+			g_warning ("add_listener failed '%s'",
+				   bonobo_exception_get_text (my_ev));
+		CORBA_exception_free (&ev);
+	}
+
+	return id;
+} 
+

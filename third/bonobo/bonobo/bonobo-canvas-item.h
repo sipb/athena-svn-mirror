@@ -14,8 +14,8 @@
 #include <bonobo/bonobo-embeddable.h>
 
 #define BONOBO_CANVAS_ITEM(obj)          (GTK_CHECK_CAST((obj), bonobo_canvas_item_get_type (), BonoboCanvasItem))
-#define BONOBO_CANVAS_ITEM_CLASS(k)      (GTK_CHECK_CLASS_CAST ((k), gnome_bonobo_get_type (), BonoboCanvasItemClass))
-#define BONOBO_IS_CANVAS_ITEM(o)         (GTK_CHECK_TYPE((o), gnome_bonobo_get_type ()))
+#define BONOBO_CANVAS_ITEM_CLASS(k)      (GTK_CHECK_CLASS_CAST ((k), bonobo_canvas_item_get_type (), BonoboCanvasItemClass))
+#define BONOBO_IS_CANVAS_ITEM(o)         (GTK_CHECK_TYPE((o), bonobo_canvas_item_get_type ()))
 
 typedef struct _BonoboCanvasItemPrivate BonoboCanvasItemPrivate;
 
@@ -30,8 +30,6 @@ typedef struct {
 } BonoboCanvasItemClass;
 
 GtkType          bonobo_canvas_item_get_type    (void);
-GnomeCanvasItem *bonobo_canvas_item_new         (GnomeCanvasGroup  *parent,
-						BonoboObjectClient *embeddable);
 
 void		 bonobo_canvas_item_set_bounds (BonoboCanvasItem *item, double x1, double y1, double x2, double y2);
 

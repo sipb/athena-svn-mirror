@@ -10,7 +10,7 @@
 #ifndef _BONOBO_UI_COMPONENT_H_
 #define _BONOBO_UI_COMPONENT_H_
 
-#include <bonobo/bonobo-object.h>
+#include <bonobo/bonobo-xobject.h>
 #include <bonobo/bonobo-ui-node.h>
 
 BEGIN_GNOME_DECLS
@@ -35,16 +35,16 @@ typedef void (*BonoboUIVerbFn)    (BonoboUIComponent           *component,
 				   const char                  *cname);
 
 struct _BonoboUIComponent {
-	BonoboObject              object;
+	BonoboXObject             object;
 	BonoboUIComponentPrivate *priv;
 };
 
 typedef struct {
-	BonoboObjectClass parent_class;
+	BonoboXObjectClass          parent_class;
 
-	/*
-	 * Signals
-	 */
+	POA_Bonobo_UIComponent__epv epv;
+
+	/* Signals */
 	void (*exec_verb) (BonoboUIComponent *comp,
 			   const char        *cname);
 
@@ -52,9 +52,7 @@ typedef struct {
 			   const char        *path,
 			   Bonobo_UIComponent_EventType type,
 			   const char        *state);
-	/*
-	 * Virtual XML Methods
-	 */
+	/* Virtual XML Methods */
 	void (*freeze)    (BonoboUIComponent *component,
 			   CORBA_Environment *opt_ev);
 
@@ -97,7 +95,6 @@ typedef struct {
 GtkType            bonobo_ui_component_get_type        (void);
 
 BonoboUIComponent *bonobo_ui_component_construct       (BonoboUIComponent  *component,
-							Bonobo_UIComponent  corba_ui,
 							const char         *name);
 
 BonoboUIComponent *bonobo_ui_component_new             (const char         *name);
@@ -214,9 +211,6 @@ gchar             *bonobo_ui_component_get_prop     (BonoboUIComponent  *compone
 void               bonobo_ui_component_set_status   (BonoboUIComponent  *component,
 						     const char         *text,
 						     CORBA_Environment  *opt_ev);
-
-POA_Bonobo_UIComponent__epv *bonobo_ui_component_get_epv (void);
-Bonobo_UIComponent bonobo_ui_component_corba_object_create (BonoboObject *object);
 
 typedef struct {
 	char          *cname;

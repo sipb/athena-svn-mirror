@@ -52,11 +52,14 @@ bonobo_application_x_mines_LDADD =		\
 #	-chgrp games $(DESTDIR)$(bindir)/gnomine && chmod 2111 $(DESTDIR)$(bindir)/gnomine
 
 
+oaf_in_files = Bonobo_Sample_Mines.oaf.in 
 oafdir = $(datadir)/oaf
-oaf_DATA = Bonobo_Sample_Mines.oafinfo
+oaf_DATA = $(oaf_in_files:.oaf.in=.oaf)
+
+@XML_I18N_MERGE_OAF_RULE@
 
 EXTRA_DIST = flag.xpm mine.xpm face-cool.xpm face-sad.xpm \
 	face-smile.xpm face-win.xpm face-worried.xpm \
-	gnomine.desktop README AUTHORS $(oaf_DATA) \
+	gnomine.desktop README AUTHORS $(oaf_in_files) $(oaf_DATA) \
 	bonobo-application-x-mines-ui.xml
 

@@ -10,19 +10,21 @@
 #include <config.h>
 #include <gnome.h>
 #include <bonobo.h>
+#include <bonobo/bonobo-ui-xml.h>
 #include <bonobo/bonobo-ui-component.h>
 #include <gnome-xml/tree.h>
 #include <gnome-xml/parser.h>
 
-static BonoboObjectClass *bonobo_ui_component_parent_class;
+#define PARENT_TYPE BONOBO_X_OBJECT_TYPE
+
+static GtkObjectClass *bonobo_ui_component_parent_class;
+
 enum {
 	EXEC_VERB,
 	UI_EVENT,
 	LAST_SIGNAL
 };
 static guint signals[LAST_SIGNAL] = { 0 };
-
-POA_Bonobo_UIComponent__vepv bonobo_ui_component_vepv;
 
 #define GET_CLASS(c) (BONOBO_UI_COMPONENT_CLASS (GTK_OBJECT (c)->klass))
 
@@ -391,85 +393,33 @@ bonobo_ui_component_destroy (GtkObject *object)
 		g_free (priv);
 	}
 	comp->priv = NULL;
-}
 
-/**
- * bonobo_ui_component_get_epv:
- *
- * Returns: The EPV for the default BonoboUIComponent implementation.  
- */
-POA_Bonobo_UIComponent__epv *
-bonobo_ui_component_get_epv (void)
-{
-	POA_Bonobo_UIComponent__epv *epv;
-
-	epv = g_new0 (POA_Bonobo_UIComponent__epv, 1);
-
-	epv->describeVerbs = impl_Bonobo_UIComponent_describeVerbs;
-	epv->execVerb      = impl_Bonobo_UIComponent_execVerb;
-	epv->uiEvent       = impl_Bonobo_UIComponent_uiEvent;
-
-	return epv;
-}
-
-Bonobo_UIComponent
-bonobo_ui_component_corba_object_create (BonoboObject *object)
-{
-	POA_Bonobo_UIComponent *servant;
-	CORBA_Environment       ev;
-
-	servant = (POA_Bonobo_UIComponent *) g_new0 (BonoboObjectServant, 1);
-	servant->vepv = &bonobo_ui_component_vepv;
-
-	CORBA_exception_init (&ev);
-
-	POA_Bonobo_UIComponent__init ((PortableServer_Servant) servant, &ev);
-	if (BONOBO_EX (&ev)){
-                g_free (servant);
-		CORBA_exception_free (&ev);
-                return CORBA_OBJECT_NIL;
-        }
-
-	CORBA_exception_free (&ev);
-
-	return bonobo_object_activate_servant (object, servant);
+	bonobo_ui_component_parent_class->destroy (object);
 }
 
 BonoboUIComponent *
 bonobo_ui_component_construct (BonoboUIComponent *ui_component,
-			       Bonobo_UIComponent corba_component,
 			       const char        *name)
 {
-	g_return_val_if_fail (corba_component != CORBA_OBJECT_NIL, NULL);
 	g_return_val_if_fail (BONOBO_IS_UI_COMPONENT (ui_component), NULL);
 
 	ui_component->priv->name = g_strdup (name);
 
-	return BONOBO_UI_COMPONENT (
-		bonobo_object_construct (BONOBO_OBJECT (ui_component),
-					 corba_component));
+	return ui_component;
 }
 
 BonoboUIComponent *
 bonobo_ui_component_new (const char *name)
 {
 	BonoboUIComponent *component;
-	Bonobo_UIComponent corba_component;
 
 	component = gtk_type_new (BONOBO_UI_COMPONENT_TYPE);
-	if (component == NULL)
+	if (!component)
 		return NULL;
 
-	corba_component = bonobo_ui_component_corba_object_create (
-		BONOBO_OBJECT (component));
-
-	if (corba_component == CORBA_OBJECT_NIL) {
-		bonobo_object_unref (BONOBO_OBJECT (component));
-		return NULL;
-	}
-
-	return BONOBO_UI_COMPONENT (bonobo_ui_component_construct (
-		component, corba_component, name));
+	return BONOBO_UI_COMPONENT (
+		bonobo_ui_component_construct (
+			component, name));
 }
 
 BonoboUIComponent *
@@ -1074,8 +1024,7 @@ bonobo_ui_component_set_container (BonoboUIComponent *component,
 
 		CORBA_exception_init (&ev);
 
-		corba_component = 
-			bonobo_object_corba_objref (BONOBO_OBJECT (component));
+		corba_component = BONOBO_OBJREF (component);
 
 		name = component->priv->name ? component->priv->name : "";
 
@@ -1109,17 +1058,13 @@ bonobo_ui_component_class_init (BonoboUIComponentClass *klass)
 {
 	GtkObjectClass *object_class = (GtkObjectClass *) klass;
 	BonoboUIComponentClass *uclass = BONOBO_UI_COMPONENT_CLASS (klass);
+	POA_Bonobo_UIComponent__epv *epv = &klass->epv;
 	
-	bonobo_ui_component_parent_class = gtk_type_class (BONOBO_OBJECT_TYPE);
+	bonobo_ui_component_parent_class = gtk_type_class (PARENT_TYPE);
 
 	object_class->destroy = bonobo_ui_component_destroy;
 
 	uclass->ui_event = ui_event;
-
-	bonobo_ui_component_vepv.Bonobo_Unknown_epv =
-		bonobo_object_get_epv ();
-	bonobo_ui_component_vepv.Bonobo_UIComponent_epv =
-		bonobo_ui_component_get_epv ();
 
 	signals [EXEC_VERB] = gtk_signal_new (
 		"exec_verb", GTK_RUN_FIRST,
@@ -1147,6 +1092,9 @@ bonobo_ui_component_class_init (BonoboUIComponentClass *klass)
 	uclass->get_prop = impl_get_prop;
 	uclass->exists   = impl_exists;
 
+	epv->describeVerbs = impl_Bonobo_UIComponent_describeVerbs;
+	epv->execVerb      = impl_Bonobo_UIComponent_execVerb;
+	epv->uiEvent       = impl_Bonobo_UIComponent_uiEvent;
 }
 
 static void
@@ -1162,31 +1110,7 @@ bonobo_ui_component_init (BonoboUIComponent *component)
 	component->priv = priv;
 }
 
-/**
- * bonobo_ui_component_get_type:
- *
- * Returns: the GtkType of the BonoboUIComponent class.
- */
-GtkType
-bonobo_ui_component_get_type (void)
-{
-	static GtkType type = 0;
-
-	if (!type) {
-		GtkTypeInfo info = {
-			"BonoboUIComponent",
-			sizeof (BonoboUIComponent),
-			sizeof (BonoboUIComponentClass),
-			(GtkClassInitFunc) bonobo_ui_component_class_init,
-			(GtkObjectInitFunc) bonobo_ui_component_init,
-			NULL, /* reserved 1 */
-			NULL, /* reserved 2 */
-			(GtkClassInitFunc) NULL
-		};
-
-		type = gtk_type_unique (bonobo_object_get_type (), &info);
-	}
-
-	return type;
-}
-
+BONOBO_X_TYPE_FUNC_FULL (BonoboUIComponent, 
+			   Bonobo_UIComponent,
+			   PARENT_TYPE,
+			   bonobo_ui_component);

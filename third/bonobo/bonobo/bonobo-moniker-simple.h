@@ -10,7 +10,6 @@
 #ifndef _BONOBO_MONIKER_SIMPLE_SIMPLE_H_
 #define _BONOBO_MONIKER_SIMPLE_SIMPLE_H_
 
-#include <bonobo/bonobo-object.h>
 #include <bonobo/bonobo-moniker.h>
 
 BEGIN_GNOME_DECLS
@@ -43,7 +42,6 @@ typedef struct {
 GtkType        bonobo_moniker_simple_get_type  (void);
 
 BonoboMoniker *bonobo_moniker_simple_construct (BonoboMonikerSimple         *moniker,
-						Bonobo_Moniker               corba_moniker,
 						const char                  *name,
 						BonoboMonikerSimpleResolveFn resolve_fn);
 

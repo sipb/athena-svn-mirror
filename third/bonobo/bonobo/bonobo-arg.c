@@ -12,50 +12,98 @@
 
 #include <config.h>
 #include <bonobo/bonobo-main.h>
+#include <bonobo/bonobo-exception.h>
 #include <bonobo/bonobo-arg.h>
 
 BonoboArg *
 bonobo_arg_new (BonoboArgType t)
 {
-	CORBA_any *any;
-	size_t     size;
+	CORBA_any *any = NULL;
+	DynamicAny_DynAny dyn = NULL;
+	CORBA_ORB orb;
+	CORBA_Environment ev;
 
-	any = CORBA_any__alloc ();
-	any->_type = t;
+	g_return_val_if_fail (t != NULL, NULL);
 
-	size = ORBit_gather_alloc_info (t);
-	/*
-	 *  If we were paranoid we would memzero this buffer.
-	 */
-	any->_value = CORBA_octet_allocbuf (size);
-	CORBA_any_set_release (any, TRUE);
+	CORBA_exception_init (&ev);
+	
+	orb = bonobo_orb ();
+
+	switch (t->kind) {
+
+	case CORBA_tk_null: 
+	case CORBA_tk_void: 
+	case CORBA_tk_short:
+	case CORBA_tk_long:
+	case CORBA_tk_ushort:
+	case CORBA_tk_ulong:
+	case CORBA_tk_float:
+	case CORBA_tk_double:
+	case CORBA_tk_boolean:
+	case CORBA_tk_char:
+	case CORBA_tk_octet:
+	case CORBA_tk_string:
+	case CORBA_tk_longlong:
+	case CORBA_tk_ulonglong:
+	case CORBA_tk_longdouble:
+	case CORBA_tk_wchar:
+	case CORBA_tk_wstring:
+	case CORBA_tk_objref:
+	case CORBA_tk_any:
+	case CORBA_tk_TypeCode:
+	case CORBA_tk_Principal:
+
+		dyn = CORBA_ORB_create_basic_dyn_any (orb, t, &ev);
+		break;
+
+ 	case CORBA_tk_sequence:
+
+		dyn = CORBA_ORB_create_dyn_sequence (orb, t, &ev);
+		break;
+
+	case CORBA_tk_array:
+
+		dyn = CORBA_ORB_create_dyn_array (orb, t, &ev);
+		break;
+		
+	case CORBA_tk_except:
+	case CORBA_tk_struct:
+
+		dyn = CORBA_ORB_create_dyn_struct (orb, t, &ev);
+		break;
+
+	case CORBA_tk_union:
+
+		dyn = CORBA_ORB_create_dyn_union (orb, t, &ev);
+		break;
+       
+	case CORBA_tk_enum:
+
+		dyn = CORBA_ORB_create_dyn_enum (orb, t, &ev);
+		break;
+       
+	default:
+
+		g_warning ("Unhandled typecode");
+		break;
+	}
+
+	if (!BONOBO_EX (&ev) && dyn != NULL) {
+		any = DynamicAny_DynAny_to_any (dyn, &ev);
+		DynamicAny_DynAny_destroy (dyn, &ev);
+		CORBA_Object_release ((CORBA_Object) dyn, &ev);
+	}
+
+	CORBA_exception_free (&ev);
 
 	return any;
 }
 
 void
-bonobo_arg_init_default (BonoboArg *a)
-{	
-	size_t size;
-
-	g_return_if_fail (a != NULL);
-	g_return_if_fail (a->_value != NULL);
-
-	size = ORBit_gather_alloc_info (a->_type);
-	/*
-	 * Hope this is good enough;
-	 * FIXME: perhaps we should special case strings
-	 */
-	memset (a->_value, 0, size);
-}
-
-void
 bonobo_arg_release (BonoboArg *a)
 {
-	if (!a)
-		return;
-
-	CORBA_free (a);	
+	if (a)
+		CORBA_free (a);	
 }
 
 BonoboArg *
@@ -262,6 +310,27 @@ bonobo_arg_type_is_equal (BonoboArgType a, BonoboArgType b, CORBA_Environment *o
 		my_ev = opt_ev;
 
 	retval = CORBA_TypeCode_equal (a, b, my_ev);
+
+	if (!opt_ev)
+		CORBA_exception_free (&ev);
+
+	return retval;
+}
+
+gboolean
+bonobo_arg_is_equal (BonoboArg *a, BonoboArg *b, CORBA_Environment *opt_ev)
+{
+	CORBA_Environment ev, *my_ev;
+	gboolean retval;
+
+	if (!opt_ev) {
+
+		CORBA_exception_init (&ev);
+		my_ev = &ev;
+	} else
+		my_ev = opt_ev;
+
+	retval = ORBit_any_equivalent (a, b, my_ev);
 
 	if (!opt_ev)
 		CORBA_exception_free (&ev);

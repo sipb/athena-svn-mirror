@@ -53,10 +53,17 @@ options.
 
 * Reserved names
 
+Verbs starting with "Bonobo" are reserved for use by the component
+model. Currently the following verbs are builtin:
+
+       BonoboCustomize
+       BonoboUIDump
+
 A placeholder named "BuiltMenuItems" automatically gets filled in
 with help menu items based on the code in gnome-help.h.
 
 Verbs starting with "Help" are reserved if you use "BuiltMenuItems".
+
 
 * Verbs
 
@@ -101,6 +108,10 @@ Verbs are actions to be taken when an item is activated.
 
 <menuitem>          - a menu item within a <submenu> or <menu>
 
+<submenu>	    - a sub menu item
+ tearoff="1/0"	    - whether we insert a tearoff item on creation,
+		      defaults to global gnome preference or none for popup.
+
 <dockitem>             - a dock item in a GnomeDock with a toolbar in it
  name="Foo"            - name to refer to dock item
  look="icon"           - lets you choose a toolbar style (text/icon/both)
@@ -111,6 +122,10 @@ Verbs are actions to be taken when an item is activated.
 * The following items have effect only at dockitem creation.
  placement="top"       - where to put the band; top, bottom, right,
 			 left, floating
+ tips="1/0"            - whether we show tooltips default 1
+ config="1/0"	       - whether to allow basic right click
+			 config default 1.
+ priority="1/0"        - whether the label should be shown in 'Priority text' mode.
 
  behavior is a comma-delimited set of phrases that match the features
  in GnomeDockItem. The supported values are:
@@ -133,6 +148,10 @@ Verbs are actions to be taken when an item is activated.
 <placeholder>       - a virtual 'directory' in which to insert items, this
 		      allows the items to be delimited variously if present
 		      or not at all by default.
+ delimit="top"	    - this flag asks that the placeholder should be visible
+		      as a separator when it contains visible items, otherwise
+		      it should not be visible. With a "none" delimit setting
+		      a placeholder is never visible.
 
 * Status bar
 

@@ -196,14 +196,12 @@ bonobo_object_client_query_interface (BonoboObjectClient *object,
 		CORBA_exception_init (ev);
 	}
 
-	interface = Bonobo_Unknown_queryInterface (
-						   bonobo_object_corba_objref (BONOBO_OBJECT (object)),
+	interface = Bonobo_Unknown_queryInterface (BONOBO_OBJREF (object),
 						   interface_desc, ev);
 	
         if (BONOBO_EX (ev)) {
 		bonobo_object_check_env (BONOBO_OBJECT (object),
-					bonobo_object_corba_objref (BONOBO_OBJECT (object)),
-					ev);
+					 BONOBO_OBJREF (object), ev);
 		if (!opt_ev)
 			CORBA_exception_free (ev);
 
@@ -254,8 +252,7 @@ bonobo_object_client_has_interface (BonoboObjectClient *object,
 
 		if (BONOBO_EX (ev)) {
 			bonobo_object_check_env (BONOBO_OBJECT (object),
-						bonobo_object_corba_objref (BONOBO_OBJECT (object)),
-						ev);
+						 BONOBO_OBJREF (object), ev);
 			if (!opt_ev)
 				CORBA_exception_free (ev);
 			return FALSE;
@@ -265,8 +262,7 @@ bonobo_object_client_has_interface (BonoboObjectClient *object,
 
 		if (BONOBO_EX (ev)) {
 			bonobo_object_check_env (BONOBO_OBJECT (object),
-						bonobo_object_corba_objref (BONOBO_OBJECT (object)),
-						ev);
+						 BONOBO_OBJREF (object), ev);
 			if (!opt_ev)
 				CORBA_exception_free (ev);
 			return FALSE;

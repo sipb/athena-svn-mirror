@@ -23,26 +23,29 @@ echo_client_LDADD =				\
 	libEcho.a				\
 	$(INTLLIBS)
 
-ECHO_CORBA_GENERATED =		\
-	Echo-common.c		\
-	Echo-skels.c		\
-	Echo-stubs.c		\
-	Echo.h
+ECHO_CORBA_GENERATED =				\
+	Bonobo_Sample_Echo-common.c		\
+	Bonobo_Sample_Echo-skels.c		\
+	Bonobo_Sample_Echo-stubs.c		\
+	Bonobo_Sample_Echo.h
 
 libEcho_a_SOURCES = $(ECHO_CORBA_GENERATED)
 
-$(ECHO_CORBA_GENERATED): Echo.idl 
-	orbit-idl -I$(top_srcdir)/idl -I`$(GNOME_CONFIG) --datadir`/idl $(srcdir)/Echo.idl
+$(ECHO_CORBA_GENERATED): Bonobo_Sample_Echo.idl 
+	orbit-idl -I$(top_srcdir)/idl -I`$(GNOME_CONFIG) --datadir`/idl $(srcdir)/Bonobo_Sample_Echo.idl
 	touch my_echo_idl
 
 
 oafdir = $(datadir)/oaf
-oaf_DATA = Bonobo_Sample_Echo.oafinfo
+oaf_in_files = Bonobo_Sample_Echo.oaf.in
+oaf_DATA = $(oaf_in_files:.oaf.in=.oaf)
+
+@XML_I18N_MERGE_OAF_RULE@
 
 idldir    = $(datadir)/idl
-idl_DATA  = Echo.idl
+idl_DATA  = Bonobo_Sample_Echo.idl
 
-EXTRA_DIST = $(oaf_DATA) $(idl_DATA)
+EXTRA_DIST = $(oaf_in_files) $(oaf_DATA) $(idl_DATA)
 
 INCLUDES = 						\
         -DGNOMELOCALEDIR=\""$(datadir)/locale"\"        \

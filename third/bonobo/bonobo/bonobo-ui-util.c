@@ -1108,32 +1108,6 @@ bonobo_ui_util_set_ui (BonoboUIComponent *component,
 	/* FIXME: we could be caching the tree here */
 }
 
-static void
-add_node (BonoboUINode *parent, const char *name)
-{
-        BonoboUINode *node = bonobo_ui_node_new (name);
-
-	bonobo_ui_node_add_child (parent, node);
-}
-
-/**
- * bonobo_ui_util_build_skeleton:
- * 
- *  Create a skeleton structure so paths work nicely.
- * should be merged into any new ui_xml objects.
- * 
- * Return value: a tree, free it with bonobo_ui_node_free.
- **/
-void
-bonobo_ui_util_build_skeleton (BonoboUIXml *xml)
-{
-	g_return_if_fail (BONOBO_IS_UI_XML (xml));
-
-	add_node (xml->root, "keybindings");
-	add_node (xml->root, "commands");
-}
-
-
 /*
  * Evil code, cut and pasted from gtkaccelgroup.c
  * needs de-Soptimizing :-)

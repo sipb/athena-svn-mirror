@@ -10,7 +10,7 @@
 #ifndef _BONOBO_PRINT_H_
 #define _BONOBO_PRINT_H_
 
-#include <bonobo/bonobo-object.h>
+#include <bonobo/bonobo-xobject.h>
 #include <libgnomeprint/gnome-print-meta.h>
 
 BEGIN_GNOME_DECLS
@@ -28,23 +28,22 @@ typedef void     (BonoboPrintRenderFn) (GnomePrintContext         *ctx,
 					gpointer                   user_data);
 
 typedef struct {
-        BonoboObject         object;
+        BonoboXObject        object;
 
 	BonoboPrintRenderFn *render;
 	gpointer             user_data;
 } BonoboPrint;
 
 typedef struct {
-	BonoboObjectClass    parent;
+	BonoboXObjectClass   parent;
+
+	POA_Bonobo_Print__epv epv;
+
 	BonoboPrintRenderFn *render;
 } BonoboPrintClass;
 
-POA_Bonobo_Print__epv *bonobo_print_get_epv (void);
-
 GtkType         bonobo_print_get_type            (void);
-Bonobo_Print    bonobo_print_corba_object_create (BonoboObject *object);
 BonoboPrint    *bonobo_print_construct           (BonoboPrint         *p,
-						  Bonobo_Print         corba_p,
 						  BonoboPrintRenderFn *render,
 						  gpointer             user_data);
 BonoboPrint    *bonobo_print_new                 (BonoboPrintRenderFn *render,

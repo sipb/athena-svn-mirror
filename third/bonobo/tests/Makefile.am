@@ -1,10 +1,12 @@
 noinst_PROGRAMS =		\
 	test-any		\
+	test-ui			\
 	test-container 		\
 	test-moniker		\
 	test-properties-server	\
 	test-properties-client	\
 	test-storage		\
+	test-toolbar		\
 	selector_test
 
 bonobo_libs =						\
@@ -40,6 +42,18 @@ test_any_SOURCES = test-any.c
 test_any_LDADD =					\
 	$(bonobo_libs)					\
 	$(top_builddir)/bonobo/libbonobox.la
+
+test_ui_SOURCES = test-ui.c
+test_ui_LDADD =						\
+	$(bonobo_libs)					\
+	$(top_builddir)/bonobo/libbonobox.la		\
+	$(top_builddir)/bonobo/libbonobo-print.la
+
+test_toolbar_SOURCES = test-toolbar.c
+test_toolbar_LDADD =					\
+	$(bonobo_libs)					\
+	$(top_builddir)/bonobo/libbonobox.la		\
+	$(top_builddir)/bonobo/libbonobo-print.la
 
 test_moniker_SOURCES = test-moniker.c
 

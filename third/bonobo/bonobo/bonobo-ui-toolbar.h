@@ -67,6 +67,9 @@ void                  bonobo_ui_toolbar_insert           (BonoboUIToolbar      *
 							  int                   position);
 
 GtkTooltips          *bonobo_ui_toolbar_get_tooltips     (BonoboUIToolbar      *toolbar);
+void                  bonobo_ui_toolbar_show_tooltips    (BonoboUIToolbar      *toolbar,
+							  gboolean              show_tips);
+
 
 GList                *bonobo_ui_toolbar_get_children     (BonoboUIToolbar      *toolbar);
 

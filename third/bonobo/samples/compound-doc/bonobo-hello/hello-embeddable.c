@@ -20,20 +20,12 @@ hello_bonobo_embeddable_set_text (HelloBonoboEmbeddable *embeddable,
 HelloBonoboEmbeddable *
 hello_bonobo_embeddable_construct (HelloBonoboEmbeddable *embeddable)
 {
-	Bonobo_Embeddable    corba_embeddable;
 	BonoboPersistStream *stream;
 	BonoboPrint         *print;
 
 	g_return_val_if_fail (HELLO_BONOBO_IS_EMBEDDABLE (embeddable), NULL);
 
-	corba_embeddable = bonobo_embeddable_corba_object_create (BONOBO_OBJECT (embeddable));
-	if (corba_embeddable == CORBA_OBJECT_NIL) {
-		bonobo_object_unref (BONOBO_OBJECT (embeddable));
-		return NULL;
-	}
-
 	bonobo_embeddable_construct (BONOBO_EMBEDDABLE (embeddable),
-				     corba_embeddable,
 				     hello_bonobo_view_factory, NULL);
 
 
@@ -95,25 +87,7 @@ hello_bonobo_embeddable_init (BonoboObject *object)
 	embeddable->text = g_strdup ("Hello World");
 }
 
-GtkType
-hello_bonobo_embeddable_get_type (void)
-{
-	static GtkType type = 0;
 
-	if (!type) {
-		GtkTypeInfo info = {
-			"HelloBonoboEmbeddable",
-			sizeof (HelloBonoboEmbeddable),
-			sizeof (HelloBonoboEmbeddableClass),
-			(GtkClassInitFunc) hello_bonobo_embeddable_class_init,
-			(GtkObjectInitFunc) hello_bonobo_embeddable_init,
-			NULL, /* reserved 1 */
-			NULL, /* reserved 2 */
-			(GtkClassInitFunc) NULL
-		};
-
-		type = gtk_type_unique (bonobo_embeddable_get_type (), &info);
-	}
-
-	return type;
-}
+BONOBO_X_TYPE_FUNC (HelloBonoboEmbeddable, 
+		      bonobo_embeddable_get_type (),
+		      hello_bonobo_embeddable);

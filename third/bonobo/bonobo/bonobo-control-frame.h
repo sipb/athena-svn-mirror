@@ -14,7 +14,7 @@
 #include <libgnome/gnome-defs.h>
 #include <gtk/gtkobject.h>
 #include <gtk/gtkwidget.h>
-#include <bonobo/bonobo-object.h>
+#include <bonobo/bonobo-xobject.h>
 #include <bonobo/bonobo-wrapper.h>
 #include <bonobo/bonobo-property-bag-client.h>
 
@@ -29,16 +29,16 @@ BEGIN_GNOME_DECLS
 typedef struct _BonoboControlFramePrivate BonoboControlFramePrivate;
 
 typedef struct {
-	BonoboObject base;
+	BonoboXObject base;
 	BonoboControlFramePrivate *priv;
 } BonoboControlFrame;
 
 typedef struct {
-	BonoboObjectClass parent_class;
+	BonoboXObjectClass parent_class;
 
-	/*
-	 * Signals.
-	 */
+	POA_Bonobo_ControlFrame__epv epv;
+
+	/* Signals. */
 	void (*activated)           (BonoboControlFrame *control_frame, gboolean state);
 	void (*activate_uri)        (BonoboControlFrame *control_frame, const char *uri, gboolean relative);
 
@@ -87,11 +87,9 @@ Bonobo_UIContainer            bonobo_control_frame_get_ui_container          (Bo
 
 
 /* Object construction stuff */
-BonoboControlFrame           *bonobo_control_frame_construct                 (BonoboControlFrame  *control_frame,
-									      Bonobo_ControlFrame  corba_control_frame,
-									      Bonobo_UIContainer   uih);
 GtkType                       bonobo_control_frame_get_type                  (void);
-POA_Bonobo_ControlFrame__epv *bonobo_control_frame_get_epv                   (void);
+BonoboControlFrame           *bonobo_control_frame_construct                 (BonoboControlFrame  *control_frame,
+									      Bonobo_UIContainer   uih);
 
 /*
  * A BonoboControlFrame acts as a proxy for the remote BonoboControl object to
@@ -106,6 +104,9 @@ void  bonobo_control_frame_size_request (BonoboControlFrame *control_frame,
 /* You almost certainly don't want these methods */
 void  bonobo_control_frame_sync_realize   (BonoboControlFrame *frame);
 void  bonobo_control_frame_sync_unrealize (BonoboControlFrame *frame);
+
+/* Or this.  It exists just so that BonoboSocket can use it. */
+gboolean bonobo_control_frame_focus (BonoboControlFrame *frame, GtkDirectionType direction);
     
 END_GNOME_DECLS
 

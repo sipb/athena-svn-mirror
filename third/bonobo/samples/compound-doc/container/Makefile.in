@@ -66,6 +66,8 @@ BONOBOX_TEST_CFLAGS = @BONOBOX_TEST_CFLAGS@
 BONOBOX_TEST_LIBS = @BONOBOX_TEST_LIBS@
 BONOBO_AGE = @BONOBO_AGE@
 BONOBO_CURRENT = @BONOBO_CURRENT@
+BONOBO_IDL_CFLAGS = @BONOBO_IDL_CFLAGS@
+BONOBO_IDL_LIBS = @BONOBO_IDL_LIBS@
 BONOBO_INCLUDEDIR = @BONOBO_INCLUDEDIR@
 BONOBO_LIBDIR = @BONOBO_LIBDIR@
 BONOBO_LIBS = @BONOBO_LIBS@
@@ -126,6 +128,8 @@ ORBIT_LIBS = @ORBIT_LIBS@
 PACKAGE = @PACKAGE@
 POFILES = @POFILES@
 POSUB = @POSUB@
+PROF_CFLAGS = @PROF_CFLAGS@
+PROF_LDFLAGS = @PROF_LDFLAGS@
 PTHREAD_LIB = @PTHREAD_LIB@
 RANLIB = @RANLIB@
 USE_INCLUDED_LIBINTL = @USE_INCLUDED_LIBINTL@
@@ -133,6 +137,10 @@ USE_NLS = @USE_NLS@
 VERSION = @VERSION@
 VFS_CFLAGS = @VFS_CFLAGS@
 VFS_LIBS = @VFS_LIBS@
+XML_I18N_EXTRACT = @XML_I18N_EXTRACT@
+XML_I18N_MERGE = @XML_I18N_MERGE@
+XML_I18N_TOOLS_PERL = @XML_I18N_TOOLS_PERL@
+XML_I18N_UPDATE = @XML_I18N_UPDATE@
 XML_LIBS = @XML_LIBS@
 XPM_LIBS = @XPM_LIBS@
 YACC = @YACC@
@@ -306,6 +314,7 @@ distdir: $(DISTFILES)
 component.o: component.c component.h ../../../bonobo/bonobo.h \
 	../../../bonobo/bonobo-object.h ../../../bonobo/Bonobo.h \
 	../../../bonobo/bonobo-moniker.h \
+	../../../bonobo/bonobo-xobject.h \
 	../../../bonobo/bonobo-moniker-simple.h \
 	../../../bonobo/bonobo-context.h \
 	../../../bonobo/bonobo-exception.h \
@@ -323,8 +332,10 @@ component.o: component.c component.h ../../../bonobo/bonobo.h \
 	../../../bonobo/bonobo-arg.h ../../../bonobo/bonobo-property.h \
 	../../../bonobo/bonobo-transient.h \
 	../../../bonobo/bonobo-event-source.h \
+	../../../bonobo/bonobo-listener.h \
 	../../../bonobo/bonobo-ui-container.h \
-	../../../bonobo/bonobo-win.h ../../../bonobo/bonobo-ui-xml.h \
+	../../../bonobo/bonobo-win.h ../../../bonobo/bonobo-ui-engine.h \
+	../../../bonobo/bonobo-ui-sync.h \
 	../../../bonobo/bonobo-ui-node.h \
 	../../../bonobo/bonobo-property-bag-xml.h \
 	../../../bonobo/bonobo-property-control.h \
@@ -353,6 +364,7 @@ component.o: component.c component.h ../../../bonobo/bonobo.h \
 container-filesel.o: container-filesel.c container-filesel.h container.h \
 	../../../bonobo/bonobo.h ../../../bonobo/bonobo-object.h \
 	../../../bonobo/Bonobo.h ../../../bonobo/bonobo-moniker.h \
+	../../../bonobo/bonobo-xobject.h \
 	../../../bonobo/bonobo-moniker-simple.h \
 	../../../bonobo/bonobo-context.h \
 	../../../bonobo/bonobo-exception.h \
@@ -370,8 +382,10 @@ container-filesel.o: container-filesel.c container-filesel.h container.h \
 	../../../bonobo/bonobo-arg.h ../../../bonobo/bonobo-property.h \
 	../../../bonobo/bonobo-transient.h \
 	../../../bonobo/bonobo-event-source.h \
+	../../../bonobo/bonobo-listener.h \
 	../../../bonobo/bonobo-ui-container.h \
-	../../../bonobo/bonobo-win.h ../../../bonobo/bonobo-ui-xml.h \
+	../../../bonobo/bonobo-win.h ../../../bonobo/bonobo-ui-engine.h \
+	../../../bonobo/bonobo-ui-sync.h \
 	../../../bonobo/bonobo-ui-node.h \
 	../../../bonobo/bonobo-property-bag-xml.h \
 	../../../bonobo/bonobo-property-control.h \
@@ -399,6 +413,7 @@ container-filesel.o: container-filesel.c container-filesel.h container.h \
 container-io.o: container-io.c ../../../bonobo/bonobo.h \
 	../../../bonobo/bonobo-object.h ../../../bonobo/Bonobo.h \
 	../../../bonobo/bonobo-moniker.h \
+	../../../bonobo/bonobo-xobject.h \
 	../../../bonobo/bonobo-moniker-simple.h \
 	../../../bonobo/bonobo-context.h \
 	../../../bonobo/bonobo-exception.h \
@@ -416,8 +431,10 @@ container-io.o: container-io.c ../../../bonobo/bonobo.h \
 	../../../bonobo/bonobo-arg.h ../../../bonobo/bonobo-property.h \
 	../../../bonobo/bonobo-transient.h \
 	../../../bonobo/bonobo-event-source.h \
+	../../../bonobo/bonobo-listener.h \
 	../../../bonobo/bonobo-ui-container.h \
-	../../../bonobo/bonobo-win.h ../../../bonobo/bonobo-ui-xml.h \
+	../../../bonobo/bonobo-win.h ../../../bonobo/bonobo-ui-engine.h \
+	../../../bonobo/bonobo-ui-sync.h \
 	../../../bonobo/bonobo-ui-node.h \
 	../../../bonobo/bonobo-property-bag-xml.h \
 	../../../bonobo/bonobo-property-control.h \
@@ -447,6 +464,7 @@ container-menu.o: container-menu.c ../../../config.h container-menu.h \
 	container.h ../../../bonobo/bonobo.h \
 	../../../bonobo/bonobo-object.h ../../../bonobo/Bonobo.h \
 	../../../bonobo/bonobo-moniker.h \
+	../../../bonobo/bonobo-xobject.h \
 	../../../bonobo/bonobo-moniker-simple.h \
 	../../../bonobo/bonobo-context.h \
 	../../../bonobo/bonobo-exception.h \
@@ -464,8 +482,10 @@ container-menu.o: container-menu.c ../../../config.h container-menu.h \
 	../../../bonobo/bonobo-arg.h ../../../bonobo/bonobo-property.h \
 	../../../bonobo/bonobo-transient.h \
 	../../../bonobo/bonobo-event-source.h \
+	../../../bonobo/bonobo-listener.h \
 	../../../bonobo/bonobo-ui-container.h \
-	../../../bonobo/bonobo-win.h ../../../bonobo/bonobo-ui-xml.h \
+	../../../bonobo/bonobo-win.h ../../../bonobo/bonobo-ui-engine.h \
+	../../../bonobo/bonobo-ui-sync.h \
 	../../../bonobo/bonobo-ui-node.h \
 	../../../bonobo/bonobo-property-bag-xml.h \
 	../../../bonobo/bonobo-property-control.h \
@@ -494,6 +514,7 @@ container-menu.o: container-menu.c ../../../config.h container-menu.h \
 container-print.o: container-print.c container-print.h container.h \
 	../../../bonobo/bonobo.h ../../../bonobo/bonobo-object.h \
 	../../../bonobo/Bonobo.h ../../../bonobo/bonobo-moniker.h \
+	../../../bonobo/bonobo-xobject.h \
 	../../../bonobo/bonobo-moniker-simple.h \
 	../../../bonobo/bonobo-context.h \
 	../../../bonobo/bonobo-exception.h \
@@ -511,8 +532,10 @@ container-print.o: container-print.c container-print.h container.h \
 	../../../bonobo/bonobo-arg.h ../../../bonobo/bonobo-property.h \
 	../../../bonobo/bonobo-transient.h \
 	../../../bonobo/bonobo-event-source.h \
+	../../../bonobo/bonobo-listener.h \
 	../../../bonobo/bonobo-ui-container.h \
-	../../../bonobo/bonobo-win.h ../../../bonobo/bonobo-ui-xml.h \
+	../../../bonobo/bonobo-win.h ../../../bonobo/bonobo-ui-engine.h \
+	../../../bonobo/bonobo-ui-sync.h \
 	../../../bonobo/bonobo-ui-node.h \
 	../../../bonobo/bonobo-property-bag-xml.h \
 	../../../bonobo/bonobo-property-control.h \
@@ -540,6 +563,7 @@ container-print.o: container-print.c container-print.h container.h \
 container.o: container.c ../../../bonobo/bonobo.h \
 	../../../bonobo/bonobo-object.h ../../../bonobo/Bonobo.h \
 	../../../bonobo/bonobo-moniker.h \
+	../../../bonobo/bonobo-xobject.h \
 	../../../bonobo/bonobo-moniker-simple.h \
 	../../../bonobo/bonobo-context.h \
 	../../../bonobo/bonobo-exception.h \
@@ -557,8 +581,10 @@ container.o: container.c ../../../bonobo/bonobo.h \
 	../../../bonobo/bonobo-arg.h ../../../bonobo/bonobo-property.h \
 	../../../bonobo/bonobo-transient.h \
 	../../../bonobo/bonobo-event-source.h \
+	../../../bonobo/bonobo-listener.h \
 	../../../bonobo/bonobo-ui-container.h \
-	../../../bonobo/bonobo-win.h ../../../bonobo/bonobo-ui-xml.h \
+	../../../bonobo/bonobo-win.h ../../../bonobo/bonobo-ui-engine.h \
+	../../../bonobo/bonobo-ui-sync.h \
 	../../../bonobo/bonobo-ui-node.h \
 	../../../bonobo/bonobo-property-bag-xml.h \
 	../../../bonobo/bonobo-property-control.h \
@@ -587,6 +613,7 @@ container.o: container.c ../../../bonobo/bonobo.h \
 embeddable-io.o: embeddable-io.c component.h ../../../bonobo/bonobo.h \
 	../../../bonobo/bonobo-object.h ../../../bonobo/Bonobo.h \
 	../../../bonobo/bonobo-moniker.h \
+	../../../bonobo/bonobo-xobject.h \
 	../../../bonobo/bonobo-moniker-simple.h \
 	../../../bonobo/bonobo-context.h \
 	../../../bonobo/bonobo-exception.h \
@@ -604,8 +631,10 @@ embeddable-io.o: embeddable-io.c component.h ../../../bonobo/bonobo.h \
 	../../../bonobo/bonobo-arg.h ../../../bonobo/bonobo-property.h \
 	../../../bonobo/bonobo-transient.h \
 	../../../bonobo/bonobo-event-source.h \
+	../../../bonobo/bonobo-listener.h \
 	../../../bonobo/bonobo-ui-container.h \
-	../../../bonobo/bonobo-win.h ../../../bonobo/bonobo-ui-xml.h \
+	../../../bonobo/bonobo-win.h ../../../bonobo/bonobo-ui-engine.h \
+	../../../bonobo/bonobo-ui-sync.h \
 	../../../bonobo/bonobo-ui-node.h \
 	../../../bonobo/bonobo-property-bag-xml.h \
 	../../../bonobo/bonobo-property-control.h \

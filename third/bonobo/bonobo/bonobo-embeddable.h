@@ -15,7 +15,7 @@
 #include <gtk/gtkobject.h>
 #include <libgnomeui/gnome-canvas.h>
 #include <bonobo/Bonobo.h>
-#include <bonobo/bonobo-object.h>
+#include <bonobo/bonobo-xobject.h>
 #include <bonobo/bonobo-canvas-component.h>
 
 BEGIN_GNOME_DECLS
@@ -28,6 +28,7 @@ BEGIN_GNOME_DECLS
 
 struct _BonoboEmbeddable;
 struct _BonoboEmbeddablePrivate;
+
 typedef struct _BonoboEmbeddable        BonoboEmbeddable;
 typedef struct _BonoboEmbeddableClass   BonoboEmbeddableClass;
 typedef struct _BonoboEmbeddablePrivate BonoboEmbeddablePrivate;
@@ -42,7 +43,7 @@ typedef void (*BonoboEmbeddableForeachViewFn) (BonoboView *view, void *data);
 typedef void (*BonoboEmbeddableForeachItemFn) (BonoboCanvasComponent *comp, void *data);
 
 struct _BonoboEmbeddable {
-	BonoboObject base;
+	BonoboXObject base;
 
 	char *host_name;
 	char *host_appname;
@@ -57,48 +58,43 @@ struct _BonoboEmbeddable {
 };
 
 struct _BonoboEmbeddableClass {
-	BonoboObjectClass parent_class;
+	BonoboXObjectClass parent_class;
 
-	/*
-	 * Signals
-	 */
+	POA_Bonobo_Embeddable__epv epv;
+
+	/* Signals */
 	void (*host_name_changed)  (BonoboEmbeddable *comp, const char *hostname);
 	void (*uri_changed)        (BonoboEmbeddable *comp, const char *uri);
 };
 
 GtkType           bonobo_embeddable_get_type         (void);
-BonoboEmbeddable *bonobo_embeddable_new              (BonoboViewFactory  factory,
-						      void              *data);
-BonoboEmbeddable *bonobo_embeddable_new_canvas_item  (GnomeItemCreator item_factory,
-						      void *closure);
+BonoboEmbeddable *bonobo_embeddable_new              (BonoboViewFactory factory,
+						      void             *data);
+BonoboEmbeddable *bonobo_embeddable_new_canvas_item  (GnomeItemCreator  item_factory,
+						      void             *closure);
 BonoboEmbeddable *bonobo_embeddable_construct        (BonoboEmbeddable *embeddable,
-						      Bonobo_Embeddable corba_embeddable,
 						      BonoboViewFactory factory,
-						      void *data);
+						      void             *data);
 BonoboEmbeddable *bonobo_embeddable_construct_full   (BonoboEmbeddable *embeddable,
-						      Bonobo_Embeddable corba_embeddable,
 						      BonoboViewFactory factory,
-						      void *factory_data,
-						      GnomeItemCreator item_factory,
-						      void *item_factory_data);
-Bonobo_Embeddable bonobo_embeddable_corba_object_create (BonoboObject *object);
+						      void             *factory_data,
+						      GnomeItemCreator  item_factory,
+						      void             *item_factory_data);
 
-void             bonobo_embeddable_set_view_factory (BonoboEmbeddable *embeddable,
-						     BonoboViewFactory factory,
-						     void *data);
+void             bonobo_embeddable_set_view_factory  (BonoboEmbeddable  *embeddable,
+						      BonoboViewFactory factory,
+						      void             *data);
 
-const char      *bonobo_embeddable_get_uri          (BonoboEmbeddable *embeddable);
-void             bonobo_embeddable_set_uri          (BonoboEmbeddable *embeddable,
-						    const char *uri);
+const char      *bonobo_embeddable_get_uri           (BonoboEmbeddable *embeddable);
+void             bonobo_embeddable_set_uri           (BonoboEmbeddable *embeddable,
+						      const char       *uri);
 
-void             bonobo_embeddable_foreach_view     (BonoboEmbeddable *embeddable,
-						    BonoboEmbeddableForeachViewFn fn,
-						    void *data);
-void             bonobo_embeddable_foreach_item     (BonoboEmbeddable *embeddable,
-						    BonoboEmbeddableForeachItemFn fn,
-						    void *data);
-
-POA_Bonobo_Embeddable__epv *bonobo_embeddable_get_epv (void);
+void             bonobo_embeddable_foreach_view      (BonoboEmbeddable *embeddable,
+						      BonoboEmbeddableForeachViewFn fn,
+						      void             *data);
+void             bonobo_embeddable_foreach_item      (BonoboEmbeddable *embeddable,
+						      BonoboEmbeddableForeachItemFn fn,
+						      void             *data);
 
 END_GNOME_DECLS
 

@@ -66,6 +66,8 @@ BONOBOX_TEST_CFLAGS = @BONOBOX_TEST_CFLAGS@
 BONOBOX_TEST_LIBS = @BONOBOX_TEST_LIBS@
 BONOBO_AGE = @BONOBO_AGE@
 BONOBO_CURRENT = @BONOBO_CURRENT@
+BONOBO_IDL_CFLAGS = @BONOBO_IDL_CFLAGS@
+BONOBO_IDL_LIBS = @BONOBO_IDL_LIBS@
 BONOBO_INCLUDEDIR = @BONOBO_INCLUDEDIR@
 BONOBO_LIBDIR = @BONOBO_LIBDIR@
 BONOBO_LIBS = @BONOBO_LIBS@
@@ -126,6 +128,8 @@ ORBIT_LIBS = @ORBIT_LIBS@
 PACKAGE = @PACKAGE@
 POFILES = @POFILES@
 POSUB = @POSUB@
+PROF_CFLAGS = @PROF_CFLAGS@
+PROF_LDFLAGS = @PROF_LDFLAGS@
 PTHREAD_LIB = @PTHREAD_LIB@
 RANLIB = @RANLIB@
 USE_INCLUDED_LIBINTL = @USE_INCLUDED_LIBINTL@
@@ -133,6 +137,10 @@ USE_NLS = @USE_NLS@
 VERSION = @VERSION@
 VFS_CFLAGS = @VFS_CFLAGS@
 VFS_LIBS = @VFS_LIBS@
+XML_I18N_EXTRACT = @XML_I18N_EXTRACT@
+XML_I18N_MERGE = @XML_I18N_MERGE@
+XML_I18N_TOOLS_PERL = @XML_I18N_TOOLS_PERL@
+XML_I18N_UPDATE = @XML_I18N_UPDATE@
 XML_LIBS = @XML_LIBS@
 XPM_LIBS = @XPM_LIBS@
 YACC = @YACC@
@@ -363,19 +371,20 @@ distdir: $(DISTFILES)
 bonobo-storage-efs.lo bonobo-storage-efs.o : bonobo-storage-efs.c \
 	../config.h ../libefs/src/efs.h ../libefs/src/efs_error.h \
 	bonobo-storage-efs.h ../bonobo/bonobo-storage.h \
-	../bonobo/bonobo-object.h ../bonobo/Bonobo.h \
-	../bonobo/bonobo-stream.h bonobo-stream-efs.h \
-	../bonobo/bonobo-storage-plugin.h
+	../bonobo/bonobo-xobject.h ../bonobo/Bonobo.h \
+	../bonobo/bonobo-object.h ../bonobo/bonobo-stream.h \
+	bonobo-stream-efs.h ../bonobo/bonobo-storage-plugin.h
 bonobo-storage-fs.lo bonobo-storage-fs.o : bonobo-storage-fs.c \
 	../config.h bonobo-storage-fs.h ../bonobo/bonobo-storage.h \
-	../bonobo/bonobo-object.h ../bonobo/Bonobo.h \
-	../bonobo/bonobo-stream.h bonobo-stream-fs.h \
-	../bonobo/bonobo-storage-plugin.h
+	../bonobo/bonobo-xobject.h ../bonobo/Bonobo.h \
+	../bonobo/bonobo-object.h ../bonobo/bonobo-stream.h \
+	bonobo-stream-fs.h ../bonobo/bonobo-storage-plugin.h
 bonobo-stream-efs.lo bonobo-stream-efs.o : bonobo-stream-efs.c \
 	../config.h bonobo-stream-efs.h ../bonobo/bonobo-stream.h \
 	../bonobo/bonobo-object.h ../bonobo/Bonobo.h \
 	bonobo-storage-efs.h ../bonobo/bonobo-storage.h \
-	../libefs/src/efs.h ../libefs/src/efs_error.h
+	../bonobo/bonobo-xobject.h ../libefs/src/efs.h \
+	../libefs/src/efs_error.h
 bonobo-stream-fs.lo bonobo-stream-fs.o : bonobo-stream-fs.c ../config.h \
 	bonobo-stream-fs.h ../bonobo/bonobo-stream.h \
 	../bonobo/bonobo-object.h ../bonobo/Bonobo.h

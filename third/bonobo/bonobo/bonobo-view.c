@@ -17,6 +17,8 @@
 #include <bonobo/bonobo-view.h>
 #include <gdk/gdkprivate.h>
 
+#define PARENT_TYPE bonobo_control_get_type ()
+
 /* Parent object class in GTK hierarchy */
 static BonoboControlClass *bonobo_view_parent_class;
 
@@ -49,38 +51,6 @@ impl_Bonobo_View_setZoomFactor (PortableServer_Servant servant,
 			 view_signals [SET_ZOOM_FACTOR], zoom);
 }
 
-/**
- * bonobo_view_corba_object_create:
- * @object: the GtkObject that will wrap the CORBA object
- *
- * Creates and activates the CORBA object that is wrapped by the
- * @object BonoboObject.
- *
- * Returns: An activated object reference to the created object
- * or %CORBA_OBJECT_NIL in case of failure.
- */
-Bonobo_View
-bonobo_view_corba_object_create (BonoboObject *object)
-{
-	POA_Bonobo_View *servant;
-	CORBA_Environment ev;
-	
-	servant = (POA_Bonobo_View *) g_new0 (BonoboObjectServant, 1);
-	servant->vepv = &bonobo_view_vepv;
-
-	CORBA_exception_init (&ev);
-	POA_Bonobo_View__init ((PortableServer_Servant) servant, &ev);
-	if (BONOBO_EX (&ev)){
-
-		g_free (servant);
-		CORBA_exception_free (&ev);
-		return CORBA_OBJECT_NIL;
-	}
-
-	CORBA_exception_free (&ev);
-	return (Bonobo_View) bonobo_object_activate_servant (object, servant);
-}
-
 #if 0
 /**
  * bonobo_view_activate:
@@ -110,15 +80,12 @@ bonobo_view_activate (BonoboView *view, gboolean activate, gpointer user_data)
  * Returns: the intialized BonoboView object.
  */
 BonoboView *
-bonobo_view_construct (BonoboView *view, Bonobo_View corba_view, GtkWidget *widget)
+bonobo_view_construct (BonoboView *view, GtkWidget *widget)
 {
-	g_return_val_if_fail (view != NULL, NULL);
 	g_return_val_if_fail (BONOBO_IS_VIEW (view), NULL);
-	g_return_val_if_fail (corba_view != CORBA_OBJECT_NIL, NULL);
-	g_return_val_if_fail (widget != NULL, NULL);
 	g_return_val_if_fail (GTK_IS_WIDGET (widget), NULL);
 	
-	bonobo_control_construct (BONOBO_CONTROL (view), corba_view, widget);
+	bonobo_control_construct (BONOBO_CONTROL (view), widget);
 
 /*	gtk_signal_connect (GTK_OBJECT (view), "view_activate",
 			    GTK_SIGNAL_FUNC (bonobo_view_activate),
@@ -140,20 +107,13 @@ BonoboView *
 bonobo_view_new (GtkWidget *widget)
 {
 	BonoboView *view;
-	Bonobo_View corba_view;
 	
 	g_return_val_if_fail (widget != NULL, NULL);
 	g_return_val_if_fail (GTK_IS_WIDGET (widget), NULL);
 
 	view = gtk_type_new (bonobo_view_get_type ());
-
-	corba_view = bonobo_view_corba_object_create (BONOBO_OBJECT (view));
-	if (corba_view == CORBA_OBJECT_NIL) {
-		bonobo_object_unref (BONOBO_OBJECT (view));
-		return NULL;
-	}
 	
-	return bonobo_view_construct (view, corba_view, widget);
+	return bonobo_view_construct (view, widget);
 }
 
 static void
@@ -173,31 +133,6 @@ bonobo_view_destroy (GtkObject *object)
 	GTK_OBJECT_CLASS (bonobo_view_parent_class)->destroy (object);
 }
 
-/**
- * bonobo_view_get_epv:
- *
- * Returns: The EPV for the default BonoboView implementation.  
- */
-POA_Bonobo_View__epv *
-bonobo_view_get_epv (void)
-{
-	POA_Bonobo_View__epv *epv;
-
-	epv = g_new0 (POA_Bonobo_View__epv, 1);
-
-	epv->setZoomFactor = impl_Bonobo_View_setZoomFactor;
-
-	return epv;
-}
-
-static void
-init_view_corba_class (void)
-{
-	bonobo_view_vepv.Bonobo_Unknown_epv = bonobo_object_get_epv ();
-	bonobo_view_vepv.Bonobo_Control_epv = bonobo_control_get_epv ();
-	bonobo_view_vepv.Bonobo_View_epv    = bonobo_view_get_epv ();
-}
-
 static void 
 gnome_marshal_NONE__DOUBLE (GtkObject * object,
 			    GtkSignalFunc func,
@@ -215,8 +150,9 @@ static void
 bonobo_view_class_init (BonoboViewClass *klass)
 {
 	GtkObjectClass *object_class = (GtkObjectClass *) klass;
+	POA_Bonobo_View__epv *epv = &klass->epv;
 
-	bonobo_view_parent_class = gtk_type_class (bonobo_control_get_type ());
+	bonobo_view_parent_class = gtk_type_class (PARENT_TYPE);
 
 	view_signals [SET_ZOOM_FACTOR] =
                 gtk_signal_new ("set_zoom_factor",
@@ -231,7 +167,7 @@ bonobo_view_class_init (BonoboViewClass *klass)
 
 	object_class->destroy = bonobo_view_destroy;
 
-	init_view_corba_class ();
+	epv->setZoomFactor = impl_Bonobo_View_setZoomFactor;
 }
 
 static void
@@ -240,33 +176,10 @@ bonobo_view_init (BonoboView *view)
 	view->priv = g_new0 (BonoboViewPrivate, 1);
 }
 
-/**
- * bonobo_view_get_type:
- *
- * Returns: The GtkType corresponding to the BonoboView class.
- */
-GtkType
-bonobo_view_get_type (void)
-{
-	static GtkType type = 0;
-
-	if (!type){
-		GtkTypeInfo info = {
-			"BonoboView",
-			sizeof (BonoboView),
-			sizeof (BonoboViewClass),
-			(GtkClassInitFunc) bonobo_view_class_init,
-			(GtkObjectInitFunc) bonobo_view_init,
-			NULL, /* reserved 1 */
-			NULL, /* reserved 2 */
-			(GtkClassInitFunc) NULL
-		};
-
-		type = gtk_type_unique (bonobo_control_get_type (), &info);
-	}
-
-	return type;
-}
+BONOBO_X_TYPE_FUNC_FULL (BonoboView, 
+			   Bonobo_View,
+			   PARENT_TYPE,
+			   bonobo_view);
 
 /**
  * bonobo_view_set_embeddable:

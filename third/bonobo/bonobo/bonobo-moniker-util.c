@@ -175,10 +175,14 @@ bonobo_moniker_util_new_from_name_full (Bonobo_Moniker     parent,
 	toplevel = Bonobo_Unknown_queryInterface (
 		object, "IDL:Bonobo/Moniker:1.0", ev);
 
-	if (BONOBO_EX (ev))
+	if (BONOBO_EX (ev)) {
+		bonobo_object_release_unref (object, ev);
 		return CORBA_OBJECT_NIL;
+	}
 
-	if (object == CORBA_OBJECT_NIL) {
+	bonobo_object_release_unref (object, ev);
+
+	if (toplevel == CORBA_OBJECT_NIL) {
 		g_warning ("Moniker object '%s' doesn't implement "
 			   "the Moniker interface", iid);
 		return CORBA_OBJECT_NIL;
@@ -190,6 +194,7 @@ bonobo_moniker_util_new_from_name_full (Bonobo_Moniker     parent,
 		return CORBA_OBJECT_NIL;
 
 	bonobo_object_release_unref (toplevel, ev);
+
 	if (BONOBO_EX (ev))
 		return CORBA_OBJECT_NIL;
 
@@ -268,7 +273,6 @@ bonobo_moniker_util_qi_return (Bonobo_Unknown     object,
 		goto release_unref_object;
 	
 	if (retval == CORBA_OBJECT_NIL) {
-		g_warning ("No interface '%s' on object", requested_interface);
 		CORBA_exception_set (ev, CORBA_USER_EXCEPTION,
 				     ex_Bonobo_Moniker_InterfaceNotFound, NULL);
 		goto release_unref_object;
@@ -644,22 +648,21 @@ async_activation_cb (CORBA_Object activated_object,
 			ctx->cb (CORBA_OBJECT_NIL, &ev, ctx->user_data);
 			parse_async_ctx_free (ctx);
 		} else {
-			static const CORBA_TypeCode args [] = {
-				TC_Object,
-				TC_string,
+			static const BonoboAsyncArg arguments [] = {
+				{ TC_Object, BONOBO_ASYNC_IN },
+				{ TC_string, BONOBO_ASYNC_IN },
+				{ NULL }
 			};
 			static const CORBA_TypeCode exceptions [] = {
 				TC_Bonobo_Moniker_InvalidSyntax,
 				TC_Bonobo_Moniker_UnknownPrefix,
 				NULL
 			};
-			static const BonoboAsyncFlags flags [] = {
-				BONOBO_ASYNC_IN,
-				BONOBO_ASYNC_IN
-			};
 			static const BonoboAsyncMethod method = {
-				"parseDisplayName", TC_Object, args, 2,
-				exceptions, flags
+				"parseDisplayName", 
+				TC_Object, 
+				arguments,
+				exceptions
 			};
 			CORBA_Object obj = CORBA_OBJECT_NIL;
 			gpointer arg_values [2] = { &obj, &ctx->name };
@@ -779,22 +782,21 @@ bonobo_moniker_resolve_async (Bonobo_Moniker         moniker,
 			      BonoboMonikerAsyncFn   cb,
 			      gpointer               user_data)
 {
-	static const CORBA_TypeCode args [] = {
-		TC_Bonobo_ResolveOptions,
-		TC_string,
+	static const BonoboAsyncArg arguments [] = {
+		{ TC_Bonobo_ResolveOptions, BONOBO_ASYNC_IN },
+		{ TC_string,                BONOBO_ASYNC_IN },
+		{ NULL }
 	};
 	static const CORBA_TypeCode exceptions [] = {
 		TC_Bonobo_Moniker_InterfaceNotFound,
 		TC_Bonobo_Moniker_UnknownPrefix,
 		NULL
 	};
-	static const BonoboAsyncFlags flags [] = {
-		BONOBO_ASYNC_IN,
-		BONOBO_ASYNC_IN
-	};
 	static const BonoboAsyncMethod method = {
-		"resolve", TC_Object, args, 2,
-		exceptions, flags
+		"resolve", 
+		TC_Object, 
+		arguments,
+		exceptions
 	};
 	gpointer arg_values [2] = { &options, &interface_name };
 	resolve_async_ctx_t *ctx;
@@ -931,4 +933,43 @@ bonobo_get_object_async (const CORBA_char    *name,
 
 	bonobo_moniker_client_new_from_name_async (
 		name, ev, timeout_msec, get_async1_cb, ctx);
+}
+
+/**
+ * bonobo_moniker_client_equal:
+ * @moniker: The moniker
+ * @name: a display name eg. file:/demo/a.jpeg
+ * @opt_ev: optional CORBA_Environment or NULL.
+ * 
+ * Compare a full @moniker with the given @name
+ * 
+ * Return value: TRUE if they are the same
+ **/
+gboolean
+bonobo_moniker_client_equal (Bonobo_Moniker     moniker,
+			     const CORBA_char  *name,
+			     CORBA_Environment *opt_ev)
+{
+	CORBA_long l;
+	CORBA_Environment *real_ev, tmp_ev;
+	
+	g_return_val_if_fail (name != NULL, FALSE);
+	g_return_val_if_fail (moniker != CORBA_OBJECT_NIL, FALSE);
+
+	if (opt_ev)
+		real_ev = opt_ev;
+	else {
+		CORBA_exception_init (&tmp_ev);
+		real_ev = &tmp_ev;
+	}
+
+	l = Bonobo_Moniker_equal (moniker, name, real_ev);
+
+	if (BONOBO_EX (real_ev))
+		l = 0;
+
+	if (!opt_ev)
+		CORBA_exception_free (&tmp_ev);
+
+	return l != 0;
 }

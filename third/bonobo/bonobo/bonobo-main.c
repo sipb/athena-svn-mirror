@@ -17,7 +17,7 @@
 #include <bonobo/bonobo-context.h>
 
 #include <signal.h>
-#include <gnome.h>
+#include <gtk/gtkmain.h>
 #include <liboaf/liboaf.h>
 
 #include <X11/Xlib.h>

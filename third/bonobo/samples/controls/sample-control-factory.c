@@ -16,8 +16,6 @@
 #include "bonobo-clock-control.h"
 #include "bonobo-calculator-control.h"
 
-BonoboGenericFactory *factory = NULL;
-
 static BonoboObject *
 control_factory (BonoboGenericFactory *this,
 		 const char           *object_id,
@@ -44,46 +42,8 @@ control_factory (BonoboGenericFactory *this,
 
 	return object;
 }
-			
-static void
-init_bonobo (int argc, char **argv)
-{
-	CORBA_ORB orb;
 
-        gnome_init_with_popt_table ("bonobo-sample-controls", "0.0",
-				    argc, argv,
-				    oaf_popt_options, 0, NULL); 
-	orb = oaf_init (argc, argv);
-
-	if (bonobo_init (orb, NULL, NULL) == FALSE)
-		g_error (_("Could not initialize Bonobo"));
-}
-
-static void
-last_unref_cb (BonoboObject *bonobo_object,
-	       gpointer      dummy)
-{
-	bonobo_object_unref (BONOBO_OBJECT (factory));
-	gtk_main_quit ();
-}
-
-int
-main (int argc, char **argv)
-{
-	{ char *tmp = malloc (4); free (tmp); } /* -lefence */
-
-	init_bonobo (argc, argv);
-
-	factory = bonobo_generic_factory_new_multi (
-		"OAFIID:Bonobo_Sample_ControlFactory",
-		control_factory, NULL);	
-
-	gtk_signal_connect (GTK_OBJECT (bonobo_context_running_get ()),
-			    "last_unref",
-			    GTK_SIGNAL_FUNC (last_unref_cb),
-			    NULL);
-
-	bonobo_main ();
-
-	return 0;
-}
+BONOBO_OAF_FACTORY_MULTI ("OAFIID:Bonobo_Sample_ControlFactory",
+			  "bonobo-sample-controls", VERSION,
+			  control_factory,
+			  NULL)

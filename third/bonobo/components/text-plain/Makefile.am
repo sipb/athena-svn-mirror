@@ -17,8 +17,9 @@ bonobo_text_plain_LDADD = 			\
 	$(INTLLIBS)
 
 oafdir = $(datadir)/oaf
+oaf_in_files = Bonobo_Sample_Text.oaf.in
+oaf_DATA = $(oaf_in_files:.oaf.in=.oaf)
 
-oaf_DATA = Bonobo_Sample_Text.oafinfo
+@XML_I18N_MERGE_OAF_RULE@
 
-EXTRA_DIST = $(oaf_DATA)
-
+EXTRA_DIST = $(oaf_in_files) $(oaf_DATA)
