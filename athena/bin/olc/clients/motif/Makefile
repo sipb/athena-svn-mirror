@@ -1,20 +1,22 @@
 # Makefile for OLC/Motif
 #
-# Be sure to have set environment variable MACHTYPE to the correct
-# machine type.  This makefile depends on it.  You can just do:
-#		setenv  MACHTYPE  ${hosttype}
-# or		setenv  MACHTYPE  `machtype`
+#  This makefile depends on the macro MACHINE.  On Athena, this is
+#  defined automatically.  If it is not defined on your system, you can
+#  either add a MACHINE macro to this file or set an environment
+#  variable to the correct machine type.  On Athena, this would be done
+#   by:		setenv  MACHTYPE  ${hosttype}
+#   or:		setenv  MACHTYPE  `machtype`
 # 
 
 MOTIFDIR  =	/afs/athena/astaff/project/motifdev
 OLCDEV    =	/afs/athena/astaff/project/olcdev
-OLCLIB    =	${OLCDEV}/${MACHTYPE}/clients/lib
-BINDIR    =	${MOTIFDIR}/${MACHTYPE}bin
+OLCLIB    =	${OLCDEV}/${MACHINE}/clients/lib
+BINDIR    =	${MOTIFDIR}/${MACHINE}bin
 INCDIR    =	-I${MOTIFDIR}/include \
 		-I${OLCDEV}/src/include -I${OLCDEV}/src/clients/olc
-LIBDIR    =	-L${MOTIFDIR}/${MACHTYPE}lib -L${OLCDEV}/${MACHTYPE}lib
+LIBDIR    =	-L${MOTIFDIR}/${MACHINE}lib -L${OLCDEV}/${MACHINE}lib
 
-CC	  =	/afs/athena/project/gnu/${MACHTYPE}bin/gcc
+CC	  =	/afs/athena/project/gnu/${MACHINE}bin/gcc
 LINT      =	/usr/bin/lint
 DEBUG     =	/usr/ucb/dbx
 DEPEND    =	/usr/athena/makedepend
