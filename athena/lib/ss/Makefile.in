@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.1 1997-12-19 03:05:54 ghudson Exp $
+# $Id: Makefile.in,v 1.2 2001-07-18 14:20:11 ghudson Exp $
 
 SHELL=/bin/sh
 VPATH=@srcdir@
@@ -40,13 +40,13 @@ mk_cmds: ${BINOBJS}
 .c.o:
 	${CC} -c ${ALL_CFLAGS} $<
 
-cmd_tbl.o: y.tab.h
+cmd_tbl.o: y.tab.h cmd_tbl.c
 
 ct.o: y.tab.c y.tab.h
 	${CC} -c ${ALL_CFLAGS} -o ct.o y.tab.c
 
 y.tab.c y.tab.h: ct.y
-	${YACC} ${YFLAGS} ct.y
+	${YACC} ${YFLAGS} ${srcdir}/ct.y
 
 std_rqs.c: std_rqs.ct mk_cmds
 	./mk_cmds ${srcdir}/std_rqs.ct
