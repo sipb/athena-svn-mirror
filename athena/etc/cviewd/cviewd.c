@@ -17,7 +17,7 @@
  * according to a command line from stdin.
  */
 
-static const char rcsid[] = "$Id: cviewd.c,v 1.5 1999-11-01 19:51:08 ghudson Exp $";
+static const char rcsid[] = "$Id: cviewd.c,v 1.6 2001-01-22 21:21:05 ghudson Exp $";
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -125,7 +125,9 @@ int main(int argc, char **argv)
   else if (first_field_matches(p, "configplease2")
 	   || first_field_matches(p, "configplease3"))
     display_cgroups();
-  else if (first_field_matches(p, "help"))
+  else if (first_field_matches(p, "help")
+	   || first_field_matches(p, "-h")
+	   || first_field_matches(p, "--help"))
     display_help();
   else
     display_clusters(p);
@@ -370,6 +372,8 @@ static void display_clusters(const char *s)
 static void display_help(void)
 {
   printf("Usage:\tcview [cluster ...]\n");
+  printf("\tcview all\n");
+  printf("\tcview public\n");
   printf("\tcview printers\n");
   printf("\tcview phones\n");
 }
