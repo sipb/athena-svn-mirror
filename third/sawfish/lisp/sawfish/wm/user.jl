@@ -1,6 +1,6 @@
 #| user.jl -- do user-local initialization
 
-   $Id: user.jl,v 1.2 2000-12-27 22:36:27 ghudson Exp $
+   $Id: user.jl,v 1.3 2001-03-09 21:53:44 ghudson Exp $
 
    Copyright (C) 2000 John Harper <john@dcs.warwick.ac.uk>
 
@@ -51,7 +51,9 @@
   (setq *user-structure* 'user)
 
   ;; frame-style loaded if user hasn't set their own
-  (define fallback-frame-style 'microGUI)
+  (define fallback-frame-style 'Crux)
+
+  (define rc-files '("~/.sawfishrc" "~/.sawfish/rc" "~/.sawmillrc"))
 
   ;; initialize the special variable pointing at this structure
   (structure () (open rep rep.structures)
@@ -67,8 +69,8 @@
   ;; configuration files don't exist.
   (if (get-command-line-option "--no-user-rc")
     (progn
-      (load-all "site-init" (lambda (f) (load f nil t)))
-      (load "rep-defaults" t)
+      (load-all "site-init" (lambda (f) (safe-load f nil t)))
+      (safe-load "rep-defaults" t)
       (unless (batch-mode)
 	(load "sawfish/wm/defaults" t))))
 	
@@ -86,11 +88,11 @@
 	    (message "Created .sawmill symlink (delete if unwanted)"))
 
 	  ;; First the site-wide stuff
-	  (load-all "site-init" (lambda (f) (load f nil t)))
+	  (load-all "site-init" (lambda (f) (safe-load f nil t)))
 
 	  ;; then the users rep configuration, or site-wide defaults
 	  (or (safe-load (concat (user-home-directory) ".reprc") t t t)
-	      (load "rep-defaults" t))
+	      (safe-load "rep-defaults" t))
 
 	  (unless batch-mode
 	    (let ((rc-file-exists-p (lambda (f)
@@ -99,8 +101,10 @@
 					  (file-exists-p (concat f ".jlc"))))))
 	      ;; load these before customized settings (but only if there's
 	      ;; no .sawmillrc file)
-	      (unless (or (rc-file-exists-p "~/.sawfishrc")
-			  (rc-file-exists-p "~/.sawmillrc"))
+	      (unless (let loop ((rest rc-files))
+			(when rest
+			  (or (rc-file-exists-p (car rest))
+			      (loop (cdr rest)))))
 		(load "sawfish/wm/defaults" t))
 
 	      ;; then the customized options
@@ -110,10 +114,11 @@
 		 (format (stderr-file) "error in custom file--> %S\n" data)))
 
 	      ;; then the sawmill specific user configuration
-	      (cond ((rc-file-exists-p "~/.sawfishrc")
-		     (safe-load "~/.sawfishrc" t t t))
-		    ((rc-file-exists-p "~/.sawmillrc")
-		     (safe-load "~/.sawmillrc" t t t))))))
+	      (let loop ((rest rc-files))
+		(when rest
+		  (if (rc-file-exists-p (car rest))
+		      (safe-load (car rest) t t t)
+		    (loop (cdr rest))))))))
       (error
        (format (stderr-file) "error in local config--> %S\n" error-data))))
 
@@ -124,7 +129,10 @@
   (unless (and (boundp 'window-menu) window-menu)
     (require 'sawfish.wm.ext.beos-window-menu))
 
-  ;; might it be useful to load the GNOME support?
+  ;; load the new WM-spec code by default now
+  (load-module 'sawfish.wm.state.wm-spec)
+
+  ;; might it be useful to load the old GNOME support?
   (unless batch-mode
     (catch 'out
       (mapc (lambda (prop)
