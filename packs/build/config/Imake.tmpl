@@ -33,20 +33,23 @@
 #ifndef NEWTOP
 #define NEWTOP .
 #endif
+#ifndef NEWCURDIR
+#define NEWCURDIR .
+#endif
 #ifndef ALibDir
-#define ALibDir /usr/athena/lib
+#define ALibDir $(ATHBASEDIR)/lib
 #endif
 #ifndef ABinDir
-#define ABinDir /usr/athena/bin
+#define ABinDir $(ATHBASEDIR)/bin
 #endif
 #ifndef AIncDir
-#define AIncDir /usr/athena/include
+#define AIncDir $(ATHBASEDIR)/include
 #endif
 #ifndef AManDir
-#define AManDir /usr/athena/man
+#define AManDir $(ATHBASEDIR)/man
 #endif
 #ifndef AEtcDir
-#define AEtcDir /usr/athena/etc
+#define AEtcDir $(ATHBASEDIR)/etc
 #endif
 #ifndef AConfDir
 #define AConfDir /etc/athena
@@ -57,14 +60,17 @@
 #ifndef AREtcDir
 #define AREtcDir /etc/athena
 #endif
-#ifndef ANewDir
-#define ANewDir ABinDir
+#ifndef AthXAppDir
+#define AthXAppDir /usr/athena/lib/X11/app-defaults
 #endif
-#ifndef XAppDefDir
-#define XAppDefDir /usr/athena/lib/X11/app-defaults
+#ifndef AthXBitDir
+#define AthXBitDir /usr/athena/lib/X11/bitmaps
 #endif
-#ifndef XBitmapDir
-#define XBitmapDir /usr/athena/lib/X11/bitmaps
+#ifndef AthXIncDir
+#define AthXIncDir /usr/athena/include
+#endif
+#ifndef AthXLibDir
+#define AthXLibDir /usr/athena/lib
 #endif
 #ifndef LintCFlag
 #define LintCFlag -o
@@ -124,7 +130,7 @@
 #define LintCmd lint
 #endif
 #ifndef LintFlags
-#define LintFlags $(DEFINES) -I$(ATHINCDIR)
+#define LintFlags $(DEFINES) -I/usr/athena/include
 #endif
 #ifndef ShlibExt
 #define ShlibExt _s
@@ -138,8 +144,9 @@ MAKESHELL=/bin/sh
 
 
 TOP = NEWTOP
-DESTDIR=
+CURDIR = NEWCURDIR
 CONFIGSRC = ConfDir
+DESTDIR=
 
 IRULESRC = $(CONFIGSRC)		
 #ifdef UseInstalled
@@ -154,6 +161,8 @@ ICONFIGFILE = ${IRULESRC}/Imake.tmpl ${IRULESRC}/Imake.rules \
 	${IRULESRC}/site.def Imakefile
 MKDIRHIER= sh $(IRULESRC)/mkdirhier.sh
 
+ATHBASEDIR=/usr/athena
+
 ATHLIBDIR=ALibDir
 ATHBINDIR=ABinDir
 ATHINCDIR=AIncDir
@@ -162,17 +171,17 @@ ATHCONFDIR=AConfDir
 ATHMANDIR=AManDir
 ATHRBINDIR=ARBinDir
 ATHRETCDIR=AREtcDir
-ATHNEWDIR=ANewDir
 
-XAPPDEFDIR=XAppDefDir
-XBITMAPDIR=XBitmapDir
+/* This should be removed, but too much depends on it */
+ATHNEWDIR=$(ATHBINDIR)
+
+ATHXAPPDIR=AthXAppDir
+ATHXBITDIR=AthXBitDir
+ATHXINCDIR=AthXIncDir
+ATHXLIBDIR=AthXLibDir
 
 LINTCFLAG=LintCFlag
-#ifdef StdIncDir
-LINTFLAGS=$(DEFINES)
-#else
-LINTFLAGS=$(DEFINES) -I$(ATHINCDIR)
-#endif
+LINTFLAGS=$(DEFINES) -I/usr/athena/include
 
 INSTALL=InstallCmd
 RANLIB=RanLibCmd
@@ -182,17 +191,8 @@ AS=AsCmd
 RM=RmCmd
 CDEBUG=CDebugFlags
 
-#ifdef StdIncDir
-CFLAGS=$(CDEBUG) CcFlags $(DEFINES)
-#else
-CFLAGS=$(CDEBUG) CcFlags $(DEFINES) -I$(ATHINCDIR)
-#endif
-
-#ifdef StdLibDir
-LDFLAGS=LdFlags $(LDDEFS)
-#else
-LDFLAGS=LdFlags $(LDDEFS) -L$(ATHLIBDIR)
-#endif
+CFLAGS=$(CDEBUG) CcFlags $(DEFINES) -I/usr/athena/include
+LDFLAGS=LdFlags $(LDDEFS) -L/usr/athena/lib
 
 LDLIBS=LdLibs
 SHLIB_EXT=ShlibExt
@@ -210,8 +210,37 @@ depend::
 FRC::
 
 /**/###########################################################################
+/**/# Project inclusion
+/**/###########################################################################
+/*
+ * This project support is UNSUPPORTED; it is inadequate, and only a
+ * stop-gap measure.  It will CHANGE!!!
+ */
+#ifndef ProjectDir
+#define ProjectDir .
+#endif
+
+#ifdef ProjectRuleFile
+#include ProjectRuleFile
+#endif
+
+/**/###########################################################################
 /**/# start of Imakefile
+/**/###########################################################################
+
 #include INCLUDE_IMAKEFILE
+
+/* Allow for project re-configuration (THIS FORMAT WILL CHANGE)
+ * At the top of a project directory, the file should read:
+ *   #undef ProjectDir
+ *   #define ProjectDir .
+ *   #define ProjectRules foo.rules
+ *   #include "foo.rules"
+ */
+#ifdef ProjectRules
+IPROJ= -DProjectRuleFile=\"ProjectRules\" -DProjectRules=ProjectRules \
+	-I../ProjectDir -DProjectDir=../ProjectDir
+#endif
 
 
 makefile_target()
