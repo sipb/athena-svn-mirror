@@ -1,6 +1,6 @@
 .\"	$Source: /afs/dev.mit.edu/source/repository/athena/bin/delete/man1/lsdel.1,v $
 .\"	$Author: jik $
-.\"	$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/man1/lsdel.1,v 1.3 1989-03-27 11:32:45 jik Exp $
+.\"	$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/man1/lsdel.1,v 1.4 1989-11-02 07:10:37 jik Exp $
 .\"
 .\" Copyright 1989 by the Massachusetts Institute of Technology.  All
 .\" rights reserved.  The file /usr/include/mit-copyright.h specifies
@@ -19,6 +19,10 @@ lsdel \- list deleted files
 .B \-r
 ] [
 .B \-t \fIn\fR
+] [
+.B \-s
+] [
+.B \-m
 ] [
 .B \-y
 ] [ filename [ ... ]]
@@ -53,6 +57,14 @@ The
 option allows the user to specify a minimum age, in days, of files to
 list.  Only files that have not been modified in \fIn\fR days or more
 will be listed.
+.PP
+The
+.BR \-s
+options tells
+.I lsdel
+to follow symbolic links when searching for deleted files.  The
+.BR \-m
+option does the same thing for mount points.
 .PP
 The
 .BR \-y

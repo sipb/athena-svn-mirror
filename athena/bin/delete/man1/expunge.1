@@ -1,6 +1,6 @@
 .\"	$Source: /afs/dev.mit.edu/source/repository/athena/bin/delete/man1/expunge.1,v $
 .\"	$Author: jik $
-.\"	$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/man1/expunge.1,v 1.5 1989-08-13 02:06:55 jik Exp $
+.\"	$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/man1/expunge.1,v 1.6 1989-11-02 07:10:08 jik Exp $
 .\"
 .\" Copyright 1989 by the Massachusetts Institute of Technology.  All
 .\" rights reserved.  The file /usr/include/mit-copyright.h specifies
@@ -27,6 +27,10 @@ expunge, purge \- permanent removal of \fIdelete\fR\^d files
 .B \-v
 ] [
 .B \-l
+] [
+.B \-s
+] [
+.B \-m
 ] [
 .B \-y
 ] [
@@ -121,6 +125,12 @@ Causes
 to list all found files before expunging them, similar to the actions
 of
 .I purge.
+.TP
+.B \-s
+Symbolic links are followed when searching for deleted files.
+.TP
+.B \-m
+Mount points are followed when searching for deleted files.
 .TP
 .B \-y
 The total number of kilobytes expunged is printed after
