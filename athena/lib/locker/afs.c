@@ -15,7 +15,7 @@
 
 /* This file is part of liblocker. It implements AFS lockers. */
 
-static const char rcsid[] = "$Id: afs.c,v 1.11 2003-07-29 14:06:00 zacheiss Exp $";
+static const char rcsid[] = "$Id: afs.c,v 1.12 2004-03-27 03:09:46 ghudson Exp $";
 
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -559,8 +559,6 @@ static int afs_get_cred(krb5_context context, char *name, char *inst, char *real
 
 fail:
   krb5_free_cred_contents(context, &increds);
-  if (client_principal)
-    krb5_free_principal(context, client_principal);
   if (krb425_ccache)
     krb5_cc_close(context, krb425_ccache);
   return(retval);
@@ -704,7 +702,7 @@ static int get_user_realm(krb5_context context, char *realm)
     goto fail;
 
   i = krb5_princ_realm(context, client_principal)->length;
-  if (i < REALM_SZ - 1)
+  if (i > REALM_SZ - 1)
     i = REALM_SZ - 1;
   memcpy(realm, krb5_princ_realm(context, client_principal)->data, i);
   realm[i] = '\0';
