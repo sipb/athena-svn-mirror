@@ -6,13 +6,13 @@ XSRCS = emul_re.c
 XOBJS = emul_re.o
 #endif
 
+#if !defined(ultrix) 
+RPCLIB=-lrpclib
+#endif
+
 BINDIR=/bin/athena
 
-#if defined(ultrix)
-LIBS = -lhesiod -lkrb -ldes -lzephyr -lcom_err $(XLIBS)
-#else
-LIBS = -lhesiod -lkrb -ldes -lrpcsvc -lzephyr -lcom_err $(XLIBS)
-#endif
+LIBS = -lhesiod -lkrb -ldes $(RPCLIB) -lzephyr -lcom_err $(XLIBS)
 
 SRCS = main.c util.c attachtab.c attach.c detach.c mul.c nfs.c rvd.c\
 	afs.c ufs.c rpc.c mount.c unmount.c zephyr.c getrealm.c\
