@@ -1,63 +1,72 @@
-<?xml version="1.0"?>
-<Model Id="GNOME-GENERIC-PS" Version="1.0">
-  <Name>Generic PostScript</Name>
+<?xml version="1.0" encoding="UTF-8"?>
+<Model Version="1.0" Id="GNOME-GENERIC-PS">
+ <Name>PS Writer</Name>
   <Vendor>GNOME</Vendor>
   <ModelVersion>0.0.1</ModelVersion>
   <Options>
     <Option Id="Engine">
-      <Option Id="Backend" Type="List" Default="gnome">
+      <Option Type="List" Id="Backend" Default="gnome">
         <Item Id="gnome">
           <Name>GNOME</Name>
-          <Key Id="Driver" Value="gnome-print-ps">
-            <Key Id="LanguageLevel" Value="2.0"/>
+          <Key Value="gnome-print-ps" Id="Driver">
+            <Key Value="2.0" Id="LanguageLevel"/>
           </Key>
         </Item>
       </Option>
     </Option>
     <Option Id="Output">
       <Option Id="Media">
-        <Option Id="PhysicalSize" Type="List" Default="USLetter">
+        <Option Type="List" Id="PhysicalSize" Default="USLetter">
           <Fill Ref="Globals.Media.PhysicalSize"/>
         </Option>
-<!-- Tinkering with these may, or may not work -->
-<!-- Most probably at least most common values are inserted automatically -->
-        <Option Id="PhysicalOrientation" Type="List" Default="R0">
+
+
+        <Option Type="List" Id="PhysicalOrientation" Default="R0">
           <Fill Ref="Globals.Media.PhysicalOrientation"/>
         </Option>
-<!-- Margins are completely ignored by gnome-print -->
-<!-- They are here for case somebody wants to peek them :-) -->
-<!-- Maybe one day libgnomeprintui paper dialog also reads these -->
-<!-- You cannot change these (they are printer physical margins) -->
+
+
+
+
         <Key Id="Margins">
-          <Key Id="Left" Value="0"/>
-          <Key Id="Right" Value="0"/>
-          <Key Id="Top" Value="0"/>
-          <Key Id="Bottom" Value="0"/>
+          <Key Value="0" Id="Left"/>
+          <Key Value="0" Id="Right"/>
+          <Key Value="0" Id="Top"/>
+          <Key Value="0" Id="Bottom"/>
         </Key>
       </Option>
       <Option Id="Job">
-        <Option Id="NumCopies" Type="String" Default="1"/>
-        <Option Id="Collate" Type="String" Default="false"/>
+        <Option Type="String" Id="NumCopies" Default="1"/>
+        <Option Type="String" Id="NonCollatedCopiesHW" Default="true"/>
+        <Option Type="String" Id="CollatedCopiesHW" Default="false"/>
+        <Option Type="String" Id="Collate" Default="false"/>
+        <Option Type="String" Id="Duplex" Default="true"/>
+        <Option Type="String" Id="Tumble" Default="false"/>
+        <Option Type="String" Id="PrintToFile" Default="false"/>
+        <Option Type="String" Id="FileName" Default="output.ps"/>
       </Option>
     </Option>
     <Option Id="Transport">
-      <Option Id="Backend" Type="List" Default="lpr">
+      <Option Type="List" Id="Backend" Default="lpr">
         <Item Id="file">
           <Name>File</Name>
-          <Key Id="Module" Value="libgnomeprint-file.so"/>
-          <Option Id="FileName" Type="String" Default="output.ps"/>
+          <Key Value="libgnomeprint-file.so" Id="Module"/>
+          <Option Type="String" Id="FileName" Default="output.ps"/>
         </Item>
         <Item Id="lpr">
           <Name>lpr</Name>
-          <Key Id="Module" Value="libgnomeprint-lpr.so"/>
-          <Option Id="Printer" Type="String" Default=""/>
+          <Key Value="libgnomeprint-lpr.so" Id="Module"/>
+          <Option Type="String" Id="Printer" Default=""/>
         </Item>
         <Item Id="custom">
           <Name>Custom</Name>
-          <Key Id="Module" Value="libgnomeprint-custom.so"/>
-          <Option Id="Command" Type="String" Default="lpr"/>
+          <Key Value="libgnomeprint-custom.so" Id="Module"/>
+          <Option Type="String" Id="Command" Default="lpr"/>
         </Item>
       </Option>
+    </Option>
+    <Option Id="Icon">
+      <Option Type="String" Id="Filename" Default="gnome-mime-application-postscript"/>
     </Option>
   </Options>
 </Model>
