@@ -1,4 +1,4 @@
-# $Id: Makefile.athena,v 1.1 1997-11-19 16:55:13 brlewis Exp $
+# $Id: Makefile.athena,v 1.2 1998-01-03 03:37:00 ghudson Exp $
 
 SHELL=/bin/sh
 
@@ -10,7 +10,7 @@ clean:
 all:
 	case "$${HOSTTYPE}" in \
 	  linux) \
-              target=posix \
+              target=linux \
 	      ;; \
 	  inbsd) \
               target=netbsd \
