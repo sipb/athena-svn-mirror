@@ -18,7 +18,7 @@ DEBUG     =	/usr/ucb/dbx
 DEPEND    =	/usr/athena/makedepend
 RM        =	/bin/rm -f
 TAR       =	/bin/tar
-COMPRESS  =	/usr/ucb/compress -f
+COMPRESS  =	/usr/ucb/compress -fv
 
 CFLAGS    =	-g ${INCDIR} -DHESIOD -DZEPHYR -DKERBEROS -DATHENA -DTEST
 LDFLAGS   =	${LIBDIR}
@@ -26,28 +26,17 @@ LINTFLAGS =	 -haucbx ${INCDIR} ${LIBS}
 UILFLAGS  =	${UILINCDIR}
 
 RCSDIR    =	${MOTIFDIR}/projects/olc/RCS
-BACKUPDIR =	/mit/motifdev/projects/olc/Backup
+BACKUPDIR =	/mit/motifdev/backups
 BACKUPFIL =	${BACKUPDIR}/olc.rcs.tar
 ERRORLOG  =	errorlog
 
 SOURCES   =	main.c procs.c widget_create.c x_motd.c x_hand_resp.c
-OBJFOOS   =	main.o procs.o widget_create.o x_motd.o x_hand_resp.o \
-		${OLCLIB}/../parser/p_utils.o
+OBJFOOS   =	main.o procs.o widget_create.o x_motd.o x_hand_resp.o
 OBJECTS   =	${OBJFOOS} \
-		${OLCLIB}/ask.o		${OLCLIB}/connect.o \
-		${OLCLIB}/consult.o	${OLCLIB}/generic.o \
-		${OLCLIB}/instance.o	${OLCLIB}/io.o \
-		${OLCLIB}/messages.o	${OLCLIB}/motd.o \
-		${OLCLIB}/queue.o	${OLCLIB}/resolve.o \
-		${OLCLIB}/send.o	${OLCLIB}/topic.o \
-		${OLCLIB}/utils.o	${OLCLIB}/status.o \
-		${OLCLIB}/../parser/p_utils.o \
-		${OLCLIB}/../tty/t_utils.o \
-		${OLCLIB}/../../common/io.o \
-		${OLCLIB}/../../common/string_utils.o
+		${OLCLIB}/../parser/p_utils.o
 
 TARGET    =	xolc
-LIBS      =	-lMrm -lXm -lXt -lX11 \
+LIBS      =	-lMu -lMrm -lXm -lXt -lX11 \
 		-lolc \
 		-lhesiod -lzephyr -lcom_err -lkrb -ldes
 
@@ -55,10 +44,7 @@ UIL_SRC   =	olc.uil
 UID       =	olc.uid
 
 
-all:  ${UID} ${TARGET} ${OBJFOOS}
-#	${CC} ${LDFLAGS} -o test ${OBJFOOS} ${LIBS}
-
-##########  all:	${UID} ${TARGET} ${OBJFOOS}
+all:  ${UID} ${TARGET}
 
 uil:	${UID}
 c:	${TARGET}
@@ -66,9 +52,8 @@ c:	${TARGET}
 ${UID}:	${UIL_SRC}
 	${UIL} ${UILFLAGS} -o ${UID} ${UIL_SRC}
 
-#${TARGET}:	${OBJECTS}
 ${TARGET}:	${OBJFOOS}
-	${CC} ${LDFLAGS} -o ${TARGET} ${OBJFOOS} ${LIBS}
+	${CC} ${LDFLAGS} -o ${TARGET} ${OBJECTS} ${LIBS}
 
 .c.o:
 	${CC} ${CFLAGS} -c $*.c
@@ -108,11 +93,11 @@ main.o: /usr/include/zephyr/mit-copyright.h /usr/include/zephyr/zephyr_err.h
 main.o: /usr/include/zephyr/zephyr_conf.h /usr/include/errno.h
 main.o: /usr/include/sys/types.h /usr/include/netinet/in.h
 main.o: /usr/include/sys/time.h /usr/include/sys/time.h
-main.o: /afs/athena/astaff/project/motifdev/include/Mrm/XmAppl.h
+main.o: /afs/athena/astaff/project/motifdev/include/Mrm/MrmAppl.h
+main.o: /usr/include/X11/Xlib.h /usr/include/X11/X.h
 main.o: /afs/athena/astaff/project/motifdev/include/X11/Intrinsic.h
-main.o: /usr/include/X11/Xlib.h /usr/include/X11/X.h /usr/include/X11/Xutil.h
-main.o: /usr/include/X11/Xresource.h /usr/include/X11/Xos.h
-main.o: /usr/include/sys/file.h
+main.o: /usr/include/X11/Xutil.h /usr/include/X11/Xresource.h
+main.o: /usr/include/X11/Xos.h /usr/include/sys/file.h
 main.o: /afs/athena/astaff/project/motifdev/include/X11/Core.h
 main.o: /afs/athena/astaff/project/motifdev/include/X11/Composite.h
 main.o: /afs/athena/astaff/project/motifdev/include/X11/Constraint.h
@@ -120,13 +105,12 @@ main.o: /afs/athena/astaff/project/motifdev/include/X11/Object.h
 main.o: /afs/athena/astaff/project/motifdev/include/X11/RectObj.h
 main.o: /afs/athena/astaff/project/motifdev/include/X11/WindowObj.h
 main.o: /afs/athena/astaff/project/motifdev/include/X11/CompObj.h
-main.o: /afs/athena/astaff/project/motifdev/include/Mrm/MRMPublic.h
-main.o: /afs/athena/astaff/project/motifdev/include/Mrm/MRMDecls.h
+main.o: /afs/athena/astaff/project/motifdev/include/Mrm/MrmPublic.h
+main.o: /afs/athena/astaff/project/motifdev/include/Mrm/MrmDecls.h
 main.o: /afs/athena/astaff/project/motifdev/include/X11/StringDefs.h
 main.o: /afs/athena/astaff/project/motifdev/include/X11/Shell.h
 main.o: /afs/athena/astaff/project/motifdev/include/X11/Vendor.h
 main.o: /afs/athena/astaff/project/motifdev/include/Xm/Xm.h
-main.o: /afs/athena/astaff/project/motifdev/include/X11/Intrinsic.h
 main.o: /usr/include/signal.h /usr/include/sys/stat.h /usr/include/pwd.h
 main.o: /usr/include/netdb.h
 procs.o: procs.c xolc.h /mit/olcdev/src/include/olc/olc.h
@@ -145,9 +129,9 @@ procs.o: /usr/include/zephyr/mit-copyright.h /usr/include/zephyr/zephyr_err.h
 procs.o: /usr/include/zephyr/zephyr_conf.h /usr/include/errno.h
 procs.o: /usr/include/sys/types.h /usr/include/netinet/in.h
 procs.o: /usr/include/sys/time.h /usr/include/sys/time.h
-procs.o: /afs/athena/astaff/project/motifdev/include/Mrm/XmAppl.h
-procs.o: /afs/athena/astaff/project/motifdev/include/X11/Intrinsic.h
+procs.o: /afs/athena/astaff/project/motifdev/include/Mrm/MrmAppl.h
 procs.o: /usr/include/X11/Xlib.h /usr/include/X11/X.h
+procs.o: /afs/athena/astaff/project/motifdev/include/X11/Intrinsic.h
 procs.o: /usr/include/X11/Xutil.h /usr/include/X11/Xresource.h
 procs.o: /usr/include/X11/Xos.h /usr/include/sys/file.h
 procs.o: /afs/athena/astaff/project/motifdev/include/X11/Core.h
@@ -157,13 +141,12 @@ procs.o: /afs/athena/astaff/project/motifdev/include/X11/Object.h
 procs.o: /afs/athena/astaff/project/motifdev/include/X11/RectObj.h
 procs.o: /afs/athena/astaff/project/motifdev/include/X11/WindowObj.h
 procs.o: /afs/athena/astaff/project/motifdev/include/X11/CompObj.h
-procs.o: /afs/athena/astaff/project/motifdev/include/Mrm/MRMPublic.h
-procs.o: /afs/athena/astaff/project/motifdev/include/Mrm/MRMDecls.h
+procs.o: /afs/athena/astaff/project/motifdev/include/Mrm/MrmPublic.h
+procs.o: /afs/athena/astaff/project/motifdev/include/Mrm/MrmDecls.h
 procs.o: /afs/athena/astaff/project/motifdev/include/X11/StringDefs.h
 procs.o: /afs/athena/astaff/project/motifdev/include/X11/Shell.h
 procs.o: /afs/athena/astaff/project/motifdev/include/X11/Vendor.h
 procs.o: /afs/athena/astaff/project/motifdev/include/Xm/Xm.h
-procs.o: /afs/athena/astaff/project/motifdev/include/X11/Intrinsic.h
 procs.o: /usr/include/signal.h /usr/include/sys/stat.h /usr/include/pwd.h
 procs.o: /usr/include/netdb.h
 widget_create.o: widget_create.c xolc.h /mit/olcdev/src/include/olc/olc.h
@@ -184,9 +167,9 @@ widget_create.o: /usr/include/zephyr/zephyr_err.h
 widget_create.o: /usr/include/zephyr/zephyr_conf.h /usr/include/errno.h
 widget_create.o: /usr/include/sys/types.h /usr/include/netinet/in.h
 widget_create.o: /usr/include/sys/time.h /usr/include/sys/time.h
-widget_create.o: /afs/athena/astaff/project/motifdev/include/Mrm/XmAppl.h
-widget_create.o: /afs/athena/astaff/project/motifdev/include/X11/Intrinsic.h
+widget_create.o: /afs/athena/astaff/project/motifdev/include/Mrm/MrmAppl.h
 widget_create.o: /usr/include/X11/Xlib.h /usr/include/X11/X.h
+widget_create.o: /afs/athena/astaff/project/motifdev/include/X11/Intrinsic.h
 widget_create.o: /usr/include/X11/Xutil.h /usr/include/X11/Xresource.h
 widget_create.o: /usr/include/X11/Xos.h /usr/include/sys/file.h
 widget_create.o: /afs/athena/astaff/project/motifdev/include/X11/Core.h
@@ -196,13 +179,12 @@ widget_create.o: /afs/athena/astaff/project/motifdev/include/X11/Object.h
 widget_create.o: /afs/athena/astaff/project/motifdev/include/X11/RectObj.h
 widget_create.o: /afs/athena/astaff/project/motifdev/include/X11/WindowObj.h
 widget_create.o: /afs/athena/astaff/project/motifdev/include/X11/CompObj.h
-widget_create.o: /afs/athena/astaff/project/motifdev/include/Mrm/MRMPublic.h
-widget_create.o: /afs/athena/astaff/project/motifdev/include/Mrm/MRMDecls.h
+widget_create.o: /afs/athena/astaff/project/motifdev/include/Mrm/MrmPublic.h
+widget_create.o: /afs/athena/astaff/project/motifdev/include/Mrm/MrmDecls.h
 widget_create.o: /afs/athena/astaff/project/motifdev/include/X11/StringDefs.h
 widget_create.o: /afs/athena/astaff/project/motifdev/include/X11/Shell.h
 widget_create.o: /afs/athena/astaff/project/motifdev/include/X11/Vendor.h
 widget_create.o: /afs/athena/astaff/project/motifdev/include/Xm/Xm.h
-widget_create.o: /afs/athena/astaff/project/motifdev/include/X11/Intrinsic.h
 widget_create.o: /usr/include/signal.h /usr/include/sys/stat.h
 widget_create.o: /usr/include/pwd.h /usr/include/netdb.h
 x_motd.o: x_motd.c xolc.h /mit/olcdev/src/include/olc/olc.h
@@ -222,9 +204,9 @@ x_motd.o: /usr/include/zephyr/zephyr_err.h /usr/include/zephyr/zephyr_conf.h
 x_motd.o: /usr/include/errno.h /usr/include/sys/types.h
 x_motd.o: /usr/include/netinet/in.h /usr/include/sys/time.h
 x_motd.o: /usr/include/sys/time.h
-x_motd.o: /afs/athena/astaff/project/motifdev/include/Mrm/XmAppl.h
-x_motd.o: /afs/athena/astaff/project/motifdev/include/X11/Intrinsic.h
+x_motd.o: /afs/athena/astaff/project/motifdev/include/Mrm/MrmAppl.h
 x_motd.o: /usr/include/X11/Xlib.h /usr/include/X11/X.h
+x_motd.o: /afs/athena/astaff/project/motifdev/include/X11/Intrinsic.h
 x_motd.o: /usr/include/X11/Xutil.h /usr/include/X11/Xresource.h
 x_motd.o: /usr/include/X11/Xos.h /usr/include/sys/file.h
 x_motd.o: /afs/athena/astaff/project/motifdev/include/X11/Core.h
@@ -234,13 +216,12 @@ x_motd.o: /afs/athena/astaff/project/motifdev/include/X11/Object.h
 x_motd.o: /afs/athena/astaff/project/motifdev/include/X11/RectObj.h
 x_motd.o: /afs/athena/astaff/project/motifdev/include/X11/WindowObj.h
 x_motd.o: /afs/athena/astaff/project/motifdev/include/X11/CompObj.h
-x_motd.o: /afs/athena/astaff/project/motifdev/include/Mrm/MRMPublic.h
-x_motd.o: /afs/athena/astaff/project/motifdev/include/Mrm/MRMDecls.h
+x_motd.o: /afs/athena/astaff/project/motifdev/include/Mrm/MrmPublic.h
+x_motd.o: /afs/athena/astaff/project/motifdev/include/Mrm/MrmDecls.h
 x_motd.o: /afs/athena/astaff/project/motifdev/include/X11/StringDefs.h
 x_motd.o: /afs/athena/astaff/project/motifdev/include/X11/Shell.h
 x_motd.o: /afs/athena/astaff/project/motifdev/include/X11/Vendor.h
 x_motd.o: /afs/athena/astaff/project/motifdev/include/Xm/Xm.h
-x_motd.o: /afs/athena/astaff/project/motifdev/include/X11/Intrinsic.h
 x_motd.o: /usr/include/signal.h /usr/include/sys/stat.h /usr/include/pwd.h
 x_motd.o: /usr/include/netdb.h
 x_hand_resp.o: x_hand_resp.c xolc.h /mit/olcdev/src/include/olc/olc.h
@@ -260,9 +241,9 @@ x_hand_resp.o: /usr/include/zephyr/zephyr_err.h
 x_hand_resp.o: /usr/include/zephyr/zephyr_conf.h /usr/include/errno.h
 x_hand_resp.o: /usr/include/sys/types.h /usr/include/netinet/in.h
 x_hand_resp.o: /usr/include/sys/time.h /usr/include/sys/time.h
-x_hand_resp.o: /afs/athena/astaff/project/motifdev/include/Mrm/XmAppl.h
-x_hand_resp.o: /afs/athena/astaff/project/motifdev/include/X11/Intrinsic.h
+x_hand_resp.o: /afs/athena/astaff/project/motifdev/include/Mrm/MrmAppl.h
 x_hand_resp.o: /usr/include/X11/Xlib.h /usr/include/X11/X.h
+x_hand_resp.o: /afs/athena/astaff/project/motifdev/include/X11/Intrinsic.h
 x_hand_resp.o: /usr/include/X11/Xutil.h /usr/include/X11/Xresource.h
 x_hand_resp.o: /usr/include/X11/Xos.h /usr/include/sys/file.h
 x_hand_resp.o: /afs/athena/astaff/project/motifdev/include/X11/Core.h
@@ -272,12 +253,11 @@ x_hand_resp.o: /afs/athena/astaff/project/motifdev/include/X11/Object.h
 x_hand_resp.o: /afs/athena/astaff/project/motifdev/include/X11/RectObj.h
 x_hand_resp.o: /afs/athena/astaff/project/motifdev/include/X11/WindowObj.h
 x_hand_resp.o: /afs/athena/astaff/project/motifdev/include/X11/CompObj.h
-x_hand_resp.o: /afs/athena/astaff/project/motifdev/include/Mrm/MRMPublic.h
-x_hand_resp.o: /afs/athena/astaff/project/motifdev/include/Mrm/MRMDecls.h
+x_hand_resp.o: /afs/athena/astaff/project/motifdev/include/Mrm/MrmPublic.h
+x_hand_resp.o: /afs/athena/astaff/project/motifdev/include/Mrm/MrmDecls.h
 x_hand_resp.o: /afs/athena/astaff/project/motifdev/include/X11/StringDefs.h
 x_hand_resp.o: /afs/athena/astaff/project/motifdev/include/X11/Shell.h
 x_hand_resp.o: /afs/athena/astaff/project/motifdev/include/X11/Vendor.h
 x_hand_resp.o: /afs/athena/astaff/project/motifdev/include/Xm/Xm.h
-x_hand_resp.o: /afs/athena/astaff/project/motifdev/include/X11/Intrinsic.h
 x_hand_resp.o: /usr/include/signal.h /usr/include/sys/stat.h
 x_hand_resp.o: /usr/include/pwd.h /usr/include/netdb.h
