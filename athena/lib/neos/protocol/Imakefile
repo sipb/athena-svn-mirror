@@ -1,8 +1,8 @@
 /* 
  * Makefile for the FX (file exchange) protocol
  *
- * $Author: miki $
- * $Id: Imakefile,v 1.4 1992-08-19 17:34:24 miki Exp $
+ * $Author: cfields $
+ * $Id: Imakefile,v 1.5 1995-07-20 23:30:00 cfields Exp $
  *
  *
  * Copyright 1989, 1990 by the Massachusetts Institute of Technology.
@@ -14,7 +14,7 @@
 
 AnsiCC()
 
-#if defined(_IBMR2) || defined(sun)
+#if defined(_IBMR2) || defined(sun) || defined(sgi)
 RPCGEN=rpcgen
 INCLUDES = -I../include
 #else
@@ -52,7 +52,7 @@ fx_prot_xdr.o: fx_prot_xdr.c
 local_prot_clnt.c fx_prot_svc.c fx_prot_clnt.c fx_prot_xdr.c: fx_prot.x
 	${RPCGEN} fx_prot.x
 	cat xdr_extras.c >> fx_prot_xdr.c
-	${RPCGEN} -m fx_prot.x -o fx_prot_svc.c
+	${RPCGEN} -m -o fx_prot_svc.c fx_prot.x
 	rm -f local_prot_clnt.c fxtemp.c ../include/fx_prot.h
 	./ansify < fx_prot.h > ../include/fx_prot.h && rm -f fx_prot.h
 	grep -v "include <sys/time" < fx_prot_clnt.c > fxtemp.c
