@@ -15,7 +15,7 @@
 
 /* This file is part of liblocker. It implements AFS lockers. */
 
-static const char rcsid[] = "$Id: afs.c,v 1.8 1999-09-22 22:25:06 danw Exp $";
+static const char rcsid[] = "$Id: afs.c,v 1.9 2000-04-14 14:44:39 ghudson Exp $";
 
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -220,7 +220,7 @@ static int afs_attach(locker_context context, locker_attachent *at,
 {
   struct stat st1, st2;
   struct ViceIoctl vio;
-  int32 hosts[8]; /* AFS docs say VIOCWHEREIS won't return more than 8. */
+  afs_int32 hosts[8]; /* AFS docs say VIOCWHEREIS won't return more than 8. */
   uid_t uid = geteuid();
   int status;
 
@@ -520,7 +520,7 @@ static int afs_zsubs(locker_context context, locker_attachent *at)
   char *path, *last_component, *p, *subs[3];
   char cell[MAXCELLCHARS + 1], vol[VNAMESIZE + 1];
   char cellvol[MAXCELLCHARS + VNAMESIZE + 2];
-  int32 hosts[8];
+  afs_int32 hosts[8];
   int status = 0, pstatus;
   struct hostent *h;
 
