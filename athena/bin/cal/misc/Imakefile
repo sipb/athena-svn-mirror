@@ -1,0 +1,47 @@
+/* 
+ *
+ *				Makefile
+ *
+ *
+ *	Makefile for the Whatsup Calendar miscellaneous files.
+ *
+ *	Copyright 1987 by the Massachusetts Institute of Technology.
+ *	For copying and distribution information, see the file
+ *	"mit-copyright.h".
+ *
+ *
+ *	$Id: Imakefile,v 1.1 1991-07-30 20:16:58 lwvanels Exp $
+ */
+
+.SUFFIXES: .el .elc
+
+FORMSINSTDIR=/usr/athena/lib
+MACROINSTDIR=/usr/athena/lib
+
+BLANKFORMS= bulkpost.longform bulkpost.shortform
+EMACSMACROS= postit.el
+COMPILEDMACROS= postit.elc
+
+
+.el.elc:
+	emacs -batch -f batch-byte-compile $*.el
+
+
+SUBDIR= 
+
+all::	${COMPILEDMACROS}
+
+install:: all
+	for i in ${BLANKFORMS}; do \
+		(install -c $$i ${DESTDIR}${FORMSINSTDIR}/$$i); \
+	done
+	for i in ${EMACSMACROS} ${COMPILEDMACROS}; do \
+		(install -c $$i ${DESTDIR}${MACROINSTDIR}/$$i); \
+	done
+
+clean::
+	rm -f a.out core *.s *.o *~ *.PS *.err *.man *.otl *.aux *.elc
+
+lint::
+
+
