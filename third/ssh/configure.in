@@ -8,8 +8,11 @@
 #
 # Created: Wed Mar 22 18:02:48 1995 ylo
 #
-# $Id: configure.in,v 1.7 1998-03-03 17:18:30 rbasch Exp $
+# $Id: configure.in,v 1.8 1998-03-11 20:27:39 ghudson Exp $
 # $Log: not supported by cvs2svn $
+# Revision 1.7  1998/03/03 17:18:30  rbasch
+# Remove -n32 compile option for IRIX 6.x
+#
 # Revision 1.6  1998/02/28 19:08:18  ghudson
 # Do a better job of using libucb.
 #
@@ -1529,7 +1532,7 @@ AC_ARG_ENABLE(suid-ssh,
 [ case "$enableval" in
   no)
        AC_MSG_RESULT(no)
-       SSHINSTALLMODE=0711
+       SSHINSTALLMODE=0755
        ;;
   *)   AC_MSG_RESULT(yes)
        SSHINSTALLMODE=04711

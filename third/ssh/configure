@@ -6893,7 +6893,7 @@ if test "${enable_suid_ssh+set}" = set; then
    case "$enableval" in
   no)
        echo "$ac_t""no" 1>&6
-       SSHINSTALLMODE=0711
+       SSHINSTALLMODE=0755
        ;;
   *)   echo "$ac_t""yes" 1>&6
        SSHINSTALLMODE=04711
