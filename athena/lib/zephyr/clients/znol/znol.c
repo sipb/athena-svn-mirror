@@ -18,7 +18,7 @@
 #include <pwd.h>
 
 #ifndef lint
-static char rcsid_znol_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/znol/znol.c,v 1.1 1987-08-06 22:53:11 rfrench Exp $";
+static char rcsid_znol_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/znol/znol.c,v 1.2 1987-10-25 01:39:51 rfrench Exp $";
 #endif lint
 
 #define SUBSATONCE 7
@@ -42,18 +42,6 @@ main(argc,argv)
 		exit (1);
 	}
 
-	envptr = (char *)getenv("WGFILE");
-	if (!envptr) {
-		sprintf(name,"/tmp/wg.%d",getuid());
-		envptr = name;
-	} 
-	if (!(fp = fopen(envptr,"r"))) {
-		fprintf(stderr,"Can't find WindowGram subscription port\n");
-		exit (1);
-	}
-	fscanf(fp,"%d",&wgport);
-	fclose(fp);
-	
 	envptr = (char *)getenv("HOME");
 	if (envptr)
 		strcpy(anyonename,envptr);
@@ -101,6 +89,12 @@ main(argc,argv)
 		exit (1);
 	} 
 
+	if (!justlist)
+		if ((wgport = ZGetWGPort()) == -1) {
+			com_err(argv[0],errno,"while getting WindowGram port");
+			exit(1);
+		}
+	
 	if (!(fp = fopen(anyonename,"r"))) {
 		fprintf(stderr,"Can't open %s for input\n",anyonename);
 		exit (1);
