@@ -1,4 +1,4 @@
- /* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.46 1996-03-08 21:52:22 cfields Exp $ */
+ /* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.47 1996-04-19 02:27:43 cfields Exp $ */
  
 #ifdef POSIX
 #include <unistd.h>
@@ -15,7 +15,11 @@
 #include <fcntl.h>
 #include <X11/Intrinsic.h>
 #include <ctype.h>
+#if defined(SOLARIS) || defined(sgi)
+#include "Wc/WcCreate.h"
+#else
 #include "../wcl/WcCreate.h"
+#endif
 #include <X11/StringDefs.h>
 #include <X11/Xaw/Label.h>
 #include <X11/Xaw/Text.h>
@@ -28,6 +32,9 @@
 #include <X11/Shell.h>
 #include <X11/Xmu/Drawing.h>
 #include <X11/Xmu/Converters.h>
+#ifdef sgi
+#include "Clock.h"
+#endif
 #include "owl.h"
 #include "environment.h"
 
@@ -442,6 +449,10 @@ main(argc, argv)
    *  Register all Athena widget classes
    */
   AriRegisterAthena ( app );
+#ifdef sgi
+  WcRegisterClassPtr(app, "ClockWidget", clockWidgetClass);
+  WcRegisterClassPtr(app, "clockWidgetClass", clockWidgetClass);
+#endif
 
   /* clear console */
   sigconsCB(NULL, "clear", NULL);
