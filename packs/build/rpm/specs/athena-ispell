@@ -1,0 +1,11 @@
+Name: athena-ispell
+Summary: A spelling checker, for Athena
+Copyright: BSDish
+Group: Applications/Text
+Provides: ispell = 3.1.20
+
+%description
+Ispell is an interactive spelling checker.  Ispell can check text
+files or standard input for spelling and typographical errors.  When
+it finds a word that is not in the dictionary, it will suggest
+correctly spelled words for the misspelled word.
