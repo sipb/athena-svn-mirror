@@ -2,8 +2,11 @@
  *   Disk quota reporting program.
  *
  *   $Author jnrees $
- *   $Header: /afs/dev.mit.edu/source/repository/athena/bin/quota/quota.c,v 1.9 1990-07-17 09:12:43 epeisach Exp $
+ *   $Header: /afs/dev.mit.edu/source/repository/athena/bin/quota/quota.c,v 1.10 1990-08-07 19:39:32 probe Exp $
  *   $Log: not supported by cvs2svn $
+ * Revision 1.9  90/07/17  09:12:43  epeisach
+ * Quota changes from jnrees for 7.1
+ * 
  * Revision 1.8  90/06/01  15:20:40  jnrees
  * Fixed core dump error, again.   This time it was found to 
  * dump core if a warning was to be printed for a user or group
@@ -369,10 +372,11 @@ getnfsquota(mntp, uid, qvp)
 	      xdr_getcquota_args, &gq_args, xdr_getcquota_rslt, qvp) ==
       RPC_PROGNOTREGISTERED){
 
-    /* Fallback on old rpc, unless gflag is true */
+    /* Fallback on old rpc, unless gflag is true, or caller is
+     the superuser. */
     struct getquota_rslt oldquota_result;
 
-    if (gflag) return(0);
+    if (gflag || !getuid()) return(0);
     oldrpc = 1;
     if (callaurpc(hostp, RQUOTAPROG, RQUOTAVERS,
 		  (vflag? RQUOTAPROC_GETQUOTA:
@@ -593,15 +597,14 @@ prquota(mntp, qvp, heading_id, heading_name)
 
   id_type = (qvp->rq_group? "group" : "user");
 
-  cp = mntp->mnt_dir;
-  if (strlen(cp) > 15){
-    printf("%s\n", cp);
-    cp = "";
-  }
 
   gettimeofday(&tv, NULL);
 
   for(i=0; i<qvp->rq_ngrps; i++){
+
+    /* If this is root or wheel, then skip */
+    if (qvp->gqr_rcquota[i].rq_id == 0) continue;
+
     rqp = &(qvp->gqr_rcquota[i]);
 
     /* We're not interested in this group if all is zero */
@@ -660,9 +663,15 @@ prquota(mntp, qvp, heading_id, heading_name)
       ftimeleft[0] = '\0';
     }
 
+    cp = mntp->mnt_dir;
+
     if (!user_and_groups){
       if (!heading_printed) simpleheading(heading_id,heading_name);
-      printf("%-12.12s %7d%7d%7d%12s%7d%7d%7d%12s\n",
+      if (strlen(cp) > 15){
+	printf("%s\n",cp);
+	cp = "";
+      }
+      printf("%-14s %5d%7d%7d%12s%7d%7d%7d%12s\n",
 	     cp,
 	     kb(rqp->rq_curblocks),
 	     kb(rqp->rq_bsoftlimit),
@@ -676,6 +685,10 @@ prquota(mntp, qvp, heading_id, heading_name)
     }
     else{
       if (!heading_printed) heading(heading_id,heading_name);
+      if (strlen(cp) > 16){
+	printf("%s\n", cp);
+	cp =  "";
+      }
       printf("%-16s%-6s%-12.12s%6d%7d%7d%-2s%7d%7d%7d%-2s\n",
 	     cp, id_type, id_name,
 	     kb(rqp->rq_curblocks),
@@ -705,6 +718,9 @@ warn(mntp, qvp)
   gettimeofday(&tv, NULL);
 
   for(i=0; i<qvp->rq_ngrps; i++){
+
+    /* If this is root or wheel, then skip */
+    if (qvp->gqr_rcquota[i].rq_id == 0) continue;
 
     if (qvp->rq_group){
       getgroupname(qvp->gqr_rcquota[i].rq_id, idbuf);
@@ -872,7 +888,7 @@ putwarning(string)
 {
   static warningmaxsize = 0;
   
-  if (warningmaxsize == 0){
+  if (warningstring == 0){
     warningstring = (char*)malloc(10);
     warningstring[0] = '\0';
     warningmaxsize = 10;
