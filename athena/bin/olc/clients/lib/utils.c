@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/utils.c,v $
- *	$Id: utils.c,v 1.24 1997-04-30 17:37:21 ghudson Exp $
+ *	$Id: utils.c,v 1.25 1998-12-12 22:30:25 ghudson Exp $
  *	$Author: ghudson $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/utils.c,v 1.24 1997-04-30 17:37:21 ghudson Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/utils.c,v 1.25 1998-12-12 22:30:25 ghudson Exp $";
 #endif
 #endif
 
@@ -375,6 +375,7 @@ sendmail(smargs)
       (void) close(fildes[1]);
       (void) close(0);
       (void) dup2(fildes[0], 0);
+      execv("/usr/sbin/sendmail", args);
       execv("/usr/lib/sendmail", args);
       olc_perror("sendmail: exec");
       exit(1);
