@@ -5,7 +5,7 @@
 /**/#
 /**/#	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/String/Imakefile,v $
 /**/#	$Author: jtkohl $
-/**/#	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/String/Imakefile,v 1.1 1989-11-08 14:17:34 jtkohl Exp $
+/**/#	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/String/Imakefile,v 1.2 1989-11-15 23:58:15 jtkohl Exp $
 /**/#
 
 LIBS= $(ZEPHYR_LIB) $(COMERR_LIB) $(KRB_LIB) $(DES_LIB)
@@ -15,7 +15,7 @@ OBJS = new_string.o
 SRCS = new_string.c
 HDRS = new_string.h
 
-SRCDIR= ${SRCTOP}/zwgc/zwgc.dev/String
+SRCDIR= ${SRCTOP}/zwgc/String
 CODE= ${SRCS} ${HDRS} Imakefile
 
 LINCLUDES= -I../Memory
