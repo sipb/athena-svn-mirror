@@ -24,8 +24,14 @@
 #ifndef ALibDir
 #define ALibDir /usr/athena/lib
 #endif
+#ifndef AIncDir
+#define AIncDir /usr/include
+#endif
 #ifndef LintCFlag
 #define LintCFlag -C
+#endif
+#ifndef RanLibCmd
+#define RanLibCmd ranlib
 #endif
 
 TOP = TOPDIR
@@ -39,7 +45,9 @@ ICONFIGFILE = ${IRULESRC}/Imake.tmpl ${IRULESRC}/Imake.rules \
 	${IRULESRC}/site.def Imakefile
 MKDIRHIER= $(CONFIGSRC)/mkdirhier.sh
 ATHLIBDIR=ALibDir
+ATHINCDIR=AIncDir
 LINTCFLAG=LintCFlag
+RANLIB=RanLibCmd
 
 #include "Imake.rules"
 
