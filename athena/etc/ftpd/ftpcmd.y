@@ -65,6 +65,7 @@ static	int cmd_form;
 static	int cmd_bytesz;
 char cbuf[512];
 char *fromname;
+extern char *bug_address;
 
 char	*index();
 %}
@@ -883,7 +884,13 @@ help(s)
 			printf("\r\n");
 		}
 		(void) fflush(stdout);
-		reply(214, "Direct comments to ftp-bugs@%s.", hostname);
+		if (bug_address) {
+			reply(214, "Direct comments to %s.", bug_address);
+		}
+		else {
+			reply(214, "Direct comments to ftp-bugs@%s.",
+			      hostname);
+		}
 		return;
 	}
 	upper(s);

@@ -54,6 +54,10 @@ static char sccsid[] = "@(#)ftpd.c	5.19 (Berkeley) 11/30/88 + portability hacks 
 #define MAXHOSTNAMELEN	64
 #endif /* !MAXHOSTNAMELEN */
 
+#ifndef BUG_ADDRESS
+#define BUG_ADDRESS "ftp-bugs@ATHENA.MIT.EDU"
+#endif
+ 
 /*
  * File containing login names
  * NOT to be used on this machine.
@@ -95,6 +99,7 @@ int	transflag;
 char	tmpline[7];
 char	hostname[MAXHOSTNAMELEN];
 char	remotehost[MAXHOSTNAMELEN];
+char	*bug_address = NULL;
 
 /*
  * Timeout intervals for retrying connections
@@ -117,8 +122,11 @@ main(argc, argv)
 {
 	int addrlen, on = 1;
 	long pgid;
-	char *cp;
-
+	int cp;
+	struct hostent *hostentry;
+	extern char *optarg;
+	extern int optind;
+	
 	addrlen = sizeof (his_addr);
 	if (getpeername(0, &his_addr, &addrlen) < 0) {
 		syslog(LOG_ERR, "getpeername (%s): %m",argv[0]);
@@ -137,34 +145,36 @@ main(argc, argv)
 	openlog("ftpd", LOG_PID);
 #endif
 	argc--, argv++;
-	while (argc > 0 && *argv[0] == '-') {
-		for (cp = &argv[0][1]; *cp; cp++) switch (*cp) {
+	while ((cp = getopt(argc, argv, "vdlt:b:")) != EOF) switch (cp) {
+	case 'v':
+		debug = 1;
+		break;
 
-		case 'v':
-			debug = 1;
-			break;
+	case 'd':
+		debug = 1;
+		break;
 
-		case 'd':
-			debug = 1;
-			break;
-
-		case 'l':
-			logging = 1;
-			break;
-
-		case 't':
-			timeout = atoi(++cp);
-			goto nextopt;
-			break;
-
-		default:
-			fprintf(stderr, "ftpd: Unknown flag -%c ignored.\n",
-			     *cp);
-			break;
-		}
-nextopt:
-		argc--, argv++;
+	case 'l':
+		logging = 1;
+		break;
+		
+	case 't':
+		timeout = atoi(optarg);
+		break;
+		
+	case 'b':
+		bug_address = optarg;
+		break;
+		
+	default:
+		fprintf(stderr, "ftpd: Unknown flag -%c ignored.\n",
+			cp);
+		break;
 	}
+#ifdef BUG_ADDRESS
+	if (! bug_address)
+		bug_address = BUG_ADDRESS;
+#endif
 	(void) freopen("/dev/null", "w", stderr);
 	(void) signal(SIGPIPE, lostconn);
 	(void) signal(SIGCHLD, SIG_IGN);
@@ -193,6 +203,11 @@ nextopt:
 	mode = MODE_S;
 	tmpline[0] = '\0';
 	(void) gethostname(hostname, sizeof (hostname));
+	hostentry = gethostbyname(hostname);
+	if (hostentry) {
+		strncpy(hostname, hostentry->h_name, sizeof(hostname));
+		hostname[sizeof(hostname) - 1] = '\0';
+	}
 	reply(220, "%s FTP server (%s) ready.", hostname, version);
 	for (;;) {
 		(void) setjmp(errcatch);
