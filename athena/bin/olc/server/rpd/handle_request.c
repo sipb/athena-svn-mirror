@@ -6,7 +6,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/rpd/handle_request.c,v 1.7 1990-12-11 09:14:31 lwvanels Exp $";
+static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/rpd/handle_request.c,v 1.8 1990-12-31 21:10:41 lwvanels Exp $";
 #endif
 #endif
 
@@ -22,7 +22,8 @@ handle_request(fd, from)
   char username[9];
   int instance;
   int version;
-  long output_len;
+  int request;
+  u_long output_len;
   char *buf;
   int result;
 
@@ -48,12 +49,26 @@ handle_request(fd, from)
   }
 
   version = ntohl(version);
-  if (version != VERSION) {
-    syslog(LOG_WARNING,"Version skew from %s\n curr = %d, recvd = %d\n",
+  if (version > VERSION) {
+    syslog(LOG_WARNING,"Version skew from %s curr = %d, recvd = %d\n",
 	    inet_ntoa(from.sin_addr),VERSION,version);
     punt_connection(fd,from);
     return;
   }
+
+  if (version >= 1) {
+    if ((len = sread(fd,&request,sizeof(request))) != sizeof(request)) {
+      if (len == -1)
+	syslog(LOG_ERR,"reading request: %m");
+      else
+	syslog(LOG_WARNING,"Not enough bytes for request (%d received)",len);
+      punt_connection(fd,from);
+      return;
+    }
+    request = ntohl(request);
+  }
+  else
+    request = LIST_REQ;
 
   if ((len = sread(fd,username,9)) != 9) {
     if (len == -1)
@@ -74,6 +89,7 @@ handle_request(fd, from)
   }
 
   instance = ntohl(instance);
+
 
 #ifdef KERBEROS
 
@@ -117,7 +133,7 @@ handle_request(fd, from)
     /* Twit! */
     syslog(LOG_WARNING,"Request from %s@%s who is not on the acl\n",
 	    principal_buffer, inet_ntoa(from.sin_addr));
-    output_len = htonl(-13);
+    output_len = htonl(ERR_NO_ACL);
     write(fd,&output_len,sizeof(long));
     punt_connection(fd,from);
     return;
@@ -126,23 +142,46 @@ handle_request(fd, from)
   syslog(LOG_DEBUG,"%s replays %s [%d]",principal_buffer, username,
 	 instance);
 
+  if ((request == SHOW_KILL_REQ) && strcmp(their_info.pname,username)) {
+    syslog(LOG_WARNING, "Request to delete %s's new messages from %s@%s\n",
+	   username,principal_buffer, inet_ntoa(from.sin_addr));
+    output_len = htonl(ERR_OTHER_SHOW);
+    write(fd,&output_len,sizeof(long));
+    punt_connection(fd,from);
+    return;
+  }
 
 #endif /* KERBEROS */
 
-  buf = get_log(username,instance,&result);
+  switch(request) {
+  case SHOW_KILL_REQ:
+    buf = get_nm(username,instance,&result,1);
+    break;
+  case SHOW_NO_KILL_REQ:
+    buf = get_nm(username,instance,&result,0);
+    break;
+  case LIST_REQ:
+    buf = get_log(username,instance,&result);
+    break;
+  default:
+    /* Sorry, not here- */
+    output_len = htonl(ERR_NOT_HERE);
+    write(fd,&output_len,sizeof(u_long));
+    return;
+  }
   if (buf == NULL) {
     /* Didn't get response; determine if it's an error or simply that the */
     /* question just doesn't exist based on result */
     if (result == 0)
-      output_len = htonl(-11L);
+      output_len = htonl(ERR_NO_SUCH_Q);
     else
-      output_len = htonl(-12L);
-    write(fd,&output_len,sizeof(long));
+      output_len = htonl(ERR_SERV);
+    write(fd,&output_len,sizeof(u_long));
   }
   else {
     /* All systems go, write response */
-    output_len = htonl((long)result);
-    write(fd,&output_len,sizeof(long));
+    output_len = htonl((u_long)result);
+    write(fd,&output_len,sizeof(u_long));
     write(fd,buf,result);
   }
 }
