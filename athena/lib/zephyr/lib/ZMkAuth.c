@@ -10,10 +10,10 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Id: ZMkAuth.c,v 1.14 1994-11-01 17:51:59 ghudson Exp $ */
+/* $Id: ZMkAuth.c,v 1.15 1994-11-01 20:52:51 ghudson Exp $ */
 
 #ifndef lint
-static char rcsid_ZMakeAuthentication_c[] = "$Id: ZMkAuth.c,v 1.14 1994-11-01 17:51:59 ghudson Exp $";
+static char rcsid_ZMakeAuthentication_c[] = "$Id: ZMkAuth.c,v 1.15 1994-11-01 20:52:51 ghudson Exp $";
 #endif
 
 #include <zephyr/zephyr_internal.h>
@@ -85,12 +85,12 @@ Code_t ZMakeAuthentication(notice, buffer, buffer_len, len)
     checksum = des_quad_cksum(buffer, NULL, cstart - buffer, 0, cred.session);
     checksum ^= des_quad_cksum(cend, NULL, buffer + *len - cend, 0,
 			       cred.session);
-    checksum ^= des_quad_cksum(notice->z_message, NULL, notice->message_len, 0,
-			       cred.session);
+    checksum ^= des_quad_cksum(notice->z_message, NULL, notice->z_message_len,
+			       0, cred.session);
     notice->z_checksum = (ZChecksum_t) checksum;
     checksum = htonl(checksum);
-    ZMakeAscii(cptr, buffer + buffer_len - cptr, (unsigned char *) &checksum,
-	       sizeof(checksum));
+    ZMakeAscii(cstart, buffer + buffer_len - cstart,
+	       (unsigned char *) &checksum, sizeof(checksum));
 
     return (ZERR_NONE);
 #else
