@@ -1,4 +1,4 @@
-/* $Id: dm.c,v 1.9 1999-10-28 14:32:07 kcr Exp $
+/* $Id: dm.c,v 1.10 1999-11-20 16:23:21 ghudson Exp $
  *
  * Copyright (c) 1990, 1991 by the Massachusetts Institute of Technology
  * For copying and distribution information, please see the file
@@ -39,12 +39,15 @@
 #ifdef HAVE_UTIL_H
 #include <util.h>
 #endif
+#ifdef HAVE_PTY_H
+#include <pty.h>
+#endif
 
 #include <X11/Xlib.h>
 #include <al.h>
 
 #ifndef lint
-static char *rcsid_main = "$Id: dm.c,v 1.9 1999-10-28 14:32:07 kcr Exp $";
+static const char rcsid[] = "$Id: dm.c,v 1.10 1999-11-20 16:23:21 ghudson Exp $";
 #endif
 
 /* Process states */
@@ -668,8 +671,7 @@ static void console_login(char *conf, char *msg)
 
 static void start_console(int fd, char **argv, int redir)
 {
-  int file, i;
-  char c;
+  int file;
 
   syslog(LOG_DEBUG, "Starting console");
 
