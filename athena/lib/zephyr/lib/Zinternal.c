@@ -3,7 +3,7 @@
  *
  *	Created by:	Robert French
  *
- *	$Id: Zinternal.c,v 1.39 1999-01-22 23:19:33 ghudson Exp $
+ *	$Id: Zinternal.c,v 1.40 1999-10-22 16:53:48 danw Exp $
  *
  *	Copyright (c) 1987,1988,1991 by the Massachusetts Institute of
  *	Technology.
@@ -18,7 +18,7 @@
 
 #ifndef lint
 static const char rcsid_Zinternal_c[] =
-  "$Id: Zinternal.c,v 1.39 1999-01-22 23:19:33 ghudson Exp $";
+  "$Id: Zinternal.c,v 1.40 1999-10-22 16:53:48 danw Exp $";
 static const char copyright[] =
   "Copyright (c) 1987,1988,1991 by the Massachusetts Institute of Technology.";
 #endif
@@ -226,10 +226,22 @@ Code_t Z_ReadWait()
     char *slash;
     Code_t retval;
     register int i;
+    fd_set fds;
+    struct timeval tv;
 
     if (ZGetFD() < 0)
 	return (ZERR_NOPORT);
 	
+    FD_ZERO(&fds);
+    FD_SET(ZGetFD(), &fds);
+    tv.tv_sec = 60;
+    tv.tv_usec = 0;
+
+    if (select(ZGetFD() + 1, &fds, NULL, NULL, &tv) < 0)
+      return (errno);
+    if (!FD_ISSET(ZGetFD(), &fds))
+      return ETIMEDOUT;
+
     from_len = sizeof(struct sockaddr_in);
 
     packet_len = recvfrom(ZGetFD(), packet, sizeof(packet), 0, 
