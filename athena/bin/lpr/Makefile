@@ -1,7 +1,7 @@
 #	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/Makefile,v $
 #	$Author: epeisach $
 #	$Locker:  $
-#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/Makefile,v 1.9 1990-04-16 11:44:11 epeisach Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/Makefile,v 1.10 1990-04-16 20:49:33 epeisach Exp $
 #
 #
 # Copyright (c) 1983 Regents of the University of California.
@@ -142,8 +142,9 @@ FILTERS:
 install:
 	for i in lpr lpq lprm; do \
 		install -c -s -o root -g ${SPGRP} -m 6755 $$i \
-			${DESTDIR}/${BINDIR}/$$i.ucb; \
+			${DESTDIR}/${BINDIR}/$$i; \
 	done
+	ln -s lpr ${DESTDIR}/${BINDIR}/lpr.ucb
 	for i in ${SUBDIR}; do \
 		(cd $$i; make ${MFLAGS} DESTDIR=${DESTDIR} install; cd ..); \
 		done
