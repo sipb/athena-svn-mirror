@@ -21,7 +21,7 @@
 
 #ifndef lint
 static char rcsid[] =
-    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/db.c,v 1.4 1989-12-18 10:23:45 raeburn Exp $";
+    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/db.c,v 1.5 1990-01-03 23:39:49 raeburn Exp $";
 #endif
 
 
@@ -35,9 +35,10 @@ static char rcsid[] =
 
 #ifdef NDBM
 static DBM *dbp = (DBM *) NULL;
-#endif NDBM
+#endif
 
 extern ACL  Acl_List[];
+static int get_user_info (USER *);
 
 /*
  * Function:	get_specialties() searches the OLC database to find a
@@ -89,7 +90,7 @@ get_acls(user)
 }
 
 
-load_db()
+int load_db()
 {
   FILE *fp, *fopen();
   TOPIC *t;
@@ -144,7 +145,7 @@ load_db()
   return(SUCCESS);
 }
 
-load_user(user)
+void load_user(user)
      USER *user;
 {
   get_specialties(user);
@@ -153,7 +154,7 @@ load_user(user)
 }
 
 #ifdef NDBM
-get_user_info(user)
+static int get_user_info(user)
      USER *user;
 {
   datum key,d;
@@ -195,7 +196,7 @@ get_user_info(user)
   return(SUCCESS);
 }
 
-save_user_info(user)
+int save_user_info(user)
      USER *user;
 {
   char buf[BUF_SIZE];
@@ -258,7 +259,7 @@ delete_user_info(user)
     return(SUCCESS);
 }
 
-#else NDBM
+#else /* ! NDBM */
 
 get_user_info(user)
      USER *user;
@@ -317,5 +318,4 @@ save_user_info(user)
   return(ERROR);
 }
 
-#endif NDBM
-
+#endif

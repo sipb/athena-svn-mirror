@@ -3,15 +3,16 @@
 
 #define NBLOCKS 100
 
-list_knuckle(knuckle,data)
+int list_knuckle(knuckle,data)
      KNUCKLE *knuckle;
      LIST *data;
 {
-  return(get_list_info(knuckle,data));
+    get_list_info(knuckle,data); /* doesn't return a value */
+    return 0;
 }
 
 
-list_user_knuckles(knuckle,data,size)
+int list_user_knuckles(knuckle,data,size)
      KNUCKLE *knuckle;
      LIST **data;
      int *size;
@@ -30,7 +31,7 @@ list_user_knuckles(knuckle,data,size)
   d = (LIST *) malloc(sizeof(LIST) * (user->no_knuckles + 1));
   if(d == (LIST *) NULL)
     {
-      log_error("malloc fuckup: list user knuckles");
+      log_error("malloc lossage: list user knuckles");
       return(ERROR);
     }
   *data = d;
@@ -69,7 +70,7 @@ printf("true\n");
 
 
 
-list_queue(queue,data,queues,topics,stati,name,size)
+int list_queue(queue,data,queues,topics,stati,name,size)
      int queue;
      LIST **data;
      int queues;
