@@ -39,6 +39,8 @@ XCOMM site:  $XConsortium: site.def,v 1.2 91/07/30 20:26:44 rws Exp $
 
 #ifdef AfterVendorCF
 
+#define InstallLibManPages NO
+
 #undef ProjectRoot
 #define ProjectRoot	/usr/athena
 
