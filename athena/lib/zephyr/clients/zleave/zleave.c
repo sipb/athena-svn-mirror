@@ -4,7 +4,7 @@
  *      Created by:     David Jedlinsky
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zleave/zleave.c,v $
- *      $Author: opus $
+ *      $Author: rfrench $
  *
  *      Copyright (c) 1987 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -16,7 +16,7 @@
 #include <zephyr/zephyr.h>
 
 #ifndef lint
-static char rcsid_zlocate_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zleave/zleave.c,v 1.1 1987-08-06 15:27:56 opus Exp $";
+static char rcsid_zlocate_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zleave/zleave.c,v 1.2 1987-08-06 22:45:58 rfrench Exp $";
 #endif lint
 
 /*
@@ -59,16 +59,48 @@ main(argc, argv)
 char **argv;
 {
 	long when, tod, now, diff, hours, minutes;
-	char *cp;
+	char *cp,*envptr,buf[64];
+	FILE *fp;
 	int *nv;
 	int atoi();
 	int ret;
-
+	int port;
+	ZSubscription_t sub;
+	
 	if ((ret = ZInitialize()) != ZERR_NONE) {
-	      printf("No Zephyr! Will write directly to terminal.\n");
+	      fprintf(stderr,"No Zephyr! Will write directly to terminal.\n");
 	      use_zephyr = 0;
 	}
 	strcpy(origlogin, getlogin());
+
+	if (use_zephyr) {
+		envptr = (char *)getenv("WGFILE");
+		if (!envptr) {
+			sprintf(buf,"/tmp/wg.%d",getuid());
+			envptr = buf;
+		} 
+		if (!(fp = fopen(envptr,"r"))) {
+			fprintf(stderr,"Can't find WindowGram subscription port.\n");
+			fprintf(stderr,"Will write directly to terminal.\n");
+			use_zephyr = 0;
+		}
+		else {
+			fscanf(fp,"%d",&port);
+			fclose(fp);
+		} 
+	}
+	
+	if (use_zephyr) {
+		sub.class = MESSAGE_CLASS;
+		sub.classinst = INSTANCE;
+		sub.recipient = ZGetSender();
+		printf("Using port %d\n",port);
+		if (ZSubscribeTo(&sub,1,(u_short)port) != ZERR_NONE) {
+			fprintf(stderr,"Subscription error!  Writing to your terminal...\n");
+			use_zephyr = 0;
+		} 
+	}	
+
 	if (argc < 2) {
 		printf("When do you have to leave? ");
 		fflush(stdout);
@@ -117,6 +149,7 @@ char **argv;
 		printf("That time has already passed!\n");
 		exit(1);
 	}
+
 	doalarm(diff);
 	exit(0);
 }
@@ -203,7 +236,7 @@ char *msg;
 	    notice.z_port = 0;
 	    notice.z_class = MESSAGE_CLASS;
 	    notice.z_class_inst = INSTANCE;
-	    notice.z_recipient = origlogin;
+	    notice.z_recipient = ZGetSender();
 	    notice.z_opcode = "";
 	    notice.z_sender = 0;
 	    notice.z_default_format = "\n$1";
