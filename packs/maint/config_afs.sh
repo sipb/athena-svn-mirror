@@ -1,6 +1,6 @@
 #!/bin/sh -
 #
-# $Id: config_afs.sh,v 1.19 2002-02-15 19:39:50 zacheiss Exp $
+# $Id: config_afs.sh,v 1.20 2002-04-09 16:33:41 ghudson Exp $
 #
 # This script configures the workstation's notion of AFS.
 # 1. It updates the cell location information from /usr/vice/etc/CellServDB
@@ -76,7 +76,7 @@ if [ sgi != "$HOSTTYPE" ]; then
 		    sync &&
 		    awk '
 			    /^#/ {next} \
-			    NF == 2 && {print "fs newalias",$2,$1}' ${ALIAS} \
+			    NF == 2 {print "fs newalias",$2,$1}' ${ALIAS} \
 			| sh
 	    }
     }
