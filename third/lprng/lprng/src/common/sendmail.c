@@ -8,10 +8,11 @@
  ***************************************************************************/
 
  static char *const _id =
-"$Id: sendmail.c,v 1.12 2001-03-07 01:19:46 ghudson Exp $";
+"$Id: sendmail.c,v 1.13 2001-06-05 23:28:50 zacheiss Exp $";
 
 #include "lp.h"
 #include "errorcodes.h"
+#include "permission.h"
 #include "fileopen.h"
 #include "getqueue.h"
 #include "sendmail.h"
@@ -72,6 +73,12 @@ void Sendmail_to_user( int retval, struct job *job )
 		char *p;
 
 		mailname += 7;
+
+		/* If mailname is an empty string, we'll end up sending
+		 * a zephyr to <message,personal,*>. 
+		 */
+		if (!*mailname)
+		  return;
 
 		/* Make sure printer and user names are sane */
 		for( p = Printer_DYN; *p; p++ ){
@@ -155,9 +162,14 @@ void Sendmail_to_user( int retval, struct job *job )
 		_(" failed and could not be retried.\n") );
 		break;
 
+	case P_REJECT:
+	        plp_snprintf(buffer+len,sizeof(buffer)-len,
+                _(" failed.  You are not allowed to print here.\n") );
+                break;
+
 	default:
 		plp_snprintf(buffer+len,sizeof(buffer)-len,
-		_(" died a horrible death.\n"));
+		_(" failed.  Make sure that\nthe printer is turned on and has a working network connection.\n"));
 		break;
 	}
 
