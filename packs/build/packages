@@ -1,4 +1,4 @@
-# $Id: packages,v 1.99 2000-01-01 05:39:22 ghudson Exp $
+# $Id: packages,v 1.100 2000-03-04 19:47:23 ghudson Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -131,6 +131,7 @@ third/mdoc
 third/motif			on linux
 third/motif/clients/mwm		on solaris
 third/nmh			requires krb5,hesiod
+third/nvi			on linux
 third/patch			on solaris
 third/perl
 third/rcs			on solaris
