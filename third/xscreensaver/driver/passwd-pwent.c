@@ -90,17 +90,8 @@
 
 extern const char *blurb(void);
 
-static char *encrypted_root_passwd = 0;
 static char *encrypted_user_passwd = 0;
 static char *explicit_passwd = 0;
-
-#ifdef VMS
-# define ROOT "SYSTEM"
-#else
-# define ROOT "root"
-#endif
-
-
 
 #ifndef VMS
 
@@ -216,7 +207,6 @@ pwent_lock_privileged_init (int argc, char **argv)
 
   u = user_name();
   encrypted_user_passwd = get_encrypted_passwd(u);
-  encrypted_root_passwd = get_encrypted_passwd(ROOT);
   if (u) free (u);
 }
 
@@ -257,8 +247,7 @@ passwds_match_p (const char *cleartext, const char *ciphertext)
 
 
 /* This can be called at any time, and says whether the typed password
-   belongs to either the logged in user (real uid, not effective); or
-   to root.
+   belongs to the logged in user (real uid, not effective) or not.
  */
 Bool
 pwent_passwd_valid_p (const char *typed_passwd, Bool verbose_p)
@@ -266,13 +255,6 @@ pwent_passwd_valid_p (const char *typed_passwd, Bool verbose_p)
   if (encrypted_user_passwd &&
       passwds_match_p (typed_passwd, encrypted_user_passwd))
     return True;
-
-  /* do not allow root to have a null password. */
-  else if (typed_passwd[0] &&
-	   encrypted_root_passwd &&
-           passwds_match_p (typed_passwd, encrypted_root_passwd))
-    return True;
-
   else
     return False;
 }
