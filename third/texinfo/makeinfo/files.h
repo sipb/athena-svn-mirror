@@ -1,5 +1,5 @@
 /* files.h -- declarations for files.c.
-   $Id: files.h,v 1.1.1.1 2002-06-05 22:16:35 zacheiss Exp $
+   $Id: files.h,v 1.1.1.2 2003-02-28 17:44:04 amb Exp $
 
    Copyright (C) 1998, 2002 Free Software Foundation, Inc.
 

@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.1.1.1 2002-06-05 22:17:24 zacheiss Exp $
+# $Id: Makefile.am,v 1.1.1.2 2003-02-28 17:44:18 amb Exp $
 # Makefile.am for texinfo/info.
 # Run automake in .. to produce Makefile.in from this.
 #
@@ -27,18 +27,13 @@ INCLUDES = -I. -I$(top_srcdir)/lib -I../intl -I.. -I$(srcdir)
 DEFS = -DINFODIR=\"$(infodir)\" -DLOCALEDIR=\"$(localedir)\" @DEFS@
 LDADD = ../lib/libtxi.a @TERMLIBS@ @LIBINTL@
 
-EXTRA_DIST = README pcterm.c
-
-if TEXINFO_MAINT
 # The files `doc.c' and `funs.h' are created by ./makedoc run over the source
 # files which contain DECLARE_INFO_COMMAND.  `funs.h' is a header file
 # listing the functions found.  `doc.c' is a structure containing pointers
 # to those functions along with completable names and documentation strings.
 BUILT_SOURCES = doc.c funs.h key.c
-else
-# don't make installers rebuild them.
-generated_sources = doc.c funs.h key.c
-endif
+
+EXTRA_DIST = README pcterm.c $(BUILT_SOURCES)
 
 makedoc_SOURCES = makedoc.c
 ginfo_SOURCES = dir.c display.c display.h doc.h dribble.c dribble.h \
@@ -59,8 +54,5 @@ cmd_sources = $(srcdir)/session.c $(srcdir)/echo-area.c $(srcdir)/infodoc.c \
 
 # The $(EXEEXT) should be added by Automake, but isn't. Fine.
 $(BUILT_SOURCES): makedoc$(EXEEXT) $(cmd_sources)
-# This is insufficient.  We really need them not to be in the
-# distribution in the first place, but it seems Automake does not
-# currently allow that.
 	rm -f $(BUILT_SOURCES)
 	./makedoc $(cmd_sources)

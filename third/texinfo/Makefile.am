@@ -1,5 +1,5 @@
 # Makefile.am for texinfo.
-# $Id: Makefile.am,v 1.1.1.1 2002-06-05 22:17:11 zacheiss Exp $
+# $Id: Makefile.am,v 1.1.1.2 2003-02-28 17:44:23 amb Exp $
 # Process this file with automake to produce Makefile.in in all directories.
 #
 # This file is free software; as a special exception the author gives
@@ -14,7 +14,7 @@
 AUTOMAKE_OPTIONS = 1.4 readme-alpha
 
 # Additional files to distribute.
-EXTRA_DIST = COPYING.DOC INTRODUCTION config.rpath dir-example djgpp
+EXTRA_DIST = COPYING.DOC INSTALL.generic INTRODUCTION config.rpath djgpp 
 
 # This is to prevent texinfo.tex from being included in the top-level
 # distribution directory.
@@ -29,6 +29,11 @@ SUBDIRS = intl m4 lib info makeinfo po util doc
 # for gettext.
 ACLOCAL_AMFLAGS = -I m4
 
-# One special target for them to use by hand.
+# In case TEXINFO_MAINT is set during make distcheck; in this case, the
+# simple doc-related files generated in info/ make distcleancheck fail.
+distcleancheck_listfiles = \
+  find -type f -exec sh -c 'test -f $(srcdir)/{} || echo {}' ';'
+
+# One special target for installers to use by hand if desired.
 install-tex:
 	cd doc && $(MAKE) TEXMF=$(TEXMF) install-tex

@@ -1,7 +1,7 @@
 /* info.h -- Header file which includes all of the other headers.
-   $Id: info.h,v 1.1.1.1 2002-06-05 22:16:43 zacheiss Exp $
+   $Id: info.h,v 1.1.1.2 2003-02-28 17:44:04 amb Exp $
 
-   Copyright (C) 1993, 97, 98, 99, 2001 Free Software Foundation, Inc.
+   Copyright (C) 1993, 1997, 1998, 1999, 2001, 2002 Free Software Foundation, Inc.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by

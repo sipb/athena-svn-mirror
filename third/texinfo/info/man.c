@@ -1,7 +1,8 @@
 /*  man.c: How to read and format man files.
-    $Id: man.c,v 1.1.1.1 2002-06-05 22:16:42 zacheiss Exp $
+    $Id: man.c,v 1.1.1.2 2003-02-28 17:44:04 amb Exp $
 
-   Copyright (C) 1995, 97, 98, 99, 2000 Free Software Foundation, Inc.
+   Copyright (C) 1995, 1997, 1998, 1999, 2000, 2002 Free Software
+   Foundation, Inc.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
