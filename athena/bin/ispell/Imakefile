@@ -53,16 +53,20 @@ install::
 	$(INSTALL) -m 755 munchlist $(DESTDIR)$(ATHBINDIR)/munchlist
 
 munchlist:	munchlist.X Makefile
+	-mv -f munchlist munchlist.old
 	sed -e 's@!!LIBDIR!!@$(LIBDIR)@' -e 's@!!DEFDICT!!@$(DEFDICT)@' \
 		<munchlist.X >munchlist
 	chmod +x munchlist
+	-cmp -s munchlist.old munchlist && mv -f munchlist.old munchlist
 
 
 $(OBJS) buildhash.o: config.h
 
 config.h:	config.X Makefile
+	-mv -f config.h config.h.old
 	sed -e 's@!!LIBDIR!!@$(LIBDIR)@' -e 's@!!DEFDICT!!@$(DEFDICT)@' \
 	    -e 's@!!DEFHASH!!@$(DEFHASH)@' <config.X >config.h
+	-cmp -s config.h.old config.h && mv -f config.h.old config.h
 
 clean::
 	$(RM) hash.out 	*.stat *.cnt munchlist config.h ispell.hash
