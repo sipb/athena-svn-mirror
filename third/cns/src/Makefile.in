@@ -109,15 +109,6 @@ install-unix:
 	    exit 1; \
 	  fi; \
 	done
-	if test -d $(DESTDIR)$(S)$(KDBDIR); then \
-	  true; \
-	else \
-	  mkdir $(DESTDIR)$(S)$(KDBDIR); \
-	fi
-	@echo " "
-	@echo "Remember to run $(DESTDIR)/usr/kerberos/install/configure"
-	@echo "to set permissions and other configuration correctly."
-	@echo " "
 
 install-windows:
 	copy doc\*.txt floppy
@@ -161,7 +152,7 @@ dist-windows::
 
 dist-mac:
 	echo "Run StuffIt on the Mac, with the whole DESTDIR"
-	
+
 
 clean: clean-$(WHAT)
 
