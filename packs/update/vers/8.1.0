@@ -9,6 +9,7 @@ sun4)
 	echo "/usr/lib/sendmail.nomx"		>> "$DEADFILES"
 
 	echo "/etc/mail/sendmail.cf"		>> "$CONFCHG"
+	echo "/etc/inet/services"		>> "$CONFCHG"
 
 	echo "TRACKOS=true"			>> "$CONFVARS"
 	echo "NEWOS=true"			>> "$CONFVARS"
@@ -32,6 +33,7 @@ sun4)
 
 sgi)
 	echo "/etc/sendmail.cf"			>> "$CONFCHG"
+	echo "/etc/services"			>> "$CONFCHG"
 	echo "/usr/etc/resolv.conf"		>> "$DEADFILES"
 	;;
 
