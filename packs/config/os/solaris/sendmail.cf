@@ -1,4 +1,4 @@
-# $Id: sendmail.cf,v 1.24 2003-11-03 20:52:29 zacheiss Exp $
+# $Id: sendmail.cf,v 1.25 2004-12-06 13:14:23 jweiss Exp $
 #
 # Athena Workstation Sendmail configuration file
 #
@@ -109,6 +109,12 @@ S2
 S4
 
 R@			$@				handle <> error addr
+
+# canonicalize domain
+R$*<@$+.$D>$*		$:$1<@$[$2.$D$]>$3		@something.mit.edu
+R$*<@mit>$*		$:$1<@$D>$2			avoid mit.MIT.EDU
+R$*<@$->$*		$:$1<@$[$2$]>$3			@something [no .s]
+R$*<@$*.>$*		$:$1<@$2>$3			remove trailing .
 
 # externalize local domain info
 R$*<$+>$*		$1$2$3				defocus
