@@ -1,5 +1,5 @@
 /*
- * $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/rpd.h,v 1.2 1990-11-18 21:07:55 lwvanels Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/rpd.h,v 1.3 1990-11-27 11:54:18 lwvanels Exp $
  */
 
 #include <sys/types.h>
@@ -14,10 +14,15 @@
 #include <stdio.h>
 #include <strings.h>
 
+#ifdef KERBEROS
+#include <krb.h>
+#endif /* KERBEROS */
+
 struct 	entry {
   int fd;		/* file descriptor */
   char username[9];
   int instance;
+  char filename[128];
   time_t last_mod;	/* Time log last modified */
   int length;		/* Length of the question */
   char *question;	/* pointer to buffer containing question */
@@ -26,11 +31,24 @@ struct 	entry {
   struct entry *prev;	/* prev entry in the chain */
 };
 
+#define VERSION 	0
+
+
 #ifdef __STDC__
 # define        P(s) s
 #else
 # define P(s) ()
 #endif
+
+
+#ifdef KERBEROS
+#define K_SERVICE	"olc"
+
+int krb_rd_req P((KTEXT authent, char *service, char *instance,
+		  u_long from_addr, AUTH_DAT *ad, char *fn));
+
+#endif /* KERBEROS */
+
 
 /* system */
 int socket P((int domain, int type, int protocol));
@@ -48,6 +66,7 @@ int fstat P((int fd, struct stat *buf));
 void *malloc P((unsigned size));
 int free P((void *ptr));
 int shutdown P((int s, int how));
+char *inet_ntoa P((struct in_addr in));
 
 /* rpd.c */
 int clean_up P((int signal));
@@ -58,5 +77,13 @@ char *get_log P((char *username , int instance , int *result ));
 int get_bucket_index P((char *username , int instance ));
 int allocate_entry P((void ));
 void delete_entry P((struct entry *ent ));
+
+/* handle_request.c */
+void handle_request P((int fd, struct sockaddr_in from));
+void punt_connection P((int fd, struct sockaddr_in from));
+
+/* io.c */
+int sread P((int fd , void *buf , int nbytes ));
+int swrite P((int fd , void *buf , int nbytes ));
 
 #undef P
