@@ -1,0 +1,40 @@
+#!/bin/sh
+
+# Handle the removal of the smf manifest files in a package.
+# For an MITcore package, we delete the services defined by
+# the manifest from the repository file in the target root.
+# For other packages, if the target is not an alternate root,
+# and smf is running, we delete the services via the running
+# svc.configd.
+
+repfile=$PKG_INSTALL_ROOT/etc/svc/repository.db
+repdoor=/etc/svc/volatile/repository_door
+
+# pkgrm supplies the path names on our standard input.
+while read manifest ; do
+  for fmri in `/usr/sbin/svccfg inventory $manifest` ; do
+    case ,$CATEGORY, in
+    *,MITcore,*)
+      if [ -s $repfile ]; then
+	echo "Deleting service $fmri from $repfile"
+	svccfg << EOF
+repository $repfile
+delete -f $fmri
+EOF
+      fi
+      ;;
+    *)
+      # If smf is running, delete the manifest's service(s), with force.
+      if [ "${PKG_INSTALL_ROOT:-/}" = "/" -a -r "$repdoor" ]; then
+	echo "Deleting service $fmri"
+	/usr/sbin/svccfg delete -f $fmri
+      fi
+      ;;
+    esac
+  done
+
+  # Remove the file.
+  rm -f $manifest
+done
+
+exit 0

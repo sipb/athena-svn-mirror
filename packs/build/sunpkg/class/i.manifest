@@ -1,0 +1,36 @@
+#!/bin/sh
+
+# Install the smf manifest files in a package.  For an MITcore
+# package, we import the manifest explicitly to the repository
+# in the target root.  For other packages, if the target is not
+# an alternate root, and smf is running, we import the manifest
+# via the running svc.configd.
+
+repfile=$PKG_INSTALL_ROOT/etc/svc/repository.db
+repdoor=/etc/svc/volatile/repository_door
+
+# pkgadd supplies file source/destination pairs on our standard input.
+while read src dest ; do
+  cp -p $src $dest || exit 1
+  case ,$CATEGORY, in
+  *,MITcore,*)
+    if [ -f "$repfile" ]; then
+      echo "Importing service manifest $dest into $repfile"
+      svccfg << EOF
+repository $repfile
+import $dest
+EOF
+    fi
+    ;;
+  *)
+    # Import the new manifest if not installing to an alternate
+    # root, and smf is running.
+    if [ "${PKG_INSTALL_ROOT:-/}" = "/" -a -r "$repdoor" ]; then
+      echo "Importing service manifest $dest"
+      SVCCFG_CHECKHASH=1 /usr/sbin/svccfg import $dest
+    fi
+    ;;
+  esac
+done
+
+exit 0
