@@ -3,7 +3,8 @@
 # Build a standard Athena package into an RPM.
 # Currently this is hardwired for Linux.
 
-usage="build-package -n [-s srcdir] [-d destdir] [-v version] [-r release] source rpmname"
+usage="build-package -n [-s srcdir] [-d destdir] [-v version] [-r release]"
+usage="$usage source rpmname"
 
 sourcedir=/mit/source
 destdir=/build
@@ -120,6 +121,8 @@ rm -rf $source_name
 
 echo "==== create specs"
 
+spec_source=$sourcedir/packs/build/rpm/specs/$package_name
+
 # We fill in this; the rest is specified in the per-package file
 rm -f $destdir/SPECS/$source_name
 touch $destdir/SPECS/$source_name
@@ -138,35 +141,36 @@ echo "%define __spec_install_post $rpmlib/brp-compress || :" \
 # Everything depends on athena-base.
 echo Requires: athena-base >> $destdir/SPECS/$source_name
 
-if grep -q Version: $sourcedir/packs/build/rpm/specs/$package_name; then true; else 
-  echo Version: $version >> $destdir/SPECS/$source_name
+if grep -q Version: $spec_source; then :; else
+  echo "Version: $version" >> $destdir/SPECS/$source_name
 fi
 
-if grep -q Release: $sourcedir/packs/build/rpm/specs/$package_name; then true; else 
-  echo Release: $release >> $destdir/SPECS/$source_name
+if grep -q Release: $spec_source; then :; else
+  echo "Release: $release" >> $destdir/SPECS/$source_name
 fi
 
-if grep -q Source: $sourcedir/packs/build/rpm/specs/$package_name; then true; else 
-  echo Source: $source_name.tar.gz >> $destdir/SPECS/$source_name
+if grep -q Source: $spec_source; then :; else
+  echo "Source: $source_name.tar.gz" >> $destdir/SPECS/$source_name
 fi
 
-if grep -q Distribution: $sourcedir/packs/build/rpm/specs/$package_name; then true; else 
-  echo Distribution: Athena $version >> $destdir/SPECS/$source_name
+if grep -q Distribution: $spec_source; then :; else
+  echo "Distribution: Athena $version" >> $destdir/SPECS/$source_name
 fi
 
-if grep -q Vendor: $sourcedir/packs/build/rpm/specs/$package_name; then true; else 
-  echo Vendor: MIT Athena >> $destdir/SPECS/$source_name
+if grep -q Vendor: $spec_source; then :; else
+  echo "Vendor: MIT Athena" >> $destdir/SPECS/$source_name
 fi
 
-if grep -q BuildRoot: $sourcedir/packs/build/rpm/specs/$package_name; then true; else 
-  echo 'BuildRoot: %{_tmppath}/%{name}-%{version}-root' >> $destdir/SPECS/$source_name
+if grep -q BuildRoot: $spec_source; then :; else
+  echo 'BuildRoot: %{_tmppath}/%{name}-%{version}-root' >> \
+    $destdir/SPECS/$source_name
 fi
 
 # Now the file as we have it gets included.
-cat $sourcedir/packs/build/rpm/specs/$package_name >> $destdir/SPECS/$source_name
+cat $spec_source >> $destdir/SPECS/$source_name
 
 # And finally the scripts get included.
-if grep -q %prep $sourcedir/packs/build/rpm/specs/$package_name; then true; else 
+if grep -q %prep $spec_source; then :; else
 cat >> $destdir/SPECS/$source_name << 'EOF'
 %prep
 %setup
@@ -174,7 +178,7 @@ cat >> $destdir/SPECS/$source_name << 'EOF'
 EOF
 fi
 
-if grep -q %build $sourcedir/packs/build/rpm/specs/$package_name; then true; else 
+if grep -q %build $spec_source; then :; else 
 cat >> $destdir/SPECS/$source_name << 'EOF'
 %build
 ./do.sh -p -s /xxx -d $RPM_BUILD_ROOT prepare
@@ -183,7 +187,7 @@ cat >> $destdir/SPECS/$source_name << 'EOF'
 EOF
 fi
 
-if grep -q %install $sourcedir/packs/build/rpm/specs/$package_name; then true; else 
+if grep -q %install $spec_source; then :; else
 cat >> $destdir/SPECS/$source_name << 'EOF'
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -199,14 +203,14 @@ find $RPM_BUILD_ROOT -type f -or -type l |
 EOF
 fi
 
-if grep -q %files $sourcedir/packs/build/rpm/specs/$package_name; then true; else 
+if grep -q %files $spec_source; then :; else
 cat >> $destdir/SPECS/$source_name << 'EOF'
 %files -f rpm.filelist
 
 EOF
 fi
 
-if grep -q %post $sourcedir/packs/build/rpm/specs/$package_name; then true; else
+if grep -q %post $spec_source; then :; else
 cat >> $destdir/SPECS/$source_name << 'EOF'
 %post
 for file in `find /usr/athena/info -type f ! -name dir`; do
@@ -221,10 +225,7 @@ fi
 echo "==== build package"
 
 rpmbuild -ba -v --rcfile=$destdir/rpmrc --target=$target \
- --buildroot=$destdir/INSTALL $destdir/SPECS/$source_name
-if [ $? -ne 0 ]; then
-  exit 1
-fi
+  --buildroot=$destdir/INSTALL $destdir/SPECS/$source_name || exit 1
 
 
 ## STEP 4: Copy the built package into athtools
