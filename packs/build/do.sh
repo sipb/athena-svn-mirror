@@ -1,7 +1,7 @@
 #!/bin/sh
-# $Id: do.sh,v 1.34 1999-04-20 19:59:30 danw Exp $
+# $Id: do.sh,v 1.34.2.1 1999-08-23 17:47:59 ghudson Exp $
 
-source=/mit/source
+source=/mit/source-8.3
 srvd=/.srvd
 contained=false
 n=""
