@@ -29,7 +29,18 @@ header	:
 	    while ( wordp = next_def_except()) {
 		if ( file_pat( wordp))
 		     add_list_elt( re_conv( wordp), DONT_TRACK, &e->patterns);
-		else add_list_elt( wordp,	 DONT_TRACK, LIST( e->names));
+		else add_list_elt( wordp,	  DONT_TRACK, LIST( e->names));
+	    }
+	    /* XXX: global names should match both entry-children and
+	     * should match occurences which are deep in an entry.
+	     * it's ok to use linebuf for this,
+	     * because we've processed linebuf's contents already.
+	     */
+	    for ( wordp = TEXT( e->names.table); wordp;
+		  wordp = TEXT( NEXT( wordp))) {
+		strcpy( linebuf, "*/");
+		strcat( linebuf, wordp);
+		add_list_elt( re_conv( linebuf), DONT_TRACK, &e->patterns);
 	    }
 	    if ( e->names.table) { /* lie, to make extra-roomy global table */
 		 e->names.shift *= 8;
