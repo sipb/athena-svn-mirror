@@ -1,5 +1,5 @@
 /* $Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/dump_db.c,v $ */
-/* $Author: ilham $ */
+/* $Author: epeisach $ */
 
 /*
  * Copyright (c) 1990 by the Massachusetts Institute of Technology.
@@ -11,7 +11,7 @@
 
 FILE *fp;
 int clean;
-static char filename[] = "/tmp/database_dumpXXXXXX";
+static char *filename;
 
 /* long quota_end_update(), quota_start_update(); */
 int quota_db_iterate();
@@ -27,10 +27,15 @@ char *argv[];
 
   signal(SIGINT, cleanup);
 
+  if (argc != 3) {
+      fprintf(stderr, "Usage: dump_db quota_db dump_file\n");
+      exit(1);
+  }
+
   quota_db_set_name(argv[1]);
 
-  mktemp(filename);            /* create unique dump file */
-  fp = fopen(filename, "w");
+  filename=argv[2];
+  fp = fopen(argv[2], "w");
   clean = 1;
 
   /* age = quota_start_update(argv[1]); */
