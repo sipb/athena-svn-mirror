@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.1 1996-09-20 05:01:36 ghudson Exp $
+# $Id: Makefile,v 1.2 1997-01-31 06:28:11 ghudson Exp $
 
 SHELL=/bin/sh
 PROTOTYPE=/usr/athena/lib/prototype_user
@@ -17,13 +17,17 @@ install:
 	-mkdir -p ${DESTDIR}${PROTOTMP}
 	-mkdir -p ${DESTDIR}${SYSTEM}
 	-mkdir -p ${DESTDIR}${ATHMANDIR}/man1
+	-mkdir -p ${DESTDIR}${ATHMANDIR}/man7
 	install -c -m 0644 README.mail ${DESTDIR}${PROTOTYPE}
+	install -c -m 0644 add.csh ${DESTDIR}${SYSTEM}/add
+	install -c -m 0444 add.1 ${DESTDIR}${ATHMANDIR}/man1
 	install -c -m 0644 dot.cshrc ${DESTDIR}${PROTOTYPE}/.cshrc
 	install -c -m 0644 dot.login ${DESTDIR}${PROTOTYPE}/.login
 	install -c -m 0644 dot.logout ${DESTDIR}${PROTOTYPE}/.logout
 	install -c -m 0644 dot.mh_profile ${DESTDIR}${PROTOTYPE}/.mh_profile
 	install -c -m 0644 env_remove ${DESTDIR}${SYSTEM}
 	install -c -m 0644 env_setup ${DESTDIR}${SYSTEM}
+	install -c -m 0444 lockers.7 ${DESTDIR}${ATHMANDIR}/man7
 	install -c -m 0644 login ${DESTDIR}${SYSTEM}
 	install -c -m 0444 renew.1 ${DESTDIR}${ATHMANDIR}/man1
 	install -c -m 0644 temp.README ${DESTDIR}${PROTOTMP}/README
