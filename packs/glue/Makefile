@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.17 1997-06-27 23:14:50 ghudson Exp $
+# $Id: Makefile,v 1.18 1997-08-25 02:20:33 ghudson Exp $
 
 SHELL=/bin/sh
 ATHRBINDIR=/bin/athena
@@ -7,7 +7,7 @@ ATHETCDIR=/usr/athena/etc
 ATHMANDIR=/usr/athena/man
 ATTACHRUN=addusr blanche bos chfn chpobox chsh dcmmaint help kermit klog \
 	listmaint mkserv mailmaint moira mrcheck namespace olc_answers olh \
-	olh_ascii olh_motif pts techinfo usermaint userreg vos xinfo xtechinfo
+	olh_ascii olh_motif pts usermaint userreg vos xinfo
 ANDREW=/afs/athena.mit.edu/astaff/project/andrew/export
 MOIRA=/afs/athena.mit.edu/system/moira
 HELP=/afs/athena.mit.edu/system/help
@@ -109,15 +109,12 @@ install:
 	install -c -m 555 psgrind.sh ${DESTDIR}${ATHBINDIR}/psgrind
 	install -c -m 555 pts ${DESTDIR}${ATHRBINDIR}
 	install -c -m 555 sis ${DESTDIR}${ATHBINDIR}
-	install -c -m 555 techinfo ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 usermaint ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 userreg ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 verify-message ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 vos ${DESTDIR}${ATHRBINDIR}
 	install -c -m 555 xinfo ${DESTDIR}${ATHBINDIR}
-	install -c -m 555 xtechinfo ${DESTDIR}${ATHBINDIR}
 	install -c -m 444 xinfo.1 ${DESTDIR}${ATHMANDIR}/man1
-	install -c -m 444 xtechinfo.1 ${DESTDIR}${ATHMANDIR}/man1
 	@set ${SYMLINKS}; while [ $$# -ne 0 ]; do \
 		echo rm -f ${DESTDIR}$$2; \
 		rm -f ${DESTDIR}$$2; \
