@@ -1,7 +1,8 @@
-# $Id: Makefile,v 1.3.2.1 2001-06-27 02:36:57 ghudson Exp $
+# $Id: Makefile,v 1.3.2.2 2001-07-10 16:39:50 ghudson Exp $
 
 ATHRBINDIR=/bin/athena
 VICE=/usr/vice/etc
+MODULES=${VICE}/modload
 WS=/usr/afsws
 
 all:
@@ -10,17 +11,25 @@ check:
 
 install:
 	mkdir -p ${DESTDIR}${ATHRBINDIR}
-	mkdir -p ${DESTDIR}${VICE}/modload
+	mkdir -p ${DESTDIR}${MODULES}
 	mkdir -p ${DESTDIR}${WS}/lib/afs
 	mkdir -p ${DESTDIR}${WS}/include/afs
 	mkdir -p ${DESTDIR}${WS}/include/rx
 	mkdir -p ${DESTDIR}/etc/rc.d/init.d
 	mkdir -p ${DESTDIR}/etc/sysconfig
 	mkdir -p ${DESTDIR}/usr/vice/cache
-	install -c -m 444 libafs-2.4.2-2.mp.o ${DESTDIR}${VICE}/modload
-	install -c -m 444 libafs-2.4.2-2.o ${DESTDIR}${VICE}/modload
-	install -c -m 444 libafs-2.4.3-12.mp.o ${DESTDIR}${VICE}/modload
-	install -c -m 444 libafs-2.4.3-12.o ${DESTDIR}${VICE}/modload
+	install -c -m 444 libafs-2.4.2-2.i686.mp.o ${DESTDIR}${MODULES}
+	install -c -m 444 libafs-2.4.2-2.i686.o ${DESTDIR}${MODULES}
+	install -c -m 444 libafs-2.4.3-12smp.i686.mp.o ${DESTDIR}${MODULES}
+	install -c -m 444 libafs-2.4.3-12.i686.o ${DESTDIR}${MODULES}
+	install -c -m 444 libafs-2.4.3-12smp.i586.mp.o ${DESTDIR}${MODULES}
+	install -c -m 444 libafs-2.4.3-12.i586.o ${DESTDIR}${MODULES}
+	install -c -m 444 libafs-2.4.3-12smp.i386.mp.o ${DESTDIR}${MODULES}
+	install -c -m 444 libafs-2.4.3-12.i386.o ${DESTDIR}${MODULES}
+	rm -f ${DESTDIR}${MODULES}/libafs-2.4.3-12smp.i486.mp.o
+	ln -s libafs-2.4.3-12smp.i386.mp.o ${DESTDIR}${MODULES}/libafs-2.4.3-12smp.i486.mp.o
+	rm -f ${DESTDIR}${MODULES}/libafs-2.4.3-12.i486.o
+	ln -s libafs-2.4.3-12.i386.o ${DESTDIR}${MODULES}/libafs-2.4.3-12.i486.o
 	install -c -m 555 fs ${DESTDIR}${ATHRBINDIR}
 	install -c -m 555 tokens ${DESTDIR}${ATHRBINDIR}
 	install -c -m 555 unlog ${DESTDIR}${ATHRBINDIR}
