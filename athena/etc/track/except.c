@@ -1,8 +1,16 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/track/except.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/except.c,v 4.0 1988-04-14 16:42:35 don Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/except.c,v 4.1 1988-05-17 19:00:31 don Exp $
  *
  *	$Log: not supported by cvs2svn $
+ * Revision 4.0  88/04/14  16:42:35  don
+ * this version is not compatible with prior versions.
+ * it offers, chiefly, link-exporting, i.e., "->" systax in exception-lists.
+ * it also offers sped-up exception-checking, via hash-tables.
+ * a bug remains in -nopullflag support: if the entry's to-name top-level
+ * dir doesn't exist, update_file doesn't get over it.
+ * the fix should be put into the updated() routine, or possibly dec_entry().
+ * 
  * Revision 3.0  88/03/09  13:53:42  don
  * no changes.
  * 
@@ -40,7 +48,7 @@
  */
 
 #ifndef lint
-static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/except.c,v 4.0 1988-04-14 16:42:35 don Exp $";
+static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/except.c,v 4.1 1988-05-17 19:00:31 don Exp $";
 #endif lint
 
 #include "mit-copyright.h"
@@ -96,19 +104,14 @@ int entnum;
 	/*	compare the tail with each pattern in both entries' lists:
 	 *	the global list ( g->patterns),
 	 *	and the current entry's exception patterns.
+	 *	the global list is chained to the end of e->patterns,
+	 *	during subscription-list parsing.
 	 */
-	else if ( e->patterns) {
-		for( q = e->patterns; q; q = NEXT( q))
-			if ( match( TEXT( q), tail)) {
-				retval = FLAG( q);
-				break;
-			}
-	}
-	else	for( q = g->patterns; q; q = NEXT( q))
-			if ( match( TEXT( q), tail)) {
-				retval = FLAG( q);
-				break;
-			}
+	else for( q = e->patterns; q; q = NEXT( q))
+		if ( match( TEXT( q), tail)) {
+			retval = FLAG( q);
+			break;
+		}
 	/* now, retval has been computed.
 	 * if it's not NORMALCASE, we've had a match:
 	 * either tail is to be a link to the exporter's filesystem,
