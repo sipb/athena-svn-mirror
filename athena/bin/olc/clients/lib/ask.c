@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/ask.c,v $
- *	$Id: ask.c,v 1.13 1991-03-28 23:57:05 lwvanels Exp $
+ *	$Id: ask.c,v 1.14 1991-04-08 20:48:40 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/ask.c,v 1.13 1991-03-28 23:57:05 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/ask.c,v 1.14 1991-04-08 20:48:40 lwvanels Exp $";
 #endif
 #endif
 
@@ -79,7 +79,8 @@ OAsk(Request,topic,file)
     }
 
 #ifdef ATHENA
-#ifdef m68k
+  /* This should be gotten rid of when the Mac gets machtype compiled for it */
+#ifdef _AUX_SOURCE
   strcpy(machinfo,"Macintosh AUX, 8M");
 #else
   f = popen("/bin/athena/machtype -c -d -M -v", "r");
