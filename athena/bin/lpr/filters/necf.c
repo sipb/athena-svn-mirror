@@ -13,24 +13,13 @@ static char sccsid[] = "@(#)necf.c	5.1 (Berkeley) 5/15/85";
 
 #define PAGESIZE	66
 
-#ifdef _AUX_SOURCE
-char	_sobuf[BUFSIZ];
-#endif
-#if defined(sun) && !defined(SOLARIS)
-#endif
-
 main()
 {
-#ifdef SOLARIS
-#else
-	extern char _sobuf[BUFSIZ];
-#endif
 	extern char *rindex();
 	char line[256];
 	register char c, *cp;
 	register lnumber;
 
-	setbuf(stdout, _sobuf);
 #ifdef SHEETFEEDER
 	printf("\033=\033\033\033O\f");
 #else
