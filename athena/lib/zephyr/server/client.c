@@ -15,7 +15,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_client_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/client.c,v 1.17 1989-05-15 14:26:28 jtkohl Exp $";
+static char rcsid_client_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/client.c,v 1.18 1990-01-10 11:38:17 jtkohl Exp $";
 #endif SABER
 #endif lint
 
@@ -77,6 +77,10 @@ int wantdefaults;
 		abort();
 	}
 
+	if (!notice->z_port) {
+	    /* must be a non-zero port # */
+	    return(ZSRV_BADSUBPORT);
+	}
 	if (!(hlp2 = hostm_find_host(&who->sin_addr))) {
 		/* not here */
 		return(ZSRV_HNOTFOUND);
