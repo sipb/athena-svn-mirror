@@ -2,5 +2,7 @@
 
 
 cp $1/packs/config/ntp.conf $2
-cp $1/packs/maint/os/linux/athena-ntp.rc $2
-cp $1/packs/maint/os/linux/system-time.sh $2
+cp $1/packs/maint/os/$OS/athena-ntp.rc $2
+if [ linux = "$OS" ]; then
+  cp $1/packs/maint/os/$OS/system-time.sh $2
+fi

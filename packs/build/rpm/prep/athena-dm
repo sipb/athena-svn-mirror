@@ -1,5 +1,7 @@
 #!/bin/sh
 
-cp $1/packs/config/os/linux/config $2
-cp $1/packs/maint/os/linux/xwrapper.sh $2
-cp $1/packs/maint/os/linux/user-xauth.sh $2
+cp $1/packs/config/os/$OS/config $2
+cp $1/packs/maint/os/$OS/xwrapper.sh $2
+if [ linux = "$OS" ]; then
+  cp $1/packs/maint/os/$OS/user-xauth.sh $2
+fi

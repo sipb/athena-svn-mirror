@@ -1,7 +1,9 @@
 #!/bin/sh
 
 cp $1/packs/config/zephyr.vars $2
-cp $1/packs/maint/os/linux/zephyrd.rc $2
-cp $1/packs/maint/os/linux/zhm.rc $2
-cp $1/packs/maint/os/linux/system-zephyr.sh $2
-cp $1/packs/maint/os/linux/user-zephyr.sh $2
+cp $1/packs/maint/os/$OS/zephyrd.rc $2
+cp $1/packs/maint/os/$OS/zhm.rc $2
+if [ linux = "$OS" ]; then
+  cp $1/packs/maint/os/$OS/system-zephyr.sh $2
+  cp $1/packs/maint/os/$OS/user-zephyr.sh $2
+fi

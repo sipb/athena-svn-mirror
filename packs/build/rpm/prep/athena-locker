@@ -1,4 +1,6 @@
 #!/bin/sh
 
-cp $1/packs/config/os/linux/attach.conf $2
-cp $1/packs/maint/os/linux/attach.rc $2
+cp $1/packs/config/os/$OS/attach.conf $2
+if [ linux = "$OS" ]; then
+  cp $1/packs/maint/os/$OS/attach.rc $2
+fi

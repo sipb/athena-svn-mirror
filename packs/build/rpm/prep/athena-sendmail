@@ -1,6 +1,8 @@
 #!/bin/sh
 
 cp $1/packs/config/aliases $2
-cp $1/packs/config/os/linux/sendmail.cf $2
-cp $1/packs/maint/os/linux/athena-sendmail.rc $2
-cp $1/packs/maint/os/linux/system-sendmail.sh $2
+cp $1/packs/config/os/$OS/sendmail.cf $2
+cp $1/packs/maint/os/$OS/athena-sendmail.rc $2
+if [ linux = "$OS" ]; then
+  cp $1/packs/maint/os/$OS/system-sendmail.sh $2
+fi
