@@ -16,11 +16,11 @@
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_live.c,v $
- *      $Author: tjcoppet $
+ *      $Author: vanharen $
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_live.c,v 1.2 1989-11-17 14:11:14 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_live.c,v 1.3 1990-01-17 02:40:22 vanharen Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -37,7 +37,7 @@ t_live(Request,file)
      char *file;
 {
   int status;
-  char sender[LABEL_LENGTH];
+  char sender[LABEL_SIZE];
   int port;
 
   set_option(Request->options, VERIFY);

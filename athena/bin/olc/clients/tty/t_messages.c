@@ -16,11 +16,11 @@
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_messages.c,v $
- *      $Author: tjcoppet $
+ *      $Author: vanharen $
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_messages.c,v 1.5 1989-11-17 14:11:21 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_messages.c,v 1.6 1990-01-17 02:40:25 vanharen Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -132,7 +132,7 @@ t_check_messages(Request)
      REQUEST *Request;
 {
   int status;
-  char file[NAME_LENGTH];
+  char file[NAME_SIZE];
   char buf[BUF_SIZE];
 
   make_temp_name(file);
@@ -157,7 +157,7 @@ t_check_connected_messages(Request)
      REQUEST *Request;
 {
   int status;
-  char file[NAME_LENGTH];
+  char file[NAME_SIZE];
   char buf[BUF_SIZE];
 
   make_temp_name(file);

@@ -16,12 +16,12 @@
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_topic.c,v $
- *      $Author: tjcoppet $
+ *      $Author: vanharen $
  */
 
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_topic.c,v 1.4 1989-11-17 14:12:46 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_topic.c,v 1.5 1990-01-17 02:40:47 vanharen Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -39,8 +39,8 @@ t_input_topic(Request,topic,flags)
      char *topic;
      int flags;
 {
-  char buf[LINE_LENGTH];	
-  char file[NAME_LENGTH];
+  char buf[LINE_SIZE];
+  char file[NAME_SIZE];
   char *bufP;		        
   int loop = 0;
   int status;

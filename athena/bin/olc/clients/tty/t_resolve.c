@@ -16,7 +16,7 @@
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_resolve.c,v $
- *      $Author: tjcoppet $
+ *      $Author: vanharen $
  */
 
 
@@ -30,7 +30,7 @@ t_done(Request,title)
      char *title;
 {
   int status;
-  char buf[LINE_LENGTH];
+  char buf[LINE_SIZE];
   int instance; 
 
   instance = Request->requester.instance;

@@ -16,11 +16,11 @@
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_queue.c,v $
- *      $Author: tjcoppet $
+ *      $Author: vanharen $
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_queue.c,v 1.7 1989-11-17 14:11:42 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_queue.c,v 1.8 1990-01-17 02:40:34 vanharen Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -31,7 +31,7 @@ t_queue(Request,queue)
      REQUEST *Request;
      char *queue;
 {
-  char buf[BUFSIZE];
+  char buf[BUF_SIZE];
   int status;
 
   

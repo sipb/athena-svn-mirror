@@ -16,11 +16,11 @@
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_status.c,v $
- *      $Author: tjcoppet $
+ *      $Author: vanharen $
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_status.c,v 1.8 1989-11-17 14:12:35 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_status.c,v 1.9 1990-01-17 02:40:43 vanharen Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -257,7 +257,7 @@ t_input_status(Request,string)
      REQUEST *Request;
      char *string;
 {
-  char buf[BUFSIZE];
+  char buf[BUF_SIZE];
   int status = 0;
   int state = 0;
 

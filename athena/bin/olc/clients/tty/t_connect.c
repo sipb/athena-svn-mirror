@@ -1,4 +1,4 @@
-/*
+ /*
  * This file is part of the OLC On-Line Consulting System.
  * It contains procedures for exectuting olc commands.
  *
@@ -16,11 +16,11 @@
  *      Copyright (c) 1988 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_connect.c,v $
- *      $Author: tjcoppet $
+ *      $Author: vanharen $
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_connect.c,v 1.6 1989-11-17 14:10:08 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_connect.c,v 1.7 1990-01-17 02:39:46 vanharen Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -33,7 +33,7 @@ t_grab(Request,flag,hold)
      int hold;
 {
   int status;
-  char buf[BUFSIZE];
+  char buf[BUF_SIZE];
   int instance;
   
   instance = Request->requester.instance;

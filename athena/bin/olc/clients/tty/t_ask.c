@@ -16,11 +16,11 @@
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_ask.c,v $
- *      $Author: tjcoppet $
+ *      $Author: vanharen $
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_ask.c,v 1.6 1989-11-17 14:09:56 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_ask.c,v 1.7 1990-01-17 02:38:14 vanharen Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -36,9 +36,9 @@ t_ask(Request,topic)
      char *topic;
 {
   int status;
-  char file[NAME_LENGTH];
+  char file[NAME_SIZE];
   struct stat statbuf;
-  char buf[BUFSIZE];
+  char buf[BUF_SIZE];
 
   set_option(Request->options,VERIFY);
   status = OAsk(Request,topic,NULL);

@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_instance.c,v 1.8 1990-01-16 11:37:19 vanharen Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_instance.c,v 1.9 1990-01-17 02:40:09 vanharen Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -31,7 +31,7 @@ t_instance(Request,instance)
      REQUEST *Request;
      int instance;
 {
-  char buf[BUFSIZE];
+  char buf[BUF_SIZE];
   int status;
 
   if(instance == -2)

@@ -16,12 +16,12 @@
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_describe.c,v $
- *      $Author: tjcoppet $
+ *      $Author: vanharen $
  */
 
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_describe.c,v 1.2 1989-11-17 14:10:48 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_describe.c,v 1.3 1990-01-17 02:40:04 vanharen Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -89,8 +89,8 @@ t_display_description(list,file)
      LIST *list;
      char *file;
 {
-  char status1[NAME_LENGTH];
-  char status2[NAME_LENGTH];
+  char status1[NAME_SIZE];
+  char status2[NAME_SIZE];
   
   printf("\nUser:   %s %s (%s@%s)\n",list->user.title,
 	 list->user.realname, list->user.username,

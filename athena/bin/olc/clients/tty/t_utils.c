@@ -16,12 +16,12 @@
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_utils.c,v $
- *      $Author: tjcoppet $
+ *      $Author: vanharen $
  *
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_utils.c,v 1.9 1989-11-17 14:13:02 tjcoppet Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_utils.c,v 1.10 1990-01-17 02:40:50 vanharen Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -57,7 +57,7 @@ display_file(filename,flag)
      int flag;
 {
   FILE *file;                  /* File structure pointer. */
-  char line[LINE_LENGTH];      /* Input line buffer. */
+  char line[LINE_SIZE];      /* Input line buffer. */
 	
   if ((file = fopen(filename, "r")) == (FILE *)NULL) 
     {
@@ -68,7 +68,7 @@ display_file(filename,flag)
   
   if (call_program("/usr/ucb/more", filename) == ERROR) 
     {
-      while(fgets(line, LINE_LENGTH, file) != (char *)NULL)
+      while(fgets(line, LINE_SIZE, file) != (char *)NULL)
 	printf("%s", line);
       printf("\n");
     }
@@ -156,7 +156,7 @@ ERRCODE
 input_text_into_file(filename)
      char *filename;
 {
-  char line[LINE_LENGTH];	
+  char line[LINE_SIZE];	
   int fd;
   int nchars;                   
 	
@@ -169,7 +169,7 @@ input_text_into_file(filename)
       return(ERROR);
     }
 	
-  while ((nchars = read(fileno(stdin), line, LINE_LENGTH)) > 0) 
+  while ((nchars = read(fileno(stdin), line, LINE_SIZE)) > 0) 
     {
       if ((line[0] == '.') & (nchars == 2))
 	break;
@@ -449,7 +449,7 @@ what_now(file, edit_first, editor)
      int edit_first;
      char *editor;
 {
-  char inbuf[LINE_LENGTH];      /* Input buffer. */
+  char inbuf[LINE_SIZE];      /* Input buffer. */
   int fd;			/* File descriptor. */
 
   if ((fd = open(file, O_RDWR | O_CREAT, 0644)) < 0) 
@@ -562,8 +562,8 @@ mail_message(user, consultant, msgfile, args)
 
 #ifdef HESIOD
   char **hp;
-  char buf[LINE_LENGTH];
-  char resp[LINE_LENGTH];
+  char buf[LINE_SIZE];
+  char resp[LINE_SIZE];
 #endif HESIOD
 
 #ifdef ATHENA
