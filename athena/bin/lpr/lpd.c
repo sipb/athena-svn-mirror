@@ -2,7 +2,7 @@
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpd.c,v $
  *	$Author: ghudson $
  *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpd.c,v 1.19.2.1 1997-06-28 19:14:11 ghudson Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpd.c,v 1.19.2.2 1997-10-17 07:04:31 ghudson Exp $
  */
 
 /*
@@ -17,7 +17,7 @@ char copyright[] =
  All rights reserved.\n";
 
 static char sccsid[] = "@(#)lpd.c	5.4 (Berkeley) 5/6/86";
-static char *rcsid_lpd_c = "$Id: lpd.c,v 1.19.2.1 1997-06-28 19:14:11 ghudson Exp $";
+static char *rcsid_lpd_c = "$Id: lpd.c,v 1.19.2.2 1997-10-17 07:04:31 ghudson Exp $";
 #endif
 
 /*
@@ -89,7 +89,7 @@ int use_kerberos;
 #endif KERBEROS
 
 #ifdef LACL
-char from_host[MAXHOSTNAMELEN];
+char from_host[MAXHOSTNAMELEN + 1];
 #endif
 
 main(argc, argv)
@@ -112,7 +112,10 @@ main(argc, argv)
 #endif ZEPHYR
 
 	gethostname(host, sizeof(host));
-	if(hp = gethostbyname(host)) strcpy(host, hp -> h_name);
+	if(hp = gethostbyname(host)) {
+		strncpy(host, hp -> h_name, sizeof(host));
+		host[sizeof(host) - 1] = '\0';
+	}
 
 	name = argv[0];
 
@@ -331,7 +334,7 @@ int	requ[MAXREQUESTS];	/* job number of spool entries */
 int	requests;		/* # of spool requests */
 char	*person;		/* name of person doing lprm */
 
-char	fromb[32];	/* buffer for client's machine name */
+char	fromb[MAXHOSTNAMELEN + 1];	/* buffer for client's machine name */
 char	cbuf[BUFSIZ];	/* command line buffer */
 char	*cmdnames[] = {
 	"null",
@@ -621,7 +624,7 @@ chkhost(f)
 	register FILE *hostf;
 	register char *cp, *sp;
 	unsigned long hold_net;
-	char ahost[50];
+	char ahost[MAXHOSTNAMELEN + 1];
 	int first = 1;
 	extern char *inet_ntoa();
 	int baselen = -1;
@@ -634,7 +637,8 @@ chkhost(f)
 		fatal("Host name for your address (%s) unknown",
 			inet_ntoa(f->sin_addr));
 
-	strcpy(fromb, hp->h_name);
+	strncpy(fromb, hp->h_name, sizeof(fromb));
+	fromb[sizeof(fromb) - 1] = '\0';
 	from = fromb;
 #ifdef LACL
 	strcpy(from_host, fromb);
@@ -693,6 +697,8 @@ startdaemon(pr)
 	
 	if ((pid = fork()) == 0) {
 		printer = malloc(strlen(pr) + 1);
+		if (!printer)
+			return(0);	
 		strcpy(printer, pr);
 		if (lflag)
 			syslog(LOG_INFO, "startdaemon(%s) succeeded", printer);
@@ -727,7 +733,7 @@ FILE *hostf;
 int baselen;
 {
 	char *user;
-	char ahost[MAXHOSTNAMELEN];
+	char ahost[MAXHOSTNAMELEN + 1];
 	register char *p;
 
 	while (fgets(ahost, sizeof (ahost), hostf)) {
