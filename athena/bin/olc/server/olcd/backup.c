@@ -17,13 +17,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/backup.c,v $
- *	$Id: backup.c,v 1.21 1991-04-08 21:09:17 lwvanels Exp $
+ *	$Id: backup.c,v 1.21.1.1 1992-01-07 15:50:25 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef SABER
 #ifndef lint
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/backup.c,v 1.21 1991-04-08 21:09:17 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/backup.c,v 1.21.1.1 1992-01-07 15:50:25 lwvanels Exp $";
 #endif
 #endif
 
@@ -208,14 +208,13 @@ USER *user;
 static void
   ensure_consistent_state()
 {
-  register KNUCKLE **k_ptr, *k;
+  register KNUCKLE *k;
   KNUCKLE *foo;
   char msgbuf[BUFSIZ];
   int status;
   
-  for (k_ptr = Knuckle_List; *k_ptr != (KNUCKLE *) NULL; k_ptr++) 
+  for (k = Knuckle_inuse; k != (KNUCKLE *) NULL; k = k->next) 
     {
-      k = *k_ptr;
       if (k->connected != (KNUCKLE *) NULL) 
 	{
 	  /* check if connected person exists */
@@ -232,13 +231,13 @@ static void
 	     * and continue. This should be looked into.
 	     */
 	    k->question = (QUESTION *) NULL;
-	    delete_knuckle(k, /*???*/0);
 	    k->connected->question = (QUESTION *) NULL;
 	    k->connected->connected = (KNUCKLE *) NULL;
 	    /* eat this too- chances are that if the connected person is */
 	    /* invalid, it is total garbage. */
 	    
-	    /* delete_knuckle(k->connected); */
+	    dealloc_knuc(k->connected);
+	    dealloc_knuc(k);
 	    continue;
 #if 0
 	    if (k->question != (QUESTION *) NULL)
@@ -270,34 +269,33 @@ static void
 void
   reconnect_knuckles()
 {
-  KNUCKLE **k_ptr;
-  KNUCKLE *k;
+  KNUCKLE *k,*foo;
   int status; 
   
-  for (k_ptr = Knuckle_List; (*k_ptr) != (KNUCKLE *) NULL; k_ptr++)
-    if((*k_ptr)->connected != (KNUCKLE *) NULL)
+  for (k = Knuckle_inuse; k != (KNUCKLE *) NULL; k = k->next)
+    if(k->connected != (KNUCKLE *) NULL)
       {
-	status = get_knuckle((*k_ptr)->cusername,(*k_ptr)->cinstance, &k,
+	status = get_knuckle(k->cusername,k->cinstance, &foo,
 			     /*???*/0);
 	if(status == SUCCESS)
 	  {
-	    (*k_ptr)->connected = k;
-	    if((*k_ptr)->question != (QUESTION *) NULL)
+	    k->connected = k;
+	    if(k->question != (QUESTION *) NULL)
 	      {
-		(*k_ptr)->connected->question = (*k_ptr)->question;
+		k->connected->question = k->question;
 		
 		/* not good enough- should have some physical tag */
-		if((*k_ptr)->status  & QUESTION_STATUS)
-		  (*k_ptr)->question->owner = (*k_ptr);		    
+		if(k->status  & QUESTION_STATUS)
+		  k->question->owner = k;
 	      }
 	  }
 	else
 	  {
-	    *((*k_ptr)->cusername) = '\0';
-	    (*k_ptr)->connected = (KNUCKLE *) NULL;
-	    if((*k_ptr)->question != (QUESTION *) NULL)
-	      if((*k_ptr)->status  & QUESTION_STATUS)
-		(*k_ptr)->question->owner = (*k_ptr);		    
+	    *(k->cusername) = '\0';
+	    k->connected = (KNUCKLE *) NULL;
+	    if(k->question != (QUESTION *) NULL)
+	      if(k->status  & QUESTION_STATUS)
+		k->question->owner = k;
 	  }
       }
 }
@@ -314,7 +312,7 @@ int needs_backup = 0;
 void
   backup_data()
 {
-  KNUCKLE **k_ptr, **k_again; /* Current user. */
+  KNUCKLE *k_ptr, *k_again; /* Current user. */
   int fd;			   /* Backup file descriptor. */
   int i;
   
@@ -326,19 +324,18 @@ void
       goto PUNT;
     }
   
-  for (k_ptr = Knuckle_List; *k_ptr != (KNUCKLE *) NULL; k_ptr++) 
+  for (k_ptr = Knuckle_inuse; k_ptr != (KNUCKLE *) NULL; k_ptr = k_ptr->next) 
     {
-      if(((*k_ptr)->instance == 0) && (((*k_ptr)->user->no_knuckles > 1) ||
-				       is_active((*k_ptr))))
+      if((k_ptr->instance == 0) && ((k_ptr->user->no_knuckles > 1) ||
+				       is_active(k_ptr)))
 	{
-	  if (write_user_info(fd, (*k_ptr)->user) != SUCCESS) 
+	  if (write_user_info(fd, k_ptr->user) != SUCCESS) 
 	    {
 	      log_error("backup_data: unable to write_user");
 	      goto PUNT;
 	    }
-	  k_again = (*k_ptr)->user->knuckles;
-	  for(i=0; i< (*k_ptr)->user->no_knuckles; i++)
-	    if (write_knuckle_info(fd, *(k_again+i)) != SUCCESS) 
+	  for(k_again = k_ptr->user->knuckles; k_again != NULL; k_again = k_again->next_k)
+	    if (write_knuckle_info(fd, k_again) != SUCCESS) 
 	      {
 		log_error("backup_data: unable to write_knuckle");
 		goto PUNT;
@@ -373,122 +370,9 @@ void
 void
   load_data()
 {
-  int fd, nk = -1;
-  int status;
-  int successful = 0;
-  KNUCKLE *kptr;
-  USER *uptr = (USER *) NULL;
-  char type[STRING_SIZE];
-  char buf[BUF_SIZE];
-  
-  skip = FALSE;
   
   log_status("Loading....\n");
-  
-  if ((fd = open(BACKUP_FILE, O_RDONLY, 0)) < 0) 
-    {
-      log_error("load_data: unable to open backup file: %m");
-      return;
-    }
-  
-  while (TRUE)
-    {
-      if(skip == FALSE)
-	{
-	  if((status = read(fd,type, sizeof(char) * STRING_SIZE)) != 
-	     sizeof(char) * STRING_SIZE)
-	    {
-	      if(status == -1)
-		break;
-	      log_error("load_data: unable to read type: %m");
-	      break;
-	    }
-	}
-      else
-	{
-	  bcopy(type_buf,type,STRING_SIZE);
-	  skip = FALSE;
-	}
-      
-      if(string_eq(type,USER_SEP))
-	{
-#ifdef TEST
-	  log_status("load_data: reading user data\n");
-#endif /* TEST */
-	  
-	  if (uptr && nk != -1 && nk != uptr->no_knuckles) {
-	    sprintf(buf,"No. knuck. mismatch: %d vs. %d",
-		    nk, uptr->no_knuckles);
-	    log_error(buf);
-	  }
-	  
-	  uptr = (USER *) malloc(sizeof(USER));
-	  if(uptr == (USER *) NULL)
-	    {
-	      log_error("load_data (failed malloc)");
-	      goto PUNT;
-	    }
-	  status = read_user_info(fd,uptr);
-	  if(status != SUCCESS)
-	    goto PUNT;
-	  
-	  nk = uptr->no_knuckles;
-	  uptr->no_knuckles = 0;
-	  uptr->knuckles = (KNUCKLE **) NULL;
-	  continue;
-	}
-      
-      if(string_eq(type,KNUCKLE_SEP))
-	{
-#ifdef TEST
-	  log_status("load_data: reading user data\n");
-#endif
-	  kptr = (KNUCKLE *) malloc(sizeof(KNUCKLE));
-	  status = read_knuckle_info(fd,kptr);
-	  if(skip)
-	    continue;
-	  if(status != SUCCESS)
-	    goto PUNT;
-	  status = insert_knuckle(kptr);
-	  if (status != SUCCESS)
-	    goto PUNT; 
-	  kptr->user = uptr;
-	  if (kptr->question == NULL)
-	    kptr->title = uptr->title2;
-	  else
-	    kptr->title = uptr->title1;
-	  insert_knuckle_in_user(kptr,uptr);
-	  sprintf(kptr->nm_file,"%s/%s_%d.nm", LOG_DIR, kptr->user->username,
-		  kptr->instance);
 
-	  kptr->user->no_knuckles++;
-	  continue;
-	}
-      
-      if(string_eq(type,DATA_SEP))
-	break;
-      
-      type_error(fd,type); 
-    }
-  
-  successful = 1;
-  
- PUNT:
-  if (!successful) 
-    {
-      log_status("Load failed, punting...\n");
-      Knuckle_List = (KNUCKLE **) NULL;
-      (void) unlink(BACKUP_FILE);
-      needs_backup = 1;
-    }
-  else 
-    {
-      reconnect_knuckles();
-      ensure_consistent_state();
-      log_status("Loading complete.\n");
-    }
-  
-  (void) close(fd);
   needs_backup = 0; 
 }
 
@@ -538,63 +422,62 @@ char *file;
 {
   FILE *fp;
   int no_knuckles;
-  KNUCKLE **k_ptr, **k_again;	/* Current user. */
-  int i;
+  KNUCKLE *k_ptr, *k_again;	/* Current user. */
   
   ensure_consistent_state();
   fp = fopen(file,"w");
   
-  for (k_ptr = Knuckle_List, no_knuckles = 0; *k_ptr; k_ptr++)
+  for (k_ptr = Knuckle_inuse, no_knuckles = 0; k_ptr != NULL; k_ptr =
+       k_ptr->next)
     no_knuckles++;
   fprintf(fp,"\nNumber of knuckles:: %d\n",no_knuckles);
   
-  for (k_ptr = Knuckle_List; *k_ptr != (KNUCKLE *) NULL; k_ptr++) 
+  for (k_ptr = Knuckle_inuse; k_ptr != (KNUCKLE *) NULL; k_ptr = k_ptr->next) 
     {
-      if((*k_ptr)->instance == 0)
+      if(k_ptr->instance == 0)
 	{
 	  fprintf(fp,"\n\nuser...");
-	  fprintf(fp,"\nuser:     %s",(*k_ptr)->user->username);
-	  fprintf(fp,"\nuid:      %d",(*k_ptr)->user->uid);
-	  fprintf(fp,"\nrealname: %s",(*k_ptr)->user->realname);
-	  fprintf(fp,"\ntitle:    %s",(*k_ptr)->title);
-	  fprintf(fp,"\nmachine:  %s",(*k_ptr)->user->machine);
-	  fprintf(fp,"\nstatus:   %d",(*k_ptr)->user->status);
-	  fprintf(fp,"\nmax_ask:  %d",(*k_ptr)->user->max_ask);
-	  fprintf(fp,"\nmax_ans:  %d",(*k_ptr)->user->max_answer);
+	  fprintf(fp,"\nuser:     %s",k_ptr->user->username);
+	  fprintf(fp,"\nuid:      %d",k_ptr->user->uid);
+	  fprintf(fp,"\nrealname: %s",k_ptr->user->realname);
+	  fprintf(fp,"\ntitle:    %s",k_ptr->title);
+	  fprintf(fp,"\nmachine:  %s",k_ptr->user->machine);
+	  fprintf(fp,"\nstatus:   %d",k_ptr->user->status);
+	  fprintf(fp,"\nmax_ask:  %d",k_ptr->user->max_ask);
+	  fprintf(fp,"\nmax_ans:  %d",k_ptr->user->max_answer);
 	  fprintf(fp,"\n");
-	  k_again = (*k_ptr)->user->knuckles;
-	  for(i=0; i< (*k_ptr)->user->no_knuckles; i++)
+	  for(k_again = k_ptr->user->knuckles; k_again != NULL; k_again = k_again->next_k)
 	    {
 	      fprintf(fp,"\n\nknuckle...");
-	      fprintf(fp,"\ninstance:     %d", (*(k_again+i))->instance);
-	      fprintf(fp,"\nstatus:       %d", (*(k_again+i))->status);
-	      fprintf(fp,"\ncusername:    %d", (*(k_again+i))->cusername);
-	      fprintf(fp,"\ncinstance:    %d", (*(k_again+i))->cinstance);
-	      if(is_connected((*(k_again+i))))
+	      fprintf(fp,"\ninstance:     %d", k_again->instance);
+	      fprintf(fp,"\nstatus:       %d", k_again->status);
+	      fprintf(fp,"\ncusername:    %d", k_again->cusername);
+	      fprintf(fp,"\ncinstance:    %d", k_again->cinstance);
+	      if(is_connected(k_again))
 		{
 		  fprintf(fp,"\n\nconnected...");
 		  fprintf(fp,"\nrcusername:   %d",
-			  (*(k_again+i))->connected->user->username);
+			  k_again->connected->user->username);
 		  fprintf(fp,"\nrcinstance:   %d",
-			  (*(k_again+i))->connected->instance);
+			  k_again->connected->instance);
 		}
-	      if(has_question((*(k_again+i))))
+	      if(has_question(k_again))
 		{
 		  fprintf(fp,"\n\nquestion...");
 		  fprintf(fp,"\nlogfile:    %s",
-			  (*(k_again+i))->question->logfile);
+			  k_again->question->logfile);
 		  fprintf(fp,"\nnseen:      %d",
-			  (*(k_again+i))->question->nseen);
+			  k_again->question->nseen);
 		  fprintf(fp,"\ntopic:      %s",
-			  (*(k_again+i))->question->topic);
+			  k_again->question->topic);
 		  fprintf(fp,"\ntcode:      %d",
-			  (*(k_again+i))->question->topic_code);
+			  k_again->question->topic_code);
 		  fprintf(fp,"\ntitle:      %s",
-			  (*(k_again+i))->question->title);
+			  k_again->question->title);
 		  fprintf(fp,"\nowner:      %s",
-			  (*(k_again+i))->question->owner->user->username);
+			  k_again->question->owner->user->username);
 		  fprintf(fp,"\nownerin:    %d",
-			  (*(k_again+i))->question->owner->instance);
+			  k_again->question->owner->instance);
 		}
 	    }
 	}
