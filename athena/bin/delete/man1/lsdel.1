@@ -1,6 +1,6 @@
 .\"	$Source: /afs/dev.mit.edu/source/repository/athena/bin/delete/man1/lsdel.1,v $
 .\"	$Author: jik $
-.\"	$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/man1/lsdel.1,v 1.6 1990-09-26 03:49:35 jik Exp $
+.\"	$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/man1/lsdel.1,v 1.7 1991-06-04 18:57:40 jik Exp $
 .\"
 .\" Copyright 1989 by the Massachusetts Institute of Technology.  All
 .\" rights reserved.  The file /usr/include/mit-copyright.h specifies
@@ -25,6 +25,10 @@ lsdel \- list deleted files
 .B \-m
 ] [
 .B \-y
+] [
+.B \-1
+] [
+.B \-C
 ] [ filename [ ... ]]
 .PP
 .SH DESCRIPTION
@@ -72,6 +76,14 @@ The
 option causes
 .I lsdel
 to print the total amount of space taken up by all the files it lists.
+.PP
+The
+.BR \-1
+option forces output to be one file per line; this is the default when
+output is not to a terminal.  The
+.BR \-C
+option does the opposite, forcing multi-column output, which is the
+default when output is to a terminal.
 .SH "SEE ALSO"
 delete(1), undelete(1), purge(1), expunge(1), ls(1)
 .SH AUTHOR
