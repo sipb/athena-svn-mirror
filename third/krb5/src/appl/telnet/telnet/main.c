@@ -287,6 +287,7 @@ main(argc, argv)
 			dontfallback = 1;
 #if defined(AUTHENTICATION) && defined(KRB5) && defined(FORWARD)
 			forward_flags |= OPTS_FORWARD_CREDS;
+			forward_flags |= OPTS_FORWARDABLE_CREDS;
 #endif
 			fputs(STARTUP_MESSAGE_SAFE, stderr);
 			break;
@@ -335,6 +336,7 @@ main(argc, argv)
 #endif
 #if defined(AUTHENTICATION) && defined(KRB5) && defined(FORWARD)
 			forward_flags |= OPTS_FORWARD_CREDS;
+			forward_flags |= OPTS_FORWARDABLE_CREDS;
 #endif
 			fputs(STARTUP_MESSAGE_DEFAULT, stderr);
 		} else if (user)

@@ -61,6 +61,6 @@
 #define	CONTROL(x)	((x)&0x1f)		/* CTRL(x) is not portable */
 
 #define STARTUP_MESSAGE_SAFE \
-"...including options requested by -safe: \"-axf\"\r\n"
+"...including options requested by -safe: \"-axF\"\r\n"
 #define STARTUP_MESSAGE_DEFAULT \
-"...trying Athena's default telnet options: \"-axf\"\r\n"
+"...trying Athena's default telnet options: \"-axF\"\r\n"
