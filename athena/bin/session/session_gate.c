@@ -2,7 +2,7 @@
  *  session_gate - Keeps session alive by continuing to run
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/session/session_gate.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/session/session_gate.c,v 1.1 1990-11-18 21:54:31 probe Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/session/session_gate.c,v 1.2 1990-11-18 21:55:32 probe Exp $
  *	$Author: probe $
  */
 
@@ -18,16 +18,17 @@
 
 static char filename[80];
 
-int main( );
+void main( );
 int itoa( );
 void cleanup( );
+void logout( );
 time_t check_pid_file( );
 time_t create_pid_file( );
 time_t update_pid_file( );
 void write_pid_to_file( );
 
 
-int main(argc, argv)
+void main(argc, argv)
 int argc;
 char **argv;
 {
@@ -35,16 +36,27 @@ char **argv;
     int parentpid;
     char buf[10];
     time_t mtime;
+    int dologout = 0;
+
+    if (argc == 2 && !strcmp(argv[1], "-logout"))
+      dologout = 1;
 
     pid = getpid();
     parentpid = getppid();
     
     /*  Set up signal handlers for a clean exit  */
 
-    signal(SIGHUP, cleanup);
-    signal(SIGINT, cleanup);
-    signal(SIGQUIT, cleanup);
-    signal(SIGTERM, cleanup);
+    if (dologout) {
+	signal(SIGHUP, logout);
+	signal(SIGINT, logout);
+	signal(SIGQUIT, logout);
+	signal(SIGTERM, logout);
+    } else {
+	signal(SIGHUP, cleanup);
+	signal(SIGINT, cleanup);
+	signal(SIGQUIT, cleanup);
+	signal(SIGTERM, cleanup);
+    }
 
     /*  Figure out the filename  */
 
@@ -73,7 +85,7 @@ char **argv;
 }
 
 
-static powers[] = {10000,1000,100,10,1};
+static powers[] = {100000, 10000,1000,100,10,1};
 
 int itoa(x, buf)
 int x;
@@ -99,6 +111,21 @@ void cleanup( )
     unlink(filename);
     exit(0);
 }
+
+void logout( )
+{
+    int f;
+
+    unlink(filename);
+    f = open(".logout", O_RDONLY, 0);
+    if (f >= 0) {
+	close(0);
+	dup(f, 0);
+	execl("/bin/csh", "logout", 0);
+    }
+    exit(0);
+}
+
 
 
 time_t check_pid_file(filename, pid, mtime)
