@@ -1907,7 +1907,8 @@ do_auth()
 				     &gcontext,
 				     target_name,
 				     GSS_C_NULL_OID,
-				     GSS_C_MUTUAL_FLAG | GSS_C_REPLAY_FLAG,
+				     GSS_C_MUTUAL_FLAG | GSS_C_REPLAY_FLAG |
+				     (forward ? GSS_C_DELEG_FLAG : 0),
 				     0,
 				     &chan,	/* channel bindings */
 				     token_ptr,

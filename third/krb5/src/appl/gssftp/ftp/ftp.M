@@ -37,7 +37,7 @@ ftp \- ARPANET file transfer program
 .SH SYNOPSIS
 .B ftp
 [\fB\-v\fP] [\fB\-d\fP] [\fB\-i\fP] [\fB\-n\fP] [\fB\-g\fP] [\fB\-k\fP
-\fIrealm\fP] [\fIhost\fP] [\fB\-forward\fP]
+\fIrealm\fP] [\fIhost\fP] [\fB\-f\fP]
 .SH DESCRIPTION
 .B FTP
 is the user interface to the
@@ -92,8 +92,8 @@ Disables file name globbing.
 When using Kerberos authentication, get tickets in
 .IR realm .
 .TP
-.B \-forward
-Cause tickets to be forwarded to the remote host.
+.B \-f
+Cause credentials to be forwarded to the remote host.
 .SH COMMANDS
 The client host with which
 .B ftp
@@ -547,7 +547,7 @@ is longer than the length of
 .IR outchars ,
 the character is deleted from the file name.
 .TP
-\fBopen\fP \fIhost\fP [\fIport\fP] [\fB\-forward\fP]
+\fBopen\fP \fIhost\fP [\fIport\fP]
 Establish a connection to the specified
 .I host
 .SM FTP
@@ -571,11 +571,7 @@ commands.
 .B ftp
 will also attempt to automatically log the user in to the
 .SM FTP
-server (see below).  If the
-.B \-forward
-option is specified,
-.B ftp
-will forward a copy of the user's Kerberos tickets to the remote host.
+server (see below).
 .TP
 .B private
 Set the protection level on data transfers to ``private''.  Data
