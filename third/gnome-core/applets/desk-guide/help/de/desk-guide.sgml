@@ -263,15 +263,19 @@
 	<para>Die Optionen beinhalten:</para>
 	<itemizedlist>
 	  <listitem>
-	    <para><guilabel>Verborgene Tasks anzeigen (HIDDEN)</guilabel>, 
-	      <guilabel>Eingerollte Tasks anzeigen (SHADED)</guilabel>,
-	      <guilabel>Tasks anzeigen, die sich vor der Fensterliste drücken (SKIP-WINLIST)</guilabel>, <guilabel>Tasks anzeigen, die sich vor der Taskliste drücken (SKIP-TASKBAR)</guilabel> &mdash; Diese vier Optionen erlauben dem
-	      &this-applet; Applikationen anzuzeigen, die Flags gesetzt haben,
-	      die sie normaler weise vor einer Applikation wie dieser
+	    <para><guilabel>Verborgene Tasks anzeigen
+	      (HIDDEN)</guilabel>, <guilabel>Eingerollte Tasks
+	      anzeigen (SHADED)</guilabel>, <guilabel>Tasks anzeigen,
+	      die sich vor der Fensterliste drücken
+	      (SKIP-WINLIST)</guilabel>, <guilabel>Tasks anzeigen, die
+	      sich vor der Taskliste drücken (SKIP-TASKBAR)</guilabel>
+	      &mdash; Diese vier Optionen erlauben dem &this-applet;
+	      Applikationen anzuzeigen, die Flags gesetzt haben, die
+	      sie normaler weise vor einer Applikation wie dieser
 	      verbergen würden. Zum Beispiel hat das
-	      <application>panel</application> die Flags
-	      HIDDEN, HIDE_FROM_WINLIST und HIDE_FROM_TASKBAR gesetzt.
-	      Wenn Sie diese Optionen anwählen, zeigt das &this-applet;
+	      <application>panel</application> die Flags HIDDEN,
+	      HIDE_FROM_WINLIST und HIDE_FROM_TASKBAR gesetzt.  Wenn
+	      Sie diese Optionen anwählen, zeigt das &this-applet;
 	      auch solche Applikationen an.
 	    </para>
 	  </listitem>
@@ -419,7 +423,7 @@
 	</itemizedlist>
       </sect3>
 
-      <sect3>
+      <sect3 id="moreInformation">
 	<title>Weitere Informationen</title>
 	<para>Der &props-dlg; hat am unteren Rand folgende Knöpfe:
 	  <itemizedlist>
@@ -549,7 +553,7 @@
 
       <para> 
 	Bitte senden Sie alle Kommentare, Anregungen und Fehlerberichte an
-	die <ulink url="http://bugs.gnome.org" type="http">GNOME-Problemdatenbank</ulink>. Eine Anleitung zum Berichten von Fehlern findet sich online unter
+	die <ulink url="http://bugs.gnome.org/" type="http">GNOME-Problemdatenbank</ulink>. Eine Anleitung zum Berichten von Fehlern findet sich online unter
 	<ulink url="http://bugs.gnome.org/Reporting.html" type="http">http://bugs.gnome.org/Reporting.html</ulink>. Falls Sie GNOME 1.1 oder neuer verwenden,
 	können Sie auch den Befehl <command>bug-buddy</command> verwenden,
 	um Fehler zu berichten. Verwenden Sie dabei bitte gnome-applets als

@@ -30,6 +30,8 @@ extern "C" {
 
 /* --- typedefs & structures --- */
 typedef struct _GwmThumbNail GwmThumbNail;
+typedef void (*GwmThumbNailDestroy) (gpointer      user_data,
+				     GwmThumbNail *thumb_nail);
 struct _GwmThumbNail
 {
   GdkPixbuf *pixbuf;
@@ -39,7 +41,7 @@ struct _GwmThumbNail
   guint      default_color;
   gpointer   size_list;
   gpointer   user_data;
-  GDestroyNotify dtor;
+  GwmThumbNailDestroy dtor;
 };
 
 
@@ -50,7 +52,7 @@ GwmThumbNail*	gwm_thumb_nail_new		(guint		 default_color,
 						 guint		 height,
 						 glong		 grow_request_id,
 						 gpointer	 user_data,
-						 GDestroyNotify	 dtor);
+						 GwmThumbNailDestroy dtor);
 void		gwm_thumb_nail_destroy		(GwmThumbNail	*nail);
 void		gwm_thumb_nail_grow		(GwmThumbNail	*nail,
 						 guint		 width,

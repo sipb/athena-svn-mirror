@@ -1,4 +1,4 @@
-<!DOCTYPE article PUBLIC "-//GNOME//DTD DocBook PNG Variant V1.1//EN" [
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook V3.1//EN" [
 <!ENTITY GNOME-APPS SYSTEM "gnome-terminal.sgml">
 <!ENTITY term "<application>GNOME Terminal</application>">
  ]>
@@ -21,7 +21,7 @@
 	Barreiro</surname>
       </author>
     </authorgroup>
-    <legalnotice>
+    <legalnotice id="legalnotice">
       <para>No traducido por motivos legales</para>
       <para>
         Permission is granted to make and distribute verbatim copies
@@ -1002,7 +1002,7 @@ no tendra efecto alguno.
     <para>
       Por favor envíe todos sus comentarios, sugerencias, y informes de errores
       a la 
-      <ulink url="http://bugs.gnome.org" type="http">
+      <ulink url="http://bugs.gnome.org/" type="http">
 	base de datos de seguimiento de errores de Gnome</ulink>. Podrá encontrar 
       instrucciones para enviar informes de errores directamente accesibles en
       <ulink

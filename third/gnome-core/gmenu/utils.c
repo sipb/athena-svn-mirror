@@ -24,6 +24,9 @@
 /* Yaikes, this function frees the d, if it can't find it or make it*/
 gchar *check_for_dir(char *d)
 {
+	if (d == NULL)
+		return NULL;
+
 	if (!g_file_exists(d))
 		{
 		g_print(_("creating user directory: %s\n"), d);
@@ -70,7 +73,7 @@ file_is_editable(const gchar *path)
 		return FALSE;
 
 	if (S_ISDIR(st.st_mode)) {
-		gchar *dirpath = g_strconcat (path, ".directory", NULL);
+		gchar *dirpath = g_concat_dir_and_file (path, ".directory");
 		if (g_file_exists(dirpath)) {
 			if (!access(dirpath, W_OK)) {
 				g_free(dirpath);

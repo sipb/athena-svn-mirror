@@ -35,6 +35,7 @@
 #include "panel_config_global.h"
 #include "panel-util.h"
 #include "session.h"
+#include "icon-entry-hack.h"
 
 /* for MAIN_MENU_* */
 #include "menu.h"
@@ -52,6 +53,11 @@
  * want the compiler to shut up */
 GlobalConfig global_config = {0};
 static GlobalConfig loaded_config = {0};
+
+/* Heh, foo, we want to use utils, but they reference applets, and applets_last,
+ * so smoke some more crack and make these available */
+GSList *applets = NULL;
+GSList *applets_last = NULL;
 
 /* animation page */
 static GtkWidget *enable_animations_cb;
@@ -85,6 +91,7 @@ static GtkWidget *movement_type_switch_rb;
 static GtkWidget *movement_type_free_rb;
 static GtkWidget *movement_type_push_rb;
 static GtkAdjustment *applet_padding;
+static GtkAdjustment *applet_border_padding;
 
 
 /* menu page */
@@ -94,6 +101,7 @@ static GtkWidget *off_panel_popups_cb;
 static GtkWidget *hungry_menus_cb;
 static GtkWidget *use_large_icons_cb;
 static GtkWidget *merge_menus_cb;
+static GtkWidget *menu_check_cb;
 
 typedef struct {
 	int inline_flag;
@@ -123,10 +131,13 @@ static GtkWidget *tooltips_enabled_cb;
 static GtkWidget *drawer_auto_close_cb;
 static GtkWidget *autoraise_cb;
 static GtkWidget *keep_bottom_cb;
+static GtkWidget *above_cb;
+static GtkWidget *normal_layer_cb;
 static GtkWidget *keys_enabled_cb;
 static GtkWidget *menu_key_entry;
 static GtkWidget *run_key_entry;
 static GtkWidget *confirm_panel_remove_cb;
+static GtkWidget *avoid_collisions_cb;
 
 static gboolean changing = TRUE;
 static GtkWidget *capplet;
@@ -420,10 +431,10 @@ sync_config_with_buttons_page(GlobalConfig *conf)
 			GTK_TOGGLE_BUTTON(tile_enable_cb[i])->active;
 		g_free(conf->tile_up[i]);
 		conf->tile_up[i] =
-			gnome_icon_entry_get_filename(GNOME_ICON_ENTRY(entry_up[i]));
+			hack_icon_entry_get_icon (GNOME_ICON_ENTRY(entry_up[i]));
 		g_free(conf->tile_down[i]);
 		conf->tile_down[i] =
-			gnome_icon_entry_get_filename(GNOME_ICON_ENTRY(entry_down[i]));
+			hack_icon_entry_get_icon (GNOME_ICON_ENTRY(entry_down[i]));
 		conf->tile_border[i] = tile_border[i]->value;
 		conf->tile_depth[i] = tile_depth[i]->value;
 	}
@@ -499,7 +510,7 @@ icon_notebook_page(int i)
 					_("Normal tile"),
 					"tiles",
 					file,
-					NULL);
+					NULL, NULL);
 	g_free(file);
 	w = gnome_icon_entry_gtk_entry (GNOME_ICON_ENTRY (entry_up[i]));
 	gtk_signal_connect_while_alive(GTK_OBJECT(w), "changed",
@@ -512,7 +523,7 @@ icon_notebook_page(int i)
 					  _("Clicked tile"),
 					  "tiles",
 					  file,
-					  NULL);
+					  NULL, NULL);
 	g_free(file);
 	w = gnome_icon_entry_gtk_entry (GNOME_ICON_ENTRY (entry_down[i]));
 	gtk_signal_connect_while_alive(GTK_OBJECT(w), "changed",
@@ -643,7 +654,8 @@ sync_applets_page_with_config(GlobalConfig *conf)
 		break;
 	default: break;
 	}
-	gtk_adjustment_set_value(applet_padding,conf->applet_padding);
+	gtk_adjustment_set_value (applet_padding, conf->applet_padding);
+	gtk_adjustment_set_value (applet_border_padding, conf->applet_border_padding);
 }
 static void
 sync_config_with_applets_page(GlobalConfig *conf)
@@ -656,6 +668,7 @@ sync_config_with_applets_page(GlobalConfig *conf)
 		conf->movement_type = PANEL_PUSH_MOVE;
 	
 	conf->applet_padding = applet_padding->value;
+	conf->applet_border_padding = applet_border_padding->value;
 }
 
 
@@ -702,9 +715,14 @@ applets_notebook_page (void)
 			    GTK_SIGNAL_FUNC (changed_cb), NULL);
 	gtk_box_pack_start (GTK_BOX (box), movement_type_push_rb, FALSE, FALSE, 0);	
 
-	box = make_int_scale_box(_("Padding"),
-				 &applet_padding,
-				 0.0, 10.0, 1.0);
+	box = make_int_scale_box (_("Padding between applets"),
+				  &applet_padding,
+				  0.0, 10.0, 1.0);
+	gtk_box_pack_start (GTK_BOX (vbox), box, FALSE, FALSE, 0);
+	
+	box = make_int_scale_box (_("Padding between applets and panel border"),
+				  &applet_border_padding,
+				  0.0, 10.0, 1.0);
 	gtk_box_pack_start (GTK_BOX (vbox), box, FALSE, FALSE, 0);
 	
 
@@ -726,6 +744,8 @@ sync_menu_page_with_config(GlobalConfig *conf)
 				    conf->use_large_icons);
 	gtk_toggle_button_set_state(GTK_TOGGLE_BUTTON(merge_menus_cb),
 				    conf->merge_menus);
+	gtk_toggle_button_set_state(GTK_TOGGLE_BUTTON(menu_check_cb),
+				    conf->menu_check);
 
 	for (opt = menu_options; opt->inline_flag; ++opt) {
 		if (conf->menu_flags & opt->inline_flag)
@@ -752,6 +772,8 @@ sync_config_with_menu_page(GlobalConfig *conf)
 		GTK_TOGGLE_BUTTON(use_large_icons_cb)->active;
 	conf->merge_menus =
 		GTK_TOGGLE_BUTTON(merge_menus_cb)->active;
+	conf->menu_check =
+		GTK_TOGGLE_BUTTON(menu_check_cb)->active;
 	conf->menu_flags = 0;
 	for (opt = menu_options; opt->inline_flag; ++opt) {
 		if (GTK_TOGGLE_BUTTON (opt->inline_rb)->active)
@@ -815,7 +837,8 @@ menu_notebook_page(void)
 	use_large_icons_cb = gtk_check_button_new_with_label (_("Use large icons"));
 	gtk_signal_connect (GTK_OBJECT (use_large_icons_cb), "toggled",
 			    GTK_SIGNAL_FUNC (changed_cb), NULL);
-	gtk_table_attach_defaults(GTK_TABLE(table),use_large_icons_cb, 0,1,0,1);
+	gtk_table_attach_defaults (GTK_TABLE (table), use_large_icons_cb,
+				   0, 1, 0, 1);
 	
 	/* Dot Buttons */
 	show_dot_buttons_cb = gtk_check_button_new_with_label (_("Show [...] buttons"));
@@ -833,7 +856,8 @@ menu_notebook_page(void)
 	hungry_menus_cb = gtk_check_button_new_with_label (_("Keep menus in memory"));
 	gtk_signal_connect (GTK_OBJECT (hungry_menus_cb), "toggled", 
 			    GTK_SIGNAL_FUNC (changed_cb), NULL);
-	gtk_table_attach_defaults(GTK_TABLE(table),hungry_menus_cb, 1,2,1,2);
+	gtk_table_attach_defaults (GTK_TABLE (table), hungry_menus_cb,
+				   1, 2, 1, 2);
 
 	/* Merge system menus */
 	merge_menus_cb = gtk_check_button_new_with_label (_("Merge in system menus"));
@@ -841,6 +865,13 @@ menu_notebook_page(void)
 			    GTK_SIGNAL_FUNC (changed_cb),  NULL);
 	gtk_table_attach_defaults(GTK_TABLE(table), merge_menus_cb,
 				  0, 1, 2, 3);
+
+	/* Menu check */
+	menu_check_cb = gtk_check_button_new_with_label (_("Automatically re-check menus\nfor newly installed software"));
+	gtk_signal_connect (GTK_OBJECT (menu_check_cb), "toggled", 
+			    GTK_SIGNAL_FUNC (changed_cb),  NULL);
+	gtk_table_attach_defaults(GTK_TABLE(table), menu_check_cb,
+				  1, 2, 2, 3);
 
 	/* Menu frame */
 	frame = gtk_frame_new (_("Global menu"));
@@ -861,59 +892,96 @@ menu_notebook_page(void)
 static void
 sync_misc_page_with_config(GlobalConfig *conf)
 {
-	gtk_toggle_button_set_state(GTK_TOGGLE_BUTTON(tooltips_enabled_cb),
-				    conf->tooltips_enabled);
-	gtk_toggle_button_set_state(GTK_TOGGLE_BUTTON(drawer_auto_close_cb),
-				    conf->drawer_auto_close);
-	gtk_toggle_button_set_state(GTK_TOGGLE_BUTTON(autoraise_cb),
-				    conf->autoraise);
-	gtk_toggle_button_set_state(GTK_TOGGLE_BUTTON(keep_bottom_cb),
-				    conf->keep_bottom);
-	gtk_toggle_button_set_state(GTK_TOGGLE_BUTTON(confirm_panel_remove_cb),
-				    conf->confirm_panel_remove);
-	gtk_toggle_button_set_state(GTK_TOGGLE_BUTTON(keys_enabled_cb),
-				    conf->keys_enabled);
-	gtk_entry_set_text (GTK_ENTRY(menu_key_entry),
+	gtk_toggle_button_set_state (GTK_TOGGLE_BUTTON (tooltips_enabled_cb),
+				     conf->tooltips_enabled);
+	gtk_toggle_button_set_state (GTK_TOGGLE_BUTTON (drawer_auto_close_cb),
+				     conf->drawer_auto_close);
+	gtk_toggle_button_set_state (GTK_TOGGLE_BUTTON (autoraise_cb),
+				     conf->autoraise);
+	gtk_toggle_button_set_state (GTK_TOGGLE_BUTTON (keep_bottom_cb),
+				     conf->keep_bottom);
+	gtk_toggle_button_set_state (GTK_TOGGLE_BUTTON (normal_layer_cb),
+				     conf->normal_layer);
+	gtk_toggle_button_set_state (GTK_TOGGLE_BUTTON (above_cb),
+				     ! conf->normal_layer && ! conf->keep_bottom);
+
+	gtk_toggle_button_set_state (GTK_TOGGLE_BUTTON (confirm_panel_remove_cb),
+				     conf->confirm_panel_remove);
+	gtk_toggle_button_set_state (GTK_TOGGLE_BUTTON (avoid_collisions_cb),
+				     conf->avoid_collisions);
+	gtk_toggle_button_set_state (GTK_TOGGLE_BUTTON (keys_enabled_cb),
+				     conf->keys_enabled);
+	gtk_entry_set_text (GTK_ENTRY (menu_key_entry),
 			    conf->menu_key ? conf->menu_key : "");
-	gtk_entry_set_text (GTK_ENTRY(run_key_entry),
+	gtk_entry_set_text (GTK_ENTRY (run_key_entry),
 			    conf->run_key ? conf->run_key : "");
 }
+
 static void
 sync_config_with_misc_page(GlobalConfig *conf)
 {
 	conf->tooltips_enabled =
-		GTK_TOGGLE_BUTTON(tooltips_enabled_cb)->active;
+		GTK_TOGGLE_BUTTON (tooltips_enabled_cb)->active;
 	conf->drawer_auto_close =
-		GTK_TOGGLE_BUTTON(drawer_auto_close_cb)->active;
+		GTK_TOGGLE_BUTTON (drawer_auto_close_cb)->active;
 	conf->autoraise =
-		GTK_TOGGLE_BUTTON(autoraise_cb)->active;
+		GTK_TOGGLE_BUTTON (autoraise_cb)->active;
 	conf->keep_bottom =
-		GTK_TOGGLE_BUTTON(keep_bottom_cb)->active;
+		GTK_TOGGLE_BUTTON (keep_bottom_cb)->active;
+	conf->normal_layer =
+		GTK_TOGGLE_BUTTON (normal_layer_cb)->active;
 	conf->confirm_panel_remove =
-		GTK_TOGGLE_BUTTON(confirm_panel_remove_cb)->active;
+		GTK_TOGGLE_BUTTON (confirm_panel_remove_cb)->active;
+	conf->avoid_collisions =
+		GTK_TOGGLE_BUTTON (avoid_collisions_cb)->active;
 	conf->keys_enabled =
-		GTK_TOGGLE_BUTTON(keys_enabled_cb)->active;
-	g_free(conf->menu_key);
+		GTK_TOGGLE_BUTTON (keys_enabled_cb)->active;
+	g_free (conf->menu_key);
 	conf->menu_key =
-		g_strdup(gtk_entry_get_text (GTK_ENTRY(menu_key_entry)));
-	g_free(conf->run_key);
+		g_strdup (gtk_entry_get_text (GTK_ENTRY (menu_key_entry)));
+	g_free (conf->run_key);
 	conf->run_key =
-		g_strdup(gtk_entry_get_text (GTK_ENTRY(run_key_entry)));
+		g_strdup (gtk_entry_get_text (GTK_ENTRY (run_key_entry)));
 }
 
 static GtkWidget *grab_dialog;
 
+static gboolean 
+is_modifier (guint keycode)
+{
+	gint i;
+	gint map_size;
+	XModifierKeymap *mod_keymap;
+	gboolean retval = FALSE;
+
+	mod_keymap = XGetModifierMapping (gdk_display);
+
+	map_size = 8 * mod_keymap->max_keypermod;
+	i = 0;
+	while (i < map_size) {
+		
+		if (keycode == mod_keymap->modifiermap[i]) {
+			retval = TRUE;
+			break;
+		}
+		++i;
+	}
+
+	XFreeModifiermap (mod_keymap);
+
+	return retval;
+}
+
+
 static GdkFilterReturn
-grab_key_filter(GdkXEvent *gdk_xevent, GdkEvent *event, gpointer data)
+grab_key_filter (GdkXEvent *gdk_xevent, GdkEvent *event, gpointer data)
 {
 	XEvent *xevent = (XEvent *)gdk_xevent;
 	GtkEntry *entry;
 	char *key;
-
-	if (xevent->type != KeyPress && xevent->type != KeyRelease)
-		puts("EXIT X");
-	if (event->type != GDK_KEY_PRESS && event->type != GDK_KEY_RELEASE)
-		puts("EXIT GDK");
+	guint keycode, state;
+	char buf[10];
+	KeySym keysym;
 
 	if (xevent->type != KeyPress && xevent->type != KeyRelease)
 	/*if (event->type != GDK_KEY_PRESS && event->type != GDK_KEY_RELEASE)*/
@@ -921,18 +989,24 @@ grab_key_filter(GdkXEvent *gdk_xevent, GdkEvent *event, gpointer data)
 	
 	entry = GTK_ENTRY (data);
 
-	/* note: GDK has already translated the keycode to a keysym for us */
-	g_message ("keycode: %d\tstate: %d",
-		   event->key.keyval, event->key.state);
+	keycode = xevent->xkey.keycode;
 
-	key = convert_keysym_state_to_string (event->key.keyval,
-					      event->key.state);
-	gtk_entry_set_text (entry, key?key:"");
-	g_free(key);
+	if (is_modifier (keycode))
+		return GDK_FILTER_CONTINUE;
+
+	state = xevent->xkey.state;
+
+	XLookupString (&xevent->xkey, buf, 0, &keysym, NULL);
+  
+	key = convert_keysym_state_to_string (keysym,
+					      state);
+
+	gtk_entry_set_text (entry, key != NULL ? key : "");
+	g_free (key);
 
 	gdk_keyboard_ungrab (GDK_CURRENT_TIME);
 	gtk_widget_destroy (grab_dialog);
-	gdk_window_remove_filter (GDK_ROOT_PARENT(),
+	gdk_window_remove_filter (GDK_ROOT_PARENT (),
 				  grab_key_filter, data);
 
 	return GDK_FILTER_REMOVE;
@@ -947,7 +1021,7 @@ grab_button_pressed (GtkButton *button, gpointer data)
 	grab_dialog = gtk_window_new (GTK_WINDOW_POPUP);
 
 
-	gdk_keyboard_grab (GDK_ROOT_PARENT(), TRUE, GDK_CURRENT_TIME);
+	gdk_keyboard_grab (GDK_ROOT_PARENT(), FALSE, GDK_CURRENT_TIME);
 	gdk_window_add_filter (GDK_ROOT_PARENT(), grab_key_filter, data);
 
 	gtk_window_set_policy (GTK_WINDOW (grab_dialog), FALSE, FALSE, TRUE);
@@ -977,6 +1051,7 @@ misc_notebook_page(void)
 	GtkWidget *vbox;
 	GtkWidget *w;
 	GList *list;
+	GSList *group;
 	
 	/* main vbox */
 	vbox = gtk_vbox_new (FALSE, GNOME_PAD_SMALL);
@@ -1010,17 +1085,47 @@ misc_notebook_page(void)
 			    GTK_SIGNAL_FUNC (changed_cb), NULL);
 	gtk_box_pack_start (GTK_BOX (box), autoraise_cb, FALSE, FALSE, 0);
 
-	/* Keep on bottom */
-	keep_bottom_cb = gtk_check_button_new_with_label (_("Keep panel below windows (GNOME compliant window managers only)"));
-	gtk_signal_connect (GTK_OBJECT (keep_bottom_cb), "toggled", 
-			    GTK_SIGNAL_FUNC (changed_cb), NULL);
-	gtk_box_pack_start (GTK_BOX (box), keep_bottom_cb, FALSE, FALSE, 0);
-
 	/* Confirm panel removal */
 	confirm_panel_remove_cb = gtk_check_button_new_with_label (_("Confirm the removal of panels with a dialog"));
 	gtk_signal_connect (GTK_OBJECT (confirm_panel_remove_cb), "toggled", 
 			    GTK_SIGNAL_FUNC (changed_cb), NULL);
 	gtk_box_pack_start (GTK_BOX (box), confirm_panel_remove_cb, FALSE, FALSE, 0);
+
+	/* Collision avoidance */
+	avoid_collisions_cb = gtk_check_button_new_with_label (_("Try to avoid overlapping panels"));
+	gtk_signal_connect (GTK_OBJECT (avoid_collisions_cb), "toggled", 
+			    GTK_SIGNAL_FUNC (changed_cb), NULL);
+	gtk_box_pack_start (GTK_BOX (box), avoid_collisions_cb, FALSE, FALSE, 0);
+
+	/* Layer frame */
+	frame = gtk_frame_new (_("Panel treatment (GNOME compliant window managers only)"));
+	gtk_container_set_border_width(GTK_CONTAINER (frame), GNOME_PAD_SMALL);
+	gtk_box_pack_start (GTK_BOX (vbox), frame, FALSE, FALSE, 0);
+
+	/* vbox for frame */
+	box = gtk_vbox_new (FALSE, 0);
+	gtk_container_set_border_width(GTK_CONTAINER (box), GNOME_PAD_SMALL);
+	gtk_container_add (GTK_CONTAINER (frame), box);
+
+	/* Keep on bottom */
+	keep_bottom_cb = gtk_radio_button_new_with_label (NULL, _("Keep panels below other windows"));
+	gtk_signal_connect (GTK_OBJECT (keep_bottom_cb), "toggled", 
+			    GTK_SIGNAL_FUNC (changed_cb), NULL);
+	gtk_box_pack_start (GTK_BOX (box), keep_bottom_cb, FALSE, FALSE, 0);
+
+	/* Normal */
+	group = gtk_radio_button_group (GTK_RADIO_BUTTON (keep_bottom_cb));
+	normal_layer_cb = gtk_radio_button_new_with_label (group, _("Keep panels on the same level as other windows"));
+	gtk_signal_connect (GTK_OBJECT (normal_layer_cb), "toggled", 
+			    GTK_SIGNAL_FUNC (changed_cb), NULL);
+	gtk_box_pack_start (GTK_BOX (box), normal_layer_cb, FALSE, FALSE, 0);
+
+	/* Above */
+	group = gtk_radio_button_group (GTK_RADIO_BUTTON (keep_bottom_cb));
+	above_cb = gtk_radio_button_new_with_label (group, _("Keep panels above other windows"));
+	gtk_signal_connect (GTK_OBJECT (above_cb), "toggled", 
+			    GTK_SIGNAL_FUNC (changed_cb), NULL);
+	gtk_box_pack_start (GTK_BOX (box), above_cb, FALSE, FALSE, 0);
 
 	/* Key Bindings frame */
 	frame = gtk_frame_new (_("Key Bindings"));
@@ -1044,7 +1149,9 @@ misc_notebook_page(void)
 	
 	/* menu key */
 	w = gtk_label_new (_("Popup menu key"));
-	gtk_table_attach_defaults (GTK_TABLE (table), w, 0, 1, 1, 2);
+	gtk_misc_set_alignment (GTK_MISC (w), 0.0, 0.5);
+	gtk_table_attach (GTK_TABLE (table), w, 0, 1, 1, 2,
+			  GTK_FILL, GTK_FILL, 0, 0);
 	
 
 	list = g_list_append(NULL, "Mod1-F1");
@@ -1064,14 +1171,17 @@ misc_notebook_page(void)
 	gtk_table_attach_defaults (GTK_TABLE (table), w, 1, 2, 1, 2);
 
 	w = gtk_button_new_with_label (_("Grab key..."));
-	gtk_table_attach_defaults (GTK_TABLE (table), w, 2, 3, 1, 2);
+	gtk_table_attach (GTK_TABLE (table), w, 2, 3, 1, 2,
+			  GTK_FILL, GTK_FILL, 0, 0);
 	gtk_signal_connect (GTK_OBJECT (w), "clicked",
 			    GTK_SIGNAL_FUNC (grab_button_pressed),
 			    menu_key_entry);
 
 	/* run key...*/
 	w = gtk_label_new (_("Run dialog key"));
-	gtk_table_attach_defaults (GTK_TABLE (table), w, 0, 1, 2, 3);
+	gtk_misc_set_alignment (GTK_MISC (w), 0.0, 0.5);
+	gtk_table_attach (GTK_TABLE (table), w, 0, 1, 2, 3,
+			  GTK_FILL, GTK_FILL, 0, 0);
 	
 	list = g_list_append(NULL, "Mod1-F2");
 	list = g_list_append(list, "Control-Mod1-r");
@@ -1089,7 +1199,8 @@ misc_notebook_page(void)
 	gtk_table_attach_defaults (GTK_TABLE (table), w, 1, 2, 2, 3);
 
 	w = gtk_button_new_with_label (_("Grab key..."));
-	gtk_table_attach_defaults (GTK_TABLE (table), w, 2, 3, 2, 3);
+	gtk_table_attach (GTK_TABLE (table), w, 2, 3, 2, 3,
+			  GTK_FILL, GTK_FILL, 0, 0);
 	gtk_signal_connect (GTK_OBJECT (w), "clicked",
 			    GTK_SIGNAL_FUNC (grab_button_pressed),
 			    run_key_entry);
@@ -1099,17 +1210,23 @@ misc_notebook_page(void)
 }
 
 static void
-help(GtkWidget *capplet)
+help (GtkWidget *capplet)
 {
-	panel_pbox_help_cb (NULL, 0, "globalpanelprefs.html");
+	panel_show_help ("globalpanelprefs.html");
 }
 
 static void
-loadup_vals(void)
+loadup_vals (void)
 {
 	GString *buf;
-	char *tile_def[]={"normal","purple","green","blue"};
+	char *tile_def[] = {
+		"normal",
+		"purple",
+		"green",
+		"blue"
+	};
 	int i;
+	gboolean def;
 	
 	buf = g_string_new(NULL);
 
@@ -1132,69 +1249,97 @@ loadup_vals(void)
 	global_config.merge_menus =
 		gnome_config_get_bool("merge_menus=TRUE");
 
+	global_config.menu_check =
+		gnome_config_get_bool("menu_check=TRUE");
+
 	global_config.off_panel_popups =
 		gnome_config_get_bool("off_panel_popups=TRUE");
 		
 	global_config.disable_animations =
 		gnome_config_get_bool("disable_animations=FALSE");
 		
-	g_string_sprintf(buf,"auto_hide_step_size=%d",
-			 DEFAULT_AUTO_HIDE_STEP_SIZE);
-	global_config.auto_hide_step_size=gnome_config_get_int(buf->str);
+	g_string_sprintf (buf, "auto_hide_step_size=%d",
+			  DEFAULT_AUTO_HIDE_STEP_SIZE);
+	global_config.auto_hide_step_size=gnome_config_get_int (buf->str);
 		
-	g_string_sprintf(buf,"explicit_hide_step_size=%d",
-			 DEFAULT_EXPLICIT_HIDE_STEP_SIZE);
-	global_config.explicit_hide_step_size=gnome_config_get_int(buf->str);
+	g_string_sprintf (buf, "explicit_hide_step_size=%d",
+			  DEFAULT_EXPLICIT_HIDE_STEP_SIZE);
+	global_config.explicit_hide_step_size=gnome_config_get_int (buf->str);
 		
-	g_string_sprintf(buf,"drawer_step_size=%d",
-			 DEFAULT_DRAWER_STEP_SIZE);
+	g_string_sprintf (buf, "drawer_step_size=%d",
+			  DEFAULT_DRAWER_STEP_SIZE);
 	global_config.drawer_step_size=gnome_config_get_int(buf->str);
 		
-	g_string_sprintf(buf,"minimize_delay=%d", DEFAULT_MINIMIZE_DELAY);
-	global_config.minimize_delay=gnome_config_get_int(buf->str);
+	g_string_sprintf (buf, "minimize_delay=%d", DEFAULT_MINIMIZE_DELAY);
+	global_config.minimize_delay=gnome_config_get_int (buf->str);
 		
-	g_string_sprintf(buf,"minimized_size=%d", DEFAULT_MINIMIZED_SIZE);
-	global_config.minimized_size=gnome_config_get_int(buf->str);
+	g_string_sprintf (buf, "minimized_size=%d", DEFAULT_MINIMIZED_SIZE);
+	global_config.minimized_size=gnome_config_get_int (buf->str);
 		
-	g_string_sprintf(buf,"movement_type=%d", PANEL_SWITCH_MOVE);
-	global_config.movement_type=gnome_config_get_int(buf->str);
+	g_string_sprintf (buf, "movement_type=%d", PANEL_SWITCH_MOVE);
+	global_config.movement_type=gnome_config_get_int (buf->str);
 
-	g_string_sprintf(buf,"menu_flags=%d", 
-			 (int)(MAIN_MENU_SYSTEM_SUB | MAIN_MENU_USER_SUB|
-			       MAIN_MENU_APPLETS_SUB | MAIN_MENU_DISTRIBUTION_SUB|
-			       MAIN_MENU_KDE_SUB | MAIN_MENU_PANEL | MAIN_MENU_DESKTOP));
+	g_string_sprintf (buf, "menu_flags=%d", 
+			  (int)(MAIN_MENU_SYSTEM_SUB | MAIN_MENU_USER_SUB|
+				MAIN_MENU_APPLETS_SUB | MAIN_MENU_DISTRIBUTION_SUB|
+				MAIN_MENU_KDE_SUB | MAIN_MENU_PANEL | MAIN_MENU_DESKTOP));
 	global_config.menu_flags = gnome_config_get_int(buf->str);
 
-	global_config.keys_enabled = gnome_config_get_bool("keys_enabled=TRUE");
+	global_config.keys_enabled =
+		gnome_config_get_bool ("keys_enabled=TRUE");
 
-	global_config.menu_key = gnome_config_get_string("menu_key=Mod1-F1");
+	global_config.menu_key = gnome_config_get_string ("menu_key=Mod1-F1");
 	/*convert_string_to_keysym_state(global_config.menu_key,
 				       &global_config.menu_keysym,
 				       &global_config.menu_state);*/
 
-	global_config.run_key = gnome_config_get_string("run_key=Mod1-F2");
+	global_config.run_key = gnome_config_get_string ("run_key=Mod1-F2");
 	/*convert_string_to_keysym_state(global_config.run_key,
 				       &global_config.run_keysym,
 				       &global_config.run_state);*/
 
-	global_config.applet_padding=gnome_config_get_int("applet_padding=3");
+	global_config.applet_padding =
+		gnome_config_get_int ("applet_padding=3");
+
+	global_config.applet_border_padding =
+		gnome_config_get_int("applet_border_padding=0");
 
 	global_config.autoraise = gnome_config_get_bool("autoraise=TRUE");
 
-	global_config.keep_bottom = gnome_config_get_bool("keep_bottom=TRUE");
+	global_config.keep_bottom =
+		gnome_config_get_bool_with_default ("keep_bottom=FALSE", &def);
+	/* if keep bottom was the default, then we want to do a nicer
+	 * saner default which is normal layer.  If it was not the
+	 * default then we don't want to change the layerness as it was
+	 * selected by the user and thus we default to FALSE */
+	if (def)
+		global_config.normal_layer =
+			gnome_config_get_bool ("normal_layer=TRUE");
+	else
+		global_config.normal_layer =
+			gnome_config_get_bool ("normal_layer=FALSE");
 
-	global_config.drawer_auto_close = gnome_config_get_bool("drawer_auto_close=FALSE");
-	global_config.simple_movement = gnome_config_get_bool("simple_movement=FALSE");
-	global_config.hide_panel_frame = gnome_config_get_bool("hide_panel_frame=FALSE");
-	global_config.tile_when_over = gnome_config_get_bool("tile_when_over=FALSE");
-	global_config.saturate_when_over = gnome_config_get_bool("saturate_when_over=TRUE");
-	global_config.confirm_panel_remove = gnome_config_get_bool("confirm_panel_remove=TRUE");
-	global_config.fast_button_scaling = gnome_config_get_bool("fast_button_scaling=FALSE");
+	global_config.drawer_auto_close =
+		gnome_config_get_bool ("drawer_auto_close=FALSE");
+	global_config.simple_movement =
+		gnome_config_get_bool ("simple_movement=FALSE");
+	global_config.hide_panel_frame =
+		gnome_config_get_bool ("hide_panel_frame=FALSE");
+	global_config.tile_when_over =
+		gnome_config_get_bool ("tile_when_over=FALSE");
+	global_config.saturate_when_over =
+		gnome_config_get_bool ("saturate_when_over=TRUE");
+	global_config.confirm_panel_remove =
+		gnome_config_get_bool ("confirm_panel_remove=TRUE");
+	global_config.avoid_collisions =
+		gnome_config_get_bool ("avoid_collisions=TRUE");
+	global_config.fast_button_scaling =
+		gnome_config_get_bool ("fast_button_scaling=FALSE");
 
-	for(i=0;i<LAST_TILE;i++) {
-		g_string_sprintf(buf,"new_tiles_enabled_%d=FALSE",i);
+	for (i = 0; i < LAST_TILE; i++) {
+		g_string_sprintf (buf, "new_tiles_enabled_%d=FALSE", i);
 		global_config.tiles_enabled[i] =
-			gnome_config_get_bool(buf->str);
+			gnome_config_get_bool (buf->str);
 
 		g_free(global_config.tile_up[i]);
 		g_string_sprintf(buf,"tile_up_%d=tiles/tile-%s-up.png",
@@ -1235,11 +1380,11 @@ tell_panel(void)
 }
 
 static void
-write_config(GlobalConfig *conf)
+write_config (GlobalConfig *conf)
 {
 	int i;
 	GString *buf;
-	gnome_config_push_prefix("/panel/Config/");
+	gnome_config_push_prefix ("/panel/Config/");
 
 	gnome_config_set_int("auto_hide_step_size",
 			     conf->auto_hide_step_size);
@@ -1263,16 +1408,22 @@ write_config(GlobalConfig *conf)
 			      conf->use_large_icons);
 	gnome_config_set_bool("merge_menus",
 			      conf->merge_menus);
+	gnome_config_set_bool("menu_check",
+			      conf->menu_check);
 	gnome_config_set_bool("off_panel_popups",
 			      conf->off_panel_popups);
 	gnome_config_set_bool("disable_animations",
 			      conf->disable_animations);
 	gnome_config_set_int("applet_padding",
 			     conf->applet_padding);
+	gnome_config_set_int("applet_border_padding",
+			     conf->applet_border_padding);
 	gnome_config_set_bool("autoraise",
 			      conf->autoraise);
 	gnome_config_set_bool("keep_bottom",
 			      conf->keep_bottom);
+	gnome_config_set_bool("normal_layer",
+			      conf->normal_layer);
 	gnome_config_set_bool("drawer_auto_close",
 			      conf->drawer_auto_close);
 	gnome_config_set_bool("simple_movement",
@@ -1285,6 +1436,8 @@ write_config(GlobalConfig *conf)
 			      conf->saturate_when_over);
 	gnome_config_set_bool("confirm_panel_remove",
 			      conf->confirm_panel_remove);
+	gnome_config_set_bool("avoid_collisions",
+			      conf->avoid_collisions);
 	gnome_config_set_int("menu_flags", conf->menu_flags);
 	gnome_config_set_bool("keys_enabled", conf->keys_enabled);
 	gnome_config_set_string("menu_key", conf->menu_key);

@@ -87,6 +87,9 @@ GNOME_INCLUDEDIR = @GNOME_INCLUDEDIR@
 GNOME_LIBDIR = @GNOME_LIBDIR@
 GNOME_LIBS = @GNOME_LIBS@
 GNOME_PRINT_PREFIX = @GNOME_PRINT_PREFIX@
+GNOME_TERMINAL_CFLAGS = @GNOME_TERMINAL_CFLAGS@
+GNOME_TERMINAL_LIBS = @GNOME_TERMINAL_LIBS@
+GNOME_XML_CFLAGS = @GNOME_XML_CFLAGS@
 GNOME_XML_LIB = @GNOME_XML_LIB@
 GNORBA_CFLAGS = @GNORBA_CFLAGS@
 GNORBA_LIBS = @GNORBA_LIBS@
@@ -120,6 +123,7 @@ ORBIT_LIBS = @ORBIT_LIBS@
 ORB_CFLAGS = @ORB_CFLAGS@
 ORB_LIBS = @ORB_LIBS@
 PACKAGE = @PACKAGE@
+PATH_TO_XRDB = @PATH_TO_XRDB@
 PIXBUF_CFLAGS = @PIXBUF_CFLAGS@
 PIXBUF_LIBS = @PIXBUF_LIBS@
 POFILES = @POFILES@
@@ -131,6 +135,10 @@ USE_INCLUDED_LIBINTL = @USE_INCLUDED_LIBINTL@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
 WINDOW_MANAGER = @WINDOW_MANAGER@
+XML_I18N_EXTRACT = @XML_I18N_EXTRACT@
+XML_I18N_MERGE = @XML_I18N_MERGE@
+XML_I18N_TOOLS_PERL = @XML_I18N_TOOLS_PERL@
+XML_I18N_UPDATE = @XML_I18N_UPDATE@
 XPM_LIBS = @XPM_LIBS@
 YACC = @YACC@
 ZVT_LIBS = @ZVT_LIBS@
@@ -139,22 +147,10 @@ cxxflags_set = @cxxflags_set@
 gnomelocaledir = @gnomelocaledir@
 l = @l@
 
-panel = panel
-applets = applets
-idl = idl
-
-always_built_SUBDIRS =  	 gsm smproxy pixmaps desktop-links help-browser 	 gnome-terminal gmenu gnome-edit gnome-hint gnome-about
+SUBDIRS =  	 intl 	 po 	 macros 	 gsm 	 smproxy 	 pixmaps 	 desktop-links 	 help-browser 	 gnome-terminal 	 gmenu 	 gnome-edit 	 gnome-hint 	 gnome-about 	 core-docs 	 panel 	 applets 	 omf-install 	 idl
 
 
-sometimes_built_SUBDIRS = panel applets idl
-
-SUBDIRS = intl po macros 	 $(always_built_SUBDIRS) $(panel) $(applets) $(idl)
-
-
-#DIST_SUBDIRS = intl po macros $(always_built_SUBDIRS) \
-#	$(sometimes_built_SUBDIRS)
-
-EXTRA_DIST =  	gnome-core.spec.in		gnome-core.spec			applet-docs.make		app-docs.make
+EXTRA_DIST =  	gnome-core.spec.in		gnome-core.spec			COPYING-DOCS			applet-docs.make		app-docs.make			xml-i18n-extract.in		xml-i18n-merge.in		xml-i18n-update.in
 
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs

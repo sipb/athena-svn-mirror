@@ -201,7 +201,7 @@ check_orbit_dir(void)
   char buf[PATH_MAX];
   struct stat sbuf;
 
-  sprintf(buf, "/tmp/orbit-%s", g_get_user_name());
+  g_snprintf(buf, sizeof(buf), "/tmp/orbit-%s", g_get_user_name());
   if(stat(buf, &sbuf))
     return TRUE; /* Doesn't exist - things are fine */
 
@@ -212,12 +212,14 @@ check_orbit_dir(void)
   return TRUE;
 }
 
+#ifdef DO_LIBICE_CHECK
 static gboolean
 check_for_libice_bug (void)
 {
 	int retval = system ("gnome-libice-check");
 	return retval == -1 || retval == 0 ||  retval == 127;
 }
+#endif
 
 int
 main (int argc, char **argv)

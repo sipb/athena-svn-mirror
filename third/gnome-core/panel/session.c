@@ -11,12 +11,15 @@
 #include <signal.h>
 #include <limits.h>
 #include <unistd.h>
+#include <sys/types.h>
+#include <sys/wait.h>
 #include <gnome.h>
 #include <gdk/gdkx.h>
 #include <X11/keysym.h>
 #include "panel-include.h"
 #include "gnome-run.h"
 #include "global-keys.h"
+#include "xstuff.h"
 
 /*#define PANEL_DEBUG 1*/
 
@@ -36,8 +39,8 @@ extern GnomeClient *client;
 
 GlobalConfig global_config;
 
-char *panel_cfg_path=NULL;
-char *old_panel_cfg_path=NULL;
+char *panel_cfg_path = NULL;
+char *old_panel_cfg_path = NULL;
 
 /*list of all panel widgets created*/
 extern GSList *panel_list;
@@ -47,30 +50,31 @@ extern char *kde_icondir;
 extern char *kde_mini_icondir;
 
 int ss_cur_applet = 0;
-int ss_done_save = FALSE;
+gboolean ss_done_save = FALSE;
 gushort ss_cookie = 0;
 GtkWidget *ss_timeout_dlg = NULL;
-static int ss_interactive = FALSE;
+static gboolean ss_interactive = FALSE;
 static int ss_timeout = 500;
 
 /*send the tooltips state to all external applets*/
 static void
-send_tooltips_state(int enabled)
+send_tooltips_state(gboolean enabled)
 {
 	GSList *li;
 
-	for(li = applets; li!=NULL; li = g_slist_next(li)) {
+	for(li = applets; li != NULL; li = li->next) {
 		AppletInfo *info = li->data;
-		if(info->type == APPLET_EXTERN) {
+		if (info->type == APPLET_EXTERN) {
 			Extern *ext = info->data;
-			g_assert(ext);
+			g_assert(ext != NULL);
 			/*if it's not set yet, don't send it, it will be sent
 			  when the ior is discovered anyhow, so this would be
 			  redundant anyway*/
-			if(ext->applet) {
+			if (ext->applet != NULL) {
 				CORBA_Environment ev;
 				CORBA_exception_init(&ev);
-				GNOME_Applet_set_tooltips_state(ext->applet, enabled, &ev);
+				GNOME_Applet_set_tooltips_state(ext->applet,
+								enabled, &ev);
 				if(ev._major)
 					panel_clean_applet(ext->info);
 				CORBA_exception_free(&ev);
@@ -80,17 +84,20 @@ send_tooltips_state(int enabled)
 }
 
 void
-apply_global_config(void)
+apply_global_config (void)
 {
 	int i;
 	static int dot_buttons_old = 0; /*doesn't matter first time this is
 					  done there are no menu applets*/
 	static int keep_bottom_old = -1;
+	static int normal_layer_old = -1;
 	static int autohide_size_old = -1;
 	static int menu_flags_old = -1;
 	static int old_use_large_icons = -1;
 	static int old_merge_menus = -1;
+	static int old_menu_check = -1;
 	static int old_fast_button_scaling = -1;
+	static int old_avoid_collisions = -1;
 	GSList *li;
 
 	panel_widget_change_global(global_config.explicit_hide_step_size,
@@ -100,7 +107,8 @@ apply_global_config(void)
 				   global_config.minimize_delay,
 				   global_config.movement_type,
 				   global_config.disable_animations,
-				   global_config.applet_padding);
+				   global_config.applet_padding,
+				   global_config.applet_border_padding);
 
 	if(global_config.tooltips_enabled)
 		gtk_tooltips_enable(panel_tooltips);
@@ -108,7 +116,8 @@ apply_global_config(void)
 		gtk_tooltips_disable(panel_tooltips);
 	/* not incredibly efficent way to do this, we just make
 	 * sure that all directories are reread */
-	if(old_merge_menus != global_config.merge_menus) {
+	if (old_merge_menus != global_config.merge_menus ||
+	    old_menu_check != global_config.menu_check) {
 		fr_force_reread();
 	}
 	/*if we changed dot_buttons/small_icons mark all menus as dirty
@@ -116,7 +125,8 @@ apply_global_config(void)
 	  so that he doesn't have to reread his menus all the time:)*/
 	if(dot_buttons_old != global_config.show_dot_buttons ||
 	   old_use_large_icons != global_config.use_large_icons ||
-	   old_merge_menus != global_config.merge_menus) {
+	   old_merge_menus != global_config.merge_menus ||
+	   old_menu_check != global_config.menu_check) {
 		GSList *li;
 		for(li = applets; li != NULL; li = g_slist_next(li)) {
 			AppletInfo *info = li->data;
@@ -147,6 +157,7 @@ apply_global_config(void)
 	dot_buttons_old = global_config.show_dot_buttons;
 	old_use_large_icons = global_config.use_large_icons;
 	old_merge_menus = global_config.merge_menus;
+	old_menu_check = global_config.menu_check;
 	send_tooltips_state(global_config.tooltips_enabled);
 
 	/* if we changed global menu flags, cmark all main menus that use
@@ -167,27 +178,31 @@ apply_global_config(void)
 		}
 	}
 
-	if(keep_bottom_old == -1 ||
-	   keep_bottom_old != global_config.keep_bottom) {
-		for(li = panel_list; li != NULL; li = g_slist_next(li)) {
+	if (keep_bottom_old == -1 ||
+	    keep_bottom_old != global_config.keep_bottom ||
+	    normal_layer_old == -1 ||
+	    normal_layer_old != global_config.normal_layer) {
+		for (li = panel_list; li != NULL; li = li->next) {
 			PanelData *pd = li->data;
-			if(!GTK_WIDGET_REALIZED(pd->panel))
+			if ( ! GTK_WIDGET_REALIZED (pd->panel))
 				continue;
 			if (IS_BASEP_WIDGET (pd->panel))
 				basep_widget_update_winhints (BASEP_WIDGET (pd->panel));
 			else if (IS_FOOBAR_WIDGET (pd->panel))
 				foobar_widget_update_winhints (FOOBAR_WIDGET (pd->panel));
 		}
+		panel_reset_dialog_layers ();
 	}
 	keep_bottom_old = global_config.keep_bottom;
+	normal_layer_old = global_config.normal_layer;
 
-	for(i = 0; i < LAST_TILE; i++) {
-		button_widget_set_flags(i, global_config.tiles_enabled[i],
-					1, 0);
-		button_widget_load_tile(i, global_config.tile_up[i],
-					global_config.tile_down[i],
-					global_config.tile_border[i],
-					global_config.tile_depth[i]);
+	for (i = 0; i < LAST_TILE; i++) {
+		button_widget_set_flags (i, global_config.tiles_enabled[i],
+					 1, 0);
+		button_widget_load_tile (i, global_config.tile_up[i],
+					 global_config.tile_down[i],
+					 global_config.tile_border[i],
+					 global_config.tile_depth[i]);
 	}
 
 	if (old_fast_button_scaling != global_config.fast_button_scaling) {
@@ -195,7 +210,7 @@ apply_global_config(void)
 	}
 	old_fast_button_scaling = global_config.fast_button_scaling;
 
-	for(li = panel_list; li != NULL; li = g_slist_next(li)) {
+	for (li = panel_list; li != NULL; li = li->next) {
 		PanelData *pd = li->data;
 		if (IS_BASEP_WIDGET (pd->panel)) {
 			if ((autohide_size_old != global_config.minimized_size) &&
@@ -217,11 +232,16 @@ apply_global_config(void)
 	autohide_size_old = global_config.minimized_size;
 	menu_flags_old = global_config.menu_flags;
 
+	if (old_avoid_collisions != global_config.avoid_collisions) {
+		basep_border_queue_recalc ();
+	}
+	old_avoid_collisions = global_config.avoid_collisions;
+
 	panel_global_keys_setup();
 }
 
 static void
-timeout_dlg_realized(GtkWidget *dialog)
+timeout_dlg_realized (GtkWidget *dialog)
 {
 	/* always make top layer */
 	gnome_win_hints_set_layer (GTK_WIDGET(dialog),
@@ -229,17 +249,19 @@ timeout_dlg_realized(GtkWidget *dialog)
 }
 
 static gboolean
-session_save_timeout(gpointer data)
+session_save_timeout (gpointer data)
 {
-	int cookie = GPOINTER_TO_INT(data);
-	if(cookie != ss_cookie)
+	int cookie = GPOINTER_TO_INT (data);
+	if (cookie != ss_cookie)
 		return FALSE;
 
 #ifdef PANEL_DEBUG	
 	printf("SAVE TIMEOUT (%u)\n",ss_cookie);
 #endif
-	if (!ss_interactive)
+	if ( ! ss_interactive) {
+		ss_cookie ++;
 		return FALSE;
+	}
 
 	ss_timeout_dlg =
 		gnome_message_box_new(_("An applet is not "
@@ -324,22 +346,6 @@ send_applet_session_save (AppletInfo *info,
 }
 
 
-static void
-convert_dentry_to_gnome(GnomeDesktopEntry *dentry)
-{
-	int i;
-	dentry->is_kde = FALSE;
-	for(i=0; i<dentry->exec_length; i++) {
-		if(dentry->exec[i][0] == '%' &&
-		   strlen(dentry->exec[i]) == 2) {
-			g_free(dentry->exec[i]);
-			dentry->exec[i] = g_strdup("");
-		}
-	}
-}
-
-
-
 /*returns TRUE if the save was completed, FALSE if we need to wait
   for the applet to respond*/
 static int
@@ -347,6 +353,7 @@ save_applet_configuration(AppletInfo *info)
 {
 	GString       *buf;
 	int            panel_num;
+	int            panel_id;
 	PanelWidget   *panel;
 	AppletData    *ad;
 	
@@ -384,6 +391,7 @@ save_applet_configuration(AppletInfo *info)
 		g_string_free(buf,TRUE);
 		return TRUE;
 	}
+	panel_id = panel->unique_id;
 
 	switch(info->type) {
 	case APPLET_EXTERN:
@@ -436,8 +444,8 @@ save_applet_configuration(AppletInfo *info)
 					  BASEP_WIDGET(drawer->drawer)->panel);
 			if(i>=0)
 				gnome_config_set_int("parameters",i);
-			else
-				g_warning("Drawer not associated with applet!");
+			gnome_config_set_int ("unique_drawer_panel_id", 
+					      PANEL_WIDGET (BASEP_WIDGET(drawer->drawer)->panel)->unique_id);
 			gnome_config_set_string("pixmap",
 						drawer->pixmap);
 			gnome_config_set_string("tooltip",
@@ -476,19 +484,15 @@ save_applet_configuration(AppletInfo *info)
 	case APPLET_LAUNCHER:
 		{
 			Launcher *launcher = info->data;
-			/*we set the .desktop to be in the panel config
-			  dir*/
-			g_string_sprintf(buf, "%s/%sApplet_%d.desktop",
-					 gnome_user_dir,PANEL_CONFIG_PATH,
-					 info->applet_id+1);
-			g_free(launcher->dentry->location);
-			launcher->dentry->location = g_strdup(buf->str);
-			if(launcher->dentry->is_kde)
-				convert_dentry_to_gnome(launcher->dentry);
-			gnome_desktop_entry_save(launcher->dentry);
 
-			gnome_config_set_string("id", LAUNCHER_ID);
-			gnome_config_set_string("parameters", buf->str);
+			gnome_config_set_string ("id", LAUNCHER_ID);
+
+			/* clean old launcher info */
+			gnome_config_clean_key ("parameters");
+
+			launcher_save (launcher);
+			gnome_config_set_string ("base_location",
+						 g_basename (launcher->dentry->location));
 			break;
 		}
 	case APPLET_LOGOUT:
@@ -510,6 +514,7 @@ save_applet_configuration(AppletInfo *info)
 	}
 	gnome_config_set_int("position", ad->pos);
 	gnome_config_set_int("panel", panel_num);
+	gnome_config_set_int("unique_panel_id", panel_id);
 	gnome_config_set_bool("right_stick",
 			      panel_widget_is_applet_stuck(panel,
 							   info->widget));
@@ -558,7 +563,13 @@ save_panel_configuration(gpointer data, gpointer user_data)
 	
 		gnome_config_set_int ("mode", basep->mode);
 		gnome_config_set_int ("state", basep->state);
+
+		gnome_config_set_int ("level", basep->level);
+		gnome_config_set_bool ("avoid_on_maximize",
+				       basep->avoid_on_maximize);
 	}
+
+	gnome_config_set_int("unique_id", panel->unique_id);
 
 	gnome_config_set_int("sz", panel->sz);
 
@@ -566,8 +577,8 @@ save_panel_configuration(gpointer data, gpointer user_data)
 	gnome_config_set_bool("strech_pixmap_bg", panel->strech_pixmap_bg);
 	gnome_config_set_bool("rotate_pixmap_bg", panel->rotate_pixmap_bg);
 
-	gnome_config_set_string("backpixmap",
-				panel->back_pixmap ? panel->back_pixmap : "");
+	gnome_config_set_string ("backpixmap",
+				 sure_string (panel->back_pixmap));
 
 	g_string_sprintf(buf, "#%02x%02x%02x",
 			 (guint)panel->back_color.red/256,
@@ -641,9 +652,9 @@ save_next_applet(void)
 
 static void
 do_session_save(GnomeClient *client,
-		int complete_sync,
-		int sync_applets,
-		int sync_panels)
+		gboolean complete_sync,
+		gboolean sync_applets,
+		gboolean sync_panels)
 {
 	int num;
 #if PER_SESSION_CONFIGURATION
@@ -683,7 +694,7 @@ do_session_save(GnomeClient *client,
 #endif
 	if(complete_sync || sync_panels) {
 		num = 1;
-		g_slist_foreach(panel_list, save_panel_configuration,&num);
+		g_slist_foreach(panel_list, save_panel_configuration, &num);
 		gnome_config_set_int("panel_count",num-1);
 	}
 #ifdef PANEL_DEBUG
@@ -699,7 +710,12 @@ do_session_save(GnomeClient *client,
 	if(complete_sync || sync_applets) {
 		ss_cur_applet = -1;
 		ss_done_save = FALSE;
-		save_next_applet();
+
+		/* kill removed launcher files */
+		remove_unused_launchers ();
+
+		/* start saving applets */
+		save_next_applet ();
 	}
 
 
@@ -708,12 +724,22 @@ do_session_save(GnomeClient *client,
 #endif
 }
 
+static guint sync_handler = 0;
+static gboolean sync_handler_needed = FALSE;
+
 void
 panel_config_sync(void)
 {
 	int ncs = need_complete_save;
 	int ats = applets_to_sync;
 	int pts = panels_to_sync;
+
+	if (sync_handler != 0) {
+		gtk_timeout_remove (sync_handler);
+		sync_handler = 0;
+	}
+
+	sync_handler_needed = FALSE;
 
 	if(need_complete_save ||
 	   applets_to_sync ||
@@ -725,7 +751,7 @@ panel_config_sync(void)
 			need_complete_save = FALSE;
 			applets_to_sync = FALSE;
 			panels_to_sync = FALSE;
-			do_session_save(client,ncs,ats,pts);
+			do_session_save (client, ncs, ats, pts);
 #ifdef PER_SESSION_CONFIGURATION
 		} else {
 			/*prevent possible races by doing this before requesting
@@ -737,6 +763,31 @@ panel_config_sync(void)
 						   GNOME_INTERACT_NONE, FALSE, FALSE);
 		}
 #endif /* PER_SESSION_CONFIGURATION */
+	}
+}
+
+static gboolean
+sync_handler_timeout (gpointer data)
+{
+	sync_handler = 0;
+
+	if (sync_handler_needed)
+		panel_config_sync ();
+
+	return FALSE;
+}
+
+void
+panel_config_sync_schedule (void)
+{
+	if (sync_handler == 0) {
+		/* don't sync for another 30 secs */
+		sync_handler = gtk_timeout_add (30000, sync_handler_timeout, NULL);
+		sync_handler_needed = FALSE;
+		panel_config_sync ();
+	} else {
+		/* a timeout is running */
+		sync_handler_needed = TRUE;
 	}
 }
 
@@ -762,13 +813,6 @@ panel_session_save (GnomeClient *client,
 	}
 	do_session_save(client,TRUE,FALSE,FALSE);
 	if (is_shutdown) {
-		GSList *li;
-		for(li=panel_list;li;li=g_slist_next(li)) {
-			PanelData *pd = li->data;
-			gtk_widget_hide(pd->panel);
-			if (pd->menu)
-				gtk_widget_hide(pd->menu);
-		}
 		while(!ss_done_save)
 			gtk_main_iteration_do(TRUE);
 	}
@@ -782,15 +826,13 @@ panel_session_die (GnomeClient *client,
 {
 	GSList *li;
 
-	gtk_timeout_remove(config_sync_timeout);
+	gtk_timeout_remove (config_sync_timeout);
+	config_sync_timeout = 0;
   
-	/*don't catch these any more*/
-	signal(SIGCHLD, SIG_DFL);
-	
 	status_inhibit = TRUE;
-	status_spot_remove_all();
-	
-	for(li=applets; li!=NULL; li=g_slist_next(li)) {
+	status_spot_remove_all ();
+
+	for (li = applets; li != NULL; li = li->next) {
 		AppletInfo *info = li->data;
 		if(info->type == APPLET_EXTERN) {
 			Extern *ext = info->data;
@@ -798,11 +840,14 @@ panel_session_die (GnomeClient *client,
 			gtk_widget_destroy (info->widget);
 		} else if(info->type == APPLET_SWALLOW) {
 			Swallow *swallow = info->data;
+			swallow->clean_remove = TRUE;
 			if(GTK_SOCKET(swallow->socket)->plug_window)
 				XKillClient(GDK_DISPLAY(),
 					    GDK_WINDOW_XWINDOW(GTK_SOCKET(swallow->socket)->plug_window));
 		}
 	}
+
+	xstuff_unsetup_desktop_area ();
 			
 	/*clean up corba stuff*/
 	panel_corba_clean_up();
@@ -854,9 +899,14 @@ load_default_applets1(PanelWidget *panel)
 			p = gnome_datadir_file (def_launchers[i]);
 			/*int center = gdk_screen_width()/2;*/
 			if(p) {
-				load_launcher_applet(p, panel,
-						     sz*4+i*sz, TRUE);
+				Launcher *launcher;
+				launcher = load_launcher_applet(p, panel,
+								sz*4+i*sz, TRUE);
 				g_free(p);
+
+				/* suck these into our own directories now */
+				if (launcher != NULL)
+					launcher_hoard (launcher);
 			}
 		}
 	}
@@ -869,6 +919,79 @@ load_default_applets1(PanelWidget *panel)
 			   G_MAXINT/2 + 4000/*flush right*/, TRUE);
 }
 
+static gboolean
+linux_battery_exists (void)
+{
+	FILE *fp;
+	char buf[200] = "";
+	int foo;
+
+	if ( ! panel_file_exists("/proc/apm"))
+		return FALSE;
+
+	fp = fopen ("/proc/apm", "r");
+	if (fp == NULL)
+		return FALSE;
+
+	if (fgets (buf, sizeof (buf), fp) == NULL) {
+		fclose (fp);
+		return FALSE;
+	}
+	fclose (fp);
+
+	foo = -1;
+	sscanf (buf,
+		"%*s %*d.%*d %*x %*x %*x %*x %d%% %*d %*s\n",
+		&foo);
+
+	if (foo >= 0)
+		return TRUE;
+	else
+		return FALSE;
+}
+
+static gboolean
+battery_exists (void)
+{
+#ifndef __linux__
+	return FALSE;
+#else
+	/* This is MUUUUCHO ugly, but apparently RH 7.0 with segv the program
+ 	 * reading /proc/apm on some laptops, and we don't want to crash, thus
+ 	 * we do the check in a forked process */
+	int status;
+	pid_t pid;
+
+	pid = fork ();
+	if (pid == 0) {
+                struct sigaction sa = {{NULL}};
+
+		sa.sa_handler = SIG_DFL;
+
+                sigaction(SIGSEGV, &sa, NULL);
+                sigaction(SIGFPE, &sa, NULL);
+                sigaction(SIGBUS, &sa, NULL);
+
+		if (linux_battery_exists ())
+			_exit (0);
+		else
+			_exit (1);
+	}
+
+	status = 0;
+	waitpid (pid, &status, 0);
+
+	if ( ! WIFSIGNALED (status) &&
+	    WIFEXITED (status) &&
+	    WEXITSTATUS (status) == 0) {
+		return TRUE;
+	} else {
+		return FALSE;
+	}
+#endif
+}
+
+
 static void
 load_default_applets2(PanelWidget *panel)
 {
@@ -877,10 +1000,11 @@ load_default_applets2(PanelWidget *panel)
 	load_extern_applet("gen_util_mailcheck",NULL,
 			   panel, G_MAXINT/2 + 1000/*flush right*/,
 			   TRUE, TRUE);
-	if(g_file_exists("/proc/apm"))
+	if (battery_exists ()) {
 		load_extern_applet("battery_applet",NULL,
 				   panel, G_MAXINT/2 + 2000 /*flush right*/,
 				   TRUE, TRUE);
+	}
 }
 
 /* try evil hacks to rewrite panel config from old applets (gnomepager for
@@ -896,7 +1020,7 @@ try_evil_config_hacks(const char *goad_id, PanelWidget *panel, int pos)
 
 		if(first_time) {
 			char *tmp;
-			tmp = gnome_is_program_in_path("gnomepager_applet");
+			tmp = panel_is_program_in_path("gnomepager_applet");
 			in_path = tmp != NULL;
 			first_time = FALSE;
 			g_free(tmp);
@@ -926,7 +1050,7 @@ init_user_applets(void)
 	buf = g_string_new(NULL);
 	for(num=1;num<=count;num++) {
 		char *applet_name;
-		int   pos=0,panel_num;
+		int   pos = 0, panel_num, panel_id;
 		PanelWidget *panel;
 
 		g_string_sprintf(buf, "%sApplet_Config/Applet_%d/",
@@ -947,16 +1071,30 @@ init_user_applets(void)
 
 		g_string_sprintf(buf,"position=%d", 0);
 		pos = gnome_config_get_int(buf->str);
-		panel_num = gnome_config_get_int("panel=0");
-		{
-			GSList *list = g_slist_nth(panels,panel_num);
-			if(!list) {
+		panel_id = gnome_config_get_int("unique_panel_id=-1");
+		if (panel_id < 0) {
+			GSList *list;
+
+			panel_num = gnome_config_get_int ("panel=0");
+
+			list = g_slist_nth (panels, panel_num);
+			if (list == NULL) {
 				g_warning("Can't find panel, "
 					  "putting applet on the first one");
 				panel = panels->data;
 			} else
 				panel = list->data;
+		} else {
+			panel = panel_widget_get_by_id (panel_id);
+			if (panel == NULL) {
+				g_warning("Can't find panel, "
+					  "putting applet on the first one");
+				panel = panels->data;
+			}
 		}
+
+		/* if this isn't true, then we are smoking some serious crack */
+		g_assert (panel != NULL);
 		
 		/*if we are to right stick this, make the number large, 
 		 G_MAXINT/2 should allways be large enough */
@@ -964,8 +1102,7 @@ init_user_applets(void)
 		
 		if(strcmp(applet_name, EXTERN_ID) == 0) {
 			char *goad_id = gnome_config_get_string("goad_id");
-			if (goad_id != NULL &&
-			    *goad_id != '\0' &&
+			if ( ! string_empty (goad_id) &&
 			    /* if we try an evil hack such as loading tasklist
 			     * and deskguide instead of the desguide don't
 			     * try to load this applet in the first place */
@@ -977,11 +1114,29 @@ init_user_applets(void)
 				load_extern_applet (goad_id, buf->str, 
 						    panel, pos, TRUE, TRUE);
 			}
-			g_free(goad_id);
+			g_free (goad_id);
 		} else if(strcmp(applet_name, LAUNCHER_ID) == 0) { 
-			char *params = gnome_config_get_string("parameters=");
-			load_launcher_applet(params, panel, pos, TRUE);
-			g_free(params);
+			gboolean hoard = FALSE;
+			Launcher *launcher;
+			char *file;
+
+			file = gnome_config_get_string("base_location=");
+			if (string_empty (file)) {
+				g_free (file);
+				file = gnome_config_get_string("parameters=");
+				hoard = TRUE;
+			} else {
+				char *tmp = launcher_file_name (file);
+				g_free (file);
+				file = tmp;
+			}
+
+			launcher = load_launcher_applet(file, panel, pos, TRUE);
+			g_free(file);
+
+			/* If this was an old style launcher, hoard it now */
+			if (hoard && launcher != NULL)
+				launcher_hoard (launcher);
 		} else if(strcmp(applet_name, LOGOUT_ID) == 0) { 
 			load_logout_applet(panel, pos, TRUE);
 		} else if(strcmp(applet_name, LOCK_ID) == 0) {
@@ -1049,7 +1204,7 @@ init_user_applets(void)
 				if(distribution != DISTRIBUTION_UNKNOWN)
 					flags |= MAIN_MENU_DISTRIBUTION_SUB;
 				/*guess KDE menus */
-				if(g_file_exists(kde_menudir))
+				if(panel_file_exists(kde_menudir))
 					flags |= MAIN_MENU_KDE_SUB;
 			}
 			if(old_style) {
@@ -1090,10 +1245,16 @@ init_user_applets(void)
 			g_free (params);
 		} else if(strcmp(applet_name, DRAWER_ID) == 0) {
 			int mypanel = gnome_config_get_int("parameters=-1");
+			int mypanel_id = gnome_config_get_int("unique_drawer_panel_id=-1");
 			char *pixmap = gnome_config_get_string("pixmap=");
 			char *tooltip = gnome_config_get_string("tooltip=");
-			load_drawer_applet(mypanel, pixmap, tooltip,
-					   panel, pos, TRUE);
+			if (mypanel_id < 0 && mypanel >= 0) {
+				PanelWidget *pw = g_slist_nth_data (panels, mypanel);
+				if (pw != NULL)
+					mypanel_id = pw->unique_id;
+			}
+			load_drawer_applet (mypanel_id, pixmap, tooltip,
+					    panel, pos, TRUE);
 			g_free(pixmap);
 			g_free(tooltip);
 		} else
@@ -1137,18 +1298,20 @@ init_user_panels(void)
 			hidebutton_pixmaps = TRUE;
 		}
 
-		panel = edge_widget_new(BORDER_BOTTOM,
-					BASEP_EXPLICIT_HIDE,
-					BASEP_SHOWN,
-					sz,
-					TRUE,
-					hidebutton_pixmaps,
-					PANEL_BACK_NONE,
-					NULL,
-					TRUE,
-					FALSE,
-					TRUE,
-					NULL);
+		panel = edge_widget_new (BORDER_BOTTOM,
+					 BASEP_EXPLICIT_HIDE /* mode */,
+					 BASEP_SHOWN /* state */,
+					 BASEP_LEVEL_DEFAULT /* level */,
+					 TRUE /* avoid_on_maximize */,
+					 sz /* size */,
+					 TRUE /* hidebuttons_enabled */,
+					 hidebutton_pixmaps,
+					 PANEL_BACK_NONE /* back type */,
+					 NULL,
+					 TRUE,
+					 FALSE,
+					 TRUE,
+					 NULL);
 		panel_setup(panel);
 		gtk_widget_show(panel);
 
@@ -1174,6 +1337,8 @@ init_user_panels(void)
 					   BORDER_RIGHT,
 					   BASEP_EXPLICIT_HIDE,
 					   BASEP_SHOWN,
+					   BASEP_LEVEL_DEFAULT,
+					   TRUE,
 					   sz,
 					   TRUE,
 					   hidebutton_pixmaps,
@@ -1213,6 +1378,8 @@ init_user_panels(void)
 		int sz;
 		BasePState state;
 		BasePMode mode;
+		BasePLevel level;
+		gboolean avoid_on_maximize;
 		BorderEdge edge;
 		char *back_pixmap, *color;
 		GdkColor back_color = {0,0,0,1};
@@ -1221,19 +1388,22 @@ init_user_panels(void)
 		gboolean rotate_pixmap_bg;
 		int hidebuttons_enabled;
 		int hidebutton_pixmaps_enabled;
+		int unique_id;
 		
 		g_string_sprintf(buf,"%spanel/Panel_%d/",
 				 PANEL_CONFIG_PATH, num);
 		gnome_config_push_prefix (buf->str);
+
+		unique_id = gnome_config_get_int ("unique_id=-1");
 		
 		back_pixmap = gnome_config_get_string ("backpixmap=");
-		if (back_pixmap && *back_pixmap == '\0') {
+		if (string_empty (back_pixmap)) {
 			g_free(back_pixmap);
 			back_pixmap = NULL;
 		}
 
 		color = gnome_config_get_string("backcolor=#ffffff");
-		if(color && *color)
+		if ( ! string_empty (color))
 			gdk_color_parse(color, &back_color);
 
 		g_string_sprintf(buf,"back_type=%d",PANEL_BACK_NONE);
@@ -1271,6 +1441,7 @@ init_user_panels(void)
 
 		state = gnome_config_get_int("state=0");
 		mode = gnome_config_get_int("mode=0");
+		level = gnome_config_get_int("level=0");
 #if 0 /* i guess we can't easily do this for now */
 		pos = basep_widget_load_pos_settings();
 #endif
@@ -1279,8 +1450,14 @@ init_user_panels(void)
 		case EDGE_PANEL:
 			g_string_sprintf (buf, "edge=%d", BORDER_BOTTOM);
 			edge = gnome_config_get_int (buf->str);
+
+			avoid_on_maximize = gnome_config_get_bool
+				("avoid_on_maximize=TRUE");
+
 			panel = edge_widget_new (edge, 
-						 mode, state, sz,
+						 mode, state,
+						 level, avoid_on_maximize,
+						 sz,
 						 hidebuttons_enabled,
 						 hidebutton_pixmaps_enabled,
 						 back_type, back_pixmap,
@@ -1297,8 +1474,13 @@ init_user_panels(void)
 			g_string_sprintf (buf, "align=%d", ALIGNED_LEFT);
 			align = gnome_config_get_int (buf->str);
 
+			avoid_on_maximize = gnome_config_get_bool
+				("avoid_on_maximize=TRUE");
+
 			panel = aligned_widget_new (align, edge,
-						    mode, state, sz,
+						    mode, state,
+						    level, avoid_on_maximize,
+						    sz,
 						    hidebuttons_enabled,
 						    hidebutton_pixmaps_enabled,
 						    back_type, back_pixmap,
@@ -1319,8 +1501,13 @@ init_user_panels(void)
 
 			offset = gnome_config_get_int ("offset=0");
 
+			avoid_on_maximize = gnome_config_get_bool
+				("avoid_on_maximize=TRUE");
+
 			panel = sliding_widget_new (anchor, offset, edge,
-						    mode, state, sz,
+						    mode, state,
+						    level, avoid_on_maximize,
+						    sz,
 						    hidebuttons_enabled,
 						    hidebutton_pixmaps_enabled,
 						    back_type, back_pixmap,
@@ -1338,9 +1525,15 @@ init_user_panels(void)
 			orient = gnome_config_get_int (buf->str);
 
 #warning FIXME: there are some issues with auto hiding drawers
+
+			avoid_on_maximize = gnome_config_get_bool
+				("avoid_on_maximize=FALSE");
+
 			panel = drawer_widget_new (orient,
 						   BASEP_EXPLICIT_HIDE, 
-						   state, sz,
+						   state,
+						   level, avoid_on_maximize,
+						   sz,
 						   hidebuttons_enabled,
 						   hidebutton_pixmaps_enabled,
 						   back_type, back_pixmap,
@@ -1365,8 +1558,13 @@ init_user_panels(void)
 			x = gnome_config_get_int ("x=0");
 			y = gnome_config_get_int ("y=0");
 
+			avoid_on_maximize = gnome_config_get_bool
+				("avoid_on_maximize=FALSE");
+
 			panel = floating_widget_new (x, y, orient,
-						     mode, state, sz,
+						     mode, state,
+						     level, avoid_on_maximize,
+						     sz,
 						     hidebuttons_enabled,
 						     hidebutton_pixmaps_enabled,
 						     back_type, back_pixmap,
@@ -1380,7 +1578,7 @@ init_user_panels(void)
 			panel = foobar_widget_new ();
 
 			/* Don't translate the first part of this string */
-			s = gnome_config_get_string (_("/panel/Config/clock_format=%I:%M:%S %p"));
+			s = gnome_config_get_string (_("/panel/Config/clock_format=%l:%M:%S %p"));
 			if (s != NULL)
 				foobar_widget_set_clock_format (FOOBAR_WIDGET (panel), s);
 			g_free (s);
@@ -1398,6 +1596,8 @@ init_user_panels(void)
 		g_free(back_pixmap);
 
 		if (panel) {
+			if (unique_id > 0)
+				panel_set_id (panel, unique_id);
 			panel_setup(panel);
 			gtk_widget_show(panel);
 		}
@@ -1407,7 +1607,7 @@ init_user_panels(void)
 
 
 void
-load_up_globals(void)
+load_up_globals (void)
 {
 	GString *buf;
 	char *tile_def[] = {
@@ -1417,6 +1617,7 @@ load_up_globals(void)
 		"blue"
 	};
 	int i;
+	gboolean def;
 	
 	buf = g_string_new(NULL);
 
@@ -1439,6 +1640,9 @@ load_up_globals(void)
 
 	global_config.merge_menus =
 		gnome_config_get_bool("merge_menus=TRUE");
+
+	global_config.menu_check =
+		gnome_config_get_bool("menu_check=TRUE");
 
 	global_config.off_panel_popups =
 		gnome_config_get_bool("off_panel_popups=TRUE");
@@ -1481,24 +1685,48 @@ load_up_globals(void)
 				       &global_config.run_keysym,
 				       &global_config.run_state);
 
-	global_config.applet_padding=gnome_config_get_int("applet_padding=3");
+	global_config.applet_padding =
+		gnome_config_get_int ("applet_padding=3");
+
+	global_config.applet_border_padding =
+		gnome_config_get_int ("applet_border_padding=0");
 
 	global_config.autoraise = gnome_config_get_bool("autoraise=TRUE");
 
-	global_config.keep_bottom = gnome_config_get_bool("keep_bottom=TRUE");
+	global_config.keep_bottom =
+		gnome_config_get_bool_with_default ("keep_bottom=FALSE", &def);
+	/* if keep bottom was the default, then we want to do a nicer
+	 * saner default which is normal layer.  If it was not the
+	 * default then we don't want to change the layerness as it was
+	 * selected by the user and thus we default to FALSE */
+	if (def)
+		global_config.normal_layer =
+			gnome_config_get_bool ("normal_layer=TRUE");
+	else
+		global_config.normal_layer =
+			gnome_config_get_bool ("normal_layer=FALSE");
 
-	global_config.drawer_auto_close = gnome_config_get_bool("drawer_auto_close=FALSE");
-	global_config.simple_movement = gnome_config_get_bool("simple_movement=FALSE");
-	global_config.hide_panel_frame = gnome_config_get_bool("hide_panel_frame=FALSE");
-	global_config.tile_when_over = gnome_config_get_bool("tile_when_over=FALSE");
-	global_config.saturate_when_over = gnome_config_get_bool("saturate_when_over=TRUE");
-	global_config.confirm_panel_remove = gnome_config_get_bool("confirm_panel_remove=TRUE");
-	global_config.fast_button_scaling = gnome_config_get_bool("fast_button_scaling=FALSE");
+	global_config.drawer_auto_close =
+		gnome_config_get_bool ("drawer_auto_close=FALSE");
+	global_config.simple_movement =
+		gnome_config_get_bool ("simple_movement=FALSE");
+	global_config.hide_panel_frame =
+		gnome_config_get_bool ("hide_panel_frame=FALSE");
+	global_config.tile_when_over =
+		gnome_config_get_bool ("tile_when_over=FALSE");
+	global_config.saturate_when_over =
+		gnome_config_get_bool ("saturate_when_over=TRUE");
+	global_config.confirm_panel_remove =
+		gnome_config_get_bool ("confirm_panel_remove=TRUE");
+	global_config.fast_button_scaling =
+		gnome_config_get_bool ("fast_button_scaling=FALSE");
+	global_config.avoid_collisions =
+		gnome_config_get_bool ("avoid_collisions=TRUE");
 	
 	g_string_sprintf (buf, "menu_flags=%d", get_default_menu_flags ());
 	global_config.menu_flags = gnome_config_get_int (buf->str);
 
-	for(i=0;i<LAST_TILE;i++) {
+	for (i = 0; i < LAST_TILE; i++) {
 		g_string_sprintf(buf,"new_tiles_enabled_%d=FALSE",i);
 		global_config.tiles_enabled[i] =
 			gnome_config_get_bool(buf->str);
@@ -1519,21 +1747,21 @@ load_up_globals(void)
 		global_config.tile_depth[i] = gnome_config_get_int(buf->str);
 	}
 
-	gnome_config_sync();
+	gnome_config_sync ();
 
-	gnome_config_pop_prefix();
+	gnome_config_pop_prefix ();
 
+	g_string_free (buf, TRUE);
 
-	g_string_free(buf,TRUE);
-
-	apply_global_config();
+	apply_global_config ();
 }
 
 void
-write_global_config(void)
+write_global_config (void)
 {
 	int i;
 	GString *buf;
+
 	gnome_config_push_prefix("/panel/Config/");
 
 	gnome_config_set_int("auto_hide_step_size",
@@ -1558,16 +1786,22 @@ write_global_config(void)
 			      global_config.use_large_icons);
 	gnome_config_set_bool("merge_menus",
 			      global_config.merge_menus);
+	gnome_config_set_bool("menu_check",
+			      global_config.menu_check);
 	gnome_config_set_bool("off_panel_popups",
 			      global_config.off_panel_popups);
 	gnome_config_set_bool("disable_animations",
 			      global_config.disable_animations);
 	gnome_config_set_int("applet_padding",
 			     global_config.applet_padding);
+	gnome_config_set_int("applet_border_padding",
+			     global_config.applet_border_padding);
 	gnome_config_set_bool("autoraise",
 			      global_config.autoraise);
 	gnome_config_set_bool("keep_bottom",
 			      global_config.keep_bottom);
+	gnome_config_set_bool("normal_layer",
+			      global_config.normal_layer);
 	gnome_config_set_bool("drawer_auto_close",
 			      global_config.drawer_auto_close);
 	gnome_config_set_bool("simple_movement",
@@ -1585,9 +1819,10 @@ write_global_config(void)
 	gnome_config_set_string("menu_key", global_config.menu_key);
 	gnome_config_set_string("run_key", global_config.run_key);
 	gnome_config_set_bool("fast_button_scaling", global_config.fast_button_scaling);
+	gnome_config_set_bool("avoid_collisions", global_config.avoid_collisions);
 			     
-	buf = g_string_new(NULL);
-	for(i=0;i<LAST_TILE;i++) {
+	buf = g_string_new (NULL);
+	for (i = 0; i < LAST_TILE; i++) {
 		g_string_sprintf(buf,"new_tiles_enabled_%d",i);
 		gnome_config_set_bool(buf->str,
 				      global_config.tiles_enabled[i]);
@@ -1689,7 +1924,12 @@ convert_write_config(void)
 static gboolean
 convert_read_old_config(void)
 {
-	char *tile_def[]={"normal","purple","green","blue"};
+	char *tile_def[] = {
+		"normal",
+		"purple",
+		"green",
+		"blue"
+	};
 	GString *buf;
 	int i,is_def;
 	int applet_count; /*store this so that we can clean*/
@@ -1745,7 +1985,7 @@ convert_read_old_config(void)
 	g_string_sprintf(buf,"movement_type=%d", PANEL_SWITCH_MOVE);
 	global_config.movement_type=gnome_config_get_int(buf->str);
 
-	global_config.applet_padding=gnome_config_get_int("applet_padding=3");
+	global_config.applet_padding = gnome_config_get_int("applet_padding=3");
 
 	global_config.autoraise = gnome_config_get_bool("autoraise=TRUE");
 

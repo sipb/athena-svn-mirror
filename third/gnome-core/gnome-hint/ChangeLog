@@ -1,6 +1,21 @@
+Sun Feb 18 04:05:33 2001  George Lebl <jirka@5z.com>
+
+	* gnome-hint.c: minor cleanup, use fontset instead of font and
+	  translate "fixed".
+
+Wed Jan 10 11:02:01 2001  George Lebl <jirka@5z.com>
+
+	* gnome-hint.c: Mark more strings for translation, and use
+	  g_strcasecmp instead of strcmp for checking the xml tags
+
+Sun Dec 17 15:28:29 2000  George Lebl <jirka@5z.com>
+
+	* gnome-hint.c: plug a leak based on a patch from "Juan Pablo Mendoza
+	  M." <pablo_juan@yahoo.com>, and a bit of cleanup
+
 2000-11-02  Kjartan Maraas  <kmaraas@gnome.org>
 
-	* gnome-hint.desktop: Fix Norwegian translation.
+	* gnome-hints.desktop: Added "no" comment.
 	
 Wed Aug 30 16:03:55 2000  George Lebl <jirka@5z.com>
 

@@ -5,9 +5,12 @@
  *           George Lebl
  */
 
+#include "config.h"
+
 #include "sliding-widget.h"
 #include "panel_config_global.h"
 #include "foobar-widget.h"
+#include "panel-util.h"
 
 extern GlobalConfig global_config;
 extern int pw_minimized_size;
@@ -100,32 +103,27 @@ sliding_pos_set_pos (BasePWidget *basep,
 		     int x, int y,
 		     int w, int h)
 {
-	int minx, miny, maxx, maxy;
+	int minx, miny, maxx, maxy, offset_x, offset_y;
 	SlidingPos *pos = SLIDING_POS(basep->pos);
 	BorderEdge newedge = BORDER_POS(basep->pos)->edge;
 	SlidingAnchor newanchor = pos->anchor;
 	gint16 newoffset = pos->offset;
 	gboolean check_pos = TRUE;
 
-	gdk_window_get_geometry (GTK_WIDGET(basep)->window,
-				 &minx, &miny, &maxx, &maxy, NULL);
+	gdk_window_get_geometry (GTK_WIDGET(basep)->window, &minx, &miny,
+				 &maxx, &maxy, NULL);
 	gdk_window_get_origin (GTK_WIDGET(basep)->window, &minx, &miny);
 	maxx += minx;
 	maxy += miny;
-	if (x >= minx &&
-	    x <= maxx &&
-	    y >= miny &&
-	    y <= maxy)
- 	        return;
 
 	/*if in the inner 1/3rd, don't change to avoid fast flickery
 	  movement*/
-	if ( x>(gdk_screen_width()/3) &&
-	     x<(2*gdk_screen_width()/3) &&
-	     y>(gdk_screen_height()/3) &&
-	     y<(2*gdk_screen_height()/3))
+	if (x > (gdk_screen_width()/3) &&
+	    x < (2*gdk_screen_width()/3) &&
+	    y > (gdk_screen_height()/3) &&
+	    y < (2*gdk_screen_height()/3))
 		return;
-	
+
 	/* don't switch the position if we are along the edge.
 	   do this so that it won't flip-flop orientations in
 	   the corners */
@@ -162,50 +160,66 @@ sliding_pos_set_pos (BasePWidget *basep,
 		/* we need to do this since the sizes might have changed 
 		   (orientation changes and what not) */
 		if(newedge != BORDER_POS(basep->pos)->edge) {
-			border_widget_change_edge (BORDER_WIDGET(basep), newedge);
+			PanelOrientation old_orient;
+			old_orient = PANEL_WIDGET (basep->panel)->orient;
+
+			border_widget_change_edge (BORDER_WIDGET(basep),
+						   newedge);
 			basep_widget_get_size (basep, &w, &h);
+
+			/* if change of orient, swap offsets */
+			if (old_orient != PANEL_WIDGET (basep->panel)->orient) {
+				int tmp = basep->offset_x;
+				basep->offset_x = basep->offset_y;
+				basep->offset_y = tmp;
+			}
 		}
 	}
+
+	offset_x = basep->offset_x;
+	if (offset_x > w)
+		offset_x = 0.99 * w; /* not completely on the edge */
+	offset_y = basep->offset_y;
+	if (offset_y > h)
+		offset_y = 0.99 * h; /* not completely on the edge */
 
 	g_assert (newedge == BORDER_POS (pos)->edge);
 	g_assert (newanchor == pos->anchor);
 
 	switch (PANEL_WIDGET (basep->panel)->orient) {
 	case PANEL_HORIZONTAL:
-		if (x >= minx && x <= maxx)
-			break; /* we are still "inside" the panel */
 		newanchor =  (x < 0.1 * gdk_screen_width ()) 
 			? SLIDING_ANCHOR_LEFT
 			: ( (x > 0.9 * gdk_screen_width ())
 			    ? SLIDING_ANCHOR_RIGHT
 			    : newanchor);
 		if (newanchor == SLIDING_ANCHOR_LEFT) {
-			newoffset = (x > maxx) ? x - (maxx - minx) : x;
+			newoffset = x - offset_x;
 			if (basep->state == BASEP_HIDDEN_RIGHT)
-				newoffset -= w - basep->hidebutton_e->allocation.width;
+				newoffset -= w - get_requisition_width (basep->hidebutton_e);
 		} else {
-			newoffset =gdk_screen_width () - ((x < minx) ? x + (maxx - minx) : x);
+			newoffset = gdk_screen_width () -
+				(x - offset_x) - w;
 			if (basep->state == BASEP_HIDDEN_LEFT)
-				newoffset -= w - basep->hidebutton_w->allocation.width;
+				newoffset -= w - get_requisition_width (basep->hidebutton_w);
 		}
 		newoffset = CLAMP (newoffset, 0, gdk_screen_width () - w);
 		break;
 	case PANEL_VERTICAL:
-		if (y >= miny && y <= maxy)
-			break; /* bleh */
 		newanchor =  (y < 0.1 * gdk_screen_height ()) 
 			? SLIDING_ANCHOR_LEFT
 			: ( (y > 0.9 * gdk_screen_height ())
 			    ? SLIDING_ANCHOR_RIGHT
 			    : newanchor);
 		if (newanchor == SLIDING_ANCHOR_LEFT) {
-			newoffset = (y > maxy) ? y - (maxy - miny) : y;
+			newoffset = y - offset_y;
 			if (basep->state == BASEP_HIDDEN_RIGHT)
-				newoffset -= h - basep->hidebutton_s->allocation.height;
+				newoffset -= h - get_requisition_height (basep->hidebutton_s);
 		} else {
-			newoffset = gdk_screen_height () - ((y < miny) ? y + (maxy - miny) : y);
+			newoffset = gdk_screen_height () -
+				(y - offset_y) - h;
 			if (basep->state == BASEP_HIDDEN_LEFT)
-				newoffset -= h - basep->hidebutton_n->allocation.height;
+				newoffset -= h - get_requisition_height (basep->hidebutton_n);
 		}
 		newoffset = CLAMP (newoffset, 0, gdk_screen_height () - h);
 		break;
@@ -249,20 +263,23 @@ sliding_pos_get_pos (BasePWidget *basep, int *x, int *y,
 	}
 }
 
-GtkWidget *sliding_widget_new (SlidingAnchor anchor,
-			       gint16 offset,
-			       BorderEdge edge,
-			       BasePMode mode,
-			       BasePState state,
-			       int sz,
-			       int hidebuttons_enabled,
-			       int hidebutton_pixmaps_enabled,
-			       PanelBackType back_type,
-			       char *back_pixmap,
-			       gboolean fit_pixmap_bg,
-			       gboolean strech_pixmap_bg,
-			       gboolean rotate_pixmap_bg,
-			       GdkColor *back_color)
+GtkWidget *
+sliding_widget_new (SlidingAnchor anchor,
+		    gint16 offset,
+		    BorderEdge edge,
+		    BasePMode mode,
+		    BasePState state,
+		    BasePLevel level,
+		    gboolean avoid_on_maximize,
+		    int sz,
+		    gboolean hidebuttons_enabled,
+		    gboolean hidebutton_pixmaps_enabled,
+		    PanelBackType back_type,
+		    char *back_pixmap,
+		    gboolean fit_pixmap_bg,
+		    gboolean strech_pixmap_bg,
+		    gboolean rotate_pixmap_bg,
+		    GdkColor *back_color)
 {
 	SlidingWidget *sliding = gtk_type_new (TYPE_SLIDING_WIDGET);
 	SlidingPos *pos = gtk_type_new (TYPE_SLIDING_POS);
@@ -275,6 +292,8 @@ GtkWidget *sliding_widget_new (SlidingAnchor anchor,
 	border_widget_construct (BORDER_WIDGET (sliding),
 				 edge, TRUE, FALSE,
 				 sz, mode, state,
+				 level,
+				 avoid_on_maximize,
 				 hidebuttons_enabled,
 				 hidebutton_pixmaps_enabled,
 				 back_type, back_pixmap,
@@ -293,8 +312,10 @@ sliding_widget_change_params (SlidingWidget *sliding,
 			      int sz,
 			      BasePMode mode,
 			      BasePState state,
-			      int hidebuttons_enabled,
-			      int hidebutton_pixmaps_enabled,
+			      BasePLevel level,
+			      gboolean avoid_on_maximize,
+			      gboolean hidebuttons_enabled,
+			      gboolean hidebutton_pixmaps_enabled,
 			      PanelBackType back_type,
 			      char *pixmap_name,
 			      gboolean fit_pixmap_bg,
@@ -321,6 +342,7 @@ sliding_widget_change_params (SlidingWidget *sliding,
 
 	border_widget_change_params (BORDER_WIDGET (sliding),
 				     edge, sz, mode, state,
+				     level, avoid_on_maximize,
 				     hidebuttons_enabled,
 				     hidebutton_pixmaps_enabled,
 				     back_type, pixmap_name,
@@ -330,7 +352,8 @@ sliding_widget_change_params (SlidingWidget *sliding,
 }
 
 void
-sliding_widget_change_offset (SlidingWidget *sliding, gint16 offset) {
+sliding_widget_change_offset (SlidingWidget *sliding, gint16 offset)
+{
 	BasePWidget *basep = BASEP_WIDGET (sliding);
 	PanelWidget *panel = PANEL_WIDGET (basep->panel);
 	SlidingPos *pos = SLIDING_POS (basep->pos);
@@ -342,6 +365,8 @@ sliding_widget_change_offset (SlidingWidget *sliding, gint16 offset) {
 				      BORDER_POS (pos)->edge,
 				      panel->sz, basep->mode,
 				      basep->state,
+				      basep->level,
+				      basep->avoid_on_maximize,
 				      basep->hidebuttons_enabled,
 				      basep->hidebutton_pixmaps_enabled,
 				      panel->back_type,
@@ -366,6 +391,8 @@ sliding_widget_change_anchor (SlidingWidget *sliding, SlidingAnchor anchor)
 				      BORDER_POS (pos)->edge,
 				      panel->sz, basep->mode,
 				      basep->state,
+				      basep->level,
+				      basep->avoid_on_maximize,
 				      basep->hidebuttons_enabled,
 				      basep->hidebutton_pixmaps_enabled,
 				      panel->back_type,
@@ -388,6 +415,8 @@ sliding_widget_change_anchor_offset_edge (SlidingWidget *sliding,
 	sliding_widget_change_params (sliding, anchor, offset, edge,
 				      panel->sz, basep->mode,
 				      basep->state,
+				      basep->level,
+				      basep->avoid_on_maximize,
 				      basep->hidebuttons_enabled,
 				      basep->hidebutton_pixmaps_enabled,
 				      panel->back_type,

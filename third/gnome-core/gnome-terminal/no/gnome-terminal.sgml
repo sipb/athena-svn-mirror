@@ -2,7 +2,7 @@
 <!ENTITY GNOME-APPS SYSTEM "gnome-terminal.sgml">] >
 
 
-<Book id="index">
+<book id="index">
   <title>GNOME Terminal brukermanual.</title>
   <bookinfo>
     <authorgroup>
@@ -12,7 +12,7 @@
       </author>
     </authorgroup>
     <releaseinfo>documentation in progress</releaseinfo>
-     <legalnotice>
+     <legalnotice id="legalnotice">
       <para>
 	Dette dokumentet kan redistribueres fritt i samsvar med
 	betingelsene gitt i GNU General Public License.</para>
@@ -33,8 +33,9 @@
 
       <para>
 	gnome-terminal støtter fargevisning (se seksjonen om
-	miljø-variabler for detaljer), og gir musstøtte til applikasjoner 
-	som støtter mushendelser for xterm-lignende terminaler.
+	<link linkend="environment">miljø</link>-variabler for 
+	detaljer), og gir musstøtte til applikasjoner som støtter
+	mushendelser for xterm lignende terminaler.
       </para>
     </sect1>
     
@@ -354,8 +355,8 @@
 	</para>
       </sect2>
       
-      <sect2 id="pointer-dnd"
-        <Title>Dra-og-slipp</title>
+      <sect2 id="pointer-dnd">
+        <title>Dra-og-slipp</title>
 	<para>
 	  Dra-og-slipp kan brukes til en rekke operasjoner i innenfor
 	  terminalen.
@@ -494,7 +495,7 @@
 	</variablelist>
       </sect2>
       
-      <sect2 id="menu-help"
+      <sect2 id="menu-help">
         <title>Hjelpmenyen</title>
 	<variablelist>
 	  <varlistentry>
@@ -575,7 +576,7 @@
       
     </sect1>
     
-    <sect1 id="enviroment">
+    <sect1 id="environment">
       <title>Miljø</title>
       <para>
 	Følgende variabler settes av gnome-terminal: 

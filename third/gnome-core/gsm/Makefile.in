@@ -87,6 +87,9 @@ GNOME_INCLUDEDIR = @GNOME_INCLUDEDIR@
 GNOME_LIBDIR = @GNOME_LIBDIR@
 GNOME_LIBS = @GNOME_LIBS@
 GNOME_PRINT_PREFIX = @GNOME_PRINT_PREFIX@
+GNOME_TERMINAL_CFLAGS = @GNOME_TERMINAL_CFLAGS@
+GNOME_TERMINAL_LIBS = @GNOME_TERMINAL_LIBS@
+GNOME_XML_CFLAGS = @GNOME_XML_CFLAGS@
 GNOME_XML_LIB = @GNOME_XML_LIB@
 GNORBA_CFLAGS = @GNORBA_CFLAGS@
 GNORBA_LIBS = @GNORBA_LIBS@
@@ -120,6 +123,7 @@ ORBIT_LIBS = @ORBIT_LIBS@
 ORB_CFLAGS = @ORB_CFLAGS@
 ORB_LIBS = @ORB_LIBS@
 PACKAGE = @PACKAGE@
+PATH_TO_XRDB = @PATH_TO_XRDB@
 PIXBUF_CFLAGS = @PIXBUF_CFLAGS@
 PIXBUF_LIBS = @PIXBUF_LIBS@
 POFILES = @POFILES@
@@ -131,6 +135,10 @@ USE_INCLUDED_LIBINTL = @USE_INCLUDED_LIBINTL@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
 WINDOW_MANAGER = @WINDOW_MANAGER@
+XML_I18N_EXTRACT = @XML_I18N_EXTRACT@
+XML_I18N_MERGE = @XML_I18N_MERGE@
+XML_I18N_TOOLS_PERL = @XML_I18N_TOOLS_PERL@
+XML_I18N_UPDATE = @XML_I18N_UPDATE@
 XPM_LIBS = @XPM_LIBS@
 YACC = @YACC@
 ZVT_LIBS = @ZVT_LIBS@
@@ -143,24 +151,30 @@ SUBDIRS = help
 
 defaultdir = $(datadir)/gnome
 
-INCLUDES = -I$(includedir) $(GNOME_INCLUDEDIR) 	-I$(top_srcdir)/intl -I$(top_builddir)/intl		-DGNOMELOCALEDIR=\""$(datadir)/locale\"" 	-DDEFAULTDIR="\"$(defaultdir)\""
+INCLUDES = -I$(includedir) $(GNOME_INCLUDEDIR) 	-I$(top_srcdir)/intl -I$(top_builddir)/intl		-DGNOMELOCALEDIR=\""$(datadir)/locale\"" 	-DDEFAULTDIR="\"$(defaultdir)\"" @CANVAS_PIXBUF_CFLAGS@ 
 
 
 LDADD = $(GNOME_LIBDIR) $(GNOMEUI_LIBS) $(INTLLIBS)
 
-sysdir = $(datadir)/apps/Settings
+sysdir = $(datadir)/control-center/Session
 
 @SESSION_TRUE@noinst_DATA = session.desktop
-@SESSION_TRUE@bin_PROGRAMS = gnome-session save-session gnome-login-check session-properties gnome-libice-check
+@SESSION_TRUE@bin_PROGRAMS = gnome-session save-session gnome-login-check session-properties gnome-libice-check session-properties-capplet
 
-gnome_session_SOURCES = manager.c manager.h ice.c main.c prop.c save.c 	command.c session.h remote.c logout.c splash.h splash.c
+gnome_session_SOURCES = manager.c manager.h ice.c ice.h main.c prop.c prop.h 	save.c save.h command.c command.h session.h remote.c remote.h 	logout.c logout.h splash.c splash.h gsm-protocol.c gsm-protocol.h 	headers.h
 
 
-gnome_session_LDADD = $(GNOME_LIBDIR) $(GNOMEUI_LIBS) $(INTLLIBS) @LIBWRAP_LIBS@
+gnome_session_LDADD = $(GNOME_LIBDIR) $(GNOMEUI_LIBS) $(INTLLIBS) @LIBWRAP_LIBS@ @CANVAS_PIXBUF_LIBS@
 
-save_session_SOURCES = save-session.c gsm-protocol.c
+save_session_SOURCES = save-session.c gsm-protocol.c gsm-protocol.h
 
 session_properties_SOURCES = session-properties.c gsm-client-list.c gsm-client-list.h gsm-client-editor.c gsm-client-editor.h gsm-client-row.c gsm-client-row.h gsm-protocol.c gsm-protocol.h session.h
+
+
+session_properties_capplet_SOURCES = session-properties-capplet.c session-properties-capplet.h session.h startup-programs.c session-names.c gsm-protocol.c gsm-protocol.h gsm-client-list.c gsm-client-list.h gsm-client-row.c gsm-client-row.h gsm-client-editor.c gsm-client-editor.h 
+
+
+session_properties_capplet_LDADD = $(GNOME_LIBDIR) $(ORB_LIBS) $(GNOMEUI_LIBS) $(INTLLIBS) -lgnorba -lcapplet
 
 
 gnome_login_check_SOURCES = gnome-login-check.c
@@ -174,6 +188,12 @@ default_DATA = default.session default.wm
 desktopdir = $(datadir)/gnome/apps/Settings/Session/
 desktop_DATA = save-session.desktop session.desktop
 
+@SESSION_TRUE@sys_DATA = session-properties.desktop
+
+settingsdir = $(datadir)/gnome/apps/Settings/Session
+
+@SESSION_TRUE@settings_DATA = session-properties.desktop
+
 man_MANS = gnome-wm.1 save-session.1 default.session.5 gnome-session.1
 
 manuals = gnome-wm.1 default.session.5.in gnome-session.1.in save-session.1
@@ -181,7 +201,7 @@ manuals = gnome-wm.1 default.session.5.in gnome-session.1.in save-session.1
 pixmapdir = $(datadir)/pixmaps/splash/
 pixmap_DATA = gnome-splash.png
 
-EXTRA_DIST =  	default.in			default.wm.in			gnome-wm 			save-session.desktop 		session.desktop			$(manuals)			gnome-splash.png
+EXTRA_DIST =  	default.in			default.wm.in			gnome-wm 			save-session.desktop 		session.desktop			$(manuals)			gnome-splash.png		session-properties.desktop
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
@@ -192,7 +212,7 @@ PROGRAMS =  $(bin_PROGRAMS)
 DEFS = @DEFS@ -I. -I$(srcdir) -I..
 LIBS = @LIBS@
 gnome_session_OBJECTS =  manager.o ice.o main.o prop.o save.o command.o \
-remote.o logout.o splash.o
+remote.o logout.o splash.o gsm-protocol.o
 gnome_session_DEPENDENCIES = 
 gnome_session_LDFLAGS = 
 save_session_OBJECTS =  save-session.o gsm-protocol.o
@@ -212,6 +232,11 @@ gnome_libice_check_OBJECTS =  gnome-libice-check.o
 gnome_libice_check_LDADD = $(LDADD)
 gnome_libice_check_DEPENDENCIES = 
 gnome_libice_check_LDFLAGS = 
+session_properties_capplet_OBJECTS =  session-properties-capplet.o \
+startup-programs.o session-names.o gsm-protocol.o gsm-client-list.o \
+gsm-client-row.o gsm-client-editor.o
+session_properties_capplet_DEPENDENCIES = 
+session_properties_capplet_LDFLAGS = 
 SCRIPTS =  $(bin_SCRIPTS)
 
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
@@ -223,7 +248,8 @@ man5dir = $(mandir)/man5
 MANS = $(man_MANS)
 
 NROFF = nroff
-DATA =  $(default_DATA) $(desktop_DATA) $(noinst_DATA) $(pixmap_DATA)
+DATA =  $(default_DATA) $(desktop_DATA) $(noinst_DATA) $(pixmap_DATA) \
+$(settings_DATA) $(sys_DATA)
 
 DIST_COMMON =  AUTHORS ChangeLog Makefile.am Makefile.in TODO \
 default.session.5.in gnome-session.1.in
@@ -233,8 +259,8 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 TAR = tar
 GZIP_ENV = --best
-SOURCES = $(gnome_session_SOURCES) $(save_session_SOURCES) $(gnome_login_check_SOURCES) $(session_properties_SOURCES) $(gnome_libice_check_SOURCES)
-OBJECTS = $(gnome_session_OBJECTS) $(save_session_OBJECTS) $(gnome_login_check_OBJECTS) $(session_properties_OBJECTS) $(gnome_libice_check_OBJECTS)
+SOURCES = $(gnome_session_SOURCES) $(save_session_SOURCES) $(gnome_login_check_SOURCES) $(session_properties_SOURCES) $(gnome_libice_check_SOURCES) $(session_properties_capplet_SOURCES)
+OBJECTS = $(gnome_session_OBJECTS) $(save_session_OBJECTS) $(gnome_login_check_OBJECTS) $(session_properties_OBJECTS) $(gnome_libice_check_OBJECTS) $(session_properties_capplet_OBJECTS)
 
 all: all-redirect
 .SUFFIXES:
@@ -333,6 +359,10 @@ session-properties: $(session_properties_OBJECTS) $(session_properties_DEPENDENC
 gnome-libice-check: $(gnome_libice_check_OBJECTS) $(gnome_libice_check_DEPENDENCIES)
 	@rm -f gnome-libice-check
 	$(LINK) $(gnome_libice_check_LDFLAGS) $(gnome_libice_check_OBJECTS) $(gnome_libice_check_LDADD) $(LIBS)
+
+session-properties-capplet: $(session_properties_capplet_OBJECTS) $(session_properties_capplet_DEPENDENCIES)
+	@rm -f session-properties-capplet
+	$(LINK) $(session_properties_capplet_LDFLAGS) $(session_properties_capplet_OBJECTS) $(session_properties_capplet_LDADD) $(LIBS)
 
 install-binSCRIPTS: $(bin_SCRIPTS)
 	@$(NORMAL_INSTALL)
@@ -482,6 +512,44 @@ uninstall-pixmapDATA:
 	  rm -f $(DESTDIR)$(pixmapdir)/$$p; \
 	done
 
+install-settingsDATA: $(settings_DATA)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(settingsdir)
+	@list='$(settings_DATA)'; for p in $$list; do \
+	  if test -f $(srcdir)/$$p; then \
+	    echo " $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(settingsdir)/$$p"; \
+	    $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(settingsdir)/$$p; \
+	  else if test -f $$p; then \
+	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(settingsdir)/$$p"; \
+	    $(INSTALL_DATA) $$p $(DESTDIR)$(settingsdir)/$$p; \
+	  fi; fi; \
+	done
+
+uninstall-settingsDATA:
+	@$(NORMAL_UNINSTALL)
+	list='$(settings_DATA)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(settingsdir)/$$p; \
+	done
+
+install-sysDATA: $(sys_DATA)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(sysdir)
+	@list='$(sys_DATA)'; for p in $$list; do \
+	  if test -f $(srcdir)/$$p; then \
+	    echo " $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(sysdir)/$$p"; \
+	    $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(sysdir)/$$p; \
+	  else if test -f $$p; then \
+	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(sysdir)/$$p"; \
+	    $(INSTALL_DATA) $$p $(DESTDIR)$(sysdir)/$$p; \
+	  fi; fi; \
+	done
+
+uninstall-sysDATA:
+	@$(NORMAL_UNINSTALL)
+	list='$(sys_DATA)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(sysdir)/$$p; \
+	done
+
 # This directory's subdirectories are mostly independent; you can cd
 # into them and run `make' without going through this Makefile.
 # To change the values of `make' variables: instead of editing Makefiles,
@@ -596,6 +664,40 @@ distdir: $(DISTFILES)
 	      || exit 1; \
 	  fi; \
 	done
+command.o: command.c command.h manager.h headers.h session.h save.h \
+	prop.h
+gnome-libice-check.o: gnome-libice-check.c
+gnome-login-check.o: gnome-login-check.c ../config.h
+gsm-client-editor.o: gsm-client-editor.c ../config.h gsm-client-editor.h \
+	gsm-protocol.h gsm-client-row.h gsm-client-list.h
+gsm-client-list.o: gsm-client-list.c ../config.h gsm-client-list.h \
+	gsm-client-row.h gsm-protocol.h gsm-client-editor.h
+gsm-client-row.o: gsm-client-row.c ../config.h gsm-client-row.h \
+	gsm-protocol.h gsm-client-list.h gsm-client-editor.h
+gsm-protocol.o: gsm-protocol.c ../config.h session.h gsm-protocol.h
+ice.o: ice.c ../config.h ice.h headers.h session.h manager.h
+logout.o: logout.c ../config.h logout.h headers.h command.h manager.h \
+	gsm-protocol.h
+main.o: main.c ../config.h manager.h headers.h ice.h save.h command.h \
+	splash.h
+manager.o: manager.c ../config.h manager.h headers.h session.h prop.h \
+	command.h splash.h remote.h save.h logout.h ice.h \
+	gsm-protocol.h
+prop.o: prop.c prop.h headers.h
+remote.o: remote.c ../config.h remote.h headers.h
+save-session.o: save-session.c ../config.h headers.h gsm-protocol.h
+save.o: save.c ../config.h save.h headers.h session.h prop.h command.h \
+	manager.h
+session-names.o: session-names.c ../config.h \
+	session-properties-capplet.h headers.h gsm-protocol.h
+session-properties-capplet.o: session-properties-capplet.c ../config.h \
+	headers.h gsm-client-list.h gsm-client-row.h gsm-protocol.h \
+	session-properties-capplet.h
+session-properties.o: session-properties.c ../config.h gsm-client-list.h \
+	gsm-client-row.h gsm-protocol.h
+splash.o: splash.c ../config.h splash.h headers.h manager.h
+startup-programs.o: startup-programs.c ../config.h \
+	session-properties-capplet.h gsm-protocol.h
 
 info-am:
 info: info-recursive
@@ -609,7 +711,7 @@ install-exec-am: install-binPROGRAMS install-binSCRIPTS
 install-exec: install-exec-recursive
 
 install-data-am: install-man install-defaultDATA install-desktopDATA \
-		install-pixmapDATA
+		install-pixmapDATA install-settingsDATA install-sysDATA
 install-data: install-data-recursive
 
 install-am: all-am
@@ -617,7 +719,8 @@ install-am: all-am
 install: install-recursive
 uninstall-am: uninstall-binPROGRAMS uninstall-binSCRIPTS uninstall-man \
 		uninstall-defaultDATA uninstall-desktopDATA \
-		uninstall-pixmapDATA
+		uninstall-pixmapDATA uninstall-settingsDATA \
+		uninstall-sysDATA
 uninstall: uninstall-recursive
 all-am: Makefile $(PROGRAMS) $(SCRIPTS) $(MANS) $(DATA)
 all-redirect: all-recursive
@@ -628,7 +731,8 @@ installdirs-am:
 	$(mkinstalldirs)  $(DESTDIR)$(bindir) $(DESTDIR)$(bindir) \
 		$(DESTDIR)$(mandir)/man1 $(DESTDIR)$(mandir)/man5 \
 		$(DESTDIR)$(defaultdir) $(DESTDIR)$(desktopdir) \
-		$(DESTDIR)$(pixmapdir)
+		$(DESTDIR)$(pixmapdir) $(DESTDIR)$(settingsdir) \
+		$(DESTDIR)$(sysdir)
 
 
 mostlyclean-generic:
@@ -674,8 +778,9 @@ clean-libtool maintainer-clean-libtool uninstall-binSCRIPTS \
 install-binSCRIPTS install-man1 uninstall-man1 install-man5 \
 uninstall-man5 install-man uninstall-man uninstall-defaultDATA \
 install-defaultDATA uninstall-desktopDATA install-desktopDATA \
-uninstall-pixmapDATA install-pixmapDATA install-data-recursive \
-uninstall-data-recursive install-exec-recursive \
+uninstall-pixmapDATA install-pixmapDATA uninstall-settingsDATA \
+install-settingsDATA uninstall-sysDATA install-sysDATA \
+install-data-recursive uninstall-data-recursive install-exec-recursive \
 uninstall-exec-recursive installdirs-recursive uninstalldirs-recursive \
 all-recursive check-recursive installcheck-recursive info-recursive \
 dvi-recursive mostlyclean-recursive distclean-recursive clean-recursive \

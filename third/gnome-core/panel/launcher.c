@@ -20,7 +20,9 @@
 
 #include "panel-include.h"
 
-#define LAUNCHER_PROPERTIES "launcher_properties"
+#include "icon-entry-hack.h"
+
+static void properties_apply (Launcher *launcher);
 
 extern GtkTooltips *panel_tooltips;
 
@@ -28,11 +30,18 @@ extern GSList *applets;
 extern GSList *applets_last;
 extern int applet_count;
 
-static char *default_app_pixmap=NULL;
+static char *default_app_pixmap = NULL;
 
 extern GlobalConfig global_config;
 
 extern GSList *panels;
+
+enum {
+	HELP_BUTTON = 0,
+	REVERT_BUTTON,
+	CLOSE_BUTTON
+};
+
 
 static void
 launch (Launcher *launcher, int argc, char *argv[])
@@ -58,12 +67,12 @@ launch (Launcher *launcher, int argc, char *argv[])
 		return;
 	}
 	
-	if(item->type && strcmp(item->type,"URL")==0) {
+	if (item->type && strcmp (item->type, "URL") == 0) {
 		char *s;
-		s = g_strjoinv(" ",item->exec);
-		gnome_url_show(s);
-		g_free(s);
-	} else if(item->type && strcmp(item->type,"PanelApplet")==0) {
+		s = g_strjoinv (" ",item->exec);
+		gnome_url_show (s);
+		g_free (s);
+	} else if (item->type && strcmp (item->type, "PanelApplet") == 0) {
 		char *goad_id;
 
 		goad_id = get_applet_goad_id_from_dentry (item);
@@ -76,9 +85,16 @@ launch (Launcher *launcher, int argc, char *argv[])
 			g_warning (_("Can't get goad_id from desktop entry!"));
 		}
 
-		g_free(goad_id);
-	} else
-		gnome_desktop_entry_launch_with_args (item,argc,argv);
+		g_free (goad_id);
+	} else {
+		char *curdir = g_get_current_dir ();
+		chdir (g_get_home_dir ());
+
+		gnome_desktop_entry_launch_with_args (item, argc, argv);
+
+		chdir (curdir);
+		g_free (curdir);
+	}
 	
 	if(global_config.drawer_auto_close) {
 		GtkWidget *parent =
@@ -90,7 +106,7 @@ launch (Launcher *launcher, int argc, char *argv[])
 			GtkWidget *grandparentw =
 				PANEL_WIDGET(grandparent)->panel_parent;
 			drawer_widget_close_drawer (DRAWER_WIDGET (parent),
-						    BASEP_WIDGET (grandparentw));
+						    grandparentw);
 		}
 	}
 }
@@ -138,16 +154,31 @@ static void
 destroy_launcher(GtkWidget *widget, gpointer data)
 {
 	Launcher *launcher = data;
-	GtkWidget *prop_dialog = gtk_object_get_data(GTK_OBJECT(launcher->button),
-						     LAUNCHER_PROPERTIES);
-	if(prop_dialog)
-		gtk_widget_destroy(prop_dialog);
+	GtkWidget *prop_dialog = launcher->prop_dialog;
+
+	launcher->prop_dialog = NULL;
+
+	if (prop_dialog != NULL)
+		gtk_widget_destroy (prop_dialog);
+}
+
+static void
+free_launcher(gpointer data)
+{
+	Launcher *launcher = data;
+
 	gnome_desktop_entry_free(launcher->dentry);
+	launcher->dentry = NULL;
+
+	if (launcher->revert_dentry != NULL)
+		gnome_desktop_entry_free(launcher->revert_dentry);
+	launcher->revert_dentry = NULL;
+
 	g_free(launcher);
 }
 
 static gboolean
-is_this_drop_ok(GtkWidget *widget, GdkDragContext *context)
+is_this_drop_ok (GtkWidget *widget, GdkDragContext *context)
 {
 	static GdkAtom text_uri_list = 0;
 	GList *li;
@@ -161,15 +192,15 @@ is_this_drop_ok(GtkWidget *widget, GdkDragContext *context)
 	if(!(context->actions & GDK_ACTION_COPY))
 		return FALSE;
 
-	if(!text_uri_list)
+	if (text_uri_list == 0)
 		text_uri_list = gdk_atom_intern ("text/uri-list", FALSE);
 
-	for(li = context->targets; li; li = li->next) {
-		if(GPOINTER_TO_INT(li->data) == text_uri_list)
+	for (li = context->targets; li; li = li->next) {
+		if (GPOINTER_TO_INT (li->data) == text_uri_list)
 			break;
 	}
 	/* if we haven't found it */
-	if(!li)
+	if (li == NULL)
 		return FALSE;
 
 	return TRUE;
@@ -193,10 +224,10 @@ drag_motion_cb(GtkWidget *widget,
 	       guint time,
 	       Launcher *launcher)
 {
-	gdk_drag_status (context, GDK_ACTION_COPY, time);
-
-	if(!is_this_drop_ok(widget, context))
+	if ( ! is_this_drop_ok (widget, context))
 		return FALSE;
+
+	gdk_drag_status (context, GDK_ACTION_COPY, time);
 
 	button_widget_set_dnd_highlight(BUTTON_WIDGET(widget), TRUE);
 
@@ -204,68 +235,85 @@ drag_motion_cb(GtkWidget *widget,
 }
 
 static gboolean
-drag_drop_cb(GtkWidget	       *widget,
-	     GdkDragContext    *context,
-	     gint               x,
-	     gint               y,
-	     guint              time,
-	     Launcher *launcher)
+drag_drop_cb (GtkWidget	        *widget,
+	      GdkDragContext    *context,
+	      gint               x,
+	      gint               y,
+	      guint              time,
+	      Launcher          *launcher)
 {
 	static GdkAtom text_uri_list = 0;
 
-	if(!is_this_drop_ok(widget, context))
+	if ( ! is_this_drop_ok (widget, context))
 		return FALSE;
 
-	if(!text_uri_list)
+	if (text_uri_list == 0)
 		text_uri_list = gdk_atom_intern ("text/uri-list", FALSE);
 
-	gtk_drag_get_data(widget, context,
-			  gdk_atom_intern ("text/uri-list", FALSE),
-			  time);
+	gtk_drag_get_data (widget, context, text_uri_list, time);
 
 	return TRUE;
 }
 
+enum {
+	TARGET_ICON_INTERNAL,
+	TARGET_URI_LIST
+};
+
 
 static void  
-drag_data_get_cb (GtkWidget *widget, GdkDragContext     *context,
-		  GtkSelectionData   *selection_data, guint info,
-		  guint time, Launcher *launcher)
+drag_data_get_cb (GtkWidget          *widget,
+		  GdkDragContext     *context,
+		  GtkSelectionData   *selection_data,
+		  guint               info,
+		  guint               time,
+		  Launcher           *launcher)
 {
 	gchar *uri_list;
 	
-	g_return_if_fail(launcher!=NULL);
-	g_return_if_fail(launcher->dentry!=NULL);
-	g_return_if_fail(launcher->dentry->location!=NULL);
+	g_return_if_fail (launcher != NULL);
+	g_return_if_fail (launcher->dentry != NULL);
 
-	uri_list = g_strconcat ("file:", launcher->dentry->location, "\r\n", NULL);
+	if (launcher->dentry->location == NULL)
+		launcher_save (launcher);
 
-	gtk_selection_data_set (selection_data,
-				selection_data->target, 8, (guchar *)uri_list,
-				strlen(uri_list));
-	g_free(uri_list);
+	if (info == TARGET_URI_LIST) {
+		uri_list = g_strconcat ("file:", launcher->dentry->location,
+					"\r\n", NULL);
+
+		gtk_selection_data_set (selection_data,
+					selection_data->target, 8, (guchar *)uri_list,
+					strlen (uri_list));
+		g_free(uri_list);
+	} else if (info == TARGET_ICON_INTERNAL) {
+		gtk_selection_data_set (selection_data,
+					selection_data->target, 8,
+					launcher->dentry->location,
+					strlen (launcher->dentry->location));
+	}
 }
 
 
 
 static Launcher *
-create_launcher (char *parameters, GnomeDesktopEntry *dentry)
+create_launcher (const char *parameters, GnomeDesktopEntry *dentry)
 {
 	char *icon;
 	Launcher *launcher;
         static GtkTargetEntry dnd_targets[] = {
-		{ "text/uri-list", 0, 0 }
+		{ "application/x-panel-icon-internal", 0, TARGET_ICON_INTERNAL },
+		{ "text/uri-list", 0, TARGET_URI_LIST }
 	};
 
-	if (!default_app_pixmap)
+	if (default_app_pixmap == NULL)
 		default_app_pixmap = gnome_pixmap_file ("gnome-unknown.png");
 
-	if(!dentry) {
-		if (!parameters)
+	if(dentry == NULL) {
+		if (parameters == NULL) {
 			return NULL;
-		else if (*parameters == '/')
-			dentry = gnome_desktop_entry_load_unconditional(parameters);
-		else {
+		} else if (*parameters == '/') {
+			dentry = gnome_desktop_entry_load_unconditional (parameters);
+		} else {
 			char *apps_par, *entry, *extension;
 
 			if (strstr (parameters, ".desktop"))
@@ -274,23 +322,26 @@ create_launcher (char *parameters, GnomeDesktopEntry *dentry)
 				extension = ".desktop";
 
 			apps_par = g_strconcat ("apps/", parameters,
-						   extension, NULL);
+						extension, NULL);
 			entry = gnome_datadir_file (apps_par);
 			g_free (apps_par);
 
-			if (!entry)
+			if (entry == NULL)
 				return NULL;
 			dentry = gnome_desktop_entry_load_unconditional (entry);
 			g_free (entry);
 		}
 	}
-	if (!dentry)
+	if (dentry == NULL)
 		return NULL; /*button is null*/
 
-	launcher = g_new(Launcher,1);
+	launcher = g_new0 (Launcher, 1);
 
+	launcher->info = NULL;
 	launcher->button = NULL;
 	launcher->dedit = NULL;
+	launcher->prop_dialog = NULL;
+
 	icon = dentry->icon;
 	if (icon && *icon) {
 		/* Sigh, now we need to make them local to the gnome install */
@@ -319,16 +370,16 @@ create_launcher (char *parameters, GnomeDesktopEntry *dentry)
 	  some (already selected) events on the panel instead of
 	  the launcher window (where they are also selected) but
 	  we don't mind*/
-	GTK_WIDGET_UNSET_FLAGS(launcher->button,GTK_NO_WINDOW);
+	GTK_WIDGET_UNSET_FLAGS (launcher->button, GTK_NO_WINDOW);
 	gtk_drag_source_set(launcher->button,
 			    GDK_BUTTON1_MASK,
-			    dnd_targets, 1,
-			    GDK_ACTION_COPY);
-	GTK_WIDGET_SET_FLAGS(launcher->button,GTK_NO_WINDOW);
+			    dnd_targets, 2,
+			    GDK_ACTION_COPY | GDK_ACTION_MOVE);
+	GTK_WIDGET_SET_FLAGS (launcher->button, GTK_NO_WINDOW);
 	
 	/*gtk_drag_dest_set (GTK_WIDGET (launcher->button),
 			   GTK_DEST_DEFAULT_ALL,
-			   dnd_targets, 1,
+			   dnd_targets, 2,
 			   GDK_ACTION_COPY);*/
 	gtk_drag_dest_set (GTK_WIDGET (launcher->button),
 			   0, NULL, 0, 0);
@@ -362,27 +413,31 @@ create_launcher (char *parameters, GnomeDesktopEntry *dentry)
 
 	launcher->dentry = dentry;
 
-	gtk_object_set_data(GTK_OBJECT(launcher->button),
-			    LAUNCHER_PROPERTIES,NULL);
-
 	return launcher;
 }
 
 static void
-properties_apply_callback(GtkWidget *widget, int page, gpointer data)
+properties_apply (Launcher *launcher)
 {
-	Launcher *launcher = data;
 	char *icon;
-	
-	if (page != -1)
-		return;
+	char *location;
+	char *docpath;
+
+	/* save (steal) location */
+	location = launcher->dentry->location;
+	launcher->dentry->location = NULL;
 
 	gnome_desktop_entry_free(launcher->dentry);
+
 	launcher->dentry =
 		gnome_dentry_get_dentry(GNOME_DENTRY_EDIT(launcher->dedit));
-	if(!launcher->dentry->name || !(*(launcher->dentry->name))) {
-		g_free(launcher->dentry->name);
-		launcher->dentry->name=g_strdup("???");
+
+	/* restore location */
+	launcher->dentry->location = location;
+
+	if (string_empty (launcher->dentry->name)) {
+		g_free (launcher->dentry->name);
+		launcher->dentry->name = g_strdup ("???");
 	}
 
 	gtk_tooltips_set_tip (panel_tooltips,launcher->button,
@@ -391,7 +446,7 @@ properties_apply_callback(GtkWidget *widget, int page, gpointer data)
 	button_widget_set_text (BUTTON_WIDGET(launcher->button),
 				launcher->dentry->name);
 	icon = launcher->dentry->icon;
-	if (icon && *icon) {
+	if ( ! string_empty (icon)) {
 		/* Sigh, now we need to make them local to the gnome
 		   install */
 		if (*icon != '/') {
@@ -408,46 +463,104 @@ properties_apply_callback(GtkWidget *widget, int page, gpointer data)
 		button_widget_set_pixmap(BUTTON_WIDGET(launcher->button),
 					 default_app_pixmap, -1);
 	}
-	panel_config_sync();
+
+	applet_remove_callback (launcher->info, "help_on_app");
+	docpath = panel_gnome_kde_help_path (launcher->dentry->docpath);
+	if (docpath != NULL) {
+		char *title;
+
+		g_free (docpath);
+
+		title = g_strdup_printf (_("Help on %s"),
+					 launcher->dentry->name);
+
+		applet_add_callback (launcher->info, "help_on_app",
+				     GNOME_STOCK_PIXMAP_HELP,
+				     title);
+		g_free (title);
+	}
 }
 
 static void
 properties_close_callback(GtkWidget *widget, gpointer data)
 {
 	Launcher *launcher = data;
-	gtk_object_set_data(GTK_OBJECT(launcher->button),
-			    LAUNCHER_PROPERTIES,NULL);
+
+	launcher->prop_dialog = NULL;
 	launcher->dedit = NULL;
+
+	if (launcher->revert_dentry != NULL)
+		gnome_desktop_entry_free (launcher->revert_dentry);
+	launcher->revert_dentry = NULL;
+
+	panel_config_sync_schedule ();
+}
+
+static void
+window_clicked (GtkWidget *w, int button, gpointer data)
+{
+	Launcher *launcher = data;
+
+	if (button == HELP_BUTTON) {
+		panel_show_help ("launcher.html");
+	} else if (button == REVERT_BUTTON) { /* revert */
+		gnome_dentry_edit_set_dentry (GNOME_DENTRY_EDIT (launcher->dedit),
+					      launcher->revert_dentry);
+	} else {
+		gnome_dialog_close (GNOME_DIALOG (w));
+	}
+}
+
+static void
+launcher_changed (GtkObject *dedit, gpointer data)
+{
+	Launcher *launcher = data;
+
+	properties_apply (launcher);
 }
 
 static GtkWidget *
-create_properties_dialog(Launcher *launcher)
+create_properties_dialog (Launcher *launcher)
 {
-	GtkWidget  *dialog;
-	GList *types = NULL;
+	GtkWidget *dialog;
+	GtkWidget *notebook;
+	GList *types;
 
-	dialog = gnome_property_box_new();
+	/* watch the enum at the top of the file */
+	dialog = gnome_dialog_new (_("Launcher properties"),
+				   GNOME_STOCK_BUTTON_HELP,
+				   _("Revert"),
+				   GNOME_STOCK_BUTTON_CLOSE,
+				   NULL);
+	gnome_dialog_set_close (GNOME_DIALOG (dialog),
+				FALSE /* click_closes */);
+
+	notebook = gtk_notebook_new ();
+	gtk_box_pack_start (GTK_BOX (GNOME_DIALOG (dialog)->vbox),
+			    notebook, TRUE, TRUE, 0);
+
 	gtk_window_set_wmclass(GTK_WINDOW(dialog),
-			       "launcher_properties","Panel");
-	gtk_window_set_title(GTK_WINDOW(dialog), _("Launcher properties"));
+			       "launcher_properties", "Panel");
 	gtk_window_set_policy(GTK_WINDOW(dialog), FALSE, FALSE, TRUE);
 	
 	launcher->dedit =
-		gnome_dentry_edit_new_notebook(
-		      GTK_NOTEBOOK(GNOME_PROPERTY_BOX(dialog)->notebook));
-	gtk_object_ref(launcher->dedit);
-	gtk_object_sink(launcher->dedit);
+		gnome_dentry_edit_new_notebook(GTK_NOTEBOOK(notebook));
+	hack_dentry_edit (GNOME_DENTRY_EDIT (launcher->dedit));
 	
-	/* Do not translate these, these are written to the file, they are
-	 * not just for the user */
-	types = g_list_append(types, "Application");
-	types = g_list_append(types, "URL");
-	types = g_list_append(types, "PanelApplet");
-	gtk_combo_set_popdown_strings(GTK_COMBO(GNOME_DENTRY_EDIT(launcher->dedit)->type_combo), types);
-	g_list_free(types);
+	types = NULL;
+	types = g_list_append (types, "Application");
+	types = g_list_append (types, "URL");
+	types = g_list_append (types, "PanelApplet");
+	gtk_combo_set_popdown_strings (GTK_COMBO (GNOME_DENTRY_EDIT (launcher->dedit)->type_combo), types);
+	g_list_free (types);
+	types = NULL;
 
-	gnome_dentry_edit_set_dentry(GNOME_DENTRY_EDIT(launcher->dedit),
-				     launcher->dentry);
+	if (launcher->revert_dentry != NULL)
+		gnome_desktop_entry_free (launcher->revert_dentry);
+	launcher->revert_dentry = gnome_desktop_entry_copy (launcher->dentry);
+
+	gnome_dentry_edit_set_dentry (GNOME_DENTRY_EDIT (launcher->dedit),
+				      launcher->dentry);
 
 	/* This sucks, but there is no other way to do this with the current
 	   GnomeDEntry API.  */
@@ -466,208 +579,400 @@ create_properties_dialog(Launcher *launcher)
 
 #undef SETUP_EDITABLE
 	
-	gtk_signal_connect_object(GTK_OBJECT(launcher->dedit), "changed",
-				  GTK_SIGNAL_FUNC(gnome_property_box_changed),
-				  GTK_OBJECT(dialog));
+	gtk_signal_connect (GTK_OBJECT (launcher->dedit), "changed",
+			    GTK_SIGNAL_FUNC (launcher_changed),
+			    launcher);
 
-	gtk_signal_connect(GTK_OBJECT(dialog), "destroy",
-			   GTK_SIGNAL_FUNC(properties_close_callback),
-			   launcher);
-	gtk_signal_connect(GTK_OBJECT(launcher->dedit), "destroy",
-			   GTK_SIGNAL_FUNC(gtk_object_unref), NULL);
+	gtk_signal_connect (GTK_OBJECT (dialog), "destroy",
+			    GTK_SIGNAL_FUNC (properties_close_callback),
+			    launcher);
 
-	gtk_signal_connect(GTK_OBJECT(dialog), "apply",
-			   GTK_SIGNAL_FUNC(properties_apply_callback),
-			   launcher);
-	gtk_signal_connect(GTK_OBJECT(dialog), "help",
-			   GTK_SIGNAL_FUNC(panel_pbox_help_cb),
-			   "launchers.html");
+	/* YAIKES, the problem here is that the notebook will attempt
+	 * to destroy the dedit, so if we unref it in the close handler,
+	 * it will be finalized by the time the notebook will destroy it,
+	 * dedit is just a horrible thing */
+	gtk_signal_connect (GTK_OBJECT (launcher->dedit), "destroy",
+			    GTK_SIGNAL_FUNC (gtk_object_unref),
+			    NULL);
+
+
+	gtk_signal_connect (GTK_OBJECT (dialog), "clicked",
+			    GTK_SIGNAL_FUNC (window_clicked),
+			    launcher);
+
+	gtk_widget_grab_focus
+		(gnome_dentry_get_name_entry
+		 (GNOME_DENTRY_EDIT (launcher->dedit)));
 
 	return dialog;
 }
 
 void
-launcher_properties(Launcher *launcher)
+launcher_properties (Launcher *launcher)
 {
-	GtkWidget         *dialog;
-
-	dialog = gtk_object_get_data(GTK_OBJECT(launcher->button),
-				     LAUNCHER_PROPERTIES);
-	if(dialog) {
-		gdk_window_raise(dialog->window);
-		gtk_widget_show(dialog);
+	if (launcher->prop_dialog != NULL) {
+		gtk_widget_show_now (launcher->prop_dialog);
+		gdk_window_raise (launcher->prop_dialog->window);
 		return;
 	}
 
-	dialog = create_properties_dialog(launcher);
-	gtk_object_set_data(GTK_OBJECT(launcher->button),
-			    LAUNCHER_PROPERTIES,dialog);
-	gtk_widget_show_all (dialog);
+	launcher->prop_dialog = create_properties_dialog (launcher);
+	gtk_widget_show_all (launcher->prop_dialog);
+	panel_set_dialog_layer (launcher->prop_dialog);
 }
 
-void
-load_launcher_applet_full (char *params, GnomeDesktopEntry *dentry,
+Launcher *
+load_launcher_applet_full (const char *params, GnomeDesktopEntry *dentry,
 			   PanelWidget *panel, int pos, gboolean exactpos)
 {
 	Launcher *launcher;
+	char *docpath;
 
-	launcher = create_launcher(params,dentry);
+	launcher = create_launcher (params, dentry);
 
 	if(!launcher)
-		return;
+		return NULL;
 
-	if(!register_toy(launcher->button, launcher, panel, pos, exactpos,
-			 APPLET_LAUNCHER))
-		return;
+	if(!register_toy(launcher->button,
+			 launcher, free_launcher,
+			 panel, pos, exactpos,
+			 APPLET_LAUNCHER)) {
+		/* Don't free launcher here, the button has been destroyed
+		   above and the launcher structure freed */
+		return NULL;
+	}
+
+	launcher->info = applets_last->data;
 
 	gtk_tooltips_set_tip (panel_tooltips,
 			      launcher->button,
-			      launcher->dentry->comment,NULL);
+			      launcher->dentry->comment,
+			      NULL);
 
-	applet_add_callback(applets_last->data,"properties",
-			    GNOME_STOCK_MENU_PROP,
-			    _("Properties..."));
-	applet_add_callback(applets_last->data, "help",
-			    GNOME_STOCK_PIXMAP_HELP,
-			    _("Help"));
+	applet_add_callback (applets_last->data,"properties",
+			     GNOME_STOCK_MENU_PROP,
+			     _("Properties..."));
+	applet_add_callback (applets_last->data, "help",
+			     GNOME_STOCK_PIXMAP_HELP,
+			     _("Help"));
+
+	docpath = panel_gnome_kde_help_path (launcher->dentry->docpath);
+	if (docpath != NULL) {
+		char *title;
+
+		g_free (docpath);
+
+		title = g_strdup_printf (_("Help on %s"),
+					 launcher->dentry->name);
+
+		applet_add_callback (applets_last->data, "help_on_app",
+				     GNOME_STOCK_PIXMAP_HELP,
+				     title);
+		g_free (title);
+	}
+
+	return launcher;
 }
 
 static void
-really_add_launcher(GtkWidget *d, int button, gpointer data)
+really_add_launcher(GtkWidget *dialog, int button, gpointer data)
 {
 	GnomeDEntryEdit *dedit = GNOME_DENTRY_EDIT(data);
-	int pos = GPOINTER_TO_INT(gtk_object_get_data(GTK_OBJECT(d),"pos"));
-	gboolean exactpos = GPOINTER_TO_INT(gtk_object_get_data(GTK_OBJECT(d),"exactpos"));
-	PanelWidget *panel = gtk_object_get_data(GTK_OBJECT(d),"panel");
+	int pos = GPOINTER_TO_INT(gtk_object_get_data(GTK_OBJECT(dialog),"pos"));
+	gboolean exactpos = GPOINTER_TO_INT(gtk_object_get_data(GTK_OBJECT(dialog),"exactpos"));
+	PanelWidget *panel = gtk_object_get_data(GTK_OBJECT(dialog),"panel");
 	GnomeDesktopEntry *dentry;
 	
 	if(button == 0/*ok*/) {
+		Launcher *launcher;
+
 		dentry = gnome_dentry_get_dentry(dedit);
 
 		if(!dentry->name || !(*(dentry->name))) {
 			g_free(dentry->name);
 			dentry->name=g_strdup("???");
 		}
-		load_launcher_applet_full (NULL, dentry, panel, pos, exactpos);
-		panel_config_sync();
+		launcher = load_launcher_applet_full (NULL, dentry, panel, pos, exactpos);
+		if (launcher != NULL)
+			launcher_save (launcher);
+
+		panel_config_sync_schedule ();
 	} else if(button == 2/*help*/) {
-		GnomeHelpMenuEntry help_entry = {
-			"panel",
-			"launchers.html#LAUNCHERS"
-		};
-		gnome_help_display(NULL, &help_entry);
+		panel_show_help ("launchers.html#LAUNCHERS");
 		/* just return as we don't want to close */
 		return;
 	}
 
-	gtk_widget_destroy(d);
+	gtk_widget_destroy(dialog);
 }
 
 void
-ask_about_launcher(char *file, PanelWidget *panel, int pos, gboolean exactpos)
+ask_about_launcher (const char *file, PanelWidget *panel, int pos, gboolean exactpos)
 {
-	GtkWidget *d;
+	GtkWidget *dialog;
 	GtkWidget *notebook;
 	GnomeDEntryEdit *dee;
-	GList *types = NULL;
+	GList *types;
 
-	d = gnome_dialog_new(_("Create launcher applet"),
-			     GNOME_STOCK_BUTTON_OK,
-			     GNOME_STOCK_BUTTON_CANCEL,
-			     GNOME_STOCK_BUTTON_HELP,
-			     NULL);
-	gtk_window_set_wmclass(GTK_WINDOW(d),
-			       "create_launcher","Panel");
-	gtk_window_set_policy(GTK_WINDOW(d), FALSE, FALSE, TRUE);
+	dialog = gnome_dialog_new (_("Create launcher applet"),
+				   GNOME_STOCK_BUTTON_OK,
+				   GNOME_STOCK_BUTTON_CANCEL,
+				   GNOME_STOCK_BUTTON_HELP,
+				   NULL);
+	gtk_window_set_wmclass (GTK_WINDOW (dialog),
+				"create_launcher", "Panel");
+	gtk_window_set_policy (GTK_WINDOW (dialog), FALSE, FALSE, TRUE);
 	
-	notebook = gtk_notebook_new();
-	gtk_box_pack_start(GTK_BOX(GNOME_DIALOG(d)->vbox),notebook,
-			   TRUE,TRUE,GNOME_PAD_SMALL);
+	notebook = gtk_notebook_new ();
+	gtk_box_pack_start (GTK_BOX(GNOME_DIALOG(dialog)->vbox), notebook,
+			    TRUE, TRUE, GNOME_PAD_SMALL);
 	dee = GNOME_DENTRY_EDIT(gnome_dentry_edit_new_notebook(GTK_NOTEBOOK(notebook)));
-	gtk_object_ref(GTK_OBJECT(dee));
-	gtk_object_sink(GTK_OBJECT(dee));
+	hack_dentry_edit (dee);
 
-	/* Do NOT translate these */
+	types = NULL;
 	types = g_list_append(types, "Application");
 	types = g_list_append(types, "URL");
 	types = g_list_append(types, "PanelApplet");
 	gtk_combo_set_popdown_strings(GTK_COMBO(dee->type_combo), types);
 	g_list_free(types);
+	types = NULL;
+
+#define SETUP_EDITABLE(entry_name)					\
+	gnome_dialog_editable_enters					\
+		(GNOME_DIALOG (dialog),					\
+		 GTK_EDITABLE (gnome_dentry_get_##entry_name##_entry (dee)));
+
+	SETUP_EDITABLE (name);
+	SETUP_EDITABLE (comment);
+	SETUP_EDITABLE (exec);
+	SETUP_EDITABLE (tryexec);
+	SETUP_EDITABLE (doc);
+
+#undef SETUP_EDITABLE
 	
-	if(file)
+	if (file != NULL)
 		gtk_entry_set_text(GTK_ENTRY(dee->exec_entry), file);
-	/* Do not translate */
 	gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(dee->type_combo)->entry),
 			   "Application");
 	
 	
-	gtk_object_set_data(GTK_OBJECT(d),"pos", GINT_TO_POINTER(pos));
-	gtk_object_set_data(GTK_OBJECT(d),"exactpos",
-			    GINT_TO_POINTER(exactpos));
-	gtk_object_set_data(GTK_OBJECT(d),"panel",panel);
+	gtk_object_set_data (GTK_OBJECT(dialog), "pos", GINT_TO_POINTER (pos));
+	gtk_object_set_data (GTK_OBJECT(dialog), "exactpos",
+			     GINT_TO_POINTER (exactpos));
+	gtk_object_set_data (GTK_OBJECT (dialog), "panel", panel);
 
-	gtk_signal_connect(GTK_OBJECT(d),"clicked",
-			   GTK_SIGNAL_FUNC(really_add_launcher),
-			   dee);
-	gtk_signal_connect(GTK_OBJECT(dee), "destroy",
-			   GTK_SIGNAL_FUNC(gtk_object_unref), NULL);
+	gtk_signal_connect (GTK_OBJECT (dialog), "clicked",
+			    GTK_SIGNAL_FUNC (really_add_launcher),
+			    dee);
+	/* YAIKES, the problem here is that the notebook will attempt
+	 * to destroy the dedit, so if we unref it in the close handler,
+	 * it will be finalized by the time the notebook will destroy it,
+	 * dedit is just a horrible thing */
+	gtk_signal_connect (GTK_OBJECT (dee), "destroy",
+			    GTK_SIGNAL_FUNC (gtk_object_unref), NULL);
 
-	gnome_dialog_close_hides(GNOME_DIALOG(d),FALSE);
+	gnome_dialog_close_hides(GNOME_DIALOG(dialog),FALSE);
 
-	gnome_dialog_set_default(GNOME_DIALOG(d),0);
+	gnome_dialog_set_default(GNOME_DIALOG(dialog),0);
 
-	gtk_widget_show_all (d);
-	panel_set_dialog_layer (d);
+	gtk_widget_show_all (dialog);
+	panel_set_dialog_layer (dialog);
+
+	gtk_widget_grab_focus (gnome_dentry_get_name_entry (dee));
 }
 
-void
-load_launcher_applet_from_info(char *name, char *comment,
-			       char **exec, int execn, char *icon,
-			       PanelWidget *panel, int pos,
-			       gboolean exactpos)
+Launcher *
+load_launcher_applet_from_info (const char *name, const char *comment,
+				char **exec, int execn, const char *icon,
+				PanelWidget *panel, int pos,
+				gboolean exactpos)
 {
-	GnomeDesktopEntry *dentry = g_new0(GnomeDesktopEntry,1);
-	dentry->name = g_strdup(name);
-	dentry->comment = g_strdup(comment);
-	dentry->exec_length = execn;
-	dentry->exec = g_copy_vector(exec);
-	if(icon && *icon != '/')
-		dentry->icon = gnome_pixmap_file(icon);
-	else
-		dentry->icon = g_strdup(icon);
-	
-	dentry->type = g_strdup("Application");
+	GnomeDesktopEntry *dentry = g_new0 (GnomeDesktopEntry, 1);
+	Launcher *launcher;
 
-	load_launcher_applet_full (NULL, dentry, panel, pos, exactpos);
-	panel_config_sync();
+	dentry->name = g_strdup (name);
+	dentry->comment = g_strdup (comment);
+	dentry->exec_length = execn;
+	dentry->exec = g_copy_vector (exec);
+
+	if (icon != NULL &&
+	    icon[0] != '/')
+		dentry->icon = gnome_pixmap_file (icon);
+	else
+		dentry->icon = g_strdup (icon);
+	
+	dentry->type = g_strdup ("Application");
+
+	launcher = load_launcher_applet_full (NULL, dentry, panel, pos, exactpos);
+	if (launcher != NULL)
+		launcher_save (launcher);
+
+	panel_config_sync_schedule ();
+
+	return launcher;
 }
 
-void
-load_launcher_applet_from_info_url(char *name, char *comment,
-				   char *url, char *icon,
-				   PanelWidget *panel, int pos,
-				   gboolean exactpos)
+Launcher *
+load_launcher_applet_from_info_url (const char *name, const char *comment,
+				    const char *url, const char *icon,
+				    PanelWidget *panel, int pos,
+				    gboolean exactpos)
 {
 	char *exec[] = { NULL, NULL };
-	GnomeDesktopEntry *dentry = g_new0(GnomeDesktopEntry,1);
-	dentry->name = g_strdup(name);
-	dentry->comment = g_strdup(comment);
-	dentry->exec_length = 1;
-	exec[0] = url;
-	dentry->exec = g_copy_vector(exec);
-	if(icon && *icon != '/')
-		dentry->icon = gnome_pixmap_file(icon);
-	else
-		dentry->icon = g_strdup(icon);
-	dentry->type = g_strdup("URL");
+	GnomeDesktopEntry *dentry = g_new0 (GnomeDesktopEntry, 1);
+	Launcher *launcher;
 
-	load_launcher_applet_full(NULL, dentry, panel, pos, exactpos);
-	panel_config_sync();
+	dentry->name = g_strdup (name);
+	dentry->comment = g_strdup (comment);
+	dentry->exec_length = 1;
+	exec[0] = (char *)url;
+	dentry->exec = g_copy_vector (exec);
+
+	if (icon != NULL &&
+	    icon[0] != '/')
+		dentry->icon = gnome_pixmap_file (icon);
+	else
+		dentry->icon = g_strdup (icon);
+	dentry->type = g_strdup ("URL");
+
+	launcher = load_launcher_applet_full (NULL, dentry, panel, pos, exactpos);
+	if (launcher != NULL)
+		launcher_save (launcher);
+
+	panel_config_sync_schedule ();
+
+	return launcher;
+}
+
+Launcher *
+load_launcher_applet (const char *params, PanelWidget *panel, int pos,
+		      gboolean exactpos)
+{
+	return load_launcher_applet_full (params, NULL, panel, pos, exactpos);
+}
+
+/* an imperfect conversion to gnome style, it's mostly the same but not
+ * completely, this should work for 90% of cases */
+static void
+convert_dentry_to_gnome (GnomeDesktopEntry *dentry)
+{
+	int i;
+
+	dentry->is_kde = FALSE;
+	for (i = 0; i < dentry->exec_length; i++) {
+		if (strcmp (dentry->exec[i], "\"%c\"") == 0 ||
+		    strcmp (dentry->exec[i], "%c") == 0) {
+			g_free (dentry->exec[i]);
+			dentry->exec[i] = g_strdup_printf ("'%s'", dentry->name);
+		} else if (dentry->exec[i][0] == '%' &&
+		    strlen(dentry->exec[i]) == 2) {
+			g_free (dentry->exec[i]);
+			dentry->exec[i] = g_strdup ("");
+		}
+	}
+
+	if (dentry->type != NULL &&
+	    strcmp (dentry->type, "KonsoleApplication") == 0) {
+		g_free (dentry->type);
+		dentry->type = g_strdup ("Application");
+		dentry->terminal = 1;
+	}
+}
+
+static char *
+launcher_get_unique_file (void)
+{
+	int rnd, word;
+#define NUM_OF_WORDS 6
+	char *words[] = {
+		"foo",
+		"bar",
+		"blah",
+		"gegl",
+		"frobate",
+		"hadjaha",
+		NULL};
+	char *fname, *full;
+
+	for (;;) {
+		rnd = rand ();
+		word = rand () % NUM_OF_WORDS;
+		fname = g_strdup_printf ("%s-%010x.desktop",
+					 words[word],
+					 (guint)rnd);
+		full = launcher_file_name (fname);
+		g_free (fname);
+
+		if ( ! panel_file_exists (full))
+			return full;
+	}
+
+	g_assert_not_reached ();
+	return NULL;
+}
+
+char *
+launcher_file_name (const char *base)
+{
+#ifdef PER_SESSION_CONFIGURATION
+	/* FIXME: this needs to do stuff, or perhaps just ignore per session
+	 * configs */
+#warning FIXME: per session config must be done for launchers
+#else
+	return g_strdup_printf ("%s/.gnome/panel.d/default/launchers/%s",
+				g_get_home_dir (),
+				base);
+#endif
+}
+
+
+void
+launcher_save (Launcher *launcher)
+{
+	g_return_if_fail (launcher != NULL);
+	g_return_if_fail (launcher->dentry != NULL);
+
+	if (launcher->dentry->is_kde)
+		convert_dentry_to_gnome(launcher->dentry);
+
+	if (launcher->dentry->location == NULL)
+		launcher->dentry->location = launcher_get_unique_file ();
+
+	gnome_desktop_entry_save(launcher->dentry);
 }
 
 void
-load_launcher_applet(char *params, PanelWidget *panel, int pos,
-		     gboolean exactpos)
+launcher_hoard (Launcher *launcher)
 {
-	load_launcher_applet_full(params, NULL, panel, pos, exactpos);
+	g_return_if_fail (launcher != NULL);
+	g_return_if_fail (launcher->dentry != NULL);
+
+	if (launcher->dentry->location != NULL) {
+		g_free (launcher->dentry->location);
+		launcher->dentry->location = NULL;
+	}
+
+	launcher_save (launcher);
+}
+
+Launcher *
+find_launcher (const char *path)
+{
+	GSList *li;
+
+	g_return_val_if_fail (path != NULL, NULL);
+
+	for (li = applets; li != NULL; li = li->next) {
+		AppletInfo *info = li->data;
+		if (info->type == APPLET_LAUNCHER) {
+			Launcher *launcher = info->data;
+
+			if (launcher->dentry != NULL &&
+			    launcher->dentry->location != NULL &&
+			    strcmp (launcher->dentry->location, path) == 0)
+				return launcher;
+		}
+	}
+
+	return NULL;
 }

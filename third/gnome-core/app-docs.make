@@ -4,9 +4,17 @@ help_DATA = \
 	topic.dat	\
 	$(figs)
 
-EXTRA_DIST = $(app).sgml $(help_DATA)
+#Scrollkeeper related stuff
+omf_dir=$(top_srcdir)/omf-install
 
-all: index.html
+EXTRA_DIST = $(app).sgml $(help_DATA) $(omffiles)
+
+all: index.html omf
+
+omf: $(omffiles)
+	-for omffile in $(omffiles); do \
+	  which scrollkeeper-preinstall >/dev/null 2>&1 && scrollkeeper-preinstall $(DESTDIR)$(helpdir)/$(app).sgml $$omffile $(omf_dir)/$$omffile; \
+	done
 
 index.html: $(app)/index.html
 	-cp $(app)/index.html .
@@ -24,12 +32,15 @@ app-dist-hook: index.html
 	-cp $(srcdir)/$(app)/*.css $(distdir)/$(app)
 	-cp $(srcdir)/$(app)/stylesheet-images/*.png \
 		$(distdir)/$(app)/stylesheet-images
+	-cp $(srcdir)/$(app)/stylesheet-images/*.gif \
+		$(distdir)/$(app)/stylesheet-images
 	-cp $(srcdir)/figures/*.png \
 		$(distdir)/figures
 
 install-data-am: index.html
 	-$(mkinstalldirs) $(DESTDIR)$(helpdir)/stylesheet-images
 	-$(mkinstalldirs) $(DESTDIR)$(helpdir)/figures
+	-cp $(srcdir)/$(app).sgml $(DESTDIR)$(helpdir)
 	-cp $(srcdir)/topic.dat $(DESTDIR)$(helpdir)
 	-for file in $(srcdir)/$(app)/*.html $(srcdir)/$(app)/*.css $(srcdir)/*.png; do \
 	  basefile=`echo $$file | sed -e 's,^.*/,,'`; \
@@ -40,6 +51,10 @@ install-data-am: index.html
 	  $(INSTALL_DATA) $$file $(DESTDIR)$(helpdir)/figures/$$basefile; \
 	done
 	-for file in $(srcdir)/$(app)/stylesheet-images/*.png; do \
+	  basefile=`echo $$file | sed -e  's,^.*/,,'`; \
+	  $(INSTALL_DATA) $$file $(DESTDIR)$(helpdir)/stylesheet-images/$$basefile; \
+	done
+	-for file in $(srcdir)/$(app)/stylesheet-images/*.gif; do \
 	  basefile=`echo $$file | sed -e  's,^.*/,,'`; \
 	  $(INSTALL_DATA) $$file $(DESTDIR)$(helpdir)/stylesheet-images/$$basefile; \
 	done

@@ -33,7 +33,7 @@ rh_submenu_to_display(GtkWidget *menuw, GtkMenuItem *menuitem)
 	int r;
 	int do_read = FALSE;
 	char *userrh;
-	if(!g_file_exists(REDHAT_MENUDIR))
+	if(!panel_file_exists(REDHAT_MENUDIR))
 		return;
 	userrh = gnome_util_prepend_user_home(".wmconfig/");
 
@@ -155,6 +155,26 @@ insert_rh_into_tree(GSList *list,RHMenuItem *rh,GSList *group)
 	return g_slist_insert_sorted(list,ri,(GCompareFunc)sort_rh);
 }
 
+static void
+kill_amp (char *str)
+{
+	int len;
+	
+	if (str == NULL)
+		return;
+
+	len = strlen (str);
+
+	if (len > 0 &&
+	    str[len-1] == '&') {
+		str[len-1] = '\0';
+
+		if (len > 1 &&
+		    str[len-2] == ' ')
+			str[len-2] = '\0';
+	}
+}
+
 static GSList *
 add_redhat_entry(GSList *list, char *file)
 {
@@ -186,7 +206,7 @@ add_redhat_entry(GSList *list, char *file)
 			char *s = read_word(&p);
 			g_free(rh->u.item.icon);
 			if(*s == '/') {
-				if(g_file_exists(s))
+				if(panel_file_exists(s))
 					rh->u.item.icon = s;
 				else {
 					g_free(s);
@@ -194,7 +214,7 @@ add_redhat_entry(GSList *list, char *file)
 				}
 			} else {
 				rh->u.item.icon = g_concat_dir_and_file("/usr/share/icons", s);
-				if(!g_file_exists(rh->u.item.icon)) {
+				if(!panel_file_exists(rh->u.item.icon)) {
 					g_free(rh->u.item.icon);
 					rh->u.item.icon = gnome_pixmap_file(s);
 				}
@@ -204,7 +224,7 @@ add_redhat_entry(GSList *list, char *file)
 			char *s = read_word(&p);
 			g_free(rh->u.item.mini_icon);
 			if(*s == '/') {
-				if(g_file_exists(s))
+				if(panel_file_exists(s))
 					rh->u.item.mini_icon = s;
 				else {
 					g_free(s);
@@ -212,7 +232,7 @@ add_redhat_entry(GSList *list, char *file)
 				}
 			} else {
 				rh->u.item.mini_icon = g_concat_dir_and_file("/usr/share/icons/mini", s);
-				if(!g_file_exists(rh->u.item.mini_icon)) {
+				if(!panel_file_exists(rh->u.item.mini_icon)) {
 					g_free(rh->u.item.mini_icon);
 					rh->u.item.mini_icon = gnome_pixmap_file(s);
 				}
@@ -221,6 +241,7 @@ add_redhat_entry(GSList *list, char *file)
 		} else if(strcmp(w,"exec")==0) {
 			g_free(rh->u.item.exec);
 			rh->u.item.exec = read_word(&p);
+			kill_amp (rh->u.item.exec);
 		} else if(strcmp(w,"group")==0) {
 			char *sc;
 			char *s = read_word(&p);

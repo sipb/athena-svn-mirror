@@ -1,7 +1,208 @@
+Wed Mar 14 12:39:26 2001  George Lebl <jirka@5z.com>
+
+	* logout.c:  call poweroff and reboot instead of shutdown, that works
+	  on old and new redhats alike
+
+Mon Mar 12 14:44:19 2001  George Lebl <jirka@5z.com>
+
+	* splash.c: Make it possible to make the done string translated, by
+	  translating the entire line for the "done", and making it a special
+	  case.
+
+Sat Mar 10 19:13:50 2001  George Lebl <jirka@5z.com>
+
+	* logout.c: freeing strings from under gettext is generally
+	  considered bad :)
+
+2001-03-07  Glynn Foster  <glynn.foster@sun.com>
+
+	The following contains some gruesome hacks to not get gnome-session
+        saving all the time. Actually it does carry out the save
+        proccess but only writes to the session file when it should. It
+        seems that this is the quickest hack to get things working 
+        correctly.
+
+	* command.c: (command): Add command for new GsmSessionSaveMode
+	* gsm-protocol.c: (gsm_protocol_set_sessionsave_mode): Added 
+        new function to set up the session save. 
+	* gsm-protocol.h: Added function header
+	* headers.h: Added extern gboolean session_save
+	* logout.c: (display_gui): toggle_button was being reverse 
+        engineered? [remove !]
+	* main.c: Added gboolean session_save
+	* manager.c: (save_yourself_request), (update_save_state),
+	(new_client): So we save all the time - but do we write all
+        the time?
+	* save-session.c: (main): Now sets the value of session_save
+        at the start of the save to TRUE and sets it back to false at
+        the end of the save. This is just a klunky way of making sure 
+        that the session gets saved.
+	* save.c: (set_sessionsave_mode): Added new function. Sets the 
+        session_save variable
+	* save.h: Added function header
+	* session.h: Added GsmSessionSaveMode hash-define.
+
+2001-02-26  Glynn Foster  <glynn.foster@sun.com>
+
+	* command.c: (command): Make sure that call with 
+	  GsmAutoSaveMode is doing the right thing
+	* save.c: (set_autosave_mode): Added function to set
+          autosave variable [somehow got removed previously]
+	* save.h: function definition
+	* session-properties-capplet.c: (write_state): Don't
+          use gnome_config to set autosave since it is set by
+          the protocol.
+
+Sat Feb 17 21:04:19 2001  George Lebl <jirka@5z.com>
+
+	* logout.c:  instead of simply checking for existance of
+	  /usr/bin/shutdown, check for it being executable for the
+	  current user.
+
+2001-02-15  jacob berkman  <jacob@ximian.com>
+
+	* save.c (read_session): still look in user dir if session is
+	`Default'
+
+2001-02-15  Jacob "Ulysses" Berkman  <jacob@helixcode.com>
+
+	* default.in: add a `Nautilus' session.  In beta 2, `Classic' will
+	run gmc, `Default' will run nautilus.
+	
+2001-02-14  jacob berkman  <jacob@ximian.com>
+
+	* save.c (read_session): if we are choosing a session, also look
+	in the default file for it.
+
+	* session-properties-capplet.c (capplet_build): default to the
+	default session
+
+2001-02-14 Glynn Foster <glynn.foster@ireland.sun.com>
+	
+	* session-properties-capplet.c/session-names.c: Was freeing 
+          something I shouldn't, so 'try' and 'revert' *should* work 
+	  like you think they should work, only different :)
+	* session-properties-capplet.h: Added mindless whitespace hacking
+	* command.c: Added mindless comment
+
+2001-02-14  Christophe Merlet  <redfox@eikonex.org>
+
+	* session-properties.c: Marqued string for translation.
+
+Tue Feb 13 23:41:58 2001  George Lebl <jirka@5z.com>
+
+	* splash.c: use the windowmanager icon for sawfish, not sawfish.png,
+	  until there is a nice sawfish icon
+
+Tue Feb 13 21:57:18 2001  George Lebl <jirka@5z.com>
+
+	* session-properties-capplet.c:  Save splash setting under the correct
+	  key
+
+	* splash.c: splash bugfixing galore.  Add nautilus to list of
+	  programs we know.  Fix possible crashes related to bad timeout
+	  removal.  Don't run icon_cb if not needed.  Fix possible races
+	  on destruction.  Make sure the scalefactor is in a reasonable level
+	  so we don't crash on rediculous splash screen images.  Rescale
+	  icons when they go out of bounds.  Use "fontset" and not "font"
+	  for text, and mark fontname for translation.  Should fix any
+	  remaining "splash screen segfaults" bugs on bugzilla.
+
+Fri Feb 9 2001 Glynn Foster <glynn.foster@sun.com>
+	* save.c (set_session_name): Set the current session
+	* gsm-protocol.c (gsm_protocol_set_session_name): Check *name
+	  for non-NULL
+	* session-properties-capplet.c (write_state): Remove config
+	  code to set CurrentSession in ~/.gnome/session-options since
+	  code in set_session_name (above) does this
+
+Thurs Feb 8 2001 Glynn Foster <glynn.foster@sun.com>
+	* session-properties-capplet.c (capplet_build): Just fixed up a 
+	  few Gtk-CRITICAL Warnings for the capplet code.
+
+2001-01-28  John Harper  <jsh@eazel.com>
+
+	* manager.c (interact_done): if the shutdown is cancelled, send
+	SmsShutdownCancelled message to clients in the
+	save_finished_list as well as those in the save_yourself_list
+	and the save_yourself_p2_list (otherwise these clients will
+	hang waiting for this or SaveComplete)
+
+Mon Feb 5 2001 Glynn Foster <glynn.foster@sun.com>
+	
+	* Some gsm loving - just a quick cleanup, added headers 
+		* headers.h, logout.h, save.h, ice.h, prop.h
+ 		  remote.h, command.h	
+          Created single global variable gchar *session_name to 
+          point to the current session, which can be changed by
+          using gsm-protocol.
+
+	* Implemented basic multi-session support. gnome-session
+	  now supports --choose-session=ARG commandline option which
+          will override any value for the CurrentSession key. If ARG
+          doesn't exist in the session file, or if the value of the 
+          CurrentSession doesn't exist in the session file, then 
+          gnome-session will use the default but save to the given 
+          session name.
+
+	* Moved Current Session indicator to ~/.gnome/session-options
+          file, along with new key/value pair AutoSave [which was more
+	  intuitive that TrashMode
+
+	* Incoporated capplet code into gnome-core/gsm and implemented
+	  multi-session chooser [still buggy - doesn't do the try and
+	  revert buttons properly, doesn't change the global session 
+          pointer using the gsm_protocol]
+		* session-properties-capplet.c, session-properties-capplet.h,
+		  session-properties.desktop, startup-programs.c,
+		  session-names.c
+
+	* Updated the man page, changed session-properties.desktop file
+           
+
+
+Wed Jan 10 11:08:06 2001  George Lebl <jirka@5z.com>
+
+	Applying the patches from helix rpms, redhat stuff and other
+	fixes.
+
+	* Makefile.am: compile with gdkpixmap canvas stuff
+
+	* gnome-login-check.c: warning fix
+
+	* main.c: apply the GDM_LANG patch from redhat stuff
+
+	* splash.c: Use the helix version, but use the normal gnome
+	  splash screen.  Fixup warnings, handle all error case, fix
+	  a segfault and scale stuff correctly to the size of the
+	  splashscreen image so that it works with any size splashscreen
+	  image nicely and some i18n fixes
+
+Mon Dec 18 00:10:13 2000  George Lebl <jirka@5z.com>
+
+	* logout.c:  Just before showing the dialog, focus the default widget
+	  otherwise Help might actually end up getting the default because
+	  it might end up getting the focus.
+
+Wed Dec 13 20:50:16 2000  George Lebl <jirka@5z.com>
+
+	* gnome-login-check.c, ice.c, manager.[ch], prop.c, remote.c, 
+	  save.c:  Fixup malloc/g_malloc confusion a bit.  Use glib's
+	  mem routines in more places where possible.  Also add a bunch
+	  of sanity "null after free" things all around, and use
+	  g_snprintf instead of sprintf out of paranoia (none of those
+	  actually resulted in real fixes though).  So this is not a high
+	  priority fix and doesn't need to go to stable, it just makes it
+	  all work with glib's mem checking stuff turned on.
+
 2000-11-15  Jacob "Ulysses" Berkman  <jacob@helixcode.com>
 
 	* gnome-login-check.c (main): change the error message to
 	reference the patch which fixes this.
+
+2000-11-09  Karl Eichwalder  <ke@suse.de>
+
+	* gnome-wm: Fix typo.
 
 2000-11-03  Jacob "Ulysses" Berkman  <jacob@helixcode.com>
 
@@ -22,10 +223,15 @@ Thu Nov 02 01:58:03 2000  George Lebl <jirka@5z.com>
 	<AE5T-KSN@asahi-net.or.jp> to fix i18n
 
 2000-10-30  Jacob "Ulysses" Berkman  <jacob@helixcode.com>
-	        
+
 	* gnome-libice-check.c (main): seg fault if libICE is broken
 
-        * gnome-login-check.c (main): add a test for broken libICE on solaris
+	* gnome-login-check.c (main): add a test for broken libICE on solaris
+
+2000-10-15 John Fleck <jfleck@inkstain.net>
+
+	* updated help/C/session.sgml for Nautilus compatibility (patch
+	from Greg Leblanc)
 
 Thu Jun 29 02:39:04 2000  Tim Janik  <timj@gtk.org>
 

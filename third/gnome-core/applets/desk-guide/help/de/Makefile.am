@@ -7,6 +7,7 @@ figs = \
 	deskguide-tasklist-fig.png
 applet = desk-guide
 lang = de
+omffiles = desk-guide_applet-de.omf
 sgml_ents = $(applet).sgml
 include $(top_srcdir)/applet-docs.make
 dist-hook: applet-dist-hook

@@ -36,6 +36,7 @@ BITMAPS     = \
 	gnome-gmenu.png				\
 	gnome-gmush.png				\
 	gnome-gnomine.png			\
+	gnome-gnomoku.png			\
 	gnome-graphics.png          \
 	gnome-gsame.png				\
 	gnome-help.png				\
@@ -86,7 +87,6 @@ BITMAPS     = \
 	vnterm.xpm				\
 	launcher-program.png			\
 	monitor.png				\
-	netscape.png				\
 	panel-arrow-down.png			\
 	panel-arrow-left.png			\
 	panel-arrow-right.png			\

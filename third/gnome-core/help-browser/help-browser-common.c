@@ -20,10 +20,8 @@
 ) && !defined(TC_DEF_TC_help_browser_simple_browser)
 #define TC_DEF_TC_help_browser_simple_browser 1
 const struct CORBA_TypeCode_struct TC_help_browser_simple_browser_struct = {
-   
-      {{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
+   {{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
     ORBIT_PSEUDO_TYPECODE},
-
    CORBA_tk_objref, "simple_browser", "IDL:help_browser/simple_browser:1.0",
    0, 0,
    NULL,

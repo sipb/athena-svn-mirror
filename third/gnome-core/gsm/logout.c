@@ -28,18 +28,18 @@
 #include "libgnome/libgnome.h"
 #include "libgnomeui/libgnomeui.h"
 
-#include "manager.h"
-#include "session.h"
+#include "logout.h"
+#include "command.h"
 #include "gsm-protocol.h"
 
 static gchar *halt_command[] =
 {
-  "/usr/bin/shutdown", "-h", "now", NULL
+  "/usr/bin/poweroff", NULL
 };
 
 static gchar *reboot_command[] =
 {
-  "/usr/bin/shutdown", "-r", "now", NULL
+  "/usr/bin/reboot", NULL
 };
 
 /* What action to take upon shutdown */
@@ -169,7 +169,18 @@ display_gui (void)
   GtkWidget *halt = NULL;
   GtkWidget *reboot = NULL;
   GtkWidget *invisible;
+  GsmProtocol *protocol;
 
+
+  protocol = (GsmProtocol *)gsm_protocol_new (gnome_master_client());
+  if( !protocol) {
+    const gchar *string = _("Could not connect to the session manager");
+    g_printerr("%s\n", string);
+  }
+  
+  gsm_protocol_get_current_session (GSM_PROTOCOL (protocol));
+
+  
   /* It's really bad here if someone else has the pointer
    * grabbed, so we first grab the pointer and keyboard
    * to an offscreen window, and then once we have the
@@ -215,8 +226,7 @@ display_gui (void)
 
   gtk_container_set_border_width (GTK_CONTAINER (GNOME_DIALOG (box)->vbox),
 				  GNOME_PAD);
-
-  if (trashing)
+  if (!autosave)
     {
       toggle_button = gtk_check_button_new_with_label (_("Save current setup"));
       gtk_widget_show (toggle_button);
@@ -231,7 +241,7 @@ display_gui (void)
    */
   s = g_strconcat ("/var/lock/console/", g_get_user_name (), NULL);
   if ((geteuid () == 0 || g_file_exists (s)) &&
-      g_file_exists (halt_command[0]))
+      access (halt_command[0], X_OK) == 0)
     {
       GtkWidget *frame;
       GtkWidget *action_vbox;
@@ -263,6 +273,15 @@ display_gui (void)
 		    NULL, NULL, GDK_CURRENT_TIME);
   gdk_keyboard_grab (invisible->window, FALSE, GDK_CURRENT_TIME);
 
+  /* Hmm, I suppose that it's a bug, or strange behaviour on gnome-dialog's
+   * part that even though the Yes is the default, Help somehow gets focus
+   * and thus temporairly grabs default as well.  I dunno if this should be
+   * changed in gnome-dialog, as grabbing the focus in _set_default would
+   * also be wrong.  Hmm, there should be a _set_focus as well I suppose,
+   * anyway, this will work */
+  if (GTK_WINDOW (box)->default_widget != NULL)
+	  gtk_widget_grab_focus (GTK_WINDOW (box)->default_widget);
+
   result = gnome_dialog_run (GNOME_DIALOG (box));
 
   refresh_screen ();
@@ -276,12 +295,11 @@ display_gui (void)
   switch (result)
     {
     case 0:
-      /* This is only called when we are going to exit, so it is ok to
-	 change `trashing'.  */
-      if (trashing)
-	set_trash_mode (! GTK_TOGGLE_BUTTON (toggle_button)->active);
-      
-      if (halt)
+	/* We want to know if we should trash changes (and lose forever)
+	 * or save them */
+	if(!autosave)
+		save_selected = GTK_TOGGLE_BUTTON (toggle_button)->active;
+     if (halt)
 	{
 	  if (GTK_TOGGLE_BUTTON (halt)->active)
 	    action = HALT;
@@ -306,7 +324,7 @@ display_gui (void)
 /* Display GUI if user wants it.  Returns TRUE if save should
    continue, FALSE otherwise.  */
 gboolean
-maybe_display_gui ()
+maybe_display_gui (void)
 {
   gboolean result, prompt = gnome_config_get_bool (GSM_OPTION_CONFIG_PREFIX "LogoutPrompt=true");
   if (! prompt)

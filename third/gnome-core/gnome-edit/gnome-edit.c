@@ -55,9 +55,9 @@ main( gint argc, gchar *argv[])
   
 	gnome_config_push_prefix( "/editor/Editor/" );
 	type = gnome_config_get_string( "EDITOR_TYPE=executable" );
-	executable = gnome_config_get_string_with_default( "EDITOR=emacs", &def );
+	executable = gnome_config_get_string_with_default( "EDITOR=vi", &def );
 	recognizes_lineno = gnome_config_get_bool( "ACCEPTS_LINE_NO=TRUE" );
-	needs_term = gnome_config_get_bool( "NEEDS_TERM=FALSE" );
+	needs_term = gnome_config_get_bool( "NEEDS_TERM=TRUE" );
 	gnome_config_pop_prefix();
 	gnome_config_sync();
 

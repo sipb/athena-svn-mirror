@@ -6,10 +6,13 @@
  *
  */
 
+#include "config.h"
+
 #include "floating-widget.h"
 #include "border-widget.h"
 #include "panel_config_global.h"
 #include "foobar-widget.h"
+#include "panel-util.h"
 
 extern GlobalConfig global_config;
 extern int pw_minimized_size;
@@ -190,14 +193,26 @@ floating_pos_get_menu_pos (BasePWidget *basep,
 			   int wx, int wy,
 			   int ww, int wh)
 {	
-	PanelWidget *panel = PANEL_WIDGET(basep->panel);
+	PanelOrientType menu_orient = floating_pos_get_applet_orient (basep);
 	
-	if(panel->orient==PANEL_VERTICAL) {
-		*x = wx + ww;
+	switch (menu_orient) {
+	case ORIENT_DOWN:
+		*x += wx;
+		*y = wy + wh;
+		break;
+	case ORIENT_LEFT:
+		*x = wx - mreq->width;
 		*y += wy;
-	} else {
+		break;
+	default:
+	case ORIENT_UP:
 		*x += wx;
 		*y = wy - mreq->height;
+		break;
+	case ORIENT_RIGHT:
+		*x = wx + ww;
+		*y += wy;
+		break;
 	}
 }
 
@@ -206,72 +221,54 @@ floating_pos_set_pos (BasePWidget *basep,
 		      int x, int y,
 		      int w, int h)
 {
-	int minx, miny, maxx, maxy;
 	FloatingPos *pos = FLOATING_POS(basep->pos);
 	gint16 newx, newy;
 
-	gdk_window_get_geometry (GTK_WIDGET(basep)->window,
-				 &minx, &miny, &maxx, &maxy, NULL);
-	gdk_window_get_origin (GTK_WIDGET(basep)->window, &minx, &miny);
-	maxx += minx;
-	maxy += miny;
-	if (x >= minx &&
-	    x <= maxx &&
-	    y >= miny &&
-	    y <= maxy)
- 	        return;
+	x -= basep->offset_x;
+	y -= basep->offset_y;
 
 	newx = pos->x;
 	newy = pos->y;
 
-	if (x < minx || x > maxx) {
-		int w2 = w;
-		int x2 = x;
-		if (PANEL_WIDGET (basep->panel)->orient == PANEL_HORIZONTAL) {
-			switch (basep->state) {
-			case BASEP_SHOWN:
-			case BASEP_MOVING:
-				break;
-			case BASEP_AUTO_HIDDEN:
-			case BASEP_HIDDEN_LEFT:
-				w2 = basep->hidebutton_w->allocation.width;
-				break;
-			case BASEP_HIDDEN_RIGHT:
-				w2 = basep->hidebutton_e->allocation.width;
-				x2 -= w - w2;
-				break;
-			}
+	if (PANEL_WIDGET (basep->panel)->orient == PANEL_HORIZONTAL) {
+		switch (basep->state) {
+		case BASEP_SHOWN:
+		case BASEP_MOVING:
+			break;
+		case BASEP_AUTO_HIDDEN:
+		case BASEP_HIDDEN_LEFT:
+			w = get_requisition_width (basep->hidebutton_w);
+			break;
+		case BASEP_HIDDEN_RIGHT:
+			w = get_requisition_width (basep->hidebutton_e);
+			break;
 		}
-		newx = CLAMP (x < minx ? x2 : x2 - w2, 0, gdk_screen_width () - w);
 	}
 
-	if (y < miny || y > maxy) {
-		int h2 = h;
-		int y2 = y;
-		if (PANEL_WIDGET (basep->panel)->orient == PANEL_VERTICAL) {
-			switch (basep->state) {
-			case BASEP_SHOWN:
-			case BASEP_MOVING:
-				break;
-			case BASEP_AUTO_HIDDEN:
-			case BASEP_HIDDEN_LEFT:
-				h2 = basep->hidebutton_n->allocation.height;
-				break;
-			case BASEP_HIDDEN_RIGHT:
-				h2 = basep->hidebutton_s->allocation.height;
-				y2 -= h - h2;
-				break;
-			}
+	newx = CLAMP (x, 0, gdk_screen_width () - w);
+
+	if (PANEL_WIDGET (basep->panel)->orient == PANEL_VERTICAL) {
+		switch (basep->state) {
+		case BASEP_SHOWN:
+		case BASEP_MOVING:
+			break;
+		case BASEP_AUTO_HIDDEN:
+		case BASEP_HIDDEN_LEFT:
+			h = get_requisition_height (basep->hidebutton_n);
+			break;
+		case BASEP_HIDDEN_RIGHT:
+			h = get_requisition_height (basep->hidebutton_s);
+			break;
 		}
-		newy = CLAMP (y < miny ? y2 : y2 - h2, 0, gdk_screen_height () - h);
 	}
+	newy = CLAMP (y, 0, gdk_screen_height () - h);
 
 	if (newy != pos->y || newx != pos->x) {
 		pos->x = newx;
 		pos->y = newy;
 		gtk_signal_emit (GTK_OBJECT (pos),
 				 floating_pos_signals[COORDS_CHANGE_SIGNAL],
-				 x, y);
+				 pos->x, pos->y);
 		gtk_widget_queue_resize (GTK_WIDGET (basep));
 	}
 }
@@ -292,22 +289,38 @@ floating_pos_get_hide_size (BasePWidget *basep,
 			    PanelOrientType hide_orient,
 			    int *w, int *h)
 {
-	switch (hide_orient) {
-	case ORIENT_UP:
-		*h = basep->hidebutton_n->allocation.height;
-		break;
-	case ORIENT_RIGHT:
-		*w = basep->hidebutton_w->allocation.width;
-		break;
-	case ORIENT_DOWN:
-		*h = basep->hidebutton_s->allocation.height;
-		break;
-	case ORIENT_LEFT:
-		*w = basep->hidebutton_e->allocation.width;
-		break;
+	if (basep->state == BASEP_AUTO_HIDDEN &&
+	    ! basep->hidebuttons_enabled) {
+		switch (hide_orient) {
+		case ORIENT_UP:
+		case ORIENT_DOWN:
+			*h = pw_minimized_size;
+			break;
+		case ORIENT_LEFT:
+		case ORIENT_RIGHT:
+			*w = pw_minimized_size;
+			break;
+		}
+	} else {
+		switch (hide_orient) {
+		case ORIENT_UP:
+			*h = get_requisition_height (basep->hidebutton_n);
+			break;
+		case ORIENT_RIGHT:
+			*w = get_requisition_width (basep->hidebutton_w);
+			break;
+		case ORIENT_DOWN:
+			*h = get_requisition_height (basep->hidebutton_s);
+			break;
+		case ORIENT_LEFT:
+			*w = get_requisition_width (basep->hidebutton_e);
+			break;
+		}
 	}
-	*w = MAX (*w, 1);
-	*h = MAX (*h, 1);
+	/* minimum of 3x3 pixels, as 1x1 is impossible to hit in case
+	 * something goes wrong */
+	*w = MAX (*w, 3);
+	*h = MAX (*h, 3);
 }
 
 static void
@@ -321,10 +334,16 @@ floating_pos_get_hide_pos (BasePWidget *basep,
 	case ORIENT_LEFT:
 		break;
 	case ORIENT_RIGHT:
-		*x += w - basep->hidebutton_w->allocation.width;
+		*x += w - ((basep->state == BASEP_AUTO_HIDDEN &&
+			    ! basep->hidebuttons_enabled)
+			   ? pw_minimized_size
+			   : get_requisition_width (basep->hidebutton_w));
 		break;
 	case ORIENT_DOWN:
-		*y += h - basep->hidebutton_s->allocation.height;
+		*y += h - ((basep->state == BASEP_AUTO_HIDDEN &&
+			    ! basep->hidebuttons_enabled)
+			   ? pw_minimized_size
+			   : get_requisition_height (basep->hidebutton_s));
 		break;
 	}
 }
@@ -372,9 +391,11 @@ floating_widget_change_params (FloatingWidget *floating,
 			       PanelOrientation orient,
 			       BasePMode mode,
 			       BasePState state,
+			       BasePLevel level,
+			       gboolean avoid_on_maximize,
 			       int sz,
-			       int hidebuttons_enabled,
-			       int hidebutton_pixmap_enabled,
+			       gboolean hidebuttons_enabled,
+			       gboolean hidebutton_pixmap_enabled,
 			       PanelBackType back_type,
 			       char *back_pixmap,
 			       gboolean fit_pixmap_bg,
@@ -402,6 +423,7 @@ floating_widget_change_params (FloatingWidget *floating,
 
 	basep_widget_change_params (BASEP_WIDGET (floating),
 				    orient, sz, mode, state,
+				    level, avoid_on_maximize,
 				    hidebuttons_enabled,
 				    hidebutton_pixmap_enabled,
 				    back_type, back_pixmap,
@@ -413,7 +435,7 @@ floating_widget_change_params (FloatingWidget *floating,
 
 void
 floating_widget_change_orient (FloatingWidget *floating,
-			     PanelOrientType orient)
+			     PanelOrientation orient)
 {
 	FloatingPos *pos = FLOATING_POS (floating->pos);
 	if (PANEL_WIDGET (BASEP_WIDGET (floating)->panel)->orient != orient) {
@@ -424,6 +446,8 @@ floating_widget_change_orient (FloatingWidget *floating,
 					       orient,
 					       basep->mode,
 					       basep->state,
+					       basep->level,
+					       basep->avoid_on_maximize,
 					       panel->sz,
 					       basep->hidebuttons_enabled,
 					       basep->hidebutton_pixmaps_enabled,
@@ -449,6 +473,8 @@ floating_widget_change_coords (FloatingWidget *floating,
 					       panel->orient,
 					       basep->mode,
 					       basep->state,
+					       basep->level,
+					       basep->avoid_on_maximize,
 					       panel->sz,
 					       basep->hidebuttons_enabled,
 					       basep->hidebutton_pixmaps_enabled,
@@ -466,9 +492,11 @@ floating_widget_new (gint16 x, gint16 y,
 		     PanelOrientation orient,
 		     BasePMode mode,
 		     BasePState state,
+		     BasePLevel level,
+		     gboolean avoid_on_maximize,
 		     int sz,
-		     int hidebuttons_enabled,
-		     int hidebutton_pixmap_enabled,
+		     gboolean hidebuttons_enabled,
+		     gboolean hidebutton_pixmap_enabled,
 		     PanelBackType back_type,
 		     char *back_pixmap,
 		     gboolean fit_pixmap_bg,
@@ -490,6 +518,8 @@ floating_widget_new (gint16 x, gint16 y,
 				TRUE, FALSE,
 				orient,
 				sz, mode, state,
+				level,
+				avoid_on_maximize,
 				hidebuttons_enabled,
 				hidebutton_pixmap_enabled,
 				back_type,

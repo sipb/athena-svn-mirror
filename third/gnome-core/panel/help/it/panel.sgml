@@ -41,7 +41,7 @@
    Questa è la versione 1.0 del manuale del pannello di GNOME.
   </releaseinfo>
  </artheader>
- <sect1>
+ <sect1 id="introduzione">
   <title>Introduzione</title>
   <para>
    <indexterm id="idx-a2">
@@ -199,7 +199,7 @@
 	chiamato <guibutton>Pulsante di Uscita</guibutton>. Premendo questo
 	pulsante con il tasto sinitro del mouse verrà iniziata la sequenza di
 	uscita dalla sessione di GNOME. Per maggiori informazioni sugli oggetti
-	speciali, consultate <xref linkend="specialobject">.
+	speciali, consultate <xref linkend="specialobjects">.
        </para>
       </formalpara>
      </listitem>
@@ -1999,7 +1999,7 @@ This submenu, which is
     <para>
      The <interface>Panel properties</interface> dialog contains two
      tabs to help you set the active Panel properties: <guilabel>Edge
-     Panel</guilabel> (or <guilabel>Aligned</guilabel>, &hellip -
+     Panel</guilabel> (or <guilabel>Aligned</guilabel>, &hellip; -
      depending on your panel type) and
      <guilabel>Background</guilabel>. Both of these tabs are explained
      below.
@@ -2120,7 +2120,7 @@ This submenu, which is
 
      <listitem>
       <para>
-       <guilabel>Color to use</guilabel> &mdash If you choose to have
+       <guilabel>Color to use</guilabel> &mdash; If you choose to have
        your <interface>Panel</interface> one color, this button will
        launch a dialog which allows you to specify which color to use.
       </para>
@@ -2252,15 +2252,12 @@ This submenu, which is
    sviluppatori di GNOME. È possibile reperire una lista parziale nella
    finestra di dialogo delle informazioni. Se vi state chiedendo come si
    chiama l'animale mostrato in questa finestra, il suo nome è "Gegl" ed ha
-   una propria <ulink type="http" url="http://www.gegl.org">home
+   una propria <ulink type="http" url="http://www.gegl.org/">home
     page</ulink>.
   </para>
   <para>
    Inviate tutti i commenti, suggerimenti, o eventuali errori al <ulink
-									url="http://bugs.gnome.org">Gnome Bug Tracking Database</ulink>. Le
-   istruzioni su come inviare resoconti di errore sono disponibili online a
-   <ulink
-	  url="http://bugs.gnome.org/Reporting.html">http://bugs.gnome.org/Reporting.html</ulink>.
+									url="http://bugzilla.gnome.org/">Gnome Bug Tracking Database</ulink>.
    Se state utilizzando GNOME 1.1 o successivo, è possibile utilizzare il
    comando <command>bug-buddy</command> per inviare queste informazioni.
   </para>
@@ -2271,30 +2268,14 @@ This submenu, which is
    suggerimenti riguardo questo manuale al Gnome Documentation Project
    all'indirizzo <email>docs@gnome.org</email> oppure inviate i vostri commenti
    utilizzando <ulink type="http"
-		     url="http://www.gnome.org/gdp/doctable">l'apposita pagina</ulink>.
+		     url="http://developer.gnome.org/projects/gdp/doctable/">l'apposita pagina</ulink>.
 
   </para>
   <para>
    La traduzione italiana di questo documento è stata eseguita da Christopher
    R. Gabriel (<email>cgabriel@pluto.linux.it</email>), all'interno del progetto
    ILDP del Pluto Linux User Group, <ulink type="http"
-					   url="http://www.pluto.linux.it/ildp/">http://www.pluto.linux.it/ildp/</ulink>.
+					   url="http://www.pluto.linux.it/ildp/">http://www.pluto.linux.it/ildp/</ulink>.</para>
 </sect1>
  
  </article>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

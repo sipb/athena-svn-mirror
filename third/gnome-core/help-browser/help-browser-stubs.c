@@ -18,8 +18,7 @@ help_browser_simple_browser_fetch_url(help_browser_simple_browser _obj,
    register GIOPConnection *_cnx;
 
    if (_obj->servant && _obj->vepv && help_browser_simple_browser__classid) {
-      
-	 ((POA_help_browser_simple_browser__epv *) _obj->
+      ((POA_help_browser_simple_browser__epv *) _obj->
        vepv[help_browser_simple_browser__classid])->fetch_url(_obj->servant,
 							      URL, ev);
       return;
@@ -84,7 +83,8 @@ help_browser_simple_browser_fetch_url(help_browser_simple_browser _obj,
 	 goto _ORBIT_system_exception;
       _ORBIT_completion_status = CORBA_COMPLETED_YES;
       if (_ORBIT_recv_buffer->message.u.reply.reply_status !=
-	  GIOP_NO_EXCEPTION) goto _ORBIT_msg_exception;
+	  GIOP_NO_EXCEPTION)
+	 goto _ORBIT_msg_exception;
       _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
       if (giop_msg_conversion_needed(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer))) {
       } else {
@@ -196,7 +196,8 @@ help_browser_simple_browser_show_url(help_browser_simple_browser _obj,
 	 goto _ORBIT_system_exception;
       _ORBIT_completion_status = CORBA_COMPLETED_YES;
       if (_ORBIT_recv_buffer->message.u.reply.reply_status !=
-	  GIOP_NO_EXCEPTION) goto _ORBIT_msg_exception;
+	  GIOP_NO_EXCEPTION)
+	 goto _ORBIT_msg_exception;
       _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
       if (giop_msg_conversion_needed(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer))) {
 	 GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur = _ORBIT_curptr;

@@ -170,15 +170,15 @@ static void
 aligned_pos_get_pos (BasePWidget *basep, int *x, int *y,
 		     int w, int h)
 {
+	int a, b;
+	BorderEdge edge = BORDER_POS(basep->pos)->edge;
+
 	*x = *y = 0;
-	switch (BORDER_POS(basep->pos)->edge) {
+	switch (edge) {
 	case BORDER_BOTTOM:
 		*y = gdk_screen_height() - h - foobar_widget_get_height ();
-                /* fall through */
+		/* fall thru */
 	case BORDER_TOP:
-		/* if we wanted to be more hackish we could just do: 
-		 *x = (ALIGNED_POS(basep->pos)->align)/2.0) * (gdk_screen_width() - w) 
-		 */
 		(*y) += foobar_widget_get_height ();
 		switch (ALIGNED_POS(basep->pos)->align) {
 		case ALIGNED_LEFT:
@@ -193,22 +193,38 @@ aligned_pos_get_pos (BasePWidget *basep, int *x, int *y,
 		break;
 	case BORDER_RIGHT:
 		*x = gdk_screen_width() - w;
-		/* fall through */
-	case BORDER_LEFT:
-		/* could do same as above, with height */
+		basep_border_get (BORDER_TOP, NULL, NULL, &a);
+		basep_border_get (BORDER_BOTTOM, NULL, NULL, &b);
 		switch (ALIGNED_POS(basep->pos)->align) {
 		case ALIGNED_LEFT:
-			*y = foobar_widget_get_height ();
+			*y = foobar_widget_get_height () + a;
 			break;
 		case ALIGNED_CENTER:
 			*y = (gdk_screen_height() - h) / 2;
 			break;
 		case ALIGNED_RIGHT:
-			*y = gdk_screen_height() - h;
+			*y = gdk_screen_height() - h - b;
+			break;
+		}
+		break;
+	case BORDER_LEFT:
+		basep_border_get (BORDER_TOP, &a, NULL, NULL);
+		basep_border_get (BORDER_BOTTOM, &b, NULL, NULL);
+		switch (ALIGNED_POS(basep->pos)->align) {
+		case ALIGNED_LEFT:
+			*y = foobar_widget_get_height () + a;
+			break;
+		case ALIGNED_CENTER:
+			*y = (gdk_screen_height() - h) / 2;
+			break;
+		case ALIGNED_RIGHT:
+			*y = gdk_screen_height() - h - b;
 			break;
 		}
 		break;
 	}
+
+	basep_border_queue_recalc ();
 }
 
 static void
@@ -250,20 +266,23 @@ aligned_pos_show_hide_right (BasePWidget *basep)
 	}
 }
 
-void aligned_widget_change_params (AlignedWidget *aligned,
-				   AlignedAlignment align,
-				   BorderEdge edge,
-				   int sz,
-				   BasePMode mode,
-				   BasePState state,
-				   int hidebuttons_enabled,
-				   int hidebutton_pixmaps_enabled,
-				   PanelBackType back_type,
-				   char *pixmap_name,
-				   gboolean fit_pixmap_bg,
-				   gboolean strech_pixmap_bg,
-				   gboolean rotate_pixmap_bg,
-				   GdkColor *back_color)
+void
+aligned_widget_change_params (AlignedWidget *aligned,
+			      AlignedAlignment align,
+			      BorderEdge edge,
+			      int sz,
+			      BasePMode mode,
+			      BasePState state,
+			      BasePLevel level,
+			      gboolean avoid_on_maximize,
+			      gboolean hidebuttons_enabled,
+			      gboolean hidebutton_pixmaps_enabled,
+			      PanelBackType back_type,
+			      char *pixmap_name,
+			      gboolean fit_pixmap_bg,
+			      gboolean strech_pixmap_bg,
+			      gboolean rotate_pixmap_bg,
+			      GdkColor *back_color)
 {
 	AlignedPos *pos = ALIGNED_POS (BASEP_WIDGET (aligned)->pos);
 
@@ -276,6 +295,7 @@ void aligned_widget_change_params (AlignedWidget *aligned,
 
 	border_widget_change_params (BORDER_WIDGET (aligned),
 				     edge, sz, mode, state,
+				     level, avoid_on_maximize,
 				     hidebuttons_enabled,
 				     hidebutton_pixmaps_enabled,
 				     back_type, pixmap_name,
@@ -300,6 +320,8 @@ aligned_widget_change_align (AlignedWidget *aligned,
 				      BORDER_POS (pos)->edge,
 				      panel->sz, basep->mode,
 				      basep->state,
+				      basep->level,
+				      basep->avoid_on_maximize,
 				      basep->hidebuttons_enabled,
 				      basep->hidebutton_pixmaps_enabled,
 				      panel->back_type,
@@ -321,6 +343,8 @@ aligned_widget_change_align_edge (AlignedWidget *aligned,
 	aligned_widget_change_params (aligned, align, edge,
 				      panel->sz, basep->mode,
 				      basep->state,
+				      basep->level,
+				      basep->avoid_on_maximize,
 				      basep->hidebuttons_enabled,
 				      basep->hidebutton_pixmaps_enabled,
 				      panel->back_type,
@@ -336,9 +360,11 @@ aligned_widget_new (AlignedAlignment align,
 		    BorderEdge edge,
 		    BasePMode mode,
 		    BasePState state,
+		    BasePLevel level,
+		    gboolean avoid_on_maximize,
 		    int sz,
-		    int hidebuttons_enabled,
-		    int hidebutton_pixmaps_enabled,
+		    gboolean hidebuttons_enabled,
+		    gboolean hidebutton_pixmaps_enabled,
 		    PanelBackType back_type,
 		    char *back_pixmap,
 		    gboolean fit_pixmap_bg,
@@ -356,6 +382,8 @@ aligned_widget_new (AlignedAlignment align,
 				 edge, 
 				 TRUE, FALSE,
 				 sz, mode, state,
+				 level,
+				 avoid_on_maximize,
 				 hidebuttons_enabled,
 				 hidebutton_pixmaps_enabled,
 				 back_type, back_pixmap,

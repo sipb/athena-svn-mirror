@@ -9,8 +9,8 @@
  *
  * Other contributors: George Lebl, Jeff Garzik, Jay Painter,
  * Christopher Blizzard, Jens Lautenbacher, Tom Tromey, Tristan Tarant,
- * Jonathan Blandford, Cody Russell, Nat Friedman, Jacob Berkman, and
- * John Harper
+ * Jonathan Blandford, Cody Russell, Nat Friedman, Jacob Berkman,
+ * John Harper, and Hans-Andreas Engel
  */
 #include <config.h>
 #include <unistd.h>
@@ -29,6 +29,7 @@
 #include <orb/orbit.h>
 #include <libgnorba/gnorba.h>
 #include <libgnomeui/gnome-window-icon.h>
+#include <glade/glade.h>
 
 #include <X11/Xatom.h>
 
@@ -44,6 +45,9 @@ extern char **environ;
 
 /* Initial geometry */
 static char *initial_global_geometry = NULL;
+
+/* Window icon */
+static char *window_icon = GNOME_ICONDIR"/gnome-terminal.png";
 
 char **env;
 
@@ -81,8 +85,13 @@ enum scrollbar_position_enum {
 
 enum targets_enum {
         TARGET_STRING,
-	TARGET_COLOR
+	TARGET_COLOR,
+	TARGET_BGIMAGE
 };
+
+/* nautilus uses this UTTER HACK to reset backgrounds, ugly ugly ugly,
+ * broken, ugly ugly, but whatever */
+#define RESET_IMAGE_NAME "/nautilus/backgrounds/reset.png"
 
 
 struct terminal_config {
@@ -108,13 +117,18 @@ struct terminal_config {
 	int update_records_and, update_records_xor;
 	const char *user_back_str, *user_fore_str;
 	int menubar_hidden; 			/* Whether to show the menubar */
-	int have_user_colors;			/* Only used for command line parsing */
 	int transparent;
+	int have_user_background;		/* Only used for command line parsing */
+#ifdef ZVT_BACKGROUND_SCROLL
+	int have_user_scroll_bg; 		/* Only used for command line parsing */
+#endif
 	int shaded;
+	int have_user_shaded;			/* Only used for command line parsing */
 	int background_pixmap;
 	int terminal_id;			/* terminal id for this terminal */
 	char *pixmap_file;
         char *window_title;                     /* the window title */
+        char *window_icon;                      /* the window icon */
 	char *wordclass;			/* select-by-word character class */
 	char *termname;				/* TERM variable setting, store as TERM=xxx */
 	GdkColor palette[18];			/* the full palette */
@@ -200,7 +214,7 @@ void paste_cmd            (GtkWidget *widget, ZvtTerm *term);
 void preferences_cmd      (GtkWidget *widget, ZvtTerm *term);
 void toggle_secure_keyboard_cmd (GtkWidget *w, ZvtTerm *term);
 
-GtkWidget *new_terminal_cmd (char **cmd, struct terminal_config *cfg_in, gchar *geometry, int termid);
+GtkWidget *new_terminal_cmd (char **cmd, struct terminal_config *cfg_in, const gchar *geometry, int termid);
 GtkWidget *new_terminal     (GtkWidget *widget, ZvtTerm *term);
 
 static void parse_an_arg (poptContext state,
@@ -314,16 +328,6 @@ gnome_term_set_font (ZvtTerm *term, char *font_name, const int use_bold)
 	if (s)
 		g_free (s);
 	gtk_object_set_user_data (GTK_OBJECT (term), g_strdup (font_name));
-}
-
-static GtkWidget *
-aligned_label (char *str)
-{
-	GtkWidget *l;
-
-	l = gtk_label_new (str);
-	gtk_misc_set_alignment (GTK_MISC (l), 1.0, 0.5);
-	return l;
 }
 
 /* This really should be in GTK+
@@ -533,6 +537,7 @@ load_config (char *class)
 	cfg->background_pixmap = gnome_config_get_bool ("background_pixmap=false");
 	cfg->pixmap_file = gnome_config_get_string ("pixmap_file");
 	cfg->window_title = NULL;
+	cfg->window_icon = NULL;
 
 	cfg->termname = NULL;
 	cfg->terminal_id = 0;
@@ -916,16 +921,15 @@ set_active (GtkWidget *widget, lambda_t *t)
 	gnome_property_box_changed (GNOME_PROPERTY_BOX (t->box));
 }
 
-static GtkWidget *
-create_option_menu_data (GnomePropertyBox *box, preferences_t *prefs, char **menu_list, int item,
+static void
+create_option_menu_data (GtkWidget *omenu,
+			 GnomePropertyBox *box, preferences_t *prefs, char **menu_list, int item,
 			 GtkSignalFunc func)
 {
-	GtkWidget *omenu;
 	GtkWidget *menu;
 	lambda_t *t;
 	int i = 0;
        
-	omenu = gtk_option_menu_new ();
 	menu = gtk_menu_new ();
 	while (*menu_list){
 		GtkWidget *entry;
@@ -949,14 +953,12 @@ create_option_menu_data (GnomePropertyBox *box, preferences_t *prefs, char **men
 				 GTK_SIGNAL_FUNC (set_active), NULL,
 				 t, (GtkDestroyNotify)g_free,
 				 FALSE, FALSE);
-
-	return omenu;
 }
 
-static GtkWidget *
-create_option_menu (GnomePropertyBox *box, preferences_t *prefs, char **menu_list, int item, GtkSignalFunc func)
+static void
+create_option_menu (GtkWidget *omenu, GnomePropertyBox *box, preferences_t *prefs, char **menu_list, int item, GtkSignalFunc func)
 {
-	return create_option_menu_data (box, prefs, menu_list, item, func);
+	create_option_menu_data (omenu, box, prefs, menu_list, item, func);
 }
 
 char *color_scheme [] = {
@@ -1067,6 +1069,7 @@ save_preferences_cmd (GtkWidget *widget, ZvtTerm *term)
 	char *prefix = g_strdup_printf ("/Terminal/%s/", cfg->class);
 
 	gnome_config_push_prefix (prefix);
+	g_free (prefix);
 	save_preferences (widget, term, cfg);
 	gnome_config_pop_prefix ();
 }
@@ -1088,16 +1091,16 @@ phelp_cb (GtkWidget *w, gint tab, gpointer data)
 void
 preferences_cmd (GtkWidget *widget, ZvtTerm *term)
 {
-	GtkWidget *l, *table, *picker, *label, *b1, *b2;
-	GtkWidget *r, *frame, *hbox, *subtable, *paltable;
+	GtkWidget *picker, *b1, *b2, *label, *r;
 	preferences_t *prefs;
-	GtkAdjustment *adj;
 	GList *class_list = NULL;
 	void *iter;
 	char *some_class;
 	struct terminal_config *cfg;
 	int i;
-
+	GladeXML *gui;
+	gchar *glade_file;
+	
 	/* Is a property window for this terminal already running? */
 	if (gtk_object_get_data (GTK_OBJECT (term), "newcfg"))
 		return;
@@ -1114,50 +1117,45 @@ preferences_cmd (GtkWidget *widget, ZvtTerm *term)
 	prefs = g_new0 (preferences_t, 1);
 	prefs->changed = 0;
 
-	prefs->prop_win = gnome_property_box_new ();
+	glade_file = GNOME_TERMINAL_GLADEDIR "/gnome-terminal.glade";
+
+	gui = glade_xml_new (glade_file, "prefs");
+	if (!gui) {
+		g_warning ("Error loading `%s'", glade_file);
+		return;
+	}
+
+	glade_xml_signal_autoconnect (gui);
+
+	prefs->prop_win = glade_xml_get_widget (gui, "prefs");
 	gtk_object_set_data (GTK_OBJECT (term), "prefs", prefs);
 
-	/* general page */
-	table = gtk_table_new (3, 3, FALSE);
-	gtk_container_set_border_width (GTK_CONTAINER (table), 4);
-	gnome_property_box_append_page (GNOME_PROPERTY_BOX (prefs->prop_win),
-					table, gtk_label_new (_("General")));
-
-	/* Font */
-	l = aligned_label (_("Font:"));
-	gtk_table_attach (GTK_TABLE (table), l,
-			  1, 2, FONT_ROW, FONT_ROW+1, GTK_FILL, 0, 0, 0);
-	prefs->font_entry = gtk_entry_new ();
+	prefs->font_entry = glade_xml_get_widget (gui, "font-entry");
 	gtk_entry_set_text (GTK_ENTRY (prefs->font_entry),
 			    gtk_object_get_user_data (GTK_OBJECT (term)));
 	gtk_entry_set_position (GTK_ENTRY (prefs->font_entry), 0);
 	gtk_signal_connect (GTK_OBJECT (prefs->font_entry), "changed",
 			    GTK_SIGNAL_FUNC (font_changed), prefs);
-	gtk_table_attach (GTK_TABLE (table), prefs->font_entry,
-			  2, 3, FONT_ROW, FONT_ROW+1, GTK_FILL, 0, 0, 0);
 	gnome_dialog_editable_enters (GNOME_DIALOG (prefs->prop_win),
 				      GTK_EDITABLE (prefs->font_entry));
 
-	picker = gnome_font_picker_new();
+	picker = glade_xml_get_widget (gui, "font-picker");
 	gnome_font_picker_set_font_name(GNOME_FONT_PICKER(picker),
 					gtk_entry_get_text(GTK_ENTRY (prefs->font_entry)));
 	gnome_font_picker_set_mode(GNOME_FONT_PICKER (picker),
 				   GNOME_FONT_PICKER_MODE_USER_WIDGET);
-	
+
 	gtk_signal_connect (GTK_OBJECT (picker), "font_set",
 			    GTK_SIGNAL_FUNC (font_changed), prefs);
 	label = gtk_label_new (_("Browse..."));
 	gnome_font_picker_uw_set_widget(GNOME_FONT_PICKER(picker), GTK_WIDGET(label));
+	gtk_widget_show (label);
+	
 	gtk_object_set_user_data(GTK_OBJECT(picker), GTK_OBJECT(prefs->font_entry)); 
 	gtk_object_set_user_data (GTK_OBJECT(prefs->font_entry), GTK_OBJECT(picker)); 
 
-	gtk_table_attach (GTK_TABLE (table), picker,
-			  3, 5, FONT_ROW, FONT_ROW+1, GTK_FILL, 0, 0, 0);
-	/* Terminal class */
-	l = aligned_label (_("Terminal Class"));
-	gtk_table_attach (GTK_TABLE (table), l,
-			  1, 2, CLASS_ROW, CLASS_ROW+1, GTK_FILL, 0, 0, 0);
-	prefs->class_box = gtk_combo_new ();
+	prefs->class_box = glade_xml_get_widget (gui, "class-box");
+
 	iter = gnome_config_init_iterator_sections ("/Terminal");
 	while (gnome_config_iterator_next (iter, &some_class, NULL)){
 		if (!strcmp (some_class, "Config") || !strncmp (some_class, "Class-", 6)){
@@ -1178,12 +1176,11 @@ preferences_cmd (GtkWidget *widget, ZvtTerm *term)
 	gtk_entry_set_text (GTK_ENTRY (GTK_COMBO (prefs->class_box)->entry), some_class);
 	gtk_signal_connect (GTK_OBJECT (GTK_COMBO (prefs->class_box)->entry), "changed",
 			    GTK_SIGNAL_FUNC (prop_changed), prefs);
-	gtk_table_attach (GTK_TABLE (table), prefs->class_box,
-			  2, 3, CLASS_ROW, CLASS_ROW+1, GTK_FILL, 0, 0, 0);
-	
+
 	/* Toggle the use of bold */
 	
-	prefs->use_bold_checkbox = gtk_check_button_new_with_label (_("Enable bold text"));
+	prefs->use_bold_checkbox = glade_xml_get_widget (gui, "use-bold-checkbox");
+	
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (prefs->use_bold_checkbox),
 	                              cfg->use_bold ? 1 : 0);
 
@@ -1194,66 +1191,48 @@ preferences_cmd (GtkWidget *widget, ZvtTerm *term)
 
 	gtk_signal_connect (GTK_OBJECT (prefs->use_bold_checkbox), "toggled",
 	                    GTK_SIGNAL_FUNC (prop_changed), prefs);
-	gtk_table_attach (GTK_TABLE(table), prefs->use_bold_checkbox,
-	                  1, 2, BOLDTOGGLE_ROW, BOLDTOGGLE_ROW+1, GTK_FILL, 0,
-	                  0, 0);
 
 	/* Blinking status */
-	prefs->blink_checkbox = gtk_check_button_new_with_label (_("Blinking cursor"));
+	prefs->blink_checkbox = glade_xml_get_widget (gui, "blink-checkbox");
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (prefs->blink_checkbox),
 				      term->blink_enabled ? 1 : 0);
 	gtk_signal_connect (GTK_OBJECT (prefs->blink_checkbox), "toggled",
 			    GTK_SIGNAL_FUNC (prop_changed), prefs);
-	gtk_table_attach (GTK_TABLE (table), prefs->blink_checkbox,
-			  2, 3, BLINK_ROW, BLINK_ROW+1, GTK_FILL, 0, 0, 0);
 
 	/* Show menu bar */
-	prefs->menubar_checkbox = gtk_check_button_new_with_label (_("Hide menu bar"));
+	prefs->menubar_checkbox = glade_xml_get_widget (gui, "menubar-checkbox");
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (prefs->menubar_checkbox),
 				      cfg->menubar_hidden ? 1 : 0);
 	gtk_signal_connect (GTK_OBJECT (prefs->menubar_checkbox), "toggled",
 			    GTK_SIGNAL_FUNC (prop_changed), prefs);
-	gtk_table_attach (GTK_TABLE (table), prefs->menubar_checkbox,
-			  1, 2, MENUBAR_ROW, MENUBAR_ROW+1, GTK_FILL, 0, 0, 0);
 
 	/* Toggle the bell */
-	prefs->bell_checkbox = gtk_check_button_new_with_label (_("Silence Terminal bell"));
+	prefs->bell_checkbox = glade_xml_get_widget (gui, "bell-checkbox");
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (prefs->bell_checkbox),
 				      zvt_term_get_bell(term) ? 0 : 1);
 	gtk_signal_connect (GTK_OBJECT (prefs->bell_checkbox), "toggled",
 			    GTK_SIGNAL_FUNC (prop_changed), prefs);
-	gtk_table_attach (GTK_TABLE (table), prefs->bell_checkbox,
-			  2, 3, BELL_ROW, BELL_ROW+1, GTK_FILL, 0, 0, 0);
 
 	/* Swap keys */
-	prefs->swapkeys_checkbox = gtk_check_button_new_with_label (_("Swap DEL/Backspace"));
+	prefs->swapkeys_checkbox = glade_xml_get_widget (gui, "swapkeys-checkbox");
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (prefs->swapkeys_checkbox),
 				      cfg->swap_keys ? 1 : 0);
 	gtk_signal_connect (GTK_OBJECT (prefs->swapkeys_checkbox), "toggled",
 			    GTK_SIGNAL_FUNC (prop_changed), prefs);
-	gtk_table_attach (GTK_TABLE (table), prefs->swapkeys_checkbox,
-			  1, 2, SWAPKEYS_ROW, SWAPKEYS_ROW+1, GTK_FILL, 0, 0, 0);
 	
 	/* --login by default */
-	prefs->login_by_default_checkbox = gtk_check_button_new_with_label (_("Use --login by default"));
+	prefs->login_by_default_checkbox = glade_xml_get_widget (gui, "login-by-default-checkbox");
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (prefs->login_by_default_checkbox),
 				      cfg->login_by_default ? 1 : 0);
 	gtk_signal_connect (GTK_OBJECT (prefs->login_by_default_checkbox), "toggled",
 			    GTK_SIGNAL_FUNC (prop_changed), prefs);
-	gtk_table_attach (GTK_TABLE (table), prefs->login_by_default_checkbox,
-			  2, 3, LOGIN_ROW, LOGIN_ROW+1, GTK_FILL, 0, 0, 0);
 
 	/* Word selection class */
-	l = aligned_label (_("Select-by-word characters"));
-	gtk_table_attach (GTK_TABLE (table), l,
-                          1, 2, WORDCLASS_ROW, WORDCLASS_ROW+1, GTK_FILL, 0, 0, 0);
-	prefs->wordclass_entry = gtk_entry_new();
+	prefs->wordclass_entry = glade_xml_get_widget (gui, "wordclass-entry");
 	gtk_entry_set_text (GTK_ENTRY (prefs->wordclass_entry),
 			    cfg->wordclass);
 	gtk_signal_connect (GTK_OBJECT (prefs->wordclass_entry), "changed",
 			    GTK_SIGNAL_FUNC (prop_changed), prefs);
-	gtk_table_attach (GTK_TABLE (table), prefs->wordclass_entry,
-			  2, 3, WORDCLASS_ROW, WORDCLASS_ROW+1, GTK_FILL, 0, 0, 4);
 	gnome_dialog_editable_enters (GNOME_DIALOG (prefs->prop_win),
 				      GTK_EDITABLE (prefs->wordclass_entry));
 
@@ -1262,50 +1241,25 @@ preferences_cmd (GtkWidget *widget, ZvtTerm *term)
 	/* if pixmap support isn't in zvt, we still create the widgets for
 	   the page, so that we can query them later, but they won't be shown
 	   so the user can't change them */
-
-	table = gtk_table_new (4, 4, FALSE);
-	gtk_container_set_border_width (GTK_CONTAINER (table), 4);
-	if(zvt_pixmap_support)
-		gnome_property_box_append_page (GNOME_PROPERTY_BOX (prefs->prop_win), table, gtk_label_new (_("Image")));
-
-	frame = gtk_frame_new (_("Background type"));
-	gtk_table_attach (GTK_TABLE (table), frame,
-			  1, 3, BACKGROUND_ROW, BACKGROUND_ROW+1, 
-			  GTK_FILL | GTK_EXPAND, 0, 0, 0);
-
-	subtable = gtk_table_new (4, 2, FALSE);
-	gtk_container_set_border_width (GTK_CONTAINER (subtable), 0);
-	gtk_table_set_row_spacings (GTK_TABLE (subtable), 0);
-	gtk_container_add (GTK_CONTAINER (frame), subtable);
-
-	r = gtk_radio_button_new_with_label (NULL, _("None"));
-	gtk_table_attach (GTK_TABLE (subtable), r,
-			  0, 1, 0, 1,
-			  GTK_FILL, 0, 0, 0);
+	if (!zvt_pixmap_support) {
+		GtkWidget *image_table = glade_xml_get_widget (gui, "image-table");
+		gtk_widget_hide (image_table);
+	}
+	
+	r = glade_xml_get_widget (gui, "background-none-checkbox");
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (r), FALSE);
 	
 	/* Background Pixmap checkbox */
-	r = prefs->pixmap_checkbox =
-		gtk_radio_button_new_with_label_from_widget (GTK_RADIO_BUTTON (r),
-							     _("Background pixmap"));
+	prefs->pixmap_checkbox = glade_xml_get_widget (gui, "pixmap-checkbox");
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (prefs->pixmap_checkbox),
 				      term->pixmap_filename ? 1 : 0);
 	gtk_signal_connect (GTK_OBJECT (prefs->pixmap_checkbox), "toggled",
 			    GTK_SIGNAL_FUNC (prop_changed), prefs);
-	gtk_table_attach (GTK_TABLE (subtable), r,
-			  0, 1, 1, 2,
-			  GTK_FILL, 0, 0, 0);
-	gtk_table_set_row_spacing (GTK_TABLE (subtable), 1, 0);
 	
 	/* Background pixmap filename */
-	hbox = gtk_hbox_new (FALSE, 0);
-	gtk_table_attach (GTK_TABLE (subtable), hbox,
-			  0, 2, 2, 3,
-			  GTK_FILL | GTK_EXPAND, 0, 0, 0);
+	prefs->pixmap_label = glade_xml_get_widget (gui, "pixmap-label");
 
-	prefs->pixmap_label = gtk_label_new (_("Pixmap file:"));
-	gtk_box_pack_start (GTK_BOX (hbox), prefs->pixmap_label, FALSE, FALSE, GNOME_PAD);
-
-	prefs->pixmap_file_entry = gnome_file_entry_new ("pixmap",_("Browse"));
+	prefs->pixmap_file_entry = glade_xml_get_widget (gui, "pixmap-file-entry");
 	prefs->pixmap_entry =
 		gnome_file_entry_gtk_entry(GNOME_FILE_ENTRY(prefs->pixmap_file_entry));
 	gtk_entry_set_text (GTK_ENTRY (prefs->pixmap_entry),
@@ -1313,107 +1267,66 @@ preferences_cmd (GtkWidget *widget, ZvtTerm *term)
 	gtk_entry_set_position (GTK_ENTRY (prefs->pixmap_entry), 0);
 	gtk_signal_connect (GTK_OBJECT (prefs->pixmap_entry), "changed",
 			    GTK_SIGNAL_FUNC (prop_changed), prefs);
-	gtk_box_pack_start (GTK_BOX (hbox), prefs->pixmap_file_entry, TRUE, TRUE, 0);
 
 	/* Scrollable pixmap */
 #ifdef ZVT_BACKGROUND_SCROLL
-	prefs->pixmap_scrollable_checkbox = gtk_check_button_new_with_label (_("Background pixmap scrolls"));
+	prefs->pixmap_scrollable_checkbox = glade_xml_get_widget (gui, "pixmap-scrollable-checkbox");
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (prefs->pixmap_scrollable_checkbox),
 				      cfg->scroll_background ? 1 : 0);
 	gtk_signal_connect (GTK_OBJECT (prefs->pixmap_scrollable_checkbox), "toggled",
 			    GTK_SIGNAL_FUNC (prop_changed), prefs);
-	gtk_table_attach (GTK_TABLE (subtable), prefs->pixmap_scrollable_checkbox,
-			  0, 1, 3, 4,
-			  GTK_FILL, 0, GNOME_PAD, 0);
+#else
+	gtk_widget_hide (glade_xml_get_widget (gui, "pixmap-scrollable-checkbox"));
 #endif
 
 	/* Transparency */
-	r = prefs->transparent_checkbox =
-		gtk_radio_button_new_with_label_from_widget (GTK_RADIO_BUTTON (r),
-							     _("Transparent"));
+	prefs->transparent_checkbox = glade_xml_get_widget (gui, "transparent-checkbox");
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (prefs->transparent_checkbox),
 				      term->transparent ? 1 : 0);
 	gtk_signal_connect (GTK_OBJECT (prefs->transparent_checkbox), "toggled",
 			    GTK_SIGNAL_FUNC (prop_changed), prefs);
-	gtk_table_attach (GTK_TABLE (subtable), r,
-#ifdef ZVT_BACKGROUND_SCROLL
-			  0, 1, 4, 5,
-#else
-			  0, 1, 3, 4,
-#endif
-			  GTK_FILL, 0, 0, 0);
-
-	/* We pack this box into the the table so the second column
-	 * is actually set to EXPAND - col spanning cells like the
-	 * third row don't count in the table's algorithm :-(
-	 */
-	hbox = gtk_hbox_new (FALSE, 0);
-	gtk_table_attach (GTK_TABLE (subtable), hbox,
-#ifdef ZVT_BACKGROUND_SCROLL
-			  1, 2, 5, 6,
-#else
-			  1, 2, 4, 5,
-#endif
-			  GTK_FILL | GTK_EXPAND, 0, 0, 0);
 
 	/* Shaded */
-	prefs->shaded_checkbox = gtk_check_button_new_with_label (_("Background should be shaded"));
+	prefs->shaded_checkbox = glade_xml_get_widget (gui, "shaded-checkbox");
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (prefs->shaded_checkbox),
 				      term->shaded ? 1 : 0);
 	gtk_signal_connect (GTK_OBJECT (prefs->shaded_checkbox), "toggled",
 			    GTK_SIGNAL_FUNC (prop_changed), prefs);
-	gtk_table_attach (GTK_TABLE (table), prefs->shaded_checkbox,
-			  1, 2, SHADED_ROW, SHADED_ROW+1, GTK_FILL, 0, 0, 0);
 
 	check_image_options_sensitivity (prefs);
 
 
 	/* Color page */
-	table = gtk_table_new (4, 4, FALSE);
-	gtk_container_set_border_width (GTK_CONTAINER (table), 4);
-	gnome_property_box_append_page (GNOME_PROPERTY_BOX (prefs->prop_win), table, gtk_label_new (_("Colors")));
 	
 	/* Color palette */
-	l = aligned_label (_("Color scheme:"));
-	gtk_table_attach (GTK_TABLE (table), l,
-			  1, 2, COLORPAL_ROW, COLORPAL_ROW+1, GTK_FILL, 0, 0, 0);
-	prefs->color_scheme = create_option_menu (GNOME_PROPERTY_BOX (prefs->prop_win), prefs,
-						  color_scheme, cfg->color_type, GTK_SIGNAL_FUNC (set_active));
+	prefs->color_scheme = glade_xml_get_widget (gui, "color-scheme-optionmenu");
+	create_option_menu (prefs->color_scheme,
+			    GNOME_PROPERTY_BOX (prefs->prop_win), prefs,
+			    color_scheme, cfg->color_type, GTK_SIGNAL_FUNC (set_active));
 	gtk_object_set_user_data (GTK_OBJECT (prefs->color_scheme), GINT_TO_POINTER (cfg->color_type));
-	gtk_table_attach (GTK_TABLE (table), prefs->color_scheme,
-			  2, 6, COLORPAL_ROW, COLORPAL_ROW+1, GTK_FILL, 0, 0, 0);
 
 	/* Foreground, background buttons */
-	prefs->fore_label = aligned_label (_("Foreground color:"));
-	gtk_table_attach (GTK_TABLE (table), prefs->fore_label,
-			  1, 2, FORECOLOR_ROW, FORECOLOR_ROW+1, GTK_FILL, 0, 0, 0);
-	prefs->palette[16] = gnome_color_picker_new ();
-	gtk_table_attach (GTK_TABLE (table), b1 = prefs->palette[16],
-			  2, 3, FORECOLOR_ROW, FORECOLOR_ROW+1, 0, 0, 0, GNOME_PAD_SMALL);
+	prefs->fore_label = glade_xml_get_widget (gui, "foreground-label");
+	
+	prefs->palette[16] = glade_xml_get_widget (gui, "foreground-colorpicker");
+	b1 = prefs->palette[16];
 	gtk_signal_connect (GTK_OBJECT (b1), "destroy", GTK_SIGNAL_FUNC (free_cs), prefs->palette[16]);
 
-	prefs->back_label = aligned_label (_("Background color:"));
-	gtk_table_attach (GTK_TABLE (table), prefs->back_label,
-			  1, 2, BACKCOLOR_ROW, BACKCOLOR_ROW+1, GTK_FILL, 0, 0, 0);
-	prefs->palette[17] = gnome_color_picker_new ();
-	gtk_table_attach (GTK_TABLE (table), b2 = prefs->palette[17],
-			  2, 3, BACKCOLOR_ROW, BACKCOLOR_ROW+1, 0, 0, 0, GNOME_PAD_SMALL);
+	prefs->back_label = glade_xml_get_widget (gui, "background-label");
+	
+	prefs->palette[17] = glade_xml_get_widget (gui, "background-colorpicker");
+	b2 = prefs->palette[17];
 	gtk_signal_connect (GTK_OBJECT (b2), "destroy", GTK_SIGNAL_FUNC (free_cs), prefs->palette[17]);
-	l = aligned_label (_("Color palette:"));
-	gtk_table_attach (GTK_TABLE (table), l,
-			  1, 2, BACKCOLOR_ROW+1, BACKCOLOR_ROW+2, GTK_FILL, 0, 0, 0);
-	prefs->palette_label = l;
 
-	paltable = gtk_table_new(8,2,FALSE);
-	gtk_container_set_border_width (GTK_CONTAINER (table), 4);
-	gtk_table_attach (GTK_TABLE (table), paltable,
-			  2, 3, BACKCOLOR_ROW+1, BACKCOLOR_ROW+2, GTK_FILL, 0,
-			  0, 0);
+	prefs->palette_label = glade_xml_get_widget (gui, "palette-label");
+	
 	for (i=0;i<18;i++) {
 		if (i<16) {
-			prefs->palette[i] = gnome_color_picker_new();
-			gtk_table_attach(GTK_TABLE(paltable), prefs->palette[i], i&7, (i&7)+1,
-					 i/8, i/8+1, 0, 0, 0, 0);
+			gchar *widget_name;
+
+			widget_name = g_strdup_printf ("palette-%d-colorpicker", i);
+			prefs->palette[i] = glade_xml_get_widget (gui, widget_name);
+			g_free (widget_name);
 		}
 		gnome_color_picker_set_i16(GNOME_COLOR_PICKER(prefs->palette[i]), cfg->palette[i].red,
 					   cfg->palette[i].green, cfg->palette[i].blue, 0);
@@ -1421,65 +1334,47 @@ preferences_cmd (GtkWidget *widget, ZvtTerm *term)
 				    GTK_SIGNAL_FUNC (color_changed), prefs);
 	}
 
-	/* default foreground/backgorund selector */
-	l = aligned_label (_("Fore/Background Colour:"));
-	gtk_table_attach (GTK_TABLE (table), l,
-			  1, 2, FOREBACK_ROW, FOREBACK_ROW+1, GTK_FILL, 0, 0, 0);
-	prefs->def_fore_back = create_option_menu_data (GNOME_PROPERTY_BOX (prefs->prop_win), prefs,
-							fore_back_table, cfg->color_set, GTK_SIGNAL_FUNC (set_active));
-	gtk_table_attach (GTK_TABLE (table), prefs->def_fore_back,
-			  2, 6, FOREBACK_ROW, FOREBACK_ROW+1, GTK_FILL, 0, 0, 0);
+	/* default foreground/background selector */
+	prefs->def_fore_back = glade_xml_get_widget (gui, "fore-background-optionmenu");
+	create_option_menu_data (prefs->def_fore_back,
+				 GNOME_PROPERTY_BOX (prefs->prop_win), prefs,
+				 fore_back_table, cfg->color_set, GTK_SIGNAL_FUNC (set_active));
 
 	check_color_sensitivity (prefs);
 
+	
 	/* Scrolling page */
-	table = gtk_table_new (4, 4, FALSE);
-	gtk_container_set_border_width (GTK_CONTAINER (table), 4);
-	gnome_property_box_append_page (GNOME_PROPERTY_BOX (prefs->prop_win), table, 
-					gtk_label_new (_("Scrolling")));
 
 	/* Scrollbar position */
-	l = aligned_label (_("Scrollbar position"));
-	gtk_table_attach (GTK_TABLE (table), l,
-			  1, 2, SCROLL_ROW, SCROLL_ROW+1, GTK_FILL, 0, 0, GNOME_PAD);
-	prefs->scrollbar = create_option_menu (GNOME_PROPERTY_BOX (prefs->prop_win), prefs,
-					       scrollbar_position_list,
-					       cfg->scrollbar_position, GTK_SIGNAL_FUNC (set_active));
+	prefs->scrollbar = glade_xml_get_widget (gui, "scrollbar-optionmenu");
+	create_option_menu (prefs->scrollbar,
+			    GNOME_PROPERTY_BOX (prefs->prop_win), prefs,
+			    scrollbar_position_list,
+			    cfg->scrollbar_position, GTK_SIGNAL_FUNC (set_active));
 	gtk_object_set_user_data(GTK_OBJECT(prefs->scrollbar), GINT_TO_POINTER(cfg->scrollbar_position));
-	gtk_table_attach (GTK_TABLE (table), prefs->scrollbar,
-			  2, 3, SCROLL_ROW, SCROLL_ROW+1, GTK_FILL, 0, 0, 0);
 
 	/* Scroll back */
-	l = aligned_label (_("Scrollback lines"));
-        gtk_table_attach (GTK_TABLE (table), l, 1, 2, SCROLLBACK_ROW, SCROLLBACK_ROW+1, 
-			  GTK_FILL, 0, 0, 0);
-	adj = (GtkAdjustment *) gtk_adjustment_new ((gfloat)cfg->scrollback, 1.0, 
-						    100000.0, 1.0, 5.0, 0.0);
-	prefs->scrollback_spin = gtk_spin_button_new (adj, 0, 0);
+	prefs->scrollback_spin = glade_xml_get_widget (gui, "scrollback-spin");
+	gtk_spin_button_set_value (GTK_SPIN_BUTTON (prefs->scrollback_spin), (gfloat)cfg->scrollback);
+	
 	gtk_signal_connect (GTK_OBJECT (prefs->scrollback_spin), "changed",
 			    GTK_SIGNAL_FUNC (prop_changed), prefs);
-	gtk_table_attach (GTK_TABLE (table), prefs->scrollback_spin, 2, 3, SCROLLBACK_ROW, 
-			  SCROLLBACK_ROW+1, GTK_FILL, 0, 0, 0);
 	gnome_dialog_editable_enters (GNOME_DIALOG (prefs->prop_win),
 				      GTK_EDITABLE (prefs->scrollback_spin));
 
 	/* Scroll on keystroke checkbox */
-	prefs->scroll_kbd_checkbox = gtk_check_button_new_with_label (_("Scroll on keystroke"));
+	prefs->scroll_kbd_checkbox = glade_xml_get_widget (gui, "scroll-kbd-checkbox");
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (prefs->scroll_kbd_checkbox),
 				      cfg->scroll_key);
 	gtk_signal_connect (GTK_OBJECT (prefs->scroll_kbd_checkbox), "toggled",
 			    GTK_SIGNAL_FUNC (prop_changed), prefs);
-	gtk_table_attach (GTK_TABLE (table), prefs->scroll_kbd_checkbox, 2, 3, 
-			  KBDSCROLL_ROW, KBDSCROLL_ROW+1, GTK_FILL, 0, 0, 0);
 
 	/* Scroll on output checkbox */
-	prefs->scroll_out_checkbox = gtk_check_button_new_with_label (_("Scroll on output"));
+	prefs->scroll_out_checkbox = glade_xml_get_widget (gui, "scroll-out-checkbox");
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (prefs->scroll_out_checkbox),
 				      cfg->scroll_out);
 	gtk_signal_connect (GTK_OBJECT (prefs->scroll_out_checkbox), "toggled",
 			    GTK_SIGNAL_FUNC (prop_changed), prefs);
-	gtk_table_attach (GTK_TABLE (table), prefs->scroll_out_checkbox, 2, 3, 
-			  OUTSCROLL_ROW, OUTSCROLL_ROW+1, GTK_FILL, 0, 0, 0);
 
 	/* connect the property box signals */
 	gtk_signal_connect (GTK_OBJECT (prefs->prop_win), "apply",
@@ -1489,7 +1384,7 @@ preferences_cmd (GtkWidget *widget, ZvtTerm *term)
 	gtk_signal_connect (GTK_OBJECT (prefs->prop_win), "help",
 			    GTK_SIGNAL_FUNC (phelp_cb), NULL);
 
-	gtk_widget_show_all (prefs->prop_win);
+	gtk_object_unref (GTK_OBJECT (gui));
 }
 
 #define NEED_UNUSED_FUNCTIONS
@@ -1699,10 +1594,11 @@ static GnomeUIInfo gnome_terminal_menu[] = {
 /*
  * Puts in *shell a pointer to the full shell pathname
  * Puts in *name the invocation name for the shell
- * *shell is allocated on the heap.
+ * *shell is newly allocated 
+ * *name is newly allocated
  */
 static void
-get_shell_name (char **shell, char **name, int isLogin)
+get_shell_name (char **shell, char **name, gboolean isLogin)
 {
 	char *only_name;
 	int len;
@@ -1719,21 +1615,20 @@ get_shell_name (char **shell, char **name, int isLogin)
 	if (isLogin){
 		len = strlen (only_name);
 		
-		/* memory leak! */
 		*name  = g_malloc (len + 2);
 		**name = '-';
 		strcpy ((*name)+1, only_name); 
 	} else {
-		*name = only_name;
+		*name = g_strdup (only_name);
 	}
 }
 
 static void
 terminal_kill (GtkWidget *widget, void *data)
 {
-	GnomeApp *app = GNOME_APP (gtk_widget_get_toplevel (GTK_WIDGET (data)));
+	GtkWidget *app = gtk_widget_get_toplevel (GTK_WIDGET (data));
 
-	close_app (app);
+	close_app (GTK_WIDGET (app));
 }
 
 /* called for "title_changed" event.  Use it to change the window title */
@@ -1777,6 +1672,61 @@ title_changed(ZvtTerm *term, VTTITLE_TYPE type, char *newtitle)
 	}
 }
 
+static gchar *
+extract_filename (const gchar* uri)
+{
+	/* file uri with a hostname */
+	if (strncmp (uri, "file://", strlen ("file://")) == 0) {
+		char *hostname = g_strdup (&uri[strlen("file://")]);
+		char *p = strchr (hostname, '/');
+		char *path;
+		char localhostname[1024];
+		/* if we can't find the '/' this uri is bad */
+		if(p == NULL) {
+			g_free (hostname);
+			return NULL;
+		}
+		/* if no hostname */
+		if(p == hostname)
+			return hostname;
+
+		path = g_strdup (p);
+		*p = '\0';
+
+		/* if really local */
+		if (g_strcasecmp (hostname, "localhost") == 0 ||
+		    g_strcasecmp (hostname, "localhost.localdomain") == 0) {
+			g_free (hostname);
+			return path;
+		}
+
+		/* ok get the hostname */
+		if (gethostname (localhostname,
+				 sizeof (localhostname)) < 0) {
+			strcpy (localhostname, "");
+		}
+
+		/* if really local */
+		if (localhostname[0] &&
+		    g_strcasecmp (hostname, localhostname) == 0) {
+			g_free (hostname);
+			return path;
+		}
+		
+		g_free (hostname);
+		g_free (path);
+		return NULL;
+
+	/* if the file doesn't have the //, we take it containing 
+	   a local path */
+	} else if (strncmp(uri, "file:", strlen("file:"))==0) {
+		const char *path = &uri[strlen("file:")];
+		/* if empty bad */
+		if(!*path) return NULL;
+		return g_strdup(path);
+	}
+	return NULL;
+}
 
 static void  
 drag_data_received  (GtkWidget *widget, GdkDragContext *context, 
@@ -1853,6 +1803,74 @@ drag_data_received  (GtkWidget *widget, GdkDragContext *context,
 						     cfg->color_set);
 			check_color_sensitivity (prefs);
 		}
+		break;
+	}
+	case TARGET_BGIMAGE:
+	{
+		char *filename = (char *)selection_data->data;
+		preferences_t *prefs;
+		gboolean back_set;
+		gboolean back_reset;
+
+		if (filename != NULL &&
+		    strstr (filename, RESET_IMAGE_NAME) != NULL) {
+			zvt_term_set_background (term, NULL, 0, 0);
+
+			cfg->background_pixmap = FALSE;
+
+			/* Switch to white on black colors */
+			cfg->color_set = COLORS_WHITE_ON_BLACK;
+		
+			set_color_scheme (term, cfg);
+			save_preferences_cmd (widget, term);
+
+			back_set = FALSE;
+			back_reset = TRUE;
+		} else if (zvt_pixmap_support &&
+			   filename != NULL) {
+			int flags;
+
+			cfg->background_pixmap = TRUE;
+			cfg->transparent = FALSE;
+			g_free (cfg->pixmap_file);
+			cfg->pixmap_file = extract_filename (filename);
+
+#ifdef ZVT_BACKGROUND_SCROLL
+			flags = cfg->shaded?ZVT_BACKGROUND_SHADED:0;
+			flags |= cfg->scroll_background?ZVT_BACKGROUND_SCROLL:0;
+#else
+			flags = cfg->shaded;
+#endif
+			zvt_term_set_background (term,
+						 cfg->pixmap_file,
+						 cfg->transparent, flags);
+			back_set = TRUE;
+			back_reset = FALSE;
+		} else {
+			zvt_term_set_background (term, NULL, 0, 0);
+			cfg->background_pixmap = FALSE;
+
+			back_set = FALSE;
+			back_reset = FALSE;
+		}
+
+		prefs  = gtk_object_get_data (GTK_OBJECT (term), "prefs");
+		if (prefs) {
+			if (back_reset) {
+				gtk_option_menu_set_history (GTK_OPTION_MENU (prefs->def_fore_back),
+							     cfg->color_set);
+				check_color_sensitivity (prefs);
+			} else if (back_set) {
+				gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (prefs->pixmap_checkbox), TRUE);
+				gtk_entry_set_text (GTK_ENTRY (prefs->pixmap_entry),
+						    cfg->pixmap_file ? cfg->pixmap_file : "");
+			} else {
+				gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (prefs->pixmap_checkbox), FALSE);
+			}
+		}
+
+		gtk_widget_queue_draw (GTK_WIDGET (term));
+		break;
 	}
 	}
 }
@@ -1863,7 +1881,8 @@ configure_term_dnd (ZvtTerm *term)
 	static GtkTargetEntry target_table[] = {
 		{ "STRING",     0, TARGET_STRING },
 		{ "text/plain", 0, TARGET_STRING },
-		{ "application/x-color", 0, TARGET_COLOR }
+		{ "application/x-color", 0, TARGET_COLOR },
+		{ "property/bgimage",    0, TARGET_BGIMAGE }
 	};
 
 	gtk_signal_connect (GTK_OBJECT (term), "drag_data_received",
@@ -1873,7 +1892,7 @@ configure_term_dnd (ZvtTerm *term)
 			   GTK_DEST_DEFAULT_MOTION |
 			   GTK_DEST_DEFAULT_HIGHLIGHT |
 			   GTK_DEST_DEFAULT_DROP,
-			   target_table, 3,
+			   target_table, 4,
 			   GDK_ACTION_COPY);
 }
 
@@ -2039,7 +2058,7 @@ show_pty_error_dialog (int errcode)
 }
 
 GtkWidget *
-new_terminal_cmd (char **cmd, struct terminal_config *cfg_in, gchar *geometry, int termid)
+new_terminal_cmd (char **cmd, struct terminal_config *cfg_in, const gchar *geometry, int termid)
 {
 	GtkWidget *app, *hbox, *scrollbar;
 	ZvtTerm   *term;
@@ -2093,13 +2112,17 @@ new_terminal_cmd (char **cmd, struct terminal_config *cfg_in, gchar *geometry, i
 		env_copy [i] = NULL;
 	}
 
-	app = gnome_app_new ("Terminal", "Terminal");
+	app = gnome_app_new ("Terminal", _("Terminal"));
 	/* override the title if it was in the config */
 	if (cfg->window_title) {
 	  gtk_window_set_title(GTK_WINDOW(app), cfg->window_title);
  	}
-	sprintf(winclass, "GnomeTerminal.%d", termid);
-	gtk_window_set_wmclass (GTK_WINDOW (app), "GnomeTerminal", winclass);
+	/* override the icon if it was in the config */
+	if (cfg->window_icon) {
+	  gnome_window_icon_set_from_file (GTK_WINDOW(app), cfg->window_icon);
+ 	}
+	g_snprintf (winclass, sizeof (winclass), "Terminal.%d", termid);
+	gtk_window_set_wmclass (GTK_WINDOW (app), winclass, "Terminal");
 	gtk_window_set_policy(GTK_WINDOW (app), TRUE, TRUE, TRUE);
 
 	if (cmd != NULL)
@@ -2240,6 +2263,9 @@ new_terminal_cmd (char **cmd, struct terminal_config *cfg_in, gchar *geometry, i
 	switch (zvt_term_forkpty (term, cfg->update_records)){
 	case -1:
 		show_pty_error_dialog(errno);
+		g_free (shell);
+		g_free (name);
+
 		/* should we exit maybe? */
 		return NULL;
 		
@@ -2250,7 +2276,8 @@ new_terminal_cmd (char **cmd, struct terminal_config *cfg_in, gchar *geometry, i
 			fcntl (i, F_SETFD, 1);
 
 		/* set delayed env variables */
-		sprintf (buffer, "WINDOWID=%d",(int) GDK_WINDOW_XWINDOW(GTK_WIDGET(term)->window));
+		g_snprintf (buffer, sizeof (buffer),
+			    "WINDOWID=%d",(int) GDK_WINDOW_XWINDOW(GTK_WIDGET(term)->window));
 		env_copy [winid_pos] = buffer;
 
 		if (cfg->termname && cfg->termname [0])
@@ -2268,7 +2295,8 @@ new_terminal_cmd (char **cmd, struct terminal_config *cfg_in, gchar *geometry, i
 	}
 	}
 
-        /* IS THIS BEING DOUBLE-FREED??? --JMP g_free (shell); */
+	g_free (shell);
+	g_free (name);
 
 	return app;
 }
@@ -2284,7 +2312,7 @@ new_terminal (GtkWidget *widget, ZvtTerm *term)
 }
 
 GtkWidget *
-new_terminal_for_client (char *geom)
+new_terminal_for_client (const char *geom)
 {
 	if (terminals != 0)
 	{
@@ -2322,7 +2350,7 @@ load_factory_settings ()
 }
 
 static gboolean
-load_session ()
+load_session (void)
 {
 	int num_terms, i;
 	gboolean def;
@@ -2371,6 +2399,7 @@ load_session ()
 			g_free(ctmp);
 		}
 		cfg->window_title = gnome_config_get_string("window_title");
+		cfg->window_icon = gnome_config_get_string("window_icon");
 		if (gnome_config_get_bool ("do_utmp=true"))
 			cfg->update_records |= ZVT_TERM_DO_UTMP_LOG;
 		if (gnome_config_get_bool ("do_wtmp=true"))
@@ -2484,7 +2513,12 @@ save_session (GnomeClient *client, gint phase, GnomeSaveStyle save_style,
 			ctmp = "xterm";
 		gnome_config_set_string("termname", ctmp);
 
-		gnome_config_set_string("window_title", cfg->window_title?cfg->window_title:"Terminal");
+		gnome_config_set_string ("window_title",
+					 cfg->window_title != NULL ?
+					   cfg->window_title : "Terminal");
+		gnome_config_set_string ("window_icon",
+					 cfg->window_icon != NULL ?
+					   cfg->window_icon : GNOME_ICONDIR"/gnome-terminal.png");
 		gnome_config_set_bool("do_utmp", (cfg->update_records & ZVT_TERM_DO_UTMP_LOG) != 0);
 		gnome_config_set_bool("do_wtmp", (cfg->update_records & ZVT_TERM_DO_WTMP_LOG) != 0);
 		gnome_config_set_bool("start_terminal_factory", 
@@ -2532,24 +2566,36 @@ save_session (GnomeClient *client, gint phase, GnomeSaveStyle save_style,
 
 /* Keys for the ARGP parser, should be negative */
 enum {
-	FONT_KEY     = -1,
-	NOLOGIN_KEY  = -2,
-	LOGIN_KEY    = -3,
-	GEOMETRY_KEY = -4,
-	COMMAND_KEY  = 'e',
-	FORE_KEY     = -6,
-	BACK_KEY     = -7,
-	CLASS_KEY    = -8,
-	DOUTMP_KEY   = -9,
-	DONOUTMP_KEY = -10,
-	DOWTMP_KEY   = -11,
-	DONOWTMP_KEY = -12,
-        TITLE_KEY    = -13,
-	TERM_KEY     = -14,
-	START_FACTORY_KEY= -15,
-	USE_FACTORY_KEY  = -16,
-	DOLASTLOG_KEY   = -17,
-	DONOLASTLOG_KEY = -18,
+	FONT_KEY      	    = -1,
+	NOLOGIN_KEY   	    = -2,
+	LOGIN_KEY     	    = -3,
+	GEOMETRY_KEY  	    = -4,
+	COMMAND_KEY   	    = 'e',
+	FORE_KEY      	    = -6,
+	BACK_KEY      	    = -7,
+	CLASS_KEY     	    = -8,
+	DOUTMP_KEY    	    = -9,
+	DONOUTMP_KEY  	    = -10,
+	DOWTMP_KEY    	    = -11,
+	DONOWTMP_KEY  	    = -12,
+        TITLE_KEY     	    = -13,
+	TERM_KEY            = -14,
+	START_FACTORY_KEY   = -15,
+	USE_FACTORY_KEY     = -16,
+	DOLASTLOG_KEY       = -17,
+	DONOLASTLOG_KEY     = -18,
+	ICON_KEY            = -19,
+        PIXMAP_KEY          = -20,
+        SHADED_KEY          = -21,
+        NOSHADED_KEY        = -22,
+        TRANSPARENT_KEY     = -23,
+        SOLID_KEY           = -24,
+
+#ifdef ZVT_BACKGROUND_SCROLL
+        BGSCROLL_PIXMAP_KEY   = -25,
+        BGNOSCROLL_PIXMAP_KEY = -26,
+#endif
+
 };
 
 static struct poptOption cb_options [] = {
@@ -2582,6 +2628,29 @@ static struct poptOption cb_options [] = {
 	{ "background", '\0', POPT_ARG_STRING, NULL, BACK_KEY,
 	  N_("Background color"), N_("COLOR")},
 
+	{ "solid", '\0', POPT_ARG_NONE, NULL, SOLID_KEY,
+	  N_("Solid background"), N_("SOLID") },	
+
+	{ "pixmap", '\0', POPT_ARG_STRING, NULL, PIXMAP_KEY,
+	  N_("Background pixmap"), N_("PIXMAP")},
+
+#ifdef ZVT_BACKGROUND_SCROLL
+	{ "bgscroll", '\0', POPT_ARG_NONE, NULL, BGSCROLL_PIXMAP_KEY,
+	  N_("Background pixmap scrolls"), N_("BGSCROLL")},
+
+	{ "bgnoscroll", '\0', POPT_ARG_NONE, NULL, BGNOSCROLL_PIXMAP_KEY,
+	  N_("Background pixmap does not scroll"), N_("BGNOSCROLL")},
+#endif
+
+	{ "shaded", '\0', POPT_ARG_NONE, NULL, SHADED_KEY,
+	  N_("Shade background"), N_("SHADED") },	
+
+	{ "noshaded", '\0', POPT_ARG_NONE, NULL, NOSHADED_KEY,
+	  N_("Do not shade background"), N_("NOSHADED") },	
+
+	{ "transparent", '\0', POPT_ARG_NONE, NULL, TRANSPARENT_KEY,
+	  N_("Transparent background"), N_("TRANSPARENT") },	
+
 	{ "utmp", '\0', POPT_ARG_NONE, NULL, DOUTMP_KEY,
 	  N_("Update utmp entry"), N_("UTMP") },
 
@@ -2602,6 +2671,9 @@ static struct poptOption cb_options [] = {
 	
 	{ "title", 't', POPT_ARG_STRING, NULL, TITLE_KEY,
           N_("Set the window title"), N_("TITLE") },
+
+	{ "icon", '\0', POPT_ARG_STRING, NULL, ICON_KEY,
+	  N_("Set the window icon"), N_("ICON") },
 
 	{ "termname", '\0', POPT_ARG_STRING, NULL, TERM_KEY,
           N_("Set the TERM variable"), N_("TERMNAME") },
@@ -2671,13 +2743,59 @@ parse_an_arg (poptContext state,
 		  }
 	case FORE_KEY:
 		cfg->user_fore_str = arg;
-		cfg->have_user_colors = 1;
 		start_terminal_factory = FALSE;
 		use_terminal_factory = FALSE;
 		break;
 	case BACK_KEY:
 		cfg->user_back_str = arg;
-		cfg->have_user_colors = 1;
+		start_terminal_factory = FALSE;
+		use_terminal_factory = FALSE;
+		break;
+	case SOLID_KEY:
+		cfg->background_pixmap = 0;
+		cfg->transparent = 0;
+		cfg->have_user_background = 1;
+		start_terminal_factory = FALSE;
+		use_terminal_factory = FALSE;
+		break;
+	case PIXMAP_KEY:
+		cfg->background_pixmap = 1;
+		cfg->transparent = 0;
+		cfg->pixmap_file = g_strdup(arg);
+		cfg->have_user_background = 1;
+		start_terminal_factory = FALSE;
+		use_terminal_factory = FALSE;
+		break;
+#ifdef ZVT_BACKGROUND_SCROLL
+	case BGSCROLL_PIXMAP_KEY:
+		cfg->scroll_background = 1;
+		cfg->have_user_scroll_bg = 1;
+		start_terminal_factory = FALSE;
+		use_terminal_factory = FALSE;
+		break;
+	case BGNOSCROLL_PIXMAP_KEY:
+		cfg->scroll_background = 0;
+		cfg->have_user_scroll_bg = 1;
+		start_terminal_factory = FALSE;
+		use_terminal_factory = FALSE;
+		break;
+#endif
+	case SHADED_KEY:
+		cfg->shaded = 1;
+		cfg->have_user_shaded = 1;
+		start_terminal_factory = FALSE;
+		use_terminal_factory = FALSE;
+		break;
+	case NOSHADED_KEY:
+		cfg->shaded = 0;
+		cfg->have_user_shaded = 1;
+		start_terminal_factory = FALSE;
+		use_terminal_factory = FALSE;
+		break;
+	case TRANSPARENT_KEY:
+		cfg->background_pixmap = 0;
+		cfg->transparent = 1;
+		cfg->have_user_background = 1;
 		start_terminal_factory = FALSE;
 		use_terminal_factory = FALSE;
 		break;
@@ -2718,6 +2836,11 @@ parse_an_arg (poptContext state,
 		start_terminal_factory = FALSE;
 		use_terminal_factory = FALSE;
                 break;
+	case ICON_KEY:
+		cfg->window_icon = g_strdup(arg);
+		start_terminal_factory = FALSE;
+		use_terminal_factory = FALSE;
+		break;
 	case TERM_KEY:
 		cfg->termname = g_strdup_printf("TERM=%s", arg);
 		start_terminal_factory = FALSE;
@@ -2819,7 +2942,7 @@ main_terminal_program (int argc, char *argv [], char **environ)
 	else
 	{
 #if 0 
-		/* program_invoation_short_name is broken on non-glibc machines at the moment */
+		/* program_invocation_short_name is broken on non-glibc machines at the moment */
 		program = program_invocation_short_name;
 #else
 		program_name = strrchr (argv[0], '/');
@@ -2856,14 +2979,44 @@ main_terminal_program (int argc, char *argv [], char **environ)
 	if (cmdline_config->window_title) {
 	  default_config->window_title = cmdline_config->window_title;
 	}
+
+	/* override the icon*/
+	if (cmdline_config->window_icon) {
+	  default_config->window_icon = cmdline_config->window_icon;
+	}
 	
-	if (cmdline_config->have_user_colors){
-		default_config->color_set = cmdline_config->color_set;
-		default_config->palette[16] = cmdline_config->palette[16];
+	if (cmdline_config->user_back_str){
 		default_config->palette[17] = cmdline_config->palette[17];
 		default_config->color_set = COLORS_CUSTOM;
 	}
+	if (cmdline_config->user_fore_str){
+		default_config->palette[16] = cmdline_config->palette[16];
+		default_config->color_set = COLORS_CUSTOM;
+	}
+	/* disallow identical foreground and background colors */
+	if(default_config->color_set==COLORS_CUSTOM &&
+	   gdk_color_equal(&default_config->palette[16], 
+			   &default_config->palette[17])) {
+		default_config->color_set = 0;		
+	}
 
+	if (cmdline_config->have_user_background){
+		default_config->background_pixmap = cmdline_config->background_pixmap;
+		if(cmdline_config->background_pixmap) {
+			default_config->pixmap_file = cmdline_config->pixmap_file;
+		}
+		default_config->transparent = cmdline_config->transparent;
+	}
+
+#ifdef ZVT_BACKGROUND_SCROLL
+	if (cmdline_config->have_user_scroll_bg){
+		default_config->scroll_background = cmdline_config->scroll_background;
+	}
+#endif
+
+	if (cmdline_config->have_user_shaded){
+		default_config->shaded = cmdline_config->shaded;
+	}
 
 	/* if the default is different from the commandline, use the commandline */
 	default_config->invoke_as_login_shell =
@@ -2920,6 +3073,8 @@ main_terminal_program (int argc, char *argv [], char **environ)
 	gtk_signal_connect (GTK_OBJECT (client), "die",
 			    GTK_SIGNAL_FUNC (session_die), NULL);
 
+	glade_gnome_init ();
+	
 	gtk_main ();
 
 	return 0;

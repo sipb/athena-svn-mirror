@@ -16,10 +16,8 @@
 ) && !defined(TC_DEF_TC_GNOME_Terminal_Terminal)
 #define TC_DEF_TC_GNOME_Terminal_Terminal 1
 const struct CORBA_TypeCode_struct TC_GNOME_Terminal_Terminal_struct = {
-   
-      {{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
+   {{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
     ORBIT_PSEUDO_TYPECODE},
-
    CORBA_tk_objref, "Terminal", "IDL:GNOME/Terminal/Terminal:1.0",
    0, 0,
    NULL,
@@ -39,10 +37,8 @@ const struct CORBA_TypeCode_struct TC_GNOME_Terminal_Terminal_struct = {
 ) && !defined(TC_DEF_TC_GNOME_Terminal_TerminalFactory)
 #define TC_DEF_TC_GNOME_Terminal_TerminalFactory 1
 const struct CORBA_TypeCode_struct TC_GNOME_Terminal_TerminalFactory_struct = {
-   
-      {{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
+   {{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
     ORBIT_PSEUDO_TYPECODE},
-
    CORBA_tk_objref, "TerminalFactory",
       "IDL:GNOME/Terminal/TerminalFactory:1.0",
    0, 0,

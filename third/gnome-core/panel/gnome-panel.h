@@ -80,6 +80,29 @@ extern "C"
 #define TC_GNOME_StatusSpot ((CORBA_TypeCode)&TC_GNOME_StatusSpot_struct)
 #endif
 #endif
+#if !defined(ORBIT_DECL_GNOME_PanelAppletBooter) && !defined(_GNOME_PanelAppletBooter_defined)
+#define ORBIT_DECL_GNOME_PanelAppletBooter 1
+#define _GNOME_PanelAppletBooter_defined 1
+#define GNOME_PanelAppletBooter__free CORBA_Object__free
+   typedef CORBA_Object GNOME_PanelAppletBooter;
+   extern CORBA_unsigned_long GNOME_PanelAppletBooter__classid;
+#if !defined(TC_IMPL_TC_GNOME_PanelAppletBooter_0)
+#define TC_IMPL_TC_GNOME_PanelAppletBooter_0 'g'
+#define TC_IMPL_TC_GNOME_PanelAppletBooter_1 'n'
+#define TC_IMPL_TC_GNOME_PanelAppletBooter_2 'o'
+#define TC_IMPL_TC_GNOME_PanelAppletBooter_3 'm'
+#define TC_IMPL_TC_GNOME_PanelAppletBooter_4 'e'
+#define TC_IMPL_TC_GNOME_PanelAppletBooter_5 '_'
+#define TC_IMPL_TC_GNOME_PanelAppletBooter_6 'p'
+#define TC_IMPL_TC_GNOME_PanelAppletBooter_7 'a'
+#define TC_IMPL_TC_GNOME_PanelAppletBooter_8 'n'
+#define TC_IMPL_TC_GNOME_PanelAppletBooter_9 'e'
+#define TC_IMPL_TC_GNOME_PanelAppletBooter_10 'l'
+   extern const struct CORBA_TypeCode_struct
+      TC_GNOME_PanelAppletBooter_struct;
+#define TC_GNOME_PanelAppletBooter ((CORBA_TypeCode)&TC_GNOME_PanelAppletBooter_struct)
+#endif
+#endif
 #if !defined(ORBIT_DECL_GNOME_Panel) && !defined(_GNOME_Panel_defined)
 #define ORBIT_DECL_GNOME_Panel 1
 #define _GNOME_Panel_defined 1
@@ -128,8 +151,7 @@ extern "C"
 #define TC_GNOME_Panel_Color ((CORBA_TypeCode)&TC_GNOME_Panel_Color_struct)
 #endif
    extern GNOME_Panel_Color *GNOME_Panel_Color__alloc(void);
-   extern gpointer GNOME_Panel_Color__free(gpointer mem, gpointer dat,
-					   CORBA_boolean free_strings);	/* ORBit internal use */
+   extern gpointer GNOME_Panel_Color__free(gpointer mem, gpointer dat, CORBA_boolean free_strings);	/* ORBit internal use */
 #endif
 #if !defined(ORBIT_DECL_CORBA_sequence_CORBA_octet) && !defined(_CORBA_sequence_CORBA_octet_defined)
 #define ORBIT_DECL_CORBA_sequence_CORBA_octet 1
@@ -170,9 +192,7 @@ extern "C"
 #define TC_CORBA_sequence_CORBA_octet ((CORBA_TypeCode)&TC_CORBA_sequence_CORBA_octet_struct)
 #endif
    extern CORBA_sequence_CORBA_octet *CORBA_sequence_CORBA_octet__alloc(void);
-   extern gpointer CORBA_sequence_CORBA_octet__free(gpointer mem,
-						    gpointer dat,
-						    CORBA_boolean free_strings);	/* ORBit internal use */
+   extern gpointer CORBA_sequence_CORBA_octet__free(gpointer mem, gpointer dat, CORBA_boolean free_strings);	/* ORBit internal use */
    CORBA_octet *CORBA_sequence_CORBA_octet_allocbuf(CORBA_unsigned_long len);
 #endif
 #if !defined(_GNOME_Panel_RgbData_defined)
@@ -194,8 +214,7 @@ extern "C"
 #define TC_GNOME_Panel_RgbData ((CORBA_TypeCode)&TC_GNOME_Panel_RgbData_struct)
 #endif
    extern GNOME_Panel_RgbData *GNOME_Panel_RgbData__alloc(void);
-   extern gpointer GNOME_Panel_RgbData__free(gpointer mem, gpointer dat,
-					     CORBA_boolean free_strings);	/* ORBit internal use */
+   extern gpointer GNOME_Panel_RgbData__free(gpointer mem, gpointer dat, CORBA_boolean free_strings);	/* ORBit internal use */
 #endif
 #if !defined(_GNOME_Panel_RgbImage_defined)
 #define _GNOME_Panel_RgbImage_defined 1
@@ -225,8 +244,7 @@ extern "C"
 #define TC_GNOME_Panel_RgbImage ((CORBA_TypeCode)&TC_GNOME_Panel_RgbImage_struct)
 #endif
    extern GNOME_Panel_RgbImage *GNOME_Panel_RgbImage__alloc(void);
-   extern gpointer GNOME_Panel_RgbImage__free(gpointer mem, gpointer dat,
-					      CORBA_boolean free_strings);	/* ORBit internal use */
+   extern gpointer GNOME_Panel_RgbImage__free(gpointer mem, gpointer dat, CORBA_boolean free_strings);	/* ORBit internal use */
 #endif
 #if !defined(_GNOME_Panel_OrientType_defined)
 #define _GNOME_Panel_OrientType_defined 1
@@ -309,8 +327,52 @@ extern "C"
 #define TC_GNOME_Panel_BackInfoType ((CORBA_TypeCode)&TC_GNOME_Panel_BackInfoType_struct)
 #endif
    extern GNOME_Panel_BackInfoType *GNOME_Panel_BackInfoType__alloc(void);
-   extern gpointer GNOME_Panel_BackInfoType__free(gpointer mem, gpointer dat,
-						  CORBA_boolean free_strings);	/* ORBit internal use */
+   extern gpointer GNOME_Panel_BackInfoType__free(gpointer mem, gpointer dat, CORBA_boolean free_strings);	/* ORBit internal use */
+#endif
+#if !defined(ORBIT_DECL_GNOME_Panel2) && !defined(_GNOME_Panel2_defined)
+#define ORBIT_DECL_GNOME_Panel2 1
+#define _GNOME_Panel2_defined 1
+#define GNOME_Panel2__free CORBA_Object__free
+   typedef CORBA_Object GNOME_Panel2;
+   extern CORBA_unsigned_long GNOME_Panel2__classid;
+#if !defined(TC_IMPL_TC_GNOME_Panel2_0)
+#define TC_IMPL_TC_GNOME_Panel2_0 'g'
+#define TC_IMPL_TC_GNOME_Panel2_1 'n'
+#define TC_IMPL_TC_GNOME_Panel2_2 'o'
+#define TC_IMPL_TC_GNOME_Panel2_3 'm'
+#define TC_IMPL_TC_GNOME_Panel2_4 'e'
+#define TC_IMPL_TC_GNOME_Panel2_5 '_'
+#define TC_IMPL_TC_GNOME_Panel2_6 'p'
+#define TC_IMPL_TC_GNOME_Panel2_7 'a'
+#define TC_IMPL_TC_GNOME_Panel2_8 'n'
+#define TC_IMPL_TC_GNOME_Panel2_9 'e'
+#define TC_IMPL_TC_GNOME_Panel2_10 'l'
+   extern const struct CORBA_TypeCode_struct TC_GNOME_Panel2_struct;
+#define TC_GNOME_Panel2 ((CORBA_TypeCode)&TC_GNOME_Panel2_struct)
+#endif
+#endif
+#if !defined(ORBIT_DECL_GNOME_PanelAppletBooter) && !defined(_GNOME_PanelAppletBooter_defined)
+#define ORBIT_DECL_GNOME_PanelAppletBooter 1
+#define _GNOME_PanelAppletBooter_defined 1
+#define GNOME_PanelAppletBooter__free CORBA_Object__free
+   typedef CORBA_Object GNOME_PanelAppletBooter;
+   extern CORBA_unsigned_long GNOME_PanelAppletBooter__classid;
+#if !defined(TC_IMPL_TC_GNOME_PanelAppletBooter_0)
+#define TC_IMPL_TC_GNOME_PanelAppletBooter_0 'g'
+#define TC_IMPL_TC_GNOME_PanelAppletBooter_1 'n'
+#define TC_IMPL_TC_GNOME_PanelAppletBooter_2 'o'
+#define TC_IMPL_TC_GNOME_PanelAppletBooter_3 'm'
+#define TC_IMPL_TC_GNOME_PanelAppletBooter_4 'e'
+#define TC_IMPL_TC_GNOME_PanelAppletBooter_5 '_'
+#define TC_IMPL_TC_GNOME_PanelAppletBooter_6 'p'
+#define TC_IMPL_TC_GNOME_PanelAppletBooter_7 'a'
+#define TC_IMPL_TC_GNOME_PanelAppletBooter_8 'n'
+#define TC_IMPL_TC_GNOME_PanelAppletBooter_9 'e'
+#define TC_IMPL_TC_GNOME_PanelAppletBooter_10 'l'
+   extern const struct CORBA_TypeCode_struct
+      TC_GNOME_PanelAppletBooter_struct;
+#define TC_GNOME_PanelAppletBooter ((CORBA_TypeCode)&TC_GNOME_PanelAppletBooter_struct)
+#endif
 #endif
 #if !defined(ORBIT_DECL_GNOME_PanelSpot) && !defined(_GNOME_PanelSpot_defined)
 #define ORBIT_DECL_GNOME_PanelSpot 1
@@ -383,14 +445,13 @@ extern "C"
    typedef struct
    {
       void *_private;
-      
-	 GNOME_PanelSpot(*add_applet) (PortableServer_Servant _servant,
-				       const GNOME_Applet panel_applet,
-				       const CORBA_char * goad_id,
-				       CORBA_char ** cfgpath,
-				       CORBA_char ** globcfgpath,
-				       CORBA_unsigned_long * winid,
-				       CORBA_Environment * ev);
+       GNOME_PanelSpot(*add_applet) (PortableServer_Servant _servant,
+				     const GNOME_Applet panel_applet,
+				     const CORBA_char * goad_id,
+				     CORBA_char ** cfgpath,
+				     CORBA_char ** globcfgpath,
+				     CORBA_unsigned_long * winid,
+				     CORBA_Environment * ev);
        GNOME_PanelSpot(*add_applet_full) (PortableServer_Servant _servant,
 					  const GNOME_Applet panel_applet,
 					  const CORBA_char * goad_id,
@@ -401,9 +462,8 @@ extern "C"
 					  CORBA_unsigned_long * winid,
 					  CORBA_Environment * ev);
       void (*quit) (PortableServer_Servant _servant, CORBA_Environment * ev);
-      
-	 CORBA_boolean(*_get_in_drag) (PortableServer_Servant _servant,
-				       CORBA_Environment * ev);
+       CORBA_boolean(*_get_in_drag) (PortableServer_Servant _servant,
+				     CORBA_Environment * ev);
        GNOME_StatusSpot(*add_status) (PortableServer_Servant _servant,
 				      CORBA_unsigned_long * winid,
 				      CORBA_Environment * ev);
@@ -427,6 +487,94 @@ extern "C"
 				     CORBA_Environment * ev);
    extern void POA_GNOME_Panel__fini(PortableServer_Servant servant,
 				     CORBA_Environment * ev);
+   typedef struct
+   {
+      void *_private;
+      void (*suggest_sync) (PortableServer_Servant _servant,
+			    CORBA_Environment * ev);
+      void (*add_launcher) (PortableServer_Servant _servant,
+			    const CORBA_char * launcher_desktop,
+			    const CORBA_short panel, const CORBA_short pos,
+			    CORBA_Environment * ev);
+      void (*ask_about_launcher) (PortableServer_Servant _servant,
+				  const CORBA_char * exec_string,
+				  const CORBA_short panel,
+				  const CORBA_short pos,
+				  CORBA_Environment * ev);
+      void (*add_launcher_from_info) (PortableServer_Servant _servant,
+				      const CORBA_char * name,
+				      const CORBA_char * comment,
+				      const CORBA_char * exec,
+				      const CORBA_char * icon,
+				      const CORBA_short panel,
+				      const CORBA_short pos,
+				      CORBA_Environment * ev);
+      void (*add_launcher_from_info_url) (PortableServer_Servant _servant,
+					  const CORBA_char * name,
+					  const CORBA_char * comment,
+					  const CORBA_char * url,
+					  const CORBA_char * icon,
+					  const CORBA_short panel,
+					  const CORBA_short pos,
+					  CORBA_Environment * ev);
+      void (*run_box) (PortableServer_Servant _servant,
+		       const CORBA_char * initial_string,
+		       CORBA_Environment * ev);
+      void (*main_menu) (PortableServer_Servant _servant,
+			 CORBA_Environment * ev);
+      void (*launch_an_applet) (PortableServer_Servant _servant,
+				const CORBA_char * goad_id,
+				const GNOME_PanelAppletBooter booter,
+				CORBA_Environment * ev);
+   }
+   POA_GNOME_Panel2__epv;
+   typedef struct
+   {
+      PortableServer_ServantBase__epv *_base_epv;
+      POA_GNOME_Panel__epv *GNOME_Panel_epv;
+      POA_GNOME_Panel2__epv *GNOME_Panel2_epv;
+   }
+   POA_GNOME_Panel2__vepv;
+   typedef struct
+   {
+      void *_private;
+      POA_GNOME_Panel2__vepv *vepv;
+   }
+   POA_GNOME_Panel2;
+   extern void POA_GNOME_Panel2__init(PortableServer_Servant servant,
+				      CORBA_Environment * ev);
+   extern void POA_GNOME_Panel2__fini(PortableServer_Servant servant,
+				      CORBA_Environment * ev);
+   typedef struct
+   {
+      void *_private;
+       GNOME_PanelSpot(*add_applet) (PortableServer_Servant _servant,
+				     const GNOME_Applet panel_applet,
+				     const CORBA_char * goad_id,
+				     CORBA_char ** cfgpath,
+				     CORBA_char ** globcfgpath,
+				     CORBA_unsigned_long * winid,
+				     CORBA_Environment * ev);
+   }
+   POA_GNOME_PanelAppletBooter__epv;
+   typedef struct
+   {
+      PortableServer_ServantBase__epv *_base_epv;
+      POA_GNOME_PanelAppletBooter__epv *GNOME_PanelAppletBooter_epv;
+   }
+   POA_GNOME_PanelAppletBooter__vepv;
+   typedef struct
+   {
+      void *_private;
+      POA_GNOME_PanelAppletBooter__vepv *vepv;
+   }
+   POA_GNOME_PanelAppletBooter;
+   extern void POA_GNOME_PanelAppletBooter__init(PortableServer_Servant
+						 servant,
+						 CORBA_Environment * ev);
+   extern void POA_GNOME_PanelAppletBooter__fini(PortableServer_Servant
+						 servant,
+						 CORBA_Environment * ev);
    typedef struct
    {
       void *_private;
@@ -610,6 +758,59 @@ extern "C"
 					   CORBA_Environment * ev);
    void GNOME_Panel_notice_config_changes(GNOME_Panel _obj,
 					  CORBA_Environment * ev);
+#define GNOME_Panel2_add_applet GNOME_Panel_add_applet
+#define GNOME_Panel2_add_applet_full GNOME_Panel_add_applet_full
+#define GNOME_Panel2_quit GNOME_Panel_quit
+#define GNOME_Panel2__get_in_drag GNOME_Panel__get_in_drag
+#define GNOME_Panel2_add_status GNOME_Panel_add_status
+#define GNOME_Panel2_notice_config_changes GNOME_Panel_notice_config_changes
+   void GNOME_Panel2_suggest_sync(GNOME_Panel2 _obj, CORBA_Environment * ev);
+   void GNOME_Panel2_add_launcher(GNOME_Panel2 _obj,
+				  const CORBA_char * launcher_desktop,
+				  const CORBA_short panel,
+				  const CORBA_short pos,
+				  CORBA_Environment * ev);
+   void GNOME_Panel2_ask_about_launcher(GNOME_Panel2 _obj,
+					const CORBA_char * exec_string,
+					const CORBA_short panel,
+					const CORBA_short pos,
+					CORBA_Environment * ev);
+   void GNOME_Panel2_add_launcher_from_info(GNOME_Panel2 _obj,
+					    const CORBA_char * name,
+					    const CORBA_char * comment,
+					    const CORBA_char * exec,
+					    const CORBA_char * icon,
+					    const CORBA_short panel,
+					    const CORBA_short pos,
+					    CORBA_Environment * ev);
+   void GNOME_Panel2_add_launcher_from_info_url(GNOME_Panel2 _obj,
+						const CORBA_char * name,
+						const CORBA_char * comment,
+						const CORBA_char * url,
+						const CORBA_char * icon,
+						const CORBA_short panel,
+						const CORBA_short pos,
+						CORBA_Environment * ev);
+   void GNOME_Panel2_run_box(GNOME_Panel2 _obj,
+			     const CORBA_char * initial_string,
+			     CORBA_Environment * ev);
+   void GNOME_Panel2_main_menu(GNOME_Panel2 _obj, CORBA_Environment * ev);
+   void GNOME_Panel2_launch_an_applet(GNOME_Panel2 _obj,
+				      const CORBA_char * goad_id,
+				      const GNOME_PanelAppletBooter booter,
+				      CORBA_Environment * ev);
+   GNOME_PanelSpot GNOME_PanelAppletBooter_add_applet(GNOME_PanelAppletBooter
+						      _obj,
+						      const GNOME_Applet
+						      panel_applet,
+						      const CORBA_char *
+						      goad_id,
+						      CORBA_char ** cfgpath,
+						      CORBA_char **
+						      globcfgpath,
+						      CORBA_unsigned_long *
+						      winid,
+						      CORBA_Environment * ev);
    CORBA_char *GNOME_PanelSpot__get_tooltip(GNOME_PanelSpot _obj,
 					    CORBA_Environment * ev);
    void GNOME_PanelSpot__set_tooltip(GNOME_PanelSpot _obj,
@@ -770,6 +971,129 @@ extern "C"
 						       _servant,
 						       CORBA_Environment *
 						       ev));
+   void _ORBIT_skel_GNOME_Panel2_suggest_sync(POA_GNOME_Panel2 *
+					      _ORBIT_servant,
+					      GIOPRecvBuffer *
+					      _ORBIT_recv_buffer,
+					      CORBA_Environment * ev,
+					      void (*_impl_suggest_sync)
+					      (PortableServer_Servant
+					       _servant,
+					       CORBA_Environment * ev));
+   void _ORBIT_skel_GNOME_Panel2_add_launcher(POA_GNOME_Panel2 *
+					      _ORBIT_servant,
+					      GIOPRecvBuffer *
+					      _ORBIT_recv_buffer,
+					      CORBA_Environment * ev,
+					      void (*_impl_add_launcher)
+					      (PortableServer_Servant
+					       _servant,
+					       const CORBA_char *
+					       launcher_desktop,
+					       const CORBA_short panel,
+					       const CORBA_short pos,
+					       CORBA_Environment * ev));
+   void _ORBIT_skel_GNOME_Panel2_ask_about_launcher(POA_GNOME_Panel2 *
+						    _ORBIT_servant,
+						    GIOPRecvBuffer *
+						    _ORBIT_recv_buffer,
+						    CORBA_Environment * ev,
+						    void
+						    (*_impl_ask_about_launcher)
+						    (PortableServer_Servant
+						     _servant,
+						     const CORBA_char *
+						     exec_string,
+						     const CORBA_short panel,
+						     const CORBA_short pos,
+						     CORBA_Environment * ev));
+   void _ORBIT_skel_GNOME_Panel2_add_launcher_from_info(POA_GNOME_Panel2 *
+							_ORBIT_servant,
+							GIOPRecvBuffer *
+							_ORBIT_recv_buffer,
+							CORBA_Environment *
+							ev,
+							void
+							(*_impl_add_launcher_from_info)
+							(PortableServer_Servant
+							 _servant,
+							 const CORBA_char *
+							 name,
+							 const CORBA_char *
+							 comment,
+							 const CORBA_char *
+							 exec,
+							 const CORBA_char *
+							 icon,
+							 const CORBA_short
+							 panel,
+							 const CORBA_short
+							 pos,
+							 CORBA_Environment *
+							 ev));
+   void _ORBIT_skel_GNOME_Panel2_add_launcher_from_info_url(POA_GNOME_Panel2 *
+							    _ORBIT_servant,
+							    GIOPRecvBuffer *
+							    _ORBIT_recv_buffer,
+							    CORBA_Environment
+							    * ev,
+							    void
+							    (*_impl_add_launcher_from_info_url)
+							    (PortableServer_Servant
+							     _servant,
+							     const CORBA_char
+							     * name,
+							     const CORBA_char
+							     * comment,
+							     const CORBA_char
+							     * url,
+							     const CORBA_char
+							     * icon,
+							     const CORBA_short
+							     panel,
+							     const CORBA_short
+							     pos,
+							     CORBA_Environment
+							     * ev));
+   void _ORBIT_skel_GNOME_Panel2_run_box(POA_GNOME_Panel2 * _ORBIT_servant,
+					 GIOPRecvBuffer * _ORBIT_recv_buffer,
+					 CORBA_Environment * ev,
+					 void (*_impl_run_box)
+					 (PortableServer_Servant _servant,
+					  const CORBA_char * initial_string,
+					  CORBA_Environment * ev));
+   void _ORBIT_skel_GNOME_Panel2_main_menu(POA_GNOME_Panel2 * _ORBIT_servant,
+					   GIOPRecvBuffer *
+					   _ORBIT_recv_buffer,
+					   CORBA_Environment * ev,
+					   void (*_impl_main_menu)
+					   (PortableServer_Servant _servant,
+					    CORBA_Environment * ev));
+   void _ORBIT_skel_GNOME_Panel2_launch_an_applet(POA_GNOME_Panel2 *
+						  _ORBIT_servant,
+						  GIOPRecvBuffer *
+						  _ORBIT_recv_buffer,
+						  CORBA_Environment * ev,
+						  void
+						  (*_impl_launch_an_applet)
+						  (PortableServer_Servant
+						   _servant,
+						   const CORBA_char * goad_id,
+						   const
+						   GNOME_PanelAppletBooter
+						   booter,
+						   CORBA_Environment * ev));
+   void
+      _ORBIT_skel_GNOME_PanelAppletBooter_add_applet
+      (POA_GNOME_PanelAppletBooter * _ORBIT_servant,
+       GIOPRecvBuffer * _ORBIT_recv_buffer, CORBA_Environment * ev,
+       GNOME_PanelSpot(*_impl_add_applet) (PortableServer_Servant _servant,
+					   const GNOME_Applet panel_applet,
+					   const CORBA_char * goad_id,
+					   CORBA_char ** cfgpath,
+					   CORBA_char ** globcfgpath,
+					   CORBA_unsigned_long * winid,
+					   CORBA_Environment * ev));
    void _ORBIT_skel_GNOME_PanelSpot__get_tooltip(POA_GNOME_PanelSpot *
 						 _ORBIT_servant,
 						 GIOPRecvBuffer *

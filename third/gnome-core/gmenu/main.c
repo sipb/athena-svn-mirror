@@ -1,6 +1,6 @@
 /*
  * GNOME menu editor revision 2
- * (C)1999
+ * (C)2000
  *
  * Authors: John Ellis <johne@bellatlantic.net>
  *          Nat Friedman <nat@nat.org>
@@ -15,17 +15,17 @@
  *-----------------------------------------------------------------------------
  */
 
-GtkWidget *app;
-GtkWidget *tree;
-GtkWidget *infolabel;
-GtkWidget *infopixmap;
+GtkWidget *app = NULL;
+GtkWidget *tree = NULL;
+GtkWidget *infolabel = NULL;
+GtkWidget *infopixmap = NULL;
 
-gchar *system_apps_dir;
+gchar *system_apps_dir = NULL;
 gchar *system_apps_merge_dir = NULL;
-gchar *system_applets_dir;
-gchar *user_apps_dir;
-gchar *system_pixmap_dir;
-gchar *user_pixmap_dir;
+gchar *system_applets_dir = NULL;
+gchar *user_apps_dir = NULL;
+gchar *system_pixmap_dir = NULL;
+gchar *user_pixmap_dir = NULL;
 
 static void new_submenu_pressed_cb(GtkWidget *widget, gpointer data);
 static void new_item_pressed_cb(GtkWidget *widget, gpointer data);
@@ -37,10 +37,10 @@ static void sort_single_pressed_cb(GtkWidget *widget, gpointer data);
 static void sort_recursive_pressed_cb(GtkWidget *widget, gpointer data);
 static void about_pressed_cb(GtkWidget *widget, gpointer data);
 
-static gint about_close_cb(GtkWidget *widget, GdkEventAny *event, gpointer data);
+static void about_close_cb(GtkWidget *widget, gpointer data);
 static void about_dialog(void);
 
-static void destroy_cb(GtkWidget *w, gpointer data);
+static gboolean delete_cb(GtkWidget *w, gpointer data);
 
 /*
  *-----------------------------------------------------------------------------
@@ -217,10 +217,10 @@ static void about_pressed_cb(GtkWidget *widget, gpointer data)
 
 static GtkWidget *about = NULL;
 
-static gint about_close_cb(GtkWidget *widget, GdkEventAny *event, gpointer data)
+static void
+about_close_cb(GtkWidget *widget, gpointer data)
 {
 	about = NULL;
-	return FALSE;
 }
 
 static void about_dialog(void)
@@ -239,12 +239,13 @@ static void about_dialog(void)
 	authors[2] = NULL;
 
 	about = gnome_about_new ( _("GNOME menu editor"), VERSION,
-			"(C) 1999",
+			"(C) 2000",
 			authors,
 			_("Released under the terms of the GNU Public License.\n"
 			"GNOME menu editor."),
 			NULL);
-	gtk_signal_connect(GTK_OBJECT(about), "destroy", GTK_SIGNAL_FUNC(about_close_cb), NULL);
+	gtk_signal_connect(GTK_OBJECT(about), "destroy",
+			   GTK_SIGNAL_FUNC(about_close_cb), NULL);
 	gtk_widget_show (about);
 }
 
@@ -254,10 +255,14 @@ static void about_dialog(void)
  *-----------------------------------------------------------------------------
  */
 
-static void destroy_cb(GtkWidget *w, gpointer data)
+static gboolean
+delete_cb(GtkWidget *w, gpointer data)
 {
 	gtk_main_quit();
+	return FALSE;
 }
+
+#define MERGE_PATH "/etc/X11/applnk"
 
 int main (int argc, char *argv[])
 {
@@ -267,14 +272,6 @@ int main (int argc, char *argv[])
 	GtkWidget *frame;
 	GtkWidget *scrolled;
 	GtkTooltips *tooltips;
-	gchar *merge_path[] = {
-		"/etc/X11/applnk",
-		"/var/lib/gnome/Debian",
-		GNOME_DATADIR"/gnome/distribution-menus/SuSE",
-		NULL
-	};
-	char *key = NULL;
-	int i;
 
 	bindtextdomain(PACKAGE, GNOMELOCALEDIR);
 	textdomain(PACKAGE);
@@ -293,13 +290,15 @@ int main (int argc, char *argv[])
 		}
 
 
-	for (i=0; merge_path[i]; i++) {
-		if (!g_file_test (merge_path[i], G_FILE_TEST_ISDIR))
-			continue;
-
-		key = g_strdup_printf ("/panel/Merge/Directory=%s", merge_path[i]);
-		system_apps_merge_dir = gnome_config_get_string(key);
-		break;
+	if (g_file_test (MERGE_PATH, G_FILE_TEST_ISDIR)) {
+		system_apps_merge_dir =
+			gnome_config_get_string("/panel/Merge/Directory="
+						MERGE_PATH);
+		if (system_apps_dir != NULL &&
+		     ! g_file_test (system_apps_merge_dir, G_FILE_TEST_ISDIR)) {
+			g_free (system_apps_merge_dir);
+			system_apps_merge_dir = NULL;
+		}
 	}
 
 	user_apps_dir = check_for_dir(gnome_util_home_file("apps"));
@@ -307,7 +306,8 @@ int main (int argc, char *argv[])
 
 	app = gnome_app_new ("gmenu",_("GNOME menu editor"));
 	gtk_widget_set_usize (app, 600, 460);
-	gtk_signal_connect(GTK_OBJECT(app), "delete_event", GTK_SIGNAL_FUNC(destroy_cb), NULL);
+	gtk_signal_connect(GTK_OBJECT(app), "delete_event",
+			   GTK_SIGNAL_FUNC (delete_cb), NULL);
 
 	gnome_app_create_menus_with_data (GNOME_APP(app), main_menu, app);
 	gnome_app_create_toolbar (GNOME_APP(app), toolbar);

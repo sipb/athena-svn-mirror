@@ -1,18 +1,18 @@
 AC_INIT(panel)
 
 AM_CONFIG_HEADER(config.h)
-AM_INIT_AUTOMAKE(gnome-core, 1.2.4)
+AM_INIT_AUTOMAKE(gnome-core, 1.4.0)
 
 AM_MAINTAINER_MODE
 
 AM_ACLOCAL_INCLUDE(macros)
 
+AM_PROG_XML_I18N_TOOLS
+
 dnl
 dnl let applications configure for gnome
 dnl
 gnome_cv_use_gnome=yes
-
-
 
 GNOME_INIT(capplet)
 
@@ -23,6 +23,7 @@ AC_ARG_PROGRAM
 AM_PROG_LIBTOOL
 AM_PROG_LEX
 AC_PROG_YACC
+AC_PATH_PROGS(PATH_TO_XRDB, "xrdb")
 
 GNOME_COMPILE_WARNINGS
 
@@ -47,7 +48,7 @@ LIBS=$LIBS_save
 dnl utility conditional
 AM_CONDITIONAL(FALSE, test "x" = "y")
 
-ALL_LINGUAS="bg_BG.cp1251 ca cs da de el en_GB es et eu fi fr ga gl hu it ja ko lt nl nn no pl pt pt_BR ru sk sl sp sr sv ta tr uk wa zh_TW.Big5 zh_CN.GB2312"
+ALL_LINGUAS="az bg_BG.cp1251 ca cs da de el en_GB es et eu fi fr ga gl hu it ja ko lt nl nn no pl pt pt_BR ro ru sk sl sp sr sv ta tr uk wa zh_TW.Big5 zh_CN.GB2312"
 AM_GNOME_GETTEXT
 # AM_GNOME_GETTEXT above substs $DATADIRNAME
 # this is the directory where the *.{mo,gmo} files are installed
@@ -129,7 +130,9 @@ CANVAS_PIXBUF_LIBS=`$GNOME_CONFIG --libs gnomecanvaspixbuf`
 AC_SUBST(CANVAS_PIXBUF_CFLAGS)
 AC_SUBST(CANVAS_PIXBUF_LIBS)
 if test "x$CANVAS_PIXBUF_CFLAGS" = x ; then
-	AC_MSG_ERROR(GnomeCanvasPixbuf is required for gnome-about)
+	AC_MSG_ERROR(GnomeCanvasPixbuf is required for gnome-about.
+This is contained in the gdk-pixbuf module, however, make sure to build
+this module after you build gnome-libs)
 fi
 
 dnl
@@ -137,6 +140,31 @@ dnl Gnome Terminal
 dnl
 ZVT_LIBS=`$GNOME_CONFIG --libs zvt`
 AC_SUBST(ZVT_LIBS)
+
+dnl Gnome Terminal now requires LibGlade
+AC_MSG_CHECKING(for Glade libraries >= 0.14)
+libglade_ok=no
+if gnome-config --libs libglade > /dev/null 2>&1; then 
+    verstxt=`gnome-config --modversion libglade`
+    vers=`echo "$verstxt" | awk -F. '{ printf "%d", $1 * 1000 + $2;}'`
+    if test "$vers" -ge 14; then
+	AC_MSG_RESULT($marker_ok found $verstxt)
+	libglade_ok=yes
+    else
+        AC_MSG_RESULT($marker_fail found only $verstxt)
+    fi
+else
+    AC_MSG_RESULT($marker_fail not found)
+fi
+if test "$libglade_ok" = no; then
+    AC_MSG_ERROR(You need at least libglade 0.14 for this version of gnome-core)
+fi
+unset libglade_ok
+GT_LIBS="libglade zvt gnorba gnomeui"
+GNOME_TERMINAL_LIBS=`gnome-config --libs $GT_LIBS`
+GNOME_TERMINAL_CFLAGS=`gnome-config --cflags $GT_LIBS`
+AC_SUBST(GNOME_TERMINAL_LIBS)
+AC_SUBST(GNOME_TERMINAL_CFLAGS)
 
 dnl
 dnl gnome-session
@@ -342,6 +370,22 @@ fi
 AC_DEFINE_UNQUOTED(KDE_MENUDIR, "$kde_datadir/applnk")
 AC_DEFINE_UNQUOTED(KDE_ICONDIR, "$kde_datadir/icons")
 AC_DEFINE_UNQUOTED(KDE_MINI_ICONDIR, "$kde_datadir/icons/mini")
+
+dnl
+dnl Place to look for KDE docs
+dnl
+AC_ARG_WITH(kde-docdir, [  --with-kde-docdir=DIR         Location of KDE documentation])
+
+if test "x$with_kde_docdir" = x ; then
+  kde_docdir=/usr/doc/kde
+else
+  kde_docdir=$with_kde_docdir
+fi
+
+AC_DEFINE_UNQUOTED(KDE_DOCDIR, "$kde_docdir")
+
+
+
 dnl AC_CONFIG_SUBDIRS(gemvt)
 
 dnl gtk-doc stuff
@@ -374,15 +418,17 @@ dnl Sun shipped a patch which makes gnome-session seg fault in a libICE call.
 dnl Use the check for the broken libICE on Solaris _only_
 dnl
 uname_s=`uname -s`
-if test x$uname_s = xSunOS; then
-    AC_DEFINE(DO_LIBICE_CHECK)
+if test "x$uname_s" = xSunOS; then
+  AC_DEFINE(DO_LIBICE_CHECK)
 fi
 
 dnl NOTE: We need to use a separate automake conditional for this
 dnl       to make this work with the tarballs.
 AM_CONDITIONAL(ENABLE_GTK_DOC, test x$enable_gtk_doc = xyes)
 
-AC_DEFINE_UNQUOTED(GNOME_ICONDIR, "${prefix}/${DATADIRNAME}/pixmaps")
+dnl HACK to expand datadir
+ICONDIR=`eval echo "${datadir}/pixmaps"`
+AC_DEFINE_UNQUOTED(GNOME_ICONDIR,"${ICONDIR}")
 
 AC_OUTPUT([
 Makefile
@@ -395,6 +441,7 @@ panel/help/Makefile
 panel/help/C/Makefile
 panel/help/de/Makefile
 panel/help/it/Makefile
+panel/help/ja/Makefile
 applets/Makefile
 applets/applet-dirs/Makefile
 applets/gen_util/Makefile
@@ -409,6 +456,8 @@ applets/gen_util/help/da/Makefile
 applets/gen_util/help/da/clock/Makefile
 applets/gen_util/help/da/mailcheck/Makefile
 applets/gen_util/help/da/printer/Makefile
+applets/gen_util/help/es/Makefile
+applets/gen_util/help/es/printer/Makefile
 applets/fish/Makefile
 applets/fish/help/Makefile
 applets/fish/help/C/Makefile
@@ -421,6 +470,13 @@ applets/desk-guide/help/de/Makefile
 applets/tasklist/Makefile
 applets/tasklist/help/Makefile
 applets/tasklist/help/C/Makefile
+core-docs/Makefile
+core-docs/fdl/Makefile
+core-docs/fdl/C/Makefile
+core-docs/gpl/Makefile
+core-docs/gpl/C/Makefile
+core-docs/lgpl/Makefile
+core-docs/lgpl/C/Makefile
 desktop-links/Makefile
 gnome-terminal/Makefile
 gnome-terminal/C/Makefile
@@ -462,6 +518,5 @@ gsm/help/C/Makefile
 gsm/default.session.5
 gsm/gnome-session.1
 smproxy/Makefile
-intl/Makefile])
-
-dnl core-docs/Makefile
+intl/Makefile
+omf-install/Makefile])

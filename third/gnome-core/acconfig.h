@@ -39,6 +39,9 @@
 #undef KDE_ICONDIR
 #undef KDE_MINI_ICONDIR
 
+/* Location of KDE documentation */
+#undef KDE_DOCDIR
+
 #undef HAVE_ZVT_TERM_RESET
 
 #undef HAVE_HOSTS_ACCESS
@@ -48,4 +51,5 @@
 
 #undef GNOME_ICONDIR
 
+#undef HAVE__ICETRANSNOLISTEN
 #undef DO_LIBICE_CHECK

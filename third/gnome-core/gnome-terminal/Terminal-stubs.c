@@ -88,7 +88,8 @@ GNOME_Terminal_TerminalFactory_create_terminal(GNOME_Terminal_TerminalFactory
 	 goto _ORBIT_system_exception;
       _ORBIT_completion_status = CORBA_COMPLETED_YES;
       if (_ORBIT_recv_buffer->message.u.reply.reply_status !=
-	  GIOP_NO_EXCEPTION) goto _ORBIT_msg_exception;
+	  GIOP_NO_EXCEPTION)
+	 goto _ORBIT_msg_exception;
       _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
       if (giop_msg_conversion_needed(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer))) {
 	 GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur = _ORBIT_curptr;

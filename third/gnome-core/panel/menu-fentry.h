@@ -9,15 +9,23 @@ BEGIN_GNOME_DECLS
 typedef struct _MenuFinfo MenuFinfo;
 typedef struct _FileRec FileRec;
 typedef struct _DirRec DirRec;
+typedef struct _MFile MFile;
 
 struct _MenuFinfo {
 	char *menudir;
 	gboolean applets;
+	gboolean launcher_add;
 	char *dir_name;
 	char *pixmap_name;	
 	gboolean fake_menu;
 	gboolean title;
 	FileRec *fr;
+};
+
+struct _MFile {
+	char *name;
+	gboolean merged;
+	gboolean verified;
 };
 
 enum {
@@ -34,6 +42,7 @@ struct _FileRec {
 	char *fullname;
 	char *icon;
 	char *goad_id;
+	char *tryexec_path;
 	DirRec *parent;
 	time_t mtime;
 	time_t last_stat;
@@ -45,13 +54,14 @@ struct _DirRec {
 	time_t dentrylast_stat;
 	time_t merge_mtime;
 	gboolean force_reread;
+	GSList *tryexecs;
 	GSList *recs; /*records for directories*/
 	GSList *mfl;  /*records of menus using this record*/
 };
 
 char * get_applet_goad_id_from_dentry(GnomeDesktopEntry *ii);
 
-GSList * get_files_from_menudir(char *menudir);
+GSList * get_mfiles_from_menudir(const char *menudir);
 
 FileRec * fr_read_dir(DirRec *dr, const char *mdir, struct stat *dstat, struct stat *merge_dstat, int sublevels);
 FileRec * fr_replace(FileRec *fr);
@@ -62,6 +72,10 @@ char * fr_get_mergedir (const char *dir);
 void fr_force_reread(void);
 
 void init_fr_chunks (void);
+
+void free_mfile (MFile *mfile);
+void free_mfile_list (GSList *list);
+
 END_GNOME_DECLS
 
 #endif

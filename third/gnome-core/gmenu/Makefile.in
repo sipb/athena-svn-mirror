@@ -87,6 +87,9 @@ GNOME_INCLUDEDIR = @GNOME_INCLUDEDIR@
 GNOME_LIBDIR = @GNOME_LIBDIR@
 GNOME_LIBS = @GNOME_LIBS@
 GNOME_PRINT_PREFIX = @GNOME_PRINT_PREFIX@
+GNOME_TERMINAL_CFLAGS = @GNOME_TERMINAL_CFLAGS@
+GNOME_TERMINAL_LIBS = @GNOME_TERMINAL_LIBS@
+GNOME_XML_CFLAGS = @GNOME_XML_CFLAGS@
 GNOME_XML_LIB = @GNOME_XML_LIB@
 GNORBA_CFLAGS = @GNORBA_CFLAGS@
 GNORBA_LIBS = @GNORBA_LIBS@
@@ -120,6 +123,7 @@ ORBIT_LIBS = @ORBIT_LIBS@
 ORB_CFLAGS = @ORB_CFLAGS@
 ORB_LIBS = @ORB_LIBS@
 PACKAGE = @PACKAGE@
+PATH_TO_XRDB = @PATH_TO_XRDB@
 PIXBUF_CFLAGS = @PIXBUF_CFLAGS@
 PIXBUF_LIBS = @PIXBUF_LIBS@
 POFILES = @POFILES@
@@ -131,6 +135,10 @@ USE_INCLUDED_LIBINTL = @USE_INCLUDED_LIBINTL@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
 WINDOW_MANAGER = @WINDOW_MANAGER@
+XML_I18N_EXTRACT = @XML_I18N_EXTRACT@
+XML_I18N_MERGE = @XML_I18N_MERGE@
+XML_I18N_TOOLS_PERL = @XML_I18N_TOOLS_PERL@
+XML_I18N_UPDATE = @XML_I18N_UPDATE@
 XPM_LIBS = @XPM_LIBS@
 YACC = @YACC@
 ZVT_LIBS = @ZVT_LIBS@
@@ -144,11 +152,18 @@ INCLUDES =  	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" 	-I$(top_srcdir)/intl -I$(
 
 bin_PROGRAMS = gmenu
 
-gmenu_SOURCES =  	desktop.c			edit.c				gmenu.h				main.c				order.c				save.c				tree.c				treedel.c			treednd.c			treenew.c			treeutil.c			utils.c
+icon_entry_hack_dir = $(top_srcdir)/panel
+
+ICON_ENTRY_HACK_SRCLIST =  	icon-entry-hack.c			icon-entry-hack.h
+
+
+gmenu_SOURCES =  	$(ICON_ENTRY_HACK_SRCLIST)		desktop.c			edit.c				gmenu.h				main.c				order.c				save.c				tree.c				treedel.c			treednd.c			treenew.c			treeutil.c			utils.c
 
 
 gmenu_LDADD =  	$(GNOME_LIBDIR)						$(GNOMEUI_LIBS)						$(INTLLIBS)
 
+
+BUILT_SOURCES = $(ICON_ENTRY_HACK_SRCLIST)
 
 EXTRA_DIST = gmenu.desktop top.xpm unknown.xpm
 
@@ -162,8 +177,8 @@ PROGRAMS =  $(bin_PROGRAMS)
 
 DEFS = @DEFS@ -I. -I$(srcdir) -I..
 LIBS = @LIBS@
-gmenu_OBJECTS =  desktop.o edit.o main.o order.o save.o tree.o treedel.o \
-treednd.o treenew.o treeutil.o utils.o
+gmenu_OBJECTS =  icon-entry-hack.o desktop.o edit.o main.o order.o \
+save.o tree.o treedel.o treednd.o treenew.o treeutil.o utils.o
 gmenu_DEPENDENCIES = 
 gmenu_LDFLAGS = 
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
@@ -324,7 +339,8 @@ distdir: $(DISTFILES)
 	  fi; \
 	done
 desktop.o: desktop.c gmenu.h ../config.h
-edit.o: edit.c gmenu.h ../config.h
+edit.o: edit.c gmenu.h ../config.h icon-entry-hack.h
+icon-entry-hack.o: icon-entry-hack.c ../config.h icon-entry-hack.h
 main.o: main.c gmenu.h ../config.h
 order.o: order.c gmenu.h ../config.h
 save.o: save.c gmenu.h ../config.h
@@ -371,6 +387,7 @@ distclean-generic:
 	-rm -f config.cache config.log stamp-h stamp-h[0-9]*
 
 maintainer-clean-generic:
+	-test -z "$(BUILT_SOURCES)" || rm -f $(BUILT_SOURCES)
 mostlyclean-am:  mostlyclean-binPROGRAMS mostlyclean-compile \
 		mostlyclean-libtool mostlyclean-tags \
 		mostlyclean-generic
@@ -410,6 +427,12 @@ all-redirect all-am all installdirs mostlyclean-generic \
 distclean-generic clean-generic maintainer-clean-generic clean \
 mostlyclean distclean maintainer-clean
 
+
+$(ICON_ENTRY_HACK_SRCLIST):
+	for file in $(ICON_ENTRY_HACK_SRCLIST); do \
+		echo $$file ; \
+		ln -sf $(icon_entry_hack_dir)/$$file . ; \
+	done
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

@@ -188,7 +188,6 @@ drawer_widget_open_drawer (DrawerWidget *drawer, GtkWidget *parentp)
 {
 	if (IS_BASEP_WIDGET (parentp))
 		BASEP_WIDGET (parentp)->drawers_open++;
-	/*gtk_widget_show (GTK_WIDGET (drawer));*/
 	basep_widget_explicit_show (BASEP_WIDGET (drawer));
 }
 
@@ -210,7 +209,7 @@ drawer_widget_close_drawer (DrawerWidget *drawer, GtkWidget *parentp)
 		basep_widget_explicit_hide (basep, BASEP_HIDDEN_LEFT);
 		break;
 	}
-	/*gtk_widget_hide (GTK_WIDGET (drawer));*/
+
 	if (IS_BASEP_WIDGET (parentp))
 		BASEP_WIDGET (parentp)->drawers_open--;
 }
@@ -353,19 +352,22 @@ drawer_pos_pre_convert_hook (BasePWidget *basep)
 	PANEL_WIDGET (basep->panel)->packed = TRUE;
 }
 
-void drawer_widget_change_params (DrawerWidget *drawer,
-				   PanelOrientType orient,
-				  BasePMode mode,
-				  BasePState state,
-				  int sz,
-				  int hidebuttons_enabled,
-				  int hidebutton_pixmap_enabled,
-				  PanelBackType back_type,
-				  char *back_pixmap,
-				  gboolean fit_pixmap_bg,
-				  gboolean strech_pixmap_bg,
-				  gboolean rotate_pixmap_bg,
-				  GdkColor *back_color)
+void
+drawer_widget_change_params (DrawerWidget *drawer,
+			     PanelOrientType orient,
+			     BasePMode mode,
+			     BasePState state,
+			     BasePLevel level,
+			     gboolean avoid_on_maximize,
+			     int sz,
+			     gboolean hidebuttons_enabled,
+			     gboolean hidebutton_pixmap_enabled,
+			     PanelBackType back_type,
+			     char *back_pixmap,
+			     gboolean fit_pixmap_bg,
+			     gboolean strech_pixmap_bg,
+			     gboolean rotate_pixmap_bg,
+			     GdkColor *back_color)
 {
 	PanelOrientation porient;
 	DrawerPos *pos = DRAWER_POS (BASEP_WIDGET (drawer)->pos);
@@ -408,6 +410,7 @@ void drawer_widget_change_params (DrawerWidget *drawer,
 
 	basep_widget_change_params (BASEP_WIDGET (drawer),
 				    porient, sz, mode, state,
+				    level, avoid_on_maximize,
 				    hidebuttons_enabled,
 				    hidebutton_pixmap_enabled,
 				    back_type, back_pixmap,
@@ -428,6 +431,8 @@ drawer_widget_change_orient (DrawerWidget *drawer,
 		drawer_widget_change_params (drawer, orient,
 					     basep->mode,
 					     basep->state,
+					     basep->level,
+					     basep->avoid_on_maximize,
 					     panel->sz,
 					     basep->hidebuttons_enabled,
 					     basep->hidebutton_pixmaps_enabled,
@@ -444,9 +449,11 @@ GtkWidget *
 drawer_widget_new (PanelOrientType orient,
 		   BasePMode mode,
 		   BasePState state,
+		   BasePLevel level,
+		   gboolean avoid_on_maximize,
 		   int sz,
-		   int hidebuttons_enabled,
-		   int hidebutton_pixmap_enabled,
+		   gboolean hidebuttons_enabled,
+		   gboolean hidebutton_pixmap_enabled,
 		   PanelBackType back_type,
 		   char *back_pixmap,
 		   gboolean fit_pixmap_bg,
@@ -477,6 +484,8 @@ drawer_widget_new (PanelOrientType orient,
 				TRUE, TRUE,
 				porient,
 				sz, mode, state,
+				level,
+				avoid_on_maximize,
 				hidebuttons_enabled,
 				hidebutton_pixmap_enabled,
 				back_type,

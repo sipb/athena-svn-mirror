@@ -63,7 +63,7 @@ void menu_tree_move_down(GtkWidget *ctree)
  *-----------------------------------------------------------------------------
  */
 
-static void menu_tree_sort_warning()
+static void menu_tree_sort_warning(void)
 {
 	gnome_warning_dialog("You do not have the proper permissions to be able to modify this menu item.");
 }

@@ -7,6 +7,7 @@
 
 #include "panel-include.h"
 
+extern GSList *applets;
 extern GSList *applets_last;
 
 extern GtkTooltips *panel_tooltips;
@@ -14,9 +15,9 @@ extern GtkTooltips *panel_tooltips;
 extern GlobalConfig global_config;
 
 static void
-logout(GtkWidget *widget)
+logout (GtkWidget *widget)
 {
-	if(global_config.drawer_auto_close) {
+	if (global_config.drawer_auto_close) {
 		GtkWidget *parent = PANEL_WIDGET(widget->parent)->panel_parent;
 		g_return_if_fail(parent!=NULL);
 		if(IS_DRAWER_WIDGET(parent)) {
@@ -25,31 +26,71 @@ logout(GtkWidget *widget)
 			GtkWidget *grandparentw =
 				PANEL_WIDGET(grandparent)->panel_parent;
 			drawer_widget_close_drawer (DRAWER_WIDGET (parent),
-						    BASEP_WIDGET (grandparentw));
+						    grandparentw);
 		}
 	}
 
 	panel_quit();
 }
 
-static GtkWidget *
-create_logout_widget(void)
+static void  
+drag_data_get_cb (GtkWidget          *widget,
+		  GdkDragContext     *context,
+		  GtkSelectionData   *selection_data,
+		  guint               info,
+		  guint               time,
+		  gpointer            data)
 {
+	char *type = data;
+	char *foo;
+
+	foo = g_strdup_printf ("%s:%d", type, find_applet (widget));
+
+	gtk_selection_data_set (selection_data,
+				selection_data->target, 8, (guchar *)foo,
+				strlen (foo));
+
+	g_free (foo);
+}
+
+static GtkWidget *
+create_logout_widget (void)
+{
+        static GtkTargetEntry dnd_targets[] = {
+		{ "application/x-panel-applet-internal", 0, 0 }
+	};
 	GtkWidget *button;
 	char *pixmap_name;
 
-	pixmap_name = gnome_pixmap_file("gnome-term-night.png");
+	pixmap_name = gnome_pixmap_file ("gnome-term-night.png");
 
-	button = button_widget_new(pixmap_name,-1,
-				   MISC_TILE,
-				   FALSE,
-				   ORIENT_UP,
-				   _("Log out"));
-	g_free(pixmap_name);
-	gtk_tooltips_set_tip (panel_tooltips,button,_("Log out of GNOME"),NULL);
+	button = button_widget_new (pixmap_name, -1,
+				    MISC_TILE,
+				    FALSE,
+				    ORIENT_UP,
+				    _("Log out"));
 
-	gtk_signal_connect(GTK_OBJECT(button), "clicked",
-			   GTK_SIGNAL_FUNC(logout), NULL);
+	/*A hack since this function only pretends to work on window
+	  widgets (which we actually kind of are) this will select
+	  some (already selected) events on the panel instead of
+	  the button window (where they are also selected) but
+	  we don't mind*/
+	GTK_WIDGET_UNSET_FLAGS (button, GTK_NO_WINDOW);
+	gtk_drag_source_set (button,
+			     GDK_BUTTON1_MASK,
+			     dnd_targets, 1,
+			     GDK_ACTION_COPY | GDK_ACTION_MOVE);
+	GTK_WIDGET_SET_FLAGS (button, GTK_NO_WINDOW);
+
+	gtk_signal_connect (GTK_OBJECT (button), "drag_data_get",
+			    GTK_SIGNAL_FUNC (drag_data_get_cb),
+			    "LOGOUT");
+
+	g_free (pixmap_name);
+	gtk_tooltips_set_tip (panel_tooltips, button, _("Log out of GNOME"), NULL);
+
+	gtk_signal_connect (GTK_OBJECT (button), "clicked",
+			    GTK_SIGNAL_FUNC (logout), NULL);
 
 	return button;
 }
@@ -63,7 +104,7 @@ load_logout_applet(PanelWidget *panel, int pos, gboolean exactpos)
 	if(!logout)
 		return;
 
-	if (!register_toy(logout, NULL, panel,
+	if (!register_toy(logout, NULL, NULL, panel,
 			  pos, exactpos, APPLET_LOGOUT))
 		return;
 
@@ -75,21 +116,41 @@ load_logout_applet(PanelWidget *panel, int pos, gboolean exactpos)
 static GtkWidget *
 create_lock_widget(void)
 {
+        static GtkTargetEntry dnd_targets[] = {
+		{ "application/x-panel-applet-internal", 0, 0 }
+	};
 	GtkWidget *button;
 	char *pixmap_name;
 
 	pixmap_name = gnome_pixmap_file("gnome-lockscreen.png");
 
-	button = button_widget_new(pixmap_name,-1,
-				   MISC_TILE,
-				   FALSE,
-				   ORIENT_UP,
-				   _("Lock screen"));
-	g_free(pixmap_name);
-	gtk_tooltips_set_tip (panel_tooltips,button,_("Lock screen"),NULL);
+	button = button_widget_new (pixmap_name, -1,
+				    MISC_TILE,
+				    FALSE,
+				    ORIENT_UP,
+				    _("Lock screen"));
 
-	gtk_signal_connect(GTK_OBJECT(button), "clicked",
-			   GTK_SIGNAL_FUNC(panel_lock), NULL);
+	/*A hack since this function only pretends to work on window
+	  widgets (which we actually kind of are) this will select
+	  some (already selected) events on the panel instead of
+	  the button window (where they are also selected) but
+	  we don't mind*/
+	GTK_WIDGET_UNSET_FLAGS (button, GTK_NO_WINDOW);
+	gtk_drag_source_set (button,
+			     GDK_BUTTON1_MASK,
+			     dnd_targets, 1,
+			     GDK_ACTION_COPY | GDK_ACTION_MOVE);
+	GTK_WIDGET_SET_FLAGS (button, GTK_NO_WINDOW);
+
+	gtk_signal_connect (GTK_OBJECT (button), "drag_data_get",
+			    GTK_SIGNAL_FUNC (drag_data_get_cb),
+			    "LOCK");
+
+	g_free (pixmap_name);
+	gtk_tooltips_set_tip (panel_tooltips, button, _("Lock screen"), NULL);
+
+	gtk_signal_connect (GTK_OBJECT (button), "clicked",
+			    GTK_SIGNAL_FUNC (panel_lock), NULL);
 
 	return button;
 }
@@ -102,7 +163,7 @@ load_lock_applet(PanelWidget *panel, int pos, gboolean exactpos)
 
 	if(!lock)
 		return;
-	if (!register_toy(lock, NULL, panel, pos, 
+	if (!register_toy(lock, NULL, NULL, panel, pos, 
 			  exactpos, APPLET_LOCK))
 		return;
 

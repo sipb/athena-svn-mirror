@@ -17,6 +17,8 @@
 
 #include "panel-include.h"
 
+#include "gwmh.h"
+
 #include "xstuff.h"
 
 extern int config_sync_timeout;
@@ -41,9 +43,6 @@ GtkTooltips *panel_tooltips = NULL;
 
 GnomeClient *client = NULL;
 
-/*a list of started extern applet child processes*/
-extern GList * children;
-
 char *kde_menudir = NULL;
 char *kde_icondir = NULL;
 char *kde_mini_icondir = NULL;
@@ -52,7 +51,7 @@ char *merge_merge_dir = NULL;
 int merge_main_dir_len = 0;
 char *merge_main_dir = NULL;
 
-static int
+static gboolean
 menu_age_timeout(gpointer data)
 {
 	GSList *li;
@@ -105,7 +104,7 @@ static void
 find_kde_directory(void)
 {
 	int i;
-	char *kdedir = getenv("KDEDIR");
+	char *kdedir = g_getenv ("KDEDIR");
 	char *try_prefixes[] = {
 		"/usr",
 		"/opt/kde",
@@ -156,8 +155,7 @@ setup_merge_directory(void)
 	merge_main_dir_len = merge_main_dir != NULL ? strlen (merge_main_dir) : 0;
 	merge_merge_dir = gnome_config_get_string("/panel/Merge/Directory=/etc/X11/applnk/");
 
-	if (merge_merge_dir == NULL ||
-	    merge_merge_dir[0] == '\0' ||
+	if (string_empty (merge_merge_dir) ||
 	    ! g_file_test(merge_merge_dir, G_FILE_TEST_ISDIR)) {
 		g_free(merge_merge_dir);
 		merge_merge_dir = NULL;
@@ -180,12 +178,26 @@ setup_visuals (void)
 	gtk_widget_push_colormap (gdk_rgb_get_cmap ());
 }
 
+static void
+kill_free_drawers (void)
+{
+	GSList *li;
+	for (li = panel_list; li != NULL; li = li->next) {
+		PanelData *pd = li->data;
+		if (IS_DRAWER_WIDGET (pd->panel) &&
+		    PANEL_WIDGET (BASEP_WIDGET (pd->panel)->panel)->master_widget == NULL) {
+			status_unparent (pd->panel);
+			gtk_widget_destroy (pd->panel);
+		}
+	}
+}
+
 int
 main(int argc, char **argv)
 {
 	CORBA_ORB orb;
 	CORBA_Environment ev;
-	gint duplicate;
+	gboolean duplicate;
 	gchar *real_global_path;
 	
 	bindtextdomain(PACKAGE, GNOMELOCALEDIR);
@@ -201,7 +213,7 @@ main(int argc, char **argv)
 
 	switch (panel_corba_gtk_init (orb)) {
 	case 0: 
-		duplicate = 0;
+		duplicate = FALSE;
 		break; /* success */
 	case -4: {
 		GtkWidget* box = gnome_question_dialog
@@ -211,7 +223,7 @@ main(int argc, char **argv)
 		panel_set_dialog_layer (box);
 		if (gnome_dialog_run_and_close (GNOME_DIALOG (box)))
 			return 0;
-		duplicate = 1;
+		duplicate = TRUE;
 		break;
 	}
 	default: {
@@ -245,7 +257,7 @@ main(int argc, char **argv)
 
 #ifndef PER_SESSION_CONFIGURATION
 	real_global_path = gnome_config_get_real_path (old_panel_cfg_path);
-	if (!g_file_exists (real_global_path)) {
+	if ( ! panel_file_exists (real_global_path)) {
 		g_free (old_panel_cfg_path);
 		old_panel_cfg_path = g_strdup ("/panel.d/default/");
 	}
@@ -274,12 +286,16 @@ main(int argc, char **argv)
 	/* this is so the capplet gets the right defaults */
 	write_global_config();
 
+	gwmh_init ();
+
 	init_fr_chunks ();
 	
 	init_menus();
 	
 	init_user_panels();
 	init_user_applets();
+
+	kill_free_drawers ();
 
 	load_tornoff();
 

@@ -72,7 +72,7 @@ void save_order_of_dir(GtkCTree *ctree, GtkCTreeNode *node, gboolean is_parent)
 		return;
 
 	dd = gtk_ctree_node_get_row_data(ctree, parent);
-        order_file = g_concat_dir_and_file(dd->path, "/.order");
+        order_file = g_concat_dir_and_file(dd->path, ".order");
 
 	work = GTK_CTREE_ROW(parent)->children;
 	if (work) {
@@ -84,7 +84,7 @@ void save_order_of_dir(GtkCTree *ctree, GtkCTreeNode *node, gboolean is_parent)
 		}
 		while (work) {
 			dd = gtk_ctree_node_get_row_data(ctree, work);
-			fprintf(f, "%s\n", dd->path + g_filename_index(dd->path));
+			fprintf(f, "%s\n", g_basename (dd->path));
 			work = GTK_CTREE_ROW (work)->sibling;
 		}
 		fclose(f);

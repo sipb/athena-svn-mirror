@@ -8,20 +8,22 @@
 <article id="index">
 
   <artheader> 
-    <title>Das GNOME-Panel</title>
+    <title>Das GNOME-Panel-Handbuch</title>
     <copyright>
       <year>2000</year>
       <holder>Red Hat, Inc., Dan Mueth, and Alexander Kirillov</holder>
     </copyright>
 
-    <legalnotice>
+    <legalnotice id="legalnotice">
       <para>
        Permission is granted to copy, distribute and/or modify this
-       document under the terms of the GNU Free Documentation License,
-       Version 1.1 or any later version published by the Free Software
-       Foundation; with no Invariant Sections, with no  Front-Cover
-       Texts, and with no Back-Cover Texts.  A copy of the license is
-       available from the Free Software Foundation and can be viewed <ulink
+       document under the terms of the <ulink type="help"
+       url="gnome-help:fdl"><citetitle>GNU Free Documentation
+       License</citetitle></ulink>, Version 1.1 or any later version
+       published by the Free Software Foundation; with no Invariant
+       Sections, with no Front-Cover Texts, and with no Back-Cover
+       Texts.  A copy of the license is available from the Free
+       Software Foundation and can be viewed <ulink
        url="http://www.gnu.org/copyleft/fdl.html"
        type="http">online</ulink>.
       </para>
@@ -36,7 +38,7 @@
      This is version 1.0 of The GNOME Panel manual.
     </releaseinfo>
   </artheader>
-  <sect1>
+  <sect1 id="unnamed1">
     <title>Einleitung</title>
     <para>
     <indexterm id="idx-a2">
@@ -68,7 +70,7 @@
 
 
   <!-- ########### Panel Basics  ############## -->  <sect1
-    id="panelbasics">   <title>Panel Grundlagen</title>
+ id="panelbasics">   <title>Panel Grundlagen</title>
     <para>
       Die Benutzung des GNOME <interface>Panel</interface>s ist sehr
       einfach und wird jedem leichtfallen, der schon einmal mit einer
@@ -108,15 +110,15 @@
 		von denen jeder entweder ein Programm startet bzw. einen Befehl
 		ausf&auml;hrt oder ein Submen&uuml; ist. Im
 		Beispiel-<interface>Panel</interface> in <xref
-		  linkend="examplepanelfig"> , ist das sich am weitesten
+ 	  linkend="examplepanelfig"> , ist das sich am weitesten
 		links befindliche Icon nach dem Pfeil ein symbolisierter
-		B&auml;renfu&szlig (das GNOME-Logo). Dies ist das
+		B&auml;renfu&szlig; (das GNOME-Logo). Dies ist das
 		<guimenu>Hauptmen&uuml;</guimenu>, eines der wichtigsten
 		Objekte im <interface>Panel</interface>.  Dieses Men&uuml;
 		bietet Zugang zu nahezu allen Applikationen, Befehlen und
 		Konfigurationsm&ouml;glichkeiten, die GNOME bietet. Das
 		<guimenu>Hauptmen&uuml;</guimenu> ist im Detail in <xref
-		  linkend="mainmenu"> beschrieben.
+ 	  linkend="mainmenu"> beschrieben.
 
 		Das zweite Icon zeigt einen Ordner, das Standard-Icon f&uuml;r
 		Benutzer-Men&uuml;s. GNOME erlaubt Benutzern, ihre eigenen
@@ -275,7 +277,7 @@
 	<xref linkend="panelproperties">) sowie über den
 	<guimenuitem>Globale Eigenschaften...</guimenuitem> Menüeintrag
 	die aller <interface>Panels</interface> (siehe <xref
-	  linkend="globalpanelprefs">).
+   linkend="globalpanelprefs">).
       </para>
       <para>
 	Sie können außerdem auf das <interface>Panel</interface> selbst
@@ -336,7 +338,7 @@
 	auf das <interface>Panel</interface> und wählen Sie
 	<guimenuitem>Ablelden</guimenuitem>. Dies bringt den
 	<interface>Abmelden-Dialog</interface> hervor, den Sie in <xref
-	  linkend="logoutdialog-fig"> sehen.
+   linkend="logoutdialog-fig"> sehen.
       </para>
       <figure id="logoutdialog-fig">
 	<title>Der Abmelde-Dialog</title>
@@ -415,7 +417,7 @@
 	rechten Maustaste auf ein Ende eines <interface>Panels</interface>
 	und wählen Sie <guimenuitem>Bildschirm sperren</guimenuitem>, oder -
 	falls Sie den <guibutton>Sperrknopf</guibutton> (siehe <xref
-	  linkend="lockbutton">) auf einem <interface>Panel</interface> haben,
+   linkend="lockbutton">) auf einem <interface>Panel</interface> haben,
 	klicken Sie ihn einfach an. Zum Aufschließen geben Sie einfach Ihr
 	Anmeldepaßwort ein.
       </para>
@@ -626,7 +628,7 @@
 	    <guimenuitem>Abmelden</guimenuitem>, welches Ihre GNOME-Sitzung
 	    beendet (siehe <xref linkend="loggingout">), sowie
 	    <guimenuitem>Bildschirm sperren</guimenuitem> (siehe <xref
-	      linkend="lockscreen">). 
+       linkend="lockscreen">). 
 	  </para>
 	</listitem>
 
@@ -2075,7 +2077,7 @@
       Der <interface>Panel Eigenschaften</interface>-Dialog enthält zwei
       Reiter, um die Panel-Eigenschaften zu ändern: 
       <guilabel>Kantenpanel</guilabel> (oder <guilabel>Ausgerichtetes
-	Panel</guilabel>, &hellip - abhängig von Ihrem Paneltyp) und
+	Panel</guilabel>, &hellip; - abhängig von Ihrem Paneltyp) und
       <guilabel>Hintergrund</guilabel>. Beide werden nachfolgend beschrieben.
     </para>
 
@@ -2340,9 +2342,7 @@
     </para>
     <para>
       Bitte schicken Sie alle Kommentare, Anregungen und Fehlerberichte
-      and die <ulink url="http://bugs.gnome.org" type="http">GNOME-Problemdatenbank</ulink>. Eine Anleitung zum Berichten von Fehlern findet sich on-line
-      unter <ulink url="http://bugs.gnome.org/Reporting.html" type="http">
-	http://bugs.gnome.org/Reporting.html</ulink>. Wenn Sie GNOME 1.1
+      and die <ulink url="http://bugzilla.gnome.org/" type="http">GNOME-Problemdatenbank</ulink>. Wenn Sie GNOME 1.1
       oder neuer verwenden, können Sie auch den Befehl
       <command>bug-buddy</command> verwenden, um Fehler zu berichten.
     </para>
@@ -2354,7 +2354,7 @@
       alle dieses Handbuch betreffenden Kommentare und Anregungen an das
       GNOME-Dokumentations-Projekt unter <email>docs@gnome.org</email> oder
       benutzen Sie das Online-Formular in der
-      <ulink type="http" url="http://www.gnome.org/gdp/doctable">GNOME-Documentations-Status-Tabelle</ulink>.
+      <ulink type="http" url="http://developer.gnome.org/projects/gdp/doctable/">GNOME-Documentations-Status-Tabelle</ulink>.
     </para>
     <para>
       Die deutsche Übersetzung dieses Handbuchs stammt von

@@ -157,15 +157,15 @@ terminal_servant_from_terminal (GtkWidget *term, CORBA_Environment *ev)
 /* TerminalFactory::create_terminal method */
 static GNOME_Terminal_Terminal
 TerminalFactory_create_terminal (PortableServer_Servant servant,
-				 CORBA_char *geometry,
+				 const CORBA_char *geometry,
 				 CORBA_Environment *ev)
 {
 	GtkWidget *term;
 	TerminalServant *ts;
 
 	term = new_terminal_for_client (geometry);
-	if (term == CORBA_OBJECT_NIL)
-		return term;
+	if (term == NULL)
+		return CORBA_OBJECT_NIL;
 	
 	ts = terminal_servant_from_terminal (term, ev);
 
@@ -175,7 +175,7 @@ TerminalFactory_create_terminal (PortableServer_Servant servant,
 /* TerminalFactory GenericFactory::supports method */
 static CORBA_boolean
 TerminalFactory_supports (PortableServer_Servant servant,
-			  CORBA_char *obj_goad_id,
+			  const CORBA_char *obj_goad_id,
 			  CORBA_Environment *ev)
 {
 	if (strcmp (obj_goad_id, "IDL:GNOME:Terminal:Terminal:1.0") == 0)
@@ -187,8 +187,8 @@ TerminalFactory_supports (PortableServer_Servant servant,
 /* TerminalFactory GenericFactory::create_object method */
 static CORBA_Object
 TerminalFactory_create_object (PortableServer_Servant servant,
-			       CORBA_char *goad_id,
-			       GNOME_stringlist *params,
+			       const CORBA_char *goad_id,
+			       const GNOME_stringlist *params,
 			       CORBA_Environment *ev)
 {
 	if (strcmp (goad_id, "IDL:GNOME:Terminal:Terminal:1.0") != 0)
@@ -419,7 +419,7 @@ get_terminal_factory (void)
 
 /* Creates a new terminal with the specified geometry */
 CORBA_Object
-create_terminal_via_factory (char *geometry, CORBA_Environment *ev)
+create_terminal_via_factory (const char *geometry, CORBA_Environment *ev)
 {
 	CORBA_Object obj, term;
 

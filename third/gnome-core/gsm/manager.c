@@ -31,7 +31,14 @@ extern int errno;
 
 #include "manager.h"
 #include "session.h"
+#include "prop.h"
+#include "command.h"
 #include "splash.h"
+#include "remote.h"
+#include "save.h"
+#include "logout.h"
+#include "ice.h"
+#include "gsm-protocol.h"
 
 /* The save_state gives a description of what we are doing */
 static enum {
@@ -44,12 +51,6 @@ static enum {
   STARTING_SESSION,
   SHUTDOWN
 } save_state;
-
-/* List of sessions which have yet to be loaded. */
-static GSList *load_request_list = NULL;
-
-/* List of clients which have yet to be started */
-static GSList *start_list = NULL;
 
 /* List of clients which have been started but have yet to register */
 GSList *pending_list = NULL;
@@ -80,14 +81,20 @@ typedef struct _SaveRequest
   gboolean global;
 } SaveRequest;
 
+/* List of sessions which have yet to be loaded. */
+static GSList *load_request_list = NULL;
+
+/* List of clients which have yet to be started */
+static GSList *start_list = NULL;
+
 /* List of requested saves */
 static GSList *save_request_list = NULL;
 
 /* This is true if a shutdown is expected to follow the current save.  */
-static int shutting_down = 0;
+static gboolean shutting_down = FALSE;
 
 /* This is true if we are starting a client to print warnings. */
-static int starting_warner = 0;
+static gint starting_warner = 0;
 
 /* List of all clients waiting for the interaction token.  The head of
    the list actually has the token.  */
@@ -122,27 +129,26 @@ gchar   *events[]       = { GsmInactive, GsmInactive,
 			    GsmSave, GsmSave, 
 			    GsmConnected, NULL };
 
-/* Index used to identify clients uniquely over the gsm protocol extensions. */
-/*UNUSED
- * static guint handle = 0;
- */
-
 static gint compare_interact_request (gconstpointer a, gconstpointer b);
+
 typedef void message_func (SmsConn connection);
 
 static void
 close_connection (SmsConn connection, SmPointer data, int count,
 		  char **reasons);
+
 static void
 save_yourself_request (SmsConn connection, SmPointer data, int save_type,
-		       Bool shutdown, int interact_style, Bool fast,
-		       Bool global);
-static void set_properties (SmsConn connection, SmPointer data, 
-			    int nprops, SmProp **props);
+		       gboolean shutdown, int interact_style, gboolean fast,
+		       gboolean global);
+
+static void 
+set_properties (SmsConn connection, SmPointer data, 
+	        int nprops, SmProp **props);
 
 static void update_save_state (void);
 
-
+
 
 Client *
 find_client_by_id (const GSList *list, const char *id)
@@ -231,36 +237,43 @@ free_client (Client *client)
  if (! client)
     return;
 
-  if (client->id)
-    free (client->id);
+  if (client->id != NULL)
+    g_free (client->id);
+  client->id = NULL; /* sanity */
 
-  if (client->handle)
+  if (client->handle != NULL)
     command_handle_free (client->handle);
+  client->handle = NULL; /* sanity */
 
   for (list = client->properties; list; list = list->next)
     {
       SmProp *sp = (SmProp *) list->data;
+      list->data = NULL; /* sanity */
+
       SmFreeProperty (sp);
     }
   g_slist_free (client->properties);
+  client->properties = NULL; /* sanity */
 
   for (list = client->get_prop_replies; list; list = list->next)
     {
       GSList *prop_list = (GSList *) list->data, *list1;
+      list->data = NULL; /* sanity */
 	
       for (list1 = prop_list; list1; list1 = list1->next)
 	{
 	  SmProp *prop = (SmProp *) list1->data;
+	  list1->data = NULL; /* sanity */
+
 	  SmFreeProperty (prop);
 	}
       g_slist_free (prop_list);
     }
   g_slist_free (client->get_prop_replies);
+  client->get_prop_replies = NULL; /* sanity */
 
-  free (client);
+  g_free (client);
 }
-
-
 
 /* Run a command on a client. */
 gint
@@ -281,7 +294,7 @@ run_command (Client* client, const gchar* command)
 	  int i;
 
 	  envpc = envc / 2;
-	  envp = (gchar**)calloc (sizeof(gchar*), envpc + 1);
+	  envp = g_new0 (char *, envpc + 1);
 	  
 	  for (i = 0; i < envpc; i++)
 	    envp[i] = g_strconcat (envv[2*i], "=", envv[2*i + 1], NULL);
@@ -297,7 +310,8 @@ run_command (Client* client, const gchar* command)
       /* We can't run this in the `if' because we might have allocated
 	 ENVV in find_vector_property but rejected it for other
 	 reasons.  */
-      free_vector (envc, envv);
+      g_strfreev (envv);
+      envv = NULL; /* sanity */
 
       update_splash (argv[0], (gfloat)client->priority);
 
@@ -305,7 +319,7 @@ run_command (Client* client, const gchar* command)
       find_string_property (client, GsmRestartService, &restart_info);
       pid = remote_start (restart_info, argc, argv, dir, envpc, envp);
       if (restart_info)
-	free (restart_info);
+	g_free (restart_info);
 
       if (errno)
 	{
@@ -320,16 +334,14 @@ run_command (Client* client, const gchar* command)
 	  errno = 0;
 	}
 
-      if (envp)
-	free_vector (envpc, envp);
-      if (dir)
-	free (dir);
-      free_vector (argc, argv);
+      if (envp != NULL)
+	      g_strfreev (envp);
+      if (dir != NULL)
+	      g_free (dir);
+      g_strfreev (argv);
     }
   return pid;
 }
-
-
 
 /* Send a message to every client on LIST.  */
 static void
@@ -347,7 +359,6 @@ send_message (GSList **list, message_func *message)
   message_sent_list = NULL;
 }
 
-
 
 static void
 process_load_request (GSList *client_list)
@@ -417,7 +428,6 @@ start_clients (GSList* client_list)
     }
 }
 
-
 
 /* Purges clients from the pending list that are taking excessive
  * periods of time to register.
@@ -522,7 +532,7 @@ remove_client (Client* client)
 	{
 	  IceConn ice_conn = SmsGetIceConnection (client->connection);
 	  
-	  IceSetShutdownNegotiation (ice_conn, False);
+	  IceSetShutdownNegotiation (ice_conn, FALSE);
 	  IceCloseConnection (ice_conn);
 	  REMOVE (live_list, client);
 	  client_event (client->handle, GsmRemove);
@@ -549,7 +559,7 @@ remove_client (Client* client)
 
       set_client_restart_style (client, SmRestartNever);
       SmsDie (client->connection);
-      IceSetShutdownNegotiation (ice_conn, False);
+      IceSetShutdownNegotiation (ice_conn, FALSE);
       IceCloseConnection (ice_conn);
       REMOVE (save_yourself_list, client);
       client_event (client->handle, GsmRemove);
@@ -563,7 +573,7 @@ remove_client (Client* client)
 
       set_client_restart_style (client, SmRestartNever);
       SmsDie (client->connection);
-      IceSetShutdownNegotiation (ice_conn, False);
+      IceSetShutdownNegotiation (ice_conn, FALSE);
       IceCloseConnection (ice_conn);
       REMOVE (save_yourself_p2_list, client);
       client_event (client->handle, GsmRemove);
@@ -639,8 +649,6 @@ remove_client (Client* client)
 }
 
 
-
-
 static Status
 register_client (SmsConn connection, SmPointer data, char *previous_id)
 {
@@ -686,29 +694,36 @@ register_client (SmsConn connection, SmPointer data, char *previous_id)
 	  return 0;
 	}
       client->match_rule = MATCH_DONE;
-      client->id = previous_id;
+      client->id = g_strdup (previous_id);
+      free (previous_id);
     }
   else
     {
-      client->id = SmsGenerateClientID (connection);
-      if (!client->id)
+      char *id = SmsGenerateClientID (connection);
+
+      if (id != NULL)
 	{
-	  static int sequence = 0;
+	  client->id = g_strdup (id);
+	  free (id);
+	}
+      else
+	{
+	  static long int sequence = 0;
 	  static char* address = NULL;
 
 	  if (! address)
 	    {
 	      g_warning ("Host name lookup failure on localhost.");
 	      
-	      address = malloc (10);
+	      address = g_new (char, 10);
 	      srand (time (NULL) + (getpid () <<16));
-	      sprintf (address, "0%.8x", rand());
+	      g_snprintf (address, 10, "0%.8x", rand());
 	    };
 
 	  /* The typecast there is for 64-bit machines */
-	  client->id = malloc (43);
-	  sprintf (client->id, "1%s%.13ld%.10d%.4d", address,
-		   (long) time(NULL), getpid (), sequence);
+	  client->id = g_malloc (43);
+	  g_snprintf (client->id, 43, "1%s%.13ld%.10ld%.4ld", address,
+		      (long) time(NULL), getpid (), sequence);
 	  sequence++;
 	  
 	  sequence %= 10000;
@@ -726,13 +741,12 @@ register_client (SmsConn connection, SmPointer data, char *previous_id)
   /* SM specs 7.2: */
   if (!previous_id)
     save_yourself_request (connection, (SmPointer) client, 
-			   SmSaveLocal, False,
-			   SmInteractStyleNone, False, False);
+			   SmSaveLocal, FALSE,
+			   SmInteractStyleNone, FALSE, FALSE);
   update_save_state ();
   return 1; 
 }
 
-
 
 static gint		
 compare_interact_request (gconstpointer a, gconstpointer b)
@@ -791,10 +805,7 @@ no_response_warning (gpointer data)
       if (!starting_warner)
 	{
 	  Session *session;
-	  gboolean old_failsafe = failsafe;
-	  failsafe = TRUE;
 	  session = read_session (WARNER_SESSION);
-	  failsafe = old_failsafe;
 	  warner = (Client*)session->client_list->data;
 	  start_client(warner);
 	  g_slist_free (session->client_list);
@@ -892,7 +903,7 @@ no_response_warning (gpointer data)
 }
 
 static void
-interact_done (SmsConn connection, SmPointer data, Bool cancel)
+interact_done (SmsConn connection, SmPointer data, gboolean cancel)
 {
   Client *client = (Client *) data;
 
@@ -912,11 +923,12 @@ interact_done (SmsConn connection, SmPointer data, Bool cancel)
          avoid misinterpreting those messages as responses to the
          NEXT SaveYourself message which we send to them */
       save_state = SAVE_CANCELLED;
-      shutting_down = 0;
+      shutting_down = FALSE;
       interact_list = NULL;
 
       send_message (&save_yourself_list, SmsShutdownCancelled);
       send_message (&save_yourself_p2_list, SmsShutdownCancelled);
+      send_message (&save_finished_list, SmsShutdownCancelled);
     }
 
   if (interact_list)
@@ -951,7 +963,7 @@ process_save_request (Client* client, int save_type, gboolean shutdown,
 	    SmsShutdownCancelled (client->connection);
 	}
       else
-	{	
+	{ 
 	  while (live_list) 
 	    {
 	      Client *tmp_client = (Client *) live_list->data;
@@ -972,7 +984,7 @@ process_save_request (Client* client, int save_type, gboolean shutdown,
 		       save_type, 0, interact_style, fast);
     }
 
-  if (shutting_down || save_yourself_list)
+  if ((shutting_down || save_yourself_list))
     { 
       /* Give apps extra time on first save as they may call SmcOpenConnection
        * long before entering the select on the resulting connection. */
@@ -983,32 +995,30 @@ process_save_request (Client* client, int save_type, gboolean shutdown,
     }
   else
     save_state = MANAGER_IDLE;
-
   update_save_state ();
 }
 
 static void
 save_yourself_request (SmsConn connection, SmPointer data, int save_type,
-		       Bool shutdown, int interact_style, Bool fast,
-		       Bool global)
+		       gboolean shutdown, int interact_style, gboolean fast,
+		       gboolean global)
 {
   Client *client = (Client *) data;
-
-  if (save_state != MANAGER_IDLE)
-    {
-      SaveRequest *request = g_new (SaveRequest, 1);
-      request->client = client;
-      request->save_type = save_type;
-      request->shutdown = shutdown;
-      request->interact_style = interact_style;
-      request->fast = fast;
-      request->global = global;
+    if (save_state != MANAGER_IDLE)
+      {
+        SaveRequest *request = g_new (SaveRequest, 1);
+        request->client = client;
+        request->save_type = save_type;
+        request->shutdown = shutdown;
+        request->interact_style = interact_style;
+        request->fast = fast;
+        request->global = global;
       
-      APPEND (save_request_list, request);
-    }
-  else
-    process_save_request (client, save_type, shutdown, 
-			  interact_style, fast, global);
+        APPEND (save_request_list, request);
+      }
+    else
+      process_save_request (client, save_type, shutdown, 
+			    interact_style, fast, global);
 }
 
 static void
@@ -1039,7 +1049,7 @@ run_shutdown_commands (const GSList *list)
 /* This is a helper function which makes sure that the save_state
    variable is correctly set after a change to the save_yourself lists. */
 static void
-update_save_state ()
+update_save_state (void)
 {
   if (save_state == STARTING_SESSION)
     {
@@ -1116,7 +1126,8 @@ update_save_state ()
 	      REMOVE (purge_drop_list, client);
 	      free_client (client);
 	    }
-	  write_session ();
+          if(autosave || save_selected || session_save)
+	    write_session ();
 
 	  for (list = save_finished_list; list;)
 	    {
@@ -1139,7 +1150,8 @@ update_save_state ()
 	}
       else
 	{
-	  write_session ();
+          if(autosave || save_selected || session_save)
+	    write_session ();
 
 	  save_state = SENDING_MESSAGES;
 	  send_message (&save_finished_list, SmsSaveComplete);
@@ -1172,8 +1184,8 @@ update_save_state ()
 
       CONCAT (live_list, save_finished_list);
       save_finished_list = NULL;
-
-      write_session ();
+      if(autosave || save_selected || session_save)
+        write_session ();
 
       save_state = MANAGER_IDLE;
     }
@@ -1205,7 +1217,7 @@ update_save_state ()
 }
 
 static void
-save_yourself_done (SmsConn connection, SmPointer data, Bool success)
+save_yourself_done (SmsConn connection, SmPointer data, gboolean success)
 {
   Client *client = (Client *) data;
   GSList *prop_list = NULL;
@@ -1311,7 +1323,7 @@ close_connection (SmsConn connection, SmPointer data, int count,
   client_reasons (client, FALSE, count, reasons);
   SmFreeReasons (count, reasons);
 
-  IceSetShutdownNegotiation (ice_conn, False);
+  IceSetShutdownNegotiation (ice_conn, FALSE);
   IceCloseConnection (ice_conn);
 }
 
@@ -1511,20 +1523,18 @@ send_properties (Client* client, GSList *prop_list)
       int i, len;
       
       len = g_slist_length (prop_list);
-      props = (SmProp**)calloc (sizeof(SmProp *), len);
+      props = (SmProp**)g_new0 (SmProp *, len);
       
       for (i = 0, list = prop_list; list; i++, list = list->next)
 	props[i] = list->data;
       
       SmsReturnProperties (client->connection, len, props);
-      free (props);      
+      g_free (props);      
       
       client->get_prop_requests--;
     }
 }
 
-
-
 
 /* This is run when a new client connects.  We register all our
    callbacks.  */
@@ -1540,7 +1550,7 @@ new_client (SmsConn connection, SmPointer data, unsigned long *maskp,
       return 0;
     }
 
-  client = (Client*)calloc (1, sizeof(Client));
+  client = (Client*)g_new0 (Client, 1);
   client->priority = DEFAULT_PRIORITY;
   client->connection = connection;
   client->attempts = 1;
@@ -1595,7 +1605,6 @@ new_client (SmsConn connection, SmPointer data, unsigned long *maskp,
   return 1;
 }
 
-
 
 /* This function is exported to the rest of gsm.  It sets up and
    performs a global save */

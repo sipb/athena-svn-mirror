@@ -17,6 +17,7 @@
 #include <gnome.h>
 
 #include "panel-include.h"
+#include "icon-entry-hack.h"
 
 #include "xstuff.h"
 
@@ -25,29 +26,31 @@ extern GSList *applets_last;
 extern int applet_count;
 extern GlobalConfig global_config;
 
+extern int applets_to_sync;
+extern int panels_to_sync;
+extern int need_complete_save;
+
 extern GtkTooltips *panel_tooltips;
 
 extern GSList *panel_list;
 
 static void
-properties_apply_callback(GtkWidget *widget, int page, gpointer data)
+properties_apply_callback(gpointer data)
 {
 	Drawer       *drawer = data;
-	GtkWidget    *pixentry = gtk_object_get_data(GTK_OBJECT(widget),
+
+	GtkWidget    *pixentry = gtk_object_get_data(GTK_OBJECT(drawer->properties),
 						     "pixmap");
-	GtkWidget    *tipentry = gtk_object_get_data(GTK_OBJECT(widget),
+	GtkWidget    *tipentry = gtk_object_get_data(GTK_OBJECT(drawer->properties),
 						     "tooltip");
 	char         *s;
 
-	if (page != -1)
-		return;
-
-	if(drawer->pixmap)
-		g_free(drawer->pixmap);
-	if(drawer->tooltip)
-		g_free(drawer->tooltip);
-	s = gnome_icon_entry_get_filename(GNOME_ICON_ENTRY(pixentry));
-	if(!s || !*s) {
+	g_free (drawer->pixmap);
+	drawer->pixmap = NULL;
+	g_free (drawer->tooltip);
+	drawer->tooltip = NULL;
+	s = hack_icon_entry_get_icon (GNOME_ICON_ENTRY (pixentry));
+	if (string_empty (s)) {
 		drawer->pixmap = gnome_pixmap_file ("panel-drawer.png");
 		button_widget_set_pixmap (BUTTON_WIDGET(drawer->button),
 					  drawer->pixmap,-1);
@@ -62,13 +65,13 @@ properties_apply_callback(GtkWidget *widget, int page, gpointer data)
 	}
 	g_free(s);
 	s = gtk_entry_get_text(GTK_ENTRY(gnome_entry_gtk_entry(GNOME_ENTRY(tipentry))));
-	if(!s || !*s)
+	if (string_empty (s))
 		drawer->tooltip = NULL;
 	else
 		drawer->tooltip = g_strdup(s);
 
-	gtk_tooltips_set_tip (panel_tooltips,drawer->button,
-			      drawer->tooltip,NULL);
+	gtk_tooltips_set_tip (panel_tooltips, drawer->button,
+			      drawer->tooltip, NULL);
 }
 
 static void
@@ -85,8 +88,8 @@ set_toggle (GtkWidget *widget, gpointer data)
 	int *the_toggle = data;
 
 	*the_toggle = GTK_TOGGLE_BUTTON(widget)->active;
-	if (ppc->register_changes)
-		gnome_property_box_changed (GNOME_PROPERTY_BOX (ppc->config_window));
+
+	panel_config_register_changes (ppc);
 }
 
 static void
@@ -96,32 +99,54 @@ set_sensitive_toggle (GtkWidget *widget, GtkWidget *widget2)
 }
 
 void
-add_drawer_properties_page(PerPanelConfig *ppc, Drawer *drawer)
+add_drawer_properties_page (PerPanelConfig *ppc, GtkNotebook *prop_nbook, Drawer *drawer)
 {
-        GtkWidget *dialog = ppc->config_window;
+        GtkWidget *dialog;
         GtkWidget *table;
 	GtkWidget *f;
 	GtkWidget *box, *box_in;
-	GtkWidget *nbook;
 	GtkWidget *w;
 	GtkWidget *button;
+
+	g_return_if_fail (ppc != NULL);
+
+        dialog = ppc->config_window;
+
+	box = gtk_vbox_new (FALSE, GNOME_PAD_SMALL);
+	gtk_container_set_border_width (GTK_CONTAINER (box), GNOME_PAD_SMALL);
+
+	box_in = gtk_vbox_new (FALSE, GNOME_PAD_SMALL);
+	gtk_container_set_border_width (GTK_CONTAINER (box_in), GNOME_PAD_SMALL);
+
+	w = make_size_widget (ppc);
+	gtk_box_pack_start (GTK_BOX (box_in), w, FALSE, FALSE, 0);
+
+	w = make_level_widget (ppc);
+	gtk_box_pack_start (GTK_BOX (box_in), w, FALSE, FALSE, 0);
+
+	f = gtk_frame_new (_("Size and Position"));
+	gtk_container_add (GTK_CONTAINER (f), box_in);
+	gtk_box_pack_start (GTK_BOX (box), f, FALSE, FALSE, 0);
+
 	
-	table = gtk_table_new(3, 2, FALSE);
-	gtk_container_set_border_width(GTK_CONTAINER(table), GNOME_PAD_SMALL);
+	table = gtk_table_new (3, 2, FALSE);
+	gtk_container_set_border_width (GTK_CONTAINER (table), GNOME_PAD_SMALL);
 
 	w = create_text_entry(table, "drawer_name", 0, _("Tooltip/Name"),
-			      drawer->tooltip, dialog);
+			      drawer->tooltip,
+			      (UpdateFunction)panel_config_register_changes,
+			      ppc);
 	gtk_object_set_data(GTK_OBJECT(dialog),"tooltip",w);
 	
 	w = create_icon_entry(table, "icon", 0, 2, _("Icon"),
-			      NULL, drawer->pixmap, dialog);
+			      NULL, drawer->pixmap,
+			      (UpdateFunction)panel_config_register_changes,
+			      ppc);
 	gtk_object_set_data(GTK_OBJECT(dialog), "pixmap", w);
 
 	f = gtk_frame_new(_("Applet appearance"));
 	gtk_container_add(GTK_CONTAINER(f),table);
 
-	box = gtk_vbox_new(FALSE,GNOME_PAD_SMALL);
-	gtk_container_set_border_width(GTK_CONTAINER(box), GNOME_PAD_SMALL);
 	gtk_box_pack_start(GTK_BOX(box),f,FALSE,FALSE,0);
 
 	f = gtk_frame_new(_("Drawer handle"));
@@ -155,17 +180,15 @@ add_drawer_properties_page(PerPanelConfig *ppc, Drawer *drawer)
 	gtk_box_pack_start (GTK_BOX (box),f,FALSE,FALSE,0);
 
 	
-	nbook = GNOME_PROPERTY_BOX (dialog)->notebook;
-	gtk_notebook_append_page (GTK_NOTEBOOK(nbook),
+	gtk_notebook_append_page (GTK_NOTEBOOK(prop_nbook),
 				  box, gtk_label_new (_("Drawer")));
 	
 	gtk_signal_connect(GTK_OBJECT(dialog), "destroy",
 			   (GtkSignalFunc) properties_close_callback,
 			   drawer);
 
-	gtk_signal_connect(GTK_OBJECT(dialog), "apply",
-			   GTK_SIGNAL_FUNC(properties_apply_callback),
-			   drawer);
+	ppc->update_function = properties_apply_callback;
+	ppc->update_data = drawer;
 
 	drawer->properties = dialog;
 }
@@ -202,11 +225,6 @@ destroy_drawer(GtkWidget *widget, gpointer data)
 
 	if(prop_dialog)
 		gtk_widget_destroy(prop_dialog);
-
-	/* HACK!, we don't free drawer structure here like other applets.
-	 * it is freed in applet_destroyed in applet.c.  There is a cleaner
-	 * solution in the 1.4 version, but for the stable version this is
-	 * GoodEnough(tm) */
 }
 
 static int
@@ -251,32 +269,71 @@ leave_notify_drawer (GtkWidget *widget, GdkEventCrossing *event, gpointer data)
 	
 }
 
+static void  
+drag_data_get_cb (GtkWidget          *widget,
+		  GdkDragContext     *context,
+		  GtkSelectionData   *selection_data,
+		  guint               info,
+		  guint               time,
+		  gpointer            data)
+{
+	char *foo;
+
+	foo = g_strdup_printf ("DRAWER:%d", find_applet (widget));
+
+	gtk_selection_data_set (selection_data,
+				selection_data->target, 8, (guchar *)foo,
+				strlen (foo));
+
+	g_free (foo);
+}
+
 static Drawer *
-create_drawer_applet(GtkWidget * drawer_panel, char *tooltip, char *pixmap,
+create_drawer_applet(GtkWidget * drawer_panel,
+		     const char *tooltip, const char *pixmap,
 		     PanelOrientType orient)
 {
+        static GtkTargetEntry dnd_targets[] = {
+		{ "application/x-panel-applet-internal", 0, 0 }
+	};
 	Drawer *drawer;
 	
-	drawer = g_new0(Drawer,1);
+	drawer = g_new0 (Drawer, 1);
 	
 	drawer->properties = NULL;
 
-	if(!tooltip ||
-	   !*tooltip)
+	if (string_empty (tooltip))
 		drawer->tooltip = NULL;
 	else
-		drawer->tooltip = g_strdup(tooltip);
+		drawer->tooltip = g_strdup (tooltip);
 
-	if(!pixmap || !*pixmap) {
+	if (string_empty (pixmap)) {
 		drawer->pixmap = gnome_pixmap_file ("panel-drawer.png");
 	} else {
-		drawer->pixmap = g_strdup(pixmap);
+		drawer->pixmap = g_strdup (pixmap);
 	}
 	drawer->button = button_widget_new (drawer->pixmap, -1,
 					    DRAWER_TILE,
-					    TRUE,orient,
+					    TRUE, orient,
 					    _("Drawer"));
-		gtk_widget_show(drawer->button);
+
+	/*A hack since this function only pretends to work on window
+	  widgets (which we actually kind of are) this will select
+	  some (already selected) events on the panel instead of
+	  the button window (where they are also selected) but
+	  we don't mind*/
+	GTK_WIDGET_UNSET_FLAGS (drawer->button, GTK_NO_WINDOW);
+	gtk_drag_source_set (drawer->button,
+			     GDK_BUTTON1_MASK,
+			     dnd_targets, 1,
+			     GDK_ACTION_MOVE);
+	GTK_WIDGET_SET_FLAGS (drawer->button, GTK_NO_WINDOW);
+
+	gtk_signal_connect (GTK_OBJECT (drawer->button), "drag_data_get",
+			    GTK_SIGNAL_FUNC (drag_data_get_cb),
+			    NULL);
+
+	gtk_widget_show(drawer->button);
 
 	drawer->drawer = drawer_panel;
 
@@ -288,25 +345,28 @@ create_drawer_applet(GtkWidget * drawer_panel, char *tooltip, char *pixmap,
 			    GTK_SIGNAL_FUNC (enter_notify_drawer), drawer);
 	gtk_signal_connect (GTK_OBJECT (drawer->button), "leave_notify_event",
 			    GTK_SIGNAL_FUNC (leave_notify_drawer), drawer);
-	gtk_object_set_user_data(GTK_OBJECT(drawer->button),drawer);
-	gtk_object_set_data(GTK_OBJECT(drawer_panel),DRAWER_PANEL_KEY,drawer);
-	gtk_widget_queue_resize(GTK_WIDGET(drawer_panel));
+
+	gtk_object_set_user_data (GTK_OBJECT (drawer->button), drawer);
+	gtk_object_set_data (GTK_OBJECT (drawer_panel), DRAWER_PANEL_KEY, drawer);
+	gtk_widget_queue_resize (GTK_WIDGET (drawer_panel));
 
 	return drawer;
 }
 
 static Drawer *
-create_empty_drawer_applet(char *tooltip, char *pixmap,
+create_empty_drawer_applet(const char *tooltip, const char *pixmap,
 			   PanelOrientType orient)
 {
-	GtkWidget *dw = drawer_widget_new(orient,
-					  BASEP_EXPLICIT_HIDE,
-					  BASEP_SHOWN,
-					  SIZE_STANDARD,
-					  TRUE, TRUE,
-					  PANEL_BACK_NONE, NULL,
-					  TRUE, FALSE, TRUE, NULL);
-	return create_drawer_applet(dw, tooltip,pixmap,orient);
+	GtkWidget *dw = drawer_widget_new (orient,
+					   BASEP_EXPLICIT_HIDE,
+					   BASEP_SHOWN,
+					   BASEP_LEVEL_DEFAULT,
+					   FALSE,
+					   SIZE_STANDARD,
+					   TRUE, TRUE,
+					   PANEL_BACK_NONE, NULL,
+					   TRUE, FALSE, TRUE, NULL);
+	return create_drawer_applet (dw, tooltip, pixmap, orient);
 }
 
 void
@@ -350,30 +410,38 @@ button_size_alloc(GtkWidget *widget, GtkAllocation *alloc, Drawer *drawer)
 }
 
 gboolean
-load_drawer_applet(int mypanel, char *pixmap, char *tooltip,
-		   PanelWidget *panel, int pos, gboolean exactpos)
+load_drawer_applet (int mypanel_id, const char *pixmap, const char *tooltip,
+		    PanelWidget *panel, int pos, gboolean exactpos)
 {
 	Drawer *drawer;
-	PanelOrientType orient = get_applet_orient(panel);
+	PanelOrientType orient = get_applet_orient (panel);
 
-	if(mypanel < 0) {
-		drawer = create_empty_drawer_applet(tooltip,pixmap,orient);
-		if(drawer) panel_setup(drawer->drawer);
+	if (mypanel_id < 0) {
+		drawer = create_empty_drawer_applet (tooltip, pixmap, orient);
+		if (drawer != NULL)
+			panel_setup (drawer->drawer);
+		panels_to_sync = TRUE;
 	} else {
 		PanelData *dr_pd;
 
-		dr_pd = g_slist_nth_data(panel_list,mypanel);
+		dr_pd = panel_data_by_id (mypanel_id);
 
-		if(!dr_pd) {
+		if (dr_pd == NULL) {
 			g_warning ("Can't find the panel for drawer, making a new panel");
 			drawer = create_empty_drawer_applet(tooltip, pixmap, orient);
 			if(drawer) panel_setup(drawer->drawer);
+			panels_to_sync = TRUE;
+		} else if ( ! IS_DRAWER_WIDGET (dr_pd->panel)) {
+			g_warning ("I found a bogus panel for a drawer, making a new one");
+			drawer = create_empty_drawer_applet(tooltip, pixmap, orient);
+			if(drawer) panel_setup(drawer->drawer);
+			panels_to_sync = TRUE;
 		} else {
-			drawer = create_drawer_applet(dr_pd->panel, tooltip,
-						      pixmap, orient);
+			drawer = create_drawer_applet (dr_pd->panel, tooltip,
+						       pixmap, orient);
 
-			drawer_widget_change_orient(DRAWER_WIDGET(dr_pd->panel),
-						    orient);
+			drawer_widget_change_orient
+				(DRAWER_WIDGET(dr_pd->panel), orient);
 		}
 	}
 
@@ -383,7 +451,8 @@ load_drawer_applet(int mypanel, char *pixmap, char *tooltip,
 	{
 		GtkWidget *dw = drawer->drawer;
 
-		if(!register_toy(drawer->button,drawer,
+		if(!register_toy(drawer->button,
+				 drawer, (GDestroyNotify)g_free,
 				 panel, pos, exactpos, APPLET_DRAWER)) {
 			/* by this time drawer has been freed as register_toy
 			   has destroyed drawer->button */
@@ -398,8 +467,8 @@ load_drawer_applet(int mypanel, char *pixmap, char *tooltip,
 				 drawer);
 
 	/* this doesn't make sense anymore */
-	if ((BASEP_WIDGET(drawer->drawer)->state == BASEP_SHOWN) &&
-	    (IS_BASEP_WIDGET (panel->panel_parent))) {
+	if((BASEP_WIDGET(drawer->drawer)->state == BASEP_SHOWN) &&
+	   (IS_BASEP_WIDGET (panel->panel_parent))) {
 		/*pop up, if popped down, if it's not an autohidden
 		  widget then it will just ignore this next call */
 		basep_widget_autoshow(BASEP_WIDGET(panel->panel_parent));

@@ -1,8 +1,8 @@
-<!DOCTYPE book PUBLIC "-//GNOME//DTD DocBook PNG Variant V1.1//EN" [
+<!DOCTYPE BOOK PUBLIC "-//OASIS//DTD DocBook V3.1//EN" [
 <!ENTITY GNOME-APPS SYSTEM "gnome-terminal.sgml">] >
 
 
-<Book id="index">
+<book id="index">
   <title>GNOME Terminal brugermanual.</title>
   <bookinfo>
     <authorgroup>
@@ -32,9 +32,9 @@
 
       <para>
 	Gnome-terminal understøtter farver (se sektionen om
-	miljø-variabler for detaljer) og har museunderstøttelse for 
-	applikationer som understøtter musehændelser for x-term lignende 
-	terminaler. </para>
+	<link linkend="environment">miljø</link>-variabler for 
+	detaljer) og har museunderstøttelse for applikationer som 
+	understøtter musehændelser for x-term lignende terminaler. </para>
     </sect1>
     
     <sect1 id="Emulation">
@@ -319,7 +319,8 @@
 	  udskrift på skærmen vil fjerne den viste markering, men
 	  det vil ikke medføre tab af indholdet på klipbordet.
 	</para>	
-      </sect2>
+   </sect2>
+
       <sect2 id="pointer-paste">
         <title>Lim inn tekst</title>
 	<para>
@@ -332,7 +333,8 @@
 	  sandsynligvis have en måde at emulere den midterste museknap på.
 	  Se i dokumentationen for X-tjeneren for mere information.
 	</para>
-      </sect2>
+   </sect2>
+
       <sect2 id="pointer-wheel">
         <title>Musehjul</title>
 	<para>
@@ -340,7 +342,8 @@
 	  4 og 5), så kan du bruge hjulet til at rulle op og ned i tilbage-
 	  rullingsbufferen.
 	</para>
-      </sect2>
+   </sect2>
+
       <sect2 id="pointer-menu">
         <title>Kontrollmenu</title>
 	<para>
@@ -353,7 +356,8 @@
 	  Ved at holde CTRL-tasten nede, kan højre museknap bruges
 	  til at vise denne menu.
 	</para>
-      </sect2>
+   </sect2>
+
       <sect2 id="pointer-dnd"
         <Title>Træk-og-slip</title>
 	<para>
@@ -575,7 +579,7 @@
       
     </sect1>
     
-    <sect1 id="enviroment">
+    <sect1 id="environment">
       <title>Miljø</title>
       <para>
 	Følgende variabler sættes af gnome-terminal: 
@@ -666,8 +670,8 @@ sgml-omittag:t
 sgml-shorttag:t
 sgml-minimize-attributes:nil
 sgml-always-quote-attributes:t
-sgml-indent-step:2
-sgml-indent-data:t
+sgml-indent-step:1
+sgml-indent-data:nil
 sgml-exposed-tags:nil
 sgml-local-catalogs:nil
 sgml-local-ecat-files:nil

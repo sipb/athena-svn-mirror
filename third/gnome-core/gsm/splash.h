@@ -20,6 +20,8 @@
 #ifndef SPLASH_H
 #define SPLASH_H
 
+#include "headers.h"
+
 BEGIN_GNOME_DECLS
 
 void start_splash (gfloat max);

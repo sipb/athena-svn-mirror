@@ -1,24 +1,32 @@
-panel = panel
-applets = applets
-idl = idl
-
-always_built_SUBDIRS = \
-	 gsm smproxy pixmaps desktop-links help-browser \
-	 gnome-terminal gmenu gnome-edit gnome-hint gnome-about
-
-sometimes_built_SUBDIRS = panel applets idl
-
-SUBDIRS = intl po macros \
-	 $(always_built_SUBDIRS) $(panel) $(applets) $(idl)
-
-#DIST_SUBDIRS = intl po macros $(always_built_SUBDIRS) \
-#	$(sometimes_built_SUBDIRS)
+SUBDIRS = \
+	 intl \
+	 po \
+	 macros \
+	 gsm \
+	 smproxy \
+	 pixmaps \
+	 desktop-links \
+	 help-browser \
+	 gnome-terminal \
+	 gmenu \
+	 gnome-edit \
+	 gnome-hint \
+	 gnome-about \
+	 core-docs \
+	 panel \
+	 applets \
+	 omf-install \
+	 idl
 
 EXTRA_DIST = \
 	gnome-core.spec.in	\
 	gnome-core.spec		\
+	COPYING-DOCS		\
 	applet-docs.make	\
-	app-docs.make
+	app-docs.make		\
+	xml-i18n-extract.in	\
+	xml-i18n-merge.in	\
+	xml-i18n-update.in
 
 ## to automatically rebuild aclocal.m4 if any of the macros in `macros/' change
 @MAINT@include macros/macros.dep

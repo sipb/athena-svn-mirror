@@ -22,8 +22,7 @@ _ORBIT_skel_help_browser_simple_browser_fetch_url
       _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
       if (giop_msg_conversion_needed(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer))) {
 	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	 
-	    (*((guint32 *) & (_ORBIT_tmpvar_3))) =
+	 (*((guint32 *) & (_ORBIT_tmpvar_3))) =
 	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
 	 _ORBIT_curptr += 4;
 	 URL = (void *) _ORBIT_curptr;
@@ -74,8 +73,7 @@ _ORBIT_skel_help_browser_simple_browser_show_url
       _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
       if (giop_msg_conversion_needed(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer))) {
 	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	 
-	    (*((guint32 *) & (_ORBIT_tmpvar_3))) =
+	 (*((guint32 *) & (_ORBIT_tmpvar_3))) =
 	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
 	 _ORBIT_curptr += 4;
 	 URL = (void *) _ORBIT_curptr;
@@ -157,10 +155,7 @@ POA_help_browser_simple_browser__init(PortableServer_Servant servant,
 {
    static const PortableServer_ClassInfo class_info =
       { (ORBit_impl_finder) & get_skel_help_browser_simple_browser,
-	 "IDL:help_browser/simple_browser:1.0",
-	 (ORBit_local_objref_init) &
-
-	 init_local_objref_help_browser_simple_browser };
+"IDL:help_browser/simple_browser:1.0", (ORBit_local_objref_init) & init_local_objref_help_browser_simple_browser };
    PortableServer_ServantBase__init(((PortableServer_ServantBase *) servant),
 				    env);
    ORBIT_OBJECT_KEY(((PortableServer_ServantBase *) servant)->_private)->

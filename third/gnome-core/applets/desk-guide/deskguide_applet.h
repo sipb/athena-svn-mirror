@@ -20,6 +20,7 @@
 #include "applet-widget.h"
 #include "gwmh.h"
 
+#define DESKGUIDE_VERSION	"0.4"
 
 #define DEFAULT_SIZE 38
 #define MAX_DESKTOPS 32

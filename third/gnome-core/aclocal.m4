@@ -340,6 +340,88 @@ AC_DEFUN([AM_ACLOCAL_INCLUDE],
 	for k in $1 ; do ACLOCAL="$ACLOCAL -I $k" ; done
 ])
 
+
+# serial 1 AC_PROG_XML_I18N_TOOLS
+AC_DEFUN(AC_PROG_XML_I18N_TOOLS,
+[
+
+dnl This is a hack - we use the expansion of AC_SUBST instead of
+dnl AC_SUBST itself to avoid automake putting 
+dnl XML_I18N_MERGE_OAF_RULE = @XML_I18N_MERGE_OAF_RULE@
+dnl in all the Makefile.in's
+XML_I18N_MERGE_OAF_RULE='\%.oaf : \%.oaf.in $(top_builddir)/xml-i18n-merge $(top_srcdir)/po/*.po\
+	$(top_builddir)/xml-i18n-merge -o $(top_srcdir)/po $< [$]*.oaf'
+AC_DIVERT_PUSH(AC_DIVERSION_SED)dnl
+s%@XML_I18N_MERGE_OAF_RULE@%[$]XML_I18N_MERGE_OAF_RULE%g
+AC_DIVERT_POP()dnl
+
+dnl same deal
+XML_I18N_MERGE_KEYS_RULE='\%.keys : \%.keys.in $(top_builddir)/xml-i18n-merge $(top_srcdir)/po/*.po\
+	$(top_builddir)/xml-i18n-merge -k $(top_srcdir)/po $< [$]*.keys'
+AC_DIVERT_PUSH(AC_DIVERSION_SED)dnl
+s%@XML_I18N_MERGE_KEYS_RULE@%[$]XML_I18N_MERGE_KEYS_RULE%g
+AC_DIVERT_POP()dnl
+
+dnl same deal
+XML_I18N_MERGE_DESKTOP_RULE='\%.desktop : \%.desktop.in $(top_builddir)/xml-i18n-merge $(top_srcdir)/po/*.po\
+	$(top_builddir)/xml-i18n-merge -d $(top_srcdir)/po $< [$]*.desktop'
+AC_DIVERT_PUSH(AC_DIVERSION_SED)dnl
+s%@XML_I18N_MERGE_DESKTOP_RULE@%[$]XML_I18N_MERGE_DESKTOP_RULE%g
+AC_DIVERT_POP()dnl
+
+dnl same deal
+XML_I18N_MERGE_DIRECTORY_RULE='\%.directory : \%.directory.in $(top_builddir)/xml-i18n-merge $(top_srcdir)/po/*.po\
+	$(top_builddir)/xml-i18n-merge -d $(top_srcdir)/po $< [$]*.directory'
+AC_DIVERT_PUSH(AC_DIVERSION_SED)dnl
+s%@XML_I18N_MERGE_DIRECTORY_RULE@%[$]XML_I18N_MERGE_DIRECTORY_RULE%g
+AC_DIVERT_POP()dnl
+
+# Always use our own xml-i18n-tools.
+XML_I18N_EXTRACT='$(top_builddir)/xml-i18n-extract'
+AC_SUBST(XML_I18N_EXTRACT)dnl
+
+XML_I18N_MERGE='$(top_builddir)/xml-i18n-merge'
+AC_SUBST(XML_I18N_MERGE)dnl
+
+XML_I18N_UPDATE='$(top_builddir)/xml-i18n-update'
+AC_SUBST(XML_I18N_UPDATE)dnl
+
+dnl same deal
+XML_I18N_MERGE_SOUNDLIST_RULE='\%.soundlist : \%.soundlist.in $(top_builddir)/xml-i18n-merge $(top_srcdir)/po/*.po\
+	$(top_builddir)/xml-i18n-merge -d $(top_srcdir)/po $< [$]*.soundlist'
+AC_DIVERT_PUSH(AC_DIVERSION_SED)dnl
+s%@XML_I18N_MERGE_SOUNDLIST_RULE@%[$]XML_I18N_MERGE_SOUNDLIST_RULE%g
+AC_DIVERT_POP()dnl
+
+AC_PATH_PROG(XML_I18N_TOOLS_PERL, perl)
+if test -z "$XML_I18N_TOOLS_PERL"; then
+   AC_MSG_ERROR([perl not found; required for xml-i18n-tools])
+fi
+if test -z "`$XML_I18N_TOOLS_PERL -v | fgrep '5.' 2> /dev/null`"; then
+   AC_MSG_ERROR([perl 5.x required for xml-i18n-tools])
+fi
+
+dnl  manually sed perl in so people don't have to put the xml-i18n-tools scripts in their 
+dnl  AC_OUTPUT
+AC_OUTPUT_COMMANDS([
+sed -e "s:@XML_I18N_TOOLS_PERL@:${XML_I18N_TOOLS_PERL}:;" < ${ac_given_srcdir}/xml-i18n-extract.in > xml-i18n-extract;
+chmod ugo+x xml-i18n-extract;
+
+sed -e "s:@XML_I18N_TOOLS_PERL@:${XML_I18N_TOOLS_PERL}:;" < ${ac_given_srcdir}/xml-i18n-merge.in > xml-i18n-merge;
+chmod ugo+x xml-i18n-merge;
+
+sed -e "s:@XML_I18N_TOOLS_PERL@:${XML_I18N_TOOLS_PERL}:;" < ${ac_given_srcdir}/xml-i18n-update.in > xml-i18n-update;
+chmod ugo+x xml-i18n-update;
+], XML_I18N_TOOLS_PERL=${XML_I18N_TOOLS_PERL})
+
+# Redirect the config.log output again, so that the ltconfig log is not
+# clobbered by the next message.
+exec 5>>./config.log
+])
+
+dnl old names
+AC_DEFUN(AM_PROG_XML_I18N_TOOLS, [indir([AC_PROG_XML_I18N_TOOLS])])dnl
+
 dnl
 dnl GNOME_INIT_HOOK (script-if-gnome-enabled, [failflag], [additional-inits])
 dnl
@@ -1380,6 +1462,8 @@ AC_DEFUN([GNOME_XML_HOOK],[
 			AC_MSG_ERROR(Could not find gnome-config)
 		fi
 	fi
+	GNOME_XML_CFLAGS=`$GNOME_CONFIG --cflags xml`
+	AC_SUBST(GNOME_XML_CFLAGS)
 	AC_CHECK_LIB(xml, xmlNewDoc, [
 		$1
 		GNOME_XML_LIB=`$GNOME_CONFIG --libs xml`
@@ -1409,7 +1493,7 @@ AC_DEFUN([GNOME_XML_CHECK], [
 
 # serial 5
 
-AC_DEFUN(AM_GNOME_WITH_NLS,
+AC_DEFUN([AM_GNOME_WITH_NLS],
   [AC_MSG_CHECKING([whether NLS is requested])
     dnl Default is enabled NLS
     AC_ARG_ENABLE(nls,
@@ -1422,7 +1506,7 @@ AC_DEFUN(AM_GNOME_WITH_NLS,
 
     dnl If we use NLS figure out what method
     if test "$USE_NLS" = "yes"; then
-      AC_DEFINE(ENABLE_NLS)
+#      AC_DEFINE(ENABLE_NLS)
 #      AC_MSG_CHECKING([whether included gettext is requested])
 #      AC_ARG_WITH(included-gettext,
 #        [  --with-included-gettext use the GNU gettext library included here],
@@ -1607,7 +1691,7 @@ AC_DEFUN(AM_GNOME_WITH_NLS,
     AC_SUBST(POSUB)
   ])
 
-AC_DEFUN(AM_GNOME_GETTEXT,
+AC_DEFUN([AM_GNOME_GETTEXT],
   [AC_REQUIRE([AC_PROG_MAKE_SET])dnl
    AC_REQUIRE([AC_PROG_CC])dnl
    AC_REQUIRE([AC_PROG_RANLIB])dnl

@@ -87,6 +87,9 @@ GNOME_INCLUDEDIR = @GNOME_INCLUDEDIR@
 GNOME_LIBDIR = @GNOME_LIBDIR@
 GNOME_LIBS = @GNOME_LIBS@
 GNOME_PRINT_PREFIX = @GNOME_PRINT_PREFIX@
+GNOME_TERMINAL_CFLAGS = @GNOME_TERMINAL_CFLAGS@
+GNOME_TERMINAL_LIBS = @GNOME_TERMINAL_LIBS@
+GNOME_XML_CFLAGS = @GNOME_XML_CFLAGS@
 GNOME_XML_LIB = @GNOME_XML_LIB@
 GNORBA_CFLAGS = @GNORBA_CFLAGS@
 GNORBA_LIBS = @GNORBA_LIBS@
@@ -120,6 +123,7 @@ ORBIT_LIBS = @ORBIT_LIBS@
 ORB_CFLAGS = @ORB_CFLAGS@
 ORB_LIBS = @ORB_LIBS@
 PACKAGE = @PACKAGE@
+PATH_TO_XRDB = @PATH_TO_XRDB@
 PIXBUF_CFLAGS = @PIXBUF_CFLAGS@
 PIXBUF_LIBS = @PIXBUF_LIBS@
 POFILES = @POFILES@
@@ -131,6 +135,10 @@ USE_INCLUDED_LIBINTL = @USE_INCLUDED_LIBINTL@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
 WINDOW_MANAGER = @WINDOW_MANAGER@
+XML_I18N_EXTRACT = @XML_I18N_EXTRACT@
+XML_I18N_MERGE = @XML_I18N_MERGE@
+XML_I18N_TOOLS_PERL = @XML_I18N_TOOLS_PERL@
+XML_I18N_UPDATE = @XML_I18N_UPDATE@
 XPM_LIBS = @XPM_LIBS@
 YACC = @YACC@
 ZVT_LIBS = @ZVT_LIBS@
@@ -139,17 +147,13 @@ cxxflags_set = @cxxflags_set@
 gnomelocaledir = @gnomelocaledir@
 l = @l@
 
-gnome_terminal_helpdir = $(datadir)/gnome/help/gnome-terminal/de
-
-gnome_terminal_help_DATA =  	index.html			topic.dat
-
-
-EXTRA_DIST = gnome-terminal.sgml topic.dat
+figs = 
+app = gnome-terminal
+lang = de
+omffiles = gnome-terminal-de.omf
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../../config.h
 CONFIG_CLEAN_FILES = 
-DATA =  $(gnome_terminal_help_DATA)
-
 DIST_COMMON =  Makefile.am Makefile.in
 
 
@@ -166,25 +170,6 @@ Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
 	cd $(top_builddir) \
 	  && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
-
-install-gnome_terminal_helpDATA: $(gnome_terminal_help_DATA)
-	@$(NORMAL_INSTALL)
-	$(mkinstalldirs) $(DESTDIR)$(gnome_terminal_helpdir)
-	@list='$(gnome_terminal_help_DATA)'; for p in $$list; do \
-	  if test -f $(srcdir)/$$p; then \
-	    echo " $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(gnome_terminal_helpdir)/$$p"; \
-	    $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(gnome_terminal_helpdir)/$$p; \
-	  else if test -f $$p; then \
-	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(gnome_terminal_helpdir)/$$p"; \
-	    $(INSTALL_DATA) $$p $(DESTDIR)$(gnome_terminal_helpdir)/$$p; \
-	  fi; fi; \
-	done
-
-uninstall-gnome_terminal_helpDATA:
-	@$(NORMAL_UNINSTALL)
-	list='$(gnome_terminal_help_DATA)'; for p in $$list; do \
-	  rm -f $(DESTDIR)$(gnome_terminal_helpdir)/$$p; \
-	done
 tags: TAGS
 TAGS:
 
@@ -216,20 +201,19 @@ installcheck: installcheck-am
 install-exec-am:
 install-exec: install-exec-am
 
-install-data-am: install-gnome_terminal_helpDATA install-data-local
+install-data-am:
 install-data: install-data-am
 
 install-am: all-am
 	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
 install: install-am
-uninstall-am: uninstall-gnome_terminal_helpDATA
+uninstall-am:
 uninstall: uninstall-am
-all-am: Makefile $(DATA)
+all-am: Makefile
 all-redirect: all-am
 install-strip:
 	$(MAKE) $(AM_MAKEFLAGS) AM_INSTALL_PROGRAM_FLAGS=-s install
 installdirs:
-	$(mkinstalldirs)  $(DESTDIR)$(gnome_terminal_helpdir)
 
 
 mostlyclean-generic:
@@ -260,42 +244,15 @@ maintainer-clean-am:  maintainer-clean-generic distclean-am
 
 maintainer-clean: maintainer-clean-am
 
-.PHONY: uninstall-gnome_terminal_helpDATA \
-install-gnome_terminal_helpDATA tags distdir info-am info dvi-am dvi \
-check check-am installcheck-am installcheck install-exec-am \
-install-exec install-data-local install-data-am install-data install-am \
-install uninstall-am uninstall all-redirect all-am all installdirs \
-mostlyclean-generic distclean-generic clean-generic \
-maintainer-clean-generic clean mostlyclean distclean maintainer-clean
+.PHONY: tags distdir info-am info dvi-am dvi check check-am \
+installcheck-am installcheck install-exec-am install-exec \
+install-data-am install-data install-am install uninstall-am uninstall \
+all-redirect all-am all installdirs mostlyclean-generic \
+distclean-generic clean-generic maintainer-clean-generic clean \
+mostlyclean distclean maintainer-clean
 
-
-all: index.html
-
-index.html: gnome-terminal/index.html
-	-cp gnome-terminal/index.html .
-
-# the wierd srcdir trick is because the db2html from the Cygnus RPMs
-# cannot handle relative filenames
-gnome-terminal/index.html: $(srcdir)/gnome-terminal.sgml
-	-srcdir=`cd $(srcdir) && pwd`; \
-	db2html $$srcdir/gnome-terminal.sgml
-
-dist-hook: index.html
-	mkdir $(distdir)/gnome-terminal
-	-cp gnome-terminal/*.html $(distdir)/gnome-terminal
-	-cp gnome-terminal/*.css $(distdir)/gnome-terminal
-
-install-data-local: index.html
-	-for file in $(srcdir)/gnome-terminal/*.html $(srcdir)/gnome-terminal/*.css; do \
-	  basefile=`echo $$file | sed -e 's,^.*/,,'`; \
-	  $(INSTALL_DATA) $$file $(DESTDIR)$(gnome_terminal_helpdir)/$$basefile; \
-	done
-
-gnome-terminal.ps: gnome-terminal.sgml
-	-db2ps $<
-
-gnome-terminal.rtf: gnome-terminal.sgml
-	-db2rtf $<
+include $(top_srcdir)/app-docs.make
+dist-hook: app-dist-hook
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

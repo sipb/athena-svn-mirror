@@ -87,6 +87,9 @@ GNOME_INCLUDEDIR = @GNOME_INCLUDEDIR@
 GNOME_LIBDIR = @GNOME_LIBDIR@
 GNOME_LIBS = @GNOME_LIBS@
 GNOME_PRINT_PREFIX = @GNOME_PRINT_PREFIX@
+GNOME_TERMINAL_CFLAGS = @GNOME_TERMINAL_CFLAGS@
+GNOME_TERMINAL_LIBS = @GNOME_TERMINAL_LIBS@
+GNOME_XML_CFLAGS = @GNOME_XML_CFLAGS@
 GNOME_XML_LIB = @GNOME_XML_LIB@
 GNORBA_CFLAGS = @GNORBA_CFLAGS@
 GNORBA_LIBS = @GNORBA_LIBS@
@@ -120,6 +123,7 @@ ORBIT_LIBS = @ORBIT_LIBS@
 ORB_CFLAGS = @ORB_CFLAGS@
 ORB_LIBS = @ORB_LIBS@
 PACKAGE = @PACKAGE@
+PATH_TO_XRDB = @PATH_TO_XRDB@
 PIXBUF_CFLAGS = @PIXBUF_CFLAGS@
 PIXBUF_LIBS = @PIXBUF_LIBS@
 POFILES = @POFILES@
@@ -131,6 +135,10 @@ USE_INCLUDED_LIBINTL = @USE_INCLUDED_LIBINTL@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
 WINDOW_MANAGER = @WINDOW_MANAGER@
+XML_I18N_EXTRACT = @XML_I18N_EXTRACT@
+XML_I18N_MERGE = @XML_I18N_MERGE@
+XML_I18N_TOOLS_PERL = @XML_I18N_TOOLS_PERL@
+XML_I18N_UPDATE = @XML_I18N_UPDATE@
 XPM_LIBS = @XPM_LIBS@
 YACC = @YACC@
 ZVT_LIBS = @ZVT_LIBS@
@@ -168,13 +176,13 @@ ORBIT_HELP_BROWSER_SOURCES = $(ORBIT_HELP_COMMON_SOURCES) 			      help-browser-
 ORBIT_HELP_CLIENT_SOURCES = $(ORBIT_HELP_COMMON_SOURCES) 			      help-browser-stubs.c
 
 
-ORBIT_GENERATED_SOURCES = $(ORBIT_HELP_COMMON_SOURCES) 		               help-browser-skels.c help-browser-stubs.c
+ORBIT_GENERATED_SOURCEFILES = $(ORBIT_HELP_COMMON_SOURCES) 		               help-browser-skels.c help-browser-stubs.c
 
 
-MAINTAINERCLEANFILES = $(ORBIT_GENERATED_SOURCES)
-CLEANFILES = $(ORBIT_GENERATED_SOURCES) my_help_browser_idl
+MAINTAINERCLEANFILES = $(ORBIT_GENERATED_SOURCEFILES)
+CLEANFILES = $(ORBIT_GENERATED_SOURCEFILES) my_help_browser_idl
 
-BUILT_SOURCES = $(ORBIT_GENERATED_SOURCES)
+BUILT_SOURCES = $(ORBIT_GENERATED_SOURCEFILES)
 
 gnome_help_browser_LDADD = $(LDADD) $(htmllibs) $(BZ_LIBS)
 
@@ -461,6 +469,40 @@ distdir: $(DISTFILES)
 	      || exit 1; \
 	  fi; \
 	done
+HTParse.o: HTParse.c HTParse.h
+bookmarks.o: bookmarks.c ../config.h bookmarks.h
+cache.o: cache.c cache.h
+docobj.o: docobj.c docobj.h parseUrl.h transport.h cache.h
+gnome-help-browser.o: gnome-help-browser.c ../config.h window.h queue.h \
+	history.h bookmarks.h cache.h toc2.h help-browser.h
+gnome-helpwin.o: gnome-helpwin.c ../config.h gnome-helpwin.h
+help-browser-common.o: help-browser-common.c help-browser.h
+help-browser-impl.o: help-browser-impl.c help-browser.h window.h queue.h \
+	history.h bookmarks.h cache.h toc2.h
+help-browser-skels.o: help-browser-skels.c help-browser.h
+help-browser-stubs.o: help-browser-stubs.c help-browser.h
+help-caller.o: help-caller.c ../config.h help-browser.h
+history.o: history.c ../config.h history.h
+htmlurl.o: htmlurl.c htmlurl.h
+magic.o: magic.c magic.h docobj.h parseUrl.h toc2.h misc.h
+mime.o: mime.c ../config.h docobj.h parseUrl.h mime.h misc.h \
+	gnome-helpwin.h
+misc.o: misc.c ../config.h misc.h
+parseUrl.o: parseUrl.c ../config.h HTParse.h parseUrl.h
+queue.o: queue.c queue.h
+toc2-ghelp.o: toc2-ghelp.c toc2.h toc2-ghelp.h
+toc2-info.o: toc2-info.c misc.h toc2-info.h toc2.h
+toc2-man.o: toc2-man.c ../config.h toc2.h toc2-man.h
+toc2.o: toc2.c ../config.h gnome-helpwin.h toc2.h toc2-man.h \
+	toc2-ghelp.h toc2-info.h
+transport.o: transport.c transport.h docobj.h parseUrl.h cache.h misc.h \
+	gnome-helpwin.h
+visit.o: visit.c ../config.h parseUrl.h docobj.h window.h queue.h \
+	history.h bookmarks.h cache.h toc2.h magic.h mime.h transport.h \
+	visit.h
+window.o: window.c ../config.h gnome-helpwin.h parseUrl.h window.h \
+	queue.h history.h bookmarks.h cache.h toc2.h transport.h \
+	docobj.h visit.h misc.h contents.xpm
 
 info-am:
 info: info-recursive
@@ -549,7 +591,7 @@ distclean-generic clean-generic maintainer-clean-generic clean \
 mostlyclean distclean maintainer-clean
 
 
-$(ORBIT_GENERATED_SOURCES): my_help_browser_idl
+$(ORBIT_GENERATED_SOURCEFILES): my_help_browser_idl
 
 my_help_browser_idl: $(top_srcdir)/idl/help-browser.idl $(ORBIT_IDL)
 	$(ORBIT_IDL) $<

@@ -84,12 +84,12 @@ gwm_thumb_nails_set_active (gboolean thumb_nails_enabled)
 }
 
 GwmThumbNail*
-gwm_thumb_nail_new (guint          default_color,
-		    guint          width,
-		    guint          height,
-		    glong          grow_request_id,
-		    gpointer       user_data,
-		    GDestroyNotify dtor)
+gwm_thumb_nail_new (guint               default_color,
+		    guint               width,
+		    guint               height,
+		    glong               grow_request_id,
+		    gpointer            user_data,
+		    GwmThumbNailDestroy dtor)
 {
   GwmThumbNail *nail;
 
@@ -113,7 +113,7 @@ gwm_thumb_nail_new (guint          default_color,
 void
 gwm_thumb_nail_destroy (GwmThumbNail *nail)
 {
-  GDestroyNotify dtor;
+  GwmThumbNailDestroy dtor;
   ThumbSize *node;
 
   g_return_if_fail (nail != NULL);
@@ -134,7 +134,7 @@ gwm_thumb_nail_destroy (GwmThumbNail *nail)
       node = next;
     }
   nail->size_list = NULL;
-  dtor (nail->user_data);
+  dtor (nail->user_data, nail);
   g_free (nail);
 }
 

@@ -35,13 +35,11 @@ _ORBIT_skel_GNOME_Panel_add_applet(POA_GNOME_Panel * _ORBIT_servant,
 	 GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur = _ORBIT_curptr;
 	 panel_applet =
 	    ORBit_demarshal_object(_ORBIT_recv_buffer,
-				   (((ORBit_ObjectKey
-				      *) _ORBIT_servant->_private)->object->
-				    orb));
+				   (((ORBit_ObjectKey *) _ORBIT_servant->
+				     _private)->object->orb));
 	 _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
 	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	 
-	    (*((guint32 *) & (_ORBIT_tmpvar_11))) =
+	 (*((guint32 *) & (_ORBIT_tmpvar_11))) =
 	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
 	 _ORBIT_curptr += 4;
 	 goad_id = (void *) _ORBIT_curptr;
@@ -51,9 +49,8 @@ _ORBIT_skel_GNOME_Panel_add_applet(POA_GNOME_Panel * _ORBIT_servant,
 	 GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur = _ORBIT_curptr;
 	 panel_applet =
 	    ORBit_demarshal_object(_ORBIT_recv_buffer,
-				   (((ORBit_ObjectKey
-				      *) _ORBIT_servant->_private)->object->
-				    orb));
+				   (((ORBit_ObjectKey *) _ORBIT_servant->
+				     _private)->object->orb));
 	 _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
 	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
 	 _ORBIT_tmpvar_11 = *((CORBA_unsigned_long *) _ORBIT_curptr);
@@ -172,31 +169,28 @@ _ORBIT_skel_GNOME_Panel_add_applet_full(POA_GNOME_Panel * _ORBIT_servant,
 	 GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur = _ORBIT_curptr;
 	 panel_applet =
 	    ORBit_demarshal_object(_ORBIT_recv_buffer,
-				   (((ORBit_ObjectKey
-				      *) _ORBIT_servant->_private)->object->
-				    orb));
+				   (((ORBit_ObjectKey *) _ORBIT_servant->
+				     _private)->object->orb));
 	 _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
 	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	 
-	    (*((guint32 *) & (_ORBIT_tmpvar_11))) =
+	 (*((guint32 *) & (_ORBIT_tmpvar_11))) =
 	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
 	 _ORBIT_curptr += 4;
 	 goad_id = (void *) _ORBIT_curptr;
 	 _ORBIT_curptr +=
 	    sizeof(goad_id[_ORBIT_tmpvar_10]) * _ORBIT_tmpvar_11;
 	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 2);
-	 
-	    (*((guint16 *) & (panel))) =
+	 (*((guint16 *) & (panel))) =
 	    GUINT16_SWAP_LE_BE(*((guint16 *) _ORBIT_curptr));
-	    _ORBIT_curptr += 2;
+	 _ORBIT_curptr += 2;
 	 (*((guint16 *) & (pos))) =
-	    GUINT16_SWAP_LE_BE(*((guint16 *) _ORBIT_curptr));} else {
+	    GUINT16_SWAP_LE_BE(*((guint16 *) _ORBIT_curptr));
+      } else {
 	 GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur = _ORBIT_curptr;
 	 panel_applet =
 	    ORBit_demarshal_object(_ORBIT_recv_buffer,
-				   (((ORBit_ObjectKey
-				      *) _ORBIT_servant->_private)->object->
-				    orb));
+				   (((ORBit_ObjectKey *) _ORBIT_servant->
+				     _private)->object->orb));
 	 _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
 	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
 	 _ORBIT_tmpvar_11 = *((CORBA_unsigned_long *) _ORBIT_curptr);
@@ -395,6 +389,557 @@ _ORBIT_skel_GNOME_Panel_notice_config_changes(POA_GNOME_Panel *
 }
 
 void
+_ORBIT_skel_GNOME_Panel2_suggest_sync(POA_GNOME_Panel2 * _ORBIT_servant,
+				      GIOPRecvBuffer * _ORBIT_recv_buffer,
+				      CORBA_Environment * ev,
+				      void (*_impl_suggest_sync)
+				      (PortableServer_Servant _servant,
+				       CORBA_Environment * ev))
+{
+   _impl_suggest_sync(_ORBIT_servant, ev);
+}
+
+void
+_ORBIT_skel_GNOME_Panel2_add_launcher(POA_GNOME_Panel2 * _ORBIT_servant,
+				      GIOPRecvBuffer * _ORBIT_recv_buffer,
+				      CORBA_Environment * ev,
+				      void (*_impl_add_launcher)
+				      (PortableServer_Servant _servant,
+				       const CORBA_char * launcher_desktop,
+				       const CORBA_short panel,
+				       const CORBA_short pos,
+				       CORBA_Environment * ev))
+{
+   CORBA_char *launcher_desktop;
+   CORBA_short panel;
+   CORBA_short pos;
+
+   {				/* demarshalling */
+      guchar *_ORBIT_curptr;
+      register CORBA_unsigned_long _ORBIT_tmpvar_2;
+      CORBA_unsigned_long _ORBIT_tmpvar_3;
+
+      _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
+      if (giop_msg_conversion_needed(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer))) {
+	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	 (*((guint32 *) & (_ORBIT_tmpvar_3))) =
+	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
+	 _ORBIT_curptr += 4;
+	 launcher_desktop = (void *) _ORBIT_curptr;
+	 _ORBIT_curptr +=
+	    sizeof(launcher_desktop[_ORBIT_tmpvar_2]) * _ORBIT_tmpvar_3;
+	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 2);
+	 (*((guint16 *) & (panel))) =
+	    GUINT16_SWAP_LE_BE(*((guint16 *) _ORBIT_curptr));
+	 _ORBIT_curptr += 2;
+	 (*((guint16 *) & (pos))) =
+	    GUINT16_SWAP_LE_BE(*((guint16 *) _ORBIT_curptr));
+      } else {
+	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	 _ORBIT_tmpvar_3 = *((CORBA_unsigned_long *) _ORBIT_curptr);
+	 _ORBIT_curptr += 4;
+	 launcher_desktop = (void *) _ORBIT_curptr;
+	 _ORBIT_curptr +=
+	    sizeof(launcher_desktop[_ORBIT_tmpvar_2]) * _ORBIT_tmpvar_3;
+	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 2);
+	 panel = *((CORBA_short *) _ORBIT_curptr);
+	 _ORBIT_curptr += 2;
+	 pos = *((CORBA_short *) _ORBIT_curptr);
+      }
+   }
+   _impl_add_launcher(_ORBIT_servant, launcher_desktop, panel, pos, ev);
+}
+
+void
+_ORBIT_skel_GNOME_Panel2_ask_about_launcher(POA_GNOME_Panel2 * _ORBIT_servant,
+					    GIOPRecvBuffer *
+					    _ORBIT_recv_buffer,
+					    CORBA_Environment * ev,
+					    void (*_impl_ask_about_launcher)
+					    (PortableServer_Servant _servant,
+					     const CORBA_char * exec_string,
+					     const CORBA_short panel,
+					     const CORBA_short pos,
+					     CORBA_Environment * ev))
+{
+   CORBA_char *exec_string;
+   CORBA_short panel;
+   CORBA_short pos;
+
+   {				/* demarshalling */
+      guchar *_ORBIT_curptr;
+      register CORBA_unsigned_long _ORBIT_tmpvar_2;
+      CORBA_unsigned_long _ORBIT_tmpvar_3;
+
+      _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
+      if (giop_msg_conversion_needed(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer))) {
+	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	 (*((guint32 *) & (_ORBIT_tmpvar_3))) =
+	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
+	 _ORBIT_curptr += 4;
+	 exec_string = (void *) _ORBIT_curptr;
+	 _ORBIT_curptr +=
+	    sizeof(exec_string[_ORBIT_tmpvar_2]) * _ORBIT_tmpvar_3;
+	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 2);
+	 (*((guint16 *) & (panel))) =
+	    GUINT16_SWAP_LE_BE(*((guint16 *) _ORBIT_curptr));
+	 _ORBIT_curptr += 2;
+	 (*((guint16 *) & (pos))) =
+	    GUINT16_SWAP_LE_BE(*((guint16 *) _ORBIT_curptr));
+      } else {
+	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	 _ORBIT_tmpvar_3 = *((CORBA_unsigned_long *) _ORBIT_curptr);
+	 _ORBIT_curptr += 4;
+	 exec_string = (void *) _ORBIT_curptr;
+	 _ORBIT_curptr +=
+	    sizeof(exec_string[_ORBIT_tmpvar_2]) * _ORBIT_tmpvar_3;
+	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 2);
+	 panel = *((CORBA_short *) _ORBIT_curptr);
+	 _ORBIT_curptr += 2;
+	 pos = *((CORBA_short *) _ORBIT_curptr);
+      }
+   }
+   _impl_ask_about_launcher(_ORBIT_servant, exec_string, panel, pos, ev);
+}
+
+void
+_ORBIT_skel_GNOME_Panel2_add_launcher_from_info(POA_GNOME_Panel2 *
+						_ORBIT_servant,
+						GIOPRecvBuffer *
+						_ORBIT_recv_buffer,
+						CORBA_Environment * ev,
+						void
+						(*_impl_add_launcher_from_info)
+						(PortableServer_Servant
+						 _servant,
+						 const CORBA_char * name,
+						 const CORBA_char * comment,
+						 const CORBA_char * exec,
+						 const CORBA_char * icon,
+						 const CORBA_short panel,
+						 const CORBA_short pos,
+						 CORBA_Environment * ev))
+{
+   CORBA_char *name;
+   CORBA_char *comment;
+   CORBA_char *exec;
+   CORBA_char *icon;
+   CORBA_short panel;
+   CORBA_short pos;
+
+   {				/* demarshalling */
+      guchar *_ORBIT_curptr;
+      register CORBA_unsigned_long _ORBIT_tmpvar_8;
+      CORBA_unsigned_long _ORBIT_tmpvar_9;
+      register CORBA_unsigned_long _ORBIT_tmpvar_10;
+      CORBA_unsigned_long _ORBIT_tmpvar_11;
+      register CORBA_unsigned_long _ORBIT_tmpvar_12;
+      CORBA_unsigned_long _ORBIT_tmpvar_13;
+      register CORBA_unsigned_long _ORBIT_tmpvar_14;
+      CORBA_unsigned_long _ORBIT_tmpvar_15;
+
+      _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
+      if (giop_msg_conversion_needed(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer))) {
+	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	 (*((guint32 *) & (_ORBIT_tmpvar_9))) =
+	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
+	 _ORBIT_curptr += 4;
+	 name = (void *) _ORBIT_curptr;
+	 _ORBIT_curptr += sizeof(name[_ORBIT_tmpvar_8]) * _ORBIT_tmpvar_9;
+	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	 (*((guint32 *) & (_ORBIT_tmpvar_11))) =
+	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
+	 _ORBIT_curptr += 4;
+	 comment = (void *) _ORBIT_curptr;
+	 _ORBIT_curptr +=
+	    sizeof(comment[_ORBIT_tmpvar_10]) * _ORBIT_tmpvar_11;
+	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	 (*((guint32 *) & (_ORBIT_tmpvar_13))) =
+	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
+	 _ORBIT_curptr += 4;
+	 exec = (void *) _ORBIT_curptr;
+	 _ORBIT_curptr += sizeof(exec[_ORBIT_tmpvar_12]) * _ORBIT_tmpvar_13;
+	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	 (*((guint32 *) & (_ORBIT_tmpvar_15))) =
+	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
+	 _ORBIT_curptr += 4;
+	 icon = (void *) _ORBIT_curptr;
+	 _ORBIT_curptr += sizeof(icon[_ORBIT_tmpvar_14]) * _ORBIT_tmpvar_15;
+	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 2);
+	 (*((guint16 *) & (panel))) =
+	    GUINT16_SWAP_LE_BE(*((guint16 *) _ORBIT_curptr));
+	 _ORBIT_curptr += 2;
+	 (*((guint16 *) & (pos))) =
+	    GUINT16_SWAP_LE_BE(*((guint16 *) _ORBIT_curptr));
+      } else {
+	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	 _ORBIT_tmpvar_9 = *((CORBA_unsigned_long *) _ORBIT_curptr);
+	 _ORBIT_curptr += 4;
+	 name = (void *) _ORBIT_curptr;
+	 _ORBIT_curptr += sizeof(name[_ORBIT_tmpvar_8]) * _ORBIT_tmpvar_9;
+	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	 _ORBIT_tmpvar_11 = *((CORBA_unsigned_long *) _ORBIT_curptr);
+	 _ORBIT_curptr += 4;
+	 comment = (void *) _ORBIT_curptr;
+	 _ORBIT_curptr +=
+	    sizeof(comment[_ORBIT_tmpvar_10]) * _ORBIT_tmpvar_11;
+	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	 _ORBIT_tmpvar_13 = *((CORBA_unsigned_long *) _ORBIT_curptr);
+	 _ORBIT_curptr += 4;
+	 exec = (void *) _ORBIT_curptr;
+	 _ORBIT_curptr += sizeof(exec[_ORBIT_tmpvar_12]) * _ORBIT_tmpvar_13;
+	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	 _ORBIT_tmpvar_15 = *((CORBA_unsigned_long *) _ORBIT_curptr);
+	 _ORBIT_curptr += 4;
+	 icon = (void *) _ORBIT_curptr;
+	 _ORBIT_curptr += sizeof(icon[_ORBIT_tmpvar_14]) * _ORBIT_tmpvar_15;
+	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 2);
+	 panel = *((CORBA_short *) _ORBIT_curptr);
+	 _ORBIT_curptr += 2;
+	 pos = *((CORBA_short *) _ORBIT_curptr);
+      }
+   }
+   _impl_add_launcher_from_info(_ORBIT_servant, name, comment, exec, icon,
+				panel, pos, ev);
+}
+
+void
+_ORBIT_skel_GNOME_Panel2_add_launcher_from_info_url(POA_GNOME_Panel2 *
+						    _ORBIT_servant,
+						    GIOPRecvBuffer *
+						    _ORBIT_recv_buffer,
+						    CORBA_Environment * ev,
+						    void
+						    (*_impl_add_launcher_from_info_url)
+						    (PortableServer_Servant
+						     _servant,
+						     const CORBA_char * name,
+						     const CORBA_char *
+						     comment,
+						     const CORBA_char * url,
+						     const CORBA_char * icon,
+						     const CORBA_short panel,
+						     const CORBA_short pos,
+						     CORBA_Environment * ev))
+{
+   CORBA_char *name;
+   CORBA_char *comment;
+   CORBA_char *url;
+   CORBA_char *icon;
+   CORBA_short panel;
+   CORBA_short pos;
+
+   {				/* demarshalling */
+      guchar *_ORBIT_curptr;
+      register CORBA_unsigned_long _ORBIT_tmpvar_8;
+      CORBA_unsigned_long _ORBIT_tmpvar_9;
+      register CORBA_unsigned_long _ORBIT_tmpvar_10;
+      CORBA_unsigned_long _ORBIT_tmpvar_11;
+      register CORBA_unsigned_long _ORBIT_tmpvar_12;
+      CORBA_unsigned_long _ORBIT_tmpvar_13;
+      register CORBA_unsigned_long _ORBIT_tmpvar_14;
+      CORBA_unsigned_long _ORBIT_tmpvar_15;
+
+      _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
+      if (giop_msg_conversion_needed(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer))) {
+	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	 (*((guint32 *) & (_ORBIT_tmpvar_9))) =
+	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
+	 _ORBIT_curptr += 4;
+	 name = (void *) _ORBIT_curptr;
+	 _ORBIT_curptr += sizeof(name[_ORBIT_tmpvar_8]) * _ORBIT_tmpvar_9;
+	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	 (*((guint32 *) & (_ORBIT_tmpvar_11))) =
+	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
+	 _ORBIT_curptr += 4;
+	 comment = (void *) _ORBIT_curptr;
+	 _ORBIT_curptr +=
+	    sizeof(comment[_ORBIT_tmpvar_10]) * _ORBIT_tmpvar_11;
+	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	 (*((guint32 *) & (_ORBIT_tmpvar_13))) =
+	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
+	 _ORBIT_curptr += 4;
+	 url = (void *) _ORBIT_curptr;
+	 _ORBIT_curptr += sizeof(url[_ORBIT_tmpvar_12]) * _ORBIT_tmpvar_13;
+	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	 (*((guint32 *) & (_ORBIT_tmpvar_15))) =
+	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
+	 _ORBIT_curptr += 4;
+	 icon = (void *) _ORBIT_curptr;
+	 _ORBIT_curptr += sizeof(icon[_ORBIT_tmpvar_14]) * _ORBIT_tmpvar_15;
+	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 2);
+	 (*((guint16 *) & (panel))) =
+	    GUINT16_SWAP_LE_BE(*((guint16 *) _ORBIT_curptr));
+	 _ORBIT_curptr += 2;
+	 (*((guint16 *) & (pos))) =
+	    GUINT16_SWAP_LE_BE(*((guint16 *) _ORBIT_curptr));
+      } else {
+	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	 _ORBIT_tmpvar_9 = *((CORBA_unsigned_long *) _ORBIT_curptr);
+	 _ORBIT_curptr += 4;
+	 name = (void *) _ORBIT_curptr;
+	 _ORBIT_curptr += sizeof(name[_ORBIT_tmpvar_8]) * _ORBIT_tmpvar_9;
+	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	 _ORBIT_tmpvar_11 = *((CORBA_unsigned_long *) _ORBIT_curptr);
+	 _ORBIT_curptr += 4;
+	 comment = (void *) _ORBIT_curptr;
+	 _ORBIT_curptr +=
+	    sizeof(comment[_ORBIT_tmpvar_10]) * _ORBIT_tmpvar_11;
+	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	 _ORBIT_tmpvar_13 = *((CORBA_unsigned_long *) _ORBIT_curptr);
+	 _ORBIT_curptr += 4;
+	 url = (void *) _ORBIT_curptr;
+	 _ORBIT_curptr += sizeof(url[_ORBIT_tmpvar_12]) * _ORBIT_tmpvar_13;
+	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	 _ORBIT_tmpvar_15 = *((CORBA_unsigned_long *) _ORBIT_curptr);
+	 _ORBIT_curptr += 4;
+	 icon = (void *) _ORBIT_curptr;
+	 _ORBIT_curptr += sizeof(icon[_ORBIT_tmpvar_14]) * _ORBIT_tmpvar_15;
+	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 2);
+	 panel = *((CORBA_short *) _ORBIT_curptr);
+	 _ORBIT_curptr += 2;
+	 pos = *((CORBA_short *) _ORBIT_curptr);
+      }
+   }
+   _impl_add_launcher_from_info_url(_ORBIT_servant, name, comment, url, icon,
+				    panel, pos, ev);
+}
+
+void
+_ORBIT_skel_GNOME_Panel2_run_box(POA_GNOME_Panel2 * _ORBIT_servant,
+				 GIOPRecvBuffer * _ORBIT_recv_buffer,
+				 CORBA_Environment * ev,
+				 void (*_impl_run_box) (PortableServer_Servant
+							_servant,
+							const CORBA_char *
+							initial_string,
+							CORBA_Environment *
+							ev))
+{
+   CORBA_char *initial_string;
+
+   {				/* demarshalling */
+      guchar *_ORBIT_curptr;
+      register CORBA_unsigned_long _ORBIT_tmpvar_2;
+      CORBA_unsigned_long _ORBIT_tmpvar_3;
+
+      _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
+      if (giop_msg_conversion_needed(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer))) {
+	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	 (*((guint32 *) & (_ORBIT_tmpvar_3))) =
+	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
+	 _ORBIT_curptr += 4;
+	 initial_string = (void *) _ORBIT_curptr;
+	 _ORBIT_curptr +=
+	    sizeof(initial_string[_ORBIT_tmpvar_2]) * _ORBIT_tmpvar_3;
+      } else {
+	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	 _ORBIT_tmpvar_3 = *((CORBA_unsigned_long *) _ORBIT_curptr);
+	 _ORBIT_curptr += 4;
+	 initial_string = (void *) _ORBIT_curptr;
+	 _ORBIT_curptr +=
+	    sizeof(initial_string[_ORBIT_tmpvar_2]) * _ORBIT_tmpvar_3;
+      }
+   }
+   _impl_run_box(_ORBIT_servant, initial_string, ev);
+}
+
+void
+_ORBIT_skel_GNOME_Panel2_main_menu(POA_GNOME_Panel2 * _ORBIT_servant,
+				   GIOPRecvBuffer * _ORBIT_recv_buffer,
+				   CORBA_Environment * ev,
+				   void (*_impl_main_menu)
+				   (PortableServer_Servant _servant,
+				    CORBA_Environment * ev))
+{
+   _impl_main_menu(_ORBIT_servant, ev);
+}
+
+void
+_ORBIT_skel_GNOME_Panel2_launch_an_applet(POA_GNOME_Panel2 * _ORBIT_servant,
+					  GIOPRecvBuffer * _ORBIT_recv_buffer,
+					  CORBA_Environment * ev,
+					  void (*_impl_launch_an_applet)
+					  (PortableServer_Servant _servant,
+					   const CORBA_char * goad_id,
+					   const GNOME_PanelAppletBooter
+					   booter, CORBA_Environment * ev))
+{
+   CORBA_char *goad_id;
+   GNOME_PanelAppletBooter booter;
+
+   {				/* demarshalling */
+      guchar *_ORBIT_curptr;
+      register CORBA_unsigned_long _ORBIT_tmpvar_2;
+      CORBA_unsigned_long _ORBIT_tmpvar_3;
+
+      _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
+      if (giop_msg_conversion_needed(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer))) {
+	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	 (*((guint32 *) & (_ORBIT_tmpvar_3))) =
+	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
+	 _ORBIT_curptr += 4;
+	 goad_id = (void *) _ORBIT_curptr;
+	 _ORBIT_curptr += sizeof(goad_id[_ORBIT_tmpvar_2]) * _ORBIT_tmpvar_3;
+	 GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur = _ORBIT_curptr;
+	 booter =
+	    ORBit_demarshal_object(_ORBIT_recv_buffer,
+				   (((ORBit_ObjectKey *) _ORBIT_servant->
+				     _private)->object->orb));
+	 _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
+      } else {
+	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	 _ORBIT_tmpvar_3 = *((CORBA_unsigned_long *) _ORBIT_curptr);
+	 _ORBIT_curptr += 4;
+	 goad_id = (void *) _ORBIT_curptr;
+	 _ORBIT_curptr += sizeof(goad_id[_ORBIT_tmpvar_2]) * _ORBIT_tmpvar_3;
+	 GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur = _ORBIT_curptr;
+	 booter =
+	    ORBit_demarshal_object(_ORBIT_recv_buffer,
+				   (((ORBit_ObjectKey *) _ORBIT_servant->
+				     _private)->object->orb));
+	 _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
+      }
+   }
+   _impl_launch_an_applet(_ORBIT_servant, goad_id, booter, ev);
+   CORBA_Object_release(booter, ev);
+}
+
+void
+_ORBIT_skel_GNOME_PanelAppletBooter_add_applet(POA_GNOME_PanelAppletBooter *
+					       _ORBIT_servant,
+					       GIOPRecvBuffer *
+					       _ORBIT_recv_buffer,
+					       CORBA_Environment * ev,
+					       GNOME_PanelSpot
+					       (*_impl_add_applet)
+					       (PortableServer_Servant
+						_servant,
+						const GNOME_Applet
+						panel_applet,
+						const CORBA_char * goad_id,
+						CORBA_char ** cfgpath,
+						CORBA_char ** globcfgpath,
+						CORBA_unsigned_long * winid,
+						CORBA_Environment * ev))
+{
+   GNOME_PanelSpot _ORBIT_retval;
+   GNOME_Applet panel_applet;
+   CORBA_char *goad_id;
+   CORBA_char *cfgpath;
+   CORBA_char *globcfgpath;
+   CORBA_unsigned_long winid;
+
+   {				/* demarshalling */
+      guchar *_ORBIT_curptr;
+      register CORBA_unsigned_long _ORBIT_tmpvar_10;
+      CORBA_unsigned_long _ORBIT_tmpvar_11;
+
+      _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
+      if (giop_msg_conversion_needed(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer))) {
+	 GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur = _ORBIT_curptr;
+	 panel_applet =
+	    ORBit_demarshal_object(_ORBIT_recv_buffer,
+				   (((ORBit_ObjectKey *) _ORBIT_servant->
+				     _private)->object->orb));
+	 _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
+	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	 (*((guint32 *) & (_ORBIT_tmpvar_11))) =
+	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
+	 _ORBIT_curptr += 4;
+	 goad_id = (void *) _ORBIT_curptr;
+	 _ORBIT_curptr +=
+	    sizeof(goad_id[_ORBIT_tmpvar_10]) * _ORBIT_tmpvar_11;
+      } else {
+	 GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur = _ORBIT_curptr;
+	 panel_applet =
+	    ORBit_demarshal_object(_ORBIT_recv_buffer,
+				   (((ORBit_ObjectKey *) _ORBIT_servant->
+				     _private)->object->orb));
+	 _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
+	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	 _ORBIT_tmpvar_11 = *((CORBA_unsigned_long *) _ORBIT_curptr);
+	 _ORBIT_curptr += 4;
+	 goad_id = (void *) _ORBIT_curptr;
+	 _ORBIT_curptr +=
+	    sizeof(goad_id[_ORBIT_tmpvar_10]) * _ORBIT_tmpvar_11;
+      }
+   }
+   _ORBIT_retval =
+      _impl_add_applet(_ORBIT_servant, panel_applet, goad_id, &(cfgpath),
+		       &(globcfgpath), &(winid), ev);
+   {				/* marshalling */
+      register GIOPSendBuffer *_ORBIT_send_buffer;
+
+      _ORBIT_send_buffer =
+	 giop_send_reply_buffer_use(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer)->
+				    connection, NULL,
+				    _ORBIT_recv_buffer->message.u.request.
+				    request_id, ev->_major);
+      if (_ORBIT_send_buffer) {
+	 if (ev->_major == CORBA_NO_EXCEPTION) {
+	    register CORBA_unsigned_long _ORBIT_tmpvar_2;
+	    CORBA_unsigned_long _ORBIT_tmpvar_3;
+	    register CORBA_unsigned_long _ORBIT_tmpvar_4;
+	    CORBA_unsigned_long _ORBIT_tmpvar_5;
+
+	    ORBit_marshal_object(_ORBIT_send_buffer, _ORBIT_retval);
+	    _ORBIT_tmpvar_3 = strlen(cfgpath) + 1;
+	    giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					     (_ORBIT_send_buffer), 4);
+	    {
+	       guchar *_ORBIT_t;
+
+	       _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_3));
+	       memcpy(_ORBIT_t, &(_ORBIT_tmpvar_3), sizeof(_ORBIT_tmpvar_3));
+	       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					      (_ORBIT_send_buffer),
+					      (_ORBIT_t),
+					      sizeof(_ORBIT_tmpvar_3));
+	    }
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (cfgpath),
+					   sizeof(cfgpath[_ORBIT_tmpvar_2]) *
+					   _ORBIT_tmpvar_3);
+	    _ORBIT_tmpvar_5 = strlen(globcfgpath) + 1;
+	    giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					     (_ORBIT_send_buffer), 4);
+	    {
+	       guchar *_ORBIT_t;
+
+	       _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_5));
+	       memcpy(_ORBIT_t, &(_ORBIT_tmpvar_5), sizeof(_ORBIT_tmpvar_5));
+	       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					      (_ORBIT_send_buffer),
+					      (_ORBIT_t),
+					      sizeof(_ORBIT_tmpvar_5));
+	    }
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer),
+					   (globcfgpath),
+					   sizeof(globcfgpath
+						  [_ORBIT_tmpvar_4]) *
+					   _ORBIT_tmpvar_5);
+	    giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					     (_ORBIT_send_buffer), 4);
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), &(winid),
+					   sizeof(winid));
+	 } else
+	    ORBit_send_system_exception(_ORBIT_send_buffer, ev);
+	 giop_send_buffer_write(_ORBIT_send_buffer);
+	 giop_send_buffer_unuse(_ORBIT_send_buffer);
+      }
+      if (ev->_major == CORBA_NO_EXCEPTION)
+	 CORBA_Object_release(_ORBIT_retval, ev);
+      CORBA_Object_release(panel_applet, ev);
+      if (ev->_major == CORBA_NO_EXCEPTION)
+	 CORBA_free(cfgpath);
+      if (ev->_major == CORBA_NO_EXCEPTION)
+	 CORBA_free(globcfgpath);
+   }
+}
+void
 _ORBIT_skel_GNOME_PanelSpot__get_tooltip(POA_GNOME_PanelSpot * _ORBIT_servant,
 					 GIOPRecvBuffer * _ORBIT_recv_buffer,
 					 CORBA_Environment * ev,
@@ -466,8 +1011,7 @@ _ORBIT_skel_GNOME_PanelSpot__set_tooltip(POA_GNOME_PanelSpot * _ORBIT_servant,
       _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
       if (giop_msg_conversion_needed(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer))) {
 	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	 
-	    (*((guint32 *) & (_ORBIT_tmpvar_3))) =
+	 (*((guint32 *) & (_ORBIT_tmpvar_3))) =
 	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
 	 _ORBIT_curptr += 4;
 	 value = (void *) _ORBIT_curptr;
@@ -1062,24 +1606,21 @@ _ORBIT_skel_GNOME_PanelSpot_add_callback(POA_GNOME_PanelSpot * _ORBIT_servant,
       _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
       if (giop_msg_conversion_needed(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer))) {
 	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	 
-	    (*((guint32 *) & (_ORBIT_tmpvar_7))) =
+	 (*((guint32 *) & (_ORBIT_tmpvar_7))) =
 	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
 	 _ORBIT_curptr += 4;
 	 callback_name = (void *) _ORBIT_curptr;
 	 _ORBIT_curptr +=
 	    sizeof(callback_name[_ORBIT_tmpvar_6]) * _ORBIT_tmpvar_7;
 	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	 
-	    (*((guint32 *) & (_ORBIT_tmpvar_9))) =
+	 (*((guint32 *) & (_ORBIT_tmpvar_9))) =
 	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
 	 _ORBIT_curptr += 4;
 	 stock_item = (void *) _ORBIT_curptr;
 	 _ORBIT_curptr +=
 	    sizeof(stock_item[_ORBIT_tmpvar_8]) * _ORBIT_tmpvar_9;
 	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	 
-	    (*((guint32 *) & (_ORBIT_tmpvar_11))) =
+	 (*((guint32 *) & (_ORBIT_tmpvar_11))) =
 	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
 	 _ORBIT_curptr += 4;
 	 menuitem_text = (void *) _ORBIT_curptr;
@@ -1131,8 +1672,7 @@ _ORBIT_skel_GNOME_PanelSpot_remove_callback(POA_GNOME_PanelSpot *
       _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
       if (giop_msg_conversion_needed(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer))) {
 	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	 
-	    (*((guint32 *) & (_ORBIT_tmpvar_3))) =
+	 (*((guint32 *) & (_ORBIT_tmpvar_3))) =
 	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
 	 _ORBIT_curptr += 4;
 	 callback_name = (void *) _ORBIT_curptr;
@@ -1177,8 +1717,7 @@ _ORBIT_skel_GNOME_PanelSpot_callback_set_sensitive(POA_GNOME_PanelSpot *
       _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
       if (giop_msg_conversion_needed(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer))) {
 	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	 
-	    (*((guint32 *) & (_ORBIT_tmpvar_3))) =
+	 (*((guint32 *) & (_ORBIT_tmpvar_3))) =
 	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
 	 _ORBIT_curptr += 4;
 	 callback_name = (void *) _ORBIT_curptr;
@@ -1234,9 +1773,9 @@ _ORBIT_skel_GNOME_PanelSpot_done_session_save(POA_GNOME_PanelSpot *
 	 ret = *((CORBA_boolean *) _ORBIT_curptr);
 	 _ORBIT_curptr += 1;
 	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	 
-	    (*((guint32 *) & (cookie))) =
-	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));} else {
+	 (*((guint32 *) & (cookie))) =
+	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
+      } else {
 	 ret = *((CORBA_boolean *) _ORBIT_curptr);
 	 _ORBIT_curptr += 1;
 	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
@@ -1263,9 +1802,9 @@ _ORBIT_skel_GNOME_Applet_change_orient(POA_GNOME_Applet * _ORBIT_servant,
       _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
       if (giop_msg_conversion_needed(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer))) {
 	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	 
-	    (*((guint32 *) & (orient))) =
-	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));} else {
+	 (*((guint32 *) & (orient))) =
+	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
+      } else {
 	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
 	 orient = *((GNOME_Panel_OrientType *) _ORBIT_curptr);
       }
@@ -1292,8 +1831,7 @@ _ORBIT_skel_GNOME_Applet_do_callback(POA_GNOME_Applet * _ORBIT_servant,
       _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
       if (giop_msg_conversion_needed(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer))) {
 	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	 
-	    (*((guint32 *) & (_ORBIT_tmpvar_3))) =
+	 (*((guint32 *) & (_ORBIT_tmpvar_3))) =
 	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
 	 _ORBIT_curptr += 4;
 	 callback_name = (void *) _ORBIT_curptr;
@@ -1335,15 +1873,13 @@ _ORBIT_skel_GNOME_Applet_session_save(POA_GNOME_Applet * _ORBIT_servant,
       _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
       if (giop_msg_conversion_needed(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer))) {
 	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	 
-	    (*((guint32 *) & (_ORBIT_tmpvar_5))) =
+	 (*((guint32 *) & (_ORBIT_tmpvar_5))) =
 	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
 	 _ORBIT_curptr += 4;
 	 cfgpath = (void *) _ORBIT_curptr;
 	 _ORBIT_curptr += sizeof(cfgpath[_ORBIT_tmpvar_4]) * _ORBIT_tmpvar_5;
 	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	 
-	    (*((guint32 *) & (_ORBIT_tmpvar_7))) =
+	 (*((guint32 *) & (_ORBIT_tmpvar_7))) =
 	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
 	 _ORBIT_curptr += 4;
 	 global_cfgpath = (void *) _ORBIT_curptr;
@@ -1411,27 +1947,22 @@ _ORBIT_skel_GNOME_Applet_back_change(POA_GNOME_Applet * _ORBIT_servant,
       _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
       if (giop_msg_conversion_needed(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer))) {
 	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	 
-	    (*((guint32 *) & (backing._d))) =
+	 (*((guint32 *) & (backing._d))) =
 	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
-	    _ORBIT_curptr += 4;
+	 _ORBIT_curptr += 4;
 	 switch (backing._d) {
 	   case GNOME_Panel_BACK_COLOR:
-	      
-		 (*((guint16 *) & (backing._u.c.red))) =
+	      (*((guint16 *) & (backing._u.c.red))) =
 		 GUINT16_SWAP_LE_BE(*((guint16 *) _ORBIT_curptr));
 	      _ORBIT_curptr += 2;
-	      
-		 (*((guint16 *) & (backing._u.c.green))) =
+	      (*((guint16 *) & (backing._u.c.green))) =
 		 GUINT16_SWAP_LE_BE(*((guint16 *) _ORBIT_curptr));
 	      _ORBIT_curptr += 2;
-	      
-		 (*((guint16 *) & (backing._u.c.blue))) =
+	      (*((guint16 *) & (backing._u.c.blue))) =
 		 GUINT16_SWAP_LE_BE(*((guint16 *) _ORBIT_curptr));
 	      break;
 	   case GNOME_Panel_BACK_PIXMAP:
-	      
-		 (*((guint32 *) & (_ORBIT_tmpvar_3))) =
+	      (*((guint32 *) & (_ORBIT_tmpvar_3))) =
 		 GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
 	      _ORBIT_curptr += 4;
 	      backing._u.pmap = (void *) _ORBIT_curptr;
@@ -1578,24 +2109,22 @@ _ORBIT_skel_GNOME_Applet_save_session(POA_GNOME_Applet * _ORBIT_servant,
       _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
       if (giop_msg_conversion_needed(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer))) {
 	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	 
-	    (*((guint32 *) & (_ORBIT_tmpvar_5))) =
+	 (*((guint32 *) & (_ORBIT_tmpvar_5))) =
 	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
 	 _ORBIT_curptr += 4;
 	 cfgpath = (void *) _ORBIT_curptr;
 	 _ORBIT_curptr += sizeof(cfgpath[_ORBIT_tmpvar_4]) * _ORBIT_tmpvar_5;
 	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	 
-	    (*((guint32 *) & (_ORBIT_tmpvar_7))) =
+	 (*((guint32 *) & (_ORBIT_tmpvar_7))) =
 	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
 	 _ORBIT_curptr += 4;
 	 global_cfgpath = (void *) _ORBIT_curptr;
 	 _ORBIT_curptr +=
 	    sizeof(global_cfgpath[_ORBIT_tmpvar_6]) * _ORBIT_tmpvar_7;
 	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	 
-	    (*((guint32 *) & (cookie))) =
-	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));} else {
+	 (*((guint32 *) & (cookie))) =
+	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
+      } else {
 	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
 	 _ORBIT_tmpvar_5 = *((CORBA_unsigned_long *) _ORBIT_curptr);
 	 _ORBIT_curptr += 4;
@@ -1631,9 +2160,9 @@ _ORBIT_skel_GNOME_Applet_change_size(POA_GNOME_Applet * _ORBIT_servant,
       _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
       if (giop_msg_conversion_needed(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer))) {
 	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 2);
-	 
-	    (*((guint16 *) & (size))) =
-	    GUINT16_SWAP_LE_BE(*((guint16 *) _ORBIT_curptr));} else {
+	 (*((guint16 *) & (size))) =
+	    GUINT16_SWAP_LE_BE(*((guint16 *) _ORBIT_curptr));
+      } else {
 	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 2);
 	 size = *((CORBA_short *) _ORBIT_curptr);
       }
@@ -1660,12 +2189,12 @@ _ORBIT_skel_GNOME_Applet_change_position(POA_GNOME_Applet * _ORBIT_servant,
       _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
       if (giop_msg_conversion_needed(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer))) {
 	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 2);
-	 
-	    (*((guint16 *) & (x))) =
+	 (*((guint16 *) & (x))) =
 	    GUINT16_SWAP_LE_BE(*((guint16 *) _ORBIT_curptr));
-	    _ORBIT_curptr += 2;
+	 _ORBIT_curptr += 2;
 	 (*((guint16 *) & (y))) =
-	    GUINT16_SWAP_LE_BE(*((guint16 *) _ORBIT_curptr));} else {
+	    GUINT16_SWAP_LE_BE(*((guint16 *) _ORBIT_curptr));
+      } else {
 	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 2);
 	 x = *((CORBA_short *) _ORBIT_curptr);
 	 _ORBIT_curptr += 2;
@@ -1843,8 +2372,7 @@ POA_GNOME_Panel__init(PortableServer_Servant servant, CORBA_Environment * env)
 {
    static const PortableServer_ClassInfo class_info =
       { (ORBit_impl_finder) & get_skel_GNOME_Panel, "IDL:GNOME/Panel:1.0",
-	 (ORBit_local_objref_init) & init_local_objref_GNOME_Panel };
-
+(ORBit_local_objref_init) & init_local_objref_GNOME_Panel };
    PortableServer_ServantBase__init(((PortableServer_ServantBase *) servant),
 				    env);
    ORBIT_OBJECT_KEY(((PortableServer_ServantBase *) servant)->_private)->
@@ -1855,6 +2383,423 @@ POA_GNOME_Panel__init(PortableServer_Servant servant, CORBA_Environment * env)
 
 void
 POA_GNOME_Panel__fini(PortableServer_Servant servant, CORBA_Environment * env)
+{
+   PortableServer_ServantBase__fini(servant, env);
+}
+
+static ORBitSkeleton
+get_skel_GNOME_Panel2(POA_GNOME_Panel2 * servant,
+		      GIOPRecvBuffer * _ORBIT_recv_buffer, gpointer * impl)
+{
+   gchar *opname = _ORBIT_recv_buffer->message.u.request.operation;
+
+   switch (opname[0]) {
+     case '_':
+	if (strcmp((opname + 1), "get_in_drag"))
+	   break;
+	*impl = (gpointer) servant->vepv->GNOME_Panel_epv->_get_in_drag;
+	return (ORBitSkeleton) _ORBIT_skel_GNOME_Panel__get_in_drag;
+	break;
+     case 'a':
+	switch (opname[1]) {
+	  case 'd':
+	     switch (opname[2]) {
+	       case 'd':
+		  switch (opname[3]) {
+		    case '_':
+		       switch (opname[4]) {
+			 case 'a':
+			    switch (opname[5]) {
+			      case 'p':
+				 switch (opname[6]) {
+				   case 'p':
+				      switch (opname[7]) {
+					case 'l':
+					   switch (opname[8]) {
+					     case 'e':
+						switch (opname[9]) {
+						  case 't':
+						     switch (opname[10]) {
+						       case '\0':
+							  *impl =
+							     (gpointer)
+							     servant->vepv->
+							     GNOME_Panel_epv->
+							     add_applet;
+							  return
+							     (ORBitSkeleton)
+							     _ORBIT_skel_GNOME_Panel_add_applet;
+							  break;
+						       case '_':
+							  if (strcmp
+							      ((opname + 11),
+							       "full"))
+							     break;
+							  *impl =
+							     (gpointer)
+							     servant->vepv->
+							     GNOME_Panel_epv->
+							     add_applet_full;
+							  return
+							     (ORBitSkeleton)
+							     _ORBIT_skel_GNOME_Panel_add_applet_full;
+							  break;
+						       default:
+							  break;
+						     }
+						     break;
+						  default:
+						     break;
+						}
+						break;
+					     default:
+						break;
+					   }
+					   break;
+					default:
+					   break;
+				      }
+				      break;
+				   default:
+				      break;
+				 }
+				 break;
+			      default:
+				 break;
+			    }
+			    break;
+			 case 'l':
+			    switch (opname[5]) {
+			      case 'a':
+				 switch (opname[6]) {
+				   case 'u':
+				      switch (opname[7]) {
+					case 'n':
+					   switch (opname[8]) {
+					     case 'c':
+						switch (opname[9]) {
+						  case 'h':
+						     switch (opname[10]) {
+						       case 'e':
+							  switch (opname[11]) {
+							    case 'r':
+							       switch (opname
+								       [12]) {
+								 case '\0':
+								    *impl =
+								       (gpointer)
+								       servant->
+								       vepv->
+								       GNOME_Panel2_epv->
+								       add_launcher;
+								    return
+								       (ORBitSkeleton)
+								       _ORBIT_skel_GNOME_Panel2_add_launcher;
+								    break;
+								 case '_':
+								    switch
+								       (opname
+									[13])
+								      {
+								      case 'f':
+									 switch
+									    (opname
+									     [14])
+									   {
+									   case 'r':
+									      switch
+										 (opname
+										  [15])
+										{
+										case 'o':
+										   switch
+										      (opname
+										       [16])
+										     {
+										     case 'm':
+											switch
+											   (opname
+											    [17])
+											  {
+											  case '_':
+											     switch
+												(opname
+												 [18])
+											       {
+											       case 'i':
+												  switch
+												     (opname
+												      [19])
+												    {
+												    case 'n':
+												       switch
+													  (opname
+													   [20])
+													 {
+													 case 'f':
+													    switch
+													       (opname
+														[21])
+													      {
+													      case 'o':
+														 switch
+														    (opname
+														     [22])
+														   {
+														   case '\0':
+														      *impl
+															 =
+															 (gpointer)
+															 servant->
+															 vepv->
+															 GNOME_Panel2_epv->
+															 add_launcher_from_info;
+														      return
+															 (ORBitSkeleton)
+															 _ORBIT_skel_GNOME_Panel2_add_launcher_from_info;
+														      break;
+														   case '_':
+														      if (strcmp((opname + 23), "url"))
+															 break;
+														      *impl
+															 =
+															 (gpointer)
+															 servant->
+															 vepv->
+															 GNOME_Panel2_epv->
+															 add_launcher_from_info_url;
+														      return
+															 (ORBitSkeleton)
+															 _ORBIT_skel_GNOME_Panel2_add_launcher_from_info_url;
+														      break;
+														   default:
+														      break;
+														 }
+														 break;
+													      default:
+														 break;
+													    }
+													    break;
+													 default:
+													    break;
+												       }
+												       break;
+												    default:
+												       break;
+												  }
+												  break;
+											       default:
+												  break;
+											     }
+											     break;
+											  default:
+											     break;
+											}
+											break;
+										     default:
+											break;
+										   }
+										   break;
+										default:
+										   break;
+									      }
+									      break;
+									   default:
+									      break;
+									 }
+									 break;
+								      default:
+									 break;
+								    }
+								    break;
+								 default:
+								    break;
+							       }
+							       break;
+							    default:
+							       break;
+							  }
+							  break;
+						       default:
+							  break;
+						     }
+						     break;
+						  default:
+						     break;
+						}
+						break;
+					     default:
+						break;
+					   }
+					   break;
+					default:
+					   break;
+				      }
+				      break;
+				   default:
+				      break;
+				 }
+				 break;
+			      default:
+				 break;
+			    }
+			    break;
+			 case 's':
+			    if (strcmp((opname + 5), "tatus"))
+			       break;
+			    *impl =
+			       (gpointer) servant->vepv->GNOME_Panel_epv->
+			       add_status;
+			    return (ORBitSkeleton)
+			       _ORBIT_skel_GNOME_Panel_add_status;
+			    break;
+			 default:
+			    break;
+		       }
+		       break;
+		    default:
+		       break;
+		  }
+		  break;
+	       default:
+		  break;
+	     }
+	     break;
+	  case 's':
+	     if (strcmp((opname + 2), "k_about_launcher"))
+		break;
+	     *impl =
+		(gpointer) servant->vepv->GNOME_Panel2_epv->
+		ask_about_launcher;
+	     return (ORBitSkeleton)
+		_ORBIT_skel_GNOME_Panel2_ask_about_launcher;
+	     break;
+	  default:
+	     break;
+	}
+	break;
+     case 'l':
+	if (strcmp((opname + 1), "aunch_an_applet"))
+	   break;
+	*impl = (gpointer) servant->vepv->GNOME_Panel2_epv->launch_an_applet;
+	return (ORBitSkeleton) _ORBIT_skel_GNOME_Panel2_launch_an_applet;
+	break;
+     case 'm':
+	if (strcmp((opname + 1), "ain_menu"))
+	   break;
+	*impl = (gpointer) servant->vepv->GNOME_Panel2_epv->main_menu;
+	return (ORBitSkeleton) _ORBIT_skel_GNOME_Panel2_main_menu;
+	break;
+     case 'n':
+	if (strcmp((opname + 1), "otice_config_changes"))
+	   break;
+	*impl =
+	   (gpointer) servant->vepv->GNOME_Panel_epv->notice_config_changes;
+	return (ORBitSkeleton) _ORBIT_skel_GNOME_Panel_notice_config_changes;
+	break;
+     case 'q':
+	if (strcmp((opname + 1), "uit"))
+	   break;
+	*impl = (gpointer) servant->vepv->GNOME_Panel_epv->quit;
+	return (ORBitSkeleton) _ORBIT_skel_GNOME_Panel_quit;
+	break;
+     case 'r':
+	if (strcmp((opname + 1), "un_box"))
+	   break;
+	*impl = (gpointer) servant->vepv->GNOME_Panel2_epv->run_box;
+	return (ORBitSkeleton) _ORBIT_skel_GNOME_Panel2_run_box;
+	break;
+     case 's':
+	if (strcmp((opname + 1), "uggest_sync"))
+	   break;
+	*impl = (gpointer) servant->vepv->GNOME_Panel2_epv->suggest_sync;
+	return (ORBitSkeleton) _ORBIT_skel_GNOME_Panel2_suggest_sync;
+	break;
+     default:
+	break;
+   }
+   return NULL;
+}
+
+static void
+init_local_objref_GNOME_Panel2(CORBA_Object obj, POA_GNOME_Panel2 * servant)
+{
+   obj->vepv[GNOME_Panel__classid] = servant->vepv->GNOME_Panel_epv;
+   obj->vepv[GNOME_Panel2__classid] = servant->vepv->GNOME_Panel2_epv;
+}
+
+void
+POA_GNOME_Panel2__init(PortableServer_Servant servant,
+		       CORBA_Environment * env)
+{
+   static const PortableServer_ClassInfo class_info =
+      { (ORBit_impl_finder) & get_skel_GNOME_Panel2, "IDL:GNOME/Panel2:1.0",
+(ORBit_local_objref_init) & init_local_objref_GNOME_Panel2 };
+   PortableServer_ServantBase__init(((PortableServer_ServantBase *) servant),
+				    env);
+   POA_GNOME_Panel__init(servant, env);
+   ORBIT_OBJECT_KEY(((PortableServer_ServantBase *) servant)->_private)->
+      class_info = (PortableServer_ClassInfo *) & class_info;
+   if (!GNOME_Panel2__classid)
+      GNOME_Panel2__classid = ORBit_register_class(&class_info);
+}
+
+void
+POA_GNOME_Panel2__fini(PortableServer_Servant servant,
+		       CORBA_Environment * env)
+{
+   POA_GNOME_Panel__fini(servant, env);
+   PortableServer_ServantBase__fini(servant, env);
+}
+
+static ORBitSkeleton
+get_skel_GNOME_PanelAppletBooter(POA_GNOME_PanelAppletBooter * servant,
+				 GIOPRecvBuffer * _ORBIT_recv_buffer,
+				 gpointer * impl)
+{
+   gchar *opname = _ORBIT_recv_buffer->message.u.request.operation;
+
+   switch (opname[0]) {
+     case 'a':
+	if (strcmp((opname + 1), "dd_applet"))
+	   break;
+	*impl =
+	   (gpointer) servant->vepv->GNOME_PanelAppletBooter_epv->add_applet;
+	return (ORBitSkeleton) _ORBIT_skel_GNOME_PanelAppletBooter_add_applet;
+	break;
+     default:
+	break;
+   }
+   return NULL;
+}
+
+static void
+init_local_objref_GNOME_PanelAppletBooter(CORBA_Object obj,
+					  POA_GNOME_PanelAppletBooter *
+					  servant)
+{
+   obj->vepv[GNOME_PanelAppletBooter__classid] =
+      servant->vepv->GNOME_PanelAppletBooter_epv;
+}
+
+void
+POA_GNOME_PanelAppletBooter__init(PortableServer_Servant servant,
+				  CORBA_Environment * env)
+{
+   static const PortableServer_ClassInfo class_info =
+      { (ORBit_impl_finder) & get_skel_GNOME_PanelAppletBooter,
+"IDL:GNOME/PanelAppletBooter:1.0", (ORBit_local_objref_init) & init_local_objref_GNOME_PanelAppletBooter };
+   PortableServer_ServantBase__init(((PortableServer_ServantBase *) servant),
+				    env);
+   ORBIT_OBJECT_KEY(((PortableServer_ServantBase *) servant)->_private)->
+      class_info = (PortableServer_ClassInfo *) & class_info;
+   if (!GNOME_PanelAppletBooter__classid)
+      GNOME_PanelAppletBooter__classid = ORBit_register_class(&class_info);
+}
+
+void
+POA_GNOME_PanelAppletBooter__fini(PortableServer_Servant servant,
+				  CORBA_Environment * env)
 {
    PortableServer_ServantBase__fini(servant, env);
 }
@@ -1902,12 +2847,8 @@ get_skel_GNOME_PanelSpot(POA_GNOME_PanelSpot * servant,
 								       [12]) {
 								 case 'o':
 								    if (strcmp
-									(
-									 (opname
-									  +
-									  13),
-									 "rient"))
-									  break;
+									((opname + 13), "rient"))
+								       break;
 								    *impl =
 								       (gpointer)
 								       servant->
@@ -1920,12 +2861,8 @@ get_skel_GNOME_PanelSpot(POA_GNOME_PanelSpot * servant,
 								    break;
 								 case 'p':
 								    if (strcmp
-									(
-									 (opname
-									  +
-									  13),
-									 "anel"))
-									  break;
+									((opname + 13), "anel"))
+								       break;
 								    *impl =
 								       (gpointer)
 								       servant->
@@ -1938,12 +2875,8 @@ get_skel_GNOME_PanelSpot(POA_GNOME_PanelSpot * servant,
 								    break;
 								 case 's':
 								    if (strcmp
-									(
-									 (opname
-									  +
-									  13),
-									 "ize"))
-									  break;
+									((opname + 13), "ize"))
+								       break;
 								    *impl =
 								       (gpointer)
 								       servant->
@@ -2350,9 +3283,7 @@ POA_GNOME_PanelSpot__init(PortableServer_Servant servant,
 {
    static const PortableServer_ClassInfo class_info =
       { (ORBit_impl_finder) & get_skel_GNOME_PanelSpot,
-	 "IDL:GNOME/PanelSpot:1.0",
-	 (ORBit_local_objref_init) & init_local_objref_GNOME_PanelSpot };
-
+"IDL:GNOME/PanelSpot:1.0", (ORBit_local_objref_init) & init_local_objref_GNOME_PanelSpot };
    PortableServer_ServantBase__init(((PortableServer_ServantBase *) servant),
 				    env);
    ORBIT_OBJECT_KEY(((PortableServer_ServantBase *) servant)->_private)->
@@ -2412,8 +3343,8 @@ get_skel_GNOME_Applet(POA_GNOME_Applet * servant,
 					   break;
 					case 'p':
 					   if (strcmp
-					       ((opname + 8),
-						"osition")) break;
+					       ((opname + 8), "osition"))
+					      break;
 					   *impl =
 					      (gpointer) servant->vepv->
 					      GNOME_Applet_epv->
@@ -2541,8 +3472,7 @@ POA_GNOME_Applet__init(PortableServer_Servant servant,
 {
    static const PortableServer_ClassInfo class_info =
       { (ORBit_impl_finder) & get_skel_GNOME_Applet, "IDL:GNOME/Applet:1.0",
-	 (ORBit_local_objref_init) & init_local_objref_GNOME_Applet };
-
+(ORBit_local_objref_init) & init_local_objref_GNOME_Applet };
    PortableServer_ServantBase__init(((PortableServer_ServantBase *) servant),
 				    env);
    ORBIT_OBJECT_KEY(((PortableServer_ServantBase *) servant)->_private)->
@@ -2591,9 +3521,7 @@ POA_GNOME_StatusSpot__init(PortableServer_Servant servant,
 {
    static const PortableServer_ClassInfo class_info =
       { (ORBit_impl_finder) & get_skel_GNOME_StatusSpot,
-	 "IDL:GNOME/StatusSpot:1.0",
-	 (ORBit_local_objref_init) & init_local_objref_GNOME_StatusSpot };
-
+"IDL:GNOME/StatusSpot:1.0", (ORBit_local_objref_init) & init_local_objref_GNOME_StatusSpot };
    PortableServer_ServantBase__init(((PortableServer_ServantBase *) servant),
 				    env);
    ORBIT_OBJECT_KEY(((PortableServer_ServantBase *) servant)->_private)->
