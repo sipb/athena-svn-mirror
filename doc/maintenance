@@ -129,17 +129,24 @@ general architecture of the wash process is:
 	  This machine is on read:source and write:update.
 
 	* Each night at 4:30am, a machine of each architecture
-	  (currently whirlpool, kenmore, and maytag) recreates empty
-	  /build and /localsrvd filesystems and performs a build of
-	  the tree with /srvd pointed at /localsrvd.  If the build
-	  fails, the update script sends mail to source-wash@mit.edu
-	  with the last few lines of the wash log, and saves the wash
-	  log in /var/wash on the local disk.
+	  (currently whirlpool, kenmore, and maytag) performs a build
+	  of the tree into /var/srvd.new, using the build directory
+	  /var/build.  If the build fails, the wash script copies the
+	  log of the failed build into AFS and sends mail to
+	  source-wash@mit.edu with the last few lines of the log.  If
+	  the build succeeds, the wash script moves /var/srvd.new to
+	  /var/srvd, so that /var/srvd is always the last successful
+	  build of the source tree.
+
+	* Each Sunday at 1:00am, the wash machines make a copy of
+	  their last successful builds into a "srvd-current" directory
+	  in AFS.  The copy is done without system:administrator
+	  privileges, so the file permissions on srvd-current are all
+	  wrong, but the current srvd is useful for development work.
 
 Source for the wash scripts lives in /afs/dev.mit.edu/service/wash.
-They are installed in /usr/local on the wash machines, along with a
-copy of krbtgp from the net-tools locker in /usr/local/bin.  Logs of
-the start and end times of the wash processes on each machine live in
+They are installed in /usr/local on the wash machines.  Logs of the
+start and end times of the wash processes on each machine live in
 /afs/dev.mit.edu/service/wash/status/`hostname`.
 
 Imake templates
