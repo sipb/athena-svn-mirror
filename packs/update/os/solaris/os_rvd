@@ -1,5 +1,5 @@
 GLOBAL : *.CKP *.pid :
-## $Id: os_rvd,v 1.8 1999-05-19 14:21:41 danw Exp $
+## $Id: os_rvd,v 1.8.2.1 2000-01-07 23:14:43 ghudson Exp $
 ## Major subscription list for workstations
 ##
 ##	MIT Project Athena
@@ -50,6 +50,7 @@ GLOBAL : *.CKP *.pid :
 		motd
 		mnttab
 		name_to_major
+		name_to_sysnum
 		nscd.conf
 		-> opt
 		path_to_inst
@@ -69,7 +70,7 @@ GLOBAL : *.CKP *.pid :
 			# needed
 		:
 	/etc/mail:::
-		sendmail.cf
+		sendmail.cf*
 		aliases
 		:
 	/etc/rc0.d:::
