@@ -106,6 +106,7 @@ Distribution sites for software under third
 	perl		ftp.gnu.org:pub/gnu/perl
 	rcs		ftp.gnu.org:pub/gnu/rcs
 	rs		From NetBSD (ftp.netbsd.org), usr.bin/rs
+	sendmail	ftp.sendmail.org:pub/sendmail
 	ssh		ftp.cs.hut.fi:pub/ssh
 	sysinfo		http://www.magnicomp.com/
 	talk		From NetBSD (ftp.netbsd.org)
