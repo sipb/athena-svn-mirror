@@ -1,6 +1,6 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/delete/delete.c,v $
- * $Author: lwvanels $
+ * $Author: probe $
  *
  * This program is a replacement for rm.  Instead of actually deleting
  * files, it marks them for deletion by prefixing them with a ".#"
@@ -11,7 +11,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_delete_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/delete.c,v 1.28 1991-08-13 21:54:24 lwvanels Exp $";
+     static char rcsid_delete_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/delete.c,v 1.29 1993-02-09 00:35:54 probe Exp $";
 #endif
 
 #include <sys/types.h>
@@ -99,7 +99,7 @@ char *argv[];
 
 #ifdef AFS_MOUNTPOINTS
      gettimeofday(&tvp[0], (struct timezone *)0);
-     bcopy(&tvp[0], &tvp[1], sizeof(struct timeval));
+     tvp[1] = tvp[0];
 #endif
 
      force = interactive = recursive = noop = verbose = filesonly =

@@ -1,6 +1,6 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/delete/pattern.c,v $
- * $Author: jik $
+ * $Author: probe $
  *
  * This program is part of a package including delete, undelete,
  * lsdel, expunge and purge.  The software suite is meant as a
@@ -11,7 +11,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_pattern_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/pattern.c,v 1.24 1991-06-25 16:15:00 jik Exp $";
+     static char rcsid_pattern_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/pattern.c,v 1.25 1993-02-09 00:36:01 probe Exp $";
 #endif
 
 #include <stdio.h>
@@ -584,16 +584,47 @@ Boolean match_undeleted, match_deleted;
 	       continue;
 	  }
 
-	  if (! stat(base, &statbuf)) {
-	       if ((statbuf.st_mode & S_IFMT) == S_IFDIR)
-		    dirp = Opendir(base);
-	  }
-	  else {
-	       dirp = NULL;
-	  }
+	  /*
+	   * The logic here in this attempt to descend is as follows:
+	   *
+	   * Try to stat base.  Succeeds?
+	   * Yes:
+	   *   Is it a directory?
+	   *   Yes:
+	   *     Try to open it.
+	   *     Does the open succeed?
+	   *     Yes:
+	   *       Continue the loop.
+	   *     No:
+	   *       Print an error, and pop up to the last directory.
+	   *   No:
+	   *     Pop up to the last directory.
+	   * No:
+	   *   Try to lstat base.  Succeeds?
+	   *   Yes:
+	   *     Is it a directory?
+	   *     Yes: see above.  *** this should never happen ***
+	   *     No:
+	   *       Pop up to the last directory.
+	   *   No:
+	   *     Print an error, and pop up to the last directory.
+	   *
+	   * The reason for the lstat is that we don't want to print
+	   * errors when we can't descend because we're trying to go
+	   * into a symlink pointing nowhere; a symlink pointing
+	   * nowhere is not an error when matching, it just means that
+	   * we can't descend.
+	   */
+	  dirp = NULL;
+	  if (((! (retval = stat(base, &statbuf))) ||
+	       (! (retval = lstat(base, &statbuf)))) &&
+	      ((statbuf.st_mode & S_IFMT) == S_IFDIR))
+	       dirp = Opendir(base);
 	  if (! dirp) {
-	       set_error(errno);
-	       error(base);
+	       if (retval || ((statbuf.st_mode & S_IFMT) == S_IFDIR)) {
+		    set_error(errno);
+		    error(base);
+	       }
 	       string_pop(base);
 	       string_pop(rest);
 	       string_pop(first);

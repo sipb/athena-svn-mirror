@@ -1,6 +1,6 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/delete/directories.c,v $
- * $Author: jik $
+ * $Author: probe $
  * 
  * This program is part of a package including delete, undelete,
  * lsdel, expunge and purge.  The software suite is meant as a
@@ -11,7 +11,7 @@
  */
 
 #if !defined(lint) && !defined(SABER)
-     static char rcsid_directories_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/directories.c,v 1.22 1991-06-25 16:14:09 jik Exp $";
+     static char rcsid_directories_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/directories.c,v 1.23 1993-02-09 00:35:57 probe Exp $";
 #endif
 
 #include <stdio.h>
@@ -368,7 +368,11 @@ filerec *leaf;
 void print_paths_from(leaf)
 filerec *leaf;
 {
-     char buf[MAXPATHLEN];
+     /*
+      * This is static to prevent multiple copies of it when calling
+      * recursively.
+      */
+     static char buf[MAXPATHLEN];
 
      printf("%s\n", get_leaf_path(leaf, buf));
      if (leaf->dirs)
@@ -383,7 +387,11 @@ filerec *leaf;
 void print_specified_paths_from(leaf)
 filerec *leaf;
 {
-     char buf[MAXPATHLEN];
+     /*
+      * This is static to prevent multiple copies of it when calling
+      * recursively.
+      */
+     static char buf[MAXPATHLEN];
 
      if (leaf->specified)
 	  printf("%s\n", get_leaf_path(leaf, buf));
@@ -662,12 +670,18 @@ filerec *leaf;
 char ***in_strings;
 int *num;
 {
-     char newname[MAXPATHLEN];
      char **strings;
      int retval;
      
      strings = *in_strings;
      if (leaf->specified) {
+	  /*
+	   * This array is static so that only one copy of it is allocated,
+	   * rather than one copy on the stack for each recursive
+	   * invocation of accumulate_names.
+	   */
+	  static char newname[MAXPATHLEN];
+
 	  *num += 1;
 	  strings = (char **) realloc((char *) strings, (unsigned)
 				      (sizeof(char *) * (*num)));

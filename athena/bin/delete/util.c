@@ -1,6 +1,6 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/delete/util.c,v $
- * $Author: miki $
+ * $Author: probe $
  *
  * This program is a replacement for rm.  Instead of actually deleting
  * files, it marks them for deletion by prefixing them with a ".#"
@@ -11,13 +11,13 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_util_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/util.c,v 1.25 1992-11-05 15:29:00 miki Exp $";
+     static char rcsid_util_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/util.c,v 1.26 1993-02-09 00:36:04 probe Exp $";
 #endif
 
 #include <stdio.h>
 #include <sys/param.h>
 #include <sys/types.h>
-#ifdef SYSV /* SYSV doesn't define uid_t */
+#ifdef SYSV && !defined(hpux) /* SYSV doesn't define uid_t */
 typedef unsigned short uid_t;
 #endif
 #ifdef POSIX
@@ -48,8 +48,13 @@ typedef unsigned short uid_t;
 #include "errors.h"
 
 extern char *getenv();
-extern uid_t getuid();
 extern int errno;
+
+#ifdef UTEK
+extern int getuid();
+#else /* ! UTEK */
+extern uid_t getuid();
+#endif /* UTEK */
 
 char *convert_to_user_name(real_name, user_name)
 char real_name[];

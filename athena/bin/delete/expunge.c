@@ -1,6 +1,6 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/delete/expunge.c,v $
- * $Author: jik $
+ * $Author: probe $
  *
  * This program is part of a package including delete, undelete,
  * lsdel, expunge and purge.  The software suite is meant as a
@@ -11,7 +11,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_expunge_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/expunge.c,v 1.21 1991-06-25 16:14:18 jik Exp $";
+     static char rcsid_expunge_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/expunge.c,v 1.22 1993-02-09 00:35:58 probe Exp $";
 #endif
 
 #include <stdio.h>
@@ -291,7 +291,11 @@ filerec *leaf;
      int retval;
      
      if ((leaf->specified) && ((leaf->specs.st_mode & S_IFMT) == S_IFDIR)) {
-	  char buf[MAXPATHLEN];
+	  /*
+	   * This is static so that we don't create a copy of it for
+	   * every recursive invocation of expunge_specified.
+	   */
+	  static char buf[MAXPATHLEN];
 
 	  if (retval = get_leaf_path(leaf, buf)) {
 	       error("get_leaf_path");
