@@ -1,4 +1,4 @@
-# $Id: phase3.sh,v 1.13 1997-07-26 16:46:46 ghudson Exp $
+# $Id: phase3.sh,v 1.14 1997-07-26 18:57:31 ghudson Exp $
 # $Source: /afs/dev.mit.edu/source/repository/packs/install/platform/sun4/phase3.sh,v $
 
 # This file is run out of the srvd by phase2.sh after it starts AFS.
@@ -46,6 +46,7 @@ echo "Running 'track'..."
 
 echo "Copying /os/var into /root/var"
 (cd /os/var; tar cf - .) | (cd /root/var; tar xf - .)
+rm -f /root/var/spool/cron/crontabs/lp
 
 echo "tracking the kernel"
 mkdir /root/kernel
