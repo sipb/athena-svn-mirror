@@ -3,7 +3,7 @@
  *
  * $Author: cfields $
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/logger/bbd.c,v $
- * $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/logger/bbd.c,v 1.13 1994-08-14 16:23:59 cfields Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/logger/bbd.c,v 1.14 1995-08-23 20:02:58 cfields Exp $
  *
  *
  * Copyright (C) 1991 by the Massachusetts Institute of Technology.
@@ -12,7 +12,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/logger/bbd.c,v 1.13 1994-08-14 16:23:59 cfields Exp $";
+static char rcsid_[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/logger/bbd.c,v 1.14 1995-08-23 20:02:58 cfields Exp $";
 #endif
 #endif
 
@@ -31,11 +31,10 @@ static char rcsid_[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/o
 #include <sys/time.h>
 #include <netinet/in.h>
 #include <netdb.h>
-#if defined(__STDC__) && !defined(__HIGHC__)
-/* Stupid High-C claims to be ANSI but doesn't have the include files.. */
+#if defined(__STDC__)
 #include <stdlib.h>
 #endif
-#ifdef SOLARIS
+#if defined(SOLARIS) || defined(sgi)
 #include <sys/termios.h>
 #endif
 
@@ -166,7 +165,7 @@ main(argc, argv)
   int onoff;
   int len,rlen,i;
   int port=0;
-#ifdef SOLARIS
+#if defined(SOLARIS) || defined(sgi)
   sigset_t oldmask,alarmmask;
 #else
   int oldmask,alarmmask;
@@ -260,7 +259,7 @@ main(argc, argv)
     exit(1);
   }
 
-#ifdef  mips
+#ifdef ultrix
   openlog("bbd",LOG_PID);
 #else
   openlog("bbd",LOG_CONS|LOG_PID,LOG_LOCAL2);
@@ -315,7 +314,7 @@ main(argc, argv)
   if (tick != 0) {
     do_tick(0);
   }
-#ifdef SOLARIS
+#if defined(SOLARIS) || defined(sgi)
   sigemptyset(&alarmmask);
   sigemptyset(&oldmask);
   sigaddset(&alarmmask,SIGALRM);
@@ -329,8 +328,8 @@ main(argc, argv)
 	syslog(LOG_ERR,"recvfrom: %m");
       continue;
     }
-#ifdef SOLARIS
-    sigprocmask(SIG_BLOCK,alarmmask,oldmask);
+#if defined(SOLARIS) || defined(sgi)
+    sigprocmask(SIG_BLOCK,&alarmmask,&oldmask);
 #else
     oldmask = sigblock(alarmmask);
 #endif
@@ -341,8 +340,8 @@ main(argc, argv)
       write(log_fd,&buf[1],(rlen-1));
       write(log_fd,"\n",1);
     }
-#ifdef SOLARIS
-    sigprocmask(SIG_BLOCK,oldmask,alarmmask);
+#if defined(SOLARIS) || defined(sgi)
+    sigprocmask(SIG_BLOCK,&oldmask,&alarmmask);
 #else
     (void) sigblock(oldmask);
 #endif
