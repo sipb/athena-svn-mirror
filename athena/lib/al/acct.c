@@ -17,12 +17,13 @@
  * functions for creating and reverting local accounts.
  */
 
-static const char rcsid[] = "$Id: acct.c,v 1.6 1997-11-15 07:31:23 ghudson Exp $";
+static const char rcsid[] = "$Id: acct.c,v 1.7 1997-11-20 17:40:13 ghudson Exp $";
 
 #include <stdlib.h>
 #include <sys/types.h>
 #include <signal.h>
 #include <string.h>
+#include <pwd.h>
 #include "al.h"
 #include "al_private.h"
 
@@ -91,6 +92,16 @@ int al_acct_create(const char *username, const char *cryptpw,
 {
   int retval = AL_SUCCESS, nwarns = 0, warns[6], i;
   struct al_record record;
+  struct passwd *pwd;
+
+  /* Don't mess with the root account. */
+  pwd = al__getpwnam(username);
+  if (pwd && pwd->pw_uid == 0)
+    {
+      al__free_passwd(pwd);
+      return AL_SUCCESS;
+    }
+  al__free_passwd(pwd);
 
   /* Get and lock the session record. */
   retval = al__get_session_record(username, &record);
@@ -216,6 +227,16 @@ int al_acct_revert(const char *username, pid_t sessionpid)
 {
   int retval, i, j;
   struct al_record record;
+  struct passwd *pwd;
+
+  /* Don't mess with the root account. */
+  pwd = al__getpwnam(username);
+  if (pwd && pwd->pw_uid == 0)
+    {
+      al__free_passwd(pwd);
+      return AL_SUCCESS;
+    }
+  al__free_passwd(pwd);
 
   retval = al__get_session_record(username, &record);
   if (AL_SUCCESS != retval)
