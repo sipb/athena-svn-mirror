@@ -35,7 +35,7 @@
 #define PKINSS3HACK_H
 
 #ifdef DEBUG
-static const char PKINSS3HACK_CVS_ID[] = "@(#) $RCSfile: pki3hack.h,v $ $Revision: 1.1.1.2 $ $Date: 2003-07-08 17:03:51 $ $Name: not supported by cvs2svn $";
+static const char PKINSS3HACK_CVS_ID[] = "@(#) $RCSfile: pki3hack.h,v $ $Revision: 1.1.1.3 $ $Date: 2003-12-24 14:43:42 $ $Name: not supported by cvs2svn $";
 #endif /* DEBUG */
 
 #ifndef NSSDEVT_H

@@ -32,7 +32,7 @@
  */
 
 #ifdef DEBUG
-static const char CVS_ID[] = "@(#) $RCSfile: pkistore.c,v $ $Revision: 1.1.1.2 $ $Date: 2003-07-08 17:03:52 $ $Name: not supported by cvs2svn $";
+static const char CVS_ID[] = "@(#) $RCSfile: pkistore.c,v $ $Revision: 1.1.1.3 $ $Date: 2003-12-24 14:43:43 $ $Name: not supported by cvs2svn $";
 #endif /* DEBUG */
 
 #ifndef PKIM_H
