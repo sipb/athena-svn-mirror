@@ -20,13 +20,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_admin.c,v $
- *	$Id: requests_admin.c,v 1.17 1991-01-08 16:40:08 lwvanels Exp $
+ *	$Id: requests_admin.c,v 1.18 1991-01-15 18:00:23 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_admin.c,v 1.17 1991-01-08 16:40:08 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_admin.c,v 1.18 1991-01-15 18:00:23 lwvanels Exp $";
 #endif
 #endif
 
@@ -163,6 +163,7 @@ olc_change_motd(fd,request)
     return(status);
 
   status = send_response(fd,read_text_into_file(fd,MOTD_FILE));
+  log_motd(requester->user->username);
   set_motd_timeout(requester);
   return(status);
 }
@@ -462,6 +463,7 @@ olc_set_user_status(fd,request)
   if (status != SUCCESS)
     return(send_response(fd,status));
 
+  user = target->user;
   if (target->question != NULL) {
     /* make sure they still have a question- */
     switch(request->options) {
