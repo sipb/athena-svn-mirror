@@ -1,4 +1,4 @@
-# $Id: Makefile.athena,v 1.1 1996-10-12 22:06:19 ghudson Exp $
+# $Id: Makefile.athena,v 1.2 1996-10-15 13:16:27 ghudson Exp $
 
 SHELL=/bin/sh
 
@@ -6,7 +6,7 @@ configure:
 	rm -f .defaults
 	cp "defaults.$$HOSTTYPE" .defaults
 	module=`sed -n "s/^set module = '\(.*\)'$/\1/p" .defaults`; \
-	./Configure "$module"
+	./Configure "$$module"
 
 clean:
 	${MAKE} clean
