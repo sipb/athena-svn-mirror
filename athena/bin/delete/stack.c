@@ -11,7 +11,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_stack_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/stack.c,v 1.2 1989-11-06 21:27:06 jik Exp $";
+     static char rcsid_stack_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/stack.c,v 1.3 1989-11-22 21:26:27 jik Exp $";
 #endif
 
 #include <sys/types.h>
@@ -21,8 +21,9 @@
 #include "delete_errs.h"
 #include "errors.h"
 #include "mit-copyright.h"
+#include "util.h"
 
-extern char *malloc(), *realloc();
+extern char *realloc();
 extern int errno;
 
 #define STACK_INC 	25
@@ -51,10 +52,11 @@ int op, bytes;
 		    size += STACK_INC - size % STACK_INC;
 	       stack = (caddr_t) (stack ? realloc((char *) stack,
 						  (unsigned) size) :
-				  malloc((unsigned) size));
+				  Malloc((unsigned) size));
 	       if (! stack) {
+		    size = count = 0;
 		    set_error(errno);
-		    error("malloc");
+		    error("Malloc");
 		    return error_code;
 	       }
 	  }
