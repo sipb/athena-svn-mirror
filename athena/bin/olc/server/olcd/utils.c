@@ -16,11 +16,11 @@
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/utils.c,v $
- *	$Author: raeburn $
+ *	$Author: vanharen $
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/utils.c,v 1.5 1990-01-05 06:23:21 raeburn Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/utils.c,v 1.6 1990-01-10 16:55:42 vanharen Exp $";
 #endif
 
 
@@ -33,7 +33,14 @@ static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 #include <ctype.h>		/* character types */
 
 
+void
+#ifdef __STDC__
 get_user_status_string(USER *u, char *status)
+#else
+get_user_status_string(u,status)
+     USER *u;
+     char *status;
+#endif /* STDC */
 {
   switch(u->status)
     {
@@ -52,7 +59,15 @@ get_user_status_string(USER *u, char *status)
     }
 }
 
+
+void
+#ifdef __STDC__
 get_status_string(KNUCKLE *k, char *status)
+#else
+get_status_string(k,status)
+     KNUCKLE *k;
+     char *status;
+#endif /* STDC */
 {
   *status = '\0';
 
@@ -121,7 +136,13 @@ printf("==> %d %d\n",is_busy(k), !is_busy(k));
 
 
 void
+#ifdef __STDC__
 get_list_info(KNUCKLE *k, LIST *data)
+#else
+get_list_info(k,data)
+     KNUCKLE *k;
+     LIST *data;
+#endif /* STDC */
 { 
   data->user.uid = k->user->uid;
   data->user.instance = k->instance;
@@ -137,7 +158,7 @@ get_list_info(KNUCKLE *k, LIST *data)
   strcpy(data->user.machine,k->user->machine);
   strcpy(data->user.username,k->user->username);
   strcpy(data->user.title,k->title);
-  
+
   if(is_connected(k))
     {
       data->connected.uid = k->connected->user->uid;
