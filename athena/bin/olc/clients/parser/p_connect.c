@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_connect.c,v 1.4 1989-08-04 11:06:03 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_connect.c,v 1.5 1989-08-22 13:50:06 tjcoppet Exp $";
 #endif
 
 
@@ -107,7 +107,7 @@ do_olc_forward(arguments)
   for (arguments++; *arguments != (char *)NULL; arguments++) 
     {
       if (string_equiv(*arguments, "-off", max(strlen(*arguments),2)))
-	set_option(Request.options,FORWARD_OFF);
+	set_option(Request.options,OFF_OPT);
       else 
 	if(string_equiv(*arguments,"-unanswered",max(strlen(*arguments),2)))
 	  set_option(Request.options, FORWARD_UNANSWERED);
