@@ -6,8 +6,7 @@ MOTIFDIR  =	/afs/athena/astaff/project/motifdev
 OLCDEV    =	/mit/olcdev
 OLCLIB    =	${OLCDEV}/${MACHTYPE}/clients/lib
 BINDIR    =	${MOTIFDIR}/${MACHTYPE}bin
-INCDIR    =	-I${MOTIFDIR}/include -I${MOTIFDIR}/include/X11 \
-		-I${MOTIFDIR}/include/Mrm -I${MOTIFDIR}/include/Xm \
+INCDIR    =	-I${MOTIFDIR}/include \
 		-I${OLCDEV}/src/include -I${OLCDEV}/src/clients/olc
 LIBDIR    =	-L${MOTIFDIR}/${MACHTYPE}lib -L${OLCDEV}/${MACHTYPE}lib
 UILINCDIR =	-I${MOTIFDIR}/include/uil
