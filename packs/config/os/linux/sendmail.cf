@@ -1,4 +1,4 @@
-# $Id: sendmail.cf,v 1.14 2000-03-13 18:22:19 tb Exp $
+# $Id: sendmail.cf,v 1.15 2000-06-08 18:56:53 jweiss Exp $
 #
 # Athena Workstation Sendmail configuration file
 #
@@ -150,7 +150,6 @@ R$+%$-			$@$>6$1<@$2>			user%hosta%hostb
 R$+%$+			$@$>6$1<@$2>			user%host
 R$+^$+			$1!$2				convert ^ to !
 R$-!$+			$@$>6$2<@$1.UUCP>		resolve uucp names
-R$-=$+			$@$>6$2<@$1.BITNET>		resolve bitnet names
 
 # fix the leftovers
 R$+<@$+>		$@$1<@$2>
