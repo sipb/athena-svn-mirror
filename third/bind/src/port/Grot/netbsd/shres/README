@@ -70,4 +70,4 @@ NOTES about this new release:
    lorder-sparc file, and the Makefile is no longer used.
 
 
-#ident	   "@(#)bind/shres/netbsd:$Name: not supported by cvs2svn $:$Id: README,v 1.1.1.2 1998-05-12 18:06:00 ghudson Exp $"
+#ident	   "@(#)bind/shres/netbsd:$Name: not supported by cvs2svn $:$Id: README,v 1.1.1.3 1999-03-16 19:47:11 danw Exp $"

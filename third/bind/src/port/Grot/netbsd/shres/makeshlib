@@ -3,7 +3,7 @@
 #
 # makeshlib - installs libresolv_pic.a into SunOS 4.x or *BSD libc.so
 #
-#ident	   "@(#)bind/shres/netbsd:$Name: not supported by cvs2svn $:$Id: makeshlib,v 1.1.1.2 1998-05-12 18:06:02 ghudson Exp $"
+#ident	   "@(#)bind/shres/netbsd:$Name: not supported by cvs2svn $:$Id: makeshlib,v 1.1.1.3 1999-03-16 19:47:10 danw Exp $"
 #
 # by Chris Davis <ckd@kei.com>
 # based on code by Piete Brooks <pb@cl.cam.ac.uk>

@@ -7,3 +7,8 @@ struct timespec {
 	time_t	tv_sec;		/* seconds */
 	long	tv_nsec;	/* nanoseconds */
 };
+
+#if defined(HAS_PTHREADS) && defined(_REENTRANT)
+#define DO_PTHREADS
+#endif
+

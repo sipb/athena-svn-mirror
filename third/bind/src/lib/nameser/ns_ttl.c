@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1996 by Internet Software Consortium.
+ * Copyright (c) 1996,1999 by Internet Software Consortium.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -16,7 +16,7 @@
  */
 
 #ifndef lint
-static char rcsid[] = "$Id: ns_ttl.c,v 1.1.1.2 1998-05-12 18:05:41 ghudson Exp $";
+static char rcsid[] = "$Id: ns_ttl.c,v 1.1.1.3 1999-03-16 19:46:41 danw Exp $";
 #endif
 
 /* Import. */

@@ -1,9 +1,10 @@
 /*
  *	from ns.h	4.33 (Berkeley) 8/23/90
- *	$Id: ns_glob.h,v 1.1.1.2 1998-05-12 18:04:04 ghudson Exp $
+ *	$Id: ns_glob.h,v 1.1.1.3 1999-03-16 19:44:59 danw Exp $
  */
 
-/* Copyright (c) 1986
+/*
+ * Copyright (c) 1986
  *    The Regents of the University of California.  All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -35,7 +36,8 @@
  * SUCH DAMAGE.
  */
 
-/* Portions Copyright (c) 1993 by Digital Equipment Corporation.
+/*
+ * Portions Copyright (c) 1993 by Digital Equipment Corporation.
  * 
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -54,7 +56,8 @@
  * SOFTWARE.
  */
 
-/* Portions Copyright (c) 1996, 1997 by Internet Software Consortium.
+/*
+ * Portions Copyright (c) 1996-1999 by Internet Software Consortium.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -74,6 +77,9 @@
  * Global variables for the name server.
  */
 
+	/* original argv[] from main() */
+DECL	char			**saved_argv;
+
 #ifdef DEBUG
 DECL	int			debug		INIT(0);
 DECL	int			desired_debug	INIT(0);
@@ -81,6 +87,9 @@ DECL	int			desired_debug	INIT(0);
 
 	/* global event context */
 DECL	evContext		ev;
+
+	/* global resolver context. */
+DECL	struct __res_state	res;
 
 	/* list of open streams */
 DECL	struct qstream		*streamq;
@@ -125,8 +134,11 @@ DECL	const char		*debugfile	INIT(_PATH_DEBUG);
 	/* zone information */
 DECL	struct zoneinfo		*zones;
 
-	/* number of zones in use */
+	/* number of zones allocated */
 DECL	int			nzones;
+
+	/* free list of unused zones[] elements. */
+DECL	LIST(struct zoneinfo)	freezones;
 
 	/* set if we need a priming */
 DECL	int			needs_prime_cache;
@@ -192,6 +204,7 @@ DECL	struct in_addr		inaddr_any;		/* Inits to 0.0.0.0 */
 DECL	options			server_options		INIT(NULL);
 
 DECL	server_info		nameserver_info		INIT(NULL);
+DECL	key_info_list		secretkey_info		INIT(NULL);
 
 	/* These will disappear some day in favour of "struct nameser". */
 DECL	ip_match_list		bogus_nameservers	INIT(NULL);
@@ -210,7 +223,6 @@ DECL	ip_match_list		local_addresses		INIT(NULL);
 DECL	ip_match_list		local_networks		INIT(NULL);
 
 	/* are we running in no-fork mode? */
-
 DECL	int			foreground		INIT(0);
 
 DECL	const struct ns_sym	logging_constants[]
@@ -289,6 +301,7 @@ DECL	const struct ns_sym	category_constants[]
 	{ ns_log_maint,		"maintenance" },
 	{ ns_log_load,		"load" },
 	{ ns_log_resp_checks,	"response-checks" },
+	{ ns_log_control,	"control" },
 	{ 0,			NULL }
 }
 #endif
@@ -308,6 +321,7 @@ DECL	u_long			globalStats[nssLast];
 DECL	evTimerID		clean_timer;
 DECL	evTimerID		interface_timer;
 DECL	evTimerID		stats_timer;
+DECL	evTimerID		heartbeat_timer;
 DECL	int			active_timers		INIT(0);
 
 DECL	uid_t			user_id;
@@ -317,3 +331,11 @@ DECL	char *			group_name		INIT(NULL);
 DECL	char *			chroot_dir		INIT(NULL);
 
 DECL	int			loading			INIT(0);
+DECL	int			needs[main_need_num];
+
+DECL	int			xfers_running		INIT(0);
+DECL	int			xfers_deferred		INIT(0);
+DECL	int			qserials_running	INIT(0);
+			
+DECL	char *			reload_args		INIT(NULL);
+DECL	char *			reload_cur_args		INIT(NULL);

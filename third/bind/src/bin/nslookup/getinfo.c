@@ -53,7 +53,7 @@
 
 #ifndef lint
 static char sccsid[] = "@(#)getinfo.c	5.26 (Berkeley) 3/21/91";
-static char rcsid[] = "$Id: getinfo.c,v 1.1.1.2 1998-05-12 18:04:25 ghudson Exp $";
+static char rcsid[] = "$Id: getinfo.c,v 1.1.1.3 1999-03-16 19:45:17 danw Exp $";
 #endif /* not lint */
 
 /*
@@ -87,7 +87,6 @@ static char rcsid[] = "$Id: getinfo.c,v 1.1.1.2 1998-05-12 18:04:25 ghudson Exp 
 
 #include "res.h"
 
-extern char *_res_resultcodes[];
 extern char *res_skip();
 
 static char *addr_list[MAXADDRS + 1];
@@ -108,7 +107,7 @@ ServerTable server[MAXSERVERS];
 
 typedef union {
     HEADER qb1;
-    u_char qb2[PACKETSZ*2];
+    u_char qb2[64*1024];
 } querybuf;
 
 typedef union {
@@ -178,7 +177,7 @@ GetAnswer(nsAddrPtr, queryType, msg, msglen, iquery, hostPtr, isServer)
 			 sizeof(answer), &n);
 
     if (status != SUCCESS) {
-	    if (_res.options & RES_DEBUG2)
+	    if (res.options & RES_DEBUG2)
 		    printf("SendRequest failed\n");
 	    return (status);
     }
@@ -322,7 +321,7 @@ GetAnswer(nsAddrPtr, queryType, msg, msglen, iquery, hostPtr, isServer)
 		bp += (((u_int32_t)bp) % sizeof(align));
 
 		if (bp + dlen >= &hostbuf[sizeof(hostbuf)]) {
-		    if (_res.options & RES_DEBUG) {
+		    if (res.options & RES_DEBUG) {
 			printf("Size (%d) too big\n", dlen);
 		    }
 		    break;
@@ -578,10 +577,10 @@ GetAnswer(nsAddrPtr, queryType, msg, msglen, iquery, hostPtr, isServer)
 *	Retrieves host name, address and alias information
 *	for a domain.
 *
-*	Algorithm from res_search().
+*	Algorithm from res_nsearch().
 *
 *  Results:
-*	ERROR		- res_mkquery failed.
+*	ERROR		- res_nmkquery failed.
 *	+ return values from GetAnswer()
 *
 *******************************************************************************
@@ -603,6 +602,7 @@ GetHostInfoByName(nsAddrPtr, queryClass, queryType, name, hostPtr, isServer)
     Boolean		got_nodata = FALSE;
     struct in_addr	ina;
     Boolean		tried_as_is = FALSE;
+    char		tmp[NS_MAXDNAME];
 
     /* Catch explicit addresses */
     if ((queryType == T_A) && IsAddr(name, &ina)) {
@@ -623,7 +623,7 @@ GetHostInfoByName(nsAddrPtr, queryClass, queryType, name, hostPtr, isServer)
     for (cp = name, n = 0; *cp; cp++)
 	    if (*cp == '.')
 		    n++;
-    if (n == 0 && (cp = hostalias(name))) {
+    if (n == 0 && (cp = res_hostalias(&res, name, tmp, sizeof tmp))) {
 	    printf("Aliased to \"%s\"\n\n", cp);
 	    return (GetHostDomain(nsAddrPtr, queryClass, queryType,
 		    cp, (char *)NULL, hostPtr, isServer));
@@ -633,7 +633,7 @@ GetHostInfoByName(nsAddrPtr, queryClass, queryType, name, hostPtr, isServer)
      * If there are dots in the name already, let's just give it a try
      * 'as is'.  The threshold can be set with the "ndots" option.
      */
-    if (n >= (int)_res.ndots) {
+    if (n >= (int)res.ndots) {
 	    result = GetHostDomain(nsAddrPtr, queryClass, queryType,
 				   name, (char *)NULL, hostPtr, isServer);
             if (result == SUCCESS)
@@ -649,9 +649,9 @@ GetHostInfoByName(nsAddrPtr, queryClass, queryType, name, hostPtr, isServer)
      *	- there is at least one dot, there is no trailing dot,
      *	  and RES_DNSRCH is set.
      */
-    if ((n == 0 && _res.options & RES_DEFNAMES) ||
-       (n != 0 && *--cp != '.' && _res.options & RES_DNSRCH))
-	 for (domain = _res.dnsrch; *domain; domain++) {
+    if ((n == 0 && res.options & RES_DEFNAMES) ||
+       (n != 0 && *--cp != '.' && res.options & RES_DNSRCH))
+	 for (domain = res.dnsrch; *domain; domain++) {
 	    result = GetHostDomain(nsAddrPtr, queryClass, queryType,
 		    name, *domain, hostPtr, isServer);
 	    /*
@@ -671,7 +671,7 @@ GetHostInfoByName(nsAddrPtr, queryClass, queryType, name, hostPtr, isServer)
 	    if (result == NO_INFO)
 		    got_nodata++;
 	    if ((result != NXDOMAIN && result != NO_INFO) ||
-		(_res.options & RES_DNSRCH) == 0)
+		(res.options & RES_DNSRCH) == 0)
 		    break;
 	}
     /* if we have not already tried the name "as is", do that now.
@@ -721,11 +721,11 @@ GetHostDomain(nsAddrPtr, queryClass, queryType, name, domain, hostPtr, isServer)
 		    MAXDNAME, name, MAXDNAME, domain);
 	    longname = nbuf;
     }
-    n = res_mkquery(QUERY, longname, queryClass, queryType,
-		    NULL, 0, 0, buf.qb2, sizeof(buf));
+    n = res_nmkquery(&res, QUERY, longname, queryClass, queryType,
+		     NULL, 0, 0, buf.qb2, sizeof(buf));
     if (n < 0) {
-	if (_res.options & RES_DEBUG) {
-	    printf("Res_mkquery failed\n");
+	if (res.options & RES_DEBUG) {
+	    printf("Res_nmkquery failed\n");
 	}
 	return (ERROR);
     }
@@ -755,7 +755,7 @@ GetHostDomain(nsAddrPtr, queryClass, queryType, name, domain, hostPtr, isServer)
 *	that corresponds to the given address.
 *
 *  Results:
-*	ERROR		- res_mkquery failed.
+*	ERROR		- res_nmkquery failed.
 *	+ return values from GetAnswer()
 *
 *******************************************************************************
@@ -777,11 +777,11 @@ GetHostInfoByAddr(nsAddrPtr, address, hostPtr)
 	    ((unsigned)p[2] & 0xff),
 	    ((unsigned)p[1] & 0xff),
 	    ((unsigned)p[0] & 0xff));
-    n = res_mkquery(QUERY, qbuf, C_IN, T_PTR, NULL, 0, NULL,
-		    buf.qb2, sizeof buf);
+    n = res_nmkquery(&res, QUERY, qbuf, C_IN, T_PTR, NULL, 0, NULL,
+		     buf.qb2, sizeof buf);
     if (n < 0) {
-	if (_res.options & RES_DEBUG) {
-	    printf("res_mkquery() failed\n");
+	if (res.options & RES_DEBUG) {
+	    printf("res_nmkquery() failed\n");
 	}
 	return (ERROR);
     }

@@ -4,3 +4,8 @@
 
 #define PATH_MAX _POSIX_PATH_MAX
 #define MAXPATHLEN _POSIX_PATH_MAX
+
+#if defined(HAS_PTHREADS) && defined(_REENTRANT)
+#define DO_PTHREADS
+#endif
+

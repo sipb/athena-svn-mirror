@@ -1,6 +1,6 @@
 #if !defined(lint) && !defined(SABER)
 static char sccsid[] = "@(#)ns_init.c	4.38 (Berkeley) 3/21/91";
-static char rcsid[] = "$Id: ns_init.c,v 1.1.1.2 1998-05-12 18:04:05 ghudson Exp $";
+static char rcsid[] = "$Id: ns_init.c,v 1.1.1.3 1999-03-16 19:44:55 danw Exp $";
 #endif /* not lint */
 
 /*
@@ -57,7 +57,7 @@ static char rcsid[] = "$Id: ns_init.c,v 1.1.1.2 1998-05-12 18:04:05 ghudson Exp 
  */
 
 /*
- * Portions Copyright (c) 1996, 1997 by Internet Software Consortium.
+ * Portions Copyright (c) 1996-1999 by Internet Software Consortium.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -79,6 +79,7 @@ static char rcsid[] = "$Id: ns_init.c,v 1.1.1.2 1998-05-12 18:04:05 ghudson Exp 
 #include <sys/param.h>
 #include <sys/socket.h>
 #include <sys/stat.h>
+#include <sys/un.h>
 
 #include <netinet/in.h>
 #include <arpa/nameser.h>
@@ -96,6 +97,8 @@ static char rcsid[] = "$Id: ns_init.c,v 1.1.1.2 1998-05-12 18:04:05 ghudson Exp 
 #include <isc/eventlib.h>
 #include <isc/logging.h>
 #include <isc/memcluster.h>
+
+#include <isc/dst.h>
 
 #include "port_after.h"
 
@@ -138,25 +141,35 @@ ns_init(const char *conffile) {
 	gettime(&tt);
 
 	if (loads == 0) {
-		zones = (struct zoneinfo *)memget(64 * sizeof *zones);
-		if (zones == NULL)
-			ns_panic(ns_log_config, 0,
-			  "Not enough memory to allocate initial zones array");
-		memset(zones, 0, 64 * sizeof *zones);
-		nzones = 1;		/* zone zero is cache data */
-		/* allocate cache hash table, formerly the root hash table. */
+		/* Init zone data. */
+		zones = NULL;
+		INIT_LIST(freezones);
+		nzones = 0;
+		make_new_zones();
+
+		/* Init hint cache. */
+		zones[0].z_type = z_hint;
+		zones[0].z_origin = savestr("", 1);
+
+		/* Allocate cache hash table, formerly the root hash table. */
 		hashtab = savehash((struct hashbuf *)NULL);
 
-		/* allocate root-hints/file-cache hash table */
+		/* Allocate root-hints/file-cache hash table. */
 		fcachetab = savehash((struct hashbuf *)NULL);
-		/* init zone data */
-		zones[0].z_type = Z_CACHE;
-		zones[0].z_origin = savestr("", 1);
+
+		/* Init other misc stuff. */
+		dst_init();
 		init_configuration();
 	} else {
 		/* Mark previous zones as not yet found in boot file. */
 		for (zp = &zones[1]; zp < &zones[nzones]; zp++)
-			zp->z_flags &= ~Z_FOUND;
+			if (reloading &&
+			    reload_cur_args != NULL &&
+			    *reload_cur_args != '\0' &&
+			    strcasecmp(reload_cur_args, zp->z_origin) != 0)
+				continue;
+			else
+				zp->z_flags &= ~Z_FOUND;
 	}
 
 #ifdef DEBUG
@@ -169,8 +182,10 @@ ns_init(const char *conffile) {
 	load_configuration(conffile);
 
 	/* Erase all old zones that were not found. */
-	for (zp = &zones[1]; zp < &zones[nzones]; zp++) {
-		if (zp->z_type && (zp->z_flags & Z_FOUND) == 0) {
+	for (zp = &zones[0]; zp < &zones[nzones]; zp++) {
+		if (zp->z_type == z_hint)
+			continue;
+		if (zp->z_type != z_nil && (zp->z_flags & Z_FOUND) == 0) {
 #ifdef BIND_UPDATE
 			/*
 			 * A dynamic zone might have changed, so we
@@ -179,7 +194,7 @@ ns_init(const char *conffile) {
 			if ((zp->z_flags & Z_DYNAMIC) &&
 			    ((zp->z_flags & Z_NEED_SOAUPDATE) ||
 			     (zp->z_flags & Z_NEED_DUMP)))
-				(void)zonedump(zp);
+				(void) zonedump(zp, ISNOTIXFR);
 #endif
 			ns_stopxfrs(zp);
 			do_reload(zp->z_origin, zp->z_type, zp->z_class);
@@ -189,6 +204,7 @@ ns_init(const char *conffile) {
 				  p_class(zp->z_class));
 			free_zone_contents(zp, 1);
 			memset(zp, 0, sizeof(*zp));
+			free_zone(zp);
 		}
 	}
 
@@ -215,14 +231,16 @@ zoneinit(struct zoneinfo *zp) {
 	 * we will refresh the zone from a primary
 	 * immediately.
 	 */
-	if (!zp->z_source)
+	if (zp->z_source == NULL)
 		return;
 	result = stat(zp->z_source, &sb);
 	if (result != -1) {
 		ns_stopxfrs(zp);
 		purge_zone(zp->z_origin, hashtab, zp->z_class);
 	}
-	if (result == -1 || db_load(zp->z_source, zp->z_origin, zp, NULL)) {
+	if (result == -1 ||
+	    db_load(zp->z_source, zp->z_origin, zp, NULL, ISNOTIXFR))
+	{
 		/*
 		 * Set zone to be refreshed immediately.
 		 */
@@ -323,13 +341,14 @@ do_reload(const char *domain, int type, int class) {
 				zoneinit(zp);
 				break;
 			case Z_PRIMARY:
-				if (db_load(zp->z_source, zp->z_origin, zp, 0)
+				if (db_load(zp->z_source, zp->z_origin, zp, 0,
+					    ISNOTIXFR)
 				    == 0)
 					zp->z_flags |= Z_AUTH;
 				break;
 			case Z_CACHE:
 				(void)db_load(zp->z_source, zp->z_origin, zp,
-					      0);
+					      0, ISNOTIXFR);
 				break;
 			}
 			break;
@@ -370,6 +389,7 @@ ns_ownercontext(type, transport)
 	case T_WKS:
 	case T_MX:
 		switch (transport) {
+		case update_trans:
 		case primary_trans:
 		case secondary_trans:
 			context = owner_ctx;
@@ -494,7 +514,6 @@ ns_shutdown() {
 			free_zone_contents(zp, 1);
 		}
 	}
-	memput(zones, ((nzones / 64) + 1) * 64 * sizeof *zones);
 
 	/* Erase the cache. */
 	clean_cache(hashtab, 1);
@@ -503,6 +522,9 @@ ns_shutdown() {
 	clean_cache(fcachetab, 1);
 	fcachetab->h_cnt = 0;		/* ??? */
 	rm_hash(fcachetab);
+
+	memput(zones, ((nzones / NEWZONES) + 1) * NEWZONES * sizeof *zones);
+	zones = NULL;
 
 #ifdef BIND_NOTIFY
 	db_cancel_pending_notifies();

@@ -1,4 +1,4 @@
-#	BSDI $Id: Makefile.BSD,v 1.1.1.1 1998-05-04 22:23:40 ghudson Exp $
+#	BSDI $Id: Makefile.BSD,v 1.1.1.2 1999-03-16 19:45:35 danw Exp $
 #
 #	@(#)Makefile	5.12 (Berkeley) 7/15/92
 
@@ -15,7 +15,8 @@ SRCS=	lcl.c lcl_gr.c lcl_pw.c lcl_sv.c lcl_pr.c lcl_ho.c lcl_nw.c lcl_ng.c \
 	gen.c gen_gr.c gen_pw.c gen_sv.c gen_pr.c gen_ho.c gen_nw.c gen_ng.c \
 	getgrent.c getpwent.c getservent.c getprotoent.c gethostent.c \
 	getnetent.c getnetgrent.c \
-	nul_ng.c irs_data.c \
+	nul_ng.c irs_data.c irp.c irp_gr.c irp_ho.c irp_ng.c irp_nw.c \
+	irp_pr.c irp_pw.c irp_sv.c irpd.c irpmarshall.c \
 	hesiod.c util.c bitncmp.c
 NOMAN=
 

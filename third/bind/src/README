@@ -1,8 +1,25 @@
-This is the source portion of BIND version 8.1.2.  Its companions are
+This is the source portion of BIND version 8.2.  Its companions are
 "doc" and "contrib" so you are probably not missing anything.
 
 See the CHANGES file for a detailed listing of all changes.  See the INSTALL
-file for information on building and installing BIND 8.1.2.
+file for information on building and installing BIND 8.2.
+
+See the SUPPORT file for information on obtaining commercial support for ISC
+artifacts including BIND, INN, and DHCP.
+
+BIND 8.2 Highlights
+
+	RFC 2308 (Negative Caching)
+	RFC 2181 (DNS Clarifications)
+	RFC 2065 (DNS Security)
+	TSIG (Transaction SIGnatures)
+	support for multiple virtual name servers
+	NDC uses a "control channel" now (no more signals)
+	"Split DNS" via zone type "forward".
+
+	Many bug fixes
+	Documentation improvements
+	Performance enhancements
 
 
 BIND 8.1.2 Highlights

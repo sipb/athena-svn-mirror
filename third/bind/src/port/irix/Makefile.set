@@ -12,7 +12,6 @@
 'YACC=yacc'
 'SYSLIBS=-ll'
 'INSTALL=bsdinst'
-'PIDDIR=/etc'
 'MANDIR=man'
 'MANROFF=man'
 'CATEXT=$$N'

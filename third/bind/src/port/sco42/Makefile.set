@@ -5,7 +5,6 @@
 'YACC=yacc -d'
 'SYSLIBS=-ll -lnsl_s -lsocket -lc_s'
 'INSTALL=/usr/local/bin/scoinst'
-'PIDDIR=/etc'
 'DESTDIR='
 'DESTBIN=/usr/bin'
 'DESTSBIN=/etc'

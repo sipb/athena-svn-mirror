@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1996, 1997, 1998 by Internet Software Consortium.
+ * Copyright (c) 1996-1999 by Internet Software Consortium.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -16,7 +16,7 @@
  */
 
 #if !defined(LINT) && !defined(CODECENTER)
-static char rcsid[] = "$Id: logging.c,v 1.1.1.2 1998-05-12 18:05:35 ghudson Exp $";
+static char rcsid[] = "$Id: logging.c,v 1.1.1.3 1999-03-16 19:46:09 danw Exp $";
 #endif /* not lint */
 
 #include "port_before.h"
@@ -300,7 +300,11 @@ log_vwrite(log_context lc, int category, int level, const char *format,
 	if (gettimeofday(&tv, NULL) < 0) {
 		syslog(LOG_INFO, "gettimeofday failed in log_vwrite()");
 	} else {
+#ifdef HAVE_TIME_R
+		localtime_r((time_t *)&tv.tv_sec, &local_tm);
+#else
 		local_tm = localtime((time_t *)&tv.tv_sec);
+#endif
 		if (local_tm != NULL) {
 			sprintf(time_buf, "%02d-%s-%4d %02d:%02d:%02d.%03ld ",
 				local_tm->tm_mday, months[local_tm->tm_mon],

@@ -19,7 +19,8 @@ fi
 if /usr/bin/cmp -s $BITYPES bitypes.h; then
 	echo 'sys/bitypes.h is up-to-date.'
 else
-	/usr/bin/cp -f $BITYPES bitypes.h
+	/usr/bin/rm -f bitypes.h
+	/usr/bin/cp $BITYPES bitypes.h
 fi
 
 exit 0

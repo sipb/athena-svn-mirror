@@ -1,5 +1,5 @@
 #ifndef lint
-static char rcsid[] = "$Id: host.c,v 1.1.1.2 1998-05-12 18:03:49 ghudson Exp $";
+static char rcsid[] = "$Id: host.c,v 1.1.1.3 1999-03-16 19:44:39 danw Exp $";
 #endif /* not lint */
 
 /*
@@ -56,7 +56,7 @@ static char rcsid[] = "$Id: host.c,v 1.1.1.2 1998-05-12 18:03:49 ghudson Exp $";
  */
 
 /*
- * Portions Copyright (c) 1996 by Internet Software Consortium
+ * Portions Copyright (c) 1996-1999 by Internet Software Consortium
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -76,7 +76,7 @@ static char rcsid[] = "$Id: host.c,v 1.1.1.2 1998-05-12 18:03:49 ghudson Exp $";
 static const char copyright[] =
 "@(#) Copyright (c) 1986 Regents of the University of California.\n\
  Portions Copyright (c) 1993 Digital Equipment Corporation.\n\
- Portions Copyright (c) 1996 Internet Software Consortium.\n\
+ Portions Copyright (c) 1996-1999 Internet Software Consortium.\n\
  All rights reserved.\n";
 #endif /* not lint */
 
@@ -108,7 +108,6 @@ static const char copyright[] =
 
 #include "port_after.h"
 
-extern int h_errno;
 extern char *_res_resultcodes[];
 
 /* Global. */
@@ -134,8 +133,9 @@ static u_char		hostbuf[NS_MAXDNAME];
 static int		sockFD;
 static FILE		*filePtr;
 
-static struct __res_state  orig;
+static struct __res_state  res, orig;
 static char		*cname = NULL;
+static const char	*progname = "amnesia";
 static int		getclass = ns_c_in, verbose = 0, list = 0;
 static int		server_specified = 0;
 static int		gettype;
@@ -146,7 +146,7 @@ static int		parsetype(const char *s);
 static int		parseclass(const char *s);
 static void		printanswer(const struct hostent *hp);
 static void		hperror(int errnum);
-static int		getaddrinfo(struct in_addr addr);
+static int		addrinfo(struct in_addr addr);
 static int		gethostinfo(char *name);
 static int		getdomaininfo(const char *name, const char *domain);
 static int		getinfo(const char *name, const char *domain,
@@ -162,74 +162,84 @@ static const u_char *	pr_cdname(const u_char *cp, const u_char *msg,
 static int		ListHosts(char *namePtr, int queryType);
 static const char *	DecodeError(int result);
 
+static void
+usage(const char *msg) {
+	fprintf(stderr, "%s: usage error (%s)\n", progname, msg);
+	fprintf(stderr, "\
+Usage: %s [-adlrwv] [-t querytype] [-c class] host [server]\n\
+\t-a is equivalent to '-v -t *'\n\
+\t-c class to look for non-Internet data\n\
+\t-d to turn on debugging output\n\
+\t-l to turn on 'list mode'\n\
+\t-r to disable recursive processing\n\
+\t-t querytype to look for a specific type of information\n\
+\t-v for verbose output\n\
+\t-w to wait forever until reply\n\
+", progname);
+	exit(1);
+}
+
 /* Public. */
 
 int
-main(int c, char **v) {
+main(int argc, char **argv) {
 	struct in_addr addr;
 	struct hostent *hp;
-	char *s, *oldcname;
+	char *s, *oldcname, *h;
 	int inverse = 0, waitmode = 0;
-	int ncnames;
+	int ncnames, ch;
 
-	res_init();
-	_res.retrans = 5;
-
-	if (c < 2) {
-		fprintf(stderr, "Usage: host [-w] [-v] [-r] [-d] [-t querytype] [-c class] [-a] host [server]\n  -w to wait forever until reply\n  -v for verbose output\n  -r to disable recursive processing\n  -d to turn on debugging output\n  -t querytype to look for a specific type of information\n  -c class to look for non-Internet data\n  -a is equivalent to '-v -t *'\n");
-		exit(1);
-	}
-	while (c > 2 && v[1][0] == '-') {
-		if (strcmp (v[1], "-w") == 0) {
-			_res.retry = 1;
-			_res.retrans = 15;
-			waitmode = 1;
-			v++;
-			c--;
-		}
-		else if (strcmp (v[1], "-r") == 0) {
-			_res.options &= ~RES_RECURSE;
-			v++;
-			c--;
-		}
-		else if (strcmp (v[1], "-d") == 0) {
-			_res.options |= RES_DEBUG;
-			v++;
-			c--;
-		}
-		else if (strcmp (v[1], "-v") == 0) {
-			verbose = 1;
-			v++;
-			c--;
-		}
-		else if (strcmp (v[1], "-l") == 0) {
-			list = 1;
-			v++;
-			c--;
-		}
-		else if (strncmp (v[1], "-t", 2) == 0) {
-			v++;
-			c--;
-			gettype = parsetype(v[1]);
-			v++;
-			c--;
-		}
-		else if (strncmp (v[1], "-c", 2) == 0) {
-			v++;
-			c--;
-			getclass = parseclass(v[1]);
-			v++;
-			c--;
-		}
-		else if (strcmp (v[1], "-a") == 0) {
+	if ((progname = strrchr(argv[0], '/')) == NULL)
+		progname = argv[0];
+	else
+		progname++;
+	res_ninit(&res);
+	res.retrans = 5;
+	while ((ch = getopt(argc, argv, "ac:dlrt:vw")) != -1) {
+		switch (ch) {
+		case 'a':
 			verbose = 1;
 			gettype = ns_t_any;
-			v++;
-			c--;
-		}		
-        }
-	if (c > 2) {
-		s = v[2];
+			break;
+		case 'c':
+			getclass = parseclass(optarg);
+			break;
+		case 'd':
+			res.options |= RES_DEBUG;
+			break;
+		case 'l':
+			list = 1;
+			break;
+		case 'r':
+			res.options &= ~RES_RECURSE;
+			break;
+		case 't':
+			gettype = parsetype(optarg);
+			break;
+		case 'v':
+			verbose = 1;
+			break;
+		case 'w':
+			res.retry = 1;
+			res.retrans = 15;
+			waitmode = 1;
+			break;
+		default:
+			usage("unrecogized switch");
+			/*NOTREACHED*/
+		}
+	}
+	argc -= optind;
+	argv += optind;
+	if (argc < 1)
+		usage("missing host argument");
+	h = *argv++;
+	argc--;
+	if (argc > 1)
+		usage("extra undefined arguments");
+	if (argc == 1) {
+		s = *argv++;
+		argc--;
 		server_specified++;
 		
 		if (!inet_aton(s, &addr)) {
@@ -237,40 +247,40 @@ main(int c, char **v) {
 			if (hp == NULL) {
 				fprintf(stderr,
 					"Error in looking up server name:\n");
-				hperror(h_errno);
+				hperror(res.res_h_errno);
 				exit(1);
 			}
-			memcpy(&_res.nsaddr.sin_addr, hp->h_addr, NS_INADDRSZ);
+			memcpy(&res.nsaddr.sin_addr, hp->h_addr, NS_INADDRSZ);
 			printf("Using domain server:\n");
 			printanswer(hp);
 		} else {
-			_res.nsaddr.sin_family = AF_INET;
-			_res.nsaddr.sin_addr = addr;
-			_res.nsaddr.sin_port = htons(NAMESERVER_PORT);
+			res.nsaddr.sin_family = AF_INET;
+			res.nsaddr.sin_addr = addr;
+			res.nsaddr.sin_port = htons(NAMESERVER_PORT);
 			printf("Using domain server %s:\n",
-			       inet_ntoa(_res.nsaddr.sin_addr));
+			       inet_ntoa(res.nsaddr.sin_addr));
 		}
-		_res.nscount = 1;
-		_res.retry = 2;
+		res.nscount = 1;
+		res.retry = 2;
 	}
-	if (strcmp(v[1], ".") == 0 || !inet_aton(v[1], &addr))
+	if (strcmp(h, ".") == 0 || !inet_aton(h, &addr))
 		addr.s_addr = INADDR_NONE;
 	hp = NULL;
-	h_errno = TRY_AGAIN;
+	res.res_h_errno = TRY_AGAIN;
 /*
  * We handle default domains ourselves, thank you.
  */
-	_res.options &= ~RES_DEFNAMES;
+	res.options &= ~RES_DEFNAMES;
 
         if (list)
-		exit(ListHosts(v[1], gettype ? gettype : ns_t_a));
+		exit(ListHosts(h, gettype ? gettype : ns_t_a));
 	oldcname = NULL;
 	ncnames = 5;
-	while (hp == NULL && h_errno == TRY_AGAIN) {
+	while (hp == NULL && res.res_h_errno == TRY_AGAIN) {
 		if (addr.s_addr == INADDR_NONE) {
 			cname = NULL;
 			if (oldcname == NULL)
-				hp = (struct hostent *)gethostinfo(v[1]);
+				hp = (struct hostent *)gethostinfo(h);
 			else
 				hp = (struct hostent *)gethostinfo(oldcname);
 			if (cname) {
@@ -281,11 +291,11 @@ main(int c, char **v) {
 				strcat(cname, ".");
 				oldcname = cname;
 				hp = NULL;
-				h_errno = TRY_AGAIN;
+				res.res_h_errno = TRY_AGAIN;
 				continue;
 			}
 		} else {
-			if (getaddrinfo(addr) == 0)
+			if (addrinfo(addr) == 0)
 				hp = NULL;
 			else
 				hp = (struct hostent *)1;	/* XXX */
@@ -295,7 +305,7 @@ main(int c, char **v) {
 	}
 
 	if (hp == NULL) {
-		hperror(h_errno);
+		hperror(res.res_h_errno);
 		exit(1);
 	}
 
@@ -430,7 +440,7 @@ hperror(int errnum) {
 }
 
 static int
-getaddrinfo(struct in_addr addr) {
+addrinfo(struct in_addr addr) {
 	u_int32_t ha = ntohl(addr.s_addr);
 	char name[NS_MAXDNAME];
 
@@ -445,6 +455,7 @@ getaddrinfo(struct in_addr addr) {
 static int
 gethostinfo(char *name) {
 	char *cp, **domain;
+	char tmp[NS_MAXDNAME];
 	const char *tp;
 	int hp, nDomain;
 	int asis = 0;
@@ -463,13 +474,13 @@ gethostinfo(char *name) {
 			cp[-1] = '.';
 		return (hp);
 	}
-	if (n == 0 && (tp = hostalias(name))) {
+	if (n == 0 && (tp = res_hostalias(&res, name, tmp, sizeof tmp))) {
 	        if (verbose)
 		    printf("Aliased to \"%s\"\n", tp);
-		_res.options |= RES_DEFNAMES;	  
+		res.options |= RES_DEFNAMES;	  
 		return (getdomaininfo(tp, (char *)NULL));
 	}
-	if (n >= _res.ndots) {
+	if (n >= res.ndots) {
 		asis = 1;
 		if (verbose)
 		    printf("Trying null domain\n");
@@ -477,14 +488,14 @@ gethostinfo(char *name) {
 		if (hp)
 			return (hp);
 	}
-	for (domain = _res.dnsrch; *domain; domain++) {
+	for (domain = res.dnsrch; *domain; domain++) {
 		if (verbose)
 			printf("Trying domain \"%s\"\n", *domain);
 		hp = getdomaininfo(name, *domain);
 		if (hp)
 			return (hp);
 	}
-	if (h_errno != HOST_NOT_FOUND || (_res.options & RES_DNSRCH) == 0)
+	if (res.res_h_errno != HOST_NOT_FOUND || (res.options & RES_DNSRCH) == 0)
 		return (0);
 	if (!asis)
 		return (0);
@@ -523,19 +534,19 @@ getinfo(const char *name, const char *domain, int type) {
 		sprintf(host, "%.*s.%.*s",
 			NS_MAXDNAME, name, NS_MAXDNAME, domain);
 
-	n = res_mkquery(QUERY, host, getclass, type, NULL, 0, NULL,
-			buf.qb2, sizeof buf);
+	n = res_nmkquery(&res, QUERY, host, getclass, type, NULL, 0, NULL,
+			 buf.qb2, sizeof buf);
 	if (n < 0) {
-		if (_res.options & RES_DEBUG)
-			printf("res_mkquery failed\n");
-		h_errno = NO_RECOVERY;
+		if (res.options & RES_DEBUG)
+			printf("res_nmkquery failed\n");
+		res.res_h_errno = NO_RECOVERY;
 		return (0);
 	}
-	n = res_send(buf.qb2, n, answer.qb2, sizeof answer);
+	n = res_nsend(&res, buf.qb2, n, answer.qb2, sizeof answer);
 	if (n < 0) {
-		if (_res.options & RES_DEBUG)
-			printf("res_send failed\n");
-		h_errno = TRY_AGAIN;
+		if (res.options & RES_DEBUG)
+			printf("res_nsend failed\n");
+		res.res_h_errno = TRY_AGAIN;
 		return (0);
 	}
 	eom = answer.qb2 + n;
@@ -557,24 +568,24 @@ printinfo(const querybuf *answer, const u_char *eom, int filter, int isls) {
 	qdcount = ntohs(hp->qdcount);
 	nscount = ntohs(hp->nscount);
 	arcount = ntohs(hp->arcount);
-	if (_res.options & RES_DEBUG || (verbose && isls == 0))
+	if (res.options & RES_DEBUG || (verbose && isls == 0))
 		printf("rcode = %d (%s), ancount=%d\n", 
 		       hp->rcode, DecodeError(hp->rcode), ancount);
 	if (hp->rcode != NOERROR || (ancount+nscount+arcount) == 0) {
 		switch (hp->rcode) {
 		case NXDOMAIN:
-			h_errno = HOST_NOT_FOUND;
+			res.res_h_errno = HOST_NOT_FOUND;
 			return (0);
 		case SERVFAIL:
-			h_errno = TRY_AGAIN;
+			res.res_h_errno = TRY_AGAIN;
 			return (0);
 			case NOERROR:
-				h_errno = NO_DATA;
+				res.res_h_errno = NO_DATA;
 				return (0);
 			case FORMERR:
 			case NOTIMP:
 			case REFUSED:
-				h_errno = NO_RECOVERY;
+				res.res_h_errno = NO_RECOVERY;
 				return (0);
 		}
 		return (0);
@@ -1036,7 +1047,7 @@ ListHosts(char *namePtr, int queryType) {
 		namePtr[i-1] = 0;
 
 	if (server_specified) {
-		memcpy(&nsipaddr[0], &_res.nsaddr.sin_addr, NS_INADDRSZ);
+		memcpy(&nsipaddr[0], &res.nsaddr.sin_addr, NS_INADDRSZ);
 		numnsaddr = 1;
 	} else {
 		/*
@@ -1044,19 +1055,22 @@ ListHosts(char *namePtr, int queryType) {
 		 * query, possibly followed by looking up addresses for some
 		 * of the names.
 		 */
-		msglen = res_mkquery(ns_o_query, namePtr, ns_c_in, ns_t_ns,
-				     NULL, 0, NULL, buf.qb2, sizeof buf);
+		msglen = res_nmkquery(&res, ns_o_query, namePtr,
+				      ns_c_in, ns_t_ns,
+				      NULL, 0, NULL,
+				      buf.qb2, sizeof buf);
 		if (msglen < 0) {
-			printf("res_mkquery failed\n");
+			printf("res_nmkquery failed\n");
 			return (ERROR);
 		}
 
-		msglen = res_send(buf.qb2, msglen, answer.qb2, sizeof answer);
+		msglen = res_nsend(&res, buf.qb2, msglen,
+				   answer.qb2, sizeof answer);
 		if (msglen < 0) {
 			printf("Cannot find nameserver -- try again later\n");
 			return (ERROR);
 		}
-		if (_res.options & RES_DEBUG || verbose)
+		if (res.options & RES_DEBUG || verbose)
 			printf("rcode = %d (%s), ancount=%d\n", 
 			       answer.qb1.rcode, DecodeError(answer.qb1.rcode),
 			       ntohs(answer.qb1.ancount));
@@ -1195,11 +1209,11 @@ ListHosts(char *namePtr, int queryType) {
 							numaddrs++;
 						}
 				}
-				if (_res.options & RES_DEBUG || verbose)
+				if (res.options & RES_DEBUG || verbose)
 					printf(
 				  "Found %d addresses for %s by extra query\n",
 					       numaddrs, nsname[i]);
-			} else if (_res.options & RES_DEBUG || verbose)
+			} else if (res.options & RES_DEBUG || verbose)
 				printf("Found %d addresses for %s\n",
 				       nshaveaddr[i], nsname[i]);
 		}
@@ -1218,10 +1232,10 @@ ListHosts(char *namePtr, int queryType) {
 	/*
 	 * Create a query packet for the requested domain name.
 	 */
-	msglen = res_mkquery(QUERY, namePtr, getclass, ns_t_axfr, NULL,
-			     0, NULL, buf.qb2, sizeof buf);
+	msglen = res_nmkquery(&res, QUERY, namePtr, getclass, ns_t_axfr, NULL,
+			      0, NULL, buf.qb2, sizeof buf);
 	if (msglen < 0) {
-		if (_res.options & RES_DEBUG)
+		if (res.options & RES_DEBUG)
 			fprintf(stderr, "ListHosts: Res_mkquery failed\n");
 		return (ERROR);
 	}
@@ -1240,7 +1254,7 @@ ListHosts(char *namePtr, int queryType) {
 			return (ERROR);
 		}
 		memcpy(&sin.sin_addr, &nsipaddr[thisns], NS_INADDRSZ);
-		if (_res.options & RES_DEBUG || verbose)
+		if (res.options & RES_DEBUG || verbose)
 			printf("Trying %s\n", inet_ntoa(sin.sin_addr));
 		if (connect(sockFD, (struct sockaddr *)&sin, sizeof(sin)) >= 0)
 			break;
@@ -1310,7 +1324,7 @@ ListHosts(char *namePtr, int queryType) {
 		if (i != NOERROR || ntohs(buf.qb1.ancount) == 0) {
 			if (thisns + 1 < numnsaddr &&
 			    (i == SERVFAIL || i == NOTIMP || i == REFUSED)) {
-				if (_res.options & RES_DEBUG || verbose)
+				if (res.options & RES_DEBUG || verbose)
 					printf(
 				     "Server failed, trying next server: %s\n",
 					       i != NOERROR

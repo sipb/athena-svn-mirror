@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1996 by Internet Software Consortium.
+ * Copyright (c) 1996-1999 by Internet Software Consortium.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -16,17 +16,24 @@
  */
 
 /*
- * $Id: dns_p.h,v 1.1.1.1 1998-05-04 22:23:40 ghudson Exp $
+ * $Id: dns_p.h,v 1.1.1.2 1999-03-16 19:45:29 danw Exp $
  */
 
 #ifndef _DNS_P_H_INCLUDED
 #define	_DNS_P_H_INCLUDED
 
+#define	maybe_ok(res, nm, ok) (((res)->options & RES_NOCHECKNAME) != 0 || \
+			       (ok)(nm) != 0)
+#define maybe_hnok(res, hn) maybe_ok((res), (hn), res_hnok)
+#define maybe_dnok(res, dn) maybe_ok((res), (dn), res_hnok)
+
 /*
  * Object state.
  */
 struct dns_p {
-	void	*hes_ctx;
+	void			*hes_ctx;
+	struct __res_state	*res;
+	void                    (*free_res) __P((void *));
 };
 
 /*

@@ -47,4 +47,4 @@ upgrading to 4.1.1_U1 does replace the shared libraries, and it's highly
 recommended that you do this upgrade if at all possible.
 
 
-#ident	   "@(#)bind/shres/netbsd:$Name: not supported by cvs2svn $:$Id: README.SunOS,v 1.1.1.2 1998-05-12 18:06:01 ghudson Exp $"
+#ident	   "@(#)bind/shres/netbsd:$Name: not supported by cvs2svn $:$Id: README.SunOS,v 1.1.1.3 1999-03-16 19:47:12 danw Exp $"

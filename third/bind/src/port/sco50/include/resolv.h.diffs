@@ -1,52 +1,28 @@
-*** ../../../include/resolv.h Tue Apr 15 22:38:26 1997
---- resolv.h Tue Apr 15 22:38:44 1997
+*** ../../../include/resolv.h	Sun Sep 13 00:16:19 1998
+--- resolv.h	Wed Sep 16 09:51:37 1998
 ***************
-*** 106,111 ****
-  #define	MAXRESOLVSORT		10	/* number of net to sort on */
-  #define	RES_MAXNDOTS		15	/* should reflect bit field size */
-  
-  struct __res_state {
-  	int	retrans;	 	/* retransmition time interval */
-  	int	retry;			/* number of times to retransmit */
---- 106,113 ----
-  #define	MAXRESOLVSORT		10	/* number of net to sort on */
-  #define	RES_MAXNDOTS		15	/* should reflect bit field size */
+*** 132,135 ****
+--- 132,137 ----
+  #define	RES_MAXRETRY		5	/* only for resolv.conf/RES_OPTIONS */
   
 + #define _RES_MAXDBSLOTS		3
 + 
   struct __res_state {
   	int	retrans;	 	/* retransmition time interval */
-  	int	retry;			/* number of times to retransmit */
 ***************
-*** 121,126 ****
-  	unsigned ndots:4;		/* threshold for initial abs. query */
-  	unsigned nsort:4;		/* number of elements in sort_list[] */
-  	char	unused[3];
-  	struct {
-  		struct in_addr	addr;
-  		u_int32_t	mask;
---- 123,130 ----
-  	unsigned ndots:4;		/* threshold for initial abs. query */
+*** 147,150 ****
+--- 149,154 ----
   	unsigned nsort:4;		/* number of elements in sort_list[] */
   	char	unused[3];
 + 	char	dborder[_RES_MAXDBSLOTS];	/* Database search order */
 + 	char	unused2[1];		/* pad */
   	struct {
   		struct in_addr	addr;
-  		u_int32_t	mask;
 ***************
-*** 125,131 ****
-  		struct in_addr	addr;
-  		u_int32_t	mask;
-  	} sort_list[MAXRESOLVSORT];
-- 	char	pad[72];		/* On an i386 this means 512b total. */
+*** 156,160 ****
+  	int	_sock;			/* PRIVATE: for res_send i/o */
+  	u_int	_flags;			/* PRIVATE: see below */
+- 	char	pad[52];		/* On an i386 this means 512b total. */
   };
   
-  /*
---- 129,134 ----
-  		struct in_addr	addr;
-  		u_int32_t	mask;
-  	} sort_list[MAXRESOLVSORT];
-  };
-  
-  /*
+--- 160,163 ----

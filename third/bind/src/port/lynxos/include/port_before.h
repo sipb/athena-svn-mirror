@@ -5,4 +5,8 @@
 
 #define __NO_INCLUDE_WARN__
 
+#if defined(HAS_PTHREADS) && defined(_REENTRANT)
+#define DO_PTHREADS
+#endif
+
 #include <time.h>

@@ -10,3 +10,8 @@ int daemon(int nochdir, int noclose);
 
 #define IFNAMSIZ 16	/* used in <net/route.h> */
 
+
+#if defined(HAS_PTHREADS) && defined(_REENTRANT)
+#define DO_PTHREADS
+#endif
+

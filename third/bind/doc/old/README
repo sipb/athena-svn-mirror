@@ -173,8 +173,6 @@ This software is protected under the U C Regents' copyright.  Changes made
 by or released through Digital Equipment Corporation are subject to a
 subsidiary copyright.  The entire copyright is as follows:
 
-++Copyright++ 1989
--
 Copyright (c) 1989
    The Regents of the University of California.  All rights reserved.
 
@@ -205,7 +203,7 @@ HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
 LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
 OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 SUCH DAMAGE.
--
+
 Portions Copyright (c) 1993 by Digital Equipment Corporation.
 
 Permission to use, copy, modify, and distribute this software for any
@@ -223,8 +221,6 @@ DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR
 PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS
 ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
 SOFTWARE.
--
---Copyright--
 
 To build this:								QUICK
 
