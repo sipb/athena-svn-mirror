@@ -1,8 +1,0 @@
-#
-# $Id: Imakefile,v 1.3 1991-06-03 01:55:25 probe Exp $
-#
-
-SimpleProgram(getcluster,getcluster.o,-lhesiod,/bin/athena)
-install_man(getcluster.8,getcluster.8)
-install_man(save_cluster_info.8,save_cluster_info.8)
-install_script(save_cluster_info.sh,,$(ATHRETCDIR)/save_cluster_info)
