@@ -6,7 +6,7 @@
  *      Created: 	October 22, 1987
  *      By:		Chris D. Peterson
  *
- *	$Id: Imakefile,v 1.4 1994-06-17 09:45:36 cfields Exp $
+ *	$Id: Imakefile,v 1.4.8.1 1999-11-09 16:16:12 tb Exp $
  *
  *         Copyright 1987, 1988 by the Massachusetts Institute of Technology.
  *     
@@ -30,6 +30,9 @@ XTKFILES= ScrollByLine.c
 INCLUDE= defs.h globals.h more.h mit-copyright.h
 CFILES= globals.c help.c main.c pages.c ${XTKFILES}
 
+create_dir($(ATHBINDIR))
+create_dir($(ATHMANDIR)/man1)
+create_dir($(LIBDIR))
 SimpleProgram(xmore,$(OBJS),$(LIBES),$(ATHBINDIR))
 install_file(xmore.help,$(LIBDIR))
 install_man(xmore.man,xmore.1)
