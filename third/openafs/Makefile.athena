@@ -1,4 +1,4 @@
-# $Id: Makefile.athena,v 1.5 2002-05-16 19:17:44 zacheiss Exp $
+# $Id: Makefile.athena,v 1.6 2003-03-13 22:07:10 ghudson Exp $
 
 SHELL=/bin/sh
 ATHRBINDIR=/bin/athena
@@ -308,6 +308,7 @@ install:
 	   ;; \
 	sun4) \
 	   mkdir -p $$SRVD/kernel/fs/sparcv9 ; \
+	   mkdir -p $$SRVD/usr/vice/cache ; \
 	   mkdir -p $$SRVD/etc/init.d ; \
 	   mkdir -p $$SRVD/etc/rc0.d ; \
 	   mkdir -p $$SRVD/etc/rc2.d ; \
