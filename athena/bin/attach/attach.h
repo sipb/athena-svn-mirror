@@ -1,5 +1,5 @@
 /*
- * $Id: attach.h,v 1.21 1996-12-11 21:59:56 ghudson Exp $
+ * $Id: attach.h,v 1.22 1997-06-02 07:41:45 ghudson Exp $
  *
  * Copyright (c) 1988,1991 by the Massachusetts Institute of Technology.
  *
@@ -115,6 +115,7 @@ struct _attachtab {
 	char		host[BUFSIZ];
 	char		hostdir[MAXPATHLEN];
 	char		mntpt[MAXPATHLEN];
+	int		preference;
 };
 
 /*
@@ -341,7 +342,8 @@ CLIENT	*rpc_create();
 extern int errno;
 extern unsigned long rvderrno;
 extern char *sys_errlist[];
-extern char **build_hesiod_line(), **conf_filsys_resolve();
+extern struct _attachtab *build_hesiod_line();
+extern char **conf_filsys_resolve();
 extern struct _fstypes *get_fs();
 extern char *filsys_options();
 extern char *stropt(), *struid(), *path_canon();
