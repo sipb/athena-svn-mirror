@@ -34,7 +34,8 @@ void Sendmail_to_user( int status, struct control_file *cfp,
 	FILE *mail = 0;
 	int fd;
 	struct stat statb;
-	char *pname;
+	char *pname, *transport = NULL, *user;
+	char tbuf[LINEBUFFER];
 	/*
 	 * check to see if the user really wanted
 	 * "your file was printed ok" message
@@ -43,19 +44,58 @@ void Sendmail_to_user( int status, struct control_file *cfp,
 		cfp->MAILNAME, Sendmail );
 	if( cfp->MAILNAME == 0
 		|| cfp->MAILNAME[0] == 0
-		|| cfp->MAILNAME[1] == 0 || hostport( cfp->MAILNAME ) ){
+		|| cfp->MAILNAME[1] == 0
+		|| ( hostport(cfp->MAILNAME) && !Extended_notification ) ){
 		DEBUG2("Sendmail: no mail wanted");
 		return;
 	}
-	if( !Sendmail || !*Sendmail) {
-		DEBUG2("Sendmail: mail is turned off");
-		return;
+
+	if( hostport(cfp->MAILNAME) ){
+		safestrncpy( tbuf, cfp->MAILNAME + 1 );
+		transport = tbuf;
+		user = strchr( transport, '%' );
+		if( !user ){
+			fatal( LOG_ERR, "Sendmail_to_user: name too long" );
+		}
+		*user++ = '\0';
+	} else {
+		user = cfp->MAILNAME + 1;
 	}
 
-	/* create the sendmail process */
-	if( Make_filter( 'f', cfp, &Pr_fd_info, Sendmail, 1, 1, 1,
-			pc_used, (void*)0, 0, 0, 0) ){
-		fatal( LOG_ERR, "%s", cfp->error );
+	if( !transport ){
+		if( !Sendmail || !*Sendmail ){
+			DEBUG2("Sendmail: mail is turned off");
+			return;
+		}
+
+		/* create the sendmail process */
+		if( Make_filter( 'f', cfp, &Pr_fd_info, Sendmail, 1, 1, 1,
+				pc_used, (void*)0, 0, 0, 0) ){
+			fatal( LOG_ERR, "%s", cfp->error );
+		}
+	} else if( strcmp( transport, "zephyr" ) == 0 ){
+		char zbuf[SMALLBUFFER];
+
+		if( !Zwrite || !*Zwrite ){
+			DEBUG2("Sendmail: zephyr is turned off");
+			return;
+		}
+
+		/* create the zwrite process */
+		if( plp_snprintf( zbuf, sizeof(zbuf),
+				 "%s -n -q -d -l -s '%s' %s", Zwrite,
+				 Printer, user ) >= SMALLBUFFER - 1 ){
+			fatal( LOG_ERR, "buffer overflow sending zephyr" );
+		}
+		if( Make_filter( 'f', cfp, &Pr_fd_info, zbuf, 1, 1, 1,
+				pc_used, (void*)0, 0, 0, 0) ){
+			fatal( LOG_ERR, "%s", cfp->error );
+		}
+
+	} else {
+		DEBUG2("Sendmail: unknown notification transport '%s'",
+		       transport);
+		return;
 	}
 
 	mail = fdopen( Pr_fd_info.input, "a+" );
@@ -63,14 +103,17 @@ void Sendmail_to_user( int status, struct control_file *cfp,
 		logerr_die( LOG_ERR, _("Sendmail: fdopen failed") );
 	}
 
-	(void) fprintf( mail, "To: %s\n", cfp->MAILNAME+1 );
-	if( status != JSUCC && Mail_operator_on_error ){
-		fprintf( mail, "CC: %s\n", Mail_operator_on_error );
+	if( !transport ){
+		/* Print the mail header */
+		(void) fprintf( mail, "To: %s\n", user );
+		if( status != JSUCC && Mail_operator_on_error ){
+			fprintf( mail, "CC: %s\n", Mail_operator_on_error );
+		}
+		(void) fprintf( mail, "From: %s@%s\n",
+			       Mail_from ? Mail_from : Printer, FQDNHost );
+		(void) fprintf( mail, "Subject: %s@%s job %s\n\n",
+			       Printer, FQDNHost, cfp->transfername );
 	}
-	(void) fprintf( mail, "From: %s@%s\n",
-		Mail_from ? Mail_from : Printer, FQDNHost );
-	(void) fprintf( mail, "Subject: %s@%s job %s\n\n",
-		Printer, FQDNHost, cfp->transfername );
 
 	/* now do the message */
 	(void) fprintf( mail, _("printer %s job %s"), Printer, cfp->transfername );
@@ -95,32 +138,30 @@ void Sendmail_to_user( int status, struct control_file *cfp,
 		break;
 	}
 
-	/*
-	 * get the last status of the spooler
-	 */
-	pname = Add2_path( CDpathname, "status.", Printer );
-	if( (fd = Checkread( pname, &statb ) ) >= 0 ){
-		FILE *sfile;
-		char msg[LINEBUFFER];
-
-		sfile = fdopen( fd, "r" );
-		if( sfile == 0 ){
-			logerr_die( LOG_ERR, _("Sendmail: fdopen failed") );
-		}
+	if( !transport ){
 		/*
-		 * we read the file,writing each line out
+		 * get the last status of the spooler
 		 */
-		while( fgets( msg, sizeof(msg), sfile ) ){
-			fprintf( mail, _("   Status: %s"), msg );
-		}
-		fclose( sfile );
-	}
-	close(fd);
+		pname = Add2_path( CDpathname, "status.", Printer );
+		if( (fd = Checkread( pname, &statb ) ) >= 0 ){
+			FILE *sfile;
+			char msg[LINEBUFFER];
 
-	/*
-	 * open the status file and copy the last set of status
-	 * information to the user
-	 */
+			sfile = fdopen( fd, "r" );
+			if( sfile == 0 ){
+				logerr_die( LOG_ERR,
+					   _("Sendmail: fdopen failed") );
+			}
+			/*
+			 * we read the file,writing each line out
+			 */
+			while( fgets( msg, sizeof(msg), sfile ) ){
+				fprintf( mail, _("   Status: %s"), msg );
+			}
+			fclose( sfile );
+		}
+		close(fd);
+	}
 
 	(void) fflush( mail );
 	(void) fclose( mail );
