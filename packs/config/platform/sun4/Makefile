@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.15 1997-12-06 21:13:01 ghudson Exp $
+# $Id: Makefile,v 1.16 1997-12-30 18:35:09 ghudson Exp $
 
 ETCDIR=/etc
 ATHRETCDIR=/etc/athena
@@ -56,7 +56,6 @@ install:
 	install -c -m 0644 logindevperm ${DESTDIR}${ETCDIR}
 	install -c -m 0644 minor_perm ${DESTDIR}${ETCDIR}
 	install -c -m 0644 name_to_sysnum ${DESTDIR}${ETCDIR}
-	install -c -m 0644 netmasks ${DESTDIR}${INET}
 	install -c -m 0644 netspy ${DESTDIR}${ETCDIR}
 	install -c -m 0644 newsyslog.conf ${DESTDIR}${ATHRETCDIR}
 	install -c -m 0644 nsswitch.conf ${DESTDIR}${ETCDIR}
