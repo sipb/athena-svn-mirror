@@ -1,4 +1,4 @@
-! $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/Xlogin.rios.presed,v 1.5 1992-05-26 19:12:07 cfields Exp $
+! $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/Xlogin.rios.presed,v 1.6 1992-06-08 17:03:14 lwvanels Exp $
 
 xlogin.wcChildren:		login, savershell, instructions, \
 				warningShell, getSessionShell, queryShell
@@ -155,7 +155,7 @@ xlogin.Geometry: 		580x325+205+105
 *motd.horizDistance:		5
 *motd.vertDistance:		10
 *motd.fromVert:			*mesg
-*motd.font			9x15
+*motd.font:			9x15
 *motd*resizable:		true
 
 *userName.wcClassName:		Label
