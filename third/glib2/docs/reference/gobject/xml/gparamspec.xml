@@ -270,7 +270,25 @@ Retrieve the <link linkend="GType">GType</link> to intiialize a <link linkend="G
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="GParamSpecClass"/>struct GParamSpecClass</title>
-<programlisting>struct GParamSpecClass;</programlisting>
+<programlisting>struct GParamSpecClass {
+
+  GTypeClass      g_type_class;
+
+  GType		  value_type;
+
+  void	        (*finalize)		(GParamSpec   *pspec);
+
+  /* GParam methods */
+  void          (*value_set_default)    (GParamSpec   *pspec,
+					 GValue       *value);
+  gboolean      (*value_validate)       (GParamSpec   *pspec,
+					 GValue       *value);
+  gint          (*values_cmp)           (GParamSpec   *pspec,
+					 const GValue *value1,
+					 const GValue *value2);
+  gpointer	  dummy[4];
+};
+</programlisting>
 <para>
 
 </para></refsect2>

@@ -118,8 +118,8 @@
 </sub>
 </sub>
 <sub name="GTypePlugin" link="gobject-GTypePlugin.html">
-<sub name="Description" link="gobject-GTypePlugin.html#id2844864"/>
-<sub name="Details" link="gobject-GTypePlugin.html#id2844876">
+<sub name="Description" link="gobject-GTypePlugin.html#id2844852"/>
+<sub name="Details" link="gobject-GTypePlugin.html#id2844865">
 <sub name="struct GTypePlugin" link="gobject-GTypePlugin.html#GTypePlugin"/>
 <sub name="struct GTypePluginClass" link="gobject-GTypePlugin.html#GTypePluginClass"/>
 <sub name="GTypePluginUse ()" link="gobject-GTypePlugin.html#GTypePluginUse"/>
@@ -133,8 +133,8 @@
 </sub>
 </sub>
 <sub name="GTypeModule" link="gobject-GTypeModule.html">
-<sub name="Description" link="gobject-GTypeModule.html#id2845931"/>
-<sub name="Details" link="gobject-GTypeModule.html#id2846070">
+<sub name="Description" link="gobject-GTypeModule.html#id2845924"/>
+<sub name="Details" link="gobject-GTypeModule.html#id2846063">
 <sub name="struct GTypeModule" link="gobject-GTypeModule.html#GTypeModule"/>
 <sub name="struct GTypeModuleClass" link="gobject-GTypeModule.html#GTypeModuleClass"/>
 <sub name="g_type_module_use ()" link="gobject-GTypeModule.html#g-type-module-use"/>
@@ -143,11 +143,11 @@
 <sub name="g_type_module_register_type ()" link="gobject-GTypeModule.html#g-type-module-register-type"/>
 <sub name="g_type_module_add_interface ()" link="gobject-GTypeModule.html#g-type-module-add-interface"/>
 </sub>
-<sub name="See Also" link="gobject-GTypeModule.html#id2846808"/>
+<sub name="See Also" link="gobject-GTypeModule.html#id2846806"/>
 </sub>
 <sub name="GObject" link="gobject-The-Base-Object-Type.html">
-<sub name="Description" link="gobject-The-Base-Object-Type.html#id2848248"/>
-<sub name="Details" link="gobject-The-Base-Object-Type.html#id2848261">
+<sub name="Description" link="gobject-The-Base-Object-Type.html#id2848246"/>
+<sub name="Details" link="gobject-The-Base-Object-Type.html#id2848259">
 <sub name="struct GObject" link="gobject-The-Base-Object-Type.html#GObject"/>
 <sub name="struct GObjectClass" link="gobject-The-Base-Object-Type.html#GObjectClass"/>
 <sub name="GObjectGetPropertyFunc ()" link="gobject-The-Base-Object-Type.html#GObjectGetPropertyFunc"/>
@@ -203,8 +203,8 @@
 </sub>
 </sub>
 <sub name="Enums and Flags" link="gobject-Enumeration-and-Flag-Types.html">
-<sub name="Description" link="gobject-Enumeration-and-Flag-Types.html#id2853781"/>
-<sub name="Details" link="gobject-Enumeration-and-Flag-Types.html#id2853793">
+<sub name="Description" link="gobject-Enumeration-and-Flag-Types.html#id2853780"/>
+<sub name="Details" link="gobject-Enumeration-and-Flag-Types.html#id2853792">
 <sub name="struct GEnumClass" link="gobject-Enumeration-and-Flag-Types.html#GEnumClass"/>
 <sub name="struct GFlagsClass" link="gobject-Enumeration-and-Flag-Types.html#GFlagsClass"/>
 <sub name="G_ENUM_CLASS_TYPE()" link="gobject-Enumeration-and-Flag-Types.html#G-ENUM-CLASS-TYPE-CAPS"/>
@@ -232,8 +232,8 @@
 </sub>
 </sub>
 <sub name="GBoxed" link="gobject-Boxed-Types.html">
-<sub name="Description" link="gobject-Boxed-Types.html#id2855841"/>
-<sub name="Details" link="gobject-Boxed-Types.html#id2855853">
+<sub name="Description" link="gobject-Boxed-Types.html#id2855845"/>
+<sub name="Details" link="gobject-Boxed-Types.html#id2855857">
 <sub name="GBoxedCopyFunc ()" link="gobject-Boxed-Types.html#GBoxedCopyFunc"/>
 <sub name="GBoxedFreeFunc ()" link="gobject-Boxed-Types.html#GBoxedFreeFunc"/>
 <sub name="g_boxed_copy ()" link="gobject-Boxed-Types.html#g-boxed-copy"/>
@@ -242,11 +242,11 @@
 <sub name="g_pointer_type_register_static ()" link="gobject-Boxed-Types.html#g-pointer-type-register-static"/>
 <sub name="G_TYPE_GSTRING" link="gobject-Boxed-Types.html#G-TYPE-GSTRING-CAPS"/>
 </sub>
-<sub name="See Also" link="gobject-Boxed-Types.html#id2856492"/>
+<sub name="See Also" link="gobject-Boxed-Types.html#id2856496"/>
 </sub>
 <sub name="Generic Values" link="gobject-Generic-values.html">
-<sub name="Description" link="gobject-Generic-values.html#id2857015"/>
-<sub name="Details" link="gobject-Generic-values.html#id2857115">
+<sub name="Description" link="gobject-Generic-values.html#id2857020"/>
+<sub name="Details" link="gobject-Generic-values.html#id2857119">
 <sub name="G_VALUE_HOLDS()" link="gobject-Generic-values.html#G-VALUE-HOLDS-CAPS"/>
 <sub name="G_VALUE_TYPE()" link="gobject-Generic-values.html#G-VALUE-TYPE-CAPS"/>
 <sub name="G_VALUE_TYPE_NAME()" link="gobject-Generic-values.html#G-VALUE-TYPE-NAME-CAPS"/>
@@ -269,11 +269,11 @@
 <sub name="g_value_register_transform_func ()" link="gobject-Generic-values.html#g-value-register-transform-func"/>
 <sub name="g_strdup_value_contents ()" link="gobject-Generic-values.html#g-strdup-value-contents"/>
 </sub>
-<sub name="See Also" link="gobject-Generic-values.html#id2859104"/>
+<sub name="See Also" link="gobject-Generic-values.html#id2859108"/>
 </sub>
 <sub name="Parameters and Values" link="gobject-Standard-Parameter-and-Value-Types.html">
-<sub name="Description" link="gobject-Standard-Parameter-and-Value-Types.html#id2862825"/>
-<sub name="Details" link="gobject-Standard-Parameter-and-Value-Types.html#id2862898">
+<sub name="Description" link="gobject-Standard-Parameter-and-Value-Types.html#id2862829"/>
+<sub name="Details" link="gobject-Standard-Parameter-and-Value-Types.html#id2862901">
 <sub name="G_IS_PARAM_SPEC_BOOLEAN()" link="gobject-Standard-Parameter-and-Value-Types.html#G-IS-PARAM-SPEC-BOOLEAN-CAPS"/>
 <sub name="G_PARAM_SPEC_BOOLEAN()" link="gobject-Standard-Parameter-and-Value-Types.html#G-PARAM-SPEC-BOOLEAN-CAPS"/>
 <sub name="G_VALUE_HOLDS_BOOLEAN()" link="gobject-Standard-Parameter-and-Value-Types.html#G-VALUE-HOLDS-BOOLEAN-CAPS"/>
@@ -440,11 +440,11 @@
 <sub name="struct GParamSpecValueArray" link="gobject-Standard-Parameter-and-Value-Types.html#GParamSpecValueArray"/>
 <sub name="g_param_spec_value_array ()" link="gobject-Standard-Parameter-and-Value-Types.html#g-param-spec-value-array"/>
 </sub>
-<sub name="See Also" link="gobject-Standard-Parameter-and-Value-Types.html#id2879089"/>
+<sub name="See Also" link="gobject-Standard-Parameter-and-Value-Types.html#id2879091"/>
 </sub>
 <sub name="Varargs Value Collection" link="gobject-Varargs-Value-Collection.html">
-<sub name="Description" link="gobject-Varargs-Value-Collection.html#id2859235"/>
-<sub name="Details" link="gobject-Varargs-Value-Collection.html#id2859247">
+<sub name="Description" link="gobject-Varargs-Value-Collection.html#id2859239"/>
+<sub name="Details" link="gobject-Varargs-Value-Collection.html#id2859251">
 <sub name="union GTypeCValue" link="gobject-Varargs-Value-Collection.html#GTypeCValue"/>
 <sub name="G_VALUE_COLLECT()" link="gobject-Varargs-Value-Collection.html#G-VALUE-COLLECT-CAPS"/>
 <sub name="G_VALUE_LCOPY()" link="gobject-Varargs-Value-Collection.html#G-VALUE-LCOPY-CAPS"/>
@@ -452,8 +452,8 @@
 </sub>
 </sub>
 <sub name="GParamSpec" link="gobject-GParamSpec.html">
-<sub name="Description" link="gobject-GParamSpec.html#id2880512"/>
-<sub name="Details" link="gobject-GParamSpec.html#id2880542">
+<sub name="Description" link="gobject-GParamSpec.html#id2880514"/>
+<sub name="Details" link="gobject-GParamSpec.html#id2880544">
 <sub name="G_TYPE_IS_PARAM()" link="gobject-GParamSpec.html#G-TYPE-IS-PARAM-CAPS"/>
 <sub name="G_PARAM_SPEC()" link="gobject-GParamSpec.html#G-PARAM-SPEC-CAPS"/>
 <sub name="G_IS_PARAM_SPEC()" link="gobject-GParamSpec.html#G-IS-PARAM-SPEC-CAPS"/>
@@ -495,11 +495,11 @@
 <sub name="g_param_spec_pool_list ()" link="gobject-GParamSpec.html#g-param-spec-pool-list"/>
 <sub name="g_param_spec_pool_list_owned ()" link="gobject-GParamSpec.html#g-param-spec-pool-list-owned"/>
 </sub>
-<sub name="See Also" link="gobject-GParamSpec.html#id2884645"/>
+<sub name="See Also" link="gobject-GParamSpec.html#id2884650"/>
 </sub>
 <sub name="Signals" link="gobject-Signals.html">
-<sub name="Description" link="gobject-Signals.html#id2886674"/>
-<sub name="Details" link="gobject-Signals.html#id2886853">
+<sub name="Description" link="gobject-Signals.html#id2886680"/>
+<sub name="Details" link="gobject-Signals.html#id2886858">
 <sub name="struct GSignalInvocationHint" link="gobject-Signals.html#GSignalInvocationHint"/>
 <sub name="GSignalAccumulator ()" link="gobject-Signals.html#GSignalAccumulator"/>
 <sub name="GSignalCMarshaller" link="gobject-Signals.html#GSignalCMarshaller"/>
@@ -553,8 +553,8 @@
 </sub>
 </sub>
 <sub name="Closures" link="gobject-Closures.html">
-<sub name="Description" link="gobject-Closures.html#id2896106"/>
-<sub name="Details" link="gobject-Closures.html#id2896116">
+<sub name="Description" link="gobject-Closures.html#id2896111"/>
+<sub name="Details" link="gobject-Closures.html#id2896122">
 <sub name="G_CLOSURE_NEEDS_MARSHAL()" link="gobject-Closures.html#G-CLOSURE-NEEDS-MARSHAL-CAPS"/>
 <sub name="G_CLOSURE_N_NOTIFIERS()" link="gobject-Closures.html#G-CLOSURE-N-NOTIFIERS-CAPS"/>
 <sub name="G_CCLOSURE_SWAP_DATA()" link="gobject-Closures.html#G-CCLOSURE-SWAP-DATA-CAPS"/>
@@ -590,8 +590,8 @@
 </sub>
 </sub>
 <sub name="Value arrays" link="gobject-Value-arrays.html">
-<sub name="Description" link="gobject-Value-arrays.html#id2899358"/>
-<sub name="Details" link="gobject-Value-arrays.html#id2899402">
+<sub name="Description" link="gobject-Value-arrays.html#id2899363"/>
+<sub name="Details" link="gobject-Value-arrays.html#id2899407">
 <sub name="struct GValueArray" link="gobject-Value-arrays.html#GValueArray"/>
 <sub name="g_value_array_get_nth ()" link="gobject-Value-arrays.html#g-value-array-get-nth"/>
 <sub name="g_value_array_new ()" link="gobject-Value-arrays.html#g-value-array-new"/>
@@ -604,7 +604,7 @@
 <sub name="g_value_array_sort ()" link="gobject-Value-arrays.html#g-value-array-sort"/>
 <sub name="g_value_array_sort_with_data ()" link="gobject-Value-arrays.html#g-value-array-sort-with-data"/>
 </sub>
-<sub name="See Also" link="gobject-Value-arrays.html#id2900841"/>
+<sub name="See Also" link="gobject-Value-arrays.html#id2900845"/>
 </sub>
 </sub>
 </chapters>

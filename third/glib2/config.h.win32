@@ -76,19 +76,19 @@
 #define ENABLE_NLS 1
 
 /* Define to the GLIB binary age */
-#define GLIB_BINARY_AGE 200
+#define GLIB_BINARY_AGE 201
 
 /* Byte contents of gmutex */
 /* #undef GLIB_BYTE_CONTENTS_GMUTEX */
 
 /* Define to the GLIB interface age */
-#define GLIB_INTERFACE_AGE 0
+#define GLIB_INTERFACE_AGE 1
 
 /* Define to the GLIB major version */
 #define GLIB_MAJOR_VERSION 2
 
 /* Define to the GLIB micro version */
-#define GLIB_MICRO_VERSION 0
+#define GLIB_MICRO_VERSION 1
 
 /* Define to the GLIB minor version */
 #define GLIB_MINOR_VERSION 2

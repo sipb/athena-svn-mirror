@@ -588,8 +588,8 @@
 </sub>
 <sub name="GLib Utilities" link="glib-utilities.html">
 <sub name="String Utility Functions" link="glib-String-Utility-Functions.html">
-<sub name="Description" link="glib-String-Utility-Functions.html#id2894825"/>
-<sub name="Details" link="glib-String-Utility-Functions.html#id2894945">
+<sub name="Description" link="glib-String-Utility-Functions.html#id2894824"/>
+<sub name="Details" link="glib-String-Utility-Functions.html#id2894944">
 <sub name="g_strdup ()" link="glib-String-Utility-Functions.html#g-strdup"/>
 <sub name="g_strndup ()" link="glib-String-Utility-Functions.html#g-strndup"/>
 <sub name="g_strdupv ()" link="glib-String-Utility-Functions.html#g-strdupv"/>
@@ -663,8 +663,8 @@
 </sub>
 </sub>
 <sub name="Character Set Conversion" link="glib-Character-Set-Conversion.html">
-<sub name="Description" link="glib-Character-Set-Conversion.html#id2905435"/>
-<sub name="Details" link="glib-Character-Set-Conversion.html#id2905447">
+<sub name="Description" link="glib-Character-Set-Conversion.html#id2905434"/>
+<sub name="Details" link="glib-Character-Set-Conversion.html#id2905446">
 <sub name="g_convert ()" link="glib-Character-Set-Conversion.html#g-convert"/>
 <sub name="g_convert_with_fallback ()" link="glib-Character-Set-Conversion.html#g-convert-with-fallback"/>
 <sub name="g_convert_with_iconv ()" link="glib-Character-Set-Conversion.html#g-convert-with-iconv"/>
@@ -747,7 +747,7 @@
 </sub>
 <sub name="Date and Time Functions" link="glib-Date-and-Time-Functions.html">
 <sub name="Description" link="glib-Date-and-Time-Functions.html#id2919730"/>
-<sub name="Details" link="glib-Date-and-Time-Functions.html#id2919973">
+<sub name="Details" link="glib-Date-and-Time-Functions.html#id2919972">
 <sub name="G_USEC_PER_SEC" link="glib-Date-and-Time-Functions.html#G-USEC-PER-SEC-CAPS"/>
 <sub name="struct GTimeVal" link="glib-Date-and-Time-Functions.html#GTimeVal"/>
 <sub name="g_get_current_time ()" link="glib-Date-and-Time-Functions.html#g-get-current-time"/>
@@ -995,8 +995,8 @@
 </sub>
 </sub>
 <sub name="File Utilities" link="glib-File-Utilities.html">
-<sub name="Description" link="glib-File-Utilities.html#id2950529"/>
-<sub name="Details" link="glib-File-Utilities.html#id2950541">
+<sub name="Description" link="glib-File-Utilities.html#id2950628"/>
+<sub name="Details" link="glib-File-Utilities.html#id2950641">
 <sub name="enum GFileError" link="glib-File-Utilities.html#GFileError"/>
 <sub name="G_FILE_ERROR" link="glib-File-Utilities.html#G-FILE-ERROR-CAPS"/>
 <sub name="enum GFileTest" link="glib-File-Utilities.html#GFileTest"/>
@@ -1013,8 +1013,8 @@
 </sub>
 </sub>
 <sub name="Shell-related Utilities" link="glib-Shell-related-Utilities.html">
-<sub name="Description" link="glib-Shell-related-Utilities.html#id2953174"/>
-<sub name="Details" link="glib-Shell-related-Utilities.html#id2953187">
+<sub name="Description" link="glib-Shell-related-Utilities.html#id2953274"/>
+<sub name="Details" link="glib-Shell-related-Utilities.html#id2953286">
 <sub name="enum GShellError" link="glib-Shell-related-Utilities.html#GShellError"/>
 <sub name="G_SHELL_ERROR" link="glib-Shell-related-Utilities.html#G-SHELL-ERROR-CAPS"/>
 <sub name="g_shell_parse_argv ()" link="glib-Shell-related-Utilities.html#g-shell-parse-argv"/>
@@ -1023,8 +1023,8 @@
 </sub>
 </sub>
 <sub name="Glob-style pattern matching" link="glib-Glob-style-pattern-matching.html">
-<sub name="Description" link="glib-Glob-style-pattern-matching.html#id2954066"/>
-<sub name="Details" link="glib-Glob-style-pattern-matching.html#id2954172">
+<sub name="Description" link="glib-Glob-style-pattern-matching.html#id2954164"/>
+<sub name="Details" link="glib-Glob-style-pattern-matching.html#id2954272">
 <sub name="struct GPatternSpec" link="glib-Glob-style-pattern-matching.html#GPatternSpec"/>
 <sub name="g_pattern_spec_new ()" link="glib-Glob-style-pattern-matching.html#g-pattern-spec-new"/>
 <sub name="g_pattern_spec_free ()" link="glib-Glob-style-pattern-matching.html#g-pattern-spec-free"/>
@@ -1035,8 +1035,8 @@
 </sub>
 </sub>
 <sub name="Simple XML Subset Parser" link="glib-Simple-XML-Subset-Parser.html">
-<sub name="Description" link="glib-Simple-XML-Subset-Parser.html#id2955406"/>
-<sub name="Details" link="glib-Simple-XML-Subset-Parser.html#id2955150">
+<sub name="Description" link="glib-Simple-XML-Subset-Parser.html#id2955505"/>
+<sub name="Details" link="glib-Simple-XML-Subset-Parser.html#id2955251">
 <sub name="enum GMarkupError" link="glib-Simple-XML-Subset-Parser.html#GMarkupError"/>
 <sub name="G_MARKUP_ERROR" link="glib-Simple-XML-Subset-Parser.html#G-MARKUP-ERROR-CAPS"/>
 <sub name="enum GMarkupParseFlags" link="glib-Simple-XML-Subset-Parser.html#GMarkupParseFlags"/>
@@ -1052,8 +1052,8 @@
 </sub>
 </sub>
 <sub name="Windows Compatibility Functions" link="glib-Windows-Compatability-Functions.html">
-<sub name="Description" link="glib-Windows-Compatability-Functions.html#id2957356"/>
-<sub name="Details" link="glib-Windows-Compatability-Functions.html#id2957368">
+<sub name="Description" link="glib-Windows-Compatability-Functions.html#id2957456"/>
+<sub name="Details" link="glib-Windows-Compatability-Functions.html#id2957469">
 <sub name="MAXPATHLEN" link="glib-Windows-Compatability-Functions.html#MAXPATHLEN-CAPS"/>
 <sub name="pid_t" link="glib-Windows-Compatability-Functions.html#pid-t"/>
 <sub name="pipe()" link="glib-Windows-Compatability-Functions.html#pipe"/>
@@ -1068,8 +1068,8 @@
 </sub>
 <sub name="GLib Data Types" link="glib-data-types.html">
 <sub name="Memory Chunks" link="glib-Memory-Chunks.html">
-<sub name="Description" link="glib-Memory-Chunks.html#id2958682"/>
-<sub name="Details" link="glib-Memory-Chunks.html#id2959004">
+<sub name="Description" link="glib-Memory-Chunks.html#id2958782"/>
+<sub name="Details" link="glib-Memory-Chunks.html#id2959105">
 <sub name="struct GMemChunk" link="glib-Memory-Chunks.html#GMemChunk"/>
 <sub name="G_ALLOC_AND_FREE" link="glib-Memory-Chunks.html#G-ALLOC-AND-FREE-CAPS"/>
 <sub name="G_ALLOC_ONLY" link="glib-Memory-Chunks.html#G-ALLOC-ONLY-CAPS"/>
@@ -1090,8 +1090,8 @@
 </sub>
 </sub>
 <sub name="Doubly-Linked Lists" link="glib-Doubly-Linked-Lists.html">
-<sub name="Description" link="glib-Doubly-Linked-Lists.html#id2962274"/>
-<sub name="Details" link="glib-Doubly-Linked-Lists.html#id2962561">
+<sub name="Description" link="glib-Doubly-Linked-Lists.html#id2962375"/>
+<sub name="Details" link="glib-Doubly-Linked-Lists.html#id2962662">
 <sub name="struct GList" link="glib-Doubly-Linked-Lists.html#GList"/>
 <sub name="g_list_append ()" link="glib-Doubly-Linked-Lists.html#g-list-append"/>
 <sub name="g_list_prepend ()" link="glib-Doubly-Linked-Lists.html#g-list-prepend"/>
@@ -1131,8 +1131,8 @@
 </sub>
 </sub>
 <sub name="Singly-Linked Lists" link="glib-Singly-Linked-Lists.html">
-<sub name="Description" link="glib-Singly-Linked-Lists.html#id2967863"/>
-<sub name="Details" link="glib-Singly-Linked-Lists.html#id2968131">
+<sub name="Description" link="glib-Singly-Linked-Lists.html#id2967965"/>
+<sub name="Details" link="glib-Singly-Linked-Lists.html#id2968232">
 <sub name="struct GSList" link="glib-Singly-Linked-Lists.html#GSList"/>
 <sub name="g_slist_alloc ()" link="glib-Singly-Linked-Lists.html#g-slist-alloc"/>
 <sub name="g_slist_append ()" link="glib-Singly-Linked-Lists.html#g-slist-append"/>
@@ -1166,8 +1166,8 @@
 </sub>
 </sub>
 <sub name="Double-ended Queues" link="glib-Double-ended-Queues.html">
-<sub name="Description" link="glib-Double-ended-Queues.html#id2972067"/>
-<sub name="Details" link="glib-Double-ended-Queues.html#id2972211">
+<sub name="Description" link="glib-Double-ended-Queues.html#id2972169"/>
+<sub name="Details" link="glib-Double-ended-Queues.html#id2972312">
 <sub name="struct GQueue" link="glib-Double-ended-Queues.html#GQueue"/>
 <sub name="g_queue_new ()" link="glib-Double-ended-Queues.html#g-queue-new"/>
 <sub name="g_queue_free ()" link="glib-Double-ended-Queues.html#g-queue-free"/>
@@ -1185,8 +1185,8 @@
 </sub>
 </sub>
 <sub name="Trash Stacks" link="glib-Trash-Stacks.html">
-<sub name="Description" link="glib-Trash-Stacks.html#id2973715"/>
-<sub name="Details" link="glib-Trash-Stacks.html#id2973775">
+<sub name="Description" link="glib-Trash-Stacks.html#id2973817"/>
+<sub name="Details" link="glib-Trash-Stacks.html#id2973876">
 <sub name="struct GTrashStack" link="glib-Trash-Stacks.html#GTrashStack"/>
 <sub name="g_trash_stack_push ()" link="glib-Trash-Stacks.html#g-trash-stack-push"/>
 <sub name="g_trash_stack_pop ()" link="glib-Trash-Stacks.html#g-trash-stack-pop"/>
@@ -1195,8 +1195,8 @@
 </sub>
 </sub>
 <sub name="Hash Tables" link="glib-Hash-Tables.html">
-<sub name="Description" link="glib-Hash-Tables.html#id2975799"/>
-<sub name="Details" link="glib-Hash-Tables.html#id2975946">
+<sub name="Description" link="glib-Hash-Tables.html#id2975894"/>
+<sub name="Details" link="glib-Hash-Tables.html#id2976041">
 <sub name="struct GHashTable" link="glib-Hash-Tables.html#GHashTable"/>
 <sub name="g_hash_table_new ()" link="glib-Hash-Tables.html#g-hash-table-new"/>
 <sub name="g_hash_table_new_full ()" link="glib-Hash-Tables.html#g-hash-table-new-full"/>
@@ -1226,8 +1226,8 @@
 </sub>
 </sub>
 <sub name="Strings" link="glib-Strings.html">
-<sub name="Description" link="glib-Strings.html#id2980447"/>
-<sub name="Details" link="glib-Strings.html#id2980471">
+<sub name="Description" link="glib-Strings.html#id2980548"/>
+<sub name="Details" link="glib-Strings.html#id2980572">
 <sub name="struct GString" link="glib-Strings.html#GString"/>
 <sub name="g_string_new ()" link="glib-Strings.html#g-string-new"/>
 <sub name="g_string_new_len ()" link="glib-Strings.html#g-string-new-len"/>
@@ -1260,8 +1260,8 @@
 </sub>
 </sub>
 <sub name="String Chunks" link="glib-String-Chunks.html">
-<sub name="Description" link="glib-String-Chunks.html#id2984507"/>
-<sub name="Details" link="glib-String-Chunks.html#id2984667">
+<sub name="Description" link="glib-String-Chunks.html#id2984608"/>
+<sub name="Details" link="glib-String-Chunks.html#id2984768">
 <sub name="struct GStringChunk" link="glib-String-Chunks.html#GStringChunk"/>
 <sub name="g_string_chunk_new ()" link="glib-String-Chunks.html#g-string-chunk-new"/>
 <sub name="g_string_chunk_insert ()" link="glib-String-Chunks.html#g-string-chunk-insert"/>
@@ -1270,8 +1270,8 @@
 </sub>
 </sub>
 <sub name="Arrays" link="glib-Arrays.html">
-<sub name="Description" link="glib-Arrays.html#id2985784"/>
-<sub name="Details" link="glib-Arrays.html#id2985937">
+<sub name="Description" link="glib-Arrays.html#id2985885"/>
+<sub name="Details" link="glib-Arrays.html#id2986039">
 <sub name="struct GArray" link="glib-Arrays.html#GArray"/>
 <sub name="g_array_new ()" link="glib-Arrays.html#g-array-new"/>
 <sub name="g_array_sized_new ()" link="glib-Arrays.html#g-array-sized-new"/>
@@ -1291,8 +1291,8 @@
 </sub>
 </sub>
 <sub name="Pointer Arrays" link="glib-Pointer-Arrays.html">
-<sub name="Description" link="glib-Pointer-Arrays.html#id2988642"/>
-<sub name="Details" link="glib-Pointer-Arrays.html#id2988379">
+<sub name="Description" link="glib-Pointer-Arrays.html#id2988743"/>
+<sub name="Details" link="glib-Pointer-Arrays.html#id2988481">
 <sub name="struct GPtrArray" link="glib-Pointer-Arrays.html#GPtrArray"/>
 <sub name="g_ptr_array_new ()" link="glib-Pointer-Arrays.html#g-ptr-array-new"/>
 <sub name="g_ptr_array_sized_new ()" link="glib-Pointer-Arrays.html#g-ptr-array-sized-new"/>
@@ -1309,8 +1309,8 @@
 </sub>
 </sub>
 <sub name="Byte Arrays" link="glib-Byte-Arrays.html">
-<sub name="Description" link="glib-Byte-Arrays.html#id2990598"/>
-<sub name="Details" link="glib-Byte-Arrays.html#id2990744">
+<sub name="Description" link="glib-Byte-Arrays.html#id2990699"/>
+<sub name="Details" link="glib-Byte-Arrays.html#id2990846">
 <sub name="struct GByteArray" link="glib-Byte-Arrays.html#GByteArray"/>
 <sub name="g_byte_array_new ()" link="glib-Byte-Arrays.html#g-byte-array-new"/>
 <sub name="g_byte_array_sized_new ()" link="glib-Byte-Arrays.html#g-byte-array-sized-new"/>
@@ -1325,8 +1325,8 @@
 </sub>
 </sub>
 <sub name="Balanced Binary Trees" link="glib-Balanced-Binary-Trees.html">
-<sub name="Description" link="glib-Balanced-Binary-Trees.html#id2992728"/>
-<sub name="Details" link="glib-Balanced-Binary-Trees.html#id2992904">
+<sub name="Description" link="glib-Balanced-Binary-Trees.html#id2992829"/>
+<sub name="Details" link="glib-Balanced-Binary-Trees.html#id2993005">
 <sub name="struct GTree" link="glib-Balanced-Binary-Trees.html#GTree"/>
 <sub name="g_tree_new ()" link="glib-Balanced-Binary-Trees.html#g-tree-new"/>
 <sub name="g_tree_new_with_data ()" link="glib-Balanced-Binary-Trees.html#g-tree-new-with-data"/>
@@ -1348,8 +1348,8 @@
 </sub>
 </sub>
 <sub name="N-ary Trees" link="glib-N-ary-Trees.html">
-<sub name="Description" link="glib-N-ary-Trees.html#id2996694"/>
-<sub name="Details" link="glib-N-ary-Trees.html#id2997027">
+<sub name="Description" link="glib-N-ary-Trees.html#id2996796"/>
+<sub name="Details" link="glib-N-ary-Trees.html#id2997129">
 <sub name="struct GNode" link="glib-N-ary-Trees.html#GNode"/>
 <sub name="g_node_new ()" link="glib-N-ary-Trees.html#g-node-new"/>
 <sub name="g_node_copy ()" link="glib-N-ary-Trees.html#g-node-copy"/>
@@ -1394,8 +1394,8 @@
 </sub>
 </sub>
 <sub name="Quarks" link="glib-Quarks.html">
-<sub name="Description" link="glib-Quarks.html#id3002375"/>
-<sub name="Details" link="glib-Quarks.html#id3002484">
+<sub name="Description" link="glib-Quarks.html#id3002475"/>
+<sub name="Details" link="glib-Quarks.html#id3002585">
 <sub name="GQuark" link="glib-Quarks.html#GQuark"/>
 <sub name="g_quark_from_string ()" link="glib-Quarks.html#g-quark-from-string"/>
 <sub name="g_quark_from_static_string ()" link="glib-Quarks.html#g-quark-from-static-string"/>
@@ -1404,8 +1404,8 @@
 </sub>
 </sub>
 <sub name="Keyed Data Lists" link="glib-Keyed-Data-Lists.html">
-<sub name="Description" link="glib-Keyed-Data-Lists.html#id3003314"/>
-<sub name="Details" link="glib-Keyed-Data-Lists.html#id3003504">
+<sub name="Description" link="glib-Keyed-Data-Lists.html#id3003414"/>
+<sub name="Details" link="glib-Keyed-Data-Lists.html#id3003604">
 <sub name="struct GData" link="glib-Keyed-Data-Lists.html#GData"/>
 <sub name="g_datalist_init ()" link="glib-Keyed-Data-Lists.html#g-datalist-init"/>
 <sub name="g_datalist_id_set_data()" link="glib-Keyed-Data-Lists.html#g-datalist-id-set-data"/>
@@ -1423,8 +1423,8 @@
 </sub>
 </sub>
 <sub name="Datasets" link="glib-Datasets.html">
-<sub name="Description" link="glib-Datasets.html#id3005262"/>
-<sub name="Details" link="glib-Datasets.html#id3005437">
+<sub name="Description" link="glib-Datasets.html#id3005363"/>
+<sub name="Details" link="glib-Datasets.html#id3005538">
 <sub name="g_dataset_id_set_data()" link="glib-Datasets.html#g-dataset-id-set-data"/>
 <sub name="g_dataset_id_set_data_full ()" link="glib-Datasets.html#g-dataset-id-set-data-full"/>
 <sub name="GDestroyNotify ()" link="glib-Datasets.html#GDestroyNotify"/>
@@ -1442,8 +1442,8 @@
 </sub>
 </sub>
 <sub name="Relations and Tuples" link="glib-Relations-and-Tuples.html">
-<sub name="Description" link="glib-Relations-and-Tuples.html#id3007230"/>
-<sub name="Details" link="glib-Relations-and-Tuples.html#id3007454">
+<sub name="Description" link="glib-Relations-and-Tuples.html#id3007331"/>
+<sub name="Details" link="glib-Relations-and-Tuples.html#id3007554">
 <sub name="struct GRelation" link="glib-Relations-and-Tuples.html#GRelation"/>
 <sub name="g_relation_new ()" link="glib-Relations-and-Tuples.html#g-relation-new"/>
 <sub name="g_relation_index ()" link="glib-Relations-and-Tuples.html#g-relation-index"/>
@@ -1460,8 +1460,8 @@
 </sub>
 </sub>
 <sub name="Caches" link="glib-Caches.html">
-<sub name="Description" link="glib-Caches.html#id3009228"/>
-<sub name="Details" link="glib-Caches.html#id3009330">
+<sub name="Description" link="glib-Caches.html#id3009328"/>
+<sub name="Details" link="glib-Caches.html#id3009430">
 <sub name="struct GCache" link="glib-Caches.html#GCache"/>
 <sub name="g_cache_new ()" link="glib-Caches.html#g-cache-new"/>
 <sub name="g_cache_insert ()" link="glib-Caches.html#g-cache-insert"/>
@@ -1475,8 +1475,8 @@
 </sub>
 </sub>
 <sub name="Memory Allocators" link="glib-Memory-Allocators.html">
-<sub name="Description" link="glib-Memory-Allocators.html#id3009005"/>
-<sub name="Details" link="glib-Memory-Allocators.html#id3011003">
+<sub name="Description" link="glib-Memory-Allocators.html#id3009105"/>
+<sub name="Details" link="glib-Memory-Allocators.html#id3011104">
 <sub name="struct GAllocator" link="glib-Memory-Allocators.html#GAllocator"/>
 <sub name="g_allocator_new ()" link="glib-Memory-Allocators.html#g-allocator-new"/>
 <sub name="g_allocator_free ()" link="glib-Memory-Allocators.html#g-allocator-free"/>

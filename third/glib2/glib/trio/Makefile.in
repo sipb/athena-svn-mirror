@@ -294,10 +294,6 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
-trio.lo trio.o : trio.c triodef.h trio.h ../../config.h triop.h \
-	trionan.h triostr.h
-trionan.lo trionan.o : trionan.c triodef.h trionan.h
-triostr.lo triostr.o : triostr.c triodef.h triostr.h triop.h
 
 info-am:
 info: info-am

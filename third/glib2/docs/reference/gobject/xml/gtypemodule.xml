@@ -93,7 +93,20 @@ in <link linkend="GTypeModuleClass">GTypeModuleClass</link>.
 </para></refsect2>
 <refsect2>
 <title><anchor id="GTypeModuleClass"/>struct GTypeModuleClass</title>
-<programlisting>struct GTypeModuleClass;</programlisting>
+<programlisting>struct GTypeModuleClass {
+
+  GObjectClass parent_class;
+
+  gboolean (* load)   (GTypeModule *module);
+  void     (* unload) (GTypeModule *module);
+
+  /* Padding for future expansion */
+  void (*reserved1) (void);
+  void (*reserved2) (void);
+  void (*reserved3) (void);
+  void (*reserved4) (void);
+};
+</programlisting>
 <para>
 
 </para></refsect2>

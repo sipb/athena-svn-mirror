@@ -474,8 +474,10 @@ gmoduleconf.h:	gmoduleconf.h.in
 
 @OS_WIN32_TRUE@install-libtool-import-lib:
 @OS_WIN32_TRUE@	$(INSTALL) .libs/libgmodule-2.0.dll.a $(DESTDIR)$(libdir)
+@OS_WIN32_TRUE@	$(INSTALL) gmodule.def $(DESTDIR)$(libdir)/gmodule-2.0.def
+
 @OS_WIN32_TRUE@uninstall-libtool-import-lib:
-@OS_WIN32_TRUE@	-rm $(DESTDIR)$(libdir)/libgmodule-2.0.dll.a
+@OS_WIN32_TRUE@	-rm $(DESTDIR)$(libdir)/libgmodule-2.0.dll.a $(DESTDIR)$(libdir)/gmodule-2.0.def
 @OS_WIN32_FALSE@install-libtool-import-lib:
 @OS_WIN32_FALSE@uninstall-libtool-import-lib:
 

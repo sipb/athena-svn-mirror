@@ -439,8 +439,10 @@ maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 
 @OS_WIN32_TRUE@install-libtool-import-lib:
 @OS_WIN32_TRUE@	$(INSTALL) .libs/libgthread-2.0.dll.a $(DESTDIR)$(libdir)
+@OS_WIN32_TRUE@	$(INSTALL) gthread.def $(DESTDIR)$(libdir)/gthread-2.0.def
+
 @OS_WIN32_TRUE@uninstall-libtool-import-lib:
-@OS_WIN32_TRUE@	-rm $(DESTDIR)$(libdir)/libgthread-2.0.dll.a
+@OS_WIN32_TRUE@	-rm $(DESTDIR)$(libdir)/libgthread-2.0.dll.a $(DESTDIR)$(libdir)/gthread-2.0.def
 @OS_WIN32_FALSE@install-libtool-import-lib:
 @OS_WIN32_FALSE@uninstall-libtool-import-lib:
 

@@ -71,13 +71,30 @@ void        <link linkend="g-flags-complete-type-info">g_flags_complete_type_inf
 <title>Details</title>
 <refsect2>
 <title><anchor id="GEnumClass"/>struct GEnumClass</title>
-<programlisting>struct GEnumClass;</programlisting>
+<programlisting>struct GEnumClass {
+
+  GTypeClass  g_type_class;
+  
+  gint	      minimum;
+  gint	      maximum;
+  guint	      n_values;
+  GEnumValue *values;
+};
+</programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
 <title><anchor id="GFlagsClass"/>struct GFlagsClass</title>
-<programlisting>struct GFlagsClass;</programlisting>
+<programlisting>struct GFlagsClass {
+
+  GTypeClass   g_type_class;
+  
+  guint	       mask;
+  guint	       n_values;
+  GFlagsValue *values;
+};
+</programlisting>
 <para>
 
 </para></refsect2>

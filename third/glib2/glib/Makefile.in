@@ -728,15 +728,6 @@ giounix.lo giounix.o : giounix.c ../config.h glib.h galloca.h gtypes.h \
 	gunicode.h gmarkup.h gmessages.h gnode.h gpattern.h gprimes.h \
 	gqsort.h gqueue.h grand.h grel.h gscanner.h gshell.h gspawn.h \
 	gstrfuncs.h gthreadpool.h gtimer.h gtree.h gutils.h
-giowin32.lo giowin32.o : giowin32.c ../config.h glib.h galloca.h \
-	gtypes.h ../glibconfig.h gmacros.h garray.h gasyncqueue.h \
-	gthread.h gerror.h gquark.h gbacktrace.h gcache.h glist.h \
-	gmem.h gcompletion.h gconvert.h gdataset.h gdate.h gdir.h \
-	gfileutils.h ghash.h ghook.h giochannel.h gmain.h gslist.h \
-	gstring.h gunicode.h gmarkup.h gmessages.h gnode.h gpattern.h \
-	gprimes.h gqsort.h gqueue.h grand.h grel.h gscanner.h gshell.h \
-	gspawn.h gstrfuncs.h gthreadpool.h gtimer.h gtree.h gutils.h \
-	gwin32.h glibintl.h
 glist.lo glist.o : glist.c ../config.h glib.h galloca.h gtypes.h \
 	../glibconfig.h gmacros.h garray.h gasyncqueue.h gthread.h \
 	gerror.h gquark.h gbacktrace.h gcache.h glist.h gmem.h \
@@ -863,26 +854,6 @@ gslist.lo gslist.o : gslist.c ../config.h glib.h galloca.h gtypes.h \
 	gunicode.h gmarkup.h gmessages.h gnode.h gpattern.h gprimes.h \
 	gqsort.h gqueue.h grand.h grel.h gscanner.h gshell.h gspawn.h \
 	gstrfuncs.h gthreadpool.h gtimer.h gtree.h gutils.h
-gspawn-win32-helper.o: gspawn-win32-helper.c ../config.h glib.h \
-	galloca.h gtypes.h ../glibconfig.h gmacros.h garray.h \
-	gasyncqueue.h gthread.h gerror.h gquark.h gbacktrace.h gcache.h \
-	glist.h gmem.h gcompletion.h gconvert.h gdataset.h gdate.h \
-	gdir.h gfileutils.h ghash.h ghook.h giochannel.h gmain.h \
-	gslist.h gstring.h gunicode.h gmarkup.h gmessages.h gnode.h \
-	gpattern.h gprimes.h gqsort.h gqueue.h grand.h grel.h \
-	gscanner.h gshell.h gspawn.h gstrfuncs.h gthreadpool.h gtimer.h \
-	gtree.h gutils.h gwin32.h gspawn-win32.c gprintfint.h \
-	trio/trio.h trio/triodef.h glibintl.h
-gspawn-win32.lo gspawn-win32.o : gspawn-win32.c ../config.h glib.h \
-	galloca.h gtypes.h ../glibconfig.h gmacros.h garray.h \
-	gasyncqueue.h gthread.h gerror.h gquark.h gbacktrace.h gcache.h \
-	glist.h gmem.h gcompletion.h gconvert.h gdataset.h gdate.h \
-	gdir.h gfileutils.h ghash.h ghook.h giochannel.h gmain.h \
-	gslist.h gstring.h gunicode.h gmarkup.h gmessages.h gnode.h \
-	gpattern.h gprimes.h gqsort.h gqueue.h grand.h grel.h \
-	gscanner.h gshell.h gspawn.h gstrfuncs.h gthreadpool.h gtimer.h \
-	gtree.h gutils.h gwin32.h gprintfint.h trio/trio.h \
-	trio/triodef.h glibintl.h
 gspawn.lo gspawn.o : gspawn.c ../config.h glib.h galloca.h gtypes.h \
 	../glibconfig.h gmacros.h garray.h gasyncqueue.h gthread.h \
 	gerror.h gquark.h gbacktrace.h gcache.h glist.h gmem.h \
@@ -995,14 +966,6 @@ gutils.lo gutils.o : gutils.c ../config.h glib.h galloca.h gtypes.h \
 	gqsort.h gqueue.h grand.h grel.h gscanner.h gshell.h gspawn.h \
 	gstrfuncs.h gthreadpool.h gtimer.h gtree.h gutils.h \
 	gprintfint.h
-gwin32.lo gwin32.o : gwin32.c ../config.h ../glibconfig.h gmacros.h \
-	glib.h galloca.h gtypes.h garray.h gasyncqueue.h gthread.h \
-	gerror.h gquark.h gbacktrace.h gcache.h glist.h gmem.h \
-	gcompletion.h gconvert.h gdataset.h gdate.h gdir.h gfileutils.h \
-	ghash.h ghook.h giochannel.h gmain.h gslist.h gstring.h \
-	gunicode.h gmarkup.h gmessages.h gnode.h gpattern.h gprimes.h \
-	gqsort.h gqueue.h grand.h grel.h gscanner.h gshell.h gspawn.h \
-	gstrfuncs.h gthreadpool.h gtimer.h gtree.h gutils.h gwin32.h
 
 info-am:
 info: info-recursive
@@ -1117,8 +1080,10 @@ uninstall-local: uninstall-ms-lib uninstall-libtool-import-lib
 
 @OS_WIN32_TRUE@install-libtool-import-lib:
 @OS_WIN32_TRUE@	$(INSTALL) .libs/libglib-2.0.dll.a $(DESTDIR)$(libdir)
+@OS_WIN32_TRUE@	$(INSTALL) glib.def $(DESTDIR)$(libdir)/glib-2.0.def
+
 @OS_WIN32_TRUE@uninstall-libtool-import-lib:
-@OS_WIN32_TRUE@	-rm $(DESTDIR)$(libdir)/libglib-2.0.dll.a
+@OS_WIN32_TRUE@	-rm $(DESTDIR)$(libdir)/libglib-2.0.dll.a $(DESTDIR)$(libdir)/glib-2.0.def
 @OS_WIN32_FALSE@install-libtool-import-lib:
 @OS_WIN32_FALSE@uninstall-libtool-import-lib:
 

@@ -414,7 +414,10 @@ An opaque structure used as the base of all type instances.
 </para></refsect2>
 <refsect2>
 <title><anchor id="GTypeClass"/>struct GTypeClass</title>
-<programlisting>struct GTypeClass;</programlisting>
+<programlisting>struct GTypeClass {
+
+};
+</programlisting>
 <para>
 
 </para></refsect2>

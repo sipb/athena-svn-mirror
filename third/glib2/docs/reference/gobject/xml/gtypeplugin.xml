@@ -68,7 +68,16 @@ void        <link linkend="g-type-plugin-complete-interface-info">g_type_plugin_
 </para></refsect2>
 <refsect2>
 <title><anchor id="GTypePluginClass"/>struct GTypePluginClass</title>
-<programlisting>struct GTypePluginClass;</programlisting>
+<programlisting>struct GTypePluginClass {
+
+  GTypeInterface		   base_iface;
+  
+  GTypePluginUse		   use_plugin;
+  GTypePluginUnuse		   unuse_plugin;
+  GTypePluginCompleteTypeInfo	   complete_type_info;
+  GTypePluginCompleteInterfaceInfo complete_interface_info;
+};
+</programlisting>
 <para>
 
 </para></refsect2>
