@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/sort.c,v $
- *	$Id: sort.c,v 1.10 1991-01-22 13:29:27 lwvanels Exp $
+ *	$Id: sort.c,v 1.11 1991-01-23 12:12:54 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/sort.c,v 1.10 1991-01-22 13:29:27 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/sort.c,v 1.11 1991-01-23 12:12:54 lwvanels Exp $";
 #endif
 #endif
 
@@ -69,6 +69,19 @@ static int bar (status) int status; {
 	    || status == OFF
 	    || status == DUTY
 	    || status == SECOND);
+}
+
+static int kstatusp(status) int status; {
+  switch(status) {
+  case ACTIVE:
+  case DONE:
+  case CANCEL:
+  case SERVICED:
+  case PENDING:
+    return 2;
+  case NOT_SEEN:
+    return 3;
+  }
 }
 
 #if 0
@@ -119,7 +132,7 @@ static int compare (first, second) LIST *first, *second; {
 	    order = cmp(first->utime, second->utime);
 	    break;
 	case sort_key__question_status:
-	    order = cmp(first->ustatus, second->ustatus); /* is this right? */
+	    order = cmp(kstatusp(first->ukstatus), kstatusp(second->ukstatus));
 	    break;
 	case sort_key__topic:
 	    order = strcmp (first->topic, second->topic);
@@ -191,6 +204,8 @@ OSortListByRule(list,rule)
 	    k++->key = sort_key__consultant_name;
 	else if (string_eq (*rule, "foo")) /* what should i call this?? */
 	    k++->key = sort_key__foo;
+	else if (string_eq (*rule,"q_status"))
+	  k++->key = sort_key__question_status;
 	else if (string_eq(*rule,"utime") || string_eq (*rule, "time"))
 	    k++->key = sort_key__time;
 	else if (string_eq (*rule, "unconnected_consultants_last"))
