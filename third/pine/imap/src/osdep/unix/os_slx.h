@@ -10,7 +10,7 @@
  *		Internet: MRC@CAC.Washington.EDU
  *
  * Date:	10 September 1993
- * Last Edited:	30 January 2001
+ * Last Edited:	20 February 2001
  * 
  * The IMAP toolkit provided in this Distribution is
  * Copyright 2001 University of Washington.
@@ -23,6 +23,7 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include <dirent.h>
+#include <time.h>		/* for struct tm */
 #include <fcntl.h>
 #include <syslog.h>
 #include <sys/file.h>

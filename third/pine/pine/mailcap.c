@@ -1,5 +1,5 @@
 #if !defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: mailcap.c,v 1.2 2001-04-30 20:01:47 rbasch Exp $";
+static char rcsid[] = "$Id: mailcap.c,v 1.3 2003-02-12 08:39:07 ghudson Exp $";
 #endif
 /*----------------------------------------------------------------------
 
@@ -22,7 +22,7 @@ static char rcsid[] = "$Id: mailcap.c,v 1.2 2001-04-30 20:01:47 rbasch Exp $";
    permission of the University of Washington.
 
    Pine, Pico, and Pilot software and its included text are Copyright
-   1989-2000 by the University of Washington.
+   1989-2002 by the University of Washington.
 
    The full text of our legal notices is contained in the file called
    CPYRIGHT, included with this distribution.
@@ -170,7 +170,7 @@ char     *mc_bld_test_cmd PROTO((char *, int, char *, PARAMETER *));
 char     *mc_cmd_bldr PROTO((char *, int, char *, PARAMETER *, char *));
 int       mc_ctype_match PROTO((int, char *, char *));
 int	  mc_sane_command PROTO((char *));
-MailcapEntry *mc_get_command PROTO((int, char *, PARAMETER *));
+MailcapEntry *mc_get_command PROTO((int, char *, PARAMETER *, int));
 void      mc_init PROTO((void));
 int       mc_passes_test PROTO((MailcapEntry *, int, char *, PARAMETER *));
 int	  mt_get_file_ext PROTO((char *, char **));
@@ -253,7 +253,6 @@ mc_init()
      */
     if(ps_global->VAR_IMAGE_VIEWER && *ps_global->VAR_IMAGE_VIEWER){
 	MailcapEntry *mc = mc_new_entry();
-	STRINGLIST   *sl;
 
 	sprintf(image_viewer, "%.*s %%s", sizeof(image_viewer)-30,
 		ps_global->VAR_IMAGE_VIEWER);
@@ -619,10 +618,11 @@ mc_sane_command(command)
  * mailcap entry, or NULL if none.  Command string still contains % stuff.
  */
 MailcapEntry *
-mc_get_command(type, subtype, params)
+mc_get_command(type, subtype, params, check_extension)
     int        type;
     char      *subtype;
     PARAMETER *params;
+    int        check_extension;
 {
     MailcapEntry *mc;
     char	  tmp_subtype[256], tmp_ext[16], *ext = NULL;
@@ -637,7 +637,9 @@ mc_get_command(type, subtype, params)
 
     mc_init();
 
-    if(type == TYPEAPPLICATION && subtype && !strucmp(subtype,"octet-stream")){
+    if(check_extension || 
+       (type == TYPEAPPLICATION 
+	&& subtype && !strucmp(subtype,"octet-stream"))){
 	char	 *namep;
 	MT_MAP_T  e2b;
 
@@ -690,7 +692,7 @@ mc_get_command(type, subtype, params)
 	fake_mc.command = fake_cmd;
 
 	sprintf(tmp_mime_type, "%.127s/%.127s", body_types[type], subtype);
-	if(mswin_reg_viewer(tmp_mime_type, ext, fake_cmd, 1024))
+	if(mswin_reg_viewer(tmp_mime_type, ext, fake_cmd, 1024, check_extension))
 	  return(&fake_mc);
     }
 #endif
@@ -765,30 +767,31 @@ PARAMETER    *params;
 
 
 int
-mailcap_can_display(type, subtype, params)
+mailcap_can_display(type, subtype, params, check_extension)
 int       type;
 char     *subtype;
 PARAMETER *params;
 {
     dprint(5, (debugfile, "- mailcap_can_display -\n"));
 
-    return(mc_get_command(type, subtype, params) != NULL);
+    return(mc_get_command(type, subtype, params, check_extension) != NULL);
 }
 
 
 char *
-mailcap_build_command(type, subtype, params, tmp_file, needsterm)
+mailcap_build_command(type, subtype, params, tmp_file, needsterm, chk_extension)
     int	       type;
     char      *subtype, *tmp_file;
     PARAMETER *params;
     int	      *needsterm;
+    int        chk_extension;
 {
     MailcapEntry *mc;
     char         *command;
 
     dprint(5, (debugfile, "- mailcap_build_command -\n"));
 
-    mc = mc_get_command(type, subtype, params);
+    mc = mc_get_command(type, subtype, params, chk_extension);
     if(!mc){
 	q_status_message(SM_ORDER, 3, 4, "Error constructing viewer command");
 	dprint(1, (debugfile,
@@ -887,7 +890,7 @@ mc_cmd_bldr(controlstring, type, subtype, parameter, tmp_file)
 		s = strindex(from, '}');
 		if(!s){
 		    q_status_message1(SM_ORDER, 0, 4,
-	"Ignoring ill-formed parameter reference in mailcap file: %s", from);
+    "Ignoring ill-formed parameter reference in mailcap file: %.200s", from);
 		    break;
 		}
 
