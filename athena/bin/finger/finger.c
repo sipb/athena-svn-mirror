@@ -3,11 +3,11 @@
  * For copying and distribution information, see the file
  * "mit-copyright.h".
  *
- * $Id: finger.c,v 1.22 1994-06-02 14:49:14 vrt Exp $
+ * $Id: finger.c,v 1.23 1994-06-03 18:55:07 cfields Exp $
  */
 
 #ifndef lint
-static char *rcsid_finger_c = "$Id: finger.c,v 1.22 1994-06-02 14:49:14 vrt Exp $";
+static char *rcsid_finger_c = "$Id: finger.c,v 1.23 1994-06-03 18:55:07 cfields Exp $";
 #endif lint
 
 /*
@@ -190,7 +190,11 @@ char ttnames[MAXTTYS][LMAX];	/* TTY names */
 long logouts[MAXTTYS];		/* Logout times */
 
 struct passwd *pwdcopy();
-#ifndef _IBMR2
+
+#ifdef NOTDEF
+/* I think these are now all declared by headers. Remove this in a couple
+   of months. This works on AIX and Ultrix... It's up to the Solaris
+   build now. */
 char *strcpy();
 char *strcat();
 char *strncpy();
