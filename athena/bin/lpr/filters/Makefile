@@ -24,6 +24,10 @@ VARIAN=	rvsort rvcat vsort vcat vpf vpsf vdmp vpltdmp vplotf vfontinfo vwidth \
 
 all:	printer
 
+Makefile: Imakefile
+	-mv -f Makefile Makefile.bak
+	/lib/cpp -E Imakefile Makefile 
+
 printer: ${PRINTER}
 
 varian:	${VARIAN}
