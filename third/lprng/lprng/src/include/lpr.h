@@ -4,7 +4,7 @@
  * Copyright 1988-1999, Patrick Powell, San Diego, CA
  *     papowell@astart.com
  * See LICENSE for conditions of use.
- * $Id: lpr.h,v 1.2 1999-05-07 15:31:16 danw Exp $
+ * $Id: lpr.h,v 1.3 1999-05-12 18:28:27 danw Exp $
  ***************************************************************************/
 
 
@@ -13,6 +13,7 @@
 #define _LPR_1_
 
 EXTERN char *Accntname_JOB; /* Accounting name: PLP 'R' control file option */
+EXTERN char *Auth_JOB; /* Auth type to use, overriding printcap */
 EXTERN int Binary;      /* Binary format: 'l' Format */
 EXTERN char *Bnrname_JOB;   /* Banner name: RFC 'L' option */
 EXTERN char *Classname_JOB; /* Class name:  RFC 'C' option */

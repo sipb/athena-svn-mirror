@@ -8,7 +8,7 @@
  ***************************************************************************/
 
  static char *const _id =
-"$Id: lpr.c,v 1.3 1999-05-11 21:11:32 danw Exp $";
+"$Id: lpr.c,v 1.4 1999-05-12 18:28:23 danw Exp $";
 
 
 #include "lp.h"
@@ -259,9 +259,9 @@ int main(int argc, char *argv[], char *envp[])
 
 
  char LPR_optstr[]    /* LPR options */
- = "1:2:3:4:#:AC:D:F:J:K:NP:QR:T:U:VZ:bcdfghi:lkm:nprstvw:z" ;
+ = "1:2:3:4:#:A:C:D:F:J:K:NP:QR:T:U:VZ:bcdfghi:lkm:nprstvw:z" ;
  char LPR_bsd_optstr[]    /* LPR options */
- = "1:2:3:4:#:AC:D:F:J:K:NP:QR:T:U:VZ:bcdfghi:lkmnprstvw:z" ;
+ = "1:2:3:4:#:A:C:D:F:J:K:NP:QR:T:U:VZ:bcdfghi:lkmnprstvw:z" ;
  char LP_optstr[]    /* LP options */
  = 	"cmprswd:D:f:H:n:o:P:q:S:t:T:y:";
 
@@ -407,6 +407,9 @@ void Get_parms(int argc, char *argv[] )
 		case '4':
 		    Check_str_dup( option, &Font4_JOB, Optarg, M_FONT);
 			break;
+		case 'A':
+		    Check_str_dup( option, &Auth_JOB, Optarg, M_DEFAULT);
+		    break;
 		case 'C':
 		    Check_str_dup( option, &Classname_JOB, Optarg,
 			   M_CLASSNAME);
@@ -797,6 +800,9 @@ int Make_job( struct job *job )
 			Zopts_JOB = Logname_DYN;
 		}
 	}
+
+	if( Auth_JOB )
+		Set_DYN(&Auth_DYN, Auth_JOB);
 
 	/* For Athena 8.3 beta: if "ka#1" but no "auth=", assume
 	 * "auth=kerberos4". (Hesiod info will be fixed after term
