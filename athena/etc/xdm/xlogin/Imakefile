@@ -1,4 +1,4 @@
-# $Id: Imakefile,v 1.26 1994-04-30 13:24:06 vrt Exp $
+# $Id: Imakefile,v 1.27 1994-06-13 06:58:42 cfields Exp $
 
 #if defined(_AIX) && (AIXV >= 30)
 MACHLIBS = -lodm -lcfg -ls
@@ -37,13 +37,13 @@ all::	Xlogin
 install:: Xlogin
 
 #if defined(_IBMR2)
-Xlogin:	Xlogin.rios.presed
+Xlogin:	Xlogin.rios.presed $(ATHVERS)
 	. $(ATHVERS); \
 	sed -e "s/ATHENA_VERSION/$$ATHMAJV.$$ATHMINV/" \
 		-e "s:MOTD_FILE:/afs/athena.mit.edu/system/config/motd/login.$$ATHMAJV$$ATHMINV:" \
 		Xlogin.rios.presed > Xlogin
 #else
-Xlogin:	Xlogin.presed
+Xlogin:	Xlogin.presed $(ATHVERS)
 	. $(ATHVERS); \
 	sed -e "s/ATHENA_VERSION/$$ATHMAJV.$$ATHMINV/" \
 		-e "s:MOTD_FILE:/afs/athena.mit.edu/system/config/motd/login.$$ATHMAJV$$ATHMINV:" \
