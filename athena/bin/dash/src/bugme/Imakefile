@@ -19,8 +19,8 @@ AllTarget(${BUGMERESOURCES})
 NormalProgramTarget(${BUGME},${OBJS},${XJLIB},,${C_LIBS})
 InstallProgram(${BUGME},${BUGME_BIN_DIR})
 
-InstallNonExec(${BUGME}.1,${MAN_DIR}/man1/${BUGME}.1)
-InstallNonExec(${BUGMERESOURCES},${BUGME_APP_DIR}/${BUGMERESOURCES})
+InstallNonExecFile(${BUGME}.1,${MAN_DIR}/man1)
+InstallNonExecFile(${BUGMERESOURCES},${BUGME_APP_DIR})
 
 DependTarget()
 
