@@ -1,11 +1,11 @@
 /*
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/getcluster/getcluster.c,v $
  *      $Author: ens $
- *      $Header: /afs/dev.mit.edu/source/repository/athena/bin/getcluster/getcluster.c,v 1.1 1987-07-23 09:41:04 ens Exp $
+ *      $Header: /afs/dev.mit.edu/source/repository/athena/bin/getcluster/getcluster.c,v 1.2 1987-07-23 09:42:31 ens Exp $
  */
 
 #ifndef lint
-static char rcsid_test2_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/getcluster/getcluster.c,v 1.1 1987-07-23 09:41:04 ens Exp $";
+static char rcsid_test2_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/getcluster/getcluster.c,v 1.2 1987-07-23 09:42:31 ens Exp $";
 #endif
 
 #include <stdio.h>
@@ -60,7 +60,7 @@ int bourneshell;
 		while(*hp) {
 			sscanf(*hp++, "%s %s", var, val);
 			upper(var);
-			printf("setenv %s %s\n", var, val);
+			printf("setenv %s %s;\n", var, val);
 		}
 	if (ferror(stdout)) {
 		ftruncate(fileno(stdout), 0L);
