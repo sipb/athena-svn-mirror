@@ -39,7 +39,7 @@ char copyright[] =
 
 #ifndef lint
 /*static char sccsid[] = "from: @(#)talkd.c	5.8 (Berkeley) 2/26/91";*/
-static char rcsid[] = "$Id: talkd.c,v 1.2 1996-10-13 07:09:07 ghudson Exp $";
+static char rcsid[] = "$Id: talkd.c,v 1.2.2.1 1997-08-12 03:47:29 ghudson Exp $";
 #endif /* not lint */
 
 /*
@@ -85,6 +85,7 @@ main(argc, argv)
 {
 	register CTL_MSG *mp = &request;
 	int cc;
+	struct sigaction action;
 
 	if (getuid()) {
 		fprintf(stderr, "%s: getuid: not super-user", argv[0]);
@@ -101,7 +102,10 @@ main(argc, argv)
 	}
 	if (argc > 1 && strcmp(argv[1], "-d") == 0)
 		debug = 1;
-	signal(SIGALRM, timeout);
+	action.sa_handler = timeout;
+	action.sa_flags = 0;
+	sigemptyset(&action.sa_mask);
+	sigaction(SIGALRM, &action, NULL);
 	alarm(TIMEOUT);
 	for (;;) {
 		extern int errno;
