@@ -8,24 +8,6 @@ CONFVARS=$UPDATE_ROOT/var/athena/update.confvars
 # drvconfig requires this.  In theory, nothing else should.
 cd ${UPDATE_ROOT:-/}
 
-if [ "$NEWOS" = "true" ]; then
-  echo "Removing the patch/pkg DB for a new OS major rev"
-  pks="`cat $OLDPKGS`"
-  for i in $pks; do
-    rm -rf $UPDATE_ROOT/var/sadm/pkg/$i
-    rm -rf $UPDATE_ROOT/var/sadm/pkg/$i.[2-9]
-  done
-  patches="`cat $OLDPTCHS`"
-  for i in $patches; do
-    rm -rf $UPDATE_ROOT/var/sadm/patch/$i
-  done
-fi
-
-if [ -s "$DEADFILES" ]; then
-  echo "Removing outdated files"
-  sed -e "s|^|$UPDATE_ROOT|" "$DEADFILES" | xargs rm -rf
-fi
-
 # Save any config files that an OS package may touch.
 if [ "$OSCHANGES" = true -a -s "$OSCONFCHG" ]; then
   echo "Saving config files prior to OS update"
@@ -37,6 +19,49 @@ if [ "$OSCHANGES" = true -a -s "$OSCONFCHG" ]; then
   done
 fi
 
+if [ "$NEWOS" = "true" ]; then
+  if [ -s "$OSPRESERVE" ]; then
+    echo "Preserving config files before removing OS packages"
+    ospreserve="`cat $OSPRESERVE`"
+    for i in $ospreserve ; do
+      if [ -f "$UPDATE_ROOT$i" ]; then
+	rm -rf "$UPDATE_ROOT$i.update-preserve"
+	cp -p "$UPDATE_ROOT$i" "$UPDATE_ROOT$i.update-preserve"
+      fi
+    done
+  else
+    ospreserve=
+  fi
+
+  echo "Removing existing packages and patches for a new OS rev"
+  pkgs="`cat $OLDPKGS`"
+  for i in $pkgs; do
+    echo "$i"
+    pkgrm -a "$LIBDIR/admin-update" -n -R "$UPDATE_ROOT" "$i"
+  done 2>>$pkglog
+
+  # We can't use patchrm on patches, because we don't back up
+  # files replaced by patchadd.  So just remove the patch directory.
+  patches="`cat $OLDPTCHS`"
+  for i in $patches; do
+    rm -rf $UPDATE_ROOT/var/sadm/patch/$i
+  done
+
+  # Restore the files we preserved above.
+  if [ -n "$ospreserve" ]; then
+    echo "Restoring preserved config files after removing OS packages"
+    for i in $ospreserve ; do
+      cp -p "$UPDATE_ROOT$i.update-preserve" "$UPDATE_ROOT$i"
+      rm -f "$UPDATE_ROOT$i.update-preserve"
+    done
+  fi
+fi
+
+if [ -s "$DEADFILES" ]; then
+  echo "Removing outdated files"
+  sed -e "s|^|$UPDATE_ROOT|" "$DEADFILES" | xargs rm -rf
+fi
+
 yes="y\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny"
 
 if [ -s "$PACKAGES" ]; then
@@ -45,20 +70,33 @@ if [ -s "$PACKAGES" ]; then
 fi
 
 if [ -s "$PACKAGES" ]; then
+  # For platform-dependent packages, we assume here that the package
+  # directory name is $pkg.$suffix, where the suffix is 'u' for sun4u,
+  # etc.  (This could be gleaned from /install/cdrom/.packagetoc).
+  suffix=`uname -m | sed -e 's|sun4||g'`
+
   echo "Installing the os packages"
   for i in `cat "$PACKAGES"`; do
-    echo "$i"
+    # If this package is platform-dependent, it will have a subdirectory
+    # in the distribution directory named foo.$suffix.  If there is no
+    # such directory, it must be platform-independent.
+    if [ -d "/install/cdrom/$i.$suffix" ] ; then
+      pkgdir="$i.$suffix"
+    else
+      pkgdir="$i"
+    fi
+    echo "$pkgdir"
     pkgadd -a $LIBDIR/admin-update -n -R "$UPDATE_ROOT" \
-      -d /install/cdrom "$i"
+      -d /install/cdrom "$pkgdir"
   done 2>>$pkglog
 fi
 
 if [ "$NEWOS" = "true" ]; then
   echo "Making adjustments"
   cp /install/cdrom/INST_RELEASE "$UPDATE_ROOT/var/sadm/system/admin"
-  rm $UPDATE_ROOT/etc/.UNC*
-  rm "$UPDATE_ROOT/etc/.sysidconfig.apps"
-  cp /install/cdrom/.sysIDtool.state "$UPDATE_ROOT/etc/default"
+  rm -f "$UPDATE_ROOT/etc/.UNCONFIGURED"
+  rm -f "$UPDATE_ROOT/etc/.sysidconfig.apps"
+  touch "$UPDATE_ROOT/etc/.NFS4inst_state.domain"
 fi
 
 if [ -s "$PATCHES" ]; then
@@ -124,19 +162,11 @@ if [ -s "$MIT_CORE_PACKAGES" ]; then
   echo "Finished installing Athena core packages."
 fi
 
-# Make sure the target also has a current finish-update script.
-cmp -s /srvd/etc/init.d/finish-update \
-  "$UPDATE_ROOT/etc/init.d/finish-update" || {
-    cp -p /srvd/etc/init.d/finish-update "$UPDATE_ROOT/etc/init.d"
-    rm -f "$UPDATE_ROOT/etc/rc2.d/S70finish-update"
-    ln -s ../init.d/finish-update "$UPDATE_ROOT/etc/rc2.d/S70finish-update"
-}
-
 rm -f "$UPDATE_ROOT/var/spool/cron/crontabs/uucp"
 
 if [ "$NEWDEVS" = "true" ]; then
   echo "Create devices and dev"
-  drvconfig -R "$UPDATE_ROOT" -r devices -p "$UPDATE_ROOT/etc/path_to_inst"
+  devfsadm -R "$UPDATE_ROOT"
   chmod 755 "$UPDATE_ROOT/dev"
   chmod 755 "$UPDATE_ROOT/devices"
   cp /dev/null "$UPDATE_ROOT/reconfigure"
