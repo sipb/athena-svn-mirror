@@ -27,12 +27,12 @@
 #include <X11/Intrinsic.h>
 #include <X11/StringDefs.h>
 
-#include <X11/AsciiText.h>
-#include <X11/Command.h>
-#include <X11/Label.h>
-#include <X11/Scroll.h>
+#include <X11/Xaw/AsciiText.h>
+#include <X11/Xaw/Command.h>
+#include <X11/Xaw/Label.h>
+#include <X11/Xaw/Scrollbar.h>
 #include <X11/Shell.h>
-#include <X11/Paned.h>
+#include <X11/Xaw/Paned.h>
 
 #include "xquota.h"
 
@@ -186,7 +186,7 @@ CreateInfoPopup(info)
 Info * info;
 {
   Widget pane;
-  Arg arglist[5];
+  Arg arglist[7];
   Cardinal num_args;
   Dimension width, height;
   Position x, y;
@@ -218,13 +218,15 @@ Info * info;
   strcpy(string, SAFE_MESSAGE);
 
   num_args = 0;
-  XtSetArg( arglist[num_args], XtNtextOptions, scrollVertical | wordBreak);
+  XtSetArg( arglist[num_args], XtNscrollVertical, XawtextScrollWhenNeeded);
   num_args++;  
-  XtSetArg( arglist[num_args], XtNeditType, XttextEdit); num_args++;  
+  XtSetArg( arglist[num_args], XtNwrap, XawtextWrapWord); num_args++;
+  XtSetArg( arglist[num_args], XtNeditType, XawtextEdit); num_args++;  
   XtSetArg( arglist[num_args], XtNlength, TEXT_BUFFER_LENGTH); num_args++;  
   XtSetArg( arglist[num_args], XtNstring, string); num_args++;  
+  XtSetArg( arglist[num_args], XtNuseStringInPlace, TRUE); num_args++;  
   info->message_widget = XtCreateManagedWidget("message", 
-					       asciiStringWidgetClass, pane, 
+					       asciiTextWidgetClass, pane, 
 					       arglist, num_args);
 
   CreateButtonPane(info, pane);
@@ -352,11 +354,12 @@ Widget parent;
   XtAddCallback(kill, XtNcallback, KillHelpProc, (caddr_t) shell);
   
   num_args = 0;
-  XtSetArg( arglist[num_args], XtNtextOptions, scrollVertical | wordBreak ) ;
+  XtSetArg( arglist[num_args], XtNscrollVertical, XawtextScrollWhenNeeded);
   num_args++; 
-  XtSetArg( arglist[num_args], XtNfile, filename ) ;
-  num_args++; 
-  (void) XtCreateManagedWidget("text", asciiDiskWidgetClass, pane,
+  XtSetArg( arglist[num_args], XtNwrap, XawtextWrapWord); num_args++;
+  XtSetArg( arglist[num_args], XtNstring, filename ) ; num_args++;
+  XtSetArg( arglist[num_args], XtNtype, XawAsciiFile ) ; num_args++; 
+  (void) XtCreateManagedWidget("text", asciiTextWidgetClass, pane,
 			       arglist, num_args);
   return(shell);
 }
@@ -731,7 +734,7 @@ int quota, used;
 
   temp = ( (float) used ) / ( (float) quota);
   if ( temp > 1.0 ) temp = 1.0;
-  XtScrollBarSetThumb( w, 1.0 - temp, temp );
+  XawScrollbarSetThumb( w, 1.0 - temp, temp );
   temp *= 100;
   if ( (((int) temp) >= info->warn && !info->flipped) ||
        (((int) temp) < info->warn && info->flipped) ) {
@@ -755,14 +758,14 @@ SetTextMessage(w, string)
 Widget w;
 char * string;
 {
-  XtTextBlock t_block;
+  XawTextBlock t_block;
 
   t_block.firstPos = 0;
   t_block.length = strlen(string);
   t_block.ptr = string;
   t_block.format = FMT8BIT;
 
-  if (XtTextReplace(w, 0, TEXT_BUFFER_LENGTH, &t_block) != XawEditDone)
+  if (XawTextReplace(w, 0, TEXT_BUFFER_LENGTH, &t_block) != XawEditDone)
     printf("Xquota Error: could not replace text string.\n");
 }
 
