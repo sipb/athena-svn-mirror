@@ -15,18 +15,20 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_brain_dump_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/bdump.c,v 1.2 1987-07-01 04:32:48 jtkohl Exp $";
+static char rcsid_brain_dump_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/bdump.c,v 1.3 1987-07-02 19:10:19 jtkohl Exp $";
 #endif SABER
 #endif lint
 
 #include "zserver.h"
 
+/*ARGSUSED*/
 void
 get_brain_dump(who)
 struct sockaddr_in *who;
 {
 }
 
+/*ARGSUSED*/
 void
 send_brain_dump(who)
 struct sockaddr_in *who;
