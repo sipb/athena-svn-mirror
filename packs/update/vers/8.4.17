@@ -1,0 +1,12 @@
+#!/bin/sh
+
+case $HOSTTYPE in
+sun4)
+  echo "106934-03"				>> $PATCHES
+  echo "OSCHANGES=true"				>> $CONFVARS
+  ;;
+
+sgi)
+  ;;
+
+esac
