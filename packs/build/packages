@@ -1,4 +1,4 @@
-# $Id: packages,v 1.117 2000-12-29 20:24:46 ghudson Exp $
+# $Id: packages,v 1.118 2000-12-30 05:04:59 ghudson Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -146,7 +146,7 @@ third/krb5			requires et package krb5-prep
 third/krb5/src/appl		requires al,locker,zephyr,krb5,hesiod package krb5
 third/ksrvutil			requires krb5
 third/lam
-third/libglade			requires gtk,gnome-libs
+third/libglade			requires gtk,gnome-libs,libxml
 third/libpng			except linux requires zlib
 third/librep			requires gmp,gdbm
 third/libungif			except linux
