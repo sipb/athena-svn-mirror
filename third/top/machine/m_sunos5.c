@@ -698,7 +698,7 @@ format_next_process (
 	   Proc_format,
 	   pp->pr_pid,
 	   (*get_userid) (pp->pr_uid),
-	   pp->pr_pri - PZERO,
+	   pp->pr_pri,
 	   pp->pr_nice - NZERO,
 	   format_k(pp->pr_bysize / 1024),
 	   format_k(pp->pr_byrssize / 1024),
