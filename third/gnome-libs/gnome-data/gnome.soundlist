@@ -1,0 +1,158 @@
+[__section_info__]
+description=GNOME system events
+description[ca]=Events de sistema de GNOME
+description[da]=Systemhændelser i Gnome skrivebordsmiljøet
+description[de]=Sound-Ereignisse für GNOME
+description[el]=Ãåãïíüôá ôïõ óõóôŞìáôïò ôïõ GNOME
+description[es]=Eventos sistema de GNOME
+description[et]=GNOME süsteemsed sündmused
+description[fr]=Événements système de GNOME
+description[gl]=Eventos de sistema de GNOME
+description[it]=Eventi di sistema GNOME
+description[ko]=±×³ğ ½Ã½ºÅÛ ÀÌº¥Æ®
+description[lt]=GNOME sistemos ávykiai
+description[no]=Systemhendelser for GNOME
+description[pl]=Zdarzenia systemowe GNOME
+description[pt]=Eventos de sistema GNOME
+description[tr]=Gnome sistem eylemleri
+description[wa]=Evenmints sistinme di GNOME
+
+[login]
+file=login.wav
+description=Login
+description[ca]=Entrada al sistema
+description[da]=Indlogning
+description[de]=Anmeldung zur Sitzung
+description[el]=¸íáñîç óõíåäñßáò
+description[es]=Apertura de sesión
+description[et]=Sisselogimine
+description[fr]=Ouverture de session
+description[gl]=Comezo de sesión
+description[it]=Login
+description[ko]=·Î±×ÀÎ
+description[lt]=Prisijungimas
+description[no]=Innlogging
+description[pl]=Rozpoczêcie pracy
+description[pt]=Início de Sessão
+description[tr]=Giriş
+description[wa]=Intreye è session
+
+[logout]
+file=logout.wav
+description=Logout
+description[ca]=Eixida del sistema
+description[da]=Udlogning
+description[de]=Abmeldung von der Sitzung
+description[el]=¸îïäïò áğü ôç óõíåäñßá
+description[es]=Salida de sesión
+description[et]=Väljalogimine
+description[fr]=Fin de session
+description[gl]=Fin de sesión
+description[it]=Esci da GNOME
+description[ko]=·Î±×¾Æ¿ô
+description[lt]=Atsijungimas
+description[no]=Utlogging
+description[pl]=Zakoñczenie pracy
+description[pt]=Fim de Sessão
+description[tr]=Çıkış
+description[wa]=Cwand li session est hûte
+
+[info]
+file=info.wav
+description=Informational Messages
+description[ca]=Missatges informatius
+description[da]=Informative beskeder
+description[de]=Informationen
+description[el]=ĞëçñïöïñéáêÜ ìçíıìáôá
+description[es]=Mensajes informativos
+description[et]=Teated
+description[fr]=Messages d'information
+description[gl]=Mensaxes de información
+description[it]=Informazioni
+description[ko]=¾Ë¸² ¸Ş¼¼Áö
+description[lt]=Informacinës şinutës
+description[no]=Informative meldinger
+description[pl]=Komunikat informacyjny
+description[pt]=Mensagens Informativas
+description[tr]=Bilgi iletileri
+description[wa]=Messaedjes d' informåcion
+
+[warning]
+file=warning.wav
+description=Warning Messages
+description[ca]=Missatges d'avís
+description[da]=Advarsler
+description[de]=Warnungen
+description[el]=Ìçíıìáôá ğñïåéäïğïßçóçò
+description[es]=Mensajes de advertencia
+description[et]=Hoiatused
+description[fr]=Messages d'avertissement
+description[gl]=Mensaxes de aviso
+description[it]=Avviso
+description[ko]=°æ°í ¸Ş¼¼Áö
+description[lt]=Áspëjamosios şinutës
+description[no]=Advarsler
+description[pl]=Komunikat ostrzegawczy
+description[pt]=Avisos
+description[tr]=Ikaz iletileri
+description[wa]=Messaedjes d' avertixhmint
+
+[error]
+file=error.wav
+description=Error Messages
+description[ca]=Missatges d'error
+description[da]=Fejlmeldinger
+description[de]=Fehler
+description[el]=Ìçíıìáôá óöÜëìáôïò
+description[es]=Mensajes de error
+description[et]=Veateated
+description[fr]=Messages d'erreur
+description[gl]=Mensaxes de erro
+description[it]=Errore
+description[ko]=¿À·ù ¸Ş¼¼Áö
+description[lt]=Klaidø praneğimai
+description[no]=Feilmeldinger
+description[pl]=Komunikat b³êdu
+description[pt]=Mensagens de Erro
+description[tr]=Hata iletileri
+description[wa]=Messaedjes d' aroke
+
+[question]
+file=question.wav
+description=Question Dialogs
+description[ca]=Diàlegs interrogatius
+description[da]=Spørgsmålsdialoger
+description[de]=Fragen
+description[el]=ÄéÜëïãïé ìå åñùôŞóåéò
+description[es]=Diálogos con preguntas
+description[et]=Küsimused
+description[fr]=Dialogues avec des questions
+description[gl]=Diálogos con preguntas
+description[it]=Domanda
+description[ko]=¹°À½ ´ëÈ­»óÀÚ
+description[lt]=Klausimø dialogai
+description[no]=Spørsmålsdialoger
+description[pl]=Komunikat z zapytaniem
+description[pt]=Diálogos com questões
+description[tr]=Sorgulama iletileri
+description[wa]=Purneas di dialogue avou des kesses
+
+[generic]
+file=generic.wav
+description=Miscellaneous Messages
+description[ca]=Missatges diversos
+description[da]=Diverse beskeder
+description[de]=Sonstige Meldungen
+description[el]=ÄéÜöïñá ìçíıìáôá
+description[es]=Mensajes misceláneos
+description[et]=Muud teated
+description[fr]=Autres messages
+description[gl]=Outras mensaxes
+description[it]=Evento generico
+description[ko]=±× ¿Ü ¸Ş¼¼Áö
+description[lt]=Ávairios şinutës
+description[no]=Forskjellige beskjeder
+description[pl]=Ró¿ne komunikaty
+description[pt]=Outras mensagens
+description[tr]=Öbür iletileri
+description[wa]=Ôtes messaedjes

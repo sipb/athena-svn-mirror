@@ -1,0 +1,169 @@
+<HTML
+><HEAD
+><TITLE
+>I'm done with this module, how do I get rid of all the
+      object files and other cruft from the source tree?</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.44"><LINK
+REL="HOME"
+TITLE="GNOME Frequently Asked Questions"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Compiling GNOME"
+HREF="compilinggnome.html"><LINK
+REL="PREVIOUS"
+TITLE="How do I compile GNOME with all the files in the right
+      place for FHS Compliance?  How do I relocate GNOME's etc and var
+      directories to easily network GNOME?"
+HREF="fhs.html"><LINK
+REL="NEXT"
+TITLE="How do I uninstall a module?"
+HREF="uninstall.html"></HEAD
+><BODY
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>GNOME Frequently Asked Questions</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="fhs.html"
+>&#60;&#60;&#60; Previous</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Compiling GNOME</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="uninstall.html"
+>Next &#62;&#62;&#62;</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="AEN446"
+>I'm done with this module, how do I get rid of all the
+      object files and other cruft from the source tree?</A
+></H1
+><P
+>You have three options, <B
+CLASS="COMMAND"
+>make clean</B
+>,
+      <B
+CLASS="COMMAND"
+>make distclean</B
+> or removing the
+      directory. Using <B
+CLASS="COMMAND"
+>make clean</B
+> will remove all
+      the object files, built executables, and miscellaneous cruft,
+      it's nice and safe.  The next option, <B
+CLASS="COMMAND"
+>make
+      distclean</B
+> should remove everything that wasn't in the
+      original tarball. If you do this, you will not be able to <A
+HREF="uninstall.html"
+>uninstall the module</A
+>.  The same goes
+      for removing the source directory.  Basically, <B
+CLASS="COMMAND"
+>make
+      clean</B
+> is good for general use, the others should be
+      considered drastic measures.</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="fhs.html"
+>&#60;&#60;&#60; Previous</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="uninstall.html"
+>Next &#62;&#62;&#62;</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>How do I compile GNOME with all the files in the right
+      place for FHS Compliance?  How do I relocate GNOME's etc and var
+      directories to easily network GNOME?</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="compilinggnome.html"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>How do I uninstall a module?</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

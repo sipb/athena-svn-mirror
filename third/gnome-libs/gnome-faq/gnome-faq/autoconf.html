@@ -1,0 +1,201 @@
+<HTML
+><HEAD
+><TITLE
+>What is Autoconf? What does it have to do with
+      GNOME?</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.44"><LINK
+REL="HOME"
+TITLE="GNOME Frequently Asked Questions"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Developer Issues"
+HREF="developinggnome.html"><LINK
+REL="PREVIOUS"
+TITLE="Developer Issues"
+HREF="developinggnome.html"><LINK
+REL="NEXT"
+TITLE="What is Libtool?  What does it have to do with
+      GNOME?"
+HREF="libtool.html"></HEAD
+><BODY
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>GNOME Frequently Asked Questions</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="developinggnome.html"
+>&#60;&#60;&#60; Previous</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Developer Issues</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="libtool.html"
+>Next &#62;&#62;&#62;</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="AUTOCONF"
+>What is Autoconf? What does it have to do with
+      GNOME?</A
+></H1
+><P
+>Autoconf is a tool for producing shell scripts that
+      automatically configure source code to adapt to the system you
+      are using.  Autoconf is invaluable, since it makes the
+      development of such configure scripts drastically easier. GNOME
+      uses it alongside the related tool, Automake, which allows
+      Autoconf to produce custom Makefiles for your system.  Autoconf
+      uses m4 to operate.  M4 is a powerful (but arcane) macro
+      language used by many GNU utilities.  Most of the macros used to
+      generate these files are found in either
+      <TT
+CLASS="FILENAME"
+>/usr/share/aclocal</TT
+> or the
+      <TT
+CLASS="FILENAME"
+>macros</TT
+> subdirectory of the source tree.</P
+><P
+>If you are using the tarballs, Autoconf and Automake have
+      already been run for you, so you don't need them on your system.
+      If you use CVS, you won't get very far without having recent
+      versions of these tools.  You can find more information about
+      Autoconf at <A
+HREF="http://gnu.org/software/autoconf/autoconf.html"
+TARGET="_top"
+> http://gnu.org/software/autoconf/autoconf.html</A
+>,
+      and Automake at <A
+HREF="http://gnu.org/software/automake/automake.html"
+TARGET="_top"
+>      http://gnu.org/software/automake/automake.html</A
+>.</P
+><P
+>Keep in mind, that <TT
+CLASS="FILENAME"
+>configure</TT
+>,
+      <TT
+CLASS="FILENAME"
+>config.h</TT
+>, <TT
+CLASS="FILENAME"
+>Makefile</TT
+>,
+      and even <TT
+CLASS="FILENAME"
+>Makefile.in</TT
+> are all constructed
+      files.  If you need to change them, you shouldn't patch them
+      directly, but rather modify the files used to create them:
+      <TT
+CLASS="FILENAME"
+>configure.in</TT
+>,
+      <TT
+CLASS="FILENAME"
+>config.h.in</TT
+>, and
+      <TT
+CLASS="FILENAME"
+>Makefile.am</TT
+>.</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="developinggnome.html"
+>&#60;&#60;&#60; Previous</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="libtool.html"
+>Next &#62;&#62;&#62;</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Developer Issues</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="developinggnome.html"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>What is Libtool?  What does it have to do with
+      GNOME?</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

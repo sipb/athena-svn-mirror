@@ -1,0 +1,166 @@
+<refentry id="GnomeCanvasLine" revision="17 Jul 2000">
+<refmeta>
+<refentrytitle>GnomeCanvasLine</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>GNOMEUI Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>GnomeCanvasLine</refname><refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+<synopsis>
+
+#include &lt;gnome.h&gt;
+
+
+struct      <link linkend="GnomeCanvasLine-struct">GnomeCanvasLine</link>;
+
+</synopsis>
+</refsynopsisdiv>
+
+<refsect1>
+<title>Object Hierarchy</title>
+<synopsis>
+
+  <link linkend="GtkObject">GtkObject</link>
+   +----<link linkend="GnomeCanvasItem">GnomeCanvasItem</link>
+         +----GnomeCanvasLine
+</synopsis>
+
+</refsect1>
+
+<refsect1>
+<title>Args</title>
+<synopsis>
+
+  &quot;<link linkend="GnomeCanvasLine--fill-color">fill_color</link>&quot;           <link linkend="gchar">gchar</link>*               : Write
+  &quot;<link linkend="GnomeCanvasLine--fill-color-gdk">fill_color_gdk</link>&quot;       <link linkend="GdkColor">GdkColor</link>             : Read / Write
+  &quot;<link linkend="GnomeCanvasLine--fill-color-rgba">fill_color_rgba</link>&quot;      <link linkend="guint">guint</link>                : Read / Write
+  &quot;<link linkend="GnomeCanvasLine--fill-stipple">fill_stipple</link>&quot;         <link linkend="GdkWindow">GdkWindow</link>            : Read / Write
+  &quot;<link linkend="GnomeCanvasLine--width-pixels">width_pixels</link>&quot;         <link linkend="guint">guint</link>                : Write
+  &quot;<link linkend="GnomeCanvasLine--width-units">width_units</link>&quot;          <link linkend="gdouble">gdouble</link>              : Write
+  &quot;<link linkend="GnomeCanvasLine--cap-style">cap_style</link>&quot;            <link linkend="GdkCapStyle">GdkCapStyle</link>          : Read / Write
+  &quot;<link linkend="GnomeCanvasLine--join-style">join_style</link>&quot;           <link linkend="GdkJoinStyle">GdkJoinStyle</link>         : Read / Write
+  &quot;<link linkend="GnomeCanvasLine--line-style">line_style</link>&quot;           <link linkend="GdkLineStyle">GdkLineStyle</link>         : Read / Write
+  &quot;<link linkend="GnomeCanvasLine--first-arrowhead">first_arrowhead</link>&quot;      <link linkend="gboolean">gboolean</link>             : Read / Write
+  &quot;<link linkend="GnomeCanvasLine--last-arrowhead">last_arrowhead</link>&quot;       <link linkend="gboolean">gboolean</link>             : Read / Write
+  &quot;<link linkend="GnomeCanvasLine--smooth">smooth</link>&quot;               <link linkend="gboolean">gboolean</link>             : Read / Write
+  &quot;<link linkend="GnomeCanvasLine--spline-steps">spline_steps</link>&quot;         <link linkend="guint">guint</link>                : Read / Write
+  &quot;<link linkend="GnomeCanvasLine--arrow-shape-a">arrow_shape_a</link>&quot;        <link linkend="gdouble">gdouble</link>              : Read / Write
+  &quot;<link linkend="GnomeCanvasLine--arrow-shape-b">arrow_shape_b</link>&quot;        <link linkend="gdouble">gdouble</link>              : Read / Write
+  &quot;<link linkend="GnomeCanvasLine--arrow-shape-c">arrow_shape_c</link>&quot;        <link linkend="gdouble">gdouble</link>              : Read / Write
+</synopsis>
+</refsect1>
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="GnomeCanvasLine-struct">struct GnomeCanvasLine</title>
+<programlisting>struct GnomeCanvasLine;</programlisting>
+<para>
+
+</para></refsect2>
+
+</refsect1>
+<refsect1>
+<title>Args</title>
+<variablelist>
+<varlistentry><term><anchor id="GnomeCanvasLine--fill-color">&quot;<literal>fill_color</literal>&quot; (<link linkend="gchar">gchar</link>* : Write)</term>
+<listitem>
+<para>
+
+</para></listitem></varlistentry>
+<varlistentry><term><anchor id="GnomeCanvasLine--fill-color-gdk">&quot;<literal>fill_color_gdk</literal>&quot; (<link linkend="GdkColor">GdkColor</link> : Read / Write)</term>
+<listitem>
+<para>
+
+</para></listitem></varlistentry>
+<varlistentry><term><anchor id="GnomeCanvasLine--fill-color-rgba">&quot;<literal>fill_color_rgba</literal>&quot; (<link linkend="guint">guint</link> : Read / Write)</term>
+<listitem>
+<para>
+
+</para></listitem></varlistentry>
+<varlistentry><term><anchor id="GnomeCanvasLine--fill-stipple">&quot;<literal>fill_stipple</literal>&quot; (<link linkend="GdkWindow">GdkWindow</link> : Read / Write)</term>
+<listitem>
+<para>
+
+</para></listitem></varlistentry>
+<varlistentry><term><anchor id="GnomeCanvasLine--width-pixels">&quot;<literal>width_pixels</literal>&quot; (<link linkend="guint">guint</link> : Write)</term>
+<listitem>
+<para>
+
+</para></listitem></varlistentry>
+<varlistentry><term><anchor id="GnomeCanvasLine--width-units">&quot;<literal>width_units</literal>&quot; (<link linkend="gdouble">gdouble</link> : Write)</term>
+<listitem>
+<para>
+
+</para></listitem></varlistentry>
+<varlistentry><term><anchor id="GnomeCanvasLine--cap-style">&quot;<literal>cap_style</literal>&quot; (<link linkend="GdkCapStyle">GdkCapStyle</link> : Read / Write)</term>
+<listitem>
+<para>
+
+</para></listitem></varlistentry>
+<varlistentry><term><anchor id="GnomeCanvasLine--join-style">&quot;<literal>join_style</literal>&quot; (<link linkend="GdkJoinStyle">GdkJoinStyle</link> : Read / Write)</term>
+<listitem>
+<para>
+
+</para></listitem></varlistentry>
+<varlistentry><term><anchor id="GnomeCanvasLine--line-style">&quot;<literal>line_style</literal>&quot; (<link linkend="GdkLineStyle">GdkLineStyle</link> : Read / Write)</term>
+<listitem>
+<para>
+
+</para></listitem></varlistentry>
+<varlistentry><term><anchor id="GnomeCanvasLine--first-arrowhead">&quot;<literal>first_arrowhead</literal>&quot; (<link linkend="gboolean">gboolean</link> : Read / Write)</term>
+<listitem>
+<para>
+
+</para></listitem></varlistentry>
+<varlistentry><term><anchor id="GnomeCanvasLine--last-arrowhead">&quot;<literal>last_arrowhead</literal>&quot; (<link linkend="gboolean">gboolean</link> : Read / Write)</term>
+<listitem>
+<para>
+
+</para></listitem></varlistentry>
+<varlistentry><term><anchor id="GnomeCanvasLine--smooth">&quot;<literal>smooth</literal>&quot; (<link linkend="gboolean">gboolean</link> : Read / Write)</term>
+<listitem>
+<para>
+
+</para></listitem></varlistentry>
+<varlistentry><term><anchor id="GnomeCanvasLine--spline-steps">&quot;<literal>spline_steps</literal>&quot; (<link linkend="guint">guint</link> : Read / Write)</term>
+<listitem>
+<para>
+
+</para></listitem></varlistentry>
+<varlistentry><term><anchor id="GnomeCanvasLine--arrow-shape-a">&quot;<literal>arrow_shape_a</literal>&quot; (<link linkend="gdouble">gdouble</link> : Read / Write)</term>
+<listitem>
+<para>
+
+</para></listitem></varlistentry>
+<varlistentry><term><anchor id="GnomeCanvasLine--arrow-shape-b">&quot;<literal>arrow_shape_b</literal>&quot; (<link linkend="gdouble">gdouble</link> : Read / Write)</term>
+<listitem>
+<para>
+
+</para></listitem></varlistentry>
+<varlistentry><term><anchor id="GnomeCanvasLine--arrow-shape-c">&quot;<literal>arrow_shape_c</literal>&quot; (<link linkend="gdouble">gdouble</link> : Read / Write)</term>
+<listitem>
+<para>
+
+</para></listitem></varlistentry>
+
+</variablelist>
+</refsect1>
+
+
+
+
+</refentry>

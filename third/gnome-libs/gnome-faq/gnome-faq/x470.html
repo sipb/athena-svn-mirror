@@ -1,0 +1,206 @@
+<HTML
+><HEAD
+><TITLE
+>How do I start GNOME?</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.44"><LINK
+REL="HOME"
+TITLE="GNOME Frequently Asked Questions"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="So now I've got GNOME, what do I do with it?"
+HREF="usinggnome.html"><LINK
+REL="PREVIOUS"
+TITLE="So now I've got GNOME, what do I do with it?"
+HREF="usinggnome.html"><LINK
+REL="NEXT"
+TITLE="How do I run GNOME programs?"
+HREF="x484.html"></HEAD
+><BODY
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>GNOME Frequently Asked Questions</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="usinggnome.html"
+>&#60;&#60;&#60; Previous</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>So now I've got GNOME, what do I do with it?</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="x484.html"
+>Next &#62;&#62;&#62;</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="AEN470"
+>How do I start GNOME?</A
+></H1
+><P
+>The proper way to start GNOME with all its features is to
+      put the line <TT
+CLASS="USERINPUT"
+><B
+>exec gnome-session</B
+></TT
+> at the
+      end of your X startup script.  This script can be called
+      <TT
+CLASS="FILENAME"
+>~/.xinitrc</TT
+>, <TT
+CLASS="FILENAME"
+>.xsession</TT
+>
+      or <TT
+CLASS="FILENAME"
+>.Xclients</TT
+>, depending on your platform
+      and configuration.  Of course, make sure that the GNOME binaries
+      are in your path, and there are no lines starting with
+      <TT
+CLASS="USERINPUT"
+><B
+>exec</B
+></TT
+> prior to the one you just added.
+      With gnome-core versions 1.04 and later, you can select the
+      window manager run by setting the <TT
+CLASS="ENVAR"
+>WINDOW_MANAGER</TT
+>
+      variable to the one you want.</P
+><P
+>Running <B
+CLASS="COMMAND"
+>gnome-session</B
+> like this will
+      run the default session, the first time in.  This includes your
+      window manager of choice (or a good guess if you didn't specify
+      it), the panel, GNOME Midnight Commander, and the help browser.
+      As you use GNOME, session management will save your current
+      desktop.  If you log out, and log back in later, your most
+      recent desktop will be restored.</P
+><P
+>If you don't want session management, GNOME will work fine
+      without it.  Put the line <TT
+CLASS="USERINPUT"
+><B
+>exec gnome-wm</B
+></TT
+>
+      at the end of your X startup script, as described above.  It
+      will still use the WINDOW_MANAGER environment variable to select
+      your window manager, but not bother with session management.
+      Run panel, gmc, or whatever as desired, either manually, or in
+      the startup script before the exec line.  For example:</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>panel &#38;
+gmc &#38;
+exec gnome-wm</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="usinggnome.html"
+>&#60;&#60;&#60; Previous</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="x484.html"
+>Next &#62;&#62;&#62;</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>So now I've got GNOME, what do I do with it?</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="usinggnome.html"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>How do I run GNOME programs?</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>
