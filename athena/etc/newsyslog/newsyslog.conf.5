@@ -1,0 +1,225 @@
+.TH NEWSYSLOG.CONF 5 "December 1, 1995" "MIT Athena"
+.SH NAME
+newsyslog.conf \- configuration files for newsyslog
+.SH DESCRIPTION
+When starting up, 
+.IR newsyslog
+reads in a configuration file to determine what actions should be
+taken.  By default, the configuation is read from
+.IR /etc/athena/newsyslog.conf .
+Each line of this file may either describe a particular log file that
+should be handled by
+.IR newsyslog ,
+or define additional information related to processing of the log
+files.  Blank lines and lines starting with a ``#'' are ignored.
+.PP
+.B Log file description lines
+.PP
+Each log file description line has five mandatory fields and two
+optional fields describing the log file to handle, with a whitespace
+separating each field.  The fields are as follows:
+.br
+	logfile name
+.br
+	owner.group of archives (optional)
+.br
+	mode of logfile & archives
+.br
+	number of archives
+.br
+	size of archives
+.br
+	archive interval
+.br
+	flags (optional)
+.PP
+The
+.I logfile name
+entry is the name of the system log file to be archived.
+.PP
+The optional
+.I owner.group
+entry specifies an ownership and group for the archive file.
+The "." is essential, even if the 
+.I owner
+or
+.I group
+field is left blank. The
+fields may be numeric, or a name which is looked up in 
+.I /etc/passwd
+or 
+.IR /etc/group .
+.PP
+The
+.I number of archives
+entry specifies the number of archives to be kept besides the log file
+itself.  
+.PP
+When the size of the logfile reaches 
+.I size of 
+.IR archives ,
+the logfile becomes trimmed as described above.  If this field is
+replaced by a ``*'', then the size of the logfile is not taken into
+account when determining when to trim the log file.
+.PP
+The
+.I number of hours
+entry specifies the time separation between the trimming of the log
+file.  If this field is replaced by a ``*'', the the number of hours
+since the last time the log was trimmed will not be taken into
+consideration.
+.PP
+The
+.I flags
+field specifies any special processing done to the archived log files:
+.br
+.TP
+.B B
+means that the file is a binary file, and so the ascii message which
+.I newsyslog
+normally inserts to indicate the fact that the logs have been turned
+over should not be included.
+.TP
+.B D
+indicates that the archived log files should be labelled with the date
+when the file was turned over, in the format ``logfile.YYYYMMDD'',
+instead of using the usual sequence ``logfile.0'', ``logfile.1''...
+.PP
+Other flags relating to the processing of the files can be defined in
+the file, but one default definition is provided for compatibility:
+.TP
+.B Z
+will compress the archive files to save space using
+.IR compress .
+This option can be redefined, but the re-definition must appear before
+the first log file description line.
+.PP
+It is possible to specify multiple filtering flags for a single log
+file.  In this case, the commands will be executed in order they are
+listed in the
+.I flags
+field.
+.PP
+.B Filtering and post-processing command definitions
+.PP
+It is possible to define additional flags that describe various
+operations which should be performed on the archived log file.
+Possible uses for this include defining flags that perform compression
+or generation of daily service reports.  The definitions of the
+filtering commands consist of:
+.br
+	the keyword
+.RB `` filter ''
+.br
+	flag letter
+.br
+	extension added by this filter (optional)
+.br
+	program to be executed
+.br
+	command-line arguments (optional)
+.PP
+The
+.I flag letter
+is a character which will be used to refer to this kind of filtering
+in the log file description lines.  The character is case-insensitive.
+Flags must be defined before they are used in a log file description.
+.PP
+The
+.I extension
+field describes the filename extension which will be added by this
+filter (for example, ``.Z'').  If the field is present, it must start
+with a ``.''  and contain no whitespace.  If a filter doesn't change
+the filename, this option should be omitted.
+.PP
+The
+.I program
+field should be a full path to the executable to be run.  No path
+search will be performed.
+.PP
+.I Command line arguments
+will be passed to the filtering program.  The name of the logfile will
+be passed as the last arguments, after all the arguments specified in
+the definition.  For instance, if the definition is
+.RB `` filter
+.B Z .Z /usr/ucb/compress
+.BR -f '',
+the command that will be executed is
+.I /usr/ucb/compress -f
+.IR logfile.0 .
+.PP
+It is possible to specify multiple filtering flags for a single log
+file.  In this case, the commands will be executed in order their
+flags are specified.
+.PP
+.B Description of processes to restart
+.PP
+It is possible to define additional flags that describe processes that
+should be restarted when the logfile is turned over by sending them a
+signal.  By default (if no signal flags are specified), a HUP signal
+is sent to the
+.I syslogd
+process specified by
+.IR /etc/syslog.pid .
+The flag definitions have the following fields:
+.br
+	the keyword
+.RB `` signal ''
+.br
+	flag letter
+.br
+	pidfile specifying the process
+.br
+	signal (optional)
+.PP
+The
+.I flag letter
+is a character which will be used to refer to this pidfile and signal
+in the log file description lines.  The character is case-insensitive.
+Flags must be defined before they are used in a log file description.
+.PP
+The
+.I pidfile
+is a file which must contain a single line specifying (in ASCII
+decimal representation) the process ID of the process to which a
+signal should be sent.
+.PP
+It is possible to specify the
+.I signal
+which will be sent either by its symbolic name or numerically.  If
+this field is omitted, HUP is used.  Note that the same signal will
+often have different numbers on various versions of UN*X, so use of
+symbolic names is encouraged.  The available names include
+.\" I commented out all signals which are very unlikely to be useful... "
+.BR HUP ,
+.BR INT ,
+.BR QUIT ,
+.\" .BR ILL ,"
+.BR ABRT ,
+.BR FPE ,
+.BR KILL ,
+.\".BR BUS ,"
+.\".BR SEGV ,"
+.\".BR PIPE ,"
+.BR ALRM ,
+.BR TERM ,
+.BR USR1 ,
+.BR USR2 ,
+.\".BR CHLD ,"
+.BR PWR ,
+.BR STOP
+and
+.\".BR TSTP ,"
+.BR CONT .
+.\".BR TTIN ,"
+.\".BR TTOU ,"
+.PP
+Each specified process will be restarted exactly once, unless none of
+the log files it is connected to are actually turned over.  The order
+in which the logfiles are turned over is unspecified and shouldn't be
+relied upon.  It is possible to specify multiple signal flags for a
+single log file.
+.SH FILES
+/etc/athena/newsyslog.conf
+.SH "SEE ALSO"
+newsyslog(8), syslogd(8), compress(1)
