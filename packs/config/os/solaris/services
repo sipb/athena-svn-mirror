@@ -187,6 +187,9 @@ afsrmtsys		7009/udp	# remote cache manager service
 csnet-cs	105/tcp
 csnet-fi	106/tcp
 
+# Used by the ESRI Spatial Database Engine
+esri_sde	5150/tcp
+
 #
 # End of Athena additions
 #
