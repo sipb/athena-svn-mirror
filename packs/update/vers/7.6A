@@ -1,10 +1,13 @@
 #!/bin/sh -
-# Version-specific update script for 7.5B
+# Version-specific update script for 7.6A
 
 echo "NEWTTYS=true"			>> ${CONFVARS}
 
 case ${MACH} in
 VS2*)	;;
+DS*)
+	echo "NEWUNIX=true"                     >> ${CONFVARS}
+	;;
 RSAIX)
 	echo -n "Updating /root ..."
 	cp /afs/rel-eng/system/rs_aix32/image/rconf.root /tmp/rconf
@@ -14,8 +17,9 @@ RSAIX)
 	cp /afs/rel-eng/system/rs_aix32/image/rconf.usr /tmp/rconf
 	synctree -s /afs/rel-eng/system/rs_aix32/image/ -d / -nosrcrules -nodstrules -a /tmp/rconf
 	rm /tmp/rconf
-	sh /afs/athena/system/rs_aix32/install/rc
 	sysck -y inventory
 	tcbck -y ALL
+	sh /afs/athena/system/rs_aix32/install/rc
 	echo "Done"
+	;;
 esac
