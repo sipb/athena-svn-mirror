@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/notify.c,v 1.3 1989-08-22 14:03:07 tjcoppet Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/notify.c,v 1.4 1989-08-22 16:30:10 tjcoppet Exp $";
 #endif
 
 
@@ -257,7 +257,7 @@ write_message_to_user(k, message, flags)
 #ifdef TEST
 #define OLC_CLASS    "OLCTEST"
 #else TEST
-#define OLC_CLASS    "OLC_FOOL"
+#define OLC_CLASS    "OLC"
 #endif TEST
 
 ERRCODE olc_broadcast_message(instance,message, code)
