@@ -2,7 +2,7 @@
  * Contains the local configuration information for attach/detach/nfsid
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/attach/config.h,v $
  *	$Author: epeisach $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/config.h,v 1.7 1991-03-04 10:05:49 epeisach Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/config.h,v 1.8 1991-03-04 12:55:18 epeisach Exp $
  */
 
 /*
@@ -24,9 +24,11 @@
  */
 #define NFS
 #define AFS
-#if !defined(AIX) && !defined(_AUX_SOURCE)
+#if !defined(_AUX_SOURCE)
 #define	RVD
+#if !defined(_AIX)
 #define UFS
+#endif
 #endif
 /* hack, we don't have the necessary header files yet */
 #ifdef ultrix
