@@ -1,4 +1,4 @@
-# $Id: Imakefile,v 1.29 1995-05-25 22:11:05 cfields Exp $
+# $Id: Imakefile,v 1.30 1995-10-02 22:08:22 cfields Exp $
 
 #if defined(_AIX) && (AIXV >= 30)
 MACHLIBS = -lodm -lcfg -ls
@@ -10,6 +10,16 @@ LDLIBS=/usr/athena/lib/libresolv.a -lsocket -lnsl /usr/ucblib/libucb.a -lelf -ld
 MACHLIBS = -lnsyslog
 #endif
 
+WCL=../wcl/libWc.a
+ARISRC=AriRegAll.c
+ARIOBJ=AriRegAll.o
+
+#ifdef sgi /* R5 changes actually, not SGI. */
+WCL=../wcl.r5/Wc/libWc.a
+ARISRC=
+ARIOBJ=../wcl.r5/Xp/libXp.a
+#endif
+
 KRB5_DEFS = -DKRB5 -I$(KRB5DIR)/include
 KRB5_LIBS = -L$(KRB5DIR)/lib -lkrb5 -lcrypto -lcom_err
 
@@ -17,13 +27,15 @@ DEFINES = -DSETPAG $(KRB5_DEFS) $(MACHDEFS)
 AFSLIBS = $(AFSDIR)/lib/afs/libsys.a \
 	$(AFSDIR)/lib/librx.a $(AFSDIR)/lib/liblwp.a
 
-SRCS = xlogin.c AriRegAll.c verify.c SmeBSB.c StringToPixel.c
-OBJS = xlogin.o AriRegAll.o verify.o SmeBSB.o StringToPixel.o
+
+SRCS = xlogin.c ${ARISRC} verify.c SmeBSB.c StringToPixel.c
+OBJS = xlogin.o ${ARIOBJ} verify.o SmeBSB.o StringToPixel.o
 #ifndef SOLARIS
-LIBS = -lXaw  ../wcl/libWc.a -lXmu -lXt -lXext -lX11 -lkrb -ldes -lhesiod \
+LIBS = -lXaw  ${WCL} -lXmu -lXt -lXext -lX11 -lkrb -ldes -lhesiod \
 	$(MACHLIBS) $(KRB5_LIBS) $(AFSLIBS) -lm
 #else
-LIBS = /usr/athena/lib/libXaw.a  ../wcl/libWc.a \
+/* Is this linking R5 Xaw, Xmu, with R5 other? */
+LIBS = /usr/athena/lib/libXaw.a ${WCL} \
 	/usr/athena/lib/libXmu.a -lXt -lXext -lX11 \
 	$(KRB5_LIBS) -lkrb -ldes -lhesiod  $(AFSLIBS) $(MACHLIBS) -lm
 #endif
@@ -33,6 +45,9 @@ PRESOURCES=Xlogin.rios.presed
 #endif
 #ifdef SOLARIS
 PRESOURCES=Xlogin.sun4.presed
+#endif
+#ifdef sgi
+PRESOURCES=Xlogin.s/**/gi.presed
 #endif
 #ifdef ultrix
 PRESOURCES=Xlogin.presed
