@@ -1,5 +1,5 @@
 # Prototype global .bash_login file
-# $Id: bash_login,v 1.5 2002-02-18 15:41:29 ghudson Exp $
+# $Id: bash_login,v 1.6 2002-05-06 14:46:18 ghudson Exp $
 
 # This file is sourced by default user file ~/.bash_login
 
@@ -11,6 +11,10 @@ if [ "${XSESSION+set}" = set ]; then
 fi
 
 initdir=/usr/athena/lib/init
+
+# Remember the pid of the login shell; used by dustbuster.
+ATHENA_LOGIN_SESSION=$$
+export ATHENA_LOGIN_SESSION
 
 if [ ! -r ~/.hushlogin ]; then
 	verbose_login=t		# Echo messages unless user has ~/.hushlogin.

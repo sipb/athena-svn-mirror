@@ -1,5 +1,5 @@
 # Prototype global .login file
-# $Id: login,v 1.9 1999-05-15 03:25:41 ghudson Exp $
+# $Id: login,v 1.10 2002-05-06 14:46:18 ghudson Exp $
 
 # This file is sourced by default user file ~/.login
 
@@ -7,6 +7,9 @@
 if ($?XSESSION) then
   exit 0
 endif
+
+# Remember the pid of the login shell; used by dustbuster.
+setenv ATHENA_LOGIN_SESSION $$
 
 set initdir=/usr/athena/lib/init
 
