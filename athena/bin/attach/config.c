@@ -1,12 +1,12 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/attach/config.c,v $
  *	$Author: probe $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/config.c,v 1.5 1990-07-20 14:50:04 probe Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/config.c,v 1.6 1992-01-06 15:52:42 probe Exp $
  */
 
 #ifndef lint
-static char *rcsid_config_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/config.c,v 1.5 1990-07-20 14:50:04 probe Exp $";
-#endif lint
+static char *rcsid_config_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/config.c,v 1.6 1992-01-06 15:52:42 probe Exp $";
+#endif
 
 #include "attach.h"
 #include "pwd.h"
@@ -141,15 +141,18 @@ static void parse_boolean(keyword, argument, buff, variable, arg)
 	caddr_t	variable;
 	int	arg;
 {
-	if (!strcmp(argument, "on"))
+	if (argument && !strcmp(argument, "on"))
 		* (int *) variable = 1;
-	else if (!strcmp(argument, "off"))
+	else if (argument && !strcmp(argument, "off"))
 		* (int *) variable = 0;
 	else {
 		if (arg == -1)
-			fprintf(stderr,
-				"%s: Argument to %s must be on or off!\n",
-				argument, keyword);
+			if (argument)
+			  fprintf(stderr,
+				  "%s: Argument to %s must be on or off!\n",
+				  argument, keyword);
+			else
+			  fprintf(stderr, "%s: Argument required!\n", keyword);
 		else
 			* (int *) variable = arg;	/* Default */
 	}
