@@ -456,7 +456,7 @@ GNULIB_VAR = LIB_GCC
    this with the shell's `for' construct.
    Note that some people don't have '.'  in their paths, so we must
    use ./prefix-args.  */
-#define YMF_PASS_LDFLAGS(flags) `./prefix-args -Xlinker flags`
+#define YMF_PASS_LDFLAGS(flags) flags
 #else
 #define YMF_PASS_LDFLAGS(flags) flags
 #endif
