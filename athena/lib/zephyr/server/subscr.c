@@ -4,7 +4,7 @@
  *	Created by:	John T. Kohl
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/subscr.c,v $
- *	$Author: jtkohl $
+ *	$Author: raeburn $
  *
  *	Copyright (c) 1987,1988 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -15,7 +15,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_subscr_c[] = "$Id: subscr.c,v 1.38 1990-01-10 11:38:52 jtkohl Exp $";
+static char rcsid_subscr_c[] = "$Id: subscr.c,v 1.39 1990-08-16 22:49:41 raeburn Exp $";
 #endif SABER
 #endif lint
 
@@ -153,7 +153,7 @@ ZNotice_t *notice;
 		    continue;
 		}
 		acl = class_get_acl(subs->zst_class);
-		if (acl) {
+		if (acl && !bdumping) {
 			if (!access_check(notice, acl, SUBSCRIBE)) {
 				syslog(LOG_WARNING, "subscr unauth %s %s",
 				       notice->z_sender, subs->zst_class);
