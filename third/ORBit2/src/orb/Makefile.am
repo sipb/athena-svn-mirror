@@ -11,12 +11,14 @@ INCLUDES =					\
 	-DORBIT2_INTERNAL_API			\
 	$(WARN_CFLAGS)				\
 	$(ORBIT_DEBUG_CFLAGS)			\
+	$(LOCAL_LINC_CFLAGS)			\
 	$(ORBIT_CFLAGS)
 
 libORBit_2_la_SOURCES=orbit-init.c orbit-init.h
 
 libORBit_2_la_LDFLAGS =               \
 	-version-info $(LT_VERSION)   \
+	-no-undefined		      \
 	$(ORBIT_LIBS)                 \
 	-lpopt
 
@@ -25,6 +27,7 @@ libORBit_2_la_LIBADD= \
 	GIOP/libGIOP.la \
 	orb-core/liborb-core.la \
 	poa/liborb-poa.la \
-	dynamic/liborb-dynamic.la
+	dynamic/liborb-dynamic.la \
+	../../linc2/src/liblinc.la
 
 inst-lib: all-recursive install-libLTLIBRARIES

@@ -4,7 +4,7 @@
 #ifndef CORBA_SMALL_H
 #define CORBA_SMALL_H 1
 
-#include <orbit/GIOP/giop.h>
+#include <glib-object.h>
 #include <orbit/orb-core/orbit-interface.h>
 
 G_BEGIN_DECLS
@@ -15,13 +15,28 @@ typedef struct {
 	CORBA_sequence_CORBA_TypeCode types;
 } ORBit_IModule;
 
+const char    *ORBit_get_safe_tmp      (void);
 
+/* Builtin allocators */
 gpointer       ORBit_small_alloc       (CORBA_TypeCode      tc);
 gpointer       ORBit_small_allocbuf    (CORBA_TypeCode      tc,
 					CORBA_unsigned_long length);
 void           ORBit_small_freekids    (CORBA_TypeCode      tc,
 					gpointer            p,
 					gpointer            d);
+
+/* More friendly(?) sequence allocators */
+gpointer       ORBit_sequence_alloc    (CORBA_TypeCode      sequence_tc,
+					CORBA_unsigned_long length);
+void           ORBit_sequence_append   (gpointer            sequence,
+					gconstpointer       element);
+void           ORBit_sequence_set_size (gpointer            sequence,
+					CORBA_unsigned_long length);
+#define        ORBit_sequence_index(sequence,idx) (sequence)->_buffer[(idx)]
+void           ORBit_sequence_concat   (gpointer            sequence,
+					gconstpointer       append);
+void           ORBit_sequence_remove   (gpointer            sequence,
+                                        guint               idx);
 
 typedef enum {
 	ORBIT_CONNECTION_CONNECTED,
@@ -30,23 +45,31 @@ typedef enum {
 	ORBIT_CONNECTION_IN_PROC
 } ORBitConnectionStatus;
 
-gpointer              ORBit_small_get_servant           (CORBA_Object obj);
-ORBitConnectionStatus ORBit_small_get_connection_status (CORBA_Object obj);
-ORBitConnectionStatus ORBit_small_listen_for_broken     (CORBA_Object obj,
-							 GCallback    fn,
-							 gpointer     user_data);
-ORBitConnectionStatus ORBit_small_unlisten_for_broken   (CORBA_Object obj,
-							 GCallback    fn);
+gpointer              ORBit_small_get_servant              (CORBA_Object obj);
+ORBitConnectionStatus ORBit_small_get_connection_status    (CORBA_Object obj);
+ORBitConnectionStatus ORBit_small_listen_for_broken        (CORBA_Object obj,
+							    GCallback    fn,
+							    gpointer     user_data);
+ORBitConnectionStatus ORBit_small_unlisten_for_broken_full (CORBA_Object obj,
+							    GCallback    fn,
+							    gpointer     user_data);
+/* old / stale */
+ORBitConnectionStatus ORBit_small_unlisten_for_broken      (CORBA_Object obj,
+							    GCallback    fn);
 
 typedef struct _ORBitConnection ORBitConnection;
 
 ORBitConnection      *ORBit_small_get_connection        (CORBA_Object     obj);
+ORBitConnection      *ORBit_small_get_connection_ref    (CORBA_Object     obj);
+void                  ORBit_small_connection_unref      (ORBitConnection *cnx);
 void                  ORBit_connection_set_max_buffer   (ORBitConnection *cnx,
 							 gulong           max_buffer_bytes);
 
 #if defined(ORBIT2_INTERNAL_API) || defined (ORBIT2_STUBS_API)
 
-#define ORBIT_SMALL_FAST_LOCALS 1
+#define ORBIT_SMALL_FAST_LOCALS           1
+#define ORBIT_SMALL_FORCE_GENERIC_MARSHAL 2
+
 extern int     ORBit_small_flags;
 
 /* Deprecated - only for bin-compat with pre 2.4 stubs */
@@ -69,6 +92,8 @@ void           ORBit_small_invoke_stub_n (CORBA_Object        object,
 #endif /* defined(ORBIT2_INTERNAL_API) || defined (ORBIT2_STUBS_API) */
 
 #ifdef ORBIT2_INTERNAL_API
+
+#include <orbit/GIOP/giop.h>
 
 void           ORBit_small_invoke_adaptor (ORBit_OAObject     adaptor_obj,
 					   GIOPRecvBuffer    *recv_buffer,

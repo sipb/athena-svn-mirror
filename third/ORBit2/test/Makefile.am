@@ -7,6 +7,7 @@ INCLUDES =                          \
 	-DORBIT2_INTERNAL_API       \
 	$(WARN_CFLAGS)              \
 	$(ORBIT_DEBUG_CFLAGS)       \
+	$(LOCAL_LINC_CFLAGS)        \
 	$(ORBIT_CFLAGS)
 
 bin_PROGRAMS=ior-decode-2 typelib-dump
@@ -14,13 +15,15 @@ noinst_PROGRAMS=test1 \
 	echo-client echo-client-t echo-server \
 	empty-client empty-server \
 	test-any-client test-any-server \
-	test-dynany test-mem test-performance test-giop
+	test-dynany test-mem test-performance test-giop test-corbaloc
 
-TESTS = test-dynany test-mem test-performance test-giop
+TESTS = test-dynany test-mem test-performance test-giop test-corbaloc
 
 LDADD = $(top_builddir)/src/orb/libORBit-2.la $(ORBIT_LIBS)
 
-test_mem_SOURCES=test-mem.c
+test_mem_SOURCES=test-mem.c $(IDLOUT)
+
+test_corbaloc_SOURCES = test-corbaloc.c
 
 test_performance_SOURCES = 	\
 	test-performance.c	\
@@ -56,7 +59,7 @@ ior_decode_2_SOURCES=ior-decode.c
 
 typelib_dump_SOURCES=typelib-dump.c
 
-DYNANY_IDLOUT=dynany.h dynany-common.c
+DYNANY_IDLOUT=dynany.h dynany-common.c dynany-skels.c dynany-stubs.c
 test_dynany_SOURCES=$(DYNANY_IDLOUT) test-dynany.c
 test_dynany_LDFLAGS=-lm
 

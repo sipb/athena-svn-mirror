@@ -19,6 +19,11 @@ static GRand           *glib_prng = NULL;
 static pid_t            genuid_pid;
 static uid_t            genuid_uid;
 
+/* This is quite possibly a complete waste of cycles */
+static GMutex          *inc_lock = NULL;
+#define INC_LOCK()      LINK_MUTEX_LOCK (inc_lock)
+#define INC_UNLOCK()    LINK_MUTEX_UNLOCK (inc_lock)
+
 /**
  * ORBit_genuid_init:
  * @type: how strong / weak we want to be
@@ -35,10 +40,11 @@ ORBit_genuid_init (ORBitGenUidType type)
 	
 	genuid_pid = getpid ();
 	genuid_uid = getuid ();
+	inc_lock = link_mutex_new();
 
 	glib_prng = g_rand_new ();
 	g_get_current_time (&time);
-	g_rand_set_seed (glib_prng, time.tv_sec ^ time.tv_usec);
+	g_rand_set_seed (glib_prng, (time.tv_sec << 20) ^ time.tv_usec);
 
 	genuid_type = type;
 
@@ -50,7 +56,7 @@ ORBit_genuid_init (ORBitGenUidType type)
 			random_fd = open ("/dev/random", O_RDONLY);
 
 		hit_strength = (random_fd >= 0);
-#if LINC_SSL_SUPPORT
+#if LINK_SSL_SUPPORT
 		hit_strength = TRUE; /* foolishly trust OpenSSL */
 #endif
 		break;
@@ -73,6 +79,11 @@ ORBit_genuid_fini (void)
 	if (glib_prng) {
 		g_rand_free (glib_prng);
 		glib_prng = NULL;
+	}
+
+	if (inc_lock) {
+		g_mutex_free (inc_lock);
+		inc_lock = NULL;
 	}
 }
 
@@ -102,7 +113,7 @@ genuid_rand_device (guchar *buffer, int length)
 	return TRUE;
 }
 
-#if LINC_SSL_SUPPORT
+#if LINK_SSL_SUPPORT
 #include <openssl/rand.h>
 
 static gboolean
@@ -110,8 +121,10 @@ genuid_rand_openssl (guchar *buffer, int length)
 {
 	static RAND_METHOD *rm = NULL;
 
+	INC_LOCK();
 	if (!rm)
 		rm = RAND_get_rand_method ();
+	INC_UNLOCK();
 
 	RAND_bytes (buffer, length);
 
@@ -145,17 +158,20 @@ genuid_simple (guchar *buffer, int length)
 
 	p_memzero (buffer, length);
 
-	inc++;
-
-	memcpy (buffer, &inc, 4);
-
 	if (length > 4)
 		memcpy (buffer + 4, &genuid_pid, 4);
 
 	if (length > 8)
 		memcpy (buffer + 8, &genuid_uid, 4);
 
+	INC_LOCK ();
+
+	inc++;
+	memcpy (buffer, &inc, 4);
+
 	xor_buffer (buffer, length);
+
+	INC_UNLOCK ();
 }
 
 static void
@@ -164,6 +180,7 @@ genuid_glib_pseudo (guchar *buffer, int length)
 	static guint32 inc = 0;
 	int            i;
 
+	INC_LOCK ();
 	inc++;
 
 	for (i = 0; i < length; i++) {
@@ -174,6 +191,7 @@ genuid_glib_pseudo (guchar *buffer, int length)
 	}
 
 	xor_buffer (buffer, length);
+	INC_UNLOCK ();
 }
 
 void
@@ -192,7 +210,7 @@ ORBit_genuid_buffer (guint8         *buffer,
 		if (random_fd >= 0 &&
 		    genuid_rand_device (buffer, length))
 			return;
-#if LINC_SSL_SUPPORT
+#if LINK_SSL_SUPPORT
 		else if (genuid_rand_openssl (buffer, length))
 			return;
 #endif

@@ -99,6 +99,9 @@ ORBit_iinterface_fill_iargs (GHashTable  *typecodes,
 				typecodes, 
 				IDL_PARAM_DCL (parm).param_type_spec);
 
+		iarg->name = CORBA_string_dup(
+				 IDL_STRING (IDL_PARAM_DCL(parm).simple_declarator).value);
+
 		switch (IDL_PARAM_DCL (parm).attr) {
 		case IDL_PARAM_IN:
 			iarg->flags = ORBit_I_ARG_IN;
@@ -507,6 +510,33 @@ ORBit_iinterfaces_from_tree (IDL_tree                        tree,
 	return retval;
 }
 
+static char *
+build_cpp_args (const char *path,
+		const char *cpp_args)
+{
+	char *ret;
+	const char *base;
+	char *base_cpy;
+	int   i;
+
+	base = g_path_get_basename (path);
+	if (strlen (base) <= 4) {
+		ret = g_strconcat ("-D__ORBIT_IDL__ ", cpp_args, NULL);
+	} else {
+		/* base minus .idl extension */
+		base_cpy = g_strndup (base, strlen (base) - 4);
+		for (i = 0; base_cpy[i] != '\0'; i++) {
+			if (base_cpy[i] == '-')
+				base_cpy[i] = '_';
+		}
+		ret = g_strconcat ("-D__ORBIT_IDL__ -D__", base_cpy,
+				   "_COMPILATION ", cpp_args, NULL);
+		g_free (base_cpy);
+	}
+	g_free (base);
+	return ret;
+}
+
 #define PARSE_FLAGS (IDLF_SHOW_CPP_ERRORS|	\
 		     IDLF_TYPECODES|		\
 		     IDLF_SRCFILES|		\
@@ -539,12 +569,15 @@ ORBit_iinterfaces_from_file (const char                     *path,
 			     CORBA_sequence_CORBA_TypeCode **typecodes_ret)
 {
 	ORBit_IInterfaces *retval;
+	char              *full_cpp_args;
 	IDL_tree           tree;
 	IDL_ns             namespace;
 	int                ret;
-
-	ret = IDL_parse_filename (path, cpp_args, NULL, &tree,
+	
+	full_cpp_args = build_cpp_args (path, cpp_args);
+	ret = IDL_parse_filename (path, full_cpp_args, NULL, &tree,
 				  &namespace, PARSE_FLAGS, 0);
+	g_free (full_cpp_args);
 	if (ret != IDL_SUCCESS) {
 		g_warning ("Cannot parse %s\n", path);
 		return NULL;

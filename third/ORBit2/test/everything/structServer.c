@@ -89,6 +89,37 @@ StructServer_opCompound (PortableServer_Servant     servant,
 	return retval;
 }
 
+static test_AlignHoleStruct
+StructServer_opAlignHole (PortableServer_Servant     servant,
+			 const test_AlignHoleStruct *inArg,
+			 test_AlignHoleStruct       *inoutArg,
+			 test_AlignHoleStruct      *outArg,
+			 CORBA_Environment         *ev)
+{
+	test_AlignHoleStruct retval;
+	g_assert (inArg->a.a == constants_DOUBLE_IN);
+	g_assert (inArg->a.b == constants_OCTET_IN);
+	g_assert (inArg->b == constants_CHAR_IN);
+
+	g_assert (inoutArg->a.a == constants_DOUBLE_INOUT_IN);
+	g_assert (inoutArg->a.b == constants_OCTET_INOUT_IN);
+	g_assert (inoutArg->b == constants_CHAR_INOUT_IN);
+  
+	inoutArg->a.a = constants_DOUBLE_INOUT_OUT;
+	inoutArg->a.b = constants_OCTET_INOUT_OUT;
+	inoutArg->b = constants_CHAR_INOUT_OUT;
+
+	outArg->a.a = constants_DOUBLE_OUT;
+	outArg->a.b = constants_OCTET_OUT;
+	outArg->b = constants_CHAR_OUT;
+
+	retval.a.a = constants_DOUBLE_RETN;
+	retval.a.b = constants_OCTET_RETN;
+	retval.b = constants_CHAR_RETN;
+
+	return retval;
+}
+
 static void
 StructServer_opObjectStruct (PortableServer_Servant   servant,
 			     const test_ObjectStruct *inArg,
@@ -125,17 +156,17 @@ StructServer_opStructAny (PortableServer_Servant servant,
 	return a;
 }
 
-PortableServer_ServantBase__epv StructServer_base_epv = {NULL,NULL,NULL};
-
 POA_test_StructServer__epv StructServer_epv = {
 	NULL,
 	StructServer_opFixed,
 	StructServer_opVariable,
 	StructServer_opCompound,
+	StructServer_opAlignHole,
 	StructServer_opObjectStruct,
 	StructServer_opStructAny
 };
 
+PortableServer_ServantBase__epv StructServer_base_epv = {NULL, simple_finalize, NULL};
 POA_test_StructServer__vepv StructServer_vepv = {&StructServer_base_epv,&BasicServer_epv,&StructServer_epv};
 
 POA_test_StructServer StructServer_servant = {NULL,&StructServer_vepv};  /* Singleton */

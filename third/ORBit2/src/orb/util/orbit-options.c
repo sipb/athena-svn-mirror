@@ -53,6 +53,35 @@ ORBit_option_set (const ORBit_option *option,
 		*str_arg = g_strdup (val);
 		break;
 	}
+	case ORBIT_OPTION_KEY_VALUE: {
+		GSList **list = (GSList**) option->arg;
+
+		/* split string into tuple */ 
+		gchar **str_vec = g_strsplit (val, "=", 2);
+		
+		if (!str_vec || !str_vec[0] || !str_vec[1])
+		{
+			g_warning ("Option %s requieres key=value pair: %s", option->name, val);
+			if (str_vec) g_strfreev (str_vec);
+			break;
+		}
+		g_assert (str_vec[0] != NULL);
+		g_assert (str_vec[1] != NULL);
+
+		{
+			ORBit_OptionKeyValue *tuple 
+				= g_new0 (ORBit_OptionKeyValue, 1);
+
+			tuple->key   = g_strdup (str_vec[0]);
+			tuple->value = g_strdup (str_vec[1]);
+
+			*list = g_slist_append (*list, tuple);
+		}
+
+		g_strfreev (str_vec);
+
+		break;		
+	}
 	default:
 		g_assert_not_reached ();
 		break;
@@ -139,6 +168,7 @@ ORBit_option_command_line_parse (int                 *argc,
 	gint      i, j, numargs;
 	gchar     name [1024];
 	gchar    *tmpstr;
+	const ORBit_option *option = NULL;
 
 #ifdef DEBUG
 	fprintf (stderr, "Parsing command line for options\n");
@@ -150,7 +180,6 @@ ORBit_option_command_line_parse (int                 *argc,
 	erase = g_new0 (gboolean, *argc);
 
 	for (i = 1, numargs = *argc; i < *argc; i++) {
-		const ORBit_option *option = NULL;
 
 		if (argv [i][0] != '-') {
 			if (!option)
@@ -165,18 +194,17 @@ ORBit_option_command_line_parse (int                 *argc,
 			}
 
 			ORBit_option_set (option, argv [i]);
-
 			option = NULL;
 			continue;
-                }
-		else if (option && option->type != ORBIT_OPTION_NONE)
+
+                } else if (option && option->type != ORBIT_OPTION_NONE)
 			g_warning ("Option %s requires an argument\n",
 				   option->name);
 
                 tmpstr = argv [i];
                 while (*tmpstr && *tmpstr == '-')
 			tmpstr++;
-
+		
                 strncpy (name, tmpstr, sizeof (name) - 1);
 		name [sizeof (name) - 1] = '\0';
 
@@ -192,16 +220,17 @@ ORBit_option_command_line_parse (int                 *argc,
 			option = NULL;
 			continue;
 		}
-
+		
 		erase [i] = TRUE;
 		numargs--;
 
-		if (option->type == ORBIT_OPTION_NONE || tmpstr) {
+		if (option->type != ORBIT_OPTION_NONE && tmpstr) {
 			ORBit_option_set (option, tmpstr);
 			option = NULL;
 		}
 	}
 
+	/* erase all consumed arguments from @argv list */
         for (i = j = 1; i < *argc; i++) {
 		if (erase [i])
                         continue;

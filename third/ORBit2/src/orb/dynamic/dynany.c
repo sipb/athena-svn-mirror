@@ -29,6 +29,7 @@
 #include "config.h"
 #include "orbit/orbit.h"
 #include "orb-core/orb-core-private.h"
+#include "../orbit-init.h"
 #include "../util/orbit-purify.h"
 
 #define o_return_val_if_fail(expr, val) if(!(expr)) { CORBA_exception_set_system (ev, ex_CORBA_BAD_PARAM, CORBA_COMPLETED_NO); return (val); }
@@ -646,6 +647,13 @@ dynany_create (const CORBA_TypeCode type,
 	return CORBA_OBJECT_NIL;
 }
 
+DynamicAny_DynAnyFactory
+ORBit_DynAnyFactory_new (CORBA_ORB orb, CORBA_Environment *ev)
+{
+	/* FIXME: make this useful for scripting one day */
+	return (DynamicAny_DynAnyFactory) TC_void;
+}
+
 DynamicAny_DynAny
 DynamicAny_DynAnyFactory_create_dyn_any (
 	DynamicAny_DynAnyFactory obj,
@@ -918,16 +926,16 @@ DynamicAny_DynAny_get_##apiname (DynamicAny_DynAny  obj,			\
 	DynAny       *dynany;							\
 	CORBA_##ctype value;							\
 										\
-	o_return_val_if_fail (obj != NULL, 0);				       	\
+	o_return_val_if_fail (obj != NULL, (CORBA_##ctype)0);				       	\
 										\
 	dynany = GET_DYNANY (obj);						\
 										\
 	/* FIXME: assumes NULL == CORBA_OBJECT_NIL for simplicity */		\
 	b_return_val_if_fail (dynany != NULL &&					\
-			      dynany->any != NULL, 0);				\
+			      dynany->any != NULL, (CORBA_##ctype)0);				\
 										\
 	if (dynany_type_mismatch (dynany, tc, ev))				\
-		return 0;	       						\
+		return (CORBA_##ctype)0;	       						\
 										\
 	dynany_get (dynany, &value, tc, ev);					\
 										\
@@ -1663,12 +1671,12 @@ DynamicAny_DynUnion_member_name (DynamicAny_DynUnion obj,
 	DynAny *dynany;
 	CORBA_TypeCode tc;
 	
-	o_return_val_if_fail (obj != NULL, 0);
+	o_return_val_if_fail (obj != NULL, NULL);
 	
 	dynany = GET_DYNANY (obj);
 	b_return_val_if_fail (dynany != NULL &&
 			      dynany->any != NULL &&
-			      dynany->any->_type != NULL, 0);
+			      dynany->any->_type != NULL, NULL);
 
 	tc = dynany->any->_type;
 

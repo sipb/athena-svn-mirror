@@ -17,111 +17,6 @@ typedef struct {
 	int       idx;
 } CBESkelOpInfo;
 
-static void
-ck_output_skel (IDL_tree     tree,
-		OIDL_C_Info *ci,
-		int         *idx)
-{
-	IDL_tree  intf;
-	gboolean  has_args;
-	gboolean  has_retval;
-	char     *opname;
-	char     *ifname;
-
-	g_return_if_fail (idx != NULL);
-
-	intf = IDL_get_parent_node (tree, IDLN_INTERFACE, NULL);
-
-	has_args   = IDL_OP_DCL (tree).parameter_dcls != NULL;
-	has_retval = IDL_OP_DCL (tree).op_type_spec != NULL;
-
-	opname = IDL_ns_ident_to_qstring (IDL_IDENT_TO_NS (IDL_OP_DCL (tree).ident), "_", 0);
-	ifname = IDL_ns_ident_to_qstring (IDL_IDENT_TO_NS (IDL_INTERFACE (intf).ident), "_", 0);
-
-	fprintf (ci->fh, "void _ORBIT_skel_small_%s("
-				"POA_%s             *_o_servant, "
-				"gpointer            _o_retval,"
-				"gpointer           *_o_args,"
-				"CORBA_Context       _o_ctx,"
-				"CORBA_Environment  *_o_ev,\n", opname, ifname);
-
-	orbit_cbe_op_write_proto (ci->fh, tree, "_impl_", TRUE);
-
-	fprintf (ci->fh, ") {\n");
-
-	if (has_retval) {
-		fprintf (ci->fh, "*(");
-		orbit_cbe_write_param_typespec (ci->fh, tree);
-		fprintf (ci->fh, " *)_o_retval = ");
-	}
-
-	fprintf (ci->fh, "_impl_%s (_o_servant, ", IDL_IDENT (IDL_OP_DCL (tree).ident).str);
-  
-	orbit_cbe_unflatten_args (tree, ci->fh, "_o_args");
-
-	if (IDL_OP_DCL (tree).context_expr)
-		fprintf (ci->fh, "_o_ctx, ");
-
-	fprintf (ci->fh, "_o_ev);\n");
-
-	fprintf (ci->fh, "}\n");
-
-	g_free (opname);
-	g_free (ifname);
-
-	(*idx)++;
-}
-
-static void
-ck_output_skels (IDL_tree       tree,
-		 OIDL_Run_Info *rinfo,
-		 OIDL_C_Info   *ci,
-		 int           *idx)
-{
-	if (!tree || (tree->declspec & IDLF_DECLSPEC_PIDL))
-		return;
-
-	switch (IDL_NODE_TYPE (tree)) {
-	case IDLN_MODULE:
-		ck_output_skels (IDL_MODULE (tree).definition_list, rinfo, ci, idx);
-		break;
-	case IDLN_LIST: {
-		IDL_tree node;
-
-		for (node = tree; node; node = IDL_LIST (node).next)
-			ck_output_skels (IDL_LIST (node).data, rinfo, ci, idx);
-		break;
-		}
-	case IDLN_ATTR_DCL: {
-		OIDL_Attr_Info *ai = tree->data;
-		IDL_tree        node;
-      
-		for (node = IDL_ATTR_DCL (tree).simple_declarations; node; node = IDL_LIST (node).next) {
-			ai = IDL_LIST (node).data->data;
-	
-			ck_output_skels (ai->op1, rinfo, ci, idx);
-			if (ai->op2)
-				ck_output_skels (ai->op2, rinfo, ci, idx);
-		}
-		break;
-		}
-	case IDLN_INTERFACE: {
-		int real_idx = 0;
-
-		ck_output_skels (IDL_INTERFACE (tree).body, rinfo, ci, &real_idx);
-		}
-		break;
-	case IDLN_OP_DCL:
-		ck_output_skel (tree, ci, idx);
-		break;
-	default:
-		break;
-	}
-}
-
-
-/* POA stuff */
-
 static void cbe_skel_do_interface(IDL_tree tree, OIDL_Run_Info *rinfo, OIDL_C_Info *ci);
 
 static void
@@ -165,7 +60,7 @@ cbe_skel_free_op_info(CBESkelOpInfo *op)
 }
 
 static void
-cbe_skel_interface_add_relayer(IDL_tree intf, CBESkelInterfaceTraverseInfo *iti)
+cbe_skel_interface_add_relayer (IDL_tree intf, CBESkelInterfaceTraverseInfo *iti)
 {
   CBESkelOpInfo *newopi;
   IDL_tree curitem, curdcl, curattr, curattrdcl;
@@ -297,16 +192,19 @@ cbe_skel_interface_print_relayer(IDL_tree tree, OIDL_Run_Info *rinfo, OIDL_C_Inf
   g_free(id);
 }
 
+typedef struct {
+	OIDL_C_Info *ci;
+	const char  *for_id;
+} CBESkelVEPVMapTraverseInfo;
+
 static void
-cbe_skel_interface_print_vepvmap_line(IDL_tree node, OIDL_C_Info *ci)
+cbe_skel_interface_print_vepvmap_offsets (IDL_tree node, CBESkelVEPVMapTraverseInfo *ti)
 {
-  char *id;
-  id = IDL_ns_ident_to_qstring(IDL_IDENT_TO_NS(IDL_INTERFACE(node).ident),
-			       "_", 0);
-  fprintf(ci->fh, "class_info.vepvmap[%s__classid]"
-    " = (((char*)&(fakevepv->%s_epv)) - ((char*)(fakevepv)))/sizeof(GFunc);\n",
-    id, id);
-  g_free(id);
+	char *id;
+	id = IDL_ns_ident_to_qstring (IDL_IDENT_TO_NS (IDL_INTERFACE (node).ident), "_", 0);
+	fprintf (ti->ci->fh, "(CORBA_unsigned_long) %s__classid,\n", id);
+	fprintf (ti->ci->fh, "ORBIT_VEPV_OFFSET (POA_%s__vepv, %s_epv),\n", ti->for_id, id);
+	g_free (id);
 }
 
 static void
@@ -315,6 +213,7 @@ cbe_skel_do_interface(IDL_tree tree, OIDL_Run_Info *rinfo, OIDL_C_Info *ci)
   char *id, *id2;
   IDL_tree curitem, pnt;
   int i;
+  CBESkelVEPVMapTraverseInfo ti;
 
   /* PIDL methods dont have normal skel functions. */
   for ( pnt=tree; pnt; pnt=IDL_NODE_UP(pnt) ) {
@@ -336,17 +235,9 @@ cbe_skel_do_interface(IDL_tree tree, OIDL_Run_Info *rinfo, OIDL_C_Info *ci)
 
   fprintf(ci->fh,"\"%s\", &%s__classid, NULL, &%s__iinterface};\n",
 	  IDL_IDENT(IDL_INTERFACE(tree).ident).repo_id, id, id);
-  fprintf(ci->fh, "   POA_%s__vepv *fakevepv = NULL;", id);
 
-  {
-  	const char *finref = 
-      		"((PortableServer_ServantBase*)servant)->vepv[0]->finalize";
-  	fprintf(ci->fh, "if ( %s == 0 ) { ", finref);
-      	fprintf(ci->fh, "%s = POA_%s__fini;\n", finref, id);
-  	fprintf(ci->fh, "}\n");
-  }
-  fprintf(ci->fh,
-	  "  PortableServer_ServantBase__init(((PortableServer_ServantBase *)servant), env);\n");
+  fprintf(ci->fh,"  PortableServer_ServantBase__init ("
+	         "       ((PortableServer_ServantBase *)servant), env);\n");
 
   for(curitem = IDL_INTERFACE(tree).inheritance_spec; curitem;
       curitem = IDL_LIST(curitem).next) {
@@ -355,14 +246,14 @@ cbe_skel_do_interface(IDL_tree tree, OIDL_Run_Info *rinfo, OIDL_C_Info *ci)
     fprintf(ci->fh, "  POA_%s__init(servant, env);\n", id2);
     g_free(id2);
   }
+
   /* registering after other __inits() makes the classids increment nicely. */
-  fprintf(ci->fh, "  ORBit_classinfo_register(&class_info);\n");
-  /* Set classinfo after other __inits() for most derived interface. */
-  fprintf(ci->fh, "  ORBIT_SERVANT_SET_CLASSINFO(servant,&class_info);\n");
-  fprintf(ci->fh, "\nif (!class_info.vepvmap) {\n");
-  fprintf(ci->fh, "   class_info.vepvmap = g_new0 (ORBit_VepvIdx, %s__classid + 1);\n", id);
-  IDL_tree_traverse_parents(tree, (GFunc) cbe_skel_interface_print_vepvmap_line, ci);
-  fprintf(ci->fh, "}\n");
+  fprintf (ci->fh, "   ORBit_skel_class_register (&class_info,\n");
+  fprintf (ci->fh, "   servant, POA_%s__fini,\n", id);
+  fprintf (ci->fh, "   ORBIT_VEPV_OFFSET (POA_%s__vepv, %s_epv),\n", id, id);
+  ti.for_id = id; ti.ci = ci;
+  IDL_tree_traverse_parents_full (tree, (GFunc) cbe_skel_interface_print_vepvmap_offsets, &ti, FALSE);
+  fprintf (ci->fh, "   (CORBA_unsigned_long) 0);");
 
   fprintf(ci->fh, "}\n\n");
 
@@ -398,8 +289,6 @@ orbit_idl_output_c_skeletons (IDL_tree       tree,
 	fprintf (ci->fh, "#include <string.h>\n");
 	fprintf (ci->fh, "#define ORBIT2_STUBS_API\n");
 	fprintf (ci->fh, "#include \"%s.h\"\n\n", ci->base_name);
-
-	ck_output_skels (tree, rinfo, ci, NULL);
 
 	ck_output_poastuff (tree, rinfo, ci);
 }

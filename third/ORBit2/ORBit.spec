@@ -2,7 +2,7 @@
 %define __spec_install_post /usr/lib/rpm/brp-compress
 Summary:          A high-performance CORBA Object Request Broker.
 Name:             ORBit2
-Version:          2.6.0
+Version:          2.12.0
 Release:          1
 Source:           %{name}-%{version}.tar.gz
 Group:            System Environment/Daemons
@@ -11,10 +11,10 @@ BuildRoot:        %{_tmppath}/%{name}-%{version}-root
 Prereq:           /sbin/install-info
 URL:              http://www.labs.redhat.com/orbit/
 BuildRequires:    pkgconfig >= 0.8
-Requires:         linc >= 1.0.0
+Requires:         linc >= @LINC_REQUIRED@
 Requires:         glib2 >= 2.0.0
 Requires:         libIDL >= 0.7.4
-BuildRequires:    linc-devel >= 1.0.0
+BuildRequires:    linc-devel >= @LINC_REQUIRED@
 BuildRequires:    glib2-devel >= 2.0.0
 BuildRequires:    libIDL-devel >= 0.7.4
 
@@ -37,8 +37,8 @@ Group:            Development/Libraries
 Requires:         %name = %{version}
 Requires:         indent
 Requires:         pkgconfig >= 0.8
-Requires:         linc >= 1.0.0
-Requires:         linc-devel >= 1.0.0
+Requires:         linc >= @LINC_REQUIRED@
+Requires:         linc-devel >= @LINC_REQUIRED@
 Requires:         glib2 >= 2.0.0
 Requires:         glib2-devel >= 2.0.0
 Requires:         libIDL >= 0.7.4
@@ -99,6 +99,7 @@ rm -rf %{buildroot}
 %{_libdir}/pkgconfig/*
 %{_includedir}/*
 %{_datadir}/aclocal/*
+%{_datadir}/idl/orbit-2.0/*
 
 %changelog
 * Tue Mar 05 2002 Chris Chabot <chabotc@reviewboard.com>

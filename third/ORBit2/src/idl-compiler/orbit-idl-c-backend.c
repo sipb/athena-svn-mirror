@@ -31,7 +31,7 @@ orbit_idl_output_c (IDL_tree       tree,
     if(!isalnum((guchar)ci.c_base_name[i])) ci.c_base_name[i] = '_';
   }
 
-  ci.ext_dcls = g_string_new(0);
+  ci.ext_dcls = g_string_new(NULL);
 
   ci.do_impl_hack = 1;
   ci.do_skel_defs = rinfo->do_skel_defs;
@@ -153,6 +153,10 @@ out_for_pass (const char    *input_filename,
 		sprintf (cmdline, "%s > %s", rinfo->output_formatter, output_filename);
 
 		g_free (output_filename);
+
+		/* Many versions of cpp do evil translating internal
+		* strings, producing bogus output, so clobber LC_ALL */
+		putenv ("LC_ALL=C");
 		fp = popen (cmdline, "w");
 
 		if (fp == NULL)

@@ -5,7 +5,7 @@
 #ifndef dynamic_defs_H
 #define dynamic_defs_H 1
 #include <glib.h>
-#define ORBIT_IDL_SERIAL 19
+#define ORBIT_IDL_SERIAL 20
 #include <orbit/orbit-types.h>
 
 #ifdef __cplusplus
@@ -194,8 +194,7 @@ extern "C"
        _length;
       DynamicAny_NameValuePair *_buffer;
       CORBA_boolean _release;
-   }
-   CORBA_sequence_DynamicAny_NameValuePair;
+   } CORBA_sequence_DynamicAny_NameValuePair;
 #endif
 #if !defined(TC_IMPL_TC_CORBA_sequence_DynamicAny_NameValuePair_0)
 #define TC_IMPL_TC_CORBA_sequence_DynamicAny_NameValuePair_0 'd'
@@ -310,8 +309,7 @@ extern "C"
        _length;
       DynamicAny_NameDynAnyPair *_buffer;
       CORBA_boolean _release;
-   }
-   CORBA_sequence_DynamicAny_NameDynAnyPair;
+   } CORBA_sequence_DynamicAny_NameDynAnyPair;
 #endif
 #if !defined(TC_IMPL_TC_CORBA_sequence_DynamicAny_NameDynAnyPair_0)
 #define TC_IMPL_TC_CORBA_sequence_DynamicAny_NameDynAnyPair_0 'd'
@@ -409,8 +407,7 @@ extern "C"
        _length;
       CORBA_any *_buffer;
       CORBA_boolean _release;
-   }
-   CORBA_sequence_CORBA_any;
+   } CORBA_sequence_CORBA_any;
 #endif
 #if !defined(TC_IMPL_TC_CORBA_sequence_CORBA_any_0)
 #define TC_IMPL_TC_CORBA_sequence_CORBA_any_0 'd'
@@ -490,8 +487,7 @@ extern "C"
        _length;
       CORBA_Object *_buffer;
       CORBA_boolean _release;
-   }
-   CORBA_sequence_CORBA_Object;
+   } CORBA_sequence_CORBA_Object;
 #endif
 #if !defined(TC_IMPL_TC_CORBA_sequence_CORBA_Object_0)
 #define TC_IMPL_TC_CORBA_sequence_CORBA_Object_0 'd'
@@ -611,6 +607,14 @@ extern "C"
 #  define TC_DynamicAny_DynArray TC_CORBA_Object
 #endif
 #endif
+#if !defined(ORBIT_DECL_DynamicAny_DynValueCommon) && !defined(_DynamicAny_DynValueCommon_defined)
+#define ORBIT_DECL_DynamicAny_DynValueCommon 1
+#define _DynamicAny_DynValueCommon_defined 1
+   typedef struct DynamicAny_DynValueCommon_type *DynamicAny_DynValueCommon;
+#ifndef TC_DynamicAny_DynValueCommon
+#  define TC_DynamicAny_DynValueCommon TC_CORBA_Object
+#endif
+#endif
 #if !defined(ORBIT_DECL_DynamicAny_DynValue) && !defined(_DynamicAny_DynValue_defined)
 #define ORBIT_DECL_DynamicAny_DynValue 1
 #define _DynamicAny_DynValue_defined 1
@@ -618,6 +622,48 @@ extern "C"
 #ifndef TC_DynamicAny_DynValue
 #  define TC_DynamicAny_DynValue TC_CORBA_Object
 #endif
+#endif
+#if !defined(ORBIT_DECL_DynamicAny_DynValueBox) && !defined(_DynamicAny_DynValueBox_defined)
+#define ORBIT_DECL_DynamicAny_DynValueBox 1
+#define _DynamicAny_DynValueBox_defined 1
+   typedef struct DynamicAny_DynValueBox_type *DynamicAny_DynValueBox;
+#ifndef TC_DynamicAny_DynValueBox
+#  define TC_DynamicAny_DynValueBox TC_CORBA_Object
+#endif
+#endif
+#undef ex_DynamicAny_MustTruncate
+#define ex_DynamicAny_MustTruncate "IDL:omg.org/DynamicAny/MustTruncate:1.0"
+#if !defined(_DynamicAny_MustTruncate_defined)
+#define _DynamicAny_MustTruncate_defined 1
+   typedef struct DynamicAny_MustTruncate_type DynamicAny_MustTruncate;
+   struct DynamicAny_MustTruncate_type
+   {
+      int dummy;
+   };
+
+#if !defined(TC_IMPL_TC_DynamicAny_MustTruncate_0)
+#define TC_IMPL_TC_DynamicAny_MustTruncate_0 'd'
+#define TC_IMPL_TC_DynamicAny_MustTruncate_1 'y'
+#define TC_IMPL_TC_DynamicAny_MustTruncate_2 'n'
+#define TC_IMPL_TC_DynamicAny_MustTruncate_3 'a'
+#define TC_IMPL_TC_DynamicAny_MustTruncate_4 'm'
+#define TC_IMPL_TC_DynamicAny_MustTruncate_5 'i'
+#define TC_IMPL_TC_DynamicAny_MustTruncate_6 'c'
+#define TC_IMPL_TC_DynamicAny_MustTruncate_7 '_'
+#define TC_IMPL_TC_DynamicAny_MustTruncate_8 'd'
+#define TC_IMPL_TC_DynamicAny_MustTruncate_9 'e'
+#define TC_IMPL_TC_DynamicAny_MustTruncate_10 'f'
+#define TC_IMPL_TC_DynamicAny_MustTruncate_11 's'
+#ifdef ORBIT_IDL_C_IMODULE_dynamic_defs
+   static
+#else
+   extern
+#endif
+   const struct CORBA_TypeCode_struct TC_DynamicAny_MustTruncate_struct;
+#define TC_DynamicAny_MustTruncate ((CORBA_TypeCode)&TC_DynamicAny_MustTruncate_struct)
+#endif
+#define DynamicAny_MustTruncate__alloc() ((DynamicAny_MustTruncate *)ORBit_small_alloc (TC_DynamicAny_MustTruncate))
+#define DynamicAny_MustTruncate__freekids(m,d) ORBit_small_freekids (TC_DynamicAny_MustTruncate,(m),(d))
 #endif
 #if !defined(ORBIT_DECL_DynamicAny_DynAnyFactory) && !defined(_DynamicAny_DynAnyFactory_defined)
 #define ORBIT_DECL_DynamicAny_DynAnyFactory 1
@@ -794,6 +840,84 @@ extern "C"
 							 _obj,
 							 CORBA_Environment *
 							 ev);
+   void DynamicAny_DynAny_insert_abstract(DynamicAny_DynAny _obj,
+					  const CORBA_AbstractBase value,
+					  CORBA_Environment * ev);
+   CORBA_AbstractBase DynamicAny_DynAny_get_abstract(DynamicAny_DynAny _obj,
+						     CORBA_Environment * ev);
+   void DynamicAny_DynAny_insert_boolean_seq(DynamicAny_DynAny _obj,
+					     const CORBA_BooleanSeq * value,
+					     CORBA_Environment * ev);
+   void DynamicAny_DynAny_insert_octet_seq(DynamicAny_DynAny _obj,
+					   const CORBA_OctetSeq * value,
+					   CORBA_Environment * ev);
+   void DynamicAny_DynAny_insert_char_seq(DynamicAny_DynAny _obj,
+					  const CORBA_CharSeq * value,
+					  CORBA_Environment * ev);
+   void DynamicAny_DynAny_insert_short_seq(DynamicAny_DynAny _obj,
+					   const CORBA_ShortSeq * value,
+					   CORBA_Environment * ev);
+   void DynamicAny_DynAny_insert_ushort_seq(DynamicAny_DynAny _obj,
+					    const CORBA_UShortSeq * value,
+					    CORBA_Environment * ev);
+   void DynamicAny_DynAny_insert_long_seq(DynamicAny_DynAny _obj,
+					  const CORBA_LongSeq * value,
+					  CORBA_Environment * ev);
+   void DynamicAny_DynAny_insert_ulong_seq(DynamicAny_DynAny _obj,
+					   const CORBA_ULongSeq * value,
+					   CORBA_Environment * ev);
+   void DynamicAny_DynAny_insert_float_seq(DynamicAny_DynAny _obj,
+					   const CORBA_FloatSeq * value,
+					   CORBA_Environment * ev);
+   void DynamicAny_DynAny_insert_double_seq(DynamicAny_DynAny _obj,
+					    const CORBA_DoubleSeq * value,
+					    CORBA_Environment * ev);
+   void DynamicAny_DynAny_insert_longlong_seq(DynamicAny_DynAny _obj,
+					      const CORBA_LongLongSeq * value,
+					      CORBA_Environment * ev);
+   void DynamicAny_DynAny_insert_ulonglong_seq(DynamicAny_DynAny _obj,
+					       const CORBA_ULongLongSeq *
+					       value, CORBA_Environment * ev);
+   void DynamicAny_DynAny_insert_longdouble_seq(DynamicAny_DynAny _obj,
+						const CORBA_LongDoubleSeq *
+						value,
+						CORBA_Environment * ev);
+   void DynamicAny_DynAny_insert_wchar_seq(DynamicAny_DynAny _obj,
+					   const CORBA_WCharSeq * value,
+					   CORBA_Environment * ev);
+   CORBA_BooleanSeq *DynamicAny_DynAny_get_boolean_seq(DynamicAny_DynAny _obj,
+						       CORBA_Environment *
+						       ev);
+   CORBA_OctetSeq *DynamicAny_DynAny_get_octet_seq(DynamicAny_DynAny _obj,
+						   CORBA_Environment * ev);
+   CORBA_CharSeq *DynamicAny_DynAny_get_char_seq(DynamicAny_DynAny _obj,
+						 CORBA_Environment * ev);
+   CORBA_ShortSeq *DynamicAny_DynAny_get_short_seq(DynamicAny_DynAny _obj,
+						   CORBA_Environment * ev);
+   CORBA_UShortSeq *DynamicAny_DynAny_get_ushort_seq(DynamicAny_DynAny _obj,
+						     CORBA_Environment * ev);
+   CORBA_LongSeq *DynamicAny_DynAny_get_long_seq(DynamicAny_DynAny _obj,
+						 CORBA_Environment * ev);
+   CORBA_ULongSeq *DynamicAny_DynAny_get_ulong_seq(DynamicAny_DynAny _obj,
+						   CORBA_Environment * ev);
+   CORBA_FloatSeq *DynamicAny_DynAny_get_float_seq(DynamicAny_DynAny _obj,
+						   CORBA_Environment * ev);
+   CORBA_DoubleSeq *DynamicAny_DynAny_get_double_seq(DynamicAny_DynAny _obj,
+						     CORBA_Environment * ev);
+   CORBA_LongLongSeq *DynamicAny_DynAny_get_longlong_seq(DynamicAny_DynAny
+							 _obj,
+							 CORBA_Environment *
+							 ev);
+   CORBA_ULongLongSeq *DynamicAny_DynAny_get_ulonglong_seq(DynamicAny_DynAny
+							   _obj,
+							   CORBA_Environment *
+							   ev);
+   CORBA_LongDoubleSeq *DynamicAny_DynAny_get_longdouble_seq(DynamicAny_DynAny
+							     _obj,
+							     CORBA_Environment
+							     * ev);
+   CORBA_WCharSeq *DynamicAny_DynAny_get_wchar_seq(DynamicAny_DynAny _obj,
+						   CORBA_Environment * ev);
 #define DynamicAny_DynFixed_type DynamicAny_DynAny_type
 #define DynamicAny_DynFixed_assign DynamicAny_DynAny_assign
 #define DynamicAny_DynFixed_from_any DynamicAny_DynAny_from_any
@@ -844,6 +968,34 @@ extern "C"
 #define DynamicAny_DynFixed_next DynamicAny_DynAny_next
 #define DynamicAny_DynFixed_component_count DynamicAny_DynAny_component_count
 #define DynamicAny_DynFixed_current_component DynamicAny_DynAny_current_component
+#define DynamicAny_DynFixed_insert_abstract DynamicAny_DynAny_insert_abstract
+#define DynamicAny_DynFixed_get_abstract DynamicAny_DynAny_get_abstract
+#define DynamicAny_DynFixed_insert_boolean_seq DynamicAny_DynAny_insert_boolean_seq
+#define DynamicAny_DynFixed_insert_octet_seq DynamicAny_DynAny_insert_octet_seq
+#define DynamicAny_DynFixed_insert_char_seq DynamicAny_DynAny_insert_char_seq
+#define DynamicAny_DynFixed_insert_short_seq DynamicAny_DynAny_insert_short_seq
+#define DynamicAny_DynFixed_insert_ushort_seq DynamicAny_DynAny_insert_ushort_seq
+#define DynamicAny_DynFixed_insert_long_seq DynamicAny_DynAny_insert_long_seq
+#define DynamicAny_DynFixed_insert_ulong_seq DynamicAny_DynAny_insert_ulong_seq
+#define DynamicAny_DynFixed_insert_float_seq DynamicAny_DynAny_insert_float_seq
+#define DynamicAny_DynFixed_insert_double_seq DynamicAny_DynAny_insert_double_seq
+#define DynamicAny_DynFixed_insert_longlong_seq DynamicAny_DynAny_insert_longlong_seq
+#define DynamicAny_DynFixed_insert_ulonglong_seq DynamicAny_DynAny_insert_ulonglong_seq
+#define DynamicAny_DynFixed_insert_longdouble_seq DynamicAny_DynAny_insert_longdouble_seq
+#define DynamicAny_DynFixed_insert_wchar_seq DynamicAny_DynAny_insert_wchar_seq
+#define DynamicAny_DynFixed_get_boolean_seq DynamicAny_DynAny_get_boolean_seq
+#define DynamicAny_DynFixed_get_octet_seq DynamicAny_DynAny_get_octet_seq
+#define DynamicAny_DynFixed_get_char_seq DynamicAny_DynAny_get_char_seq
+#define DynamicAny_DynFixed_get_short_seq DynamicAny_DynAny_get_short_seq
+#define DynamicAny_DynFixed_get_ushort_seq DynamicAny_DynAny_get_ushort_seq
+#define DynamicAny_DynFixed_get_long_seq DynamicAny_DynAny_get_long_seq
+#define DynamicAny_DynFixed_get_ulong_seq DynamicAny_DynAny_get_ulong_seq
+#define DynamicAny_DynFixed_get_float_seq DynamicAny_DynAny_get_float_seq
+#define DynamicAny_DynFixed_get_double_seq DynamicAny_DynAny_get_double_seq
+#define DynamicAny_DynFixed_get_longlong_seq DynamicAny_DynAny_get_longlong_seq
+#define DynamicAny_DynFixed_get_ulonglong_seq DynamicAny_DynAny_get_ulonglong_seq
+#define DynamicAny_DynFixed_get_longdouble_seq DynamicAny_DynAny_get_longdouble_seq
+#define DynamicAny_DynFixed_get_wchar_seq DynamicAny_DynAny_get_wchar_seq
    CORBA_string DynamicAny_DynFixed_get_value(DynamicAny_DynFixed _obj,
 					      CORBA_Environment * ev);
    CORBA_boolean DynamicAny_DynFixed_set_value(DynamicAny_DynFixed _obj,
@@ -899,6 +1051,34 @@ extern "C"
 #define DynamicAny_DynEnum_next DynamicAny_DynAny_next
 #define DynamicAny_DynEnum_component_count DynamicAny_DynAny_component_count
 #define DynamicAny_DynEnum_current_component DynamicAny_DynAny_current_component
+#define DynamicAny_DynEnum_insert_abstract DynamicAny_DynAny_insert_abstract
+#define DynamicAny_DynEnum_get_abstract DynamicAny_DynAny_get_abstract
+#define DynamicAny_DynEnum_insert_boolean_seq DynamicAny_DynAny_insert_boolean_seq
+#define DynamicAny_DynEnum_insert_octet_seq DynamicAny_DynAny_insert_octet_seq
+#define DynamicAny_DynEnum_insert_char_seq DynamicAny_DynAny_insert_char_seq
+#define DynamicAny_DynEnum_insert_short_seq DynamicAny_DynAny_insert_short_seq
+#define DynamicAny_DynEnum_insert_ushort_seq DynamicAny_DynAny_insert_ushort_seq
+#define DynamicAny_DynEnum_insert_long_seq DynamicAny_DynAny_insert_long_seq
+#define DynamicAny_DynEnum_insert_ulong_seq DynamicAny_DynAny_insert_ulong_seq
+#define DynamicAny_DynEnum_insert_float_seq DynamicAny_DynAny_insert_float_seq
+#define DynamicAny_DynEnum_insert_double_seq DynamicAny_DynAny_insert_double_seq
+#define DynamicAny_DynEnum_insert_longlong_seq DynamicAny_DynAny_insert_longlong_seq
+#define DynamicAny_DynEnum_insert_ulonglong_seq DynamicAny_DynAny_insert_ulonglong_seq
+#define DynamicAny_DynEnum_insert_longdouble_seq DynamicAny_DynAny_insert_longdouble_seq
+#define DynamicAny_DynEnum_insert_wchar_seq DynamicAny_DynAny_insert_wchar_seq
+#define DynamicAny_DynEnum_get_boolean_seq DynamicAny_DynAny_get_boolean_seq
+#define DynamicAny_DynEnum_get_octet_seq DynamicAny_DynAny_get_octet_seq
+#define DynamicAny_DynEnum_get_char_seq DynamicAny_DynAny_get_char_seq
+#define DynamicAny_DynEnum_get_short_seq DynamicAny_DynAny_get_short_seq
+#define DynamicAny_DynEnum_get_ushort_seq DynamicAny_DynAny_get_ushort_seq
+#define DynamicAny_DynEnum_get_long_seq DynamicAny_DynAny_get_long_seq
+#define DynamicAny_DynEnum_get_ulong_seq DynamicAny_DynAny_get_ulong_seq
+#define DynamicAny_DynEnum_get_float_seq DynamicAny_DynAny_get_float_seq
+#define DynamicAny_DynEnum_get_double_seq DynamicAny_DynAny_get_double_seq
+#define DynamicAny_DynEnum_get_longlong_seq DynamicAny_DynAny_get_longlong_seq
+#define DynamicAny_DynEnum_get_ulonglong_seq DynamicAny_DynAny_get_ulonglong_seq
+#define DynamicAny_DynEnum_get_longdouble_seq DynamicAny_DynAny_get_longdouble_seq
+#define DynamicAny_DynEnum_get_wchar_seq DynamicAny_DynAny_get_wchar_seq
    CORBA_string DynamicAny_DynEnum_get_as_string(DynamicAny_DynEnum _obj,
 						 CORBA_Environment * ev);
    void DynamicAny_DynEnum_set_as_string(DynamicAny_DynEnum _obj,
@@ -961,6 +1141,34 @@ extern "C"
 #define DynamicAny_DynStruct_next DynamicAny_DynAny_next
 #define DynamicAny_DynStruct_component_count DynamicAny_DynAny_component_count
 #define DynamicAny_DynStruct_current_component DynamicAny_DynAny_current_component
+#define DynamicAny_DynStruct_insert_abstract DynamicAny_DynAny_insert_abstract
+#define DynamicAny_DynStruct_get_abstract DynamicAny_DynAny_get_abstract
+#define DynamicAny_DynStruct_insert_boolean_seq DynamicAny_DynAny_insert_boolean_seq
+#define DynamicAny_DynStruct_insert_octet_seq DynamicAny_DynAny_insert_octet_seq
+#define DynamicAny_DynStruct_insert_char_seq DynamicAny_DynAny_insert_char_seq
+#define DynamicAny_DynStruct_insert_short_seq DynamicAny_DynAny_insert_short_seq
+#define DynamicAny_DynStruct_insert_ushort_seq DynamicAny_DynAny_insert_ushort_seq
+#define DynamicAny_DynStruct_insert_long_seq DynamicAny_DynAny_insert_long_seq
+#define DynamicAny_DynStruct_insert_ulong_seq DynamicAny_DynAny_insert_ulong_seq
+#define DynamicAny_DynStruct_insert_float_seq DynamicAny_DynAny_insert_float_seq
+#define DynamicAny_DynStruct_insert_double_seq DynamicAny_DynAny_insert_double_seq
+#define DynamicAny_DynStruct_insert_longlong_seq DynamicAny_DynAny_insert_longlong_seq
+#define DynamicAny_DynStruct_insert_ulonglong_seq DynamicAny_DynAny_insert_ulonglong_seq
+#define DynamicAny_DynStruct_insert_longdouble_seq DynamicAny_DynAny_insert_longdouble_seq
+#define DynamicAny_DynStruct_insert_wchar_seq DynamicAny_DynAny_insert_wchar_seq
+#define DynamicAny_DynStruct_get_boolean_seq DynamicAny_DynAny_get_boolean_seq
+#define DynamicAny_DynStruct_get_octet_seq DynamicAny_DynAny_get_octet_seq
+#define DynamicAny_DynStruct_get_char_seq DynamicAny_DynAny_get_char_seq
+#define DynamicAny_DynStruct_get_short_seq DynamicAny_DynAny_get_short_seq
+#define DynamicAny_DynStruct_get_ushort_seq DynamicAny_DynAny_get_ushort_seq
+#define DynamicAny_DynStruct_get_long_seq DynamicAny_DynAny_get_long_seq
+#define DynamicAny_DynStruct_get_ulong_seq DynamicAny_DynAny_get_ulong_seq
+#define DynamicAny_DynStruct_get_float_seq DynamicAny_DynAny_get_float_seq
+#define DynamicAny_DynStruct_get_double_seq DynamicAny_DynAny_get_double_seq
+#define DynamicAny_DynStruct_get_longlong_seq DynamicAny_DynAny_get_longlong_seq
+#define DynamicAny_DynStruct_get_ulonglong_seq DynamicAny_DynAny_get_ulonglong_seq
+#define DynamicAny_DynStruct_get_longdouble_seq DynamicAny_DynAny_get_longdouble_seq
+#define DynamicAny_DynStruct_get_wchar_seq DynamicAny_DynAny_get_wchar_seq
    DynamicAny_FieldName
       DynamicAny_DynStruct_current_member_name(DynamicAny_DynStruct _obj,
 					       CORBA_Environment * ev);
@@ -1032,6 +1240,34 @@ extern "C"
 #define DynamicAny_DynUnion_next DynamicAny_DynAny_next
 #define DynamicAny_DynUnion_component_count DynamicAny_DynAny_component_count
 #define DynamicAny_DynUnion_current_component DynamicAny_DynAny_current_component
+#define DynamicAny_DynUnion_insert_abstract DynamicAny_DynAny_insert_abstract
+#define DynamicAny_DynUnion_get_abstract DynamicAny_DynAny_get_abstract
+#define DynamicAny_DynUnion_insert_boolean_seq DynamicAny_DynAny_insert_boolean_seq
+#define DynamicAny_DynUnion_insert_octet_seq DynamicAny_DynAny_insert_octet_seq
+#define DynamicAny_DynUnion_insert_char_seq DynamicAny_DynAny_insert_char_seq
+#define DynamicAny_DynUnion_insert_short_seq DynamicAny_DynAny_insert_short_seq
+#define DynamicAny_DynUnion_insert_ushort_seq DynamicAny_DynAny_insert_ushort_seq
+#define DynamicAny_DynUnion_insert_long_seq DynamicAny_DynAny_insert_long_seq
+#define DynamicAny_DynUnion_insert_ulong_seq DynamicAny_DynAny_insert_ulong_seq
+#define DynamicAny_DynUnion_insert_float_seq DynamicAny_DynAny_insert_float_seq
+#define DynamicAny_DynUnion_insert_double_seq DynamicAny_DynAny_insert_double_seq
+#define DynamicAny_DynUnion_insert_longlong_seq DynamicAny_DynAny_insert_longlong_seq
+#define DynamicAny_DynUnion_insert_ulonglong_seq DynamicAny_DynAny_insert_ulonglong_seq
+#define DynamicAny_DynUnion_insert_longdouble_seq DynamicAny_DynAny_insert_longdouble_seq
+#define DynamicAny_DynUnion_insert_wchar_seq DynamicAny_DynAny_insert_wchar_seq
+#define DynamicAny_DynUnion_get_boolean_seq DynamicAny_DynAny_get_boolean_seq
+#define DynamicAny_DynUnion_get_octet_seq DynamicAny_DynAny_get_octet_seq
+#define DynamicAny_DynUnion_get_char_seq DynamicAny_DynAny_get_char_seq
+#define DynamicAny_DynUnion_get_short_seq DynamicAny_DynAny_get_short_seq
+#define DynamicAny_DynUnion_get_ushort_seq DynamicAny_DynAny_get_ushort_seq
+#define DynamicAny_DynUnion_get_long_seq DynamicAny_DynAny_get_long_seq
+#define DynamicAny_DynUnion_get_ulong_seq DynamicAny_DynAny_get_ulong_seq
+#define DynamicAny_DynUnion_get_float_seq DynamicAny_DynAny_get_float_seq
+#define DynamicAny_DynUnion_get_double_seq DynamicAny_DynAny_get_double_seq
+#define DynamicAny_DynUnion_get_longlong_seq DynamicAny_DynAny_get_longlong_seq
+#define DynamicAny_DynUnion_get_ulonglong_seq DynamicAny_DynAny_get_ulonglong_seq
+#define DynamicAny_DynUnion_get_longdouble_seq DynamicAny_DynAny_get_longdouble_seq
+#define DynamicAny_DynUnion_get_wchar_seq DynamicAny_DynAny_get_wchar_seq
    DynamicAny_DynAny DynamicAny_DynUnion_get_discriminator(DynamicAny_DynUnion
 							   _obj,
 							   CORBA_Environment *
@@ -1109,6 +1345,34 @@ extern "C"
 #define DynamicAny_DynSequence_next DynamicAny_DynAny_next
 #define DynamicAny_DynSequence_component_count DynamicAny_DynAny_component_count
 #define DynamicAny_DynSequence_current_component DynamicAny_DynAny_current_component
+#define DynamicAny_DynSequence_insert_abstract DynamicAny_DynAny_insert_abstract
+#define DynamicAny_DynSequence_get_abstract DynamicAny_DynAny_get_abstract
+#define DynamicAny_DynSequence_insert_boolean_seq DynamicAny_DynAny_insert_boolean_seq
+#define DynamicAny_DynSequence_insert_octet_seq DynamicAny_DynAny_insert_octet_seq
+#define DynamicAny_DynSequence_insert_char_seq DynamicAny_DynAny_insert_char_seq
+#define DynamicAny_DynSequence_insert_short_seq DynamicAny_DynAny_insert_short_seq
+#define DynamicAny_DynSequence_insert_ushort_seq DynamicAny_DynAny_insert_ushort_seq
+#define DynamicAny_DynSequence_insert_long_seq DynamicAny_DynAny_insert_long_seq
+#define DynamicAny_DynSequence_insert_ulong_seq DynamicAny_DynAny_insert_ulong_seq
+#define DynamicAny_DynSequence_insert_float_seq DynamicAny_DynAny_insert_float_seq
+#define DynamicAny_DynSequence_insert_double_seq DynamicAny_DynAny_insert_double_seq
+#define DynamicAny_DynSequence_insert_longlong_seq DynamicAny_DynAny_insert_longlong_seq
+#define DynamicAny_DynSequence_insert_ulonglong_seq DynamicAny_DynAny_insert_ulonglong_seq
+#define DynamicAny_DynSequence_insert_longdouble_seq DynamicAny_DynAny_insert_longdouble_seq
+#define DynamicAny_DynSequence_insert_wchar_seq DynamicAny_DynAny_insert_wchar_seq
+#define DynamicAny_DynSequence_get_boolean_seq DynamicAny_DynAny_get_boolean_seq
+#define DynamicAny_DynSequence_get_octet_seq DynamicAny_DynAny_get_octet_seq
+#define DynamicAny_DynSequence_get_char_seq DynamicAny_DynAny_get_char_seq
+#define DynamicAny_DynSequence_get_short_seq DynamicAny_DynAny_get_short_seq
+#define DynamicAny_DynSequence_get_ushort_seq DynamicAny_DynAny_get_ushort_seq
+#define DynamicAny_DynSequence_get_long_seq DynamicAny_DynAny_get_long_seq
+#define DynamicAny_DynSequence_get_ulong_seq DynamicAny_DynAny_get_ulong_seq
+#define DynamicAny_DynSequence_get_float_seq DynamicAny_DynAny_get_float_seq
+#define DynamicAny_DynSequence_get_double_seq DynamicAny_DynAny_get_double_seq
+#define DynamicAny_DynSequence_get_longlong_seq DynamicAny_DynAny_get_longlong_seq
+#define DynamicAny_DynSequence_get_ulonglong_seq DynamicAny_DynAny_get_ulonglong_seq
+#define DynamicAny_DynSequence_get_longdouble_seq DynamicAny_DynAny_get_longdouble_seq
+#define DynamicAny_DynSequence_get_wchar_seq DynamicAny_DynAny_get_wchar_seq
    CORBA_unsigned_long
       DynamicAny_DynSequence_get_length(DynamicAny_DynSequence _obj,
 					CORBA_Environment * ev);
@@ -1182,6 +1446,34 @@ extern "C"
 #define DynamicAny_DynArray_next DynamicAny_DynAny_next
 #define DynamicAny_DynArray_component_count DynamicAny_DynAny_component_count
 #define DynamicAny_DynArray_current_component DynamicAny_DynAny_current_component
+#define DynamicAny_DynArray_insert_abstract DynamicAny_DynAny_insert_abstract
+#define DynamicAny_DynArray_get_abstract DynamicAny_DynAny_get_abstract
+#define DynamicAny_DynArray_insert_boolean_seq DynamicAny_DynAny_insert_boolean_seq
+#define DynamicAny_DynArray_insert_octet_seq DynamicAny_DynAny_insert_octet_seq
+#define DynamicAny_DynArray_insert_char_seq DynamicAny_DynAny_insert_char_seq
+#define DynamicAny_DynArray_insert_short_seq DynamicAny_DynAny_insert_short_seq
+#define DynamicAny_DynArray_insert_ushort_seq DynamicAny_DynAny_insert_ushort_seq
+#define DynamicAny_DynArray_insert_long_seq DynamicAny_DynAny_insert_long_seq
+#define DynamicAny_DynArray_insert_ulong_seq DynamicAny_DynAny_insert_ulong_seq
+#define DynamicAny_DynArray_insert_float_seq DynamicAny_DynAny_insert_float_seq
+#define DynamicAny_DynArray_insert_double_seq DynamicAny_DynAny_insert_double_seq
+#define DynamicAny_DynArray_insert_longlong_seq DynamicAny_DynAny_insert_longlong_seq
+#define DynamicAny_DynArray_insert_ulonglong_seq DynamicAny_DynAny_insert_ulonglong_seq
+#define DynamicAny_DynArray_insert_longdouble_seq DynamicAny_DynAny_insert_longdouble_seq
+#define DynamicAny_DynArray_insert_wchar_seq DynamicAny_DynAny_insert_wchar_seq
+#define DynamicAny_DynArray_get_boolean_seq DynamicAny_DynAny_get_boolean_seq
+#define DynamicAny_DynArray_get_octet_seq DynamicAny_DynAny_get_octet_seq
+#define DynamicAny_DynArray_get_char_seq DynamicAny_DynAny_get_char_seq
+#define DynamicAny_DynArray_get_short_seq DynamicAny_DynAny_get_short_seq
+#define DynamicAny_DynArray_get_ushort_seq DynamicAny_DynAny_get_ushort_seq
+#define DynamicAny_DynArray_get_long_seq DynamicAny_DynAny_get_long_seq
+#define DynamicAny_DynArray_get_ulong_seq DynamicAny_DynAny_get_ulong_seq
+#define DynamicAny_DynArray_get_float_seq DynamicAny_DynAny_get_float_seq
+#define DynamicAny_DynArray_get_double_seq DynamicAny_DynAny_get_double_seq
+#define DynamicAny_DynArray_get_longlong_seq DynamicAny_DynAny_get_longlong_seq
+#define DynamicAny_DynArray_get_ulonglong_seq DynamicAny_DynAny_get_ulonglong_seq
+#define DynamicAny_DynArray_get_longdouble_seq DynamicAny_DynAny_get_longdouble_seq
+#define DynamicAny_DynArray_get_wchar_seq DynamicAny_DynAny_get_wchar_seq
    DynamicAny_AnySeq *DynamicAny_DynArray_get_elements(DynamicAny_DynArray
 						       _obj,
 						       CORBA_Environment *
@@ -1196,6 +1488,91 @@ extern "C"
 						    const DynamicAny_DynAnySeq
 						    * value,
 						    CORBA_Environment * ev);
+#define DynamicAny_DynValueCommon_type DynamicAny_DynAny_type
+#define DynamicAny_DynValueCommon_assign DynamicAny_DynAny_assign
+#define DynamicAny_DynValueCommon_from_any DynamicAny_DynAny_from_any
+#define DynamicAny_DynValueCommon_to_any DynamicAny_DynAny_to_any
+#define DynamicAny_DynValueCommon_equal DynamicAny_DynAny_equal
+#define DynamicAny_DynValueCommon_destroy DynamicAny_DynAny_destroy
+#define DynamicAny_DynValueCommon_copy DynamicAny_DynAny_copy
+#define DynamicAny_DynValueCommon_insert_boolean DynamicAny_DynAny_insert_boolean
+#define DynamicAny_DynValueCommon_insert_octet DynamicAny_DynAny_insert_octet
+#define DynamicAny_DynValueCommon_insert_char DynamicAny_DynAny_insert_char
+#define DynamicAny_DynValueCommon_insert_short DynamicAny_DynAny_insert_short
+#define DynamicAny_DynValueCommon_insert_ushort DynamicAny_DynAny_insert_ushort
+#define DynamicAny_DynValueCommon_insert_long DynamicAny_DynAny_insert_long
+#define DynamicAny_DynValueCommon_insert_ulong DynamicAny_DynAny_insert_ulong
+#define DynamicAny_DynValueCommon_insert_float DynamicAny_DynAny_insert_float
+#define DynamicAny_DynValueCommon_insert_double DynamicAny_DynAny_insert_double
+#define DynamicAny_DynValueCommon_insert_string DynamicAny_DynAny_insert_string
+#define DynamicAny_DynValueCommon_insert_reference DynamicAny_DynAny_insert_reference
+#define DynamicAny_DynValueCommon_insert_typecode DynamicAny_DynAny_insert_typecode
+#define DynamicAny_DynValueCommon_insert_longlong DynamicAny_DynAny_insert_longlong
+#define DynamicAny_DynValueCommon_insert_ulonglong DynamicAny_DynAny_insert_ulonglong
+#define DynamicAny_DynValueCommon_insert_longdouble DynamicAny_DynAny_insert_longdouble
+#define DynamicAny_DynValueCommon_insert_wchar DynamicAny_DynAny_insert_wchar
+#define DynamicAny_DynValueCommon_insert_wstring DynamicAny_DynAny_insert_wstring
+#define DynamicAny_DynValueCommon_insert_any DynamicAny_DynAny_insert_any
+#define DynamicAny_DynValueCommon_insert_dyn_any DynamicAny_DynAny_insert_dyn_any
+#define DynamicAny_DynValueCommon_get_boolean DynamicAny_DynAny_get_boolean
+#define DynamicAny_DynValueCommon_get_octet DynamicAny_DynAny_get_octet
+#define DynamicAny_DynValueCommon_get_char DynamicAny_DynAny_get_char
+#define DynamicAny_DynValueCommon_get_short DynamicAny_DynAny_get_short
+#define DynamicAny_DynValueCommon_get_ushort DynamicAny_DynAny_get_ushort
+#define DynamicAny_DynValueCommon_get_long DynamicAny_DynAny_get_long
+#define DynamicAny_DynValueCommon_get_ulong DynamicAny_DynAny_get_ulong
+#define DynamicAny_DynValueCommon_get_float DynamicAny_DynAny_get_float
+#define DynamicAny_DynValueCommon_get_double DynamicAny_DynAny_get_double
+#define DynamicAny_DynValueCommon_get_string DynamicAny_DynAny_get_string
+#define DynamicAny_DynValueCommon_get_reference DynamicAny_DynAny_get_reference
+#define DynamicAny_DynValueCommon_get_typecode DynamicAny_DynAny_get_typecode
+#define DynamicAny_DynValueCommon_get_longlong DynamicAny_DynAny_get_longlong
+#define DynamicAny_DynValueCommon_get_ulonglong DynamicAny_DynAny_get_ulonglong
+#define DynamicAny_DynValueCommon_get_longdouble DynamicAny_DynAny_get_longdouble
+#define DynamicAny_DynValueCommon_get_wchar DynamicAny_DynAny_get_wchar
+#define DynamicAny_DynValueCommon_get_wstring DynamicAny_DynAny_get_wstring
+#define DynamicAny_DynValueCommon_get_any DynamicAny_DynAny_get_any
+#define DynamicAny_DynValueCommon_get_dyn_any DynamicAny_DynAny_get_dyn_any
+#define DynamicAny_DynValueCommon_seek DynamicAny_DynAny_seek
+#define DynamicAny_DynValueCommon_rewind DynamicAny_DynAny_rewind
+#define DynamicAny_DynValueCommon_next DynamicAny_DynAny_next
+#define DynamicAny_DynValueCommon_component_count DynamicAny_DynAny_component_count
+#define DynamicAny_DynValueCommon_current_component DynamicAny_DynAny_current_component
+#define DynamicAny_DynValueCommon_insert_abstract DynamicAny_DynAny_insert_abstract
+#define DynamicAny_DynValueCommon_get_abstract DynamicAny_DynAny_get_abstract
+#define DynamicAny_DynValueCommon_insert_boolean_seq DynamicAny_DynAny_insert_boolean_seq
+#define DynamicAny_DynValueCommon_insert_octet_seq DynamicAny_DynAny_insert_octet_seq
+#define DynamicAny_DynValueCommon_insert_char_seq DynamicAny_DynAny_insert_char_seq
+#define DynamicAny_DynValueCommon_insert_short_seq DynamicAny_DynAny_insert_short_seq
+#define DynamicAny_DynValueCommon_insert_ushort_seq DynamicAny_DynAny_insert_ushort_seq
+#define DynamicAny_DynValueCommon_insert_long_seq DynamicAny_DynAny_insert_long_seq
+#define DynamicAny_DynValueCommon_insert_ulong_seq DynamicAny_DynAny_insert_ulong_seq
+#define DynamicAny_DynValueCommon_insert_float_seq DynamicAny_DynAny_insert_float_seq
+#define DynamicAny_DynValueCommon_insert_double_seq DynamicAny_DynAny_insert_double_seq
+#define DynamicAny_DynValueCommon_insert_longlong_seq DynamicAny_DynAny_insert_longlong_seq
+#define DynamicAny_DynValueCommon_insert_ulonglong_seq DynamicAny_DynAny_insert_ulonglong_seq
+#define DynamicAny_DynValueCommon_insert_longdouble_seq DynamicAny_DynAny_insert_longdouble_seq
+#define DynamicAny_DynValueCommon_insert_wchar_seq DynamicAny_DynAny_insert_wchar_seq
+#define DynamicAny_DynValueCommon_get_boolean_seq DynamicAny_DynAny_get_boolean_seq
+#define DynamicAny_DynValueCommon_get_octet_seq DynamicAny_DynAny_get_octet_seq
+#define DynamicAny_DynValueCommon_get_char_seq DynamicAny_DynAny_get_char_seq
+#define DynamicAny_DynValueCommon_get_short_seq DynamicAny_DynAny_get_short_seq
+#define DynamicAny_DynValueCommon_get_ushort_seq DynamicAny_DynAny_get_ushort_seq
+#define DynamicAny_DynValueCommon_get_long_seq DynamicAny_DynAny_get_long_seq
+#define DynamicAny_DynValueCommon_get_ulong_seq DynamicAny_DynAny_get_ulong_seq
+#define DynamicAny_DynValueCommon_get_float_seq DynamicAny_DynAny_get_float_seq
+#define DynamicAny_DynValueCommon_get_double_seq DynamicAny_DynAny_get_double_seq
+#define DynamicAny_DynValueCommon_get_longlong_seq DynamicAny_DynAny_get_longlong_seq
+#define DynamicAny_DynValueCommon_get_ulonglong_seq DynamicAny_DynAny_get_ulonglong_seq
+#define DynamicAny_DynValueCommon_get_longdouble_seq DynamicAny_DynAny_get_longdouble_seq
+#define DynamicAny_DynValueCommon_get_wchar_seq DynamicAny_DynAny_get_wchar_seq
+   CORBA_boolean DynamicAny_DynValueCommon_is_null(DynamicAny_DynValueCommon
+						   _obj,
+						   CORBA_Environment * ev);
+   void DynamicAny_DynValueCommon_set_to_null(DynamicAny_DynValueCommon _obj,
+					      CORBA_Environment * ev);
+   void DynamicAny_DynValueCommon_set_to_value(DynamicAny_DynValueCommon _obj,
+					       CORBA_Environment * ev);
 #define DynamicAny_DynValue_type DynamicAny_DynAny_type
 #define DynamicAny_DynValue_assign DynamicAny_DynAny_assign
 #define DynamicAny_DynValue_from_any DynamicAny_DynAny_from_any
@@ -1246,6 +1623,37 @@ extern "C"
 #define DynamicAny_DynValue_next DynamicAny_DynAny_next
 #define DynamicAny_DynValue_component_count DynamicAny_DynAny_component_count
 #define DynamicAny_DynValue_current_component DynamicAny_DynAny_current_component
+#define DynamicAny_DynValue_insert_abstract DynamicAny_DynAny_insert_abstract
+#define DynamicAny_DynValue_get_abstract DynamicAny_DynAny_get_abstract
+#define DynamicAny_DynValue_insert_boolean_seq DynamicAny_DynAny_insert_boolean_seq
+#define DynamicAny_DynValue_insert_octet_seq DynamicAny_DynAny_insert_octet_seq
+#define DynamicAny_DynValue_insert_char_seq DynamicAny_DynAny_insert_char_seq
+#define DynamicAny_DynValue_insert_short_seq DynamicAny_DynAny_insert_short_seq
+#define DynamicAny_DynValue_insert_ushort_seq DynamicAny_DynAny_insert_ushort_seq
+#define DynamicAny_DynValue_insert_long_seq DynamicAny_DynAny_insert_long_seq
+#define DynamicAny_DynValue_insert_ulong_seq DynamicAny_DynAny_insert_ulong_seq
+#define DynamicAny_DynValue_insert_float_seq DynamicAny_DynAny_insert_float_seq
+#define DynamicAny_DynValue_insert_double_seq DynamicAny_DynAny_insert_double_seq
+#define DynamicAny_DynValue_insert_longlong_seq DynamicAny_DynAny_insert_longlong_seq
+#define DynamicAny_DynValue_insert_ulonglong_seq DynamicAny_DynAny_insert_ulonglong_seq
+#define DynamicAny_DynValue_insert_longdouble_seq DynamicAny_DynAny_insert_longdouble_seq
+#define DynamicAny_DynValue_insert_wchar_seq DynamicAny_DynAny_insert_wchar_seq
+#define DynamicAny_DynValue_get_boolean_seq DynamicAny_DynAny_get_boolean_seq
+#define DynamicAny_DynValue_get_octet_seq DynamicAny_DynAny_get_octet_seq
+#define DynamicAny_DynValue_get_char_seq DynamicAny_DynAny_get_char_seq
+#define DynamicAny_DynValue_get_short_seq DynamicAny_DynAny_get_short_seq
+#define DynamicAny_DynValue_get_ushort_seq DynamicAny_DynAny_get_ushort_seq
+#define DynamicAny_DynValue_get_long_seq DynamicAny_DynAny_get_long_seq
+#define DynamicAny_DynValue_get_ulong_seq DynamicAny_DynAny_get_ulong_seq
+#define DynamicAny_DynValue_get_float_seq DynamicAny_DynAny_get_float_seq
+#define DynamicAny_DynValue_get_double_seq DynamicAny_DynAny_get_double_seq
+#define DynamicAny_DynValue_get_longlong_seq DynamicAny_DynAny_get_longlong_seq
+#define DynamicAny_DynValue_get_ulonglong_seq DynamicAny_DynAny_get_ulonglong_seq
+#define DynamicAny_DynValue_get_longdouble_seq DynamicAny_DynAny_get_longdouble_seq
+#define DynamicAny_DynValue_get_wchar_seq DynamicAny_DynAny_get_wchar_seq
+#define DynamicAny_DynValue_is_null DynamicAny_DynValueCommon_is_null
+#define DynamicAny_DynValue_set_to_null DynamicAny_DynValueCommon_set_to_null
+#define DynamicAny_DynValue_set_to_value DynamicAny_DynValueCommon_set_to_value
    DynamicAny_FieldName
       DynamicAny_DynValue_current_member_name(DynamicAny_DynValue _obj,
 					      CORBA_Environment * ev);
@@ -1267,6 +1675,106 @@ extern "C"
 						   DynamicAny_NameDynAnyPairSeq
 						   * value,
 						   CORBA_Environment * ev);
+#define DynamicAny_DynValueBox_type DynamicAny_DynAny_type
+#define DynamicAny_DynValueBox_assign DynamicAny_DynAny_assign
+#define DynamicAny_DynValueBox_from_any DynamicAny_DynAny_from_any
+#define DynamicAny_DynValueBox_to_any DynamicAny_DynAny_to_any
+#define DynamicAny_DynValueBox_equal DynamicAny_DynAny_equal
+#define DynamicAny_DynValueBox_destroy DynamicAny_DynAny_destroy
+#define DynamicAny_DynValueBox_copy DynamicAny_DynAny_copy
+#define DynamicAny_DynValueBox_insert_boolean DynamicAny_DynAny_insert_boolean
+#define DynamicAny_DynValueBox_insert_octet DynamicAny_DynAny_insert_octet
+#define DynamicAny_DynValueBox_insert_char DynamicAny_DynAny_insert_char
+#define DynamicAny_DynValueBox_insert_short DynamicAny_DynAny_insert_short
+#define DynamicAny_DynValueBox_insert_ushort DynamicAny_DynAny_insert_ushort
+#define DynamicAny_DynValueBox_insert_long DynamicAny_DynAny_insert_long
+#define DynamicAny_DynValueBox_insert_ulong DynamicAny_DynAny_insert_ulong
+#define DynamicAny_DynValueBox_insert_float DynamicAny_DynAny_insert_float
+#define DynamicAny_DynValueBox_insert_double DynamicAny_DynAny_insert_double
+#define DynamicAny_DynValueBox_insert_string DynamicAny_DynAny_insert_string
+#define DynamicAny_DynValueBox_insert_reference DynamicAny_DynAny_insert_reference
+#define DynamicAny_DynValueBox_insert_typecode DynamicAny_DynAny_insert_typecode
+#define DynamicAny_DynValueBox_insert_longlong DynamicAny_DynAny_insert_longlong
+#define DynamicAny_DynValueBox_insert_ulonglong DynamicAny_DynAny_insert_ulonglong
+#define DynamicAny_DynValueBox_insert_longdouble DynamicAny_DynAny_insert_longdouble
+#define DynamicAny_DynValueBox_insert_wchar DynamicAny_DynAny_insert_wchar
+#define DynamicAny_DynValueBox_insert_wstring DynamicAny_DynAny_insert_wstring
+#define DynamicAny_DynValueBox_insert_any DynamicAny_DynAny_insert_any
+#define DynamicAny_DynValueBox_insert_dyn_any DynamicAny_DynAny_insert_dyn_any
+#define DynamicAny_DynValueBox_get_boolean DynamicAny_DynAny_get_boolean
+#define DynamicAny_DynValueBox_get_octet DynamicAny_DynAny_get_octet
+#define DynamicAny_DynValueBox_get_char DynamicAny_DynAny_get_char
+#define DynamicAny_DynValueBox_get_short DynamicAny_DynAny_get_short
+#define DynamicAny_DynValueBox_get_ushort DynamicAny_DynAny_get_ushort
+#define DynamicAny_DynValueBox_get_long DynamicAny_DynAny_get_long
+#define DynamicAny_DynValueBox_get_ulong DynamicAny_DynAny_get_ulong
+#define DynamicAny_DynValueBox_get_float DynamicAny_DynAny_get_float
+#define DynamicAny_DynValueBox_get_double DynamicAny_DynAny_get_double
+#define DynamicAny_DynValueBox_get_string DynamicAny_DynAny_get_string
+#define DynamicAny_DynValueBox_get_reference DynamicAny_DynAny_get_reference
+#define DynamicAny_DynValueBox_get_typecode DynamicAny_DynAny_get_typecode
+#define DynamicAny_DynValueBox_get_longlong DynamicAny_DynAny_get_longlong
+#define DynamicAny_DynValueBox_get_ulonglong DynamicAny_DynAny_get_ulonglong
+#define DynamicAny_DynValueBox_get_longdouble DynamicAny_DynAny_get_longdouble
+#define DynamicAny_DynValueBox_get_wchar DynamicAny_DynAny_get_wchar
+#define DynamicAny_DynValueBox_get_wstring DynamicAny_DynAny_get_wstring
+#define DynamicAny_DynValueBox_get_any DynamicAny_DynAny_get_any
+#define DynamicAny_DynValueBox_get_dyn_any DynamicAny_DynAny_get_dyn_any
+#define DynamicAny_DynValueBox_seek DynamicAny_DynAny_seek
+#define DynamicAny_DynValueBox_rewind DynamicAny_DynAny_rewind
+#define DynamicAny_DynValueBox_next DynamicAny_DynAny_next
+#define DynamicAny_DynValueBox_component_count DynamicAny_DynAny_component_count
+#define DynamicAny_DynValueBox_current_component DynamicAny_DynAny_current_component
+#define DynamicAny_DynValueBox_insert_abstract DynamicAny_DynAny_insert_abstract
+#define DynamicAny_DynValueBox_get_abstract DynamicAny_DynAny_get_abstract
+#define DynamicAny_DynValueBox_insert_boolean_seq DynamicAny_DynAny_insert_boolean_seq
+#define DynamicAny_DynValueBox_insert_octet_seq DynamicAny_DynAny_insert_octet_seq
+#define DynamicAny_DynValueBox_insert_char_seq DynamicAny_DynAny_insert_char_seq
+#define DynamicAny_DynValueBox_insert_short_seq DynamicAny_DynAny_insert_short_seq
+#define DynamicAny_DynValueBox_insert_ushort_seq DynamicAny_DynAny_insert_ushort_seq
+#define DynamicAny_DynValueBox_insert_long_seq DynamicAny_DynAny_insert_long_seq
+#define DynamicAny_DynValueBox_insert_ulong_seq DynamicAny_DynAny_insert_ulong_seq
+#define DynamicAny_DynValueBox_insert_float_seq DynamicAny_DynAny_insert_float_seq
+#define DynamicAny_DynValueBox_insert_double_seq DynamicAny_DynAny_insert_double_seq
+#define DynamicAny_DynValueBox_insert_longlong_seq DynamicAny_DynAny_insert_longlong_seq
+#define DynamicAny_DynValueBox_insert_ulonglong_seq DynamicAny_DynAny_insert_ulonglong_seq
+#define DynamicAny_DynValueBox_insert_longdouble_seq DynamicAny_DynAny_insert_longdouble_seq
+#define DynamicAny_DynValueBox_insert_wchar_seq DynamicAny_DynAny_insert_wchar_seq
+#define DynamicAny_DynValueBox_get_boolean_seq DynamicAny_DynAny_get_boolean_seq
+#define DynamicAny_DynValueBox_get_octet_seq DynamicAny_DynAny_get_octet_seq
+#define DynamicAny_DynValueBox_get_char_seq DynamicAny_DynAny_get_char_seq
+#define DynamicAny_DynValueBox_get_short_seq DynamicAny_DynAny_get_short_seq
+#define DynamicAny_DynValueBox_get_ushort_seq DynamicAny_DynAny_get_ushort_seq
+#define DynamicAny_DynValueBox_get_long_seq DynamicAny_DynAny_get_long_seq
+#define DynamicAny_DynValueBox_get_ulong_seq DynamicAny_DynAny_get_ulong_seq
+#define DynamicAny_DynValueBox_get_float_seq DynamicAny_DynAny_get_float_seq
+#define DynamicAny_DynValueBox_get_double_seq DynamicAny_DynAny_get_double_seq
+#define DynamicAny_DynValueBox_get_longlong_seq DynamicAny_DynAny_get_longlong_seq
+#define DynamicAny_DynValueBox_get_ulonglong_seq DynamicAny_DynAny_get_ulonglong_seq
+#define DynamicAny_DynValueBox_get_longdouble_seq DynamicAny_DynAny_get_longdouble_seq
+#define DynamicAny_DynValueBox_get_wchar_seq DynamicAny_DynAny_get_wchar_seq
+#define DynamicAny_DynValueBox_is_null DynamicAny_DynValueCommon_is_null
+#define DynamicAny_DynValueBox_set_to_null DynamicAny_DynValueCommon_set_to_null
+#define DynamicAny_DynValueBox_set_to_value DynamicAny_DynValueCommon_set_to_value
+   CORBA_any *DynamicAny_DynValueBox_get_boxed_value(DynamicAny_DynValueBox
+						     _obj,
+						     CORBA_Environment * ev);
+   void DynamicAny_DynValueBox_set_boxed_value(DynamicAny_DynValueBox _obj,
+					       const CORBA_any * boxed,
+					       CORBA_Environment * ev);
+   DynamicAny_DynAny
+      DynamicAny_DynValueBox_get_boxed_value_as_dyn_any(DynamicAny_DynValueBox
+							_obj,
+							CORBA_Environment *
+							ev);
+   void
+      DynamicAny_DynValueBox_set_boxed_value_as_dyn_any(DynamicAny_DynValueBox
+							_obj,
+							const
+							DynamicAny_DynAny
+							boxed,
+							CORBA_Environment *
+							ev);
    DynamicAny_DynAny
       DynamicAny_DynAnyFactory_create_dyn_any(DynamicAny_DynAnyFactory _obj,
 					      const CORBA_any * value,
@@ -1275,6 +1783,21 @@ extern "C"
       DynamicAny_DynAnyFactory_create_dyn_any_from_type_code
       (DynamicAny_DynAnyFactory _obj, const CORBA_TypeCode type,
        CORBA_Environment * ev);
+   DynamicAny_DynAny
+      DynamicAny_DynAnyFactory_create_dyn_any_without_truncation
+      (DynamicAny_DynAnyFactory _obj, const CORBA_any * value,
+       CORBA_Environment * ev);
+   DynamicAny_DynAnySeq
+      *DynamicAny_DynAnyFactory_create_multiple_dyn_anys
+      (DynamicAny_DynAnyFactory _obj, const DynamicAny_AnySeq * values,
+       const CORBA_boolean allow_truncate, CORBA_Environment * ev);
+   DynamicAny_AnySeq
+      *DynamicAny_DynAnyFactory_create_multiple_anys(DynamicAny_DynAnyFactory
+						     _obj,
+						     const
+						     DynamicAny_DynAnySeq *
+						     values,
+						     CORBA_Environment * ev);
 #ifdef __cplusplus
 }
 #endif				/* __cplusplus */

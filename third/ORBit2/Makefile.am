@@ -1,6 +1,8 @@
 AUTOMAKE_OPTIONS = 1.3
 
-SUBDIRS=src include test docs
+DISTCHECK_CONFIGURE_FLAGS = --enable-gtk-doc
+
+SUBDIRS=linc2 src include test docs
 
 bin_SCRIPTS=orbit2-config
 
@@ -18,4 +20,7 @@ m4datadir=$(datadir)/aclocal
 m4data_DATA=ORBit2.m4
 
 pkgconfigdir = $(libdir)/pkgconfig
-pkgconfig_DATA = ORBit-2.0.pc ORBit-CosNaming-2.0.pc
+pkgconfig_DATA = \
+	ORBit-2.0.pc \
+	ORBit-CosNaming-2.0.pc \
+	ORBit-imodule-2.0.pc

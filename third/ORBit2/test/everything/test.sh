@@ -3,11 +3,32 @@
 # This is a generic script for firing up a server, waiting for it to write
 # its stringified IOR to a file, then firing up a server
 
-# We had issues creating this once, and it gives us a 'clean' slate.
-rm -Rf "/tmp/orbit-$USER"
+if test "z$ORBIT_TMPDIR" = "z"; then
+	ORBIT_TMPDIR="/tmp/orbit-$USER/tst"
+	rm -Rf $ORBIT_TMPDIR
+	mkdir -p $ORBIT_TMPDIR
+fi
+TMPDIR=$ORBIT_TMPDIR;
+export TMPDIR;
 
-for params in '--ORBIIOPIPv4=0 --ORBIIOPUSock=1'		\
+# 100: socket path max - Posix.1g
+SAMPLE_NAME="$ORBIT_TMPDIR/orbit-$USER/linc-78fe-0-14c0fc671d5b4";
+echo "Sample name: '$SAMPLE_NAME'"
+if (test ${#SAMPLE_NAME} -gt 100); then
+    echo "Socket directory path '$ORBIT_TMPDIR' too long for bind";
+    exit 1;
+else
+    echo "Running with socketdir: '$ORBIT_TMPDIR'";
+fi
+
+for params in '--ORBIIOPIPv4=0 --ORBIIOPUSock=1 --ORBCorbaloc=1'  \
+              '--ORBIIOPIPv4=1 --ORBIIOPUSock=0 --ORBCorbaloc=1'  \
+              '--ORBIIOPIPv4=1 --ORBIIOPUSock=0 --thread-tests'	\
+	      '--ORBIIOPIPv4=0 --ORBIIOPUSock=1 --thread-tests'	\
+	      '--ORBIIOPIPv4=0 --ORBIIOPUSock=1'		\
 	      '--ORBIIOPIPv4=1 --ORBIIOPUSock=0'		\
+	      '--ORBIIOPIPv4=0 --ORBIIOPUSock=1 --thread-safe'	\
+	      '--ORBIIOPIPv4=1 --ORBIIOPUSock=0 --thread-safe'	\
 	      '--ORBIIOPIPv4=0 --ORBIIOPUSock=1 --gen-imodule'	\
 	      '--ORBIIOPIPv4=1 --ORBIIOPUSock=0 --gen-imodule'
 do
@@ -24,6 +45,7 @@ do
     else
         echo "============================================================="
 	echo "Test failed with params: $params"
+	echo "  if this is an IPv4 test, can you ping `hostname` ?"
         echo "============================================================="
 	kill $!
 	rm iorfile

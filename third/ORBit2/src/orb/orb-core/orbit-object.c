@@ -51,6 +51,7 @@ object_hash_dump (gpointer key,
 		TYPE_CASE (ORBGROUP, "ORB Group");
 		TYPE_CASE (POAMANAGER, "POA Manager");
 		TYPE_CASE (POACURRENT, "Current POA");
+		TYPE_CASE (CLIENT_POLICY, "Client policy");
 	}
 
 	if (!str)
@@ -65,11 +66,14 @@ object_hash_dump (gpointer key,
 #endif
 
 int
-ORBit_RootObject_shutdown (void)
+ORBit_RootObject_shutdown (gboolean moan)
 {
 #ifdef G_ENABLE_DEBUG
 	int valid_running = 1; /* The ORB */
-
+#endif
+	if (!moan)
+		return 0;
+#ifdef G_ENABLE_DEBUG
 	if (!ORBit_RootObject_lifecycle_lock &&
 	    alive_root_objects - valid_running)
 		g_warning ("ORB: a total of %ld refs to %ld ORB "
@@ -81,16 +85,15 @@ ORBit_RootObject_shutdown (void)
 			   "objects were leaked",
 			   total_refs - valid_running);
 	else
-#endif
 		return 0;
 
-#ifdef G_ENABLE_DEBUG
 	if (_orbit_debug_flags & ORBIT_DEBUG_REFS)
 		g_hash_table_foreach (
 			object_hash, object_hash_dump, NULL);
 
 	return 1;
 #endif
+	return 0;
 }
 
 void
@@ -118,10 +121,10 @@ ORBit_RootObject_duplicate (gpointer obj)
 	ORBit_RootObject robj = obj;
 
 	if (robj && robj->refs != ORBIT_REFCOUNT_STATIC) {
-		LINC_MUTEX_LOCK   (ORBit_RootObject_lifecycle_lock);
+		LINK_MUTEX_LOCK   (ORBit_RootObject_lifecycle_lock);
 		robj->refs++;
 		total_refs++;
-		LINC_MUTEX_UNLOCK (ORBit_RootObject_lifecycle_lock);
+		LINK_MUTEX_UNLOCK (ORBit_RootObject_lifecycle_lock);
 	}
 
 	return obj;
@@ -179,11 +182,11 @@ ORBit_RootObject_release (gpointer obj)
 
 	if (robj && robj->refs != ORBIT_REFCOUNT_STATIC) {
 
-		LINC_MUTEX_LOCK   (ORBit_RootObject_lifecycle_lock);
+		LINK_MUTEX_LOCK   (ORBit_RootObject_lifecycle_lock);
 
 		do_unref (robj);
 
-		LINC_MUTEX_UNLOCK (ORBit_RootObject_lifecycle_lock);
+		LINK_MUTEX_UNLOCK (ORBit_RootObject_lifecycle_lock);
 	}
 }
 

@@ -33,12 +33,50 @@ test_TestFactory getFactoryInstance(CORBA_Environment *ev);
 typedef void (*init_fn_t) (PortableServer_Servant, CORBA_Environment *);
 
 CORBA_Object create_object (PortableServer_POA poa,
-			    init_fn_t          fn,
 			    gpointer           servant,
 			    CORBA_Environment *ev);
 
 CORBA_ORB          global_orb;
 PortableServer_POA global_poa;
+
+static void
+simple_finalize (PortableServer_Servant servant,
+		 CORBA_Environment     *ev)
+{
+/*	g_warning ("Finalize servant %p", servant); */
+	g_free (servant);
+}
+
+static gpointer
+simple_servant_new (gpointer vepv, init_fn_t fn)
+{
+	CORBA_Environment ev[1];
+	PortableServer_ClassInfo *class_info;
+	PortableServer_ServantBase *servant =
+		g_new0 (PortableServer_ServantBase, 1);
+
+	servant->vepv = vepv;
+	g_assert (servant->vepv[0] != NULL);
+
+	CORBA_exception_init (ev);
+	fn (servant, ev);
+	if (ev->_major != CORBA_NO_EXCEPTION)
+		g_error ("object__init failed: %d\n", ev->_major);
+	g_assert (ORBIT_SERVANT_TO_CLASSINFO (servant) != NULL);
+	CORBA_exception_free (ev);
+
+	class_info = ORBIT_SERVANT_TO_CLASSINFO (servant);
+	g_assert (class_info);
+
+/*	g_warning ("Create servant %p ('%s')",
+                   servant, class_info->class_name); */
+
+	return servant;
+}
+
+#define SIMPLE_SERVANT_NEW(type) (simple_servant_new (&(type##_vepv), POA_test_##type##__init))
+
+PortableServer_ServantBase__epv Simple_base_epv = {NULL, simple_finalize, NULL};
 
 #include "basicServer.c"
 #include "structServer.c"
@@ -48,7 +86,9 @@ PortableServer_POA global_poa;
 #include "anyServer.c"
 #include "contextServer.c"
 #include "deadReference.c"
+#include "lifeCycle.c"
 #include "pingServer.c"
+#include "derivedServer.c"
 
 typedef struct {
 	POA_test_TestFactory baseServant;
@@ -60,8 +100,10 @@ typedef struct {
 	test_ArrayServer     arrayServerRef;
 	test_AnyServer       anyServerRef;
 	test_ContextServer   contextServerRef;
+	test_DerivedServer   derivedServerRef;
 	GSList              *pingPongServerRefs;
 } test_TestFactory_Servant;
+
 
 static test_BasicServer
 TestFactory_getBasicServer (PortableServer_Servant servant,
@@ -136,6 +178,15 @@ TestFactory_getContextServer (PortableServer_Servant servant,
 	return CORBA_Object_duplicate (this->contextServerRef, ev);
 }
 
+static test_DerivedServer
+TestFactory_getDerivedServer (PortableServer_Servant servant,
+			      CORBA_Environment     *ev)
+{
+	test_TestFactory_Servant *this = (test_TestFactory_Servant*) servant;
+
+	return CORBA_Object_duplicate (this->derivedServerRef, ev);
+}
+
 static test_PingPongServer
 TestFactory_createPingPongServer (PortableServer_Servant servant,
 				  CORBA_Environment     *ev)
@@ -143,8 +194,7 @@ TestFactory_createPingPongServer (PortableServer_Servant servant,
 	test_PingPongServer obj;
 
 	obj = create_object (
-		global_poa, POA_test_PingPongServer__init,
-		create_ping_pong_servant (), ev);
+		global_poa, create_ping_pong_servant (), ev);
 
 	if (servant) {
 		test_TestFactory_Servant *this;
@@ -177,21 +227,26 @@ TestFactory_createDeadReferenceObj (PortableServer_Servant  servant,
 			CORBA_ORB_resolve_initial_references (global_orb,
 							      "POACurrent",
 							      ev);
-
 	g_assert (ev->_major == CORBA_NO_EXCEPTION);
 
         poa = PortableServer_Current_get_POA (poa_current, ev);
-
 	g_assert (ev->_major == CORBA_NO_EXCEPTION);
 
-	obj = create_object (poa, POA_test_DeadReferenceObj__init,
-			     &DeadReferenceObj_servant, ev);
+	obj = create_object (poa, SIMPLE_SERVANT_NEW (DeadReferenceObj), ev);
 
 	CORBA_Object_release ((CORBA_Object) poa, ev);
 	CORBA_Object_release ((CORBA_Object) poa_current, ev);
 
 	/* Note: Not duping - ORB will free it and reference
 	 * should dangle. */
+	return obj;
+}
+
+static test_LifeCycleServer
+TestFactory_createLifeCycleServer (PortableServer_Servant  servant,
+				   CORBA_Environment      *ev)
+{
+	CORBA_Object obj = create_object (global_poa, SIMPLE_SERVANT_NEW (LifeCycleServer), ev);
 	return obj;
 }
 
@@ -204,7 +259,7 @@ TestFactory_segv (PortableServer_Servant servant,
 	/* Emulate a SegV */
 	exit (0);
 #else
-	g_main_loop_quit (linc_loop);
+	CORBA_ORB_shutdown (global_orb, TRUE, ev);
 #endif
 }
 
@@ -224,12 +279,14 @@ test_TestFactory__fini (PortableServer_Servant  servant,
 	CORBA_Object_release (this->arrayServerRef, ev);
 	CORBA_Object_release (this->anyServerRef, ev);
 	CORBA_Object_release (this->contextServerRef, ev);
+	CORBA_Object_release (this->derivedServerRef, ev);
 
 	for (l = this->pingPongServerRefs; l; l = l->next)
 		CORBA_Object_release (l->data, ev);
 	g_slist_free (this->pingPongServerRefs);
-}
 
+	g_free (servant);
+}
 
 /* vtable */
 static PortableServer_ServantBase__epv TestFactory_base_epv = {
@@ -250,12 +307,13 @@ static POA_test_TestFactory__epv TestFactory_epv = {
 	TestFactory_getContextServer,
 	TestFactory_segv,
 	NULL,                         /* getBaseServer                */
-	NULL,                         /* getDerivedServer             */
+	TestFactory_getDerivedServer,
 	NULL,                         /* getDerivedServerAsBaseServer */
 	NULL,                         /* getDerivedServerAsB2         */
 	NULL,                         /* createTransientObj           */
 	TestFactory_createDeadReferenceObj,
 	TestFactory_createPingPongServer,
+	TestFactory_createLifeCycleServer,
 	TestFactory_noOp
 };
 
@@ -282,17 +340,11 @@ start_poa (CORBA_ORB orb, CORBA_Environment *ev)
 
 CORBA_Object
 create_object (PortableServer_POA poa,
-	       init_fn_t          fn,
 	       gpointer           servant,
 	       CORBA_Environment *ev)
 {
 	CORBA_Object             object;
 	PortableServer_ObjectId *objid;
-
-	fn (servant, ev);
-	if (ev->_major != CORBA_NO_EXCEPTION)
-		g_error ("object__init failed: %d\n", ev->_major);
-	g_assert (ORBIT_SERVANT_TO_CLASSINFO (servant) != NULL);
 
 	objid = PortableServer_POA_activate_object (
 		poa, servant, ev);
@@ -305,7 +357,7 @@ create_object (PortableServer_POA poa,
 	if (ev->_major != CORBA_NO_EXCEPTION)
 		g_error ("servant_to_reference failed: %d\n", ev->_major);
 
-	g_assert (ORBIT_STUB_GetServant (object) == servant);
+	g_assert (ORBit_small_get_servant (object) == servant);
 	g_assert (ORBIT_SERVANT_TO_CLASSINFO (servant) != NULL);
 
 	CORBA_free (objid);
@@ -324,32 +376,28 @@ test_TestFactory__init (PortableServer_Servant servant,
 	this->baseServant.vepv = &TestFactory_vepv;
 
 	this->basicServerRef = create_object (
-		poa, POA_test_BasicServer__init,
-		&BasicServer_servant, ev);
+		poa, SIMPLE_SERVANT_NEW (BasicServer), ev);
 
 	this->structServerRef = create_object (
-		poa, POA_test_StructServer__init,
-		&StructServer_servant, ev);
+		poa, SIMPLE_SERVANT_NEW (StructServer), ev);
 
 	this->sequenceServerRef = create_object (
-		poa, POA_test_SequenceServer__init,
-		&SequenceServer_servant, ev);
+		poa, SIMPLE_SERVANT_NEW (SequenceServer), ev);
 
 	this->unionServerRef = create_object (
-		poa, POA_test_UnionServer__init,
-		&UnionServer_servant, ev);
+		poa, SIMPLE_SERVANT_NEW (UnionServer), ev);
 
 	this->arrayServerRef = create_object (
-		poa, POA_test_ArrayServer__init,
-		&ArrayServer_servant, ev);
+		poa, SIMPLE_SERVANT_NEW (ArrayServer), ev);
 
 	this->anyServerRef = create_object (
-		poa, POA_test_AnyServer__init,
-		&AnyServer_servant, ev);
+		poa, SIMPLE_SERVANT_NEW (AnyServer), ev);
 
 	this->contextServerRef = create_object (
-		poa, POA_test_ContextServer__init,
-		&ContextServer_servant, ev);
+		poa, SIMPLE_SERVANT_NEW (ContextServer), ev);
+
+	this->derivedServerRef = create_object (
+		poa, SIMPLE_SERVANT_NEW (DerivedServer), ev);
 
 	this->pingPongServerRefs = NULL;
 
@@ -392,11 +440,11 @@ dump_ior (CORBA_ORB orb, const char *fname, CORBA_Environment *ev)
 
 static CORBA_Object
 create_TestFactory (PortableServer_POA        poa,
-		    test_TestFactory_Servant *servant,
 		    CORBA_Environment        *ev)
 {
 	CORBA_Object             object;
 	PortableServer_ObjectId *objid;
+	test_TestFactory_Servant *servant = g_new0 (test_TestFactory_Servant, 1);
 
 	g_assert (ev->_major == CORBA_NO_EXCEPTION);
 	test_TestFactory__init (servant, poa, ev);
@@ -414,15 +462,13 @@ create_TestFactory (PortableServer_POA        poa,
 	if (ev->_major != CORBA_NO_EXCEPTION)
 		g_error ("servant_to_reference failed: %d\n", ev->_major);
 
-	g_assert (ORBIT_STUB_GetServant (object) == servant);
+	g_assert (ORBit_small_get_servant (object) == servant);
 	g_assert (ORBIT_SERVANT_TO_CLASSINFO (servant) != NULL);
 
 	CORBA_free (objid);
 
 	return object;
 }
-
-test_TestFactory_Servant servant;
 
 static void
 init_iinterfaces (ORBit_IInterfaces *interfaces,
@@ -437,7 +483,9 @@ init_iinterfaces (ORBit_IInterfaces *interfaces,
 	i++; \
 	} G_STMT_END
 
+	/* This order matches that in the IDL file */
 	CLOBBER_SYM (test_TestFactory__iinterface);
+	CLOBBER_SYM (test_LifeCycleServer__iinterface);
 	CLOBBER_SYM (test_DeadReferenceObj__iinterface);
 	CLOBBER_SYM (test_TransientObj__iinterface);
 	CLOBBER_SYM (test_SequenceServer__iinterface);
@@ -471,6 +519,9 @@ init_iinterfaces (ORBit_IInterfaces *interfaces,
 	CORBA_Environment *ev = &real_ev;
 	ORBit_IInterfaces *interfaces = NULL;
 	gboolean           gen_imodule = FALSE;
+	gboolean           thread_safe = FALSE;
+	gboolean           thread_tests = FALSE;
+	const char        *orb_name;
 	int                i;
 
 /*	g_mem_set_vtable (glib_mem_profiler_table); */
@@ -479,16 +530,27 @@ init_iinterfaces (ORBit_IInterfaces *interfaces,
 
 	CORBA_exception_init(&real_ev);
 
-	/* Initialize threads first - so we get a threaded ORB */
-	if (!g_thread_supported ())
-		g_thread_init (NULL);
-
-	global_orb = CORBA_ORB_init (&argc, argv, "", ev);
-	g_assert (ev->_major == CORBA_NO_EXCEPTION);
-
-	for (i = 0; i < argc; i++)
+	for (i = 0; i < argc; i++) {
 		if (!strcmp (argv [i], "--gen-imodule"))
 			gen_imodule = TRUE;
+		if (!strcmp (argv [i], "--thread-safe"))
+			thread_safe = TRUE;
+		if (!strcmp (argv [i], "--thread-tests")) {
+			thread_safe = TRUE;
+			thread_tests = TRUE;
+		}
+	}
+
+	if (thread_safe)
+		orb_name = "orbit-local-orb";
+	else
+		orb_name = "orbit-local-non-threaded-orb";
+
+	global_orb = CORBA_ORB_init (&argc, argv, orb_name, ev);
+	g_assert (ev->_major == CORBA_NO_EXCEPTION);
+
+	if (thread_tests)
+		link_set_io_thread (TRUE);
 
 	if (gen_imodule) {
 		interfaces = ORBit_iinterfaces_from_file (TEST_SRCDIR "/everything.idl", NULL, NULL);
@@ -501,7 +563,7 @@ init_iinterfaces (ORBit_IInterfaces *interfaces,
 	global_poa = start_poa (global_orb, ev);
 	g_assert (ev->_major == CORBA_NO_EXCEPTION);
 
-	factory = create_TestFactory (global_poa, &servant, ev);
+	factory = create_TestFactory (global_poa, ev);
 	g_assert (factory != CORBA_OBJECT_NIL);
 
 	/* a quick local test */
@@ -523,8 +585,6 @@ init_iinterfaces (ORBit_IInterfaces *interfaces,
 
 	CORBA_Object_release (factory, ev);
 	g_assert (ev->_major == CORBA_NO_EXCEPTION);
-
-	g_warning ("released factory");
 
 	if (gen_imodule)
 		CORBA_free (interfaces);

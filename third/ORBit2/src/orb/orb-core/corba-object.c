@@ -8,24 +8,27 @@
 #include "orbit-debug.h"
 #include "../util/orbit-purify.h"
 
+static GMutex *object_lock = NULL;
+
+#define OBJECT_LOCK(obj)   LINK_MUTEX_LOCK   (object_lock)
+#define OBJECT_UNLOCK(obj) LINK_MUTEX_UNLOCK (object_lock)
+
 /*
- * HashTable of Object Adaptor generated refs that have 
- * been externalised and refs that we have received.
+ * obj->orb -> construct time property ...
+ * obj->type_qid -> construct time property ?
+ *
+ * obj->profile_list -> needs locking
  */
-static GHashTable *objrefs = NULL;
 
 static guint
 g_CORBA_Object_hash (gconstpointer key)
 {
-	guint        retval;
 	CORBA_Object obj = (gpointer) key;
 
-	retval = obj->type_qid;
-
+	/* type_id is not reliable: cf. corbaloc */
 	g_assert (obj->object_key != NULL);
-	retval ^= IOP_ObjectKey_hash (obj->object_key);
 
-	return retval;
+        return IOP_ObjectKey_hash (obj->object_key);
 }
 
 static gboolean
@@ -67,32 +70,53 @@ g_CORBA_Object_equal (gconstpointer a, gconstpointer b)
 void
 ORBit_register_objref (CORBA_Object obj)
 {
-	if (!objrefs)
-		objrefs = g_hash_table_new (
-			g_CORBA_Object_hash, g_CORBA_Object_equal);
+	CORBA_ORB orb = obj->orb;
 
+	g_assert (orb != NULL);
 	g_assert (obj->object_key != NULL);
 	g_assert (obj->profile_list != NULL);
 
-	g_hash_table_insert (objrefs, obj, obj);
+	LINK_MUTEX_LOCK (orb->lock);
+
+	if (!orb->objrefs)
+		orb->objrefs = g_hash_table_new (
+			g_CORBA_Object_hash, g_CORBA_Object_equal);
+	g_hash_table_insert (orb->objrefs, obj, obj);
+
+	LINK_MUTEX_UNLOCK (orb->lock);
 }
 
 static CORBA_Object
 ORBit_lookup_objref (CORBA_Object obj)
 {
-	if (!objrefs || !obj->profile_list)
-		return NULL;
+	CORBA_Object result;
+	CORBA_ORB orb = obj->orb;
 
-	return g_hash_table_lookup (objrefs, obj);
+	g_assert (orb != NULL);
+
+	LINK_MUTEX_LOCK (orb->lock);
+	if (!orb->objrefs || !obj->profile_list)
+		result = NULL;
+	else
+		result = g_hash_table_lookup (orb->objrefs, obj);
+	LINK_MUTEX_UNLOCK (orb->lock);
+
+	return result;
 }
 
 static void
 CORBA_Object_release_cb (ORBit_RootObject robj)
 {
 	CORBA_Object obj = (CORBA_Object) robj;
+	CORBA_ORB    orb = obj->orb;
 
-	if (obj->profile_list)
-		g_hash_table_remove (objrefs, obj);
+	g_assert (orb != NULL);
+
+	if (obj->profile_list) {
+		LINK_MUTEX_LOCK (orb->lock);
+		g_hash_table_remove (orb->objrefs, obj);
+		LINK_MUTEX_UNLOCK (orb->lock);
+	}
 
 	ORBit_free_T (obj->object_key);
 
@@ -105,7 +129,12 @@ CORBA_Object_release_cb (ORBit_RootObject robj)
 		ORBit_RootObject_release_T (obj->adaptor_obj);
 	}
 
-	giop_connection_unref (obj->connection);
+	
+	if (obj->connection) {
+		LINK_MUTEX_UNLOCK (ORBit_RootObject_lifecycle_lock);
+		giop_connection_unref (obj->connection);
+		LINK_MUTEX_LOCK   (ORBit_RootObject_lifecycle_lock);
+	}
 
 	p_free (obj, struct CORBA_Object_type);
 }
@@ -116,7 +145,9 @@ static ORBit_RootObject_Interface objref_if = {
 };
 
 CORBA_Object
-ORBit_objref_new (CORBA_ORB orb, GQuark type_id)
+ORBit_objref_new (CORBA_ORB      orb,
+		  ORBit_OAObject adaptor_obj,
+		  GQuark         type_id)
 {
 	CORBA_Object retval;
 
@@ -126,6 +157,7 @@ ORBit_objref_new (CORBA_ORB orb, GQuark type_id)
 
 	retval->type_qid = type_id;
 	retval->orb = orb;
+	retval->adaptor_obj = ORBit_RootObject_duplicate (adaptor_obj);
 
 	return retval;
 }
@@ -136,13 +168,14 @@ ORBit_objref_find (CORBA_ORB   orb,
 		   GSList     *profiles)
 {
 	CORBA_Object retval = CORBA_OBJECT_NIL;
-	struct CORBA_Object_type fakeme = {{0}};
+	struct CORBA_Object_type fakeme = {{NULL}};
 
+	fakeme.orb = orb;
 	fakeme.type_qid = g_quark_from_string (type_id);
 	fakeme.profile_list = profiles;
 	fakeme.object_key = IOP_profiles_sync_objkey (profiles);
 
-	LINC_MUTEX_LOCK (ORBit_RootObject_lifecycle_lock);
+	LINK_MUTEX_LOCK (ORBit_RootObject_lifecycle_lock);
 
 	retval = ORBit_lookup_objref (&fakeme);
 
@@ -162,7 +195,7 @@ ORBit_objref_find (CORBA_ORB   orb,
 #endif /* G_ENABLE_DEBUG */
 
 	if (!retval) {
-		retval = ORBit_objref_new (orb, fakeme.type_qid);
+		retval = ORBit_objref_new (orb, NULL, fakeme.type_qid);
 		retval->profile_list = profiles;
 		retval->object_key   = fakeme.object_key;
 		ORBit_register_objref (retval);
@@ -173,7 +206,7 @@ ORBit_objref_find (CORBA_ORB   orb,
 
 	retval = ORBit_RootObject_duplicate_T (retval);
 
-	LINC_MUTEX_UNLOCK (ORBit_RootObject_lifecycle_lock);
+	LINK_MUTEX_UNLOCK (ORBit_RootObject_lifecycle_lock);
 
 	return retval;
 }
@@ -199,11 +232,15 @@ ORBit_objref_get_proxy (CORBA_Object obj)
 {
 	CORBA_Object iobj;
 
-	if (!obj->profile_list)
+	OBJECT_LOCK (obj);
+	if (!obj->profile_list) {
 		IOP_generate_profiles (obj);
+		ORBit_register_objref (obj);
+	}
+	OBJECT_UNLOCK (obj);
 
 	/* We need a pseudo-remote reference */
-	iobj = ORBit_objref_new (obj->orb, obj->type_qid);
+	iobj = ORBit_objref_new (obj->orb, NULL, obj->type_qid);
 	iobj->profile_list = IOP_profiles_copy (obj->profile_list);
 	iobj->object_key = IOP_ObjectKey_copy (obj->object_key);
 
@@ -211,27 +248,52 @@ ORBit_objref_get_proxy (CORBA_Object obj)
 }
 
 static gboolean
-ORBit_try_connection (CORBA_Object obj)
+ORBit_try_connection_T (CORBA_Object obj)
 {
-	while (obj->connection) {
-		switch (LINC_CONNECTION (obj->connection)->status) {
-		case LINC_CONNECTING:
-			g_main_context_iteration(NULL, TRUE);
-			break;
+	gboolean retval = FALSE;
+	LinkConnectionStatus status;
+	LinkConnection *cnx = LINK_CONNECTION (obj->connection);
 
-		case LINC_CONNECTED:
-			return TRUE;
-			break;
+	OBJECT_UNLOCK (obj);
 
-		case LINC_DISCONNECTED:
-			giop_connection_unref (obj->connection);
-			obj->connection = NULL;
-			return FALSE;
-			break;
-		}
+	status = link_connection_wait_connected (cnx);
+
+	switch (status) {
+	case LINK_CONNECTING:
+		g_assert_not_reached();
+		break;
+	case LINK_CONNECTED:
+		retval = TRUE;
+		break;
+	case LINK_DISCONNECTED:
+		/* Have a go at reviving it */
+		dprintf (MESSAGES, "re-connecting dropped cnx %p: ", cnx);
+		if (giop_connection_try_reconnect (GIOP_CONNECTION (cnx)) == LINK_CONNECTED)
+			retval = TRUE;
+		dprintf (MESSAGES, retval ? "connected\n" : "not connected\n" );
+		break;
 	}
 
-	return FALSE;
+	OBJECT_LOCK (obj);
+
+	g_assert (LINK_CONNECTION (obj->connection) == cnx);
+
+	return retval;
+}
+
+GIOPConnection *
+ORBit_object_peek_connection (CORBA_Object obj)
+{
+	GIOPConnection *cnx;
+
+	OBJECT_LOCK (obj);
+	
+	if ((cnx = obj->connection))
+		giop_connection_ref (cnx);
+
+	OBJECT_UNLOCK (obj);
+
+	return cnx;
 }
 
 GIOPConnection *
@@ -244,9 +306,21 @@ ORBit_object_get_connection (CORBA_Object obj)
 	char *proto = NULL, *host, *service;
 	gboolean is_ssl = FALSE;
 	GIOPVersion iiop_version = GIOP_1_2;
+	GIOPConnection *cnx = NULL;
 
-	if (ORBit_try_connection (obj))
-		return obj->connection;
+	OBJECT_LOCK (obj);
+
+	if (obj->connection) {
+		if (ORBit_try_connection_T (obj)) {
+			cnx = obj->connection;
+			giop_connection_ref (cnx);
+			OBJECT_UNLOCK (obj);
+			return cnx;
+		} else {
+			OBJECT_UNLOCK (obj);
+			return NULL;
+		}
+	}
   
 	g_assert (obj->connection == NULL);
 
@@ -266,21 +340,24 @@ ORBit_object_get_connection (CORBA_Object obj)
 
 			obj->connection = giop_connection_initiate (
 				obj->orb, proto, host, service,
-				is_ssl ? LINC_CONNECTION_SSL : 0, iiop_version);
+				is_ssl ? LINK_CONNECTION_SSL : 0, iiop_version);
 
-			if (ORBit_try_connection (obj)) {
+			if (obj->connection && ORBit_try_connection_T (obj)) {
 				obj->object_key = objkey;
 				obj->connection->orb_data = obj->orb;
 
 				dprintf (OBJECTS, "Initiated a connection to '%s' '%s' '%s'\n",
 					 proto, host, service);
 
-				return obj->connection;
+				cnx = obj->connection;
+				giop_connection_ref (cnx);
+				break;
 			}
 		}
 	}
+	OBJECT_UNLOCK (obj);
 
-	return NULL;
+	return cnx;
 }
 
 GIOPConnection *
@@ -293,9 +370,10 @@ ORBit_handle_location_forward (GIOPRecvBuffer *buf,
 	if (ORBit_demarshal_IOR (obj->orb, buf, NULL, &profiles))
 		goto out;
 
+	OBJECT_LOCK (obj);
 	IOP_delete_profiles (obj->orb, &obj->forward_locations);
-
 	obj->forward_locations = profiles;
+	OBJECT_UNLOCK (obj);
 
 	retval = ORBit_object_get_connection (obj);
 
@@ -338,7 +416,9 @@ CORBA_boolean
 CORBA_Object_non_existent (CORBA_Object       obj,
 			   CORBA_Environment *ev)
 {
-	ORBit_OAObject adaptor_obj;
+	gboolean        retval;
+	GIOPConnection *cnx;
+	ORBit_OAObject  adaptor_obj;
 
 	if (obj == CORBA_OBJECT_NIL)
 		return TRUE;
@@ -347,7 +427,17 @@ CORBA_Object_non_existent (CORBA_Object       obj,
 	if (adaptor_obj && adaptor_obj->interface->is_active (adaptor_obj))
 		return FALSE;
 
-	return ORBit_object_get_connection (obj) ? CORBA_FALSE : CORBA_TRUE;
+	cnx = ORBit_object_get_connection (obj);
+
+	if (cnx) {
+		LinkConnectionStatus status;
+		status = link_connection_wait_connected (LINK_CONNECTION (cnx));
+		retval = (status == LINK_CONNECTED) ? FALSE : TRUE;
+		giop_connection_unref (cnx);
+	} else
+		retval = TRUE;
+
+	return retval;
 }
 
 /*
@@ -421,41 +511,48 @@ ORBit_marshal_object (GIOPSendBuffer *buf, CORBA_Object obj)
 {
 	GSList             *cur;
 	const char         *typeid;
-	CORBA_unsigned_long num_profiles;
+	CORBA_unsigned_long num_profiles = 0;
 
-	if (obj) {
-		typeid = g_quark_to_string (obj->type_qid);
-		if (!typeid)
-			g_error ("Attempted to marshal a bogus / "
-				 "dead object %p type", obj);
-	} else
-		typeid = "";
+	if (!obj) {
+		dprintf (OBJECTS, "Marshal NIL object\n");
+		giop_send_buffer_append_string (buf, "");
+		giop_send_buffer_append_aligned (buf, &num_profiles, 4);
+		return;
+	}
+
+	typeid = g_quark_to_string (obj->type_qid);
+	if (!typeid)
+		g_error ("Attempted to marshal a bogus / "
+			 "dead object %p type", obj);
 
 	giop_send_buffer_append_string (buf, typeid);
 
-	if (obj) {
-		if (!obj->profile_list)
-			IOP_generate_profiles (obj);
-		num_profiles = g_slist_length (obj->profile_list);
-		g_assert (num_profiles > 0);
-	} else
-		num_profiles = 0;
+	OBJECT_LOCK (obj);
+
+	if (!obj->profile_list) {
+		IOP_generate_profiles (obj);
+		ORBit_register_objref (obj);
+	}
+	num_profiles = g_slist_length (obj->profile_list);
+	g_assert (num_profiles > 0);
+
 	giop_send_buffer_append_aligned (buf, &num_profiles, 4);
 
 	dprintf (OBJECTS, "Marshal object '%p'\n", obj);
 
-	if (obj)
-		for (cur = obj->profile_list; cur; cur = cur->next) {
+	for (cur = obj->profile_list; cur; cur = cur->next) {
 #ifdef G_ENABLE_DEBUG
-			if (_orbit_debug_flags & ORBIT_DEBUG_OBJECTS) {
-				char *str;
-				fprintf (stderr, "%s\n",
-					 (str = IOP_profile_dump (obj, cur->data)));
-				g_free (str);
-			}
-#endif /* G_ENABLE_DEBUG */
-			IOP_profile_marshal (obj, buf, cur->data);
+		if (_orbit_debug_flags & ORBIT_DEBUG_OBJECTS) {
+			char *str;
+			fprintf (stderr, "%s\n",
+				 (str = IOP_profile_dump (obj, cur->data)));
+			g_free (str);
 		}
+#endif /* G_ENABLE_DEBUG */
+		IOP_profile_marshal (obj, buf, cur->data);
+	}
+
+	OBJECT_UNLOCK (obj);
 }
 
 gboolean
@@ -465,6 +562,8 @@ ORBit_demarshal_object (CORBA_Object   *obj,
 {
 	gchar  *type_id = NULL;
 	GSList *profiles = NULL;
+
+	g_return_val_if_fail (orb != CORBA_OBJECT_NIL, TRUE);
 
 	if (ORBit_demarshal_IOR (orb, buf, &type_id, &profiles))
 		return TRUE;
@@ -477,44 +576,69 @@ ORBit_demarshal_object (CORBA_Object   *obj,
 	return FALSE;
 }
 
-CORBA_boolean
-CORBA_Object_is_a (CORBA_Object       obj,
-		   const CORBA_char  *logical_type_id,
-		   CORBA_Environment *ev)
+CORBA_char*
+ORBit_object_to_corbaloc (CORBA_Object       obj,
+                          CORBA_Environment *ev)
 {
-	static GQuark  corba_object_quark = 0;
-	static GQuark  omg_corba_object_quark = 0;
-	CORBA_boolean  retval;
-	gpointer       args[] = { (gpointer *)&logical_type_id };
-	GQuark         logical_type_quark;
+        CORBA_char      *retval = NULL;
 
-	if (!corba_object_quark)
-		corba_object_quark = g_quark_from_static_string (
-			"IDL:CORBA/Object:1.0");
+        if (!obj) {
+                dprintf (OBJECTS, "Corbaloc NIL object\n");
+                return CORBA_string_dup ("corbaloc::/");
+        }
 
-	if (!omg_corba_object_quark)
-		omg_corba_object_quark = g_quark_from_static_string (
-			"IDL:omg.org/CORBA/Object:1.0");
+        OBJECT_LOCK (obj);
 
-	logical_type_quark = g_quark_from_string (logical_type_id);
+        if (!obj->profile_list) {
+                IOP_generate_profiles (obj);
+                ORBit_register_objref (obj);
+        }
 
-	if (logical_type_quark == corba_object_quark)
-		return CORBA_TRUE;
+        if (!(retval = ORBit_corbaloc_from (obj->profile_list,
+                                            obj->object_key))) {
+                CORBA_exception_set_system (
+                        ev, ex_CORBA_BAD_PARAM, CORBA_COMPLETED_NO);
+                /* FIXME, set minor code with vendor specific id */
+        }
+ 
+        OBJECT_UNLOCK (obj);
+         
+        return retval;
+}
 
-	if (logical_type_quark == omg_corba_object_quark)
-		return CORBA_TRUE;
 
-	if (!obj)
-		return CORBA_FALSE;
+CORBA_Object
+ORBit_object_by_corbaloc  (CORBA_ORB          orb,
+                           const gchar       *corbaloc,
+                           CORBA_Environment *ev)
+{
+        CORBA_Object  retval       = CORBA_OBJECT_NIL;
+        GSList       *profile_list = NULL;
 
-	if (logical_type_quark == obj->type_qid)
-		return CORBA_TRUE;
+        g_return_val_if_fail (orb!=NULL,      CORBA_OBJECT_NIL);
+        g_return_val_if_fail (corbaloc!=NULL, CORBA_OBJECT_NIL);
+        g_return_val_if_fail (ev!=NULL,       CORBA_OBJECT_NIL);
 
-	ORBit_small_invoke_stub (
-		obj, &CORBA_Object__imethods[4],
-		&retval, args, NULL, ev);
+	if (!strncmp (corbaloc, "corbaloc::/", 1 + strlen ("corbaloc::/")))
+		return CORBA_OBJECT_NIL;  
 
-	return retval;
+        if (!(profile_list = ORBit_corbaloc_parse (corbaloc)))  {
+                CORBA_exception_set_system (
+                        ev, ex_CORBA_BAD_PARAM, CORBA_COMPLETED_NO);
+                /* FIXME, set minor code with vendor specific id */
+                return CORBA_OBJECT_NIL;
+        }
+
+        if (!(retval = ORBit_objref_find (orb, "", profile_list))) {
+                CORBA_exception_set_system (
+                        ev, ex_CORBA_BAD_PARAM, CORBA_COMPLETED_NO);
+                /* FIXME, set minor code with vendor specific id */
+
+                IOP_delete_profiles (orb, &profile_list);
+                return CORBA_OBJECT_NIL;
+        }
+
+        return retval;
 }
 
 static gboolean
@@ -542,6 +666,52 @@ ORBit_impl_CORBA_Object_is_a(PortableServer_ServantBase *servant,
 	const char               *type_id = *(const char **)args[0];
 
 	*(CORBA_boolean *)ret = ORBit_IInterface_is_a (ci->idata, type_id);
+}
+
+CORBA_boolean
+CORBA_Object_is_a (CORBA_Object       obj,
+		   const CORBA_char  *logical_type_id,
+		   CORBA_Environment *ev)
+{
+	static GQuark  corba_object_quark = 0;
+	static GQuark  omg_corba_object_quark = 0;
+	CORBA_boolean  retval;
+	gpointer       servant;
+	gpointer       args[] = { NULL };
+	GQuark         logical_type_quark;
+
+	args[0] = (gpointer *)&logical_type_id;
+
+	if (!corba_object_quark)
+		corba_object_quark = g_quark_from_static_string (
+			"IDL:CORBA/Object:1.0");
+
+	if (!omg_corba_object_quark)
+		omg_corba_object_quark = g_quark_from_static_string (
+			"IDL:omg.org/CORBA/Object:1.0");
+
+	logical_type_quark = g_quark_from_string (logical_type_id);
+
+	if (logical_type_quark == corba_object_quark)
+		return CORBA_TRUE;
+
+	if (logical_type_quark == omg_corba_object_quark)
+		return CORBA_TRUE;
+
+	if (!obj)
+		return CORBA_FALSE;
+
+	if (logical_type_quark == obj->type_qid)
+		return CORBA_TRUE;
+
+	if ((servant = ORBit_small_get_servant (obj)))
+		ORBit_impl_CORBA_Object_is_a (servant, &retval, args, NULL, ev, NULL);
+
+	else /* warning: obeys POA policies */
+		ORBit_small_invoke_stub (obj, &CORBA_Object__imethods[4],
+					 &retval, args, NULL, ev);
+
+	return retval;
 }
 
 static void
@@ -790,3 +960,9 @@ CORBA_Object__iinterface = {
   {12, 12, CORBA_Object__imethods, FALSE},
   {0, 0, NULL, FALSE}
 };
+
+void
+_ORBit_object_init (void)
+{
+	object_lock = link_mutex_new();
+}

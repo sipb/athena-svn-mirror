@@ -5,7 +5,7 @@
 #ifndef poa_defs_H
 #define poa_defs_H 1
 #include <glib.h>
-#define ORBIT_IDL_SERIAL 19
+#define ORBIT_IDL_SERIAL 20
 #include <orbit/orbit-types.h>
 
 #ifdef __cplusplus
@@ -40,8 +40,7 @@ extern "C"
        _length;
       CORBA_Object *_buffer;
       CORBA_boolean _release;
-   }
-   CORBA_sequence_CORBA_Object;
+   } CORBA_sequence_CORBA_Object;
 #endif
 #if !defined(TC_IMPL_TC_CORBA_sequence_CORBA_Object_0)
 #define TC_IMPL_TC_CORBA_sequence_CORBA_Object_0 'p'
@@ -133,54 +132,11 @@ extern "C"
 #define _PortableServer_Servant_defined 1
    typedef struct PortableServer_Servant_type *PortableServer_Servant;
 #endif
-#if !defined(ORBIT_DECL_CORBA_sequence_CORBA_octet)
-#define ORBIT_DECL_CORBA_sequence_CORBA_octet 1
-#define ORBIT_IMPL_CORBA_sequence_CORBA_octet_0 'p'
-#define ORBIT_IMPL_CORBA_sequence_CORBA_octet_1 'o'
-#define ORBIT_IMPL_CORBA_sequence_CORBA_octet_2 'a'
-#define ORBIT_IMPL_CORBA_sequence_CORBA_octet_3 '_'
-#define ORBIT_IMPL_CORBA_sequence_CORBA_octet_4 'd'
-#define ORBIT_IMPL_CORBA_sequence_CORBA_octet_5 'e'
-#define ORBIT_IMPL_CORBA_sequence_CORBA_octet_6 'f'
-#define ORBIT_IMPL_CORBA_sequence_CORBA_octet_7 's'
-#if !defined(_CORBA_sequence_CORBA_octet_defined)
-#define _CORBA_sequence_CORBA_octet_defined 1
-   typedef struct
-   {
-      CORBA_unsigned_long _maximum,
-       _length;
-      CORBA_octet *_buffer;
-      CORBA_boolean _release;
-   }
-   CORBA_sequence_CORBA_octet;
-#endif
-#if !defined(TC_IMPL_TC_CORBA_sequence_CORBA_octet_0)
-#define TC_IMPL_TC_CORBA_sequence_CORBA_octet_0 'p'
-#define TC_IMPL_TC_CORBA_sequence_CORBA_octet_1 'o'
-#define TC_IMPL_TC_CORBA_sequence_CORBA_octet_2 'a'
-#define TC_IMPL_TC_CORBA_sequence_CORBA_octet_3 '_'
-#define TC_IMPL_TC_CORBA_sequence_CORBA_octet_4 'd'
-#define TC_IMPL_TC_CORBA_sequence_CORBA_octet_5 'e'
-#define TC_IMPL_TC_CORBA_sequence_CORBA_octet_6 'f'
-#define TC_IMPL_TC_CORBA_sequence_CORBA_octet_7 's'
-#ifdef ORBIT_IDL_C_IMODULE_poa_defs
-   static
-#else
-   extern
-#endif
-   const struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_octet_struct;
-#define TC_CORBA_sequence_CORBA_octet ((CORBA_TypeCode)&TC_CORBA_sequence_CORBA_octet_struct)
-#endif
-#define CORBA_sequence_CORBA_octet__alloc() ((CORBA_sequence_CORBA_octet *)ORBit_small_alloc (TC_CORBA_sequence_CORBA_octet))
-#define CORBA_sequence_CORBA_octet__freekids(m,d) ORBit_small_freekids (TC_CORBA_sequence_CORBA_octet,(m),(d))
-#define CORBA_sequence_CORBA_octet_allocbuf(l) ((CORBA_octet*)ORBit_small_allocbuf (TC_CORBA_sequence_CORBA_octet, (l)))
-#define CORBA_sequence_CORBA_octet_allocbuf(l) ((CORBA_octet*)ORBit_small_allocbuf (TC_CORBA_sequence_CORBA_octet, (l)))
-#endif
 #if !defined(_PortableServer_ObjectId_defined)
 #define _PortableServer_ObjectId_defined 1
-   typedef CORBA_sequence_CORBA_octet PortableServer_ObjectId;
-#define PortableServer_ObjectId_marshal(x,y,z) CORBA_sequence_CORBA_octet_marshal((x),(y),(z))
-#define PortableServer_ObjectId_demarshal(x,y,z,i) CORBA_sequence_CORBA_octet_demarshal((x),(y),(z),(i))
+   typedef CORBA_OctetSeq PortableServer_ObjectId;
+#define PortableServer_ObjectId_marshal(x,y,z) CORBA_OctetSeq_marshal((x),(y),(z))
+#define PortableServer_ObjectId_demarshal(x,y,z,i) CORBA_OctetSeq_demarshal((x),(y),(z),(i))
 #if !defined(TC_IMPL_TC_PortableServer_ObjectId_0)
 #define TC_IMPL_TC_PortableServer_ObjectId_0 'p'
 #define TC_IMPL_TC_PortableServer_ObjectId_1 'o'
@@ -266,9 +222,9 @@ extern "C"
    typedef enum
    {
       PortableServer_ORB_CTRL_MODEL,
-      PortableServer_SINGLE_THREAD_MODEL
-   }
-   PortableServer_ThreadPolicyValue;
+      PortableServer_SINGLE_THREAD_MODEL,
+      PortableServer_MAIN_THREAD_MODEL
+   } PortableServer_ThreadPolicyValue;
 #if !defined(TC_IMPL_TC_PortableServer_ThreadPolicyValue_0)
 #define TC_IMPL_TC_PortableServer_ThreadPolicyValue_0 'p'
 #define TC_IMPL_TC_PortableServer_ThreadPolicyValue_1 'o'
@@ -303,8 +259,7 @@ extern "C"
    {
       PortableServer_TRANSIENT,
       PortableServer_PERSISTENT
-   }
-   PortableServer_LifespanPolicyValue;
+   } PortableServer_LifespanPolicyValue;
 #if !defined(TC_IMPL_TC_PortableServer_LifespanPolicyValue_0)
 #define TC_IMPL_TC_PortableServer_LifespanPolicyValue_0 'p'
 #define TC_IMPL_TC_PortableServer_LifespanPolicyValue_1 'o'
@@ -339,8 +294,7 @@ extern "C"
    {
       PortableServer_UNIQUE_ID,
       PortableServer_MULTIPLE_ID
-   }
-   PortableServer_IdUniquenessPolicyValue;
+   } PortableServer_IdUniquenessPolicyValue;
 #if !defined(TC_IMPL_TC_PortableServer_IdUniquenessPolicyValue_0)
 #define TC_IMPL_TC_PortableServer_IdUniquenessPolicyValue_0 'p'
 #define TC_IMPL_TC_PortableServer_IdUniquenessPolicyValue_1 'o'
@@ -375,8 +329,7 @@ extern "C"
    {
       PortableServer_USER_ID,
       PortableServer_SYSTEM_ID
-   }
-   PortableServer_IdAssignmentPolicyValue;
+   } PortableServer_IdAssignmentPolicyValue;
 #if !defined(TC_IMPL_TC_PortableServer_IdAssignmentPolicyValue_0)
 #define TC_IMPL_TC_PortableServer_IdAssignmentPolicyValue_0 'p'
 #define TC_IMPL_TC_PortableServer_IdAssignmentPolicyValue_1 'o'
@@ -411,8 +364,7 @@ extern "C"
    {
       PortableServer_IMPLICIT_ACTIVATION,
       PortableServer_NO_IMPLICIT_ACTIVATION
-   }
-   PortableServer_ImplicitActivationPolicyValue;
+   } PortableServer_ImplicitActivationPolicyValue;
 #if !defined(TC_IMPL_TC_PortableServer_ImplicitActivationPolicyValue_0)
 #define TC_IMPL_TC_PortableServer_ImplicitActivationPolicyValue_0 'p'
 #define TC_IMPL_TC_PortableServer_ImplicitActivationPolicyValue_1 'o'
@@ -447,8 +399,7 @@ extern "C"
    {
       PortableServer_RETAIN,
       PortableServer_NON_RETAIN
-   }
-   PortableServer_ServantRetentionPolicyValue;
+   } PortableServer_ServantRetentionPolicyValue;
 #if !defined(TC_IMPL_TC_PortableServer_ServantRetentionPolicyValue_0)
 #define TC_IMPL_TC_PortableServer_ServantRetentionPolicyValue_0 'p'
 #define TC_IMPL_TC_PortableServer_ServantRetentionPolicyValue_1 'o'
@@ -484,8 +435,7 @@ extern "C"
       PortableServer_USE_ACTIVE_OBJECT_MAP_ONLY,
       PortableServer_USE_DEFAULT_SERVANT,
       PortableServer_USE_SERVANT_MANAGER
-   }
-   PortableServer_RequestProcessingPolicyValue;
+   } PortableServer_RequestProcessingPolicyValue;
 #if !defined(TC_IMPL_TC_PortableServer_RequestProcessingPolicyValue_0)
 #define TC_IMPL_TC_PortableServer_RequestProcessingPolicyValue_0 'p'
 #define TC_IMPL_TC_PortableServer_RequestProcessingPolicyValue_1 'o'
@@ -562,8 +512,7 @@ extern "C"
       PortableServer_POAManager_ACTIVE,
       PortableServer_POAManager_DISCARDING,
       PortableServer_POAManager_INACTIVE
-   }
-   PortableServer_POAManager_State;
+   } PortableServer_POAManager_State;
 #if !defined(TC_IMPL_TC_PortableServer_POAManager_State_0)
 #define TC_IMPL_TC_PortableServer_POAManager_State_0 'p'
 #define TC_IMPL_TC_PortableServer_POAManager_State_1 'o'
@@ -582,6 +531,156 @@ extern "C"
       TC_PortableServer_POAManager_State_struct;
 #define TC_PortableServer_POAManager_State ((CORBA_TypeCode)&TC_PortableServer_POAManager_State_struct)
 #endif
+#endif
+#if !defined(ORBIT_DECL_PortableServer_POAManagerFactory) && !defined(_PortableServer_POAManagerFactory_defined)
+#define ORBIT_DECL_PortableServer_POAManagerFactory 1
+#define _PortableServer_POAManagerFactory_defined 1
+   typedef struct PortableServer_POAManagerFactory_type
+      *PortableServer_POAManagerFactory;
+#ifndef TC_PortableServer_POAManagerFactory
+#  define TC_PortableServer_POAManagerFactory TC_CORBA_Object
+#endif
+#endif
+#if !defined(ORBIT_DECL_CORBA_sequence_CORBA_Object)
+#define ORBIT_DECL_CORBA_sequence_CORBA_Object 1
+#define ORBIT_IMPL_CORBA_sequence_CORBA_Object_0 'p'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_Object_1 'o'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_Object_2 'a'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_Object_3 '_'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_Object_4 'd'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_Object_5 'e'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_Object_6 'f'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_Object_7 's'
+#if !defined(_CORBA_sequence_CORBA_Object_defined)
+#define _CORBA_sequence_CORBA_Object_defined 1
+   typedef struct
+   {
+      CORBA_unsigned_long _maximum,
+       _length;
+      CORBA_Object *_buffer;
+      CORBA_boolean _release;
+   } CORBA_sequence_CORBA_Object;
+#endif
+#if !defined(TC_IMPL_TC_CORBA_sequence_CORBA_Object_0)
+#define TC_IMPL_TC_CORBA_sequence_CORBA_Object_0 'p'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_Object_1 'o'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_Object_2 'a'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_Object_3 '_'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_Object_4 'd'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_Object_5 'e'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_Object_6 'f'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_Object_7 's'
+#ifdef ORBIT_IDL_C_IMODULE_poa_defs
+   static
+#else
+   extern
+#endif
+   const struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_Object_struct;
+#define TC_CORBA_sequence_CORBA_Object ((CORBA_TypeCode)&TC_CORBA_sequence_CORBA_Object_struct)
+#endif
+#define CORBA_sequence_CORBA_Object__alloc() ((CORBA_sequence_CORBA_Object *)ORBit_small_alloc (TC_CORBA_sequence_CORBA_Object))
+#define CORBA_sequence_CORBA_Object__freekids(m,d) ORBit_small_freekids (TC_CORBA_sequence_CORBA_Object,(m),(d))
+#define CORBA_sequence_CORBA_Object_allocbuf(l) ((CORBA_Object*)ORBit_small_allocbuf (TC_CORBA_sequence_CORBA_Object, (l)))
+#define CORBA_sequence_CORBA_Object_allocbuf(l) ((CORBA_Object*)ORBit_small_allocbuf (TC_CORBA_sequence_CORBA_Object, (l)))
+#endif
+#if !defined(ORBIT_DECL_CORBA_sequence_PortableServer_POAManager)
+#define ORBIT_DECL_CORBA_sequence_PortableServer_POAManager 1
+#define ORBIT_IMPL_CORBA_sequence_PortableServer_POAManager_0 'p'
+#define ORBIT_IMPL_CORBA_sequence_PortableServer_POAManager_1 'o'
+#define ORBIT_IMPL_CORBA_sequence_PortableServer_POAManager_2 'a'
+#define ORBIT_IMPL_CORBA_sequence_PortableServer_POAManager_3 '_'
+#define ORBIT_IMPL_CORBA_sequence_PortableServer_POAManager_4 'd'
+#define ORBIT_IMPL_CORBA_sequence_PortableServer_POAManager_5 'e'
+#define ORBIT_IMPL_CORBA_sequence_PortableServer_POAManager_6 'f'
+#define ORBIT_IMPL_CORBA_sequence_PortableServer_POAManager_7 's'
+#if !defined(_CORBA_sequence_PortableServer_POAManager_defined)
+#define _CORBA_sequence_PortableServer_POAManager_defined 1
+   typedef CORBA_sequence_CORBA_Object
+      CORBA_sequence_PortableServer_POAManager;
+#endif
+#if !defined(TC_IMPL_TC_CORBA_sequence_PortableServer_POAManager_0)
+#define TC_IMPL_TC_CORBA_sequence_PortableServer_POAManager_0 'p'
+#define TC_IMPL_TC_CORBA_sequence_PortableServer_POAManager_1 'o'
+#define TC_IMPL_TC_CORBA_sequence_PortableServer_POAManager_2 'a'
+#define TC_IMPL_TC_CORBA_sequence_PortableServer_POAManager_3 '_'
+#define TC_IMPL_TC_CORBA_sequence_PortableServer_POAManager_4 'd'
+#define TC_IMPL_TC_CORBA_sequence_PortableServer_POAManager_5 'e'
+#define TC_IMPL_TC_CORBA_sequence_PortableServer_POAManager_6 'f'
+#define TC_IMPL_TC_CORBA_sequence_PortableServer_POAManager_7 's'
+#ifdef ORBIT_IDL_C_IMODULE_poa_defs
+   static
+#else
+   extern
+#endif
+   const struct CORBA_TypeCode_struct
+      TC_CORBA_sequence_PortableServer_POAManager_struct;
+#define TC_CORBA_sequence_PortableServer_POAManager ((CORBA_TypeCode)&TC_CORBA_sequence_PortableServer_POAManager_struct)
+#endif
+#define CORBA_sequence_PortableServer_POAManager__alloc CORBA_sequence_CORBA_Object__alloc
+#define CORBA_sequence_PortableServer_POAManager__freekids CORBA_sequence_CORBA_Object__freekids
+#define CORBA_sequence_PortableServer_POAManager_allocbuf CORBA_sequence_CORBA_Object_allocbuf
+#define CORBA_sequence_PortableServer_POAManager_marshal(x,y,z) CORBA_sequence_CORBA_Object_marshal((x),(y),(z))
+#define CORBA_sequence_PortableServer_POAManager_demarshal(x,y,z,i) CORBA_sequence_CORBA_Object_demarshal((x),(y),(z),(i))
+#endif
+#if !defined(_PortableServer_POAManagerFactory_POAManagerSeq_defined)
+#define _PortableServer_POAManagerFactory_POAManagerSeq_defined 1
+   typedef CORBA_sequence_PortableServer_POAManager
+      PortableServer_POAManagerFactory_POAManagerSeq;
+#define PortableServer_POAManagerFactory_POAManagerSeq_marshal(x,y,z) CORBA_sequence_PortableServer_POAManager_marshal((x),(y),(z))
+#define PortableServer_POAManagerFactory_POAManagerSeq_demarshal(x,y,z,i) CORBA_sequence_PortableServer_POAManager_demarshal((x),(y),(z),(i))
+#if !defined(TC_IMPL_TC_PortableServer_POAManagerFactory_POAManagerSeq_0)
+#define TC_IMPL_TC_PortableServer_POAManagerFactory_POAManagerSeq_0 'p'
+#define TC_IMPL_TC_PortableServer_POAManagerFactory_POAManagerSeq_1 'o'
+#define TC_IMPL_TC_PortableServer_POAManagerFactory_POAManagerSeq_2 'a'
+#define TC_IMPL_TC_PortableServer_POAManagerFactory_POAManagerSeq_3 '_'
+#define TC_IMPL_TC_PortableServer_POAManagerFactory_POAManagerSeq_4 'd'
+#define TC_IMPL_TC_PortableServer_POAManagerFactory_POAManagerSeq_5 'e'
+#define TC_IMPL_TC_PortableServer_POAManagerFactory_POAManagerSeq_6 'f'
+#define TC_IMPL_TC_PortableServer_POAManagerFactory_POAManagerSeq_7 's'
+#ifdef ORBIT_IDL_C_IMODULE_poa_defs
+   static
+#else
+   extern
+#endif
+   const struct CORBA_TypeCode_struct
+      TC_PortableServer_POAManagerFactory_POAManagerSeq_struct;
+#define TC_PortableServer_POAManagerFactory_POAManagerSeq ((CORBA_TypeCode)&TC_PortableServer_POAManagerFactory_POAManagerSeq_struct)
+#endif
+#define PortableServer_POAManagerFactory_POAManagerSeq__alloc() ((PortableServer_POAManagerFactory_POAManagerSeq *)ORBit_small_alloc (TC_CORBA_sequence_PortableServer_POAManager))
+#define PortableServer_POAManagerFactory_POAManagerSeq__freekids(m,d) ORBit_small_freekids (TC_CORBA_sequence_PortableServer_POAManager,(m),(d))
+#define PortableServer_POAManagerFactory_POAManagerSeq_allocbuf(l) ((PortableServer_POAManager*)ORBit_small_allocbuf (TC_CORBA_sequence_PortableServer_POAManager, (l)))
+#endif
+#undef ex_PortableServer_POAManagerFactory_ManagerAlreadyExists
+#define ex_PortableServer_POAManagerFactory_ManagerAlreadyExists "IDL:omg.org/PortableServer/POAManagerFactory/ManagerAlreadyExists:1.0"
+#if !defined(_PortableServer_POAManagerFactory_ManagerAlreadyExists_defined)
+#define _PortableServer_POAManagerFactory_ManagerAlreadyExists_defined 1
+   typedef struct PortableServer_POAManagerFactory_ManagerAlreadyExists_type
+      PortableServer_POAManagerFactory_ManagerAlreadyExists;
+   struct PortableServer_POAManagerFactory_ManagerAlreadyExists_type
+   {
+      int dummy;
+   };
+
+#if !defined(TC_IMPL_TC_PortableServer_POAManagerFactory_ManagerAlreadyExists_0)
+#define TC_IMPL_TC_PortableServer_POAManagerFactory_ManagerAlreadyExists_0 'p'
+#define TC_IMPL_TC_PortableServer_POAManagerFactory_ManagerAlreadyExists_1 'o'
+#define TC_IMPL_TC_PortableServer_POAManagerFactory_ManagerAlreadyExists_2 'a'
+#define TC_IMPL_TC_PortableServer_POAManagerFactory_ManagerAlreadyExists_3 '_'
+#define TC_IMPL_TC_PortableServer_POAManagerFactory_ManagerAlreadyExists_4 'd'
+#define TC_IMPL_TC_PortableServer_POAManagerFactory_ManagerAlreadyExists_5 'e'
+#define TC_IMPL_TC_PortableServer_POAManagerFactory_ManagerAlreadyExists_6 'f'
+#define TC_IMPL_TC_PortableServer_POAManagerFactory_ManagerAlreadyExists_7 's'
+#ifdef ORBIT_IDL_C_IMODULE_poa_defs
+   static
+#else
+   extern
+#endif
+   const struct CORBA_TypeCode_struct
+      TC_PortableServer_POAManagerFactory_ManagerAlreadyExists_struct;
+#define TC_PortableServer_POAManagerFactory_ManagerAlreadyExists ((CORBA_TypeCode)&TC_PortableServer_POAManagerFactory_ManagerAlreadyExists_struct)
+#endif
+#define PortableServer_POAManagerFactory_ManagerAlreadyExists__alloc() ((PortableServer_POAManagerFactory_ManagerAlreadyExists *)ORBit_small_alloc (TC_PortableServer_POAManagerFactory_ManagerAlreadyExists))
+#define PortableServer_POAManagerFactory_ManagerAlreadyExists__freekids(m,d) ORBit_small_freekids (TC_PortableServer_POAManagerFactory_ManagerAlreadyExists,(m),(d))
 #endif
 #if !defined(ORBIT_DECL_PortableServer_AdapterActivator) && !defined(_PortableServer_AdapterActivator_defined)
 #define ORBIT_DECL_PortableServer_AdapterActivator 1
@@ -1056,6 +1155,20 @@ extern "C"
    PortableServer_POAManager_State
       PortableServer_POAManager_get_state(PortableServer_POAManager _obj,
 					  CORBA_Environment * ev);
+   CORBA_string PortableServer_POAManager_get_id(PortableServer_POAManager
+						 _obj,
+						 CORBA_Environment * ev);
+   PortableServer_POAManager
+      PortableServer_POAManagerFactory_create_POAManager
+      (PortableServer_POAManagerFactory _obj, const CORBA_char * id,
+       const CORBA_PolicyList * policies, CORBA_Environment * ev);
+   PortableServer_POAManagerFactory_POAManagerSeq
+      *PortableServer_POAManagerFactory_list(PortableServer_POAManagerFactory
+					     _obj, CORBA_Environment * ev);
+   PortableServer_POAManager
+      PortableServer_POAManagerFactory_find(PortableServer_POAManagerFactory
+					    _obj, const CORBA_char * id,
+					    CORBA_Environment * ev);
    CORBA_boolean
       PortableServer_AdapterActivator_unknown_adapter
       (PortableServer_AdapterActivator _obj, const PortableServer_POA parent,
@@ -1251,12 +1364,23 @@ extern "C"
 						    PortableServer_ObjectId *
 						    oid,
 						    CORBA_Environment * ev);
+   CORBA_OctetSeq *PortableServer_POA__get_id(PortableServer_POA _obj,
+					      CORBA_Environment * ev);
+   PortableServer_POAManagerFactory
+      PortableServer_POA__get_the_POAManagerFactory(PortableServer_POA _obj,
+						    CORBA_Environment * ev);
    PortableServer_POA PortableServer_Current_get_POA(PortableServer_Current
 						     _obj,
 						     CORBA_Environment * ev);
    PortableServer_ObjectId
       *PortableServer_Current_get_object_id(PortableServer_Current _obj,
 					    CORBA_Environment * ev);
+   CORBA_Object PortableServer_Current_get_reference(PortableServer_Current
+						      _obj,
+						      CORBA_Environment * ev);
+   PortableServer_Servant
+      PortableServer_Current_get_servant(PortableServer_Current _obj,
+					 CORBA_Environment * ev);
 #ifdef __cplusplus
 }
 #endif				/* __cplusplus */

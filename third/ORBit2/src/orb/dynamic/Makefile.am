@@ -14,9 +14,8 @@ INCLUDES =						\
 	$(WARN_CFLAGS)					\
 	$(ORBIT_DEBUG_CFLAGS)				\
 	$(DISABLE_DEPRECATED_CFLAGS)			\
+	$(LOCAL_LINC_CFLAGS)				\
 	$(ORBIT_CFLAGS)
-
-DYNAMIC_IDLOUT=dynamic-defs-common.c
 
 IDL_FLAGS= -I$(top_srcdir)/src/idl/CORBA_PIDL			\
 	--define=Object=OObject --define=TypeCode=TTypeCode	\
