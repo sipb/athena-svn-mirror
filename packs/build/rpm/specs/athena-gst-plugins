@@ -1,7 +1,0 @@
-Name: athena-gst-plugins
-Summary: GStreamer streaming-media framework plugins, for athena
-License: LGPL
-Group: Libraries/Multimedia
-
-%description
-Contains a set of plugins for GStreamer.
