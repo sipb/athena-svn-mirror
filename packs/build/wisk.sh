@@ -14,7 +14,7 @@
 #	endpackage	the name of the package in the package list to
 #			stop building at
 
-# $Revision: 1.53 $
+# $Revision: 1.54 $
 
 umask 2
 
@@ -86,7 +86,7 @@ set libs2=" athena/lib/kerberos2 athena/lib/acl athena/lib/gdb athena/lib/gdss a
 
 # athena/lib/moira.dev ; I think this is not ours at the moment.
 
-set etcs="athena/etc/track athena/etc/rvd athena/etc/newsyslog athena/etc/cleanup athena/etc/ftpd athena/etc/inetd athena/etc/inetd.new athena/etc/netconfig athena/etc/gettime athena/etc/traceroute athena/etc/xdm athena/etc/scripts athena/etc/timed athena/etc/snmpd athena/etc/desync"
+set etcs="athena/etc/track athena/etc/rvd athena/etc/newsyslog athena/etc/cleanup athena/etc/ftpd athena/etc/inetd athena/etc/inetd.new athena/etc/listsuidcells athena/etc/netconfig athena/etc/gettime athena/etc/traceroute athena/etc/xdm athena/etc/scripts athena/etc/timed athena/etc/snmpd athena/etc/desync"
 
 # Decomissioned 9/95 by fiat
 # athena/bin/xps athena/bin/afs-nfs athena/bin/xprint athena/bin/kerberometer
