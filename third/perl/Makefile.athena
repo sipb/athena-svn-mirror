@@ -1,4 +1,4 @@
-# $Id: Makefile.athena,v 1.21 2005-01-06 18:03:56 ghudson Exp $
+# $Id: Makefile.athena,v 1.22 2005-04-06 19:34:05 ghudson Exp $
 
 SHELL=/bin/sh
 
@@ -19,7 +19,7 @@ prepare:
 	  ./Configure -d -s -e -Dprefix=/usr/athena -Dcc="$$COMPILER" \
 	    -Dlocincpth=/usr/athena/include -Dloclibpth=/usr/athena/lib \
 	    -Doptimize='-g' -Dusethreads -Dperladmin=bugs@mit.edu \
-	    -Dlddlflags='-Wl,-E -G' -Dccdlflags='-Wl,-E'; \
+	    -Dldflags='-L/usr/athena/lib -Wl,-R/usr/athena/lib' \
 	  ;; \
 	esac
 
