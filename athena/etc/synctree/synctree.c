@@ -13,10 +13,11 @@
 
 #include <sys/time.h>
 #include <sys/resource.h>
-#include <strings.h>
+#include <string.h>
 #ifdef OLD
 #include <ndbm.h>
 #endif
+#include <errno.h>
 
 #ifdef SOLARIS
 #define NO_LINEBUF
@@ -42,10 +43,6 @@ char *date_db_name  = ".reconcile_dates";
 rule rules[MAXNRULES];
 unsigned int lastrule;
 unsigned int rflag = 0;
-
-extern int errno;
-extern int sys_nerr;
-extern char *sys_errlist[];
 
 int dodir();
 char *destination_pathname();
@@ -84,15 +81,6 @@ main(argc, argv)
 
   uid = getuid();
   euid = geteuid();
-
-#ifdef DEBUG
-  if (uid != 11211 && uid != 14640) {
-    printf("This SyncTree for debuging only.  Exiting.\n");
-    exit(1);
-  } else {
-    printf("DEBUG SyncTree\n");
-  }
-#endif /* DEBUG */
 
 #ifndef NO_RLIMIT
   getrlimit(RLIMIT_DATA,&rl);
@@ -326,7 +314,7 @@ int dodir(src,dst,part)
   
     /* read in source directory */
     if ((dirp = opendir(src)) == NULL) {
-	printf("%s is not a directory.\n",src);
+	fprintf(stderr, "Can't read directory %s: %s\n", src, strerror(errno));
 	return 1;
     }
     while ((dp = readdir(dirp)) != NULL) {
@@ -394,7 +382,7 @@ int dodir(src,dst,part)
 	    (void) strcat(sp->pathname,sp->dir->d_name);
 	    /* get information about file */
 	    if (lstat(sp->pathname,&(sp->stat)) < 0) {
-#define perror(problem, whatnext) printf("%s: %s: %s. %s\n", sp->pathname, problem, errno<sys_nerr ? sys_errlist[errno] : "unknown error", whatnext)
+#define perror(problem, whatnext) printf("%s: %s: %s. %s\n", sp->pathname, problem, strerror(errno), whatnext)
 		perror("lstat() failed", "ignoring");
 		sp->map_ruleno = 0;
 		continue;
@@ -410,7 +398,7 @@ int dodir(src,dst,part)
 	    (void) strcat(path, sp->dir->d_name);
 
 	    if (lstat(path, &(sp->stat)) < 0) {
-#define perror(problem, whatnext) printf("%s: %s: %s. %s\n", sp->pathname, problem, errno<sys_nerr ? sys_errlist[errno] : "unknown error", whatnext)
+#define perror(problem, whatnext) printf("%s: %s: %s. %s\n", sp->pathname, problem, strerror(errno), whatnext)
 		perror("lstat() failed", "ignoring");
 		sp->map_ruleno = 0;
 		continue;
