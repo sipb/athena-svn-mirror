@@ -16,7 +16,7 @@
 #include <afs/param.h>
 #endif
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/rx/rx.c,v 1.2 2002-02-05 17:49:31 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/rx/rx.c,v 1.3 2002-02-24 10:39:51 zacheiss Exp $");
 
 #ifdef KERNEL
 #include "../afs/sysincludes.h"
@@ -1248,6 +1248,7 @@ rx_NewService(port, serviceId, serviceName, securityObjects,
 	    service->idleDeadTime = 60;
 	    service->connDeadTime = rx_connDeadTime;
 	    service->executeRequestProc = serviceProc;
+	    service->checkReach = 0;
 	    rx_services[i] = service;	/* not visible until now */
 	    AFS_RXGUNLOCK();
 	    USERPRI;
@@ -2919,12 +2920,8 @@ static int rxi_CheckConnReach(conn, call)
     struct rx_peer *peer = conn->peer;
     afs_uint32 now, lastReach;
 
-    MUTEX_ENTER(&rx_serverPool_lock);
-    if (service->nRequestsRunning <= service->maxProcs/2) {
-	MUTEX_EXIT(&rx_serverPool_lock);
+    if (service->checkReach == 0)
 	return 0;
-    }
-    MUTEX_EXIT(&rx_serverPool_lock);
 
     now = clock_Sec();
     MUTEX_ENTER(&peer->peer_lock);

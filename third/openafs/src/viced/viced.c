@@ -19,7 +19,7 @@
 #include <afsconfig.h>
 #include <afs/param.h>
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/viced/viced.c,v 1.1.1.1 2002-01-31 21:32:09 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/viced/viced.c,v 1.2 2002-02-24 10:40:17 zacheiss Exp $");
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -488,6 +488,7 @@ main(argc, argv)
     rx_SetDestroyConnProc(tservice, (char (*)()) h_FreeConnection);
     rx_SetMinProcs(tservice, 3);
     rx_SetMaxProcs(tservice, lwps);
+    rx_SetCheckReach(tservice, 1);
 
     tservice = rx_NewService(0,  RX_STATS_SERVICE_ID, "rpcstats", sc, 4, RXSTATS_ExecuteRequest);
     if (!tservice) {
