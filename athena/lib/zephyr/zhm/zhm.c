@@ -15,7 +15,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_hm_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zhm/zhm.c,v 1.7 1987-07-08 21:57:37 opus Exp $";
+static char rcsid_hm_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zhm/zhm.c,v 1.8 1987-07-09 12:35:53 opus Exp $";
 #endif SABER
 #endif lint
 
@@ -211,7 +211,7 @@ send_boot_notice()
       notice.z_class_inst = ZEPHYR_CTL_HM;
       notice.z_opcode = HM_BOOT;
       notice.z_sender = "sender";
-      notice.z_recipient = "recip";
+      notice.z_recipient = "";
       notice.z_message_len = 0;
       
       /* Notify server that this host is here */
@@ -239,7 +239,7 @@ send_flush_notice()
       notice.z_class_inst = ZEPHYR_CTL_HM;
       notice.z_opcode = HM_FLUSH;
       notice.z_sender = "sender";
-      notice.z_recipient = "recip";
+      notice.z_recipient = "";
       notice.z_message_len = 0;
 
       /* Tell server to look the other way */
