@@ -20,10 +20,13 @@
 LIBDIR = /usr/athena/lib/ispell
 DEFHASH = ispell.hash
 DEFDICT = dict.191
-MANDIR	= ${DESTDIR}/usr/man/man1
 SHELL = /bin/sh
 
 TERMLIB = -ltermcap
+
+#if defined(_AUX_SOURCE)
+DEFINES= -DUSG
+#endif
 
 all:: ispell.hash munchlist
 
