@@ -19,7 +19,7 @@
  */
 
 #ifndef lint
-static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/string_utils.c,v 1.1 1989-07-07 13:20:53 tjcoppet Exp $";
+static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/string_utils.c,v 1.2 1989-08-08 14:36:19 tjcoppet Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -158,6 +158,7 @@ get_next_line(line, buf)
  * Returns:	SUCCESS or ERROR.
  * Notes:
  *	Get each word in the command line and set up a pointer to it.
+ *      Kludge it so phrases can be quoted.
  */
 
 ERRCODE
@@ -169,13 +170,50 @@ parse_command_line(command_line, arguments)
   int argcount;		        /* Running counter of arguments. */
   char *get_next_word();	/* Get the next word in a line. */
   char buf[BUFSIZE];
-	
+  char *bufP;
+  int quote = 0;
+  int first = 1;
+
   current = command_line;
   argcount = 0;
   while ((current = get_next_word(current, buf)) != (char *) NULL) 
     {
-      (void) strcpy(arguments[argcount],buf);
-      argcount++;
+      if(buf[0] == '\"')
+	{
+	  quote = TRUE;
+	  bufP = &buf[1];
+	}
+      else
+	bufP = &buf[0];
+
+      if(quote)
+	{
+	  if(bufP[strlen(bufP)-1] == '\"')
+	    {
+	      bufP[strlen(bufP)-1] = '\0';
+	     (void) strcat(arguments[argcount],bufP);
+	      quote = FALSE;
+	      first = 1;
+	      ++argcount;
+	    }
+	  else
+	    {
+	      if(first)
+		{
+		  (void) strcpy(arguments[argcount],bufP);
+		  first = 0;
+		}
+	      else
+		(void) strcat(arguments[argcount],bufP);
+
+	      (void) strcat(arguments[argcount]," ");
+	    }
+	}
+      else
+	{
+	  (void) strcpy(arguments[argcount],bufP);
+	  argcount++;
+	}
     }
   
   *arguments[argcount] = '\0';
