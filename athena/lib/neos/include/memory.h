@@ -1,9 +1,9 @@
 /**********************************************************************
  * Macros to deal with allocation properly
  *
- * $Author: probe $
+ * $Author: vrt $
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/neos/include/memory.h,v $
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/include/memory.h,v 1.2 1993-02-02 06:23:23 probe Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/include/memory.h,v 1.3 1993-04-27 17:17:51 vrt Exp $
  *
  * Copyright 1989, 1990 by the Massachusetts Institute of Technology.
  *
@@ -11,10 +11,11 @@
  * <mit-copyright.h>.
  **********************************************************************/
 
+#ifndef sun /* gcc barfs on this. */
 #ifndef lint
-static char rcsid_memory_h[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/include/memory.h,v 1.2 1993-02-02 06:23:23 probe Exp $";
+static char rcsid_memory_h[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/include/memory.h,v 1.3 1993-04-27 17:17:51 vrt Exp $";
 #endif
-
+#endif /* SOLARIS */
 #ifndef __MEMORY_MACROS__
 #define __MEMORY_MACROS__
 
