@@ -1,0 +1,17 @@
+#ifndef CONFIG_H
+#define CONFIG_H
+
+/* Define if you have the strdup function.  */
+#undef HAVE_STRDUP
+
+/* Define if you have gethostname in the nsl library (-lnsl).  */
+#undef HAVE_LIBNSL
+
+/* Define if we should use execvp (which looks up PATH) instead of execv. */
+#undef USE_EXECVP
+
+/* Define to a string containing either a full path to compress,
+ * or just "compress" if USE_EXECVP is defined */
+#undef COMPRESS
+
+#endif /* CONFIG_H */

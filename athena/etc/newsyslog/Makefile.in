@@ -1,0 +1,128 @@
+# $Header: /afs/dev.mit.edu/source/repository/athena/etc/newsyslog/Makefile.in,v 1.1 1996-04-29 22:41:42 bert Exp $
+
+### programs used in building/installing for Athena
+
+CC=@CC@
+LN_S=@LN_S@
+
+INSTALL=install
+MKDIRHIER=mkdirhier
+
+### various flags
+
+DEFS=@DEFS@
+LIBS=@LIBS@
+
+# DEBUG=-g -DDEBUG -Wall
+DEBUG=-O
+
+CFLAGS=@CFLAGS@ $(DEBUG) $(DEFS)
+LDFLAGS=@LDFLAGS@ $(DEBUG) $(LIBS)
+
+### release rules
+
+.DEFAULT: all
+all: newsyslog
+
+newsyslog: newsyslog.o signames.o
+	$(CC) $^ $(LDFLAGS) -o $@
+
+install:
+	-$(MKDIRHIER) $(DESTDIR)/etc/athena
+	$(INSTALL) -m 755 newsyslog $(DESTDIR)/etc/athena
+	-$(MKDIRHIER) $(DESTDIR)/usr/athena/man/man8
+	-$(MKDIRHIER) $(DESTDIR)/usr/athena/man/man5
+	$(INSTALL) -m 644 newsyslog.8      $(DESTDIR)/usr/athena/man/man8
+	$(INSTALL) -m 644 newsyslog.conf.5 $(DESTDIR)/usr/athena/man/man5
+
+clean:
+	rm -f *~ *.o newsyslog sigd *.pure *.pcv
+
+###### everything below should be irrelevant to the Athena release
+
+### programs used only during development
+
+SYNCTREE=/usr/athena/etc/synctree
+NROFF=groff -Tascii
+LESS=less
+PURIFY=purify
+PURECOV=purecov
+GTOUCH=gtouch
+
+ROOT=/afs/zone.mit.edu/test/newsyslog
+
+### development-only rules
+
+dev: sync bld
+
+# DECstations suck...
+sync:
+#	if [ ! -d ${ROOT}/@sys ]; then exit -1; fi
+	${SYNCTREE} -s ${ROOT}/src -d ${ROOT}/@sys
+
+newsyslog.pure: newsyslog.o signames.o
+	$(PURIFY) $(PURECOV) $(CC) $^ $(LDFLAGS) -o $@
+
+sigd: sigd.o signames.o
+	$(CC) $^ $(LDFLAGS) -o $@
+
+## manpage preview
+prev8: newsyslog.8
+	$(NROFF) -man $^ | $(LESS)
+prev5: newsyslog.conf.5
+	$(NROFF) -man $^ | $(LESS)
+
+## tests (works with gmake only, so it's commented out)
+
+#! tests/0k:
+#! 	${GTOUCH} $@
+#! tests/%k: tests/LARGE
+#! 	dd if=$< of=$@ ibs=1024 count=$*
+#! tests/LARGE:
+#! 	rm -f $@
+#! 	for i in /dev/zero /vmunix; do		\
+#! 	    if [ -r "$$i" ]; then		\
+#! 	        $(LN_S) "$$i" $@;		\
+#! 	        break 2;			\
+#! 	    fi					\
+#! 	done
+#! 
+#! FORCE:
+#! tests/empty:
+#! 
+#! tests/%.now: tests/% FORCE
+#! #	rm -f $@
+#! 	if [ -r $< ]; then cat $< >> $@; fi
+#! 	${GTOUCH} -d now $@
+#! tests/%.yesterday: tests/% FORCE
+#! #	rm -f $@
+#! 	if [ -r $< ]; then cat $< >> $@; fi
+#! 	${GTOUCH} -d yesterday $@
+#! 
+#! .PHONY: test-files test-clean
+#! 
+#! FILES.empty= tests/empty.now tests/empty.yesterday
+#! FILES.0k= tests/0k.now # tests/1k.yesterday
+#! FILES.1k= tests/1k.now # tests/1k.yesterday
+#! FILES.2k= tests/2k.now # tests/2k.yesterday
+#! ALL_FILES=${FILES.0k} ${FILES.1k}
+#! 
+#! test-files: ${ALL_FILES}
+#! 
+#! test-clean:
+#! 	rm -f tests/*
+#! 
+#! test: test-files
+#! 	./run_sigd 1 USR1 HUP ${ALL_FILES} &
+#! 	./run_sigd 2 USR2 HUP ${ALL_FILES} &
+#! 	./newsyslog -vvrf test.conf -t 5
+#! 	kill -HUP `cat tests/sigd1.pid tests/sigd2.pid`
+#! 
+#! mock-test:
+#! 	./newsyslog -nvvvrf test.conf
+#! 
+#! pure-test: test-files
+#! 	./run_sigd 1 USR1 HUP ${ALL_FILES} &
+#! 	./run_sigd 2 USR2 HUP ${ALL_FILES} &
+#! 	./newsyslog.pure -vvrf test.conf
+#! 	kill -HUP `cat tests/sigd1.pid tests/sigd2.pid`

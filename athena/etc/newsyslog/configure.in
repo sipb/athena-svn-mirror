@@ -1,0 +1,44 @@
+AC_REVISION($Revision: 1.1 $)
+
+AC_INIT(newsyslog.c)
+
+### Checks for programs.
+AC_PROG_CC
+AC_PROG_LN_S
+
+### Checks for libraries.
+AC_CHECK_LIB(nsl, gethostname)
+
+### Checks for header files.
+AC_CHECK_HEADERS(string.h)
+
+### Checks for library functions.
+AC_CHECK_FUNCS(strdup)
+
+### Deal with options.
+AC_ARG_ENABLE(execvp,
+   [  --disable-execvp        Disable searching of PATH for executed programs])
+AC_ARG_ENABLE(explicit-path,
+   [  --enable-explicit-path  Hardcode path to 'compress' into the binary])
+
+case "$enable_execvp" in
+   no)  case "$enable_explicit_path" in
+           "")  ;;
+          yes)  ;;
+            *)  AC_MSG_WARN(--disable-execvp implies --enable-explicit-path) ;;
+        esac
+        enable_explicit_path=yes
+    ;;
+    *)  AC_DEFINE(USE_EXECVP) ;;
+esac
+case "$enable_explicit_path" in
+   yes)  AC_PATH_PROG(COMPRESS,compress)
+         test -n "${COMPRESS}" || AC_MSG_ERROR(cannot find compress in ${PATH})
+     ;;
+     *)  COMPRESS=compress ;;
+esac
+
+AC_DEFINE_UNQUOTED(COMPRESS, "${COMPRESS}")
+
+AC_CONFIG_HEADER(config.h)
+AC_OUTPUT(Makefile)
