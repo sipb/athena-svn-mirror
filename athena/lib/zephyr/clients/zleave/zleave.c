@@ -4,7 +4,7 @@
  *      Created by:     David Jedlinsky
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zleave/zleave.c,v $
- *      $Author: jfc $
+ *      $Author: lwvanels $
  *
  *      Copyright (c) 1987,1988 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -16,8 +16,8 @@
 #include <zephyr/zephyr.h>
 
 #ifndef lint
-static char rcsid_zlocate_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zleave/zleave.c,v 1.16 1991-06-20 14:37:21 jfc Exp $";
-#endif lint
+static char rcsid_zlocate_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zleave/zleave.c,v 1.17 1991-12-05 15:29:42 lwvanels Exp $";
+#endif /* lint */
 
 /*
  * Copyright (c) 1980 Regents of the University of California.
