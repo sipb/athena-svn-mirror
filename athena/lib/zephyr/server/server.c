@@ -4,7 +4,7 @@
  *	Created by:	John T. Kohl
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/server.c,v $
- *	$Author: rfrench $
+ *	$Author: jtkohl $
  *
  *	Copyright (c) 1987 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -15,7 +15,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_server_s_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/server.c,v 1.13 1987-08-01 11:44:55 rfrench Exp $";
+static char rcsid_server_s_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/server.c,v 1.14 1987-09-28 16:38:15 jtkohl Exp $";
 #endif SABER
 #endif lint
 
@@ -670,6 +670,7 @@ ZServerDesc_t *server;
 		send_stats(who);
 		return;
 	}
+#ifdef notdef
 	syslog(LOG_INFO, "disp: new server?");
 	if (server_register(notice, auth, who) != ZERR_NONE)
 		syslog(LOG_INFO, "new server failed");
@@ -679,6 +680,7 @@ ZServerDesc_t *server;
 		       ntohs(who->sin_port));
 		hello_respond(who, DONT_ADJUST, auth);
 	}
+#endif notdef
 	return;
 }
 
