@@ -1,7 +1,7 @@
 #!/bin/sh
 # Script to bounce the packs on an Athena workstation
 #
-# $Id: reactivate.sh,v 1.15 1993-06-04 16:21:30 miki Exp $
+# $Id: reactivate.sh,v 1.16 1994-05-05 00:25:16 cfields Exp $
 
 trap "" 1 15
 
@@ -17,12 +17,25 @@ dflags="-clean"
 # Set various flags (based on environment and command-line)
 if [ "$1" = "-detach" ]; then dflags=""; fi
 
+if [ "$1" = "-prelogin" ]; then
+	if [ "${PUBLIC}" = "false" ]; then exit 0; fi
+	echo "Cleaning up..." >> /dev/console
+else
+	full=true
+fi
+
 if [ "${USER}" = "" ]; then
 	exec 1>/dev/console 2>&1
 	quiet=-q
 else
 	echo Reactivating workstation...
 	quiet=
+fi
+
+# Sun attach bug workaround.
+if [ "${MACHINE}" = "SUN4" ]; then
+	dflags=""
+	quiet=""
 fi
 
 case "${SYSTEM}" in
@@ -43,6 +56,7 @@ if [ -f /etc/athena/zhm.pid ] ; then
 	/bin/kill -HUP `/bin/cat /etc/athena/zhm.pid`
 fi
 
+if [ $full ]; then		# START tmp clean
 # Clean temporary areas (including temporary home directories)
 case "${MACHINE}" in
 RSAIX)
@@ -51,7 +65,10 @@ RSAIX)
 	;;
 
 SUN4)
+	cp -p /tmp/ps_data /usr/tmp/ps_data
 	/bin/rm -rf /tmp/* > /dev/null 2>&1
+	cp -p /usr/tmp/ps_data /tmp/ps_data
+	/bin/rm -f /usr/tmp/ps_data
 	;;
 *)
 	/bin/mv /tmp/.X11-unix /tmp/../.X11-unix
@@ -59,12 +76,22 @@ SUN4)
 	/bin/mv /tmp/../.X11-unix /tmp/.X11-unix
 	;;
 esac
+fi				# END tmp clean
 
 # Restore password and group files
 case "${MACHINE}" in
 RSAIX)
 	;;
 SUN4)
+	if [ -f /etc/passwd.local ] ; then
+	    ${cp} /etc/passwd.local /etc/ptmp && /bin/mv -f /etc/ptmp /etc/passwd
+	fi
+	if [ -f /etc/shadow.local ] ; then
+	    ${cp} /etc/shadow.local /etc/stmp && /bin/mv -f /etc/stmp /etc/shadow
+	fi
+	if [ -f /etc/group.local ] ; then
+	    ${cp} /etc/group.local /etc/gtmp && /bin/mv -f /etc/gtmp /etc/group
+	fi
 	;;
 *)
 	if [ -f /etc/passwd.local ] ; then
@@ -77,20 +104,23 @@ SUN4)
 	;;
 esac
 
+if [ $full ]; then		# START AFS reconfig
 # Reconfigure AFS state
 if [ "${AFSCLIENT}" != "false" ]; then
     if [ -f /afs/athena.mit.edu/service/aklog ] ; then
 	${cp} /afs/athena.mit.edu/service/aklog /bin/athena/aklog.new && \
-	/bin/test -s /bin/athena/aklog.new && \
+	test -s /bin/athena/aklog.new && \
 	/bin/mv /bin/athena/aklog.new /bin/athena/aklog
 	/bin/rm -f /bin/athena/aklog.new
     fi
     /etc/athena/config_afs > /dev/null 2>&1 &
 fi
+fi				# END AFS reconfig
 
 # punt any processes owned by users not in /etc/passwd
 /etc/athena/cleanup -passwd
 
+if [ $full ]; then		# START time-consuming stuff
 # Finally, detach all remote filesystems
 /bin/athena/detach -O -h -n $quiet $dflags -a
 
@@ -129,11 +159,14 @@ EOF
 		fi
 	fi
 fi
+fi				# END time-consuming stuff
 
 if [ -f /usr/athena/bin/access_off ]; then /usr/athena/bin/access_off; fi
 
+if [ $full ]; then		# START reactivate.local
 if [ -f /etc/athena/reactivate.local ]; then
 	/etc/athena/reactivate.local
 fi
+fi				# END reactivate.local
 
 exit 0
