@@ -1,12 +1,15 @@
+#!/bin/csh
 #
 #atob and untar mail sent via tarmail
-atob < $1 | tar xvpf -
-mv $1 /usr/tmp/$1.$$
-echo tarmail file moved to: /usr/tmp/$1.$$
+atob < ${1} | tar xvpf -
+ls -l ${1}
+set destfile = `echo ${1} | sed 's"/"."g'`
+mv ${1} /tmp/${destfile}.$$
+echo tarmail file moved to: /tmp/${destfile}.$$
 exit
 #
 # 	$Source: /afs/dev.mit.edu/source/repository/athena/bin/tarmail/untarmail,v $
 #	$Author: jtkohl $
 #	$Locker:  $
-#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/tarmail/untarmail,v 1.1 1985-04-25 20:37:35 jtkohl Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/tarmail/untarmail,v 1.2 1985-04-30 16:12:56 jtkohl Exp $
 #
