@@ -22,7 +22,7 @@
 
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/x_hand_resp.c,v 1.3 1989-10-11 16:21:56 vanharen Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/x_hand_resp.c,v 1.4 1989-10-11 16:29:10 vanharen Exp $";
 #endif
 
 #include "xolc.h"
