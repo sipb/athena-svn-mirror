@@ -5,7 +5,7 @@
 /**/#
 /**/#	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/Imakefile,v $
 /**/#	$Author: jtkohl $
-/**/#	$Id: Imakefile,v 1.3 1989-11-15 23:03:21 jtkohl Exp $
+/**/#	$Id: Imakefile,v 1.4 1989-11-15 23:55:31 jtkohl Exp $
 /**/#
 
 SUBDIRS= Memory String Dictionary
@@ -35,8 +35,8 @@ HDRS = exec.h node.h zwgc.h parser.h port.h\
 LINCLUDES = -IMemory -IString -IDictionary
 GENERATORS= generate_stack_instance stack.h
 
-SRCDIR= ${SRCTOP}/zwgc/zwgc.dev
-CONFIG_FILES= zwgc.desc  zephyr.vars
+SRCDIR= ${SRCTOP}/zwgc
+CONFIG_FILES= zwgc.desc  zephyr.vars zwgc_resources
 CODE= ${GENERATORS} ${HDRS} ${SRCS} ${CONFIG_FILES} Imakefile
 
 LIB=.
@@ -78,6 +78,8 @@ install::
 	$(CP) zwgc.desc $(DESTDIR)$(ACLDIR)/zwgc.desc
 	$(RM) $(DESTDIR)$(ETCATHDIR)/zephyr.vars
 	$(CP) zephyr.vars $(DESTDIR)$(ETCATHDIR)/zephyr.vars
+	$(RM) $(DESTDIR)$(ACLDIR)/zwgc_resources
+	$(CP) zwgc_resources $(DESTDIR)$(ACLDIR)/zwgc_resources
 
 YFLAGS=-d
 
