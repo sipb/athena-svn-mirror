@@ -1,4 +1,4 @@
-# $Id: phase3.sh,v 1.3.2.3 2000-11-04 16:06:43 ghudson Exp $
+# $Id: phase3.sh,v 1.3.2.4 2001-04-01 05:41:19 zacheiss Exp $
 
 # This file is run out of the srvd by phase2.sh after it starts AFS.
 # The contents of this file used to live in phase2.sh, which is run
@@ -31,8 +31,14 @@ mkdir /root/proc
 ln -s var/rtmp /root/tmp
 
 echo "Mount var, usr , var/usr/vice..."
-/sbin/mount  $vardrive /root/var
-/sbin/mount  $usrdrive /root/usr
+case $partitioning in
+many)
+    /sbin/mount  $vardrive /root/var
+    /sbin/mount  $usrdrive /root/usr
+    ;;
+*)
+    ;;
+esac
 mkdir /root/var/usr
 mkdir /root/var/usr/vice
 mkdir /root/var/tmp
@@ -186,7 +192,14 @@ sed  -e "s/RVD/Workstation/g" < /srvd/.rvdinfo >> /root/etc/athena/version
 
 echo "Updating vfstab"
 rm -f etc/vfstab
-sed "s/@DISK@/$drive/g" /srvd/etc/vfstab.std > etc/vfstab
+case $partitioning in
+many)
+    sed "s/@DISK@/$drive/g" /srvd/etc/vfstab.std > etc/vfstab
+    ;;
+*)
+    sed "s/@DISK@/$drive/g;/d0s5/d;/d0s6/d" /srvd/etc/vfstab.std > etc/vfstab
+    ;;
+esac
 chmod 644 etc/vfstab
 cp /dev/null etc/named.local
 
@@ -239,10 +252,16 @@ cd /
 
 umount /var/usr/vice > /dev/null 2>&1
 fsck -y -F ufs $rcachedrive
-umount /root/var > /dev/null 2>&1
-fsck -y -F ufs $rvardrive
-umount /root/usr
-fsck -y -F ufs $rusrdrive
+case $partitioning in
+many)
+    umount /root/var > /dev/null 2>&1
+    fsck -y -F ufs $rvardrive
+    umount /root/usr
+    fsck -y -F ufs $rusrdrive
+    ;;
+*)
+    ;;
+esac
 /sbin/umount /root > /dev/null 2>&1
 /usr/sbin/fsck -y -F ufs $rrootdrive
 sleep 5
