@@ -1,0 +1,11 @@
+# $Id: .build,v 1.1 1996-09-20 04:28:08 ghudson Exp $
+
+echo In ${package}: imake -I$xconfigdir -DUseInstalled -DSRCDIR=$source &&
+imake -I"$xconfigdir" -DUseInstalled -DSRCDIR="$source" &&
+echo In ${package}: make Makefiles && make Makefiles &&
+echo In ${package}: make clean && make clean &&
+echo In ${package}: make depend && make depend &&
+echo In ${package}: make all && make all &&
+echo In ${package}: make install DESTDIR=$srvd && make install DESTDIR=$srvd &&
+echo In ${package}: make install.man DESTDIR=$srvd &&
+make install.man DESTDIR=$srvd
