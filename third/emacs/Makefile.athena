@@ -1,12 +1,11 @@
-# $Id: Makefile.athena,v 1.4 1997-03-11 19:20:08 ghudson Exp $
+# $Id: Makefile.athena,v 1.5 1997-04-16 17:45:28 ghudson Exp $
 
 SHELL=/bin/sh
 
 prepare:
 	rm -f config.cache
-	./configure --with-x-toolkit --sharedstatedir=/var/tmp \
-		--datadir=/usr/athena/share --with-pop --with-hesiod \
-		--with-kerberos
+	./configure --with-x-toolkit --sharedstatedir=/var/tmp --with-pop \
+		--with-hesiod --with-kerberos
 
 clean:
 	${MAKE} clean
