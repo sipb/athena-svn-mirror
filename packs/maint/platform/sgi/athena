@@ -1,4 +1,4 @@
-# $Id: athena,v 1.43 1998-05-01 16:59:49 rbasch Exp $
+# $Id: athena,v 1.44 1998-05-08 15:57:28 ghudson Exp $
 # /etc/init.d/athena - Start/Stop the athena daemons
 
 # First, set up some useful variables.
@@ -104,8 +104,7 @@ if [ "$PUBLIC" = true ]; then
 	cp -p /srvd/etc/group /etc/group.local
 	cp -p /etc/group.local /etc/group
 
-	rm -f /etc/named.local /etc/X0.hosts
-	touch /etc/named.local /etc/X0.hosts
+	touch /etc/X0.hosts
 
 	find /lost+found -type f -mtime +3 -exec rm -f {} \; 2>/dev/null
 	find /usr/vice/cache/lost+found -type f -exec rm -f {} \; 2>/dev/null
