@@ -587,7 +587,7 @@ main(int ac, char **av)
 	initialize_server_options(&options);
 
 	/* Parse command-line arguments. */
-	while ((opt = getopt(ac, av, "f:p:b:k:h:g:V:u:dDeiqtQ46")) != -1) {
+	while ((opt = getopt(ac, av, "f:p:b:k:h:g:V:u:dDeiqtQ46sS")) != -1) {
 		switch (opt) {
 		case '4':
 			IPv4or6 = AF_INET;
