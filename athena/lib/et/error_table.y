@@ -1,6 +1,6 @@
 %{
 #include <stdio.h>
-char *str_concat(), *ds(), *quote(), *malloc(), *realloc();
+char *str_concat(), *ds(), *quote();
 char *current_token = (char *)NULL;
 extern char *table_name;
 %}
@@ -73,10 +73,9 @@ description	:	QUOTED_STRING
 
 #ifndef	lint
 static char const rcsid_error_table_y[] =
-    "$Header: /afs/dev.mit.edu/source/repository/athena/lib/et/error_table.y,v 1.1 1992-11-05 17:30:36 probe Exp $";
+    "$Header: /afs/dev.mit.edu/source/repository/athena/lib/et/error_table.y,v 1.2 1992-11-05 17:31:44 probe Exp $";
 #endif
 
-char *malloc(), *realloc();
 extern FILE *hfile, *cfile;
 
 static long gensym_n = 0;
@@ -91,7 +90,7 @@ gensym(x)
 		gettimeofday(&tv, &tzp);
 		gensym_n = (tv.tv_sec%10000)*100 + tv.tv_usec/10000;
 	}
-	symbol = malloc(32 * sizeof(char));
+	symbol = (char *)malloc(32 * sizeof(char));
 	gensym_n++;
 	sprintf(symbol, "et%ld", gensym_n);
 	return(symbol);
@@ -102,7 +101,7 @@ ds(string)
 	char const *string;
 {
 	char *rv;
-	rv = malloc(strlen(string)+1);
+	rv = (char *)malloc(strlen(string)+1);
 	strcpy(rv, string);
 	return(rv);
 }
@@ -112,7 +111,7 @@ quote(string)
 	char const *string;
 {
 	char *rv;
-	rv = malloc(strlen(string)+3);
+	rv = (char *)malloc(strlen(string)+3);
 	strcpy(rv, "\"");
 	strcat(rv, string);
 	strcat(rv, "\"");
