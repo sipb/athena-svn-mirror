@@ -66,7 +66,7 @@ int bitlen;
 int Private2Public (key)
 RSAKeyStorage *key;
 {
-       bzero(key->p,PRIVATE_KEY_SIZE-PUBLIC_KEY_SIZE);
+       memset(key->p,0,PRIVATE_KEY_SIZE-PUBLIC_KEY_SIZE);
        key->pl=key->ql=key->dpl=key->dql=0;
 }
 
