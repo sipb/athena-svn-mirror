@@ -1,4 +1,4 @@
-# $Id: masks,v 1.3 2000-01-02 07:01:58 jweiss Exp $
+# $Id: masks,v 1.4 2000-05-18 22:18:54 jweiss Exp $
 
 # This file specifies the netmasks for each network supported by the
 # Athena environment.  The format for lines in the file is:
@@ -23,10 +23,12 @@
 # network, broadcast, and gateway address for a given IP address.  See
 # the comments at the top of that file for usage information.
 
-# MITnet addresses begin with "18" and have a 16-bit netmask, except
-# for bits of LCS which have a 24-bit netmask, and 18.101 which is
-# being used for IS internal experiments, with a 28 bit netmask.
-# LCS information from wollman@lcs.mit.edu, 1/12/98
+# Most MITnet addresses begin with "18" and have a 16-bit netmask.
+# 18.7 is being used in IS machine rooms with a 24-bit netmask.
+# Bits of LCS also have a 24-bit netmask, according to 
+# wollman@lcs.mit.edu, 1/12/98.
+# 18.101 is being used for IS internal experiments, with a 28 bit netmask.
+18.7.0.0	16	24
 18.24.0.0	16	24
 18.26.0.0	16	24
 18.101.0.0	16	28
