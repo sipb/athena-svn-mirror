@@ -4,7 +4,7 @@
  *	Created by:	John T. Kohl
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/bdump.c,v $
- *	$Author: rfrench $
+ *	$Author: jtkohl $
  *
  *	Copyright (c) 1987 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -15,7 +15,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_bdump_s_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/bdump.c,v 1.10 1987-08-01 11:44:20 rfrench Exp $";
+static char rcsid_bdump_s_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/bdump.c,v 1.11 1987-08-03 12:07:38 jtkohl Exp $";
 #endif SABER
 #endif lint
 
@@ -115,7 +115,8 @@ struct sockaddr_in *who;
 	}
 
 	/* myname is the hostname */
-	(void) send_list(ACKED, sock_sin.sin_port, ZEPHYR_ADMIN_CLASS, "",
+	/* the class instance is the version number, here it is "1" */
+	(void) send_list(ACKED, sock_sin.sin_port, ZEPHYR_ADMIN_CLASS, "1",
 		  ADMIN_BDUMP, myname, "", lyst, 2);
 	
 	return;
@@ -242,6 +243,15 @@ ZServerDesc_t *server;
 
 	zdbug((LOG_DEBUG, "bdump avail"));
 
+	/* version number 1 is the same as no version number */
+	if (strcmp(notice->z_class_inst, "1")
+	     && strcmp(notice->z_class_inst, "")) {
+		syslog(LOG_WARNING,
+		       "Incompatible bdump version '%s' from %s",
+		       notice->z_class_inst,
+		       inet_ntoa(who->sin_addr));
+		return;
+	}
 	bdumping = 1;
 	(void) signal(SIGPIPE, SIG_IGN); /* so we can detect problems */
 
