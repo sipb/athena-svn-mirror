@@ -62,13 +62,17 @@
 
 #ifdef HAVE_SYS_VFSTAB_H
 #include <sys/vfstab.h>
-#else
+#elif defined (HAVE_FSTAB_H)
 #include <fstab.h>
 #endif
 
 #ifdef HAVE_MNTENT_H
 #include <mntent.h>
+#if defined (_PATH_MNTTAB)
 #define MOUNT_TABLE_PATH _PATH_MNTTAB
+#else
+#define MOUNT_TABLE_PATH MNTTAB
+#endif
 #elif defined (HAVE_SYS_MNTTAB_H)
 #define SOLARIS_MNT 1
 #include <sys/mnttab.h>
