@@ -8,7 +8,7 @@
  ***************************************************************************/
 
  static char *const _id =
-"$Id: printjob.c,v 1.1.1.3 1999-05-24 18:29:32 danw Exp $";
+"$Id: printjob.c,v 1.2 1999-06-26 03:56:46 mwhitson Exp $";
 
 
 #include "lp.h"
@@ -493,7 +493,7 @@ void Print_job( int output, struct job *job, int timeout )
 				if( n ){
 					setstatus(job,"%s filter problems, error '%s'",
 						filter_title, Server_status(n));
-					Errorcode = JFAIL;
+					Errorcode = n;
 					cleanup(0);
 				}
 				setstatus(job, "%s filter finished", filter_title );
