@@ -2,7 +2,7 @@ DisplayManager.servers:			/var/X11/xdm/Xservers
 DisplayManager.errorLogFile:		/var/X11/xdm/xdm-errors
 DisplayManager.pidFile:			/var/X11/xdm/xdm-pid
 DisplayManager.keyFile:			/var/X11/xdm/xdm-keys
-DisplayManager.accessFile:		/var/X11/xdm/Xaccess
+DisplayManager.accessFile:		/etc/athena/login/xdm/Xaccess
 DisplayManager*resources:		/var/X11/xdm/Xresources
 DisplayManager*locale:			C
 DisplayManager*reset:			/etc/athena/login/xdm/Xreset
