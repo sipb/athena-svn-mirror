@@ -203,8 +203,26 @@ is an example:
 	cvs ci -m "Not present in emacs 22.3."
 
 It is important to remove such files on the vendor branch, so that
-diffs against the vendor branch will work properly.  Locally modified
-files will also need to be removed on the mainline, during the merge.
+diffs against the vendor branch will work properly.
+
+Now you can do the merge.  Here is an example of how you might do one:
+
+	cd /tmp
+	rm -rf third/emacs
+	cvs co -kk third/emacs
+	cd third/emacs
+	cvs update -j emacs-22_2 -j emacs-22_3
+	# Resolve conflicts>
+	cvs ci -m "Merge with emacs 22.3."
+
+Using a "-kk" working directory will prevent merge conflicts based on
+RCS IDs; it is unnecessary for a package which does not use RCS
+keyword strings.  If the merge results in any files being deleted,
+check those files (with "cvs log") to make sure they were in fact
+modified on the mainline.  If they weren't, then some CVS oddity is
+involved.  Try using "cvs admin -bvendortag filename" (e.g. "cvs admin
+-bfsf filename" for the emacs example) and then "cvs update filename"
+to make the file go away more naturally.
 
 If you add a new piece of third-party software or import a new
 version, you should look over doc/third-party and see if any notes
