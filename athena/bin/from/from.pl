@@ -1,6 +1,6 @@
 #!/usr/athena/bin/perl -w
 
-# $Id: from.pl,v 1.2 2003-05-12 14:04:34 rbasch Exp $
+# $Id: from.pl,v 1.3 2003-05-29 22:05:29 rbasch Exp $
 
 # This is an implementation of the Athena "from" utility using the
 # Perl interface to the Cyrus imclient IMAP library.
@@ -18,6 +18,7 @@ sub number_callback(@);
 sub make_msgspec(@);
 sub close_connection();
 sub get_localmail();
+sub get_terminal_width();
 sub errorout($);
 
 sub usage(;$) {
@@ -155,12 +156,20 @@ if (($verbose || $totals_only) && ($msgcount > 0 || !$quiet)) {
 
 # Show the desired headers if appropriate.
 if (!$totals_only && $msgcount > 0) {
+    my $subject_width;
+
     print ucfirst(($checkall ? "" : "$search_key ") .
 		  "mail in IMAP folder $mbox:\n") unless $verbose || $imaponly;
+    if ($report) {
+	my $tty_width = get_terminal_width();
+	$subject_width = ($tty_width > 33 ? $tty_width - 33 : 0);
+    }
     for $msg (@pomsgs) {
 	if ($report) {
-	    printf("%-30.30s %.42s\n", $msg->{from},
-		   ($msg->{subject} ? $msg->{subject} : ''));
+	    printf("%-30.30s ", $msg->{from});
+	    print substr($msg->{subject}, 0, $subject_width)
+		if $msg->{subject} && $subject_width;
+	    print "\n";
 	} else {
 	    if ($verbose) {
 		print "\n";
@@ -291,6 +300,19 @@ sub get_localmail() {
     close(MAIL);
     return $count;
 }    
+
+sub get_terminal_width() {
+    my $columns = 80;
+    open STTY, "stty -a |" or return $columns;
+    while (<STTY>) {
+	if (/columns[\s=]+(\d+);/o) {
+	    $columns = $1;
+	    last;
+	}
+    }
+    close STTY;
+    return $columns;
+}
 
 sub errorout($) {
     print STDERR "from: $_[0]\n";
