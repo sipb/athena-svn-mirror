@@ -2,7 +2,7 @@
 /*
  * show.c -- show/list messages
  *
- * $Id: show.c,v 1.2 1999-06-07 15:56:15 danw Exp $
+ * $Id: show.c,v 1.3 1999-10-08 22:14:32 danw Exp $
  */
 
 #include <h/mh.h>
@@ -320,6 +320,14 @@ go_to_it: ;
 	}
 	vec[vecp++] = "-show";
 	vec[vecp] = NULL;
+    }
+
+    /* If the "proc" is "mhshow", add "-file" if showing file or draft.
+     */
+    if (strcmp (r1bindex (proc, '/'), "mhshow") == 0 && (draftsw || file) ) {
+       vec[vecp] = vec[vecp - 1];
+       vec[vecp - 1] = "-file";
+       vec[++vecp] = NULL;
     }
 
     /*
