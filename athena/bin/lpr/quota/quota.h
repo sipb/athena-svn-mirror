@@ -1,7 +1,7 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota.h,v $
- *	$Author: epeisach $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota.h,v 1.8 1991-09-25 10:26:11 epeisach Exp $
+ *	$Author: cfields $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota.h,v 1.9 1994-06-17 11:14:16 cfields Exp $
  */
 
 /*
@@ -49,7 +49,9 @@ extern int  qdefault;                  /* Default quota */
 extern char pbuf[]; /* Dont ask :) -Ilham */
 extern char *bp;
 
+#ifndef ZEPHYR
 char *malloc();
+#endif
 extern char 	*error_text();
 
 #define TRUE 1
