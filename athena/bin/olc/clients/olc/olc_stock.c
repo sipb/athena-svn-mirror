@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc_stock.c,v $
- *	$Id: olc_stock.c,v 1.15 1991-04-08 20:51:15 lwvanels Exp $
+ *	$Id: olc_stock.c,v 1.16 1991-04-10 21:58:58 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc_stock.c,v 1.15 1991-04-08 20:51:15 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc_stock.c,v 1.16 1991-04-10 21:58:58 lwvanels Exp $";
 #endif
 #endif
 
@@ -121,7 +121,11 @@ do_olc_stock(arguments)
 
   make_temp_name(file);
   
+#ifdef NO_VFORK
+  switch(fork()) 
+#else
   switch(vfork()) 
+#endif
     {
     case -1:                /* error */
       olc_perror("stock: fork");

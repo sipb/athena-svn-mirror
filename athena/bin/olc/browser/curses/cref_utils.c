@@ -22,11 +22,11 @@
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/cref_utils.c,v $
  *	$Author: lwvanels $
- *      $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/cref_utils.c,v 2.3 1991-02-25 10:02:47 lwvanels Exp $
+ *      $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/cref_utils.c,v 2.4 1991-04-10 22:00:51 lwvanels Exp $
  */
 
 #ifndef lint
-static char *rcsid_cref_utils_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/cref_utils.c,v 2.3 1991-02-25 10:02:47 lwvanels Exp $";
+static char *rcsid_cref_utils_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/cref_utils.c,v 2.4 1991-04-10 22:00:51 lwvanels Exp $";
 #endif	lint
 
 #include <mit-copyright.h>
@@ -106,7 +106,11 @@ call_program(program, argument)
   extern int errno;			/* Global error variable. */
   extern char *sys_errlist[];		/* System error messages. */
   
+#ifdef NO_VFORK
   if ( (pid = fork() ) == -1)
+#else
+  if ( (pid = vfork() ) == -1)
+#endif
     {
       sprintf(error, "Can't fork to execute %s\n", program);
       message(1, error);

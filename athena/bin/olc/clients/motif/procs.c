@@ -14,7 +14,7 @@
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/procs.c,v 1.11 1991-03-28 13:20:01 lwvanels Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/procs.c,v 1.12 1991-04-10 21:57:31 lwvanels Exp $";
 #endif
 
 #include <signal.h>
@@ -508,7 +508,11 @@ olc_stock (w, tag, callback_data)
   XtSetValues(w_stock_btn, args, 1);
   
   sprintf(pidascii,"%d",getpid());
+#ifdef NO_VFORK
+  if ((sa_pid = fork()) == -1) {
+#else
   if ((sa_pid = vfork()) == -1) {
+#endif
     MuError("Error in vfork; cannot start stock answer browser");
     return;
   }
