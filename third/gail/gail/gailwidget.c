@@ -1,5 +1,5 @@
 /* GAIL - The GNOME Accessibility Implementation Library
- * Copyright 2001 Sun Microsystems Inc.
+ * Copyright 2001, 2002, 2003 Sun Microsystems Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -29,10 +29,10 @@ static void gail_widget_connect_widget_destroyed (GtkAccessible    *accessible);
 static void gail_widget_destroyed                (GtkWidget        *widget,
                                                   GtkAccessible    *accessible);
 
-static G_CONST_RETURN gchar* gail_widget_get_name (AtkObject *accessible);
 static G_CONST_RETURN gchar* gail_widget_get_description (AtkObject *accessible);
 static AtkObject* gail_widget_get_parent (AtkObject *accessible);
 static AtkStateSet* gail_widget_ref_state_set (AtkObject *accessible);
+static AtkRelationSet* gail_widget_ref_relation_set (AtkObject *accessible);
 static gint gail_widget_get_index_in_parent (AtkObject *accessible);
 
 static void atk_component_interface_init (AtkComponentIface *iface);
@@ -94,6 +94,8 @@ static gboolean   gail_widget_focus_gtk          (GtkWidget     *widget,
                                                   GdkEventFocus *event);
 static gboolean   gail_widget_real_focus_gtk     (GtkWidget     *widget,
                                                   GdkEventFocus *event);
+static void       gail_widget_size_allocate_gtk  (GtkWidget     *widget,
+                                                  GtkAllocation *allocation);
 
 static void       gail_widget_focus_event        (AtkObject     *obj,
                                                   gboolean      focus_in);
@@ -155,9 +157,9 @@ gail_widget_class_init (GailWidgetClass *klass)
 
   accessible_class->connect_widget_destroyed = gail_widget_connect_widget_destroyed;
 
-  class->get_name = gail_widget_get_name;
   class->get_description = gail_widget_get_description;
   class->get_parent = gail_widget_get_parent;
+  class->ref_relation_set = gail_widget_ref_relation_set;
   class->ref_state_set = gail_widget_ref_state_set;
   class->get_index_in_parent = gail_widget_get_index_in_parent;
   class->initialize = gail_widget_real_initialize;
@@ -192,7 +194,11 @@ gail_widget_real_initialize (AtkObject *obj,
   g_signal_connect (widget,
                     "notify",
                     G_CALLBACK (gail_widget_notify_gtk),
-                    widget);
+                    NULL);
+  g_signal_connect (widget,
+                    "size_allocate",
+                    G_CALLBACK (gail_widget_size_allocate_gtk),
+                    NULL);
   atk_component_add_focus_handler (ATK_COMPONENT (accessible),
                                    gail_widget_focus_event);
   /*
@@ -208,6 +214,8 @@ gail_widget_real_initialize (AtkObject *obj,
                     NULL);
   g_object_set_data (G_OBJECT (obj), "atk-component-layer",
 		     GINT_TO_POINTER (ATK_LAYER_WIDGET));
+
+  obj->role = ATK_ROLE_UNKNOWN;
 }
 
 AtkObject* 
@@ -222,8 +230,6 @@ gail_widget_new (GtkWidget *widget)
 
   accessible = ATK_OBJECT (object);
   atk_object_initialize (accessible, widget);
-
-  accessible->role = ATK_ROLE_UNKNOWN;
 
   return accessible;
 }
@@ -256,30 +262,6 @@ gail_widget_destroyed (GtkWidget     *widget,
   accessible->widget = NULL;
   atk_object_notify_state_change (ATK_OBJECT (accessible), ATK_STATE_DEFUNCT,
                                   TRUE);
-}
-
-static G_CONST_RETURN gchar*
-gail_widget_get_name (AtkObject *accessible)
-{
-  if (accessible->name)
-    return accessible->name;
-  else
-    {
-      /*
-       * Get the widget name is it exists
-       */
-      GtkWidget* widget = GTK_ACCESSIBLE (accessible)->widget;
-
-      if (widget == NULL)
-        /*
-         * State is defunct
-         */
-        return NULL;
-
-      g_return_val_if_fail (GTK_IS_WIDGET (widget), NULL);
-
-      return widget->name;
-    }
 }
 
 static G_CONST_RETURN gchar*
@@ -336,9 +318,173 @@ gail_widget_get_parent (AtkObject *accessible)
       if (parent_widget == NULL)
         return NULL;
 
+      /*
+       * For a widget whose parent is a GtkNoteBook, we return the
+       * accessible object corresponding the GtkNotebookPage containing
+       * the widget as the accessible parent.
+       */
+      if (GTK_IS_NOTEBOOK (parent_widget))
+        {
+          gint page_num;
+          GtkWidget *child;
+          GtkNotebook *notebook;
+
+          page_num = 0;
+          notebook = GTK_NOTEBOOK (parent_widget);
+          while (TRUE)
+            {
+              child = gtk_notebook_get_nth_page (notebook, page_num);
+              if (!child)
+                break;
+              if (child == widget)
+                {
+                  parent = gtk_widget_get_accessible (parent_widget);
+                  parent = atk_object_ref_accessible_child (parent, page_num);
+                  g_object_unref (parent);
+                  return parent;
+                }
+              page_num++;
+            }
+        }
+
       parent = gtk_widget_get_accessible (parent_widget);
     }
   return parent;
+}
+
+static GtkWidget*
+find_label (GtkWidget *widget)
+{
+  GList *labels;
+  GtkWidget *label;
+  GtkWidget *temp_widget;
+
+  labels = gtk_widget_list_mnemonic_labels (widget);
+  label = NULL;
+  if (labels)
+    {
+      if (labels->data)
+        {
+          if (labels->next)
+            {
+              g_warning ("Widget (%s) has more than one label", G_OBJECT_TYPE_NAME (widget));
+              
+            }
+          else
+            {
+              label = labels->data;
+            }
+        }
+      g_list_free (labels);
+    }
+
+  /*
+   * Ignore a label within a button; bug #136602
+   */
+  if (label && GTK_IS_BUTTON (widget))
+    {
+      temp_widget = label;
+      while (temp_widget)
+        {
+          if (temp_widget == widget)
+            {
+              label = NULL;
+              break;
+            }
+          temp_widget = gtk_widget_get_parent (temp_widget);
+        }
+    } 
+  return label;
+}
+
+static AtkRelationSet*
+gail_widget_ref_relation_set (AtkObject *obj)
+{
+  GtkWidget *widget;
+  AtkRelationSet *relation_set;
+  GtkWidget *label;
+  AtkObject *array[1];
+  AtkRelation* relation;
+
+  g_return_val_if_fail (GAIL_IS_WIDGET (obj), NULL);
+
+  widget = GTK_ACCESSIBLE (obj)->widget;
+  if (widget == NULL)
+    /*
+     * State is defunct
+     */
+    return NULL;
+
+  relation_set = ATK_OBJECT_CLASS (parent_class)->ref_relation_set (obj);
+
+  if (GTK_IS_BOX (widget) && !GTK_IS_COMBO (widget))
+      /*
+       * Do not report labelled-by for a GtkBox which could be a 
+       * GnomeFileEntry.
+       */
+    return relation_set;
+
+  if (!atk_relation_set_contains (relation_set, ATK_RELATION_LABELLED_BY))
+    {
+      label = find_label (widget);
+      if (label == NULL)
+        {
+          if (GTK_IS_BUTTON (widget))
+            /*
+             * Handle the case where GnomeIconEntry is the mnemonic widget.
+             * The GtkButton which is a grandchild of the GnomeIconEntry
+             * should really be the mnemonic widget. See bug #133967.
+             */
+            {
+              GtkWidget *temp_widget;
+
+              temp_widget = gtk_widget_get_parent (widget);
+
+              if (GTK_IS_ALIGNMENT (temp_widget))
+                {
+                  temp_widget = gtk_widget_get_parent (temp_widget);
+                  if (GTK_IS_BOX (temp_widget))
+                    {
+                      label = find_label (temp_widget);
+                 
+                      if (!label)
+                        label = find_label (gtk_widget_get_parent (temp_widget));
+                    }
+                }
+            }
+          else if (GTK_IS_COMBO (widget))
+            /*
+             * Handle the case when GnomeFileEntry is the mnemonic widget.
+             * The GnomeEntry which is a grandchild of the GnomeFileEntry
+             * should be the mnemonic widget. See bug #137584.
+             */
+            {
+              GtkWidget *temp_widget;
+
+              temp_widget = gtk_widget_get_parent (widget);
+
+              if (GTK_IS_HBOX (temp_widget))
+                {
+                  temp_widget = gtk_widget_get_parent (temp_widget);
+                  if (GTK_IS_BOX (temp_widget))
+                    {
+                      label = find_label (temp_widget);
+                    }
+                }
+            }
+        }
+
+      if (label)
+        {
+	  array [0] = gtk_widget_get_accessible (label);
+
+	  relation = atk_relation_new (array, 1, ATK_RELATION_LABELLED_BY);
+	  atk_relation_set_add (relation_set, relation);
+	  g_object_unref (relation);
+        }
+    }
+
+  return relation_set;
 }
 
 static AtkStateSet*
@@ -399,7 +545,11 @@ gail_widget_ref_state_set (AtkObject *accessible)
   
       if (GTK_WIDGET_HAS_FOCUS (widget))
         {
-          atk_state_set_add_state (state_set, ATK_STATE_FOCUSED);
+          AtkObject *focus_obj;
+
+          focus_obj = g_object_get_data (G_OBJECT (accessible), "gail-focus-object");
+          if (focus_obj == NULL)
+            atk_state_set_add_state (state_set, ATK_STATE_FOCUSED);
         }
     }
   return state_set;
@@ -791,6 +941,24 @@ gail_widget_real_focus_gtk (GtkWidget     *widget,
   return FALSE;
 }
 
+static void
+gail_widget_size_allocate_gtk (GtkWidget     *widget,
+                               GtkAllocation *allocation)
+{
+  AtkObject* accessible;
+  AtkRectangle rect;
+
+  accessible = gtk_widget_get_accessible (widget);
+  if (ATK_IS_COMPONENT (accessible))
+    {
+      rect.x = allocation->x;
+      rect.y = allocation->y;
+      rect.width = allocation->width;
+      rect.height = allocation->height;
+      g_signal_emit_by_name (accessible, "bounds_changed", &rect);
+    }
+}
+
 /*
  * This function is the signal handler defined for map and unmap signals.
  */
@@ -867,7 +1035,12 @@ static void
 gail_widget_focus_event (AtkObject   *obj,
                          gboolean    focus_in)
 {
-  atk_object_notify_state_change (obj, ATK_STATE_FOCUSED, focus_in);
+  AtkObject *focus_obj;
+
+  focus_obj = g_object_get_data (G_OBJECT (obj), "gail-focus-object");
+  if (focus_obj == NULL)
+    focus_obj = obj;
+  atk_object_notify_state_change (focus_obj, ATK_STATE_FOCUSED, focus_in);
 }
 
 static GtkWidget*
@@ -920,7 +1093,17 @@ static gboolean gail_widget_on_screen (GtkWidget *widget)
         return_value = TRUE;
     }
   else
-    return_value = TRUE;
+    {
+      /*
+       * Check whether the widget has been placed of the screen. The
+       * widget may be MAPPED as when toolbar items do not fit on the toolbar.
+       */
+      if (widget->allocation.x + widget->allocation.width <= 0 &&
+          widget->allocation.y + widget->allocation.height <= 0)
+        return_value = FALSE;
+      else 
+        return_value = TRUE;
+    }
 
   return return_value;
 }

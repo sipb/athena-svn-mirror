@@ -112,7 +112,7 @@ static void choicecb (GtkWidget *widget, gpointer data)
 
 static void _check_table (AtkObject *in_obj)
 {
-  AtkObject *obj = 0;
+  AtkObject *obj = NULL;
   G_CONST_RETURN char *no_properties;
   G_CONST_RETURN char *no_gui;
 
@@ -531,7 +531,7 @@ _selection_tests(AtkObject *obj)
 }
 
 static void
-_create_event_watcher ()
+_create_event_watcher (void)
 {
   atk_add_focus_tracker (_check_table);
 }
@@ -760,7 +760,7 @@ void test_choice_gui(AtkObject **obj)
   window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
   gtk_window_set_title(GTK_WINDOW(window), "Test to run");
 
-  gtk_signal_connect(GTK_OBJECT(window), "destroy",
+  g_signal_connect(GTK_OBJECT(window), "destroy",
   GTK_SIGNAL_FUNC(destroy), &window);
  
   vbox = gtk_vbox_new(TRUE, 0);
@@ -818,7 +818,7 @@ void test_choice_gui(AtkObject **obj)
     GTK_BUTTONBOX_SPREAD);
   gtk_box_pack_end_defaults(GTK_BOX(hbuttonbox), GTK_WIDGET(button));
   gtk_box_pack_end_defaults(GTK_BOX(vbox), hbuttonbox);
-  gtk_signal_connect(GTK_OBJECT(button), "clicked", GTK_SIGNAL_FUNC(choicecb), obj);
+  g_signal_connect(GTK_OBJECT(button), "clicked", GTK_SIGNAL_FUNC(choicecb), obj);
 
   gtk_container_add(GTK_CONTAINER(window), vbox);
   gtk_widget_show(vbox);

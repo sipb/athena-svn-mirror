@@ -34,6 +34,8 @@ static AtkStateSet*          gail_button_ref_state_set    (AtkObject       *obj)
 static void                  gail_button_notify_label_gtk (GObject         *obj,
                                                            GParamSpec      *pspec,
                                                            gpointer        data);
+static void                  gail_button_label_map_gtk    (GtkWidget       *widget,
+                                                           gpointer        data);
 
 static void                  gail_button_real_initialize  (AtkObject       *obj,
                                                            gpointer        data);
@@ -43,6 +45,9 @@ static void                  gail_button_init_textutil    (GailButton     *butto
 
 static void                  gail_button_pressed_enter_handler  (GtkWidget       *widget);
 static void                  gail_button_released_leave_handler (GtkWidget       *widget);
+static gint                  gail_button_real_add_gtk           (GtkContainer    *container,
+                                                                 GtkWidget       *widget,
+                                                                 gpointer        data);
 
 
 static void                  atk_action_interface_init  (AtkActionIface *iface);
@@ -192,8 +197,10 @@ gail_button_class_init (GailButtonClass *klass)
   GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
   AtkObjectClass *class = ATK_OBJECT_CLASS (klass);
   GailWidgetClass *widget_class;
+  GailContainerClass *container_class;
 
   widget_class = (GailWidgetClass*)klass;
+  container_class = (GailContainerClass*)klass;
 
   gobject_class->finalize = gail_button_finalize;
 
@@ -204,6 +211,9 @@ gail_button_class_init (GailButtonClass *klass)
   class->ref_child = gail_button_ref_child;
   class->ref_state_set = gail_button_ref_state_set;
   class->initialize = gail_button_real_initialize;
+
+  container_class->add_gtk = gail_button_real_add_gtk;
+  container_class->remove_gtk = NULL;
 }
 
 static void
@@ -231,26 +241,24 @@ gail_button_new (GtkWidget *widget)
   accessible = ATK_OBJECT (object);
   atk_object_initialize (accessible, widget);
 
-  set_role_for_button (accessible, widget);
-
   return accessible;
 }
 
 static G_CONST_RETURN gchar*
 gail_button_get_name (AtkObject *obj)
 {
+  G_CONST_RETURN gchar* name = NULL;
+
   g_return_val_if_fail (GAIL_IS_BUTTON (obj), NULL);
 
-  if (obj->name != NULL)
-    return obj->name;
-  else
+  name = ATK_OBJECT_CLASS (parent_class)->get_name (obj);
+  if (name == NULL)
     {
       /*
        * Get the text on the label
        */
       GtkWidget *widget;
       GtkWidget *child;
-      G_CONST_RETURN gchar* name = NULL;
 
       widget = GTK_ACCESSIBLE (obj)->widget;
       if (widget == NULL)
@@ -264,9 +272,49 @@ gail_button_get_name (AtkObject *obj)
       child = get_label_from_button (widget, 0, FALSE);
       if (GTK_IS_LABEL (child))
         name = gtk_label_get_text (GTK_LABEL (child)); 
+      else
+        {
+          GtkImage *image;
 
-      return name;
+          image = get_image_from_button (widget);
+          if (GTK_IS_IMAGE (image))
+            {
+              AtkObject *atk_obj;
+
+              atk_obj = gtk_widget_get_accessible (GTK_WIDGET (image));
+              name = atk_object_get_name (atk_obj);
+            }
+        }
     }
+  return name;
+}
+
+/*
+ * A DownArrow in a GtkToggltButton whose parent is not a ColorCombo
+ * has press as default action.
+ */
+static gboolean
+gail_button_is_default_press (GtkWidget *widget)
+{
+  GtkWidget  *child;
+  GtkWidget  *parent;
+  gboolean ret = FALSE;
+  const gchar *parent_type_name;
+
+  child = GTK_BIN (widget)->child;
+  if (GTK_IS_ARROW (child) &&
+      GTK_ARROW (child)->arrow_type == GTK_ARROW_DOWN)
+    {
+      parent = gtk_widget_get_parent (widget);
+      if (parent)
+        {
+          parent_type_name = g_type_name (G_OBJECT_TYPE (parent));
+          if (strcmp (parent_type_name, "ColorCombo"))
+            return TRUE;
+        }
+    }
+
+  return ret;
 }
 
 static void
@@ -274,20 +322,10 @@ gail_button_real_initialize (AtkObject *obj,
                              gpointer   data)
 {
   GailButton *button = GAIL_BUTTON (obj);
-  guint handler_id;
   GtkWidget  *label;
-  const gchar *label_text;
+  GtkWidget  *widget;
 
   ATK_OBJECT_CLASS (parent_class)->initialize (obj, data);
-
-  /*
-   * As we report the button as having no children we are not interested
-   * in add and remove signals
-   */
-  handler_id = GPOINTER_TO_UINT (g_object_get_data (G_OBJECT (obj), "gail-add-handler-id"));
-  g_signal_handler_disconnect (data, handler_id);
-  handler_id = GPOINTER_TO_UINT (g_object_get_data (G_OBJECT(obj), "gail-remove-handler-id"));
-  g_signal_handler_disconnect (data, handler_id);
 
   button->state = GTK_STATE_NORMAL;
 
@@ -309,11 +347,31 @@ gail_button_real_initialize (AtkObject *obj,
                     NULL);
 
 
-  label = get_label_from_button (GTK_WIDGET (data), 0, FALSE);
+  widget = GTK_WIDGET (data);
+  label = get_label_from_button (widget, 0, FALSE);
   if (GTK_IS_LABEL (label))
     {
-      gail_button_init_textutil (button, label);
+      if (GTK_WIDGET_MAPPED (label))
+        gail_button_init_textutil (button, label);
+      else 
+        g_signal_connect (label,
+                          "map",
+                          G_CALLBACK (gail_button_label_map_gtk),
+                          button);
     }
+  button->default_is_press = gail_button_is_default_press (widget);
+    
+  set_role_for_button (obj, data);
+}
+
+static void
+gail_button_label_map_gtk (GtkWidget *widget,
+                           gpointer data)
+{
+  GailButton *button; 
+
+  button = GAIL_BUTTON (data);
+  gail_button_init_textutil (button, widget);
 }
 
 static void
@@ -365,6 +423,34 @@ gail_button_init_textutil (GailButton  *button,
                     button);     
 }
 
+static gint
+gail_button_real_add_gtk (GtkContainer *container,
+                          GtkWidget    *widget,
+                          gpointer     data)
+{
+  GtkLabel *label;
+  GailButton *button;
+
+  if (GTK_IS_LABEL (widget))
+    {
+      const gchar* label_text;
+
+      label = GTK_LABEL (widget);
+
+
+      button = GAIL_BUTTON (data);
+      if (!button->textutil)
+        gail_button_init_textutil (button, widget);
+      else
+        {
+          label_text = gtk_label_get_text (label);
+          gail_text_util_text_setup (button->textutil, label_text);
+        }
+    }
+
+  return 1;
+}
+
 static void
 atk_action_interface_init (AtkActionIface *iface)
 {
@@ -409,7 +495,7 @@ gail_button_do_action (AtkAction *action,
 	}
       g_queue_push_head (button->action_queue, (gpointer) i);
       if (!button->action_idle_handler)
-	button->action_idle_handler = gtk_idle_add (idle_do_action, button);
+	button->action_idle_handler = g_idle_add (idle_do_action, button);
       break;
     default:
       return_value = FALSE;
@@ -442,6 +528,13 @@ idle_do_action (gpointer data)
   while (!g_queue_is_empty (gail_button->action_queue)) 
     {
       gint action_number = (gint) g_queue_pop_head (gail_button->action_queue);
+      if (gail_button->default_is_press)
+        {
+          if (action_number == 0)
+            action_number = 1;
+          else if (action_number == 1)
+            action_number = 0;
+        }
       switch (action_number)
 	{
 	case 0:
@@ -495,6 +588,13 @@ gail_button_get_description (AtkAction *action,
 
   button = GAIL_BUTTON (action);
 
+  if (button->default_is_press)
+    {
+      if (i == 0)
+        i = 1;
+      else if (i == 1)
+        i = 0;
+    }
   switch (i)
     {
     case 0:
@@ -520,6 +620,14 @@ gail_button_get_keybinding (AtkAction *action,
   GailButton *button;
   gchar *return_value = NULL;
 
+  button = GAIL_BUTTON (action);
+  if (button->default_is_press)
+    {
+      if (i == 0)
+        i = 1;
+      else if (i == 1)
+        i = 0;
+    }
   switch (i)
     {
     case 0:
@@ -528,9 +636,9 @@ gail_button_get_keybinding (AtkAction *action,
          * We look for a mnemonic on the label
          */
         GtkWidget *widget;
-        GtkWidget *child;
+        GtkWidget *label;
+        guint key_val; 
 
-        button = GAIL_BUTTON (action);
         widget = GTK_ACCESSIBLE (button)->widget;
         if (widget == NULL)
           /*
@@ -540,17 +648,47 @@ gail_button_get_keybinding (AtkAction *action,
 
         g_return_val_if_fail (GTK_IS_BUTTON (widget), NULL);
 
-        child = get_label_from_button (widget, 0, FALSE);
-        if (GTK_IS_LABEL (child))
+        label = get_label_from_button (widget, 0, FALSE);
+        if (GTK_IS_LABEL (label))
           {
-            guint key_val; 
-
-            key_val = gtk_label_get_mnemonic_keyval (GTK_LABEL (child)); 
+            key_val = gtk_label_get_mnemonic_keyval (GTK_LABEL (label)); 
             if (key_val != GDK_VoidSymbol)
               return_value = gtk_accelerator_name (key_val, GDK_MOD1_MASK);
-            g_free (button->click_keybinding);
-            button->click_keybinding = return_value;
           }
+        if (return_value == NULL)
+          {
+            /* Find labelled-by relation */
+            AtkRelationSet *set;
+            AtkRelation *relation;
+            GPtrArray *target;
+            gpointer target_object;
+
+            set = atk_object_ref_relation_set (ATK_OBJECT (action));
+            if (set)
+              {
+                relation = atk_relation_set_get_relation_by_type (set, ATK_RELATION_LABELLED_BY);
+                if (relation)
+                  {              
+                    target = atk_relation_get_target (relation);
+            
+                    target_object = g_ptr_array_index (target, 0);
+                    if (GTK_IS_ACCESSIBLE (target_object))
+                      {
+                        label = GTK_ACCESSIBLE (target_object)->widget;
+                      } 
+                  }
+                g_object_unref (set);
+              }
+
+            if (GTK_IS_LABEL (label))
+              {
+                key_val = gtk_label_get_mnemonic_keyval (GTK_LABEL (label)); 
+                if (key_val != GDK_VoidSymbol)
+                  return_value = gtk_accelerator_name (key_val, GDK_MOD1_MASK);
+              }
+          }
+        g_free (button->click_keybinding);
+        button->click_keybinding = return_value;
         break;
       }
     default:
@@ -564,7 +702,17 @@ gail_button_action_get_name (AtkAction *action,
                              gint      i)
 {
   G_CONST_RETURN gchar *return_value;
+  GailButton *button;
 
+  button = GAIL_BUTTON (action);
+
+  if (button->default_is_press)
+    {
+      if (i == 0)
+        i = 1;
+      else if (i == 1)
+        i = 0;
+    }
   switch (i)
     {
     case 0:
@@ -608,6 +756,13 @@ gail_button_set_description (AtkAction      *action,
 
   button = GAIL_BUTTON (action);
 
+  if (button->default_is_press)
+    {
+      if (i == 0)
+        i = 1;
+      else if (i == 1)
+        i = 0;
+    }
   switch (i)
     {
     case 0:
@@ -633,10 +788,6 @@ gail_button_set_description (AtkAction      *action,
     return FALSE;
 }
 
-/*
- * We report that this object has no children
- */
-
 static gint
 gail_button_get_n_children (AtkObject* obj)
 {
@@ -652,6 +803,12 @@ gail_button_get_n_children (AtkObject* obj)
      */
     return 0;
 
+  /*
+   * Check whether we have an attached menu for PanelMenuButton
+   */
+  if (g_object_get_data (G_OBJECT (widget), "gtk-attached-menu"))
+    return 1;
+
   n_children = get_n_labels_from_button (widget);
   if (n_children <= 1)
     n_children = 0;
@@ -664,6 +821,7 @@ gail_button_ref_child (AtkObject *obj,
                        gint      i)
 {
   GtkWidget *widget;
+  GtkWidget *child_widget;
   AtkObject *child;
 
   g_return_val_if_fail (GAIL_IS_BUTTON (obj), NULL);
@@ -675,16 +833,26 @@ gail_button_ref_child (AtkObject *obj,
      */
     return NULL;
 
-  child = NULL;
-  if (get_n_labels_from_button (widget) > 1)
+  if (i == 0)
+    child_widget = g_object_get_data (G_OBJECT (widget), "gtk-attached-menu");
+  else
+    child_widget = NULL;
+
+  if (!child_widget) 
     {
-      widget = get_label_from_button (widget, i, TRUE);
-      if (widget)
+      if (get_n_labels_from_button (widget) > 1)
         {
-          child = gtk_widget_get_accessible (widget);
-          g_object_ref (child);
+          child_widget = get_label_from_button (widget, i, TRUE);
         }
     }
+
+  if (child_widget)
+    {
+      child = gtk_widget_get_accessible (child_widget);
+      g_object_ref (child);
+    }
+  else
+    child = NULL;
 
   return child;
 }
@@ -767,16 +935,21 @@ get_image_from_button (GtkWidget *button)
   GtkImage *image = NULL;
 
   child = gtk_bin_get_child (GTK_BIN (button));
-  if (GTK_IS_ALIGNMENT (child))
-    child = gtk_bin_get_child (GTK_BIN (child));
-  if (GTK_IS_CONTAINER (child))
+  if (GTK_IS_IMAGE (child))
+    image = GTK_IMAGE (child);
+  else
     {
-      list = gtk_container_get_children (GTK_CONTAINER (child));
-      if (!list)
-        return NULL;
-      if (GTK_IS_IMAGE (list->data))
-        image = GTK_IMAGE (list->data);
-      g_list_free (list);
+      if (GTK_IS_ALIGNMENT (child))
+        child = gtk_bin_get_child (GTK_BIN (child));
+      if (GTK_IS_CONTAINER (child))
+        {
+          list = gtk_container_get_children (GTK_CONTAINER (child));
+          if (!list)
+            return NULL;
+          if (GTK_IS_IMAGE (list->data))
+            image = GTK_IMAGE (list->data);
+          g_list_free (list);
+        }
     }
 
   return image;
@@ -1255,7 +1428,7 @@ gail_button_finalize (GObject            *object)
   g_free (button->click_keybinding);
   if (button->action_idle_handler)
     {
-      gtk_idle_remove (button->action_idle_handler);
+      g_source_remove (button->action_idle_handler);
       button->action_idle_handler = 0;
     }
   if (button->action_queue)
@@ -1270,35 +1443,50 @@ gail_button_finalize (GObject            *object)
 }
 
 static GtkWidget*
-get_label_from_button (GtkWidget *button,
-                       gint      index,
-                       gboolean  allow_many)
+find_label_child (GtkContainer *container,
+                  gint         *index,
+                  gboolean     allow_many)
 {
+  GList *children, *tmp_list;
   GtkWidget *child;
-  gint n_labels;
-
-  if (index > 0 && !allow_many)
-    g_warning ("Inconsistent values passed to get_label_from_button");
-
-  n_labels = 0;
-  child = gtk_bin_get_child (GTK_BIN (button));
-  if (GTK_IS_ALIGNMENT (child))
-    child = gtk_bin_get_child (GTK_BIN (child));
-
-  while (GTK_IS_CONTAINER (child))
-    {
-      /*
-       * Child is not a label.  Search for a label in the container's children.
-       */
-      GList *children, *tmp_list;
  
-      children = gtk_container_get_children (GTK_CONTAINER (child));
+  children = gtk_container_get_children (container);
 
-      child = NULL;
-      for (tmp_list = children; tmp_list != NULL; tmp_list = tmp_list->next) 
-	{
-	  if (GTK_IS_LABEL (tmp_list->data))
-	    {
+  child = NULL;
+  for (tmp_list = children; tmp_list != NULL; tmp_list = tmp_list->next) 
+    {
+      if (GTK_IS_LABEL (tmp_list->data))
+        {
+          if (!allow_many)
+            {
+              if (child)
+                {
+                  child = NULL;
+                  break;
+                }
+              child = GTK_WIDGET (tmp_list->data);
+            }
+          else
+            {
+              if (*index == 0)
+                {
+                  child = GTK_WIDGET (tmp_list->data);
+                  break;
+                }
+              (*index)--;
+	    }
+        }
+       /*
+        * Label for button which are GtkTreeView column headers are in a 
+        * GtkHBox in a GtkAlignment.
+        */
+      else if (GTK_IS_ALIGNMENT (tmp_list->data))
+        {
+          GtkWidget *widget;
+
+          widget = gtk_bin_get_child (GTK_BIN (tmp_list->data));
+          if (GTK_IS_LABEL (widget))
+            {
               if (!allow_many)
                 {
                   if (child)
@@ -1306,55 +1494,84 @@ get_label_from_button (GtkWidget *button,
                       child = NULL;
                       break;
                     }
-	          child = GTK_WIDGET (tmp_list->data);
+                  child = widget;
                 }
               else
                 {
-                  if (n_labels == index)
+                  if (*index == 0)
                     {
-	              child = GTK_WIDGET (tmp_list->data);
+	              child = widget;
                       break;
                     }
-                  n_labels++;
+                  (*index)--;
 	        }
 	    }
-           /*
-            * Label for button which are GtkTreeView column headers are in a 
-            * GtkHBox in a GtkAlignment.
-            */
-          if (GTK_IS_ALIGNMENT (tmp_list->data))
-            {
-              GtkWidget *widget;
-
-              widget = gtk_bin_get_child (GTK_BIN (tmp_list->data));
-              if (GTK_IS_LABEL (widget))
-                {
-                  if (!allow_many)
-                    {
-                      if (child)
-                        {
-                          child = NULL;
-                          break;
-                        }
-	              child = GTK_WIDGET (tmp_list->data);
-                    }
-                  else
-                    {
-                      if (n_labels == index)
-                        {
-	                  child = GTK_WIDGET (tmp_list->data);
-                          break;
-                        }
-                      n_labels++;
-	            }
-	        }
-	    }
-	}
-
-      g_list_free (children);
+        }
+      else if (GTK_IS_CONTAINER (tmp_list->data))
+        {
+          child = find_label_child (GTK_CONTAINER (tmp_list->data), index, allow_many);
+          if (child)
+            break;
+        } 
     }
+  g_list_free (children);
+  return child;
+}
+
+static GtkWidget*
+get_label_from_button (GtkWidget *button,
+                       gint      index,
+                       gboolean  allow_many)
+{
+  GtkWidget *child;
+
+  if (index > 0 && !allow_many)
+    g_warning ("Inconsistent values passed to get_label_from_button");
+
+  child = gtk_bin_get_child (GTK_BIN (button));
+  if (GTK_IS_ALIGNMENT (child))
+    child = gtk_bin_get_child (GTK_BIN (child));
+
+  if (GTK_IS_CONTAINER (child))
+    child = find_label_child (GTK_CONTAINER (child), &index, allow_many);
+  else if (!GTK_IS_LABEL (child))
+    child = NULL;
 
   return child;
+}
+
+static void
+count_labels (GtkContainer *container,
+              gint         *n_labels)
+{
+  GList *children, *tmp_list;
+ 
+  children = gtk_container_get_children (container);
+
+  for (tmp_list = children; tmp_list != NULL; tmp_list = tmp_list->next) 
+    {
+      if (GTK_IS_LABEL (tmp_list->data))
+        {
+          (*n_labels)++;
+        }
+       /*
+        * Label for button which are GtkTreeView column headers are in a 
+        * GtkHBox in a GtkAlignment.
+        */
+      else if (GTK_IS_ALIGNMENT (tmp_list->data))
+        {
+          GtkWidget *widget;
+
+          widget = gtk_bin_get_child (GTK_BIN (tmp_list->data));
+          if (GTK_IS_LABEL (widget))
+            (*n_labels)++;
+        }
+      else if (GTK_IS_CONTAINER (tmp_list->data))
+        {
+          count_labels (GTK_CONTAINER (tmp_list->data), n_labels);
+        } 
+    }
+  g_list_free (children);
 }
 
 static gint
@@ -1368,35 +1585,10 @@ get_n_labels_from_button (GtkWidget *button)
   child = gtk_bin_get_child (GTK_BIN (button));
   if (GTK_IS_ALIGNMENT (child))
     child = gtk_bin_get_child (GTK_BIN (child));
-  while (GTK_IS_CONTAINER (child))
-    {
-      /*
-       * Child is not a label.  Search for a label in the container's children.
-       */
-      GList *children, *tmp_list;
- 
-      children = gtk_container_get_children (GTK_CONTAINER (child));
 
-      child = NULL;
-      for (tmp_list = children; tmp_list != NULL; tmp_list = tmp_list->next) 
-	{
-	  if (GTK_IS_LABEL (tmp_list->data))
-            n_labels++;
+  if (GTK_IS_CONTAINER (child))
+    count_labels (GTK_CONTAINER (child), &n_labels);
 
-           /*
-            * Label for button which are GtkreeView column headers are in a 
-            * GtkHBox in a GtkAlignment.
-            */
-          if (GTK_IS_ALIGNMENT (tmp_list->data))
-            {
-              child = gtk_bin_get_child (GTK_BIN (tmp_list->data));
-	      if (GTK_IS_LABEL (child))
-                n_labels++;
-	    }
-	}
-
-      g_list_free (children);
-    }
   return n_labels;
 }
 

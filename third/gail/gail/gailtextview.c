@@ -1,5 +1,5 @@
 /* GAIL - The GNOME Accessibility Implementation Library
- * Copyright 2001 Sun Microsystems Inc.
+ * Copyright 2001, 2002, 2003 Sun Microsystems Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -240,19 +240,15 @@ gail_text_view_init (GailTextView      *text_view)
 }
 
 static void
-gail_text_view_real_initialize (AtkObject *obj,
-                                gpointer  data)
+setup_buffer (GtkTextView  *view, 
+              GailTextView *gail_view)
 {
-  GtkTextView *view;
   GtkTextBuffer *buffer;
-  GailTextView *gail_view;
 
-  ATK_OBJECT_CLASS (parent_class)->initialize (obj, data);
-
-  view = GTK_TEXT_VIEW (data);
   buffer = view->buffer;
+  if (buffer == NULL)
+    return;
 
-  gail_view = GAIL_TEXT_VIEW (obj);
   gail_view->textutil = gail_text_util_new ();
   gail_text_util_buffer_setup (gail_view->textutil, buffer);
 
@@ -265,6 +261,25 @@ gail_text_view_real_initialize (AtkObject *obj,
      (GCallback) _gail_text_view_mark_set_cb, view, NULL, 0);
   g_signal_connect_data (buffer, "changed",
      (GCallback) _gail_text_view_changed_cb, view, NULL, 0);
+
+}
+
+static void
+gail_text_view_real_initialize (AtkObject *obj,
+                                gpointer  data)
+{
+  GtkTextView *view;
+  GailTextView *gail_view;
+
+  ATK_OBJECT_CLASS (parent_class)->initialize (obj, data);
+
+  view = GTK_TEXT_VIEW (data);
+
+  gail_view = GAIL_TEXT_VIEW (obj);
+  setup_buffer (view, gail_view);
+
+  obj->role = ATK_ROLE_TEXT;
+
 }
 
 static void
@@ -274,7 +289,7 @@ gail_text_view_finalize (GObject            *object)
 
   g_object_unref (text_view->textutil);
   if (text_view->insert_notify_handler)
-    gtk_idle_remove (text_view->insert_notify_handler);
+    g_source_remove (text_view->insert_notify_handler);
 
   G_OBJECT_CLASS (parent_class)->finalize (object);
 }
@@ -292,8 +307,6 @@ gail_text_view_new (GtkWidget *widget)
   accessible = ATK_OBJECT (object);
   atk_object_initialize (accessible, widget);
 
-  accessible->role = ATK_ROLE_TEXT;
-
   return accessible;
 }
 
@@ -310,6 +323,13 @@ gail_text_view_real_notify_gtk (GObject             *obj,
       editable = gtk_text_view_get_editable (GTK_TEXT_VIEW (obj));
       atk_object_notify_state_change (atk_obj, ATK_STATE_EDITABLE,
                                       editable);
+    }
+  else if (!strcmp (pspec->name, "buffer"))
+    {
+      AtkObject *atk_obj;
+
+      atk_obj = gtk_widget_get_accessible (GTK_WIDGET (obj));
+      setup_buffer (GTK_TEXT_VIEW (obj), GAIL_TEXT_VIEW (atk_obj));
     }
   else
     parent_class->notify_gtk (obj, pspec);
@@ -453,7 +473,6 @@ gail_text_view_get_character_at_offset (AtkText *text,
   GtkTextIter start, end;
   GtkTextBuffer *buffer;
   gchar *string;
-  gchar *index;
   gunichar unichar;
 
   widget = GTK_ACCESSIBLE (text)->widget;
@@ -578,6 +597,13 @@ gail_text_view_get_offset_at_point (AtkText      *text,
   buff_y = CLAMP (buff_y, rect.y, rect.y + rect.height - 1);
 
   gtk_text_view_get_iter_at_location (view, &loc_itr, buff_x, buff_y);
+  /*
+   * The iter at a location sometimes points to the next character.
+   * See bug 111031. We work around that
+   */
+  gtk_text_view_get_iter_location (view, &loc_itr, &rect);
+  if (buff_x < rect.x)
+    gtk_text_iter_backward_char (&loc_itr);
   return gtk_text_iter_get_offset (&loc_itr);
 }
 
@@ -820,7 +846,7 @@ gail_text_view_get_selection (AtkText *text,
   * selection_num is 0.
   */
   if (selection_num != 0)
-     return 0;
+     return NULL;
 
   view = GTK_TEXT_VIEW (widget);
   buffer = view->buffer;
@@ -832,7 +858,7 @@ gail_text_view_get_selection (AtkText *text,
   if (*start_pos != *end_pos)
     return gtk_text_buffer_get_text (buffer, &start, &end, FALSE);
   else
-    return 0;
+    return NULL;
 }
 
 static gboolean
@@ -865,9 +891,9 @@ gail_text_view_add_selection (AtkText *text,
   if (select_start == select_end)
     {
       gtk_text_buffer_get_iter_at_offset (buffer,  &pos_itr, start_pos);
-      gtk_text_buffer_move_mark_by_name (buffer, "insert", &pos_itr);
-      gtk_text_buffer_get_iter_at_offset (buffer,  &pos_itr, end_pos);
       gtk_text_buffer_move_mark_by_name (buffer, "selection_bound", &pos_itr);
+      gtk_text_buffer_get_iter_at_offset (buffer,  &pos_itr, end_pos);
+      gtk_text_buffer_move_mark_by_name (buffer, "insert", &pos_itr);
       return TRUE;
     }
   else
@@ -908,7 +934,6 @@ gail_text_view_remove_selection (AtkText *text,
       */
       cursor_mark = gtk_text_buffer_get_insert (buffer);
       gtk_text_buffer_get_iter_at_mark (buffer, &cursor_itr, cursor_mark);
-      gtk_text_buffer_move_mark_by_name (buffer, "insert", &cursor_itr);
       gtk_text_buffer_move_mark_by_name (buffer, "selection_bound", &cursor_itr);
       return TRUE;
     }
@@ -952,9 +977,9 @@ gail_text_view_set_selection (AtkText *text,
   if (select_start != select_end)
     {
       gtk_text_buffer_get_iter_at_offset (buffer,  &pos_itr, start_pos);
-      gtk_text_buffer_move_mark_by_name (buffer, "insert", &pos_itr);
-      gtk_text_buffer_get_iter_at_offset (buffer,  &pos_itr, end_pos);
       gtk_text_buffer_move_mark_by_name (buffer, "selection_bound", &pos_itr);
+      gtk_text_buffer_get_iter_at_offset (buffer,  &pos_itr, end_pos);
+      gtk_text_buffer_move_mark_by_name (buffer, "insert", &pos_itr);
       return TRUE;
     }
   else
@@ -1414,7 +1439,7 @@ _gail_text_view_insert_text_cb (GtkTextBuffer *buffer,
        */
       if (gail_text_view->insert_notify_handler)
         {
-          gtk_idle_remove (gail_text_view->insert_notify_handler);
+          g_source_remove (gail_text_view->insert_notify_handler);
         }
       gail_text_view->insert_notify_handler = 0;
       insert_idle_handler (gail_text_view);
@@ -1448,7 +1473,7 @@ _gail_text_view_delete_range_cb (GtkTextBuffer *buffer,
   gail_text_view = GAIL_TEXT_VIEW (accessible);
   if (gail_text_view->insert_notify_handler)
     {
-      gtk_idle_remove (gail_text_view->insert_notify_handler);
+      g_source_remove (gail_text_view->insert_notify_handler);
       gail_text_view->insert_notify_handler = 0;
       if (gail_text_view->position == offset && 
           gail_text_view->length == length)
@@ -1543,7 +1568,7 @@ _gail_text_view_changed_cb (GtkTextBuffer *buffer,
     {
       if (!gail_text_view->insert_notify_handler)
         {
-          gail_text_view->insert_notify_handler = gtk_idle_add (insert_idle_handler, accessible);
+          gail_text_view->insert_notify_handler = g_idle_add (insert_idle_handler, accessible);
         }
       return;
     }
@@ -1608,7 +1633,7 @@ emit_text_caret_moved (GailTextView *gail_text_view,
    */
   if (gail_text_view->insert_notify_handler)
     {
-      gtk_idle_remove (gail_text_view->insert_notify_handler);
+      g_source_remove (gail_text_view->insert_notify_handler);
       gail_text_view->insert_notify_handler = 0;
       insert_idle_handler (gail_text_view);
     }

@@ -25,6 +25,18 @@ static void         gail_list_class_init            (GailListClass  *klass);
 
 static gint         gail_list_get_index_in_parent   (AtkObject      *accessible);
 
+static void         atk_selection_interface_init    (AtkSelectionIface *iface);
+static gboolean     gail_list_add_selection         (AtkSelection   *selection,
+                                                     gint           i);
+static gboolean     gail_list_clear_selection       (AtkSelection   *selection);
+static AtkObject*   gail_list_ref_selection         (AtkSelection   *selection,
+                                                     gint           i);
+static gint         gail_list_get_selection_count   (AtkSelection   *selection);
+static gboolean     gail_list_is_child_selected     (AtkSelection   *selection,
+                                                     gint           i);
+static gboolean     gail_list_remove_selection      (AtkSelection   *selection,
+                                                     gint           i);
+
 
 static GailContainerClass *parent_class = NULL;
 
@@ -48,9 +60,20 @@ gail_list_get_type (void)
       (GInstanceInitFunc) NULL, /* instance init */
       NULL /* value table */
     };
+    static const GInterfaceInfo atk_selection_info =
+    {
+      (GInterfaceInitFunc) atk_selection_interface_init,
+      (GInterfaceFinalizeFunc) NULL,
+      NULL
+    };
 
     type = g_type_register_static (GAIL_TYPE_CONTAINER,
                                    "GailList", &tinfo, 0);
+
+    g_type_add_interface_static (type, ATK_TYPE_SELECTION,
+                                   &atk_selection_info);
+
+
   }
   return type;
 }
@@ -98,3 +121,157 @@ gail_list_get_index_in_parent (AtkObject *accessible)
   return ATK_OBJECT_CLASS (parent_class)->get_index_in_parent (accessible);
 }
 
+static void
+atk_selection_interface_init (AtkSelectionIface *iface)
+{
+  g_return_if_fail (iface != NULL);
+
+  iface->add_selection = gail_list_add_selection;
+  iface->clear_selection = gail_list_clear_selection;
+  iface->ref_selection = gail_list_ref_selection;
+  iface->get_selection_count = gail_list_get_selection_count;
+  iface->is_child_selected = gail_list_is_child_selected;
+  iface->remove_selection = gail_list_remove_selection;
+  /*
+   * select_all_selection does not make sense for a combo box
+   * so no implementation is provided.
+   */
+}
+
+static gboolean
+gail_list_add_selection (AtkSelection   *selection,
+                         gint           i)
+{
+  GtkList *list;
+  GtkWidget *widget;
+
+  widget = GTK_ACCESSIBLE (selection)->widget;
+  if (widget == NULL)
+    /*
+     * State is defunct
+     */
+    return FALSE;
+
+  list = GTK_LIST (widget);
+
+  gtk_list_select_item (list, i);
+  return TRUE;
+}
+
+static gboolean 
+gail_list_clear_selection (AtkSelection *selection)
+{
+  GtkList *list;
+  GtkWidget *widget;
+
+  widget = GTK_ACCESSIBLE (selection)->widget;
+  if (widget == NULL)
+    /*
+     * State is defunct
+     */
+    return FALSE;
+
+  list = GTK_LIST (widget);
+
+  gtk_list_unselect_all (list);
+  return TRUE;
+}
+
+static AtkObject*
+gail_list_ref_selection (AtkSelection *selection,
+                         gint         i)
+{
+  GtkList *list;
+  GList *g_list;
+  GtkWidget *item;
+  AtkObject *obj;
+  GtkWidget *widget;
+
+  widget = GTK_ACCESSIBLE (selection)->widget;
+  if (widget == NULL)
+    /*
+     * State is defunct
+     */
+    return NULL;
+
+  list = GTK_LIST (widget);
+
+  /*
+   * A combo box can have only one selection.
+   */
+  if (i != 0)
+    return NULL;
+
+  g_list = list->selection;
+
+  if (g_list == NULL)
+    return NULL;
+
+  item = GTK_WIDGET (g_list->data);
+
+  obj = gtk_widget_get_accessible (item);
+  g_object_ref (obj);
+  return obj;
+}
+
+static gint
+gail_list_get_selection_count (AtkSelection *selection)
+{
+  GtkList *list;
+  GList *g_list;
+  GtkWidget *widget;
+
+  widget = GTK_ACCESSIBLE (selection)->widget;
+  if (widget == NULL)
+    /*
+     * State is defunct
+     */
+    return 0;
+
+  list = GTK_LIST (widget);
+
+  g_list = list->selection;
+
+  return g_list_length (g_list);;
+}
+
+static gboolean
+gail_list_is_child_selected (AtkSelection *selection,
+                             gint         i)
+{
+  GtkList *list;
+  GList *g_list;
+  GtkWidget *item;
+  gint j;
+  GtkWidget *widget;
+
+  widget = GTK_ACCESSIBLE (selection)->widget;
+  if (widget == NULL)
+    /*
+     * State is defunct
+     */
+    return FALSE;
+
+  list = GTK_LIST (widget);
+
+  g_list = list->selection;
+
+  if (g_list == NULL)
+    return FALSE;
+
+  item = GTK_WIDGET (g_list->data);
+
+  j = g_list_index (list->children, item);
+
+  return (j == i);
+}
+
+static gboolean
+gail_list_remove_selection (AtkSelection   *selection,
+                             gint           i)
+{
+  if (atk_selection_is_child_selected (selection, i))
+    atk_selection_clear_selection (selection);
+
+  return TRUE;
+}

@@ -1,5 +1,5 @@
 /* GAIL - The GNOME Accessibility Implementation Library
- * Copyright 2001 Sun Microsystems Inc.
+ * Copyright 2001, 2002, 2003 Sun Microsystems Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -23,6 +23,19 @@
 #include "gailoptionmenu.h"
 
 static void                  gail_option_menu_class_init       (GailOptionMenuClass *klass);
+static void		     gail_option_menu_real_initialize  (AtkObject       *obj,
+                                                                gpointer        data);
+
+static gint                  gail_option_menu_get_n_children   (AtkObject       *obj);
+static AtkObject*            gail_option_menu_ref_child        (AtkObject       *obj,
+                                                                gint            i);
+static gint                  gail_option_menu_real_add_gtk     (GtkContainer    *container,
+                                                                GtkWidget       *widget,
+                                                                gpointer        data);
+static gint                  gail_option_menu_real_remove_gtk  (GtkContainer    *container,
+                                                                GtkWidget       *widget,
+                                                                gpointer        data);
+
 
 static void                  atk_action_interface_init         (AtkActionIface  *iface);
 
@@ -80,6 +93,17 @@ gail_option_menu_get_type (void)
 static void
 gail_option_menu_class_init (GailOptionMenuClass *klass)
 {
+  AtkObjectClass *class = ATK_OBJECT_CLASS (klass);
+  GailContainerClass *container_class;
+
+  container_class = (GailContainerClass *) klass;
+
+  class->get_n_children = gail_option_menu_get_n_children;
+  class->ref_child = gail_option_menu_ref_child;
+  class->initialize = gail_option_menu_real_initialize;
+
+  container_class->add_gtk = gail_option_menu_real_add_gtk;
+  container_class->remove_gtk = gail_option_menu_real_remove_gtk;
   parent_class = g_type_class_peek_parent (klass);
 }
 
@@ -96,9 +120,103 @@ gail_option_menu_new (GtkWidget *widget)
   accessible = ATK_OBJECT (object);
   atk_object_initialize (accessible, widget);
 
-  accessible->role = ATK_ROLE_PUSH_BUTTON;
+  return accessible;
+}
+
+static void
+gail_option_menu_real_initialize (AtkObject *obj,
+                                  gpointer  data)
+{
+  ATK_OBJECT_CLASS (parent_class)->initialize (obj, data);
+
+  obj->role = ATK_ROLE_COMBO_BOX;
+}
+
+static gint
+gail_option_menu_get_n_children (AtkObject *obj)
+{
+  GtkWidget *widget;
+  GtkOptionMenu *option_menu;
+  gint n_children = 0;
+
+  g_return_val_if_fail (GAIL_IS_OPTION_MENU (obj), 0);
+
+  widget = GTK_ACCESSIBLE (obj)->widget;
+  if (widget == NULL)
+    /*
+     * State is defunct
+     */
+    return 0;
+
+  option_menu = GTK_OPTION_MENU (widget);
+  if (gtk_option_menu_get_menu (option_menu))
+      n_children++;
+
+  return n_children;;
+}
+
+static AtkObject*
+gail_option_menu_ref_child (AtkObject *obj,
+                            gint      i)
+{
+  GtkWidget *widget;
+  AtkObject *accessible;
+
+  g_return_val_if_fail (GAIL_IS_OPTION_MENU (obj), NULL);
+
+  widget = GTK_ACCESSIBLE (obj)->widget;
+  if (widget == NULL)
+    /*
+     * State is defunct
+     */
+    return NULL;
+
+
+  if (i == 0)
+    accessible = g_object_ref (gtk_widget_get_accessible (gtk_option_menu_get_menu (GTK_OPTION_MENU (widget))));
+   else
+    accessible = NULL;
 
   return accessible;
+}
+
+static gint
+gail_option_menu_real_add_gtk (GtkContainer *container,
+                               GtkWidget    *widget,
+                               gpointer     data)
+{
+  AtkObject* atk_parent = ATK_OBJECT (data);
+  AtkObject* atk_child = gtk_widget_get_accessible (widget);
+
+  GAIL_CONTAINER_CLASS (parent_class)->add_gtk (container, widget, data);
+
+  g_object_notify (G_OBJECT (atk_child), "accessible_parent");
+
+  g_signal_emit_by_name (atk_parent, "children_changed::add",
+			 1, atk_child, NULL);
+
+  return 1;
+}
+
+static gint 
+gail_option_menu_real_remove_gtk (GtkContainer *container,
+                                  GtkWidget    *widget,
+                                  gpointer     data)
+{
+  AtkPropertyValues values = { NULL };
+  AtkObject* atk_parent = ATK_OBJECT (data);
+  AtkObject *atk_child = gtk_widget_get_accessible (widget);
+
+  g_value_init (&values.old_value, G_TYPE_POINTER);
+  g_value_set_pointer (&values.old_value, atk_parent);
+
+  values.property_name = "accessible-parent";
+  g_signal_emit_by_name (atk_child,
+                         "property_change::accessible-parent", &values, NULL);
+  g_signal_emit_by_name (atk_parent, "children_changed::remove",
+			 1, atk_child, NULL);
+
+  return 1;
 }
 
 static void
@@ -138,7 +256,7 @@ gail_option_menu_do_action (AtkAction *action,
       if (button->action_idle_handler)
         return_value = FALSE;
       else
-        button->action_idle_handler = gtk_idle_add (idle_do_action, button);
+        button->action_idle_handler = g_idle_add (idle_do_action, button);
       break;
     default:
       return_value = FALSE;

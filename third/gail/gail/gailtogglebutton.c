@@ -1,5 +1,5 @@
 /* GAIL - The GNOME Accessibility Implementation Library
- * Copyright 2001 Sun Microsystems Inc.
+ * Copyright 2001, 2002, 2003 Sun Microsystems Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -91,11 +91,6 @@ gail_toggle_button_new (GtkWidget *widget)
   accessible = ATK_OBJECT (object);
   atk_object_initialize (accessible, widget);
 
-  if (GTK_IS_CHECK_BUTTON (widget))
-    accessible->role = ATK_ROLE_CHECK_BOX;
-  else
-    accessible->role = ATK_ROLE_TOGGLE_BUTTON;
- 
   return accessible;
 }
 
@@ -109,6 +104,11 @@ gail_toggle_button_real_initialize (AtkObject *obj,
                     "toggled",
                     G_CALLBACK (gail_toggle_button_toggled_gtk),
                     NULL);
+
+  if (GTK_IS_CHECK_BUTTON (data))
+    obj->role = ATK_ROLE_CHECK_BOX;
+  else
+    obj->role = ATK_ROLE_TOGGLE_BUTTON;
 }
 
 static void

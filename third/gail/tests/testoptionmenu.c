@@ -10,7 +10,7 @@
  */
 #define NUM_VALID_ROLES 1
 
-static void _create_event_watcher ();
+static void _create_event_watcher (void);
 static void _check_object (AtkObject *obj);
 static gint _do_menu_item_action (gpointer data);
 static gboolean doing_action = FALSE;
@@ -138,7 +138,7 @@ static gint _do_menu_item_action (gpointer data)
 }
 
 static void
-_create_event_watcher ()
+_create_event_watcher (void)
 {
   atk_add_focus_tracker (_check_object);
 }

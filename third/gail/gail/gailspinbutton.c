@@ -1,5 +1,5 @@
 /* GAIL - The GNOME Accessibility Implementation Library
- * Copyright 2001 Sun Microsystems Inc.
+ * Copyright 2001, 2002, 2003 Sun Microsystems Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -114,8 +114,6 @@ gail_spin_button_new (GtkWidget *widget)
   accessible = ATK_OBJECT (object);
   atk_object_initialize (accessible, widget);
 
-  accessible->role = ATK_ROLE_SPIN_BUTTON;
-
   return accessible;
 }
 
@@ -143,6 +141,9 @@ gail_spin_button_real_initialize (AtkObject *obj,
     }
   else
     spin_button->adjustment = NULL;
+
+  obj->role = ATK_ROLE_SPIN_BUTTON;
+
 }
 
 static void

@@ -50,7 +50,10 @@ struct _GailNotebook
   GList*       page_cache;
   gint         selected_page;
   gint         focus_tab_page;
+  gint         page_count;
   guint        idle_focus_id;
+
+  gint         remove_index;
 };
 
 GType gail_notebook_get_type (void);

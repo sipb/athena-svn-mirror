@@ -50,6 +50,8 @@ struct _GailTreeView
   GList*        cell_data;
   GtkTreeModel  *tree_model;
   AtkObject     *focus_cell;
+  GtkAdjustment *old_hadj;
+  GtkAdjustment *old_vadj;
 };
 
 GType gail_tree_view_get_type (void);

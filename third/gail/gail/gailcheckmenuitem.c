@@ -1,5 +1,5 @@
 /* GAIL - The GNOME Accessibility Implementation Library
- * Copyright 2002 Sun Microsystems Inc.
+ * Copyright 2002, 2003 Sun Microsystems Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -94,8 +94,6 @@ gail_check_menu_item_new (GtkWidget *widget)
 
   accessible = ATK_OBJECT (object);
   atk_object_initialize (accessible, widget);
-
-  accessible->role = ATK_ROLE_CHECK_MENU_ITEM;
  
   return accessible;
 }
@@ -110,6 +108,8 @@ gail_check_menu_item_real_initialize (AtkObject *obj,
                     "toggled",
                     G_CALLBACK (gail_check_menu_item_toggled_gtk),
                     NULL);
+
+  obj->role = ATK_ROLE_CHECK_MENU_ITEM;
 }
 
 static void

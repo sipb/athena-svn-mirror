@@ -105,10 +105,10 @@ gail_canvas_group_ref_child (AtkObject *obj,
   GObject *g_obj;
   GList *list_item;
 
-  g_return_val_if_fail (GAIL_IS_CANVAS_ITEM (obj), 0);
+  g_return_val_if_fail (GAIL_IS_CANVAS_ITEM (obj), NULL);
   atk_gobject = ATK_GOBJECT_ACCESSIBLE (obj);
   g_obj = atk_gobject_accessible_get_object (atk_gobject);
-  g_return_val_if_fail (GNOME_IS_CANVAS_GROUP (g_obj), 0);
+  g_return_val_if_fail (GNOME_IS_CANVAS_GROUP (g_obj), NULL);
   group = GNOME_CANVAS_GROUP (g_obj);
 
   list_item = g_list_nth (group->item_list, i);

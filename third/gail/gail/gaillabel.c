@@ -20,6 +20,7 @@
 #include <string.h>
 #include <gtk/gtk.h>
 #include "gaillabel.h"
+#include "gailwindow.h"
 #include <libgail-util/gailmisc.h>
 
 static void       gail_label_class_init            (GailLabelClass    *klass);
@@ -27,6 +28,10 @@ static void	  gail_label_real_initialize	   (AtkObject 	      *obj,
                                                     gpointer	      data);
 static void	  gail_label_real_notify_gtk	   (GObject	      *obj,
                                                     GParamSpec	      *pspec);
+static void       gail_label_map_gtk               (GtkWidget         *widget,
+                                                    gpointer          data);
+static void       gail_label_init_text_util        (GailLabel         *gail_label,
+                                                    GtkWidget         *widget);
 static void       gail_label_finalize              (GObject           *object);
 
 static void       atk_text_interface_init          (AtkTextIface      *iface);
@@ -158,34 +163,34 @@ static void
 gail_label_real_initialize (AtkObject *obj,
                             gpointer  data)
 {
-  GtkLabel  *label;
   GtkWidget  *widget;
   GailLabel *gail_label;
-  const gchar *label_text;
 
   ATK_OBJECT_CLASS (parent_class)->initialize (obj, data);
   
   gail_label = GAIL_LABEL (obj);
 
+  gail_label->window_create_handler = 0;
+  gail_label->has_top_level = FALSE;
   gail_label->cursor_position = 0;
   gail_label->selection_bound = 0;
+  gail_label->textutil = NULL;
+  gail_label->label_length = 0;
   
-  gail_label->textutil = gail_text_util_new ();
+  widget = GTK_WIDGET (data);
 
-  label = GTK_LABEL (data);
-  label_text = gtk_label_get_text (label);
-  gail_text_util_text_setup (gail_label->textutil, label_text);
-  
-  if (label_text == NULL)
-    gail_label->label_length = 0;
+  if (GTK_WIDGET_MAPPED (widget))
+    gail_label_init_text_util (gail_label, widget);
   else
-    gail_label->label_length = g_utf8_strlen (label_text, -1);
+    g_signal_connect (widget,
+                      "map",
+                      G_CALLBACK (gail_label_map_gtk),
+                      gail_label);
 
   /* 
-   * Check whether ancestor of GtkLabel is a GtkButton  and if so
+   * Check whether ancestor of GtkLabel is a GtkButton and if so
    * set accessible parent for GailLabel
    */
-  widget = GTK_WIDGET (data);
   while (widget != NULL)
     {
       widget = gtk_widget_get_parent (widget);
@@ -195,6 +200,41 @@ gail_label_real_initialize (AtkObject *obj,
           break;
         }
     }
+
+  if (GTK_IS_ACCEL_LABEL (widget))
+    obj->role = ATK_ROLE_ACCEL_LABEL;
+  else
+    obj->role = ATK_ROLE_LABEL;
+}
+
+static void
+gail_label_map_gtk (GtkWidget *widget,
+                    gpointer data)
+{
+  GailLabel *gail_label;
+
+  gail_label = GAIL_LABEL (data);
+  gail_label_init_text_util (gail_label, widget);
+}
+
+static void
+gail_label_init_text_util (GailLabel *gail_label,
+                           GtkWidget *widget)
+{
+  GtkLabel *label;
+  const gchar *label_text;
+
+  if (gail_label->textutil == NULL)
+    gail_label->textutil = gail_text_util_new ();
+
+  label = GTK_LABEL (widget);
+  label_text = gtk_label_get_text (label);
+  gail_text_util_text_setup (gail_label->textutil, label_text);
+  
+  if (label_text == NULL)
+    gail_label->label_length = 0;
+  else
+    gail_label->label_length = g_utf8_strlen (label_text, -1);
 }
 
 AtkObject* 
@@ -210,12 +250,57 @@ gail_label_new (GtkWidget *widget)
   accessible = ATK_OBJECT (object);
   atk_object_initialize (accessible, widget);
 
-  if (GTK_IS_ACCEL_LABEL (widget))
-    accessible->role = ATK_ROLE_ACCEL_LABEL;
-  else
-    accessible->role = ATK_ROLE_LABEL;
-
   return accessible;
+}
+
+static void
+notify_name_change (AtkObject *atk_obj)
+{
+  GtkLabel *label;
+  GailLabel *gail_label;
+  GtkWidget *widget;
+  GObject *gail_obj;
+
+  widget = GTK_ACCESSIBLE (atk_obj)->widget;
+  if (widget == NULL)
+    /*
+     * State is defunct
+     */
+    return;
+
+  gail_obj = G_OBJECT (atk_obj);
+  label = GTK_LABEL (widget);
+  gail_label = GAIL_LABEL (atk_obj);
+
+  if (gail_label->textutil == NULL)
+    return;
+
+  /* Create a delete text and an insert text signal */
+ 
+  g_signal_emit_by_name (gail_obj, "text_changed::delete", 0, 
+                         gail_label->label_length);
+
+  gail_label_init_text_util (gail_label, widget);
+
+  g_signal_emit_by_name (gail_obj, "text_changed::insert", 0, 
+                         gail_label->label_length);
+
+  if (atk_obj->name == NULL)
+    /*
+     * The label has changed so notify a change in accessible-name
+     */
+    g_object_notify (gail_obj, "accessible-name");
+
+  g_signal_emit_by_name (gail_obj, "visible_data_changed");
+}
+
+static void
+window_created (GObject *obj,
+                gpointer data)
+{
+  g_return_if_fail (GAIL_LABEL (data));
+
+  notify_name_change (ATK_OBJECT (data)); 
 }
 
 static void
@@ -227,38 +312,49 @@ gail_label_real_notify_gtk (GObject           *obj,
   GtkLabel *label;
   GailLabel *gail_label;
   GObject *gail_obj;
+  AtkObject *top_level;
+  AtkObject *temp_obj;
 
-  gail_obj = G_OBJECT (atk_obj);
-  label = GTK_LABEL (widget);
   gail_label = GAIL_LABEL (atk_obj);
 
   if (strcmp (pspec->name, "label") == 0)
     {
-      const gchar* label_text;
-
-      /* Create a delete text and an insert text signal */
- 
-      label_text = gtk_label_get_text (label);
-
-      g_signal_emit_by_name (gail_obj, "text_changed::delete", 0, 
-                             gail_label->label_length);
-      gail_text_util_text_setup (gail_label->textutil, label_text);
-      g_signal_emit_by_name (gail_obj, "text_changed::insert", 0, 
-                             gail_label->label_length);
-
-      if (atk_obj->name == NULL)
-        /*
-         * The label has changed so notify a change in accessible-name
-         */
-        g_object_notify (gail_obj, "accessible-name");
-
-      g_signal_emit_by_name (gail_obj, "visible_data_changed");
+     /* 
+      * We may get a label change for a label which is not attached to an
+      * application. We wait until the toplevel window is created before
+      * emitting the notification.
+      *
+      * This happens when [Ctrl+]Alt+Tab is pressed in metacity
+      */
+      if (!gail_label->has_top_level)
+        {
+          temp_obj = atk_obj;
+          top_level = NULL;
+          while (temp_obj)
+            {
+              top_level = temp_obj;
+              temp_obj = atk_object_get_parent (top_level);
+            }
+          if (atk_object_get_role (top_level) != ATK_ROLE_APPLICATION)
+            {
+              if (gail_label->window_create_handler == 0 && 
+                  GAIL_IS_WINDOW (top_level))
+                gail_label->window_create_handler = g_signal_connect_after (top_level, "create", G_CALLBACK (window_created), atk_obj);
+            }
+          else
+            gail_label->has_top_level = TRUE;
+        }
+      if (gail_label->has_top_level)
+        notify_name_change (atk_obj);
     }
   else if (strcmp (pspec->name, "cursor-position") == 0)
     {
       gint start, end;
       gboolean text_caret_moved = FALSE;
       gboolean selection_changed = FALSE;
+
+      gail_obj = G_OBJECT (atk_obj);
+      label = GTK_LABEL (widget);
 
       if (gtk_label_get_selection_bounds (label, &start, &end))
         {
@@ -315,7 +411,8 @@ gail_label_finalize (GObject            *object)
 {
   GailLabel *label = GAIL_LABEL (object);
 
-  g_object_unref (label->textutil);
+  if (label->textutil)
+    g_object_unref (label->textutil);
   G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
@@ -351,7 +448,6 @@ gail_label_ref_relation_set (AtkObject *obj)
   if (widget == NULL)
     /*
      * State is defunct
-
      */
     return NULL;
 
@@ -371,6 +467,44 @@ gail_label_ref_relation_set (AtkObject *obj)
           AtkObject *accessible_array[1];
           AtkRelation* relation;
 
+          /*
+           * Handle the case where a GnomeIconEntry is specified as the 
+           * mnemonic widget. use the button which is a grandchild of the
+           * GnomeIconEntry as the mnemonic widget. See bug #133967.
+           */
+          if (!GTK_WIDGET_CAN_FOCUS (mnemonic_widget))
+            {
+              if (GTK_IS_BOX (mnemonic_widget))
+                {
+                  GList *list;
+
+                  list = gtk_container_get_children (GTK_CONTAINER (mnemonic_widget));
+                  if (g_list_length (list) == 1)
+                    {
+                      if (GTK_IS_ALIGNMENT (list->data))
+                        {
+                          GtkWidget *temp_widget;
+
+                          temp_widget = GTK_BIN (list->data)->child;
+                          if (GTK_IS_BUTTON (temp_widget))
+                            mnemonic_widget = temp_widget;
+                        }
+                      else if (GTK_IS_HBOX (list->data))
+                        {
+                          GtkWidget *temp_widget;
+
+                          temp_widget = GTK_WIDGET (list->data);
+                          g_list_free (list);
+                          list = gtk_container_get_children (GTK_CONTAINER (temp_widget));
+                          if (GTK_IS_COMBO (list->data))
+                            {
+                              mnemonic_widget = GTK_WIDGET (list->data);
+                            }
+                        }
+                    }
+                  g_list_free (list);
+                }
+            }
           accessible_array[0] = gtk_widget_get_accessible (mnemonic_widget);
           relation = atk_relation_new (accessible_array, 1,
                                        ATK_RELATION_LABEL_FOR);
@@ -387,10 +521,13 @@ gail_label_ref_relation_set (AtkObject *obj)
 static G_CONST_RETURN gchar*
 gail_label_get_name (AtkObject *accessible)
 {
+  G_CONST_RETURN gchar *name;
+
   g_return_val_if_fail (GAIL_IS_LABEL (accessible), NULL);
 
-  if (accessible->name != NULL)
-    return accessible->name;
+  name = ATK_OBJECT_CLASS (parent_class)->get_name (accessible);
+  if (name != NULL)
+    return name;
   else
     {
       /*

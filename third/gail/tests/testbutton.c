@@ -18,7 +18,7 @@
  * different actions.
  */
 
-static void _create_event_watcher ();
+static void _create_event_watcher (void);
 static void _check_object (AtkObject *obj);
 static void button_pressed_handler (GtkButton *button);
 static void _print_states (AtkObject *obj);
@@ -65,7 +65,7 @@ _check_object (AtkObject *obj)
     g_assert (GTK_IS_ACCESSIBLE (atk_button));
     widget = GTK_ACCESSIBLE (atk_button)->widget;
     g_assert (GTK_IS_BUTTON (widget));
-    gtk_signal_connect (GTK_OBJECT (widget),
+    g_signal_connect (GTK_OBJECT (widget),
                                     "pressed",
                            GTK_SIGNAL_FUNC (button_pressed_handler),
                                     NULL);
@@ -190,7 +190,7 @@ _print_button_image_info(AtkObject *obj) {
 }
 
 static void
-_create_event_watcher ()
+_create_event_watcher (void)
 {
   atk_add_focus_tracker (_check_object);
 }

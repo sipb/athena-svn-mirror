@@ -1,5 +1,5 @@
 /* GAIL - The GNOME Accessibility Enabling Library
- * Copyright 2001 Sun Microsystems Inc.
+ * Copyright 2001, 2002, 2003 Sun Microsystems Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -89,8 +89,6 @@ gail_scrolled_window_new (GtkWidget *widget)
   accessible = ATK_OBJECT (object);
   atk_object_initialize (accessible, widget);
 
-  accessible->role = ATK_ROLE_SCROLL_PANE;
-
   return accessible;
 }
 
@@ -105,10 +103,12 @@ gail_scrolled_window_real_initialize (AtkObject *obj,
   window = GTK_SCROLLED_WINDOW (data);
   g_signal_connect_data (window->hscrollbar, "notify::visible",
     (GCallback)gail_scrolled_window_scrollbar_visibility_changed, 
-    obj, FALSE, FALSE);
+    obj, NULL, FALSE);
   g_signal_connect_data (window->vscrollbar, "notify::visible",
     (GCallback)gail_scrolled_window_scrollbar_visibility_changed, 
-    obj, FALSE, FALSE);
+    obj, NULL, FALSE);
+
+  obj->role = ATK_ROLE_SCROLL_PANE;
 }
 
 static gint
@@ -156,7 +156,7 @@ gail_scrolled_window_ref_child (AtkObject *obj,
   widget = GTK_ACCESSIBLE (obj)->widget;
   if (widget == NULL)
     /* Object is defunct */
-    return 0;
+    return NULL;
 
   gtk_window = GTK_SCROLLED_WINDOW (widget);
 
@@ -170,7 +170,9 @@ gail_scrolled_window_ref_child (AtkObject *obj,
       else if (gtk_window->vscrollbar_visible)
         accessible = gtk_widget_get_accessible (gtk_window->vscrollbar);
     }
-  else if (child == n_children+1 && gtk_window->vscrollbar_visible)
+  else if (child == n_children+1 && 
+           gtk_window->hscrollbar_visible &&
+           gtk_window->vscrollbar_visible)
     accessible = gtk_widget_get_accessible (gtk_window->vscrollbar);
   else if (child < n_children)
     {
@@ -203,6 +205,8 @@ gail_scrolled_window_scrollbar_visibility_changed (GObject    *object,
       gchar *signal_name;
 
       gtk_window = GTK_SCROLLED_WINDOW (GTK_ACCESSIBLE (user_data)->widget);
+      if (gtk_window == NULL)
+        return;
       children = gtk_container_get_children (GTK_CONTAINER (gtk_window));
       index = n_children = g_list_length (children);
       g_list_free (children);

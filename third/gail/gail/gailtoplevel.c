@@ -1,5 +1,5 @@
 /* GAIL - The GNOME Accessibility Implementation Library
- * Copyright 2001 Sun Microsystems Inc.
+ * Copyright 2001, 2002, 2003 Sun Microsystems Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -50,8 +50,8 @@ static gboolean         gail_toplevel_show_event_watcher (GSignalInvocationHint 
 
 static void      _gail_toplevel_remove_child            (GailToplevel           *toplevel,
                                                         GtkWindow               *window);
-static gboolean  is_tooltip_window                      (GtkWidget              *widget);
 static gboolean  is_attached_menu_window                (GtkWidget              *widget);
+static gboolean  is_combo_window                        (GtkWidget              *widget);
 
 
 static gpointer parent_class = NULL;
@@ -132,8 +132,7 @@ gail_toplevel_object_init (GailToplevel *toplevel)
           !GTK_WIDGET_VISIBLE (widget) ||
           is_attached_menu_window (widget) ||
           GTK_WIDGET (window)->parent ||
-          GTK_IS_PLUG (window) ||
-          is_tooltip_window (widget))
+          GTK_IS_PLUG (window))
         {
           GList *temp_l  = l->next;
 
@@ -226,6 +225,7 @@ gail_toplevel_show_event_watcher (GSignalInvocationHint *ihint,
   GObject *object;
   GtkWidget *widget;
   gint n_children;
+  AtkObject *child;
 
   object = g_value_get_object (param_values + 0);
 
@@ -235,8 +235,8 @@ gail_toplevel_show_event_watcher (GSignalInvocationHint *ihint,
   widget = GTK_WIDGET (object);
   if (widget->parent || 
       is_attached_menu_window (widget) ||
-      GTK_IS_PLUG (widget) || 
-      is_tooltip_window (widget))
+      is_combo_window (widget) ||
+      GTK_IS_PLUG (widget))
     return TRUE;
 
   /* Add the window to the list & emit the signal */
@@ -248,9 +248,11 @@ gail_toplevel_show_event_watcher (GSignalInvocationHint *ihint,
   * Must subtract 1 from the n_children since the index is 0-based
   * but g_list_length is 1-based.
   */
+  child = gtk_widget_get_accessible (widget);
+  atk_object_set_parent (child, atk_obj);
   g_signal_emit_by_name (atk_obj, "children-changed::add",
                          n_children - 1, 
-                         gtk_widget_get_accessible (widget), NULL);
+                         child, NULL);
 
   /* Connect destroy signal callback */
   g_signal_connect (G_OBJECT(object), 
@@ -276,7 +278,7 @@ gail_toplevel_hide_event_watcher (GSignalInvocationHint *ihint,
   object = g_value_get_object (param_values + 0);
 
   if (!GTK_IS_WINDOW (object))
-    return FALSE;
+    return TRUE;
 
   _gail_toplevel_remove_child (toplevel, GTK_WINDOW (object));
   return TRUE;
@@ -292,6 +294,7 @@ _gail_toplevel_remove_child (GailToplevel *toplevel,
   AtkObject *atk_obj = ATK_OBJECT (toplevel);
   GList *l;
   guint window_count = 0;
+  AtkObject *child;
 
   if (toplevel->window_list)
     {
@@ -307,27 +310,17 @@ _gail_toplevel_remove_child (GailToplevel *toplevel,
               /* Remove the window from the window_list & emit the signal */
               toplevel->window_list = g_list_remove (toplevel->window_list,
                                                      l->data);
+              child = gtk_widget_get_accessible (GTK_WIDGET (window));
               g_signal_emit_by_name (atk_obj, "children-changed::remove",
                                      window_count, 
-                                     gtk_widget_get_accessible (GTK_WIDGET (window)), NULL);
+                                     child, NULL);
+              atk_object_set_parent (child, NULL);
               break;
             }
 
           window_count++;
         }
     }
-}
-
-static gboolean
-is_tooltip_window (GtkWidget *widget)
-{
-  const gchar *name;
-
-  name = gtk_widget_get_name (widget);
-  if (name && strcmp (name, "gtk-tooltips") == 0)
-    return TRUE;
-  else
-    return FALSE;
 }
 
 static gboolean
@@ -341,9 +334,40 @@ is_attached_menu_window (GtkWidget *widget)
       GtkWidget *attach;
 
       attach = gtk_menu_get_attach_widget (GTK_MENU (child));
-      if (GTK_IS_MENU_ITEM (attach))
+      /* Allow for menu belonging to the Panel Menu, which is a GtkButton */
+      if (GTK_IS_MENU_ITEM (attach) ||
+          GTK_IS_OPTION_MENU (attach) ||
+          GTK_IS_BUTTON (attach))
         ret = TRUE;
     }
   return ret;
 }
 
+static gboolean
+is_combo_window (GtkWidget *widget)
+{
+  GtkWidget *child = GTK_BIN (widget)->child;
+  AtkObject *obj;
+  GtkAccessible *accessible;
+
+  if (!GTK_IS_EVENT_BOX (child))
+    return FALSE;
+
+  child = GTK_BIN (child)->child;
+
+  if (!GTK_IS_FRAME (child))
+    return FALSE;
+
+  child = GTK_BIN (child)->child;
+
+  if (!GTK_IS_SCROLLED_WINDOW (child))
+    return FALSE;
+
+  obj = gtk_widget_get_accessible (child);
+  obj = atk_object_get_parent (obj);
+  accessible = GTK_ACCESSIBLE (obj);
+  if (GTK_IS_COMBO (accessible->widget))
+    return TRUE;
+
+  return  FALSE;
+}

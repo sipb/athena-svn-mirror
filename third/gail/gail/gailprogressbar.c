@@ -1,5 +1,5 @@
 /* GAIL - The GNOME Accessibility Implementation Library
- * Copyright 2001 Sun Microsystems Inc.
+ * Copyright 2001, 2002, 2003 Sun Microsystems Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -113,8 +113,6 @@ gail_progress_bar_new (GtkWidget *widget)
   accessible = ATK_OBJECT (object);
   atk_object_initialize (accessible, widget);
 
-  accessible->role = ATK_ROLE_PROGRESS_BAR;
-	
   return accessible;
 }
 
@@ -142,6 +140,8 @@ gail_progress_bar_real_initialize (AtkObject *obj,
     }
   else
     progress_bar->adjustment = NULL;
+
+  obj->role = ATK_ROLE_PROGRESS_BAR;
 }
 
 static void	 

@@ -164,6 +164,7 @@ gail_cell_object_init (GailCell *cell)
   cell->index = 0;
   atk_state_set_add_state (cell->state_set, ATK_STATE_TRANSIENT);
   atk_state_set_add_state (cell->state_set, ATK_STATE_ENABLED);
+  atk_state_set_add_state (cell->state_set, ATK_STATE_SENSITIVE);
   cell->refresh_index = NULL;
 }
 
@@ -171,14 +172,38 @@ static void
 gail_cell_object_finalize (GObject *obj)
 {
   GailCell *cell = GAIL_CELL (obj);
+  AtkRelationSet *relation_set;
+  AtkRelation *relation;
+  GPtrArray *target;
+  gpointer target_object;
+  gint i;
 
   if (cell->state_set)
     g_object_unref (cell->state_set);
   g_list_free (cell->action_list);
   if (cell->action_idle_handler)
     {
-      gtk_idle_remove (cell->action_idle_handler);
+      g_source_remove (cell->action_idle_handler);
       cell->action_idle_handler = 0;
+    }
+  relation_set = atk_object_ref_relation_set (ATK_OBJECT (obj));
+  if (ATK_IS_RELATION_SET (relation_set))
+    {
+      relation = atk_relation_set_get_relation_by_type (relation_set, 
+                                                        ATK_RELATION_NODE_CHILD_OF);
+      if (relation)
+        {
+          target = atk_relation_get_target (relation);
+          for (i = 0; i < target->len; i++)
+            {
+              target_object = g_ptr_array_index (target, i);
+              if (GAIL_IS_CELL (target_object))
+                {
+                  g_object_unref (target_object);
+                }
+            }
+        }
+      g_object_unref (relation_set);
     }
   G_OBJECT_CLASS (parent_class)->finalize (obj);
 }
@@ -481,7 +506,7 @@ gail_cell_action_do_action (AtkAction *action,
   if (cell->action_idle_handler)
     return FALSE;
   cell->action_func = info->do_action_func;
-  cell->action_idle_handler = gtk_idle_add (idle_do_action, cell);
+  cell->action_idle_handler = g_idle_add (idle_do_action, cell);
   return TRUE;
 }
 

@@ -8,7 +8,7 @@
  * i.e. the getting of the name and the getting and setting of description
  */
 
-static void _create_event_watcher ();
+static void _create_event_watcher (void);
 static void _check_object (AtkObject *obj);
 
 static void 
@@ -71,7 +71,7 @@ _check_object (AtkObject *obj)
 }
 
 static void
-_create_event_watcher ()
+_create_event_watcher (void)
 {
   atk_add_focus_tracker (_check_object);
 }

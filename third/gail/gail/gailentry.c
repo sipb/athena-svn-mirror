@@ -1,5 +1,5 @@
 /* GAIL - The GNOME Accessibility Implementation Library
- * Copyright 2001 Sun Microsystems Inc.
+ * Copyright 2001, 2002, 2003 Sun Microsystems Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -19,8 +19,10 @@
 
 #include <string.h>
 #include <gtk/gtk.h>
+#include <gdk/gdkkeysyms.h>
 #include "gailentry.h"
 #include "gailcombo.h"
+#include "gailcombobox.h"
 #include <libgail-util/gailmisc.h>
 
 static void       gail_entry_class_init            (GailEntryClass       *klass);
@@ -127,6 +129,7 @@ static void       gail_entry_paste_received	   (GtkClipboard *clipboard,
 
 /* Callbacks */
 
+static void       gail_entry_notify_insert         (GailEntry            *entry);
 static void	  _gail_entry_insert_text_cb	   (GtkEntry     	 *entry,
                                                     gchar		 *arg1,
                                                     gint		 arg2,
@@ -145,6 +148,8 @@ static gboolean              gail_entry_do_action        (AtkAction       *actio
 static gboolean              idle_do_action              (gpointer        data);
 static gint                  gail_entry_get_n_actions    (AtkAction       *action);
 static G_CONST_RETURN gchar* gail_entry_get_description  (AtkAction       *action,
+                                                          gint            i);
+static G_CONST_RETURN gchar* gail_entry_get_keybinding   (AtkAction       *action,
                                                           gint            i);
 static G_CONST_RETURN gchar* gail_entry_action_get_name  (AtkAction       *action,
                                                           gint            i);
@@ -244,6 +249,7 @@ gail_entry_object_init (GailEntry *entry)
   entry->cursor_position = 0;
   entry->selection_bound = 0;
   entry->activate_description = NULL;
+  entry->activate_keybinding = NULL;
 }
 
 static void
@@ -272,6 +278,11 @@ gail_entry_real_initialize (AtkObject *obj,
 	G_CALLBACK (_gail_entry_delete_text_cb), NULL);
   g_signal_connect (data, "changed",
 	G_CALLBACK (_gail_entry_changed_cb), NULL);
+
+  if (entry->visible)
+    obj->role = ATK_ROLE_TEXT;
+  else
+    obj->role = ATK_ROLE_PASSWORD_TEXT;
 }
 
 static void
@@ -290,14 +301,8 @@ gail_entry_real_notify_gtk (GObject		*obj,
 
   if (strcmp (pspec->name, "cursor-position") == 0)
     {
-      if (entry->signal_name)
-        {
-          g_signal_emit_by_name (atk_obj, 
-                                 entry->signal_name,
-                                 entry->position,
-                                 entry->length);
-          entry->signal_name = NULL;
-        }
+      gail_entry_notify_insert (entry);
+
       if (check_for_selection_change (entry, gtk_entry))
         g_signal_emit_by_name (atk_obj, "text_selection_changed");
       /*
@@ -308,14 +313,8 @@ gail_entry_real_notify_gtk (GObject		*obj,
     }
   else if (strcmp (pspec->name, "selection-bound") == 0)
     {
-      if (entry->signal_name)
-        {
-          g_signal_emit_by_name (atk_obj, 
-                                 entry->signal_name,
-                                 entry->position,
-                                 entry->length);
-          entry->signal_name = NULL;
-        }
+      gail_entry_notify_insert (entry);
+
       if (check_for_selection_change (entry, gtk_entry))
         g_signal_emit_by_name (atk_obj, "text_selection_changed");
     }
@@ -385,10 +384,16 @@ gail_entry_finalize (GObject            *object)
 
   g_object_unref (entry->textutil);
   g_free (entry->activate_description);
+  g_free (entry->activate_keybinding);
   if (entry->action_idle_handler)
     {
-      gtk_idle_remove (entry->action_idle_handler);
+      g_source_remove (entry->action_idle_handler);
       entry->action_idle_handler = 0;
+    }
+  if (entry->insert_idle_handler)
+    {
+      g_source_remove (entry->insert_idle_handler);
+      entry->insert_idle_handler = 0;
     }
   G_OBJECT_CLASS (parent_class)->finalize (object);
 }
@@ -406,11 +411,6 @@ gail_entry_new (GtkWidget *widget)
   accessible = ATK_OBJECT (object);
   atk_object_initialize (accessible, widget);
 
-  if (GTK_ENTRY (widget)->visible)
-    accessible->role = ATK_ROLE_TEXT;
-  else
-    accessible->role = ATK_ROLE_PASSWORD_TEXT;
-
   return accessible;
 }
 
@@ -422,7 +422,8 @@ gail_entry_get_index_in_parent (AtkObject *accessible)
    * otherwise do the normal thing.
    */
   if (accessible->accessible_parent)
-    if (GAIL_IS_COMBO (accessible->accessible_parent))
+    if (GAIL_IS_COMBO (accessible->accessible_parent) ||
+        GAIL_IS_COMBO_BOX (accessible->accessible_parent))
       return 1;
 
   return ATK_OBJECT_CLASS (parent_class)->get_index_in_parent (accessible);
@@ -786,7 +787,7 @@ gail_entry_get_selection (AtkText *text,
   * selection_num is 0.
   */
   if (selection_num != 0)
-     return 0;
+     return NULL;
 
   entry = GTK_ENTRY (widget);
   gtk_editable_get_selection_bounds (GTK_EDITABLE (entry), start_pos, end_pos);
@@ -794,7 +795,7 @@ gail_entry_get_selection (AtkText *text,
   if (*start_pos != *end_pos)
      return gtk_editable_get_chars (GTK_EDITABLE (entry), *start_pos, *end_pos);
   else
-     return 0;
+     return NULL;
 }
 
 static gboolean
@@ -1061,13 +1062,36 @@ gail_entry_paste_received (GtkClipboard *clipboard,
 
 /* Callbacks */
 
+static gboolean
+idle_notify_insert (gpointer data)
+{
+  GailEntry *entry = GAIL_ENTRY (data);
+
+  entry->insert_idle_handler = 0;
+  gail_entry_notify_insert (entry);
+  return FALSE;
+}
+
+static void
+gail_entry_notify_insert (GailEntry *entry)
+{
+  if (entry->signal_name)
+    {
+      g_signal_emit_by_name (entry, 
+                             entry->signal_name,
+                             entry->position,
+                             entry->length);
+      entry->signal_name = NULL;
+    }
+}
 /* Note arg1 returns the character at the start of the insert.
  * arg2 returns the number of characters inserted.
  */
-static void _gail_entry_insert_text_cb (GtkEntry *entry, 
-                                        gchar    *arg1, 
-                                        gint     arg2,
-                                        gpointer arg3)
+static void 
+_gail_entry_insert_text_cb (GtkEntry *entry, 
+                            gchar    *arg1, 
+                            gint     arg2,
+                            gpointer arg3)
 {
   AtkObject *accessible;
   GailEntry *gail_entry;
@@ -1083,7 +1107,10 @@ static void _gail_entry_insert_text_cb (GtkEntry *entry,
     }
   /*
    * The signal will be emitted when the cursor position is updated.
+   * or in an idle handler if it not updated.
    */
+   if (gail_entry->insert_idle_handler == 0)
+     gail_entry->insert_idle_handler = g_idle_add (idle_notify_insert, gail_entry);
 }
 
 static gunichar 
@@ -1121,9 +1148,10 @@ gail_entry_get_character_at_offset (AtkText *text,
 /* Note arg1 returns the start of the delete range, arg2 returns the
  * end of the delete range if multiple characters are deleted.	
  */
-static void _gail_entry_delete_text_cb (GtkEntry *entry, 
-                                        gint      arg1, 
-                                        gint      arg2)
+static void 
+_gail_entry_delete_text_cb (GtkEntry *entry, 
+                            gint      arg1, 
+                            gint      arg2)
 {
   AtkObject *accessible;
 
@@ -1189,6 +1217,7 @@ atk_action_interface_init (AtkActionIface *iface)
   iface->do_action = gail_entry_do_action;
   iface->get_n_actions = gail_entry_get_n_actions;
   iface->get_description = gail_entry_get_description;
+  iface->get_keybinding = gail_entry_get_keybinding;
   iface->get_name = gail_entry_action_get_name;
   iface->set_description = gail_entry_set_description;
 }
@@ -1218,7 +1247,7 @@ gail_entry_do_action (AtkAction *action,
       if (entry->action_idle_handler)
         return_value = FALSE;
       else
-        entry->action_idle_handler = gtk_idle_add (idle_do_action, entry);
+        entry->action_idle_handler = g_idle_add (idle_do_action, entry);
       break;
     default:
       return_value = FALSE;
@@ -1270,6 +1299,73 @@ gail_entry_get_description (AtkAction *action,
       break;
     default:
       return_value = NULL;
+      break;
+    }
+  return return_value; 
+}
+
+static G_CONST_RETURN gchar*
+gail_entry_get_keybinding (AtkAction *action,
+                           gint      i)
+{
+  GailEntry *entry;
+  gchar *return_value = NULL;
+
+  entry = GAIL_ENTRY (action);
+  switch (i)
+    {
+    case 0:
+      {
+        /*
+         * We look for a mnemonic on the label
+         */
+        GtkWidget *widget;
+        GtkWidget *label;
+        AtkRelationSet *set;
+        AtkRelation *relation;
+        GPtrArray *target;
+        gpointer target_object;
+        guint key_val; 
+
+        entry = GAIL_ENTRY (action);
+        widget = GTK_ACCESSIBLE (entry)->widget;
+        if (widget == NULL)
+          /*
+           * State is defunct
+           */
+          return NULL;
+
+        /* Find labelled-by relation */
+
+        set = atk_object_ref_relation_set (ATK_OBJECT (action));
+        if (!set)
+          return NULL;
+        label = NULL;
+        relation = atk_relation_set_get_relation_by_type (set, ATK_RELATION_LABELLED_BY);
+        if (relation)
+          {              
+            target = atk_relation_get_target (relation);
+          
+            target_object = g_ptr_array_index (target, 0);
+            if (GTK_IS_ACCESSIBLE (target_object))
+              {
+                label = GTK_ACCESSIBLE (target_object)->widget;
+              } 
+          }
+
+        g_object_unref (set);
+
+        if (GTK_IS_LABEL (label))
+          {
+            key_val = gtk_label_get_mnemonic_keyval (GTK_LABEL (label)); 
+            if (key_val != GDK_VoidSymbol)
+              return_value = gtk_accelerator_name (key_val, GDK_MOD1_MASK);
+          }
+        g_free (entry->activate_keybinding);
+        entry->activate_keybinding = return_value;
+        break;
+      }
+    default:
       break;
     }
   return return_value; 

@@ -1,5 +1,5 @@
 /* GAIL - The GNOME Accessibility Implementation Library
- * Copyright 2001 Sun Microsystems Inc.
+ * Copyright 2001, 2002, 2003 Sun Microsystems Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -19,9 +19,13 @@
 
 #include <gtk/gtkmenu.h>
 #include <gtk/gtkmenuitem.h>
+#include <gtk/gtkoptionmenu.h>
 #include "gailmenu.h"
 
 static void gail_menu_class_init (GailMenuClass *klass);
+
+static void	  gail_menu_real_initialize     (AtkObject *obj,
+                                                 gpointer  data);
 
 static AtkObject* gail_menu_get_parent          (AtkObject *accessible);
 static gint       gail_menu_get_index_in_parent (AtkObject *accessible);
@@ -63,6 +67,7 @@ gail_menu_class_init (GailMenuClass *klass)
 
   class->get_parent = gail_menu_get_parent;
   class->get_index_in_parent = gail_menu_get_index_in_parent;
+  class->initialize = gail_menu_real_initialize;
 
   parent_class = g_type_class_peek_parent (klass);
 }
@@ -80,11 +85,29 @@ gail_menu_new (GtkWidget *widget)
   accessible = ATK_OBJECT (object);
   atk_object_initialize (accessible, widget);
 
-  accessible->role = ATK_ROLE_MENU;
   g_object_set_data (G_OBJECT (accessible), "atk-component-layer",
 		     GINT_TO_POINTER (ATK_LAYER_POPUP));
-
   return accessible;
+}
+
+static void
+gail_menu_real_initialize (AtkObject *obj,
+                           gpointer  data)
+{
+  GtkWidget  *widget;
+  GtkMenu  *menu;
+
+  ATK_OBJECT_CLASS (parent_class)->initialize (obj, data);
+
+  menu = GTK_MENU (data);
+
+  widget = gtk_menu_get_attach_widget (menu);
+  if (GTK_IS_OPTION_MENU (widget))
+    {
+      atk_object_set_parent (obj, gtk_widget_get_accessible (widget));
+    }
+
+  obj->role = ATK_ROLE_MENU;
 }
 
 static AtkObject*
@@ -113,11 +136,12 @@ gail_menu_get_parent (AtkObject *accessible)
       g_return_val_if_fail (GTK_IS_MENU (widget), NULL);
 
       /*
-       * If the menu is attached to a menu item report the menu item as parent
+       * If the menu is attached to a menu item or a button (Gnome Menu)
+       * report the menu item as parent.
        */
       parent_widget = gtk_menu_get_attach_widget (GTK_MENU (widget));
 
-      if (!GTK_IS_MENU_ITEM (parent_widget))
+      if (!GTK_IS_MENU_ITEM (parent_widget) && !GTK_IS_BUTTON (parent_widget))
         parent_widget = widget->parent;
 
       if (parent_widget == NULL)

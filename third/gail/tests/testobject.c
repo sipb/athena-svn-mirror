@@ -6,7 +6,7 @@ static void _print_type (AtkObject *obj);
 static void _print_states (AtkObject *obj);
 static void _check_children (AtkObject *obj);
 static void _check_relation (AtkObject *obj);
-static void _create_event_watcher ();
+static void _create_event_watcher (void);
 static void _focus_handler (AtkObject *obj, gboolean focus_in);
 static gboolean _children_changed (GSignalInvocationHint *ihint,
                                    guint                  n_param_values,
@@ -312,7 +312,7 @@ _children_changed (GSignalInvocationHint *ihint,
 }
 
 static void
-_create_event_watcher ()
+_create_event_watcher (void)
 {
   /*
    * _print_accessible() will be called for an accessible object when its

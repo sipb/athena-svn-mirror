@@ -46,6 +46,8 @@ struct _GailLabel
   gint           cursor_position;
   gint           selection_bound;
   gint           label_length;
+  guint          window_create_handler;
+  gboolean       has_top_level;
 };
 
 GType gail_label_get_type (void);

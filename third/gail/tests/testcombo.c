@@ -173,7 +173,7 @@ static gint _close_combo_list (gpointer data)
 }
 
 static void
-_create_event_watcher ()
+_create_event_watcher (void)
 {
   atk_add_focus_tracker (_check_combo_box);
 }

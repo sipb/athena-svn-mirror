@@ -3,8 +3,8 @@
 #define MAX_GROUPS 20
 #define MAX_NAME_VALUE 20
 
-#include <netinet/in.h>
 #include <sys/types.h>
+#include <netinet/in.h>
 #include <sys/socket.h>
 #include <sys/un.h>
 #include <errno.h>
@@ -12,6 +12,7 @@
 #include <stdlib.h>
 #include <strings.h>
 #include "testlib.h"
+#include "config.h"
 
 typedef enum
 {
@@ -101,27 +102,33 @@ typedef enum {
 
 /* GUI functions */
 
-static void _init_data();
-static void _create_window();
+static void _init_data(void);
+static void _create_window(void);
 static void _add_menu(GtkWidget ** menu, GtkWidget ** menuitem,
   gchar * name, gboolean init_value, GCallback func);
 static void _clear_tab(TabNumber tab_n);
 static void _greyout_tab (GtkWidget *widget, gboolean is_sensitive);
 static void _finished_group(TabNumber tab_n, gint group_num);
 static gboolean _object_is_ours (AtkObject *aobject);
-static void _create_event_watcher ();
+static void _create_event_watcher (void);
 
 /* Mouse Watcher/Magnifier/Festival functions */
 
-static gboolean _mouse_watcher ();
-static gboolean _button_watcher ();
+static gboolean _mouse_watcher (GSignalInvocationHint *ihint,
+	guint                  n_param_values,
+	const GValue          *param_values,
+	gpointer               data);
+static gboolean _button_watcher (GSignalInvocationHint *ihint,
+	guint                  n_param_values,
+	const GValue          *param_values,
+	gpointer               data);
 static void _send_to_magnifier (gint x, gint y, gint w, gint h);
 static void _send_to_festival (const gchar * name,
   const gchar * role_name, const gchar * accel);
 static void _speak_caret_event (AtkObject * aobject);
 static void _festival_say (const gchar * text);
 static void _festival_write (const gchar * text, int fd);
-static gint _festival_init ();
+static gint _festival_init (void);
 
 /* Update functions */
 
@@ -239,8 +246,13 @@ static GtkWidget *menuitem_festival_terse = NULL;
 static GtkWidget *menuitem_trackmouse = NULL;
 static GtkWidget *menuitem_trackfocus = NULL;
 
+#ifdef HAVE_SOCKADDR_UN_SUN_LEN
+static struct sockaddr_un mag_server = { 0, AF_UNIX , "/tmp/magnifier_socket" };
+static struct sockaddr_un client = { 0 , AF_UNIX, "/tmp/mag_client"};
+#else
 static struct sockaddr_un mag_server = { AF_UNIX , "/tmp/magnifier_socket" };
 static struct sockaddr_un client = { AF_UNIX, "/tmp/mag_client"};
+#endif
 
 /* GUI Information for the output window */
 typedef struct
@@ -265,6 +277,11 @@ _send_to_magnifier(gint x, gint y, gint w, gint h)
   g_print ("sending magnifier: %s\n", buff);
 #endif
 
+#ifdef HAVE_SOCKADDR_UN_SUN_LEN
+  mag_server.sun_len = SUN_LEN(&mag_server);
+  client.sun_len = SUN_LEN(&client);
+#endif
+  
   if((desc=socket(AF_UNIX,SOCK_STREAM,0)) == -1){
     perror("socket");
     return;
@@ -288,7 +305,7 @@ _send_to_magnifier(gint x, gint y, gint w, gint h)
   return;
 }
 
-static int _festival_init ()
+static int _festival_init (void)
 {
   int fd;
   struct sockaddr_in name;
@@ -941,7 +958,7 @@ _print_action (AtkAction *aobject)
 
         nv->atkobj = ATK_OBJECT(aobject);
         nv->action_num = j;
-        nv->signal_id = gtk_signal_connect (GTK_OBJECT (nv->button),
+        nv->signal_id = g_signal_connect (GTK_OBJECT (nv->button),
           "clicked", GTK_SIGNAL_FUNC (_action_cb), nv);
 
         g_free(label_str);
@@ -1423,7 +1440,7 @@ _print_value_type(gint group_num, gchar *type, GValue *value)
 }
 
 static void
-_create_event_watcher ()
+_create_event_watcher (void)
 {
     focus_tracker_id = atk_add_focus_tracker (_print_accessible);
 
@@ -1545,7 +1562,7 @@ static void _add_notebook_page (GtkNotebook *nbook,
 }
 
 static void
-_create_notebook ()
+_create_notebook (void)
 {
   TabInfo *tab;
   notebook = GTK_NOTEBOOK (gtk_notebook_new());
@@ -1574,14 +1591,14 @@ _create_notebook ()
   tab = nbook_tabs[VALUE];
   _add_notebook_page (notebook, tab->main_box, &tab->page, "<b>_Value</b>");
 
-  gtk_signal_connect (GTK_OBJECT (notebook),
+  g_signal_connect (GTK_OBJECT (notebook),
                       "switch-page",
                       GTK_SIGNAL_FUNC (_update_current_page),
                       NULL);
 }
 
 static void
-_init_data()
+_init_data(void)
 {
   TabInfo *the_tab;
 
@@ -1635,7 +1652,7 @@ _init_data()
 }
 
 static void
-_create_window ()
+_create_window (void)
 {
     static GtkWidget *window = NULL;
 
@@ -1645,7 +1662,7 @@ _create_window ()
         gtk_widget_set_name (window, "Ferret Window");
         gtk_window_set_policy (GTK_WINDOW(window), TRUE, TRUE, FALSE);
 
-        gtk_signal_connect (GTK_OBJECT (window), "destroy",
+        g_signal_connect (GTK_OBJECT (window), "destroy",
                            GTK_SIGNAL_FUNC (gtk_widget_destroyed),
                            &window);
 
@@ -1702,7 +1719,7 @@ _add_menu(GtkWidget ** menu, GtkWidget ** menuitem, gchar * name,
       GTK_CHECK_MENU_ITEM(*menuitem), init_value);
     gtk_menu_shell_append (GTK_MENU_SHELL (*menu), *menuitem);
     gtk_widget_show(*menuitem);
-    gtk_signal_connect(GTK_OBJECT(*menuitem), "toggled", func, NULL);
+    g_signal_connect(GTK_OBJECT(*menuitem), "toggled", func, NULL);
 }
 
 int
@@ -2156,7 +2173,7 @@ _update_handlers(AtkObject *obj)
            g_signal_handler_disconnect(last_object, table_row_reordered_id);
         if (table_column_reordered_id != 0)
            g_signal_handler_disconnect(last_object, table_column_reordered_id);
-        if (property_id != 0);
+        if (property_id != 0)
            g_signal_handler_disconnect(last_object, property_id);
 
         g_object_unref(last_object);

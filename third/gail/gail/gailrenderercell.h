@@ -55,6 +55,8 @@ struct _GailRendererCellClass
 gboolean
 gail_renderer_cell_update_cache (GailRendererCell *cell, gboolean emit_change_signal);
 
+AtkObject *gail_renderer_cell_new (void);
+
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */
