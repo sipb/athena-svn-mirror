@@ -4,7 +4,7 @@
 ### installation program.  It is called by the first script,
 ### athenainstall.
 
-### $Header: /afs/dev.mit.edu/source/repository/packs/install/platform/sun4/phase2.sh,v 1.14 1996-04-26 15:52:22 miki Exp $
+### $Header: /afs/dev.mit.edu/source/repository/packs/install/platform/sun4/phase2.sh,v 1.15 1996-05-09 02:27:05 cfields Exp $
 ### $Locker:  $
 
 echo "Set some variables"
@@ -186,10 +186,21 @@ cp -p /os/etc/dfs/dfstab etc/dfs/dfstab
 echo "$netaddr	${hostname}.MIT.EDU $hostname" >>etc/inet/hosts
 cd /root/etc
 cd /root
-cp -p /srvd/etc/passwd.std etc/passwd
-cp -p /srvd/etc/shadow.std etc/shadow
+if [ -r /srvd/etc/passwd ]; then
+    cp -p /srvd/etc/passwd etc/passwd
+    chmod 644 etc/passwd
+    chown root etc/passwd
+else
+    cp -p /srvd/etc/passwd.fallback etc/passwd
+fi
+if [ -r /srvd/etc/shadow ]; then
+    cp -p /srvd/etc/shadow etc/shadow
+    chown root etc/shadow
+else
+    cp -p /srvd/etc/shadow.fallback etc/shadow
+fi
 chmod 600 etc/shadow
-cp -p /srvd/etc/group.std etc/group
+cp -p /srvd/etc/group etc/group
 #ln -s ../var/adm/utmp etc/utmp
 #ln -s ../var/adm/utmpx etc/utmpx
 #ln -s ../var/adm/wtmp etc/wtmp
