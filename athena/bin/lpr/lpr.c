@@ -17,13 +17,13 @@
 
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpr.c,v $
- *	$Author: ghudson $
+ *	$Author: jweiss $
  *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpr.c,v 1.17 1997-10-13 21:50:44 ghudson Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpr.c,v 1.18 1998-04-15 04:10:56 jweiss Exp $
  */
 
 #ifndef lint
-static char *rcsid_lpr_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpr.c,v 1.17 1997-10-13 21:50:44 ghudson Exp $";
+static char *rcsid_lpr_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpr.c,v 1.18 1998-04-15 04:10:56 jweiss Exp $";
 #endif lint
 
 /*
@@ -264,8 +264,14 @@ main(argc, argv)
 			}
 			break;
 
-		case 'l':		/* literal output */
 		case 'p':		/* print using ``pr'' */
+			if (arg[2]) {
+				printf ("The -p option does not take an "
+					"argument, perhaps you meant -P.\n");
+				exit(1);
+			} 
+			/* Intentionally fall through to actually process -p. */
+		case 'l':		/* literal output */
 		case 't':		/* print troff output (cat files) */
 		case 'n':		/* print ditroff output */
 		case 'd':		/* print tex output (dvi files) */
