@@ -3,7 +3,7 @@
 _NOTICE N1[] = "Copyright (c) 1985,1987,1990,1991,1992  Adobe Systems Incorporated";
 _NOTICE N2[] = "GOVERNMENT END USERS: See Notice file in TranScript library directory";
 _NOTICE N3[] = "-- probably /usr/lib/ps/Notice";
-_NOTICE RCSID[]="$Header: /afs/dev.mit.edu/source/repository/third/transcript/src/enscript.c,v 1.1.1.1 1996-10-07 20:25:48 ghudson Exp $";
+_NOTICE RCSID[]="$Header: /afs/dev.mit.edu/source/repository/third/transcript/src/enscript.c,v 1.2 1996-10-14 04:57:22 ghudson Exp $";
 #endif
 /* enscript.c
  *
@@ -25,7 +25,7 @@ _NOTICE RCSID[]="$Header: /afs/dev.mit.edu/source/repository/third/transcript/sr
  * the coordinate system is in 20ths of a point. (1440 per inch)
  *
  * RCSLOG:
- * $Log: not supported by cvs2svn $
+ * $/Log: enscript.c,v/$
  * Revision 3.24  1994/03/22  22:13:45  snichols
  * typo in variable name.
  *
@@ -1102,7 +1102,7 @@ private VOID InitPage()
 			}
 			*q = *p;
 			q++;
-			*q = NULL;
+			*q = 0;
 		    }
 		    head = TRUE;
 		    ShowStr(header);
@@ -1367,11 +1367,13 @@ static FILE *OpenPPD()
     ppd = GetPPD(PrinterName);
     if (ppd != NULL)
 	return ppd;
+#ifdef ATHENA_REALLY_WANTED_TO_INSTALL_PPD_FILES_FOR_ALL_PRINTERS
     if (!BeQuiet) {
 	fprintf(stderr, "%s: warning: couldn't open ppd file for printer %s.\n",
 		prog, PrinterName);
 	fprintf(stderr, "Using built-in defaults.\n");
     }
+#endif
     return NULL;
 }
 	    
