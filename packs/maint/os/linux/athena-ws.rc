@@ -145,6 +145,10 @@ case "$1" in
 		echo
 	fi
 
+	echo -n Getting cluster information
+	save_cluster_info
+	echo
+
 	if [ "$PUBLIC" = true ]; then
 		echo -n Public workstation cleanup
 
