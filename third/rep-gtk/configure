@@ -1,6 +1,6 @@
 #! /bin/sh
 
-# From configure.in Revision: 1.32 
+# From configure.in Revision: 1.33 
 
 
 
@@ -587,7 +587,7 @@ fi
 
 
 
-version="0.14"
+version="0.15"
 
 OUT="gtk/types.la gtk/gtk.la"
 
