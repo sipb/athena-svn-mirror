@@ -1,11 +1,13 @@
 #!/sbin/sh
-# $Id: athchanges,v 1.4 2003-04-07 22:12:07 ghudson Exp $
+# $Id: athchanges,v 1.5 2003-04-09 19:42:20 ghudson Exp $
 # athchanges - Set up configuration files required by Athena software.
 
 # Unlike oschanges, this script is run under a chroot into the update
 # or install root, so it does not have to honor $UPDATE_ROOT.
 
 umask 022
+PATH=/usr/athena/bin:/usr/bin
+export PATH
 
 # Recreate GConf schemas.
 gdir=/etc/athena/gconf
