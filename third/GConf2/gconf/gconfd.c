@@ -369,7 +369,7 @@ gconf_server_load_sources(void)
           error = NULL;
         }
       
-      g_slist_free(addresses);
+      gconf_address_list_free(addresses);
 
       g_assert(sources != NULL);
 
@@ -707,6 +707,9 @@ main(int argc, char** argv)
       
       daemon_lock = gconf_get_lock (lock_dir, &err);
     }
+
+  g_free (gconfd_dir);
+  g_free (lock_dir);
 
   if (daemon_lock != NULL)
     {
