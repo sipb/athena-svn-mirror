@@ -1,6 +1,6 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/AL/getrealm.c,v $
- * $Author: shanzer $
+ * $Author: jtkohl $
  *
  * Copyright 1988 by the Massachusetts Institute of Technology.
  *
@@ -12,7 +12,7 @@
 
 #ifndef	lint
 static char rcsid_getrealm_c[] =
-"$Header: /afs/dev.mit.edu/source/repository/athena/lib/AL/getrealm.c,v 1.3 1988-10-07 05:12:20 shanzer Exp $";
+"$Header: /afs/dev.mit.edu/source/repository/athena/lib/AL/getrealm.c,v 4.1 1988-11-15 14:32:55 jtkohl Exp $";
 #endif	lint
 
 #include <mit-copyright.h>
@@ -31,7 +31,9 @@ static char rcsid_getrealm_c[] =
  * Given a fully-qualified domain-style primary host name,
  * return the name of the Kerberos realm for the host.
  * If the hostname contains no discernable domain, or an error occurs,
- * return the local realm name, as supplied by get_krbrlm()
+ * return the local realm name, as supplied by get_krbrlm().
+ * If the hostname contains a domain, but no translation is found,
+ * the hostname's domain is returned.
  *
  * The format of each line of the translation file is:
  * domain_name kerberos_realm
