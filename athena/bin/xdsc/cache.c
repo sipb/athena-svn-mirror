@@ -57,8 +57,8 @@ extern void	TopSelect();
 extern Boolean	nocache;
 extern char	axis[];
 
-static int	next=0, prev=0, nref=0;
-static int	pref=0, fref=0, lref=0;
+int	next=0, prev=0;
+static int	nref = 0, pref=0, fref=0, lref=0;
 static int	first=0, last=0;
 static int	highestseen;
 static int	current;
@@ -435,6 +435,10 @@ int	arg;
 			return(nref);
 		case PREF:
 			return(pref);
+		case LREF:
+			return(lref);
+		case FREF:
+			return(fref);
 		case FIRST:
 			return(first);
 		case LAST:
