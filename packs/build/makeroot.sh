@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: makeroot.sh,v 1.21 2004-04-21 02:09:46 zacheiss Exp $
+# $Id: makeroot.sh,v 1.22 2004-05-05 18:38:51 ghudson Exp $
 
 if [ $# -lt 1 ]; then
   echo "Usage: $0 rootdir [fullversion]" >&2
@@ -68,7 +68,7 @@ EOF
   rm -f "$admin"
 
   # Install patches.
-  jot -b y 50 | patchadd -d -R "$root" -u -M /install/patches/patches.link \
+  jot -b y 50 | patchadd -d -R "$root" -u -M /install/patches \
     `cat /install/patches/current-patches`
 
   # /usr/lib/isaexec (a front end which selects between the sparcv7 and
@@ -92,9 +92,6 @@ EOF
 
   # pkgadd needs to use mnttab.  We can fake it out by copying /etc/mnttab.
   cp /etc/mnttab "$root/etc"
-
-  # Copy the /os symlink.
-  (cd / && tar cf - os) | (cd "$root" && tar xf -)
 
   # Make links into destination area.
   ln -s ../build/athtools/usr/athena "$root/usr/athena"
