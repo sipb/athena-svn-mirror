@@ -1,15 +1,15 @@
 ! Copyright (C) 1991 by the Massachusetts Institute of Technology.
 ! For copying and distribution information, see the file "mit-copyright.h".
-*XmMessageBox.labelFontList:	-adobe-*schoolbook-medium-r-*-*-*-140-*
-*XmSelectionBox.labelFontList:	-adobe-*schoolbook-medium-r-*-*-*-140-*
-*XmPushButtonGadget.fontList:	-adobe-*schoolbook-medium-r-*-*-*-140-*
-*XmPushButton.fontList:		-adobe-*schoolbook-medium-r-*-*-*-140-*
-*XmLabelGadget.fontList:	-adobe-*schoolbook-medium-r-*-*-*-120-*
+*XmMessageBox.labelFontList:	-adobe-*schoolbook-medium-r-normal--14-*
+*XmSelectionBox.labelFontList:	-adobe-*schoolbook-medium-r-normal--14-*
+*XmPushButtonGadget.fontList:	-adobe-*schoolbook-medium-r-normal--14-*
+*XmPushButton.fontList:		-adobe-*schoolbook-medium-r-normal--14-*
+*XmLabelGadget.fontList:	-adobe-*schoolbook-medium-r-normal--12-*
 *XmForm.paneMinimum:		175
 !
-*top_lbl.fontList:		-adobe-*schoolbook-bold-r-*-*-*-180-*
+*top_lbl.fontList:		-adobe-*schoolbook-bold-r-normal--18-*
 *top_lbl.labelString:		OLC Stock Answer Browser
-*bottom_lbl.fontList:		-adobe-*schoolbook-bold-r-*-*-*-140-*
+*bottom_lbl.fontList:		-adobe-*schoolbook-bold-r-normal--14-*
 *bottom_lbl.labelString:	
 *next.labelString:		Next answer
 *prev.labelString:		Prev answer
