@@ -8,7 +8,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/rpd/rpd.c,v 1.16 1992-06-15 17:36:43 lwvanels Exp $";
+static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/rpd/rpd.c,v 1.17 1996-09-20 02:46:08 ghudson Exp $";
 #endif
 #endif
 
@@ -140,7 +140,7 @@ main(argc, argv)
     exit(1);
   }
 
-  bzero(&sin,sizeof(sin));
+  memset(&sin,0,sizeof(sin));
   sin.sin_family = AF_INET;
   sin.sin_addr.s_addr = INADDR_ANY;
   sin.sin_port = sent->s_port;

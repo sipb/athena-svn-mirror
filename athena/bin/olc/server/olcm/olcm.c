@@ -9,13 +9,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcm/olcm.c,v $
- *      $Id: olcm.c,v 1.12 1992-08-12 13:41:46 lwvanels Exp $
- *      $Author: lwvanels $
+ *      $Id: olcm.c,v 1.13 1996-09-20 02:41:03 ghudson Exp $
+ *      $Author: ghudson $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcm/olcm.c,v 1.12 1992-08-12 13:41:46 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcm/olcm.c,v 1.13 1996-09-20 02:41:03 ghudson Exp $";
 #endif
 #endif
 
@@ -25,7 +25,7 @@ static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 #include <olc/olc.h>
 
 #include <stdio.h>
-#include <strings.h>
+#include <string.h>
 #include <sys/errno.h>
 #include <sys/types.h>
 #include <sys/param.h>
@@ -189,7 +189,7 @@ main(argc,argv)
       while(isascii(*p) && isspace(*p))
 	p++;
 
-      end = index(p,'<');
+      end = strchr(p,'<');
       if (end == NULL)
 	end = p;
       else {
@@ -212,9 +212,9 @@ main(argc,argv)
       if (end != p) {
 	strcpy(orig_address,p);
 	*end = '\0';
-	end = index(orig_address,'>');
+	end = strchr(orig_address,'>');
 	if (end != NULL) *end = '\0';
-	end = index(orig_address,'\n');
+	end = strchr(orig_address,'\n');
 	if (end != NULL) *end = '\0';
 	strncpy(username,p,8);
 	username[8] = '\0';

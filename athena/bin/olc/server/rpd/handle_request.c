@@ -8,7 +8,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/rpd/handle_request.c,v 1.20 1993-05-16 19:37:20 vanharen Exp $";
+static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/rpd/handle_request.c,v 1.21 1996-09-20 02:46:07 ghudson Exp $";
 #endif
 #endif
 
@@ -159,7 +159,7 @@ handle_request(fd, from)
   their_auth.length = ntohl(their_auth.length);
 
   if (their_auth.length != 0) {
-    bzero(their_auth.dat,sizeof(their_auth.dat));
+    memset(their_auth.dat,0,sizeof(their_auth.dat));
     ltr =MIN(sizeof(unsigned char)*their_auth.length,
 	     sizeof(their_auth.dat));
     if ((len = sread(fd,their_auth.dat,ltr)) != ltr) {

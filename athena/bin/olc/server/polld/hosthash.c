@@ -6,13 +6,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/polld/hosthash.c,v $
- *	$Id: hosthash.c,v 1.3 1991-03-27 14:02:52 lwvanels Exp $
- *	$Author: lwvanels $
+ *	$Id: hosthash.c,v 1.4 1996-09-20 02:41:29 ghudson Exp $
+ *	$Author: ghudson $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/polld/hosthash.c,v 1.3 1991-03-27 14:02:52 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/polld/hosthash.c,v 1.4 1996-09-20 02:41:29 ghudson Exp $";
 #endif
 #endif
 
@@ -68,7 +68,7 @@ init_cache()
   int i;
 
   for(i=0;i<CACHESIZE;i++) {
-    bzero((char *) &(cache[i]), sizeof(cache[i]));
+    memset(&(cache[i]), 0, sizeof(cache[i]));
     cache[i].use = 1;
   }
 }

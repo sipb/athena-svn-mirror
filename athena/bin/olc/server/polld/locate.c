@@ -126,7 +126,7 @@ PTF *person;
   }
 
   sin.sin_family = host->h_addrtype;
-  bcopy(host->h_addr, (char *) &sin.sin_addr, host->h_length);
+  memcpy(&sin.sin_addr, host->h_addr, host->h_length);
   sin.sin_port = finger_port;
   if ((fd = socket(host->h_addrtype, SOCK_STREAM, 0)) < 0) {
     syslog(LOG_ERR,"locate_person: Error opening socket: %m");

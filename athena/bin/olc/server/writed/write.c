@@ -28,11 +28,11 @@
 
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/writed/write.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/writed/write.c,v 1.1 1991-05-15 12:36:40 lwvanels Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/writed/write.c,v 1.2 1996-09-20 02:46:53 ghudson Exp $
  */
 
 #ifndef lint
-static char *rcsid_write_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/writed/write.c,v 1.1 1991-05-15 12:36:40 lwvanels Exp $";
+static char *rcsid_write_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/writed/write.c,v 1.2 1996-09-20 02:46:53 ghudson Exp $";
 #endif lint
 
 #ifndef	lint
@@ -53,12 +53,11 @@ static char *sccsid = "@(#)write.c	4.13 3/13/86";
 #include	<netinet/in.h>
 #include	<netdb.h>
 #include <pwd.h>
+#include <string.h>
 
 #define	NMAX	sizeof(ubuf.ut_name)
 #define	LMAX	sizeof(ubuf.ut_line)
 
-char	*strcat();
-char	*strcpy();
 struct	utmp ubuf;
 int	signum[] = {SIGHUP, SIGINT, SIGQUIT, 0};
 char	mebuf[NMAX + 1]	= "???";
@@ -81,7 +80,6 @@ struct passwd *pwdent;
 FILE	*tf;
 int	logcnt;
 char	*ttyname();
-char	*rindex();
 int	eof();
 int	timout();
 char	*getenv();
@@ -107,7 +105,7 @@ main(argc, argv)
 	me = mebuf;
 	if ((argc > 3) && (getuid() == 0) &&
 	    (strcmp("-f", argv[1]) == 0) &&
-	    (mytty = rindex(argv[2], '@'))) {
+	    (mytty = strrchr(argv[2], '@'))) {
 		me = argv[2];
 		*mytty++ = '\0';
 		netme = 1;
@@ -119,7 +117,7 @@ main(argc, argv)
 		exit(1);
 	}
 	him = argv[1];
-	if ((!netme) && (hishost = rindex(him, '@'))) {
+	if ((!netme) && (hishost = strrchr(him, '@'))) {
 		*hishost++ = '\0';
 		hp = gethostbyname(hishost);
 		if (hp == NULL) {
@@ -168,7 +166,7 @@ main(argc, argv)
 		if (!suser)
 		  exit(1);
 	    }
-	    mytty = rindex(mytty, '/') + 1;
+	    mytty = strrchr(mytty, '/') + 1;
 	}
 	if (histtya) {
 		strcpy(histty, "/dev/");
@@ -255,7 +253,7 @@ cont:
 			exit(1);
 		}
 		sin.sin_family = hp->h_addrtype;
-		bcopy(hp->h_addr, (char *)&sin.sin_addr, hp->h_length);
+		memcpy(&sin.sin_addr, hp->h_addr, hp->h_length);
 		sin.sin_port = sp->s_port;
 		fds = socket(hp->h_addrtype, SOCK_STREAM, 0);
 		if (fds < 0) {
