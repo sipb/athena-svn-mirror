@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: gnome-panel.sh,v 1.1 2003-07-24 18:48:44 ghudson Exp $
+# $Id: gnome-panel.sh,v 1.1.2.1 2003-07-24 19:32:28 ghudson Exp $
 
 # gnome-panel - Wrapper around /usr/bin/panel to ensure that the
 # Athena GNOME libraries will take preference over the native ones,
