@@ -4,17 +4,17 @@
  *	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFreeNot.c,v $
- *	$Author: raeburn $
+ *	$Author: lwvanels $
  *
  *	Copyright (c) 1987 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFreeNot.c,v 1.3 1990-11-30 08:44:07 raeburn Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFreeNot.c,v 1.4 1991-12-04 13:51:06 lwvanels Exp $ */
 
 #ifndef lint
-static char rcsid_ZFreeNotice_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFreeNot.c,v 1.3 1990-11-30 08:44:07 raeburn Exp $";
-#endif lint
+static char rcsid_ZFreeNotice_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFreeNot.c,v 1.4 1991-12-04 13:51:06 lwvanels Exp $";
+#endif
 
 #include <zephyr/mit-copyright.h>
 

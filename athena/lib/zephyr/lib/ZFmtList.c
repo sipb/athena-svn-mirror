@@ -4,17 +4,17 @@
  *	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFmtList.c,v $
- *	$Author: jfc $
+ *	$Author: lwvanels $
  *
  *	Copyright (c) 1987,1991 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFmtList.c,v 1.11 1991-06-20 14:31:36 jfc Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFmtList.c,v 1.12 1991-12-04 13:48:25 lwvanels Exp $ */
 
 #ifndef lint
 static char rcsid_ZFormatNoticeList_c[] =
-    "$Id: ZFmtList.c,v 1.11 1991-06-20 14:31:36 jfc Exp $";
+    "$Id: ZFmtList.c,v 1.12 1991-12-04 13:48:25 lwvanels Exp $";
 #endif
 
 #include <zephyr/zephyr_internal.h>
@@ -45,7 +45,7 @@ Code_t ZFormatNoticeList(notice, list, nitems, buffer, ret_len,
     *ret_len = hdrlen+size;
 
     /* *ret_len can never be zero here, no need to worry about malloc(0). */
-    if (!(*buffer = malloc((unsigned)*ret_len)))
+    if (!(*buffer = (char *) malloc((unsigned)*ret_len)))
 	return (ENOMEM);
 
     bcopy(header, *buffer, hdrlen);

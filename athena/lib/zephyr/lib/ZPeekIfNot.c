@@ -4,17 +4,17 @@
  *	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZPeekIfNot.c,v $
- *	$Author: jtkohl $
+ *	$Author: lwvanels $
  *
  *	Copyright (c) 1987,1988 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZPeekIfNot.c,v 1.9 1988-06-29 16:40:43 jtkohl Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZPeekIfNot.c,v 1.10 1991-12-04 13:48:24 lwvanels Exp $ */
 
 #ifndef lint
-static char rcsid_ZPeekIfNotice_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZPeekIfNot.c,v 1.9 1988-06-29 16:40:43 jtkohl Exp $";
-#endif lint
+static char rcsid_ZPeekIfNotice_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZPeekIfNot.c,v 1.10 1991-12-04 13:48:24 lwvanels Exp $";
+#endif
 
 #include <zephyr/mit-copyright.h>
 
@@ -41,7 +41,7 @@ Code_t ZPeekIfNotice(notice, from, predicate, args)
 				       &tmpnotice)) != ZERR_NONE)
 		return (retval);
 	    if ((*predicate)(&tmpnotice, args)) {
-		if (!(buffer = malloc((unsigned) qptr->packet_len)))
+		if (!(buffer = (char *) malloc((unsigned) qptr->packet_len)))
 		    return (ENOMEM);
 		bcopy(qptr->packet, buffer, qptr->packet_len);
 		if (from)

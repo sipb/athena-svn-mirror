@@ -4,16 +4,16 @@
  *	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZCkIfNot.c,v $
- *	$Author: jfc $
+ *	$Author: lwvanels $
  *
  *	Copyright (c) 1987,1988 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZCkIfNot.c,v 1.10 1991-06-20 14:35:39 jfc Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZCkIfNot.c,v 1.11 1991-12-04 13:48:21 lwvanels Exp $ */
 
 #ifndef lint
-static char rcsid_ZCheckIfNotice_c[] = "$Id: ZCkIfNot.c,v 1.10 1991-06-20 14:35:39 jfc Exp $";
+static char rcsid_ZCheckIfNotice_c[] = "$Id: ZCkIfNot.c,v 1.11 1991-12-04 13:48:21 lwvanels Exp $";
 #endif
 
 #include <zephyr/zephyr_internal.h>
@@ -39,7 +39,7 @@ Code_t ZCheckIfNotice(notice, from, predicate, args)
 				   &tmpnotice)) != ZERR_NONE)
 	    return (retval);
 	if ((*predicate)(&tmpnotice, args)) {
-	    if (!(buffer = malloc((unsigned) qptr->packet_len)))
+	    if (!(buffer = (char *) malloc((unsigned) qptr->packet_len)))
 		return (ENOMEM);
 	    bcopy(qptr->packet, buffer, qptr->packet_len);
 	    if (from)

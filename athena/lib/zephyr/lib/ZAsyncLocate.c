@@ -4,16 +4,16 @@
  *	Created by:	Marc Horowitz
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZAsyncLocate.c,v $
- *	$Author: jfc $
+ *	$Author: lwvanels $
  *
  *	Copyright (c) 1990,1991 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZAsyncLocate.c,v 1.1 1991-06-29 23:51:18 jfc Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZAsyncLocate.c,v 1.2 1991-12-04 13:51:16 lwvanels Exp $ */
 
 #ifndef lint
-static char rcsid_ZAsyncLocate_c[] = "$Id: ZAsyncLocate.c,v 1.1 1991-06-29 23:51:18 jfc Exp $";
+static char rcsid_ZAsyncLocate_c[] = "$Id: ZAsyncLocate.c,v 1.2 1991-12-04 13:51:16 lwvanels Exp $";
 #endif
 
 #include <zephyr/zephyr_internal.h>
@@ -21,7 +21,7 @@ static char rcsid_ZAsyncLocate_c[] = "$Id: ZAsyncLocate.c,v 1.1 1991-06-29 23:51
 Code_t ZRequestLocations(user, zald, kind, auth)
      char *user;
      register ZAsyncLocateData_t *zald;
-     int kind;	/* UNSAFE, UNACKED, or ACKED */
+     ZNotice_Kind_t kind;	/* UNSAFE, UNACKED, or ACKED */
      Z_AuthProc auth;
 {
     int retval;
@@ -66,7 +66,7 @@ Code_t ZParseLocations(notice,zald,nlocs,user)
      char **user;
 {
     char *ptr, *end;
-    int retval, i;
+    int i;
 
     ZFlushLocations();    /* This never fails (this function is part of the
 			     library, so it is allowed to know this). */
@@ -114,21 +114,21 @@ Code_t ZParseLocations(notice,zald,nlocs,user)
        unsigned int len;
 
        len = strlen (ptr) + 1;
-       __locate_list[i].host = malloc(len);
+       __locate_list[i].host = (char *) malloc(len);
        if (!__locate_list[i].host)
 	  return (ENOMEM);
        (void) strcpy(__locate_list[i].host, ptr);
        ptr += len;
 
        len = strlen (ptr) + 1;
-       __locate_list[i].time = malloc(len);
+       __locate_list[i].time = (char *) malloc(len);
        if (!__locate_list[i].time)
 	  return (ENOMEM);
        (void) strcpy(__locate_list[i].time, ptr);
        ptr += len;
 
        len = strlen (ptr) + 1;
-       __locate_list[i].tty = malloc(len);
+       __locate_list[i].tty = (char *) malloc(len);
        if (!__locate_list[i].tty)
 	  return (ENOMEM);
        (void) strcpy(__locate_list[i].tty, ptr);

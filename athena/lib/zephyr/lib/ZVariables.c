@@ -5,17 +5,17 @@
  *	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZVariables.c,v $
- *	$Author: raeburn $
+ *	$Author: lwvanels $
  *
  *	Copyright (c) 1987 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZVariables.c,v 1.10 1990-11-04 10:26:12 raeburn Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZVariables.c,v 1.11 1991-12-04 13:51:03 lwvanels Exp $ */
 
 #ifndef lint
-static char rcsid_ZVariables_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZVariables.c,v 1.10 1990-11-04 10:26:12 raeburn Exp $";
-#endif lint
+static char rcsid_ZVariables_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZVariables.c,v 1.11 1991-12-04 13:51:03 lwvanels Exp $";
+#endif
 
 #include <zephyr/mit-copyright.h>
 

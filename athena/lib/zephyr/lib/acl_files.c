@@ -4,7 +4,7 @@
  *	Created by:	John T. Kohl
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/acl_files.c,v $
- *	$Author: jfc $
+ *	$Author: lwvanels $
  *
  *	Copyright (c) 1987,1988 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid_acl_files_c[] = "$Id: acl_files.c,v 1.5 1991-06-29 20:58:23 jfc Exp $";
+static char rcsid_acl_files_c[] = "$Id: acl_files.c,v 1.6 1991-12-04 13:51:12 lwvanels Exp $";
 #endif
 
 /*** Routines for manipulating access control list files ***/
@@ -378,7 +378,7 @@ static int acl_cache_next = 0;
 int acl_load(name)
 char *name;
 {
-    int i,fd;
+    int i;
     FILE *f;
     char buf[MAX_PRINCIPAL_SIZE];
     char canon[MAX_PRINCIPAL_SIZE];

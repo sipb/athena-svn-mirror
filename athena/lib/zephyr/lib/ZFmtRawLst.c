@@ -4,17 +4,17 @@
  *	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFmtRawLst.c,v $
- *	$Author: jtkohl $
+ *	$Author: lwvanels $
  *
  *	Copyright (c) 1987 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFmtRawLst.c,v 1.6 1988-06-23 10:29:16 jtkohl Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFmtRawLst.c,v 1.7 1991-12-04 13:50:58 lwvanels Exp $ */
 
 #ifndef lint
-static char rcsid_ZFormatRawNoticeList_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFmtRawLst.c,v 1.6 1988-06-23 10:29:16 jtkohl Exp $";
-#endif lint
+static char rcsid_ZFormatRawNoticeList_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFmtRawLst.c,v 1.7 1991-12-04 13:50:58 lwvanels Exp $";
+#endif
 
 #include <zephyr/mit-copyright.h>
 
@@ -42,7 +42,7 @@ Code_t ZFormatRawNoticeList(notice, list, nitems, buffer, ret_len)
 
     *ret_len = hdrlen+size;
     
-    if (!(*buffer = malloc((unsigned) *ret_len)))
+    if (!(*buffer = (char *) malloc((unsigned) *ret_len)))
 	return (ENOMEM);
 
     bcopy(header, *buffer, hdrlen);
