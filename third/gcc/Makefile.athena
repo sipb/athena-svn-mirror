@@ -1,4 +1,4 @@
-# $Id: Makefile.athena,v 1.21 2003-03-13 06:17:03 ghudson Exp $
+# $Id: Makefile.athena,v 1.22 2003-03-31 20:44:05 ghudson Exp $
 
 SHELL=/bin/sh
 
@@ -31,12 +31,12 @@ clean:
 	cd obj && ${MAKE} clean
 
 all:
-	cd obj && ${MAKE} bootstrap
+	cd obj && CONFIG_SHELL=/bin/ksh ${MAKE} bootstrap SHELL=/bin/ksh
 
 check:
 
 install: force
 	mkdir -p "$$SRVD/usr"
-	cd obj && ${MAKE} install "prefix=$$SRVD/usr/athena"
+	cd obj && ${MAKE} install "prefix=$$SRVD/usr/athena" SHELL=/bin/ksh
 
 force:

@@ -69,7 +69,7 @@ SHELL = /bin/sh
 # cygwin host.
 INSTALL_PROGRAM_ARGS =
 
-INSTALL = $$s/install-sh -c
+INSTALL = $(SHELL) $$s/install-sh -c
 INSTALL_PROGRAM = $(INSTALL) $(INSTALL_PROGRAM_ARGS)
 INSTALL_SCRIPT = $(INSTALL)
 INSTALL_DATA = $(INSTALL) -m 644
