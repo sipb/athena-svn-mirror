@@ -8,6 +8,7 @@
  */
 
 #include <stdio.h>
+#include <sys/types.h>
 #include <sys/file.h>
 #include <string.h>
 #include <sys/param.h>
@@ -23,7 +24,7 @@ static const char copyright[] =
     "Copyright 1987,1988 by MIT Student Information Processing Board";
 
 static const char rcsid_compile_et_c[] =
-    "$Header: /afs/dev.mit.edu/source/repository/athena/lib/et/compile_et.c,v 1.3 1991-02-28 15:15:23 epeisach Exp $";
+    "$Header: /afs/dev.mit.edu/source/repository/athena/lib/et/compile_et.c,v 1.4 1991-06-10 01:57:57 probe Exp $";
 #endif
 
 extern char *gensym();
