@@ -6,6 +6,8 @@ add - attach a filesystem, add it to your path and manpath
 .SH SYNOPSIS
 add [ options ] filesystemname filesystemname ...
 
+add [ options ] pathname pathname ...
+
 .SH DESCRIPTION
 \fIadd\fR is an alias provided by the standard Athena dotfiles.  It is
 intended to make the process of using software that is stored in
@@ -19,6 +21,12 @@ In addition, if no binary directory matches the current system,
 \fIATHENA_SYS_COMPAT\fR (see below) may be consulted for a list of
 compatible binary directories.  (See \fIlockers\fR(7) for suggestions
 on how to organize and maintain lockers.)
+
+A pathname (starting with a ``.'' or ``/'') may be specified in place
+of a filesystem name. In this case, the string is added directly to
+the path rather than being interpreted as a lockername and resolved
+into a pathname. Note that filesystem names and pathnames may not be
+mixed in a single invocation of add.
 
 When no arguments are used, \fIadd\fR will print out the (possibly
 abbreviated) value of the user's PATH variable. This is equivalent to
