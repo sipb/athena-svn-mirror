@@ -2,8 +2,8 @@
  *  session_gate - Keeps session alive by continuing to run
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/session/session_gate.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/session/session_gate.c,v 1.10 1994-03-25 15:36:36 miki Exp $
- *	$Author: miki $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/session/session_gate.c,v 1.11 1995-02-28 17:11:25 cfields Exp $
+ *	$Author: cfields $
  */
 
 #include <signal.h>
@@ -17,6 +17,29 @@
 #include <sys/file.h>
 #include <sys/stat.h>
 #include <sys/wait.h>
+
+#ifdef SGISession
+#include <stdio.h>
+#include <errno.h>
+#include <X11/Xlib.h>
+
+Display *dpy;
+Window root;
+Atom sessionAtom, wmAtom;
+int logoutsignal = 0;
+int SGISession_debug = 0;
+
+#define SGISession_TIMEOUT 1
+#define SGISession_ATHENALOGOUT 2
+#define SGISession_SGILOGOUT 3
+
+#define SGISession_NOBODY 1
+#define SGISession_WMONLY 2
+#define SGISession_EVERYONE 3
+
+void flaglogout();
+void SGISession_EndSession(), SGISession_Debug();
+#endif
 
 #define BUFSIZ 1024
 #define MINUTE 60
@@ -44,15 +67,36 @@ char **argv;
     char buf[10];
     time_t mtime;
     int dologout = 0;
+#ifdef SGISession
+    int logoutStarted = 0;
 
+
+    while (*argv)
+      {
+	if (!strcmp(*argv, "-logout"))
+	  dologout = 1;
+
+	if (!strcmp(*argv, "-debug"))
+	  SGISession_debug = 1;
+
+	argv++;
+      }
+#else
     if (argc == 2 && !strcmp(argv[1], "-logout"))
       dologout = 1;
+#endif
 
     pid = getpid();
     parentpid = getppid();
     
     /*  Set up signal handlers for a clean exit  */
 
+#ifdef SGISession
+    	signal(SIGHUP, flaglogout);
+	signal(SIGINT, flaglogout);
+	signal(SIGQUIT, flaglogout);
+	signal(SIGTERM, flaglogout);
+#else
     if (dologout) {
 	signal(SIGHUP, logout);
 	signal(SIGINT, logout);
@@ -64,6 +108,7 @@ char **argv;
 	signal(SIGQUIT, cleanup);
 	signal(SIGTERM, cleanup);
     }
+#endif
     signal(SIGCHLD, clean_child);	/* Clean up zobmied children */
 
     /*  Figure out the filename  */
@@ -82,6 +127,70 @@ char **argv;
      *   - If parent process does not exist, cleanup and exit.
      *   - If pid file has been modified or is missing, refresh it.
      */
+
+#ifdef SGISession
+#define goodbye() if (dologout) logout(); else cleanup()
+
+    if (0 == SGISession_Initialize())
+      {
+	SGISession_Debug("Gating an SGI session\n");
+	while (1)
+	  {
+	    switch(SGISession_Wait())
+	      {
+	      case SGISession_TIMEOUT: /* MINUTE passed */
+		SGISession_Debug("chime\n");
+		clean_child();	/* In case there are any zombied children */
+		if (parentpid != getppid())
+		  cleanup();
+		mtime = check_pid_file(filename, pid, mtime);
+		break;
+
+	      case SGISession_ATHENALOGOUT: /* HUP signal */
+		SGISession_Debug("Received hangup\n");
+		logoutsignal = 0;
+		if (logoutStarted)
+		  {
+		    /* This is our second signal. Something bad must
+		       have happened the first time. Just log the user
+		       out. */
+		    SGISession_Debug("Second hangup; doing Athena logout\n");
+		    goodbye();
+		  }
+
+		logoutStarted = 1;
+		switch(SGISession_WhoCares())
+		  {
+		  case SGISession_NOBODY:
+		    SGISession_Debug("Nobody cares; doing Athena logout\n");
+		    goodbye();
+		    break;
+		  case SGISession_WMONLY:
+		    SGISession_Debug(
+"Window manager about cares session but reaper was not run;\n\
+calling endsession and doing Athena logout\n");
+		    SGISession_EndSession();
+		    goodbye();
+		    break;
+		  case SGISession_EVERYONE:
+		    SGISession_Debug(
+		     "starting endsession and waiting for window property\n");
+		    SGISession_EndSession();
+		    break;
+		  }
+		break;
+
+	      case SGISession_SGILOGOUT: /* property deleted */
+		SGISession_Debug(
+			 "Window property deleted; doing Athena logout\n");
+		goodbye();
+		break;
+	      }
+	  }
+      }
+    else
+ SGISession_Debug("Gating a normal session; SGISession_Initialize failed\n");
+#endif
     
     while (1)
       {
@@ -92,6 +201,137 @@ char **argv;
 	  mtime = check_pid_file(filename, pid, mtime);
       }
 }
+
+#ifdef SGISession
+int SGISession_Initialize()
+{
+  int screen;
+
+  dpy = XOpenDisplay(NULL);
+
+    if (dpy == NULL)
+      return -1;
+
+  screen = DefaultScreen(dpy);
+  root = RootWindow(dpy, screen);
+
+  sessionAtom = XInternAtom(dpy, "_SGI_SESSION_PROPERTY", False);
+  wmAtom = XInternAtom(dpy, "_SGI_TELL_WM", False);
+
+  XSelectInput(dpy, root, PropertyChangeMask);
+  return 0;
+}
+
+void flaglogout( )
+{
+  logoutsignal++;
+}
+
+int SGISession_Wait()
+{
+  static int initialized = 0;
+  static fd_set read;
+  static struct timeval timeout;
+  int selret;
+  XEvent event;
+
+  if (!initialized)
+    {
+      FD_ZERO(&read);
+      timeout.tv_sec = MINUTE;
+      timeout.tv_usec = 0;
+      initialized++;
+    }
+
+  while (1)
+    {
+      while (XPending(dpy) > 0)
+	{
+	  if (logoutsignal)
+	    return SGISession_ATHENALOGOUT;
+
+	  XNextEvent(dpy, &event);
+	  if (event.type == PropertyNotify &&
+	      event.xproperty.atom == sessionAtom &&
+	      event.xproperty.state == PropertyDelete)
+	    return SGISession_SGILOGOUT;
+	}
+
+      FD_SET(ConnectionNumber(dpy), &read);
+
+      if (logoutsignal)
+	return SGISession_ATHENALOGOUT;
+
+      selret = select(ConnectionNumber(dpy) + 1,
+		      &read, NULL, NULL, &timeout);
+      switch(selret)
+	{
+	case -1:
+	  if (errno == EINTR && logoutsignal)
+	    return SGISession_ATHENALOGOUT;
+	  fprintf(stderr,
+		  "session_gate: Unexpected error %d from select\n",
+		  errno);
+	  break;
+	case 0:
+	  return SGISession_TIMEOUT;
+	  break;
+	default:
+	  if (!FD_ISSET(ConnectionNumber(dpy), &read))
+	    {
+	      /* This can't happen. */
+	      fprintf(stderr,
+		      "session_gate: select returned data for unknown fd\n");
+	      exit(0);
+	    }
+	  break;
+	}
+    }
+}
+
+int SGISession_WhoCares()
+{
+  Atom *properties;
+  int i, numprops;
+  int wmcares = 0, wecare = 0;
+
+  properties = XListProperties(dpy, root, &numprops);
+  if (properties)
+    {
+      for (i = 0; i < numprops; i++)
+	if (properties[i] == sessionAtom)
+	  wecare = 1;
+	else
+	  if (properties[i] == wmAtom)
+	    wmcares = 1;
+    }
+  else
+    return SGISession_NOBODY;
+
+  XFree(properties);
+
+  if (wmcares && wecare)
+    return SGISession_EVERYONE;
+
+  if (wmcares)
+    return SGISession_WMONLY;
+
+  return SGISession_NOBODY;
+}
+
+void SGISession_EndSession()
+{
+  system("/usr/bin/X11/endsession -f");
+}
+
+void SGISession_Debug(message)
+     char *message;
+{
+  if (SGISession_debug)
+    fprintf(stderr, "session_gate debug: %s", message);
+}
+#endif
+
 
 static powers[] = {100000,10000,1000,100,10,1,0};
 
@@ -144,6 +384,8 @@ void logout( )
  */
 void clean_child( )
 {
+    signal(SIGCHLD, clean_child);	/* Clean up zobmied children */
+
 #ifdef POSIX
     waitpid((pid_t)-1, 0, WNOHANG);
 #else
