@@ -734,7 +734,7 @@ XftCharIndex (Display	    *dpy,
 		offset = 1;
 	}
 	ent = ent + offset;
-	if (ent > font->hash_value)
+	if (ent >= font->hash_value)
 	    ent -= font->hash_value;
     }
     return font->hash_table[ent].glyph;
