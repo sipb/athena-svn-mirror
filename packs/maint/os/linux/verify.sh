@@ -95,7 +95,8 @@ for failure in $failures; do
     /etc/xinetd.conf | \
     /etc/xinetd.d/* | \
     /etc/athena/rc.conf | \
-    /etc/conf.linuxconf )
+    /etc/conf.linuxconf | \
+    /etc/man.config )
         ;;
 
     # These are managed by other parts of the system which work to make
@@ -173,7 +174,7 @@ rpm -i --force $pkglist || errorout "$0: rpm package installation failed"
 
 config=$SYSPREFIX/config/$athenaversion
 
-for i in services syslog.conf inittab info-dir xinetd.conf; do
+for i in man.config services syslog.conf inittab info-dir xinetd.conf; do
     cp $config/etc/$i /etc/$i
 done
 
