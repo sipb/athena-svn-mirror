@@ -9,6 +9,7 @@ sun4)
 sgi)
 	echo "/etc/services"			>> "$CONFCHG"
 	echo "/etc/inetd.conf"			>> "$CONFCHG"
+	echo "/etc/syslog.conf"			>> "$CONFCHG"
 	;;
 esac
 
