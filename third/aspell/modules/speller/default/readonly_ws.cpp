@@ -612,7 +612,7 @@ namespace aspeller_default_readonly_ws {
     typedef vector<Value>   Vector;
     static const bool is_multi = false;
     const Key & key(const Value & v) const {return v.first;}
-    hash<const char *>  hash;
+    acommon::hash<const char *>  hash;
     bool equal(const Key & rhs, const Key & lhs) const {return strcmp(rhs,lhs) == 0;}
     bool is_nonexistent(const Value & v) const {return v.first == 0;}
     void make_nonexistent(Value & v) const {
@@ -626,11 +626,11 @@ namespace aspeller_default_readonly_ws {
     return ((i + size - 1)/size)*size;
   }
 
-  static void advance_file(FStream & OUT, int pos) {
-    int diff = pos - OUT.tell();
+  static void advance_file(FStream & out, int pos) {
+    int diff = pos - out.tell();
     assert(diff >= 0);
     for(; diff != 0; --diff)
-      OUT << '\0';
+      out << '\0';
   }
   
   PosibErr<void> create (ParmString base, 
@@ -648,9 +648,9 @@ namespace aspeller_default_readonly_ws {
 
     const char * mid_chars = lang.mid_chars();
 
-    FStream OUT;
+    FStream out;
    
-    OUT.open(base, "wb");
+    out.open(base, "wb");
 
     DataHead data_head;
     memset(&data_head, 0, sizeof(data_head));
@@ -757,15 +757,15 @@ namespace aspeller_default_readonly_ws {
       // Witting word data, creating Final Hash, creating sounds Pre Hash
       //
       
-      advance_file(OUT, data_head.head_size);
-      std::streampos start = data_head.head_size;
+      advance_file(out, data_head.head_size);
+      long int start = data_head.head_size;
 
       if (use_soundslike)
 	sound_prehash.resize(word_hash.bucket_count());
       
       vector<u32int> final_hash(word_hash.bucket_count(), u32int_max);
       
-      OUT << '\0';
+      out << '\0';
       for (unsigned int i = 0; i != word_hash.vector().size(); ++i) {
 	
 	const char * value = word_hash.vector()[i];
@@ -774,11 +774,11 @@ namespace aspeller_default_readonly_ws {
 
 	// write compound info
 	if (*(value - 1) != '\0')
-	  OUT << *(value-1);
+	  out << *(value-1);
 
-	final_hash[i] = OUT.tell() - start;
+	final_hash[i] = out.tell() - start;
 
-	OUT << value << '\0';
+	out << value << '\0';
 	if (use_soundslike) {
 
 	  temp = lang.to_soundslike(value);
@@ -831,14 +831,14 @@ namespace aspeller_default_readonly_ws {
 	}
       }
       
-      data_head.word_block_size = round_up(OUT.tell() - start + 1l, 
+      data_head.word_block_size = round_up(out.tell() - start + 1l, 
 					   page_size);
       data_head.total_block_size = data_head.word_block_size;
 
-      advance_file(OUT, data_head.head_size + data_head.total_block_size);
+      advance_file(out, data_head.head_size + data_head.total_block_size);
 
       // Writting final hash
-      OUT.write(reinterpret_cast<const char *>(&final_hash.front()),
+      out.write(reinterpret_cast<const char *>(&final_hash.front()),
 		final_hash.size() * 4);
 
       data_head.word_count   = word_hash.size();
@@ -846,7 +846,7 @@ namespace aspeller_default_readonly_ws {
       data_head.word_size    
 	= round_up(word_hash.bucket_count() * 4, page_size);
       data_head.total_block_size += data_head.word_size;
-      advance_file(OUT, data_head.head_size + data_head.total_block_size);
+      advance_file(out, data_head.head_size + data_head.total_block_size);
     }
     
     if (use_soundslike) {
@@ -854,7 +854,7 @@ namespace aspeller_default_readonly_ws {
     
       vector<u32int> final_hash(sound_prehash.bucket_count(), u32int_max);
 
-      std::streampos start = OUT.tell();
+      long int start = out.tell();
       
       //
       // Writting soundslike words, creating soundslike Final Hash
@@ -868,28 +868,28 @@ namespace aspeller_default_readonly_ws {
 	u16int count = value.second.size;
 
 	if (count == 1) {
-	  OUT.write(reinterpret_cast<const char *>(&value.second.d.single), 
+	  out.write(reinterpret_cast<const char *>(&value.second.d.single), 
 		    4);
 	} else {
-	  OUT.write(reinterpret_cast<const char *>(value.second.d.list),
+	  out.write(reinterpret_cast<const char *>(value.second.d.list),
 		    count * 4);
 	}
 
-	OUT.write(reinterpret_cast<char *>(&count),2);
+	out.write(reinterpret_cast<char *>(&count),2);
 
-	final_hash[i] = OUT.tell() - start;
+	final_hash[i] = out.tell() - start;
 
-	OUT << value.first << '\0';
+	out << value.first << '\0';
 
-	advance_file(OUT, round_up(OUT.tell(), 4));
+	advance_file(out, round_up(out.tell(), 4));
       }
       data_head.soundslike_block_size 
-	= round_up(OUT.tell() - start, page_size);
+	= round_up(out.tell() - start, page_size);
       data_head.total_block_size += data_head.soundslike_block_size;
 
       // Witting Final soundslike Hash
-      advance_file(OUT, data_head.head_size + data_head.total_block_size);
-      OUT.write(reinterpret_cast<char *>(&final_hash.front()),
+      advance_file(out, data_head.head_size + data_head.total_block_size);
+      out.write(reinterpret_cast<char *>(&final_hash.front()),
 		final_hash.size() * 4);
 
       data_head.soundslike_count   = sound_prehash.size();
@@ -900,15 +900,15 @@ namespace aspeller_default_readonly_ws {
     
     }
 
-    advance_file(OUT, data_head.head_size + data_head.total_block_size);
+    advance_file(out, data_head.head_size + data_head.total_block_size);
 
     // write data head to file
-    OUT.restart();
-    OUT.write((char *)&data_head, sizeof(DataHead));
-    OUT.write(lang.name(), data_head.lang_name_size);
-    OUT.write(lang.soundslike_name(), data_head.soundslike_name_size);
-    OUT.write(lang.soundslike_version(), data_head.soundslike_version_size);
-    OUT.write(mid_chars, data_head.middle_chars_size); 
+    out.restart();
+    out.write((char *)&data_head, sizeof(DataHead));
+    out.write(lang.name(), data_head.lang_name_size);
+    out.write(lang.soundslike_name(), data_head.soundslike_name_size);
+    out.write(lang.soundslike_version(), data_head.soundslike_version_size);
+    out.write(mid_chars, data_head.middle_chars_size); 
 
     return no_err;
   }

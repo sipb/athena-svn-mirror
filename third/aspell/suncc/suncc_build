@@ -1,0 +1,26 @@
+#!/usr/bin/bash
+
+# These are the hacks needed to get aspell to build on solaris/sparc
+#
+# Written for Stibo Catalog by Flemming Frandsen <flfr at stibo dot com> 2004
+
+make distclean
+
+export PATH=/home/ffr/gnu:/home/ffr/bin:/usr/bin:/usr/5bin:/usr/ccs/bin:/usr/sbin:/opt/SUNWspro/bin:/home/compdev/bin/Solaris:/usr/ucb:/etc
+
+export CC=cc
+export LD=CC
+export CXX=CC
+
+./configure --prefix=/home/ffr/projects/spell/test
+
+
+# Use the C++ compiler in stead of the c compiler in examples.
+# This is caused by not linking system libs to libaspell.so so this an incorrect "fix"
+
+cp examples/Makefile examples/Makefile.old
+perl -ne 's/CC = cc/CC = CC/; print' < examples/Makefile.old > examples/Makefile
+
+
+make
+

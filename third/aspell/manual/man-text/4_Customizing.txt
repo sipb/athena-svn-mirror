@@ -1,5 +1,5 @@
 next up previous contents
-Next: 5. Working With Dictionaries Up: GNU Aspell 0.50.3 Previous: 3.
+Next: 5. Working With Dictionaries Up: GNU Aspell 0.50.5 Previous: 3.
 Basic Usage   Contents
 
 Subsections
@@ -511,6 +511,6 @@ bad-spellers
 
 --------------------------------------------------------------------------
 next up previous contents
-Next: 5. Working With Dictionaries Up: GNU Aspell 0.50.3 Previous: 3.
+Next: 5. Working With Dictionaries Up: GNU Aspell 0.50.5 Previous: 3.
 Basic Usage   Contents
-Kevin Atkinson 2002-11-23
+Kevin Atkinson 2004-02-10

@@ -22,6 +22,7 @@
 
 #include "aspell.h"
 
+#include "asc_ctype.hpp"
 #include "check_funs.hpp"
 #include "config.hpp"
 #include "document_checker.hpp"
@@ -66,7 +67,7 @@ void soundslike();
   } while(false)
 #define EXIT_ON_ERR_SET(command, type, var)\
   type var;\
-  do{PosibErr<type> pe(command);\
+  do{PosibErr< type > pe(command);\
   if(pe.has_err()){CERR<<"Error: "<< pe.get_err()->mesg << "\n"; exit(1);}\
   else {var=pe.data;}\
   } while(false)
@@ -76,7 +77,7 @@ void soundslike();
   } while(false)
 #define BREAK_ON_ERR_SET(command, type, var)\
   type var;\
-  do{PosibErr<type> pe(command);\
+  do{PosibErr< type > pe(command);\
   if(pe.has_err()){CERR<<"Error: "<< pe.get_err()->mesg << "\n"; break;}\
   else {var=pe.data;}\
   } while(false)
@@ -390,17 +391,18 @@ void dicts()
 // pipe
 //
 
+// precond: strlen(str) > 0
 char * trim_wspace (char * str)
 {
-  unsigned int last = strlen(str) - 1;
-  while (isspace(str[0])) {
+  int last = strlen(str) - 1;
+  while (asc_isspace(str[0])) {
     ++str;
     --last;
   }
-  while (isspace(str[last])) {
-    str[last] = '\0';
+  while (last > 0 && asc_isspace(str[last])) {
     --last;
   }
+  str[last + 1] = '\0';
   return str;
 }
 
@@ -454,9 +456,11 @@ DocumentChecker * new_checker(AspellSpeller * speller,
 
 void pipe() 
 {
+#ifndef WIN32
   // set up stdin and stdout to be line buffered
   assert(setvbuf(stdin, 0, _IOLBF, 0) == 0); 
   assert(setvbuf(stdout, 0, _IOLBF, 0) == 0);
+#endif
 
   bool terse_mode = true;
   bool do_time = options->retrieve_bool("time");
@@ -489,16 +493,17 @@ void pipe()
 
   for (;;) {
     buf.clear();
+    fflush(stdout);
     while (c = getchar(), c != '\n' && c != EOF)
       buf.push_back(static_cast<char>(c));
-    if (c == '\n')
-      buf.push_back(static_cast<char>(c));
+    buf.push_back('\n'); // always add new line so strlen > 0
     buf.push_back('\0');
     line = buf.data();
     ignore = 0;
     switch (line[0]) {
     case '\n':
-      continue;
+      if (c != EOF) continue;
+      else          break;
     case '*':
       word = trim_wspace(line + 1);
       aspell_speller_add_to_personal(speller, word, -1);
@@ -966,8 +971,10 @@ void Mapping::to_ispell()
 
 void filter()
 {
-  assert(setvbuf(stdin, 0, _IOLBF, 0) == 0);
-  assert(setvbuf(stdout, 0, _IOLBF, 0) == 0);
+  //assert(setvbuf(stdin, 0, _IOLBF, 0) == 0);
+  //assert(setvbuf(stdout, 0, _IOLBF, 0) == 0);
+  CERR << "Sorry \"filter\" is currently unimplemented.\n";
+  exit(3);
 }
 
 
@@ -1086,7 +1093,10 @@ void personal () {
   }
   options->replace("module", "aspeller");
   if (action == do_create || action == do_merge) {
-    abort(); // FIXME
+    CERR << "Sorry \"create/merge personal\" is currently unimplemented.\n";
+    exit(3);
+
+    // FIXME
 #if 0
     StackPtr<Speller> speller(new_speller(options));
 
@@ -1138,7 +1148,11 @@ void repl() {
   }
 
   if (action == do_create || action == do_merge) {
-    abort(); //fixme
+
+    CERR << "Sorry \"create/merge repl\" is currently unimplemented.\n";
+    exit(3);
+
+    // FIXME
 #if 0
     SpellerImpl speller(options);
 

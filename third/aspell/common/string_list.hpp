@@ -85,7 +85,7 @@ namespace acommon {
     }
 
     bool empty() const { return first == 0; }
-    unsigned int size() const { abort(); }
+    unsigned int size() const { abort(); return 0; }
 
   };
 

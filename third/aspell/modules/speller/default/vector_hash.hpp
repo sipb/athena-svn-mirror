@@ -57,9 +57,10 @@ namespace aspeller {
   public:
     typedef std::bidirectional_iterator_tag             iterator_category;
     typedef typename Parms::Value                       value_type;
-    typedef typename std::iterator_traits<TableIter>::difference_type difference_type;
-    typedef typename std::iterator_traits<TableIter>::pointer         pointer;
-    typedef typename std::iterator_traits<TableIter>::reference       reference;
+    // these cause problems for SUNPRO_CC
+    //typedef typename std::iterator_traits<TableIter>::difference_type difference_type;
+    //typedef typename std::iterator_traits<TableIter>::pointer         pointer;
+    //typedef typename std::iterator_traits<TableIter>::reference       reference;
 
     //VHTIterator vector_iterator() const {return pos;}
   public:
@@ -240,7 +241,6 @@ namespace aspeller {
   private:
     class FindIterator
     {
-      friend class HashTable;
     public: // but don't use
       const vector_type * vector;
       const Parms       * parms;
@@ -263,7 +263,7 @@ namespace aspeller {
       ConstFindIterator() {}
       ConstFindIterator(const HashTable * ht, const key_type & k) 
 	: FindIterator(ht,k) {}
-      const value_type & deref() const {return (*this->vector)[i];}
+      const value_type & deref() const {return (*this->vector)[this->i];}
     };
 
     class MutableFindIterator : public FindIterator 
@@ -273,7 +273,7 @@ namespace aspeller {
       MutableFindIterator(HashTable * ht, const key_type & k) 
 	: FindIterator(ht,k) {}
       value_type & deref() const {
-	return (*const_cast<vector_type *>(this->vector))[i];
+	return (*const_cast<vector_type *>(this->vector))[this->i];
       }
     };
     

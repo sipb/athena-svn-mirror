@@ -63,13 +63,14 @@ namespace acommon {
     const char * str_;
     mutable unsigned int size_;
   };
-
+#ifndef __SUNPRO_CC
   inline bool operator== (ParmString s1, ParmString s2)
   {
     if (s1.str() == 0 || s2.str() == 0)
       return s1.str() == s2.str();
     return strcmp(s1,s2) == 0;
   }
+#endif
   inline bool operator== (const char * s1, ParmString s2)
   {
     if (s1 == 0 || s2.str() == 0)

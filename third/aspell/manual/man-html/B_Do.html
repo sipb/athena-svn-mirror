@@ -29,26 +29,26 @@ original version by:  Nikos Drakos, CBLU, University of Leeds
 
 <BODY >
 <!--Navigation Panel-->
-<A NAME="tex2html525"
+<A NAME="tex2html550"
   HREF="C_Credits.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html521"
+<A NAME="tex2html546"
   HREF="manual.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html515"
+<A NAME="tex2html540"
   HREF="A_Changelog.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A> 
-<A NAME="tex2html523"
+<A NAME="tex2html548"
   HREF="Contents.html">
 <IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="contents" SRC="contents.png"></A>  
 <BR>
-<B> Next:</B> <A NAME="tex2html526"
+<B> Next:</B> <A NAME="tex2html551"
   HREF="C_Credits.html">C. Credits</A>
-<B> Up:</B> <A NAME="tex2html522"
-  HREF="manual.html">GNU Aspell 0.50.3</A>
-<B> Previous:</B> <A NAME="tex2html516"
+<B> Up:</B> <A NAME="tex2html547"
+  HREF="manual.html">GNU Aspell 0.50.5</A>
+<B> Previous:</B> <A NAME="tex2html541"
   HREF="A_Changelog.html">A. Changelog</A>
- &nbsp <B>  <A NAME="tex2html524"
+ &nbsp <B>  <A NAME="tex2html549"
   HREF="Contents.html">Contents</A></B> 
 <BR>
 <BR>
@@ -57,23 +57,27 @@ original version by:  Nikos Drakos, CBLU, University of Leeds
 <A NAME="CHILD_LINKS"><STRONG>Subsections</STRONG></A>
 
 <UL>
-<LI><A NAME="tex2html527"
-  HREF="B_Do.html#SECTION001110000000000000000">B.1 Things that need to be done</A>
-<LI><A NAME="tex2html528"
-  HREF="B_Do.html#SECTION001120000000000000000">B.2 Good ideas that are worth implementing</A>
-<LI><A NAME="tex2html529"
-  HREF="B_Do.html#SECTION001130000000000000000">B.3 Notes and Status of various items</A>
+<LI><A NAME="tex2html552"
+  HREF="B_Do.html#SECTION001110000000000000000">B.1 Things that will be done by Aspell 0.51</A>
+<LI><A NAME="tex2html553"
+  HREF="B_Do.html#SECTION001120000000000000000">B.2 Things that need to be done</A>
+<LI><A NAME="tex2html554"
+  HREF="B_Do.html#SECTION001130000000000000000">B.3 Things I would like to get done</A>
+<LI><A NAME="tex2html555"
+  HREF="B_Do.html#SECTION001140000000000000000">B.4 Good ideas that are worth implementing</A>
+<LI><A NAME="tex2html556"
+  HREF="B_Do.html#SECTION001150000000000000000">B.5 Notes and Status of various items</A>
 <UL>
-<LI><A NAME="tex2html530"
-  HREF="B_Do.html#SECTION001131000000000000000">B.3.1 General region skipping</A>
-<LI><A NAME="tex2html531"
-  HREF="B_Do.html#SECTION001132000000000000000">B.3.2 Word skipping by context</A>
-<LI><A NAME="tex2html532"
-  HREF="B_Do.html#SECTION001133000000000000000">B.3.3 Hidden Markov Model</A>
-<LI><A NAME="tex2html533"
-  HREF="B_Do.html#SECTION001134000000000000000">B.3.4 Email the Personal Dictionary</A>
-<LI><A NAME="tex2html534"
-  HREF="B_Do.html#SECTION001135000000000000000">B.3.5 Words With Spaces in Them</A>
+<LI><A NAME="tex2html557"
+  HREF="B_Do.html#SECTION001151000000000000000">B.5.1 General region skipping</A>
+<LI><A NAME="tex2html558"
+  HREF="B_Do.html#SECTION001152000000000000000">B.5.2 Word skipping by context</A>
+<LI><A NAME="tex2html559"
+  HREF="B_Do.html#SECTION001153000000000000000">B.5.3 Hidden Markov Model</A>
+<LI><A NAME="tex2html560"
+  HREF="B_Do.html#SECTION001154000000000000000">B.5.4 Email the Personal Dictionary</A>
+<LI><A NAME="tex2html561"
+  HREF="B_Do.html#SECTION001155000000000000000">B.5.5 Words With Spaces in Them</A>
 </UL></UL>
 <!--End of Table of Child-Links-->
 <HR>
@@ -88,38 +92,20 @@ it with me or others.
 
 <P>
 
-<H1><A NAME="SECTION001110000000000000000"></A><A NAME="todo"></A>
-<BR>
-B.1 Things that need to be done
+<H1><A NAME="SECTION001110000000000000000">
+B.1 Things that will be done by Aspell 0.51</A>
 </H1>
 
 <P>
-These items need to be done before I consider Aspell finished. Unfortunately,
-I do not have the time to do all so if you are interested in helping
-me with one of these tasks please email me. Good C++ skills are needed
-for most of these tasks involving coding.
+These items are already done, or close to it, in the develpment version
+of Aspell.
 
 <P>
 
 <UL>
 <LI>Convert manual from LyX/L<SUP><SMALL>A</SMALL></SUP>T<SMALL>E</SMALL>X to Texinfo.
 </LI>
-<LI>Clean up copyright notices and bring the Aspell package up to GNU
-Standards.
-</LI>
 <LI>Add gettext support to Aspell.
-</LI>
-<LI>Allow Aspell to check documents which are in UTF-8. The main thing
-to be done is to get Aspell to display UTF-8 correctly. This will
-involve being able to get the length of UTF-8 strings and display
-UTF-8 using the curses library.
-</LI>
-<LI>Make Aspell Thread safe. Even though Aspell itself is not multi-threaded
-I would like it to be thread safe so that it can be used by multi-threaded
-programs. There are several areas of Aspell that that are potently
-thread unsafe (such as accessing a global pool) and several several
-classes which have the potential of being used by more than one thread
-(such as the personal dictionary).
 </LI>
 <LI>Allow filters to be loaded at run-time. At the moment all filters
 must be complied in.
@@ -127,19 +113,96 @@ must be complied in.
 <LI>Integrate Kevin Hendricks affix compression code into Aspell. His
 code is already in use in OpenOffice as part of the lingucomponent
 component. More information can be found at <TT><A NAME="tex2html17"
-  HREF="http://whiteboard.openoffice.org/lingucomponent/dictionary.html">http://whiteboard.openoffice.org/lingucomponent/dictionary.html</A></TT>.
+  HREF="http://lingucomponent.openoffice.org/">http://lingucomponent.openoffice.org/</A></TT>.
 The latest version of his code is also available there.
 </LI>
-<LI>Create a C++ interface for Aspell, possibly on top of the C one.
+<LI>Make Aspell Thread safe. Even though Aspell itself is not multi-threaded
+I would like it to be thread safe so that it can be used by multi-threaded
+programs. There are several areas of Aspell that that are potently
+thread unsafe (such as accessing a global pool) and several several
+classes which have the potential of being used by more than one thread
+(such as the personal dictionary). <I>[In Progress]</I>
 </LI>
 <LI>Enhance ispell.el so that it will work better with the new Aspell.
+<I>[In Progress]</I>
 </LI>
 </UL>
 
 <P>
 
-<H1><A NAME="SECTION001120000000000000000">
-B.2 Good ideas that are worth implementing</A>
+<H1><A NAME="SECTION001120000000000000000"></A><A NAME="todo"></A>
+<BR>
+B.2 Things that need to be done
+</H1>
+
+<P>
+These items need to be done before I consider Aspell finished. If
+you are interested in helping me with one of these tasks please email
+me. Good C++ skills are needed for most of these tasks involving coding.
+I hope to have these all done by Aspell 0.51. 
+
+<P>
+
+<UL>
+<LI>Clean up copyright notices and bring the Aspell package up to GNU
+Standards.
+</LI>
+<LI>Allow Aspell to check documents which are in UTF-8. I don't know the
+proper way to use Unicode characters with the curses library, and
+I can't seam to find any concrete documentation on how to do it. If
+you have experience in this area I would really appreciate it if you
+could enlighten me.
+</LI>
+<LI>Come up with a <B>nroff mode</B> for spell checking. I know nothing
+about nroff. I would gladly write the filter if someone would be willing
+to work with me in developing one. All I really need to know is what
+to skip.
+</LI>
+</UL>
+
+<P>
+
+<H1><A NAME="SECTION001130000000000000000">
+B.3 Things I would like to get done</A>
+</H1>
+
+<P>
+I would like to get these done. However, I may still consider Aspell
+finished with out. They will probably eventually get implemented.
+However, I could still use help with them.
+
+<P>
+
+<UL>
+<LI>Use Lawrence Philips' new Double Metaphone algorithm. See <TT><A NAME="tex2html18"
+  HREF="http://aspell.sourceforge.net/metaphone/">http://aspell.sourceforge.net/metaphone/</A></TT>.
+The main task involved here is converting the algorithm into table
+form. This will take some time but their is no real programming experience
+is required. If you want to help with Aspell but don't have any real
+programming experience, this would be a great place to start.
+</LI>
+<LI>Create a C++ interface for Aspell, possibly on top of the C one.
+</LI>
+<LI>Write a GUI for the aspell utility. Ideally it should be able to do
+everything the Aspell utility can do and not just be able spell check
+a document.
+</LI>
+<LI>Better support for compound words. If you speak a language which has
+a lot of compound of run-together words I would appreciate hearing
+back from you. The current support for <I>conditional</I> compound
+words will disappear in Aspell 0.51 since no one seams to be using
+it. Support for <I>unconditional</I> compound words will still be
+available. However, several people have informed me that they need
+more. I attempted to provide that, but it wasn't powerful enough,
+and hence unused. Thus, I am going to start from scratch, but I need
+to know exactly what is involved in correct compound formation.
+</LI>
+</UL>
+
+<P>
+
+<H1><A NAME="SECTION001140000000000000000">
+B.4 Good ideas that are worth implementing</A>
 </H1>
 
 <P>
@@ -149,15 +212,10 @@ will get to implementing then if ever.
 <P>
 
 <UL>
-<LI>Use Lawrence Philips' new Double Metaphone algorithm. See <TT><A NAME="tex2html18"
-  HREF="http://aspell.sourceforge.net/metaphone/">http://aspell.sourceforge.net/metaphone/</A></TT>.
-</LI>
 <LI>Come up with a plug-in for <B>gEdit</B> the gnome text editor.
 </LI>
 <LI>Change languages (and thus dictionaries) based on the information
 in the actual document.
-</LI>
-<LI>Come up with a <B>nroff mode</B> for spell checking.
 </LI>
 <LI>Come up with a mode that will skip words based on the symbols that
 (almost) always surround the word. (<B>Word skipping by context</B>)
@@ -206,14 +264,14 @@ on the first few lines.
 
 <P>
 
-<H1><A NAME="SECTION001130000000000000000">
-B.3 Notes and Status of various items</A>
+<H1><A NAME="SECTION001150000000000000000">
+B.5 Notes and Status of various items</A>
 </H1>
 
 <P>
 
-<H2><A NAME="SECTION001131000000000000000">
-B.3.1 General region skipping</A>
+<H2><A NAME="SECTION001151000000000000000">
+B.5.1 General region skipping</A>
 </H2>
 
 <P>
@@ -223,8 +281,8 @@ url and email address.
 
 <P>
 
-<H2><A NAME="SECTION001132000000000000000">
-B.3.2 Word skipping by context</A>
+<H2><A NAME="SECTION001152000000000000000">
+B.5.2 Word skipping by context</A>
 </H2>
 
 <P>
@@ -289,8 +347,8 @@ comments about the idea please let me know.
 
 <P>
 
-<H2><A NAME="SECTION001133000000000000000">
-B.3.3 Hidden Markov Model</A>
+<H2><A NAME="SECTION001153000000000000000">
+B.5.3 Hidden Markov Model</A>
 </H2>
 
 <P>
@@ -324,8 +382,8 @@ be very complicated to implement. Perhaps in the far future.
 
 <P>
 
-<H2><A NAME="SECTION001134000000000000000">
-B.3.4 Email the Personal Dictionary</A>
+<H2><A NAME="SECTION001154000000000000000">
+B.5.4 Email the Personal Dictionary</A>
 </H2>
 
 <P>
@@ -359,8 +417,8 @@ sense I would first need to learn how to send email within a C++ program.
 
 <P>
 
-<H2><A NAME="SECTION001135000000000000000">
-B.3.5 Words With Spaces in Them</A>
+<H2><A NAME="SECTION001155000000000000000">
+B.5.5 Words With Spaces in Them</A>
 </H2>
 
 <P>
@@ -383,31 +441,31 @@ sometime in the near future.
 <P>
 <HR>
 <!--Navigation Panel-->
-<A NAME="tex2html525"
+<A NAME="tex2html550"
   HREF="C_Credits.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html521"
+<A NAME="tex2html546"
   HREF="manual.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html515"
+<A NAME="tex2html540"
   HREF="A_Changelog.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A> 
-<A NAME="tex2html523"
+<A NAME="tex2html548"
   HREF="Contents.html">
 <IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="contents" SRC="contents.png"></A>  
 <BR>
-<B> Next:</B> <A NAME="tex2html526"
+<B> Next:</B> <A NAME="tex2html551"
   HREF="C_Credits.html">C. Credits</A>
-<B> Up:</B> <A NAME="tex2html522"
-  HREF="manual.html">GNU Aspell 0.50.3</A>
-<B> Previous:</B> <A NAME="tex2html516"
+<B> Up:</B> <A NAME="tex2html547"
+  HREF="manual.html">GNU Aspell 0.50.5</A>
+<B> Previous:</B> <A NAME="tex2html541"
   HREF="A_Changelog.html">A. Changelog</A>
- &nbsp <B>  <A NAME="tex2html524"
+ &nbsp <B>  <A NAME="tex2html549"
   HREF="Contents.html">Contents</A></B> 
 <!--End of Navigation Panel-->
 <ADDRESS>
 Kevin Atkinson
-2002-11-23
+2004-02-10
 </ADDRESS>
 </BODY>
 </HTML>

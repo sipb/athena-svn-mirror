@@ -1,5 +1,5 @@
 next up previous contents
-Next: 4. Customizing Aspell Up: GNU Aspell 0.50.3 Previous: 2. Getting
+Next: 4. Customizing Aspell Up: GNU Aspell 0.50.5 Previous: 2. Getting
 Started   Contents
 
 Subsections
@@ -179,6 +179,6 @@ instead which will avoid switching aspell into email mode.
 
 --------------------------------------------------------------------------
 next up previous contents
-Next: 4. Customizing Aspell Up: GNU Aspell 0.50.3 Previous: 2. Getting
+Next: 4. Customizing Aspell Up: GNU Aspell 0.50.5 Previous: 2. Getting
 Started   Contents
-Kevin Atkinson 2002-11-23
+Kevin Atkinson 2004-02-10

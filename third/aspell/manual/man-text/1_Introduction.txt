@@ -1,5 +1,5 @@
 next up previous contents
-Next: 2. Getting Started Up: GNU Aspell 0.50.3 Previous: Contents   
+Next: 2. Getting Started Up: GNU Aspell 0.50.5 Previous: Contents   
 Contents
 
 Subsections
@@ -85,14 +85,14 @@ please contact me at kevina@gnu.org.
 
 1.1.1.2 Things that, currently, only Ispell have
 
-  * Support for affix compression (However this should change soon once
-    Kevin Hendricks is integrated)
+  * Support for affix compression (However this will change with Aspell
+    0.51)
   * Lower memory footprint
   * Perhaps better support for spell checking (La)TEX files.
   * Support for spell checking Nroff files.
 
 --------------------------------------------------------------------------
 next up previous contents
-Next: 2. Getting Started Up: GNU Aspell 0.50.3 Previous: Contents   
+Next: 2. Getting Started Up: GNU Aspell 0.50.5 Previous: Contents   
 Contents
-Kevin Atkinson 2002-11-23
+Kevin Atkinson 2004-02-10

@@ -1,16 +1,18 @@
 next up previous contents
-Next: C. Credits Up: GNU Aspell 0.50.3 Previous: A. Changelog   Contents
+Next: C. Credits Up: GNU Aspell 0.50.5 Previous: A. Changelog   Contents
 
 Subsections
 
-  * B.1 Things that need to be done
-  * B.2 Good ideas that are worth implementing
-  * B.3 Notes and Status of various items
-      + B.3.1 General region skipping
-      + B.3.2 Word skipping by context
-      + B.3.3 Hidden Markov Model
-      + B.3.4 Email the Personal Dictionary
-      + B.3.5 Words With Spaces in Them
+  * B.1 Things that will be done by Aspell 0.51
+  * B.2 Things that need to be done
+  * B.3 Things I would like to get done
+  * B.4 Good ideas that are worth implementing
+  * B.5 Notes and Status of various items
+      + B.5.1 General region skipping
+      + B.5.2 Word skipping by context
+      + B.5.3 Hidden Markov Model
+      + B.5.4 Email the Personal Dictionary
+      + B.5.5 Words With Spaces in Them
 
 --------------------------------------------------------------------------
 
@@ -19,49 +21,83 @@ B. To Do
 Words in bold indicate how you should refer to the item when discussing it
 with me or others.
 
+B.1 Things that will be done by Aspell 0.51
 
-B.1 Things that need to be done
+These items are already done, or close to it, in the develpment version of
+Aspell.
 
-These items need to be done before I consider Aspell finished.
-Unfortunately, I do not have the time to do all so if you are interested
-in helping me with one of these tasks please email me. Good C++ skills are
-needed for most of these tasks involving coding.
-
-  * Convert manual from LyX/LATEX to Texinfo.
-  * Clean up copyright notices and bring the Aspell package up to GNU
-    Standards.
+  * Convert manual from LyX/L^ATEX to Texinfo.
   * Add gettext support to Aspell.
-  * Allow Aspell to check documents which are in UTF-8. The main thing to
-    be done is to get Aspell to display UTF-8 correctly. This will involve
-    being able to get the length of UTF-8 strings and display UTF-8 using
-    the curses library.
-  * Make Aspell Thread safe. Even though Aspell itself is not
-    multi-threaded I would like it to be thread safe so that it can be
-    used by multi-threaded programs. There are several areas of Aspell
-    that that are potently thread unsafe (such as accessing a global pool)
-    and several several classes which have the potential of being used by
-    more than one thread (such as the personal dictionary).
   * Allow filters to be loaded at run-time. At the moment all filters must
     be complied in.
   * Integrate Kevin Hendricks affix compression code into Aspell. His code
     is already in use in OpenOffice as part of the lingucomponent
     component. More information can be found at http://
-    whiteboard.openoffice.org/lingucomponent/dictionary.html. The latest
-    version of his code is also available there.
-  * Create a C++ interface for Aspell, possibly on top of the C one.
-  * Enhance ispell.el so that it will work better with the new Aspell.
+    lingucomponent.openoffice.org/. The latest version of his code is also
+    available there.
+  * Make Aspell Thread safe. Even though Aspell itself is not
+    multi-threaded I would like it to be thread safe so that it can be
+    used by multi-threaded programs. There are several areas of Aspell
+    that that are potently thread unsafe (such as accessing a global pool)
+    and several several classes which have the potential of being used by
+    more than one thread (such as the personal dictionary). [In Progress]
+  * Enhance ispell.el so that it will work better with the new Aspell. [In
+    Progress]
 
-B.2 Good ideas that are worth implementing
+
+B.2 Things that need to be done
+
+These items need to be done before I consider Aspell finished. If you are
+interested in helping me with one of these tasks please email me. Good C++
+skills are needed for most of these tasks involving coding. I hope to have
+these all done by Aspell 0.51.
+
+  * Clean up copyright notices and bring the Aspell package up to GNU
+    Standards.
+  * Allow Aspell to check documents which are in UTF-8. I don't know the
+    proper way to use Unicode characters with the curses library, and I
+    can't seam to find any concrete documentation on how to do it. If you
+    have experience in this area I would really appreciate it if you could
+    enlighten me.
+  * Come up with a nroff mode for spell checking. I know nothing about
+    nroff. I would gladly write the filter if someone would be willing to
+    work with me in developing one. All I really need to know is what to
+    skip.
+
+B.3 Things I would like to get done
+
+I would like to get these done. However, I may still consider Aspell
+finished with out. They will probably eventually get implemented. However,
+I could still use help with them.
+
+  * Use Lawrence Philips' new Double Metaphone algorithm. See http://
+    aspell.sourceforge.net/metaphone/. The main task involved here is
+    converting the algorithm into table form. This will take some time but
+    their is no real programming experience is required. If you want to
+    help with Aspell but don't have any real programming experience, this
+    would be a great place to start.
+  * Create a C++ interface for Aspell, possibly on top of the C one.
+  * Write a GUI for the aspell utility. Ideally it should be able to do
+    everything the Aspell utility can do and not just be able spell check
+    a document.
+  * Better support for compound words. If you speak a language which has a
+    lot of compound of run-together words I would appreciate hearing back
+    from you. The current support for conditional compound words will
+    disappear in Aspell 0.51 since no one seams to be using it. Support
+    for unconditional compound words will still be available. However,
+    several people have informed me that they need more. I attempted to
+    provide that, but it wasn't powerful enough, and hence unused. Thus, I
+    am going to start from scratch, but I need to know exactly what is
+    involved in correct compound formation.
+
+B.4 Good ideas that are worth implementing
 
 These items all sound like good ideas however I am not sure when I will
 get to implementing then if ever.
 
-  * Use Lawrence Philips' new Double Metaphone algorithm. See http://
-    aspell.sourceforge.net/metaphone/.
   * Come up with a plug-in for gEdit the gnome text editor.
   * Change languages (and thus dictionaries) based on the information in
     the actual document.
-  * Come up with a nroff mode for spell checking.
   * Come up with a mode that will skip words based on the symbols that
     (almost) always surround the word. (Word skipping by context)
   * Create two server modes for Aspell. One that uses the DICT protocol
@@ -92,15 +128,15 @@ thought I would pass them on.
     choosing the dictionary that produced the fewest spelling errors on
     the first few lines.
 
-B.3 Notes and Status of various items
+B.5 Notes and Status of various items
 
-B.3.1 General region skipping
+B.5.1 General region skipping
 
 I want to implement this give other people an idea of how it should be
 done and because I am really sick of having to spell check through url and
 email address.
 
-B.3.2 Word skipping by context
+B.5.2 Word skipping by context
 
 This was posted on the Aspell mailing list on January 1, 1999:
 
@@ -145,7 +181,7 @@ languages code.
 If you are interested in helping be out with this or just have general
 comments about the idea please let me know.
 
-B.3.3 Hidden Markov Model
+B.5.3 Hidden Markov Model
 
 Knud Haugaard Sørensen suggested this one. From his email on the Aspell
 mailing list:
@@ -167,7 +203,7 @@ mailing list:
 I think it is a great idea. However unfortunately it will probably be very
 complicated to implement. Perhaps in the far future.
 
-B.3.4 Email the Personal Dictionary
+B.5.4 Email the Personal Dictionary
 
 Some one suggest in a personal email:
 
@@ -188,7 +224,7 @@ And I replied:
     as a library. It also is not a real high priority, especially sense I
     would first need to learn how to send email within a C++ program.
 
-B.3.5 Words With Spaces in Them
+B.5.5 Words With Spaces in Them
 
 While this is something I would like to do it is not a simple task. The
 basic problem is that when tokenizing a string there is no good way to
@@ -207,5 +243,5 @@ doing this is not there. Perhaps sometime in the near future.
 
 --------------------------------------------------------------------------
 next up previous contents
-Next: C. Credits Up: GNU Aspell 0.50.3 Previous: A. Changelog   Contents
-Kevin Atkinson 2002-11-23
+Next: C. Credits Up: GNU Aspell 0.50.5 Previous: A. Changelog   Contents
+Kevin Atkinson 2004-02-10

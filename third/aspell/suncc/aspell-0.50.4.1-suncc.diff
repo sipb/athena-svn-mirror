@@ -1,0 +1,125 @@
+diff -ru original.aspell-0.50.4.1/common/string.hpp solaris-v4-aspell-0.50.4.1/common/string.hpp
+--- original.aspell-0.50.4.1/common/string.hpp	Mon Nov 25 22:03:59 2002
++++ solaris-v4-aspell-0.50.4.1/common/string.hpp	Mon Jan 19 10:13:22 2004
+@@ -15,6 +15,13 @@
+ #include "istream.hpp"
+ #include "ostream.hpp"
+ 
++
++/*
++PosibErr<String>::operator const String&() const
++String::String(const PosibErr<String>&)
++
++*/
++
+ namespace acommon {
+ 
+   template <typename Ret> class PosibErr;
+diff -ru original.aspell-0.50.4.1/common/string_buffer.cpp solaris-v4-aspell-0.50.4.1/common/string_buffer.cpp
+--- original.aspell-0.50.4.1/common/string_buffer.cpp	Fri Nov 30 04:55:46 2001
++++ solaris-v4-aspell-0.50.4.1/common/string_buffer.cpp	Mon Jan 19 09:34:31 2004
+@@ -7,7 +7,7 @@
+ #include "string_buffer.hpp"
+ 
+ namespace acommon {
+-
++  /*
+   const StringBuffer::Buf StringBuffer::sbuf = {{0}};
+ 
+   StringBuffer::StringBuffer() 
+@@ -25,5 +25,5 @@
+     fill += size;
+     return s;
+   }
+-
++*/
+ }
+diff -ru original.aspell-0.50.4.1/common/string_buffer.hpp solaris-v4-aspell-0.50.4.1/common/string_buffer.hpp
+--- original.aspell-0.50.4.1/common/string_buffer.hpp	Fri Nov 30 04:55:46 2001
++++ solaris-v4-aspell-0.50.4.1/common/string_buffer.hpp	Mon Jan 19 09:34:32 2004
+@@ -18,9 +21,33 @@
+     static const Buf sbuf;
+     BasicList<Buf> bufs;
+     unsigned int fill;
++
+   public:
+-    StringBuffer();
+-    char * alloc(unsigned int size);
++    /*
++      StringBuffer();
++      char * alloc(unsigned int size);
++    */
++
++    //        const StringBuffer::Buf StringBuffer::sbuf = {{0}};
++    
++    StringBuffer::StringBuffer() 
++      : fill(1)
++    {
++      bufs.push_front(sbuf);
++    }
++    
++    char * StringBuffer::alloc(unsigned int size) {
++      if (fill + size > buf_size) {
++	fill = 1;
++	bufs.push_front(sbuf);
++      }
++      char * s = bufs.front().buf + fill;
++      fill += size;
++      return s;
++    }
++
+   };
+ 
++  const StringBuffer::Buf StringBuffer::sbuf = {{0}};
++
+ }
+diff -ru original.aspell-0.50.4.1/modules/filter/tex.cpp solaris-v4-aspell-0.50.4.1/modules/filter/tex.cpp
+--- original.aspell-0.50.4.1/modules/filter/tex.cpp	Wed Aug 21 01:47:28 2002
++++ solaris-v4-aspell-0.50.4.1/modules/filter/tex.cpp	Mon Jan 19 09:34:32 2004
+@@ -19,8 +19,9 @@
+ 
+   class TexFilter : public IndividualFilter 
+   {
+-  private:
++  public:
+     enum InWhat {Name, Opt, Parm, Other, Swallow};
++  private:
+     struct Command {
+       InWhat in_what;
+       String name;
+diff -ru original.aspell-0.50.4.1/prog/aspell.cpp solaris-v4-aspell-0.50.4.1/prog/aspell.cpp
+--- original.aspell-0.50.4.1/prog/aspell.cpp	Tue Oct  7 04:45:24 2003
++++ solaris-v4-aspell-0.50.4.1/prog/aspell.cpp	Mon Jan 19 11:46:25 2004
+@@ -15,7 +15,6 @@
+ // 
+ 
+ #include <deque>
+-
+ #include <ctype.h>
+ 
+ #include "settings.h"
+@@ -31,7 +30,6 @@
+ #include "file_util.hpp"
+ #include "fstream.hpp"
+ #include "info.hpp"
+-#include "iostream.hpp"
+ #include "posib_err.hpp"
+ #include "speller.hpp"
+ #include "stack_ptr.hpp"
+@@ -44,6 +42,16 @@
+ 
+ using namespace acommon;
+ 
++#ifndef __SUNPRO_CC
++// This doesn't seem to work on solaris, dunno why though -- FF
++#include "iostream.hpp"
++#else
++  FStream CIN(stdin, false);
++  FStream COUT(stdout, false);
++  FStream CERR(stderr, false);
++#endif
++
++
+ // action functions declarations
+ 
+ void print_ver();

@@ -4,6 +4,9 @@
 // license along with this library if you did not you can find
 // it at http://www.gnu.org/.
 
+#ifndef STRING_BUFFER__HPP
+#define STRING_BUFFER__HPP
+
 #include "basic_list.hpp"
 
 namespace acommon {
@@ -24,3 +27,5 @@ namespace acommon {
   };
 
 }
+
+#endif

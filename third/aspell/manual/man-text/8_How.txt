@@ -1,5 +1,5 @@
 next up previous contents
-Next: A. Changelog Up: GNU Aspell 0.50.3 Previous: 7. Adding Support For  
+Next: A. Changelog Up: GNU Aspell 0.50.5 Previous: 7. Adding Support For  
 Contents
 
 
@@ -41,11 +41,11 @@ The process goes something like this.
 Please note that the soundslike equivalent is a rough approximation of how
 the words sounds. It is not the phoneme of the word by any means. For more
 details about exactly how each step is performed please see the file 
-suggest.cc. For more information on the metaphone algorithm please see the
-data file english_phonet.dat.
+suggest.cpp. For more information on the metaphone algorithm please see
+the data file english_phonet.dat.
 
 --------------------------------------------------------------------------
 next up previous contents
-Next: A. Changelog Up: GNU Aspell 0.50.3 Previous: 7. Adding Support For  
+Next: A. Changelog Up: GNU Aspell 0.50.5 Previous: 7. Adding Support For  
 Contents
-Kevin Atkinson 2002-11-23
+Kevin Atkinson 2004-02-10

@@ -1,5 +1,5 @@
 next up previous contents
-Next: D. Glossary and References Up: GNU Aspell 0.50.3 Previous: B. To Do
+Next: D. Glossary and References Up: GNU Aspell 0.50.5 Previous: B. To Do
   Contents
 
 
@@ -24,6 +24,6 @@ C. Credits
 
 --------------------------------------------------------------------------
 next up previous contents
-Next: D. Glossary and References Up: GNU Aspell 0.50.3 Previous: B. To Do
+Next: D. Glossary and References Up: GNU Aspell 0.50.5 Previous: B. To Do
   Contents
-Kevin Atkinson 2002-11-23
+Kevin Atkinson 2004-02-10
