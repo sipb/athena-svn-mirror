@@ -1,0 +1,8 @@
+#!/usr/bin/perl
+
+# $Header: /afs/dev.mit.edu/source/repository/third/perl/eg/ADB,v 1.1.1.1 1996-10-02 06:40:04 ghudson Exp $
+
+# This script is only useful when used in your crash directory.
+
+$num = shift;
+exec 'adb', '-k', "vmunix.$num", "vmcore.$num";
