@@ -1,8 +1,11 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 1.3 1987-08-28 13:47:30 shanzer Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 1.4 1987-08-28 15:11:40 shanzer Exp $
  *
  *	$Log: not supported by cvs2svn $
+ * Revision 1.3  87/08/28  13:47:30  shanzer
+ * Put temp file in /tmp where the belong.. 
+ * 
  * Revision 1.2  87/03/05  19:20:08  rfrench
  * Fixed lossage with extra /'s in filenames.
  * 
@@ -12,7 +15,7 @@
  */
 
 #ifndef lint
-static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 1.3 1987-08-28 13:47:30 shanzer Exp $";
+static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 1.4 1987-08-28 15:11:40 shanzer Exp $";
 #endif lint
 
 #include "mit-copyright.h"
@@ -63,11 +66,13 @@ int argc;
 char **argv;
 {
 	char subtmp[LINELEN],scratch[LINELEN];
+	int	cleanup();
 	int i;
 
 	strcpy(prgname,argv[0]);
 
 	umask(022);	/* set default umask for daemons */
+	signal(SIGINT, cleanup);
 
 	strcpy(errmsg,"");
 
