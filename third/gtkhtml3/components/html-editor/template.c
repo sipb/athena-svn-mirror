@@ -278,7 +278,7 @@ template_widget (GtkHTMLEditTemplateProperties *d, gboolean insert)
 	gtk_tree_view_set_model (GTK_TREE_VIEW (d->tview_template), GTK_TREE_MODEL (d->store));
 
 	gtk_tree_view_append_column (GTK_TREE_VIEW (d->tview_template),
-				     gtk_tree_view_column_new_with_attributes ("Labels",
+				     gtk_tree_view_column_new_with_attributes (_("Labels"),
 									       gtk_cell_renderer_text_new (),
 									       "text", 0, NULL));
 	g_signal_connect (gtk_tree_view_get_selection (GTK_TREE_VIEW (d->tview_template)), "changed",

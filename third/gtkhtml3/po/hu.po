@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gtkhtml VERSION\n"
-"POT-Creation-Date: 2003-07-07 16:40+0200\n"
-"PO-Revision-Date: 2003-07-08 12:59+0200\n"
+"POT-Creation-Date: 2003-09-06 00:40+0200\n"
+"PO-Revision-Date: 2003-09-06 00:42+0200\n"
 "Last-Translator: Andras Timar <timar@gnome.hu>\n"
 "Language-Team: Hungarian <hu@gnome.hu>\n"
 "MIME-Version: 1.0\n"
@@ -18,125 +18,11 @@ msgid "<None>"
 msgstr "<Nincs>"
 
 #: capplet/gnome-bindings-prop.c:211 capplet/main.c:241
-#: components/html-editor/cell.c:418 components/html-editor/image.c:531
+#: components/html-editor/cell.c:418 components/html-editor/image.c:545
 #: components/html-editor/rule.c:316 components/html-editor/table.c:530
 #: components/html-editor/table.c:614 components/html-editor/template.c:272
 msgid "Could not load glade file."
 msgstr "Nem sikerült betölteni a glade fájlt."
-
-#: capplet/gtkhtml-capplet.glade.h:1
-msgid "\n"
-msgstr "\n"
-
-#: capplet/gtkhtml-capplet.glade.h:3
-#: components/html-editor/gtkhtml-editor-properties.glade.h:1
-msgid "*"
-msgstr "*"
-
-#: capplet/gtkhtml-capplet.glade.h:4
-msgid "*********************"
-msgstr "*********************"
-
-#: capplet/gtkhtml-capplet.glade.h:5
-msgid "Add Keyboard Shortcuts"
-msgstr "Gyorsbillentyűk hozzáadása"
-
-#: capplet/gtkhtml-capplet.glade.h:6
-msgid "Automatically detect links"
-msgstr "Automatikus hivatkozás-felismerés"
-
-#: capplet/gtkhtml-capplet.glade.h:7
-msgid "Behavior"
-msgstr "Viselkedés"
-
-#: capplet/gtkhtml-capplet.glade.h:8
-msgid "Composer Properties"
-msgstr "Szerkesztő tulajdonságai"
-
-#: capplet/gtkhtml-capplet.glade.h:9
-msgid "Composer Properties planned"
-msgstr "Tervezett szerkesztőtulajdoságok"
-
-#: capplet/gtkhtml-capplet.glade.h:10
-msgid "Configure spell checking"
-msgstr "Helyesírás-ellenőrzés beállításai"
-
-#: capplet/gtkhtml-capplet.glade.h:11
-msgid "Enable spell checking"
-msgstr "Helyesírás-ellenőrzés engedélyezése"
-
-#: capplet/gtkhtml-capplet.glade.h:12
-msgid "Fixed width"
-msgstr "Fix szélességű"
-
-#: capplet/gtkhtml-capplet.glade.h:13
-msgid "Fonts"
-msgstr "Betűkészletek"
-
-#: capplet/gtkhtml-capplet.glade.h:14
-msgid "For printing"
-msgstr "Nyomtatáshoz"
-
-#: capplet/gtkhtml-capplet.glade.h:15
-msgid "Grab keys"
-msgstr "Billentyű megadása"
-
-#: capplet/gtkhtml-capplet.glade.h:16
-msgid "Information"
-msgstr "Információ"
-
-#: capplet/gtkhtml-capplet.glade.h:17
-msgid "Keyboard Shortcuts"
-msgstr "Gyorsbillentyűk"
-
-#: capplet/gtkhtml-capplet.glade.h:18
-#: components/html-editor/gtkhtml-editor-properties.glade.h:47
-msgid "Miscellaneous"
-msgstr "Egyebek"
-
-#: capplet/gtkhtml-capplet.glade.h:19
-msgid "New shortcut:"
-msgstr "Új indítóikon:"
-
-#: capplet/gtkhtml-capplet.glade.h:20
-msgid "On screen"
-msgstr "Képernyőn"
-
-#: capplet/gtkhtml-capplet.glade.h:21
-msgid "Select HTML fixed width font"
-msgstr "Fix szélességű betűkészlet választása a HTML-hez"
-
-#: capplet/gtkhtml-capplet.glade.h:22
-msgid "Select HTML fixed width font for printing"
-msgstr "Fix szélességű betűkészlet választása a HTML nyomtatásához"
-
-#: capplet/gtkhtml-capplet.glade.h:23
-msgid "Select HTML variable width font"
-msgstr "Változó szélességű betűkészlet választása a HTML-hez"
-
-#: capplet/gtkhtml-capplet.glade.h:24
-msgid "Select HTML variable width font for printing"
-msgstr "Változó szélességű betűkészlet választása a HTML nyomtatásához"
-
-#: capplet/gtkhtml-capplet.glade.h:25
-msgid "Shortcuts _type:"
-msgstr "Gyorsbillentyű _típusa:"
-
-#: capplet/gtkhtml-capplet.glade.h:26
-msgid "Show animated images"
-msgstr "Animált képek megjelenítése"
-
-#: capplet/gtkhtml-capplet.glade.h:27
-msgid "Variable width"
-msgstr "Változó szélességű"
-
-#: capplet/gtkhtml-capplet.glade.h:28
-msgid "_Add"
-msgstr "_Hozzáadás"
-
-#: capplet/gtkhtml-capplet.glade.h:29
-msgid "_Delete"
-msgstr "_Törlés"
 
 #: capplet/main.c:226
 msgid ""
@@ -146,668 +32,7 @@ msgstr ""
 "Nem sikerült futtatni a GNOME Spell control appletet\n"
 "Próbáld meg telepíteni a GNOME Spellt, ha nincs még telepítve."
 
-#: components/html-editor/GNOME_GtkHTML_Editor.server.in.in.h:1
-msgid "GNOME HTML Editor"
-msgstr "GNOME HTML-szerkesztő"
-
-#: components/html-editor/GNOME_GtkHTML_Editor.server.in.in.h:2
-msgid "GNOME HTML Editor Control"
-msgstr "GNOME HTML-szerkesztő kontroll"
-
-#: components/html-editor/GNOME_GtkHTML_Editor.server.in.in.h:3
-msgid "GNOME HTML Editor Factory"
-msgstr "GNOME HTML-szerkesztő factory"
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:1
-#: components/html-editor/gtkhtml-editor-properties.glade.h:4
-msgid "+0"
-msgstr "+0"
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:2
-#: components/html-editor/gtkhtml-editor-properties.glade.h:5
-msgid "+1"
-msgstr "+1"
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:3
-#: components/html-editor/gtkhtml-editor-properties.glade.h:6
-msgid "+2"
-msgstr "+2"
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:4
-#: components/html-editor/gtkhtml-editor-properties.glade.h:7
-msgid "+3"
-msgstr "+3"
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:5
-#: components/html-editor/gtkhtml-editor-properties.glade.h:9
-msgid "-1"
-msgstr "-1"
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:6
-#: components/html-editor/gtkhtml-editor-properties.glade.h:10
-msgid "-2"
-msgstr "-2"
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:7
-msgid "A_ddress"
-msgstr "_Cím"
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:8
-#: components/html-editor/toolbar.c:53
-msgid "Alphabetical List"
-msgstr "Betűkkel jelölt lista"
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:9
-msgid "Background Color"
-msgstr "Háttérszín"
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:10
-msgid "Blue"
-msgstr "Kék"
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:11
-#: components/html-editor/toolbar.c:50
-msgid "Bulleted List"
-msgstr "Felsorolás"
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:12
-#: components/html-editor/toolbar.c:511
-msgid "Center justifies the paragraphs"
-msgstr "Középre igazítja a bekezdést"
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:13
-msgid "Check spelling of the document"
-msgstr "A dokumentum helyesírás-ellenőrzése"
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:14
-msgid "Copy"
-msgstr "Másolás"
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:15
-msgid "Copy selection to clipboard"
-msgstr "A kijelölés másolása a vágólapra"
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:16
-msgid "Copy the selection"
-msgstr "A kijelölés másolása"
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:17
-msgid "Cr_ying"
-msgstr "_Sírás"
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:18
-msgid "Cu_t"
-msgstr "_Kivágás"
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:19
-msgid "Cut"
-msgstr "Kivágás"
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:20
-msgid "Cut selection to clipboard"
-msgstr "A kijelölés kivágása a vágólapra"
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:21
-msgid "Cut the selection"
-msgstr "A kijelölés kivágása"
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:22
-#: components/html-editor/search.c:74 components/html-editor/search.c:126
-msgid "Find"
-msgstr "Keresés"
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:23
-msgid "Find A Regular Expression"
-msgstr "Reguláris kifejezés keresése"
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:24
-msgid "Find And Replace"
-msgstr "Keresés és csere"
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:25
-msgid "Find Regular E_xpression..."
-msgstr "_Reguláris kifejezés keresése"
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:26
-msgid "Find _Again"
-msgstr "_Következő találat"
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:27
-msgid "Find again"
-msgstr "Következő találat"
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:28
-msgid "Find and Replace"
-msgstr "Keresés és csere"
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:29
-msgid "For_mat"
-msgstr "For_mátum"
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:30
-msgid "Green"
-msgstr "Zöld"
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:31
-msgid "Header _1"
-msgstr "Címsor _1"
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:32
-msgid "Header _2"
-msgstr "Címsor _2"
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:33
-msgid "Header _3"
-msgstr "Címsor _3"
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:34
-msgid "Header _4"
-msgstr "Címsor _4"
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:35
-msgid "Header _5"
-msgstr "Címsor _5"
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:36
-msgid "Header _6"
-msgstr "Címsor _6"
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:37
-#: components/html-editor/editor-control-factory.c:198
-#: components/html-editor/gtkhtml-editor-properties.glade.h:39
-#: components/html-editor/menubar.c:91 components/html-editor/popup.c:208
-msgid "Image"
-msgstr "Kép"
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:38
-msgid "Insert Crying smiley into document..."
-msgstr "Síró hangulatjel beszúrása a dokumentumba..."
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:39
-msgid "Insert Frown smiley into document..."
-msgstr "Rosszalló hangulatjel beszúrása a dokumentumba..."
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:40
-msgid "Insert HTML file into document..."
-msgstr "HTML fájl beszúrása a dokumentumba..."
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:41
-msgid "Insert HTML link into document..."
-msgstr "HTML hivatkozás beszúrása a dokumentumba..."
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:42
-msgid "Insert HTML template into document..."
-msgstr "HTML sablon beszúrása a dokumentumba..."
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:43
-msgid "Insert Indifferent smiley into document..."
-msgstr "Közömbös hangulatjel beszúrása a dokumentumba..."
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:44
-msgid "Insert Laughing smiley into document..."
-msgstr "Nevető hangulatjel beszúrása a dokumentumba..."
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:45
-msgid "Insert Lick smiley into document..."
-msgstr "Nyelvnyújtó hangulatjel beszúrása a dokumentumba..."
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:46
-msgid "Insert Oh no! smiley into document..."
-msgstr "Ó, ne! hangulatjel beszúrása a dokumentumba..."
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:47
-msgid "Insert Smile smiley into document..."
-msgstr "Mosolygó hangulatjel beszúrása a dokumentumba..."
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:48
-msgid "Insert Surprised smiley into document..."
-msgstr "Meglepett hangulatjel beszúrása a dokumentumba..."
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:49
-msgid "Insert Undecided smiley into document..."
-msgstr "Határozatlan hangulatjel beszúrása a dokumentumba..."
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:50
-msgid "Insert Wink smiley into document..."
-msgstr "Kacsintó hangulatjel beszúrása a dokumentumba..."
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:51
-msgid "Insert image into document..."
-msgstr "Kép beszúrása a dokumentumba..."
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:52
-msgid "Insert rule into document..."
-msgstr "Vonal beszúrása a dokumentumba"
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:53
-msgid "Insert table into document..."
-msgstr "Táblázat beszúrása a dokumentumba..."
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:54
-msgid "Insert text file into document..."
-msgstr "Szövegfájl beszúrása a dokumentumba..."
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:55
-#: components/html-editor/toolbar.c:509
-msgid "Left justifies the paragraphs"
-msgstr "Balra igazítja a bekezdést"
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:56
-msgid "Li_ck"
-msgstr "_Nyelvnyújtás"
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:57
-#: components/html-editor/body.c:327 components/html-editor/menubar.c:107
-#: components/html-editor/popup.c:105 components/html-editor/popup.c:201
-#: components/html-editor/popup.c:274
-msgid "Link"
-msgstr "Hivatkozás"
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:58
-msgid "Make the current Paragraph style Normal"
-msgstr "A bekezdés stílusa legyen Normal"
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:59
-msgid "Make the current Paragraph style Preformat"
-msgstr "A bekezdés stílusa legyen előre formázott"
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:60
-msgid "Make the current paragraph a bulleted list"
-msgstr "A bekezdés legyen felsorolás"
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:61
-msgid "Make the current paragraph a list with roman numerals"
-msgstr "A bekezdés legyen római számos lista"
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:62
-msgid "Make the current paragraph a numbered list"
-msgstr "A bekezdés legyen számozott lista"
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:63
-msgid "Make the current paragraph an H1 header"
-msgstr "A bekezdés legyen H1 címsor"
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:64
-msgid "Make the current paragraph an H2 header"
-msgstr "A bekezdés legyen H2 címsor"
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:65
-msgid "Make the current paragraph an H3 header"
-msgstr "A bekezdés legyen H3 címsor"
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:66
-msgid "Make the current paragraph an H4 header"
-msgstr "A bekezdés legyen H4 címsor"
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:67
-msgid "Make the current paragraph an H5 header"
-msgstr "A bekezdés legyen H5 címsor"
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:68
-msgid "Make the current paragraph an H6 header"
-msgstr "A bekezdés legyen H6 címsor"
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:69
-msgid "Make the current paragraph an address"
-msgstr "A bekezdés legyen cím"
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:70
-msgid "Make the current paragraph an alphabetical list"
-msgstr "A bekezdés legyen betűkkel jelölt lista"
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:71
-#: components/html-editor/gtkhtml-editor-properties.glade.h:49
-#: components/html-editor/paragraph.c:129 components/html-editor/toolbar.c:48
-msgid "Normal"
-msgstr "Normál"
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:72
-#: components/html-editor/toolbar.c:51
-msgid "Numbered List"
-msgstr "Számozott lista"
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:73
-msgid "Numbered _List"
-msgstr "Számozott _lista"
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:74
-msgid "Oh _no!"
-msgstr "Óh, ne!"
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:75
-msgid "Orange"
-msgstr "Narancs"
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:76
-msgid "Other..."
-msgstr "Egyéb..."
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:77
-msgid "Paste"
-msgstr "Beillesztés"
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:78
-msgid "Paste _Quotation"
-msgstr "_Idézet beillesztése"
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:79
-msgid "Paste from clipboard"
-msgstr "Beillesztés a vágólapról"
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:80
-msgid "Paste the clipboard"
-msgstr "A vágólap tartalmának beillesztése"
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:81
-msgid "Paste the clipboard as a quotation"
-msgstr "Vágólap beillesztése idézetként"
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:82
-#: components/html-editor/toolbar.c:49
-msgid "Preformat"
-msgstr "Előre formázott"
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:83
-msgid "Purple"
-msgstr "Lila"
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:84
-msgid "Red"
-msgstr "Vörös"
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:85
-msgid "Redo"
-msgstr "Újra"
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:86
-msgid "Redo previously undone change"
-msgstr "Az előzőleg visszavont művelet ismételt végrehajtása"
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:87
-msgid "Redo the undone action"
-msgstr "A visszavont művelet ismételt végrehajtása"
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:88
-#: components/html-editor/replace.c:79 components/html-editor/replace.c:153
-#: components/html-editor/replace.c:215
-msgid "Replace"
-msgstr "Csere"
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:89
-#: components/html-editor/toolbar.c:513
-msgid "Right justifies the paragraphs"
-msgstr "Jobbra igazítja a bekezdést"
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:90
-msgid "Roman Numeral List"
-msgstr "Római számos lista"
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:91
-#: components/html-editor/editor-control-factory.c:218
-#: components/html-editor/gtkhtml-editor-properties.glade.h:63
-#: components/html-editor/menubar.c:125 components/html-editor/popup.c:229
-msgid "Rule"
-msgstr "Vonal"
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:92
-msgid "Select _All"
-msgstr "_Mindent kijelöl"
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:93
-msgid "Select the entire contents of the document"
-msgstr "Kijelöli a dokumentum teljes tartalmát"
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:94
-#: components/html-editor/gtkhtml-editor-properties.glade.h:69
-#: components/html-editor/text.c:238 components/html-editor/toolbar.c:528
-msgid "Strikeout"
-msgstr "Áthúzott"
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:95
-msgid "Su_perscript"
-msgstr "_Felső index"
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:96
-msgid "Su_rprised"
-msgstr "_Meglepett"
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:97
-msgid "Subs_cript"
-msgstr "_Alsó index"
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:98
-msgid "Subscript"
-msgstr "Felső index"
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:99
-msgid "Superscript"
-msgstr "Alsó index"
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:100
-#: components/html-editor/gtkhtml-editor-properties.glade.h:72
-#: components/html-editor/menubar.c:142 components/html-editor/popup.c:236
-#: components/html-editor/popup.c:517 components/html-editor/popup.c:526
-msgid "Table"
-msgstr "Táblázat"
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:101
-msgid "Te_mplate..."
-msgstr "_Sablon"
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:102
-msgid "Te_xt file..."
-msgstr "_Szövegfájl..."
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:103
-#: components/html-editor/body.c:257
-#: components/html-editor/gtkhtml-editor-properties.glade.h:74
-#: components/html-editor/menubar.c:165
-msgid "Template"
-msgstr "Sablon"
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:104
-#: components/html-editor/toolbar.c:520
-msgid "Typewriter"
-msgstr "Írógép"
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:105
-msgid "Undo"
-msgstr "Visszavonás"
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:106
-msgid "Undo previous changes"
-msgstr "Előző változtatások visszavonása"
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:107
-msgid "Undo the last action"
-msgstr "Az utolsó művelet visszavonása"
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:108
-msgid "Yellow"
-msgstr "Sárga"
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:109
-msgid "_Alignment"
-msgstr "_Igazítás"
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:110
-msgid "_Alphabetical List"
-msgstr "_Betűkkel jelölt lista"
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:111
-msgid "_Bold"
-msgstr "_Félkövér"
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:112
-msgid "_Bulleted List"
-msgstr "_Felsorolás"
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:113
-msgid "_Center"
-msgstr "_Középen"
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:114
-msgid "_Copy"
-msgstr "_Másolás"
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:115
-msgid "_Decrease Indent"
-msgstr "Behúzás _csökkentése"
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:116
-msgid "_Edit"
-msgstr "S_zerkesztés"
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:117
-msgid "_Find..."
-msgstr "_Keresés..."
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:118
-msgid "_Font Size"
-msgstr "_Betűméret"
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:119
-msgid "_Frown"
-msgstr "_Rosszalló"
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:120
-msgid "_HTML file..."
-msgstr "_HTML fájl"
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:121
-msgid "_Heading"
-msgstr "_Címsor"
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:122
-msgid "_Image..."
-msgstr "_Kép..."
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:123
-msgid "_Increase Indent"
-msgstr "Behúzás _növelése"
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:124
-msgid "_Indifferent"
-msgstr "_Közömbös"
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:125
-msgid "_Insert"
-msgstr "_Beszúrás"
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:126
-msgid "_Italic"
-msgstr "_Dőlt"
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:127
-msgid "_Laughing"
-msgstr "_Nevető"
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:128
-msgid "_Left"
-msgstr "_Balra"
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:129
-msgid "_Link..."
-msgstr "_Hivatkozás..."
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:130
-msgid "_Normal"
-msgstr "_Szokásos"
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:131
-msgid "_Page..."
-msgstr "_Oldal..."
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:132
-msgid "_Paragraph..."
-msgstr "_Bekezdés..."
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:133
-msgid "_Paste"
-msgstr "_Beillesztés"
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:134
-msgid "_Plain text"
-msgstr "_Egyszerű szöveg"
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:135
-msgid "_Preformat"
-msgstr "_Előre formázott"
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:136
-msgid "_Redo"
-msgstr "Új_ra"
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:137
-msgid "_Replace..."
-msgstr "_Csere..."
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:138
-msgid "_Right"
-msgstr "_Jobbra"
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:139
-msgid "_Roman Numeral List"
-msgstr "_Római számokkal számozott lista"
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:140
-msgid "_Rule..."
-msgstr "_Vonal..."
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:141
-msgid "_Smile"
-msgstr "_Mosoly"
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:142
-msgid "_Smiley"
-msgstr "_Hangulatjel"
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:143
-msgid "_Spell Check Document..."
-msgstr "_Dokumentum helyesírás-ellenőrzése..."
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:144
-msgid "_Strikeout"
-msgstr "Á_thúzott"
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:145
-msgid "_Style"
-msgstr "_Stílus"
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:146
-msgid "_Table..."
-msgstr "_Táblázat..."
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:147
-msgid "_Text..."
-msgstr "_Szöveg..."
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:148
-msgid "_Undecided"
-msgstr "_Határozatlan"
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:149
-msgid "_Underline"
-msgstr "A_láhúzott"
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:150
-msgid "_Undo"
-msgstr "_Visszavonás"
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:151
-msgid "_Wink"
-msgstr "_Kacsintás"
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:152
-msgid "_Wrap Lines"
-msgstr "_Sorok tördelése"
-
-#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:153
-msgid "etc..."
-msgstr "stb..."
-
 #: components/html-editor/body.c:66
-#: components/html-editor/gtkhtml-editor-properties.glade.h:48
 msgid "None"
 msgstr "Nincs"
 
@@ -823,17 +48,19 @@ msgstr "Kék tinta"
 msgid "Rectangles"
 msgstr "Téglalapok"
 
+#: components/html-editor/body.c:257 components/html-editor/menubar.c:165
+msgid "Template"
+msgstr "Sablon"
+
 #: components/html-editor/body.c:275 src/gtkhtml.c:2555
 msgid "Document Title"
 msgstr "Dokumentum címe"
 
 #: components/html-editor/body.c:279 components/html-editor/body.c:282
-#: components/html-editor/gtkhtml-editor-properties.glade.h:15
 msgid "Background Image"
 msgstr "Háttérkép"
 
 #: components/html-editor/body.c:304
-#: components/html-editor/gtkhtml-editor-properties.glade.h:25
 msgid "Colors"
 msgstr "Színek"
 
@@ -845,18 +72,21 @@ msgstr "Automatikus"
 
 #: components/html-editor/body.c:326
 #: components/html-editor/editor-control-factory.c:207
-#: components/html-editor/gtkhtml-editor-properties.glade.h:76
 #: components/html-editor/menubar.c:338 components/html-editor/popup.c:194
 msgid "Text"
 msgstr "Szöveg"
 
+#: components/html-editor/body.c:327 components/html-editor/menubar.c:107
+#: components/html-editor/popup.c:105 components/html-editor/popup.c:201
+#: components/html-editor/popup.c:274
+msgid "Link"
+msgstr "Hivatkozás"
+
 #: components/html-editor/body.c:328
-#: components/html-editor/gtkhtml-editor-properties.glade.h:14
 msgid "Background"
 msgstr "Háttér"
 
 #: components/html-editor/cell.c:173 components/html-editor/cell.c:175
-#: components/html-editor/image.c:257 components/html-editor/image.c:260
 #: components/html-editor/text.c:108
 msgid "The quick brown fox jumps over the lazy dog."
 msgstr "Árvíztűrő tükörfúrógép"
@@ -880,13 +110,22 @@ msgstr ""
 msgid "Properties"
 msgstr "Tulajdonságok"
 
+#: components/html-editor/editor-control-factory.c:198
+#: components/html-editor/menubar.c:91 components/html-editor/popup.c:208
+msgid "Image"
+msgstr "Kép"
+
+#: components/html-editor/editor-control-factory.c:218
+#: components/html-editor/menubar.c:125 components/html-editor/popup.c:229
+msgid "Rule"
+msgstr "Vonal"
+
 #: components/html-editor/editor-control-factory.c:228
 #: components/html-editor/menubar.c:356 components/html-editor/popup.c:215
 msgid "Paragraph"
 msgstr "Bekezdés"
 
 #: components/html-editor/editor-control-factory.c:233
-#: components/html-editor/gtkhtml-editor-properties.glade.h:52
 #: components/html-editor/menubar.c:320 components/html-editor/popup.c:222
 msgid "Page"
 msgstr "Oldal"
@@ -894,276 +133,6 @@ msgstr "Oldal"
 #: components/html-editor/gnome-gtkhtml-editor.c:68
 msgid "GtkHTML Editor Control"
 msgstr "GtkHTML szerkesztőkontroll"
-
-#: components/html-editor/gtkhtml-editor-properties.glade.h:2
-msgid "************"
-msgstr "************"
-
-#: components/html-editor/gtkhtml-editor-properties.glade.h:3
-msgid "***text***"
-msgstr "***text***"
-
-#: components/html-editor/gtkhtml-editor-properties.glade.h:8
-msgid "+4"
-msgstr "+4"
-
-#: components/html-editor/gtkhtml-editor-properties.glade.h:11
-msgid "Alignment"
-msgstr "Igazítás"
-
-#: components/html-editor/gtkhtml-editor-properties.glade.h:12
-msgid "Alignment:"
-msgstr "Igazítás:"
-
-#: components/html-editor/gtkhtml-editor-properties.glade.h:13
-msgid "Apply changes to:"
-msgstr "Változások alkalmazása:"
-
-#: components/html-editor/gtkhtml-editor-properties.glade.h:16
-#: components/html-editor/text.c:235 components/html-editor/toolbar.c:522
-msgid "Bold"
-msgstr "Félkövér"
-
-#: components/html-editor/gtkhtml-editor-properties.glade.h:17
-msgid "Border"
-msgstr "Szegély"
-
-#: components/html-editor/gtkhtml-editor-properties.glade.h:18
-msgid "Border:"
-msgstr "Szegély:"
-
-#: components/html-editor/gtkhtml-editor-properties.glade.h:19
-msgid "Bottom"
-msgstr "Lent"
-
-#: components/html-editor/gtkhtml-editor-properties.glade.h:20
-#: components/html-editor/popup.c:243
-msgid "Cell"
-msgstr "Cella"
-
-#: components/html-editor/gtkhtml-editor-properties.glade.h:21
-#: components/html-editor/paragraph.c:164 components/html-editor/toolbar.c:511
-msgid "Center"
-msgstr "Középen"
-
-#: components/html-editor/gtkhtml-editor-properties.glade.h:22
-#: components/html-editor/link.c:137 components/html-editor/text.c:246
-msgid "Click will follow this URL"
-msgstr "A kattintás követi ezt az URL-t"
-
-#: components/html-editor/gtkhtml-editor-properties.glade.h:23
-msgid "Click will follow this URL:"
-msgstr "A kattintás követi ezt az URL-t:"
-
-#: components/html-editor/gtkhtml-editor-properties.glade.h:24
-msgid "Color:"
-msgstr "Szín:"
-
-#: components/html-editor/gtkhtml-editor-properties.glade.h:26
-#: components/html-editor/popup.c:528
-msgid "Column"
-msgstr "Oszlop"
-
-#: components/html-editor/gtkhtml-editor-properties.glade.h:27
-msgid "Column span:"
-msgstr "Átnyúló oszlop:"
-
-#: components/html-editor/gtkhtml-editor-properties.glade.h:28
-msgid "Columns:"
-msgstr "Oszlop:"
-
-#: components/html-editor/gtkhtml-editor-properties.glade.h:29
-msgid "Description:"
-msgstr "Leírás:"
-
-#: components/html-editor/gtkhtml-editor-properties.glade.h:30
-msgid "Don't wrap"
-msgstr "Nincs tördelés"
-
-#: components/html-editor/gtkhtml-editor-properties.glade.h:31
-msgid "Enable"
-msgstr "Engedélyezés"
-
-#: components/html-editor/gtkhtml-editor-properties.glade.h:32
-msgid "Follow"
-msgstr "Követés"
-
-#: components/html-editor/gtkhtml-editor-properties.glade.h:33
-msgid "Font size"
-msgstr "Betűméret"
-
-#: components/html-editor/gtkhtml-editor-properties.glade.h:34
-msgid "Foreground color"
-msgstr "Előtérszín"
-
-#: components/html-editor/gtkhtml-editor-properties.glade.h:35
-msgid "Header"
-msgstr "Fejléc"
-
-#: components/html-editor/gtkhtml-editor-properties.glade.h:36
-msgid "Height:"
-msgstr "Magasság:"
-
-#: components/html-editor/gtkhtml-editor-properties.glade.h:37
-msgid "Horizontal alignment:"
-msgstr "Vízszintes igazítás:"
-
-#: components/html-editor/gtkhtml-editor-properties.glade.h:38
-msgid "Horizontal:"
-msgstr "Vízszintes:"
-
-#: components/html-editor/gtkhtml-editor-properties.glade.h:40
-#: components/html-editor/text.c:236 components/html-editor/toolbar.c:524
-msgid "Italic"
-msgstr "Dőlt"
-
-#: components/html-editor/gtkhtml-editor-properties.glade.h:41
-#: components/html-editor/paragraph.c:163
-msgid "Left"
-msgstr "Balra"
-
-#: components/html-editor/gtkhtml-editor-properties.glade.h:42
-msgid "Length:"
-msgstr "Hosszúság:"
-
-#: components/html-editor/gtkhtml-editor-properties.glade.h:43
-msgid "Link insert"
-msgstr "Hivatkozás beszúrása"
-
-#: components/html-editor/gtkhtml-editor-properties.glade.h:44
-msgid "Link properties"
-msgstr "Hivatkozás tulajdonságok"
-
-#: components/html-editor/gtkhtml-editor-properties.glade.h:45
-msgid "Location"
-msgstr "Hely"
-
-#: components/html-editor/gtkhtml-editor-properties.glade.h:46
-msgid "Middle"
-msgstr "Középre"
-
-#: components/html-editor/gtkhtml-editor-properties.glade.h:50
-msgid "Padding"
-msgstr "Sorkitöltés"
-
-#: components/html-editor/gtkhtml-editor-properties.glade.h:51
-msgid "Padding:"
-msgstr "Sorkitöltés:"
-
-#: components/html-editor/gtkhtml-editor-properties.glade.h:53
-msgid "Percent"
-msgstr "Százalék"
-
-#: components/html-editor/gtkhtml-editor-properties.glade.h:55
-#, no-c-format
-msgid "Percent %"
-msgstr "Százalék %"
-
-#: components/html-editor/gtkhtml-editor-properties.glade.h:56
-msgid "Pixels"
-msgstr "Képpont"
-
-#: components/html-editor/gtkhtml-editor-properties.glade.h:57
-msgid "Pixmap:"
-msgstr "Pixmap:"
-
-#: components/html-editor/gtkhtml-editor-properties.glade.h:58
-msgid "Points"
-msgstr "Pont"
-
-#: components/html-editor/gtkhtml-editor-properties.glade.h:59
-#: components/html-editor/paragraph.c:165
-msgid "Right"
-msgstr "Jobbra"
-
-#: components/html-editor/gtkhtml-editor-properties.glade.h:60
-#: components/html-editor/popup.c:527
-msgid "Row"
-msgstr "Sor"
-
-#: components/html-editor/gtkhtml-editor-properties.glade.h:61
-msgid "Row span:"
-msgstr "Átnyúló sor:"
-
-#: components/html-editor/gtkhtml-editor-properties.glade.h:62
-msgid "Rows:"
-msgstr "Sor:"
-
-#: components/html-editor/gtkhtml-editor-properties.glade.h:64
-msgid "Scope"
-msgstr "Tartomány"
-
-#: components/html-editor/gtkhtml-editor-properties.glade.h:65
-msgid "Shaded"
-msgstr "Árnyékolt"
-
-#: components/html-editor/gtkhtml-editor-properties.glade.h:66
-#: components/html-editor/text.c:262
-msgid "Size"
-msgstr "Méret"
-
-#: components/html-editor/gtkhtml-editor-properties.glade.h:67
-msgid "Spacing"
-msgstr "Távolságok"
-
-#: components/html-editor/gtkhtml-editor-properties.glade.h:68
-msgid "Spacing:"
-msgstr "Távolságok:"
-
-#: components/html-editor/gtkhtml-editor-properties.glade.h:70
-#: components/html-editor/paragraph.c:115 components/html-editor/text.c:222
-msgid "Style"
-msgstr "Stílus"
-
-#: components/html-editor/gtkhtml-editor-properties.glade.h:71
-msgid "Style:"
-msgstr "Stílus:"
-
-#: components/html-editor/gtkhtml-editor-properties.glade.h:73
-msgid "Table Insert"
-msgstr "Táblázat beszúrása"
-
-#: components/html-editor/gtkhtml-editor-properties.glade.h:75
-#: components/html-editor/link.c:85
-msgid "Test URL..."
-msgstr "URL tesztelése..."
-
-#: components/html-editor/gtkhtml-editor-properties.glade.h:77
-msgid "Thickness:"
-msgstr "Vastagság:"
-
-#: components/html-editor/gtkhtml-editor-properties.glade.h:78
-msgid "Top"
-msgstr "Fent"
-
-#: components/html-editor/gtkhtml-editor-properties.glade.h:79
-#: components/html-editor/text.c:237 components/html-editor/toolbar.c:526
-msgid "Underline"
-msgstr "Aláhúzott"
-
-#: components/html-editor/gtkhtml-editor-properties.glade.h:80
-msgid "Vertical:"
-msgstr "Függőleges:"
-
-#: components/html-editor/gtkhtml-editor-properties.glade.h:81
-msgid "Width:"
-msgstr "Szélesség:"
-
-#: components/html-editor/gtkhtml-editor-properties.glade.h:82
-msgid "Wrap"
-msgstr "Tördelés"
-
-#: components/html-editor/gtkhtml-editor-properties.glade.h:83
-msgid "Wrapping:"
-msgstr "Tördelés:"
-
-#: components/html-editor/gtkhtml-editor-properties.glade.h:84
-msgid "xxxxxxxxx"
-msgstr "xxxxxxxxx"
-
-#: components/html-editor/gtkhtml-editor-properties.glade.h:85
-msgid "xxxxxxxxxxxxxx"
-msgstr "xxxxxxxxxxxxxx"
 
 #: components/html-editor/image.c:118 components/html-editor/rule.c:93
 #: components/html-editor/table.c:192
@@ -1214,7 +183,17 @@ msgstr ""
 "@src@@alt@@width@@height@align=top border=0></td></tr><tr><td><b>[Írd ide a "
 "megjegyzést]</td></tr></table></td></tr></table></center>"
 
-#: components/html-editor/image.c:691
+#: components/html-editor/image.c:258 components/html-editor/image.c:264
+msgid ""
+"This is sample text, designed to show you how text would flow around this "
+"image if you insert the image into your message."
+msgstr "Ez egy mintaszöveg, amely szemlélteti a szöveg körbefuttatását a kép körül, ha a képet beilleszted az üzenetbe."
+
+#: components/html-editor/image.c:270
+msgid "No image selected"
+msgstr "Nincs kép kiválasztva"
+
+#: components/html-editor/image.c:705
 msgid ""
 "The editted image was removed from the document.\n"
 "Cannot apply your changes."
@@ -1222,9 +201,17 @@ msgstr ""
 "A szerkesztett kép törlődött a dokumentumból.\n"
 "A változtatásokat nem lehet alkalmazni."
 
+#: components/html-editor/link.c:85
+msgid "Test URL..."
+msgstr "URL tesztelése..."
+
 #: components/html-editor/link.c:121
 msgid "Link text"
 msgstr "Hivatkozás szövege"
+
+#: components/html-editor/link.c:137 components/html-editor/text.c:246
+msgid "Click will follow this URL"
+msgstr "A kattintás követi ezt az URL-t"
 
 #: components/html-editor/link.c:210
 msgid ""
@@ -1241,6 +228,11 @@ msgstr ""
 msgid "Insert"
 msgstr "Beszúrás"
 
+#: components/html-editor/menubar.c:142 components/html-editor/popup.c:236
+#: components/html-editor/popup.c:517 components/html-editor/popup.c:526
+msgid "Table"
+msgstr "Táblázat"
+
 #: components/html-editor/menubar.c:252
 #, c-format
 msgid "Error loading file '%s': %s"
@@ -1253,6 +245,14 @@ msgstr "Beszúrás: HTML-fájl"
 #: components/html-editor/menubar.c:279
 msgid "Insert: Text File"
 msgstr "Beszúrás: szövegfájl "
+
+#: components/html-editor/paragraph.c:115 components/html-editor/text.c:222
+msgid "Style"
+msgstr "Stílus"
+
+#: components/html-editor/paragraph.c:129 components/html-editor/toolbar.c:48
+msgid "Normal"
+msgstr "Normál"
 
 #: components/html-editor/paragraph.c:130
 msgid "Pre"
@@ -1306,6 +306,18 @@ msgstr "Betű elem"
 msgid "Align"
 msgstr "Igazítás"
 
+#: components/html-editor/paragraph.c:163
+msgid "Left"
+msgstr "Balra"
+
+#: components/html-editor/paragraph.c:164 components/html-editor/toolbar.c:511
+msgid "Center"
+msgstr "Középen"
+
+#: components/html-editor/paragraph.c:165
+msgid "Right"
+msgstr "Jobbra"
+
 #: components/html-editor/paragraph.c:194
 msgid ""
 "The editted paragraph was removed from the document.\n"
@@ -1313,6 +325,10 @@ msgid ""
 msgstr ""
 "A szerkesztett bekezdés törlődött a dokumentumból.\n"
 "A változtatásokat nem lehet alkalmazni."
+
+#: components/html-editor/popup.c:243
+msgid "Cell"
+msgstr "Cella"
 
 #: components/html-editor/popup.c:456
 msgid "Paste Quotation"
@@ -1383,6 +399,14 @@ msgstr "Egy oszloppal utána"
 msgid "Table delete"
 msgstr "Táblázat törlése"
 
+#: components/html-editor/popup.c:527
+msgid "Row"
+msgstr "Sor"
+
+#: components/html-editor/popup.c:528
+msgid "Column"
+msgstr "Oszlop"
+
 #: components/html-editor/popup.c:529
 msgid "Cell contents"
 msgstr "Cellatartalom"
@@ -1403,6 +427,11 @@ msgstr "Mindet cseréli"
 #: components/html-editor/replace.c:77
 msgid "Next"
 msgstr "Következő"
+
+#: components/html-editor/replace.c:79 components/html-editor/replace.c:153
+#: components/html-editor/replace.c:215
+msgid "Replace"
+msgstr "Csere"
 
 #: components/html-editor/replace.c:161
 msgid "Search _backward"
@@ -1435,6 +464,10 @@ msgid ""
 msgstr ""
 "A szerkesztett vonal törlődött a dokumentumból.\n"
 "A változtatásokat nem lehet alkalmazni."
+
+#: components/html-editor/search.c:74 components/html-editor/search.c:126
+msgid "Find"
+msgstr "Keresés"
 
 #: components/html-editor/search.c:79
 msgid "_Backward"
@@ -1492,6 +525,26 @@ msgstr "Fájl mentése másként..."
 msgid "GtkHTML Editor Test Container"
 msgstr "GtkHTML szerkesztő tesztkonténer"
 
+#: components/html-editor/text.c:235 components/html-editor/toolbar.c:522
+msgid "Bold"
+msgstr "Félkövér"
+
+#: components/html-editor/text.c:236 components/html-editor/toolbar.c:524
+msgid "Italic"
+msgstr "Dőlt"
+
+#: components/html-editor/text.c:237 components/html-editor/toolbar.c:526
+msgid "Underline"
+msgstr "Aláhúzott"
+
+#: components/html-editor/text.c:238 components/html-editor/toolbar.c:528
+msgid "Strikeout"
+msgstr "Áthúzott"
+
+#: components/html-editor/text.c:262
+msgid "Size"
+msgstr "Méret"
+
 #. color selection
 #: components/html-editor/text.c:292
 msgid "Color"
@@ -1505,17 +558,49 @@ msgstr ""
 "A szerkesztett szöveg törlődött a dokumentumból.\n"
 "A változtatásokat nem lehet alkalmazni."
 
+#: components/html-editor/toolbar.c:49
+msgid "Preformat"
+msgstr "Előre formázott"
+
+#: components/html-editor/toolbar.c:50
+msgid "Bulleted List"
+msgstr "Felsorolás"
+
+#: components/html-editor/toolbar.c:51
+msgid "Numbered List"
+msgstr "Számozott lista"
+
 #: components/html-editor/toolbar.c:52
 msgid "Roman List"
 msgstr "Római számos lista"
+
+#: components/html-editor/toolbar.c:53
+msgid "Alphabetical List"
+msgstr "Betűkkel jelölt lista"
 
 #: components/html-editor/toolbar.c:509
 msgid "Left align"
 msgstr "Balra igazítás"
 
+#: components/html-editor/toolbar.c:509
+msgid "Left justifies the paragraphs"
+msgstr "Balra igazítja a bekezdést"
+
+#: components/html-editor/toolbar.c:511
+msgid "Center justifies the paragraphs"
+msgstr "Középre igazítja a bekezdést"
+
 #: components/html-editor/toolbar.c:513
 msgid "Right align"
 msgstr "Jobbra igazítás"
+
+#: components/html-editor/toolbar.c:513
+msgid "Right justifies the paragraphs"
+msgstr "Jobbra igazítja a bekezdést"
+
+#: components/html-editor/toolbar.c:520
+msgid "Typewriter"
+msgstr "Írógép"
 
 #: components/html-editor/toolbar.c:520
 msgid "Toggle typewriter font style"
@@ -1702,3 +787,657 @@ msgstr "Nyomtatási kép"
 #: src/testgtkhtml.c:973
 msgid "GtkHTML Test Application"
 msgstr "GtkHTML tesztalkalmazás"
+
+#~ msgid "\n"
+#~ msgstr "\n"
+
+#~ msgid "*"
+#~ msgstr "*"
+
+#~ msgid "*********************"
+#~ msgstr "*********************"
+
+#~ msgid "Add Keyboard Shortcuts"
+#~ msgstr "Gyorsbillentyűk hozzáadása"
+
+#~ msgid "Automatically detect links"
+#~ msgstr "Automatikus hivatkozás-felismerés"
+
+#~ msgid "Behavior"
+#~ msgstr "Viselkedés"
+
+#~ msgid "Composer Properties"
+#~ msgstr "Szerkesztő tulajdonságai"
+
+#~ msgid "Composer Properties planned"
+#~ msgstr "Tervezett szerkesztőtulajdoságok"
+
+#~ msgid "Configure spell checking"
+#~ msgstr "Helyesírás-ellenőrzés beállításai"
+
+#~ msgid "Enable spell checking"
+#~ msgstr "Helyesírás-ellenőrzés engedélyezése"
+
+#~ msgid "Fixed width"
+#~ msgstr "Fix szélességű"
+
+#~ msgid "Fonts"
+#~ msgstr "Betűkészletek"
+
+#~ msgid "For printing"
+#~ msgstr "Nyomtatáshoz"
+
+#~ msgid "Grab keys"
+#~ msgstr "Billentyű megadása"
+
+#~ msgid "Information"
+#~ msgstr "Információ"
+
+#~ msgid "Keyboard Shortcuts"
+#~ msgstr "Gyorsbillentyűk"
+
+#~ msgid "Miscellaneous"
+#~ msgstr "Egyebek"
+
+#~ msgid "New shortcut:"
+#~ msgstr "Új indítóikon:"
+
+#~ msgid "On screen"
+#~ msgstr "Képernyőn"
+
+#~ msgid "Select HTML fixed width font"
+#~ msgstr "Fix szélességű betűkészlet választása a HTML-hez"
+
+#~ msgid "Select HTML fixed width font for printing"
+#~ msgstr "Fix szélességű betűkészlet választása a HTML nyomtatásához"
+
+#~ msgid "Select HTML variable width font"
+#~ msgstr "Változó szélességű betűkészlet választása a HTML-hez"
+
+#~ msgid "Select HTML variable width font for printing"
+#~ msgstr "Változó szélességű betűkészlet választása a HTML nyomtatásához"
+
+#~ msgid "Shortcuts _type:"
+#~ msgstr "Gyorsbillentyű _típusa:"
+
+#~ msgid "Show animated images"
+#~ msgstr "Animált képek megjelenítése"
+
+#~ msgid "Variable width"
+#~ msgstr "Változó szélességű"
+
+#~ msgid "_Add"
+#~ msgstr "_Hozzáadás"
+
+#~ msgid "_Delete"
+#~ msgstr "_Törlés"
+
+#~ msgid "GNOME HTML Editor"
+#~ msgstr "GNOME HTML-szerkesztő"
+
+#~ msgid "GNOME HTML Editor Control"
+#~ msgstr "GNOME HTML-szerkesztő kontroll"
+
+#~ msgid "GNOME HTML Editor Factory"
+#~ msgstr "GNOME HTML-szerkesztő factory"
+
+#~ msgid "+0"
+#~ msgstr "+0"
+
+#~ msgid "+1"
+#~ msgstr "+1"
+
+#~ msgid "+2"
+#~ msgstr "+2"
+
+#~ msgid "+3"
+#~ msgstr "+3"
+
+#~ msgid "-1"
+#~ msgstr "-1"
+
+#~ msgid "-2"
+#~ msgstr "-2"
+
+#~ msgid "A_ddress"
+#~ msgstr "_Cím"
+
+#~ msgid "Background Color"
+#~ msgstr "Háttérszín"
+
+#~ msgid "Blue"
+#~ msgstr "Kék"
+
+#~ msgid "Check spelling of the document"
+#~ msgstr "A dokumentum helyesírás-ellenőrzése"
+
+#~ msgid "Copy"
+#~ msgstr "Másolás"
+
+#~ msgid "Copy selection to clipboard"
+#~ msgstr "A kijelölés másolása a vágólapra"
+
+#~ msgid "Copy the selection"
+#~ msgstr "A kijelölés másolása"
+
+#~ msgid "Cr_ying"
+#~ msgstr "_Sírás"
+
+#~ msgid "Cu_t"
+#~ msgstr "_Kivágás"
+
+#~ msgid "Cut"
+#~ msgstr "Kivágás"
+
+#~ msgid "Cut selection to clipboard"
+#~ msgstr "A kijelölés kivágása a vágólapra"
+
+#~ msgid "Cut the selection"
+#~ msgstr "A kijelölés kivágása"
+
+#~ msgid "Find A Regular Expression"
+#~ msgstr "Reguláris kifejezés keresése"
+
+#~ msgid "Find And Replace"
+#~ msgstr "Keresés és csere"
+
+#~ msgid "Find Regular E_xpression..."
+#~ msgstr "_Reguláris kifejezés keresése"
+
+#~ msgid "Find _Again"
+#~ msgstr "_Következő találat"
+
+#~ msgid "Find again"
+#~ msgstr "Következő találat"
+
+#~ msgid "Find and Replace"
+#~ msgstr "Keresés és csere"
+
+#~ msgid "For_mat"
+#~ msgstr "For_mátum"
+
+#~ msgid "Green"
+#~ msgstr "Zöld"
+
+#~ msgid "Header _1"
+#~ msgstr "Címsor _1"
+
+#~ msgid "Header _2"
+#~ msgstr "Címsor _2"
+
+#~ msgid "Header _3"
+#~ msgstr "Címsor _3"
+
+#~ msgid "Header _4"
+#~ msgstr "Címsor _4"
+
+#~ msgid "Header _5"
+#~ msgstr "Címsor _5"
+
+#~ msgid "Header _6"
+#~ msgstr "Címsor _6"
+
+#~ msgid "Insert Crying smiley into document..."
+#~ msgstr "Síró hangulatjel beszúrása a dokumentumba..."
+
+#~ msgid "Insert Frown smiley into document..."
+#~ msgstr "Rosszalló hangulatjel beszúrása a dokumentumba..."
+
+#~ msgid "Insert HTML file into document..."
+#~ msgstr "HTML fájl beszúrása a dokumentumba..."
+
+#~ msgid "Insert HTML link into document..."
+#~ msgstr "HTML hivatkozás beszúrása a dokumentumba..."
+
+#~ msgid "Insert HTML template into document..."
+#~ msgstr "HTML sablon beszúrása a dokumentumba..."
+
+#~ msgid "Insert Indifferent smiley into document..."
+#~ msgstr "Közömbös hangulatjel beszúrása a dokumentumba..."
+
+#~ msgid "Insert Laughing smiley into document..."
+#~ msgstr "Nevető hangulatjel beszúrása a dokumentumba..."
+
+#~ msgid "Insert Lick smiley into document..."
+#~ msgstr "Nyelvnyújtó hangulatjel beszúrása a dokumentumba..."
+
+#~ msgid "Insert Oh no! smiley into document..."
+#~ msgstr "Ó, ne! hangulatjel beszúrása a dokumentumba..."
+
+#~ msgid "Insert Smile smiley into document..."
+#~ msgstr "Mosolygó hangulatjel beszúrása a dokumentumba..."
+
+#~ msgid "Insert Surprised smiley into document..."
+#~ msgstr "Meglepett hangulatjel beszúrása a dokumentumba..."
+
+#~ msgid "Insert Undecided smiley into document..."
+#~ msgstr "Határozatlan hangulatjel beszúrása a dokumentumba..."
+
+#~ msgid "Insert Wink smiley into document..."
+#~ msgstr "Kacsintó hangulatjel beszúrása a dokumentumba..."
+
+#~ msgid "Insert image into document..."
+#~ msgstr "Kép beszúrása a dokumentumba..."
+
+#~ msgid "Insert rule into document..."
+#~ msgstr "Vonal beszúrása a dokumentumba"
+
+#~ msgid "Insert table into document..."
+#~ msgstr "Táblázat beszúrása a dokumentumba..."
+
+#~ msgid "Insert text file into document..."
+#~ msgstr "Szövegfájl beszúrása a dokumentumba..."
+
+#~ msgid "Li_ck"
+#~ msgstr "_Nyelvnyújtás"
+
+#~ msgid "Make the current Paragraph style Normal"
+#~ msgstr "A bekezdés stílusa legyen Normal"
+
+#~ msgid "Make the current Paragraph style Preformat"
+#~ msgstr "A bekezdés stílusa legyen előre formázott"
+
+#~ msgid "Make the current paragraph a bulleted list"
+#~ msgstr "A bekezdés legyen felsorolás"
+
+#~ msgid "Make the current paragraph a list with roman numerals"
+#~ msgstr "A bekezdés legyen római számos lista"
+
+#~ msgid "Make the current paragraph a numbered list"
+#~ msgstr "A bekezdés legyen számozott lista"
+
+#~ msgid "Make the current paragraph an H1 header"
+#~ msgstr "A bekezdés legyen H1 címsor"
+
+#~ msgid "Make the current paragraph an H2 header"
+#~ msgstr "A bekezdés legyen H2 címsor"
+
+#~ msgid "Make the current paragraph an H3 header"
+#~ msgstr "A bekezdés legyen H3 címsor"
+
+#~ msgid "Make the current paragraph an H4 header"
+#~ msgstr "A bekezdés legyen H4 címsor"
+
+#~ msgid "Make the current paragraph an H5 header"
+#~ msgstr "A bekezdés legyen H5 címsor"
+
+#~ msgid "Make the current paragraph an H6 header"
+#~ msgstr "A bekezdés legyen H6 címsor"
+
+#~ msgid "Make the current paragraph an address"
+#~ msgstr "A bekezdés legyen cím"
+
+#~ msgid "Make the current paragraph an alphabetical list"
+#~ msgstr "A bekezdés legyen betűkkel jelölt lista"
+
+#~ msgid "Numbered _List"
+#~ msgstr "Számozott _lista"
+
+#~ msgid "Oh _no!"
+#~ msgstr "Óh, ne!"
+
+#~ msgid "Orange"
+#~ msgstr "Narancs"
+
+#~ msgid "Other..."
+#~ msgstr "Egyéb..."
+
+#~ msgid "Paste"
+#~ msgstr "Beillesztés"
+
+#~ msgid "Paste _Quotation"
+#~ msgstr "_Idézet beillesztése"
+
+#~ msgid "Paste from clipboard"
+#~ msgstr "Beillesztés a vágólapról"
+
+#~ msgid "Paste the clipboard"
+#~ msgstr "A vágólap tartalmának beillesztése"
+
+#~ msgid "Paste the clipboard as a quotation"
+#~ msgstr "Vágólap beillesztése idézetként"
+
+#~ msgid "Purple"
+#~ msgstr "Lila"
+
+#~ msgid "Red"
+#~ msgstr "Vörös"
+
+#~ msgid "Redo"
+#~ msgstr "Újra"
+
+#~ msgid "Redo previously undone change"
+#~ msgstr "Az előzőleg visszavont művelet ismételt végrehajtása"
+
+#~ msgid "Redo the undone action"
+#~ msgstr "A visszavont művelet ismételt végrehajtása"
+
+#~ msgid "Roman Numeral List"
+#~ msgstr "Római számos lista"
+
+#~ msgid "Select _All"
+#~ msgstr "_Mindent kijelöl"
+
+#~ msgid "Select the entire contents of the document"
+#~ msgstr "Kijelöli a dokumentum teljes tartalmát"
+
+#~ msgid "Su_perscript"
+#~ msgstr "_Felső index"
+
+#~ msgid "Su_rprised"
+#~ msgstr "_Meglepett"
+
+#~ msgid "Subs_cript"
+#~ msgstr "_Alsó index"
+
+#~ msgid "Subscript"
+#~ msgstr "Felső index"
+
+#~ msgid "Superscript"
+#~ msgstr "Alsó index"
+
+#~ msgid "Te_mplate..."
+#~ msgstr "_Sablon"
+
+#~ msgid "Te_xt file..."
+#~ msgstr "_Szövegfájl..."
+
+#~ msgid "Undo"
+#~ msgstr "Visszavonás"
+
+#~ msgid "Undo previous changes"
+#~ msgstr "Előző változtatások visszavonása"
+
+#~ msgid "Undo the last action"
+#~ msgstr "Az utolsó művelet visszavonása"
+
+#~ msgid "Yellow"
+#~ msgstr "Sárga"
+
+#~ msgid "_Alignment"
+#~ msgstr "_Igazítás"
+
+#~ msgid "_Alphabetical List"
+#~ msgstr "_Betűkkel jelölt lista"
+
+#~ msgid "_Bold"
+#~ msgstr "_Félkövér"
+
+#~ msgid "_Bulleted List"
+#~ msgstr "_Felsorolás"
+
+#~ msgid "_Center"
+#~ msgstr "_Középen"
+
+#~ msgid "_Copy"
+#~ msgstr "_Másolás"
+
+#~ msgid "_Decrease Indent"
+#~ msgstr "Behúzás _csökkentése"
+
+#~ msgid "_Edit"
+#~ msgstr "S_zerkesztés"
+
+#~ msgid "_Find..."
+#~ msgstr "_Keresés..."
+
+#~ msgid "_Font Size"
+#~ msgstr "_Betűméret"
+
+#~ msgid "_Frown"
+#~ msgstr "_Rosszalló"
+
+#~ msgid "_HTML file..."
+#~ msgstr "_HTML fájl"
+
+#~ msgid "_Heading"
+#~ msgstr "_Címsor"
+
+#~ msgid "_Image..."
+#~ msgstr "_Kép..."
+
+#~ msgid "_Increase Indent"
+#~ msgstr "Behúzás _növelése"
+
+#~ msgid "_Indifferent"
+#~ msgstr "_Közömbös"
+
+#~ msgid "_Insert"
+#~ msgstr "_Beszúrás"
+
+#~ msgid "_Italic"
+#~ msgstr "_Dőlt"
+
+#~ msgid "_Laughing"
+#~ msgstr "_Nevető"
+
+#~ msgid "_Left"
+#~ msgstr "_Balra"
+
+#~ msgid "_Link..."
+#~ msgstr "_Hivatkozás..."
+
+#~ msgid "_Normal"
+#~ msgstr "_Szokásos"
+
+#~ msgid "_Page..."
+#~ msgstr "_Oldal..."
+
+#~ msgid "_Paragraph..."
+#~ msgstr "_Bekezdés..."
+
+#~ msgid "_Paste"
+#~ msgstr "_Beillesztés"
+
+#~ msgid "_Plain text"
+#~ msgstr "_Egyszerű szöveg"
+
+#~ msgid "_Preformat"
+#~ msgstr "_Előre formázott"
+
+#~ msgid "_Redo"
+#~ msgstr "Új_ra"
+
+#~ msgid "_Replace..."
+#~ msgstr "_Csere..."
+
+#~ msgid "_Right"
+#~ msgstr "_Jobbra"
+
+#~ msgid "_Roman Numeral List"
+#~ msgstr "_Római számokkal számozott lista"
+
+#~ msgid "_Rule..."
+#~ msgstr "_Vonal..."
+
+#~ msgid "_Smile"
+#~ msgstr "_Mosoly"
+
+#~ msgid "_Smiley"
+#~ msgstr "_Hangulatjel"
+
+#~ msgid "_Spell Check Document..."
+#~ msgstr "_Dokumentum helyesírás-ellenőrzése..."
+
+#~ msgid "_Strikeout"
+#~ msgstr "Á_thúzott"
+
+#~ msgid "_Style"
+#~ msgstr "_Stílus"
+
+#~ msgid "_Table..."
+#~ msgstr "_Táblázat..."
+
+#~ msgid "_Text..."
+#~ msgstr "_Szöveg..."
+
+#~ msgid "_Undecided"
+#~ msgstr "_Határozatlan"
+
+#~ msgid "_Underline"
+#~ msgstr "A_láhúzott"
+
+#~ msgid "_Undo"
+#~ msgstr "_Visszavonás"
+
+#~ msgid "_Wink"
+#~ msgstr "_Kacsintás"
+
+#~ msgid "_Wrap Lines"
+#~ msgstr "_Sorok tördelése"
+
+#~ msgid "etc..."
+#~ msgstr "stb..."
+
+#~ msgid "************"
+#~ msgstr "************"
+
+#~ msgid "***text***"
+#~ msgstr "***text***"
+
+#~ msgid "+4"
+#~ msgstr "+4"
+
+#~ msgid "Alignment"
+#~ msgstr "Igazítás"
+
+#~ msgid "Alignment:"
+#~ msgstr "Igazítás:"
+
+#~ msgid "Apply changes to:"
+#~ msgstr "Változások alkalmazása:"
+
+#~ msgid "Border"
+#~ msgstr "Szegély"
+
+#~ msgid "Border:"
+#~ msgstr "Szegély:"
+
+#~ msgid "Bottom"
+#~ msgstr "Lent"
+
+#~ msgid "Click will follow this URL:"
+#~ msgstr "A kattintás követi ezt az URL-t:"
+
+#~ msgid "Color:"
+#~ msgstr "Szín:"
+
+#~ msgid "Column span:"
+#~ msgstr "Átnyúló oszlop:"
+
+#~ msgid "Columns:"
+#~ msgstr "Oszlop:"
+
+#~ msgid "Description:"
+#~ msgstr "Leírás:"
+
+#~ msgid "Don't wrap"
+#~ msgstr "Nincs tördelés"
+
+#~ msgid "Enable"
+#~ msgstr "Engedélyezés"
+
+#~ msgid "Follow"
+#~ msgstr "Követés"
+
+#~ msgid "Font size"
+#~ msgstr "Betűméret"
+
+#~ msgid "Foreground color"
+#~ msgstr "Előtérszín"
+
+#~ msgid "Header"
+#~ msgstr "Fejléc"
+
+#~ msgid "Height:"
+#~ msgstr "Magasság:"
+
+#~ msgid "Horizontal alignment:"
+#~ msgstr "Vízszintes igazítás:"
+
+#~ msgid "Horizontal:"
+#~ msgstr "Vízszintes:"
+
+#~ msgid "Length:"
+#~ msgstr "Hosszúság:"
+
+#~ msgid "Link insert"
+#~ msgstr "Hivatkozás beszúrása"
+
+#~ msgid "Link properties"
+#~ msgstr "Hivatkozás tulajdonságok"
+
+#~ msgid "Location"
+#~ msgstr "Hely"
+
+#~ msgid "Middle"
+#~ msgstr "Középre"
+
+#~ msgid "Padding"
+#~ msgstr "Sorkitöltés"
+
+#~ msgid "Padding:"
+#~ msgstr "Sorkitöltés:"
+
+#~ msgid "Percent"
+#~ msgstr "Százalék"
+
+#~ msgid "Percent %"
+#~ msgstr "Százalék %"
+
+#~ msgid "Pixels"
+#~ msgstr "Képpont"
+
+#~ msgid "Pixmap:"
+#~ msgstr "Pixmap:"
+
+#~ msgid "Points"
+#~ msgstr "Pont"
+
+#~ msgid "Row span:"
+#~ msgstr "Átnyúló sor:"
+
+#~ msgid "Rows:"
+#~ msgstr "Sor:"
+
+#~ msgid "Scope"
+#~ msgstr "Tartomány"
+
+#~ msgid "Shaded"
+#~ msgstr "Árnyékolt"
+
+#~ msgid "Spacing"
+#~ msgstr "Távolságok"
+
+#~ msgid "Spacing:"
+#~ msgstr "Távolságok:"
+
+#~ msgid "Style:"
+#~ msgstr "Stílus:"
+
+#~ msgid "Table Insert"
+#~ msgstr "Táblázat beszúrása"
+
+#~ msgid "Thickness:"
+#~ msgstr "Vastagság:"
+
+#~ msgid "Top"
+#~ msgstr "Fent"
+
+#~ msgid "Vertical:"
+#~ msgstr "Függőleges:"
+
+#~ msgid "Width:"
+#~ msgstr "Szélesség:"
+
+#~ msgid "Wrap"
+#~ msgstr "Tördelés"
+
+#~ msgid "Wrapping:"
+#~ msgstr "Tördelés:"
+
+#~ msgid "xxxxxxxxx"
+#~ msgstr "xxxxxxxxx"
+
+#~ msgid "xxxxxxxxxxxxxx"
+#~ msgstr "xxxxxxxxxxxxxx"

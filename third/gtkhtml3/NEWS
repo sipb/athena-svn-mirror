@@ -6,7 +6,7 @@ New in this release
   * fixed blue text saving.
   * example text changed to be more self-explaining.
   * fixed printing font issues.
-  * fixed cursor naviagtion.
+  * fixed cursor navigation.
   * removed old indent keybindings.
   * Shift-F10 keybinding for popup menu in the editor.
 

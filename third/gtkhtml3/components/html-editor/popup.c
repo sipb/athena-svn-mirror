@@ -377,7 +377,7 @@ insert_html (GtkWidget *mi, GtkHTMLControlData *cd)
         (*props) ++;
 
 #define SUBMENU(l) \
-		        menuitem = gtk_menu_item_new_with_label (_(l)); \
+		        menuitem = gtk_menu_item_new_with_label (l); \
 			gtk_menu_shell_append (GTK_MENU_SHELL (menu), menuitem); \
 			gtk_widget_show (menuitem); \
 			(*items)++; items_sep++; \
@@ -469,7 +469,7 @@ prepare_properties_and_menu (GtkHTMLControlData *cd, guint *items, guint *props)
 
 	if (cd->format_html && obj) {
 		ADD_SEP;
-		SUBMENU ("Style");
+		SUBMENU (_("Style"));
 		switch (HTML_OBJECT_TYPE (obj)) {
 		case HTML_TYPE_TEXT:
 			ADD_ITEM (_("Text Style..."), prop_dialog, TEXT);
@@ -513,7 +513,7 @@ prepare_properties_and_menu (GtkHTMLControlData *cd, guint *items, guint *props)
 		END_SUBMENU;
 		ADD_SEP;
 		if (obj->parent && obj->parent->parent && HTML_IS_TABLE_CELL (obj->parent->parent)) {
-			SUBMENU (N_("Table insert"));
+			SUBMENU (_("Table insert"));
 			ADD_ITEM (_("Table"), insert_table_cb, NONE);
 			ADD_SEP;
 			ADD_ITEM (_("Row above"), insert_row_above, NONE);
@@ -522,7 +522,7 @@ prepare_properties_and_menu (GtkHTMLControlData *cd, guint *items, guint *props)
 			ADD_ITEM (_("Column before"), insert_column_before, NONE);
 			ADD_ITEM (_("Column after"), insert_column_after, NONE);
 			END_SUBMENU;
-			SUBMENU (N_("Table delete"));
+			SUBMENU (_("Table delete"));
 			ADD_ITEM (_("Table"), delete_table, NONE);
 			ADD_ITEM (_("Row"), delete_row, NONE);
 			ADD_ITEM (_("Column"), delete_column, NONE);
@@ -536,12 +536,12 @@ prepare_properties_and_menu (GtkHTMLControlData *cd, guint *items, guint *props)
 		gchar *spell, *word, *ignore, *add;
 
 		ADD_SEP;
-		ADD_ITEM ("Check Word Spelling...", spell_check_cb, NONE);
+		ADD_ITEM (_("Check Word Spelling..."), spell_check_cb, NONE);
 		if (get_n_languages (cd) > 1) {
 			gchar *lang;
 			gint i;
 
-			SUBMENU ("Add Word to");
+			SUBMENU (_("Add Word to"));
 
 			for (i = 0; i < cd->languages->_length; i ++) {
 				if (strstr (html_engine_get_language (cd->html->engine), cd->languages->_buffer [i].abbreviation)) {
@@ -554,13 +554,13 @@ prepare_properties_and_menu (GtkHTMLControlData *cd, guint *items, guint *props)
 			
 			END_SUBMENU;
 		} else {
-			ADD_ITEM ("Add Word to Dictionary", spell_add, NONE);
+			ADD_ITEM (_("Add Word to Dictionary"), spell_add, NONE);
 			g_object_set_data (G_OBJECT (menuitem), "abbrev", (gpointer) get_language (cd));
 		}
-		ADD_ITEM ("Ignore Misspelled Word", spell_ignore, NONE);
+		ADD_ITEM (_("Ignore Misspelled Word"), spell_ignore, NONE);
 	}
 
-	SUBMENU ("Input Methods");
+	SUBMENU (_("Input Methods"));
 	gtk_im_multicontext_append_menuitems (GTK_IM_MULTICONTEXT (cd->html->priv->im_context), 
 					      GTK_MENU_SHELL (menu));
 	END_SUBMENU;

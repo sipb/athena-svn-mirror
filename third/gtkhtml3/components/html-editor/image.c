@@ -413,7 +413,11 @@ set_ui (GtkHTMLEditImageProperties *d)
 static void
 changed_template (GtkWidget *w, GtkHTMLEditImageProperties *d)
 {
+	gint oldtemplate = d->template;
 	d->template = g_list_index (GTK_MENU_SHELL (w)->children, gtk_menu_get_active (GTK_MENU (w)));
+
+	if (d->template == oldtemplate)
+		return;
 
 	d->border = image_templates [d->template].border;
 	d->align = image_templates [d->template].align;

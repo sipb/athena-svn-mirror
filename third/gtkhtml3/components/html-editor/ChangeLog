@@ -1,3 +1,76 @@
+2003-09-15  Larry Ewing  <lewing@ximian.com>
+
+	* editor-control-factory.c (set_frame_cb): activate the menu items
+	by hand in set_frame rather than using the activate signal.  The
+	has the effect of reverting most of the changes federico
+	introduced with the bonoboui fixes.
+
+	* control-data.c (gtk_html_control_data_new): remove now unused
+	detach handler id.
+
+	* menubar.c (menubar_set_languages): protect again a NULL language
+	setting.  Remove teh detach function.
+
+2003-09-02  Larry Ewing  <lewing@ximian.com>
+
+	* GNOME_GtkHTML_Editor-emacs.xml.in: add file with emacs friendly
+	keybindings converted by Alain Mellan (see Ximian #41187).
+
+	* menubar.c (menubar_setup): load emacs keybindings if the
+	use_emacs_keybindings is set in the class.
+
+	* Makefile.am: add rules for GNOME_GtkHTML_Editor-emacs.xml.in.
+
+2003-09-03  Radek Doulik  <rodo@ximian.com>
+
+	* menubar.c (menubar_set_languages): use control data languge
+
+	* spell.c (spell_set_language): set control data language
+
+	* control-data.c (gtk_html_control_data_new): added language
+	property
+
+	* menubar.c (menubar_setup): move spell control checking here from
+	activate callback, cache has_spell_control value - it's expensive
+	call
+	(menubar_setup): call menubar_set_languages
+
+2003-07-23  Federico Mena Quintero  <federico@ximian.com>
+
+	* menubar.c (menubar_setup): Save the signal ID that we connect.
+	(menubar_detach): New function, disconnects the appropriate
+	signals and removes our menu items.
+
+	* control-data.c (gtk_html_control_data_destroy): Disconnect the
+	menubar signal handler if it is present.
+
+	* editor-control-factory.c (activate_cb): In the deactivate case,
+	call menubar_detach().  Also, set the sensitivity of the
+	EditSpellCheck verb here.
+	(set_frame_cb): Don't set up the menubar here, nor the sensitivity
+	of the EditSpellCheck verb.
+
+2003-09-05  Antonio Xu  <antonio.xu@sun.com>
+
+	* editor-control-factory.c (load_from_file): use
+	g_filename_from_uri to get image file's real path, bug fix
+	#47990.
+
+2003-09-03  Dan Winship  <danw@ximian.com>
+
+	* Makefile.am (libgnome_gtkhtml_editor_3_0_la_LDFLAGS): Remove
+	-no-undefined (which is wrong), and add -module
+
+2003-08-08  Yuedong Du  <yuedong.du@sun.com>
+
+        * menubar.c: fix a typo cause bullet list not work. See bug
+        #47387
+
+2003-07-28  Alex Jiang <alex.jiang@sun.com>
+
+	* image.c (changed_template): before clear option data, check 
+	if we are using the same template. Fixes #44705
+
 2003-07-18  Antonio Xu <antonio.xu@sun.com>
 
 	* image.c : (get_sample_html) : change some no sense text.

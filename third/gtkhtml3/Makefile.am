@@ -5,7 +5,7 @@ SUBDIRS =					\
 	art					\
 	po
 
-CLEANFILES =					\
+DISTCLEANFILES =					\
 	po/.intltool-merge-cache		\
 	intltool-extract			\
 	intltool-update				\

@@ -1,3 +1,27 @@
+2003-09-15  Larry Ewing  <lewing@ximian.com>
+
+	* configure.in (GTKHTML_MODULES): drop the libbonoboui 2.2.4
+	requirement for now.
+
+2003-09-12  Larry Ewing  <lewing@ximian.com>
+
+	* configure.in: bump version numbers for release.
+
+2003-09-04  Larry Ewing  <lewing@ximian.com>
+
+ 	* Makefile.am: change CLEANFILES to DISTCLEANFILES to fix Ximian
+ 	#43015.
+
+2003-06-26  Larry Ewing  <lewing@ximian.com>
+
+	* configure.in: revert gettext changes as they are unapproved
+	patches to the stable branch.
+
+2003-08-12  Abel Cheung  <maddog@linux.org.hk>
+
+	* configure.in: Fixed GETTEXT_PACKAGE (ximian #37784), and make sure
+	that newest intltool is used.
+
 2003-06-26  Larry Ewing  <lewing@ximian.com>
 
 	* configure.in: bump versions for release.

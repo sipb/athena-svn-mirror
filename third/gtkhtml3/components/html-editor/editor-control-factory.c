@@ -95,18 +95,20 @@ typedef struct _SetFrameData SetFrameData;
 static GtkHTMLEditorAPI *editor_api;
 
 static void
-activate_cb (BonoboControl      *control,
+activate_ui_cb (BonoboControl      *control,
 	     gboolean            active,
 	     GtkHTMLControlData *cd)
 {
-	Bonobo_UIContainer remote_ui_container;
 	BonoboUIComponent *ui_component;
 
-	printf ("ACTIVATE\n");
+	ui_component = bonobo_control_get_ui_component (control);
 
 	if (active) {
+		Bonobo_UIContainer remote_ui_container;
+
+		cd->uic = ui_component;
+
 		remote_ui_container = bonobo_control_get_remote_ui_container (control, NULL);
-		cd->uic = ui_component = bonobo_control_get_ui_component (control);
 		bonobo_ui_component_set_container (ui_component, remote_ui_container, NULL);
 		bonobo_object_release_unref (remote_ui_container, NULL);
 
@@ -118,8 +120,6 @@ static void
 set_frame_cb (BonoboControl *control,
 	      gpointer data)
 {
-	Bonobo_UIContainer remote_ui_container;
-	BonoboUIComponent *ui_component;
 	GtkHTMLControlData *control_data;
 	GtkWidget *toolbar;
 	GtkWidget *scrolled_window;
@@ -133,9 +133,7 @@ set_frame_cb (BonoboControl *control,
 
 	CORBA_Object_release (frame, NULL);
 
-	remote_ui_container = bonobo_control_get_remote_ui_container (control, NULL);
-	control_data->uic = ui_component = bonobo_control_get_ui_component (control);
-	bonobo_ui_component_set_container (ui_component, remote_ui_container, NULL);
+	control_data->uic = bonobo_control_get_ui_component (control);
 
 	/* Setup the tool bar.  */
 
@@ -150,19 +148,10 @@ set_frame_cb (BonoboControl *control,
 
 	gtk_box_pack_start (GTK_BOX (control_data->vbox), scrolled_window, TRUE, TRUE, 0);
 
-	/* Setup the menu bar.  */
-
-	menubar_setup (ui_component, control_data);
-
-	if (!spell_has_control ()) {
-		control_data->has_spell_control = FALSE;
-		bonobo_ui_component_set_prop (ui_component, "/commands/EditSpellCheck", "sensitive", "0", NULL);
-	} else
-		control_data->has_spell_control = TRUE;
+	/* hack to setup the bonobo ui if activate isn't working */
+	activate_ui_cb (control, TRUE, control_data);
 
 	gtk_html_set_editor_api (GTK_HTML (control_data->html), editor_api, control_data);
-
-	bonobo_object_release_unref (remote_ui_container, NULL);
 }
 
 static gint
@@ -251,12 +240,17 @@ load_from_file (GtkHTML *html,
 	unsigned char buffer[4096];
 	int len;
 	int fd;
-        const char *path;
+        char *path;
 
         if (strncmp (url, "file:", 5) == 0)
-		path = url + 5; 
+		path = g_filename_from_uri(url, NULL, NULL);
+	else
+		path = g_strdup(url);
 
-	if ((fd = open (path, O_RDONLY)) == -1) {
+	fd = open (path, O_RDONLY);
+	g_free(path);
+
+	if (fd == -1) {
 		g_warning ("%s", g_strerror (errno));
 		return FALSE;
 	}
@@ -632,7 +626,7 @@ editor_control_construct (BonoboControl *control, GtkWidget *vbox)
 	   embedded in its control frame.  We use the "set_frame" signal to
 	   handle that.  */
 
-	g_signal_connect (control, "activate", G_CALLBACK (activate_cb), cd);
+	/* g_signal_connect (control, "activate", G_CALLBACK (activate_ui_cb), cd); */
 	g_signal_connect (control, "set_frame", G_CALLBACK (set_frame_cb), cd);
 	g_signal_connect (html_widget, "url_requested", G_CALLBACK (url_requested_cb), cd);
 	g_signal_connect (html_widget, "button_press_event", G_CALLBACK (html_button_pressed), cd);

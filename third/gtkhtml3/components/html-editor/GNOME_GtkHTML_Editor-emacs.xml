@@ -93,7 +93,7 @@
 			_tip="Right justifies the paragraphs"
 			pixtype="stock" pixname="gtk-justify-right"/>
 
-			<cmd name="FormatBold" _label="_Bold" accel="*Ctrl*b"
+			<cmd name="FormatBold" _label="_Bold" accel=""
 			pixtype="stock" pixname="gtk-bold"/>
 			<cmd name="FormatItalic" _label="_Italic" accel="*Ctrl*i"
 			pixtype="stock" pixname="gtk-italic"/>
@@ -133,13 +133,13 @@
                                      pixtype="filename" pixname="/usr/share/gtkhtml-3.0/icons/16_paste.png"/>
 				     <menuitem name="EditPasteQuotation" verb="" accel="*Ctrl**Shift*V"/>
 				     <separator/>
-				     <menuitem name="EditSelectAll" verb="" accel="*Ctrl*A"/>
+				     <menuitem name="EditSelectAll" verb="" accel=""/>
 			</placeholder>
 
 			<placeholder name="EditFindReplace">
-				     <menuitem name="EditFind" verb="" accel="*Ctrl*F"
+				     <menuitem name="EditFind" verb="" accel=""
                                      pixtype="filename" pixname="/usr/share/gtkhtml-3.0/icons/search-16.png"/>
-				     <menuitem name="EditFindRegex" verb="" accel="*Ctrl*E"/>
+				     <menuitem name="EditFindRegex" verb="" accel=""/>
 				     <menuitem name="EditFindAgain" verb="" accel="*Ctrl*G"/>
 				     <menuitem name="EditReplace" verb="" accel="*Ctrl**Shift*F"
                                      pixtype="filename" pixname="/usr/share/gtkhtml-3.0/icons/search-and-replace-16.png"/>
@@ -268,9 +268,8 @@
 
 				<separator/>
 
-				<menuitem name="IndentMore" verb="" _label="_Increase Indent" accel="*Ctrl*bracketright"/>
-				<menuitem name="IndentLess" verb="" _label="_Decrease Indent" accel="*Ctrl*bracketleft"/>
-				<menuitem name="WrapLines" verb="" _label="_Wrap Lines" accel="*Ctrl*l"/>
+				<menuitem name="IndentMore" verb="" _label="_Increase Indent" accel="*Ctrl*TAB"/>
+				<menuitem name="IndentLess" verb="" _label="_Decrease Indent" accel="*Shift**Ctrl*TAB"/>
 
 				<separator/>
 

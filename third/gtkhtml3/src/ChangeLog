@@ -1,3 +1,43 @@
+2003-09-05  Antonio Xu  <antonio.xu@sun.com>
+
+	* gtkhtml.c (new_obj_from_uri): Use HTML_IS_PLAIN_PAINTER to judge
+	html edit model, and use g_filename_from_uri to get the image file's
+	real path, fix bug #47988 #47990.
+
+2003-09-03  Dan Winship  <danw@ximian.com>
+
+	* Makefile.am (testgtkhtml_LDFLAGS): Remove -static again
+
+2003-09-01  Maxx Cao  <maxx.cao@sun.com>
+
+	* htmltextslave.c (get_offset_for_pointer): add consideration for
+	one-character text, fix bug #47676.
+
+2003-08-15  Antonio Xu  <antonio.xu@sun.com>
+
+	* htmlengine-edit-movement.c (html_engine_jump_at): add
+	gtk_html_im_reset before html_engine_get_object_at, fix bug #47349.
+
+2003-08-15  Antonio Xu  <antonio.xu@sun.com>
+
+	* htmlengine-edit-cut-and-paste.c (insert_object_do): copy cursor
+	instead of receate a new cursor, fix bug #45911.
+
+2003-08-12  Antonio Xu  <antonio.xu@sun.com>
+
+	* gtkhtml.c (new_obj_from_uri): Use pixbuf to judge what kind of
+	image type being supported by gtkhtml, fix bug #47543.
+
+2003-08-07  Larry Ewing  <lewing@ximian.com>
+
+	* gtkhtml.c (key_press_event): only reset the blinking cursor if
+	we are editable.
+
+2003-08-01  Radek Doulik  <rodo@ximian.com>
+
+	* htmlobject.c (get_length): objects not accepting cursor have
+	zero length
+
 2003-07-28  Radek Doulik  <rodo@ximian.com>
 
 	* htmltext.c (get_tags): fix color check to save color attribute
