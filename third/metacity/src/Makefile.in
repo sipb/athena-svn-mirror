@@ -83,6 +83,7 @@ GMOFILES = @GMOFILES@
 GMSGFMT = @GMSGFMT@
 HAVE_LIB = @HAVE_LIB@
 HOST_ALIAS = @HOST_ALIAS@
+ICONV = @ICONV@
 INSTOBJEXT = @INSTOBJEXT@
 INTLLIBS = @INTLLIBS@
 INTLTOOL_CAVES_RULE = @INTLTOOL_CAVES_RULE@
@@ -112,6 +113,8 @@ LTLIB = @LTLIB@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
 MKINSTALLDIRS = @MKINSTALLDIRS@
+MSGFMT = @MSGFMT@
+MSGMERGE = @MSGMERGE@
 OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
 PACKAGE = @PACKAGE@
@@ -125,6 +128,7 @@ RC = @RC@
 STRIP = @STRIP@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
+XGETTEXT = @XGETTEXT@
 
 lib_LTLIBRARIES = libmetacity-private.la
 
@@ -259,7 +263,7 @@ DIST_COMMON =  Makefile.am Makefile.in libmetacity-private.pc.in
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = tar
+TAR = gtar
 GZIP_ENV = --best
 SOURCES = $(libmetacity_private_la_SOURCES) $(metacity_SOURCES) $(metacity_theme_viewer_SOURCES) $(metacity_dialog_SOURCES) $(testgradient_SOURCES) $(testasyncgetprop_SOURCES)
 OBJECTS = $(libmetacity_private_la_OBJECTS) $(metacity_OBJECTS) $(metacity_theme_viewer_OBJECTS) $(metacity_dialog_OBJECTS) $(testgradient_OBJECTS) $(testasyncgetprop_OBJECTS)
@@ -578,7 +582,7 @@ TAGS: tags-recursive $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) $(LISP)
 	  awk '    { files[$$0] = 1; } \
 	       END { for (i in files) print i; }'`; \
 	test -z "$(ETAGS_ARGS)$$unique$(LISP)$$tags" \
-	  || (cd $(srcdir) && etags -o $$here/TAGS $(ETAGS_ARGS) $$tags  $$unique $(LISP))
+	  || (cd $(srcdir) && etags $(ETAGS_ARGS) $$tags  $$unique $(LISP) -o $$here/TAGS)
 
 mostlyclean-tags:
 
@@ -648,7 +652,7 @@ frame.o: frame.c ../config.h frame.h window.h screen.h display.h \
 	iconcache.h bell.h errors.h keybindings.h
 frames.o: frames.c ../config.h frames.h common.h theme.h gradient.h \
 	util.h core.h menu.h fixedtip.h prefs.h
-gradient.lo gradient.o : gradient.c gradient.h util.h
+gradient.o: gradient.c gradient.h util.h
 group-props.o: group-props.c ../config.h group-props.h group.h window.h \
 	screen.h display.h eventqueue.h common.h ui.h tabpopup.h util.h \
 	stack.h iconcache.h group-private.h xprops.h
@@ -690,17 +694,17 @@ tabpopup.o: tabpopup.c ../config.h util.h core.h common.h tabpopup.h \
 	stack.h iconcache.h draw-workspace.h frame.h
 testasyncgetprop.o: testasyncgetprop.c async-getprop.h
 testgradient.o: testgradient.c gradient.h
-theme-parser.lo theme-parser.o : theme-parser.c ../config.h \
-	theme-parser.h theme.h gradient.h common.h util.h
+theme-parser.o: theme-parser.c ../config.h theme-parser.h theme.h \
+	gradient.h common.h util.h
 theme-viewer.o: theme-viewer.c ../config.h util.h theme.h gradient.h \
 	common.h theme-parser.h preview-widget.h
-theme.lo theme.o : theme.c ../config.h theme.h gradient.h common.h \
-	theme-parser.h util.h
+theme.o: theme.c ../config.h theme.h gradient.h common.h theme-parser.h \
+	util.h
 themewidget.o: themewidget.c themewidget.h theme.h gradient.h common.h
 ui.o: ui.c ../config.h prefs.h common.h ui.h tabpopup.h frames.h theme.h \
 	gradient.h util.h menu.h core.h eggaccelerators.h \
 	inlinepixbufs.h
-util.lo util.o : util.c ../config.h util.h main.h
+util.o: util.c ../config.h util.h main.h
 window-props.o: window-props.c ../config.h window-props.h window.h \
 	screen.h display.h eventqueue.h common.h ui.h tabpopup.h util.h \
 	stack.h iconcache.h xprops.h frame.h group.h

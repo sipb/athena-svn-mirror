@@ -158,7 +158,7 @@ maybe_leave_show_desktop_mode (MetaWindow *window)
 {
   gboolean is_desktop_or_dock;
 
-  if (!window->screen->showing_desktop)
+  if (!window->screen->active_workspace->showing_desktop)
     return;
 
   /* If the window is a transient for the dock or desktop, don't
@@ -175,7 +175,8 @@ maybe_leave_show_desktop_mode (MetaWindow *window)
 
   if (!is_desktop_or_dock)
     {
-      meta_screen_minimize_all_except (window->screen, window);
+      meta_screen_minimize_all_on_active_workspace_except (window->screen,
+                                                           window);
       meta_screen_unshow_desktop (window->screen);      
     }
 }
@@ -931,7 +932,7 @@ meta_window_free (MetaWindow  *window)
       meta_topic (META_DEBUG_FOCUS,
                   "Focusing default window since we're unmanaging %s\n",
                   window->desc);
-      meta_workspace_focus_default_window (window->screen->active_workspace, window);
+      meta_workspace_focus_default_window (window->screen->active_workspace, window, meta_display_get_current_time_roundtrip (window->display));
     }
   else if (window->display->expected_focus_window == window)
     {
@@ -939,7 +940,7 @@ meta_window_free (MetaWindow  *window)
                   "Focusing default window since expected focus window freed %s\n",
                   window->desc);
       window->display->expected_focus_window = NULL;
-      meta_workspace_focus_default_window (window->screen->active_workspace, window);
+      meta_workspace_focus_default_window (window->screen->active_workspace, window, meta_display_get_current_time_roundtrip (window->display));
     }
   else
     {
@@ -967,6 +968,8 @@ meta_window_free (MetaWindow  *window)
   
   if (window->display->focus_window == window)
     window->display->focus_window = NULL;
+  if (window->display->previously_focused_window == window)
+    window->display->previously_focused_window = NULL;
 
   meta_window_unqueue_calc_showing (window);
   meta_window_unqueue_move_resize (window);
@@ -1083,13 +1086,7 @@ meta_window_free (MetaWindow  *window)
     g_object_unref (G_OBJECT (window->mini_icon));
 
   meta_icon_cache_free (&window->icon_cache);
-
-  /* Avoid a race condition between the focusing of the mru window and the
-   * mouse entering the window beneath the one closed in sloppy/mouse focus
-   * modes.
-   */  
-  meta_display_increment_focus_sentinel (window->display);
-
+  
   g_free (window->sm_client_id);
   g_free (window->wm_client_machine);
   g_free (window->startup_id);
@@ -1269,7 +1266,7 @@ window_should_be_showing (MetaWindow  *window)
                                 &is_desktop_or_dock);
 
   if (showing &&      
-      window->screen->showing_desktop &&
+      window->screen->active_workspace->showing_desktop &&
       !is_desktop_or_dock)
     {
       meta_verbose ("Window %s is on current workspace, but we're showing the desktop\n",
@@ -1488,42 +1485,6 @@ idle_calc_showing (gpointer data)
        */
       window->calc_showing_queued = FALSE;
       
-      tmp = tmp->next;
-    }
-
-  /* for all displays used in the queue, set a sentinel property on
-   * the root window so that we can ignore EnterNotify events that
-   * occur before the window maps occur.  This avoids a race
-   * condition.
-   */
-  tmp = should_show;
-  while (tmp != NULL)
-    {
-      MetaWindow *window = tmp->data;
-      
-      if (g_slist_find (displays, window->display) == NULL)
-        {
-          displays = g_slist_prepend (displays, window->display);
-          meta_display_increment_focus_sentinel (window->display);
-        }
-
-      tmp = tmp->next;
-    }
-  /* There's also a potential race condition on window minimize.
-   * So we need to avoid that to, in the same manner.  As with the
-   * case above, this race condition is only for sloppy/mouse focus.
-   */
-  tmp = should_hide;
-  while (tmp != NULL)
-    {
-      MetaWindow *window = tmp->data;
-      
-      if (g_slist_find (displays, window->display) == NULL)
-        {
-          displays = g_slist_prepend (displays, window->display);
-          meta_display_increment_focus_sentinel (window->display);
-        }
-
       tmp = tmp->next;
     }
 
@@ -1919,7 +1880,7 @@ meta_window_minimize (MetaWindow  *window)
           meta_topic (META_DEBUG_FOCUS,
                       "Focusing default window due to minimization of focus window %s\n",
                       window->desc);
-          meta_workspace_focus_default_window (window->screen->active_workspace, window);
+          meta_workspace_focus_default_window (window->screen->active_workspace, window, meta_display_get_current_time_roundtrip (window->display));
         }
       else
         {
@@ -3363,6 +3324,10 @@ meta_window_focus (MetaWindow  *window,
       window->wm_state_demands_attention = FALSE;
       set_net_wm_state (window);
     }  
+
+  /* Check if there's an autoraise timeout for a different window */
+  if (window != window->display->autoraise_window)
+    meta_display_remove_autoraise_callback (window->display);
 }
 
 static void
@@ -4022,7 +3987,29 @@ meta_window_client_message (MetaWindow *window,
                     event->xclient.data.l[0]);
       if (event->xclient.data.l[0] == IconicState &&
           window->has_minimize_func)
-        meta_window_minimize (window);
+        {
+          meta_window_minimize (window);
+
+          /* If the window being minimized was the one with focus,
+           * then we should focus a new window.  We often receive this
+           * wm_change_state message when a user has clicked on the
+           * tasklist on the panel; in those cases, the current
+           * focus_window is the panel, but the previous focus_window
+           * will have been this one.  This is a special case where we
+           * need to manually handle focusing a new window because
+           * meta_window_minimize will get it wrong.
+           */
+          if (window->display->focus_window &&
+              (window->display->focus_window->type == META_WINDOW_DOCK ||
+               window->display->focus_window->type == META_WINDOW_DESKTOP) &&
+              window->display->previously_focused_window == window)
+            {
+              meta_topic (META_DEBUG_FOCUS,
+                          "Focusing default window because of minimization of former focus window %s, which was due to a wm_change_state client message\n",
+                      window->desc);
+              meta_workspace_focus_default_window (window->screen->active_workspace, window, meta_display_get_current_time_roundtrip (window->display));
+            }
+        }
 
       return TRUE;
     }
@@ -4317,9 +4304,6 @@ meta_window_notify_focus (MetaWindow *window,
     
   if (event->type == FocusIn)
     {
-      if (window->display->expected_focus_window == window)
-        window->display->expected_focus_window = NULL;
-
       if (window != window->display->focus_window)
         {
           meta_topic (META_DEBUG_FOCUS,
@@ -4397,6 +4381,8 @@ meta_window_notify_focus (MetaWindow *window,
           meta_topic (META_DEBUG_FOCUS,
                       "* Focus --> NULL (was %s)\n", window->desc);
           
+          window->display->previously_focused_window =
+            window->display->focus_window;
           window->display->focus_window = NULL;
           window->has_focus = FALSE;
           if (window->frame)

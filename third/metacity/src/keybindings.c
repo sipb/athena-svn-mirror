@@ -36,6 +36,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#ifdef HAVE_XKB
+#include <X11/XKBlib.h>
+#endif
+
 static gboolean all_bindings_disabled = FALSE;
 
 typedef void (* MetaKeyHandlerFunc) (MetaDisplay    *display,
@@ -186,12 +190,6 @@ static void handle_maximize_horiz     (MetaDisplay    *display,
                                        MetaKeyBinding *binding);
 
 /* debug */
-static void handle_spew_mark          (MetaDisplay *display,
-                                       MetaScreen  *screen,
-                                       MetaWindow  *window,
-                                       XEvent      *event,
-                                       MetaKeyBinding     *binding);
-
 static gboolean process_keyboard_move_grab (MetaDisplay *display,
                                             MetaScreen  *screen,
                                             MetaWindow  *window,
@@ -422,7 +420,7 @@ reload_keymap (MetaDisplay *display)
   display->keymap = XGetKeyboardMapping (display->xdisplay,
                                          display->min_keycode,
                                          display->max_keycode -
-                                         display->min_keycode,
+                                         display->min_keycode + 1,
                                          &display->keysyms_per_keycode);  
 }
 
@@ -2311,6 +2309,33 @@ process_keyboard_resize_grab (MetaDisplay *display,
 }
 
 static gboolean
+end_keyboard_grab (MetaDisplay *display,
+		   unsigned int keycode)
+{
+#ifdef HAVE_XKB
+  if (display->xkb_base_event_type > 0)
+    {
+      unsigned int primary_modifier;
+      XkbStateRec state;
+  
+      primary_modifier = get_primary_modifier (display, display->grab_mask);
+      
+      XkbGetState (display->xdisplay, XkbUseCoreKbd, &state);
+
+      if (!(primary_modifier & state.mods))
+	return TRUE;
+    }
+  else
+#endif
+    {
+      if (keycode_is_primary_modifier (display, keycode, display->grab_mask))
+	return TRUE;
+    }
+
+  return FALSE;
+}
+
+static gboolean
 process_tab_grab (MetaDisplay *display,
                   MetaScreen  *screen,
                   XEvent      *event,
@@ -2325,10 +2350,9 @@ process_tab_grab (MetaDisplay *display,
     return FALSE;
 
   g_return_val_if_fail (screen->tab_popup != NULL, FALSE);
-  
+
   if (event->type == KeyRelease &&
-      keycode_is_primary_modifier (display, event->xkey.keycode,
-                                   display->grab_mask))
+      end_keyboard_grab (display, event->xkey.keycode))
     {
       /* We're done, move to the new window. */
       Window target_xwindow;
@@ -2474,7 +2498,7 @@ handle_activate_workspace (MetaDisplay    *display,
   
   if (workspace)
     {
-      meta_workspace_activate (workspace);
+      meta_workspace_activate (workspace, event->xkey.time);
     }
   else
     {
@@ -2491,7 +2515,7 @@ error_on_command (int         command_index,
 {
   GError *err;
   char *argv[10];
-  char *key;
+  const char *key;
   char numbuf[32];
   char timestampbuf[32];
   
@@ -2509,7 +2533,7 @@ error_on_command (int         command_index,
   argv[3] = "--timestamp";
   argv[4] = timestampbuf;
   argv[5] = "--command-failed-error";
-  argv[6] = key;
+  argv[6] = (char *)key;
   argv[7] = (char*) (command ? command : "");
   argv[8] = (char*) message;
   argv[9] = NULL;
@@ -2553,7 +2577,7 @@ meta_spawn_command_line_async_on_screen (const gchar *command_line,
                                          GError     **error)
 {
   gboolean retval;
-  gchar **argv = 0;
+  gchar **argv = NULL;
 
   g_return_val_if_fail (command_line != NULL, FALSE);
 
@@ -2657,10 +2681,9 @@ process_workspace_switch_grab (MetaDisplay *display,
     return FALSE;
 
   g_return_val_if_fail (screen->tab_popup != NULL, FALSE);
-  
+
   if (event->type == KeyRelease &&
-      keycode_is_primary_modifier (display, event->xkey.keycode,
-                                   display->grab_mask))
+      end_keyboard_grab (display, event->xkey.keycode))
     {
       /* We're done, move to the new workspace. */
       MetaWorkspace *target_workspace;
@@ -2670,19 +2693,25 @@ process_workspace_switch_grab (MetaDisplay *display,
 
       meta_topic (META_DEBUG_KEYBINDINGS,
                   "Ending workspace tab operation, primary modifier released\n");
-      if (target_workspace)
+
+      if (target_workspace == screen->active_workspace)
         {
           meta_topic (META_DEBUG_KEYBINDINGS,
-                      "Ending grab early so we can focus the target workspace\n");
+                      "Ending grab so we can focus on the target workspace\n");
           meta_display_end_grab_op (display, event->xkey.time);
 
           meta_topic (META_DEBUG_KEYBINDINGS,
-                      "Activating target workspace\n");
+                      "Focusing default window on target workspace\n");
 
-          meta_workspace_activate (target_workspace);
+          meta_workspace_focus_default_window (target_workspace, 
+                                               NULL,
+                                               event->xkey.time);
 
           return TRUE; /* we already ended the grab */
         }
+
+      /* Workspace switching should have already occurred on KeyPress */
+      meta_warning ("target_workspace != active_workspace.  Some other event must have occurred.\n");
       
       return FALSE; /* end grab */
     }
@@ -2745,7 +2774,7 @@ process_workspace_switch_grab (MetaDisplay *display,
           meta_topic (META_DEBUG_KEYBINDINGS,
                       "Activating target workspace\n");
 
-          meta_workspace_activate (target_workspace);
+          meta_workspace_activate (target_workspace, event->xkey.time);
 
           return TRUE; /* we already ended the grab */
         }
@@ -2753,7 +2782,10 @@ process_workspace_switch_grab (MetaDisplay *display,
 
   /* end grab */
   meta_topic (META_DEBUG_KEYBINDINGS,
-              "Ending workspace tabbing, uninteresting key pressed\n");
+              "Ending workspace tabbing & focusing default window; uninteresting key pressed\n");
+  workspace =
+    (MetaWorkspace *) meta_ui_tab_popup_get_selected (screen->tab_popup);
+  meta_workspace_focus_default_window (workspace, NULL, event->xkey.time);
   return FALSE;
 }
 
@@ -2764,10 +2796,12 @@ handle_toggle_desktop (MetaDisplay    *display,
                        XEvent         *event,
                        MetaKeyBinding *binding)
 {
-  if (screen->showing_desktop)
+  if (screen->active_workspace->showing_desktop)
     {
       meta_screen_unshow_desktop (screen);
-      meta_workspace_focus_default_window (screen->active_workspace, NULL);
+      meta_workspace_focus_default_window (screen->active_workspace, 
+                                           NULL,
+                                           event->xkey.time);
     }
   else
     meta_screen_show_desktop (screen);
@@ -3203,7 +3237,7 @@ do_handle_move_to_workspace  (MetaDisplay    *display,
       /* Activate second, so the window is never unmapped */
       meta_window_change_workspace (window, workspace);
       if (flip)
-        meta_workspace_activate_with_focus (workspace, window);
+        meta_workspace_activate_with_focus (workspace, window, event->xkey.time);
     }
   else
     {
@@ -3367,7 +3401,7 @@ handle_workspace_switch  (MetaDisplay    *display,
           meta_display_end_grab_op (display, event->xkey.time);
         }
       
-      meta_workspace_activate (next);
+      meta_workspace_activate (next, event->xkey.time);
 
       if (grabbed_before_release)
         {
@@ -3379,6 +3413,7 @@ handle_workspace_switch  (MetaDisplay    *display,
     }
 }
 
+#if 0
 static void
 handle_spew_mark (MetaDisplay    *display,
                   MetaScreen     *screen,
@@ -3388,6 +3423,7 @@ handle_spew_mark (MetaDisplay    *display,
 {
   meta_verbose ("-- MARK MARK MARK MARK --\n");
 }
+#endif
 
 void
 meta_set_keybindings_disabled (gboolean setting)
