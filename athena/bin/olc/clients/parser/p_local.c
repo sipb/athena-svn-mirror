@@ -18,12 +18,12 @@
  * Copyright (C) 1989,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: p_local.c,v 1.20 1999-07-30 18:28:07 ghudson Exp $
+ *	$Id: p_local.c,v 1.21 2000-05-23 20:29:00 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: p_local.c,v 1.20 1999-07-30 18:28:07 ghudson Exp $";
+static char rcsid[] ="$Id: p_local.c,v 1.21 2000-05-23 20:29:00 ghudson Exp $";
 #endif
 #endif
 
@@ -153,7 +153,10 @@ do_olc_help(arguments)
 	    return ERROR;
 	  }
 
-      strcat(help_filename, Command_Table[ind].command_name);
+      if (strcmp(Command_Table[ind].command_name, "?") == 0)
+	strcat(help_filename, "qmark");
+      else
+	strcat(help_filename, Command_Table[ind].command_name);
     }
 
   strcat(help_filename, client_help_ext());
