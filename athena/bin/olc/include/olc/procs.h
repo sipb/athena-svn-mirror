@@ -19,8 +19,8 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/procs.h,v $
- *	$Id: procs.h,v 1.11 1991-03-11 13:44:54 lwvanels Exp $
- *	$Author: lwvanels $
+ *	$Id: procs.h,v 1.12 1991-08-23 11:23:32 raek Exp $
+ *	$Author: raek $
  */
 
 #include <mit-copyright.h>
@@ -37,8 +37,8 @@
 
 /* acl.c */
 ERRCODE OSetAcl P((REQUEST *Request , char *acl ));
-int OListAcl P((REQUEST *Request , char *acl , char *file ));
-int OGetAccesses P((REQUEST *Request , char *file ));
+ERRCODE OListAcl P((REQUEST *Request , char *acl , char *file ));
+ERRCODE OGetAccesses P((REQUEST *Request , char *file ));
 
 /* ask.c */
 ERRCODE OAsk P((REQUEST *Request , char *topic , char *file ));
@@ -54,9 +54,9 @@ ERRCODE OSignOff P((REQUEST *Request ));
 /* data.c */
 
 /* db.c */
-int OLoadUser P((REQUEST *Request ));
-int OGetDBInfo P((REQUEST *Request , DBINFO *dbinfo ));
-int OSetDBInfo P((REQUEST *Request , DBINFO *dbinfo ));
+ERRCODE OLoadUser P((REQUEST *Request ));
+ERRCODE OGetDBInfo P((REQUEST *Request , DBINFO *dbinfo ));
+ERRCODE OSetDBInfo P((REQUEST *Request , DBINFO *dbinfo ));
 
 /* describe.c */
 ERRCODE ODescribe P((REQUEST *Request , LIST *list , char *file , char *note ));
@@ -76,7 +76,7 @@ ERRCODE OInitialize P((void ));
 
 /* instance.c */
 ERRCODE OVerifyInstance P((REQUEST *Request , int *instance ));
-int OGetDefaultInstance P((REQUEST *Request , int *instance ));
+ERRCODE OGetDefaultInstance P((REQUEST *Request , int *instance ));
 
 /* io.c */
 ERRCODE send_request P((int fd , REQUEST *request ));
@@ -86,16 +86,16 @@ ERRCODE open_connection_to_nl_daemon P((int *fd));
 
 /* list.c */
 ERRCODE OListQueue P((REQUEST *Request , LIST **list , char *queues , char *topics , char *users , int stati ));
-int OReadList P((int fd , LIST **list , int size ));
+ERRCODE OReadList P((int fd , LIST **list , int size ));
 
 /* messages.c */
 ERRCODE OReplayLog P((REQUEST *Request , char *file ));
 ERRCODE OShowMessageIntoFile P((REQUEST *Request , char *file ));
-int OShowMessage P((REQUEST *Request , char **buf ));
+ERRCODE OShowMessage P((REQUEST *Request , char **buf ));
 ERRCODE OGetMessage P((REQUEST *Request , char *file , char **buf , int code ));
 
 /* misc.c */
-int ODump P((REQUEST *Request , int type , char *file ));
+ERRCODE ODump P((REQUEST *Request , int type , char *file ));
 
 /* motd.c */
 ERRCODE OGetFile P((REQUEST *Request , int type , char *file ));
@@ -107,8 +107,8 @@ ERRCODE nl_get_log P((int fd, char **buf, int *buflen, char *username, int insta
 ERRCODE nl_get_nm P((int fd, char **buf, int *buflen, char *username, int instance, int nuke, int *outlen));
 
 /* olc.c */
-int main P((int argc , char **argv ));
-int do_olc_init P((void ));
+ERRCODE main P((int argc , char **argv ));
+ERRCODE do_olc_init P((void ));
 
 /* olc_stock.c */
 ERRCODE do_olc_stock P((char **arguments ));
@@ -130,15 +130,15 @@ ERRCODE OSend P((REQUEST *Request , int type , char *file ));
 ERRCODE OMailHeader P((REQUEST *Request , char *file , char *username , char *realname , char *topic , char *destination , char *message ));
 
 /* status.c */
-int OListPerson P((REQUEST *Request , LIST **data ));
-int OWho P((REQUEST *Request , LIST *data ));
-int OGetStatusString P((int status , char *string ));
-int OGetStatusCode P((char *string , int *status ));
-int OGetUsername P((REQUEST *Request , char *username ));
-int OGetHostname P((REQUEST *Request , char *hostname ));
-int OGetConnectedUsername P((REQUEST *Request , char *username ));
-int OGetConnectedHostname P((REQUEST *Request , char *hostname ));
-int OVersion P((REQUEST *Request, char **vstring));
+ERRCODE OListPerson P((REQUEST *Request , LIST **data ));
+ERRCODE OWho P((REQUEST *Request , LIST *data ));
+ERRCODE OGetStatusString P((int status , char *string ));
+ERRCODE OGetStatusCode P((char *string , int *status ));
+ERRCODE OGetUsername P((REQUEST *Request , char *username ));
+ERRCODE OGetHostname P((REQUEST *Request , char *hostname ));
+ERRCODE OGetConnectedUsername P((REQUEST *Request , char *username ));
+ERRCODE OGetConnectedHostname P((REQUEST *Request , char *hostname ));
+ERRCODE OVersion P((REQUEST *Request, char **vstring));
 
 /* topic.c */
 ERRCODE OGetTopic P((REQUEST *Request , char *topic ));
@@ -148,15 +148,15 @@ ERRCODE OVerifyTopic P((REQUEST *Request , char *topic ));
 ERRCODE OHelpTopic P((REQUEST *Request , char *topic , char *buf ));
 
 /* utils.c */
-int OFillRequest P((REQUEST *req ));
-int fill_request P((REQUEST *req ));
-int open_connection_to_mailhost P((void ));
-int query_mailhost P((int s , char *name ));
-int can_receive_mail P((char *name ));
+ERRCODE OFillRequest P((REQUEST *req ));
+ERRCODE fill_request P((REQUEST *req ));
+ERRCODE open_connection_to_mailhost P((void ));
+ERRCODE query_mailhost P((int s , char *name ));
+ERRCODE can_receive_mail P((char *name ));
 ERRCODE call_program P((char *program , char *argument ));
 void expand_hostname P((char *hostname , char *instance , char *realm ));
-int sendmail P((char **smargs ));
-int file_length P((char *file ));
+ERRCODE sendmail P((char **smargs ));
+ERRCODE file_length P((char *file ));
 
 /* System: */
 
