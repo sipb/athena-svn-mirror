@@ -19,3 +19,15 @@ pts		afsuser
 usermaint	moira
 vos		afsuser
 xinfo		xmit
+
+# MIME helpers for nmh
+show-application	mimeutils
+show-audio	mimeutils
+show-binhex	mimeutils
+show-image	mimeutils
+show-msword	mimeutils
+show-pdf	mimeutils
+show-postscript	mimeutils
+show-text	mimeutils
+show-video	mimeutils
+store-binhex	mimeutils
