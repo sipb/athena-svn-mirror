@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.12 1990-11-28 14:39:40 mar Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.13 1990-11-30 14:47:27 mar Exp $
  *
  * Copyright (c) 1990 by the Massachusetts Institute of Technology
  * For copying and distribution information, please see the file
@@ -22,7 +22,7 @@
 
 
 #ifndef lint
-static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.12 1990-11-28 14:39:40 mar Exp $";
+static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.13 1990-11-30 14:47:27 mar Exp $";
 #endif
 
 #ifndef NULL
@@ -50,6 +50,9 @@ volatile int console_tty = 0, console_failed = FALSE;
 volatile int loginpid, login_running = NONEXISTANT;
 volatile int clflag;
 char *logintty;
+#ifdef ultrix
+int ultrix_console;
+#endif
 
 /* Programs */
 #ifdef ultrix
@@ -98,7 +101,7 @@ char **argv;
     fd_set readfds;
     int pgrp, file, tries, console = TRUE, mask;
 #ifdef ultrix
-    int ultrix_console, login_tty;
+    int login_tty;
 #endif
 
     if (argc != 4 &&
@@ -287,9 +290,6 @@ char **argv;
 
 #ifdef ultrix
     ultrix_console = open(ultrixcons, O_RDONLY, 0);
-    strcpy(line, "/dev/");
-    strcat(line, logintty);
-    console_tty = open(line, O_WRONLY, 0);
 #endif
 
     /* main loop.  Wait for SIGCHLD, waking up every minute anyway. */
@@ -578,6 +578,11 @@ void shutdown()
 #endif  /* TIOCCONS */
     i = 0;
     ioctl(0, TIOCFLUSH, &i);
+#endif
+
+#ifdef ultrix
+    if (ultrix_console >= 0)
+      close(ultrix_console);
 #endif
 
     ioctl(0, TIOCGETP, &mode);
