@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/config/macII.cf,v 1.4 1991-04-10 15:46:04 lwvanels Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/config/macII.cf,v 1.5 1991-04-14 21:01:41 lwvanels Exp $ */
 #define RanlibCmd /bin/true
 
 #define HaveGcc		0
@@ -6,3 +6,4 @@
 #define HaveSelectMacros 0
 #define HaveDefErrno     0
 #define HaveMotif	0
+#define HasVFork	0
