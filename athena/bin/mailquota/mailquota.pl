@@ -1,6 +1,6 @@
 #!/usr/athena/bin/perl -w
 
-# $Id: mailquota.pl,v 1.1 2003-10-10 21:30:45 rbasch Exp $
+# $Id: mailquota.pl,v 1.2 2003-11-07 22:49:23 rbasch Exp $
 
 # Display the IMAP resource usage on the user's post office server.
 
@@ -200,7 +200,6 @@ sub capability_callback(@) {
 }
 
 # Close the connection to the IMAP server, and error out.
-# message.
 sub close_and_errorout($) {
     close_connection();
     errorout $_[0];
