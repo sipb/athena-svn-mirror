@@ -1,5 +1,5 @@
 /* 
- * $Id: rkinit.c,v 1.3 1990-07-17 13:24:33 qjb Exp $
+ * $Id: rkinit.c,v 1.4 1990-10-05 20:42:16 qjb Exp $
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/rkinit/rkinit.c,v $
  * $Author: qjb $
  *
@@ -7,7 +7,7 @@
  */
 
 #if !defined(lint) && !defined(SABER) && !defined(LOCORE) && defined(RCS_HDRS)
-static char *rcsid = "$Id: rkinit.c,v 1.3 1990-07-17 13:24:33 qjb Exp $";
+static char *rcsid = "$Id: rkinit.c,v 1.4 1990-10-05 20:42:16 qjb Exp $";
 #endif /* lint || SABER || LOCORE || RCS_HDRS */
 
 #include <stdio.h>
@@ -35,10 +35,12 @@ static void usage(void)
 static void usage()
 #endif /* __STDC__ */
 {
-    fprintf(stderr,"Usage: rkinit host options\n");
+    fprintf(stderr,"Usage: rkinit [host] options\n");
     fprintf(stderr,
       "Options: [-l username] [-k krb_realm] [-p principal] [-f tktfile]\n");
-    fprintf(stderr, "         [-t lifetime] [-notimeout]\n");
+    fprintf(stderr, "         [-t lifetime] [-h host] [-notimeout]\n");
+    fprintf(stderr, "A host must be specified either with the -h option ");
+    fprintf(stderr, "or as the first argument.\n");
 	    
     exit(1);
 }
@@ -54,7 +56,7 @@ main(argc, argv)
     char *whoami;		/* Name of this program */
 
     char principal[MAX_K_NAME_SZ]; /* Principal for which to get tickets */
-    char *host;			/* Remote host */
+    char *host = NULL;		/* Remote host */
     char *username = 0;	/* Username of owner of ticket */
     char r_krealm[REALM_SZ];	/* Kerberos realm of remote host */
     char aname[ANAME_SZ];	/* Aname of remote ticket file */
@@ -84,9 +86,21 @@ main(argc, argv)
 
     if (argc < 2) usage();
 
-    host = argv[1];
-    for (i = 2; i < argc; i++) {
-	if (strcmp(argv[i], "-l") == NULL) {
+    if (argv[1][0] != '-') {
+	host = argv[1];
+	i = 2;
+    }
+    else
+	i = 1;
+
+    for (/* i initialized above */; i < argc; i++) {
+	if (strcmp(argv[i], "-h") == NULL) {
+	    if (++i >= argc)
+		usage();
+	    else
+		host = argv[i];
+	}	    
+	else if (strcmp(argv[i], "-l") == NULL) {
 	    if (++i >= argc)
 		usage();
 	    else 
@@ -124,6 +138,9 @@ main(argc, argv)
 	else
 	    usage();
     }
+
+    if (host == NULL)
+	usage();
 
     /* Initialize the realm of the remote host if necessary */
     if (r_krealm[0] == 0) {
