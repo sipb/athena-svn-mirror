@@ -16,7 +16,7 @@
 #include <zephyr/zephyr.h>
 
 #ifndef lint
-static char rcsid_zlocate_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zleave/zleave.c,v 1.12 1989-05-10 18:05:11 jtkohl Exp $";
+static char rcsid_zlocate_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zleave/zleave.c,v 1.13 1989-05-10 18:15:30 jtkohl Exp $";
 #endif lint
 
 /*
@@ -119,6 +119,10 @@ char **argv;
 		else
 		    usage();
 	    }
+
+	if (!reminder_message)
+	    reminder_message = "";
+
 	if (argc < 2) {
 		printf("When do you have to leave? ");
 		(void) fflush(stdout);
