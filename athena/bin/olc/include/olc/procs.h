@@ -16,8 +16,8 @@
  *      Copyright (c) 1985,1988 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/procs.h,v $
- *      $Author: raeburn $
- *      $Id: procs.h,v 1.3 1990-01-04 14:38:07 raeburn Exp $
+ *      $Author: vanharen $
+ *      $Id: procs.h,v 1.4 1990-01-09 16:03:21 vanharen Exp $
  */
 
 /* Declarations of common functions. */
@@ -25,9 +25,9 @@
 #include <olc/lang.h>
 
 #if ! __STDC__
-char *malloc();
+char *malloc(), *realloc();
 #else
-void *malloc (unsigned int);
+void *malloc (unsigned int), *realloc (void *, unsigned int);
 #endif
 
 char *read_text_from_fd OPrototype((int));
