@@ -1,0 +1,43 @@
+#!/bin/sh
+#
+# Xstartup
+#
+# This program is run as root after the user is verified
+#
+# don't do xstdcmap until its fixed
+# nohup /usr/bin/X11/xstdcmap -all &
+
+#
+# CAUTION:
+# These two lines need to match those in /usr/bin/X11/X.
+# NOT configurable on a per-user basis.
+#
+glGammaFile=/etc/config/system.glGammaVal
+glGammaDefault="1.7"
+GAMMA_CMD=/usr/sbin/gamma
+
+#
+# Execute gamma only for REX (starter) graphics.
+#
+if `hinv -c graphics | fgrep -s LG1` && [ -x "$GAMMA_CMD" ]; then
+	RUN_GAMMA=1
+fi
+
+if [ "$RUN_GAMMA" = 1 ]; then
+	if [ -r $glGammaFile -a -s $glGammaFile ];  then
+		glGammaVal=`cat $glGammaFile`
+	else
+		glGammaVal=$glGammaDefault
+	fi
+
+	screens=`/usr/bin/X11/xlistscrns`
+	for screen in $screens
+		do
+		HOME=/ DISPLAY=$screen /usr/sbin/gamma $glGammaVal
+		done
+fi
+
+#
+# Tell xdm everything is ok
+#
+exit 0
