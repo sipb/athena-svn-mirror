@@ -1,3 +1,16 @@
+2001-11-05  Christopher James Lahey  <clahey@ximian.com>
+
+	* configure.in: Bumped version number to 0.18.
+
+2001-11-03  Christopher James Lahey  <clahey@ximian.com>
+
+	* configure.in: Bumped the version number to 0.17.99.0.  Bumped
+	the soname to 18.
+
+	* gal/widgets/e-categories.c (e_categories_destroy): Got rid of a
+	GtkWarning here that was due to Gtk+ casting a NULL pointer.
+	Fixes Ximian bug #14327.
+
 2001-10-31    <NotZed@Ximian.com>
 
 	* configure.in: Bumped version number to 0.17.

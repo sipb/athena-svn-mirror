@@ -9,7 +9,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gal\n"
-"POT-Creation-Date: 2001-10-31 19:39-0500\n"
+"POT-Creation-Date: 2001-11-05 15:43-0500\n"
 "PO-Revision-Date: 2001-09-01 10:59+0200\n"
 "Last-Translator: GNOME PL Team <translators@gnome.pl>\n"
 "Language-Team: Polish <pl@li.org>\n"
@@ -492,19 +492,19 @@ msgstr "ciemnopurpurowy"
 msgid "sky blue"
 msgstr "b³êkitny"
 
-#: gal/widgets/e-categories.c:389
+#: gal/widgets/e-categories.c:395
 msgid "Add to global category list"
 msgstr "Dodaj do globalnej listy kategorii"
 
-#: gal/widgets/e-categories.c:391
+#: gal/widgets/e-categories.c:397
 msgid "Add all to global category list"
 msgstr "Dodaj wszystkie do globalnej listy kategorii"
 
-#: gal/widgets/e-categories.c:393
+#: gal/widgets/e-categories.c:399
 msgid "Remove from global category list"
 msgstr "Usuñ z globalnej listy kategorii"
 
-#: gal/widgets/e-categories.c:395
+#: gal/widgets/e-categories.c:401
 msgid "Remove all from global category list"
 msgstr "Usuñ wszystkie z globalnej listy kategorii"
 

@@ -243,7 +243,7 @@ e_categories_entry_change (GtkWidget *entry,
 }
 
 static void
-ecmld_destroyed (GtkObject *object, ECategories *categories)
+e_categories_release_ecmld (ECategories *categories)
 {
 	if (categories->priv->ecmld) {
 		if (categories->priv->ecmld_destroy_id)
@@ -253,6 +253,12 @@ ecmld_destroyed (GtkObject *object, ECategories *categories)
 		gtk_object_unref (GTK_OBJECT (categories->priv->ecmld));
 		categories->priv->ecmld = NULL;
 	}
+}
+
+static void
+ecmld_destroyed (GtkObject *object, ECategories *categories)
+{
+	e_categories_release_ecmld (categories);
 }
 
 static void
@@ -474,6 +480,7 @@ e_categories_init (ECategories *categories)
 	categories->priv->selected_list = NULL;
 	categories->priv->categories = g_strdup ("");
 	categories->priv->ecmld = NULL;
+	categories->priv->ecmld_destroy_id = 0;
 
 	gnome_dialog_append_button ( GNOME_DIALOG(categories),
 				     GNOME_STOCK_BUTTON_OK);
@@ -569,7 +576,7 @@ e_categories_destroy (GtkObject *object)
 		gtk_object_unref (GTK_OBJECT (categories->priv->ecml));
 	}
 
-	ecmld_destroyed (GTK_OBJECT (categories->priv->ecmld), categories);
+	e_categories_release_ecmld (categories);
 
 	g_free(categories->priv->category_list);
 	g_free(categories->priv->selected_list);

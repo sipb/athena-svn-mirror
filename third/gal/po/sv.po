@@ -3,12 +3,12 @@
 # Christian Rose <menthos@menthos.com>, 2000, 2001.
 # Richard Hult <rhult@codefactory.se>, 2000.
 #
-# $Id: sv.po,v 1.1.1.1 2001-11-02 18:43:12 ghudson Exp $
+# $Id: sv.po,v 1.1.1.2 2001-11-08 23:20:11 ghudson Exp $
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gal\n"
-"POT-Creation-Date: 2001-10-31 19:39-0500\n"
+"POT-Creation-Date: 2001-11-05 15:43-0500\n"
 "PO-Revision-Date: 2001-10-23 12:52+0200\n"
 "Last-Translator: Christian Rose <menthos@menthos.com>\n"
 "Language-Team: Swedish <sv@li.org>\n"
@@ -492,19 +492,19 @@ msgstr "mörklila"
 msgid "sky blue"
 msgstr "himmelsblå"
 
-#: gal/widgets/e-categories.c:389
+#: gal/widgets/e-categories.c:395
 msgid "Add to global category list"
 msgstr "Lägg till i globala kategorilistan"
 
-#: gal/widgets/e-categories.c:391
+#: gal/widgets/e-categories.c:397
 msgid "Add all to global category list"
 msgstr "Lägg till alla i globala kategorilistan"
 
-#: gal/widgets/e-categories.c:393
+#: gal/widgets/e-categories.c:399
 msgid "Remove from global category list"
 msgstr "Ta bort från globala kategorilistan"
 
-#: gal/widgets/e-categories.c:395
+#: gal/widgets/e-categories.c:401
 msgid "Remove all from global category list"
 msgstr "Ta bort alla från globala kategorilistan"
 

@@ -8,7 +8,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gal 0.13.99.1\n"
-"POT-Creation-Date: 2001-10-31 19:39-0500\n"
+"POT-Creation-Date: 2001-11-05 15:43-0500\n"
 "PO-Revision-Date: 2001-10-06 20:17+0300\n"
 "Last-Translator: Pauli Virtanen <pauli.virtanen@saunalahti.fi>\n"
 "Language-Team: Finnish <fi@li.org>\n"
@@ -491,19 +491,19 @@ msgstr "tumma purppura"
 msgid "sky blue"
 msgstr "taivaansininen"
 
-#: gal/widgets/e-categories.c:389
+#: gal/widgets/e-categories.c:395
 msgid "Add to global category list"
 msgstr "Lis‰‰ yleiseen luokkalistaan"
 
-#: gal/widgets/e-categories.c:391
+#: gal/widgets/e-categories.c:397
 msgid "Add all to global category list"
 msgstr "Lis‰‰ kaikki yleiseen luokkalistaan"
 
-#: gal/widgets/e-categories.c:393
+#: gal/widgets/e-categories.c:399
 msgid "Remove from global category list"
 msgstr "Poista yleisest‰ luokkalistasta"
 
-#: gal/widgets/e-categories.c:395
+#: gal/widgets/e-categories.c:401
 msgid "Remove all from global category list"
 msgstr "Poista kaikki yleisest‰ luokkalistasta"
 

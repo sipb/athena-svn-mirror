@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gal CVS\n"
-"POT-Creation-Date: 2001-10-31 19:39-0500\n"
+"POT-Creation-Date: 2001-11-05 15:43-0500\n"
 "PO-Revision-Date: 2001-10-01 23:06+0900\n"
 "Last-Translator: Takuo KITAME <kitame@debian.org>\n"
 "Language-Team: Japanese <translation@gnome.gr.jp>\n"
@@ -489,19 +489,19 @@ msgstr "濃い紫"
 msgid "sky blue"
 msgstr "淡青"
 
-#: gal/widgets/e-categories.c:389
+#: gal/widgets/e-categories.c:395
 msgid "Add to global category list"
 msgstr "グローバルカテゴリ一覧に追加"
 
-#: gal/widgets/e-categories.c:391
+#: gal/widgets/e-categories.c:397
 msgid "Add all to global category list"
 msgstr "すべてをグローバルカテゴリ一覧に追加"
 
-#: gal/widgets/e-categories.c:393
+#: gal/widgets/e-categories.c:399
 msgid "Remove from global category list"
 msgstr "グローバルカテゴリ一覧から削除"
 
-#: gal/widgets/e-categories.c:395
+#: gal/widgets/e-categories.c:401
 msgid "Remove all from global category list"
 msgstr "すべてをグローバルカテゴリ一覧から削除"
 

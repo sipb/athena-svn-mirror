@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2001-10-31 19:39-0500\n"
+"POT-Creation-Date: 2001-11-05 15:43-0500\n"
 "PO-Revision-Date: 2001-06-04 11:30+0200\n"
 "Last-Translator: Radek Doulik <rodo@ximian.com>\n"
 "Language-Team: Czech <cs@li.org>\n"
@@ -489,19 +489,19 @@ msgstr "tmavì fialová"
 msgid "sky blue"
 msgstr "azurová"
 
-#: gal/widgets/e-categories.c:389
+#: gal/widgets/e-categories.c:395
 msgid "Add to global category list"
 msgstr "Pøidat do hlavního seznamu kategorií"
 
-#: gal/widgets/e-categories.c:391
+#: gal/widgets/e-categories.c:397
 msgid "Add all to global category list"
 msgstr "Pøidat v¹e do hlavního seznamu kategorií"
 
-#: gal/widgets/e-categories.c:393
+#: gal/widgets/e-categories.c:399
 msgid "Remove from global category list"
 msgstr "Ostranit z hlavního seznamu kategorií"
 
-#: gal/widgets/e-categories.c:395
+#: gal/widgets/e-categories.c:401
 msgid "Remove all from global category list"
 msgstr "Odstranit v¹e z hlavního seznamu kategorií"
 

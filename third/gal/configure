@@ -733,7 +733,7 @@ fi
 
 PACKAGE=gal
 
-VERSION=0.17
+VERSION=0.18
 
 if test "`cd $srcdir && pwd`" != "`pwd`" && test -f $srcdir/config.status; then
   { echo "configure: error: source directory already configured; run "make distclean" there first" 1>&2; exit 1; }
@@ -860,7 +860,7 @@ GAL_AGE=0
 
 GAL_REVISION=0
 
-GAL_CURRENT=17
+GAL_CURRENT=18
 
 
 
