@@ -1,3 +1,15 @@
+Overview of Changes in gtkhtml2 2.6.3
+=====================================
+* Fix large memory leak [Kjartan Maraas]
+* Use xmlSAX2 API instead of deprecated SAXv1 API (bug #164808) [Rodney Dawes]
+* Use gnome-common in autogen.sh [Rodney Dawes]
+* Return NULL at end of non-void function (bug #165455) [Chris Lahey]
+* Use g_print instead of g_warning (bug #163071) [Pawel Sawek]
+* Miscellaneous bug fixes (bug #151005) [Kjartan Maraas]
+* Miscellaneous bug fixes [Peter Williams]
+* Miscellaneous bug fixes (bugs #143502, #156582, #157328, #157330, #160704)
+  [Padraig O'Briain]
+
 Overview of Changes in gtkhtml2 2.6.2
 =====================================
 * Fix memory leaks. (bugs #140628, #140664, #140596, #140730, #140727,

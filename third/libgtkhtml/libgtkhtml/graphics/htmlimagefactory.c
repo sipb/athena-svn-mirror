@@ -155,7 +155,7 @@ html_image_factory_get_image (HtmlImageFactory *image_factory, const gchar *uri)
 					  image);
 
 		image->stream = stream;
-		g_object_add_weak_pointer (image, (gpointer *) &(stream->user_data));
+		g_object_add_weak_pointer (G_OBJECT (image), (gpointer *) &(stream->user_data));
 
 		g_signal_emit (G_OBJECT (image_factory), image_factory_signals [REQUEST_IMAGE], 0, uri, stream);
 		

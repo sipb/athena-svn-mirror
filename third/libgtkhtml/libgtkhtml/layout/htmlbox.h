@@ -43,7 +43,7 @@ G_BEGIN_DECLS
 struct _HtmlBox {
 	GObject parent_object;
 
-	gboolean is_relayouted:1;
+	guint is_relayouted:1;
 
 	gint x, y;
 	gint width, height;

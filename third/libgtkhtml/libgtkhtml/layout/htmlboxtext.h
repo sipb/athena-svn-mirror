@@ -69,8 +69,8 @@ struct _HtmlBoxText {
 
 	HtmlBoxTextMaster *master; /* NULL for slave boxes */
 	
-	gboolean generated_content: 1;
-	gboolean forced_newline: 1;
+	guint generated_content: 1;
+	guint forced_newline: 1;
         guint selection: 3;
 	gint16 sel_start_index;
 	gint16 sel_end_index;

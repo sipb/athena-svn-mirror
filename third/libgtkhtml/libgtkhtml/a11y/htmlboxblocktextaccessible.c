@@ -495,9 +495,9 @@ html_box_block_text_accessible_get_character_at_offset (AtkText *text,
 	gchar *index;
 	gunichar unichar;
 
-	g_return_val_if_fail (HTML_BOX_BLOCK_TEXT_ACCESSIBLE (text), NULL);
+	g_return_val_if_fail (text != NULL, NULL);
 	block = HTML_BOX_BLOCK_TEXT_ACCESSIBLE (text);
-	g_return_val_if_fail (block->priv->textutil, NULL);
+	g_return_val_if_fail (block->priv->textutil != NULL, NULL);
 	buffer = block->priv->textutil->buffer;
 	if (offset >= gtk_text_buffer_get_char_count (buffer))
 		return '\0';
@@ -518,7 +518,7 @@ html_box_block_text_accessible_get_character_count (AtkText *text)
 	HtmlBoxBlockTextAccessible *block;
 	GtkTextBuffer *buffer;
 
-	g_return_val_if_fail (HTML_BOX_BLOCK_TEXT_ACCESSIBLE (text), 0);
+	g_return_val_if_fail (text != NULL, NULL);
 	block = HTML_BOX_BLOCK_TEXT_ACCESSIBLE (text);
 	g_return_val_if_fail (block->priv->textutil, 0);
 	buffer = block->priv->textutil->buffer;

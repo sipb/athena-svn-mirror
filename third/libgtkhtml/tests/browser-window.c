@@ -501,39 +501,39 @@ browser_window_new_view (gpointer data, guint action, GtkWidget *widget)
 }
 
 static GtkItemFactoryEntry menu_items[] = {
-	{ "/_File",          NULL,         0, 0, "<Branch>" },
-	{ "/File/_New",      "<Control>N", 0, 0, NULL },
-	{ "/File/New _View", NULL,         browser_window_new_view, 0, NULL },
-	{ "/File/sep1",      NULL,         0, 0, "<Separator>" },
-	{ "/File/_Close",    "<Control>W", 0, 0, NULL },
-	{ "/File/E_xit",     "<Control>Q", browser_window_exit, 0, NULL },
-	{ "/Tests",          NULL,         0, 0, "<Branch>" },
-	{ "/Tests/Test 1",   NULL,         browser_window_load_test, 1, NULL },
-	{ "/Tests/Test 2",   NULL,         browser_window_load_test, 2, NULL },
-	{ "/Tests/Test 3",   NULL,         browser_window_load_test, 3, NULL },
-	{ "/Tests/Test 4",   NULL,         browser_window_load_test, 4, NULL },
-	{ "/Tests/Test 5",   NULL,         browser_window_load_test, 5, NULL },
-	{ "/Tests/Test 6",   NULL,         browser_window_load_test, 6, NULL },
-	{ "/Tests/Test 7",   NULL,         browser_window_load_test, 7, NULL },
-	{ "/Tests/Test 8",   NULL,         browser_window_load_test, 8, NULL },
-	{ "/Tests/Test 9",   NULL,         browser_window_load_test, 9, NULL },
-	{ "/Tests/Acid test",   NULL,         browser_window_load_test, 100, NULL },
-	{ "/Tests/MixMagic",   NULL,         browser_window_load_test, 101, NULL },
-	{ "/Tests/Slashdot.org",   NULL,         browser_window_load_test, 102, NULL },
-	{ "/Tests/Freshmeat.net",   NULL,         browser_window_load_test, 103, NULL },
-	{ "/Tests/Themes.org",   NULL,         browser_window_load_test, 104, NULL },
-	{ "/Tests/Linux.com",   NULL,         browser_window_load_test, 105, NULL },
-	{ "/Tests/Table stress",   NULL,         browser_window_load_test, 106, NULL },
-	{ "/Tests/Mozilla.org",   NULL,         browser_window_load_test, 107, NULL },
-	{ "/Tests/gtk.themes.org",   NULL,         browser_window_load_test, 108, NULL },
-	{ "/Tests/Anders test",   NULL,         browser_window_load_test, 109, NULL },
-	{ "/Tests/CSS support",   NULL,         browser_window_load_test, 110, NULL },
-	{ "/Tests/DBaron status",   NULL,         browser_window_load_test, 111, NULL },
-	{ "/Tests/Jonas test",   NULL,         browser_window_load_test, 112, NULL },
-	{ "/Debug",          NULL,         0, 0, "<Branch>" },
-	{ "/Debug/Clear doc", NULL,        browser_window_clear_doc, 0, NULL },
-	{ "/Debug/Dump boxes", NULL,       browser_window_dump, 0, NULL },
-	{ "/Debug/Properties", NULL,       browser_window_properties, 0, NULL },
+	{ "/_File",          NULL,         NULL, 0, "<Branch>" },
+	{ "/File/_New",      "<Control>N", NULL, 0, NULL },
+	{ "/File/New _View", NULL,         (GtkItemFactoryCallback)browser_window_new_view, 0, NULL },
+	{ "/File/sep1",      NULL,         NULL, 0, "<Separator>" },
+	{ "/File/_Close",    "<Control>W", NULL, 0, NULL },
+	{ "/File/E_xit",     "<Control>Q", (GtkItemFactoryCallback)browser_window_exit, 0, NULL },
+	{ "/Tests",          NULL,         NULL, 0, "<Branch>" },
+	{ "/Tests/Test 1",   NULL,         (GtkItemFactoryCallback)browser_window_load_test, 1, NULL },
+	{ "/Tests/Test 2",   NULL,         (GtkItemFactoryCallback)browser_window_load_test, 2, NULL },
+	{ "/Tests/Test 3",   NULL,         (GtkItemFactoryCallback)browser_window_load_test, 3, NULL },
+	{ "/Tests/Test 4",   NULL,         (GtkItemFactoryCallback)browser_window_load_test, 4, NULL },
+	{ "/Tests/Test 5",   NULL,         (GtkItemFactoryCallback)browser_window_load_test, 5, NULL },
+	{ "/Tests/Test 6",   NULL,         (GtkItemFactoryCallback)browser_window_load_test, 6, NULL },
+	{ "/Tests/Test 7",   NULL,         (GtkItemFactoryCallback)browser_window_load_test, 7, NULL },
+	{ "/Tests/Test 8",   NULL,         (GtkItemFactoryCallback)browser_window_load_test, 8, NULL },
+	{ "/Tests/Test 9",   NULL,         (GtkItemFactoryCallback)browser_window_load_test, 9, NULL },
+	{ "/Tests/Acid test",   NULL,      (GtkItemFactoryCallback)browser_window_load_test, 100, NULL },
+	{ "/Tests/MixMagic",   NULL,       (GtkItemFactoryCallback)browser_window_load_test, 101, NULL },
+	{ "/Tests/Slashdot.org",   NULL,   (GtkItemFactoryCallback)browser_window_load_test, 102, NULL },
+	{ "/Tests/Freshmeat.net",   NULL,  (GtkItemFactoryCallback)browser_window_load_test, 103, NULL },
+	{ "/Tests/Themes.org",   NULL,     (GtkItemFactoryCallback)browser_window_load_test, 104, NULL },
+	{ "/Tests/Linux.com",   NULL,      (GtkItemFactoryCallback)browser_window_load_test, 105, NULL },
+	{ "/Tests/Table stress",   NULL,   (GtkItemFactoryCallback)browser_window_load_test, 106, NULL },
+	{ "/Tests/Mozilla.org",   NULL,    (GtkItemFactoryCallback)browser_window_load_test, 107, NULL },
+	{ "/Tests/gtk.themes.org",   NULL, (GtkItemFactoryCallback)browser_window_load_test, 108, NULL },
+	{ "/Tests/Anders test",   NULL,    (GtkItemFactoryCallback)browser_window_load_test, 109, NULL },
+	{ "/Tests/CSS support",   NULL,    (GtkItemFactoryCallback)browser_window_load_test, 110, NULL },
+	{ "/Tests/DBaron status",   NULL,  (GtkItemFactoryCallback)browser_window_load_test, 111, NULL },
+	{ "/Tests/Jonas test",   NULL,     (GtkItemFactoryCallback)browser_window_load_test, 112, NULL },
+	{ "/Debug",          NULL,         NULL, 0, "<Branch>" },
+	{ "/Debug/Clear doc", NULL,        (GtkItemFactoryCallback)browser_window_clear_doc, 0, NULL },
+	{ "/Debug/Dump boxes", NULL,       (GtkItemFactoryCallback)browser_window_dump, 0, NULL },
+	{ "/Debug/Properties", NULL,       (GtkItemFactoryCallback)browser_window_properties, 0, NULL },
 };
 
 GtkType
@@ -620,8 +620,8 @@ browser_window_init (BrowserWindow *window)
 	window->view = NULL;
 
 	window->entry = gtk_entry_new ();
-	gtk_signal_connect (GTK_OBJECT (window->entry), "activate",
-			    GTK_SIGNAL_FUNC (browser_window_entry_activate), window);
+	g_signal_connect (window->entry, "activate",
+			  G_CALLBACK (browser_window_entry_activate), window);
 	
 	window->item_factory = gtk_item_factory_new (GTK_TYPE_MENU_BAR, "<main>", NULL);
 	gtk_item_factory_create_items (window->item_factory, G_N_ELEMENTS (menu_items), menu_items, window);

@@ -41,8 +41,6 @@ static AtkObject* html_view_accessible_get_focus_object    (GtkWidget          *
 
 static void       focus_object_destroyed                   (gpointer           data);       
 static void       root_object_destroyed                    (gpointer           data);
-static void       set_focus_object                         (GObject            *obj,
-                                                            AtkObject          *focus_obj);       
 static void       set_root_object                          (GObject            *obj,
                                                             HtmlBox            *root);
 
@@ -185,7 +183,6 @@ html_view_accessible_initialize (AtkObject *obj,
                                  gpointer  data)
 {
 	GtkWidget *widget;
-	AtkObject *focus_object;
 	HtmlView *view;
 
 	ATK_OBJECT_CLASS (parent_class)->initialize (obj, data);
@@ -193,12 +190,9 @@ html_view_accessible_initialize (AtkObject *obj,
 	widget = GTK_WIDGET (data);
  	view = HTML_VIEW (data);
 	set_root_object (G_OBJECT (obj), view->root);
-	g_signal_connect (widget, "grab_focus",
-			  G_CALLBACK (html_view_accessible_grab_focus_cb),
-                          NULL);
-	focus_object = html_view_accessible_get_focus_object (widget, NULL);
-	if (focus_object)
-		set_focus_object (G_OBJECT (obj), focus_object);
+	g_signal_connect_after (widget, "grab_focus",
+			        G_CALLBACK (html_view_accessible_grab_focus_cb),
+                                NULL);
 }
 
 static void
@@ -291,10 +285,13 @@ html_view_accessible_grab_focus_cb (GtkWidget *widget)
 	focus_object = html_view_accessible_get_focus_object (widget, &link_index);
 
 	obj = gtk_widget_get_accessible (widget);
-	set_focus_object (G_OBJECT (obj), focus_object);
-	if (GTK_WIDGET_HAS_FOCUS (widget) && focus_object) {
-		atk_focus_tracker_notify (focus_object);
-		g_signal_emit_by_name (focus_object, "link-selected", link_index);
+	if (GTK_WIDGET_HAS_FOCUS (widget)) {
+		if (focus_object) {
+			atk_focus_tracker_notify (focus_object);
+			g_signal_emit_by_name (focus_object, "link-selected", link_index);
+		} else {
+			atk_focus_tracker_notify (obj);
+		}
 	}
 }
 
@@ -405,25 +402,6 @@ root_object_destroyed (gpointer data)
 {
 	set_root_object (G_OBJECT (data), NULL);
 	g_signal_emit_by_name (data, "children_changed::remove", 0, NULL, NULL);
-}
-
-static void
-set_focus_object (GObject *obj,
-                  AtkObject *focus_obj) 
-{
-	gpointer old_focus_obj;
-
-	old_focus_obj = g_object_get_data (obj, gail_focus_object);
-	if (old_focus_obj) {
-		g_object_weak_unref (old_focus_obj, 
-				     (GWeakNotify) focus_object_destroyed,
-				     obj);
-	}
-	if (focus_obj)
-		g_object_weak_ref (G_OBJECT (focus_obj), 
-				   (GWeakNotify) focus_object_destroyed,
-				   obj);
-	g_object_set_data (obj, gail_focus_object, focus_obj);
 }
 
 static void

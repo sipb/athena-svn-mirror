@@ -764,8 +764,8 @@ create_prop_editor (GObject *object, GType type)
   win = gtk_window_new (GTK_WINDOW_TOPLEVEL);
 
   tips = gtk_tooltips_new ();
-  gtk_signal_connect_object (GTK_OBJECT (win), "destroy",
-			     GTK_SIGNAL_FUNC (gtk_object_destroy), GTK_OBJECT (tips));
+  g_signal_connect_swapped (win, "destroy",
+			   G_CALLBACK (gtk_object_destroy), GTK_OBJECT (tips));
 
   /* hold a weak ref to the object we're editing */
   g_object_set_data_full (G_OBJECT (object), "prop-editor-win", win, model_destroy);

@@ -129,8 +129,8 @@ html_box_embedded_button_new (HtmlView *view, HtmlBoxEmbeddedButtonType type)
 	html_box_embedded_set_widget (HTML_BOX_EMBEDDED (result), gtk_button_new_with_label ("button"));
 	result->type = type;
 
-	gtk_signal_connect (GTK_OBJECT (HTML_BOX_EMBEDDED (result)->widget), "clicked", 
-			    GTK_SIGNAL_FUNC (html_box_embedded_button_clicked), result);
+	g_signal_connect (HTML_BOX_EMBEDDED (result)->widget, "clicked", 
+			  G_CALLBACK (html_box_embedded_button_clicked), result);
 
 	html_box_embedded_set_descent (HTML_BOX_EMBEDDED (result), 4);
 

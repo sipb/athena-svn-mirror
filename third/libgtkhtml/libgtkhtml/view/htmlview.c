@@ -20,7 +20,7 @@
    Boston, MA 02111-1307, USA.
 */
 
-#include <strings.h>
+#include <string.h>
 
 #include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>
@@ -254,6 +254,7 @@ html_view_get_box_text_for_offset (HtmlView *view, gint *offset, gboolean end_of
 			return last_text;
 		}
 	}
+	return NULL;
 }
 
 static gboolean
@@ -411,6 +412,58 @@ html_view_get_cursor_position (HtmlView *view)
 }
 
 static void
+html_view_update_focus_element (HtmlView *view, HtmlBox *new_cursor_box, gint offset)
+{ 
+	HtmlBoxText *text;
+
+	if (new_cursor_box == NULL) {
+		gint tmp_offset;
+
+		tmp_offset = offset;
+		text = html_view_get_box_text_for_offset (view, &tmp_offset, html_view_get_cursor_end_of_line (view) != 0);
+		new_cursor_box = HTML_BOX (text);
+	}
+	if (DOM_IS_ELEMENT (new_cursor_box->parent->dom_node)) {
+		DomElement *element;
+
+		element = DOM_ELEMENT (new_cursor_box->parent->dom_node);
+		if (dom_element_is_focusable (element)) {
+			if (element != view->document->focus_element) {
+               			html_document_update_focus_element (view->document, element);
+               			html_view_focus_element (view);
+			}
+		} else if (view->document->focus_element) {
+			html_document_update_focus_element (view->document, NULL);
+			html_view_focus_element (view);
+		}
+	}
+}
+
+static void
+html_view_notify_cursor_position (HtmlView *view)
+{
+	HtmlBoxText *box_text;
+#ifdef ENABLE_ACCESSIBILITY
+	AtkObject *obj;
+	gint offset;
+#endif /* ENABLE_ACCESSIBILITY */
+
+	box_text = _html_view_get_cursor_box_text (view, NULL);	
+	if (box_text) {
+		html_view_update_focus_element (view, HTML_BOX (box_text), 0);
+#ifdef ENABLE_ACCESSIBILITY
+		obj = atk_gobject_accessible_for_object (G_OBJECT (box_text));
+		if (!ATK_IS_NO_OP_OBJECT (obj)) {
+			/* Accessibility is enabled */
+			g_return_if_fail (ATK_IS_TEXT (obj));
+			offset = atk_text_get_caret_offset (ATK_TEXT (obj));
+			g_signal_emit_by_name (obj, "text-caret-moved", offset);
+		}
+#endif /* ENABLE_ACCESSIBILITY */
+	}
+	return;
+}
+static void
 html_view_set_cursor_position (HtmlView *view, gint cursor_position)
 {
 	if (quark_cursor_position == 0)
@@ -421,24 +474,7 @@ html_view_set_cursor_position (HtmlView *view, gint cursor_position)
 	g_object_set_qdata (G_OBJECT (view), 
 			    quark_cursor_position,
 			    GINT_TO_POINTER (cursor_position));
-#ifdef ENABLE_ACCESSIBILITY
-	{
-	AtkObject *obj;
-	HtmlBoxText *box_text;
-	gint offset;
-
-	box_text = _html_view_get_cursor_box_text (view, NULL);	
-	if (box_text) {
-		obj = atk_gobject_accessible_for_object (G_OBJECT (box_text));
-		if (!ATK_IS_NO_OP_OBJECT (obj)) {
-			/* Accessibility is enabled */
-			g_return_if_fail (ATK_IS_TEXT (obj));
-			offset = atk_text_get_caret_offset (ATK_TEXT (obj));
-			g_signal_emit_by_name (obj, "text-caret-moved", offset);
-		}
-	}
-	}
-#endif /* ENABLE_ACCESSIBILITY */
+        html_view_notify_cursor_position (view);
 }
 
 static gint
@@ -656,6 +692,9 @@ static void
 html_view_toggle_cursor (HtmlView *view)
 {
 	cursor_showing = !cursor_showing;
+	if (cursor_showing) {
+		html_view_notify_cursor_position (view);
+	}
 	gtk_widget_queue_draw (GTK_WIDGET (view));
 }
 
@@ -1394,32 +1433,9 @@ move_cursor (HtmlView *view, HtmlBox *new_cursor_box, gint offset, gboolean exte
 				- end_str;
 		view->sel_backwards = !forward;	
 	} else {
-		HtmlBoxText *text;
-
 		html_view_set_cursor_position (view, offset);
 		html_view_set_selection_bound (view, offset);
-
-		if (new_cursor_box == NULL) {
-			text = html_view_get_box_text_for_offset (view, &offset, html_view_get_cursor_end_of_line (view) != 0);
-			new_cursor_box = HTML_BOX (text);
-		}
-		if (DOM_IS_ELEMENT (new_cursor_box->parent->dom_node)) {
-			DomElement *element;
-
-			element = DOM_ELEMENT (new_cursor_box->parent->dom_node);
-			if (dom_element_is_focusable (element)) {
-			
-				if (element != view->document->focus_element) {
-                			html_document_update_focus_element (view->document, element);
-                			html_view_focus_element (view);
-				}
-			} else if (view->document->focus_element) {
-				html_document_update_focus_element (view->document, NULL);
-				html_view_focus_element (view);
-			}
-		}
 	}
-
 }
 
 /*
@@ -2302,11 +2318,14 @@ html_view_motion_notify (GtkWidget *widget, GdkEventMotion *event)
 	gdk_window_get_pointer (widget->window, &x, &y, &mask);
 
 	view = HTML_VIEW (widget);
+
+	/* Generate the on_url signal before checking for button press */
+	html_event_mouse_move (view, event);
+
 	if (html_view_get_button (view) != 1)
 		return FALSE;
 
-	html_event_mouse_move (view, event);
-
+	html_selection_update (view, event);
 	html_view_check_cursor_blink (view);
 
 	return FALSE;
@@ -3248,7 +3267,7 @@ html_view_focus_element (HtmlView *view)
 		/* No element focused to scroll to top */
 		GtkAdjustment *adj = GTK_LAYOUT (view)->vadjustment;
 
-		if (!html_view_get_cursor_visible (view)) {
+		if (!cursor_showing) {
 			set_adjustment_clamped (adj, 0);
 		}
 		gtk_widget_grab_focus (GTK_WIDGET (view));

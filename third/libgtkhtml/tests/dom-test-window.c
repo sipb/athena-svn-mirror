@@ -89,12 +89,12 @@ dom_test_force_restyle (gpointer action_callbac, guint action, GtkWidget *widget
 
 static GtkItemFactoryEntry menu_items[] =
 {
-	{ "/_File",                 NULL, 0,                       0, "<Branch>" },
-	{ "/File/_Quit",            NULL, gtk_main_quit,           0, "<StockItem>", GTK_STOCK_QUIT },
-	{ "/_Debug",                NULL, 0,                       0, "<Branch>" },
-	{ "/Debug/Force re_layout", NULL, dom_test_force_relayout, 0, NULL },
-	{ "/Debug/Force re_style",  NULL, dom_test_force_restyle,  0, NULL },
-	{ "/Debug/Dump layout _tree", NULL, dom_test_dump_layout_tree, 0, NULL }
+	{ "/_File",                 NULL, NULL,                       0, "<Branch>" },
+	{ "/File/_Quit",            NULL, (GtkItemFactoryCallback)gtk_main_quit,           0, "<StockItem>", GTK_STOCK_QUIT },
+	{ "/_Debug",                NULL, NULL,                       0, "<Branch>" },
+	{ "/Debug/Force re_layout", NULL, (GtkItemFactoryCallback)dom_test_force_relayout, 0, NULL },
+	{ "/Debug/Force re_style",  NULL, (GtkItemFactoryCallback)dom_test_force_restyle,  0, NULL },
+	{ "/Debug/Dump layout _tree", NULL, (GtkItemFactoryCallback)dom_test_dump_layout_tree, 0, NULL }
 };
 
 static gboolean
@@ -263,8 +263,8 @@ dom_test_window_construct (DomTestWindow *window)
 	gtk_tree_view_column_add_attribute (column, renderer, "pixbuf", 1);
 
 	gtk_tree_view_append_column (GTK_TREE_VIEW (tree_view), column);
-	gtk_signal_connect (GTK_OBJECT (tree_view), "button_press_event",
-			    GTK_SIGNAL_FUNC (dom_test_tree_view_button_press), window);
+	g_signal_connect (tree_view, "button_press_event",
+			  G_CALLBACK (dom_test_tree_view_button_press), window);
 
 	/* Create a new "fake" document for orphan nodes */
 	window->orphan_root_node = dom_Node_mkref ((xmlNode *)xmlNewDoc (NULL));

@@ -20,6 +20,8 @@
    Boston, MA 02111-1307, USA.
 */
 
+#include <string.h>
+
 #include <glib.h>
 #include "htmlglobalatoms.h"
 #include "htmlatomlist.h"
@@ -70,7 +72,7 @@ html_atom_list_get_atom (HtmlAtomList *al, const gchar *str)
 	gboolean found;
 	gpointer old_atom;
 
-	ptr = g_strdown (g_strdup (str));
+	ptr = g_ascii_strdown (str, strlen (str));
 
 	found = g_hash_table_lookup_extended (al->table, ptr, NULL, &old_atom);
 	

@@ -47,7 +47,7 @@ html_comment (void *ctx, const xmlChar *ch)
 	HtmlParser *parser = HTML_PARSER(ctx);
 	DomNode *node;
 
-	comment (parser->xmlctxt, ch);
+	xmlSAX2Comment (parser->xmlctxt, ch);
 
 	node = dom_Node_mkref (xmlGetLastChild (parser->xmlctxt->node));
 	if (node)
@@ -60,7 +60,7 @@ html_characters (void *ctx, const xmlChar *ch, int len)
 	HtmlParser *parser = HTML_PARSER (ctx);
 	DomNode *node;
 
-	characters (parser->xmlctxt, ch, len);
+	xmlSAX2Characters (parser->xmlctxt, ch, len);
 	
 	node = dom_Node_mkref (xmlGetLastChild (parser->xmlctxt->node));
 	
@@ -73,7 +73,7 @@ html_startElement(void *ctx, const xmlChar *name, const xmlChar **atts)
 	HtmlParser *parser = HTML_PARSER (ctx);
 	DomNode *node;
 
-	startElement (parser->xmlctxt, name, atts);
+	xmlSAX2StartElement (parser->xmlctxt, name, atts);
 
 	node = dom_Node_mkref (parser->xmlctxt->node);
 
@@ -85,7 +85,7 @@ html_endElement (void *ctx, const xmlChar *name)
 {
 	HtmlParser *parser = HTML_PARSER (ctx);
 
-	endElement (parser->xmlctxt, name);
+	xmlSAX2EndElement (parser->xmlctxt, name);
 }
 
 static void
@@ -93,7 +93,7 @@ html_startDocument (void *ctx)
 {
 	HtmlParser *parser = HTML_PARSER (ctx);
 	
-	startDocument (parser->xmlctxt);
+	xmlSAX2StartDocument (parser->xmlctxt);
 
 	if (parser->document->dom_document) {
 		g_warning ("DomDocument leaked in html_startDocument");
@@ -111,7 +111,7 @@ html_endDocument (void *ctx)
 {
 	HtmlParser *parser = HTML_PARSER (ctx);
 	
-	endDocument (parser->xmlctxt);
+	xmlSAX2EndDocument (parser->xmlctxt);
 }
 
 xmlSAXHandler SAXHandlerStruct = {
