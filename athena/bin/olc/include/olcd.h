@@ -17,8 +17,8 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olcd.h,v $
- *	$Id: olcd.h,v 1.19 1990-07-16 10:07:02 vanharen Exp $
- *	$Author: vanharen $
+ *	$Id: olcd.h,v 1.20 1990-07-24 14:12:27 lwvanels Exp $
+ *	$Author: lwvanels $
  */
 
 #include <mit-copyright.h>
@@ -49,7 +49,7 @@ extern char *ACL_DIR;
 #ifdef KERBEROS
 extern char K_INSTANCEbuf[];
 extern char *SRVTAB_FILE;
-#endif KERBEROS
+#endif /* KERBEROS */
 
 /* system defines */
 
