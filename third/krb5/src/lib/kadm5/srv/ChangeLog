@@ -1,0 +1,22 @@
+Fri Aug  2 14:07:31 1996  Barry Jaspan  <bjaspan@DUN-DUN-NOODLES>
+
+	* svr_principal.c: remove krb5_free_keyblock_contents (moved to
+        libkrb5.a)
+
+Fri Jul 26 17:48:14 1996  Sam Hartman  <hartmans@mit.edu>
+
+	* svr_principal.c (krb5_copy_key_data_contents): If
+ 	key_data_length[i] == 0, don't complain if malloc(0) returns 0;
+ 	this is allowed by ANSI.
+
+Thu Jul 25 18:42:47 1996  Sam Hartman  <hartmans@mit.edu>
+
+	* configure.in (LIBS): Link against -ldb under AIX for shared
+ 	library construction; we should eventually make libdb a shared
+ 	library.
+
+Wed Jul 24 18:21:28 1996  Tom Yu  <tlyu@voltage-multiplier.mit.edu>
+
+	* Makefile.in, configure.in: break out server lib into a
+		subdirectory
+

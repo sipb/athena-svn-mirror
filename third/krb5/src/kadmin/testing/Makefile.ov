@@ -1,0 +1,8 @@
+# $Id: Makefile.ov,v 1.1.1.1 1996-09-12 04:43:38 ghudson Exp $
+
+TOP = ..
+include $(TOP)/config.mk/template
+
+SUBDIRS=util scripts
+
+expand SubdirTarget

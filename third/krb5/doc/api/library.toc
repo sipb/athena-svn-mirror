@@ -1,0 +1,30 @@
+\contentsline {section}{\numberline {1}Introduction}{2}
+\contentsline {subsection}{\numberline {1.1}Acknowledgments}{2}
+\contentsline {subsection}{\numberline {1.2}Kerberos Basics}{2}
+\contentsline {subsubsection}{\numberline {1.2.1}The purpose of Realms}{4}
+\contentsline {subsubsection}{\numberline {1.2.2}Fundamental assumptions about the environment}{4}
+\contentsline {subsection}{\numberline {1.3}Glossary of terms}{5}
+\contentsline {section}{\numberline {2}Useful KDC parameters to know about}{6}
+\contentsline {section}{\numberline {3}Error tables}{7}
+\contentsline {subsection}{\numberline {3.1}error\unhbox \voidb@x {\ptt \unhbox \voidb@x {\protect \fam \ttfam \tentt _}\discretionary {}{}{}}\discretionary {}{}{}table krb5}{7}
+\contentsline {subsection}{\numberline {3.2}error\unhbox \voidb@x {\ptt \unhbox \voidb@x {\protect \fam \ttfam \tentt _}\discretionary {}{}{}}\discretionary {}{}{}table kdb5}{11}
+\contentsline {subsection}{\numberline {3.3}error\unhbox \voidb@x {\ptt \unhbox \voidb@x {\protect \fam \ttfam \tentt _}\discretionary {}{}{}}\discretionary {}{}{}table kv5m}{12}
+\contentsline {subsection}{\numberline {3.4}error\unhbox \voidb@x {\ptt \unhbox \voidb@x {\protect \fam \ttfam \tentt _}\discretionary {}{}{}}\discretionary {}{}{}table asn1}{12}
+\contentsline {section}{\numberline {4}libkrb5.a functions}{14}
+\contentsline {subsection}{\numberline {4.1}Main functions}{14}
+\contentsline {subsubsection}{\numberline {4.1.1}The krb5\unhbox \voidb@x {\ptt \unhbox \voidb@x {\protect \fam \ttfam \tentt _}\discretionary {}{}{}}\discretionary {}{}{}context}{14}
+\contentsline {subsubsection}{\numberline {4.1.2}The krb5\unhbox \voidb@x {\ptt \unhbox \voidb@x {\protect \fam \ttfam \tentt _}\discretionary {}{}{}}\discretionary {}{}{}auth\unhbox \voidb@x {\ptt \unhbox \voidb@x {\protect \fam \ttfam \tentt _}\discretionary {}{}{}}\discretionary {}{}{}context}{15}
+\contentsline {subsubsection}{\numberline {4.1.3}Principal access functions}{19}
+\contentsline {subsubsection}{\numberline {4.1.4}The application functions}{23}
+\contentsline {subsubsection}{\numberline {4.1.5}Miscellaneous main functions}{40}
+\contentsline {subsection}{\numberline {4.2}Credentials cache functions}{43}
+\contentsline {subsection}{\numberline {4.3}Replay cache functions}{47}
+\contentsline {subsection}{\numberline {4.4}Key table functions}{51}
+\contentsline {subsection}{\numberline {4.5}Free functions}{55}
+\contentsline {subsection}{\numberline {4.6}Operating-system specific functions}{60}
+\contentsline {subsubsection}{\numberline {4.6.1}Operating specific context}{60}
+\contentsline {subsubsection}{\numberline {4.6.2}Configuration based functions}{61}
+\contentsline {subsubsection}{\numberline {4.6.3}Disk based functions}{63}
+\contentsline {subsubsection}{\numberline {4.6.4}Network based routines}{64}
+\contentsline {subsubsection}{\numberline {4.6.5}Operating specific access functions}{65}
+\contentsline {subsubsection}{\numberline {4.6.6}Miscellaneous operating specific functions}{67}
