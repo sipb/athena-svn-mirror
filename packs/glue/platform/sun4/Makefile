@@ -1,20 +1,18 @@
-# $Id: Makefile,v 1.10 1997-10-06 16:18:10 ghudson Exp $
+# $Id: Makefile,v 1.11 1998-03-01 22:58:34 rbasch Exp $
 
 SHELL=/bin/sh
 ATHBINDIR=/usr/athena/bin
 USRLIBDIR=/usr/lib
+ATTACHRUN=cc f77
+ATTRUNTEMPLATE=../../template.sh
 
-all: cc f77
+all: ${ATTACHRUN}
 
-cc:
-	path=`athdir -c -p /mit/sunsoft -t bin`/suncc; \
-		sed -e 's|@LOCKER@|sunsoft|g' -e "s|@PATH@|$$path|g" \
-		-e 's|@PROGRAM@|cc|g' ../../template.sh > $@
-
-f77:
-	path=`athdir -c -p /mit/sunsoft -t bin`/f77; \
-		sed -e 's|@LOCKER@|sunsoft|g' -e "s|@PATH@|$$path|g" \
-		-e 's|@PROGRAM@|f77|g' ../../template.sh > $@
+${ATTACHRUN}: specs ${ATTRUNTEMPLATE}
+	set `grep '^$@[ 	]' specs`; locker=$$2; program=$${3-$$1}; \
+		bindir=`athdir -c -p /mit/$$2 -t bin`; \
+		sed -e "s|@LOCKER@|$$2|g" -e "s|@BINDIR@|$$bindir|g" \
+			-e "s|@PROGRAM@|$$program|g" ${ATTRUNTEMPLATE} > $@
 
 check:
 
@@ -31,6 +29,6 @@ install:
 	ln -s /usr/ccs/lib/cpp ${DESTDIR}${USRLIBDIR}/cpp
 
 clean:
-	rm -f cc f77
+	rm -f ${ATTACHRUN}
 
 distclean: clean
