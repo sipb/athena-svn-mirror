@@ -2,6 +2,7 @@ Name: athena-gnome-print
 Summary: GNOME printing libraries, for Athena
 Copyright: LGPL
 Group: System Environment/Base
+Provides: gnome-print = 0.35
 
 Requires: athena-gnome-libs athena-libxml athena-gdk-pixbuf
 
@@ -32,5 +33,6 @@ find $RPM_BUILD_ROOT -type f -or -type l |
 %post
 # Adapted from gnome-print's spec file.  Only works on Linux systems.
 perl /usr/athena/share/fonts/run-gnome-font-install \
-  /usr/athena/bin/gnome-font-install /usr/athena/share /usr/athena/share
+  /usr/athena/bin/gnome-font-install /usr/athena/share /usr/athena/share \
+  > /dev/null
 exit 0

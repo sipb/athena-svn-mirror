@@ -2,6 +2,7 @@ Name: athena-perl
 Summary: The Perl programming language, as configured for Athena
 Copyright: GPL
 Group: Development/Languages
+Provides: perl = 5.6.1
 
 %description
 The Perl programming language, as configured for Athena
