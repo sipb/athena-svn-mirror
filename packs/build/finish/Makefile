@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.7 1999-12-15 05:27:19 jweiss Exp $
+# $Id: Makefile,v 1.8 2001-03-26 20:17:37 ghudson Exp $
 
 SHELL=/bin/sh
 ATHETCDIR=/usr/athena/etc
@@ -12,10 +12,10 @@ all: fix_owners rvdinfo
 fix_owners: fix_owners.o
 	${CC} -o $@ fix_owners.o
 
-rvdinfo: ../version
-	. ../version; \
-		version="$$major.$$minor.$$patch"; \
-		echo "Athena RVD ($$HOSTTYPE) Version $$version `date`" > $@
+rvdinfo:
+	version="$$ATHENA_MAJOR_VERSION.$$ATHENA_MINOR_VERSION";
+	version="$$version.$$ATHENA_PATCH_VERSION"; \
+	echo "Athena RVD ($$HOSTTYPE) Version $$version `date`" > $@
 
 check:
 	cd os/${OS} && ${MAKE} $@
@@ -25,10 +25,10 @@ check:
 # in place on the packs, including the other things we install.
 install:
 	@if [ -r ${DESTDIR}/.rvdinfo ]; then \
-		. ../version; \
 		dvers=`sed -e 's/^.* \([0-9]*\.[0-9]*\)\..*/\1/' \
 			${DESTDIR}/.rvdinfo`; \
-		if [ "$$dvers" != "$$major.$$minor" ]; then \
+		vers=$$ATHENA_MAJOR_VERSION.$$ATHENA_MINOR_VERSION; \
+		if [ "$$dvers" != "$$vers" ]; then \
 			echo "Error: major or minor version mismatch."; \
 			exit 1; \
 		fi; \
@@ -36,10 +36,9 @@ install:
 	cd os/${OS} && ${MAKE} $@
 	mkdir -p ${DESTDIR}${ATHLIBDIR}/stats
 	rm -f ${DESTDIR}/patch
-	. ../version; \
-		vers="$$major.$$minor"; \
+	vers="$$ATHENA_MAJOR_VERSION.$$ATHENA_MINOR_VERSION"; \
 		ln -s /afs/athena.mit.edu/system/patch-$$vers/${ATHENA_SYS} \
-			 ${DESTDIR}/patch
+		 ${DESTDIR}/patch
 	install -c -m 444 rvdinfo ${DESTDIR}/.rvdinfo
 	./fix_owners ${DESTDIR}
 	chmod go-w ${DESTDIR}
