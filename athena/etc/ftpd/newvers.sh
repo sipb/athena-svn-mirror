@@ -20,8 +20,6 @@
 if [ ! -r version ]; then echo 0 > version; fi
 /bin/rm -f vers.c
 /bin/mv -f version version.old
-awk '	{	version = $1 + 1; }\
-END	{	printf "char version[] = \"Version 4.%d ", version > "vers.c";\
-		printf "%d\n", version > "version"; }' < version.old
+awk -f newvers.awk < version.old
 /bin/rm -f version.old
 echo `date`'";' >> vers.c
