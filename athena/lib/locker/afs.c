@@ -15,7 +15,7 @@
 
 /* This file is part of liblocker. It implements AFS lockers. */
 
-static const char rcsid[] = "$Id: afs.c,v 1.3 1999-03-29 17:33:17 danw Exp $";
+static const char rcsid[] = "$Id: afs.c,v 1.4 1999-04-15 05:53:33 tb Exp $";
 
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -45,6 +45,17 @@ static const char rcsid[] = "$Id: afs.c,v 1.3 1999-03-29 17:33:17 danw Exp $";
 
 #include "locker.h"
 #include "locker_private.h"
+
+/* Cheesy test for determining AFS 3.5. */
+#ifndef AFSCONF_CLIENTNAME
+#define AFS35
+#endif
+
+#ifdef AFS35
+#include <afs/dirpath.h>
+#else
+#define AFSDIR_CLIENT_ETC_DIRPATH AFSCONF_CLIENTNAME
+#endif
 
 static int afs_parse(locker_context context, char *name, char *desc,
 		     char *mountpoint, locker_attachent **at);
@@ -361,7 +372,7 @@ int locker_auth_to_cell(locker_context context, char *name, char *cell,
     return LOCKER_SUCCESS;
 
   /* Find the cell's db servers. */
-  configdir = afsconf_Open(AFSCONF_CLIENTNAME);
+  configdir = afsconf_Open(AFSDIR_CLIENT_ETC_DIRPATH);
   if (!configdir)
     {
       locker__error(context, "%s: Could not authenticate to AFS: "
@@ -433,7 +444,7 @@ int locker_auth_to_cell(locker_context context, char *name, char *cell,
 
   /* Look up principal's PTS id. */
   initialize_pt_error_table();
-  status = pr_Initialize(0, AFSCONF_CLIENTNAME, cell);
+  status = pr_Initialize(0, AFSDIR_CLIENT_ETC_DIRPATH, cell);
   if (status)
     {
       locker__error(context, "%s: Could not initialize AFS protection "
