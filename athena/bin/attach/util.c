@@ -6,9 +6,7 @@
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  */
 
-#ifndef lint
-static char rcsid_util_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/util.c,v 1.4 1990-04-21 17:57:15 jfc Exp $";
-#endif lint
+static char *rcsid_util_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/util.c,v 1.5 1990-07-06 10:59:30 jfc Exp $";
 
 #include "attach.h"
 #include <sys/file.h>
@@ -163,7 +161,7 @@ char **build_hesiod_line(name)
 	    return (realhes);
     }
 
-    fsp = get_fs(filsys_type);
+    fsp = get_fs(filsys_type ? filsys_type : "NFS");
     if (!fsp)
 	return (NULL);
     if (!fsp->explicit) {
