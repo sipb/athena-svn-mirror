@@ -13,7 +13,7 @@
 /* voldump: Dump a volume by volume name/ID, server, and partition, without
  *	    using the VLDB.
  *
- * $Id: voldump.c,v 1.2 1996-06-20 15:25:27 ghudson Exp $
+ * $Id: voldump.c,v 1.3 1997-11-17 16:26:21 ghudson Exp $
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/voldump/voldump.c,v $
  */
 
@@ -149,7 +149,7 @@ static int32 dump_volume(struct cmd_syndesc *as)
 
     fromdate = atol(as->parms[1].items->data);
     if (fromdate) {
-	code = ktime_DateToInt32(as->parms[1].items->data, &fromdate);
+	code = ktime_DateToLong(as->parms[1].items->data, &fromdate);
 	if (code) {
 	    fprintf(stderr, "vos: failed to parse date '%s' (error=%d))\n",
 		    as->parms[1].items->data, code);
