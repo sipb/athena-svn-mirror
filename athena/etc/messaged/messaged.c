@@ -13,7 +13,7 @@
  * without express or implied warranty.
  */
 
-static const char rcsid[] = "$Id: messaged.c,v 1.1 1999-12-08 22:07:17 danw Exp $";
+static const char rcsid[] = "$Id: messaged.c,v 1.2 2004-05-21 19:43:22 zacheiss Exp $";
 
 #include "globalmessage.h"
 #ifndef GMS_SERVER_MESSAGE
@@ -39,7 +39,7 @@ static const char rcsid[] = "$Id: messaged.c,v 1.1 1999-12-08 22:07:17 danw Exp 
 #define saddr_list(sin) (unsigned)sin[0],(unsigned)sin[1],(unsigned)sin[2],(unsigned)sin[3]
 int main(int argc, char **argv)
 {
-  char buf[BFSZ];
+  char buf[GMS_MAX_MESSAGE_LEN];
   int readstat, readlen, msgfile;
   struct sockaddr from;
   /* these strange casts are so that I can print out the address of
@@ -66,7 +66,7 @@ int main(int argc, char **argv)
   /* read the packet from the socket (stdin, since we run from inetd)
    * and also record the from address so we can send a reply.
    */
-  readstat = recvfrom(0, buf, BFSZ, 0, &from, &fromlen);
+  readstat = recvfrom(0, buf, GMS_MAX_MESSAGE_LEN, 0, &from, &fromlen);
   if(readstat == -1) {
     syslog(LOG_INFO, "GMS daemon recvfrom failure %s", error_message(errno));
     exit(errno);
@@ -147,7 +147,7 @@ int main(int argc, char **argv)
    * that we couldn't open it.
    */
   if(msgfile != -1) {
-    readlen = read(msgfile, buf + headerlen, BFSZ-headerlen-1);
+    readlen = read(msgfile, buf + headerlen, GMS_MAX_MESSAGE_LEN-headerlen-1);
     if(readlen == -1) {
       /* read failed but open didn't, so record the error */
       syslog(LOG_INFO, "GMS daemon read error [%s] reading message file <%s>",
@@ -155,7 +155,7 @@ int main(int argc, char **argv)
       exit(errno);
     }
     /* protect the fencepost... */
-    buf[BFSZ-1] = '\0';
+    buf[GMS_MAX_MESSAGE_LEN-1] = '\0';
     close(msgfile);
   } else {
     readlen = 0;
