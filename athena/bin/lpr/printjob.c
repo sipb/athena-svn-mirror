@@ -1,8 +1,8 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/printjob.c,v $
- *	$Author: miki $
+ *	$Author: cfields $
  *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/printjob.c,v 1.26 1995-07-11 20:50:37 miki Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/printjob.c,v 1.27 1995-11-28 23:07:03 cfields Exp $
  */
 
 /*
@@ -13,7 +13,7 @@
 
 #ifndef lint
 static char sccsid[] = "@(#)printjob.c	5.2 (Berkeley) 9/17/85";
-static char *rcsid_printjob_c = "$Id: printjob.c,v 1.26 1995-07-11 20:50:37 miki Exp $";
+static char *rcsid_printjob_c = "$Id: printjob.c,v 1.27 1995-11-28 23:07:03 cfields Exp $";
 #endif
 
 /*
@@ -193,7 +193,7 @@ printjob()
 		 if (fchmod(lfd, stb.st_mode & 0776) < 0)
 			 syslog(LOG_ERR, "%s: %s: %m", printer, LO);
 	 }
-	 if(lflag) syslog("Opening printer on %s", printer);
+	 if(lflag) syslog(LOG_INFO, "Opening printer on %s", printer);
 	 openpr();			/* open printer or remote */
 again:
 	 /*
