@@ -1,0 +1,92 @@
+<HTML>
+<TITLE>x3270if - command interface to x3270</TITLE>
+<H1>x3270if - command interface to x3270</H1>
+<H2>SYNOPSIS</H2>
+<B>x3270if</B> [<B>-v</B>] <I>action</I>[<B>(</B><I>param</I>[,...]<B>)</B>]
+<P><B>x3270if</B> [<B>-v</B>] <B>-s</B> <I>field</I>
+<H2>DESCRIPTION</H2>
+<B>x3270if</B>
+provides an interface between
+<I>x3270</I>(1)
+and child processes run with the
+<B>Script()</B>
+action.
+<P>
+<B>x3270if</B>
+performs one of two functions: passing an action and optional parameters to
+<I>x3270</I>
+for execution, or reporting the value of one of
+<I>x3270</I>'s
+status fields.
+<P>
+The result of the command execution, or the value of the requested status
+field, is written to standard output.
+<H2>OPTIONS</H2>
+<DL>
+<DT>
+<B>-v</B>
+<DD>Turns on verbose debug messages, showing the literal data that is passed
+between
+<I>x3270</I>
+and
+<B>x3270if</B>.
+<DT>
+<B>-s</B> <I>field</I>
+<DD>Causes
+<B>3270if</B>
+to return the value of an
+<I>x3270</I>
+status field, rather than passing an action to be executed.
+<I>Field</I>
+is an integer in the range 0 through 11, indicating the desired status
+field.
+The indices and meanings of each field are documented on the
+<A HREF="x3270-script.html"><I>x3270-script</I>(1)</A>
+manual page.
+</DL>
+<H2>EXIT STATUS</H2>
+If the requested
+<I>action</I>
+succeeds,
+<B>x3270if</B>
+exits with status 0.
+If the action fails,
+<B>x3270if</B>
+exits with status 1.
+If there is an operational error within
+<B>x3270if</B>
+itself, such as a command-line syntax error, missing environment
+variable, or closed pipe,
+<B>x3270if</B>
+exits with status 2.
+<H2>ENVIRONMENT</H2>
+<I>x3270</I>
+uses a pair of pipes for communication with each child process.
+The values of the file descriptors for these pipes are encoded as text
+in two environment variables, which are required by
+<B>x3270if</B>:
+<DL>
+<DT>
+<B>X3270OUTPUT</B>
+<DD>Output from
+<I>x3270</I>,
+input to the child process.
+<DT>
+<B>X3270INPUT</B>
+<DD>Input to
+<I>x3270</I>,
+output from the child process.
+</DL>
+<H2>SEE ALSO</H2>
+<A HREF="x3270.man.html"><I>x3270</I>(1)</A>,
+<A HREF="x3270-script.html"><I>x3270-script</I>(1)</A>
+<H2>COPYRIGHT</H2>
+Copyright &#169; 1995 by Paul Mattes.
+<P>
+Permission to use, copy, modify, and distribute this software and its
+documentation for any purpose and without fee is hereby granted,
+provided that the above copyright notice appear in all copies and that
+both that copyright notice and this permission notice appear in
+supporting documentation.
+<HR>
+<ADDRESS>Last Modified 1 October 1995</ADDRESS>
