@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.63 1998-06-04 18:26:47 ghudson Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.64 1998-06-11 18:03:28 ghudson Exp $
  *
  * Copyright (c) 1990, 1991 by the Massachusetts Institute of Technology
  * For copying and distribution information, please see the file
@@ -37,7 +37,7 @@ static sigset_t sig_cur;
 #include <al.h>
 
 #ifndef lint
-static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.63 1998-06-04 18:26:47 ghudson Exp $";
+static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.64 1998-06-11 18:03:28 ghudson Exp $";
 #endif
 
 /* Non-portable termios flags we'd like to set. */
@@ -109,9 +109,6 @@ static void console_login(char *conf, char *msg);
 static void start_console(char *line, char **argv);
 static void cleanup(char *tty);
 static pid_t fork_and_store(pid_t *var);
-#ifdef TRACE
-static void trace(char *msg);
-#endif
 #ifdef SOLARIS
 static int grabconsole(void);
 #endif
@@ -336,9 +333,6 @@ int main(int argc, char **argv)
     /* Fire up X */
     xpid = 0;
     for (tries = 0; tries < 3; tries++) {
-#ifdef DEBUG
-	fprintf(stderr,"Starting X\n");
-#endif
 	x_running = STARTUP;
 	switch (fork_and_store(&xpid)) {
 	case 0:
@@ -372,9 +366,6 @@ int main(int argc, char **argv)
 	    if (x_running == NONEXISTENT) break;
 	    alarm(X_START_WAIT);
 	    alarm_running = RUNNING;
-#ifdef DEBUG
-	    fprintf(stderr,"waiting for X\n");
-#endif
 	    sigsuspend(&sig_zero);
 	    if (x_running != RUNNING) {
 		if (alarm_running == NONEXISTENT)
@@ -450,9 +441,6 @@ int main(int argc, char **argv)
 
     /* Fire up the X login */
     for (tries = 0; tries < 3; tries++) {
-#ifdef DEBUG
-	fprintf(stderr,"Starting X Login\n");
-#endif
 	login_running = STARTUP;
 	sigact.sa_handler = loginready;
         sigaction(SIGUSR1, &sigact, NULL);
@@ -516,9 +504,6 @@ int main(int argc, char **argv)
     (void) sigaddset(&sig_cur, SIGCHLD);
     (void) sigprocmask(SIG_BLOCK, &sig_cur, NULL);
     while (1) {
-#ifdef DEBUG
-	fprintf(stderr,"waiting...\n");
-#endif
 	/* Wait for something to hapen */
 	if (console_failed) {
 	    /* if no console is running, we must copy bits from the console
@@ -564,10 +549,6 @@ static void console_login(char *conf, char *msg)
     struct termios ttybuf;
     sigset_t mask, omask;
     char *p, **cargv;
-
-#ifdef DEBUG
-    fprintf(stderr,"starting console login\n%s",msg);
-#endif
 
     sigemptyset(&sig_zero);
     if (login_running != NONEXISTENT && login_running != STARTUP)
@@ -647,9 +628,6 @@ static void start_console(char *line, char **argv)
 #ifdef SOLARIS
     int fd;
 #endif
-#ifdef DEBUG
-    fprintf(stderr,"Starting Console\n");
-#endif
 
     if (console_tty == 0) {
 	/* Open master side of pty */
@@ -681,9 +659,6 @@ static void start_console(char *line, char **argv)
     gettimeofday(&now, 0);
     if (now.tv_sec <= last_try.tv_sec + 3) {
 	/* giveup on console */
-#ifdef DEBUG
-	fprintf(stderr,"Giving up on console\n");
-#endif
 	/* Set the console characteristics so we don't lose later */
 	setpgid(0, pgrp=getpid());		/* Reset the tty pgrp */
 	tcsetpgrp(0, pgrp);
@@ -753,12 +728,6 @@ static void start_console(char *line, char **argv)
 #endif /* CERASE */
 	tcsetattr(0, TCSANOW, &tc);
 
-#ifdef DEBUG
-	close(1);
-	close(2);
-	open("/tmp/console.err", O_CREAT|O_APPEND|O_WRONLY, 0644);
-	dup2(1, 2);
-#endif
 	setgid(DAEMON);
 	setuid(DAEMON);
 	(void) sigprocmask(SIG_SETMASK, &sig_zero, (sigset_t *)0);
@@ -894,23 +863,14 @@ static void cleanup(char *tty)
               write(file, (char *)&utmp, sizeof(utmp));
               close(file);
       }
-#ifdef TRACE
-      trace("Just closed wtmp\n");
-#endif
        if ((file = open("/usr/adm/wtmpx",O_WRONLY|O_APPEND)) >= 0) {
                write(file, (char *)&utmpx, sizeof(utmpx));
               close(file);
       }
-#ifdef TRACE
-      trace("Just closed wtmpx\n");
-#endif
     }
 #endif /* SOLARIS */
 
     al_acct_revert(login, loginpid);
-#ifdef TRACE
-    trace("Just came back from al_acct_revert\n");
-#endif
 
     tcflush(0, TCIOFLUSH);
 }
@@ -933,35 +893,11 @@ static void child(int signo)
     pid = waitpid(-1, &status, WNOHANG);
     if (pid == 0 || pid == -1) return;
 
-#ifdef DEBUG
-    fprintf(stderr,"Child exited %d\n",pid);
-#endif
     if (pid == xpid) {
-#ifdef DEBUG
-	fprintf(stderr,"X Server exited\n");
-#endif
-#ifdef TRACE
-	trace("X Server exited status ");
-	trace(number(status.w_retcode));
-#endif
 	x_running = NONEXISTENT;
     } else if (pid == consolepid) {
-#ifdef DEBUG
-	fprintf(stderr,"Console exited\n");
-#endif
-#ifdef TRACE
-	trace("Console exited status ");
-	trace(number(status.w_retcode));
-#endif
 	console_running = NONEXISTENT;
     } else if (pid == loginpid) {
-#ifdef DEBUG
-	fprintf(stderr,"X Login exited\n");
-#endif
-#ifdef TRACE
-	trace("X Login exited status ");
-	trace(number(status.w_retcode));
-#endif
         if (WEXITSTATUS(status) == CONSOLELOGIN)
 	  login_running = STARTUP;
 	else
@@ -974,17 +910,11 @@ static void child(int signo)
 
 static void xready(int signo)
 {
-#ifdef DEBUG
-    fprintf(stderr,"X Server ready\n");
-#endif
     x_running = RUNNING;
 }
 
 static void loginready(int signo)
 {
-#ifdef DEBUG
-    fprintf(stderr,"X Login ready\n");
-#endif
     login_running = RUNNING;
 }
 
@@ -992,9 +922,6 @@ static void loginready(int signo)
 
 static void catchalarm(int signo)
 {
-#ifdef DEBUG
-    fprintf(stderr,"Alarm!\n");
-#endif
     alarm_running = NONEXISTENT;
 }
 
@@ -1003,9 +930,6 @@ static void catchalarm(int signo)
 
 static void die(int signo)
 {
-#ifdef DEBUG
-    fprintf(stderr,"Killing children and exiting\n");
-#endif
     cleanup(logintty);
     _exit(0);
 }
@@ -1135,15 +1059,3 @@ static pid_t fork_and_store(pid_t *var)
   sigprocmask(SIG_SETMASK, &omask, NULL);
   return *var;
 }
-
-#ifdef TRACE
-static void trace(char *msg)
-{
-    int f;
-
-    f = open("/tmp/dm.log", O_WRONLY|O_CREAT|O_APPEND, 0644);
-    if (!f) return;
-    write(f, msg, strlen(msg));
-    close(f);
-}
-#endif
