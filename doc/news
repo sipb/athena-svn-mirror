@@ -30,17 +30,6 @@ Changes from release 8.0 to release 8.1:
 
 	* emacs18 has gone away.
 
-	* In release 8.0, we made symlinks in /usr/lib for the X
-	  libraries under Solaris.  These are no longer present.  The
-	  LD_LIBRARY_PATH environment variable should take care of
-	  programs which do not have a runtime path, and the Athena
-	  release is built with runtime paths for all the programs on
-	  the packs.
-
-	  LD_LIBRARY_PATH will include /usr/dt/lib as well as
-	  /usr/openwin/lib for easy use of the Solaris Motif
-	  libraries.
-
 	* AFS includes and libraries are installed in
 	  /usr/afsws/include and /usr/afsws/lib.
 
