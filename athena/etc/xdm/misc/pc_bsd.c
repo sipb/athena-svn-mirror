@@ -10,6 +10,14 @@
 #include <errno.h>
 #include "pc_bsd.h"
 
+/*
+ * Porting warning: make sure that the chmod calls on the socket
+ * actually do something useful for access control before deciding
+ * this library works. Under Solaris 2.3, chmod/chown are useless,
+ * as apparently the BSD emulation doesn't deal with it. (My plan
+ * was to get this library done with streams for SYSV in general.)
+ */
+
 long pc_init(pc_state **ps)
 {
   pc_state *ret;
@@ -380,7 +388,7 @@ long pc_wait(pc_message **mm, pc_state *s)
 		      return PCerrNoMem;
 		    }
 
-		  p->fd = accept(s->ports[j]->fd, NULL, 0);
+		  p->fd = accept(s->ports[j]->fd, NULL, NULL);
 		  if (p->fd == -1)
 		    {
 		      free(m);
@@ -415,4 +423,58 @@ long pc_wait(pc_message **mm, pc_state *s)
 	*mm = m;
 	return 0L;
       }
+}
+
+/* Close all connections and pending connections associated with
+   the port p we are listening on. Ship them an optional message
+   before blowing them away. */
+long pc_secure(pc_state *s, pc_port *p, pc_message *m)
+{
+  fd_set r;
+  int fd, i, ret;
+  struct timeval t;
+  pc_port *pc;
+
+  if (s == NULL || p == NULL)
+    return PCerrNullArg;
+
+  if (p->type != PC_LISTENER)
+    return PCerrBadType;
+
+  /* If this state is responsible for listening, clear the queue. */
+  if (FD_ISSET(p->fd, &(s->readfds)))
+    {
+      t.tv_sec = 0; t.tv_usec = 0;
+      FD_ZERO(&r);
+      FD_SET(p->fd, &r);
+      while (ret = select(p->fd + 1, &r, NULL, NULL, &t))
+	{
+	  if (ret == -1)
+	    {
+	      if (errno == EINTR)
+		continue;
+	      return PCerrSelectFailed;
+	    }
+
+	  fd = accept(p->fd, NULL, NULL);
+	  if (m)
+	    write(fd, m->data, m->length);
+	  close(fd);
+	}
+    }
+
+  /* find everything that came from p and shut it down. */
+  for (i = 0; i < s->numports;)
+    {
+      pc = s->ports[i];
+      if (pc->type == PC_LISTENEE && pc->parent == p)
+	{
+	  pc_removeport(s, pc);		/* in effect does our i++ */
+	  if (m)
+	    write(pc->fd, m->data, m->length);
+	  pc_close(pc);
+	}
+      else
+	i++;
+    }
 }
