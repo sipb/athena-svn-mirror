@@ -1,0 +1,39 @@
+/*
+ * $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/polld/Imakefile,v $
+ * $Id: Imakefile,v 1.1 1991-01-08 16:49:38 lwvanels Exp $
+ */
+
+/*#define Profiling*/
+
+#ifdef Profiling
+LIBSUFFIX=_p
+EXTRA_LOAD_FLAGS=-pg
+#endif
+
+SRCS=comm.c get_list.c locate.c polld.c
+OBJS=comm.o get_list.o locate.o polld.o
+
+LOCAL_LIBRARIES=$(COMMONLIB) $(CLIENTLIB)
+
+#ifdef Profiling
+DEFINES=-DSYSLOG -DPROFILE
+.c.o:
+	$(CC) -pg -c $(CFLAGS) $*.c
+#else
+DEFINES=-DSYSLOG
+#endif /* Profiling */
+
+DEPLIBS=$(LOCAL_LIBRARIES)
+
+SYS_LIBRARIES=	$(HesiodLib) $(ZephyrLib) $(ComErrLib) $(KerberosLib)
+
+INCLUDES= -I.
+
+NormalProgramTarget(polld,$(OBJS),$(LOCAL_LIBRARIES),$(LOCAL_LIBRARIES),$(SYS_LIBRARIES))
+
+SaberProgramTarget(polld,$(SRCS),$(OBJS),$(LOCAL_LIBRARIES),$(SYS_LIBRARIES))
+
+DependTarget()
+LintTarget()
+
+AllTarget(polld)
