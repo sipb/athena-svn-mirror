@@ -18,12 +18,12 @@
  * Copyright (C) 1988,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: log.c,v 1.48 1999-03-06 16:48:55 ghudson Exp $
+ *	$Id: log.c,v 1.49 1999-05-15 19:31:03 jweiss Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: log.c,v 1.48 1999-03-06 16:48:55 ghudson Exp $";
+static char rcsid[] ="$Id: log.c,v 1.49 1999-05-15 19:31:03 jweiss Exp $";
 #endif
 #endif
 
@@ -608,17 +608,26 @@ char *os;
     }
   }
 
-  /* This assumes all machines have a processor and memory (not a bad */
-  /* assumption, I hope... */
+  /* This assumes that the first piece of input is the Athena version,
+     and that the memory description contains a comma.
+   */
 
-  /* look for processor field */
   p = strchr(os,',');
   if (p == NULL)
     return(stuff);
   *p = '\0';
-  o_mach = os;
-  
   p = p+1;
+  o_mach = p; /* The first line is the Athena Version */
+  /* strip whitespace off of front of CPU type */
+  while (*o_mach == ' ')
+    o_mach++;
+  if (strncmp("SUNW,",o_mach,5) == 0 ) {
+    /* Sun processors have commas embedded in them.
+       Throw away the first part of the processor name and the comma.
+     */
+    o_mach = o_mach+5;
+  }
+  
   /* Need to special case for RS/6000 entry; it is formatted
      processor, display, xxxxxx K
    */
@@ -637,49 +646,77 @@ char *os;
     *memory = ';';
     memory = strrchr(p,',');
     if (memory==NULL) {
-      memory = p;
+      memory = "unavailable";
       o_disp = "none";
     }
     else {
       *memory = '\0';
       memory++;
-      o_disp = p+1;
+      if (strncmp(o_mach,"SGI",3) == 0) {
+	/* SGIs have 3 lines of CPU info skip the last two intelligently */
+	p = strchr(o_mach,',');
+	if (p == NULL)
+	  o_disp="none";
+	*p = '\0';
+	q = p+1;
+	while (*q == ' ')
+	  q++;
+	if (strncmp(q,"FPU:",4) == 0)  {
+	  p = strchr(q,',');
+	  if (p != NULL) {
+	    *p = '\0';
+	    q = p+1;
+	    while (*q == ' ')
+	      q++;
+	    if (strncmp(q,"CPU:",4) == 0)  {
+	      p = strchr(q,',');
+	      if (p != NULL) {
+		*p = '\0';
+		o_disp = p+1;
+	      } else {
+		o_disp="none";
+	      }
+	    }
+	  }
+	}
+      } else {
+	p = strchr(o_mach,',');
+	if (p==NULL)
+	  o_disp="none";
+	*p = '\0';
+	o_disp = p+1;
+      }
     }
   }
 
-  /* strip whitespace off of front of machine name */
-  while (*o_mach == ' ')
-    o_mach++;
+  /* Remember that first line of os that was the Athena Version */
+  sprintf(stuff,"\nVersion  : %s",os);
   size = strlen(o_mach);
   for(i=0;i<n_mach;i++)
     if (strncmp(o_mach,mach[i].orig,size) == 0) {
       o_mach = mach[i].trans;
       break;
     }
-  sprintf(stuff,"\nProcessor: %s\n",o_mach);
+  sprintf(tmp_buf,"\nProcessor: %s\n",o_mach);
+  strcat(stuff,tmp_buf);
   
-  while (o_disp != NULL) {
-    p = strchr(o_disp,',');
-    if (p != NULL) {
-      *p = '\0';
-      p++;
-    }
-    while (*o_disp == ' ')
-      o_disp++;
-    q = strchr(o_disp,' ');
-    if (q != NULL)
-      *q = '\0';
-
-    size = strlen(o_disp);
-    for(i=0;i<n_disp;i++)
-      if (strncmp(o_disp,disp[i].orig,size) == 0) {
-	o_disp = disp[i].trans;
-	break;
-      }
-    sprintf(tmp_buf,"Display  : %s\n",o_disp);
-    strcat(stuff,tmp_buf);
-    o_disp = p;
+  p = strchr(o_disp,',');
+  if (p != NULL) {
+    *p = '\0';
+    p++;
   }
+  while (*o_disp == ' ')
+    o_disp++;
+
+  size = strlen(o_disp);
+  for(i=0;i<n_disp;i++)
+    if (strncmp(o_disp,disp[i].orig,size) == 0) {
+      o_disp = disp[i].trans;
+      break;
+    }
+  sprintf(tmp_buf,"Display  : %s\n",o_disp);
+  strcat(stuff,tmp_buf);
+  o_disp = p;
 
   while (*memory == ' ')
     memory++;
