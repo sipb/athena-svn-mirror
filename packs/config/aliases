@@ -1,4 +1,4 @@
-# $Id $
+# $Id: aliases,v 1.3 1998-03-31 16:50:06 danw Exp $
 
 #########################################################################
 #
@@ -18,12 +18,12 @@
 # start of common aliases--do not remove this line
 
 # RFC 822 requires a `postmaster' alias to exist
-postmaster@localhost: root
+postmaster@localhost: root@localhost
 
 # We don't care about root's mail on cluster workstations
-root@localhost: /dev/null
-daemon@localhost: /dev/null
-MAILER-DAEMON@localhost: /dev/null
+root@localhost: /dev/null@localhost
+daemon@localhost: /dev/null@localhost
+MAILER-DAEMON@localhost: /dev/null@localhost
 
 # Add the following alias to enable NIS aliases.  If enabled, the
 #	NIS database defines anything not defined in this file.
