@@ -62,7 +62,7 @@ sunos4*)
 sunos5*-*gcc*|solaris2*-*gcc*)
 	SHOBJ_CFLAGS=-fpic
 	SHOBJ_LD='${CC}'
-	SHOBJ_LDFLAGS='-shared -Wl,-i -Wl,-h,$@'
+	SHOBJ_LDFLAGS='-shared -Wl,-h,$@'
 
 #	SHLIB_XLDFLAGS='-R $(libdir)'
 	SHLIB_LIBVERSION='$(SHLIB_LIBSUFF).$(SHLIB_MAJOR)'
