@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_send.c,v $
- *	$Id: p_send.c,v 1.12 1990-11-14 12:36:00 lwvanels Exp $
+ *	$Id: p_send.c,v 1.13 1991-01-03 15:40:30 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_send.c,v 1.12 1990-11-14 12:36:00 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_send.c,v 1.13 1991-01-03 15:40:30 lwvanels Exp $";
 #endif
 #endif
 
@@ -127,8 +127,8 @@ do_olc_comment(arguments)
   char editor[NAME_SIZE];
   int temp = FALSE;
 
-  strcpy(file, "");
-  strcpy(editor, "");
+  file[0] = '\0';
+  editor[0] = '\0';
 
   if(fill_request(&Request) != SUCCESS)
     return(ERROR);
@@ -159,6 +159,13 @@ do_olc_comment(arguments)
 	  continue;
 	}
    
+      if(string_equiv(*arguments, "-private", max(strlen(*arguments),2)))
+	{
+	  set_option(Request.options,PRIV_COMMENT_OPT);
+	  arguments++;
+	  continue;
+	}
+
       arguments = handle_argument(arguments, &Request, &status);
       if(status)
 	return(ERROR);
@@ -170,6 +177,7 @@ do_olc_comment(arguments)
 	  printf("Usage is: \tcomment  [<username> <instance id>] ");
 	  printf("[-editor <editor>]\n\t\t[-file <file name>] ");
 	  printf("[-instance <instance id>]\n");
+	  printf("\t\t[-private]\n");
 	  return(ERROR);
 	}
     }
