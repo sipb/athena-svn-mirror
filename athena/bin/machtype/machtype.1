@@ -1,13 +1,13 @@
 .\"     -*- nroff -*- mode
 .\"     $Source: /afs/dev.mit.edu/source/repository/athena/bin/machtype/machtype.1,v $
 .\"     $Author: lwvanels $
-.\"     $Header: /afs/dev.mit.edu/source/repository/athena/bin/machtype/machtype.1,v 1.10 1992-04-14 18:28:35 lwvanels Exp $
+.\"     $Header: /afs/dev.mit.edu/source/repository/athena/bin/machtype/machtype.1,v 1.11 1992-04-22 14:41:41 lwvanels Exp $
 .TH MACHTYPE 1 "April 1 1991"
 .SH NAME
 machtype \- Print machine type to standard output
 .SH SYNOPSIS
 .B machtype
-[-c] [-d] [-r] [-M] [-v] [-A] [-L] [-P] [-V] [-k kernel] [-m memory] 
+[-c] [-d] [-r] [-M] [-v] [-A] [-L] [-P] [-V] [-N] [-E] [-k kernel] [-m memory] 
 .SH DESCRIPTION
 .I Machtype
 prints the CPU type to standard output.  It prints "vax" when run on a
@@ -66,6 +66,14 @@ Print out the version of the Athena system packs attached, from
 .B -L
 Print out the version of Athena installed on the local system from
 .I /etc/athena/version.
+.TP
+.B -N
+Print out the name of the base operating system; if used with the "-v" flag,
+the version number of the OS will be included as well.  Current values for
+the name of the base OS are "BSD", "Ultrix", and "AIX".
+.TP
+.B -E
+Print out the version number of the base operating system.
 .PP
 .I Machtype
 is useful for conditionalizing shell scripts, .login files, etc. in an
