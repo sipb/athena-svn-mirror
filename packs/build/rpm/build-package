@@ -6,7 +6,7 @@
 usage="build-package -n [-s srcdir] [-d destdir] [-v version] [-r release]"
 usage="$usage source rpmname"
 
-sourcedir=/mit/source
+sourcedir=/mit/source-9.2
 destdir=/build
 makepackage=yes
 
