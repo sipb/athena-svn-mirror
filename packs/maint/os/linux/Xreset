@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: Xreset,v 1.1 2000-04-25 13:51:40 rbasch Exp $
+# $Id: Xreset,v 1.2 2001-09-07 19:16:50 zacheiss Exp $
 
 # Xreset
 #
@@ -11,5 +11,8 @@ cd /dev
 # Reclaim the audio devices.
 chown root:sys dsp* audio* midi* mixer* sequencer
 chmod      640 dsp* audio* midi* mixer* sequencer
+
+# Turn off power saving.
+/usr/X11R6/bin/xset -display :0.0 -dpms
 
 exit 0
