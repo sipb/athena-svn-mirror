@@ -1,9 +1,9 @@
 /*
- *	$Id: track.c,v 4.25 1999-12-16 01:58:11 danw Exp $
+ *	$Id: track.c,v 4.26 2001-08-01 13:47:15 ghudson Exp $
  */
 
 #ifndef lint
-static char *rcsid_header_h = "$Id: track.c,v 4.25 1999-12-16 01:58:11 danw Exp $";
+static char *rcsid_header_h = "$Id: track.c,v 4.26 2001-08-01 13:47:15 ghudson Exp $";
 #endif
 
 #include "bellcore-copyright.h"
@@ -254,8 +254,12 @@ char **argv;
 	build_path( fromroot, workdir, DEF_SLISTDIR, subfilepath);
 	build_path( fromroot, workdir, DEF_STATDIR, statfilepath);
 
-	fprintf( stderr, "using %s as subscription-list\n", subfilepath);
-	fprintf( stderr, "using %s as statfile\n",         statfilepath);
+	if ( !quietflag || verboseflag) {
+		fprintf( stderr, "using %s as subscription-list\n",
+			 subfilepath);
+		fprintf( stderr, "using %s as statfile\n",
+			 statfilepath);
+	}
 
 	/*
 	**	redirect yacc/lex i/o
