@@ -29,16 +29,25 @@ console	/etc/athena/console -f /etc/athena/login/Console -display :0.0 -input /d
 console	/etc/athena/console -f /etc/athena/login/Console -display :0.0
 #endif
 
+#define NEED_LOGIN
+
 #ifdef ultrix
+#undef NEED_LOGIN
 #if (DPI==100)
 login	/etc/athena/xlogin -config /etc/athena/login -display :0.0 -fp /usr/athena/lib/X11/fonts/misc/,/usr/athena/lib/X11/fonts/100dpi/,/usr/andrew/X11fonts.100,/usr/athena/lib/X11/fonts/75dpi/,/usr/lib/X11/fonts/decwin/100dpi/
 #else
 login	/etc/athena/xlogin -config /etc/athena/login -display :0.0 -fp /usr/athena/lib/X11/fonts/misc/,/usr/athena/lib/X11/fonts/75dpi/,/usr/andrew/X11fonts.75,/usr/athena/lib/X11/fonts/100dpi/,/usr/lib/X11/fonts/decwin/75dpi/
 #endif
-#else
-#ifdef RSAIX
-login   /etc/athena/xlogin -fp /etc/athena/login/fonts/,/usr/lib/X11/fonts,/usr/lib/X11/fonts/100dpi/,/usr/lib/X11/fonts/75dpi/,/usr/lpp/info/X11fonts/,/usr/andrew/X11fonts/ -config /etc/athena/login -display :0 -tty
-#else
-login	/etc/athena/xlogin -config /etc/athena/login -display :0.0 -fp /usr/athena/lib/X11/fonts/misc/,/usr/athena/lib/X11/fonts/75dpi/,/usr/andrew/X11fonts.75,/usr/athena/lib/X11/fonts/100dpi/
 #endif
+
+#ifdef RSAIX
+#undef NEED_LOGIN
+#if defined(POWER_Gt1)
+login   /etc/athena/xlogin -fp /etc/athena/login/fonts/75dpi/,/usr/lib/X11/fonts,/usr/lib/X11/fonts/75dpi/,/usr/lpp/info/X11fonts/,/usr/andrew/X11fonts/ -config /etc/athena/login -display :0 -tty
+#else
+login   /etc/athena/xlogin -fp /etc/athena/login/fonts/100dpi/,/usr/lib/X11/fonts,/usr/lib/X11/fonts/100dpi/,/usr/lpp/info/X11fonts/,/usr/andrew/X11fonts/ -config /etc/athena/login -display :0 -tty
+#endif
+
+#ifdef NEED_LOGIN
+login	/etc/athena/xlogin -config /etc/athena/login -display :0.0 -fp /usr/athena/lib/X11/fonts/misc/,/usr/athena/lib/X11/fonts/75dpi/,/usr/andrew/X11fonts.75,/usr/athena/lib/X11/fonts/100dpi/
 #endif
