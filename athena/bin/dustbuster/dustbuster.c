@@ -13,7 +13,7 @@
  * without express or implied warranty.
  */
 
-static const char rcsid[] = "$Id: dustbuster.c,v 1.3 2002-04-18 12:22:58 ghudson Exp $";
+static const char rcsid[] = "$Id: dustbuster.c,v 1.4 2002-04-25 20:38:30 rbasch Exp $";
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -69,7 +69,6 @@ int main(int argc, char **argv)
 	  else
 	    signame = *++argv;		/* -s SIGNAME */
 	  sig = find_signal(signame);
-	  argv++;
 	  break;
 
 	case 'S':
@@ -80,6 +79,7 @@ int main(int argc, char **argv)
 	  usage();
 	  break;
 	}
+      argv++;
     }
   if (*argv == NULL)
     usage();
