@@ -1,7 +1,7 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/logger_server.c,v $
  *	$Author: epeisach $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/logger_server.c,v 1.4 1990-07-05 14:50:40 epeisach Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/logger_server.c,v 1.5 1990-11-14 17:07:25 epeisach Exp $
  */
 
 /*
@@ -10,7 +10,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char logger_server_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/logger_server.c,v 1.4 1990-07-05 14:50:40 epeisach Exp $";
+static char logger_server_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/logger_server.c,v 1.5 1990-11-14 17:07:25 epeisach Exp $";
 #endif (!defined(lint) && !defined(SABER))
 
 #include "mit-copyright.h"
@@ -127,7 +127,7 @@ quota_currency currency;
 	    if (gquotarec.deleted)
 		return QGROUPDELETED;
 	}
-	sprintf(grp_str,":%d", qid->account);
+	(void) sprintf(grp_str,":%d", qid->account);
 
 	(void) strncpy(rname, grp_str, ANAME_SZ);
 	(void) strncpy(rinstance, grp_str, INST_SZ);
