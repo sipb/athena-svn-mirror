@@ -8,7 +8,7 @@
  # 	For copying and distribution information, see the file
  # 	"mit-copyright.h". 
  #
- # $Header: /afs/dev.mit.edu/source/repository/athena/bin/gms/Imakefile,v 1.1 1991-01-22 15:00:23 epeisach Exp $
+ # $Header: /afs/dev.mit.edu/source/repository/athena/bin/gms/Imakefile,v 1.2 1991-02-28 10:34:16 epeisach Exp $
  # Generic one project, one target makefile.
  #
 */
@@ -55,11 +55,11 @@ clean::
 
 .SUFFIXES: .o .h .et
 
-$(ETINCS):	$(ETSRCS)
+.et.h:	
 	rm -f $*.c $*.h
 	$(COMPILE_ET) $*.et
 
-$(ETCSRC):	$(ETSRCS)
+.et.c:
 	rm -f $*.c $*.h
 	$(COMPILE_ET) $*.et
 
