@@ -13,7 +13,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char rcsid_port_c[] = "$Id: port.c,v 1.6 1990-05-17 03:45:55 raeburn Exp $";
+static char rcsid_port_c[] = "$Id: port.c,v 1.7 1990-10-19 06:51:30 raeburn Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>
@@ -425,7 +425,7 @@ void create_port_from_files(name, input, output)
 {
     port *p = create_named_port(name);
 
-#if !defined(ibm032)
+#if !defined(__HIGHC__)
     p->get = input ? get_file : NULL;
     p->put = output ? put_file : NULL;
 #else
