@@ -1,14 +1,16 @@
 /* 
  * Imakefile for turnin and related clients; Athena release
  *
- * $Id: Imakefile,v 1.3 1991-07-22 01:29:51 probe Exp $
+ * $Author: epeisach $
+ * $Id: Imakefile,v 1.4 1992-04-27 12:37:46 epeisach Exp $
  *
  * Copyright (c) 1990, Massachusetts Institute of Technology
  *
  */
 
-#if !defined(_IBMR2)
-RPCDIR = rpc3.9
+#ifdef TESTING_ONLY_TESTING
+FXTEST=fxtest
 #endif
 
-#define ISUBDIRS $(RPCDIR) ets include protocol lib clients man
+#define ISUBDIRS rpc3.9 ets include protocol lib clients server ${FXTEST} man
+
