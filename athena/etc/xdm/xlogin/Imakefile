@@ -1,4 +1,4 @@
-# $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/Imakefile,v 1.4 1992-04-01 20:59:33 lwvanels Exp $
+# $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/Imakefile,v 1.5 1992-04-05 16:51:50 probe Exp $
 #
 # CC can be overridden from driver makefile.  Note the -g flag
 # is on the CC macro, not the CFLAGS and LDFLAGS macros, so the
@@ -6,18 +6,20 @@
 #
 #       CC = gcc -g -DFUNCTION_PROTOTYPES -ansi
 
-DEFINES = -I.
+#if defined(_AIX) && (AIXV >= 30)
+MACHDEFS = -DNOCREATE=\"$(ATHCONFDIR)/nocreate\" \
+	   -DNOATTACH=\"$(ATHCONFDIR)/noattach\"
+MACHLIBS = -lodm -lcfg -ls
+#endif
+
+DEFINES = -I. $(MACHDEFS)
 
 LINTFLAGS = $(CFLAGS) -b -h -u -v -z
 
   SRCS = xlogin.c AriRegAll.c verify.c
   OBJS = xlogin.o AriRegAll.o verify.o
-#if defined(_AIX) && (AIXV >= 30)
   LIBS = -lXaw -lm ../wcl/libWc.a -lXmu -lXt -lXext -lX11 -lkrb -ldes -lhesiod \
-	 -lodm -lcfg -ls
-#else
-  LIBS = -lXaw -lm ../wcl/libWc.a -lXmu -lXt -lXext -lX11 -lkrb -ldes -lhesiod
-#endif
+	 $(MACHLIBS)
 
 create_dir(/etc/athena/login)
 SimpleProgram(timeout,timeout.o,,$(ATHBINDIR))
