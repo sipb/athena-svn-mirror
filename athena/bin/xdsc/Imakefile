@@ -2,7 +2,7 @@
 /**/# Makefile for xdiscuss
 /**/#
 
-/**/#"$Header: /afs/dev.mit.edu/source/repository/athena/bin/xdsc/Imakefile,v 1.4 1991-07-26 12:58:08 sao Exp $";
+/**/#"$Header: /afs/dev.mit.edu/source/repository/athena/bin/xdsc/Imakefile,v 1.5 1991-07-29 10:32:23 sao Exp $";
 
 #ifdef _AUX_SOURCE
 CC=cc -B/usr/lib/big/
@@ -19,4 +19,6 @@ SimpleProgram(xdsc,$(OBJS),$(LIBS),$(ATHBINDIR))
 install_man(xdsc.1,xdsc.1)
 
 SpecialObject(xdsc.o,xdsc.c Makefile,-DEDSC_PATH=\"$(ATHETCDIR)/edsc\")
+install_file(Lucy,${ATHXAPPDIR})
+install_file(Xdsc,${ATHXAPPDIR})
 
