@@ -11,13 +11,14 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_shell_regexp_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/shell_regexp.c,v 1.1 1989-10-23 13:31:15 jik Exp $";
+     static char rcsid_shell_regexp_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/shell_regexp.c,v 1.2 1989-11-06 21:27:16 jik Exp $";
 #endif
 
 #include <com_err.h>
 #include "shell_regexp.h"
 #include "delete_errs.h"
 #include "errors.h"
+#include "mit-copyright.h"
 
 static int real_cmp();
 

@@ -9,6 +9,7 @@
  * Copyright (c) 1989 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h."
  */
+#include "mit-copyright.h"
 
 extern int reg_cmp();
 

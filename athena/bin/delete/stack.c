@@ -1,9 +1,26 @@
+/*
+ * $Source: /afs/dev.mit.edu/source/repository/athena/bin/delete/stack.c,v $
+ * $Author: jik $
+ *
+ * This program is part of a package including delete, undelete,
+ * lsdel, expunge and purge.  The software suite is meant as a
+ * replacement for rm which allows for file recovery.
+ * 
+ * Copyright (c) 1989 by the Massachusetts Institute of Technology.
+ * For copying and distribution information, see the file "mit-copyright.h."
+ */
+
+#if (!defined(lint) && !defined(SABER))
+     static char rcsid_stack_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/stack.c,v 1.2 1989-11-06 21:27:06 jik Exp $";
+#endif
+
 #include <sys/types.h>
 #include <stdio.h>
 #include <errno.h>
 #include "stack.h"
 #include "delete_errs.h"
 #include "errors.h"
+#include "mit-copyright.h"
 
 extern char *malloc(), *realloc();
 extern int errno;

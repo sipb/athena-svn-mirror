@@ -11,13 +11,14 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_errors_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/errors.c,v 1.1 1989-10-23 13:38:32 jik Exp $";
+     static char rcsid_errors_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/errors.c,v 1.2 1989-11-06 21:27:20 jik Exp $";
 #endif
 
 #include <varargs.h>
 #include <com_err.h>
 #include <stdio.h>
 #include "delete_errs.h"
+#include "mit-copyright.h"
 
 char *whoami;
 int error_reported = 1;
