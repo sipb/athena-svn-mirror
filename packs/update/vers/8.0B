@@ -20,3 +20,14 @@ INDY)
 	;;
 esac
 
+# Previous boot time scripts would append blank lines to these files,
+# so you get files full of blank lines.  Replace any such files with
+# an empty file.
+for i in /etc/nocreate /etc/noremote /etc/noattach; do
+	if [ -f $i ]; then
+		if [ `grep -c . $i` -eq 0 ]; then
+			rm -f $i
+			touch $i
+		fi
+	fi
+done
