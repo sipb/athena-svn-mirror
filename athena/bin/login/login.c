@@ -1,9 +1,9 @@
 /*
- * $Id: login.c,v 1.89 1997-06-17 03:17:40 danw Exp $
+ * $Id: login.c,v 1.90 1997-06-23 02:29:58 danw Exp $
  */
 
 #ifndef lint
-static char *rcsid = "$Id: login.c,v 1.89 1997-06-17 03:17:40 danw Exp $";
+static char *rcsid = "$Id: login.c,v 1.90 1997-06-23 02:29:58 danw Exp $";
 #endif
 
 /*
@@ -1611,7 +1611,7 @@ done:
 }
 /* END TRASH */
 
-#if !defined(ultrix) && !defined(sun)
+#if !defined(ultrix)
 /*
  * Set the value of var to be arg in the Unix 4.2 BSD environment env.
  * Var should NOT end in '='; setenv inserts it. 
