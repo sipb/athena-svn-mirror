@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: build.sh,v 1.6 1996-10-13 15:55:00 ghudson Exp $
+# $Id: build.sh,v 1.7 1996-10-13 16:16:51 ghudson Exp $
 
 source="/source"
 build="/build"
@@ -24,6 +24,8 @@ while getopts s:b:d: opt; do
 	esac
 done
 shift `expr $OPTIND - 1`
+start="$1"
+end="${2-$1}"
 
 # Determine the platform type.
 case "`uname -a`" in
@@ -66,43 +68,25 @@ packages=`( echo "$platform"; cat "$source/packs/build/packages" ) | awk '
 	}'`
 
 # Build the packages.
-found=""
-done=""
 for package in $packages; do
 	# If arguments given, filter for start and end packages.
-	if [ -n "$done" ]; then
-		break;
-	fi
-	if [ -n "$1" -a -z "$found" ]; then
-		if [ "$package" = "$1" ]; then
-			found=true
-			if [ -z "$2" ]; then
-				done=true
-			fi
-		else
-			continue
-		fi
-	fi
-	if [ "$package" = "$2" ]; then
-		done=true
+	if [ "$package" = "$start" ]; then
+		start=""
+	elif [ -n "$start" ]; then
+		continue
 	fi
 
 	# Build the package.
-	cd $build/$package &&
-	echo "**********************" &&
-	echo "***** ${package}: configure" &&
-	sh $source/packs/build/do.sh -s "$source" -d "$srvd" configure &&
-	echo "***** ${package}: clean" &&
-	sh $source/packs/build/do.sh -s "$source" -d "$srvd" clean &&
-	echo "***** ${package}: all" &&
-	sh $source/packs/build/do.sh -s "$source" -d "$srvd" all &&
-	echo "***** ${package}: check" &&
-	sh $source/packs/build/do.sh -s "$source" -d "$srvd" check &&
-	echo "***** ${package}: install" &&
-	sh $source/packs/build/do.sh -s "$source" -d "$srvd" install
-	if [ "$?" -ne 0 ]; then
-		echo "We bombed in $package"
-		exit 1
+	cd $build/$package || exit 1
+	echo "**********************"
+	for op in configure clean check all install; do
+		echo "***** ${package}: $op"
+		sh $source/packs/build/do.sh -s "$source" -d "$srvd" "$op" ||
+			{ echo "We bombed in $package"; exit 1; }
+	done
+
+	if [ "$package" = "$end" ]; then
+		break
 	fi
 done
 
