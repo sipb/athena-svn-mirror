@@ -52,9 +52,6 @@ esac
 
 # Add gettime entry to root crontab.
 if [ `grep -ic "gettime" /var/cron/crontabs/root` = 0 ]; then
-	echo "/var/cron/crontabs/root renamed to root.old"
-	mv /var/cron/crontabs/root /var/cron/crontabs/root.old
-	cp -p /var/cron/crontabs/root.old /var/cron/crontabs/root
 	echo "$cronentry" >> /var/cron/crontabs/root
 fi
 
