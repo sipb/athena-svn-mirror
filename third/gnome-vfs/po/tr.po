@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-vfs 1.1\n"
-"POT-Creation-Date: 2002-01-20 06:32-0800\n"
+"POT-Creation-Date: 2002-03-15 12:46-0800\n"
 "PO-Revision-Date: 2001-06-08 13:46+0200\n"
 "Last-Translator: Sinan Imamoglu <sinan@linuxmail.org>\n"
 "Language-Team: Turkish <gnome-turk@gnome.org>\n"
@@ -359,7 +359,7 @@ msgid "Operation stopped"
 msgstr "Ýþlem durduruldu"
 
 # modules/file-method.c:380
-#: modules/file-method.c:380
+#: modules/file-method.c:369
 #, c-format
 msgid "Unknown GnomeVFSSeekPosition %d"
 msgstr "Bilinmeyen GnomeVFSSeekPosition %d"

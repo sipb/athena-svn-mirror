@@ -1,3 +1,53 @@
+2002-02-23  Zbigniew Chyla  <cyba@gnome.pl>
+
+	* pl.po: Updated Polish translation by
+	GNOME PL Team <translators@gnome.pl>.
+
+2002-01-31  Simos Xenitellis  <simos@hellug.gr>
+
+	* el.po: Updated Greek translation.
+
+2002-01-30  Seth Nickell  <snickell@stanford.edu>
+
+	reviewed by: <delete if not using a buddy>
+
+	* ChangeLog:
+
+2002-01-30  gettextize  <bug-gnu-utils@gnu.org>
+
+	* Makefile.in.in: Upgrade to gettext-0.10.40.
+
+2002-01-30  gettextize  <bug-gnu-utils@gnu.org>
+
+	* Makefile.in.in: Upgrade to gettext-0.10.40.
+
+2002-01-30  gettextize  <bug-gnu-utils@gnu.org>
+
+	* Makefile.in.in: Upgrade to gettext-0.10.40.
+
+2002-01-30  gettextize  <bug-gnu-utils@gnu.org>
+
+	* Makefile.in.in: Upgrade to gettext-0.10.39.
+
+<<<<<<< ChangeLog
+2002-01-30  gettextize  <bug-gnu-utils@gnu.org>
+
+	* Makefile.in.in: Upgrade to gettext-0.10.40.
+
+2002-01-30  gettextize  <bug-gnu-utils@gnu.org>
+
+	* Makefile.in.in: Upgrade to gettext-0.10.39.
+
+2002-01-30  gettextize  <bug-gnu-utils@gnu.org>
+
+	* Makefile.in.in: Upgrade to gettext-0.10.39.
+
+=======
+2002-01-29  Christophe Merlet  <redfox@eikonex.org>
+
+	* fr.po: Updated French translation.
+
+>>>>>>> 1.165.2.26
 2002-01-04  Pablo Saratxaga <pablo@mandrakesoft.com>
 
 	* eu.po: Added Basque file

@@ -1,5 +1,5 @@
 AC_INIT(libgnomevfs/gnome-vfs.h)
-AM_INIT_AUTOMAKE(gnome-vfs, 1.0.4)
+AM_INIT_AUTOMAKE(gnome-vfs, 1.0.5)
 
 GNOME_COMMON_INIT
 
@@ -130,19 +130,15 @@ GNOME_INIT
 VFS_GNOME_CFLAGS="`gnome-config --cflags gnome`"
 VFS_GNOMEUI_CFLAGS="`gnome-config --cflags gnome gnomeui`"
 VFS_GNOMEGNORBA_CFLAGS="`gnome-config --cflags gnome gnomeui gnorba`"
-VFS_CAPPLET_CFLAGS="`gnome-config --cflags gnome gnomeui capplet`"
 VFS_GNOME_LIBS="`gnome-config --libs gnome`"
 VFS_GNOMEUI_LIBS="`gnome-config --libs gnome gnomeui`"
 VFS_GNOMEGNORBA_LIBS="`gnome-config --libs gnome gnomeui gnorba`"
-VFS_CAPPLET_LIBS="`gnome-config --libs gnome gnomeui capplet`"
 VFS_GLIB_CONFIG="glib-config"
 AC_SUBST(VFS_GNOME_CFLAGS)
 AC_SUBST(VFS_GNOMEUI_CFLAGS)
 AC_SUBST(VFS_GNOMEGNORBA_CFLAGS)
-AC_SUBST(VFS_CAPPLET_CFLAGS)
 AC_SUBST(VFS_GNOME_LIBS)
 AC_SUBST(VFS_GNOMEUI_LIBS)
-AC_SUBST(VFS_CAPPLET_LIBS)
 AC_SUBST(VFS_GNOMEGNORBA_LIBS)
 
 AC_ARG_ENABLE(gconf,
@@ -582,6 +578,73 @@ AC_SUBST(VFS_LIBDIR)
 AC_SUBST(VFS_INCLUDEDIR)
 AC_SUBST(VFS_LIBS)
 
+
+dnl Checks for libcharset
+jm_LANGINFO_CODESET
+jm_GLIBC21
+AC_CHECK_HEADERS([stddef.h stdlib.h string.h])
+AC_CHECK_FUNCS(setlocale)
+
+AC_MSG_CHECKING(whether make is GNU Make)
+STRIP_BEGIN=
+STRIP_END=
+if $ac_make --version 2>/dev/null | grep '^GNU Make ' >/dev/null ; then
+        STRIP_BEGIN='$(strip $(STRIP_DUMMY)'
+        STRIP_END=')'
+        AC_MSG_RESULT(yes)
+else
+        AC_MSG_RESULT(no)
+fi
+STRIP_DUMMY=
+AC_SUBST(STRIP_DUMMY)
+AC_SUBST(STRIP_BEGIN)
+AC_SUBST(STRIP_END)
+
+dnl ***********************
+dnl *** Tests for iconv ***
+dnl ***********************
+
+AC_ARG_WITH(libiconv, [ --with-libiconv          use the libiconv library ],,with_libiconv=maybe)
+
+found_iconv=no
+
+if test "x$with_libiconv" != "xyes" ; then
+   # 
+   # Check in the C library 
+   #
+   AC_CHECK_FUNC(iconv_open, with_libiconv=no; found_iconv=yes)
+fi
+
+if test "x$with_libiconv" != "xno" ; then
+   #
+   # Check for libiconv
+   #
+   AC_CHECK_LIB(iconv, libiconv_open, with_libiconv=yes; found_iconv=yes)
+fi
+
+if test "x$found_iconv" = "xno" ; then
+   AC_MSG_ERROR([*** No iconv() implementation found in C library or libiconv])
+fi
+
+if test "x$with_libiconv" = "xyes" ; then
+  ICONV_LIBS="-liconv"
+  AC_DEFINE(USE_LIBICONV)
+fi
+AC_SUBST(ICONV_LIBS)
+
+dnl If the system doesn't define EILSEQ, we should define EILSEQ ourselves
+dnl since we need it for g_iconv()
+
+AC_MSG_CHECKING([for EILSEQ])
+AC_TRY_COMPILE([
+#include <errno.h>
+],
+[
+int error = EILSEQ;
+], have_eilseq=yes, have_eilseq=no);
+AC_MSG_RESULT($have_eilseq)
+
+
 dnl Output files
 
 AC_OUTPUT([
@@ -590,6 +653,7 @@ gnome-vfs.spec
 libgnomevfs/gnome-vfs-file-size.h
 idl/Makefile
 libgnomevfs-pthread/Makefile
+libgnomevfs/libcharset/Makefile
 libgnomevfs/Makefile
 modules/Makefile
 modules/extfs/Makefile
@@ -600,8 +664,6 @@ modules/extfs/lha
 modules/extfs/rar
 modules/extfs/zip
 modules/extfs/zoo
-man/Makefile
-man/gnome-vfs-mime.5
 devel-docs/Makefile
 devel-docs/gnome-vfs-tutorial/Makefile
 po/Makefile.in

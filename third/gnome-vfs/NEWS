@@ -1,4 +1,20 @@
 ===================================
+gnome-vfs 1.0.5
+---------------
+
+New features:
+
+* UTF-8 gnome-mime-data support (Seth)
+
+Bug fixes:
+
+* NNTP fixes (Andy)
+* Large file (64bit) support (Darin)
+* Build fixes (Darin, Remi Cohen-Scali, Jacob)
+* C++ style comments corrected (Tim Mooney)
+* Miscelaneous fixes (Anders)
+
+===================================
 gnome-vfs 1.0.4
 ---------------
 

@@ -79,8 +79,8 @@ GCONF_CONFIG = @GCONF_CONFIG@
 GCONF_LIBS = @GCONF_LIBS@
 GCONF_REQUIRED = @GCONF_REQUIRED@
 GCONF_SCHEMA_CONFIG_SOURCE = @GCONF_SCHEMA_CONFIG_SOURCE@
-GCONF_SCHEMA_FILE_DIR = @GCONF_SCHEMA_FILE_DIR@
 GENCAT = @GENCAT@
+GLIBC21 = @GLIBC21@
 GLIB_CFLAGS = @GLIB_CFLAGS@
 GLIB_CONFIG = @GLIB_CONFIG@
 GLIB_LIBS = @GLIB_LIBS@
@@ -109,6 +109,7 @@ GT_NO = @GT_NO@
 GT_YES = @GT_YES@
 HAVE_GTK_DOC = @HAVE_GTK_DOC@
 HTML_DIR = @HTML_DIR@
+ICONV_LIBS = @ICONV_LIBS@
 INCLUDE_LOCALE_H = @INCLUDE_LOCALE_H@
 INSTOBJEXT = @INSTOBJEXT@
 INTLDEPS = @INTLDEPS@
@@ -142,12 +143,13 @@ POSUB = @POSUB@
 PTHREAD_LIB = @PTHREAD_LIB@
 RANLIB = @RANLIB@
 STRIP = @STRIP@
+STRIP_BEGIN = @STRIP_BEGIN@
+STRIP_DUMMY = @STRIP_DUMMY@
+STRIP_END = @STRIP_END@
 TOP_BUILDDIR = @TOP_BUILDDIR@
 USE_INCLUDED_LIBINTL = @USE_INCLUDED_LIBINTL@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
-VFS_CAPPLET_CFLAGS = @VFS_CAPPLET_CFLAGS@
-VFS_CAPPLET_LIBS = @VFS_CAPPLET_LIBS@
 VFS_CFLAGS = @VFS_CFLAGS@
 VFS_GNOMEGNORBA_CFLAGS = @VFS_GNOMEGNORBA_CFLAGS@
 VFS_GNOMEGNORBA_LIBS = @VFS_GNOMEGNORBA_LIBS@
@@ -189,7 +191,7 @@ l = @l@
 NULL = 
 SUBDIRS = extfs
 
-INCLUDES =  	-I$(top_srcdir)					-I$(top_srcdir)/libgnomevfs			-I$(top_builddir)/libgnomevfs			-I$(top_srcdir)/intl				-I$(top_builddir)/intl				$(GLIB_CFLAGS)					$(XML_CFLAGS)	 				$(LIBEFS_CFLAGS)				$(GCONF_CFLAGS)					$(VFS_GNOME_CFLAGS)				$(VFS_CFLAGS) $(WERROR)				-D_GNU_SOURCE					-D_REENTRANT					-D_POSIX_PTHREAD_SEMANTICS			-DSYSCONFDIR=\"$(sysconfdir)\"			-DPREFIX=\"$(prefix)\"
+INCLUDES =  	-I$(top_srcdir)					-I$(top_srcdir)/libgnomevfs			-I$(top_builddir)/libgnomevfs			-I$(top_srcdir)/intl				-I$(top_builddir)/intl				$(GLIB_CFLAGS)					$(XML_CFLAGS)	 				$(LIBEFS_CFLAGS)				$(GCONF_CFLAGS)					$(VFS_GNOME_CFLAGS)				$(VFS_CFLAGS) $(WERROR)				-D_GNU_SOURCE					-D_REENTRANT					-D_POSIX_PTHREAD_SEMANTICS			-DSYSCONFDIR=\"$(sysconfdir)\"			-DPREFIX=\"$(prefix)\"				-D_LARGEFILE64_SOURCE                           -D_FILE_OFFSET_BITS=64
 
 
 EXTRA_DIST =  	default-modules.conf				cdda-module.conf				ssl-modules.conf				$(libnfs_la_SRCLIST)				$(libssh_la_SRCLIST)
@@ -248,6 +250,7 @@ libssh_la_SRCLIST =  	ssh-method.c 					ssh-method.h
 
 libvfs_test_la_SOURCES =  	test-method.c				
 
+libvfs_test_la_LDFLAGS = $(module_flags)
 libvfs_test_la_LIBADD = $(XML_LIBS)
 
 ### `gzip' method
@@ -266,11 +269,13 @@ libbzip2_la_LIBADD = -lbz2
 
 libftp_la_SOURCES =  	ftp-method.c					ftp-method.h
 
+libftp_la_LDFLAGS = $(module_flags)
 
 ### `nntp' method
 
 libnntp_la_SOURCES =  	nntp-method.c 					nntp-method.h
 
+libnntp_la_LDFLAGS = $(module_flags)
 
 ### `nfs' method
 
@@ -311,7 +316,6 @@ libextfs_la_LIBADD =
 libextfs_la_OBJECTS =  extfs-method.lo
 libfile_la_LIBADD = 
 libfile_la_OBJECTS =  file-method.lo
-libvfs_test_la_LDFLAGS = 
 libvfs_test_la_DEPENDENCIES = 
 libvfs_test_la_OBJECTS =  test-method.lo
 libhttp_la_DEPENDENCIES = 
@@ -320,10 +324,8 @@ libbzip2_la_DEPENDENCIES =
 libbzip2_la_OBJECTS =  bzip2-method.lo
 libgzip_la_DEPENDENCIES = 
 libgzip_la_OBJECTS =  gzip-method.lo
-libftp_la_LDFLAGS = 
 libftp_la_LIBADD = 
 libftp_la_OBJECTS =  ftp-method.lo
-libnntp_la_LDFLAGS = 
 libnntp_la_LIBADD = 
 libnntp_la_OBJECTS =  nntp-method.lo
 libvfs_pipe_la_DEPENDENCIES = 
@@ -611,30 +613,6 @@ bzip2-method.lo bzip2-method.o : bzip2-method.c ../config.h \
 	../libgnomevfs/gnome-vfs-transform.h \
 	../libgnomevfs/gnome-vfs-module.h \
 	../libgnomevfs/gnome-vfs-mime.h ../libgnomevfs/gnome-vfs-ops.h
-cdda-cddb.lo cdda-cddb.o : cdda-cddb.c cdda-cdrom-extensions.h \
-	cdda-cddb.h
-cdda-method.lo cdda-method.o : cdda-method.c ../config.h \
-	../libgnomevfs/gnome-vfs.h ../libgnomevfs/gnome-vfs-async-ops.h \
-	../libgnomevfs/gnome-vfs-directory-filter.h \
-	../libgnomevfs/gnome-vfs-file-info.h \
-	../libgnomevfs/gnome-vfs-file-size.h \
-	../libgnomevfs/gnome-vfs-result.h \
-	../libgnomevfs/gnome-vfs-uri.h \
-	../libgnomevfs/gnome-vfs-find-directory.h \
-	../libgnomevfs/gnome-vfs-handle.h \
-	../libgnomevfs/gnome-vfs-method.h \
-	../libgnomevfs/gnome-vfs-context.h \
-	../libgnomevfs/gnome-vfs-cancellation.h \
-	../libgnomevfs/gnome-vfs-transform.h \
-	../libgnomevfs/gnome-vfs-xfer.h \
-	../libgnomevfs/gnome-vfs-messages.h \
-	../libgnomevfs/gnome-vfs-module-callback.h \
-	../libgnomevfs/gnome-vfs-directory.h \
-	../libgnomevfs/gnome-vfs-init.h ../libgnomevfs/gnome-vfs-ops.h \
-	../libgnomevfs/gnome-vfs-utils.h \
-	../libgnomevfs/gnome-vfs-module.h \
-	../libgnomevfs/gnome-vfs-module-shared.h \
-	../libgnomevfs/gnome-vfs-mime.h cdda-cddb.h cdda-method.h
 desktop-method.lo desktop-method.o : desktop-method.c ../config.h \
 	../libgnomevfs/gnome-vfs-mime.h ../libgnomevfs/gnome-vfs-uri.h \
 	../libgnomevfs/gnome-vfs-module.h \
@@ -854,6 +832,8 @@ nntp-method.lo nntp-method.o : nntp-method.c ../config.h \
 	../libgnomevfs/gnome-vfs-transform.h \
 	../libgnomevfs/gnome-vfs-module.h \
 	../libgnomevfs/gnome-vfs-module-shared.h \
+	../libgnomevfs/gnome-vfs-module-callback-module-api.h \
+	../libgnomevfs/gnome-vfs-standard-callbacks.h \
 	../libgnomevfs/gnome-vfs-mime.h \
 	../libgnomevfs/gnome-vfs-parse-ls.h \
 	../libgnomevfs/gnome-vfs-utils.h nntp-method.h
@@ -871,6 +851,28 @@ pipe-method.lo pipe-method.o : pipe-method.c ../config.h \
 	../libgnomevfs/gnome-vfs-transform.h \
 	../libgnomevfs/gnome-vfs-utils.h \
 	../libgnomevfs/gnome-vfs-module-shared.h pipe-method.h \
+	../libgnomevfs/gnome-vfs.h ../libgnomevfs/gnome-vfs-async-ops.h \
+	../libgnomevfs/gnome-vfs-handle.h \
+	../libgnomevfs/gnome-vfs-xfer.h \
+	../libgnomevfs/gnome-vfs-messages.h \
+	../libgnomevfs/gnome-vfs-module-callback.h \
+	../libgnomevfs/gnome-vfs-directory.h \
+	../libgnomevfs/gnome-vfs-init.h ../libgnomevfs/gnome-vfs-ops.h
+ssh-method.lo ssh-method.o : ssh-method.c ../config.h \
+	../libgnomevfs/gnome-vfs-mime.h ../libgnomevfs/gnome-vfs-uri.h \
+	../libgnomevfs/gnome-vfs-cancellation.h \
+	../libgnomevfs/gnome-vfs-context.h \
+	../libgnomevfs/gnome-vfs-module.h \
+	../libgnomevfs/gnome-vfs-method.h \
+	../libgnomevfs/gnome-vfs-directory-filter.h \
+	../libgnomevfs/gnome-vfs-file-info.h \
+	../libgnomevfs/gnome-vfs-file-size.h \
+	../libgnomevfs/gnome-vfs-result.h \
+	../libgnomevfs/gnome-vfs-find-directory.h \
+	../libgnomevfs/gnome-vfs-transform.h \
+	../libgnomevfs/gnome-vfs-utils.h \
+	../libgnomevfs/gnome-vfs-module-shared.h \
+	../libgnomevfs/gnome-vfs-parse-ls.h file-method.h \
 	../libgnomevfs/gnome-vfs.h ../libgnomevfs/gnome-vfs-async-ops.h \
 	../libgnomevfs/gnome-vfs-handle.h \
 	../libgnomevfs/gnome-vfs-xfer.h \

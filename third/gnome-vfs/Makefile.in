@@ -79,8 +79,8 @@ GCONF_CONFIG = @GCONF_CONFIG@
 GCONF_LIBS = @GCONF_LIBS@
 GCONF_REQUIRED = @GCONF_REQUIRED@
 GCONF_SCHEMA_CONFIG_SOURCE = @GCONF_SCHEMA_CONFIG_SOURCE@
-GCONF_SCHEMA_FILE_DIR = @GCONF_SCHEMA_FILE_DIR@
 GENCAT = @GENCAT@
+GLIBC21 = @GLIBC21@
 GLIB_CFLAGS = @GLIB_CFLAGS@
 GLIB_CONFIG = @GLIB_CONFIG@
 GLIB_LIBS = @GLIB_LIBS@
@@ -109,6 +109,7 @@ GT_NO = @GT_NO@
 GT_YES = @GT_YES@
 HAVE_GTK_DOC = @HAVE_GTK_DOC@
 HTML_DIR = @HTML_DIR@
+ICONV_LIBS = @ICONV_LIBS@
 INCLUDE_LOCALE_H = @INCLUDE_LOCALE_H@
 INSTOBJEXT = @INSTOBJEXT@
 INTLDEPS = @INTLDEPS@
@@ -142,12 +143,13 @@ POSUB = @POSUB@
 PTHREAD_LIB = @PTHREAD_LIB@
 RANLIB = @RANLIB@
 STRIP = @STRIP@
+STRIP_BEGIN = @STRIP_BEGIN@
+STRIP_DUMMY = @STRIP_DUMMY@
+STRIP_END = @STRIP_END@
 TOP_BUILDDIR = @TOP_BUILDDIR@
 USE_INCLUDED_LIBINTL = @USE_INCLUDED_LIBINTL@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
-VFS_CAPPLET_CFLAGS = @VFS_CAPPLET_CFLAGS@
-VFS_CAPPLET_LIBS = @VFS_CAPPLET_LIBS@
 VFS_CFLAGS = @VFS_CFLAGS@
 VFS_GNOMEGNORBA_CFLAGS = @VFS_GNOMEGNORBA_CFLAGS@
 VFS_GNOMEGNORBA_LIBS = @VFS_GNOMEGNORBA_LIBS@
@@ -188,7 +190,7 @@ l = @l@
 @PLATFORM_GNOME_2_TRUE@SUBDIRS_GNOME = doc
 @PLATFORM_GNOME_2_FALSE@SUBDIRS_GNOME = doc test
 
-SUBDIRS =  	libgnomevfs					libgnomevfs-pthread				idl						modules						man						devel-docs					$(SUBDIRS_GNOME)				po
+SUBDIRS =  	libgnomevfs					libgnomevfs-pthread				idl						modules						devel-docs					$(SUBDIRS_GNOME)				po
 
 
 EXTRA_DIST =  	HACKING						TODO						autogen.sh					gnome-vfs.spec					vfsConf.sh.in					xml-i18n-extract.in				xml-i18n-merge.in				xml-i18n-update.in				gnome-vfs-config.in
@@ -218,8 +220,8 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 TAR = tar
 GZIP_ENV = --best
-DIST_SUBDIRS =  libgnomevfs libgnomevfs-pthread idl modules man \
-devel-docs doc doc test po
+DIST_SUBDIRS =  libgnomevfs libgnomevfs-pthread idl modules devel-docs \
+doc doc test po
 all: all-redirect
 .SUFFIXES:
 $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 

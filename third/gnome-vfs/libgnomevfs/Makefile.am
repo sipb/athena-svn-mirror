@@ -1,5 +1,7 @@
 NULL = 
 
+SUBDIRS = libcharset
+
 INCLUDES =					\
 	-DGNOME_VFS_CONFDIR=\"$(sysconfdir)\"	\
 	-DGNOME_VFS_DATADIR=\"$(datadir)\"	\
@@ -22,6 +24,8 @@ INCLUDES =					\
 	-DLIBDIR=\"$(libdir)\"			\
 	-DSYSCONFDIR=\"$(sysconfdir)\"		\
 	-DG_LOG_DOMAIN=\"GnomeVFS\"		\
+	-D_LARGEFILE64_SOURCE			\
+	-D_FILE_OFFSET_BITS=64			\
 	$(NULL)
 
 lib_LTLIBRARIES = libgnomevfs.la
@@ -30,6 +34,8 @@ EXTRA_DIST =					\
 	getdelim.c
 
 libgnomevfs_la_LIBADD =				\
+	libcharset/libcharset.la		\
+	@ICONV_LIBS@				\
 	$(GLIB_LIBS)				\
 	$(ORBIT_LIBS)				\
 	$(OAF_LIBS)				\

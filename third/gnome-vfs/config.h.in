@@ -52,6 +52,7 @@
 #undef GNOME_PLATFORM_VERSION
 #undef ENABLE_PROFILER
 #undef HAVE_OPENSSL
+#undef USE_LIBICONV
 
 /* The number of bytes in a int.  */
 #undef SIZEOF_INT
@@ -151,6 +152,12 @@
 
 /* Define if you have the <openssl/x509.h> header file.  */
 #undef HAVE_OPENSSL_X509_H
+
+/* Define if you have the <stddef.h> header file.  */
+#undef HAVE_STDDEF_H
+
+/* Define if you have the <stdlib.h> header file.  */
+#undef HAVE_STDLIB_H
 
 /* Define if you have the <string.h> header file.  */
 #undef HAVE_STRING_H

@@ -28,20 +28,9 @@
 #include <config.h>
 #endif
 
-#define _LARGEFILE64_SOURCE
-
 #include <glib.h>
-#if GNOME_PLATFORM_VERSION < 1095000
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
-#else
-/* FIXME: We need to use gettext, but we can't use the gettext helpers
- * in libgnome since it depends on us, not the other way around.
- * What's the good GNOME 2.0 solution for this?
- */
-#define _(String) (String)
-#define N_(String) (String)
-#endif
 #include <dirent.h>
 #include <errno.h>
 #include <fcntl.h>

@@ -1,6 +1,6 @@
 # Note that this is NOT a relocatable package
 %define name     gnome-vfs
-%define ver      1.0.4
+%define ver      1.0.5
 %define  RELEASE 1
 %define  rel     %{?CUSTOM_RELEASE} %{!?CUSTOM_RELEASE:%RELEASE}
 %define  prefix  /usr
@@ -80,19 +80,14 @@ fi
 %defattr(-, root, root)
 
 %doc AUTHORS COPYING ChangeLog NEWS README
-%config %{sysconfdir}/gnome-vfs-mime-magic
 %config %{sysconfdir}/vfs/modules/*.conf
-%dir %{prefix}/share/application-registry
 %{prefix}/lib/*.0
 %{prefix}/lib/*.sh
 %{prefix}/lib/*.so
 %{prefix}/lib/vfs/extfs/*
 %{prefix}/lib/vfs/modules/*.so
-%{prefix}/man/man5/*.5*
 %{prefix}/share/application-registry/gnome-vfs.applications
 %{prefix}/share/locale/*/LC_MESSAGES/*.mo
-%{prefix}/share/mime-info/*.keys
-%{prefix}/share/mime-info/*.mime
 
 %files devel
 %defattr(-, root, root)

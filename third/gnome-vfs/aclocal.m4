@@ -196,6 +196,28 @@ if test -z "`$INTLTOOL_PERL -v | fgrep '5.' 2> /dev/null`"; then
    AC_MSG_ERROR([perl 5.x required for xml-i18n-tools])
 fi
 
+dnl Remove Intltool [] tags from po/POTFILES
+dnl
+ifdef([AC_DIVERSION_ICMDS],[
+  AC_DIVERT_PUSH(AC_DIVERSION_ICMDS)
+      changequote(,)
+      mv -f po/POTFILES po/POTFILES.tmp
+      sed -e 's/\[.*\] *//' < po/POTFILES.tmp > po/POTFILES
+      rm -f po/POTFILES.tmp
+      changequote([,])
+  AC_DIVERT_POP()
+],[
+  ifdef([AC_CONFIG_COMMANDS_PRE],[
+    AC_CONFIG_COMMANDS_PRE([
+        changequote(,)
+        mv -f po/POTFILES po/POTFILES.tmp
+        sed -e 's/\[.*\] *//' < po/POTFILES.tmp > po/POTFILES
+        rm -f po/POTFILES.tmp
+        changequote([,])
+    ])
+  ])
+])
+
 dnl  manually sed perl in so people don't have to put the xml-i18n-tools scripts in their 
 dnl  AC_OUTPUT
 AC_OUTPUT_COMMANDS([
@@ -5031,29 +5053,17 @@ dnl Define GCONF_SCHEMA_CONFIG_SOURCE
 dnl
 AC_DEFUN(AM_GCONF_SOURCE,
 [
-  if test "x$GCONF_SCHEMA_INSTALL_SOURCE" = "x"; then
-    GCONF_SCHEMA_CONFIG_SOURCE=`gconftool --get-default-source`
-  else
-    GCONF_SCHEMA_CONFIG_SOURCE=$GCONF_SCHEMA_INSTALL_SOURCE
-  fi
+if test "x$GCONF_SCHEMA_INSTALL_SOURCE" = "x"; then
+  GCONF_SCHEMA_CONFIG_SOURCE=`gconftool --get-default-source`
+else
+  GCONF_SCHEMA_CONFIG_SOURCE=$GCONF_SCHEMA_INSTALL_SOURCE
+fi
 
-  AC_ARG_WITH(gconf-source, 
-  [  --with-gconf-source=sourceaddress      Config database for installing schema files.],GCONF_SCHEMA_CONFIG_SOURCE="$withval",)
+AC_ARG_WITH(gconf-source, 
+[  --with-gconf-source=sourceaddress      Where to install schema files.],GCONF_SCHEMA_CONFIG_SOURCE="$withval",)
 
   AC_SUBST(GCONF_SCHEMA_CONFIG_SOURCE)
   AC_MSG_RESULT("Using config source $GCONF_SCHEMA_CONFIG_SOURCE for schema installation")
-
-  if test "x$GCONF_SCHEMA_FILE_DIR" = "x"; then
-    GCONF_SCHEMA_FILE_DIR=$sysconfdir/gconf/schemas/
-  else
-    GCONF_SCHEMA_FILE_DIR=$GCONF_SCHEMA_FILE_DIR
-  fi
-
-  AC_ARG_WITH(gconf-schema-file-dir, 
-  [  --with-gconf-schema-file-dir=dir        Directory for installing schema files.],GCONF_SCHEMA_FILE_DIR="$withval",)
-
-  AC_SUBST(GCONF_SCHEMA_FILE_DIR)
-  AC_MSG_RESULT("Using $GCONF_SCHEMA_FILE_DIR as install directory for schema files")
 ])
 
 dnl
@@ -5084,4 +5094,31 @@ av_struct_linger=no
 ])
 AC_MSG_RESULT($av_struct_linger)
 ])
+
+#serial 2
+
+# Test for the GNU C Library, version 2.1 or newer.
+# From Bruno Haible.
+
+AC_DEFUN([jm_GLIBC21],
+  [
+    AC_CACHE_CHECK(whether we are using the GNU C Library 2.1 or newer,
+      ac_cv_gnu_library_2_1,
+      [AC_EGREP_CPP([Lucky GNU user],
+	[
+#include <features.h>
+#ifdef __GNU_LIBRARY__
+ #if (__GLIBC__ == 2 && __GLIBC_MINOR__ >= 1) || (__GLIBC__ > 2)
+  Lucky GNU user
+ #endif
+#endif
+	],
+	ac_cv_gnu_library_2_1=yes,
+	ac_cv_gnu_library_2_1=no)
+      ]
+    )
+    AC_SUBST(GLIBC21)
+    GLIBC21="$ac_cv_gnu_library_2_1"
+  ]
+)
 

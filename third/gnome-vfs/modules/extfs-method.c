@@ -189,8 +189,8 @@ static gchar *
 get_dirname (const gchar *pth)
 {
 	gchar *p;
-	//gchar *s;
-	//guint len;
+	/* gchar *s; */
+	/* guint len; */
 	gchar *path = strip_separators(pth);
 
 	p = strrchr (path, G_DIR_SEPARATOR);
@@ -586,8 +586,8 @@ do_open_directory (GnomeVFSMethod *method,
 	gchar *quoted_file_name;
 	gchar *cmd;
 	gchar *sub_uri;
-	//const gchar *p;
-	//const GList *item;
+	/* const gchar *p; */
+	/* const GList *item; */
 	GList *entries=NULL;
 	GList *l;
 	FILE *pipe;
@@ -712,7 +712,7 @@ do_read_directory (GnomeVFSMethod *method,
 
 	gnome_vfs_file_info_copy (file_info, (GnomeVFSFileInfo *)item->data);
 
-	//gnome_vfs_file_info_unref((GnomeVFSFileInfo *)item->data);
+	/* gnome_vfs_file_info_unref((GnomeVFSFileInfo *)item->data); */
 
 	*((GList **)method_handle) = item->next;
 

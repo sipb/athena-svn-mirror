@@ -29,6 +29,8 @@
 #include <config.h>
 #include "gnome-vfs-mime-info.h"
 
+#include "libcharset/libcharset.h"
+
 #include "gnome-vfs-mime-monitor.h"
 #include "gnome-vfs-mime-private.h"
 #include "gnome-vfs-mime.h"
@@ -43,6 +45,18 @@
 #include <sys/types.h>
 #include <time.h>
 #include <unistd.h>
+
+#include <iconv.h>
+#include <errno.h>
+#include <stdlib.h>
+
+
+#if defined(USE_LIBICONV) && !defined (_LIBICONV_H)
+#error libiconv in use but included iconv.h not from libiconv
+#endif
+#if !defined(USE_LIBICONV) && defined (_LIBICONV_H)
+#error libiconv not in use but included iconv.h is from libiconv
+#endif
 
 #ifdef NEED_GNOMESUPPORT_H
 #include "gnomesupport.h"
@@ -247,6 +261,170 @@ language_level (const char *langage)
 	return -1;
 }
 
+/* this function adapted from glib2's g_convert_with_iconv */
+static gchar*
+convert_with_iconv (const gchar *str,
+		    gssize       len,
+		    iconv_t      converter,
+		    gsize       *bytes_read, 
+		    gsize       *bytes_written)
+{
+	gchar *dest;
+	gchar *outp;
+	const gchar *p;
+	gsize inbytes_remaining;
+	gsize outbytes_remaining;
+	gsize err;
+	gsize outbuf_size;
+	gboolean have_error = FALSE;
+  
+	g_return_val_if_fail (str != NULL, NULL);
+	g_return_val_if_fail (converter != (iconv_t) -1, NULL);
+     
+	if (len < 0)
+		len = strlen (str);
+
+	p = str;
+	inbytes_remaining = len;
+	outbuf_size = len + 1; /* + 1 for nul in case len == 1 */
+  
+	outbytes_remaining = outbuf_size - 1; /* -1 for nul */
+	outp = dest = g_malloc (outbuf_size);
+
+ again:
+  
+	err = iconv (converter, (char **)&p, &inbytes_remaining, &outp, &outbytes_remaining);
+
+	if (err == (size_t) -1) {
+		switch (errno) {
+		case EINVAL:
+			/* Incomplete text, do not report an error */
+			break;
+		case E2BIG: {
+			size_t used = outp - dest;
+			
+			outbuf_size *= 2;
+			dest = g_realloc (dest, outbuf_size);
+			
+			outp = dest + used;
+			outbytes_remaining = outbuf_size - used - 1; /* -1 for nul */
+			
+			goto again;
+		}
+		case EILSEQ:
+			g_warning (_("Invalid byte sequence in conversion input"));
+			have_error = TRUE;
+			break;
+		default:
+			g_warning (_("Error during conversion: %s"),
+				   strerror (errno));
+			have_error = TRUE;
+			break;
+		}
+	}
+	
+	*outp = '\0';
+	
+	if (bytes_read) {
+		*bytes_read = p - str;
+	} else {
+		if ((p - str) != len) {
+			if (!have_error) {
+				g_warning (_("Partial character sequence at end of input"));
+				have_error = TRUE;
+			}
+		}
+	}
+	
+	if (bytes_written)
+		*bytes_written = outp - dest;	/* Doesn't include '\0' */
+	
+	if (have_error) {
+		g_free (dest);
+		return NULL;
+	} else {
+		return dest;
+	}
+}
+
+static gboolean
+get_charset (const char **a)
+{
+  const char *charset = getenv("CHARSET");
+
+  if (charset && *charset)
+    {
+      *a = charset;
+
+      if (charset && strstr (charset, "UTF-8"))
+	return TRUE;
+      else
+	return FALSE;
+    }
+
+  charset = _gnome_vfs_locale_charset ();
+
+  if (charset && *charset)
+    {
+      *a = charset;
+      
+      if (charset && strstr (charset, "UTF-8"))
+	return TRUE;
+      else
+	return FALSE;
+    }
+
+  /* Assume this for compatibility at present.  */
+  *a = "US-ASCII";
+  
+  return FALSE;
+}
+
+static gchar *
+locale_from_utf8 (const gchar *utf8string)
+{
+	gssize len;
+	gsize bytes_read;
+	gsize bytes_written;
+
+	iconv_t converter;
+	char *converted;
+	const char *charset;
+
+	static gboolean already_warned = FALSE;
+
+	if (utf8string == NULL) {
+		return NULL;
+	}
+	
+	len = strlen (utf8string);
+
+	if (get_charset (&charset)) {
+		return strdup (utf8string);
+	} else {
+		converter = iconv_open (charset, "UTF-8");
+		if (converter == (iconv_t)-1) {
+			if (already_warned != TRUE) {
+				already_warned = TRUE;
+				g_warning ("Unable to convert MIME info from UTF-8 to the current locale %s. MIME info will probably display wrong.", charset);
+			}
+			return g_strdup (utf8string);
+		}
+		converted = convert_with_iconv (utf8string,
+						len,
+						converter,
+						&bytes_read, 
+						&bytes_written);
+		iconv_close (converter);
+
+		if (converted == NULL) {
+			g_warning ("Unable to convert %s from UTF-8 to %s, this string will probably display wrong.", utf8string, charset);
+			return g_strdup (utf8string);
+		}
+	}
+
+	return converted;
+}
 
 static void
 context_add_key (GnomeMimeContext *context, char *key, char *lang, char *value)
@@ -254,6 +432,7 @@ context_add_key (GnomeMimeContext *context, char *key, char *lang, char *value)
 	char *v;
 	char *orig_key;
 	int lang_level;
+	char *converted_value;
 
 	lang_level = language_level(lang);
 	/* wrong language completely */
@@ -282,16 +461,22 @@ context_add_key (GnomeMimeContext *context, char *key, char *lang, char *value)
 		}
 	}
 
+	if (lang != NULL) {
+		converted_value = locale_from_utf8 (value);
+	} else {
+		converted_value = g_strdup (value);
+	}
+
 	if (g_hash_table_lookup_extended (context->keys, key,
 					  (gpointer *)&orig_key,
 					  (gpointer *)&v)) {
 		/* if we found it in the database already, just replace it here */
 		g_free (v);
 		g_hash_table_insert (context->keys, orig_key,
-				     g_strdup (value));
+				     converted_value);
 	} else {
 		g_hash_table_insert (context->keys, g_strdup(key),
-				     g_strdup (value));
+				     converted_value);
 	}
 	/* set this as the previous key */
 	g_free(previous_key);

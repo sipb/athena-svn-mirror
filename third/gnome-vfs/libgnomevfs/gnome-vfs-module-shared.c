@@ -1,6 +1,5 @@
 #include <config.h>
 
-#define _LARGEFILE64_SOURCE
 #define _BSD_SOURCE /* so S_ISVTX and hence GNOME_VFS_PERM_STICKY will be defined */
 
 #include "gnome-vfs-module-shared.h"
