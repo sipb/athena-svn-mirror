@@ -1,11 +1,12 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/config/ibm.cf,v 1.5 1991-04-08 14:35:43 lwvanels Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/config/ibm.cf,v 1.6 1991-04-15 17:27:16 lwvanels Exp $ */
 #ifdef PS2Architecture
-#define RanlibCmd	/bin/true
-#define CcCmd /bin/cc
-#define SystemV 1
-#define MachSpecDef -q -D_BSD
-#define ExtraLoadFlags -L/usr/athena/lib -lbsd
-#define HaveDefErrno	0
+#define RanlibCmd		/bin/true
+#define CcCmd 			/bin/cc
+#define SystemV 		1
+#define MachSpecDef 		-q -D_BSD
+#define ExtraLoadFlags 		-L/usr/athena/lib -lbsd
+#define HaveDefErrno		0
+#define HaveAnsiIncludes	1
 #endif
 
 #ifdef RtArchitecture
