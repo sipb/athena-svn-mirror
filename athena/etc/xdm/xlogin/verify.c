@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.81 1997-04-25 03:56:21 ghudson Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.81.2.1 1997-09-13 22:00:59 ghudson Exp $
  */
 
 #include <stdio.h>
@@ -1571,7 +1571,7 @@ char *glist;
 {
     char *cp;			/* temporary */
     char *gnames[MAX_GROUPS], *gids[MAX_GROUPS];
-    int i, fd = -1, ngroups, nalready;
+    int i, fd = -1, ngroups, nentries;
     int namelen = strlen(name);
     FILE *etc_group, *etc_gtmp;
     static char data[BUFSIZ+MAXGNAMELENGTH];/*  space to add new username */
@@ -1616,8 +1616,8 @@ char *glist;
     }
 
     /* Make a pass over the group file to count the groups the user is
-     * currently in which aren't in our list. */
-    nalready = 0;
+     * currently in. */
+    nentries = 0;
     while (fgets(data, sizeof(data) - MAXGNAMELENGTH, etc_group)) {
 	char *gid;
 
@@ -1634,30 +1634,18 @@ char *glist;
 	    break;
 	*cp = 0;
 
-	/* If it's in our list of gids, we aren't interested. */
-	for (i = 0; i < ngroups; i++) {
-	    if (gids[i] && !strcmp(gid, gids[i]))
-		break;
-	}
-	if (i < ngroups)
-	    break;
-
 	/* Now check if the user is in the user list. */
 	while (cp) {
 	    cp++;
 	    if (!strncmp(name, cp, namelen) &&
 		(cp[namelen] == ',' || cp[namelen] == ' ' ||
 		 cp[namelen] == '\n')) {
-		nalready++;
+		nentries++;
 		break;
 	    }
 	    cp = strchr(cp, ',');
 	}
     }
-
-    /* Avoid putting the user in more than MAX_GROUPS groups total. */
-    if (ngroups > MAX_GROUPS - nalready)
-	ngroups = MAX_GROUPS - nalready;
 
     /* Now make a second pass, adding the user to groups in our list. */
     rewind(etc_group);
@@ -1670,7 +1658,8 @@ char *glist;
 
 	/* If a valid format line, check to see if the user belongs in
 	   the group.  Otherwise, just write it out as-is. */
-	if ((gpwd = strchr(data, ':')) &&
+	if (nentries < MAX_GROUPS &&
+	    (gpwd = strchr(data, ':')) &&
 	    (gid = strchr(++gpwd, ':')) &&
 	    (guserlist = strchr(++gid, ':'))) {
 	    *guserlist = '\0';
@@ -1703,6 +1692,7 @@ char *glist;
 	    *(end_userlist + namelen + 1) = 0;
 	    gnames[add] = NULL;
 	    gids[add] = NULL;
+	    nentries++;
 	}
 	if (fputs(data, etc_gtmp) == EOF && ferror(etc_gtmp)) {
 	    (void) fclose(etc_gtmp);
@@ -1711,9 +1701,10 @@ char *glist;
     }	/* end while */
 
     /* now append all groups remaining in gids[], gnames[] */
-    for (i = 0;i < ngroups;i++)
+    for (i = 0;i < ngroups && nentries < MAX_GROUPS;i++)
       if (gids[i] && gnames[i]) {
 	  fprintf(etc_gtmp, "%s:*:%s:%s\n", gnames[i], gids[i], name);
+	  nentries++;
       }
 
     (void) fchmod(fd, 0644);
