@@ -212,6 +212,7 @@ for file in `find /usr/athena/info -type f ! -name dir`; do
     install-info --info-dir=/usr/athena/info $file 2>/dev/null
 done
 EOF
+fi
 
 ## STEP 3: Make the package.
 
