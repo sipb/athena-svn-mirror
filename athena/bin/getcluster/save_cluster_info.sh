@@ -3,10 +3,8 @@
 # This is normally exected by /etc/rc and each time a workstation is
 # activated.
 #
-# $Id: save_cluster_info.sh,v 1.9 1996-06-06 05:35:55 ghudson Exp $
+# $Id: save_cluster_info.sh,v 1.10 1996-06-10 02:55:27 ghudson Exp $
 #
-# Errors from getcluster guarantee that stdout will be size 0,
-# therefore a size # 0 is a sufficient test.
 # Use old data from last session if getcluster fails.
 
 PATH=/bin:/usr/ucb:/usr/bsd; export PATH
