@@ -2,6 +2,7 @@ Name: athena-texinfo
 Summary: The GNU texinfo documentation system, for Athena
 Copyright: GPL
 Group: Applications/Publishing
+Provides: texinfo = 4.2
 
 %description
 Texinfo is a documentation system that can produce both online

@@ -2,6 +2,7 @@ Name: athena-bonobo
 Summary: The bonobo library for compound documents in GNOME, for Athena
 Copyright: GPL
 Group: Development/Libraries
+Provides: bonobo = 1.0.19
 
 Requires: athena-gnome-libs athena-libxml athena-gnome-print
 Requires: athena-gdk-pixbuf athena-oaf

@@ -2,6 +2,7 @@ Name: athena-bonobo-conf
 Summary: The bonobo-conf configuration moniker, for Athena
 Copyright: GPL
 Group: System Environment/Libraries
+Provides: bonobo-conf = 0.14
 
 Requires: athena-bonobo
 

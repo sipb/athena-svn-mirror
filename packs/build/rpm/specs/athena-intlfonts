@@ -2,6 +2,7 @@ Name: athena-intlfonts
 Summary: International fonts for Emacs and other programs
 Copyright: none
 Group: User Interface/X
+Provides: intlfonts = 1.1
 
 %description
 International fonts for many languages suitable for use in Emacs and

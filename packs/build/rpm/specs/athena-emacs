@@ -2,6 +2,7 @@ Name: athena-emacs
 Summary: The Emacs text editor, as configured for Athena workstations
 Copyright: GPL
 Group: Applications/Editors
+Provides: emacs = 21.1
 
 Requires: athena-hesiod athena-krb5
 

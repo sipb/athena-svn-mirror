@@ -2,6 +2,7 @@ Name: athena-gnome-mime-data
 Summary: The GNOME MIME database, for Athena
 Copyright: LGPL
 Group: System Environment/Libraries
+Provides: gnome-mime-data = 1.0.1
 
 %description
 The GNOME MIME database contains a basic set of applications and MIME

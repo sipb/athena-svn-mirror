@@ -2,6 +2,7 @@ Name: athena-control-center
 Summary: The GNOME Control Center, for Athena
 Copyright: GPL
 Group: User Interface/Desktops
+Provides: control-center = 1.4.0.4
 
 Requires: athena-gnome-libs athena-libglade athena-gdk-pixbuf athena-dustbuster athena-esound libxml
 

@@ -2,6 +2,7 @@ Name: athena-autoconf
 Summary: GNU autoconf as modified for Athena workstations.
 Copyright: GPL
 Group: Development/Tools
+Provides: autoconf = 2.13
 
 %description 
 A modified version of the normal GNU autoconf utility, for use on

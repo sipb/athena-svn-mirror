@@ -2,6 +2,7 @@ Name: athena-ORBit
 Summary: The ORBit object request broker, for Athena
 Copyright: GPL
 Group: System Environment/Daemons
+Provides: ORBit = 0.5.13
 
 Requires: athena-glib gettext
 

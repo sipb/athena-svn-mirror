@@ -2,6 +2,7 @@ Name: athena-librep
 Summary: The rep Lisp interpreter, for Athena
 Copyright: GPL
 Group: System Environment/Libraries
+Provides: librep = 0.15.2
 
 Requires: gmp
 

@@ -2,6 +2,7 @@ Name: athena-eel
 Summary: Eazel Extensions Library, for Athena
 Copyright: LGPL
 Group: System Environment/Libraries
+Provides: eel = 1.0.2
 
 Requires: athena-librsvg
 
