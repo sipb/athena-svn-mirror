@@ -2,7 +2,7 @@
  * Makefile for the FX (file exchange) protocol
  *
  * $Author: ghudson $
- * $Id: Imakefile,v 1.6 1997-11-14 22:25:50 ghudson Exp $
+ * $Id: Imakefile,v 1.7 1997-11-17 20:58:10 ghudson Exp $
  *
  *
  * Copyright 1989, 1990 by the Massachusetts Institute of Technology.
@@ -14,7 +14,11 @@
 
 AnsiCC()
 
+#ifdef sgi
+RPCGEN=rpcgen
+#else
 RPCGEN=rpcgen -C
+#endif
 INCLUDES = -I../include
 
 /* Define KERBEROS for Kerberos support */
@@ -47,6 +51,15 @@ fx_prot_svc.c fx_prot_clnt.c fx_prot_xdr.c: fx_prot.x
 	${RPCGEN} fx_prot.x
 	cat xdr_extras.c >> fx_prot_xdr.c
 	${RPCGEN} -m -o fx_prot_svc.c fx_prot.x
+/* IRIX (as of 6.3) doesn't support rpcgen -C the way other operating
+ * systems do.  Instead, we have to convert the server call names by
+ * hand. */
+#ifdef sgi
+	sed -e '/local = /s/_1/_1_svc/' fx_prot_svc.c > fx_prot_svc.new
+	mv fx_prot_svc.new fx_prot_svc.c
+	sed -f svcdecls.sed fx_prot.h > fx_prot.new
+	mv fx_prot.new fx_prot.h
+#endif
 	rm -f ../include/fx_prot.h
 	mv fx_prot.h ../include/fx_prot.h
 
