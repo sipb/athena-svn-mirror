@@ -1,6 +1,6 @@
 # Global cshrc file
 #
-# $Id: cshrc,v 1.6 2000-02-11 20:51:08 ghudson Exp $
+# $Id: cshrc,v 1.7 2000-03-15 20:51:48 ghudson Exp $
 
 # This file is sourced by default user file ~/.cshrc
 
@@ -21,6 +21,7 @@ set athena_manpath=/usr/athena/man:/usr/man:/usr/X11R6/man
 
 # Compatibility with older versions of Athena tcsh
 set hosttype=linux
+setenv HOSTTYPE linux
 if (! $?HOST) then
 	setenv HOST `hostname`
 endif
