@@ -64,6 +64,11 @@ If
 .B LPR
 is not set, the default printer for the local cluster is used.
 .PP
+If the environment variable 
+.B LPROPT
+is set, it will be processed before any arguments on the command line,
+thereby allowing for user definable defaults.
+.PP
 The following single letter options notify the line printer
 spooler that the files are not standard text files. The spooling daemon will
 use the appropriate filters to print the data accordingly.
