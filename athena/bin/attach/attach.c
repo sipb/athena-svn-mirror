@@ -15,7 +15,7 @@
 
 /* This is attach, which is used to attach lockers to workstations. */
 
-static const char rcsid[] = "$Id: attach.c,v 1.26 1999-03-23 18:30:35 danw Exp $";
+static const char rcsid[] = "$Id: attach.c,v 1.27 1999-03-24 16:02:33 danw Exp $";
 
 #include <netdb.h>
 #include <pwd.h>
@@ -32,8 +32,6 @@ static void usage(void);
 static void attach_list(locker_context context, char *host);
 static int print_callback(locker_context context, locker_attachent *at,
 			  void *val);
-static int attach_check_host(locker_context context, locker_attachent *at,
-			     int addr);
 static void attach_print_entry(char *fs, char *mp, char *user, char *mode);
 static int attach_print(locker_context context, locker_attachent *at,
 			void *data);
@@ -176,7 +174,6 @@ int attach_main(int argc, char **argv)
 		}
 	      else
 		{
-		  uid_t uid;
 		  struct passwd *pw;
 
 		  pw = getpwnam(optarg);

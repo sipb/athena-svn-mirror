@@ -15,7 +15,7 @@
 
 /* This is detach, which is used to detach lockers from workstations. */
 
-static const char rcsid[] = "$Id: detach.c,v 1.17 1999-03-23 18:30:35 danw Exp $";
+static const char rcsid[] = "$Id: detach.c,v 1.18 1999-03-24 16:02:35 danw Exp $";
 
 #include <netdb.h>
 #include <pwd.h>
@@ -129,7 +129,6 @@ int detach_main(int argc, char **argv)
 		}
 	      else
 		{
-		  uid_t uid;
 		  struct passwd *pw;
 
 		  pw = getpwnam(optarg);
