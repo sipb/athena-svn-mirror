@@ -16,11 +16,11 @@
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_utils.c,v $
- *      $Author: tjcoppet $
+ *      $Author: vanharen $
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_utils.c,v 1.6 1989-11-17 14:09:09 tjcoppet Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_utils.c,v 1.7 1990-04-25 16:45:28 vanharen Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -84,7 +84,8 @@ handle_argument(args, req, status)
     if(*args)
 	{
 	  (void) strcpy(req->target.username,*args);
-	  if((*(args+1) != (char *) NULL) && (*args[1] != '-'))
+	  if((*(args+1) != (char *) NULL) && (*args[1] != '-') &&
+	     (*args[1] != '>'))
 	    {
 	      ++args;
 	      if(isnumber(*args) != SUCCESS)
