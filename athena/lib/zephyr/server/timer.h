@@ -5,8 +5,8 @@
  *	Derived from timer_manager_.h by Ken Raeburn
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/timer.h,v $
- *	$Author: lwvanels $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/timer.h,v 1.7 1991-12-04 13:25:40 lwvanels Exp $
+ *	$Author: probe $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/timer.h,v 1.8 1993-11-19 16:04:47 probe Exp $
  *
  */
 
@@ -59,11 +59,7 @@ typedef struct _timer {
 #define ALARM_ARG(x)  ((x)->arg)
 #define TIMER_SIZE sizeof(struct _timer)
 
-#ifdef mips
-#define time_t long /* sigh */
-#endif
-extern time_t time P((time_t*));
-#define NOW (time((time_t *)NULL))
+#define NOW (gettimeofday(&t_local, (struct timezone *)0), t_local.tv_sec)
 typedef void (*timer_proc) P((void *));
 extern timer timer_set_rel P((long, timer_proc, void*));
 extern timer timer_set_abs P((long, timer_proc, void*));
@@ -73,4 +69,5 @@ extern void timer_reset P((timer)), timer_process P((void));
 
 #define	timer_when(x)	ALARM_TIME(x)
 
+extern struct timeval t_local;
 extern long nexttimo;			/* Unix time of next timout */
