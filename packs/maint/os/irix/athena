@@ -1,4 +1,4 @@
-# $Id: athena,v 1.13 1999-06-07 15:41:27 rbasch Exp $
+# $Id: athena,v 1.14 1999-08-05 19:32:18 tb Exp $
 # /etc/init.d/athena - Start/Stop the athena daemons
 
 # First, set up some useful variables.  Note /usr/athena/etc at the
@@ -253,7 +253,7 @@ fi
 
 if [ "$SSHD" = true -o "$SSHD" = switched ]; then
 	case $SSHD,$ACCESSON in
-		true,*)		sshopt= ;;
+		true,*)		sshdopt= ;;
 		switched,true)	sshdopt=-s ;;
 		switched,*)	sshdopt=-S ;;
 	esac
