@@ -6,14 +6,14 @@
 # For copying and distribution information, see the file "mit-copyright.h."
 #
 #	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/Imakefile,v $
-#	$Id: Imakefile,v 1.8 1991-08-23 09:40:32 lwvanels Exp $
-#	$Author: lwvanels $
+#	$Id: Imakefile,v 1.9 1991-08-23 11:45:51 raek Exp $
+#	$Author: raek $
 #
 
 /* #define Profiling */
 
-SRCS=	string_utils.c c_io.c perror.c c_status.c features.c common_et.c
-OBJS=	string_utils.o c_io.o perror.o c_status.o features.o common_et.o
+SRCS=	string_utils.c c_io.c perror.c c_status.c common_et.c
+OBJS=	string_utils.o c_io.o perror.o c_status.o common_et.o
 
 CompileErrorTable(common_et)
 NormalLibraryTarget(common,$(OBJS))
