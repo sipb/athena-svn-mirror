@@ -1,8 +1,8 @@
 #ifdef AFS
 AFSDEF=-DAFS
 AFSINC=-Iafsinc
-AFSFIL=ktc.c afs.c
-AFSOBJ=ktc.o afs.o
+AFSFIL=afs.c
+AFSOBJ=afs.o
 #endif
 #ifdef ibm032
 CCFLG=-Hon=read_only_strings
