@@ -42,10 +42,11 @@ Third-party stuff not under third
 	* Modified operating system files
 
 		We keep some modified configuration files from the
-		operating systems we use in packs/config and
-		packs/maint.  The files and their origins are:
+		operating systems we use in the os and arch
+		subdirectories of packs/config and packs/maint.
+		The files and their origins are:
 
-		Solaris files in packs/config/platform/sun4:
+		Solaris files in packs/config:
 
 		Athena4.kt	/usr/openwin/share/etc/keytables/US4.kt.Z
 		Athena5.kt	/usr/openwin/share/etc/keytables/US_UNIX5.kt.Z
@@ -61,12 +62,12 @@ Third-party stuff not under third
 		su		/etc/default/su
 		system		/etc/system
 
-		Solaris files in packs/maint/platform/sun4:
+		Solaris files in packs/maint:
 
 		nfs.client	/etc/init.d/nfs.client
 		rpc		/etc/init.d/rpc
 
-		IRIX files in packs/config/platform/sgi:
+		IRIX files in packs/config:
 
 		4DWm		/usr/lib/X11/app-defaults/4DWm
 		Mwm		/usr/lib/X11/app-defaults/Mwm
@@ -78,7 +79,7 @@ Third-party stuff not under third
 		services	/etc/services
 		system.chestrc	/usr/lib/X11/system.chestrc
 
-		IRIX files in packs/maint/platform/sgi:
+		IRIX files in packs/maint:
 
 		network		/etc/init.d/network
 
