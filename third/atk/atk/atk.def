@@ -2,6 +2,7 @@ EXPORTS
 	atk_action_do_action
 	atk_action_get_description
 	atk_action_get_keybinding
+	atk_action_get_localized_name
 	atk_action_get_n_actions
 	atk_action_get_name
 	atk_action_get_type
@@ -13,6 +14,8 @@ EXPORTS
 	atk_component_add_focus_handler
 	atk_component_contains
 	atk_component_get_extents
+	atk_component_get_layer
+	atk_component_get_mdi_zorder
 	atk_component_get_position
 	atk_component_get_size
 	atk_component_get_type
@@ -37,6 +40,7 @@ EXPORTS
 	atk_focus_tracker_init
 	atk_focus_tracker_notify
 	atk_get_default_registry
+	atk_get_focus_object
 	atk_get_root
 	atk_get_toolkit_name
 	atk_get_toolkit_version
@@ -49,6 +53,8 @@ EXPORTS
 	atk_hyperlink_get_start_index
 	atk_hyperlink_get_type
 	atk_hyperlink_get_uri
+	atk_hyperlink_is_inline
+	atk_hyperlink_is_selected_link
 	atk_hyperlink_is_valid
 	atk_hypertext_get_link
 	atk_hypertext_get_link_index
@@ -67,6 +73,7 @@ EXPORTS
 	atk_no_op_object_factory_new
 	atk_no_op_object_get_type
 	atk_no_op_object_new
+	atk_object_add_relationship
 	atk_object_connect_property_change_handler
 	atk_object_factory_create_accessible
 	atk_object_factory_get_accessible_type
@@ -87,6 +94,7 @@ EXPORTS
 	atk_object_ref_relation_set
 	atk_object_ref_state_set
 	atk_object_remove_property_change_handler
+	atk_object_remove_relationship
 	atk_object_set_description
 	atk_object_set_name
 	atk_object_set_parent
@@ -115,6 +123,7 @@ EXPORTS
 	atk_remove_global_event_listener
 	atk_remove_key_event_listener
 	atk_role_for_name
+	atk_role_get_localized_name
 	atk_role_get_name
 	atk_role_get_type
 	atk_role_register
@@ -183,6 +192,7 @@ EXPORTS
 	atk_text_attribute_get_value
 	atk_text_attribute_register
 	atk_text_boundary_get_type
+	atk_text_get_bounded_ranges
 	atk_text_get_caret_offset
 	atk_text_get_character_at_offset
 	atk_text_get_character_count
@@ -190,6 +200,7 @@ EXPORTS
 	atk_text_get_default_attributes
 	atk_text_get_n_selections
 	atk_text_get_offset_at_point
+	atk_text_get_range_extents
 	atk_text_get_run_attributes
 	atk_text_get_selection
 	atk_text_get_text

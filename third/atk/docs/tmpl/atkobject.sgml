@@ -40,9 +40,6 @@ The AtkObject structure should not be accessed directly.
 
 <!-- ##### ENUM AtkRole ##### -->
 <para>
-These are the built-in enumerated roles that UI components can have in
-ATK.  Other roles may be added at runtime, so an AtkRole >=
-ATK_ROLE_LAST_DEFINED is not necessarily an error.
 </para>
 
 @ATK_ROLE_INVALID: 
@@ -119,6 +116,9 @@ ATK_ROLE_LAST_DEFINED is not necessarily an error.
 @ATK_ROLE_PARAGRAPH: 
 @ATK_ROLE_RULER: 
 @ATK_ROLE_APPLICATION: 
+@ATK_ROLE_AUTOCOMPLETE: 
+@ATK_ROLE_EDITBAR: 
+@ATK_ROLE_EMBEDDED: 
 @ATK_ROLE_LAST_DEFINED: 
 
 <!-- ##### FUNCTION atk_role_register ##### -->
@@ -132,9 +132,6 @@ ATK_ROLE_LAST_DEFINED is not necessarily an error.
 
 <!-- ##### ENUM AtkLayer ##### -->
 <para>
-These enumerated "layer values" are used when determining which UI
-rendering layer a component is drawn into, which can help in making
-determinations of when components occlude one another.
 </para>
 
 @ATK_LAYER_INVALID: 
@@ -425,16 +422,19 @@ atk_object_connect_property_change_handler().
 
 <!-- ##### SIGNAL AtkObject::active-descendant-changed ##### -->
 <para>
-
+The "active-descendant-changed" signal is emitted by an object which has
+the state ATK_STATE_MANAGES_DESCENDANTS when the focus object in the
+object changes. For instance, a table will emit the signal when the cell
+in the table which has focus changes.
 </para>
 
 @atkobject: the object which received the signal.
-@arg1: 
+@arg1: the newly focused object.
 
 <!-- ##### SIGNAL AtkObject::children-changed ##### -->
 <para>
-The children_changed signal supports two details, "add" and "remove" which
-indicate whether a child was added or removed
+The signal "children-changed" is emitted when a child is added or
+removed form an object. It supports two details: "add" and "remove"
 </para>
 
 @atkobject: the object which received the signal.
@@ -443,16 +443,17 @@ indicate whether a child was added or removed
 
 <!-- ##### SIGNAL AtkObject::focus-event ##### -->
 <para>
-
+The signal "focus-event" is emitted when an object gains or loses focus.
 </para>
 
 @atkobject: the object which received the signal.
-@arg1: A boolean value which indicates whether or not the focus event is is or out.
+@arg1: A boolean value which indicates whether the object gained or lost focus.
 
 <!-- ##### SIGNAL AtkObject::property-change ##### -->
 <para>
-This signal support a detail which identifies the property which has
-changed.
+The signal "property-change" is emitted when an object's property
+value changes. The detail identifies the name of the property whose
+value has changed.
 </para>
 
 @atkobject: the object which received the signal.
@@ -460,7 +461,8 @@ changed.
 
 <!-- ##### SIGNAL AtkObject::state-change ##### -->
 <para>
-This signal support, which may be any of the accessible state types.
+The "state-change" signal is emitted  when an object's state changes.
+The detail value identifies the state type which has changed.
 </para>
 
 @atkobject: the object which received the signal.
@@ -469,7 +471,8 @@ This signal support, which may be any of the accessible state types.
 
 <!-- ##### SIGNAL AtkObject::visible-data-changed ##### -->
 <para>
-
+The "visible-data-changed" signal is emitted when the visual appearance of 
+the object changed.
 </para>
 
 @atkobject: the object which received the signal.
@@ -485,6 +488,11 @@ This signal support, which may be any of the accessible state types.
 </para>
 
 <!-- ##### ARG AtkObject:accessible-description ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG AtkObject:accessible-hypertext-nlinks ##### -->
 <para>
 
 </para>
@@ -505,6 +513,11 @@ This signal support, which may be any of the accessible state types.
 </para>
 
 <!-- ##### ARG AtkObject:accessible-table-caption ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG AtkObject:accessible-table-caption-object ##### -->
 <para>
 
 </para>

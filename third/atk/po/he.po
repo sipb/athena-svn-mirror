@@ -6,7 +6,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: atk.HEAD.he\n"
-"POT-Creation-Date: 2003-01-20 09:26+0000\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-09-07 08:13+0100\n"
 "PO-Revision-Date: 2002-12-05 23:31+0200\n"
 "Last-Translator: Gil 'Dolfin' Osher <dolfin@rpg.org.il>\n"
 "Language-Team: Hebrew <he@li.org>\n"
@@ -15,298 +16,507 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.0\n"
 
-#: atk/atkobject.c:1183
+#: atk/atkhyperlink.c:103
+msgid "Selected Link"
+msgstr ""
+
+#: atk/atkhyperlink.c:104
+msgid "Specifies whether the AtkHyperlink object is selected"
+msgstr ""
+
+#: atk/atkhyperlink.c:110
+msgid "Number of Anchors"
+msgstr ""
+
+#: atk/atkhyperlink.c:111
+msgid "The number of anchors associated with the AtkHyperlink object"
+msgstr ""
+
+#: atk/atkhyperlink.c:119
+msgid "End index"
+msgstr ""
+
+#: atk/atkhyperlink.c:120
+msgid "The end index of the AtkHyperlink object"
+msgstr ""
+
+#: atk/atkhyperlink.c:128
+msgid "Start index"
+msgstr ""
+
+#: atk/atkhyperlink.c:129
+msgid "The start index of the AtkHyperlink object"
+msgstr ""
+
+#: atk/atkobject.c:82
 msgid "invalid"
 msgstr "לא תקני"
 
-#: atk/atkobject.c:1186
-msgid "accel-label"
+#: atk/atkobject.c:83
+#, fuzzy
+msgid "accelerator label"
 msgstr "תוית-מאיץ"
 
-#: atk/atkobject.c:1189
+#: atk/atkobject.c:84
 msgid "alert"
 msgstr "התרעה"
 
-#: atk/atkobject.c:1192
+#: atk/atkobject.c:85
 msgid "animation"
 msgstr "הנפשה"
 
-#: atk/atkobject.c:1195
+#: atk/atkobject.c:86
 msgid "arrow"
 msgstr "חץ"
 
-#: atk/atkobject.c:1198
+#: atk/atkobject.c:87
 msgid "calendar"
 msgstr "לוח שנה"
 
-#: atk/atkobject.c:1201
+#: atk/atkobject.c:88
 msgid "canvas"
 msgstr "אריג"
 
-#: atk/atkobject.c:1204
-msgid "check-box"
+#: atk/atkobject.c:89
+#, fuzzy
+msgid "check box"
 msgstr "תיבת-סימון"
 
-#: atk/atkobject.c:1207
-msgid "check-menu-item"
+#: atk/atkobject.c:90
+#, fuzzy
+msgid "check menu item"
 msgstr "סימון-פריט-תפריט"
 
-#: atk/atkobject.c:1210
-msgid "color-chooser"
+#: atk/atkobject.c:91
+#, fuzzy
+msgid "color chooser"
 msgstr "בוחר-צבע"
 
-#: atk/atkobject.c:1213
-msgid "column-header"
+#: atk/atkobject.c:92
+#, fuzzy
+msgid "column header"
 msgstr "כותרת-עמודה"
 
-#: atk/atkobject.c:1216
-msgid "combo-box"
+#: atk/atkobject.c:93
+#, fuzzy
+msgid "combo box"
 msgstr "תיבה-משולבת"
 
-#: atk/atkobject.c:1219
-msgid "date-editor"
+#: atk/atkobject.c:94
+#, fuzzy
+msgid "dateeditor"
 msgstr "עורך-תאריך"
 
-#: atk/atkobject.c:1222
-msgid "desktop-icon"
+#: atk/atkobject.c:95
+#, fuzzy
+msgid "desktop icon"
 msgstr "סמל-שולחן-עבודה"
 
-#: atk/atkobject.c:1225
-msgid "desktop-frame"
+#: atk/atkobject.c:96
+#, fuzzy
+msgid "desktop frame"
 msgstr "מסגרת-שולחן-עבודה"
 
-#: atk/atkobject.c:1228
+#: atk/atkobject.c:97
 msgid "dial"
 msgstr "חוגה"
 
-#: atk/atkobject.c:1231
+#: atk/atkobject.c:98
 msgid "dialog"
 msgstr "תיבת-דו-שיח"
 
-#: atk/atkobject.c:1234
-msgid "directory-pane"
+#: atk/atkobject.c:99
+#, fuzzy
+msgid "directory pane"
 msgstr "חלונית-סיפרייה"
 
-#: atk/atkobject.c:1237
-msgid "drawing-area"
+#: atk/atkobject.c:100
+#, fuzzy
+msgid "drawing area"
 msgstr "איזור-ציור"
 
-#: atk/atkobject.c:1240
-msgid "file-chooser"
+#: atk/atkobject.c:101
+#, fuzzy
+msgid "file chooser"
 msgstr "בוחר-קבצים"
 
-#: atk/atkobject.c:1243
+#: atk/atkobject.c:102
 msgid "filler"
 msgstr "ממלא"
 
-#: atk/atkobject.c:1246
-msgid "font-chooser"
+#. I know it looks wrong but that is what Java returns
+#: atk/atkobject.c:104
+#, fuzzy
+msgid "fontchooser"
 msgstr "בוחר-גופן"
 
-#: atk/atkobject.c:1249
+#: atk/atkobject.c:105
 msgid "frame"
 msgstr "מסגרת"
 
-#: atk/atkobject.c:1252
-msgid "glass-pane"
+#: atk/atkobject.c:106
+#, fuzzy
+msgid "glass pane"
 msgstr "חלונית-זכוכית"
 
-#: atk/atkobject.c:1255
-msgid "html-container"
+#: atk/atkobject.c:107
+#, fuzzy
+msgid "html container"
 msgstr "מיכל-html"
 
-#: atk/atkobject.c:1258
+#: atk/atkobject.c:108
 msgid "icon"
 msgstr "סמל"
 
-#: atk/atkobject.c:1261
+#: atk/atkobject.c:109
 msgid "image"
 msgstr "תמונה"
 
-#: atk/atkobject.c:1264
-msgid "internal-frame"
+#: atk/atkobject.c:110
+#, fuzzy
+msgid "internal frame"
 msgstr "מסגרת-פנימית"
 
-#: atk/atkobject.c:1267
+#: atk/atkobject.c:111
 msgid "label"
 msgstr "תוית"
 
-#: atk/atkobject.c:1270
-msgid "layered-pane"
+#: atk/atkobject.c:112
+#, fuzzy
+msgid "layered pane"
 msgstr "חלונית שכבות"
 
-#: atk/atkobject.c:1273
+#: atk/atkobject.c:113
 msgid "list"
 msgstr "רשימה"
 
-#: atk/atkobject.c:1276
-msgid "list-item"
+#: atk/atkobject.c:114
+#, fuzzy
+msgid "list item"
 msgstr "פריט-רשימה"
 
-#: atk/atkobject.c:1279
+#: atk/atkobject.c:115
 msgid "menu"
 msgstr "תפריט"
 
-#: atk/atkobject.c:1282
-msgid "menu-bar"
+#: atk/atkobject.c:116
+#, fuzzy
+msgid "menu bar"
 msgstr "שורת-תפריט"
 
-#: atk/atkobject.c:1285
-msgid "menu-item"
+#: atk/atkobject.c:117
+#, fuzzy
+msgid "menu item"
 msgstr "פריט-תפריט"
 
-#: atk/atkobject.c:1288
-msgid "option-pane"
+#: atk/atkobject.c:118
+#, fuzzy
+msgid "option pane"
 msgstr "חלונית-אפשרות"
 
-#: atk/atkobject.c:1291
-msgid "page-tab"
+#: atk/atkobject.c:119
+#, fuzzy
+msgid "page tab"
 msgstr "עמוד-כרטיסייה"
 
-#: atk/atkobject.c:1294
-msgid "page-tab-list"
+#: atk/atkobject.c:120
+#, fuzzy
+msgid "page tab list"
 msgstr "עמוד-רשימת-כרטיסיות"
 
-#: atk/atkobject.c:1297
+#: atk/atkobject.c:121
 msgid "panel"
 msgstr "לוח"
 
-#: atk/atkobject.c:1300
-msgid "password-text"
+#: atk/atkobject.c:122
+#, fuzzy
+msgid "password text"
 msgstr "מלל-סיסמה"
 
-#: atk/atkobject.c:1303
-msgid "popup-menu"
+#: atk/atkobject.c:123
+#, fuzzy
+msgid "popup menu"
 msgstr "תפריט-קופץ"
 
-#: atk/atkobject.c:1306
-msgid "progress-bar"
+#: atk/atkobject.c:124
+#, fuzzy
+msgid "progress bar"
 msgstr "שורת-התקדמות"
 
-#: atk/atkobject.c:1309
-msgid "push-button"
+#: atk/atkobject.c:125
+#, fuzzy
+msgid "push button"
 msgstr "כפתור-לחיצה"
 
-#: atk/atkobject.c:1312
-msgid "radio-button"
+#: atk/atkobject.c:126
+#, fuzzy
+msgid "radio button"
 msgstr "כפתור-בחירה"
 
-#: atk/atkobject.c:1315
-msgid "radio-menu-item"
+#: atk/atkobject.c:127
+#, fuzzy
+msgid "radio menu item"
 msgstr "פריט-תפריט-בחירה"
 
-#: atk/atkobject.c:1318
-msgid "root-pane"
+#: atk/atkobject.c:128
+#, fuzzy
+msgid "root pane"
 msgstr "חלונית-שורש"
 
-#: atk/atkobject.c:1321
-msgid "row-header"
+#: atk/atkobject.c:129
+#, fuzzy
+msgid "row header"
 msgstr "כותרת-שורה"
 
-#: atk/atkobject.c:1324
-msgid "scroll-bar"
+#: atk/atkobject.c:130
+#, fuzzy
+msgid "scroll bar"
 msgstr "פס-גלילה"
 
-#: atk/atkobject.c:1327
-msgid "scroll-pane"
+#: atk/atkobject.c:131
+#, fuzzy
+msgid "scroll pane"
 msgstr "חלונית-גלילה"
 
-#: atk/atkobject.c:1330
+#: atk/atkobject.c:132
 msgid "separator"
 msgstr "מפריד"
 
-#: atk/atkobject.c:1333
+#: atk/atkobject.c:133
 msgid "slider"
 msgstr "מחוון"
 
-#: atk/atkobject.c:1336
-msgid "split-pane"
+#: atk/atkobject.c:134
+#, fuzzy
+msgid "split pane"
 msgstr "חלונית-מתפצלת"
 
-#: atk/atkobject.c:1339
-msgid "spin-button"
+#: atk/atkobject.c:135
+#, fuzzy
+msgid "spin button"
 msgstr "תיבת-טווח"
 
-#: atk/atkobject.c:1342
+#: atk/atkobject.c:136
 msgid "statusbar"
 msgstr "שורת-מצב"
 
-#: atk/atkobject.c:1345
+#: atk/atkobject.c:137
 msgid "table"
 msgstr "טבלה"
 
-#: atk/atkobject.c:1348
-msgid "table-cell"
+#: atk/atkobject.c:138
+#, fuzzy
+msgid "table cell"
 msgstr "תא-טבלה"
 
-#: atk/atkobject.c:1351
-msgid "table-column-header"
+#: atk/atkobject.c:139
+#, fuzzy
+msgid "table column header"
 msgstr "כותרת-עמודת-טבלה"
 
-#: atk/atkobject.c:1354
-msgid "table-row-header"
+#: atk/atkobject.c:140
+#, fuzzy
+msgid "table row header"
 msgstr "כותרת-שורת-טבלה"
 
-#: atk/atkobject.c:1357
-msgid "tear-off-menu-item"
+#: atk/atkobject.c:141
+#, fuzzy
+msgid "tear off menu item"
 msgstr "פריט-תפריט-נתלש"
 
-#: atk/atkobject.c:1360
+#: atk/atkobject.c:142
 msgid "terminal"
 msgstr "מסוף"
 
-#: atk/atkobject.c:1363
+#: atk/atkobject.c:143
 msgid "text"
 msgstr "מלל"
 
-#: atk/atkobject.c:1366
-msgid "toggle-button"
+#: atk/atkobject.c:144
+#, fuzzy
+msgid "toggle button"
 msgstr "כפתור-החלפה"
 
-#: atk/atkobject.c:1369
-msgid "tool-bar"
+#: atk/atkobject.c:145
+#, fuzzy
+msgid "tool bar"
 msgstr "סרגל-כלים"
 
-#: atk/atkobject.c:1372
-msgid "tool-tip"
+#: atk/atkobject.c:146
+#, fuzzy
+msgid "tool tip"
 msgstr "עצה"
 
-#: atk/atkobject.c:1375
+#: atk/atkobject.c:147
 msgid "tree"
 msgstr "עץ"
 
-#: atk/atkobject.c:1378
-msgid "tree-table"
+#: atk/atkobject.c:148
+#, fuzzy
+msgid "tree table"
 msgstr "טבלת-עץ"
 
-#: atk/atkobject.c:1381
+#: atk/atkobject.c:149
 msgid "unknown"
 msgstr "לא-ידוע"
 
-#: atk/atkobject.c:1384
+#: atk/atkobject.c:150
 msgid "viewport"
 msgstr "תצוגה"
 
-#: atk/atkobject.c:1387
+#: atk/atkobject.c:151
 msgid "window"
 msgstr "חלון"
 
-#: atk/atkobject.c:1390
+#: atk/atkobject.c:152
 msgid "header"
 msgstr "כותרת"
 
-#: atk/atkobject.c:1393
+#: atk/atkobject.c:153
 msgid "footer"
 msgstr "תחתית"
 
-#: atk/atkobject.c:1396
+#: atk/atkobject.c:154
 msgid "paragraph"
 msgstr "פסקה"
 
-#: atk/atkobject.c:1399
-msgid "ruler"
-msgstr "סרגל"
-
-#: atk/atkobject.c:1402
+#: atk/atkobject.c:155
 msgid "application"
 msgstr "יישום"
+
+#: atk/atkobject.c:156
+msgid "autocomplete"
+msgstr ""
+
+#: atk/atkobject.c:157
+msgid "edit bar"
+msgstr ""
+
+#: atk/atkobject.c:158
+msgid "embedded component"
+msgstr ""
+
+#: atk/atkobject.c:296
+msgid "Accessible Name"
+msgstr ""
+
+#: atk/atkobject.c:297
+msgid "Object instance's name formatted for assistive technology access"
+msgstr ""
+
+#: atk/atkobject.c:303
+msgid "Accessible Description"
+msgstr ""
+
+#: atk/atkobject.c:304
+msgid "Description of an object, formatted for assistive technology access"
+msgstr ""
+
+#: atk/atkobject.c:310
+msgid "Accessible Parent"
+msgstr ""
+
+#: atk/atkobject.c:311
+msgid "Is used to notify that the parent has changed"
+msgstr ""
+
+#: atk/atkobject.c:317
+msgid "Accessible Value"
+msgstr ""
+
+#: atk/atkobject.c:318
+msgid "Is used to notify that the value has changed"
+msgstr ""
+
+#: atk/atkobject.c:326
+msgid "Accessible Role"
+msgstr ""
+
+#: atk/atkobject.c:327
+msgid "The accessible role of this object"
+msgstr ""
+
+#: atk/atkobject.c:335
+msgid "Accessible Layer"
+msgstr ""
+
+#: atk/atkobject.c:336
+msgid "The accessible layer of this object"
+msgstr ""
+
+#: atk/atkobject.c:344
+msgid "Accessible MDI Value"
+msgstr ""
+
+#: atk/atkobject.c:345
+msgid "The accessible MDI value of this object"
+msgstr ""
+
+#: atk/atkobject.c:353
+msgid "Accessible Table Caption"
+msgstr ""
+
+#: atk/atkobject.c:354
+msgid ""
+"Is used to notify that the table caption has changed; this property should "
+"not be used. accessible-table-caption-object should be used instead"
+msgstr ""
+
+#: atk/atkobject.c:360
+msgid "Accessible Table Column Header"
+msgstr ""
+
+#: atk/atkobject.c:361
+msgid "Is used to notify that the table column header has changed"
+msgstr ""
+
+#: atk/atkobject.c:367
+msgid "Accessible Table Column Description"
+msgstr ""
+
+#: atk/atkobject.c:368
+msgid "Is used to notify that the table column description has changed"
+msgstr ""
+
+#: atk/atkobject.c:374
+msgid "Accessible Table Row Header"
+msgstr ""
+
+#: atk/atkobject.c:375
+msgid "Is used to notify that the table row header has changed"
+msgstr ""
+
+#: atk/atkobject.c:381
+msgid "Accessible Table Row Description"
+msgstr ""
+
+#: atk/atkobject.c:382
+msgid "Is used to notify that the table row description has changed"
+msgstr ""
+
+#: atk/atkobject.c:388
+msgid "Accessible Table Summary"
+msgstr ""
+
+#: atk/atkobject.c:389
+msgid "Is used to notify that the table summary has changed"
+msgstr ""
+
+#: atk/atkobject.c:395
+msgid "Accessible Table Caption Object"
+msgstr ""
+
+#: atk/atkobject.c:396
+msgid "Is used to notify that the table caption has changed"
+msgstr ""
+
+#: atk/atkobject.c:402
+msgid "Number of Accessible Hypertext Links"
+msgstr ""
+
+#: atk/atkobject.c:403
+msgid "The number of links which the current AtkHypertext has"
+msgstr ""
+
+#~ msgid "ruler"
+#~ msgstr "סרגל"

@@ -40,9 +40,12 @@ AtkComponentIface
 ATK_COMPONENT
 ATK_IS_COMPONENT
 ATK_TYPE_COMPONENT
+ATK_TYPE_RECTANGLE
 ATK_COMPONENT_GET_IFACE
 AtkFocusHandler
+AtkRectangle
 atk_component_get_type
+atk_rectangle_get_type
 </SECTION>
 
 <SECTION>
@@ -126,6 +129,7 @@ atk_no_op_object_get_type
 ATK_NO_OP_OBJECT_CLASS
 ATK_IS_NO_OP_OBJECT_CLASS
 ATK_NO_OP_OBJECT_GET_CLASS
+AtkNoOpObjectClass
 </SECTION>
 
 <SECTION>
@@ -141,6 +145,7 @@ atk_no_op_object_factory_get_type
 ATK_NO_OP_OBJECT_FACTORY_CLASS
 ATK_IS_NO_OP_OBJECT_FACTORY_CLASS
 ATK_NO_OP_OBJECT_FACTORY_GET_CLASS
+AtkNoOpObjectFactoryClass
 </SECTION>
 
 <SECTION>
@@ -198,6 +203,7 @@ atk_implementor_get_type
 atk_object_get_type
 atk_role_get_type
 atk_layer_get_type
+AtkObjectClass
 </SECTION>
 
 <SECTION>
@@ -215,6 +221,7 @@ atk_object_factory_get_type
 ATK_OBJECT_FACTORY_CLASS
 ATK_IS_OBJECT_FACTORY_CLASS
 ATK_OBJECT_FACTORY_GET_CLASS
+AtkObjectFactoryClass
 </SECTION>
 
 <SECTION>
@@ -233,6 +240,7 @@ atk_registry_get_type
 ATK_REGISTRY_CLASS
 ATK_IS_REGISTRY_CLASS
 ATK_REGISTRY_GET_CLASS
+AtkRegistryClass
 </SECTION>
 
 <SECTION>
@@ -256,6 +264,7 @@ atk_relation_type_get_type
 ATK_RELATION_CLASS
 ATK_IS_RELATION_CLASS
 ATK_RELATION_GET_CLASS
+AtkRelationClass
 </SECTION>
 
 <SECTION>
@@ -277,6 +286,7 @@ atk_relation_set_get_type
 ATK_RELATION_SET_CLASS
 ATK_IS_RELATION_SET_CLASS
 ATK_RELATION_SET_GET_CLASS
+AtkRelationSetClass
 </SECTION>
 
 <SECTION>
@@ -321,6 +331,7 @@ atk_state_set_get_type
 ATK_STATE_SET_CLASS
 ATK_IS_STATE_SET_CLASS
 ATK_STATE_SET_GET_CLASS
+AtkStateSetClass
 </SECTION>
 
 <SECTION>
@@ -370,6 +381,9 @@ atk_table_get_type
 <TITLE>AtkText</TITLE>
 AtkText
 AtkTextBoundary
+AtkTextClipType
+AtkTextRange
+AtkTextRectangle
 AtkAttribute
 AtkAttributeSet
 AtkTextAttribute
@@ -384,6 +398,9 @@ atk_text_get_run_attributes
 atk_text_get_default_attributes
 atk_text_get_character_count
 atk_text_get_offset_at_point
+atk_text_get_bounded_ranges
+atk_text_get_range_extents
+atk_text_free_ranges
 atk_text_get_n_selections
 atk_text_get_selection
 atk_text_add_selection
@@ -403,9 +420,11 @@ ATK_TYPE_TEXT
 ATK_TEXT_GET_IFACE
 ATK_TYPE_TEXT_ATTRIBUTE
 ATK_TYPE_TEXT_BOUNDARY
+ATK_TYPE_TEXT_CLIP_TYPE
 atk_text_get_type
 atk_text_attribute_get_type
 atk_text_boundary_get_type
+atk_text_clip_type_get_type
 </SECTION>
 
 <SECTION>
@@ -437,6 +456,7 @@ atk_hyperlink_get_start_index
 atk_hyperlink_is_valid
 atk_hyperlink_is_inline
 atk_hyperlink_get_n_anchors
+atk_hyperlink_is_selected_link
 <SUBSECTION Standard>
 ATK_HYPERLINK
 ATK_IS_HYPERLINK
@@ -447,6 +467,7 @@ ATK_IS_HYPERLINK_CLASS
 ATK_HYPERLINK_GET_CLASS
 atk_hyperlink_state_flags_get_type
 ATK_TYPE_HYPERLINK_STATE_FLAGS
+AtkHyperlinkClass
 </SECTION>
 
 <SECTION>
@@ -497,6 +518,7 @@ AtkKeySnoopFunc
 atk_add_key_event_listener
 atk_remove_key_event_listener
 atk_get_root
+atk_get_focus_object
 atk_get_toolkit_name
 atk_get_toolkit_version
 <SUBSECTION Standard>
@@ -511,6 +533,7 @@ atk_coord_type_get_type
 ATK_UTIL_CLASS
 ATK_IS_UTIL_CLASS
 ATK_UTIL_GET_CLASS
+AtkUtilClass
 </SECTION>
 
 <SECTION>
@@ -527,4 +550,5 @@ atk_gobject_accessible_get_type
 ATK_GOBJECT_ACCESSIBLE_CLASS
 ATK_IS_GOBJECT_ACCESSIBLE_CLASS
 ATK_GOBJECT_ACCESSIBLE_GET_CLASS
+AtkGObjectAccessibleClass
 </SECTION>

@@ -43,6 +43,8 @@ The AtkRelation structure should not be accessed directly.
 @ATK_RELATION_SUBWINDOW_OF: 
 @ATK_RELATION_EMBEDS: 
 @ATK_RELATION_EMBEDDED_BY: 
+@ATK_RELATION_POPUP_FOR: 
+@ATK_RELATION_PARENT_WINDOW_OF: 
 @ATK_RELATION_LAST_DEFINED: 
 
 <!-- ##### FUNCTION atk_relation_type_register ##### -->
@@ -100,4 +102,14 @@ The AtkRelation structure should not be accessed directly.
 @relation: 
 @Returns: 
 
+
+<!-- ##### ARG AtkRelation:relation-type ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG AtkRelation:target ##### -->
+<para>
+
+</para>
 

@@ -1,345 +1,43 @@
-<HTML
-><HEAD
-><TITLE
->ATK Library</TITLE
-><META
-NAME="GENERATOR"
-CONTENT="Modular DocBook HTML Stylesheet Version 1.44"><LINK
-REL="HOME"
-TITLE="ATK Library Reference Manual"
-HREF="book1.html"><LINK
-REL="PREVIOUS"
-TITLE="ATK Library Reference Manual"
-HREF="book1.html"><LINK
-REL="NEXT"
-TITLE="AtkAction"
-HREF="atkaction.html"></HEAD
-><BODY
-BGCOLOR="#FFFFFF"
-TEXT="#000000"
-LINK="#0000FF"
-VLINK="#840084"
-ALINK="#0000FF"
-><DIV
-CLASS="NAVHEADER"
-><TABLE
-WIDTH="100%"
-BORDER="0"
-BGCOLOR="#000000"
-CELLPADDING="1"
-CELLSPACING="0"
-><TR
-><TH
-COLSPAN="4"
-ALIGN="center"
-><FONT
-COLOR="#FFFFFF"
-SIZE="5"
->ATK Library Reference Manual</FONT
-></TH
-></TR
-><TR
-><TD
-WIDTH="25%"
-BGCOLOR="#C00000"
-ALIGN="left"
-><A
-HREF="book1.html"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
->&#60;&#60;&#60; Previous Page</B
-></FONT
-></A
-></TD
-><TD
-WIDTH="25%"
-BGCOLOR="#0000C0"
-ALIGN="center"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
-><A
-HREF="book1.html"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
->Home</B
-></FONT
-></A
-></B
-></FONT
-></TD
-><TD
-WIDTH="25%"
-BGCOLOR="#00C000"
-ALIGN="center"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
->&nbsp;</B
-></FONT
-></TD
-><TD
-WIDTH="25%"
-BGCOLOR="#C00000"
-ALIGN="right"
-><A
-HREF="atkaction.html"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
->Next Page &#62;&#62;&#62;</B
-></FONT
-></A
-></TD
-></TR
-></TABLE
-></DIV
-><DIV
-CLASS="CHAPTER"
-><H1
-><A
-NAME="ATK"
->ATK Library</A
-></H1
-><DIV
-CLASS="TOC"
-><DL
-><DT
-><B
->Table of Contents</B
-></DT
-><DT
-><A
-HREF="atkaction.html"
->AtkAction</A
-> &#8212; The ATK interface provided by UI components which the user can
-activate/interact with,</DT
-><DT
-><A
-HREF="atkcomponent.html"
->AtkComponent</A
-> &#8212; The ATK interface provided by UI components which occupy a physical area on
-the screen.</DT
-><DT
-><A
-HREF="atkdocument.html"
->AtkDocument</A
-> &#8212; The ATK interface which allows access to a DOM associated with on object.</DT
-><DT
-><A
-HREF="atkeditabletext.html"
->AtkEditableText</A
-> &#8212; The ATK interface implemented by components containing user-editable text content.</DT
-><DT
-><A
-HREF="atkgobjectaccessible.html"
->AtkGObjectAccessible</A
-> &#8212; This object class is derived from AtkObject and can be used as a basis 
-implementing accessible objects.</DT
-><DT
-><A
-HREF="atkhyperlink.html"
->AtkHyperlink</A
-> &#8212; An ATK object which encapsulates a link or set of links in a hypertext document.</DT
-><DT
-><A
-HREF="atkhypertext.html"
->AtkHypertext</A
-> &#8212; The ATK interface which provides standard mechanism for manipulating hyperlinks.</DT
-><DT
-><A
-HREF="atkimage.html"
->AtkImage</A
-> &#8212; The ATK Interface implemented by components which expose image or pixmap
-content on-screen.</DT
-><DT
-><A
-HREF="atknoopobject.html"
->AtkNoOpObject</A
-> &#8212; An AtkObject which purports to implement all ATK interfaces.</DT
-><DT
-><A
-HREF="atknoopobjectfactory.html"
->AtkNoOpObjectFactory</A
-> &#8212; The AtkObjectFactory which creates an AtkNoOpObject.</DT
-><DT
-><A
-HREF="atkobject.html"
->AtkObject</A
-> &#8212; The base object class for the Accessibility Toolkit API.</DT
-><DT
-><A
-HREF="atkobjectfactory.html"
->AtkObjectFactory</A
-> &#8212; The base object class for a factory used to create accessible objects for 
-objects of a specific GType.</DT
-><DT
-><A
-HREF="atkregistry.html"
->AtkRegistry</A
-> &#8212; An object used to store the GType of the factories used to create an accessible
-object for an object of a particular GType.</DT
-><DT
-><A
-HREF="atkrelation.html"
->AtkRelation</A
-> &#8212; An object used to describe a relation between a object and one or more
-other objects.</DT
-><DT
-><A
-HREF="atkrelationset.html"
->AtkRelationSet</A
-> &#8212; A set of AtkRelations, normally the set of AtkRelations which an AtkObject has.</DT
-><DT
-><A
-HREF="atkselection.html"
->AtkSelection</A
-> &#8212; The ATK interface implemented by container objects whose <A
-HREF="atkobject.html"
->AtkObject</A
-> children
-can be selected.</DT
-><DT
-><A
-HREF="atk-atkstate.html"
->AtkState</A
-> &#8212; An AtkState describes a component's particular state.</DT
-><DT
-><A
-HREF="atkstateset.html"
->AtkStateSet</A
-> &#8212; An AtkStateSet determines a component's state set.</DT
-><DT
-><A
-HREF="atkstreamablecontent.html"
->AtkStreamableContent</A
-> &#8212; The ATK interface which provides access to streamable content.</DT
-><DT
-><A
-HREF="atktable.html"
->AtkTable</A
-> &#8212; The ATK interface implemented for UI components which contain tabular or
-row/column information.</DT
-><DT
-><A
-HREF="atktext.html"
->AtkText</A
-> &#8212; The ATK interface implemented by components with text content.</DT
-><DT
-><A
-HREF="atkutil.html"
->AtkUtil</A
-> &#8212; This is a utility class which supports the adding and removal of event listeners.</DT
-><DT
-><A
-HREF="atkvalue.html"
->AtkValue</A
-> &#8212; The ATK interface implemented by valuators and components which display or
-select a value from a bounded range of values.</DT
-></DL
-></DIV
-></DIV
-><DIV
-CLASS="NAVFOOTER"
-><BR
-CLEAR="all"><BR><TABLE
-WIDTH="100%"
-BORDER="0"
-BGCOLOR="#000000"
-CELLPADDING="1"
-CELLSPACING="0"
-><TR
-><TD
-WIDTH="25%"
-BGCOLOR="#C00000"
-ALIGN="left"
-><A
-HREF="book1.html"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
->&#60;&#60;&#60; Previous Page</B
-></FONT
-></A
-></TD
-><TD
-WIDTH="25%"
-BGCOLOR="#0000C0"
-ALIGN="center"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
-><A
-HREF="book1.html"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
->Home</B
-></FONT
-></A
-></B
-></FONT
-></TD
-><TD
-WIDTH="25%"
-BGCOLOR="#00C000"
-ALIGN="center"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
->&nbsp;</B
-></FONT
-></TD
-><TD
-WIDTH="25%"
-BGCOLOR="#C00000"
-ALIGN="right"
-><A
-HREF="atkaction.html"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
->Next Page &#62;&#62;&#62;</B
-></FONT
-></A
-></TD
-></TR
-><TR
-><TD
-COLSPAN="2"
-ALIGN="left"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
->ATK Library Reference Manual</B
-></FONT
-></TD
-><TD
-COLSPAN="2"
-ALIGN="right"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
->AtkAction</B
-></FONT
-></TD
-></TR
-></TABLE
-></DIV
-></BODY
-></HTML
->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>ATK Library</title><meta name="generator" content="DocBook XSL Stylesheets V1.60.1"><meta name="generator" content="GTK-Doc V1.1 (XML mode)"><style type="text/css">
+        .synopsis, .classsynopsis {
+            background: #eeeeee;
+            border: solid 1px #aaaaaa;
+            padding: 0.5em;
+        }
+        .programlisting {
+            background: #eeeeff;
+            border: solid 1px #aaaaff;
+            padding: 0.5em;
+        }
+        .variablelist {
+            padding: 4px;
+            margin-left: 3em;
+        }
+        .navigation {
+            background: #ffeeee;
+            border: solid 1px #ffaaaa;
+            margin-top: 0.5em;
+            margin-bottom: 0.5em;
+        }
+        .navigation a {
+            color: #770000;
+        }
+        .navigation a:visited {
+            color: #550000;
+        }
+        .navigation .title {
+            font-size: 200%;
+        }
+      </style><link rel="home" href="index.html" title="ATK Library Reference Manual"><link rel="up" href="index.html" title="ATK Library Reference Manual"><link rel="previous" href="index.html" title="ATK Library Reference Manual"><link rel="next" href="AtkAction.html" title="AtkAction"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="index.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">ATK Library Reference Manual</th><td><a accesskey="n" href="AtkAction.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="chapter" lang="en"><div class="titlepage"><div><div><h2 class="title"><a name="atk"></a>ATK Library</h2></div></div><div></div></div><div class="toc"><p><b>Table of Contents</b></p><dl><dt><a href="AtkAction.html">AtkAction</a> - The ATK interface provided by UI components which the user can
+activate/interact with,</dt><dt><a href="AtkComponent.html">AtkComponent</a> - The ATK interface provided by UI components which occupy a physical area on
+the screen.</dt><dt><a href="AtkDocument.html">AtkDocument</a> - The ATK interface which allows access to a DOM associated with on object.</dt><dt><a href="AtkEditableText.html">AtkEditableText</a> - The ATK interface implemented by components containing user-editable text content.</dt><dt><a href="AtkGObjectAccessible.html">AtkGObjectAccessible</a> - This object class is derived from AtkObject and can be used as a basis 
+implementing accessible objects.</dt><dt><a href="AtkHyperlink.html">AtkHyperlink</a> - An ATK object which encapsulates a link or set of links in a hypertext document.</dt><dt><a href="AtkHypertext.html">AtkHypertext</a> - The ATK interface which provides standard mechanism for manipulating hyperlinks.</dt><dt><a href="AtkImage.html">AtkImage</a> - The ATK Interface implemented by components which expose image or pixmap
+content on-screen.</dt><dt><a href="AtkNoOpObject.html">AtkNoOpObject</a> - An AtkObject which purports to implement all ATK interfaces.</dt><dt><a href="AtkNoOpObjectFactory.html">AtkNoOpObjectFactory</a> - The AtkObjectFactory which creates an AtkNoOpObject.</dt><dt><a href="AtkObject.html">AtkObject</a> - 
+The base object class for the Accessibility Toolkit API.</dt><dt><a href="AtkObjectFactory.html">AtkObjectFactory</a> - The base object class for a factory used to create accessible objects for 
+objects of a specific GType.</dt><dt><a href="AtkRegistry.html">AtkRegistry</a> - An object used to store the GType of the factories used to create an accessible
+object for an object of a particular GType.</dt><dt><a href="AtkRelation.html">AtkRelation</a> - An object used to describe a relation between a object and one or more
+other objects.</dt><dt><a href="AtkRelationSet.html">AtkRelationSet</a> - A set of AtkRelations, normally the set of AtkRelations which an AtkObject has.</dt><dt><a href="AtkSelection.html">AtkSelection</a> - 
+The ATK interface implemented by container objects whose AtkObject children
+can be selected.</dt><dt><a href="atk-AtkState.html">AtkState</a> - An AtkState describes a component's particular state.</dt><dt><a href="AtkStateSet.html">AtkStateSet</a> - An AtkStateSet determines a component's state set.</dt><dt><a href="AtkStreamableContent.html">AtkStreamableContent</a> - The ATK interface which provides access to streamable content.</dt><dt><a href="AtkTable.html">AtkTable</a> - The ATK interface implemented for UI components which contain tabular or
+row/column information.</dt><dt><a href="AtkText.html">AtkText</a> - The ATK interface implemented by components with text content.</dt><dt><a href="AtkUtil.html">AtkUtil</a> - This is a utility class which supports the adding and removal of event listeners.</dt><dt><a href="AtkValue.html">AtkValue</a> - The ATK interface implemented by valuators and components which display or
+select a value from a bounded range of values.</dt></dl></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="index.html"><b>&lt;&lt; ATK Library Reference Manual</b></a></td><td align="right"><a accesskey="n" href="AtkAction.html"><b>AtkAction &gt;&gt;</b></a></td></tr></table></body></html>

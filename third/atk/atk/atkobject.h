@@ -114,9 +114,16 @@ extern "C" {
  *@ATK_ROLE_PARAGRAPH: An object which is contains a paragraph of text content.
  *@ATK_ROLE_RULER: An object which describes margins and tab stops, etc. for text objects which it controls (should have CONTROLLER_FOR relation to such).
  *@ATK_ROLE_APPLICATION: The object is an application object, which may contain @ATK_ROLE_FRAME objects or other types of accessibles.
+ *@ATK_ROLE_AUTOCOMPLETE: The object is a dialog or list containing items for insertion into an entry widget, for instance a list of words for completion of a text entry.
+ *@ATK_ROLE_EDITBAR: The object is an editable text object in a toolbar
+ *@ATK_ROLE_EMBEDDED: The object is an embedded container within a document or panel.  This role is a grouping "hint" indicating that the contained objects share a context.
  *@ATK_ROLE_LAST_DEFINED: not a valid role, used for finding end of enumeration
  * 
- *Describes the role of an object
+ * Describes the role of an object
+ *
+ * These are the built-in enumerated roles that UI components can have in
+ * ATK.  Other roles may be added at runtime, so an AtkRole >=
+ * ATK_ROLE_LAST_DEFINED is not necessarily an error.
  **/
 typedef enum
 {
@@ -194,6 +201,9 @@ typedef enum
   ATK_ROLE_PARAGRAPH,
   ATK_ROLE_RULER,
   ATK_ROLE_APPLICATION,
+  ATK_ROLE_AUTOCOMPLETE,
+  ATK_ROLE_EDITBAR,
+  ATK_ROLE_EMBEDDED,
   ATK_ROLE_LAST_DEFINED
 } AtkRole;
 
@@ -211,6 +221,10 @@ AtkRole                  atk_role_register        (const gchar *name);
  *@ATK_LAYER_WINDOW: This layer is used for toplevel windows.
  *
  * Describes the layer of a component
+ *
+ * These enumerated "layer values" are used when determining which UI
+ * rendering layer a component is drawn into, which can help in making
+ * determinations of when components occlude one another.
  **/
 typedef enum
 {
