@@ -1,9 +1,9 @@
 /*
- * $Id: login.c,v 1.51 1992-06-03 13:53:09 lwvanels Exp $
+ * $Id: login.c,v 1.52 1992-07-07 17:27:42 lwvanels Exp $
  */
 
 #ifndef lint
-static char *rcsid = "$Id: login.c,v 1.51 1992-06-03 13:53:09 lwvanels Exp $";
+static char *rcsid = "$Id: login.c,v 1.52 1992-07-07 17:27:42 lwvanels Exp $";
 #endif
 
 /*
@@ -1847,7 +1847,7 @@ init_wgfile()
  * user.  If the Kerberos server doesn't respond, assume the user is
  * trying to fake us out (since we DID just get a TGT from what is
  * supposedly our KDC).  If the rcmd.<host> service is unknown (i.e.,
- * the local /etc/srvtab doesn't have it), let her in.
+ * the local srvtab doesn't have it), let her in.
  *
  * Returns 1 for confirmation, -1 for failure, 0 for uncertainty.
  */
@@ -1876,7 +1876,7 @@ int verify_krb_tgt (realm)
     }
     bcopy ((char *)hp->h_addr, (char *) &addr, sizeof (addr));
     /* Do we have rcmd.<host> keys? */
-    have_keys = read_service_key (rcmd, phost, realm, 0, "/etc/srvtab", key)
+    have_keys = read_service_key (rcmd, phost, realm, 0, KEYFILE, key)
 	? 0 : 1;
     krbval = krb_mk_req (&ticket, rcmd, phost, realm, 0);
     if (krbval == KDC_PR_UNKNOWN) {
