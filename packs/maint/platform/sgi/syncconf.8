@@ -1,37 +1,76 @@
-.TH SYNCCONF 8 "31 May 1996"
-.ds ]W MIT Athena
+.\" $Id: syncconf.8,v 1.2 1997-02-11 18:27:26 ghudson Exp $
+.\"
+.\" Copyright 1996, 1997 by the Massachusetts Institute of Technology.
+.\"
+.\" Permission to use, copy, modify, and distribute this
+.\" software and its documentation for any purpose and without
+.\" fee is hereby granted, provided that the above copyright
+.\" notice appear in all copies and that both that copyright
+.\" notice and this permission notice appear in supporting
+.\" documentation, and that the name of M.I.T. not be used in
+.\" advertising or publicity pertaining to distribution of the
+.\" software without specific, written prior permission.
+.\" M.I.T. makes no representations about the suitability of
+.\" this software for any purpose.  It is provided "as is"
+.\" without express or implied warranty.
+.\"
+.TH SYNCCONF 8 "4 Feb 1997"
 .SH NAME
 syncconf \- synchronize system configuration files with rc.conf
 .SH SYNOPSIS
-.nf
-syncconf [-q] [-n]
+.B syncconf
+[
+.B \-a
+] [
+.B \-n
+] [
+.B \-q
+]
 .fi
 .SH DESCRIPTION
-The \fIsyncconf\fR script is used to propagate the state of
-\fIrc.conf\fR to vendor specific configuration files. This provides
-the possibility of a uniform interface for changing common machine
-configuration information across many operating systems, and frees
-system administrators from the need of remembering esoteric machine
-specific procedures.
+The
+.I syncconf
+script is used to propagate the state of
+.I rc.conf
+to vendor specific configuration files. This provides the possibility
+of a uniform interface for changing common machine configuration
+information across many operating systems, and frees system
+administrators from the need of remembering esoteric machine specific
+procedures.
 
-If \fISYNCCONFIG\fR is set to true in \fIrc.conf\fR, \fIsyncconf\fR is
-run automatically early in the boot process; \fIsyncconf\fR should not
-normally need to be run by the user. \fIrc.conf\fR specifies which
-configuration variables are synchronized by \fIsyncconf\fR.
+If ``SYNCCONFIG'' is set to true in
+.IR rc.conf ,
+.I syncconf
+is run automatically early in the boot process and at shutdown time;
+.I syncconf should not
+normally need to be run by the user.
+.I rc.conf
+specifies which configuration variables are synchronized by
+.IR syncconf .
 .SH OPTIONS
-\fIsyncconf\fR provides two options:
+.I syncconf
+provides three options:
+.PP
 .TP 8
-.B \-q
-This option causes \fIsyncconf\fR not to give output on what, if
-anything, it is synchronizing.
+.B \-a
+This option causes
+.I syncconf
+to synchronize all options, not just the ones which have changed.
 .TP 8
 .B \-n
-This option causes \fIsyncconf\fR to echo the shell commands it would
-use to synchronize, but does not actually execute them.
+This option causes 
+.I syncconf
+to echo the shell commands it would use to synchronize, but does not
+actually execute them.
+.TP 8
+.B \-q
+This option causes
+.I syncconf
+not to give output on what, if anything, it is synchronizing.
 .SH FILES
 /etc/athena/rc.conf             Athena configuration file
 /etc/athena/.rc.conf.sync       synchronization state file
 .SH AUTHOR
 Craig Fields, MIT Information Systems
 .br
-Copyright (c) 1996, Massachusetts Institute of Technology
+Copyright (c) 1996, 1997 Massachusetts Institute of Technology
