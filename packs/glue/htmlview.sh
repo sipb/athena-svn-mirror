@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: htmlview.sh,v 1.5 2003-04-30 07:29:12 jweiss Exp $
+# $Id: htmlview.sh,v 1.6 2003-05-01 08:34:18 jweiss Exp $
 
 # htmlview script adapted from the infoagents locker to take advantage
 # of the local netscape, if present.
@@ -87,7 +87,7 @@ else
   echo "$0: Could not run gurlview.  Will try Lynx." >&2
 
   # Start Lynx
-  /bin/athena/attachandrun infoagents lynx lynx $lynx_flags "$url"
+  /bin/athena/attachandrun infoagents lynx lynx $lynx_flags "$url" && exit 0
 fi
 
 echo "$0: Could not find or start any WWW browser." >&2
