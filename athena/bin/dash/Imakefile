@@ -1,8 +1,5 @@
 #define XSUBDIRS src
 
-DASH_MENUS = ${ATHLIBDIR}/Dash.menus
-DASH_FALLBACK = ${ATHLIBDIR}/Dash.fallback
-
 #define LDEF src/Xj_local.defs
 
 Makefiles::
@@ -26,11 +23,3 @@ Makefiles::
 	@echo XJ_INC_DIR = ${ATHINCDIR} >> LDEF
 	@echo DASH_MENUS = ${DASH_MENUS} >> LDEF
 	@echo DASH_FALLBACK = ${DASH_FALLBACK} >> LDEF
-
-install::
-	$(RM) $(DESTDIR)$(DASH_MENUS)
-	$(RM) $(DESTDIR)$(DASH_MENUS).cmp
-	$(INSTALL) -m 0444 Dash.fallback $(DESTDIR)$(DASH_FALLBACK)
-	. $(ATHVERS); \
-		ln -s /afs/athena.mit.edu/system/config/dash/${HOSTTYPE}/Dash.menus-$$major.$$minor $(DESTDIR)$(DASH_MENUS); \
-		ln -s /afs/athena.mit.edu/system/config/dash/${HOSTTYPE}/Dash.menus-$$major.$$minor.cmp $(DESTDIR)$(DASH_MENUS).cmp
