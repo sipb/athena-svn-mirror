@@ -1720,7 +1720,13 @@ handle_clientmessage (saver_info *si, XEvent *event, Bool until_idle_p)
   if (event->xclient.message_type != XA_SCREENSAVER ||
       event->xclient.format != 32)
     {
-      bogus_clientmessage_warning (si, event);
+      /* Athena mod: sometimes we get bogus GNOME messages when
+	 windows are minimized or unminimized; it's probably sawfish's
+	 fault.  Suppress the resulting warnings unless we are verbose,
+	 since it seems to be harmless.  We can probably revert this if
+	 and when we switch to metacity. */
+      if (p->verbose_p)
+	bogus_clientmessage_warning (si, event);
       return False;
     }
 
