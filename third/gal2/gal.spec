@@ -2,7 +2,7 @@
 
 Summary: The G App library.
 Name: gal
-Version: 2.2.1
+Version: 2.2.5
 Release: 1
 License: LGPL
 Group: System Environment/Libraries

@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ta\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-10 09:50-0400\n"
-"PO-Revision-Date: 2004-08-23 15:53+0530\n"
+"POT-Creation-Date: 2005-02-14 08:46-0500\n"
+"PO-Revision-Date: 2004-10-08 19:14+0530\n"
 "Last-Translator: Jayaradha N <jaya@pune.redhat.com>\n"
 "Language-Team: Tamil <zhakanini@yahoogroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -83,8 +83,8 @@ msgstr "பெரிதாக்கப்பட்ட நெடுவரிச�
 msgid "Color Column"
 msgstr "நிற நெடுவரிசை"
 
-#: gal/e-table/e-cell-text.c:1731 gal/e-text/e-text.c:3567
-#: gal/e-text/e-text.c:3568 gal/menus/gal-define-views-model.c:178
+#: gal/e-table/e-cell-text.c:1731 gal/e-text/e-text.c:3597
+#: gal/e-text/e-text.c:3598 gal/menus/gal-define-views-model.c:178
 msgid "Editable"
 msgstr "திருத்தகூடிய"
 
@@ -97,15 +97,15 @@ msgstr "BG நிற நெடுவரிசை"
 #: gal/e-table/e-table-field-chooser-item.c:660
 #: gal/e-table/e-table-field-chooser.c:91
 #: gal/e-table/e-table-header-item.c:1816
-#: gal/e-table/e-table-selection-model.c:316 gal/widgets/e-categories.c:122
-#: gal/widgets/e-categories.c:123
+#: gal/e-table/e-table-selection-model.c:316 gal/widgets/e-categories.c:123
+#: gal/widgets/e-categories.c:124
 msgid "Header"
 msgstr "தலைப்பு"
 
 #: gal/e-table/e-table-click-to-add.c:469
 #: gal/e-table/e-table-selection-model.c:309 gal/e-table/e-table.c:3327
-#: gal/e-table/e-tree-selection-model.c:795 gal/e-text/e-text.c:3431
-#: gal/e-text/e-text.c:3432
+#: gal/e-table/e-tree-selection-model.c:795 gal/e-text/e-text.c:3461
+#: gal/e-text/e-text.c:3462
 msgid "Model"
 msgstr "மாதிரி"
 
@@ -116,16 +116,16 @@ msgstr "செய்தி"
 #: gal/e-table/e-table-click-to-add.c:483
 #: gal/e-table/e-table-field-chooser-item.c:667
 #: gal/e-table/e-table-group-container.c:976
-#: gal/e-table/e-table-group-container.c:977 gal/e-text/e-text.c:3609
-#: gal/e-text/e-text.c:3610
+#: gal/e-table/e-table-group-container.c:977 gal/e-text/e-text.c:3639
+#: gal/e-text/e-text.c:3640
 msgid "Width"
 msgstr "அகலம்"
 
 #: gal/e-table/e-table-click-to-add.c:490
 #: gal/e-table/e-table-field-chooser-item.c:674
 #: gal/e-table/e-table-group-container.c:969
-#: gal/e-table/e-table-group-container.c:970 gal/e-text/e-text.c:3617
-#: gal/e-text/e-text.c:3618
+#: gal/e-table/e-table-group-container.c:970 gal/e-text/e-text.c:3647
+#: gal/e-text/e-text.c:3648
 msgid "Height"
 msgstr "உயரம்"
 
@@ -157,7 +157,7 @@ msgstr "இறங்குகின்றது"
 #: gal/e-table/e-table-config-no-group.glade.h:6
 #: gal/e-table/e-table-config.glade.h:6
 msgid "Description"
-msgstr "விவரணம்"
+msgstr "விளக்கம்"
 
 #: gal/e-table/e-table-config-no-group.glade.h:7
 #: gal/e-table/e-table-config.glade.h:7
@@ -216,7 +216,7 @@ msgstr "_சேர் ->"
 #: gal/e-table/e-table-config-no-group.glade.h:18
 #: gal/e-table/e-table-config.glade.h:17
 msgid "_Fields Shown..."
-msgstr "(_F) காட்டப்பட்ட புலங்கள்..."
+msgstr "காட்டப்பட்ட புலங்கள்..."
 
 #: gal/e-table/e-table-config-no-group.glade.h:19
 #: gal/e-table/e-table-config.glade.h:20
@@ -254,7 +254,7 @@ msgstr "_தொகுதிப்படுத்தும் வகை..."
 
 #: gal/e-table/e-table-config.glade.h:19
 msgid "_Show these fields in order:"
-msgstr "(_S)இந்த புலங்களை வரிசையாக காண்பிக்கவும்:"
+msgstr "இந்த புலங்களை வரிசையாக காண்பிக்கவும்:"
 
 #: gal/e-table/e-table-field-chooser-dialog.c:74
 #: gal/e-table/e-table-field-chooser-item.c:646
@@ -283,8 +283,8 @@ msgid ""
 "To add a column to your table, drag it into\n"
 "the location in which you want it to appear."
 msgstr ""
-"உங்கள் அட்டவணையில் ஓர் நெடுவாிசையை சேர்க்க, அந்த\n"
-"நெடுவாிசை தோன்ற வேண்டிய இடத்தில் இழுத்துப் போடவும்."
+"உங்கள் அட்டவணையில் ஓர் நெடுவரிசையை சேர்க்க, அந்த\n"
+"நெடுவரிசை தோன்ற வேண்டிய இடத்தில் இழுத்துப் போடவும்."
 
 #: gal/e-table/e-table-group-container.c:355
 #, c-format
@@ -390,15 +390,15 @@ msgstr "பெட்டிப்படி தொகுதிச்செய்"
 
 #: gal/e-table/e-table-header-item.c:1484
 msgid "Remove This Column"
-msgstr "இந்த நெடுவாிசையை கழட்டு"
+msgstr "இந்த நெடுவரிசையை கழட்டு"
 
 #: gal/e-table/e-table-header-item.c:1485
 msgid "Add a Column..."
-msgstr "நெடுவாிசை ஒன்றைச் சேர்..."
+msgstr "நெடுவரிசையை ஒன்றைச் சேர்..."
 
 #: gal/e-table/e-table-header-item.c:1487
 msgid "Alignment"
-msgstr "நேர்ப்படுத்தம்"
+msgstr "பொருத்தம்"
 
 #: gal/e-table/e-table-header-item.c:1488
 msgid "Best Fit"
@@ -406,7 +406,7 @@ msgstr "சரியான பொருத்தம்"
 
 #: gal/e-table/e-table-header-item.c:1489
 msgid "Format Columns..."
-msgstr "நெடுவாிசைகளை வடிவமை..."
+msgstr "நெடுவரிசைகளை வடிவமை..."
 
 #: gal/e-table/e-table-header-item.c:1491
 msgid "Customize Current View..."
@@ -471,128 +471,128 @@ msgstr "விரிவாக்கி அளவு"
 msgid "Size of the expander arrow"
 msgstr "விரிவாக்கி அம்புக்குறியின் அளவு"
 
-#: gal/e-text/e-text.c:2667
+#: gal/e-text/e-text.c:2697
 msgid "Select All"
 msgstr "அனைத்தையும் தேர்வு செய்"
 
-#: gal/e-text/e-text.c:2679
+#: gal/e-text/e-text.c:2709
 msgid "Input Methods"
 msgstr "உள்ளிடும் முறைகள்"
 
-#: gal/e-text/e-text.c:3438 gal/e-text/e-text.c:3439
+#: gal/e-text/e-text.c:3468 gal/e-text/e-text.c:3469
 msgid "Event Processor"
 msgstr "நிகழ்வு செயல்முறைகள்"
 
-#: gal/e-text/e-text.c:3445 gal/e-text/e-text.c:3446
+#: gal/e-text/e-text.c:3475 gal/e-text/e-text.c:3476
 msgid "Text"
 msgstr "உரை"
 
-#: gal/e-text/e-text.c:3452 gal/e-text/e-text.c:3453
+#: gal/e-text/e-text.c:3482 gal/e-text/e-text.c:3483
 msgid "Bold"
 msgstr "தடித்த"
 
-#: gal/e-text/e-text.c:3459 gal/e-text/e-text.c:3460
+#: gal/e-text/e-text.c:3489 gal/e-text/e-text.c:3490
 msgid "Strikeout"
 msgstr "அடிக்கவும்"
 
-#: gal/e-text/e-text.c:3466 gal/e-text/e-text.c:3467
+#: gal/e-text/e-text.c:3496 gal/e-text/e-text.c:3497
 msgid "Anchor"
 msgstr "இணைப்பு"
 
-#: gal/e-text/e-text.c:3474 gal/e-text/e-text.c:3475
+#: gal/e-text/e-text.c:3504 gal/e-text/e-text.c:3505
 msgid "Justification"
 msgstr "சீராக்கு"
 
-#: gal/e-text/e-text.c:3481 gal/e-text/e-text.c:3482
+#: gal/e-text/e-text.c:3511 gal/e-text/e-text.c:3512
 msgid "Clip Width"
 msgstr "க்ளிப் அகலம்"
 
-#: gal/e-text/e-text.c:3488 gal/e-text/e-text.c:3489
+#: gal/e-text/e-text.c:3518 gal/e-text/e-text.c:3519
 msgid "Clip Height"
 msgstr "க்ளில் உயரம்"
 
-#: gal/e-text/e-text.c:3495 gal/e-text/e-text.c:3496
+#: gal/e-text/e-text.c:3525 gal/e-text/e-text.c:3526
 msgid "Clip"
 msgstr "க்ளிப்"
 
-#: gal/e-text/e-text.c:3502 gal/e-text/e-text.c:3503
+#: gal/e-text/e-text.c:3532 gal/e-text/e-text.c:3533
 msgid "Fill clip rectangle"
 msgstr "க்ளிக் செவ்வகத்தை நிரப்பு"
 
-#: gal/e-text/e-text.c:3509 gal/e-text/e-text.c:3510
+#: gal/e-text/e-text.c:3539 gal/e-text/e-text.c:3540
 msgid "X Offset"
 msgstr "X ஒதுக்கம்"
 
-#: gal/e-text/e-text.c:3516 gal/e-text/e-text.c:3517
+#: gal/e-text/e-text.c:3546 gal/e-text/e-text.c:3547
 msgid "Y Offset"
 msgstr "Y ஒதுக்கம்"
 
-#: gal/e-text/e-text.c:3523 gal/e-text/e-text.c:3524
+#: gal/e-text/e-text.c:3553 gal/e-text/e-text.c:3554
 msgid "Fill color"
 msgstr "வண்ண நிரப்பி"
 
-#: gal/e-text/e-text.c:3530 gal/e-text/e-text.c:3531 gal/e-text/e-text.c:3538
-#: gal/e-text/e-text.c:3539
+#: gal/e-text/e-text.c:3560 gal/e-text/e-text.c:3561 gal/e-text/e-text.c:3568
+#: gal/e-text/e-text.c:3569
 msgid "GDK fill color"
 msgstr "GDK வண்ண நிரப்பி"
 
-#: gal/e-text/e-text.c:3545 gal/e-text/e-text.c:3546
+#: gal/e-text/e-text.c:3575 gal/e-text/e-text.c:3576
 msgid "Fill stipple"
 msgstr "புள்ளிகளால் நிரப்பு"
 
-#: gal/e-text/e-text.c:3552 gal/e-text/e-text.c:3553
+#: gal/e-text/e-text.c:3582 gal/e-text/e-text.c:3583
 msgid "Text width"
 msgstr "உரை அகலம்"
 
-#: gal/e-text/e-text.c:3559 gal/e-text/e-text.c:3560
+#: gal/e-text/e-text.c:3589 gal/e-text/e-text.c:3590
 msgid "Text height"
 msgstr "உரை உயரம்"
 
-#: gal/e-text/e-text.c:3574 gal/e-text/e-text.c:3575
+#: gal/e-text/e-text.c:3604 gal/e-text/e-text.c:3605
 msgid "Use ellipsis"
 msgstr "நீள்வட்டத்தை பயன்படுத்து"
 
-#: gal/e-text/e-text.c:3581 gal/e-text/e-text.c:3582
+#: gal/e-text/e-text.c:3611 gal/e-text/e-text.c:3612
 msgid "Ellipsis"
 msgstr "நீள்வட்டம்"
 
-#: gal/e-text/e-text.c:3588 gal/e-text/e-text.c:3589
+#: gal/e-text/e-text.c:3618 gal/e-text/e-text.c:3619
 msgid "Line wrap"
 msgstr "வரி மடக்கி"
 
-#: gal/e-text/e-text.c:3595 gal/e-text/e-text.c:3596
+#: gal/e-text/e-text.c:3625 gal/e-text/e-text.c:3626
 msgid "Break characters"
 msgstr "எழுத்து நிறுத்தம்"
 
-#: gal/e-text/e-text.c:3602 gal/e-text/e-text.c:3603
+#: gal/e-text/e-text.c:3632 gal/e-text/e-text.c:3633
 msgid "Max lines"
 msgstr "அதிகபட்ச வரிகள்"
 
-#: gal/e-text/e-text.c:3624 gal/e-text/e-text.c:3625
+#: gal/e-text/e-text.c:3654 gal/e-text/e-text.c:3655
 msgid "Draw borders"
 msgstr "ஓரங்களை வரை"
 
-#: gal/e-text/e-text.c:3631 gal/e-text/e-text.c:3632
+#: gal/e-text/e-text.c:3661 gal/e-text/e-text.c:3662
 msgid "Allow newlines"
 msgstr "புதிய வரிகளை அனுமதி"
 
-#: gal/e-text/e-text.c:3638 gal/e-text/e-text.c:3639
+#: gal/e-text/e-text.c:3668 gal/e-text/e-text.c:3669
 msgid "Draw background"
 msgstr "பின்னனியை வரை"
 
-#: gal/e-text/e-text.c:3645 gal/e-text/e-text.c:3646
+#: gal/e-text/e-text.c:3675 gal/e-text/e-text.c:3676
 msgid "Draw button"
 msgstr "பட்டன்களை வரை"
 
-#: gal/e-text/e-text.c:3652 gal/e-text/e-text.c:3653
+#: gal/e-text/e-text.c:3682 gal/e-text/e-text.c:3683
 msgid "Cursor position"
 msgstr "கர்சர் நிலை"
 
-#: gal/e-text/e-text.c:3659 gal/e-text/e-text.c:3660
+#: gal/e-text/e-text.c:3689 gal/e-text/e-text.c:3690
 msgid "IM Context"
 msgstr "IM தறுவாய்"
 
-#: gal/e-text/e-text.c:3666 gal/e-text/e-text.c:3667
+#: gal/e-text/e-text.c:3696 gal/e-text/e-text.c:3697
 msgid "Handle Popup"
 msgstr "தோன்றக் சாளரங்களை கையாள்"
 
@@ -642,15 +642,15 @@ msgstr "*"
 
 #: gal/menus/gal-view-instance-save-as-dialog.glade.h:3
 msgid "_Create new view"
-msgstr "(_C)புதிய காட்சியை உருவாக்கு"
+msgstr "புதிய காட்சியை உருவாக்கு"
 
 #: gal/menus/gal-view-instance-save-as-dialog.glade.h:4
 msgid "_Name:"
-msgstr "(_N)பெயர்:"
+msgstr "பெயர்:"
 
 #: gal/menus/gal-view-instance-save-as-dialog.glade.h:5
 msgid "_Replace existing view"
-msgstr "(_R)தற்போதிய காட்சியால் மாற்று"
+msgstr "தற்போதைய காட்சியால் மாற்று"
 
 #: gal/menus/gal-view-instance.c:574
 msgid "Custom View"
@@ -853,11 +853,11 @@ msgstr "மங்கலானிர் சியான்"
 
 #: gal/widgets/color-palette.c:622 gal/widgets/color-palette.c:632
 msgid "light blue"
-msgstr "மங்கமான நீல நிறம்"
+msgstr "மங்கலான நீல நிறம்"
 
 #: gal/widgets/color-palette.c:623 gal/widgets/color-palette.c:636
 msgid "light purple"
-msgstr "மங்கமான ஊதா நிறம்"
+msgstr "மங்கலான ஊதா நிறம்"
 
 #: gal/widgets/color-palette.c:624
 msgid "white"
@@ -881,7 +881,7 @@ msgstr "பிறந்தநாள்"
 
 #: gal/widgets/e-categories-master-list-array.c:68
 msgid "Business"
-msgstr "இவணிகம்"
+msgstr "வணிகம்"
 
 #: gal/widgets/e-categories-master-list-array.c:69
 msgid "Competition"
@@ -993,37 +993,37 @@ msgstr "பொது வகைப்பட்டியலை திருத்�
 
 #: gal/widgets/e-categories-master-list-dialog.glade.h:5
 msgid "_Edit category:"
-msgstr "(_E)வகைப்பட்டியல் திருத்தம்:"
+msgstr "வகைப்பட்டியல் திருத்தம்:"
 
 #: gal/widgets/e-categories-master-list-dialog.glade.h:6
 msgid "_New category:"
-msgstr "(_N)புதிய வகை:"
+msgstr "புதிய வகை:"
 
 #: gal/widgets/e-categories-master-list-option-menu.c:69
 msgid "All Categories"
 msgstr "அனைத்து வகைகள்"
 
-#: gal/widgets/e-categories.c:115 gal/widgets/e-categories.c:116
+#: gal/widgets/e-categories.c:116 gal/widgets/e-categories.c:117
 msgid "Categories"
 msgstr "வகைகள்"
 
-#: gal/widgets/e-categories.c:393
+#: gal/widgets/e-categories.c:394
 msgid "Add to global category list"
 msgstr "முழமை வகையின் பட்டிக்குச் சேர்க்கவும்"
 
-#: gal/widgets/e-categories.c:394
+#: gal/widgets/e-categories.c:395
 msgid "Add all to global category list"
 msgstr "அனைத்தையும் முழமை வகையின் பட்டிக்குச் சேர்க்கவும்"
 
-#: gal/widgets/e-categories.c:395
+#: gal/widgets/e-categories.c:396
 msgid "Remove from global category list"
 msgstr "முழமை வகையின் பட்டியில் இருந்து கழட்டவும்"
 
-#: gal/widgets/e-categories.c:396
+#: gal/widgets/e-categories.c:397
 msgid "Remove all from global category list"
 msgstr "அனைத்தையும் முழமை வகையின் பட்டியில் இருந்து கழட்டவும்"
 
-#: gal/widgets/e-categories.c:540
+#: gal/widgets/e-categories.c:542
 msgid "Edit Categories"
 msgstr "வகைகளை திருத்து"
 

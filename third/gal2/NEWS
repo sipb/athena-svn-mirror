@@ -1,4 +1,51 @@
 ----------------------
+gal-2.2.5  2005-02-14
+----------------------
+
+Other bugs and changes:
+
+	- Updated translations: 
+	 it (Luca Ferretti, Alessio Frusciante)
+
+----------------------
+gal-2.2.4  2004-12-06
+----------------------
+
+Other bugs and changes:
+
+	- focus focus chaining (JP)
+	- fix category focus handling (Hao Sheng)
+	- Updated translations: 
+	 gu (Ankit Patel)
+
+----------------------
+gal-2.2.3  2004-10-01
+----------------------
+
+Other bugs and changes:
+
+	- Updated translations: 
+	 en_CA (Adam Weinberger)
+	 fr (Craig Jeffares)
+
+----------------------
+gal-2.2.2  2004-09-23
+----------------------
+
+Bugzilla bugs fixed (see http://bugzilla.ximian.com/show_bug.cgi):
+
+	#637731 - blocking mouse grab when autocompleting (Suresh)
+
+Other bugs and changes:
+
+	- Updated translations: 
+	 it (Craig Jeffares)
+	 zh_TW (Craig Jeffares)
+	 id (Mohammad DAMT)
+	 th (Supranee Thirawatthanasuk)
+ 	 hi (Guntupalli Karunakar)
+
+----------------------
 gal-2.2.1  2004-09-10
 ----------------------
 

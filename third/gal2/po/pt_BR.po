@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gal 2.1.6\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-10 09:50-0400\n"
+"POT-Creation-Date: 2005-02-14 08:46-0500\n"
 "PO-Revision-Date: 2004-06-18 19:22-0300\n"
 "Last-Translator: Gustavo Maciel Dias Vieira <gustavo@sagui.org>\n"
 "Language-Team: Brazilian Portuguese <gnome-l10n-br@listas.cipsga.org.br>\n"
@@ -78,8 +78,8 @@ msgstr "Coluna em negrito"
 msgid "Color Column"
 msgstr "Coluna colorida"
 
-#: gal/e-table/e-cell-text.c:1731 gal/e-text/e-text.c:3567
-#: gal/e-text/e-text.c:3568 gal/menus/gal-define-views-model.c:178
+#: gal/e-table/e-cell-text.c:1731 gal/e-text/e-text.c:3597
+#: gal/e-text/e-text.c:3598 gal/menus/gal-define-views-model.c:178
 msgid "Editable"
 msgstr "Editável"
 
@@ -92,15 +92,15 @@ msgstr "Coluna da cor de fundo"
 #: gal/e-table/e-table-field-chooser-item.c:660
 #: gal/e-table/e-table-field-chooser.c:91
 #: gal/e-table/e-table-header-item.c:1816
-#: gal/e-table/e-table-selection-model.c:316 gal/widgets/e-categories.c:122
-#: gal/widgets/e-categories.c:123
+#: gal/e-table/e-table-selection-model.c:316 gal/widgets/e-categories.c:123
+#: gal/widgets/e-categories.c:124
 msgid "Header"
 msgstr "Cabeçalho"
 
 #: gal/e-table/e-table-click-to-add.c:469
 #: gal/e-table/e-table-selection-model.c:309 gal/e-table/e-table.c:3327
-#: gal/e-table/e-tree-selection-model.c:795 gal/e-text/e-text.c:3431
-#: gal/e-text/e-text.c:3432
+#: gal/e-table/e-tree-selection-model.c:795 gal/e-text/e-text.c:3461
+#: gal/e-text/e-text.c:3462
 msgid "Model"
 msgstr "Modelo"
 
@@ -111,16 +111,16 @@ msgstr "Mensagem"
 #: gal/e-table/e-table-click-to-add.c:483
 #: gal/e-table/e-table-field-chooser-item.c:667
 #: gal/e-table/e-table-group-container.c:976
-#: gal/e-table/e-table-group-container.c:977 gal/e-text/e-text.c:3609
-#: gal/e-text/e-text.c:3610
+#: gal/e-table/e-table-group-container.c:977 gal/e-text/e-text.c:3639
+#: gal/e-text/e-text.c:3640
 msgid "Width"
 msgstr "Largura"
 
 #: gal/e-table/e-table-click-to-add.c:490
 #: gal/e-table/e-table-field-chooser-item.c:674
 #: gal/e-table/e-table-group-container.c:969
-#: gal/e-table/e-table-group-container.c:970 gal/e-text/e-text.c:3617
-#: gal/e-text/e-text.c:3618
+#: gal/e-table/e-table-group-container.c:970 gal/e-text/e-text.c:3647
+#: gal/e-text/e-text.c:3648
 msgid "Height"
 msgstr "Altura"
 
@@ -466,128 +466,128 @@ msgstr "Tamanho do expansor"
 msgid "Size of the expander arrow"
 msgstr "Tamanho da seta do expansor"
 
-#: gal/e-text/e-text.c:2667
+#: gal/e-text/e-text.c:2697
 msgid "Select All"
 msgstr "Selecionar tudo"
 
-#: gal/e-text/e-text.c:2679
+#: gal/e-text/e-text.c:2709
 msgid "Input Methods"
 msgstr "Métodos de entrada"
 
-#: gal/e-text/e-text.c:3438 gal/e-text/e-text.c:3439
+#: gal/e-text/e-text.c:3468 gal/e-text/e-text.c:3469
 msgid "Event Processor"
 msgstr "Processador de eventos"
 
-#: gal/e-text/e-text.c:3445 gal/e-text/e-text.c:3446
+#: gal/e-text/e-text.c:3475 gal/e-text/e-text.c:3476
 msgid "Text"
 msgstr "Texto"
 
-#: gal/e-text/e-text.c:3452 gal/e-text/e-text.c:3453
+#: gal/e-text/e-text.c:3482 gal/e-text/e-text.c:3483
 msgid "Bold"
 msgstr "Negrito"
 
-#: gal/e-text/e-text.c:3459 gal/e-text/e-text.c:3460
+#: gal/e-text/e-text.c:3489 gal/e-text/e-text.c:3490
 msgid "Strikeout"
 msgstr "Riscado"
 
-#: gal/e-text/e-text.c:3466 gal/e-text/e-text.c:3467
+#: gal/e-text/e-text.c:3496 gal/e-text/e-text.c:3497
 msgid "Anchor"
 msgstr "Âncora"
 
-#: gal/e-text/e-text.c:3474 gal/e-text/e-text.c:3475
+#: gal/e-text/e-text.c:3504 gal/e-text/e-text.c:3505
 msgid "Justification"
 msgstr "Alinhamento"
 
-#: gal/e-text/e-text.c:3481 gal/e-text/e-text.c:3482
+#: gal/e-text/e-text.c:3511 gal/e-text/e-text.c:3512
 msgid "Clip Width"
 msgstr "Largura do clip"
 
-#: gal/e-text/e-text.c:3488 gal/e-text/e-text.c:3489
+#: gal/e-text/e-text.c:3518 gal/e-text/e-text.c:3519
 msgid "Clip Height"
 msgstr "Altura do clip"
 
-#: gal/e-text/e-text.c:3495 gal/e-text/e-text.c:3496
+#: gal/e-text/e-text.c:3525 gal/e-text/e-text.c:3526
 msgid "Clip"
 msgstr "Clip"
 
-#: gal/e-text/e-text.c:3502 gal/e-text/e-text.c:3503
+#: gal/e-text/e-text.c:3532 gal/e-text/e-text.c:3533
 msgid "Fill clip rectangle"
 msgstr "Preencher retângulo do clip"
 
-#: gal/e-text/e-text.c:3509 gal/e-text/e-text.c:3510
+#: gal/e-text/e-text.c:3539 gal/e-text/e-text.c:3540
 msgid "X Offset"
 msgstr "Deslocamento X"
 
-#: gal/e-text/e-text.c:3516 gal/e-text/e-text.c:3517
+#: gal/e-text/e-text.c:3546 gal/e-text/e-text.c:3547
 msgid "Y Offset"
 msgstr "Deslocamento Y"
 
-#: gal/e-text/e-text.c:3523 gal/e-text/e-text.c:3524
+#: gal/e-text/e-text.c:3553 gal/e-text/e-text.c:3554
 msgid "Fill color"
 msgstr "Cor de preenchimento"
 
-#: gal/e-text/e-text.c:3530 gal/e-text/e-text.c:3531 gal/e-text/e-text.c:3538
-#: gal/e-text/e-text.c:3539
+#: gal/e-text/e-text.c:3560 gal/e-text/e-text.c:3561 gal/e-text/e-text.c:3568
+#: gal/e-text/e-text.c:3569
 msgid "GDK fill color"
 msgstr "Cor de preenchimento GDK"
 
-#: gal/e-text/e-text.c:3545 gal/e-text/e-text.c:3546
+#: gal/e-text/e-text.c:3575 gal/e-text/e-text.c:3576
 msgid "Fill stipple"
 msgstr "Preencher pontilhado"
 
-#: gal/e-text/e-text.c:3552 gal/e-text/e-text.c:3553
+#: gal/e-text/e-text.c:3582 gal/e-text/e-text.c:3583
 msgid "Text width"
 msgstr "Largura do texto"
 
-#: gal/e-text/e-text.c:3559 gal/e-text/e-text.c:3560
+#: gal/e-text/e-text.c:3589 gal/e-text/e-text.c:3590
 msgid "Text height"
 msgstr "Altura do texto"
 
-#: gal/e-text/e-text.c:3574 gal/e-text/e-text.c:3575
+#: gal/e-text/e-text.c:3604 gal/e-text/e-text.c:3605
 msgid "Use ellipsis"
 msgstr "Usar elipses"
 
-#: gal/e-text/e-text.c:3581 gal/e-text/e-text.c:3582
+#: gal/e-text/e-text.c:3611 gal/e-text/e-text.c:3612
 msgid "Ellipsis"
 msgstr "Elipses"
 
-#: gal/e-text/e-text.c:3588 gal/e-text/e-text.c:3589
+#: gal/e-text/e-text.c:3618 gal/e-text/e-text.c:3619
 msgid "Line wrap"
 msgstr "Quebra de linha"
 
-#: gal/e-text/e-text.c:3595 gal/e-text/e-text.c:3596
+#: gal/e-text/e-text.c:3625 gal/e-text/e-text.c:3626
 msgid "Break characters"
 msgstr "Caracteres de quebra"
 
-#: gal/e-text/e-text.c:3602 gal/e-text/e-text.c:3603
+#: gal/e-text/e-text.c:3632 gal/e-text/e-text.c:3633
 msgid "Max lines"
 msgstr "Linhas máximas"
 
-#: gal/e-text/e-text.c:3624 gal/e-text/e-text.c:3625
+#: gal/e-text/e-text.c:3654 gal/e-text/e-text.c:3655
 msgid "Draw borders"
 msgstr "Desenhar bordas"
 
-#: gal/e-text/e-text.c:3631 gal/e-text/e-text.c:3632
+#: gal/e-text/e-text.c:3661 gal/e-text/e-text.c:3662
 msgid "Allow newlines"
 msgstr "Permitir quebras de linha"
 
-#: gal/e-text/e-text.c:3638 gal/e-text/e-text.c:3639
+#: gal/e-text/e-text.c:3668 gal/e-text/e-text.c:3669
 msgid "Draw background"
 msgstr "Desenhar fundo"
 
-#: gal/e-text/e-text.c:3645 gal/e-text/e-text.c:3646
+#: gal/e-text/e-text.c:3675 gal/e-text/e-text.c:3676
 msgid "Draw button"
 msgstr "Desenhar base"
 
-#: gal/e-text/e-text.c:3652 gal/e-text/e-text.c:3653
+#: gal/e-text/e-text.c:3682 gal/e-text/e-text.c:3683
 msgid "Cursor position"
 msgstr "Posição do cursor"
 
-#: gal/e-text/e-text.c:3659 gal/e-text/e-text.c:3660
+#: gal/e-text/e-text.c:3689 gal/e-text/e-text.c:3690
 msgid "IM Context"
 msgstr "Contexto do ME"
 
-#: gal/e-text/e-text.c:3666 gal/e-text/e-text.c:3667
+#: gal/e-text/e-text.c:3696 gal/e-text/e-text.c:3697
 msgid "Handle Popup"
 msgstr "Alça do popup"
 
@@ -998,27 +998,27 @@ msgstr "_Nova categoria:"
 msgid "All Categories"
 msgstr "Todas categorias"
 
-#: gal/widgets/e-categories.c:115 gal/widgets/e-categories.c:116
+#: gal/widgets/e-categories.c:116 gal/widgets/e-categories.c:117
 msgid "Categories"
 msgstr "Categorias"
 
-#: gal/widgets/e-categories.c:393
+#: gal/widgets/e-categories.c:394
 msgid "Add to global category list"
 msgstr "Adicionar a lista global de categorias"
 
-#: gal/widgets/e-categories.c:394
+#: gal/widgets/e-categories.c:395
 msgid "Add all to global category list"
 msgstr "Adicionar todos a lista global de categorias"
 
-#: gal/widgets/e-categories.c:395
+#: gal/widgets/e-categories.c:396
 msgid "Remove from global category list"
 msgstr "Remover da lista global de categorias"
 
-#: gal/widgets/e-categories.c:396
+#: gal/widgets/e-categories.c:397
 msgid "Remove all from global category list"
 msgstr "Remover todos da lista global de categorias"
 
-#: gal/widgets/e-categories.c:540
+#: gal/widgets/e-categories.c:542
 msgid "Edit Categories"
 msgstr "Editar categorias"
 
