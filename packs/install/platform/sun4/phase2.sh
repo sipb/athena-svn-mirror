@@ -4,9 +4,8 @@
 ### installation program.  It is called by the first script,
 ### athenainstall.
 
-### $Header: /afs/dev.mit.edu/source/repository/packs/install/platform/sun4/phase2.sh,v 1.10 1996-01-04 10:23:58 miki Exp $
+### $Header: /afs/dev.mit.edu/source/repository/packs/install/platform/sun4/phase2.sh,v 1.11 1996-02-02 11:01:07 cfields Exp $
 ### $Locker:  $
-
 
 echo "Set some variables"
 PATH=/srvd/bin:/srvd/bin/athena:/srvd/etc:/srvd/usr/sbin:/bin:/etc:/sbin:/usr/sbin
@@ -99,8 +98,9 @@ modload /kernel/fs/afs
 echo "Starting afsd "
 /etc/afsd -nosettime -daemons 4
 
+ROOT=/root; export ROOT
 echo "Mounting hard disk's root partition..."
-/etc/mount  $rootdrive /root
+/etc/mount  $rootdrive $ROOT
 
 cd /
 echo "Making dirs on root"
@@ -163,7 +163,7 @@ mkdir afs mit mnt
 ln -s /var/usr/vice usr/vice
 ln -s /var/adm usr/adm
 ln -s /var/spool usr/spool
-ln -s /var/preserver usr/preserve
+ln -s /var/preserve usr/preserve
 cp -p /srvd/.c* /srvd/.l* /srvd/.p* /srvd/.r* /srvd/.t* /srvd/.x* /root/
 chmod 1777 /root/tmp 
 
@@ -178,6 +178,8 @@ cp -p /srvd/etc/services etc/
 cp -p /srvd/etc/athena/inetd.conf etc/athena/
 cp -p /srvd/etc/minor_perm etc/minor_perm
 cp -p /srvd/etc/system etc/system
+cp -p /srvd/etc/name_to_major etc/
+cp -p /srvd/etc/driver_aliases etc/
 chmod 644 etc/system
 
 hostname=`echo $hostname | awk -F. '{print $1}' | /usr/bin/tr "[A-Z]" "[a-z]"`
@@ -241,6 +243,17 @@ echo "Installing bootblocks on root "
 cp -p /ufsboot /root
 /usr/sbin/installboot /srvd/lib/fs/ufs/bootblk $rrootdrive
 cd /root
+
+# Note: device scripts depend on ROOT being set properly.
+auxdir=/srvd/install/aux.devs
+if [ -d $auxdir ]; then
+	echo "Installing extra devices..."
+	for i in ${auxdir}/*; do
+		if [ -x $i ]; then
+			$i
+		fi
+	done
+fi
 
 echo "Unmounting filesystems and checking them"
 cd /
