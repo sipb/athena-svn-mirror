@@ -1,5 +1,5 @@
 # rules.mk.sh -- Build dynamically-loadable objects for librep
-# $Id: rules.mk.sh,v 1.1.1.1 2000-11-12 06:10:21 ghudson Exp $
+# $Id: rules.mk.sh,v 1.2 2000-12-11 22:44:01 ghudson Exp $
 
 repdir=$1
 repexecdir=$2
@@ -13,8 +13,8 @@ repexecdir=$repexecdir
 rpath_repexecdir=$repexecdir
 repdocfile=$repdocfile
 
-rep_LIBTOOL=\$(repexecdir)/libtool
-rep_INSTALL_ALIASES=\$(repexecdir)/install-aliases
+rep_LIBTOOL=\$\$ATHTOOLROOT\$(repexecdir)/libtool
+rep_INSTALL_ALIASES=\$\$ATHTOOLROOT\$(repexecdir)/install-aliases
 
 # use this like:
 # foo.la : foo.lo bar.lo

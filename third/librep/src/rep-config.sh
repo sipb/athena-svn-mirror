@@ -12,7 +12,7 @@ version=$3
 LIBS=$4
 repexecdir=$5
 
-libpath="-L${libdir}"
+libpath="-L\$ATHTOOLROOT${libdir}"
 
 # So that we keep -R options where required
 if test -n "$hardcode_libdir_flag_spec"; then
@@ -36,13 +36,13 @@ while test \$# -gt 0; do
       echo "${version}"
       ;;
     --cflags)
-      echo "-I${prefix}/include -I${repexecdir}"
+      echo "-I\$ATHTOOLROOT${prefix}/include -I\$ATHTOOLROOT${repexecdir}"
       ;;
     --libs)
       echo "${libpath} -lrep ${LIBS}"
       ;;
     --execdir)
-      echo "${repexecdir}"
+      echo "\$ATHTOOLROOT${repexecdir}"
       ;;
     *)
       echo "\${usage}" 1>&2
