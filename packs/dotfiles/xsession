@@ -3,7 +3,7 @@
 # Accepts one optional argument, either "nocalls" (use no user files)
 # or "dash" (use old dash-based interface).
 #
-# $Id: xsession,v 1.6 2003-04-22 05:48:50 ghudson Exp $
+# $Id: xsession,v 1.7 2003-04-22 15:34:34 ghudson Exp $
 
 # Note: This shell script deliberately uses the -f flag.
 
@@ -150,7 +150,6 @@ else if ($?offer_gnome_upgrade) then
     echo "Attempting GNOME upgrade on `date`" >> ~/.athena-gnome-upgrade-log
     sh $initdir/gnome-stuff-1-to-2 >>& ~/.athena-gnome-upgrade-log
     sh $initdir/gnome-panel-1-to-2 >>& ~/.athena-gnome-upgrade-log
-    sh $initdir/gnome-launchers-1-to-2 >>& ~/.athena-gnome-upgrade-log
     set offer_gnome_failure
   endif
   unset dtext
