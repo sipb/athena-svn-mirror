@@ -134,28 +134,10 @@ if [ "${RVDCLIENT}" = "true" ]; then
 fi
 
 # Take a new release, if necessary.
-if [ "${AUTOUPDATE}" = "true" -a -f /srvd/auto_update ]; then
-	echo  "Checking /srvd/auto_update... \c"		>/dev/console
-	/srvd/auto_update rc < /dev/console > /dev/console 2>&1
-	echo "done."						>/dev/console
-elif [ -f /srvd/.rvdinfo ]; then
-	NEWVERS=`awk '{a=$5}; END{print a}' /srvd/.rvdinfo`
-	VERSION=`awk '{a=$5}; END{print a}' /etc/athena/version`
-	if [ "${NEWVERS}" != "${VERSION}" ]; then
-		cat <<EOF					>/dev/console
-The workstation software version ($VERSION) does not match the
-version on the system packs ($NEWVERS).  A new version of software
-may be available.  Please contact Athena Operations (x3-1410) to
-have your workstation updated.
-EOF
-	 if [ ! -f /usr/tmp/update.check -a -f /usr/ucb/logger ]; then
-       	    /usr/ucb/logger -t `uname -n` -p user.notice at revision $VERSION
-	    cp /dev/null /usr/tmp/update.check
-	 fi
-	fi
-fi
-
-echo ""								>/dev/console
+echo  "Checking /srvd/auto_update... \c"		>/dev/console
+/srvd/auto_update rc < /dev/console > /dev/console 2>&1
+echo "done."						>/dev/console
+echo ""							>/dev/console
 
 # Whenever Solaris decides to configure the devices directory, it insists
 # on creating /dev/audio and /dev/audioctl mode 600 (which would require
