@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: machtype_linux.sh,v 1.5 2000-03-07 22:11:08 jweiss Exp $
+# $Id: machtype_linux.sh,v 1.6 2000-06-08 18:46:11 ghudson Exp $
 
 # We need to support the following options:
 # NOTE: c, v, d, L, and M are needed by olc, and it cares what order
@@ -81,7 +81,7 @@ if [ $at_rel ]; then
 	if [ $verbose ]; then
 		echo -n "Machtype version: "
 	fi
-	echo "@ATHMAJV@.@ATHMINV@"
+	echo "@ATHENA_MAJOR_VERSION@.@ATHENA_MINOR_VERSION@"
 	printed=1
 fi
 
@@ -114,12 +114,12 @@ if [ $base_os_ver ]; then
 fi
 
 if [ $ath_sys_name ]; then
-	echo "@ATHSYS@"
+	echo "@ATHENA_SYS@"
 	printed=1
 fi
 
 if [ $ath_sys_compat ]; then
-	echo "@ATHSYSCOMPAT@"
+	echo "@ATHENA_SYS_COMPAT@"
 	printed=1
 fi
 
