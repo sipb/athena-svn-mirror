@@ -10,7 +10,7 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/h/zephyr/zephyr.h,v 1.20 1987-11-16 21:31:19 jtkohl Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/h/zephyr/zephyr.h,v 1.21 1987-12-18 15:31:05 jtkohl Exp $ */
 
 #ifndef __ZEPHYR_H__
 #define __ZEPHYR_H__
@@ -206,6 +206,8 @@ extern int ZMakeAuthentication();
 #define EXPOSE_REALMANN		"REALM-ANNOUNCED"/* Opcode: Realm announced */
 #define EXPOSE_NETVIS		"NET-VISIBLE"	/* Opcode: Net visible */
 #define EXPOSE_NETANN		"NET-ANNOUNCED"	/* Opcode: Net announced */
+#define	LOGIN_USER_LOGIN	"USER_LOGIN"	/* Opcode: user login
+						   (from server) */
 #define LOGIN_USER_LOGOUT	"USER_LOGOUT"	/* Opcode: User logout */
 #define	LOGIN_USER_FLUSH	"USER_FLUSH"	/* Opcode: flush all locs */
 
