@@ -3,7 +3,7 @@
  *  Copyright (c) 1991, Massachusetts Institute of Technology
  *		
  *   $Source: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/Imakefile,v $
- *   $Author: cfields $ 
+ *   $Author: ghudson $ 
  *
  * Copyright 1990, 1991 by the Massachusetts Institute of Technology. 
  *
@@ -62,13 +62,13 @@ L_HDRS		=	${LABEL_HDRS}
 
 OBJS		=	AClock.o Arrow.o Button.o DClock.o Drawing.o \
 			Form.o Jets.o ${L_OBJS} Menu.o ScrollBar.o \
-			TextDisplay.o Tree.o Window.o \ 
+			TextDisplay.o Tree.o Window.o \
 			hash.o registerCB.o xselect.o warn.o \
 			VaCreateJet.o \
 			${STR_OBJS} ${VSPRINTFOBJS} ${STRCASEOBJS}
 SRCS		=	AClock.c Arrow.c Button.c DClock.c Drawing.c \
 			Form.c Jets.c ${L_SRCS} Menu.c ScrollBar.c \
-			TextDisplay.c Tree.c Window.c \ 
+			TextDisplay.c Tree.c Window.c \
 			hash.c registerCB.c xselect.c warn.c \
 			VaCreateJet.c \
 			${STR_C} ${VSPRINTF_C} ${STRCASE_C}
