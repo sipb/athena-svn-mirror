@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.68 1998-01-31 23:47:05 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.69 1998-02-02 22:25:08 ghudson Exp $ */
  
 #include <unistd.h>
 #include <string.h>
@@ -207,9 +207,14 @@ XtActionsRec actions[] = {
 #ifndef CONSOLEPID
 #define CONSOLEPID "/var/athena/console.pid"
 #endif
-#ifndef UTMPF
-#define UTMPF "/etc/utmp"
-#endif
+
+#ifndef UTMP_FILE
+#ifdef _PATH_UTMP
+#define UTMP_FILE _PATH_UTMP
+#else /* _PATH_UTMP */
+#define UTMP_FILE "/var/adm/utmp"
+#endif /* _PATH_UTMP */
+#endif /* UTMP_FILE */
 
 /* Globals. */
 
@@ -582,7 +587,7 @@ static void start_reactivate(data, timerid)
 
   do_motd();
 
-  file = open(UTMPF, O_RDONLY, 0);
+  file = open(UTMP_FILE, O_RDONLY, 0);
   if (file >= 0)
     {
       while (read(file, (char *) &utmp, sizeof(utmp)) > 0)
