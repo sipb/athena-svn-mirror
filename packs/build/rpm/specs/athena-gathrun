@@ -3,7 +3,7 @@ Summary: An Athena utility to run GUI programs out of lockers from a menu
 License: MIT
 Group: User Interface/Desktops
 
-Requires: athena-attachandrun athena-gnome-utils
+Requires: athena-attachandrun
 
 %description
 The gathrun utility allows a user to run a program from a specified

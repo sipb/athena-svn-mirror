@@ -3,8 +3,6 @@ Summary: An Athena script to revert future logins to the old interface
 License: MIT
 Group: User Interface/Desktops
 
-Requires: athena-gnome-utils
-
 %description
 The revert-to-dash program puts up a dialog box to confirm that the
 user wants to use the old dash-based interface for future logins, and
