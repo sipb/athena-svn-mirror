@@ -19,8 +19,6 @@
 #define XDMCMD "/etc/athena/" XDM " -config /etc/athena/login/xdm/xdm-config"
 extern int debug;
 
-#define USE_GETTY
-
 static int run(char *what, int newpag)
 {
   char cmd[1024], *args[20], *ptr;
@@ -81,21 +79,6 @@ dpy_state *dpy_init(void)
   return dpy;
 }
 
-#ifdef USE_GETTY
-/* Return the device on which the login will run when we go to
-   console mode. The dpy_ code directly or indirectly handles
-   utmp, this should return NULL. */
-char *dpy_consDevice(dpy_state *dpy)
-{
-  return CONSDEV;
-}
-#else
-char *dpy_consDevice(dpy_state *dpy)
-{
-  return NULL;
-}
-#endif
-
 int dpy_startX(dpy_state *dpy)
 {
   int ret;
@@ -149,7 +132,7 @@ int dpy_stopX(dpy_state *dpy)
   dpy->mode = DPY_NONE;
   return 0;
 }
-#ifdef USE_GETTY
+
 int dpy_startCons(dpy_state *dpy)
 {
   int fd, on = 1;
@@ -170,37 +153,6 @@ int dpy_startCons(dpy_state *dpy)
   dpy->mode = DPY_CONS;
   return 0;
 }
-#else
-int dpy_startCons(dpy_state *dpy)
-{
-  int fd, on = 1;
-
-  if (dpy == NULL || dpy->mode != DPY_NONE)
-    return 1;
-
-  if ((dpy->login = fork()) == 0)
-    {
-      close(0);
-      close(1);
-      close(2);
-      setsid();
-      fd = open(CONSDEV, O_RDWR, 0);
-      ioctl(fd, TIOCCONS, (char *) &on);
-      dup2(fd, 0);
-      dup2(fd, 1);
-      dup2(fd, 2);
-
-      execl("/bin/login", "login", 0); /* remove DISPLAY... */
-      exit(1);
-    }
-
-  if (dpy->login == -1)
-    return 1;
-
-  dpy->mode = DPY_CONS;
-  return 0;
-}
-#endif
 
 int dpy_stopCons(dpy_state *dpy)
 {
