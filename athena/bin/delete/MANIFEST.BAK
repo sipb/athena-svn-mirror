@@ -1,0 +1,38 @@
+   File Name		Archive #	Description
+-----------------------------------------------------------
+ MANIFEST                   1	This shipping list
+ Makefile                   2	
+ PATCHLEVEL                 1	
+ README                     1	
+ block-test.sh              1	
+ col.c                      2	
+ col.h                      1	
+ delete.c                   3	
+ delete.h                   1	
+ delete_errs.et             1	
+ directories.c              3	
+ directories.h              1	
+ errors.c                   1	
+ errors.h                   1	
+ expunge.c                  2	
+ expunge.h                  1	
+ lsdel.c                    2	
+ lsdel.h                    1	
+ malloc-test.c              1	
+ man1                       1	
+ man1/delete.1              1	
+ man1/expunge.1             1	
+ man1/lsdel.1               1	
+ man1/purge.1               1	
+ man1/undelete.1            1	
+ mit-copying.h              1	
+ pattern.c                  4	
+ pattern.h                  1	
+ shell_regexp.c             1	
+ shell_regexp.h             1	
+ stack.c                    1	
+ stack.h                    1	
+ undelete.c                 2	
+ undelete.h                 1	
+ util.c                     2	
+ util.h                     1	

@@ -1,0 +1,597 @@
+*** /tmp/delete/com_err/Makefile	Mon Mar 11 20:22:36 1991
+--- Makefile	Mon Mar 11 20:26:32 1991
+***************
+*** 2,10 ****
+  # Makefile for error-table routines
+  #
+  # Copyright 1987, 1989, 1991 MIT Student Information Processing Board
+! # For copyright info, see mit-sipb-copyright.h.
+  #
+! #	$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/com_err/com_err.patch4,v 1.1 1993-10-12 06:01:52 probe Exp $
+  #	$Locker:  $
+  #
+  
+--- 2,10 ----
+  # Makefile for error-table routines
+  #
+  # Copyright 1987, 1989, 1991 MIT Student Information Processing Board
+! # For copyright info, see sipb-copying.h.
+  #
+! #	$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/com_err/com_err.patch4,v 1.1 1993-10-12 06:01:52 probe Exp $
+  #	$Locker:  $
+  #
+  
+***************
+*** 13,20 ****
+  DEFINES= 
+  CFLAGS=		-O $(DEFINES)
+  LINTFLAGS= 	-uhvpb
+! LINTFILES= 	error_message.c et_name.c init_et.c com_err.c
+! LIBOBJS= 	error_message.o et_name.o init_et.o com_err.o
+  
+  BINDIR=		/usr/bin
+  INCDIR=		/usr/include
+--- 13,20 ----
+  DEFINES= 
+  CFLAGS=		-O $(DEFINES)
+  LINTFLAGS= 	-uhvpb
+! LINTFILES= 	error_msg.c et_name.c init_et.c com_err.c
+! LIBOBJS= 	error_msg.o et_name.o init_et.o com_err.o
+  
+  BINDIR=		/usr/bin
+  INCDIR=		/usr/include
+***************
+*** 22,37 ****
+  DOCDIR=		/usr/doc
+  DESTDIR=
+  
+! CFILES=		com_err.c compile_et.c error_message.c et_name.c\
+  		init_et.c strcasecmp.c test.c
+  HFILES=		com_err.h compiler.h error_table.h internal.h\
+! 		mit-sipb-copyright.h 
+  MANS=		com_err.3 compile_et.1
+  YACCS=		error_table.y
+  LEXS=		et_lex.lex.l
+  ETS=		test1.et test2.et
+  FILES=		Makefile PATCHLEVEL README\
+! 		com_err.texinfo.Z.uu texinfo.tex.Z.uu\
+  		$(CFILES) $(HFILES) $(MANS) $(YACCS) $(LEXS) $(ETS)
+  
+  
+--- 22,37 ----
+  DOCDIR=		/usr/doc
+  DESTDIR=
+  
+! CFILES=		com_err.c compile_et.c error_msg.c et_name.c\
+  		init_et.c strcasecmp.c test.c
+  HFILES=		com_err.h compiler.h error_table.h internal.h\
+! 		sipb-copying.h 
+  MANS=		com_err.3 compile_et.1
+  YACCS=		error_table.y
+  LEXS=		et_lex.lex.l
+  ETS=		test1.et test2.et
+  FILES=		Makefile PATCHLEVEL README\
+! 		c_e.texinfo.Zu texinfo.tex.Zu\
+  		$(CFILES) $(HFILES) $(MANS) $(YACCS) $(LEXS) $(ETS)
+  
+  
+***************
+*** 76,82 ****
+  tags:	TAGS
+  
+  com_err.ps : com_err.dvi
+! com_err.dvi: com_err.texinfo
+  
+  error_table.o: et_lex.lex.c
+  
+--- 76,82 ----
+  tags:	TAGS
+  
+  com_err.ps : com_err.dvi
+! com_err.dvi: comerr.texinfo
+  
+  error_table.o: et_lex.lex.c
+  
+***************
+*** 83,99 ****
+  install: all
+  	install -c -s compile_et ${DESTDIR}${BINDIR}/compile_et
+  	install -c -m 444 com_err.h ${DESTDIR}${INCDIR}/com_err.h
+! 	install -c -m 444 mit-sipb-copyright.h \
+! 				${DESTDIR}${INCDIR}/mit-sipb-copyright.h
+  	install -c libcom_err.a ${DESTDIR}${LIBDIR}/libcom_err.a
+  	${RANLIB} ${DESTDIR}${LIBDIR}/libcom_err.a
+! 	install -c com_err.texinfo ${DESTDIR}${DOCDIR}/com_err.texinfo
+  	install -c com_err.3 ${DESTDIR}/usr/man/man3/com_err.3
+  	install -c compile_et.1 ${DESTDIR}/usr/man/man1/compile_et.1
+  
+! TAGS:	et_name.c error_message.c compile_et.c error_table.c \
+  		lex.yy.c perror.c init_et.c
+! 	etags et_name.c error_message.c compile_et.c \
+  		error_table.c perror.c init_et.c
+  
+  libcom_err.a:	$(LIBOBJS)
+--- 83,99 ----
+  install: all
+  	install -c -s compile_et ${DESTDIR}${BINDIR}/compile_et
+  	install -c -m 444 com_err.h ${DESTDIR}${INCDIR}/com_err.h
+! 	install -c -m 444 sipb-copying.h \
+! 				${DESTDIR}${INCDIR}/sipb-copying.h
+  	install -c libcom_err.a ${DESTDIR}${LIBDIR}/libcom_err.a
+  	${RANLIB} ${DESTDIR}${LIBDIR}/libcom_err.a
+! 	install -c comerr.texinfo ${DESTDIR}${DOCDIR}/comerr.texinfo
+  	install -c com_err.3 ${DESTDIR}/usr/man/man3/com_err.3
+  	install -c compile_et.1 ${DESTDIR}/usr/man/man1/compile_et.1
+  
+! TAGS:	et_name.c error_msg.c compile_et.c error_table.c \
+  		lex.yy.c perror.c init_et.c
+! 	etags et_name.c error_msg.c compile_et.c \
+  		error_table.c perror.c init_et.c
+  
+  libcom_err.a:	$(LIBOBJS)
+***************
+*** 128,133 ****
+--- 128,145 ----
+  
+  tar: $(FILES)
+  	tar cvf - $(FILES) | compress > com_err.tar.Z
++ 
++ comerr.texinfo: c_e.texinfo.Z
++ 	uncompress < c_e.texinfo.Z > comerr.texinfo
++ 
++ c_e.texinfo.Z: c_e.texinfo.Zu
++ 	uudecode c_e.texinfo.Zu
++ 
++ texinfo.tex: texinfo.tex.Z
++ 	uncompress texinfo.tex.Z
++ 
++ texinfo.tex.Z: texinfo.tex.Zu
++ 	uudecode texinfo.tex.Zu
+  
+  # for testing
+  test:	test.o test1.o test2.o libcom_err.a
+*** /tmp/delete/com_err/PATCHLEVEL	Mon Mar 11 20:22:37 1991
+--- PATCHLEVEL	Mon Mar 11 20:26:33 1991
+***************
+*** /tmp/delete/com_err/1 ****
+! 3
+--- 1 ----
+! 4
+*** README	Mon Mar 11 20:37:36 1991
+--- README	Mon Mar 11 20:36:53 1991
+***************
+*** 35,40 ****
+--- 35,59 ----
+  After that, you should be all set.
+  
+  
++ 		     I'M LOOKING FOR BETA-TESTERS
++ 
++ I try to make this package run on as many different platforms as
++ possible.  However, I do not have access to a large variety of
++ platforms, so I can't effectively test all of the changes I make.  I'm
++ therefore looking for people who are willing to beta-test changes
++ before I release them to the general public.  If you are interested in
++ doing this, please let me know.
++ 
++ 
++ 			     ARCHIVE SITE
++ 
++ The most recent version of the com_err package and patches to get from
++ previous versions to the most recent version are archived on
++ pit-manager.mit.edu (18.72.1.58).  You can retrieve them via anonymous
++ ftp in the directory /pub/com_err, or via mail-server (send a message
++ with the subject "help" to "mail-server@pit-manager.mit.edu").
++ 
++ 
+  			      QUESTIONS?
+  
+    I didn't write com_err, but I'm willing to answer questions and/or
+***************
+*** 41,47 ****
+  direct them to someone who can.  See my signature to find out how to
+  contact me.
+  
+!   See the file mit-sipb-copyright.h for copyright and distribution
+  information.
+  
+  Jonathan Kamens			              USnail:
+--- 60,66 ----
+  direct them to someone who can.  See my signature to find out how to
+  contact me.
+  
+!   See the file sipb-copying.h for copyright and distribution
+  information.
+  
+  Jonathan Kamens			              USnail:
+*** /tmp/delete/com_err/com_err.3	Mon Mar 11 20:22:40 1991
+--- com_err.3	Mon Mar 11 20:26:34 1991
+***************
+*** /tmp/delete/com_err/1,7 ****
+  .\" Copyright (c) 1988 Massachusetts Institute of Technology,
+  .\" Student Information Processing Board.  All rights reserved.
+  .\"
+! .\" $Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/com_err/com_err.patch4,v 1.1 1993-10-12 06:01:52 probe Exp $
+  .\"
+  .TH COM_ERR 3 "22 Nov 1988" SIPB
+  .SH NAME
+--- 1,7 ----
+  .\" Copyright (c) 1988 Massachusetts Institute of Technology,
+  .\" Student Information Processing Board.  All rights reserved.
+  .\"
+! .\" $Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/com_err/com_err.patch4,v 1.1 1993-10-12 06:01:52 probe Exp $
+  .\"
+  .TH COM_ERR 3 "22 Nov 1988" SIPB
+  .SH NAME
+*** com_err.c	Mon Mar 11 20:22:41 1991
+--- com_err.c	Mon Mar 11 20:26:36 1991
+***************
+*** 1,11 ****
+  /*
+   * Copyright 1987, 1988 by MIT Student Information Processing Board.
+   *
+!  * For copyright info, see mit-sipb-copyright.h.
+   */
+  
+  #include <stdio.h>
+! #include "mit-sipb-copyright.h"
+  
+  /*
+   * Our environment only provides for ANSI's <stdarg.h> when using GNU
+--- 1,11 ----
+  /*
+   * Copyright 1987, 1988 by MIT Student Information Processing Board.
+   *
+!  * For copyright info, see sipb-copying.h.
+   */
+  
+  #include <stdio.h>
+! #include "sipb-copying.h"
+  
+  /*
+   * Our environment only provides for ANSI's <stdarg.h> when using GNU
+***************
+*** 46,52 ****
+  
+  #if ! lint
+  static const char rcsid[] =
+!     "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/com_err/com_err.patch4,v 1.1 1993-10-12 06:01:52 probe Exp $";
+  #endif	/* ! lint */
+  
+  static void
+--- 46,52 ----
+  
+  #if ! lint
+  static const char rcsid[] =
+!     "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/com_err/com_err.patch4,v 1.1 1993-10-12 06:01:52 probe Exp $";
+  #endif	/* ! lint */
+  
+  static void
+*** /tmp/delete/com_err/compile_et.1	Mon Mar 11 20:22:42 1991
+--- compile_et.1	Mon Mar 11 20:26:39 1991
+***************
+*** /tmp/delete/com_err/1,7 ****
+  .\" Copyright (c) 1988 Massachusetts Institute of Technology,
+  .\" Student Information Processing Board.  All rights reserved.
+  .\"
+! .\" $Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/com_err/com_err.patch4,v 1.1 1993-10-12 06:01:52 probe Exp $
+  .\"
+  .TH COMPILE_ET 1 "22 Nov 1988" SIPB
+  .SH NAME
+--- 1,7 ----
+  .\" Copyright (c) 1988 Massachusetts Institute of Technology,
+  .\" Student Information Processing Board.  All rights reserved.
+  .\"
+! .\" $Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/com_err/com_err.patch4,v 1.1 1993-10-12 06:01:52 probe Exp $
+  .\"
+  .TH COMPILE_ET 1 "22 Nov 1988" SIPB
+  .SH NAME
+*** compile_et.c	Mon Mar 11 20:22:44 1991
+--- compile_et.c	Mon Mar 11 20:26:40 1991
+***************
+*** /tmp/delete/com_err/3,9 ****
+   * Copyright 1986, 1987, 1988
+   * by MIT Student Information Processing Board.
+   *
+!  * For copyright info, see "mit-sipb-copyright.h".
+   *
+   */
+  
+--- 3,9 ----
+   * Copyright 1986, 1987, 1988
+   * by MIT Student Information Processing Board.
+   *
+!  * For copyright info, see "sipb-copying.h".
+   *
+   */
+  
+***************
+*** 15,21 ****
+  #include <sys/file.h>
+  #include <string.h>
+  #include <sys/param.h>
+! #include "mit-sipb-copyright.h"
+  #include "compiler.h"
+  
+  #ifndef __STDC__
+--- 15,21 ----
+  #include <sys/file.h>
+  #include <string.h>
+  #include <sys/param.h>
+! #include "sipb-copying.h"
+  #include "compiler.h"
+  
+  #ifndef __STDC__
+***************
+*** 27,33 ****
+      "Copyright 1987,1988 by MIT Student Information Processing Board";
+  
+  static const char rcsid_compile_et_c[] =
+!     "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/com_err/com_err.patch4,v 1.1 1993-10-12 06:01:52 probe Exp $";
+  #endif
+  
+  extern char *gensym();
+--- 27,33 ----
+      "Copyright 1987,1988 by MIT Student Information Processing Board";
+  
+  static const char rcsid_compile_et_c[] =
+!     "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/com_err/com_err.patch4,v 1.1 1993-10-12 06:01:52 probe Exp $";
+  #endif
+  
+  extern char *gensym();
+*** error_msg.c	Mon Mar 11 20:22:45 1991
+--- error_msg.c	Mon Mar 11 20:26:41 1991
+***************
+*** /tmp/delete/com_err/1,21 ****
+  /*
+!  * $Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/com_err/com_err.patch4,v 1.1 1993-10-12 06:01:52 probe Exp $
+!  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/delete/com_err/com_err.patch4,v $
+   * $Locker:  $
+   *
+   * Copyright 1987 by the Student Information Processing Board
+   * of the Massachusetts Institute of Technology
+   *
+!  * For copyright info, see "mit-sipb-copyright.h".
+   */
+  
+  #include <stdio.h>
+  #include "error_table.h"
+! #include "mit-sipb-copyright.h"
+  #include "internal.h"
+  
+  static const char rcsid[] =
+!     "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/com_err/com_err.patch4,v 1.1 1993-10-12 06:01:52 probe Exp $";
+  static const char copyright[] =
+      "Copyright 1986, 1987, 1988 by the Student Information Processing Board\nand the department of Information Systems\nof the Massachusetts Institute of Technology";
+  
+--- 1,21 ----
+  /*
+!  * $Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/com_err/com_err.patch4,v 1.1 1993-10-12 06:01:52 probe Exp $
+!  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/delete/com_err/com_err.patch4,v $
+   * $Locker:  $
+   *
+   * Copyright 1987 by the Student Information Processing Board
+   * of the Massachusetts Institute of Technology
+   *
+!  * For copyright info, see "sipb-copying.h".
+   */
+  
+  #include <stdio.h>
+  #include "error_table.h"
+! #include "sipb-copying.h"
+  #include "internal.h"
+  
+  static const char rcsid[] =
+!     "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/com_err/com_err.patch4,v 1.1 1993-10-12 06:01:52 probe Exp $";
+  static const char copyright[] =
+      "Copyright 1986, 1987, 1988 by the Student Information Processing Board\nand the department of Information Systems\nof the Massachusetts Institute of Technology";
+  
+*** error_table.h	Mon Mar 11 20:22:46 1991
+--- error_table.h	Mon Mar 11 20:26:42 1991
+***************
+*** /tmp/delete/com_err/2,8 ****
+   * Copyright 1988 by the Student Information Processing Board of the
+   * Massachusetts Institute of Technology.
+   *
+!  * For copyright info, see mit-sipb-copyright.h.
+   */
+  
+  #ifndef _ET_H
+--- 2,8 ----
+   * Copyright 1988 by the Student Information Processing Board of the
+   * Massachusetts Institute of Technology.
+   *
+!  * For copyright info, see sipb-copying.h.
+   */
+  
+  #ifndef _ET_H
+*** error_table.y	Mon Mar 11 20:22:47 1991
+--- error_table.y	Mon Mar 11 20:26:43 1991
+***************
+*** 62,71 ****
+   *
+   * Copyright 1986, 1987 by the MIT Student Information Processing Board
+   *
+!  * For copyright info, see mit-sipb-copyright.h.
+   */
+  
+  #include <string.h>
+  #include <assert.h>
+  #include <ctype.h>
+  #include <sys/types.h>
+--- 62,77 ----
+   *
+   * Copyright 1986, 1987 by the MIT Student Information Processing Board
+   *
+!  * For copyright info, see sipb-copying.h.
+   */
+  
++ #ifdef SYSV
+  #include <string.h>
++ #define index strchr
++ #define rindex strrchr
++ #else
++ #include <strings.h>
++ #endif
+  #include <assert.h>
+  #include <ctype.h>
+  #include <sys/types.h>
+***************
+*** 72,82 ****
+  #include <sys/time.h>
+  #include "internal.h"
+  #include "error_table.h"
+! #include "mit-sipb-copyright.h"
+  
+  #ifndef	lint
+  static char const rcsid_error_table_y[] =
+!     "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/com_err/com_err.patch4,v 1.1 1993-10-12 06:01:52 probe Exp $";
+  #endif
+  
+  extern FILE *hfile, *cfile;
+--- 78,88 ----
+  #include <sys/time.h>
+  #include "internal.h"
+  #include "error_table.h"
+! #include "sipb-copying.h"
+  
+  #ifndef	lint
+  static char const rcsid_error_table_y[] =
+!     "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/com_err/com_err.patch4,v 1.1 1993-10-12 06:01:52 probe Exp $";
+  #endif
+  
+  extern FILE *hfile, *cfile;
+*** /tmp/delete/com_err/et_lex.lex.l	Mon Mar 11 20:22:48 1991
+--- et_lex.lex.l	Mon Mar 11 20:26:43 1991
+***************
+*** 31,35 ****
+  .		{ return (*yytext); }
+  %%
+  #ifndef lint
+! static char rcsid_et_lex_lex_l[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/com_err/com_err.patch4,v 1.1 1993-10-12 06:01:52 probe Exp $";
+  #endif
+--- 31,35 ----
+  .		{ return (*yytext); }
+  %%
+  #ifndef lint
+! static char rcsid_et_lex_lex_l[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/com_err/com_err.patch4,v 1.1 1993-10-12 06:01:52 probe Exp $";
+  #endif
+*** /tmp/delete/com_err/et_name.c	Mon Mar 11 20:22:49 1991
+--- et_name.c	Mon Mar 11 20:26:44 1991
+***************
+*** 1,11 ****
+  /*
+   * Copyright 1987 by MIT Student Information Processing Board
+   *
+!  * For copyright info, see mit-sipb-copyright.h.
+   */
+  
+  #include "error_table.h"
+! #include "mit-sipb-copyright.h"
+  #include "internal.h"
+  
+  #ifndef	lint
+--- 1,11 ----
+  /*
+   * Copyright 1987 by MIT Student Information Processing Board
+   *
+!  * For copyright info, see sipb-copying.h.
+   */
+  
+  #include "error_table.h"
+! #include "sipb-copying.h"
+  #include "internal.h"
+  
+  #ifndef	lint
+***************
+*** /tmp/delete/com_err/12,18 ****
+  static const char copyright[] =
+      "Copyright 1987,1988 by Student Information Processing Board, Massachusetts Institute of Technology";
+  static const char rcsid_et_name_c[] =
+!     "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/com_err/com_err.patch4,v 1.1 1993-10-12 06:01:52 probe Exp $";
+  #endif
+  
+  static const char char_set[] =
+--- 12,18 ----
+  static const char copyright[] =
+      "Copyright 1987,1988 by Student Information Processing Board, Massachusetts Institute of Technology";
+  static const char rcsid_et_name_c[] =
+!     "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/com_err/com_err.patch4,v 1.1 1993-10-12 06:01:52 probe Exp $";
+  #endif
+  
+  static const char char_set[] =
+*** init_et.c	Mon Mar 11 20:22:49 1991
+--- init_et.c	Mon Mar 11 20:26:45 1991
+***************
+*** 1,17 ****
+  /*
+!  * $Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/com_err/com_err.patch4,v 1.1 1993-10-12 06:01:52 probe Exp $
+!  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/delete/com_err/com_err.patch4,v $
+   * $Locker:  $
+   *
+   * Copyright 1986, 1987, 1988 by MIT Information Systems and
+   *	the MIT Student Information Processing Board.
+   *
+!  * For copyright info, see mit-sipb-copyright.h.
+   */
+  
+  #include <stdio.h>
+  #include "error_table.h"
+! #include "mit-sipb-copyright.h"
+  
+  #ifndef __STDC__
+  #define const
+--- 1,17 ----
+  /*
+!  * $Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/com_err/com_err.patch4,v 1.1 1993-10-12 06:01:52 probe Exp $
+!  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/delete/com_err/com_err.patch4,v $
+   * $Locker:  $
+   *
+   * Copyright 1986, 1987, 1988 by MIT Information Systems and
+   *	the MIT Student Information Processing Board.
+   *
+!  * For copyright info, see sipb-copying.h.
+   */
+  
+  #include <stdio.h>
+  #include "error_table.h"
+! #include "sipb-copying.h"
+  
+  #ifndef __STDC__
+  #define const
+***************
+*** 19,25 ****
+  
+  #ifndef	lint
+  static const char rcsid_init_et_c[] =
+!     "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/com_err/com_err.patch4,v 1.1 1993-10-12 06:01:52 probe Exp $";
+  #endif
+  
+  extern char *malloc(), *realloc();
+--- 19,25 ----
+  
+  #ifndef	lint
+  static const char rcsid_init_et_c[] =
+!     "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/com_err/com_err.patch4,v 1.1 1993-10-12 06:01:52 probe Exp $";
+  #endif
+  
+  extern char *malloc(), *realloc();
+*** /tmp/delete/com_err/internal.h	Mon Mar 11 20:22:50 1991
+--- internal.h	Mon Mar 11 20:26:45 1991
+***************
+*** 1,7 ****
+  /*
+   * internal include file for com_err package
+   */
+! #include "mit-sipb-copyright.h"
+  #ifndef __STDC__
+  #undef const
+  #define const
+--- 1,7 ----
+  /*
+   * internal include file for com_err package
+   */
+! #include "sipb-copying.h"
+  #ifndef __STDC__
+  #undef const
+  #define const
