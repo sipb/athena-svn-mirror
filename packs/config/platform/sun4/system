@@ -81,3 +81,7 @@ set scsi_options=0x3f8
 
 set shmsys:shminfo_shmmax=16777216
 set shmsys:shminfo_shmseg=8
+
+* Zero dosynctodr so that xntpd doesn't compete with the hardware time
+* of day clock for synchronization.
+set dosynctodr=0
