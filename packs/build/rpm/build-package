@@ -8,13 +8,9 @@ usage="$usage source rpmname"
 
 sourcedir=/mit/source
 destdir=/build
-makepackage=yes
 
 while getopts s:d:v:r: opt; do
   case "$opt" in
-  n)
-    makepackage=no
-    ;;
   s)
     sourcedir="$OPTARG"
     ;;
