@@ -20,13 +20,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/io.c,v $
- *	$Id: io.c,v 1.19 1991-10-30 16:15:10 lwvanels Exp $
+ *	$Id: io.c,v 1.20 1992-02-24 17:51:00 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/io.c,v 1.19 1991-10-30 16:15:10 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/io.c,v 1.20 1992-02-24 17:51:00 lwvanels Exp $";
 #endif
 #endif
 
@@ -248,13 +248,31 @@ read_list(fd, list)
 }
 
 
-/* Note; both these functions assume that you will only be talking to one */
-/* daemon.  This may need to be changed in the future (but for now it makes */
-/* caching easy */
-
 /*
  * Function:	open_connection_to_daemon() opens a socket connected to the
- *			OLC daemon and provides Kerberos authentication.
+ *			default OLC daemon and provides Kerberos
+ *			authentication.
+ *
+ * Arguments:	None.
+ * Returns:	A file descriptor bound to a socket connected to the daemon
+ *		if successful.  If an error occurs, we exit.
+ * Notes:
+ *		This is just a wrapper around open_connection_to_named_daemon
+ */
+
+ERRCODE
+open_connection_to_daemon(request, fd)
+     REQUEST *request;
+     int *fd;
+{
+  return(open_connection_to_named_daemon(request, fd, DaemonHost));
+}
+
+/*
+ * Function:	open_connection_to_named_daemon() opens a socket connected
+ *			to the specified OLC daemon and provides Kerberos
+ *			authentication.
+ *
  * Arguments:	None.
  * Returns:	A file descriptor bound to a socket connected to the daemon
  *		if successful.  If an error occurs, we exit.
@@ -266,13 +284,15 @@ read_list(fd, list)
  */
 
 ERRCODE
-open_connection_to_daemon(request, fd)
+open_connection_to_named_daemon(request, fd, hostname)
      REQUEST *request;
      int *fd;
+     char *hostname;
 {
   struct hostent *hp = (struct hostent *)NULL; 
   struct servent *service = (struct servent *)NULL; 
   static struct sockaddr_in sin, *sptr = (struct sockaddr_in *) NULL;
+  static char cached_hostname[MAXHOSTNAMELEN];
   int status;
 
 #ifdef KERBEROS
@@ -283,40 +303,40 @@ open_connection_to_daemon(request, fd)
 
   *fd = socket(AF_INET, SOCK_STREAM, 0);
   
-  if (sptr == (struct sockaddr_in *) NULL)
-    {
-      char *port_env;
-      hp = gethostbyname(DaemonHost);
-      if (hp == (struct hostent *)NULL) 
-	{
-	  close(*fd);
-	  return(ERROR_NAME_RESOLVE);
-	}
-      
-      bzero(&sin, sizeof (sin));
-      bcopy(hp->h_addr, &sin.sin_addr, hp->h_length);
-
-      sin.sin_family = AF_INET;
-
-      port_env = (char *) getenv ("OLCD_PORT");
-      if (port_env != NULL)
-	  sin.sin_port = htons (atoi (port_env));
-      else {
-#ifdef HESIOD
-          service = hes_getservbyname(OLC_SERVICE, OLC_PROTOCOL);
-#endif
-	  /* Fall back to /etc/services if no hesiod information avail. */
-	  if (service == (struct servent *) NULL) {
-	    if ((service = getservbyname(OLC_SERVICE, OLC_PROTOCOL)) ==
-		(struct servent *) NULL) {
-	      close(*fd);
-	      return(ERROR_SLOC);
-	    }
-	  }
-	  sin.sin_port = service->s_port;
-	}
-      sptr = &sin;
+  if ((sptr == (struct sockaddr_in *) NULL) ||
+      (strcmp(cached_hostname,hostname) != 0)) {
+    char *port_env;
+    hp = gethostbyname(DaemonHost);
+    if (hp == (struct hostent *)NULL) {
+      close(*fd);
+      return(ERROR_NAME_RESOLVE);
     }
+      
+    bzero(&sin, sizeof (sin));
+    bcopy(hp->h_addr, &sin.sin_addr, hp->h_length);
+
+    sin.sin_family = AF_INET;
+
+    port_env = (char *) getenv ("OLCD_PORT");
+    if (port_env != NULL)
+      sin.sin_port = htons (atoi (port_env));
+    else {
+#ifdef HESIOD
+      service = hes_getservbyname(OLC_SERVICE, OLC_PROTOCOL);
+#endif
+      /* Fall back to /etc/services if no hesiod information avail. */
+      if (service == (struct servent *) NULL) {
+	if ((service = getservbyname(OLC_SERVICE, OLC_PROTOCOL)) ==
+	    (struct servent *) NULL) {
+	  close(*fd);
+	  return(ERROR_SLOC);
+	}
+      }
+      sin.sin_port = service->s_port;
+    }
+    sptr = &sin;
+    strcpy(cached_hostname,hostname);
+  }
 
   if (connect(*fd, (struct sockaddr *)(&sin), sizeof(sin)) < 0) 
     {
