@@ -1,5 +1,5 @@
 /*
- * $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/rpd.h,v 1.17 1993-05-16 19:21:14 vanharen Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/rpd.h,v 1.18 1993-10-08 09:22:44 thorne Exp $
  * Copyright (C) 1989,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  */
@@ -60,8 +60,8 @@ struct 	entry {
 #ifdef KERBEROS
 #define K_SERVICE	"olc"
 
-#define SRVTAB      "/usr/athena/lib/olc/srvtab"
-#define MONITOR_ACL "/usr/athena/lib/olc/acls/monitor.acl"
+#define SRVTAB      "/etc/athena/srvtab"
+#define MONITOR_ACL "/var/server/olc/acls/monitor.acl"
 
 /* system */
 char *inet_ntoa P((struct in_addr in));
