@@ -25,7 +25,7 @@ SM_UNUSED(static char copyright[]) =
 	The Regents of the University of California.  All rights reserved.\n";
 #endif /* ! lint */
 
-SM_RCSID("@(#)$Id: main.c,v 1.3 2003-07-25 05:13:41 zacheiss Exp $")
+SM_RCSID("@(#)$Id: main.c,v 1.4 2003-11-02 03:14:43 zacheiss Exp $")
 
 
 #if NETINET || NETINET6
@@ -98,6 +98,8 @@ char		*CommandLineArgs;	/* command line args for pid file */
 bool		Warn_Q_option = false;	/* warn about Q option use */
 static int	MissingFds = 0;	/* bit map of fds missing on startup */
 char		*Mbdb = "pw";	/* mailbox database defaults to /etc/passwd */
+int		noauthentication = 0; /* Use authentication? */
+char		*porttouse = NULL; /* port for outgoing mail, overriding cf file  */
 
 #ifdef NGROUPS_MAX
 GIDSET_T	InitialGidSet[NGROUPS_MAX];
@@ -373,23 +375,23 @@ main(argc, argv, envp)
 
 #if _FFR_QUARANTINE
 # if defined(__osf__) || defined(_AIX3)
-#  define OPTIONS	"A:B:b:C:cd:e:F:f:Gh:IiL:M:mN:nO:o:p:q:R:r:sTtV:vX:xQ:U"
+#  define OPTIONS	"A:B:b:C:cd:e:F:f:Gh:IiL:M:mN:nO:o:P:p:q:R:r:sTtV:vX:xQ:U"
 # endif /* defined(__osf__) || defined(_AIX3) */
 # if defined(sony_news)
-#  define OPTIONS	"A:B:b:C:cd:E:e:F:f:Gh:IiJ:L:M:mN:nO:o:p:q:R:r:sTtV:vX:Q:U"
+#  define OPTIONS	"A:B:b:C:cd:E:e:F:f:Gh:IiJ:L:M:mN:nO:o:P:p:q:R:r:sTtV:vX:Q:U"
 # endif /* defined(sony_news) */
 # ifndef OPTIONS
-#  define OPTIONS	"A:B:b:C:cd:e:F:f:Gh:IiL:M:mN:nO:o:p:q:R:r:sTtV:vX:Q:U"
+#  define OPTIONS	"A:B:b:C:cd:e:F:f:Gh:IiL:M:mN:nO:o:P:p:q:R:r:sTtV:vX:Q:U"
 # endif /* ! OPTIONS */
 #else /* _FFR_QUARANTINE */
 # if defined(__osf__) || defined(_AIX3)
-#  define OPTIONS	"A:B:b:C:cd:e:F:f:Gh:IiL:M:mN:nO:o:p:q:R:r:sTtV:vX:xU"
+#  define OPTIONS	"A:B:b:C:cd:e:F:f:Gh:IiL:M:mN:nO:o:P:p:q:R:r:sTtV:vX:xU"
 # endif /* defined(__osf__) || defined(_AIX3) */
 # if defined(sony_news)
-#  define OPTIONS	"A:B:b:C:cd:E:e:F:f:Gh:IiJ:L:M:mN:nO:o:p:q:R:r:sTtV:vX:U"
+#  define OPTIONS	"A:B:b:C:cd:E:e:F:f:Gh:IiJ:L:M:mN:nO:o:P:p:q:R:r:sTtV:vX:U"
 # endif /* defined(sony_news) */
 # ifndef OPTIONS
-#  define OPTIONS	"A:B:b:C:cd:e:F:f:Gh:IiL:M:mN:nO:o:p:q:R:r:sTtV:vX:U"
+#  define OPTIONS	"A:B:b:C:cd:e:F:f:Gh:IiL:M:mN:nO:o:P:p:q:R:r:sTtV:vX:U"
 # endif /* ! OPTIONS */
 #endif /* _FFR_QUARANTINE */
 
@@ -964,6 +966,10 @@ main(argc, argv, envp)
 			}
 			break;
 
+		  case 'P':
+			porttouse = newstr(optarg);
+			break;
+
 #if _FFR_QUARANTINE
 		  case 'Q':	/* change quarantining on queued items */
 			/* sanity check */
@@ -1125,7 +1131,7 @@ main(argc, argv, envp)
 			break;
 
 		  case 'U':    /* Don't even bother trying authentication. */
-			conffile = newstr("/etc/mail/sendmail-noauth.cf");
+			noauthentication = 1;
 		        break;
 
 		  case 'V':	/* DSN ENVID: set "original" envelope id */
