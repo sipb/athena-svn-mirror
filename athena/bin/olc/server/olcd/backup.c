@@ -10,18 +10,19 @@
  *
  *      Tom Coppeto
  *	Chris VanHaren
+ *	Lucien Van Elsen
  *      MIT Project Athena
  *
  * Copyright (C) 1988,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/backup.c,v $
- *	$Id: backup.c,v 1.14 1990-07-16 08:29:49 lwvanels Exp $
+ *	$Id: backup.c,v 1.15 1990-08-20 04:38:41 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/backup.c,v 1.14 1990-07-16 08:29:49 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/backup.c,v 1.15 1990-08-20 04:38:41 lwvanels Exp $";
 #endif
 
 #include <mit-copyright.h>
@@ -45,12 +46,12 @@ static void type_error();
  * Plain text is used so the file can be debugged easily.
  */
 
-static char *DATA_SEP      = "  new data:    \0";
-static char *USER_SEP      = "  new user:    \0";
-static char *KNUCKLE_SEP   = "  new knuckle: \0";
-static char *TEXT_SEP      = "  new text:    \0";
-static char *BLANK_SEP     = "  a blank:     \0";
-static char *TRANS_SEP     = "  new train:   \0";
+static char *DATA_SEP      = "  new data:    ";
+static char *USER_SEP      = "  new user:    ";
+static char *KNUCKLE_SEP   = "  new knuckle: ";
+static char *TEXT_SEP      = "  new text:    ";
+static char *BLANK_SEP     = "  a blank:     ";
+static char *TRANS_SEP     = "  new train:   ";
 
 static type_buf[BUF_SIZE];
 static int skip;
