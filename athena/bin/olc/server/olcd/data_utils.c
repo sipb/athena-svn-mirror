@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data_utils.c,v $
- *	$Id: data_utils.c,v 1.33 1991-03-27 14:15:19 lwvanels Exp $
+ *	$Id: data_utils.c,v 1.34 1991-03-28 23:07:53 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data_utils.c,v 1.33 1991-03-27 14:15:19 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data_utils.c,v 1.34 1991-03-28 23:07:53 lwvanels Exp $";
 #endif
 #endif
 
@@ -33,6 +33,7 @@ static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 #include <olcd.h>
 
 #include <ctype.h>
+#include <string.h>
 #include <syslog.h>
 #include <sys/errno.h>
 #include <sys/types.h>    
