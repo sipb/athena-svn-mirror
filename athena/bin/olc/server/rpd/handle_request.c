@@ -6,7 +6,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/rpd/handle_request.c,v 1.8 1990-12-31 21:10:41 lwvanels Exp $";
+static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/rpd/handle_request.c,v 1.9 1991-01-15 18:04:20 lwvanels Exp $";
 #endif
 #endif
 
@@ -19,8 +19,8 @@ handle_request(fd, from)
 {
 
   int len;
-  char username[9];
-  int instance;
+  char username[9],tusername[9];
+  int instance,tinstance;
   int version;
   int request;
   u_long output_len;
@@ -90,9 +90,32 @@ handle_request(fd, from)
 
   instance = ntohl(instance);
 
+  if (request == REPLAY_KILL_REQ) {
+    /* both of these take a target username */
+    if ((len = sread(fd,tusername,9)) != 9) {
+      if (len == -1)
+	syslog(LOG_ERR,"reading tusername: %m");
+      else
+	syslog(LOG_WARNING,"Wanted nine bytes of tusername, only got %d\n",
+	       len);
+      punt_connection(fd,from);
+      return;
+    }
+
+    if ((len = sread(fd,&tinstance,sizeof(tinstance))) != sizeof(tinstance)) {
+      if (len == -1)
+	syslog(LOG_ERR,"reading tinstance: %m");
+      else
+	syslog(LOG_WARNING,"Not enough bytes for tinstance (%d)\n",len);
+      punt_connection(fd,from);
+      return;
+    }
+
+    tinstance = ntohl(tinstance);
+  }
 
 #ifdef KERBEROS
-
+  
   if ((len = sread(fd,&their_auth.length, sizeof(their_auth.length))) !=
       sizeof(their_auth.length)) {
     if (len == -1)
@@ -142,7 +165,8 @@ handle_request(fd, from)
   syslog(LOG_DEBUG,"%s replays %s [%d]",principal_buffer, username,
 	 instance);
 
-  if ((request == SHOW_KILL_REQ) && strcmp(their_info.pname,username)) {
+  if (((request == SHOW_KILL_REQ) && strcmp(their_info.pname,username)) ||
+      ((request == REPLAY_KILL_REQ) && strcmp(their_info.pname,tusername))) {
     syslog(LOG_WARNING, "Request to delete %s's new messages from %s@%s\n",
 	   username,principal_buffer, inet_ntoa(from.sin_addr));
     output_len = htonl(ERR_OTHER_SHOW);
@@ -161,6 +185,12 @@ handle_request(fd, from)
     buf = get_nm(username,instance,&result,0);
     break;
   case LIST_REQ:
+    buf = get_log(username,instance,&result);
+    break;
+  case REPLAY_KILL_REQ:
+    buf = get_nm(tusername,tinstance,&result,1);
+    if (result != 0)
+      break;
     buf = get_log(username,instance,&result);
     break;
   default:
@@ -191,7 +221,6 @@ punt_connection(fd, from)
      int fd;
      struct sockaddr_in from;
 {
-  shutdown(fd,2);   /* Not going to send or receive from this guy again.. */
   close(fd);
   syslog(LOG_INFO,"Punted connection from %s\n",inet_ntoa(from.sin_addr));
   return;
