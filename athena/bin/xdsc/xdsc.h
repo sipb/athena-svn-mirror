@@ -2,6 +2,8 @@
 #define		MAX_BOT_BUTTONS		9
 #define		BUFSIZE			512
 #define		HELL_FROZEN_OVER	0
+#define		LONGNAMELEN		100
+#define		SHORTNAMELEN		50
 
 #define		NEXT			1
 #define		PREV			2
@@ -14,6 +16,7 @@
 #define		LAST			9
 #define		CURRENT			10
 #define		HIGHESTSEEN		11
+#define		INITIALIZE		12
 
 #define		BUTTONS_UPDATE		1
 #define		BUTTONS_OFF		2
@@ -23,4 +26,4 @@
 #define		EDITMTGS		2
 #define		LISTTRNS		3
 
-static char rcsidh[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/xdsc/xdsc.h,v 1.1 1990-12-03 13:42:53 sao Exp $";
+static char rcsidh[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/xdsc/xdsc.h,v 1.2 1990-12-06 16:42:38 sao Exp $";
