@@ -13,7 +13,7 @@
  * without express or implied warranty.
  */
 
-static const char rcsid[] = "$Id: verify.c,v 1.11 2000-04-11 13:38:38 rbasch Exp $";
+static const char rcsid[] = "$Id: verify.c,v 1.12 2000-04-25 13:47:34 rbasch Exp $";
 
 #include <sys/types.h>
 #include <sys/param.h>
@@ -117,8 +117,6 @@ int al_pid;
 extern FILE *xdmstream;
 #endif
 
-extern char *audio_devices[];
-
 static char *get_tickets(char *username, char *password);
 static void abort_verify(void *user);
 static void add_utmp(char *user, char *tty, char *display);
@@ -172,7 +170,7 @@ static struct passwd *get_pwnam(char *usr)
 #endif
 
 char *dologin(char *user, char *passwd, int option, char *script,
-	      char *tty, char *session, char *display)
+	      char *tty, char *startup, char *session, char *display)
 {
   static char errbuf[5120];
   char tkt_file[128], *msg, wgfile[16];
@@ -597,18 +595,10 @@ char *dologin(char *user, char *passwd, int option, char *script,
 		"Continue with this login session anyway?",
 		abort_verify, user);
 
-#ifdef SOLARIS_MAE
-  /* If the login fails, lose() is called, setting a global flag
-   * to indicate that xlogin will exit as soon as the user has
-   * been notified of the error. xlogin will then restart, and
-   * at the beginning of xlogin we chown netdev back to root.
+  /* Invoke the Xstartup script.  This should ensure that the various user
+   * devices (e.g. audio) are chown'ed to the user.
    */
-  if (netspy)
-    chown(NETDEV, pwd->pw_uid, SYS);
-#endif
-
-  for (i = 0; audio_devices[i]; i++)
-    chown(audio_devices[i], pwd->pw_uid, WHEEL);
+  exec_script(startup, environment);
 
 #ifdef HAVE_SETLOGIN
   i = setlogin(pwd->pw_name);

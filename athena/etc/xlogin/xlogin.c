@@ -13,7 +13,7 @@
  * without express or implied warranty.
  */
 
-static const char rcsid[] = "$Id: xlogin.c,v 1.6 2000-04-11 13:38:42 rbasch Exp $";
+static const char rcsid[] = "$Id: xlogin.c,v 1.7 2000-04-25 13:47:35 rbasch Exp $";
  
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -144,6 +144,8 @@ typedef struct _XLoginResources {
   String reactivate_prog;
   String tty;
   String session;
+  String reset;
+  String startup;
   String fontpath;
   String srvdcheck;
   String loginName;
@@ -169,6 +171,8 @@ static XrmOptionDescRec options[] = {
   {"-restart",	"*restartTimeout",	XrmoptionSepArg,	NULL},
   {"-tty",	"*loginTty",		XrmoptionSepArg,	NULL},
   {"-session",	"*sessionScript",	XrmoptionSepArg,	NULL},
+  {"-reset",	"*resetScript",		XrmoptionSepArg,	NULL},
+  {"-startup",	"*startupScript",	XrmoptionSepArg,	NULL},
   {"-srvdcheck","*srvdCheck",		XrmoptionSepArg,	NULL},
   {"-fp",	"*fontPath",		XrmoptionSepArg,	NULL},
   {"-blankall", "*blankAll",		XrmoptionNoArg,   (caddr_t) "on"},
@@ -206,6 +210,10 @@ static XtResource my_resources[] = {
      Offset(tty), XtRImmediate, (caddr_t) "ttyv0"},
   {"sessionScript", XtCFile, XtRString, sizeof(String),
      Offset(session), XtRImmediate, (caddr_t) "/etc/athena/login/Xsession"},
+  {"resetScript", XtCFile, XtRString, sizeof(String),
+     Offset(reset), XtRImmediate, (caddr_t) "/etc/athena/login/Xreset"},
+  {"startupScript", XtCFile, XtRString, sizeof(String),
+     Offset(startup), XtRImmediate, (caddr_t) "/etc/athena/login/Xstartup"},
   {"srvdcheck", XtCFile, XtRString, sizeof(String),
      Offset(srvdcheck), XtRImmediate, (caddr_t) "/srvd/.rvdinfo"},
 #ifdef SOLARIS
@@ -281,16 +289,6 @@ extern char *defaultpath;
 char loginname[128], passwd[128];
 sigset_t sig_zero;
 
-#ifdef SOLARIS_MAE
-int netspy = FALSE;
-#endif
-
-#ifdef SOLARIS
-char *audio_devices[] = { "/dev/audio", "/dev/audioctl", NULL };
-#else
-char *audio_devices[] = { NULL };
-#endif
-
 /* Local Globals */
 
 static struct sigaction sigact, osigact;
@@ -306,6 +304,7 @@ int main(int argc, char **argv)
   int i;
   long acc = 0;
   int pid;
+  extern char **environ;
 #ifdef NANNY
   int fdflags;
 #endif
@@ -405,25 +404,11 @@ int main(int argc, char **argv)
     kill(getppid(), SIGUSR1);
 #endif /* not NANNY */
 
-#ifdef SOLARIS_MAE
-  /* Make sure the network device has the proper owner and protections.
-   * But don't muck with it unless the file NETSPY exists. */
-
-  netspy = file_exists(NETSPY);
-  if (netspy)
-    {
-      chown(NETDEV, ROOT, SYS);
-      chmod(NETDEV, 0600);
-    }
-#endif
-
-  /* Ditto for audio devices. */
-  for (i = 0; audio_devices[i]; i++)
-    {
-      chown(audio_devices[i], ROOT, WHEEL);
-      chmod(audio_devices[i], 0600);
-    }
-
+  /* Invoke the Xreset script.  This should ensure that the various user
+   * devices (e.g. audio) are chown'ed to root.
+   */
+  exec_script(resources.reset, environ);
+  
   /* Call reactivate with the -prelogin option. This restores /etc/passwd,
    * blows away stray processes, runs access_off, and a couple of other
    * low overhead things (if PUBLIC=true). This is low overhead because
@@ -1009,7 +994,8 @@ static void loginACT(Widget w, XEvent *event, String *p, Cardinal *n)
       XFlush(dpy);
       larv_set_busy(1);
       tb.ptr = dologin(loginname, passwd, mode, script, resources.tty,
-		       resources.session, DisplayString(dpy));
+		       resources.startup, resources.session,
+		       DisplayString(dpy));
       larv_set_busy(0);
       XWarpPointer(dpy, None, RootWindow(dpy, DefaultScreen(dpy)),
 		   0, 0, 0, 0, WidthOfScreen(DefaultScreenOfDisplay(dpy))/2,
@@ -1865,7 +1851,7 @@ static void catch_child(void)
   while (1)
     {
       pid = waitpid(-1, &status, WNOHANG);
-      if (pid == -1 && errno == ECHILD)
+      if ((pid == -1 && errno == ECHILD) || (pid == 0))
 	break;
       if (pid == activation_pid)
 	{
@@ -2064,4 +2050,56 @@ int set_uid_and_caps(struct passwd *pw)
 #else
   return setuid(pw->pw_uid);
 #endif
+}
+
+/* Execute the given script in a child process, using the given
+ * environment.  Returns the child's exit status, or -1 upon failure.
+ */
+int exec_script(const char *file, char **env)
+{
+  sigset_t mask, omask;
+  pid_t pid, ret;
+  int status;
+  char *shell = "/bin/sh";
+
+  /* Block SIGCHLD to prevent the handler from interfering. */
+  sigemptyset(&mask);
+  sigaddset(&mask, SIGCHLD);
+  sigprocmask(SIG_BLOCK, &mask, &omask);
+
+  pid = fork();
+  switch (pid)
+    {
+    case 0:
+      /* This is the child. */
+      sigprocmask(SIG_SETMASK, &omask, NULL);
+      /* Try to execute the file. */
+      execle(file, file, (char *) NULL, env);
+      /* If the exec failed with a header or permissions problem,
+       * try feeding the file to the shell.
+       */
+      if (errno == ENOEXEC || errno == EACCES)
+	execle(shell, shell, file, (char *) NULL, env);
+      fprintf(stderr, "xlogin: Cannot execute %s: %s\n", file,
+	      strerror(errno));
+      _exit(-1);
+    case -1:
+      /* The fork() failed. */
+      sigprocmask(SIG_SETMASK, &omask, NULL);
+      fprintf(stderr, "xlogin: Cannot fork to run %s\n", file);
+      return -1;
+    default:
+      break;
+    }
+
+  /* This is the parent.  Wait for the child to complete. */
+  while (((ret = waitpid(pid, &status, 0)) == -1) && (errno == EINTR))
+    ;
+
+  sigprocmask(SIG_SETMASK, &omask, NULL);
+
+  if ((ret != pid) || !WIFEXITED(status))
+    return -1;
+
+  return WEXITSTATUS(status);
 }

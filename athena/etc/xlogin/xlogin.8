@@ -1,4 +1,4 @@
-.\" $Id: xlogin.8,v 1.1 1999-10-28 15:38:53 kcr Exp $
+.\" $Id: xlogin.8,v 1.2 2000-04-25 13:47:35 rbasch Exp $
 .TH XLOGIN 8 "25 May 1994"
 .ds ]W MIT Project Athena
 .SH NAME
@@ -66,6 +66,16 @@ Name of the tty to log the user in on.
 .B -session
 Name of the global session script to run when logging the user in.
 .TP
+.B -reset
+Name of the reset script to run during initialization.  It can be
+used to reclaim ownership of devices granted to the user by the
+startup script.
+.TP
+.B -startup
+Name of the startup script to run as root after the user has been
+verified.  It can be used to grant ownership of various devices
+(e.g. audio) to the user logging in.
+.TP
 .B -motdfile
 Name of the file to find the global message of the day to display in
 the idle screen.
@@ -119,6 +129,14 @@ Name of the tty to log the user in on.
 .B *sessionScript
 Name of the global session script to run when logging the user in.
 The default is /etc/athena/login/Xsession.
+.TP
+.B *resetScript
+Name of the reset script to run during initialization.
+The default is /etc/athena/login/Xreset.
+.TP
+.B *startupScript
+Name of the startup script to run as root after the user has
+been verified.  The default is /etc/athena/login/Xstartup.
 .PP
 The following resources may also be specified (typically in Xlogin.local):
 .TP
