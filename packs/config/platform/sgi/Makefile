@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.5 1997-02-19 18:23:23 ghudson Exp $
+# $Id: Makefile,v 1.6 1997-03-09 21:59:55 ghudson Exp $
 
 SHELL=/bin/sh
 ETCDIR=/etc
@@ -12,6 +12,7 @@ CRONTABS=/var/spool/cron/crontabs
 FLEXLM=/var/flexlm
 NCS=/var/ncs
 NETLS=/var/netls
+SGICONFIG=/etc/config
 CONFIG=/afs/athena.mit.edu/system/config
 
 all:
@@ -22,7 +23,7 @@ install:
 	-mkdir -p ${DESTDIR}${ETCDIR}
 	-mkdir -p ${DESTDIR}${ATHRETCDIR}
 	-mkdir -p ${DESTDIR}${DEFAULT}
-	-mkdir -p ${DESTDIR}${CONFIG}
+	-mkdir -p ${DESTDIR}${SGICONFIG}
 	-mkdir -p ${DESTDIR}${X11LIBS}
 	-mkdir -p ${DESTDIR}${APPDEFS}
 	-mkdir -p ${DESTDIR}${FONTS}
@@ -45,16 +46,16 @@ install:
 	install -c -m 0644 newsyslog.conf ${DESTDIR}${ATHRETCDIR}
 	install -c -m 0644 nodelock ${DESTDIR}${NETLS}
 	install -c -m 0644 passwd.fallback ${DESTDIR}${ETCDIR}
-	install -c -m 0644 ppagesd ${DESTDIR}${CONFIG}
+	install -c -m 0644 ppagesd ${DESTDIR}${SGICONFIG}
 	install -c -m 0644 rc.conf ${DESTDIR}${ATHRETCDIR}
-	install -c -m 0644 rfindd ${DESTDIR}${CONFIG}
+	install -c -m 0644 rfindd ${DESTDIR}${SGICONFIG}
 	install -c -m 0644 sendmail.cf ${DESTDIR}${ETCDIR}
 	install -c -m 0644 services ${DESTDIR}${ETCDIR}
-	install -c -m 0644 staticroute ${DESTDIR}${CONFIG}
+	install -c -m 0644 staticroute ${DESTDIR}${SGICONFIG}
 	install -c -m 0644 su ${DESTDIR}${DEFAULT}
 	install -c -m 0644 system.chestrc ${DESTDIR}${X11LIB}
 	install -c -m 0644 syslog.conf ${DESTDIR}${ETCDIR}
-	install -c -m 0644 verbose ${DESTDIR}${CONFIG}
+	install -c -m 0644 verbose ${DESTDIR}${SGICONFIG}
 	rm -f ${DESTDIR}${FLEXLM}/license.dat
 	ln -s ${CONFIG}/license/sgi/license.dat ${DESTDIR}${FLEXLM}/license.dat
 	rm -f ${DESTDIR}${NCS}/glb_site.txt
