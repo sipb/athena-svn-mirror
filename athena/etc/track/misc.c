@@ -1,8 +1,14 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/track/misc.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/misc.c,v 2.0 1987-11-30 15:19:30 don Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/misc.c,v 2.1 1987-12-01 16:44:49 don Exp $
  *
  *	$Log: not supported by cvs2svn $
+ * Revision 2.0  87/11/30  15:19:30  don
+ * general rewrite; got rid of stamp data-type, with its attendant garbage,
+ * cleaned up pathname-handling. readstat & writestat now sort overything
+ * by pathname, which simplifies traversals/lookup. should be comprehensible
+ * now.
+ * 
  * Revision 1.2  87/11/12  16:51:18  don
  * part of general rewrite.
  * 
@@ -12,7 +18,7 @@
  */
 
 #ifndef lint
-static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/misc.c,v 2.0 1987-11-30 15:19:30 don Exp $";
+static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/misc.c,v 2.1 1987-12-01 16:44:49 don Exp $";
 #endif lint
 
 #include "mit-copyright.h"
@@ -22,7 +28,6 @@ static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athen
 /*
  * diagnostic stuff: used throughout track
  */
-
 printmsg()
 
 {
@@ -32,7 +37,7 @@ printmsg()
 		errno,
 		errmsg,
 		subfilename,
-		entries[cur_ent].fromfile);
+		entries[ entnum].fromfile);
 }
 
 do_gripe()

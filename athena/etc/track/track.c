@@ -1,8 +1,14 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 2.0 1987-11-30 15:14:38 don Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 2.1 1987-12-01 16:45:00 don Exp $
  *
  *	$Log: not supported by cvs2svn $
+ * Revision 2.0  87/11/30  15:14:38  don
+ * general rewrite; got rid of stamp data-type, with its attendant garbage,
+ * cleaned up pathname-handling. readstat & writestat now sort overything
+ * by pathname, which simplifies traversals/lookup. should be comprehensible
+ * now.
+ * 
  *
  * Revision 1.6  87/10/29  		don
  * Rewrote just about everything, but especially read_names &
@@ -30,7 +36,7 @@
  */
 
 #ifndef lint
-static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 2.0 1987-11-30 15:14:38 don Exp $";
+static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 2.1 1987-12-01 16:45:00 don Exp $";
 #endif lint
 
 #include "mit-copyright.h"
@@ -80,7 +86,7 @@ int incl_devs = 0;	/* if set, include devices in update */
 
 Entry entries[ ENTRYMAX];		/* Subscription list entries */
 int entrycnt = 0;			/* Number of entries */
-int cur_ent = 0;			/* Current entry number */
+int entnum = 0;			/* Current entry number */
 
 main(argc,argv)
 int argc;
@@ -297,7 +303,7 @@ readstat() {
 
 	init_next_match();
 
-	while ( cur_ent = get_next_match( statline)) {
+	while ( entnum = get_next_match( statline)) {
 
 		/* extract the currency data from the statline:
 		 */
@@ -305,22 +311,22 @@ readstat() {
 		if ( S_IFMT == TYPE( *remstatp))
 			continue;
 
-		/* remname begins with cur_ent's fromfile:
+		/* remname begins with entnum's fromfile:
 		 */
-		tail = remname + strlen( entries[ cur_ent].fromfile);
+		tail = remname + strlen( entries[ entnum].fromfile);
 
-		if ( ! goodname( tail, cur_ent)) continue;
+		if ( ! goodname( tail, entnum)) continue;
 
 		/* construct the current entry's full pathnames,
 		 * and extract the corresponding currency data for
 		 * the local cmpfile:
 		 */
-		cmpstatp = dec_entry( cur_ent, from, to, cmp);
+		cmpstatp = dec_entry( entnum, from, to, cmp);
 
 		/* dec_entry pushes pathname-qualification onto
 		 * from, to, and cmp:
 		 * the element NAME of the path 'from' indicates the start of
-		 * cur_ent's fromfile-name;
+		 * entnum's fromfile-name;
 		 * the element pathtail() indicates the end of the pathname.
 		 * the same holds for the corresp. elements of 'to' & 'cmp'.
 		 */
@@ -349,7 +355,7 @@ readstat() {
 				  cmpstatp, cmplink,   to[ ROOT]))
 			continue;
 
-		do_cmds( entries[cur_ent].cmdbuf, to[ ROOT]);
+		do_cmds( entries[entnum].cmdbuf, to[ ROOT]);
 	}
 }
 
@@ -417,12 +423,12 @@ writestat()
 	pushpath( from, fromroot);
 	pushpath( cmp,  fromroot);
 
-	for( cur_ent = 1; cur_ent < entrycnt; cur_ent++) {
+	for( entnum = 1; entnum < entrycnt; entnum++) {
 
 		/* dec_entry pushes pathname-qualification
 		 * onto the paths 'from' & 'cmp'.
 		 */
-		cmpstatp = dec_entry( cur_ent, from, NULL, cmp);
+		cmpstatp = dec_entry( entnum, from, NULL, cmp);
 
 		/* write_statline returns fromfile's type:
 		 */
@@ -480,14 +486,14 @@ struct stat *cmpstatp;
 		pushpath( f, dp->d_name);
 		pushpath( c, dp->d_name);
 
-		/* f[ TAIL] was the end of cur_ent's fromfile-name,
+		/* f[ TAIL] was the end of entnum's fromfile-name,
 		 * when writestat called walk_trees.
 		 * since that call, walk_trees has recursively appended
 		 * more pathname-qualification to f.
 		 * now, f[ TAIL] shows just these additions, without the
 		 * original fromfile-name.
 		 */
-		if (! goodname( f[ TAIL], cur_ent));
+		if (! goodname( f[ TAIL], entnum));
 
 		else if ( c && lstat( c[ ROOT], cmpstatp)) {
 			sprintf(errmsg,"can't stat %s\n", c[ ROOT]);

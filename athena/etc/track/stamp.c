@@ -1,15 +1,21 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/track/stamp.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/stamp.c,v 2.0 1987-11-30 15:19:43 don Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/stamp.c,v 2.1 1987-12-01 16:44:54 don Exp $
  *
  *	$Log: not supported by cvs2svn $
+ * Revision 2.0  87/11/30  15:19:43  don
+ * general rewrite; got rid of stamp data-type, with its attendant garbage,
+ * cleaned up pathname-handling. readstat & writestat now sort overything
+ * by pathname, which simplifies traversals/lookup. should be comprehensible
+ * now.
+ * 
  * Revision 1.1  87/02/12  21:15:36  rfrench
  * Initial revision
  * 
  */
 
 #ifndef lint
-static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/stamp.c,v 2.0 1987-11-30 15:19:43 don Exp $";
+static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/stamp.c,v 2.1 1987-12-01 16:44:54 don Exp $";
 #endif lint
 
 #include "mit-copyright.h"
@@ -183,6 +189,8 @@ char *line, *name, *link;
  */
 #define SUBPATH( r, l, n) ('\001' == (r)[n] || '\0' == (r)[n])
 
+int cur_ent = 0;	/* not global! index into entries[]. */
+
 init_next_match() {
 	cur_ent = 1;
 }
@@ -195,13 +203,13 @@ last_match( remkey, i) char *remkey; int i; {
 	 * the current statline:
 	 */
 	for ( ; i < entrycnt; i++) {
-		key = entries[ i + 1].sortkey;
-		len = entries[ i + 1].keylen;
+		key = entries[ i].sortkey;
+		len = entries[ i].keylen;
 		if ( strncmp( remkey, key, len) ||
 	           ! SUBPATH( remkey, key, len))
-			return( i);
+			return( i - 1);
 	}
-	return( 0);
+	return( entrycnt - 1);
 }
 #define SIGN( i) (((i) > 0)? 1 : ((i)? -1 : 0))
 
@@ -229,7 +237,7 @@ char *remstatline;
 			klen = entries[ cur_ent].keylen;
 			switch ( SIGN( strncmp( rkey, lkey, klen))) {
 			case 0: if (   SUBPATH( rkey, lkey, klen))
-					return( last_match( rkey, cur_ent));
+					return( last_match( rkey, cur_ent + 1));
 			case -1: break; 
 			case 1: continue;
 			}
@@ -237,9 +245,10 @@ char *remstatline;
 				* go to outer loop & read statfile.  */
 		}
 		/* XXX: when the inner loop walks off the end of entries[],
-		 * cur_ent gets garbage; but, the loop is faster this way.
-		 * the caller shouldn't be looking at the value, since we're
-		 * saying "the party's over", but let's clean up, anyway.
+		 * entries[ cur_ent] is garbage; but, the loop is faster
+		 * this way. the caller shouldn't be looking at cur_ent's value,
+		 * since we're saying "the party's over", but let's clean up,
+		 * anyway.
 		 */
 		if ( cur_ent >= entrycnt) {
 			cur_ent = 0;
@@ -258,9 +267,9 @@ int entnum; char *fr[], *to[], *cmp[]; {
 	if ( prev_ent) {
 		poppath( fr); poppath( to); poppath( cmp);
 	}
-	pushpath( fr,  entries[ cur_ent].fromfile);
-	pushpath( to,  entries[ cur_ent].tofile);
-	pushpath( cmp, entries[ cur_ent].cmpfile);
+	pushpath( fr,  entries[ entnum].fromfile);
+	pushpath( to,  entries[ entnum].tofile);
+	pushpath( cmp, entries[ entnum].cmpfile);
 	
 	if ( lstat( cmp[ ROOT], &sbuf)) {
 		sbuf.st_mode = S_IFMT;	/* klooge for bad type */

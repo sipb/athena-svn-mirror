@@ -1,15 +1,21 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/track/except.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/except.c,v 2.0 1987-11-30 15:19:17 don Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/except.c,v 2.1 1987-12-01 16:41:36 don Exp $
  *
  *	$Log: not supported by cvs2svn $
+ * Revision 2.0  87/11/30  15:19:17  don
+ * general rewrite; got rid of stamp data-type, with its attendant garbage,
+ * cleaned up pathname-handling. readstat & writestat now sort overything
+ * by pathname, which simplifies traversals/lookup. should be comprehensible
+ * now.
+ * 
  * Revision 1.1  87/02/12  21:14:36  rfrench
  * Initial revision
  * 
  */
 
 #ifndef lint
-static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/except.c,v 2.0 1987-11-30 15:19:17 don Exp $";
+static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/except.c,v 2.1 1987-12-01 16:41:36 don Exp $";
 #endif lint
 
 #include "mit-copyright.h"
@@ -33,7 +39,7 @@ int entnum;
 
 	if (debug)
 		printf("goodname(%s,%d); fromname=%s\n",
-			tail,entnum, entries[cur_ent].fromfile);
+			tail,entnum, entries[entnum].fromfile);
 
 	switch( ( unsigned) *tail) {
 	case '\0': return( 1);
