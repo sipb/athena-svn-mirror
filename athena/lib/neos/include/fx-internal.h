@@ -3,7 +3,7 @@
  *
  * $Author: epeisach $
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/neos/include/fx-internal.h,v $
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/include/fx-internal.h,v 1.1 1992-04-27 12:53:09 epeisach Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/include/fx-internal.h,v 1.2 1992-04-27 12:53:25 epeisach Exp $
  *
  * Copyright 1989, 1990 by the Massachusetts Institute of Technology.
  *
@@ -41,12 +41,20 @@
 
 #ifdef HESIOD
 
-#define HES_NAME "fx"
+#define HES_NAME "turnin"
 #define HES_TYPE "sloc"
 
 #else
 
+#if defined(_IBMR2)
+#define SERVER_LIST_FILE "/usr/lpp/exchange/server.list"
+#else /* defined(_IBMR2) */
+#if defined(ultrix)
+#define SERVER_LIST_FILE "/var/exchange/server.list"
+#else
 #define SERVER_LIST_FILE "/site/exchange/server.list"
+#endif /* defined(ultrix) */
+#endif /* defined(_IBMR2) */
 
 #endif /* HESIOD */
 
