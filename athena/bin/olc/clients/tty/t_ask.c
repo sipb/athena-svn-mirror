@@ -18,12 +18,12 @@
  * Copyright (C) 1989,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: t_ask.c,v 1.25 1999-06-28 22:52:15 ghudson Exp $
+ *	$Id: t_ask.c,v 1.25.4.1 2001-09-16 17:54:28 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: t_ask.c,v 1.25 1999-06-28 22:52:15 ghudson Exp $";
+static char rcsid[] ="$Id: t_ask.c,v 1.25.4.1 2001-09-16 17:54:28 ghudson Exp $";
 #endif
 #endif
 
@@ -70,7 +70,7 @@ t_ask(Request,topic,q_file)
 
     case ERROR:
       fprintf(stderr, 
-	 "An error has 1occurred while contacting server.  Please try again.\n");
+	 "An error has occurred while contacting server.  Please try again.\n");
       if(client_is_user_client())
 	exit(1);
       else
