@@ -1,4 +1,4 @@
-<refentry id="libglade-Libglade-Initialisation" revision="8 Nov 2000">
+<refentry id="libglade-Libglade-Initialisation">
 <refmeta>
 <refentrytitle>Libglade Initialisation</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -79,7 +79,7 @@ This would be a lot more useful if special tags in the XML file could
 trigger the loading of modules.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">

@@ -1,6 +1,6 @@
-/* -*- Mode: C; c-basic-offset: 8 -*- */
-/* libglade - a library for building interfaces from XML files at runtime
- * Copyright (C) 1998, 1999, 2000  James Henstridge <james@daa.com.au>
+/* -*- Mode: C; c-basic-offset: 8 -*-
+ * libglade - a library for building interfaces from XML files at runtime
+ * Copyright (C) 1998-2001  James Henstridge <james@daa.com.au>
  *
  * glade-gtk.c: support for GTK+ widgets in libglade
  *
@@ -270,10 +270,41 @@ clist_build_children (GladeXML *xml, GtkWidget *w, GladeWidgetInfo *info,
 	gint col = 0;
 
 	for (tmp = info->children; tmp; tmp = tmp->next) {
-		GtkWidget *child = glade_xml_build_widget (xml, tmp->data,
-							   longname);
+		GladeWidgetInfo *cinfo = tmp->data;
+		GtkWidget *child = NULL;
 
-		gtk_clist_set_column_widget (GTK_CLIST(w), col, child);
+		/* if it is a GtkLabel child with a "label" attribute,
+		 * treat it specially. */
+		if (!strcmp(cinfo->class, "GtkLabel")) {
+			GList *tmp2;
+			gchar *label = NULL;
+
+			for (tmp2 = cinfo->attributes; tmp2; tmp2=tmp2->next) {
+				GladeAttribute *attr = tmp2->data;
+
+				if (!strcmp(attr->name, "label")) {
+					label = attr->value;
+					break;
+				}
+			}
+			if (label) {
+				gtk_clist_set_column_title (GTK_CLIST(w), col,
+							    label);
+				/* get the GtkLabel, which is a child
+				 * of the alignment widget used as
+				 * title. */
+				child = gtk_clist_get_column_widget
+					(GTK_CLIST(w), col);
+				child = GTK_BIN(child)->child;
+				glade_xml_set_common_params(xml, child, cinfo,
+							    longname);
+			}
+		}
+		if (!child) {
+			child = glade_xml_build_widget (xml, cinfo, longname);
+
+			gtk_clist_set_column_widget (GTK_CLIST(w), col, child);
+		}
 		col++;
 	}
 }
@@ -581,6 +612,7 @@ toolbar_build_children (GladeXML *xml, GtkWidget *w, GladeWidgetInfo *info,
 		}
 		if (is_button) {
 			char *label = NULL, *icon = NULL;
+			gboolean active = FALSE;
 			GtkWidget *iconw = NULL;
 
 			for (tmp2 = cinfo->attributes;tmp2;tmp2 = tmp2->next) {
@@ -590,6 +622,8 @@ toolbar_build_children (GladeXML *xml, GtkWidget *w, GladeWidgetInfo *info,
 				else if (!strcmp(attr->name, "icon"))
 					icon = glade_xml_relative_file(xml,
 								attr->value);
+				else if (!strcmp(attr->name, "active"))
+					active = (attr->value[0] == 'T');
 			}
 			if (icon) {
 				GdkPixmap *pix;
@@ -606,13 +640,15 @@ toolbar_build_children (GladeXML *xml, GtkWidget *w, GladeWidgetInfo *info,
 				if (pix) gdk_pixmap_unref(pix);
 				if (mask) gdk_bitmap_unref(mask);
 			}
-			if (!strcmp(cinfo->class, "GtkToggleButton"))
+			if (!strcmp(cinfo->class, "GtkToggleButton")) {
 				child = gtk_toolbar_append_element(
 					GTK_TOOLBAR(w),
 					GTK_TOOLBAR_CHILD_TOGGLEBUTTON, NULL,
 					_(label), NULL, NULL, iconw, NULL,
 					NULL);
-			else if (!strcmp(cinfo->class, "GtkRadioButton")) {
+				gtk_toggle_button_set_active(
+					GTK_TOGGLE_BUTTON(child), active);
+			} else if (!strcmp(cinfo->class, "GtkRadioButton")) {
 				child = gtk_toolbar_append_element(
 					GTK_TOOLBAR(w),
 					GTK_TOOLBAR_CHILD_RADIOBUTTON, NULL,

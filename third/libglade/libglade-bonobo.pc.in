@@ -8,4 +8,4 @@ Description: A library providing support for Bonobo controls in libglade
 Version: @VERSION@
 Requires: libglade, libglade-gnome
 Libs: -L${libdir} -lglade-bonobo
-Cflags: -I${includedir}
+Cflags: -I${includedir}/libglade-1.0

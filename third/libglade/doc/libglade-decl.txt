@@ -113,6 +113,124 @@ GladeXML *xml, const char *msgid
 <RETURNS>GtkWidget  *</RETURNS>
 GladeXML *xml, gchar *func_name, gchar *name,gchar *string1, gchar *string2,gint int1, gint int2
 </FUNCTION>
+<STRUCT>
+<NAME>GladeAttribute</NAME>
+</STRUCT>
+<STRUCT>
+<NAME>GladeAttribute</NAME>
+struct GladeAttribute {
+    gchar *name;
+    gchar *value;
+};
+</STRUCT>
+<STRUCT>
+<NAME>GladeAcceleratorInfo</NAME>
+</STRUCT>
+<STRUCT>
+<NAME>GladeAcceleratorInfo</NAME>
+struct GladeAcceleratorInfo {
+    guint key;
+    GdkModifierType modifiers;
+    gchar *signal;
+};
+</STRUCT>
+<STRUCT>
+<NAME>GladeSignalInfo</NAME>
+</STRUCT>
+<STRUCT>
+<NAME>GladeSignalInfo</NAME>
+struct GladeSignalInfo {
+    gchar *name;
+    gchar *handler;
+    gchar *data;
+    gchar *object; /* NULL if this isn't a connect_object signal */
+    gboolean after : 1;
+};
+</STRUCT>
+<STRUCT>
+<NAME>GladeStyleInfo</NAME>
+</STRUCT>
+<STRUCT>
+<NAME>GladeStyleInfo</NAME>
+struct GladeStyleInfo {
+    gchar *name;
+    gchar *rc_name;
+    gboolean local : 1;
+};
+</STRUCT>
+<STRUCT>
+<NAME>GladeWidgetInfo</NAME>
+</STRUCT>
+<STRUCT>
+<NAME>GladeWidgetInfo</NAME>
+struct GladeWidgetInfo {
+    GladeWidgetInfo *parent;
+
+    gchar *class;
+    gchar *name;
+    gchar *tooltip;
+
+    gint width, height;
+    gint border_width;
+
+    /* bit field */
+    gboolean visible : 1;
+    gboolean sensitive : 1;
+    gboolean can_default : 1;
+    gboolean can_focus : 1;
+    gboolean has_default : 1;
+    gboolean has_focus : 1;
+
+    GladeStyleInfo *style;
+
+    /* lists of GladeAttribute's */
+    GList *attributes;
+    GList *child_attributes; /* for the <child></child> section */
+
+    GList *signals;
+    GList *accelerators;
+
+    GList *children;
+};
+</STRUCT>
+<STRUCT>
+<NAME>GladeWidgetTree</NAME>
+</STRUCT>
+<STRUCT>
+<NAME>GladeWidgetTree</NAME>
+struct GladeWidgetTree {
+    guint ref;
+    GTime mtime;
+    GList *styles;
+    GList *widgets;
+    GHashTable *names;
+};
+</STRUCT>
+<FUNCTION>
+<NAME>glade_widget_tree_parse_file</NAME>
+<RETURNS>GladeWidgetTree  *</RETURNS>
+const char *file
+</FUNCTION>
+<FUNCTION>
+<NAME>glade_widget_tree_parse_memory</NAME>
+<RETURNS>GladeWidgetTree  *</RETURNS>
+char *buffer, int size
+</FUNCTION>
+<FUNCTION>
+<NAME>glade_widget_tree_ref</NAME>
+<RETURNS>GladeWidgetTree  *</RETURNS>
+GladeWidgetTree *tree
+</FUNCTION>
+<FUNCTION>
+<NAME>glade_widget_tree_unref</NAME>
+<RETURNS>void  </RETURNS>
+GladeWidgetTree *tree
+</FUNCTION>
+<FUNCTION>
+<NAME>glade_widget_tree_print</NAME>
+<RETURNS>void  </RETURNS>
+GladeWidgetTree *tree
+</FUNCTION>
 <MACRO>
 <NAME>GLADE_XML</NAME>
 #define GLADE_XML(obj) GTK_CHECK_CAST((obj), glade_xml_get_type(), GladeXML)
@@ -276,125 +394,12 @@ void
 void
 </FUNCTION>
 <FUNCTION>
+<NAME>glade_gnome_db_init</NAME>
+<RETURNS>void  </RETURNS>
+void
+</FUNCTION>
+<FUNCTION>
 <NAME>glade_load_module</NAME>
 <RETURNS>void  </RETURNS>
 const char *module
-</FUNCTION>
-<STRUCT>
-<NAME>GladeAttribute</NAME>
-</STRUCT>
-<STRUCT>
-<NAME>GladeAttribute</NAME>
-struct GladeAttribute {
-    gchar *name;
-    gchar *value;
-};
-</STRUCT>
-<STRUCT>
-<NAME>GladeAcceleratorInfo</NAME>
-</STRUCT>
-<STRUCT>
-<NAME>GladeAcceleratorInfo</NAME>
-struct GladeAcceleratorInfo {
-    guint key;
-    GdkModifierType modifiers;
-    gchar *signal;
-};
-</STRUCT>
-<STRUCT>
-<NAME>GladeSignalInfo</NAME>
-</STRUCT>
-<STRUCT>
-<NAME>GladeSignalInfo</NAME>
-struct GladeSignalInfo {
-    gchar *name;
-    gchar *handler;
-    gchar *data;
-    gchar *object; /* NULL if this isn't a connect_object signal */
-    gboolean after : 1;
-};
-</STRUCT>
-<STRUCT>
-<NAME>GladeStyleInfo</NAME>
-</STRUCT>
-<STRUCT>
-<NAME>GladeStyleInfo</NAME>
-struct GladeStyleInfo {
-    gchar *name;
-    gchar *rc_name;
-    gboolean local : 1;
-};
-</STRUCT>
-<STRUCT>
-<NAME>GladeWidgetInfo</NAME>
-</STRUCT>
-<STRUCT>
-<NAME>GladeWidgetInfo</NAME>
-struct GladeWidgetInfo {
-    GladeWidgetInfo *parent;
-
-    gchar *class;
-    gchar *name;
-    gchar *tooltip;
-
-    gint width, height;
-    gint border_width;
-
-    /* bit field */
-    gboolean visible : 1;
-    gboolean sensitive : 1;
-    gboolean can_default : 1;
-    gboolean can_focus : 1;
-    gboolean has_default : 1;
-    gboolean has_focus : 1;
-
-    GladeStyleInfo *style;
-
-    /* lists of GladeAttribute's */
-    GList *attributes;
-    GList *child_attributes; /* for the <child></child> section */
-
-    GList *signals;
-    GList *accelerators;
-
-    GList *children;
-};
-</STRUCT>
-<STRUCT>
-<NAME>GladeWidgetTree</NAME>
-</STRUCT>
-<STRUCT>
-<NAME>GladeWidgetTree</NAME>
-struct GladeWidgetTree {
-    guint ref;
-    GTime mtime;
-    GList *styles;
-    GList *widgets;
-    GHashTable *names;
-};
-</STRUCT>
-<FUNCTION>
-<NAME>glade_widget_tree_parse_file</NAME>
-<RETURNS>GladeWidgetTree  *</RETURNS>
-const char *file
-</FUNCTION>
-<FUNCTION>
-<NAME>glade_widget_tree_parse_memory</NAME>
-<RETURNS>GladeWidgetTree  *</RETURNS>
-char *buffer, int size
-</FUNCTION>
-<FUNCTION>
-<NAME>glade_widget_tree_ref</NAME>
-<RETURNS>GladeWidgetTree  *</RETURNS>
-GladeWidgetTree *tree
-</FUNCTION>
-<FUNCTION>
-<NAME>glade_widget_tree_unref</NAME>
-<RETURNS>void  </RETURNS>
-GladeWidgetTree *tree
-</FUNCTION>
-<FUNCTION>
-<NAME>glade_widget_tree_print</NAME>
-<RETURNS>void  </RETURNS>
-GladeWidgetTree *tree
 </FUNCTION>

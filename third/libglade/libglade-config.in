@@ -22,6 +22,7 @@ Possible widget libraries:
   gtk (included by default)
   gnome
   bonobo
+  gnomedb
 EOF
 
     exit $1
@@ -37,6 +38,7 @@ libs=false
 lib_gtk=yes
 lib_gnome=no
 lib_bonobo=no
+lib_gnomedb=no
 
 while test $# -gt 0; do
     case "$1" in
@@ -83,6 +85,10 @@ while test $# -gt 0; do
 	lib_gnome=yes   # bonobo implies gnome
 	lib_bonobo=yes
 	;;
+    gnomedb)            # gnomedb implies gnome
+        lib_gnome=yes
+        lib_gnomedb=yes
+        ;;
 
     *)
 	usage 1 1>&2
@@ -104,13 +110,18 @@ done
 @BONOBO_SUPPORT_FALSE@  exit 1
 @BONOBO_SUPPORT_FALSE@fi
 
+# This is uncommented when we have no GNOME-DB support ...
+@GNOMEDB_SUPPORT_FALSE@if test "$lib_gnomedb" = "yes"; then
+@GNOMEDB_SUPPORT_FALSE@  echo "*** GNOME-DB support was not compiled into libglade" 1>&2
+@GNOMEDB_SUPPORT_FALSE@  exit 1
+@GNOMEDB_SUPPORT_FALSE@fi
+
 if test "$echo_cflags" = "yes"; then
-    cflags="@XML_CFLAGS@"
-    if test "@includedir@" != /usr/include; then
-	cflags="$cflags -I@includedir@"
-    fi
+    cflags="@XML_CFLAGS@ -I@includedir@/libglade-1.0"
     if test "$lib_bonobo" = "yes"; then
 	cflags="$cflags @BONOBO_CFLAGS@"
+    elif test "$lib_gnomedb" = "yes"; then
+        cflags="$cflags @GNOMEDB_CFLAGS@"
     elif test "$lib_gnome" = "yes"; then
 	cflags="$cflags @GNOME_INCLUDEDIR@"
     else
@@ -133,6 +144,10 @@ if test "$echo_libs" = "yes"; then
     if test "$lib_bonobo" = "yes"; then
 	libs="-lglade-bonobo $libs"
 	libsa="@GNOME_LIBDIR@ @BONOBO_LIBS@"
+    fi
+    if test "$lib_gnomedb" = "yes"; then
+	libs="-lglade-gnomedb $libs"
+	libsa="@GNOME_LIBDIR@ @GNOMEDB_LIBS@"
     fi
     echo -L@libdir@ $libs @XML_LIBS@ $libsa
 fi

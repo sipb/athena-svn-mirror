@@ -1,8 +1,9 @@
-<!-- ##### STRUCT GladeSignalData ##### -->
+<!-- ##### MACRO GLADE_IS_XML ##### -->
 <para>
 
 </para>
 
+@obj: 
 
 <!-- ##### MACRO GLADE_XML ##### -->
 <para>
@@ -11,13 +12,6 @@
 
 @obj: 
 
-<!-- ##### FUNCTION glade_xml_get_type ##### -->
-<para>
-
-</para>
-
-@Returns: 
-
 <!-- ##### MACRO GLADE_XML_CLASS ##### -->
 <para>
 
@@ -25,12 +19,11 @@
 
 @klass: 
 
-<!-- ##### MACRO GLADE_IS_XML ##### -->
+<!-- ##### STRUCT GladeSignalData ##### -->
 <para>
 
 </para>
 
-@obj: 
 
 <!-- ##### FUNCTION glade_widget_tree_free ##### -->
 <para>
@@ -38,4 +31,11 @@
 </para>
 
 @tree: 
+
+<!-- ##### FUNCTION glade_xml_get_type ##### -->
+<para>
+
+</para>
+
+@Returns: 
 

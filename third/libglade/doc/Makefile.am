@@ -12,13 +12,8 @@ HTML_DIR=$(datadir)/gnome/html
 
 TARGET_DIR=$(HTML_DIR)/$(DOC_MODULE)
 
-if GNOME_SUPPORT
-CFLAGS = $(GNOME_INCLUDEDIR) $(XML_CFLAGS) -I$(srcdir)/..
-LDFLAGS = ../glade/libglade.la $(GNOME_LIBDIR) $(GNOMEUI_LIBS) $(XML_LIBS)
-else
 CFLAGS = $(GTK_CFLAGS) $(XML_CFLAGS) -I$(srcdir)/..
 LDFLAGS = ../glade/libglade.la $(GTK_LIBS) $(XML_LIBS)
-endif
 
 SCANOBJ_FILES = $(DOC_MODULE).signals $(DOC_MODULE).hierachy $(DOC_MODULE).args
 
@@ -28,7 +23,11 @@ tmpl_sources =				\
 	tmpl/glade-build.sgml		\
 	tmpl/libglade-unused.sgml
 
-noinst_DATA = html/libglade.html
+if HAVE_GTK_DOC
+html_stamp = html.stamp
+endif
+
+noinst_DATA = $(html_stamp)
 
 EXTRA_DIST = 				\
 	libglade-decl.txt		\
@@ -36,46 +35,46 @@ EXTRA_DIST = 				\
 	libglade-docs.sgml		\
 	libglade.types
 
-if HAVE_GTK_DOC
-html/libglade.html: sgml/glade.sgml
-	$(MAKE) html
-else
-html/libglade.html:
-endif
-
-sgml/glade.sgml: $(tmpl_sources) libglade.hierarchy libglade-decl.txt
-	$(MAKE) sgml	
-
-libglade.hierarchy libglade-decl.txt:
-	$(MAKE) templates
-
-scan:
+scan-build.stamp: $(top_srcdir)/glade/*.h
+	@echo '*** Scanning header files ***'
+	@-chmod -R u+w $(srcdir)
 	env CC="$(LIBTOOL) --mode=compile $(CC)" \
-		LD="$(LIBTOOL) --mode=link $(CC)" \
-		CFLAGS="$(CFLAGS)" LDFLAGS="$(LDFLAGS)" \
-		gtkdoc-scanobj --module=$(DOC_MODULE) \
-		--types=$(srcdir)/$(DOC_MODULE).types --nogtkinit
-	-mv -f $(SCANOBJ_FILES) $(srcdir)
+	    LD="$(LIBTOOL) --mode=link $(CC)" \
+	    CFLAGS="$(CFLAGS)" LDFLAGS="$(LDFLAGS)" \
+	        gtkdoc-scanobj --module=$(DOC_MODULE) \
+	                --types=$(srcdir)/$(DOC_MODULE).types \
+	                --output-dir=$(srcdir)
 	cd $(srcdir) \
 	&& gtkdoc-scan --module=$(DOC_MODULE) \
-		       --source-dir=$(DOC_SOURCE_DIR) \
-		       --ignore-headers=glade-private.h
+	               --source-dir=$(DOC_SOURCE_DIR) \
+	               --ignore-headers=glade-private.h
+	touch scan-build.stamp
 
-templates: scan
+$(DOC_MODULE)-decl.txt $(SCANOBJ_FILES): scan-build.stamp
+	@true
+
+tmpl.stamp: $(DOC_MODULE)-decl.txt $(SCANOBJ_FILES) $(DOC_MODULE)-sections.txt
+	@echo '*** Rebuilding template files ***'
+	@-chmod -R u+w $(srcdir)
 	cd $(srcdir) && gtkdoc-mktmpl --module=$(DOC_MODULE)
 
-sgml:
-	test -d $(srcdir)/sgml || mkdir $(srcdir)/sgml
+sgml.stamp: tmpl.stamp $(top_srcdir)/glade/*.c $(srcdir)/tmpl/*.sgml
+	@echo '*** Building SGML ***'
+	@-chmod -R u+w $(srcdir)
+	@test -d $(srcdir)/sgml || mkdir $(srcdir)/sgml
 	cd $(srcdir) \
 	&& gtkdoc-mkdb --module=$(DOC_MODULE) --source-dir=$(DOC_SOURCE_DIR)
 
-html:
-	test -d $(srcdir)/html || mkdir $(srcdir)/html
+html.stamp: sgml.stamp $(DOC_MAIN_SGML_FILE) $(content_files)
+	@echo '*** Building HTML ***'
+	@-chmod -R u+w $(srcdir)
+	@test -d $(srcdir)/html || mkdir $(srcdir)/html
 	-cd $(srcdir)/html && gtkdoc-mkhtml $(DOC_MODULE) ../$(DOC_MAIN_SGML_FILE)
 
 clean-local:
 	rm -f *~ *.bak *.hierarchy *.signals *-unused.txt
 	rm -f libglade-scan.lo libglade-scan.o
+	rm -f *.stamp
 
 maintainer-clean-local: clean
 	cd $(srcdir) && rm -rf sgml html $(DOC_MODULE)-decl-list.txt $(DOC_MODULE)-decl.txt 
