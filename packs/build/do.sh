@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: do.sh,v 1.79 2003-03-26 16:32:35 ghudson Exp $
+# $Id: do.sh,v 1.80 2003-05-20 18:32:16 ghudson Exp $
 
 source=/mit/source
 srvd=/.srvd
@@ -82,8 +82,20 @@ Linux\ 2.2.*\ i?86)
   ATHENA_SYS_COMPAT=i386_linux3:i386_linux2:i386_linux1
   ;;
 Linux\ 2.4.*\ i?86)
-  ATHENA_SYS=i386_linux24
-  ATHENA_SYS_COMPAT=i386_linux22:i386_linux3:i386_linux2:i386_linux1
+  case `cat /etc/redhat-release` in
+  *release\ 7.3\ *)
+    ATHENA_SYS=i386_linux24
+    ATHENA_SYS_COMPAT=i386_linux22:i386_linux3:i386_linux2:i386_linux1
+    ;;
+  *release\ 9\ *)
+    ATHENA_SYS=i386_rh9
+    ATHENA_SYS_COMPAT=i386_linux24:i386_linux22:i386_linux3:i386_linux2
+    ATHENA_SYS_COMPAT=${ATHENA_SYS_COMPAT}:i386_linux1
+    ;;
+  *)
+    echo "Unrecognized Red Hat release, aborting." 1>&2
+    ;;
+  esac
   ;;
 *)
   echo "Unrecognized system type, aborting." 1>&2
