@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/utils.c,v 1.6 1990-01-10 16:55:42 vanharen Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/utils.c,v 1.7 1990-04-25 17:00:12 vanharen Exp $";
 #endif
 
 
@@ -188,5 +188,6 @@ get_list_info(k,data)
     {
       data->nseen = -1;
       data->note[0] = '\0';
+      data->topic[0] = '\0';
     }
 }
