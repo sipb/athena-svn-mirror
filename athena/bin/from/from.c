@@ -1,5 +1,5 @@
 /* 
- * $Id: from.c,v 1.3 1991-06-24 14:19:16 akajerry Exp $
+ * $Id: from.c,v 1.4 1991-06-28 16:47:28 akajerry Exp $
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/from/from.c,v $
  * $Author: akajerry $
  *
@@ -10,13 +10,15 @@
  */
 
 #if !defined(lint) && !defined(SABER) && defined(RCS_HDRS)
-static char *rcsid = "$Id: from.c,v 1.3 1991-06-24 14:19:16 akajerry Exp $";
+static char *rcsid = "$Id: from.c,v 1.4 1991-06-28 16:47:28 akajerry Exp $";
 #endif /* lint || SABER || RCS_HDRS */
 
 #include <stdio.h>
+#include <sys/ioctl.h>
 #include <sys/types.h>
 #include <pwd.h>
 #include <strings.h>
+#include <malloc.h>
 #ifdef HESIOD
 #include <hesiod.h>
 #endif
@@ -44,6 +46,10 @@ int	num_headers, skip_message;
 
 char *Short_List[] = {
 	"^from$", NULL
+	};
+
+char *Report_List[] = {
+        "^from$", "^subject$", NULL
 	};
 
 char *Verbose_List[] = {
@@ -91,6 +97,7 @@ PRS(argc,argv)
 		case 'v':
 		        /* verbose mode */
 			verbose++;
+			report = 0;
 			break;
 		case 'd':
 			/* debug mode */
@@ -166,9 +173,11 @@ lusage()
 getmail_pop(user, host)
      char	*user,*host;
 {
-	int nmsgs, nbytes;
+	int nmsgs, nbytes, linelength;
 	char response[128];
+	char *p;
 	register int i, j;
+	struct winsize windowsize;
 	int	header_scan();
 
 	if (pop_init(host) == NOTOK) {
@@ -200,11 +209,25 @@ getmail_pop(user, host)
 		(void) pop_command("QUIT");
 		return(1);
 	}
-	if (report && (nmsgs == 0))
+	if (report && (nmsgs == 0)) {
 	  printf("You don't have any mail waiting.\n");
+	  return(0);
+	}
 	if (verbose)
-		printf("You have %d messages (%d bytes) on %s:\n",
-		       nmsgs, nbytes, host);
+	  if (nmsgs == 0) {
+	    printf("You don't have any mail waiting.\n");
+	    return(0);
+	  }
+	  else
+	    printf("You have %d messages (%d bytes) on %s:\n",
+		   nmsgs, nbytes, host);
+
+	/* find out how long the line is for the stdout */
+	if ((ioctl(1, TIOCGWINSZ, (void *)&windowsize) < 0) || 
+	    (windowsize.ws_col == 0))
+	  windowsize.ws_col = 80;  /* default assume 80 */
+	/* for the console window timestamp */
+	linelength = windowsize.ws_col - 6;
 	
 	for (i = 1; i <= nmsgs; i++) {
 		if (verbose && !skip_message)
@@ -215,12 +238,15 @@ getmail_pop(user, host)
 			(void) pop_command("QUIT");
 			return(1);
 		}
-		for (j = 0; j < num_headers; j++) {
-			if (!skip_message)
-				puts(headers[j]);
-			free(headers[j]);
-		}
-        }
+		if (report) 
+		  print_report(headers, num_headers, linelength);
+		else
+		  for (j = 0; j < num_headers; j++) {
+		    if (!skip_message)
+		      puts(headers[j]);
+		    free(headers[j]);
+		  }
+	      }
 	
 	(void) pop_command("QUIT");
 	return(0);
@@ -230,7 +256,7 @@ header_scan(line, last_header)
 	char	*line;
 	int	*last_header;
 {
-	char	*keyword;
+	char	*keyword, **search_list;
 	register int	i;
 	
 	if (*last_header && isspace(*line)) {
@@ -248,8 +274,14 @@ header_scan(line, last_header)
 		if (strcmp(sender, mail_from))
 			skip_message++;
 		free (mail_from);
-	}
-	if (list_compare(keyword, verbose ? Verbose_List : Short_List)) {
+	      }
+	if (verbose)
+	  search_list = Verbose_List;
+	else if (report)
+	  search_list = Report_List;
+	else
+	  search_list = Short_List;
+	if (list_compare(keyword, search_list)) {
 		*last_header = 1;
 		headers[num_headers++] = strdup(line);
 	} else
@@ -436,4 +468,58 @@ match (line, str)
 		line++;
 	}
 	return (*str == '\0');
+}
+
+print_report(headers, num_headers, winlength)
+     char **headers;
+     int num_headers, winlength;
+{
+  int j, len, from_found = 0, subject_found = 0;
+  char *p, *from_field, *subject_field, *buf, *buf1;
+  
+  for(j = 0; j < num_headers; j++) {
+    p = index(headers[j], ':');
+    if (p == NULL)
+      continue;
+
+    if (strncmp("From", headers[j], 4) == 0) {
+      p++;
+      while (p[0] == ' ')
+	p++;
+      from_field = p;
+      if (subject_found)
+	break;
+      from_found = 1;
+      continue;
+    }
+    if (strncmp("Subject", headers[j], 6) == 0) {
+      p++;
+      while (p[0] == ' ') 
+	p++;
+      subject_field = p;
+      if (from_found)
+	break;
+      subject_found = 1;
+    }
+  }
+
+  buf = malloc(winlength+1);  /* add 1 for the NULL terminator */
+  buf[0] = '\0';
+
+  strncpy(buf, from_field, winlength+1);
+  len = strlen(buf);
+  if  (len < 30)
+    len = 30;
+
+  buf1 = malloc(winlength-len+1);  /* add 1 for the NULL terminator */
+  buf1[0] = '\0';
+
+  strncpy(buf1, subject_field, winlength - len - 1);
+  
+  printf("%-30s %s\n", buf, buf1);
+
+  free(buf);
+  free(buf1);
+  for (j = 0; j < num_headers; j++)
+    free(headers[j]);
 }
