@@ -1,5 +1,5 @@
 # Display Manager Configuration File
-# $Id: config,v 1.24 1993-07-09 16:50:43 mar Exp $
+# $Id: config,v 1.25 1993-07-26 08:31:23 vrt Exp $
 
 #prog	command line
 #X	/etc/Xqvss -v :0 -fp /etc/athena/login/fonts/ -co /etc/athena/login/rgb
@@ -9,7 +9,7 @@
 #X	/etc/Xws -v :0 -fp /etc/athena/login/fonts/ -co /etc/athena/login/rgb
 #X	/etc/Xtm2d -v :0 -fp /etc/athena/login/fonts/ -co /etc/athena/login/rgb
 #X	/etc/Xsun -v :0  -fp /etc/athena/login/fonts/ -co /etc/athena/login/rgb
-#X	/usr/bin/X11/X -v -n :0 -c 0 -a 2 -x dps -x pcsim -bs
+#X	/usr/bin/X11/X -n :0 -c 0 -a 2 -x dps -x pcsim -bs
 
 console	/etc/athena/console -f /etc/athena/login/Console -display :0.0
 #ULTconsole	/etc/athena/console -f /etc/athena/login/Console -display :0.0 -input /dev/xcons
