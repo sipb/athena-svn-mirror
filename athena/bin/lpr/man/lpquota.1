@@ -1,0 +1,97 @@
+.TH LPQUOTA 1 "April 16, 1990"
+.FM mit
+.SH NAME
+lpquota \- enquire about print quota
+.SH SYNOPSIS
+.B lpquota
+[
+.BI \-P printer
+] [
+.BI \-Q quotaserver
+] [
+.BI \-S service
+] [
+.B \-c
+] [
+.B \-q
+] [
+.BI \-f allowed
+] [
+.BI \-i amount
+] [
+.BI \-d amount
+] [
+.BI \-s amount 
+] [
+.BI \-a amount
+] [
+username
+]
+.SH DESCRIPTION
+.B Lpquota
+is the client that interacts with the Quota Server, allowing users to
+determine their printing usage as well as get a list of all times that
+they have printed. For the privileged user, this client also allows
+manipulation of the quota database.
+.PP
+The
+.B \-Pprinter
+option forces use of the quota server associated with a specific printer. 
+If you do not specify a printer using the
+.B -Pprinter
+option, and the 
+.B -Qquotaserver 
+option is not used, 
+the printer name contained in the environment variable
+.B PRINTER 
+is used.
+.PP
+The
+.B \-Qquotaserver can be used to explicitly specify the machine that the
+quota server is running on.
+.PP
+The following single letter specify options to the program.
+.IP \fB\-q\fP 5
+Display a users Print Quota and associated charges
+.IP \fB\-l\fP 5
+Display a complete log of all print activity for the particular user.
+.IP \fB\-c\fP 5
+Create the user in the Quota Database
+.PP
+The following options which are only available for an administrator, all
+take an amount which is in cents.
+.IP \fB\-i\fP 5
+Increases the users quota limit
+.IP \fB\-d\fP 5
+Decrease the users quota limit
+.IP \fB\-s\fP 5
+Sets the users quota limit
+.IP \fB\-a\fP 5
+Adjusts the users actual usage. This is to be used in giving a user
+credit for poor quality printouts.
+.PP
+The 
+.B \-S 
+option is to allow alternate quota services to be used. Currently the
+deafult and only useful one is 
+.B athena
+.PP
+The 
+.B \-f 
+followed by either 0 or 1 disallows or allows a user to print on a
+specific printer.
+.SH "SEE ALSO"
+lpr(1),
+lpq(1),
+lprm(1),
+kerberos(1),
+printcap(5),
+.SH BUGS
+Currently account numbers are not supported.
+
+There is no way to delete a user once entered in the database.
+
+
+
+
+
