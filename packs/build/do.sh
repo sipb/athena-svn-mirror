@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: do.sh,v 1.6 1996-11-20 15:47:02 ghudson Exp $
+# $Id: do.sh,v 1.7 1996-11-21 00:32:30 ghudson Exp $
 
 source="/source"
 build="/build"
@@ -28,7 +28,7 @@ umask 022
 export ATHENA_SYS HOSTTYPE CONFIG_SITE PATH
 CONFIG_SITE=$source/packs/build/config.site
 case "`uname -a`" in
-SunOS*5.4*sparc*)
+SunOS*5.4*sun4*)
 	ATHENA_SYS=sun4m_54
 	HOSTTYPE=sun4
 	LD_LIBRARY_PATH=/usr/openwin/lib export LD_LIBRARY_PATH
