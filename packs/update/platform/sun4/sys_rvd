@@ -4,7 +4,7 @@ GLOBAL : *.CKP *.local *.pid :
 ##	MIT Project Athena
 ##
 ##	$Source: /afs/dev.mit.edu/source/repository/packs/update/platform/sun4/sys_rvd,v $
-##	$Header: /afs/dev.mit.edu/source/repository/packs/update/platform/sun4/sys_rvd,v 1.14 1994-06-29 15:54:21 miki Exp $
+##	$Header: /afs/dev.mit.edu/source/repository/packs/update/platform/sun4/sys_rvd,v 1.15 1994-07-26 19:08:46 cfields Exp $
 	.:::
 		-> SUNW*
 		*4c
@@ -31,9 +31,6 @@ GLOBAL : *.CKP *.local *.pid :
 		.rvdinfo
 		:
 	/etc:::			# These are specific to each machine.
-		.*.lock
-		clusterinfo
-		clusterinfo.bsh
 		crontab.root.add
 		defaultdomain
 		dumpdates
@@ -41,8 +38,10 @@ GLOBAL : *.CKP *.local *.pid :
 		group
 		hostname.le0
 		-> lp
+                minor_perm
 		nodename
 		defaultrouter 
+		mail
 		motd
 		mnttab
 		-> opt
@@ -80,12 +79,12 @@ GLOBAL : *.CKP *.local *.pid :
 		-> uucp
 		:
 	/etc/mail:::
-		aliases
 		sendmail.cf
+		aliases
+		:
 	/etc/athena:::
 		attach.conf
-		clusterinfo
-		clusterinfo.bsh
+                inetd.conf
 		newsyslog.conf
 		rc.conf
 		srvtab
