@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.8 1999-03-24 22:36:58 ghudson Exp $
+# $Id: Makefile,v 1.9 1999-11-11 20:29:35 danw Exp $
 
 SHELL=/bin/sh
 ATHRETCDIR=/etc/athena
@@ -24,6 +24,7 @@ install:
 	install -c -m 0444 save_cluster_info.8 ${DESTDIR}${ATHMANDIR}/man8
 	install -c -m 0555 shutdown_notify.sh \
 		${DESTDIR}${ATHRETCDIR}/shutdown_notify
+	install -c -m 0444 syncconf.8 ${DESTDIR}${ATHMANDIR}/man8
 	cd os/${OS} && ${MAKE} $@
 
 clean:
